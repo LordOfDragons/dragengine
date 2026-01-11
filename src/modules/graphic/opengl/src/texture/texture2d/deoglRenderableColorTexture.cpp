@@ -48,7 +48,7 @@ pHeight(height),
 pComponentCount(componentCount),
 pIsFloat(isFloat),
 pInUse(false),
-pTexture(NULL),
+pTexture(nullptr),
 pMemoryUsageGPU(0)
 {
 	if(width < 1 || height < 1){

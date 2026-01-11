@@ -63,17 +63,17 @@
 
 deHeightTerrainSector::deHeightTerrainSector(const decPoint &sector) :
 pSector(sector),
-pParentHeightTerrain(NULL),
+pParentHeightTerrain(nullptr),
 pIndex(-1),
-pVisibleFaces(NULL),
+pVisibleFaces(nullptr),
 pVFByteCount(0),
-pDecalRoot(NULL),
-pDecalTail(NULL),
+pDecalRoot(nullptr),
+pDecalTail(nullptr),
 pDecalCount(0){
 }
 
 deHeightTerrainSector::~deHeightTerrainSector(){
-	SetHeightImage(NULL);
+	SetHeightImage(nullptr);
 	RemoveAllNavSpaces();
 	RemoveAllDecals();
 	RemoveAllTextures();
@@ -237,7 +237,7 @@ void deHeightTerrainSector::SetAllFacesVisible(bool visible){
 	if(visible){
 		if(pVisibleFaces){
 			delete [] pVisibleFaces;
-			pVisibleFaces = NULL;
+			pVisibleFaces = nullptr;
 		}
 		
 	}else{
@@ -293,11 +293,11 @@ void deHeightTerrainSector::AddDecal(deDecal *decal){
 	if(pDecalTail){
 		pDecalTail->SetLLHeightTerrainSectorNext(decal);
 		decal->SetLLHeightTerrainSectorPrev(pDecalTail);
-		decal->SetLLHeightTerrainSectorNext(NULL); // not required by definition, just to make sure...
+		decal->SetLLHeightTerrainSectorNext(nullptr); // not required by definition, just to make sure...
 		
 	}else{
-		decal->SetLLHeightTerrainSectorPrev(NULL); // not required by definition, just to make sure...
-		decal->SetLLHeightTerrainSectorNext(NULL); // not required by definition, just to make sure...
+		decal->SetLLHeightTerrainSectorPrev(nullptr); // not required by definition, just to make sure...
+		decal->SetLLHeightTerrainSectorNext(nullptr); // not required by definition, just to make sure...
 		pDecalRoot = decal;
 	}
 	
@@ -335,9 +335,9 @@ void deHeightTerrainSector::RemoveDecal(deDecal *decal){
 	}
 	pDecalCount--;
 	
-	decal->SetParentHeightTerrainSector(NULL);
-	decal->SetLLHeightTerrainSectorPrev(NULL);
-	decal->SetLLHeightTerrainSectorNext(NULL);
+	decal->SetParentHeightTerrainSector(nullptr);
+	decal->SetLLHeightTerrainSectorPrev(nullptr);
+	decal->SetLLHeightTerrainSectorNext(nullptr);
 	
 	if(pParentHeightTerrain){
 		if(pParentHeightTerrain->GetPeerGraphic()){
@@ -354,14 +354,14 @@ void deHeightTerrainSector::RemoveDecal(deDecal *decal){
 void deHeightTerrainSector::RemoveAllDecals(){
 	while(pDecalTail){
 		deDecal * const next = pDecalTail->GetLLComponentPrev();
-		pDecalTail->SetParentHeightTerrainSector(NULL);
-		pDecalTail->SetLLHeightTerrainSectorPrev(NULL);
-		pDecalTail->SetLLHeightTerrainSectorNext(NULL);
+		pDecalTail->SetParentHeightTerrainSector(nullptr);
+		pDecalTail->SetLLHeightTerrainSectorPrev(nullptr);
+		pDecalTail->SetLLHeightTerrainSectorNext(nullptr);
 		pDecalTail->FreeReference();
 		pDecalTail = next;
 		pDecalCount--;
 	}
-	pDecalRoot = NULL;
+	pDecalRoot = nullptr;
 	
 	if(pParentHeightTerrain){
 		if(pParentHeightTerrain->GetPeerGraphic()){

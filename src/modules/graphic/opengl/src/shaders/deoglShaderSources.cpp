@@ -122,7 +122,7 @@ decXmlElementTag *deoglShaderSources::pGetTagAt(const decXmlElementTag &tag, int
 		return element->CastToElementTag();
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -140,7 +140,7 @@ decXmlAttValue *deoglShaderSources::pFindAttribute(const decXmlElementTag &tag, 
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 

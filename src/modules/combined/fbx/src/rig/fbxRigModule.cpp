@@ -66,7 +66,7 @@ deBaseModule *FBXRigCreateModule(deLoadableModule *loadableModule){
 		return new fbxRigModule(*loadableModule);
 		
 	}catch(const deException &){
-		return NULL;
+		return nullptr;
 	}
 }
 

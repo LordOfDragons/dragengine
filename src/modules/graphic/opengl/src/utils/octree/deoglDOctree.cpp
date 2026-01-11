@@ -45,11 +45,11 @@ pCenter(center),
 pHalfSize(halfSize),
 pMinExtend(center - halfSize),
 pMaxExtend(center + halfSize),
-pParent(NULL)
+pParent(nullptr)
 {
 	int i;
 	for(i=0; i<8; i++){
-		pNodes[i] = NULL;
+		pNodes[i] = nullptr;
 	}
 }
 
@@ -87,7 +87,7 @@ deoglDOctree *deoglDOctree::GetNodeAtBox(const decDVector &minExtend, const decD
 	const int octant = FindOctantAtBox(minExtend, maxExtend);
 	
 	// if we found no matching octant return NULL
-	if(octant == eoNotFound) return NULL;
+	if(octant == eoNotFound) return nullptr;
 	
 	// if the node does not exist create it
 	if(!pNodes[octant]){
@@ -103,7 +103,7 @@ deoglDOctree *deoglDOctree::FindNodeAtBox(const decDVector &minExtend, const dec
 	int octant = FindOctantAtBox(minExtend, maxExtend);
 	
 	// if we found no matching octant return NULL
-	if(octant == eoNotFound) return NULL;
+	if(octant == eoNotFound) return nullptr;
 	
 	// return the node that we found
 	return pNodes[octant];
@@ -229,7 +229,7 @@ void deoglDOctree::ClearTree(bool clearNodes){
 			pNodes[i]->ClearTree(clearNodes);
 			if(clearNodes){
 				delete pNodes[i];
-				pNodes[i] = NULL;
+				pNodes[i] = nullptr;
 			}
 		}
 	}

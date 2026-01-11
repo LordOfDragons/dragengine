@@ -46,7 +46,7 @@
 desynCreateSynthesizerSource::desynCreateSynthesizerSource(desynSynthesizer &synthesizer, int firstLink) :
 pSynthesizer(synthesizer),
 pFirstLink(firstLink),
-pSource(NULL){
+pSource(nullptr){
 }
 
 desynCreateSynthesizerSource::~desynCreateSynthesizerSource(){
@@ -58,7 +58,7 @@ desynCreateSynthesizerSource::~desynCreateSynthesizerSource(){
 ///////////////
 
 void desynCreateSynthesizerSource::Reset(){
-	pSource = NULL;
+	pSource = nullptr;
 }
 
 
@@ -68,7 +68,7 @@ void desynCreateSynthesizerSource::Reset(){
 /////////////
 
 void desynCreateSynthesizerSource::VisitSource(deSynthesizerSource &source){
-	pSource = NULL;
+	pSource = nullptr;
 }
 
 void desynCreateSynthesizerSource::VisitSound(deSynthesizerSourceSound &source){

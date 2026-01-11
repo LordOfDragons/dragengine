@@ -40,15 +40,15 @@
 
 deoalPanningCollector::deoalPanningCollector(int resolution) :
 pResolution(resolution),
-pPixels(NULL),
+pPixels(nullptr),
 pPixelCount(resolution * resolution * 6),
 pPixelsPerFace(resolution * resolution),
-pPixelsXPos(NULL),
-pPixelsXNeg(NULL),
-pPixelsYPos(NULL),
-pPixelsYNeg(NULL),
-pPixelsZPos(NULL),
-pPixelsZNeg(NULL)
+pPixelsXPos(nullptr),
+pPixelsXNeg(nullptr),
+pPixelsYPos(nullptr),
+pPixelsYNeg(nullptr),
+pPixelsZPos(nullptr),
+pPixelsZNeg(nullptr)
 {
 	if(resolution < 1){
 		DETHROW(deeInvalidParam);
@@ -68,15 +68,15 @@ pPixelsZNeg(NULL)
 
 deoalPanningCollector::deoalPanningCollector(const deoalPanningCollector &collector) :
 pResolution(collector.pResolution),
-pPixels(NULL),
+pPixels(nullptr),
 pPixelCount(collector.pPixelCount),
 pPixelsPerFace(collector.pPixelsPerFace),
-pPixelsXPos(NULL),
-pPixelsXNeg(NULL),
-pPixelsYPos(NULL),
-pPixelsYNeg(NULL),
-pPixelsZPos(NULL),
-pPixelsZNeg(NULL)
+pPixelsXPos(nullptr),
+pPixelsXNeg(nullptr),
+pPixelsYPos(nullptr),
+pPixelsYNeg(nullptr),
+pPixelsZPos(nullptr),
+pPixelsZNeg(nullptr)
 {
 	pPixels = new float[pPixelCount];
 	

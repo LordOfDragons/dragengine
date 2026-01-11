@@ -124,7 +124,7 @@ void deoalComponentDebug::pUpdateDDFaces(){
 			if(pDDFaces->GetParentWorld()){
 				pDDFaces->GetParentWorld()->RemoveDebugDrawer(pDDFaces);
 			}
-			pDDFaces = NULL;
+			pDDFaces = nullptr;
 		}
 		return;
 	}
@@ -166,8 +166,8 @@ void deoalComponentDebug::pUpdateDDFaces(){
 			continue;
 		}
 		
-		deDebugDrawerShape *shape = NULL;
-		deDebugDrawerShapeFace *shapeFace = NULL;
+		deDebugDrawerShape *shape = nullptr;
+		deDebugDrawerShapeFace *shapeFace = nullptr;
 		try{
 			shape = new deDebugDrawerShape();
 			shape->SetFillColor(colorFill);
@@ -186,7 +186,7 @@ void deoalComponentDebug::pUpdateDDFaces(){
 					shapeFace->AddVertex(face.GetVertex3());
 					shapeFace->SetNormal(face.GetNormal());
 					shape->AddFace(shapeFace);
-					shapeFace = NULL;
+					shapeFace = nullptr;
 				}
 				
 			}else{
@@ -202,7 +202,7 @@ void deoalComponentDebug::pUpdateDDFaces(){
 					shapeFace->AddVertex(face.GetVertex3());
 					shapeFace->SetNormal(face.GetNormal());
 					shape->AddFace(shapeFace);
-					shapeFace = NULL;
+					shapeFace = nullptr;
 				}
 			}
 			

@@ -45,7 +45,7 @@
 ////////////////////////////
 
 deCanvasVisitorIdentify::deCanvasVisitorIdentify() :
-pCanvas(NULL),
+pCanvas(nullptr),
 pType(deCanvasVisitorIdentify::ectUnknown){
 }
 
@@ -107,7 +107,7 @@ deCanvasView &deCanvasVisitorIdentify::CastToView() const{
 }
 
 void deCanvasVisitorIdentify::Reset(){
-	pCanvas = NULL;
+	pCanvas = nullptr;
 	pType = ectUnknown;
 }
 

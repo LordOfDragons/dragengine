@@ -230,14 +230,14 @@ public:
 	 * \deprecated Use StartGame(const char*, const char*, const char*, delGPModuleList*).
 	 */
 	virtual void StartGame(const char *scriptDirectory, const char *gameObject,
-		delGPModuleList *collectChangedParams = NULL) = 0;
+		delGPModuleList *collectChangedParams = nullptr) = 0;
 	
 	/**
 	 * \brief Start game.
 	 * \version 1.9
 	 */
 	virtual void StartGame(const char *scriptDirectory, const char *scriptVersion, const char *gameObject,
-		delGPModuleList *collectChangedParams = NULL) = 0;
+		delGPModuleList *collectChangedParams = nullptr) = 0;
 	
 	/** \brief Stop game. */
 	virtual void StopGame() = 0;

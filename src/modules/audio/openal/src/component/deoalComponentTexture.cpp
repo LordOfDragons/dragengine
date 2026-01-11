@@ -50,7 +50,7 @@
 deoalComponentTexture::deoalComponentTexture(deoalComponent &component, int index) :
 pComponent(component),
 pIndex(index),
-pSkin(NULL),
+pSkin(nullptr),
 pDirtyTexture(true)
 {
 	try{
@@ -81,7 +81,7 @@ void deoalComponentTexture::Synchronize(){
 		pATexture->SetSkin(pSkin->GetASkin());
 		
 	}else{
-		pATexture->SetSkin(NULL);
+		pATexture->SetSkin(nullptr);
 	}
 	
 	// update dynamic skin
@@ -110,7 +110,7 @@ void deoalComponentTexture::TextureChanged(const deComponentTexture &texture){
 		pSkin = (deoalSkin*)texture.GetSkin()->GetPeerAudio();
 		
 	}else{
-		pSkin = NULL;
+		pSkin = nullptr;
 	}
 	
 	// dynamic skin

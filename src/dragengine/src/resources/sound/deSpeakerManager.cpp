@@ -109,7 +109,7 @@ void deSpeakerManager::SystemAudioUnload(){
 	deSpeaker *speaker = (deSpeaker*)pSpeakers.GetRoot();
 	
 	while(speaker){
-		speaker->SetPeerAudio(NULL);
+		speaker->SetPeerAudio(nullptr);
 		speaker = (deSpeaker*)speaker->GetLLManagerNext();
 	}
 }
@@ -130,7 +130,7 @@ void deSpeakerManager::SystemScriptingUnload(){
 	deSpeaker *speaker = (deSpeaker*)pSpeakers.GetRoot();
 	
 	while(speaker){
-		speaker->SetPeerScripting(NULL);
+		speaker->SetPeerScripting(nullptr);
 		speaker = (deSpeaker*)speaker->GetLLManagerNext();
 	}
 }

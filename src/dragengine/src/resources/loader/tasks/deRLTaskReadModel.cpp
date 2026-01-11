@@ -109,7 +109,7 @@ void deRLTaskReadModel::Finished(){
 	LogFinishedEnter();
 	if(!pSucceeded){
 		SetState(esFailed);
-		pModel = NULL;
+		pModel = nullptr;
 		LogFinishedExit();
 		GetResourceLoader().FinishTask(this);
 		return;

@@ -918,7 +918,7 @@ void deClassCamera::PushCamera(dsRunTime *rt, deCamera *camera){
 	}
 	
 	if(!camera){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

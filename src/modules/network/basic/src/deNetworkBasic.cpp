@@ -75,13 +75,13 @@ MOD_ENTRY_POINT_ATTR deBaseModule *BasicNetworkCreateModule(deLoadableModule *lo
 ///////////////////
 
 deBaseModule *BasicNetworkCreateModule(deLoadableModule *loadableModule){
-	deBaseModule *module = NULL;
+	deBaseModule *module = nullptr;
 	
 	try{
 		module = new deNetworkBasic(*loadableModule);
 		
 	}catch(const deException &){
-		return NULL;
+		return nullptr;
 	}
 	
 	return module;
@@ -207,7 +207,7 @@ void deNetworkBasic::CleanUp(){
 	}*/
 	
 	if(pDatagram){
-		pDatagram = NULL;
+		pDatagram = nullptr;
 	}
 	
 	// ensure all linked lists are NULL
@@ -298,8 +298,8 @@ void deNetworkBasic::UnregisterConnection(debnConnection *connection){
 	}
 	
 	connection->SetIsRegistered(false);
-	connection->SetNextConnection(NULL);
-	connection->SetPreviousConnection(NULL);
+	connection->SetNextConnection(nullptr);
+	connection->SetPreviousConnection(nullptr);
 }
 
 void deNetworkBasic::RegisterServer(debnServer *server){
@@ -343,8 +343,8 @@ void deNetworkBasic::UnregisterServer(debnServer *server){
 	}
 	
 	server->SetIsRegistered(false);
-	server->SetNextServer(NULL);
-	server->SetPreviousServer(NULL);
+	server->SetNextServer(nullptr);
+	server->SetPreviousServer(nullptr);
 }
 
 void deNetworkBasic::RegisterSocket(debnSocket *bnSocket){
@@ -388,8 +388,8 @@ void deNetworkBasic::UnregisterSocket(debnSocket *bnSocket){
 	}
 	
 	bnSocket->SetIsRegistered(false);
-	bnSocket->SetNextSocket(NULL);
-	bnSocket->SetPreviousSocket(NULL);
+	bnSocket->SetNextSocket(nullptr);
+	bnSocket->SetPreviousSocket(nullptr);
 }
 
 
@@ -477,7 +477,7 @@ debnServer *deNetworkBasic::pFindServer(const debnSocket *bnSocket) const{
 		server = server->GetNextServer();
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 

@@ -51,7 +51,7 @@
 dedsConnection::dedsConnection(deScriptingDragonScript &ds, deConnection *connection) :
 pDS(ds),
 pConnection(connection),
-pValCB(NULL),
+pValCB(nullptr),
 pHasCB(false)
 {
 	if(!connection){
@@ -77,7 +77,7 @@ dedsConnection::~dedsConnection(){
 		pDS.GetScriptEngine()->GetMainRunTime()->FreeValue(pValCB);
 	}
 	
-	pValCB = NULL;
+	pValCB = nullptr;
 	pHasCB = false;
 }
 

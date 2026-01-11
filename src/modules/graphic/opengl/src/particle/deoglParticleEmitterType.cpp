@@ -70,7 +70,7 @@ void deoglParticleEmitterType::SyncToRender(){
 			pRType->SetSkin(((deoglSkin*)pType.GetSkin()->GetPeerGraphic())->GetRSkin());
 			
 		}else{
-			pRType->SetSkin(NULL);
+			pRType->SetSkin(nullptr);
 		}
 		
 		pRType->SetSimulationType(pType.GetSimulationType());

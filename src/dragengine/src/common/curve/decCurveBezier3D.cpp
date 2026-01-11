@@ -39,13 +39,13 @@
 ////////////////////////////
 
 decCurveBezier3D::decCurveBezier3D() :
-pPoints(NULL),
+pPoints(nullptr),
 pPointCount(0),
 pInterpolationMode(eimBezier){
 }
 
 decCurveBezier3D::decCurveBezier3D(const decCurveBezier3D &copy) :
-pPoints(NULL),
+pPoints(nullptr),
 pPointCount(0),
 pInterpolationMode(eimBezier)
 {
@@ -162,7 +162,7 @@ const decCurveBezier3DPoint &decCurveBezier3D::operator[](int position) const{
 
 decCurveBezier3D &decCurveBezier3D::operator=(const decCurveBezier3D &curve){
 	int p, pointCount = curve.GetPointCount();
-	decCurveBezier3DPoint *newArray = NULL;
+	decCurveBezier3DPoint *newArray = nullptr;
 	
 	if(pointCount > 0){
 		newArray = new decCurveBezier3DPoint[pointCount];

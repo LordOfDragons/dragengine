@@ -104,7 +104,7 @@ void deAnimatorInstanceManager::SystemAnimatorUnload(){
 	deAnimatorInstance *instance = (deAnimatorInstance*)pInstances.GetRoot();
 	
 	while(instance){
-		instance->SetPeerAnimator(NULL);
+		instance->SetPeerAnimator(nullptr);
 		instance = (deAnimatorInstance*)instance->GetLLManagerNext();
 	}
 }

@@ -45,7 +45,7 @@ pAttachType(eatStatic),
 pResource(resource),
 pScaling(1.0f, 1.0f, 1.0f),
 pNoScaling(false),
-pWeights(NULL),
+pWeights(nullptr),
 pWeightCount(0)
 {
 	if(!resource || !CanAttachResource(*resource)){
@@ -95,7 +95,7 @@ void deColliderAttachment::SetWeightCount(int count){
 		return;
 	}
 	
-	sWeight *newArray = NULL;
+	sWeight *newArray = nullptr;
 	
 	if(count > 0){
 		newArray = new sWeight[count];

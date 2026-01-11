@@ -49,7 +49,7 @@
 
 
 // error handling function
-static deOSUnix *tempGlobalOS = NULL;
+static deOSUnix *tempGlobalOS = nullptr;
 
 static int errorHandler(Display *dpy, XErrorEvent *e){
 	// we need a way to get hold of a default logger. best way would be a global logger
@@ -260,16 +260,16 @@ static int errorHandler(Display *dpy, XErrorEvent *e){
 ////////////////////////////
 
 deOSUnix::deOSUnix() :
-pDisplay(NULL),
+pDisplay(nullptr),
 pScreen(0),
 pCurWindow(0),
 pEventMask(0),
 pHostingMainWindow(0),
 pHostingRenderWindow(0),
 
-pDisplayInformation(NULL),
+pDisplayInformation(nullptr),
 pDisplayCount(0),
-pDisplayResolutions(NULL),
+pDisplayResolutions(nullptr),
 pDisplayResolutionCount(0),
 pScaleFactor(100)
 {
@@ -585,25 +585,25 @@ void deOSUnix::pCleanUp(){
 	// close display
 	if(pDisplay){
 		XCloseDisplay(pDisplay);
-		pDisplay = NULL;
+		pDisplay = nullptr;
 	}
 	
 	if(pDisplayInformation){
 		delete [] pDisplayInformation;
-		pDisplayInformation = NULL;
+		pDisplayInformation = nullptr;
 		pDisplayCount = 0;
 	}
 	
 	if(pDisplayResolutions){
 		delete [] pDisplayResolutions;
-		pDisplayResolutions = NULL;
+		pDisplayResolutions = nullptr;
 		pDisplayResolutionCount = 0;
 	}
 	
 	// reset error handler
 	if(tempGlobalOS == this){
-		XSetErrorHandler(NULL);
-		tempGlobalOS = NULL;
+		XSetErrorHandler(nullptr);
+		tempGlobalOS = nullptr;
 	}
 }
 

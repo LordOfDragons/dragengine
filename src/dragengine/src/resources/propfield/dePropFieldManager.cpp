@@ -108,7 +108,7 @@ void dePropFieldManager::SystemGraphicUnload(){
 	dePropField *field = (dePropField*)pFields.GetRoot();
 	
 	while(field){
-		field->SetPeerGraphic(NULL);
+		field->SetPeerGraphic(nullptr);
 		field = (dePropField*)field->GetLLManagerNext();
 	}
 }
@@ -129,7 +129,7 @@ void dePropFieldManager::SystemPhysicsUnload(){
 	dePropField *field = (dePropField*)pFields.GetRoot();
 	
 	while(field){
-		field->SetPeerPhysics(NULL);
+		field->SetPeerPhysics(nullptr);
 		field = (dePropField*)field->GetLLManagerNext();
 	}
 }
@@ -150,7 +150,7 @@ void dePropFieldManager::SystemScriptingUnload(){
 	dePropField *field = (dePropField*)pFields.GetRoot();
 	
 	while(field){
-		field->SetPeerScripting(NULL);
+		field->SetPeerScripting(nullptr);
 		field = (dePropField*)field->GetLLManagerNext();
 	}
 }

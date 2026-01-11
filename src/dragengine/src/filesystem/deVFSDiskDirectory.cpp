@@ -375,7 +375,7 @@ void deVFSDiskDirectory::TouchFile(const decPath &path){
 			DETHROW_INFO(deeWriteFile, npath);
 		}
 #else // OS_MACOS
-		if(utimensat(AT_FDCWD, npath, NULL, 0) != 0){
+		if(utimensat(AT_FDCWD, npath, nullptr, 0) != 0){
 			DETHROW_INFO(deeWriteFile, npath);
 		}
 #endif // OS_MACOS
@@ -394,7 +394,7 @@ void deVFSDiskDirectory::SearchFiles(const decPath &directory, deContainerFileSe
 	decPath searchPath(pDiskPath + directory);
 	
 #if defined OS_UNIX
-	DIR *theDir = NULL;
+	DIR *theDir = nullptr;
 	dirent *entry;
 	
 	try{

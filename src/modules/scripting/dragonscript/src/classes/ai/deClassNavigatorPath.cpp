@@ -416,7 +416,7 @@ void deClassNavigatorPath::nfUpdateDebugDrawer::RunFunction(dsRunTime *rt, dsVal
 		const float boxSize = 0.02f * scale;
 		const decVector upAlt(0.0f, 0.0f, 1.0f);
 		const decVector up(0.0f, 1.0f, 0.0f);
-		decShape *shape = NULL;
+		decShape *shape = nullptr;
 		
 		try{
 			// start of path
@@ -424,13 +424,13 @@ void deClassNavigatorPath::nfUpdateDebugDrawer::RunFunction(dsRunTime *rt, dsVal
 			
 			shape = new decShapeSphere(0.05f * scale, lastPoint);
 			shapes.Add(shape);
-			shape = NULL;
+			shape = nullptr;
 			
 			// end of path
 			if(pointCount > 1){
 				shape = new decShapeSphere(0.05f * scale, (matrix * path.GetAt(pointCount - 1)).ToVector());
 				shapes.Add(shape);
-				shape = NULL;
+				shape = nullptr;
 			}
 			
 			// path segments
@@ -456,7 +456,7 @@ void deClassNavigatorPath::nfUpdateDebugDrawer::RunFunction(dsRunTime *rt, dsVal
 				
 				shape = new decShapeBox(halfExtends, (lastPoint + nextPoint) * 0.5f, orientation);
 				shapes.Add(shape);
-				shape = NULL;
+				shape = nullptr;
 			}
 			
 		}catch(...){

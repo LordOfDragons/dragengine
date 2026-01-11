@@ -53,7 +53,7 @@ pConfiguration(*this),
 
 pWindowMain(windowMain),
 
-pCmdLineGame(NULL),
+pCmdLineGame(nullptr),
 pCmdLineQuitNow(false)
 {
 	if(!windowMain){

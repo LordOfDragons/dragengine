@@ -58,7 +58,7 @@ deoglConvexVisHullBuilder::~deoglConvexVisHullBuilder(){
 ///////////////
 
 void deoglConvexVisHullBuilder::BuildSphere(decConvexVolumeList &volumeList, const decVector &position, float radius) const{
-	decConvexVolume *volume = NULL;
+	decConvexVolume *volume = nullptr;
 	float offset;
 	
 	volumeList.RemoveAllVolumes();
@@ -157,8 +157,8 @@ float distance, float angle, int resolution) const{
 	const float circleAngleStep = PI * 2.0f / (float)resolution;
 	const float circleRadius = distance * tanf(angle) / cosf(circleAngleStep * 0.5f);
 	
-	decConvexVolumeFace *face = NULL;
-	decConvexVolume *volume = NULL;
+	decConvexVolumeFace *face = nullptr;
+	decConvexVolume *volume = nullptr;
 	decVector circlePoint;
 	float circleAngle;
 	int i;
@@ -190,7 +190,7 @@ float distance, float angle, int resolution) const{
 			face->AddVertex(1 + (resolution - 1 - i));
 		}
 		volume->AddFace(face);
-		face = NULL;
+		face = nullptr;
 		
 		volumeList.AddVolume(volume);
 		
@@ -206,7 +206,7 @@ float distance, float angle, int resolution) const{
 }
 
 void deoglConvexVisHullBuilder::BuildFrustum(decConvexVolumeList &volumeList, const decMatrix &matrix, float farDistance, float angleX, float angleY) const{
-	decConvexVolume *volume = NULL;
+	decConvexVolume *volume = nullptr;
 	float sinX = sinf(angleX);
 	float cosX = cosf(angleX);
 	float sinY = sinf(angleY);
@@ -516,12 +516,12 @@ const decDVector &minExtend, const decDVector &maxExtend) const{
 	const decVector localMinExtend = (matrix * minExtend).ToVector();
 	const decVector localMaxExtend = (matrix * maxExtend).ToVector();
 	
-	volumeList.SplitByPlane(normalXAxis, localMinExtend, true, NULL); // crop left face
-	volumeList.SplitByPlane(-normalXAxis, localMaxExtend, true, NULL); // crop right face
-	volumeList.SplitByPlane(normalYAxis, localMinExtend, true, NULL); // crop bottom face
-	volumeList.SplitByPlane(-normalYAxis, localMaxExtend, true, NULL); // crop top face
-	volumeList.SplitByPlane(normalZAxis, localMinExtend, true, NULL); // crop back face
-	volumeList.SplitByPlane(-normalZAxis, localMaxExtend, true, NULL); // crop front face
+	volumeList.SplitByPlane(normalXAxis, localMinExtend, true, nullptr); // crop left face
+	volumeList.SplitByPlane(-normalXAxis, localMaxExtend, true, nullptr); // crop right face
+	volumeList.SplitByPlane(normalYAxis, localMinExtend, true, nullptr); // crop bottom face
+	volumeList.SplitByPlane(-normalYAxis, localMaxExtend, true, nullptr); // crop top face
+	volumeList.SplitByPlane(normalZAxis, localMinExtend, true, nullptr); // crop back face
+	volumeList.SplitByPlane(-normalZAxis, localMaxExtend, true, nullptr); // crop front face
 }
 
 
@@ -533,7 +533,7 @@ void deoglConvexVisHullBuilder::pAddTriangle(decConvexVolume *volume, int p1, in
 	const decVector &vertex1 = volume->GetVertexAt(p1);
 	const decVector &vertex2 = volume->GetVertexAt(p2);
 	const decVector &vertex3 = volume->GetVertexAt(p3);
-	decConvexVolumeFace *face = NULL;
+	decConvexVolumeFace *face = nullptr;
 	decVector normal;
 	float length;
 	
@@ -563,7 +563,7 @@ void deoglConvexVisHullBuilder::pAddTriangle(decConvexVolume *volume, int p1, in
 }
 
 void deoglConvexVisHullBuilder::pAddTriangle(decConvexVolume *volume, int p1, int p2, int p3, const decVector &normal) const{
-	decConvexVolumeFace *face = NULL;
+	decConvexVolumeFace *face = nullptr;
 	
 	try{
 		face = new decConvexVolumeFace;
@@ -586,7 +586,7 @@ void deoglConvexVisHullBuilder::pAddQuad(decConvexVolume *volume, int p1, int p2
 	const decVector &vertex1 = volume->GetVertexAt(p1);
 	const decVector &vertex2 = volume->GetVertexAt(p2);
 	const decVector &vertex3 = volume->GetVertexAt(p3);
-	decConvexVolumeFace *face = NULL;
+	decConvexVolumeFace *face = nullptr;
 	decVector normal;
 	float length;
 	
@@ -617,7 +617,7 @@ void deoglConvexVisHullBuilder::pAddQuad(decConvexVolume *volume, int p1, int p2
 }
 
 void deoglConvexVisHullBuilder::pAddQuad(decConvexVolume *volume, int p1, int p2, int p3, int p4, const decVector &normal) const{
-	decConvexVolumeFace *face = NULL;
+	decConvexVolumeFace *face = nullptr;
 	
 	try{
 		face = new decConvexVolumeFace;

@@ -56,15 +56,15 @@ pType(deSoundLevelMeter::emtPoint),
 pConeAngle(45.0f),
 pAudibleDistance(1.0f),
 pEnabled(false),
-pParentWorld(NULL),
-pOctreeNode(NULL),
-pEnvProbeList(NULL),
-pEnvProbe(NULL),
+pParentWorld(nullptr),
+pOctreeNode(nullptr),
+pEnvProbeList(nullptr),
+pEnvProbe(nullptr),
 pDirtyEnvProbe(true),
 
 pWorldMarkedRemove(false),
-pLLWorldPrev(NULL),
-pLLWorldNext(NULL)
+pLLWorldPrev(nullptr),
+pLLWorldNext(nullptr)
 {
 	pWOVPrepareRayTrace.SetRadius(pAudibleDistance);
 	LEAK_CHECK_CREATE(audioThread, SoundLevelMeter);
@@ -145,7 +145,7 @@ deoalASoundLevelMeterSpeaker *deoalASoundLevelMeter::GetSpeakerWith(deoalASpeake
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 void deoalASoundLevelMeter::RemoveSpeakerIfPresent(deoalASpeaker *speaker){
@@ -175,7 +175,7 @@ void deoalASoundLevelMeter::SetParentWorld(deoalAWorld *world){
 	
 	if(pEnvProbeList){
 		delete pEnvProbeList;
-		pEnvProbeList = NULL;
+		pEnvProbeList = nullptr;
 	}
 	
 	if(pOctreeNode){
@@ -202,12 +202,12 @@ void deoalASoundLevelMeter::PrepareQuickDispose(){
 	if(pEnvProbeList){
 		pEnvProbeList->PrepareQuickDispose();
 		delete pEnvProbeList;
-		pEnvProbeList = NULL;
+		pEnvProbeList = nullptr;
 	}
 	
 	pSpeakers.RemoveAll();
-	pParentWorld = NULL;
-	pOctreeNode = NULL;
+	pParentWorld = nullptr;
+	pOctreeNode = nullptr;
 }
 
 
@@ -218,11 +218,11 @@ deoalEnvProbe *deoalASoundLevelMeter::GetEnvProbe(){
 	}
 	
 	pDirtyEnvProbe = false;
-	pEnvProbe = NULL;
+	pEnvProbe = nullptr;
 	
 	deoalAWorld * const world = GetParentWorld();
 	if(!world){
-		return NULL;
+		return nullptr;
 	}
 	
 	if(!pEnvProbeList){
@@ -322,7 +322,7 @@ void deoalASoundLevelMeter::SetLLWorldNext(deoalASoundLevelMeter *soundLevelMete
 //////////////////////
 
 void deoalASoundLevelMeter::pCleanUp(){
-	pEnvProbe = NULL;
+	pEnvProbe = nullptr;
 	if(pEnvProbeList){
 		delete pEnvProbeList;
 	}

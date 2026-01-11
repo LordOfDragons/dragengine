@@ -49,7 +49,7 @@ fbxModelCluster::fbxModelCluster(fbxModel &model, fbxNode &nodeCluster) :
 pModel(model),
 pNodeCluster(nodeCluster),
 pNodeClusterID(nodeCluster.GetID()),
-pRigBone(NULL){
+pRigBone(nullptr){
 }
 
 fbxModelCluster::~fbxModelCluster(){

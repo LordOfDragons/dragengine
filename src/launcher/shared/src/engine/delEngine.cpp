@@ -75,7 +75,7 @@ delEngine::delEngine(delLauncher &launcher, const char *logFileTitle) :
 pLauncher(launcher),
 pLogFile(decString(logFileTitle) + ".log"),
 pResolutionCount(0),
-pResolutions(NULL),
+pResolutions(nullptr),
 pScaleFactor(100){
 }
 
@@ -408,7 +408,7 @@ const char *delEngine::GetModuleTypeText(deModuleSystem::eModuleTypes moduleType
 void delEngine::UpdateResolutions(delEngineInstance &instance){
 	if(pResolutions){
 		delete [] pResolutions;
-		pResolutions = NULL;
+		pResolutions = nullptr;
 		pResolutionCount = 0;
 	}
 	
@@ -430,7 +430,7 @@ void delEngine::UpdateResolutions(delEngineInstance &instance){
 		
 		if(pResolutions){
 			delete [] pResolutions;
-			pResolutions = NULL;
+			pResolutions = nullptr;
 		}
 		pResolutionCount = 0;
 	}

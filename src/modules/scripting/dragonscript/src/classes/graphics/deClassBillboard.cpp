@@ -513,7 +513,7 @@ void deClassBillboard::PushBillboard(dsRunTime *rt, deBillboard *billboard){
 	}
 	
 	if(!billboard){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

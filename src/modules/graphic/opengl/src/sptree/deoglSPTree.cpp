@@ -49,13 +49,13 @@ deoglSPTree::deoglSPTree(const decVector &minExtend, const decVector &maxExtend,
 	
 	pMinExtend = minExtend;
 	pMaxExtend = maxExtend;
-	pNodes = NULL;
+	pNodes = nullptr;
 	
 	pTotalNodeCount = nodeCount.x * nodeCount.y * nodeCount.z;
 	pStride = nodeCount.x * nodeCount.y;
 	
 	pNodes = new deoglSPTreeNode*[pTotalNodeCount];
-	for(i=0; i<pTotalNodeCount; i++) pNodes[i] = NULL;
+	for(i=0; i<pTotalNodeCount; i++) pNodes[i] = nullptr;
 }
 
 deoglSPTree::~deoglSPTree(){
@@ -116,7 +116,7 @@ void deoglSPTree::ClearAllNodes(){
 	for(i=0; i<count; i++){
 		if(pNodes[i]){
 			delete pNodes[i];
-			pNodes[i] = NULL;
+			pNodes[i] = nullptr;
 		}
 	}
 }

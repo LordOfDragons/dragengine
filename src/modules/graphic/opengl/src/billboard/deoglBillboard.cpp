@@ -51,9 +51,9 @@ deoglBillboard::deoglBillboard(deGraphicOpenGl &ogl, const deBillboard &billboar
 pOgl(ogl),
 pBillboard(billboard),
 
-pParentWorld(NULL),
-pSkinStateController(NULL),
-pDynamicSkin(NULL),
+pParentWorld(nullptr),
+pSkinStateController(nullptr),
+pDynamicSkin(nullptr),
 
 pAccumUpdate(0.0f),
 
@@ -202,7 +202,7 @@ void deoglBillboard::SetParentWorld(deoglWorld *parentWorld){
 //////////////////////////
 
 void deoglBillboard::DynamicSkinDestroyed(){
-	pDynamicSkin = NULL;
+	pDynamicSkin = nullptr;
 }
 
 void deoglBillboard::DynamicSkinRenderablesChanged(){
@@ -300,7 +300,7 @@ void deoglBillboard::DynamicSkinChanged(){
 		pDynamicSkin->AddListener(this);
 		
 	}else{
-		pDynamicSkin = NULL;
+		pDynamicSkin = nullptr;
 	}
 	
 	pDirtyDynamicSkin = true;
@@ -360,7 +360,7 @@ void deoglBillboard::pSyncSkin(){
 		pRBillboard->SetSkin(((deoglSkin*)pBillboard.GetSkin()->GetPeerGraphic())->GetRSkin());
 		
 	}else{
-		pRBillboard->SetSkin(NULL);
+		pRBillboard->SetSkin(nullptr);
 	}
 	
 	pDirtySkin = false;
@@ -372,7 +372,7 @@ void deoglBillboard::pSyncDynamicSkin(){
 			pRBillboard->SetDynamicSkin(pDynamicSkin->GetRDynamicSkin());
 			
 		}else{
-			pRBillboard->SetDynamicSkin(NULL);
+			pRBillboard->SetDynamicSkin(nullptr);
 		}
 		
 		pDirtyDynamicSkin = false;

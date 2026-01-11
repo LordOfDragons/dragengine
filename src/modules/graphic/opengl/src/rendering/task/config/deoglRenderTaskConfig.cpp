@@ -38,7 +38,7 @@
 ////////////////////////////
 
 deoglRenderTaskConfig::deoglRenderTaskConfig() :
-pTextures(NULL),
+pTextures(nullptr),
 pTextureCount(0),
 pTextureSize(0){
 }

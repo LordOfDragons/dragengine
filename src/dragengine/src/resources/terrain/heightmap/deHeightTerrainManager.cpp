@@ -118,7 +118,7 @@ void deHeightTerrainManager::SystemGraphicUnload(){
 	deHeightTerrain *heightTerrain = (deHeightTerrain*)pTerrains.GetRoot();
 	
 	while(heightTerrain){
-		heightTerrain->SetPeerGraphic(NULL);
+		heightTerrain->SetPeerGraphic(nullptr);
 		heightTerrain = (deHeightTerrain*)heightTerrain->GetLLManagerNext();
 	}
 }
@@ -139,7 +139,7 @@ void deHeightTerrainManager::SystemPhysicsUnload(){
 	deHeightTerrain *heightTerrain = (deHeightTerrain*)pTerrains.GetRoot();
 	
 	while(heightTerrain){
-		heightTerrain->SetPeerPhysics(NULL);
+		heightTerrain->SetPeerPhysics(nullptr);
 		heightTerrain = (deHeightTerrain*)heightTerrain->GetLLManagerNext();
 	}
 }
@@ -160,7 +160,7 @@ void deHeightTerrainManager::SystemAIUnload(){
 	deHeightTerrain *heightTerrain = (deHeightTerrain*)pTerrains.GetRoot();
 	
 	while(heightTerrain){
-		heightTerrain->SetPeerAI(NULL);
+		heightTerrain->SetPeerAI(nullptr);
 		heightTerrain = (deHeightTerrain*)heightTerrain->GetLLManagerNext();
 	}
 }
@@ -181,7 +181,7 @@ void deHeightTerrainManager::SystemAudioUnload(){
 	deHeightTerrain *heightTerrain = (deHeightTerrain*)pTerrains.GetRoot();
 	
 	while(heightTerrain){
-		heightTerrain->SetPeerAudio(NULL);
+		heightTerrain->SetPeerAudio(nullptr);
 		heightTerrain = (deHeightTerrain*)heightTerrain->GetLLManagerNext();
 	}
 }

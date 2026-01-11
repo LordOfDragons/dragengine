@@ -118,7 +118,7 @@ void deColliderManager::SystemPhysicsUnload(){
 	deCollider *collider = (deCollider*)pColliders.GetRoot();
 	
 	while(collider){
-		collider->SetPeerPhysics(NULL);
+		collider->SetPeerPhysics(nullptr);
 		collider = (deCollider*)collider->GetLLManagerNext();
 	}
 }
@@ -139,7 +139,7 @@ void deColliderManager::SystemScriptingUnload(){
 	deCollider *collider = (deCollider*)pColliders.GetRoot();
 	
 	while(collider){
-		collider->SetPeerScripting(NULL);
+		collider->SetPeerScripting(nullptr);
 		collider = (deCollider*)collider->GetLLManagerNext();
 	}
 }

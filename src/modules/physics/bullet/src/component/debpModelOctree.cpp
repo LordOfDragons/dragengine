@@ -39,14 +39,14 @@
 ////////////////////////////
 
 debpModelOctree::debpModelOctree(const decDVector &center, const decDVector &halfSize) : debpDOctree(center, halfSize){
-	pFaces = NULL;
+	pFaces = nullptr;
 	pFaceCount = 0;
 	pFaceSize = 0;
 }
 
 debpModelOctree::debpModelOctree(const decVector &center, const decVector &halfSize) :
 debpDOctree(decDVector(center), decDVector(halfSize)){
-	pFaces = NULL;
+	pFaces = nullptr;
 	pFaceCount = 0;
 	pFaceSize = 0;
 }

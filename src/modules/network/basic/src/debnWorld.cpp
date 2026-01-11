@@ -53,10 +53,10 @@ debnWorld::debnWorld(deNetworkBasic *netBasic, deWorld *world){
 	
 	pCanCreateStates = false;
 	
-	pStateSlots = NULL;
+	pStateSlots = nullptr;
 	pStateSlotCount = 0;
 	
-	pParentNetwork = NULL;
+	pParentNetwork = nullptr;
 	
 	try{
 		pStateSlots = new debnState*[1000];
@@ -64,7 +64,7 @@ debnWorld::debnWorld(deNetworkBasic *netBasic, deWorld *world){
 		pStateSlotCount = 1000;
 		
 		for(i=0; i<pStateSlotCount; i++){
-			pStateSlots[i] = NULL;
+			pStateSlots[i] = nullptr;
 		}
 		
 	}catch(const deException &){

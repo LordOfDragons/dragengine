@@ -214,7 +214,7 @@ void deoglCapCheckUBOIndirectMatrixAccess::Check(GLuint fbo){
 		
 		OGL_CHECK(renderThread, glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
 		OGL_CHECK(renderThread, glTexImage2D(GL_TEXTURE_2D, 0, texformat.GetFormat(),
-			1, 1, 0, texformat.GetPixelFormat(), texformat.GetPixelType(), NULL));
+			1, 1, 0, texformat.GetPixelFormat(), texformat.GetPixelType(), nullptr));
 		OGL_CHECK(renderThread, glPixelStorei(GL_UNPACK_ALIGNMENT, 4));
 		
 		// bind test texture to fbo and set render parameters

@@ -55,7 +55,7 @@
 deParallelProcessing::deParallelProcessing(deEngine &engine) :
 pEngine(engine),
 pCoreCount(4),
-pThreads(NULL),
+pThreads(nullptr),
 pThreadCount(0),
 pPaused(false),
 pOutputDebugMessages(false)
@@ -603,7 +603,7 @@ deParallelTask *deParallelProcessing::NextPendingTask(bool takeLowPriorityTasks)
 	// not adding or releasing task references
 	
 	if(pPaused){
-		return NULL;
+		return nullptr;
 	}
 	
 	int nextIndex = 0;
@@ -664,7 +664,7 @@ deParallelTask *deParallelProcessing::NextPendingTask(bool takeLowPriorityTasks)
 		if(pListPendingTasksLowPriority.IsNotEmpty()){
 			pSemaphoreNewTasks.Signal();
 		}
-		return NULL;
+		return nullptr;
 	}
 	
 	nextIndex = 0;
@@ -706,7 +706,7 @@ deParallelTask *deParallelProcessing::NextPendingTask(bool takeLowPriorityTasks)
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 void deParallelProcessing::WaitOnNewTasksSemaphore(){
@@ -853,7 +853,7 @@ void deParallelProcessing::pDestroyThreads(){
 	}
 	delete [] pThreads;
 	
-	pThreads = NULL;
+	pThreads = nullptr;
 	pThreadCount = 0;
 	
 	if(pOutputDebugMessages){

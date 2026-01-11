@@ -67,7 +67,7 @@ deoglRSkyInstanceLayer::deoglRSkyInstanceLayer(deoglRSkyInstance &instance, int 
 pInstance(instance),
 pIndex(index),
 
-pTrackerEnvMap(NULL),
+pTrackerEnvMap(nullptr),
 pSkyNeedsUpdate(false)
 {
 	pShadowCaster = new deoglShadowCaster(instance.GetRenderThread());
@@ -188,7 +188,7 @@ deoglSkyLayerGICascade *deoglRSkyInstanceLayer::GetGICascade(const deoglGICascad
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 deoglSkyLayerGICascade *deoglRSkyInstanceLayer::AddGICascade(const deoglGICascade &cascade){

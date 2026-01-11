@@ -172,12 +172,12 @@ deoalSource *deoalSourceManager::pNextUnboundSource() const{
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 deoalSource *deoalSourceManager::pBestRebindableSource() const{
 	const int count = pSources.GetCount();
-	deoalSource *bestSource = NULL;
+	deoalSource *bestSource = nullptr;
 	deoalSource *source;
 	int i;
 	
@@ -198,11 +198,11 @@ deoalSource *deoalSourceManager::pCreateNewSource(){
 	// check if we are over our estimated maximum of active sources. this is only an estimate
 	// and we might go higher but this is the first number where we ran into a problem
 	if(pSources.GetCount() >= pEstimatedMaxBound){
-		return NULL;
+		return nullptr;
 	}
 	
 	// try creating a new source
-	deoalSource *source = NULL;
+	deoalSource *source = nullptr;
 	
 	try{
 		source = new deoalSource(pAudioThread);
@@ -218,7 +218,7 @@ deoalSource *deoalSourceManager::pCreateNewSource(){
 			pSources.GetCount());
 		if(source){
 			delete source;
-			source = NULL;
+			source = nullptr;
 		}
 		
 		// keep track of the highest number of sources as an estimate of the maximum

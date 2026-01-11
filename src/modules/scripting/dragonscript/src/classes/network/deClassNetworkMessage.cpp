@@ -239,7 +239,7 @@ void deClassNetworkMessage::PushNetworkMessage(dsRunTime *rt, deNetworkMessage *
 	}
 	
 	if(!message){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

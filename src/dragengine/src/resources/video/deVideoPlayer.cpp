@@ -55,8 +55,8 @@ pPlayTo(0.0f),
 pPlaySpeed(1.0f),
 pPlayPosition(0.0f),
 
-pPeerGraphic(NULL),
-pPeerAudio(NULL){
+pPeerGraphic(nullptr),
+pPeerAudio(nullptr){
 }
 
 deVideoPlayer::~deVideoPlayer(){
@@ -243,11 +243,11 @@ void deVideoPlayer::SetPeerAudio(deBaseAudioVideoPlayer *peer){
 void deVideoPlayer::pCleanUp(){
 	if(pPeerGraphic){
 		delete pPeerGraphic;
-		pPeerGraphic = NULL;
+		pPeerGraphic = nullptr;
 	}
 	if(pPeerAudio){
 		delete pPeerAudio;
-		pPeerAudio = NULL;
+		pPeerAudio = nullptr;
 	}
 }
 

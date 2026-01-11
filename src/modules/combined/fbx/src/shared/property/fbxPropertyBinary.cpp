@@ -45,13 +45,13 @@
 
 fbxPropertyBinary::fbxPropertyBinary() :
 fbxProperty(etBinary),
-pValue(NULL),
+pValue(nullptr),
 pLength(0){
 }
 
 fbxPropertyBinary::fbxPropertyBinary(decBaseFileReader &reader) :
 fbxProperty(etBinary),
-pValue(NULL),
+pValue(nullptr),
 pLength(0)
 {
 	const int length = reader.ReadUInt();
@@ -79,7 +79,7 @@ void fbxPropertyBinary::SetValue(const uint8_t *value, int length){
 	
 	if(pValue){
 		delete [] pValue;
-		pValue = NULL;
+		pValue = nullptr;
 		pLength = 0;
 	}
 	

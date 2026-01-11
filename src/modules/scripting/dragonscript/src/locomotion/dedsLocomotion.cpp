@@ -110,7 +110,7 @@ pLimitTiltRight(30.0f),
 
 pTiltOffset(0.0f),
 
-pControllerMappings(NULL),
+pControllerMappings(nullptr),
 pControllerMappingCount(0),
 pControllerMappingSize(0),
 pUpdateAIColliderAngularVelocity(false)
@@ -1179,13 +1179,13 @@ void dedsLocomotion::WriteToFile(decBaseFileWriter &writer) const {
 //////////////////////
 
 void dedsLocomotion::pCleanUp(){
-	SetAICollider(NULL);
+	SetAICollider(nullptr);
 	
-	SetCCTTiltSingle(NULL);
-	SetCCTTiltFrontLeft(NULL);
-	SetCCTTiltFrontRight(NULL);
-	SetCCTTiltBackLeft(NULL);
-	SetCCTTiltBackRight(NULL);
+	SetCCTTiltSingle(nullptr);
+	SetCCTTiltFrontLeft(nullptr);
+	SetCCTTiltFrontRight(nullptr);
+	SetCCTTiltBackLeft(nullptr);
+	SetCCTTiltBackRight(nullptr);
 	
 	if(pControllerMappings){
 		delete [] pControllerMappings;

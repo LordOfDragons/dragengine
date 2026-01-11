@@ -45,12 +45,12 @@ deOcclusionMesh::deOcclusionMesh(deOcclusionMeshManager *manager, deVirtualFileS
 	const char *filename, TIME_SYSTEM modificationTime) :
 deFileResource(manager, vfs, filename, modificationTime),
 
-pBones(NULL),
-pWeights(NULL),
-pWeightGroups(NULL),
-pVertices(NULL),
-pCorners(NULL),
-pFaces(NULL),
+pBones(nullptr),
+pWeights(nullptr),
+pWeightGroups(nullptr),
+pVertices(nullptr),
+pCorners(nullptr),
+pFaces(nullptr),
 
 pBoneCount(0),
 pWeightCount(0),
@@ -60,13 +60,13 @@ pCornerCount(0),
 pFaceCount(0),
 pDoubleSidedFaceCount(0),
 
-pPeerGraphic (NULL){
+pPeerGraphic (nullptr){
 }
 
 deOcclusionMesh::~deOcclusionMesh(){
 	if(pPeerGraphic){
 		delete pPeerGraphic;
-		pPeerGraphic = NULL;
+		pPeerGraphic = nullptr;
 	}
 	
 	if(pFaces){
@@ -95,7 +95,7 @@ deOcclusionMesh::~deOcclusionMesh(){
 ///////////////
 
 bool deOcclusionMesh::Verify() const{
-	bool *visited = NULL;
+	bool *visited = nullptr;
 	int i, j, parent;
 	bool success = true;
 	
@@ -157,7 +157,7 @@ void deOcclusionMesh::SetBoneCount(int count){
 		if(pBones){
 			delete [] pBones;
 		}
-		pBones = NULL;
+		pBones = nullptr;
 		pBoneCount = 0;
 		
 		if(count > 0){
@@ -213,7 +213,7 @@ void deOcclusionMesh::SetWeightCount(int count){
 		if(pWeights){
 			delete [] pWeights;
 		}
-		pWeights = NULL;
+		pWeights = nullptr;
 		pWeightCount = 0;
 		
 		if(count > 0){
@@ -240,7 +240,7 @@ void deOcclusionMesh::SetWeightGroupCount(int count){
 		if(pWeightGroups){
 			delete [] pWeightGroups;
 		}
-		pWeightGroups = NULL;
+		pWeightGroups = nullptr;
 		pWeightGroupCount = 0;
 		
 		if(count > 0){
@@ -280,7 +280,7 @@ void deOcclusionMesh::SetVertexCount(int count){
 		if(pVertices){
 			delete [] pVertices;
 		}
-		pVertices = NULL;
+		pVertices = nullptr;
 		pVertexCount = 0;
 		
 		if(count > 0){
@@ -312,7 +312,7 @@ void deOcclusionMesh::SetCornerCount(int count){
 		if(pCorners){
 			delete [] pCorners;
 		}
-		pCorners = NULL;
+		pCorners = nullptr;
 		pCornerCount = 0;
 		
 		if(count > 0){
@@ -352,7 +352,7 @@ void deOcclusionMesh::SetFaceCount(int count){
 		if(pFaces){
 			delete [] pFaces;
 		}
-		pFaces = NULL;
+		pFaces = nullptr;
 		pFaceCount = 0;
 		
 		if(count > 0){

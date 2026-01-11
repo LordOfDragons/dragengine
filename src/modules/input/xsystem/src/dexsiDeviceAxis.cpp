@@ -91,7 +91,7 @@ void dexsiDeviceAxis::SetType(deInputDeviceAxis::eAxisTypes type){
 
 
 void dexsiDeviceAxis::SetDisplayImages(const char *name){
-	pDisplayImage = NULL;
+	pDisplayImage = nullptr;
 	pDisplayIcons.RemoveAll();
 	
 	if(!name){

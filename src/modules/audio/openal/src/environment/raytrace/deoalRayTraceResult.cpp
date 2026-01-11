@@ -46,7 +46,7 @@
 /////////////////////////////////
 
 deoalRayTraceResult::deoalRayTraceResult() :
-pElements(NULL),
+pElements(nullptr),
 pElementCount(0),
 pElementSize(0)
 {
@@ -159,7 +159,7 @@ deoalRayTraceHitElement *deoalRayTraceResult::pInsert(float distance){
 		
 	}else{
 		if(begin == pElementCount){
-			return NULL; // element to insert drops out
+			return nullptr; // element to insert drops out
 		}
 		end = pElementCount - 1;
 	}

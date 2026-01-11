@@ -48,10 +48,10 @@
 dedsColliderListenerClosest::dedsColliderListenerClosest(deScriptingDragonScript &ds) :
 pDS(ds),
 
-pListener(NULL),
+pListener(nullptr),
 pHasListener(false),
 
-pOwner(NULL),
+pOwner(nullptr),
 pHasCollision(false)
 {
 	pListener = ds.GetScriptEngine()->GetMainRunTime()->CreateValue(ds.GetClassColliderListener());
@@ -63,7 +63,7 @@ dedsColliderListenerClosest::~dedsColliderListenerClosest(){
 	}
 	
 	pDS.GetScriptEngine()->GetMainRunTime()->FreeValue(pListener);
-	pListener = NULL;
+	pListener = nullptr;
 }
 
 
@@ -87,7 +87,7 @@ void dedsColliderListenerClosest::SetListener(dsRealObject *object){
 
 void dedsColliderListenerClosest::Reset(){
 	pDS.GetCollisionInfo()->Clear();
-	pOwner = NULL;
+	pOwner = nullptr;
 	pHasCollision = false;
 }
 

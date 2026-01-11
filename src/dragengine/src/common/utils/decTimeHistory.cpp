@@ -39,8 +39,8 @@
 ////////////////////////////
 
 decTimeHistory::decTimeHistory(int initialSize, int cutExtremeValues) :
-pEntries(NULL),
-pSorted(NULL),
+pEntries(nullptr),
+pSorted(nullptr),
 pSize(0),
 pHead(0),
 pTail(0),
@@ -84,11 +84,11 @@ void decTimeHistory::SetSize(int size){
 	
 	if(pSorted){
 		delete [] pSorted;
-		pSorted = NULL;
+		pSorted = nullptr;
 	}
 	if(pEntries){
 		delete [] pEntries;
-		pEntries = NULL;
+		pEntries = nullptr;
 	}
 	pSize = 0;
 	

@@ -41,7 +41,7 @@
 
 deoglVBOWriterCanvasPaint::deoglVBOWriterCanvasPaint(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
-pDataPoints(NULL){
+pDataPoints(nullptr){
 }
 
 deoglVBOWriterCanvasPaint::~deoglVBOWriterCanvasPaint(){
@@ -57,7 +57,7 @@ void deoglVBOWriterCanvasPaint::Reset(deoglSharedVBOBlock *vboBlock){
 		pDataPoints = reinterpret_cast<char*>(vboBlock->GetData());
 		
 	}else{
-		pDataPoints = NULL;
+		pDataPoints = nullptr;
 	}
 }
 

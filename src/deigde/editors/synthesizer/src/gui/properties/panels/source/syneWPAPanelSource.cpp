@@ -239,7 +239,7 @@ class cActionEnable : public cBaseAction {
 public:
 	using Ref = deTObjectReference<cActionEnable>;
 	cActionEnable(syneWPAPanelSource &panel) : cBaseAction(panel, "Enable source",
-		NULL, "Determines if the source is affecting the model"){ }
+		nullptr, "Determines if the source is affecting the model"){ }
 	
 	igdeUndo::Ref OnAction(syneSource *source) override{
 		return syneUSourceToggleEnabled::Ref::New(source);

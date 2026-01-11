@@ -49,21 +49,21 @@ pLodError(0.01f),
 pVertexPositionSets(nullptr),
 pVertexPositionSetCount(0)
 {
-	pWeights = NULL;
+	pWeights = nullptr;
 	pWeightCount = 0;
-	pWeightGroups = NULL;
+	pWeightGroups = nullptr;
 	pWeightGroupCount = 0;
 	
-	pVertices = NULL;
+	pVertices = nullptr;
 	pVertexCount = 0;
 	
 	pNormalCount = 0;
 	pTangentCount = 0;
 	
-	pFaces = NULL;
+	pFaces = nullptr;
 	pFaceCount = 0;
 	
-	pTextureCoordinatesSets = NULL;
+	pTextureCoordinatesSets = nullptr;
 	pTextureCoordinatesSetsCount = 0;
 	pTextureCoordinatesCount = 0;
 }
@@ -116,7 +116,7 @@ void deModelLOD::SetWeightCount(int count){
 		if(pWeights){
 			delete [] pWeights;
 		}
-		pWeights = NULL;
+		pWeights = nullptr;
 		pWeightCount = 0;
 		
 		if(count > 0){
@@ -145,7 +145,7 @@ void deModelLOD::SetWeightGroupCount(int count){
 		if(pWeightGroups){
 			delete [] pWeightGroups;
 		}
-		pWeightGroups = NULL;
+		pWeightGroups = nullptr;
 		pWeightGroupCount = 0;
 		
 		if(count > 0){
@@ -185,7 +185,7 @@ void deModelLOD::SetVertexCount(int count){
 		if(pVertices){
 			delete [] pVertices;
 		}
-		pVertices = NULL;
+		pVertices = nullptr;
 		pVertexCount = 0;
 		
 		if(count > 0){
@@ -233,7 +233,7 @@ void deModelLOD::SetFaceCount(int count){
 		if(pFaces){
 			delete [] pFaces;
 		}
-		pFaces = NULL;
+		pFaces = nullptr;
 		pFaceCount = 0;
 		
 		if(count > 0){
@@ -273,7 +273,7 @@ void deModelLOD::SetTextureCoordinatesSetCount(int count){
 		if(pTextureCoordinatesSets){
 			delete [] pTextureCoordinatesSets;
 		}
-		pTextureCoordinatesSets = NULL;
+		pTextureCoordinatesSets = nullptr;
 		pTextureCoordinatesSetsCount = 0;
 		
 		if(count > 0){

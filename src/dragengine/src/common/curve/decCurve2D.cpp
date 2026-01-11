@@ -39,12 +39,12 @@
 ////////////////////////////
 
 decCurve2D::decCurve2D(){
-	pPoints = NULL;
+	pPoints = nullptr;
 	pPointCount = 0;
 }
 
 decCurve2D::decCurve2D(const decCurve2D &curve){
-	pPoints = NULL;
+	pPoints = nullptr;
 	
 	if(curve.pPointCount > 0){
 		pPoints = new decVector2[curve.pPointCount];
@@ -151,7 +151,7 @@ void decCurve2D::RemovePointFrom(int position){
 void decCurve2D::RemoveAllPoints(){
 	if(pPoints){
 		delete [] pPoints;
-		pPoints = NULL;
+		pPoints = nullptr;
 	}
 	pPointCount = 0;
 }
@@ -234,7 +234,7 @@ float decCurve2D::EvaluateLinear(float coordinate) const{
 
 
 decCurve2D &decCurve2D::operator=(const decCurve2D &curve){
-	decVector2 *newArray = NULL;
+	decVector2 *newArray = nullptr;
 	
 	if(curve.pPointCount > 0){
 		newArray = new decVector2[curve.pPointCount];

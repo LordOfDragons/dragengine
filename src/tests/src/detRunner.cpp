@@ -179,7 +179,7 @@ detRunner::detRunner(){
 	#endif
 	
 	pCount = 0;
-	pCases = NULL;
+	pCases = nullptr;
 	pAddTest(new detString);
 	pAddTest(new detStringList);
 	pAddTest(new detStringSet);
@@ -219,7 +219,7 @@ detRunner::~detRunner(){
 bool detRunner::Run(){
 	int i, errorCount = 0;
 	
-	setvbuf(stdout, NULL, _IONBF, 0);
+	setvbuf(stdout, nullptr, _IONBF, 0);
 	
 	printf("Ready to start engine tests. Some of the tests can take quite\n");
 	printf("some time so do not panic if the progress counters gets stuck\n");

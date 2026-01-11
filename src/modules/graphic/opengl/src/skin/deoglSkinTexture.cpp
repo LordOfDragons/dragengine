@@ -140,7 +140,7 @@ pPipelines(*this)
 	pRenderableMaterialProperties = false;
 	
 	for(i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++){
-		pChannels[i] = NULL;
+		pChannels[i] = nullptr;
 	}
 	
 	pAbsorption.Set(0.0f, 0.0f, 0.0f);
@@ -344,7 +344,7 @@ void deoglSkinTexture::BuildChannels(deoglRSkin &skin, const deSkinTexture &text
 				// skin using non-initialized data
 				pChannels[i]->SetCacheID("");
 				pChannels[i]->SetCanBeCached(false);
-				pChannels[i]->SetPixelBufferMipMap(NULL);
+				pChannels[i]->SetPixelBufferMipMap(nullptr);
 				continue;
 			}
 		}
@@ -479,7 +479,7 @@ deoglSkinChannel *deoglSkinTexture::GetChannelAt(deoglSkinChannel::eChannelTypes
 }
 
 bool deoglSkinTexture::IsChannelEnabled(deoglSkinChannel::eChannelTypes type) const{
-	return pChannels[type] != NULL;
+	return pChannels[type] != nullptr;
 }
 
 void deoglSkinTexture::DropAllCaches(){
@@ -881,7 +881,7 @@ void deoglSkinTexture::pCleanUp(){
 	for(i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++){
 		if(pChannels[i]){
 			delete pChannels[i];
-			pChannels[i] = NULL;
+			pChannels[i] = nullptr;
 		}
 	}
 }
@@ -963,7 +963,7 @@ void deoglSkinTexture::pLoadCached(deoglRSkin &skin){
 	// try to load caches using the calculated cache ids
 	deoglCaches &caches = pRenderThread.GetOgl().GetCaches();
 	deCacheHelper &cacheTextures = caches.GetSkinTextures();
-	char *verifyData = NULL;
+	char *verifyData = nullptr;
 	int i;
 	
 	const bool enableCacheLogging = ENABLE_CACHE_LOGGING;

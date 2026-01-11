@@ -58,21 +58,21 @@ void deoalIcoSphere::sEdge::Set(int vertex1, int vertex2){
 /////////////////////////////////
 
 deoalIcoSphere::deoalIcoSphere() :
-pVertices(NULL),
+pVertices(nullptr),
 pVertexCount(0),
-pEdges(NULL),
+pEdges(nullptr),
 pEdgeCount(0),
-pFaces(NULL),
+pFaces(nullptr),
 pFaceCount(0),
 pOpeningAngle(0.0f){
 }
 
 deoalIcoSphere::deoalIcoSphere(const deoalIcoSphere &ico) :
-pVertices(NULL),
+pVertices(nullptr),
 pVertexCount(0),
-pEdges(NULL),
+pEdges(nullptr),
 pEdgeCount(0),
-pFaces(NULL),
+pFaces(nullptr),
 pFaceCount(0),
 pOpeningAngle(ico.pOpeningAngle)
 {
@@ -300,9 +300,9 @@ void deoalIcoSphere::DebugPrintBlender(deoalAudioThread &audioThread) const{
 //////////////
 
 deoalIcoSphere &deoalIcoSphere::operator=(const deoalIcoSphere &ico){
-	decVector *vertices = NULL;
-	sEdge *edges = NULL;
-	sFace *faces = NULL;
+	decVector *vertices = nullptr;
+	sEdge *edges = nullptr;
+	sFace *faces = nullptr;
 	
 	try{
 		if(ico.pVertexCount > 0){

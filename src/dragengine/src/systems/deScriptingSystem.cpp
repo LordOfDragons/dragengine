@@ -67,7 +67,7 @@ extern const int *vResourcePeerCreationOrder;
 
 deScriptingSystem::deScriptingSystem(deEngine *engine) :
 deBaseSystem(engine, "Script", deModuleSystem::emtScript),
-pActiveModule(NULL),
+pActiveModule(nullptr),
 pEditMode(false),
 pGameRunning(false)
 {
@@ -177,7 +177,7 @@ void deScriptingSystem::SetActiveModule(deLoadableModule *module){
 
 void deScriptingSystem::ClearPermanents(){
 	deBaseSystem::ClearPermanents();
-	pActiveModule = NULL;
+	pActiveModule = nullptr;
 }
 
 void deScriptingSystem::PostStart(){

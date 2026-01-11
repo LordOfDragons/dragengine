@@ -427,7 +427,7 @@ void deClassSafeArray::nfFind::RunFunction(dsRunTime *rt, dsValue *myself){
 	}
 	
 	if(nd.array.GetCount() == 0){
-		rt->PushObject(NULL, rt->GetEngine()->GetClassObject());
+		rt->PushObject(nullptr, rt->GetEngine()->GetClassObject());
 		return;
 	}
 	
@@ -468,7 +468,7 @@ void deClassSafeArray::nfFind::RunFunction(dsRunTime *rt, dsValue *myself){
 		}
 		
 		if(!found){
-			rt->PushObject(NULL, rt->GetEngine()->GetClassObject());
+			rt->PushObject(nullptr, rt->GetEngine()->GetClassObject());
 		}
 		
 		nd.iterators.RemoveFrom(nd.iterators.IndexOf(&iterator));

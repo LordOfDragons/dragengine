@@ -38,7 +38,7 @@
 ////////////////////////////
 
 deAnimatorControllerTarget::deAnimatorControllerTarget(){
-	pLinks = NULL;
+	pLinks = nullptr;
 	pLinkCount = 0;
 }
 
@@ -85,7 +85,7 @@ void deAnimatorControllerTarget::RemoveLink(int link){
 	
 	if(index == -1) DETHROW(deeInvalidParam);
 	
-	int *newArray = NULL;
+	int *newArray = nullptr;
 	if(pLinkCount > 0){
 		newArray = new int[pLinkCount - 1];
 	}
@@ -103,7 +103,7 @@ void deAnimatorControllerTarget::RemoveLink(int link){
 void deAnimatorControllerTarget::RemoveAllLinks(){
 	if(pLinks){
 		delete [] pLinks;
-		pLinks = NULL;
+		pLinks = nullptr;
 	}
 	
 	pLinkCount = 0;

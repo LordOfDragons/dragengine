@@ -43,9 +43,9 @@
 ////////////////////////////
 
 deoglCollideListComponent::deoglCollideListComponent() :
-pComponent(NULL),
+pComponent(nullptr),
 pLODLevel(0),
-pComponentLOD(NULL),
+pComponentLOD(nullptr),
 pCulled(false),
 pCascadeMask(0),
 pCubeFaceMask(0x2f),
@@ -61,9 +61,9 @@ deoglCollideListComponent::~deoglCollideListComponent(){
 ///////////////
 
 void deoglCollideListComponent::Clear(){
-	pComponent = NULL;
+	pComponent = nullptr;
 	pLODLevel = 0;
-	pComponentLOD = NULL;
+	pComponentLOD = nullptr;
 	pCulled = false;
 	pCascadeMask = 0;
 	pCubeFaceMask = 0x2f;

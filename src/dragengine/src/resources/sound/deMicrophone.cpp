@@ -53,15 +53,15 @@ pVolume(1.0f),
 pSpeakerGain(1.0f),
 pEnableAuralization(true),
 
-pSpeakerRoot(NULL),
-pSpeakerTail(NULL),
+pSpeakerRoot(nullptr),
+pSpeakerTail(nullptr),
 pSpeakerCount(0),
 
-pPeerAudio(NULL),
+pPeerAudio(nullptr),
 
-pParentWorld(NULL),
-pLLWorldPrev(NULL),
-pLLWorldNext(NULL)
+pParentWorld(nullptr),
+pLLWorldPrev(nullptr),
+pLLWorldNext(nullptr)
 {
 	pLayerMask.SetBit(0);
 }
@@ -213,11 +213,11 @@ void deMicrophone::AddSpeaker(deSpeaker *speaker){
 	if(pSpeakerTail){
 		pSpeakerTail->SetLLMicrophoneNext(speaker);
 		speaker->SetLLMicrophonePrev(pSpeakerTail);
-		speaker->SetLLMicrophoneNext(NULL); // not required by definition, just to make sure...
+		speaker->SetLLMicrophoneNext(nullptr); // not required by definition, just to make sure...
 		
 	}else{
-		speaker->SetLLMicrophonePrev(NULL); // not required by definition, just to make sure...
-		speaker->SetLLMicrophoneNext(NULL); // not required by definition, just to make sure...
+		speaker->SetLLMicrophonePrev(nullptr); // not required by definition, just to make sure...
+		speaker->SetLLMicrophoneNext(nullptr); // not required by definition, just to make sure...
 		pSpeakerRoot = speaker;
 	}
 	
@@ -250,9 +250,9 @@ void deMicrophone::RemoveSpeaker(deSpeaker *speaker){
 	}
 	pSpeakerCount--;
 	
-	speaker->SetParentMicrophone(NULL);
-	speaker->SetLLMicrophonePrev(NULL);
-	speaker->SetLLMicrophoneNext(NULL);
+	speaker->SetParentMicrophone(nullptr);
+	speaker->SetLLMicrophonePrev(nullptr);
+	speaker->SetLLMicrophoneNext(nullptr);
 	if(pPeerAudio){
 		pPeerAudio->SpeakerRemoved(speaker);
 	}
@@ -270,7 +270,7 @@ void deMicrophone::RemoveAllSpeakers(){
 		pSpeakerTail = next;
 		pSpeakerCount--;
 	}
-	pSpeakerRoot = NULL;
+	pSpeakerRoot = nullptr;
 }
 
 
@@ -315,7 +315,7 @@ void deMicrophone::SetLLWorldNext(deMicrophone *microphone){
 void deMicrophone::pCleanUp(){
 	if(pPeerAudio){
 		delete pPeerAudio;
-		pPeerAudio = NULL;
+		pPeerAudio = nullptr;
 	}
 	
 	RemoveAllSpeakers();

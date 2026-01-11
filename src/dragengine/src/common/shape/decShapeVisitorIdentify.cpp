@@ -44,7 +44,7 @@
 //////////////////////////////
 
 decShapeVisitorIdentify::decShapeVisitorIdentify() :
-pShape(NULL),
+pShape(nullptr),
 pType(estUnknown){
 }
 
@@ -93,7 +93,7 @@ decShapeHull &decShapeVisitorIdentify::CastToHull() const{
 
 
 void decShapeVisitorIdentify::Reset(){
-	pShape = NULL;
+	pShape = nullptr;
 	pType = estUnknown;
 }
 

@@ -47,10 +47,10 @@ pAudioThread(audioThread),
 
 pState(epsStopped),
 pSource(0),
-pBuffers(NULL),
+pBuffers(nullptr),
 pBufferCount(0),
 
-pOwner(NULL),
+pOwner(nullptr),
 pImportance(1000.0f),
 
 pFilter(0),
@@ -104,7 +104,7 @@ void deoalSource::SetBufferCount(int count){
 	if(pBuffers){
 		OAL_CHECK(pAudioThread, alDeleteBuffers(pBufferCount, pBuffers));
 		delete [] pBuffers;
-		pBuffers = NULL;
+		pBuffers = nullptr;
 		pBufferCount = 0;
 	}
 	
@@ -143,11 +143,11 @@ void deoalSource::SetImportance(float importance){
 
 
 bool deoalSource::IsBound() const{
-	return pOwner != NULL;
+	return pOwner != nullptr;
 }
 
 bool deoalSource::IsUnbound() const{
-	return pOwner == NULL;
+	return pOwner == nullptr;
 }
 
 

@@ -53,9 +53,9 @@
 deoalRTPTListenFinish::deoalRTPTListenFinish(deoalRTParallelEnvProbe &owner) :
 deParallelTask(&owner.GetAudioThread().GetOal()),
 pOwner(owner),
-pSourceProbe(NULL),
-pListenProbe(NULL),
-pListener(NULL)
+pSourceProbe(nullptr),
+pListenProbe(nullptr),
+pListener(nullptr)
 {
 	SetMarkFinishedAfterRun(true);
 	SetLowPriority(true);

@@ -53,13 +53,13 @@ MOD_ENTRY_POINT_ATTR deBaseModule *SQCreateModule(deLoadableModule *loadableModu
 ////////////////
 
 deBaseModule *SQCreateModule(deLoadableModule *loadableModule){
-	deBaseModule *module = NULL;
+	deBaseModule *module = nullptr;
 	
 	try{
 		module = new deCRSimplyQuit(*loadableModule);
 		
 	}catch(const deException &){
-		return NULL;
+		return nullptr;
 	}
 	
 	return module;
@@ -75,7 +75,7 @@ deBaseModule *SQCreateModule(deLoadableModule *loadableModule){
 
 deCRSimplyQuit::deCRSimplyQuit(deLoadableModule &loadableModule) :
 deBaseCrashRecoveryModule(loadableModule),
-pCoreFault(NULL){
+pCoreFault(nullptr){
 }
 
 deCRSimplyQuit::~deCRSimplyQuit(){
@@ -94,7 +94,7 @@ bool deCRSimplyQuit::Init(){
 void deCRSimplyQuit::CleanUp(){
 	if(pCoreFault){
 		delete pCoreFault;
-		pCoreFault = NULL;
+		pCoreFault = nullptr;
 	}
 }
 

@@ -46,7 +46,7 @@ deoglRenderableDepthCubeMap::deoglRenderableDepthCubeMap(
 pSize(size),
 pUseFloat(useFloat),
 pInUse(false),
-pCubeMap(NULL),
+pCubeMap(nullptr),
 pMemoryUsageGPU(0)
 {
 	if(size < 1){

@@ -49,7 +49,7 @@
 deoglCanvasVideoPlayer::deoglCanvasVideoPlayer(deGraphicOpenGl &ogl, deCanvasVideoPlayer &canvas) :
 deoglCanvas(ogl, canvas),
 pCanvasVideoPlayer(canvas),
-pVideoPlayer(NULL),
+pVideoPlayer(nullptr),
 pDirty(true){
 }
 
@@ -81,7 +81,7 @@ void deoglCanvasVideoPlayer::SyncContentToRender(){
 			pRCanvasVideoPlayer->SetVideoPlayer(pVideoPlayer->GetRVideoPlayer());
 			
 		}else{
-			pRCanvasVideoPlayer->SetVideoPlayer(NULL);
+			pRCanvasVideoPlayer->SetVideoPlayer(nullptr);
 		}
 		
 		const float repeatScaleU = (float)pCanvasVideoPlayer.GetRepeatX();
@@ -96,7 +96,7 @@ void deoglCanvasVideoPlayer::VideoPlayerRequiresSync(){
 }
 
 void deoglCanvasVideoPlayer::DropVideoPlayer(){
-	pVideoPlayer = NULL;
+	pVideoPlayer = nullptr;
 }
 
 
@@ -113,7 +113,7 @@ void deoglCanvasVideoPlayer::ContentChanged(){
 		pVideoPlayer->GetNotifyCanvas().Add(this);
 		
 	}else{
-		pVideoPlayer = NULL;
+		pVideoPlayer = nullptr;
 	}
 	
 	pDirty = true;

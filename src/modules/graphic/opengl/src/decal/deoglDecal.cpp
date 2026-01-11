@@ -52,7 +52,7 @@ deoglDecal::deoglDecal(deGraphicOpenGl &ogl, const deDecal &decal) :
 pOgl(ogl),
 pDecal(decal),
 
-pDynamicSkin(NULL),
+pDynamicSkin(nullptr),
 
 pDirtyVBO(true),
 pDirtyGeometry(true),
@@ -69,7 +69,7 @@ pDynamicSkinRequiresSync(true),
 pNotifyTextureChanged(false),
 pNotifyTUCChanged(false),
 
-pParentComponent(NULL)
+pParentComponent(nullptr)
 {
 	try{
 		pRDecal = deoglRDecal::Ref::New(ogl.GetRenderThread());
@@ -162,7 +162,7 @@ void deoglDecal::SetParentComponent(deoglComponent *component){
 //////////////////////////
 
 void deoglDecal::DynamicSkinDestroyed(){
-	pDynamicSkin = NULL;
+	pDynamicSkin = nullptr;
 }
 
 void deoglDecal::DynamicSkinRenderablesChanged(){
@@ -229,7 +229,7 @@ void deoglDecal::DynamicSkinChanged(){
 		pDynamicSkin->AddListener(this);
 		
 	}else{
-		pDynamicSkin = NULL;
+		pDynamicSkin = nullptr;
 	}
 	
 	pDirtyDynamicSkin = true;
@@ -270,7 +270,7 @@ void deoglDecal::pSyncSkin(){
 		pRDecal->SetSkin(((deoglSkin*)pDecal.GetSkin()->GetPeerGraphic())->GetRSkin());
 		
 	}else{
-		pRDecal->SetSkin(NULL);
+		pRDecal->SetSkin(nullptr);
 	}
 	
 	pDirtySkin = false;
@@ -284,7 +284,7 @@ void deoglDecal::pSyncDynamicSkin(){
 			pRDecal->SetDynamicSkin(pDynamicSkin->GetRDynamicSkin());
 			
 		}else{
-			pRDecal->SetDynamicSkin(NULL);
+			pRDecal->SetDynamicSkin(nullptr);
 		}
 		
 		pDirtyDynamicSkin = false;

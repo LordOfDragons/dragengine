@@ -949,7 +949,7 @@ void deClassColliderConstraint::CreateClassMembers(dsEngine *engine){
 
 deColliderConstraint *deClassColliderConstraint::GetConstraint(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return dedsGetNativeData<sCConNatDat>(p_GetNativeData(myself->GetBuffer())).constraint;
@@ -961,7 +961,7 @@ void deClassColliderConstraint::PushConstraint(dsRunTime *rt, deColliderConstrai
 	}
 	
 	if(!constraint){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

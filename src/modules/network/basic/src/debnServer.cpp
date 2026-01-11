@@ -62,11 +62,11 @@ debnServer::debnServer(deNetworkBasic *netBasic, deServer *server){
 	pNetBasic = netBasic;
 	pServer = server;
 	
-	pSocket = NULL;
+	pSocket = nullptr;
 	pListening = false;
 	
-	pPreviousServer = NULL;
-	pNextServer = NULL;
+	pPreviousServer = nullptr;
+	pNextServer = nullptr;
 	pIsRegistered = false;
 }
 

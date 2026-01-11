@@ -194,7 +194,7 @@ void deoglSkinState::SetVideoPlayerCount(int count){
 	
 	int i;
 	for(i=0; i<count; i++){
-		pVideoPlayers.Add(NULL);
+		pVideoPlayers.Add(nullptr);
 	}
 }
 
@@ -356,7 +356,7 @@ void deoglSkinState::SetCalculatedPropertyCount(int count){
 	
 	if(pCalculatedProperties){
 		delete [] pCalculatedProperties;
-		pCalculatedProperties = NULL;
+		pCalculatedProperties = nullptr;
 		pCalculatedPropertyCount = 0;
 	}
 	
@@ -507,22 +507,22 @@ void deoglSkinState::SetVariationSeed(const decPoint &seed){
 //////////////////////
 
 void deoglSkinState::pSharedInit(){
-	pOwnerComponent = NULL;
+	pOwnerComponent = nullptr;
 	pOwnerComponentTexture = 0;
-	pOwnerBillboard = NULL;
-	pOwnerDecal = NULL;
-	pOwnerLight = NULL;
+	pOwnerBillboard = nullptr;
+	pOwnerDecal = nullptr;
+	pOwnerLight = nullptr;
 	
 	pTime = 0.0f;
 	
-	pRenderables = NULL;
+	pRenderables = nullptr;
 	pRenderableCount = 0;
 	pRenderableSize = 0;
 	
 	pMapped = nullptr;
 	pMappedCount = 0;
 	
-	pCalculatedProperties = NULL;
+	pCalculatedProperties = nullptr;
 	pCalculatedPropertyCount = 0;
 	
 	pConstructedProperties = nullptr;

@@ -41,7 +41,7 @@
 
 // constructor, destructor
 deCrashRecoverySystem::deCrashRecoverySystem(deEngine *engine) : deBaseSystem(engine, "Crash-Recovery", deModuleSystem::emtCrashRecovery){
-	pActiveModule = NULL;
+	pActiveModule = nullptr;
 }
 deCrashRecoverySystem::~deCrashRecoverySystem(){
 }
@@ -53,7 +53,7 @@ void deCrashRecoverySystem::SetActiveModule(deLoadableModule *module){
 }
 void deCrashRecoverySystem::ClearPermanents(){
 	deBaseSystem::ClearPermanents();
-	pActiveModule = NULL;
+	pActiveModule = nullptr;
 }
 
 // overload those

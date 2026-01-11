@@ -45,16 +45,16 @@ deoalRTWorldOctree::deoalRTWorldOctree() :
 pPosition(),
 pHalfExtends(),
 pMaxDepth(8), //4
-pBuildNodes(NULL),
+pBuildNodes(nullptr),
 pBuildNodeCount(0),
 pBuildNodeSize(0),
-pBuildComponents(NULL),
+pBuildComponents(nullptr),
 pBuildComponentCount(0),
 pBuildComponentSize(0),
-pVisitNodes(NULL),
+pVisitNodes(nullptr),
 pVisitNodeCount(0),
 pVisitNodeSize(0),
-pVisitComponents(NULL),
+pVisitComponents(nullptr),
 pVisitComponentCount(0),
 pVisitComponentSize(0)
 {

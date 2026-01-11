@@ -238,7 +238,7 @@ void deClassColliderVolume::PushCollider(dsRunTime *rt, deColliderVolume *collid
 	}
 	
 	if(!collider){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

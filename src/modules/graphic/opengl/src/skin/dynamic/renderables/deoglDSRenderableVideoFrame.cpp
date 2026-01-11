@@ -47,7 +47,7 @@ deoglDSRenderableVideoFrame::deoglDSRenderableVideoFrame(deoglDynamicSkin &dynam
 	const deDSRenderableVideoFrame &renderable) :
 deoglDSRenderable(dynamicSkin, renderable),
 pRenderableVideoFrame(renderable),
-pVideoPlayer(NULL),
+pVideoPlayer(nullptr),
 pDirty(true)
 {
 	try{
@@ -79,7 +79,7 @@ deoglRDSRenderable *deoglDSRenderableVideoFrame::GetRRenderable() const{
 
 void deoglDSRenderableVideoFrame::RenderableChanged(){
 	deoglVideoPlayer * const videoPlayer = pRenderableVideoFrame.GetVideoPlayer()
-		? (deoglVideoPlayer*)pRenderableVideoFrame.GetVideoPlayer()->GetPeerGraphic() : NULL;
+		? (deoglVideoPlayer*)pRenderableVideoFrame.GetVideoPlayer()->GetPeerGraphic() : nullptr;
 	
 	if(videoPlayer != pVideoPlayer){
 		if(pVideoPlayer){
@@ -114,7 +114,7 @@ void deoglDSRenderableVideoFrame::SyncToRender(){
 			pRRenderableVideoFrame->SetVideoPlayer(pVideoPlayer->GetRVideoPlayer());
 			
 		}else{
-			pRRenderableVideoFrame->SetVideoPlayer(NULL);
+			pRRenderableVideoFrame->SetVideoPlayer(nullptr);
 		}
 		
 		pDirty = false;
@@ -126,7 +126,7 @@ void deoglDSRenderableVideoFrame::VideoPlayerRequiresSync(){
 }
 
 void deoglDSRenderableVideoFrame::DropVideoPlayer(){
-	pVideoPlayer = NULL;
+	pVideoPlayer = nullptr;
 }
 
 

@@ -114,14 +114,14 @@ void deErrorTrace::RemoveAllPoints(){
 
 deErrorTracePoint *deErrorTrace::AddAndSetIfEmpty(const char *error, deLoadableModule *sourceModule, const char *sourceFunc, int sourceLine){
 	if(!error || !sourceFunc || sourceLine < 0) DETHROW(deeInvalidParam);
-	if(pPointCount > 0) return NULL;
+	if(pPointCount > 0) return nullptr;
 	pError = error;
 	return AddPoint(sourceModule, sourceFunc, sourceLine);
 }
 
 deErrorTracePoint *deErrorTrace::AddPoint(deLoadableModule *sourceModule, const char *sourceFunc, int sourceLine){
 	if(!sourceFunc || sourceLine < 0) DETHROW(deeInvalidParam);
-	deErrorTracePoint *newPoint = NULL;
+	deErrorTracePoint *newPoint = nullptr;
 	try{
 		newPoint = new deErrorTracePoint(sourceModule, sourceFunc, sourceLine);
 		AddPoint(newPoint);

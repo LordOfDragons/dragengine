@@ -59,11 +59,11 @@ fbxRigBone::fbxRigBone(fbxRig &rig, fbxNode &nodePoseBone, fbxNode &nodeModel) :
 pRig(rig),
 pNodePoseBone(nodePoseBone),
 pNodeModel(nodeModel),
-pNodeArmature(NULL),
+pNodeArmature(nullptr),
 pNodeModelID(nodeModel.GetID()),
 pIndex(0),
 pName(nodeModel.GetProperties().GetAt(1)->CastString().GetValue()),
-pParent(NULL),
+pParent(nullptr),
 pDirty(true),
 pRotationOrder(fbxScene::ConvRotationOrder(nodeModel.GetPropertyInt("RotationOrder", 0))){
 }

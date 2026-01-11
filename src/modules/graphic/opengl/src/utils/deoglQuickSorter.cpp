@@ -41,8 +41,8 @@
 ////////////////////////////
 
 deoglQuickSorter::deoglQuickSorter(){
-	pElements = NULL;
-	pScores = NULL;
+	pElements = nullptr;
+	pScores = nullptr;
 	pCount = 0;
 	pSize = 0;
 }

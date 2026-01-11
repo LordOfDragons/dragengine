@@ -39,7 +39,7 @@
 ////////////////////////////
 
 deoglPointSieveBucket::deoglPointSieveBucket(){
-	pIndices = NULL;
+	pIndices = nullptr;
 	pIndexCount = 0;
 	pIndexSize = 0;
 }

@@ -53,10 +53,10 @@ deoglComponentTexture::deoglComponentTexture(deoglComponent &component, int inde
 pComponent(component),
 pIndex(index),
 
-pSkinStateController(NULL),
+pSkinStateController(nullptr),
 
-pSkin(NULL),
-pDynamicSkin(NULL),
+pSkin(nullptr),
+pDynamicSkin(nullptr),
 
 pDirtyTexture(true),
 pDynamicSkinRenderablesChanged(true),
@@ -160,7 +160,7 @@ void deoglComponentTexture::ClearSkinStateController(){
 //////////////////////////
 
 void deoglComponentTexture::DynamicSkinDestroyed(){
-	pDynamicSkin = NULL;
+	pDynamicSkin = nullptr;
 }
 
 void deoglComponentTexture::DynamicSkinRenderablesChanged(){

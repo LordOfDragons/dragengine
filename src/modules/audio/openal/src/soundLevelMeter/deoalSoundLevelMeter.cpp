@@ -54,14 +54,14 @@ pOal(oal),
 pSoundLevelMeter(soundLevelMeter),
 pASoundLevelMeter(deoalASoundLevelMeter::Ref::New(oal.GetAudioThread())),
 
-pParentWorld(NULL),
+pParentWorld(nullptr),
 
 pDirtyGeometry(true),
 pDirtyOctreeNode(true),
 pDirtyLayerMask(true),
 pDirtyEnabled(true),
 
-pSpeakers(NULL),
+pSpeakers(nullptr),
 pSpeakerCount(0),
 pSpeakerSize(0),
 

@@ -46,11 +46,11 @@ deoglCombinedTexture::deoglCombinedTexture(deoglRenderThread &renderThread,
 const decColor &color, deoglRImage *images[4]) :
 pRenderThread(renderThread),
 pColor(color),
-pTexture(NULL),
+pTexture(nullptr),
 pUsageCount(1),
 pHashCode(0),
-pLLPrev(NULL),
-pLLNext(NULL)
+pLLPrev(nullptr),
+pLLNext(nullptr)
 {
 	int i;
 	for(i=0; i<4; i++){

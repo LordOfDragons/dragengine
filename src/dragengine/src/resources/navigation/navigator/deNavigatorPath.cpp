@@ -38,13 +38,13 @@
 ////////////////////////////
 
 deNavigatorPath::deNavigatorPath() :
-pPoints(NULL),
+pPoints(nullptr),
 pCount(0),
 pSize(0){
 }
 
 deNavigatorPath::deNavigatorPath(const deNavigatorPath &path) :
-pPoints(NULL),
+pPoints(nullptr),
 pCount(0),
 pSize(0)
 {

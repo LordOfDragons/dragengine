@@ -58,16 +58,16 @@ pForceFieldSurface(0.0f),
 pForceFieldMass(0.0f),
 pForceFieldSpeed(0.0f),
 
-pAttachments(NULL),
+pAttachments(nullptr),
 pAttachmentCount(0),
 pAttachmentSize(0),
 
-pPeerPhysics(NULL),
-pPeerScripting(NULL),
+pPeerPhysics(nullptr),
+pPeerScripting(nullptr),
 
-pParentWorld(NULL),
-pLLWorldPrev(NULL),
-pLLWorldNext(NULL){
+pParentWorld(nullptr),
+pLLWorldPrev(nullptr),
+pLLWorldNext(nullptr){
 }
 
 deCollider::~deCollider(){
@@ -332,7 +332,7 @@ deColliderAttachment *deCollider::GetAttachmentWith(deResource *resource) const{
 			return pAttachments[i];
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 void deCollider::AddAttachment(deColliderAttachment *attachment){
@@ -684,11 +684,11 @@ void deCollider::SetLLWorldNext(deCollider *collider){
 void deCollider::pCleanUp(){
 	if(pPeerScripting){
 		delete pPeerScripting;
-		pPeerScripting = NULL;
+		pPeerScripting = nullptr;
 	}
 	if(pPeerPhysics){
 		delete pPeerPhysics;
-		pPeerPhysics = NULL;
+		pPeerPhysics = nullptr;
 	}
 	
 	RemoveAllCollisionTests();

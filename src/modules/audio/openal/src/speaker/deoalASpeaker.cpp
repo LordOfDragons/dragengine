@@ -76,11 +76,11 @@
 
 deoalASpeaker::deoalASpeaker(deoalAudioThread &audioThread) :
 pAudioThread(audioThread),
-pBackLink(NULL),
+pBackLink(nullptr),
 
-pParentWorld(NULL),
-pParentMicrophone(NULL),
-pOctreeNode(NULL),
+pParentWorld(nullptr),
+pParentMicrophone(nullptr),
+pOctreeNode(nullptr),
 pSourceUpdateTracker(0),
 pSpeakerType(deSpeaker::estPoint),
 pPositionless(true),
@@ -102,11 +102,11 @@ pLooping(false),
 pMuted(false),
 pRestart(true),
 
-pSource(NULL),
+pSource(nullptr),
 pBufferSampleCount(1),
 pBufferSize(1),
 pBufferSampleSize(1),
-pBufferData(NULL),
+pBufferData(nullptr),
 pBufferDataCapacity(0),
 pQueueSampleOffset(0),
 
@@ -191,7 +191,7 @@ void deoalASpeaker::SetSoundDecoder(deSoundDecoder *decoder){
 	// WARNING Called during synchronization time from main thread.
 	
 	pSoundDecoder = decoder;
-	pNeedsInitialDecode = decoder != NULL;
+	pNeedsInitialDecode = decoder != nullptr;
 }
 
 
@@ -518,9 +518,9 @@ void deoalASpeaker::PrepareQuickDispose(){
 		pEnvironment = nullptr;
 	}
 	
-	pParentMicrophone = NULL;
-	pParentWorld = NULL;
-	pOctreeNode = NULL;
+	pParentMicrophone = nullptr;
+	pParentWorld = nullptr;
+	pOctreeNode = nullptr;
 }
 
 
@@ -764,7 +764,7 @@ public:
 	deoalSource *source;
 	
 	deoalASpeakerDeletion() :
-	source(0){
+	source(nullptr){
 	}
 	
 	~deoalASpeakerDeletion() override{
@@ -931,7 +931,7 @@ void deoalASpeaker::pSynthInit(){
 	if(pBufferSize > pBufferDataCapacity){
 		if(pBufferData){
 			delete [] pBufferData;
-			pBufferData = NULL;
+			pBufferData = nullptr;
 		}
 		
 		pBufferData = new char[pBufferSize];
@@ -1080,7 +1080,7 @@ void deoalASpeaker::pVideoPlayerInit(){
 	if(pBufferSize > pBufferDataCapacity){
 		if(pBufferData){
 			delete [] pBufferData;
-			pBufferData = NULL;
+			pBufferData = nullptr;
 		}
 		
 		pBufferData = new char[pBufferSize];

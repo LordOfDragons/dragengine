@@ -59,9 +59,9 @@
 deoglRParticleEmitterType::deoglRParticleEmitterType(deoglRParticleEmitter &emitter) :
 pEmitter(emitter),
 
-pParameterSamples(NULL),
+pParameterSamples(nullptr),
 
-pTextureSamples(NULL),
+pTextureSamples(nullptr),
 
 pEmitLight(false)
 {

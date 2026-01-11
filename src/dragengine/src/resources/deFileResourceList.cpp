@@ -64,5 +64,5 @@ deResource *deFileResourceList::GetWithFilename(deVirtualFileSystem *vfs, const 
 		resource = (deFileResource*)resource->GetLLManagerNext();
 	}
 	
-	return NULL;
+	return nullptr;
 }

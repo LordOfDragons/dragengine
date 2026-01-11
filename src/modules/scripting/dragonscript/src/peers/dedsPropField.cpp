@@ -52,7 +52,7 @@ dedsPropField::dedsPropField(deScriptingDragonScript *ds, dePropField *propField
 	pPropField = propField;
 	pHasCB = false;
 	pValCB = ds->GetScriptEngine()->GetMainRunTime()->CreateValue(ds->GetClassPropFieldListener());
-	pDelegee = NULL;
+	pDelegee = nullptr;
 }
 
 dedsPropField::~dedsPropField(){
@@ -71,7 +71,7 @@ dedsPropField::~dedsPropField(){
 		pDS->GetScriptEngine()->GetMainRunTime()->FreeValue(pValCB);
 	}
 	
-	pValCB = NULL;
+	pValCB = nullptr;
 	pHasCB = false;
 }
 

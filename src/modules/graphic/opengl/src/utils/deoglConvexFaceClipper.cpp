@@ -44,7 +44,7 @@
 /////////////////////////////////
 
 deoglConvexFaceClipper::deoglConvexFaceClipper(){
-	pVertices = NULL;
+	pVertices = nullptr;
 	pVertexCount = 0;
 }
 
@@ -104,7 +104,7 @@ void deoglConvexFaceClipper::AddVertex(const decDVector &vertex){
 void deoglConvexFaceClipper::RemoveAllVertices(){
 	if(pVertices){
 		delete [] pVertices;
-		pVertices = NULL;
+		pVertices = nullptr;
 	}
 	pVertexCount = 0;
 }
@@ -121,7 +121,7 @@ void deoglConvexFaceClipper::ClipByPlane(const decDVector &planeNormal, const de
 	int vertexFirst, vertexSecond, v;
 	double lambda;
 	
-	pVertices = NULL;
+	pVertices = nullptr;
 	pVertexCount = 0;
 	
 	try{

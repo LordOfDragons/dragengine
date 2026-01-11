@@ -157,7 +157,7 @@ void deoglHTView::UpdateAllRTSInstances(){
 
 void deoglHTView::pRebuildSectors(){
 	const int count = pHeightTerrain->GetSectorCount();
-	deoglHTViewSector *sector = NULL;
+	deoglHTViewSector *sector = nullptr;
 	int i;
 	
 	try{
@@ -166,7 +166,7 @@ void deoglHTView::pRebuildSectors(){
 		for(i=0; i<count; i++){
 			sector = new deoglHTViewSector(*this, pHeightTerrain->GetSectorAt(i));
 			AddSector(sector);
-			sector = NULL;
+			sector = nullptr;
 		}
 		
 	}catch(const deException &){

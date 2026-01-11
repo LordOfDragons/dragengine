@@ -222,10 +222,10 @@ void deoglGIInstance::cDecalComponentListener::MovementHintChanged(deoglRCompone
 
 deoglGIInstance::deoglGIInstance(deoglGIInstances &instances) :
 pInstances(instances),
-pComponent(NULL),
-pDecal(NULL),
-pGIBVHLocal(NULL),
-pGIBVHDynamic(NULL),
+pComponent(nullptr),
+pDecal(nullptr),
+pGIBVHLocal(nullptr),
+pGIBVHDynamic(nullptr),
 pIndexNodes(0),
 pIndexFaces(0),
 pIndexVertices(0),
@@ -447,7 +447,7 @@ void deoglGIInstance::SetRecheckDynamic(bool recheckDynamic){
 }
 
 bool deoglGIInstance::Empty() const{
-	return pComponent == NULL && pDecal == NULL;
+	return pComponent == nullptr && pDecal == nullptr;
 }
 
 void deoglGIInstance::Clear(){
@@ -457,12 +457,12 @@ void deoglGIInstance::Clear(){
 	
 	if(pGIBVHLocal){
 		pGIBVHLocal->RemoveBlockUsage();
-		pGIBVHLocal = NULL;
+		pGIBVHLocal = nullptr;
 	}
 	
 	if(pGIBVHDynamic){
 		pGIBVHDynamic->RemoveBlockUsage();
-		pGIBVHDynamic = NULL;
+		pGIBVHDynamic = nullptr;
 	}
 	
 	pIndexNodes = 0;
@@ -490,7 +490,7 @@ void deoglGIInstance::Clear(){
 		if(pDecal->GetParentComponent()){
 			pDecal->GetParentComponent()->RemoveListener(pDecalComponentListener);
 		}
-		pDecal = NULL;
+		pDecal = nullptr;
 	}
 }
 
@@ -543,7 +543,7 @@ const deoglDynamicTBOBlock::Ref &deoglGIInstance::GetBlockMaterial(){
 void deoglGIInstance::DropBlockMaterial(){
 	if(pBlockMaterial){
 		pBlockMaterial->Drop();
-		pBlockMaterial = NULL;
+		pBlockMaterial = nullptr;
 	}
 }
 
@@ -596,7 +596,7 @@ void deoglGIInstance::pInitParameters(){
 			pIndexVertices = blockVertex->GetOffset();
 		}
 		
-		pHasBVHNodes = pGIBVHDynamic->GetGIBVHLocal().GetBVH().GetRootNode() != NULL;
+		pHasBVHNodes = pGIBVHDynamic->GetGIBVHLocal().GetBVH().GetRootNode() != nullptr;
 		pBVHMinExtend = pGIBVHDynamic->GetMinimumExtend();
 		pBVHMaxExtend = pGIBVHDynamic->GetMaximumExtend();
 		

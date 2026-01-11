@@ -335,7 +335,7 @@ void deClassModel::PushModel(dsRunTime *rt, deModel *model){
 	}
 	
 	if(!model){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

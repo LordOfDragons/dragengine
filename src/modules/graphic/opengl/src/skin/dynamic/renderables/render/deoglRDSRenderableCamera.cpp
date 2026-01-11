@@ -72,7 +72,7 @@ void deoglRDSRenderableCamera::PrepareForRender(const deoglRenderPlanMasked *ren
 }
 
 deoglRenderPlan *deoglRDSRenderableCamera::GetRenderPlan() const{
-	return pCamera ? &pCamera->GetPlan() : NULL;
+	return pCamera ? &pCamera->GetPlan() : nullptr;
 }
 
 
@@ -81,5 +81,5 @@ deoglRenderPlan *deoglRDSRenderableCamera::GetRenderPlan() const{
 //////////////////////
 
 void deoglRDSRenderableCamera::pCleanUp(){
-	SetCamera(NULL);
+	SetCamera(nullptr);
 }

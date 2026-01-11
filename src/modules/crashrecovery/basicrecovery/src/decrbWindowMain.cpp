@@ -76,7 +76,7 @@ void decrbWindowMain::create(){
 ////////////////////////////
 
 decrbWindowMain::decrbWindowMain(FXApp* papp, deCRBasic *crBasic) :
-FXMainWindow(papp, "Drag[en]gine Crash Recovery", NULL, NULL, DECOR_ALL, 0, 0, 600, 500){
+FXMainWindow(papp, "Drag[en]gine Crash Recovery", nullptr, nullptr, DECOR_ALL, 0, 0, 600, 500){
 	// prepare
 	pCRBasic = crBasic;
 	pEngine = pCRBasic->GetGameEngine();
@@ -84,7 +84,7 @@ FXMainWindow(papp, "Drag[en]gine Crash Recovery", NULL, NULL, DECOR_ALL, 0, 0, 6
 	// build gui	
 	FXVerticalFrame *content = new FXVerticalFrame(this, LAYOUT_FILL_X | LAYOUT_FILL_Y
 		| LAYOUT_TOP | LAYOUT_LEFT, 0, 0, 0, 0, 0, 0, 0, 0);
-	pTabPanels = new FXTabBook(content, NULL, ID_TABPANELS, TABBOOK_NORMAL | LAYOUT_FILL_X | LAYOUT_FILL_Y);
+	pTabPanels = new FXTabBook(content, nullptr, ID_TABPANELS, TABBOOK_NORMAL | LAYOUT_FILL_X | LAYOUT_FILL_Y);
 	
 	new FXTabItem(pTabPanels, "Status");
 	pPanelStatus = new decrbPanelStatus(this, pTabPanels);
@@ -103,9 +103,9 @@ FXMainWindow(papp, "Drag[en]gine Crash Recovery", NULL, NULL, DECOR_ALL, 0, 0, 6
 	
 	FXHorizontalFrame *frameButtons = new FXHorizontalFrame(content, LAYOUT_SIDE_TOP
 		| LAYOUT_FILL_X, 0, 0, 0, 0, 10, 10, 10, 10);
- 	new FXButton(frameButtons, "Continue", NULL, this, ID_BTNCONTINUE, BUTTON_NORMAL
+ 	new FXButton(frameButtons, "Continue", nullptr, this, ID_BTNCONTINUE, BUTTON_NORMAL
 		| BUTTON_DEFAULT | BUTTON_INITIAL | LAYOUT_FILL_X);
- 	new FXButton(frameButtons, "Shutdown", NULL, this, ID_BTNSHUTDOWN, BUTTON_NORMAL
+ 	new FXButton(frameButtons, "Shutdown", nullptr, this, ID_BTNSHUTDOWN, BUTTON_NORMAL
 		| LAYOUT_FILL_X);
 }
 

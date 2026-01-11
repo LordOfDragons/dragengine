@@ -240,7 +240,7 @@ void deClassEffectFilterKernel::PushEffect(dsRunTime *rt, deEffectFilterKernel *
 	}
 	
 	if(!effect){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

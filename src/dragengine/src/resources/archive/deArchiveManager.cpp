@@ -53,8 +53,8 @@
 
 deArchiveManager::deArchiveManager(deEngine *engine) :
 deFileResourceManager(engine, ertArchive),
-pContainerRoot(NULL),
-pContainerTail(NULL),
+pContainerRoot(nullptr),
+pContainerTail(nullptr),
 pContainerCount(0)
 {
 	SetLoggingName("archive");
@@ -86,7 +86,7 @@ const char *basePath){
 	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
-	deBaseArchiveContainer *peer = NULL;
+	deBaseArchiveContainer *peer = nullptr;
 	deArchive::Ref archive;
 	decPath path;
 	
@@ -116,7 +116,7 @@ const char *basePath){
 			
 			archive = deArchive::Ref::New(this, vfs, path.GetPathUnix(), modificationTime);
 			archive->SetPeerContainer(peer);
-			peer = NULL;
+			peer = nullptr;
 			
 			pArchives.Add(archive);
 		}
@@ -171,7 +171,7 @@ void deArchiveManager::ReleaseLeakingResources(){
 			pContainerRoot= pContainerRoot->GetLLManagerNext();
 		}
 		
-		pContainerTail = NULL;
+		pContainerTail = nullptr;
 		pContainerCount = 0;
 	}
 	
@@ -186,7 +186,7 @@ void deArchiveManager::ReleaseLeakingResources(){
 		while(archive){
 			LogWarnFormat("- %s", archive->GetFilename().IsEmpty()
 				? "<temporary>" : archive->GetFilename().GetString());
-			archive->SetPeerContainer(NULL);  // prevent crash
+			archive->SetPeerContainer(nullptr);  // prevent crash
 			archive = (deArchive*)archive->GetLLManagerNext();
 		}
 		
@@ -224,7 +224,7 @@ void deArchiveManager::RemoveContainer(deArchiveContainer *container){
 		
 		pContainerTail = pContainerTail->GetLLManagerPrev();
 		if(pContainerTail){
-			pContainerTail->SetLLManagerNext(NULL);
+			pContainerTail->SetLLManagerNext(nullptr);
 		}
 		
 	}else{
@@ -242,7 +242,7 @@ void deArchiveManager::RemoveContainer(deArchiveContainer *container){
 		
 		pContainerRoot = pContainerRoot->GetLLManagerNext();
 		if(pContainerRoot){
-			pContainerRoot->SetLLManagerPrev(NULL);
+			pContainerRoot->SetLLManagerPrev(nullptr);
 		}
 		
 	}else{
@@ -253,8 +253,8 @@ void deArchiveManager::RemoveContainer(deArchiveContainer *container){
 		container->GetLLManagerPrev()->SetLLManagerNext(container->GetLLManagerNext());
 	}
 	
-	container->SetLLManagerNext(NULL);
-	container->SetLLManagerPrev(NULL);
+	container->SetLLManagerNext(nullptr);
+	container->SetLLManagerPrev(nullptr);
 	pContainerCount--;
 	
 	container->MarkLeaking();

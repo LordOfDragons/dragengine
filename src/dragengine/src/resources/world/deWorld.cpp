@@ -420,7 +420,7 @@ void deWorld::RemoveAllSkies(){
 		pSkyTail = next;
 		pSkyCount--;
 	}
-	pSkyRoot = NULL;
+	pSkyRoot = nullptr;
 }
 
 
@@ -490,7 +490,7 @@ void deWorld::RemoveAllBillboards(){
 		pBillboardTail = next;
 		pBillboardCount--;
 	}
-	pBillboardRoot = NULL;
+	pBillboardRoot = nullptr;
 }
 
 
@@ -564,7 +564,7 @@ void deWorld::RemoveAllCameras(){
 		pCameraTail = next;
 		pCameraCount--;
 	}
-	pCameraRoot = NULL;
+	pCameraRoot = nullptr;
 }
 
 
@@ -638,7 +638,7 @@ void deWorld::RemoveAllColliders(){
 		pColliderTail = next;
 		pColliderCount--;
 	}
-	pColliderRoot = NULL;
+	pColliderRoot = nullptr;
 }
 
 
@@ -730,7 +730,7 @@ void deWorld::RemoveAllComponents(){
 		pComponentTail = next;
 		pComponentCount--;
 	}
-	pComponentRoot = NULL;
+	pComponentRoot = nullptr;
 }
 
 
@@ -804,7 +804,7 @@ void deWorld::RemoveAllDebugDrawers(){
 		pDebugDrawerTail = next;
 		pDebugDrawerCount--;
 	}
-	pDebugDrawerRoot = NULL;
+	pDebugDrawerRoot = nullptr;
 }
 
 
@@ -878,7 +878,7 @@ void deWorld::RemoveAllEnvMapProbes(){
 		pEnvMapProbeTail = next;
 		pEnvMapProbeCount--;
 	}
-	pEnvMapProbeRoot = NULL;
+	pEnvMapProbeRoot = nullptr;
 }
 
 
@@ -952,7 +952,7 @@ void deWorld::RemoveAllForceFields(){
 		pForceFieldTail = next;
 		pForceFieldCount--;
 	}
-	pForceFieldRoot = NULL;
+	pForceFieldRoot = nullptr;
 }
 
 
@@ -1026,7 +1026,7 @@ void deWorld::RemoveAllLights(){
 		pLightTail = next;
 		pLightCount--;
 	}
-	pLightRoot = NULL;
+	pLightRoot = nullptr;
 }
 
 
@@ -1100,7 +1100,7 @@ void deWorld::RemoveAllLumimeters(){
 		pLumimeterTail = next;
 		pLumimeterCount--;
 	}
-	pLumimeterRoot = NULL;
+	pLumimeterRoot = nullptr;
 }
 
 
@@ -1174,7 +1174,7 @@ void deWorld::RemoveAllMicrophones(){
 		pMicrophoneTail = next;
 		pMicrophoneCount--;
 	}
-	pMicrophoneRoot = NULL;
+	pMicrophoneRoot = nullptr;
 }
 
 
@@ -1248,7 +1248,7 @@ void deWorld::RemoveAllNavigationSpaces(){
 		pNavSpaceTail = next;
 		pNavSpaceCount--;
 	}
-	pNavSpaceRoot = NULL;
+	pNavSpaceRoot = nullptr;
 }
 
 
@@ -1322,7 +1322,7 @@ void deWorld::RemoveAllNavigationBlockers(){
 		pNavBlockerTail = next;
 		pNavBlockerCount--;
 	}
-	pNavBlockerRoot = NULL;
+	pNavBlockerRoot = nullptr;
 }
 
 
@@ -1396,7 +1396,7 @@ void deWorld::RemoveAllNavigators(){
 		pNavigatorTail = next;
 		pNavigatorCount--;
 	}
-	pNavigatorRoot = NULL;
+	pNavigatorRoot = nullptr;
 }
 
 
@@ -1470,7 +1470,7 @@ void deWorld::RemoveAllNetworkStates(){
 		pNetworkStateTail = next;
 		pNetworkStateCount--;
 	}
-	pNetworkStateRoot = NULL;
+	pNetworkStateRoot = nullptr;
 }
 
 
@@ -1553,7 +1553,7 @@ void deWorld::RemoveAllParticleEmitters(){
 		pParticleEmitterTail = next;
 		pParticleEmitterCount--;
 	}
-	pParticleEmitterRoot = NULL;
+	pParticleEmitterRoot = nullptr;
 }
 
 
@@ -1636,7 +1636,7 @@ void deWorld::RemoveAllPropFields(){
 		pPropFieldTail = next;
 		pPropFieldCount--;
 	}
-	pPropFieldRoot = NULL;
+	pPropFieldRoot = nullptr;
 }
 
 
@@ -1719,7 +1719,7 @@ void deWorld::RemoveAllSmokeEmitters(){
 		pSmokeEmitterTail = next;
 		pSmokeEmitterCount--;
 	}
-	pSmokeEmitterRoot = NULL;
+	pSmokeEmitterRoot = nullptr;
 }
 
 
@@ -1837,7 +1837,7 @@ void deWorld::RemoveAllSpeakers(){
 		pSpeakerTail = next;
 		pSpeakerCount--;
 	}
-	pSpeakerRoot = NULL;
+	pSpeakerRoot = nullptr;
 }
 
 
@@ -1911,7 +1911,7 @@ void deWorld::RemoveAllSoundLevelMeters(){
 		pSoundLevelMeterTail = next;
 		pSoundLevelMeterCount--;
 	}
-	pSoundLevelMeterRoot = NULL;
+	pSoundLevelMeterRoot = nullptr;
 }
 
 
@@ -1985,7 +1985,7 @@ void deWorld::RemoveAllTouchSensors(){
 		pTouchSensorTail = next;
 		pTouchSensorCount--;
 	}
-	pTouchSensorRoot = NULL;
+	pTouchSensorRoot = nullptr;
 }
 
 
@@ -2036,23 +2036,23 @@ void deWorld::SetPeerAI(deBaseAIWorld *peer){
 void deWorld::pCleanUp(){
 	if(pPeerAI){
 		delete pPeerAI;
-		pPeerAI = NULL;
+		pPeerAI = nullptr;
 	}
 	if(pPeerNetwork){
 		delete pPeerNetwork;
-		pPeerNetwork = NULL;
+		pPeerNetwork = nullptr;
 	}
 	if(pPeerPhysics){
 		delete pPeerPhysics;
-		pPeerPhysics = NULL;
+		pPeerPhysics = nullptr;
 	}
 	if(pPeerAudio){
 		delete pPeerAudio;
-		pPeerAudio = NULL;
+		pPeerAudio = nullptr;
 	}
 	if(pPeerGraphic){
 		delete pPeerGraphic;
-		pPeerGraphic = NULL;
+		pPeerGraphic = nullptr;
 	}
 	
 	Clear();

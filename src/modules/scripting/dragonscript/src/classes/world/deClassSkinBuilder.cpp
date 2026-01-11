@@ -77,12 +77,12 @@ class deClassSkinBuilder_Builder : public deSkinBuilder{
 	
 public:
 	deClassSkinBuilder_Builder(dsRunTime *rt, dsValue *myself) :
-	pRT(rt), pMyself(myself), pSkin(NULL), pOpenConstructed(NULL), pNextNodeAsMask(false){
+	pRT(rt), pMyself(myself), pSkin(nullptr), pOpenConstructed(nullptr), pNextNodeAsMask(false){
 	}
 	
 	void BuildSkin(deSkin *skin) override{
 		pSkin = skin;
-		pOpenConstructed = NULL;
+		pOpenConstructed = nullptr;
 		pOpenNodes.RemoveAll();
 		pNextNodeAsMask = false;
 		
@@ -90,23 +90,23 @@ public:
 			pRT->RunFunction(pMyself, "buildSkin", 0);
 			
 		}catch(const duException &e){
-			pSkin = NULL;
+			pSkin = nullptr;
 			pRT->PrintExceptionTrace();
 			e.PrintError();
 			DETHROW(deeInvalidParam);
 			
 		}catch(...){
 			pNextNodeAsMask = false;
-			pOpenConstructed = NULL;
+			pOpenConstructed = nullptr;
 			pOpenNodes.RemoveAll();
-			pSkin = NULL;
+			pSkin = nullptr;
 			throw;
 		}
 		
 		pNextNodeAsMask = false;
-		pOpenConstructed = NULL;
+		pOpenConstructed = nullptr;
 		pOpenNodes.RemoveAll();
-		pSkin = NULL;
+		pSkin = nullptr;
 	}
 	
 	inline deSkin *GetSkin() const{ return pSkin; }
@@ -150,7 +150,7 @@ public:
 		pOpenNodes.RemoveFrom(pOpenNodes.GetCount() - 1);
 		pNextNodeAsMask = false;
 		if(pOpenNodes.GetCount() == 0){
-			pOpenConstructed = NULL;
+			pOpenConstructed = nullptr;
 		}
 	}
 };
@@ -171,7 +171,7 @@ dsFunction(init.clsSkinBuilder, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSkinBuilder::nfNew::RunFunction(dsRunTime*, dsValue *myself){
-	dedsGetNativeData<sMdlBldNatDat>(p_GetNativeData(myself)).builder = NULL;
+	dedsGetNativeData<sMdlBldNatDat>(p_GetNativeData(myself)).builder = nullptr;
 }
 
 // public destructor Destructor()
@@ -207,11 +207,11 @@ void deClassSkinBuilder::nfBuild::RunFunction(dsRunTime *rt, dsValue *myself){
 		skin = ds.GetGameEngine()->GetSkinManager()->CreateSkin(filename, builder);
 		
 	}catch(...){
-		nd.builder = NULL;
+		nd.builder = nullptr;
 		throw;
 	}
 	
-	nd.builder = NULL;
+	nd.builder = nullptr;
 	ds.GetClassSkin()->PushSkin(rt, skin);
 }
 

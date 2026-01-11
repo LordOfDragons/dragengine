@@ -125,7 +125,7 @@ static inline void fSet(GLuint *d, unsigned int v1, unsigned int v2, unsigned in
 deoglShaderParameterBlock::deoglShaderParameterBlock(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
 
-pParameters(NULL),
+pParameters(nullptr),
 pParameterCount(0),
 pRowMajor(true),
 
@@ -134,7 +134,7 @@ pElementStride(0),
 pOffsetPadding(0),
 
 pBufferSize(0),
-pMapped(NULL),
+pMapped(nullptr),
 pElementLower(0),
 pElementUpper(0){
 }
@@ -142,7 +142,7 @@ pElementUpper(0){
 deoglShaderParameterBlock::deoglShaderParameterBlock(const deoglShaderParameterBlock &paramBlock) :
 pRenderThread(paramBlock.pRenderThread),
 
-pParameters(NULL),
+pParameters(nullptr),
 pParameterCount(0),
 pRowMajor(paramBlock.pRowMajor),
 
@@ -151,7 +151,7 @@ pElementStride(paramBlock.pElementStride),
 pOffsetPadding(paramBlock.pOffsetPadding),
 
 pBufferSize(paramBlock.pBufferSize),
-pMapped(NULL),
+pMapped(nullptr),
 pElementLower(0),
 pElementUpper(0)
 {
@@ -193,7 +193,7 @@ void deoglShaderParameterBlock::SetParameterCount(int count){
 	
 	if(pParameters){
 		delete [] pParameters;
-		pParameters = NULL;
+		pParameters = nullptr;
 		pParameterCount = 0;
 	}
 	
@@ -289,7 +289,7 @@ void deoglShaderParameterBlock::MapToStd140(){
 
 
 bool deoglShaderParameterBlock::IsBufferMapped() const{
-	return pMapped != NULL;
+	return pMapped != nullptr;
 }
 
 void deoglShaderParameterBlock::EnsureBuffer(){

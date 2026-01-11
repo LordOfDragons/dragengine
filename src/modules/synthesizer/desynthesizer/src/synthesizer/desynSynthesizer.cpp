@@ -50,7 +50,7 @@ desynSynthesizer::desynSynthesizer(deDESynthesizer &module, deSynthesizer &synth
 pModule(module),
 pSynthesizer(synthesizer),
 
-pSources(NULL),
+pSources(nullptr),
 pSourceCount(0),
 
 pSilent(true),
@@ -274,7 +274,7 @@ void desynSynthesizer::pClearSources(){
 	}
 	delete [] pSources;
 	
-	pSources = NULL;
+	pSources = nullptr;
 	pSourceCount = 0;
 	
 	pStateDataSize = 0;

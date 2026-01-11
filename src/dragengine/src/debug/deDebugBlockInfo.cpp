@@ -176,7 +176,7 @@ int deDebugBlockInfo::GetEntryCount() const{
 void deDebugBlockInfo::AddEntry(const char *label, const char *text,
 const decColor &color, const decColor &bgColor){
 	deCanvasManager &canvasManager = *pEngine.GetCanvasManager();
-	sEntry * entry = NULL;
+	sEntry * entry = nullptr;
 	
 	try{
 		entry = new sEntry;

@@ -75,7 +75,7 @@ deBaseModule *FBXAnimCreateModule(deLoadableModule *loadableModule){
 		return new fbxAnimModule(*loadableModule);
 		
 	}catch(const deException &){
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -149,7 +149,7 @@ void fbxAnimModule::pLoadMoves(deAnimation &animation, const fbxAnimation &loadA
 			move = new deAnimationMove;
 			pLoadMove(animation, *move, m);
 			animation.AddMove(move);
-			move = NULL;
+			move = nullptr;
 		});
 		
 	}catch(const deException &){

@@ -137,28 +137,28 @@ void deoglLSConfiguration::pLoadConfigOpenGL(deoglConfiguration &configuration, 
 					}
 					
 				}else if(strcmp(name, "debugShowCB") == 0){
-					configuration.SetDebugShowCB(strtol(tag->GetFirstData()->GetData(), NULL, 10) != 0);
+					configuration.SetDebugShowCB(strtol(tag->GetFirstData()->GetData(), nullptr, 10) != 0);
 					
 				}else if(strcmp(name, "reducedLighting") == 0){
-					configuration.SetUseReducedLighting(strtol(tag->GetFirstData()->GetData(), NULL, 10) != 0);
+					configuration.SetUseReducedLighting(strtol(tag->GetFirstData()->GetData(), nullptr, 10) != 0);
 					
 				}else if(strcmp(name, "skyBodyDensity") == 0){
-					configuration.SetSkyBodyDensity(strtof(tag->GetFirstData()->GetData(), NULL));
+					configuration.SetSkyBodyDensity(strtof(tag->GetFirstData()->GetData(), nullptr));
 					
 				}else if(strcmp(name, "wireframeMode") == 0){
-					configuration.SetDebugWireframe(strtol(tag->GetFirstData()->GetData(), NULL, 10) != 0);
+					configuration.SetDebugWireframe(strtol(tag->GetFirstData()->GetData(), nullptr, 10) != 0);
 					
 				}else if(strcmp(name, "debugUVSplitter") == 0){
-					configuration.SetDebugUVSplitter(strtol(tag->GetFirstData()->GetData(), NULL, 10) != 0);
+					configuration.SetDebugUVSplitter(strtol(tag->GetFirstData()->GetData(), nullptr, 10) != 0);
 					
 				}else if(strcmp(name, "debugPrintSkyUpdate") == 0){
-					configuration.SetDebugPrintSkyUpdate(strtol(tag->GetFirstData()->GetData(), NULL, 10) != 0);
+					configuration.SetDebugPrintSkyUpdate(strtol(tag->GetFirstData()->GetData(), nullptr, 10) != 0);
 					
 				}else if(strcmp(name, "showLightCB") == 0){
-					configuration.SetShowLightCB(strtol(tag->GetFirstData()->GetData(), NULL, 10) != 0);
+					configuration.SetShowLightCB(strtol(tag->GetFirstData()->GetData(), nullptr, 10) != 0);
 					
 				}else if(strcmp(name, "mapFaceSplitThreshold") == 0){
-					configuration.SetMapFaceSplitThreshold(strtof(tag->GetFirstData()->GetData(), NULL));
+					configuration.SetMapFaceSplitThreshold(strtof(tag->GetFirstData()->GetData(), nullptr));
 					
 				}else if(strcmp(name, "shadowQuality") == 0){
 					const decString value(tag->GetFirstData()->GetData());
@@ -187,184 +187,184 @@ void deoglLSConfiguration::pLoadConfigOpenGL(deoglConfiguration &configuration, 
 					}
 					
 				}else if(strcmp(name, "shadowMapOffsetScale") == 0){
-					configuration.SetShadowMapOffsetScale(strtof(tag->GetFirstData()->GetData(), NULL));
+					configuration.SetShadowMapOffsetScale(strtof(tag->GetFirstData()->GetData(), nullptr));
 					
 				}else if(strcmp(name, "shadowMapOffsetBias") == 0){
-					configuration.SetShadowMapOffsetBias(strtof(tag->GetFirstData()->GetData(), NULL));
+					configuration.SetShadowMapOffsetBias(strtof(tag->GetFirstData()->GetData(), nullptr));
 					
 				}else if(strcmp(name, "shadowCubePCFSize") == 0){
-					configuration.SetShadowCubePCFSize(strtof(tag->GetFirstData()->GetData(), NULL));
+					configuration.SetShadowCubePCFSize(strtof(tag->GetFirstData()->GetData(), nullptr));
 					
 				}else if(strcmp(name, "occlusionReduction") == 0){
-					configuration.SetOcclusionReduction((int)strtol(tag->GetFirstData()->GetData(), NULL, 10));
+					configuration.SetOcclusionReduction((int)strtol(tag->GetFirstData()->GetData(), nullptr, 10));
 					
 				}else if(strcmp(name, "distShadowScale") == 0){
-					configuration.SetDistShadowScale(strtof(tag->GetFirstData()->GetData(), NULL));
+					configuration.SetDistShadowScale(strtof(tag->GetFirstData()->GetData(), nullptr));
 					
 				}else if(strcmp(name, "distShadowBias") == 0){
-					configuration.SetDistShadowBias(strtof(tag->GetFirstData()->GetData(), NULL));
+					configuration.SetDistShadowBias(strtof(tag->GetFirstData()->GetData(), nullptr));
 					
 				}else if(strcmp(name, "textOffsetU") == 0){
-					configuration.SetTextOffsetU(strtof(tag->GetFirstData()->GetData(), NULL));
+					configuration.SetTextOffsetU(strtof(tag->GetFirstData()->GetData(), nullptr));
 					
 				}else if(strcmp(name, "textOffsetV") == 0){
-					configuration.SetTextOffsetV(strtof(tag->GetFirstData()->GetData(), NULL));
+					configuration.SetTextOffsetV(strtof(tag->GetFirstData()->GetData(), nullptr));
 					
 				}else if(strcmp(name, "useDepthPass") == 0){
-					configuration.SetUseDepthPass(strtol(tag->GetFirstData()->GetData(), NULL, 10) != 0);
+					configuration.SetUseDepthPass(strtol(tag->GetFirstData()->GetData(), nullptr, 10) != 0);
 					
 				}else if(strcmp(name, "useOneFBO") == 0){
-					configuration.SetUseOneFBO(strtol(tag->GetFirstData()->GetData(), NULL, 10) != 0);
+					configuration.SetUseOneFBO(strtol(tag->GetFirstData()->GetData(), nullptr, 10) != 0);
 					
 				}else if(strcmp(name, "useEncodeDepth") == 0){
-					configuration.SetUseEncodeDepth(strtol(tag->GetFirstData()->GetData(), NULL, 10) != 0);
+					configuration.SetUseEncodeDepth(strtol(tag->GetFirstData()->GetData(), nullptr, 10) != 0);
 					
 				}else if(strcmp(name, "disableStencil") == 0){
-					configuration.SetDisableStencil(strtol(tag->GetFirstData()->GetData(), NULL, 10) != 0);
+					configuration.SetDisableStencil(strtol(tag->GetFirstData()->GetData(), nullptr, 10) != 0);
 					
 				}else if(strcmp(name, "lightCutOffIntensity") == 0){
-					configuration.SetLightCutOffIntensity(strtof(tag->GetFirstData()->GetData(), NULL));
+					configuration.SetLightCutOffIntensity(strtof(tag->GetFirstData()->GetData(), nullptr));
 					
 				}else if(strcmp(name, "useTextureCompression") == 0){
-					configuration.SetUseTextureCompression(strtol(tag->GetFirstData()->GetData(), NULL, 10) != 0);
+					configuration.SetUseTextureCompression(strtol(tag->GetFirstData()->GetData(), nullptr, 10) != 0);
 					
 				}else if(strcmp(name, "defRenSizeLimit") == 0){
-					configuration.SetDefRenSizeLimit((int)strtol(tag->GetFirstData()->GetData(), NULL, 10));
+					configuration.SetDefRenSizeLimit((int)strtol(tag->GetFirstData()->GetData(), nullptr, 10));
 					
 				}else if(strcmp(name, "useHDRR") == 0){
-					configuration.SetUseHDRR(strtol(tag->GetFirstData()->GetData(), NULL, 10) != 0);
+					configuration.SetUseHDRR(strtol(tag->GetFirstData()->GetData(), nullptr, 10) != 0);
 					
 				}else if(strcmp(name, "hdrrMaximumIntensity") == 0){
-					configuration.SetHDRRMaximumIntensity(strtof(tag->GetFirstData()->GetData(), NULL));
+					configuration.SetHDRRMaximumIntensity(strtof(tag->GetFirstData()->GetData(), nullptr));
 					
 				}else if(strcmp(name, "renderDownScale") == 0){
 					configuration.SetRenderDownScale(tag->GetFirstData()->GetData().ToInt());
 					
 				}else if(strcmp(name, "useInverseDepth") == 0){
-					configuration.SetUseInverseDepth(strtol(tag->GetFirstData()->GetData(), NULL, 10) != 0);
+					configuration.SetUseInverseDepth(strtol(tag->GetFirstData()->GetData(), nullptr, 10) != 0);
 					
 				}else if(strcmp(name, "gammaCorrection") == 0){
-					configuration.SetGammaCorrection(strtof(tag->GetFirstData()->GetData(), NULL));
+					configuration.SetGammaCorrection(strtof(tag->GetFirstData()->GetData(), nullptr));
 					
 				}else if(strcmp(name, "contrast") == 0){
-					configuration.SetContrast(strtof(tag->GetFirstData()->GetData(), NULL));
+					configuration.SetContrast(strtof(tag->GetFirstData()->GetData(), nullptr));
 					
 				}else if(strcmp(name, "brightness") == 0){
-					configuration.SetBrightness(strtof(tag->GetFirstData()->GetData(), NULL));
+					configuration.SetBrightness(strtof(tag->GetFirstData()->GetData(), nullptr));
 					
 				}else if(strcmp(name, "decalOffsetScale") == 0){
-					configuration.SetDecalOffsetScale(strtof(tag->GetFirstData()->GetData(), NULL));
+					configuration.SetDecalOffsetScale(strtof(tag->GetFirstData()->GetData(), nullptr));
 					
 				}else if(strcmp(name, "decalOffsetBias") == 0){
-					configuration.SetDecalOffsetBias(strtof(tag->GetFirstData()->GetData(), NULL));
+					configuration.SetDecalOffsetBias(strtof(tag->GetFirstData()->GetData(), nullptr));
 					
 				}else if(strcmp(name, "lodMaxPixelError") == 0){
-					configuration.SetLODMaxPixelError((int)strtol(tag->GetFirstData()->GetData(), NULL, 10));
+					configuration.SetLODMaxPixelError((int)strtol(tag->GetFirstData()->GetData(), nullptr, 10));
 					
 					
 					
 				}else if(strcmp(name, "normalRoughnessCorrectionStrength") == 0){
-					configuration.SetNormalRoughnessCorrectionStrength(strtof(tag->GetFirstData()->GetData(), NULL));
+					configuration.SetNormalRoughnessCorrectionStrength(strtof(tag->GetFirstData()->GetData(), nullptr));
 					
 					
 					
 				}else if(strcmp(name, "ssrEnable") == 0){
-					configuration.SetSSREnable(strtol(tag->GetFirstData()->GetData(), NULL, 10) != 0);
+					configuration.SetSSREnable(strtol(tag->GetFirstData()->GetData(), nullptr, 10) != 0);
 					
 				}else if(strcmp(name, "ssrStepCount") == 0){
-					configuration.SetSSRStepCount((int)strtol(tag->GetFirstData()->GetData(), NULL, 10));
+					configuration.SetSSRStepCount((int)strtol(tag->GetFirstData()->GetData(), nullptr, 10));
 					
 				}else if(strcmp(name, "ssrMaxRayLength") == 0){
-					configuration.SetSSRMaxRayLength(strtof(tag->GetFirstData()->GetData(), NULL));
+					configuration.SetSSRMaxRayLength(strtof(tag->GetFirstData()->GetData(), nullptr));
 					
 				}else if(strcmp(name, "ssrReduction") == 0){
-					configuration.SetSSRReduction((int)strtol(tag->GetFirstData()->GetData(), NULL, 10));
+					configuration.SetSSRReduction((int)strtol(tag->GetFirstData()->GetData(), nullptr, 10));
 					
 				}else if(strcmp(name, "ssrCoverageEdgeSize") == 0){
-					configuration.SetSSRCoverageEdgeSize(strtof(tag->GetFirstData()->GetData(), NULL));
+					configuration.SetSSRCoverageEdgeSize(strtof(tag->GetFirstData()->GetData(), nullptr));
 					
 				}else if(strcmp(name, "ssrCoveragePowerEdge") == 0){
-					configuration.SetSSRCoveragePowerEdge(strtof(tag->GetFirstData()->GetData(), NULL));
+					configuration.SetSSRCoveragePowerEdge(strtof(tag->GetFirstData()->GetData(), nullptr));
 					
 				}else if(strcmp(name, "ssrCoveragePowerRayLength") == 0){
-					configuration.SetSSRCoveragePowerRayLength(strtof(tag->GetFirstData()->GetData(), NULL));
+					configuration.SetSSRCoveragePowerRayLength(strtof(tag->GetFirstData()->GetData(), nullptr));
 					
 				}else if(strcmp(name, "ssrMethod") == 0){
-					configuration.SetSSRMethod((int)strtol(tag->GetFirstData()->GetData(), NULL, 10));
+					configuration.SetSSRMethod((int)strtol(tag->GetFirstData()->GetData(), nullptr, 10));
 					
 					
 					
 				}else if(strcmp(name, "ssaoEnable") == 0){
-					configuration.SetSSAOEnable(strtol(tag->GetFirstData()->GetData(), NULL, 10) != 0);
+					configuration.SetSSAOEnable(strtol(tag->GetFirstData()->GetData(), nullptr, 10) != 0);
 					
 				}else if(strcmp(name, "ssaoTapCount") == 0){
-					configuration.SetSSAOTapCount((int)strtol(tag->GetFirstData()->GetData(), NULL, 10));
+					configuration.SetSSAOTapCount((int)strtol(tag->GetFirstData()->GetData(), nullptr, 10));
 					
 				}else if(strcmp(name, "ssaoTurnCount") == 0){
-					configuration.SetSSAOTurnCount(strtof(tag->GetFirstData()->GetData(), NULL));
+					configuration.SetSSAOTurnCount(strtof(tag->GetFirstData()->GetData(), nullptr));
 					
 				}else if(strcmp(name, "ssaoSelfOcclusionAngle") == 0){
-					configuration.SetSSAOSelfOcclusionAngle(strtof(tag->GetFirstData()->GetData(), NULL));
+					configuration.SetSSAOSelfOcclusionAngle(strtof(tag->GetFirstData()->GetData(), nullptr));
 					
 				}else if(strcmp(name, "ssaoRadius") == 0){
-					configuration.SetSSAORadius(strtof(tag->GetFirstData()->GetData(), NULL));
+					configuration.SetSSAORadius(strtof(tag->GetFirstData()->GetData(), nullptr));
 					
 				}else if(strcmp(name, "ssaoRadiusLimit") == 0){
-					configuration.SetSSAORadiusLimit(strtof(tag->GetFirstData()->GetData(), NULL));
+					configuration.SetSSAORadiusLimit(strtof(tag->GetFirstData()->GetData(), nullptr));
 					
 				}else if(strcmp(name, "ssaoMipMapBase") == 0){
-					configuration.SetSSAOMipMapBase(strtof(tag->GetFirstData()->GetData(), NULL));
+					configuration.SetSSAOMipMapBase(strtof(tag->GetFirstData()->GetData(), nullptr));
 					
 				}else if(strcmp(name, "ssaoEdgeBlurThreshold") == 0){
-					configuration.SetSSAOEdgeBlurThreshold(strtof(tag->GetFirstData()->GetData(), NULL));
+					configuration.SetSSAOEdgeBlurThreshold(strtof(tag->GetFirstData()->GetData(), nullptr));
 					
 					
 					
 				}else if(strcmp(name, "aoSelfShadowEnable") == 0){
-					configuration.SetAOSelfShadowEnable(strtol(tag->GetFirstData()->GetData(), NULL, 10) != 0);
+					configuration.SetAOSelfShadowEnable(strtol(tag->GetFirstData()->GetData(), nullptr, 10) != 0);
 					
 				}else if(strcmp(name, "aoSelfShadowSmoothAngle") == 0){
-					configuration.SetAOSelfShadowSmoothAngle(strtof(tag->GetFirstData()->GetData(), NULL));
+					configuration.SetAOSelfShadowSmoothAngle(strtof(tag->GetFirstData()->GetData(), nullptr));
 					
 					
 					
 				}else if(strcmp(name, "sssssEnable") == 0){
-					configuration.SetSSSSSEnable(strtol(tag->GetFirstData()->GetData(), NULL, 10) != 0);
+					configuration.SetSSSSSEnable(strtol(tag->GetFirstData()->GetData(), nullptr, 10) != 0);
 					
 					
 					
 				}else if(strcmp(name, "frameRateLimit") == 0){
-					configuration.SetFrameRateLimit((int)strtol(tag->GetFirstData()->GetData(), NULL, 10));
+					configuration.SetFrameRateLimit((int)strtol(tag->GetFirstData()->GetData(), nullptr, 10));
 					
 				}else if(strcmp(name, "asyncRenderSkipSyncTimeRatio") == 0){
-					configuration.SetAsyncRenderSkipSyncTimeRatio(strtof(tag->GetFirstData()->GetData(), NULL));
+					configuration.SetAsyncRenderSkipSyncTimeRatio(strtof(tag->GetFirstData()->GetData(), nullptr));
 					
 					
 					
 				}else if(strcmp(name, "envMapEnable") == 0){
-					configuration.SetEnvMapEnable(strtol(tag->GetFirstData()->GetData(), NULL, 10) != 0);
+					configuration.SetEnvMapEnable(strtol(tag->GetFirstData()->GetData(), nullptr, 10) != 0);
 					
 				}else if(strcmp(name, "bugNo2ComponentFBOTex") == 0){
-					configuration.SetBugNo2ComponentFBOTex((int)strtol(tag->GetFirstData()->GetData(), NULL, 10));
+					configuration.SetBugNo2ComponentFBOTex((int)strtol(tag->GetFirstData()->GetData(), nullptr, 10));
 					
 				}else if(strcmp(name, "disableCubeMapLinearFiltering") == 0){
-					configuration.SetDisableCubeMapLinearFiltering(strtol(tag->GetFirstData()->GetData(), NULL, 10) != 0);
+					configuration.SetDisableCubeMapLinearFiltering(strtol(tag->GetFirstData()->GetData(), nullptr, 10) != 0);
 					
 					
 					
 				}else if(strcmp(name, "debugContext") == 0){
-					configuration.SetDebugContext(strtol(tag->GetFirstData()->GetData(), NULL, 10) != 0);
+					configuration.SetDebugContext(strtol(tag->GetFirstData()->GetData(), nullptr, 10) != 0);
 					
 				}else if(strcmp(name, "asyncRendering") == 0){
-					configuration.SetAsyncRendering(strtol(tag->GetFirstData()->GetData(), NULL, 10) != 0);
+					configuration.SetAsyncRendering(strtol(tag->GetFirstData()->GetData(), nullptr, 10) != 0);
 					
 				}else if(strcmp(name, "enableRetainImageOptimization") == 0){
-					configuration.SetEnableRetainImageOptimization(strtol(tag->GetFirstData()->GetData(), NULL, 10) != 0);
+					configuration.SetEnableRetainImageOptimization(strtol(tag->GetFirstData()->GetData(), nullptr, 10) != 0);
 					
 					
 					
 				}else if(strcmp(name, "maxSPBIndexCount") == 0){
-					configuration.SetMaxSPBIndexCount((int)strtol(tag->GetFirstData()->GetData(), NULL, 10) != 0);
+					configuration.SetMaxSPBIndexCount((int)strtol(tag->GetFirstData()->GetData(), nullptr, 10) != 0);
 					
 					
 					
@@ -463,7 +463,7 @@ decXmlElementTag *deoglLSConfiguration::pGetTagAt(decXmlElementTag *tag, int ind
 	if(element->CanCastToElementTag()){
 		return element->CastToElementTag();
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -480,7 +480,7 @@ decXmlAttValue *deoglLSConfiguration::pFindAttribute(decXmlElementTag *tag, cons
 			}
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 const char *deoglLSConfiguration::pGetAttributeString(decXmlElementTag *tag, const char *name){
@@ -497,7 +497,7 @@ const char *deoglLSConfiguration::pGetAttributeString(decXmlElementTag *tag, con
 int deoglLSConfiguration::pGetAttributeInt(decXmlElementTag *tag, const char *name){
 	decXmlAttValue *value = pFindAttribute(tag, name);
 	if(value){
-		return (int)strtol(value->GetValue(), NULL, 10);
+		return (int)strtol(value->GetValue(), nullptr, 10);
 	}else{
 		pOgl.LogErrorFormat("Missing Attribute '%s' in tag '%s'.",
 			name, tag->GetName().GetString());
@@ -508,7 +508,7 @@ int deoglLSConfiguration::pGetAttributeInt(decXmlElementTag *tag, const char *na
 float deoglLSConfiguration::pGetAttributeFloat(decXmlElementTag *tag, const char *name){
 	decXmlAttValue *value = pFindAttribute(tag, name);
 	if(value){
-		return strtof(value->GetValue(), NULL);
+		return strtof(value->GetValue(), nullptr);
 	}else{
 		pOgl.LogErrorFormat("Missing Attribute '%s' in tag '%s'.",
 			name, tag->GetName().GetString());

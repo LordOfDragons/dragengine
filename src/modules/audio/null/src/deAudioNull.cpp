@@ -53,13 +53,13 @@ MOD_ENTRY_POINT_ATTR deBaseModule *NullAudioCreateModule(deLoadableModule *loada
 ///////////////////
 
 deBaseModule *NullAudioCreateModule(deLoadableModule *loadableModule){
-	deBaseModule *module = NULL;
+	deBaseModule *module = nullptr;
 	
 	try{
 		module = new deAudioNull(*loadableModule);
 		
 	}catch(const deException &){
-		return NULL;
+		return nullptr;
 	}
 	
 	return module;
@@ -94,7 +94,7 @@ void deAudioNull::CleanUp(){
 
 void deAudioNull::ProcessAudio(){
 	deMicrophone *activeMicrophone = GetGameEngine()->GetAudioSystem()->GetActiveMicrophone();
-	deWorld *world = NULL;
+	deWorld *world = nullptr;
 	
 	// stepping the speakers is required as game code can synchronize to sound finished playing.
 	// for the time being we stop all speakers found playing. this is not correct but prevents
@@ -125,51 +125,51 @@ void deAudioNull::SetActiveMicrophone(deMicrophone *microphone){
 /////////////////////
 
 deBaseAudioWorld *deAudioNull::CreateWorld(deWorld*){
-	return NULL;
+	return nullptr;
 }
 
 deBaseAudioSound *deAudioNull::CreateSound(deSound*){
-	return NULL;
+	return nullptr;
 }
 
 deBaseAudioSpeaker *deAudioNull::CreateSpeaker(deSpeaker*){
-	return NULL;
+	return nullptr;
 }
 
 deBaseAudioMicrophone *deAudioNull::CreateMicrophone(deMicrophone*){
-	return NULL;
+	return nullptr;
 }
 
 deBaseAudioComponent *deAudioNull::CreateComponent(deComponent*){
-	return NULL;
+	return nullptr;
 }
 
 deBaseAudioModel *deAudioNull::CreateModel(deModel*){
-	return NULL;
+	return nullptr;
 }
 
 deBaseAudioSkin *deAudioNull::CreateSkin(deSkin*){
-	return NULL;
+	return nullptr;
 }
 
 deBaseAudioDecal *deAudioNull::CreateDecal(deDecal*){
-	return NULL;
+	return nullptr;
 }
 
 deBaseAudioSoundLevelMeter *deAudioNull::CreateSoundLevelMeter(deSoundLevelMeter*){
-	return NULL;
+	return nullptr;
 }
 
 deBaseAudioVideoPlayer *deAudioNull::CreateVideoPlayer(deVideoPlayer*){
-	return NULL;
+	return nullptr;
 }
 
 deBaseAudioSynthesizerInstance *deAudioNull::CreateSynthesizerInstance(deSynthesizerInstance*){
-	return NULL;
+	return nullptr;
 }
 
 deBaseAudioHeightTerrain *deAudioNull::CreateHeightTerrain(deHeightTerrain&){
-	return NULL;
+	return nullptr;
 }
 
 #ifdef WITH_INTERNAL_MODULE

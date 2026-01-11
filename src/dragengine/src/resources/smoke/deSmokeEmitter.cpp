@@ -56,25 +56,25 @@ deSmokeEmitter::deSmokeEmitter(deSmokeEmitterManager *manager) : deResource(mana
 	
 	pUseLocalGravity = false;
 	
-	pPoints = NULL;
+	pPoints = nullptr;
 	pPointCount = 0;
 	
-	pPeerGraphic = NULL;
-	pPeerPhysics = NULL;
+	pPeerGraphic = nullptr;
+	pPeerPhysics = nullptr;
 	
-	pParentWorld = NULL;
-	pLLWorldNext = NULL;
-	pLLWorldPrev = NULL;
+	pParentWorld = nullptr;
+	pLLWorldNext = nullptr;
+	pLLWorldPrev = nullptr;
 }
 
 deSmokeEmitter::~deSmokeEmitter(){
 	if(pPeerPhysics){
 		delete pPeerPhysics;
-		pPeerPhysics = NULL;
+		pPeerPhysics = nullptr;
 	}
 	if(pPeerGraphic){
 		delete pPeerGraphic;
-		pPeerGraphic = NULL;
+		pPeerGraphic = nullptr;
 	}
 }
 

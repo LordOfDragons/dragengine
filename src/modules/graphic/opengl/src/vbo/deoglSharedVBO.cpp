@@ -63,7 +63,7 @@ pMemUseIBO(parentList->GetRenderThread().GetMemoryManager().GetConsumption().buf
 	pParentList = parentList;
 	pVBO = 0;
 	pIBO = 0;
-	pVAO = NULL;
+	pVAO = nullptr;
 	pUsedSize = 0;
 	pSize = size;
 	pIndexSize = indexSize;
@@ -120,12 +120,12 @@ void deoglSharedVBO::Prepare(){
 	const int stride = pParentList->GetLayout().GetStride();
 	const GLenum drawType = pParentList->GetDrawType();
 	const int blockCount = pBlocks.GetCount();
-	unsigned char *vboData = NULL;
+	unsigned char *vboData = nullptr;
 	int i;
 	
 	// update vertex buffer
 	OGL_CHECK(renderThread, pglBindBuffer(GL_SHADER_STORAGE_BUFFER, pVBO));
-	OGL_CHECK(renderThread, pglBufferData(GL_SHADER_STORAGE_BUFFER, stride * pUsedSize, NULL, drawType));
+	OGL_CHECK(renderThread, pglBufferData(GL_SHADER_STORAGE_BUFFER, stride * pUsedSize, nullptr, drawType));
 	
 	if(pUsedSize > 0){
 		// another way which does not require a memory copy is to write the data blocks in ascending
@@ -155,7 +155,7 @@ void deoglSharedVBO::Prepare(){
 	// update index buffer. works differently depending on the presence of base-vertex support
 	if(pIBO){
 		OGL_CHECK(renderThread, pglBindBuffer(GL_SHADER_STORAGE_BUFFER, pIBO));
-		OGL_CHECK(renderThread, pglBufferData(GL_SHADER_STORAGE_BUFFER, indexSize * pIndexUsedSize, NULL, drawType));
+		OGL_CHECK(renderThread, pglBufferData(GL_SHADER_STORAGE_BUFFER, indexSize * pIndexUsedSize, nullptr, drawType));
 		
 		if(pIndexUsedSize > 0){
 			const bool useBaseVertex = renderThread.GetChoices().GetSharedVBOUseBaseVertex();
@@ -163,7 +163,7 @@ void deoglSharedVBO::Prepare(){
 			// another way which does not require a memory copy is to write the data blocks in ascending
 			// order using glBufferSubData. according to the Internet this should not be slower than
 			// glBufferData for a newly created buffer.
-			vboData = NULL;
+			vboData = nullptr;
 			
 			try{
 				vboData = new unsigned char[indexSize * pIndexUsedSize];

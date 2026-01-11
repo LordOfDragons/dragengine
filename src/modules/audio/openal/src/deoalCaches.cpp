@@ -45,7 +45,7 @@
 
 deoalCaches::deoalCaches(deoalAudioThread &audioThread) :
 pAudioThread(audioThread),
-pSound(NULL)
+pSound(nullptr)
 {
 	(void)pAudioThread; // silence compiler warning
 	

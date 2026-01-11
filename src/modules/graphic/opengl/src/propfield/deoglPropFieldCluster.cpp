@@ -142,16 +142,16 @@ pPropFieldType(propFieldType),
 pRenderThread(propFieldType.GetPropField().GetRenderThread()),
 pWorldComputeElement(WorldComputeElement::Ref::New(*this)),
 
-pInstances(NULL),
+pInstances(nullptr),
 pInstanceCount(0),
 
-pBendStateData(NULL),
+pBendStateData(nullptr),
 pBendStateDataSize(0),
 
-pTUCDepth(NULL),
-pTUCGeometry(NULL),
-pTUCShadow(NULL),
-pTUCEnvMap(NULL),
+pTUCDepth(nullptr),
+pTUCGeometry(nullptr),
+pTUCShadow(nullptr),
+pTUCEnvMap(nullptr),
 
 pDirtyTUCs(true),
 pDirtyBendStates(true),
@@ -161,7 +161,7 @@ pTBOBendStates(0),
 pVBOInstances(0),
 pVBOBendStates(0),
 
-pRTSInstance(NULL),
+pRTSInstance(nullptr),
 pDirtyRTSInstance(true){
 }
 
@@ -185,19 +185,19 @@ deoglPropFieldCluster::~deoglPropFieldCluster(){
 	
 	if(pTUCDepth){
 		pTUCDepth->RemoveUsage();
-		pTUCDepth = NULL;
+		pTUCDepth = nullptr;
 	}
 	if(pTUCGeometry){
 		pTUCGeometry->RemoveUsage();
-		pTUCGeometry = NULL;
+		pTUCGeometry = nullptr;
 	}
 	if(pTUCShadow){
 		pTUCShadow->RemoveUsage();
-		pTUCShadow = NULL;
+		pTUCShadow = nullptr;
 	}
 	if(pTUCEnvMap){
 		pTUCEnvMap->RemoveUsage();
-		pTUCEnvMap = NULL;
+		pTUCEnvMap = nullptr;
 	}
 	
 	deoglDelayedOperations &dops = pRenderThread.GetDelayedOperations();
@@ -229,7 +229,7 @@ void deoglPropFieldCluster::SetInstanceCount(int count){
 	}
 	
 	if(count != pInstanceCount){
-		sInstance *instances = NULL;
+		sInstance *instances = nullptr;
 		
 		if(count > 0){
 			instances = new sInstance[count];
@@ -263,7 +263,7 @@ void deoglPropFieldCluster::PrepareBendStateData(const dePropFieldType &type){
 	if(vboDataSize > pBendStateDataSize){
 		if(pBendStateData){
 			delete [] pBendStateData;
-			pBendStateData = NULL;
+			pBendStateData = nullptr;
 			pBendStateDataSize = 0;
 		}
 		
@@ -333,13 +333,13 @@ deoglTexUnitsConfig *deoglPropFieldCluster::GetTUCForPipelineType(deoglSkinTextu
 deoglTexUnitsConfig *deoglPropFieldCluster::BareGetTUCFor(deoglSkinTexturePipelines::eTypes type) const{
 	deoglSkinTexture * const skinTexture = pPropFieldType.GetUseSkinTexture();
 	if(!skinTexture){
-		return NULL;
+		return nullptr;
 	}
 	
 	deoglTexUnitConfig units[deoglSkinShader::ETT_COUNT];
-	deoglRDynamicSkin *dynamicSkin = NULL;
+	deoglRDynamicSkin *dynamicSkin = nullptr;
 	deoglSkinState *skinState = nullptr;
-	deoglTexUnitsConfig *tuc = NULL;
+	deoglTexUnitsConfig *tuc = nullptr;
 	int target;
 	
 	deoglSkinShader &skinShader = *skinTexture->GetPipelines().
@@ -367,7 +367,7 @@ deoglTexUnitsConfig *deoglPropFieldCluster::BareGetTUCFor(deoglSkinTexturePipeli
 	}
 	
 	if(!tuc){
-		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith(NULL, 0,
+		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith(nullptr, 0,
 			skinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock());
 	}
 	tuc->EnsureRTSTexture();
@@ -418,34 +418,34 @@ void deoglPropFieldCluster::pPrepareTUCs(){
 	// depth
 	if(pTUCDepth){
 		pTUCDepth->RemoveUsage();
-		pTUCDepth = NULL;
+		pTUCDepth = nullptr;
 	}
 	pTUCDepth = BareGetTUCFor(deoglSkinTexturePipelines::etDepth);
 	
 	// geometry
 	if(pTUCGeometry){
 		pTUCGeometry->RemoveUsage();
-		pTUCGeometry = NULL;
+		pTUCGeometry = nullptr;
 	}
 	pTUCGeometry = BareGetTUCFor(deoglSkinTexturePipelines::etGeometry);
 	
 	// shadow
 	if(pTUCShadow){
 		pTUCShadow->RemoveUsage();
-		pTUCShadow = NULL;
+		pTUCShadow = nullptr;
 	}
 	pTUCShadow = BareGetTUCFor(deoglSkinTexturePipelines::etShadowProjection);
 	
 	// envmap
 	if(pTUCEnvMap){
 		pTUCEnvMap->RemoveUsage();
-		pTUCEnvMap = NULL;
+		pTUCEnvMap = nullptr;
 	}
 	
 	deoglSkinTexture * const skinTexture = pPropFieldType.GetUseSkinTexture();
 	
 	if(skinTexture){
-		deoglRDynamicSkin *dynamicSkin = NULL;
+		deoglRDynamicSkin *dynamicSkin = nullptr;
 		deoglSkinState *skinState = nullptr;
 		deoglTexUnitConfig unit[8];
 		
@@ -537,7 +537,7 @@ void deoglPropFieldCluster::pUpdateTBOBendStates(){
 	}
 	
 	OGL_CHECK(pRenderThread, pglBindBuffer(GL_TEXTURE_BUFFER, pVBOBendStates));
-	OGL_CHECK(pRenderThread, pglBufferData(GL_TEXTURE_BUFFER, vboDataSize, NULL, GL_STREAM_DRAW));
+	OGL_CHECK(pRenderThread, pglBufferData(GL_TEXTURE_BUFFER, vboDataSize, nullptr, GL_STREAM_DRAW));
 	OGL_CHECK(pRenderThread, pglBufferData(GL_TEXTURE_BUFFER, vboDataSize, pBendStateData, GL_STREAM_DRAW));
 	
 	if(!pTBOBendStates){
@@ -574,7 +574,7 @@ void deoglPropFieldCluster::pPrepareRTSInstance(){
 	}else{
 		if(pRTSInstance){
 			pRTSInstance->ReturnToPool();
-			pRTSInstance = NULL;
+			pRTSInstance = nullptr;
 		}
 	}
 }

@@ -54,18 +54,18 @@
 deoalAModel::deoalAModel(deoalAudioThread &audioThread, const deModel &model) :
 pAudioThread(audioThread),
 pFilename(model.GetFilename()),
-pFaces(NULL),
+pFaces(nullptr),
 pFaceCount(0),
-pWeights(NULL),
+pWeights(nullptr),
 pWeightCount(0),
-pWeightSets(NULL),
+pWeightSets(nullptr),
 pWeightSetCount(0),
 // pRTSphereRadiusSquared( 0.0f ),
-pOctree(NULL),
-pOctreeOverlap(NULL),
+pOctree(nullptr),
+pOctreeOverlap(nullptr),
 // pRTOctree( NULL ),
-pRTBVH(NULL),
-pRayCache(NULL)
+pRTBVH(nullptr),
+pRayCache(nullptr)
 {
 	// use the highest LOD level available for performance reasons
 	const int lodCount = model.GetLODCount();

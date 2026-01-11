@@ -41,11 +41,11 @@
 ////////////////////////////
 
 deoglConvexHull2D::deoglConvexHull2D(){
-	pPoints = NULL;
+	pPoints = nullptr;
 	pPointCount = 0;
 	pPointSize = 0;
 	
-	pHullPoints = NULL;
+	pHullPoints = nullptr;
 	pHullPointCount = 0;
 	pHullPointSize = 0;
 }

@@ -87,7 +87,7 @@ decXmlElementTag *deoalLSConfiguration::pGetTagAt(const decXmlElementTag &tag, i
 		return element.CastToElementTag();
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -107,7 +107,7 @@ decXmlAttValue *deoalLSConfiguration::pFindAttribute(const decXmlElementTag &tag
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 const char *deoalLSConfiguration::pGetAttributeString(const decXmlElementTag &tag, const char *name){

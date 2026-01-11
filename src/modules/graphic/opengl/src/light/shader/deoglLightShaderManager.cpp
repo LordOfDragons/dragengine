@@ -209,7 +209,7 @@ void deoglLightShaderManager::Maintanance(){
 	// currently no maintanance done... all greedy
 	
 	if(pMaintananceInterval == 0){
-		deoglLightShader *shader = NULL;
+		deoglLightShader *shader = nullptr;
 		int i;
 		
 		for(i=pShaderList.GetCount()-1; i>=0; i--){

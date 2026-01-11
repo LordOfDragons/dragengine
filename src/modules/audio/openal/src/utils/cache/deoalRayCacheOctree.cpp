@@ -140,7 +140,7 @@ void deoalRayCacheOctree::RemoveRay(deoalRayCacheRay *ray){
 	}
 	
 	pRays.RemoveFrom(pRays.IndexOf(ray));
-	ray->SetOctreeNode(NULL);
+	ray->SetOctreeNode(nullptr);
 }
 
 void deoalRayCacheOctree::RemoveAllRays(){
@@ -148,7 +148,7 @@ void deoalRayCacheOctree::RemoveAllRays(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoalRayCacheRay*)pRays.GetAt(i))->SetOctreeNode(NULL);
+		((deoalRayCacheRay*)pRays.GetAt(i))->SetOctreeNode(nullptr);
 	}
 	pRays.RemoveAll();
 }

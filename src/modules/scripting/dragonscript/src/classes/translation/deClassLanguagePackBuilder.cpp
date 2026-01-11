@@ -51,7 +51,7 @@ class deClassLanguagePackBuilder_Builder : public deLanguagePackBuilder{
 	
 public:
 	deClassLanguagePackBuilder_Builder(dsRunTime *rt, dsValue *myself) :
-	pRT(rt), pMyself(myself), pLanguagePack(NULL){
+	pRT(rt), pMyself(myself), pLanguagePack(nullptr){
 	}
 	
 	void BuildLanguagePack(deLanguagePack &languagePack) override{
@@ -61,17 +61,17 @@ public:
 			pRT->RunFunction(pMyself, "buildLanguagePack", 0);
 			
 		}catch(const duException &e){
-			pLanguagePack = NULL;
+			pLanguagePack = nullptr;
 			pRT->PrintExceptionTrace();
 			e.PrintError();
 			DETHROW(deeInvalidParam);
 			
 		}catch(...){
-			pLanguagePack = NULL;
+			pLanguagePack = nullptr;
 			throw;
 		}
 		
-		pLanguagePack = NULL;
+		pLanguagePack = nullptr;
 	}
 	
 	inline deLanguagePack *GetLanguagePack() const{ return pLanguagePack; }
@@ -129,11 +129,11 @@ void deClassLanguagePackBuilder::nfBuild::RunFunction(dsRunTime *rt, dsValue *my
 		languagePack = ds.GetGameEngine()->GetLanguagePackManager()->CreateLanguagePack(filename, builder);
 		
 	}catch(...){
-		nd.builder = NULL;
+		nd.builder = nullptr;
 		throw;
 	}
 	
-	nd.builder = NULL;
+	nd.builder = nullptr;
 	ds.GetClassLanguagePack()->PushLanguagePack(rt, languagePack);
 }
 

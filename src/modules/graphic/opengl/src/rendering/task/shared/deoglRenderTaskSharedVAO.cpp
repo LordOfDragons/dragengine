@@ -42,7 +42,7 @@
 deoglRenderTaskSharedVAO::deoglRenderTaskSharedVAO(deoglRenderTaskSharedPool &pool, int index) :
 pPool(pool),
 pIndex(index),
-pVAO(NULL){
+pVAO(nullptr){
 }
 
 deoglRenderTaskSharedVAO::~deoglRenderTaskSharedVAO(){
@@ -60,7 +60,7 @@ void deoglRenderTaskSharedVAO::SetVAO(deoglVAO *shader){
 
 
 void deoglRenderTaskSharedVAO::Clear(){
-	pVAO = NULL;
+	pVAO = nullptr;
 }
 
 void deoglRenderTaskSharedVAO::ReturnToPool(){

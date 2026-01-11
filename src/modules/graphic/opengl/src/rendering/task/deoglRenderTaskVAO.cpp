@@ -44,9 +44,9 @@
 ////////////////////////////
 
 deoglRenderTaskVAO::deoglRenderTaskVAO() :
-pVAO(NULL),
+pVAO(nullptr),
 pInstanceCount(0),
-pHasInstance(NULL),
+pHasInstance(nullptr),
 pHasInstanceCount(0),
 pHasInstanceSize(0){
 }
@@ -70,7 +70,7 @@ deoglRenderTaskVAO::~deoglRenderTaskVAO(){
 ///////////////
 
 void deoglRenderTaskVAO::Reset(){
-	pVAO = NULL;
+	pVAO = nullptr;
 	pInstanceCount = 0;
 	pHasInstanceCount = 0;
 }

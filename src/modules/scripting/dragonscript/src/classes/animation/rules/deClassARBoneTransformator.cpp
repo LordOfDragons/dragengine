@@ -563,7 +563,7 @@ void deClassARBoneTransformator::CreateClassMembers(dsEngine *engine){
 
 deAnimatorRuleBoneTransformator *deClassARBoneTransformator::GetRule(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return dedsGetNativeData<sARBoneTransNatDat>(p_GetNativeData(myself->GetBuffer())).rule;
@@ -585,7 +585,7 @@ void deClassARBoneTransformator::PushRule(dsRunTime *rt, deAnimator *animator, d
 	}
 	
 	if(!rule){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

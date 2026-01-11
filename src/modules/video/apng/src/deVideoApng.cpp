@@ -49,13 +49,13 @@ MOD_ENTRY_POINT_ATTR deBaseModule *APNGCreateModule(deLoadableModule *loadableMo
 #endif
 
 deBaseModule *APNGCreateModule(deLoadableModule *loadableModule){
-	deBaseModule *module = NULL;
+	deBaseModule *module = nullptr;
 	
 	try{
 		module = new deVideoApng(*loadableModule);
 		
 	}catch(const deException &){
-		return NULL;
+		return nullptr;
 	}
 	
 	return module;
@@ -103,7 +103,7 @@ deBaseVideoDecoder *deVideoApng::CreateDecoder(decBaseFileReader *reader){
 }
 
 deBaseVideoAudioDecoder *deVideoApng::CreateAudioDecoder(decBaseFileReader*){
-	return NULL;
+	return nullptr;
 }
 
 #ifdef WITH_INTERNAL_MODULE

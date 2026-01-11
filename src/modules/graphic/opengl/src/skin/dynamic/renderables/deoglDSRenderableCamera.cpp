@@ -47,7 +47,7 @@ deoglDSRenderableCamera::deoglDSRenderableCamera(
 deoglDynamicSkin &dynamicSkin, const deDSRenderableCamera &renderable) :
 deoglDSRenderable(dynamicSkin, renderable),
 pRenderableCamera(renderable),
-pCamera(NULL),
+pCamera(nullptr),
 pDirty(true)
 {
 	try{
@@ -79,7 +79,7 @@ deoglRDSRenderable *deoglDSRenderableCamera::GetRRenderable() const{
 
 void deoglDSRenderableCamera::RenderableChanged(){
 	deoglCamera * const camera = pRenderableCamera.GetCamera()
-		? (deoglCamera*)pRenderableCamera.GetCamera()->GetPeerGraphic() : NULL;
+		? (deoglCamera*)pRenderableCamera.GetCamera()->GetPeerGraphic() : nullptr;
 	
 	if(camera != pCamera){
 		if(pCamera){
@@ -114,7 +114,7 @@ void deoglDSRenderableCamera::SyncToRender(){
 			pRRenderableCamera->SetCamera(pCamera->GetRCamera());
 			
 		}else{
-			pRRenderableCamera->SetCamera(NULL);
+			pRRenderableCamera->SetCamera(nullptr);
 		}
 		
 		pDirty = false;
@@ -126,7 +126,7 @@ void deoglDSRenderableCamera::CameraRequiresSync(){
 }
 
 void deoglDSRenderableCamera::DropCamera(){
-	pCamera = NULL;
+	pCamera = nullptr;
 }
 
 

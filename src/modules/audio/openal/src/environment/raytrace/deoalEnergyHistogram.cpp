@@ -44,7 +44,7 @@ pSlotCount(0),
 pBandCount(1),
 pTime(0.0f),
 pSlotTime(0.0f),
-pEntries(NULL),
+pEntries(nullptr),
 pEntryCount(0),
 pInvSlotTime(0.0f),
 pHalfSlotSize(0.0f){
@@ -54,7 +54,7 @@ deoalEnergyHistogram::deoalEnergyHistogram(int slotCount, int bandCount, float t
 pSlotCount(slotCount),
 pBandCount(bandCount),
 pTime(decMath::max(time, 0.0f)),
-pEntries(NULL),
+pEntries(nullptr),
 pEntryCount(bandCount * slotCount),
 pInvSlotTime(0.0f),
 pHalfSlotSize(0.0f)
@@ -105,7 +105,7 @@ void deoalEnergyHistogram::SetParameters(int slotCount, int bandCount, float tim
 	}
 	
 	const int entryCount = bandCount * slotCount;
-	float *entries = NULL;
+	float *entries = nullptr;
 	if(entryCount > 0){
 		entries = new float[entryCount];
 	}

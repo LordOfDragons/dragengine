@@ -416,7 +416,7 @@ void deClassCanvasPaint::CreateClassMembers(dsEngine *engine){
 
 deCanvasPaint *deClassCanvasPaint::GetCanvas(dsRealObject *myself) const {
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return dedsGetNativeData<sCPaintNatDat>(p_GetNativeData(myself->GetBuffer())).canvas;
@@ -428,7 +428,7 @@ void deClassCanvasPaint::PushCanvas(dsRunTime *rt, deCanvasPaint *canvas){
 	}
 	
 	if(!canvas){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

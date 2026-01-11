@@ -57,7 +57,7 @@ declRunGame::declRunGame(declLauncher &launcher) :
 pLauncher(launcher),
 pUseConsole(false),
 pLogAllToConsole(false),
-pModuleParameters(NULL),
+pModuleParameters(nullptr),
 pHasPatchIdentifier(false){
 }
 

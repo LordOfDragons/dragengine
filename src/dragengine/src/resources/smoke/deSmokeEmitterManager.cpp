@@ -105,7 +105,7 @@ void deSmokeEmitterManager::SystemGraphicUnload(){
 	deSmokeEmitter *smokeEmitter = (deSmokeEmitter*)pSmokeEmitters.GetRoot();
 	
 	while(smokeEmitter){
-		smokeEmitter->SetPeerGraphic(NULL);
+		smokeEmitter->SetPeerGraphic(nullptr);
 		smokeEmitter = (deSmokeEmitter*)smokeEmitter->GetLLManagerNext();
 	}
 }
@@ -126,7 +126,7 @@ void deSmokeEmitterManager::SystemPhysicsUnload(){
 	deSmokeEmitter *smokeEmitter = (deSmokeEmitter*)pSmokeEmitters.GetRoot();
 	
 	while(smokeEmitter){
-		smokeEmitter->SetPeerPhysics(NULL);
+		smokeEmitter->SetPeerPhysics(nullptr);
 		smokeEmitter = (deSmokeEmitter*)smokeEmitter->GetLLManagerNext();
 	}
 }

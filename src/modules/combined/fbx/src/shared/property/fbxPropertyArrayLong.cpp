@@ -45,13 +45,13 @@
 
 fbxPropertyArrayLong::fbxPropertyArrayLong() :
 fbxProperty(etArrayLong),
-pValues(NULL),
+pValues(nullptr),
 pCount(0){
 }
 
 fbxPropertyArrayLong::fbxPropertyArrayLong(decBaseFileReader &reader) :
 fbxProperty(etArrayLong),
-pValues(NULL),
+pValues(nullptr),
 pCount(0)
 {
 	const int count = reader.ReadUInt();

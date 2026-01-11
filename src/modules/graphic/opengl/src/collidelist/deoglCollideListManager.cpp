@@ -40,7 +40,7 @@
 ////////////////////////////
 
 deoglCollideListManager::deoglCollideListManager(){
-	pLists = NULL;
+	pLists = nullptr;
 	pListCount = 0;
 	pListSize = 0;
 }
@@ -73,7 +73,7 @@ deoglCollideList *deoglCollideListManager::GetList(){
 			int i, newSize = pListSize * 3 / 2 + 1;
 			sList *newArray = new sList[newSize];
 			for(i=pListSize; i<newSize; i++){
-				newArray[i].list = NULL;
+				newArray[i].list = nullptr;
 				newArray[i].inUse = false;
 			}
 			if(pLists){

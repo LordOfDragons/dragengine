@@ -102,16 +102,16 @@ deoglRenderTaskTexture *deoglAddToRenderTaskGIMaterial::AddComponentTexture(deog
 		// NOTE for this to work we have to recast the ray into the direction of the direct
 		//      rendering camera. this is though quite complex to achieve fast in a ray
 		//      tracer. for this reason this is skipped
-		return NULL;
+		return nullptr;
 	}
 	
 	deoglSkinTexture * const skinTexture = componentTexture.GetUseSkinTexture();
 	if(!skinTexture){
-		return NULL;
+		return nullptr;
 	}
 	
 	if(pFilterReject(skinTexture)){
-		return NULL;
+		return nullptr;
 	}
 	
 	// obtain render task texture

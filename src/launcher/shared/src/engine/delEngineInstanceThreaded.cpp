@@ -309,7 +309,7 @@ bool delEngineInstanceThreaded::StartEngine(){
 	// avoid this problem either a separate process can be used like the one in the
 	// windows case or a flush can be forced of all open files. we use the second
 	// solution here
-	fflush(NULL);
+	fflush(nullptr);
 	
 	if(!pProcessID){
 		int pipesIn[2] = {0, 0};
@@ -390,7 +390,7 @@ void delEngineInstanceThreaded::StopEngine(){
 			"Stopping game engine in process %i", pProcessID);
 		if(!StopProcess()){
 			kill(pProcessID, SIGKILL);
-			waitpid(pProcessID, NULL, 0);
+			waitpid(pProcessID, nullptr, 0);
 		}
 		
 		pProcessID = 0;
@@ -458,7 +458,7 @@ void delEngineInstanceThreaded::KillEngine(){
 		GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
 			"Killing game engine process %i", pProcessID);
 		kill(pProcessID, SIGKILL);
-		waitpid(pProcessID, NULL, 0);
+		waitpid(pProcessID, nullptr, 0);
 		
 		pProcessID = 0;
 	}
@@ -596,7 +596,7 @@ bool delEngineInstanceThreaded::CheckCanReadPipe(){
 	tv.tv_sec = 0;
 	tv.tv_usec = 0;
 	
-	return select(pPipeOut + 1, &rfds, NULL, NULL, &tv) == 1;
+	return select(pPipeOut + 1, &rfds, nullptr, nullptr, &tv) == 1;
 	#endif
 }
 
@@ -632,7 +632,7 @@ bool delEngineInstanceThreaded::StopProcess(){
 #ifdef OS_W32
 		WaitForSingleObject(pProcessHandle, 5000);
 #else
-		waitpid(pProcessID, NULL, 0);
+		waitpid(pProcessID, nullptr, 0);
 #endif
 		
 		GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),

@@ -186,7 +186,7 @@ void deFont::SetGlyphCount(int count){
 	
 	if(pGlyphs){
 		delete [] pGlyphs;
-		pGlyphs = NULL;
+		pGlyphs = nullptr;
 		pGlyphCount = 0;
 	}
 	
@@ -417,13 +417,13 @@ void deFont::SetPeerGraphic(deBaseGraphicFont *peer){
 void deFont::pFreeGlyphMap(){
 	if(pGlyphMap){
 		delete [] pGlyphMap;
-		pGlyphMap = NULL;
+		pGlyphMap = nullptr;
 		pGlyphMapCount = 0;
 	}
 	
 	if(pGlyphGroups){
 		delete [] pGlyphGroups;
-		pGlyphGroups = NULL;
+		pGlyphGroups = nullptr;
 		pGlyphGroupCount = 0;
 	}
 }

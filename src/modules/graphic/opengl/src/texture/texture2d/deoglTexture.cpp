@@ -66,7 +66,7 @@ pRenderThread(renderThread),
 
 #ifdef BACKEND_OPENGL
 pTexture(0),
-pFormat(0),
+pFormat(nullptr),
 
 #elif defined BACKEND_VULKAN
 pFormat(nullptr),
@@ -218,7 +218,7 @@ void deoglTexture::CreateTexture(){
 		
 	}else{
 		OGL_CHECK(pRenderThread, glTexImage2D(GL_TEXTURE_2D, 0, glformat,
-			pSize.x, pSize.y, 0, glpixelformat, glpixeltype, NULL));
+			pSize.x, pSize.y, 0, glpixelformat, glpixeltype, nullptr));
 		
 		if(pMipMapped){
 			pRealMipMapLevelCount = pMipMapLevelCount;
@@ -232,7 +232,7 @@ void deoglTexture::CreateTexture(){
 			for(i=0; i<pRealMipMapLevelCount; i++){
 				size = decPoint(size.x >> 1, size.y >> 1).Largest(decPoint(1, 1));
 				OGL_CHECK(pRenderThread, glTexImage2D(GL_TEXTURE_2D, i + 1,
-					glformat, size.x, size.y, 0, glpixelformat, glpixeltype, NULL));
+					glformat, size.x, size.y, 0, glpixelformat, glpixeltype, nullptr));
 			}
 		}
 	}

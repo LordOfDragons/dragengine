@@ -53,21 +53,21 @@ pDefFixCost(0.0f),
 pDefCostPerMeter(1.0f),
 pBlockingCost(1000.0f),
 
-pTypes(NULL),
+pTypes(nullptr),
 pTypeCount(0),
 pTypeSize(0),
 
-pPeerAI(NULL),
+pPeerAI(nullptr),
 
-pParentWorld(NULL),
-pLLWorldPrev(NULL),
-pLLWorldNext(NULL){
+pParentWorld(nullptr),
+pLLWorldPrev(nullptr),
+pLLWorldNext(nullptr){
 }
 
 deNavigator::~deNavigator(){
 	if(pPeerAI){
 		delete pPeerAI;
-		pPeerAI = NULL;
+		pPeerAI = nullptr;
 	}
 	
 	if(pTypes){
@@ -178,7 +178,7 @@ deNavigatorType *deNavigator::GetTypeWith(int typeValue) const{
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 int deNavigator::IndexOfType(deNavigatorType *type) const{

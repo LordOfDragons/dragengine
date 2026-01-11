@@ -49,7 +49,7 @@ debpPointSieve::debpPointSieve(int bucketCountX, int bucketCountZ, float sieveSi
 	pSieveDivX = (float)bucketCountX / sieveSizeX;
 	pSieveDivZ = (float)bucketCountZ / sieveSizeZ;
 	
-	pBuckets = NULL;
+	pBuckets = nullptr;
 	pBucketCountX = bucketCountX;
 	pBucketCountZ = bucketCountZ;
 	pBucketCount = bucketCountX * bucketCountZ;

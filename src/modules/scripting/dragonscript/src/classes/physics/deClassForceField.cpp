@@ -541,7 +541,7 @@ void deClassForceField::CreateClassMembers(dsEngine *engine){
 
 deForceField *deClassForceField::GetForceField(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return dedsGetNativeData<sFFNatDat>(p_GetNativeData(myself->GetBuffer())).forcefield;
@@ -553,7 +553,7 @@ void deClassForceField::PushForceField(dsRunTime *rt, deForceField *forcefield){
 	}
 	
 	if(!forcefield){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

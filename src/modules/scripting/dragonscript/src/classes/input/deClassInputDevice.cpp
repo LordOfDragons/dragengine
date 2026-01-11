@@ -217,7 +217,7 @@ void deClassInputDevice::nfGetLargestDisplayIconX::RunFunction(dsRunTime *rt, ds
 	const deScriptingDragonScript &ds = static_cast<deClassInputDevice*>(GetOwnerClass())->GetDS();
 	const int count = device.GetDevice()->GetDisplayIcons().GetCount();
 	const int maxWidth = rt->GetValue(0)->GetInt();
-	deImage *bestIcon = NULL;
+	deImage *bestIcon = nullptr;
 	int bestWidth = 0;
 	int i;
 	
@@ -243,7 +243,7 @@ void deClassInputDevice::nfGetLargestDisplayIconY::RunFunction(dsRunTime *rt, ds
 	const deScriptingDragonScript &ds = static_cast<deClassInputDevice*>(GetOwnerClass())->GetDS();
 	const int count = device.GetDevice()->GetDisplayIcons().GetCount();
 	const int maxHeight = rt->GetValue(0)->GetInt();
-	deImage *bestIcon = NULL;
+	deImage *bestIcon = nullptr;
 	int bestHeight = 0;
 	int i;
 	
@@ -757,10 +757,10 @@ void deClassInputDevice::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 deClassInputDevice::deClassInputDevice(deScriptingDragonScript &ds) :
 dsClass("InputDevice", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED),
 pDS(ds),
-pClsInputDeviceType(NULL),
-pClsInputDeviceBoneConfiguration(NULL),
-pClsInputEventSource(NULL),
-pClsInputEventKeyLocation(NULL)
+pClsInputDeviceType(nullptr),
+pClsInputDeviceBoneConfiguration(nullptr),
+pClsInputEventSource(nullptr),
+pClsInputEventKeyLocation(nullptr)
 {
 	GetParserInfo()->SetParent(DENS_DRAGENGINE);
 	GetParserInfo()->SetBase("Object");
@@ -872,7 +872,7 @@ void deClassInputDevice::CreateClassMembers(dsEngine *engine){
 
 dedsInputDevice *deClassInputDevice::GetInputDevice(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return dedsGetNativeData<sInputDeviceNatDat>(p_GetNativeData(myself->GetBuffer())).device;

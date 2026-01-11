@@ -40,8 +40,8 @@
 
 deResource::deResource(deResourceManager *resourceManager) :
 pResourceManager(resourceManager),
-pLLManagerPrev(NULL),
-pLLManagerNext(NULL)
+pLLManagerPrev(nullptr),
+pLLManagerNext(nullptr)
 {
 	if(!resourceManager){
 		DETHROW(deeInvalidParam);
@@ -81,7 +81,7 @@ void deResource::SetLLManagerPrev(deResource *resource){
 }
 
 void deResource::MarkLeaking(){
-	pResourceManager = NULL;
-	pLLManagerNext = NULL;
-	pLLManagerPrev = NULL;
+	pResourceManager = nullptr;
+	pLLManagerNext = nullptr;
+	pLLManagerPrev = nullptr;
 }

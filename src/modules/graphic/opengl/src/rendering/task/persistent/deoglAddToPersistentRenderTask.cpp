@@ -360,7 +360,7 @@ const deoglSkinTexture &skinTexture, const deoglTexUnitsConfig *tuc, const deogl
 	deoglPersistentRenderTaskPipeline *rtpipeline = pRenderTask.GetPipelineWith(pipeline);
 	if(!rtpipeline){
 		rtpipeline = pRenderTask.AddPipeline(pipeline);
-		rtpipeline->SetParameterBlock(NULL);
+		rtpipeline->SetParameterBlock(nullptr);
 		rtpipeline->SetSPBInstanceIndexBase(spbInstanceIndexBase);
 		rtpipeline->SetDrawIDOffset(drawIDOffset);
 	}

@@ -321,7 +321,7 @@ static LONG WINAPI unhandledException(_EXCEPTION_POINTERS *ei){
 #else
 static void signalSegV(int number, siginfo_t *infos, void *ptrContext){
 	decrbCoreFault *coreFault = decrbCoreFault::GetGlobalCoreFault();
-	deCRBasic *module = NULL;
+	deCRBasic *module = nullptr;
 	
 	if(coreFault){
 		module = coreFault->GetModule();
@@ -416,7 +416,7 @@ static void signalSegV(int number, siginfo_t *infos, void *ptrContext){
 
 static void signalAbort(int number, siginfo_t *infos, void *ptrContext){
 	decrbCoreFault *coreFault = decrbCoreFault::GetGlobalCoreFault();
-	deCRBasic *module = NULL;
+	deCRBasic *module = nullptr;
 	
 	if(coreFault){
 		module = coreFault->GetModule();
@@ -505,7 +505,7 @@ decrbCoreFault::~decrbCoreFault(){
 // Management
 ///////////////
 
-decrbCoreFault *decrbCoreFault::pGlobalCoreFault = NULL;
+decrbCoreFault *decrbCoreFault::pGlobalCoreFault = nullptr;
 
 decrbCoreFault *decrbCoreFault::GetGlobalCoreFault(){
 	return pGlobalCoreFault;
@@ -526,7 +526,7 @@ void decrbCoreFault::HandleAbort(void* ptrContext){
 //////////////////////
 
 void decrbCoreFault::pCleanUp(){
-	pGlobalCoreFault = NULL;
+	pGlobalCoreFault = nullptr;
 	
 	pUnregisterHandlers();
 }
@@ -549,7 +549,7 @@ void decrbCoreFault::pRegisterHandlers(){
 	action.sa_sigaction = signalSegV;
 	action.sa_flags = SA_SIGINFO;
 	
-	if(sigaction(SIGSEGV, &action, NULL)){
+	if(sigaction(SIGSEGV, &action, nullptr)){
 		DETHROW(deeInvalidAction);
 	}
 	
@@ -559,7 +559,7 @@ void decrbCoreFault::pRegisterHandlers(){
 	action.sa_sigaction = signalAbort;
 	action.sa_flags = SA_SIGINFO;
 	
-	if(sigaction(SIGABRT, &action, NULL)){
+	if(sigaction(SIGABRT, &action, nullptr)){
 		DETHROW(deeInvalidAction);
 	}
 #endif

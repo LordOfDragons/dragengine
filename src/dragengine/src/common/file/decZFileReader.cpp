@@ -54,13 +54,13 @@ pFileLength(0),
 pPureMode(false),
 pPureLength(0),
 
-pZStream(NULL),
+pZStream(nullptr),
 
-pBufferIn(NULL),
+pBufferIn(nullptr),
 pBufferInSize(0),
 pBufferInPosition(0),
 
-pContent(NULL),
+pContent(nullptr),
 pContentSize(0),
 pContentCapacity(0),
 pContentPosition(0)
@@ -77,13 +77,13 @@ pFileLength(0),
 pPureMode(pureMode),
 pPureLength(pureLength),
 
-pZStream(NULL),
+pZStream(nullptr),
 
-pBufferIn(NULL),
+pBufferIn(nullptr),
 pBufferInSize(0),
 pBufferInPosition(0),
 
-pContent(NULL),
+pContent(nullptr),
 pContentSize(0),
 pContentCapacity(0),
 pContentPosition(0)
@@ -186,18 +186,18 @@ void decZFileReader::pInit(decBaseFileReader *reader, bool pureMode, int pureLen
 	const int options = pureMode ? 0 : reader->ReadByte();
 	(void)options;
 	
-	pBufferIn = NULL;
+	pBufferIn = nullptr;
 	pBufferInPosition = 0;
 	pBufferInSize = 0;
-	pContent = NULL;
+	pContent = nullptr;
 	pContentSize = 0;
 	pContentCapacity = 0;
 	pContentPosition = 0;
 	
 	z_stream * const zstream = new z_stream;
-	zstream->zalloc = NULL;
-	zstream->zfree = NULL;
-	zstream->opaque = NULL;
+	zstream->zalloc = nullptr;
+	zstream->zfree = nullptr;
+	zstream->opaque = nullptr;
 	if(inflateInit(zstream) != Z_OK){
 		delete zstream;
 		DETHROW(deeOutOfMemory);

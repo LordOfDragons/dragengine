@@ -38,7 +38,7 @@
 ////////////////////////////
 
 deDecalList::deDecalList(){
-	pDecals = NULL;
+	pDecals = nullptr;
 	pDecalCount = 0;
 	pDecalSize = 0;
 }

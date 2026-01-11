@@ -92,7 +92,7 @@ void deRLTaskWriteImage::Finished(){
 		SetState(esSucceeded);
 		
 	}else{
-		pImage = NULL;
+		pImage = nullptr;
 		SetState(esFailed);
 	}
 	LogFinishedExit();

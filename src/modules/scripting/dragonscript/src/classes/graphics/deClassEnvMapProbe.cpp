@@ -253,11 +253,11 @@ void deClassEnvMapProbe::nfSetShapeReflection::RunFunction(dsRunTime *rt, dsValu
 			envMapProbe.SetShapeReflection(shapeList.GetAt(0)->Copy());
 			
 		}else{
-			envMapProbe.SetShapeReflection(NULL);
+			envMapProbe.SetShapeReflection(nullptr);
 		}
 		
 	}else{
-		envMapProbe.SetShapeReflection(NULL);
+		envMapProbe.SetShapeReflection(nullptr);
 	}
 }
 
@@ -480,7 +480,7 @@ void deClassEnvMapProbe::PushEnvMapProbe(dsRunTime *rt, deEnvMapProbe *envMapPro
 	}
 	
 	if(!envMapProbe){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

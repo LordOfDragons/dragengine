@@ -49,7 +49,7 @@ dethOggReader::dethOggReader(deVideoTheora &module, decBaseFileReader &reader) :
 pModule(module),
 
 pReader(reader),
-pStream(NULL),
+pStream(nullptr),
 
 pCurFrame(0)
 {
@@ -102,7 +102,7 @@ void dethOggReader::ReadStreamHeaders(dethInfos &infos){
 				if(!pStream->ReadTheoraHeader(infos)){
 					//pModule.LogWarnFormat( "Stream %i: Not a Theora stream, ignoring it", serial );
 					delete pStream;
-					pStream = NULL;
+					pStream = nullptr;
 				}
 			}
 		}
@@ -149,7 +149,7 @@ int dethOggReader::ReadFromFile(char *buffer, int size){
 
 bool dethOggReader::ReadPage(ogg_page &page){
 	int bufferSize = 4096;
-	char *buffer = NULL;
+	char *buffer = nullptr;
 	int readBytes;
 	
 	try{

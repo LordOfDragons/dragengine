@@ -211,7 +211,7 @@ void deoglDynamicTBOShared::RemoveBlock(deoglDynamicTBOBlock *block){
 	block->SetEmpty(true);
 	
 	// if the previous block is empty merge this block with the previous block
-	deoglDynamicTBOBlock *mergeBlock = NULL;
+	deoglDynamicTBOBlock *mergeBlock = nullptr;
 	
 	if(index > 0){
 		mergeBlock = (deoglDynamicTBOBlock*)pBlocks.GetAt(index - 1);

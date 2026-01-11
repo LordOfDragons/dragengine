@@ -40,7 +40,7 @@
 ////////////////////////////
 
 deoglShapeManager::deoglShapeManager(){
-	pShapes = NULL;
+	pShapes = nullptr;
 	pShapeCount = 0;
 	pShapeSize = 0;
 }

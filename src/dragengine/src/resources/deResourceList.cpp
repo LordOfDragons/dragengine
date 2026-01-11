@@ -39,8 +39,8 @@
 ////////////////////////////
 
 deResourceList::deResourceList() :
-pRoot(NULL),
-pTail(NULL),
+pRoot(nullptr),
+pTail(nullptr),
 pCount(0){
 }
 
@@ -120,7 +120,7 @@ void deResourceList::RemoveAll(){
 		pRoot->MarkLeaking();
 		pRoot = pRoot->GetLLManagerNext();
 	}
-	pTail = NULL;
+	pTail = nullptr;
 	pCount = 0;
 }
 
@@ -141,7 +141,7 @@ void deResourceList::pBareRemove(deResource *resource){
 		
 		pTail = pTail->GetLLManagerPrev();
 		if(pTail){
-			pTail->SetLLManagerNext(NULL);
+			pTail->SetLLManagerNext(nullptr);
 		}
 		
 	}else{
@@ -159,7 +159,7 @@ void deResourceList::pBareRemove(deResource *resource){
 		
 		pRoot = pRoot->GetLLManagerNext();
 		if(pRoot){
-			pRoot->SetLLManagerPrev(NULL);
+			pRoot->SetLLManagerPrev(nullptr);
 		}
 		
 	}else{
@@ -170,8 +170,8 @@ void deResourceList::pBareRemove(deResource *resource){
 		resource->GetLLManagerPrev()->SetLLManagerNext(resource->GetLLManagerNext());
 	}
 	
-	resource->SetLLManagerNext(NULL);
-	resource->SetLLManagerPrev(NULL);
+	resource->SetLLManagerNext(nullptr);
+	resource->SetLLManagerPrev(nullptr);
 	pCount--;
 	
 	resource->MarkLeaking();

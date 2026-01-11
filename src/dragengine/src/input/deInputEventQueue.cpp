@@ -41,7 +41,7 @@ deInputEventQueue::deInputEventQueue(int queueSize){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pEvents = NULL;
+	pEvents = nullptr;
 	pEventCount = 0;
 	pEventSize = 0;
 	

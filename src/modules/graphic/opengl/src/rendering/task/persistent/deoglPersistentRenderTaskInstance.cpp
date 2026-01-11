@@ -49,9 +49,9 @@ deoglPersistentRenderTaskInstance::deoglPersistentRenderTaskInstance(deoglPersis
 pPool(pool),
 pLLVAO(this),
 
-pParentVAO(NULL),
-pParamBlock(NULL),
-pParamBlockSpecial(NULL),
+pParentVAO(nullptr),
+pParamBlock(nullptr),
+pParamBlockSpecial(nullptr),
 
 pFirstPoint(0),
 pPointCount(0),
@@ -60,9 +60,9 @@ pIndexCount(0),
 pPrimitiveType(GL_TRIANGLES),
 pTessPatchVertexCount(3),
 
-pSubInstanceSPB(NULL),
-pSubInstanceSPBGroup(NULL),
-pSIIndexInstanceSPB(NULL),
+pSubInstanceSPB(nullptr),
+pSubInstanceSPBGroup(nullptr),
+pSIIndexInstanceSPB(nullptr),
 pSIIndexInstanceFirst(0){
 }
 
@@ -236,9 +236,9 @@ void deoglPersistentRenderTaskInstance::WriteSIIndexInstanceShort(bool useFlags)
 void deoglPersistentRenderTaskInstance::Clear(){
 	RemoveAllSubInstances();
 	
-	pParentVAO = NULL;
-	pParamBlock = NULL;
-	pParamBlockSpecial = NULL;
+	pParentVAO = nullptr;
+	pParamBlock = nullptr;
+	pParamBlockSpecial = nullptr;
 	
 	pFirstPoint = 0;
 	pPointCount = 0;
@@ -247,9 +247,9 @@ void deoglPersistentRenderTaskInstance::Clear(){
 	pPrimitiveType = GL_TRIANGLES;
 	pTessPatchVertexCount = 3;
 	
-	pSubInstanceSPB = NULL;
-	pSubInstanceSPBGroup = NULL;
-	pSIIndexInstanceSPB = NULL;
+	pSubInstanceSPB = nullptr;
+	pSubInstanceSPBGroup = nullptr;
+	pSIIndexInstanceSPB = nullptr;
 	pSIIndexInstanceFirst = 0;
 }
 

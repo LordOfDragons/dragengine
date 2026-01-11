@@ -65,11 +65,11 @@
 deoalSpeaker::deoalSpeaker(deAudioOpenAL &oal, deSpeaker &speaker) :
 pOal(oal),
 pSpeaker(speaker),
-pParentWorld(NULL),
-pParentMicrophone(NULL),
-pSound(NULL),
-pSynthesizer(NULL),
-pVideoPlayer(NULL),
+pParentWorld(nullptr),
+pParentMicrophone(nullptr),
+pSound(nullptr),
+pSynthesizer(nullptr),
+pVideoPlayer(nullptr),
 
 pSynthesizerUpdateTracker(0),
 
@@ -397,12 +397,12 @@ void deoalSpeaker::PlayStateChanged(){
 void deoalSpeaker::pCleanUp(){
 	if(pVideoPlayer){
 		pVideoPlayer->RemoveSpeaker(this);
-		pVideoPlayer = NULL;
+		pVideoPlayer = nullptr;
 	}
 	
 	if(pASpeaker){
-		pASpeaker->SetBackLink(NULL);
-		pASpeaker = NULL;
+		pASpeaker->SetBackLink(nullptr);
+		pASpeaker = nullptr;
 	}
 }
 
@@ -413,7 +413,7 @@ void deoalSpeaker::pSyncSource(){
 		return;
 	}
 	
-	pSound = NULL;
+	pSound = nullptr;
 	if(pSpeaker.GetSound()){
 		pSound = (deoalSound*)pSpeaker.GetSound()->GetPeerAudio();
 	}
@@ -421,7 +421,7 @@ void deoalSpeaker::pSyncSource(){
 		pSound->Synchronize();
 	}
 	
-	pSynthesizer = NULL;
+	pSynthesizer = nullptr;
 	pSynthesizerUpdateTracker = 0;
 	if(pSpeaker.GetSynthesizer()){
 		pSynthesizer = (deoalSynthesizerInstance*)pSpeaker.GetSynthesizer()->GetPeerAudio();
@@ -432,7 +432,7 @@ void deoalSpeaker::pSyncSource(){
 	
 	if(pVideoPlayer){
 		pVideoPlayer->RemoveSpeaker(this);
-		pVideoPlayer = NULL;
+		pVideoPlayer = nullptr;
 	}
 	if(pSpeaker.GetVideoPlayer()){
 		pVideoPlayer = (deoalVideoPlayer*)pSpeaker.GetVideoPlayer()->GetPeerAudio();

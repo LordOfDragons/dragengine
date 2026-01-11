@@ -51,12 +51,12 @@
 demdlTexCoordSorter::demdlTexCoordSorter() :
 pFaceCount(0),
 pTexCoordSetCount(0),
-pFaceCorners(NULL),
-pFaceTexCoords(NULL),
+pFaceCorners(nullptr),
+pFaceTexCoords(nullptr),
 
-pTCBuckets(NULL),
-pTCBucketEntries(NULL),
-pTexCoords(NULL),
+pTCBuckets(nullptr),
+pTCBucketEntries(nullptr),
+pTexCoords(nullptr),
 pTexCoordCount(0)
 {
 	pTCBuckets = new sBucketEntry*[TCBUCKET_COUNT];
@@ -96,19 +96,19 @@ void demdlTexCoordSorter::Resize(int faceCount, int texCoordSetCount){
 	
 	if(pTCBucketEntries){
 		delete [] pTCBucketEntries;
-		pTCBucketEntries = NULL;
+		pTCBucketEntries = nullptr;
 	}
 	if(pTexCoords){
 		delete [] pTexCoords;
-		pTexCoords = NULL;
+		pTexCoords = nullptr;
 	}
 	if(pFaceTexCoords){
 		delete [] pFaceTexCoords;
-		pFaceTexCoords = NULL;
+		pFaceTexCoords = nullptr;
 	}
 	if(pFaceCorners){
 		delete [] pFaceCorners;
-		pFaceCorners = NULL;
+		pFaceCorners = nullptr;
 	}
 	
 	if(faceCount > 0){
@@ -142,7 +142,7 @@ void demdlTexCoordSorter::Sort(){
 			const int hash = HashTexCoords(texCoords);
 			
 			// find matching entry in bucket with hash code
-			sBucketEntry *tail = NULL;
+			sBucketEntry *tail = nullptr;
 			sBucketEntry *entry = pTCBuckets[hash];
 			
 			while(entry){
@@ -162,7 +162,7 @@ void demdlTexCoordSorter::Sort(){
 				
 				nextEntry->texCoords = texCoords;
 				nextEntry->index = pTexCoordCount;
-				nextEntry->next = NULL;
+				nextEntry->next = nullptr;
 				
 				if(tail){
 					tail->next = nextEntry;

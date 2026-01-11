@@ -89,7 +89,7 @@ void deSkyManager::SystemGraphicUnload(){
 	deSky *sky = (deSky*)pSkies.GetRoot();
 	
 	while(sky){
-		sky->SetPeerGraphic(NULL);
+		sky->SetPeerGraphic(nullptr);
 		sky = (deSky*)sky->GetLLManagerNext();
 	}
 }

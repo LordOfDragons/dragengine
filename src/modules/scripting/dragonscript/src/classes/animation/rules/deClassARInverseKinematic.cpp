@@ -473,7 +473,7 @@ void deClassARInverseKinematic::CreateClassMembers(dsEngine *engine){
 
 deAnimatorRuleInverseKinematic *deClassARInverseKinematic::GetRule(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return dedsGetNativeData<sARIKNatDat>(p_GetNativeData(myself->GetBuffer())).rule;
@@ -494,7 +494,7 @@ void deClassARInverseKinematic::PushRule(dsRunTime *rt, deAnimator *animator, de
 	}
 	
 	if(!rule){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

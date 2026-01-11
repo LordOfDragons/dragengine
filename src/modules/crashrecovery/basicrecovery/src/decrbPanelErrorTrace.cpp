@@ -66,14 +66,14 @@ FXVerticalFrame(container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_L
 	FXHorizontalFrame *frameLine = new FXHorizontalFrame(this, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
 		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
 	new FXLabel(frameLine, "Error:");
-	pEditError = new FXTextField(frameLine, 10, NULL, 0, TEXTFIELD_READONLY | FRAME_SUNKEN | LAYOUT_FILL_X);
+	pEditError = new FXTextField(frameLine, 10, nullptr, 0, TEXTFIELD_READONLY | FRAME_SUNKEN | LAYOUT_FILL_X);
 	
 	FXGroupBox *groupBox = new FXGroupBox(this, "Trace:", GROUPBOX_TITLE_LEFT | FRAME_RIDGE | LAYOUT_FILL_X
 		| LAYOUT_FILL_Y, 0, 0, 0, 0,
 		padding, padding, padding, padding);
 	FXVerticalFrame *frameBox = new FXVerticalFrame(groupBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X | LAYOUT_FILL_Y,
 		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
-	pTreeTrace = new FXTreeList(frameBox, NULL, ID_TREETRACE, TREELIST_EXTENDEDSELECT
+	pTreeTrace = new FXTreeList(frameBox, nullptr, ID_TREETRACE, TREELIST_EXTENDEDSELECT
 		| TREELIST_SHOWS_LINES | TREELIST_SHOWS_BOXES | TREELIST_ROOT_BOXES
 		| FRAME_SUNKEN | LAYOUT_FILL_X | LAYOUT_FILL_Y);
 	
@@ -124,7 +124,7 @@ void decrbPanelErrorTrace::UpdateTrace(){
 				tracePoint->GetSourceLine());
 		}
 		
-		treeItem = pTreeTrace->appendItem(NULL, traceText, NULL, NULL, NULL, false);
+		treeItem = pTreeTrace->appendItem(nullptr, traceText, nullptr, nullptr, nullptr, false);
 		valueCount = tracePoint->GetValueCount();
 		for(j=0; j<valueCount; j++){
 			pAddErrorTraceSubValues(0, treeItem, tracePoint->GetValue(j));
@@ -162,7 +162,7 @@ void decrbPanelErrorTrace::pAddErrorTraceSubValues(int level, FXTreeItem *treeIt
 	*/
 	
 	traceText.format("%s = %s", traceValue->GetName().GetString(), traceValue->GetValue().GetString());
-	subTreeItem = pTreeTrace->appendItem(treeItem, traceText, NULL, NULL, NULL, false);
+	subTreeItem = pTreeTrace->appendItem(treeItem, traceText, nullptr, nullptr, nullptr, false);
 	
 	for(i=0; i<valueCount; i++){
 		pAddErrorTraceSubValues(level + 1, subTreeItem, traceValue->GetSubValue(i));

@@ -65,10 +65,10 @@ pUpAxis(eaYPos),
 pFrontAxis(eaZNeg),
 pCoordAxis(eaXPos),
 pUnitScaleFactor(1.0f),
-pNodeObjects(NULL),
-pNodeConnections(NULL),
-pObjectMap(NULL),
-pConnectionMap(NULL){
+pNodeObjects(nullptr),
+pNodeConnections(nullptr),
+pObjectMap(nullptr),
+pConnectionMap(nullptr){
 }
 
 fbxScene::fbxScene(decBaseFileReader &reader) :
@@ -78,10 +78,10 @@ pUpAxis(eaYPos),
 pFrontAxis(eaZNeg),
 pCoordAxis(eaXPos),
 pUnitScaleFactor(1.0f),
-pNodeObjects(NULL),
-pNodeConnections(NULL),
-pObjectMap(NULL),
-pConnectionMap(NULL)
+pNodeObjects(nullptr),
+pNodeConnections(nullptr),
+pObjectMap(nullptr),
+pConnectionMap(nullptr)
 {
 	// header
 	char signature[21]; // 0-terminator at index 20 included !
@@ -195,7 +195,7 @@ fbxNode *fbxScene::FirstNodeNamed(const char *name) const{
 }
 
 fbxNode *fbxScene::FirstNodeNamedOrNull(const char *name) const{
-	return pNodeObjects ? pNodeObjects->FirstNodeNamedOrNull(name) : NULL;
+	return pNodeObjects ? pNodeObjects->FirstNodeNamedOrNull(name) : nullptr;
 }
 
 void fbxScene::FindNodesNamed(decTList<fbxNode*> &list, const char *name) const{
@@ -230,7 +230,7 @@ fbxNode *fbxScene::NodeWithID(int64_t id) const{
 }
 
 fbxNode *fbxScene::NodeWithIDOrNull(int64_t id) const{
-	return pObjectMap ? pObjectMap->GetAt(id) : NULL;
+	return pObjectMap ? pObjectMap->GetAt(id) : nullptr;
 }
 
 

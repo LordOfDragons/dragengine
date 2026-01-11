@@ -46,9 +46,9 @@
 deoglPersistentRenderTaskTexture::deoglPersistentRenderTaskTexture(deoglPersistentRenderTaskPool &pool) :
 pPool(pool),
 pLLTexture(this),
-pParentPipeline(NULL),
-pTUC(NULL),
-pParamBlock(NULL){
+pParentPipeline(nullptr),
+pTUC(nullptr),
+pParamBlock(nullptr){
 }
 
 deoglPersistentRenderTaskTexture::~deoglPersistentRenderTaskTexture(){
@@ -163,9 +163,9 @@ void deoglPersistentRenderTaskTexture::RemoveAllVAOs(){
 void deoglPersistentRenderTaskTexture::Clear(){
 	RemoveAllVAOs();
 	
-	pParentPipeline = NULL;
-	pTUC = NULL;
-	pParamBlock = NULL;
+	pParentPipeline = nullptr;
+	pTUC = nullptr;
+	pParamBlock = nullptr;
 }
 
 void deoglPersistentRenderTaskTexture::RemoveFromParentIfEmpty(){

@@ -40,7 +40,7 @@
 ////////////////////////////
 
 deoglOcclusionMeshList::deoglOcclusionMeshList(){
-	pOcclusionMeshes = NULL;
+	pOcclusionMeshes = nullptr;
 	pOcclusionMeshCount = 0;
 	pOcclusionMeshSize = 0;
 }

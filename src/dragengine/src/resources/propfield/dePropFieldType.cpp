@@ -44,10 +44,10 @@ dePropFieldType::dePropFieldType(){
 	pRotationPerForce = 5.0f;
 	pRestitution = 0.5f;
 	
-	pInstances = NULL;
+	pInstances = nullptr;
 	pInstanceCount = 0;
 	
-	pBendStates = NULL;
+	pBendStates = nullptr;
 	pBendStateCount = 0;
 }
 
@@ -88,7 +88,7 @@ void dePropFieldType::SetCollisionFilter(const decCollisionFilter &collisionFilt
 void dePropFieldType::SetInstanceCount(int count){
 	if(count < 0) DETHROW(deeInvalidParam);
 	
-	dePropFieldInstance *instances = NULL;
+	dePropFieldInstance *instances = nullptr;
 	
 	if(count > 0){
 		instances = new dePropFieldInstance[count];
@@ -116,7 +116,7 @@ void dePropFieldType::SetBendStateCount(int count){
 		return;
 	}
 	
-	dePropFieldBendState *bendStates = NULL;
+	dePropFieldBendState *bendStates = nullptr;
 	
 	if(count > 0){
 		bendStates = new dePropFieldBendState[count];

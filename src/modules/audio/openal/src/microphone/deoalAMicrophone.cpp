@@ -67,18 +67,18 @@ pVolume(1.0f),
 pMuted(true),
 pSpeakerGain(1.0f),
 pEnableAuralization(true),
-pParentWorld(NULL),
-pOctreeNode(NULL),
-pEnvProbeList(NULL),
+pParentWorld(nullptr),
+pOctreeNode(nullptr),
+pEnvProbeList(nullptr),
 pActive(false),
-pEnvProbe(NULL),
+pEnvProbe(nullptr),
 pDirtyEnvProbe(true),
 pDirtyGeometry(true),
 pDirtyGain(true),
 
 pWorldMarkedRemove(false),
-pLLWorldPrev(NULL),
-pLLWorldNext(NULL)
+pLLWorldPrev(nullptr),
+pLLWorldNext(nullptr)
 {
 	pWOVPrepareRayTrace.SetRTWorldBVH(&pRTWorldBVH);
 	
@@ -332,11 +332,11 @@ void deoalAMicrophone::PrepareQuickDispose(){
 	if(pEnvProbeList){
 		pEnvProbeList->PrepareQuickDispose();
 		delete pEnvProbeList;
-		pEnvProbeList = NULL;
+		pEnvProbeList = nullptr;
 	}
 	
-	pParentWorld = NULL;
-	pOctreeNode = NULL;
+	pParentWorld = nullptr;
+	pOctreeNode = nullptr;
 }
 
 
@@ -354,10 +354,10 @@ deoalEnvProbe *deoalAMicrophone::GetEnvProbe(){
 	}
 	
 	pDirtyEnvProbe = false;
-	pEnvProbe = NULL;
+	pEnvProbe = nullptr;
 	
 	if(!pParentWorld || pActiveSpeakers.GetCount() == 0){
-		return NULL;
+		return nullptr;
 	}
 	
 	// calculate range of probe. set this to the largest range of all speakers
@@ -639,11 +639,11 @@ void deoalAMicrophone::SetLLWorldNext(deoalAMicrophone *microphone){
 void deoalAMicrophone::pCleanUp(){
 	RemoveAllSpeakers();
 	
-	pParentWorld = NULL;
-	pEnvProbe = NULL;
+	pParentWorld = nullptr;
+	pEnvProbe = nullptr;
 	if(pEnvProbeList){
 		delete pEnvProbeList;
-		pEnvProbeList = NULL;
+		pEnvProbeList = nullptr;
 	}
 }
 

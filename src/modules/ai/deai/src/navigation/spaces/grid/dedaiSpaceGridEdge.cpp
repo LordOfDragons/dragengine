@@ -38,7 +38,7 @@
 /////////////////////////////////
 
 dedaiSpaceGridEdge::dedaiSpaceGridEdge() :
-pGrid(NULL),
+pGrid(nullptr),
 pIndex(0),
 pVertex1(0),
 pVertex2(0),

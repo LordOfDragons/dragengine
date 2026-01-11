@@ -98,7 +98,7 @@ void deBillboardManager::SystemGraphicUnload(){
 	deBillboard *billboard = (deBillboard*)pBillboards.GetRoot();
 	
 	while(billboard){
-		billboard->SetPeerGraphic(NULL);
+		billboard->SetPeerGraphic(nullptr);
 		billboard = (deBillboard*)billboard->GetLLManagerNext();
 	}
 }

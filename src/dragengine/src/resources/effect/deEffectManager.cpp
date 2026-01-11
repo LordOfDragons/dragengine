@@ -123,7 +123,7 @@ void deEffectManager::SystemGraphicUnload(){
 	deEffect *effect = (deEffect*)pEffects.GetRoot();
 	
 	while(effect){
-		effect->SetPeerGraphic(NULL);
+		effect->SetPeerGraphic(nullptr);
 		effect = (deEffect*)effect->GetLLManagerNext();
 	}
 }

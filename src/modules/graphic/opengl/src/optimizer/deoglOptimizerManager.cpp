@@ -40,7 +40,7 @@
 ////////////////////////////
 
 deoglOptimizerManager::deoglOptimizerManager(){
-	pOptimizers = NULL;
+	pOptimizers = nullptr;
 	pOptimizerCount = 0;
 	pOptimizerSize = 0;
 	pNextOptimizer = 0;

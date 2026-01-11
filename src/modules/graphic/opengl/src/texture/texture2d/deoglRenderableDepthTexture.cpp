@@ -48,7 +48,7 @@ pHeight(height),
 pWithStencil(withStencil),
 pUseFloat(useFloat),
 pInUse(false),
-pTexture(NULL),
+pTexture(nullptr),
 pMemoryUsageGPU(0)
 {
 	if(width < 1 || height < 1){

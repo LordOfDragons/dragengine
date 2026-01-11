@@ -39,7 +39,7 @@
 ////////////////////////////
 
 deoglTriangleSorter::deoglTriangleSorter() :
-pTriangles(NULL),
+pTriangles(nullptr),
 pTriangleCount(0),
 pTriangleSize(0){
 }

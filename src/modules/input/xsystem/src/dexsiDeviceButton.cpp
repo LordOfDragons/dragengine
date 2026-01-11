@@ -80,7 +80,7 @@ void dexsiDeviceButton::SetType(deInputDeviceButton::eButtonTypes type){
 
 
 void dexsiDeviceButton::SetDisplayImages(const char *name){
-	pDisplayImage = NULL;
+	pDisplayImage = nullptr;
 	pDisplayIcons.RemoveAll();
 	
 	if(!name){

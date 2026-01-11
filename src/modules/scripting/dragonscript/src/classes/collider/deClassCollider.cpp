@@ -599,7 +599,7 @@ void deClassCollider::nfGetOwner::RunFunction(dsRunTime *rt, dsValue *myself){
 		rt->PushObject(scrCol->GetOwner());
 		
 	}else{
-		rt->PushObject(NULL);
+		rt->PushObject(nullptr);
 	}
 }
 
@@ -1430,7 +1430,7 @@ void deClassCollider::nfGetColliderListener::RunFunction(dsRunTime *rt, dsValue 
 		rt->PushObject(scrCol->GetCallback(), ds.GetClassColliderListener());
 		
 	}else{
-		rt->PushObject(NULL, ds.GetClassColliderListener());
+		rt->PushObject(nullptr, ds.GetClassColliderListener());
 	}
 }
 
@@ -1507,7 +1507,7 @@ void deClassCollider::nfGetBreakingListener::RunFunction(dsRunTime *rt, dsValue 
 		rt->PushObject(scrCol->GetCallbackBreaking(), ds.GetClassColliderBreakingListener());
 		
 	}else{
-		rt->PushObject(NULL, ds.GetClassColliderBreakingListener());
+		rt->PushObject(nullptr, ds.GetClassColliderBreakingListener());
 	}
 }
 
@@ -1578,7 +1578,7 @@ void deClassCollider::nfRayHits::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	nd.collider->RayHits(rayOrigin, rayDirection, &rayHits);
 	
-	rayHits.SetListener(NULL);
+	rayHits.SetListener(nullptr);
 	rayHits.Reset();
 }
 
@@ -1609,7 +1609,7 @@ void deClassCollider::nfRayHitsClosest::RunFunction(dsRunTime *rt, dsValue *myse
 	nd.collider->RayHits(rayOrigin, rayDirection, &hitsClosest);
 	
 	hitsClosest.NotifyListener();
-	hitsClosest.SetListener(NULL);
+	hitsClosest.SetListener(nullptr);
 	hitsClosest.Reset();
 }
 
@@ -1640,7 +1640,7 @@ void deClassCollider::nfColliderHits::RunFunction(dsRunTime *rt, dsValue *myself
 	
 	nd.collider->ColliderHits(collider, &adapter);
 	
-	adapter.SetListener(NULL);
+	adapter.SetListener(nullptr);
 	adapter.Reset();
 }
 
@@ -1674,7 +1674,7 @@ void deClassCollider::nfColliderMoveHits::RunFunction(dsRunTime *rt, dsValue *my
 	
 	nd.collider->ColliderMoveHits(collider, displacement, &adapter);
 	
-	adapter.SetListener(NULL);
+	adapter.SetListener(nullptr);
 	adapter.Reset();
 }
 
@@ -1710,7 +1710,7 @@ void deClassCollider::nfColliderMoveHitsClosest::RunFunction(dsRunTime *rt, dsVa
 	nd.collider->ColliderMoveHits(collider, displacement, &hitsClosest);
 	
 	hitsClosest.NotifyListener();
-	hitsClosest.SetListener(NULL);
+	hitsClosest.SetListener(nullptr);
 	hitsClosest.Reset();
 }
 
@@ -1744,7 +1744,7 @@ void deClassCollider::nfColliderRotateHits::RunFunction(dsRunTime *rt, dsValue *
 	
 	nd.collider->ColliderRotateHits(collider, rotation, &adapter);
 	
-	adapter.SetListener(NULL);
+	adapter.SetListener(nullptr);
 	adapter.Reset();
 }
 
@@ -1780,7 +1780,7 @@ void deClassCollider::nfColliderRotateHitsClosest::RunFunction(dsRunTime *rt, ds
 	nd.collider->ColliderRotateHits(collider, rotation, &hitsClosest);
 	
 	hitsClosest.NotifyListener();
-	hitsClosest.SetListener(NULL);
+	hitsClosest.SetListener(nullptr);
 	hitsClosest.Reset();
 }
 
@@ -1816,7 +1816,7 @@ void deClassCollider::nfColliderMoveRotateHits::RunFunction(dsRunTime *rt, dsVal
 	
 	nd.collider->ColliderMoveRotateHits(collider, displacement, rotation, &adapter);
 	
-	adapter.SetListener(NULL);
+	adapter.SetListener(nullptr);
 	adapter.Reset();
 }
 
@@ -1854,7 +1854,7 @@ void deClassCollider::nfColliderMoveRotateHitsClosest::RunFunction(dsRunTime *rt
 	nd.collider->ColliderMoveRotateHits(collider, displacement, rotation, &hitsClosest);
 	
 	hitsClosest.NotifyListener();
-	hitsClosest.SetListener(NULL);
+	hitsClosest.SetListener(nullptr);
 	hitsClosest.Reset();
 }
 
@@ -2073,7 +2073,7 @@ void deClassCollider::CreateClassMembers(dsEngine *engine){
 
 deCollider *deClassCollider::GetCollider(dsRealObject *myself) const {
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return dedsGetNativeData<sColNatDat>(p_GetNativeData(myself->GetBuffer())).collider;
@@ -2093,7 +2093,7 @@ void deClassCollider::PushCollider(dsRunTime *rt, deCollider *collider){
 	}
 	
 	if(!collider){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	
@@ -2125,12 +2125,12 @@ void deClassCollider::PushCollider(dsRunTime *rt, deCollider *collider){
 
 deResource *deClassCollider::GetResource(dsValue &myself) const{
 	if(myself.GetType()->GetPrimitiveType() != DSPT_OBJECT){
-		return NULL;
+		return nullptr;
 	}
 	
 	dsRealObject * const realObject = myself.GetRealObject();
 	if(!realObject){
-		return NULL;
+		return nullptr;
 	}
 	
 	const dsClass * const sclass = realObject->GetType();
@@ -2199,12 +2199,12 @@ deResource *deClassCollider::GetResource(dsValue &myself) const{
 		return pDS.GetClassSoundLevelMeter()->GetSoundLevelMeter(realObject);
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 void deClassCollider::PushResource(dsRunTime &rt, deResource *resource){
 	if(!resource){
-		rt.PushObject(NULL, pDS.GetScriptEngine()->GetClassObject());
+		rt.PushObject(nullptr, pDS.GetScriptEngine()->GetClassObject());
 		return;
 	}
 	
@@ -2282,7 +2282,7 @@ void deClassCollider::PushResource(dsRunTime &rt, deResource *resource){
 		break;
 		
 	default:
-		rt.PushObject(NULL, pDS.GetScriptEngine()->GetClassObject());
+		rt.PushObject(nullptr, pDS.GetScriptEngine()->GetClassObject());
 	}
 }
 decDMatrix deClassCollider::GetResourceMatrix(const deResource &resource){
@@ -2414,7 +2414,7 @@ void deClassCollider::AttachStatic(deCollider &collider, deResource *resource) c
 
 void deClassCollider::AttachStatic(deCollider &collider, deResource *resource,
 const decVector &position, const decQuaternion &orientation, const decVector &scale) const{
-	deColliderAttachment *attachment = NULL;
+	deColliderAttachment *attachment = nullptr;
 	
 	try{
 		attachment = new deColliderAttachment(resource);
@@ -2433,7 +2433,7 @@ const decVector &position, const decQuaternion &orientation, const decVector &sc
 }
 
 void deClassCollider::AttachRig(deCollider &collider, deResource *resource) const{
-	deColliderAttachment *attachment = NULL;
+	deColliderAttachment *attachment = nullptr;
 	
 	try{
 		attachment = new deColliderAttachment(resource);
@@ -2482,7 +2482,7 @@ void deClassCollider::AttachBone(deCollider &collider, deResource *resource, con
 
 void deClassCollider::AttachBone(deCollider &collider, deResource *resource, const char *targetBone,
 const decVector &position, const decQuaternion &orientation, const decVector &scale) const{
-	deColliderAttachment *attachment = NULL;
+	deColliderAttachment *attachment = nullptr;
 	
 	try{
 		attachment = new deColliderAttachment(resource);
@@ -2511,7 +2511,7 @@ void deClassCollider::AttachWeight(deCollider &collider, deResource *resource, c
 	
 	deCollider * const attachCollider = static_cast<deCollider*>(resource);
 	
-	deColliderAttachment *attachment = NULL;
+	deColliderAttachment *attachment = nullptr;
 	deColliderVisitorIdentify identify;
 	
 	collider.Visit(identify);
@@ -2602,7 +2602,7 @@ void deClassCollider::AttachWeight(deCollider &collider, deResource *resource, c
 }
 
 void deClassCollider::AttachRelativeMovement(deCollider &collider, deResource *resource) const{
-	deColliderAttachment *attachment = NULL;
+	deColliderAttachment *attachment = nullptr;
 	
 	try{
 		attachment = new deColliderAttachment(resource);

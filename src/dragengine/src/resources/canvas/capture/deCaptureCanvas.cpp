@@ -46,11 +46,11 @@ deResource(manager),
 
 pCapture(false),
 
-pPeerGraphic(NULL){
+pPeerGraphic(nullptr){
 }
 
 deCaptureCanvas::~deCaptureCanvas(){
-	SetPeerGraphic(NULL);
+	SetPeerGraphic(nullptr);
 }
 
 

@@ -65,33 +65,33 @@ pCoordinates(sector.GetSector()),
 pBaseHeight(sector.GetParentHeightTerrain()->GetBaseHeight()),
 pScaling(sector.GetParentHeightTerrain()->GetHeightScaling()),
 
-pTextures(NULL),
+pTextures(nullptr),
 pTextureCount(0),
 pValidTextures(false),
 pDirtyMaskTextures(true),
 pTexturesRequirePrepareForRender(true),
 
-pHeights(NULL),
+pHeights(nullptr),
 pMinHeight(0.0f),
 pMaxHeight(0.0f),
 
-pVBODataPoints1(NULL),
+pVBODataPoints1(nullptr),
 pVBODataPoints1Count(0),
-pVBODataPoints2(NULL),
+pVBODataPoints2(nullptr),
 pVBODataPoints2Count(0),
-pVBODataFaces(NULL),
+pVBODataFaces(nullptr),
 pVBODataFacesCount(0),
 
 pDirtyPoints(true),
 
-pClusters(NULL),
+pClusters(nullptr),
 pClusterCount(0),
 
 pValid(false)
 {
 	int i;
 	for(i=0; i<OGLHTS_MAX_MASK_TEXTURES; i++){
-		pMasks[i] = NULL;
+		pMasks[i] = nullptr;
 	}
 	
 	try{
@@ -387,7 +387,7 @@ void deoglRHTSector::pSetTextureCount(int count){
 			delete pTextures[i];
 		}
 		delete [] pTextures;
-		pTextures = NULL;
+		pTextures = nullptr;
 		pTextureCount = 0;
 	}
 	
@@ -498,7 +498,7 @@ void deoglRHTSector::pSyncMaskTextures(const deHeightTerrainSector &sector){
 	
 	deImage *images[16];
 	for(t=0; t<16; t++){
-		images[t] = NULL;
+		images[t] = nullptr;
 	}
 	
 	for(t=0; t<textureCount; t++){
@@ -692,7 +692,7 @@ void deoglRHTSector::pUpdateMaskTextures(){
 		}else{
 			if(pMasks[i]){
 				delete pMasks[i];
-				pMasks[i] = NULL;
+				pMasks[i] = nullptr;
 			}
 		}
 	}
@@ -735,7 +735,7 @@ void deoglRHTSector::pCreateVBODataPoints1(){
 		if(assignedClusters == 32){
 			OGL_CHECK(renderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBODataPoints1[v]));
 			OGL_CHECK(renderThread, pglBufferData(GL_ARRAY_BUFFER,
-				sizeof(deoglVBOHeightTerrain1) * vboOffset, NULL, GL_STATIC_DRAW));
+				sizeof(deoglVBOHeightTerrain1) * vboOffset, nullptr, GL_STATIC_DRAW));
 //renderThread.GetLogger().LogInfoFormat( "htsector data1: size=%i vbo=%u", sizeof(deoglVBOHeightTerrain1)*vboOffset, pVBODataPoints1[ v ] );
 			
 			v++;
@@ -747,7 +747,7 @@ void deoglRHTSector::pCreateVBODataPoints1(){
 	if(v < vboCount && vboOffset > 0){
 		OGL_CHECK(renderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBODataPoints1[v]));
 		OGL_CHECK(renderThread, pglBufferData(GL_ARRAY_BUFFER,
-			sizeof(deoglVBOHeightTerrain1) * vboOffset, NULL, GL_STATIC_DRAW));
+			sizeof(deoglVBOHeightTerrain1) * vboOffset, nullptr, GL_STATIC_DRAW));
 //renderThread.GetLogger().LogInfoFormat( "htsector data1: size=%i vbo=%u", sizeof(deoglVBOHeightTerrain1)*vboOffset, pVBODataPoints1[ v ] );
 	}
 	
@@ -793,7 +793,7 @@ void deoglRHTSector::pCreateVBODataFaces(){
 		if(assignedClusters == 32){
 			OGL_CHECK(renderThread, pglBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pVBODataFaces[v]));
 			OGL_CHECK(renderThread, pglBufferData(GL_ELEMENT_ARRAY_BUFFER,
-				sizeof(GLushort) * vboOffset, NULL, GL_STATIC_DRAW));
+				sizeof(GLushort) * vboOffset, nullptr, GL_STATIC_DRAW));
 //renderThread.GetLogger().LogInfoFormat( "htsector index: size=%i vbo=%u", sizeof(GLushort)*vboOffset, pVBODataFaces[ v ] );
 			
 			v++;
@@ -805,7 +805,7 @@ void deoglRHTSector::pCreateVBODataFaces(){
 	if(v < vboCount && vboOffset > 0){
 		OGL_CHECK(renderThread, pglBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pVBODataFaces[v]));
 		OGL_CHECK(renderThread, pglBufferData(GL_ELEMENT_ARRAY_BUFFER,
-			sizeof(GLushort) * vboOffset, NULL, GL_STATIC_DRAW));
+			sizeof(GLushort) * vboOffset, nullptr, GL_STATIC_DRAW));
 //renderThread.GetLogger().LogInfoFormat( "htsector index: size=%i vbo=%u", sizeof(GLushort)*vboOffset, pVBODataFaces[ v ] );
 	}
 	
@@ -864,7 +864,7 @@ void deoglRHTSector::pUpdateHeightMap(){
 				if(assignedClusters == 32){
 					OGL_CHECK(renderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBODataPoints2[v]));
 					OGL_CHECK(renderThread, pglBufferData(GL_ARRAY_BUFFER,
-						sizeof(deoglVBOHeightTerrain2) * vboOffset, NULL, GL_STREAM_DRAW));
+						sizeof(deoglVBOHeightTerrain2) * vboOffset, nullptr, GL_STREAM_DRAW));
 //renderThread.GetLogger().LogInfoFormat( "htsector data2: size=%i vbo=%u", sizeof( deoglVBOHeightTerrain2 )*vboOffset, pVBODataPoints2[ v ] );
 					
 					v++;
@@ -876,7 +876,7 @@ void deoglRHTSector::pUpdateHeightMap(){
 			if(v < vboCount && vboOffset > 0){
 				OGL_CHECK(renderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBODataPoints2[v]));
 				OGL_CHECK(renderThread, pglBufferData(GL_ARRAY_BUFFER,
-					sizeof(deoglVBOHeightTerrain2) * vboOffset, NULL, GL_STREAM_DRAW));
+					sizeof(deoglVBOHeightTerrain2) * vboOffset, nullptr, GL_STREAM_DRAW));
 //renderThread.GetLogger().LogInfoFormat( "htsector data2: size=%i vbo=%u", sizeof( deoglVBOHeightTerrain2 )*vboOffset, pVBODataPoints2[ v ] );
 			}
 		}

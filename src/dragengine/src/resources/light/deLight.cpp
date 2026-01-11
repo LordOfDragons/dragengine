@@ -69,17 +69,17 @@ pHintShadowImportance(100),
 pHintMovement(emhStationary),
 pHintParameter(ephStatic),
 
-pPeerGraphic(NULL),
+pPeerGraphic(nullptr),
 
-pParentWorld(NULL),
-pLLWorldPrev(NULL),
-pLLWorldNext(NULL){
+pParentWorld(nullptr),
+pLLWorldPrev(nullptr),
+pLLWorldNext(nullptr){
 }
 
 deLight::~deLight(){
 	if(pPeerGraphic){
 		delete pPeerGraphic;
-		pPeerGraphic = NULL;
+		pPeerGraphic = nullptr;
 	}
 }
 

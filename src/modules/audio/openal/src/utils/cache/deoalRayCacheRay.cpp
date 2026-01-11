@@ -50,11 +50,11 @@ deoalRayCacheRay::deoalRayCacheRay(const decVector &origin, const decVector &dir
 pOrigin(origin),
 pDirection(direction),
 pLength(length),
-pHits(NULL),
+pHits(nullptr),
 pHitCount(0),
-pOctreeNode(NULL),
-pLLPrev(NULL),
-pLLNext(NULL)
+pOctreeNode(nullptr),
+pLLPrev(nullptr),
+pLLNext(nullptr)
 {
 	const int elementCount = elements.GetCount();
 	if(elementCount == 0){
@@ -80,11 +80,11 @@ float length, const deoalRayTraceResult &result) :
 pOrigin(origin),
 pDirection(direction),
 pLength(length),
-pHits(NULL),
+pHits(nullptr),
 pHitCount(0),
-pOctreeNode(NULL),
-pLLPrev(NULL),
-pLLNext(NULL)
+pOctreeNode(nullptr),
+pLLPrev(nullptr),
+pLLNext(nullptr)
 {
 	const int count = result.GetElementCount();
 	if(count == 0){
@@ -110,11 +110,11 @@ deoalRayCacheRay::deoalRayCacheRay(const decVector &origin, const decVector &dir
 pOrigin(origin),
 pDirection(direction),
 pLength(length),
-pHits(NULL),
+pHits(nullptr),
 pHitCount(0),
-pOctreeNode(NULL),
-pLLPrev(NULL),
-pLLNext(NULL)
+pOctreeNode(nullptr),
+pLLPrev(nullptr),
+pLLNext(nullptr)
 {
 	if(elementCount == 0){
 		return;

@@ -212,7 +212,7 @@ void deClassEffectOverlayImage::PushEffect(dsRunTime *rt, deEffectOverlayImage *
 	}
 	
 	if(!effect){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

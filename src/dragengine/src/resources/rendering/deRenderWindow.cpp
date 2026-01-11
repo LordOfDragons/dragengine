@@ -86,7 +86,7 @@ pScaleFactor(100),
 pNotifyScriptOnResize(false),
 pPaint(true),
 
-pPeerGraphic(NULL)
+pPeerGraphic(nullptr)
 {
 	pCanvasView = GetEngine()->GetCanvasManager()->CreateCanvasView();
 	pCanvasView->SetSize(decPoint(pWidth, pHeight));
@@ -95,7 +95,7 @@ pPeerGraphic(NULL)
 deRenderWindow::~deRenderWindow(){
 	if(pPeerGraphic){
 		delete pPeerGraphic;
-		pPeerGraphic = NULL;
+		pPeerGraphic = nullptr;
 	}
 }
 

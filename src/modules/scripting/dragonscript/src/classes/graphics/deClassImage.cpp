@@ -297,7 +297,7 @@ void deClassImage::PushImage(dsRunTime *rt, deImage *image){
 	}
 	
 	if(!image){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

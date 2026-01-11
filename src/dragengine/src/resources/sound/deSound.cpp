@@ -49,8 +49,8 @@ pSampleCount(sampleCount),
 pChannelCount(channelCount),
 pSampleRate(sampleRate),
 
-pPeerAudio(NULL),
-pPeerSynthesizer(NULL)
+pPeerAudio(nullptr),
+pPeerSynthesizer(nullptr)
 {
 	if(bytesPerSample < 1 || sampleCount < 0 || sampleRate < 1 || channelCount < 1){
 		DETHROW(deeInvalidParam);
@@ -70,13 +70,13 @@ pChannelCount(0),
 pSampleRate(0),
 pPlayTime(0.0f),
 
-pPeerAudio(NULL),
-pPeerSynthesizer(NULL){
+pPeerAudio(nullptr),
+pPeerSynthesizer(nullptr){
 }
 
 deSound::~deSound(){
-	SetPeerAudio(NULL),
-	SetPeerSynthesizer(NULL);
+	SetPeerAudio(nullptr),
+	SetPeerSynthesizer(nullptr);
 }
 
 

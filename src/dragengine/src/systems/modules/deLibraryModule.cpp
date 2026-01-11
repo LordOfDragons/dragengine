@@ -74,7 +74,7 @@ deLibraryModule::deLibraryModule(deModuleSystem *system, const char *xmlDefFilen
 	#ifdef OS_BEOS
 	pLibHandle = 0;
 	#else
-	pLibHandle = NULL;
+	pLibHandle = nullptr;
 	#endif
 	
 	try{
@@ -116,7 +116,7 @@ void deLibraryModule::UnloadModule(){
 	}
 	
 	// destroy module and clear error code
-	SetModule(NULL);
+	SetModule(nullptr);
 	SetErrorCode(eecSuccess);
 	
 	// close library if a handler exist
@@ -127,7 +127,7 @@ void deLibraryModule::UnloadModule(){
 		
 		#ifdef HAS_LIB_DL
 		dlclose(pLibHandle);
-		pLibHandle = NULL;
+		pLibHandle = nullptr;
 		#endif
 		
 		#ifdef OS_W32
@@ -166,7 +166,7 @@ void deLibraryModule::Visit(deLoadableModuleVisitor &visitor){
 
 void deLibraryModule::pCleanUp(){
 	if(pLibHandle){
-		SetModule(NULL);
+		SetModule(nullptr);
 		
 		#ifdef OS_BEOS
 		unload_add_on(pLibHandle);
@@ -431,7 +431,7 @@ void deLibraryModule::pParseXML(const char *filename, decBaseFileReader &reader)
 					}
 					
 				}else if(strcmp(tag2->GetName(), "size") == 0){
-					pLibFileSize = (int)strtol(tag2->GetFirstData()->GetData(), NULL, 10);
+					pLibFileSize = (int)strtol(tag2->GetFirstData()->GetData(), nullptr, 10);
 					
 				}else if(strcmp(tag2->GetName(), "sha1") == 0){
 					if(tag2->GetFirstData()){
@@ -606,7 +606,7 @@ void deLibraryModule::pPreloadLibraries(){
 	#if defined OS_UNIX && !defined OS_BEOS
 	deLogger &logger = *GetSystem()->GetEngine()->GetLogger();
 	const int count = pPreloadLibraryPath.GetCount();
-	void *handleLibrary = NULL;
+	void *handleLibrary = nullptr;
 	decPath path;
 	int i;
 	
@@ -623,7 +623,7 @@ void deLibraryModule::pPreloadLibraries(){
 		}
 		
 		pPreloadedLibraries.Add(handleLibrary);
-		handleLibrary = NULL;
+		handleLibrary = nullptr;
 		logger.LogInfoFormat(LOGSOURCE, "  - Preloaded %s", path.GetLastComponent().GetString());
 	}
 	#endif

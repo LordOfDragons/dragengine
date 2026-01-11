@@ -74,7 +74,7 @@ deSkinProperty *deSkinTexture::GetPropertyWithType(const char *type) const{
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 int deSkinTexture::IndexOfProperty(deSkinProperty *property) const{

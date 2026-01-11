@@ -67,13 +67,13 @@ decColor deoglRDSRenderable::GetRenderColor(const decColor &defaultColor){
 }
 
 deoglTexture *deoglRDSRenderable::GetRenderTexture(){
-	return NULL;
+	return nullptr;
 }
 
 deoglCubeMap *deoglRDSRenderable::GetRenderCubeMap(){
-	return NULL;
+	return nullptr;
 }
 
 deoglRenderPlan *deoglRDSRenderable::GetRenderPlan() const{
-	return NULL;
+	return nullptr;
 }

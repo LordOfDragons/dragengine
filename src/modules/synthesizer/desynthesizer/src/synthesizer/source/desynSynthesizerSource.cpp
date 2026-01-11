@@ -65,9 +65,9 @@ pTargetBlendFactor(synthesizer, firstLink, source.GetTargetBlendFactor()),
 pTargetVolume(synthesizer, firstLink, source.GetTargetVolume()),
 pTargetPanning(synthesizer, firstLink, source.GetTargetPanning()),
 
-pEffects(NULL),
+pEffects(nullptr),
 pEffectCount(0),
-pApplyEffect(NULL)
+pApplyEffect(nullptr)
 {
 	try{
 		pCreateEffects(synthesizer, firstLink, source);
@@ -165,7 +165,7 @@ float *buffer, int samples, float curveOffset, float curveFactor){
 	}
 	
 	const int channelCount = instance.GetChannelCount();
-	desynSharedBuffer *sharedBuffer = NULL;
+	desynSharedBuffer *sharedBuffer = nullptr;
 	
 	try{
 		sharedBuffer = GetModule().GetSharedBufferList().ClaimBuffer(samples * channelCount);

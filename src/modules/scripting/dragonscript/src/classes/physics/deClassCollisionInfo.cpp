@@ -116,7 +116,7 @@ void deClassCollisionInfo::nfGetCollider::RunFunction(dsRunTime *rt, dsValue *my
 	if(info->IsCollider()){
 		clsCI->GetClassCollider()->PushCollider(rt, info->GetCollider());
 	}else{
-		rt->PushObject(NULL, clsCI->GetClassCollider());
+		rt->PushObject(nullptr, clsCI->GetClassCollider());
 	}
 }
 
@@ -485,7 +485,7 @@ void deClassCollisionInfo::CreateClassMembers(dsEngine *engine){
 
 deCollisionInfo *deClassCollisionInfo::GetInfo(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return dedsGetNativeData<sCINatDat>(p_GetNativeData(myself->GetBuffer())).info;
@@ -497,7 +497,7 @@ void deClassCollisionInfo::PushInfo(dsRunTime *rt, deCollisionInfo *info){
 	}
 	
 	if(!info){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

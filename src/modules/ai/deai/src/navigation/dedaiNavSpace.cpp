@@ -44,8 +44,8 @@
 dedaiNavSpace::dedaiNavSpace(deDEAIModule &deai, const deNavigationSpace &navigationSpace) :
 pDEAI(deai),
 pNavigationSpace(navigationSpace),
-pParentWorld(NULL),
-pSpace(NULL)
+pParentWorld(nullptr),
+pSpace(nullptr)
 {
 	try{
 		pSpace = new dedaiSpace(deai);
@@ -123,7 +123,7 @@ void dedaiNavSpace::LayoutChanged(){
 //////////////////////
 
 void dedaiNavSpace::pCleanUp(){
-	SetParentWorld(NULL);
+	SetParentWorld(nullptr);
 	
 	if(pSpace){
 		delete pSpace;

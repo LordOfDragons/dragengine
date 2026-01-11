@@ -49,11 +49,11 @@
 dedsCollider::dedsCollider(deScriptingDragonScript &ds, deCollider *collider) :
 pDS(ds),
 pCollider(collider),
-pValOwner(NULL),
+pValOwner(nullptr),
 pEnableCanHitCallback(false),
-pValCB(NULL),
+pValCB(nullptr),
 pHasCB(false),
-pValCBBreaking(NULL),
+pValCBBreaking(nullptr),
 pHasCBBreaking(false)
 {
 	if(!collider){
@@ -75,37 +75,37 @@ dedsCollider::~dedsCollider(){
 	if(pCollider && pCollider->GetRefCount() > 0){
 		if(pValCBBreaking){
 			pDS.AddValueDeleteLater(pValCBBreaking);
-			pValCBBreaking = NULL;
+			pValCBBreaking = nullptr;
 			pHasCBBreaking = false;
 		}
 		
 		if(pValCB){
 			pDS.AddValueDeleteLater(pValCB);
-			pValCB = NULL;
+			pValCB = nullptr;
 			pHasCB = false;
 		}
 		
 		if(pValOwner){
 			pDS.AddValueDeleteLater(pValOwner);
-			pValOwner = NULL;
+			pValOwner = nullptr;
 		}
 		
 	}else{
 		if(pValCBBreaking){
 			pDS.GetScriptEngine()->GetMainRunTime()->FreeValue(pValCBBreaking);
-			pValCBBreaking = NULL;
+			pValCBBreaking = nullptr;
 			pHasCBBreaking = false;
 		}
 		
 		if(pValCB){
 			pDS.GetScriptEngine()->GetMainRunTime()->FreeValue(pValCB);
-			pValCB = NULL;
+			pValCB = nullptr;
 			pHasCB = false;
 		}
 		
 		if(pValOwner){
 			pDS.GetScriptEngine()->GetMainRunTime()->FreeValue(pValOwner);
-			pValOwner = NULL;
+			pValOwner = nullptr;
 		}
 	}
 }

@@ -169,7 +169,7 @@ void deClassSynthesizerInstance::nfGetControllerNamed::RunFunction(dsRunTime *rt
 	const int index = instance->IndexOfControllerNamed(rt->GetValue(0)->GetString());
 	
 	if(index == -1){
-		rt->PushObject(NULL, ds.GetClassSynthesizerController());
+		rt->PushObject(nullptr, ds.GetClassSynthesizerController());
 		
 	}else{
 		ds.GetClassSynthesizerController()->PushController(rt, instance, index);
@@ -408,7 +408,7 @@ void deClassSynthesizerInstance::PushSynthesizerInstance(dsRunTime *rt, deSynthe
 	}
 	
 	if(!instance){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

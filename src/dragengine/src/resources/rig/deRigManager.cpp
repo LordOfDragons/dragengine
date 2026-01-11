@@ -70,7 +70,7 @@ deRig *deRigManager::GetRigWith(const char *filename) const{
 
 deRig *deRigManager::GetRigWith(deVirtualFileSystem *vfs, const char *filename) const{
 	deRig * const rig = (deRig*)pRigs.GetWithFilename(vfs, filename);
-	return rig && !rig->GetOutdated() ? rig : NULL;
+	return rig && !rig->GetOutdated() ? rig : nullptr;
 }
 
 deRig::Ref deRigManager::CreateRig(const char *filename, deRigBuilder &builder){
@@ -148,7 +148,7 @@ deRig::Ref deRigManager::LoadRig(deVirtualFileSystem *vfs, const char *filename,
 			LogInfoFormat("Rig '%s' (base path '%s') changed on VFS: Outdating and Reloading",
 				filename, basePath ? basePath : "");
 			findRig->MarkOutdated();
-			findRig = NULL;
+			findRig = nullptr;
 		}
 		
 		if(findRig){
@@ -228,7 +228,7 @@ void deRigManager::SystemPhysicsUnload(){
 	deRig *rig = (deRig*)pRigs.GetRoot();
 	
 	while(rig){
-		rig->SetPeerPhysics(NULL);
+		rig->SetPeerPhysics(nullptr);
 		rig = (deRig*)rig->GetLLManagerNext();
 	}
 }

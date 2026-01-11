@@ -45,8 +45,8 @@
 deoglPersistentRenderTaskPipeline::deoglPersistentRenderTaskPipeline(deoglPersistentRenderTaskPool &pool) :
 pPool(pool),
 pLLTask(this),
-pParentTask(NULL),
-pParamBlock(NULL),
+pParentTask(nullptr),
+pParamBlock(nullptr),
 pSPBInstanceIndexBase(-1),
 pDrawIDOffset(-1){
 }
@@ -186,7 +186,7 @@ void deoglPersistentRenderTaskPipeline::RemoveAllTextures(){
 
 void deoglPersistentRenderTaskPipeline::Clear(){
 	RemoveAllTextures();
-	pParamBlock = NULL;
+	pParamBlock = nullptr;
 	pSPBInstanceIndexBase = -1;
 	pDrawIDOffset = -1;
 }

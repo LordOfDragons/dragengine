@@ -51,7 +51,7 @@ deoglRenderTaskParticles::deoglRenderTaskParticles(){
 	pRenderParamBlock = nullptr;
 	pRenderVSStereo = false;
 	
-	pSteps = NULL;
+	pSteps = nullptr;
 	pStepCount = 0;
 	pStepSize = 0;
 }

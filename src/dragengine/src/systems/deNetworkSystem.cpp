@@ -56,7 +56,7 @@ extern const int *vResourcePeerCreationOrder;
 ////////////////////////////
 
 deNetworkSystem::deNetworkSystem(deEngine *engine) : deBaseSystem(engine, "Network", deModuleSystem::emtNetwork){
-	pActiveModule = NULL;
+	pActiveModule = nullptr;
 }
 
 deNetworkSystem::~deNetworkSystem(){
@@ -74,7 +74,7 @@ void deNetworkSystem::SetActiveModule(deLoadableModule *module){
 
 void deNetworkSystem::ClearPermanents(){
 	deBaseSystem::ClearPermanents();
-	pActiveModule = NULL;
+	pActiveModule = nullptr;
 }
 
 void deNetworkSystem::PostStart(){

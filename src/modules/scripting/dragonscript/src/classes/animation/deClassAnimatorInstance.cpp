@@ -334,7 +334,7 @@ void deClassAnimatorInstance::nfGetControllerNamed::RunFunction(dsRunTime *rt, d
 	const int index = instance->IndexOfControllerNamed(rt->GetValue(0)->GetString());
 	
 	if(index == -1){
-		rt->PushObject(NULL, ds.GetClassAnimatorController());
+		rt->PushObject(nullptr, ds.GetClassAnimatorController());
 		
 	}else{
 		ds.GetClassAnimatorController()->PushController(rt, instance, index);
@@ -645,7 +645,7 @@ void deClassAnimatorInstance::CreateClassMembers(dsEngine *engine){
 
 deAnimatorInstance *deClassAnimatorInstance::GetAnimatorInstance(dsRealObject *object) const{
 	if(!object){
-		return NULL;
+		return nullptr;
 	}
 	
 	return dedsGetNativeData<sArINatDat>(p_GetNativeData(object->GetBuffer())).instance;
@@ -657,7 +657,7 @@ void deClassAnimatorInstance::PushAnimatorInstance(dsRunTime *rt, deAnimatorInst
 	}
 	
 	if(!instance){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

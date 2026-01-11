@@ -38,7 +38,7 @@
 ////////////////////////////
 
 deNetworkMessage::deNetworkMessage() :
-pBuffer(NULL),
+pBuffer(nullptr),
 pBufferSize(0),
 pDataLength(0),
 pTimeStamp(decDateTime::GetSystemTime()){

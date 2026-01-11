@@ -107,7 +107,7 @@ void deSynthesizerInstanceManager::SystemSynthesizerUnload(){
 	deSynthesizerInstance *instance = (deSynthesizerInstance*)pInstances.GetRoot();
 	
 	while(instance){
-		instance->SetPeerSynthesizer(NULL);
+		instance->SetPeerSynthesizer(nullptr);
 		instance = (deSynthesizerInstance*)instance->GetLLManagerNext();
 	}
 }
@@ -128,7 +128,7 @@ void deSynthesizerInstanceManager::SystemAudioUnload(){
 	deSynthesizerInstance *instance = (deSynthesizerInstance*)pInstances.GetRoot();
 	
 	while(instance){
-		instance->SetPeerAudio(NULL);
+		instance->SetPeerAudio(nullptr);
 		instance = (deSynthesizerInstance*)instance->GetLLManagerNext();
 	}
 }

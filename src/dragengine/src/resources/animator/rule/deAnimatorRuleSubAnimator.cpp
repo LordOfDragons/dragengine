@@ -45,7 +45,7 @@
 deAnimatorRuleSubAnimator::deAnimatorRuleSubAnimator() :
 pEnableVertexPositionSet(true)
 {
-	pConnections = NULL;
+	pConnections = nullptr;
 	pConnectionCount = 0;
 	
 	pEnablePosition = true;
@@ -94,7 +94,7 @@ void deAnimatorRuleSubAnimator::SetEnableVertexPositionSet(bool enabled){
 void deAnimatorRuleSubAnimator::UpdateConnectionCount(){
 	if(pConnections){
 		delete [] pConnections;
-		pConnections = NULL;
+		pConnections = nullptr;
 		pConnectionCount = 0;
 	}
 	

@@ -59,7 +59,7 @@ MOD_ENTRY_POINT_ATTR deBaseModule *DESynthesizerCreateModule(deLoadableModule *l
 #endif
 
 deBaseModule *DESynthesizerCreateModule(deLoadableModule *loadableModule){
-	deBaseModule *module = NULL;
+	deBaseModule *module = nullptr;
 	
 	try{
 		module = new deDESynthesizer(*loadableModule);
@@ -81,13 +81,13 @@ deBaseModule *DESynthesizerCreateModule(deLoadableModule *loadableModule){
 deDESynthesizer::deDESynthesizer(deLoadableModule &loadableModule) :
 deBaseSynthesizerModule(loadableModule),
 
-pConfiguration(NULL),
-pCommandExecuter(NULL),
-pParameterList(NULL),
+pConfiguration(nullptr),
+pCommandExecuter(nullptr),
+pParameterList(nullptr),
 
-pDecodeBuffer(NULL),
-pSharedBufferList(NULL),
-pCaches(NULL)
+pDecodeBuffer(nullptr),
+pSharedBufferList(nullptr),
+pCaches(nullptr)
 {
 	try{
 		pCommandExecuter = new desynCommandExecuter(*this);
@@ -149,11 +149,11 @@ bool deDESynthesizer::Init(){
 void deDESynthesizer::CleanUp(){
 	if(pSharedBufferList){
 		delete pSharedBufferList;
-		pSharedBufferList = NULL;
+		pSharedBufferList = nullptr;
 	}
 	if(pDecodeBuffer){
 		delete pDecodeBuffer;
-		pDecodeBuffer = NULL;
+		pDecodeBuffer = nullptr;
 	}
 	
 	if(pConfiguration){
@@ -162,7 +162,7 @@ void deDESynthesizer::CleanUp(){
 	
 	if(pCaches){
 		delete pCaches;
-		pCaches = NULL;
+		pCaches = nullptr;
 	}
 }
 

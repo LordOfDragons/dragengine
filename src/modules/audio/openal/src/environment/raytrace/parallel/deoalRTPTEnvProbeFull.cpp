@@ -55,9 +55,9 @@
 deoalRTPTEnvProbeFull::deoalRTPTEnvProbeFull(deoalRTParallelEnvProbe &owner) :
 deParallelTask(&owner.GetAudioThread().GetOal()),
 pOwner(owner),
-pWorld(NULL),
-pEnvProbe(NULL),
-pProbeConfig(NULL),
+pWorld(nullptr),
+pEnvProbe(nullptr),
+pProbeConfig(nullptr),
 pFirstRay(0),
 pRayCount(0),
 pBackStepDistance(1e-4f)
@@ -199,7 +199,7 @@ void deoalRTPTEnvProbeFull::pTraceRay(const sTraceRay &ray, const sTraceGain &ga
 	// find result. use the first forward facing element. backward facing elements are
 	// ignored because due to snapping the probe position can end up inside a component.
 	// without skipping backwards facing faces this can result in incorrect probe data
-	const deoalRayTraceHitElement *hitElement = NULL;
+	const deoalRayTraceHitElement *hitElement = nullptr;
 	const int hitCount = pRTResult.GetElementCount();
 	int hitIndex;
 	
@@ -281,7 +281,7 @@ void deoalRTPTEnvProbeFull::pTraceRay(const sTraceRay &ray, const sTraceGain &ga
 	pUpdateExtends(hitPoint);
 	
 	// find thickness for transmission calculation
-	const deoalRayTraceHitElement *hitElementBack = NULL;
+	const deoalRayTraceHitElement *hitElementBack = nullptr;
 	for(hitIndex++; hitIndex<hitCount; hitIndex++){
 		const deoalRayTraceHitElement &he = pRTResult.GetElementAt(hitIndex);
 		if(!he.GetForwardFacing()){

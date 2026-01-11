@@ -92,7 +92,7 @@ void deRLTaskWriteOcclusionMesh::Finished(){
 		SetState(esSucceeded);
 		
 	}else{
-		pOcclusionMesh = NULL;
+		pOcclusionMesh = nullptr;
 		SetState(esFailed);
 	}
 	LogFinishedExit();

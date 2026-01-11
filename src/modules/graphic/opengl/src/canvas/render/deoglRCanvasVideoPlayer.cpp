@@ -52,7 +52,7 @@ pTCClampMax(1.0f, 1.0f){
 
 deoglRCanvasVideoPlayer::~deoglRCanvasVideoPlayer(){
 	LEAK_CHECK_FREE(GetRenderThread(), CanvasVideoPlayer);
-	SetVideoPlayer(NULL);
+	SetVideoPlayer(nullptr);
 }
 
 

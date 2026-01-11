@@ -251,7 +251,7 @@ deErrorTracePoint *deBaseModule::SetErrorTrace(const deException &exception){
 	deErrorTracePoint * const tracepoint = GetGameEngine()->GetErrorTrace()->AddAndSetIfEmpty(
 		text, &pLoadableModule, exception.GetFile(), exception.GetLine());
 	if(!tracepoint){
-		return NULL;
+		return nullptr;
 	}
 	
 	tracepoint->AddValue("Source File", exception.GetFile());

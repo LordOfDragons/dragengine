@@ -46,11 +46,11 @@ deLumimeter::deLumimeter(deLumimeterManager *manager) : deResource(manager){
 	pConeOuterAngle = PI;
 	pConeExponent = 1.0f;
 	
-	pPeerGraphic = NULL;
+	pPeerGraphic = nullptr;
 	
-	pParentWorld = NULL;
-	pLLWorldNext = NULL;
-	pLLWorldPrev = NULL;
+	pParentWorld = nullptr;
+	pLLWorldNext = nullptr;
+	pLLWorldPrev = nullptr;
 }
 
 deLumimeter::~deLumimeter(){

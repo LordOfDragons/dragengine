@@ -106,30 +106,30 @@ FXVerticalFrame(container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_L
 	frameLine = new FXHorizontalFrame(frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X | LAYOUT_FILL_Y,
 		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
 	new FXLabel(frameLine, "Description:");
-	pEditDescription = new FXText(frameLine, NULL, 0, FRAME_SUNKEN | TEXT_READONLY
+	pEditDescription = new FXText(frameLine, nullptr, 0, FRAME_SUNKEN | TEXT_READONLY
 		| TEXT_WORDWRAP | LAYOUT_FILL_X | LAYOUT_FILL_Y);
 	
 	frameLine = new FXHorizontalFrame(frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
 		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
 	new FXLabel(frameLine, "Type:");
-	pEditType = new FXTextField(frameLine, 10, NULL, 0, FRAME_SUNKEN | TEXTFIELD_READONLY
+	pEditType = new FXTextField(frameLine, 10, nullptr, 0, FRAME_SUNKEN | TEXTFIELD_READONLY
 		| LAYOUT_FILL_X);
 	
 	frameLine = new FXHorizontalFrame(frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X | LAYOUT_FILL_Y,
 		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
 	new FXLabel(frameLine, "Allowed Values:");
-	pEditAllowedValues = new FXText(frameLine, NULL, 0, FRAME_SUNKEN | TEXT_READONLY
+	pEditAllowedValues = new FXText(frameLine, nullptr, 0, FRAME_SUNKEN | TEXT_READONLY
 		| TEXT_WORDWRAP | LAYOUT_FILL_X | LAYOUT_FILL_Y);
 	
 	frameLine = new FXHorizontalFrame(frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
 		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
 	new FXLabel(frameLine, "Current Value:");
-	pEditValue = new FXTextField(frameLine, 10, NULL, 0, FRAME_SUNKEN);
+	pEditValue = new FXTextField(frameLine, 10, nullptr, 0, FRAME_SUNKEN);
 	
 	frameLine = new FXHorizontalFrame(frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
 		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
-	pBtnSet = new FXButton(frameLine, "Set Parameter", NULL, this, ID_BTNSET, BUTTON_NORMAL);
-	pBtnReset = new FXButton(frameLine, "Reset Parameter", NULL, this, ID_BTNRESET, BUTTON_NORMAL);
+	pBtnSet = new FXButton(frameLine, "Set Parameter", nullptr, this, ID_BTNSET, BUTTON_NORMAL);
+	pBtnReset = new FXButton(frameLine, "Reset Parameter", nullptr, this, ID_BTNRESET, BUTTON_NORMAL);
 	
 	// load the lists
 	UpdateModulesList();
@@ -148,7 +148,7 @@ decrbPanelParameters::~decrbPanelParameters(){
 
 void decrbPanelParameters::UpdateParameter(){
 	int selection = pCBModule->getCurrentItem();
-	deBaseModule *module = NULL;
+	deBaseModule *module = nullptr;
 	int i, count;
 	FXString text;
 	
@@ -224,7 +224,7 @@ void decrbPanelParameters::UpdateParameter(){
 void decrbPanelParameters::UpdateParametersList(){
 	int selection = pCBModule->getCurrentItem();
 	deLoadableModule *loadableModule;
-	deBaseModule *module = NULL;
+	deBaseModule *module = nullptr;
 	int i, count;
 	
 	if(selection != -1){
@@ -278,7 +278,7 @@ long decrbPanelParameters::onCBParameterChanged(FXObject* , FXSelector, void*){
 
 long decrbPanelParameters::onBtnSetCommand(FXObject* , FXSelector, void*){
 	int selection = pCBModule->getCurrentItem();
-	deBaseModule *module = NULL;
+	deBaseModule *module = nullptr;
 	FXString text;
 	
 	if(selection != -1){
@@ -305,7 +305,7 @@ long decrbPanelParameters::onBtnSetCommand(FXObject* , FXSelector, void*){
 
 long decrbPanelParameters::onBtnResetCommand(FXObject* , FXSelector, void*){
 	int selection = pCBModule->getCurrentItem();
-	deBaseModule *module = NULL;
+	deBaseModule *module = nullptr;
 	
 	if(selection != -1){
 		module = pWndMain->GetEngine()->GetModuleSystem()->

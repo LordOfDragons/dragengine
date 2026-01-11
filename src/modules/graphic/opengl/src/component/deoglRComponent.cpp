@@ -115,8 +115,8 @@
 deoglRComponent::deoglRComponent(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
 
-pParentWorld(NULL),
-pOctreeNode(NULL),
+pParentWorld(nullptr),
+pOctreeNode(nullptr),
 pWorldComputeElement(deoglRComponentWCElement::Ref::New(*this)),
 pHasEnteredWorld(false),
 
@@ -147,14 +147,14 @@ pVertexPositionSetCount(0),
 pCSOctreeIndex(0),
 
 pWorldMarkedRemove(false),
-pLLWorldPrev(NULL),
-pLLWorldNext(NULL),
+pLLWorldPrev(nullptr),
+pLLWorldNext(nullptr),
 
 pLLPrepareForRenderWorld(this)
 {
 	pLODErrorScaling = 1.0f;
 	
-	pDynamicOcclusionMesh = NULL;
+	pDynamicOcclusionMesh = nullptr;
 	pDynOccMeshRequiresPrepareForRender = true;
 	
 	pDirtyPrepareSkinStateRenderables = true;
@@ -164,7 +164,7 @@ pLLPrepareForRenderWorld(this)
 	pRenderStatic = true;
 	pStaticSince = 0.0f;
 	
-	pBoneMatrices = NULL;
+	pBoneMatrices = nullptr;
 	pBoneMatrixCount = 0;
 	
 	pRenderMode = ermStatic;
@@ -488,12 +488,12 @@ void deoglRComponent::SetOcclusionMesh(deoglROcclusionMesh *occlusionMesh){
 	
 	if(pDynamicOcclusionMesh){
 		delete pDynamicOcclusionMesh;
-		pDynamicOcclusionMesh = NULL;
+		pDynamicOcclusionMesh = nullptr;
 	}
 	pOccMeshSharedSPBDoubleSided = nullptr;
 	pOccMeshSharedSPBSingleSided = nullptr;
 	if(pOccMeshSharedSPBElement){
-		pOccMeshSharedSPBElement = NULL;
+		pOccMeshSharedSPBElement = nullptr;
 	}
 	pOcclusionMesh = occlusionMesh;
 	if(occlusionMesh){
@@ -790,7 +790,7 @@ void deoglRComponent::UpdateSkin(float elapsed){
 		pRenderEnvMapFadeFactor += pRenderEnvMapFadePerTime * elapsed;
 		
 		if(pRenderEnvMapFadeFactor >= 1.0f){
-			SetRenderEnvMapFade(NULL);
+			SetRenderEnvMapFade(nullptr);
 			pRenderEnvMapFadeFactor = 1.0f;
 		}
 	}
@@ -1239,8 +1239,8 @@ void deoglRComponent::PrepareQuickDispose(){
 	NotifyComponentDestroyed(); // important, otherwise listeners segfault
 	pListeners.RemoveAll();
 	
-	pParentWorld = NULL;
-	pOctreeNode = NULL;
+	pParentWorld = nullptr;
+	pOctreeNode = nullptr;
 	
 	pLightList.RemoveAll();
 	
@@ -1496,7 +1496,7 @@ void deoglRComponent::SyncDecalReferences(const deComponent &engComponent){
 	for(i=0; i<count; i++){
 		deoglRDecal &decal = *((deoglRDecal*)pDecals.GetAt(i));
 		if(decal.GetComponentMarkedRemove()){
-			decal.SetParentComponent(NULL);
+			decal.SetParentComponent(nullptr);
 		}
 	}
 	
@@ -1732,7 +1732,7 @@ void deoglRComponent::SetLLWorldNext(deoglRComponent *component){
 void deoglRComponent::pCleanUp(){
 	NotifyComponentDestroyed();
 	
-	SetParentWorld(NULL);
+	SetParentWorld(nullptr);
 	
 	RemoveAllTextures();
 	RemoveAllLODs();
@@ -1979,7 +1979,7 @@ void deoglRComponent::pPrepareSolidity(){
 			int textureNumber = 0;
 			
 			if(skin && skin->GetTextureCount() == 0){
-				skin = NULL;
+				skin = nullptr;
 			}
 			
 			if(!skin){
@@ -2200,7 +2200,7 @@ void deoglRComponent::pPrepareParamBlocks(){
 	if(!pValidOccMeshSharedSPBElement){
 		// shared spb
 		if(pOccMeshSharedSPBElement){
-			pOccMeshSharedSPBElement = NULL;
+			pOccMeshSharedSPBElement = nullptr;
 		}
 		
 		if(pRenderThread.GetChoices().GetSharedSPBUseSSBO()){
@@ -2341,7 +2341,7 @@ void deoglRComponent::pPrepareDynOccMesh(){
 
 void deoglRComponent::pResizeBoneMatrices(){
 	const int boneCount = pModel ? pModel->GetBoneCount() : 0;
-	oglMatrix3x4 *matrices = NULL;
+	oglMatrix3x4 *matrices = nullptr;
 	
 	if(boneCount > 0){
 		matrices = new oglMatrix3x4[boneCount];

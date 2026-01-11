@@ -134,9 +134,9 @@ public:
 /////////////////////////////////
 
 deoalModelRTOctree::deoalModelRTOctree(deoalModelOctree &octree) :
-pFaces(NULL),
+pFaces(nullptr),
 pFaceCount(0),
-pNodes(NULL),
+pNodes(nullptr),
 pNodeCount(0)
 {
 	try{

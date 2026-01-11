@@ -265,7 +265,7 @@ void deClassSSSynthesizer::CreateClassMembers(dsEngine *engine){
 
 deSynthesizerSourceSynthesizer *deClassSSSynthesizer::GetSource(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return dedsGetNativeData<sSSSynNatDat>(p_GetNativeData(myself->GetBuffer())).source;
@@ -287,7 +287,7 @@ void deClassSSSynthesizer::PushSource(dsRunTime *rt, deSynthesizer *synthesizer,
 	}
 	
 	if(!source){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

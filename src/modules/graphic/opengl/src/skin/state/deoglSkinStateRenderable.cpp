@@ -52,8 +52,8 @@ deoglSkinStateRenderable::deoglSkinStateRenderable(deoglSkinState &skinState, in
 pSkinState(skinState),
 pIndex(index),
 pHostRenderable(-1),
-pPlan(NULL),
-pTexture(NULL){
+pPlan(nullptr),
+pTexture(nullptr){
 }
 
 deoglSkinStateRenderable::~deoglSkinStateRenderable(){
@@ -79,9 +79,9 @@ void deoglSkinStateRenderable::SetPlan(deoglRenderPlan *plan){
 	}
 	
 	if(pPlan){
-		pPlan->SetWorld(NULL);
+		pPlan->SetWorld(nullptr);
 		delete pPlan;
-		pPlan = NULL;
+		pPlan = nullptr;
 	}
 	pPlan = plan;
 }
@@ -98,7 +98,7 @@ void deoglSkinStateRenderable::SetTexture(deoglTexture* texture) {
 }
 
 void deoglSkinStateRenderable::Clear(){
-	SetPlan(NULL);
+	SetPlan(nullptr);
 }
 
 

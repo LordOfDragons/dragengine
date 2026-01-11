@@ -48,7 +48,7 @@ deoglDSRenderableCanvas::deoglDSRenderableCanvas(
 deoglDynamicSkin &dynamicSkin, const deDSRenderableCanvas &renderable) :
 deoglDSRenderable(dynamicSkin, renderable),
 pRenderableCanvas(renderable),
-pCanvasView(NULL),
+pCanvasView(nullptr),
 pDirty(true)
 {
 	try{
@@ -80,7 +80,7 @@ deoglRDSRenderable *deoglDSRenderableCanvas::GetRRenderable() const{
 
 void deoglDSRenderableCanvas::RenderableChanged(){
 	deoglCanvasView * const canvasView = pRenderableCanvas.GetCanvas()
-		? (deoglCanvasView*)pRenderableCanvas.GetCanvas()->GetPeerGraphic() : NULL;
+		? (deoglCanvasView*)pRenderableCanvas.GetCanvas()->GetPeerGraphic() : nullptr;
 	
 	if(canvasView != pCanvasView){
 		if(pCanvasView){
@@ -117,7 +117,7 @@ void deoglDSRenderableCanvas::SyncToRender(){
 			pRRenderableCanvas->SetCanvas(pCanvasView->GetRCanvasView());
 			
 		}else{
-			pRRenderableCanvas->SetCanvas(NULL);
+			pRRenderableCanvas->SetCanvas(nullptr);
 		}
 		
 		pDirty = false;
@@ -125,7 +125,7 @@ void deoglDSRenderableCanvas::SyncToRender(){
 }
 
 void deoglDSRenderableCanvas::CanvasViewDestroyed(){
-	pCanvasView = NULL;
+	pCanvasView = nullptr;
 }
 
 void deoglDSRenderableCanvas::CanvasViewRequiresSync(){

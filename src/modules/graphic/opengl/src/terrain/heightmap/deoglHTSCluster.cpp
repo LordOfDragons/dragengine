@@ -140,7 +140,7 @@ pIndex(-1),
 
 pWorldComputeElement(WorldComputeElement::Ref::New(*this))
 {
-	pHTSector = NULL;
+	pHTSector = nullptr;
 	
 	pPointCountX = 0;
 	pPointCountZ = 0;
@@ -156,14 +156,14 @@ pWorldComputeElement(WorldComputeElement::Ref::New(*this))
 	pOffsetVBODataFaces = 0;
 	pVBODataFaces = 0;
 	
-	pVAO = NULL;
+	pVAO = nullptr;
 	
-	pFacePoints = NULL;
+	pFacePoints = nullptr;
 	pFacePointCount = 0;
 	pFacePointSize = 0;
 	
-	pDataPoints1 = NULL;
-	pDataPoints2 = NULL;
+	pDataPoints1 = nullptr;
+	pDataPoints2 = nullptr;
 	pDataPointCount = 0;
 }
 
@@ -472,7 +472,7 @@ void deoglHTSCluster::UpdateVAO(){
 	}else{
 		if(pVAO){
 			delete pVAO;
-			pVAO = NULL;
+			pVAO = nullptr;
 		}
 	}
 }

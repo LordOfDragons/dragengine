@@ -1139,7 +1139,7 @@ deResource *deClassServiceObject::GetResource(dsValue &myself) const{
 
 void deClassServiceObject::PushResource(dsRunTime &rt, deResource *resource){
 	if(!resource){
-		rt.PushObject(NULL, pDS.GetScriptEngine()->GetClassObject());
+		rt.PushObject(nullptr, pDS.GetScriptEngine()->GetClassObject());
 		return;
 	}
 	

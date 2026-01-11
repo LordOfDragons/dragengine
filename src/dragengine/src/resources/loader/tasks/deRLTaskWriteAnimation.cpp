@@ -92,7 +92,7 @@ void deRLTaskWriteAnimation::Finished(){
 		SetState(esSucceeded);
 		
 	}else{
-		pAnimation = NULL;
+		pAnimation = nullptr;
 		SetState(esFailed);
 	}
 	LogFinishedExit();

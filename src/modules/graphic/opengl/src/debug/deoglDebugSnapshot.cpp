@@ -283,7 +283,7 @@ void deoglDebugSnapshot::TakeSnapshot() const{
 //////////////////////
 
 void deoglDebugSnapshot::pTakeSnapshotStates() const{
-	deoglDelayedFileWrite *file = NULL;
+	deoglDelayedFileWrite *file = nullptr;
 	decBaseFileWriter::Ref writer;
 	
 	decPath path;
@@ -585,7 +585,7 @@ static sNameTableEntry vGLConstantNameTable[] = {
 	{GL_MIN, "GL_MIN"},
 	{GL_MAX, "GL_MAX"},
 	
-	{0, NULL}
+	{0, nullptr}
 };
 
 decString deoglDebugSnapshot::pGLConstantName(int value) const{

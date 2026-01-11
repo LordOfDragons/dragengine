@@ -63,7 +63,7 @@ MOD_ENTRY_POINT_ATTR deBaseModule *DEFontCreateModule(deLoadableModule *loadable
 ///////////////////
 
 deBaseModule *DEFontCreateModule(deLoadableModule *loadableModule) {
-	deBaseModule *module = NULL;
+	deBaseModule *module = nullptr;
 	
 	try {
 		module = new deFontModule(*loadableModule);
@@ -132,13 +132,13 @@ const char *deFontModule::pGetAttributeString(decXmlElementTag *tag, const char 
 }
 
 bool deFontModule::pHasAttributeString(decXmlElementTag *tag, const char *name) {
-	return tag->FindAttribute(name) != NULL;
+	return tag->FindAttribute(name) != nullptr;
 }
 
 int deFontModule::pGetAttributeInt(decXmlElementTag *tag, const char *name) {
 	decXmlAttValue *value = tag->FindAttribute(name);
 	if (value) {
-		return (int)strtol(value->GetValue(), NULL, 10);
+		return (int)strtol(value->GetValue(), nullptr, 10);
 	} else {
 		LogErrorFormat("Missing Attribute '%s' in tag '%s'\n", name, tag->GetName().GetString());
 		DETHROW(deeInvalidParam);
@@ -147,7 +147,7 @@ int deFontModule::pGetAttributeInt(decXmlElementTag *tag, const char *name) {
 float deFontModule::pGetAttributeFloat(decXmlElementTag *tag, const char *name) {
 	decXmlAttValue *value = tag->FindAttribute(name);
 	if (value) {
-		return strtof(value->GetValue(), NULL);
+		return strtof(value->GetValue(), nullptr);
 	} else {
 		LogErrorFormat("Missing Attribute '%s' in tag '%s'\n", name, tag->GetName().GetString());
 		DETHROW(deeInvalidParam);

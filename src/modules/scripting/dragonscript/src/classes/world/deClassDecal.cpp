@@ -444,7 +444,7 @@ void deClassDecal::PushDecal(dsRunTime *rt, deDecal *decal){
 	}
 	
 	if(!decal){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

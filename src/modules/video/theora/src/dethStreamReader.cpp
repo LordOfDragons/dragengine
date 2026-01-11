@@ -54,7 +54,7 @@ dethStreamReader::dethStreamReader(dethOggReader *reader, int serial){
 	
 	pReader = reader;
 	pSerial = serial;
-	pDecoderContext = NULL;
+	pDecoderContext = nullptr;
 	pFrameOffset = 0;
 	
 	try{
@@ -156,7 +156,7 @@ bool dethStreamReader::ReadTheoraHeader(dethInfos &infos){
 				if(!pDecoderContext) DETHROW(deeOutOfMemory);
 				
 				th_setup_free(tsinfo);
-				infos.SetSetupInfo(NULL);
+				infos.SetSetupInfo(nullptr);
 				
 				break;
 			}

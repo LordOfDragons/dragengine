@@ -103,7 +103,7 @@ void deTouchSensorManager::SystemPhysicsUnload(){
 	deTouchSensor *touchSensor = (deTouchSensor*)pTouchSensors.GetRoot();
 	
 	while(touchSensor){
-		touchSensor->SetPeerPhysics(NULL);
+		touchSensor->SetPeerPhysics(nullptr);
 		touchSensor = (deTouchSensor*)touchSensor->GetLLManagerNext();
 	}
 }
@@ -125,7 +125,7 @@ void deTouchSensorManager::SystemScriptingUnload(){
 	deTouchSensor *touchSensor = (deTouchSensor*)pTouchSensors.GetRoot();
 	
 	while(touchSensor){
-		touchSensor->SetPeerScripting(NULL);
+		touchSensor->SetPeerScripting(nullptr);
 		touchSensor = (deTouchSensor*)touchSensor->GetLLManagerNext();
 	}
 }

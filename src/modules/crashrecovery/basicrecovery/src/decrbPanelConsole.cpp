@@ -73,7 +73,7 @@ FXVerticalFrame(container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_L
 	
 	// prepare
 	pWndMain = windowMain;
-	pLog = NULL;
+	pLog = nullptr;
 	
 	// create console line buffer
 	pLog = new decUnicodeLineBuffer(200);
@@ -94,7 +94,7 @@ FXVerticalFrame(container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_L
 	FXVerticalFrame *frameBox = new FXVerticalFrame(groupBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X | LAYOUT_FILL_Y,
 		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
 	
-	pEditLog = new FXText(frameBox, NULL, 0, FRAME_SUNKEN | TEXT_READONLY
+	pEditLog = new FXText(frameBox, nullptr, 0, FRAME_SUNKEN | TEXT_READONLY
 		| TEXT_WORDWRAP | LAYOUT_FILL_X | LAYOUT_FILL_Y);
 	
 	frameLine = new FXHorizontalFrame(frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,

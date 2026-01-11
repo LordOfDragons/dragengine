@@ -41,8 +41,8 @@
 ////////////////////////////
 
 fbxConnectionMap::fbxConnectionMap(int expectedCount) :
-pBucketsSource(NULL),
-pBucketsTarget(NULL),
+pBucketsSource(nullptr),
+pBucketsTarget(nullptr),
 pBucketCount(0)
 {
 	if(expectedCount < 1){

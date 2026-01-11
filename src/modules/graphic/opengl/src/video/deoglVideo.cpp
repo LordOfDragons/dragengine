@@ -69,7 +69,7 @@ bool deoglVideo::IsFrameReady(int frame) const{
 	if(!pCacheFrames){
 		return false;
 	}
-	return pRVideo->GetTexture(frame) != NULL;
+	return pRVideo->GetTexture(frame) != nullptr;
 }
 
 bool deoglVideo::CanCacheFrame(int frame) const{
@@ -79,7 +79,7 @@ bool deoglVideo::CanCacheFrame(int frame) const{
 	if(pRVideo->GetUpdateFrame() != -1){
 		return false;
 	}
-	return pRVideo->GetTexture(frame) == NULL;
+	return pRVideo->GetTexture(frame) == nullptr;
 }
 
 deoglPixelBuffer::Ref deoglVideo::CacheFrame(int frame, deoglPixelBuffer *pixelBuffer){

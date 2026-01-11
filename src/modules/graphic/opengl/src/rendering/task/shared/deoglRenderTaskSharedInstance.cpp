@@ -47,15 +47,15 @@ deoglRenderTaskSharedInstance::deoglRenderTaskSharedInstance(deoglRenderTaskShar
 pPool(pool),
 pIndex(index),
 
-pParamBlock(NULL),
-pParamBlockSpecial(NULL),
+pParamBlock(nullptr),
+pParamBlockSpecial(nullptr),
 
 pFirstPoint(0),
 pPointCount(0),
 pFirstIndex(0),
 pIndexCount(0),
 pSubInstanceCount(0),
-pSubInstanceSPB(NULL),
+pSubInstanceSPB(nullptr),
 pPrimitiveType(GL_TRIANGLES),
 pTessPatchVertexCount(3){
 }
@@ -111,15 +111,15 @@ void deoglRenderTaskSharedInstance::SetTessPatchVertexCount(int count){
 
 
 void deoglRenderTaskSharedInstance::Clear(){
-	pParamBlock = NULL;
-	pParamBlockSpecial = NULL;
+	pParamBlock = nullptr;
+	pParamBlockSpecial = nullptr;
 	
 	pFirstPoint = 0;
 	pPointCount = 0;
 	pFirstIndex = 0;
 	pIndexCount = 0;
 	pSubInstanceCount = 0;
-	pSubInstanceSPB = NULL;
+	pSubInstanceSPB = nullptr;
 	pPrimitiveType = GL_TRIANGLES;
 	pTessPatchVertexCount = 3;
 }

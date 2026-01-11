@@ -47,7 +47,7 @@
 deoglRSkyLink::deoglRSkyLink(const deSkyLink &link) :
 pController(link.GetController()),
 pRepeat(link.GetRepeat()),
-pSamples(NULL),
+pSamples(nullptr),
 pSampleCount(0),
 pUpperLimit(0.0f),
 pDisabled(false)

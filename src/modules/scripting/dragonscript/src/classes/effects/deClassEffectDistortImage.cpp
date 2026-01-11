@@ -217,7 +217,7 @@ void deClassEffectDistortImage::PushEffect(dsRunTime *rt, deEffectDistortImage *
 	}
 	
 	if(!effect){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

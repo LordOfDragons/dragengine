@@ -49,8 +49,8 @@
 
 deoglRParticleEmitter::deoglRParticleEmitter(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
-pVBOLayoutShared(NULL),
-pVBOLayoutLocal(NULL){
+pVBOLayoutShared(nullptr),
+pVBOLayoutLocal(nullptr){
 	LEAK_CHECK_CREATE(renderThread, ParticleEmitter);
 }
 

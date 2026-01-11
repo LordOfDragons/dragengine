@@ -191,7 +191,7 @@ void deoalWorldOctree::InsertComponentIntoTree(deoalAComponent *component, int m
 		if(!currentNode->ContainsBox(center, halfExtends)){
 			// remove from the current node
 			currentNode->RemoveComponent(component);
-			currentNode = NULL;
+			currentNode = nullptr;
 		}
 	}
 	
@@ -218,7 +218,7 @@ void deoalWorldOctree::InsertMicrophoneIntoTree(deoalAMicrophone *microphone, in
 		if(!currentNode->ContainsBox(position, halfExtends)){
 			// remove from the current node
 			currentNode->RemoveMicrophone(microphone);
-			currentNode = NULL;
+			currentNode = nullptr;
 		}
 	}
 	
@@ -246,7 +246,7 @@ void deoalWorldOctree::InsertSpeakerIntoTree(deoalASpeaker *speaker, int maxDept
 		if(!currentNode->ContainsBox(position, halfExtends)){
 			// remove from the current node
 			currentNode->RemoveSpeaker(speaker);
-			currentNode = NULL;
+			currentNode = nullptr;
 		}
 	}
 	
@@ -273,7 +273,7 @@ void deoalWorldOctree::InsertEnvProbeIntoTree(deoalEnvProbe *envProbe, int maxDe
 		if(!currentNode->ContainsBox(center, halfExtends)){
 			// remove from the current node
 			currentNode->RemoveEnvProbe(envProbe);
-			currentNode = NULL;
+			currentNode = nullptr;
 		}
 	}
 	
@@ -302,7 +302,7 @@ deoalASoundLevelMeter *soundLevelMeter, int maxDepth){
 		if(!currentNode->ContainsBox(position, halfExtends)){
 			// remove from the current node
 			currentNode->RemoveSoundLevelMeter(soundLevelMeter);
-			currentNode = NULL;
+			currentNode = nullptr;
 		}
 	}
 	
@@ -341,14 +341,14 @@ void deoalWorldOctree::AddComponent(deoalAComponent *component){
 
 void deoalWorldOctree::RemoveComponent(deoalAComponent *component){
 	pComponents.RemoveFrom(pComponents.IndexOf(component));
-	component->SetOctreeNode(NULL);
+	component->SetOctreeNode(nullptr);
 }
 
 void deoalWorldOctree::RemoveAllComponents(){
 	int count = pComponents.GetCount();
 	while(count > 0){
 		count--;
-		((deoalAComponent*)pComponents.GetAt(count))->SetOctreeNode(NULL);
+		((deoalAComponent*)pComponents.GetAt(count))->SetOctreeNode(nullptr);
 	}
 	pComponents.RemoveAll();
 }
@@ -381,14 +381,14 @@ void deoalWorldOctree::AddMicrophone(deoalAMicrophone *microphone){
 
 void deoalWorldOctree::RemoveMicrophone(deoalAMicrophone *microphone){
 	pMicrophones.RemoveFrom(pMicrophones.IndexOf(microphone));
-	microphone->SetOctreeNode(NULL);
+	microphone->SetOctreeNode(nullptr);
 }
 
 void deoalWorldOctree::RemoveAllMicrophones(){
 	int count = pMicrophones.GetCount();
 	while(count > 0){
 		count--;
-		((deoalAMicrophone*)pMicrophones.GetAt(count))->SetOctreeNode(NULL);
+		((deoalAMicrophone*)pMicrophones.GetAt(count))->SetOctreeNode(nullptr);
 	}
 	pMicrophones.RemoveAll();
 }
@@ -421,14 +421,14 @@ void deoalWorldOctree::AddSpeaker(deoalASpeaker *speaker){
 
 void deoalWorldOctree::RemoveSpeaker(deoalASpeaker *speaker){
 	pSpeakers.RemoveFrom(pSpeakers.IndexOf(speaker));
-	speaker->SetOctreeNode(NULL);
+	speaker->SetOctreeNode(nullptr);
 }
 
 void deoalWorldOctree::RemoveAllSpeakers(){
 	int count = pSpeakers.GetCount();
 	while(count > 0){
 		count--;
-		((deoalASpeaker*)pSpeakers.GetAt(count))->SetOctreeNode(NULL);
+		((deoalASpeaker*)pSpeakers.GetAt(count))->SetOctreeNode(nullptr);
 	}
 	pSpeakers.RemoveAll();
 }
@@ -465,14 +465,14 @@ void deoalWorldOctree::RemoveEnvProbe(deoalEnvProbe *envProbe){
 	}catch(const deException &e){
 		e.PrintError();
 	}
-	envProbe->SetOctreeNode(NULL);
+	envProbe->SetOctreeNode(nullptr);
 }
 
 void deoalWorldOctree::RemoveAllEnvProbes(){
 	int count = pEnvProbes.GetCount();
 	while(count > 0){
 		count--;
-		((deoalEnvProbe*)pEnvProbes.GetAt(count))->SetOctreeNode(NULL);
+		((deoalEnvProbe*)pEnvProbes.GetAt(count))->SetOctreeNode(nullptr);
 	}
 	pEnvProbes.RemoveAll();
 }
@@ -505,14 +505,14 @@ void deoalWorldOctree::AddSoundLevelMeter(deoalASoundLevelMeter *soundLevelMeter
 
 void deoalWorldOctree::RemoveSoundLevelMeter(deoalASoundLevelMeter *soundLevelMeter){
 	pSoundLevelMeters.RemoveFrom(pSoundLevelMeters.IndexOf(soundLevelMeter));
-	soundLevelMeter->SetOctreeNode(NULL);
+	soundLevelMeter->SetOctreeNode(nullptr);
 }
 
 void deoalWorldOctree::RemoveAllSoundLevelMeters(){
 	int count = pSoundLevelMeters.GetCount();
 	while(count > 0){
 		count--;
-		((deoalASoundLevelMeter*)pSoundLevelMeters.GetAt(count))->SetOctreeNode(NULL);
+		((deoalASoundLevelMeter*)pSoundLevelMeters.GetAt(count))->SetOctreeNode(nullptr);
 	}
 	pSoundLevelMeters.RemoveAll();
 }

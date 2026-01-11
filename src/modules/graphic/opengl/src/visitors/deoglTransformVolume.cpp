@@ -44,13 +44,13 @@
 ////////////////////////////
 
 deoglTransformVolume::deoglTransformVolume(){
-	pSphere = NULL;
-	pCylinder = NULL;
-	pCapsule = NULL;
-	pBox = NULL;
-	pTriangle = NULL;
-	pFrustum = NULL;
-	pVolume = NULL;
+	pSphere = nullptr;
+	pCylinder = nullptr;
+	pCapsule = nullptr;
+	pBox = nullptr;
+	pTriangle = nullptr;
+	pFrustum = nullptr;
+	pVolume = nullptr;
 	
 	pDirtyMatrix = false;
 	pScaling.Set(1.0f, 1.0f, 1.0f);

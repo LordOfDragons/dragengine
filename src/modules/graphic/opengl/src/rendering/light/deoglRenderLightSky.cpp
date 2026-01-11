@@ -160,9 +160,9 @@ enum eSPLightAmbient{
 deoglRenderLightSky::deoglRenderLightSky(deoglRenderThread &renderThread) :
 deoglRenderLightBase(renderThread),
 
-pColList2(NULL),
+pColList2(nullptr),
 
-pSolidShadowMap(NULL)
+pSolidShadowMap(nullptr)
 {
 	deoglShaderDefines defines, commonDefines;
 	deoglPipelineConfiguration pipconf;
@@ -475,7 +475,7 @@ const deoglRenderPlanMasked *mask, bool xray){
 	// GI rays
 	if(!mask && solid && !xray && giState){
 		const deoglSkyLayerGICascade * const slgc = plan.GetLayer()->GetGICascade(giState->GetSkyShadowCascade());
-		const deoglSCSolid * const scsolid = slgc ? &slgc->GetShadowCaster().GetSolid() : NULL;
+		const deoglSCSolid * const scsolid = slgc ? &slgc->GetShadowCaster().GetSolid() : nullptr;
 		
 		RestoreFBOGITraceRays(*giState);
 		
@@ -631,7 +631,7 @@ void deoglRenderLightSky::RenderShadowMap(deoglRenderPlanSkyLight &plan, deoglSh
 	if(pSolidShadowMap && (pSolidShadowMap->GetWidth() != shadowMapSize
 			|| pSolidShadowMap->GetLayerCount() != layerCount)){
 		pSolidShadowMap->SetInUse(false);
-		pSolidShadowMap = NULL;
+		pSolidShadowMap = nullptr;
 	}
 	if(!pSolidShadowMap){
 		pSolidShadowMap = renderThread.GetTexture().GetRenderableDepthArrayTexture()
@@ -1200,7 +1200,7 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanSkyLight &plan){
 	
 	// set values
 	const deoglSPBMapBuffer mapped(paramBlock);
-	const bool hasGIState = plan.GetPlan().GetRenderGIState() != NULL;
+	const bool hasGIState = plan.GetPlan().GetRenderGIState() != nullptr;
 	
 	target = lightShader.GetLightUniformTarget(deoglLightShader::elutLightColor);
 	if(target != -1){
@@ -1464,11 +1464,11 @@ void deoglRenderLightSky::DevModeDebugInfoChanged(){
 void deoglRenderLightSky::pCleanUp(){
 	if(pSolidShadowMap){
 		pSolidShadowMap->SetInUse(false);
-		pSolidShadowMap = NULL;
+		pSolidShadowMap = nullptr;
 	}
 	if(pSolidShadowMap){
 		pSolidShadowMap->SetInUse(false);
-		pSolidShadowMap = NULL;
+		pSolidShadowMap = nullptr;
 	}
 	
 	if(pColList2){

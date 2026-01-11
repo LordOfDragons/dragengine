@@ -241,7 +241,7 @@ void detConvexVolume::TestVolumeSetToCube(){
 	ASSERT_FALSE(vertex[7] == -1);
 	
 	convexFace = pGetFaceWithNormal(volume, decVector(0.0f, 0.0f, -1.0f));
-	ASSERT_TRUE(convexFace != NULL);
+	ASSERT_TRUE(convexFace != nullptr);
 	ASSERT_TRUE(convexFace->GetVertexCount() == 4);
 	ASSERT_TRUE(convexFace->HasVertex(vertex[0]));
 	ASSERT_TRUE(convexFace->HasVertex(vertex[1]));
@@ -249,7 +249,7 @@ void detConvexVolume::TestVolumeSetToCube(){
 	ASSERT_TRUE(convexFace->HasVertex(vertex[3]));
 	
 	convexFace = pGetFaceWithNormal(volume, decVector(0.0f, 0.0f, 1.0f));
-	ASSERT_TRUE(convexFace != NULL);
+	ASSERT_TRUE(convexFace != nullptr);
 	ASSERT_TRUE(convexFace->GetVertexCount() == 4);
 	ASSERT_TRUE(convexFace->HasVertex(vertex[4]));
 	ASSERT_TRUE(convexFace->HasVertex(vertex[5]));
@@ -257,7 +257,7 @@ void detConvexVolume::TestVolumeSetToCube(){
 	ASSERT_TRUE(convexFace->HasVertex(vertex[7]));
 	
 	convexFace = pGetFaceWithNormal(volume, decVector(1.0f, 0.0f, 0.0f));
-	ASSERT_TRUE(convexFace != NULL);
+	ASSERT_TRUE(convexFace != nullptr);
 	ASSERT_TRUE(convexFace->GetVertexCount() == 4);
 	ASSERT_TRUE(convexFace->HasVertex(vertex[1]));
 	ASSERT_TRUE(convexFace->HasVertex(vertex[2]));
@@ -265,7 +265,7 @@ void detConvexVolume::TestVolumeSetToCube(){
 	ASSERT_TRUE(convexFace->HasVertex(vertex[6]));
 	
 	convexFace = pGetFaceWithNormal(volume, decVector(-1.0f, 0.0f, 0.0f));
-	ASSERT_TRUE(convexFace != NULL);
+	ASSERT_TRUE(convexFace != nullptr);
 	ASSERT_TRUE(convexFace->GetVertexCount() == 4);
 	ASSERT_TRUE(convexFace->HasVertex(vertex[0]));
 	ASSERT_TRUE(convexFace->HasVertex(vertex[3]));
@@ -273,7 +273,7 @@ void detConvexVolume::TestVolumeSetToCube(){
 	ASSERT_TRUE(convexFace->HasVertex(vertex[7]));
 	
 	convexFace = pGetFaceWithNormal(volume, decVector(0.0f, 1.0f, 0.0f));
-	ASSERT_TRUE(convexFace != NULL);
+	ASSERT_TRUE(convexFace != nullptr);
 	ASSERT_TRUE(convexFace->GetVertexCount() == 4);
 	ASSERT_TRUE(convexFace->HasVertex(vertex[0]));
 	ASSERT_TRUE(convexFace->HasVertex(vertex[1]));
@@ -281,7 +281,7 @@ void detConvexVolume::TestVolumeSetToCube(){
 	ASSERT_TRUE(convexFace->HasVertex(vertex[5]));
 	
 	convexFace = pGetFaceWithNormal(volume, decVector(0.0f, -1.0f, 0.0f));
-	ASSERT_TRUE(convexFace != NULL);
+	ASSERT_TRUE(convexFace != nullptr);
 	ASSERT_TRUE(convexFace->GetVertexCount() == 4);
 	ASSERT_TRUE(convexFace->HasVertex(vertex[3]));
 	ASSERT_TRUE(convexFace->HasVertex(vertex[2]));
@@ -436,14 +436,14 @@ void detConvexVolume::TestSplitVolumeByPlane(){
 	splitPosition.Set(decVector(0.0f, 0.5f, -1.0f));
 	
 	list.SetToCube(decVector(1.0f, 1.0f, 1.0f));
-	list.SplitByPlane(splitNormal, splitPosition, false, NULL);
+	list.SplitByPlane(splitNormal, splitPosition, false, nullptr);
 	
 	result = pIsVolumeCubeSplit(list, splitNormal);
 	ASSERT_TRUE(result == 0);
 	
 	// create split plane that cuts right through ( inversed normal )
 	list.SetToCube(decVector(1.0f, 1.0f, 1.0f));
-	list.SplitByPlane(-splitNormal, splitPosition, false, NULL);
+	list.SplitByPlane(-splitNormal, splitPosition, false, nullptr);
 	
 	result = pIsVolumeCubeSplit(list, splitNormal);
 	ASSERT_TRUE(result == 0);
@@ -456,14 +456,14 @@ void detConvexVolume::TestSplitVolumeByPlane(){
 	splitPosition.Set(0.5f, 0.5f, -2.0f);
 	
 	list.SetToCube(decVector(1.0f, 1.0f, 1.0f));
-	list.SplitByPlane(splitNormal, splitPosition, false, NULL);
+	list.SplitByPlane(splitNormal, splitPosition, false, nullptr);
 	
 	result = pIsVolumeCube(list);
 	ASSERT_TRUE(result == 0);
 	
 	// create split face which does not cut due to split plane normal separating ( inversed normal )
 	list.SetToCube(decVector(1.0f, 1.0f, 1.0f));
-	list.SplitByPlane(-splitNormal, splitPosition, false, NULL);
+	list.SplitByPlane(-splitNormal, splitPosition, false, nullptr);
 	
 	result = pIsVolumeCube(list);
 	ASSERT_TRUE(result == 0);
@@ -482,14 +482,14 @@ void detConvexVolume::TestCropVolumeByPlane(){
 	splitPosition.Set(decVector(0.0f, 0.5f, -1.0f));
 	
 	list.SetToCube(decVector(1.0f, 1.0f, 1.0f));
-	list.SplitByPlane(splitNormal, splitPosition, true, NULL);
+	list.SplitByPlane(splitNormal, splitPosition, true, nullptr);
 	
 	result = pIsVolumeCubeCropped(list, splitNormal);
 	ASSERT_TRUE(result == 0);
 	
 	// create split plane that cuts right through ( inversed normal )
 	list.SetToCube(decVector(1.0f, 1.0f, 1.0f));
-	list.SplitByPlane(-splitNormal, splitPosition, true, NULL);
+	list.SplitByPlane(-splitNormal, splitPosition, true, nullptr);
 	
 	result = pIsVolumeCubeCroppedInverse(list, splitNormal);
 	ASSERT_TRUE(result == 0);
@@ -502,7 +502,7 @@ void detConvexVolume::TestCropVolumeByPlane(){
 	splitPosition.Set(0.5f, 0.5f, -2.0f);
 	
 	list.SetToCube(decVector(1.0f, 1.0f, 1.0f));
-	list.SplitByPlane(splitNormal, splitPosition, true, NULL);
+	list.SplitByPlane(splitNormal, splitPosition, true, nullptr);
 	
 	result = pIsVolumeCube(list);
 	ASSERT_TRUE(result == 0);
@@ -510,7 +510,7 @@ void detConvexVolume::TestCropVolumeByPlane(){
 	// create split face which does not cut due to split plane normal separating.
 	// the volume is on the cut side so it is completely cut away
 	list.SetToCube(decVector(1.0f, 1.0f, 1.0f));
-	list.SplitByPlane(-splitNormal, splitPosition, true, NULL);
+	list.SplitByPlane(-splitNormal, splitPosition, true, nullptr);
 	
 	ASSERT_TRUE(list.GetVolumeCount() == 0);
 }
@@ -749,8 +749,8 @@ void detConvexVolume::TestSpecial1(){
 	
 	// special test
 	decConvexVolumeList cvl1, cvl2;
-	decConvexVolume *cv = NULL;
-	decConvexVolumeFace *cvf = NULL;
+	decConvexVolume *cv = nullptr;
+	decConvexVolumeFace *cvf = nullptr;
 	int i, j;
 	
 	try{
@@ -770,9 +770,9 @@ void detConvexVolume::TestSpecial1(){
 		}
 		cvf->SetNormal(((v[1]-v[0])%(v[2]-v[1])).Normalized());
 		cv->AddFace(cvf);
-		cvf = NULL;
+		cvf = nullptr;
 		cvl1.AddVolume(cv);
-		cv = NULL;
+		cv = nullptr;
 		
 		// splitter volume
 		cv = new decConvexVolume;
@@ -796,10 +796,10 @@ void detConvexVolume::TestSpecial1(){
 			}
 			cvf->SetNormal(((v2[f2[i][1]]-v2[f2[i][0]])%(v2[f2[i][2]]-v2[f2[i][1]])).Normalized());
 			cv->AddFace(cvf);
-			cvf = NULL;
+			cvf = nullptr;
 		}
 		cvl2.AddVolume(cv);
-		cv = NULL;
+		cv = nullptr;
 		
 	}catch(const deException &){
 		if(cvf){
@@ -884,7 +884,7 @@ decConvexVolumeFace *detConvexVolume::pGetFaceWithNormal(const decConvexVolume &
 		if(normal.IsEqualTo(face->GetNormal())) return face;
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 decConvexVolume *detConvexVolume::pGetVolumeWithVertex(const decConvexVolumeList &list, const decVector &vertex) const{
@@ -896,7 +896,7 @@ decConvexVolume *detConvexVolume::pGetVolumeWithVertex(const decConvexVolumeList
 		if(volume->HasVertex(vertex)) return volume;
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 int detConvexVolume::pIsVolumeCube(const decConvexVolumeList &list) const{

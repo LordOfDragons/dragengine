@@ -49,7 +49,7 @@ pGamma(1.0f),
 pColorize(1.0f, 1.0f, 1.0f),
 
 pTransparency(1.0f),
-pMask(NULL),
+pMask(nullptr),
 pCombineMode(ecmBlend)
 {
 	int i;

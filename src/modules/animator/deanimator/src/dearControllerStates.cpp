@@ -43,7 +43,7 @@
 ////////////////////////////
 
 dearControllerStates::dearControllerStates(){
-	pStates = NULL;
+	pStates = nullptr;
 	pStateCount = 0;
 }
 
@@ -62,7 +62,7 @@ void dearControllerStates::SetStateCount(int count){
 	if(count != pStateCount){
 		if(pStates){
 			delete [] pStates;
-			pStates = NULL;
+			pStates = nullptr;
 		}
 		pStateCount = 0;
 		

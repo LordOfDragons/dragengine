@@ -145,7 +145,7 @@ void deCanvasManager::SystemGraphicUnload(){
 	deCanvas *canvas = (deCanvas*)pCanvas.GetRoot();
 	
 	while(canvas){
-		canvas->SetPeerGraphic(NULL);
+		canvas->SetPeerGraphic(nullptr);
 		canvas = (deCanvas*)canvas->GetLLManagerNext();
 	}
 }

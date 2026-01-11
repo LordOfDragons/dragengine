@@ -47,12 +47,12 @@ deoglPFClusterGenerator::deoglPFClusterGenerator(const decVector2 &minExtend, co
 	pMaxExtend = maxExtend;
 	pMaxEntryCount = maxEntryCount;
 	
-	pEntries = NULL;
+	pEntries = nullptr;
 	pEntryCount = 0;
 	pEntrySize = 0;
 	
-	pNode1 = NULL;
-	pNode2 = NULL;
+	pNode1 = nullptr;
+	pNode2 = nullptr;
 }
 
 deoglPFClusterGenerator::~deoglPFClusterGenerator(){
@@ -225,13 +225,13 @@ void deoglPFClusterGenerator::ClearTree(){
 	if(pNode1){
 		pNode1->ClearTree();
 		delete pNode1;
-		pNode1 = NULL;
+		pNode1 = nullptr;
 	}
 	
 	if(pNode2){
 		pNode2->ClearTree();
 		delete pNode2;
-		pNode2 = NULL;
+		pNode2 = nullptr;
 	}
 	
 	RemoveAllEntries();

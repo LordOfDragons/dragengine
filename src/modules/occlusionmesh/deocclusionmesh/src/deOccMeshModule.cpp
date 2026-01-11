@@ -55,13 +55,13 @@ MOD_ENTRY_POINT_ATTR deBaseModule *DEOccMeshCreateModule(deLoadableModule *loada
 #endif
 
 deBaseModule *DEOccMeshCreateModule(deLoadableModule *loadableModule){
-	deBaseModule *module = NULL;
+	deBaseModule *module = nullptr;
 	
 	try{
 		module = new deOccMeshModule(*loadableModule);
 		
 	}catch(const deException &){
-		return NULL;
+		return nullptr;
 	}
 	
 	return module;
@@ -130,7 +130,7 @@ void deOccMeshModule::pLoadMesh(decBaseFileReader &reader, deOcclusionMesh &mesh
 	infos.version = (int)reader.ReadUShort();
 	infos.flags = (int)reader.ReadUShort();
 	infos.boneCount = (int)reader.ReadUShort();
-	infos.weightSetList = NULL;
+	infos.weightSetList = nullptr;
 	
 	try{
 		infos.weightSetList = new deoccmWeightSetList;
@@ -190,7 +190,7 @@ void deOccMeshModule::pLoadBones(decBaseFileReader &reader, deOcclusionMesh &mes
 }
 
 void deOccMeshModule::pLoadWeights(decBaseFileReader &reader, deOcclusionMesh &mesh, sMeshInfos &infos){
-	deoccmWeightSet *weightSet = NULL;
+	deoccmWeightSet *weightSet = nullptr;
 	int w, b, boneCount;
 	float factor;
 	int bone;
@@ -214,7 +214,7 @@ void deOccMeshModule::pLoadWeights(decBaseFileReader &reader, deOcclusionMesh &m
 			weightSet->Normalize();
 			
 			infos.weightSetList->Add(weightSet);
-			weightSet = NULL;
+			weightSet = nullptr;
 		}
 		
 	}catch(const deException &){

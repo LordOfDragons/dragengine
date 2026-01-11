@@ -107,7 +107,7 @@ void deoglRenderParticles::RenderTaskParticles(const deoglRenderTaskParticles &r
 	const deoglSPBlockUBO * const renderParamBlock = renderTask.GetRenderParamBlock();
 	const bool renderVSStereo = renderTask.GetRenderVSStereo();
 	const int stepCount = renderTask.GetStepCount();
-	const deoglVAO *curVAO = NULL;
+	const deoglVAO *curVAO = nullptr;
 	int i;
 	
 	if(stepCount == 0){

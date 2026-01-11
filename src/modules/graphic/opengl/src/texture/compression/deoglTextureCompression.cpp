@@ -41,11 +41,11 @@
 ////////////////////////////
 
 deoglTextureCompression::deoglTextureCompression(){
-	pDecompressedData = NULL;
-	pCompressedData = NULL;
+	pDecompressedData = nullptr;
+	pCompressedData = nullptr;
 	
-	pDecompressedDataMipMap = NULL;
-	pCompressedDataMipMap = NULL;
+	pDecompressedDataMipMap = nullptr;
+	pCompressedDataMipMap = nullptr;
 	
 	pFastCompression = true;
 }
@@ -240,10 +240,10 @@ void deoglTextureCompression::pCompressSquish(const deoglPixelBuffer &pixelBuffe
 	const int depth = pixelBufferFrom.GetDepth();
 	const int strideLayer = width * height;
 	const int blockSize = pixelBufferTo.GetUnitSize();
-	const deoglPixelBuffer::sByte1 *ptrByte1 = NULL;
-	const deoglPixelBuffer::sByte2 *ptrByte2 = NULL;
-	const deoglPixelBuffer::sByte3 *ptrByte3 = NULL;
-	const deoglPixelBuffer::sByte4 *ptrByte4 = NULL;
+	const deoglPixelBuffer::sByte1 *ptrByte1 = nullptr;
+	const deoglPixelBuffer::sByte2 *ptrByte2 = nullptr;
+	const deoglPixelBuffer::sByte3 *ptrByte3 = nullptr;
+	const deoglPixelBuffer::sByte4 *ptrByte4 = nullptr;
 	int x, y, z, x2, y2, bx, by, bi, bm;
 	squish::u8 blockData[64];
 	int dataOffset;

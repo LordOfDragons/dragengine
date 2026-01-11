@@ -1206,7 +1206,7 @@ void deClassEasyXMLElement::CreateClassMembers(dsEngine *engine){
 
 decXmlElement *deClassEasyXMLElement::GetElement(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	return dedsGetNativeData<sXMLElNatDat>(p_GetNativeData(myself->GetBuffer())).element;
 }
@@ -1217,7 +1217,7 @@ void deClassEasyXMLElement::PushElement(dsRunTime *rt, decXmlElement *element){
 	}
 	
 	if(!element){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

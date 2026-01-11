@@ -344,7 +344,7 @@ void deClassARTrackTo::CreateClassMembers(dsEngine *engine){
 
 deAnimatorRuleTrackTo *deClassARTrackTo::GetRule(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return dedsGetNativeData<sARTrackNatDat>(p_GetNativeData(myself->GetBuffer())).rule;
@@ -365,7 +365,7 @@ void deClassARTrackTo::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorR
 	}
 	
 	if(!rule){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

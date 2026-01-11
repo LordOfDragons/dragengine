@@ -61,14 +61,14 @@ dedaiNavBlocker::dedaiNavBlocker(deDEAIModule &deai, const deNavigationBlocker &
 pDEAI(deai),
 pNavBlocker(blocker),
 
-pParentWorld(NULL),
+pParentWorld(nullptr),
 
 pDirtyMatrix(true),
 pDirtyExtends(true),
 pDirtyShape(true),
 
-pLayer(NULL),
-pDDSBlocker(NULL)
+pLayer(nullptr),
+pDDSBlocker(nullptr)
 {
 	ShapeChanged();
 }
@@ -101,7 +101,7 @@ void dedaiNavBlocker::SetParentWorld(dedaiWorld *world){
 		}
 		
 	}else{
-		pLayer = NULL;
+		pLayer = nullptr;
 	}
 	
 	pDirtyShape = true;
@@ -200,8 +200,8 @@ void dedaiNavBlocker::UpdateDDSBlocker(){
 				pParentWorld->GetWorld().RemoveDebugDrawer(pDebugDrawer);
 			}
 			
-			pDDSBlocker = NULL;
-			pDebugDrawer = NULL;
+			pDDSBlocker = nullptr;
+			pDebugDrawer = nullptr;
 		}
 	}
 }
@@ -218,14 +218,14 @@ void dedaiNavBlocker::UpdateDDSBlockerShape(){
 	pDDSBlocker->GetShapeList().RemoveAll();
 	
 	if(count > 0){
-		decShape *shape = NULL;
+		decShape *shape = nullptr;
 		int i;
 		
 		try{
 			for(i=0; i<count; i++){
 				shape = shapeList.GetAt(i)->Copy();
 				pDDSBlocker->GetShapeList().Add(shape);
-				shape = NULL;
+				shape = nullptr;
 			}
 			
 		}catch(const deException &){
@@ -343,7 +343,7 @@ void dedaiNavBlocker::BlockingPriorityChanged(){
 //////////////////////
 
 void dedaiNavBlocker::pCleanUp(){
-	SetParentWorld(NULL);
+	SetParentWorld(nullptr);
 }
 
 void dedaiNavBlocker::pUpdateMatrices(){

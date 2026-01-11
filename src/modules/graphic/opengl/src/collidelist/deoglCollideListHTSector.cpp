@@ -43,7 +43,7 @@
 ////////////////////////////
 
 deoglCollideListHTSector::deoglCollideListHTSector() :
-pSector(NULL),
+pSector(nullptr),
 pClusterCount(0){
 }
 
@@ -60,7 +60,7 @@ deoglCollideListHTSector::~deoglCollideListHTSector(){
 
 void deoglCollideListHTSector::Clear(){
 	RemoveAllClusters();
-	pSector = NULL;
+	pSector = nullptr;
 }
 
 void deoglCollideListHTSector::SetSector(deoglHTViewSector *sector){
@@ -85,7 +85,7 @@ deoglCollideListHTSCluster &deoglCollideListHTSector::GetClusterAt(int index) co
 }
 
 deoglCollideListHTSCluster *deoglCollideListHTSector::AddCluster(const decPoint &coordinates){
-	deoglCollideListHTSCluster *cluster = NULL;
+	deoglCollideListHTSCluster *cluster = nullptr;
 	
 	if(pClusterCount < pClusters.GetCount()){
 		cluster = pClusters.GetAt(pClusterCount);

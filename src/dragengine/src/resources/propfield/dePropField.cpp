@@ -44,31 +44,31 @@
 ////////////////////////////
 
 dePropField::dePropField(dePropFieldManager *manager) : deResource(manager){
-	pTypes = NULL;
+	pTypes = nullptr;
 	pTypeCount = 0;
 	pTypeSize = 0;
 	
-	pPeerGraphic = NULL;
-	pPeerPhysics = NULL;
-	pPeerScripting = NULL;
+	pPeerGraphic = nullptr;
+	pPeerPhysics = nullptr;
+	pPeerScripting = nullptr;
 	
-	pParentWorld = NULL;
-	pLLWorldNext = NULL;
-	pLLWorldPrev = NULL;
+	pParentWorld = nullptr;
+	pLLWorldNext = nullptr;
+	pLLWorldPrev = nullptr;
 }
 
 dePropField::~dePropField(){
 	if(pPeerScripting){
 		delete pPeerScripting;
-		pPeerScripting = NULL;
+		pPeerScripting = nullptr;
 	}
 	if(pPeerPhysics){
 		delete pPeerPhysics;
-		pPeerPhysics = NULL;
+		pPeerPhysics = nullptr;
 	}
 	if(pPeerGraphic){
 		delete pPeerGraphic;
-		pPeerGraphic = NULL;
+		pPeerGraphic = nullptr;
 	}
 	
 	RemoveAllTypes();

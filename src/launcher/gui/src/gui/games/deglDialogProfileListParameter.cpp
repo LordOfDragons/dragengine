@@ -372,18 +372,18 @@ void deglDialogProfileListParameter::UpdateVisibility(deModuleParameter::eCatego
 	const FXSelector selector = FXSEL(SEL_COMMAND, visible ? FXWindow::ID_SHOW : FXWindow::ID_HIDE);
 	
 	if(pLabel){
-		pLabel->tryHandle(pLabel, selector, 0);
+		pLabel->tryHandle(pLabel, selector, nullptr);
 	}
 	if(pComboBox){
-		pComboBox->tryHandle(pLabel, selector, 0);
+		pComboBox->tryHandle(pLabel, selector, nullptr);
 	}
 	if(pFrameSlider){
-		pFrameSlider->tryHandle(pLabel, selector, 0);
+		pFrameSlider->tryHandle(pLabel, selector, nullptr);
 	}
 	if(pCheckBox){
-		pCheckBox->tryHandle(pLabel, selector, 0);
+		pCheckBox->tryHandle(pLabel, selector, nullptr);
 	}
 	if(pTextField){
-		pTextField->tryHandle(pLabel, selector, 0);
+		pTextField->tryHandle(pLabel, selector, nullptr);
 	}
 }

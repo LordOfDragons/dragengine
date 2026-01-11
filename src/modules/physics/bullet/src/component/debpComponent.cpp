@@ -70,17 +70,17 @@ pDirtyBoneWeights(true),
 pDirtyWeights(true),
 pEnabled(false),
 
-pBones(NULL),
+pBones(nullptr),
 pBoneCount(0),
-pModel(NULL),
+pModel(nullptr),
 
 pDirtyModelRigMappings(true),
-pVertices(NULL),
-pWeights(NULL),
+pVertices(nullptr),
+pWeights(nullptr),
 pVertexCount(0),
 pWeightsCount(0),
 
-pLinkedCollider(NULL)
+pLinkedCollider(nullptr)
 {
 	if(!component){
 		DETHROW(deeInvalidParam);
@@ -175,7 +175,7 @@ void debpComponent::ModelChanged(){
 	pDirtyBoneWeights = true;
 	pDirtyWeights = true;
 	
-	pModel = NULL;
+	pModel = nullptr;
 	if(pComponent->GetModel()){
 		pModel = (debpModel*)pComponent->GetModel()->GetPeerPhysics();
 	}
@@ -493,7 +493,7 @@ const decVector &debpComponent::GetVertex(int index) const{
 
 void debpComponent::pCleanUp(){
 	if(pLinkedCollider){
-		pLinkedCollider->SetLinkedComponent(NULL);
+		pLinkedCollider->SetLinkedComponent(nullptr);
 	}
 	if(pBones){
 		delete [] pBones;
@@ -509,7 +509,7 @@ void debpComponent::pCleanUp(){
 void debpComponent::pRebuildBoneArrays(){
 	if(pBones){
 		delete [] pBones;
-		pBones = NULL;
+		pBones = nullptr;
 		pBoneCount = 0;
 	}
 	
@@ -527,13 +527,13 @@ void debpComponent::pRebuildBoneArrays(){
 void debpComponent::pChangeModel(){
 	if(pVertices){
 		delete [] pVertices;
-		pVertices = NULL;
+		pVertices = nullptr;
 		pVertexCount = 0;
 	}
 	
 	if(pWeights){
 		delete [] pWeights;
-		pWeights = NULL;
+		pWeights = nullptr;
 		pWeightsCount = 0;
 	}
 	

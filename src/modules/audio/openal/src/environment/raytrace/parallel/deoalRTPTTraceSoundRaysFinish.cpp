@@ -62,9 +62,9 @@ deoalRTPTTraceSoundRaysFinish::deoalRTPTTraceSoundRaysFinish(deoalRTParallelEnvP
 deParallelTask(&owner.GetAudioThread().GetOal()),
 pOwner(owner),
 pRange(0.0f),
-pProbeConfig(NULL),
-pSoundRayList(NULL),
-pRoomParameters(NULL)
+pProbeConfig(nullptr),
+pSoundRayList(nullptr),
+pRoomParameters(nullptr)
 {
 	SetMarkFinishedAfterRun(true);
 	SetLowPriority(true);

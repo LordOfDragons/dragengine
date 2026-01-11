@@ -46,7 +46,7 @@ pDynamic(false),
 pIKLimitsLower(TWO_PI, TWO_PI, TWO_PI),
 pIKLimitsUpper(0.0f, 0.0f, 0.0f),
 pIKResistance(0.0f, 0.0f, 0.0f),
-pConstraints(NULL),
+pConstraints(nullptr),
 pConstraintCount(0),
 pConstraintSize(0)
 {

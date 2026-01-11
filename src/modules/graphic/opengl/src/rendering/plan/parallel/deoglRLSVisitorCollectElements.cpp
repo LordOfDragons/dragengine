@@ -73,7 +73,7 @@ pShaftFar(0.0f),
 pFrustumPlaneCount(0),
 pEdgeCount(0),
 pCullLayerMask(false),
-pOcclusionTest(NULL)
+pOcclusionTest(nullptr)
 {
 	int i;
 	for(i=0; i<6; i++){
@@ -426,7 +426,7 @@ void deoglRLSVisitorCollectElements::VisitHTView(const deoglHTView &htview){
 		const int count = htsector.GetClusterCount();
 		decPoint si;
 		
-		deoglCollideListHTSector *clsector = NULL;
+		deoglCollideListHTSector *clsector = nullptr;
 		
 		for(si.y=0; si.y<count; si.y++){
 			for(si.x=0; si.x<count; si.x++, cluster++){
@@ -459,14 +459,14 @@ void deoglRLSVisitorCollectElements::VisitPropFields(const deoglRWorld &world){
 		const int typeCount = propField.GetTypeCount();
 		int j;
 		
-		deoglCollideListPropField *clpropfield = NULL;
+		deoglCollideListPropField *clpropfield = nullptr;
 		
 		for(j=0; j<typeCount; j++){
 			deoglRPropFieldType &type = propField.GetTypeAt(j);
 			const int clusterCount = type.GetClusterCount();
 			int k;
 			
-			deoglCollideListPropFieldType *cltype = NULL;
+			deoglCollideListPropFieldType *cltype = nullptr;
 			
 			for(k=0; k<clusterCount; k++){
 				deoglPropFieldCluster &cluster = *type.GetClusterAt(k);

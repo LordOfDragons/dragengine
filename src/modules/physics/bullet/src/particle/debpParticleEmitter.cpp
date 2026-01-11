@@ -55,7 +55,7 @@ debpParticleEmitter::debpParticleEmitter(dePhysicsBullet *bullet, deParticleEmit
 	pBullet = bullet;
 	pEmitter = emitter;
 	
-	pTypes = NULL;
+	pTypes = nullptr;
 	pTypeCount = 0;
 	
 	pDirtyParameters = true;
@@ -145,7 +145,7 @@ void debpParticleEmitter::pUpdateTypes(){
 	
 	if(pTypes){
 		delete [] pTypes;
-		pTypes = NULL;
+		pTypes = nullptr;
 	}
 	pTypeCount = 0;
 	

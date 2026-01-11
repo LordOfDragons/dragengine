@@ -40,7 +40,7 @@
 ////////////////////////////
 
 decUuidSet::decUuidSet(){
-	pUuids = NULL;
+	pUuids = nullptr;
 	pUuidCount = 0;
 	pUuidSize = 0;
 }
@@ -48,7 +48,7 @@ decUuidSet::decUuidSet(){
 decUuidSet::decUuidSet(const decUuidSet &set){
 	const int count = set.GetCount();
 	
-	pUuids = NULL;
+	pUuids = nullptr;
 	pUuidCount = 0;
 	pUuidSize = 0;
 	

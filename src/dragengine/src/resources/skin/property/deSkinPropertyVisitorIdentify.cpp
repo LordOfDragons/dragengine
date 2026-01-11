@@ -103,7 +103,7 @@ deSkinPropertyMapped &deSkinPropertyVisitorIdentify::CastToMapped() const{
 }
 
 void deSkinPropertyVisitorIdentify::Reset(){
-	pProperty = NULL;
+	pProperty = nullptr;
 	pType = eptUnknown;
 }
 

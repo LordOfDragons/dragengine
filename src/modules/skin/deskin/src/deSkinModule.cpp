@@ -77,13 +77,13 @@ MOD_ENTRY_POINT_ATTR deBaseModule *DESkinCreateModule(deLoadableModule *loadable
 // returns NULL on error.
 /////////////////////////////////////////////////////////
 deBaseModule *DESkinCreateModule(deLoadableModule *loadableModule){
-	deBaseModule *module = NULL;
+	deBaseModule *module = nullptr;
 	
 	try{
 		module = new deSkinModule(*loadableModule);
 		
 	}catch(const deException &){
-		return NULL;
+		return nullptr;
 	}
 	
 	return module;
@@ -143,7 +143,7 @@ decXmlElementTag *deSkinModule::pGetTagAt(const decXmlElementTag &tag, int index
 		return element.CastToElementTag();
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -163,7 +163,7 @@ decXmlAttValue *deSkinModule::pFindAttribute(const decXmlElementTag &tag, const 
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 const char *deSkinModule::pGetAttributeString(const decXmlElementTag &tag, const char *name){
@@ -182,7 +182,7 @@ int deSkinModule::pGetAttributeInt(const decXmlElementTag &tag, const char *name
 	const decXmlAttValue * const value = pFindAttribute(tag, name);
 	
 	if(value){
-		return (int)strtol(value->GetValue(), NULL, 10);
+		return (int)strtol(value->GetValue(), nullptr, 10);
 		
 	}else{
 		LogErrorFormat("Missing Attribute '%s' in tag '%s'", name, tag.GetName().GetString());
@@ -194,7 +194,7 @@ float deSkinModule::pGetAttributeFloat(const decXmlElementTag &tag, const char *
 	const decXmlAttValue * const value = pFindAttribute(tag, name);
 	
 	if(value){
-		return strtof(value->GetValue(), NULL);
+		return strtof(value->GetValue(), nullptr);
 		
 	}else{
 		LogErrorFormat("Missing Attribute '%s' in tag '%s'", name, tag.GetName().GetString());
@@ -217,7 +217,7 @@ bool deSkinModule::pGetAttributeBool(const decXmlElementTag &tag, const char *na
 
 
 void deSkinModule::pParseSkin(const decXmlElementTag &root, deSkin &skin){
-	deSkinTexture *texture = NULL;
+	deSkinTexture *texture = nullptr;
 	decXmlElementTag *tag;
 	decPath basePath;
 	int i;
@@ -473,16 +473,16 @@ void deSkinModule::pParseMappedCurvePoint(const decXmlElementTag &root, decCurve
 
 
 deSkinTexture *deSkinModule::pParseTexture(const decXmlElementTag &root, decPath &basePath, deSkin &skin){
-	deSkinPropertyValue *propertyValue = NULL;
-	deSkinPropertyColor *propertyColor = NULL;
-	deSkinPropertyImage *propertyImage = NULL;
-	deSkinPropertyVideo *propertyVideo = NULL;
-	deSkinPropertyMapped *propertyMapped = NULL;
-	deSkinPropertyConstructed *propertyConstructed = NULL;
-	deSkinTexture *texture = NULL;
+	deSkinPropertyValue *propertyValue = nullptr;
+	deSkinPropertyColor *propertyColor = nullptr;
+	deSkinPropertyImage *propertyImage = nullptr;
+	deSkinPropertyVideo *propertyVideo = nullptr;
+	deSkinPropertyMapped *propertyMapped = nullptr;
+	deSkinPropertyConstructed *propertyConstructed = nullptr;
+	deSkinTexture *texture = nullptr;
 	decXmlCharacterData *cdata;
 	decXmlElementTag *tag;
-	const char *name = NULL;
+	const char *name = nullptr;
 	decColor color;
 	int i;
 	
@@ -511,7 +511,7 @@ deSkinTexture *deSkinModule::pParseTexture(const decXmlElementTag &root, decPath
 					
 					cdata = tag->GetFirstData();
 					if(cdata){
-						propertyValue->SetValue(strtof(cdata->GetData(), NULL));
+						propertyValue->SetValue(strtof(cdata->GetData(), nullptr));
 						
 					}else{
 						propertyValue->SetValue(0.0f);
@@ -525,7 +525,7 @@ deSkinTexture *deSkinModule::pParseTexture(const decXmlElementTag &root, decPath
 					}
 					
 					texture->AddProperty(propertyValue);
-					propertyValue = NULL;
+					propertyValue = nullptr;
 					
 				}else if(tag->GetName() == "color"){
 					name = pGetAttributeString(*tag, "property");
@@ -562,7 +562,7 @@ deSkinTexture *deSkinModule::pParseTexture(const decXmlElementTag &root, decPath
 					}
 					
 					texture->AddProperty(propertyColor);
-					propertyColor = NULL;
+					propertyColor = nullptr;
 					
 				}else if(tag->GetName() == "image"){
 					name = pGetAttributeString(*tag, "property");
@@ -588,7 +588,7 @@ deSkinTexture *deSkinModule::pParseTexture(const decXmlElementTag &root, decPath
 					}
 					
 					texture->AddProperty(propertyImage);
-					propertyImage = NULL;
+					propertyImage = nullptr;
 					
 				}else if(tag->GetName() == "video"){
 					name = pGetAttributeString(*tag, "property");
@@ -617,7 +617,7 @@ deSkinTexture *deSkinModule::pParseTexture(const decXmlElementTag &root, decPath
 					}
 					
 					texture->AddProperty(propertyVideo);
-					propertyVideo = NULL;
+					propertyVideo = nullptr;
 					
 				}else if(tag->GetName() == "mapped"){
 					name = pGetAttributeString(*tag, "property");
@@ -640,7 +640,7 @@ deSkinTexture *deSkinModule::pParseTexture(const decXmlElementTag &root, decPath
 					pParsePropertyMapped(*tag, skin, *propertyMapped);
 					
 					texture->AddProperty(propertyMapped);
-					propertyMapped = NULL;
+					propertyMapped = nullptr;
 					
 				}else if(tag->GetName() == "constructed"){
 					name = pGetAttributeString(*tag, "property");
@@ -663,7 +663,7 @@ deSkinTexture *deSkinModule::pParseTexture(const decXmlElementTag &root, decPath
 					pParsePropertyConstructed(*tag, skin, *propertyConstructed);
 					
 					texture->AddProperty(propertyConstructed);
-					propertyConstructed = NULL;
+					propertyConstructed = nullptr;
 					
 				}else if(tag->GetName() == "fullAlpha"){
 					LogWarnFormat("%s: texture(%i:%i): tag fullAlpha is deprecated. adding transparency.type=1 property instead",
@@ -675,7 +675,7 @@ deSkinTexture *deSkinModule::pParseTexture(const decXmlElementTag &root, decPath
 						propertyValue = new deSkinPropertyValue(name);
 						propertyValue->SetValue(1.0f);
 						texture->AddProperty(propertyValue);
-						propertyValue = NULL;
+						propertyValue = nullptr;
 					}
 					
 				}else{
@@ -799,7 +799,7 @@ void deSkinModule::pParsePropertyMapped(const decXmlElementTag &root, deSkin &sk
 
 void deSkinModule::pParsePropertyConstructed(const decXmlElementTag& root,
 const deSkin &skin, deSkinPropertyConstructed& property){
-	deSkinPropertyNode *node = NULL;
+	deSkinPropertyNode *node = nullptr;
 	int i;
 	
 	try{
@@ -861,7 +861,7 @@ const deSkin &skin, deSkinPropertyConstructed& property){
 				
 				if(node){
 					property.GetContent().AddNode(node);
-					node = NULL;
+					node = nullptr;
 					
 				}else{
 					LogWarnFormat("constructed(%i:%i): Unknown Tag %s, ignoring",
@@ -881,7 +881,7 @@ const deSkin &skin, deSkinPropertyConstructed& property){
 }
 
 deSkinPropertyNode *deSkinModule::pParsePropertyNode(const decXmlElementTag &tag, const deSkin &skin){
-	deSkinPropertyNode *node = NULL;
+	deSkinPropertyNode *node = nullptr;
 	
 	try{
 		const decString tagName(tag.GetName());
@@ -948,35 +948,35 @@ const deSkin &skin, deSkinPropertyNode &node){
 	}else if(tagName == "rotation"){
 		decXmlCharacterData * const cdata = tag.GetFirstData();
 		if(cdata){
-			node.SetRotation(strtof(cdata->GetData(), NULL) * DEG2RAD);
+			node.SetRotation(strtof(cdata->GetData(), nullptr) * DEG2RAD);
 		}
 		return true;
 		
 	}else if(tagName == "shear"){
 		decXmlCharacterData * const cdata = tag.GetFirstData();
 		if(cdata){
-			node.SetShear(strtof(cdata->GetData(), NULL) * DEG2RAD);
+			node.SetShear(strtof(cdata->GetData(), nullptr) * DEG2RAD);
 		}
 		return true;
 		
 	}else if(tagName == "brightness"){
 		decXmlCharacterData * const cdata = tag.GetFirstData();
 		if(cdata){
-			node.SetBrightness(strtof(cdata->GetData(), NULL));
+			node.SetBrightness(strtof(cdata->GetData(), nullptr));
 		}
 		return true;
 		
 	}else if(tagName == "contrast"){
 		decXmlCharacterData * const cdata = tag.GetFirstData();
 		if(cdata){
-			node.SetContrast(strtof(cdata->GetData(), NULL));
+			node.SetContrast(strtof(cdata->GetData(), nullptr));
 		}
 		return true;
 		
 	}else if(tagName == "gamma"){
 		decXmlCharacterData * const cdata = tag.GetFirstData();
 		if(cdata){
-			node.SetGamma(strtof(cdata->GetData(), NULL));
+			node.SetGamma(strtof(cdata->GetData(), nullptr));
 		}
 		return true;
 		
@@ -999,7 +999,7 @@ const deSkin &skin, deSkinPropertyNode &node){
 	}else if(tagName == "transparency"){
 		decXmlCharacterData * const cdata = tag.GetFirstData();
 		if(cdata){
-			node.SetTransparency(strtof(cdata->GetData(), NULL));
+			node.SetTransparency(strtof(cdata->GetData(), nullptr));
 		}
 		return true;
 		
@@ -1021,7 +1021,7 @@ const deSkin &skin, deSkinPropertyNode &node){
 		
 	}else if(tagName == "mask"){
 		const int count = tag.GetElementCount();
-		deSkinPropertyNode *nodeMask = NULL;
+		deSkinPropertyNode *nodeMask = nullptr;
 		int i;
 		
 		try{
@@ -1143,7 +1143,7 @@ const deSkin &skin, deSkinPropertyNode &node){
 void deSkinModule::pParsePropertyNodeGroup(const decXmlElementTag &root,
 const deSkin &skin, deSkinPropertyNodeGroup &group){
 	const int count = root.GetElementCount();
-	deSkinPropertyNode *node = NULL;
+	deSkinPropertyNode *node = nullptr;
 	int i;
 	
 	try{
@@ -1158,7 +1158,7 @@ const deSkin &skin, deSkinPropertyNodeGroup &group){
 			node = pParsePropertyNode(*tag, skin);
 			if(node){
 				group.AddNode(node);
-				node = NULL;
+				node = nullptr;
 				
 			}else if(!pParsePropertyNodeCommon(*tag, skin, group)){
 				LogWarnFormat("group(%i:%i): Unknown Tag %s, ignoring",
@@ -1288,7 +1288,7 @@ const deSkin &skin, deSkinPropertyNodeShape &shape){
 		}else if(tagName == "thickness"){
 			decXmlCharacterData * const cdata = tag->GetFirstData();
 			if(cdata){
-				shape.SetThickness(strtof(cdata->GetData(), NULL));
+				shape.SetThickness(strtof(cdata->GetData(), nullptr));
 			}
 		
 		}else if(tagName == "shapeMapped"){
@@ -1361,7 +1361,7 @@ const deSkin &skin, deSkinPropertyNodeText &text){
 		}else if(tagName == "fontSize"){
 			decXmlCharacterData * const cdata = tag->GetFirstData();
 			if(cdata){
-				text.SetFontSize(strtof(cdata->GetData(), NULL));
+				text.SetFontSize(strtof(cdata->GetData(), nullptr));
 			}
 			
 		}else if(tagName == "text"){
@@ -1432,19 +1432,19 @@ decColor deSkinModule::pParseColor(const decXmlElementTag &root){
 		tag = pGetTagAt(root, i);
 		if(tag){
 			if(strcmp(tag->GetName(), "red") == 0){
-				color.r = strtof(tag->GetFirstData()->GetData(), NULL);
+				color.r = strtof(tag->GetFirstData()->GetData(), nullptr);
 				
 			}else if(strcmp(tag->GetName(), "green") == 0){
-				color.g = strtof(tag->GetFirstData()->GetData(), NULL);
+				color.g = strtof(tag->GetFirstData()->GetData(), nullptr);
 				
 			}else if(strcmp(tag->GetName(), "blue") == 0){
-				color.b = strtof(tag->GetFirstData()->GetData(), NULL);
+				color.b = strtof(tag->GetFirstData()->GetData(), nullptr);
 				
 			}else if(strcmp(tag->GetName(), "alpha") == 0){
-				color.a = strtof(tag->GetFirstData()->GetData(), NULL);
+				color.a = strtof(tag->GetFirstData()->GetData(), nullptr);
 				
 			}else if(strcmp(tag->GetName(), "all") == 0){
-				color.r = strtof(tag->GetFirstData()->GetData(), NULL);
+				color.r = strtof(tag->GetFirstData()->GetData(), nullptr);
 				color.g = color.r;
 				color.b = color.r;
 				color.a = color.r;
@@ -1464,12 +1464,12 @@ void deSkinModule::pReadVector2(const decXmlElementTag &tag, decVector2 &vector)
 	
 	value = tag.FindAttribute("x");
 	if(value){
-		vector.x = strtof(value->GetValue(), NULL);
+		vector.x = strtof(value->GetValue(), nullptr);
 	}
 	
 	value = tag.FindAttribute("y");
 	if(value){
-		vector.y = strtof(value->GetValue(), NULL);
+		vector.y = strtof(value->GetValue(), nullptr);
 	}
 }
 

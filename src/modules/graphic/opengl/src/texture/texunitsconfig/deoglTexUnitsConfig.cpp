@@ -59,17 +59,17 @@
 
 deoglTexUnitsConfig::deoglTexUnitsConfig(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
-pUnits(NULL),
+pUnits(nullptr),
 pUnitCount(0),
-pParamBlock(NULL),
+pParamBlock(nullptr),
 pMaterialIndex(-1),
 pMaterialUsageCount(0),
 pUsageCount(1),
 pUnitsHashCode(0),
 pUniqueKey(renderThread.GetUniqueKey().Get()),
-pRTSTexture(NULL),
-pLLPrev(NULL),
-pLLNext(NULL){
+pRTSTexture(nullptr),
+pLLPrev(nullptr),
+pLLNext(nullptr){
 }
 
 deoglTexUnitsConfig::~deoglTexUnitsConfig(){
@@ -93,7 +93,7 @@ deoglTexUnitsConfig::~deoglTexUnitsConfig(){
 void deoglTexUnitsConfig::SetUnitCount(int count){
 	if(pUnits){
 		delete [] pUnits;
-		pUnits = NULL;
+		pUnits = nullptr;
 		pUnitCount = 0;
 	}
 	
@@ -210,7 +210,7 @@ void deoglTexUnitsConfig::RemoveUsage(){
 	
 	if(pRTSTexture){
 		pRenderThread.GetRenderTaskSharedPool().ReturnTexture(pRTSTexture);
-		pRTSTexture = NULL;
+		pRTSTexture = nullptr;
 	}
 	
 	pRenderThread.GetShader().GetTexUnitsConfigList().Remove(this);

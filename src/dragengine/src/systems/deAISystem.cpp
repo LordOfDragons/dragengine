@@ -55,7 +55,7 @@ extern const int *vResourcePeerCreationOrder;
 
 deAISystem::deAISystem(deEngine *engine) :
 deBaseSystem(engine, "AI", deModuleSystem::emtAI),
-pActiveModule(NULL){
+pActiveModule(nullptr){
 }
 
 deAISystem::~deAISystem(){
@@ -126,7 +126,7 @@ void deAISystem::SetActiveModule(deLoadableModule *module){
 
 void deAISystem::ClearPermanents(){
 	deBaseSystem::ClearPermanents();
-	pActiveModule = NULL;
+	pActiveModule = nullptr;
 }
 
 void deAISystem::PostStart(){

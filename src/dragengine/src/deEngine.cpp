@@ -428,7 +428,7 @@ deResourceManager *deEngine::GetResourceManagerFor(int resourceType) const{
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 deAnimationManager *deEngine::GetAnimationManager() const{
@@ -940,9 +940,9 @@ const char *gameObject){
 			for(i=0; i<esSystemCount; i++){
 				if(!pSystems[i]->CanStart()){
 					deErrorTracePoint *tracePoint = pErrorTrace->AddAndSetIfEmpty("System is not ready to start",
-						NULL, "deEngine::Run", __LINE__);
+						nullptr, "deEngine::Run", __LINE__);
 					if(!tracePoint){
-						tracePoint = pErrorTrace->AddPoint(NULL, "deEngine::Run", __LINE__);
+						tracePoint = pErrorTrace->AddPoint(nullptr, "deEngine::Run", __LINE__);
 					}
 					tracePoint->AddValue("system", pSystems[i]->GetSystemName());
 					
@@ -952,8 +952,8 @@ const char *gameObject){
 			}
 			
 		}catch(const deException &e){
-			pErrorTrace->AddAndSetIfEmpty(e.GetName(), NULL, e.GetFile(), e.GetLine());
-			deErrorTracePoint * const tracePoint = pErrorTrace->AddPoint(NULL, "deEngine::Run", __LINE__);
+			pErrorTrace->AddAndSetIfEmpty(e.GetName(), nullptr, e.GetFile(), e.GetLine());
+			deErrorTracePoint * const tracePoint = pErrorTrace->AddPoint(nullptr, "deEngine::Run", __LINE__);
 			tracePoint->AddValue("system", pSystems[i]->GetSystemName());
 			
 			hasErrors = true;
@@ -969,8 +969,8 @@ const char *gameObject){
 				}
 				
 			}catch(const deException &e){
-				pErrorTrace->AddAndSetIfEmpty(e.GetName(), NULL, e.GetFile(), e.GetLine());
-				deErrorTracePoint * const tracePoint = pErrorTrace->AddPoint(NULL, "deEngine::Run", __LINE__);
+				pErrorTrace->AddAndSetIfEmpty(e.GetName(), nullptr, e.GetFile(), e.GetLine());
+				deErrorTracePoint * const tracePoint = pErrorTrace->AddPoint(nullptr, "deEngine::Run", __LINE__);
 				tracePoint->AddValue("system", pSystems[i]->GetSystemName());
 				
 				hasErrors = true;
@@ -1158,7 +1158,7 @@ void deEngine::pInitSystems(){
 	
 	pSystems = new deBaseSystem*[esSystemCount];
 	for(i=0; i<esSystemCount; i++){
-		pSystems[i] = NULL;
+		pSystems[i] = nullptr;
 	}
 	
 	pSystems[esGraphic] = new deGraphicSystem(this);
@@ -1347,7 +1347,7 @@ void deEngine::pCleanUp(){
 	// free parallel processing
 	if(pParallelProcessing){
 		delete pParallelProcessing;
-		pParallelProcessing = NULL;
+		pParallelProcessing = nullptr;
 	}
 	
 	// free the rest

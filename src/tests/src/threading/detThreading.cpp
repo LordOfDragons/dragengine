@@ -63,10 +63,10 @@ void detThreading::Prepare(){
 	
 	testValue = 0;
 	testCondition = false;
-	mutex1 = NULL;
-	semaphore1 = NULL;
+	mutex1 = nullptr;
+	semaphore1 = nullptr;
 	
-	for(i=0; i<DETT_THREAD_COUNT; i++) threads[i] = NULL;
+	for(i=0; i<DETT_THREAD_COUNT; i++) threads[i] = nullptr;
 }
 
 void detThreading::Run(){
@@ -168,13 +168,13 @@ void detThreading::TestThread(){
 	mutex1->Unlock();
 	
 	delete threads[0];
-	threads[0] = NULL;
+	threads[0] = nullptr;
 	
 	delete semaphore1;
-	semaphore1 = NULL;
+	semaphore1 = nullptr;
 	
 	delete mutex1;
-	mutex1 = NULL;
+	mutex1 = nullptr;
 }
 
 void detThreading::Sleep(float seconds){

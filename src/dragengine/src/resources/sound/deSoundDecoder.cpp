@@ -42,9 +42,9 @@
 deSoundDecoder::deSoundDecoder(deSoundManager &manager, deSound *sound) :
 pSoundManager(manager),
 pSound(sound),
-pPeerSound(NULL),
-pLLManagerPrev(NULL),
-pLLManagerNext(NULL)
+pPeerSound(nullptr),
+pLLManagerPrev(nullptr),
+pLLManagerNext(nullptr)
 {
 	if(!sound){
 		DETHROW(deeInvalidParam);
@@ -52,7 +52,7 @@ pLLManagerNext(NULL)
 }
 
 deSoundDecoder::~deSoundDecoder(){
-	SetPeerSound(NULL);
+	SetPeerSound(nullptr);
 	
 	pSoundManager.RemoveDecoder(this);
 }
@@ -111,6 +111,6 @@ void deSoundDecoder::SetLLManagerPrev(deSoundDecoder *resource){
 }
 
 void deSoundDecoder::MarkLeaking(){
-	pLLManagerNext = NULL;
-	pLLManagerPrev = NULL;
+	pLLManagerNext = nullptr;
+	pLLManagerPrev = nullptr;
 }

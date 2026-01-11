@@ -43,7 +43,7 @@ pMinValue(0.0f),
 pMaxValue(1.0f),
 pClamp(true),
 pDirty(false),
-pValues(NULL),
+pValues(nullptr),
 pValueSize(0){
 }
 
@@ -73,7 +73,7 @@ void desynSynthesizerController::UpdateValues(int samples, float time, float ran
 	if(samples > pValueSize){
 		if(pValues){
 			delete [] pValues;
-			pValues = NULL;
+			pValues = nullptr;
 		}
 		pValueSize = 0;
 		

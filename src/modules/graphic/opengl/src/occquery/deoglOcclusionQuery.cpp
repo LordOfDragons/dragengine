@@ -109,7 +109,7 @@ void deoglOcclusionQuery::EndQuery(){
 		break;
 	}
 	
-	ocmgr.SetActiveQuery(NULL);
+	ocmgr.SetActiveQuery(nullptr);
 }
 
 bool deoglOcclusionQuery::HasResult() const{

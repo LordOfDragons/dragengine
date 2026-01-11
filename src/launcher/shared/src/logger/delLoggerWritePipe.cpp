@@ -105,7 +105,7 @@ void delLoggerWritePipe::LogToPipe(const char *source, const char *message, int 
 	unsigned short lenMessage = (unsigned short)strlen(message);
 	unsigned short lenSource = (unsigned short)strlen(source);
 	unsigned char wtype = (unsigned char)type;
-	char *data = NULL;
+	char *data = nullptr;
 	int dataLen = 0;
 	char *dataPtr;
 	

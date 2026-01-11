@@ -70,7 +70,7 @@ pIsDefined(false),
 pRequiredComponentCount(1),
 pRequiresFloat(false),
 pAllowMipMap(true),
-pSharedImage(NULL),
+pSharedImage(nullptr),
 pTextureType(deoglSkinChannel::ett2d){
 }
 
@@ -91,7 +91,7 @@ void deoglVSDetermineChannelFormat::ProcessChannel(deoglSkinChannel::eChannelTyp
 	pRequiredComponentCount = 1;
 	pRequiresFloat = false;
 	pAllowMipMap = true;
-	pSharedImage = NULL;
+	pSharedImage = nullptr;
 	pTextureType = deoglSkinChannel::ett2d;
 	
 	switch(channel){
@@ -238,7 +238,7 @@ void deoglVSDetermineChannelFormat::SetSharedImage(deoglRImage *image){
 		pIsDefined = true;
 		
 	}else{
-		pSharedImage = NULL;
+		pSharedImage = nullptr;
 	}
 }
 

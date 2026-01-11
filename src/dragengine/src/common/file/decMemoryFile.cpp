@@ -39,7 +39,7 @@
 
 decMemoryFile::decMemoryFile(const char *filename) :
 pFilename(filename),
-pData(NULL),
+pData(nullptr),
 pSize(0),
 pCapacity(0),
 pModificationTime(decDateTime().ToSystemTime()){
@@ -72,7 +72,7 @@ void decMemoryFile::Resize(int size, bool compact){
 	if(size == 0){
 		if(compact){
 			free(pData);
-			pData = NULL;
+			pData = nullptr;
 			pCapacity = 0;
 		}
 		pSize = 0;

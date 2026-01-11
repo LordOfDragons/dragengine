@@ -94,7 +94,7 @@ void detTDictionary::TestStringIntBasic(){
 	ASSERT_EQUAL(dict.GetCount(), 3); // count unchanged
 
 	// GetAt with output parameter
-	const int *value = 0;
+	const int *value = nullptr;
 	ASSERT_TRUE(dict.GetAt("b", value));
 	ASSERT_NOT_NULL(value);
 	ASSERT_EQUAL(*value, 2);

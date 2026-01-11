@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shared dynamic TBO. */
-	deoglDynamicTBOShared(deoglDynamicTBO *tbo, int stride, deoglDynamicTBO *tbo2 = NULL, int stride2 = 1);
+	deoglDynamicTBOShared(deoglDynamicTBO *tbo, int stride, deoglDynamicTBO *tbo2 = nullptr, int stride2 = 1);
 	
 protected:
 	/** Cleans up shared dynamic TBO. */
@@ -98,7 +98,7 @@ public:
 	deoglDynamicTBOBlock *GetBlockAt(int index) const;
 	
 	/** Add block. Returns block or NULL if not enough space. */
-	deoglDynamicTBOBlock::Ref AddBlock(deoglDynamicTBO *tbo, deoglDynamicTBO *tbo2 = NULL);
+	deoglDynamicTBOBlock::Ref AddBlock(deoglDynamicTBO *tbo, deoglDynamicTBO *tbo2 = nullptr);
 	
 	/** Remove block returning the space to the pool of free space. */
 	void RemoveBlock(deoglDynamicTBOBlock *block);

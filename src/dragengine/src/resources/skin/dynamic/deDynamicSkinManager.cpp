@@ -105,7 +105,7 @@ void deDynamicSkinManager::SystemGraphicUnload(){
 	deDynamicSkin *dynamicSkin = (deDynamicSkin*)pSkins.GetRoot();
 	
 	while(dynamicSkin){
-		dynamicSkin->SetPeerGraphic(NULL);
+		dynamicSkin->SetPeerGraphic(nullptr);
 		dynamicSkin = (deDynamicSkin*)dynamicSkin->GetLLManagerNext();
 	}
 }

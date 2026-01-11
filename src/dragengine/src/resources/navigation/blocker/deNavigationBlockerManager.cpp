@@ -104,7 +104,7 @@ void deNavigationBlockerManager::SystemAIUnload(){
 	deNavigationBlocker *blocker = (deNavigationBlocker*)pBlockers.GetRoot();
 	
 	while(blocker){
-		blocker->SetPeerAI(NULL);
+		blocker->SetPeerAI(nullptr);
 		blocker = (deNavigationBlocker*)blocker->GetLLManagerNext();
 	}
 }

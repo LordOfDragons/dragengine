@@ -64,8 +64,8 @@
 deRLTaskReadSkinInternal::cInternalTask::cInternalTask(
 deSkinPropertyImage *propertyImage, deResourceLoaderTask *task) :
 pPropertyImage(propertyImage),
-pNodeImage(NULL),
-pNodeText(NULL),
+pNodeImage(nullptr),
+pNodeText(nullptr),
 pTask(task)
 {
 	if(!task || !propertyImage){
@@ -75,9 +75,9 @@ pTask(task)
 
 deRLTaskReadSkinInternal::cInternalTask::cInternalTask(
 deSkinPropertyNodeImage *nodeImage, deResourceLoaderTask *task) :
-pPropertyImage(NULL),
+pPropertyImage(nullptr),
 pNodeImage(nodeImage),
-pNodeText(NULL),
+pNodeText(nullptr),
 pTask(task)
 {
 	if(!task || !nodeImage){
@@ -87,8 +87,8 @@ pTask(task)
 
 deRLTaskReadSkinInternal::cInternalTask::cInternalTask(
 deSkinPropertyNodeText *nodeText, deResourceLoaderTask *task) :
-pPropertyImage(NULL),
-pNodeImage(NULL),
+pPropertyImage(nullptr),
+pNodeImage(nullptr),
 pNodeText(nodeText),
 pTask(task)
 {
@@ -172,7 +172,7 @@ void deRLTaskReadSkinInternal::Finished(){
 	LogFinishedEnter();
 	if(IsCancelled() || !pApplyInternal()){
 		SetState(esFailed);
-		pSkin = NULL;
+		pSkin = nullptr;
 		LogFinishedExit();
 		return;
 	}
@@ -235,7 +235,7 @@ decString deRLTaskReadSkinInternal::GetDebugName() const{
 
 void deRLTaskReadSkinInternal::pCleanUp(){
 	pInternalTasks.RemoveAll();
-	pSkin = NULL;
+	pSkin = nullptr;
 }
 
 void deRLTaskReadSkinInternal::pPrepare(){
@@ -256,7 +256,7 @@ void deRLTaskReadSkinInternal::pPrepare(){
 		
 	}catch(const deException &){
 		SetState(esFailed);
-		pSkin = NULL;
+		pSkin = nullptr;
 		Cancel(GetEngine().GetParallelProcessing());
 		return;
 	}

@@ -66,7 +66,7 @@
 ////////////////////////////
 
 declLauncher::declLauncher() :
-pConfiguration(NULL){
+pConfiguration(nullptr){
 	// also log to "/logs/delauncher-console"
 	AddFileLogger("delauncher-console");
 	
@@ -164,7 +164,7 @@ void declLauncher::CleanUp(){
 	
 	if(pConfiguration){
 		delete pConfiguration;
-		pConfiguration = NULL;
+		pConfiguration = nullptr;
 	}
 }
 

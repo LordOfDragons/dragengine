@@ -45,7 +45,7 @@
 deapngDecoder::deapngDecoder(deVideoApng &module, decBaseFileReader *file) :
 deBaseVideoDecoder(file),
 pModule(module),
-pReader(NULL)
+pReader(nullptr)
 {
 	module.LogInfoFormat("Create decoder for %s", file->GetFilename());
 	

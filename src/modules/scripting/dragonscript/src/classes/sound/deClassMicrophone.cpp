@@ -404,12 +404,12 @@ void deClassMicrophone::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 
 deClassMicrophone::deClassMicrophone(deEngine *gameEngine, deScriptingDragonScript *scrMgr) :
 dsClass("Microphone", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE),
-pGameEngine(NULL),
-pScrMgr(NULL),
-pClsVec(NULL),
-pClsDVec(NULL),
-pClsSpk(NULL),
-pClsMicrophoneType(NULL)
+pGameEngine(nullptr),
+pScrMgr(nullptr),
+pClsVec(nullptr),
+pClsDVec(nullptr),
+pClsSpk(nullptr),
+pClsMicrophoneType(nullptr)
 {
 	// check params
 	if(!gameEngine || !scrMgr) DSTHROW(dueInvalidParam);
@@ -496,7 +496,7 @@ void deClassMicrophone::CreateClassMembers(dsEngine *engine){
 
 deMicrophone *deClassMicrophone::GetMicrophone(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return dedsGetNativeData<sMicNatDat>(p_GetNativeData(myself->GetBuffer())).microphone;
@@ -508,7 +508,7 @@ void deClassMicrophone::PushMicrophone(dsRunTime *rt, deMicrophone *microphone){
 	}
 	
 	if(!microphone){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

@@ -61,7 +61,7 @@ pDynamicFar(10.0f),
 pDynamicScale(2.887585e-2f),
 pDynamicOffset(2.887585e-4f),
 
-pShadowLayers(NULL),
+pShadowLayers(nullptr),
 pShadowLayerCount(0){
 }
 
@@ -140,7 +140,7 @@ void deoglShadowCaster::SetShadowLayerCount(int count){
 	
 	if(pShadowLayers){
 		delete [] pShadowLayers;
-		pShadowLayers = NULL;
+		pShadowLayers = nullptr;
 		pShadowLayerCount = 0;
 	}
 	

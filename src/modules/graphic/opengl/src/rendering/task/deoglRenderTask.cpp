@@ -72,7 +72,7 @@
 deoglRenderTask::deoglRenderTask(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
 
-pRenderParamBlock(NULL),
+pRenderParamBlock(nullptr),
 pTBOInstances(0),
 pSPBInstanceMaxEntries(0),
 pSPBInstanceIndexCount(0),
@@ -86,7 +86,7 @@ pHasPipeline(nullptr),
 pHasPipelineCount(0),
 pHasPipelineSize(0),
 
-pConfigTextures(NULL),
+pConfigTextures(nullptr),
 pConfigTextureCount(0),
 pConfigTextureSize(0){
 }
@@ -120,7 +120,7 @@ void deoglRenderTask::Clear(){
 	pHasPipelineCount = 0;
 	pPipelineCount = 0;
 	
-	SetRenderParamBlock(NULL);
+	SetRenderParamBlock(nullptr);
 	SetTBOInstances(0);
 	pUseSPBInstanceFlags = false;
 	pRenderVSStereo = false;
@@ -648,7 +648,7 @@ void deoglRenderTask::pUpdateSPBInstances(){
 		}
 		
 	}else{
-		deoglShaderParameterBlock *paramBlock = NULL;
+		deoglShaderParameterBlock *paramBlock = nullptr;
 		int i, j, k, l;
 		
 		try{
@@ -670,7 +670,7 @@ void deoglRenderTask::pUpdateSPBInstances(){
 							if(instance.GetSIIndexInstanceSPB() != paramBlock){
 								if(paramBlock){
 									paramBlock->UnmapBuffer();
-									paramBlock = NULL;
+									paramBlock = nullptr;
 								}
 								
 								instance.GetSIIndexInstanceSPB()->MapBuffer();

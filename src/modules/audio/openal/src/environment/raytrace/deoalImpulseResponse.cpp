@@ -40,13 +40,13 @@
 /////////////////////////////////
 
 deoalImpulseResponse::deoalImpulseResponse() :
-pImpulses(NULL),
+pImpulses(nullptr),
 pCount(0),
 pSize(0){
 }
 
 deoalImpulseResponse::deoalImpulseResponse(const deoalImpulseResponse &response) :
-pImpulses(NULL),
+pImpulses(nullptr),
 pCount(0),
 pSize(0)
 {

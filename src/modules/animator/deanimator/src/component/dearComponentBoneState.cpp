@@ -37,7 +37,7 @@
 
 dearComponentBoneState::dearComponentBoneState() :
 pScale(1.0f, 1.0f, 1.0f),
-pParent(NULL){
+pParent(nullptr){
 }
 
 dearComponentBoneState::~dearComponentBoneState(){

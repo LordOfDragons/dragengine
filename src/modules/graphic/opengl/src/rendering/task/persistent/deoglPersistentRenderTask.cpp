@@ -64,7 +64,7 @@
 
 deoglPersistentRenderTask::deoglPersistentRenderTask(deoglPersistentRenderTaskPool &pool) :
 pPool(pool),
-pRenderParamBlock(NULL),
+pRenderParamBlock(nullptr),
 pTBOInstances(0),
 pSPBInstanceMaxEntries(0),
 pUseSPBInstanceFlags(false){
@@ -305,7 +305,7 @@ void deoglPersistentRenderTask::pCalcSPBInstancesMaxEntries(deoglRenderThread &r
 void deoglPersistentRenderTask::pAssignSPBInstances(deoglRenderThread &renderThread){
 	decTLinkedList<deoglPersistentRenderTaskPipeline>::Element *iterPipeline = pPipelines.GetRoot();
 	const int componentsPerIndex = pUseSPBInstanceFlags ? 2 : 1;
-	deoglShaderParameterBlock *paramBlock = NULL;
+	deoglShaderParameterBlock *paramBlock = nullptr;
 	int paramBlockCount = 0;
 	int firstIndex = 0;
 	
@@ -360,7 +360,7 @@ void deoglPersistentRenderTask::pAssignSPBInstances(deoglRenderThread &renderThr
 }
 
 void deoglPersistentRenderTask::pUpdateSPBInstances(){
-	deoglShaderParameterBlock *paramBlock = NULL;
+	deoglShaderParameterBlock *paramBlock = nullptr;
 	
 	try{
 		decTLinkedList<deoglPersistentRenderTaskPipeline>::Element *iterPipeline = pPipelines.GetRoot();
@@ -383,7 +383,7 @@ void deoglPersistentRenderTask::pUpdateSPBInstances(){
 						if(instance.GetSIIndexInstanceSPB() != paramBlock){
 							if(paramBlock){
 								paramBlock->UnmapBuffer();
-								paramBlock = NULL;
+								paramBlock = nullptr;
 							}
 							
 							instance.GetSIIndexInstanceSPB()->MapBuffer();

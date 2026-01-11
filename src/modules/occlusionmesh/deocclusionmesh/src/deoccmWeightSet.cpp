@@ -40,7 +40,7 @@
 ////////////////////////////
 
 deoccmWeightSet::deoccmWeightSet(){
-	pWeights = NULL;
+	pWeights = nullptr;
 	pCount = 0;
 	pGroupedIndex = -1;
 }
@@ -129,7 +129,7 @@ void deoccmWeightSet::SetGroupedIndex(int index){
 void deoccmWeightSet::RemoveAll(){
 	if(pWeights){
 		delete [] pWeights;
-		pWeights = NULL;
+		pWeights = nullptr;
 		pCount = 0;
 	}
 }

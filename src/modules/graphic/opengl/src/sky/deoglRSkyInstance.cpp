@@ -48,12 +48,12 @@
 
 deoglRSkyInstance::deoglRSkyInstance(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
-pParentWorld(NULL),
+pParentWorld(nullptr),
 pOrder(0),
 pPassthroughTransparency(0.0f),
-pControllerStates(NULL),
+pControllerStates(nullptr),
 pControllerStateCount(0),
-pLayers(NULL),
+pLayers(nullptr),
 pLayerCount(0),
 pTotalSkyLightIntensity(0.0f),
 pTotalSkyAmbientIntensity(0.0f),
@@ -143,7 +143,7 @@ void deoglRSkyInstance::UpdateControllerStates(const deSkyInstance &instance){
 	if(count != pControllerStateCount){
 		if(pControllerStates){
 			delete [] pControllerStates;
-			pControllerStates = NULL;
+			pControllerStates = nullptr;
 			pControllerStateCount = 0;
 		}
 		
@@ -185,7 +185,7 @@ void deoglRSkyInstance::RebuildLayers(){
 			delete pLayers[--pLayerCount];
 		}
 		delete [] pLayers;
-		pLayers = NULL;
+		pLayers = nullptr;
 		pLayerCount = 0;
 	}
 	
@@ -273,7 +273,7 @@ void deoglRSkyInstance::DropAllGIStates(){
 
 
 void deoglRSkyInstance::PrepareQuickDispose(){
-	pParentWorld = NULL;
+	pParentWorld = nullptr;
 }
 
 void deoglRSkyInstance::NotifyUpdateStaticComponent(deoglRComponent *component){

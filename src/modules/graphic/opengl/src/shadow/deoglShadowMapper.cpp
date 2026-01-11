@@ -80,45 +80,45 @@
 deoglShadowMapper::deoglShadowMapper(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
 
-pTextureDepthSolid(NULL),
-pTextureDepthTransp(NULL),
-pTextureColorTransp(NULL),
-pForeignTexDepthSolid(NULL),
-pForeignTexDepthTransp(NULL),
-pForeignTexColorTransp(NULL),
-pUseTexDepthSolid(NULL),
-pUseTexDepthTransp(NULL),
-pUseTexColorTransp(NULL),
+pTextureDepthSolid(nullptr),
+pTextureDepthTransp(nullptr),
+pTextureColorTransp(nullptr),
+pForeignTexDepthSolid(nullptr),
+pForeignTexDepthTransp(nullptr),
+pForeignTexColorTransp(nullptr),
+pUseTexDepthSolid(nullptr),
+pUseTexDepthTransp(nullptr),
+pUseTexColorTransp(nullptr),
 
-pCubeMapDepthSolid(NULL),
-pCubeMapDepthTransp(NULL),
-pCubeMapColorTransp(NULL),
-pForeignCubeMapDepthSolid(NULL),
-pForeignCubeMapDepthTransp(NULL),
-pForeignCubeMapColorTransp(NULL),
-pUseCubeMapDepthSolid(NULL),
-pUseCubeMapDepthTransp(NULL),
-pUseCubeMapColorTransp(NULL),
+pCubeMapDepthSolid(nullptr),
+pCubeMapDepthTransp(nullptr),
+pCubeMapColorTransp(nullptr),
+pForeignCubeMapDepthSolid(nullptr),
+pForeignCubeMapDepthTransp(nullptr),
+pForeignCubeMapColorTransp(nullptr),
+pUseCubeMapDepthSolid(nullptr),
+pUseCubeMapDepthTransp(nullptr),
+pUseCubeMapColorTransp(nullptr),
 
-pArrTexSolidDepth(NULL),
-pArrTexTranspDepth(NULL),
-pArrTexTranspColor(NULL),
-pForeignArrTexSolidDepth(NULL),
-pForeignArrTexTranspDepth(NULL),
-pForeignArrTexTranspColor(NULL),
-pUseArrTexSolidDepth(NULL),
-pUseArrTexTranspDepth(NULL),
-pUseArrTexTranspColor(NULL),
+pArrTexSolidDepth(nullptr),
+pArrTexTranspDepth(nullptr),
+pArrTexTranspColor(nullptr),
+pForeignArrTexSolidDepth(nullptr),
+pForeignArrTexTranspDepth(nullptr),
+pForeignArrTexTranspColor(nullptr),
+pUseArrTexSolidDepth(nullptr),
+pUseArrTexTranspDepth(nullptr),
+pUseArrTexTranspColor(nullptr),
 
-pTextureOcclusion(NULL),
+pTextureOcclusion(nullptr),
 
-pTextureAmbient(NULL),
-pForeignTexAmbient(NULL),
-pUseTexAmbient(NULL),
+pTextureAmbient(nullptr),
+pForeignTexAmbient(nullptr),
+pUseTexAmbient(nullptr),
 
-pCubeMapAmbient(NULL),
-pForeignCubeMapAmbient(NULL),
-pUseCubeMapAmbient(NULL){
+pCubeMapAmbient(nullptr),
+pForeignCubeMapAmbient(nullptr),
+pUseCubeMapAmbient(nullptr){
 }
 
 deoglShadowMapper::~deoglShadowMapper(){
@@ -141,7 +141,7 @@ deoglTexture *deoglShadowMapper::GetSolidDepthTexture() const{
 void deoglShadowMapper::SetForeignSolidDepthTexture(deoglTexture *texture){
 	if(pTextureDepthSolid){
 		pTextureDepthSolid->SetInUse(false);
-		pTextureDepthSolid = NULL;
+		pTextureDepthSolid = nullptr;
 	}
 	
 	pForeignTexDepthSolid = texture;
@@ -159,7 +159,7 @@ deoglTexture *deoglShadowMapper::GetTransparentDepthTexture() const{
 void deoglShadowMapper::SetForeignTransparentDepthTexture(deoglTexture *texture){
 	if(pTextureDepthTransp){
 		pTextureDepthTransp->SetInUse(false);
-		pTextureDepthTransp = NULL;
+		pTextureDepthTransp = nullptr;
 	}
 	
 	pForeignTexDepthTransp = texture;
@@ -177,7 +177,7 @@ deoglTexture *deoglShadowMapper::GetTransparentColorTexture() const{
 void deoglShadowMapper::SetForeignTransparentColorTexture(deoglTexture *texture){
 	if(pTextureColorTransp){
 		pTextureColorTransp->SetInUse(false);
-		pTextureColorTransp = NULL;
+		pTextureColorTransp = nullptr;
 	}
 	
 	pForeignTexColorTransp = texture;
@@ -192,46 +192,46 @@ void deoglShadowMapper::DropTextures(){
 void deoglShadowMapper::DropTexturesSolid(){
 	pFBOTextureSolid.Clear();
 	
-	pUseTexDepthSolid = NULL;
-	pForeignTexDepthSolid = NULL;
+	pUseTexDepthSolid = nullptr;
+	pForeignTexDepthSolid = nullptr;
 	if(pTextureDepthSolid){
 		pTextureDepthSolid->SetInUse(false);
-		pTextureDepthSolid = NULL;
+		pTextureDepthSolid = nullptr;
 	}
 }
 
 void deoglShadowMapper::DropTexturesTransparent(){
 	pFBOTextureTransp.Clear();
 	
-	pUseTexDepthTransp = NULL;
-	pForeignTexDepthTransp = NULL;
+	pUseTexDepthTransp = nullptr;
+	pForeignTexDepthTransp = nullptr;
 	if(pTextureDepthTransp){
 		pTextureDepthTransp->SetInUse(false);
-		pTextureDepthTransp = NULL;
+		pTextureDepthTransp = nullptr;
 	}
 	
-	pUseTexColorTransp = NULL;
-	pForeignTexColorTransp = NULL;
+	pUseTexColorTransp = nullptr;
+	pForeignTexColorTransp = nullptr;
 	if(pTextureColorTransp){
 		pTextureColorTransp->SetInUse(false);
-		pTextureColorTransp = NULL;
+		pTextureColorTransp = nullptr;
 	}
 }
 
 void deoglShadowMapper::DropForeignTextures(){
 	if(pForeignTexDepthSolid){
-		pForeignTexDepthSolid = NULL;
-		pUseTexDepthSolid = NULL;
+		pForeignTexDepthSolid = nullptr;
+		pUseTexDepthSolid = nullptr;
 	}
 	
 	if(pForeignTexDepthTransp){
-		pForeignTexDepthTransp = NULL;
-		pUseTexDepthTransp = NULL;
+		pForeignTexDepthTransp = nullptr;
+		pUseTexDepthTransp = nullptr;
 	}
 	
 	if(pForeignTexColorTransp){
-		pForeignTexColorTransp = NULL;
-		pUseTexColorTransp = NULL;
+		pForeignTexColorTransp = nullptr;
+		pUseTexColorTransp = nullptr;
 	}
 }
 
@@ -343,7 +343,7 @@ deoglCubeMap *deoglShadowMapper::GetSolidDepthCubeMap() const{
 void deoglShadowMapper::SetForeignSolidDepthCubeMap(deoglCubeMap *cubemap){
 	if(pCubeMapDepthSolid){
 		pCubeMapDepthSolid->SetInUse(false);
-		pCubeMapDepthSolid = NULL;
+		pCubeMapDepthSolid = nullptr;
 	}
 	
 	pForeignCubeMapDepthSolid = cubemap;
@@ -362,7 +362,7 @@ deoglCubeMap *deoglShadowMapper::GetTransparentDepthCubeMap() const{
 void deoglShadowMapper::SetForeignTransparentDepthCubeMap(deoglCubeMap *cubemap){
 	if(pCubeMapDepthTransp){
 		pCubeMapDepthTransp->SetInUse(false);
-		pCubeMapDepthTransp = NULL;
+		pCubeMapDepthTransp = nullptr;
 	}
 	
 	pForeignCubeMapDepthTransp = cubemap;
@@ -381,7 +381,7 @@ deoglCubeMap *deoglShadowMapper::GetTransparentColorCubeMap() const{
 void deoglShadowMapper::SetForeignTransparentColorCubeMap(deoglCubeMap *cubemap){
 	if(pCubeMapColorTransp){
 		pCubeMapColorTransp->SetInUse(false);
-		pCubeMapColorTransp = NULL;
+		pCubeMapColorTransp = nullptr;
 	}
 	
 	pForeignCubeMapColorTransp = cubemap;
@@ -397,11 +397,11 @@ void deoglShadowMapper::DropCubeMaps(){
 void deoglShadowMapper::DropCubeMapsSolid(){
 	pFBOCube.Clear();
 	
-	pUseCubeMapDepthSolid = NULL;
-	pForeignCubeMapDepthSolid = NULL;
+	pUseCubeMapDepthSolid = nullptr;
+	pForeignCubeMapDepthSolid = nullptr;
 	if(pCubeMapDepthSolid){
 		pCubeMapDepthSolid->SetInUse(false);
-		pCubeMapDepthSolid = NULL;
+		pCubeMapDepthSolid = nullptr;
 	}
 	DBGCALL("DropSolidCubeMaps", pCubeMapDepthSolid, pForeignCubeMapDepthSolid, pUseCubeMapDepthSolid)
 }
@@ -409,39 +409,39 @@ void deoglShadowMapper::DropCubeMapsSolid(){
 void deoglShadowMapper::DropCubeMapsTransparent(){
 	pFBOCube.Clear();
 	
-	pUseCubeMapDepthTransp = NULL;
-	pForeignCubeMapDepthTransp = NULL;
+	pUseCubeMapDepthTransp = nullptr;
+	pForeignCubeMapDepthTransp = nullptr;
 	if(pCubeMapDepthTransp){
 		pCubeMapDepthTransp->SetInUse(false);
-		pCubeMapDepthTransp = NULL;
+		pCubeMapDepthTransp = nullptr;
 	}
 	DBGCALL("DropTransparentCubeMaps1", pUseCubeMapDepthTransp, pForeignCubeMapDepthTransp, 0)
 	
-	pUseCubeMapColorTransp = NULL;
-	pForeignCubeMapColorTransp = NULL;
+	pUseCubeMapColorTransp = nullptr;
+	pForeignCubeMapColorTransp = nullptr;
 	if(pCubeMapColorTransp){
 		pCubeMapColorTransp->SetInUse(false);
-		pCubeMapColorTransp = NULL;
+		pCubeMapColorTransp = nullptr;
 	}
 	DBGCALL("DropTransparentCubeMaps2", pUseCubeMapColorTransp, pForeignCubeMapColorTransp, pCubeMapColorTransp)
 }
 
 void deoglShadowMapper::DropForeignCubeMaps(){
 	if(pForeignCubeMapDepthSolid){
-		pForeignCubeMapDepthSolid = NULL;
-		pUseCubeMapDepthSolid = NULL;
+		pForeignCubeMapDepthSolid = nullptr;
+		pUseCubeMapDepthSolid = nullptr;
 	}
 	DBGCALL3("DropForeignCubeMaps1", pForeignCubeMapDepthSolid, pUseCubeMapDepthSolid)
 	
 	if(pForeignCubeMapDepthTransp){
-		pForeignCubeMapDepthTransp = NULL;
-		pUseCubeMapDepthTransp = NULL;
+		pForeignCubeMapDepthTransp = nullptr;
+		pUseCubeMapDepthTransp = nullptr;
 	}
 	DBGCALL3("DropForeignCubeMaps2", pForeignCubeMapDepthTransp, pUseCubeMapDepthTransp)
 	
 	if(pForeignCubeMapColorTransp){
-		pForeignCubeMapColorTransp = NULL;
-		pUseCubeMapColorTransp = NULL;
+		pForeignCubeMapColorTransp = nullptr;
+		pUseCubeMapColorTransp = nullptr;
 	}
 	DBGCALL3("DropForeignCubeMaps3", pForeignCubeMapColorTransp, pUseCubeMapColorTransp)
 }
@@ -645,7 +645,7 @@ deoglArrayTexture *deoglShadowMapper::GetSolidDepthArrayTexture() const{
 void deoglShadowMapper::SetForeignSolidDepthArrayTexture(deoglArrayTexture *texture){
 	if(pArrTexSolidDepth){
 		pArrTexSolidDepth->SetInUse(false);
-		pArrTexSolidDepth = NULL;
+		pArrTexSolidDepth = nullptr;
 	}
 	
 	pForeignArrTexSolidDepth = texture;
@@ -663,7 +663,7 @@ deoglArrayTexture *deoglShadowMapper::GetTransparentDepthArrayTexture() const{
 void deoglShadowMapper::SetForeignTransparentDepthArrayTexture(deoglArrayTexture *texture){
 	if(pArrTexTranspDepth){
 		pArrTexTranspDepth->SetInUse(false);
-		pArrTexTranspDepth = NULL;
+		pArrTexTranspDepth = nullptr;
 	}
 	
 	pForeignArrTexTranspDepth = texture;
@@ -681,7 +681,7 @@ deoglArrayTexture *deoglShadowMapper::GetTransparentColorArrayTexture() const{
 void deoglShadowMapper::SetForeignTransparentColorArrayTexture(deoglArrayTexture *texture){
 	if(pArrTexTranspColor){
 		pArrTexTranspColor->SetInUse(false);
-		pArrTexTranspColor = NULL;
+		pArrTexTranspColor = nullptr;
 	}
 	
 	pForeignArrTexTranspColor = texture;
@@ -691,42 +691,42 @@ void deoglShadowMapper::SetForeignTransparentColorArrayTexture(deoglArrayTexture
 void deoglShadowMapper::DropArrayTextures(){
 	pFBOArrTex.Clear();
 	
-	pUseArrTexSolidDepth = NULL;
-	pForeignArrTexSolidDepth = NULL;
+	pUseArrTexSolidDepth = nullptr;
+	pForeignArrTexSolidDepth = nullptr;
 	if(pArrTexSolidDepth){
 		pArrTexSolidDepth->SetInUse(false);
-		pArrTexSolidDepth = NULL;
+		pArrTexSolidDepth = nullptr;
 	}
 	
-	pUseArrTexTranspDepth = NULL;
-	pForeignArrTexTranspDepth = NULL;
+	pUseArrTexTranspDepth = nullptr;
+	pForeignArrTexTranspDepth = nullptr;
 	if(pArrTexTranspDepth){
 		pArrTexTranspDepth->SetInUse(false);
-		pArrTexTranspDepth = NULL;
+		pArrTexTranspDepth = nullptr;
 	}
 	
-	pUseArrTexTranspColor = NULL;
-	pForeignArrTexTranspColor = NULL;
+	pUseArrTexTranspColor = nullptr;
+	pForeignArrTexTranspColor = nullptr;
 	if(pArrTexTranspColor){
 		pArrTexTranspColor->SetInUse(false);
-		pArrTexTranspColor = NULL;
+		pArrTexTranspColor = nullptr;
 	}
 }
 
 void deoglShadowMapper::DropForeignArrayTextures(){
 	if(pForeignArrTexSolidDepth){
-		pForeignArrTexSolidDepth = NULL;
-		pUseArrTexSolidDepth = NULL;
+		pForeignArrTexSolidDepth = nullptr;
+		pUseArrTexSolidDepth = nullptr;
 	}
 	
 	if(pForeignArrTexTranspDepth){
-		pForeignArrTexTranspDepth = NULL;
-		pUseArrTexTranspDepth = NULL;
+		pForeignArrTexTranspDepth = nullptr;
+		pUseArrTexTranspDepth = nullptr;
 	}
 	
 	if(pForeignArrTexTranspColor){
-		pForeignArrTexTranspColor = NULL;
-		pUseArrTexTranspColor = NULL;
+		pForeignArrTexTranspColor = nullptr;
+		pUseArrTexTranspColor = nullptr;
 	}
 }
 
@@ -871,7 +871,7 @@ void deoglShadowMapper::DropOcclusionTextures(){
 	
 	if(pTextureOcclusion){
 		pTextureOcclusion->SetInUse(false);
-		pTextureOcclusion = NULL;
+		pTextureOcclusion = nullptr;
 	}
 }
 
@@ -919,7 +919,7 @@ deoglTexture *deoglShadowMapper::GetAmbientTexture() const{
 void deoglShadowMapper::SetForeignAmbientTexture(deoglTexture *texture){
 	if(pTextureAmbient){
 		pTextureAmbient->SetInUse(false);
-		pTextureAmbient = NULL;
+		pTextureAmbient = nullptr;
 	}
 	
 	pForeignTexAmbient = texture;
@@ -929,18 +929,18 @@ void deoglShadowMapper::SetForeignAmbientTexture(deoglTexture *texture){
 void deoglShadowMapper::DropAmbientTextures(){
 	pFBOAmbient.Clear();
 	
-	pUseTexAmbient = NULL;
-	pForeignTexAmbient = NULL;
+	pUseTexAmbient = nullptr;
+	pForeignTexAmbient = nullptr;
 	if(pTextureAmbient){
 		pTextureAmbient->SetInUse(false);
-		pTextureAmbient = NULL;
+		pTextureAmbient = nullptr;
 	}
 }
 
 void deoglShadowMapper::DropForeignAmbientTextures(){
 	if(pForeignTexAmbient){
-		pForeignTexAmbient = NULL;
-		pUseTexAmbient = NULL;
+		pForeignTexAmbient = nullptr;
+		pUseTexAmbient = nullptr;
 	}
 }
 
@@ -997,7 +997,7 @@ deoglCubeMap *deoglShadowMapper::GetAmbientCubeMap() const{
 void deoglShadowMapper::SetForeignAmbientCubeMap(deoglCubeMap *cubemap){
 	if(pCubeMapAmbient){
 		pCubeMapAmbient->SetInUse(false);
-		pCubeMapAmbient = NULL;
+		pCubeMapAmbient = nullptr;
 	}
 	
 	pForeignCubeMapAmbient = cubemap;
@@ -1008,19 +1008,19 @@ void deoglShadowMapper::SetForeignAmbientCubeMap(deoglCubeMap *cubemap){
 void deoglShadowMapper::DropAmbientCubeMaps(){
 	pFBOCubeAmbient.Clear();
 	
-	pUseCubeMapAmbient = NULL;
-	pForeignCubeMapAmbient = NULL;
+	pUseCubeMapAmbient = nullptr;
+	pForeignCubeMapAmbient = nullptr;
 	if(pCubeMapAmbient){
 		pCubeMapAmbient->SetInUse(false);
-		pCubeMapAmbient = NULL;
+		pCubeMapAmbient = nullptr;
 	}
 	DBGCALL("DropAmbientCubeMaps", pCubeMapAmbient, pForeignCubeMapAmbient, pUseCubeMapAmbient)
 }
 
 void deoglShadowMapper::DropForeignAmbientCubeMaps(){
 	if(pForeignCubeMapAmbient){
-		pForeignCubeMapAmbient = NULL;
-		pUseCubeMapAmbient = NULL;
+		pForeignCubeMapAmbient = nullptr;
+		pUseCubeMapAmbient = nullptr;
 	}
 	DBGCALL3("DropForeignAmbientCubeMaps", pForeignCubeMapAmbient, pUseCubeMapAmbient)
 }

@@ -51,7 +51,7 @@ fbxAnimationMove::fbxAnimationMove(fbxAnimation &animation, fbxNode &nodeStack) 
 pAnimation(animation),
 pNodeStack(nodeStack),
 pNodeStackID(nodeStack.GetID()),
-pNodeLayer(NULL),
+pNodeLayer(nullptr),
 pNodeLayerID(0),
 pName(nodeStack.GetProperties().GetAt(1)->CastString().GetValue()),
 pFrameRate(25)

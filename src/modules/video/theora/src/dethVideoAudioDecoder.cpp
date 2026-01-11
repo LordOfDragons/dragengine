@@ -95,7 +95,7 @@ void dethVideoAudioDecoder::SetPosition(int position){
 
 int dethVideoAudioDecoder::ReadSamples(void *buffer, int size){
 	int16_t *ptrBuffer = (int16_t*)buffer;
-	float **samples = NULL;
+	float **samples = nullptr;
 	int bytesWritten = 0;
 	
 	size -= size % pBufferSampleSize;
@@ -367,7 +367,7 @@ void dethVideoAudioDecoder::pSeek(int position){
 	}
 	
 	// read audio until the right time is found
-	float **samples = NULL;
+	float **samples = nullptr;
 	
 	while(pCurSample < position){
 		int sampleCount = vorbis_synthesis_pcmout(&pDecoderContext, &samples);

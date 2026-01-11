@@ -45,13 +45,13 @@ deSkin::deSkin(deSkinManager *manager, deVirtualFileSystem *vfs, const char *fil
 	TIME_SYSTEM modificationTime) :
 deFileResource(manager, vfs, filename, modificationTime),
 
-pTextures(NULL),
+pTextures(nullptr),
 pTextureCount(0),
 pTextureSize(0),
 
-pPeerGraphic(NULL),
-pPeerAudio(NULL),
-pPeerPhysics(NULL){
+pPeerGraphic(nullptr),
+pPeerAudio(nullptr),
+pPeerPhysics(nullptr){
 }
 
 deSkin::~deSkin(){

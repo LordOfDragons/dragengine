@@ -100,7 +100,7 @@ void deRLTaskReadAnimation::Finished(){
 	LogFinishedEnter();
 	if(!pSucceeded){
 		SetState(esFailed);
-		pAnimation = NULL;
+		pAnimation = nullptr;
 		LogFinishedExit();
 		GetResourceLoader().FinishTask(this);
 		return;

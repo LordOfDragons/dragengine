@@ -45,7 +45,7 @@
 
 dedsColliderListenerAdaptor::dedsColliderListenerAdaptor(deScriptingDragonScript &ds) :
 pDS(ds),
-pListener(NULL),
+pListener(nullptr),
 pHasListener(false)
 {
 	pListener = ds.GetScriptEngine()->GetMainRunTime()->CreateValue(ds.GetClassColliderListener());
@@ -57,7 +57,7 @@ dedsColliderListenerAdaptor::~dedsColliderListenerAdaptor(){
 	}
 	
 	pDS.GetScriptEngine()->GetMainRunTime()->FreeValue(pListener);
-	pListener = NULL;
+	pListener = nullptr;
 }
 
 
@@ -121,7 +121,7 @@ bool dedsColliderListenerAdaptor::CanHitCollider(deCollider *owner, deCollider *
 	
 	try{
 		clsCol.PushCollider(rt, collider); // collider
-		clsCol.PushCollider(rt, NULL); // owner
+		clsCol.PushCollider(rt, nullptr); // owner
 		rt->RunFunctionFast(pListener, funcIndex);
 		
 		canHitCollider = rt->GetReturnBool();

@@ -39,7 +39,7 @@
 ////////////////////////////
 
 dethInfos::dethInfos() :
-pSetupInfo(NULL),
+pSetupInfo(nullptr),
 pHeaderFinished(false),
 pAudioHeaderFinished(false)
 {

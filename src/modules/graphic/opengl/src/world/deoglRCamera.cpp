@@ -76,7 +76,7 @@ pToneMapCurveResolution(1024),
 pTextureToneMapCurve(nullptr),
 pDirtyToneMapCurve(true),
 
-pPlan(NULL),
+pPlan(nullptr),
 
 pInitTexture(true),
 
@@ -117,7 +117,7 @@ void deoglRCamera::SetParentWorld(deoglRWorld *parentWorld){
 		return;
 	}
 	
-	pPlan->SetWorld(NULL); // has to come first since SetWorld accesses previous world
+	pPlan->SetWorld(nullptr); // has to come first since SetWorld accesses previous world
 	pParentWorld = parentWorld;
 	pPlan->SetWorld(parentWorld);
 }

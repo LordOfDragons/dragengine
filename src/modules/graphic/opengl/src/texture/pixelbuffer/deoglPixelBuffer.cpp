@@ -48,7 +48,7 @@ deoglPixelBuffer::deoglPixelBuffer(ePixelFormats format, int width, int height, 
 	pWidth = width;
 	pHeight = height;
 	pDepth = depth;
-	pPixels = NULL;
+	pPixels = nullptr;
 	
 	if(format == epfByte1){
 		pUnitSize = 1;
@@ -201,7 +201,7 @@ pImageSize(pixelBuffer.pImageSize),
 pCompressed(pixelBuffer.pCompressed),
 pGLPixelFormat(pixelBuffer.pGLPixelFormat),
 pGLPixelType(pixelBuffer.pGLPixelType),
-pPixels(NULL)
+pPixels(nullptr)
 {
 	pPixels = new GLubyte[pImageSize];
 	memcpy(pPixels, pixelBuffer.pPixels, pImageSize);

@@ -50,7 +50,7 @@ dedaiHeightTerrainSector::dedaiHeightTerrainSector(dedaiHeightTerrain &heightTer
 	const deHeightTerrainSector &sector) :
 pHeightTerrain(heightTerrain),
 pSector(sector),
-pHeights(NULL)
+pHeights(nullptr)
 {
 	try{
 		pPosition.x = heightTerrain.GetHeightTerrain().GetSectorSize() * sector.GetSector().x;
@@ -96,7 +96,7 @@ void dedaiHeightTerrainSector::ParentWorldChanged(){
 void dedaiHeightTerrainSector::SectorChanged(){
 	if(pHeights){
 		delete [] pHeights;
-		pHeights = NULL;
+		pHeights = nullptr;
 	}
 	
 	pUpdateHeights();

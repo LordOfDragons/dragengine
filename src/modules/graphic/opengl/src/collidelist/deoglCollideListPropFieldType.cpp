@@ -42,7 +42,7 @@
 
 deoglCollideListPropFieldType::deoglCollideListPropFieldType(deoglCollideListPropField &propField) :
 pPropField(propField),
-pType(NULL),
+pType(nullptr),
 pClusterCount(0)
 {
 	(void)pPropField; // silence compiler warning
@@ -60,7 +60,7 @@ deoglCollideListPropFieldType::~deoglCollideListPropFieldType(){
 
 void deoglCollideListPropFieldType::Clear(){
 	RemoveAllClusters();
-	pType = NULL;
+	pType = nullptr;
 }
 
 void deoglCollideListPropFieldType::SetType(deoglRPropFieldType *type){
@@ -81,7 +81,7 @@ deoglCollideListPropFieldCluster &deoglCollideListPropFieldType::GetClusterAt(in
 }
 
 deoglCollideListPropFieldCluster *deoglCollideListPropFieldType::AddCluster(deoglPropFieldCluster *cluster){
-	deoglCollideListPropFieldCluster *clcluster = NULL;
+	deoglCollideListPropFieldCluster *clcluster = nullptr;
 	
 	if(pClusterCount < pClusters.GetCount()){
 		clcluster = pClusters.GetAt(pClusterCount);

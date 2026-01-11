@@ -43,7 +43,7 @@
 
 deSynthesizerSourceSynthesizer::deSynthesizerSourceSynthesizer() :
 
-pConnections(NULL),
+pConnections(nullptr),
 pConnectionCount(0){
 }
 
@@ -72,7 +72,7 @@ void deSynthesizerSourceSynthesizer::SetSynthesizer(deSynthesizer *synthesizer){
 void deSynthesizerSourceSynthesizer::UpdateConnectionCount(){
 	if(pConnections){
 		delete [] pConnections;
-		pConnections = NULL;
+		pConnections = nullptr;
 		pConnectionCount = 0;
 	}
 	

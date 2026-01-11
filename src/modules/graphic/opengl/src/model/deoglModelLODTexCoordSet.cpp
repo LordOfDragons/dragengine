@@ -39,11 +39,11 @@
 ////////////////////////////
 
 deoglModelLODTexCoordSet::deoglModelLODTexCoordSet(){
-	pTexCoords = NULL;
+	pTexCoords = nullptr;
 	pTexCoordCount = 0;
 	
-	pTangents = NULL;
-	pNegateTangents = NULL;
+	pTangents = nullptr;
+	pNegateTangents = nullptr;
 	pTangentCount = 0;
 }
 
@@ -61,7 +61,7 @@ void deoglModelLODTexCoordSet::SetTextureCoordinateCount(int count, bool copyCon
 		DETHROW(deeInvalidParam);
 	}
 	
-	decVector2 *texCoords = NULL;
+	decVector2 *texCoords = nullptr;
 	
 	if(count > 0){
 		texCoords = new decVector2[count];
@@ -90,8 +90,8 @@ void deoglModelLODTexCoordSet::SetTangentCount(int count){
 		DETHROW(deeInvalidParam);
 	}
 	
-	decVector *tangents = NULL;
-	bool *negateTangent = NULL;
+	decVector *tangents = nullptr;
+	bool *negateTangent = nullptr;
 	
 	if(count > 0){
 		tangents = new decVector[count];

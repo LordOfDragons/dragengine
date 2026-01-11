@@ -52,7 +52,7 @@
 deResourceLoaderTask::deResourceLoaderTask(deEngine &engine,
 deResourceLoader &resourceLoader, deVirtualFileSystem *vfs,
 const char *path, deResourceLoader::eResourceType resourceType) :
-deParallelTask(NULL),
+deParallelTask(nullptr),
 pEngine(engine),
 pResourceLoader(resourceLoader),
 pVFS(vfs),

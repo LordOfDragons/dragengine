@@ -38,7 +38,7 @@
 /////////////////////////////////
 
 dedaiSpaceGridVertex::dedaiSpaceGridVertex() :
-pGrid(NULL),
+pGrid(nullptr),
 pFirstEdge(0),
 pIndex(0),
 pEdgeCount(0),
@@ -47,7 +47,7 @@ pLinkCount(0),
 
 pEnabled(true),
 
-pPathParent(NULL),
+pPathParent(nullptr),
 pPathCostF(0.0f),
 pPathCostG(0.0f),
 pPathCostH(0.0f),
@@ -121,7 +121,7 @@ void dedaiSpaceGridVertex::SetPathType(ePathFindingTypes type){
 }
 
 void dedaiSpaceGridVertex::ClearPath(){
-	pPathParent = NULL;
+	pPathParent = nullptr;
 	pPathCostF = 0.0f;
 	pPathCostG = 0.0f;
 	pPathCostH = 0.0f;

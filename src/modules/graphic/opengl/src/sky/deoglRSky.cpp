@@ -49,9 +49,9 @@
 
 deoglRSky::deoglRSky(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
-pLinks(NULL),
+pLinks(nullptr),
 pLinkCount(0),
-pLayers(NULL),
+pLayers(nullptr),
 pLayerCount(0)
 {
 	LEAK_CHECK_CREATE(renderThread, Sky);
@@ -99,7 +99,7 @@ void deoglRSky::RebuildLinks(const deSky &sky){
 			delete pLinks[--pLinkCount];
 		}
 		delete [] pLinks;
-		pLinks = NULL;
+		pLinks = nullptr;
 	}
 	
 	const int linkCount = sky.GetLinks().GetCount();
@@ -128,7 +128,7 @@ void deoglRSky::RebuildLayers(const deSky &sky){
 			delete pLayers[--pLayerCount];
 		}
 		delete [] pLayers;
-		pLayers = NULL;
+		pLayers = nullptr;
 	}
 	
 	const int layerCount = sky.GetLayers().GetCount();

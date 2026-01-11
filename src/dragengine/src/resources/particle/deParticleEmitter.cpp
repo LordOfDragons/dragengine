@@ -52,18 +52,18 @@ deResource(manager)
 	
 	pGraphicModuleSimlates = false;
 	
-	pPeerGraphic = NULL;
-	pPeerPhysics = NULL;
+	pPeerGraphic = nullptr;
+	pPeerPhysics = nullptr;
 }
 
 deParticleEmitter::~deParticleEmitter(){
 	if(pPeerPhysics){
 		delete pPeerPhysics;
-		pPeerPhysics = NULL;
+		pPeerPhysics = nullptr;
 	}
 	if(pPeerGraphic){
 		delete pPeerGraphic;
-		pPeerGraphic = NULL;
+		pPeerGraphic = nullptr;
 	}
 }
 

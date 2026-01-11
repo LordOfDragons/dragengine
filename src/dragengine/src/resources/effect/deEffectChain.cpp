@@ -40,7 +40,7 @@
 ////////////////////////////
 
 deEffectChain::deEffectChain(){
-	pEffects = NULL;
+	pEffects = nullptr;
 	pEffectCount = 0;
 	pEffectSize = 0;
 }
@@ -106,7 +106,7 @@ void deEffectChain::RemoveEffect(deEffect *effect){
 	for(i=index; i<pEffectCount-1; i++){
 		pEffects[i] = pEffects[i + 1];
 	}
-	pEffects[pEffectCount - 1] = NULL;
+	pEffects[pEffectCount - 1] = nullptr;
 	pEffectCount--;
 	effect->FreeReference();
 }
@@ -114,7 +114,7 @@ void deEffectChain::RemoveEffect(deEffect *effect){
 void deEffectChain::RemoveAllEffects(){
 	while(pEffectCount > 0){
 		pEffects[pEffectCount - 1]->FreeReference();
-		pEffects[pEffectCount - 1] = NULL;
+		pEffects[pEffectCount - 1] = nullptr;
 		pEffectCount--;
 	}
 }

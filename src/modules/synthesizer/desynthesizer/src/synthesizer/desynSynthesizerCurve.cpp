@@ -42,9 +42,9 @@
 
 desynSynthesizerCurve::desynSynthesizerCurve() :
 pType(eetConstant),
-pPoints(NULL),
-pSamples(NULL),
-pFactors(NULL),
+pPoints(nullptr),
+pSamples(nullptr),
+pFactors(nullptr),
 pCount(0),
 pFirst(0.0f),
 pLast(0.0f),
@@ -54,9 +54,9 @@ pStep(0.0f)
 
 desynSynthesizerCurve::desynSynthesizerCurve(const decCurveBezier &curve) :
 pType(eetConstant),
-pPoints(NULL),
-pSamples(NULL),
-pFactors(NULL),
+pPoints(nullptr),
+pSamples(nullptr),
+pFactors(nullptr),
 pCount(0),
 pFirst(0.0f),
 pLast(0.0f),
@@ -67,9 +67,9 @@ pStep(0.0f)
 
 desynSynthesizerCurve::desynSynthesizerCurve(const decCurveBezier &curve, float ymin, float ymax) :
 pType(eetConstant),
-pPoints(NULL),
-pSamples(NULL),
-pFactors(NULL),
+pPoints(nullptr),
+pSamples(nullptr),
+pFactors(nullptr),
 pCount(0),
 pFirst(0.0f),
 pLast(0.0f),
@@ -155,17 +155,17 @@ float desynSynthesizerCurve::Evaluate(float position) const{
 void desynSynthesizerCurve::pClear(){
 	if(pSamples){
 		delete [] pSamples;
-		pSamples = NULL;
+		pSamples = nullptr;
 	}
 	
 	if(pPoints){
 		delete [] pPoints;
-		pPoints = NULL;
+		pPoints = nullptr;
 	}
 	
 	if(pFactors){
 		delete [] pFactors;
-		pFactors = NULL;
+		pFactors = nullptr;
 	}
 	
 	pCount = 0;

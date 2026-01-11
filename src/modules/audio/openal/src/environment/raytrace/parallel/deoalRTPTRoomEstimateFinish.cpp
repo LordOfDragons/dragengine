@@ -69,8 +69,8 @@ deoalRTPTRoomEstimateFinish::deoalRTPTRoomEstimateFinish(deoalRTParallelEnvProbe
 deParallelTask(&owner.GetAudioThread().GetOal()),
 pOwner(owner),
 pRange(0.0f),
-pProbeConfig(NULL),
-pRoomParameters(NULL)
+pProbeConfig(nullptr),
+pRoomParameters(nullptr)
 {
 	SetMarkFinishedAfterRun(true);
 	SetLowPriority(true);

@@ -48,8 +48,8 @@ deoglPersistentRenderTaskVAO::deoglPersistentRenderTaskVAO(deoglPersistentRender
 pPool(pool),
 pLLTexture(this),
 
-pParentTexture(NULL),
-pVAO(NULL){
+pParentTexture(nullptr),
+pVAO(nullptr){
 }
 
 deoglPersistentRenderTaskVAO::~deoglPersistentRenderTaskVAO(){
@@ -147,8 +147,8 @@ void deoglPersistentRenderTaskVAO::RemoveAllInstances(){
 void deoglPersistentRenderTaskVAO::Clear(){
 	RemoveAllInstances();
 	
-	pParentTexture = NULL;
-	pVAO = NULL;
+	pParentTexture = nullptr;
+	pVAO = nullptr;
 }
 
 void deoglPersistentRenderTaskVAO::RemoveFromParentIfEmpty(){

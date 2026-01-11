@@ -105,7 +105,7 @@ dearRule *dearCreateRuleVisitor::CreateRuleFrom(deAnimatorRule &engRule){
 /////////////
 
 void dearCreateRuleVisitor::VisitRule(deAnimatorRule&){
-	pCreatedRule = NULL;
+	pCreatedRule = nullptr;
 }
 
 void dearCreateRuleVisitor::VisitAnimation(deAnimatorRuleAnimation &rule){

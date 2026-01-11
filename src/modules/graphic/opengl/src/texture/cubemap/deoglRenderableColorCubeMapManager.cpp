@@ -42,7 +42,7 @@
 
 deoglRenderableColorCubeMapManager::deoglRenderableColorCubeMapManager(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
-pCubeMaps(NULL),
+pCubeMaps(nullptr),
 pCubeMapCount(0),
 pCubeMapSize(0){
 }
@@ -69,7 +69,7 @@ const deoglRenderableColorCubeMap *deoglRenderableColorCubeMapManager::GetCubeMa
 }
 
 deoglRenderableColorCubeMap *deoglRenderableColorCubeMapManager::GetCubeMapWith(int size, int componentCount, bool isFloat){
-	deoglRenderableColorCubeMap *cubemap = NULL;
+	deoglRenderableColorCubeMap *cubemap = nullptr;
 	int i;
 	
 	// find the cubemap with the matching format

@@ -77,12 +77,12 @@
 
 deoglGIBVH::deoglGIBVH(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
-pComponents(NULL),
+pComponents(nullptr),
 pComponentCount(0),
 pComponentSize(0),
-pPrimitives(NULL),
+pPrimitives(nullptr),
 pPrimitiveSize(0),
-pRecalcNodes(NULL),
+pRecalcNodes(nullptr),
 pRecalcNodeSize(0),
 pIndexRootNode(0),
 pRenderTaskMaterial(renderThread),
@@ -230,7 +230,7 @@ void deoglGIBVH::AddComponent(deoglRenderPlan&, const decMatrix &matrix, deoglGI
 		
 		for(i=0; i<textureCount; i++){
 			deoglRenderTaskTexture * const rttexture = addToRenderTask.AddComponentTexture(lod, i);
-			deoglTexUnitsConfig * const tuc = rttexture ? rttexture->GetTexture()->GetTUC() : NULL;
+			deoglTexUnitsConfig * const tuc = rttexture ? rttexture->GetTexture()->GetTUC() : nullptr;
 			pAddMaterial(instance, i, component.GetTextureAt(i), tuc);
 			instance.AddTUC(tuc);
 		}
@@ -424,7 +424,7 @@ void deoglGIBVH::pCleanUp(){
 void deoglGIBVH::pDropBlockBVH(){
 	if(pBlockBVH){
 		((deoglDynamicTBOBlock*)(deObject*)pBlockBVH)->Drop();
-		pBlockBVH = NULL;
+		pBlockBVH = nullptr;
 	}
 }
 

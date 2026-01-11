@@ -41,8 +41,8 @@
 
 deoglCombinedTextureList::deoglCombinedTextureList(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
-pRoot(NULL),
-pTail(NULL),
+pRoot(nullptr),
+pTail(nullptr),
 pCount(0){
 }
 
@@ -52,7 +52,7 @@ deoglCombinedTextureList::~deoglCombinedTextureList(){
 		pRoot = pRoot->GetLLNext();
 		delete pTail;
 	}
-	pTail = NULL;
+	pTail = nullptr;
 }
 
 

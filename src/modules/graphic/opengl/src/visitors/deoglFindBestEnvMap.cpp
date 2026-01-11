@@ -42,7 +42,7 @@
 ////////////////////////////
 
 deoglFindBestEnvMap::deoglFindBestEnvMap(){
-	pEnvMap = NULL;
+	pEnvMap = nullptr;
 	pDistance = 0.0;
 }
 
@@ -59,7 +59,7 @@ void deoglFindBestEnvMap::SetPosition(const decDVector &position){
 }
 
 void deoglFindBestEnvMap::Reset(){
-	pEnvMap = NULL;
+	pEnvMap = nullptr;
 	pDistance = 0.0;
 }
 

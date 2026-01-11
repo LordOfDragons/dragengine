@@ -99,7 +99,7 @@ deoglSharedVBOList *deoglSharedVBOListList::GetWith(const deoglVBOLayout &layout
 		}
 	}
 	
-	list = NULL;
+	list = nullptr;
 	
 	try{
 		list = new deoglSharedVBOList(pRenderThread, layout, drawType, pMaxSize, pMaxIndexSize);

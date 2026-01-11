@@ -49,13 +49,13 @@ pChannelCount(1),
 pSampleRate(44100),
 pBytesPerSample(2),
 pSampleCount(pSampleRate * 10),
-pPeerSynthesizer(NULL){
+pPeerSynthesizer(nullptr){
 }
 
 deSynthesizer::~deSynthesizer(){
 	if(pPeerSynthesizer){
 		delete pPeerSynthesizer;
-		pPeerSynthesizer = NULL;
+		pPeerSynthesizer = nullptr;
 	}
 	
 	RemoveAllSources();

@@ -505,7 +505,7 @@ void deClassFileReader::PushFileReader(dsRunTime *rt, decBaseFileReader *fileRea
 	}
 	
 	if(!fileReader){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

@@ -40,7 +40,7 @@
 ////////////////////////////
 
 deoglModelFaceList::deoglModelFaceList(){
-	pFaces = NULL;
+	pFaces = nullptr;
 	pFaceCount = 0;
 	pFaceSize = 0;
 }

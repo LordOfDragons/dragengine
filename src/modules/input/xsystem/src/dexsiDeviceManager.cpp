@@ -535,7 +535,7 @@ void dexsiDeviceManager::pUpdateWatchEvdev(){
 		pUpdateDeviceIndices();
 		
 		timeval eventTime;
-		gettimeofday(&eventTime, NULL);
+		gettimeofday(&eventTime, nullptr);
 		pModule.AddDeviceAttachedDetached(eventTime);
 	}
 }
@@ -600,7 +600,7 @@ void dexsiDeviceManager::pUpdateDelayProbeDevices(){
 	
 	if(devicesChanged){
 		timeval eventTime;
-		gettimeofday(&eventTime, NULL);
+		gettimeofday(&eventTime, nullptr);
 		pModule.AddDeviceAttachedDetached(eventTime);
 	}
 }

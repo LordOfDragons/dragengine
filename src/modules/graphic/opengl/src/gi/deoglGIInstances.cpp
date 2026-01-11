@@ -50,7 +50,7 @@
 
 deoglGIInstances::deoglGIInstances(deoglGIState &giState) :
 pGIState(giState),
-pDynamicBoxes(NULL),
+pDynamicBoxes(nullptr),
 pDynamicBoxCount(0),
 pDynamicBoxSize(0){
 }

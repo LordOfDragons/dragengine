@@ -49,7 +49,7 @@ int width, int height, int depth, int maxLevel){
 	int levelWidth = width;
 	int count;
 	
-	pPixelBuffers = NULL;
+	pPixelBuffers = nullptr;
 	pPixelBufferCount = 0;
 	
 	count = (int)(floorf(log2f((float)((height > width) ? height : width))));
@@ -999,10 +999,10 @@ void deoglPixelBufferMipMap::CreateRoughnessMipMaps(deoglPixelBufferMipMap &norm
 	const int baseNormalLevel =  pPixelBufferCount - 1 - (int)floorf(log2f((float)baseNormalMipMapSize) + 0.5f);
 	const int normalMaxLevel = normalPixeBufferMipMap.GetPixelBufferCount() - 1;
 	const float byteFactor = 1.0f / 255.0f;
-	const GLfloat *normalPointerOrgFloat = NULL;
-	const GLubyte *normalPointerOrgByte = NULL;
-	const GLfloat *normalPointerFloat = NULL;
-	const GLubyte *normalPointerByte = NULL;
+	const GLfloat *normalPointerOrgFloat = nullptr;
+	const GLubyte *normalPointerOrgByte = nullptr;
+	const GLfloat *normalPointerFloat = nullptr;
+	const GLubyte *normalPointerByte = nullptr;
 	const GLfloat *sourcePointerFloat;
 	GLfloat *destinationPointerFloat;
 	const GLubyte *sourcePointerByte;
@@ -1142,12 +1142,12 @@ void deoglPixelBufferMipMap::CreateRoughnessMipMaps(deoglPixelBufferMipMap &norm
 			if(floatData){
 				destinationPointerFloat = (GLfloat*)destinationPixelBuffer.GetPointer();
 				sourcePointerFloat = (const GLfloat *)sourcePixelBuffer.GetPointer();
-				destinationPointerByte = NULL;
-				sourcePointerByte = NULL;
+				destinationPointerByte = nullptr;
+				sourcePointerByte = nullptr;
 				
 			}else{
-				destinationPointerFloat = NULL;
-				sourcePointerFloat = NULL;
+				destinationPointerFloat = nullptr;
+				sourcePointerFloat = nullptr;
 				destinationPointerByte = (GLubyte*)destinationPixelBuffer.GetPointer();
 				sourcePointerByte = (const GLubyte *)sourcePixelBuffer.GetPointer();
 			}

@@ -190,15 +190,15 @@ const deoglDynamicTBOBlock::Ref &deoglGIBVHLocal::GetBlockVertex(){
 void deoglGIBVHLocal::DropBlocks(){
 	if(pBlockNode){
 		pBlockNode->Drop();
-		pBlockNode = NULL;
+		pBlockNode = nullptr;
 	}
 	if(pBlockFace){
 		pBlockFace->Drop();
-		pBlockFace = NULL;
+		pBlockFace = nullptr;
 	}
 	if(pBlockVertex){
 		pBlockVertex->Drop();
-		pBlockVertex = NULL;
+		pBlockVertex = nullptr;
 	}
 }
 

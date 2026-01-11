@@ -87,10 +87,10 @@ pCompressed(true),
 
 pFactorU(1.0f),
 pFactorV(1.0f),
-pTexture(NULL),
-pCubeMap(NULL),
-pArrayTexture(NULL),
-pCombinedTexture(NULL),
+pTexture(nullptr),
+pCubeMap(nullptr),
+pArrayTexture(nullptr),
+pCombinedTexture(nullptr),
 pTextureType(ett2d),
 
 pIsCached(false),
@@ -98,15 +98,15 @@ pCanBeCached(false),
 
 pUniformColorMask{true, true, true, true},
 
-pDelayedCombineImage1(NULL),
-pDelayedCombineImage2(NULL),
+pDelayedCombineImage1(nullptr),
+pDelayedCombineImage2(nullptr),
 
 pUniform(true),
 pDynamic(false),
 
 pImage(nullptr),
 
-pVideo(NULL),
+pVideo(nullptr),
 pVideoPlayer(-1),
 pSharedVideoPlayer(true),
 pRenderable(-1),
@@ -2032,11 +2032,11 @@ int srcLayer, int destLayer, int targetRed, int targetGreen, int targetBlue, int
 	
 	// get the right pointer for the image data
 	const int srcLayerSize = image.GetWidth() * image.GetHeight() * componentCount;
-	const unsigned char *srcData8 = NULL;
-	const unsigned short *srcData16 = NULL;
-	const float *srcData32 = NULL;
-	const GLubyte *srcDataPb8 = NULL;
-	const GLfloat *srcDataPb32 = NULL;
+	const unsigned char *srcData8 = nullptr;
+	const unsigned short *srcData16 = nullptr;
+	const float *srcData32 = nullptr;
+	const GLubyte *srcDataPb8 = nullptr;
+	const GLfloat *srcDataPb32 = nullptr;
 	
 	deoglPixelBuffer * const pixelBuffer = ((deoglImage*)image.GetPeerGraphic())->GetPixelBuffer();
 	

@@ -58,13 +58,13 @@ MOD_ENTRY_POINT_ATTR deBaseModule *DELangPackCreateModule(deLoadableModule *load
 ///////////////////
 
 deBaseModule *DELangPackCreateModule(deLoadableModule *loadableModule){
-	deBaseModule *module = NULL;
+	deBaseModule *module = nullptr;
 	
 	try{
 		module = new deLangPackModule(*loadableModule);
 		
 	}catch(const deException &){
-		return NULL;
+		return nullptr;
 	}
 	
 	return module;
@@ -133,7 +133,7 @@ const decXmlAttValue *deLangPackModule::pFindAttribute(const decXmlElementTag &t
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 const char *deLangPackModule::pGetAttributeString(const decXmlElementTag &tag, const char *name){

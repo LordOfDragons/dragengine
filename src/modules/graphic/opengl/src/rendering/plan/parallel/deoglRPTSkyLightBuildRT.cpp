@@ -176,7 +176,7 @@ void deoglRPTSkyLightBuildRT::pFilter(int layerIndex){
 		const deoglCollideListHTSector &sector = *collideList.GetHTSectorAt(i);
 		const int clusterCount = sector.GetClusterCount();
 		
-		deoglCollideListHTSector *addSector = NULL;
+		deoglCollideListHTSector *addSector = nullptr;
 		for(j=0; j<clusterCount; j++){
 			const deoglCollideListHTSCluster &cluster = sector.GetClusterAt(j);
 			if((cluster.GetCascadeMask() & cascadeMask) == cascadeMask){
@@ -202,12 +202,12 @@ void deoglRPTSkyLightBuildRT::pFilter(int layerIndex){
 		const deoglCollideListPropField &propfield = *collideList.GetPropFieldAt(i);
 		const int typeCount = propfield.GetTypeCount();
 		
-		deoglCollideListPropField *addPropField = NULL;
+		deoglCollideListPropField *addPropField = nullptr;
 		for(j=0; j<typeCount; j++){
 			const deoglCollideListPropFieldType &type = *propfield.GetTypeAt(j);
 			const int clusterCount = type.GetClusterCount();
 			
-			deoglCollideListPropFieldType *addType = NULL;
+			deoglCollideListPropFieldType *addType = nullptr;
 			for(k=0; k<clusterCount; k++){
 				const deoglCollideListPropFieldCluster &cluster = type.GetClusterAt(k);
 				if((cluster.GetCascadeMask() & cascadeMask) == cascadeMask){

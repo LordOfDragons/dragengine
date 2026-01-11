@@ -301,7 +301,7 @@ void deClassSoundLevelMeter::nfGetListener::RunFunction(dsRunTime *rt, dsValue *
 		rt->PushObject(peer->GetCallback(), ds.GetClassSoundLevelMeterListener());
 		
 	}else{
-		rt->PushObject(NULL, ds.GetClassSoundLevelMeterListener());
+		rt->PushObject(nullptr, ds.GetClassSoundLevelMeterListener());
 	}
 }
 
@@ -364,7 +364,7 @@ void deClassSoundLevelMeter::nfEquals::RunFunction(dsRunTime *rt, dsValue *mysel
 deClassSoundLevelMeter::deClassSoundLevelMeter(deScriptingDragonScript &ds) :
 dsClass("SoundLevelMeter", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED),
 pDS(ds),
-pClsSoundLevelMeterType(NULL)
+pClsSoundLevelMeterType(nullptr)
 {
 	GetParserInfo()->SetParent(DENS_SCENERY);
 	GetParserInfo()->SetBase("Object");
@@ -432,7 +432,7 @@ void deClassSoundLevelMeter::CreateClassMembers(dsEngine *engine){
 
 deSoundLevelMeter *deClassSoundLevelMeter::GetSoundLevelMeter(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	return dedsGetNativeData<sSLMNatDat>(p_GetNativeData(myself->GetBuffer())).soundLevelMeter;
 }
@@ -443,7 +443,7 @@ void deClassSoundLevelMeter::PushSoundLevelMeter(dsRunTime *rt, deSoundLevelMete
 	}
 	
 	if(!soundLevelMeter){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

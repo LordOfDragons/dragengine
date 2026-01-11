@@ -971,7 +971,7 @@ void deClassLight::CreateClassMembers(dsEngine *engine){
 
 deLight *deClassLight::GetLight(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	return dedsGetNativeData<sLigNatDat>(p_GetNativeData(myself->GetBuffer())).light;
 }
@@ -982,7 +982,7 @@ void deClassLight::PushLight(dsRunTime *rt, deLight *light){
 	}
 	
 	if(!light){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

@@ -46,7 +46,7 @@
 
 deoglRHeightTerrain::deoglRHeightTerrain(deoglRenderThread &renderThread, const deHeightTerrain &heightTerrain) :
 pRenderThread(renderThread),
-pParentWorld(NULL),
+pParentWorld(nullptr),
 pSectorResolution(heightTerrain.GetSectorResolution()),
 pSectorSize(heightTerrain.GetSectorSize()),
 pSectorsRequirePrepareForRender(true),
@@ -59,7 +59,7 @@ deoglRHeightTerrain::~deoglRHeightTerrain(){
 	LEAK_CHECK_FREE(pRenderThread, HeightTerrain);
 	NotifyHeightTerrainDestroyed();
 	pListeners.RemoveAll();
-	SetParentWorld(NULL);
+	SetParentWorld(nullptr);
 }
 
 

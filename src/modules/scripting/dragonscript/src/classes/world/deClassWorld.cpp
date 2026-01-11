@@ -1553,7 +1553,7 @@ void deClassWorld::nfGetHeightTerrain::RunFunction(dsRunTime *rt, dsValue *mysel
 		clsWorld->GetClassHeightTerrain()->PushHeightTerrain(rt, world->GetHeightTerrain());
 		
 	}else{
-		rt->PushObject(NULL, clsWorld->GetClassHeightTerrain());
+		rt->PushObject(nullptr, clsWorld->GetClassHeightTerrain());
 	}
 }
 
@@ -1571,7 +1571,7 @@ void deClassWorld::nfSetHeightTerrain::RunFunction(dsRunTime *rt, dsValue *mysel
 		world->SetHeightTerrain(clsWorld->GetClassHeightTerrain()->GetHeightTerrain(object));
 		
 	}else{
-		world->SetHeightTerrain(NULL);
+		world->SetHeightTerrain(nullptr);
 	}
 }
 
@@ -1603,7 +1603,7 @@ void deClassWorld::nfPointHits::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	world.PointHits(point, &adaptor, collisionFilter);
 	
-	adaptor.SetListener(NULL);
+	adaptor.SetListener(nullptr);
 	adaptor.Reset();
 }
 
@@ -1630,7 +1630,7 @@ void deClassWorld::nfColliderHits::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	world.ColliderHits(collider, &adaptor);
 	
-	adaptor.SetListener(NULL);
+	adaptor.SetListener(nullptr);
 	adaptor.Reset();
 }
 
@@ -1659,7 +1659,7 @@ void deClassWorld::nfColliderMoveHits::RunFunction(dsRunTime *rt, dsValue *mysel
 	
 	world.ColliderMoveHits(collider, displacement, &adaptor);
 	
-	adaptor.SetListener(NULL);
+	adaptor.SetListener(nullptr);
 	adaptor.Reset();
 }
 
@@ -1689,7 +1689,7 @@ void deClassWorld::nfColliderMoveHitsClosest::RunFunction(dsRunTime *rt, dsValue
 	world.ColliderMoveHits(collider, displacement, &hitsClosest);
 	
 	hitsClosest.NotifyListener();
-	hitsClosest.SetListener(NULL);
+	hitsClosest.SetListener(nullptr);
 	hitsClosest.Reset();
 }
 
@@ -1717,7 +1717,7 @@ void deClassWorld::nfRayHits::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	world.RayHits(rayOrigin, rayDirection, &adaptor, collisionFilter);
 	
-	adaptor.SetListener(NULL);
+	adaptor.SetListener(nullptr);
 	adaptor.Reset();
 }
 
@@ -1746,7 +1746,7 @@ void deClassWorld::nfRayHitsClosest::RunFunction(dsRunTime *rt, dsValue *myself)
 	world.RayHits(rayOrigin, rayDirection, &hitsClosest, collisionFilter);
 	
 	hitsClosest.NotifyListener();
-	hitsClosest.SetListener(NULL);
+	hitsClosest.SetListener(nullptr);
 	hitsClosest.Reset();
 }
 
@@ -1794,23 +1794,23 @@ void deClassWorld::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 
 deClassWorld::deClassWorld(deEngine *gameEngine, deScriptingDragonScript *scriptManager) :
 dsClass("World", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED),
-pGameEngine(NULL),
-pDS(NULL),
-pClsCam(NULL),
-pClsClr(NULL),
-pClsCol(NULL),
-pClsCI(NULL),
-pClsComp(NULL),
-pClsDVec(NULL),
-pClsHT(NULL),
-pClsLig(NULL),
-pClsMat(NULL),
-pClsMic(NULL),
-pClsNS(NULL),
-pClsSkyInst(NULL),
-pClsSpk(NULL),
-pClsTS(NULL),
-pClsVec(NULL)
+pGameEngine(nullptr),
+pDS(nullptr),
+pClsCam(nullptr),
+pClsClr(nullptr),
+pClsCol(nullptr),
+pClsCI(nullptr),
+pClsComp(nullptr),
+pClsDVec(nullptr),
+pClsHT(nullptr),
+pClsLig(nullptr),
+pClsMat(nullptr),
+pClsMic(nullptr),
+pClsNS(nullptr),
+pClsSkyInst(nullptr),
+pClsSpk(nullptr),
+pClsTS(nullptr),
+pClsVec(nullptr)
 {
 	if(!gameEngine || !scriptManager) DSTHROW(dueInvalidParam);
 	
@@ -2041,7 +2041,7 @@ void deClassWorld::PushWorld(dsRunTime *rt, deWorld *world){
 	}
 	
 	if(!world){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

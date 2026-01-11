@@ -128,7 +128,7 @@ void *igdeNativeFoxIcon::CreateNativeIconPNG(decBaseFileReader &reader){
 		imageData = new char[imageSize];
 		reader.Read(imageData, imageSize);
 		
-		nativeIcon = new FXPNGIcon(FXApp::instance(), 0, FXRGB(192,192,192), IMAGE_KEEP | IMAGE_SHMI | IMAGE_SHMP);
+		nativeIcon = new FXPNGIcon(FXApp::instance(), nullptr, FXRGB(192,192,192), IMAGE_KEEP | IMAGE_SHMI | IMAGE_SHMP);
 		#ifdef FOX_OLD_MEMORY_STREAM
 		if(!stream.open(FX::FXStreamLoad, (FXuval)imageSize, (FXuchar*)imageData)){
 		#else

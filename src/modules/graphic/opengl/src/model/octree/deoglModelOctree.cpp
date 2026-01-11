@@ -57,7 +57,7 @@ deoglModelOctree::~deoglModelOctree(){
 deoglOctree *deoglModelOctree::CreateOctree(int octant) const{
 	const decVector halfExtend(GetHalfSize() * 0.5f);
 	const decVector &center = GetCenter();
-	deoglOctree *node = NULL;
+	deoglOctree *node = nullptr;
 	decVector nc;
 	
 	// determine the smallest and largest coordinates

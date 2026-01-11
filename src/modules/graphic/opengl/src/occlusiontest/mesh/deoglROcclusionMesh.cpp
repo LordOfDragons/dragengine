@@ -59,22 +59,22 @@ deoglROcclusionMesh::deoglROcclusionMesh(deoglRenderThread &renderThread,
 const deOcclusionMesh &occlusionmesh) :
 pRenderThread(renderThread),
 pFilename(occlusionmesh.GetFilename()),
-pSharedSPBListUBO(NULL),
+pSharedSPBListUBO(nullptr),
 pRTIGroupsSingle(deoglSharedSPBRTIGroupList::Ref::New(renderThread)),
 pRTIGroupsDouble(deoglSharedSPBRTIGroupList::Ref::New(renderThread)),
-pBVH(NULL),
-pRayTraceField(NULL)
+pBVH(nullptr),
+pRayTraceField(nullptr)
 {
-	pVBOBlock = NULL;
+	pVBOBlock = nullptr;
 	
-	pWeightsEntries = NULL;
-	pWeightsCounts = NULL;
+	pWeightsEntries = nullptr;
+	pWeightsCounts = nullptr;
 	pWeightsCount = 0;
 	
-	pVertices = NULL;
+	pVertices = nullptr;
 	pVertexCount = 0;
 	
-	pCorners = NULL;
+	pCorners = nullptr;
 	pCornerCount = 0;
 	pSingleSidedFaceCount = 0;
 	pDoubleSidedFaceCount = 0;
@@ -134,7 +134,7 @@ void deoglROcclusionMesh::PrepareBVH(){
 		return;
 	}
 	
-	deoglBVH::sBuildPrimitive *primitives = NULL;
+	deoglBVH::sBuildPrimitive *primitives = nullptr;
 	const int faceCount = pSingleSidedFaceCount + pDoubleSidedFaceCount;
 	
 	if(faceCount > 0){
@@ -165,7 +165,7 @@ void deoglROcclusionMesh::PrepareBVH(){
 	}catch(const deException &){
 		if(pBVH){
 			delete pBVH;
-			pBVH = NULL;
+			pBVH = nullptr;
 		}
 		if(primitives){
 			delete [] primitives;

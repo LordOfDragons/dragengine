@@ -1,6 +1,7 @@
 ---
 #Checks: '-*,modernize-use-override'
-Checks: '-*,modernize-use-using'
+#Checks: '-*,modernize-use-using'
+Checks: '-*,modernize-use-nullptr'
 HeaderFilterRegex: '.*/src/.*'
 CheckOptions:
   modernize-use-override.IgnoreDestructors: 'false'

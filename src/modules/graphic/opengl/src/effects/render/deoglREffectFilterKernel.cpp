@@ -75,7 +75,7 @@ enum eSPEffectDownsample{
 
 deoglREffectFilterKernel::deoglREffectFilterKernel(deoglRenderThread &renderThread) :
 deoglREffect(renderThread),
-pKernel(NULL),
+pKernel(nullptr),
 pKernelRows(0),
 pKernelCols(0),
 pScale(1.0f)

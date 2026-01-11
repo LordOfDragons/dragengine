@@ -69,12 +69,12 @@ pDirtyPrepareForRender(true),
 pDirtyNotifySkyChanged(false),
 pDirtySkyOrder(false),
 
-pRootComponent(NULL),
-pTailComponent(NULL),
+pRootComponent(nullptr),
+pTailComponent(nullptr),
 pComponentCount(0),
 
-pRootBillboard(NULL),
-pTailBillboard(NULL),
+pRootBillboard(nullptr),
+pTailBillboard(nullptr),
 pBillboardCount(0),
 
 pDisableLights(false),
@@ -82,10 +82,10 @@ pDisableLights(false),
 pValidReferenceDistance(1e4), // 10km
 
 pEnvMapUpdateCount(0),
-pEnvMapRenderPlan(NULL),
+pEnvMapRenderPlan(nullptr),
 pDirtyEnvMapLayout(false),
 
-pOctree(NULL),
+pOctree(nullptr),
 pCompute(deoglWorldCompute::Ref::New(*this))
 {
 	try{
@@ -136,7 +136,7 @@ void deoglRWorld::SetSize(const decDVector &size){
 	
 	pOctree->ClearTree(true); // required since deoglWorldOctree does not do it
 	delete pOctree;
-	pOctree = NULL;
+	pOctree = nullptr;
 	
 	pOctree = new deoglWorldOctree(decDVector(), octreeSize * 0.5, insertDepth);
 	
@@ -191,7 +191,7 @@ void deoglRWorld::SetHeightTerrain(deoglRHeightTerrain *heightTerrain){
 	}
 	
 	if(pHeightTerrain){
-		pHeightTerrain->SetParentWorld(NULL);
+		pHeightTerrain->SetParentWorld(nullptr);
 	}
 	
 	pHeightTerrain = heightTerrain;
@@ -627,7 +627,7 @@ void deoglRWorld::RemovePropField(deoglRPropField *propField){
 	if(index == -1){
 		DETHROW(deeInvalidParam);
 	}
-	propField->SetParentWorld(NULL);
+	propField->SetParentWorld(nullptr);
 	pPropFields.RemoveFrom(index);
 }
 
@@ -635,7 +635,7 @@ void deoglRWorld::RemoveAllPropFields(){
 	const int count = pPropFields.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		((deoglRPropField*)pPropFields.GetAt(i))->SetParentWorld(NULL);
+		((deoglRPropField*)pPropFields.GetAt(i))->SetParentWorld(nullptr);
 	}
 	pPropFields.RemoveAll();
 }
@@ -650,7 +650,7 @@ void deoglRWorld::RemoveRemovalMarkedPropFields(){
 			continue;
 		}
 		
-		propField->SetParentWorld(NULL);
+		propField->SetParentWorld(nullptr);
 		pPropFields.RemoveFrom(i);
 		i--;
 		count--;
@@ -688,7 +688,7 @@ void deoglRWorld::RemoveParticleEmitterInstance(deoglRParticleEmitterInstance *i
 	if(index == -1){
 		DETHROW(deeInvalidParam);
 	}
-	instance->SetParentWorld(NULL);
+	instance->SetParentWorld(nullptr);
 	pParticleEmitterInstances.RemoveFrom(index);
 }
 
@@ -696,7 +696,7 @@ void deoglRWorld::RemoveAllParticleEmitterInstances(){
 	const int count = pParticleEmitterInstances.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		((deoglRParticleEmitterInstance*)pParticleEmitterInstances.GetAt(i))->SetParentWorld(NULL);
+		((deoglRParticleEmitterInstance*)pParticleEmitterInstances.GetAt(i))->SetParentWorld(nullptr);
 	}
 	pParticleEmitterInstances.RemoveAll();
 }
@@ -711,7 +711,7 @@ void deoglRWorld::RemoveRemovalMarkedParticleEmitterInstances(){
 			continue;
 		}
 		
-		instance->SetParentWorld(NULL);
+		instance->SetParentWorld(nullptr);
 		pParticleEmitterInstances.RemoveFrom(i);
 		i--;
 		count--;
@@ -736,14 +736,14 @@ void deoglRWorld::AddComponent(deoglRComponent *component){
 	if(pTailComponent){
 		pTailComponent->SetLLWorldNext(component);
 		component->SetLLWorldPrev(pTailComponent);
-		component->SetLLWorldNext(NULL);
+		component->SetLLWorldNext(nullptr);
 		pTailComponent = component;
 		
 	}else{
 		pTailComponent = component;
 		pRootComponent = component;
-		component->SetLLWorldPrev(NULL);
-		component->SetLLWorldNext(NULL);
+		component->SetLLWorldPrev(nullptr);
+		component->SetLLWorldNext(nullptr);
 	}
 	
 	component->AddReference();
@@ -781,7 +781,7 @@ void deoglRWorld::RemoveComponent(deoglRComponent *component){
 void deoglRWorld::RemoveAllComponents(){
 	while(pRootComponent){
 		deoglRComponent * const next = pRootComponent->GetLLWorldNext();
-		pRootComponent->SetLLWorldPrev(NULL); // ensure root has no prev
+		pRootComponent->SetLLWorldPrev(nullptr); // ensure root has no prev
 		
 		RemovePrepareForRenderComponent(pRootComponent);
 		pRootComponent->SetParentWorld(nullptr);
@@ -792,7 +792,7 @@ void deoglRWorld::RemoveAllComponents(){
 		pRootComponent = next;
 	}
 	
-	pTailComponent = NULL;
+	pTailComponent = nullptr;
 }
 
 void deoglRWorld::RemoveRemovalMarkedComponents(){
@@ -842,7 +842,7 @@ void deoglRWorld::RemoveLight(deoglRLight *light){
 	}
 	
 	RemovePrepareForRenderLight(light);
-	light->SetParentWorld(NULL);
+	light->SetParentWorld(nullptr);
 	pLights.RemoveFrom(index);
 }
 
@@ -853,7 +853,7 @@ void deoglRWorld::RemoveAllLights(){
 	for(i=0; i<count; i++){
 		deoglRLight * const light = (deoglRLight*)pLights.GetAt(i);
 		RemovePrepareForRenderLight(light);
-		light->SetParentWorld(NULL);
+		light->SetParentWorld(nullptr);
 	}
 	
 	pLights.RemoveAll();
@@ -869,7 +869,7 @@ void deoglRWorld::RemoveRemovalMarkedLights(){
 			continue;
 		}
 		
-		light->SetParentWorld(NULL);
+		light->SetParentWorld(nullptr);
 		pLights.RemoveFrom(i);
 		i--;
 		count--;
@@ -912,7 +912,7 @@ void deoglRWorld::RemoveEnvMapProbe(deoglREnvMapProbe *envMapProbe){
 		DETHROW(deeInvalidParam);
 	}
 	
-	envMapProbe->SetParentWorld(NULL);
+	envMapProbe->SetParentWorld(nullptr);
 	pEnvMapProbes.RemoveFrom(index);
 }
 
@@ -921,7 +921,7 @@ void deoglRWorld::RemoveAllEnvMapProbes(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoglREnvMapProbe*)pEnvMapProbes.GetAt(i))->SetParentWorld(NULL);
+		((deoglREnvMapProbe*)pEnvMapProbes.GetAt(i))->SetParentWorld(nullptr);
 	}
 	
 	pEnvMapProbes.RemoveAll();
@@ -937,7 +937,7 @@ void deoglRWorld::RemoveRemovalMarkedEnvMapProbes(){
 			continue;
 		}
 		
-		envMapProbe->SetParentWorld(NULL);
+		envMapProbe->SetParentWorld(nullptr);
 		pEnvMapProbes.RemoveFrom(i);
 		i--;
 		count--;
@@ -978,7 +978,7 @@ void deoglRWorld::RemoveEnvMap(deoglEnvironmentMap *envmap){
 	}
 	
 	pEnvMapList.Remove(envmap);
-	envmap->SetWorld(NULL);
+	envmap->SetWorld(nullptr);
 	
 	InvalidateEnvMapLayout();
 }
@@ -998,7 +998,7 @@ void deoglRWorld::RemoveAllEnvMaps(){
 	
 	const int envMapCount = pEnvMapList.GetCount();
 	for(i=0; i<envMapCount; i++){
-		pEnvMapList.GetAt(i)->SetWorld(NULL);
+		pEnvMapList.GetAt(i)->SetWorld(nullptr);
 	}
 	pEnvMapList.RemoveAll();
 	
@@ -1060,7 +1060,7 @@ void deoglRWorld::RemoveLumimeter(deoglRLumimeter *lumimeter){
 		DETHROW(deeInvalidParam);
 	}
 	
-	lumimeter->SetParentWorld(NULL);
+	lumimeter->SetParentWorld(nullptr);
 	pLumimeters.RemoveFrom(index);
 }
 
@@ -1069,7 +1069,7 @@ void deoglRWorld::RemoveAllLumimeters(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoglRLumimeter*)pLumimeters.GetAt(i))->SetParentWorld(NULL);
+		((deoglRLumimeter*)pLumimeters.GetAt(i))->SetParentWorld(nullptr);
 	}
 	
 	pLumimeters.RemoveAll();
@@ -1085,7 +1085,7 @@ void deoglRWorld::RemoveRemovalMarkedLumimeters(){
 			continue;
 		}
 		
-		lumimeter->SetParentWorld(NULL);
+		lumimeter->SetParentWorld(nullptr);
 		pLumimeters.RemoveFrom(i);
 		i--;
 		count--;
@@ -1114,14 +1114,14 @@ void deoglRWorld::AddBillboard(deoglRBillboard *billboard){
 	if(pTailBillboard){
 		pTailBillboard->SetLLWorldNext(billboard);
 		billboard->SetLLWorldPrev(pTailBillboard);
-		billboard->SetLLWorldNext(NULL);
+		billboard->SetLLWorldNext(nullptr);
 		pTailBillboard = billboard;
 		
 	}else{
 		pTailBillboard = billboard;
 		pRootBillboard = billboard;
-		billboard->SetLLWorldPrev(NULL);
-		billboard->SetLLWorldNext(NULL);
+		billboard->SetLLWorldPrev(nullptr);
+		billboard->SetLLWorldNext(nullptr);
 	}
 	
 	billboard->AddReference();
@@ -1137,7 +1137,7 @@ void deoglRWorld::RemoveBillboard(deoglRBillboard *billboard){
 	}
 	
 	RemovePrepareForRenderBillboard(billboard);
-	billboard->SetParentWorld(NULL);
+	billboard->SetParentWorld(nullptr);
 	billboard->SetWorldMarkedRemove(false);
 	
 	if(billboard->GetLLWorldPrev()){
@@ -1161,10 +1161,10 @@ void deoglRWorld::RemoveBillboard(deoglRBillboard *billboard){
 void deoglRWorld::RemoveAllBillboards(){
 	while(pRootBillboard){
 		deoglRBillboard * const next = pRootBillboard->GetLLWorldNext();
-		pRootBillboard->SetLLWorldPrev(NULL); // ensure root has no prev
+		pRootBillboard->SetLLWorldPrev(nullptr); // ensure root has no prev
 		
 		RemovePrepareForRenderBillboard(pRootBillboard);
-		pRootBillboard->SetParentWorld(NULL);
+		pRootBillboard->SetParentWorld(nullptr);
 		pRootBillboard->SetWorldMarkedRemove(false);
 		pBillboardCount--;
 		pRootBillboard->FreeReference();
@@ -1172,7 +1172,7 @@ void deoglRWorld::RemoveAllBillboards(){
 		pRootBillboard = next;
 	}
 	
-	pTailBillboard = NULL;
+	pTailBillboard = nullptr;
 }
 
 void deoglRWorld::RemoveRemovalMarkedBillboards(){
@@ -1222,7 +1222,7 @@ void deoglRWorld::RemoveSky(deoglRSkyInstance *sky){
 		DETHROW(deeInvalidParam);
 	}
 	
-	sky->SetParentWorld(NULL);
+	sky->SetParentWorld(nullptr);
 	pSkies.RemoveFrom(index);
 	pDirtyNotifySkyChanged = true;
 }
@@ -1232,7 +1232,7 @@ void deoglRWorld::RemoveAllSkies(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoglRSkyInstance*)pSkies.GetAt(i))->SetParentWorld(NULL);
+		((deoglRSkyInstance*)pSkies.GetAt(i))->SetParentWorld(nullptr);
 	}
 	
 	pSkies.RemoveAll();
@@ -1250,7 +1250,7 @@ void deoglRWorld::RemoveRemovalMarkedSkies(){
 			continue;
 		}
 		
-		sky->SetParentWorld(NULL);
+		sky->SetParentWorld(nullptr);
 		pSkies.RemoveFrom(i);
 		i--;
 		count--;
@@ -1297,7 +1297,7 @@ void deoglRWorld::RemoveDebugDrawer(deoglRDebugDrawer *debugDrawer){
 		DETHROW(deeInvalidParam);
 	}
 	
-	debugDrawer->SetParentWorld(NULL);
+	debugDrawer->SetParentWorld(nullptr);
 	pDebugDrawers.RemoveFrom(index);
 }
 
@@ -1306,7 +1306,7 @@ void deoglRWorld::RemoveAllDebugDrawers(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoglRDebugDrawer*)pDebugDrawers.GetAt(i))->SetParentWorld(NULL);
+		((deoglRDebugDrawer*)pDebugDrawers.GetAt(i))->SetParentWorld(nullptr);
 	}
 	
 	pDebugDrawers.RemoveAll();
@@ -1322,7 +1322,7 @@ void deoglRWorld::RemoveRemovalMarkedDebugDrawers(){
 			continue;
 		}
 		
-		debugDrawer->SetParentWorld(NULL);
+		debugDrawer->SetParentWorld(nullptr);
 		pDebugDrawers.RemoveFrom(i);
 		i--;
 		count--;
@@ -1344,7 +1344,7 @@ const deoglGIState *deoglRWorld::GetGICascadeAt(int index) const{
 
 const deoglGIState *deoglRWorld::ClosestGIState(const decDVector &position) const{
 	const int count = pGIStates.GetCount();
-	const deoglGIState *bestGIState = NULL;
+	const deoglGIState *bestGIState = nullptr;
 	double bestDistance = 0.0;
 	int i, j;
 	
@@ -1489,7 +1489,7 @@ void deoglRWorld::pCleanUp(){
 	}
 	pSkies.RemoveAll();
 	
-	SetHeightTerrain(NULL); // needs no special handling
+	SetHeightTerrain(nullptr); // needs no special handling
 	
 	pFreeSkyEnvMap();
 	
@@ -1500,7 +1500,7 @@ void deoglRWorld::pCleanUp(){
 	}
 	
 	if(pEnvMapRenderPlan){
-		pEnvMapRenderPlan->SetWorld(NULL);
+		pEnvMapRenderPlan->SetWorld(nullptr);
 		delete pEnvMapRenderPlan;
 	}
 }

@@ -106,7 +106,7 @@ void deAnimatorManager::SystemAnimatorUnload(){
 	deAnimator *animator = (deAnimator*)pAnimators.GetRoot();
 	
 	while(animator){
-		animator->SetPeerAnimator(NULL);
+		animator->SetPeerAnimator(nullptr);
 		animator = (deAnimator*)animator->GetLLManagerNext();
 	}
 }

@@ -64,7 +64,7 @@ pSkinRendered(skinRendered),
 pSkin(skin),
 pTexture(texture),
 pModelTexture(modelTexture),
-pPlan(NULL)
+pPlan(nullptr)
 {
 	pPlan = new deoglRenderPlan(skinRendered.GetRenderThread());
 }
@@ -89,7 +89,7 @@ void deoglSkinRenderedTexture::AddRenderPlans(deoglRenderPlan &plan){
 }
 
 void deoglSkinRenderedTexture::DropDelayedDeletionObjects(){
-	pPlan->SetWorld(NULL);
+	pPlan->SetWorld(nullptr);
 }
 
 
@@ -157,7 +157,7 @@ void deoglSkinRenderedTexture::pMirrorAddRenderPlans(deoglRenderPlan &plan){
 	// no extra cost and witout messing up parent GI state. for mirrors this is good
 	// enough since mirrors need to be in view of the parent camera
 	pPlan->SetUseConstGIState(plan.GetRenderGIState());
-	pPlan->SetUseGIState(pPlan->GetUseConstGIState() != NULL);
+	pPlan->SetUseGIState(pPlan->GetUseConstGIState() != nullptr);
 	
 	// calculate the frustum for this texture
 	//matrixMVP = ( ownerMatrix * pPlan->GetCameraMatrix() ).ToMatrix() * pPlan->GetProjectionMatrix();

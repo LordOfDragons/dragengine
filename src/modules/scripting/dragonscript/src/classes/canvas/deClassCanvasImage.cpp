@@ -242,7 +242,7 @@ void deClassCanvasImage::CreateClassMembers(dsEngine *engine){
 
 deCanvasImage *deClassCanvasImage::GetCanvas(dsRealObject *myself) const {
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return dedsGetNativeData<sCImageNatDat>(p_GetNativeData(myself->GetBuffer())).canvas;
@@ -254,7 +254,7 @@ void deClassCanvasImage::PushCanvas(dsRunTime *rt, deCanvasImage *canvas){
 	}
 	
 	if(!canvas){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

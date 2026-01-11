@@ -134,14 +134,14 @@ deoglRenderLight::deoglRenderLight(deoglRenderThread &renderThread,
 deoglRTRenderers &renderers) :
 deoglRenderLightBase(renderThread),
 
-pRenderLightSpot(NULL),
-pRenderLightSky(NULL),
-pRenderLightPoint(NULL),
-pRenderLightParticles(NULL),
-pRenderGI(NULL),
+pRenderLightSpot(nullptr),
+pRenderLightSky(nullptr),
+pRenderLightPoint(nullptr),
+pRenderLightParticles(nullptr),
+pRenderGI(nullptr),
 
-pRenderTask(NULL),
-pAddToRenderTask(NULL)
+pRenderTask(nullptr),
+pAddToRenderTask(nullptr)
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 	const bool renderFSQuadStereoVSLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
@@ -428,8 +428,8 @@ void deoglRenderLight::RenderLights(deoglRenderPlan &plan, bool solid, const deo
 	}
 	
 	// render lights
-	const bool hasGIStateUpdate = plan.GetUpdateGIState() != NULL;
-	const bool hasGIStateRender = plan.GetRenderGIState() != NULL;
+	const bool hasGIStateUpdate = plan.GetUpdateGIState() != nullptr;
+	const bool hasGIStateRender = plan.GetRenderGIState() != nullptr;
 	
 	if(solid && !mask && !xray && hasGIStateUpdate){
 		pRenderGI->ClearProbes(plan);

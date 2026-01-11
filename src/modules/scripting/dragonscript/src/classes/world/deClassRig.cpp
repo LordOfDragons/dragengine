@@ -661,7 +661,7 @@ void deClassRig::PushRig(dsRunTime *rt, deRig *rig){
 	}
 	
 	if(!rig){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

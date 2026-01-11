@@ -48,7 +48,7 @@
 
 deColliderRig::deColliderRig(deColliderManager *manager) :
 deCollider(manager),
-pBones(NULL),
+pBones(nullptr),
 pBoneCount(0){
 }
 
@@ -86,14 +86,14 @@ void deColliderRig::SetRig(deRig *rig){
 	
 	// if the count changed resize the bones array
 	if(boneCount != pBoneCount){
-		deColliderBone **bones = NULL;
+		deColliderBone **bones = nullptr;
 		int i;
 		
 		if(boneCount > 0){
 			try{
 				bones = new deColliderBone*[boneCount];
 				for(i=0; i<boneCount; i++){
-					bones[i] = NULL;
+					bones[i] = nullptr;
 				}
 				
 				for(i=0; i<boneCount; i++){
@@ -120,7 +120,7 @@ void deColliderRig::SetRig(deRig *rig){
 				}
 			}
 			delete [] pBones;
-			pBones = NULL;
+			pBones = nullptr;
 		}
 		
 		pBones = bones;

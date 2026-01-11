@@ -90,7 +90,7 @@ decXmlCharacterData *decXmlElementTag::GetFirstData() const{
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 decXmlElementTag *decXmlElementTag::GetElementIfTag(int index) const{
@@ -100,7 +100,7 @@ decXmlElementTag *decXmlElementTag::GetElementIfTag(int index) const{
 		return element.CastToElementTag();
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -120,7 +120,7 @@ decXmlAttValue *decXmlElementTag::FindAttribute(const char *name) const{
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 

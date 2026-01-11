@@ -104,7 +104,7 @@ deVideo *video, int currentFrame, float playbackSpeed){
 	}
 	
 	// no match found. add a new shared video player
-	deoglSharedVideoPlayer *sharedVideoPlayer = NULL;
+	deoglSharedVideoPlayer *sharedVideoPlayer = nullptr;
 	deVideoPlayer::Ref videoPlayer;
 	
 	try{

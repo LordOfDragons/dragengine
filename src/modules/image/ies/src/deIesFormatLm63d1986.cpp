@@ -55,7 +55,7 @@ void deIesFormatLm63d1986::sSamplePoint::Set(int index, float blend){
 deIesFormatLm63d1986::deIesFormatLm63d1986() :
 pImageType(eitEquirectangular),
 pAngleFactorCount(0),
-pAngleFactors(NULL),
+pAngleFactors(nullptr),
 pLampCount(0),
 pLumensPerLamp(0.0f),
 pCandelaMultiplier(0.0f),
@@ -69,15 +69,15 @@ pLumLength(0.0f),
 pBallastFactor(1.0f),
 pFutureBallastFactor(1.0f),
 pFinalLumMultiplier(1.0f),
-pVerticalAngles(NULL),
-pHorizontalAngles(NULL),
-pCandelaValues(NULL),
+pVerticalAngles(nullptr),
+pHorizontalAngles(nullptr),
+pCandelaValues(nullptr),
 pSmallestVerticalStep(0.0f),
 pSmallestHorizontalStep(0.0f),
 pVerticalResolution(1),
 pHorizontalResolution(1),
-pVerticalSamplePoints(NULL),
-pHorizontalSamplePoints(NULL){
+pVerticalSamplePoints(nullptr),
+pHorizontalSamplePoints(nullptr){
 }
 
 deIesFormatLm63d1986::~deIesFormatLm63d1986(){

@@ -42,7 +42,7 @@
 ////////////////////////////
 
 deSynthesizerEffect::deSynthesizerEffect() :
-pSynthesizer(NULL),
+pSynthesizer(nullptr),
 pStrength(1.0f),
 pEnabled(true){
 }

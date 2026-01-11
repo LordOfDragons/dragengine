@@ -47,7 +47,7 @@ pSize(size),
 pComponentCount(componentCount),
 pIsFloat(isFloat),
 pInUse(false),
-pCubeMap(NULL),
+pCubeMap(nullptr),
 pMemoryUsageGPU(0)
 {
 	if(size < 1){

@@ -162,8 +162,8 @@ void deoglRenderGeometry::RenderTask(const deoglRenderTask &renderTask){
 	deoglSPBlockUBO * const renderParamBlock = renderTask.GetRenderParamBlock();
 	const bool renderVSStereo = renderTask.GetRenderVSStereo();
 // 	const int strideIndirect = sizeof( oglDrawIndirectCommand );
-	deoglShaderParameterBlock *spbSIIndexInstance = NULL;
-	deoglVAO *curVAO = NULL;
+	deoglShaderParameterBlock *spbSIIndexInstance = nullptr;
+	deoglVAO *curVAO = nullptr;
 	int i, j, k, l, m;
 	
 	renderThread.GetBufferObject().GetSharedVBOListList().PrepareAllLists(); // needs to be done better
@@ -660,10 +660,10 @@ void deoglRenderGeometry::RenderTask(const deoglPersistentRenderTask &renderTask
 	}
 	
 	const deoglSPBlockUBO * const renderParamBlock = renderTask.GetRenderParamBlock();
-	const deoglShaderParameterBlock *spbSIIndexInstance = NULL;
+	const deoglShaderParameterBlock *spbSIIndexInstance = nullptr;
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace(renderThread, "Geometry.RenderTask(Persistent)");
-	const deoglVAO *curVAO = NULL;
+	const deoglVAO *curVAO = nullptr;
 	
 	renderThread.GetBufferObject().GetSharedVBOListList().PrepareAllLists(); // needs to be done better
 	

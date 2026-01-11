@@ -197,7 +197,7 @@ void deoglSkinStateCNShape::pPrepareVBOBlock(deoglSkinState &state){
 		pDirtyVBOBlock = true;
 		if(pVBOBlock){
 			pVBOBlock->GetVBO()->RemoveBlock(pVBOBlock);
-			pVBOBlock = NULL;
+			pVBOBlock = nullptr;
 		}
 	}
 	

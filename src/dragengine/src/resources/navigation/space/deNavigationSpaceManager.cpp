@@ -105,7 +105,7 @@ void deNavigationSpaceManager::SystemAIUnload(){
 	deNavigationSpace *navspace = (deNavigationSpace*)pNavSpaces.GetRoot();
 	
 	while(navspace){
-		navspace->SetPeerAI(NULL);
+		navspace->SetPeerAI(nullptr);
 		navspace = (deNavigationSpace*)navspace->GetLLManagerNext();
 	}
 }

@@ -186,16 +186,16 @@ deoglRenderBase(renderThread)
 	deoglPipelineConfiguration pipconf;
 	const deoglShaderSources *sources;
 	
-	pRenderTask = NULL;
-	pAddToRenderTask = NULL;
+	pRenderTask = nullptr;
+	pAddToRenderTask = nullptr;
 	
 	pUseEquiEnvMap = true;
-	pEnvMap = NULL;
-	pEnvMapEqui = NULL;
+	pEnvMap = nullptr;
+	pEnvMapEqui = nullptr;
 	
-	pDirectEnvMapActive  = NULL;
+	pDirectEnvMapActive  = nullptr;
 
-	pDirectEnvMapFading = NULL;
+	pDirectEnvMapFading = nullptr;
 	
 	pUseEquiEnvMap = config.GetEnvMapUseEqui() || !extensions.GetHasArrayCubeMap();
 	//printf( "EQUI: %i %i %i\n", pUseEquiEnvMap?1:0, config.GetEnvMapUseEqui()?1:0, extensions.GetHasArrayCubeMap()?1:0 );
@@ -623,14 +623,14 @@ void deoglRenderReflection::UpdateEnvMap(deoglRenderPlan &plan){
 		pDirectEnvMapActive = plan.GetDirectEnvMapFader().GetActiveEnvMap();
 		
 	}else{
-		pDirectEnvMapActive = NULL;
+		pDirectEnvMapActive = nullptr;
 	}
 	
 	if(plan.GetDirectEnvMapFader().GetFadingEnvMap()){
 		pDirectEnvMapFading = plan.GetDirectEnvMapFader().GetFadingEnvMap();
 		
 	}else{
-		pDirectEnvMapFading = NULL;
+		pDirectEnvMapFading = nullptr;
 	}
 	
 	if(renderThread.GetConfiguration().GetEnvMapMethod() != deoglConfiguration::eemmSingle){
@@ -644,12 +644,12 @@ void deoglRenderReflection::UpdateEnvMap(deoglRenderPlan &plan){
 		pEnvMap->CreateCubeMap();
 	}
 	
-	const deoglTexture *blendEnvMapEqui[4] = {NULL, NULL, NULL, NULL};
-	const deoglCubeMap *blendEnvMap[4] = {NULL, NULL, NULL, NULL};
+	const deoglTexture *blendEnvMapEqui[4] = {nullptr, nullptr, nullptr, nullptr};
+	const deoglCubeMap *blendEnvMap[4] = {nullptr, nullptr, nullptr, nullptr};
 	const decDVector &cameraPosition = plan.GetCameraPosition();
 	deoglTexSamplerConfig *blendSampler[4];
 	float blendWeights[4] = {1.0f, 0.0f, 0.0f, 0.0f};
-	deoglShaderCompiled *shader = NULL;
+	deoglShaderCompiled *shader = nullptr;
 	decDVector envMapPosition[4];
 	deoglEnvironmentMap *envmap;
 	int i, count;
@@ -1028,7 +1028,7 @@ void deoglRenderReflection::RenderReflections(deoglRenderPlan &plan){
 	deoglEnvMapSlotManager &envMapSlotMgr = renderThread.GetEnvMapSlotManager();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	deoglTexture *envMapSky = NULL;
+	deoglTexture *envMapSky = nullptr;
 	
 	// prepare
 	DEBUG_RESET_TIMERS;
@@ -1429,7 +1429,7 @@ void deoglRenderReflection::RenderGIEnvMaps(deoglRenderPlan &plan){
 	// the counter is incremented by one. then the envmap with the largest value is picked.
 	// upon rerendeing the envmap the counter is set to the maximum value to give it highest
 	// priority. envmaps with maximum priority are always updated.
-	deoglEnvironmentMap *lightEnvMap = NULL;
+	deoglEnvironmentMap *lightEnvMap = nullptr;
 	const int count = plan.GetEnvMapCount();
 	int i;
 	
@@ -1622,8 +1622,8 @@ void deoglRenderReflection::RenderScreenSpace(deoglRenderPlan &plan){
 	
 	// prepare vbo for applying reflections
 	int i, envMapCount = 0;
-	const deoglTexture *envMapEquis[8] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
-	const deoglCubeMap *envMapCubes[8] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
+	const deoglTexture *envMapEquis[8] = {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr};
+	const deoglCubeMap *envMapCubes[8] = {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr};
 	const float envMapRoughnessBase = (float)PI * 0.5f;
 	
 	pEnvMapsParamBlock = (deoglSPBlockUBO*)pEnvMapsParamBlockSingleUse->Next();

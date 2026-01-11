@@ -45,7 +45,7 @@
 dedsNetworkState::dedsNetworkState(deScriptingDragonScript &ds, deNetworkState *state) :
 pDS(ds), 
 pNetworkState(state),
-pValCB(NULL),
+pValCB(nullptr),
 pHasCB(false)
 {
 	if(!state){
@@ -71,7 +71,7 @@ dedsNetworkState::~dedsNetworkState(){
 		pDS.GetScriptEngine()->GetMainRunTime()->FreeValue(pValCB);
 	}
 	
-	pValCB = NULL;
+	pValCB = nullptr;
 	pHasCB = false;
 }
 

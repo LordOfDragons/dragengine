@@ -49,7 +49,7 @@ pLightColor(1.0f, 1.0f, 1.0f),
 pLightIntensity(0.0f),
 pAmbientIntensity(0.0f),
 
-pBodies(NULL),
+pBodies(nullptr),
 pBodyCount(0),
 
 pMulBySkyLight(false),
@@ -114,7 +114,7 @@ void deSkyLayer::SetAmbientIntensity(float intensity){
 void deSkyLayer::SetBodyCount(int count){
 	if(pBodies){
 		delete [] pBodies;
-		pBodies = NULL;
+		pBodies = nullptr;
 		pBodyCount = 0;
 	}
 	

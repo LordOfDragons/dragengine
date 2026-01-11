@@ -220,10 +220,10 @@ dexsiDevice(module, esLibevdev),
 
 pEvdevPath(pathDevice),
 pEvdevFile(-1),
-pEvdevDevice(NULL),
-pEvdevMapRelAxis(NULL),
-pEvdevMapAbsAxis(NULL),
-pEvdevMapKeys(NULL)
+pEvdevDevice(nullptr),
+pEvdevMapRelAxis(nullptr),
+pEvdevMapAbsAxis(nullptr),
+pEvdevMapKeys(nullptr)
 {
 	// libevdev version
 	// https://www.freedesktop.org/software/libevdev/doc/latest/index.html

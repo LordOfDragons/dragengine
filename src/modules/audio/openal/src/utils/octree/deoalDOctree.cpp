@@ -44,10 +44,10 @@
 deoalDOctree::deoalDOctree(const decDVector &center, const decDVector &halfSize){
 	int i;
 	
-	for(i=0; i<8; i++) pNodes[i] = NULL;
+	for(i=0; i<8; i++) pNodes[i] = nullptr;
 	pCenter = center;
 	pHalfSize = halfSize;
-	pParent = NULL;
+	pParent = nullptr;
 }
 
 deoalDOctree::~deoalDOctree(){
@@ -84,7 +84,7 @@ deoalDOctree *deoalDOctree::GetNodeAtBox(const decDVector &boxCenter, const decD
 	int octant = FindOctantAtBox(boxCenter, boxHalfSize);
 	
 	// if we found no matching octant return NULL
-	if(octant == eoNotFound) return NULL;
+	if(octant == eoNotFound) return nullptr;
 	
 	// if the node does not exist create it
 	if(!pNodes[octant]){
@@ -100,7 +100,7 @@ deoalDOctree *deoalDOctree::FindNodeAtBox(const decDVector &boxCenter, const dec
 	int octant = FindOctantAtBox(boxCenter, boxHalfSize);
 	
 	// if we found no matching octant return NULL
-	if(octant == eoNotFound) return NULL;
+	if(octant == eoNotFound) return nullptr;
 	
 	// return the node that we found
 	return pNodes[octant];
@@ -141,7 +141,7 @@ deoalDOctree *deoalDOctree::FindNodeAtPoint(const decDVector &point) const{
 	int octant = FindOctantAtPoint(point);
 	
 	// if we found no matching octant return NULL
-	if(octant == eoNotFound) return NULL;
+	if(octant == eoNotFound) return nullptr;
 	
 	// return the node that we found
 	return pNodes[octant];
@@ -256,7 +256,7 @@ void deoalDOctree::ClearTree(bool clearNodes){
 			pNodes[i]->ClearTree(clearNodes);
 			if(clearNodes){
 				delete pNodes[i];
-				pNodes[i] = NULL;
+				pNodes[i] = nullptr;
 			}
 		}
 	}

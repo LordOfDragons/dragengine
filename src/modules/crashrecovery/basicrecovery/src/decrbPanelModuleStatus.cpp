@@ -90,24 +90,24 @@ FXVerticalFrame(container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_L
 	frameLine = new FXHorizontalFrame(frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
 		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
 	new FXLabel(frameLine, "Description:");
-	pEditDescription = new FXText(frameLine, NULL, 0, FRAME_SUNKEN | TEXT_READONLY
+	pEditDescription = new FXText(frameLine, nullptr, 0, FRAME_SUNKEN | TEXT_READONLY
 		| TEXT_WORDWRAP | LAYOUT_FILL_X);
 	pEditDescription->setVisibleRows(4);
 	
 	frameLine = new FXHorizontalFrame(frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
 		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
 	new FXLabel(frameLine, "Type:");
-	pEditType = new FXTextField(frameLine, 15, NULL, 0, FRAME_SUNKEN | TEXTFIELD_READONLY);
+	pEditType = new FXTextField(frameLine, 15, nullptr, 0, FRAME_SUNKEN | TEXTFIELD_READONLY);
 	new FXLabel(frameLine, "Version:");
-	pEditVersion = new FXTextField(frameLine, 5, NULL, 0, FRAME_SUNKEN | TEXTFIELD_READONLY);
-	pChkFallback = new FXCheckButton(frameLine, "Fallback Module", NULL, 0, CHECKBUTTON_NORMAL);
+	pEditVersion = new FXTextField(frameLine, 5, nullptr, 0, FRAME_SUNKEN | TEXTFIELD_READONLY);
+	pChkFallback = new FXCheckButton(frameLine, "Fallback Module", nullptr, 0, CHECKBUTTON_NORMAL);
 	
 	frameLine = new FXHorizontalFrame(frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
 		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
 	new FXLabel(frameLine, "Directory:");
-	pEditDirName = new FXTextField(frameLine, 15, NULL, 0, FRAME_SUNKEN | TEXTFIELD_READONLY);
+	pEditDirName = new FXTextField(frameLine, 15, nullptr, 0, FRAME_SUNKEN | TEXTFIELD_READONLY);
 	new FXLabel(frameLine, "Author:");
-	pEditAuthor = new FXTextField(frameLine, 30, NULL, 0, FRAME_SUNKEN | TEXTFIELD_READONLY);
+	pEditAuthor = new FXTextField(frameLine, 30, nullptr, 0, FRAME_SUNKEN | TEXTFIELD_READONLY);
 	
 	// file handling information
 	groupBox = new FXGroupBox(this, "File Handling Information:",
@@ -119,12 +119,12 @@ FXVerticalFrame(container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_L
 	frameLine = new FXHorizontalFrame(frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
 		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
 	new FXLabel(frameLine, "File Pattern:");
-	pEditPattern = new FXTextField(frameLine, 15, NULL, 0, FRAME_SUNKEN | TEXTFIELD_READONLY);
+	pEditPattern = new FXTextField(frameLine, 15, nullptr, 0, FRAME_SUNKEN | TEXTFIELD_READONLY);
 	
 	frameLine = new FXHorizontalFrame(frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
 		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
 	new FXLabel(frameLine, "Default Extension:");
-	pEditDefaultExtension= new FXTextField(frameLine, 15, NULL, 0, FRAME_SUNKEN | TEXTFIELD_READONLY);
+	pEditDefaultExtension= new FXTextField(frameLine, 15, nullptr, 0, FRAME_SUNKEN | TEXTFIELD_READONLY);
 	
 	frameLine = new FXHorizontalFrame(frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
 		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
@@ -139,15 +139,15 @@ FXVerticalFrame(container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_L
 	frameLine = new FXHorizontalFrame(frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
 		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
 	new FXLabel(frameLine, "Filename:");
-	pEditLibName = new FXTextField(frameLine, 10, NULL, 0, FRAME_SUNKEN | TEXTFIELD_READONLY
+	pEditLibName = new FXTextField(frameLine, 10, nullptr, 0, FRAME_SUNKEN | TEXTFIELD_READONLY
 		| LAYOUT_FILL_X);
 	
 	frameLine = new FXHorizontalFrame(frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
 		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
 	new FXLabel(frameLine, "File Size:");
-	pEditLibSize = new FXTextField(frameLine, 10, NULL, 0, FRAME_SUNKEN | TEXTFIELD_READONLY);
+	pEditLibSize = new FXTextField(frameLine, 10, nullptr, 0, FRAME_SUNKEN | TEXTFIELD_READONLY);
 	new FXLabel(frameLine, "CRC:");
-	pEditLibHash = new FXTextField(frameLine, 40, NULL, 0, FRAME_SUNKEN | TEXTFIELD_READONLY);
+	pEditLibHash = new FXTextField(frameLine, 40, nullptr, 0, FRAME_SUNKEN | TEXTFIELD_READONLY);
 	
 	// status
 	groupBox = new FXGroupBox(this, "Module Status:",
@@ -156,7 +156,7 @@ FXVerticalFrame(container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_L
 	frameBox = new FXVerticalFrame(groupBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
 		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
 	
-	pEditStatus = new FXTextField(groupBox, 20, NULL, 0, FRAME_SUNKEN | TEXTFIELD_READONLY
+	pEditStatus = new FXTextField(groupBox, 20, nullptr, 0, FRAME_SUNKEN | TEXTFIELD_READONLY
 		| LAYOUT_FILL_X);
 	
 	// load the modules list

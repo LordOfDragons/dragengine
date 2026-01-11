@@ -52,7 +52,7 @@ extern const int *vResourcePeerCreationOrder;
 
 deSynthesizerSystem::deSynthesizerSystem(deEngine *engine) :
 deBaseSystem(engine, "Synthesizer", deModuleSystem::emtSynthesizer),
-pActiveModule(NULL){
+pActiveModule(nullptr){
 }
 
 deSynthesizerSystem::~deSynthesizerSystem(){
@@ -108,7 +108,7 @@ void deSynthesizerSystem::SetActiveModule(deLoadableModule *module){
 
 void deSynthesizerSystem::ClearPermanents(){
 	deBaseSystem::ClearPermanents();
-	pActiveModule = NULL;
+	pActiveModule = nullptr;
 }
 
 void deSynthesizerSystem::PostStart(){

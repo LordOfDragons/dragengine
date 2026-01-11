@@ -66,7 +66,7 @@ dexsiDevice(module, esX11)
 	// get key information
 	Display * const display = GetModule().GetOSUnix()->GetDisplay();
 	int i, minKeyCode, maxKeyCode, keySymPerKeyCode;
-	KeySym *keysyms = NULL;
+	KeySym *keysyms = nullptr;
 	
 	XDisplayKeycodes(display, &minKeyCode, &maxKeyCode);
 	
@@ -162,7 +162,7 @@ dexsiDevice(module, esX11)
 				
 				char character = 0;
 				KeySym charKeySym = 0;
-				if(!XLookupString(&fakeKeyEvent, &character, 1, &charKeySym, NULL)
+				if(!XLookupString(&fakeKeyEvent, &character, 1, &charKeySym, nullptr)
 				|| !charKeySym || !character){
 					continue;
 				}

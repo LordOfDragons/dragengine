@@ -53,7 +53,7 @@ pRenderThread(renderThread)
 	pHandleShader = pglCreateProgram();
 	DEASSERT_NOTNULL(pHandleShader)
 	
-	pParameters = NULL;
+	pParameters = nullptr;
 	pParameterCount = 0;
 }
 
@@ -153,7 +153,7 @@ void deoglShaderCompiled::SetParameterCount(int count){
 	
 	if(pParameters){
 		delete [] pParameters;
-		pParameters = NULL;
+		pParameters = nullptr;
 		pParameterCount = 0;
 	}
 	

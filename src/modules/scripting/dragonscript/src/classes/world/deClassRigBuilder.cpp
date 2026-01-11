@@ -57,7 +57,7 @@ class deClassRigBuilder_Builder : public deRigBuilder{
 	
 public:
 	deClassRigBuilder_Builder(dsRunTime *rt, dsValue *myself) :
-	pRT(rt), pMyself(myself), pRig(NULL){
+	pRT(rt), pMyself(myself), pRig(nullptr){
 	}
 	
 	void BuildRig(deRig *rig) override{
@@ -67,17 +67,17 @@ public:
 			pRT->RunFunction(pMyself, "buildRig", 0);
 			
 		}catch(const duException &e){
-			pRig = NULL;
+			pRig = nullptr;
 			pRT->PrintExceptionTrace();
 			e.PrintError();
 			DETHROW(deeInvalidParam);
 			
 		}catch(...){
-			pRig = NULL;
+			pRig = nullptr;
 			throw;
 		}
 		
-		pRig = NULL;
+		pRig = nullptr;
 	}
 	
 	inline deRig *GetRig() const{ return pRig; }
@@ -99,7 +99,7 @@ dsFunction(init.clsRigBuilder, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassRigBuilder::nfNew::RunFunction(dsRunTime*, dsValue *myself){
-	dedsGetNativeData<sMdlBldNatDat>(p_GetNativeData(myself)).builder = NULL;
+	dedsGetNativeData<sMdlBldNatDat>(p_GetNativeData(myself)).builder = nullptr;
 }
 
 // public destructor Destructor()
@@ -135,11 +135,11 @@ void deClassRigBuilder::nfBuild::RunFunction(dsRunTime *rt, dsValue *myself){
 		rig = ds.GetGameEngine()->GetRigManager()->CreateRig(filename, builder);
 		
 	}catch(...){
-		nd.builder = NULL;
+		nd.builder = nullptr;
 		throw;
 	}
 	
-	nd.builder = NULL;
+	nd.builder = nullptr;
 	ds.GetClassRig()->PushRig(rt, rig);
 }
 
@@ -471,7 +471,7 @@ void deClassRigBuilder::nfSetShapeProperties::RunFunction(dsRunTime *rt, dsValue
 deClassRigBuilder::deClassRigBuilder(deScriptingDragonScript &ds) :
 dsClass("RigBuilder", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_ABSTRACT),
 pDS(ds),
-pClsColliderConstraintDof(NULL)
+pClsColliderConstraintDof(nullptr)
 {
 	GetParserInfo()->SetParent(DENS_SCENERY);
 	GetParserInfo()->SetBase("Object");

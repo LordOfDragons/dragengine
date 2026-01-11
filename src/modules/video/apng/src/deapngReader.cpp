@@ -96,7 +96,7 @@ pErrorState(false)
 		pReader = reader;
 		// create structs
 		pReadStruct = png_create_read_struct_2(PNG_LIBPNG_VER_STRING, (png_voidp)this,
-			(png_error_ptr)deapngError, (png_error_ptr)deapngWarning, NULL, NULL, NULL);
+			(png_error_ptr)deapngError, (png_error_ptr)deapngWarning, nullptr, nullptr, nullptr);
 		if(!pReadStruct){
 			DETHROW(deeOutOfMemory);
 		}
@@ -162,12 +162,12 @@ void deapngReader::Rewind(){
 	}
 	
 	if(pReadStruct){
-		png_destroy_read_struct(&pReadStruct, &pInfoStruct, NULL);
-		pReadStruct = NULL;
-		pInfoStruct = NULL;
+		png_destroy_read_struct(&pReadStruct, &pInfoStruct, nullptr);
+		pReadStruct = nullptr;
+		pInfoStruct = nullptr;
 		
 		pReadStruct = png_create_read_struct_2(PNG_LIBPNG_VER_STRING, (png_voidp)this,
-			(png_error_ptr)deapngError, (png_error_ptr)deapngWarning, NULL, NULL, NULL);
+			(png_error_ptr)deapngError, (png_error_ptr)deapngWarning, nullptr, nullptr, nullptr);
 		if(!pReadStruct){
 			DETHROW(deeOutOfMemory);
 		}
@@ -261,7 +261,7 @@ void deapngReader::pCleanUp(){
 		delete [] pAccumData;
 	}
 	if(pReadStruct){
-		png_destroy_read_struct(&pReadStruct, &pInfoStruct, NULL);
+		png_destroy_read_struct(&pReadStruct, &pInfoStruct, nullptr);
 	}
 }
 

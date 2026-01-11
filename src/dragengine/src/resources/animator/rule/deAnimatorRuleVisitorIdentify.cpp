@@ -52,7 +52,7 @@
 ////////////////////////////
 
 deAnimatorRuleVisitorIdentify::deAnimatorRuleVisitorIdentify() :
-pRule(NULL),
+pRule(nullptr),
 pType(ertUnknown){
 }
 
@@ -156,7 +156,7 @@ deAnimatorRuleMirror &deAnimatorRuleVisitorIdentify::CastToMirror() const{
 }
 
 void deAnimatorRuleVisitorIdentify::Reset(){
-	pRule = NULL;
+	pRule = nullptr;
 	pType = ertUnknown;
 }
 

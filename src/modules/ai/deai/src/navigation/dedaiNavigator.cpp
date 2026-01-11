@@ -69,17 +69,17 @@ dedaiNavigator::dedaiNavigator(deDEAIModule &deai, deNavigator &navigator) :
 pDEAI(deai),
 pNavigator(navigator),
 
-pParentWorld(NULL),
+pParentWorld(nullptr),
 
-pTypeMappings(NULL),
+pTypeMappings(nullptr),
 pTypeMappingCount(0),
 pDirtyTypeMappings(true),
 
-pLayer(NULL),
-pDDSPath(NULL),
-pDDSPathFaces(NULL),
-pDDSPathFacesOpen(NULL),
-pDDSPathFacesClosed(NULL){
+pLayer(nullptr),
+pDDSPath(nullptr),
+pDDSPathFaces(nullptr),
+pDDSPathFacesOpen(nullptr),
+pDDSPathFacesClosed(nullptr){
 }
 
 dedaiNavigator::~dedaiNavigator(){
@@ -110,7 +110,7 @@ void dedaiNavigator::SetParentWorld(dedaiWorld *world){
 		}
 		
 	}else{
-		pLayer = NULL;
+		pLayer = nullptr;
 	}
 	
 	UpdateDDSPath();
@@ -185,7 +185,7 @@ void dedaiNavigator::UpdateDDSPath(){
 		}else{
 			if(pDDSPath){
 				pDebugDrawer->RemoveShape(pDDSPath);
-				pDDSPath = NULL;
+				pDDSPath = nullptr;
 			}
 		}
 		
@@ -215,15 +215,15 @@ void dedaiNavigator::UpdateDDSPath(){
 		}else{
 			if(pDDSPathFaces){
 				pDebugDrawer->RemoveShape(pDDSPathFaces);
-				pDDSPathFaces = NULL;
+				pDDSPathFaces = nullptr;
 			}
 			if(pDDSPathFacesOpen){
 				pDebugDrawer->RemoveShape(pDDSPathFacesOpen);
-				pDDSPathFacesOpen = NULL;
+				pDDSPathFacesOpen = nullptr;
 			}
 			if(pDDSPathFacesClosed){
 				pDebugDrawer->RemoveShape(pDDSPathFacesClosed);
-				pDDSPathFacesClosed = NULL;
+				pDDSPathFacesClosed = nullptr;
 			}
 		}
 		
@@ -234,11 +234,11 @@ void dedaiNavigator::UpdateDDSPath(){
 				pParentWorld->GetWorld().RemoveDebugDrawer(pDebugDrawer);
 			}
 			
-			pDDSPath = NULL;
-			pDDSPathFaces = NULL;
-			pDDSPathFacesOpen = NULL;
-			pDDSPathFacesClosed = NULL;
-			pDebugDrawer = NULL;
+			pDDSPath = nullptr;
+			pDDSPathFaces = nullptr;
+			pDDSPathFacesOpen = nullptr;
+			pDDSPathFacesClosed = nullptr;
+			pDebugDrawer = nullptr;
 		}
 	}
 }
@@ -257,7 +257,7 @@ void dedaiNavigator::UpdateDDSPathShape(const deNavigatorPath &path){
 	const decVector upAlt(0.0f, 0.0f, 1.0f);
 	const decVector up(0.0f, 1.0f, 0.0f);
 	decQuaternion orientation;
-	decShape *shape = NULL;
+	decShape *shape = nullptr;
 	decVector p1, p2, pd;
 	int i;
 	
@@ -265,13 +265,13 @@ void dedaiNavigator::UpdateDDSPathShape(const deNavigatorPath &path){
 		if(count > 0){
 			shape = new decShapeSphere(0.05f);
 			pDDSPath->GetShapeList().Add(shape);
-			shape = NULL;
+			shape = nullptr;
 		}
 		
 		if(count > 1){
 			shape = new decShapeSphere(0.05f, (path.GetAt(count - 1) - refpos).ToVector());
 			pDDSPath->GetShapeList().Add(shape);
-			shape = NULL;
+			shape = nullptr;
 		}
 		
 		for(i=0; i<count; i++){
@@ -295,7 +295,7 @@ void dedaiNavigator::UpdateDDSPathShape(const deNavigatorPath &path){
 				
 				shape = new decShapeBox(halfExtends, (p1 + p2) * 0.5f, orientation);
 				pDDSPath->GetShapeList().Add(shape);
-				shape = NULL;
+				shape = nullptr;
 			}
 		}
 		
@@ -617,7 +617,7 @@ int &hitAfterPoint, float &hitDistance){
 //////////////////////
 
 void dedaiNavigator::pCleanUp(){
-	SetParentWorld(NULL);
+	SetParentWorld(nullptr);
 	
 	if(pTypeMappings){
 		delete [] pTypeMappings;
@@ -629,7 +629,7 @@ void dedaiNavigator::pUpdateTypeMappings(){
 	if(typeCount != pTypeMappingCount){
 		if(pTypeMappings){
 			delete [] pTypeMappings;
-			pTypeMappings = NULL;
+			pTypeMappings = nullptr;
 			pTypeMappingCount = 0;
 		}
 		

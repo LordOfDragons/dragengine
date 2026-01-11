@@ -204,7 +204,7 @@ void deClassSynthesizerEffect::PushEffect(dsRunTime *rt, deSynthesizerSource *so
 	}
 	
 	if(!effect){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

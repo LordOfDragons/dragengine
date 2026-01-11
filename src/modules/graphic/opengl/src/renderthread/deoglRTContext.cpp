@@ -124,7 +124,7 @@ pCompileContextCount(0),
 #ifdef OS_UNIX_X11
 pOSUnix(renderThread.GetOgl().GetOS()->CastToOSUnix()),
 
-pDisplay(NULL),
+pDisplay(nullptr),
 pScreen(0),
 
 #ifdef BACKEND_OPENGL
@@ -133,7 +133,7 @@ pLoaderContext(nullptr),
 #endif // BACKEND_OPENGL
 
 pColMap(0),
-pVisInfo(NULL),
+pVisInfo(nullptr),
 
 #elif defined OS_ANDROID
 pOSAndroid(renderThread.GetOgl().GetOS()->CastToOSAndroid()),
@@ -171,7 +171,7 @@ pContext(NULL),
 pLoaderContext(NULL),
 #endif // OS_*
 
-pActiveRRenderWindow(NULL),
+pActiveRRenderWindow(nullptr),
 pUserRequestedQuit(false),
 pAppActivated(true)
 {
@@ -336,7 +336,7 @@ void deoglRTContext::CleanUp(){
 	
 	// we need to forcefully drop the active window in case the list above is not empty otherwise
 	// we end up with another window being active
-	ActivateRRenderWindow(NULL, true);
+	ActivateRRenderWindow(nullptr, true);
 	
 	// HACK unassign window
 #ifdef OS_UNIX_X11
@@ -468,7 +468,7 @@ void deoglRTContext::ActivateRRenderWindow(deoglRRenderWindow *rrenderWindow, bo
 #ifdef OS_UNIX_X11
 		#ifdef BACKEND_OPENGL
 // 		printf( "glXMakeCurrent(clear) previous(%lu,%p)\n", glXGetCurrentDrawable(), glXGetCurrentContext() );
-		OGLX_CHECK(pRenderThread, glXMakeCurrent(pDisplay, None, NULL));
+		OGLX_CHECK(pRenderThread, glXMakeCurrent(pDisplay, None, nullptr));
 		#endif // BACKEND_OPENGL
 		
 #elif defined OS_ANDROID
@@ -845,7 +845,7 @@ void deoglRTContext::pPrintVisualInfo(){
 
 void deoglRTContext::pChooseFBConfig(){
 	deoglRTLogger &logger = pRenderThread.GetLogger();
-	GLXFBConfig *configs = NULL;
+	GLXFBConfig *configs = nullptr;
 	int configCount = 0;
 	int configValue;
 	int bestConfig;
@@ -895,7 +895,7 @@ void deoglRTContext::pChooseFBConfig(){
 		// store the best config away and free memory
 		pBestFBConfig = configs[bestConfig];
 		XFree(configs);
-		configs = NULL;
+		configs = nullptr;
 		
 		// print out the stats of the best config we have chose
 		if(pRenderThread.GetConfiguration().GetDoLogDebug()){
@@ -975,7 +975,7 @@ void deoglRTContext::pCreateContext(){
 	// NOTE it is important to try to find first the "ARB" version of the function.
 	//      some driver implementations have bugged "No-ARB" version of the function
 	//      returning NULL. the "ARB" version seems less error prone
-	PFNGLXCREATECONTEXTATTRIBSARBPROC pglXCreateContextAttribs = NULL;
+	PFNGLXCREATECONTEXTATTRIBSARBPROC pglXCreateContextAttribs = nullptr;
 	pglXCreateContextAttribs = (PFNGLXCREATECONTEXTATTRIBSARBPROC)
 		GetFunctionPointer("glXCreateContextAttribsARB");
 	if(!pglXCreateContextAttribs){
@@ -1026,7 +1026,7 @@ void deoglRTContext::pCreateContext(){
 			contextAttribs[1] = vOpenGLVersions[i].major;
 			contextAttribs[3] = vOpenGLVersions[i].minor;
 			
-			pContext = pglXCreateContextAttribs(pDisplay, pBestFBConfig, NULL, True, contextAttribs);
+			pContext = pglXCreateContextAttribs(pDisplay, pBestFBConfig, nullptr, True, contextAttribs);
 			if(pContext){
 				logger.LogInfoFormat("- Trying %d.%d Core... Success",
 					vOpenGLVersions[i].major, vOpenGLVersions[i].minor);
@@ -1050,7 +1050,7 @@ void deoglRTContext::pCreateContext(){
 		if(!pContext){
 			logger.LogWarn("No supported OpenGL Context could be created with new method. "
 				"Creating OpenGL Context using old method");
-			pContext = glXCreateNewContext(pDisplay, pBestFBConfig, GLX_RGBA_TYPE, NULL, True);
+			pContext = glXCreateNewContext(pDisplay, pBestFBConfig, GLX_RGBA_TYPE, nullptr, True);
 			pLoaderContext = glXCreateNewContext(pDisplay, pBestFBConfig, GLX_RGBA_TYPE, pContext, True);
 			for(i=0; i<compileContextCount; i++){
 				pCompileContext[i] = glXCreateNewContext(pDisplay, pBestFBConfig, GLX_RGBA_TYPE, pContext, True);
@@ -1064,7 +1064,7 @@ void deoglRTContext::pCreateContext(){
 		
 	}else{
 		logger.LogInfo("Creating OpenGL Context using old method");
-		pContext = glXCreateNewContext(pDisplay, pBestFBConfig, GLX_RGBA_TYPE, NULL, True);
+		pContext = glXCreateNewContext(pDisplay, pBestFBConfig, GLX_RGBA_TYPE, nullptr, True);
 		pLoaderContext = glXCreateNewContext(pDisplay, pBestFBConfig, GLX_RGBA_TYPE, pContext, True);
 		int i;
 		for(i=0; i<compileContextCount; i++){
@@ -1132,14 +1132,14 @@ void deoglRTContext::pFreeContext(){
 void deoglRTContext::pFreeVisualInfo(){
 	if(pVisInfo){
 		XFree(pVisInfo);
-		pVisInfo = NULL;
+		pVisInfo = nullptr;
 	}
 }
 
 void deoglRTContext::pCloseDisplay(){
 	if(pDisplay){
 		XCloseDisplay(pDisplay);
-		pDisplay = NULL;
+		pDisplay = nullptr;
 	}
 }
 

@@ -99,7 +99,7 @@ deDSRenderableCamera &deDSRenderableVisitorIdentify::CastToCamera() const{
 }
 
 void deDSRenderableVisitorIdentify::Reset(){
-	pRenderable = NULL;
+	pRenderable = nullptr;
 	pType = eptUnknown;
 }
 

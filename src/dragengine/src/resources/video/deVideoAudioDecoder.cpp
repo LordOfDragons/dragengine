@@ -42,9 +42,9 @@
 deVideoAudioDecoder::deVideoAudioDecoder(deVideoManager &manager, deVideo *video) :
 pVideoManager(manager),
 pVideo(video),
-pPeerVideo(NULL),
-pLLManagerPrev(NULL),
-pLLManagerNext(NULL)
+pPeerVideo(nullptr),
+pLLManagerPrev(nullptr),
+pLLManagerNext(nullptr)
 {
 	if(!video){
 		DETHROW(deeInvalidParam);
@@ -52,7 +52,7 @@ pLLManagerNext(NULL)
 }
 
 deVideoAudioDecoder::~deVideoAudioDecoder(){
-	SetPeerVideo(NULL);
+	SetPeerVideo(nullptr);
 	
 	pVideoManager.RemoveAudioDecoder(this);
 }
@@ -108,6 +108,6 @@ void deVideoAudioDecoder::SetLLManagerPrev(deVideoAudioDecoder *resource){
 }
 
 void deVideoAudioDecoder::MarkLeaking(){
-	pLLManagerNext = NULL;
-	pLLManagerPrev = NULL;
+	pLLManagerNext = nullptr;
+	pLLManagerPrev = nullptr;
 }

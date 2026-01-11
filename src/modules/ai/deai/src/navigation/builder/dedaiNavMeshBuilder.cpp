@@ -75,7 +75,7 @@ dedaiNavMeshBuilderEdge *dedaiNavMeshBuilder::GetEdgeWith(int vertex1, int verte
 }
 
 dedaiNavMeshBuilderFace *dedaiNavMeshBuilder::AddFace(){
-	dedaiNavMeshBuilderFace *face = NULL;
+	dedaiNavMeshBuilderFace *face = nullptr;
 	
 	try{
 		face = new dedaiNavMeshBuilderFace;

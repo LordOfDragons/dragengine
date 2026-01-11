@@ -39,10 +39,10 @@
 ////////////////////////////
 
 deoglBVH::deoglBVH() :
-pNodes(NULL),
+pNodes(nullptr),
 pNodeCount(0),
 pNodeSize (0),
-pPrimitives(NULL),
+pPrimitives(nullptr),
 pPrimitiveCount(0),
 pPrimitiveSize(0){
 }
@@ -77,7 +77,7 @@ int deoglBVH::GetPrimitiveAt(int index) const{
 
 deoglBVHNode *deoglBVH::GetRootNode() const{
 	if(pNodeCount == 0){
-		return NULL;
+		return nullptr;
 	}
 	return pNodes;
 }

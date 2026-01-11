@@ -40,7 +40,7 @@
 
 deoalRayTraceConfig::deoalRayTraceConfig() :
 pRayCount(0),
-pRayDirections(NULL),
+pRayDirections(nullptr),
 pRayUnitVolume(0.0f),
 pRayUnitSurface(0.0f),
 pOpeningAngle(0.0f){
@@ -48,7 +48,7 @@ pOpeningAngle(0.0f){
 
 deoalRayTraceConfig::deoalRayTraceConfig(const deoalRayTraceConfig &config) :
 pRayCount(0),
-pRayDirections(NULL),
+pRayDirections(nullptr),
 pRayUnitVolume(config.pRayUnitVolume),
 pRayUnitSurface(config.pRayUnitSurface),
 pOpeningAngle(config.pOpeningAngle)
@@ -80,7 +80,7 @@ void deoalRayTraceConfig::SetFromVertices(const decVector *vertices, int count, 
 	
 	if(pRayDirections){
 		delete [] pRayDirections;
-		pRayDirections = NULL;
+		pRayDirections = nullptr;
 	}
 	
 	pRayDirections = new decVector[count];
@@ -110,7 +110,7 @@ void deoalRayTraceConfig::SetRaysEquallySpaced(int rayCount){
 	
 	if(pRayDirections){
 		delete [] pRayDirections;
-		pRayDirections = NULL;
+		pRayDirections = nullptr;
 	}
 	
 	pRayCount = 0;

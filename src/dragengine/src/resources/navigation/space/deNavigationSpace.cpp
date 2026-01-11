@@ -49,12 +49,12 @@ deResource(manager),
 pType(estGrid),
 pLayer(0),
 
-pVertices(NULL),
-pEdges(NULL),
-pCorners(NULL),
-pFaces(NULL),
-pWalls(NULL),
-pRooms(NULL),
+pVertices(nullptr),
+pEdges(nullptr),
+pCorners(nullptr),
+pFaces(nullptr),
+pWalls(nullptr),
+pRooms(nullptr),
 pVertexCount(0),
 pEdgeCount(0),
 pCornerCount(0),
@@ -67,17 +67,17 @@ pSnapAngle(180.0f * DEG2RAD),
 
 pBlockingPriority(0),
 
-pPeerAI(NULL),
+pPeerAI(nullptr),
 
-pParentWorld(NULL),
-pLLWorldPrev(NULL),
-pLLWorldNext(NULL){
+pParentWorld(nullptr),
+pLLWorldPrev(nullptr),
+pLLWorldNext(nullptr){
 }
 
 deNavigationSpace::~deNavigationSpace(){
 	if(pPeerAI){
 		delete pPeerAI;
-		pPeerAI = NULL;
+		pPeerAI = nullptr;
 	}
 	
 	if(pRooms){
@@ -210,7 +210,7 @@ void deNavigationSpace::SetVertexCount(int count){
 		if(pVertices){
 			delete [] pVertices;
 		}
-		pVertices = NULL;
+		pVertices = nullptr;
 		pVertexCount = 0;
 		
 		if(count > 0){
@@ -250,7 +250,7 @@ void deNavigationSpace::SetEdgeCount(int count){
 		if(pEdges){
 			delete [] pEdges;
 		}
-		pEdges = NULL;
+		pEdges = nullptr;
 		pEdgeCount = 0;
 		
 		if(count > 0){
@@ -282,7 +282,7 @@ void deNavigationSpace::SetCornerCount(int count){
 		if(pCorners){
 			delete [] pCorners;
 		}
-		pCorners = NULL;
+		pCorners = nullptr;
 		pCornerCount = 0;
 		
 		if(count > 0){
@@ -314,7 +314,7 @@ void deNavigationSpace::SetFaceCount(int count){
 		if(pFaces){
 			delete [] pFaces;
 		}
-		pFaces = NULL;
+		pFaces = nullptr;
 		pFaceCount = 0;
 		
 		if(count > 0){
@@ -346,7 +346,7 @@ void deNavigationSpace::SetWallCount(int count){
 		if(pWalls){
 			delete [] pWalls;
 		}
-		pWalls = NULL;
+		pWalls = nullptr;
 		pWallCount = 0;
 		
 		if(count > 0){
@@ -378,7 +378,7 @@ void deNavigationSpace::SetRoomCount(int count){
 		if(pRooms){
 			delete [] pRooms;
 		}
-		pRooms = NULL;
+		pRooms = nullptr;
 		pRoomCount = 0;
 		
 		if(count > 0){

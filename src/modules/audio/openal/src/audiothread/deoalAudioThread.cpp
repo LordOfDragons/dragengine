@@ -256,7 +256,7 @@ void deoalAudioThread::CleanUp(){
 	
 	if(pDebugInfo){
 		delete pDebugInfo;
-		pDebugInfo = NULL;
+		pDebugInfo = nullptr;
 	}
 }
 
@@ -759,7 +759,7 @@ void deoalAudioThread::pCleanUpThread(){
 	}
 	if(pCaches){
 		delete pCaches;
-		pCaches = NULL;
+		pCaches = nullptr;
 	}
 	
 	if(pCapabilities){

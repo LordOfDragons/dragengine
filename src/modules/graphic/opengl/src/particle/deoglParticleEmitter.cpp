@@ -53,7 +53,7 @@
 deoglParticleEmitter::deoglParticleEmitter(deGraphicOpenGl &ogl, const deParticleEmitter &emitter) :
 pOgl(ogl),
 pParticleEmitter(emitter),
-pTypes(NULL),
+pTypes(nullptr),
 pTypeCount(0),
 pDirtyTypes(true)
 {
@@ -120,7 +120,7 @@ void deoglParticleEmitter::TypeCountChanged(){
 			delete pTypes[pTypeCount];
 		}
 		delete [] pTypes;
-		pTypes = NULL;
+		pTypes = nullptr;
 	}
 	pTypeCount = 0;
 	
@@ -154,6 +154,6 @@ void deoglParticleEmitter::pCleanUp(){
 	
 	// types holds a reference to pREmitter. do not remove it earlier
 	if(pREmitter){
-		pREmitter = NULL;
+		pREmitter = nullptr;
 	}
 }

@@ -688,7 +688,7 @@ void deoglRRenderWindow::Render(){
 	pRenderThread.GetFramebuffer().Activate(nullptr /*pRenderTarget->GetFBO()*/);
 	
 	deoglRenderCanvasContext context(*pRCanvasView,
-		nullptr /*pRenderTarget->GetFBO()*/, decPoint(), size, true, NULL);
+		nullptr /*pRenderTarget->GetFBO()*/, decPoint(), size, true, nullptr);
 	pRenderThread.GetRenderers().GetCanvas().Prepare(context);
 
 	const decPoint canvasSize(pRCanvasView->GetSize().Round());
@@ -824,7 +824,7 @@ void deoglRRenderWindow::pDestroyWindow(){
 	if(pRenderThread.HasContext()){
 		if(pRenderThread.GetContext().GetActiveRRenderWindow() == this){
 			// the context takes care of setting a new active render window if possible and required
-			pRenderThread.GetContext().ActivateRRenderWindow(NULL);
+			pRenderThread.GetContext().ActivateRRenderWindow(nullptr);
 		}
 	}
 	
@@ -1229,7 +1229,7 @@ void deoglRRenderWindow::pSetIcon(){
 	
 	// image data has to be in ARGB format and using long as mentioned here:
 	// https://stackoverflow.com/a/15595582
-	unsigned long *iconBuffer = NULL;
+	unsigned long *iconBuffer = nullptr;
 	int iconBufferLen = 0;
 	
 	if(pIcon){

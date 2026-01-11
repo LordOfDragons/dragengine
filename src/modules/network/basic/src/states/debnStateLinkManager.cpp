@@ -40,8 +40,8 @@
 ////////////////////////////
 
 debnStateLinkManager::debnStateLinkManager(){
-	pHeadLink = NULL;
-	pTailLink = NULL;
+	pHeadLink = nullptr;
+	pTailLink = nullptr;
 	pLinkCount = 0;
 	pNextIdentifier = 0;
 }
@@ -126,7 +126,7 @@ void debnStateLinkManager::RemoveAllLinks(){
 		delete link;
 	}
 	
-	pTailLink = NULL;
+	pTailLink = nullptr;
 }
 
 int debnStateLinkManager::GetFreeIdentifier(){

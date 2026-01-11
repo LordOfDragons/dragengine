@@ -93,7 +93,7 @@ static sNameTableEntry vGLConstantNameTable[] = {
 	{GL_MIN, "GL_MIN"},
 	{GL_MAX, "GL_MAX"},
 	
-	{0, NULL}
+	{0, nullptr}
 };
 
 

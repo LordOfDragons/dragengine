@@ -50,8 +50,8 @@
 desynSynthesizerSourceSynthesizer::desynSynthesizerSourceSynthesizer(desynSynthesizer &synthesizer,
 int firstLink, const deSynthesizerSourceSynthesizer &source) :
 desynSynthesizerSource(synthesizer, firstLink, source),
-pChildSynthesizer(NULL),
-pSources(NULL),
+pChildSynthesizer(nullptr),
+pSources(nullptr),
 pSourceCount(0)
 {
 	SetSilent(!source.GetEnabled());
@@ -160,13 +160,13 @@ int firstLink, const deSynthesizerSourceSynthesizer &source){
 	const int childFirstLink = synthesizer.GetLinkCount();
 	
 	if(linkCount > 0){
-		desynSynthesizerLink *link = NULL;
+		desynSynthesizerLink *link = nullptr;
 		
 		try{
 			for(i=0; i<linkCount; i++){
 				link = new desynSynthesizerLink(*childSynthesizer->GetLinks().GetAt(i), controllerMapping);
 				synthesizer.AddLink(link);
-				link = NULL;
+				link = nullptr;
 			}
 			
 		}catch(const deException &){
@@ -209,6 +209,6 @@ void desynSynthesizerSourceSynthesizer::pClearSources(){
 	}
 	delete [] pSources;
 	
-	pSources = NULL;
+	pSources = nullptr;
 	pSourceCount = 0;
 }

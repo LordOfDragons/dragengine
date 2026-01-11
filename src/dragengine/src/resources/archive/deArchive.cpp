@@ -42,11 +42,11 @@
 deArchive::deArchive(deArchiveManager *manager, deVirtualFileSystem *vfs,
 	const char *filename, TIME_SYSTEM modificationTime) :
 deFileResource(manager, vfs, filename, modificationTime),
-pPeerContainer(NULL){
+pPeerContainer(nullptr){
 }
 
 deArchive::~deArchive(){
-	SetPeerContainer(NULL);
+	SetPeerContainer(nullptr);
 }
 
 

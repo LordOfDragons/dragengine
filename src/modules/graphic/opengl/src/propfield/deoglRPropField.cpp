@@ -55,7 +55,7 @@
 deoglRPropField::deoglRPropField(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
 
-pParentWorld(NULL),
+pParentWorld(nullptr),
 
 pTypesRequirePrepareForRender(true),
 

@@ -56,25 +56,25 @@
 deoglSCTransparent::deoglSCTransparent(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
 
-pStaticShadowMap(NULL),
-pStaticColorMap(NULL),
-pStaticShadowCubeMap(NULL),
-pStaticColorCubeMap(NULL),
+pStaticShadowMap(nullptr),
+pStaticColorMap(nullptr),
+pStaticShadowCubeMap(nullptr),
+pStaticColorCubeMap(nullptr),
 pLastUseStatic(0),
 pHasStatic(false),
 
-pDynamicShadowMap(NULL),
-pDynamicColorMap(NULL),
-pDynamicShadowCubeMap(NULL),
-pDynamicColorCubeMap(NULL),
+pDynamicShadowMap(nullptr),
+pDynamicColorMap(nullptr),
+pDynamicShadowCubeMap(nullptr),
+pDynamicColorCubeMap(nullptr),
 pLastUseDynamic(0),
 pHasDynamic(false),
 pDirtyDynamic(true),
 
-pTemporaryShadowMap(NULL),
-pTemporaryColorMap(NULL),
-pTemporaryShadowCubeMap(NULL),
-pTemporaryColorCubeMap(NULL),
+pTemporaryShadowMap(nullptr),
+pTemporaryColorMap(nullptr),
+pTemporaryShadowCubeMap(nullptr),
+pTemporaryColorCubeMap(nullptr),
 
 pLastSizeStatic(0),
 pNextSizeStatic(0),
@@ -113,7 +113,7 @@ deoglTexture *deoglSCTransparent::ObtainStaticShadowMapWithSize(int size, bool u
 		
 		if(pStaticShadowMap){
 			delete pStaticShadowMap;
-			pStaticShadowMap = NULL;
+			pStaticShadowMap = nullptr;
 		}
 	}
 	
@@ -141,7 +141,7 @@ deoglTexture *deoglSCTransparent::ObtainStaticColorMapWithSize(int size){
 		
 		if(pStaticColorMap){
 			delete pStaticColorMap;
-			pStaticColorMap = NULL;
+			pStaticColorMap = nullptr;
 		}
 	}
 	
@@ -170,7 +170,7 @@ deoglCubeMap *deoglSCTransparent::ObtainStaticShadowCubeMapWithSize(int size, bo
 		
 		if(pStaticShadowCubeMap){
 			delete pStaticShadowCubeMap;
-			pStaticShadowCubeMap = NULL;
+			pStaticShadowCubeMap = nullptr;
 		}
 	}
 	
@@ -198,7 +198,7 @@ deoglCubeMap *deoglSCTransparent::ObtainStaticColorCubeMapWithSize(int size){
 		
 		if(pStaticColorCubeMap){
 			delete pStaticColorCubeMap;
-			pStaticColorCubeMap = NULL;
+			pStaticColorCubeMap = nullptr;
 		}
 	}
 	
@@ -222,19 +222,19 @@ void deoglSCTransparent::DropStatic(){
 	
 	if(pStaticShadowMap){
 		delete pStaticShadowMap;
-		pStaticShadowMap = NULL;
+		pStaticShadowMap = nullptr;
 	}
 	if(pStaticColorMap){
 		delete pStaticColorMap;
-		pStaticColorMap = NULL;
+		pStaticColorMap = nullptr;
 	}
 	if(pStaticShadowCubeMap){
 		delete pStaticShadowCubeMap;
-		pStaticShadowCubeMap = NULL;
+		pStaticShadowCubeMap = nullptr;
 	}
 	if(pStaticColorCubeMap){
 		delete pStaticColorCubeMap;
-		pStaticColorCubeMap = NULL;
+		pStaticColorCubeMap = nullptr;
 	}
 	
 	pLastSizeStatic = 0;
@@ -264,7 +264,7 @@ deoglTexture *deoglSCTransparent::ObtainDynamicShadowMapWithSize(int size, bool 
 		
 		if(pDynamicShadowMap){
 			delete pDynamicShadowMap;
-			pDynamicShadowMap = NULL;
+			pDynamicShadowMap = nullptr;
 		}
 	}
 	
@@ -293,7 +293,7 @@ deoglTexture *deoglSCTransparent::ObtainDynamicColorMapWithSize(int size){
 		
 		if(pDynamicColorMap){
 			delete pDynamicColorMap;
-			pDynamicColorMap = NULL;
+			pDynamicColorMap = nullptr;
 		}
 	}
 	
@@ -323,7 +323,7 @@ deoglCubeMap *deoglSCTransparent::ObtainDynamicShadowCubeMapWithSize(int size, b
 		
 		if(pDynamicShadowCubeMap){
 			delete pDynamicShadowCubeMap;
-			pDynamicShadowCubeMap = NULL;
+			pDynamicShadowCubeMap = nullptr;
 		}
 	}
 	
@@ -352,7 +352,7 @@ deoglCubeMap *deoglSCTransparent::ObtainDynamicColorCubeMapWithSize(int size){
 		
 		if(pDynamicColorCubeMap){
 			delete pDynamicColorCubeMap;
-			pDynamicColorCubeMap = NULL;
+			pDynamicColorCubeMap = nullptr;
 		}
 	}
 	
@@ -377,19 +377,19 @@ void deoglSCTransparent::DropDynamic(){
 	
 	if(pDynamicShadowMap){
 		delete pDynamicShadowMap;
-		pDynamicShadowMap = NULL;
+		pDynamicShadowMap = nullptr;
 	}
 	if(pDynamicColorMap){
 		delete pDynamicColorMap;
-		pDynamicColorMap = NULL;
+		pDynamicColorMap = nullptr;
 	}
 	if(pDynamicShadowCubeMap){
 		delete pDynamicShadowCubeMap;
-		pDynamicShadowCubeMap = NULL;
+		pDynamicShadowCubeMap = nullptr;
 	}
 	if(pDynamicColorCubeMap){
 		delete pDynamicColorCubeMap;
-		pDynamicColorCubeMap = NULL;
+		pDynamicColorCubeMap = nullptr;
 	}
 	
 	pLastSizeDynamic = 0;
@@ -487,19 +487,19 @@ deoglRenderableColorCubeMap *deoglSCTransparent::ObtainTemporaryColorCubeMapWith
 void deoglSCTransparent::DropTemporary(){
 	if(pTemporaryShadowMap){
 		pTemporaryShadowMap->SetInUse(false);
-		pTemporaryShadowMap = NULL;
+		pTemporaryShadowMap = nullptr;
 	}
 	if(pTemporaryColorMap){
 		pTemporaryColorMap->SetInUse(false);
-		pTemporaryColorMap = NULL;
+		pTemporaryColorMap = nullptr;
 	}
 	if(pTemporaryShadowCubeMap){
 		pTemporaryShadowCubeMap->SetInUse(false);
-		pTemporaryShadowCubeMap = NULL;
+		pTemporaryShadowCubeMap = nullptr;
 	}
 	if(pTemporaryColorCubeMap){
 		pTemporaryColorCubeMap->SetInUse(false);
-		pTemporaryColorCubeMap = NULL;
+		pTemporaryColorCubeMap = nullptr;
 	}
 }
 

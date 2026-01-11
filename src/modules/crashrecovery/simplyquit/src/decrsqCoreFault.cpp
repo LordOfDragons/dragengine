@@ -364,7 +364,7 @@ static _Unwind_Reason_Code unwindCallback(struct _Unwind_Context *context, void 
 
 static void signalSegV(int number, siginfo_t *infos, void *ptrContext){
 	decrsqCoreFault *coreFault = decrsqCoreFault::GetGlobalCoreFault();
-	deCRSimplyQuit *module = NULL;
+	deCRSimplyQuit *module = nullptr;
 	
 	if(coreFault){
 		module = &coreFault->GetModule();
@@ -512,7 +512,7 @@ static void signalSegV(int number, siginfo_t *infos, void *ptrContext){
 
 static void signalAbort(int number, siginfo_t *infos, void *ptrContext){
 	decrsqCoreFault *coreFault = decrsqCoreFault::GetGlobalCoreFault();
-	deCRSimplyQuit *module = NULL;
+	deCRSimplyQuit *module = nullptr;
 	
 	if(coreFault){
 		module = &coreFault->GetModule();
@@ -620,7 +620,7 @@ static void signalAbort(int number, siginfo_t *infos, void *ptrContext){
 
 static void signalBusError(int number, siginfo_t *infos, void *ptrContext){
 	decrsqCoreFault *coreFault = decrsqCoreFault::GetGlobalCoreFault();
-	deCRSimplyQuit *module = NULL;
+	deCRSimplyQuit *module = nullptr;
 	
 	if(coreFault){
 		module = &coreFault->GetModule();
@@ -765,7 +765,7 @@ decrsqCoreFault::~decrsqCoreFault(){
 // Management
 ///////////////
 
-decrsqCoreFault *decrsqCoreFault::pGlobalCoreFault = NULL;
+decrsqCoreFault *decrsqCoreFault::pGlobalCoreFault = nullptr;
 
 decrsqCoreFault *decrsqCoreFault::GetGlobalCoreFault(){
 	return pGlobalCoreFault;
@@ -790,7 +790,7 @@ void decrsqCoreFault::HandleBusError(int error, void *memoryLocation, void *ptrC
 //////////////////////
 
 void decrsqCoreFault::pCleanUp(){
-	pGlobalCoreFault = NULL;
+	pGlobalCoreFault = nullptr;
 	
 	pUnregisterHandlers();
 }
@@ -817,7 +817,7 @@ void decrsqCoreFault::pRegisterHandlers(){
 	action.sa_sigaction = signalSegV;
 	action.sa_flags = SA_SIGINFO;
 	
-	if(sigaction(SIGSEGV, &action, NULL)){
+	if(sigaction(SIGSEGV, &action, nullptr)){
 		DETHROW(deeInvalidAction);
 	}
 	
@@ -827,7 +827,7 @@ void decrsqCoreFault::pRegisterHandlers(){
 	action.sa_sigaction = signalAbort;
 	action.sa_flags = SA_SIGINFO;
 	
-	if(sigaction(SIGABRT, &action, NULL)){
+	if(sigaction(SIGABRT, &action, nullptr)){
 		DETHROW(deeInvalidAction);
 	}
 	
@@ -837,7 +837,7 @@ void decrsqCoreFault::pRegisterHandlers(){
 	action.sa_sigaction = signalBusError;
 	action.sa_flags = SA_SIGINFO;
 	
-	if(sigaction(SIGBUS, &action, NULL)){
+	if(sigaction(SIGBUS, &action, nullptr)){
 		DETHROW(deeInvalidAction);
 	}
 #endif

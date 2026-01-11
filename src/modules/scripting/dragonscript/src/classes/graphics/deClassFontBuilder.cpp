@@ -50,7 +50,7 @@ class deClassFontBuilder_Builder : public deFontBuilder{
 	
 public:
 	deClassFontBuilder_Builder(dsRunTime *rt, dsValue *myself) :
-	pRT(rt), pMyself(myself), pFont(NULL){
+	pRT(rt), pMyself(myself), pFont(nullptr){
 	}
 	
 	void BuildFont(deFont *font) override{

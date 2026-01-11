@@ -381,7 +381,7 @@ pVAOCopyShadow(nullptr)
 		OGL_CHECK(renderThread, pglBindVertexArray(pVAOCopyShadow->GetVAO()));
 		
 		OGL_CHECK(renderThread, pglEnableVertexAttribArray(0));
-		OGL_CHECK(renderThread, pglVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 24, (const GLvoid *)0));
+		OGL_CHECK(renderThread, pglVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 24, (const GLvoid *)nullptr));
 		OGL_CHECK(renderThread, pglEnableVertexAttribArray(1));
 		OGL_CHECK(renderThread, pglVertexAttribIPointer(1, 1, GL_INT, 24, (const GLvoid *)8));
 		OGL_CHECK(renderThread, pglEnableVertexAttribArray(2));
@@ -655,7 +655,7 @@ const deoglRenderPlanMasked *mask){
 	
 	deoglRenderPlan &plan = planLight.GetPlan();
 	const bool lightGeometry = !cllight.GetCulled();
-	deoglGIState * const giState = !mask && solid ? plan.GetUpdateGIState() : NULL;
+	deoglGIState * const giState = !mask && solid ? plan.GetUpdateGIState() : nullptr;
 	
 	if(!lightGeometry && !giState){
 		return;
@@ -735,14 +735,14 @@ const deoglRenderPlanMasked *mask){
 	shadowParams.matrixProjection = defren.CreateProjectionDMatrix(1, 1,
 		DEG2RAD * 90.0f, 1.0f, OGL_REN_LIG_ZNEAR, light.GetRange());
 	
-	deoglCubeMap *texSolidDepth1 = NULL;
-	deoglCubeMap *texSolidDepth2 = NULL;
-	deoglCubeMap *texTranspDepth1 = NULL;
-	deoglCubeMap *texTranspColor1 = NULL;
-	deoglCubeMap *texTranspDepth2 = NULL;
-	deoglCubeMap *texTranspColor2 = NULL;
-	deoglCubeMap *texAmbient1 = NULL;
-	deoglCubeMap *texAmbient2 = NULL;
+	deoglCubeMap *texSolidDepth1 = nullptr;
+	deoglCubeMap *texSolidDepth2 = nullptr;
+	deoglCubeMap *texTranspDepth1 = nullptr;
+	deoglCubeMap *texTranspColor1 = nullptr;
+	deoglCubeMap *texTranspDepth2 = nullptr;
+	deoglCubeMap *texTranspColor2 = nullptr;
+	deoglCubeMap *texAmbient1 = nullptr;
+	deoglCubeMap *texAmbient2 = nullptr;
 	
 	if(useShadow){
 		DebugTimer2Reset(plan, true);
@@ -1243,8 +1243,8 @@ DEBUG_PRINT_TIMER("Shadow Static");
 	// dynamic shadow map with transparency if required
 	if(shadowType == deoglShadowCaster::estDynamicOnly
 	||  shadowType == deoglShadowCaster::estStaticAndDynamic){
-		const deoglCollideList *clist1 = NULL;
-		const deoglCollideList *clist2 = NULL;
+		const deoglCollideList *clist1 = nullptr;
+		const deoglCollideList *clist2 = nullptr;
 		
 		if(refilterShadow){
 			const decLayerMask &layerMask = plan.GetLayerMask();
@@ -1733,7 +1733,7 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanLight &planLight){
 	
 	// set values
 	const deoglSPBMapBuffer mapped(paramBlock);
-	const bool hasGIState = plan.GetRenderGIState() != NULL;
+	const bool hasGIState = plan.GetRenderGIState() != nullptr;
 	
 	target = lightShader.GetLightUniformTarget(deoglLightShader::elutLightColor);
 	if(target != -1){

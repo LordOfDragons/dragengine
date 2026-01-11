@@ -219,7 +219,7 @@ void deClassConnection::nfGetConnectionListener::RunFunction(dsRunTime *rt, dsVa
 		rt->PushObject(scrConnection->GetCallback(), clsConnection->GetClassConnectionListener());
 		
 	}else{
-		rt->PushObject(NULL, clsConnection->GetClassConnectionListener());
+		rt->PushObject(nullptr, clsConnection->GetClassConnectionListener());
 	}
 }
 
@@ -280,11 +280,11 @@ void deClassConnection::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 
 deClassConnection::deClassConnection(deEngine *gameEngine, deScriptingDragonScript *scrMgr) :
 dsClass("Connection", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE),
-pGameEngine(NULL),
-pScrMgr(NULL),
-pClsNS(NULL),
-pClsNM(NULL),
-pClsConL(NULL)
+pGameEngine(nullptr),
+pScrMgr(nullptr),
+pClsNS(nullptr),
+pClsNM(nullptr),
+pClsConL(nullptr)
 {
 	if(!gameEngine || !scrMgr) DSTHROW(dueInvalidParam);
 	
@@ -364,7 +364,7 @@ void deClassConnection::PushConnection(dsRunTime *rt, deConnection *connection){
 	}
 	
 	if(!connection){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

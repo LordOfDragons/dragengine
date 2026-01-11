@@ -39,7 +39,7 @@
 /////////////////////////////////
 
 deoalDefaultDOctree::deoalDefaultDOctree(const decDVector &center, const decDVector &halfSize) : deoalDOctree(center, halfSize){
-	pElements = NULL;
+	pElements = nullptr;
 	pElementCount = 0;
 	pElementSize = 0;
 }
@@ -57,7 +57,7 @@ deoalDefaultDOctree::~deoalDefaultDOctree(){
 deoalDOctree *deoalDefaultDOctree::CreateOctree(int octant) const{
 	decDVector halfSize = GetHalfSize() * 0.5f;
 	const decDVector &center = GetCenter();
-	deoalDOctree *node = (deoalDefaultDOctree*)NULL;
+	deoalDOctree *node = (deoalDefaultDOctree*)nullptr;
 	decDVector nc;
 	
 	// determine the smallest and largest coordinates
@@ -142,7 +142,7 @@ void deoalDefaultDOctree::RemoveElement(void *element){
 	if(index == -1) DETHROW(deeInvalidParam);
 	
 	for(i=index+1; i<pElementCount; i++) pElements[i - 1] = pElements[i];
-	pElements[pElementCount - 1] = NULL;
+	pElements[pElementCount - 1] = nullptr;
 	pElementCount--;
 }
 

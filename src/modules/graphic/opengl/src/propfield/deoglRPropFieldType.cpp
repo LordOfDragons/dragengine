@@ -74,7 +74,7 @@
 deoglRPropFieldType::deoglRPropFieldType(deoglRPropField &propField) :
 pPropField(propField),
 
-pUseSkinTexture(NULL),
+pUseSkinTexture(nullptr),
 
 pClustersRequirePrepareForRender(true),
 
@@ -118,7 +118,7 @@ void deoglRPropFieldType::SetSkin(deoglRSkin *skin){
 		return;
 	}
 	pSkin = skin;
-	pUseSkinTexture = NULL;
+	pUseSkinTexture = nullptr;
 	if(skin && skin->GetTextureCount() > 0){
 		pUseSkinTexture = &skin->GetTextureAt(0);
 	}
@@ -200,7 +200,7 @@ void deoglRPropFieldType::AddClustersWithSieve(const dePropFieldType &type){
 	
 	// add a cluster for each cluster which is not empty
 	decVector clusterMinExtend, clusterMaxExtend;
-	deoglPropFieldCluster *cluster = NULL;
+	deoglPropFieldCluster *cluster = nullptr;
 	int c;
 	
 	try{
@@ -260,7 +260,7 @@ void deoglRPropFieldType::AddClustersWithSieve(const dePropFieldType &type){
 			cluster->SetExtends(clusterMinExtend, clusterMaxExtend);
 			
 			AddCluster(cluster);
-			cluster = NULL;
+			cluster = nullptr;
 		}
 		
 	}catch(const deException &){
@@ -300,7 +300,7 @@ void deoglRPropFieldType::AddClustersFromGenerator(const dePropFieldType &type, 
 		const float propRadius = pModel->GetExtends().maximum.Length();
 		const dePropFieldInstance * const engInstances = type.GetInstances();
 		decVector clusterMinExtend, clusterMaxExtend;
-		deoglPropFieldCluster *cluster = NULL;
+		deoglPropFieldCluster *cluster = nullptr;
 		int i;
 		
 		try{
@@ -473,7 +473,7 @@ void deoglRPropFieldType::MarkTUCsDirty(){
 
 
 void deoglRPropFieldType::UpdateInstanceParamBlock(deoglSPBlockUBO &paramBlock, deoglSkinShader &skinShader){
-	deoglRDynamicSkin *useDynamicSkin = NULL;
+	deoglRDynamicSkin *useDynamicSkin = nullptr;
 	deoglSkinState *useSkinState = nullptr;
 	
 	if(!pUseSkinTexture){

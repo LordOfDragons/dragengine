@@ -42,7 +42,7 @@
 
 deoglRenderableDepthCubeMapManager::deoglRenderableDepthCubeMapManager(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
-pCubeMaps(NULL),
+pCubeMaps(nullptr),
 pCubeMapCount(0),
 pCubeMapSize(0){
 }
@@ -69,7 +69,7 @@ const deoglRenderableDepthCubeMap *deoglRenderableDepthCubeMapManager::GetCubeMa
 }
 
 deoglRenderableDepthCubeMap *deoglRenderableDepthCubeMapManager::GetCubeMapWith(int size, bool useFloat){
-	deoglRenderableDepthCubeMap *cubemap = NULL;
+	deoglRenderableDepthCubeMap *cubemap = nullptr;
 	int i;
 	
 	// find the cubemap with the matching format

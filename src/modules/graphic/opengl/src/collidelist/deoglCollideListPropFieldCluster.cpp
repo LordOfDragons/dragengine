@@ -41,7 +41,7 @@
 ////////////////////////////
 
 deoglCollideListPropFieldCluster::deoglCollideListPropFieldCluster() :
-pCluster(NULL),
+pCluster(nullptr),
 pCulled(false),
 pCascadeMask(0){
 }

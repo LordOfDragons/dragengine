@@ -40,7 +40,7 @@
 ////////////////////////////
 
 fbxObjectMap::fbxObjectMap(int expectedCount) :
-pBuckets(NULL),
+pBuckets(nullptr),
 pBucketCount(0)
 {
 	if(expectedCount < 1){

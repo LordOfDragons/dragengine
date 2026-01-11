@@ -58,7 +58,7 @@ deLoggerBuffer::sEntry &deLoggerBuffer::sEntry::operator=(const deLoggerBuffer::
 ////////////////////////////
 
 deLoggerBuffer::deLoggerBuffer() :
-pEntries(NULL),
+pEntries(nullptr),
 pEntrySize(0),
 pEntryCount(0){
 }

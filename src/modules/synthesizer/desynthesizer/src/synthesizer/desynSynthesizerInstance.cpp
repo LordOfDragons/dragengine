@@ -52,10 +52,10 @@ desynSynthesizerInstance::desynSynthesizerInstance(deDESynthesizer &module, deSy
 pModule(module),
 pSynthesizerInstance(instance),
 
-pSynthesizer(NULL),
+pSynthesizer(nullptr),
 pSynthesizerUpdateTracker(0),
 
-pControllers(NULL),
+pControllers(nullptr),
 pControllerCount(0),
 
 pChannelCount(1),
@@ -73,7 +73,7 @@ pDirtySynthesizer(true),
 pDirtyControllers(false),
 pDirtyFormat(true),
 
-pStateData(NULL),
+pStateData(nullptr),
 pStateDataSize(0)
 {
 	SynthesizerChanged();
@@ -110,7 +110,7 @@ void desynSynthesizerInstance::SynthesizerChanged(){
 		pSynthesizer = (desynSynthesizer*)pSynthesizerInstance.GetSynthesizer()->GetPeerSynthesizer();
 		
 	}else{
-		pSynthesizer = NULL;
+		pSynthesizer = nullptr;
 	}
 	
 	pSynthesizerUpdateTracker = 0;
@@ -165,7 +165,7 @@ void desynSynthesizerInstance::GenerateSound(void *buffer, int bufferSize, int o
 		pGenerateSilence(buffer, samples);
 	}
 	
-	desynSharedBuffer *sharedBuffer = NULL;
+	desynSharedBuffer *sharedBuffer = nullptr;
 	
 	try{
 		sharedBuffer = pModule.GetSharedBufferList().ClaimBuffer(samples * pChannelCount);
@@ -277,7 +277,7 @@ void desynSynthesizerInstance::pClearControllers(){
 	}
 	
 	delete [] pControllers;
-	pControllers = NULL;
+	pControllers = nullptr;
 	pControllerCount = 0;
 }
 
@@ -457,6 +457,6 @@ void desynSynthesizerInstance::pFreeStateData(){
 	deMutexGuard guard(pSynthesizer->GetMutex());
 	pSynthesizer->CleanUpStateData(pStateData);
 	delete [] pStateData;
-	pStateData = NULL;
+	pStateData = nullptr;
 	pStateDataSize = 0;
 }

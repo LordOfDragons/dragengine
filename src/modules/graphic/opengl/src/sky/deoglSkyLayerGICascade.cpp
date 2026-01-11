@@ -50,7 +50,7 @@ pLayer(layer),
 pGICascade(cascade),
 pPosition(cascade.GetPosition()),
 pPositionThreshold(5.0),
-pShadowCaster(NULL),
+pShadowCaster(nullptr),
 pDirtyStaticShadow(true)
 {
 	try{

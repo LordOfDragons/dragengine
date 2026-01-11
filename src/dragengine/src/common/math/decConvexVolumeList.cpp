@@ -55,7 +55,7 @@
 /////////////////////////////////
 
 decConvexVolumeList::decConvexVolumeList(){
-	pVolumes = NULL;
+	pVolumes = nullptr;
 	pVolumeCount = 0;
 	pVolumeSize = 0;
 }
@@ -160,14 +160,14 @@ void decConvexVolumeList::RemoveAllVolumes(){
 
 void decConvexVolumeList::SetToCube(const decVector &halfSize){
 	if(halfSize < decVector(0.0f, 0.0f, 0.0f)) DETHROW(deeInvalidParam);
-	decConvexVolume *volume = NULL;
+	decConvexVolume *volume = nullptr;
 	
 	// remove all volumes
 	RemoveAllVolumes();
 	
 	// add new volume set to cube
 	try{
-		volume = CreateVolume(NULL, true);
+		volume = CreateVolume(nullptr, true);
 		
 		volume->SetToCube(halfSize);
 		
@@ -472,12 +472,12 @@ int decConvexVolumeList::pTestByPlane(int volume, const decVector &splitNormal, 
 
 int decConvexVolumeList::pSplitByPlane(int volume, const decVector &splitNormal, float splitDot, bool deleteBackVolume, decConvexVolumeFace *face){
 	int f, faceCount = pVolumes[volume]->GetFaceCount();
-	decConvexVolume *volumeFront = NULL;
-	decConvexVolume *volumeBack = NULL;
-	decConvexVolumeFace *faceFront = NULL;
-	decConvexVolumeFace *faceBack = NULL;
-	decConvexVolumeFace *faceCutFront = NULL;
-	decConvexVolumeFace *faceCutBack = NULL;
+	decConvexVolume *volumeFront = nullptr;
+	decConvexVolume *volumeBack = nullptr;
+	decConvexVolumeFace *faceFront = nullptr;
+	decConvexVolumeFace *faceBack = nullptr;
+	decConvexVolumeFace *faceCutFront = nullptr;
+	decConvexVolumeFace *faceCutBack = nullptr;
 	decConvexVolumeFace *testFace;
 	decVector edgeDirection, cutVertexPosition;
 	bool isFrontFirst, isFrontSecond;
@@ -632,11 +632,11 @@ int decConvexVolumeList::pSplitByPlane(int volume, const decVector &splitNormal,
 			// add faces to volumes if exising
 			if(faceFront){
 				volumeFront->AddFace(faceFront);
-				faceFront = NULL;
+				faceFront = nullptr;
 			}
 			if(faceBack){
 				volumeBack->AddFace(faceBack);
-				faceBack = NULL;
+				faceBack = nullptr;
 			}
 		}
 		
@@ -649,7 +649,7 @@ int decConvexVolumeList::pSplitByPlane(int volume, const decVector &splitNormal,
 			}else{
 				delete faceCutFront;
 			}
-			faceCutFront = NULL;
+			faceCutFront = nullptr;
 		}
 		
 		if(faceCutBack){
@@ -660,18 +660,18 @@ int decConvexVolumeList::pSplitByPlane(int volume, const decVector &splitNormal,
 			}else{
 				delete faceCutBack;
 			}
-			faceCutBack = NULL;
+			faceCutBack = nullptr;
 		}
 		
 		// add volumes if existing
 		if(volumeFront){
 			delete pVolumes[volume];
 			pVolumes[volume] = volumeFront;
-			volumeFront = NULL;
+			volumeFront = nullptr;
 			
 			if(volumeBack){
 				AddVolume(volumeBack);
-				volumeBack = NULL;
+				volumeBack = nullptr;
 				result = SPLIT_FRONT_BACK;
 				
 			}else{
@@ -681,7 +681,7 @@ int decConvexVolumeList::pSplitByPlane(int volume, const decVector &splitNormal,
 		}else if(volumeBack){
 			delete pVolumes[volume];
 			pVolumes[volume] = volumeBack;
-			volumeBack = NULL;
+			volumeBack = nullptr;
 			result = SPLIT_BACK;
 			
 		}else{

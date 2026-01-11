@@ -276,14 +276,14 @@ public:
 	 * \deprecated Use StartGame(const char*, const char*, const char*, delGPModuleList*).
 	 */
 	void StartGame(const char *scriptDirectory, const char *gameObject,
-		delGPModuleList *collectChangedParams = NULL) override;
+		delGPModuleList *collectChangedParams = nullptr) override;
 	
 	/**
 	 * \brief Start game.
 	 * \version 1.9
 	 */
 	void StartGame(const char *scriptDirectory, const char *scriptVersion, const char *gameObject,
-		delGPModuleList *collectChangedParams = NULL) override;
+		delGPModuleList *collectChangedParams = nullptr) override;
 	
 	/** \brief Stop game. */
 	void StopGame() override;

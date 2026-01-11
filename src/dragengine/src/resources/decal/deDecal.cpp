@@ -56,20 +56,20 @@ pTexture(0),
 
 pVisible(true),
 
-pBoneStates(NULL),
+pBoneStates(nullptr),
 pBoneStateCount(0),
 
-pParentComponent(NULL),
-pLLComponentPrev(NULL),
-pLLComponentNext(NULL),
+pParentComponent(nullptr),
+pLLComponentPrev(nullptr),
+pLLComponentNext(nullptr),
 
-pParentHeightTerrainSector(NULL),
-pLLHeightTerrainSectorPrev(NULL),
-pLLHeightTerrainSectorNext(NULL),
+pParentHeightTerrainSector(nullptr),
+pLLHeightTerrainSectorPrev(nullptr),
+pLLHeightTerrainSectorNext(nullptr),
 
-pPeerGraphic(NULL),
-pPeerPhysics(NULL),
-pPeerAudio(NULL){
+pPeerGraphic(nullptr),
+pPeerPhysics(nullptr),
+pPeerAudio(nullptr){
 }
 
 deDecal::~deDecal(){
@@ -259,7 +259,7 @@ void deDecal::SetBoneStateCount(int count){
 		return;
 	}
 	
-	deDecalBoneState *boneStates = NULL;
+	deDecalBoneState *boneStates = nullptr;
 	if(count > 0){
 		boneStates = new deDecalBoneState[count];
 	}
@@ -367,15 +367,15 @@ void deDecal::SetPeerAudio(deBaseAudioDecal *peer){
 void deDecal::pCleanUp(){
 	if(pPeerGraphic){
 		delete pPeerGraphic;
-		pPeerGraphic = NULL;
+		pPeerGraphic = nullptr;
 	}
 	if(pPeerPhysics){
 		delete pPeerPhysics;
-		pPeerPhysics = NULL;
+		pPeerPhysics = nullptr;
 	}
 	if(pPeerAudio){
 		delete pPeerAudio;
-		pPeerAudio = NULL;
+		pPeerAudio = nullptr;
 	}
 	
 	if(pBoneStates){

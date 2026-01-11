@@ -102,7 +102,7 @@ void deoalASynthesizerInstance::UpdateParameters(){
 void deoalASynthesizerInstance::DropInstance(){
 	// WARNING Called by main thread during synchronization
 	deMutexGuard guard(pMutex);
-	pInstance = NULL;
+	pInstance = nullptr;
 	pAdvanceUpdateTracker();
 }
 

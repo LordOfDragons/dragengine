@@ -45,7 +45,7 @@ pByteCount(1){
 }
 
 decUniqueID::decUniqueID(int value) :
-pBytes(NULL),
+pBytes(nullptr),
 pByteCount(0)
 {
 	if(value < 0){
@@ -75,7 +75,7 @@ pByteCount(0)
 }
 
 decUniqueID::decUniqueID(const char *string) :
-pBytes(NULL),
+pBytes(nullptr),
 pByteCount(0)
 {
 	if(!string || !string[0]){

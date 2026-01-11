@@ -74,7 +74,7 @@ delGame *delGameList::GetWithID(const decUuid &id) const{
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 delGameList delGameList::GetWithAlias(const char *alias) const{

@@ -50,7 +50,7 @@
 ////////////////////////////
 
 deoglSkinStateController::deoglSkinStateController() :
-pSharedVideoPlayers(NULL),
+pSharedVideoPlayers(nullptr),
 pSharedVideoPlayerCount(0),
 pHasCalculatedProperties(false),
 pHasConstructedProperties(false){
@@ -77,7 +77,7 @@ void deoglSkinStateController::SetVideoPlayerCount(int count){
 	// video players
 	pVideoPlayers.RemoveAll();
 	while(pVideoPlayers.GetCount() < count){
-		pVideoPlayers.Add(NULL);
+		pVideoPlayers.Add(nullptr);
 	}
 	
 	// shared video players
@@ -86,19 +86,19 @@ void deoglSkinStateController::SetVideoPlayerCount(int count){
 			pSharedVideoPlayerCount--;
 			if(pSharedVideoPlayers[pSharedVideoPlayerCount]){
 				pSharedVideoPlayers[pSharedVideoPlayerCount]->FreeUsage();
-				pSharedVideoPlayers[pSharedVideoPlayerCount] = NULL;
+				pSharedVideoPlayers[pSharedVideoPlayerCount] = nullptr;
 			}
 		}
 		
 		delete [] pSharedVideoPlayers;
-		pSharedVideoPlayers = NULL;
+		pSharedVideoPlayers = nullptr;
 	}
 	
 	if(count > 0){
 		pSharedVideoPlayers = new deoglSharedVideoPlayer*[count];
 		
 		for(pSharedVideoPlayerCount=0; pSharedVideoPlayerCount<count; pSharedVideoPlayerCount++){
-			pSharedVideoPlayers[pSharedVideoPlayerCount] = NULL;
+			pSharedVideoPlayers[pSharedVideoPlayerCount] = nullptr;
 		}
 	}
 }
@@ -269,11 +269,11 @@ deoglSkinTexture &texture, deoglWorld &world){
 		}
 		
 		const deoglSkinChannel &channel = *texture.GetChannelAt((deoglSkinChannel::eChannelTypes)i);
-		deoglSharedVideoPlayer *sharedVideoPlayer = NULL;
+		deoglSharedVideoPlayer *sharedVideoPlayer = nullptr;
 		const int vpindex = channel.GetVideoPlayer();
 		deVideoPlayer::Ref videoPlayer;
 		
-		deVideo *oldVideo = NULL;
+		deVideo *oldVideo = nullptr;
 		if(vpindex != -1){
 			if(channel.GetSharedVideoPlayer()){
 				sharedVideoPlayer = GetSharedVideoPlayerAt(vpindex);
@@ -295,7 +295,7 @@ deoglSkinTexture &texture, deoglWorld &world){
 		
 		if(channel.GetVideo()){
 			if(channel.GetSharedVideoPlayer()){
-				sharedVideoPlayer = NULL;
+				sharedVideoPlayer = nullptr;
 				
 				try{
 					// TODO hosting component or other object has to provide the playback speed. until
@@ -335,13 +335,13 @@ deoglSkinTexture &texture, deoglWorld &world){
 			
 		}else{
 			if(channel.GetSharedVideoPlayer()){
-				skinState.SetVideoPlayerAt(vpindex, NULL);
+				skinState.SetVideoPlayerAt(vpindex, nullptr);
 				
 			}else{
-				pVideoPlayers.SetAt(vpindex, NULL);
+				pVideoPlayers.SetAt(vpindex, nullptr);
 			}
 			
-			SetSharedVideoPlayerAt(vpindex, NULL);
+			SetSharedVideoPlayerAt(vpindex, nullptr);
 		}
 	}
 }

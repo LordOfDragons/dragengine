@@ -71,19 +71,19 @@
 ////////////////////////////
 
 deoglCollideList::deoglCollideList(){
-	pComponents = NULL;
+	pComponents = nullptr;
 	pComponentCount = 0;
 	pComponentSize = 0;
 	
-	pLights = NULL;
+	pLights = nullptr;
 	pLightCount = 0;
 	pLightSize = 0;
 	
-	pBillboards = NULL;
+	pBillboards = nullptr;
 	pBillboardCount = 0;
 	pBillboardSize = 0;
 	
-	pHTSectors = NULL;
+	pHTSectors = nullptr;
 	pHTSectorCount = 0;
 	pHTSectorSize = 0;
 	
@@ -91,15 +91,15 @@ deoglCollideList::deoglCollideList(){
 	pHTSClusterCount = 0;
 	pHTSClusterSize = 0;
 	
-	pPropFields = NULL;
+	pPropFields = nullptr;
 	pPropFieldCount = 0;
 	pPropFieldSize = 0;
 	
-	pPropFieldClusters = NULL;
+	pPropFieldClusters = nullptr;
 	pPropFieldClusterCount = 0;
 	pPropFieldClusterSize = 0;
 	
-	pTransformVolume = NULL;
+	pTransformVolume = nullptr;
 	
 	try{
 		pTransformVolume = new deoglTransformVolume;
@@ -298,7 +298,7 @@ deoglCollideListComponent *deoglCollideList::AddComponent(deoglRComponent *compo
 		int i, newSize = pComponentCount * 3 / 2 + 1;
 		deoglCollideListComponent **newArray = new deoglCollideListComponent*[newSize];
 		for(i=pComponentSize; i<newSize; i++){
-			newArray[i] = NULL;
+			newArray[i] = nullptr;
 		}
 		if(pComponents){
 			for(i=0; i<pComponentSize; i++){
@@ -519,7 +519,7 @@ deoglCollideListLight *deoglCollideList::AddLight(deoglRLight *light){
 		int i, newSize = pLightCount * 3 / 2 + 1;
 		deoglCollideListLight **newArray = new deoglCollideListLight*[newSize];
 		for(i=pLightSize; i<newSize; i++){
-			newArray[i] = NULL;
+			newArray[i] = nullptr;
 		}
 		if(pLights){
 			for(i=0; i<pLightSize; i++){
@@ -847,13 +847,13 @@ void deoglCollideList::AddPropField(deoglRPropField *propField, deoglDCollisionV
 	deoglDCollisionBox box;
 	int i, j;
 	
-	deoglCollideListPropField *clpropfield = NULL;
+	deoglCollideListPropField *clpropfield = nullptr;
 	
 	for(i=0; i<typeCount; i++){
 		deoglRPropFieldType &type = propField->GetTypeAt(i);
 		const int clusterCount = type.GetClusterCount();
 		
-		deoglCollideListPropFieldType *cltype = NULL;
+		deoglCollideListPropFieldType *cltype = nullptr;
 		
 		for(j=0; j<clusterCount; j++){
 			deoglPropFieldCluster &cluster = *type.GetClusterAt(j);

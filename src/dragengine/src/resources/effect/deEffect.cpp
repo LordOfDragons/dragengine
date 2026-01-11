@@ -43,7 +43,7 @@
 
 deEffect::deEffect(deEffectManager *manager) : deResource(manager){
 	pEnabled = true;
-	pPeerGraphic = NULL;
+	pPeerGraphic = nullptr;
 }
 
 deEffect::~deEffect(){

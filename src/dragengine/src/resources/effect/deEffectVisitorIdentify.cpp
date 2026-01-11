@@ -82,7 +82,7 @@ deEffectDistortImage &deEffectVisitorIdentify::CastToDistortImage() const{
 }
 
 void deEffectVisitorIdentify::Reset(){
-	pEffect = NULL;
+	pEffect = nullptr;
 	pType = eetUnknown;
 }
 

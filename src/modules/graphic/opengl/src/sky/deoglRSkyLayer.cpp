@@ -50,7 +50,7 @@
 deoglRSkyLayer::deoglRSkyLayer(const deSkyLayer &layer) :
 pLayerType(eltUnknown),
 
-pBodies(NULL),
+pBodies(nullptr),
 pBodyCount(0),
 
 pOffset(layer.GetOffset()),
@@ -74,7 +74,7 @@ pMulBySkyColor(layer.GetMuliplyBySkyColor())
 	}
 	
 	for(i=deSkyLayer::etOffsetX; i<=deSkyLayer::etAmbientIntensity; i++){
-		pTargets[i] = NULL;
+		pTargets[i] = nullptr;
 	}
 	
 	if(layer.GetSkin()){

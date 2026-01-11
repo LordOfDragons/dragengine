@@ -145,7 +145,7 @@ deClassDynamicSkin::nfAddRenderable::nfAddRenderable(const sInitData &init) : ds
 void deClassDynamicSkin::nfAddRenderable::RunFunction(dsRunTime *rt, dsValue *myself){
 	deDynamicSkin &dynamicSkin = *(dedsGetNativeData<sDSkinNatDat>(p_GetNativeData(myself)).dynamicSkin);
 	const char *name = rt->GetValue(0)->GetString();
-	deDSRenderable *renderable = NULL;
+	deDSRenderable *renderable = nullptr;
 	
 	if(dynamicSkin.HasRenderableNamed(name)){
 		DSTHROW(dueInvalidParam);
@@ -189,7 +189,7 @@ void deClassDynamicSkin::nfAddRenderable::RunFunction(dsRunTime *rt, dsValue *my
 	
 	try{
 		dynamicSkin.AddRenderable(renderable);
-		renderable = NULL;
+		renderable = nullptr;
 		
 	}catch(...){
 		delete renderable;
@@ -669,7 +669,7 @@ void deClassDynamicSkin::CreateClassMembers(dsEngine *engine){
 
 deDynamicSkin *deClassDynamicSkin::GetDynamicSkin(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return dedsGetNativeData<sDSkinNatDat>(p_GetNativeData(myself->GetBuffer())).dynamicSkin;
@@ -681,7 +681,7 @@ void deClassDynamicSkin::PushDynamicSkin(dsRunTime *rt, deDynamicSkin *dynamicSk
 	}
 	
 	if(!dynamicSkin){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

@@ -46,8 +46,8 @@
 deoglLightBoundaryMap::deoglLightBoundaryMap(deoglRenderThread &renderThread, int size) :
 pRenderThread(renderThread),
 
-pTextureMin(NULL),
-pTextureMax(NULL),
+pTextureMin(nullptr),
+pTextureMax(nullptr),
 
 pPixBufBoundaryMin(deoglPixelBuffer::Ref::New(deoglPixelBuffer::epfFloat3, 1, 1, 1)),
 pPixBufBoundaryMax(deoglPixelBuffer::Ref::New(deoglPixelBuffer::epfFloat3, 1, 1, 1)),

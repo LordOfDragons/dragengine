@@ -46,9 +46,9 @@ pFilename(filename),
 pFileSize(0),
 pFilePosition(0),
 
-pDataBuffer(NULL),
+pDataBuffer(nullptr),
 pDataBufferPosition(0),
-pReader(NULL)
+pReader(nullptr)
 {
 	if(!module || !filename){
 		DETHROW(deeInvalidParam);
@@ -148,9 +148,9 @@ void deJpegImageInfo::SkipNext(int bytes){
 void deJpegImageInfo::CloseReader(){
 	if(pDataBuffer){
 		delete [] pDataBuffer;
-		pDataBuffer = NULL;
+		pDataBuffer = nullptr;
 	}
-	pReader = NULL;
+	pReader = nullptr;
 }
 
 

@@ -64,7 +64,7 @@ public:
 	deComponent *GetRootComponent() const;
 	
 	/** \brief Create component. */
-	deComponent::Ref CreateComponent(deModel *model = NULL, deSkin *skin = NULL);
+	deComponent::Ref CreateComponent(deModel *model = nullptr, deSkin *skin = nullptr);
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

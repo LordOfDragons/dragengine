@@ -56,13 +56,13 @@
 ////////////////////////////
 
 fbxNode::fbxNode() :
-pNodeProperties70(NULL),
+pNodeProperties70(nullptr),
 pID(0),
 pDirtyTransformation(true){
 }
 
 fbxNode::fbxNode(fbxScene &scene, decBaseFileReader &reader) :
-pNodeProperties70(NULL),
+pNodeProperties70(nullptr),
 pID(0),
 pDirtyTransformation(true)
 {
@@ -71,7 +71,7 @@ pDirtyTransformation(true)
 }
 
 fbxNode::fbxNode(fbxScene &scene, decBaseFileReader &reader, int endOffset) :
-pNodeProperties70(NULL),
+pNodeProperties70(nullptr),
 pID(0),
 pDirtyTransformation(true)
 {
@@ -362,7 +362,7 @@ fbxNode *fbxNode::FirstNodeNamedOrNull(const char* name) const{
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 void fbxNode::FindNodesNamed(decTList<fbxNode*> &list, const char *name) const{
@@ -526,7 +526,7 @@ void fbxNode::pRead(fbxScene &scene, decBaseFileReader &reader, int endOffset){
 
 fbxNode *fbxNode::pProp70Named(const char* name) const{
 	if(!pNodeProperties70){
-		return NULL;
+		return nullptr;
 	}
 	
 	const int count = pNodeProperties70->GetNodes().GetCount();
@@ -539,7 +539,7 @@ fbxNode *fbxNode::pProp70Named(const char* name) const{
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 void fbxNode::pInitID(){

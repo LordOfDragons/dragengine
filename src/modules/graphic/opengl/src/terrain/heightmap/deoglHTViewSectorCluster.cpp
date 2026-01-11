@@ -93,7 +93,7 @@ void deoglHTViewSectorCluster::Reset(){
 deoglRenderTaskSharedInstance *deoglHTViewSectorCluster::GetRTSInstanceAt(int texture, int index) const{
 	const int rtsIndex = texture * 5 + index;
 	if(rtsIndex >= pRTSInstances.GetCount()){
-		return NULL;
+		return nullptr;
 	}
 	return (deoglRenderTaskSharedInstance*)pRTSInstances.GetAt(rtsIndex);
 }
@@ -123,7 +123,7 @@ void deoglHTViewSectorCluster::UpdateRTSInstances(){
 		const deoglSkinTexture * const skinTexture = httexture.GetUseSkinTexture();
 		if(!skinTexture){
 			for(j=0; j<5; j++){
-				pRTSInstances.Add(NULL);
+				pRTSInstances.Add(nullptr);
 			}
 			continue;
 		}
@@ -142,7 +142,7 @@ void deoglHTViewSectorCluster::UpdateRTSInstances(){
 		// add instances for borders if required
 		if(pLodLevel < 1){
 			for(j=0; j<4; j++){
-				pRTSInstances.Add(NULL);
+				pRTSInstances.Add(nullptr);
 			}
 			continue;
 		}

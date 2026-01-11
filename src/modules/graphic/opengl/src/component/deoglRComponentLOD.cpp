@@ -96,17 +96,17 @@ deoglRComponentLOD::deoglRComponentLOD(deoglRComponent &component, int lodIndex)
 pComponent(component),
 pLODIndex(lodIndex),
 
-pVAO(NULL),
-pVBOLayout(NULL),
-pVBOBlock(NULL),
+pVAO(nullptr),
+pVBOLayout(nullptr),
+pVBOBlock(nullptr),
 
 pWeights(nullptr),
 
-pPositions(NULL),
-pRealNormals(NULL),
-pNormals(NULL),
-pTangents(NULL),
-pFaceNormals(NULL),
+pPositions(nullptr),
+pRealNormals(nullptr),
+pNormals(nullptr),
+pTangents(nullptr),
+pFaceNormals(nullptr),
 
 pDirtyModelWeights(true),
 pDirtyModelPositions(true),
@@ -122,9 +122,9 @@ pMemUse(component.GetRenderThread().GetMemoryManager().GetConsumption().bufferOb
 
 pVBOTransformVertices(0),
 pTBOTransformVertices(0),
-pTexTransformNormTan(NULL),
+pTexTransformNormTan(nullptr),
 
-pGIBVHDynamic(NULL),
+pGIBVHDynamic(nullptr),
 pDirtyGIBVHPositions(true)
 {
 	LEAK_CHECK_CREATE(component.GetRenderThread(), ComponentLOD);
@@ -212,12 +212,12 @@ void deoglRComponentLOD::UpdateVBO(){
 	if(pDirtyVAO){
 		if(pVAO){
 			delete pVAO;
-			pVAO = NULL;
+			pVAO = nullptr;
 		}
 		pDirtyVAO = false;
 		
 		pDirtyVBO = true;
-		pVBOBlock = NULL;
+		pVBOBlock = nullptr;
 	}
 	
 	if(pDirtyVBO){
@@ -405,7 +405,7 @@ void deoglRComponentLOD::PrepareGIDynamicBVH(){
 void deoglRComponentLOD::DropGIDynamicBVH(){
 	if(pGIBVHDynamic){
 		delete pGIBVHDynamic;
-		pGIBVHDynamic = NULL;
+		pGIBVHDynamic = nullptr;
 	}
 }
 
@@ -528,7 +528,7 @@ void deoglRComponentLOD::UpdateRenderTaskConfigurations(){
 
 deoglModelLOD *deoglRComponentLOD::GetModelLOD() const{
 	const deoglRModel * const model = pComponent.GetModel();
-	return model ? &model->GetLODAt(pLODIndex) : NULL;
+	return model ? &model->GetLODAt(pLODIndex) : nullptr;
 }
 
 deoglModelLOD &deoglRComponentLOD::GetModelLODRef() const{
@@ -581,7 +581,7 @@ void deoglRComponentLOD::PreparePositions(){
 	PrepareWeights();
 	
 	if(pDirtyModelPositions){
-		oglVector3 *positions = NULL;
+		oglVector3 *positions = nullptr;
 		
 		if(pComponent.GetModel() && pLODIndex >= 0 && pLODIndex < pComponent.GetModel()->GetLODCount()){
 			deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt(pLODIndex);
@@ -626,10 +626,10 @@ void deoglRComponentLOD::PrepareNormalsTangents(){
 	PreparePositions();
 	
 	if(pDirtyModelNorTan){
-		oglVector3 *realNormals = NULL;
-		oglVector3 *normals = NULL;
-		oglVector3 *tangents = NULL;
-		oglVector3 *faceNormals = NULL;
+		oglVector3 *realNormals = nullptr;
+		oglVector3 *normals = nullptr;
+		oglVector3 *tangents = nullptr;
+		oglVector3 *faceNormals = nullptr;
 		
 		if(pComponent.GetModel() && pLODIndex >= 0 && pLODIndex < pComponent.GetModel()->GetLODCount()){
 			deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt(pLODIndex);

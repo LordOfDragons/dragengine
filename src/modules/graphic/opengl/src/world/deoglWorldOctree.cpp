@@ -200,7 +200,7 @@ void deoglWorldOctree::InsertBillboardIntoTree(deoglRBillboard *billboard){
 	if(currentNode){
 		if(!currentNode->ContainsBox(minExtend, maxExtend)){
 			currentNode->RemoveBillboard(billboard);
-			currentNode = NULL;
+			currentNode = nullptr;
 		}
 	}
 	
@@ -224,7 +224,7 @@ void deoglWorldOctree::InsertComponentIntoTree(deoglRComponent *component){
 		if(!currentNode->ContainsBox(minExtend, maxExtend)){
 			// remove from the current node
 			currentNode->RemoveComponent(component);
-			currentNode = NULL;
+			currentNode = nullptr;
 		}
 	}
 	
@@ -249,7 +249,7 @@ void deoglWorldOctree::InsertEnvMapIntoTree(deoglEnvironmentMap *envmap){
 	if(currentNode){
 		if(!currentNode->ContainsBox(minExtend, maxExtend)){
 			currentNode->RemoveEnvMap(envmap);
-			currentNode = NULL;
+			currentNode = nullptr;
 		}
 	}
 	
@@ -275,7 +275,7 @@ void deoglWorldOctree::InsertLightIntoTree(deoglRLight *light){
 		if(!currentNode->ContainsBox(minExtend, maxExtend)){
 			// remove from the current node
 			currentNode->RemoveLight(light);
-			currentNode = NULL;
+			currentNode = nullptr;
 		}
 	}
 	
@@ -298,7 +298,7 @@ void deoglWorldOctree::InsertParticleEmitterIntoTree(deoglRParticleEmitterInstan
 	if(currentNode){
 		if(!currentNode->ContainsBox(minExtend, maxExtend)){
 			currentNode->RemoveParticleEmitter(instance);
-			currentNode = NULL;
+			currentNode = nullptr;
 		}
 	}
 	
@@ -485,7 +485,7 @@ void deoglWorldOctree::RemoveComponent(deoglRComponent *component){
 	
 	pComponents.RemoveFrom(index);
 	
-	component->SetOctreeNode(NULL);
+	component->SetOctreeNode(nullptr);
 }
 
 void deoglWorldOctree::RemoveAllComponents(){
@@ -493,7 +493,7 @@ void deoglWorldOctree::RemoveAllComponents(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoglRComponent*)pComponents.GetAt(i))->SetOctreeNode(NULL);
+		((deoglRComponent*)pComponents.GetAt(i))->SetOctreeNode(nullptr);
 	}
 	
 	pComponents.RemoveAll();
@@ -534,7 +534,7 @@ void deoglWorldOctree::RemoveLight(deoglRLight *light){
 	
 	pLights.RemoveFrom(index);
 	
-	light->SetOctreeNode(NULL);
+	light->SetOctreeNode(nullptr);
 }
 
 void deoglWorldOctree::RemoveAllLights(){
@@ -542,7 +542,7 @@ void deoglWorldOctree::RemoveAllLights(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoglRLight*)pLights.GetAt(i))->SetOctreeNode(NULL);
+		((deoglRLight*)pLights.GetAt(i))->SetOctreeNode(nullptr);
 	}
 	
 	pLights.RemoveAll();
@@ -581,7 +581,7 @@ void deoglWorldOctree::RemoveLumimeter(deoglRLumimeter *lumimeter){
 	}
 	pLumimeters.RemoveFrom(index);
 	
-	lumimeter->SetOctreeNode(NULL);
+	lumimeter->SetOctreeNode(nullptr);
 }
 
 void deoglWorldOctree::RemoveAllLumimeters(){
@@ -589,7 +589,7 @@ void deoglWorldOctree::RemoveAllLumimeters(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoglRLight*)pLumimeters.GetAt(i))->SetOctreeNode(NULL);
+		((deoglRLight*)pLumimeters.GetAt(i))->SetOctreeNode(nullptr);
 	}
 	
 	pLumimeters.RemoveAll();
@@ -618,7 +618,7 @@ void deoglWorldOctree::RemoveBillboard(deoglRBillboard *billboard){
 	
 	pBillboards.RemoveFrom(index);
 	
-	billboard->SetOctreeNode(NULL);
+	billboard->SetOctreeNode(nullptr);
 }
 
 void deoglWorldOctree::RemoveAllBillboards(){
@@ -626,7 +626,7 @@ void deoglWorldOctree::RemoveAllBillboards(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoglRBillboard*)pBillboards.GetAt(i))->SetOctreeNode(NULL);
+		((deoglRBillboard*)pBillboards.GetAt(i))->SetOctreeNode(nullptr);
 	}
 	
 	pBillboards.RemoveAll();
@@ -655,7 +655,7 @@ void deoglWorldOctree::RemoveEnvMap(deoglEnvironmentMap *envmap){
 	
 	pEnvMaps.RemoveFrom(index);
 	
-	envmap->SetOctreeNode(NULL);
+	envmap->SetOctreeNode(nullptr);
 }
 
 void deoglWorldOctree::RemoveAllEnvMaps(){
@@ -663,7 +663,7 @@ void deoglWorldOctree::RemoveAllEnvMaps(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoglEnvironmentMap*)pEnvMaps.GetAt(i))->SetOctreeNode(NULL);
+		((deoglEnvironmentMap*)pEnvMaps.GetAt(i))->SetOctreeNode(nullptr);
 	}
 	
 	pEnvMaps.RemoveAll();
@@ -692,7 +692,7 @@ void deoglWorldOctree::RemoveParticleEmitter(deoglRParticleEmitterInstance *emit
 	
 	pParticleEmitters.RemoveFrom(index);
 	
-	emitter->SetOctreeNode(NULL);
+	emitter->SetOctreeNode(nullptr);
 }
 
 void deoglWorldOctree::RemoveAllParticleEmitters(){
@@ -700,7 +700,7 @@ void deoglWorldOctree::RemoveAllParticleEmitters(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoglRParticleEmitterInstance*)pParticleEmitters.GetAt(i))->SetOctreeNode(NULL);
+		((deoglRParticleEmitterInstance*)pParticleEmitters.GetAt(i))->SetOctreeNode(nullptr);
 	}
 	
 	pParticleEmitters.RemoveAll();

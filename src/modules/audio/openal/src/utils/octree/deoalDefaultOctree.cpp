@@ -38,7 +38,7 @@
 /////////////////////////////////
 
 deoalDefaultOctree::deoalDefaultOctree(const decVector &center, const decVector &halfSize) : deoalOctree(center, halfSize){
-	pElements = NULL;
+	pElements = nullptr;
 	pElementCount = 0;
 	pElementSize = 0;
 }
@@ -56,7 +56,7 @@ deoalDefaultOctree::~deoalDefaultOctree(){
 deoalOctree *deoalDefaultOctree::CreateOctree(int octant) const{
 	decVector halfSize = GetHalfSize() * 0.5f;
 	const decVector &center = GetCenter();
-	deoalOctree *node = (deoalDefaultOctree*)NULL;
+	deoalOctree *node = (deoalDefaultOctree*)nullptr;
 	decVector nc;
 	
 	// determine the smallest and largest coordinates
@@ -141,7 +141,7 @@ void deoalDefaultOctree::RemoveElement(void *element){
 	if(index == -1) DETHROW(deeInvalidParam);
 	
 	for(i=index+1; i<pElementCount; i++) pElements[i - 1] = pElements[i];
-	pElements[pElementCount - 1] = NULL;
+	pElements[pElementCount - 1] = nullptr;
 	pElementCount--;
 }
 

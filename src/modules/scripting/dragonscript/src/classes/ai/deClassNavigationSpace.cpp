@@ -941,7 +941,7 @@ void deClassNavigationSpace::CreateClassMembers(dsEngine *engine){
 
 deNavigationSpace *deClassNavigationSpace::GetNavigationSpace(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return dedsGetNativeData<sNavSpaceNatDat>(p_GetNativeData(myself->GetBuffer())).navspace;
@@ -953,7 +953,7 @@ void deClassNavigationSpace::PushNavigationSpace(dsRunTime *rt, deNavigationSpac
 	}
 	
 	if(!navspace){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

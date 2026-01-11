@@ -122,16 +122,16 @@ pLevel(0),
 
 pUseGIState(false),
 pRenderStereo(false),
-pUseConstGIState(NULL),
+pUseConstGIState(nullptr),
 pRenderVR(ervrNone),
 pSkyLightCount(0),
 pLodMaxPixelError(0),
 pLodLevelOffset(0),
-pOcclusionMap(NULL),
-pOcclusionTest(NULL),
-pGIState(NULL)
+pOcclusionMap(nullptr),
+pOcclusionTest(nullptr),
+pGIState(nullptr)
 {
-	pCamera = NULL;
+	pCamera = nullptr;
 	pCameraFov = DEG2RAD * 90.0f;
 	pCameraFovRatio = 1.0f;
 	pCameraImageDistance = 0.01f;
@@ -155,8 +155,8 @@ pGIState(NULL)
 	
 	pUseCustomFrustum = false;
 	
-	pFBOTarget = NULL;
-	pFBOMaterial = NULL;
+	pFBOTarget = nullptr;
+	pFBOMaterial = nullptr;
 	
 	pDirtyProjMat = true;
 	
@@ -173,11 +173,11 @@ pGIState(NULL)
 	
 	pDirectEnvMapFader.SetFadePerTime(1.0f);
 	
-	pLights = NULL;
+	pLights = nullptr;
 	pLightCount = 0;
 	pLightSize = 0;
 	
-	pMaskedPlans = NULL;
+	pMaskedPlans = nullptr;
 	pMaskedPlanCount = 0;
 	pMaskedPlanSize = 0;
 	
@@ -192,13 +192,13 @@ pGIState(NULL)
 	pStencilPrevRefValue = 0;
 	pStencilWriteMask = 0xf;
 	
-	pDebug = NULL;
+	pDebug = nullptr;
 	pDebugTiming = false;
 }
 
 deoglRenderPlan::~deoglRenderPlan(){
 	CleanUp();
-	SetWorld(NULL);
+	SetWorld(nullptr);
 	
 	int i, count;
 	
@@ -649,7 +649,7 @@ void deoglRenderPlan::pPlanSkyLight(){
 				continue;
 			}
 			
-			deoglRenderPlanSkyLight *planSkyLight = NULL;
+			deoglRenderPlanSkyLight *planSkyLight = nullptr;
 			
 			for(k=0; k<pSkyLightCount; k++){
 				deoglRenderPlanSkyLight * const check = (deoglRenderPlanSkyLight*)pSkyLights.GetAt(k);
@@ -831,7 +831,7 @@ void deoglRenderPlan::pWaitFinishedFindContent(const deoglRenderPlanMasked *mask
 	
 	pRenderThread.GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareFindContent(
 		*this, pTaskFindContent->GetElapsedTime() );
-	pTaskFindContent = NULL;
+	pTaskFindContent = nullptr;
 }
 
 void deoglRenderPlan::pPlanGI(){
@@ -912,7 +912,7 @@ void deoglRenderPlan::pPlanEnvMaps(){
 	// if possible
 	for(i=0; i<pEnvMapCount; i++){
 		pEnvMaps[pEnvMapCount + i].SetEnvMap(pEnvMaps[i].GetEnvMap());
-		pEnvMaps[i].SetEnvMap(NULL);
+		pEnvMaps[i].SetEnvMap(nullptr);
 	}
 	
 	// first find the environment maps containing the camera
@@ -935,7 +935,7 @@ void deoglRenderPlan::pPlanEnvMaps(){
 			
 			for(k=pEnvMapCount; k<pEnvMapCount*2; k++){
 				if(pEnvMaps[k].GetEnvMap() == envmap){
-					pEnvMaps[k].SetEnvMap(NULL);
+					pEnvMaps[k].SetEnvMap(nullptr);
 					break;
 				}
 			}
@@ -979,7 +979,7 @@ void deoglRenderPlan::pPlanEnvMaps(){
 					
 					for(k=pEnvMapCount; k<pEnvMapCount*2; k++){
 						if(pEnvMaps[k].GetEnvMap() == envmap){
-							pEnvMaps[k].SetEnvMap(NULL);
+							pEnvMaps[k].SetEnvMap(nullptr);
 							break;
 						}
 					}
@@ -1024,7 +1024,7 @@ void deoglRenderPlan::pPlanEnvMaps(){
 		if(envmap){
 			for(j=pEnvMapCount; j<pEnvMapCount*2; j++){
 				if(pEnvMaps[j].GetEnvMap() == envmap){
-					pEnvMaps[j].SetEnvMap(NULL);
+					pEnvMaps[j].SetEnvMap(nullptr);
 					break;
 				}
 			}
@@ -1051,7 +1051,7 @@ void deoglRenderPlan::pPlanEnvMaps(){
 				
 				for(k=pEnvMapCount; k<pEnvMapCount*2; k++){
 					if(pEnvMaps[k].GetEnvMap() == envmap){
-						pEnvMaps[k].SetEnvMap(NULL);
+						pEnvMaps[k].SetEnvMap(nullptr);
 						break;
 					}
 				}
@@ -1089,7 +1089,7 @@ void deoglRenderPlan::pPlanEnvMaps(){
 	
 	// for the direct environment map fader switch to the first environment map we found
 	if(pEnvMapCount == 0){
-		pDirectEnvMapFader.FadeTo(NULL);
+		pDirectEnvMapFader.FadeTo(nullptr);
 		
 	}else{
 		pDirectEnvMapFader.FadeTo(pEnvMaps[0].GetEnvMap());
@@ -1102,7 +1102,7 @@ void deoglRenderPlan::pPlanEnvMaps(){
 			
 			pEnvMaps[i].GetEnvMap()->RemovePlanUsage();
 			pEnvMaps[i].GetEnvMap()->GetRenderPlanList().Remove(this);
-			pEnvMaps[i].SetEnvMap(NULL);
+			pEnvMaps[i].SetEnvMap(nullptr);
 		}
 	}
 	
@@ -1133,7 +1133,7 @@ void deoglRenderPlan::pPlanEnvMaps(){
 	
 	// update env map if required
 	if(pWorld->GetEnvMapUpdateCount() > 0){
-		deoglEnvironmentMap *updateEnvmap = NULL;
+		deoglEnvironmentMap *updateEnvmap = nullptr;
 		
 		// check if one of the 4 closest environment maps is in need of updating. if so choose this one
 		for(i=0; i<pEnvMapCount; i++){
@@ -1333,7 +1333,7 @@ void deoglRenderPlan::pDebugPrepare(){
 	}else{
 		if(pDebug){
 			delete pDebug;
-			pDebug = NULL;
+			pDebug = nullptr;
 		}
 	}
 }
@@ -1474,7 +1474,7 @@ void deoglRenderPlan::Render(){
 	
 	// to make sure we clean up everyting even after an exception try this all
 	try{
-		pRenderThread.GetRenderers().GetWorld().RenderWorld(*this, NULL);
+		pRenderThread.GetRenderers().GetWorld().RenderWorld(*this, nullptr);
 		
 	}catch(const deException &e){
 		e.PrintError();
@@ -1509,8 +1509,8 @@ void deoglRenderPlan::CleanUp(){
 	pDropLightsTemporary();
 	pCollideList.Clear();
 	pComponentsOccMap.RemoveAll();
-	SetOcclusionTest(NULL);
-	SetOcclusionMap(NULL);
+	SetOcclusionTest(nullptr);
+	SetOcclusionMap(nullptr);
 }
 
 
@@ -1873,13 +1873,13 @@ deoglGIState *deoglRenderPlan::GetUpdateGIState() const{
 	&& pRenderVR != ervrRightEye){
 		return pGIState;
 	}
-	return NULL;
+	return nullptr;
 }
 
 deoglGIState *deoglRenderPlan::GetRenderGIState() const{
 	if(!pUseGIState || pDisableLights
 	|| pRenderThread.GetConfiguration().GetGIQuality() == deoglConfiguration::egiqOff){
-		return NULL;
+		return nullptr;
 		
 	}else if(pUseConstGIState){
 		return pUseConstGIState;
@@ -1927,7 +1927,7 @@ void deoglRenderPlan::RemoveEnvMap(deoglEnvironmentMap *envmap){
 	
 	for(i=0; i<pEnvMapCount; i++){
 		if(pEnvMaps[i].GetEnvMap() == envmap){
-			pEnvMaps[i].SetEnvMap(NULL);
+			pEnvMaps[i].SetEnvMap(nullptr);
 		}
 	}
 }
@@ -1979,7 +1979,7 @@ deoglRenderPlanLight *deoglRenderPlan::GetLightFor(deoglCollideListLight *light)
 void deoglRenderPlan::RemoveAllLights(){
 	while(pLightCount > 0){
 		pLightCount--;
-		pLights[pLightCount]->SetLight(NULL);
+		pLights[pLightCount]->SetLight(nullptr);
 	}
 }
 
@@ -2059,7 +2059,7 @@ deoglRenderPlanMasked *deoglRenderPlan::AddMaskedPlanFor(deoglRenderPlan *plan){
 	}
 	
 	pMaskedPlans[pMaskedPlanCount]->SetPlan(plan);
-	pMaskedPlans[pMaskedPlanCount]->SetComponent(NULL, 0);
+	pMaskedPlans[pMaskedPlanCount]->SetComponent(nullptr, 0);
 	pMaskedPlanCount++;
 	
 	plan->SetLevel(pLevel + 1); // it is deeper one level than us
@@ -2070,8 +2070,8 @@ deoglRenderPlanMasked *deoglRenderPlan::AddMaskedPlanFor(deoglRenderPlan *plan){
 void deoglRenderPlan::RemoveAllMaskedPlans(){
 	while(pMaskedPlanCount > 0){
 		pMaskedPlanCount--;
-		pMaskedPlans[pMaskedPlanCount]->SetPlan(NULL);
-		pMaskedPlans[pMaskedPlanCount]->SetComponent(NULL, 0);
+		pMaskedPlans[pMaskedPlanCount]->SetPlan(nullptr);
+		pMaskedPlans[pMaskedPlanCount]->SetComponent(nullptr, 0);
 	}
 }
 

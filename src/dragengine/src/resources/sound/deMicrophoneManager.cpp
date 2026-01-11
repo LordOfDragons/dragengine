@@ -106,7 +106,7 @@ void deMicrophoneManager::SystemAudioUnload(){
 	deMicrophone *microphone = (deMicrophone*)pMicrophones.GetRoot();
 	
 	while(microphone){
-		microphone->SetPeerAudio(NULL);
+		microphone->SetPeerAudio(nullptr);
 		microphone = (deMicrophone*)microphone->GetLLManagerNext();
 	}
 }

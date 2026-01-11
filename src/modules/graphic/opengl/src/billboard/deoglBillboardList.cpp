@@ -40,7 +40,7 @@
 ////////////////////////////
 
 deoglBillboardList::deoglBillboardList(){
-	pBillboards = NULL;
+	pBillboards = nullptr;
 	pBillboardCount = 0;
 	pBillboardSize = 0;
 }

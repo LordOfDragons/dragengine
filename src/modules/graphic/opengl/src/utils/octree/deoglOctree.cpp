@@ -43,10 +43,10 @@
 deoglOctree::deoglOctree(const decVector &center, const decVector &halfSize){
 	int i;
 	
-	for(i=0; i<8; i++) pNodes[i] = NULL;
+	for(i=0; i<8; i++) pNodes[i] = nullptr;
 	pCenter = center;
 	pHalfSize = halfSize;
-	pParent = NULL;
+	pParent = nullptr;
 }
 
 deoglOctree::~deoglOctree(){
@@ -83,7 +83,7 @@ deoglOctree *deoglOctree::GetNodeAtBox(const decVector &boxCenter, const decVect
 	int octant = FindOctantAtBox(boxCenter, boxHalfSize);
 	
 	// if we found no matching octant return NULL
-	if(octant == eoNotFound) return NULL;
+	if(octant == eoNotFound) return nullptr;
 	
 	// if the node does not exist create it
 	if(!pNodes[octant]){
@@ -99,7 +99,7 @@ deoglOctree *deoglOctree::FindNodeAtBox(const decVector &boxCenter, const decVec
 	int octant = FindOctantAtBox(boxCenter, boxHalfSize);
 	
 	// if we found no matching octant return NULL
-	if(octant == eoNotFound) return NULL;
+	if(octant == eoNotFound) return nullptr;
 	
 	// return the node that we found
 	return pNodes[octant];
@@ -140,7 +140,7 @@ deoglOctree *deoglOctree::FindNodeAtPoint(const decVector &point) const{
 	int octant = FindOctantAtPoint(point);
 	
 	// if we found no matching octant return NULL
-	if(octant == eoNotFound) return NULL;
+	if(octant == eoNotFound) return nullptr;
 	
 	// return the node that we found
 	return pNodes[octant];
@@ -255,7 +255,7 @@ void deoglOctree::ClearTree(bool clearNodes){
 			pNodes[i]->ClearTree(clearNodes);
 			if(clearNodes){
 				delete pNodes[i];
-				pNodes[i] = NULL;
+				pNodes[i] = nullptr;
 			}
 		}
 	}

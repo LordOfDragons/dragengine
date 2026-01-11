@@ -58,8 +58,8 @@ deoalASoundLevelMeterSpeaker::deoalASoundLevelMeterSpeaker(
 pSoundLevelMeter(soundLevelMeter),
 pSpeaker(speaker),
 pVolume(0.0f),
-pEnvProbe(NULL),
-pListener(NULL),
+pEnvProbe(nullptr),
+pListener(nullptr),
 pGainLow(0.0f),
 pGainMedium(0.0f),
 pGainHigh(0.0f){
@@ -269,5 +269,5 @@ const deoalRayTraceResult &rtresult, int& index, bool forwardFacing) const{
 			return &hitElement;
 		}
 	}
-	return NULL;
+	return nullptr;
 }

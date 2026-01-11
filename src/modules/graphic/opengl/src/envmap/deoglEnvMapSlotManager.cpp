@@ -46,14 +46,14 @@
 
 deoglEnvMapSlotManager::deoglEnvMapSlotManager(deoglRenderThread &renderThread) :
 pRenderThread(renderThread){
-	pArrayTexture = NULL;
+	pArrayTexture = nullptr;
 	
 	pWidth = 512;
 	pHeight = 256;
 	pLayerCount = 5;
 	
-	pSlots = NULL;
-	pUsedSlots = NULL;
+	pSlots = nullptr;
+	pUsedSlots = nullptr;
 	pUsedSlotsSize = 0;
 	pUsedSlotsCount = 0;
 	

@@ -52,13 +52,13 @@ MOD_ENTRY_POINT_ATTR deBaseModule *TheoraCreateModule(deLoadableModule *loadable
 #endif
 
 deBaseModule *TheoraCreateModule(deLoadableModule *loadableModule){
-	deBaseModule *module = NULL;
+	deBaseModule *module = nullptr;
 	
 	try{
 		module = new deVideoTheora(*loadableModule);
 		
 	}catch(const deException &){
-		return NULL;
+		return nullptr;
 	}
 	
 	return module;
@@ -131,7 +131,7 @@ deBaseVideoAudioDecoder *deVideoTheora::CreateAudioDecoder(decBaseFileReader *re
 		
 	}else{
 		delete decoder;
-		return NULL;
+		return nullptr;
 	}
 }
 

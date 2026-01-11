@@ -55,9 +55,9 @@ pHeight(height),
 pDepth(depth),
 pComponentCount(componentCount),
 pBitCount(bitCount),
-pData(NULL),
+pData(nullptr),
 pRetainImageData(GetFilename().IsEmpty() ? 1 : 0),
-pPeerGraphic(NULL)
+pPeerGraphic(nullptr)
 {
 	DEASSERT_TRUE(width >= 1)
 	DEASSERT_TRUE(height >= 1)
@@ -76,9 +76,9 @@ pHeight(0),
 pDepth(1),
 pComponentCount(3),
 pBitCount(8),
-pData(NULL),
+pData(nullptr),
 pRetainImageData(1),
-pPeerGraphic(NULL)
+pPeerGraphic(nullptr)
 {
 	DEASSERT_NOTNULL(image)
 	
@@ -108,9 +108,9 @@ pHeight(0),
 pDepth(0),
 pComponentCount(0),
 pBitCount(0),
-pData(NULL),
+pData(nullptr),
 pRetainImageData(GetFilename().IsEmpty() ? 1 : 0),
-pPeerGraphic(NULL){
+pPeerGraphic(nullptr){
 }
 
 deImage::~deImage(){
@@ -236,7 +236,7 @@ void deImage::RetainImageData(){
 	if(!pData){
 		deImageManager &manager = *((deImageManager*)GetResourceManager());
 // 		manager.LogInfoFormat( "Retain image '%s'", GetFilename().GetString() );
-		deBaseImageInfo *info = NULL;
+		deBaseImageInfo *info = nullptr;
 		
 		try{
 			deBaseImageModule * const module = (deBaseImageModule*)manager.GetModuleSystem()->
@@ -297,7 +297,7 @@ void deImage::ReleaseImageData(){
 // 		( ( deImageManager* )GetResourceManager() )->LogInfoFormat(
 // 			"Release image '%s'", GetFilename().GetString() );
 		delete [] pData;
-		pData = NULL;
+		pData = nullptr;
 	}
 	
 	if(pPeerGraphic){
@@ -373,6 +373,6 @@ void deImage::PeersRetainImageData(){
 // 		( ( deImageManager* )GetResourceManager() )->LogInfoFormat(
 // 			"(PRID) Release image '%s'", GetFilename().GetString() );
 		delete [] pData;
-		pData = NULL;
+		pData = nullptr;
 	}
 }

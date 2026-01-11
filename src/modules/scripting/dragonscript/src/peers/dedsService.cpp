@@ -46,8 +46,8 @@
 dedsService::dedsService(deScriptingDragonScript &ds, deService *service) :
 pDS(ds),
 pService(service),
-pValOwner(NULL),
-pValCB(NULL),
+pValOwner(nullptr),
+pValCB(nullptr),
 pHasCB(false)
 {
 	if(!service){
@@ -68,25 +68,25 @@ dedsService::~dedsService(){
 	if(pService && pService->GetRefCount() > 0){
 		if(pValCB){
 			pDS.AddValueDeleteLater(pValCB);
-			pValCB = NULL;
+			pValCB = nullptr;
 			pHasCB = false;
 		}
 		
 		if(pValOwner){
 			pDS.AddValueDeleteLater(pValOwner);
-			pValOwner = NULL;
+			pValOwner = nullptr;
 		}
 		
 	}else{
 		if(pValCB){
 			pDS.GetScriptEngine()->GetMainRunTime()->FreeValue(pValCB);
-			pValCB = NULL;
+			pValCB = nullptr;
 			pHasCB = false;
 		}
 		
 		if(pValOwner){
 			pDS.GetScriptEngine()->GetMainRunTime()->FreeValue(pValOwner);
-			pValOwner = NULL;
+			pValOwner = nullptr;
 		}
 	}
 }

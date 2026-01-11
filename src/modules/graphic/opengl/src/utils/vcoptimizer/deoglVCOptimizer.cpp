@@ -56,12 +56,12 @@ deoglVCOptimizer::deoglVCOptimizer(){
 	}
 	pInvCacheFactor = 1.0f / (float)pCacheSize;
 	
-	pGroups = NULL;
-	pFaces = NULL;
-	pVertices = NULL;
-	pVertexFaces = NULL;
-	pReorderedFaces = NULL;
-	pReorderedVertices = NULL;
+	pGroups = nullptr;
+	pFaces = nullptr;
+	pVertices = nullptr;
+	pVertexFaces = nullptr;
+	pReorderedFaces = nullptr;
+	pReorderedVertices = nullptr;
 	pGroupCount = 0;
 	pFaceCount = 0;
 	pVertexCount = 0;
@@ -102,11 +102,11 @@ deoglVCOptimizer::~deoglVCOptimizer(){
 void deoglVCOptimizer::SetVertexCount(int vertexCount){
 	if(pReorderedVertices){
 		delete pReorderedVertices;
-		pReorderedVertices = NULL;
+		pReorderedVertices = nullptr;
 	}
 	if(pVertices){
 		delete [] pVertices;
-		pVertices = NULL;
+		pVertices = nullptr;
 	}
 	pReorderedVertexCount = 0;
 	pVertexCount = 0;
@@ -121,15 +121,15 @@ void deoglVCOptimizer::SetVertexCount(int vertexCount){
 void deoglVCOptimizer::SetFaceCount(int faceCount){
 	if(pReorderedFaces){
 		delete [] pReorderedFaces;
-		pReorderedFaces = NULL;
+		pReorderedFaces = nullptr;
 	}
 	if(pVertexFaces){
 		delete [] pVertexFaces;
-		pVertexFaces = NULL;
+		pVertexFaces = nullptr;
 	}
 	if(pFaces){
 		delete [] pFaces;
-		pFaces = NULL;
+		pFaces = nullptr;
 	}
 	pReorderedFaceCount = 0;
 	pFaceCount = 0;
@@ -156,7 +156,7 @@ void deoglVCOptimizer::SetFaceAt(int face, int vertex1, int vertex2, int vertex3
 void deoglVCOptimizer::SetGroupCount(int groupCount){
 	if(pGroups){
 		delete [] pGroups;
-		pGroups = NULL;
+		pGroups = nullptr;
 	}
 	pGroupCount = 0;
 	

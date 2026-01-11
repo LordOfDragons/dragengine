@@ -82,7 +82,7 @@ void deoglCaptureCanvas::SyncToRender(){
 			pRCaptureCanvas->SetCanvasView(oglCanvasView->GetRCanvasView());
 			
 		}else{
-			pRCaptureCanvas->SetCanvasView(NULL);
+			pRCaptureCanvas->SetCanvasView(nullptr);
 		}
 		
 		pDirtyCanvasView = false;

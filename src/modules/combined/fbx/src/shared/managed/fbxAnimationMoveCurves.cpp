@@ -51,10 +51,10 @@ fbxAnimationMoveCurves::fbxAnimationMoveCurves(fbxAnimationMove &move, fbxNode &
 pMove(move),
 pNodeCurves(nodeCurves),
 pNodeCurvesID(nodeCurves.GetID()),
-pNodeModel(NULL),
+pNodeModel(nullptr),
 pNodeModelID(0),
 pTargetProperty(etpUnsupported),
-pRigBone(NULL)
+pRigBone(nullptr)
 {
 	// find curves and model
 	decTList<fbxConnection*> connections;

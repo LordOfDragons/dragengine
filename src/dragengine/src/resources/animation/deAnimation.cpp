@@ -202,7 +202,7 @@ void deAnimation::pCleanUp(){
 	
 	if(pPeerAnimator){
 		delete pPeerAnimator;
-		pPeerAnimator = NULL;
+		pPeerAnimator = nullptr;
 	}
 	
 	if(pMoves){

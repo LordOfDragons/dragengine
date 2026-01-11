@@ -1664,8 +1664,8 @@ void deClassLocomotion::nfAddControllerMapping::RunFunction(dsRunTime *rt, dsVal
 	dedsLocomotion &locomotion = dedsGetNativeData<sLocoNatDat>(p_GetNativeData(myself)).locomotion;
 	const deScriptingDragonScript &ds = static_cast<deClassLocomotion*>(GetOwnerClass())->GetDS();
 	
-	deAnimator *acAnimator = NULL;
-	deAnimatorInstance *acInstance = NULL;
+	deAnimator *acAnimator = nullptr;
+	deAnimatorInstance *acInstance = nullptr;
 	int acController = 0;
 	
 	ds.GetClassAnimatorController()->GetController(rt->GetValue(0)->GetRealObject(),
@@ -1695,8 +1695,8 @@ void deClassLocomotion::nfRemoveControllerMapping::RunFunction(dsRunTime *rt, ds
 	dedsLocomotion &locomotion = dedsGetNativeData<sLocoNatDat>(p_GetNativeData(myself)).locomotion;
 	const deScriptingDragonScript &ds = static_cast<deClassLocomotion*>(GetOwnerClass())->GetDS();
 	
-	deAnimator *acAnimator = NULL;
-	deAnimatorInstance *acInstance = NULL;
+	deAnimator *acAnimator = nullptr;
+	deAnimatorInstance *acInstance = nullptr;
 	int acController = 0;
 	
 	ds.GetClassAnimatorController()->GetController(rt->GetValue(0)->GetRealObject(),

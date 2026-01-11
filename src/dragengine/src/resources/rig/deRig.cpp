@@ -44,18 +44,18 @@
 deRig::deRig(deRigManager *manager, deVirtualFileSystem *vfs, const char *filename,
 	TIME_SYSTEM modificationTime) :
 deFileResource(manager, vfs, filename, modificationTime),
-pBones(NULL),
+pBones(nullptr),
 pBoneCount(0),
 pBoneSize(0),
 pRootBone(-1),
 pModelCollision(false),
-pPeerPhysics(NULL){
+pPeerPhysics(nullptr){
 }
 
 deRig::~deRig(){
 	if(pPeerPhysics){
 		delete pPeerPhysics;
-		pPeerPhysics = NULL;
+		pPeerPhysics = nullptr;
 	}
 	
 	RemoveAllBones();
@@ -70,7 +70,7 @@ deRig::~deRig(){
 ///////////////
 
 bool deRig::Verify() const{
-	bool *boneVisited = NULL;
+	bool *boneVisited = nullptr;
 	int i, j, parent;
 	bool success = true;
 	
@@ -96,7 +96,7 @@ bool deRig::Verify() const{
 			
 			// clean up
 			delete [] boneVisited;
-			boneVisited = NULL;
+			boneVisited = nullptr;
 			
 		}catch(const deException &){
 			if(boneVisited) delete [] boneVisited;
@@ -117,7 +117,7 @@ void deRig::Prepare(){
 	}
 	
 	// calculate the matrices of each bone
-	bool *calculated = NULL;
+	bool *calculated = nullptr;
 	int i, remaining, parent;
 	decMatrix boneMat;
 	try{

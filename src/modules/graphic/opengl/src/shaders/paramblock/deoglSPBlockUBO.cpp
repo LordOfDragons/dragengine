@@ -51,7 +51,7 @@ pUBO(0),
 pBindingPoint(0),
 pCompact(true),
 pAllocateBuffer(true),
-pWriteBuffer(NULL),
+pWriteBuffer(nullptr),
 pWriteBufferCapacity(0),
 pWriteBufferUsed(false){
 }
@@ -62,7 +62,7 @@ pUBO(0),
 pBindingPoint(paramBlock.pBindingPoint),
 pCompact(paramBlock.pCompact),
 pAllocateBuffer(true),
-pWriteBuffer(NULL),
+pWriteBuffer(nullptr),
 pWriteBufferCapacity(0),
 pWriteBufferUsed(false){
 }
@@ -125,7 +125,7 @@ void deoglSPBlockUBO::MapBuffer(){
 		
 		OGL_CHECK(GetRenderThread(), pglBindBuffer(GL_UNIFORM_BUFFER, pUBO));
 		OGL_CHECK(GetRenderThread(), pglBufferData(GL_UNIFORM_BUFFER,
-			GetBufferSize(), NULL, GL_DYNAMIC_DRAW));
+			GetBufferSize(), nullptr, GL_DYNAMIC_DRAW));
 				// clear using old clear method
 		pAllocateBuffer = false;
 		
@@ -182,7 +182,7 @@ void deoglSPBlockUBO::MapBuffer(int element, int count){
 		
 		if(pAllocateBuffer){
 			OGL_CHECK(GetRenderThread(), pglBufferData(GL_UNIFORM_BUFFER,
-				GetBufferSize(), NULL, GL_DYNAMIC_DRAW));
+				GetBufferSize(), nullptr, GL_DYNAMIC_DRAW));
 			pAllocateBuffer = false;
 		}
 		
@@ -231,7 +231,7 @@ void deoglSPBlockUBO::UnmapBuffer(){
 		if(pAllocateBuffer){
 			OGL_CHECK(renderThread, pglBindBuffer(GL_UNIFORM_BUFFER, pUBO));
 			OGL_CHECK(renderThread, pglBufferData(GL_UNIFORM_BUFFER,
-				GetBufferSize(), NULL, GL_DYNAMIC_DRAW));
+				GetBufferSize(), nullptr, GL_DYNAMIC_DRAW));
 			pAllocateBuffer = false;
 			
 		}else{
@@ -315,7 +315,7 @@ void deoglSPBlockUBO::pGrowWriteBuffer(int size){
 		}
 		
 		delete [] pWriteBuffer;
-		pWriteBuffer = NULL;
+		pWriteBuffer = nullptr;
 		pWriteBufferCapacity = 0;
 	}
 	

@@ -162,7 +162,7 @@ void deClassParticleEmitter::nfGetControllerNamed::RunFunction(dsRunTime *rt, ds
 	const int index = emitter->GetControllers().IndexOfNamed(rt->GetValue(0)->GetString());
 	
 	if(index == -1){
-		rt->PushObject(NULL, ds.GetClassParticleEmitterController());
+		rt->PushObject(nullptr, ds.GetClassParticleEmitterController());
 		
 	}else{
 		ds.GetClassParticleEmitterController()->PushController(rt, emitter, index);
@@ -922,12 +922,12 @@ void deClassParticleEmitter::nfEquals::RunFunction(dsRunTime *rt, dsValue *mysel
 
 deClassParticleEmitter::deClassParticleEmitter(deScriptingDragonScript *ds) :
 dsClass("ParticleEmitter", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED),
-pDS(NULL),
-pClsParticleEmitterParameter(NULL),
-pClsParticleEmitterEmitController(NULL),
-pClsParticleEmitterCastFrom(NULL),
-pClsParticleCollisionResponse(NULL),
-pClsParticleEmitterSimulation(NULL)
+pDS(nullptr),
+pClsParticleEmitterParameter(nullptr),
+pClsParticleEmitterEmitController(nullptr),
+pClsParticleEmitterCastFrom(nullptr),
+pClsParticleCollisionResponse(nullptr),
+pClsParticleEmitterSimulation(nullptr)
 {
 	if(!ds){
 		DSTHROW(dueInvalidParam);
@@ -1034,7 +1034,7 @@ void deClassParticleEmitter::CreateClassMembers(dsEngine *engine){
 
 deParticleEmitter *deClassParticleEmitter::GetParticleEmitter(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return dedsGetNativeData<sPENatDat>(p_GetNativeData(myself->GetBuffer())).emitter;
@@ -1046,7 +1046,7 @@ void deClassParticleEmitter::PushParticleEmitter(dsRunTime *rt, deParticleEmitte
 	}
 	
 	if(!emitter){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

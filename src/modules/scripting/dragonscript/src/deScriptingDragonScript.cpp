@@ -756,7 +756,7 @@ void deScriptingDragonScript::LoadPackage(const char *name, const char *director
 		DSTHROW(dueInvalidParam);
 	}
 	
-	dsPackage *package = NULL;
+	dsPackage *package = nullptr;
 	
 	try{
 		LogInfoFormat("Load Package from '%s'\n", directory);
@@ -772,7 +772,7 @@ void deScriptingDragonScript::LoadPackage(const char *name, const char *director
 			DSTHROW(dueInvalidParam); // DETHROW(deeScriptError)
 		}
 		
-		package = NULL;
+		package = nullptr;
 		
 	}catch(const duException &e){
 		SetErrorTraceDS(e);
@@ -1297,7 +1297,7 @@ void deScriptingDragonScript::pCreateParameters(){
 void deScriptingDragonScript::pLoadBasicPackage(){
 	deVirtualFileSystem &vfs = GetVFS();
 	deEngine *engine = GetGameEngine();
-	dsPackage *package = NULL;
+	dsPackage *package = nullptr;
 	decPath path;
 	
 	// load basic package
@@ -1314,7 +1314,7 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 		if(!pScriptEngine->AddPackage(package)){
 			DSTHROW(dueInvalidParam); // DETHROW(deeScriptError)
 		}
-		package = NULL;
+		package = nullptr;
 		
 		// create and add native classes
 		package = new dsPackage("Drag[en]gine Classes");
@@ -1516,7 +1516,7 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 		}
 		
 //		package->PrintClasses();
-		package = NULL;
+		package = nullptr;
 		
 		// find constant classes
 		pClsResourceLoaderType = pScriptEngine->GetClass("Dragengine.ResourceLoaderType");
@@ -1553,7 +1553,7 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 void deScriptingDragonScript::pLoadGamePackage(const char *directory, const char *gameClass){
 //	deVirtualFileSystem *vfs = GetGameEngine()->GetVirtualFileSystem();
 //	const char *basePath = vfs->GetBasePath();
-	dsPackage *package = NULL;
+	dsPackage *package = nullptr;
 	int i;
 	
 	try{
@@ -1606,7 +1606,7 @@ void deScriptingDragonScript::pLoadGamePackage(const char *directory, const char
 		deErrorTracePoint *tracePoint = AddErrorTracePoint("deScriptingDragonScript::pLoadGamePackage", __LINE__);
 		tracePoint->AddValue("directory", directory);
 		tracePoint->AddValue("gameClass", gameClass);
-		tracePoint->AddValueBool("gameClassPresent", pClsGame != NULL);
+		tracePoint->AddValueBool("gameClassPresent", pClsGame != nullptr);
 		if(package){
 			tracePoint->AddValueInt("packageClassCount", package->GetClassCount());
 			tracePoint->AddValueInt("packageHostClassCount", package->GetHostClassCount());
@@ -1654,7 +1654,7 @@ public:
 			return true;
 		}
 		
-		deScriptSource *source = NULL;
+		deScriptSource *source = nullptr;
 		try{
 			source = new deScriptSource(vfs, path);
 			pPackage.AddScript(source);
@@ -1749,7 +1749,7 @@ void deScriptingDragonScript::pAddExceptionTrace(deErrorTracePoint *tracePoint){
 	dsRunTime *rt = pScriptEngine->GetMainRunTime();
 	dsRealObject *exception = rt->GetRaisedException()->GetRealObject();
 	dsClassException *clsExcep = (dsClassException*)pScriptEngine->GetClassException();
-	dsExceptionTrace *trace = NULL;
+	dsExceptionTrace *trace = nullptr;
 	deErrorTraceValue *traceValue;
 	decString key, value;
 	int i;

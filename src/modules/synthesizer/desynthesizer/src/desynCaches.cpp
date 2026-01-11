@@ -44,7 +44,7 @@
 
 desynCaches::desynCaches(deDESynthesizer &dsyn) :
 pDSyn(dsyn),
-pSound(NULL)
+pSound(nullptr)
 {
 	(void)pDSyn;
 	try{

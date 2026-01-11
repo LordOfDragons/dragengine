@@ -38,13 +38,13 @@
 ////////////////////////////
 
 dePathList::dePathList() :
-pPath(NULL),
+pPath(nullptr),
 pPathCount(0),
 pPathSize(0){
 }
 
 dePathList::dePathList (const dePathList &list):
-pPath(NULL),
+pPath(nullptr),
 pPathCount(0),
 pPathSize(0)
 {

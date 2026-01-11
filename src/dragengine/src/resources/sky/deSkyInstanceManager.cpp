@@ -102,7 +102,7 @@ void deSkyInstanceManager::SystemGraphicUnload(){
 	deSkyInstance *instance = (deSkyInstance*)pInstances.GetRoot();
 	
 	while(instance){
-		instance->SetPeerGraphic(NULL);
+		instance->SetPeerGraphic(nullptr);
 		instance = (deSkyInstance*)instance->GetLLManagerNext();
 	}
 }

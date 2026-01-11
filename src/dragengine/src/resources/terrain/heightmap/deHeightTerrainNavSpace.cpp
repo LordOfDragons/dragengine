@@ -44,11 +44,11 @@ pType(deNavigationSpace::estMesh),
 pLayer(0),
 pSnapDistance(0.001f),
 pSnapAngle(DEG2RAD * 180.0f),
-pCorners(NULL),
+pCorners(nullptr),
 pCornerCount(0),
-pEdges(NULL),
+pEdges(nullptr),
 pEdgeCount(0),
-pFaces(NULL),
+pFaces(nullptr),
 pFaceCount(0){
 }
 
@@ -107,7 +107,7 @@ void deHeightTerrainNavSpace::SetCornerCount(int count){
 	if(pCorners){
 		delete [] pCorners;
 	}
-	pCorners = NULL;
+	pCorners = nullptr;
 	pCornerCount = 0;
 	
 	if(count > 0){
@@ -147,7 +147,7 @@ void deHeightTerrainNavSpace::SetEdgeCount(int count){
 	if(pEdges){
 		delete [] pEdges;
 	}
-	pEdges = NULL;
+	pEdges = nullptr;
 	pEdgeCount = 0;
 	
 	if(count > 0){
@@ -180,7 +180,7 @@ void deHeightTerrainNavSpace::SetFaceCount(int count){
 	if(pFaces){
 		delete [] pFaces;
 	}
-	pFaces = NULL;
+	pFaces = nullptr;
 	pFaceCount = 0;
 	
 	if(count > 0){

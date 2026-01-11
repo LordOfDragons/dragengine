@@ -54,7 +54,7 @@
 deoalWOVPrepareRayTrace::deoalWOVPrepareRayTrace() :
 pRadius(0.0),
 pRadiusSquared(0.0),
-    pRTWorldBVH(NULL)
+    pRTWorldBVH(nullptr)
 {
 	SetVisitAll(false);
 	SetVisitComponents(true);

@@ -512,7 +512,7 @@ void deClassCanvas::AssignCanvas(dsRealObject *myself, deCanvas *canvas){
 
 deCanvas *deClassCanvas::GetCanvas(dsRealObject *myself) const {
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return dedsGetNativeData<sCanvasNatDat>(p_GetNativeData(myself->GetBuffer())).canvas;
@@ -524,7 +524,7 @@ void deClassCanvas::PushCanvas(dsRunTime *rt, deCanvas *canvas){
 	}
 	
 	if(!canvas){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

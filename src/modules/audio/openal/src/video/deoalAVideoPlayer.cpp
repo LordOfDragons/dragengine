@@ -80,7 +80,7 @@ deoalAVideoPlayer::~deoalAVideoPlayer(){
 void deoalAVideoPlayer::SetVideo(deVideo *video){
 	// WARNING Called during synchronization time by main thread
 	
-	pDecoder = NULL;
+	pDecoder = nullptr;
 	pBytesPerSample = 1;
 	pChannelCount = 1;
 	pSampleRate = 11025;

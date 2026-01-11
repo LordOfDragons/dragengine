@@ -144,11 +144,11 @@ const deoglDynamicTBOBlock::Ref &deoglGIBVHDynamic::GetBlockVertex(){
 void deoglGIBVHDynamic::DropBlocks(){
 	if(pBlockNode){
 		pBlockNode->Drop();
-		pBlockNode = NULL;
+		pBlockNode = nullptr;
 	}
 	if(pBlockVertex){
 		pBlockVertex->Drop();
-		pBlockVertex = NULL;
+		pBlockVertex = nullptr;
 	}
 }
 

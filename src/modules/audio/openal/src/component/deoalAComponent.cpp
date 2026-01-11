@@ -55,9 +55,9 @@
 
 deoalAComponent::deoalAComponent(deoalAudioThread &audioThread) :
 pAudioThread(audioThread),
-pParentWorld(NULL),
-pOctreeNode(NULL),
-pTextureNames(NULL),
+pParentWorld(nullptr),
+pOctreeNode(nullptr),
+pTextureNames(nullptr),
 pAffectsSound(false),
 pHasScaling(false),
 pDirtyMatrices(true),
@@ -66,17 +66,17 @@ pDirtyExtends(true),
 // pDirtyRTSphere( true ),
 pDirtyTextureUseSkin(true),
 
-pBones(NULL),
+pBones(nullptr),
 pBoneCount(0),
-pWeightMatrices(NULL),
-pFaces(NULL),
+pWeightMatrices(nullptr),
+pFaces(nullptr),
 pFaceCount(0),
 // pOctree( NULL ),
-pBVH(NULL),
+pBVH(nullptr),
 
 pWorldMarkedRemove(false),
-pLLWorldPrev(NULL),
-pLLWorldNext(NULL)
+pLLWorldPrev(nullptr),
+pLLWorldNext(nullptr)
 {
 	LEAK_CHECK_CREATE(audioThread, Component);
 }
@@ -125,8 +125,8 @@ void deoalAComponent::UpdateOctreeNode(){
 }
 
 void deoalAComponent::PrepareQuickDispose(){
-	pParentWorld = NULL;
-	pOctreeNode = NULL;
+	pParentWorld = nullptr;
+	pOctreeNode = nullptr;
 }
 
 
@@ -266,7 +266,7 @@ void deoalAComponent::InitBones(const deComponent &component){
 	if(boneCount != pBoneCount){
 		if(pBones){
 			delete [] pBones;
-			pBones = NULL;
+			pBones = nullptr;
 			pBoneCount = 0;
 		}
 		
@@ -292,7 +292,7 @@ void deoalAComponent::InitBones(const deComponent &component){
 				bone.SetParent(pBones + engBone.GetParentBone());
 				
 			}else{
-				bone.SetParent(NULL);
+				bone.SetParent(nullptr);
 			}
 			
 			bone.SetOriginalMatrix(engBone.GetOriginalMatrix());
@@ -749,14 +749,14 @@ void deoalAComponent::pPrepareWeightMatrices(){
 void deoalAComponent::pDropWeightMatrices(){
 	if(pWeightMatrices){
 		delete [] pWeightMatrices;
-		pWeightMatrices = NULL;
+		pWeightMatrices = nullptr;
 		
 		pDirtyWeightMatrices = true;
 	}
 	
 	if(pBones){
 		delete [] pBones;
-		pBones = NULL;
+		pBones = nullptr;
 		pBoneCount = 0;
 	}
 }
@@ -831,7 +831,7 @@ void deoalAComponent::pDropFaces(){
 	pDropOctree();
 	if(pFaces){
 		delete [] pFaces;
-		pFaces = NULL;
+		pFaces = nullptr;
 	}
 	pFaceCount = 0;
 }
@@ -863,7 +863,7 @@ void deoalAComponent::pBuildOctree(){
 void deoalAComponent::pDropOctree(){
 	if(pBVH){
 		delete pBVH;
-		pBVH = NULL;
+		pBVH = nullptr;
 	}
 // 	if( pOctree ){
 // 		delete pOctree;

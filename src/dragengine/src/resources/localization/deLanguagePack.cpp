@@ -44,7 +44,7 @@
 deLanguagePack::deLanguagePack(deLanguagePackManager *manager, deVirtualFileSystem *vfs,
 	const char *filename, TIME_SYSTEM modificationTime) :
 deFileResource(manager, vfs, filename, modificationTime),
-pEntries(NULL),
+pEntries(nullptr),
 pEntryCount(0)
 {
 	pMissingText.SetFromUTF8("< Missing Text >");
@@ -86,7 +86,7 @@ void deLanguagePack::SetEntryCount(int count){
 	
 	if(pEntries){
 		delete [] pEntries;
-		pEntries = NULL;
+		pEntries = nullptr;
 		pEntryCount = 0;
 	}
 	

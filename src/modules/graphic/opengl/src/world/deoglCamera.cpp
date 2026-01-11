@@ -56,7 +56,7 @@ deoglCamera::deoglCamera(deGraphicOpenGl &ogl, const deCamera &camera) :
 pOgl(ogl),
 pCamera(camera),
 
-pParentWorld(NULL),
+pParentWorld(nullptr),
 
 pNextSyncUpdateTime(0.0f),
 
@@ -130,7 +130,7 @@ void deoglCamera::SyncToRender(){
 // 			pOgl.LogInfoFormat( "Camera.Sync world: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 		
 	}else{
-		pRCamera->SetParentWorld(NULL);
+		pRCamera->SetParentWorld(nullptr);
 	}
 	
 	if(pDirtyGeometry){

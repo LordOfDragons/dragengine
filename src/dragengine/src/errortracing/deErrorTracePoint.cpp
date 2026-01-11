@@ -87,7 +87,7 @@ deErrorTraceValue *deErrorTracePoint::FindValue(const char *name) const{
 	for(i=0; i<pValueCount; i++){
 		if(strcmp(name, pValues[i]->GetName()) == 0) return pValues[i];
 	}
-	return NULL;
+	return nullptr;
 }
 
 void deErrorTracePoint::AddValue(deErrorTraceValue *value){
@@ -120,7 +120,7 @@ void deErrorTracePoint::RemoveAllValues(){
 //////////////////////////
 
 deErrorTraceValue *deErrorTracePoint::AddValue(const char *name, const char *value){
-	deErrorTraceValue *newValue = NULL;
+	deErrorTraceValue *newValue = nullptr;
 	try{
 		newValue = new deErrorTraceValue(name, value);
 		AddValue(newValue);
@@ -132,7 +132,7 @@ deErrorTraceValue *deErrorTracePoint::AddValue(const char *name, const char *val
 }
 
 deErrorTraceValue *deErrorTracePoint::AddValueInt(const char *name, int value){
-	deErrorTraceValue *newValue = NULL;
+	deErrorTraceValue *newValue = nullptr;
 	char buffer[20];
 	#ifdef _MSC_VER
 		sprintf_s(reinterpret_cast<char*>(&buffer), 20, "%i", value);
@@ -150,7 +150,7 @@ deErrorTraceValue *deErrorTracePoint::AddValueInt(const char *name, int value){
 }
 
 deErrorTraceValue *deErrorTracePoint::AddValueFloat(const char *name, float value){
-	deErrorTraceValue *newValue = NULL;
+	deErrorTraceValue *newValue = nullptr;
 	char buffer[20];
 	#ifdef _MSC_VER
 		sprintf_s(reinterpret_cast<char*>(&buffer), 20, "%g", value);
@@ -168,7 +168,7 @@ deErrorTraceValue *deErrorTracePoint::AddValueFloat(const char *name, float valu
 }
 
 deErrorTraceValue *deErrorTracePoint::AddValueBool(const char *name, bool value){
-	deErrorTraceValue *newValue = NULL;
+	deErrorTraceValue *newValue = nullptr;
 	try{
 		if(value){
 			newValue = new deErrorTraceValue(name, "True");

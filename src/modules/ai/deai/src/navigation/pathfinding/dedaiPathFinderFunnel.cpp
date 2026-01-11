@@ -38,7 +38,7 @@
 /////////////////////////////////
 
 dedaiPathFinderFunnel::dedaiPathFinderFunnel(){
-	pMesh = NULL;
+	pMesh = nullptr;
 	pLeftDist = 0.0f;
 	pRightDist = 0.0f;
 }

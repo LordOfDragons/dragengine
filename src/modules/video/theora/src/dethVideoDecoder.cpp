@@ -47,7 +47,7 @@
 dethVideoDecoder::dethVideoDecoder(deVideoTheora &module, decBaseFileReader *file) :
 deBaseVideoDecoder(file),
 pModule(module),
-pReader(NULL)
+pReader(nullptr)
 {
 	(void)pModule;
 	dethInfos infos;

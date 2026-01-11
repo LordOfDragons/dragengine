@@ -95,20 +95,20 @@ static const int vCubeFaces[] = {
 deoglEnvironmentMap::deoglEnvironmentMap(deoglRenderThread &renderThread) :
 pRenderThread(renderThread)
 {
-	pWorld = NULL;
-	pOctreeNode = NULL;
+	pWorld = nullptr;
+	pOctreeNode = nullptr;
 	
 	pSkyOnly = true;
 	
 	pSize = pRenderThread.GetConfiguration().GetEnvMapSize();
 	pIsFloat = true;
 	
-	pEnvMap = NULL;
-	pEnvMapPosition = NULL;
-	pEnvMapDiffuse = NULL;
-	pEnvMapNormal = NULL;
-	pEnvMapEmissive = NULL;
-	pEnvMapEqui = NULL;
+	pEnvMap = nullptr;
+	pEnvMapPosition = nullptr;
+	pEnvMapDiffuse = nullptr;
+	pEnvMapNormal = nullptr;
+	pEnvMapEmissive = nullptr;
+	pEnvMapEqui = nullptr;
 	pMaxMipMapLevel = 0;
 	
 	pLayerMask.SetBit(1);
@@ -117,7 +117,7 @@ pRenderThread(renderThread)
 	pInfluencePriority = 0;
 	pHasInfluenceBox = false,
 	pHasReflectionBox = false;
-	pReflectionMaskBoxMatrices = NULL;
+	pReflectionMaskBoxMatrices = nullptr;
 	pReflectionMaskBoxMatrixCount = 0;
 	
 	pDirty = true;
@@ -135,8 +135,8 @@ pRenderThread(renderThread)
 	
 	pSlotIndex = -1;
 	
-	pConvexVolumeList = NULL;
-	pLightVolume = NULL;
+	pConvexVolumeList = nullptr;
+	pLightVolume = nullptr;
 	pDirtyConvexVolumeList = true;
 	
 	try{
@@ -169,7 +169,7 @@ void deoglEnvironmentMap::SetWorld(deoglRWorld *world){
 	
 	if(pOctreeNode){
 		pOctreeNode->RemoveEnvMap(this);
-		pOctreeNode = NULL;
+		pOctreeNode = nullptr;
 	}
 	pDirtyOctreeNode = true;
 	
@@ -307,7 +307,7 @@ const decDMatrix& deoglEnvironmentMap::GetReflectionMaskBoxMatrixAt(int index) c
 void deoglEnvironmentMap::RemoveAllReflectionMaskBoxMatrices(){
 	if(pReflectionMaskBoxMatrices){
 		delete [] pReflectionMaskBoxMatrices;
-		pReflectionMaskBoxMatrices = NULL;
+		pReflectionMaskBoxMatrices = nullptr;
 		pReflectionMaskBoxMatrixCount = 0;
 		
 		SetDirty(true);
@@ -604,8 +604,8 @@ void deoglEnvironmentMap::RenderEnvCubeMap(deoglRenderPlan &parentPlan){
 	
 	// use the parent plan gi state but without modifying it. allows to use GI with
 	// no extra cost and witout messing up parent GI state
-	plan.SetUseConstGIState(NULL);//parentPlan.GetRenderGIState());
-	plan.SetUseGIState(plan.GetUseConstGIState() != NULL);
+	plan.SetUseConstGIState(nullptr);//parentPlan.GetRenderGIState());
+	plan.SetUseGIState(plan.GetUseConstGIState() != nullptr);
 	
 	plan.SetNoAmbientLight(true);
 	
@@ -733,9 +733,9 @@ void deoglEnvironmentMap::RenderEnvCubeMap(deoglRenderPlan &parentPlan){
 			//     PrepareRender from touching env-map list at all. using the pEnvMap being
 			//     NULL as indicator for a removed env-map is a workaround
 			if(!pEnvMap){
-				pRenderThread.GetFramebuffer().Activate(NULL);
-				plan.SetFBOTarget(NULL);
-				plan.SetFBOMaterial(NULL);
+				pRenderThread.GetFramebuffer().Activate(nullptr);
+				plan.SetFBOTarget(nullptr);
+				plan.SetFBOMaterial(nullptr);
 				pNextUpdateFace = 6;
 				pDirty = false;
 				return;
@@ -762,8 +762,8 @@ void deoglEnvironmentMap::RenderEnvCubeMap(deoglRenderPlan &parentPlan){
 			renderTime[7] += renderTime[cmf];
 		//}
 		
-		plan.SetFBOTarget(NULL);
-		plan.SetFBOMaterial(NULL);
+		plan.SetFBOTarget(nullptr);
+		plan.SetFBOMaterial(nullptr);
 		
 		pRenderThread.GetFramebuffer().Activate(oldfbo);
 		
@@ -844,7 +844,7 @@ void deoglEnvironmentMap::UpdateConvexVolumeList(){
 					const decVector splitPosition = ((position - pPosition) * 0.5).ToVector();
 					const decVector splitNormal = -splitPosition.Normalized();
 					
-					pConvexVolumeList->SplitByPlane(splitNormal, splitPosition, true, NULL);
+					pConvexVolumeList->SplitByPlane(splitNormal, splitPosition, true, nullptr);
 				}
 			}
 			
@@ -909,8 +909,8 @@ void deoglEnvironmentMap::LightChanged(deoglRLight*){
 
 
 void deoglEnvironmentMap::PrepareQuickDispose(){
-	pWorld = NULL;
-	pOctreeNode = NULL;
+	pWorld = nullptr;
+	pOctreeNode = nullptr;
 	
 	pComponentList.RemoveAll();
 	pBillboardList.RemoveAll();

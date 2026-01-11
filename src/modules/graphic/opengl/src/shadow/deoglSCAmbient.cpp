@@ -52,19 +52,19 @@
 deoglSCAmbient::deoglSCAmbient(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
 
-pStaticMap(NULL),
-pStaticCubeMap(NULL),
+pStaticMap(nullptr),
+pStaticCubeMap(nullptr),
 pLastUseStatic(0),
 pHasStatic(false),
 
-pDynamicMap(NULL),
-pDynamicCubeMap(NULL),
+pDynamicMap(nullptr),
+pDynamicCubeMap(nullptr),
 pLastUseDynamic(0),
 pHasDynamic(false),
 pDirtyDynamic(true),
 
-pTemporaryMap(NULL),
-pTemporaryCubeMap(NULL),
+pTemporaryMap(nullptr),
+pTemporaryCubeMap(nullptr),
 
 pLastSizeStatic(0),
 pNextSizeStatic(0),
@@ -98,7 +98,7 @@ deoglTexture *deoglSCAmbient::ObtainStaticMapWithSize(int size, bool useFloat){
 		
 		if(pStaticMap){
 			delete pStaticMap;
-			pStaticMap = NULL;
+			pStaticMap = nullptr;
 		}
 	}
 	
@@ -126,7 +126,7 @@ deoglCubeMap *deoglSCAmbient::ObtainStaticCubeMapWithSize(int size, bool useFloa
 		
 		if(pStaticCubeMap){
 			delete pStaticCubeMap;
-			pStaticCubeMap = NULL;
+			pStaticCubeMap = nullptr;
 		}
 	}
 	
@@ -148,11 +148,11 @@ void deoglSCAmbient::DropStatic(){
 	
 	if(pStaticMap){
 		delete pStaticMap;
-		pStaticMap = NULL;
+		pStaticMap = nullptr;
 	}
 	if(pStaticCubeMap){
 		delete pStaticCubeMap;
-		pStaticCubeMap = NULL;
+		pStaticCubeMap = nullptr;
 	}
 	
 	pLastSizeStatic = 0;
@@ -182,7 +182,7 @@ deoglTexture *deoglSCAmbient::ObtainDynamicMapWithSize(int size, bool useFloat){
 		
 		if(pDynamicMap){
 			delete pDynamicMap;
-			pDynamicMap = NULL;
+			pDynamicMap = nullptr;
 		}
 	}
 	
@@ -211,7 +211,7 @@ deoglCubeMap *deoglSCAmbient::ObtainDynamicCubeMapWithSize(int size, bool useFlo
 		
 		if(pDynamicCubeMap){
 			delete pDynamicCubeMap;
-			pDynamicCubeMap = NULL;
+			pDynamicCubeMap = nullptr;
 		}
 	}
 	
@@ -234,11 +234,11 @@ void deoglSCAmbient::DropDynamic(){
 	
 	if(pDynamicMap){
 		delete pDynamicMap;
-		pDynamicMap = NULL;
+		pDynamicMap = nullptr;
 	}
 	if(pDynamicCubeMap){
 		delete pDynamicCubeMap;
-		pDynamicCubeMap = NULL;
+		pDynamicCubeMap = nullptr;
 	}
 	
 	pLastSizeDynamic = 0;
@@ -299,11 +299,11 @@ deoglRenderableDepthCubeMap *deoglSCAmbient::ObtainTemporaryCubeMapWithSize(int 
 void deoglSCAmbient::DropTemporary(){
 	if(pTemporaryMap){
 		pTemporaryMap->SetInUse(false);
-		pTemporaryMap = NULL;
+		pTemporaryMap = nullptr;
 	}
 	if(pTemporaryCubeMap){
 		pTemporaryCubeMap->SetInUse(false);
-		pTemporaryCubeMap = NULL;
+		pTemporaryCubeMap = nullptr;
 	}
 }
 

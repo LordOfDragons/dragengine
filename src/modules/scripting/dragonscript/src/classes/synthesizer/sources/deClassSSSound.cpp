@@ -320,7 +320,7 @@ void deClassSSSound::CreateClassMembers(dsEngine *engine){
 
 deSynthesizerSourceSound *deClassSSSound::GetSource(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return dedsGetNativeData<sSSSoundNatDat>(p_GetNativeData(myself->GetBuffer())).source;
@@ -342,7 +342,7 @@ void deClassSSSound::PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSyn
 	}
 	
 	if(!source){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

@@ -367,7 +367,7 @@ void deClassARAnimationDifference::CreateClassMembers(dsEngine *engine){
 
 deAnimatorRuleAnimationDifference *deClassARAnimationDifference::GetRule(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return dedsGetNativeData<sARAnimDiffNatDat>(p_GetNativeData(myself->GetBuffer())).rule;
@@ -388,7 +388,7 @@ void deClassARAnimationDifference::PushRule(dsRunTime *rt, deAnimator *animator,
 	}
 	
 	if(!rule){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

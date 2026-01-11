@@ -97,7 +97,7 @@ void deCameraManager::SystemGraphicUnload(){
 	deCamera *camera = (deCamera*)pCameras.GetRoot();
 	
 	while(camera){
-		camera->SetPeerGraphic(NULL);
+		camera->SetPeerGraphic(nullptr);
 		camera = (deCamera*)camera->GetLLManagerNext();
 	}
 }

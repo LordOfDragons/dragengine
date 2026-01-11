@@ -321,7 +321,7 @@ void deClassSSGroup::CreateClassMembers(dsEngine *engine){
 
 deSynthesizerSourceGroup *deClassSSGroup::GetSource(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return dedsGetNativeData<sSSGroupNatDat>(p_GetNativeData(myself->GetBuffer())).source;
@@ -343,7 +343,7 @@ void deClassSSGroup::PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSyn
 	}
 	
 	if(!source){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

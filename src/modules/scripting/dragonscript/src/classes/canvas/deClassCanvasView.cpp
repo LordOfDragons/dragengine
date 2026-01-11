@@ -274,7 +274,7 @@ void deClassCanvasView::PushCanvas(dsRunTime *rt, deCanvasView *canvas){
 	}
 	
 	if(!canvas){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

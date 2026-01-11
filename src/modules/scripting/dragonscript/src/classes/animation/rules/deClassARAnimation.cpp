@@ -326,7 +326,7 @@ void deClassARAnimation::CreateClassMembers(dsEngine *engine){
 
 deAnimatorRuleAnimation *deClassARAnimation::GetRule(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return dedsGetNativeData<sARAnimNatDat>(p_GetNativeData(myself->GetBuffer())).rule;
@@ -347,7 +347,7 @@ void deClassARAnimation::PushRule(dsRunTime *rt, deAnimator *animator, deAnimato
 	}
 	
 	if(!rule){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

@@ -75,7 +75,7 @@ deAnimation * deAnimationManager::GetAnimationWith(const char *filename) const{
 
 deAnimation *deAnimationManager::GetAnimationWith(deVirtualFileSystem *vfs, const char *filename) const{
 	deAnimation * const animation = (deAnimation*)pAnimations.GetWithFilename(vfs, filename);
-	return animation && !animation->GetOutdated() ? animation : NULL;
+	return animation && !animation->GetOutdated() ? animation : nullptr;
 }
 
 deAnimation::Ref deAnimationManager::CreateAnimation(const char *filename, deAnimationBuilder &builder){
@@ -140,7 +140,7 @@ const char *filename, const char *basePath){
 			LogInfoFormat("Animation '%s' (base path '%s') changed on VFS: Outdating and Reloading",
 				filename, basePath ? basePath : "");
 			findAnim->MarkOutdated();
-			findAnim = NULL;
+			findAnim = nullptr;
 		}
 		
 		if(findAnim){
@@ -252,7 +252,7 @@ void deAnimationManager::SystemAnimatorUnload(){
 	deAnimation *animation = (deAnimation*)pAnimations.GetRoot();
 	
 	while(animation){
-		animation->SetPeerAnimator(NULL);
+		animation->SetPeerAnimator(nullptr);
 		animation = (deAnimation*)animation->GetLLManagerNext();
 	}
 }

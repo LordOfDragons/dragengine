@@ -78,12 +78,12 @@ pParticleCount(0),
 pFirstIndex(0),
 pIndexCount(0),
 pUseTextureNumber(0),
-pUseSkinTexture(NULL),
+pUseSkinTexture(nullptr),
 
-pTUCDepth(NULL),
-pTUCCounter(NULL),
-pTUCGeometry(NULL),
-pTUCGeometryDepthTest(NULL),
+pTUCDepth(nullptr),
+pTUCCounter(nullptr),
+pTUCGeometry(nullptr),
+pTUCGeometryDepthTest(nullptr),
 
 pValidParamBlock(false),
 pDirtyParamBlock(true),
@@ -93,7 +93,7 @@ pDirtyTUCCounter(true),
 pDirtyTUCGeometry(true),
 pDirtyTUCGeometryDepthTest(true),
 
-pRTSInstance(NULL)
+pRTSInstance(nullptr)
 {
 	LEAK_CHECK_CREATE(instance.GetRenderThread(), ParticleEmitterInstanceType);
 	
@@ -169,7 +169,7 @@ void deoglRParticleEmitterInstanceType::SetUseSkin(deoglRSkin *skin){
 		pUseSkinTexture = &pUseSkin->GetTextureAt(pUseTextureNumber);
 		
 	}else{
-		pUseSkinTexture = NULL;
+		pUseSkinTexture = nullptr;
 	}
 }
 
@@ -265,7 +265,7 @@ deoglTexUnitsConfig *deoglRParticleEmitterInstanceType::GetTUCDepth(){
 	if(pDirtyTUCDepth){
 		if(pTUCDepth){
 			pTUCDepth->RemoveUsage();
-			pTUCDepth = NULL;
+			pTUCDepth = nullptr;
 		}
 		
 		pTUCDepth = BareGetTUCFor(deoglSkinTexturePipelines::etDepth);
@@ -280,7 +280,7 @@ deoglTexUnitsConfig *deoglRParticleEmitterInstanceType::GetTUCCounter(){
 	if(pDirtyTUCCounter){
 		if(pTUCCounter){
 			pTUCCounter->RemoveUsage();
-			pTUCCounter = NULL;
+			pTUCCounter = nullptr;
 		}
 		
 		pTUCCounter = BareGetTUCFor(deoglSkinTexturePipelines::etCounter);
@@ -295,7 +295,7 @@ deoglTexUnitsConfig *deoglRParticleEmitterInstanceType::GetTUCGeometry(){
 	if(pDirtyTUCGeometry){
 		if(pTUCGeometry){
 			pTUCGeometry->RemoveUsage();
-			pTUCGeometry = NULL;
+			pTUCGeometry = nullptr;
 		}
 		
 		pTUCGeometry = BareGetTUCFor(deoglSkinTexturePipelines::etGeometry);
@@ -310,7 +310,7 @@ deoglTexUnitsConfig *deoglRParticleEmitterInstanceType::GetTUCGeometryDepthTest(
 	if(pDirtyTUCGeometryDepthTest){
 		if(pTUCGeometryDepthTest){
 			pTUCGeometryDepthTest->RemoveUsage();
-			pTUCGeometryDepthTest = NULL;
+			pTUCGeometryDepthTest = nullptr;
 		}
 		
 		pTUCGeometryDepthTest = BareGetTUCFor(deoglSkinTexturePipelines::etGeometryDepthTest);
@@ -324,15 +324,15 @@ deoglTexUnitsConfig *deoglRParticleEmitterInstanceType::GetTUCGeometryDepthTest(
 deoglTexUnitsConfig *deoglRParticleEmitterInstanceType::BareGetTUCFor(
 deoglSkinTexturePipelines::eTypes shaderType) const{
 	if(!pUseSkinTexture){
-		return NULL;
+		return nullptr;
 	}
 	
 	deoglSkinShader &skinShader = *GetUseSkinPipelines().GetWithRef(shaderType).GetShader();
 	deoglRenderThread &renderThread = pEmitterInstance.GetRenderThread();
-	deoglTexUnitsConfig *tuc = NULL;
+	deoglTexUnitsConfig *tuc = nullptr;
 	
 	if(skinShader.GetTextureUnitCount() > 0){
-		deoglRDynamicSkin *dynamicSkin = NULL;
+		deoglRDynamicSkin *dynamicSkin = nullptr;
 		deoglSkinState *skinState = nullptr;
 		
 		if(pDynamicSkin){
@@ -398,7 +398,7 @@ deoglSkinTexturePipelines::eTypes shaderType) const{
 	}
 	
 	if(!tuc){
-		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith(NULL, 0,
+		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith(nullptr, 0,
 			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock());
 	}
 	tuc ->EnsureRTSTexture();

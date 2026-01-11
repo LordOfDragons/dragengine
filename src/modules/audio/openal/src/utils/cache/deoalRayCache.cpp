@@ -61,7 +61,7 @@ public:
 	pRangeSquared(range * range),
 	pSpreadDot(spreadDot),
 	pRangeExtend(range, range, range),
-	pFoundRay(NULL){
+	pFoundRay(nullptr){
 	}
 	
 	~deoalRayCacheFindRayVisitor() override{
@@ -166,10 +166,10 @@ pRange(0.1f),
 pSpread(0.5f),
 pSpreadDot(cosf(DEG2RAD * pSpread)),
 pOctreeDepth(4),
-pRootRay(NULL),
-pTailRay(NULL),
+pRootRay(nullptr),
+pTailRay(nullptr),
 pRayCount(0),
-pOctree(NULL)
+pOctree(nullptr)
 {
 	// NOTE
 	// how to define the spread? possible solution how much deviation distance at a certain
@@ -265,7 +265,7 @@ deoalRayCache::~deoalRayCache(){
 
 deoalRayCacheRay *deoalRayCache::FindRay(const decVector &origin, const decVector &direction){
 	pLockRead();
-	deoalRayCacheRay *ray = NULL;
+	deoalRayCacheRay *ray = nullptr;
 	
 	try{
 		ray = pFindRay(origin, direction);

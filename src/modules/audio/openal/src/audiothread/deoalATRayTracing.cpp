@@ -47,9 +47,9 @@
 deoalATRayTracing::deoalATRayTracing(deoalAudioThread &audioThread) :
 pAudioThread(audioThread),
 
-pConfigTraceSoundRays(NULL),
-pConfigRoomEstimate(NULL),
-pConfigTraceSoundRaysSensor(NULL)
+pConfigTraceSoundRays(nullptr),
+pConfigRoomEstimate(nullptr),
+pConfigTraceSoundRaysSensor(nullptr)
 {
 	try{
 		pCreateRayTraceConfigs();
@@ -96,7 +96,7 @@ void deoalATRayTracing::pCreateRayTraceConfigs(){
 	// configuration for tracing sound rays
 	if(pConfigTraceSoundRays){
 		delete pConfigTraceSoundRays;
-		pConfigTraceSoundRays = NULL;
+		pConfigTraceSoundRays = nullptr;
 	}
 	pConfigTraceSoundRays = new deoalRayTraceConfig;
 	pConfigTraceSoundRays->SetRaysEquallySpaced(config.GetSoundTraceRayCount());
@@ -105,7 +105,7 @@ void deoalATRayTracing::pCreateRayTraceConfigs(){
 	// configuration for estimating room parameters
 	if(pConfigRoomEstimate){
 		delete pConfigRoomEstimate;
-		pConfigRoomEstimate = NULL;
+		pConfigRoomEstimate = nullptr;
 	}
 	pConfigRoomEstimate = new deoalRayTraceConfig;
 	pConfigRoomEstimate->SetRaysEquallySpaced(config.GetEstimateRoomRayCount());
@@ -113,7 +113,7 @@ void deoalATRayTracing::pCreateRayTraceConfigs(){
 	// configuration for tracing sound rays for sound sensor meters
 	if(pConfigTraceSoundRaysSensor){
 		delete pConfigTraceSoundRaysSensor;
-		pConfigTraceSoundRaysSensor = NULL;
+		pConfigTraceSoundRaysSensor = nullptr;
 	}
 	pConfigTraceSoundRaysSensor = new deoalRayTraceConfig;
 	pConfigTraceSoundRaysSensor->SetRaysEquallySpaced(24); //config.GetSoundTraceRayCount());

@@ -57,7 +57,7 @@ pFloatTexture(bitCount != 8),
 
 pDirtyTexture(true),
 
-pTexture(NULL){
+pTexture(nullptr){
 }
 
 deoglRenderTarget::~deoglRenderTarget(){
@@ -85,7 +85,7 @@ void deoglRenderTarget::SetSize(const decPoint &size){
 	ReleaseFramebuffer();
 	if(pTexture){
 		delete pTexture;
-		pTexture = NULL;
+		pTexture = nullptr;
 	}
 	
 	pSize = size;

@@ -40,7 +40,7 @@
 
 deSharedVulkan::deSharedVulkan(deBaseModule &module, bool enableDebug) :
 pModule(module),
-pLoader(NULL),
+pLoader(nullptr),
 pCachePath(decPath::CreatePathUnix("/cache/local/vulkan"))
 {
 	try{

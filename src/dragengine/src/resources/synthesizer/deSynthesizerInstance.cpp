@@ -49,8 +49,8 @@ deResource(manager),
 
 pSampleCount(0),
 
-pPeerSynthesizer(NULL),
-pPeerAudio(NULL){
+pPeerSynthesizer(nullptr),
+pPeerAudio(nullptr){
 }
 
 deSynthesizerInstance::~deSynthesizerInstance(){
@@ -183,11 +183,11 @@ void deSynthesizerInstance::SetPeerAudio(deBaseAudioSynthesizerInstance *peer){
 void deSynthesizerInstance::pCleanUp(){
 	if(pPeerAudio){
 		delete pPeerAudio;
-		pPeerAudio = NULL;
+		pPeerAudio = nullptr;
 	}
 	if(pPeerSynthesizer){
 		delete pPeerSynthesizer;
-		pPeerSynthesizer = NULL;
+		pPeerSynthesizer = nullptr;
 	}
 }
 

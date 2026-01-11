@@ -54,7 +54,7 @@ pBitCount(0){
 
 deoglRCaptureCanvas::~deoglRCaptureCanvas(){
 	LEAK_CHECK_FREE(pRenderThread, CaptureCanvas);
-	SetCanvasView(NULL);
+	SetCanvasView(nullptr);
 }
 
 
@@ -169,7 +169,7 @@ void deoglRCaptureCanvas::CapturePending(){
 	}
 	
 	const deoglDebugTraceGroup debugTrace(GetRenderThread(), "CaptureCanvas.CapturePending");
-	deoglTexture *texture = NULL;
+	deoglTexture *texture = nullptr;
 	
 	if(pCanvasView){
 		pCanvasView->PrepareRenderTarget(nullptr, pComponentCount, pBitCount);

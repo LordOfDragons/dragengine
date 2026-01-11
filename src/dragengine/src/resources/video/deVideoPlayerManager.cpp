@@ -109,7 +109,7 @@ void deVideoPlayerManager::SystemAudioUnload(){
 	deVideoPlayer *videoPlayer = (deVideoPlayer*)pVideoPlayers.GetRoot();
 	
 	while(videoPlayer){
-		videoPlayer->SetPeerAudio(NULL);
+		videoPlayer->SetPeerAudio(nullptr);
 		videoPlayer = (deVideoPlayer*)videoPlayer->GetLLManagerNext();
 	}
 }
@@ -131,7 +131,7 @@ void deVideoPlayerManager::SystemGraphicUnload(){
 	deVideoPlayer *videoPlayer = (deVideoPlayer*)pVideoPlayers.GetRoot();
 	
 	while(videoPlayer){
-		videoPlayer->SetPeerGraphic(NULL);
+		videoPlayer->SetPeerGraphic(nullptr);
 		videoPlayer = (deVideoPlayer*)videoPlayer->GetLLManagerNext();
 	}
 }

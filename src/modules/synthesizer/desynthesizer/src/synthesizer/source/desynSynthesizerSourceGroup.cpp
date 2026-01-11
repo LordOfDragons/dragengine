@@ -46,7 +46,7 @@
 desynSynthesizerSourceGroup::desynSynthesizerSourceGroup(desynSynthesizer &synthesizer,
 int firstLink, const deSynthesizerSourceGroup &source) :
 desynSynthesizerSource(synthesizer, firstLink, source),
-pSources(NULL),
+pSources(nullptr),
 pSourceCount(0),
 pApplicationType(source.GetApplicationType()),
 pSelectRange(0.0f),
@@ -103,7 +103,7 @@ void desynSynthesizerSourceGroup::InitStateDataSource(char *stateData){
 	if(pApplicationType != deSynthesizerSourceGroup::eatAll){
 		desynSharedBuffer ** const sdata = (desynSharedBuffer**)(stateData + GetStateDataOffset());
 		for(i=0; i<pSourceCount; i++){
-			sdata[i] = NULL;
+			sdata[i] = nullptr;
 		}
 	}
 	
@@ -210,7 +210,7 @@ char *stateData, float *buffer, int samples, float curveOffset, float curveFacto
 		for(i=0; i<pSourceCount; i++){
 			if(sdata[i]){
 				sharedBufferList.ReleaseBuffer(sdata[i]);
-				sdata[i] = NULL;
+				sdata[i] = nullptr;
 				
 			}else{
 				pSources[i]->SkipSound(instance, stateData, samples, curveOffset, curveFactor);
@@ -221,7 +221,7 @@ char *stateData, float *buffer, int samples, float curveOffset, float curveFacto
 		for(i=0; i<pSourceCount; i++){
 			if(sdata[i]){
 				sharedBufferList.ReleaseBuffer(sdata[i]);
-				sdata[i] = NULL;
+				sdata[i] = nullptr;
 			}
 		}
 		throw;
@@ -281,7 +281,7 @@ char *stateData, float *buffer, int samples, float curveOffset, float curveFacto
 		for(i=0; i<pSourceCount; i++){
 			if(sdata[i]){
 				sharedBufferList.ReleaseBuffer(sdata[i]);
-				sdata[i] = NULL;
+				sdata[i] = nullptr;
 				
 			}else{
 				pSources[i]->SkipSound(instance, stateData, samples, curveOffset, curveFactor);
@@ -292,7 +292,7 @@ char *stateData, float *buffer, int samples, float curveOffset, float curveFacto
 		for(i=0; i<pSourceCount; i++){
 			if(sdata[i]){
 				sharedBufferList.ReleaseBuffer(sdata[i]);
-				sdata[i] = NULL;
+				sdata[i] = nullptr;
 			}
 		}
 		throw;
@@ -353,6 +353,6 @@ void desynSynthesizerSourceGroup::pClearSources(){
 	}
 	delete [] pSources;
 	
-	pSources = NULL;
+	pSources = nullptr;
 	pSourceCount = 0;
 }

@@ -39,13 +39,13 @@
 //////////////////////////////
 
 decShapeList::decShapeList() :
-pShapes(NULL),
+pShapes(nullptr),
 pCount(0),
 pSize(0){
 }
 
 decShapeList::decShapeList(const decShapeList &copy) :
-pShapes(NULL),
+pShapes(nullptr),
 pCount(0),
 pSize(0)
 {

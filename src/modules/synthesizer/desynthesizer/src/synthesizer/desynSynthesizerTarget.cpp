@@ -44,7 +44,7 @@
 
 desynSynthesizerTarget::desynSynthesizerTarget(const desynSynthesizer &synthesizer,
 int firstLink, const deSynthesizerControllerTarget &target) :
-pLinks(NULL),
+pLinks(nullptr),
 pLinkCount(0)
 {
 	const decTList<int> &links = target.GetLinks();

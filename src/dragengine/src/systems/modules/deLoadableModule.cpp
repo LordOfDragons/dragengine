@@ -59,7 +59,7 @@ pNoCompress(false),
 
 pEnabled(true),
 
-pModule(NULL),
+pModule(nullptr),
 pLockCount(0),
 
 pErrorCode(eecSuccess)
@@ -157,7 +157,7 @@ void deLoadableModule::SetModule(deBaseModule *module){
 }
 
 bool deLoadableModule::IsLoaded() const{
-	return pModule != NULL;
+	return pModule != nullptr;
 }
 
 void deLoadableModule::SetErrorCode(int code){

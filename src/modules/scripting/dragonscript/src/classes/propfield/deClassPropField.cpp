@@ -232,7 +232,7 @@ void deClassPropField::nfGetListener::RunFunction(dsRunTime *rt, dsValue *myself
 		rt->PushObject(peer->GetCallback(), clsPF->GetDS()->GetClassPropFieldListener());
 		
 	}else{
-		rt->PushObject(NULL, clsPF->GetDS()->GetClassPropFieldListener());
+		rt->PushObject(nullptr, clsPF->GetDS()->GetClassPropFieldListener());
 	}
 }
 
@@ -365,7 +365,7 @@ void deClassPropField::PushPropField(dsRunTime *rt, dePropField *propfield){
 	if(!rt) DSTHROW(dueInvalidParam);
 	
 	if(!propfield){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

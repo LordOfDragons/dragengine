@@ -40,7 +40,7 @@
 ////////////////////////////
 
 deSynthesizerEffectVisitorIdentify::deSynthesizerEffectVisitorIdentify() :
-pEffect(NULL),
+pEffect(nullptr),
 pType(eetUnknown){
 }
 
@@ -60,7 +60,7 @@ deSynthesizerEffectStretch &deSynthesizerEffectVisitorIdentify::CastToStretch() 
 }
 
 void deSynthesizerEffectVisitorIdentify::Reset(){
-	pEffect = NULL;
+	pEffect = nullptr;
 	pType = eetUnknown;
 }
 

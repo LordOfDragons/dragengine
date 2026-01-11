@@ -59,10 +59,10 @@
 /////////////////////////////////////////////
 
 deoglSCBuildConstructed::sContext::sContext() :
-parent(NULL),
-child(NULL),
+parent(nullptr),
+child(nullptr),
 root(this),
-mask(NULL),
+mask(nullptr),
 clipTo(0, 0, 1),
 transparency(1.0f),
 gamma(1.0f){
@@ -70,9 +70,9 @@ gamma(1.0f){
 
 deoglSCBuildConstructed::sContext::sContext(const deSkinPropertyNode &node, sContext *pparent) :
 parent(pparent),
-child(NULL),
+child(nullptr),
 root(pparent ? pparent->root : this),
-mask(NULL)
+mask(nullptr)
 {
 	const decPoint sizeAbs(abs(node.GetSize().x), abs(node.GetSize().y));
 	clamp.x = decMath::max(sizeAbs.x - 1, 0);
@@ -150,8 +150,8 @@ targetBlue(100),
 targetAlpha(100),
 
 pixBufComponentCount(0),
-pixBufDataFloat(NULL),
-pixBufDataByte(NULL),
+pixBufDataFloat(nullptr),
+pixBufDataByte(nullptr),
 pixBufWidth(0),
 pixBufHeight(0),
 pixBufDepth(0),
@@ -170,8 +170,8 @@ tileY(false){
 
 deoglSCBuildConstructed::deoglSCBuildConstructed(deoglSkinChannel &channel) :
 pChannel(channel),
-pContext(NULL),
-pTarget(NULL){
+pContext(nullptr),
+pTarget(nullptr){
 }
 
 deoglSCBuildConstructed::~deoglSCBuildConstructed(){
@@ -202,7 +202,7 @@ int targetRed, int targetGreen, int targetBlue, int targetAlpha){
 	pTarget = &target;
 	pFillBackground(property.GetColor());
 	
-	sContext context(property.GetContent(), NULL);
+	sContext context(property.GetContent(), nullptr);
 	if(context.localClipTo.z > target.pixBufDepth){
 		context.localClipTo.z = target.pixBufDepth;
 	}
@@ -212,8 +212,8 @@ int targetRed, int targetGreen, int targetBlue, int targetAlpha){
 	
 	pContext = &context;
 	property.GetContent().Visit(*this);
-	pContext = NULL;
-	pTarget = NULL;
+	pContext = nullptr;
+	pTarget = nullptr;
 	
 	return true;
 }
@@ -576,49 +576,49 @@ bool deoglSCBuildConstructed::pInitPixelBuffer(sTarget &target){
 	switch(pixelBuffer.GetFormat()){
 	case deoglPixelBuffer::epfByte1:
 		target.pixBufComponentCount = 1;
-		target.pixBufDataFloat = NULL;
+		target.pixBufDataFloat = nullptr;
 		target.pixBufDataByte = (GLubyte*)pixelBuffer.GetPointer();
 		break;
 		
 	case deoglPixelBuffer::epfByte2:
 		target.pixBufComponentCount = 2;
-		target.pixBufDataFloat = NULL;
+		target.pixBufDataFloat = nullptr;
 		target.pixBufDataByte = (GLubyte*)pixelBuffer.GetPointer();
 		break;
 		
 	case deoglPixelBuffer::epfByte3:
 		target.pixBufComponentCount = 3;
-		target.pixBufDataFloat = NULL;
+		target.pixBufDataFloat = nullptr;
 		target.pixBufDataByte = (GLubyte*)pixelBuffer.GetPointer();
 		break;
 		
 	case deoglPixelBuffer::epfByte4:
 		target.pixBufComponentCount = 4;
-		target.pixBufDataFloat = NULL;
+		target.pixBufDataFloat = nullptr;
 		target.pixBufDataByte = (GLubyte*)pixelBuffer.GetPointer();
 		break;
 		
 	case deoglPixelBuffer::epfFloat1:
 		target.pixBufComponentCount = 1;
-		target.pixBufDataByte = NULL;
+		target.pixBufDataByte = nullptr;
 		target.pixBufDataFloat = (GLfloat*)pixelBuffer.GetPointer();
 		break;
 		
 	case deoglPixelBuffer::epfFloat2:
 		target.pixBufComponentCount = 2;
-		target.pixBufDataByte = NULL;
+		target.pixBufDataByte = nullptr;
 		target.pixBufDataFloat = (GLfloat*)pixelBuffer.GetPointer();
 		break;
 		
 	case deoglPixelBuffer::epfFloat3:
 		target.pixBufComponentCount = 3;
-		target.pixBufDataByte = NULL;
+		target.pixBufDataByte = nullptr;
 		target.pixBufDataFloat = (GLfloat*)pixelBuffer.GetPointer();
 		break;
 		
 	case deoglPixelBuffer::epfFloat4:
 		target.pixBufComponentCount = 4;
-		target.pixBufDataByte = NULL;
+		target.pixBufDataByte = nullptr;
 		target.pixBufDataFloat = (GLfloat*)pixelBuffer.GetPointer();
 		break;
 		

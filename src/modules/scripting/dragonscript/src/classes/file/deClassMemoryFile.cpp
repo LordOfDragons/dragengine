@@ -264,7 +264,7 @@ void deClassMemoryFile::PushMemoryFile(dsRunTime *rt, decMemoryFile *memoryFile)
 	}
 	
 	if(!memoryFile){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

@@ -97,7 +97,7 @@ pBuffer(0),
 pFormat(0),
 pValid(false),
 
-pStreamData(NULL),
+pStreamData(nullptr),
 pStreamDataSize(0),
 pStreaming(true),
 pIsUsed(false),
@@ -205,7 +205,7 @@ void deoalASound::pCleanUp(){
 	
 	// delayed deletion
 	if(pBuffer){
-		deoalASoundDeletion *delayedDeletion = NULL;
+		deoalASoundDeletion *delayedDeletion = nullptr;
 		
 		try{
 			delayedDeletion = new deoalASoundDeletion;
@@ -259,7 +259,7 @@ void deoalASound::pLoadFromCache(){
 		// check file modification times to reject the cached file if the source model changed
 		if(header.filetime != (uint64_t)vfs.GetFileModificationTime(path)){
 			// cache file outdated
-			reader = NULL;
+			reader = nullptr;
 			cacheSound.Delete(pFilename);
 			caches.Unlock();
 			
@@ -273,7 +273,7 @@ void deoalASound::pLoadFromCache(){
 		// check cache version in case we upgraded
 		if(header.version != CACHE_VERSION){
 			// cache file outdated
-			reader = NULL;
+			reader = nullptr;
 			cacheSound.Delete(pFilename);
 			caches.Unlock();
 			
@@ -291,7 +291,7 @@ void deoalASound::pLoadFromCache(){
 		|| (int)header.sampleRate != pSampleRate
 		|| (ALenum)header.format != pFormat){
 			// cache file outdated
-			reader = NULL;
+			reader = nullptr;
 			cacheSound.Delete(pFilename);
 			caches.Unlock();
 			
@@ -314,7 +314,7 @@ void deoalASound::pLoadFromCache(){
 		}
 		
 		// done
-		reader = NULL;
+		reader = nullptr;
 		
 		pIsUsed = (header.flags & FLAG_IS_USED) == FLAG_IS_USED;
 		pIsCached = true;

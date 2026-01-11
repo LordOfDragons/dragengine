@@ -57,16 +57,16 @@
 
 deoglRTBufferObject::deoglRTBufferObject(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
-pShapeManager(NULL),
-pSharedVBOListList(NULL),
+pShapeManager(nullptr),
+pSharedVBOListList(nullptr),
 
 pInstanceArraySizeUBO(0),
 pInstanceArraySizeSSBO(0),
 
-pBillboardSPBListUBO(NULL),
+pBillboardSPBListUBO(nullptr),
 pBillboardRTIGroups(deoglSharedSPBRTIGroupList::Ref::New(renderThread)),
 
-pTemporaryVBOData(NULL),
+pTemporaryVBOData(nullptr),
 pTemporaryVBODataSize(0)
 {
 	memset(pSharedVBOListByType, '\0', sizeof(pSharedVBOListByType));
@@ -116,7 +116,7 @@ char *deoglRTBufferObject::GetTemporaryVBOData(int size){
 	if(size > pTemporaryVBODataSize){
 		if(pTemporaryVBOData){
 			delete [] pTemporaryVBOData;
-			pTemporaryVBOData = NULL;
+			pTemporaryVBOData = nullptr;
 			pTemporaryVBODataSize = 0;
 		}
 		
@@ -711,7 +711,7 @@ void deoglRTBufferObject::pCreateSharedVBOLists(){
 }
 
 void deoglRTBufferObject::pCreateShapes(){
-	deoglShape *shape = NULL;
+	deoglShape *shape = nullptr;
 	int i;
 	
 	pShapeManager = new deoglShapeManager;
@@ -719,19 +719,19 @@ void deoglRTBufferObject::pCreateShapes(){
 	try{
 		shape = new deoglShapeSphere(pRenderThread);
 		pShapeManager->AddShape(shape);
-		shape = NULL;
+		shape = nullptr;
 		
 		shape = new deoglShapeBox(pRenderThread);
 		pShapeManager->AddShape(shape);
-		shape = NULL;
+		shape = nullptr;
 		
 		shape = new deoglShapeCylinder(pRenderThread);
 		pShapeManager->AddShape(shape);
-		shape = NULL;
+		shape = nullptr;
 		
 		shape = new deoglShapeCapsule(pRenderThread);
 		pShapeManager->AddShape(shape);
-		shape = NULL;
+		shape = nullptr;
 		
 	}catch(const deException &){
 		if(shape){

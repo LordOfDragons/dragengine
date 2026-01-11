@@ -104,7 +104,7 @@ void deRLTaskReadRig::Finished(){
 	LogFinishedEnter();
 	if(!pSucceeded){
 		SetState(esFailed);
-		pRig = NULL;
+		pRig = nullptr;
 		LogFinishedExit();
 		GetResourceLoader().FinishTask(this);
 		return;

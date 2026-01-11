@@ -83,7 +83,7 @@ void deThread::Start(){
 	if(!pCreated){
 		pCreated = true;
 		pRunning = true;
-		if(pthread_create(&pThread, NULL, deThread::pThreadRunner, this) != 0){
+		if(pthread_create(&pThread, nullptr, deThread::pThreadRunner, this) != 0){
 			pCreated = false;
 			pRunning = false;
 			DETHROW(deeOutOfMemory);
@@ -141,7 +141,7 @@ void deThread::Stop(){
 		#endif
 	}
 	if(pCreated){
-		if(pthread_join(pThread, NULL) != 0) DETHROW(deeInvalidAction);
+		if(pthread_join(pThread, nullptr) != 0) DETHROW(deeInvalidAction);
 		pCreated = false;
 		pRunning = false; // just to make sure
 	}
@@ -169,7 +169,7 @@ void deThread::WaitForExit(){
 	// unix, beos
 	#if defined OS_UNIX || defined OS_BEOS
 	if(IsRunning() && pCreated){
-		if(pthread_join(pThread, NULL) != 0) DETHROW(deeInvalidAction);
+		if(pthread_join(pThread, nullptr) != 0) DETHROW(deeInvalidAction);
 		pCreated = false;
 		pRunning = false; // just to make sure
 	}
@@ -231,7 +231,7 @@ DWORD WINAPI deThread::pThreadRunner(LPVOID parameter)
 	thread->pMutexState.Unlock();
 	
 #if defined OS_UNIX || defined OS_BEOS
-	return NULL;
+	return nullptr;
 #endif
 #ifdef OS_W32
 	return 0;

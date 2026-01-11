@@ -73,18 +73,18 @@
 /////////////////////////////////
 
 dedaiPathFinderNavMesh::dedaiPathFinderNavMesh() :
-pWorld(NULL),
-pNavigator(NULL),
+pWorld(nullptr),
+pNavigator(nullptr),
 
-pStartFace(NULL),
-pEndFace(NULL),
+pStartFace(nullptr),
+pEndFace(nullptr),
 
-pPathPoints(NULL),
+pPathPoints(nullptr),
 pPathPointCount(0),
 pPathPointSize(0),
 
-pDDSListOpen(NULL),
-pDDSListClosed(NULL){
+pDDSListOpen(nullptr),
+pDDSListClosed(nullptr){
 }
 
 dedaiPathFinderNavMesh::~dedaiPathFinderNavMesh(){
@@ -164,7 +164,7 @@ void dedaiPathFinderNavMesh::UpdateDDSShapeFaces(deDebugDrawerShape &dds){
 	
 	if(pPathFaces.GetCount() > 0){
 		const decDMatrix matrix = decDMatrix::CreateTranslation(-pStartPoint);
-		deDebugDrawerShapeFace *ddsFace = NULL;
+		deDebugDrawerShapeFace *ddsFace = nullptr;
 		const int count = pPathFaces.GetCount();
 		int i, j;
 		
@@ -185,7 +185,7 @@ void dedaiPathFinderNavMesh::UpdateDDSShapeFaces(deDebugDrawerShape &dds){
 					}
 					ddsFace->SetNormal(face.GetNormal());
 					dds.AddFace(ddsFace);
-					ddsFace = NULL;
+					ddsFace = nullptr;
 				}
 			}
 			
@@ -249,15 +249,15 @@ void dedaiPathFinderNavMesh::pFindFacePath(){
 	pStartFace = pNavigator->GetLayer()->GetMeshFaceClosestTo(pStartPoint, distance);
 	
 	if(distance > maxOutsideDistance){
-		pStartFace = NULL;
-		pEndFace = NULL;
+		pStartFace = nullptr;
+		pEndFace = nullptr;
 		
 	}else{
 		pEndFace = pNavigator->GetLayer()->GetMeshFaceClosestTo(pEndPoint, distance);
 		
 		if(distance > maxOutsideDistance){
-			pStartFace = NULL;
-			pEndFace = NULL;
+			pStartFace = nullptr;
+			pEndFace = nullptr;
 		}
 	}
 	
@@ -285,7 +285,7 @@ void dedaiPathFinderNavMesh::pFindFacePath(){
 		const decDVector targetStart = pStartFace->GetMesh()->GetSpace().GetMatrix() * pStartFace->GetCenter();
 		
 		pListOpen.Add(pStartFace);
-		pStartFace->SetPathParent(NULL);
+		pStartFace->SetPathParent(nullptr);
 		pStartFace->SetPathCostG(0.0f);
 		pStartFace->SetPathCostH((float)((targetEnd - targetStart).Length()));
 		pStartFace->SetPathCostF(pStartFace->GetPathCostH());
@@ -319,7 +319,7 @@ void dedaiPathFinderNavMesh::pFindFacePath(){
 				
 				// determine if this edge leads somewhere. this can be inside the same navigation mesh if the edge has
 				// a second face assigned or inside another navigation mesh if the corner has a link
-				nextFace = NULL;
+				nextFace = nullptr;
 // 				linkedCorner = 0;
 				
 				if(edge.GetFace2() == -1){
@@ -518,7 +518,7 @@ void dedaiPathFinderNavMesh::pFindFacePath(){
 			
 			faceCount = pListOpen.GetCount();
 			if(faceCount == 0){
-				testFace = NULL;
+				testFace = nullptr;
 				
 			}else{
 				testFace = (dedaiSpaceMeshFace*)pListOpen.GetAt(faceCount - 1);
@@ -571,7 +571,7 @@ void dedaiPathFinderNavMesh::pFindFacePath(){
 			while(nextFace){
 				faceCount++;
 				nextFace = nextFace->GetPathParent();
-				pPathFaces.Add(NULL);
+				pPathFaces.Add(nullptr);
 			}
 			
 			for(faceCount--; faceCount>=0; faceCount--){
@@ -689,7 +689,7 @@ void dedaiPathFinderNavMesh::pFindRealPath(){
 				vertexRight = vertexLeft;
 				
 				// stop compiler complaining about potentially unused variables as they are not
-				nextFace = NULL;
+				nextFace = nullptr;
 				curFaceEdge = 0;
 #ifdef DEBUG
 				DL = 0;
@@ -1101,7 +1101,7 @@ void dedaiPathFinderNavMesh::pUpdateDDSListOpen(){
 	if(pListOpen.GetCount() > 0){
 		dedaiSpace &space = ((dedaiSpaceMeshFace*)pListOpen.GetAt(0))->GetMesh()->GetSpace();
 		const decDMatrix &invMatrix = space.GetInverseMatrix();
-		deDebugDrawerShapeFace *ddsFace = NULL;
+		deDebugDrawerShapeFace *ddsFace = nullptr;
 		const int count = pListOpen.GetCount();
 		int i, j;
 		
@@ -1125,7 +1125,7 @@ void dedaiPathFinderNavMesh::pUpdateDDSListOpen(){
 					}
 					ddsFace->SetNormal(face.GetNormal());
 					pDDSListOpen->AddFace(ddsFace);
-					ddsFace = NULL;
+					ddsFace = nullptr;
 				}
 			}
 			
@@ -1149,7 +1149,7 @@ void dedaiPathFinderNavMesh::pUpdateDDSListClosed(){
 	if(pListClosed.GetCount() > 0){
 		dedaiSpace &navspace = ((dedaiSpaceMeshFace*)pListClosed.GetAt(0))->GetMesh()->GetSpace();
 		const decDMatrix &invMatrix = navspace.GetInverseMatrix();
-		deDebugDrawerShapeFace *ddsFace = NULL;
+		deDebugDrawerShapeFace *ddsFace = nullptr;
 		const int count = pListClosed.GetCount();
 		int i, j;
 		
@@ -1173,7 +1173,7 @@ void dedaiPathFinderNavMesh::pUpdateDDSListClosed(){
 					}
 					ddsFace->SetNormal(face.GetNormal());
 					pDDSListClosed->AddFace(ddsFace);
-					ddsFace = NULL;
+					ddsFace = nullptr;
 				}
 			}
 			

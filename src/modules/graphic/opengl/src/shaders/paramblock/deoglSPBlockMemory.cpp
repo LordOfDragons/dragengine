@@ -45,13 +45,13 @@
 
 deoglSPBlockMemory::deoglSPBlockMemory(deoglRenderThread &renderThread) :
 deoglShaderParameterBlock(renderThread),
-pBuffer(NULL),
+pBuffer(nullptr),
 pBufferCapacity(0){
 }
 
 deoglSPBlockMemory::deoglSPBlockMemory(const deoglSPBlockMemory &paramBlock) :
 deoglShaderParameterBlock(paramBlock),
-pBuffer(NULL),
+pBuffer(nullptr),
 pBufferCapacity(0){
 }
 

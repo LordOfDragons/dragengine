@@ -174,7 +174,7 @@ void deClassSky::nfGetControllerNamed::RunFunction(dsRunTime *rt, dsValue *mysel
 	const int index = sky->IndexOfControllerNamed(rt->GetValue(0)->GetString());
 	
 	if(index == -1){
-		rt->PushObject(NULL, ds.GetClassSkyController());
+		rt->PushObject(nullptr, ds.GetClassSkyController());
 		
 	}else{
 		ds.GetClassSkyController()->PushController(rt, sky, index);
@@ -400,7 +400,7 @@ void deClassSky::PushSky(dsRunTime *rt, deSky *sky){
 	}
 	
 	if(!sky){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

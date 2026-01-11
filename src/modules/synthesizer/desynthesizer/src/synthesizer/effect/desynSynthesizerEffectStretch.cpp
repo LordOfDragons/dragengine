@@ -102,8 +102,8 @@ int desynSynthesizerEffectStretch::StateDataSize(int offset){
 
 void desynSynthesizerEffectStretch::InitStateData(char *stateData){
 	sStateData& sdata = *((sStateData*)(stateData + GetStateDataOffset()));
-	sdata.stouch = NULL;
-	sdata.inputBuffer = NULL;
+	sdata.stouch = nullptr;
+	sdata.inputBuffer = nullptr;
 	
 	const int sampleRate = GetSynthesizer().GetSynthesizer().GetSampleRate();
 	const int channelCount = GetSynthesizer().GetSynthesizer().GetChannelCount();
@@ -130,12 +130,12 @@ void desynSynthesizerEffectStretch::CleanUpStateData(char *stateData){
 	
 	if(sdata.stouch){
 		delete sdata.stouch;
-		sdata.stouch = NULL;
+		sdata.stouch = nullptr;
 	}
 	
 	if(sdata.inputBuffer){
 		delete [] sdata.inputBuffer;
-		sdata.inputBuffer = NULL;
+		sdata.inputBuffer = nullptr;
 	}
 }
 

@@ -99,7 +99,7 @@ pRestrictedImageBufferFormats(false)
 	
 	OGL_CHECK(renderThread, pglEnableVertexAttribArray(0));
 	OGL_CHECK(renderThread, pglVertexAttribPointer(0, 2, GL_FLOAT,
-		GL_FALSE, 0, (const GLvoid *)0));
+		GL_FALSE, 0, (const GLvoid *)nullptr));
 	
 	OGL_CHECK(renderThread, pglBindBuffer(GL_ARRAY_BUFFER, 0));
 	OGL_CHECK(renderThread, pglBindVertexArray(0));

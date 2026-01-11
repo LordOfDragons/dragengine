@@ -78,7 +78,7 @@ deBaseModule *FBXModelCreateModule(deLoadableModule *loadableModule){
 		return new fbxModelModule(*loadableModule);
 		
 	}catch(const deException &){
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -92,7 +92,7 @@ deBaseModule *FBXModelCreateModule(deLoadableModule *loadableModule){
 
 fbxModelModule::fbxModelModule(deLoadableModule &loadableModule) :
 deBaseModelModule(loadableModule),
-pCacheTCSorter(NULL)
+pCacheTCSorter(nullptr)
 {
 	//pCacheTCSorter = new deCacheHelper( &GetVFS(), decPath::CreatePathUnix( "/cache/local/tcsorter" ) );
 	
@@ -168,7 +168,7 @@ void fbxModelModule::pLoadModel(deModel &model, fbxScene &scene){
 	}
 	
 	// create and add lod
-	deModelLOD *modelLod = NULL;
+	deModelLOD *modelLod = nullptr;
 	
 	try{
 		modelLod = new deModelLOD;
@@ -190,7 +190,7 @@ void fbxModelModule::pLoadModelBones(deModel &model, const fbxRig &rig){
 }
 
 void fbxModelModule::pLoadModelBone(deModel &model, const fbxRigBone &rigBone){
-	deModelBone *bone = NULL;
+	deModelBone *bone = nullptr;
 	try{
 		bone = new deModelBone(rigBone.GetName());
 		bone->SetPosition(rigBone.GetPosition());
@@ -232,7 +232,7 @@ void fbxModelModule::pLoadModelTexture(deModel &model, const fbxModel &loadModel
 	const int width = 1024;
 	const int height = 1024;
 	
-	deModelTexture *texture = NULL;
+	deModelTexture *texture = nullptr;
 	try{
 		texture = new deModelTexture(name, width, height);
 		texture->SetDecalOffset(model.GetTextureCount());
@@ -337,8 +337,8 @@ const fbxModel &loadModel, const fbxRig *loadRig){
 	const fbxNode * const nodeLayerUVs = nodeGeometry.FirstNodeNamedOrNull("LayerElementUV");
 	fbxScene::eMappingInformationType uvMit = fbxScene::emitByVertex;
 	fbxScene::eReferenceInformationType uvRit = fbxScene::eritDirect;
-	const fbxProperty *propUVIndex = NULL;
-	const fbxProperty *propUV = NULL;
+	const fbxProperty *propUVIndex = nullptr;
+	const fbxProperty *propUV = nullptr;
 	
 	if(nodeLayerUVs){
 		uvMit = fbxScene::ConvMappingInformationType(*nodeLayerUVs);
@@ -518,7 +518,7 @@ const fbxModel &loadModel, const fbxRig *loadRig){
 
 void fbxModelModule::pEnsureTextureIndex(deModel &model, int count){
 	while(count >= model.GetTextureCount()){
-		deModelTexture *texture = NULL;
+		deModelTexture *texture = nullptr;
 		decString baseName("material");
 		decString name(baseName);
 		int number = 1;

@@ -84,15 +84,15 @@ deoglOptimizerLight::deoglOptimizerLight(deoglRLight *light, deoglWorld *world){
 	
 	pDoOptimizeLightVolume = true;
 	pCropStage = ecsBuildTriangleList;
-	pTriangleSorter = NULL;
-	pConvexVolumeList = NULL;
+	pTriangleSorter = nullptr;
+	pConvexVolumeList = nullptr;
 	pMaxVolumeCount = 30;
 	
 	pDoOptimizeShadowCaster = false; //true;
 	pCasterStage = easBuildCollideList;
-	pFinalCollideList = NULL;
-	pCollideList = NULL;
-	pShadowCaster = NULL;
+	pFinalCollideList = nullptr;
+	pCollideList = nullptr;
+	pShadowCaster = nullptr;
 	
 	try{
 		pTriangleSorter = new deoglTriangleSorter;
@@ -233,7 +233,7 @@ void deoglOptimizerLight::pBuildTriangleList(){
 }
 
 void deoglOptimizerLight::pPrepareCroping(){
-	decConvexVolume *volume = NULL;
+	decConvexVolume *volume = nullptr;
 	float xn, yn, xf, yf;
 	float range;
 	float offset;
@@ -400,7 +400,7 @@ void deoglOptimizerLight::pPrepareCroping(){
 bool deoglOptimizerLight::pCropLightVolume(int timeSlice){
 	decConvexVolume splitVolume;
 	deoglDCollisionTriangle colTri;
-	decConvexVolumeFace *face = NULL;
+	decConvexVolumeFace *face = nullptr;
 	float projectionDistance;
 	decVector pf1, pf2, pf3;
 	decVector closestPoint;
@@ -490,7 +490,7 @@ bool deoglOptimizerLight::pCropLightVolume(int timeSlice){
 			pLight->ReplaceLightVolume(pConvexVolumeList);
 		}
 		
-		pConvexVolumeList = NULL;
+		pConvexVolumeList = nullptr;
 		return false;
 		
 	}
@@ -548,7 +548,7 @@ void deoglOptimizerLight::pSCBuildShadowCaster(){
 	
 	// replace the shadow caster int the light
 	pLight->ReplaceShadowCaster(pShadowCaster);
-	pShadowCaster = NULL;
+	pShadowCaster = nullptr;
 	
 	// our work is done now
 	pCasterStage = easDone;
@@ -561,7 +561,7 @@ decVector deoglOptimizerLight::pGetSectorOffset(const decVector &sectorSize, con
 }
 
 void deoglOptimizerLight::pVolumeAddFace(decConvexVolume *volume, int p1, int p2, int p3, const decVector &normal){
-	decConvexVolumeFace *face = NULL;
+	decConvexVolumeFace *face = nullptr;
 	decVector faceNormal;
 	
 	try{
@@ -584,7 +584,7 @@ void deoglOptimizerLight::pVolumeAddFace(decConvexVolume *volume, int p1, int p2
 }
 
 void deoglOptimizerLight::pVolumeAddFace(decConvexVolume *volume, int p1, int p2, int p3, int p4, const decVector &normal){
-	decConvexVolumeFace *face = NULL;
+	decConvexVolumeFace *face = nullptr;
 	decVector faceNormal;
 	
 	try{

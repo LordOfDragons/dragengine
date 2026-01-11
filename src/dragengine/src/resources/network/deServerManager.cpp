@@ -107,7 +107,7 @@ void deServerManager::SystemNetworkUnload(){
 	deServer *server = (deServer*)pServers.GetRoot();
 	
 	while(server){
-		server->SetPeerNetwork(NULL);
+		server->SetPeerNetwork(nullptr);
 		server = (deServer*)server->GetLLManagerNext();
 	}
 }
@@ -129,7 +129,7 @@ void deServerManager::SystemScriptingUnload(){
 	deServer *server = (deServer*)pServers.GetRoot();
 	
 	while(server){
-		server->SetPeerScripting(NULL);
+		server->SetPeerScripting(nullptr);
 		server = (deServer*)server->GetLLManagerNext();
 	}
 }

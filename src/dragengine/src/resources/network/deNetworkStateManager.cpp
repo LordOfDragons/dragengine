@@ -108,7 +108,7 @@ void deNetworkStateManager::SystemNetworkUnload(){
 	deNetworkState *state = (deNetworkState*)pStates.GetRoot();
 	
 	while(state){
-		state->SetPeerNetwork (NULL);
+		state->SetPeerNetwork (nullptr);
 		state = (deNetworkState*)state->GetLLManagerNext();
 	}
 }
@@ -130,7 +130,7 @@ void deNetworkStateManager::SystemScriptingUnload(){
 	deNetworkState *state = (deNetworkState*)pStates.GetRoot();
 	
 	while(state){
-		state->SetPeerScripting(NULL);
+		state->SetPeerScripting(nullptr);
 		state = (deNetworkState*)state->GetLLManagerNext();
 	}
 }

@@ -52,23 +52,23 @@
 deoglSkinRendered::deoglSkinRendered(deoglRenderThread &renderThread, deoglRComponent &component) :
 pRenderThread(renderThread),
 pOwnerComponent(&component),
-pOwnerBillboard(NULL),
-pOwnerDecal(NULL),
+pOwnerBillboard(nullptr),
+pOwnerDecal(nullptr),
 pDirty(true){
 }
 
 deoglSkinRendered::deoglSkinRendered(deoglRenderThread &renderThread, deoglRBillboard &billboard) :
 pRenderThread(renderThread),
-pOwnerComponent(NULL),
+pOwnerComponent(nullptr),
 pOwnerBillboard(&billboard),
-pOwnerDecal(NULL),
+pOwnerDecal(nullptr),
 pDirty(true){
 }
 
 deoglSkinRendered::deoglSkinRendered(deoglRenderThread &renderThread, deoglRDecal &decal) :
 pRenderThread(renderThread),
-pOwnerComponent(NULL),
-pOwnerBillboard(NULL),
+pOwnerComponent(nullptr),
+pOwnerBillboard(nullptr),
 pOwnerDecal(&decal),
 pDirty(true){
 }
@@ -93,7 +93,7 @@ deoglRSkin *deoglSkinRendered::GetOwnerSkin() const{
 		return pOwnerDecal->GetSkin();
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 

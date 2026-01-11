@@ -56,15 +56,15 @@ deModel::deModel(deModelManager *manager, deVirtualFileSystem *vfs, const char *
 	TIME_SYSTEM modificationTime) :
 deFileResource(manager, vfs, filename, modificationTime),
 
-pBones(NULL),
+pBones(nullptr),
 pBoneCount(0),
 pBoneSize(0),
 
-pTextures(NULL),
+pTextures(nullptr),
 pTextureCount(0),
 pTextureSize(0),
 
-pLODs(NULL),
+pLODs(nullptr),
 pLODCount(0),
 pLODSize(0),
 
@@ -72,23 +72,23 @@ pVertexPositionSets(nullptr),
 pVertexPositionSetCount(0),
 pVertexPositionSetSize(0),
 
-pPeerGraphic (NULL),
-pPeerPhysics (NULL),
-pPeerAudio (NULL){
+pPeerGraphic (nullptr),
+pPeerPhysics (nullptr),
+pPeerAudio (nullptr){
 }
 
 deModel::~deModel(){
 	if(pPeerAudio){
 		delete pPeerAudio;
-		pPeerAudio = NULL;
+		pPeerAudio = nullptr;
 	}
 	if(pPeerPhysics){
 		delete pPeerPhysics;
-		pPeerPhysics = NULL;
+		pPeerPhysics = nullptr;
 	}
 	if(pPeerGraphic){
 		delete pPeerGraphic;
-		pPeerGraphic = NULL;
+		pPeerGraphic = nullptr;
 	}
 	
 	if(pLODs){
@@ -455,7 +455,7 @@ void deModel::pCalcBoneMatrices(){
 		return;
 	}
 	
-	bool *calculated = NULL;
+	bool *calculated = nullptr;
 	int i;
 	
 	try{

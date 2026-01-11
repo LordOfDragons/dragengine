@@ -50,7 +50,7 @@ int main(int argc, char **argv){
 	struct sigaction act;
 	memset(&act, '\0', sizeof(act));
 	act.sa_handler = SIG_IGN;
-	sigaction(SIGPIPE, &act, NULL);
+	sigaction(SIGPIPE, &act, nullptr);
 #endif
 	
 #ifdef OS_W32

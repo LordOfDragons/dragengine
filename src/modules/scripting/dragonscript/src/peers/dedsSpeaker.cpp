@@ -45,7 +45,7 @@
 dedsSpeaker::dedsSpeaker(deScriptingDragonScript &ds, deSpeaker *speaker) :
 pDS(ds),
 pSpeaker(speaker),
-pValueOwner(NULL)
+pValueOwner(nullptr)
 {
 	if(!speaker){
 		DSTHROW(dueInvalidParam);
@@ -72,7 +72,7 @@ dedsSpeaker::~dedsSpeaker(){
 		pDS.GetScriptEngine()->GetMainRunTime()->FreeValue(pValueOwner);
 	}
 	
-	pValueOwner = NULL;
+	pValueOwner = nullptr;
 }
 
 

@@ -40,7 +40,7 @@
 ////////////////////////////
 
 demdlWeightSet::demdlWeightSet(){
-	pWeights = NULL;
+	pWeights = nullptr;
 	pCount = 0;
 	pGroupedIndex = -1;
 }
@@ -129,7 +129,7 @@ void demdlWeightSet::SetGroupedIndex(int index){
 void demdlWeightSet::RemoveAll(){
 	if(pWeights){
 		delete [] pWeights;
-		pWeights = NULL;
+		pWeights = nullptr;
 		pCount = 0;
 	}
 }

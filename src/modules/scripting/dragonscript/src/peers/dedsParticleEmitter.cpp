@@ -75,7 +75,7 @@ dedsParticleEmitter::~dedsParticleEmitter(){
 		pDS->GetScriptEngine()->GetMainRunTime()->FreeValue(pValCB);
 	}
 	
-	pValCB = NULL;
+	pValCB = nullptr;
 	pHasCB = false;
 }
 

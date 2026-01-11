@@ -42,12 +42,12 @@
 
 deoglImposterBillboard::deoglImposterBillboard(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
-pChannelTextures(NULL)
+pChannelTextures(nullptr)
 {
 	int i;
 	pChannelTextures = new deoglArrayTexture*[deoglSkinChannel::CHANNEL_COUNT];
 	for(i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++){
-		pChannelTextures[i] = NULL;
+		pChannelTextures[i] = nullptr;
 	}
 }
 
@@ -96,7 +96,7 @@ void deoglImposterBillboard::EnableChannelTexture(int channel, bool enable){
 		}
 		
 		delete pChannelTextures[channel];
-		pChannelTextures[channel] = NULL;
+		pChannelTextures[channel] = nullptr;
 	}
 }
 
@@ -105,7 +105,7 @@ bool deoglImposterBillboard::IsChannelTextureEnabled(int channel) const{
 		DETHROW(deeInvalidParam);
 	}
 	
-	return pChannelTextures[channel] != NULL;
+	return pChannelTextures[channel] != nullptr;
 }
 
 

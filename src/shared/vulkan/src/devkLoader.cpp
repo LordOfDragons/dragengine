@@ -46,7 +46,7 @@ pVulkan(vulkan),
 #ifdef OS_BEOS
 pLibHandle(0)
 #else
-pLibHandle(NULL)
+pLibHandle(nullptr)
 #endif
 {
 	try{

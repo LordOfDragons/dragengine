@@ -61,7 +61,7 @@ void deClassAudioSystem::nfGetActiveMicrophone::RunFunction(dsRunTime *rt, dsVal
 		clsMic->PushMicrophone(rt, microphone);
 		
 	}else{
-		rt->PushObject(NULL, clsMic);
+		rt->PushObject(nullptr, clsMic);
 	}
 }
 
@@ -81,7 +81,7 @@ void deClassAudioSystem::nfSetActiveMicrophone::RunFunction(dsRunTime *rt, dsVal
 		audSys->SetActiveMicrophone(clsMic->GetMicrophone(object));
 		
 	}else{
-		audSys->SetActiveMicrophone(NULL);
+		audSys->SetActiveMicrophone(nullptr);
 	}
 }
 

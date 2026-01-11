@@ -40,8 +40,8 @@ deoglSPTreeNode::deoglSPTreeNode(const decVector &center, const decVector &halfS
 	pCenter = center;
 	pHalfSize = halfSize;
 	pSplitState = essNone;
-	pChildLeft = NULL;
-	pChildRight = NULL;
+	pChildLeft = nullptr;
+	pChildRight = nullptr;
 }
 
 deoglSPTreeNode::~deoglSPTreeNode(){
@@ -62,11 +62,11 @@ void deoglSPTreeNode::SetSplitState(int splitState){
 		
 		if(pChildRight){
 			delete pChildRight;
-			pChildRight = NULL;
+			pChildRight = nullptr;
 		}
 		if(pChildLeft){
 			delete pChildLeft;
-			pChildLeft = NULL;
+			pChildLeft = nullptr;
 		}
 		
 		if(splitState == essXAxis){

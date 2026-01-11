@@ -96,7 +96,7 @@ void deCaptureCanvasManager::SystemGraphicUnload(){
 	deCaptureCanvas *captureCanvas = (deCaptureCanvas*)pCaptureCanvas.GetRoot();
 	
 	while(captureCanvas){
-		captureCanvas->SetPeerGraphic(NULL);
+		captureCanvas->SetPeerGraphic(nullptr);
 		captureCanvas = (deCaptureCanvas*)captureCanvas->GetLLManagerNext();
 	}
 }

@@ -65,16 +65,16 @@ pRange(1.0f),
 pRollOff(1.0f),
 pDistanceOffset(0.0f),
 
-pPeerAudio(NULL),
-pPeerScripting(NULL),
+pPeerAudio(nullptr),
+pPeerScripting(nullptr),
 
-pParentWorld(NULL),
-pLLWorldPrev(NULL),
-pLLWorldNext(NULL),
+pParentWorld(nullptr),
+pLLWorldPrev(nullptr),
+pLLWorldNext(nullptr),
 
-pParentMicrophone(NULL),
-pLLMicrophonePrev(NULL),
-pLLMicrophoneNext(NULL)
+pParentMicrophone(nullptr),
+pLLMicrophonePrev(nullptr),
+pLLMicrophoneNext(nullptr)
 {
 	pLayerMask.SetBit(0);
 }

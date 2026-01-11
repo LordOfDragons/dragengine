@@ -507,7 +507,7 @@ void deClassARForeignState::CreateClassMembers(dsEngine *engine){
 
 deAnimatorRuleForeignState *deClassARForeignState::GetRule(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return dedsGetNativeData<sARFStaNatDat>(p_GetNativeData(myself->GetBuffer())).rule;
@@ -528,7 +528,7 @@ void deClassARForeignState::PushRule(dsRunTime *rt, deAnimator *animator, deAnim
 	}
 	
 	if(!rule){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

@@ -101,7 +101,7 @@ void deEnvMapProbeManager::SystemGraphicUnload(){
 	deEnvMapProbe *envMapProbe = (deEnvMapProbe*)pEnvMapProbes.GetRoot();
 	
 	while(envMapProbe){
-		envMapProbe->SetPeerGraphic(NULL);
+		envMapProbe->SetPeerGraphic(nullptr);
 		envMapProbe = (deEnvMapProbe*)envMapProbe->GetLLManagerNext();
 	}
 }

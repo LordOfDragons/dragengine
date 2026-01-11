@@ -105,7 +105,7 @@ void deParticleEmitterManager::SystemGraphicUnload(){
 	deParticleEmitter *psys = (deParticleEmitter*)pParticleEmitters.GetRoot();
 	
 	while(psys){
-		psys->SetPeerGraphic(NULL);
+		psys->SetPeerGraphic(nullptr);
 		psys = (deParticleEmitter*)psys->GetLLManagerNext();
 	}
 }
@@ -126,7 +126,7 @@ void deParticleEmitterManager::SystemPhysicsUnload(){
 	deParticleEmitter *psys = (deParticleEmitter*)pParticleEmitters.GetRoot();
 	
 	while(psys){
-		psys->SetPeerPhysics(NULL);
+		psys->SetPeerPhysics(nullptr);
 		psys = (deParticleEmitter*)psys->GetLLManagerNext();
 	}
 }

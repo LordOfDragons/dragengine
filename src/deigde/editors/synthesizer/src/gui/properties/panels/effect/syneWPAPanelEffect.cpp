@@ -155,7 +155,7 @@ class cActionEnable : public cBaseAction {
 public:
 	using Ref = deTObjectReference<cActionEnable>;
 	cActionEnable(syneWPAPanelEffect &panel) : cBaseAction(panel, "Enable effect",
-		NULL, "Determines if the effect is affecting the source"){ }
+		nullptr, "Determines if the effect is affecting the source"){ }
 	
 	igdeUndo::Ref OnAction(syneEffect *effect) override{
 		return syneUEffectToggleEnabled::Ref::New(effect);

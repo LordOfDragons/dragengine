@@ -48,7 +48,7 @@
 deoglCanvasImage::deoglCanvasImage(deGraphicOpenGl &ogl, deCanvasImage &canvas) :
 deoglCanvas(ogl, canvas),
 pCanvasImage(canvas),
-pImage(NULL),
+pImage(nullptr),
 pDirty(true){
 }
 
@@ -85,7 +85,7 @@ void deoglCanvasImage::SyncContentToRender(){
 			halfPixel.y = 0.5f / (float)rimage->GetHeight();
 			
 		}else{
-			pRCanvasImage->SetImage(NULL);
+			pRCanvasImage->SetImage(nullptr);
 		}
 		
 		const float repeatScaleU = (float)pCanvasImage.GetRepeatX();
@@ -101,7 +101,7 @@ void deoglCanvasImage::ImageRequiresSync(){
 }
 
 void deoglCanvasImage::DropImage(){
-	pImage = NULL;
+	pImage = nullptr;
 }
 
 
@@ -120,7 +120,7 @@ void deoglCanvasImage::ContentChanged(){
 		}
 		
 	}else{
-		pImage = NULL;
+		pImage = nullptr;
 	}
 	
 	pDirty = true;

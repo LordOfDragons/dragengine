@@ -50,10 +50,10 @@ decXpmImage::decXpmImage(const char *xpmData[], bool flip){
 	int x, y, c, line=0;
 	const char *lineData;
 	rgba *destData, *destLine;
-	colorEntry *colorTable = NULL;
+	colorEntry *colorTable = nullptr;
 	pWidth = 0;
 	pHeight = 0;
-	pData = NULL;
+	pData = nullptr;
 	try{
 		// image information
 		lineData = xpmData[line++];

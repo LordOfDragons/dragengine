@@ -86,7 +86,7 @@ void deRLTaskReadImage::Run(){
 	}
 	
 	const decPath vfsPath(decPath::CreatePathUnix(GetPath()));
-	deBaseImageInfo *infos = NULL;
+	deBaseImageInfo *infos = nullptr;
 	
 	try{
 		decBaseFileReader::Ref reader(GetVFS()->OpenFileForReading(vfsPath));
@@ -122,7 +122,7 @@ void deRLTaskReadImage::Finished(){
 	LogFinishedEnter();
 	if(!pSucceeded){
 		SetState(esFailed);
-		pImage = NULL;
+		pImage = nullptr;
 		LogFinishedExit();
 		GetResourceLoader().FinishTask(this);
 		return;

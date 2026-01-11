@@ -46,8 +46,8 @@
 deoglRLumimeter::deoglRLumimeter(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
 
-pParentWorld(NULL),
-pOctreeNode(NULL),
+pParentWorld(nullptr),
+pOctreeNode(nullptr),
 pDirtyOctree(true),
 
 pLuminance(0.0f),
@@ -82,7 +82,7 @@ void deoglRLumimeter::SetParentWorld(deoglRWorld *parentWorld){
 	
 	if(pOctreeNode){
 		pOctreeNode->RemoveLumimeter(this);
-		pOctreeNode = NULL;
+		pOctreeNode = nullptr;
 	}
 }
 
@@ -155,8 +155,8 @@ void deoglRLumimeter::UpdateMeasurements(){
 
 
 void deoglRLumimeter::PrepareQuickDispose(){
-	pParentWorld = NULL;
-	pOctreeNode = NULL;
+	pParentWorld = nullptr;
+	pOctreeNode = nullptr;
 }
 
 

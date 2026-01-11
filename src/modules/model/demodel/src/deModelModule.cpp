@@ -67,13 +67,13 @@ MOD_ENTRY_POINT_ATTR deBaseModule *DEModelCreateModule(deLoadableModule *loadabl
 #endif
 
 deBaseModule *DEModelCreateModule(deLoadableModule *loadableModule){
-	deBaseModule *module = NULL;
+	deBaseModule *module = nullptr;
 	
 	try{
 		module = new deModelModule(*loadableModule);
 		
 	}catch(const deException &){
-		return NULL;
+		return nullptr;
 	}
 	
 	return module;
@@ -110,7 +110,7 @@ struct sWeight{
 
 deModelModule::deModelModule(deLoadableModule &loadableModule) :
 deBaseModelModule(loadableModule){
-	pCacheTCSorter = NULL;
+	pCacheTCSorter = nullptr;
 	
 	// create cache
 	deVirtualFileSystem &vfs = GetVFS();
@@ -181,7 +181,7 @@ void deModelModule::pLoadVersion0(decBaseFileReader &reader, deModel &model){
 	decVector2 texPos;
 	deModelBone *bone;
 	deModelTexture *texture;
-	deModelLOD *lod = NULL;
+	deModelLOD *lod = nullptr;
 	int textureFlags;
 	float curWeight;
 	demdlTexCoordSorter texCoordSorter;
@@ -298,13 +298,13 @@ void deModelModule::pLoadVersion0(decBaseFileReader &reader, deModel &model){
 				
 				if(weightsIndex == -1){
 					weightSetList.Add(weightSet);
-					weightSet = NULL;
+					weightSet = nullptr;
 					
 					vertex.SetWeightSet(weightSetList.GetCount() - 1);
 					
 				}else{
 					delete weightSet;
-					weightSet = NULL;
+					weightSet = nullptr;
 					
 					vertex.SetWeightSet(weightsIndex);
 				}
@@ -621,7 +621,7 @@ void deModelModule::pLoadVersion0(decBaseFileReader &reader, deModel &model){
 void deModelModule::pLoadModel(decBaseFileReader &reader, deModel &model){
 	const char *signature = "Drag[en]gine Model";
 	demdlTexCoordSorter texCoordSorter;
-	deModelLOD *lod = NULL;
+	deModelLOD *lod = nullptr;
 	char sigbuf[18];
 	sModelInfos infos;
 	int i;
@@ -634,7 +634,7 @@ void deModelModule::pLoadModel(decBaseFileReader &reader, deModel &model){
 	
 	// read infos
 	infos.filename = reader.GetFilename();
-	infos.weightSetList = NULL;
+	infos.weightSetList = nullptr;
 	infos.vertexPositionSetCount = 0;
 	
 	infos.version = reader.ReadUShort();
@@ -892,7 +892,7 @@ void deModelModule::pLoadModel(decBaseFileReader &reader, deModel &model){
 }
 
 void deModelModule::pLoadBones(decBaseFileReader &reader, deModel &model, sModelInfos &infos){
-	deModelBone *bone = NULL;
+	deModelBone *bone = nullptr;
 	decString name;
 	int b, parent;
 	
@@ -915,7 +915,7 @@ void deModelModule::pLoadBones(decBaseFileReader &reader, deModel &model, sModel
 			bone->SetParent(parent);
 			
 			model.AddBone(bone);
-			bone = NULL;
+			bone = nullptr;
 		}
 		
 	}catch(const deException &){
@@ -927,7 +927,7 @@ void deModelModule::pLoadBones(decBaseFileReader &reader, deModel &model, sModel
 }
 
 void deModelModule::pLoadTextures(decBaseFileReader &reader, deModel &model, sModelInfos &infos){
-	deModelTexture *texture = NULL;
+	deModelTexture *texture = nullptr;
 	int t,  width, height;
 	decString name;
 	int textureFlags;
@@ -961,7 +961,7 @@ void deModelModule::pLoadTextures(decBaseFileReader &reader, deModel &model, sMo
 			}
 			
 			model.AddTexture(texture);
-			texture = NULL;
+			texture = nullptr;
 		}
 		
 	}catch(const deException &){
@@ -1018,7 +1018,7 @@ void deModelModule::pLoadVertPosSets(decBaseFileReader& reader, deModel& model, 
 }
 
 void deModelModule::pLoadWeights(decBaseFileReader &reader, sModelInfos &infos, deModelLOD &lodMesh){
-	demdlWeightSet *weightSet = NULL;
+	demdlWeightSet *weightSet = nullptr;
 	int w, b, boneCount;
 	float factor;
 	int bone;
@@ -1042,7 +1042,7 @@ void deModelModule::pLoadWeights(decBaseFileReader &reader, sModelInfos &infos, 
 			weightSet->Normalize();
 			
 			infos.weightSetList->Add(weightSet);
-			weightSet = NULL;
+			weightSet = nullptr;
 		}
 		
 	}catch(const deException &){

@@ -39,7 +39,7 @@
 ////////////////////////////
 
 deNetworkValueData::deNetworkValueData(int length) :
-pData(NULL),
+pData(nullptr),
 pLength(0)
 {
 	SetLength(length);
@@ -67,7 +67,7 @@ void deNetworkValueData::SetLength(int length){
 	
 	if(pData){
 		delete [] pData;
-		pData = NULL;
+		pData = nullptr;
 		pLength = 0;
 	}
 	

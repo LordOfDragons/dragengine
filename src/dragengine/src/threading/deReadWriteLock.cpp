@@ -42,7 +42,7 @@
 
 deReadWriteLock::deReadWriteLock(){
 	#if defined OS_UNIX || defined OS_BEOS
-	if(pthread_rwlock_init(&pRWLock, NULL) != 0){
+	if(pthread_rwlock_init(&pRWLock, nullptr) != 0){
 		DETHROW(deeOutOfMemory);
 	}
 	#endif

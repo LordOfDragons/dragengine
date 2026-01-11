@@ -37,8 +37,8 @@
 ////////////////////////////
 
 deoalDelayedDeletion::deoalDelayedDeletion() :
-pLLPrev(NULL),
-pLLNext(NULL){
+pLLPrev(nullptr),
+pLLNext(nullptr){
 }
 
 deoalDelayedDeletion::~deoalDelayedDeletion(){

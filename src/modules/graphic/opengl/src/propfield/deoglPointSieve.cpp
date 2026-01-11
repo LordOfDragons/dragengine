@@ -49,7 +49,7 @@ deoglPointSieve::deoglPointSieve(int bucketCountX, int bucketCountZ, float sieve
 	pSieveDivX = (float)bucketCountX / sieveSizeX;
 	pSieveDivZ = (float)bucketCountZ / sieveSizeZ;
 	
-	pBuckets = NULL;
+	pBuckets = nullptr;
 	pBucketCountX = bucketCountX;
 	pBucketCountZ = bucketCountZ;
 	pBucketCount = bucketCountX * bucketCountZ;

@@ -79,7 +79,7 @@ pHintMovement(emhStationary),
 pEnableGI(true),
 pHintGIImportance(4),
 
-pBones(NULL),
+pBones(nullptr),
 pBoneCount(0),
 
 pVertexPositionSetWeights(nullptr),
@@ -88,21 +88,21 @@ pVertexPositionSetCount(0),
 pBonesDirty(true),
 pMatrixDirty(false),
 
-pTextures(NULL),
+pTextures(nullptr),
 pTextureCount(0),
 
-pDecalRoot(NULL),
-pDecalTail(NULL),
+pDecalRoot(nullptr),
+pDecalTail(nullptr),
 pDecalCount(0),
 
-pPeerGraphic(NULL),
-pPeerPhysics(NULL),
-pPeerAudio(NULL),
-pPeerAnimator(NULL),
+pPeerGraphic(nullptr),
+pPeerPhysics(nullptr),
+pPeerAudio(nullptr),
+pPeerAnimator(nullptr),
 
-pParentWorld(NULL),
-pLLWorldPrev(NULL),
-pLLWorldNext(NULL)
+pParentWorld(nullptr),
+pLLWorldPrev(nullptr),
+pLLWorldNext(nullptr)
 {
 	pLayerMask.SetBit(0);
 	
@@ -217,7 +217,7 @@ void deComponent::SetModelKeepTextures(deModel* model){
 		return;
 	}
 	
-	deComponentTexture *textures = NULL;
+	deComponentTexture *textures = nullptr;
 	const int textureCount = pTextureCount;
 	const deModel::Ref oldModel(pModel); // guard reference
 	int i;
@@ -647,11 +647,11 @@ void deComponent::AddDecal(deDecal *decal){
 	if(pDecalTail){
 		pDecalTail->SetLLComponentNext(decal);
 		decal->SetLLComponentPrev(pDecalTail);
-		decal->SetLLComponentNext(NULL); // not required by definition, just to make sure...
+		decal->SetLLComponentNext(nullptr); // not required by definition, just to make sure...
 		
 	}else{
-		decal->SetLLComponentPrev(NULL); // not required by definition, just to make sure...
-		decal->SetLLComponentNext(NULL); // not required by definition, just to make sure...
+		decal->SetLLComponentPrev(nullptr); // not required by definition, just to make sure...
+		decal->SetLLComponentNext(nullptr); // not required by definition, just to make sure...
 		pDecalRoot = decal;
 	}
 	
@@ -690,9 +690,9 @@ void deComponent::RemoveDecal(deDecal *decal){
 	}
 	pDecalCount--;
 	
-	decal->SetParentComponent(NULL);
-	decal->SetLLComponentPrev(NULL);
-	decal->SetLLComponentNext(NULL);
+	decal->SetParentComponent(nullptr);
+	decal->SetLLComponentPrev(nullptr);
+	decal->SetLLComponentNext(nullptr);
 	
 	if(pPeerGraphic){
 		pPeerGraphic->DecalRemoved(decal);
@@ -710,14 +710,14 @@ void deComponent::RemoveDecal(deDecal *decal){
 void deComponent::RemoveAllDecals(){
 	while(pDecalTail){
 		deDecal * const next = pDecalTail->GetLLComponentPrev();
-		pDecalTail->SetParentComponent(NULL);
-		pDecalTail->SetLLComponentPrev(NULL);
-		pDecalTail->SetLLComponentNext(NULL);
+		pDecalTail->SetParentComponent(nullptr);
+		pDecalTail->SetLLComponentPrev(nullptr);
+		pDecalTail->SetLLComponentNext(nullptr);
 		pDecalTail->FreeReference();
 		pDecalTail = next;
 		pDecalCount--;
 	}
-	pDecalRoot = NULL;
+	pDecalRoot = nullptr;
 	
 	if(pPeerGraphic){
 		pPeerGraphic->AllDecalsRemoved();
@@ -885,10 +885,10 @@ void deComponent::pCleanUp(){
 		pAnimatorTask = nullptr;
 	}
 	
-	SetPeerAudio(NULL);
-	SetPeerPhysics(NULL);
-	SetPeerGraphic(NULL);
-	SetPeerAnimator(NULL);
+	SetPeerAudio(nullptr);
+	SetPeerPhysics(nullptr);
+	SetPeerGraphic(nullptr);
+	SetPeerAnimator(nullptr);
 	
 	RemoveAllDecals();
 	
@@ -970,7 +970,7 @@ void deComponent::pChangeRig(deRig *rig){
 	}
 	
 	// create new bones array
-	deComponentBone *bones = NULL;
+	deComponentBone *bones = nullptr;
 	int i, boneCount = 0;
 	
 	if(rig){

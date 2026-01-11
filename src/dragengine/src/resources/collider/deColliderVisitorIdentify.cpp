@@ -41,7 +41,7 @@
 ////////////////////////////
 
 deColliderVisitorIdentify::deColliderVisitorIdentify() :
-pCollider(NULL),
+pCollider(nullptr),
 pType(ectUnknown){
 }
 
@@ -80,7 +80,7 @@ deColliderComponent &deColliderVisitorIdentify::CastToComponent() const{
 
 
 void deColliderVisitorIdentify::Reset(){
-	pCollider = NULL;
+	pCollider = nullptr;
 	pType = ectUnknown;
 }
 

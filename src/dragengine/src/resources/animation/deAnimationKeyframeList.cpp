@@ -41,7 +41,7 @@
 ////////////////////////////
 
 deAnimationKeyframeList::deAnimationKeyframeList(){
-	pKeyframes = NULL;
+	pKeyframes = nullptr;
 	pKeyframeCount = 0;
 	pKeyframeSize = 0;
 }

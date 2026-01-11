@@ -41,7 +41,7 @@
 ////////////////////////////
 
 deParticleEmitterInstanceType::deParticleEmitterInstanceType(){
-	pParticleArray = NULL;
+	pParticleArray = nullptr;
 	pParticleCount = 0;
 }
 

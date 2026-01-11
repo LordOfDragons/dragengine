@@ -90,7 +90,7 @@ pRenderThread(renderThread),
 pOwnerSkin(&owner),
 pFilename(skin.GetFilename()),
 
-pTextures(NULL),
+pTextures(nullptr),
 pTextureCount(0),
 
 pIsSolid(true),
@@ -324,7 +324,7 @@ void deoglRSkin::FinalizeAsyncResLoading(){
 		#endif
 		pVSRetainImageData->ReleaseImages();
 		delete pVSRetainImageData;
-		pVSRetainImageData = NULL;
+		pVSRetainImageData = nullptr;
 	}
 	
 	// now it is safe to init skin in render thread

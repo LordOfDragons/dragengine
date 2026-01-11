@@ -47,13 +47,13 @@
 ////////////////////////////
 
 decZFileWriter::decZFileWriter(decBaseFileWriter *writer) :
-pZStream(NULL),
+pZStream(nullptr),
 
-pBufferIn(NULL),
+pBufferIn(nullptr),
 pBufferInSize(0),
 pBufferInPosition(0),
 
-pBufferOut(NULL),
+pBufferOut(nullptr),
 pBufferOutSize(0)
 {
 	if(!writer){
@@ -63,13 +63,13 @@ pBufferOutSize(0)
 }
 
 decZFileWriter::decZFileWriter(decBaseFileWriter *writer, bool pureMode) :
-pZStream(NULL),
+pZStream(nullptr),
 
-pBufferIn(NULL),
+pBufferIn(nullptr),
 pBufferInSize(0),
 pBufferInPosition(0),
 
-pBufferOut(NULL),
+pBufferOut(nullptr),
 pBufferOutSize(0)
 {
 	if(!writer){
@@ -211,17 +211,17 @@ void decZFileWriter::pInit(decBaseFileWriter *writer, bool pureMode){
 		writer->WriteByte(0); // options in case we want to expand on functionality internally
 	}
 	
-	pBufferIn = NULL;
+	pBufferIn = nullptr;
 	pBufferInPosition = 0;
 	pBufferInSize = 0;
-	pBufferOut = NULL;
+	pBufferOut = nullptr;
 	pBufferOutSize = 0;
 	
 	z_stream * const zstream = new z_stream;
 	memset(zstream, 0, sizeof(z_stream));
-	zstream->zalloc = NULL;
-	zstream->zfree = NULL;
-	zstream->opaque = NULL;
+	zstream->zalloc = nullptr;
+	zstream->zfree = nullptr;
+	zstream->opaque = nullptr;
 	//if( deflateInit( zstream, Z_BEST_SPEED ) != Z_OK ){
 	//if( deflateInit( zstream, Z_BEST_COMPRESSION ) != Z_OK ){
 	if(deflateInit(zstream, Z_DEFAULT_COMPRESSION) != Z_OK){

@@ -52,13 +52,13 @@ MOD_ENTRY_POINT_ATTR deBaseModule *DEAnimatorCreateModule(deLoadableModule *load
 ///////////////////
 
 deBaseModule *DEAnimatorCreateModule(deLoadableModule *loadableModule){
-	deBaseModule *module = NULL;
+	deBaseModule *module = nullptr;
 	
 	try{
 		module = new deDEAnimator(*loadableModule);
 		
 	}catch(const deException &){
-		return NULL;
+		return nullptr;
 	}
 	
 	return module;

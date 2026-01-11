@@ -597,7 +597,7 @@ const deoglCollideListPropFieldCluster &clPropFieldCluster, bool imposters){
 	
 	// obtain render task. this is the same for all clusters in the type
 	const deoglDeferredRendering &defren = pRenderThread.GetDeferredRendering();
-	const deoglVAO *vao = NULL;
+	const deoglVAO *vao = nullptr;
 	
 	if(imposters){
 		vao = defren.GetVAOBillboard();
@@ -676,7 +676,7 @@ const deoglRPropFieldType &propFieldType, bool imposters){
 	
 	// obtain render task. this is the same for all clusters in the type
 	const deoglDeferredRendering &defren = pRenderThread.GetDeferredRendering();
-	const deoglVAO *vao = NULL;
+	const deoglVAO *vao = nullptr;
 	
 	if(imposters){
 		vao = defren.GetVAOBillboard();

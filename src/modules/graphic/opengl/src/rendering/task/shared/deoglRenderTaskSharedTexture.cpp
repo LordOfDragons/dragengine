@@ -42,7 +42,7 @@
 deoglRenderTaskSharedTexture::deoglRenderTaskSharedTexture(deoglRenderTaskSharedPool &pool, int index) :
 pPool(pool),
 pIndex(index),
-pTUC(NULL){
+pTUC(nullptr){
 }
 
 deoglRenderTaskSharedTexture::~deoglRenderTaskSharedTexture(){
@@ -60,7 +60,7 @@ void deoglRenderTaskSharedTexture::SetTUC(deoglTexUnitsConfig *tuc){
 
 
 void deoglRenderTaskSharedTexture::Clear(){
-	pTUC = NULL;
+	pTUC = nullptr;
 }
 
 void deoglRenderTaskSharedTexture::ReturnToPool(){

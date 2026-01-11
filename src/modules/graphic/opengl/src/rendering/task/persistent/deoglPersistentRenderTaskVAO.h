@@ -101,8 +101,8 @@ public:
 	deoglPersistentRenderTaskInstance *GetInstanceWith(const deoglSharedSPBRTIGroup *group) const;
 	
 	/** Add instance. */
-	deoglPersistentRenderTaskInstance *AddInstance(deoglSharedSPB *spb = NULL,
-		const deoglSharedSPBRTIGroup *group = NULL);
+	deoglPersistentRenderTaskInstance *AddInstance(deoglSharedSPB *spb = nullptr,
+		const deoglSharedSPBRTIGroup *group = nullptr);
 	
 	/** Remove instance. */
 	void RemoveInstance(deoglPersistentRenderTaskInstance *instance);

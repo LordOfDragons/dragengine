@@ -50,17 +50,17 @@ pBlockingPriority(0)
 	pSpaceType = deNavigationSpace::estGrid;
 	pEnabled = true;
 	
-	pPeerAI = NULL;
+	pPeerAI = nullptr;
 	
-	pParentWorld = NULL;
-	pLLWorldPrev = NULL;
-	pLLWorldNext = NULL;
+	pParentWorld = nullptr;
+	pLLWorldPrev = nullptr;
+	pLLWorldNext = nullptr;
 }
 
 deNavigationBlocker::~deNavigationBlocker(){
 	if(pPeerAI){
 		delete pPeerAI;
-		pPeerAI = NULL;
+		pPeerAI = nullptr;
 	}
 }
 

@@ -250,7 +250,7 @@ pGIShowProbeUpdate(false),
 pGIShowCascade(0),
 pGIShowProbeRays(false),
 
-pTextureDebugImage(NULL),
+pTextureDebugImage(nullptr),
 pDebugImageUsed(false)
 {
 	#ifdef OS_ANDROID
@@ -288,7 +288,7 @@ const deoglFramebuffer::Ref &deoglDeveloperMode::GetFBODebugImageWith(int width,
 			pFBODebugImage = nullptr;
 			
 			delete pTextureDebugImage;
-			pTextureDebugImage = NULL;
+			pTextureDebugImage = nullptr;
 		}
 	}
 	
@@ -324,7 +324,7 @@ void deoglDeveloperMode::CheckDebugImageUse(){
 		
 		if(pTextureDebugImage){
 			delete pTextureDebugImage;
-			pTextureDebugImage = NULL;
+			pTextureDebugImage = nullptr;
 		}
 	}
 	
@@ -614,7 +614,7 @@ void deoglDeveloperMode::pCmdOpenGLCaps(const decUnicodeArgumentList &, decUnico
 	
 	
 	
-	GLint i, j, f, formatCount, *formats = NULL;
+	GLint i, j, f, formatCount, *formats = nullptr;
 	GLint resultsInt[2];
 	decString text;
 	

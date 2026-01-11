@@ -1151,7 +1151,7 @@ deoglSkinState *skinState, deoglRDynamicSkin *dynamicSkin){
 	
 	if(pTextureTargets[ettEnvMap] != -1){
 		units[pTextureTargets[ettEnvMap]].EnableCubeMapFromChannel(pRenderThread,
-			skinTexture, deoglSkinChannel::ectEnvironmentMap, skinState, dynamicSkin, NULL);
+			skinTexture, deoglSkinChannel::ectEnvironmentMap, skinState, dynamicSkin, nullptr);
 		
 		if(pTextureTargets[ettEnvMapFade] != -1){
 			units[pTextureTargets[ettEnvMapFade]].SetFrom(units[pTextureTargets[ettEnvMap]]);

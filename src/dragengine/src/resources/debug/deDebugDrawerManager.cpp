@@ -97,7 +97,7 @@ void deDebugDrawerManager::SystemGraphicUnload(){
 	deDebugDrawer *debugDrawer = (deDebugDrawer*)pDebugDrawers.GetRoot();
 	
 	while(debugDrawer){
-		debugDrawer->SetPeerGraphic(NULL);
+		debugDrawer->SetPeerGraphic(nullptr);
 		debugDrawer = (deDebugDrawer*)debugDrawer->GetLLManagerNext();
 	}
 }

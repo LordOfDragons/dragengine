@@ -44,7 +44,7 @@ decCurveDistanceMapping::decCurveDistanceMapping() :
 pResolution(0.1f),
 pLength(0.0f),
 pLastSegment(0),
-pMappings(NULL),
+pMappings(nullptr),
 pMappingCount(0){
 }
 
@@ -52,7 +52,7 @@ decCurveDistanceMapping::decCurveDistanceMapping(const decCurveDistanceMapping &
 pResolution(mapping.pResolution),
 pLength(mapping.pLength),
 pLastSegment(mapping.pLastSegment),
-pMappings(NULL),
+pMappings(nullptr),
 pMappingCount(0){
 	if(mapping.pMappingCount > 0){
 		pMappings = new float[mapping.pMappingCount];
@@ -104,7 +104,7 @@ void decCurveDistanceMapping::Map(float distance, int &segment, float &blend) co
 void decCurveDistanceMapping::Clear(){
 	if(pMappings){
 		delete [] pMappings;
-		pMappings = NULL;
+		pMappings = nullptr;
 		pMappingCount = 0;
 	}
 	pResolution = 0.1f;

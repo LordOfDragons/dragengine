@@ -231,7 +231,7 @@ void decString::SetValue(char value){
 #ifdef OS_W32
     int length = snprintf(NULL, 0, "%hi", value);
 #else
-	int length = snprintf(NULL, 0, "%hhi", value);
+	int length = snprintf(nullptr, 0, "%hhi", value);
 #endif
 	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
@@ -251,7 +251,7 @@ void decString::SetValue(unsigned char value){
 #ifdef OS_W32
 	int length = snprintf(NULL, 0, "%hu", value);
 #else
-	int length = snprintf(NULL, 0, "%hhu", value);
+	int length = snprintf(nullptr, 0, "%hhu", value);
 #endif
 	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
@@ -268,7 +268,7 @@ void decString::SetValue(unsigned char value){
 }
 
 void decString::SetValue(short value){
-	int length = snprintf(NULL, 0, "%hi", value);
+	int length = snprintf(nullptr, 0, "%hi", value);
 	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
 	char *newString = new char[length + 1];
@@ -280,7 +280,7 @@ void decString::SetValue(short value){
 }
 
 void decString::SetValue(unsigned short value){
-	int length = snprintf(NULL, 0, "%hu", value);
+	int length = snprintf(nullptr, 0, "%hu", value);
 	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
 	char *newString = new char[length + 1];
@@ -292,7 +292,7 @@ void decString::SetValue(unsigned short value){
 }
 
 void decString::SetValue(int value){
-	int length = snprintf(NULL, 0, "%i", value);
+	int length = snprintf(nullptr, 0, "%i", value);
 	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
 	char *newString = new char[length + 1];
@@ -304,7 +304,7 @@ void decString::SetValue(int value){
 }
 
 void decString::SetValue(unsigned int value){
-	int length = snprintf(NULL, 0, "%u", value);
+	int length = snprintf(nullptr, 0, "%u", value);
 	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
 	char *newString = new char[length + 1];
@@ -316,7 +316,7 @@ void decString::SetValue(unsigned int value){
 }
 
 void decString::SetValue(float value){
-	int length = snprintf(NULL, 0, "%g", value);
+	int length = snprintf(nullptr, 0, "%g", value);
 	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
 	char *newString = new char[length + 1];
@@ -328,7 +328,7 @@ void decString::SetValue(float value){
 }
 
 void decString::SetValue(double value){
-	int length = snprintf(NULL, 0, "%g", value);
+	int length = snprintf(nullptr, 0, "%g", value);
 	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
 	char *newString = new char[length + 1];
@@ -350,7 +350,7 @@ void decString::FormatUsing(const char *format, va_list args){
 	va_list copyargs;
 	
 	va_copy(copyargs, args);
-	int length = vsnprintf(NULL, 0, format, copyargs);
+	int length = vsnprintf(nullptr, 0, format, copyargs);
 	va_end(copyargs);
 	
 	if(length < 0) DETHROW(deeInvalidParam); // broken vsnprintf implementation
@@ -435,7 +435,7 @@ void decString::AppendValue(char value){
 #ifdef OS_W32
 	const int length2 = snprintf(NULL, 0, "%hi", value);
 #else
-	int length2 = snprintf(NULL, 0, "%hhi", value);
+	int length2 = snprintf(nullptr, 0, "%hhi", value);
 #endif
 	if(length2 < 0){
 		DETHROW(deeInvalidParam); // broken snprintf implementation
@@ -469,7 +469,7 @@ void decString::AppendValue(unsigned char value){
 #ifdef OS_W32
 	const int length2 = snprintf(NULL, 0, "%hu", value);
 #else
-	int length2 = snprintf(NULL, 0, "%hhu", value);
+	int length2 = snprintf(nullptr, 0, "%hhu", value);
 #endif
 	if(length2 < 0){
 		DETHROW(deeInvalidParam); // broken snprintf implementation
@@ -500,7 +500,7 @@ void decString::AppendValue(unsigned char value){
 
 void decString::AppendValue(short value){
 	const int length1 = (int)strlen(pString);
-	const int length2 = snprintf(NULL, 0, "%hi", value);
+	const int length2 = snprintf(nullptr, 0, "%hi", value);
 	if(length2 < 0){
 		DETHROW(deeInvalidParam); // broken snprintf implementation
 	}
@@ -523,7 +523,7 @@ void decString::AppendValue(short value){
 
 void decString::AppendValue(short unsigned value){
 	const int length1 = (int)strlen(pString);
-	const int length2 = snprintf(NULL, 0, "%hu", value);
+	const int length2 = snprintf(nullptr, 0, "%hu", value);
 	if(length2 < 0){
 		DETHROW(deeInvalidParam); // broken snprintf implementation
 	}
@@ -546,7 +546,7 @@ void decString::AppendValue(short unsigned value){
 
 void decString::AppendValue(int value){
 	const int length1 = (int)strlen(pString);
-	const int length2 = snprintf(NULL, 0, "%i", value);
+	const int length2 = snprintf(nullptr, 0, "%i", value);
 	if(length2 < 0){
 		DETHROW(deeInvalidParam); // broken snprintf implementation
 	}
@@ -569,7 +569,7 @@ void decString::AppendValue(int value){
 
 void decString::AppendValue(unsigned int value){
 	const int length1 = (int)strlen(pString);
-	const int length2 = snprintf(NULL, 0, "%u", value);
+	const int length2 = snprintf(nullptr, 0, "%u", value);
 	if(length2 < 0){
 		DETHROW(deeInvalidParam); // broken snprintf implementation
 	}
@@ -592,7 +592,7 @@ void decString::AppendValue(unsigned int value){
 
 void decString::AppendValue(long long value){
 	const int length1 = (int)strlen(pString);
-	const int length2 = snprintf(NULL, 0, "%lli", value);
+	const int length2 = snprintf(nullptr, 0, "%lli", value);
 	if(length2 < 0){
 		DETHROW(deeInvalidParam); // broken snprintf implementation
 	}
@@ -615,7 +615,7 @@ void decString::AppendValue(long long value){
 
 void decString::AppendValue(unsigned long long value){
 	const int length1 = (int)strlen(pString);
-	const int length2 = snprintf(NULL, 0, "%llu", value);
+	const int length2 = snprintf(nullptr, 0, "%llu", value);
 	if(length2 < 0){
 		DETHROW(deeInvalidParam); // broken snprintf implementation
 	}
@@ -638,7 +638,7 @@ void decString::AppendValue(unsigned long long value){
 
 void decString::AppendValue(float value){
 	const int length1 = (int)strlen(pString);
-	const int length2 = snprintf(NULL, 0, "%g", value);
+	const int length2 = snprintf(nullptr, 0, "%g", value);
 	if(length2 < 0){
 		DETHROW(deeInvalidParam); // broken snprintf implementation
 	}
@@ -661,7 +661,7 @@ void decString::AppendValue(float value){
 
 void decString::AppendValue(double value){
 	const int length1 = (int)strlen(pString);
-	const int length2 = snprintf(NULL, 0, "%g", value);
+	const int length2 = snprintf(nullptr, 0, "%g", value);
 	if(length2 < 0){
 		DETHROW(deeInvalidParam); // broken snprintf implementation
 	}
@@ -694,7 +694,7 @@ void decString::AppendFormatUsing(const char *format, va_list args){
 	va_list copyargs;
 	
 	va_copy(copyargs, args);
-	const int length2 = vsnprintf(NULL, 0, format, copyargs);
+	const int length2 = vsnprintf(nullptr, 0, format, copyargs);
 	va_end(copyargs);
 	
 	if(length2 < 0){

@@ -318,7 +318,7 @@ void deClassARStateSnapshot::CreateClassMembers(dsEngine *engine){
 
 deAnimatorRuleStateSnapshot *deClassARStateSnapshot::GetRule(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return dedsGetNativeData<sARSnapNatDat>(p_GetNativeData(myself->GetBuffer())).rule;
@@ -339,7 +339,7 @@ void deClassARStateSnapshot::PushRule(dsRunTime *rt, deAnimator *animator, deAni
 	}
 	
 	if(!rule){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

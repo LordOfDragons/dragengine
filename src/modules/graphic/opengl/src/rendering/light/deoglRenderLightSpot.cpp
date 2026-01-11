@@ -550,7 +550,7 @@ const deoglRenderPlanMasked *mask){
 	
 	const bool lightGeometry = !cllight.GetCulled();
 	deoglRenderPlan &plan = planLight.GetPlan();
-	deoglGIState * const giState = !mask && solid ? plan.GetUpdateGIState() : NULL;
+	deoglGIState * const giState = !mask && solid ? plan.GetUpdateGIState() : nullptr;
 	
 	if(!lightGeometry && !giState){
 		return;
@@ -569,14 +569,14 @@ const deoglRenderPlanMasked *mask){
 	deoglRenderPlanDebug * const planDebug = plan.GetDebug();
 	deoglDCollisionBox colbox;
 	int shadowType = shadowCaster.GetShadowType();
-	deoglTexture *texSolidDepth1 = NULL;
-	deoglTexture *texSolidDepth2 = NULL;
-	deoglTexture *texTranspDepth1 = NULL;
-	deoglTexture *texTranspColor1 = NULL;
-	deoglTexture *texTranspDepth2 = NULL;
-	deoglTexture *texTranspColor2 = NULL;
-	deoglTexture *texAmbient1 = NULL;
-	deoglTexture *texAmbient2 = NULL;
+	deoglTexture *texSolidDepth1 = nullptr;
+	deoglTexture *texSolidDepth2 = nullptr;
+	deoglTexture *texTranspDepth1 = nullptr;
+	deoglTexture *texTranspColor1 = nullptr;
+	deoglTexture *texTranspDepth2 = nullptr;
+	deoglTexture *texTranspColor2 = nullptr;
+	deoglTexture *texAmbient1 = nullptr;
+	deoglTexture *texAmbient2 = nullptr;
 	
 	const bool useTemporary = planLight.GetUseShadowTemporary();
 	const bool useAmbient = planLight.GetUseAmbient();
@@ -1139,8 +1139,8 @@ void deoglRenderLightSpot::RenderShadows(deoglRenderPlanLight &planLight, sShado
 	// dynamic shadow map with transparency if required
 	if(shadowType == deoglShadowCaster::estDynamicOnly
 	|| shadowType == deoglShadowCaster::estStaticAndDynamic){
-		const deoglCollideList *clist1 = NULL;
-		const deoglCollideList *clist2 = NULL;
+		const deoglCollideList *clist1 = nullptr;
+		const deoglCollideList *clist2 = nullptr;
 		
 		if(refilterShadow){
 			const decLayerMask &layerMask = plan.GetLayerMask();
@@ -1562,7 +1562,7 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanLight &planLight){
 	
 	// set values
 	const deoglSPBMapBuffer mapped(paramBlock);
-	const bool hasGIState = plan.GetRenderGIState() != NULL;
+	const bool hasGIState = plan.GetRenderGIState() != nullptr;
 	
 	target = lightShader.GetLightUniformTarget(deoglLightShader::elutLightColor);
 	if(target != -1){

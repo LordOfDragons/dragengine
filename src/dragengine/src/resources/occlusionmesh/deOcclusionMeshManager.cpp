@@ -78,7 +78,7 @@ deOcclusionMesh *deOcclusionMeshManager::GetOcclusionMeshWith(const char *filena
 deOcclusionMesh *deOcclusionMeshManager::GetOcclusionMeshWith(
 deVirtualFileSystem *vfs, const char *filename) const{
 	deOcclusionMesh * const occmesh = (deOcclusionMesh*)pMeshes.GetWithFilename(vfs, filename);
-	return occmesh && !occmesh->GetOutdated() ? occmesh : NULL;
+	return occmesh && !occmesh->GetOutdated() ? occmesh : nullptr;
 }
 
 deOcclusionMesh::Ref deOcclusionMeshManager::CreateOcclusionMesh(
@@ -156,7 +156,7 @@ const char *filename, const char *basePath){
 			LogInfoFormat("Occlusion Mesh '%s' (base path '%s') changed on VFS: Outdating and Reloading",
 				filename, basePath ? basePath : "");
 			findOccMesh->MarkOutdated();
-			findOccMesh = NULL;
+			findOccMesh = nullptr;
 		}
 		
 		if(findOccMesh){
@@ -261,7 +261,7 @@ void deOcclusionMeshManager::SystemGraphicUnload(){
 	deOcclusionMesh *occmesh = (deOcclusionMesh*)pMeshes.GetRoot();
 	
 	while(occmesh){
-		occmesh->SetPeerGraphic(NULL);
+		occmesh->SetPeerGraphic(nullptr);
 		occmesh = (deOcclusionMesh*)occmesh->GetLLManagerNext();
 	}
 }

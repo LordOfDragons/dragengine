@@ -49,12 +49,12 @@ pOrder(0.0f),
 pTransparency(1.0f),
 pBlendMode(ebmBlend),
 
-pPeerGraphic(NULL),
+pPeerGraphic(nullptr),
 
-pParentMask(NULL),
-pParentView(NULL),
-pLLViewPrev(NULL),
-pLLViewNext(NULL){
+pParentMask(nullptr),
+pParentView(nullptr),
+pLLViewPrev(nullptr),
+pLLViewNext(nullptr){
 }
 
 deCanvas::~deCanvas(){
@@ -169,7 +169,7 @@ void deCanvas::SetMask(deCanvas *mask){
 	}
 	
 	if(pMask){
-		pMask->pParentMask = NULL;
+		pMask->pParentMask = nullptr;
 	}
 	
 	pMask = mask;

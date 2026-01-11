@@ -73,15 +73,15 @@ pSector(sector)
 	
 	pIndex = index;
 	
-	pSkin = NULL;
+	pSkin = nullptr;
 	
-	pUseSkinTexture = NULL;
+	pUseSkinTexture = nullptr;
 	
-	pTUCDepth = NULL;
-	pTUCGeometry = NULL;
-	pTUCShadow = NULL;
-	pTUCEnvMap = NULL;
-	pTUCLuminance = NULL;
+	pTUCDepth = nullptr;
+	pTUCGeometry = nullptr;
+	pTUCShadow = nullptr;
+	pTUCEnvMap = nullptr;
+	pTUCLuminance = nullptr;
 	
 	pValidParamBlock = false;
 	pDirtyParamBlock = true;
@@ -108,7 +108,7 @@ void deoglHTSTexture::SetSkin(deoglRSkin *skin){
 		return;
 	}
 	pSkin = skin;
-	pUseSkinTexture = NULL;
+	pUseSkinTexture = nullptr;
 	if(skin && skin->GetTextureCount() > 0){
 		pUseSkinTexture = &skin->GetTextureAt(0);
 	}
@@ -171,7 +171,7 @@ deoglTexUnitsConfig *deoglHTSTexture::GetTUCForPipelineType(deoglSkinTexturePipe
 
 deoglTexUnitsConfig *deoglHTSTexture::BareGetTUCFor(deoglSkinTexturePipelines::eTypes type) const{
 	if(!pUseSkinTexture){
-		return NULL;
+		return nullptr;
 	}
 	
 	deoglRenderThread &renderThread = pSector.GetHeightTerrain().GetRenderThread();
@@ -179,9 +179,9 @@ deoglTexUnitsConfig *deoglHTSTexture::BareGetTUCFor(deoglSkinTexturePipelines::e
 		GetAt(deoglSkinTexturePipelinesList::eptHeightMap1).
 		GetWithRef(type).GetShader();
 	deoglTexUnitConfig units[deoglSkinShader::ETT_COUNT];
-	deoglRDynamicSkin *dynamicSkin = NULL;
+	deoglRDynamicSkin *dynamicSkin = nullptr;
 	deoglSkinState *skinState = nullptr;
-	deoglTexUnitsConfig *tuc = NULL;
+	deoglTexUnitsConfig *tuc = nullptr;
 	int target;
 	
 	if(skinShader.GetTextureUnitCount() > 0){
@@ -210,7 +210,7 @@ deoglTexUnitsConfig *deoglHTSTexture::BareGetTUCFor(deoglSkinTexturePipelines::e
 	}
 	
 	if(!tuc){
-		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith(NULL, 0,
+		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith(nullptr, 0,
 			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock());
 	}
 	tuc->EnsureRTSTexture();
@@ -221,7 +221,7 @@ deoglTexUnitsConfig *deoglHTSTexture::BareGetTUCFor(deoglSkinTexturePipelines::e
 
 
 void deoglHTSTexture::UpdateInstanceParamBlock(deoglSPBlockUBO &paramBlock, deoglSkinShader &skinShader){
-	deoglRDynamicSkin *useDynamicSkin = NULL;
+	deoglRDynamicSkin *useDynamicSkin = nullptr;
 	deoglSkinState *useSkinState = nullptr;
 	
 	if(!pUseSkinTexture){
@@ -317,23 +317,23 @@ void deoglHTSTexture::PrepareForRender(){
 void deoglHTSTexture::pCleanUp(){
 	if(pTUCDepth){
 		pTUCDepth->RemoveUsage();
-		pTUCDepth = NULL;
+		pTUCDepth = nullptr;
 	}
 	if(pTUCGeometry){
 		pTUCGeometry->RemoveUsage();
-		pTUCGeometry = NULL;
+		pTUCGeometry = nullptr;
 	}
 	if(pTUCShadow){
 		pTUCShadow->RemoveUsage();
-		pTUCShadow = NULL;
+		pTUCShadow = nullptr;
 	}
 	if(pTUCEnvMap){
 		pTUCEnvMap->RemoveUsage();
-		pTUCEnvMap = NULL;
+		pTUCEnvMap = nullptr;
 	}
 	if(pTUCLuminance){
 		pTUCLuminance->RemoveUsage();
-		pTUCLuminance = NULL;
+		pTUCLuminance = nullptr;
 	}
 }
 
@@ -381,33 +381,33 @@ void deoglHTSTexture::pPrepareTUCs(){
 	// depth
 	if(pTUCDepth){
 		pTUCDepth->RemoveUsage();
-		pTUCDepth = NULL;
+		pTUCDepth = nullptr;
 	}
 	pTUCDepth = BareGetTUCFor(deoglSkinTexturePipelines::etDepth);
 	
 	// geometry
 	if(pTUCGeometry){
 		pTUCGeometry->RemoveUsage();
-		pTUCGeometry = NULL;
+		pTUCGeometry = nullptr;
 	}
 	pTUCGeometry = BareGetTUCFor(deoglSkinTexturePipelines::etGeometry);
 	
 	// shadow
 	if(pTUCShadow){
 		pTUCShadow->RemoveUsage();
-		pTUCShadow = NULL;
+		pTUCShadow = nullptr;
 	}
 	pTUCShadow = BareGetTUCFor(deoglSkinTexturePipelines::etShadowProjection);
 	
 	// envmap
 	if(pTUCEnvMap){
 		pTUCEnvMap->RemoveUsage();
-		pTUCEnvMap = NULL;
+		pTUCEnvMap = nullptr;
 	}
 	
 	if(pUseSkinTexture){
 		deoglRenderThread &renderThread = pSector.GetHeightTerrain().GetRenderThread();
-		deoglRDynamicSkin *dynamicSkin = NULL;
+		deoglRDynamicSkin *dynamicSkin = nullptr;
 		deoglSkinState *skinState = nullptr;
 		deoglTexUnitConfig unit[8];
 		
@@ -438,7 +438,7 @@ void deoglHTSTexture::pPrepareTUCs(){
 	// luminance
 	if(pTUCLuminance){
 		pTUCLuminance->RemoveUsage();
-		pTUCLuminance = NULL;
+		pTUCLuminance = nullptr;
 	}
 	// pTUCLuminance = BareGetTUCFor( deoglSkinTexturePipelines::etLuminance );
 }

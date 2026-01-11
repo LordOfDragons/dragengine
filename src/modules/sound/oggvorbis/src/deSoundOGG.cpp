@@ -55,13 +55,13 @@ MOD_ENTRY_POINT_ATTR deBaseModule *OGGCreateModule(deLoadableModule *loadableMod
 ///////////////////
 
 deBaseModule *OGGCreateModule(deLoadableModule *loadableModule){
-	deBaseModule *module = NULL;
+	deBaseModule *module = nullptr;
 	
 	try{
 		module = new deSoundOGG(*loadableModule);
 		
 	}catch(const deException &){
-		return NULL;
+		return nullptr;
 	}
 	
 	return module;
@@ -146,7 +146,7 @@ void deSoundOGG::InitLoadSound(decBaseFileReader &file, deBaseSoundInfo &info){
 		callbacks.tell_func = fOggTell;
 		
 		// open the file
-		if(ov_open_callbacks(&file, &oggFile, NULL, 0, callbacks) < 0){
+		if(ov_open_callbacks(&file, &oggFile, nullptr, 0, callbacks) < 0){
 			LogError("Invalid OGG file.");
 			DETHROW(deeInvalidParam);
 		}

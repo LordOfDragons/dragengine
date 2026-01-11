@@ -54,7 +54,7 @@
 
 deoglVolumeShape::deoglVolumeShape(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
-pShape(NULL){
+pShape(nullptr){
 }
 
 deoglVolumeShape::~deoglVolumeShape(){
@@ -66,7 +66,7 @@ deoglVolumeShape::~deoglVolumeShape(){
 ///////////////
 
 void deoglVolumeShape::Reset(){
-	pShape = NULL;
+	pShape = nullptr;
 }
 
 

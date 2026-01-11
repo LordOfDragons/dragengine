@@ -41,16 +41,16 @@ dedaiNavMeshBuilderEdge::dedaiNavMeshBuilderEdge(){
 	pIndex = 0;
 	pVertex1 = 0;
 	pVertex2 = 0;
-	pFace1 = NULL;
-	pFace2 = NULL;
+	pFace1 = nullptr;
+	pFace2 = nullptr;
 }
 
 dedaiNavMeshBuilderEdge::dedaiNavMeshBuilderEdge(int vertex1, int vertex2){
 	pIndex = 0;
 	pVertex1 = vertex1;
 	pVertex2 = vertex2;
-	pFace1 = NULL;
-	pFace2 = NULL;
+	pFace1 = nullptr;
+	pFace2 = nullptr;
 }
 
 dedaiNavMeshBuilderEdge::~dedaiNavMeshBuilderEdge(){

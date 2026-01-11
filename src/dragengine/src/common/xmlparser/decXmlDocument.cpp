@@ -84,7 +84,7 @@ decXmlElementTag *decXmlDocument::GetRoot() const{
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 

@@ -51,17 +51,17 @@ pForce(1.0f),
 pFluctuationDirection(0.0f),
 pFluctuationForce(0.0f),
 pEnabled(true),
-pPeerPhysics (NULL),
+pPeerPhysics (nullptr),
 
-pParentWorld(NULL),
-pLLWorldPrev(NULL),
-pLLWorldNext(NULL){
+pParentWorld(nullptr),
+pLLWorldPrev(nullptr),
+pLLWorldNext(nullptr){
 }
 
 deForceField::~deForceField(){
 	if(pPeerPhysics){
 		delete pPeerPhysics;
-		pPeerPhysics = NULL;
+		pPeerPhysics = nullptr;
 	}
 }
 

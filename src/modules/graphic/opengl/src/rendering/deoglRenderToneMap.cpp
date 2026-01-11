@@ -189,7 +189,7 @@ deoglRenderToneMap::deoglRenderToneMap(deoglRenderThread &renderThread) : deoglR
 	deoglPipelineConfiguration pipconf;
 	const deoglShaderSources *sources;
 	
-	pTextureToneMapParams = NULL;
+	pTextureToneMapParams = nullptr;
 	
 	try{
 		renderThread.GetShader().SetCommonDefines(commonDefines);

@@ -47,21 +47,21 @@
 
 deoglShaderPreprocessor::deoglShaderPreprocessor(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
-pSources(NULL),
+pSources(nullptr),
 pSourcesLen(0),
 pSourcesSize(1024),
-pInputNext(NULL),
-pInputFile(NULL),
+pInputNext(nullptr),
+pInputFile(nullptr),
 pInputLine(0),
 pOutputLine(1),
 pOutputCode(true),
 pOutputCodeCase(true),
 pEndDirectiveBlock(false),
 pLastMappedOutputLine(0),
-pResolveBuffer(NULL),
+pResolveBuffer(nullptr),
 pResolveBufferLen(0),
 pResolveBufferSize(1024),
-pResolveSymbolName(NULL),
+pResolveSymbolName(nullptr),
 pResolveSymbolNameLen(0),
 pResolveSymbolNameSize(200),
 
@@ -109,8 +109,8 @@ void deoglShaderPreprocessor::Clear(){
 	ClearAllSymbols();
 	
 	pSourceLocations.RemoveAll();
-	pInputNext = NULL;
-	pInputFile = NULL;
+	pInputNext = nullptr;
+	pInputFile = nullptr;
 	pInputLine = 1;
 	pOutputLine = 1;
 	pLastMappedOutputLine = 0;
@@ -217,7 +217,7 @@ void deoglShaderPreprocessor::SourcesAppend(const char *text, int length, bool m
 }
 
 void deoglShaderPreprocessor::SourcesAppendProcessed(const char *sourceCode){
-	SourcesAppendProcessed(sourceCode, NULL);
+	SourcesAppendProcessed(sourceCode, nullptr);
 }
 
 void deoglShaderPreprocessor::SourcesAppendProcessed(const char *sourceCode,
@@ -228,7 +228,7 @@ const char *inputFile, bool resetState){
 	
 	if(pDebugLogParsing){
 		pRenderThread.GetLogger().LogInfoFormat("Shader Preprocessor: process sources from %s",
-			inputFile != NULL ? inputFile : "?");
+			inputFile != nullptr ? inputFile : "?");
 	}
 	
 	pInputNext = sourceCode;
@@ -246,12 +246,12 @@ const char *inputFile, bool resetState){
 		// not at end of string. this should never happen
 		pRenderThread.GetLogger().LogErrorFormat(
 			"Shader Preprocessor: Not at end of string (Invalid character '%c' at %s:%d",
-			*pInputNext, pInputFile != NULL ? pInputFile : "?", pInputLine );
+			*pInputNext, pInputFile != nullptr ? pInputFile : "?", pInputLine );
 		DETHROW(deeInvalidParam);
 	}
 	
-	pInputNext = NULL;
-	pInputFile = NULL;
+	pInputNext = nullptr;
+	pInputFile = nullptr;
 	pInputLine = 1;
 }
 
@@ -554,7 +554,7 @@ void deoglShaderPreprocessor::pProcessDirectiveInclude(){
 	const decString *sources = nullptr;
 	if(!pRenderThread.GetShader().GetShaderManager().GetIncludableSources().GetAt(filename, sources)){
 		pRenderThread.GetLogger().LogErrorFormat("Shader Preprocessor: #include: File not found %s at %s:%d",
-			filename.GetString(), pInputFile != NULL ? pInputFile : "?", pInputLine);
+			filename.GetString(), pInputFile != nullptr ? pInputFile : "?", pInputLine);
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -935,7 +935,7 @@ bool deoglShaderPreprocessor::pProcessDirectiveCondition(const char *directive, 
 					default:
 						pInputNext = oldInputNext;
 						pInputLine = oldInputLine;
-						updateResultValue = symbol != NULL;
+						updateResultValue = symbol != nullptr;
 					}
 				}
 				
@@ -1097,8 +1097,8 @@ static const char vTokenEOS[] = "<EOS>";
 deoglShaderPreprocessor::eDirectiveTokens deoglShaderPreprocessor::pParseDirectiveToken(sToken &token){
 	int mode = 0;
 	
-	token.begin = NULL;
-	token.end = NULL;
+	token.begin = nullptr;
+	token.end = nullptr;
 	
 	while(*pInputNext){
 		// find token begin
@@ -1417,8 +1417,8 @@ eDirectiveTokens expectedType, const char *directive){
 bool deoglShaderPreprocessor::pParseDirectiveAnything(sToken &token){
 	int mode = 0;
 	
-	token.begin = NULL;
-	token.end = NULL;
+	token.begin = nullptr;
+	token.end = nullptr;
 	token.type = edtAnything;
 	
 	while(*pInputNext){
@@ -1522,7 +1522,7 @@ void deoglShaderPreprocessor::pErrorInvalidToken(const sToken &token, const char
 	pRenderThread.GetLogger().LogErrorFormat(
 		"Shader Preprocessor: #%s: Invalid token '%s' at %s:%d", directive,
 		pDirectiveTokenString(token).GetString(),
-		pInputFile != NULL ? pInputFile : "?", token.line);
+		pInputFile != nullptr ? pInputFile : "?", token.line);
 	
 	DETHROW(deeInvalidParam);
 }
@@ -1534,7 +1534,7 @@ void deoglShaderPreprocessor::pResolveString(const char *text, int length){
 	const char *last = text + length;
 	const char *end = last + 1;
 	const char *codeBegin = next;
-	const char *tokenBegin = NULL;
+	const char *tokenBegin = nullptr;
 	decString result;
 	int mode = 0;
 	

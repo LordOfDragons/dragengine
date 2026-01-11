@@ -136,7 +136,7 @@ void deClassSpeaker::nfGetSound::RunFunction(dsRunTime *rt, dsValue *myself){
 		clsSnd->PushSound(rt, speaker->GetSound());
 		
 	}else{
-		rt->PushObject(NULL, clsSnd);
+		rt->PushObject(nullptr, clsSnd);
 	}
 }
 
@@ -154,7 +154,7 @@ void deClassSpeaker::nfSetSound::RunFunction(dsRunTime *rt, dsValue *myself){
 		speaker->SetSound(clsSpk->GetScriptModule()->GetClassSound()->GetSound(object));
 		
 	}else{
-		speaker->SetSound(NULL);
+		speaker->SetSound(nullptr);
 	}
 }
 
@@ -555,7 +555,7 @@ void deClassSpeaker::nfGetOwner::RunFunction(dsRunTime *rt, dsValue *myself){
 		rt->PushObject(scrCol->GetOwner());
 		
 	}else{
-		rt->PushObject(NULL);
+		rt->PushObject(nullptr);
 	}
 }
 
@@ -679,12 +679,12 @@ void deClassSpeaker::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 
 deClassSpeaker::deClassSpeaker(deEngine *gameEngine, deScriptingDragonScript *scrMgr) :
 dsClass("Speaker", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE),
-pGameEngine(NULL),
-pScrMgr(NULL),
-pClsVec(NULL),
-pClsDVec(NULL),
-pClsSnd(NULL),
-pClsSpeakerType(NULL)
+pGameEngine(nullptr),
+pScrMgr(nullptr),
+pClsVec(nullptr),
+pClsDVec(nullptr),
+pClsSnd(nullptr),
+pClsSpeakerType(nullptr)
 {
 	// validate parameters
 	if(!gameEngine || !scrMgr) DSTHROW(dueInvalidParam);
@@ -796,7 +796,7 @@ void deClassSpeaker::CreateClassMembers(dsEngine *engine){
 
 deSpeaker *deClassSpeaker::GetSpeaker(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return dedsGetNativeData<sSpkNatDat>(p_GetNativeData(myself->GetBuffer())).speaker;
@@ -808,7 +808,7 @@ void deClassSpeaker::PushSpeaker(dsRunTime *rt, deSpeaker *speaker){
 	}
 	
 	if(!speaker){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

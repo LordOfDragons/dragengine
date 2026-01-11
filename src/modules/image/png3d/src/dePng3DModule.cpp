@@ -56,13 +56,13 @@ MOD_ENTRY_POINT_ATTR deBaseModule *PNG3DCreateModule(deLoadableModule *loadableM
 ////////////////
 
 deBaseModule *PNG3DCreateModule(deLoadableModule *loadableModule){
-	deBaseModule *module = NULL;
+	deBaseModule *module = nullptr;
 	
 	try{
 		module = new dePng3DModule(*loadableModule);
 		
 	}catch(const deException &){
-		return NULL;
+		return nullptr;
 	}
 	
 	return module;
@@ -89,7 +89,7 @@ dePng3DModule::~dePng3DModule(){
 ////////////////////
 
 deBaseImageInfo *dePng3DModule::InitLoadImage(decBaseFileReader &file){
-	dePng3DImageInfo *infos = NULL;
+	dePng3DImageInfo *infos = nullptr;
 	dePng3DTarball tarball(this);
 	
 	try{

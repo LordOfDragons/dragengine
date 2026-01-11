@@ -49,7 +49,7 @@
 debpForceField::debpForceField(dePhysicsBullet &bullet, const deForceField &forceField) :
 pBullet(bullet),
 pForceField(forceField),
-pVortices(NULL),
+pVortices(nullptr),
 pVortexCount(0),
 pVortexSize(0),
 pTimeUntilNextVortex(0.5f),

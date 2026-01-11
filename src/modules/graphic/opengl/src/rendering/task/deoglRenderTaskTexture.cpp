@@ -42,11 +42,11 @@
 ////////////////////////////
 
 deoglRenderTaskTexture::deoglRenderTaskTexture() :
-pTexture(NULL),
+pTexture(nullptr),
 
 pVAOCount(0),
 
-pHasVAO(NULL),
+pHasVAO(nullptr),
 pHasVAOCount(0),
 pHasVAOSize(0){
 }
@@ -70,7 +70,7 @@ deoglRenderTaskTexture::~deoglRenderTaskTexture(){
 ///////////////
 
 void deoglRenderTaskTexture::Reset(){
-	pTexture = NULL;
+	pTexture = nullptr;
 	pHasVAOCount = 0;
 	pVAOCount = 0;
 }

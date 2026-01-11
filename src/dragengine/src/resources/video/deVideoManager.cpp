@@ -59,12 +59,12 @@
 deVideoManager::deVideoManager(deEngine *engine) :
 deFileResourceManager(engine, ertVideo),
 
-pDecoderRoot(NULL),
-pDecoderTail(NULL),
+pDecoderRoot(nullptr),
+pDecoderTail(nullptr),
 pDecoderCount(0),
 
-pAudioDecoderRoot(NULL),
-pAudioDecoderTail(NULL),
+pAudioDecoderRoot(nullptr),
+pAudioDecoderTail(nullptr),
 pAudioDecoderCount(0)
 {
 	SetLoggingName("video");
@@ -93,7 +93,7 @@ deVideo *deVideoManager::GetVideoWith(const char *filename) const{
 
 deVideo *deVideoManager::GetVideoWith(deVirtualFileSystem *vfs, const char *filename) const{
 	deVideo * const video = (deVideo*)pVideos.GetWithFilename(vfs, filename);
-	return video && !video->GetOutdated() ? video : NULL;
+	return video && !video->GetOutdated() ? video : nullptr;
 }
 
 deVideo::Ref deVideoManager::LoadVideo(const char *filename, const char *basePath, bool asynchron){
@@ -193,8 +193,8 @@ deVideoDecoder::Ref deVideoManager::CreateDecoder(deVideo *video){
 	}
 	
 	deVideoDecoder::Ref videoDecoder;
-	deBaseVideoModule *module = NULL;
-	deBaseVideoDecoder *peer = NULL;
+	deBaseVideoModule *module = nullptr;
+	deBaseVideoDecoder *peer = nullptr;
 	
 	try{
 		videoDecoder = deVideoDecoder::Ref::New(*this, video);
@@ -216,10 +216,10 @@ deVideoDecoder::Ref deVideoManager::CreateDecoder(deVideo *video){
 			video->GetFilename().GetString());
 		
 		deErrorTrace &errorTrace = *GetEngine()->GetErrorTrace();
-		errorTrace.AddAndSetIfEmpty(e.GetName(), NULL, e.GetFile(), e.GetLine());
+		errorTrace.AddAndSetIfEmpty(e.GetName(), nullptr, e.GetFile(), e.GetLine());
 		
 		deErrorTracePoint &etp = *errorTrace.AddPoint(
-			NULL, "deVideoManager::CreateDecoder", __LINE__);
+			nullptr, "deVideoManager::CreateDecoder", __LINE__);
 		
 		deErrorTraceValue &etv = *etp.AddValue("video", "<deVideo>");
 		etv.AddSubValue("filename", video->GetFilename());
@@ -254,8 +254,8 @@ deVideoAudioDecoder::Ref deVideoManager::CreateAudioDecoder(deVideo *video){
 	}
 	
 	deVideoAudioDecoder::Ref audioDecoder;
-	deBaseVideoAudioDecoder *peer = NULL;
-	deBaseVideoModule *module = NULL;
+	deBaseVideoAudioDecoder *peer = nullptr;
+	deBaseVideoModule *module = nullptr;
 	
 	try{
 		module = (deBaseVideoModule*)GetModuleSystem()->GetModuleAbleToLoad(
@@ -279,10 +279,10 @@ deVideoAudioDecoder::Ref deVideoManager::CreateAudioDecoder(deVideo *video){
 			video->GetFilename().GetString());
 		
 		deErrorTrace &errorTrace = *GetEngine()->GetErrorTrace();
-		errorTrace.AddAndSetIfEmpty(e.GetName(), NULL, e.GetFile(), e.GetLine());
+		errorTrace.AddAndSetIfEmpty(e.GetName(), nullptr, e.GetFile(), e.GetLine());
 		
 		deErrorTracePoint &etp = *errorTrace.AddPoint(
-			NULL, "deVideoManager::CreateSoundDecoder", __LINE__);
+			nullptr, "deVideoManager::CreateSoundDecoder", __LINE__);
 		
 		deErrorTraceValue &etv = *etp.AddValue("video", "<deVideo>");
 		etv.AddSubValue("filename", video->GetFilename());
@@ -327,7 +327,7 @@ void deVideoManager::ReleaseLeakingResources(){
 			pDecoderRoot= pDecoderRoot->GetLLManagerNext();
 		}
 		
-		pDecoderTail = NULL;
+		pDecoderTail = nullptr;
 		pDecoderCount = 0;
 	}
 	
@@ -341,7 +341,7 @@ void deVideoManager::ReleaseLeakingResources(){
 			pAudioDecoderRoot= pAudioDecoderRoot->GetLLManagerNext();
 		}
 		
-		pAudioDecoderTail = NULL;
+		pAudioDecoderTail = nullptr;
 		pAudioDecoderCount = 0;
 	}
 	
@@ -387,7 +387,7 @@ void deVideoManager::SystemGraphicUnload(){
 	deVideo *video = (deVideo*)pVideos.GetRoot();
 	
 	while(video){
-		video->SetPeerGraphic(NULL);
+		video->SetPeerGraphic(nullptr);
 		video = (deVideo*)video->GetLLManagerNext();
 	}
 }
@@ -421,7 +421,7 @@ void deVideoManager::RemoveDecoder(deVideoDecoder *decoder){
 		
 		pDecoderTail = pDecoderTail->GetLLManagerPrev();
 		if(pDecoderTail){
-			pDecoderTail->SetLLManagerNext(NULL);
+			pDecoderTail->SetLLManagerNext(nullptr);
 		}
 		
 	}else{
@@ -439,7 +439,7 @@ void deVideoManager::RemoveDecoder(deVideoDecoder *decoder){
 		
 		pDecoderRoot = pDecoderRoot->GetLLManagerNext();
 		if(pDecoderRoot){
-			pDecoderRoot->SetLLManagerPrev(NULL);
+			pDecoderRoot->SetLLManagerPrev(nullptr);
 		}
 		
 	}else{
@@ -450,8 +450,8 @@ void deVideoManager::RemoveDecoder(deVideoDecoder *decoder){
 		decoder->GetLLManagerPrev()->SetLLManagerNext(decoder->GetLLManagerNext());
 	}
 	
-	decoder->SetLLManagerNext(NULL);
-	decoder->SetLLManagerPrev(NULL);
+	decoder->SetLLManagerNext(nullptr);
+	decoder->SetLLManagerPrev(nullptr);
 	pDecoderCount--;
 	
 	decoder->MarkLeaking();
@@ -480,7 +480,7 @@ void deVideoManager::RemoveAudioDecoder(deVideoAudioDecoder *decoder){
 		
 		pAudioDecoderTail = pAudioDecoderTail->GetLLManagerPrev();
 		if(pAudioDecoderTail){
-			pAudioDecoderTail->SetLLManagerNext(NULL);
+			pAudioDecoderTail->SetLLManagerNext(nullptr);
 		}
 		
 	}else{
@@ -498,7 +498,7 @@ void deVideoManager::RemoveAudioDecoder(deVideoAudioDecoder *decoder){
 		
 		pAudioDecoderRoot = pAudioDecoderRoot->GetLLManagerNext();
 		if(pAudioDecoderRoot){
-			pAudioDecoderRoot->SetLLManagerPrev(NULL);
+			pAudioDecoderRoot->SetLLManagerPrev(nullptr);
 		}
 		
 	}else{
@@ -509,8 +509,8 @@ void deVideoManager::RemoveAudioDecoder(deVideoAudioDecoder *decoder){
 		decoder->GetLLManagerPrev()->SetLLManagerNext(decoder->GetLLManagerNext());
 	}
 	
-	decoder->SetLLManagerNext(NULL);
-	decoder->SetLLManagerPrev(NULL);
+	decoder->SetLLManagerNext(nullptr);
+	decoder->SetLLManagerPrev(nullptr);
 	pAudioDecoderCount--;
 	
 	decoder->MarkLeaking();

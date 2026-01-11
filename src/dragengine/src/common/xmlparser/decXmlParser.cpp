@@ -60,13 +60,13 @@ decXmlParser::decXmlParser(deLogger *logger){
 	pLogger = logger;
 	pLine = 1;
 	pPos = 1;
-	pToken = NULL;
+	pToken = nullptr;
 	pTokenLen = 0;
 	pTokenLine = 1;
 	pTokenPos = 1;
-	pCleanString = NULL;
+	pCleanString = nullptr;
 	pCleanStringSize = 0;
-	pFile = NULL;
+	pFile = nullptr;
 	pCurChar = DEXP_EOF;
 	pHasFatalError = false;
 	
@@ -316,7 +316,7 @@ bool decXmlParser::ParseElementTag(decXmlContainer *container, const char *requi
 						break;
 					}
 					if(!(ParseComment(tag) || ParsePI(tag) || ParseReference(tag)
-					|| ParseCDSect(tag) || ParseElementTag(tag, NULL))){
+					|| ParseCDSect(tag) || ParseElementTag(tag, nullptr))){
 						RaiseFatalError();
 					}
 				}

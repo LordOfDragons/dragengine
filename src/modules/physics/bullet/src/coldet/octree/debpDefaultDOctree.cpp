@@ -39,7 +39,7 @@
 /////////////////////////////////
 
 debpDefaultDOctree::debpDefaultDOctree(const decDVector &center, const decDVector &halfSize) : debpDOctree(center, halfSize){
-	pElements = NULL;
+	pElements = nullptr;
 	pElementCount = 0;
 	pElementSize = 0;
 }
@@ -57,7 +57,7 @@ debpDefaultDOctree::~debpDefaultDOctree(){
 debpDOctree *debpDefaultDOctree::CreateOctree(int octant) const{
 	decDVector halfSize = GetHalfSize() * 0.5f;
 	const decDVector &center = GetCenter();
-	debpDOctree *node = (debpDefaultDOctree*)NULL;
+	debpDOctree *node = (debpDefaultDOctree*)nullptr;
 	decDVector nc;
 	
 	// determine the smallest and largest coordinates
@@ -142,7 +142,7 @@ void debpDefaultDOctree::RemoveElement(void *element){
 	if(index == -1) DETHROW(deeInvalidParam);
 	
 	for(i=index+1; i<pElementCount; i++) pElements[i - 1] = pElements[i];
-	pElements[pElementCount - 1] = NULL;
+	pElements[pElementCount - 1] = nullptr;
 	pElementCount--;
 }
 

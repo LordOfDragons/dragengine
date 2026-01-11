@@ -39,7 +39,7 @@
 /////////////////////////////////
 
 debpDefaultOctree::debpDefaultOctree(const decVector &center, const decVector &halfSize) : debpOctree(center, halfSize){
-	pElements = NULL;
+	pElements = nullptr;
 	pElementCount = 0;
 	pElementSize = 0;
 }
@@ -57,7 +57,7 @@ debpDefaultOctree::~debpDefaultOctree(){
 debpOctree *debpDefaultOctree::CreateOctree(int octant) const{
 	decVector halfSize = GetHalfSize() * 0.5f;
 	const decVector &center = GetCenter();
-	debpOctree *node = (debpDefaultOctree*)NULL;
+	debpOctree *node = (debpDefaultOctree*)nullptr;
 	decVector nc;
 	
 	// determine the smallest and largest coordinates
@@ -142,7 +142,7 @@ void debpDefaultOctree::RemoveElement(void *element){
 	if(index == -1) DETHROW(deeInvalidParam);
 	
 	for(i=index+1; i<pElementCount; i++) pElements[i - 1] = pElements[i];
-	pElements[pElementCount - 1] = NULL;
+	pElements[pElementCount - 1] = nullptr;
 	pElementCount--;
 }
 

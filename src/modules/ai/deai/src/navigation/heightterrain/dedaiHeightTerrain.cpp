@@ -46,7 +46,7 @@
 dedaiHeightTerrain::dedaiHeightTerrain(deDEAIModule &deai, const deHeightTerrain &heightTerrain) :
 pDEAI(deai),
 pHeightTerrain(heightTerrain),
-pParentWorld(NULL)
+pParentWorld(nullptr)
 {
 	try{
 		heightTerrain.GetSectors().Visit([&](deHeightTerrainSector *sector){
@@ -223,6 +223,6 @@ void dedaiHeightTerrain::NavSpaceLayoutChanged(int sector, int index){
 //////////////////////
 
 void dedaiHeightTerrain::pCleanUp(){
-	SetParentWorld(NULL);
+	SetParentWorld(nullptr);
 	AllSectorsRemoved();
 }

@@ -296,7 +296,7 @@ void deClassSSWave::CreateClassMembers(dsEngine *engine){
 
 deSynthesizerSourceWave *deClassSSWave::GetSource(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return dedsGetNativeData<sSSWaveNatDat>(p_GetNativeData(myself->GetBuffer())).source;
@@ -318,7 +318,7 @@ void deClassSSWave::PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynt
 	}
 	
 	if(!source){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

@@ -368,7 +368,7 @@ void deClassEasyXML::CreateClassMembers(dsEngine *engine){
 
 dedsXmlDocument *deClassEasyXML::GetDocument(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	return dedsGetNativeData<sXMLNatDat>(p_GetNativeData(myself->GetBuffer())).document;
 }
@@ -379,7 +379,7 @@ void deClassEasyXML::PushDocument(dsRunTime *rt, dedsXmlDocument *document){
 	}
 	
 	if(!document){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

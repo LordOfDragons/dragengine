@@ -71,13 +71,13 @@ MOD_ENTRY_POINT_ATTR deBaseModule *DERigCreateModule(deLoadableModule *loadableM
 ///////////////////
 
 deBaseModule *DERigCreateModule(deLoadableModule *loadableModule){
-	deBaseModule *module = NULL;
+	deBaseModule *module = nullptr;
 	
 	try{
 		module = new deRigModule(*loadableModule);
 		
 	}catch(const deException &){
-		return NULL;
+		return nullptr;
 	}
 	
 	return module;
@@ -137,7 +137,7 @@ decXmlElementTag *deRigModule::pGetTagAt(decXmlElementTag *tag, int index){
 		return element->CastToElementTag();
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -148,7 +148,7 @@ decXmlElementTag *deRigModule::pGetTagAt(const decXmlElementTag &tag, int index)
 		return element->CastToElementTag();
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -167,7 +167,7 @@ decXmlAttValue *deRigModule::pFindAttribute(decXmlElementTag *tag, const char *n
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 const char *deRigModule::pGetAttributeString(decXmlElementTag *tag, const char *name){
@@ -186,7 +186,7 @@ int deRigModule::pGetAttributeInt(decXmlElementTag *tag, const char *name){
 	decXmlAttValue *value = pFindAttribute(tag, name);
 	
 	if(value){
-		return (int)strtol(value->GetValue(), NULL, 10);
+		return (int)strtol(value->GetValue(), nullptr, 10);
 		
 	}else{
 		LogErrorFormat("Missing Attribute '%s' in tag '%s'\n", name, tag->GetName().GetString());
@@ -198,7 +198,7 @@ float deRigModule::pGetAttributeFloat(decXmlElementTag *tag, const char *name){
 	decXmlAttValue *value = pFindAttribute(tag, name);
 	
 	if(value){
-		return strtof(value->GetValue(), NULL);
+		return strtof(value->GetValue(), nullptr);
 		
 	}else{
 		LogErrorFormat("Missing Attribute '%s' in tag '%s'\n", name, tag->GetName().GetString());
@@ -209,7 +209,7 @@ float deRigModule::pGetAttributeFloat(decXmlElementTag *tag, const char *name){
 
 
 void deRigModule::pParseRig(decXmlElementTag *root, deRig &rig){
-	const char *rootBone = NULL;
+	const char *rootBone = nullptr;
 	decXmlCharacterData *cdata;
 	dermNameList boneNameList;
 	decXmlElementTag *tag;
@@ -319,8 +319,8 @@ void deRigModule::pParseBone(decXmlElementTag *root, deRig &rig, dermNameList &b
 	decVector ikResistance(0.0f, 0.0f, 0.0f);
 	bool ikLocked[3] = {false, false, false};
 	decXmlCharacterData *cdata;
-	const char *name = NULL;
-	deRigBone *bone = NULL;
+	const char *name = nullptr;
+	deRigBone *bone = nullptr;
 	decXmlElementTag *tag;
 	decVector vector;
 	int i;
@@ -387,7 +387,7 @@ void deRigModule::pParseBone(decXmlElementTag *root, deRig &rig, dermNameList &b
 				}else if(strcmp(tag->GetName(), "mass") == 0){
 					cdata = tag->GetFirstData();
 					if(cdata){
-						bone->SetMass(strtof(cdata->GetData(), NULL));
+						bone->SetMass(strtof(cdata->GetData(), nullptr));
 						
 					}else{
 						bone->SetMass(0.0f);
@@ -475,7 +475,7 @@ void deRigModule::pParseBoneIK(decXmlElementTag *root, float &lower, float &uppe
 				cdata = tag->GetFirstData();
 				
 				if(cdata){
-					lower = strtof(cdata->GetData(), NULL) * DEG2RAD;
+					lower = strtof(cdata->GetData(), nullptr) * DEG2RAD;
 					
 				}else{
 					lower = 0.0f;
@@ -485,7 +485,7 @@ void deRigModule::pParseBoneIK(decXmlElementTag *root, float &lower, float &uppe
 				cdata = tag->GetFirstData();
 				
 				if(cdata){
-					upper = strtof(cdata->GetData(), NULL) * DEG2RAD;
+					upper = strtof(cdata->GetData(), nullptr) * DEG2RAD;
 					
 				}else{
 					upper = 0.0f;
@@ -495,7 +495,7 @@ void deRigModule::pParseBoneIK(decXmlElementTag *root, float &lower, float &uppe
 				cdata = tag->GetFirstData();
 				
 				if(cdata){
-					resistance = strtof(cdata->GetData(), NULL);
+					resistance = strtof(cdata->GetData(), nullptr);
 					
 				}else{
 					resistance = 0.0f;
@@ -505,7 +505,7 @@ void deRigModule::pParseBoneIK(decXmlElementTag *root, float &lower, float &uppe
 				cdata = tag->GetFirstData();
 				
 				if(cdata){
-					locked = ((int)strtol(cdata->GetData(), NULL, 10) != 0);
+					locked = ((int)strtol(cdata->GetData(), nullptr, 10) != 0);
 					
 				}else{
 					locked = false;
@@ -516,7 +516,7 @@ void deRigModule::pParseBoneIK(decXmlElementTag *root, float &lower, float &uppe
 }
 
 void deRigModule::pParseSphere(decXmlElementTag *root, decShapeList &shapes, decStringList &shapeProperties){
-	decShapeSphere *sphere = NULL;
+	decShapeSphere *sphere = nullptr;
 	decXmlCharacterData *cdata;
 	decXmlElementTag *tag;
 	decString property;
@@ -543,7 +543,7 @@ void deRigModule::pParseSphere(decXmlElementTag *root, decShapeList &shapes, dec
 					cdata = tag->GetFirstData();
 					
 					if(cdata){
-						sphere->SetRadius(strtof(cdata->GetData(), NULL));
+						sphere->SetRadius(strtof(cdata->GetData(), nullptr));
 						
 					}else{
 						sphere->SetRadius(0.0f);
@@ -572,7 +572,7 @@ void deRigModule::pParseSphere(decXmlElementTag *root, decShapeList &shapes, dec
 }
 
 void deRigModule::pParseCylinder(decXmlElementTag *root, decShapeList &shapes, decStringList &shapeProperties){
-	decShapeCylinder *cylinder = NULL;
+	decShapeCylinder *cylinder = nullptr;
 	decXmlCharacterData *cdata;
 	decXmlElementTag *tag;
 	decString property;
@@ -611,7 +611,7 @@ void deRigModule::pParseCylinder(decXmlElementTag *root, decShapeList &shapes, d
 					cdata = tag->GetFirstData();
 					
 					if(cdata){
-						cylinder->SetRadius(strtof(cdata->GetData(), NULL));
+						cylinder->SetRadius(strtof(cdata->GetData(), nullptr));
 						
 					}else{
 						cylinder->SetRadius(0.0f);
@@ -621,7 +621,7 @@ void deRigModule::pParseCylinder(decXmlElementTag *root, decShapeList &shapes, d
 					cdata = tag->GetFirstData();
 					
 					if(cdata){
-						cylinder->SetTopRadius(strtof(cdata->GetData(), NULL));
+						cylinder->SetTopRadius(strtof(cdata->GetData(), nullptr));
 						
 					}else{
 						cylinder->SetTopRadius(0.0f);
@@ -631,7 +631,7 @@ void deRigModule::pParseCylinder(decXmlElementTag *root, decShapeList &shapes, d
 					cdata = tag->GetFirstData();
 					
 					if(cdata){
-						cylinder->SetBottomRadius(strtof(cdata->GetData(), NULL));
+						cylinder->SetBottomRadius(strtof(cdata->GetData(), nullptr));
 						
 					}else{
 						cylinder->SetBottomRadius(0.0f);
@@ -641,7 +641,7 @@ void deRigModule::pParseCylinder(decXmlElementTag *root, decShapeList &shapes, d
 					cdata = tag->GetFirstData();
 					
 					if(cdata){
-						cylinder->SetHalfHeight(strtof(cdata->GetData(), NULL));
+						cylinder->SetHalfHeight(strtof(cdata->GetData(), nullptr));
 						
 					}else{
 						cylinder->SetHalfHeight(0.0f);
@@ -674,7 +674,7 @@ void deRigModule::pParseCylinder(decXmlElementTag *root, decShapeList &shapes, d
 }
 
 void deRigModule::pParseCapsule(decXmlElementTag *root, decShapeList &shapes, decStringList &shapeProperties){
-	decShapeCapsule *capsule = NULL;
+	decShapeCapsule *capsule = nullptr;
 	decXmlCharacterData *cdata;
 	decXmlElementTag *tag;
 	decString property;
@@ -711,7 +711,7 @@ void deRigModule::pParseCapsule(decXmlElementTag *root, decShapeList &shapes, de
 					cdata = tag->GetFirstData();
 					
 					if(cdata){
-						capsule->SetRadius(strtof(cdata->GetData(), NULL));
+						capsule->SetRadius(strtof(cdata->GetData(), nullptr));
 						
 					}else{
 						capsule->SetRadius(0.0f);
@@ -721,7 +721,7 @@ void deRigModule::pParseCapsule(decXmlElementTag *root, decShapeList &shapes, de
 					cdata = tag->GetFirstData();
 					
 					if(cdata){
-						capsule->SetTopRadius(strtof(cdata->GetData(), NULL));
+						capsule->SetTopRadius(strtof(cdata->GetData(), nullptr));
 						
 					}else{
 						capsule->SetTopRadius(0.0f);
@@ -731,7 +731,7 @@ void deRigModule::pParseCapsule(decXmlElementTag *root, decShapeList &shapes, de
 					cdata = tag->GetFirstData();
 					
 					if(cdata){
-						capsule->SetBottomRadius(strtof(cdata->GetData(), NULL));
+						capsule->SetBottomRadius(strtof(cdata->GetData(), nullptr));
 						
 					}else{
 						capsule->SetBottomRadius(0.0f);
@@ -741,7 +741,7 @@ void deRigModule::pParseCapsule(decXmlElementTag *root, decShapeList &shapes, de
 					cdata = tag->GetFirstData();
 					
 					if(cdata){
-						capsule->SetHalfHeight(strtof(cdata->GetData(), NULL));
+						capsule->SetHalfHeight(strtof(cdata->GetData(), nullptr));
 						
 					}else{
 						capsule->SetHalfHeight(0.0f);
@@ -770,7 +770,7 @@ void deRigModule::pParseCapsule(decXmlElementTag *root, decShapeList &shapes, de
 }
 
 void deRigModule::pParseBox(decXmlElementTag *root, decShapeList &shapes, decStringList &shapeProperties){
-	decShapeBox *box = NULL;
+	decShapeBox *box = nullptr;
 	decXmlElementTag *tag;
 	decString property;
 	decVector vector;
@@ -844,7 +844,7 @@ void deRigModule::pParseBox(decXmlElementTag *root, decShapeList &shapes, decStr
 }
 
 void deRigModule::pParseHull(decXmlElementTag *root, decShapeList &shapes, decStringList &shapeProperties){
-	decShapeHull *hull = NULL;
+	decShapeHull *hull = nullptr;
 	decString property;
 	decVector vector;
 	int i;
@@ -907,7 +907,7 @@ void deRigModule::pParseHull(decXmlElementTag *root, decShapeList &shapes, decSt
 }
 
 void deRigModule::pParseConstraint(decXmlElementTag *root, deRig &rig, deRigBone *bone, dermNameList &boneNameList){
-	deRigConstraint *constraint = NULL;
+	deRigConstraint *constraint = nullptr;
 	decXmlCharacterData *cdata;
 	decXmlElementTag *tag;
 	decVector vector;
@@ -971,7 +971,7 @@ void deRigModule::pParseConstraint(decXmlElementTag *root, deRig &rig, deRigBone
 				}else if(strcmp(tag->GetName(), "breakingThreshold") == 0){
 					cdata = tag->GetFirstData();
 					if(cdata){
-						constraint->SetBreakingThreshold(strtof(cdata->GetData(), NULL));
+						constraint->SetBreakingThreshold(strtof(cdata->GetData(), nullptr));
 					}
 					
 				}else if(strcmp(tag->GetName(), "limits") == 0){
@@ -1026,7 +1026,7 @@ deColliderConstraintDof &dof, bool linearConstraint){
 				const decXmlCharacterData * const cdata = tag->GetFirstData();
 				
 				if(cdata){
-					value = strtof(cdata->GetData(), NULL);
+					value = strtof(cdata->GetData(), nullptr);
 					
 					if(!linearConstraint){
 						value *= DEG2RAD;
@@ -1039,7 +1039,7 @@ deColliderConstraintDof &dof, bool linearConstraint){
 				const decXmlCharacterData * const cdata = tag->GetFirstData();
 				
 				if(cdata){
-					value = strtof(cdata->GetData(), NULL);
+					value = strtof(cdata->GetData(), nullptr);
 					
 					if(!linearConstraint){
 						value *= DEG2RAD;
@@ -1051,19 +1051,19 @@ deColliderConstraintDof &dof, bool linearConstraint){
 			}else if(strcmp(tag->GetName(), "staticFriction") == 0){
 				const decXmlCharacterData * const cdata = tag->GetFirstData();
 				if(cdata){
-					dof.SetStaticFriction(strtof(cdata->GetData(), NULL));
+					dof.SetStaticFriction(strtof(cdata->GetData(), nullptr));
 				}
 				
 			}else if(strcmp(tag->GetName(), "kinematicFriction") == 0){
 				const decXmlCharacterData * const cdata = tag->GetFirstData();
 				if(cdata){
-					dof.SetKinematicFriction(strtof(cdata->GetData(), NULL));
+					dof.SetKinematicFriction(strtof(cdata->GetData(), nullptr));
 				}
 				
 			}else if(strcmp(tag->GetName(), "springStiffness") == 0){
 				const decXmlCharacterData * const cdata = tag->GetFirstData();
 				if(cdata){
-					dof.SetSpringStiffness(strtof(cdata->GetData(), NULL));
+					dof.SetSpringStiffness(strtof(cdata->GetData(), nullptr));
 				}
 			}
 		}
@@ -1175,21 +1175,21 @@ void deRigModule::pParseConstraintDamping(decXmlElementTag *root, deRigConstrain
 				cdata = tag->GetFirstData();
 				
 				if(cdata){
-					constraint->SetLinearDamping(strtof(cdata->GetData(), NULL));
+					constraint->SetLinearDamping(strtof(cdata->GetData(), nullptr));
 				}
 				
 			}else if(strcmp(tag->GetName(), "angular") == 0){
 				cdata = tag->GetFirstData();
 				
 				if(cdata){
-					constraint->SetAngularDamping(strtof(cdata->GetData(), NULL));
+					constraint->SetAngularDamping(strtof(cdata->GetData(), nullptr));
 				}
 				
 			}else if(strcmp(tag->GetName(), "spring") == 0){
 				cdata = tag->GetFirstData();
 				
 				if(cdata){
-					constraint->SetSpringDamping(strtof(cdata->GetData(), NULL));
+					constraint->SetSpringDamping(strtof(cdata->GetData(), nullptr));
 				}
 			}
 		}

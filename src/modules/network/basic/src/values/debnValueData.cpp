@@ -45,7 +45,7 @@
 
 debnValueData::debnValueData(deNetworkValueData &valueData) :
 pValueData(valueData),
-pLastValue(NULL),
+pLastValue(nullptr),
 pLastValueLen(0)
 {
 	SetDataType(evtData);
@@ -85,7 +85,7 @@ void debnValueData::SetLastValueFromNetworkValue(){
 	if(pValueData.GetLength() > pLastValueLen){
 		if(pLastValue){
 			delete [] pLastValue;
-			pLastValue = NULL;
+			pLastValue = nullptr;
 			pLastValueLen = 0;
 		}
 		pLastValue = new uint8_t[pValueData.GetLength()];

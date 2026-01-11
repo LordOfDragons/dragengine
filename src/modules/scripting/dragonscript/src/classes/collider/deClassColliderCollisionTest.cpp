@@ -882,7 +882,7 @@ deColliderCollisionTest *collisionTest, deCollider *parentCollider){
 	}
 	
 	if(!collisionTest){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

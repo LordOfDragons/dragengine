@@ -59,10 +59,10 @@ pPredictedFrame(0),
 pDirtyFrame(true),
 pDirtySource(true),
 
-pVideo(NULL),
+pVideo(nullptr),
 
 pBrokenVideoDecoder(false),
-pDecodeThread(NULL)
+pDecodeThread(nullptr)
 {
 	pRVideoPlayer = deoglRVideoPlayer::Ref::New(ogl.GetRenderThread());
 	
@@ -143,7 +143,7 @@ void deoglVideoPlayer::SyncToRender(){
 			pRVideoPlayer->SetVideo(pVideo->GetRVideo());
 			
 		}else{
-			pRVideoPlayer->SetVideo(NULL);
+			pRVideoPlayer->SetVideo(nullptr);
 		}
 		
 		deVideo * const video = pVideoPlayer.GetVideo();
@@ -201,10 +201,10 @@ void deoglVideoPlayer::SyncToRender(){
 					pVideoPlayer.GetVideo()->GetFilename().GetString());
 				pDecodeThread->StopDecode();
 				delete pDecodeThread;
-				pDecodeThread = NULL;
+				pDecodeThread = nullptr;
 			}
 			
-			pVideoDecoder = NULL;
+			pVideoDecoder = nullptr;
 			pBrokenVideoDecoder = false;
 			
 		}else if(pDecodeThread && pPredictedFrame != pCurFrame){
@@ -230,17 +230,17 @@ void deoglVideoPlayer::SourceChanged(){
 	if(pDecodeThread){
 		pDecodeThread->StopDecode();
 		delete pDecodeThread;
-		pDecodeThread = NULL;
+		pDecodeThread = nullptr;
 	}
 	
-	pVideoDecoder = NULL;
+	pVideoDecoder = nullptr;
 	pBrokenVideoDecoder = false;
 	
 	if(pVideoPlayer.GetVideo()){
 		pVideo = (deoglVideo*)pVideoPlayer.GetVideo()->GetPeerGraphic();
 		
 	}else{
-		pVideo = NULL;
+		pVideo = nullptr;
 	}
 	
 	if(pVideo && !pVideo->AllFramesAreCached()){

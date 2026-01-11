@@ -56,7 +56,7 @@ decTimer::~decTimer(){
 void decTimer::Reset(){
 #if defined OS_UNIX
 	timeval vTime;
-	gettimeofday(&vTime, NULL);
+	gettimeofday(&vTime, nullptr);
 	pLastSec = vTime.tv_sec;
 	pLastUSec = vTime.tv_usec;
 	
@@ -70,7 +70,7 @@ void decTimer::Reset(){
 float decTimer::GetElapsedTime(){
 #if defined OS_UNIX
 	timeval vTime;
-	gettimeofday(&vTime, NULL);
+	gettimeofday(&vTime, nullptr);
 	const suseconds_t diff = (int)(vTime.tv_sec - pLastSec) * 1000000 + ((int)vTime.tv_usec - (int)pLastUSec);
 	pLastSec = vTime.tv_sec;
 	pLastUSec = vTime.tv_usec;
@@ -89,7 +89,7 @@ float decTimer::GetElapsedTime(){
 float decTimer::PeekElapsedTime(){
 #if defined OS_UNIX
 	timeval vTime;
-	gettimeofday(&vTime, NULL);
+	gettimeofday(&vTime, nullptr);
 	const suseconds_t diff = (int)(vTime.tv_sec - pLastSec) * 1000000 + ((int)vTime.tv_usec - (int)pLastUSec);
 	return (float)diff * 1e-6f; // / 1000000.0f;
 	

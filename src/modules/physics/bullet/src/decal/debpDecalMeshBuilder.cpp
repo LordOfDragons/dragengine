@@ -55,14 +55,14 @@
 ////////////////////////////
 
 debpDecalMeshBuilder::debpDecalMeshBuilder(){
-	pCVolList = NULL;
+	pCVolList = nullptr;
 	pDistance = 0.0f;
-	pDecalBox = NULL;
+	pDecalBox = nullptr;
 	
-	pPoints = NULL;
+	pPoints = nullptr;
 	pPointCount = 0;
 	pPointSize = 0;
-	pFaces = NULL;
+	pFaces = nullptr;
 	pFaceCount = 0;
 	pFaceSize = 0;
 }
@@ -82,12 +82,12 @@ debpDecalMeshBuilder::~debpDecalMeshBuilder(){
 void debpDecalMeshBuilder::Init(deDecal *decal, float distance){
 	if(!decal || distance < 1e-3f) DETHROW(deeInvalidParam);
 	decVector halfSize(decal->GetSize() * 0.5f);
-	decConvexVolume *volume = NULL;
+	decConvexVolume *volume = nullptr;
 	
 	// free the old stuff
 	if(pCVolList){
 		delete pCVolList;
-		pCVolList = NULL;
+		pCVolList = nullptr;
 	}
 	
 	// tuck away the infos
@@ -102,7 +102,7 @@ void debpDecalMeshBuilder::Init(deDecal *decal, float distance){
 	// create decal box
 	if(pDecalBox){
 		delete pDecalBox;
-		pDecalBox = NULL;
+		pDecalBox = nullptr;
 	}
 	pDecalBox = new debpDCollisionBox(pOrigin - pDecalView * (pDistance * 0.5f),
 		decVector(halfSize.x, halfSize.y, pDistance * 0.5f), decal->GetOrientation());
@@ -460,7 +460,7 @@ void debpDecalMeshBuilder::RemoveAllFaces(){
 //////////////////////
 
 void debpDecalMeshBuilder::pVolumeAddFace(decConvexVolume *volume, int p1, int p2, int p3, const decVector &normal, bool decal){
-	debpDMBConvexVolumeFace *face = NULL;
+	debpDMBConvexVolumeFace *face = nullptr;
 	decVector faceNormal;
 	
 	try{
@@ -485,7 +485,7 @@ void debpDecalMeshBuilder::pVolumeAddFace(decConvexVolume *volume, int p1, int p
 }
 
 void debpDecalMeshBuilder::pVolumeAddFace(decConvexVolume *volume, int p1, int p2, int p3, int p4, const decVector &normal, bool decal){
-	debpDMBConvexVolumeFace *face = NULL;
+	debpDMBConvexVolumeFace *face = nullptr;
 	decVector faceNormal;
 	
 	try{

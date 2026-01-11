@@ -79,7 +79,7 @@ deModel *deModelManager::GetModelWith(const char *filename) const{
 
 deModel *deModelManager::GetModelWith(deVirtualFileSystem *vfs, const char *filename) const{
 	deModel * const model = (deModel*)pModels.GetWithFilename(vfs, filename);
-	return model && !model->GetOutdated() ? model : NULL;
+	return model && !model->GetOutdated() ? model : nullptr;
 }
 
 deModel::Ref deModelManager::CreateModel(const char *filename, deModelBuilder &builder){
@@ -263,7 +263,7 @@ void deModelManager::SystemGraphicUnload(){
 	deModel *model = (deModel*)pModels.GetRoot();
 	
 	while(model){
-		model->SetPeerGraphic(NULL);
+		model->SetPeerGraphic(nullptr);
 		model = (deModel*)model->GetLLManagerNext();
 	}
 }
@@ -285,7 +285,7 @@ void deModelManager::SystemPhysicsUnload(){
 	deModel *model = (deModel*)pModels.GetRoot();
 	
 	while(model){
-		model->SetPeerPhysics(NULL);
+		model->SetPeerPhysics(nullptr);
 		model = (deModel*)model->GetLLManagerNext();
 	}
 }
@@ -307,7 +307,7 @@ void deModelManager::SystemAudioUnload(){
 	deModel *model = (deModel*)pModels.GetRoot();
 	
 	while(model){
-		model->SetPeerAudio (NULL);
+		model->SetPeerAudio (nullptr);
 		model = (deModel*)model->GetLLManagerNext();
 	}
 }

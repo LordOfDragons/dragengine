@@ -365,7 +365,7 @@ void deClassLumimeter::PushLumimeter(dsRunTime *rt, deLumimeter *lumimeter){
 	}
 	
 	if(!lumimeter){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

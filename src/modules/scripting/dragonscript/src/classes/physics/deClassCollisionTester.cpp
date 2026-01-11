@@ -588,7 +588,7 @@ void deClassCollisionTester::PushCollisionTester(dsRunTime *rt, dedsCollisionTes
 	}
 	
 	if(!collisionTester){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

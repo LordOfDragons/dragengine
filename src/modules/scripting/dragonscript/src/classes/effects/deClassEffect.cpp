@@ -220,7 +220,7 @@ void deClassEffect::PushEffect(dsRunTime *rt, deEffect *effect){
 	}
 	
 	if(!effect){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

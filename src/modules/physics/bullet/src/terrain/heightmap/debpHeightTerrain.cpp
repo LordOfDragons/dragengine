@@ -49,9 +49,9 @@ debpHeightTerrain::debpHeightTerrain(dePhysicsBullet *bullet, deHeightTerrain *h
 	pBullet = bullet;
 	pHeightTerrain = heightTerrain;
 	
-	pParentWorld = NULL;
+	pParentWorld = nullptr;
 	
-	pSectors = NULL;
+	pSectors = nullptr;
 	pSectorCount = 0;
 	pSectorSize = 0;
 	
@@ -104,7 +104,7 @@ debpHTSector *debpHeightTerrain::GetSectorWith(int x, int z) const{
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 
@@ -154,7 +154,7 @@ const decPoint &toSector, const decPoint &toCoordinates){
 
 void debpHeightTerrain::SectorAdded(deHeightTerrainSector *sector)
 {
-	debpHTSector *bpsector = NULL;
+	debpHTSector *bpsector = nullptr;
 	
 	try{
 		if(pSectorCount == pSectorSize){

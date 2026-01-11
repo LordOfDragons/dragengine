@@ -42,7 +42,7 @@
 
 deoglTimerQuerySet::deoglTimerQuerySet(deoglRenderThread &renderthread) :
 pRenderThread(renderthread),
-pQueries(NULL),
+pQueries(nullptr),
 pQueryCount(0){
 }
 
@@ -55,7 +55,7 @@ deoglTimerQuerySet::~deoglTimerQuerySet(){
 		}
 		
 		delete [] pQueries;
-		pQueries = NULL;
+		pQueries = nullptr;
 	}
 }
 
@@ -76,7 +76,7 @@ void deoglTimerQuerySet::SetQueryCount(int count){
 		}
 		if(pQueries){
 			delete [] pQueries;
-			pQueries = NULL;
+			pQueries = nullptr;
 		}
 		
 		if(count > 0){

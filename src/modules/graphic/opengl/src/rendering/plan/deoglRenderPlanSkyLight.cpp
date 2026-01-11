@@ -85,9 +85,9 @@
 
 deoglRenderPlanSkyLight::deoglRenderPlanSkyLight(deoglRenderPlan &plan) :
 pPlan(plan),
-pSky(NULL),
-pLayer(NULL),
-pOcclusionTest(NULL),
+pSky(nullptr),
+pLayer(nullptr),
+pOcclusionTest(nullptr),
 pPlanned(false),
 pUseLight(true),
 pUseShadow(false),
@@ -205,13 +205,13 @@ void deoglRenderPlanSkyLight::Clear(){
 		pShadowLayers[i].renderTask->Clear();
 	}
 	
-	SetOcclusionTest(NULL);
+	SetOcclusionTest(nullptr);
 	pCollideList.Clear();
 	pUseLight = false;
 	pUseShadow = false;
 	
-	pSky = NULL;
-	pLayer = NULL;
+	pSky = nullptr;
+	pLayer = nullptr;
 }
 
 void deoglRenderPlanSkyLight::SetLayer(deoglRSkyInstance *sky, deoglRSkyInstanceLayer *layer){
@@ -344,7 +344,7 @@ void deoglRenderPlanSkyLight::WaitFinishedGIUpdateRT(){
 	rc.SampleDebugInfoPlanPrepareSkyLightGIUpdateRenderTask(pPlan, pTaskGIUpdateRT->GetElapsedTime());
 	
 // 	const float timePrepare = pTaskGIUpdateRT->GetElapsedTime();
-	pTaskGIUpdateRT = NULL;
+	pTaskGIUpdateRT = nullptr;
 	
 	// this call does modify a shader parameter block and can thus not be parallel
 		decTimer timer;
@@ -369,7 +369,7 @@ void deoglRenderPlanSkyLight::WaitFinishedBuildRT1(){
 	
 	deoglRenderCanvas &rc = pPlan.GetRenderThread().GetRenderers().GetCanvas();
 	rc.SampleDebugInfoPlanPrepareSkyLightBuildRT(pPlan, pTaskBuildRT1->GetElapsedTime());
-	pTaskBuildRT1 = NULL;
+	pTaskBuildRT1 = nullptr;
 	
 	// this call does modify a shader parameter block and can thus not be parallel
 	pShadowLayers[0].renderTask->PrepareForRender();
@@ -386,7 +386,7 @@ void deoglRenderPlanSkyLight::WaitFinishedBuildRT2(){
 	
 	deoglRenderCanvas &rc = pPlan.GetRenderThread().GetRenderers().GetCanvas();
 	rc.SampleDebugInfoPlanPrepareSkyLightBuildRT(pPlan, pTaskBuildRT2->GetElapsedTime());
-	pTaskBuildRT2 = NULL;
+	pTaskBuildRT2 = nullptr;
 	
 	// this call does modify a shader parameter block and can thus not be parallel
 	pShadowLayers[3].renderTask->PrepareForRender();
@@ -612,7 +612,7 @@ void deoglRenderPlanSkyLight::CleanUp(){
 	pGIRenderTaskDynamic.Clear();
 	pUseLight = false;
 	pUseShadow = false;
-	SetOcclusionTest(NULL);
+	SetOcclusionTest(nullptr);
 }
 
 
@@ -1139,7 +1139,7 @@ void deoglRenderPlanSkyLight::pWaitFinishedFindContent(){
 	
 	pPlan.GetRenderThread().GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareSkyLightFindContent(
 		pPlan, pTaskFindContent->GetElapsedTime());
-	pTaskFindContent = NULL;
+	pTaskFindContent = nullptr;
 }
 
 void deoglRenderPlanSkyLight::pWaitFinishedGIFindContent(){
@@ -1151,7 +1151,7 @@ void deoglRenderPlanSkyLight::pWaitFinishedGIFindContent(){
 	
 	deoglRenderCanvas &rc = pPlan.GetRenderThread().GetRenderers().GetCanvas();
 	rc.SampleDebugInfoPlanPrepareSkyLightGIFindContent(pPlan, pTaskGIFindContent->GetElapsedTime());
-	pTaskGIFindContent = NULL;
+	pTaskGIFindContent = nullptr;
 }
 
 void deoglRenderPlanSkyLight::pGICalcShadowLayerParams(){

@@ -88,20 +88,20 @@ void deoglRParticleEmitterInstance::WorldComputeElement::UpdateDataGeometries(sD
 
 deoglRParticleEmitterInstance::deoglRParticleEmitterInstance(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
-pParentWorld(NULL),
-pOctreeNode(NULL),
+pParentWorld(nullptr),
+pOctreeNode(nullptr),
 pWorldComputeElement(WorldComputeElement::Ref::New(*this)),
 
 pBurstTime(0.0f),
 
-pParticles(NULL),
+pParticles(nullptr),
 pParticleCount(0),
 pParticleSize(0),
 
-pLocalVBOData(NULL),
-pSharedVBOData(NULL),
+pLocalVBOData(nullptr),
+pSharedVBOData(nullptr),
 
-pIndices(NULL),
+pIndices(nullptr),
 pIndexCount(0),
 pIndexSize(0),
 pIndexUsedCount(0),
@@ -111,7 +111,7 @@ pDirtyRenderEnvMap(true),
 pVBOShared(0),
 pVBOLocal(0),
 pIBO(0),
-pVAO(NULL),
+pVAO(nullptr),
 
 pDirtyParticles(true),
 
@@ -123,10 +123,10 @@ pWorldMarkedRemove(false){
 
 deoglRParticleEmitterInstance::~deoglRParticleEmitterInstance(){
 	LEAK_CHECK_FREE(pRenderThread, ParticleEmitterInstance);
-	SetParentWorld(NULL);
+	SetParentWorld(nullptr);
 	
 	ReleaseParticles();
-	SetEmitter(NULL);
+	SetEmitter(nullptr);
 	
 	if(pIndices){
 		delete [] pIndices;
@@ -160,12 +160,12 @@ void deoglRParticleEmitterInstance::SetParentWorld(deoglRWorld *world){
 	
 	if(pRenderEnvMap){
 		pRenderEnvMap->GetParticleEmitterInstanceList().RemoveIfExisting(this);
-		pRenderEnvMap = NULL;
+		pRenderEnvMap = nullptr;
 	}
 	pWorldComputeElement->RemoveFromCompute();
 	if(pOctreeNode){
 		pOctreeNode->RemoveParticleEmitter(this);
-		pOctreeNode = NULL;
+		pOctreeNode = nullptr;
 	}
 	
 	pParentWorld = world;
@@ -385,7 +385,7 @@ void deoglRParticleEmitterInstance::UpdateParticles(const deParticleEmitterInsta
 		// enlarge particle array
 		if(pParticles){
 			delete [] pParticles;
-			pParticles = NULL;
+			pParticles = nullptr;
 		}
 		pParticles = new sParticle[particleCount];
 		pParticleSize = particleCount;
@@ -393,14 +393,14 @@ void deoglRParticleEmitterInstance::UpdateParticles(const deParticleEmitterInsta
 		// enlarge local vbo data array
 		if(pLocalVBOData){
 			delete [] pLocalVBOData;
-			pLocalVBOData = NULL;
+			pLocalVBOData = nullptr;
 		}
 		pLocalVBOData = new sLocalVBOData[particleCount];
 		
 		// enlarge shared vbo data array
 		if(pSharedVBOData){
 			delete [] pSharedVBOData;
-			pSharedVBOData = NULL;
+			pSharedVBOData = nullptr;
 		}
 		pSharedVBOData = new char[DEPE_SPARTICLE_SIZE * particleCount];
 	}
@@ -409,7 +409,7 @@ void deoglRParticleEmitterInstance::UpdateParticles(const deParticleEmitterInsta
 	if(pIndexCount > pIndexSize){
 		if(pIndices){
 			delete [] pIndices;
-			pIndices = NULL;
+			pIndices = nullptr;
 		}
 		pIndices = new GLushort[pIndexCount];
 		pIndexSize = pIndexCount;
@@ -500,7 +500,7 @@ void deoglRParticleEmitterInstance::UpdateParticlesVBO(){
 	}
 	
 	OGL_CHECK(pRenderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBOShared));
-	OGL_CHECK(pRenderThread, pglBufferData(GL_ARRAY_BUFFER, DEPE_SPARTICLE_SIZE * pParticleCount, NULL, GL_STREAM_DRAW));
+	OGL_CHECK(pRenderThread, pglBufferData(GL_ARRAY_BUFFER, DEPE_SPARTICLE_SIZE * pParticleCount, nullptr, GL_STREAM_DRAW));
 	OGL_CHECK(pRenderThread, pglBufferData(GL_ARRAY_BUFFER, DEPE_SPARTICLE_SIZE * pParticleCount, pSharedVBOData, GL_STREAM_DRAW));
 	
 	// local vbo
@@ -566,17 +566,17 @@ void deoglRParticleEmitterInstance::ReleaseParticles(){
 	
 	if(pSharedVBOData){
 		delete [] pSharedVBOData;
-		pSharedVBOData = NULL;
+		pSharedVBOData = nullptr;
 	}
 	
 	if(pLocalVBOData){
 		delete [] pLocalVBOData;
-		pLocalVBOData = NULL;
+		pLocalVBOData = nullptr;
 	}
 	
 	if(pParticles){
 		delete [] pParticles;
-		pParticles = NULL;
+		pParticles = nullptr;
 		pParticleCount = 0;
 		pParticleSize = 0;
 	}
@@ -600,8 +600,8 @@ void deoglRParticleEmitterInstance::WorldReferencePointChanged(){
 
 
 void deoglRParticleEmitterInstance::PrepareQuickDispose(){
-	pParentWorld = NULL;
-	pOctreeNode = NULL;
+	pParentWorld = nullptr;
+	pOctreeNode = nullptr;
 }
 
 
@@ -695,7 +695,7 @@ void deoglRParticleEmitterInstance::UpdateIBO(){
 		const int size = vboLayout.GetIndexSize() * pIndexUsedCount;
 		
 		OGL_CHECK(pRenderThread, pglBindBuffer(GL_ARRAY_BUFFER, pIBO));
-		OGL_CHECK(pRenderThread, pglBufferData(GL_ARRAY_BUFFER, size, NULL, GL_STREAM_DRAW));
+		OGL_CHECK(pRenderThread, pglBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_STREAM_DRAW));
 		OGL_CHECK(pRenderThread, pglBufferData(GL_ARRAY_BUFFER, size, pIndices, GL_STREAM_DRAW));
 	}
 	

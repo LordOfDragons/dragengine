@@ -52,7 +52,7 @@ debpDMBConvexVolumeList::~debpDMBConvexVolumeList(){
 ////////////////
 
 decConvexVolumeFace *debpDMBConvexVolumeList::CreateVolumeFace(decConvexVolumeFace *face){
-	debpDMBConvexVolumeFace *newFace = NULL;
+	debpDMBConvexVolumeFace *newFace = nullptr;
 	
 	newFace = new debpDMBConvexVolumeFace;
 	

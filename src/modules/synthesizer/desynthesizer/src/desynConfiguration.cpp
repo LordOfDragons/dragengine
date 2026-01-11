@@ -101,7 +101,7 @@ decXmlElementTag *desynConfiguration::pGetTagAt(const decXmlElementTag &tag, int
 		return element.CastToElementTag();
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -121,7 +121,7 @@ decXmlAttValue *desynConfiguration::pFindAttribute(const decXmlElementTag &tag, 
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 const char *desynConfiguration::pGetAttributeString(const decXmlElementTag &tag, const char *name){
@@ -141,7 +141,7 @@ int desynConfiguration::pGetAttributeInt(const decXmlElementTag &tag, const char
 	const decXmlAttValue * const value = pFindAttribute(tag, name);
 	
 	if(value){
-		return (int)strtol(value->GetValue(), NULL, 10);
+		return (int)strtol(value->GetValue(), nullptr, 10);
 		
 	}else{
 		pModule.LogErrorFormat("Missing Attribute '%s' in tag '%s'.", name,
@@ -154,7 +154,7 @@ float desynConfiguration::pGetAttributeFloat(const decXmlElementTag &tag, const 
 	const decXmlAttValue * const value = pFindAttribute(tag, name);
 	
 	if(value){
-		return strtof(value->GetValue(), NULL);
+		return strtof(value->GetValue(), nullptr);
 		
 	}else{
 		pModule.LogErrorFormat("Missing Attribute '%s' in tag '%s'.", name,

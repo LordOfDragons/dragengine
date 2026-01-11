@@ -301,7 +301,7 @@ void deClassSEStretch::CreateClassMembers(dsEngine *engine){
 
 deSynthesizerEffectStretch *deClassSEStretch::GetEffect(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return dedsGetNativeData<sSEStretchNatDat>(p_GetNativeData(myself->GetBuffer())).effect;
@@ -323,7 +323,7 @@ void deClassSEStretch::PushEffect(dsRunTime *rt, deSynthesizerSource *source, de
 	}
 	
 	if(!effect){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

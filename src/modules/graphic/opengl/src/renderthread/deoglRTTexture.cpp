@@ -50,16 +50,16 @@
 ////////////////////////////
 
 deoglRTTexture::deoglRTTexture(deoglRenderThread &renderThread) :
-pTextureStageManager(NULL),
-pImageStageManager(NULL),
-pCombinedTextureList(NULL),
-pRenColorTexMgr(NULL),
-pRenDepthTexMgr(NULL),
-pRenColorCubeMgr(NULL),
-pRenDepthCubeMgr(NULL),
-pRenColorArrTexMgr(NULL),
-pRenDepthArrTexMgr(NULL),
-pOcclusionMapPool(NULL)
+pTextureStageManager(nullptr),
+pImageStageManager(nullptr),
+pCombinedTextureList(nullptr),
+pRenColorTexMgr(nullptr),
+pRenDepthTexMgr(nullptr),
+pRenColorCubeMgr(nullptr),
+pRenDepthCubeMgr(nullptr),
+pRenColorArrTexMgr(nullptr),
+pRenDepthArrTexMgr(nullptr),
+pOcclusionMapPool(nullptr)
 {
 	try{
 		pTextureStageManager = new deoglTextureStageManager(renderThread);

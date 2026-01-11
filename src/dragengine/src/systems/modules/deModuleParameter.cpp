@@ -42,7 +42,7 @@ pType(eptBoolean),
 pMinValue(0.0f),
 pMaxValue(1.0f),
 pValueStepSize(0.1f),
-pSelectionEntries(NULL),
+pSelectionEntries(nullptr),
 pSelectionEntryCount(0),
 pCategory(ecBasic){
 }
@@ -54,7 +54,7 @@ pDescription(parameter.pDescription),
 pMinValue(parameter.pMinValue),
 pMaxValue(parameter.pMaxValue),
 pValueStepSize(parameter.pValueStepSize),
-pSelectionEntries(NULL),
+pSelectionEntries(nullptr),
 pSelectionEntryCount(0),
 pCategory(parameter.pCategory),
 pDisplayName(parameter.pDisplayName),
@@ -177,7 +177,7 @@ void deModuleParameter::RemoveAllSelectionEntries(){
 	if(pSelectionEntries){
 		delete [] pSelectionEntries;
 	}
-	pSelectionEntries = NULL;
+	pSelectionEntries = nullptr;
 	pSelectionEntryCount = 0;
 }
 

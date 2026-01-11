@@ -101,7 +101,7 @@ void deForceFieldManager::SystemPhysicsUnload(){
 	deForceField *field = (deForceField*)pFields.GetRoot();
 	
 	while(field){
-		field->SetPeerPhysics(NULL);
+		field->SetPeerPhysics(nullptr);
 		field = (deForceField*)field->GetLLManagerNext();
 	}
 }

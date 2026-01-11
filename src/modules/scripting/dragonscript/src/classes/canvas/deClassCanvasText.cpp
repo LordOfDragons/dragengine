@@ -254,7 +254,7 @@ void deClassCanvasText::CreateClassMembers(dsEngine *engine){
 
 deCanvasText *deClassCanvasText::GetCanvas(dsRealObject *myself) const {
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return dedsGetNativeData<sCTextNatDat>(p_GetNativeData(myself->GetBuffer())).canvas;
@@ -266,7 +266,7 @@ void deClassCanvasText::PushCanvas(dsRunTime *rt, deCanvasText *canvas){
 	}
 	
 	if(!canvas){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

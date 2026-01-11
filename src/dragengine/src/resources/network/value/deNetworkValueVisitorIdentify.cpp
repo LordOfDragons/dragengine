@@ -122,7 +122,7 @@ deNetworkValueQuaternion *deNetworkValueVisitorIdentify::CastToQuaternion() cons
 }
 
 void deNetworkValueVisitorIdentify::Reset(){
-	pValue = NULL;
+	pValue = nullptr;
 	pType = envtUnknown;
 }
 

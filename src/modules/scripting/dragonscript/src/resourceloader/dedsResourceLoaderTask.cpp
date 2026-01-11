@@ -74,7 +74,7 @@ const char *filename, deResourceLoader::eResourceType resourceType) :
 pDS(ds),
 pFilename(filename),
 pResourceType(resourceType),
-pListeners(NULL),
+pListeners(nullptr),
 pListenerCount(0),
 pListenerSize(0)
 {

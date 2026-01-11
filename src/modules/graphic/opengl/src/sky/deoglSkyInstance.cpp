@@ -49,8 +49,8 @@ deoglSkyInstance::deoglSkyInstance(deGraphicOpenGl &ogl, const deSkyInstance &in
 pOgl(ogl),
 pInstance(instance),
 pRInstance(deoglRSkyInstance::Ref::New(pOgl.GetRenderThread())),
-pParentWorld(NULL),
-pOglSky(NULL),
+pParentWorld(nullptr),
+pOglSky(nullptr),
 pEnvMapTimer(0.0f),
 pDirtySky(true),
 pDirtyControllers(true),
@@ -68,7 +68,7 @@ deoglSkyInstance::~deoglSkyInstance(){
 
 void deoglSkyInstance::SyncToRender(){
 	if(pDirtySky){
-		pOglSky = NULL;
+		pOglSky = nullptr;
 		if(pInstance.GetSky()){
 			pOglSky = (deoglSky*)pInstance.GetSky()->GetPeerGraphic();
 		}
@@ -80,7 +80,7 @@ void deoglSkyInstance::SyncToRender(){
 			pRInstance->SetRSky(pOglSky->GetRSky());
 			
 		}else{
-			pRInstance->SetRSky(NULL);
+			pRInstance->SetRSky(nullptr);
 		}
 		
 		pRInstance->SetOrder(pInstance.GetOrder());

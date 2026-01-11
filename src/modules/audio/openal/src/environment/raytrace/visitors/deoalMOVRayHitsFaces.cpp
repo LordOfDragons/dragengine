@@ -50,7 +50,7 @@
 deoalMOVRayHitsFaces::deoalMOVRayHitsFaces(deoalAComponent &component, const deoalAModel &model) :
 pComponent(component),
 pModel(model),
-pResult(NULL),
+pResult(nullptr),
 pResultInWorldSpace(false),
 pCheckAxisX(false),
 pCheckAxisY(false),

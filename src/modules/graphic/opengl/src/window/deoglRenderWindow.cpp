@@ -58,7 +58,7 @@ deoglRenderWindow::deoglRenderWindow(deGraphicOpenGl &ogl, deRenderWindow &rende
 pOgl(ogl),
 pRenderWindow(renderWindow),
 
-pCanvasView(NULL),
+pCanvasView(nullptr),
 pDirtyParams(false),
 pDirtyPosition(true),
 pDirtySize(true),
@@ -183,7 +183,7 @@ void deoglRenderWindow::SyncToRender(){
 			image.ReleasePixelBuffer();
 			
 		}else{
-			pRRenderWindow->SetIcon(NULL);
+			pRRenderWindow->SetIcon(nullptr);
 		}
 		pDirtyIcon = false;
 // 			pOgl.LogInfoFormat( "RWindow.Sync icon: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );

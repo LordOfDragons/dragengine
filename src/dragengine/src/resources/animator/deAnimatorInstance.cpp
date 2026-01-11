@@ -53,7 +53,7 @@ pBlendFactor(1.0f),
 pEnableRetargeting(true),
 pProtectDynamicBones(false),
 
-pPeerAnimator(NULL){
+pPeerAnimator(nullptr){
 
 }
 
@@ -272,7 +272,7 @@ void deAnimatorInstance::SetPeerAnimator(deBaseAnimatorAnimatorInstance *peer){
 void deAnimatorInstance::pCleanUp(){
 	if(pPeerAnimator){
 		delete pPeerAnimator;
-		pPeerAnimator = NULL;
+		pPeerAnimator = nullptr;
 	}
 }
 

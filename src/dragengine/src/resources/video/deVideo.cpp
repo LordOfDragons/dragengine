@@ -54,7 +54,7 @@ pBytesPerSample(bytesPerSample),
 pSampleCount(sampleCount),
 pSampleRate(sampleRate),
 pChannelCount(channelCount),
-pPeerGraphic(NULL)
+pPeerGraphic(nullptr)
 {
 	DEASSERT_TRUE(width >= 1)
 	DEASSERT_TRUE(height >= 1)
@@ -87,13 +87,13 @@ pBytesPerSample(2),
 pSampleCount(0),
 pSampleRate(44100),
 pChannelCount(1),
-pPeerGraphic(NULL){
+pPeerGraphic(nullptr){
 }
 
 deVideo::~deVideo(){
 	if(pPeerGraphic){
 		delete pPeerGraphic;
-		pPeerGraphic = NULL;
+		pPeerGraphic = nullptr;
 	}
 }
 

@@ -223,7 +223,7 @@ void deClassSynthesizer::nfGetControllerNamed::RunFunction(dsRunTime *rt, dsValu
 	const int index = synthesizer->IndexOfControllerNamed(rt->GetValue(0)->GetString());
 	
 	if(index == -1){
-		rt->PushObject(NULL, ds.GetClassSynthesizerController());
+		rt->PushObject(nullptr, ds.GetClassSynthesizerController());
 		
 	}else{
 		ds.GetClassSynthesizerController()->PushController(rt, synthesizer, index);
@@ -528,7 +528,7 @@ void deClassSynthesizer::PushSynthesizer(dsRunTime *rt, deSynthesizer *synthesiz
 	}
 	
 	if(!synthesizer){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

@@ -44,7 +44,7 @@
 ////////////////////////////
 
 deSynthesizerSourceVisitorIdentify::deSynthesizerSourceVisitorIdentify() :
-pSource(NULL),
+pSource(nullptr),
 pType(estUnknown){
 }
 
@@ -92,7 +92,7 @@ deSynthesizerSourceGroup &deSynthesizerSourceVisitorIdentify::CastToGroup() cons
 }
 
 void deSynthesizerSourceVisitorIdentify::Reset(){
-	pSource = NULL;
+	pSource = nullptr;
 	pType = estUnknown;
 }
 

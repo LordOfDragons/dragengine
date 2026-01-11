@@ -37,7 +37,7 @@
 
 deSkinPropertyConstructed::deSkinPropertyConstructed(const char *type) :
 deSkinProperty(type),
-pContent(NULL),
+pContent(nullptr),
 pTileX(false),
 pTileY(false),
 pBitCount(8)

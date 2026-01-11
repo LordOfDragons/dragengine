@@ -290,7 +290,7 @@ void dearRuleInverseKinematic::pSetChainCount(int count){
 		return;
 	}
 	
-	dearIKWorkState *newChain = NULL;
+	dearIKWorkState *newChain = nullptr;
 	if(count > 0){
 		newChain = new dearIKWorkState[count];
 	}

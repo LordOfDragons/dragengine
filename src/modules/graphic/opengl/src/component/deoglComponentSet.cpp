@@ -40,7 +40,7 @@
 ////////////////////////////
 
 deoglComponentSet::deoglComponentSet(){
-	pComponents = NULL;
+	pComponents = nullptr;
 	pComponentCount = 0;
 	pComponentSize = 0;
 }

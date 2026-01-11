@@ -56,7 +56,7 @@ pForceToneMapAdaption(false){
 
 deoglRCanvasRenderWorld::~deoglRCanvasRenderWorld(){
 	LEAK_CHECK_FREE(GetRenderThread(), CanvasRenderWorld);
-	SetCamera(NULL);
+	SetCamera(nullptr);
 }
 
 

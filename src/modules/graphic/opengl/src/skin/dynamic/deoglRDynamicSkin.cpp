@@ -74,7 +74,7 @@ deoglRDSRenderable *deoglRDynamicSkin::GetRenderableNamed(const char *name) cons
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 int deoglRDynamicSkin::IndexOfRenderableNamed(const char *name) const{

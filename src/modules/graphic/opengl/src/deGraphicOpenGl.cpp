@@ -281,7 +281,7 @@ void deGraphicOpenGl::CleanUp(){
 	if(pRenderThread){
 		pRenderThread->CleanUp();
 		delete pRenderThread;
-		pRenderThread = NULL;
+		pRenderThread = nullptr;
 	}
 	
 	SetVRCamera(nullptr);
@@ -293,7 +293,7 @@ void deGraphicOpenGl::CleanUp(){
 	pOverlay = nullptr;
 	if(pCaches){
 		delete pCaches;
-		pCaches = NULL;
+		pCaches = nullptr;
 	}
 	if(pResources){
 		delete pResources;
@@ -682,7 +682,7 @@ void deGraphicOpenGl::SendCommand(const decUnicodeArgumentList &command, decUnic
 ///////////////
 
 bool deGraphicOpenGl::HasRenderThread() const{
-	return pRenderThread != NULL;
+	return pRenderThread != nullptr;
 }
 
 void deGraphicOpenGl::SetVRCamera(deoglCamera *camera){

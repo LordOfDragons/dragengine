@@ -52,7 +52,7 @@ deBaseModule *IESCreateModule(deLoadableModule *loadableModule){
 		return new deIesModule(*loadableModule);
 		
 	}catch(const deException &){
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -76,14 +76,14 @@ deIesModule::~deIesModule(){
 ///////////////////////
 
 deBaseImageInfo *deIesModule::InitLoadImage(decBaseFileReader &file){
-	deIesImageInfo *info = NULL;
+	deIesImageInfo *info = nullptr;
 	
 	try{
 		info = new deIesFormatLm63d1986;
 		
 		if(!info->LoadHeader(file)){
 			delete info;
-			return NULL;
+			return nullptr;
 		}
 		
 	}catch(const deException &){

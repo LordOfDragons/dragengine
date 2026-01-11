@@ -56,7 +56,7 @@ dedsResourceLoader::dedsResourceLoader(deScriptingDragonScript *ds){
 	
 	pDS = ds;
 	
-	pTasks = NULL;
+	pTasks = nullptr;
 	pTaskCount = 0;
 	pTaskSize = 0;
 }

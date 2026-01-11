@@ -83,7 +83,7 @@ extern const int *vResourcePeerCreationOrder;
 
 deGraphicSystem::deGraphicSystem(deEngine *engine) :
 deBaseSystem(engine, "Graphic", deModuleSystem::emtGraphic),
-pActiveModule(NULL){
+pActiveModule(nullptr){
 }
 
 deGraphicSystem::~deGraphicSystem(){

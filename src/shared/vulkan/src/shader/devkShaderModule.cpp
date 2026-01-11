@@ -61,7 +61,7 @@ pModule(VK_NULL_HANDLE)
 		info.codeSize = pSourceLength;
 		info.pCode = (const uint32_t *)pSource;
 		
-		VK_CHECK(vulkan, device.vkCreateShaderModule(device.GetDevice(), &info, NULL, &pModule));
+		VK_CHECK(vulkan, device.vkCreateShaderModule(device.GetDevice(), &info, nullptr, &pModule));
 		
 	}catch(const deException &){
 		pCleanUp();

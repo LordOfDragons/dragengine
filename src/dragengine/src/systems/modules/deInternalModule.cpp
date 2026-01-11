@@ -62,7 +62,7 @@ void deInternalModule::LoadModule(){
 
 void deInternalModule::UnloadModule(){
 	if(!IsLoaded() || IsLocked()) DETHROW(deeInvalidAction);
-	SetModule(NULL);
+	SetModule(nullptr);
 	SetErrorCode(eecSuccess);
 }
 

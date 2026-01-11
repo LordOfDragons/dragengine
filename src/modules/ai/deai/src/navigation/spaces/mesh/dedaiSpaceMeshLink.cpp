@@ -39,7 +39,7 @@
 /////////////////////////////////
 
 dedaiSpaceMeshLink::dedaiSpaceMeshLink() :
-pMesh(NULL),
+pMesh(nullptr),
 pFace(0),
 pCorner(0){
 }

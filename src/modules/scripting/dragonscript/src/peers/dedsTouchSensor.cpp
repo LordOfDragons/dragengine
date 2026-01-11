@@ -47,7 +47,7 @@
 dedsTouchSensor::dedsTouchSensor(deScriptingDragonScript &ds, deTouchSensor *touchSensor) :
 pDS(ds),
 pTouchSensor(touchSensor),
-pValCB(NULL),
+pValCB(nullptr),
 pHasCB(false)
 {
 	if(!touchSensor){
@@ -73,7 +73,7 @@ dedsTouchSensor::~dedsTouchSensor(){
 		pDS.GetScriptEngine()->GetMainRunTime()->FreeValue(pValCB);
 	}
 	
-	pValCB = NULL;
+	pValCB = nullptr;
 	pHasCB = false;
 }
 

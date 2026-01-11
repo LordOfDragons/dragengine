@@ -120,7 +120,7 @@ DEBUG_RESET_TIMERS;
 	int i;
 	
 	const int countMoves = pMoves.GetCount();
-	const dearAnimationMove *move = NULL;
+	const dearAnimationMove *move = nullptr;
 	
 	if(countMoves > 0){
 		const int index = decMath::clamp(

@@ -208,7 +208,7 @@ void dearBoneStateList::UpdateMappings(const deAnimator &animator){
 			}
 			
 			if(parent == -1){
-				state.SetParentState(NULL);
+				state.SetParentState(nullptr);
 				
 			}else{
 				state.SetParentState(&pStates.GetAt(parent));

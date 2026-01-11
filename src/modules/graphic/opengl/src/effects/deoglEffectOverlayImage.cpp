@@ -77,7 +77,7 @@ void deoglEffectOverlayImage::SyncToRender(){
 			pREffectOverlayImage->SetImage(oglImage->GetRImage());
 			
 		}else{
-			pREffectOverlayImage->SetImage(NULL);
+			pREffectOverlayImage->SetImage(nullptr);
 		}
 		
 		pDirtyImage = false;

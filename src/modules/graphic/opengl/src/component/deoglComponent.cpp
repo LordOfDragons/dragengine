@@ -63,15 +63,15 @@ deoglComponent::deoglComponent(deGraphicOpenGl &ogl, deComponent &component) :
 pOgl(ogl),
 pComponent(component),
 
-pParentWorld(NULL),
-pSkinStateController(NULL),
+pParentWorld(nullptr),
+pSkinStateController(nullptr),
 
-pDynamicSkin(NULL),
+pDynamicSkin(nullptr),
 
-pLODs(NULL),
+pLODs(nullptr),
 pLODCount(0),
 
-pTextures(NULL),
+pTextures(nullptr),
 pTextureCount(0),
 
 pAccumUpdate(0.0f),
@@ -461,7 +461,7 @@ void deoglComponent::DecalRequiresSync(){
 //////////////////////////
 
 void deoglComponent::DynamicSkinDestroyed(){
-	pDynamicSkin = NULL;
+	pDynamicSkin = nullptr;
 }
 
 void deoglComponent::DynamicSkinRenderablesChanged(){
@@ -726,7 +726,7 @@ void deoglComponent::DynamicSkinChanged(){
 		pDynamicSkin->AddListener(this);
 		
 	}else{
-		pDynamicSkin = NULL;
+		pDynamicSkin = nullptr;
 	}
 	
 	pDirtyDynamicSkin = true;
@@ -765,7 +765,7 @@ void deoglComponent::DecalAdded(deDecal *decal){
 
 void deoglComponent::DecalRemoved(deDecal *decal){
 	deoglDecal &oglDecal = *((deoglDecal*)decal->GetPeerGraphic());
-	oglDecal.SetParentComponent(NULL);
+	oglDecal.SetParentComponent(nullptr);
 	oglDecal.GetRDecal()->SetComponentMarkedRemove(true);
 	
 	pDirtyDecals = true;
@@ -778,7 +778,7 @@ void deoglComponent::AllDecalsRemoved(){
 	deDecal *decal = pComponent.GetRootDecal();
 	while(decal){
 		deoglDecal &oglDecal = *((deoglDecal*)decal->GetPeerGraphic());
-		oglDecal.SetParentComponent(NULL);
+		oglDecal.SetParentComponent(nullptr);
 		oglDecal.GetRDecal()->SetComponentMarkedRemove(true);
 		
 		decal = decal->GetLLComponentNext();
@@ -973,7 +973,7 @@ void deoglComponent::pDropLODs(){
 		delete pLODs[pLODCount];
 	}
 	delete [] pLODs;
-	pLODs = NULL;
+	pLODs = nullptr;
 	pLODCount = 0;
 }
 
@@ -1002,7 +1002,7 @@ void deoglComponent::pDropTextures(){
 		delete pTextures[pTextureCount];
 	}
 	delete [] pTextures;
-	pTextures = NULL;
+	pTextures = nullptr;
 	pTextureCount = 0;
 }
 
@@ -1032,7 +1032,7 @@ void deoglComponent::pSyncModel(){
 		pRComponent->SetModel(((deoglModel*)pComponent.GetModel()->GetPeerGraphic())->GetRModel());
 		
 	}else{
-		pRComponent->SetModel(NULL);
+		pRComponent->SetModel(nullptr);
 	}
 	
 	pDirtyModel = false;
@@ -1047,7 +1047,7 @@ void deoglComponent::pSyncSkin(){
 		pRComponent->SetSkin(((deoglSkin*)pComponent.GetSkin()->GetPeerGraphic())->GetRSkin());
 		
 	}else{
-		pRComponent->SetSkin(NULL);
+		pRComponent->SetSkin(nullptr);
 	}
 	
 	pDirtySkin = false;
@@ -1090,7 +1090,7 @@ void deoglComponent::pSyncOcclusionMesh(){
 				pComponent.GetOcclusionMesh()->GetPeerGraphic())->GetROcclusionMesh());
 			
 		}else{
-			pRComponent->SetOcclusionMesh(NULL);
+			pRComponent->SetOcclusionMesh(nullptr);
 		}
 		
 		pDirtyOcclusionMesh = false;

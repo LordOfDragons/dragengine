@@ -44,13 +44,13 @@
 ////////////////////////////
 
 deoglRenderTaskInstance::deoglRenderTaskInstance() :
-pInstance(NULL),
+pInstance(nullptr),
 
-pSubInstances(NULL),
+pSubInstances(nullptr),
 pSubInstanceCount(0),
 pSubInstanceSize(0),
 
-pSIIndexInstanceSPB(NULL),
+pSIIndexInstanceSPB(nullptr),
 pSIIndexInstanceFirst(0),
 pDrawIndirectIndex(0),
 pDrawIndirectCount(0){
@@ -155,9 +155,9 @@ void deoglRenderTaskInstance::SetDrawIndirectCount(int count){
 
 
 void deoglRenderTaskInstance::Reset(){
-	pInstance = NULL;
+	pInstance = nullptr;
 	pSubInstanceCount = 0;
-	pSIIndexInstanceSPB = NULL;
+	pSIIndexInstanceSPB = nullptr;
 	pSIIndexInstanceFirst = 0;
 	pDrawIndirectIndex = 0;
 	pDrawIndirectCount = 0;

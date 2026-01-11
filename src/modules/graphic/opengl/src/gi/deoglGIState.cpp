@@ -66,7 +66,7 @@ deoglGIState::deoglGIState(deoglRenderThread &renderThread, const decVector &siz
 pRenderThread(renderThread),
 
 pSize(size),
-pWorld(NULL),
+pWorld(nullptr),
 pGIImportance(deoglGIAreaTracker::GIImportanceFromGIQuality(
 	renderThread.GetConfiguration().GetGIQuality())),
 
@@ -95,11 +95,11 @@ pIrradianceMapScale(1.0f / ((pSizeTexIrradiance + 2) * pProbeCount.x * pProbeCou
 pDistanceMapScale(1.0f / ((pSizeTexDistance + 2) * pProbeCount.x * pProbeCount.y + 2),
 	1.0f / ((pSizeTexDistance + 2) * pProbeCount.z + 2)),
 
-pCascades(NULL),
+pCascades(nullptr),
 pCascadeCount(0),
 pActiveCascade(0),
 
-pCascaceUpdateCycle(NULL),
+pCascaceUpdateCycle(nullptr),
 pCascaceUpdateCycleCount(0),
 pCascaceUpdateCycleIndex(0),
 pCameraForceToneMapAdaptionCount(0),

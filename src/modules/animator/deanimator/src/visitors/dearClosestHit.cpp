@@ -42,7 +42,7 @@
 ////////////////////////////
 
 dearClosestHit::dearClosestHit(){
-	pListener = NULL;
+	pListener = nullptr;
 	pHitDistance = 0.0f;
 	pHasHit = false;
 }
@@ -91,7 +91,7 @@ void dearClosestHit::CollisionResponse(deCollider*, deCollisionInfo *info){
 }
 
 bool dearClosestHit::CanHitCollider(deCollider *owner, deCollider *collider){
-	return pListener == NULL || pListener->CanHitCollider(owner, collider);
+	return pListener == nullptr || pListener->CanHitCollider(owner, collider);
 }
 
 void dearClosestHit::ColliderChanged(deCollider*){

@@ -52,7 +52,7 @@ pTCClampMax(1.0f, 1.0f){
 
 deoglRCanvasCanvasView::~deoglRCanvasCanvasView(){
 	LEAK_CHECK_FREE(GetRenderThread(), CanvasCanvasView);
-	SetCanvasView(NULL);
+	SetCanvasView(nullptr);
 }
 
 

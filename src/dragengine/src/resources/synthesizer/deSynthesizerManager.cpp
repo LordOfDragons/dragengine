@@ -108,7 +108,7 @@ void deSynthesizerManager::SystemSynthesizerUnload(){
 	deSynthesizer *synthesizer = (deSynthesizer*)pSynthesizers.GetRoot();
 	
 	while(synthesizer){
-		synthesizer->SetPeerSynthesizer(NULL);
+		synthesizer->SetPeerSynthesizer(nullptr);
 		synthesizer = (deSynthesizer*)synthesizer->GetLLManagerNext();
 	}
 }

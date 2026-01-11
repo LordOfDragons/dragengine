@@ -38,7 +38,7 @@
 ////////////////////////////
 
 debnMessageAckList::debnMessageAckList(){
-	pAcks = NULL;
+	pAcks = nullptr;
 	pAckCount = 0;
 	pAckSize = 0;
 }

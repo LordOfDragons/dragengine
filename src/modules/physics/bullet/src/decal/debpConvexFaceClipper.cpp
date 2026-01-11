@@ -45,7 +45,7 @@
 /////////////////////////////////
 
 debpConvexFaceClipper::debpConvexFaceClipper(){
-	pVertices = NULL;
+	pVertices = nullptr;
 	pVertexCount = 0;
 }
 
@@ -105,7 +105,7 @@ void debpConvexFaceClipper::AddVertex(const decDVector &vertex){
 void debpConvexFaceClipper::RemoveAllVertices(){
 	if(pVertices){
 		delete [] pVertices;
-		pVertices = NULL;
+		pVertices = nullptr;
 	}
 	pVertexCount = 0;
 }
@@ -122,7 +122,7 @@ void debpConvexFaceClipper::ClipByPlane(const decDVector &planeNormal, const dec
 	int vertexFirst, vertexSecond, v;
 	double lambda;
 	
-	pVertices = NULL;
+	pVertices = nullptr;
 	pVertexCount = 0;
 	
 	try{

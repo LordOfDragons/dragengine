@@ -122,10 +122,10 @@ void deoglRBillboard::WorldComputeElement::UpdateDataGeometries(sDataElementGeom
 deoglRBillboard::deoglRBillboard(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
 
-pParentWorld(NULL),
-pOctreeNode(NULL),
+pParentWorld(nullptr),
+pOctreeNode(nullptr),
 pWorldComputeElement(WorldComputeElement::Ref::New(*this)),
-pUseSkinTexture(NULL),
+pUseSkinTexture(nullptr),
 pLocked(true),
 pSpherical(false),
 pSizeFixedToScreen(false),
@@ -141,10 +141,10 @@ pRenderEnvMapFadePerTime(1.0f),
 pRenderEnvMapFadeFactor(1.0f),
 pDirtyRenderEnvMap(true),
 
-pTUCDepth(NULL),
-pTUCGeometry(NULL),
-pTUCCounter(NULL),
-pTUCEnvMap(NULL),
+pTUCDepth(nullptr),
+pTUCGeometry(nullptr),
+pTUCCounter(nullptr),
+pTUCEnvMap(nullptr),
 
 pDirtySharedSPBElement(true),
 pDirtyTUCs(true),
@@ -160,8 +160,8 @@ pMarked(false),
 pCSOctreeIndex(0),
 
 pWorldMarkedRemove(false),
-pLLWorldPrev(NULL),
-pLLWorldNext(NULL),
+pLLWorldPrev(nullptr),
+pLLWorldNext(nullptr),
 
 pLLPrepareForRenderWorld(this)
 {
@@ -241,7 +241,7 @@ void deoglRBillboard::SetSkin(deoglRSkin *skin){
 		return;
 	}
 	pSkin = skin;
-	pUseSkinTexture = skin && skin->GetTextureCount() > 0 ? &skin->GetTextureAt(0) : NULL;
+	pUseSkinTexture = skin && skin->GetTextureCount() > 0 ? &skin->GetTextureAt(0) : nullptr;
 	pDirtySharedSPBElement = true;
 	pRequiresPrepareForRender();
 	
@@ -324,7 +324,7 @@ void deoglRBillboard::UpdateSkin(float elapsed){
 		pRenderEnvMapFadeFactor += pRenderEnvMapFadePerTime * elapsed;
 		
 		if(pRenderEnvMapFadeFactor >= 1.0f){
-			SetRenderEnvMapFade(NULL);
+			SetRenderEnvMapFade(nullptr);
 			pRenderEnvMapFadeFactor = 1.0f;
 		}
 	}
@@ -442,14 +442,14 @@ deoglTexUnitsConfig *deoglRBillboard::GetTUCForPipelineType(deoglSkinTexturePipe
 
 deoglTexUnitsConfig *deoglRBillboard::BareGetTUCFor(deoglSkinTexturePipelines::eTypes type) const{
 	if(!pUseSkinTexture){
-		return NULL;
+		return nullptr;
 	}
 	
 	deoglSkinShader &skinShader = *pUseSkinTexture->GetPipelines().
 		GetAt(deoglSkinTexturePipelinesList::eptBillboard).GetWithRef(type).GetShader();
 	deoglTexUnitConfig units[deoglSkinShader::ETT_COUNT];
 	deoglRDynamicSkin::Ref dynamicSkin;
-	deoglTexUnitsConfig *tuc = NULL;
+	deoglTexUnitsConfig *tuc = nullptr;
 	
 	if(skinShader.GetTextureUnitCount() > 0){
 		skinShader.SetTUCCommon(&units[0], *pUseSkinTexture, nullptr, dynamicSkin);
@@ -461,7 +461,7 @@ deoglTexUnitsConfig *deoglRBillboard::BareGetTUCFor(deoglSkinTexturePipelines::e
 	}
 	
 	if(!tuc){
-		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith(NULL, 0,
+		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith(nullptr, 0,
 			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock());
 	}
 	tuc ->EnsureRTSTexture();
@@ -889,8 +889,8 @@ void deoglRBillboard::PrepareForRenderRender(deoglRenderPlan &plan, const deoglR
 }
 
 void deoglRBillboard::PrepareQuickDispose(){
-	pParentWorld = NULL;
-	pOctreeNode = NULL;
+	pParentWorld = nullptr;
+	pOctreeNode = nullptr;
 }
 
 
@@ -899,7 +899,7 @@ void deoglRBillboard::PrepareQuickDispose(){
 //////////////////////
 
 void deoglRBillboard::pCleanUp(){
-	SetParentWorld(NULL);
+	SetParentWorld(nullptr);
 	if(pTUCDepth){
 		pTUCDepth->RemoveUsage();
 	}
@@ -938,28 +938,28 @@ void deoglRBillboard::pPrepareTUCs(){
 	// depth
 	if(pTUCDepth){
 		pTUCDepth->RemoveUsage();
-		pTUCDepth = NULL;
+		pTUCDepth = nullptr;
 	}
 	pTUCDepth = BareGetTUCFor(deoglSkinTexturePipelines::etDepth);
 	
 	// geometry
 	if(pTUCGeometry){
 		pTUCGeometry->RemoveUsage();
-		pTUCGeometry = NULL;
+		pTUCGeometry = nullptr;
 	}
 	pTUCGeometry = BareGetTUCFor(deoglSkinTexturePipelines::etGeometry);
 	
 	// counter
 	if(pTUCCounter){
 		pTUCCounter->RemoveUsage();
-		pTUCCounter = NULL;
+		pTUCCounter = nullptr;
 	}
 	pTUCCounter = BareGetTUCFor(deoglSkinTexturePipelines::etCounter);
 	
 	// envmap
 	if(pTUCEnvMap){
 		pTUCEnvMap->RemoveUsage();
-		pTUCEnvMap = NULL;
+		pTUCEnvMap = nullptr;
 	}
 	
 	if(pUseSkinTexture){

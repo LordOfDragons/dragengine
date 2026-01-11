@@ -66,7 +66,7 @@ deoglCanvas::~deoglCanvas(){
 
 void deoglCanvas::DropRCanvas(){
 	if(pRCanvas){
-		pRCanvas = NULL;
+		pRCanvas = nullptr;
 	}
 }
 

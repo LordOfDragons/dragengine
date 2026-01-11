@@ -49,7 +49,7 @@ pLayerCount(layerCount),
 pWithStencil(withStencil),
 pUseFloat(useFloat),
 pInUse(false),
-pArrayTexture(NULL),
+pArrayTexture(nullptr),
 pMemoryUsageGPU(0)
 {
 	if(width < 1 || height < 1 || layerCount < 1){

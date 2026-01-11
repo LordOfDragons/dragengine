@@ -52,15 +52,15 @@ pSpherical(true),
 pSizeFixedToScreen(false),
 pVisible(true),
 
-pPeerGraphic(NULL),
+pPeerGraphic(nullptr),
 
-pParentWorld(NULL),
-pLLWorldPrev(NULL),
-pLLWorldNext(NULL){
+pParentWorld(nullptr),
+pLLWorldPrev(nullptr),
+pLLWorldNext(nullptr){
 }
 
 deBillboard::~deBillboard(){
-	SetPeerGraphic(NULL);
+	SetPeerGraphic(nullptr);
 }
 
 

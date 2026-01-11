@@ -40,8 +40,8 @@
 ////////////////////////////
 
 deoglRenderPlanMasked::deoglRenderPlanMasked() :
-pPlan(NULL),
-pComponent(NULL),
+pPlan(nullptr),
+pComponent(nullptr),
 pComponentTexture(0),
 pUseClipPlane(false),
 pClipNormal(0.0f, 1.0f, 0.0f),
@@ -76,7 +76,7 @@ void deoglRenderPlanMasked::SetPlan(deoglRenderPlan *plan){
 	
 	pPlan = plan;
 	
-	pComponent = NULL;
+	pComponent = nullptr;
 	pComponentTexture = 0;
 	
 	pUseClipPlane = false;

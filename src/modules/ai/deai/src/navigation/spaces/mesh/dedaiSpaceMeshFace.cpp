@@ -41,7 +41,7 @@
 /////////////////////////////////
 
 dedaiSpaceMeshFace::dedaiSpaceMeshFace() :
-pMesh(NULL),
+pMesh(nullptr),
 pFirstCorner(0),
 pCornerCount(0),
 pIndex(0),
@@ -49,7 +49,7 @@ pTypeNumber(0),
 pDistance(0.0f),
 pEnabled(true),
 
-pPathParent(NULL),
+pPathParent(nullptr),
 pPathCostF(0.0f),
 pPathCostG(0.0f),
 pPathCostH(0.0f),
@@ -172,7 +172,7 @@ void dedaiSpaceMeshFace::SetPathType(ePathFindingTypes type){
 }
 
 void dedaiSpaceMeshFace::ClearPath(){
-	pPathParent = NULL;
+	pPathParent = nullptr;
 	pPathCostF = 0.0f;
 	pPathCostG = 0.0f;
 	pPathCostH = 0.0f;

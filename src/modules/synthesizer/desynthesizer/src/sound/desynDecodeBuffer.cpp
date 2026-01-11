@@ -40,7 +40,7 @@
 ////////////////////////////
 
 desynDecodeBuffer::desynDecodeBuffer(int size) :
-pBuffer(NULL),
+pBuffer(nullptr),
 pSize(0)
 {
 	SetSize(size);

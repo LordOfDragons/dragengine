@@ -352,22 +352,22 @@ void deoglExtensions::DisableExtension(eExtensions extension){
 	
 	switch(extension){
 	case ext_ARB_shader_storage_buffer_object:
-		pglShaderStorageBlockBinding = NULL;
+		pglShaderStorageBlockBinding = nullptr;
 		break;
 		
 	case ext_ARB_program_interface_query:
-		pglGetProgramInterfaceiv = NULL;
-		pglGetProgramResourceIndex = NULL;
+		pglGetProgramInterfaceiv = nullptr;
+		pglGetProgramResourceIndex = nullptr;
 		break;
 		
 	case ext_ARB_uniform_buffer_object:
 		// pglGetUniformIndices = NULL;
 		// pglGetActiveUniformsiv = NULL;
 		// pglGetActiveUniformName = NULL;
-		pglGetUniformBlockIndex = NULL;
+		pglGetUniformBlockIndex = nullptr;
 		// pglGetActiveUniformBlockiv = NULL;
 		// pglGetActiveUniformBlockName = NULL;
-		pglUniformBlockBinding = NULL;
+		pglUniformBlockBinding = nullptr;
 		break;
 		
 	default:

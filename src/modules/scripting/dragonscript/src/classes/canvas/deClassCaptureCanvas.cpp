@@ -152,7 +152,7 @@ deClassCaptureCanvas::nfDropImage::nfDropImage(const sInitData &init) : dsFuncti
 void deClassCaptureCanvas::nfDropImage::RunFunction(dsRunTime *rt, dsValue *myself){
 	deCaptureCanvas &captureCanvas = dedsGetNativeData<sCapCanNatDat>(p_GetNativeData(myself)).captureCanvas;
 	
-	captureCanvas.SetImage(NULL);
+	captureCanvas.SetImage(nullptr);
 }
 
 // public func bool getCapture()
@@ -282,7 +282,7 @@ void deClassCaptureCanvas::PushCaptureCanvas(dsRunTime *rt, deCaptureCanvas *cap
 	}
 	
 	if(!captureCanvas){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

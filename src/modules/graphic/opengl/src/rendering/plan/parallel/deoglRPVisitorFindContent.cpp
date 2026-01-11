@@ -54,7 +54,7 @@
 
 deoglRPVisitorFindContent::deoglRPVisitorFindContent(deoglRenderPlan &plan) :
 pPlan(plan),
-pFrustum(NULL),
+pFrustum(nullptr),
 pCullPixelSize(1.0f),
 pErrorScaling(1.0f),
 pCullDynamicComponents(false),

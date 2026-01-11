@@ -45,8 +45,8 @@
 fbxAnimationEvaluateCurve::fbxAnimationEvaluateCurve(const fbxAnimationMove &move,
 const fbxAnimationCurve *curve, float defaultValue) :
 pMove(move),
-pPropertyTime(NULL),
-pPropertyValue(NULL),
+pPropertyTime(nullptr),
+pPropertyValue(nullptr),
 pLastKeyIndex(-1),
 pKeyIndex(0),
 pPrevKeyTime(0.0f),

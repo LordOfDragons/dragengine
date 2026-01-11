@@ -45,7 +45,7 @@
 deoalASkin::deoalASkin(deoalAudioThread &audioThread, const deSkin &skin) :
 pAudioThread(audioThread),
 pFilename(skin.GetFilename()),
-pTextures(NULL),
+pTextures(nullptr),
 pTextureCount(0),
 pAffectsSound(false)
 {

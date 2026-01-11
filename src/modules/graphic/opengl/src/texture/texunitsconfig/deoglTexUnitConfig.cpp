@@ -60,12 +60,12 @@
 ////////////////////////////
 
 deoglTexUnitConfig::deoglTexUnitConfig() :
-pTexture(NULL),
-pCubeMap(NULL),
-pArrayTexture(NULL),
+pTexture(nullptr),
+pCubeMap(nullptr),
+pArrayTexture(nullptr),
 pTBO(0),
 pSpecial(estNone),
-pSampler(NULL){
+pSampler(nullptr){
 }
 
 deoglTexUnitConfig::~deoglTexUnitConfig(){
@@ -205,12 +205,12 @@ bool deoglTexUnitConfig::IsDisabled() const{
 
 
 void deoglTexUnitConfig::Disable(){
-	pTexture = NULL;
-	pCubeMap = NULL;
-	pArrayTexture = NULL;
+	pTexture = nullptr;
+	pCubeMap = nullptr;
+	pArrayTexture = nullptr;
 	pTBO = 0;
 	pSpecial = estNone;
-	pSampler = NULL;
+	pSampler = nullptr;
 }
 
 void deoglTexUnitConfig::EnableTexture(deoglTexture *texture, deoglTexSamplerConfig *sampler){
@@ -345,7 +345,7 @@ void deoglTexUnitConfig::EnableCubeMapFromChannel(deoglRenderThread &renderThrea
 const deoglSkinTexture &skinTexture, deoglSkinChannel::eChannelTypes skinChannel,
 const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglCubeMap *defaultCubemap){
 	deoglCubeMap *useCubemap = defaultCubemap;
-	deoglTexSamplerConfig *useSampler = NULL;
+	deoglTexSamplerConfig *useSampler = nullptr;
 	bool found = false;
 	
 	// determine texture to use
@@ -354,7 +354,7 @@ const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglCube
 	if(schan){
 		// try renderable
 		const int skinRenderable = schan->GetRenderable();
-		deoglCubeMap *renderableCubemap = NULL;
+		deoglCubeMap *renderableCubemap = nullptr;
 		
 		if(dynamicSkin && skinState){
 			if(skinRenderable != -1 && skinRenderable < skinState->GetRenderableCount()){
@@ -413,7 +413,7 @@ void deoglTexUnitConfig::EnableArrayTextureFromChannel(deoglRenderThread &render
 const deoglSkinTexture &skinTexture, deoglSkinChannel::eChannelTypes skinChannel,
 const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglArrayTexture *defaultTexture){
 	deoglArrayTexture *useTexture = defaultTexture;
-	deoglTexSamplerConfig *useSampler = NULL;
+	deoglTexSamplerConfig *useSampler = nullptr;
 	
 	// determine texture to use
 	const deoglSkinChannel * const schan = skinTexture.GetChannelAt(skinChannel);
@@ -464,7 +464,7 @@ const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglArra
 void deoglTexUnitConfig::EnableTBO(GLuint tbo){
 	Disable();
 	pTBO = tbo;
-	pSampler = NULL;
+	pSampler = nullptr;
 }
 
 void deoglTexUnitConfig::EnableSpecial(int special, deoglTexSamplerConfig *sampler){

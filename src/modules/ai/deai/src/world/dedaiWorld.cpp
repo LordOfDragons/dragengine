@@ -56,7 +56,7 @@
 dedaiWorld::dedaiWorld(deDEAIModule &deai, deWorld &world) :
 pDEAI(deai),
 pWorld(world),
-pHeightTerrain(NULL),
+pHeightTerrain(nullptr),
 pDevModeUpdateTracker(0)
 {
 	try{
@@ -233,7 +233,7 @@ void dedaiWorld::NavigationSpaceAdded(deNavigationSpace *navspace){
 void dedaiWorld::NavigationSpaceRemoved(deNavigationSpace *navspace){
 	dedaiNavSpace * const peer = (dedaiNavSpace*)navspace->GetPeerAI();
 	if(peer){
-		peer->SetParentWorld(NULL);
+		peer->SetParentWorld(nullptr);
 	}
 }
 
@@ -244,7 +244,7 @@ void dedaiWorld::AllNavigationSpacesRemoved(){
 		dedaiNavSpace * const peer = (dedaiNavSpace*)navspace->GetPeerAI();
 		navspace = navspace->GetLLWorldNext();
 		if(peer){
-			peer->SetParentWorld(NULL);
+			peer->SetParentWorld(nullptr);
 		}
 	}
 }
@@ -259,7 +259,7 @@ void dedaiWorld::NavigationBlockerRemoved(deNavigationBlocker *blocker){
 	dedaiNavBlocker * const peer = (dedaiNavBlocker*)blocker->GetPeerAI();
 	
 	if(peer){
-		peer->SetParentWorld(NULL);
+		peer->SetParentWorld(nullptr);
 	}
 }
 
@@ -272,7 +272,7 @@ void dedaiWorld::AllNavigationBlockersRemoved(){
 		blocker = blocker->GetLLWorldNext();
 		
 		if(peer){
-			peer->SetParentWorld(NULL);
+			peer->SetParentWorld(nullptr);
 		}
 	}
 }
@@ -287,7 +287,7 @@ void dedaiWorld::NavigatorRemoved(deNavigator *navigator){
 	dedaiNavigator * const peer = (dedaiNavigator*)navigator->GetPeerAI();
 	
 	if(peer){
-		peer->SetParentWorld(NULL);
+		peer->SetParentWorld(nullptr);
 	}
 }
 
@@ -300,7 +300,7 @@ void dedaiWorld::AllNavigatorsRemoved(){
 		navigator = navigator->GetLLWorldNext();
 		
 		if(peer){
-			peer->SetParentWorld(NULL);
+			peer->SetParentWorld(nullptr);
 		}
 	}
 }
@@ -309,8 +309,8 @@ void dedaiWorld::AllNavigatorsRemoved(){
 
 void dedaiWorld::HeightTerrainChanged(){
 	if(pHeightTerrain){
-		pHeightTerrain->SetParentWorld(NULL);
-		pHeightTerrain = NULL;
+		pHeightTerrain->SetParentWorld(nullptr);
+		pHeightTerrain = nullptr;
 	}
 	
 	if(pWorld.GetHeightTerrain()){
@@ -332,6 +332,6 @@ void dedaiWorld::pCleanUp(){
 	AllNavigationSpacesRemoved();
 	
 	if(pHeightTerrain){
-		pHeightTerrain->SetParentWorld(NULL);
+		pHeightTerrain->SetParentWorld(nullptr);
 	}
 }

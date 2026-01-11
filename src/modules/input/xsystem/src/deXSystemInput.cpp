@@ -70,7 +70,7 @@ deBaseModule *XSysInpCreateModule(deLoadableModule *loadableModule){
 		return new deXSystemInput(*loadableModule);
 		
 	}catch(const deException &){
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -85,7 +85,7 @@ deBaseModule *XSysInpCreateModule(deLoadableModule *loadableModule){
 deXSystemInput::deXSystemInput(deLoadableModule &loadableModule) :
 deBaseInputModule(loadableModule),
 
-pOSUnix(NULL),
+pOSUnix(nullptr),
 
 pWindowWidth(0),
 pWindowHeight(0),
@@ -99,7 +99,7 @@ pIsListening(false),
 pSystemAutoRepeatEnabled(false),
 pAutoRepeatEnabled(false),
 
-pKeyStates(NULL),
+pKeyStates(nullptr),
 
 pLogLevel(LogLevel::info),
 pEnableRawMouseInput(false),
@@ -181,11 +181,11 @@ void deXSystemInput::CleanUp(){
 	
 	if(pKeyStates){
 		delete [] pKeyStates;
-		pKeyStates = NULL;
+		pKeyStates = nullptr;
 	}
 	
 	pSetAutoRepeatEnabled(pSystemAutoRepeatEnabled);
-	pOSUnix = NULL;
+	pOSUnix = nullptr;
 }
 
 
@@ -705,7 +705,7 @@ void deXSystemInput::pQueryMousePosition(bool sendEvents){
 		}
 		
 		timeval eventTime;
-		gettimeofday(&eventTime, NULL);
+		gettimeofday(&eventTime, nullptr);
 		pAddMouseMove(pDevices->GetPrimaryMouse()->GetIndex(),
 			pModifiersFromXState(state), childX - midX, childY - midY, eventTime);
 		pCenterPointer();
@@ -734,7 +734,7 @@ void deXSystemInput::pQueryMousePosition(bool sendEvents){
 		}
 		
 		timeval eventTime;
-		gettimeofday(&eventTime, NULL);
+		gettimeofday(&eventTime, nullptr);
 		pAddMouseMove(pDevices->GetPrimaryMouse()->GetIndex(),
 			pModifiersFromXState(state), pLastMouseX, pLastMouseY, eventTime);
 	}

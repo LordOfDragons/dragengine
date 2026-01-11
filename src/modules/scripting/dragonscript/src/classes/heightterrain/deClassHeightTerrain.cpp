@@ -248,7 +248,7 @@ void deClassHeightTerrain::nfAddSector::RunFunction(dsRunTime *rt, dsValue *myse
 	}
 	
 	// create sector and add it
-	deHeightTerrainSector *sector = NULL;
+	deHeightTerrainSector *sector = nullptr;
 	try{
 		sector = new deHeightTerrainSector(scoord);
 		hterrain.AddSector(sector);
@@ -1304,7 +1304,7 @@ void deClassHeightTerrain::CreateClassMembers(dsEngine *engine){
 
 deHeightTerrain *deClassHeightTerrain::GetHeightTerrain(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return dedsGetNativeData<sHTNatDat>(p_GetNativeData(myself->GetBuffer())).hterrain;
@@ -1316,7 +1316,7 @@ void deClassHeightTerrain::PushHeightTerrain(dsRunTime *rt, deHeightTerrain *hte
 	}
 	
 	if(!hterrain){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

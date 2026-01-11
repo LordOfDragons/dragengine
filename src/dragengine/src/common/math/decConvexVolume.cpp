@@ -38,10 +38,10 @@
 /////////////////////////////////
 
 decConvexVolume::decConvexVolume(){
-	pVertices = NULL;
+	pVertices = nullptr;
 	pVertexCount = 0;
 	pVertexSize = 0;
-	pFaces = NULL;
+	pFaces = nullptr;
 	pFaceCount = 0;
 	pFaceSize = 0;
 }
@@ -198,7 +198,7 @@ void decConvexVolume::SetEmpty(){
 
 void decConvexVolume::SetToCube(const decVector &halfSize){
 	if(halfSize < decVector(0.0f, 0.0f, 0.0f)) DETHROW(deeInvalidParam);
-	decConvexVolumeFace *face = NULL;
+	decConvexVolumeFace *face = nullptr;
 	
 	// remove all faces and vertices
 	SetEmpty();
@@ -223,7 +223,7 @@ void decConvexVolume::SetToCube(const decVector &halfSize){
 		face->AddVertex(2);
 		face->AddVertex(3);
 		AddFace(face);
-		face = NULL;
+		face = nullptr;
 		
 		// add right face
 		face = new decConvexVolumeFace;
@@ -233,7 +233,7 @@ void decConvexVolume::SetToCube(const decVector &halfSize){
 		face->AddVertex(6);
 		face->AddVertex(2);
 		AddFace(face);
-		face = NULL;
+		face = nullptr;
 		
 		// add back face
 		face = new decConvexVolumeFace;
@@ -243,7 +243,7 @@ void decConvexVolume::SetToCube(const decVector &halfSize){
 		face->AddVertex(7);
 		face->AddVertex(6);
 		AddFace(face);
-		face = NULL;
+		face = nullptr;
 		
 		// add left face
 		face = new decConvexVolumeFace;
@@ -253,7 +253,7 @@ void decConvexVolume::SetToCube(const decVector &halfSize){
 		face->AddVertex(3);
 		face->AddVertex(7);
 		AddFace(face);
-		face = NULL;
+		face = nullptr;
 		
 		// add top face
 		face = new decConvexVolumeFace;
@@ -263,7 +263,7 @@ void decConvexVolume::SetToCube(const decVector &halfSize){
 		face->AddVertex(1);
 		face->AddVertex(0);
 		AddFace(face);
-		face = NULL;
+		face = nullptr;
 		
 		// add bottom face
 		face = new decConvexVolumeFace;

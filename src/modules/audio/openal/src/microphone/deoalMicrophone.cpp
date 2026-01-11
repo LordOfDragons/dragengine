@@ -59,7 +59,7 @@ pOal(oal),
 pMicrophone(microphone),
 pAMicrophone(deoalAMicrophone::Ref::New(oal.GetAudioThread())),
 
-pParentWorld(NULL),
+pParentWorld(nullptr),
 pActive(false),
 
 pDirtyMicrophone(true),
@@ -264,7 +264,7 @@ void deoalMicrophone::SpeakerRemoved(deSpeaker *speaker){
 	deoalSpeaker * const oalSpeaker = (deoalSpeaker*)speaker->GetPeerAudio();
 	RemoveSyncSpeaker(oalSpeaker);
 	oalSpeaker->GetASpeaker()->SetMicrophoneMarkedRemove(true);
-	oalSpeaker->SetParentMicrophone(NULL);
+	oalSpeaker->SetParentMicrophone(nullptr);
 	
 	pDirtySpeakers = true;
 	
@@ -277,7 +277,7 @@ void deoalMicrophone::AllSpeakersRemoved(){
 		deoalSpeaker * const oalSpeaker = (deoalSpeaker*)speaker->GetPeerAudio();
 		RemoveSyncSpeaker(oalSpeaker);
 		oalSpeaker->GetASpeaker()->SetMicrophoneMarkedRemove(true);
-		oalSpeaker->SetParentMicrophone(NULL);
+		oalSpeaker->SetParentMicrophone(nullptr);
 		speaker = speaker->GetLLMicrophoneNext();
 	}
 	

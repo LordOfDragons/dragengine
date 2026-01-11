@@ -56,7 +56,7 @@ deMutex::deMutex()
 		DETHROW_INFO(deeInvalidAction, "unknown error");
 	}
 	*/
-	if(pthread_mutex_init(&pMutex, NULL) != 0){
+	if(pthread_mutex_init(&pMutex, nullptr) != 0){
 		DETHROW(deeOutOfMemory);
 	}
 #endif

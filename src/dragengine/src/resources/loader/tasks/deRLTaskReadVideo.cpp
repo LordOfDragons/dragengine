@@ -113,7 +113,7 @@ void deRLTaskReadVideo::Finished(){
 	
 	if(!pSucceeded){
 		SetState(esFailed);
-		pVideo = NULL;
+		pVideo = nullptr;
 		LogFinishedExit();
 		GetResourceLoader().FinishTask(this);
 		return;

@@ -42,7 +42,7 @@
 deoalAComponentBone::deoalAComponentBone() :
 pIndex(0),
 pScale(1.0f, 1.0f, 1.0f),
-pParent(NULL){
+pParent(nullptr){
 }
 
 deoalAComponentBone::~deoalAComponentBone(){

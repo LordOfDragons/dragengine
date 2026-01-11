@@ -51,7 +51,7 @@ pStateDataOffset(0),
 
 pTargetStrength(synthesizer, firstLink, effect.GetTargetStrength()),
 
-pPreviousEffect(NULL){
+pPreviousEffect(nullptr){
 }
 
 desynSynthesizerEffect::~desynSynthesizerEffect(){

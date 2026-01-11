@@ -48,7 +48,7 @@ deCollisionInfo::deCollisionInfo() :
 pOwnerBone(-1),
 pOwnerShape(-1),
 pOwnerFace(-1),
-pHTSector(NULL),
+pHTSector(nullptr),
 pBone(-1),
 pShape(-1),
 pFace(-1),

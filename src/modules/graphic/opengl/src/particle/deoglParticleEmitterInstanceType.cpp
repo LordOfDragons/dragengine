@@ -84,7 +84,7 @@ void deoglParticleEmitterInstanceType::SyncToRender(){
 			pRType->SetDynamicSkin(((deoglDynamicSkin*)itype.GetDynamicSkin()->GetPeerGraphic())->GetRDynamicSkin());
 			
 		}else{
-			pRType->SetDynamicSkin(NULL);
+			pRType->SetDynamicSkin(nullptr);
 		}
 		
 		deoglParticleEmitter * const emitter = pEmitterInstance.GetEmitter();
@@ -95,11 +95,11 @@ void deoglParticleEmitterInstanceType::SyncToRender(){
 				pRType->SetUseSkin(((deoglSkin*)etype.GetSkin()->GetPeerGraphic())->GetRSkin());
 				
 			}else{
-				pRType->SetUseSkin(NULL);
+				pRType->SetUseSkin(nullptr);
 			}
 			
 		}else{
-			pRType->SetUseSkin(NULL);
+			pRType->SetUseSkin(nullptr);
 		}
 		
 		pDirtyType = false;

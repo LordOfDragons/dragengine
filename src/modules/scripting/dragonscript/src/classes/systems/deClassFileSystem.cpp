@@ -554,12 +554,12 @@ void deClassFileSystem::nfOpenUrl::RunFunction(dsRunTime *rt, dsValue*){
 deClassFileSystem::deClassFileSystem(deScriptingDragonScript *ds) :
 dsClass("FileSystem", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE),
 pDS(ds),
-pClsFileType(NULL),
-pClsFileExtension(NULL),
-pClsResourceLoaderType(NULL),
-pTypeFile(NULL),
-pTypeDirectory(NULL),
-pTypeSpecial(NULL),
+pClsFileType(nullptr),
+pClsFileExtension(nullptr),
+pClsResourceLoaderType(nullptr),
+pTypeFile(nullptr),
+pTypeDirectory(nullptr),
+pTypeSpecial(nullptr),
 pTypesReady(false)
 {
 	if(!ds){

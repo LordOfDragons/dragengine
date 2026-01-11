@@ -41,7 +41,7 @@
 
 deEffectFilterKernel::deEffectFilterKernel(deEffectManager *manager) :
 deEffect(manager),
-pKernel(NULL),
+pKernel(nullptr),
 pKernelRows(0),
 pKernelCols(0),
 pScale(1.0f)

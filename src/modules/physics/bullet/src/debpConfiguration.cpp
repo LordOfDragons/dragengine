@@ -137,7 +137,7 @@ decXmlElementTag *debpConfiguration::pGetTagAt(decXmlElementTag *tag, int index)
 	if(element->CanCastToElementTag()){
 		return element->CastToElementTag();
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -154,7 +154,7 @@ decXmlAttValue *debpConfiguration::pFindAttribute(decXmlElementTag *tag, const c
 			}
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 void debpConfiguration::pParseConfig(decXmlElementTag *root){
@@ -178,8 +178,8 @@ void debpConfiguration::pParseConfig(decXmlElementTag *root){
 void debpConfiguration::pParseProperty(decXmlElementTag *root){
 	decXmlCharacterData *cdata;
 	decXmlAttValue *xmlValue;
-	const char *value = NULL;
-	const char *name = NULL;
+	const char *value = nullptr;
+	const char *name = nullptr;
 	
 	// check attributes
 	xmlValue = pFindAttribute(root, "name");
@@ -201,19 +201,19 @@ void debpConfiguration::pParseProperty(decXmlElementTag *root){
 	
 	// set property if name is matching anything valid
 	if(strcmp(name, "enableConstraintPoint2Point") == 0){
-		SetEnableConstraintPoint2Point((int)strtol(value, NULL, 10) != 0);
+		SetEnableConstraintPoint2Point((int)strtol(value, nullptr, 10) != 0);
 		
 	}else if(strcmp(name, "enableConstraintHinge") == 0){
-		SetEnableConstraintHinge((int)strtol(value, NULL, 10) != 0);
+		SetEnableConstraintHinge((int)strtol(value, nullptr, 10) != 0);
 		
 	}else if(strcmp(name, "enableConstraintConeTwist") == 0){
-		SetEnableConstraintConeTwist((int)strtol(value, NULL, 10) != 0);
+		SetEnableConstraintConeTwist((int)strtol(value, nullptr, 10) != 0);
 		
 	}else if(strcmp(name, "enableConstraintSlider") == 0){
-		SetEnableConstraintSlider((int)strtol(value, NULL, 10) != 0);
+		SetEnableConstraintSlider((int)strtol(value, nullptr, 10) != 0);
 		
 	}else if(strcmp(name, "simulatePropFields") == 0){
-		SetSimulatePropFields((int)strtol(value, NULL, 10) != 0);
+		SetSimulatePropFields((int)strtol(value, nullptr, 10) != 0);
 		
 	}else{
 		pBullet->LogWarnFormat("bullet.xml(%i:%i): Invalid property name %s, ignoring",

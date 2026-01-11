@@ -252,7 +252,7 @@ void deoalWorld::SpeakerRemoved(deSpeaker *speaker){
 	deoalSpeaker * const oalSpeaker = (deoalSpeaker*)speaker->GetPeerAudio();
 	RemoveSyncSpeaker(oalSpeaker);
 	oalSpeaker->GetASpeaker()->SetWorldMarkedRemove(true);
-	oalSpeaker->SetParentWorld(NULL);
+	oalSpeaker->SetParentWorld(nullptr);
 	pDirtySpeakers = true;
 }
 
@@ -263,7 +263,7 @@ void deoalWorld::AllSpeakersRemoved(){
 		deoalSpeaker * const oalSpeaker = (deoalSpeaker*)speaker->GetPeerAudio();
 		RemoveSyncSpeaker(oalSpeaker);
 		oalSpeaker->GetASpeaker()->SetWorldMarkedRemove(true);
-		oalSpeaker->SetParentWorld(NULL);
+		oalSpeaker->SetParentWorld(nullptr);
 		speaker = speaker->GetLLWorldNext();
 	}
 	
@@ -284,7 +284,7 @@ void deoalWorld::MicrophoneRemoved(deMicrophone *microphone){
 	deoalMicrophone * const oalMicrophone = (deoalMicrophone*)microphone->GetPeerAudio();
 	RemoveSyncMicrophone(oalMicrophone);
 	oalMicrophone->GetAMicrophone()->SetWorldMarkedRemove(true);
-	oalMicrophone->SetParentWorld(NULL);
+	oalMicrophone->SetParentWorld(nullptr);
 	pDirtyMicrophones = true;
 	pDirtyAllMicLayerMask = true;
 }
@@ -296,7 +296,7 @@ void deoalWorld::AllMicrophonesRemoved(){
 		deoalMicrophone * const oalMicrophone = (deoalMicrophone*)microphone->GetPeerAudio();
 		RemoveSyncMicrophone(oalMicrophone);
 		oalMicrophone->GetAMicrophone()->SetWorldMarkedRemove(true);
-		oalMicrophone->SetParentWorld(NULL);
+		oalMicrophone->SetParentWorld(nullptr);
 		microphone = microphone->GetLLWorldNext();
 	}
 	
@@ -317,7 +317,7 @@ void deoalWorld::ComponentRemoved(deComponent *component){
 	deoalComponent * const oalComponent = (deoalComponent*)component->GetPeerAudio();
 	RemoveSyncComponent(oalComponent);
 	oalComponent->GetAComponent()->SetWorldMarkedRemove(true);
-	oalComponent->SetParentWorld(NULL);
+	oalComponent->SetParentWorld(nullptr);
 	pDirtyComponents = true;
 }
 
@@ -328,7 +328,7 @@ void deoalWorld::AllComponentsRemoved(){
 		deoalComponent * const oalComponent = (deoalComponent*)component->GetPeerAudio();
 		RemoveSyncComponent(oalComponent);
 		oalComponent->GetAComponent()->SetWorldMarkedRemove(true);
-		oalComponent->SetParentWorld(NULL);
+		oalComponent->SetParentWorld(nullptr);
 		component = component->GetLLWorldNext();
 	}
 	
@@ -350,7 +350,7 @@ void deoalWorld::SoundLevelMeterRemoved(deSoundLevelMeter *soundLevelMeter){
 		(deoalSoundLevelMeter*)soundLevelMeter->GetPeerAudio();
 	RemoveSyncSoundLevelMeter(oalSoundLevelMeter);
 	oalSoundLevelMeter->GetASoundLevelMeter()->SetWorldMarkedRemove(true);
-	oalSoundLevelMeter->SetParentWorld(NULL);
+	oalSoundLevelMeter->SetParentWorld(nullptr);
 	pDirtySoundLevelMeters = true;
 }
 
@@ -362,7 +362,7 @@ void deoalWorld::AllSoundLevelMetersRemoved(){
 			(deoalSoundLevelMeter*)soundLevelMeter->GetPeerAudio();
 		RemoveSyncSoundLevelMeter(oalSoundLevelMeter);
 		oalSoundLevelMeter->GetASoundLevelMeter()->SetWorldMarkedRemove(true);
-		oalSoundLevelMeter->SetParentWorld(NULL);
+		oalSoundLevelMeter->SetParentWorld(nullptr);
 		soundLevelMeter = soundLevelMeter->GetLLWorldNext();
 	}
 	

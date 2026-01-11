@@ -56,25 +56,25 @@ struct sStateData{
 ///////////////////////////////////////////////
 
 desynSynthesizerSourceChain::sSound::sSound() :
-sound(NULL),
+sound(nullptr),
 sampleCount(0),
 sampleRate(0),
 lastSample(0),
-dataMono8(NULL),
-dataMono16(NULL),
-dataStereo8(NULL),
-dataStereo16(NULL){
+dataMono8(nullptr),
+dataMono16(nullptr),
+dataStereo8(nullptr),
+dataStereo16(nullptr){
 }
 
 void desynSynthesizerSourceChain::sSound::Clear(){
-	sound = NULL;
+	sound = nullptr;
 	sampleCount = 0;
 	sampleRate = 0;
 	lastSample = 0;
-	dataMono8 = NULL;
-	dataMono16 = NULL;
-	dataStereo8 = NULL;
-	dataStereo16 = NULL;
+	dataMono8 = nullptr;
+	dataMono16 = nullptr;
+	dataStereo8 = nullptr;
+	dataStereo16 = nullptr;
 }
 
 
@@ -88,7 +88,7 @@ void desynSynthesizerSourceChain::sSound::Clear(){
 desynSynthesizerSourceChain::desynSynthesizerSourceChain(desynSynthesizer &synthesizer,
 int firstLink, const deSynthesizerSourceChain &source) :
 desynSynthesizerSource(synthesizer, firstLink, source),
-pSounds(NULL),
+pSounds(nullptr),
 pSoundCount(0),
 
 pMinSpeed(source.GetMinSpeed()),

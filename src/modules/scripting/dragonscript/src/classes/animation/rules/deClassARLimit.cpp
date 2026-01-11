@@ -565,7 +565,7 @@ void deClassARLimit::CreateClassMembers(dsEngine *engine){
 
 deAnimatorRuleLimit *deClassARLimit::GetRule(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return dedsGetNativeData<sARLimitNatDat>(p_GetNativeData(myself->GetBuffer())).rule;
@@ -586,7 +586,7 @@ void deClassARLimit::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRul
 	}
 	
 	if(!rule){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

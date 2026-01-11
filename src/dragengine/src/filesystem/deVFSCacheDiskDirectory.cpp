@@ -122,7 +122,7 @@ uint64_t deVFSCacheDiskDirectory::CalculateDirectorySize(const char *path){
 	uint64_t sizeDirectory = 0;
 	
 #ifdef OS_UNIX
-	DIR *theDir = NULL;
+	DIR *theDir = nullptr;
 	dirent *entry;
 	struct stat st;
 	
@@ -252,7 +252,7 @@ TIME_SYSTEM &oldestAccesTime, bool &hasOldestFile, const char *path){
 	
 #ifdef OS_UNIX
 	struct stat st;
-	DIR *theDir = NULL;
+	DIR *theDir = nullptr;
 	dirent *entry;
 	
 	try{

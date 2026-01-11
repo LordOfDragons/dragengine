@@ -328,7 +328,7 @@ void deoglDelayedOperations::ProcessFreeOperations(bool /*deleteAll*/){
 		int i;
 		
 		for(i=0; i<count; i++){
-			((deoglRCamera*)pCleanUpCameraList.GetAt(i))->SetParentWorld(NULL);
+			((deoglRCamera*)pCleanUpCameraList.GetAt(i))->SetParentWorld(nullptr);
 		}
 		pCleanUpCameraList.RemoveAll();
 	// 	const float accumCamera = timer.GetElapsedTime();

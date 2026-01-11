@@ -71,7 +71,7 @@ void deColliderComponent::SetComponent(deComponent *component){
 		SetRig(component->GetRig());
 		
 	}else{
-		SetRig(NULL);
+		SetRig(nullptr);
 	}
 }
 

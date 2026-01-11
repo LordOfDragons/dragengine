@@ -66,7 +66,7 @@ delEngineModule *delEngineModuleList::GetNamed(const char *name) const{
 	}
 	
 	const int count = pModules.GetCount();
-	delEngineModule *latestModule = NULL;
+	delEngineModule *latestModule = nullptr;
 	int i;
 	
 	for(i=0; i<count; i++){
@@ -115,7 +115,7 @@ delEngineModule *delEngineModuleList::GetNamedAtLeast(const char *name, const ch
 	}
 	
 	const int count = pModules.GetCount();
-	delEngineModule *latestModule = NULL;
+	delEngineModule *latestModule = nullptr;
 	int i;
 	
 	for(i=0; i<count; i++){
@@ -220,7 +220,7 @@ int delEngineModuleList::IndexOfNamed(const char *name) const{
 	}
 	
 	const int count = pModules.GetCount();
-	const delEngineModule *latestModule = NULL;
+	const delEngineModule *latestModule = nullptr;
 	int latestIndex = -1;
 	int i;
 	

@@ -39,7 +39,7 @@
 ////////////////////////////
 
 debnStateLinkList::debnStateLinkList(){
-	pLinks = NULL;
+	pLinks = nullptr;
 	pLinkCount = 0;
 	pLinkSize = 0;
 }

@@ -107,7 +107,7 @@ void deComponentManager::SystemGraphicUnload(){
 	deComponent *component = (deComponent*)pComponents.GetRoot();
 	
 	while(component){
-		component->SetPeerGraphic(NULL);
+		component->SetPeerGraphic(nullptr);
 		component = (deComponent*)component->GetLLManagerNext();
 	}
 }
@@ -128,7 +128,7 @@ void deComponentManager::SystemPhysicsUnload(){
 	deComponent *component = (deComponent*)pComponents.GetRoot();
 	
 	while(component){
-		component->SetPeerPhysics(NULL);
+		component->SetPeerPhysics(nullptr);
 		component = (deComponent*)component->GetLLManagerNext();
 	}
 }
@@ -149,7 +149,7 @@ void deComponentManager::SystemAudioUnload(){
 	deComponent *component = (deComponent*)pComponents.GetRoot();
 	
 	while(component){
-		component->SetPeerAudio(NULL);
+		component->SetPeerAudio(nullptr);
 		component = (deComponent*)component->GetLLManagerNext();
 	}
 }
@@ -171,7 +171,7 @@ void deComponentManager::SystemAnimatorUnload(){
 	deComponent *component = (deComponent*)pComponents.GetRoot();
 	
 	while(component){
-		component->SetPeerAnimator(NULL);
+		component->SetPeerAnimator(nullptr);
 		component = (deComponent*)component->GetLLManagerNext();
 	}
 }

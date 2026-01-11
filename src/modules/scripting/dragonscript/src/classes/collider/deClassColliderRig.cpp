@@ -680,7 +680,7 @@ void deClassColliderRig::PushCollider(dsRunTime *rt, deColliderRig *collider){
 	}
 	
 	if(!collider){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

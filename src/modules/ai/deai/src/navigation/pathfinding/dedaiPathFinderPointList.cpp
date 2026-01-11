@@ -38,7 +38,7 @@
 /////////////////////////////////
 
 dedaiPathFinderPointList::dedaiPathFinderPointList(){
-	pPoints = NULL;
+	pPoints = nullptr;
 	pPointCount = 0;
 	pPointSize = 0;
 }

@@ -286,7 +286,7 @@ void deClassColliderComponent::PushCollider(dsRunTime *rt, deColliderComponent *
 	}
 	
 	if(!collider){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

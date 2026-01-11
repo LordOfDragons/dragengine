@@ -99,7 +99,7 @@ void dedaiLayer::MarkDirty(){
 
 
 dedaiSpaceGridVertex *dedaiLayer::GetGridVertexClosestTo(const decDVector &position, float &distance){
-	dedaiSpaceGridVertex *bestVertex = NULL;
+	dedaiSpaceGridVertex *bestVertex = nullptr;
 	float bestDistance = 0.0f;
 	float testDistance;
 	
@@ -171,7 +171,7 @@ dedaiSpaceGridVertex *dedaiLayer::GetGridVertexClosestTo(const decDVector &posit
 }
 
 dedaiSpaceMeshFace *dedaiLayer::GetMeshFaceClosestTo(const decDVector &position, float &distance){
-	dedaiSpaceMeshFace *bestFace = NULL;
+	dedaiSpaceMeshFace *bestFace = nullptr;
 	float bestDistance = 0.0f;
 	float testDistance;
 	
@@ -254,7 +254,7 @@ dedaiSpaceMeshFace *dedaiLayer::GetMeshFaceClosestTo(const decDVector &position,
 dedaiSpaceGridEdge *dedaiLayer::GetGridNearestPoint(const decDVector &point,
 float radius, decDVector &nearestPoint, float &nearestLambda){
 	float testNearestDistance, testLambda, bestDistanceSquared = radius;
-	dedaiSpaceGridEdge *bestEdge = NULL;
+	dedaiSpaceGridEdge *bestEdge = nullptr;
 	decVector testNearestPosition;
 	
 	// height terrain navspaces
@@ -335,7 +335,7 @@ float radius, decDVector &nearestPoint, float &nearestLambda){
 dedaiSpaceMeshFace *dedaiLayer::GetNavMeshNearestPoint(const decDVector &point, float radius, decDVector &nearest){
 	const decDVector testMinExtend(point - decDVector((double)radius, (double)radius, (double)radius));
 	const decDVector testMaxExtend(point + decDVector((double)radius, (double)radius, (double)radius));
-	dedaiSpaceMeshFace *bestFace = NULL;
+	dedaiSpaceMeshFace *bestFace = nullptr;
 	float bestDistanceSquared = 0.0f;
 	decVector testNearestPosition;
 	float testNearestDistance;
@@ -486,7 +486,7 @@ bool dedaiLayer::NavMeshLineCollide(const decDVector &origin, const decVector &d
 			
 			// determine if this edge leads somewhere
 			const dedaiSpaceMeshEdge &edge = navmesh->GetEdgeAt(c1.GetEdge());
-			dedaiSpaceMeshFace *nextFace = NULL;
+			dedaiSpaceMeshFace *nextFace = nullptr;
 			
 			if(edge.GetFace2() == -1){
 				if(c1.GetLink() != -1){

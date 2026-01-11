@@ -111,7 +111,7 @@ void deClassVideoPlayer::nfSetVideo::RunFunction(dsRunTime *rt, dsValue *myself)
 		videoPlayer.SetVideo(clsVP.GetDS()->GetClassVideo()->GetVideo(object));
 		
 	}else{
-		videoPlayer.SetVideo(NULL);
+		videoPlayer.SetVideo(nullptr);
 	}
 }
 
@@ -410,7 +410,7 @@ void deClassVideoPlayer::PushVideoPlayer(dsRunTime *rt, deVideoPlayer *videoPlay
 	}
 	
 	if(!videoPlayer){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

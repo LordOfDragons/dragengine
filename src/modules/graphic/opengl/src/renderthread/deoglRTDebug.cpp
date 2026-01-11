@@ -237,8 +237,8 @@ const GLchar *message, void *userParam){
 
 deoglRTDebug::deoglRTDebug(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
-pDebugSaveTexture(NULL),
-pDeveloperMode(NULL),
+pDebugSaveTexture(nullptr),
+pDeveloperMode(nullptr),
 pEnableHwDebugOutput(true),
 pDebugMemoryConsumption(renderThread),
 pEnableDebugTrace(false)
@@ -254,12 +254,12 @@ pEnableDebugTrace(false)
 				
 				if(renderThread.GetConfiguration().GetDebugNoMessages()){
 					renderThread.GetLogger().LogInfo("Suppress hardware debug messages");
-					pglDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_FALSE);
+					pglDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_FALSE);
 					
 				}else{
 // 					glEnable( GL_DEBUG_OUTPUT_SYNCHRONOUS );
 					
-					pglDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
+					pglDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
 					
 					
 					// disable message not interesting for us but flodding the logs
@@ -335,7 +335,7 @@ pEnableDebugTrace(false)
 				
 			}else if(renderThread.GetExtensions().GetHasExtension(deoglExtensions::ext_AMD_debug_output)){
 				pglDebugMessageCallbackAMD(fDebugOutputAMD, this);
-				pglDebugMessageEnableAMD(0, 0, 0, NULL, GL_TRUE);
+				pglDebugMessageEnableAMD(0, 0, 0, nullptr, GL_TRUE);
 				renderThread.GetLogger().LogInfo("Debugging callback using AMD_debug_output activated");
 			}
 			
@@ -416,9 +416,9 @@ void deoglRTDebug::pCleanUp(){
 	}
 	
 	if(pglDebugMessageCallback){
-		pglDebugMessageCallback(NULL, NULL);
+		pglDebugMessageCallback(nullptr, nullptr);
 		
 	}else if(pglDebugMessageCallbackAMD){
-		pglDebugMessageCallbackAMD(NULL, NULL);
+		pglDebugMessageCallbackAMD(nullptr, nullptr);
 	}
 }

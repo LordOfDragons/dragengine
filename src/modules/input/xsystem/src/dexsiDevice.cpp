@@ -67,7 +67,7 @@ pXDeviceType(exdtOther),
 
 pX11FirstKeyCode(0),
 pX11KeyCodeCount(0),
-pX11KeyCodeMap(NULL),
+pX11KeyCodeMap(nullptr),
 
 pDirtyAxesValues(false){
 }
@@ -85,7 +85,7 @@ pXDeviceType(exdtOther),
 
 pX11FirstKeyCode(0),
 pX11KeyCodeCount(0),
-pX11KeyCodeMap(NULL),
+pX11KeyCodeMap(nullptr),
 
 pDirtyAxesValues(false)
 {
@@ -283,7 +283,7 @@ void dexsiDevice::ResetX11KeyCodeMap(int firstKeyCode, int keyCodeCount){
 	
 	if(pX11KeyCodeMap){
 		delete [] pX11KeyCodeMap;
-		pX11KeyCodeMap = NULL;
+		pX11KeyCodeMap = nullptr;
 	}
 	
 	pX11FirstKeyCode = firstKeyCode;

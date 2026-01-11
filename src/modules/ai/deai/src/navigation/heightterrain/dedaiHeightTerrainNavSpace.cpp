@@ -51,21 +51,21 @@ dedaiHeightTerrainNavSpace::dedaiHeightTerrainNavSpace(dedaiHeightTerrainSector 
 pSector(sector),
 pNavigationSpace(navigationSpace),
 
-pVertices(NULL),
+pVertices(nullptr),
 pVertexCount(0),
 pVertexSize(0),
 
-pEdges(NULL),
+pEdges(nullptr),
 
-pCorners(NULL),
+pCorners(nullptr),
 pCornerCount(0),
 pCornerSize(0),
 
-pFaces(NULL),
+pFaces(nullptr),
 pFaceCount(0),
 pFaceSize(0),
 
-pSpace(NULL)
+pSpace(nullptr)
 {
 	try{
 		pUpdateCorners();
@@ -274,7 +274,7 @@ void dedaiHeightTerrainNavSpace::pUpdateCorners(){
 	if(cornerCount > pVertexSize){
 		if(pVertices){
 			delete [] pVertices;
-			pVertices = NULL;
+			pVertices = nullptr;
 			pVertexSize = 0;
 		}
 		
@@ -285,7 +285,7 @@ void dedaiHeightTerrainNavSpace::pUpdateCorners(){
 	if(cornerCount > pCornerSize){
 		if(pCorners){
 			delete [] pCorners;
-			pCorners = NULL;
+			pCorners = nullptr;
 			pCornerSize = 0;
 		}
 		
@@ -296,7 +296,7 @@ void dedaiHeightTerrainNavSpace::pUpdateCorners(){
 	if(faceCount > pFaceSize){
 		if(pFaces){
 			delete [] pFaces;
-			pFaces = NULL;
+			pFaces = nullptr;
 			pFaceSize = 0;
 		}
 		
@@ -371,7 +371,7 @@ void dedaiHeightTerrainNavSpace::pUpdateEdges(){
 	
 	if(pEdges){
 		delete [] pEdges;
-		pEdges = NULL;
+		pEdges = nullptr;
 	}
 	pVertexCount = 0;
 	
@@ -393,7 +393,7 @@ void dedaiHeightTerrainNavSpace::pUpdateEdges(){
 	if(maxVertexCount > pVertexSize){
 		if(pVertices){
 			delete [] pVertices;
-			pVertices = NULL;
+			pVertices = nullptr;
 			pVertexSize = 0;
 		}
 		

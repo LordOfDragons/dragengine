@@ -49,7 +49,7 @@ pRenderThread(renderThread),
 pVAO(0),
 pIndexSize(0),
 pIndexGLType(GL_NONE),
-pRTSVAO(NULL)
+pRTSVAO(nullptr)
 {
 	OGL_CHECK(renderThread, pglGenVertexArrays(1, &pVAO));
 	

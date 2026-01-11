@@ -82,7 +82,7 @@ deImage * deImageManager::GetImageWith(const char *filename) const{
 
 deImage *deImageManager::GetImageWith(deVirtualFileSystem *vfs, const char *filename) const{
 	deImage * const image = (deImage*)pImages.GetWithFilename(vfs, filename);
-	return image && !image->GetOutdated() ? image : NULL;
+	return image && !image->GetOutdated() ? image : nullptr;
 }
 
 deImage::Ref deImageManager::CreateImage(int width, int height, int depth, int componentCount, int bitCount){
@@ -99,7 +99,7 @@ deImage::Ref deImageManager::LoadImage(const char *filename, const char *basePat
 
 deImage::Ref deImageManager::LoadImage(deVirtualFileSystem *vfs, const char *filename, const char *basePath){
 	deBaseImageModule *module;
-	deBaseImageInfo *imageInfos = NULL;
+	deBaseImageInfo *imageInfos = nullptr;
 	deImage::Ref image;
 	decPath path;
 	
@@ -118,7 +118,7 @@ deImage::Ref deImageManager::LoadImage(deVirtualFileSystem *vfs, const char *fil
 			LogInfoFormat("Image '%s' (base path '%s') changed on VFS: Outdating and Reloading",
 				filename, basePath ? basePath : "");
 			findImage->MarkOutdated();
-			findImage = NULL;
+			findImage = nullptr;
 		}
 		
 		if(findImage){
@@ -141,7 +141,7 @@ deImage::Ref deImageManager::LoadImage(deVirtualFileSystem *vfs, const char *fil
 			image->SetAsynchron(false);
 			
 			module->LoadImage(*fileReader, *image, *imageInfos);
-			delete imageInfos; imageInfos = NULL;
+			delete imageInfos; imageInfos = nullptr;
 			
 			// load into graphic system
 			GetGraphicSystem()->LoadImage(image);
@@ -167,7 +167,7 @@ deImage::Ref deImageManager::LoadImage(deVirtualFileSystem *vfs, const char *fil
 }
 
 deImage::Ref deImageManager::LoadDefault(){
-	decXpmImage *xpmImage = NULL;
+	decXpmImage *xpmImage = nullptr;
 	deImage::Ref image;
 	
 	try{
@@ -184,7 +184,7 @@ deImage::Ref deImageManager::LoadDefault(){
 			xpmImage = new decXpmImage(no_tex_xpm, true);
 			image = deImage::Ref::New(this, GetEngine()->GetVirtualFileSystem(),
 				IMAGE_NO_TEXTURE, decDateTime::GetSystemTime(), xpmImage);
-			delete xpmImage; xpmImage = NULL;
+			delete xpmImage; xpmImage = nullptr;
 			
 			// load into graphic system
 			GetGraphicSystem()->LoadImage(image);
@@ -278,7 +278,7 @@ void deImageManager::SystemGraphicUnload(){
 	deImage *image = (deImage*)pImages.GetRoot();
 	
 	while(image){
-		image->SetPeerGraphic(NULL);
+		image->SetPeerGraphic(nullptr);
 		image = (deImage*)image->GetLLManagerNext();
 	}
 }

@@ -65,20 +65,20 @@
 
 dedaiSpace::dedaiSpace(deDEAIModule &deai) :
 pDEAI(deai),
-pParentWorld(NULL),
+pParentWorld(nullptr),
 
-pOwnerNavSpace(NULL),
-pOwnerHTNavSpace(NULL),
+pOwnerNavSpace(nullptr),
+pOwnerHTNavSpace(nullptr),
 
 pType(deNavigationSpace::estGrid),
 pLayerNumber(0),
-pLayer(NULL),
+pLayer(nullptr),
 pSnapDistance(0.001f),
 pSnapAngle(DEG2RAD * 180.0f),
 pBlockingPriority(0),
 
-pGrid(NULL),
-pMesh(NULL),
+pGrid(nullptr),
+pMesh(nullptr),
 
 pDirtyMatrix(true),
 pDirtyExtends(true),
@@ -86,11 +86,11 @@ pDirtyLayout(true),
 pDirtyLinks(true),
 
 pDirtyBlocking(true),
-pDDSSpace(NULL),
-pDDSCorners(NULL),
-pDDSNormals(NULL),
-pDDSMismatching(NULL),
-pDDSHighlightCostType(NULL),
+pDDSSpace(nullptr),
+pDDSCorners(nullptr),
+pDDSNormals(nullptr),
+pDDSMismatching(nullptr),
+pDDSHighlightCostType(nullptr),
 
 pDebugLastHighlightCostType(-1){
 }
@@ -124,7 +124,7 @@ void dedaiSpace::SetParentWorld(dedaiWorld *world){
 		pLayer = world->GetLayer(pLayerNumber);
 		
 	}else{
-		pLayer = NULL;
+		pLayer = nullptr;
 	}
 	
 	pDirtyLayout = true;
@@ -162,7 +162,7 @@ void dedaiSpace::SetOwnerNavSpace(dedaiNavSpace *navSpace){
 		pDebugDrawer->SetOrientation(pOrientation);
 	}
 	
-	pLayer = NULL;
+	pLayer = nullptr;
 	pDirtyMatrix = true;
 	pDirtyExtends = true;
 	pDirtyLayout = true;
@@ -197,7 +197,7 @@ void dedaiSpace::SetOwnerHTNavSpace(dedaiHeightTerrainNavSpace *htNavSpace){
 		pDebugDrawer->SetOrientation(pOrientation);
 	}
 	
-	pLayer = NULL;
+	pLayer = nullptr;
 	pDirtyMatrix = true;
 	pDirtyExtends = true;
 	pDirtyLayout = true;
@@ -231,7 +231,7 @@ void dedaiSpace::SetLayerNumber(int layerNumber){
 		pLayer = pParentWorld->GetLayer(pLayerNumber);
 		
 	}else{
-		pLayer = NULL;
+		pLayer = nullptr;
 	}
 	pInvalidateLayerBlocking();
 }
@@ -492,12 +492,12 @@ void dedaiSpace::UpdateDDSSpace(){
 				pParentWorld->GetWorld().RemoveDebugDrawer(pDebugDrawer);
 			}
 			
-			pDDSSpace = NULL;
-			pDDSCorners = NULL;
-			pDDSNormals = NULL;
-			pDDSMismatching = NULL;
-			pDDSHighlightCostType = NULL;
-			pDebugDrawer = NULL;
+			pDDSSpace = nullptr;
+			pDDSCorners = nullptr;
+			pDDSNormals = nullptr;
+			pDDSMismatching = nullptr;
+			pDDSHighlightCostType = nullptr;
+			pDebugDrawer = nullptr;
 		}
 	}
 }
@@ -526,8 +526,8 @@ void dedaiSpace::AddBlockerSplitters(decConvexVolumeList &list){
 	
 	const decDVector &minExtend = GetMinimumExtends();
 	const decDVector &maxExtend = GetMaximumExtends();
-	decConvexVolumeFace *volumeFace = NULL;
-	decConvexVolume *volume = NULL;
+	decConvexVolumeFace *volumeFace = nullptr;
+	decConvexVolume *volume = nullptr;
 	int i, j, k;
 	
 	// add splitter volumes from all overlapping blockers of appropriate priority
@@ -605,12 +605,12 @@ void dedaiSpace::AddBlockerSplitters(decConvexVolumeList &list){
 							}
 							
 							volume->AddFace(volumeFace);
-							volumeFace = NULL;
+							volumeFace = nullptr;
 						}
 					}
 					
 					list.AddVolume(volume);
-					volume = NULL;
+					volume = nullptr;
 				}
 			}
 			
@@ -631,8 +631,8 @@ void dedaiSpace::AddBlockerSplitters(decConvexVolumeList &list){
 void dedaiSpace::AddSpaceBlockerSplitters(decConvexVolumeList &list){
 	const decDVector &minExtend = GetMinimumExtends();
 	const decDVector &maxExtend = GetMaximumExtends();
-	decConvexVolumeFace *volumeFace = NULL;
-	decConvexVolume *volume = NULL;
+	decConvexVolumeFace *volumeFace = nullptr;
+	decConvexVolume *volume = nullptr;
 	int i, j, k;
 	
 	// add splitter volumes from all overlapping navigation space blockers except ourself
@@ -706,12 +706,12 @@ void dedaiSpace::AddSpaceBlockerSplitters(decConvexVolumeList &list){
 							}
 							
 							volume->AddFace(volumeFace);
-							volumeFace = NULL;
+							volumeFace = nullptr;
 						}
 					}
 					
 					list.AddVolume(volume);
-					volume = NULL;
+					volume = nullptr;
 				}
 			}
 			
@@ -850,7 +850,7 @@ void dedaiSpace::pUpdateSpace(){
 	case deNavigationSpace::estGrid:
 		if(pMesh){
 			delete pMesh;
-			pMesh = NULL;
+			pMesh = nullptr;
 		}
 		
 		if(pGrid){
@@ -866,7 +866,7 @@ void dedaiSpace::pUpdateSpace(){
 	case deNavigationSpace::estMesh:
 		if(pGrid){
 			delete pGrid;
-			pGrid = NULL;
+			pGrid = nullptr;
 		}
 		
 		if(pMesh){

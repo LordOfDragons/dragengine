@@ -78,7 +78,7 @@ pTCClampMin(0.0f, 0.0f),
 pTCClampMax(1.0f, 1.0f),
 // pColorTransform( canvas.GetColorTransform() ), // no, this applies color transform twice
 pTransparency(canvas.GetTransparency()),
-pMask(NULL)
+pMask(nullptr)
 {
 	// set clip factor to obtain correct clipping coordinates for the shaders
 	pClipFactor.x = (float)viewportSize.x * 0.5f;

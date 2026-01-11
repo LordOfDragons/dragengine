@@ -48,7 +48,7 @@
 
 deoglRenderPlanLight::deoglRenderPlanLight(deoglRenderPlan &plan) :
 pPlan(plan),
-pLight(NULL),
+pLight(nullptr),
 
 pDistance(0.0f),
 pReductionFactorStatic(1),

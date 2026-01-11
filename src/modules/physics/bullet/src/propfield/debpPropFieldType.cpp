@@ -54,7 +54,7 @@ debpPropFieldType::debpPropFieldType(debpPropField *propField, dePropFieldType *
 	pPropField = propField;
 	pType = type;
 	
-	pBendStates = NULL;
+	pBendStates = nullptr;
 	pBendStateCount = 0;
 	pBendStateSize = 0;
 	
@@ -77,7 +77,7 @@ void debpPropFieldType::MarkDirty(){
 
 void debpPropFieldType::SetBendStateSize(int size){
 	if(size != pBendStateSize){
-		debpPropFieldBendState *newArray = NULL;
+		debpPropFieldBendState *newArray = nullptr;
 		
 		if(size > 0){
 			newArray = new debpPropFieldBendState[size];

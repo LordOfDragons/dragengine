@@ -77,7 +77,7 @@ void deoglEffectDistortImage::SyncToRender(){
 			pREffectDistortImage->SetImage(oglImage->GetRImage());
 			
 		}else{
-			pREffectDistortImage->SetImage(NULL);
+			pREffectDistortImage->SetImage(nullptr);
 		}
 		
 		pDirtyImage = false;

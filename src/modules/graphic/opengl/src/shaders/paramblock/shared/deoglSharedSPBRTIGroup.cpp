@@ -44,7 +44,7 @@ deoglSharedSPB &sharedSPB, int textureCount) :
 pParent(parent),
 pSharedSPB(sharedSPB),
 pTextureCount(textureCount),
-pRTSInstance(NULL)
+pRTSInstance(nullptr)
 {
 	DEASSERT_NOTNULL(parent)
 	

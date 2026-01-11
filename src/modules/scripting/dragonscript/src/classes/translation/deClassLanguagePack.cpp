@@ -294,7 +294,7 @@ void deClassLanguagePack::PushLanguagePack(dsRunTime *rt, deLanguagePack *langPa
 	}
 	
 	if(!langPack){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

@@ -42,17 +42,17 @@
 ////////////////////////////
 
 deDynamicSkin::deDynamicSkin(deDynamicSkinManager *manager) : deResource(manager){
-	pRenderables = NULL;
+	pRenderables = nullptr;
 	pRenderableCount = 0;
 	pRenderableSize = 0;
 	
-	pPeerGraphic = NULL;
+	pPeerGraphic = nullptr;
 }
 
 deDynamicSkin::~deDynamicSkin(){
 	if(pPeerGraphic){
 		delete pPeerGraphic;
-		pPeerGraphic = NULL;
+		pPeerGraphic = nullptr;
 	}
 	
 	RemoveAllRenderables();
@@ -74,7 +74,7 @@ deDSRenderable *deDynamicSkin::GetRenderableNamed(const char *name) const{
 	int index = IndexOfRenderableNamed(name);
 	
 	if(index == -1){
-		return NULL;
+		return nullptr;
 		
 	}else{
 		return pRenderables[index];

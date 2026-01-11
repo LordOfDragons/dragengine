@@ -107,7 +107,7 @@ void deRLTaskReadLanguagePack::Finished(){
 	
 	if(!pSucceeded){
 		SetState(esFailed);
-		pLanguagePack = NULL;
+		pLanguagePack = nullptr;
 		LogFinishedExit();
 		GetResourceLoader().FinishTask(this);
 		return;

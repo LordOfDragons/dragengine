@@ -44,23 +44,23 @@
 
 deEnvMapProbe::deEnvMapProbe(deEnvMapProbeManager *manager) : deResource(manager){
 	pScaling.Set(1.0f, 1.0f, 1.0f);
-	pShapeReflection = NULL;
+	pShapeReflection = nullptr;
 	pInfluenceBorderSize = 0.1f;
 	pInfluencePriority = 0;
 	
 	pLayerMask.SetBit(0);
 	
-	pPeerGraphic = NULL;
+	pPeerGraphic = nullptr;
 	
-	pParentWorld = NULL;
-	pLLWorldPrev = NULL;
-	pLLWorldNext = NULL;
+	pParentWorld = nullptr;
+	pLLWorldPrev = nullptr;
+	pLLWorldNext = nullptr;
 }
 
 deEnvMapProbe::~deEnvMapProbe(){
 	if(pPeerGraphic){
 		delete pPeerGraphic;
-		pPeerGraphic = NULL;
+		pPeerGraphic = nullptr;
 	}
 	
 	if(pShapeReflection){

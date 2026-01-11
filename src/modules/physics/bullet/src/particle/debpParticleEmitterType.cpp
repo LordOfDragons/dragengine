@@ -56,16 +56,16 @@ debpParticleEmitterType::debpParticleEmitterType() :
 pParamFactorLinVelo(1.0f),
 pParamFactorAngVelo(1.0f)
 {
-	pEmitter = NULL,
+	pEmitter = nullptr,
 	pType = 0;
 	
-	pSkin = NULL;
-	pModel = NULL;
-	pModelSkin = NULL;
+	pSkin = nullptr;
+	pModel = nullptr;
+	pModelSkin = nullptr;
 	
-	pParameterValueSamples = NULL;
-	pParameterSpreadSamples = NULL;
-	pParameterProgressSamples = NULL;
+	pParameterValueSamples = nullptr;
+	pParameterSpreadSamples = nullptr;
+	pParameterProgressSamples = nullptr;
 }
 
 debpParticleEmitterType::~debpParticleEmitterType(){
@@ -114,7 +114,7 @@ void debpParticleEmitterType::UpdateType(){
 		pSkin = (debpSkin*)skin->GetPeerPhysics();
 		
 	}else{
-		pSkin = NULL;
+		pSkin = nullptr;
 	}
 	
 	model = type.GetModel();
@@ -122,7 +122,7 @@ void debpParticleEmitterType::UpdateType(){
 		pModel = (debpModel*)model->GetPeerPhysics();
 		
 	}else{
-		pModel = NULL;
+		pModel = nullptr;
 	}
 	
 	skin = type.GetModelSkin();
@@ -130,7 +130,7 @@ void debpParticleEmitterType::UpdateType(){
 		pModelSkin = (debpSkin*)skin->GetPeerPhysics();
 		
 	}else{
-		pModelSkin = NULL;
+		pModelSkin = nullptr;
 	}
 }
 

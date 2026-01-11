@@ -142,7 +142,7 @@ void deClassComponent::nfGetRig::RunFunction(dsRunTime *rt, dsValue *myself){
 	if(component->GetRig()){
 		clsComp->GetClassRig()->PushRig(rt, component->GetRig());
 	}else{
-		rt->PushObject(NULL, clsComp->GetClassRig());
+		rt->PushObject(nullptr, clsComp->GetClassRig());
 	}
 }
 
@@ -1302,19 +1302,19 @@ void deClassComponent::nfSetHintGIImportance::RunFunction(dsRunTime *rt, dsValue
 
 deClassComponent::deClassComponent(deEngine *GameEngine, deScriptingDragonScript *ScrMgr) :
 dsClass("Component", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED),
-pGameEngine(NULL),
-pScrMgr(NULL),
-pClsMdl(NULL),
-pClsRig(NULL),
-pClsSkin(NULL),
-pClsImg(NULL),
-pClsDec(NULL),
-pClsClr(NULL),
-pClsCam(NULL),
-pClsVec(NULL),
-pClsDVec(NULL),
-pClsQuat(NULL),
-pClsComponentHintMovement(NULL)
+pGameEngine(nullptr),
+pScrMgr(nullptr),
+pClsMdl(nullptr),
+pClsRig(nullptr),
+pClsSkin(nullptr),
+pClsImg(nullptr),
+pClsDec(nullptr),
+pClsClr(nullptr),
+pClsCam(nullptr),
+pClsVec(nullptr),
+pClsDVec(nullptr),
+pClsQuat(nullptr),
+pClsComponentHintMovement(nullptr)
 {
 	// check parameters
 	if(!GameEngine || !ScrMgr) DSTHROW(dueInvalidParam);
@@ -1481,7 +1481,7 @@ void deClassComponent::CreateClassMembers(dsEngine *engine){
 
 deComponent *deClassComponent::GetComponent(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return dedsGetNativeData<sCompNatDat>(p_GetNativeData(myself->GetBuffer())).component;
@@ -1493,7 +1493,7 @@ void deClassComponent::PushComponent(dsRunTime *rt, deComponent *component){
 	}
 	
 	if(!component){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

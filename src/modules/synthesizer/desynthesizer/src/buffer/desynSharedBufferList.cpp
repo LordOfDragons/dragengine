@@ -62,7 +62,7 @@ desynSharedBuffer *desynSharedBufferList::ClaimBuffer(int size){
 	}
 	
 	const int count = pBuffers.GetCount();
-	desynSharedBuffer *buffer = NULL;
+	desynSharedBuffer *buffer = nullptr;
 	int i;
 	
 	for(i=0; i<count; i++){
@@ -76,7 +76,7 @@ desynSharedBuffer *desynSharedBufferList::ClaimBuffer(int size){
 		}
 	}
 	
-	buffer = NULL;
+	buffer = nullptr;
 	try{
 		buffer = new desynSharedBuffer;
 		buffer->SetSize(size);

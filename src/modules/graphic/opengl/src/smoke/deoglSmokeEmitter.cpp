@@ -51,7 +51,7 @@ deoglSmokeEmitter::deoglSmokeEmitter(deGraphicOpenGl *ogl, deSmokeEmitter *smoke
 	
 	pOgl = ogl;
 	pSmokeEmitter = smokeEmitter;
-	pParentWorld = NULL;
+	pParentWorld = nullptr;
 	
 	pDirtyExtends = true;
 }

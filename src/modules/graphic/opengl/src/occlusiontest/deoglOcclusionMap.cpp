@@ -46,7 +46,7 @@ pRenderThread(renderThread){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pTexture = NULL;
+	pTexture = nullptr;
 	
 	pWidth = width;
 	pHeight = height;

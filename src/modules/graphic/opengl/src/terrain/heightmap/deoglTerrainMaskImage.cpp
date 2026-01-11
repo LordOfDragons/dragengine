@@ -41,9 +41,9 @@ deoglTerrainMaskImage::deoglTerrainMaskImage(deImage &image) :
 pImage(image),
 pWidth(image.GetWidth()),
 pHeight(image.GetHeight()),
-pData8(NULL),
-pData16(NULL),
-pData32(NULL),
+pData8(nullptr),
+pData16(nullptr),
+pData32(nullptr),
 pRetained(false)
 {
 	image.RetainImageData();

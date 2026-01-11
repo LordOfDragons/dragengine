@@ -41,9 +41,9 @@
 
 deoglPersistentRenderTaskOwner::deoglPersistentRenderTaskOwner() :
 pLLTask(this),
-pOwner(NULL),
+pOwner(nullptr),
 pUniqueKey(0),
-pComponent(NULL){
+pComponent(nullptr){
 }
 
 deoglPersistentRenderTaskOwner::~deoglPersistentRenderTaskOwner(){
@@ -115,8 +115,8 @@ void deoglPersistentRenderTaskOwner::RemoveAllSubInstances(){
 
 
 void deoglPersistentRenderTaskOwner::Clear(){
-	pOwner = NULL;
-	pComponent = NULL;
+	pOwner = nullptr;
+	pComponent = nullptr;
 	pInstances.RemoveAll();
 	pSubInstances.RemoveAll();
 }

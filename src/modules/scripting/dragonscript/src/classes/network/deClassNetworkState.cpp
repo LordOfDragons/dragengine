@@ -793,7 +793,7 @@ void deClassNetworkState::nfGetStateListener::RunFunction(dsRunTime *rt, dsValue
 		rt->PushObject(scrState->GetCallback(), ds.GetClassNetworkStateListener());
 		
 	}else{
-		rt->PushObject(NULL, ds.GetClassNetworkStateListener());
+		rt->PushObject(nullptr, ds.GetClassNetworkStateListener());
 	}
 }
 
@@ -940,7 +940,7 @@ void deClassNetworkState::CreateClassMembers(dsEngine *engine){
 
 deNetworkState *deClassNetworkState::GetNetworkState(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return dedsGetNativeData<sNSNatDat>(p_GetNativeData(myself->GetBuffer())).state;
@@ -952,7 +952,7 @@ void deClassNetworkState::PushNetworkState(dsRunTime *rt, deNetworkState *state)
 	}
 	
 	if(!state){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

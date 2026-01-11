@@ -37,19 +37,19 @@
 //////////////////////////////
 
 decShapeHull::decShapeHull() :
-pPoints(NULL),
+pPoints(nullptr),
 pPointCount(0){
 }
 
 decShapeHull::decShapeHull(const decVector &position) :
 decShape(position),
-pPoints(NULL),
+pPoints(nullptr),
 pPointCount(0){
 }
 
 decShapeHull::decShapeHull(const decVector &position, const decQuaternion &orientation) :
 decShape(position, orientation),
-pPoints(NULL),
+pPoints(nullptr),
 pPointCount(0){
 }
 
@@ -75,7 +75,7 @@ void decShapeHull::SetPointCount(int count){
 	
 	if(pPoints){
 		delete [] pPoints;
-		pPoints = NULL;
+		pPoints = nullptr;
 		pPointCount = 0;
 	}
 	

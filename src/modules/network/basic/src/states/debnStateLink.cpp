@@ -48,10 +48,10 @@ pIdentifier(-1),
 pLinkState(elsDown),
 pConnection(connection),
 pChanged(false),
-pValueChanged(NULL),
+pValueChanged(nullptr),
 pValueCount(0),
-pPreviousLink(NULL),
-pNextLink(NULL)
+pPreviousLink(nullptr),
+pNextLink(nullptr)
 {
 	try{
 		const int valueCount = bnState->GetValueCount();
@@ -78,7 +78,7 @@ debnStateLink::~debnStateLink(){
 ///////////////
 
 void debnStateLink::DropState(){
-	pState = NULL;
+	pState = nullptr;
 }
 
 void debnStateLink::SetIdentifier(int identifier){

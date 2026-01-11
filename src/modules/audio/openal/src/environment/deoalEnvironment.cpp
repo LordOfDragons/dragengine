@@ -84,7 +84,7 @@
 
 deoalEnvironment::deoalEnvironment(deoalAudioThread &audioThread) :
 pAudioThread(audioThread),
-pWorld(NULL),
+pWorld(nullptr),
 pRange(1.0f),
 pRangeSquared(1.0f),
 pAttenuationRefDist(1.0f),
@@ -109,8 +109,8 @@ pReverbLateReverbGain(1.26f),
 pReverbLateReverbDelay(0.011f),
 pReverbEchoTime(0.25f),
 pResetListenerSmooth(true),
-pEnvProbe(NULL),
-pDebug(NULL)
+pEnvProbe(nullptr),
+pDebug(nullptr)
 {
 	#ifdef LISTENER_CENTRIC_RAY_CAST
 	pEnvProbe = new deoalEnvProbe(audioThread);
@@ -118,7 +118,7 @@ pDebug(NULL)
 }
 
 deoalEnvironment::~deoalEnvironment(){
-	SetWorld(NULL);
+	SetWorld(nullptr);
 	
 	if(pDebug){
 		delete pDebug;
@@ -343,8 +343,8 @@ void deoalEnvironment::DebugUpdateDirect(deDebugDrawer &debugDrawer, const deoal
 	
 	const int count = rtresult.GetElementCount();
 	decDVector lastPosition(pPosition);
-	deDebugDrawerShape *ddshape = NULL;
-	deDebugDrawerShapeFace *ddsface = NULL;
+	deDebugDrawerShape *ddshape = nullptr;
+	deDebugDrawerShapeFace *ddsface = nullptr;
 	const float sphereRadius = 0.01f; //0.0025f;
 	
 	debugDrawer.SetPosition(pPosition);
@@ -382,10 +382,10 @@ void deoalEnvironment::DebugUpdateDirect(deDebugDrawer &debugDrawer, const deoal
 			ddsface->AddVertex(lastPosition - pPosition);
 			ddsface->SetNormal(decVector(0.0f, 0.0f, 1.0f));
 			ddshape->AddFace(ddsface);
-			ddsface = NULL;
+			ddsface = nullptr;
 			ddshape->GetShapeList().Add(new decShapeSphere(sphereRadius, lastPosition - pPosition));
 			debugDrawer.AddShape(ddshape);
-			ddshape = NULL;
+			ddshape = nullptr;
 			lastPosition = hitElement.GetPoint();
 		}
 		
@@ -403,7 +403,7 @@ void deoalEnvironment::DebugUpdateDirect(deDebugDrawer &debugDrawer, const deoal
 		ddsface->AddVertex(lastPosition - pPosition);
 		ddsface->SetNormal(decVector(0.0f, 0.0f, 1.0f));
 		ddshape->AddFace(ddsface);
-		ddsface = NULL;
+		ddsface = nullptr;
 		ddshape->GetShapeList().Add(new decShapeSphere(sphereRadius, lastPosition - pPosition));
 		ddshape->GetShapeList().Add(new decShapeSphere(sphereRadius, microphone.GetPosition() - pPosition));
 		debugDrawer.AddShape(ddshape);
@@ -462,7 +462,7 @@ void deoalEnvironment::pDirectPath(const deoalAMicrophone &microphone, const dec
 	// is used to keep track of the number of encountered front and back faces. whenever a front
 	// face is hit the counter in incremented. if the counter is larger than 1 apply the
 	// transmission as if a back face is hit and switch to the new transmission parameters.
-	const deoalRayTraceHitElement *curTransElement = NULL;
+	const deoalRayTraceHitElement *curTransElement = nullptr;
 	const int count = rtresult.GetElementCount();
 	int frontBackCounter = 0;
 	int i;
@@ -480,7 +480,7 @@ void deoalEnvironment::pDirectPath(const deoalAMicrophone &microphone, const dec
 			if(frontBackCounter > 0){
 				continue;
 			}
-			curTransElement = NULL;
+			curTransElement = nullptr;
 		}
 		
 		if(!transmitFront){

@@ -40,7 +40,7 @@
 ////////////////////////////
 
 deoglCapsTextureFormatList::deoglCapsTextureFormatList() :
-pFormats(NULL),
+pFormats(nullptr),
 pFormatCount(0),
 pFormatSize(0){
 }
@@ -76,7 +76,7 @@ const deoglCapsTextureFormat *deoglCapsTextureFormatList::GetFormatWith(GLint fo
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 void deoglCapsTextureFormatList::AddFormat(GLint format, GLenum pixelFormat, GLenum pixelType,

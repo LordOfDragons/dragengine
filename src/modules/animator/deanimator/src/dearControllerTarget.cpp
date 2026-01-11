@@ -43,7 +43,7 @@
 /////////////////////////////////
 
 dearControllerTarget::dearControllerTarget(const deAnimatorControllerTarget &target, int firstLink) :
-pLinks(NULL),
+pLinks(nullptr),
 pLinkCount(0){
 	const int linkCount = target.GetLinkCount();
 	

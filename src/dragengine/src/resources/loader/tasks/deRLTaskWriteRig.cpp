@@ -92,7 +92,7 @@ void deRLTaskWriteRig::Finished(){
 		SetState(esSucceeded);
 		
 	}else{
-		pRig = NULL;
+		pRig = nullptr;
 		SetState(esFailed);
 	}
 	LogFinishedExit();

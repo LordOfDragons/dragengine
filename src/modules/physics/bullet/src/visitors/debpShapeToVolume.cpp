@@ -47,11 +47,11 @@
 ////////////////////////////
 
 debpShapeToVolume::debpShapeToVolume(){
-	pSphere = NULL;
-	pBox = NULL;
-	pCylinder = NULL;
-	pCapsule = NULL;
-	pVolume = NULL;
+	pSphere = nullptr;
+	pBox = nullptr;
+	pCylinder = nullptr;
+	pCapsule = nullptr;
+	pVolume = nullptr;
 	
 	try{
 		pSphere = new debpDCollisionSphere;

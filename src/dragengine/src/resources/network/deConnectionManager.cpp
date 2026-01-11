@@ -107,7 +107,7 @@ void deConnectionManager::SystemNetworkUnload(){
 	deConnection *connection = (deConnection*)pConnections.GetRoot();
 	
 	while(connection){
-		connection->SetPeerNetwork(NULL);
+		connection->SetPeerNetwork(nullptr);
 		connection = (deConnection*)connection->GetLLManagerNext();
 	}
 }
@@ -129,7 +129,7 @@ void deConnectionManager::SystemScriptingUnload(){
 	deConnection *connection = (deConnection*)pConnections.GetRoot();
 	
 	while(connection){
-		connection->SetPeerScripting(NULL);
+		connection->SetPeerScripting(nullptr);
 		connection = (deConnection*)connection->GetLLManagerNext();
 	}
 }

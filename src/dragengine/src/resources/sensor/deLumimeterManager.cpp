@@ -101,7 +101,7 @@ void deLumimeterManager::SystemGraphicUnload(){
 	deLumimeter *lumimeter = (deLumimeter*)pLumimeters.GetRoot();
 	
 	while(lumimeter){
-		lumimeter->SetPeerGraphic(NULL);
+		lumimeter->SetPeerGraphic(nullptr);
 		lumimeter = (deLumimeter*)lumimeter->GetLLManagerNext();
 	}
 }

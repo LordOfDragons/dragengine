@@ -54,11 +54,11 @@ debpDecal::debpDecal(deDecal *decal){
 	
 	pDecal = decal;
 	
-	pFaces = NULL;
+	pFaces = nullptr;
 	pFaceCount = 0;
 	pDirtyGeometry = false;
 	
-	pParentComponent = NULL;
+	pParentComponent = nullptr;
 }
 
 debpDecal::~debpDecal(){
@@ -73,7 +73,7 @@ debpDecal::~debpDecal(){
 void debpDecal::MarkDirty(){
 	if(pFaces){
 		delete [] pFaces;
-		pFaces = NULL;
+		pFaces = nullptr;
 		pFaceCount = 0;
 	}
 	

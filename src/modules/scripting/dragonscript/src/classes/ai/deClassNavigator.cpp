@@ -371,7 +371,7 @@ void deClassNavigator::nfNearestPoint::RunFunction(dsRunTime *rt, dsValue *mysel
 	int nearestType;
 	
 	if(!navigator.NearestPoint(point, radius, nearestPoint, nearestType)){
-		ds.GetClassNavigationInfo()->PushNavigationInfo(rt, NULL);
+		ds.GetClassNavigationInfo()->PushNavigationInfo(rt, nullptr);
 		return;
 	}
 	
@@ -398,7 +398,7 @@ void deClassNavigator::nfLineCollide::RunFunction(dsRunTime *rt, dsValue *myself
 	float distance;
 	
 	if(!navigator.LineCollide(origin, direction, distance)){
-		ds.GetClassNavigationInfo()->PushNavigationInfo(rt, NULL);
+		ds.GetClassNavigationInfo()->PushNavigationInfo(rt, nullptr);
 		return;
 	}
 	
@@ -472,7 +472,7 @@ void deClassNavigator::nfPathCollideRay2::RunFunction(dsRunTime *rt, dsValue *my
 		ds.GetClassNavigationInfo()->PushNavigationInfo(rt, navinfo);
 		
 	}else{
-		ds.GetClassNavigationInfo()->PushNavigationInfo(rt, NULL);
+		ds.GetClassNavigationInfo()->PushNavigationInfo(rt, nullptr);
 	}
 }
 
@@ -503,7 +503,7 @@ void deClassNavigator::nfPathCollideShape::RunFunction(dsRunTime *rt, dsValue *m
 		ds.GetClassNavigationInfo()->PushNavigationInfo(rt, navinfo);
 		
 	}else{
-		ds.GetClassNavigationInfo()->PushNavigationInfo(rt, NULL);
+		ds.GetClassNavigationInfo()->PushNavigationInfo(rt, nullptr);
 	}
 }
 
@@ -542,7 +542,7 @@ void deClassNavigator::nfPathCollideShape2::RunFunction(dsRunTime *rt, dsValue *
 		ds.GetClassNavigationInfo()->PushNavigationInfo(rt, navinfo);
 		
 	}else{
-		ds.GetClassNavigationInfo()->PushNavigationInfo(rt, NULL);
+		ds.GetClassNavigationInfo()->PushNavigationInfo(rt, nullptr);
 	}
 }
 
@@ -681,7 +681,7 @@ void deClassNavigator::PushNavigator(dsRunTime *rt, deNavigator *navigator){
 	}
 	
 	if(!navigator){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

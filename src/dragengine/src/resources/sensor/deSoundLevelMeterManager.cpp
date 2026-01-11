@@ -105,7 +105,7 @@ void deSoundLevelMeterManager::SystemAudioUnload(){
 	deSoundLevelMeter *soundLevelMeter = (deSoundLevelMeter*)pSoundLevelMeters.GetRoot();
 	
 	while(soundLevelMeter){
-		soundLevelMeter->SetPeerAudio(NULL);
+		soundLevelMeter->SetPeerAudio(nullptr);
 		soundLevelMeter = (deSoundLevelMeter*)soundLevelMeter->GetLLManagerNext();
 	}
 }
@@ -126,7 +126,7 @@ void deSoundLevelMeterManager::SystemScriptingUnload(){
 	deSoundLevelMeter *soundLevelMeter = (deSoundLevelMeter*)pSoundLevelMeters.GetRoot();
 	
 	while(soundLevelMeter){
-		soundLevelMeter->SetPeerScripting(NULL);
+		soundLevelMeter->SetPeerScripting(nullptr);
 		soundLevelMeter = (deSoundLevelMeter*)soundLevelMeter->GetLLManagerNext();
 	}
 }

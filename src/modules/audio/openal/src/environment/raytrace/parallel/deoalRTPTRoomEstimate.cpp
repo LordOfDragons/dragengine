@@ -53,8 +53,8 @@
 deoalRTPTRoomEstimate::deoalRTPTRoomEstimate(deoalRTParallelEnvProbe &owner) :
 deParallelTask(&owner.GetAudioThread().GetOal()),
 pOwner(owner),
-pWorld(NULL),
-pProbeConfig(NULL),
+pWorld(nullptr),
+pProbeConfig(nullptr),
 pFirstRay(0),
 #ifndef RTPTRE_ONE_TASK_PER_RAY
 pRayCount(0),

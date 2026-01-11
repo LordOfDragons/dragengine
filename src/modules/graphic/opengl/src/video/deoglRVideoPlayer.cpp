@@ -46,20 +46,20 @@
 
 deoglRVideoPlayer::deoglRVideoPlayer(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
-pCachedFrameTexture(NULL),
+pCachedFrameTexture(nullptr),
 pUpdateCachedFrameTexture(-1),
 
 pWidth(1),
 pHeight(1),
 pComponentCount(3),
 
-pTexture(NULL),
+pTexture(nullptr),
 pDirtyTexture(false)
 {
 }
 
 deoglRVideoPlayer::~deoglRVideoPlayer(){
-	SetVideo(NULL);
+	SetVideo(nullptr);
 	
 	if(pTexture){
 		delete pTexture;
@@ -112,11 +112,11 @@ void deoglRVideoPlayer::SetVideoSize(int width, int height, int componentCount){
 	
 	if(pTexture){
 		delete pTexture;
-		pTexture = NULL;
+		pTexture = nullptr;
 	}
 	
 	pUpdateCachedFrameTexture = -1;
-	pCachedFrameTexture = NULL;
+	pCachedFrameTexture = nullptr;
 	
 	pDirtyTexture = true;
 }

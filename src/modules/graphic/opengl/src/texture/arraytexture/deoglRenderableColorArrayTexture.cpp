@@ -49,7 +49,7 @@ pLayerCount(layerCount),
 pComponentCount(componentCount),
 pIsFloat(isFloat),
 pInUse(false),
-pArrayTexture(NULL),
+pArrayTexture(nullptr),
 pMemoryUsageGPU(0)
 {
 	if(width < 1 || height < 1 || layerCount < 1){

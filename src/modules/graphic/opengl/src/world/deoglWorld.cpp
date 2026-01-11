@@ -79,9 +79,9 @@ deoglWorld::deoglWorld(deGraphicOpenGl &ogl, const deWorld &world) :
 pOgl(ogl),
 pWorld(world),
 
-pHeightTerrain(NULL),
+pHeightTerrain(nullptr),
 
-pSharedVideoPlayerList(NULL),
+pSharedVideoPlayerList(nullptr),
 
 pDirtySize(false),
 pDirtySkies(true),
@@ -371,7 +371,7 @@ void deoglWorld::HeightTerrainChanged(){
 		pHeightTerrain = (deoglHeightTerrain*)pWorld.GetHeightTerrain()->GetPeerGraphic();
 		
 	}else{
-		pHeightTerrain = NULL;
+		pHeightTerrain = nullptr;
 	}
 	
 	pDirtyHeightTerrains = true;
@@ -388,14 +388,14 @@ void deoglWorld::CameraAdded(deCamera *camera){
 }
 
 void deoglWorld::CameraRemoved(deCamera *camera){
-	((deoglCamera*)camera->GetPeerGraphic())->SetParentWorld(NULL);
+	((deoglCamera*)camera->GetPeerGraphic())->SetParentWorld(nullptr);
 }
 
 void deoglWorld::AllCamerasRemoved(){
 	deCamera *camera = pWorld.GetRootCamera();
 	while(camera){
 		deoglCamera * const oglCamera = (deoglCamera*)camera->GetPeerGraphic();
-		oglCamera->SetParentWorld(NULL);
+		oglCamera->SetParentWorld(nullptr);
 		camera = camera->GetLLWorldNext();
 	}
 }
@@ -465,7 +465,7 @@ void deoglWorld::LightAdded(deLight *light){
 void deoglWorld::LightRemoved(deLight *light){
 	deoglLight * const oglLight = (deoglLight*)light->GetPeerGraphic();
 	oglLight->GetRLight()->SetWorldMarkedRemove(true);
-	oglLight->SetParentWorld(NULL);
+	oglLight->SetParentWorld(nullptr);
 	
 	pDirtyLights = true;
 }
@@ -475,7 +475,7 @@ void deoglWorld::AllLightsRemoved(){
 	while(light){
 		deoglLight * const oglLight = (deoglLight*)light->GetPeerGraphic();
 		oglLight->GetRLight()->SetWorldMarkedRemove(true);
-		oglLight->SetParentWorld(NULL);
+		oglLight->SetParentWorld(nullptr);
 		light = light->GetLLWorldNext();
 	}
 	
@@ -570,7 +570,7 @@ void deoglWorld::BillboardRemoved(deBillboard *billboard){
 	deoglBillboard * const oglBillboard = (deoglBillboard*)billboard->GetPeerGraphic();
 	RemoveSyncBillboard(oglBillboard);
 	oglBillboard->GetRBillboard()->SetWorldMarkedRemove(true);
-	oglBillboard->SetParentWorld(NULL);
+	oglBillboard->SetParentWorld(nullptr);
 	pDirtyBillboards = true;
 }
 
@@ -580,7 +580,7 @@ void deoglWorld::AllBillboardsRemoved(){
 		deoglBillboard * const oglBillboard = (deoglBillboard*)billboard->GetPeerGraphic();
 		RemoveSyncBillboard(oglBillboard);
 		oglBillboard->GetRBillboard()->SetWorldMarkedRemove(true);
-		oglBillboard->SetParentWorld(NULL);
+		oglBillboard->SetParentWorld(nullptr);
 		billboard = billboard->GetLLWorldNext();
 	}
 	
@@ -679,7 +679,7 @@ void deoglWorld::pSyncHeightTerrain(){
 			pRWorld->SetHeightTerrain(pHeightTerrain->GetRHeightTerrain());
 			
 		}else{
-			pRWorld->SetHeightTerrain(NULL);
+			pRWorld->SetHeightTerrain(nullptr);
 		}
 		
 		pDirtyHeightTerrains = false;

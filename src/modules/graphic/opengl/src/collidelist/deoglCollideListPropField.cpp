@@ -43,7 +43,7 @@
 ////////////////////////////
 
 deoglCollideListPropField::deoglCollideListPropField() :
-pPropField(NULL),
+pPropField(nullptr),
 pTypeCount(0){
 }
 
@@ -62,7 +62,7 @@ deoglCollideListPropField::~deoglCollideListPropField(){
 
 void deoglCollideListPropField::Clear(){
 	RemoveAllTypes();
-	SetPropField(NULL);
+	SetPropField(nullptr);
 }
 
 void deoglCollideListPropField::StartOcclusionTest(deoglOcclusionTest &occlusionTest,
@@ -101,7 +101,7 @@ deoglCollideListPropFieldType *deoglCollideListPropField::GetTypeAt(int index) c
 }
 
 deoglCollideListPropFieldType *deoglCollideListPropField::AddType(deoglRPropFieldType *type){
-	deoglCollideListPropFieldType *cltype = NULL;
+	deoglCollideListPropFieldType *cltype = nullptr;
 	
 	if(pTypeCount < pTypes.GetCount()){
 		cltype = (deoglCollideListPropFieldType*)pTypes.GetAt(pTypeCount);

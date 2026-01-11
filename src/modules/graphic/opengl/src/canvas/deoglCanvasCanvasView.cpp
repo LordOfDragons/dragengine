@@ -49,7 +49,7 @@
 deoglCanvasCanvasView::deoglCanvasCanvasView(deGraphicOpenGl &ogl, deCanvasCanvasView &canvas) :
 deoglCanvas(ogl, canvas),
 pCanvasCanvasView(canvas),
-pCanvasView(NULL){
+pCanvasView(nullptr){
 }
 
 deoglCanvasCanvasView::~deoglCanvasCanvasView(){
@@ -74,7 +74,7 @@ void deoglCanvasCanvasView::SyncContentToRender(){
 		pRCanvasCanvasView->SetCanvasView(pCanvasView->GetRCanvasView());
 		
 	}else{
-		pRCanvasCanvasView->SetCanvasView(NULL);
+		pRCanvasCanvasView->SetCanvasView(nullptr);
 	}
 	
 	const float repeatScaleU = (float)pCanvasCanvasView.GetRepeatX();
@@ -84,7 +84,7 @@ void deoglCanvasCanvasView::SyncContentToRender(){
 }
 
 void deoglCanvasCanvasView::CanvasViewDestroyed(){
-	pCanvasView = NULL;
+	pCanvasView = nullptr;
 }
 
 void deoglCanvasCanvasView::CanvasViewRequiresSync(){
@@ -106,7 +106,7 @@ void deoglCanvasCanvasView::ContentChanged(){
 		pCanvasView->AddListener(this);
 		
 	}else{
-		pCanvasView = NULL;
+		pCanvasView = nullptr;
 	}
 	
 	deoglCanvas::ContentChanged();

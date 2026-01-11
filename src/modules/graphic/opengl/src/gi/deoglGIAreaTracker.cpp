@@ -61,7 +61,7 @@
 
 deoglGIAreaTracker::deoglGIAreaTracker(int giimportance) :
 pAllLeaving(false),
-pWorld(NULL),
+pWorld(nullptr),
 pUpdateThreshold(1.0),
 pGIImportance(giimportance),
 pValid(false){

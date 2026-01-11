@@ -50,12 +50,12 @@ deResource(manager),
 pTrackEnterLeave(true),
 pEnabled(true),
 
-pPeerPhysics(NULL),
-pPeerScripting(NULL),
+pPeerPhysics(nullptr),
+pPeerScripting(nullptr),
 
-pParentWorld(NULL),
-pLLWorldPrev(NULL),
-pLLWorldNext(NULL){
+pParentWorld(nullptr),
+pLLWorldPrev(nullptr),
+pLLWorldNext(nullptr){
 }
 
 deTouchSensor::~deTouchSensor(){

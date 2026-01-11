@@ -392,7 +392,7 @@ void deClassARGroup::CreateClassMembers(dsEngine *engine){
 
 deAnimatorRuleGroup *deClassARGroup::GetRule(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return dedsGetNativeData<sARGroupNatDat>(p_GetNativeData(myself->GetBuffer())).rule;
@@ -413,7 +413,7 @@ void deClassARGroup::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRul
 	}
 	
 	if(!rule){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

@@ -42,7 +42,7 @@
 deoglPersistentRenderTaskSubInstance::deoglPersistentRenderTaskSubInstance(deoglPersistentRenderTaskPool &pool) :
 pPool(pool),
 pLLInstance(this),
-pParentInstance(NULL),
+pParentInstance(nullptr),
 pIndexInstance(0),
 pFlags(0)
 {
@@ -70,7 +70,7 @@ void deoglPersistentRenderTaskSubInstance::SetFlags(int flags){
 }
 
 void deoglPersistentRenderTaskSubInstance::Clear(){
-	pParentInstance = NULL;
+	pParentInstance = nullptr;
 	
 	pIndexInstance = 0;
 	pFlags = 0;

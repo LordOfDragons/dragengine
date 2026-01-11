@@ -1644,7 +1644,7 @@ long deglDialogProfileList::onMPParameterOptBasic(FXObject*, FXSelector, void*){
 long deglDialogProfileList::updateMPParameterOptBasic(FXObject *sender, FXSelector, void*){
 	return sender->tryHandle(sender, FXSEL(SEL_COMMAND,
 		pMPParameterCategory == deModuleParameter::ecBasic
-			? FXRadioButton::ID_CHECK : FXRadioButton::ID_UNCHECK), 0);
+			? FXRadioButton::ID_CHECK : FXRadioButton::ID_UNCHECK), nullptr);
 }
 
 long deglDialogProfileList::onMPParameterOptAdvanced(FXObject*, FXSelector, void*){
@@ -1656,7 +1656,7 @@ long deglDialogProfileList::onMPParameterOptAdvanced(FXObject*, FXSelector, void
 long deglDialogProfileList::updateMPParameterOptAdvanced(FXObject *sender, FXSelector, void*){
 	return sender->tryHandle(sender, FXSEL(SEL_COMMAND,
 		pMPParameterCategory == deModuleParameter::ecAdvanced
-			? FXRadioButton::ID_CHECK : FXRadioButton::ID_UNCHECK), 0);
+			? FXRadioButton::ID_CHECK : FXRadioButton::ID_UNCHECK), nullptr);
 }
 
 long deglDialogProfileList::onMPParameterOptExpert(FXObject*, FXSelector, void*){
@@ -1677,7 +1677,7 @@ long deglDialogProfileList::onMPParameterOptExpert(FXObject*, FXSelector, void*)
 long deglDialogProfileList::updateMPParameterOptExpert(FXObject* sender, FXSelector, void*){
 	return sender->tryHandle(sender, FXSEL(SEL_COMMAND,
 		pMPParameterCategory == deModuleParameter::ecExpert
-			? FXRadioButton::ID_CHECK : FXRadioButton::ID_UNCHECK), 0);
+			? FXRadioButton::ID_CHECK : FXRadioButton::ID_UNCHECK), nullptr);
 }
 
 

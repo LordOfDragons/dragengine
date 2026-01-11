@@ -56,7 +56,7 @@ class deClassOcclusionMeshBuilder_Builder : public deOcclusionMeshBuilder{
 	
 public:
 	deClassOcclusionMeshBuilder_Builder(dsRunTime *rt, dsValue *myself) :
-	pRT(rt), pMyself(myself), pOcclusionMesh(NULL){
+	pRT(rt), pMyself(myself), pOcclusionMesh(nullptr){
 	}
 	
 	void BuildOcclusionMesh(deOcclusionMesh *occlusionMesh) override{

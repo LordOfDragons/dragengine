@@ -46,7 +46,7 @@
 
 deoglRDSRenderableColor::deoglRDSRenderableColor(deoglRDynamicSkin &dynamicSkin) :
 deoglRDSRenderable(etColor, dynamicSkin),
-pTexture(NULL),
+pTexture(nullptr),
 pDirty(true)
 {
 	LEAK_CHECK_CREATE(dynamicSkin.GetRenderThread(), DSRenderableColor);

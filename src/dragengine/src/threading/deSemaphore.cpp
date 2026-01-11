@@ -60,10 +60,10 @@ pSignalCounter(0)
 {
 	// unix, beos
 	#if defined OS_UNIX || defined OS_BEOS
-	if(pthread_mutex_init(&pMutex, NULL) != 0){
+	if(pthread_mutex_init(&pMutex, nullptr) != 0){
 		DETHROW(deeOutOfMemory);
 	}
-	if(pthread_cond_init(&pCondition, NULL) != 0){
+	if(pthread_cond_init(&pCondition, nullptr) != 0){
 		DETHROW(deeOutOfMemory);
 	}
 	#endif
@@ -92,10 +92,10 @@ pSignalCounter(0)
 	
 	// unix, beos
 	#if defined OS_UNIX || defined OS_BEOS
-	if(pthread_mutex_init(&pMutex, NULL) != 0){
+	if(pthread_mutex_init(&pMutex, nullptr) != 0){
 		DETHROW(deeOutOfMemory);
 	}
-	if(pthread_cond_init(&pCondition, NULL) != 0){
+	if(pthread_cond_init(&pCondition, nullptr) != 0){
 		DETHROW(deeOutOfMemory);
 	}
 	#endif

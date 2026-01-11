@@ -130,8 +130,8 @@ public:
 deoglREnvMapProbe::deoglREnvMapProbe(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
 
-pParentWorld(NULL),
-pOctreeNode(NULL),
+pParentWorld(nullptr),
+pOctreeNode(nullptr),
 pDirtyOctreeNode(true),
 
 pInfluenceBorderSize(0.0f),
@@ -178,7 +178,7 @@ void deoglREnvMapProbe::SetParentWorld(deoglRWorld *world){
 	
 	if(pOctreeNode){
 		//pOctreeNode->GetEnvMapProbeList().Remove( this );
-		pOctreeNode = NULL;
+		pOctreeNode = nullptr;
 	}
 	pDirtyOctreeNode = true;
 }
@@ -237,8 +237,8 @@ void deoglREnvMapProbe::UpdateReflectionShape(const decShapeList &maskShapeList,
 
 
 void deoglREnvMapProbe::PrepareQuickDispose(){
-	pParentWorld = NULL;
-	pOctreeNode = NULL;
+	pParentWorld = nullptr;
+	pOctreeNode = nullptr;
 }
 
 
@@ -256,5 +256,5 @@ void deoglREnvMapProbe::SetWorldMarkedRemove(bool marked){
 //////////////////////
 
 void deoglREnvMapProbe::pCleanUp(){
-	SetParentWorld(NULL);
+	SetParentWorld(nullptr);
 }

@@ -40,7 +40,7 @@
 ////////////////////////////
 
 deoglParticleEmitterInstanceList::deoglParticleEmitterInstanceList() :
-pInstances(NULL),
+pInstances(nullptr),
 pInstanceCount(0),
 pInstanceSize(0){
 }

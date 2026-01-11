@@ -60,7 +60,7 @@ pRoundCornerY(0.0f),
 pStartAngle(0.0f),
 pEndAngle(0.0f),
 
-pPoints(NULL),
+pPoints(nullptr),
 pPointCount(0),
 pDirtyVBOBlock(true),
 pVBOBlockPointCount(0)
@@ -131,7 +131,7 @@ void deoglRCanvasPaint::SetPointCount(int count){
 	
 	if(pPoints){
 		delete [] pPoints;
-		pPoints = NULL;
+		pPoints = nullptr;
 		pPointCount = 0;
 	}
 	
@@ -233,7 +233,7 @@ void deoglRCanvasPaint::pPrepareVBOBlock(){
 		pDirtyVBOBlock = true;
 		if(pVBOBlock){
 			pVBOBlock->GetVBO()->RemoveBlock(pVBOBlock);
-			pVBOBlock = NULL;
+			pVBOBlock = nullptr;
 		}
 	}
 	

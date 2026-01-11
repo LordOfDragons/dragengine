@@ -94,12 +94,12 @@ void deoglDebugSaveTexture::SaveTextureLevelConversion(deoglTexture &texture, in
 		DETHROW(deeInvalidParam);
 	}
 	
-	deoglDelayedSaveImage *saveImage = NULL;
+	deoglDelayedSaveImage *saveImage = nullptr;
 	int height = texture.GetHeight();
 	int width = texture.GetWidth();
 	decString fileTitle;
 	decPath pathFile;
-	sRGBA8 *imgdata = NULL;
+	sRGBA8 *imgdata = nullptr;
 	int i;
 	
 	for(i=0; i<level; i++){
@@ -128,10 +128,10 @@ void deoglDebugSaveTexture::SaveTextureLevelConversion(deoglTexture &texture, in
 		pConvertDataRGBA(pixbuf->GetPointerFloat4(), imgdata, width, height, false, conversion);
 		
 		saveImage = new deoglDelayedSaveImage(pathFile, width, height, 1, 4, 8, reinterpret_cast<char*>(imgdata));
-		imgdata = NULL;
+		imgdata = nullptr;
 		
 		pRenderThread.GetDelayedOperations().AddSaveImage(saveImage);
-		saveImage = NULL;
+		saveImage = nullptr;
 		
 	}catch(const deException &e){
 		if(saveImage){
@@ -157,14 +157,14 @@ void deoglDebugSaveTexture::SaveDepthTextureLevel(deoglTexture &texture, int lev
 	
 	deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
 	deoglFramebuffer * const oldFBO = pRenderThread.GetFramebuffer().GetActive();
-	deoglDelayedSaveImage *saveImage = NULL;
+	deoglDelayedSaveImage *saveImage = nullptr;
 	int height = texture.GetHeight();
 	int width = texture.GetWidth();
 	deoglFramebuffer::Ref fbo;
 	decString fileTitle;
 	decPath pathFile;
 	int y, x;
-	sRGBA8 *imgdata = NULL;
+	sRGBA8 *imgdata = nullptr;
 	float depthval;
 	
 	for(y=0; y<level; y++){
@@ -244,10 +244,10 @@ void deoglDebugSaveTexture::SaveDepthTextureLevel(deoglTexture &texture, int lev
 		}
 		
 		saveImage = new deoglDelayedSaveImage(pathFile, width, height, 1, 4, 8, reinterpret_cast<char*>(imgdata));
-		imgdata = NULL;
+		imgdata = nullptr;
 		
 		pRenderThread.GetDelayedOperations().AddSaveImage(saveImage);
-		saveImage = NULL;
+		saveImage = nullptr;
 		
 		pRenderThread.GetFramebuffer().Activate(oldFBO);
 		
@@ -272,15 +272,15 @@ void deoglDebugSaveTexture::SaveStencilTexture(deoglTexture &texture, const char
 	
 	deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
 	deoglFramebuffer * const oldFBO = pRenderThread.GetFramebuffer().GetActive();
-	deoglDelayedSaveImage *saveImage = NULL;
+	deoglDelayedSaveImage *saveImage = nullptr;
 	int height = texture.GetHeight();
 	int width = texture.GetWidth();
 	deoglFramebuffer::Ref fbo;
 	decString fileTitle;
 	decPath pathFile;
 	int y, x;
-	sRGB8 *imgdata = NULL;
-	unsigned char *pbdata = NULL;
+	sRGB8 *imgdata = nullptr;
+	unsigned char *pbdata = nullptr;
 	
 	fileTitle.Format("%s.png", name);
 	pathFile.SetFromUnix(pBasePath.GetString());
@@ -327,13 +327,13 @@ void deoglDebugSaveTexture::SaveStencilTexture(deoglTexture &texture, const char
 		}
 		
 		saveImage = new deoglDelayedSaveImage(pathFile, width, height, 1, 3, 8, reinterpret_cast<char*>(imgdata));
-		imgdata = NULL;
+		imgdata = nullptr;
 		
 		pRenderThread.GetDelayedOperations().AddSaveImage(saveImage);
-		saveImage = NULL;
+		saveImage = nullptr;
 		
 		delete [] pbdata;
-		pbdata = NULL;
+		pbdata = nullptr;
 		
 		pRenderThread.GetFramebuffer().Activate(oldFBO);
 		
@@ -361,7 +361,7 @@ void deoglDebugSaveTexture::SaveStencilArrayTexture(deoglArrayTexture &texture, 
 	
 	deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
 	deoglFramebuffer * const oldFBO = pRenderThread.GetFramebuffer().GetActive();
-	deoglDelayedSaveImage *saveImage = NULL;
+	deoglDelayedSaveImage *saveImage = nullptr;
 	int height = texture.GetHeight();
 	int width = texture.GetWidth();
 	int layers = texture.GetLayerCount();
@@ -369,8 +369,8 @@ void deoglDebugSaveTexture::SaveStencilArrayTexture(deoglArrayTexture &texture, 
 	decString fileTitle;
 	decPath pathFile;
 	int y, x, l;
-	sRGB8 *imgdata = NULL;
-	unsigned char *pbdata = NULL;
+	sRGB8 *imgdata = nullptr;
+	unsigned char *pbdata = nullptr;
 	
 	fileTitle.Format("%s.png3d", name);
 	pathFile.SetFromUnix(pBasePath.GetString());
@@ -419,13 +419,13 @@ void deoglDebugSaveTexture::SaveStencilArrayTexture(deoglArrayTexture &texture, 
 		}
 		
 		saveImage = new deoglDelayedSaveImage(pathFile, width, height, layers, 3, 8, reinterpret_cast<char*>(imgdata));
-		imgdata = NULL;
+		imgdata = nullptr;
 		
 		pRenderThread.GetDelayedOperations().AddSaveImage(saveImage);
-		saveImage = NULL;
+		saveImage = nullptr;
 		
 		delete [] pbdata;
-		pbdata = NULL;
+		pbdata = nullptr;
 		
 		pRenderThread.GetFramebuffer().Activate(oldFBO);
 		
@@ -466,10 +466,10 @@ void deoglDebugSaveTexture::SaveCubeMapLevelConversion(deoglCubeMap &cubemap, in
 	}
 	
 	const int size = cubemap.GetLevelSize(level);
-	deoglDelayedSaveImage *saveImage = NULL;
+	deoglDelayedSaveImage *saveImage = nullptr;
 	decString fileTitle;
 	decPath pathFile;
-	sRGBA8 *imgdata = NULL;
+	sRGBA8 *imgdata = nullptr;
 	int i;
 	
 	fileTitle.Format("%s.png3d", name);
@@ -491,10 +491,10 @@ void deoglDebugSaveTexture::SaveCubeMapLevelConversion(deoglCubeMap &cubemap, in
 		}
 		
 		saveImage = new deoglDelayedSaveImage(pathFile, size, size, 6, 4, 8, reinterpret_cast<char*>(imgdata));
-		imgdata = NULL;
+		imgdata = nullptr;
 		
 		pRenderThread.GetDelayedOperations().AddSaveImage(saveImage);
-		saveImage = NULL;
+		saveImage = nullptr;
 		
 	}catch(const deException &e){
 		if(saveImage){
@@ -520,10 +520,10 @@ void deoglDebugSaveTexture::SaveDepthCubeMapLevel(deoglCubeMap &cubemap, int lev
 	}
 	
 	const int size = cubemap.GetLevelSize(level);
-	deoglDelayedSaveImage *saveImage = NULL;
+	deoglDelayedSaveImage *saveImage = nullptr;
 	decString fileTitle;
 	decPath pathFile;
-	sRGBA8 *imgdata = NULL;
+	sRGBA8 *imgdata = nullptr;
 	float depthval;
 	int cmf, x, y;
 	
@@ -565,10 +565,10 @@ void deoglDebugSaveTexture::SaveDepthCubeMapLevel(deoglCubeMap &cubemap, int lev
 		}
 		
 		saveImage = new deoglDelayedSaveImage(pathFile, size, size, 6, 4, 8, reinterpret_cast<char*>(imgdata));
-		imgdata = NULL;
+		imgdata = nullptr;
 		
 		pRenderThread.GetDelayedOperations().AddSaveImage(saveImage);
-		saveImage = NULL;
+		saveImage = nullptr;
 		
 	}catch(const deException &e){
 		if(saveImage){
@@ -602,12 +602,12 @@ int level, const char *name, eConvertions conversion){
 		DETHROW(deeInvalidParam);
 	}
 	
-	deoglDelayedSaveImage *saveImage = NULL;
+	deoglDelayedSaveImage *saveImage = nullptr;
 	const int layerCount = texture.GetLayerCount();
 	int height, width;
 	decString fileTitle;
 	decPath pathFile;
-	sRGBA8 *imgdata = NULL;
+	sRGBA8 *imgdata = nullptr;
 	int i;
 	
 	texture.GetLevelSize(level, width, height);
@@ -631,10 +631,10 @@ int level, const char *name, eConvertions conversion){
 		}
 		
 		saveImage = new deoglDelayedSaveImage(pathFile, width, height, layerCount, 4, 8, reinterpret_cast<char*>(imgdata));
-		imgdata = NULL;
+		imgdata = nullptr;
 		
 		pRenderThread.GetDelayedOperations().AddSaveImage(saveImage);
-		saveImage = NULL;
+		saveImage = nullptr;
 		
 	}catch(const deException &e){
 		if(saveImage){
@@ -658,13 +658,13 @@ void deoglDebugSaveTexture::SaveDepthArrayTextureLevel(deoglArrayTexture &arrayT
 		DETHROW(deeInvalidParam);
 	}
 	
-	deoglDelayedSaveImage *saveImage = NULL;
+	deoglDelayedSaveImage *saveImage = nullptr;
 	int layerCount = arrayTexture.GetLayerCount();
 	int width, height;
 	decString fileTitle;
 	decPath pathFile;
 	int l, x, y;
-	sRGBA8 *imgdata = NULL;
+	sRGBA8 *imgdata = nullptr;
 	float depthval;
 	
 	arrayTexture.GetLevelSize(level, width, height);
@@ -704,10 +704,10 @@ void deoglDebugSaveTexture::SaveDepthArrayTextureLevel(deoglArrayTexture &arrayT
 		}
 		
 		saveImage = new deoglDelayedSaveImage(pathFile, width, height, layerCount, 4, 8, reinterpret_cast<char*>(imgdata));
-		imgdata = NULL;
+		imgdata = nullptr;
 		
 		pRenderThread.GetDelayedOperations().AddSaveImage(saveImage);
-		saveImage = NULL;
+		saveImage = nullptr;
 		
 	}catch(const deException &e){
 		if(saveImage){

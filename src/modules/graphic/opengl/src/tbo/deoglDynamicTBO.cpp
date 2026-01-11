@@ -50,7 +50,7 @@ pComponentCount(componentCount),
 pDataTypeSize(dataTypeSize),
 pVBO(0),
 pTBO(0),
-pData(NULL),
+pData(nullptr),
 pDataSize(0),
 pDataCount(0),
 pMemUse(renderThread.GetMemoryManager().GetConsumption().bufferObject.tbo)
@@ -156,7 +156,7 @@ void deoglDynamicTBO::Update(){
 	OGL_CHECK(pRenderThread, pglBindBuffer(GL_TEXTURE_BUFFER, pVBO));
 	
 	const int size = pDataCount * pDataTypeSize;
-	OGL_CHECK(pRenderThread, pglBufferData(GL_TEXTURE_BUFFER, size, NULL, GL_STREAM_DRAW));
+	OGL_CHECK(pRenderThread, pglBufferData(GL_TEXTURE_BUFFER, size, nullptr, GL_STREAM_DRAW));
 	OGL_CHECK(pRenderThread, pglBufferData(GL_TEXTURE_BUFFER, size, pData, GL_STREAM_DRAW));
 	
 	pEnsureTBO();

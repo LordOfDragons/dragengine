@@ -38,7 +38,7 @@
 /////////////////////////////////
 
 deDebugDrawerShapeFace::deDebugDrawerShapeFace() :
-pVertices(NULL),
+pVertices(nullptr),
 pVertexCount(0),
 pNormal(0.0f, 0.0f, 1.0f){
 }
@@ -96,7 +96,7 @@ void deDebugDrawerShapeFace::AddVertex(const decVector &vertex){
 void deDebugDrawerShapeFace::RemoveAllVertices(){
 	if(pVertices){
 		delete [] pVertices;
-		pVertices = NULL;
+		pVertices = nullptr;
 	}
 	pVertexCount = 0;
 }

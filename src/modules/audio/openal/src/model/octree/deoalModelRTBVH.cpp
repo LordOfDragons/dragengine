@@ -41,19 +41,19 @@
 /////////////////////////////////
 
 deoalModelRTBVH::deoalModelRTBVH() :
-pFaces(NULL),
+pFaces(nullptr),
 pFaceCount(0),
 pFaceSize(0),
 
-pNodes(NULL),
+pNodes(nullptr),
 pNodeCount(0),
 pNodeSize(0),
 
-pBuildNodes(NULL),
+pBuildNodes(nullptr),
 pBuildNodeCount(0),
 pBuildNodeSize(0),
 
-pBuildFaces(NULL),
+pBuildFaces(nullptr),
 pBuildFaceCount(0),
 pBuildFaceSize(0),
 
@@ -82,7 +82,7 @@ void deoalModelRTBVH::Build(const deoalModelFace *faces, int faceCount){
 	if(faceCount > pBuildFaceSize){
 		if(pBuildFaces){
 			delete [] pBuildFaces;
-			pBuildFaces = NULL;
+			pBuildFaces = nullptr;
 			pBuildFaceSize = 0;
 		}
 		pBuildFaces = new sBuildFace[faceCount];
@@ -117,7 +117,7 @@ void deoalModelRTBVH::Build(const deoalModelFace *faces, int faceCount){
 	if(pBuildNodeCount > pNodeSize){
 		if(pNodes){
 			delete [] pNodes;
-			pNodes = NULL;
+			pNodes = nullptr;
 			pNodeSize = 0;
 		}
 		pNodes = new sNode[pBuildNodeCount];
@@ -128,7 +128,7 @@ void deoalModelRTBVH::Build(const deoalModelFace *faces, int faceCount){
 	if(pBuildFaceCount > pFaceSize){
 		if(pFaces){
 			delete [] pFaces;
-			pFaces = NULL;
+			pFaces = nullptr;
 			pFaceSize = 0;
 		}
 		pFaces = new sFace[pBuildFaceCount];
@@ -144,13 +144,13 @@ void deoalModelRTBVH::Build(const deoalModelFace *faces, int faceCount){
 void deoalModelRTBVH::DropBuildData(){
 	if(pBuildNodes){
 		delete [] pBuildNodes;
-		pBuildNodes = NULL;
+		pBuildNodes = nullptr;
 		pBuildNodeCount = 0;
 		pBuildNodeSize = 0;
 	}
 	if(pBuildFaces){
 		delete [] pBuildFaces;
-		pBuildFaces = NULL;
+		pBuildFaces = nullptr;
 		pBuildFaceCount = 0;
 		pBuildFaceSize = 0;
 	}

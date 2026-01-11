@@ -38,7 +38,7 @@
 ////////////////////////////
 
 desynSharedBuffer::desynSharedBuffer() :
-pBuffer(NULL),
+pBuffer(nullptr),
 pSize(0),
 pInUse(false){
 }
@@ -61,7 +61,7 @@ void desynSharedBuffer::SetSize(int size){
 	
 	if(pBuffer){
 		delete [] pBuffer;
-		pBuffer = NULL;
+		pBuffer = nullptr;
 		pSize = 0;
 	}
 	

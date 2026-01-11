@@ -189,7 +189,7 @@ void deVRSystem::SetActiveModule(deLoadableModule *module){
 
 void deVRSystem::ClearPermanents(){
 	deBaseSystem::ClearPermanents();
-	pActiveModule = NULL;
+	pActiveModule = nullptr;
 }
 
 void deVRSystem::PostStart(){

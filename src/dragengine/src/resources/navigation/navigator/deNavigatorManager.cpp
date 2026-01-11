@@ -105,7 +105,7 @@ void deNavigatorManager::SystemAIUnload(){
 	deNavigator *navigator = (deNavigator*)pNavigators.GetRoot();
 	
 	while(navigator){
-		navigator->SetPeerAI(NULL);
+		navigator->SetPeerAI(nullptr);
 		navigator = (deNavigator*)navigator->GetLLManagerNext();
 	}
 }

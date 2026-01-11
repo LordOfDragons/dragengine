@@ -87,7 +87,7 @@ pValid(false),
 pIsUsed(false),
 pIsCached(false),
 
-pStreamData(NULL),
+pStreamData(nullptr),
 pStreamDataSize(0),
 	pStreaming(true)
 {
@@ -229,7 +229,7 @@ void desynSound::pLoadFromCache(){
 		// check file modification times to reject the cached file if the source model changed
 		if(header.filetime != (uint64_t)vfs.GetFileModificationTime(path)){
 			// cache file outdated
-			reader = NULL;
+			reader = nullptr;
 			cacheSound.Delete(filename);
 			caches.Unlock();
 			
@@ -243,7 +243,7 @@ void desynSound::pLoadFromCache(){
 		// check cache version in case we upgraded
 		if(header.version != CACHE_VERSION){
 			// cache file outdated
-			reader = NULL;
+			reader = nullptr;
 			cacheSound.Delete(filename);
 			caches.Unlock();
 			
@@ -260,7 +260,7 @@ void desynSound::pLoadFromCache(){
 		|| (int)header.sampleCount != pSound.GetSampleCount()
 		|| (int)header.sampleRate != pSound.GetSampleRate()){
 			// cache file outdated
-			reader = NULL;
+			reader = nullptr;
 			cacheSound.Delete(filename);
 			caches.Unlock();
 			
@@ -283,7 +283,7 @@ void desynSound::pLoadFromCache(){
 		}
 		
 		// done
-		reader = NULL;
+		reader = nullptr;
 		
 		pIsUsed = (header.flags & FLAG_IS_USED) == FLAG_IS_USED;
 		pIsCached = true;
@@ -292,7 +292,7 @@ void desynSound::pLoadFromCache(){
 		
 	}catch(const deException &){
 		// damaged cache file
-		reader = NULL;
+		reader = nullptr;
 		cacheSound.Delete(filename);
 		caches.Unlock();
 		
@@ -346,7 +346,7 @@ void desynSound::pWriteToCache(){
 		if(pStreamDataSize > 0){
 			writer->Write(pStreamData, pStreamDataSize);
 		}
-		writer = NULL;
+		writer = nullptr;
 		
 		caches.Unlock();
 		if(enableCacheLogging){
@@ -354,7 +354,7 @@ void desynSound::pWriteToCache(){
 		}
 		
 	}catch(const deException &e){
-		writer = NULL;
+		writer = nullptr;
 		cacheSound.Delete(filename);
 		caches.Unlock();
 		

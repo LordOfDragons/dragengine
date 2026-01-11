@@ -37,7 +37,7 @@
 ////////////////////////////
 
 deModelTextureCoordinatesSet::deModelTextureCoordinatesSet(){
-	pTextureCoordinates = NULL;
+	pTextureCoordinates = nullptr;
 	pTextureCoordinatesCount = 0;
 }
 
@@ -59,7 +59,7 @@ void deModelTextureCoordinatesSet::SetTextureCoordinatesCount(int count){
 	
 	if(pTextureCoordinates){
 		delete [] pTextureCoordinates;
-		pTextureCoordinates = NULL;
+		pTextureCoordinates = nullptr;
 		pTextureCoordinatesCount = 0;
 	}
 	

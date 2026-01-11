@@ -52,10 +52,10 @@ pSectorSize(sectorSize),
 pSectorResolution(sectorResolution),
 pBaseHeight(0.0f),
 pHeightScaling(1.0f),
-pPeerGraphic(NULL),
-pPeerPhysics(NULL),
-pPeerAudio(NULL),
-pPeerAI(NULL)
+pPeerGraphic(nullptr),
+pPeerPhysics(nullptr),
+pPeerAudio(nullptr),
+pPeerAI(nullptr)
 {
 	if(sectorSize < 0.001f || sectorResolution < 2){
 		DETHROW(deeInvalidParam);
@@ -167,7 +167,7 @@ void deHeightTerrain::RemoveSector(deHeightTerrainSector *sector){
 	
 	const int index = sector->GetIndex();
 	sector->SetIndex(-1);
-	sector->SetParentHeightTerrain(NULL);
+	sector->SetParentHeightTerrain(nullptr);
 	pSectors.RemoveFrom(index);
 	
 	pSectors.VisitIndexed([](int i, deHeightTerrainSector *s){
@@ -307,19 +307,19 @@ void deHeightTerrain::SetPeerAI(deBaseAIHeightTerrain *peer){
 void deHeightTerrain::pCleanUp(){
 	if(pPeerAI){
 		delete pPeerAI;
-		pPeerAI = NULL;
+		pPeerAI = nullptr;
 	}
 	if(pPeerAudio){
 		delete pPeerAudio;
-		pPeerAudio = NULL;
+		pPeerAudio = nullptr;
 	}
 	if(pPeerPhysics){
 		delete pPeerPhysics;
-		pPeerPhysics = NULL;
+		pPeerPhysics = nullptr;
 	}
 	if(pPeerGraphic){
 		delete pPeerGraphic;
-		pPeerGraphic = NULL;
+		pPeerGraphic = nullptr;
 	}
 	
 	RemoveAllSectors();

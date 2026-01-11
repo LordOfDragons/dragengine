@@ -170,8 +170,8 @@ enum eSPTestTFB{
 deoglRenderOcclusion::deoglRenderOcclusion(deoglRenderThread &renderThread) :
 deoglRenderBase(renderThread),
 
-pRenderTask(NULL),
-pAddToRenderTask(NULL)
+pRenderTask(nullptr),
+pAddToRenderTask(nullptr)
 {
 	const bool indirectMatrixAccess = renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working();
 	const bool renderFSQuadStereoVSLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
@@ -376,7 +376,7 @@ pAddToRenderTask(NULL)
 		OGL_CHECK(renderThread, pglBufferData(GL_ARRAY_BUFFER, sizeof(pointsFrustumPlanes), (const GLvoid *)&pointsFrustumPlanes, GL_STATIC_DRAW));
 		
 		OGL_CHECK(renderThread, pglEnableVertexAttribArray(0));
-		OGL_CHECK(renderThread, pglVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (const GLvoid *)0));
+		OGL_CHECK(renderThread, pglVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (const GLvoid *)nullptr));
 		
 		OGL_CHECK(renderThread, pglBindBuffer(GL_ARRAY_BUFFER, 0));
 		OGL_CHECK(renderThread, pglBindVertexArray(0));
@@ -674,7 +674,7 @@ void deoglRenderOcclusion::RenderOcclusionMap(deoglRenderPlan &plan,
 deoglRenderTask *renderTask, deoglComputeRenderTask *computeRenderTask){
 	deoglOcclusionMap &occmap = *plan.GetOcclusionMap();
 	const int baselevel = plan.GetOcclusionMapBaseLevel();
-	const decMatrix *renderFrustumPlanesMatrix = NULL;
+	const decMatrix *renderFrustumPlanesMatrix = nullptr;
 	
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace(GetRenderThread(), "Occlusion.RenderOcclusionMap");

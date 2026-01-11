@@ -46,7 +46,7 @@
 ////////////////////////////
 
 deoglCollideListLight::deoglCollideListLight() :
-pLight(NULL),
+pLight(nullptr),
 pCulled(false),
 pCameraInside(false),
 pCameraInsideOccQueryBox(true),

@@ -78,31 +78,31 @@
 dedaiSpaceMesh::dedaiSpaceMesh(dedaiSpace &space) :
 pSpace(space),
 
-pVertices(NULL),
+pVertices(nullptr),
 pVertexCount(0),
 pVertexSize(0),
 pStaticVertexCount(0),
 pBlockerBaseVertex(0),
 
-pEdges(NULL),
+pEdges(nullptr),
 pEdgeCount(0),
 pEdgeSize(0),
 pStaticEdgeCount(0),
 pBlockerBaseEdge(0),
 
-pCorners(NULL),
+pCorners(nullptr),
 pCornerCount(0),
 pCornerSize(0),
 pStaticCornerCount(0),
 pBlockerBaseCorner(0),
 
-pFaces(NULL),
+pFaces(nullptr),
 pFaceCount(0),
 pFaceSize(0),
 pStaticFaceCount(0),
 pBlockerBaseFace(0),
 
-pLinks(NULL),
+pLinks(nullptr),
 pLinkCount(0),
 pLinkSize(0){
 }
@@ -279,7 +279,7 @@ void dedaiSpaceMesh::AddFace(){
 
 dedaiSpaceMeshFace *dedaiSpaceMesh::GetFaceClosestTo(const decVector &position, float &distance) const{
 	// for the time being brute force
-	dedaiSpaceMeshFace *bestFace = NULL;
+	dedaiSpaceMeshFace *bestFace = nullptr;
 	float bestDistSquared = 0.0f;
 	int f, c;
 	
@@ -336,7 +336,7 @@ decVector &nearestPosition, float &nearestDistSquared) const{
 	const decVector testMinExtend(point - decVector(radius, radius, radius));
 	const decVector testMaxExtend(point + decVector(radius, radius, radius));
 	const float radiusSquared = radius * radius;
-	dedaiSpaceMeshFace *nearestFace = NULL;
+	dedaiSpaceMeshFace *nearestFace = nullptr;
 	int f, c;
 	
 	nearestDistSquared = 0.0f;
@@ -636,7 +636,7 @@ void dedaiSpaceMesh::UpdateDDSSpaceShape(){
 	deDebugDrawerShape * const ddsNormals = pSpace.GetDDSNormals();
 	deDebugDrawerShape * const ddsMismatching = pSpace.GetDDSMismatching();
 	deDebugDrawerShape * const ddsHighlightCostType = pSpace.GetDDSHighlightCostType();
-	deDebugDrawerShapeFace *ddsFace = NULL;
+	deDebugDrawerShapeFace *ddsFace = nullptr;
 	unsigned short highlightCostType = ~0;
 	const float normalLength = 0.1f;
 	const float cornerCrossLength = 0.025f;
@@ -692,7 +692,7 @@ void dedaiSpaceMesh::UpdateDDSSpaceShape(){
 					}
 					ddsFace->SetNormal(pFaces[f].GetNormal());
 					ddsShape->AddFace(ddsFace);
-					ddsFace = NULL;
+					ddsFace = nullptr;
 				}
 				
 				// corners
@@ -705,14 +705,14 @@ void dedaiSpaceMesh::UpdateDDSSpaceShape(){
 						ddsFace->AddVertex(position + cornerCross1);
 						ddsFace->AddVertex(position + cornerCross2);
 						ddsCorners->AddFace(ddsFace);
-						ddsFace = NULL;
+						ddsFace = nullptr;
 						
 						ddsFace = new deDebugDrawerShapeFace;
 						ddsFace->AddVertex(position);
 						ddsFace->AddVertex(position + cornerCross4);
 						ddsFace->AddVertex(position + cornerCross3);
 						ddsCorners->AddFace(ddsFace);
-						ddsFace = NULL;
+						ddsFace = nullptr;
 					}
 				}
 				
@@ -723,7 +723,7 @@ void dedaiSpaceMesh::UpdateDDSSpaceShape(){
 					ddsFace->AddVertex(pFaces[f].GetCenter());
 					ddsFace->AddVertex(pFaces[f].GetCenter());
 					ddsNormals->AddFace(ddsFace);
-					ddsFace = NULL;
+					ddsFace = nullptr;
 				}
 				
 				// highlight if required
@@ -735,7 +735,7 @@ void dedaiSpaceMesh::UpdateDDSSpaceShape(){
 						}
 						ddsFace->SetNormal(pFaces[f].GetNormal());
 						ddsHighlightCostType->AddFace(ddsFace);
-						ddsFace = NULL;
+						ddsFace = nullptr;
 					}
 				}
 				
@@ -793,7 +793,7 @@ void dedaiSpaceMesh::UpdateDDSSpaceShape(){
 							}
 							ddsFace->SetNormal(pFaces[f].GetNormal());
 							ddsMismatching->AddFace(ddsFace);
-							ddsFace = NULL;
+							ddsFace = nullptr;
 							
 							break;
 						}
@@ -1265,7 +1265,7 @@ void dedaiSpaceMesh::pOptimizeBlockedFaces(dedaiConvexFaceList &list, int initia
 			// find second face containing edge from this vertex to the next one.
 			const int nextCorner = (v + 1) % vertexCount;
 			const int nextVertex = face.GetVertexAt(nextCorner);
-			dedaiConvexFace *otherFace = NULL;
+			dedaiConvexFace *otherFace = nullptr;
 			bool hasOtherVertex = false;
 			int otherCorner = 0;
 			

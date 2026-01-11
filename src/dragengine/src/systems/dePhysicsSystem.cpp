@@ -67,7 +67,7 @@ extern const int *vResourcePeerCreationOrder;
 ////////////////////////////
 
 dePhysicsSystem::dePhysicsSystem(deEngine *engine) : deBaseSystem(engine, "Physics", deModuleSystem::emtPhysics){
-	pActiveModule = NULL;
+	pActiveModule = nullptr;
 }
 
 dePhysicsSystem::~dePhysicsSystem(){
@@ -85,7 +85,7 @@ void dePhysicsSystem::SetActiveModule(deLoadableModule *module){
 
 void dePhysicsSystem::ClearPermanents(){
 	deBaseSystem::ClearPermanents();
-	pActiveModule = NULL;
+	pActiveModule = nullptr;
 }
 
 

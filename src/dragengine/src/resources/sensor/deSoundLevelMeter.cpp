@@ -86,12 +86,12 @@ pConeAngle(45.0f),
 pAudibleDistance(100.0f),
 pEnabled(true),
 
-pPeerAudio(NULL),
-pPeerScripting(NULL),
+pPeerAudio(nullptr),
+pPeerScripting(nullptr),
 
-pParentWorld(NULL),
-pLLWorldPrev(NULL),
-pLLWorldNext(NULL){
+pParentWorld(nullptr),
+pLLWorldPrev(nullptr),
+pLLWorldNext(nullptr){
 }
 
 deSoundLevelMeter::~deSoundLevelMeter(){

@@ -51,7 +51,7 @@
 deoglRDebugDrawer::deoglRDebugDrawer(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
 
-pParentWorld(NULL),
+pParentWorld(nullptr),
 
 pVisible(false),
 pXRay(false),
@@ -59,13 +59,13 @@ pXRay(false),
 pHasShapes(false),
 pHasFaces(false),
 
-pShapes(NULL),
+pShapes(nullptr),
 pShapeCount(0),
 
-pVBOData(NULL),
+pVBOData(nullptr),
 pVBOPointCount(0),
 pVBO(0),
-pVAO(NULL),
+pVAO(nullptr),
 pDirtyVBO(true),
 
 pWorldMarkedRemove(false){
@@ -128,7 +128,7 @@ void deoglRDebugDrawer::UpdateShapes(const deDebugDrawer &debugDrawer){
 	if(shapeCount != pShapeCount){
 		if(pShapes){
 			delete [] pShapes;
-			pShapes = NULL;
+			pShapes = nullptr;
 			pShapeCount = 0;
 		}
 		
@@ -181,7 +181,7 @@ void deoglRDebugDrawer::UpdateVBO(){
 	
 	// write vbo data to vbo
 	OGL_CHECK(pRenderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBO));
-	OGL_CHECK(pRenderThread, pglBufferData(GL_ARRAY_BUFFER, sizeof(oglVector3) * pVBOPointCount, NULL, GL_STATIC_DRAW));
+	OGL_CHECK(pRenderThread, pglBufferData(GL_ARRAY_BUFFER, sizeof(oglVector3) * pVBOPointCount, nullptr, GL_STATIC_DRAW));
 	OGL_CHECK(pRenderThread, pglBufferData(GL_ARRAY_BUFFER, sizeof(oglVector3) * pVBOPointCount, pVBOData, GL_STATIC_DRAW));
 	
 	// create vao if not existing
@@ -214,7 +214,7 @@ void deoglRDebugDrawer::UpdateVBO(){
 
 
 void deoglRDebugDrawer::PrepareQuickDispose(){
-	pParentWorld = NULL;
+	pParentWorld = nullptr;
 	//pOctreeNode = NULL;
 }
 
@@ -264,7 +264,7 @@ void deoglRDebugDrawer::pWriteVBOData(const deDebugDrawer &debugDrawer){
 	if(pointCount != pVBOPointCount){
 		if(pVBOData){
 			delete [] pVBOData;
-			pVBOData = NULL;
+			pVBOData = nullptr;
 			pVBOPointCount = 0;
 		}
 		

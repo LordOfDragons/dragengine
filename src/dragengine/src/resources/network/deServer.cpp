@@ -45,8 +45,8 @@
 
 deServer::deServer(deServerManager *manager) :
 deResource(manager),
-pPeerNetwork(NULL),
-pPeerScripting(NULL){
+pPeerNetwork(nullptr),
+pPeerScripting(nullptr){
 }
 
 deServer::~deServer(){

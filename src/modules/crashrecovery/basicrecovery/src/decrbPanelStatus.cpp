@@ -82,7 +82,7 @@ FXVerticalFrame(container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_L
 	FXVerticalFrame *frameBox = new FXVerticalFrame(groupBox, LAYOUT_SIDE_TOP
 		| LAYOUT_FILL_X, 0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
 	
-	pEditStatus = new FXText(frameBox, NULL, 0, TEXT_READONLY | TEXT_WORDWRAP
+	pEditStatus = new FXText(frameBox, nullptr, 0, TEXT_READONLY | TEXT_WORDWRAP
 		| FRAME_SUNKEN | LAYOUT_FILL_X);
 	text = "An error has occurred. The engine is has been put into recovery mode. "
 		"You can now examine the error and try to get the engine back running. "
@@ -98,14 +98,14 @@ FXVerticalFrame(container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_L
 	groupBox = new FXGroupBox(this, "Module System Status:",
 		GROUPBOX_TITLE_LEFT | FRAME_RIDGE | LAYOUT_FILL_X | LAYOUT_FILL_Y);
 	
-	pListSystems = new FXIconList(groupBox, NULL, 0, ICONLIST_BROWSESELECT
+	pListSystems = new FXIconList(groupBox, nullptr, 0, ICONLIST_BROWSESELECT
 		| ICONLIST_DETAILED | FRAME_SUNKEN | LAYOUT_FILL_X | LAYOUT_FILL_Y);
 	pListSystems->setSortFunc(fSortByName);
 	
 	FXHeader *header = pListSystems->getHeader();
-	header->appendItem("System Name", NULL, 150, NULL, false);
-	header->appendItem("Active Module", NULL, 200, NULL, false);
-	header->appendItem("Running", NULL, 80, NULL, false);
+	header->appendItem("System Name", nullptr, 150, nullptr, false);
+	header->appendItem("Active Module", nullptr, 200, nullptr, false);
+	header->appendItem("Running", nullptr, 80, nullptr, false);
 	
 	count = engine->GetSystemCount();
 	for(i=0; i<count; i++){
@@ -117,14 +117,14 @@ FXVerticalFrame(container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_L
 	groupBox = new FXGroupBox(this, "Module Status:",
 		GROUPBOX_TITLE_LEFT | FRAME_RIDGE | LAYOUT_FILL_X | LAYOUT_FILL_Y);
 	
-	pListModules = new FXIconList(groupBox, NULL, 0, ICONLIST_BROWSESELECT
+	pListModules = new FXIconList(groupBox, nullptr, 0, ICONLIST_BROWSESELECT
 		| ICONLIST_DETAILED | FRAME_SUNKEN | LAYOUT_FILL_X | LAYOUT_FILL_Y);
 	pListModules->setSortFunc(fSortByName);
 	
 	header = pListModules->getHeader();
-	header->appendItem("Module Name", NULL, 200, NULL, false);
-	header->appendItem("Loaded", NULL, 80, NULL, false);
-	header->appendItem("Status", NULL, 150, NULL, false);
+	header->appendItem("Module Name", nullptr, 200, nullptr, false);
+	header->appendItem("Loaded", nullptr, 80, nullptr, false);
+	header->appendItem("Status", nullptr, 150, nullptr, false);
 	
 	for(i=0; i<modSys->GetModules().GetCount(); i++){
 		pAddModule(modSys->GetModules().GetAt(i));
@@ -199,7 +199,7 @@ void decrbPanelStatus::pAddSystem(deBaseSystem *system){
 	}
 	
 	itemText.format("%s\t%s\t%s", system->GetSystemName().GetString(), textModule, textRunning);
-	pListSystems->appendItem(itemText, NULL, NULL, system, false);
+	pListSystems->appendItem(itemText, nullptr, nullptr, system, false);
 }
 
 void decrbPanelStatus::pAddModule(deLoadableModule *module){
@@ -213,5 +213,5 @@ void decrbPanelStatus::pAddModule(deLoadableModule *module){
 	}
 	
 	itemText.format("%s\t%s\t%s", module->GetName().GetString(), textLoaded, "Success");
-	pListModules->appendItem(itemText, NULL, NULL, module, false);
+	pListModules->appendItem(itemText, nullptr, nullptr, module, false);
 }

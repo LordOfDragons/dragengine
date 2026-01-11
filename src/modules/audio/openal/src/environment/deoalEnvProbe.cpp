@@ -60,7 +60,7 @@ pRange(0.0f),
 pAttenuationRefDist(1.0f),
 pAttenuationRolloff(0.0f),
 pAttenuationDistanceOffset(0.0f),
-pRTConfig(NULL),
+pRTConfig(nullptr),
 pRayCount(0),
 pRayOpeningAngle(0.0f),
 pReverberationTimeMedium(0.0f),
@@ -82,7 +82,7 @@ pListenerRange(1.0f),
 pListenerTracking(1),
 pEstimated(true),
 pLastUsed(0),
-pOctreeNode(NULL){
+pOctreeNode(nullptr){
 }
 
 deoalEnvProbe::~deoalEnvProbe(){
@@ -280,12 +280,12 @@ const deoalRayTraceConfig &probeConfig){
 
 void deoalEnvProbe::CalcListener(deoalEnvProbeListener &listener, deoalAWorld &world,
 const decDVector &position, deoalAMicrophone *microphone){
-	pCalcListener(listener, world, position, microphone, NULL);
+	pCalcListener(listener, world, position, microphone, nullptr);
 }
 
 void deoalEnvProbe::CalcListener(deoalEnvProbeListener &listener, deoalAWorld &world,
 const decDVector &position, deoalASoundLevelMeter *soundLevelMeter){
-	pCalcListener(listener, world, position, NULL, soundLevelMeter);
+	pCalcListener(listener, world, position, nullptr, soundLevelMeter);
 }
 
 void deoalEnvProbe::SetLastUsed(unsigned int lastUsed){

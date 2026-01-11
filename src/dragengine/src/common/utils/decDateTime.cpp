@@ -148,7 +148,7 @@ void decDateTime::SetFrom(const TIME_SYSTEM systemTime){
 TIME_SYSTEM decDateTime::GetSystemTime(){
 #ifdef OS_UNIX
 	timeval tval;
-	if(gettimeofday(&tval, NULL) == -1){
+	if(gettimeofday(&tval, nullptr) == -1){
 		DETHROW(deeInvalidParam);
 	}
 	return (TIME_SYSTEM)tval.tv_sec;

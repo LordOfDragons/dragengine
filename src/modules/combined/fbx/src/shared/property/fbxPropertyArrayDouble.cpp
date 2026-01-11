@@ -45,13 +45,13 @@
 
 fbxPropertyArrayDouble::fbxPropertyArrayDouble() :
 fbxProperty(etArrayDouble),
-pValues(NULL),
+pValues(nullptr),
 pCount(0){
 }
 
 fbxPropertyArrayDouble::fbxPropertyArrayDouble(decBaseFileReader &reader) :
 fbxProperty(etArrayDouble),
-pValues(NULL),
+pValues(nullptr),
 pCount(0)
 {
 	const int count = reader.ReadUInt();

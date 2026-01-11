@@ -52,11 +52,11 @@ MOD_ENTRY_POINT_ATTR deBaseModule *TGACreateModule(deLoadableModule *loadableMod
 // returns NULL on error.
 /////////////////////////////////////////////////////////
 deBaseModule *TGACreateModule(deLoadableModule *loadableModule){
-	deBaseModule *module = NULL;
+	deBaseModule *module = nullptr;
 	try{
 		module = new deTgaModule(*loadableModule);
 	}catch(const deException &){
-		return NULL;
+		return nullptr;
 	}
 	return module;
 }
@@ -75,7 +75,7 @@ deTgaModule::~deTgaModule(){
 
 // images
 deBaseImageInfo *deTgaModule::InitLoadImage(decBaseFileReader &file){
-	deTgaImageInfo *infos = NULL;
+	deTgaImageInfo *infos = nullptr;
 	bool troubles = false;
 	try{
 		// create infos object
@@ -89,7 +89,7 @@ deBaseImageInfo *deTgaModule::InitLoadImage(decBaseFileReader &file){
 		// finished
 		if(troubles){
 			delete infos;
-			return NULL;
+			return nullptr;
 		}
 	}catch(const deException &){
 		if(infos) delete infos;

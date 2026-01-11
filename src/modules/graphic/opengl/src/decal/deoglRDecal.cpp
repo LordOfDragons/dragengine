@@ -154,16 +154,16 @@ pRenderThread(renderThread),
 pSize(0.5f, 0.5f, 1.0f),
 pVisible(true),
 
-pParentComponent(NULL),
+pParentComponent(nullptr),
 pComponentMarkedRemove(false),
 pWorldComputeElement(WorldComputeElement::Ref::New(*this)),
 
-pRTSInstance(NULL),
+pRTSInstance(nullptr),
 pDirtySharedSPBElement(true),
 pDirtyTUCs(true),
 
-pGIBVHLocal(NULL),
-pGIBVHDynamic(NULL),
+pGIBVHLocal(nullptr),
+pGIBVHDynamic(nullptr),
 pDirtyGIBVHLocal(false),
 pDirtyGIBVHDynamic(false),
 pStaticTexture(true),
@@ -171,13 +171,13 @@ pStaticTexture(true),
 pListenerIndex(0)
 {
 	pUseTextureNumber = -1;
-	pUseSkinTexture = NULL;
+	pUseSkinTexture = nullptr;
 	
 	pDirtyPrepareSkinStateRenderables = true;
 	pDirtyRenderSkinStateRenderables = true;
 	pRequiresPrepareForRender();
 	
-	pVBOBlock = NULL;
+	pVBOBlock = nullptr;
 	pPointCount = 0;
 	
 	pDirtyUseTexture = true;
@@ -442,12 +442,12 @@ deoglTexUnitsConfig *deoglRDecal::GetTUCForPipelineType(deoglSkinTexturePipeline
 
 deoglTexUnitsConfig *deoglRDecal::BareGetTUCFor(deoglSkinTexturePipelines::eTypes type) const{
 	if(!pUseSkinTexture){
-		return NULL;
+		return nullptr;
 	}
 	
 	deoglTexUnitConfig units[deoglSkinShader::ETT_COUNT];
-	deoglEnvironmentMap *envmapSky = NULL;
-	deoglTexUnitsConfig *tuc = NULL;
+	deoglEnvironmentMap *envmapSky = nullptr;
+	deoglTexUnitsConfig *tuc = nullptr;
 	
 	if(pParentComponent){
 		envmapSky = pParentComponent->GetParentWorld()->GetSkyEnvironmentMap();
@@ -466,7 +466,7 @@ deoglTexUnitsConfig *deoglRDecal::BareGetTUCFor(deoglSkinTexturePipelines::eType
 	}
 	
 	if(!tuc){
-		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith(NULL, 0,
+		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith(nullptr, 0,
 			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock());
 	}
 	tuc->EnsureRTSTexture();
@@ -513,7 +513,7 @@ void deoglRDecal::PrepareForRenderRender(deoglRenderPlan &plan, const deoglRende
 }
 
 void deoglRDecal::PrepareQuickDispose(){
-	pParentComponent = NULL;
+	pParentComponent = nullptr;
 }
 
 void deoglRDecal::DynamicSkinRenderablesChanged(){
@@ -555,7 +555,7 @@ void deoglRDecal::PrepareGILocalBVH(){
 		DETHROW(deeInvalidParam);
 	}
 	
-	deoglBVH::sBuildPrimitive *primitives = NULL;
+	deoglBVH::sBuildPrimitive *primitives = nullptr;
 	int primitiveCount = 0;
 	bool disable = false;
 	
@@ -642,7 +642,7 @@ void deoglRDecal::PrepareGILocalBVH(){
 	}catch(const deException &){
 		if(pGIBVHLocal){
 			delete pGIBVHLocal;
-			pGIBVHLocal = NULL;
+			pGIBVHLocal = nullptr;
 		}
 		if(primitives){
 			delete [] primitives;
@@ -857,7 +857,7 @@ void deoglRDecal::pPrepareVBO(){
 	
 	if(pVBOBlock){
 		pVBOBlock->GetVBO()->RemoveBlock(pVBOBlock);
-		pVBOBlock = NULL;
+		pVBOBlock = nullptr;
 	}
 	
 	if(pParentComponent){
@@ -876,7 +876,7 @@ void deoglRDecal::pUpdateUseSkin(){
 	
 	pUseSkin = nullptr;
 	pUseTextureNumber = -1;
-	pUseSkinTexture = NULL;
+	pUseSkinTexture = nullptr;
 	pUseDynamicSkin = nullptr;
 	pUseSkinState = nullptr;
 	
@@ -925,7 +925,7 @@ void deoglRDecal::pPrepareTUCs(){
 	// geometry
 	if(pTUCGeometry){
 		pTUCGeometry->RemoveUsage();
-		pTUCGeometry = NULL;
+		pTUCGeometry = nullptr;
 	}
 	pTUCGeometry = BareGetTUCFor(deoglSkinTexturePipelines::etGeometry);
 	
@@ -946,14 +946,14 @@ void deoglRDecal::pPrepareTUCs(){
 	// shadow
 	if(pTUCShadow){
 		pTUCShadow->RemoveUsage();
-		pTUCShadow = NULL;
+		pTUCShadow = nullptr;
 	}
 	pTUCShadow = BareGetTUCFor(deoglSkinTexturePipelines::etShadowProjection);
 	
 	// envmap
 	if(pTUCEnvMap){
 		pTUCEnvMap->RemoveUsage();
-		pTUCEnvMap = NULL;
+		pTUCEnvMap = nullptr;
 	}
 	
 	if(pUseSkinTexture){
@@ -961,20 +961,20 @@ void deoglRDecal::pPrepareTUCs(){
 		
 		if(pUseSkinTexture->GetVariationU() || pUseSkinTexture->GetVariationV()){
 			unit[0].EnableArrayTextureFromChannel(pRenderThread, *pUseSkinTexture,
-				deoglSkinChannel::ectColor, NULL, NULL,
+				deoglSkinChannel::ectColor, nullptr, nullptr,
 				pRenderThread.GetDefaultTextures().GetColorArray());
 			
 			unit[1].EnableArrayTextureFromChannel(pRenderThread, *pUseSkinTexture,
-				deoglSkinChannel::ectEmissivity, NULL, NULL,
+				deoglSkinChannel::ectEmissivity, nullptr, nullptr,
 				pRenderThread.GetDefaultTextures().GetEmissivityArray());
 			
 		}else{
 			unit[0].EnableTextureFromChannel(pRenderThread, *pUseSkinTexture,
-				deoglSkinChannel::ectColor, NULL, NULL,
+				deoglSkinChannel::ectColor, nullptr, nullptr,
 				pRenderThread.GetDefaultTextures().GetColor());
 			
 			unit[1].EnableTextureFromChannel(pRenderThread, *pUseSkinTexture,
-				deoglSkinChannel::ectEmissivity, NULL, NULL,
+				deoglSkinChannel::ectEmissivity, nullptr, nullptr,
 				pRenderThread.GetDefaultTextures().GetEmissivity());
 		}
 		

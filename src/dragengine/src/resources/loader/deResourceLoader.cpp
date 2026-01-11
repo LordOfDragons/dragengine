@@ -234,7 +234,7 @@ deResourceLoaderTask *deResourceLoader::AddSaveRequest(deVirtualFileSystem *vfs,
 const char *path, deFileResource *resource){
 	// TODO
 	// note. if resource is finished mark created task finished
-	return NULL;
+	return nullptr;
 }
 
 bool deResourceLoader::NextFinishedRequest(deResourceLoaderInfo &info){
@@ -261,7 +261,7 @@ bool deResourceLoader::NextFinishedRequest(deResourceLoaderInfo &info){
 				break;
 				
 			case deResourceLoaderTask::esFailed:
-				info.SetResource(NULL);
+				info.SetResource(nullptr);
 				break;
 				
 			default:{

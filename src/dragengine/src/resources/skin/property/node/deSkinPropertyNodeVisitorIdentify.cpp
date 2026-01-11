@@ -42,7 +42,7 @@
 ////////////////////////////
 
 deSkinPropertyNodeVisitorIdentify::deSkinPropertyNodeVisitorIdentify() :
-pNode(NULL),
+pNode(nullptr),
 pType(entUnknown){
 }
 
@@ -85,7 +85,7 @@ deSkinPropertyNodeText &deSkinPropertyNodeVisitorIdentify::CastToText() const{
 
 
 void deSkinPropertyNodeVisitorIdentify::Reset(){
-	pNode = NULL;
+	pNode = nullptr;
 	pType = entUnknown;
 }
 

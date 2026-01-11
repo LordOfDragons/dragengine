@@ -43,7 +43,7 @@
 deoglRenderableColorArrayTextureManager::deoglRenderableColorArrayTextureManager(
 	deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
-pArrayTextures(NULL),
+pArrayTextures(nullptr),
 pArrayTextureCount(0),
 pArrayTextureSize(0){
 }
@@ -73,7 +73,7 @@ const deoglRenderableColorArrayTexture *deoglRenderableColorArrayTextureManager:
 
 deoglRenderableColorArrayTexture *deoglRenderableColorArrayTextureManager::GetWith(
 int width, int height, int layerCount, int componentCount, bool isFloat){
-	deoglRenderableColorArrayTexture *texture = NULL;
+	deoglRenderableColorArrayTexture *texture = nullptr;
 	int i;
 	
 	// find the texture with the matching format

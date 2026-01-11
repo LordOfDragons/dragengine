@@ -58,13 +58,13 @@ struct sStateData{
 desynSynthesizerSourceSound::desynSynthesizerSourceSound(desynSynthesizer &synthesizer,
 int firstLink, const deSynthesizerSourceSound &source) :
 desynSynthesizerSource(synthesizer, firstLink, source),
-pSound(NULL),
+pSound(nullptr),
 pSampleCount(0),
 pLastSample(0),
-pSoundDataMono8(NULL),
-pSoundDataMono16(NULL),
-pSoundDataStereo8(NULL),
-pSoundDataStereo16(NULL),
+pSoundDataMono8(nullptr),
+pSoundDataMono16(nullptr),
+pSoundDataStereo8(nullptr),
+pSoundDataStereo16(nullptr),
 
 pMinSpeed(source.GetMinSpeed()),
 pMaxSpeed(source.GetMaxSpeed()),

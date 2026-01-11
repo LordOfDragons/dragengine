@@ -39,7 +39,7 @@
 ////////////////////////////
 
 dedsStyledTextNode::dedsStyledTextNode(){
-	pStyle = NULL;
+	pStyle = nullptr;
 }
 
 

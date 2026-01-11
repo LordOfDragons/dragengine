@@ -55,13 +55,13 @@ pMaterialMapSize(pMaxMaterialMapSize),
 pMaterialsPerRow(pMaxMaterialsPerRow),
 pRowsPerImage(pMaxRowsPerImage),
 pMaxMaterialCount(pMaxMaterialsPerRow * pMaxRowsPerImage),
-pTexDiffuse(NULL),
-pTexReflectivity(NULL),
-pTexEmissivity(NULL),
+pTexDiffuse(nullptr),
+pTexReflectivity(nullptr),
+pTexEmissivity(nullptr),
 pFBOMaterial(deoglFramebuffer::Ref::New(renderThread, false))
 {
 	try{
-		pTUCs.Add(NULL); // index 0 is fallback
+		pTUCs.Add(nullptr); // index 0 is fallback
 		
 		pCreateFBOMaterial();
 		
@@ -119,7 +119,7 @@ void deoglGIMaterials::AddTUC(deoglTexUnitsConfig *tuc){
 
 deoglTexUnitsConfig *deoglGIMaterials::GetTUC(int materialIndex) const{
 	if(materialIndex < 1 || materialIndex >= pTUCs.GetCount()){
-		return NULL;
+		return nullptr;
 	}
 	return (deoglTexUnitsConfig*)pTUCs.GetAt(materialIndex);
 }
@@ -218,9 +218,9 @@ void deoglGIMaterials::pEnlarge(){
 	deoglTexture * const texReflectivity = pTexReflectivity;
 	deoglTexture * const texEmissivity = pTexEmissivity;
 	
-	pTexDiffuse = NULL;
-	pTexReflectivity = NULL;
-	pTexEmissivity = NULL;
+	pTexDiffuse = nullptr;
+	pTexReflectivity = nullptr;
+	pTexEmissivity = nullptr;
 	
 	try{
 		pCreateFBOMaterial();

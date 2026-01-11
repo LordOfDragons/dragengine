@@ -46,7 +46,7 @@
 //////////////////////////////
 
 dedaiShapeToConvexVolume::dedaiShapeToConvexVolume() :
-pList(NULL),
+pList(nullptr),
 pSphereRingCount(9),
 pSphereSegmentCount(20){
 }
@@ -76,7 +76,7 @@ void dedaiShapeToConvexVolume::SetSphereSegmentsCount(int segmentCount) {
 
 
 void dedaiShapeToConvexVolume::AddTriangle(decConvexVolume &volume, int p1, int p2, int p3){
-	decConvexVolumeFace *face = NULL;
+	decConvexVolumeFace *face = nullptr;
 	
 	try{
 		face = CreateFace();
@@ -100,7 +100,7 @@ void dedaiShapeToConvexVolume::AddTriangle(decConvexVolume &volume, int p1, int 
 }
 
 void dedaiShapeToConvexVolume::AddQuad(decConvexVolume &volume, int p1, int p2, int p3, int p4){
-	decConvexVolumeFace *face = NULL;
+	decConvexVolumeFace *face = nullptr;
 	
 	try{
 		face = CreateFace();
@@ -156,7 +156,7 @@ void dedaiShapeToConvexVolume::VisitShapeSphere(decShapeSphere &sphere){
 	float angle, radiusRing, heightRing;
 	int i, j, base;
 	
-	decConvexVolume *volume = NULL;
+	decConvexVolume *volume = nullptr;
 	
 	try{
 		volume = CreateVolume();
@@ -215,7 +215,7 @@ void dedaiShapeToConvexVolume::VisitShapeBox(decShapeBox &box){
 	const decMatrix matrix(decMatrix::CreateWorld(box.GetPosition(), box.GetOrientation(), box.GetHalfExtends()));
 	const decVector2 &tapering = box.GetTapering();
 	
-	decConvexVolume *volume = NULL;
+	decConvexVolume *volume = nullptr;
 	
 	try{
 		volume = CreateVolume();

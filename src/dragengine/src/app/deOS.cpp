@@ -39,7 +39,7 @@
 ////////////////////////////
 
 deOS::deOS() :
-pEngine(NULL),
+pEngine(nullptr),
 pAppActive(false){
 }
 

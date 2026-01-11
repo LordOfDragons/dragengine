@@ -81,8 +81,8 @@ deoglPropFieldType::~deoglPropFieldType(){
 
 void deoglPropFieldType::SyncToRender(){
 	if(pDirtyType){
-		deoglRModel *model = NULL;
-		deoglRSkin *skin = NULL;
+		deoglRModel *model = nullptr;
+		deoglRSkin *skin = nullptr;
 		
 		if(pType.GetModel()){
 			model = ((deoglModel*)pType.GetModel()->GetPeerGraphic())->GetRModel();

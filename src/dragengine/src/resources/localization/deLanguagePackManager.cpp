@@ -76,7 +76,7 @@ deLanguagePack *deLanguagePackManager::GetLanguagePackWith(const char *filename)
 deLanguagePack *deLanguagePackManager::GetLanguagePackWith(deVirtualFileSystem *vfs,
 const char *filename) const{
 	deLanguagePack * const langpack = (deLanguagePack*)pLangPacks.GetWithFilename(vfs, filename);
-	return langpack && !langpack->GetOutdated() ? langpack : NULL;
+	return langpack && !langpack->GetOutdated() ? langpack : nullptr;
 }
 
 deLanguagePack::Ref deLanguagePackManager::CreateLanguagePack(

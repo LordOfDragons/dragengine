@@ -41,13 +41,13 @@
 
 deoglOcclusionQueryManager::deoglOcclusionQueryManager(deoglRenderThread &renderThread) :
 pRenderThread(renderThread){
-	pQueries = NULL;
+	pQueries = nullptr;
 	pQueryCount = 0;
 	pQuerySize = 0;
 	
 	pFreeQueryCount = 0;
 	
-	pActiveQuery = NULL;
+	pActiveQuery = nullptr;
 }
 
 deoglOcclusionQueryManager::~deoglOcclusionQueryManager(){

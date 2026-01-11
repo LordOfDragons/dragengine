@@ -95,14 +95,14 @@ deBaseModule *OpenALCreateModule(deLoadableModule *loadableModule){
 deAudioOpenAL::deAudioOpenAL(deLoadableModule &loadableModule) :
 deBaseAudioModule(loadableModule),
 
-pAudioThread(NULL),
+pAudioThread(nullptr),
 
-pConfiguration(NULL),
-pCommandExecuter(NULL),
+pConfiguration(nullptr),
+pCommandExecuter(nullptr),
 
-pDevMode(NULL),
+pDevMode(nullptr),
 
-pActiveMicrophone(NULL)
+pActiveMicrophone(nullptr)
 {
 	try{
 		pCommandExecuter = new deoalCommandExecuter(*this);
@@ -137,14 +137,14 @@ deAudioOpenAL::~deAudioOpenAL(){
 ///////////////
 
 bool deAudioOpenAL::HasAudioThread() const{
-	return pAudioThread != NULL;
+	return pAudioThread != nullptr;
 }
 
 
 
 deoalWorld *deAudioOpenAL::GetActiveWorld() const{
 	if(!pActiveMicrophone){
-		return NULL;
+		return nullptr;
 	}
 	return pActiveMicrophone->GetParentWorld();
 }
@@ -185,12 +185,12 @@ void deAudioOpenAL::CleanUp(){
 	if(pAudioThread){
 		pAudioThread->CleanUp();
 		delete pAudioThread;
-		pAudioThread = NULL;
+		pAudioThread = nullptr;
 	}
 	
 	if(pDevMode){
 		delete pDevMode;
-		pDevMode = NULL;
+		pDevMode = nullptr;
 	}
 }
 
@@ -222,7 +222,7 @@ void deAudioOpenAL::ProcessAudio(){
 		}
 		
 	}else{
-		pAudioThread->SetActiveMicrophone(NULL);
+		pAudioThread->SetActiveMicrophone(nullptr);
 	}
 	
 	// synchronize audio thread and trigger next audio cycle
@@ -230,7 +230,7 @@ void deAudioOpenAL::ProcessAudio(){
 }
 
 void deAudioOpenAL::SetActiveMicrophone(deMicrophone *microphone){
-	deoalMicrophone *oalMicrophone = NULL;
+	deoalMicrophone *oalMicrophone = nullptr;
 	if(microphone){
 		oalMicrophone = (deoalMicrophone*)microphone->GetPeerAudio();
 	}

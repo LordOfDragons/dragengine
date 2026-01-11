@@ -41,7 +41,7 @@
 deoalRayTraceHitElement::deoalRayTraceHitElement() :
 pDistance(1.0f),
 pForwardFacing(true),
-pComponent(NULL),
+pComponent(nullptr),
 pComponentFace(-1){
 }
 
@@ -69,7 +69,7 @@ void deoalRayTraceHitElement::SetEmpty(){
 	pPoint.SetZero();
 	pNormal.SetZero();
 	pForwardFacing = true;
-	pComponent = NULL;
+	pComponent = nullptr;
 	pComponentFace = -1;
 }
 

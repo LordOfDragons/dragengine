@@ -55,15 +55,15 @@
 deoglSCSolid::deoglSCSolid(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
 
-pStaticMap(NULL),
-pStaticCubeMap(NULL),
-pStaticArrayMap(NULL),
+pStaticMap(nullptr),
+pStaticCubeMap(nullptr),
+pStaticArrayMap(nullptr),
 pLastUseStatic(0),
 pHasStatic(false),
 
-pDynamicMap(NULL),
-pDynamicCubeMap(NULL),
-pDynamicArrayMap(NULL),
+pDynamicMap(nullptr),
+pDynamicCubeMap(nullptr),
+pDynamicArrayMap(nullptr),
 pLastUseDynamic(0),
 pHasDynamic(false),
 pDirtyDynamic(true),
@@ -108,7 +108,7 @@ deoglTexture *deoglSCSolid::ObtainStaticMapWithSize(int size, bool withStencil, 
 		
 		if(pStaticMap){
 			delete pStaticMap;
-			pStaticMap = NULL;
+			pStaticMap = nullptr;
 		}
 	}
 	
@@ -137,7 +137,7 @@ deoglCubeMap *deoglSCSolid::ObtainStaticCubeMapWithSize(int size, bool useFloat)
 		
 		if(pStaticCubeMap){
 			delete pStaticCubeMap;
-			pStaticCubeMap = NULL;
+			pStaticCubeMap = nullptr;
 		}
 	}
 	
@@ -166,7 +166,7 @@ deoglArrayTexture *deoglSCSolid::ObtainStaticArrayMapWithSize(int size, int laye
 		
 		if(pStaticArrayMap){
 			delete pStaticArrayMap;
-			pStaticArrayMap = NULL;
+			pStaticArrayMap = nullptr;
 		}
 	}
 	
@@ -189,15 +189,15 @@ void deoglSCSolid::DropStatic(){
 	
 	if(pStaticMap){
 		delete pStaticMap;
-		pStaticMap = NULL;
+		pStaticMap = nullptr;
 	}
 	if(pStaticCubeMap){
 		delete pStaticCubeMap;
-		pStaticCubeMap = NULL;
+		pStaticCubeMap = nullptr;
 	}
 	if(pStaticArrayMap){
 		delete pStaticArrayMap;
-		pStaticArrayMap = NULL;
+		pStaticArrayMap = nullptr;
 	}
 	
 	pLastSizeStatic = 0;
@@ -228,7 +228,7 @@ deoglTexture *deoglSCSolid::ObtainDynamicMapWithSize(int size, bool withStencil,
 		
 		if(pDynamicMap){
 			delete pDynamicMap;
-			pDynamicMap = NULL;
+			pDynamicMap = nullptr;
 		}
 	}
 	
@@ -258,7 +258,7 @@ deoglCubeMap *deoglSCSolid::ObtainDynamicCubeMapWithSize(int size, bool useFloat
 		
 		if(pDynamicCubeMap){
 			delete pDynamicCubeMap;
-			pDynamicCubeMap = NULL;
+			pDynamicCubeMap = nullptr;
 		}
 	}
 	
@@ -288,7 +288,7 @@ deoglArrayTexture *deoglSCSolid::ObtainDynamicArrayMapWithSize(int size, int lay
 		
 		if(pDynamicArrayMap){
 			delete pDynamicArrayMap;
-			pDynamicArrayMap = NULL;
+			pDynamicArrayMap = nullptr;
 		}
 	}
 	
@@ -312,15 +312,15 @@ void deoglSCSolid::DropDynamic(){
 	
 	if(pDynamicMap){
 		delete pDynamicMap;
-		pDynamicMap = NULL;
+		pDynamicMap = nullptr;
 	}
 	if(pDynamicCubeMap){
 		delete pDynamicCubeMap;
-		pDynamicCubeMap = NULL;
+		pDynamicCubeMap = nullptr;
 	}
 	if(pDynamicArrayMap){
 		delete pDynamicArrayMap;
-		pDynamicArrayMap = NULL;
+		pDynamicArrayMap = nullptr;
 	}
 	
 	pLastSizeDynamic = 0;
@@ -402,15 +402,15 @@ deoglRenderableDepthArrayTexture *deoglSCSolid::ObtainTemporaryArrayMapWithSize(
 void deoglSCSolid::DropTemporary(){
 	if(pTemporaryMap){
 		pTemporaryMap->SetInUse(false);
-		pTemporaryMap = NULL;
+		pTemporaryMap = nullptr;
 	}
 	if(pTemporaryCubeMap){
 		pTemporaryCubeMap->SetInUse(false);
-		pTemporaryCubeMap = NULL;
+		pTemporaryCubeMap = nullptr;
 	}
 	if(pTemporaryArrayMap){
 		pTemporaryArrayMap->SetInUse(false);
-		pTemporaryArrayMap = NULL;
+		pTemporaryArrayMap = nullptr;
 	}
 }
 

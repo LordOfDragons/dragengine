@@ -42,7 +42,7 @@
 /////////////////////////////////
 
 deoglRSkyControllerTarget::deoglRSkyControllerTarget(const deSkyControllerTarget &target) :
-pLinks(NULL),
+pLinks(nullptr),
 pLinkCount(0)
 {
 	const decTList<int> &links = target.GetLinks();

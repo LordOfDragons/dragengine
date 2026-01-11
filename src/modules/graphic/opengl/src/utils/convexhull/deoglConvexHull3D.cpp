@@ -45,7 +45,7 @@
 ////////////////////////////
 
 deoglConvexHull3D::deoglConvexHull3D(){
-	pPoints = NULL;
+	pPoints = nullptr;
 	pPointCount = 0;
 	pPointSize = 0;
 }
@@ -106,7 +106,7 @@ void deoglConvexHull3D::CalculateHull(){
 		vertices[i].z = pPoints[i].z;
 	}
 	
-	int *faceIndices = NULL;
+	int *faceIndices = nullptr;
 	int nFaces;
 	convhull_3d_build(vertices, pPointCount, &faceIndices, &nFaces);
 	

@@ -42,7 +42,7 @@
 
 deoglRenderableDepthTextureManager::deoglRenderableDepthTextureManager(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
-pTextures(NULL),
+pTextures(nullptr),
 pTextureCount(0),
 pTextureSize(0){
 }
@@ -70,7 +70,7 @@ const deoglRenderableDepthTexture *deoglRenderableDepthTextureManager::GetTextur
 
 deoglRenderableDepthTexture *deoglRenderableDepthTextureManager::GetTextureWith(
 int width, int height, bool withStencil, bool useFloat){
-	deoglRenderableDepthTexture *texture = NULL;
+	deoglRenderableDepthTexture *texture = nullptr;
 	int i;
 	
 	// find the texture with the matching format

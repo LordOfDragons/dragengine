@@ -117,7 +117,7 @@ dePngModule::~dePngModule(){
 ////////////////////
 
 deBaseImageInfo *dePngModule::InitLoadImage(decBaseFileReader &file){
-	dePngImageInfo *infos = NULL;
+	dePngImageInfo *infos = nullptr;
 	bool troubles = false;
 	int colorType;
 	
@@ -130,7 +130,7 @@ deBaseImageInfo *dePngModule::InitLoadImage(decBaseFileReader &file){
 		
 		// create structures
 		infos->readStruct = png_create_read_struct_2(PNG_LIBPNG_VER_STRING, (png_voidp)&infos->feedback,
-			(png_error_ptr)depngError, (png_error_ptr)depngWarning, NULL, NULL, NULL);
+			(png_error_ptr)depngError, (png_error_ptr)depngWarning, nullptr, nullptr, nullptr);
 		if(!infos->readStruct) DETHROW(deeOutOfMemory);
 		
 		infos->infoStruct = png_create_info_struct(infos->readStruct);
@@ -175,7 +175,7 @@ deBaseImageInfo *dePngModule::InitLoadImage(decBaseFileReader &file){
 		
 		if(troubles){
 			delete infos;
-			return NULL;
+			return nullptr;
 		}
 		
 		// NOTE libpng has separate function calls all linked to png_set_expand but using
@@ -237,7 +237,7 @@ void dePngModule::LoadImage(decBaseFileReader &file, deImage &image, deBaseImage
 	int height = pngInfos.height;
 	int width = pngInfos.width;
 	int r, rowLength;
-	png_bytep *rows = NULL;
+	png_bytep *rows = nullptr;
 	
 	// determine the length of a row in bytes
 	if(bitCount == 8){
@@ -263,7 +263,7 @@ void dePngModule::LoadImage(decBaseFileReader &file, deImage &image, deBaseImage
 		png_read_image(pngInfos.readStruct, rows);
 		
 		// finish file
-		png_read_end(pngInfos.readStruct, NULL);
+		png_read_end(pngInfos.readStruct, nullptr);
 		
 		// free rows array
 		delete [] rows;
@@ -275,8 +275,8 @@ void dePngModule::LoadImage(decBaseFileReader &file, deImage &image, deBaseImage
 }
 
 void dePngModule::SaveImage(decBaseFileWriter &file, const deImage &image){
-	png_structp writeStruct = NULL;
-	png_infop infoStruct = NULL;
+	png_structp writeStruct = nullptr;
+	png_infop infoStruct = nullptr;
 	char *imageData = reinterpret_cast<char*>(image.GetData());
 	int componentCount = image.GetComponentCount();
 	int bitCount = image.GetBitCount();
@@ -284,7 +284,7 @@ void dePngModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 	int height = image.GetHeight();
 	int width = image.GetWidth();
 	int r, rowLength;
-	png_bytep *rows = NULL;
+	png_bytep *rows = nullptr;
 	int pngBitCount;
 	int pngColorType;
 	
@@ -334,7 +334,7 @@ void dePngModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 	try{
 		// create structures
 		writeStruct = png_create_write_struct_2(PNG_LIBPNG_VER_STRING, (png_voidp)&feedback,
-			(png_error_ptr)depngError, (png_error_ptr)depngWarning, NULL, NULL, NULL);
+			(png_error_ptr)depngError, (png_error_ptr)depngWarning, nullptr, nullptr, nullptr);
 		if(!writeStruct) DETHROW(deeOutOfMemory);
 		
 		infoStruct = png_create_info_struct(writeStruct);
@@ -395,11 +395,11 @@ void dePngModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 		PNG_TRANSFORM_SWAP_ENDIAN   Byte-swap 16-bit samples
 		PNG_TRANSFORM_STRIP_FILLER  Strip out filler bytes.
 		*/
-		png_write_png(writeStruct, infoStruct, PNG_TRANSFORM_SWAP_ENDIAN, NULL);
+		png_write_png(writeStruct, infoStruct, PNG_TRANSFORM_SWAP_ENDIAN, nullptr);
 		
 		// free rows array
 		delete [] rows;
-		rows = NULL;
+		rows = nullptr;
 		
 		// clean up
 		png_destroy_write_struct(&writeStruct, &infoStruct);

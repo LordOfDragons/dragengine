@@ -72,19 +72,19 @@ struct sLink{
 dedaiSpaceGrid::dedaiSpaceGrid(dedaiSpace &space) :
 pSpace(space),
 
-pVertexEdges(NULL),
+pVertexEdges(nullptr),
 pVertexEdgeCount(0),
 pVertexEdgeSize(0),
 
-pVertices(NULL),
+pVertices(nullptr),
 pVertexCount(0),
 pVertexSize(0),
 
-pEdges(NULL),
+pEdges(nullptr),
 pEdgeCount(0),
 pEdgeSize(0),
 
-pLinks(NULL),
+pLinks(nullptr),
 pLinkCount(0),
 pLinkSize(0){
 }
@@ -170,7 +170,7 @@ void dedaiSpaceGrid::AddVertex(const decVector &position){
 
 dedaiSpaceGridVertex *dedaiSpaceGrid::GetVertexClosestTo(const decVector &position, float &distance) const{
 	// for the time being brute force
-	dedaiSpaceGridVertex *bestVertex = NULL;
+	dedaiSpaceGridVertex *bestVertex = nullptr;
 	float bestDistSquared = 0.0f;
 	decVector testDirection;
 	float testDistSquared;
@@ -292,7 +292,7 @@ void dedaiSpaceGrid::RemoveAllLinks(){
 dedaiSpaceGridEdge *dedaiSpaceGrid::NearestPoint(const decVector &point, float radius,
 decVector &nearestPosition, float &nearestDistSquared, float &nearestLambda) const{
 	const float radiusSquared = radius * radius;
-	dedaiSpaceGridEdge *nearestEdge = NULL;
+	dedaiSpaceGridEdge *nearestEdge = nullptr;
 	nearestDistSquared = radiusSquared;
 	int i;
 	
@@ -343,7 +343,7 @@ void dedaiSpaceGrid::LinkToOtherGrids(){
 	const deWorld &engWorld = pSpace.GetParentWorld()->GetWorld();
 	const decDMatrix &spaceMatrix = pSpace.GetMatrix();
 	const float threshold = pSpace.GetSnapDistance();
-	sLink *links = NULL, *links2;
+	sLink *links = nullptr, *links2;
 	int linkCount = 0;
 	int i, j, k, l;
 	
@@ -517,7 +517,7 @@ void dedaiSpaceGrid::UpdateDDSSpaceShape(){
 	deDebugDrawerShape &ddsShape = *pSpace.GetDDSSpace();
 	deDebugDrawerShape &ddsNormals = *pSpace.GetDDSNormals();
 	deDebugDrawerShape &ddsMismatching = *pSpace.GetDDSMismatching();
-	deDebugDrawerShapeFace *ddsFace = NULL;
+	deDebugDrawerShapeFace *ddsFace = nullptr;
 	int i;
 	
 	ddsShape.RemoveAllFaces();
@@ -545,7 +545,7 @@ void dedaiSpaceGrid::UpdateDDSSpaceShape(){
 			ddsFace->AddVertex(position2);
 			ddsFace->AddVertex(position2);
 			ddsShape.AddFace(ddsFace);
-			ddsFace = NULL;
+			ddsFace = nullptr;
 		}
 		
 	}catch(const deException &){

@@ -50,12 +50,12 @@ deResource(manager),
 
 pReadOnly(readOnly),
 
-pPeerNetwork(NULL),
-pPeerScripting(NULL),
+pPeerNetwork(nullptr),
+pPeerScripting(nullptr),
 
-pParentWorld(NULL),
-pLLWorldPrev(NULL),
-pLLWorldNext(NULL){
+pParentWorld(nullptr),
+pLLWorldPrev(nullptr),
+pLLWorldNext(nullptr){
 }
 
 deNetworkState::~deNetworkState(){

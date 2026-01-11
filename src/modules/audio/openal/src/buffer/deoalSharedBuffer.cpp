@@ -38,7 +38,7 @@
 ////////////////////////////
 
 deoalSharedBuffer::deoalSharedBuffer() :
-pBuffer(NULL),
+pBuffer(nullptr),
 pSize(0),
 pInUse(false){
 }
@@ -61,7 +61,7 @@ void deoalSharedBuffer::SetSize(int size){
 	
 	if(pBuffer){
 		delete [] pBuffer;
-		pBuffer = NULL;
+		pBuffer = nullptr;
 		pSize = 0;
 	}
 	

@@ -106,7 +106,7 @@ void deRLTaskReadOcclusionMesh::Finished(){
 	LogFinishedEnter();
 	if(!pSucceeded){
 		SetState(esFailed);
-		pOcclusionMesh = NULL;
+		pOcclusionMesh = nullptr;
 		LogFinishedExit();
 		GetResourceLoader().FinishTask(this);
 		return;

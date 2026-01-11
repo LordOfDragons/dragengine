@@ -378,7 +378,7 @@ void deClassNavigationBlocker::CreateClassMembers(dsEngine *engine){
 
 deNavigationBlocker *deClassNavigationBlocker::GetNavigationBlocker(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return dedsGetNativeData<sNavBlockerNatDat>(p_GetNativeData(myself->GetBuffer())).blocker;
@@ -390,7 +390,7 @@ void deClassNavigationBlocker::PushNavigationBlocker(dsRunTime *rt, deNavigation
 	}
 	
 	if(!blocker){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

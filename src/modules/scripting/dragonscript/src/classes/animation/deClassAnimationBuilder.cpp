@@ -56,7 +56,7 @@ class deClassAnimationBuilder_Builder : public deAnimationBuilder{
 	
 public:
 	deClassAnimationBuilder_Builder(dsRunTime *rt, dsValue *myself) :
-	pRT(rt), pMyself(myself), pAnimation(NULL){
+	pRT(rt), pMyself(myself), pAnimation(nullptr){
 	}
 	
 	void BuildAnimation(deAnimation *animation) override{
@@ -66,17 +66,17 @@ public:
 			pRT->RunFunction(pMyself, "buildAnimation", 0);
 			
 		}catch(const duException &e){
-			pAnimation = NULL;
+			pAnimation = nullptr;
 			pRT->PrintExceptionTrace();
 			e.PrintError();
 			DETHROW(deeInvalidParam);
 			
 		}catch(...){
-			pAnimation = NULL;
+			pAnimation = nullptr;
 			throw;
 		}
 		
-		pAnimation = NULL;
+		pAnimation = nullptr;
 	}
 	
 	inline deAnimation *GetAnimation() const{ return pAnimation; }
@@ -134,11 +134,11 @@ void deClassAnimationBuilder::nfBuild::RunFunction(dsRunTime *rt, dsValue *mysel
 		animation = ds.GetGameEngine()->GetAnimationManager()->CreateAnimation(filename, builder);
 		
 	}catch(...){
-		nd.builder = NULL;
+		nd.builder = nullptr;
 		throw;
 	}
 	
-	nd.builder = NULL;
+	nd.builder = nullptr;
 	ds.GetClassAnimation()->PushAnimation(rt, animation);
 }
 
@@ -279,12 +279,12 @@ void deClassAnimationBuilder::nfSetKeyframeListCount::RunFunction(dsRunTime *rt,
 	deAnimationMove &move = *builder->GetAnimation()->GetMove(rt->GetValue(0)->GetInt());
 	const int count = rt->GetValue(1)->GetInt();
 	
-	deAnimationKeyframeList *kflist = NULL;
+	deAnimationKeyframeList *kflist = nullptr;
 	try{
 		while(move.GetKeyframeListCount() < count){
 			kflist = new deAnimationKeyframeList;
 			move.AddKeyframeList(kflist);
-			kflist = NULL;
+			kflist = nullptr;
 		}
 		
 	}catch(...){

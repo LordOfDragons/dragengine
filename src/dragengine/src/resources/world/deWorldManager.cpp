@@ -108,7 +108,7 @@ void deWorldManager::SystemGraphicUnload(){
 	deWorld *world = (deWorld*)pWorlds.GetRoot();
 	
 	while(world){
-		world->SetPeerGraphic(NULL);
+		world->SetPeerGraphic(nullptr);
 		world = (deWorld*)world->GetLLManagerNext();
 	}
 }
@@ -130,7 +130,7 @@ void deWorldManager::SystemPhysicsUnload(){
 	deWorld *world = (deWorld*)pWorlds.GetRoot();
 	
 	while(world){
-		world->SetPeerPhysics(NULL);
+		world->SetPeerPhysics(nullptr);
 		world = (deWorld*)world->GetLLManagerNext();
 	}
 }
@@ -152,7 +152,7 @@ void deWorldManager::SystemAudioUnload(){
 	deWorld *world = (deWorld*)pWorlds.GetRoot();
 	
 	while(world){
-		world->SetPeerAudio(NULL);
+		world->SetPeerAudio(nullptr);
 		world = (deWorld*)world->GetLLManagerNext();
 	}
 }
@@ -174,7 +174,7 @@ void deWorldManager::SystemNetworkUnload(){
 	deWorld *world = (deWorld*)pWorlds.GetRoot();
 	
 	while(world){
-		world->SetPeerNetwork(NULL);
+		world->SetPeerNetwork(nullptr);
 		world = (deWorld*)world->GetLLManagerNext();
 	}
 }
@@ -196,7 +196,7 @@ void deWorldManager::SystemAIUnload(){
 	deWorld *world = (deWorld*)pWorlds.GetRoot();
 	
 	while(world){
-		world->SetPeerAI(NULL);
+		world->SetPeerAI(nullptr);
 		world = (deWorld*)world->GetLLManagerNext();
 	}
 }

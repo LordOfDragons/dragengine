@@ -45,8 +45,8 @@ deArchiveContainer::deArchiveContainer(const decPath &rootPath, deArchive *archi
 const decPath &archivePath) :
 deVFSContainer(rootPath),
 pArchivePath(archivePath),
-pLLManagerPrev(NULL),
-pLLManagerNext(NULL)
+pLLManagerPrev(nullptr),
+pLLManagerNext(nullptr)
 {
 	if(!archive){
 		DETHROW(deeInvalidParam);
@@ -239,6 +239,6 @@ void deArchiveContainer::SetLLManagerPrev(deArchiveContainer *resource){
 }
 
 void deArchiveContainer::MarkLeaking(){
-	pLLManagerNext = NULL;
-	pLLManagerPrev = NULL;
+	pLLManagerNext = nullptr;
+	pLLManagerPrev = nullptr;
 }

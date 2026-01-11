@@ -101,7 +101,7 @@ deBaseSoundDecoder(file){
 		callbacks.tell_func = fOggDecodeTell;
 		
 		// open the file
-		if(ov_open_callbacks(file, &pOggFile, NULL, 0, callbacks) < 0){
+		if(ov_open_callbacks(file, &pOggFile, nullptr, 0, callbacks) < 0){
 			module->LogError("Invalid OGG file.");
 			DETHROW(deeInvalidParam);
 		}

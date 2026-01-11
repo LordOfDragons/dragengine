@@ -44,8 +44,8 @@
 deoalAComponentTexture::deoalAComponentTexture(deoalAComponent &component, int index) :
 pComponent(component),
 pIndex(index),
-pUseSkin(NULL),
-pUseTexture(NULL),
+pUseSkin(nullptr),
+pUseTexture(nullptr),
 
 pAffectsSound(false),
 pAbsorptionLow(0.0f),
@@ -74,8 +74,8 @@ void deoalAComponentTexture::SetSkin(deoalASkin *skin){
 
 
 void deoalAComponentTexture::UpdateUseTexture(){
-	pUseSkin = NULL;
-	pUseTexture = NULL;
+	pUseSkin = nullptr;
+	pUseTexture = nullptr;
 	pAffectsSound = false;
 	
 	if(pSkin){

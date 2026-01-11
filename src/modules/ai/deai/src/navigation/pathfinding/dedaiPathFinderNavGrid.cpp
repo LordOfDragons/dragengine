@@ -51,9 +51,9 @@
 /////////////////////////////////
 
 dedaiPathFinderNavGrid::dedaiPathFinderNavGrid(){
-	pWorld = NULL;
-	pNavigator = NULL;
-	pPathPoints = NULL;
+	pWorld = nullptr;
+	pNavigator = nullptr;
+	pPathPoints = nullptr;
 	pPathPointCount = 0;
 	pPathPointSize = 0;
 }
@@ -169,7 +169,7 @@ void dedaiPathFinderNavGrid::pFindVertexPath(){
 	
 	if(pEndVertex != pStartVertex){
 		pListOpen.Add(pStartVertex);
-		pStartVertex->SetPathParent(NULL);
+		pStartVertex->SetPathParent(nullptr);
 		pStartVertex->SetPathCostG(0.0f);
 		pStartVertex->SetPathCostH((pEndVertex->GetPosition() - pStartVertex->GetPosition()).Length());
 		pStartVertex->SetPathCostF(pStartVertex->GetPathCostH());
@@ -317,7 +317,7 @@ void dedaiPathFinderNavGrid::pFindVertexPath(){
 			
 			vertexCount = pListOpen.GetCount();
 			if(vertexCount == 0){
-				testVertex = NULL;
+				testVertex = nullptr;
 				
 			}else{
 				testVertex = (dedaiSpaceGridVertex*)pListOpen.GetAt(vertexCount - 1);
@@ -367,7 +367,7 @@ void dedaiPathFinderNavGrid::pFindVertexPath(){
 			while(nextVertex){
 				vertexCount++;
 				nextVertex = nextVertex->GetPathParent();
-				pPathVertices.Add(NULL);
+				pPathVertices.Add(nullptr);
 			}
 			
 			for(vertexCount--; vertexCount>=0; vertexCount--){

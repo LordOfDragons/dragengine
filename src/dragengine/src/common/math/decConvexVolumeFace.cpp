@@ -46,7 +46,7 @@
 /////////////////////////////////
 
 decConvexVolumeFace::decConvexVolumeFace(){
-	pVertices = NULL;
+	pVertices = nullptr;
 	pVertexCount = 0;
 	pMarker = 0;
 }
@@ -108,7 +108,7 @@ void decConvexVolumeFace::AddVertex(int vertex){
 void decConvexVolumeFace::RemoveAllVertices(){
 	if(pVertices){
 		delete [] pVertices;
-		pVertices = NULL;
+		pVertices = nullptr;
 	}
 	pVertexCount = 0;
 }

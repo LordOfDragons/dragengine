@@ -107,7 +107,7 @@ static decTimer dtimer;
 
 deoglRenderTranspCounting::deoglRenderTranspCounting(deoglRenderThread &renderThread) :
 deoglRenderBase(renderThread),
-pOccQuery(NULL),
+pOccQuery(nullptr),
 pHasCount(false),
 pCount(0)
 {

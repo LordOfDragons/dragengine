@@ -44,7 +44,7 @@
 
 decDiskFileWriter::decDiskFileWriter(const char *filename, bool append) :
 pFilename(filename),
-pFile(NULL)
+pFile(nullptr)
 {
 #ifdef OS_W32
 	wchar_t widePath[MAX_PATH];

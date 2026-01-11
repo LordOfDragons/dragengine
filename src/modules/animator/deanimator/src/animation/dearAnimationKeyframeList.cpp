@@ -42,7 +42,7 @@
 /////////////////////////////////
 
 dearAnimationKeyframeList::dearAnimationKeyframeList(const deAnimationKeyframeList &list){
-	pKeyframes = NULL;
+	pKeyframes = nullptr;
 	pKeyframeCount = 0;
 	
 	try{
@@ -72,7 +72,7 @@ dearAnimationKeyframe &dearAnimationKeyframeList::GetAt(int index) const{
 
 dearAnimationKeyframe *dearAnimationKeyframeList::GetWithTime(float time) const{
 	if(pKeyframeCount == 0){
-		return NULL;
+		return nullptr;
 	}
 	
 	if(time <= pKeyframes[0].GetTime()){

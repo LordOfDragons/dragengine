@@ -41,7 +41,7 @@
 ////////////////////////////
 
 deoglParticleSorter::deoglParticleSorter(){
-	pParticles = NULL;
+	pParticles = nullptr;
 	pParticleCount = 0;
 	pParticleSize = 0;
 }

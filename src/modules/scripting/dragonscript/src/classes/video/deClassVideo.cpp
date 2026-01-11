@@ -308,7 +308,7 @@ void deClassVideo::PushVideo(dsRunTime *rt, deVideo *video){
 	}
 	
 	if(!video){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

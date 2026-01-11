@@ -43,7 +43,7 @@ infoStruct(nullptr){
 }
 dePngImageInfo::~dePngImageInfo(){
 	if(readStruct){
-		png_destroy_read_struct(&readStruct, &infoStruct, NULL);
+		png_destroy_read_struct(&readStruct, &infoStruct, nullptr);
 	}
 }
 

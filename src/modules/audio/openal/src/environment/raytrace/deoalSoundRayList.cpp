@@ -41,15 +41,15 @@
 /////////////////////////////////
 
 deoalSoundRayList::deoalSoundRayList() :
-pRays(NULL),
+pRays(nullptr),
 pRayCount(0),
 pRaySize(0),
 
-pSegments(NULL),
+pSegments(nullptr),
 pSegmentCount(0),
 pSegmentSize(0),
 
-pTransmittedRays(NULL),
+pTransmittedRays(nullptr),
 pTransmittedRayCount(0),
 pTransmittedRaySize(0){
 }

@@ -62,7 +62,7 @@ void debpCreateShape::SetCreatedShape(debpShape *shape){
 }
 
 void debpCreateShape::Reset(){
-	pShape = NULL;
+	pShape = nullptr;
 }
 
 
@@ -71,7 +71,7 @@ void debpCreateShape::Reset(){
 /////////////
 
 void debpCreateShape::VisitShape(decShape&){
-	pShape = NULL;
+	pShape = nullptr;
 }
 
 void debpCreateShape::VisitShapeSphere(decShapeSphere &sphere){

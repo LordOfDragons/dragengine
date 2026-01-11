@@ -58,7 +58,7 @@
 deoalDebugInfo::deoalDebugInfo(deoalAudioThread &audioThread) :
 pAudioThread(audioThread),
 
-pDIModule(NULL),
+pDIModule(nullptr),
 pDebugTimeMainThread(29, 2),
 pDebugTimeMainThreadWaitFinish(29, 2),
 pDebugTimeMainThreadSynchronize(29, 2),
@@ -76,8 +76,8 @@ pDebugFPSMain(0),
 pDebugFPSAudio(0),
 pDebugFPSAudioEstimated(0),
 
-pDIActiveMic(NULL),
-pDISpeakerAtPosition(NULL),
+pDIActiveMic(nullptr),
+pDISpeakerAtPosition(nullptr),
 
 pModeVisAudSpeakers(0){
 }
@@ -284,7 +284,7 @@ void deoalDebugInfo::HideDIModule(){
 	}
 	
 	delete pDIModule;
-	pDIModule = NULL;
+	pDIModule = nullptr;
 }
 
 void deoalDebugInfo::UpdateDIModule(){
@@ -364,7 +364,7 @@ void deoalDebugInfo::HideDIActiveMic(){
 	}
 	
 	delete pDIActiveMic;
-	pDIActiveMic = NULL;
+	pDIActiveMic = nullptr;
 }
 
 void deoalDebugInfo::UpdateDIActiveMic(){
@@ -410,7 +410,7 @@ void deoalDebugInfo::HideDDActiveMicRays(){
 	if(pDDActiveMicRays->GetParentWorld()){
 		pDDActiveMicRays->GetParentWorld()->RemoveDebugDrawer(pDDActiveMicRays);
 	}
-	pDDActiveMicRays = NULL;
+	pDDActiveMicRays = nullptr;
 }
 
 void deoalDebugInfo::CaptureActiveMicRays(){
@@ -423,7 +423,7 @@ void deoalDebugInfo::CaptureActiveMicRays(){
 	deoalMicrophone * const microphone = pAudioThread.GetOal().GetActiveMicrophone();
 	if(microphone){
 		deWorld * const world = microphone->GetParentWorld()
-			? &microphone->GetParentWorld()->GetWorld() : NULL;
+			? &microphone->GetParentWorld()->GetWorld() : nullptr;
 		
 		if(pDDActiveMicRays->GetParentWorld() != world){
 			if(pDDActiveMicRays->GetParentWorld()){
@@ -468,7 +468,7 @@ void deoalDebugInfo::HideDISpeakerAtPosition(){
 	}
 	
 	delete pDISpeakerAtPosition;
-	pDISpeakerAtPosition = NULL;
+	pDISpeakerAtPosition = nullptr;
 }
 
 void deoalDebugInfo::UpdateDISpeakerAtPosition(){
@@ -477,7 +477,7 @@ void deoalDebugInfo::UpdateDISpeakerAtPosition(){
 	}
 	
 	deoalAMicrophone * const microphone = pAudioThread.GetActiveMicrophone();
-	deoalASpeaker *speaker = NULL;
+	deoalASpeaker *speaker = nullptr;
 	
 	if(microphone){
 		const deoalSpeakerList &speakers = microphone->GetActiveSpeakers();
@@ -544,7 +544,7 @@ void deoalDebugInfo::UpdateDIClosestSpeakers(){
 		
 		while(closestCount > 0){
 			double bestDistance = lastBestDistance;
-			deoalASpeaker *bestSpeaker = NULL;
+			deoalASpeaker *bestSpeaker = nullptr;
 			
 			for(i=0; i<count; i++){
 				deoalASpeaker * const speaker = activeSpeakers.GetAt(i);
@@ -624,7 +624,7 @@ void deoalDebugInfo::PrepareDDClosestSpeakersDirect(int count){
 	
 	if(microphone){
 		deWorld * const world = microphone->GetParentWorld()
-			? &microphone->GetParentWorld()->GetWorld() : NULL;
+			? &microphone->GetParentWorld()->GetWorld() : nullptr;
 		
 		for(i=0; i<count; i++){
 			deDebugDrawer * const dd = (deDebugDrawer*)pDDClosestSpeakersDirect.GetAt(i);
@@ -670,7 +670,7 @@ void deoalDebugInfo::CaptureDDClosestSpeakersDirect(){
 		
 		while(closestCount > 0){
 			double bestDistance = lastBestDistance;
-			deoalASpeaker *bestSpeaker = NULL;
+			deoalASpeaker *bestSpeaker = nullptr;
 			
 			for(i=0; i<count; i++){
 				deoalASpeaker * const speaker = activeSpeakers.GetAt(i);

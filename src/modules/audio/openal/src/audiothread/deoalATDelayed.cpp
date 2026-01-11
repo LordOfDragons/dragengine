@@ -45,8 +45,8 @@ deoalATDelayed::deoalATDelayed(deoalAudioThread &audioThread) :
 pAudioThread(audioThread),
 
 pHasFreeOperations(false),
-pRootDeletion(NULL),
-pTailDeletion(NULL),
+pRootDeletion(nullptr),
+pTailDeletion(nullptr),
 pDeletionCount(0){
 }
 
@@ -69,7 +69,7 @@ void deoalATDelayed::ProcessFreeOperations(bool deleteAll){
 			deoalDelayedDeletion * const deletion = pRootDeletion;
 			pRootDeletion = pRootDeletion->GetLLNext();
 			if(pRootDeletion){
-				pRootDeletion->SetLLPrev(NULL);
+				pRootDeletion->SetLLPrev(nullptr);
 			}
 			pDeletionCount--;
 			
@@ -78,7 +78,7 @@ void deoalATDelayed::ProcessFreeOperations(bool deleteAll){
 		}
 		
 		if(pDeletionCount == 0){
-			pTailDeletion = NULL;
+			pTailDeletion = nullptr;
 		}
 		
 		pHasFreeOperations = pDeletionCount > 0;

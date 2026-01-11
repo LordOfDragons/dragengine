@@ -53,13 +53,13 @@ MOD_ENTRY_POINT_ATTR deBaseModule *DEAICreateModule(deLoadableModule *loadableMo
 
 
 deBaseModule *DEAICreateModule(deLoadableModule *loadableModule){
-	deBaseModule *module = NULL;
+	deBaseModule *module = nullptr;
 	
 	try{
 		module = new deDEAIModule(*loadableModule);
 		
 	}catch(const deException &){
-		module = NULL; // just to be safe
+		module = nullptr; // just to be safe
 	}
 	
 	return module;
@@ -75,8 +75,8 @@ deBaseModule *DEAICreateModule(deLoadableModule *loadableModule){
 
 deDEAIModule::deDEAIModule(deLoadableModule &loadableModule) :
 deBaseAIModule(loadableModule){
-	pDeveloperMode = NULL;
-	pCommandExecuter = NULL;
+	pDeveloperMode = nullptr;
+	pCommandExecuter = nullptr;
 	
 	// create objects existing at all times
 	pCommandExecuter = new dedaiCommandExecuter(this);

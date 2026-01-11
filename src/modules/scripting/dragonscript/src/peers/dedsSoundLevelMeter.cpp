@@ -49,7 +49,7 @@ dedsSoundLevelMeter::dedsSoundLevelMeter(deScriptingDragonScript &ds,
 deSoundLevelMeter *soundLevelMeter) :
 pDS(ds),
 pSoundLevelMeter(soundLevelMeter),
-pValCB(NULL),
+pValCB(nullptr),
 pHasCB(false)
 {
 	if(!soundLevelMeter){
@@ -75,7 +75,7 @@ dedsSoundLevelMeter::~dedsSoundLevelMeter(){
 		pDS.GetScriptEngine()->GetMainRunTime()->FreeValue(pValCB);
 	}
 	
-	pValCB = NULL;
+	pValCB = nullptr;
 	pHasCB = false;
 }
 

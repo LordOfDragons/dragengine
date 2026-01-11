@@ -84,7 +84,7 @@ deFont *deFontManager::GetFontWith(const char *filename) const{
 
 deFont *deFontManager::GetFontWith(deVirtualFileSystem *vfs, const char *filename) const{
 	deFont * const font = (deFont*)pFonts.GetWithFilename(vfs, filename);
-	return font && !font->GetOutdated() ? font : NULL;
+	return font && !font->GetOutdated() ? font : nullptr;
 }
 
 deFont::Ref deFontManager::CreateFont(const char *filename, deFontBuilder &builder){
@@ -154,7 +154,7 @@ const char *basePath){
 			LogInfoFormat("Font '%s' (base path '%s') changed on VFS: Outdating and Reloading",
 				filename, basePath ? basePath : "");
 			findFont->MarkOutdated();
-			findFont = NULL;
+			findFont = nullptr;
 		}
 		
 		if(findFont){
@@ -537,7 +537,7 @@ void deFontManager::SystemGraphicLoad(){
 void deFontManager::SystemGraphicUnload(){
 	deFont *font = (deFont*)pFonts.GetRoot();
 	while(font){
-		font->SetPeerGraphic(NULL);
+		font->SetPeerGraphic(nullptr);
 		font = (deFont*)font->GetLLManagerNext();
 	}
 }

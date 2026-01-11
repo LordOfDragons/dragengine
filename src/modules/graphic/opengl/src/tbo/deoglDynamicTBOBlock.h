@@ -99,7 +99,7 @@ public:
 	inline const deoglDynamicTBO::Ref &GetData2() const{ return pData2; }
 	
 	/** Set TBO containing the data to use for the block or NULL if empty. */
-	void SetData(deoglDynamicTBO *tbo, deoglDynamicTBO *tbo2 = NULL);
+	void SetData(deoglDynamicTBO *tbo, deoglDynamicTBO *tbo2 = nullptr);
 	
 	/** Block is empty. */
 	inline bool GetEmpty() const{ return pEmpty; }

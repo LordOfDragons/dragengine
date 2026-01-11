@@ -747,9 +747,9 @@ void deClassDVector::nfToStringPrecision::RunFunction(dsRunTime *rt, dsValue *my
 
 deClassDVector::deClassDVector(deEngine *gameEngine, deScriptingDragonScript *scriptManager) :
 dsClass("DVector", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED),
-pGameEngine(NULL),
-pScrMgr(NULL),
-pClsVec(NULL)
+pGameEngine(nullptr),
+pScrMgr(nullptr),
+pClsVec(nullptr)
 {
 	if(!gameEngine || !scriptManager) DSTHROW(dueInvalidParam);
 	

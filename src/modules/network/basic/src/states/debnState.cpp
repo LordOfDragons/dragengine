@@ -56,11 +56,11 @@
 
 debnState::debnState(deNetworkState &state) :
 pState(state),
-pValues(NULL),
+pValues(nullptr),
 pValueCount(0),
 pValueSize(0),
-pLinks(NULL),
-pParentWorld(NULL)
+pLinks(nullptr),
+pParentWorld(nullptr)
 {
 	pLinks = new debnStateLinkList;
 }

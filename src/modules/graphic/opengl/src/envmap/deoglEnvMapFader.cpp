@@ -81,7 +81,7 @@ void deoglEnvMapFader::FadeTo(deoglEnvironmentMap *envmap){
 	// has pEnvMapActive and it is not envmap. has pEnvMapFading which could be envmap.
 	// drop pEnvMapDelayed. this is correct no matter if pEnvMapFading is envmpa or not
 	if(pEnvMapDelayed){
-		pEnvMapDelayed = NULL;
+		pEnvMapDelayed = nullptr;
 	}
 	
 	// here pEnvMapActive is not NULL, pEnvMapFading is not NULL and pEnvMapDelayed is NULL.
@@ -100,19 +100,19 @@ void deoglEnvMapFader::Drop(deoglEnvironmentMap *envmap){
 	}
 	
 	if(pEnvMapDelayed == envmap){
-		pEnvMapDelayed = NULL;
+		pEnvMapDelayed = nullptr;
 	}
 	
 	if(pEnvMapFading == envmap){
 		pEnvMapFading = pEnvMapDelayed;
-		pEnvMapDelayed = NULL;
+		pEnvMapDelayed = nullptr;
 		pBlendFactor = 1.0f;
 	}
 	
 	if(pEnvMapActive == envmap){
 		pEnvMapActive = pEnvMapFading;
 		pEnvMapFading = pEnvMapDelayed;
-		pEnvMapDelayed = NULL;
+		pEnvMapDelayed = nullptr;
 		pBlendFactor = 1.0f;
 	}
 	//printf( "drop %p: active=%p fading=%p delayed=%p\n", envmap, pEnvMapActive, pEnvMapFading, pEnvMapDelayed );
@@ -120,15 +120,15 @@ void deoglEnvMapFader::Drop(deoglEnvironmentMap *envmap){
 
 void deoglEnvMapFader::DropAll(){
 	if(pEnvMapActive){
-		pEnvMapActive = NULL;
+		pEnvMapActive = nullptr;
 	}
 	
 	if(pEnvMapFading){
-		pEnvMapFading = NULL;
+		pEnvMapFading = nullptr;
 	}
 	
 	if(pEnvMapDelayed){
-		pEnvMapDelayed = NULL;
+		pEnvMapDelayed = nullptr;
 	}
 	
 	pBlendFactor = 1.0f;
@@ -149,7 +149,7 @@ void deoglEnvMapFader::Update(float elapsed){
 	while(pBlendFactor <= 0.0f){
 		pEnvMapActive = pEnvMapFading;
 		pEnvMapFading = pEnvMapDelayed;
-		pEnvMapDelayed = NULL;
+		pEnvMapDelayed = nullptr;
 		
 		if(pEnvMapFading){
 			pBlendFactor += 1.0f;

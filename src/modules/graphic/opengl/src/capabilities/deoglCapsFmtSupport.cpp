@@ -65,12 +65,12 @@ pCapabilities(capabilities)
 	int i;
 	
 	for(i=0; i<UseTextureFormatCount; i++){
-		pUseTex2DFormats[i] = NULL;
-		pUseTexCubeFormats[i] = NULL;
-		pUseArrTexFormats[i] = NULL;
-		pUseFBOTex2DFormats[i] = NULL;
-		pUseFBOTexCubeFormats[i] = NULL;
-		pUseFBOArrTexFormats[i] = NULL;
+		pUseTex2DFormats[i] = nullptr;
+		pUseTexCubeFormats[i] = nullptr;
+		pUseArrTexFormats[i] = nullptr;
+		pUseFBOTex2DFormats[i] = nullptr;
+		pUseFBOTexCubeFormats[i] = nullptr;
+		pUseFBOArrTexFormats[i] = nullptr;
 	}
 }
 
@@ -574,7 +574,7 @@ int bitsPerPixel, int flags, const char *name){
 	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
 	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 	
-	glTexImage2D(GL_TEXTURE_2D, 0, format, 8, 8, 0, pixelFormat, pixelType, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, format, 8, 8, 0, pixelFormat, pixelType, nullptr);
 	errorCode = glGetError();
 	
 	OGL_CHECK(renderThread, glBindTexture(GL_TEXTURE_2D, 0));
@@ -625,7 +625,7 @@ int bitsPerPixel, int flags, const char *name){
 	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE));
 	
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, format, 8, 8, 0, pixelFormat, pixelType, NULL);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, format, 8, 8, 0, pixelFormat, pixelType, nullptr);
 	errorCode = glGetError();
 	
 	OGL_CHECK(renderThread, glBindTexture(GL_TEXTURE_CUBE_MAP, 0));
@@ -675,7 +675,7 @@ int bitsPerPixel, int flags, const char *name){
 	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
 	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 	
-	pglTexImage3D(GL_TEXTURE_2D_ARRAY, 0, format, 8, 8, 4, 0, pixelFormat, pixelType, NULL);
+	pglTexImage3D(GL_TEXTURE_2D_ARRAY, 0, format, 8, 8, 4, 0, pixelFormat, pixelType, nullptr);
 	errorCode = glGetError();
 	
 	OGL_CHECK(renderThread, glBindTexture(GL_TEXTURE_2D_ARRAY, 0));
@@ -726,7 +726,7 @@ int bitsPerPixel, int flags, const char *name, int what){
 	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
 	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 	
-	glTexImage2D(GL_TEXTURE_2D, 0, format, 8, 8, 0, pixelFormat, pixelType, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, format, 8, 8, 0, pixelFormat, pixelType, nullptr);
 	errorCode = glGetError();
 	
 	if(errorCode == GL_NO_ERROR){
@@ -825,12 +825,12 @@ GLenum pixelType, int bitsPerPixel, int flags, const char *name, int what){
 	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE));
 	
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, format, 8, 8, 0, pixelFormat, pixelType, NULL);
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, format, 8, 8, 0, pixelFormat, pixelType, NULL);
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, format, 8, 8, 0, pixelFormat, pixelType, NULL);
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, format, 8, 8, 0, pixelFormat, pixelType, NULL);
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, format, 8, 8, 0, pixelFormat, pixelType, NULL);
-	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, format, 8, 8, 0, pixelFormat, pixelType, NULL);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, format, 8, 8, 0, pixelFormat, pixelType, nullptr);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, format, 8, 8, 0, pixelFormat, pixelType, nullptr);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, format, 8, 8, 0, pixelFormat, pixelType, nullptr);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, format, 8, 8, 0, pixelFormat, pixelType, nullptr);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, format, 8, 8, 0, pixelFormat, pixelType, nullptr);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, format, 8, 8, 0, pixelFormat, pixelType, nullptr);
 	errorCode = glGetError();
 	
 	if(errorCode == GL_NO_ERROR){
@@ -928,7 +928,7 @@ GLenum pixelType, int bitsPerPixel, int flags, const char *name, int what){
 	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
 	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 	
-	pglTexImage3D(GL_TEXTURE_2D_ARRAY, 0, format, 8, 8, 4, 0, pixelFormat, pixelType, NULL);
+	pglTexImage3D(GL_TEXTURE_2D_ARRAY, 0, format, 8, 8, 4, 0, pixelFormat, pixelType, nullptr);
 	errorCode = glGetError();
 	
 	if(errorCode == GL_NO_ERROR){

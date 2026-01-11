@@ -52,14 +52,14 @@
 deoalRTPTListen::deoalRTPTListen(deoalRTParallelEnvProbe &owner) :
 deParallelTask(&owner.GetAudioThread().GetOal()),
 pOwner(owner),
-pWorld(NULL),
-    pRTWorldBVH(NULL),
+pWorld(nullptr),
+    pRTWorldBVH(nullptr),
 pFirstRay(0),
 #ifndef RTPTL_ONE_TASK_PER_RAY
 pRayCount(0),
 #endif
-pListenProbe(NULL),
-pSourceProbe(NULL)
+pListenProbe(nullptr),
+pSourceProbe(nullptr)
 {
 	(void)pOwner; // silence compiler warning
 	
@@ -561,7 +561,7 @@ void deoalRTPTListen::RunSphereReceiver(){
 		const deoalSoundRay &soundRay = soundRayList.GetRayAt(pFirstRay);
 	#endif
 		
-		RunSphereReceiver(params, soundRay, NULL);
+		RunSphereReceiver(params, soundRay, nullptr);
 	#ifndef RTPTL_ONE_TASK_PER_RAY
 	}
 	#endif

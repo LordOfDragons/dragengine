@@ -42,12 +42,12 @@
 
 deoglTexUnitsConfigList::deoglTexUnitsConfigList(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
-pRootTUC(NULL),
-pTailTUC(NULL),
+pRootTUC(nullptr),
+pTailTUC(nullptr),
 pTUCCount(0),
-pTUCEmpty(NULL)
+pTUCEmpty(nullptr)
 {
-	pTUCEmpty = GetWith(NULL, 0, NULL);
+	pTUCEmpty = GetWith(nullptr, 0, nullptr);
 	pTUCEmpty->EnsureRTSTexture();
 }
 
@@ -57,7 +57,7 @@ deoglTexUnitsConfigList::~deoglTexUnitsConfigList(){
 		pRootTUC = pRootTUC->GetLLNext();
 		delete pTailTUC;
 	}
-	pTailTUC = NULL;
+	pTailTUC = nullptr;
 }
 
 

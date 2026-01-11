@@ -218,7 +218,7 @@ deoglLightBoundaryMap &deoglRenderThread::GetLightBoundaryMap(int size){
 		}
 		
 		delete pLightBoundarybox;
-		pLightBoundarybox = NULL;
+		pLightBoundarybox = nullptr;
 		
 		pLightBoundarybox = new deoglLightBoundaryMap(*this, size);
 	}
@@ -948,7 +948,7 @@ void deoglRenderThread::DevModeDebugInfoChanged(){
 void deoglRenderThread::pCleanUp(){
 	if(pLogger){
 		delete pLogger;
-		pLogger = NULL;
+		pLogger = nullptr;
 	}
 }
 
@@ -995,7 +995,7 @@ void deoglRenderThread::pInitThreadPhase3(){
 
 void deoglRenderThread::pInitThreadPhase4(){
 	pContext->InitPhase4(pInitialRenderWindow);
-	pInitialRenderWindow = NULL;
+	pInitialRenderWindow = nullptr;
 	
 	// deprecated
 	pQuickSorter = new deoglQuickSorter;
@@ -2484,7 +2484,7 @@ void deoglRenderThread::pCleanUpThread(){
 	// clean up objects
 	if(pRenderers){
 		delete pRenderers;
-		pRenderers = NULL;
+		pRenderers = nullptr;
 	}
 	#ifdef TIME_CLEANUP
 	pLogger->LogInfoFormat("RT-CleanUp: destroy renderers (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
@@ -2492,28 +2492,28 @@ void deoglRenderThread::pCleanUpThread(){
 	
 	if(pLightBoundarybox){
 		delete pLightBoundarybox;
-		pLightBoundarybox = NULL;
+		pLightBoundarybox = nullptr;
 	}
 	if(pOcclusionTestPool){
 		delete pOcclusionTestPool;
-		pOcclusionTestPool = NULL;
+		pOcclusionTestPool = nullptr;
 	}
 	if(pPersistentRenderTaskPool){
 		delete pPersistentRenderTaskPool;
-		pPersistentRenderTaskPool = NULL;
+		pPersistentRenderTaskPool = nullptr;
 	}
 	if(pTriangleSorter){
 		delete pTriangleSorter;
-		pTriangleSorter = NULL;
+		pTriangleSorter = nullptr;
 	}
 	
 	if(pOccQueryMgr){
 		delete pOccQueryMgr;
-		pOccQueryMgr = NULL;
+		pOccQueryMgr = nullptr;
 	}
 	if(pGI){
 		delete pGI;
-		pGI = NULL;
+		pGI = nullptr;
 	}
 	#ifdef TIME_CLEANUP
 	pLogger->LogInfoFormat("RT-CleanUp: destroy occlusion managers (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
@@ -2525,28 +2525,28 @@ void deoglRenderThread::pCleanUpThread(){
 	
 	if(pDeferredRendering){
 		delete pDeferredRendering;
-		pDeferredRendering = NULL;
+		pDeferredRendering = nullptr;
 	}
 	#ifdef TIME_CLEANUP
 	pLogger->LogInfoFormat("RT-CleanUp: destroy deferred rendering (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
 	#endif
 	if(pShadowMapper){
 		delete pShadowMapper;
-		pShadowMapper = NULL;
+		pShadowMapper = nullptr;
 	}
 	#ifdef TIME_CLEANUP
 	pLogger->LogInfoFormat("RT-CleanUp: destroy shadow mapper (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
 	#endif
 	if(pEnvMapSlotManager){
 		delete pEnvMapSlotManager;
-		pEnvMapSlotManager = NULL;
+		pEnvMapSlotManager = nullptr;
 	}
 	#ifdef TIME_CLEANUP
 	pLogger->LogInfoFormat("RT-CleanUp: destroy env-map slot manager (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
 	#endif
 	if(pBufferObject){
 		delete pBufferObject;
-		pBufferObject = NULL;
+		pBufferObject = nullptr;
 	}
 	#ifdef TIME_CLEANUP
 	pLogger->LogInfoFormat("RT-CleanUp: destroy buffer objects (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
@@ -2554,7 +2554,7 @@ void deoglRenderThread::pCleanUpThread(){
 	
 	if(pFramebuffer){
 		delete pFramebuffer;
-		pFramebuffer = NULL;
+		pFramebuffer = nullptr;
 	}
 	#ifdef TIME_CLEANUP
 	pLogger->LogInfoFormat("RT-CleanUp: destroy framebuffers (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
@@ -2562,7 +2562,7 @@ void deoglRenderThread::pCleanUpThread(){
 	pPipelineManager = nullptr;
 	if(pTexture){
 		delete pTexture;
-		pTexture = NULL;
+		pTexture = nullptr;
 	}
 	#ifdef TIME_CLEANUP
 	pLogger->LogInfoFormat("RT-CleanUp: destroy textures (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
@@ -2605,7 +2605,7 @@ void deoglRenderThread::pCleanUpThread(){
 	
 	if(pDebug){
 		delete pDebug;
-		pDebug = NULL;
+		pDebug = nullptr;
 	}
 	#ifdef TIME_CLEANUP
 	pLogger->LogInfoFormat("RT-CleanUp: destroy debug (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
@@ -2613,7 +2613,7 @@ void deoglRenderThread::pCleanUpThread(){
 	
 	if(pCapabilities){
 		delete pCapabilities;
-		pCapabilities = NULL;
+		pCapabilities = nullptr;
 	}
 	#ifdef TIME_CLEANUP
 	pLogger->LogInfoFormat("RT-CleanUp: destroy capabilities (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
@@ -2621,7 +2621,7 @@ void deoglRenderThread::pCleanUpThread(){
 	
 	if(pExtensions){
 		delete pExtensions;
-		pExtensions = NULL;
+		pExtensions = nullptr;
 	}
 	#ifdef TIME_CLEANUP
 	pLogger->LogInfoFormat("RT-CleanUp: destroy extensions (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
@@ -2629,7 +2629,7 @@ void deoglRenderThread::pCleanUpThread(){
 	
 	if(pDefaultTextures){
 		delete pDefaultTextures;
-		pDefaultTextures = NULL;
+		pDefaultTextures = nullptr;
 	}
 	#ifdef TIME_CLEANUP
 	pLogger->LogInfoFormat("RT-CleanUp: destroy default textures (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
@@ -2637,7 +2637,7 @@ void deoglRenderThread::pCleanUpThread(){
 	
 	if(pShader){
 		delete pShader;
-		pShader = NULL;
+		pShader = nullptr;
 	}
 	#ifdef TIME_CLEANUP
 	pLogger->LogInfoFormat("RT-CleanUp: destroy shaders (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
@@ -2645,33 +2645,33 @@ void deoglRenderThread::pCleanUpThread(){
 	
 	if(pChoices){
 		delete pChoices;
-		pChoices = NULL;
+		pChoices = nullptr;
 	}
 	
 	// deprecated
 	if(pOptimizerManager){
 		delete pOptimizerManager;
-		pOptimizerManager = NULL;
+		pOptimizerManager = nullptr;
 	}
 	if(pQuickSorter){
 		delete pQuickSorter;
-		pQuickSorter = NULL;
+		pQuickSorter = nullptr;
 	}
 	// deprecated
 	
 	// has to come last
 	if(pRenderTaskSharedPool){
 		delete pRenderTaskSharedPool;
-		pRenderTaskSharedPool = NULL;
+		pRenderTaskSharedPool = nullptr;
 	}
 	if(pUniqueKey){
 		delete pUniqueKey;
-		pUniqueKey = NULL;
+		pUniqueKey = nullptr;
 	}
 	
 	if(pDelayedOperations){
 		delete pDelayedOperations;
-		pDelayedOperations = NULL;
+		pDelayedOperations = nullptr;
 	}
 	#ifdef TIME_CLEANUP
 	pLogger->LogInfoFormat("RT-CleanUp: destroy delayed operations (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));

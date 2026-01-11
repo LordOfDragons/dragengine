@@ -50,7 +50,7 @@
 decXmlElement::decXmlElement() :
 pLineNumber(1),
 pPositionNumber(0),
-pParent(NULL)
+pParent(nullptr)
 {
 }
 

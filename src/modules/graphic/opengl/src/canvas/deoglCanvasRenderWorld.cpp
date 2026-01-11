@@ -49,7 +49,7 @@
 deoglCanvasRenderWorld::deoglCanvasRenderWorld(deGraphicOpenGl &ogl, deCanvasRenderWorld &canvas) :
 deoglCanvas(ogl, canvas),
 pCanvasRenderWorld(canvas),
-pCamera(NULL){
+pCamera(nullptr){
 }
 
 deoglCanvasRenderWorld::~deoglCanvasRenderWorld(){
@@ -73,7 +73,7 @@ void deoglCanvasRenderWorld::SyncContentToRender(){
 		pRCanvasRenderWorld->SetCamera(pCamera->GetRCamera());
 		
 	}else{
-		pRCanvasRenderWorld->SetCamera(NULL);
+		pRCanvasRenderWorld->SetCamera(nullptr);
 	}
 	
 	if(pCamera){
@@ -86,7 +86,7 @@ void deoglCanvasRenderWorld::CameraRequiresSync(){
 }
 
 void deoglCanvasRenderWorld::DropCamera(){
-	pCamera = NULL;
+	pCamera = nullptr;
 }
 
 
@@ -104,7 +104,7 @@ void deoglCanvasRenderWorld::ContentChanged(){
 		pCamera->GetNotifyCanvas().Add(this);
 		
 	}else{
-		pCamera = NULL;
+		pCamera = nullptr;
 	}
 	
 	deoglCanvas::ContentChanged();

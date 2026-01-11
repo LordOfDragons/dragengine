@@ -90,7 +90,7 @@ pDragControl(false)
 	pFrameTitle->setSelector(ID_FRA_TITLE);
 	pFrameTitle->enable();
 	
-	pLabTitle = new FXLabel(pFrameTitle, powner.GetTitle().GetString(), 0,
+	pLabTitle = new FXLabel(pFrameTitle, powner.GetTitle().GetString(), nullptr,
 		LAYOUT_FILL_X | LAYOUT_FILL_Y | JUSTIFY_CENTER_X | JUSTIFY_CENTER_Y);
 	pLabTitle->setFont((FXFont*)pFont->GetNativeFont());
 	pLabTitle->setTarget(this);

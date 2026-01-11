@@ -61,14 +61,14 @@
 deoglDecalMeshBuilder::deoglDecalMeshBuilder(deoglRenderThread &renderThread) :
 pRenderThread(renderThread)
 {
-	pCVolList = NULL;
+	pCVolList = nullptr;
 	pDistance = 0.0f;
-	pDecalBox = NULL;
+	pDecalBox = nullptr;
 	
-	pPoints = NULL;
+	pPoints = nullptr;
 	pPointCount = 0;
 	pPointSize = 0;
-	pFaces = NULL;
+	pFaces = nullptr;
 	pFaceCount = 0;
 	pFaceSize = 0;
 }
@@ -96,7 +96,7 @@ deoglDecalMeshBuilder::~deoglDecalMeshBuilder(){
 void deoglDecalMeshBuilder::Init(const deoglRDecal &decal, float distance){
 	pSize = decal.GetSize();
 	const decVector halfSize = decVector(pSize * 0.5f);
-	decConvexVolume *volume = NULL;
+	decConvexVolume *volume = nullptr;
 	
 	if(distance < 0.001f){
 		distance = 0.001f;
@@ -105,7 +105,7 @@ void deoglDecalMeshBuilder::Init(const deoglRDecal &decal, float distance){
 	// free the old stuff
 	if(pCVolList){
 		delete pCVolList;
-		pCVolList = NULL;
+		pCVolList = nullptr;
 	}
 	
 	// tuck away the infos
@@ -119,7 +119,7 @@ void deoglDecalMeshBuilder::Init(const deoglRDecal &decal, float distance){
 	// create decal box
 	if(pDecalBox){
 		delete pDecalBox;
-		pDecalBox = NULL;
+		pDecalBox = nullptr;
 	}
 	pDecalBox = new deoglDCollisionBox(pOrigin - pDecalView * (pDistance * 0.5f),
 		decVector(halfSize.x, halfSize.y, pDistance * 0.5f), decal.GetOrientation());
@@ -624,7 +624,7 @@ void deoglDecalMeshBuilder::RemoveAllFaces(){
 
 void deoglDecalMeshBuilder::pVolumeAddFace(decConvexVolume *volume,
 int p1, int p2, int p3, const decVector &normal, bool decalFace){
-	deoglDMBConvexVolumeFace *face = NULL;
+	deoglDMBConvexVolumeFace *face = nullptr;
 	
 	try{
 		face = new deoglDMBConvexVolumeFace;
@@ -645,7 +645,7 @@ int p1, int p2, int p3, const decVector &normal, bool decalFace){
 
 void deoglDecalMeshBuilder::pVolumeAddFace(decConvexVolume *volume,
 int p1, int p2, int p3, int p4, const decVector &normal, bool decalFace){
-	deoglDMBConvexVolumeFace *face = NULL;
+	deoglDMBConvexVolumeFace *face = nullptr;
 	
 	try{
 		face = new deoglDMBConvexVolumeFace;

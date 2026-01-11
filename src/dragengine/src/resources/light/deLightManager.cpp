@@ -90,7 +90,7 @@ void deLightManager::SystemGraphicUnload(){
 	deLight *light = (deLight*)pLights.GetRoot();
 	
 	while(light){
-		light->SetPeerGraphic(NULL);
+		light->SetPeerGraphic(nullptr);
 		light = (deLight*)light->GetLLManagerNext();
 	}
 }

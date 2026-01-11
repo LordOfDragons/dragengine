@@ -62,9 +62,9 @@ deGraphicOpenGl &ogl, const deParticleEmitterInstance &instance) :
 pOgl(ogl),
 pInstance(instance),
 
-pEmitter(NULL),
+pEmitter(nullptr),
 
-pTypes(NULL),
+pTypes(nullptr),
 pTypeCount(0),
 
 pDirtyEmitter(true),
@@ -112,7 +112,7 @@ void deoglParticleEmitterInstance::SyncToRender(){
 			pRInstance->SetEmitter(pEmitter->GetREmitter());
 			
 		}else{
-			pRInstance->SetEmitter(NULL);
+			pRInstance->SetEmitter(nullptr);
 		}
 		
 		pDirtyEmitter = false;
@@ -170,7 +170,7 @@ void deoglParticleEmitterInstance::EmitterChanged(){
 		pEmitter = (deoglParticleEmitter*)pInstance.GetEmitter()->GetPeerGraphic();
 		
 	}else{
-		pEmitter = NULL;
+		pEmitter = nullptr;
 	}
 	
 	pUpdateTypes();
@@ -253,7 +253,7 @@ void deoglParticleEmitterInstance::pCleanUp(){
 	
 	// types holds a reference to pRInstance. do not remove it earlier
 	if(pRInstance){
-		pRInstance = NULL;
+		pRInstance = nullptr;
 	}
 }
 
@@ -266,7 +266,7 @@ void deoglParticleEmitterInstance::pUpdateTypes(){
 			delete pTypes[i];
 		}
 		delete [] pTypes;
-		pTypes = NULL;
+		pTypes = nullptr;
 	}
 	pTypeCount = 0;
 	

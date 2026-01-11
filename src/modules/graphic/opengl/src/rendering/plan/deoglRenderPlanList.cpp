@@ -40,7 +40,7 @@
 ////////////////////////////
 
 deoglRenderPlanList::deoglRenderPlanList(){
-	pPlans = NULL;
+	pPlans = nullptr;
 	pPlanCount = 0;
 	pPlanSize = 0;
 }

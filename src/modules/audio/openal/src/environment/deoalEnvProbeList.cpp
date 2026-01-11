@@ -52,8 +52,8 @@ pWorld(world),
 pAttenuationRefDist(1.0f),
 pAttenuationRolloff(1.0f),
 pAttenuationDistanceOffset(0.0f),
-pRTWorldBVH(NULL),
-pRTConfig(NULL),
+pRTWorldBVH(nullptr),
+pRTConfig(nullptr),
 pReuseDistance(reuseDistance),
 pReuseDistanceSquared(reuseDistance * reuseDistance),
 pLastUsedCounter(1),
@@ -117,7 +117,7 @@ void deoalEnvProbeList::PrepareProcessAudio(){
 deoalEnvProbe *deoalEnvProbeList::GetProbeEstimateRoom(const decDVector &position){
 	// TODO check if probe exists in the octree and return it if found
 	const int count = pProbes.GetCount();
-	deoalEnvProbe *bestProbe = NULL;
+	deoalEnvProbe *bestProbe = nullptr;
 	double bestDistanceSquared = 0.0;
 	
 	int i;
@@ -183,7 +183,7 @@ deoalEnvProbe *deoalEnvProbeList::GetProbeEstimateRoom(const decDVector &positio
 	}
 	
 	// collect probe data and insert probe into octree
-	deoalEnvProbe *probe = NULL;
+	deoalEnvProbe *probe = nullptr;
 	
 	try{
 		probe = new deoalEnvProbe(pWorld.GetAudioThread());
@@ -219,7 +219,7 @@ deoalEnvProbe *deoalEnvProbeList::GetProbeTraceSoundRays(const decDVector &posit
 	//deoalRayTraceConfig *config = ( deoalRayTraceConfig* )pProbeConfigs.GetAt( 0 );
 	deoalAudioThread &audiothread = pWorld.GetAudioThread();
 	const int count = pProbes.GetCount();
-	deoalEnvProbe *bestProbe = NULL;
+	deoalEnvProbe *bestProbe = nullptr;
 	double bestDistanceSquared = 0.0;
 	
 	int i;
@@ -300,7 +300,7 @@ deoalEnvProbe *deoalEnvProbeList::GetProbeTraceSoundRays(const decDVector &posit
 	}
 	
 	// collect probe data and insert probe into octree
-	deoalEnvProbe *probe = NULL;
+	deoalEnvProbe *probe = nullptr;
 	
 	try{
 		probe = new deoalEnvProbe(pWorld.GetAudioThread());
@@ -356,7 +356,7 @@ void deoalEnvProbeList::PrepareQuickDispose(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoalEnvProbe*)pProbes.GetAt(i))->SetOctreeNode(NULL);
+		((deoalEnvProbe*)pProbes.GetAt(i))->SetOctreeNode(nullptr);
 	}
 }
 

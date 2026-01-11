@@ -56,9 +56,9 @@
 deoalRTPTTraceSoundRays::deoalRTPTTraceSoundRays(deoalRTParallelEnvProbe &owner) :
 deParallelTask(&owner.GetAudioThread().GetOal()),
 pOwner(owner),
-pWorld(NULL),
-    pRTWorldBVH(NULL),
-pProbeConfig(NULL),
+pWorld(nullptr),
+    pRTWorldBVH(nullptr),
+pProbeConfig(nullptr),
 pRange(0.0f),
 pRefDist(1.0f),
 pRollOff(0.0f),
@@ -355,7 +355,7 @@ const sTraceAbsorptionSum &absorptionSum){
 	// anything does few collision tests. important is cutting down on collision tests
 	// in small environments since those are very expensive
 #ifdef USE_STEPWISE_RAY_LENGTH
-	const deoalRayTraceHitElement *hitElement = NULL;
+	const deoalRayTraceHitElement *hitElement = nullptr;
 	decDVector rayOrigin(ray.position);
 	float rayLength = pInitialRayLength;
 	float rayOffset = 0.0f;
@@ -366,7 +366,7 @@ const sTraceAbsorptionSum &absorptionSum){
 		const decDVector rayEnd(ray.position + ray.direction * nextRayOffset);
 		rayLength *= 2.0f;
 		
-		hitElement = NULL;
+		hitElement = nullptr;
 		pRTResult.Clear();
 		
 		if(pRTWorldBVH){
@@ -694,7 +694,7 @@ const sTraceAbsorptionSum &absorptionSum){
 	// after the back facing hit element are applied too while face winding counting. this can
 	// potentially result in a negative face winding count but this is better than wrong ray
 	// penetration
-	const deoalRayTraceHitElement *hitElementBack = NULL;
+	const deoalRayTraceHitElement *hitElementBack = nullptr;
 // 	const deoalAComponentTexture *textureBack = NULL;
 	float hitElementBackOffset = 0.0f;
 	
@@ -759,7 +759,7 @@ const sTraceAbsorptionSum &absorptionSum){
 			}
 			
 			if(findBackCounter > 0){
-				hitElementBack = NULL;
+				hitElementBack = nullptr;
 				continue;
 			}
 			

@@ -46,11 +46,11 @@ deDebugDrawer::deDebugDrawer(deDebugDrawerManager *manager) : deResource(manager
 	pVisible = true;
 	pXRay = false;
 	
-	pPeerGraphic = NULL;
+	pPeerGraphic = nullptr;
 	
-	pParentWorld = NULL;
-	pLLWorldPrev = NULL;
-	pLLWorldNext = NULL;
+	pParentWorld = nullptr;
+	pLLWorldPrev = nullptr;
+	pLLWorldNext = nullptr;
 }
 
 deDebugDrawer::~deDebugDrawer(){
@@ -228,7 +228,7 @@ void deDebugDrawer::SetLLWorldNext(deDebugDrawer *debugDrawer){
 void deDebugDrawer::pCleanUp(){
 	if(pPeerGraphic){
 		delete pPeerGraphic;
-		pPeerGraphic = NULL;
+		pPeerGraphic = nullptr;
 	}
 	
 	RemoveAllShapes();

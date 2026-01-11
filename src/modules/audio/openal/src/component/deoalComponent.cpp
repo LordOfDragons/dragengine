@@ -55,12 +55,12 @@
 deoalComponent::deoalComponent(deAudioOpenAL &oal, deComponent &component) :
 pOal(oal),
 pComponent(component),
-pTextures(NULL),
+pTextures(nullptr),
 pTextureCount(0),
-pParentWorld(NULL),
-pModel(NULL),
-pSkin(NULL),
-pAudioModel(NULL),
+pParentWorld(nullptr),
+pModel(nullptr),
+pSkin(nullptr),
+pAudioModel(nullptr),
 
 pDirtyComponent(true),
 pDirtyAffectsSound(true),
@@ -78,7 +78,7 @@ pDirtyTextures(true),
 pDynamicSkinRequiresSync(true),
 pTextureDynamicSkinRequiresSync(true),
 
-pDebug(NULL),
+pDebug(nullptr),
 
 pLLSyncWorld(this)
 {
@@ -359,7 +359,7 @@ void deoalComponent::DynamicSkinChanged(){
 void deoalComponent::pCleanUp(){
 	if(pDebug){
 		delete pDebug;
-		pDebug = NULL;
+		pDebug = nullptr;
 	}
 	
 	pDropTextures();
@@ -377,7 +377,7 @@ void deoalComponent::pDropTextures(){
 		delete pTextures[pTextureCount];
 	}
 	delete [] pTextures;
-	pTextures = NULL;
+	pTextures = nullptr;
 	pTextureCount = 0;
 }
 
@@ -403,21 +403,21 @@ void deoalComponent::pSyncModel(){
 		return;
 	}
 	
-	const decStringList *textureNames = NULL;
+	const decStringList *textureNames = nullptr;
 	
 	if(pComponent.GetModel()){
 		pModel = (deoalModel*)pComponent.GetModel()->GetPeerAudio();
 		textureNames = &pModel->GetAModel()->GetTextureNames();
 		
 	}else{
-		pModel = NULL;
+		pModel = nullptr;
 	}
 	
 	if(pComponent.GetAudioModel()){
 		pAudioModel = (deoalModel*)pComponent.GetAudioModel()->GetPeerAudio();
 		
 	}else{
-		pAudioModel = NULL;
+		pAudioModel = nullptr;
 	}
 	
 	if(pAudioModel){
@@ -425,7 +425,7 @@ void deoalComponent::pSyncModel(){
 		
 	}else{
 // 		pAComponent->SetModel( pModel->GetAModel(), textureNames );
-		pAComponent->SetModel(NULL, textureNames);
+		pAComponent->SetModel(nullptr, textureNames);
 	}
 	
 	pDirtyModel = false;
@@ -441,8 +441,8 @@ void deoalComponent::pSyncSkin(){
 		pAComponent->SetSkin(pSkin->GetASkin());
 		
 	}else{
-		pSkin = NULL;
-		pAComponent->SetSkin(NULL);
+		pSkin = nullptr;
+		pAComponent->SetSkin(nullptr);
 	}
 	
 	pDirtySkin = false;
@@ -482,7 +482,7 @@ void deoalComponent::pSyncDebug(){
 		
 	}else if(pDebug){
 		delete pDebug;
-		pDebug = NULL;
+		pDebug = nullptr;
 	}
 }
 

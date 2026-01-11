@@ -56,7 +56,7 @@
 
 dedsCollisionTester::dedsCollisionTester(deScriptingDragonScript &ds) :
 pDS(ds){
-	pColliderListener = NULL;
+	pColliderListener = nullptr;
 	pHasColliderListener = false;
 	
 	pHasCollision = false;
@@ -68,7 +68,7 @@ pDS(ds){
 
 dedsCollisionTester::dedsCollisionTester(const dedsCollisionTester &collisionTester) :
 pDS(collisionTester.pDS){
-	pColliderListener = NULL;
+	pColliderListener = nullptr;
 	pHasColliderListener = false;
 	
 	pHasCollision = false;
@@ -287,7 +287,7 @@ bool dedsCollisionTester::CanHitCollider(deCollider *owner, deCollider *collider
 		try{
 			deClassCollider &clsCol = *pDS.GetClassCollider();
 			clsCol.PushCollider(rt, collider); // collider
-			clsCol.PushCollider(rt, NULL); // owner
+			clsCol.PushCollider(rt, nullptr); // owner
 			rt->RunFunctionFast(pColliderListener, funcIndex);
 			
 			canHitCollider = rt->GetReturnBool();

@@ -67,7 +67,7 @@ delBaseXML::~delBaseXML(){
 ///////////////
 
 bool delBaseXML::HasAttribute(const decXmlElementTag &tag, const char *name) const{
-	return tag.FindAttribute(name) != NULL;
+	return tag.FindAttribute(name) != nullptr;
 }
 
 const decString &delBaseXML::GetAttributeString(const decXmlElementTag &tag, const char *name) const{

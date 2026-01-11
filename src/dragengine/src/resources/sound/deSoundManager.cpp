@@ -59,8 +59,8 @@
 deSoundManager::deSoundManager(deEngine *engine) :
 deFileResourceManager(engine, ertSound),
 
-pDecoderRoot(NULL),
-pDecoderTail(NULL),
+pDecoderRoot(nullptr),
+pDecoderTail(nullptr),
 pDecoderCount(0)
 {
 	SetLoggingName("sound");
@@ -89,7 +89,7 @@ deSound *deSoundManager::GetSoundWith(const char *filename) const{
 
 deSound *deSoundManager::GetSoundWith(deVirtualFileSystem *vfs, const char *filename) const{
 	deSound * const sound = (deSound*)pSounds.GetWithFilename(vfs, filename);
-	return sound && !sound->GetOutdated() ? sound : NULL;
+	return sound && !sound->GetOutdated() ? sound : nullptr;
 }
 
 deSound::Ref deSoundManager::LoadSound(const char *filename, const char *basePath, bool asynchron){
@@ -222,10 +222,10 @@ deSoundDecoder::Ref deSoundManager::CreateDecoder(deSound *sound){
 			sound->GetFilename().GetString());
 		
 		deErrorTrace &errorTrace = *GetEngine()->GetErrorTrace();
-		errorTrace.AddAndSetIfEmpty(e.GetName(), NULL, e.GetFile(), e.GetLine());
+		errorTrace.AddAndSetIfEmpty(e.GetName(), nullptr, e.GetFile(), e.GetLine());
 		
 		deErrorTracePoint &etp = *errorTrace.AddPoint(
-			NULL, "deSoundManager::CreateDecoder", __LINE__);
+			nullptr, "deSoundManager::CreateDecoder", __LINE__);
 		
 		deErrorTraceValue &etv = *etp.AddValue("sound", "<deSound>");
 		etv.AddSubValue("filename", sound->GetFilename());
@@ -279,7 +279,7 @@ void deSoundManager::ReleaseLeakingResources(){
 				pDecoderRoot= pDecoderRoot->GetLLManagerNext();
 			}
 			
-			pDecoderTail = NULL;
+			pDecoderTail = nullptr;
 			pDecoderCount = 0;
 			
 		}catch(const deException &){
@@ -330,7 +330,7 @@ void deSoundManager::SystemAudioUnload(){
 	deSound *sound = (deSound*)pSounds.GetRoot();
 	
 	while(sound){
-		sound->SetPeerAudio(NULL);
+		sound->SetPeerAudio(nullptr);
 		sound = (deSound*)sound->GetLLManagerNext();
 	}
 }
@@ -354,7 +354,7 @@ void deSoundManager::SystemSynthesizerUnload(){
 	deSound *sound = (deSound*)pSounds.GetRoot();
 	
 	while(sound){
-		sound->SetPeerSynthesizer(NULL);
+		sound->SetPeerSynthesizer(nullptr);
 		sound = (deSound*)sound->GetLLManagerNext();
 	}
 }
@@ -389,7 +389,7 @@ void deSoundManager::RemoveDecoder(deSoundDecoder *decoder){
 			
 			pDecoderTail = pDecoderTail->GetLLManagerPrev();
 			if(pDecoderTail){
-				pDecoderTail->SetLLManagerNext(NULL);
+				pDecoderTail->SetLLManagerNext(nullptr);
 			}
 			
 		}else{
@@ -407,7 +407,7 @@ void deSoundManager::RemoveDecoder(deSoundDecoder *decoder){
 			
 			pDecoderRoot = pDecoderRoot->GetLLManagerNext();
 			if(pDecoderRoot){
-				pDecoderRoot->SetLLManagerPrev(NULL);
+				pDecoderRoot->SetLLManagerPrev(nullptr);
 			}
 			
 		}else{
@@ -418,8 +418,8 @@ void deSoundManager::RemoveDecoder(deSoundDecoder *decoder){
 			decoder->GetLLManagerPrev()->SetLLManagerNext(decoder->GetLLManagerNext());
 		}
 		
-		decoder->SetLLManagerNext(NULL);
-		decoder->SetLLManagerPrev(NULL);
+		decoder->SetLLManagerNext(nullptr);
+		decoder->SetLLManagerPrev(nullptr);
 		pDecoderCount--;
 		
 		decoder->MarkLeaking();

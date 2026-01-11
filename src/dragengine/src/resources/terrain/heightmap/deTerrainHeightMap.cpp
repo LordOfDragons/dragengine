@@ -58,7 +58,7 @@ deTerrainHeightMap::deTerrainHeightMap(){
 	pSize.Set(1.0f, 1.0f);
 	pScaling = 1.0f;
 	
-	pVisibleFaces = NULL;
+	pVisibleFaces = nullptr;
 	pVFByteCount = 0;
 }
 
@@ -77,11 +77,11 @@ void deTerrainHeightMap::SetPointCount(const decPoint &pointCount){
 	if(pointCount != pPointCount){
 		if(pVisibleFaces){
 			delete [] pVisibleFaces;
-			pVisibleFaces = NULL;
+			pVisibleFaces = nullptr;
 			pVFByteCount = 0;
 		}
 		
-		SetHeightImage(NULL);
+		SetHeightImage(nullptr);
 		
 		pPointCount = pointCount;
 	}
@@ -242,7 +242,7 @@ void deTerrainHeightMap::SetAllFacesVisible(bool visible){
 	if(visible){
 		if(pVisibleFaces){
 			delete [] pVisibleFaces;
-			pVisibleFaces = NULL;
+			pVisibleFaces = nullptr;
 		}
 		
 	}else{

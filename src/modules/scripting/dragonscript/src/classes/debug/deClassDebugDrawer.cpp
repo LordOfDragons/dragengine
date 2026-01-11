@@ -654,7 +654,7 @@ void deClassDebugDrawer::PushDebugDrawer(dsRunTime *rt, deDebugDrawer *debugDraw
 	}
 	
 	if(!debugDrawer){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

@@ -87,11 +87,11 @@
 deoglLight::deoglLight(deGraphicOpenGl &ogl, const deLight &light) :
 pOgl(ogl),
 pLight(light),
-pSkinStateController(NULL),
-pParentWorld(NULL),
-pDynamicSkin(NULL),
-pLightSkin(NULL),
-pLightCanvas(NULL),
+pSkinStateController(nullptr),
+pParentWorld(nullptr),
+pDynamicSkin(nullptr),
+pLightSkin(nullptr),
+pLightCanvas(nullptr),
 
 pAccumUpdate(0.0f),
 
@@ -298,7 +298,7 @@ void deoglLight::SyncToRender(){
 	}
 	
 	if(pDirtyConvexVolumeList){
-		pRLight->SetLightVolumeCropBox(NULL);
+		pRLight->SetLightVolumeCropBox(nullptr);
 		pRLight->SetLightVolumeDirty();
 		pDirtyConvexVolumeList = false;
 	}
@@ -342,7 +342,7 @@ void deoglLight::DirtyRenderableMapping(){
 //////////////////////////
 
 void deoglLight::DynamicSkinDestroyed(){
-	pDynamicSkin = NULL;
+	pDynamicSkin = nullptr;
 }
 
 void deoglLight::DynamicSkinRenderablesChanged(){
@@ -375,7 +375,7 @@ void deoglLight::DynamicSkinRequiresSync(){
 /////////////////////////
 
 void deoglLight::CanvasViewDestroyed(){
-	pLightCanvas = NULL;
+	pLightCanvas = nullptr;
 }
 
 void deoglLight::CanvasViewRequiresSync(){
@@ -510,7 +510,7 @@ void deoglLight::OrientationChanged(){
 
 void deoglLight::SourceChanged(){
 	deoglDynamicSkin * const dynamicSkin = pLight.GetDynamicSkin()
-		? (deoglDynamicSkin*)pLight.GetDynamicSkin()->GetPeerGraphic() : NULL;
+		? (deoglDynamicSkin*)pLight.GetDynamicSkin()->GetPeerGraphic() : nullptr;
 	
 	if(dynamicSkin != pDynamicSkin){
 		if(pDynamicSkin){
@@ -533,7 +533,7 @@ void deoglLight::SourceChanged(){
 	
 	// light skin
 	deoglSkin * const lightSkin = pLight.GetLightSkin()
-		? (deoglSkin*)pLight.GetLightSkin()->GetPeerGraphic() : NULL;
+		? (deoglSkin*)pLight.GetLightSkin()->GetPeerGraphic() : nullptr;
 	
 	if(lightSkin != pLightSkin){
 		pLightSkin = lightSkin;
@@ -542,7 +542,7 @@ void deoglLight::SourceChanged(){
 	
 	// light canvas
 	deoglCanvasView * const lightCanvas = pLight.GetLightCanvas()
-		? (deoglCanvasView*)pLight.GetLightCanvas()->GetPeerGraphic() : NULL;
+		? (deoglCanvasView*)pLight.GetLightCanvas()->GetPeerGraphic() : nullptr;
 	
 	if(lightCanvas != pLightCanvas){
 		if(pLightCanvas){
@@ -615,7 +615,7 @@ void deoglLight::pSyncSource(){
 		}
 		
 	}else{
-		pRLight->SetLightSkin(NULL);
+		pRLight->SetLightSkin(nullptr);
 	}
 	
 	// dynamic skin

@@ -60,7 +60,7 @@ class deClassModelBuilder_Builder : public deModelBuilder{
 	
 public:
 	deClassModelBuilder_Builder(dsRunTime *rt, dsValue *myself) :
-	pRT(rt), pMyself(myself), pModel(NULL){
+	pRT(rt), pMyself(myself), pModel(nullptr){
 	}
 	
 	void BuildModel(deModel *model) override{

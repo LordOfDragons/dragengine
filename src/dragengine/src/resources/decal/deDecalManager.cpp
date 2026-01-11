@@ -106,7 +106,7 @@ void deDecalManager::SystemGraphicUnload(){
 	deDecal *decal = (deDecal*)pDecals.GetRoot();
 	
 	while(decal){
-		decal->SetPeerGraphic(NULL);
+		decal->SetPeerGraphic(nullptr);
 		decal = (deDecal*)decal->GetLLManagerNext();
 	}
 }
@@ -128,7 +128,7 @@ void deDecalManager::SystemPhysicsUnload(){
 	deDecal *decal = (deDecal*)pDecals.GetRoot();
 	
 	while(decal){
-		decal->SetPeerPhysics(NULL);
+		decal->SetPeerPhysics(nullptr);
 		decal = (deDecal*)decal->GetLLManagerNext();
 	}
 }
@@ -150,7 +150,7 @@ void deDecalManager::SystemAudioUnload(){
 	deDecal *decal = (deDecal*)pDecals.GetRoot();
 	
 	while(decal){
-		decal->SetPeerAudio(NULL);
+		decal->SetPeerAudio(nullptr);
 		decal = (deDecal*)decal->GetLLManagerNext();
 	}
 }

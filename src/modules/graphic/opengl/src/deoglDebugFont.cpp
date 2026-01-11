@@ -45,8 +45,8 @@
 
 deoglDebugFont::deoglDebugFont(deoglRenderThread &renderThread) :
 pRenderThread(renderThread){
-	pGlyphs = NULL;
-	pTexture = NULL;
+	pGlyphs = nullptr;
+	pTexture = nullptr;
 	pFontHeight = 1;
 	
 	try{

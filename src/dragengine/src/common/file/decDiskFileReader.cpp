@@ -48,7 +48,7 @@ decDiskFileReader::decDiskFileReader(const char *filename){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pFile = NULL;
+	pFile = nullptr;
 	
 	
 	

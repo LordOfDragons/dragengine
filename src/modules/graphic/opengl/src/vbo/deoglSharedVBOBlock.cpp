@@ -47,10 +47,10 @@ int indexOffset, int indexCount) :
 pVBO(vbo),
 pOffset(offset),
 pSize(size),
-pData(NULL),
+pData(nullptr),
 pIndexOffset(indexOffset),
 pIndexCount(indexCount),
-pIndexData(NULL),
+pIndexData(nullptr),
 pValid(false),
 pEmpty(true)
 {
@@ -74,7 +74,7 @@ deoglSharedVBOBlock::~deoglSharedVBOBlock(){
 ///////////////
 
 void deoglSharedVBOBlock::DropVBO(){
-	pVBO = NULL;
+	pVBO = nullptr;
 }
 
 void deoglSharedVBOBlock::DelayedRemove(){
@@ -154,11 +154,11 @@ void deoglSharedVBOBlock::pReallocData(){
 	if(pEmpty){
 		if(pIndexData){
 			delete [] pIndexData;
-			pIndexData = NULL;
+			pIndexData = nullptr;
 		}
 		if(pData){
 			delete [] pData;
-			pData = NULL;
+			pData = nullptr;
 		}
 		
 	}else{

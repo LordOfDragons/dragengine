@@ -61,7 +61,7 @@ extern const int *vResourcePeerCreationOrder;
 ////////////////////////////
 
 deAudioSystem::deAudioSystem(deEngine *engine) : deBaseSystem(engine, "Audio", deModuleSystem::emtAudio){
-	pActiveModule = NULL;
+	pActiveModule = nullptr;
 }
 
 deAudioSystem::~deAudioSystem(){
@@ -102,7 +102,7 @@ void deAudioSystem::PreStop(){
 	int i;
 	
 	// unset the active microphone
-	SetActiveMicrophone(NULL);
+	SetActiveMicrophone(nullptr);
 	
 	// remove all parallel tasks if present
 	engine.GetParallelProcessing().FinishAndRemoveTasksOwnedBy(pActiveModule);

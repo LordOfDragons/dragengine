@@ -78,23 +78,23 @@ pComponent(component),
 pIndex(index),
 
 pUseTextureNumber(0),
-pUseSkinTexture(NULL),
+pUseSkinTexture(nullptr),
 pUseDoubleSided(false),
 pUseDecal(false),
 pIsRendered(false),
 pRenderTaskFilters(0),
 
-pTUCDepth(NULL),
-pTUCGeometry(NULL),
-pTUCCounter(NULL),
-pTUCShadow(NULL),
-pTUCShadowCube(NULL),
-pTUCEnvMap(NULL),
-pTUCOutlineDepth(NULL),
-pTUCOutlineGeometry(NULL),
-pTUCOutlineCounter(NULL),
-pTUCLuminance(NULL),
-pTUCGIMaterial(NULL),
+pTUCDepth(nullptr),
+pTUCGeometry(nullptr),
+pTUCCounter(nullptr),
+pTUCShadow(nullptr),
+pTUCShadowCube(nullptr),
+pTUCEnvMap(nullptr),
+pTUCOutlineDepth(nullptr),
+pTUCOutlineGeometry(nullptr),
+pTUCOutlineCounter(nullptr),
+pTUCLuminance(nullptr),
+pTUCGIMaterial(nullptr),
 
 pValidParamBlocks(false),
 pDirtyParamBlocks(true),
@@ -283,7 +283,7 @@ void deoglRComponentTexture::UpdateUseSkin(){
 }
 
 decTexMatrix2 deoglRComponentTexture::CalcTexCoordMatrix() const{
-	deoglRDynamicSkin *useDynamicSkin = NULL;
+	deoglRDynamicSkin *useDynamicSkin = nullptr;
 	deoglSkinState *useSkinState = nullptr;
 	
 	if(pSkinState){
@@ -332,7 +332,7 @@ void deoglRComponentTexture::PrepareParamBlocks(){
 	if(!pValidParamBlocks){
 		// shared spb
 		if(pSharedSPBElement){
-			pSharedSPBElement = NULL;
+			pSharedSPBElement = nullptr;
 		}
 		
 		if(pComponent.GetRenderThread().GetChoices().GetSharedSPBUseSSBO()){
@@ -564,40 +564,40 @@ void deoglRComponentTexture::PrepareTUCs(){
 		// depth
 		if(pTUCDepth){
 			pTUCDepth->RemoveUsage();
-			pTUCDepth = NULL;
+			pTUCDepth = nullptr;
 		}
 		pTUCDepth = BareGetTUCFor(deoglSkinTexturePipelines::etDepth);
 		
 		// counter
 		if(pTUCCounter){
 			pTUCCounter->RemoveUsage();
-			pTUCCounter = NULL;
+			pTUCCounter = nullptr;
 		}
 		pTUCCounter = BareGetTUCFor(deoglSkinTexturePipelines::etCounter);
 		
 		// shadow
 		if(pTUCShadow){
 			pTUCShadow->RemoveUsage();
-			pTUCShadow = NULL;
+			pTUCShadow = nullptr;
 		}
 		pTUCShadow = BareGetTUCFor(deoglSkinTexturePipelines::etShadowProjection);
 		
 		// shadow cube
 		if(pTUCShadowCube){
 			pTUCShadowCube->RemoveUsage();
-			pTUCShadowCube = NULL;
+			pTUCShadowCube = nullptr;
 		}
 		pTUCShadowCube = BareGetTUCFor(deoglSkinTexturePipelines::etShadowDistanceCube);
 		
 		// environment map
 		if(pTUCEnvMap){
 			pTUCEnvMap->RemoveUsage();
-			pTUCEnvMap = NULL;
+			pTUCEnvMap = nullptr;
 		}
 		
 		if(pUseSkinTexture){
 			deoglRenderThread &renderThread = pComponent.GetRenderThread();
-			deoglRDynamicSkin *dynamicSkin = NULL;
+			deoglRDynamicSkin *dynamicSkin = nullptr;
 			deoglSkinState *skinState = nullptr;
 			deoglTexUnitConfig unit[8];
 			
@@ -638,28 +638,28 @@ void deoglRComponentTexture::PrepareTUCs(){
 		// outline depth
 		if(pTUCOutlineDepth){
 			pTUCOutlineDepth->RemoveUsage();
-			pTUCOutlineDepth = NULL;
+			pTUCOutlineDepth = nullptr;
 		}
 		pTUCOutlineDepth = BareGetOutlineTUCFor(deoglSkinTexturePipelines::etDepth);
 		
 		// outline geometry
 		if(pTUCOutlineGeometry){
 			pTUCOutlineGeometry->RemoveUsage();
-			pTUCOutlineGeometry = NULL;
+			pTUCOutlineGeometry = nullptr;
 		}
 		pTUCOutlineGeometry = BareGetOutlineTUCFor(deoglSkinTexturePipelines::etGeometry);
 		
 		// outline counter
 		if(pTUCOutlineCounter){
 			pTUCOutlineCounter->RemoveUsage();
-			pTUCOutlineCounter = NULL;
+			pTUCOutlineCounter = nullptr;
 		}
 		pTUCOutlineCounter = BareGetOutlineTUCFor(deoglSkinTexturePipelines::etCounter);
 		
 		// global illumination material
 		if(pTUCGIMaterial){
 			pTUCGIMaterial->RemoveUsage();
-			pTUCGIMaterial = NULL;
+			pTUCGIMaterial = nullptr;
 		}
 		pTUCGIMaterial = BareGetTUCFor(deoglSkinTexturePipelines::etGIMaterial);
 	}
@@ -668,14 +668,14 @@ void deoglRComponentTexture::PrepareTUCs(){
 		// geometry
 		if(pTUCGeometry){
 			pTUCGeometry->RemoveUsage();
-			pTUCGeometry = NULL;
+			pTUCGeometry = nullptr;
 		}
 		pTUCGeometry = BareGetTUCFor(deoglSkinTexturePipelines::etGeometry);
 		
 		// luminance
 		if(pTUCLuminance){
 			pTUCLuminance->RemoveUsage();
-			pTUCLuminance = NULL;
+			pTUCLuminance = nullptr;
 		}
 		// pTUCLuminance = BareGetTUCFor( deoglSkinTexturePipelines::etLuminance );
 	}
@@ -688,14 +688,14 @@ void deoglRComponentTexture::PrepareTUCs(){
 
 deoglTexUnitsConfig *deoglRComponentTexture::BareGetTUCFor(deoglSkinTexturePipelines::eTypes type) const{
 	if(!pUseSkinTexture){
-		return NULL;
+		return nullptr;
 	}
 	
 	deoglRenderThread &renderThread = pComponent.GetRenderThread();
 	deoglTexUnitConfig units[deoglSkinShader::ETT_COUNT];
-	deoglRDynamicSkin *dynamicSkin = NULL;
+	deoglRDynamicSkin *dynamicSkin = nullptr;
 	deoglSkinState *skinState = nullptr;
-	deoglTexUnitsConfig *tuc = NULL;
+	deoglTexUnitsConfig *tuc = nullptr;
 	
 	if(pSkinState){
 		skinState = pSkinState;
@@ -721,7 +721,7 @@ deoglTexUnitsConfig *deoglRComponentTexture::BareGetTUCFor(deoglSkinTexturePipel
 	}
 	
 	if(!tuc){
-		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith(NULL, 0,
+		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith(nullptr, 0,
 			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock());
 	}
 	tuc->EnsureRTSTexture();
@@ -732,14 +732,14 @@ deoglTexUnitsConfig *deoglRComponentTexture::BareGetTUCFor(deoglSkinTexturePipel
 deoglTexUnitsConfig *deoglRComponentTexture::BareGetOutlineTUCFor(
 deoglSkinTexturePipelines::eTypes type) const{
 	if(!pUseSkinTexture){
-		return NULL;
+		return nullptr;
 	}
 	
 	deoglRenderThread &renderThread = pComponent.GetRenderThread();
 	deoglTexUnitConfig units[deoglSkinShader::ETT_COUNT];
-	deoglRDynamicSkin *dynamicSkin = NULL;
+	deoglRDynamicSkin *dynamicSkin = nullptr;
 	deoglSkinState *skinState = nullptr;
-	deoglTexUnitsConfig *tuc = NULL;
+	deoglTexUnitsConfig *tuc = nullptr;
 	
 	if(pSkinState){
 		skinState = pSkinState;
@@ -765,7 +765,7 @@ deoglSkinTexturePipelines::eTypes type) const{
 	}
 	
 	if(!tuc){
-		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith(NULL, 0,
+		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith(nullptr, 0,
 			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock());
 	}
 	tuc->EnsureRTSTexture();
@@ -969,7 +969,7 @@ void deoglRComponentTexture::pUpdateIsRendered(){
 		return;
 	}
 	
-	pIsRendered = pUseDynamicSkin->GetRenderableAt(skinStateRenderable.GetHostRenderable())->GetRenderPlan() != NULL;
+	pIsRendered = pUseDynamicSkin->GetRenderableAt(skinStateRenderable.GetHostRenderable())->GetRenderPlan() != nullptr;
 }
 
 void deoglRComponentTexture::pUpdateRenderTaskFilters(){

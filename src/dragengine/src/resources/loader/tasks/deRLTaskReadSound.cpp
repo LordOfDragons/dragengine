@@ -109,7 +109,7 @@ void deRLTaskReadSound::Finished(){
 	LogFinishedEnter();
 	if(!pSucceeded){
 		SetState(esFailed);
-		pSound = NULL;
+		pSound = nullptr;
 		LogFinishedExit();
 		GetResourceLoader().FinishTask(this);
 		return;

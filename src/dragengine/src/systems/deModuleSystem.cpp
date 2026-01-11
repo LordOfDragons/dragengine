@@ -250,7 +250,7 @@ deLoadableModule *deModuleSystem::GetModuleNamed(const char *name) const{
 		DETHROW(deeInvalidParam);
 	}
 	
-	deLoadableModule *latestModule = NULL;
+	deLoadableModule *latestModule = nullptr;
 	const int count = pModules.GetCount();
 	int i;
 	
@@ -284,7 +284,7 @@ deLoadableModule *deModuleSystem::GetModuleNamed(const char *name, const char *v
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 deLoadableModule *deModuleSystem::GetModuleNamedAtLeast(const char *name, const char *version) const{
@@ -292,7 +292,7 @@ deLoadableModule *deModuleSystem::GetModuleNamedAtLeast(const char *name, const 
 		DETHROW(deeInvalidParam);
 	}
 	
-	deLoadableModule *latestModule = NULL;
+	deLoadableModule *latestModule = nullptr;
 	const int count = pModules.GetCount();
 	int i;
 	
@@ -313,7 +313,7 @@ deLoadableModule *deModuleSystem::GetModuleNamedAtLeast(const char *name, const 
 }
 
 deLoadableModule *deModuleSystem::GetFirstLoadedModuleFor(eModuleTypes type) const{
-	deLoadableModule *useModule = NULL;
+	deLoadableModule *useModule = nullptr;
 	int i;
 	
 	for(i=0; i<pModules.GetCount(); i++){
@@ -346,7 +346,7 @@ deLoadableModule *deModuleSystem::FindMatching(eModuleTypes type, const char *fi
 		DETHROW(deeInvalidParam);
 	}
 	
-	deLoadableModule *latestModule = NULL;
+	deLoadableModule *latestModule = nullptr;
 	int i, j;
 	
 	for(i=0; i<pModules.GetCount(); i++){
@@ -462,8 +462,8 @@ int deModuleSystem::CompareVersion(const char *version1, const char *version2)
 		}
 		
 		// check if they differ. a missing version part is assumed to be 0
-		const long part1 = strtol(version1 + last1, NULL, 10);
-		const long part2 = strtol(version2 + last2, NULL, 10);
+		const long part1 = strtol(version1 + last1, nullptr, 10);
+		const long part2 = strtol(version2 + last2, nullptr, 10);
 		
 		if(part1 < part2){
 			return -1;

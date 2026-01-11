@@ -42,11 +42,11 @@
 /////////////////////////////////
 
 dearBoneState::dearBoneState(){
-	pRigBone = NULL;
-	pRigBoneName = NULL;
+	pRigBone = nullptr;
+	pRigBoneName = nullptr;
 	pIndex = 0;
 	pRigIndex = -1;
-	pParentState = NULL;
+	pParentState = nullptr;
 	pScale.Set(1.0f, 1.0f, 1.0f);
 	pProtect = false;
 	pDirty = true;

@@ -81,7 +81,7 @@ private:
 public:
 	dedsCachedVegetationPropField(){
 		pHeight = 0.0f;
-		pInstances = NULL;
+		pInstances = nullptr;
 		pInstanceCount = 0;
 	}
 	
@@ -118,7 +118,7 @@ public:
 		
 		if(pInstances){
 			delete [] pInstances;
-			pInstances = NULL;
+			pInstances = nullptr;
 			pInstanceCount = 0;
 		}
 		
@@ -222,7 +222,7 @@ public:
 		
 		int p, pfCount = pfCellCount * pfCellCount;
 		
-		pPFs = NULL;
+		pPFs = nullptr;
 		pPFCount = 0;
 		pPFCellCount = pfCellCount;
 		pSectorDim = sectorDim;
@@ -238,7 +238,7 @@ public:
 	}
 	
 	~dedsCachedVegetationSector(){
-		SetWorld(NULL);
+		SetWorld(nullptr);
 		
 		if(pPFs) delete [] pPFs;
 	}
@@ -313,7 +313,7 @@ public:
 	void LoadCacheFile(const deEngine *engine, decBaseFileReader &reader){
 		deModelManager *mdlmgr = engine->GetModelManager();
 		deSkinManager *skinmgr = engine->GetSkinManager();
-		dePropFieldType *engPFType = NULL;
+		dePropFieldType *engPFType = nullptr;
 		decDVector sectorPosition;
 		decVector scalePosition;
 		int i, t, typeCount;
@@ -364,7 +364,7 @@ public:
 					engPFType->SetCollisionFilter(pCollisionFilter);
 					
 					pPFs[p].GetEnginePF()->AddType(engPFType);
-					engPFType = NULL;
+					engPFType = nullptr;
 				}
 				
 			}catch(...){
@@ -421,7 +421,7 @@ public:
 		if(!engine || sectorDim < 10.0f || pfCellCount < 1) DSTHROW(dueInvalidParam);
 		
 		pEngine = engine;
-		pSectors = NULL;
+		pSectors = nullptr;
 		pSectorCount = 0;
 		pSectorSize = 0;
 		pSectorDim = sectorDim;
@@ -473,12 +473,12 @@ public:
 			}
 		}
 		
-		return NULL;
+		return nullptr;
 	}
 	
 	void AddSectorWith(const decPoint &coordinates, const char *cacheFile){
 		const deVirtualFileSystem::Ref &vfs = pEngine->GetVirtualFileSystem();
-		dedsCachedVegetationSector *sector = NULL;
+		dedsCachedVegetationSector *sector = nullptr;
 		decPath path;
 		
 		if(GetSectorWith(coordinates)) DSTHROW(dueInvalidParam);
@@ -524,7 +524,7 @@ public:
 		}
 		
 		if(index != -1){
-			pSectors[index]->SetWorld(NULL);
+			pSectors[index]->SetWorld(nullptr);
 			delete pSectors[index];
 			
 			for(s=index+1; s<pSectorCount; s++){
@@ -537,7 +537,7 @@ public:
 	void RemoveAllSectors(){
 		while(pSectorCount > 0){
 			pSectorCount--;
-			pSectors[pSectorCount]->SetWorld(NULL);
+			pSectors[pSectorCount]->SetWorld(nullptr);
 			delete pSectors[pSectorCount];
 		}
 	}

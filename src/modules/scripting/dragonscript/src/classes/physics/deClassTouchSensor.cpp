@@ -392,7 +392,7 @@ void deClassTouchSensor::nfAllHits::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	touchSensor.AllHits(&adaptor);
 	
-	adaptor.SetListener(NULL);
+	adaptor.SetListener(nullptr);
 	adaptor.Reset();
 }
 
@@ -418,7 +418,7 @@ void deClassTouchSensor::nfRayHits::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	touchSensor.RayHits(rayOrigin, rayDirection, &adaptor);
 	
-	adaptor.SetListener(NULL);
+	adaptor.SetListener(nullptr);
 	adaptor.Reset();
 }
 
@@ -445,7 +445,7 @@ void deClassTouchSensor::nfRayHitsClosest::RunFunction(dsRunTime *rt, dsValue *m
 	touchSensor.RayHits(rayOrigin, rayDirection, &hitsClosest);
 	
 	hitsClosest.NotifyListener();
-	hitsClosest.SetListener(NULL);
+	hitsClosest.SetListener(nullptr);
 	hitsClosest.Reset();
 }
 
@@ -475,7 +475,7 @@ void deClassTouchSensor::nfColliderHits::RunFunction(dsRunTime *rt, dsValue *mys
 	
 	touchSensor->ColliderHits(collider, &adaptor);
 	
-	adaptor.SetListener(NULL);
+	adaptor.SetListener(nullptr);
 	adaptor.Reset();
 }
 
@@ -507,7 +507,7 @@ void deClassTouchSensor::nfColliderMoveHits::RunFunction(dsRunTime *rt, dsValue 
 	
 	touchSensor->ColliderMoveHits(collider, displacement, &adaptor);
 	
-	adaptor.SetListener(NULL);
+	adaptor.SetListener(nullptr);
 	adaptor.Reset();
 }
 
@@ -540,7 +540,7 @@ void deClassTouchSensor::nfColliderMoveHitsClosest::RunFunction(dsRunTime *rt, d
 	touchSensor->ColliderMoveHits(collider, displacement, &hitsClosest);
 	
 	hitsClosest.NotifyListener();
-	hitsClosest.SetListener(NULL);
+	hitsClosest.SetListener(nullptr);
 	hitsClosest.Reset();
 }
 
@@ -570,7 +570,7 @@ void deClassTouchSensor::nfColliderRotateHits::RunFunction(dsRunTime *rt, dsValu
 	
 	touchSensor.ColliderRotateHits(collider, rotation, &adaptor);
 	
-	adaptor.SetListener(NULL);
+	adaptor.SetListener(nullptr);
 	adaptor.Reset();
 }
 
@@ -601,7 +601,7 @@ void deClassTouchSensor::nfColliderRotateHitsClosest::RunFunction(dsRunTime *rt,
 	touchSensor.ColliderRotateHits(collider, rotation, &hitsClosest);
 	
 	hitsClosest.NotifyListener();
-	hitsClosest.SetListener(NULL);
+	hitsClosest.SetListener(nullptr);
 	hitsClosest.Reset();
 }
 
@@ -633,7 +633,7 @@ void deClassTouchSensor::nfColliderMoveRotateHits::RunFunction(dsRunTime *rt, ds
 	
 	touchSensor.ColliderMoveRotateHits(collider, displacement, rotation, &adaptor);
 	
-	adaptor.SetListener(NULL);
+	adaptor.SetListener(nullptr);
 	adaptor.Reset();
 }
 
@@ -666,7 +666,7 @@ void deClassTouchSensor::nfColliderMoveRotateHitsClosest::RunFunction(dsRunTime 
 	touchSensor.ColliderMoveRotateHits(collider, displacement, rotation, &hitsClosest);
 	
 	hitsClosest.NotifyListener();
-	hitsClosest.SetListener(NULL);
+	hitsClosest.SetListener(nullptr);
 	hitsClosest.Reset();
 }
 
@@ -688,7 +688,7 @@ void deClassTouchSensor::nfGetListener::RunFunction(dsRunTime *rt, dsValue *myse
 		rt->PushObject(scrTS->GetCallback(), clsTS->GetClassTouchSensorListener());
 		
 	}else{
-		rt->PushObject(NULL, clsTS->GetClassTouchSensorListener());
+		rt->PushObject(nullptr, clsTS->GetClassTouchSensorListener());
 	}
 }
 
@@ -856,7 +856,7 @@ void deClassTouchSensor::PushTouchSensor(dsRunTime *rt, deTouchSensor *touchSens
 	}
 	
 	if(!touchSensor){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

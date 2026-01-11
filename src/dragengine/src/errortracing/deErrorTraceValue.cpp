@@ -79,7 +79,7 @@ deErrorTraceValue *deErrorTraceValue::FindSubValue(const char *name) const{
 	for(i=0; i<pSubValueCount; i++){
 		if(strcmp(name, pSubValues[i]->GetName()) == 0) return pSubValues[i];
 	}
-	return NULL;
+	return nullptr;
 }
 
 void deErrorTraceValue::AddSubValue(deErrorTraceValue *value){
@@ -112,7 +112,7 @@ void deErrorTraceValue::RemoveAllSubValues(){
 //////////////////////////
 
 deErrorTraceValue *deErrorTraceValue::AddSubValue(const char *name, const char *value){
-	deErrorTraceValue *newSubValue = NULL;
+	deErrorTraceValue *newSubValue = nullptr;
 	try{
 		newSubValue = new deErrorTraceValue(name, value);
 		AddSubValue(newSubValue);
@@ -124,7 +124,7 @@ deErrorTraceValue *deErrorTraceValue::AddSubValue(const char *name, const char *
 }
 
 deErrorTraceValue *deErrorTraceValue::AddSubValueInt(const char *name, int value){
-	deErrorTraceValue *newSubValue = NULL;
+	deErrorTraceValue *newSubValue = nullptr;
 	char buffer[20];
 	#ifdef _MSC_VER
 		sprintf_s(reinterpret_cast<char*>(&buffer), 20, "%i", value);
@@ -142,7 +142,7 @@ deErrorTraceValue *deErrorTraceValue::AddSubValueInt(const char *name, int value
 }
 
 deErrorTraceValue *deErrorTraceValue::AddSubValueFloat(const char *name, float value){
-	deErrorTraceValue *newSubValue = NULL;
+	deErrorTraceValue *newSubValue = nullptr;
 	char buffer[20];
 	#ifdef _MSC_VER
 		sprintf_s(reinterpret_cast<char*>(&buffer), 20, "%g", value);
@@ -160,7 +160,7 @@ deErrorTraceValue *deErrorTraceValue::AddSubValueFloat(const char *name, float v
 }
 
 deErrorTraceValue *deErrorTraceValue::AddSubValueBool(const char *name, bool value){
-	deErrorTraceValue *newSubValue = NULL;
+	deErrorTraceValue *newSubValue = nullptr;
 	try{
 		if(value){
 			newSubValue = new deErrorTraceValue(name, "True");

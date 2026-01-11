@@ -116,8 +116,8 @@ void deoglRLight::WorldComputeElement::UpdateData(sDataElement &data) const {
 deoglRLight::deoglRLight(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
 
-pParentWorld(NULL),
-pOctreeNode(NULL),
+pParentWorld(nullptr),
+pOctreeNode(nullptr),
 pWorldComputeElement(WorldComputeElement::Ref::New(*this)),
 
 pActive(false),
@@ -132,7 +132,7 @@ pHintShadowImportance(100),
 pIntensity(0.0f),
 pAmbientRatio(0.0f),
 pColor(1.0f, 1.0f, 1.0f),
-pUseSkinTexture(NULL),
+pUseSkinTexture(nullptr),
 pDirtyPrepareSkinStateRenderables(true),
 pDirtyRenderSkinStateRenderables(true),
 pDirtyPrepareLightCanvas(true),
@@ -140,8 +140,8 @@ pDirtyPrepareLightCanvas(true),
 pCSOctreeIndex(0),
 
 pWorldMarkedRemove(false),
-pLLWorldPrev(NULL),
-pLLWorldNext(NULL),
+pLLWorldPrev(nullptr),
+pLLWorldNext(nullptr),
 
 pLLPrepareForRenderWorld(this)
 {
@@ -149,18 +149,18 @@ pLLPrepareForRenderWorld(this)
 	pDirtyConvexVolumeList = true;
 	pDirtyFullExtends = true;
 	pDirtyExtends = true;
-	pConvexVolumeList = NULL;
-	pOptimizer = NULL;
-	pColVol = NULL;
-	pShadowCaster = NULL;
+	pConvexVolumeList = nullptr;
+	pOptimizer = nullptr;
+	pColVol = nullptr;
+	pShadowCaster = nullptr;
 	pDirtyStaticShadows = true;
 	pDirtyDynamicShadows = true;
 	pDirtyCollideLists = true;
-	pStaticCollideList = NULL;
-	pDynamicCollideList = NULL;
+	pStaticCollideList = nullptr;
+	pDynamicCollideList = nullptr;
 	
-	pLightVolume = NULL;
-	pLightVolumeCropBox = NULL;
+	pLightVolume = nullptr;
+	pLightVolumeCropBox = nullptr;
 	
 	pDirtyTouching = true;
 	pMarked = false;
@@ -201,7 +201,7 @@ void deoglRLight::SetParentWorld(deoglRWorld *parentWorld){
 	
 	if(pOctreeNode){
 		pOctreeNode->RemoveLight(this);
-		pOctreeNode = NULL;
+		pOctreeNode = nullptr;
 	}
 	
 	pDirtyTouching = true;
@@ -235,7 +235,7 @@ void deoglRLight::UpdateOctreeNode(){
 		pWorldComputeElement->RemoveFromCompute();
 		if(pOctreeNode){
 			pOctreeNode->RemoveLight(this);
-			pOctreeNode = NULL;
+			pOctreeNode = nullptr;
 		}
 	}
 }
@@ -307,7 +307,7 @@ void deoglRLight::SetLightSkin(deoglRSkin *skin){
 		return;
 	}
 	
-	pUseSkinTexture = NULL;
+	pUseSkinTexture = nullptr;
 	pLightSkin = skin;
 	
 	if(!skin){
@@ -639,7 +639,7 @@ void deoglRLight::UpdateAttenuation(float range, float halfIntensityDistance){
 
 
 void deoglRLight::ClearOptimizer(){
-	pOptimizer = NULL;
+	pOptimizer = nullptr;
 }
 
 
@@ -770,8 +770,8 @@ void deoglRLight::EnvMapNotifyLightChanged(){
 
 
 void deoglRLight::PrepareQuickDispose(){
-	pParentWorld = NULL;
-	pOctreeNode = NULL;
+	pParentWorld = nullptr;
+	pOctreeNode = nullptr;
 	pStaticComponentList.RemoveAll();
 	pDynamicComponentList.RemoveAll();
 }
@@ -786,7 +786,7 @@ void deoglRLight::AddComponent(deoglRComponent *component){
 		if(pStaticComponentList.AddIfMissing(component)){
 			pDirtyStaticShadows = true;
 			pDirtyCollideLists = true;
-			SetLightVolumeCropBox(NULL);
+			SetLightVolumeCropBox(nullptr);
 			
 			if(component->GetOcclusionMesh()){
 				SetLightVolumeDirty();
@@ -807,7 +807,7 @@ void deoglRLight::RemoveComponent(deoglRComponent *component){
 		
 		if(pUpdateOnRemoveComponent){
 			pDirtyStaticShadows = true;
-			SetLightVolumeCropBox(NULL);
+			SetLightVolumeCropBox(nullptr);
 			
 			if(component->GetOcclusionMesh()){
 				SetLightVolumeDirty();
@@ -832,7 +832,7 @@ void deoglRLight::RemoveAllComponents(){
 		pStaticComponentList.RemoveAll();
 		pDirtyStaticShadows = true;
 		pDirtyCollideLists = true;
-		SetLightVolumeCropBox(NULL);
+		SetLightVolumeCropBox(nullptr);
 	}
 	
 	count = pDynamicComponentList.GetCount();
@@ -1042,7 +1042,7 @@ void deoglRLight::SetLLWorldNext(deoglRLight *light){
 //////////////////////
 
 void deoglRLight::pCleanUp(){
-	SetParentWorld(NULL);
+	SetParentWorld(nullptr);
 	
 	if(pDynamicCollideList){
 		delete pDynamicCollideList;
@@ -1299,7 +1299,7 @@ void deoglRLight::pUpdateCollisionVolume(){
 	}
 	
 	const decDVector lightPosition(pMatrix.GetPosition());
-	deoglDCollisionVolume *newColVol = NULL;
+	deoglDCollisionVolume *newColVol = nullptr;
 	
 	try{
 		// if there exists no light volume yet create a default collision volume

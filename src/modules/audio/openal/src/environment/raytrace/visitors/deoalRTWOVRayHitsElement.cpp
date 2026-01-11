@@ -50,7 +50,7 @@
 /////////////////////////////////
 
 deoalRTWOVRayHitsElement::deoalRTWOVRayHitsElement() :
-pResult(NULL),
+pResult(nullptr),
 pThresholdTransmit(1e-3f)
 {
 	(void)pThresholdTransmit; // not used yet

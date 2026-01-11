@@ -39,7 +39,7 @@
 /////////////////////////////////
 
 dearWorkState::dearWorkState(){
-	pBoneState = NULL;
+	pBoneState = nullptr;
 }
 
 dearWorkState::~dearWorkState(){

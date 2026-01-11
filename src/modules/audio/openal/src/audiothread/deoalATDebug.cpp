@@ -178,7 +178,7 @@ pShowSpeakerEnvInfoAt(false)
 		palDebugMessageCallback(fDebugOutput, &audioThread);
 		alEnable(AL_DEBUG_OUTPUT_EXT);
 		
-		palDebugMessageControl(AL_DONT_CARE_EXT, AL_DONT_CARE_EXT, AL_DONT_CARE_EXT, 0, NULL, AL_TRUE);
+		palDebugMessageControl(AL_DONT_CARE_EXT, AL_DONT_CARE_EXT, AL_DONT_CARE_EXT, 0, nullptr, AL_TRUE);
 		
 		audioThread.GetLogger().LogInfo("Debugging callback using ALC_EXT_debug activated");
 	}

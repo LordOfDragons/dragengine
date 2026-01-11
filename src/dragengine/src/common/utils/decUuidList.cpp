@@ -40,7 +40,7 @@
 ////////////////////////////
 
 decUuidList::decUuidList(){
-	pUuids = NULL;
+	pUuids = nullptr;
 	pUuidCount = 0;
 	pUuidSize = 0;
 }
@@ -48,7 +48,7 @@ decUuidList::decUuidList(){
 decUuidList::decUuidList(const decUuidList &list){
 	const int count = list.GetCount();
 	
-	pUuids = NULL;
+	pUuids = nullptr;
 	pUuidCount = 0;
 	pUuidSize = 0;
 	

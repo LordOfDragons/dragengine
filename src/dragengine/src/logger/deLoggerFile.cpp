@@ -85,5 +85,5 @@ void deLoggerFile::LogPrefix(const char *source, const char *message, const char
 	const deMutexGuard lock(pMutex);
 	
 	pWriter->Write(string.GetString(), string.GetLength());
-	fflush(NULL);
+	fflush(nullptr);
 }

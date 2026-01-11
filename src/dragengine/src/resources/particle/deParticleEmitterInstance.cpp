@@ -58,27 +58,27 @@ deResource(manager)
 	pBurstTime = 0.0f;
 	pLayerMask.SetBit(0);
 	
-	pPeerGraphic = NULL;
-	pPeerPhysics = NULL;
-	pPeerScripting = NULL;
+	pPeerGraphic = nullptr;
+	pPeerPhysics = nullptr;
+	pPeerScripting = nullptr;
 	
-	pParentWorld = NULL;
-	pLLWorldPrev = NULL;
-	pLLWorldNext = NULL;
+	pParentWorld = nullptr;
+	pLLWorldPrev = nullptr;
+	pLLWorldNext = nullptr;
 }
 
 deParticleEmitterInstance::~deParticleEmitterInstance(){
 	if(pPeerScripting){
 		delete pPeerScripting;
-		pPeerScripting = NULL;
+		pPeerScripting = nullptr;
 	}
 	if(pPeerPhysics){
 		delete pPeerPhysics;
-		pPeerPhysics = NULL;
+		pPeerPhysics = nullptr;
 	}
 	if(pPeerGraphic){
 		delete pPeerGraphic;
-		pPeerGraphic = NULL;
+		pPeerGraphic = nullptr;
 	}
 }
 

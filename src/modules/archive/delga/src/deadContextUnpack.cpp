@@ -275,13 +275,13 @@ deadArchiveDirectory::Ref deadContextUnpack::ReadFileTable(){
 	const deadArchiveDirectory::Ref archiveDirectory(deadArchiveDirectory::Ref::New(pModule, ""));
 	
 	while(error == UNZ_OK){ // exit if error == UNZ_END_OF_LIST_OF_FILE
-		if(unzGetCurrentFileInfo(pZipFile, &info, NULL, 0, NULL, 0, NULL, 0) != UNZ_OK){
+		if(unzGetCurrentFileInfo(pZipFile, &info, nullptr, 0, nullptr, 0, nullptr, 0) != UNZ_OK){
 			DETHROW_INFO(deeReadFile, pContainer->GetFilename());
 		}
 		
 		filename.Set(' ', info.size_filename);
 		if(unzGetCurrentFileInfo(pZipFile, &info, filename.GetMutableString(),
-		info.size_filename, NULL, 0, NULL, 0) != UNZ_OK){
+		info.size_filename, nullptr, 0, nullptr, 0) != UNZ_OK){
 			DETHROW_INFO(deeReadFile, filename);
 		}
 

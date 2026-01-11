@@ -53,7 +53,7 @@ extern const int *vResourcePeerCreationOrder;
 
 deAnimatorSystem::deAnimatorSystem(deEngine *engine) :
 deBaseSystem(engine, "Animator", deModuleSystem::emtAnimator),
-pActiveModule(NULL){
+pActiveModule(nullptr){
 }
 
 deAnimatorSystem::~deAnimatorSystem(){
@@ -120,7 +120,7 @@ void deAnimatorSystem::SetActiveModule(deLoadableModule *module){
 
 void deAnimatorSystem::ClearPermanents(){
 	deBaseSystem::ClearPermanents();
-	pActiveModule = NULL;
+	pActiveModule = nullptr;
 }
 
 void deAnimatorSystem::PostStart(){

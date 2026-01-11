@@ -39,7 +39,7 @@ public:
 	 * \param[in] file Name of the source file where the exception occurred. If NULL set to a default string.
 	 * \param[in] line Line number in file where the exception occurred. If NULL set to a default string.
 	 */
-	deeInvalidParam(const char *file, int line, const char *description = NULL);
+	deeInvalidParam(const char *file, int line, const char *description = nullptr);
 };
 
 /**
@@ -123,7 +123,7 @@ public:
 	 * \param[in] file Name of the source file where the exception occurred. If NULL set to a default string.
 	 * \param[in] line Line number in file where the exception occurred. If NULL set to a default string.
 	 */
-	deeNullPointer(const char *file, int line, const char *description = NULL);
+	deeNullPointer(const char *file, int line, const char *description = nullptr);
 };
 
 /**
@@ -137,7 +137,7 @@ public:
 	 * \param[in] file Name of the source file where the exception occurred. If NULL set to a default string.
 	 * \param[in] line Line number in file where the exception occurred. If NULL set to a default string.
 	 */
-	deeInvalidAction(const char *file, int line, const char *description = NULL);
+	deeInvalidAction(const char *file, int line, const char *description = nullptr);
 };
 
 /**
@@ -151,7 +151,7 @@ public:
 	 * \param[in] file Name of the source file where the exception occurred. If NULL set to a default string.
 	 * \param[in] line Line number in file where the exception occurred. If NULL set to a default string.
 	 */
-	deeInvalidFormat(const char *file, int line, const char *description = NULL);
+	deeInvalidFormat(const char *file, int line, const char *description = nullptr);
 };
 
 /**
@@ -165,7 +165,7 @@ public:
 	 * \param[in] file Name of the source file where the exception occurred. If NULL set to a default string.
 	 * \param[in] line Line number in file where the exception occurred. If NULL set to a default string.
 	 */
-	deeFileNotFound(const char *file, int line, const char *path = NULL);
+	deeFileNotFound(const char *file, int line, const char *path = nullptr);
 	
 private:
 	static decString pCreateText(const char *path);
@@ -182,7 +182,7 @@ public:
 	 * \param[in] file Name of the source file where the exception occurred. If NULL set to a default string.
 	 * \param[in] line Line number in file where the exception occurred. If NULL set to a default string.
 	 */
-	deeFileExists(const char *file, int line, const char *path = NULL);
+	deeFileExists(const char *file, int line, const char *path = nullptr);
 	
 private:
 	static decString pCreateText(const char *path);
@@ -199,7 +199,7 @@ public:
 	 * \param[in] file Name of the source file where the exception occurred. If NULL set to a default string.
 	 * \param[in] line Line number in file where the exception occurred. If NULL set to a default string.
 	 */
-	deeOpenFile(const char *file, int line, const char *path = NULL);
+	deeOpenFile(const char *file, int line, const char *path = nullptr);
 	
 private:
 	static decString pCreateText(const char *path);
@@ -216,7 +216,7 @@ public:
 	 * \param[in] file Name of the source file where the exception occurred. If NULL set to a default string.
 	 * \param[in] line Line number in file where the exception occurred. If NULL set to a default string.
 	 */
-	deeReadFile(const char *file, int line, const char *path = NULL);
+	deeReadFile(const char *file, int line, const char *path = nullptr);
 	
 private:
 	static decString pCreateText(const char *path);
@@ -233,7 +233,7 @@ public:
 	 * \param[in] file Name of the source file where the exception occurred. If NULL set to a default string.
 	 * \param[in] line Line number in file where the exception occurred. If NULL set to a default string.
 	 */
-	deeWriteFile(const char *file, int line, const char *path = NULL);
+	deeWriteFile(const char *file, int line, const char *path = nullptr);
 	
 private:
 	static decString pCreateText(const char *path);
@@ -250,7 +250,7 @@ public:
 	 * \param[in] file Name of the source file where the exception occurred. If NULL set to a default string.
 	 * \param[in] line Line number in file where the exception occurred. If NULL set to a default string.
 	 */
-	deeInvalidFileFormat(const char *file, int line, const char *path = NULL);
+	deeInvalidFileFormat(const char *file, int line, const char *path = nullptr);
 	
 private:
 	static decString pCreateText(const char *path);
@@ -337,7 +337,7 @@ public:
 	 * \param[in] file Name of the source file where the exception occurred. If NULL set to a default string.
 	 * \param[in] line Line number in file where the exception occurred. If NULL set to a default string.
 	 */
-	deeTestFailed(const char *file, int line, const char *description = NULL);
+	deeTestFailed(const char *file, int line, const char *description = nullptr);
 };
 
 /**
@@ -351,7 +351,7 @@ public:
 	 * \param[in] file Name of the source file where the exception occurred. If NULL set to a default string.
 	 * \param[in] line Line number in file where the exception occurred. If NULL set to a default string.
 	 */
-	deeAssertion(const char *file, int line, const char *description = NULL);
+	deeAssertion(const char *file, int line, const char *description = nullptr);
 };
 
 

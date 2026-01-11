@@ -49,7 +49,7 @@ pRoundCornerY(0.0f),
 pStartAngle(0.0f),
 pEndAngle(TWO_PI),
 
-pPoints(NULL),
+pPoints(nullptr),
 pPointCount(0){
 }
 
@@ -198,7 +198,7 @@ void deCanvasPaint::RemovePointFrom(int position){
 void deCanvasPaint::RemoveAllPoints(){
 	if(pPoints){
 		delete [] pPoints;
-		pPoints = NULL;
+		pPoints = nullptr;
 	}
 	pPointCount = 0;
 }

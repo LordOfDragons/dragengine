@@ -241,7 +241,7 @@ void dePng3DTarball::Get3DImageInfos(dePng3DImageInfo &infos, decBaseFileReader 
 
 void dePng3DTarball::Load3DImage(dePng3DImageInfo &infos, decBaseFileReader &file, deImage &image){
 	char *imageData = reinterpret_cast<char*>(image.GetData());
-	png_bytep *rows = NULL;
+	png_bytep *rows = nullptr;
 	sTarballHeader header;
 	char *sliceImageData;
 	unsigned short z;
@@ -338,7 +338,7 @@ void dePng3DTarball::Save3DImage(decBaseFileWriter &file, const deImage &image){
 	unsigned char *headerBytes;
 	char paddingBytes[512];
 	struct timeval curtime;
-	png_bytep *rows = NULL;
+	png_bytep *rows = nullptr;
 	sTarballHeader header;
 	unsigned int checksum;
 	char *sliceImageData;
@@ -412,7 +412,7 @@ void dePng3DTarball::Save3DImage(decBaseFileWriter &file, const deImage &image){
         curtime.tv_usec = (long)(usec % 1000000ULL);
 		}
 	#else
-		gettimeofday(&curtime, NULL);
+		gettimeofday(&curtime, nullptr);
 	#endif
 
 	header.mtime[11] = ' ';
@@ -524,8 +524,8 @@ void dePng3DTarball::Save3DImage(decBaseFileWriter &file, const deImage &image){
 
 
 void dePng3DTarball::Get2DImageInfos(dePng3DImageInfo &infos3D, sImageInfos &infos2D, decBaseFileReader &file){
-	png_structp readStruct = NULL;
-	png_infop infoStruct = NULL;
+	png_structp readStruct = nullptr;
+	png_infop infoStruct = nullptr;
 	sFeedback feedback;
 	int colorType;
 	
@@ -535,7 +535,7 @@ void dePng3DTarball::Get2DImageInfos(dePng3DImageInfo &infos3D, sImageInfos &inf
 	try{
 		// create structures
 		readStruct = png_create_read_struct_2(PNG_LIBPNG_VER_STRING, (png_voidp)&feedback,
-			(png_error_ptr)depng3dError, (png_error_ptr)depng3dWarning, NULL, NULL, NULL);
+			(png_error_ptr)depng3dError, (png_error_ptr)depng3dWarning, nullptr, nullptr, nullptr);
 		if(!readStruct) DETHROW(deeOutOfMemory);
 		
 		infoStruct = png_create_info_struct(readStruct);
@@ -577,11 +577,11 @@ void dePng3DTarball::Get2DImageInfos(dePng3DImageInfo &infos3D, sImageInfos &inf
 		}
 		
 		// clean up
-		png_destroy_read_struct(&readStruct, &infoStruct, NULL);
+		png_destroy_read_struct(&readStruct, &infoStruct, nullptr);
 		
 	}catch(const deException &){
 		if(readStruct){
-			png_destroy_read_struct(&readStruct, &infoStruct, NULL);
+			png_destroy_read_struct(&readStruct, &infoStruct, nullptr);
 		}
 		
 		throw;
@@ -591,8 +591,8 @@ void dePng3DTarball::Get2DImageInfos(dePng3DImageInfo &infos3D, sImageInfos &inf
 void dePng3DTarball::Load2DImage(dePng3DImageInfo &infos3D, decBaseFileReader &file, png_bytep *rows){
 	if(!rows) DETHROW(deeInvalidParam);
 	
-	png_structp readStruct = NULL;
-	png_infop infoStruct = NULL;
+	png_structp readStruct = nullptr;
+	png_infop infoStruct = nullptr;
 	int componentCount;
 	sFeedback feedback;
 	int colorType;
@@ -607,7 +607,7 @@ void dePng3DTarball::Load2DImage(dePng3DImageInfo &infos3D, decBaseFileReader &f
 	try{
 		// create structures
 		readStruct = png_create_read_struct_2(PNG_LIBPNG_VER_STRING, (png_voidp)&feedback,
-			(png_error_ptr)depng3dError, (png_error_ptr)depng3dWarning, NULL, NULL, NULL);
+			(png_error_ptr)depng3dError, (png_error_ptr)depng3dWarning, nullptr, nullptr, nullptr);
 		if(!readStruct) DETHROW(deeOutOfMemory);
 		
 		infoStruct = png_create_info_struct(readStruct);
@@ -704,14 +704,14 @@ void dePng3DTarball::Load2DImage(dePng3DImageInfo &infos3D, decBaseFileReader &f
 		png_read_image(readStruct, rows);
 		
 		// finish file
-		png_read_end(readStruct, NULL);
+		png_read_end(readStruct, nullptr);
 		
 		// clean up
-		png_destroy_read_struct(&readStruct, &infoStruct, NULL);
+		png_destroy_read_struct(&readStruct, &infoStruct, nullptr);
 		
 	}catch(const deException &){
 		if(readStruct){
-			png_destroy_read_struct(&readStruct, &infoStruct, NULL);
+			png_destroy_read_struct(&readStruct, &infoStruct, nullptr);
 		}
 		
 		throw;
@@ -721,8 +721,8 @@ void dePng3DTarball::Load2DImage(dePng3DImageInfo &infos3D, decBaseFileReader &f
 void dePng3DTarball::Save2DImage(int width, int height, decBaseFileWriter &file, png_bytep *rows, int pngColorType, int pngBitCount){
 	if(!rows) DETHROW(deeInvalidParam);
 	
-	png_structp writeStruct = NULL;
-	png_infop infoStruct = NULL;
+	png_structp writeStruct = nullptr;
+	png_infop infoStruct = nullptr;
 	sFeedback feedback;
 	
 	feedback.module = pModule;
@@ -731,7 +731,7 @@ void dePng3DTarball::Save2DImage(int width, int height, decBaseFileWriter &file,
 	try{
 		// create structures
 		writeStruct = png_create_write_struct_2(PNG_LIBPNG_VER_STRING, (png_voidp)&feedback,
-			(png_error_ptr)depng3dError, (png_error_ptr)depng3dWarning, NULL, NULL, NULL);
+			(png_error_ptr)depng3dError, (png_error_ptr)depng3dWarning, nullptr, nullptr, nullptr);
 		if(!writeStruct) DETHROW(deeOutOfMemory);
 		
 		infoStruct = png_create_info_struct(writeStruct);
@@ -785,7 +785,7 @@ void dePng3DTarball::Save2DImage(int width, int height, decBaseFileWriter &file,
 		PNG_TRANSFORM_SWAP_ENDIAN   Byte-swap 16-bit samples
 		PNG_TRANSFORM_STRIP_FILLER  Strip out filler bytes.
 		*/
-		png_write_png(writeStruct, infoStruct, PNG_TRANSFORM_SWAP_ENDIAN, NULL);
+		png_write_png(writeStruct, infoStruct, PNG_TRANSFORM_SWAP_ENDIAN, nullptr);
 		
 		// clean up
 		png_destroy_write_struct(&writeStruct, &infoStruct);

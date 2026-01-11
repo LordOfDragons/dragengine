@@ -57,13 +57,13 @@ MOD_ENTRY_POINT_ATTR deBaseModule *BRCreateModule(deLoadableModule *loadableModu
 ////////////////
 
 deBaseModule *BRCreateModule(deLoadableModule *loadableModule){
-	deBaseModule *module = NULL;
+	deBaseModule *module = nullptr;
 	
 	try{
 		module = new deCRBasic(*loadableModule);
 		
 	}catch(const deException &){
-		return NULL;
+		return nullptr;
 	}
 	
 	return module;
@@ -78,7 +78,7 @@ deBaseModule *BRCreateModule(deLoadableModule *loadableModule){
 deCRBasic::deCRBasic(deLoadableModule &loadableModule) :
 deBaseCrashRecoveryModule(loadableModule){
 	pQuitEngine = true;
-	pCoreFault = NULL;
+	pCoreFault = nullptr;
 }
 deCRBasic::~deCRBasic(){
 }
@@ -103,7 +103,7 @@ bool deCRBasic::Init(){
 void deCRBasic::CleanUp(){
 	if(pCoreFault){
 		delete pCoreFault;
-		pCoreFault = NULL;
+		pCoreFault = nullptr;
 	}
 }
 
@@ -115,7 +115,7 @@ bool deCRBasic::RecoverFromError(){
 	int argc = 1;
 	char *args[1] = {argBuffer};
 	deEngine *engine = GetGameEngine();
-	FXApp *app = NULL;
+	FXApp *app = nullptr;
 	
 	// print error to console in case stopping graphic system crashes due to very ugly circumstances
 	//LogTrace();

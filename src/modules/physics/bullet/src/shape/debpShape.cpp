@@ -40,7 +40,7 @@
 debpShape::debpShape(int type, decShape *shape) :
 pType(type),
 pShape(shape),
-pCollisionVolume(NULL)
+pCollisionVolume(nullptr)
 {
 	if(type < estSphere || type > estCapsule || !shape){
 		DETHROW(deeInvalidParam);

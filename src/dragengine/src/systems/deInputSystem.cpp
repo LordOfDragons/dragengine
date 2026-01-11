@@ -47,8 +47,8 @@
 
 deInputSystem::deInputSystem(deEngine *engine) :
 deBaseSystem(engine, "Input", deModuleSystem::emtInput),
-pActiveModule(NULL),
-pEventQueue(NULL),
+pActiveModule(nullptr),
+pEventQueue(nullptr),
 pCaptureInputDevices(false),
 pDropInputCount(0)
 {
@@ -152,7 +152,7 @@ void deInputSystem::SetActiveModule(deLoadableModule *module){
 
 void deInputSystem::ClearPermanents(){
 	deBaseSystem::ClearPermanents();
-	pActiveModule = NULL;
+	pActiveModule = nullptr;
 }
 
 void deInputSystem::PostStart(){

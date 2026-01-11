@@ -77,7 +77,7 @@ void dexsiDeviceFeedback::SetType(deInputDeviceFeedback::eFeedbackTypes type){
 
 
 void dexsiDeviceFeedback::SetDisplayImages(const char *name){
-	pDisplayImage = NULL;
+	pDisplayImage = nullptr;
 	pDisplayIcons.RemoveAll();
 	
 	if(!name){

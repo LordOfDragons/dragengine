@@ -63,13 +63,13 @@ MOD_ENTRY_POINT_ATTR deBaseModule *JPEGCreateModule(deLoadableModule *loadableMo
 ////////////////
 
 deBaseModule *JPEGCreateModule(deLoadableModule *loadableModule){
-	deBaseModule *module = NULL;
+	deBaseModule *module = nullptr;
 	
 	try{
 		module = new deJpegModule(*loadableModule);
 		
 	}catch(const deException &){
-		return NULL;
+		return nullptr;
 	}
 	
 	return module;
@@ -151,7 +151,7 @@ deJpegModule::~deJpegModule(){
 ////////////////////
 
 deBaseImageInfo *deJpegModule::InitLoadImage(decBaseFileReader &file){
-	deJpegImageInfo *info = NULL;
+	deJpegImageInfo *info = nullptr;
 	
 	try{
 		info = new deJpegImageInfo(this, file.GetFilename());

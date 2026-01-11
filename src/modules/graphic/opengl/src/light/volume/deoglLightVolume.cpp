@@ -50,7 +50,7 @@
 deoglLightVolume::deoglLightVolume(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
 pVAO(0),
-pPoints(NULL),
+pPoints(nullptr),
 pPointCount(0),
 pVBO(0),
 pVBOPointCount(0),
@@ -127,7 +127,7 @@ void deoglLightVolume::SetPointCount(int count){
 	if(count != pPointCount){
 		if(pPoints){
 			delete [] pPoints;
-			pPoints = NULL;
+			pPoints = nullptr;
 		}
 		
 		if(count > 0){

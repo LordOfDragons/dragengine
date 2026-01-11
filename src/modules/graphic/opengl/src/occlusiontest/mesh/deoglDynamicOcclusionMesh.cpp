@@ -63,7 +63,7 @@
 deoglDynamicOcclusionMesh::deoglDynamicOcclusionMesh(deoglRenderThread &renderThread,
 deoglROcclusionMesh *occlusionmesh, deoglRComponent *component) :
 pRenderThread(renderThread),
-pBVH(NULL)
+pBVH(nullptr)
 {
 	if(!occlusionmesh || !component){
 		DETHROW(deeInvalidParam);
@@ -72,14 +72,14 @@ pBVH(NULL)
 	pOcclusionMesh = occlusionmesh;
 	pComponent = component;
 	
-	pWeights = NULL;
+	pWeights = nullptr;
 	pWeightCount = 0;
 	
-	pVertices = NULL;
+	pVertices = nullptr;
 	
 	pVBO = 0;
-	pVAO = NULL;
-	pVBOData = NULL;
+	pVAO = nullptr;
+	pVBOData = nullptr;
 	pVBOVertexCount = 0;
 	pVBOVertexSize = 0;
 	
@@ -108,7 +108,7 @@ deoglVAO *deoglDynamicOcclusionMesh::GetVAO() const{
 void deoglDynamicOcclusionMesh::InvalidateVAO(){
 	if(pVAO){
 		delete pVAO;
-		pVAO = NULL;
+		pVAO = nullptr;
 	}
 }
 
@@ -168,7 +168,7 @@ void deoglDynamicOcclusionMesh::PrepareBVH(){
 	
 	   PrepareForRender(); // make sure vertices are transformed
 	
-	deoglBVH::sBuildPrimitive *primitives = NULL;
+	deoglBVH::sBuildPrimitive *primitives = nullptr;
 	const int faceCount = pOcclusionMesh->GetSingleSidedFaceCount() + pOcclusionMesh->GetDoubleSidedFaceCount();
 	
 	if(faceCount > 0){
@@ -195,7 +195,7 @@ void deoglDynamicOcclusionMesh::PrepareBVH(){
 	}catch(const deException &){
 		if(pBVH){
 			delete pBVH;
-			pBVH = NULL;
+			pBVH = nullptr;
 		}
 		if(primitives){
 			delete [] primitives;
@@ -238,8 +238,8 @@ void deoglDynamicOcclusionMesh::pBuildArrays(){
 	
 	const int weightCount = pOcclusionMesh->GetWeightsEntryCount();
 	const int vertexCount = pOcclusionMesh->GetVertexCount();
-	oglMatrix3x4 *weights = NULL;
-	decVector *vertices = NULL;
+	oglMatrix3x4 *weights = nullptr;
+	decVector *vertices = nullptr;
 	
 	try{
 		if(weightCount > 0){
@@ -427,7 +427,7 @@ void deoglDynamicOcclusionMesh::pTransformVertices(){
 
 void deoglDynamicOcclusionMesh::pBuildVBO(){
 	const int vertexCount = pOcclusionMesh->GetVertexCount();
-	deoglVBOp *newArray = NULL;
+	deoglVBOp *newArray = nullptr;
 	int dataSize;
 	
 	dataSize = VBO_P_STRIDE * vertexCount;
@@ -449,7 +449,7 @@ void deoglDynamicOcclusionMesh::pBuildVBO(){
 	
 	pWriteVBOData();
 	
-	OGL_CHECK(pRenderThread, pglBufferData(GL_ARRAY_BUFFER, dataSize, NULL, GL_STREAM_DRAW));
+	OGL_CHECK(pRenderThread, pglBufferData(GL_ARRAY_BUFFER, dataSize, nullptr, GL_STREAM_DRAW));
 	OGL_CHECK(pRenderThread, pglBufferData(GL_ARRAY_BUFFER, dataSize, pVBOData, GL_STREAM_DRAW));
 	
 	pVBOVertexCount = vertexCount;

@@ -50,7 +50,7 @@ pFillFirstPoint(0),
 pFillPointCount(0),
 pLineFirstPoint(0),
 pLinePointCount(0),
-pHullPoints(NULL),
+pHullPoints(nullptr),
 pHullPointCount(0),
 pDirtyHulls(false){
 }
@@ -308,7 +308,7 @@ void deoglDebugDrawerShape::pPrepareHulls(){
 	pHullIndices.RemoveAll();
 	if(pHullPoints){
 		delete [] pHullPoints;
-		pHullPoints = NULL;
+		pHullPoints = nullptr;
 		pHullPointCount = 0;
 	}
 	

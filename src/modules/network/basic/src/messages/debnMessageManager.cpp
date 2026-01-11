@@ -40,7 +40,7 @@
 ////////////////////////////
 
 debnMessageManager::debnMessageManager(){
-	pMessages = NULL;
+	pMessages = nullptr;
 	pMessageCount = 0;
 	pMessageSize = 0;
 }

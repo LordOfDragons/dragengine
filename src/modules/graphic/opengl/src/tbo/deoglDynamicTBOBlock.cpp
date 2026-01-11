@@ -71,7 +71,7 @@ deoglDynamicTBOBlock::~deoglDynamicTBOBlock(){
 ///////////////
 
 void deoglDynamicTBOBlock::DropSharedTBO(){
-	pSharedTBO = NULL;
+	pSharedTBO = nullptr;
 }
 
 void deoglDynamicTBOBlock::SetOffset(int offset){
@@ -94,8 +94,8 @@ void deoglDynamicTBOBlock::SetSize(int size){
 	}
 	
 	pSize = size;
-	pData = NULL;
-	pData2 = NULL;
+	pData = nullptr;
+	pData2 = nullptr;
 }
 
 void deoglDynamicTBOBlock::SetData(deoglDynamicTBO *tbo, deoglDynamicTBO *tbo2){
@@ -105,8 +105,8 @@ void deoglDynamicTBOBlock::SetData(deoglDynamicTBO *tbo, deoglDynamicTBO *tbo2){
 
 void deoglDynamicTBOBlock::SetEmpty(bool empty){
 	pEmpty = empty;
-	pData = NULL;
-	pData2 = NULL;
+	pData = nullptr;
+	pData2 = nullptr;
 }
 
 void deoglDynamicTBOBlock::Drop(){

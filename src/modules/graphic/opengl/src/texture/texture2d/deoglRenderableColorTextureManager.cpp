@@ -42,7 +42,7 @@
 
 deoglRenderableColorTextureManager::deoglRenderableColorTextureManager(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
-pTextures(NULL),
+pTextures(nullptr),
 pTextureCount(0),
 pTextureSize(0){
 }
@@ -71,7 +71,7 @@ const deoglRenderableColorTexture *deoglRenderableColorTextureManager::GetTextur
 }
 
 deoglRenderableColorTexture *deoglRenderableColorTextureManager::GetTextureWith(int width, int height, int componentCount, bool isFloat){
-	deoglRenderableColorTexture *texture = NULL;
+	deoglRenderableColorTexture *texture = nullptr;
 	int i;
 	
 	// find the texture with the matching format

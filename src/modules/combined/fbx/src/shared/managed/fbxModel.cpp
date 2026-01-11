@@ -51,19 +51,19 @@
 fbxModel::fbxModel(fbxScene &scene, fbxNode &nodeGeometry) :
 pScene(scene),
 pNodeGeomtry(nodeGeometry),
-pNodeModel(NULL),
-pNodeDeformer(NULL),
+pNodeModel(nullptr),
+pNodeDeformer(nullptr),
 pGeometryID(nodeGeometry.GetID()),
 pModelID(0),
 pDeformerID(0),
-pVertexWeights(NULL),
+pVertexWeights(nullptr),
 pVertexWeightCount(0),
 pVertexWeightSize(0),
-pWeights(NULL),
+pWeights(nullptr),
 pWeightCount(0),
 pWeightSize(0),
 pWeightMatchThreshold(0.001f),
-pVertices(NULL),
+pVertices(nullptr),
 pVertexCount(0),
 pCulling(true)
 {
@@ -178,7 +178,7 @@ fbxModelCluster *fbxModel::GetClusterNamed(const char *name) const{
 			return cluster;
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 void fbxModel::MatchClusters(const fbxRig &rig){

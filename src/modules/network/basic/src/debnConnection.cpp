@@ -66,25 +66,25 @@ debnConnection::debnConnection(deNetworkBasic *netBasic, deConnection *connectio
 	pNetBasic = netBasic;
 	pConnection = connection;
 	
-	pSocket = NULL;
+	pSocket = nullptr;
 	pConnectionState = ecsDisconnected;
 	pIdentifier = -1;
 	pElapsedConnectResend = 0.0f;
 	pElapsedConnectTimeout = 0.0f;
 	
-	pStateLinks = NULL;
-	pModifiedStateLinks = NULL;
+	pStateLinks = nullptr;
+	pModifiedStateLinks = nullptr;
 	
-	pReliableMessagesSend = NULL;
-	pReliableMessagesRecv = NULL;
+	pReliableMessagesSend = nullptr;
+	pReliableMessagesRecv = nullptr;
 	pReliableNumberSend = 0;
 	pReliableNumberRecv = 0;
 	pReliableWindowSize = 10;
 	
 	pLongMessagePartSize = 1357;
 	
-	pPreviousConnection = NULL;
-	pNextConnection = NULL;
+	pPreviousConnection = nullptr;
+	pNextConnection = nullptr;
 	pIsRegistered = false;
 	
 	try{
@@ -1098,12 +1098,12 @@ void debnConnection::pProcessLinkState(int number, decBaseFileReader &reader){
 	if(scrCon){
 		state = pNetBasic->GetGameEngine()->GetNetworkStateManager()->CreateState(readOnly);
 		if(!scrCon->LinkState(state, message)){
-			state = NULL;
+			state = nullptr;
 		}
 	}
 	
 	// if there is a state try to link
-	debnState *bnState = NULL;
+	debnState *bnState = nullptr;
 	if(state){
 		bnState = (debnState*)state->GetPeerNetwork();
 	}
@@ -1294,7 +1294,7 @@ void debnConnection::pProcessLinkStateLong(int number, decBaseFileReader &reader
 }
 
 void debnConnection::pAddReliableReceive(int type, int number, decBaseFileReader &reader){
-	debnMessage *bnMessage = NULL;
+	debnMessage *bnMessage = nullptr;
 	
 	// length of the message
 	const int length = reader.GetLength() - reader.GetPosition();

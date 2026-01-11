@@ -309,7 +309,7 @@ void igdeNativeFoxApplication::RunModalWhileShown(igdeWindow &window){
 				mainWindow->OnFrameUpdate();
 			}
 		}
-		native->handle(native, FXSEL(SEL_IGDE_FRAME_UPDATE, 0), 0);
+		native->handle(native, FXSEL(SEL_IGDE_FRAME_UPDATE, 0), nullptr);
 	}
 }
 

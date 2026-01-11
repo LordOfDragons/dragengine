@@ -107,7 +107,7 @@ void deRLTaskReadFontInternal::Finished(){
 	
 	if(!pSucceeded){
 		SetState(esFailed);
-		pFont = NULL;
+		pFont = nullptr;
 		LogFinishedExit();
 		GetResourceLoader().FinishTask(this);
 		return;

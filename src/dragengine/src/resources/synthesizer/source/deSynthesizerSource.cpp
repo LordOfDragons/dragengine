@@ -42,7 +42,7 @@
 ////////////////////////////
 
 deSynthesizerSource::deSynthesizerSource() :
-pSynthesizer(NULL),
+pSynthesizer(nullptr),
 pMixMode(emmAdd),
 pBlendFactor(1.0f),
 pEnabled(true),

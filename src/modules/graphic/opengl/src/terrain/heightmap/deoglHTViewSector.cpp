@@ -49,7 +49,7 @@
 deoglHTViewSector::deoglHTViewSector(deoglHTView &view, deoglRHTSector &sector) :
 pView(view),
 pSector(sector),
-pClusters(NULL),
+pClusters(nullptr),
 pClusterCount(0)
 {
 	const int count = sector.GetClusterCount();

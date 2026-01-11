@@ -56,7 +56,7 @@ pNumber(number),
 pTakeLowPriorityTasks(takeLowPriorityTasks),
 pExitThread(false),
 pWaiting(false),
-pTask(NULL){
+pTask(nullptr){
 }
 
 deParallelThread::~deParallelThread(){

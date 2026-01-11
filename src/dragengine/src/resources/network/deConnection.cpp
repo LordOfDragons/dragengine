@@ -49,8 +49,8 @@
 deConnection::deConnection(deConnectionManager *manager) :
 deResource(manager),
 pConnected(false),
-pPeerNetwork(NULL),
-pPeerScripting(NULL){
+pPeerNetwork(nullptr),
+pPeerScripting(nullptr){
 }
 
 deConnection::~deConnection(){

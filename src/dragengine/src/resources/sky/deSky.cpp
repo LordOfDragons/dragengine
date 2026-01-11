@@ -45,13 +45,13 @@
 
 deSky::deSky(deSkyManager *manager) :
 deResource(manager),
-pPeerGraphic(NULL){
+pPeerGraphic(nullptr){
 }
 
 deSky::~deSky(){
 	if(pPeerGraphic){
 		delete pPeerGraphic;
-		pPeerGraphic = NULL;
+		pPeerGraphic = nullptr;
 	}
 }
 

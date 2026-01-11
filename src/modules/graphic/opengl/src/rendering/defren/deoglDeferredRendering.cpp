@@ -280,7 +280,7 @@ enum eFBOCopyDepth{
 
 deoglDeferredRendering::deoglDeferredRendering(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
-pTextureLuminance(NULL),
+pTextureLuminance(nullptr),
 pMemUse(renderThread.GetMemoryManager().GetConsumption().deferredRendering),
 // pTextureLuminanceNormal( NULL ),
 // pTextureLuminanceDepth( NULL ),
@@ -338,32 +338,32 @@ pTexRenderDocDebug(nullptr)
 	
 	pUseFadeOutRange = useInverseDepth;
 	
-	pTextureDepth1 = NULL;
-	pTextureDepth2 = NULL;
-	pTextureDepth3 = NULL;
+	pTextureDepth1 = nullptr;
+	pTextureDepth2 = nullptr;
+	pTextureDepth3 = nullptr;
 	pTextureDepthXRay = nullptr;
 	
-	pTextureDiffuse = NULL;
-	pTextureNormal = NULL;
-	pTextureReflectivity = NULL;
-	pTextureRoughness = NULL;
-	pTextureAOSolidity = NULL;
-	pTextureSubSurface = NULL;
-	pTextureTemporary1 = NULL;
-	pTextureTemporary2 = NULL;
-	pTextureTemporary3 = NULL;
-	pTextureColor = NULL;
+	pTextureDiffuse = nullptr;
+	pTextureNormal = nullptr;
+	pTextureReflectivity = nullptr;
+	pTextureRoughness = nullptr;
+	pTextureAOSolidity = nullptr;
+	pTextureSubSurface = nullptr;
+	pTextureTemporary1 = nullptr;
+	pTextureTemporary2 = nullptr;
+	pTextureTemporary3 = nullptr;
+	pTextureColor = nullptr;
 	
 	pFBOMipMapCount = 0;
 	pModeDepth = true;
 	pModePostProcess = true;
 	
-	pDepthMinMax = NULL;
+	pDepthMinMax = nullptr;
 	
 	pVBOFullScreenQuad = 0;
 	pVBOBillboard = 0;
-	pVAOFullScreenQuad = NULL;
-	pVAOBillboard = NULL;
+	pVAOFullScreenQuad = nullptr;
+	pVAOBillboard = nullptr;
 	
 	try{
 		pCreateTextures();
@@ -377,7 +377,7 @@ pTexRenderDocDebug(nullptr)
 		OGL_CHECK(renderThread, pglBindVertexArray(pVAOFullScreenQuad->GetVAO()));
 		
 		OGL_CHECK(renderThread, pglEnableVertexAttribArray(0));
-		OGL_CHECK(renderThread, pglVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 12, (const GLvoid *)0));
+		OGL_CHECK(renderThread, pglVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 12, (const GLvoid *)nullptr));
 		OGL_CHECK(renderThread, pglEnableVertexAttribArray(1));
 		OGL_CHECK(renderThread, pglVertexAttribIPointer(1, 1, GL_INT, 12, (const GLvoid *)8));
 		
@@ -390,7 +390,7 @@ pTexRenderDocDebug(nullptr)
 		OGL_CHECK(renderThread, pglBindVertexArray(pVAOBillboard->GetVAO()));
 		
 		OGL_CHECK(renderThread, pglEnableVertexAttribArray(0));
-		OGL_CHECK(renderThread, pglVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 48, (const GLvoid *)0));
+		OGL_CHECK(renderThread, pglVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 48, (const GLvoid *)nullptr));
 		OGL_CHECK(renderThread, pglEnableVertexAttribArray(1));
 		OGL_CHECK(renderThread, pglVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 48, (const GLvoid *)12));
 		OGL_CHECK(renderThread, pglEnableVertexAttribArray(2));
@@ -448,13 +448,13 @@ void deoglDeferredRendering::Resize(int width, int height, int layerCount){
 		// destroy the old depth min-max since we create a new one
 		if(pDepthMinMax){
 			delete pDepthMinMax;
-			pDepthMinMax = NULL;
+			pDepthMinMax = nullptr;
 		}
 		
 		// detach everything from the framebuffer
 		pDestroyFBOs();
 		
-		pRenderThread.GetFramebuffer().Activate(NULL);
+		pRenderThread.GetFramebuffer().Activate(nullptr);
 		
 		// determine the larger sizes for each direction
 		textureWidth = decMath::max(width, pWidth);
@@ -1325,42 +1325,42 @@ void deoglDeferredRendering::pUpdateMemoryUsage(){
 void deoglDeferredRendering::pCreateFBOs(){
 	const deoglRestoreFramebuffer restoreFbo(pRenderThread);
 	
-	pCreateFBOTex(efbomdD1, "DefRen.Depth1", NULL, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1);
-	pCreateFBOTex(efbomdD2, "DefRen.Depth2", NULL, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2);
-	pCreateFBOTex(efbomdD3, "DefRen.Depth3", NULL, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth3);
-	pCreateFBOTex(efbomdDXRay, "DefRen.DepthXRay", NULL, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepthXRay);
-	pCreateFBOTex(efbomdDiff, "DefRen.Diffuse", pTextureDiffuse, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-	pCreateFBOTex(efbomdDiffD1, "DefRen.DiffuseD1", pTextureDiffuse, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1);
-	pCreateFBOTex(efbomdDiffD2, "DefRen.DiffuseD2", pTextureDiffuse, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2);
-	pCreateFBOTex(efbomdRefl, "DefRen.Reflectivity", pTextureReflectivity, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-	pCreateFBOTex(efbomdReflD1, "DefRen.ReflectivityD1", pTextureReflectivity, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1);
-	pCreateFBOTex(efbomdReflD2, "DefRen.ReflectivityD2", pTextureReflectivity, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2);
-	pCreateFBOTex(efbomdRough, "DefRen.Roughness", pTextureRoughness, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-	pCreateFBOTex(efbomdRoughD1, "DefRen.RoughnessD1", pTextureRoughness, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1);
-	pCreateFBOTex(efbomdRoughD2, "DefRen.RoughnessD2", pTextureRoughness, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2);
-	pCreateFBOTex(efbomdAOSolidity, "DefRen.AOSolidity", pTextureAOSolidity, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-	pCreateFBOTex(efbomdAOSolidityD1, "DefRen.AOSolidityD1", pTextureAOSolidity, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1);
-	pCreateFBOTex(efbomdAOSolidityD2, "DefRen.AOSolidityD2", pTextureAOSolidity, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2);
-	pCreateFBOTex(efbomdTemp1, "DefRen.Temporary1", pTextureTemporary1, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-	pCreateFBOTex(efbomdTemp1D1, "DefRen.Temporary1D1", pTextureTemporary1, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1);
-	pCreateFBOTex(efbomdTemp1D2, "DefRen.Temporary1D2", pTextureTemporary1, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2);
-	pCreateFBOTex(efbomdTemp2, "DefRen.Temporary2", pTextureTemporary2, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-	pCreateFBOTex(efbomdTemp2D1, "DefRen.Temporary2D1", pTextureTemporary2, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1);
-	pCreateFBOTex(efbomdTemp2D2, "DefRen.Temporary2D2", pTextureTemporary2, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2);
-	pCreateFBOTex(efbomdTemp3, "DefRen.Temporary3", pTextureTemporary3, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-	pCreateFBOTex(efbomdColor, "DefRen.Color", pTextureColor, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-	pCreateFBOTex(efbomdColorD1, "DefRen.ColorD1", pTextureColor, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1);
-	pCreateFBOTex(efbomdColorD2, "DefRen.ColorD2", pTextureColor, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2);
-	pCreateFBOTex(efbomdColorTemp2, "DefRen.ColorTemp2", pTextureColor, pTextureTemporary2, NULL, NULL, NULL, NULL, NULL, NULL);
-	pCreateFBOTex(efbomdColorTemp2D1, "DefRen.ColorTemp2D1", pTextureColor, pTextureTemporary2, NULL, NULL, NULL, NULL, NULL, pTextureDepth1);
-	pCreateFBOTex(efbomdColorTemp2D2, "DefRen.ColorTemp2D2", pTextureColor, pTextureTemporary2, NULL, NULL, NULL, NULL, NULL, pTextureDepth2);
-	pCreateFBOTex(efbomdColorLum, "DefRen.ColorLum", pTextureColor, pTextureLuminance, NULL, NULL, NULL, NULL, NULL, NULL);
-	pCreateFBOTex(efbomdColorLumD1, "DefRen.ColorLumD1", pTextureColor, pTextureLuminance, NULL, NULL, NULL, NULL, NULL, pTextureDepth1);
-	pCreateFBOTex(efbomdColorLumD2, "DefRen.ColorLumD2", pTextureColor, pTextureLuminance, NULL, NULL, NULL, NULL, NULL, pTextureDepth2);
-	pCreateFBOTex(efbomdColorLumTemp2, "DefRen.ColorLumTemp2", pTextureColor, pTextureLuminance, pTextureTemporary2, NULL, NULL, NULL, NULL, NULL);
-	pCreateFBOTex(efbomdColorLumTemp2D1, "DefRen.ColorLumTemp2D1", pTextureColor, pTextureLuminance, pTextureTemporary2, NULL, NULL, NULL, NULL, pTextureDepth1);
-	pCreateFBOTex(efbomdColorLumTemp2D2, "DefRen.ColorLumTemp2D2", pTextureColor, pTextureLuminance, pTextureTemporary2, NULL, NULL, NULL, NULL, pTextureDepth2);
-	pCreateFBOTex(efbomdLuminance, "DefRen.Luminance", pTextureLuminance, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+	pCreateFBOTex(efbomdD1, "DefRen.Depth1", nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, pTextureDepth1);
+	pCreateFBOTex(efbomdD2, "DefRen.Depth2", nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, pTextureDepth2);
+	pCreateFBOTex(efbomdD3, "DefRen.Depth3", nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, pTextureDepth3);
+	pCreateFBOTex(efbomdDXRay, "DefRen.DepthXRay", nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, pTextureDepthXRay);
+	pCreateFBOTex(efbomdDiff, "DefRen.Diffuse", pTextureDiffuse, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
+	pCreateFBOTex(efbomdDiffD1, "DefRen.DiffuseD1", pTextureDiffuse, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, pTextureDepth1);
+	pCreateFBOTex(efbomdDiffD2, "DefRen.DiffuseD2", pTextureDiffuse, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, pTextureDepth2);
+	pCreateFBOTex(efbomdRefl, "DefRen.Reflectivity", pTextureReflectivity, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
+	pCreateFBOTex(efbomdReflD1, "DefRen.ReflectivityD1", pTextureReflectivity, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, pTextureDepth1);
+	pCreateFBOTex(efbomdReflD2, "DefRen.ReflectivityD2", pTextureReflectivity, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, pTextureDepth2);
+	pCreateFBOTex(efbomdRough, "DefRen.Roughness", pTextureRoughness, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
+	pCreateFBOTex(efbomdRoughD1, "DefRen.RoughnessD1", pTextureRoughness, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, pTextureDepth1);
+	pCreateFBOTex(efbomdRoughD2, "DefRen.RoughnessD2", pTextureRoughness, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, pTextureDepth2);
+	pCreateFBOTex(efbomdAOSolidity, "DefRen.AOSolidity", pTextureAOSolidity, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
+	pCreateFBOTex(efbomdAOSolidityD1, "DefRen.AOSolidityD1", pTextureAOSolidity, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, pTextureDepth1);
+	pCreateFBOTex(efbomdAOSolidityD2, "DefRen.AOSolidityD2", pTextureAOSolidity, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, pTextureDepth2);
+	pCreateFBOTex(efbomdTemp1, "DefRen.Temporary1", pTextureTemporary1, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
+	pCreateFBOTex(efbomdTemp1D1, "DefRen.Temporary1D1", pTextureTemporary1, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, pTextureDepth1);
+	pCreateFBOTex(efbomdTemp1D2, "DefRen.Temporary1D2", pTextureTemporary1, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, pTextureDepth2);
+	pCreateFBOTex(efbomdTemp2, "DefRen.Temporary2", pTextureTemporary2, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
+	pCreateFBOTex(efbomdTemp2D1, "DefRen.Temporary2D1", pTextureTemporary2, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, pTextureDepth1);
+	pCreateFBOTex(efbomdTemp2D2, "DefRen.Temporary2D2", pTextureTemporary2, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, pTextureDepth2);
+	pCreateFBOTex(efbomdTemp3, "DefRen.Temporary3", pTextureTemporary3, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
+	pCreateFBOTex(efbomdColor, "DefRen.Color", pTextureColor, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
+	pCreateFBOTex(efbomdColorD1, "DefRen.ColorD1", pTextureColor, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, pTextureDepth1);
+	pCreateFBOTex(efbomdColorD2, "DefRen.ColorD2", pTextureColor, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, pTextureDepth2);
+	pCreateFBOTex(efbomdColorTemp2, "DefRen.ColorTemp2", pTextureColor, pTextureTemporary2, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
+	pCreateFBOTex(efbomdColorTemp2D1, "DefRen.ColorTemp2D1", pTextureColor, pTextureTemporary2, nullptr, nullptr, nullptr, nullptr, nullptr, pTextureDepth1);
+	pCreateFBOTex(efbomdColorTemp2D2, "DefRen.ColorTemp2D2", pTextureColor, pTextureTemporary2, nullptr, nullptr, nullptr, nullptr, nullptr, pTextureDepth2);
+	pCreateFBOTex(efbomdColorLum, "DefRen.ColorLum", pTextureColor, pTextureLuminance, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
+	pCreateFBOTex(efbomdColorLumD1, "DefRen.ColorLumD1", pTextureColor, pTextureLuminance, nullptr, nullptr, nullptr, nullptr, nullptr, pTextureDepth1);
+	pCreateFBOTex(efbomdColorLumD2, "DefRen.ColorLumD2", pTextureColor, pTextureLuminance, nullptr, nullptr, nullptr, nullptr, nullptr, pTextureDepth2);
+	pCreateFBOTex(efbomdColorLumTemp2, "DefRen.ColorLumTemp2", pTextureColor, pTextureLuminance, pTextureTemporary2, nullptr, nullptr, nullptr, nullptr, nullptr);
+	pCreateFBOTex(efbomdColorLumTemp2D1, "DefRen.ColorLumTemp2D1", pTextureColor, pTextureLuminance, pTextureTemporary2, nullptr, nullptr, nullptr, nullptr, pTextureDepth1);
+	pCreateFBOTex(efbomdColorLumTemp2D2, "DefRen.ColorLumTemp2D2", pTextureColor, pTextureLuminance, pTextureTemporary2, nullptr, nullptr, nullptr, nullptr, pTextureDepth2);
+	pCreateFBOTex(efbomdLuminance, "DefRen.Luminance", pTextureLuminance, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
 	
 	if(pRenderThread.GetCapabilities().GetMaxDrawBuffers() >= 8){
 		pCreateFBOTex(efbomdMaterialColorD1, "DefRen.MaterialColorD1", pTextureDiffuse, pTextureNormal,
@@ -1372,9 +1372,9 @@ void deoglDeferredRendering::pCreateFBOs(){
 		
 	}else{
 		pCreateFBOTex(efbomdMaterialColorD1, "DefRen.MaterialColorD1", pTextureDiffuse, pTextureNormal,
-			pTextureReflectivity, pTextureColor, NULL, NULL, NULL, pTextureDepth1);
+			pTextureReflectivity, pTextureColor, nullptr, nullptr, nullptr, pTextureDepth1);
 		pCreateFBOTex(efbomdMaterialColorD2, "DefRen.MaterialColorD2", pTextureDiffuse, pTextureNormal,
-			pTextureReflectivity, pTextureColor, NULL, NULL, NULL, pTextureDepth2);
+			pTextureReflectivity, pTextureColor, nullptr, nullptr, nullptr, pTextureDepth2);
 	}
 	
 	decString debugName;

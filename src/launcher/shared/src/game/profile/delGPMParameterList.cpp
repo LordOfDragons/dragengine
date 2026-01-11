@@ -82,7 +82,7 @@ bool delGPMParameterList::Has(delGPMParameter *parameter) const{
 }
 
 bool delGPMParameterList::HasNamed(const char *name) const{
-	return GetNamed (name) != NULL;
+	return GetNamed (name) != nullptr;
 }
 
 int delGPMParameterList::IndexOf(delGPMParameter *parameter) const{

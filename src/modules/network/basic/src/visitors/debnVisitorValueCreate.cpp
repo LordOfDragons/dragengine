@@ -61,7 +61,7 @@
 ////////////////////////////
 
 debnVisitorValueCreate::debnVisitorValueCreate(){
-	pValue = NULL;
+	pValue = nullptr;
 }
 
 debnVisitorValueCreate::~debnVisitorValueCreate(){
@@ -73,7 +73,7 @@ debnVisitorValueCreate::~debnVisitorValueCreate(){
 ///////////////
 
 void debnVisitorValueCreate::Reset(){
-	pValue = NULL;
+	pValue = nullptr;
 }
 
 

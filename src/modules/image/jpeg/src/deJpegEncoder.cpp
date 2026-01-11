@@ -47,8 +47,8 @@ deJpegEncoder::deJpegEncoder(deJpegModule *module){
 	
 	pModule = module;
 	
-	pDataBuffer = NULL;
-	pWriter = NULL;
+	pDataBuffer = nullptr;
+	pWriter = nullptr;
 	
 	memset(&pErrorMgr, '\0', sizeof(pErrorMgr));
 	memset(&pDestMgr, '\0', sizeof(pDestMgr));
@@ -99,14 +99,14 @@ void deJpegEncoder::WriteRemaining(){
 		pWriter->Write(pDataBuffer, bytes);
 	}
 	
-	pDestMgr.next_output_byte = NULL;
+	pDestMgr.next_output_byte = nullptr;
 	pDestMgr.free_in_buffer = 0;
 }
 
 void deJpegEncoder::CloseReader(){
 	if(pDataBuffer){
 		delete [] pDataBuffer;
-		pDataBuffer = NULL;
+		pDataBuffer = nullptr;
 	}
-	pWriter = NULL;
+	pWriter = nullptr;
 }

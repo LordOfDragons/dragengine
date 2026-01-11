@@ -47,7 +47,7 @@
 
 deAnimator::deAnimator(deAnimatorManager *manager) :
 deResource(manager),
-pPeerAnimator(NULL){
+pPeerAnimator(nullptr){
 }
 
 deAnimator::~deAnimator(){
@@ -233,7 +233,7 @@ void deAnimator::SetPeerAnimator(deBaseAnimatorAnimator *peer){
 void deAnimator::pCleanUp(){
 	if(pPeerAnimator){
 		delete pPeerAnimator;
-		pPeerAnimator = NULL;
+		pPeerAnimator = nullptr;
 	}
 	
 	RemoveAllRules();

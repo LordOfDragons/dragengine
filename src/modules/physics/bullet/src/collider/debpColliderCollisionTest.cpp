@@ -396,7 +396,7 @@ bool debpColliderCollisionTest::CanHitCollider(deCollider *owner, deCollider *co
 	// otherwise ask parent collider collision listener
 	deBaseScriptingCollider * const listener = parentCollider->GetPeerScripting();
 	if(listener){
-		return listener->CanHitCollider(NULL, collider);
+		return listener->CanHitCollider(nullptr, collider);
 	}
 	
 	// otherwise accept the collision

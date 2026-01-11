@@ -50,13 +50,13 @@ MOD_ENTRY_POINT_ATTR deBaseModule *DELGACreateModule(deLoadableModule *loadableM
 
 
 deBaseModule *DELGACreateModule(deLoadableModule *loadableModule){
-	deBaseModule *module = NULL;
+	deBaseModule *module = nullptr;
 	
 	try{
 		module = new deArchiveDelga(*loadableModule);
 		
 	}catch(const deException &){
-		return NULL;
+		return nullptr;
 	}
 	
 	return module;

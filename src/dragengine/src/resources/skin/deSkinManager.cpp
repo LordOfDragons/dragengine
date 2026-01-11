@@ -91,7 +91,7 @@ deSkin *deSkinManager::GetSkinWith(const char *filename) const{
 
 deSkin *deSkinManager::GetSkinWith(deVirtualFileSystem *vfs, const char *filename) const{
 	deSkin * const skin = (deSkin*)pSkins.GetWithFilename(vfs, filename);
-	return skin && !skin->GetOutdated() ? skin : NULL;
+	return skin && !skin->GetOutdated() ? skin : nullptr;
 }
 
 deSkin::Ref deSkinManager::CreateSkin(const char *filename, deSkinBuilder &builder){
@@ -204,8 +204,8 @@ deSkin::Ref deSkinManager::LoadSkin(deVirtualFileSystem *vfs, const char *filena
 }
 
 deSkin::Ref deSkinManager::LoadDefault(){
-	deSkinPropertyImage * propDiff = NULL;
-	deSkinTexture * skinTex = NULL;
+	deSkinPropertyImage * propDiff = nullptr;
+	deSkinTexture * skinTex = nullptr;
 	deSkin::Ref skin;
 	
 	try{
@@ -327,7 +327,7 @@ void deSkinManager::SystemGraphicUnload(){
 	deSkin *skin = (deSkin*)pSkins.GetRoot();
 	
 	while(skin){
-		skin->SetPeerGraphic(NULL);
+		skin->SetPeerGraphic(nullptr);
 		skin = (deSkin*)skin->GetLLManagerNext();
 	}
 }
@@ -349,7 +349,7 @@ void deSkinManager::SystemAudioUnload(){
 	deSkin *skin = (deSkin*)pSkins.GetRoot();
 	
 	while(skin){
-		skin->SetPeerAudio(NULL);
+		skin->SetPeerAudio(nullptr);
 		skin = (deSkin*)skin->GetLLManagerNext();
 	}
 }
@@ -371,7 +371,7 @@ void deSkinManager::SystemPhysicsUnload(){
 	deSkin *skin = (deSkin*)pSkins.GetRoot();
 	
 	while(skin){
-		skin->SetPeerPhysics(NULL);
+		skin->SetPeerPhysics(nullptr);
 		skin = (deSkin*)skin->GetLLManagerNext();
 	}
 }

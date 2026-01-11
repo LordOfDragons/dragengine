@@ -51,7 +51,7 @@
 
 decXmlVisitorWriter::decXmlVisitorWriter() :
 pCompact(false),
-pWriter(NULL),
+pWriter(nullptr),
 pTagIndent(false),
 pTagNewline(false){
 }
@@ -90,12 +90,12 @@ void decXmlVisitorWriter::WriteDocument(decBaseFileWriter *file, decXmlDocument 
 		document.GetRoot()->Visit(*this);
 		
 		delete pWriter;
-		pWriter = NULL;
+		pWriter = nullptr;
 		
 	}catch(const deException &){
 		if(pWriter){
 			delete pWriter;
-			pWriter = NULL;
+			pWriter = nullptr;
 		}
 		throw;
 	}

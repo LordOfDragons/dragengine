@@ -64,13 +64,13 @@ MOD_ENTRY_POINT_ATTR deBaseModule *ConsoleInputCreateModule(deLoadableModule *lo
 ///////////////////
 
 deBaseModule *ConsoleInputCreateModule(deLoadableModule *loadableModule){
-	deBaseModule *module = NULL;
+	deBaseModule *module = nullptr;
 	
 	try{
 		module = new deConsoleInput(*loadableModule);
 		
 	}catch(const deException &){
-		return NULL;
+		return nullptr;
 	}
 	
 	return module;
@@ -142,7 +142,7 @@ int getch(){// from: http://www.c-plusplus.de/forum/viewtopic-var-p-is-285478.ht
 
 deConsoleInput::deConsoleInput(deLoadableModule &loadableModule) :
 deBaseInputModule(loadableModule),
-pKeyCodeMap(NULL){
+pKeyCodeMap(nullptr){
 }
 
 deConsoleInput::~deConsoleInput(){
@@ -183,7 +183,7 @@ void deConsoleInput::CleanUp(){
 	
 	if(pKeyCodeMap){
 		delete [] pKeyCodeMap;
-		pKeyCodeMap = NULL;
+		pKeyCodeMap = nullptr;
 	}
 }
 
@@ -341,7 +341,7 @@ decTimer debugTimer;
 	
 	character = readNextChar();
 	while(character){
-		gettimeofday(&eventTime, NULL);
+		gettimeofday(&eventTime, nullptr);
 		
 		const deInputEvent::eKeyCodes keyCode = pKeyCodeMap[character];
 		

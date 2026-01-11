@@ -40,9 +40,9 @@
 deoglTerrainHeightImage::deoglTerrainHeightImage(deImage &image) :
 pWidth(image.GetWidth()),
 pHeight(image.GetHeight()),
-pData8(NULL),
-pData16(NULL),
-pData32(NULL)
+pData8(nullptr),
+pData16(nullptr),
+pData32(nullptr)
 {
 	if(image.GetBitCount() == 8){
 		pData8 = image.GetDataGrayscale8();

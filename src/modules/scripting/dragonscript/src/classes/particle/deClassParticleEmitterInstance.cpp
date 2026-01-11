@@ -335,7 +335,7 @@ void deClassParticleEmitterInstance::nfGetControllerNamed::RunFunction(dsRunTime
 	const int index = instance->GetControllers().IndexOfNamed(rt->GetValue(0)->GetString());
 	
 	if(index == -1){
-		rt->PushObject(NULL, ds.GetClassParticleEmitterController());
+		rt->PushObject(nullptr, ds.GetClassParticleEmitterController());
 		
 	}else{
 		ds.GetClassParticleEmitterController()->PushController(rt, instance, index);
@@ -631,7 +631,7 @@ void deClassParticleEmitterInstance::nfGetListener::RunFunction(dsRunTime *rt, d
 		rt->PushObject(peer->GetCallback(), ds.GetClassParticleEmitterInstanceListener());
 		
 	}else{
-		rt->PushObject(NULL, ds.GetClassParticleEmitterInstanceListener());
+		rt->PushObject(nullptr, ds.GetClassParticleEmitterInstanceListener());
 	}
 }
 
@@ -906,7 +906,7 @@ void deClassParticleEmitterInstance::PushInstance(dsRunTime *rt, deParticleEmitt
 	}
 	
 	if(!instance){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

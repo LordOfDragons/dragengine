@@ -109,7 +109,7 @@ void deParticleEmitterInstanceManager::SystemGraphicUnload(){
 	deParticleEmitterInstance *instance = (deParticleEmitterInstance*)pInstances.GetRoot();
 	
 	while(instance){
-		instance->SetPeerGraphic(NULL);
+		instance->SetPeerGraphic(nullptr);
 		instance = (deParticleEmitterInstance*)instance->GetLLManagerNext();
 	}
 }
@@ -131,7 +131,7 @@ void deParticleEmitterInstanceManager::SystemPhysicsUnload(){
 	deParticleEmitterInstance *instance = (deParticleEmitterInstance*)pInstances.GetRoot();
 	
 	while(instance){
-		instance->SetPeerPhysics(NULL);
+		instance->SetPeerPhysics(nullptr);
 		instance = (deParticleEmitterInstance*)instance->GetLLManagerNext();
 	}
 }
@@ -153,7 +153,7 @@ void deParticleEmitterInstanceManager::SystemScriptingUnload(){
 	deParticleEmitterInstance *instance = (deParticleEmitterInstance*)pInstances.GetRoot();
 	
 	while(instance){
-		instance->SetPeerScripting(NULL);
+		instance->SetPeerScripting(nullptr);
 		instance = (deParticleEmitterInstance*)instance->GetLLManagerNext();
 	}
 }

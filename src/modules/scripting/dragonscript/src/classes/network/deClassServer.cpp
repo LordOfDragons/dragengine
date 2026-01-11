@@ -136,7 +136,7 @@ void deClassServer::nfGetServerListener::RunFunction(dsRunTime *rt, dsValue *mys
 		rt->PushObject(scrServer->GetCallback(), clsServer->GetClassServerListener());
 		
 	}else{
-		rt->PushObject(NULL, clsServer->GetClassServerListener());
+		rt->PushObject(nullptr, clsServer->GetClassServerListener());
 	}
 }
 
@@ -266,7 +266,7 @@ void deClassServer::PushServer(dsRunTime *rt, deServer *server){
 	}
 	
 	if(!server){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	

@@ -234,7 +234,7 @@ void deoalAWorld::RemoveAllComponents(){
 		pRootComponent = next;
 	}
 	
-	pTailComponent = NULL;
+	pTailComponent = nullptr;
 }
 
 void deoalAWorld::RemoveRemovalMarkedComponents(){
@@ -347,7 +347,7 @@ void deoalAWorld::RemoveAllSpeakers(){
 		pRootSpeaker = next;
 	}
 	
-	pTailSpeaker = NULL;
+	pTailSpeaker = nullptr;
 }
 
 void deoalAWorld::RemoveRemovalMarkedSpeakers(){
@@ -442,7 +442,7 @@ void deoalAWorld::RemoveAllMicrophones(){
 		pRootMicrophone = next;
 	}
 	
-	pTailMicrophone = NULL;
+	pTailMicrophone = nullptr;
 }
 
 void deoalAWorld::RemoveRemovalMarkedMicrophones(){
@@ -542,7 +542,7 @@ void deoalAWorld::RemoveAllSoundLevelMeters(){
 		pRootSoundLevelMeter = next;
 	}
 	
-	pTailSoundLevelMeter = NULL;
+	pTailSoundLevelMeter = nullptr;
 }
 
 void deoalAWorld::RemoveRemovalMarkedSoundLevelMeters(){

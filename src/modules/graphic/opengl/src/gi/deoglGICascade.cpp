@@ -73,19 +73,19 @@ pMaxProbeDistance(probeSpacing.Length() * 1.5f),
 pPosition(offset),
 pLastRefPosition(offset),
 
-pProbes(NULL),
-pAgedProbes(NULL),
+pProbes(nullptr),
+pAgedProbes(nullptr),
 pHasInvalidProbesInsideView(true),
 pRequiresFullUpdateInsideView(true),
 
-pClearProbes(NULL),
+pClearProbes(nullptr),
 pClearProbeCount(giState.GetRealProbeCount() / 32),
 pHasClearProbes(false),
 
-pUpdateProbes(NULL),
+pUpdateProbes(nullptr),
 pUpdateProbeCount(0),
 
-pRayCacheProbes(NULL),
+pRayCacheProbes(nullptr),
 pRayCacheProbeCount(0)
 {
 	try{

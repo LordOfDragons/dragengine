@@ -72,7 +72,7 @@ void deoglRDSRenderableVideoFrame::PrepareForRender(const deoglRenderPlanMasked 
 
 deoglTexture *deoglRDSRenderableVideoFrame::GetRenderTexture(){
 	if(!pVideoPlayer){
-		return NULL;
+		return nullptr;
 	}
 	return pVideoPlayer->GetTexture();
 }
@@ -83,5 +83,5 @@ deoglTexture *deoglRDSRenderableVideoFrame::GetRenderTexture(){
 //////////////////////
 
 void deoglRDSRenderableVideoFrame::pCleanUp(){
-	SetVideoPlayer(NULL);
+	SetVideoPlayer(nullptr);
 }

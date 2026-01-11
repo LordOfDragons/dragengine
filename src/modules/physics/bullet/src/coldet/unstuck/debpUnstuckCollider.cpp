@@ -44,13 +44,13 @@
 debpUnstuckCollider::debpUnstuckCollider(debpWorld &world) :
 pWorld(world),
 
-pStuckCollider(NULL),
+pStuckCollider(nullptr),
 
-pNearbyColliders(NULL),
+pNearbyColliders(nullptr),
 pNearbyColliderCount(0),
 pNearbyColliderSize(0),
 
-pBlockerNormals(NULL),
+pBlockerNormals(nullptr),
 pBlockerNormalCount(0),
 pBlockerNormalSize(0)
 {
@@ -80,7 +80,7 @@ void debpUnstuckCollider::SetDisplacement(const decDVector &displacement){
 }
 
 void debpUnstuckCollider::Reset(){
-	pStuckCollider = NULL;
+	pStuckCollider = nullptr;
 	pNearbyColliderCount = 0;
 	pBlockerNormalCount = 0;
 }

@@ -77,14 +77,14 @@ deoglRModel::deoglRModel(deoglRenderThread &renderThread, const deModel &model) 
 pRenderThread(renderThread),
 pFilename(model.GetFilename()),
 pHasWeightlessExtends(false),
-pBoneExtends(NULL),
+pBoneExtends(nullptr),
 pBoneCount(0),
-pLODs(NULL),
+pLODs(nullptr),
 pLODCount(0),
 pDoubleSided(false),
 pIsCached(false),
-pImposterBillboard(NULL),
-pSharedSPBListUBO(NULL)
+pImposterBillboard(nullptr),
+pSharedSPBListUBO(nullptr)
 {
 // 	decTimer timer;
 	// try loading from cache if present
@@ -98,7 +98,7 @@ pSharedSPBListUBO(NULL)
 				delete pLODs[i];
 			}
 			delete [] pLODs;
-			pLODs = NULL;
+			pLODs = nullptr;
 			pLODCount = 0;
 		}
 		
@@ -295,7 +295,7 @@ void deoglRModel::DebugVCOptimize(){
 void deoglRModel::pCleanUp(){
 	if(pBoneExtends){
 		delete [] pBoneExtends;
-		pBoneExtends = NULL;
+		pBoneExtends = nullptr;
 	}
 	if(pSharedSPBListUBO){
 		delete pSharedSPBListUBO;

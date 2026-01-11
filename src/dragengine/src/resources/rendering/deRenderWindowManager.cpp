@@ -129,7 +129,7 @@ void deRenderWindowManager::SystemGraphicUnload(){
 	deRenderWindow *renderWindow = (deRenderWindow*)pRenderWindows.GetRoot();
 	
 	while(renderWindow){
-		renderWindow->SetPeerGraphic(NULL);
+		renderWindow->SetPeerGraphic(nullptr);
 		renderWindow = (deRenderWindow*)renderWindow->GetLLManagerNext();
 	}
 }
