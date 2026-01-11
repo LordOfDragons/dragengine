@@ -59,8 +59,6 @@
 
 #include "occlusiontest/mesh/deoglOcclusionMesh.h"
 
-#include "parameters/deoglParameter.h"
-#include "parameters/deoglParameterList.h"
 #include "parameters/deoglPLogLevel.h"
 #include "parameters/deoglPVSyncMode.h"
 #include "parameters/ao/deoglPAOSelfShadowEnable.h"
@@ -166,7 +164,6 @@
 #include <dragengine/resources/sky/deSky.h>
 #include <dragengine/resources/sky/deSkyInstance.h>
 #include <dragengine/systems/deGraphicSystem.h>
-#include <dragengine/systems/modules/deModuleParameter.h>
 
 
 // export definition
@@ -643,23 +640,23 @@ void deGraphicOpenGl::GetGraphicApiConnection(sGraphicApiConnection &connection)
 ///////////////
 
 int deGraphicOpenGl::GetParameterCount() const{
-	return pParameters.GetParameterCount();
+	return pParameters.GetCount();
 }
 
 void deGraphicOpenGl::GetParameterInfo(int index, deModuleParameter &info) const{
-	info = pParameters.GetParameterAt(index);
+	info = pParameters.GetAt(index);
 }
 
 int deGraphicOpenGl::IndexOfParameterNamed(const char *name) const{
-	return pParameters.IndexOfParameterNamed(name);
+	return pParameters.IndexOfNamed(name);
 }
 
 decString deGraphicOpenGl::GetParameterValue(const char *name) const{
-	return pParameters.GetParameterNamed(name).GetParameterValue();
+	return pParameters.GetNamed(name).GetParameterValue();
 }
 
 void deGraphicOpenGl::SetParameterValue(const char *name, const char *value){
-	pParameters.GetParameterNamed(name).SetParameterValue(value);
+	pParameters.GetNamed(name).SetParameterValue(value);
 }
 
 
@@ -704,67 +701,67 @@ void deGraphicOpenGl::pLoadConfig(){
 }
 
 void deGraphicOpenGl::pCreateParameters() {
-	pParameters.AddParameter(new deoglPLogLevel(*this));
-	pParameters.AddParameter(new deoglPFrameRateLimit(*this));
-	pParameters.AddParameter(new deoglPAsyncRenderSkipSyncTimeRatio(*this));
+	pParameters.Add(deTUniqueReference<deoglPLogLevel>::New(*this));
+	pParameters.Add(deTUniqueReference<deoglPFrameRateLimit>::New(*this));
+	pParameters.Add(deTUniqueReference<deoglPAsyncRenderSkipSyncTimeRatio>::New(*this));
 	
-	pParameters.AddParameter(new deoglPGammaCorrection(*this));
-	pParameters.AddParameter(new deoglPContrast(*this));
-	pParameters.AddParameter(new deoglPBrightness(*this));
-	pParameters.AddParameter(new deoglPRenderDownScale(*this));
+	pParameters.Add(deTUniqueReference<deoglPGammaCorrection>::New(*this));
+	pParameters.Add(deTUniqueReference<deoglPContrast>::New(*this));
+	pParameters.Add(deTUniqueReference<deoglPBrightness>::New(*this));
+	pParameters.Add(deTUniqueReference<deoglPRenderDownScale>::New(*this));
 	
-	pParameters.AddParameter(new deoglPLODMaxPixelError(*this));
+	pParameters.Add(deTUniqueReference<deoglPLODMaxPixelError>::New(*this));
 	
-	pParameters.AddParameter(new deoglPNorRougCorrStrength(*this));
+	pParameters.Add(deTUniqueReference<deoglPNorRougCorrStrength>::New(*this));
 	
-	pParameters.AddParameter(new deoglPSSREnable(*this));
-	pParameters.AddParameter(new deoglPSSRStepCount(*this));
-	pParameters.AddParameter(new deoglPSSRMaxRayLength(*this));
-	pParameters.AddParameter(new deoglPSSRReduction(*this));
-	pParameters.AddParameter(new deoglPSSRCoverageEdgeSize(*this));
-	pParameters.AddParameter(new deoglPSSRCoveragePowerEdge(*this));
-	pParameters.AddParameter(new deoglPSSRCoveragePowerRayLength(*this));
+	pParameters.Add(deTUniqueReference<deoglPSSREnable>::New(*this));
+	pParameters.Add(deTUniqueReference<deoglPSSRStepCount>::New(*this));
+	pParameters.Add(deTUniqueReference<deoglPSSRMaxRayLength>::New(*this));
+	pParameters.Add(deTUniqueReference<deoglPSSRReduction>::New(*this));
+	pParameters.Add(deTUniqueReference<deoglPSSRCoverageEdgeSize>::New(*this));
+	pParameters.Add(deTUniqueReference<deoglPSSRCoveragePowerEdge>::New(*this));
+	pParameters.Add(deTUniqueReference<deoglPSSRCoveragePowerRayLength>::New(*this));
 	
-	pParameters.AddParameter(new deoglPAOSelfShadowEnable(*this));
-	pParameters.AddParameter(new deoglPAOSelfShadowSmoothAngle(*this));
+	pParameters.Add(deTUniqueReference<deoglPAOSelfShadowEnable>::New(*this));
+	pParameters.Add(deTUniqueReference<deoglPAOSelfShadowSmoothAngle>::New(*this));
 	
-	pParameters.AddParameter(new deoglPSSAOEnable(*this));
-	pParameters.AddParameter(new deoglPSSAOTapCount(*this));
-	pParameters.AddParameter(new deoglPSSAORadius(*this));
-	pParameters.AddParameter(new deoglPSSAOSelfOcclusionAngle(*this));
-	pParameters.AddParameter(new deoglPSSAOEdgeBlurThreshold(*this));
-	pParameters.AddParameter(new deoglPSSAORadiusLimit(*this));
-	pParameters.AddParameter(new deoglPSSAOMipMapBase(*this));
-	pParameters.AddParameter(new deoglPSSAOTurnCount(*this));
+	pParameters.Add(deTUniqueReference<deoglPSSAOEnable>::New(*this));
+	pParameters.Add(deTUniqueReference<deoglPSSAOTapCount>::New(*this));
+	pParameters.Add(deTUniqueReference<deoglPSSAORadius>::New(*this));
+	pParameters.Add(deTUniqueReference<deoglPSSAOSelfOcclusionAngle>::New(*this));
+	pParameters.Add(deTUniqueReference<deoglPSSAOEdgeBlurThreshold>::New(*this));
+	pParameters.Add(deTUniqueReference<deoglPSSAORadiusLimit>::New(*this));
+	pParameters.Add(deTUniqueReference<deoglPSSAOMipMapBase>::New(*this));
+	pParameters.Add(deTUniqueReference<deoglPSSAOTurnCount>::New(*this));
 	
-	pParameters.AddParameter(new deoglPGIQuality(*this));
-	pParameters.AddParameter(new deoglPGIUpdateSpeed(*this));
+	pParameters.Add(deTUniqueReference<deoglPGIQuality>::New(*this));
+	pParameters.Add(deTUniqueReference<deoglPGIUpdateSpeed>::New(*this));
 	
-	pParameters.AddParameter(new deoglPLightCutOffIntensity(*this));
-	pParameters.AddParameter(new deoglPShadowQuality(*this));
-	pParameters.AddParameter(new deoglPShadowMapOffsetScale(*this));
-	pParameters.AddParameter(new deoglPShadowMapOffsetBias(*this));
-	pParameters.AddParameter(new deoglPShadowCubePCFSize(*this));
+	pParameters.Add(deTUniqueReference<deoglPLightCutOffIntensity>::New(*this));
+	pParameters.Add(deTUniqueReference<deoglPShadowQuality>::New(*this));
+	pParameters.Add(deTUniqueReference<deoglPShadowMapOffsetScale>::New(*this));
+	pParameters.Add(deTUniqueReference<deoglPShadowMapOffsetBias>::New(*this));
+	pParameters.Add(deTUniqueReference<deoglPShadowCubePCFSize>::New(*this));
 	
-	pParameters.AddParameter(new deoglPHDRRMaximumIntensity(*this));
-	pParameters.AddParameter(new deoglPDefRenSizeLimit(*this));
-	pParameters.AddParameter(new deoglPTranspLayerLimit(*this));
+	pParameters.Add(deTUniqueReference<deoglPHDRRMaximumIntensity>::New(*this));
+	pParameters.Add(deTUniqueReference<deoglPDefRenSizeLimit>::New(*this));
+	pParameters.Add(deTUniqueReference<deoglPTranspLayerLimit>::New(*this));
 	
-	pParameters.AddParameter(new deoglPVSyncMode(*this));
+	pParameters.Add(deTUniqueReference<deoglPVSyncMode>::New(*this));
 	
-	pParameters.AddParameter(new deoglPVRRenderScale(*this));
-	pParameters.AddParameter(new deoglPVRForceFrameRate(*this));
+	pParameters.Add(deTUniqueReference<deoglPVRRenderScale>::New(*this));
+	pParameters.Add(deTUniqueReference<deoglPVRForceFrameRate>::New(*this));
 	
 #if defined WITH_DEBUG || defined WITH_DEBUG_CONTEXT
-	pParameters.AddParameter(new deoglPDebugContext(*this));
-	pParameters.AddParameter(new deoglPDebugNoMessages(*this));
+	pParameters.Add(deTUniqueReference<deoglPDebugContext>::New(*this));
+	pParameters.Add(deTUniqueReference<deoglPDebugNoMessages>::New(*this));
 #endif
 #ifdef WITH_DEBUG
-	pParameters.AddParameter(new deoglPDebugNoCulling(*this));
-	pParameters.AddParameter(new deoglPDebugShowCB(*this));
-	pParameters.AddParameter(new deoglPOcclusionReduction(*this));
-	pParameters.AddParameter(new deoglPShowLightCB(*this));
-	pParameters.AddParameter(new deoglPWireframeMode(*this));
+	pParameters.Add(deTUniqueReference<deoglPDebugNoCulling>::New(*this));
+	pParameters.Add(deTUniqueReference<deoglPDebugShowCB>::New(*this));
+	pParameters.Add(deTUniqueReference<deoglPOcclusionReduction>::New(*this));
+	pParameters.Add(deTUniqueReference<deoglPShowLightCB>::New(*this));
+	pParameters.Add(deTUniqueReference<deoglPWireframeMode>::New(*this));
 #endif
 }
 

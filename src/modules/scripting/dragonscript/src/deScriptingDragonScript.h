@@ -34,7 +34,7 @@
 #include "dedsLoadingScreen.h"
 #include "dedsVRPlaceholder.h"
 #include "dedsEngineException.h"
-#include "parameters/dedsParameterList.h"
+#include "parameters/dedsParameter.h"
 
 
 class deClassPhysicsSystem;
@@ -283,7 +283,7 @@ private:
 	sModuleVersion pCompatibleVersion;
 	sModuleVersion pModuleVersion;
 	eState pState;
-	dedsParameterList pParameters;
+	dedsParameter::List pParameters;
 	
 	LogLevel pLogLevel;
 	bool pForceDpiAware;

@@ -124,12 +124,12 @@ pTailSocket(nullptr)
 #endif
 {
 	try{
-		pParameters.AddParameter(new debnPLogLevel(*this));
+		pParameters.Add(deTUniqueReference<debnPLogLevel>::New(*this));
 		/*
-		pParameters.AddParameter(new debnPConnectResendInterval(*this));
-		pParameters.AddParameter(new debnPConnectTimeout(*this));
-		pParameters.AddParameter(new debnPReliableResendInterval(*this));
-		pParameters.AddParameter(new debnPReliableTimeout(*this));
+		pParameters.AddParameter(deTUniqueReference<debnPConnectResendInterval>::New(*this));
+		pParameters.AddParameter(deTUniqueReference<debnPConnectTimeout>::New(*this));
+		pParameters.AddParameter(deTUniqueReference<debnPReliableResendInterval>::New(*this));
+		pParameters.AddParameter(deTUniqueReference<debnPReliableTimeout>::NEw(*this));
 		*/
 		
 		debnLoadConfiguration(*this).LoadConfig(pConfiguration);
@@ -414,23 +414,23 @@ void deNetworkBasic::CloseConnections(debnSocket *bnSocket){
 
 
 int deNetworkBasic::GetParameterCount() const{
-	return pParameters.GetParameterCount();
+	return pParameters.GetCount();
 }
 
 void deNetworkBasic::GetParameterInfo(int index, deModuleParameter &info) const{
-	info = pParameters.GetParameterAt(index);
+	info = pParameters.GetAt(index);
 }
 
 int deNetworkBasic::IndexOfParameterNamed(const char *name) const{
-	return pParameters.IndexOfParameterNamed(name);
+	return pParameters.IndexOfNamed(name);
 }
 
 decString deNetworkBasic::GetParameterValue(const char *name) const{
-	return pParameters.GetParameterNamed(name).GetParameterValue();
+	return pParameters.GetNamed(name).GetParameterValue();
 }
 
 void deNetworkBasic::SetParameterValue(const char *name, const char *value){
-	pParameters.GetParameterNamed(name).SetParameterValue(value);
+	pParameters.GetNamed(name).SetParameterValue(value);
 }
 
 

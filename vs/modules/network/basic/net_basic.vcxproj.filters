@@ -31,9 +31,6 @@
     <ClCompile Include="..\..\..\..\src\modules\network\basic\src\parameters\debnParameterInt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\parameters\debnParameterList.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\network\basic\src\parameters\debug\debnPLogLevel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -148,9 +145,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\network\basic\src\parameters\debnParameterInt.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\parameters\debnParameterList.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\network\basic\src\parameters\debug\debnPLogLevel.h">

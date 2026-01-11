@@ -42,7 +42,6 @@
 #include "smoke/debpSmokeEmitter.h"
 #include "particle/debpParticleEmitter.h"
 #include "particle/debpParticleEmitterInstance.h"
-#include "parameters/debpParameterList.h"
 #include "parameters/debpPSimulatePropFields.h"
 #include "propfield/debpPropField.h"
 #include "terrain/heightmap/debpHeightTerrain.h"
@@ -156,7 +155,6 @@ deBasePhysicsModule(loadableModule),
 pConfiguration(NULL),
 pDeveloperMode(*this),
 pCommandExecuter(NULL),
-pParameters(NULL),
 pCollisionDetection(NULL),
 pDebug(*this)
 {
@@ -166,8 +164,7 @@ pDebug(*this)
 	pConfiguration = new debpConfiguration(this);
 	
 	// create parameters
-	pParameters = new debpParameterList;
-	pParameters->AddParameter(new debpPSimulatePropFields(*this));
+	pParameters.Add(deTUniqueReference<debpPSimulatePropFields>::New(*this));
 }
 
 dePhysicsBullet::~dePhysicsBullet(){
@@ -175,7 +172,6 @@ dePhysicsBullet::~dePhysicsBullet(){
 	
 	if(pConfiguration) delete pConfiguration;
 	if(pCommandExecuter) delete pCommandExecuter;
-	if(pParameters) delete pParameters;
 }
 
 
@@ -217,23 +213,23 @@ void dePhysicsBullet::CleanUp(){
 ///////////////
 
 int dePhysicsBullet::GetParameterCount() const{
-	return pParameters->GetParameterCount();
+	return pParameters.GetCount();
 }
 
 void dePhysicsBullet::GetParameterInfo(int index, deModuleParameter &info) const{
-	info = pParameters->GetParameterAt(index);
+	info = pParameters.GetAt(index);
 }
 
 int dePhysicsBullet::IndexOfParameterNamed(const char *name) const{
-	return pParameters->IndexOfParameterNamed(name);
+	return pParameters.IndexOfNamed(name);
 }
 
 decString dePhysicsBullet::GetParameterValue(const char *name) const{
-	return pParameters->GetParameterNamed(name).GetParameterValue();
+	return pParameters.GetNamed(name).GetParameterValue();
 }
 
 void dePhysicsBullet::SetParameterValue(const char *name, const char *value){
-	pParameters->GetParameterNamed(name).SetParameterValue(value);
+	pParameters.GetNamed(name).SetParameterValue(value);
 }
 
 void dePhysicsBullet::SendCommand(const decUnicodeArgumentList &command, decUnicodeString &answer){

@@ -25,19 +25,36 @@
 #ifndef _DEOXRPARAMETER_H_
 #define _DEOXRPARAMETER_H_
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/systems/modules/deModuleParameter.h>
-#include <dragengine/deObject.h>
 
 class deVROpenXR;
 
 /**
  * Base class for all parameters.
  */
-class deoxrParameter : public deObject{
+class deoxrParameter{
 public:
-	/** Reference. */
-	using Ref = deTObjectReference<deoxrParameter>;
+	class List : public decTUniqueList<deoxrParameter>{
+	public:
+		using decTUniqueList<deoxrParameter>::decTUniqueList;
+		
+		deoxrParameter &GetNamed(const char *name) const{
+			const deTUniqueReference<deoxrParameter> *found = nullptr;
+			DEASSERT_TRUE(Find([&](const deoxrParameter &p){
+				return p.GetParameter().GetName() == name;
+			}, found));
+			return **found;
+		}
+		
+		int IndexOfNamed(const char *name) const{
+			return IndexOfMatching([&](const deoxrParameter &p){
+				return p.GetParameter().GetName() == name;
+			});
+		}
+	};
+	
 	
 	
 protected:
@@ -51,13 +68,11 @@ public:
 	/** Create parameter. */
 	deoxrParameter(deVROpenXR &oxr);
 	
-protected:
 	/** Clean up parameter. */
-	~deoxrParameter() override = default;
+	virtual ~deoxrParameter() = default;
 	/*@}*/
 	
 	
-public:
 	/** \name Management */
 	/*@{*/
 	/** Parameter. */

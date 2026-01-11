@@ -31,8 +31,6 @@
 #include "desynConfiguration.h"
 #include "desynCommandExecuter.h"
 #include "buffer/desynSharedBufferList.h"
-#include "parameters/desynParameter.h"
-#include "parameters/desynParameterList.h"
 #include "sound/desynDecodeBuffer.h"
 #include "sound/desynSound.h"
 #include "synthesizer/desynSynthesizer.h"
@@ -80,11 +78,8 @@ deBaseModule *DESynthesizerCreateModule(deLoadableModule *loadableModule){
 
 deDESynthesizer::deDESynthesizer(deLoadableModule &loadableModule) :
 deBaseSynthesizerModule(loadableModule),
-
 pConfiguration(nullptr),
 pCommandExecuter(nullptr),
-pParameterList(nullptr),
-
 pDecodeBuffer(nullptr),
 pSharedBufferList(nullptr),
 pCaches(nullptr)
@@ -92,8 +87,6 @@ pCaches(nullptr)
 	try{
 		pCommandExecuter = new desynCommandExecuter(*this);
 		pConfiguration = new desynConfiguration(*this);
-		
-		pParameterList = new desynParameterList;
 		
 	}catch(const deException &e){
 		LogException(e);
@@ -109,9 +102,6 @@ deDESynthesizer::~deDESynthesizer(){
 	}
 	if(pCommandExecuter){
 		delete pCommandExecuter;
-	}
-	if(pParameterList){
-		delete pParameterList;
 	}
 }
 
@@ -190,23 +180,23 @@ deSynthesizerInstance *instance){
 ///////////////
 
 int deDESynthesizer::GetParameterCount() const{
-	return pParameterList->GetParameterCount();
+	return pParameters.GetCount();
 }
 
 void deDESynthesizer::GetParameterInfo(int index, deModuleParameter &info) const{
-	info = pParameterList->GetParameterAt(index);
+	info = pParameters.GetAt(index);
 }
 
 int deDESynthesizer::IndexOfParameterNamed(const char *name) const{
-	return pParameterList->IndexOfParameterNamed(name);
+	return pParameters.IndexOfNamed(name);
 }
 
 decString deDESynthesizer::GetParameterValue(const char *name) const{
-	return pParameterList->GetParameterNamed(name).GetParameterValue();
+	return pParameters.GetNamed(name).GetParameterValue();
 }
 
 void deDESynthesizer::SetParameterValue(const char *name, const char *value){
-	pParameterList->GetParameterNamed(name).SetParameterValue(value);
+	pParameters.GetNamed(name).SetParameterValue(value);
 }
 
 void deDESynthesizer::SendCommand(const decUnicodeArgumentList &command, decUnicodeString &answer){

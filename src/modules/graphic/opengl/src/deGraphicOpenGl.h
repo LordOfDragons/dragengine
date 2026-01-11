@@ -29,7 +29,7 @@
 #include "configuration/deoglConfiguration.h"
 #include "commands/deoglCommandExecuter.h"
 #include "debug/deoglDebugOverlay.h"
-#include "parameters/deoglParameterList.h"
+#include "parameters/deoglParameter.h"
 #include "shaders/deoglShaderCompilingInfo.h"
 #include "window/deoglRenderWindowList.h"
 
@@ -50,7 +50,7 @@ class deGraphicOpenGl : public deBaseGraphicModule{
 private:
 	deoglConfiguration pConfiguration;
 	deoglCommandExecuter pCommandExecuter;
-	deoglParameterList pParameters;
+	deoglParameter::List pParameters;
 	
 	deoglRenderWindowList pRenderWindowList;
 	deoglCaptureCanvasList pCaptureCanvasList;

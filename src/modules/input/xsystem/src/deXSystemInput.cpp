@@ -622,23 +622,23 @@ void deXSystemInput::AddDeviceAttachedDetached(const timeval &eventTime){
 ///////////////
 
 int deXSystemInput::GetParameterCount() const{
-	return pParameters.GetParameterCount();
+	return pParameters.GetCount();
 }
 
 void deXSystemInput::GetParameterInfo(int index, deModuleParameter &info) const{
-	info = pParameters.GetParameterAt(index).GetParameter();
+	info = pParameters.GetAt(index)->GetParameter();
 }
 
 int deXSystemInput::IndexOfParameterNamed(const char *name) const{
-	return pParameters.IndexOfParameterNamed(name);
+	return pParameters.IndexOfNamed(name);
 }
 
 decString deXSystemInput::GetParameterValue(const char *name) const{
-	return pParameters.GetParameterNamed(name).GetParameterValue();
+	return pParameters.GetNamed(name).GetParameterValue();
 }
 
 void deXSystemInput::SetParameterValue(const char *name, const char *value){
-	pParameters.GetParameterNamed(name).SetParameterValue(value);
+	pParameters.GetNamed(name).SetParameterValue(value);
 }
 
 
@@ -985,9 +985,9 @@ void deXSystemInput::pUpdateRawMouseInput(){
 }
 
 void deXSystemInput::pCreateParameters(){
-	pParameters.AddParameter(dexsiPRawMouseInput::Ref::New(*this));
-	pParameters.AddParameter(dexsiPRawMouseInputSensivity::Ref::New(*this));
-	pParameters.AddParameter(dexsiPLogLevel::Ref::New(*this));
+	pParameters.Add(deTUniqueReference<dexsiPRawMouseInput>::New(*this));
+	pParameters.Add(deTUniqueReference<dexsiPRawMouseInputSensivity>::New(*this));
+	pParameters.Add(deTUniqueReference<dexsiPLogLevel>::New(*this));
 }
 
 

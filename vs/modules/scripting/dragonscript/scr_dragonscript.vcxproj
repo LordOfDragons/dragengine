@@ -625,7 +625,6 @@
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\parameters\dedsParameterBool.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\parameters\dedsParameterFloat.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\parameters\dedsParameterInt.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\parameters\dedsParameterList.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsCollider.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsConnection.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsNetworkState.cpp" />
@@ -851,7 +850,6 @@
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\parameters\dedsParameterBool.h" />
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\parameters\dedsParameterFloat.h" />
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\parameters\dedsParameterInt.h" />
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\parameters\dedsParameterList.h" />
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsCollider.h" />
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsConnection.h" />
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsNetworkState.h" />

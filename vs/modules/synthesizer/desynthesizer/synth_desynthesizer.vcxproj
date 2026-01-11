@@ -422,7 +422,6 @@
     <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameterBool.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameterFloat.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameterInt.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameterList.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\sound\desynDecodeBuffer.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\sound\desynSound.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\desynCreateSynthesizerEffect.cpp" />
@@ -454,7 +453,6 @@
     <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameterBool.h" />
     <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameterFloat.h" />
     <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameterInt.h" />
-    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameterList.h" />
     <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\sound\desynDecodeBuffer.h" />
     <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\sound\desynSound.h" />
     <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\desynCreateSynthesizerEffect.h" />

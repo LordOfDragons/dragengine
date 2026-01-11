@@ -936,23 +936,23 @@ void deVROpenXR::EndFrame(){
 ///////////////
 
 int deVROpenXR::GetParameterCount() const{
-	return pParameters.GetParameterCount();
+	return pParameters.GetCount();
 }
 
 void deVROpenXR::GetParameterInfo(int index, deModuleParameter &info) const{
-	info = pParameters.GetParameterAt(index).GetParameter();
+	info = pParameters.GetAt(index)->GetParameter();
 }
 
 int deVROpenXR::IndexOfParameterNamed(const char *name) const{
-	return pParameters.IndexOfParameterNamed(name);
+	return pParameters.IndexOfNamed(name);
 }
 
 decString deVROpenXR::GetParameterValue(const char *name) const{
-	return pParameters.GetParameterNamed(name).GetParameterValue();
+	return pParameters.GetNamed(name).GetParameterValue();
 }
 
 void deVROpenXR::SetParameterValue(const char *name, const char *value){
-	pParameters.GetParameterNamed(name).SetParameterValue(value);
+	pParameters.GetNamed(name).SetParameterValue(value);
 }
 
 
@@ -1168,7 +1168,7 @@ bool deVROpenXR::pBeginFrame(){
 }
 
 void deVROpenXR::pCreateParameters(){
-	pParameters.AddParameter(deoxrPLogLevel::Ref::New(*this));
+	pParameters.Add(deTUniqueReference<deoxrPLogLevel>::New(*this));
 }
 
 
@@ -1177,9 +1177,9 @@ void deVROpenXR::pCreateParameters(){
 
 class deoxrModuleInternal : public deInternalModule{
 public:
-	typedef deTObjectReference<deoxrModuleInternal> Ref;
+	using Ref = deTObjectReference<deoxrModuleInternal>;
 	
-	deoxrModuleInternal(deModuleSystem *system) : deInternalModule(system){
+	explicit deoxrModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("OpenXR");
 		SetDescription("OpenXR Support.");
 		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");

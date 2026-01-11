@@ -26,7 +26,7 @@
 #define _DEMODIO_H_
 
 #include "modio.h"
-#include "parameters/deModioParameterList.h"
+#include "parameters/deModioParameter.h"
 
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/collection/decTDictionary.h>
@@ -50,10 +50,13 @@ private:
 	decTObjectList<deModioModConfig> pModConfigs, pActivateConfigs;
 	decString pCurUserId;
 	
-	deModioParameterList pParameters;
-	deMPLogLevel *pParamLogLevel;
+	deModioParameter::List pParameters;
 	
 	decPath pPathConfig, pPathFailureState;
+	
+	
+public:
+	Modio::LogLevel logLevel;
 	
 	
 public:
@@ -105,9 +108,6 @@ public:
 	
 	/** Active modifications (deModioUserConfig). */
 	inline const decTObjectList<deModioModConfig> &GetActiveMods() const{ return pActivateConfigs; }
-	
-	/** Log level module parameter. */
-	inline const deMPLogLevel &GetParamLogLevel() const{ return *pParamLogLevel; }
 	
 	
 	/**

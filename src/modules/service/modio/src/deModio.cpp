@@ -78,9 +78,9 @@ deBaseModule *ModioCreateModule(deLoadableModule *loadableModule){
 deModio::deModio(deLoadableModule& loadableModule) :
 deBaseServiceModule(loadableModule),
 pRequiresEventHandlingCount(0),
-pParamLogLevel(new deMPLogLevel(*this))
+logLevel(Modio::LogLevel::Warning)
 {
-	pParameters.AddParameter(pParamLogLevel);
+	pParameters.Add(deTUniqueReference<deMPLogLevel>::New(*this));
 	
 	pInitPath();
 	pLoadConfig();
@@ -236,23 +236,23 @@ void deModio::ClearFailureState(){
 ///////////////
 
 int deModio::GetParameterCount() const{
-	return pParameters.GetParameterCount();
+	return pParameters.GetCount();
 }
 
 void deModio::GetParameterInfo(int index, deModuleParameter &info) const{
-	info = pParameters.GetParameterAt(index);
+	info = pParameters.GetAt(index);
 }
 
 int deModio::IndexOfParameterNamed(const char *name) const{
-	return pParameters.IndexOfParameterNamed(name);
+	return pParameters.IndexOfNamed(name);
 }
 
 decString deModio::GetParameterValue(const char *name) const{
-	return pParameters.GetParameterNamed(name).GetParameterValue();
+	return pParameters.GetNamed(name).GetParameterValue();
 }
 
 void deModio::SetParameterValue(const char *name, const char *value){
-	pParameters.GetParameterNamed(name).SetParameterValue(value);
+	pParameters.GetNamed(name).SetParameterValue(value);
 }
 
 

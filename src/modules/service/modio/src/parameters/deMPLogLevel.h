@@ -33,10 +33,6 @@
  * Log Level Parameter.
  */
 class deMPLogLevel : public deModioParameter{
-private:
-	Modio::LogLevel pLogLevel;
-	
-	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -50,9 +46,6 @@ public:
 	
 	/** \name Parameter Value */
 	/*@{*/
-	/** Log level. */
-	inline Modio::LogLevel GetLogLevel() const{ return pLogLevel; }
-	
 	/** Current value. */
 	decString GetParameterValue() override;
 	

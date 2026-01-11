@@ -30,7 +30,7 @@
 
 #include "dexsiXInclude.h"
 #include "dexsiDeviceManager.h"
-#include "parameters/dexsiParameterList.h"
+#include "parameters/dexsiParameter.h"
 
 class deOSUnix;
 
@@ -85,7 +85,7 @@ private:
 	double pAccumRawMouseInputX, pAccumRawMouseInputY;
 	double pRawMouseInputSensitivity;
 	
-	dexsiParameterList pParameters;
+	dexsiParameter::List pParameters;
 	
 	
 public:

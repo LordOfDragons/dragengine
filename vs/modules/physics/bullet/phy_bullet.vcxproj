@@ -500,7 +500,6 @@
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\parameters\debpParameterBool.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\parameters\debpParameterFloat.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\parameters\debpParameterInt.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\parameters\debpParameterList.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\particle\debpParticleEmitter.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\particle\debpParticleEmitterInstance.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\particle\debpParticleEmitterInstanceType.cpp" />
@@ -825,7 +824,6 @@
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\parameters\debpParameterBool.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\parameters\debpParameterFloat.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\parameters\debpParameterInt.h" />
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\parameters\debpParameterList.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\particle\debpParticleEmitter.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\particle\debpParticleEmitterInstance.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\particle\debpParticleEmitterInstanceType.h" />

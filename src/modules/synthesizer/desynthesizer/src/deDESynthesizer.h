@@ -25,13 +25,14 @@
 #ifndef _DEDESYNTHESIZER_H_
 #define _DEDESYNTHESIZER_H_
 
+#include "parameters/desynParameter.h"
+
 #include <dragengine/systems/modules/synthesizer/deBaseSynthesizerModule.h>
 
 class desynCaches;
 class desynCommandExecuter;
 class desynConfiguration;
 class desynDecodeBuffer;
-class desynParameterList;
 class desynSharedBufferList;
 
 
@@ -43,7 +44,7 @@ class deDESynthesizer : public deBaseSynthesizerModule{
 private:
 	desynConfiguration *pConfiguration;
 	desynCommandExecuter *pCommandExecuter;
-	desynParameterList *pParameterList;
+	desynParameter::List pParameters;
 	
 	desynDecodeBuffer *pDecodeBuffer;
 	desynSharedBufferList *pSharedBufferList;

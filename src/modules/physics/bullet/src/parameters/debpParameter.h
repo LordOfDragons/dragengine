@@ -25,6 +25,7 @@
 #ifndef _DEBPPARAMETER_H_
 #define _DEBPPARAMETER_H_
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/systems/modules/deModuleParameter.h>
 
@@ -39,6 +40,27 @@ class dePhysicsBullet;
  * the parameter itself and provides methods to retrieves or alter the current value.
  */
 class debpParameter : public deModuleParameter{
+public:
+	class List : public decTUniqueList<debpParameter>{
+	public:
+		using decTUniqueList<debpParameter>::decTUniqueList;
+		
+		debpParameter &GetNamed(const char *name) const{
+			const deTUniqueReference<debpParameter> *found = nullptr;
+			DEASSERT_TRUE(Find([&](const debpParameter &p){
+				return p.GetName() == name;
+			}, found));
+			return **found;
+		}
+		
+		int IndexOfNamed(const char *name) const{
+			return IndexOfMatching([&](const debpParameter &p){
+				return p.GetName() == name;
+			});
+		}
+	};
+	
+	
 protected:
 	dePhysicsBullet &pBullet;
 	

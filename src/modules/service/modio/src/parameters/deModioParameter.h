@@ -25,6 +25,7 @@
 #ifndef _DEMODIOPARAMETER_H_
 #define _DEMODIOPARAMETER_H_
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/systems/modules/deModuleParameter.h>
 
 class deModio;
@@ -37,6 +38,27 @@ class deModio;
  * the parameter itself and provides methods to retrieves or alter the current value.
  */
 class deModioParameter : public deModuleParameter{
+public:
+	class List : public decTUniqueList<deModioParameter>{
+	public:
+		using decTUniqueList<deModioParameter>::decTUniqueList;
+		
+		deModioParameter &GetNamed(const char *name) const{
+			const deTUniqueReference<deModioParameter> *found = nullptr;
+			DEASSERT_TRUE(Find([&](const deModioParameter &p){
+				return p.GetName() == name;
+			}, found));
+			return **found;
+		}
+		
+		int IndexOfNamed(const char *name) const{
+			return IndexOfMatching([&](const deModioParameter &p){
+				return p.GetName() == name;
+			});
+		}
+	};
+	
+	
 protected:
 	deModio &pModule;
 	

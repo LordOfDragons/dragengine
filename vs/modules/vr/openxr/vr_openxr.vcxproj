@@ -481,7 +481,6 @@
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\parameters\deoxrParameterBool.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\parameters\deoxrParameterFloat.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\parameters\deoxrParameterInt.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\parameters\deoxrParameterList.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\action\deoxrAction.h" />
@@ -547,6 +546,5 @@
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\parameters\deoxrParameterBool.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\parameters\deoxrParameterFloat.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\parameters\deoxrParameterInt.h" />
-    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\parameters\deoxrParameterList.h" />
   </ItemGroup>
 </Project>

@@ -28,13 +28,13 @@
 #include "debpCommon.h"
 #include "debug/debpDebug.h"
 #include "devmode/debpDeveloperMode.h"
+#include "parameters/debpParameter.h"
 
 #include <dragengine/resources/collider/deCollisionInfo.h>
 #include <dragengine/systems/modules/physics/deBasePhysicsModule.h>
 
 class debpConfiguration;
 class debpCommandExecuter;
-class debpParameterList;
 class debpCollisionDetection;
 
 
@@ -45,7 +45,7 @@ private:
 	debpConfiguration *pConfiguration;
 	debpDeveloperMode pDeveloperMode;
 	debpCommandExecuter *pCommandExecuter;
-	debpParameterList *pParameters;
+	debpParameter::List pParameters;
 	
 	deCollisionInfo::Ref pColInfo;
 	debpCollisionDetection *pCollisionDetection;

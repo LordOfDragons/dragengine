@@ -25,18 +25,35 @@
 #ifndef _DEDSPARAMETER_H_
 #define _DEDSPARAMETER_H_
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/systems/modules/deModuleParameter.h>
-#include <dragengine/deObject.h>
 
 class deScriptingDragonScript;
 
 /**
  * Base class for all parameters.
  */
-class dedsParameter : public deObject{
+class dedsParameter{
 public:
-	using Ref = deTObjectReference<dedsParameter>;
+	class List : public decTUniqueList<dedsParameter>{
+	public:
+		using decTUniqueList<dedsParameter>::decTUniqueList;
+		
+		dedsParameter &GetNamed(const char *name) const{
+			const deTUniqueReference<dedsParameter> *found = nullptr;
+			DEASSERT_TRUE(Find([&](const dedsParameter &p){
+				return p.GetParameter().GetName() == name;
+			}, found));
+			return **found;
+		}
+		
+		int IndexOfNamed(const char *name) const{
+			return IndexOfMatching([&](const dedsParameter &p){
+				return p.GetParameter().GetName() == name;
+			});
+		}
+	};
 	
 	
 protected:
@@ -50,13 +67,11 @@ public:
 	/** Create parameter. */
 	dedsParameter(deScriptingDragonScript &ds);
 	
-protected:
 	/** Clean up parameter. */
-	~dedsParameter() override = default;
+	virtual ~dedsParameter() = default;
 	/*@}*/
 	
 	
-public:
 	/** \name Management */
 	/*@{*/
 	/** Parameter. */

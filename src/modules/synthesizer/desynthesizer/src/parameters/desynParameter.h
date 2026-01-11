@@ -25,6 +25,7 @@
 #ifndef _DESYNPARAMETER_H_
 #define _DESYNPARAMETER_H_
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/systems/modules/deModuleParameter.h>
 
@@ -38,6 +39,27 @@ class deDESynthesizer;
  * the parameter itself and provides methods to retrieves or alter the current value.
  */
 class desynParameter : public deModuleParameter{
+public:
+	class List : public decTUniqueList<desynParameter>{
+	public:
+		using decTUniqueList<desynParameter>::decTUniqueList;
+		
+		desynParameter &GetNamed(const char *name) const{
+			const deTUniqueReference<desynParameter> *found = nullptr;
+			DEASSERT_TRUE(Find([&](const desynParameter &p){
+				return p.GetName() == name;
+			}, found));
+			return **found;
+		}
+		
+		int IndexOfNamed(const char *name) const{
+			return IndexOfMatching([&](const desynParameter &p){
+				return p.GetName() == name;
+			});
+		}
+	};
+	
+	
 protected:
 	deDESynthesizer &pSynthesizer;
 	

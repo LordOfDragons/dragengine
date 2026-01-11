@@ -22,13 +22,11 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
 #include <stdlib.h>
 
 #include "desynSharedBuffer.h"
 
 #include <dragengine/common/exceptions.h>
-
 
 
 // Class desynSharedBuffer
@@ -55,9 +53,7 @@ desynSharedBuffer::~desynSharedBuffer(){
 ///////////////
 
 void desynSharedBuffer::SetSize(int size){
-	if(size < 0){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_TRUE(size >= 0)
 	
 	if(pBuffer){
 		delete [] pBuffer;

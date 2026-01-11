@@ -36,8 +36,7 @@
 ////////////////////////////
 
 deMPLogLevel::deMPLogLevel(deModio &module) :
-deModioParameter(module),
-pLogLevel(Modio::LogLevel::Warning)
+deModioParameter(module)
 {
 	SetName("logLevel");
 	SetDescription("Log level.");
@@ -64,7 +63,7 @@ deMPLogLevel::~deMPLogLevel(){
 ////////////////////
 
 decString deMPLogLevel::GetParameterValue(){
-	switch(pLogLevel){
+	switch(pModule.logLevel){
 	case Modio::LogLevel::Error:
 		return "error";
 		
@@ -85,22 +84,22 @@ decString deMPLogLevel::GetParameterValue(){
 void deMPLogLevel::SetParameterValue(const char *value){
 	const decString checkValue(decString(value).GetLower());
 	if(checkValue == "error"){
-		pLogLevel = Modio::LogLevel::Error;
+		pModule.logLevel = Modio::LogLevel::Error;
 		
 	}else if(checkValue == "warning"){
-		pLogLevel = Modio::LogLevel::Warning;
+		pModule.logLevel = Modio::LogLevel::Warning;
 		
 	}else if(checkValue == "info"){
-		pLogLevel = Modio::LogLevel::Info;
+		pModule.logLevel = Modio::LogLevel::Info;
 		
 	}else if(checkValue == "debug"){
-		pLogLevel = Modio::LogLevel::Trace;
+		pModule.logLevel = Modio::LogLevel::Trace;
 		
 	}else{
-		pLogLevel = Modio::LogLevel::Warning;
+		pModule.logLevel = Modio::LogLevel::Warning;
 	}
 	
 	if(deModioService::Global()){
-		Modio::SetLogLevel(pLogLevel);
+		Modio::SetLogLevel(pModule.logLevel);
 	}
 }

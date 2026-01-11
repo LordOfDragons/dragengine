@@ -25,18 +25,35 @@
 #ifndef _DEXSIPARAMETER_H_
 #define _DEXSIPARAMETER_H_
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/systems/modules/deModuleParameter.h>
-#include <dragengine/deObject.h>
 
 class deXSystemInput;
 
 /**
  * Base class for all parameters.
  */
-class dexsiParameter : public deObject{
+class dexsiParameter{
 public:
-	using Ref = deTObjectReference<dexsiParameter>;
+	class List : public decTUniqueList<dexsiParameter>{
+	public:
+		using decTUniqueList<dexsiParameter>::decTUniqueList;
+		
+		dexsiParameter &GetNamed(const char *name) const{
+			const deTUniqueReference<dexsiParameter> *found = nullptr;
+			DEASSERT_TRUE(Find([&](const dexsiParameter &p){
+				return p.GetParameter().GetName() == name;
+			}, found));
+			return **found;
+		}
+		
+		int IndexOfNamed(const char *name) const{
+			return IndexOfMatching([&](const dexsiParameter &p){
+				return p.GetParameter().GetName() == name;
+			});
+		}
+	};
 	
 	
 protected:
@@ -50,13 +67,11 @@ public:
 	/** Create parameter. */
 	dexsiParameter(deXSystemInput &module);
 	
-protected:
 	/** Clean up parameter. */
-	~dexsiParameter() override = default;
+	virtual ~dexsiParameter() = default;
 	/*@}*/
 	
 	
-public:
 	/** \name Management */
 	/*@{*/
 	/** Parameter. */

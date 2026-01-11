@@ -436,7 +436,6 @@
     <ClCompile Include="..\..\..\..\src\modules\network\basic\src\parameters\debnParameterBool.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\network\basic\src\parameters\debnParameterFloat.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\network\basic\src\parameters\debnParameterInt.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\parameters\debnParameterList.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\network\basic\src\parameters\debug\debnPLogLevel.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\network\basic\src\parameters\reliability\debnPConnectResendInterval.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\network\basic\src\parameters\reliability\debnPConnectTimeout.cpp" />
@@ -477,7 +476,6 @@
     <ClInclude Include="..\..\..\..\src\modules\network\basic\src\parameters\debnParameterBool.h" />
     <ClInclude Include="..\..\..\..\src\modules\network\basic\src\parameters\debnParameterFloat.h" />
     <ClInclude Include="..\..\..\..\src\modules\network\basic\src\parameters\debnParameterInt.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\parameters\debnParameterList.h" />
     <ClInclude Include="..\..\..\..\src\modules\network\basic\src\parameters\debug\debnPLogLevel.h" />
     <ClInclude Include="..\..\..\..\src\modules\network\basic\src\parameters\reliability\debnPConnectResendInterval.h" />
     <ClInclude Include="..\..\..\..\src\modules\network\basic\src\parameters\reliability\debnPConnectTimeout.h" />

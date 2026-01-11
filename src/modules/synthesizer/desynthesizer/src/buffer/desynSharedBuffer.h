@@ -25,12 +25,13 @@
 #ifndef _DESYNSHAREDBUFFER_H_
 #define _DESYNSHAREDBUFFER_H_
 
+#include <dragengine/deObject.h>
 
 
 /**
  * \brief Shared buffer.
  */
-class desynSharedBuffer{
+class desynSharedBuffer : public deObject{
 private:
 	float *pBuffer;
 	int pSize;
@@ -44,12 +45,13 @@ public:
 	/** \brief Create shared buffer. */
 	desynSharedBuffer();
 	
+protected:
 	/** \brief Clean up buffer. */
-	~desynSharedBuffer();
+	~desynSharedBuffer() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Buffer. */

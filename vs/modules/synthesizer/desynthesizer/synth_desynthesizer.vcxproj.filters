@@ -52,9 +52,6 @@
     <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameterInt.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameterList.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\sound\desynDecodeBuffer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -136,9 +133,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameterInt.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameterList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\sound\desynDecodeBuffer.cpp">

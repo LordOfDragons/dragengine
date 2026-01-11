@@ -70,9 +70,6 @@
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\parameters\debpParameterInt.cpp">
       <Filter>Source Files\module</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\parameters\debpParameterList.cpp">
-      <Filter>Source Files\module</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\parameters\debpPSimulatePropFields.cpp">
       <Filter>Source Files\module</Filter>
     </ClCompile>
@@ -1036,9 +1033,6 @@
       <Filter>Source Files\module</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\parameters\debpParameterInt.h">
-      <Filter>Source Files\module</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\parameters\debpParameterList.h">
       <Filter>Source Files\module</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\parameters\debpPSimulatePropFields.h">

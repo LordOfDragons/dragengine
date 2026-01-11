@@ -441,7 +441,6 @@
     <ClCompile Include="..\..\..\..\src\modules\service\modio\src\deModioService.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\service\modio\src\parameters\deMPLogLevel.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\service\modio\src\parameters\deModioParameter.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\service\modio\src\parameters\deModioParameterList.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\modules\service\modio\src\config\deModioModConfig.h" />
@@ -459,6 +458,5 @@
     <ClInclude Include="..\..\..\..\src\modules\service\modio\src\modio.h" />
     <ClInclude Include="..\..\..\..\src\modules\service\modio\src\parameters\deMPLogLevel.h" />
     <ClInclude Include="..\..\..\..\src\modules\service\modio\src\parameters\deModioParameter.h" />
-    <ClInclude Include="..\..\..\..\src\modules\service\modio\src\parameters\deModioParameterList.h" />
   </ItemGroup>
 </Project>

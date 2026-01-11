@@ -25,10 +25,9 @@
 #ifndef _DESYNSHAREDBUFFERLIST_H_
 #define _DESYNSHAREDBUFFERLIST_H_
 
-#include <dragengine/common/collection/decTList.h>
+#include "desynSharedBuffer.h"
 
-class desynSharedBuffer;
-
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 
 /**
@@ -36,20 +35,15 @@ class desynSharedBuffer;
  */
 class desynSharedBufferList{
 private:
-	decTList<desynSharedBuffer*> pBuffers;
-	
+	decTObjectOrderedSet<desynSharedBuffer> pBuffers;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create shared buffer list. */
-	desynSharedBufferList();
-	
-	/** \brief Clean up buffer list. */
-	~desynSharedBufferList();
+	desynSharedBufferList() = default;
 	/*@}*/
-	
 	
 	
 	/** \name Management */

@@ -732,9 +732,6 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglParameterInt.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglParameterList.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglPLogLevel.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -2617,9 +2614,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglParameterInt.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglParameterList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglPLogLevel.cpp">

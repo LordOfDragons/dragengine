@@ -102,7 +102,7 @@ pUpdateProgressInterval(1.0f)
 	options.PortalInUse = pPortal;
 	
 	module.LogInfo("deModioService: Initialize service");
-	Modio::SetLogLevel(module.GetParamLogLevel().GetLogLevel());
+	Modio::SetLogLevel(module.logLevel);
 	
 	Modio::SetLogCallback([this](Modio::LogLevel level, const std::string &message){
 		pOnLogCallback(level, message);

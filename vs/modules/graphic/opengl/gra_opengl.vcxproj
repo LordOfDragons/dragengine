@@ -643,7 +643,6 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglParameterBool.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglParameterFloat.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglParameterInt.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglParameterList.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\gi\deoglPGIQuality.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\gi\deoglPGIUpdateSpeed.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\light\deoglPLightCutOffIntensity.cpp" />
@@ -1279,7 +1278,6 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglParameterBool.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglParameterFloat.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglParameterInt.h" />
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglParameterList.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\gi\deoglPGIQuality.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\gi\deoglPGIUpdateSpeed.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\light\deoglPLightCutOffIntensity.h" />

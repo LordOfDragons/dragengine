@@ -33,9 +33,6 @@
  */
 class dedsPLogLevel : public dedsParameter{
 public:
-	using Ref = deTObjectReference<dedsPLogLevel>;
-	
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create parameter. */

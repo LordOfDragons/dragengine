@@ -1183,23 +1183,23 @@ bool deScriptingDragonScript::OnAppActivate(){
 ///////////////
 
 int deScriptingDragonScript::GetParameterCount() const{
-	return pParameters.GetParameterCount();
+	return pParameters.GetCount();
 }
 
 void deScriptingDragonScript::GetParameterInfo(int index, deModuleParameter &info) const{
-	info = pParameters.GetParameterAt(index).GetParameter();
+	info = pParameters.GetAt(index)->GetParameter();
 }
 
 int deScriptingDragonScript::IndexOfParameterNamed(const char *name) const{
-	return pParameters.IndexOfParameterNamed(name);
+	return pParameters.IndexOfNamed(name);
 }
 
 decString deScriptingDragonScript::GetParameterValue(const char *name) const{
-	return pParameters.GetParameterNamed(name).GetParameterValue();
+	return pParameters.GetNamed(name).GetParameterValue();
 }
 
 void deScriptingDragonScript::SetParameterValue(const char *name, const char *value){
-	pParameters.GetParameterNamed(name).SetParameterValue(value);
+	pParameters.GetNamed(name).SetParameterValue(value);
 }
 
 
@@ -1290,8 +1290,8 @@ void deScriptingDragonScript::LogExceptionDS(const duException &exception){
 
 // private functions
 void deScriptingDragonScript::pCreateParameters(){
-	pParameters.AddParameter(dedsPForceDpiAware::Ref::New(*this));
-	pParameters.AddParameter(dedsPLogLevel::Ref::New(*this));
+	pParameters.Add(deTUniqueReference<dedsPForceDpiAware>::New(*this));
+	pParameters.Add(deTUniqueReference<dedsPLogLevel>::New(*this));
 }
 
 void deScriptingDragonScript::pLoadBasicPackage(){

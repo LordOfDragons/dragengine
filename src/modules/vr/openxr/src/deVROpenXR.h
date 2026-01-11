@@ -42,7 +42,7 @@
 #include "device/deoxrDeviceManager.h"
 #include "device/profile/deoxrDeviceProfileManager.h"
 #include "graphicapi/deoxrGraphicApiOpenGL.h"
-#include "parameters/deoxrParameterList.h"
+#include "parameters/deoxrParameter.h"
 
 /** input module device identifier prefix. */
 #define OXR_DEVID_PREFIX "OXR_"
@@ -142,7 +142,7 @@ private:
 	
 	LogLevel pLogLevel;
 	
-	deoxrParameterList pParameters;
+	deoxrParameter::List pParameters;
 	
 	
 public:

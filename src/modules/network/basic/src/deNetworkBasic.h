@@ -27,7 +27,7 @@
 
 #include "debnAddress.h"
 #include "configuration/debnConfiguration.h"
-#include "parameters/debnParameterList.h"
+#include "parameters/debnParameter.h"
 
 #include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/string/decStringList.h>
@@ -162,7 +162,7 @@ enum eProtocols{
  */
 class deNetworkBasic : public deBaseNetworkModule{
 private:
-	debnParameterList pParameters;
+	debnParameter::List pParameters;
 	debnConfiguration pConfiguration;
 	
 	// objects to monitor
