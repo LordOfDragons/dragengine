@@ -141,7 +141,7 @@ static sSwapchainFormatName vSwapchainFormatNamesOpenGL[]{
 deoxrSession::deoxrSession(deoxrSystem &system) :
 pSystem(system),
 pGraphicApi(egaHeadless),
-pSession(nullptr),
+pSession(XR_NULL_HANDLE),
 pRunning(false),
 pPredictedDisplayTime(0),
 pPredictedDisplayPeriod(0),
