@@ -72,7 +72,7 @@ public:
 	
 protected:
 	/** \breif Clean up game definition skin. */
-	virtual ~igdeGDSkin();
+	~igdeGDSkin() override;
 	/*@}*/
 	
 	

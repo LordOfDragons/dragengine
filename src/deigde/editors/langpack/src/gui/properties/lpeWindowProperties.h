@@ -58,7 +58,7 @@ public:
 	
 protected:
 	/** \brief Clean up window. */
-	virtual ~lpeWindowProperties();
+	~lpeWindowProperties() override;
 	/*@}*/
 	
 	

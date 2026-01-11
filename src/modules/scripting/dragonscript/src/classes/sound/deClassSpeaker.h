@@ -53,10 +53,10 @@ private:
 public:
 	// constructor
 	deClassSpeaker(deEngine *gameEngine, deScriptingDragonScript *scrMgr);
-	~deClassSpeaker();
+	~deClassSpeaker() override;
 	
 	// internal functions
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	deSpeaker *GetSpeaker(dsRealObject *myself) const;
 	void PushSpeaker(dsRunTime *rt, deSpeaker *speaker);
 	inline deEngine *GetGameEngine() const{ return pGameEngine; }

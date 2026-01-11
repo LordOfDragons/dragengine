@@ -54,7 +54,7 @@ public:
 	
 protected:
 	/** Clean up fence. */
-	virtual ~deoglFence();
+	~deoglFence() override;
 	/*@}*/
 	
 	

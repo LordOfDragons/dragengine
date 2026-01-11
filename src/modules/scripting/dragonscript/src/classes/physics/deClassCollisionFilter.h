@@ -45,7 +45,7 @@ public:
 	/** \brief Creates a new class. */
 	deClassCollisionFilter(deScriptingDragonScript *ds);
 	/** \brief Cleans up the class. */
-	virtual ~deClassCollisionFilter();
+	~deClassCollisionFilter() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -54,7 +54,7 @@ public:
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	
 	/** \brief Creates the class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Retrieves the collision filter in the given real object. */
 	const decCollisionFilter &GetCollisionFilter(dsRealObject *myself) const;

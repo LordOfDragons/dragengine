@@ -55,7 +55,7 @@ public:
 	deOccMeshModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~deOccMeshModule();
+	~deOccMeshModule() override;
 	/*@}*/
 	
 	
@@ -63,10 +63,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Load occlusion mesh. */
-	virtual void LoadOcclusionMesh(decBaseFileReader &reader, deOcclusionMesh &occlusionMesh);
+	void LoadOcclusionMesh(decBaseFileReader &reader, deOcclusionMesh &occlusionMesh) override;
 	
 	/** \brief Save occlusion mesh. */
-	virtual void SaveOcclusionMesh(decBaseFileWriter &writer, const deOcclusionMesh &occlusionMesh);
+	void SaveOcclusionMesh(decBaseFileWriter &writer, const deOcclusionMesh &occlusionMesh) override;
 	/*@}*/
 	
 private:

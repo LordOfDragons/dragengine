@@ -64,7 +64,7 @@ public:
 	debnState(deNetworkState &state);
 	
 	/** \brief Clean up state. */
-	virtual ~debnState();
+	~debnState() override;
 	/*@}*/
 	
 	
@@ -134,10 +134,10 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Value added. */
-	virtual void ValueAdded(int index, deNetworkValue *value);
+	void ValueAdded(int index, deNetworkValue *value) override;
 	
 	/** \brief Value changed. */
-	virtual void ValueChanged(int index, deNetworkValue *value);
+	void ValueChanged(int index, deNetworkValue *value) override;
 	/*@}*/
 };
 

@@ -51,7 +51,7 @@ public:
 	
 	/** \brief Clean up configuration. */
 protected:
-	~ceConfiguration();
+	~ceConfiguration() override;
 public:
 	/*@}*/
 	

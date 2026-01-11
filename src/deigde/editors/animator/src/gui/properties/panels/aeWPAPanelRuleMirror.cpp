@@ -126,7 +126,7 @@ public:
 	typedef deTObjectReference<cBaseComboBoxListener> Ref;
 	cBaseComboBoxListener(aeWPAPanelRuleMirror &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleMirror * const rule = (aeRuleMirror*)pPanel.GetRule();
 		if(!animator || !rule){
@@ -312,11 +312,11 @@ public:
 	typedef deTObjectReference<cListMatchNames> Ref;
 	cListMatchNames(aeWPAPanelRuleMirror &panel) : pPanel(panel){}
 	
-	virtual void OnDoubleClickItem(igdeListBox*, int){
+	void OnDoubleClickItem(igdeListBox*, int) override{
 		((cBaseAction&)cActionMatchNameEdit::Ref::New(pPanel)).OnAction();
 	}
 	
-	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
+	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
 		if(!pPanel.GetRule()){
 			return;
 		}

@@ -95,7 +95,7 @@ public:
 	
 	/** \brief Clean up layer. */
 protected:
-	virtual ~skyeLayer();
+	~skyeLayer() override;
 public:
 	/*@}*/
 	

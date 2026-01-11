@@ -52,7 +52,7 @@ public:
 	/** Creates a object. */
 	meUpdateHeightTerrainPropField(meHeightTerrainPropField *propField);
 	/** Cleans up the object. */
-	virtual ~meUpdateHeightTerrainPropField();
+	~meUpdateHeightTerrainPropField() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -68,7 +68,7 @@ public:
 	 * indicates the percentage of instances to use compared to a fully populated
 	 * prop field.
 	 */
-	virtual void CreateInstances(float density);
+	void CreateInstances(float density) override;
 	/*@}*/
 	
 private:

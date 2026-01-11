@@ -59,7 +59,7 @@ public:
 	inline const ceConversationAction::List &GetActions() const{ return pActions; }
 	
 	/** \brief Do menu action. */
-	virtual void OnAction();
+	void OnAction() override;
 	/*@}*/
 };
 

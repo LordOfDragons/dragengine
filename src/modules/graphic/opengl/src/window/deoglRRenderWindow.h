@@ -160,7 +160,7 @@ public:
 	
 protected:
 	/** Clean up render render target. */
-	virtual ~deoglRRenderWindow();
+	~deoglRRenderWindow() override;
 	/*@}*/
 	
 	

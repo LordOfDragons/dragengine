@@ -109,7 +109,7 @@ public:
 	
 protected:
 	/** Clean up render component lod. */
-	virtual ~deoglRComponentLOD();
+	~deoglRComponentLOD() override;
 	/*@}*/
 	
 	

@@ -56,7 +56,7 @@ public:
 	
 	igdeDEConsole_TextCommand(igdeDEConsole &panel) : pPanel(panel){}
 	
-	virtual void OnEnterKey(igdeTextField*){
+	void OnEnterKey(igdeTextField*) override{
 		pPanel.SendCommand();
 	}
 };

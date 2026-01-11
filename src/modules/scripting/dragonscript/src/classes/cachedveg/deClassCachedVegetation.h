@@ -50,7 +50,7 @@ public:
 	/** Creates a new CLASS. */
 	deClassCachedVegetation(deScriptingDragonScript *ds);
 	/** Cleans up the CLASS. */
-	virtual ~deClassCachedVegetation();
+	~deClassCachedVegetation() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -58,7 +58,7 @@ public:
 	/** Retrieves the module. */
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/** Creates class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	/*@}*/
 	
 private:

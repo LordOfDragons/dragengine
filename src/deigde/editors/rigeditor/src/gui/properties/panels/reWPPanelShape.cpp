@@ -64,7 +64,7 @@ public:
 	typedef deTObjectReference<cTextProperty> Ref;
 	cTextProperty(reWPPanelShape &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		reRig * const rig = pPanel.GetRig();
 		reRigShape * const shape = pPanel.GetShape();
 		if(!rig || !shape){

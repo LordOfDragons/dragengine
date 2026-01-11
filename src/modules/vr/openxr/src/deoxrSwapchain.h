@@ -83,7 +83,7 @@ public:
 	
 protected:
 	/** Clean up space. */
-	virtual ~deoxrSwapchain();
+	~deoxrSwapchain() override;
 	/*@}*/
 	
 	

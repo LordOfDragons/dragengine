@@ -75,7 +75,7 @@ public:
 	
 protected:
 	/** \brief Clean up view. */
-	virtual ~meView3D();
+	~meView3D() override;
 	/*@}*/
 	
 	
@@ -96,13 +96,13 @@ public:
 	void SetWorld(meWorld *world);
 	
 	/** \brief Create canvas. */
-	virtual void CreateCanvas();
+	void CreateCanvas() override;
 	
 	/** \brief Resize canvas to fit window size. */
-	virtual void OnResize();
+	void OnResize() override;
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate(float elapsed);
+	void OnFrameUpdate(float elapsed) override;
 	
 	/** \brief Mode changed. */
 	void ModeChanged();

@@ -55,12 +55,12 @@ public:
 	meULowerDecalBottom(meWorld *world, meDecal *decal);
 	
 protected:
-	virtual ~meULowerDecalBottom();
+	~meULowerDecalBottom() override;
 	
 public:
 	// undo and redo operations
-	virtual void Undo();
-	virtual void Redo();
+	void Undo() override;
+	void Redo() override;
 };
 
 // end of include only once

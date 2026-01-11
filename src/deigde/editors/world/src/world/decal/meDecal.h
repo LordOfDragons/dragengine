@@ -111,7 +111,7 @@ public:
 	
 protected:
 	/** \brief Cleans up the decal. */
-	virtual ~meDecal();
+	~meDecal() override;
 	
 public:
 	/*@}*/

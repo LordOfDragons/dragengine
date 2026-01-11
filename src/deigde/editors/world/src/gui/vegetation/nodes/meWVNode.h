@@ -58,7 +58,7 @@ public:
 	
 protected:
 	/** \brief Clean up object. */
-	virtual ~meWVNode();
+	~meWVNode() override;
 	/*@}*/
 	
 	

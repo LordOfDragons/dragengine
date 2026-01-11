@@ -53,16 +53,16 @@ public:
 	aeURuleTrackToSetLockedAxis(aeRuleTrackTo *rule, deAnimatorRuleTrackTo::eLockedAxis newAxis);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleTrackToSetLockedAxis();
+	~aeURuleTrackToSetLockedAxis() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

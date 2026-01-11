@@ -55,7 +55,7 @@ public:
 	/** Creates a new virtual file system list. */
 	igdeNativeFoxVFSDirectoryBox(deVirtualFileSystem *vfs, FXComposite *p,FXObject* tgt=nullptr,FXSelector sel=0,FXuint opts=FRAME_SUNKEN|FRAME_THICK|TREELISTBOX_NORMAL,FXint x=0,FXint y=0,FXint w=0,FXint h=0,FXint pl=DEFAULT_PAD,FXint pr=DEFAULT_PAD,FXint pt=DEFAULT_PAD,FXint pb=DEFAULT_PAD);
 	/** Cleans up the virtual file system list. */
-	virtual ~igdeNativeFoxVFSDirectoryBox();
+	~igdeNativeFoxVFSDirectoryBox() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -69,11 +69,11 @@ public:
 	void SetPath(const decPath &path);
 	
 	/** Create server-side resources. */
-	virtual void create();
+	void create() override;
 	/** Detach server-side resources. */
-	virtual void detach();
+	void detach() override;
 	/** Destroy server-side resources. */
-	virtual void destroy();
+	void destroy() override;
 	/*@}*/
 	
 	/** \name Events */

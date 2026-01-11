@@ -46,13 +46,13 @@ public:
 	/** Creates a new script class. */
 	deClassOcclusionMesh(deScriptingDragonScript *ds);
 	/** Cleans up the script class. */
-	~deClassOcclusionMesh();
+	~deClassOcclusionMesh() override;
 	/*@}*/
 	
 	/** @name Management */
 	/*@{*/
 	/** Creates the class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	/** Retrieves the scripting module. */
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	

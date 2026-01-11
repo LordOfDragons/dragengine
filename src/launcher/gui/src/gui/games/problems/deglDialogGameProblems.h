@@ -88,7 +88,7 @@ public:
 		delGame *game, delGameProfile *profile, FXWindow *owner);
 	
 	/** Clean up dialog. */
-	virtual ~deglDialogGameProblems();
+	~deglDialogGameProblems() override;
 	/*@}*/
 	
 	

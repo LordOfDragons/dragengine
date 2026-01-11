@@ -133,7 +133,7 @@ public:
 	
 protected:
 	/** Clean up device. */
-	virtual ~dexsiDevice();
+	~dexsiDevice() override;
 	/*@}*/
 	
 	

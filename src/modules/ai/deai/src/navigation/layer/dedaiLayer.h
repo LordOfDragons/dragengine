@@ -64,7 +64,7 @@ public:
 	
 protected:
 	/** \brief Clean up layer. */
-	virtual ~dedaiLayer();
+	~dedaiLayer() override;
 	/*@}*/
 	
 	

@@ -50,16 +50,16 @@ public:
 	aeURuleAnimDiffToggleEnableVertexPositionSet(aeRuleAnimationDifference *rule);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleAnimDiffToggleEnableVertexPositionSet();
+	~aeURuleAnimDiffToggleEnableVertexPositionSet() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

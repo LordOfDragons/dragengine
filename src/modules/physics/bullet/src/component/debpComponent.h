@@ -85,7 +85,7 @@ public:
 	debpComponent(dePhysicsBullet &bullet, deComponent *comp);
 	
 	/** \brief Clean up peer. */
-	~debpComponent();
+	~debpComponent() override;
 	/*@}*/
 	
 	
@@ -163,32 +163,32 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	/** \brief Scaling changed. */
-	virtual void ScalingChanged();
+	void ScalingChanged() override;
 	
 	/** \brief Orientation changed. */
-	virtual void OrientationChanged();
+	void OrientationChanged() override;
 	
 	/** \brief Model object changed. */
-	virtual void ModelChanged();
+	void ModelChanged() override;
 	
 	/** \brief Rig object changed. */
-	virtual void RigChanged();
+	void RigChanged() override;
 	
 	/** \brief Visitility changed. */
-	virtual void VisibilityChanged();
+	void VisibilityChanged() override;
 	
 	/** \brief Extends changed. */
-	virtual void ExtendsChanged();
+	void ExtendsChanged() override;
 	
 	/**
 	 * \brief Mesh vertices have been invalidated.
 	 * 
 	 * Called if Model changed or bones have been invalidated.
 	 */
-	virtual void MeshDirty();
+	void MeshDirty() override;
 	/*@}*/
 	
 	
@@ -204,7 +204,7 @@ public:
 	 * \param[in] point Point on the surface to test.
 	 * \param[out] list List of decals to fill in. Not emptied before filling.
 	 */
-	virtual void FindDecalsAt(const decVector &point, deDecalList &list);
+	void FindDecalsAt(const decVector &point, deDecalList &list) override;
 	
 	/**
 	 * \brief Collect decals in contact with shape.
@@ -214,7 +214,7 @@ public:
 	 * \param[in] shape Shape to test.
 	 * \param[out] list List of decals to fill in. Not emptied before filling.
 	 */
-	virtual void FindDecalsTouching(decShape *shape, deDecalList &list);
+	void FindDecalsTouching(decShape *shape, deDecalList &list) override;
 	/*@}*/
 	
 	

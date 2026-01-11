@@ -40,7 +40,7 @@ public:
 	meRigBuilderMeshCollision();
 	
 	/** \brief Clean up builder. */
-	virtual ~meRigBuilderMeshCollision();
+	~meRigBuilderMeshCollision() override;
 	/*@}*/
 	
 	
@@ -48,7 +48,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Build rig into the provided rig object. */
-	virtual void BuildRig(deRig *rig);
+	void BuildRig(deRig *rig) override;
 	/*@}*/
 };
 

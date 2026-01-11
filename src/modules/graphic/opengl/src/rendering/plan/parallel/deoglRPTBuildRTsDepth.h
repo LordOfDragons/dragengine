@@ -56,7 +56,7 @@ public:
 	deoglRPTBuildRTsDepth(deoglRenderPlanTasks &plan, const deoglRenderPlanMasked *mask);
 	
 	/** Clean up task. */
-	virtual ~deoglRPTBuildRTsDepth();
+	~deoglRPTBuildRTsDepth() override;
 	/*@}*/
 	
 	
@@ -64,13 +64,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Run task. */
-	virtual void Run();
+	void Run() override;
 	
 	/** Task finished. */
-	virtual void Finished();
+	void Finished() override;
 	
 	/** Debug name. */
-	virtual decString GetDebugName() const;
+	decString GetDebugName() const override;
 	
 	/** Elapsed time. */
 	inline float GetElapsedTime() const{ return pElapsedTime; }

@@ -55,7 +55,7 @@ public:
 	
 protected:
 	/** \brief Clean up the undo action. */
-	virtual ~peeUControllerSetName();
+	~peeUControllerSetName() override;
 	/*@}*/
 	
 	
@@ -64,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

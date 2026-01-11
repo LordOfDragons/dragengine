@@ -191,7 +191,7 @@ public:
 	
 	/** \brief Clean up property. */
 protected:
-	virtual ~gdeProperty();
+	~gdeProperty() override;
 public:
 	/*@}*/
 	

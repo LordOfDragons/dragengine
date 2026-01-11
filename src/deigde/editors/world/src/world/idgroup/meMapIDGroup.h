@@ -58,7 +58,7 @@ public:
 	
 protected:
 	/** Clean up mapping between game definition property and Identifier group. */
-	virtual ~meMapIDGroup();
+	~meMapIDGroup() override;
 	
 public:
 	/*@}*/

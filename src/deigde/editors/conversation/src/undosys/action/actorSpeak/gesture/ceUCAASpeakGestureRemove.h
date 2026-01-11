@@ -54,16 +54,16 @@ public:
 	ceUCAASpeakGestureRemove(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *gesture);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCAASpeakGestureRemove();
+	~ceUCAASpeakGestureRemove() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

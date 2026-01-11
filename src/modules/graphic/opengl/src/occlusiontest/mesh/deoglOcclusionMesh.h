@@ -50,7 +50,7 @@ public:
 	deoglOcclusionMesh(deGraphicOpenGl &ogl, const deOcclusionMesh &occlusionMesh);
 	
 	/** Clean up peer. */
-	virtual ~deoglOcclusionMesh();
+	~deoglOcclusionMesh() override;
 	/*@}*/
 	
 	

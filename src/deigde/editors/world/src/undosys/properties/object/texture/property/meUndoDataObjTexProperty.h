@@ -59,7 +59,7 @@ protected:
 	/** \brief Clean up undo data. */
 
 protected:
-	virtual ~meUndoDataObjTexProperty();
+	~meUndoDataObjTexProperty() override;
 
 public:
 	/*@}*/

@@ -50,7 +50,7 @@ public:
 	igdeNativeFoxContainerForm(igdeContainerForm &owner, FXComposite *parent, int layoutFlags);
 	
 	/** \brief Clean up container. */
-	virtual ~igdeNativeFoxContainerForm();
+	~igdeNativeFoxContainerForm() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeFoxContainerForm* CreateNativeWidget(igdeContainerForm &owner);

@@ -80,7 +80,7 @@ public:
 		FXComposite *windowParent, int layoutFlags);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxToolBar();
+	~igdeNativeFoxToolBar() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeFoxToolBar* CreateNativeWidget(igdeToolBar &owner);

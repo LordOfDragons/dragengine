@@ -47,7 +47,7 @@ public:
 	deClassTexMatrix2(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
-	virtual ~deClassTexMatrix2();
+	~deClassTexMatrix2() override;
 	/*@}*/
 	
 	
@@ -59,7 +59,7 @@ public:
 	inline const deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/**
 	 * \brief Texture matrix from an object.

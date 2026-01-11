@@ -84,7 +84,7 @@ public:
 	
 protected:
 	/** Clean up space. */
-	virtual ~deoxrSpace();
+	~deoxrSpace() override;
 	/*@}*/
 	
 	

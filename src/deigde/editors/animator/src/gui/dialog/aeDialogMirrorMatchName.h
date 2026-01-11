@@ -54,7 +54,7 @@ public:
 	
 protected:
 	/** Clean up dialog. */
-	virtual ~aeDialogMirrorMatchName();
+	~aeDialogMirrorMatchName() override;
 	/*@}*/
 	
 	
@@ -72,10 +72,10 @@ public:
 	 * Init running. Called by Run() after dialog is created. Subclass can implement to
 	 * init controls after the dialog is visible on screen.
 	 */
-	virtual void OnDialogShown();
+	void OnDialogShown() override;
 	
 	/** Accept dialog. */
-	virtual bool Accept();
+	bool Accept() override;
 	/*@}*/
 };
 

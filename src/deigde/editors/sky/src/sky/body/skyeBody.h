@@ -72,7 +72,7 @@ public:
 	
 protected:
 	/** \brief Clean up sky body. */
-	virtual ~skyeBody();
+	~skyeBody() override;
 	/*@}*/
 	
 	

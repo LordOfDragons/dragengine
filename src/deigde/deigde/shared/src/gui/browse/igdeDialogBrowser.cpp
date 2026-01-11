@@ -71,7 +71,7 @@ public:
 	
 	igdeDialogBrowser_TreeCategories(igdeDialogBrowser &dialog) : pDialog(dialog){}
 	
-	virtual void OnSelectionChanged(igdeTreeList*){
+	void OnSelectionChanged(igdeTreeList*) override{
 		pDialog.UpdateItemList();
 	}
 };
@@ -85,11 +85,11 @@ public:
 	
 	igdeDialogBrowser_TextFilter(igdeDialogBrowser &dialog) : pDialog(dialog){}
 	
-	virtual void OnTextChanged(igdeTextField*){
+	void OnTextChanged(igdeTextField*) override{
 		pDialog.UpdateItemList();
 	}
 	
-	virtual void OnTextChanging(igdeTextField*){
+	void OnTextChanging(igdeTextField*) override{
 		pDialog.UpdateItemList();
 	}
 };
@@ -161,15 +161,15 @@ public:
 	
 	igdeDialogBrowser_ListItems(igdeDialogBrowser &dialog) : pDialog(dialog){}
 	
-	virtual void OnSelectionChanged(igdeIconListBox*){
+	void OnSelectionChanged(igdeIconListBox*) override{
 		pDialog.CurrentItemChanged();
 	}
 	
-	virtual void OnDoubleClickItem(igdeIconListBox*, int){
+	void OnDoubleClickItem(igdeIconListBox*, int) override{
 		pDialog.Accept();
 	}
 	
-	virtual void AddContextMenuEntries(igdeIconListBox*, igdeMenuCascade &menu){
+	void AddContextMenuEntries(igdeIconListBox*, igdeMenuCascade &menu) override{
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		
 		helper.MenuOption(menu, pDialog.GetActionPISizeLarge());

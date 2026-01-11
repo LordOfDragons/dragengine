@@ -121,19 +121,19 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Position, orientation or size changed. */
-	virtual void GeometryChanged();
+	void GeometryChanged() override;
 	
 	/** Texture coordinates transformation changed. */
-	virtual void TransformChanged();
+	void TransformChanged() override;
 	
 	/** Skin changed. */
-	virtual void SkinChanged();
+	void SkinChanged() override;
 	
 	/** Dynamic skin changed. */
-	virtual void DynamicSkinChanged();
+	void DynamicSkinChanged() override;
 	
 	/** Visible changed. */
-	virtual void VisibleChanged();
+	void VisibleChanged() override;
 	/*@}*/
 	
 	

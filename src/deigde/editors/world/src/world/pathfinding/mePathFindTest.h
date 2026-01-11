@@ -80,7 +80,7 @@ public:
 	
 protected:
 	/** \brief Cleans up the path find test. */
-	virtual ~mePathFindTest();
+	~mePathFindTest() override;
 	
 public:
 	/*@}*/

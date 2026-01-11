@@ -62,7 +62,7 @@ public:
 		const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxGroupBox();
+	~igdeNativeFoxGroupBox() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeFoxGroupBox* CreateNativeWidget(igdeGroupBox &owner);
@@ -78,7 +78,7 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual FXint getDefaultHeight();
+	FXint getDefaultHeight() override;
 	
 	virtual void UpdateCollapsed();
 	virtual void UpdateTitle();

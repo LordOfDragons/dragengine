@@ -65,12 +65,12 @@ public:
 	meUSetObjectClass(meObject::List &objects, const char *newcname);
 	
 protected:
-	~meUSetObjectClass();
+	~meUSetObjectClass() override;
 	
 public:
 	// management
-	void Undo();
-	void Redo();
+	void Undo() override;
+	void Redo() override;
 };
 
 #endif

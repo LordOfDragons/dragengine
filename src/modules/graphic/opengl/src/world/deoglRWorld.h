@@ -131,7 +131,7 @@ public:
 	
 protected:
 	/** Clean up render camera. */
-	virtual ~deoglRWorld();
+	~deoglRWorld() override;
 	/*@}*/
 	
 	

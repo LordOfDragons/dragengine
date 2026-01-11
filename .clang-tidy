@@ -1,0 +1,5 @@
+---
+Checks: '-*,modernize-use-override'
+HeaderFilterRegex: '.*/src/.*'
+CheckOptions:
+  modernize-use-override.IgnoreDestructors: 'false'

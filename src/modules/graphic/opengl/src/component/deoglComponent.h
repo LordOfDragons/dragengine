@@ -193,68 +193,68 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	/** Scaling changed. */
-	virtual void ScalingChanged();
+	void ScalingChanged() override;
 	
 	/** Orientation changed. */
-	virtual void OrientationChanged();
+	void OrientationChanged() override;
 	
 	/** Model object changed. */
-	virtual void ModelChanged();
+	void ModelChanged() override;
 	
 	/** Skin object changed. */
-	virtual void SkinChanged();
+	void SkinChanged() override;
 	
 	/** Model and skin object changed. */
-	virtual void ModelAndSkinChanged();
+	void ModelAndSkinChanged() override;
 	
 	/** Rig object changed. */
-	virtual void RigChanged();
+	void RigChanged() override;
 	
 	/** Visitility changed. */
-	virtual void VisibilityChanged();
+	void VisibilityChanged() override;
 	
 	/** Extends changed. */
-	virtual void ExtendsChanged();
+	void ExtendsChanged() override;
 	
 	/**
 	 * Mesh vertices have been invalidated.
 	 * 
 	 * Called if Model changed or bones have been invalidated.
 	 */
-	virtual void MeshDirty();
+	void MeshDirty() override;
 	
 	/** Occlusion mesh changed. */
-	virtual void OcclusionMeshChanged();
+	void OcclusionMeshChanged() override;
 	
 	/** Parameter or hint changed. */
-	virtual void ParametersChanged();
+	void ParametersChanged() override;
 	
 	
 	
 	/** Texture changed. */
-	virtual void TextureChanged(int index, deComponentTexture& texture);
+	void TextureChanged(int index, deComponentTexture& texture) override;
 	
 	/** Dynamic skin changed. */
-	virtual void DynamicSkinChanged();
+	void DynamicSkinChanged() override;
 	
 	
 	
 	/** Layer mask changed. */
-	virtual void LayerMaskChanged();
+	void LayerMaskChanged() override;
 	
 	
 	
 	/** Decal has been added. */
-	virtual void DecalAdded(deDecal *decal);
+	void DecalAdded(deDecal *decal) override;
 	
 	/** Decal has been removed. */
-	virtual void DecalRemoved(deDecal *decal);
+	void DecalRemoved(deDecal *decal) override;
 	
 	/** All decals have been removed. */
-	virtual void AllDecalsRemoved();
+	void AllDecalsRemoved() override;
 	
 	
 	
@@ -262,7 +262,7 @@ public:
 	 * Retrieve index of the texture of the face closest to a position or -1 if not found.
 	 * \details Limits the search to the provided radius.
 	 */
-	virtual int IndexOfTextureClosestTo(const decVector &vector, float radius);
+	int IndexOfTextureClosestTo(const decVector &vector, float radius) override;
 	
 	/** Retrieve index of the face closest to a position or -1 if not found. */
 	//int IndexOfFaceClosestTo( const decVector &vector, float radius );

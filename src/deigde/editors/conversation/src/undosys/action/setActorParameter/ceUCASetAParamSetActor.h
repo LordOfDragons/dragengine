@@ -53,16 +53,16 @@ public:
 	ceUCASetAParamSetActor(ceConversationTopic *topic, ceCASetActorParameter *action, const char *newActorID);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCASetAParamSetActor();
+	~ceUCASetAParamSetActor() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

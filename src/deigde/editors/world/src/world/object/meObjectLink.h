@@ -69,7 +69,7 @@ public:
 	
 protected:
 	/** \brief Cleans up an object link. */
-	virtual ~meObjectLink();
+	~meObjectLink() override;
 	
 public:
 	/*@}*/

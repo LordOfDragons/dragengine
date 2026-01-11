@@ -71,7 +71,7 @@ public:
 	inline ceCAPlayerChoice &GetIfElse() const{ return *pPlayerChoice; }
 	
 	/** \brief Do menu action. */
-	virtual void OnAction();
+	void OnAction() override;
 	/*@}*/
 };
 

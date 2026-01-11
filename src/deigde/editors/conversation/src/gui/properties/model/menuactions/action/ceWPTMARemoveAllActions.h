@@ -63,7 +63,7 @@ public:
 	inline ceConversation &GetConversation() const{ return *pConversation; }
 	
 	/** \brief Do menu action. */
-	virtual void OnAction();
+	void OnAction() override;
 	
 	/** \brief Create undo action for adding action. */
 	virtual igdeUndo::Ref CreateUndo();

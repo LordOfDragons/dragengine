@@ -48,7 +48,7 @@ public:
 	class Launcher : public delLauncher{
 	public:
 		Launcher();
-		virtual ~Launcher();
+		~Launcher() override;
 	};
 	
 #ifdef OS_UNIX

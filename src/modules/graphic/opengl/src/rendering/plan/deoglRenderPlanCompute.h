@@ -99,7 +99,7 @@ public:
 	
 protected:
 	/** Clean up render plan compute. */
-	~deoglRenderPlanCompute();
+	~deoglRenderPlanCompute() override;
 	/*@}*/
 	
 	

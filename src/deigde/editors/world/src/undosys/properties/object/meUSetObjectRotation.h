@@ -54,12 +54,12 @@ public:
 	meUSetObjectRotation(meObject *object, const decVector &newRotation);
 	
 protected:
-	~meUSetObjectRotation();
+	~meUSetObjectRotation() override;
 	
 public:
 	// management
-	void Undo();
-	void Redo();
+	void Undo() override;
+	void Redo() override;
 };
 
 // end of include only once

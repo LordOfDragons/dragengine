@@ -78,7 +78,7 @@ public:
 	/** Creates a new dialog. */
 	deglDialogModuleProps(deglWindowMain *windowMain, delEngineModule *module, FXWindow *owner);
 	/** Cleans up the dialog. */
-	virtual ~deglDialogModuleProps();
+	~deglDialogModuleProps() override;
 	/*@}*/
 	
 	/** \name Management */

@@ -52,7 +52,7 @@ public:
 	/** Creates a new peer. */
 	dearAnimation(deDEAnimator *module, deAnimation *animation);
 	/** Cleans up the peer. */
-	virtual ~dearAnimation();
+	~dearAnimation() override;
 	/*@}*/
 	
 	/** \name Management */

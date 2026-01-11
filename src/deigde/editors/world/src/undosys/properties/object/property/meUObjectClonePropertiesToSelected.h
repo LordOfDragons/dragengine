@@ -55,7 +55,7 @@ protected:
 	/** \brief Clean up undo object. */
 
 protected:
-	virtual ~meUObjectClonePropertiesToSelected();
+	~meUObjectClonePropertiesToSelected() override;
 
 public:
 	/*@}*/
@@ -71,9 +71,9 @@ public:
 	inline const decStringDictionary &GetProperties() const{ return pProperties; }
 	
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

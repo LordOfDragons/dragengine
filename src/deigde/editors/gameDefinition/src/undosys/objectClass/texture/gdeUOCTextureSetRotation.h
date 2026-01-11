@@ -59,7 +59,7 @@ public:
 	
 protected:
 	/** Clean up undo action. */
-	virtual ~gdeUOCTextureSetRotation();
+	~gdeUOCTextureSetRotation() override;
 	/*@}*/
 	
 	
@@ -67,10 +67,10 @@ protected:
 	/** \rotation Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

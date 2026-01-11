@@ -68,7 +68,7 @@ public:
 	}
 	
 	// visiting
-	void VisitDocument(decXmlDocument &doc){
+	void VisitDocument(decXmlDocument &doc) override{
 		PrintIndent();
 		printf("%c Document: Encoding(%s) DocType(%s) SysLit(%s) PubLit(%s) Standalone(%c)\n",
 			doc.IsEmpty() ? '-' : '+',
@@ -80,7 +80,7 @@ public:
 		pIndent--;
 	}
 	
-	void VisitComment(decXmlComment &comment){
+	void VisitComment(decXmlComment &comment) override{
 		char commentBuf[54];
 		PrintIndent();
 		strncpy((char*)&commentBuf, comment.GetComment(), 50);
@@ -91,13 +91,13 @@ public:
 		printf("- Comment: \"%s\"\n", commentBuf);
 	}
 	
-	void VisitPI(decXmlPI &pi){
+	void VisitPI(decXmlPI &pi) override{
 		PrintIndent();
 		printf("- Process Instrucion: Target(%s) Command(%s)\n",
 			pi.GetTarget().GetString(), pi.GetCommand().GetString());
 	}
 	
-	void VisitElementTag(decXmlElementTag &tag){
+	void VisitElementTag(decXmlElementTag &tag) override{
 		PrintIndent();
 		printf("%c Element Tag: Name(%s) Namespace(%s) LocalName(%s)\n",
 			tag.IsEmpty() ? '-' : '+', tag.GetName().GetString(),
@@ -107,7 +107,7 @@ public:
 		pIndent--;
 	}
 	
-	void VisitCharacterData(decXmlCharacterData &data){
+	void VisitCharacterData(decXmlCharacterData &data) override{
 		char dataBuf[54];
 		PrintIndent();
 		strncpy((char*)&dataBuf, data.GetData(), 50);
@@ -115,7 +115,7 @@ public:
 		printf("- Character Data: \"%s\"\n", dataBuf);
 	}
 	
-	void VisitEntityReference(decXmlEntityReference &ref){
+	void VisitEntityReference(decXmlEntityReference &ref) override{
 		char dataBuf[54];
 		PrintIndent();
 		strncpy((char*)&dataBuf, ref.GetName(), 50);
@@ -123,7 +123,7 @@ public:
 		printf("- Entity Reference: \"%s\"\n", dataBuf);
 	}
 	
-	void VisitCharReference(decXmlCharReference &ref){
+	void VisitCharReference(decXmlCharReference &ref) override{
 		char dataBuf[54];
 		PrintIndent();
 		strncpy((char*)&dataBuf, ref.GetData(), 50);
@@ -135,7 +135,7 @@ public:
 		}
 	}
 	
-	void VisitCDSect(decXmlCDSect &cdsect){
+	void VisitCDSect(decXmlCDSect &cdsect) override{
 		char dataBuf[54];
 		PrintIndent();
 		strncpy((char*)&dataBuf, cdsect.GetData(), 50);
@@ -143,14 +143,14 @@ public:
 		printf("- CDSect: \"%s\"\n", dataBuf);
 	}
 	
-	void VisitAttValue(decXmlAttValue &value){
+	void VisitAttValue(decXmlAttValue &value) override{
 		PrintIndent();
 		printf("- Attribute Value: Name(%s) Namespace(%s) LocalName(%s) Value(\"%s\")\n",
 			value.GetName().GetString(), value.GetNamespace().GetString(),
 			value.GetLocalName().GetString(), value.GetValue().GetString());
 	}
 	
-	void VisitNamespace(decXmlNamespace &ns){
+	void VisitNamespace(decXmlNamespace &ns) override{
 		PrintIndent();
 		printf("- Namespace: Name(%s) URL(\"%s\")\n",
 			ns.GetName().GetString(), ns.GetURL().GetString());

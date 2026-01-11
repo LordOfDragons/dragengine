@@ -55,16 +55,16 @@ public:
 	aeURuleLimitSetPosMax(aeRuleLimit *rule, const decVector &newMax);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleLimitSetPosMax();
+	~aeURuleLimitSetPosMax() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

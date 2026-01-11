@@ -82,7 +82,7 @@ public:
 	desynSynthesizerInstance(deDESynthesizer &module, deSynthesizerInstance &instance);
 	
 	/** \brief Clean up synthesizer instance peer. */
-	virtual ~desynSynthesizerInstance();
+	~desynSynthesizerInstance() override;
 	/*@}*/
 	
 	
@@ -135,13 +135,13 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Synthesizer changed. */
-	virtual void SynthesizerChanged();
+	void SynthesizerChanged() override;
 	
 	/** \brief Controller changed. */
-	virtual void ControllerChanged(int index);
+	void ControllerChanged(int index) override;
 	
 	/** \brief Play time changed. */
-	virtual void PlayTimeChanged();
+	void PlayTimeChanged() override;
 	/*@}*/
 	
 	
@@ -153,7 +153,7 @@ public:
 	 * 
 	 * \warning Audio module is allowed to call this asynchronously.
 	 */
-	virtual void Reset();
+	void Reset() override;
 	
 	/**
 	 * \brief Generate sound.
@@ -169,7 +169,7 @@ public:
 	 * \throws EInvalidParam \em buffer is NULL.
 	 * \throws EInvalidParam Assigned synthesizer object changed while in use.
 	 */
-	virtual void GenerateSound(void *buffer, int bufferSize, int offset, int samples);
+	void GenerateSound(void *buffer, int bufferSize, int offset, int samples) override;
 	/*@}*/
 	
 	

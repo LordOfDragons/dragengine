@@ -81,7 +81,7 @@ public:
 	
 protected:
 	/** Clean up device axis. */
-	virtual ~deoxrDeviceAxis();
+	~deoxrDeviceAxis() override;
 	/*@}*/
 	
 	

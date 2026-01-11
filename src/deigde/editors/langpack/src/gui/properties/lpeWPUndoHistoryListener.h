@@ -50,7 +50,7 @@ public:
 	lpeWPUndoHistoryListener(lpeWPUndoHistory &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~lpeWPUndoHistoryListener();
+	~lpeWPUndoHistoryListener() override;
 	/*@}*/
 	
 	

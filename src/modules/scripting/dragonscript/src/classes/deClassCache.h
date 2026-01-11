@@ -51,7 +51,7 @@ public:
 	deClassCache(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
-	virtual ~deClassCache();
+	~deClassCache() override;
 	/*@}*/
 	
 	
@@ -59,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Create class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Script module. */
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }

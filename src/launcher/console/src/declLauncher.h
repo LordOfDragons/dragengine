@@ -63,7 +63,7 @@ public:
 	declLauncher();
 	
 	/** Clean up launcher. */
-	virtual ~declLauncher();
+	~declLauncher() override;
 	/*@}*/
 	
 	

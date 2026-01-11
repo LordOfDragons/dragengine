@@ -128,7 +128,7 @@ public:
 	typedef deTObjectReference<cBaseComboBoxListener> Ref;
 	cBaseComboBoxListener(aeWPAPanelRuleInverseKinematic &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleInverseKinematic * const rule = (aeRuleInverseKinematic*)pPanel.GetRule();
 		if(!animator || !rule){
@@ -152,7 +152,7 @@ public:
 	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(aeWPAPanelRuleInverseKinematic &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleInverseKinematic * const rule = (aeRuleInverseKinematic*)pPanel.GetRule();
 		if(!animator || !rule){
@@ -176,7 +176,7 @@ public:
 	typedef deTObjectReference<cBaseEditVectorListener> Ref;
 	cBaseEditVectorListener(aeWPAPanelRuleInverseKinematic &panel) : pPanel(panel){}
 	
-	virtual void OnVectorChanged(igdeEditVector *editVector){
+	void OnVectorChanged(igdeEditVector *editVector) override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleInverseKinematic * const rule = (aeRuleInverseKinematic*)pPanel.GetRule();
 		if(!animator || !rule){

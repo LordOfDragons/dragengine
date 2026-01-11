@@ -98,8 +98,8 @@ public:
 	
 	
 protected:
-	virtual bool pOpenTrack(const webm::TrackEntry &track);
-	virtual void pProcessFrame(webm::Reader &reader, std::uint64_t &bytes_remaining);
+	bool pOpenTrack(const webm::TrackEntry &track) override;
+	void pProcessFrame(webm::Reader &reader, std::uint64_t &bytes_remaining) override;
 	void pEndSegment() override;
 	
 	

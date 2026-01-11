@@ -60,7 +60,7 @@ public:
 	igdeNativeFoxSlider(igdeSlider &owner, FXComposite *parent, int layoutFlags);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxSlider();
+	~igdeNativeFoxSlider() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeFoxSlider* CreateNativeWidget(igdeSlider &owner);

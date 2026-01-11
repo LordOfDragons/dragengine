@@ -54,7 +54,7 @@ public:
 	igdeNativeFoxMenuCheck(igdeMenuCheck &owner, FXComposite *parent);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxMenuCheck();
+	~igdeNativeFoxMenuCheck() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeFoxMenuCheck* CreateNativeWidget(igdeMenuCheck &owner);

@@ -58,7 +58,7 @@ public:
 	deoglLumimeter(deGraphicOpenGl &ogl, const deLumimeter &lumimeter);
 	
 	/** Clean up lumimeter peer. */
-	virtual ~deoglLumimeter();
+	~deoglLumimeter() override;
 	/*@}*/
 	
 	
@@ -82,13 +82,13 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	/** Direction changed. */
-	virtual void DirectionChanged();
+	void DirectionChanged() override;
 	
 	/** Cone parameter changed. */
-	virtual void ConeParameterChanged();
+	void ConeParameterChanged() override;
 	/*@}*/
 	
 	
@@ -96,10 +96,10 @@ public:
 	/** \name Measuring */
 	/*@{*/
 	/** Measures the luminance. */
-	virtual float MeasureLuminance();
+	float MeasureLuminance() override;
 	
 	/** Measures the color. */
-	virtual decColor MeasureColor();
+	decColor MeasureColor() override;
 	/*@}*/
 	
 private:

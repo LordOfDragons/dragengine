@@ -53,7 +53,7 @@ public:
 	
 protected:
 	/** Clean up light pipeline. */
-	virtual ~deoglSkinTexturePipeline();
+	~deoglSkinTexturePipeline() override;
 	/*@}*/
 	
 	

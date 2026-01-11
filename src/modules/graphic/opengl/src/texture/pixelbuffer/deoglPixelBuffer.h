@@ -204,7 +204,7 @@ public:
 	
 protected:
 	/** Cleans up the opengl array texture. */
-	virtual ~deoglPixelBuffer();
+	~deoglPixelBuffer() override;
 	/*@}*/
 	
 	

@@ -54,7 +54,7 @@ public:
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeULinkSetCurve();
+	~aeULinkSetCurve() override;
 	/*@}*/
 	
 	
@@ -66,10 +66,10 @@ public:
 	void SetNewCurve(const decCurveBezier &curve);
 	
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	
 	/** Progressive redo action. */
 	void ProgressiveRedo();

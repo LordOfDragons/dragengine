@@ -49,16 +49,16 @@ public:
 	aeURuleLimitSetEnableScaleXMin(aeRuleLimit *rule);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleLimitSetEnableScaleXMin();
+	~aeURuleLimitSetEnableScaleXMin() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

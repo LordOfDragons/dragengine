@@ -84,7 +84,7 @@ public:
 	typedef deTObjectReference<cComboActorID> Ref;
 	cComboActorID(ceWPAActorSpeak &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorSpeak * const action = pPanel.GetAction();
 		if(!topic || !action  || comboBox->GetText() == action->GetActor()){
@@ -103,7 +103,7 @@ public:
 	typedef deTObjectReference<cTextTextBoxText> Ref;
 	cTextTextBoxText(ceWPAActorSpeak &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorSpeak * const action = pPanel.GetAction();
 		if(!topic || !action || textField->GetText() == action->GetTextBoxText().ToUTF8()){
@@ -153,7 +153,7 @@ public:
 	typedef deTObjectReference<cTextTextBoxTextTranslate> Ref;
 	cTextTextBoxTextTranslate(ceWPAActorSpeak &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorSpeak * const action = pPanel.GetAction();
 		if(!topic || !action || textField->GetText() == action->GetTextBoxTextTranslate()){
@@ -305,7 +305,7 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
 		"Show Text Box Text Translate Menu"), pPanel(panel){}
 	
-	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
+	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override{
 		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
 		
 		helper.MenuCommand(contextMenu, cActionTbt2TranslationEntry::Ref::New(pPanel));
@@ -322,7 +322,7 @@ public:
 	typedef deTObjectReference<cTextTextBoxStyle> Ref;
 	cTextTextBoxStyle(ceWPAActorSpeak &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorSpeak * const action = pPanel.GetAction();
 		if(!topic || !action || textField->GetText() == action->GetTextBoxTextStyle()){
@@ -341,7 +341,7 @@ public:
 	typedef deTObjectReference<cTextMovement> Ref;
 	cTextMovement(ceWPAActorSpeak &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorSpeak * const action = pPanel.GetAction();
 		if(!topic || !action || textField->GetText() == action->GetMovement()){
@@ -360,7 +360,7 @@ public:
 	typedef deTObjectReference<cPathSound> Ref;
 	cPathSound(ceWPAActorSpeak &panel) : pPanel(panel){}
 	
-	virtual void OnEditPathChanged(igdeEditPath *editPath){
+	void OnEditPathChanged(igdeEditPath *editPath) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorSpeak * const action = pPanel.GetAction();
 		if(!topic || !action || editPath->GetPath() == action->GetPathSound()){
@@ -379,7 +379,7 @@ public:
 	typedef deTObjectReference<cTextMinSpeechTime> Ref;
 	cTextMinSpeechTime(ceWPAActorSpeak &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorSpeak * const action = pPanel.GetAction();
 		const float time = textField->GetFloat();

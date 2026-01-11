@@ -77,7 +77,7 @@ public:
 	
 protected:
 	/** Clean up device list. */
-	virtual ~dexsiDeviceManager();
+	~dexsiDeviceManager() override;
 	/*@}*/
 	
 	

@@ -49,7 +49,7 @@ public:
 	deCRSimplyQuit(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up core fault. */
-	virtual ~deCRSimplyQuit();
+	~deCRSimplyQuit() override;
 	/*@}*/
 	
 	
@@ -57,13 +57,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Initialize module. */
-	virtual bool Init();
+	bool Init() override;
 	
 	/** \brief Clean up module. */
-	virtual void CleanUp();
+	void CleanUp() override;
 	
 	/** \brief Recover from error. */
-	virtual bool RecoverFromError();
+	bool RecoverFromError() override;
 	/*@}*/
 	
 	

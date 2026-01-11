@@ -70,7 +70,7 @@ public:
 	
 	/** \brief Clean up controller. */
 protected:
-	virtual ~syneController();
+	~syneController() override;
 public:
 	/*@}*/
 	

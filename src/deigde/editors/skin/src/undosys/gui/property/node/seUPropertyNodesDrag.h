@@ -57,7 +57,7 @@ public:
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~seUPropertyNodesDrag();
+	~seUPropertyNodesDrag() override;
 	/*@}*/
 	
 	
@@ -69,10 +69,10 @@ public:
 	void SetDistance(const decPoint &distance);
 	
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

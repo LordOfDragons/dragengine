@@ -65,7 +65,7 @@ public:
 		Framebuffer(deoxrGraphicApiOpenGL &gaogl, unsigned int image);
 		
 	protected:
-		virtual ~Framebuffer();
+		~Framebuffer() override;
 		
 	private:
 		deoxrGraphicApiOpenGL &pGAOgl;

@@ -61,12 +61,12 @@ public:
 	typedef deTObjectReference<cEditCurve> Ref;
 	cEditCurve(meWVNodeCurve &node) : pNode(node){}
 	
-	virtual void OnCurveChanged(igdeViewCurveBezier *viewCurveBezier){
+	void OnCurveChanged(igdeViewCurveBezier *viewCurveBezier) override{
 		OnCurveChanging(viewCurveBezier);
 		pUndo = nullptr;
 	}
 	
-	virtual void OnCurveChanging(igdeViewCurveBezier *viewCurveBezier){
+	void OnCurveChanging(igdeViewCurveBezier *viewCurveBezier) override{
 		if(pUndo){
 			((meUHTVRuleCurveSetCurve&)(igdeUndo&)pUndo).SetNewCurve(viewCurveBezier->GetCurve());
 			pUndo->Redo();

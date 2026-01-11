@@ -72,7 +72,7 @@ public:
 	typedef deTObjectReference<cComboOperator> Ref;
 	cComboOperator(ceWPCVariable &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionVariable * const condition = pPanel.GetCondition();
@@ -98,7 +98,7 @@ public:
 	typedef deTObjectReference<cTextVariable> Ref;
 	cTextVariable(ceWPCVariable &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionVariable * const condition = pPanel.GetCondition();
@@ -118,7 +118,7 @@ public:
 	typedef deTObjectReference<cTextTestValue> Ref;
 	cTextTestValue(ceWPCVariable &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionVariable * const condition = pPanel.GetCondition();
@@ -143,7 +143,7 @@ public:
 	typedef deTObjectReference<cTextTestVariable> Ref;
 	cTextTestVariable(ceWPCVariable &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionVariable * const condition = pPanel.GetCondition();

@@ -71,7 +71,7 @@ public:
 	
 	
 	/** \brief Do menu action. */
-	virtual void OnAction();
+	void OnAction() override;
 	
 	/** \brief Create undo action for pasting condition. */
 	virtual igdeUndo::Ref CreateUndo(const ceConversationCondition::List &conditions);

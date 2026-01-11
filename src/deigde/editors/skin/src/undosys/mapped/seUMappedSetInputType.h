@@ -55,7 +55,7 @@ public:
 	
 protected:
 	/** Clean up undo. */
-	virtual ~seUMappedSetInputType();
+	~seUMappedSetInputType() override;
 	/*@}*/
 	
 	
@@ -64,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -54,16 +54,16 @@ public:
 	aeUSetRuleFStaSrcCFrame(aeRuleForeignState *rule, deAnimatorRuleForeignState::eCoordinateFrames newCFrame);
 protected:
 	/** Clean up undo. */
-	virtual ~aeUSetRuleFStaSrcCFrame();
+	~aeUSetRuleFStaSrcCFrame() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

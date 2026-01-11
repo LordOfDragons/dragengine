@@ -103,7 +103,7 @@ public:
 	
 	
 	/** Create an engine synthesizer source. */
-	virtual deSynthesizerSource::Ref CreateEngineSource();
+	deSynthesizerSource::Ref CreateEngineSource() override;
 	
 	/** Create a copy of this source. */
 	syneSource::Ref CreateCopy() const override;

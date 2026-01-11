@@ -48,7 +48,7 @@ public:
 	deClassInputDeviceFeedback(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
-	virtual ~deClassInputDeviceFeedback();
+	~deClassInputDeviceFeedback() override;
 	/*@}*/
 	
 	
@@ -59,7 +59,7 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Creates class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Push feedback. */
 	void PushFeedback(dsRunTime *rt, dedsInputDevice *device, int index);

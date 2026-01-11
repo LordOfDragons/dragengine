@@ -58,7 +58,7 @@ public:
 	
 protected:
 	/** \brief Clean up bullet shape wrapper deleting wrapped bullet shape. */
-	virtual ~debpBulletShape();
+	~debpBulletShape() override;
 	/*@}*/
 	
 	

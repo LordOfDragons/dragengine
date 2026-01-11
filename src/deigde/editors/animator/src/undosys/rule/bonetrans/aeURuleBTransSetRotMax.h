@@ -55,16 +55,16 @@ public:
 	aeURuleBTransSetRotMax(aeRuleBoneTransformator *rule, const decVector &newMax);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleBTransSetRotMax();
+	~aeURuleBTransSetRotMax() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

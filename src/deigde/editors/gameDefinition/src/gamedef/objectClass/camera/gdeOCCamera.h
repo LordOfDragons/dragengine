@@ -61,7 +61,7 @@ public:
 	
 	/** \brief Clean up camera. */
 protected:
-	virtual ~gdeOCCamera();
+	~gdeOCCamera() override;
 public:
 	/*@}*/
 	

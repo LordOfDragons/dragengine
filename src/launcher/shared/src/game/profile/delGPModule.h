@@ -62,7 +62,7 @@ public:
 	
 protected:
 	/** \brief Clean up game profile. */
-	virtual ~delGPModule();
+	~delGPModule() override;
 	/*@}*/
 	
 	

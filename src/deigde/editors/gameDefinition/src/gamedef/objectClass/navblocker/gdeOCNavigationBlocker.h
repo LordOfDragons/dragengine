@@ -96,7 +96,7 @@ public:
 	
 	/** \brief Clean up navigation blocker. */
 protected:
-	virtual ~gdeOCNavigationBlocker();
+	~gdeOCNavigationBlocker() override;
 public:
 	/*@}*/
 	

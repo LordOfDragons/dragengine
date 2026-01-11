@@ -71,7 +71,7 @@ public:
 	
 	
 	/** \brief Do menu action. */
-	virtual void OnAction();
+	void OnAction() override;
 	
 	/** \brief Create undo action for adding condition. */
 	virtual igdeUndo::Ref CreateUndo(ceConversationCondition *condition);

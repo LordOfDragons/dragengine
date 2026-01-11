@@ -49,7 +49,7 @@ public:
 	deClassCanvasPaint(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
-	virtual ~deClassCanvasPaint();
+	~deClassCanvasPaint() override;
 	/*@}*/
 	
 	
@@ -62,7 +62,7 @@ public:
 	inline dsClass *GetClassCanvasPaintShape() const{ return pClsCanvasPaintShape; }
 	
 	/** \brief Create script class members. */
-	virtual void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/**
 	 * \brief Retrieve canvas paint from a script object.

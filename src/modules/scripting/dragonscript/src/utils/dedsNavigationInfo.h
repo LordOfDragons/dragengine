@@ -63,7 +63,7 @@ public:
 	
 protected:
 	/** \brief Clean up the navigation information. */
-	virtual ~dedsNavigationInfo();
+	~dedsNavigationInfo() override;
 	/*@}*/
 	
 	

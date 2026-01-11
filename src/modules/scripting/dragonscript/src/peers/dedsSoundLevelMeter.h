@@ -53,7 +53,7 @@ public:
 	dedsSoundLevelMeter(deScriptingDragonScript &ds, deSoundLevelMeter *soundLevelMeter);
 	
 	/** \brief Clean up peer. */
-	virtual ~dedsSoundLevelMeter();
+	~dedsSoundLevelMeter() override;
 	/*@}*/
 	
 	
@@ -74,12 +74,12 @@ public:
 	/**
 	 * \brief Speaker became audible.
 	 */
-	virtual void SpeakerAudible(const deSoundLevelMeter::cAudibleSpeaker &speaker);
+	void SpeakerAudible(const deSoundLevelMeter::cAudibleSpeaker &speaker) override;
 	
 	/**
 	 * \brief Speaker became inaudible.
 	 */
-	virtual void SpeakerInaudible(deSpeaker *speaker);
+	void SpeakerInaudible(deSpeaker *speaker) override;
 	/*@}*/
 };
 

@@ -84,7 +84,7 @@ public:
 	
 protected:
 	/** \brief Clean up node. */
-	virtual ~fbxNode();
+	~fbxNode() override;
 	/*@}*/
 	
 	

@@ -51,7 +51,7 @@ public:
 	/** \brief Creates a new peer. */
 	dedsPropField(deScriptingDragonScript *ds, dePropField *propField);
 	/** \brief Cleans up the peer. */
-	virtual ~dedsPropField();
+	~dedsPropField() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -73,7 +73,7 @@ public:
 	 * \details The density indicates the percentage of instances to use compared
 	 *          to a fully populated prop field.
 	 */
-	virtual void CreateInstances(float density);
+	void CreateInstances(float density) override;
 	/*@}*/
 };
 

@@ -62,7 +62,7 @@ public:
 	deClassARLimit(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
-	virtual ~deClassARLimit();
+	~deClassARLimit() override;
 	/*@}*/
 	
 	
@@ -73,7 +73,7 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Rule or \em NULL if deleted or myself is \em NULL. */
 	deAnimatorRuleLimit *GetRule(dsRealObject *myself) const;

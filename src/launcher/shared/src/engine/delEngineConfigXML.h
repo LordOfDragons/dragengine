@@ -47,7 +47,7 @@ public:
 	delEngineConfigXML(deLogger *logger, const char *loggerSource);
 	
 	/** \brief Clean up engine config xml read/save. */
-	virtual ~delEngineConfigXML();
+	~delEngineConfigXML() override;
 	/*@}*/
 	
 	

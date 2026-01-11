@@ -64,7 +64,7 @@ public:
 	
 protected:
 	/** \brief Cleans up panel. */
-	virtual ~igdeDEConsole();
+	~igdeDEConsole() override;
 	/*@}*/
 	
 	

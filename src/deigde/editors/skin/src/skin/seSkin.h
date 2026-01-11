@@ -122,7 +122,7 @@ public:
 	seSkin(igdeEnvironment *environment);
 	/** Cleans up the skin. */
 protected:
-	virtual ~seSkin();
+	~seSkin() override;
 public:
 	/*@}*/
 	
@@ -272,9 +272,9 @@ public:
 	void RemoveListener(seSkinListener *listener);
 	
 	/** Notify all listeners that the changed or saved state changed. */
-	virtual void NotifyStateChanged();
+	void NotifyStateChanged() override;
 	/** Notify all listeners that the undo system changed. */
-	virtual void NotifyUndoChanged();
+	void NotifyUndoChanged() override;
 	
 	/** Notify all that a skin parameter changed. */
 	void NotifySkinChanged();

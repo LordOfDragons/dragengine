@@ -65,7 +65,7 @@ public:
 	/** Creates a new camera. */
 	aeCamera(aeAnimator *animator, deEngine *engine);
 	/** Cleans up the camera object. */
-	virtual ~aeCamera();
+	~aeCamera() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -105,12 +105,12 @@ public:
 	void Update();
 	
 	/** Resets the camera. */
-	virtual void Reset();
+	void Reset() override;
 	
 	/** Parameter changed. */
-	virtual void ParameterChanged();
+	void ParameterChanged() override;
 	/** Adaption changed. */
-	virtual void AdaptionChanged();
+	void AdaptionChanged() override;
 	/*@}*/
 };
 

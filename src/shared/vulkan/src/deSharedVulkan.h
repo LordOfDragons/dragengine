@@ -68,7 +68,7 @@ public:
 	
 protected:
 	/** Clean up shared vulkan. */
-	virtual ~deSharedVulkan();
+	~deSharedVulkan() override;
 	/*@}*/
 	
 	

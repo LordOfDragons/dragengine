@@ -121,7 +121,7 @@ public:
 	peeEmitter(igdeEnvironment *environment, peeLoadSaveSystem &loadSaveSystem);
 	/** \brief Clean up the emitter. */
 protected:
-	virtual ~peeEmitter();
+	~peeEmitter() override;
 public:
 	/*@}*/
 	
@@ -241,9 +241,9 @@ public:
 	void RemoveListener(peeEmitterListener *listener);
 	
 	/** Notifies all listeners that the changed or saved state changed. */
-	virtual void NotifyStateChanged();
+	void NotifyStateChanged() override;
 	/** Notifies all listeners that the undo system changed. */
-	virtual void NotifyUndoChanged();
+	void NotifyUndoChanged() override;
 	
 	/** Notifies all that a emitter changed. */
 	void NotifyEmitterChanged();

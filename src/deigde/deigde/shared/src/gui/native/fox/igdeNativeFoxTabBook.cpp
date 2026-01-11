@@ -55,9 +55,9 @@ public:
 	igdeNativeFoxTabBookHeader(FXComposite *pparent, const char *text, FXIcon *iicon,
 		FXObject *ttarget, FXSelector selector, FXuint ooptions,
 		int padLeft, int padRight, int padTop, int padBottom);
-	virtual ~igdeNativeFoxTabBookHeader();
+	~igdeNativeFoxTabBookHeader() override;
 	
-	virtual FXbool canFocus() const;
+	FXbool canFocus() const override;
 };
 
 FXIMPLEMENT(igdeNativeFoxTabBookHeader, FXToggleButton, nullptr, 0)

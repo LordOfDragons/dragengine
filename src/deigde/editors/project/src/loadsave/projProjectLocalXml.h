@@ -49,7 +49,7 @@ public:
 	projProjectLocalXml(deLogger *logger, const char *loggerSource);
 	
 	/** \brief Clean up xml project. */
-	virtual ~projProjectLocalXml();
+	~projProjectLocalXml() override;
 	/*@}*/
 	
 	

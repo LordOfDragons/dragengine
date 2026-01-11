@@ -137,7 +137,7 @@ public:
 	
 protected:
 	/** Clean up render decal. */
-	virtual ~deoglRDecal();
+	~deoglRDecal() override;
 	/*@}*/
 	
 	

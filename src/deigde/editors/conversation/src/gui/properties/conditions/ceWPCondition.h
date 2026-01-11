@@ -49,7 +49,7 @@ public:
 	
 protected:
 	/** \brief Clean up property window. */
-	virtual ~ceWPCondition();
+	~ceWPCondition() override;
 	/*@}*/
 	
 	

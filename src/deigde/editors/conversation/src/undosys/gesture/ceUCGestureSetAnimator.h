@@ -52,16 +52,16 @@ public:
 	ceUCGestureSetAnimator(ceGesture *file, const char *newAnimator);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCGestureSetAnimator();
+	~ceUCGestureSetAnimator() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

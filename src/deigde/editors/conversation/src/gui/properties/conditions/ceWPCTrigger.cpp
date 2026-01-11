@@ -70,7 +70,7 @@ public:
 	typedef deTObjectReference<cComboTestMode> Ref;
 	cComboTestMode(ceWPCTrigger &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionTrigger * const condition = pPanel.GetCondition();
@@ -96,7 +96,7 @@ public:
 	typedef deTObjectReference<cTextTrigger> Ref;
 	cTextTrigger(ceWPCTrigger &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionTrigger * const condition = pPanel.GetCondition();

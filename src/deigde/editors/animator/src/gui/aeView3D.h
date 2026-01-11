@@ -69,7 +69,7 @@ public:
 	
 protected:
 	/** Clean up view. */
-	virtual ~aeView3D();
+	~aeView3D() override;
 	/*@}*/
 	
 	
@@ -102,10 +102,10 @@ public:
 	void StopWakeboarding();
 	
 	/** Game like frame update. */
-	virtual void OnFrameUpdate(float elapsed);
+	void OnFrameUpdate(float elapsed) override;
 	
 	/** Create canvas. */
-	virtual void CreateCanvas();
+	void CreateCanvas() override;
 	
 	/** Gizmos. */
 	inline aeGizmoManager &GetGizoms(){ return pGizmos; }

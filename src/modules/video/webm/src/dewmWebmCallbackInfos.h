@@ -65,7 +65,7 @@ public:
 	dewmWebmCallbackInfos(deVideoWebm &module, dewmInfos &infos);
 	
 	/** Clean up callback. */
-	virtual ~dewmWebmCallbackInfos();
+	~dewmWebmCallbackInfos() override;
 	/*@}*/
 	
 	
@@ -73,32 +73,32 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Start parsing segment. */
-	virtual webm::Status OnSegmentBegin(const webm::ElementMetadata &metadata, webm::Action *action);
+	webm::Status OnSegmentBegin(const webm::ElementMetadata &metadata, webm::Action *action) override;
 	
 	/** End parsing segment. */
-	virtual webm::Status OnSegmentEnd(const webm::ElementMetadata &metadata);
+	webm::Status OnSegmentEnd(const webm::ElementMetadata &metadata) override;
 	
 	/** Segment information. */
-	virtual webm::Status OnInfo(const webm::ElementMetadata &metadata, const webm::Info &info);
+	webm::Status OnInfo(const webm::ElementMetadata &metadata, const webm::Info &info) override;
 	
 	/** Track entry. */
-	virtual webm::Status OnTrackEntry(const webm::ElementMetadata &metadata,
-		const webm::TrackEntry &track_entry);
+	webm::Status OnTrackEntry(const webm::ElementMetadata &metadata,
+		const webm::TrackEntry &track_entry) override;
 	
 	/** Cluster begin. */
-	virtual webm::Status OnClusterBegin(const webm::ElementMetadata &metadata,
-		const webm::Cluster &cluster, webm::Action *action);
+	webm::Status OnClusterBegin(const webm::ElementMetadata &metadata,
+		const webm::Cluster &cluster, webm::Action *action) override;
 	
 	/** Blocks. */
-	virtual webm::Status OnSimpleBlockBegin(const webm::ElementMetadata &metadata,
-		const webm::SimpleBlock &simple_block, webm::Action *action);
+	webm::Status OnSimpleBlockBegin(const webm::ElementMetadata &metadata,
+		const webm::SimpleBlock &simple_block, webm::Action *action) override;
 	
-	virtual webm::Status OnBlockBegin(const webm::ElementMetadata &metadata,
-		const webm::Block &block, webm::Action *action);
+	webm::Status OnBlockBegin(const webm::ElementMetadata &metadata,
+		const webm::Block &block, webm::Action *action) override;
 	
 	/** Frame. */
-	virtual webm::Status OnFrame(const webm::FrameMetadata &metadata, webm::Reader *reader,
-		std::uint64_t *bytes_remaining);
+	webm::Status OnFrame(const webm::FrameMetadata &metadata, webm::Reader *reader,
+		std::uint64_t *bytes_remaining) override;
 	/*@}*/
 	
 	

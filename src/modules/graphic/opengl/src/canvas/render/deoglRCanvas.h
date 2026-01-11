@@ -73,7 +73,7 @@ public:
 	
 protected:
 	/** Clean up peer. */
-	virtual ~deoglRCanvas();
+	~deoglRCanvas() override;
 	/*@}*/
 	
 	

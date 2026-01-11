@@ -66,7 +66,7 @@ public:
 	
 protected:
 	/** \brief Clean up sound level meter speaker. */
-	virtual ~deoalASoundLevelMeterSpeaker();
+	~deoalASoundLevelMeterSpeaker() override;
 	/*@}*/
 	
 	

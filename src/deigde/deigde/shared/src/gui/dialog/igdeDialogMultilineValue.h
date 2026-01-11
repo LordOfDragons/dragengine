@@ -56,7 +56,7 @@ public:
 	
 protected:
 	/** \brief Clean up dialog. */
-	virtual ~igdeDialogMultilineValue();
+	~igdeDialogMultilineValue() override;
 	/*@}*/
 	
 	

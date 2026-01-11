@@ -61,7 +61,7 @@ public:
 	
 protected:
 	/** Clean up peer. */
-	virtual ~deoglRCaptureCanvas();
+	~deoglRCaptureCanvas() override;
 	/*@}*/
 	
 	

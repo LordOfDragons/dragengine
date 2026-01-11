@@ -51,7 +51,7 @@ public:
 	deFontModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~deFontModule();
+	~deFontModule() override;
 	/*@}*/
 	
 	
@@ -59,10 +59,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Load font. */
-	virtual void LoadFont(decBaseFileReader &reader, deFont &font);
+	void LoadFont(decBaseFileReader &reader, deFont &font) override;
 	
 	/** \brief Save font. */
-	virtual void SaveFont(decBaseFileWriter &writer, const deFont &font);
+	void SaveFont(decBaseFileWriter &writer, const deFont &font) override;
 	/*@}*/
 
 private:

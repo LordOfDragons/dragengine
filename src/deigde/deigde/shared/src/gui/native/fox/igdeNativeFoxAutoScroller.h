@@ -63,7 +63,7 @@ public:
 	igdeNativeFoxAutoScroller(FXComposite *parent, int opts = 0);
 	
 	/** \brief Clean up widget. */
-	virtual ~igdeNativeFoxAutoScroller();
+	~igdeNativeFoxAutoScroller() override;
 	/*@}*/
 	
 	
@@ -82,9 +82,9 @@ public:
 	/** \brief Set scroll position. */
 	void SetScrollPosition(int position);
 	
-	virtual FXint getDefaultWidth();
-	virtual FXint getDefaultHeight();
-	virtual void layout();
+	FXint getDefaultWidth() override;
+	FXint getDefaultHeight() override;
+	void layout() override;
 	
 	void MoveContent(int x);
 	/*@}*/

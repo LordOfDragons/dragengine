@@ -52,7 +52,7 @@ public:
 	
 	igdeDialogTexturePropertyList_ListBox(igdeDialogTexturePropertyList &dialog) : pDialog(dialog){}
 	
-	virtual void OnSelectionChanged(igdeListBox*){
+	void OnSelectionChanged(igdeListBox*) override{
 		pDialog.UpdateProperty();
 	}
 };

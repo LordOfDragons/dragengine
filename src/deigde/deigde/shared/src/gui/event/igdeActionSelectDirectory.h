@@ -68,7 +68,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeActionSelectDirectory();
+	~igdeActionSelectDirectory() override;
 	/*@}*/
 	
 	
@@ -94,7 +94,7 @@ public:
 	 * If user selected a directory and it is different updates the text field and notifies
 	 * listeners about the change.
 	 */
-	virtual void OnAction();
+	void OnAction() override;
 	
 	/**
 	 * \brief Accept directory.

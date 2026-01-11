@@ -93,7 +93,7 @@ public:
 	
 protected:
 	/** \brief Clean up editor window. */
-	virtual ~feWindowMain();
+	~feWindowMain() override;
 	/*@}*/
 	
 	
@@ -146,44 +146,44 @@ public:
 	void SaveFont(const char *filename);
 	
 	/** \brief Game engine is about to be started. */
-	virtual void OnBeforeEngineStart();
+	void OnBeforeEngineStart() override;
 	
 	/** \brief Game engine has been started. */
-	virtual void OnAfterEngineStart();
+	void OnAfterEngineStart() override;
 	
 	/** \brief Game engine is about to be stopped. */
-	virtual void OnBeforeEngineStop();
+	void OnBeforeEngineStop() override;
 	
 	/** \brief Game engine has been stopped. */
-	virtual void OnAfterEngineStop();
+	void OnAfterEngineStop() override;
 	
 	/** \brief Module is has been activated. */
-	virtual void OnActivate();
+	void OnActivate() override;
 	
 	/** \brief Module has been deactivated. */
-	virtual void OnDeactivate();
+	void OnDeactivate() override;
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate(float elapsed);
+	void OnFrameUpdate(float elapsed) override;
 	
 	/** \brief List of unsaved open documents. */
-	virtual void GetChangedDocuments(decStringList &list);
+	void GetChangedDocuments(decStringList &list) override;
 	
 	/**
 	 * \brief Requests a document to be loaded.
 	 */
-	virtual void LoadDocument(const char *filename);
+	void LoadDocument(const char *filename) override;
 	
 	/** \brief Request document to be saved. */
-	virtual bool SaveDocument(const char *filename);
+	bool SaveDocument(const char *filename) override;
 	
 	/**
 	 * \brief Recent files changed.
 	 */
-	virtual void RecentFilesChanged();
+	void RecentFilesChanged() override;
 	
 	/** \brief Game project has changed. */
-	virtual void OnGameProjectChanged();
+	void OnGameProjectChanged() override;
 	/*@}*/
 	
 	

@@ -66,7 +66,7 @@ public:
 	
 protected:
 	/** \brief Clean up dialog. */
-	virtual ~reDialogImportBone();
+	~reDialogImportBone() override;
 	/*@}*/
 	
 	
@@ -107,7 +107,7 @@ public:
 	
 	
 	/** \brief Accept dialog. */
-	virtual bool Accept();
+	bool Accept() override;
 	/*@}*/
 };
 

@@ -140,7 +140,7 @@ public:
 	
 protected:
 	/** Clean up instance. */
-	virtual ~deoxrInstance();
+	~deoxrInstance() override;
 	/*@}*/
 	
 	

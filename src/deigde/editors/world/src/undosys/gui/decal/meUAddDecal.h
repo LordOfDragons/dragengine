@@ -59,7 +59,7 @@ public:
 	/** \brief Clean up undo. */
 
 protected:
-	virtual ~meUAddDecal();
+	~meUAddDecal() override;
 
 public:
 	/*@}*/
@@ -70,9 +70,9 @@ public:
 	inline const meDecal::Ref &GetDecal() const{ return pDecal; }
 	
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

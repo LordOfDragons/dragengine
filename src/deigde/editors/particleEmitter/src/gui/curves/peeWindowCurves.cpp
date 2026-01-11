@@ -64,7 +64,7 @@ public:
 	typedef deTObjectReference<cListCurves> Ref;
 	cListCurves(peeWindowCurves &panel) : pPanel(panel){}
 	
-	virtual void OnSelectionChanged(igdeListBox*){
+	void OnSelectionChanged(igdeListBox*) override{
 		if(pPanel.GetParameter()){
 			pPanel.DropProgressiveUndo();
 			pPanel.UpdateCurve();
@@ -82,7 +82,7 @@ public:
 	pUndo(undo){
 	}
 	
-	virtual void OnCurveChanged(igdeViewCurveBezier *view){
+	void OnCurveChanged(igdeViewCurveBezier *view) override{
 		if(pUndo){
 			OnCurveChanging(view);
 			pUndo = nullptr;
@@ -125,7 +125,7 @@ public:
 		pUndo = nullptr;
 	}
 	
-	virtual void OnCurveChanging(igdeViewCurveBezier *view){
+	void OnCurveChanging(igdeViewCurveBezier *view) override{
 		peeType * const type = pPanel.GetType();
 		peeParameter * const parameter = pPanel.GetParameter();
 		if(!type || !parameter){

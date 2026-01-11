@@ -58,7 +58,7 @@ public:
 	debnWorld(deNetworkBasic *oal, deWorld *world);
 	
 	/** \brief Clean up world. */
-	virtual ~debnWorld();
+	~debnWorld() override;
 	/*@}*/
 	
 	
@@ -89,13 +89,13 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief NetworkState has been added. */
-	virtual void NetworkStateAdded(deNetworkState *state);
+	void NetworkStateAdded(deNetworkState *state) override;
 	
 	/** \brief NetworkState has been removed. */
-	virtual void NetworkStateRemoved(deNetworkState *state);
+	void NetworkStateRemoved(deNetworkState *state) override;
 	
 	/** \brief All states have been removed. */
-	virtual void AllNetworkStatesRemoved();
+	void AllNetworkStatesRemoved() override;
 	/*@}*/
 	
 	

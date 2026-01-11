@@ -67,7 +67,7 @@ private:
 public:
 	// constructor, destructor
 	decrbPanelStatus(decrbWindowMain *windowMain, FXComposite *container);
-	virtual ~decrbPanelStatus();
+	~decrbPanelStatus() override;
 	
 	// management
 	void UpdateStatus();

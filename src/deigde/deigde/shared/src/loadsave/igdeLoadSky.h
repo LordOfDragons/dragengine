@@ -59,7 +59,7 @@ public:
 	igdeLoadSky(igdeEnvironment &environment, deLogger *logger, const char *loggerSource);
 	
 	/** \brief Clean up load object. */
-	~igdeLoadSky();
+	~igdeLoadSky() override;
 	/*@}*/
 	
 	

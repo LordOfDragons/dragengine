@@ -73,7 +73,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~reWPShape();
+	~reWPShape() override;
 	/*@}*/
 	
 	

@@ -61,10 +61,10 @@ public:
 		AcceptDialog(igdeDialog &dialog, const char *text, igdeIcon *icon = nullptr);
 		
 	protected:
-		virtual ~AcceptDialog();
+		~AcceptDialog() override;
 		
 	public:
-		virtual void OnAction();
+		void OnAction() override;
 	};
 	
 	
@@ -81,10 +81,10 @@ public:
 		CancelDialog(igdeDialog &dialog, const char *text, igdeIcon *icon = nullptr);
 		
 	protected:
-		virtual ~CancelDialog();
+		~CancelDialog() override;
 		
 	public:
-		virtual void OnAction();
+		void OnAction() override;
 	};
 	
 	
@@ -106,7 +106,7 @@ public:
 	
 protected:
 	/** \brief Clean up dialog. */
-	virtual ~igdeDialog();
+	~igdeDialog() override;
 	/*@}*/
 	
 	
@@ -125,7 +125,7 @@ public:
 	
 	
 	/** \brief Add child. */
-	virtual void AddChild(igdeWidget *child);
+	void AddChild(igdeWidget *child) override;
 	
 	
 	
@@ -253,13 +253,13 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
 	/*@}*/
 	
 	
@@ -272,31 +272,31 @@ protected:
 	 * \brief Window title changed.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void OnTitleChanged();
+	void OnTitleChanged() override;
 	
 	/**
 	 * \brief Window icon changed.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void OnIconChanged();
+	void OnIconChanged() override;
 	
 	/**
 	 * \brief Window size changed.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void OnSizeChanged();
+	void OnSizeChanged() override;
 	
 	/**
 	 * \brief Window position changed.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void OnPositionChanged();
+	void OnPositionChanged() override;
 	
 	/** \brief Visible changed. */
-	virtual void OnVisibleChanged();
+	void OnVisibleChanged() override;
 	
 	/** \brief Enabled changed. */
-	virtual void OnEnabledChanged();
+	void OnEnabledChanged() override;
 	/*@}*/
 };
 

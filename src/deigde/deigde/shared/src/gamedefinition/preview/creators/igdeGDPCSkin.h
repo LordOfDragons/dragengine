@@ -86,7 +86,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeGDPCSkin();
+	~igdeGDPCSkin() override;
 	/*@}*/
 	
 	
@@ -101,16 +101,16 @@ public:
 	
 protected:
 	/** \brief Debug prefix. */
-	virtual decString DebugPrefix();
+	decString DebugPrefix() override;
 	
 	/** \brief Set up canvas to render. */
-	virtual void PrepareCanvasForRender();
+	void PrepareCanvasForRender() override;
 	
 	/** \brief Wait for canvas to be ready for rendering. */
-	virtual bool IsCanvasReadyForRender();
+	bool IsCanvasReadyForRender() override;
 	
 	/** \brief Update canvas to render animations. */
-	virtual void UpdateCanvasForRender(float elapsed);
+	void UpdateCanvasForRender(float elapsed) override;
 	/*@}*/
 };
 

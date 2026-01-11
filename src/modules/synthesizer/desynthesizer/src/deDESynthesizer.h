@@ -58,7 +58,7 @@ public:
 	deDESynthesizer(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up desynthesizer module. */
-	virtual ~deDESynthesizer();
+	~deDESynthesizer() override;
 	/*@}*/
 	
 	
@@ -66,10 +66,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Init module. */
-	virtual bool Init();
+	bool Init() override;
 	
 	/** \brief Clean up module. */
-	virtual void CleanUp();
+	void CleanUp() override;
 	
 	/** \brief Configuration. */
 	inline desynConfiguration &GetConfiguration() const{ return *pConfiguration; }
@@ -89,13 +89,13 @@ public:
 	/** \name Synthesizer management */
 	/*@{*/
 	/** \brief Create peer for sound. */
-	virtual deBaseSynthesizerSound *CreateSound(deSound *sound);
+	deBaseSynthesizerSound *CreateSound(deSound *sound) override;
 	
 	/** \brief Create peer for synthesizer or \em NULL if no explicit peer is required. */
-	virtual deBaseSynthesizerSynthesizer *CreateSynthesizer(deSynthesizer *synthesizer);
+	deBaseSynthesizerSynthesizer *CreateSynthesizer(deSynthesizer *synthesizer) override;
 	
 	/** \brief Create peer for synthesizer instance or \em NULL if no explicit peer is required. */
-	virtual deBaseSynthesizerSynthesizerInstance *CreateSynthesizerInstance(deSynthesizerInstance *instance);
+	deBaseSynthesizerSynthesizerInstance *CreateSynthesizerInstance(deSynthesizerInstance *instance) override;
 	/*@}*/
 	
 	
@@ -103,23 +103,23 @@ public:
 	/** \name Parameters */
 	/*@{*/
 	/** \brief Number of parameters. */
-	virtual int GetParameterCount() const;
+	int GetParameterCount() const override;
 	
 	/**
 	 * \brief Get information about parameter.
 	 * \param[in] index Index of the parameter
 	 * \param[in] parameter Object to fill with information about the parameter
 	 */
-	virtual void GetParameterInfo(int index, deModuleParameter &parameter) const;
+	void GetParameterInfo(int index, deModuleParameter &parameter) const override;
 	
 	/** \brief Index of named parameter or -1 if not found. */
-	virtual int IndexOfParameterNamed(const char *name) const;
+	int IndexOfParameterNamed(const char *name) const override;
 	
 	/** \brief Value of named parameter. */
-	virtual decString GetParameterValue(const char *name) const;
+	decString GetParameterValue(const char *name) const override;
 	
 	/** \brief Set value of named parameter. */
-	virtual void SetParameterValue(const char *name, const char *value);
+	void SetParameterValue(const char *name, const char *value) override;
 	/*@}*/
 	
 	
@@ -127,7 +127,7 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** \brief Send command to module. */
-	virtual void SendCommand(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void SendCommand(const decUnicodeArgumentList &command, decUnicodeString &answer) override;
 	/*@}*/
 };
 

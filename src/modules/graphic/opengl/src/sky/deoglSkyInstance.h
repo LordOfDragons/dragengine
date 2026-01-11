@@ -65,7 +65,7 @@ public:
 	deoglSkyInstance(deGraphicOpenGl &ogl, const deSkyInstance &instance);
 	
 	/** Cleans up the sky. */
-	virtual ~deoglSkyInstance();
+	~deoglSkyInstance() override;
 	/*@}*/
 	
 	
@@ -106,16 +106,16 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Sky changed. */
-	virtual void SkyChanged();
+	void SkyChanged() override;
 	
 	/** order changed. */
-	virtual void OrderChanged();
+	void OrderChanged() override;
 	
 	/** Controller changed. */
-	virtual void ControllerChanged(int index);
+	void ControllerChanged(int index) override;
 	
 	/** Layer mask changed. */
-	virtual void LayerMaskChanged();
+	void LayerMaskChanged() override;
 	/*@}*/
 };
 

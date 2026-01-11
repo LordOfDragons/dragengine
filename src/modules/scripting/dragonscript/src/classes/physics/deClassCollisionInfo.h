@@ -45,10 +45,10 @@ private:
 public:
 	// constructor
 	deClassCollisionInfo(deEngine *gameEngine, deScriptingDragonScript *scrMgr);
-	~deClassCollisionInfo();
+	~deClassCollisionInfo() override;
 	
 	// management
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	inline deEngine *GetGameEngine() const{ return pGameEngine; }
 	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
 	inline deClassCollider *GetClassCollider() const{ return pClsCol; }

@@ -77,7 +77,7 @@ public:
 	
 	cMouseListener(ceWDSVAPreview &lane) : pVAPreview(lane), pDragMode(edmNone){}
 	
-	virtual bool OnDragBegin(){
+	bool OnDragBegin() override{
 		ceCAActorSpeak * const actionSpeak = pVAPreview.GetWindow().GetActionASpeak();
 		ceConversationAction * const action = pVAPreview.GetWindow().GetAction();
 		
@@ -108,7 +108,7 @@ public:
 		return false;
 	}
 	
-	virtual void OnDragUpdate(){
+	void OnDragUpdate() override{
 		switch(pDragMode){
 		case edmTime:
 			pVAPreview.SetCurTime(pVAPreview.GetWindow().GetTimeForX(GetDragPosition().x));
@@ -119,15 +119,15 @@ public:
 		}
 	}
 	
-	virtual void OnDragFinish(bool){
+	void OnDragFinish(bool) override{
 		pDragMode = edmNone;
 	}
 	
-	virtual void OnMouseWheeled(igdeWidget*, const decPoint &, const decPoint &change, int){
+	void OnMouseWheeled(igdeWidget*, const decPoint &, const decPoint &change, int) override{
 		// maybe use this to "skip" back or ahead?
 	}
 	
-	virtual void OnButtonPress(igdeWidget *widget, int button, const decPoint &position, int modifiers){
+	void OnButtonPress(igdeWidget *widget, int button, const decPoint &position, int modifiers) override{
 		if(button != deInputEvent::embcRight){
 			igdeMouseDragListener::OnButtonPress(widget, button, position, modifiers);
 			return;

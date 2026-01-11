@@ -67,7 +67,7 @@ public:
 	typedef deTObjectReference<cComboOperator> Ref;
 	cComboOperator(meWVNodeVectorMath &node) : pNode(node){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		if(!pNode.GetRuleVectorMath()){
 			return;
 		}
@@ -92,7 +92,7 @@ public:
 	typedef deTObjectReference<cTextVectorA> Ref;
 	cTextVectorA(meWVNodeVectorMath &node) : pNode(node){}
 	
-	virtual void OnVectorChanged(igdeEditVector *editVector){
+	void OnVectorChanged(igdeEditVector *editVector) override{
 		const decVector &value = editVector->GetVector();
 		if(value.IsEqualTo(pNode.GetRuleVectorMath()->GetVectorA())){
 			return;
@@ -112,7 +112,7 @@ public:
 	typedef deTObjectReference<cTextVectorB> Ref;
 	cTextVectorB(meWVNodeVectorMath &node) : pNode(node){}
 	
-	virtual void OnVectorChanged(igdeEditVector *editVector){
+	void OnVectorChanged(igdeEditVector *editVector) override{
 		const decVector &value = editVector->GetVector();
 		if(value.IsEqualTo(pNode.GetRuleVectorMath()->GetVectorB())){
 			return;

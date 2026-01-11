@@ -170,7 +170,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~meWPHeightTerrain();
+	~meWPHeightTerrain() override;
 	/*@}*/
 	
 	

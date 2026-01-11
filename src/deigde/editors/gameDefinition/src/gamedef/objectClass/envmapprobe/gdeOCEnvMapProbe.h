@@ -97,7 +97,7 @@ public:
 	
 	/** \brief Clean up environment map probe. */
 protected:
-	virtual ~gdeOCEnvMapProbe();
+	~gdeOCEnvMapProbe() override;
 public:
 	/*@}*/
 	

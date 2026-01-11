@@ -133,7 +133,7 @@ public:
 	
 protected:
 	/** \brief Clean up game. */
-	virtual ~delGame();
+	~delGame() override;
 	/*@}*/
 	
 	

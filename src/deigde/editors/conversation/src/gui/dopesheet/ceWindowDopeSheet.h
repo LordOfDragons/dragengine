@@ -88,12 +88,12 @@ public:
 		
 	protected:
 protected:
-		virtual ~cDopeSheet();
+		~cDopeSheet() override;
 public:
 		
 	public:
-		virtual void OnResize();
-		virtual void CreateCanvas();
+		void OnResize() override;
+		void CreateCanvas() override;
 	};
 	
 	
@@ -147,7 +147,7 @@ public:
 	
 protected:
 	/** \brief Clean up window. */
-	virtual ~ceWindowDopeSheet();
+	~ceWindowDopeSheet() override;
 	/*@}*/
 	
 	

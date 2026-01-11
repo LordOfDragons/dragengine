@@ -99,7 +99,7 @@ public:
 	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(reWPConstraint &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		reRig * const rig = pPanel.GetRig();
 		reRigConstraint * const constraint = pPanel.GetConstraint();
 		if(!rig || !constraint){
@@ -123,7 +123,7 @@ public:
 	typedef deTObjectReference<cBaseEditVectorListener> Ref;
 	cBaseEditVectorListener(reWPConstraint &panel) : pPanel(panel){}
 	
-	virtual void OnVectorChanged(igdeEditVector *editVector){
+	void OnVectorChanged(igdeEditVector *editVector) override{
 		reRig * const rig = pPanel.GetRig();
 		reRigConstraint * const constraint = pPanel.GetConstraint();
 		if(!rig || !constraint){
@@ -173,7 +173,7 @@ public:
 	typedef deTObjectReference<cBaseComboBoxListener> Ref;
 	cBaseComboBoxListener(reWPConstraint &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		reRig * const rig = pPanel.GetRig();
 		reRigConstraint * const constraint = pPanel.GetConstraint();
 		if(!rig || !constraint){
@@ -198,7 +198,7 @@ public:
 	cComboTarget(reWPConstraint &panel, bool &preventUpdate) :
 	cBaseComboBoxListener(panel), pPreventUpdate(preventUpdate){}
 	
-	virtual igdeUndo::Ref OnTextChanged(igdeComboBox *comboBox, reRig*, reRigConstraint *constraint){
+	igdeUndo::Ref OnTextChanged(igdeComboBox *comboBox, reRig*, reRigConstraint *constraint) override{
 		if(pPreventUpdate){
 			return {};
 		}

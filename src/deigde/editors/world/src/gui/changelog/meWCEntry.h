@@ -89,7 +89,7 @@ public:
 	
 protected:
 	/** \brief Clean up entry. */
-	virtual ~meWCEntry();
+	~meWCEntry() override;
 	/*@}*/
 	
 	

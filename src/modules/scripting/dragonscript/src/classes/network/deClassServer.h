@@ -48,10 +48,10 @@ private:
 public:
 	// constructor
 	deClassServer(deEngine *gameEngine, deScriptingDragonScript *scrMgr);
-	~deClassServer();
+	~deClassServer() override;
 	
 	// internal functions
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	deServer *GetServer(dsRealObject *myself) const;
 	void PushServer(dsRunTime *rt, deServer *server);
 	inline deEngine *GetGameEngine() const{ return pGameEngine; }

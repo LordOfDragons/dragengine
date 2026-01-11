@@ -53,7 +53,7 @@ public:
 	deoglEffect(deGraphicOpenGl &ogl, const deEffect &effect);
 	
 	/** Clean up effect. */
-	virtual ~deoglEffect();
+	~deoglEffect() override;
 	/*@}*/
 	
 	
@@ -80,7 +80,7 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Enabled state changed. */
-	virtual void EnabledChanged();
+	void EnabledChanged() override;
 	/*@}*/
 	
 protected:

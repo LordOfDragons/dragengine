@@ -93,7 +93,7 @@ protected:
 	igdeDialogBrowser(igdeEnvironment &environment, const char *title, bool canResize = true);
 	
 	/** \brief Clean up selection dialog. */
-	virtual ~igdeDialogBrowser();
+	~igdeDialogBrowser() override;
 	/*@}*/
 	
 	

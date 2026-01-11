@@ -51,7 +51,7 @@ public:
 	debpRig(dePhysicsBullet &bullet, const deRig &rig);
 	
 	/** \brief Clean up rig peer. */
-	virtual ~debpRig();
+	~debpRig() override;
 	/*@}*/
 	
 	

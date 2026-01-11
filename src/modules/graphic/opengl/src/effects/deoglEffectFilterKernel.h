@@ -71,7 +71,7 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Filter kernel changed. */
-	virtual void FilterKernelChanged();
+	void FilterKernelChanged() override;
 	/*@}*/
 };
 

@@ -76,7 +76,7 @@ public:
 	
 protected:
 	/** \brief Clean up logger history. */
-	virtual ~igdeLoggerHistory();
+	~igdeLoggerHistory() override;
 	
 public:
 	/*@}*/
@@ -131,13 +131,13 @@ public:
 	void NotifyMessageAdded(igdeLoggerHistoryEntry &entry);
 	
 	/** \brief Log an information message. */
-	virtual void LogInfo(const char *source, const char *message);
+	void LogInfo(const char *source, const char *message) override;
 	
 	/** \brief Log a warning message. */
-	virtual void LogWarn(const char *source, const char *message);
+	void LogWarn(const char *source, const char *message) override;
 	
 	/** \brief Log an error message. */
-	virtual void LogError(const char *source, const char *message);
+	void LogError(const char *source, const char *message) override;
 	/*@}*/
 };
 

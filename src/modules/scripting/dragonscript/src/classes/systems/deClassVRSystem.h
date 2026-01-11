@@ -52,7 +52,7 @@ public:
 	deClassVRSystem(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
-	virtual ~deClassVRSystem();
+	~deClassVRSystem() override;
 	/*@}*/
 	
 	
@@ -60,7 +60,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Create class members. */
-	virtual void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Script module. */
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }

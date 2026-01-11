@@ -148,7 +148,7 @@ public:
 	
 protected:
 	/** Clean up panel. */
-	virtual ~ceWPView();
+	~ceWPView() override;
 	/*@}*/
 	
 	

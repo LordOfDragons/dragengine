@@ -68,7 +68,7 @@ public:
 	
 protected:
 	/** Clean up window. */
-	virtual ~aeWindowProperties();
+	~aeWindowProperties() override;
 	/*@}*/
 	
 	

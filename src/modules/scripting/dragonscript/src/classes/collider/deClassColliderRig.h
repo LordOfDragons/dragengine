@@ -47,7 +47,7 @@ public:
 	/** \brief Create a new script class. */
 	deClassColliderRig(deScriptingDragonScript &ds);
 	/** \brief Clean up the script class. */
-	virtual ~deClassColliderRig();
+	~deClassColliderRig() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -57,7 +57,7 @@ public:
 	inline const deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create script class members. */
-	virtual void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/**
 	 * \brief Retrieve collider from a script object.

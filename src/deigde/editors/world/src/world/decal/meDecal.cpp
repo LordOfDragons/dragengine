@@ -82,7 +82,7 @@ public:
 	meDecalTimerReattachDecals(meDecal &decal) : igdeTimer(*decal.GetEnvironment()), pDecal(decal){
 	}
 	
-	virtual void OnTimeout(){
+	void OnTimeout() override{
 		pDecal.AttachDecals();
 	}
 };

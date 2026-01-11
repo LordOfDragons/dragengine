@@ -247,7 +247,7 @@ public:
 	typedef deTObjectReference<cTreeRules> Ref;
 	cTreeRules(aeWPRule &panel) : pPanel(panel){}
 	
-	virtual void OnSelectionChanged(igdeTreeList *treeList){
+	void OnSelectionChanged(igdeTreeList *treeList) override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		if(animator){
 			animator->SetActiveRule(treeList->GetSelection()
@@ -255,21 +255,21 @@ public:
 		}
 	}
 	
-	virtual void OnItemExpanded(igdeTreeList*, igdeTreeItem *item){
+	void OnItemExpanded(igdeTreeList*, igdeTreeItem *item) override{
 		aeRule * const rule = (aeRule*)item->GetData();
 		if(rule && rule->GetType() == deAnimatorRuleVisitorIdentify::ertGroup){
 			((aeRuleGroup*)rule)->SetTreeListExpanded(true);
 		}
 	}
 	
-	virtual void OnItemCollapsed(igdeTreeList*, igdeTreeItem *item){
+	void OnItemCollapsed(igdeTreeList*, igdeTreeItem *item) override{
 		aeRule * const rule = (aeRule*)item->GetData();
 		if(rule && rule->GetType() == deAnimatorRuleVisitorIdentify::ertGroup){
 			((aeRuleGroup*)rule)->SetTreeListExpanded(false);
 		}
 	}
 	
-	virtual void AddContextMenuEntries(igdeTreeList*, igdeMenuCascade &menu){
+	void AddContextMenuEntries(igdeTreeList*, igdeMenuCascade &menu) override{
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		
 		const aeWindowMain &windowMain = pPanel.GetWindowProperties().GetWindowMain();

@@ -47,7 +47,7 @@ public:
 	deClassEasyXML(deScriptingDragonScript &ds);
 	
 	/** \brief Creates a new class. */
-	virtual ~deClassEasyXML();
+	~deClassEasyXML() override;
 	/*@}*/
 	
 	
@@ -58,7 +58,7 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Get xml document from object or \em NULL if \em myself is \em NULL. */
 	dedsXmlDocument *GetDocument(dsRealObject *myself) const;

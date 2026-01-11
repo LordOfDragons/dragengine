@@ -56,7 +56,7 @@ public:
 	/** \brief Clean up undo object. */
 
 protected:
-	virtual ~meUObjectShapeRotate();
+	~meUObjectShapeRotate() override;
 
 public:
 	/*@}*/
@@ -64,9 +64,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/** Progressive redo the action. */
 	void ProgressiveRedo() override;
 };

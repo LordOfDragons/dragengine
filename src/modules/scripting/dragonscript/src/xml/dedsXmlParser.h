@@ -43,11 +43,11 @@ private:
 public:
 	// constructor, destructor
 	dedsXmlParser(deLogger *logger);
-	virtual ~dedsXmlParser();
+	~dedsXmlParser() override;
 	// management
 	inline const char *GetParseLog() const{ return (const char *)pLog; }
-	virtual void UnexpectedEOF(int line, int pos);
-	virtual void UnexpectedToken(int line, int pos, const char *token);
+	void UnexpectedEOF(int line, int pos) override;
+	void UnexpectedToken(int line, int pos, const char *token) override;
 };
 
 // end of include only once

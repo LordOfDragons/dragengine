@@ -74,7 +74,7 @@ public:
 	deoalSoundLevelMeter(deAudioOpenAL &oal, deSoundLevelMeter &soundLevelMeter);
 	
 	/** \brief Clean up sound level meter. */
-	virtual ~deoalSoundLevelMeter();
+	~deoalSoundLevelMeter() override;
 	/*@}*/
 	
 	
@@ -126,31 +126,31 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Type changed. */
-	virtual void TypeChanged();
+	void TypeChanged() override;
 	
 	/** \brief Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	/** \brief Orientation changed. */
-	virtual void OrientationChanged();
+	void OrientationChanged() override;
 	
 	/** \brief Cone angle changed. */
-	virtual void ConeAngleChanged();
+	void ConeAngleChanged() override;
 	
 	/** \brief Audible distance changed. */
-	virtual void AudibleDistanceChanged();
+	void AudibleDistanceChanged() override;
 	
 	/** \brief Layer mask changed. */
-	virtual void LayerMaskChanged();
+	void LayerMaskChanged() override;
 	
 	/** \brief Enabled changed. */
-	virtual void EnabledChanged();
+	void EnabledChanged() override;
 	
 	/** \brief Number of audible speakers. */
-	virtual int GetAudibleSpeakerCount();
+	int GetAudibleSpeakerCount() override;
 	
 	/** \brief Audible speaker at index. */
-	virtual const deSoundLevelMeter::cAudibleSpeaker &GetAudibleSpeakerAt(int index);
+	const deSoundLevelMeter::cAudibleSpeaker &GetAudibleSpeakerAt(int index) override;
 	/*@}*/
 	
 	

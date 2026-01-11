@@ -58,16 +58,16 @@ public:
 		ceCConditionVariable *condition, ceCConditionVariable::eOperators newOperator);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCCVarSetOperator();
+	~ceUCCVarSetOperator() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

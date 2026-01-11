@@ -73,7 +73,7 @@ public:
 	
 protected:
 	/** \brief Clean up microphone. */
-	virtual ~deoalAVideoPlayer();
+	~deoalAVideoPlayer() override;
 	/*@}*/
 	
 	

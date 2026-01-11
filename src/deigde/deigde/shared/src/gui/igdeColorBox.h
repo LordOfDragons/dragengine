@@ -49,7 +49,7 @@ public:
 	public:
 		typedef deTObjectReference<cActionCopy> Ref;
 		cActionCopy(igdeColorBox &colorBox);
-		virtual void OnAction();
+		void OnAction() override;
 	};
 	
 	class DE_DLL_EXPORT cActionCopyHex : public igdeAction{
@@ -57,7 +57,7 @@ public:
 	public:
 		typedef deTObjectReference<cActionCopyHex> Ref;
 		cActionCopyHex(igdeColorBox &colorBox);
-		virtual void OnAction();
+		void OnAction() override;
 	};
 	
 	class DE_DLL_EXPORT cActionPaste : public igdeAction{
@@ -65,7 +65,7 @@ public:
 	public:
 		typedef deTObjectReference<cActionPaste> Ref;
 		cActionPaste(igdeColorBox &colorBox);
-		virtual void OnAction();
+		void OnAction() override;
 	};
 	
 	class DE_DLL_EXPORT cActionPasteHex : public igdeAction{
@@ -73,7 +73,7 @@ public:
 	public:
 		typedef deTObjectReference<cActionPasteHex> Ref;
 		cActionPasteHex(igdeColorBox &colorBox);
-		virtual void OnAction();
+		void OnAction() override;
 	};
 	
 	class DE_DLL_EXPORT cActionEditValues : public igdeAction{
@@ -81,7 +81,7 @@ public:
 	public:
 		typedef deTObjectReference<cActionEditValues> Ref;
 		cActionEditValues(igdeColorBox &colorBox);
-		virtual void OnAction();
+		void OnAction() override;
 	};
 	
 	class DE_DLL_EXPORT cActionEditHex : public igdeAction{
@@ -89,7 +89,7 @@ public:
 	public:
 		typedef deTObjectReference<cActionEditHex> Ref;
 		cActionEditHex(igdeColorBox &colorBox);
-		virtual void OnAction();
+		void OnAction() override;
 	};
 	
 	
@@ -121,7 +121,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeColorBox();
+	~igdeColorBox() override;
 	/*@}*/
 	
 	
@@ -176,13 +176,13 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
 	
 	
 	

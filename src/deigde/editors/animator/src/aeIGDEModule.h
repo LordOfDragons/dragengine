@@ -40,7 +40,7 @@ public:
 	
 protected:
 	/** Clean up module. */
-	virtual ~aeIGDEModule();
+	~aeIGDEModule() override;
 	/*@}*/
 	
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Start module. */
-	virtual void Start();
+	void Start() override;
 	/*@}*/
 };
 

@@ -63,7 +63,7 @@ public:
 	
 protected:
 	/** \brief Clean up actor gesture. */
-	virtual ~ceActorGesture();
+	~ceActorGesture() override;
 	/*@}*/
 	
 	

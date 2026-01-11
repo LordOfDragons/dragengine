@@ -63,7 +63,7 @@ public:
 	
 protected:
 	/** \brief Clean up view. */
-	virtual ~syneViewSynthesizer();
+	~syneViewSynthesizer() override;
 	/*@}*/
 	
 	

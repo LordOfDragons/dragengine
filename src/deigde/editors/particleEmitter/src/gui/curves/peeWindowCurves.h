@@ -82,7 +82,7 @@ public:
 	
 protected:
 	/** \brief Clean up window. */
-	virtual ~peeWindowCurves();
+	~peeWindowCurves() override;
 	/*@}*/
 	
 	

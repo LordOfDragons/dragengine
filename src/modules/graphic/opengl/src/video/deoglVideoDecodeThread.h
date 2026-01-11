@@ -62,7 +62,7 @@ public:
 	deoglVideoDecodeThread(deVideoDecoder *decoder, deVideo *video);
 	
 	/** Clean up thread. */
-	virtual ~deoglVideoDecodeThread();
+	~deoglVideoDecodeThread() override;
 	/*@}*/
 	
 	
@@ -104,7 +104,7 @@ public:
 	
 	
 	/** Run function of the thread */
-	virtual void Run();
+	void Run() override;
 	
 	/** Ensure pixel buffers are ready for decoding. */
 	void PreparePixelBuffers();

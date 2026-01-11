@@ -69,7 +69,7 @@ public:
 	
 	/** \brief Cleans up conversation view. */
 protected:
-	virtual ~ceViewConversation();
+	~ceViewConversation() override;
 public:
 	/*@}*/
 	
@@ -93,13 +93,13 @@ public:
 	inline const ceCanvasRuleOfThirdsAid::Ref &GetRuleOfThirdsAid() const{ return pRuleOfThirdsAid; }
 	
 	/** \brief Create canvas. */
-	virtual void CreateCanvas();
+	void CreateCanvas() override;
 	
 	/** \brief Widget size changed. */
-	virtual void OnResize();
+	void OnResize() override;
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate(float elapsed);
+	void OnFrameUpdate(float elapsed) override;
 	/*@}*/
 };
 

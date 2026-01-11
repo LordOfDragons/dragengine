@@ -72,7 +72,7 @@ public:
 	
 protected:
 	/** \brief Clean up dialog. */
-	virtual ~ceDialogPasteSnippet();
+	~ceDialogPasteSnippet() override;
 	/*@}*/
 	
 	
@@ -102,7 +102,7 @@ public:
 	
 	
 	/** \brief Accept dialog. */
-	virtual bool Accept();
+	bool Accept() override;
 	
 	
 	
@@ -112,7 +112,7 @@ public:
 	 * Called by Run() after dialog is created. Subclass can implement to init controls
 	 * after the dialog is visible on screen.
 	 */
-	virtual void OnDialogShown();
+	void OnDialogShown() override;
 	/*@}*/
 };
 

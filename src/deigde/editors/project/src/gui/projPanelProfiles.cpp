@@ -129,7 +129,7 @@ public:
 	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(projPanelProfiles &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		projProject * const project = pPanel.GetProject();
 		if(!project){
 			return;
@@ -158,7 +158,7 @@ public:
 	typedef deTObjectReference<cBaseTextAreaListener> Ref;
 	cBaseTextAreaListener(projPanelProfiles &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextArea *textArea){
+	void OnTextChanged(igdeTextArea *textArea) override{
 		projProject * const project = pPanel.GetProject();
 		if(!project){
 			return;
@@ -187,7 +187,7 @@ public:
 	typedef deTObjectReference<cBaseEditPointListener> Ref;
 	cBaseEditPointListener(projPanelProfiles &panel) : pPanel(panel){}
 	
-	virtual void OnPointChanged(igdeEditPoint *editPoint){
+	void OnPointChanged(igdeEditPoint *editPoint) override{
 		projProject * const project = pPanel.GetProject();
 		if(!project){
 			return;
@@ -218,7 +218,7 @@ public:
 	typedef deTObjectReference<cListProfile> Ref;
 	cListProfile(projPanelProfiles &panel) : pPanel(panel){}
 	
-	virtual void OnSelectionChanged(igdeListBox *listBox){
+	void OnSelectionChanged(igdeListBox *listBox) override{
 		projProject * const project = pPanel.GetProject();
 		if(!project){
 			return;
@@ -241,8 +241,8 @@ public:
 	typedef deTObjectReference<cTextName> Ref;
 	cTextName(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, projProject *project,
-	projProfile *profile){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject *project,
+	projProfile *profile) override{
 		const decString &name = textField->GetText();
 		if(name == profile->GetName()){
 			return {};
@@ -264,8 +264,8 @@ public:
 	typedef deTObjectReference<cTextDescription> Ref;
 	cTextDescription(projPanelProfiles &panel) : cBaseTextAreaListener(panel){}
 	
-	virtual igdeUndo::Ref OnChanged(igdeTextArea *textArea, projProject*,
-	projProfile *profile){
+	igdeUndo::Ref OnChanged(igdeTextArea *textArea, projProject*,
+	projProfile *profile) override{
 		if(textArea->GetText() == profile->GetDescription()){
 			return {};
 		}
@@ -388,7 +388,7 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Identifier menu"),
 	pPanel(panel){}
 	
-	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
+	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override{
 		if(!pPanel.GetActiveProfile()){
 			return;
 		}

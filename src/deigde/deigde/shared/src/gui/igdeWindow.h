@@ -58,7 +58,7 @@ public:
 	
 protected:
 	/** \brief Clean up window. */
-	virtual ~igdeWindow();
+	~igdeWindow() override;
 	/*@}*/
 	
 	
@@ -109,7 +109,7 @@ public:
 	 * 
 	 * Windows can contain only one widget. This is usually a container.
 	 */
-	virtual void AddChild(igdeWidget *child);
+	void AddChild(igdeWidget *child) override;
 	
 	
 	
@@ -125,7 +125,7 @@ public:
 	virtual void Close();
 	
 	/** \brief Parent window. */
-	virtual igdeWindow *GetParentWindow();
+	igdeWindow *GetParentWindow() override;
 	/*@}*/
 	
 	
@@ -139,13 +139,13 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
 	
 	
 	
@@ -175,7 +175,7 @@ protected:
 	virtual void OnPositionChanged();
 	
 	/** \brief Visible changed. */
-	virtual void OnVisibleChanged();
+	void OnVisibleChanged() override;
 	
 	/** \brief Enabled changed. */
 	virtual void OnEnabledChanged();

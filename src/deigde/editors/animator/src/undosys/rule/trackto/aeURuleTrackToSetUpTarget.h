@@ -53,16 +53,16 @@ public:
 	aeURuleTrackToSetUpTarget(aeRuleTrackTo *rule, deAnimatorRuleTrackTo::eUpTarget newTarget);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleTrackToSetUpTarget();
+	~aeURuleTrackToSetUpTarget() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

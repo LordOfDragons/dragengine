@@ -73,7 +73,7 @@ public:
 	dedaiNavBlocker(deDEAIModule &deai, const deNavigationBlocker &blocker);
 	
 	/** \brief Clean up peer. */
-	virtual ~dedaiNavBlocker();
+	~dedaiNavBlocker() override;
 	/*@}*/
 	
 	
@@ -140,28 +140,28 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	/** \brief Orientation changed. */
-	virtual void OrientationChanged();
+	void OrientationChanged() override;
 	
 	/** \brief Scaling changed. */
-	virtual void ScalingChanged();
+	void ScalingChanged() override;
 	
 	/** \brief Layer changed. */
-	virtual void LayerChanged();
+	void LayerChanged() override;
 	
 	/** \brief Space type changed. */
-	virtual void SpaceTypeChanged();
+	void SpaceTypeChanged() override;
 	
 	/** \brief Enabled changed. */
-	virtual void EnabledChanged();
+	void EnabledChanged() override;
 	
 	/** \brief Shape changed. */
-	virtual void ShapeChanged();
+	void ShapeChanged() override;
 	
 	/** \brief Priority changed. */
-	virtual void BlockingPriorityChanged();
+	void BlockingPriorityChanged() override;
 	/*@}*/
 	
 	

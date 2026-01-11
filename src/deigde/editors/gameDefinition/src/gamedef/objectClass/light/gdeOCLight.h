@@ -145,7 +145,7 @@ public:
 	
 	/** \brief Clean up light. */
 protected:
-	virtual ~gdeOCLight();
+	~gdeOCLight() override;
 public:
 	/*@}*/
 	

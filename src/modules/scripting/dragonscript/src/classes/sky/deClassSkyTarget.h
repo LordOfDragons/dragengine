@@ -51,7 +51,7 @@ public:
 	deClassSkyTarget(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
-	virtual ~deClassSkyTarget();
+	~deClassSkyTarget() override;
 	/*@}*/
 	
 	
@@ -62,7 +62,7 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Creates class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Push target. */
 	void PushTarget(dsRunTime *rt, deSky *sky, int layer, deSkyLayer::eTargets target);

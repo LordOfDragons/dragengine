@@ -76,7 +76,7 @@ public:
 	inline ceCConditionLogic &GetLogic() const{ return *pLogic; }
 	
 	/** \brief Do menu action. */
-	virtual void OnAction();
+	void OnAction() override;
 	/*@}*/
 };
 

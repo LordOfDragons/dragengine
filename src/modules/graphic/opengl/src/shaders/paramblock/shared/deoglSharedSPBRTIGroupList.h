@@ -57,7 +57,7 @@ public:
 	
 protected:
 	/** Clean up shared SPB list. */
-	virtual ~deoglSharedSPBRTIGroupList();
+	~deoglSharedSPBRTIGroupList() override;
 	/*@}*/
 	
 	

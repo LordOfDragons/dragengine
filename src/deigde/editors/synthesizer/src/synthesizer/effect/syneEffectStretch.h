@@ -103,7 +103,7 @@ public:
 	
 	
 	/** \brief Create engine synthesizer effect. */
-	virtual deSynthesizerEffect::Ref CreateEngineEffect();
+	deSynthesizerEffect::Ref CreateEngineEffect() override;
 	
 	/** \brief Update targets. */
 	void UpdateTargets() override;

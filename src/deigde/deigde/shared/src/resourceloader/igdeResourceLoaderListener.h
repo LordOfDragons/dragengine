@@ -51,7 +51,7 @@ public:
 	
 protected:
 	/** \brief Clean up listener. */
-	virtual ~igdeResourceLoaderListener();
+	~igdeResourceLoaderListener() override;
 	/*@}*/
 	
 	

@@ -82,7 +82,7 @@ public:
 	
 protected:
 	/** \brief Clean up class particle emitter. */
-	virtual ~igdeGDCParticleEmitter();
+	~igdeGDCParticleEmitter() override;
 	/*@}*/
 	
 	

@@ -70,7 +70,7 @@ public:
 	inline ceCAWait &GetWait() const{ return *pWait; }
 	
 	/** \brief Do menu action. */
-	virtual void OnAction();
+	void OnAction() override;
 	/*@}*/
 };
 

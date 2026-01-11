@@ -58,7 +58,7 @@ public:
 	igdeNativeFoxSwitcher(igdeSwitcher &owner, FXComposite *parent, int layoutFlags);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxSwitcher();
+	~igdeNativeFoxSwitcher() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeFoxSwitcher* CreateNativeWidget(igdeSwitcher &owner);

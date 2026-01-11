@@ -154,7 +154,7 @@ public:
 	inline const syneControllerTarget::Ref &GetTargetPlay() const{ return pTargetPlay; }
 	
 	/** \brief Create an engine synthesizer source. */
-	virtual deSynthesizerSource::Ref CreateEngineSource();
+	deSynthesizerSource::Ref CreateEngineSource() override;
 	
 	/** \brief Update targets. */
 	void UpdateTargets() override;

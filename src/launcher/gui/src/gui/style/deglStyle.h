@@ -54,7 +54,7 @@ public:
 	
 protected:
 	/** Clean up style. */
-	virtual ~deglStyle();
+	~deglStyle() override;
 	/*@}*/
 	
 	

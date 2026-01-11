@@ -130,7 +130,7 @@ public:
 	
 protected:
 	/** \brief Clean up class force field. */
-	virtual ~igdeGDCForceField();
+	~igdeGDCForceField() override;
 	/*@}*/
 	
 	

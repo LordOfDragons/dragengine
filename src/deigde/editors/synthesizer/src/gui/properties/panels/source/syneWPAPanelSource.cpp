@@ -85,7 +85,7 @@ protected:
 public:
 	cBaseTextFieldListener(syneWPAPanelSource &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		syneSource * const source = pPanel.GetSource();
 		if(!source){
 			return;
@@ -107,7 +107,7 @@ protected:
 public:
 	cBaseComboBoxListener(syneWPAPanelSource &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		syneSource * const source = pPanel.GetSource();
 		if(!source){
 			return;
@@ -131,7 +131,7 @@ public:
 	igdeAction(text, icon, description),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		syneSource * const source = pPanel.GetSource();
 		if(!source){
 			return;
@@ -152,7 +152,7 @@ public:
 	typedef deTObjectReference<cTextName> Ref;
 	cTextName(syneWPAPanelSource &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo::Ref  OnChanged(igdeTextField *textField, syneSource *source){
+	igdeUndo::Ref  OnChanged(igdeTextField *textField, syneSource *source) override{
 		return textField->GetText() != source->GetName()
 			? syneUSetSourceName::Ref::New(source, textField->GetText()) : igdeUndo::Ref();
 	}
@@ -163,7 +163,7 @@ public:
 	typedef deTObjectReference<cComboMixMode> Ref;
 	cComboMixMode(syneWPAPanelSource &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo::Ref  OnChanged(igdeComboBox *comboBox, syneSource *source){
+	igdeUndo::Ref  OnChanged(igdeComboBox *comboBox, syneSource *source) override{
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
 		if(!selection){
 			return {};
@@ -180,7 +180,7 @@ public:
 	typedef deTObjectReference<cTextBlendFactor> Ref;
 	cTextBlendFactor(syneWPAPanelSource &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo::Ref  OnChanged(igdeTextField *textField, syneSource *source){
+	igdeUndo::Ref  OnChanged(igdeTextField *textField, syneSource *source) override{
 		const float value = textField->GetFloat();
 		return fabsf(value - source->GetBlendFactor()) > FLOAT_SAFE_EPSILON
 			? syneUSetSourceBlendFactor::Ref::New(source, value) : igdeUndo::Ref();
@@ -192,7 +192,7 @@ public:
 	typedef deTObjectReference<cTextMinVolume> Ref;
 	cTextMinVolume(syneWPAPanelSource &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo::Ref  OnChanged(igdeTextField *textField, syneSource *source){
+	igdeUndo::Ref  OnChanged(igdeTextField *textField, syneSource *source) override{
 		const float value = textField->GetFloat();
 		return fabsf(value - source->GetMinVolume()) > FLOAT_SAFE_EPSILON
 			? syneUSetSourceMinVolume::Ref::New(source, value) : igdeUndo::Ref();
@@ -204,7 +204,7 @@ public:
 	typedef deTObjectReference<cTextMaxVolume> Ref;
 	cTextMaxVolume(syneWPAPanelSource &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo::Ref  OnChanged(igdeTextField *textField, syneSource *source){
+	igdeUndo::Ref  OnChanged(igdeTextField *textField, syneSource *source) override{
 		const float value = textField->GetFloat();
 		return fabsf(value - source->GetMaxVolume()) > FLOAT_SAFE_EPSILON
 			? syneUSetSourceMaxVolume::Ref::New(source, value) : igdeUndo::Ref();
@@ -216,7 +216,7 @@ public:
 	typedef deTObjectReference<cTextMinPanning> Ref;
 	cTextMinPanning(syneWPAPanelSource &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo::Ref  OnChanged(igdeTextField *textField, syneSource *source){
+	igdeUndo::Ref  OnChanged(igdeTextField *textField, syneSource *source) override{
 		const float value = textField->GetFloat();
 		return fabsf(value - source->GetMinPanning()) > FLOAT_SAFE_EPSILON
 			? syneUSetSourceMinPanning::Ref::New(source, value) : igdeUndo::Ref();
@@ -228,7 +228,7 @@ public:
 	typedef deTObjectReference<cTextMaxPanning> Ref;
 	cTextMaxPanning(syneWPAPanelSource &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo::Ref  OnChanged(igdeTextField *textField, syneSource *source){
+	igdeUndo::Ref  OnChanged(igdeTextField *textField, syneSource *source) override{
 		const float value = textField->GetFloat();
 		return fabsf(value - source->GetMaxPanning()) > FLOAT_SAFE_EPSILON
 			? syneUSetSourceMaxPanning::Ref::New(source, value) : igdeUndo::Ref();
@@ -241,7 +241,7 @@ public:
 	cActionEnable(syneWPAPanelSource &panel) : cBaseAction(panel, "Enable source",
 		NULL, "Determines if the source is affecting the model"){ }
 	
-	virtual igdeUndo::Ref OnAction(syneSource *source){
+	igdeUndo::Ref OnAction(syneSource *source) override{
 		return syneUSourceToggleEnabled::Ref::New(source);
 	}
 };
@@ -252,7 +252,7 @@ public:
 	typedef deTObjectReference<cComboTarget> Ref;
 	cComboTarget(syneWPAPanelSource &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo::Ref  OnChanged(igdeComboBox*, syneSource*){
+	igdeUndo::Ref  OnChanged(igdeComboBox*, syneSource*) override{
 		pPanel.UpdateTarget();
 		return {};
 	}
@@ -265,7 +265,7 @@ public:
 	typedef deTObjectReference<cListLinks> Ref;
 	cListLinks(syneWPAPanelSource &panel) : pPanel(panel){}
 	
-	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
+	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		helper.MenuCommand(menu, pPanel.GetActionLinkAdd());
 		helper.MenuCommand(menu, pPanel.GetActionLinkRemove());

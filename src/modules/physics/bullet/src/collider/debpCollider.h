@@ -113,7 +113,7 @@ private:
 public:
 	// constructor, destructor
 	debpCollider(dePhysicsBullet *bullet, deCollider &collider, int type);
-	~debpCollider();
+	~debpCollider() override;
 	
 	// physics management
 	/** Retrieves the type. */
@@ -381,73 +381,73 @@ public:
 	/** @name Notifications */
 	/*@{*/
 	/** Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	/** Orientation changed. */
-	virtual void OrientationChanged();
+	void OrientationChanged() override;
 	
 	/** Scale changed. */
-	virtual void ScaleChanged();
+	void ScaleChanged() override;
 	
 	/** Position or orientation changed. */
-	virtual void GeometryChanged();
+	void GeometryChanged() override;
 	
 	/** Linear velocity changed. */
-	virtual void LinearVelocityChanged();
+	void LinearVelocityChanged() override;
 	/** Angular velocity changed. */
-	virtual void AngularVelocityChanged();
+	void AngularVelocityChanged() override;
 	/** Enabled changed. */
-	virtual void EnabledChanged();
+	void EnabledChanged() override;
 	/** Gravity changed. */
-	virtual void GravityChanged();
+	void GravityChanged() override;
 	/** Properties like mass changed. */
-	virtual void PropertiesChanged();
+	void PropertiesChanged() override;
 	/** Response type changed. */
-	virtual void ResponseTypeChanged();
+	void ResponseTypeChanged() override;
 	
 	/** Collision filter changed. */
-	virtual void CollisionFilterChanged();
+	void CollisionFilterChanged() override;
 	
 	/** Ignore colliders changed. */
-	virtual void IgnoreCollidersChanged();
+	void IgnoreCollidersChanged() override;
 	
 	/** Force field factor changed. */
-	virtual void ForceFieldChanged();
+	void ForceFieldChanged() override;
 	
 	/** Attachment added. */
-	virtual void AttachmentAdded(int index, deColliderAttachment *attachment);
+	void AttachmentAdded(int index, deColliderAttachment *attachment) override;
 	/** Attachment changed. */
-	virtual void AttachmentChanged(int index, deColliderAttachment *attachment);
+	void AttachmentChanged(int index, deColliderAttachment *attachment) override;
 	/** Attachment removed. */
-	virtual void AttachmentRemoved(int index, deColliderAttachment *attachment);
+	void AttachmentRemoved(int index, deColliderAttachment *attachment) override;
 	/** All attachments removed. */
-	virtual void AllAttachmentsRemoved();
+	void AllAttachmentsRemoved() override;
 	
 	/** Constraint added. */
-	virtual void ConstraintAdded(int index, deColliderConstraint *attachment);
+	void ConstraintAdded(int index, deColliderConstraint *attachment) override;
 	/** Constraint changed. */
-	virtual void ConstraintChanged(int index, deColliderConstraint *attachment);
+	void ConstraintChanged(int index, deColliderConstraint *attachment) override;
 	/** Constraint removed. */
-	virtual void ConstraintRemoved(int index, deColliderConstraint *attachment);
+	void ConstraintRemoved(int index, deColliderConstraint *attachment) override;
 	/** All attachments removed. */
-	virtual void AllConstraintsRemoved();
+	void AllConstraintsRemoved() override;
 	
 	
 	
 	/** Post physics collision test added. */
-	virtual void CollisionTestAdded(int index);
+	void CollisionTestAdded(int index) override;
 	
 	/** Post physics collision test changed. */
-	virtual void CollisionTestChanged(int index);
+	void CollisionTestChanged(int index) override;
 	
 	/** Post physics collision test enabled changed. */
-	virtual void CollisionTestEnabledChanged(int index);
+	void CollisionTestEnabledChanged(int index) override;
 	
 	/** Post physics collision test removed. */
-	virtual void CollisionTestRemoved(int index);
+	void CollisionTestRemoved(int index) override;
 	
 	/** All post physics collision tests removed. */
-	virtual void AllCollisionTestsRemoved();
+	void AllCollisionTestsRemoved() override;
 	/*@}*/
 	
 	

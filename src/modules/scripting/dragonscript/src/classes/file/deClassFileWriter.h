@@ -45,13 +45,13 @@ public:
 	/** Creates a new script class. */
 	deClassFileWriter(deScriptingDragonScript *ds);
 	/** Cleans up the script class. */
-	virtual ~deClassFileWriter();
+	~deClassFileWriter() override;
 	/*@}*/
 	
 	/** @name Management */
 	/*@{*/
 	/** Create class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	/** Retrieves the fileWriter or NULL if myself is NULL. */
 	decBaseFileWriter *GetFileWriter(dsRealObject *myself) const;
 	/** Retrieves the stream version. */

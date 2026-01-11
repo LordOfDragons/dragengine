@@ -54,7 +54,7 @@ public:
 	
 	/** \brief Clean up undo action. */
 protected:
-	virtual ~ceUCTopicPaste();
+	~ceUCTopicPaste() override;
 public:
 	/*@}*/
 	
@@ -67,10 +67,10 @@ public:
 	inline const ceConversationTopic::List &GetTopics() const{ return pTopics; }
 	
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -146,31 +146,31 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	/** Axis changed. */
-	virtual void AxisChanged();
+	void AxisChanged() override;
 	
 	/** Size changed. */
-	virtual void SizeChanged();
+	void SizeChanged() override;
 	
 	/** Offset changed. */
-	virtual void OffsetChanged();
+	void OffsetChanged() override;
 	
 	/** Skin changed. */
-	virtual void SkinChanged();
+	void SkinChanged() override;
 	
 	/** Dynamic skin changed. */
-	virtual void DynamicSkinChanged();
+	void DynamicSkinChanged() override;
 	
 	/** Locked or spherical changed. */
-	virtual void ParametersChanged();
+	void ParametersChanged() override;
 	
 	/** Visibility changed. */
-	virtual void VisibilityChanged();
+	void VisibilityChanged() override;
 	
 	/** Layer mask changed. */
-	virtual void LayerMaskChanged();
+	void LayerMaskChanged() override;
 	/*@}*/
 	
 	

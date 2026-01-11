@@ -50,7 +50,7 @@ public:
 	/** Creates a new peer. */
 	aeALTouchSensorListener();
 	/** Cleans up the peer. */
-	virtual ~aeALTouchSensorListener();
+	~aeALTouchSensorListener() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -65,13 +65,13 @@ public:
 	 * Notify scripting module peer collider entered touch sensor.
 	 * \param collider Collider entering the shape.
 	 */
-	virtual void ColliderEntered(deCollider *collider);
+	void ColliderEntered(deCollider *collider) override;
 	
 	/**
 	 * Notify scripting module peer collider left touch sensor.
 	 * \param collider Collider entering the shape.
 	 */
-	virtual void ColliderLeft(deCollider *collider);
+	void ColliderLeft(deCollider *collider) override;
 	/*@}*/
 };
 

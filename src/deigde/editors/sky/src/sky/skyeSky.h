@@ -91,7 +91,7 @@ public:
 	
 protected:
 	/** \brief Clean up sky. */
-	virtual ~skyeSky();
+	~skyeSky() override;
 	/*@}*/
 	
 	
@@ -248,10 +248,10 @@ public:
 	void RemoveListener(skyeSkyListener *listener);
 	
 	/** \brief Notify listeners changed or saved state changed. */
-	virtual void NotifyStateChanged();
+	void NotifyStateChanged() override;
 	
 	/** \brief Notify listeners undo system changed. */
-	virtual void NotifyUndoChanged();
+	void NotifyUndoChanged() override;
 	
 	/** \brief Notify sky parameter changed. */
 	void NotifySkyChanged();

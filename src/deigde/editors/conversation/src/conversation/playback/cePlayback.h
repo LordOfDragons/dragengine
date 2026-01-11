@@ -99,7 +99,7 @@ public:
 	
 	/** Clean up playback. */
 protected:
-	~cePlayback();
+	~cePlayback() override;
 public:
 	/*@}*/
 	

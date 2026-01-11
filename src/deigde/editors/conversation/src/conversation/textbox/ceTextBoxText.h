@@ -58,7 +58,7 @@ public:
 	
 	/** \brief Clean up text box text. */
 protected:
-	virtual ~ceTextBoxText();
+	~ceTextBoxText() override;
 public:
 	/*@}*/
 	

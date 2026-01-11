@@ -76,7 +76,7 @@ public:
 	
 protected:
 	/** \brief Clean up filtered combo box. */
-	virtual ~igdeComboBoxFilter();
+	~igdeComboBoxFilter() override;
 	/*@}*/
 	
 	
@@ -124,58 +124,58 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
 	
 	
 	
 protected:
 	/** \brief Item added. */
-	virtual void OnItemAdded(int index);
+	void OnItemAdded(int index) override;
 	
 	/** \brief Item removed. */
-	virtual void OnItemRemoved(int index);
+	void OnItemRemoved(int index) override;
 	
 	/** \brief All items removed. */
-	virtual void OnAllItemsRemoved();
+	void OnAllItemsRemoved() override;
 	
 	/** \brief Item changed. */
-	virtual void OnItemChanged(int index);
+	void OnItemChanged(int index) override;
 	
 	/** \brief Item moved. */
-	virtual void OnItemMoved(int fromIndex, int toIndex);
+	void OnItemMoved(int fromIndex, int toIndex) override;
 	
 	/** \brief Items sorted. */
-	virtual void OnItemsSorted();
+	void OnItemsSorted() override;
 	
 	/** \brief Text changed. */
-	virtual void OnTextChanged();
+	void OnTextChanged() override;
 	
 	/** \brief Enabled changed. */
-	virtual void OnEnabledChanged();
+	void OnEnabledChanged() override;
 	
 	/** \brief Rows changed. */
-	virtual void OnRowsChanged();
+	void OnRowsChanged() override;
 	
 	/** \brief Editable changed. */
-	virtual void OnEditableChanged();
+	void OnEditableChanged() override;
 	
 	/** \brief Description changed. */
-	virtual void OnDescriptionChanged();
+	void OnDescriptionChanged() override;
 	
 	/** \brief Filter string changed. */
 	virtual void OnFilterStringChanged();
 	
 	/** \brief Invalid value changed. */
-	virtual void OnInvalidValueChanged();
+	void OnInvalidValueChanged() override;
 	
 	/** \brief Request focus. */
-	virtual void OnRequestFocus();
+	void OnRequestFocus() override;
 	/*@}*/
 };
 

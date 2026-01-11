@@ -45,11 +45,11 @@ private:
 public:
 	// constructor
 	deClassResourceListener(deEngine *gameEngine, deScriptingDragonScript *scrMgr);
-	~deClassResourceListener();
+	~deClassResourceListener() override;
 	
 	// internal functions
 	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	inline deEngine *GetGameEngine() const{ return pGameEngine; }
 	
 	/** \brief Function index of finishedLoading(). */

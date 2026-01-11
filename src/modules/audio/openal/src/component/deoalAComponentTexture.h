@@ -69,7 +69,7 @@ public:
 	
 protected:
 	/** \brief Clean up component texture. */
-	virtual ~deoalAComponentTexture();
+	~deoalAComponentTexture() override;
 	/*@}*/
 	
 	

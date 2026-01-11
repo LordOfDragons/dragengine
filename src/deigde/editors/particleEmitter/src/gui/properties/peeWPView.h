@@ -73,7 +73,7 @@ public:
 	
 protected:
 	/** \brief Clean up the rig. */
-	virtual ~peeWPView();
+	~peeWPView() override;
 	/*@}*/
 	
 	

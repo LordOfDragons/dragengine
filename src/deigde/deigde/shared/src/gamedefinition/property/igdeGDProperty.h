@@ -202,7 +202,7 @@ public:
 	
 protected:
 	/** \brief Clean up property. */
-	virtual ~igdeGDProperty();
+	~igdeGDProperty() override;
 	/*@}*/
 	
 	

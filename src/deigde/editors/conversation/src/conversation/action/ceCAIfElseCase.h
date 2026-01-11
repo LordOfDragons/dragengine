@@ -56,7 +56,7 @@ public:
 	
 	/** \brief Clean up the if else case. */
 protected:
-	virtual ~ceCAIfElseCase();
+	~ceCAIfElseCase() override;
 public:
 	/*@}*/
 	

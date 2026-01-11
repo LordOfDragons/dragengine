@@ -75,7 +75,7 @@ public:
 	deGraphicOpenGl(deLoadableModule &loadableModule);
 	
 	/** Clean up graphic module. */
-	virtual ~deGraphicOpenGl();
+	~deGraphicOpenGl() override;
 	/*@}*/
 	
 	
@@ -86,16 +86,16 @@ public:
 	 * Called to init the module and prepare it for rendering. Returns true on success.
 	 * To access the os of the engine use the GetOS function.
 	 */
-	virtual bool Init(deRenderWindow *renderWindow);
+	bool Init(deRenderWindow *renderWindow) override;
 	
 	/**
 	 * Called to cleanup the module. All resources have to be freed and running threads
 	 * stopped or killed if needed.
 	 */
-	virtual void CleanUp();
+	void CleanUp() override;
 	
 	/** Input system overlay canvas view changed. */
-	virtual void InputOverlayCanvasChanged();
+	void InputOverlayCanvasChanged() override;
 	
 	#ifdef WITH_OPENGLES
 	/** Application window has been created. */
@@ -123,7 +123,7 @@ public:
 	 * module to decide if it shows the last frame or the current frame for
 	 * best performance. For this reason run RenderWindows in regular intervals.
 	 */
-	virtual void RenderWindows();
+	void RenderWindows() override;
 	
 	/**
 	 * Frame-per-second rate averaged over the last couple of frames.
@@ -131,100 +131,100 @@ public:
 	 * 
 	 * Returns 0 if module is not using a separate thread.
 	 */
-	virtual int GetFPSRate();
+	int GetFPSRate() override;
 	
 	/** Set position and orientation of VR debug panel if graphic module shows one. */
-	virtual void SetVRDebugPanelPosition(const decDVector &position, const decQuaternion &orientation);
+	void SetVRDebugPanelPosition(const decDVector &position, const decQuaternion &orientation) override;
 	/*@}*/
 	
 	
 	
 	/** Create a peer for the given billboard. */
-	virtual deBaseGraphicBillboard *CreateBillboard(deBillboard *billboard);
+	deBaseGraphicBillboard *CreateBillboard(deBillboard *billboard) override;
 	
 	/** Create a peer for the given canvas. */
-	virtual deBaseGraphicCanvas *CreateCanvas(deCanvas *canvas);
+	deBaseGraphicCanvas *CreateCanvas(deCanvas *canvas) override;
 	
 	/** Create peer for capture canvas. */
-	virtual deBaseGraphicCaptureCanvas *CreateCaptureCanvas(deCaptureCanvas *captureCanvas);
+	deBaseGraphicCaptureCanvas *CreateCaptureCanvas(deCaptureCanvas *captureCanvas) override;
 	
 	/** Create a peer for the given camera. */
-	virtual deBaseGraphicCamera *CreateCamera(deCamera *camera);
+	deBaseGraphicCamera *CreateCamera(deCamera *camera) override;
 	
 	/** Create a peer for the given component. */
-	virtual deBaseGraphicComponent *CreateComponent(deComponent *comp);
+	deBaseGraphicComponent *CreateComponent(deComponent *comp) override;
 	
 	/** Create a peer for the given debug drawer. */
-	virtual deBaseGraphicDebugDrawer *CreateDebugDrawer(deDebugDrawer *debugDrawer);
+	deBaseGraphicDebugDrawer *CreateDebugDrawer(deDebugDrawer *debugDrawer) override;
 	
 	/** Create a peer for the given decal. */
-	virtual deBaseGraphicDecal *CreateDecal(deDecal *decal);
+	deBaseGraphicDecal *CreateDecal(deDecal *decal) override;
 	
 	/** Create a peer for the given dynamic skin. */
-	virtual deBaseGraphicDynamicSkin *CreateDynamicSkin(deDynamicSkin *dynamicSkin);
+	deBaseGraphicDynamicSkin *CreateDynamicSkin(deDynamicSkin *dynamicSkin) override;
 	
 	/** Create a peer for the given effect. */
-	virtual deBaseGraphicEffect *CreateEffect(deEffect *effect);
+	deBaseGraphicEffect *CreateEffect(deEffect *effect) override;
 	
 	/** Create a peer for the given environment map probe. */
-	virtual deBaseGraphicEnvMapProbe *CreateEnvMapProbe(deEnvMapProbe *envMapProbe);
+	deBaseGraphicEnvMapProbe *CreateEnvMapProbe(deEnvMapProbe *envMapProbe) override;
 	
 	/** Create a peer for the given font. */
-	virtual deBaseGraphicFont *CreateFont(deFont *font);
+	deBaseGraphicFont *CreateFont(deFont *font) override;
 	
 	/** Create a peer for the given height terrain. */
-	virtual deBaseGraphicHeightTerrain *CreateHeightTerrain(deHeightTerrain *heightTerrain);
+	deBaseGraphicHeightTerrain *CreateHeightTerrain(deHeightTerrain *heightTerrain) override;
 	
 	/** Create a peer for the given image. */
-	virtual deBaseGraphicImage *CreateImage(deImage *image);
+	deBaseGraphicImage *CreateImage(deImage *image) override;
 	
 	/** Create a peer for the given light. */
-	virtual deBaseGraphicLight *CreateLight(deLight *light);
+	deBaseGraphicLight *CreateLight(deLight *light) override;
 	
 	/** Create a peer for the given lumimeter. */
-	virtual deBaseGraphicLumimeter *CreateLumimeter(deLumimeter *lumimeter);
+	deBaseGraphicLumimeter *CreateLumimeter(deLumimeter *lumimeter) override;
 	
 	/** Ccreat a peer for the given model. */
-	virtual deBaseGraphicModel *CreateModel(deModel *model);
+	deBaseGraphicModel *CreateModel(deModel *model) override;
 	
 	/** Create a peer for the given occlusion mesh. */
-	virtual deBaseGraphicOcclusionMesh *CreateOcclusionMesh(deOcclusionMesh *occmesh);
+	deBaseGraphicOcclusionMesh *CreateOcclusionMesh(deOcclusionMesh *occmesh) override;
 	
 	/** Create a peer for the given particle emitter. */
-	virtual deBaseGraphicParticleEmitter *CreateParticleEmitter(deParticleEmitter *emitter);
+	deBaseGraphicParticleEmitter *CreateParticleEmitter(deParticleEmitter *emitter) override;
 	
 	/** Create a peer for the given particle emitter instance. */
-	virtual deBaseGraphicParticleEmitterInstance *CreateParticleEmitterInstance(deParticleEmitterInstance *instance);
+	deBaseGraphicParticleEmitterInstance *CreateParticleEmitterInstance(deParticleEmitterInstance *instance) override;
 	
 	/** Create a peer for the given prop field. */
-	virtual deBaseGraphicPropField *CreatePropField(dePropField *propField);
+	deBaseGraphicPropField *CreatePropField(dePropField *propField) override;
 	
 	/** Create a peer for the given render window. */
-	virtual deBaseGraphicRenderWindow *CreateRenderWindow(deRenderWindow *renderWindow);
+	deBaseGraphicRenderWindow *CreateRenderWindow(deRenderWindow *renderWindow) override;
 	
 	/** Create a peer for the given skin. */
-	virtual deBaseGraphicSkin *CreateSkin(deSkin *skin);
+	deBaseGraphicSkin *CreateSkin(deSkin *skin) override;
 	
 	/** Create peer sky. */
-	virtual deBaseGraphicSky *CreateSky(deSky *sky);
+	deBaseGraphicSky *CreateSky(deSky *sky) override;
 	
 	/** Create peer sky instance. */
-	virtual deBaseGraphicSkyInstance *CreateSkyInstance(deSkyInstance *instance);
+	deBaseGraphicSkyInstance *CreateSkyInstance(deSkyInstance *instance) override;
 	
 	/** Create a peer for the given smoke emitter. */
-	virtual deBaseGraphicSmokeEmitter *CreateSmokeEmitter(deSmokeEmitter *smokeEmitter);
+	deBaseGraphicSmokeEmitter *CreateSmokeEmitter(deSmokeEmitter *smokeEmitter) override;
 	
 	/** Create a peer for the given video. */
-	virtual deBaseGraphicVideo *CreateVideo(deVideo *video);
+	deBaseGraphicVideo *CreateVideo(deVideo *video) override;
 	
 	/** Create a peer for the given video player. */
-	virtual deBaseGraphicVideoPlayer *CreateVideoPlayer(deVideoPlayer *videoPlayer);
+	deBaseGraphicVideoPlayer *CreateVideoPlayer(deVideoPlayer *videoPlayer) override;
 	
 	/** Create a peer for the given world. */
-	virtual deBaseGraphicWorld *CreateWorld(deWorld *world);
+	deBaseGraphicWorld *CreateWorld(deWorld *world) override;
 	
 	/** Get graphic api connection parameters. */
-	virtual void GetGraphicApiConnection(sGraphicApiConnection &connection);
+	void GetGraphicApiConnection(sGraphicApiConnection &connection) override;
 	/*@}*/
 	
 	
@@ -232,23 +232,23 @@ public:
 	/** \name Parameters */
 	/*@{*/
 	/** Number of parameters. */
-	virtual int GetParameterCount() const;
+	int GetParameterCount() const override;
 	
 	/**
 	 * Get information about parameter.
 	 * \param[in] index Index of the parameter
 	 * \param[in] parameter Object to fill with information about the parameter
 	 */
-	virtual void GetParameterInfo(int index, deModuleParameter &parameter) const;
+	void GetParameterInfo(int index, deModuleParameter &parameter) const override;
 	
 	/** Index of named parameter or -1 if not found. */
-	virtual int IndexOfParameterNamed(const char *name) const;
+	int IndexOfParameterNamed(const char *name) const override;
 	
 	/** Value of named parameter. */
-	virtual decString GetParameterValue(const char *name) const;
+	decString GetParameterValue(const char *name) const override;
 	
 	/** Set value of named parameter. */
-	virtual void SetParameterValue(const char *name, const char *value);
+	void SetParameterValue(const char *name, const char *value) override;
 	/*@}*/
 	
 	
@@ -264,7 +264,7 @@ public:
 	 * 
 	 * The default implementation does nothing.
 	 */
-	virtual void PauseParallelProcessingUpdate();
+	void PauseParallelProcessingUpdate() override;
 	/*@}*/
 	
 	
@@ -278,7 +278,7 @@ public:
 	 * parameter and the answer has to be written into 'answer'. The default
 	 * implementation simply answers only to help with itself.
 	 */
-	virtual void SendCommand(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void SendCommand(const decUnicodeArgumentList &command, decUnicodeString &answer) override;
 	/*@}*/
 	
 	

@@ -52,10 +52,10 @@ private:
 public:
 	// constructor
 	deClassConnection(deEngine *gameEngine, deScriptingDragonScript *scrMgr);
-	~deClassConnection();
+	~deClassConnection() override;
 	
 	// internal functions
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	deConnection *GetConnection(dsRealObject *myself) const;
 	void PushConnection(dsRunTime *rt, deConnection *connection);
 	inline deEngine *GetGameEngine() const{ return pGameEngine; }

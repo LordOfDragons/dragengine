@@ -93,7 +93,7 @@ protected:
 	fbxProperty(eType type);
 	
 	/** \brief Clean up property. */
-	virtual ~fbxProperty();
+	~fbxProperty() override;
 	/*@}*/
 	
 	

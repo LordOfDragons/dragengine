@@ -60,7 +60,7 @@ public:
 	
 protected:
 	/** \brief Clean up ray trace parallel task. */
-	virtual ~deoalRTPTRoomEstimateFinish();
+	~deoalRTPTRoomEstimateFinish() override;
 	/*@}*/
 	
 	
@@ -86,10 +86,10 @@ public:
 	
 	
 	/** \brief Parallel task implementation. */
-	virtual void Run();
+	void Run() override;
 	
 	/** \brief Processing of task Run() finished. */
-	virtual void Finished();
+	void Finished() override;
 	/*@}*/
 	
 	
@@ -97,10 +97,10 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** \brief Short task name for debugging. */
-	virtual decString GetDebugName() const;
+	decString GetDebugName() const override;
 	
 	/** \brief Task details for debugging. */
-	virtual decString GetDebugDetails() const;
+	decString GetDebugDetails() const override;
 	/*@}*/
 	
 	

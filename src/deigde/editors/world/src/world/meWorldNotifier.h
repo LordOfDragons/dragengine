@@ -70,7 +70,7 @@ public:
 	
 protected:
 	/** Cleans up the skin notifier. */
-	virtual ~meWorldNotifier();
+	~meWorldNotifier() override;
 	
 public:
 	/*@}*/

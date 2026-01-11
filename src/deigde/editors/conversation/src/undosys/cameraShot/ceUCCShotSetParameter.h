@@ -55,7 +55,7 @@ public:
 	ceUCCShotSetParameter(ceCameraShot *cameraShot, int parameter);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCCShotSetParameter();
+	~ceUCCShotSetParameter() override;
 	/*@}*/
 	
 public:
@@ -65,9 +65,9 @@ public:
 	void SetNewCurve(const decCurveBezier &curve);
 	
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -56,7 +56,7 @@ public:
 	
 protected:
 	/** Clean up render dynamic skin. */
-	virtual ~deoglRDynamicSkin();
+	~deoglRDynamicSkin() override;
 	/*@}*/
 	
 	

@@ -47,7 +47,7 @@ public:
 	/** Creates a new gui peer. */
 	igdeSMPropField();
 	/** Cleans up the peer. */
-	virtual ~igdeSMPropField();
+	~igdeSMPropField() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -65,7 +65,7 @@ public:
 	 * indicates the percentage of instances to use compared to a fully populated
 	 * prop field.
 	 */
-	virtual void CreateInstances(float density);
+	void CreateInstances(float density) override;
 	/*@}*/
 };
 

@@ -58,7 +58,7 @@ public:
 	ceUCAASpeakWordFromText(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCAASpeakWordFromText();
+	~ceUCAASpeakWordFromText() override;
 	/*@}*/
 	
 public:
@@ -68,9 +68,9 @@ public:
 	void SetWordsFromText(const decUnicodeString &text, float letterDuration);
 	
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

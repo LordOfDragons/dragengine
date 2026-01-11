@@ -74,7 +74,7 @@ public:
 	
 protected:
 	/** \brief Clean up sound peer. */
-	virtual ~deoalASound();
+	~deoalASound() override;
 	/*@}*/
 	
 	

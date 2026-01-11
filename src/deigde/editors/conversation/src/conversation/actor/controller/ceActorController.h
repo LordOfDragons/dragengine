@@ -86,7 +86,7 @@ public:
 	
 protected:
 	/** \brief Clean up actor controller. */
-	virtual ~ceActorController();
+	~ceActorController() override;
 	/*@}*/
 	
 	

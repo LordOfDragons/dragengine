@@ -58,7 +58,7 @@ public:
 	igdeNativeFoxTimer(igdeTimer &owner, FXApp *app);
 	
 	/** \brief Clean up timer. */
-	virtual ~igdeNativeFoxTimer();
+	~igdeNativeFoxTimer() override;
 	
 	/** \brief Create native timer. */
 	static igdeNativeFoxTimer* CreateNativeTimer(igdeTimer &owner);

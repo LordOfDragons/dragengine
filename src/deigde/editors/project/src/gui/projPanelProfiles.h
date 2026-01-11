@@ -112,7 +112,7 @@ public:
 	
 	/** \brief Clean up panel. */
 protected:
-	virtual ~projPanelProfiles();
+	~projPanelProfiles() override;
 public:
 	/*@}*/
 	

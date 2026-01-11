@@ -52,7 +52,7 @@ public:
 	dedsServer(deScriptingDragonScript *ds, deServer *server);
 	
 	/** \brief Clean up peer. */
-	virtual ~dedsServer();
+	~dedsServer() override;
 	/*@}*/
 	
 	
@@ -73,7 +73,7 @@ public:
 	/**
 	 * \brief Remote host connected.
 	 */
-	virtual void ClientConnected(deConnection *connection);
+	void ClientConnected(deConnection *connection) override;
 	/*@}*/
 };
 

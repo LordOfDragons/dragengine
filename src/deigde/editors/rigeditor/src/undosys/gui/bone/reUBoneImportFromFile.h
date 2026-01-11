@@ -93,7 +93,7 @@ public:
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~reUBoneImportFromFile();
+	~reUBoneImportFromFile() override;
 	/*@}*/
 	
 	
@@ -126,10 +126,10 @@ public:
 	void SetImportConstraints(bool import);
 	
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -66,7 +66,7 @@ public:
 		const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up text widget. */
-	virtual ~igdeNativeFoxTextArea();
+	~igdeNativeFoxTextArea() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeFoxTextArea* CreateNativeWidget(igdeTextArea &owner);

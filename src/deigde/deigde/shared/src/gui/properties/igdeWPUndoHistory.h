@@ -62,7 +62,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~igdeWPUndoHistory();
+	~igdeWPUndoHistory() override;
 	
 public:
 	/*@}*/

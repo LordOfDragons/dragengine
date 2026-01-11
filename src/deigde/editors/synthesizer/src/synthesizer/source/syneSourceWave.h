@@ -95,7 +95,7 @@ public:
 	
 	
 	/** \brief Create engine synthesizer source. */
-	virtual deSynthesizerSource::Ref CreateEngineSource();
+	deSynthesizerSource::Ref CreateEngineSource() override;
 	
 	/** \brief Update targets. */
 	void UpdateTargets() override;

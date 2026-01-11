@@ -75,7 +75,7 @@ public:
 	
 protected:
 	/** Clean up mapped. */
-	virtual ~seMapped();
+	~seMapped() override;
 	/*@}*/
 	
 	

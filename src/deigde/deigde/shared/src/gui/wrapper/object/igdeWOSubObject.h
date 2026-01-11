@@ -68,7 +68,7 @@ public:
 	
 protected:
 	/** \brief Clean up object wrapper sub object. */
-	virtual ~igdeWOSubObject();
+	~igdeWOSubObject() override;
 	
 public:
 	/*@}*/

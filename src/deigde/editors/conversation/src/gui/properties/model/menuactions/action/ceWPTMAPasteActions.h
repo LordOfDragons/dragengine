@@ -69,7 +69,7 @@ public:
 	
 	
 	/** \brief Do menu action. */
-	virtual void OnAction();
+	void OnAction() override;
 	
 	/** \brief Create undo action for pasting actions. */
 	virtual ceUCActionPaste::Ref CreateUndo(const ceConversationAction::List &actions);

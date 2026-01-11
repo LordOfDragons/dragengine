@@ -78,7 +78,7 @@ public:
 	
 	/** \brief Clean up listener. */
 protected:
-	virtual ~seVCIDragNode();
+	~seVCIDragNode() override;
 public:
 	/*@}*/
 	
@@ -90,17 +90,17 @@ public:
 	 * \brief Dragging begins.
 	 * \returns true to start drag operation or false to abort without calling OnDragFinish.
 	 */
-	virtual bool OnDragBegin();
+	bool OnDragBegin() override;
 	
 	/**
 	 * \brief Update dragging.
 	 */
-	virtual void OnDragUpdate();
+	void OnDragUpdate() override;
 	
 	/**
 	 * \brief Dragging ends.
 	 */
-	virtual void OnDragFinish(bool cancelled);
+	void OnDragFinish(bool cancelled) override;
 	/*@}*/
 	
 	

@@ -97,7 +97,7 @@ public:
 	ceConversationAction(const ceConversationAction &action);
 	/** \brief Cleans up the conversation action. */
 protected:
-	virtual ~ceConversationAction();
+	~ceConversationAction() override;
 public:
 	/*@}*/
 	

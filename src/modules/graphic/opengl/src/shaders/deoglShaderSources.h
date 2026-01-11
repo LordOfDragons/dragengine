@@ -76,7 +76,7 @@ public:
 	
 protected:
 	/** Clean up shader sources. */
-	virtual ~deoglShaderSources();
+	~deoglShaderSources() override;
 	/*@}*/
 	
 	

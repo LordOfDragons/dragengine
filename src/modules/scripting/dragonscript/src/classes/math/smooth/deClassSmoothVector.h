@@ -46,7 +46,7 @@ public:
 	deClassSmoothVector(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up the class. */
-	virtual ~deClassSmoothVector();
+	~deClassSmoothVector() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -56,7 +56,7 @@ public:
 	inline const deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Smooth vector from object. */
 	const decSmoothVector &GetSmoothVector(dsRealObject *myself) const;

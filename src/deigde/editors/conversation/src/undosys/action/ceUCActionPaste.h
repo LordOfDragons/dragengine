@@ -53,7 +53,7 @@ public:
 	ceUCActionPaste(ceConversationTopic *topic, const ceConversationAction::List &actions, int index);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCActionPaste();
+	~ceUCActionPaste() override;
 	/*@}*/
 	
 public:
@@ -69,9 +69,9 @@ public:
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 protected:

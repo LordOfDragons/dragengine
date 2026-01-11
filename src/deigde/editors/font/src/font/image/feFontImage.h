@@ -65,7 +65,7 @@ public:
 	feFontImage(deEngine *engine);
 	/** Cleans up the font image. */
 protected:
-	virtual ~feFontImage();
+	~feFontImage() override;
 public:
 	/*@}*/
 	

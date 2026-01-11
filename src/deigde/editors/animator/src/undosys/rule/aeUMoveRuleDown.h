@@ -58,16 +58,16 @@ public:
 	aeUMoveRuleDown(aeAnimator *animator, aeRule *rule);
 protected:
 	/** Clean up undo. */
-	virtual ~aeUMoveRuleDown();
+	~aeUMoveRuleDown() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

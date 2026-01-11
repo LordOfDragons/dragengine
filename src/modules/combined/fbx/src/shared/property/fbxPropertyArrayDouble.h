@@ -83,9 +83,9 @@ public:
 	double GetValueAtAsDouble(int index) const override;
 	
 	/** \brief Read sequence of values as composed type. */
-	virtual decVector2 GetValueAtAsVector2(int index) const;
-	virtual decVector GetValueAtAsVector(int index) const;
-	virtual decMatrix GetValueAtAsMatrix(int index) const;
+	decVector2 GetValueAtAsVector2(int index) const override;
+	decVector GetValueAtAsVector(int index) const override;
+	decMatrix GetValueAtAsMatrix(int index) const override;
 	
 	
 	
@@ -93,7 +93,7 @@ public:
 	void Save(decBaseFileWriter &writer) override;
 	
 	/** \brief Debug print property structure. */
-	virtual void DebugPrintStructure(deBaseModule &logger, const decString &prefix) const;
+	void DebugPrintStructure(deBaseModule &logger, const decString &prefix) const override;
 	/*@}*/
 };
 

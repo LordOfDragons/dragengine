@@ -66,7 +66,7 @@ public:
 	
 protected:
 	/** \brief Clean up texture definition. */
-	virtual ~igdeGDCCTexture();
+	~igdeGDCCTexture() override;
 	
 public:
 	/*@}*/

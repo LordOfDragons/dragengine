@@ -67,7 +67,7 @@ public:
 	
 	/** Clean up listener. */
 protected:
-	virtual ~gdeGameDefinitionListener();
+	~gdeGameDefinitionListener() override;
 public:
 	/*@}*/
 	

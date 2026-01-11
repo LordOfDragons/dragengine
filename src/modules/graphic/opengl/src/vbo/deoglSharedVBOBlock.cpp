@@ -87,7 +87,7 @@ void deoglSharedVBOBlock::DelayedRemove(){
 		explicit cDelayedRemove(deoglSharedVBOBlock *vboBlock) : pVBOBlock(vboBlock){}
 		
 	protected:
-		~cDelayedRemove(){
+		~cDelayedRemove() override{
 			pVBOBlock->GetVBO()->RemoveBlock(pVBOBlock);
 		}
 	};

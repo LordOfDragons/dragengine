@@ -98,7 +98,7 @@ public:
 	
 protected:
 	/** Clean up render occlusion mesh. */
-	virtual ~deoglROcclusionMesh();
+	~deoglROcclusionMesh() override;
 	/*@}*/
 	
 	

@@ -77,7 +77,7 @@ protected:
 public:
 	cBaseTextFieldListener(syneWPAPanelEffect &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		syneEffect * const effect = pPanel.GetEffect();
 		if(!effect){
 			return;
@@ -99,7 +99,7 @@ protected:
 public:
 	cBaseComboBoxListener(syneWPAPanelEffect &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		syneEffect * const effect = pPanel.GetEffect();
 		if(!effect){
 			return;
@@ -123,7 +123,7 @@ public:
 	igdeAction(text, icon, description),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		syneEffect * const effect = pPanel.GetEffect();
 		if(!effect){
 			return;
@@ -144,7 +144,7 @@ public:
 	typedef deTObjectReference<cTextStrength> Ref;
 	cTextStrength(syneWPAPanelEffect &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo::Ref  OnChanged(igdeTextField *textField, syneEffect *effect){
+	igdeUndo::Ref  OnChanged(igdeTextField *textField, syneEffect *effect) override{
 		const float value = textField->GetFloat();
 		return fabsf(value - effect->GetStrength()) > FLOAT_SAFE_EPSILON
 			? syneUEffectSetStrength::Ref::New(effect, value) : igdeUndo::Ref();
@@ -157,7 +157,7 @@ public:
 	cActionEnable(syneWPAPanelEffect &panel) : cBaseAction(panel, "Enable effect",
 		NULL, "Determines if the effect is affecting the source"){ }
 	
-	virtual igdeUndo::Ref OnAction(syneEffect *effect){
+	igdeUndo::Ref OnAction(syneEffect *effect) override{
 		return syneUEffectToggleEnabled::Ref::New(effect);
 	}
 };
@@ -168,7 +168,7 @@ public:
 	typedef deTObjectReference<cComboTarget> Ref;
 	cComboTarget(syneWPAPanelEffect &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo::Ref  OnChanged(igdeComboBox*, syneEffect*){
+	igdeUndo::Ref  OnChanged(igdeComboBox*, syneEffect*) override{
 		pPanel.UpdateTarget();
 		return {};
 	}
@@ -181,7 +181,7 @@ public:
 	typedef deTObjectReference<cListLinks> Ref;
 	cListLinks(syneWPAPanelEffect &panel) : pPanel(panel){}
 	
-	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
+	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		helper.MenuCommand(menu, pPanel.GetActionLinkAdd());
 		helper.MenuCommand(menu, pPanel.GetActionLinkRemove());

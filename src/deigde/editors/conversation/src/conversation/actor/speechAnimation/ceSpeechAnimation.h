@@ -85,7 +85,7 @@ public:
 	
 	/** Clean up speech animation. */
 protected:
-	~ceSpeechAnimation();
+	~ceSpeechAnimation() override;
 public:
 	/*@}*/
 	

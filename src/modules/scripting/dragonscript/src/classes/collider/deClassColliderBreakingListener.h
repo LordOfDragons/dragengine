@@ -44,7 +44,7 @@ public:
 	/** \brief Creates a new class. */
 	deClassColliderBreakingListener(deScriptingDragonScript *ds);
 	/** \brief Cleans up the class. */
-	virtual ~deClassColliderBreakingListener();
+	~deClassColliderBreakingListener() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -53,7 +53,7 @@ public:
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	
 	/** \brief Creates the class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Function index colliderConstraintBroke(). */
 	inline int GetFuncIndexColliderConstraintBroke() const{ return pFuncIndexColliderConstraintBroke; }

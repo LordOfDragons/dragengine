@@ -58,16 +58,16 @@ public:
 	aeUMoveControllerDown(aeAnimator *animator, aeController *controller);
 protected:
 	/** Clean up undo. */
-	virtual ~aeUMoveControllerDown();
+	~aeUMoveControllerDown() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

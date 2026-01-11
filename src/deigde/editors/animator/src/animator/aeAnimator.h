@@ -167,7 +167,7 @@ public:
 	
 	/** Cleans up the actor animator. */
 protected:
-	virtual ~aeAnimator();
+	~aeAnimator() override;
 public:
 	/*@}*/
 	
@@ -475,9 +475,9 @@ public:
 	void RemoveAllNotifiers();
 	
 	/** Notifies all listeners that the changed or saved state changed. */
-	virtual void NotifyStateChanged();
+	void NotifyStateChanged() override;
 	/** Notifies all listeners that the undo system changed. */
-	virtual void NotifyUndoChanged();
+	void NotifyUndoChanged() override;
 	/** Notifies all that the animator changed. */
 	void NotifyAnimatorChanged();
 	/** Notifies all that the view changed. */

@@ -49,7 +49,7 @@ public:
 	igdeDialogCurveBezierCoordEditPoint(igdeDialogCurveBezierCoord &dialog) :
 	pDialog(dialog){}
 	
-	virtual void OnVector2Changed(igdeEditVector2 *editVector2){
+	void OnVector2Changed(igdeEditVector2 *editVector2) override{
 		const decCurveBezierPoint &point = pDialog.GetPoint();
 		const decVector2 diff(editVector2->GetVector2() - point.GetPoint());
 		pDialog.SetPoint(decCurveBezierPoint(editVector2->GetVector2(),
@@ -66,7 +66,7 @@ public:
 	igdeDialogCurveBezierCoordEditHandle1(igdeDialogCurveBezierCoord &dialog) :
 	pDialog(dialog){}
 	
-	virtual void OnVector2Changed(igdeEditVector2 *editVector2){
+	void OnVector2Changed(igdeEditVector2 *editVector2) override{
 		const decCurveBezierPoint &point = pDialog.GetPoint();
 		pDialog.SetPoint(decCurveBezierPoint(point.GetPoint(),
 			editVector2->GetVector2(), point.GetHandle2()));
@@ -82,7 +82,7 @@ public:
 	igdeDialogCurveBezierCoordEditHandle2(igdeDialogCurveBezierCoord &dialog) :
 	pDialog(dialog){}
 	
-	virtual void OnVector2Changed(igdeEditVector2 *editVector2){
+	void OnVector2Changed(igdeEditVector2 *editVector2) override{
 		const decCurveBezierPoint &point = pDialog.GetPoint();
 		pDialog.SetPoint(decCurveBezierPoint(point.GetPoint(),
 			point.GetHandle1(), editVector2->GetVector2()));

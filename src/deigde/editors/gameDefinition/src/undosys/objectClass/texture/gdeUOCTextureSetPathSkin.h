@@ -59,7 +59,7 @@ public:
 	
 protected:
 	/** Clean up undo action. */
-	virtual ~gdeUOCTextureSetPathSkin();
+	~gdeUOCTextureSetPathSkin() override;
 	/*@}*/
 	
 	
@@ -68,10 +68,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

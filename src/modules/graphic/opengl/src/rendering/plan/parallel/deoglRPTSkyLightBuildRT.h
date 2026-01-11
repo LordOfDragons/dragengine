@@ -58,7 +58,7 @@ public:
 		deoglCollideList &tempCollideList, int fromLayer, int toLayer);
 	
 	/** Clean up task. */
-	virtual ~deoglRPTSkyLightBuildRT();
+	~deoglRPTSkyLightBuildRT() override;
 	/*@}*/
 	
 	
@@ -66,13 +66,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Run task. */
-	virtual void Run();
+	void Run() override;
 	
 	/** Task finished. */
-	virtual void Finished();
+	void Finished() override;
 	
 	/** Debug name. */
-	virtual decString GetDebugName() const;
+	decString GetDebugName() const override;
 	
 	/** Information for updating render task. */
 	inline float GetElapsedTime() const{ return pElapsedTime; }

@@ -90,7 +90,7 @@ public:
 	pImageHeight(0){
 	}
 	
-	virtual ~igdeFont_FontBuilder(){
+	~igdeFont_FontBuilder() override{
 		if(pGlyphs){
 			delete [] pGlyphs;
 		}
@@ -120,7 +120,7 @@ public:
 	
 	
 	
-	virtual void BuildFont(deFont *engFont){
+	void BuildFont(deFont *engFont) override{
 		if(!engFont){
 			DETHROW(deeInvalidParam);
 		}

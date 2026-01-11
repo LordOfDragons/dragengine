@@ -74,7 +74,7 @@ public:
 	typedef deTObjectReference<cComboActor> Ref;
 	cComboActor(ceWPCAParam &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionActorParameter * const condition = pPanel.GetCondition();
@@ -94,7 +94,7 @@ public:
 	typedef deTObjectReference<cComboOperator> Ref;
 	cComboOperator(ceWPCAParam &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionActorParameter * const condition = pPanel.GetCondition();
@@ -120,7 +120,7 @@ public:
 	typedef deTObjectReference<cTextParameter> Ref;
 	cTextParameter(ceWPCAParam &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionActorParameter * const condition = pPanel.GetCondition();
@@ -140,7 +140,7 @@ public:
 	typedef deTObjectReference<cTextTestValue> Ref;
 	cTextTestValue(ceWPCAParam &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionActorParameter * const condition = pPanel.GetCondition();
@@ -165,7 +165,7 @@ public:
 	typedef deTObjectReference<cTextTestVariable> Ref;
 	cTextTestVariable(ceWPCAParam &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionActorParameter * const condition = pPanel.GetCondition();

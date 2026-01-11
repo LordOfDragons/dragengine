@@ -84,7 +84,7 @@ public:
 	deoalSpeaker(deAudioOpenAL &oal, deSpeaker &speaker);
 	
 	/** \brief Clean up speaker peer. */
-	virtual ~deoalSpeaker();
+	~deoalSpeaker() override;
 	/*@}*/
 	
 	
@@ -129,55 +129,55 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Type changed. */
-	virtual void TypeChanged();
+	void TypeChanged() override;
 	
 	/** \brief Sound source changed. */
-	virtual void SourceChanged();
+	void SourceChanged() override;
 	
 	
 	
 	/** \brief Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	/** \brief Orientation changed. */
-	virtual void OrientationChanged();
+	void OrientationChanged() override;
 	
 	/** \brief Velocity changed. */
-	virtual void VelocityChanged();
+	void VelocityChanged() override;
 	
 	
 	
 	/** \brief Muted changed. */
-	virtual void MutedChanged();
+	void MutedChanged() override;
 	
 	/** \brief Looping changed. */
-	virtual void LoopingChanged();
+	void LoopingChanged() override;
 	
 	/** \brief Play position changed. */
-	virtual void PlayPositionChanged();
+	void PlayPositionChanged() override;
 	
 	/** \brief Play speed changed. */
-	virtual void PlaySpeedChanged();
+	void PlaySpeedChanged() override;
 	
 	/** \brief Volume changed. */
-	virtual void VolumeChanged();
+	void VolumeChanged() override;
 	
 	/** \brief Range changed. */
-	virtual void RangeChanged();
+	void RangeChanged() override;
 	
 	/** \brief Roll off factor changed. */
-	virtual void RollOffChanged();
+	void RollOffChanged() override;
 	
 	/** \brief Distance offset changed. */
-	virtual void DistanceOffsetChanged();
+	void DistanceOffsetChanged() override;
 	
 	/** \brief Layer mask changed. */
-	virtual void LayerMaskChanged();
+	void LayerMaskChanged() override;
 	
 	
 	
 	/** \brief Play state changed. */
-	virtual void PlayStateChanged();
+	void PlayStateChanged() override;
 	/*@}*/
 	
 	

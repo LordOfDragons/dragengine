@@ -53,7 +53,7 @@ protected:
 	/** \brief Clean up undo object. */
 
 protected:
-	virtual ~meUObjectCloneTexturesToSelected();
+	~meUObjectCloneTexturesToSelected() override;
 
 public:
 	/*@}*/
@@ -69,9 +69,9 @@ public:
 	inline const meObjectTexture::List &GetPropertyList() const{ return pTextureList; }
 	
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -54,7 +54,7 @@ public:
 	meBaseUndoRotate();
 	
 protected:
-	~meBaseUndoRotate();
+	~meBaseUndoRotate() override;
 	
 public:
 	// management

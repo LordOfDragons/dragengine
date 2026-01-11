@@ -59,7 +59,7 @@ public:
 	
 protected:
 	/** \brief Clean up game profile disable module version. */
-	virtual ~delGPDisableModuleVersion();
+	~delGPDisableModuleVersion() override;
 	/*@}*/
 	
 	

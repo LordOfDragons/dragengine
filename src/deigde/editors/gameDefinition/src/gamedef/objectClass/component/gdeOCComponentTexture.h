@@ -70,7 +70,7 @@ public:
 	
 	/** \brief Clean up object class component texture. */
 protected:
-	virtual ~gdeOCComponentTexture();
+	~gdeOCComponentTexture() override;
 public:
 	/*@}*/
 	

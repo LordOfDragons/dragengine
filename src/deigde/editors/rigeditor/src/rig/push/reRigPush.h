@@ -88,7 +88,7 @@ public:
 	reRigPush(const reRigPush &push);
 	/** \brief Cleans up the rig push. */
 protected:
-	virtual ~reRigPush();
+	~reRigPush() override;
 public:
 	/*@}*/
 	

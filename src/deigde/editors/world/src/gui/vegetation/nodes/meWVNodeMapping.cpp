@@ -65,7 +65,7 @@ public:
 	typedef deTObjectReference<cTextLower> Ref;
 	cTextLower(meWVNodeMapping &node) : pNode(node){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		const float value = textField->GetFloat();
 		if(fabsf(value - pNode.GetRuleMapping()->GetLower()) <= FLOAT_SAFE_EPSILON){
 			return;
@@ -85,7 +85,7 @@ public:
 	typedef deTObjectReference<cTextUpper> Ref;
 	cTextUpper(meWVNodeMapping &node) : pNode(node){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		const float value = textField->GetFloat();
 		if(fabsf(value - pNode.GetRuleMapping()->GetUpper()) <= FLOAT_SAFE_EPSILON){
 			return;
@@ -105,7 +105,7 @@ public:
 	typedef deTObjectReference<cTextValue> Ref;
 	cTextValue(meWVNodeMapping &node) : pNode(node){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		const float value = textField->GetFloat();
 		if(fabsf(value - pNode.GetRuleMapping()->GetValue()) <= FLOAT_SAFE_EPSILON){
 			return;

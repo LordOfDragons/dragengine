@@ -73,7 +73,7 @@ public:
 	
 	/** \brief Clean up text box. */
 protected:
-	~ceTextBox();
+	~ceTextBox() override;
 public:
 	/*@}*/
 	

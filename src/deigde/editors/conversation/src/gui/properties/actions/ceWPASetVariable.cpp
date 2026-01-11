@@ -73,7 +73,7 @@ public:
 	typedef deTObjectReference<cTextName> Ref;
 	cTextName(ceWPASetVariable &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCASetVariable * const action = pPanel.GetAction();
 		if(!topic || !action || textField->GetText() == action->GetName()){
@@ -92,7 +92,7 @@ public:
 	typedef deTObjectReference<cComboOperator> Ref;
 	cComboOperator(ceWPASetVariable &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCASetVariable * const action = pPanel.GetAction();
 		if(!topic || !action || !comboBox->GetSelectedItem()){
@@ -117,7 +117,7 @@ public:
 	typedef deTObjectReference<cTextValue> Ref;
 	cTextValue(ceWPASetVariable &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCASetVariable * const action = pPanel.GetAction();
 		const int value = textField->GetInteger();
@@ -137,7 +137,7 @@ public:
 	typedef deTObjectReference<cTextValueVariable> Ref;
 	cTextValueVariable(ceWPASetVariable &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCASetVariable * const action = pPanel.GetAction();
 		if(!topic || !action || textField->GetText() == action->GetValueVariable()){

@@ -55,7 +55,7 @@ public:
 		const decTList<int> &controllerMapping, int firstLink);
 	
 	/** Clean up object. */
-	virtual ~dearCreateRuleVisitor();
+	~dearCreateRuleVisitor() override;
 	/*@}*/
 	
 	
@@ -80,49 +80,49 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** Visit animator rule. */
-	virtual void VisitRule(deAnimatorRule &rule);
+	void VisitRule(deAnimatorRule &rule) override;
 	
 	/** Visit animation rule. */
-	virtual void VisitAnimation(deAnimatorRuleAnimation &rule);
+	void VisitAnimation(deAnimatorRuleAnimation &rule) override;
 	
 	/** Visit animation difference rule. */
-	virtual void VisitAnimationDifference(deAnimatorRuleAnimationDifference &rule);
+	void VisitAnimationDifference(deAnimatorRuleAnimationDifference &rule) override;
 	
 	/** Visit animation select rule. */
-	virtual void VisitAnimationSelect(deAnimatorRuleAnimationSelect &rule);
+	void VisitAnimationSelect(deAnimatorRuleAnimationSelect &rule) override;
 	
 	/** Visit bone rotator animator rule. */
-	virtual void VisitBoneTransformator(deAnimatorRuleBoneTransformator &rule);
+	void VisitBoneTransformator(deAnimatorRuleBoneTransformator &rule) override;
 	
 	/** Visit inverse kinematic animator rule. */
-	virtual void VisitInverseKinematic(deAnimatorRuleInverseKinematic &rule);
+	void VisitInverseKinematic(deAnimatorRuleInverseKinematic &rule) override;
 	
 	/** Visit state manipulator rule. */
-	virtual void VisitStateManipulator(deAnimatorRuleStateManipulator &rule);
+	void VisitStateManipulator(deAnimatorRuleStateManipulator &rule) override;
 	
 	/** Visit state snapshot rule. */
-	virtual void VisitStateSnapshot(deAnimatorRuleStateSnapshot &rule);
+	void VisitStateSnapshot(deAnimatorRuleStateSnapshot &rule) override;
 	
 	/** Visit foreign state rule. */
-	virtual void VisitForeignState(deAnimatorRuleForeignState &rule);
+	void VisitForeignState(deAnimatorRuleForeignState &rule) override;
 	
 	/** Visit group rule. */
-	virtual void VisitGroup(deAnimatorRuleGroup &rule);
+	void VisitGroup(deAnimatorRuleGroup &rule) override;
 	
 	/** Visit sub animator rule. */
-	virtual void VisitSubAnimator(deAnimatorRuleSubAnimator &rule);
+	void VisitSubAnimator(deAnimatorRuleSubAnimator &rule) override;
 	
 	/** Visit track to rule. */
-	virtual void VisitTrackTo(deAnimatorRuleTrackTo &rule);
+	void VisitTrackTo(deAnimatorRuleTrackTo &rule) override;
 	
 	/** Visit limit rule. */
-	virtual void VisitLimit(deAnimatorRuleLimit &rule);
+	void VisitLimit(deAnimatorRuleLimit &rule) override;
 	
 	/**
 	 * Visit mirror rule.
 	 * \version 1.9
 	 */
-	virtual void VisitMirror(deAnimatorRuleMirror &rule);
+	void VisitMirror(deAnimatorRuleMirror &rule) override;
 	/*@}*/
 };
 

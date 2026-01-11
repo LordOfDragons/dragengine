@@ -154,7 +154,7 @@ public:
 	
 protected:
 	/** \brief Clean up game definition class. */
-	virtual ~igdeGDClass();
+	~igdeGDClass() override;
 	/*@}*/
 	
 	

@@ -64,7 +64,7 @@ public:
 	
 protected:
 	/** Clean up shared SPB render task instance group. */
-	virtual ~deoglSharedSPBRTIGroup();
+	~deoglSharedSPBRTIGroup() override;
 	/*@}*/
 	
 	

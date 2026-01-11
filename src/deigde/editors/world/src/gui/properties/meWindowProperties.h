@@ -70,7 +70,7 @@ public:
 	
 protected:
 	/** \brief Clean up window. */
-	virtual ~meWindowProperties();
+	~meWindowProperties() override;
 	
 	
 	

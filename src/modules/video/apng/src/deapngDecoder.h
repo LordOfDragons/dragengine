@@ -53,7 +53,7 @@ public:
 	deapngDecoder(deVideoApng &module, decBaseFileReader *file);
 	
 	/** \brief Clean up decoder. */
-	virtual ~deapngDecoder();
+	~deapngDecoder() override;
 	/*@}*/
 	
 	
@@ -61,10 +61,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief File position in frames from the beginning. */
-	virtual int GetPosition();
+	int GetPosition() override;
 	
 	/** \brief Set file position in frames from the beginning. */
-	virtual void SetPosition(int position);
+	void SetPosition(int position) override;
 	
 	/**
 	 * \brief Decode next frame into buffer and advances file position.
@@ -77,7 +77,7 @@ public:
 	 * has been decoded successfully. Otherwise \em fals is returned and an error
 	 * is signaled using the engine error signaling.
 	 */
-	virtual bool DecodeFrame(void *buffer, int size);
+	bool DecodeFrame(void *buffer, int size) override;
 	/*@}*/
 	
 	

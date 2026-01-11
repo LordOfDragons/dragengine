@@ -47,7 +47,7 @@ public:
 	/** Creates a new gui peer. */
 	igdeSMTouchSensor();
 	/** Cleans up the peer. */
-	virtual ~igdeSMTouchSensor();
+	~igdeSMTouchSensor() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -64,13 +64,13 @@ public:
 	 * \brief Notify scripting module peer collider entered touch sensor.
 	 * \param collider Collider entering the shape.
 	 */
-	virtual void ColliderEntered(deCollider *collider);
+	void ColliderEntered(deCollider *collider) override;
 	
 	/**
 	 * \brief Notify scripting module peer collider left touch sensor.
 	 * \param collider Collider entering the shape.
 	 */
-	virtual void ColliderLeft(deCollider *collider);
+	void ColliderLeft(deCollider *collider) override;
 	/*@}*/
 };
 

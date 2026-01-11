@@ -150,7 +150,7 @@ public:
 	typedef deTObjectReference<cBaseComboBoxListener> Ref;
 	cBaseComboBoxListener(aeWPAPanelRuleLimit &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleLimit * const rule = (aeRuleLimit*)pPanel.GetRule();
 		if(!animator || !rule){
@@ -174,7 +174,7 @@ public:
 	typedef deTObjectReference<cBaseEditVectorListener> Ref;
 	cBaseEditVectorListener(aeWPAPanelRuleLimit &panel) : pPanel(panel){}
 	
-	virtual void OnVectorChanged(igdeEditVector *editVector){
+	void OnVectorChanged(igdeEditVector *editVector) override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleLimit * const rule = (aeRuleLimit*)pPanel.GetRule();
 		if(!animator || !rule){
@@ -198,7 +198,7 @@ public:
 	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(aeWPAPanelRuleLimit &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleLimit * const rule = (aeRuleLimit*)pPanel.GetRule();
 		if(!animator || !rule){

@@ -64,7 +64,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~gdeWPPatternList();
+	~gdeWPPatternList() override;
 	/*@}*/
 	
 	

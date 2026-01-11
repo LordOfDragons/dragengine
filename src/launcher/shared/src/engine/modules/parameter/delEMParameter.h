@@ -59,7 +59,7 @@ public:
 	
 protected:
 	/** \brief Clean up engine module parameter. */
-	virtual ~delEMParameter();
+	~delEMParameter() override;
 	
 public:
 	/*@}*/

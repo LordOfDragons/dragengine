@@ -78,7 +78,7 @@ public:
 	typedef deTObjectReference<cEditLMPos> Ref;
 	cEditLMPos(meWPSensors &panel) : pPanel(panel){}
 	
-	virtual void OnDVectorChanged(igdeEditDVector *editDVector){
+	void OnDVectorChanged(igdeEditDVector *editDVector) override{
 		meWorld * const world = pPanel.GetWindowProperties().GetWindowMain().GetWorld();
 		meLumimeter * const lumimeter = world ? world->GetLumimeter().Pointer() : nullptr;
 		if(lumimeter){
@@ -95,7 +95,7 @@ public:
 	typedef deTObjectReference<cEditLMDir> Ref;
 	cEditLMDir(meWPSensors &panel) : pPanel(panel){}
 	
-	virtual void OnVectorChanged(igdeEditVector *editVector){
+	void OnVectorChanged(igdeEditVector *editVector) override{
 		meWorld * const world = pPanel.GetWindowProperties().GetWindowMain().GetWorld();
 		meLumimeter * const lumimeter = world ? world->GetLumimeter().Pointer() : nullptr;
 		if(lumimeter){
@@ -112,7 +112,7 @@ public:
 	typedef deTObjectReference<cTextLMConeIA> Ref;
 	cTextLMConeIA(meWPSensors &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		meWorld * const world = pPanel.GetWindowProperties().GetWindowMain().GetWorld();
 		meLumimeter * const lumimeter = world ? world->GetLumimeter().Pointer() : nullptr;
 		if(lumimeter){
@@ -128,7 +128,7 @@ public:
 	typedef deTObjectReference<cTextLMConeOA> Ref;
 	cTextLMConeOA(meWPSensors &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		meWorld * const world = pPanel.GetWindowProperties().GetWindowMain().GetWorld();
 		meLumimeter * const lumimeter = world ? world->GetLumimeter().Pointer() : nullptr;
 		if(lumimeter){
@@ -144,7 +144,7 @@ public:
 	typedef deTObjectReference<cTextLMConeExp> Ref;
 	cTextLMConeExp(meWPSensors &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		meWorld * const world = pPanel.GetWindowProperties().GetWindowMain().GetWorld();
 		meLumimeter * const lumimeter = world ? world->GetLumimeter().Pointer() : nullptr;
 		if(lumimeter){

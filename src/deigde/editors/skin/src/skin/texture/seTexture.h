@@ -77,7 +77,7 @@ public:
 	seTexture(const seTexture &texture);
 	/** Cleans up the texture. */
 protected:
-	virtual ~seTexture();
+	~seTexture() override;
 public:
 	/*@}*/
 	

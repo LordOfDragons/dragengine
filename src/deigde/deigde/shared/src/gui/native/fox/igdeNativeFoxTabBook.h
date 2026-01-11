@@ -75,7 +75,7 @@ public:
 		int layoutFlags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxTabBook();
+	~igdeNativeFoxTabBook() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeFoxTabBook* CreateNativeWidget(igdeTabBook &owner);

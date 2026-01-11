@@ -64,7 +64,7 @@ public:
 	deClassARMirror(deScriptingDragonScript &ds);
 	
 	/** Clean up script class. */
-	virtual ~deClassARMirror();
+	~deClassARMirror() override;
 	/*@}*/
 	
 	
@@ -75,7 +75,7 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** Create class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** Rule or nullptr if deleted or myself is nullptr. */
 	deAnimatorRuleMirror *GetRule(dsRealObject *myself) const;

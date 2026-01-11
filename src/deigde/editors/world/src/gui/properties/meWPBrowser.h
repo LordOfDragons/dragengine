@@ -128,7 +128,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~meWPBrowser();
+	~meWPBrowser() override;
 	/*@}*/
 	
 	

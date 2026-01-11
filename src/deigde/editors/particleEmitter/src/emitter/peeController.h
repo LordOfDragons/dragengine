@@ -66,7 +66,7 @@ public:
 	peeController();
 	/** \brief Clean up the controller. */
 protected:
-	virtual ~peeController();
+	~peeController() override;
 public:
 	/*@}*/
 	

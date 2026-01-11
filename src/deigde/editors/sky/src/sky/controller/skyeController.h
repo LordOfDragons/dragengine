@@ -70,7 +70,7 @@ public:
 	
 	/** \brief Clean up sky controller. */
 protected:
-	virtual ~skyeController();
+	~skyeController() override;
 public:
 	/*@}*/
 	

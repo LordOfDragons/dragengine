@@ -49,7 +49,7 @@ public:
 	deClassService(deScriptingDragonScript &ds);
 	
 	/** Clean up class. */
-	virtual ~deClassService();
+	~deClassService() override;
 	/*@}*/
 	
 	
@@ -60,7 +60,7 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** Creates class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** Service or nullptr if myself is nullptr. */
 	deService *GetService(dsRealObject *myself) const;

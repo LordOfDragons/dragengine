@@ -50,16 +50,16 @@ public:
 	aeURuleSnapToggleEnablePosition(aeRuleStateSnapshot *rule);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleSnapToggleEnablePosition();
+	~aeURuleSnapToggleEnablePosition() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

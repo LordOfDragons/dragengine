@@ -115,7 +115,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~skyeWPLayer();
+	~skyeWPLayer() override;
 	/*@}*/
 	
 	

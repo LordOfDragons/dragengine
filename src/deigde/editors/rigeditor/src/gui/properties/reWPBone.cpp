@@ -84,7 +84,7 @@ public:
 	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(reWPBone &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		reRig * const rig = pPanel.GetRig();
 		reRigBone * const bone = pPanel.GetBone();
 		if(!rig || !bone){
@@ -108,7 +108,7 @@ public:
 	typedef deTObjectReference<cBaseEditVectorListener> Ref;
 	cBaseEditVectorListener(reWPBone &panel) : pPanel(panel){}
 	
-	virtual void OnVectorChanged(igdeEditVector *editVector){
+	void OnVectorChanged(igdeEditVector *editVector) override{
 		reRig * const rig = pPanel.GetRig();
 		reRigBone * const bone = pPanel.GetBone();
 		if(!rig || !bone){
@@ -158,7 +158,7 @@ public:
 	typedef deTObjectReference<cBaseComboBoxListener> Ref;
 	cBaseComboBoxListener(reWPBone &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		reRig * const rig = pPanel.GetRig();
 		reRigBone * const bone = pPanel.GetBone();
 		if(!rig || !bone){
@@ -200,7 +200,7 @@ public:
 	typedef deTObjectReference<cComboParent> Ref;
 	cComboParent(reWPBone &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo::Ref OnTextChanged(igdeComboBox *comboBox, reRig *rig, reRigBone *bone){
+	igdeUndo::Ref OnTextChanged(igdeComboBox *comboBox, reRig *rig, reRigBone *bone) override{
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
 		reRigBone *parent = nullptr;
 		if(selection){

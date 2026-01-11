@@ -56,7 +56,7 @@ protected:
 	/** \brief Clean up object. */
 
 protected:
-	virtual ~meUHTSetSectorResolution();
+	~meUHTSetSectorResolution() override;
 
 public:
 	/*@}*/
@@ -65,10 +65,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -55,16 +55,16 @@ public:
 	aeURuleLimitSetRotMin(aeRuleLimit *rule, const decVector &newMin);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleLimitSetRotMin();
+	~aeURuleLimitSetRotMin() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

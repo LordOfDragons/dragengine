@@ -89,7 +89,7 @@ public:
 	
 protected:
 	/** Clean up render model. */
-	virtual ~deoglRModel();
+	~deoglRModel() override;
 	/*@}*/
 	
 	

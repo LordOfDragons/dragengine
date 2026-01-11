@@ -70,7 +70,7 @@ public:
 	
 protected:
 	/** \brief Clean up constructed property view. */
-	virtual ~seViewConstructed();
+	~seViewConstructed() override;
 	/*@}*/
 	
 	
@@ -107,7 +107,7 @@ public:
 	virtual void OnFrameUpdate(float elapsed);
 	
 	/** \brief Widget size changed. */
-	virtual void OnResize();
+	void OnResize() override;
 	
 	/** \brief View scrolled. */
 	void OnScrolled();

@@ -58,7 +58,7 @@ public:
 	feFontGlyph();
 	/** Cleans up the font glyph. */
 protected:
-	virtual ~feFontGlyph();
+	~feFontGlyph() override;
 public:
 	/*@}*/
 	

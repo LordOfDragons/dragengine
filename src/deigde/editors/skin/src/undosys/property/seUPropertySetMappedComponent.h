@@ -59,7 +59,7 @@ public:
 	
 protected:
 	/** Clean up undo. */
-	virtual ~seUPropertySetMappedComponent();
+	~seUPropertySetMappedComponent() override;
 	/*@}*/
 	
 	
@@ -71,10 +71,10 @@ public:
 	void SetNewValue(seMapped *newValue);
 	
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -60,7 +60,7 @@ public:
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeURemoveController();
+	~aeURemoveController() override;
 	/*@}*/
 	
 	
@@ -69,10 +69,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 	

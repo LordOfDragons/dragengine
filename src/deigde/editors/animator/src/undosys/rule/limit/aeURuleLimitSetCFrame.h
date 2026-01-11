@@ -53,16 +53,16 @@ public:
 	aeURuleLimitSetCFrame(aeRuleLimit *rule, deAnimatorRuleLimit::eCoordinateFrames newCoordFrame);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleLimitSetCFrame();
+	~aeURuleLimitSetCFrame() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -74,7 +74,7 @@ ceLoadSaveLangPack::~ceLoadSaveLangPack(){
 class cLoadLangPackLoader : public deLanguagePackBuilder{
 public:
 	cLoadLangPackLoader(){}
-	void BuildLanguagePack(deLanguagePack&){}
+	void BuildLanguagePack(deLanguagePack&) override{}
 };
 
 void ceLoadSaveLangPack::LoadLangPack(ceLangPack &langpack, decBaseFileReader &file){

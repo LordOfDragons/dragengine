@@ -55,7 +55,7 @@ public:
 	
 protected:
 	/** Clean up shared render task shader. */
-	virtual ~deoglRenderTaskSharedVAO();
+	~deoglRenderTaskSharedVAO() override;
 	/*@}*/
 	
 	

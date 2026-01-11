@@ -67,7 +67,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeActionRedo();
+	~igdeActionRedo() override;
 	/*@}*/
 	
 	
@@ -91,7 +91,7 @@ public:
 	 * 
 	 * Called if user interacts with a UI element triggering actions.
 	 */
-	virtual void OnAction();
+	void OnAction() override;
 	
 	/**
 	 * \brief Request update of action parameters if required.
@@ -99,7 +99,7 @@ public:
 	 * Called for example by UI elements to update action parameters.
 	 * Default implementation does nothing.
 	 */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

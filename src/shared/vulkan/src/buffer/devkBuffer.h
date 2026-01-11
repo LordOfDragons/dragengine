@@ -80,7 +80,7 @@ public:
 	
 protected:
 	/** Clean up buffer. */
-	virtual ~devkBuffer();
+	~devkBuffer() override;
 	/*@}*/
 	
 	

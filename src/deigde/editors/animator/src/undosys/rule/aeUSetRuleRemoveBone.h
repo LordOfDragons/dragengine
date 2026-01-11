@@ -54,7 +54,7 @@ public:
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeUSetRuleRemoveBone();
+	~aeUSetRuleRemoveBone() override;
 	/*@}*/
 	
 	
@@ -66,10 +66,10 @@ public:
 	bool HasBones() const;
 	
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

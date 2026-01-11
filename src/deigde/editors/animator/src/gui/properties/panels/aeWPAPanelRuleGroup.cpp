@@ -114,7 +114,7 @@ public:
 	typedef deTObjectReference<cComboApplicationType> Ref;
 	cComboApplicationType(aeWPAPanelRuleGroup &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleGroup * const rule = (aeRuleGroup*)pPanel.GetRule();
 		if(!animator || !rule || !comboBox->GetSelectedItem()){

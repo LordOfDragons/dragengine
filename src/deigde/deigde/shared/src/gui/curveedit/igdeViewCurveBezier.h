@@ -51,7 +51,7 @@ public:
 	public:
 		typedef deTObjectReference<cActionResetView> Ref;
 		cActionResetView(igdeViewCurveBezier &view);
-		virtual void OnAction();
+		void OnAction() override;
 	};
 	
 	class DE_DLL_EXPORT cActionFitToCurve : public igdeAction{
@@ -59,7 +59,7 @@ public:
 	public:
 		typedef deTObjectReference<cActionFitToCurve> Ref;
 		cActionFitToCurve(igdeViewCurveBezier &view);
-		virtual void OnAction();
+		void OnAction() override;
 	};
 	
 	class DE_DLL_EXPORT cActionEditSelectedPoint : public igdeAction{
@@ -67,8 +67,8 @@ public:
 	public:
 		typedef deTObjectReference<cActionEditSelectedPoint> Ref;
 		cActionEditSelectedPoint(igdeViewCurveBezier &view);
-		virtual void OnAction();
-		virtual void Update();
+		void OnAction() override;
+		void Update() override;
 	};
 	
 	class DE_DLL_EXPORT cActionSetInterpolationMode : public igdeAction{
@@ -79,8 +79,8 @@ public:
 		cActionSetInterpolationMode(igdeViewCurveBezier &view,
 			decCurveBezier::eInterpolationModes mode, const char *text, igdeIcon *icon,
 			const char *description, deInputEvent::eKeyCodes mnemonic = deInputEvent::ekcUndefined);
-		virtual void OnAction();
-		virtual void Update();
+		void OnAction() override;
+		void Update() override;
 	};
 	
 	class DE_DLL_EXPORT cActionCopyCurve : public igdeAction{
@@ -88,7 +88,7 @@ public:
 	public:
 		typedef deTObjectReference<cActionCopyCurve> Ref;
 		cActionCopyCurve(igdeViewCurveBezier &view);
-		virtual void OnAction();
+		void OnAction() override;
 	};
 	
 	class DE_DLL_EXPORT cActionPasteCurve : public igdeAction{
@@ -96,7 +96,7 @@ public:
 	public:
 		typedef deTObjectReference<cActionPasteCurve> Ref;
 		cActionPasteCurve(igdeViewCurveBezier &view);
-		virtual void OnAction();
+		void OnAction() override;
 	};
 	
 	class DE_DLL_EXPORT cActionClearCurve : public igdeAction{
@@ -104,7 +104,7 @@ public:
 	public:
 		typedef deTObjectReference<cActionClearCurve> Ref;
 		cActionClearCurve(igdeViewCurveBezier &view);
-		virtual void OnAction();
+		void OnAction() override;
 	};
 	
 	class DE_DLL_EXPORT cActionSetDefaultConstant : public igdeAction{
@@ -112,7 +112,7 @@ public:
 	public:
 		typedef deTObjectReference<cActionSetDefaultConstant> Ref;
 		cActionSetDefaultConstant(igdeViewCurveBezier &view);
-		virtual void OnAction();
+		void OnAction() override;
 	};
 	
 	class DE_DLL_EXPORT cActionSetDefaultLinear : public igdeAction{
@@ -120,7 +120,7 @@ public:
 	public:
 		typedef deTObjectReference<cActionSetDefaultLinear> Ref;
 		cActionSetDefaultLinear(igdeViewCurveBezier &view);
-		virtual void OnAction();
+		void OnAction() override;
 	};
 	
 	class DE_DLL_EXPORT cActionSetDefaultBezier : public igdeAction{
@@ -128,7 +128,7 @@ public:
 	public:
 		typedef deTObjectReference<cActionSetDefaultBezier> Ref;
 		cActionSetDefaultBezier(igdeViewCurveBezier &view);
-		virtual void OnAction();
+		void OnAction() override;
 	};
 	
 	class DE_DLL_EXPORT cActionInvertCurveX : public igdeAction{
@@ -136,7 +136,7 @@ public:
 	public:
 		typedef deTObjectReference<cActionInvertCurveX> Ref;
 		cActionInvertCurveX(igdeViewCurveBezier &view);
-		virtual void OnAction();
+		void OnAction() override;
 	};
 	
 	class DE_DLL_EXPORT cActionInvertCurveY : public igdeAction{
@@ -144,7 +144,7 @@ public:
 	public:
 		typedef deTObjectReference<cActionInvertCurveY> Ref;
 		cActionInvertCurveY(igdeViewCurveBezier &view);
-		virtual void OnAction();
+		void OnAction() override;
 	};
 	
 	class DE_DLL_EXPORT cActionEditClamp : public igdeAction{
@@ -152,7 +152,7 @@ public:
 	public:
 		typedef deTObjectReference<cActionEditClamp> Ref;
 		cActionEditClamp(igdeViewCurveBezier &view);
-		virtual void OnAction();
+		void OnAction() override;
 	};
 	
 	class DE_DLL_EXPORT cActionAutoHandles : public igdeAction{
@@ -160,7 +160,7 @@ public:
 	public:
 		typedef deTObjectReference<cActionAutoHandles> Ref;
 		cActionAutoHandles(igdeViewCurveBezier &view);
-		virtual void OnAction();
+		void OnAction() override;
 	};
 	
 	
@@ -191,7 +191,7 @@ public:
 	
 protected:
 	/** \brief Clean up view. */
-	virtual ~igdeViewCurveBezier();
+	~igdeViewCurveBezier() override;
 	/*@}*/
 	
 	
@@ -323,13 +323,13 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
 	
 	
 	

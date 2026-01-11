@@ -79,7 +79,7 @@ public:
 	
 protected:
 	/** Clean up face tracker. */
-	virtual ~deoxrFaceTracker();
+	~deoxrFaceTracker() override;
 	/*@}*/
 	
 	

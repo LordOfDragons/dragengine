@@ -46,13 +46,13 @@ public:
 	/** \brief Creates a new class. */
 	deClassSafeArray(deScriptingDragonScript *ds);
 	/** \brief Cleans up the class. */
-	virtual ~deClassSafeArray();
+	~deClassSafeArray() override;
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** \brief Creates the class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Retrieves the scripting module. */
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }

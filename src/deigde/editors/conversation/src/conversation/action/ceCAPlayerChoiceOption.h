@@ -63,7 +63,7 @@ public:
 	
 protected:
 	/** \brief Clean up player choice option. */
-	virtual ~ceCAPlayerChoiceOption();
+	~ceCAPlayerChoiceOption() override;
 	/*@}*/
 	
 	

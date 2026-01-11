@@ -116,7 +116,7 @@ public:
 	
 protected:
 	/** Clean up skin texture pipeline. */
-	virtual ~deoglSkinTexturePipelines();
+	~deoglSkinTexturePipelines() override;
 	/*@}*/
 	
 	

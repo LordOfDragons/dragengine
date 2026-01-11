@@ -77,7 +77,7 @@ public:
 	
 protected:
 	/** Clean up render prop field. */
-	virtual ~deoglRPropField();
+	~deoglRPropField() override;
 	/*@}*/
 	
 	

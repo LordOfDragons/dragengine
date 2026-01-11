@@ -68,7 +68,7 @@ public:
 	deglDialogEngineProps(deglWindowMain *windowMain, FXWindow *owner);
 	
 	/** Clean up dialog. */
-	virtual ~deglDialogEngineProps();
+	~deglDialogEngineProps() override;
 	/*@}*/
 	
 	

@@ -57,7 +57,7 @@ public:
 	igdeNativeFoxDialog(igdeDialog &owner, FXWindow *parent, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxDialog();
+	~igdeNativeFoxDialog() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeFoxDialog* CreateNativeWidget(igdeDialog &owner, igdeWidget *ownerOwner);

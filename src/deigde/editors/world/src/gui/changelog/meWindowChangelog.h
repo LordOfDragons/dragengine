@@ -61,7 +61,7 @@ public:
 	
 protected:
 	/** \brief Clean up window. */
-	virtual ~meWindowChangelog();
+	~meWindowChangelog() override;
 	/*@}*/
 	
 	

@@ -57,7 +57,7 @@ public:
 		ceCConditionLogic *logic, const ceConversationCondition::List &conditions);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCCLogicPaste();
+	~ceUCCLogicPaste() override;
 	/*@}*/
 	
 public:
@@ -67,9 +67,9 @@ public:
 	inline const ceConversationCondition::List &GetConditions() const{ return pConditions; }
 	
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 protected:

@@ -67,7 +67,7 @@ public:
 	deClassARBoneTransformator(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
-	virtual ~deClassARBoneTransformator();
+	~deClassARBoneTransformator() override;
 	/*@}*/
 	
 	
@@ -78,7 +78,7 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Rule or \em NULL if deleted or myself is \em NULL. */
 	deAnimatorRuleBoneTransformator *GetRule(dsRealObject *myself) const;

@@ -57,7 +57,7 @@ public:
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCTPToggleIdentifierUsage();
+	~gdeUOCTPToggleIdentifierUsage() override;
 	/*@}*/
 	
 	
@@ -66,10 +66,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

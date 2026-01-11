@@ -53,7 +53,7 @@ public:
 	deClassInputDevice(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
-	virtual ~deClassInputDevice();
+	~deClassInputDevice() override;
 	/*@}*/
 	
 	
@@ -64,7 +64,7 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Creates class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief InputDevice or \em NULL if myself is \em NULL. */
 	dedsInputDevice *GetInputDevice(dsRealObject *myself) const;

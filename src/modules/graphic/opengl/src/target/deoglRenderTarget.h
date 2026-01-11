@@ -63,7 +63,7 @@ public:
 	
 protected:
 	/** Clean up render render target. */
-	virtual ~deoglRenderTarget();
+	~deoglRenderTarget() override;
 	/*@}*/
 	
 	

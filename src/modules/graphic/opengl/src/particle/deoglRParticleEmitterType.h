@@ -97,7 +97,7 @@ public:
 	
 protected:
 	/** Clean up render type. */
-	virtual ~deoglRParticleEmitterType();
+	~deoglRParticleEmitterType() override;
 	/*@}*/
 	
 	

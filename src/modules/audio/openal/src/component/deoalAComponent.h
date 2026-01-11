@@ -121,7 +121,7 @@ public:
 	
 protected:
 	/** \brief Clean up component peer. */
-	virtual ~deoalAComponent();
+	~deoalAComponent() override;
 	/*@}*/
 	
 	

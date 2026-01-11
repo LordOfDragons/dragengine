@@ -144,7 +144,7 @@ public:
 	
 protected:
 	/** Clean up octree. */
-	virtual ~deoglWorldCSOctree();
+	~deoglWorldCSOctree() override;
 	/*@}*/
 	
 	

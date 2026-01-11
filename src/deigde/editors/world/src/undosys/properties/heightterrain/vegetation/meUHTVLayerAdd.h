@@ -61,7 +61,7 @@ protected:
 	/** \brief Clean up undo object. */
 
 protected:
-	virtual ~meUHTVLayerAdd();
+	~meUHTVLayerAdd() override;
 
 public:
 	/*@}*/
@@ -70,9 +70,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

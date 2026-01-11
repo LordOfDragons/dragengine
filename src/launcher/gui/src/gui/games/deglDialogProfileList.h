@@ -121,7 +121,7 @@ private:
 		const delGame::Ref pGameCustom;
 		
 	protected:
-		virtual ~cEditProfile();
+		~cEditProfile() override;
 		
 	public:
 		typedef deTObjectReference<cEditProfile> Ref;
@@ -209,7 +209,7 @@ public:
 	/** Creates a new dialog. */
 	deglDialogProfileList(deglWindowMain *windowMain, FXWindow *owner, delGameProfile *selectProfile);
 	/** Cleans up the dialog. */
-	virtual ~deglDialogProfileList();
+	~deglDialogProfileList() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -250,7 +250,7 @@ public:
 	void UpdateCBDisabledModuleVersionsVersion();
 	
 	/** Run modal invocation of the dialog. */
-	virtual FXuint execute(FXuint placement = PLACEMENT_OWNER);
+	FXuint execute(FXuint placement = PLACEMENT_OWNER) override;
 	/*@}*/
 	
 	/** \name Events */

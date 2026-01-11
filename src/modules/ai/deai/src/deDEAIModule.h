@@ -47,33 +47,33 @@ public:
 	/** \brief Creates a new ai module. */
 	deDEAIModule(deLoadableModule &loadableModule);
 	/** \brief Cleans up the ai module. */
-	virtual ~deDEAIModule();
+	~deDEAIModule() override;
 	/*@}*/
 	
 	/** \name Module Management */
 	/*@{*/
 	/** \brief Initializes the ai module. */
-	virtual bool Init();
+	bool Init() override;
 	/** \brief Shuts down the ai module and cleans up. */
-	virtual void CleanUp();
+	void CleanUp() override;
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** \brief Create peer for a world object. */
-	virtual deBaseAIWorld *CreateWorld(deWorld *world);
+	deBaseAIWorld *CreateWorld(deWorld *world) override;
 	
 	/** \brief Create peer for a navigation space object. */
-	virtual deBaseAINavigationSpace *CreateNavigationSpace(deNavigationSpace *navspace);
+	deBaseAINavigationSpace *CreateNavigationSpace(deNavigationSpace *navspace) override;
 	
 	/** \brief Create peer for a navigation blocker object. */
-	virtual deBaseAINavigationBlocker *CreateNavigationBlocker(deNavigationBlocker *blocker);
+	deBaseAINavigationBlocker *CreateNavigationBlocker(deNavigationBlocker *blocker) override;
 	
 	/** \brief Create peer for a navigator object. */
-	virtual deBaseAINavigator *CreateNavigator(deNavigator *navigator);
+	deBaseAINavigator *CreateNavigator(deNavigator *navigator) override;
 	
 	/** \brief Create peer for height terrain. */
-	virtual deBaseAIHeightTerrain *CreateHeightTerrain(deHeightTerrain &heightTerrain);
+	deBaseAIHeightTerrain *CreateHeightTerrain(deHeightTerrain &heightTerrain) override;
 	
 	/** \brief Retrieves the developer mode. */
 	inline dedaiDeveloperMode &GetDeveloperMode() const{ return *pDeveloperMode; }
@@ -90,7 +90,7 @@ public:
 	 * \param[in] command The command to send to the module as a list of arguments.
 	 * \param[out] answer Unicode string to hold the answer returned from the module.
 	 */
-	virtual void SendCommand(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void SendCommand(const decUnicodeArgumentList &command, decUnicodeString &answer) override;
 	/*@}*/
 };
 

@@ -58,7 +58,7 @@ public:
 	deoglSky(deGraphicOpenGl &ogl, const deSky &sky);
 	
 	/** Clean up sky. */
-	virtual ~deoglSky();
+	~deoglSky() override;
 	/*@}*/
 	
 	
@@ -86,7 +86,7 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Parameters changed. */
-	virtual void ParametersChanged();
+	void ParametersChanged() override;
 	/*@}*/
 };
 

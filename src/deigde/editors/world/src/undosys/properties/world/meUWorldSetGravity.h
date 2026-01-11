@@ -58,7 +58,7 @@ protected:
 	/** Clean up undo object. */
 
 protected:
-	virtual ~meUWorldSetGravity();
+	~meUWorldSetGravity() override;
 
 public:
 	/*@}*/
@@ -69,10 +69,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -45,7 +45,7 @@ public:
 	
 protected:
 	/** Clean up height terrain listener. */
-	virtual ~deoglHeightTerrainListener();
+	~deoglHeightTerrainListener() override;
 	/*@}*/
 	
 	

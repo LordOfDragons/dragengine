@@ -53,7 +53,7 @@ public:
 	ceUCACoordSysRemoveSetCoordSysID(ceConversationTopic *topic, ceCACoordSystemRemove *action, const char *newCoordSystemID);
 	/** \brief Cleans up the undo object. */
 protected:
-	virtual ~ceUCACoordSysRemoveSetCoordSysID();
+	~ceUCACoordSysRemoveSetCoordSysID() override;
 public:
 	/*@}*/
 	
@@ -61,9 +61,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

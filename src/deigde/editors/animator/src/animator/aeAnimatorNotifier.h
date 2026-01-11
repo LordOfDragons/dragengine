@@ -52,7 +52,7 @@ public:
 	aeAnimatorNotifier();
 	/** Cleans up the animator notifier. */
 protected:
-	virtual ~aeAnimatorNotifier();
+	~aeAnimatorNotifier() override;
 public:
 	/*@}*/
 	

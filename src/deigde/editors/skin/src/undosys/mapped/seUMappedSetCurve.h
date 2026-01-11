@@ -55,7 +55,7 @@ public:
 	
 protected:
 	/** Clean up undo. */
-	virtual ~seUMappedSetCurve();
+	~seUMappedSetCurve() override;
 	/*@}*/
 	
 	
@@ -67,10 +67,10 @@ public:
 	void SetCurve(const decCurveBezier &curve);
 	
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

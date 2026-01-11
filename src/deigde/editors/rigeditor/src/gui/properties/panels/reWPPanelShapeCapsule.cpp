@@ -61,7 +61,7 @@ public:
 	typedef deTObjectReference<cTextHalfHeight> Ref;
 	cTextHalfHeight(reWPPanelShapeCapsule &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		reRig * const rig = pPanel.GetRig();
 		reRigShapeCapsule * const capsule = (reRigShapeCapsule*)pPanel.GetShape();
 		if(!rig || !capsule){
@@ -87,7 +87,7 @@ public:
 	typedef deTObjectReference<cTextTopRadius> Ref;
 	cTextTopRadius(reWPPanelShapeCapsule &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		reRig * const rig = pPanel.GetRig();
 		reRigShapeCapsule * const capsule = (reRigShapeCapsule*)pPanel.GetShape();
 		if(!rig || !capsule){
@@ -112,7 +112,7 @@ public:
 	typedef deTObjectReference<cTextBottomRadius> Ref;
 	cTextBottomRadius(reWPPanelShapeCapsule &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		reRig * const rig = pPanel.GetRig();
 		reRigShapeCapsule * const capsule = (reRigShapeCapsule*)pPanel.GetShape();
 		if(!rig || !capsule){

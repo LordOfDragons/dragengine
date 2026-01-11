@@ -104,7 +104,7 @@ public:
 	ceCameraShot(const ceCameraShot &cameraShot);
 	/** Cleans up the camera shot. */
 protected:
-	virtual ~ceCameraShot();
+	~ceCameraShot() override;
 public:
 	/*@}*/
 	

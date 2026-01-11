@@ -56,7 +56,7 @@ public:
 	dedaiHeightTerrain(deDEAIModule &deai, const deHeightTerrain &heightTerrain);
 	
 	/** \brief Clean up peer. */
-	virtual ~dedaiHeightTerrain();
+	~dedaiHeightTerrain() override;
 	/*@}*/
 	
 	
@@ -91,48 +91,48 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Parameter changes. */
-	virtual void ParametersChanged();
+	void ParametersChanged() override;
 	
 	/** \brief Sector added. */
-	virtual void SectorAdded(deHeightTerrainSector *sector);
+	void SectorAdded(deHeightTerrainSector *sector) override;
 	
 	/** \brief Sector removed. */
-	virtual void SectorRemoved(int index);
+	void SectorRemoved(int index) override;
 	
 	/** \brief All sector removed. */
-	virtual void AllSectorsRemoved();
+	void AllSectorsRemoved() override;
 	
 	/** \brief Sector changed. */
-	virtual void SectorChanged(int index);
+	void SectorChanged(int index) override;
 	
 	
 	
 	/** \brief Sector heights changed. */
-	virtual void HeightChanged(const decPoint &fromSector, const decPoint &fromCoordinates,
-		const decPoint &toSector, const decPoint &toCoordinates);
+	void HeightChanged(const decPoint &fromSector, const decPoint &fromCoordinates,
+		const decPoint &toSector, const decPoint &toCoordinates) override;
 	
 	
 	
 	/** \brief Navigation space added. */
-	virtual void NavSpaceAdded(int sector, deHeightTerrainNavSpace *navspace);
+	void NavSpaceAdded(int sector, deHeightTerrainNavSpace *navspace) override;
 	
 	/** \brief Navigation space removed. */
-	virtual void NavSpaceRemoved(int sector, int index);
+	void NavSpaceRemoved(int sector, int index) override;
 	
 	/** \brief All navigation spaces removed. */
-	virtual void AllNavSpacesRemoved(int sector);
+	void AllNavSpacesRemoved(int sector) override;
 	
 	/** \brief Navigation space layer changed. */
-	virtual void NavSpaceLayerChanged(int sector, int index);
+	void NavSpaceLayerChanged(int sector, int index) override;
 	
 	/** \brief Navigation space type changed. */
-	virtual void NavSpaceTypeChanged(int sector, int index);
+	void NavSpaceTypeChanged(int sector, int index) override;
 	
 	/** \brief Navigation space snapping parameters changed. */
-	virtual void NavSpaceSnappingChanged(int sector, int index);
+	void NavSpaceSnappingChanged(int sector, int index) override;
 	
 	/** \brief Navigation space layout changed. */
-	virtual void NavSpaceLayoutChanged(int sector, int index);
+	void NavSpaceLayoutChanged(int sector, int index) override;
 	/*@}*/
 	
 	

@@ -56,7 +56,7 @@ public:
 	
 protected:
 	/** Clean up input slot. */
-	~meHTVRSlot();
+	~meHTVRSlot() override;
 	
 public:
 	/*@}*/

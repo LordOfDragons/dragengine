@@ -69,7 +69,7 @@ public:
 	deOSUnix();
 	
 	/** \brief Clean up the unix operating system object. */
-	virtual ~deOSUnix();
+	~deOSUnix() override;
 	/*@}*/
 	
 	
@@ -77,22 +77,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Engine path. */
-	virtual decString GetPathEngine();
+	decString GetPathEngine() override;
 	
 	/** \brief Share path. */
-	virtual decString GetPathShare();
+	decString GetPathShare() override;
 	
 	/** \brief System configuration path. */
-	virtual decString GetPathSystemConfig();
+	decString GetPathSystemConfig() override;
 	
 	/** \brief User configuration path. */
-	virtual decString GetPathUserConfig();
+	decString GetPathUserConfig() override;
 	
 	/** \brief User cache path. */
-	virtual decString GetPathUserCache();
+	decString GetPathUserCache() override;
 	
 	/** \brief User capture path. */
-	virtual decString GetPathUserCapture();
+	decString GetPathUserCapture() override;
 	
 	/**
 	 * \brief Process all events in the application event queue.
@@ -102,19 +102,19 @@ public:
 	 * to false if you want to clear the event queue after a lengthy operation to
 	 * avoid an event flood resulting in strange initial inputs.
 	 */
-	virtual void ProcessEventLoop(bool sendToInputModule);
+	void ProcessEventLoop(bool sendToInputModule) override;
 	
 	/**
 	 * \brief Current user locale language (ISO 639 language code) in lower case.
 	 * \version 1.16
 	 */
-	virtual decString GetUserLocaleLanguage();
+	decString GetUserLocaleLanguage() override;
 	
 	/**
 	 * \brief Current user locale territory (ISO 3166 country code) lower case or empty string.
 	 * \version 1.16
 	 */
-	virtual decString GetUserLocaleTerritory();
+	decString GetUserLocaleTerritory() override;
 	/*@}*/
 	
 	
@@ -122,7 +122,7 @@ public:
 	/** \name Display information. */
 	/*@{*/
 	/** \brief Number of displays. */
-	virtual int GetDisplayCount();
+	int GetDisplayCount() override;
 	
 	/**
 	 * \brief Current resolution of display.
@@ -130,7 +130,7 @@ public:
 	 * \throws deeInvalidParam \em display is less than 0 or equal to or greater than
 	 *                         GetDisplayCount().
 	 */
-	virtual decPoint GetDisplayCurrentResolution(int display);
+	decPoint GetDisplayCurrentResolution(int display) override;
 	
 	/**
 	 * \brief Current refresh rate of display.
@@ -138,7 +138,7 @@ public:
 	 * \throws deeInvalidParam \em display is less than 0 or equal to or greater than
 	 *                         GetDisplayCount().
 	 */
-	virtual int GetDisplayCurrentRefreshRate(int display);
+	int GetDisplayCurrentRefreshRate(int display) override;
 	
 	/**
 	 * \brief Number of resolutions supported on display.
@@ -146,7 +146,7 @@ public:
 	 * \throws deeInvalidParam \em display is less than 0 or equal to or greater than
 	 *                         GetDisplayCount().
 	 */
-	virtual int GetDisplayResolutionCount(int display);
+	int GetDisplayResolutionCount(int display) override;
 	
 	/**
 	 * \brief Resolution by index for display.
@@ -157,7 +157,7 @@ public:
 	 * \throws deeInvalidParam \em resolution is less than 0 or equal to or greater than
 	 *                         GetDisplayResolutionCount(display).
 	 */
-	virtual decPoint GetDisplayResolution(int display, int resolution);
+	decPoint GetDisplayResolution(int display, int resolution) override;
 	
 	/**
 	 * \brief Current global scaling factor for display.
@@ -168,7 +168,7 @@ public:
 	 * 
 	 * Value of 100 represents scaling of 100%. Value step size is 25.
 	 */
-	virtual int GetDisplayCurrentScaleFactor(int display);
+	int GetDisplayCurrentScaleFactor(int display) override;
 	/*@}*/
 	
 	
@@ -179,7 +179,7 @@ public:
 	 * \brief Cast to deOSUnix.
 	 * \throws deeInvalidParam Not an instance of deOSUnix.
 	 */
-	virtual deOSUnix *CastToOSUnix();
+	deOSUnix *CastToOSUnix() override;
 	/*@}*/
 	
 	

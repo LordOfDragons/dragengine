@@ -52,7 +52,7 @@ public:
 	dedsNetworkState(deScriptingDragonScript &ds, deNetworkState *state);
 	
 	/** \brief Cleans up the peer. */
-	virtual ~dedsNetworkState();
+	~dedsNetworkState() override;
 	/*@}*/
 	
 	
@@ -60,7 +60,7 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief State value changed. */
-	virtual void StateValueChanged(int index);
+	void StateValueChanged(int index) override;
 	/*@}*/
 	
 	

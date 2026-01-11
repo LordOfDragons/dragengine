@@ -73,7 +73,7 @@ private:
 public:
 	// constructor, destructor
 	aeLSAnimator(aeLoadSaveSystem *lssys);
-	~aeLSAnimator();
+	~aeLSAnimator() override;
 	
 	// management
 	inline const decString &GetName() const{ return pName; }

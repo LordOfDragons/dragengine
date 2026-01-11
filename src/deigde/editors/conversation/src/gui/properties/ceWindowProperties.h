@@ -62,7 +62,7 @@ public:
 	
 protected:
 	/** \brief Clean up window. */
-	virtual ~ceWindowProperties();
+	~ceWindowProperties() override;
 	/*@}*/
 	
 	

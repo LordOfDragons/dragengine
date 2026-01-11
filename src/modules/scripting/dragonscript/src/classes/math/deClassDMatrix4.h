@@ -45,7 +45,7 @@ public:
 	/** Creates a new class. */
 	deClassDMatrix4(deScriptingDragonScript *ds);
 	/** Cleans up the class. */
-	virtual ~deClassDMatrix4();
+	~deClassDMatrix4() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -53,7 +53,7 @@ public:
 	/** Retrieves the module. */
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/** Creates class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** Retrieves the matrix from an object. */
 	const decDMatrix &GetDMatrix4(dsRealObject *myself) const;

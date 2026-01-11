@@ -103,7 +103,7 @@ public:
 	
 	/** \brief Clean up navigation space. */
 protected:
-	virtual ~gdeOCNavigationSpace();
+	~gdeOCNavigationSpace() override;
 public:
 	/*@}*/
 	

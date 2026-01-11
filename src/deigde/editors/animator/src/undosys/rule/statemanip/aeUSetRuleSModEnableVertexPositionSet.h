@@ -48,16 +48,16 @@ public:
 	aeUSetRuleSModEnableVertexPositionSet(aeRuleStateManipulator *rule);
 protected:
 	/** Clean up undo. */
-	virtual ~aeUSetRuleSModEnableVertexPositionSet();
+	~aeUSetRuleSModEnableVertexPositionSet() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

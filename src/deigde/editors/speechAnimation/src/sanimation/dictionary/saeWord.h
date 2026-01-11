@@ -64,7 +64,7 @@ public:
 	
 	/** Cleans up the word. */
 protected:
-	virtual ~saeWord();
+	~saeWord() override;
 public:
 	/*@}*/
 	

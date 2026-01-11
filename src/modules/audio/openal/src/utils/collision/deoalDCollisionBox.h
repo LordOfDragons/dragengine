@@ -67,7 +67,7 @@ public:
 	/** @name First Stage Dispatch */
 	/*@{*/
 	bool VolumeHitsVolume(deoalDCollisionVolume *volume) override;
-	virtual double VolumeMoveHitsVolume(deoalDCollisionVolume *volume, const decDVector &displacement, decDVector *normal);
+	double VolumeMoveHitsVolume(deoalDCollisionVolume *volume, const decDVector &displacement, decDVector *normal) override;
 	/*@}*/
 	
 	/** @name Second Stage Dispatch */
@@ -78,13 +78,13 @@ public:
 	bool BoxHitsVolume(deoalDCollisionBox *box) override;
 	bool TriangleHitsVolume(deoalDCollisionTriangle *triangle) override;
 	bool FrustumHitsVolume(deoalDCollisionFrustum *frustum) override;
-	virtual double SphereMoveHitsVolume(deoalDCollisionSphere *sphere, const decDVector &displacement, decDVector *normal);
-	virtual double CylinderMoveHitsVolume(deoalDCollisionCylinder *cylinder, const decDVector &displacement, decDVector *normal);
-	virtual double CapsuleMoveHitsVolume(deoalDCollisionCapsule *capsule, const decDVector &displacement, decDVector *normal);
-	virtual double BoxMoveHitsVolume(deoalDCollisionBox *box, const decDVector &displacement, decDVector *normal);
-	virtual double TriangleMoveHitsVolume(deoalDCollisionTriangle *triangle, const decDVector &displacement, decDVector *normal);
-	virtual double FrustumMoveHitsVolume(deoalDCollisionFrustum *frustum, const decDVector &displacement, decDVector *normal);
-	virtual double PointMoveHitsVolume(const decDVector &point, const decDVector &displacement, decDVector *normal);
+	double SphereMoveHitsVolume(deoalDCollisionSphere *sphere, const decDVector &displacement, decDVector *normal) override;
+	double CylinderMoveHitsVolume(deoalDCollisionCylinder *cylinder, const decDVector &displacement, decDVector *normal) override;
+	double CapsuleMoveHitsVolume(deoalDCollisionCapsule *capsule, const decDVector &displacement, decDVector *normal) override;
+	double BoxMoveHitsVolume(deoalDCollisionBox *box, const decDVector &displacement, decDVector *normal) override;
+	double TriangleMoveHitsVolume(deoalDCollisionTriangle *triangle, const decDVector &displacement, decDVector *normal) override;
+	double FrustumMoveHitsVolume(deoalDCollisionFrustum *frustum, const decDVector &displacement, decDVector *normal) override;
+	double PointMoveHitsVolume(const decDVector &point, const decDVector &displacement, decDVector *normal) override;
 	/*@}*/
 	
 	/** @name Enclosing Volumes */
@@ -96,9 +96,9 @@ public:
 	/** @name Miscelanous Functions */
 	/*@{*/
 	/** Determines if a point is inside the volume. */
-	virtual bool IsPointInside(const decDVector &point);
+	bool IsPointInside(const decDVector &point) override;
 	/** Retrieves the closest point on the volume. */
-	virtual decDVector ClosestPointTo(const decDVector &point);
+	decDVector ClosestPointTo(const decDVector &point) override;
 	
 	/**
 	 * Retrieves the surface normal through the given point. The point is either right on the
@@ -108,7 +108,7 @@ public:
 	 * @param point Point to determine the normal for.
 	 * @return Surface normal at given point.
 	 */
-	virtual decDVector NormalAtPoint(const decDVector &point);
+	decDVector NormalAtPoint(const decDVector &point) override;
 	/**
 	 * Determines if a ray hits the volume.
 	 * @param rayOrigin Origin of the ray.
@@ -117,7 +117,7 @@ public:
 	 * to the collision point.
 	 * @return True if the ray hits the volume.
 	 */
-	virtual bool RayHitsVolume(const decDVector &rayOrigin, const decDVector &rayDirection, double &hitDistance);
+	bool RayHitsVolume(const decDVector &rayOrigin, const decDVector &rayDirection, double &hitDistance) override;
 	/*@}*/
 	
 	/** @name Visiting */

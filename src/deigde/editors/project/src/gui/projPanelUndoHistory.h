@@ -56,7 +56,7 @@ public:
 	
 	/** \brief Clean up view. */
 protected:
-	virtual ~projPanelUndoHistory();
+	~projPanelUndoHistory() override;
 public:
 	/*@}*/
 	

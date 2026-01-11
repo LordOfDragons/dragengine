@@ -40,7 +40,7 @@ public:
 	deIesModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~deIesModule();
+	~deIesModule() override;
 	/*@}*/
 	
 	
@@ -48,13 +48,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Quick check if the file can be loaded by this module.  */
-	virtual deBaseImageInfo *InitLoadImage(decBaseFileReader &reader);
+	deBaseImageInfo *InitLoadImage(decBaseFileReader &reader) override;
 	
 	/** \brief Load image. */
-	virtual void LoadImage(decBaseFileReader &reader, deImage &image, deBaseImageInfo &infos);
+	void LoadImage(decBaseFileReader &reader, deImage &image, deBaseImageInfo &infos) override;
 	
 	/** \brief Save image. */
-	virtual void SaveImage(decBaseFileWriter &writer, const deImage &image);
+	void SaveImage(decBaseFileWriter &writer, const deImage &image) override;
 	/*@}*/
 };
 

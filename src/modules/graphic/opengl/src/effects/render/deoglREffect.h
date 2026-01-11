@@ -53,7 +53,7 @@ public:
 	
 protected:
 	/** Clean up render effect. */
-	virtual ~deoglREffect();
+	~deoglREffect() override;
 	/*@}*/
 	
 	

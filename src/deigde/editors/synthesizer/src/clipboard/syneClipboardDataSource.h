@@ -66,7 +66,7 @@ protected:
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
 	/** \brief Clean up clipboard data. */
-	virtual ~syneClipboardDataSource();
+	~syneClipboardDataSource() override;
 	/*@}*/
 	
 	

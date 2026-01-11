@@ -90,7 +90,7 @@ public:
 	
 protected:
 	/** \brief Clean up editable entity. */
-	virtual ~igdeEditableEntity();
+	~igdeEditableEntity() override;
 	
 public:
 	/*@}*/

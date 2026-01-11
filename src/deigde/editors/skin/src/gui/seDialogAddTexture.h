@@ -55,7 +55,7 @@ public:
 	
 protected:
 	/** \brief Clean up dialog. */
-	virtual ~seDialogAddTexture();
+	~seDialogAddTexture() override;
 	/*@}*/
 	
 	

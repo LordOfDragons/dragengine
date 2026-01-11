@@ -57,16 +57,16 @@ public:
 		int flags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxNVSocket();
+	~igdeNativeFoxNVSocket() override;
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	virtual FXint getDefaultWidth();
-	virtual FXint getDefaultHeight();
-	virtual FXbool canFocus() const;
+	FXint getDefaultWidth() override;
+	FXint getDefaultHeight() override;
+	FXbool canFocus() const override;
 	
 	
 	/** \brief Checked. */

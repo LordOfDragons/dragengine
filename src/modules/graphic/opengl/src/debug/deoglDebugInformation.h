@@ -81,7 +81,7 @@ public:
 	
 protected:
 	/** Clean up debug information. */
-	virtual ~deoglDebugInformation();
+	~deoglDebugInformation() override;
 	/*@}*/
 	
 	

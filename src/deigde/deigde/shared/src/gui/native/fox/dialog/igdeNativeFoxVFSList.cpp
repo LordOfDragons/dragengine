@@ -124,7 +124,7 @@ public:
 	pOwner(powner), pColumnPattern(columnPattern){
 	}
 	
-	virtual bool VisitFile(const deVirtualFileSystem &vfs, const decPath &path){
+	bool VisitFile(const deVirtualFileSystem &vfs, const decPath &path) override{
 		if(!path.GetPathUnix().MatchesPattern(pOwner.GetPattern())){
 			return true;
 		}
@@ -147,7 +147,7 @@ public:
 		return true;
 	}
 	
-	virtual bool VisitDirectory(const deVirtualFileSystem &, const decPath &path){
+	bool VisitDirectory(const deVirtualFileSystem &, const decPath &path) override{
 		try{
 			igdeNativeFoxVFSListItem * const item = new igdeNativeFoxVFSListItem(
 				path, "", pOwner.GetIconFolderBig(), pOwner.GetIconFolderSmall());
@@ -162,7 +162,7 @@ public:
 		return true;
 	}
 	
-	virtual bool VisitSpecial(const deVirtualFileSystem &vfs, const decPath &path){
+	bool VisitSpecial(const deVirtualFileSystem &vfs, const decPath &path) override{
 		if(!path.GetPathUnix().MatchesPattern(pOwner.GetPattern())){
 			return true;
 		}

@@ -262,7 +262,7 @@ public:
 	pHullPoints(hullPoints), pHullPointCount(hullPointCount), pHullIndices(hullIndices){
 	}
 	
-	virtual void VisitShapeHull(decShapeHull &hull){
+	void VisitShapeHull(decShapeHull &hull) override{
 		const int count = hull.GetPointCount();
 		if(count < 3){
 			return;

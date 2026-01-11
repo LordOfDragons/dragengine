@@ -62,7 +62,7 @@ public:
 	/** \brief Clean up object. */
 
 protected:
-	virtual ~meUHTVRuleMove();
+	~meUHTVRuleMove() override;
 
 public:
 	/*@}*/
@@ -75,9 +75,9 @@ public:
 	void SetNewPosition(const decVector2 &position);
 	
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

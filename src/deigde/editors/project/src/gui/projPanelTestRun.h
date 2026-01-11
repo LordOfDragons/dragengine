@@ -107,7 +107,7 @@ public:
 	
 	/** \brief Clean up view. */
 protected:
-	virtual ~projPanelTestRun();
+	~projPanelTestRun() override;
 public:
 	/*@}*/
 	

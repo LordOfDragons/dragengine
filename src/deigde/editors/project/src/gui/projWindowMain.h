@@ -113,7 +113,7 @@ public:
 	
 	/** \brief Clean up window. */
 protected:
-	virtual ~projWindowMain();
+	~projWindowMain() override;
 public:
 	/*@}*/
 	
@@ -197,16 +197,16 @@ public:
 	
 	
 	/** \brief Game like frame update. */
-	void OnFrameUpdate(float elapsed);
+	void OnFrameUpdate(float elapsed) override;
 	
 	/** \brief Retrieve a list of unsaved open documents. */
-	void GetChangedDocuments(decStringList &list);
+	void GetChangedDocuments(decStringList &list) override;
 	
 	/** \brief Requests a document to be saved. */
-	bool SaveDocument(const char *filename);
+	bool SaveDocument(const char *filename) override;
 	
 	/** \brief The game project has changed. */
-	void OnGameProjectChanged();
+	void OnGameProjectChanged() override;
 	
 	/** \brief Update show action path. */
 	void UpdateShowActionPath();

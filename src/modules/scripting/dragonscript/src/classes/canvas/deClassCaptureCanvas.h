@@ -48,7 +48,7 @@ public:
 	deClassCaptureCanvas(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
-	virtual ~deClassCaptureCanvas();
+	~deClassCaptureCanvas() override;
 	/*@}*/
 	
 	
@@ -60,7 +60,7 @@ public:
 	inline const deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create script class members. */
-	virtual void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/**
 	 * \brief Retrieve capture canvas from a script object.

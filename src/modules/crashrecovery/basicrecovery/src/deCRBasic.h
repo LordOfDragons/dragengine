@@ -45,12 +45,12 @@ private:
 public:
 	// constructor, destructor
 	deCRBasic(deLoadableModule &loadableModule);
-	~deCRBasic();
+	~deCRBasic() override;
 	// management
-	bool Init();
-	void CleanUp();
+	bool Init() override;
+	void CleanUp() override;
 	// crash management
-	bool RecoverFromError();
+	bool RecoverFromError() override;
 	// internal functions for module classes only
 	void SetQuitEngine(bool quitEngine);
 	

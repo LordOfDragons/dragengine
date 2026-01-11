@@ -104,7 +104,7 @@ public:
 	
 protected:
 	/** Clean up microphone. */
-	virtual ~deoalAMicrophone();
+	~deoalAMicrophone() override;
 	/*@}*/
 	
 	

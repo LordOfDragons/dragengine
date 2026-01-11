@@ -48,7 +48,7 @@ public:
 	fbxSkinModule(deLoadableModule &loadableModule);
 	
 	/** Clean up module. */
-	virtual ~fbxSkinModule();
+	~fbxSkinModule() override;
 	/*@}*/
 	
 	
@@ -56,10 +56,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Load skin. */
-	virtual void LoadSkin(decBaseFileReader &reader, deSkin &skin);
+	void LoadSkin(decBaseFileReader &reader, deSkin &skin) override;
 	
 	/** Save skin. */
-	virtual void SaveSkin(decBaseFileWriter &writer, const deSkin &skin);
+	void SaveSkin(decBaseFileWriter &writer, const deSkin &skin) override;
 	/*@}*/
 	
 	

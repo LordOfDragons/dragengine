@@ -90,7 +90,7 @@ public:
 	
 protected:
 	/** \brief Cleans up the object shape. */
-	virtual ~meObjectShape();
+	~meObjectShape() override;
 	
 public:
 	/*@}*/

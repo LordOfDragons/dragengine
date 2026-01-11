@@ -63,7 +63,7 @@ public:
 	deClassARGroup(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
-	virtual ~deClassARGroup();
+	~deClassARGroup() override;
 	/*@}*/
 	
 	
@@ -74,7 +74,7 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Rule or \em NULL if deleted or myself is \em NULL. */
 	deAnimatorRuleGroup *GetRule(dsRealObject *myself) const;

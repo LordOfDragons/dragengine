@@ -49,7 +49,7 @@ public:
 	igdeNativeFoxToolBarSeparator(igdeToolBarSeparator &owner, FXComposite *parent, int layoutFlags);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxToolBarSeparator();
+	~igdeNativeFoxToolBarSeparator() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeFoxToolBarSeparator* CreateNativeWidget(igdeToolBarSeparator &owner);

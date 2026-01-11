@@ -83,7 +83,7 @@ public:
 	
 protected:
 	/** Clean up panel. */
-	virtual ~aeWPLink();
+	~aeWPLink() override;
 	/*@}*/
 	
 	

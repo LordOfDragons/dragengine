@@ -56,7 +56,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~gdeDefaultPropertyValue();
+	~gdeDefaultPropertyValue() override;
 	/*@}*/
 	
 	

@@ -148,7 +148,7 @@ public:
 	
 protected:
 	/** Clean up speaker peer. */
-	virtual ~deoalASpeaker();
+	~deoalASpeaker() override;
 	/*@}*/
 	
 	

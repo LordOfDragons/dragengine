@@ -64,7 +64,7 @@ public:
 	
 protected:
 	/** \brief Clean up object wrapper sub object. */
-	virtual ~igdeWOSOLight();
+	~igdeWOSOLight() override;
 	
 public:
 	/*@}*/
@@ -77,25 +77,25 @@ public:
 	inline const deLight::Ref &GetLight() const{ return pLight; }
 	
 	/** \brief Update parameters. */
-	virtual void UpdateParameters();
+	void UpdateParameters() override;
 	
 	/** \brief Init triggers. */
-	virtual void InitTriggers();
+	void InitTriggers() override;
 	
 	/** \brief Update trigger. */
-	virtual void UpdateTriggers();
+	void UpdateTriggers() override;
 	
 	/** \brief Update visibility. */
-	virtual void UpdateVisibility();
+	void UpdateVisibility() override;
 	
 	/** \brief Layer masks changed. */
-	virtual void UpdateLayerMasks();
+	void UpdateLayerMasks() override;
 	
 	/** \brief All sub components finished loading. */
-	virtual void OnAllSubObjectsFinishedLoading();
+	void OnAllSubObjectsFinishedLoading() override;
 	
 	/** \brief Visit. */
-	virtual void Visit(igdeWOSOVisitor &visitor);
+	void Visit(igdeWOSOVisitor &visitor) override;
 	
 	/** \brief For internal use only. */
 	void AsyncLoadFinished(bool success);
@@ -104,8 +104,8 @@ public:
 	
 	
 protected:
-	void AttachToCollider();
-	void DetachFromCollider();
+	void AttachToCollider() override;
+	void DetachFromCollider() override;
 	
 	
 	

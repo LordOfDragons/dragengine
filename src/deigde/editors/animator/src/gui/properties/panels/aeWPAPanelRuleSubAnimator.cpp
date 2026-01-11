@@ -122,7 +122,7 @@ public:
 	typedef deTObjectReference<cBaseComboBoxListener> Ref;
 	cBaseComboBoxListener(aeWPAPanelRuleSubAnimator &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleSubAnimator * const rule = (aeRuleSubAnimator*)pPanel.GetRule();
 		if(!animator || !rule){
@@ -146,7 +146,7 @@ public:
 	typedef deTObjectReference<cPathAnimator> Ref;
 	cPathAnimator(aeWPAPanelRuleSubAnimator &panel) : pPanel(panel){}
 	
-	virtual void OnEditPathChanged(igdeEditPath *editPath){
+	void OnEditPathChanged(igdeEditPath *editPath) override{
 		aeRuleSubAnimator * const rule = (aeRuleSubAnimator*)pPanel.GetRule();
 		if(!rule || rule->GetPathSubAnimator() == editPath->GetPath()){
 			return;

@@ -54,7 +54,7 @@ public:
 	ceUCATriggerSetAction(ceConversationTopic *topic, ceCATrigger *action, ceCATrigger::eActions newOperator);
 	/** \brief Cleans up the undo object. */
 protected:
-	virtual ~ceUCATriggerSetAction();
+	~ceUCATriggerSetAction() override;
 public:
 	/*@}*/
 	
@@ -62,9 +62,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

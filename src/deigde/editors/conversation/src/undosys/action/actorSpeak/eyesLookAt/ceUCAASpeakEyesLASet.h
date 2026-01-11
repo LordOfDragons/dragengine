@@ -56,16 +56,16 @@ public:
 	ceUCAASpeakEyesLASet(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *eyesLookAt, ceStrip *newStrip);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCAASpeakEyesLASet();
+	~ceUCAASpeakEyesLASet() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

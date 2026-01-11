@@ -66,7 +66,7 @@ public:
 	
 	/** \brief Clean up panel. */
 protected:
-	virtual ~feWPGlyph();
+	~feWPGlyph() override;
 public:
 	/*@}*/
 	

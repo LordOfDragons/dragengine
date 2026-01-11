@@ -57,15 +57,15 @@ public:
 	/** Creates a new ogg sound stream object. */
 	deoggSoundDecoder(deSoundOGG *module, decBaseFileReader *file);
 	/** Cleans up the ogg sound stream object. */
-	virtual ~deoggSoundDecoder();
+	~deoggSoundDecoder() override;
 	/*@}*/
 	
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the position in samples. */
-	virtual int GetPosition();
+	int GetPosition() override;
 	/** Sets the position in samples from the beginning. */
-	virtual void SetPosition(int position);
+	void SetPosition(int position) override;
 	/**
 	 * Reads a chunk of sound data from the file. Reads the given number
 	 * of sample bytes into the provided buffer and advances the position.
@@ -73,7 +73,7 @@ public:
 	 * than the requested amount if the end of file has been reached. An
 	 * error is signaled using the engine error signaling and 0 returned.
 	 */
-	virtual int ReadSamples(void *buffer, int size);
+	int ReadSamples(void *buffer, int size) override;
 	/*@}*/
 };
 

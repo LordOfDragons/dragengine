@@ -54,7 +54,7 @@ protected:
 	public:
 		typedef deTObjectReference<cActionAdd> Ref;
 		cActionAdd(igdeEditTags &widget);
-		virtual void OnAction();
+		void OnAction() override;
 	};
 	
 	/** \brief Action removing selected tag. */
@@ -65,7 +65,7 @@ protected:
 	public:
 		typedef deTObjectReference<cActionRemove> Ref;
 		cActionRemove(igdeEditTags &widget);
-		virtual void OnAction();
+		void OnAction() override;
 	};
 	
 	/** \brief Action removing all tags. */
@@ -76,7 +76,7 @@ protected:
 	public:
 		typedef deTObjectReference<cActionClear> Ref;
 		cActionClear(igdeEditTags &widget);
-		virtual void OnAction();
+		void OnAction() override;
 	};
 	
 	
@@ -108,7 +108,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~igdeEditTags();
+	~igdeEditTags() override;
 	/*@}*/
 	
 	
@@ -155,10 +155,10 @@ public:
 	virtual void OnAction();
 	
 	/** \brief Action parameters changed. */
-	virtual void OnParameterChanged(igdeAction *action);
+	void OnParameterChanged(igdeAction *action) override;
 	
 	/** \brief Action has been destroyed. */
-	virtual void OnDestroyed(igdeAction *action);
+	void OnDestroyed(igdeAction *action) override;
 	
 	
 	

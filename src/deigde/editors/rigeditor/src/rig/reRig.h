@@ -200,7 +200,7 @@ public:
 	reRig(igdeEnvironment *environment);
 	/** Cleans up the rig. */
 protected:
-	virtual ~reRig();
+	~reRig() override;
 public:
 	/*@}*/
 	
@@ -491,9 +491,9 @@ public:
 	/** Notifies all that the element or work mode changed. */
 	void NotifyModeChanged();
 	/** Notifies all that the changed or saved state changed. */
-	virtual void NotifyStateChanged();
+	void NotifyStateChanged() override;
 	/** Notifies all that the undos changed. */
-	virtual void NotifyUndoChanged();
+	void NotifyUndoChanged() override;
 	
 	/** Notifies all that the bone structure changed. */
 	void NotifyAllStructureChanged();

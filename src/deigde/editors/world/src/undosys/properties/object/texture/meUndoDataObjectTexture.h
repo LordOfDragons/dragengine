@@ -60,7 +60,7 @@ protected:
 	/** \brief Clean up undo data object. */
 
 protected:
-	virtual ~meUndoDataObjectTexture();
+	~meUndoDataObjectTexture() override;
 
 public:
 	/*@}*/

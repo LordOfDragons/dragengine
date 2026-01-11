@@ -63,7 +63,7 @@ public:
 	
 protected:
 	/** \brief Clean up file fialog. */
-	virtual ~igdeResourceLoaderTask();
+	~igdeResourceLoaderTask() override;
 	/*@}*/
 	
 	

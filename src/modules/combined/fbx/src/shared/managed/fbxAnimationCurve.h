@@ -62,7 +62,7 @@ public:
 	
 protected:
 	/** \brief Clean up move. */
-	virtual ~fbxAnimationCurve();
+	~fbxAnimationCurve() override;
 	/*@}*/
 	
 	

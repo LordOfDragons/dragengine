@@ -67,7 +67,7 @@ public:
 	
 protected:
 	/** Clean up phoneme. */
-	virtual ~saePhoneme();
+	~saePhoneme() override;
 	/*@}*/
 	
 	

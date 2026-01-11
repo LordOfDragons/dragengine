@@ -55,7 +55,7 @@ public:
 		
 	protected:
 protected:
-		virtual ~Listener();
+		~Listener() override;
 public:
 	};
 	
@@ -77,7 +77,7 @@ public:
 	
 protected:
 	/** Clean up dialog. */
-	virtual ~ceDialogEditStrip();
+	~ceDialogEditStrip() override;
 	/*@}*/
 	
 	
@@ -126,7 +126,7 @@ public:
 	 * Called by Run() after dialog is created. Subclass can implement to init controls
 	 * after the dialog is visible on screen.
 	 */
-	virtual void OnDialogShown();
+	void OnDialogShown() override;
 	/*@}*/
 };
 

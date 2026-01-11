@@ -47,7 +47,7 @@ public:
 	deClassColorMatrix(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
-	virtual ~deClassColorMatrix();
+	~deClassColorMatrix() override;
 	/*@}*/
 	
 	
@@ -58,7 +58,7 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Color matrix from an object. */
 	const decColorMatrix &GetColorMatrix(dsRealObject *myself) const;

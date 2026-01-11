@@ -88,7 +88,7 @@ public:
 	
 protected:
 	/** \brief Clean up class navigation space. */
-	virtual ~igdeGDCNavigationSpace();
+	~igdeGDCNavigationSpace() override;
 	/*@}*/
 	
 	

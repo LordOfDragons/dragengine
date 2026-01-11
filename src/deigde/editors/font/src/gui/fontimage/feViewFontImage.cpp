@@ -62,7 +62,7 @@ protected:
 public:
 	cScrollView(feViewFontImage &view) : pView(view){}
 	
-	virtual void OnValueChanged(igdeScrollBar *scrollBar){
+	void OnValueChanged(igdeScrollBar *scrollBar) override{
 		pView.ScrollView();
 	}
 };
@@ -78,7 +78,7 @@ protected:
 public:
 	cChangeZoom(feViewFontImage &view) : pView(view){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		pView.GetViewImage()->SetZoom(comboBox->GetText().ToInt());
 		pView.UpdateScrollbarRanges();
 		

@@ -53,7 +53,7 @@ public:
 	ceUCATriggerSetName(ceConversationTopic *topic, ceCATrigger *action, const char *newName);
 	/** \brief Cleans up the undo object. */
 protected:
-	virtual ~ceUCATriggerSetName();
+	~ceUCATriggerSetName() override;
 public:
 	/*@}*/
 	
@@ -61,9 +61,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

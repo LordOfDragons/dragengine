@@ -57,7 +57,7 @@ public:
 	deClassSynthesizerEffect(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
-	virtual ~deClassSynthesizerEffect();
+	~deClassSynthesizerEffect() override;
 	/*@}*/
 	
 	
@@ -68,7 +68,7 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Effect or \em NULL if deleted or myself is \em NULL. */
 	deSynthesizerEffect *GetEffect(dsRealObject *myself) const;

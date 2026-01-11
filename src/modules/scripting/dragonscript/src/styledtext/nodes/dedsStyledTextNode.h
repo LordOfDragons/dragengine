@@ -55,7 +55,7 @@ public:
 
 protected:
 	/** Cleans up the styled text node. */
-	virtual ~dedsStyledTextNode();
+	~dedsStyledTextNode() override;
 	/*@}*/
 	
 public:

@@ -61,7 +61,7 @@ public:
 	typedef deTObjectReference<cComboOperator> Ref;
 	cComboOperator(meWVNodeMultiMath &node) : pNode(node){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		if(!pNode.GetRuleMultiMath()){
 			return;
 		}

@@ -54,7 +54,7 @@ public:
 	/** \brief Clean up undo object. */
 
 protected:
-	virtual ~meUAddNavSpace();
+	~meUAddNavSpace() override;
 
 public:
 	/*@}*/
@@ -67,10 +67,10 @@ public:
 	inline const meNavigationSpace::Ref &GetNavSpace() const{ return pNavSpace; }
 	
 	/** \brief Undo the action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo the action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

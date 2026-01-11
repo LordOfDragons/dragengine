@@ -42,7 +42,7 @@ public:
 	explicit igdeXMLLoadTexturePropertyList(deLogger *logger);
 	
 	/** \brief Clean up loader. */
-	virtual ~igdeXMLLoadTexturePropertyList();
+	~igdeXMLLoadTexturePropertyList() override;
 	/*@}*/
 	
 	

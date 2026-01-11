@@ -100,7 +100,7 @@ public:
 	
 protected:
 	/** Clean up panel. */
-	virtual ~aeWPView();
+	~aeWPView() override;
 	/*@}*/
 	
 	

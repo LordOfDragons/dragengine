@@ -85,7 +85,7 @@ public:
 	
 protected:
 	/** Cleans up the object. */
-	virtual ~meHTVegetationLayer();
+	~meHTVegetationLayer() override;
 	
 public:
 	/*@}*/

@@ -47,7 +47,7 @@ public:
 	deClassAnimationBuilder(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
-	virtual ~deClassAnimationBuilder();
+	~deClassAnimationBuilder() override;
 	/*@}*/
 	
 	
@@ -58,7 +58,7 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Creates class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	/*@}*/
 	
 	

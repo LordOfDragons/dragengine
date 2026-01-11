@@ -60,7 +60,7 @@ public:
 	deoglVideo(deGraphicOpenGl &ogl, deVideo &video);
 	
 	/** Clean up peer. */
-	virtual ~deoglVideo();
+	~deoglVideo() override;
 	/*@}*/
 	
 	

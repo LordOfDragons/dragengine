@@ -63,7 +63,7 @@ public:
 	deoalVideoPlayer(deAudioOpenAL &oal, deVideoPlayer &videoPlayer);
 	
 	/** \brief Clean up peer. */
-	virtual ~deoalVideoPlayer();
+	~deoalVideoPlayer() override;
 	/*@}*/
 	
 	
@@ -99,25 +99,25 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Sound source changed. */
-	virtual void SourceChanged();
+	void SourceChanged() override;
 	
 	/** \brief Looping changed. */
-	virtual void LoopingChanged();
+	void LoopingChanged() override;
 	
 	/** \brief Play range changed. */
-	virtual void PlayRangeChanged();
+	void PlayRangeChanged() override;
 	
 	/** \brief Play speed changed. */
-	virtual void PlaySpeedChanged();
+	void PlaySpeedChanged() override;
 	
 	/**
 	 * \brief Play position changed.
 	 * \param[in] seeking Changed due to seeking or by deVideoPlayer::Update().
 	 */
-	virtual void PlayPositionChanged(bool seeking);
+	void PlayPositionChanged(bool seeking) override;
 	
 	/** \brief Play state changed. */
-	virtual void PlayStateChanged();
+	void PlayStateChanged() override;
 	/*@}*/
 };
 

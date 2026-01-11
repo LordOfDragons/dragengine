@@ -49,7 +49,7 @@ public:
 	peeEmitterListener();
 	/** \brief Clean up the listener. */
 protected:
-	virtual ~peeEmitterListener();
+	~peeEmitterListener() override;
 public:
 	/*@}*/
 	

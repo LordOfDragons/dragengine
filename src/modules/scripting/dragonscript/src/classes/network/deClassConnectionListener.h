@@ -49,11 +49,11 @@ private:
 public:
 	// constructor
 	deClassConnectionListener(deEngine *gameEngine, deScriptingDragonScript *scrMgr);
-	~deClassConnectionListener();
+	~deClassConnectionListener() override;
 	
 	// internal functions
 	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	inline deEngine *GetGameEngine() const{ return pGameEngine; }
 	
 	inline deClassNetworkMessage *GetClassNetworkMessage() const{ return pClsNM; }

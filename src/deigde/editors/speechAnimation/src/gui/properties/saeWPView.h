@@ -67,7 +67,7 @@ public:
 	
 protected:
 	/** Clean up panel. */
-	virtual ~saeWPView();
+	~saeWPView() override;
 	/*@}*/
 	
 	

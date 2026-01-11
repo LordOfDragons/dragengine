@@ -139,7 +139,7 @@ public:
 	
 protected:
 	/** Clean up world compute. */
-	virtual ~deoglWorldCompute();
+	~deoglWorldCompute() override;
 	/*@}*/
 	
 	

@@ -80,7 +80,7 @@ public:
 	
 protected:
 	/** Clean up render video. */
-	virtual ~deoglRVideo();
+	~deoglRVideo() override;
 	/*@}*/
 	
 	

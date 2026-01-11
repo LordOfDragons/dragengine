@@ -56,7 +56,7 @@ public:
 		ceCConditionTrigger *condition, const char *newTrigger);
 	/** \brief Cleans up the undo object. */
 protected:
-	virtual ~ceUCCTriggerSetTrigger();
+	~ceUCCTriggerSetTrigger() override;
 public:
 	/*@}*/
 	
@@ -64,9 +64,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

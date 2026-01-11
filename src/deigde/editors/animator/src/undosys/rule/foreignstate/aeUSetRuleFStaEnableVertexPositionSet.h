@@ -49,16 +49,16 @@ public:
 	aeUSetRuleFStaEnableVertexPositionSet(aeRuleForeignState *rule);
 protected:
 	/** Clean up undo. */
-	virtual ~aeUSetRuleFStaEnableVertexPositionSet();
+	~aeUSetRuleFStaEnableVertexPositionSet() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

@@ -66,7 +66,7 @@ public:
 	deoglParticleEmitterInstance(deGraphicOpenGl &ogl, const deParticleEmitterInstance &instance);
 	
 	/** Clean up peer. */
-	virtual ~deoglParticleEmitterInstance();
+	~deoglParticleEmitterInstance() override;
 	/*@}*/
 	
 	
@@ -104,46 +104,46 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Emitter changed. */
-	virtual void EmitterChanged();
+	void EmitterChanged() override;
 	
 	/** Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	/** Orientation changed. */
-	virtual void OrientationChanged();
+	void OrientationChanged() override;
 	
 	/** Reference position changed. */
-	virtual void ReferencePositionChanged();
+	void ReferencePositionChanged() override;
 	
 	/** Enable casting changed. */
-	virtual void EnableCastingChanged();
+	void EnableCastingChanged() override;
 	
 	/** Collision filter changed. */
-	virtual void CollisionFilterChanged();
+	void CollisionFilterChanged() override;
 	
 	/** Warm up time changed. */
-	virtual void WarmUpTimeChanged();
+	void WarmUpTimeChanged() override;
 	
 	/** Burst time changed. */
-	virtual void BurstTimeChanged();
+	void BurstTimeChanged() override;
 	
 	/** Layer mask changed. */
-	virtual void LayerMaskChanged();
+	void LayerMaskChanged() override;
 	
 	/** Controller changed. */
-	virtual void ControllerChanged(int controller);
+	void ControllerChanged(int controller) override;
 	
 	/** Type changed. */
-	virtual void TypeChanged(int type);
+	void TypeChanged(int type) override;
 	
 	/** Type particles changed. */
-	virtual void TypeParticlesChanged(int type);
+	void TypeParticlesChanged(int type) override;
 	
 	/** Reset burst particles. */
-	virtual void ResetBurst();
+	void ResetBurst() override;
 	
 	/** Kill all particles. */
-	virtual void KillAllParticles();
+	void KillAllParticles() override;
 	/*@}*/
 	
 private:

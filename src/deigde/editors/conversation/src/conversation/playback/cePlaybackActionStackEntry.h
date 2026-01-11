@@ -59,7 +59,7 @@ public:
 	cePlaybackActionStackEntry();
 	/** Cleans up the stack. */
 protected:
-	~cePlaybackActionStackEntry();
+	~cePlaybackActionStackEntry() override;
 public:
 	/*@}*/
 	

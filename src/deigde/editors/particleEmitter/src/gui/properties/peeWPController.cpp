@@ -84,7 +84,7 @@ public:
 	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(peeWPController &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		peeEmitter * const emitter = pPanel.GetEmitter();
 		peeController * const controller = pPanel.GetController();
 		if(!emitter || !controller){
@@ -189,7 +189,7 @@ public:
 	typedef deTObjectReference<cListControllers> Ref;
 	cListControllers(peeWPController &panel) : pPanel(panel){}
 	
-	virtual void OnSelectionChanged(igdeListBox *listBox){
+	void OnSelectionChanged(igdeListBox *listBox) override{
 		peeEmitter * const emitter = pPanel.GetEmitter();
 		if(!emitter){
 			return;
@@ -205,7 +205,7 @@ public:
 		}
 	}
 	
-	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
+	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
 		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelperProperties();
 		helper.MenuCommand(menu, pPanel.GetActionControllerAdd());
 		helper.MenuCommand(menu, pPanel.GetActionControllerRemove());
@@ -241,7 +241,7 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove the selected controller."){}
 	
-	virtual igdeUndo::Ref OnActionController(peeEmitter*, peeController *controller){
+	igdeUndo::Ref OnActionController(peeEmitter*, peeController *controller) override{
 		return peeUControllerRemove::Ref::New(controller);
 	}
 	
@@ -259,7 +259,7 @@ public:
 		"Move controller up in the list."),
 	pListBox(listBox){}
 	
-	virtual igdeUndo::Ref OnActionController(peeEmitter*, peeController *controller){
+	igdeUndo::Ref OnActionController(peeEmitter*, peeController *controller) override{
 		return peeUControllerMoveUp::Ref::New(controller);
 	}
 	
@@ -277,7 +277,7 @@ public:
 		"Move controller down in the list."),
 	pListBox(listBox){}
 	
-	virtual igdeUndo::Ref OnActionController(peeEmitter*, peeController *controller){
+	igdeUndo::Ref OnActionController(peeEmitter*, peeController *controller) override{
 		return peeUControllerMoveDown::Ref::New(controller);
 	}
 	
@@ -336,11 +336,11 @@ public:
 	typedef deTObjectReference<cSliderValue> Ref;
 	cSliderValue(peeWPController &panel) : pPanel(panel){}
 	
-	virtual void OnSliderTextValueChanging(igdeEditSliderText *sliderText){
+	void OnSliderTextValueChanging(igdeEditSliderText *sliderText) override{
 		OnSliderTextValueChanged(sliderText);
 	}
 	
-	virtual void OnSliderTextValueChanged(igdeEditSliderText *sliderText){
+	void OnSliderTextValueChanged(igdeEditSliderText *sliderText) override{
 		peeController * const controller = pPanel.GetController();
 		if(controller){
 			controller->SetValue(sliderText->GetValue());
@@ -354,7 +354,7 @@ public:
 	cActionClamp(peeWPController &panel) : cBaseActionController(panel, "Clamp value to range",
 		"Determines if the value of the controller is clamped to the given range."){ }
 	
-	virtual igdeUndo::Ref OnActionController(peeEmitter*, peeController *controller){
+	igdeUndo::Ref OnActionController(peeEmitter*, peeController *controller) override{
 		return peeUControllerToggleClamp::Ref::New(controller);
 	}
 };
@@ -365,7 +365,7 @@ public:
 	cActionFrozen(peeWPController &panel) : cBaseActionController(panel,
 		"Freeze Controller value", "Prevents the controller from changing the current value."){}
 	
-	virtual igdeUndo::Ref OnActionController(peeEmitter*, peeController *controller){
+	igdeUndo::Ref OnActionController(peeEmitter*, peeController *controller) override{
 		return peeUControllerToggleFrozen::Ref::New(controller);
 	}
 };

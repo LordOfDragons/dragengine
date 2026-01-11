@@ -99,7 +99,7 @@ public:
 	
 protected:
 	/** Clean up render camera. */
-	virtual ~deoglRCamera();
+	~deoglRCamera() override;
 	/*@}*/
 	
 	

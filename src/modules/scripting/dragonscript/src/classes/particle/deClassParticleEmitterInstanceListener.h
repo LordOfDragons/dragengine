@@ -45,7 +45,7 @@ public:
 	/** Creates a new class. */
 	deClassParticleEmitterInstanceListener(deScriptingDragonScript *ds);
 	/** Cleans up the class. */
-	virtual ~deClassParticleEmitterInstanceListener();
+	~deClassParticleEmitterInstanceListener() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -53,7 +53,7 @@ public:
 	/** Retrieves the module. */
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/** Creates class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Function index for lastParticleDied(). */
 	inline int GetFuncIndexLastParticleDied() const{ return pFuncIndexLastParticleDied; }

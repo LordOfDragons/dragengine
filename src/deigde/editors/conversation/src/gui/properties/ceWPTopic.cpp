@@ -194,7 +194,7 @@ public:
 	typedef deTObjectReference<cComboFile> Ref;
 	cComboFile(ceWPTopic &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversation * const conversation = pPanel.GetConversation();
 		if(conversation){
 			conversation->SetActiveFile(comboBox->GetSelectedItem()
@@ -437,7 +437,7 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Show File Menu"),
 		pPanel(panel){}
 	
-	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
+	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override{
 		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
 		
 		helper.MenuCommand(contextMenu, cActionGroupAdd::Ref::New(pPanel));
@@ -467,7 +467,7 @@ public:
 	typedef deTObjectReference<cComboTopic> Ref;
 	cComboTopic(ceWPTopic &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversationFile * const file = pPanel.GetFile();
 		if(file){
 			file->SetActiveTopic(comboBox->GetSelectedItem()
@@ -709,7 +709,7 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Show Topic Menu"),
 		pPanel(panel){}
 	
-	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
+	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override{
 		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
 		
 		helper.MenuCommand(contextMenu, cActionTopicAdd::Ref::New(pPanel));
@@ -739,7 +739,7 @@ public:
 	typedef deTObjectReference<cTreeActionsListener> Ref;
 	cTreeActionsListener(ceWPTopic &panel) : pPanel(panel){}
 	
-	virtual void OnSelectionChanged(igdeTreeList *treeList){
+	void OnSelectionChanged(igdeTreeList *treeList) override{
 		ceConversationTopic * const topic = pPanel.GetTopic();
 		if(!topic || pPanel.GetActionTreeModel()->GetPreventUpdate()){
 			return;
@@ -752,15 +752,15 @@ public:
 		pPanel.SyncTopicActive();
 	}
 	
-	virtual void OnItemExpanded(igdeTreeList*, igdeTreeItem *item){
+	void OnItemExpanded(igdeTreeList*, igdeTreeItem *item) override{
 		((ceWPTTreeItem*)item)->OnExpanded();
 	}
 	
-	virtual void OnItemCollapsed(igdeTreeList*, igdeTreeItem *item){
+	void OnItemCollapsed(igdeTreeList*, igdeTreeItem *item) override{
 		((ceWPTTreeItem*)item)->OnCollapsed();
 	}
 	
-	virtual void AddContextMenuEntries(igdeTreeList *treeList, igdeMenuCascade &menu){
+	void AddContextMenuEntries(igdeTreeList *treeList, igdeMenuCascade &menu) override{
 		if(treeList->GetSelection()){
 			((ceWPTTreeItem&)*treeList->GetSelection()).OnContextMenu(menu);
 			

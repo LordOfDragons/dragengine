@@ -58,7 +58,7 @@ public:
 	/** \brief Clean up undo action. */
 
 protected:
-	virtual ~meBaseUndoMove();
+	~meBaseUndoMove() override;
 
 public:
 	/*@}*/

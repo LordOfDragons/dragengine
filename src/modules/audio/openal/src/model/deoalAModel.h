@@ -102,7 +102,7 @@ public:
 	
 protected:
 	/** \brief Clean up model peer. */
-	virtual ~deoalAModel();
+	~deoalAModel() override;
 	/*@}*/
 	
 	

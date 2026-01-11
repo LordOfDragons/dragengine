@@ -82,7 +82,7 @@ public:
 	
 protected:
 	/** \brief Clean up peer. */
-	virtual ~dedaiHeightTerrainNavSpace();
+	~dedaiHeightTerrainNavSpace() override;
 	/*@}*/
 	
 	

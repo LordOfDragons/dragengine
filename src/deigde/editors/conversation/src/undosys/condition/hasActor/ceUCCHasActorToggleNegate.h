@@ -53,16 +53,16 @@ public:
 	ceUCCHasActorToggleNegate(ceConversationTopic *topic, ceConversationAction *action, ceCConditionHasActor *hasActor);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCCHasActorToggleNegate();
+	~ceUCCHasActorToggleNegate() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

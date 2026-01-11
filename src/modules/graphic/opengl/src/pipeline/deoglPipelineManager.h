@@ -63,7 +63,7 @@ public:
 	
 protected:
 	/** Clean up pipelines manager. */
-	virtual ~deoglPipelineManager();
+	~deoglPipelineManager() override;
 	/*@}*/
 	
 	

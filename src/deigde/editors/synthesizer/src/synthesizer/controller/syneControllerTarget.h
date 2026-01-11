@@ -63,7 +63,7 @@ public:
 	
 	/** Clean up controller target. */
 protected:
-	~syneControllerTarget();
+	~syneControllerTarget() override;
 public:
 	/*@}*/
 	

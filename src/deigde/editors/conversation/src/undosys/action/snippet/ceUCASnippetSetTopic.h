@@ -53,16 +53,16 @@ public:
 	ceUCASnippetSetTopic(ceConversationTopic *topic, ceCASnippet *snippet, const char *newTopic);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCASnippetSetTopic();
+	~ceUCASnippetSetTopic() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

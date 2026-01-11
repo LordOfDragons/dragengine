@@ -65,7 +65,7 @@ public:
 	
 protected:
 	/** \brief Clean up trigger target. */
-	virtual ~igdeTriggerTarget();
+	~igdeTriggerTarget() override;
 	/*@}*/
 	
 	

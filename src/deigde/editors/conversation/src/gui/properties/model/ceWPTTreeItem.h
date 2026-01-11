@@ -58,7 +58,7 @@ public:
 	
 protected:
 	/** \brief Clean up tree item. */
-	virtual ~ceWPTTreeItem();
+	~ceWPTTreeItem() override;
 	/*@}*/
 	
 	

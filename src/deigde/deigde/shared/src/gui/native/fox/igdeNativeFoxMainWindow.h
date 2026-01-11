@@ -49,7 +49,7 @@ public:
 	igdeNativeFoxMainWindow(igdeMainWindow &owner);
 	
 	/** \brief Clean up container. */
-	virtual ~igdeNativeFoxMainWindow();
+	~igdeNativeFoxMainWindow() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeFoxMainWindow* CreateNativeWidget(igdeMainWindow &owner);
@@ -65,8 +65,8 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void create();
-	virtual void destroy();
+	void create() override;
+	void destroy() override;
 	
 	/** \brief System color. */
 	decColor GetSystemColor(igdeEnvironment::eSystemColors color) const;

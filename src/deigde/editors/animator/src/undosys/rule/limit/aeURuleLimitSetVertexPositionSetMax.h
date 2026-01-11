@@ -54,16 +54,16 @@ public:
 	aeURuleLimitSetVertexPositionSetMax(aeRuleLimit *rule, float newMax);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleLimitSetVertexPositionSetMax();
+	~aeURuleLimitSetVertexPositionSetMax() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

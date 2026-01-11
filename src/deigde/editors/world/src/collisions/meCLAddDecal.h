@@ -60,7 +60,7 @@ private:
 public:
 	// constructor, destructor
 	meCLAddDecal(meWindowMain *windowMain, meWorld *world);
-	virtual ~meCLAddDecal();
+	~meCLAddDecal() override;
 	
 	// management
 	void SetRay(const decDVector &rayOrigin, const decVector &rayDirection);
@@ -73,9 +73,9 @@ public:
 	void Cancel();
 	
 	// notifications
-	virtual void CollisionResponse(deCollider *owner, deCollisionInfo *info);
-	virtual bool CanHitCollider(deCollider *owner, deCollider *collider);
-	virtual void ColliderChanged(deCollider *owner);
+	void CollisionResponse(deCollider *owner, deCollisionInfo *info) override;
+	bool CanHitCollider(deCollider *owner, deCollider *collider) override;
+	void ColliderChanged(deCollider *owner) override;
 	
 private:
 	decVector pGetRotationForNormal(const decVector &normal) const;

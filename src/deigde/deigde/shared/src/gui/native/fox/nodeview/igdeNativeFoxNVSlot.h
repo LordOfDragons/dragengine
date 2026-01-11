@@ -68,7 +68,7 @@ public:
 		const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxNVSlot();
+	~igdeNativeFoxNVSlot() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeFoxNVSlot* CreateNativeWidget(igdeNVSlot &owner);
@@ -84,7 +84,7 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual FXbool canFocus() const;
+	FXbool canFocus() const override;
 	
 	
 	/** \brief Owner. */

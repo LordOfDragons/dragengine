@@ -61,7 +61,7 @@ public:
 	/** Creates a new peer. */
 	debpPropField(dePhysicsBullet *bullet, dePropField *forceField);
 	/** Cleans up the peer. */
-	virtual ~debpPropField();
+	~debpPropField() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -83,22 +83,22 @@ public:
 	/** @name Notification */
 	/*@{*/
 	/** Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	/** Type has been added. */
-	virtual void TypeAdded(int index, dePropFieldType *type);
+	void TypeAdded(int index, dePropFieldType *type) override;
 	/** Type has been removed. */
-	virtual void TypeRemoved(int index, dePropFieldType *type);
+	void TypeRemoved(int index, dePropFieldType *type) override;
 	/** All types have been removed. */
-	virtual void AllTypesRemoved();
+	void AllTypesRemoved() override;
 	/** Type changed. */
-	virtual void TypeChanged(int index, dePropFieldType *type);
+	void TypeChanged(int index, dePropFieldType *type) override;
 	
 	/** Instances changed. */
-	virtual void InstancesChanged(int index, dePropFieldType *type);
+	void InstancesChanged(int index, dePropFieldType *type) override;
 	
 	/** Project all instances to the given ground. */
-	virtual void ProjectInstances(const dePropFieldGround &ground, const decVector &direction);
+	void ProjectInstances(const dePropFieldGround &ground, const decVector &direction) override;
 	/*@}*/
 	
 private:

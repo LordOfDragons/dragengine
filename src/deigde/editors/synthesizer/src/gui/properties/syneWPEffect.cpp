@@ -83,7 +83,7 @@ public:
 	typedef deTObjectReference<cListEffects> Ref;
 	cListEffects(syneWPEffect &panel) : pPanel(panel){}
 	
-	virtual void OnSelectionChanged(igdeListBox *listBox){
+	void OnSelectionChanged(igdeListBox *listBox) override{
 		syneSource * const source = pPanel.GetSource();
 		if(!source){
 			return;
@@ -95,7 +95,7 @@ public:
 		}
 	}
 	
-	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
+	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		
 		helper.MenuCommand(menu, pPanel.GetActionEffectCopy());

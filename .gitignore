@@ -11,3 +11,4 @@ custom.py
 /vs/.vs/vs
 compile_commands.json
 scons_commands.log
+.tidy_fixes

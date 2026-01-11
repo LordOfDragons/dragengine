@@ -50,7 +50,7 @@ public:
 	lpeWPLangPackListener(lpeWPLangPack &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~lpeWPLangPackListener();
+	~lpeWPLangPackListener() override;
 	/*@}*/
 	
 	

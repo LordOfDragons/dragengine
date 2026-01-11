@@ -46,7 +46,7 @@ public:
 	deClassColliderCollisionTest(deScriptingDragonScript &ds);
 	
 	/** \brief Cleans up class. */
-	virtual ~deClassColliderCollisionTest();
+	~deClassColliderCollisionTest() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -56,7 +56,7 @@ public:
 	inline const deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	
 	

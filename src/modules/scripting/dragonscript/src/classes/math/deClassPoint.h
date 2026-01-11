@@ -42,9 +42,9 @@ private:
 public:
 	// constructor
 	deClassPoint(deEngine *gameEngine, deScriptingDragonScript *scriptManager);
-	~deClassPoint();
+	~deClassPoint() override;
 	// internal functions
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	inline deEngine *GetGameEngine() const{ return pGameEngine; }
 	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
 	const decPoint &GetPoint(dsRealObject *This) const;

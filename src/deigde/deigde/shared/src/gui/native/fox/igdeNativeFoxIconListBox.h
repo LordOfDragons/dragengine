@@ -70,7 +70,7 @@ public:
 		const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxIconListBox();
+	~igdeNativeFoxIconListBox() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeFoxIconListBox* CreateNativeWidget(igdeIconListBox &owner);
@@ -120,8 +120,8 @@ public:
 	static int IconListBoxPadTop(const igdeGuiTheme &guitheme);
 	static int IconListBoxPadBottom(const igdeGuiTheme &guitheme);
 	
-	virtual FXint getDefaultWidth();
-	virtual FXint getDefaultHeight();
+	FXint getDefaultWidth() override;
+	FXint getDefaultHeight() override;
 	/*@}*/
 	
 	

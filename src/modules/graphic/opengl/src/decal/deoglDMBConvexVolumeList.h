@@ -42,7 +42,7 @@ public:
 	deoglDMBConvexVolumeList();
 	
 	/** Clean up decal mesh builder convex volume list. */
-	virtual ~deoglDMBConvexVolumeList();
+	~deoglDMBConvexVolumeList() override;
 	/*@}*/
 	
 	
@@ -57,7 +57,7 @@ public:
 	 * create convex volume face of specialized subclasses. The default
 	 * implementation creates a convex volume face of type decConvexVolumeFace.
 	 */
-	virtual decConvexVolumeFace *CreateVolumeFace(decConvexVolumeFace *face);
+	decConvexVolumeFace *CreateVolumeFace(decConvexVolumeFace *face) override;
 	/*@}*/
 };
 

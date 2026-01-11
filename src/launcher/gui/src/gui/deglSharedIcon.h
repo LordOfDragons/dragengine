@@ -52,7 +52,7 @@ public:
 	
 protected:
 	/** Clean up shared icon. */
-	virtual ~deglSharedIcon();
+	~deglSharedIcon() override;
 	/*@}*/
 	
 	

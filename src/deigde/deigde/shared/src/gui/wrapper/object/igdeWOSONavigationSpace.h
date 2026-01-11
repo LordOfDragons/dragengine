@@ -62,7 +62,7 @@ public:
 	
 protected:
 	/** \brief Clean up object wrapper sub object. */
-	virtual ~igdeWOSONavigationSpace();
+	~igdeWOSONavigationSpace() override;
 	
 public:
 	/*@}*/
@@ -75,20 +75,20 @@ public:
 	inline const deNavigationSpace::Ref &GetNavigationSpace() const{ return pNavigationSpace; }
 	
 	/** \brief Update parameters. */
-	virtual void UpdateParameters();
+	void UpdateParameters() override;
 	
 	/** \brief All sub components finished loading. */
-	virtual void OnAllSubObjectsFinishedLoading();
+	void OnAllSubObjectsFinishedLoading() override;
 	
 	/** \brief Visit. */
-	virtual void Visit(igdeWOSOVisitor &visitor);
+	void Visit(igdeWOSOVisitor &visitor) override;
 	/*@}*/
 	
 	
 	
 protected:
-	virtual void AttachToCollider();
-	virtual void DetachFromCollider();
+	void AttachToCollider() override;
+	void DetachFromCollider() override;
 	
 	
 	

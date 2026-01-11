@@ -52,16 +52,16 @@ public:
 	ceUCCShotSetTiltFrom(ceCameraShot *cameraShot, float newTilt);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCCShotSetTiltFrom();
+	~ceUCCShotSetTiltFrom() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

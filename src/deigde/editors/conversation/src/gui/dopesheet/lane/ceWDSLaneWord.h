@@ -54,7 +54,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Context menu if appropriate. */
-	virtual void OnContextMenu(igdeMenuCascade &menu, const decPoint &position);
+	void OnContextMenu(igdeMenuCascade &menu, const decPoint &position) override;
 	
 	/** \brief Strip list. */
 	const ceStrip::List &GetStripList() const override;

@@ -49,7 +49,7 @@ public:
 	igdeNativeFoxMenuBar(igdeMenuBar &owner, FXComposite *parent, int layoutFlags);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxMenuBar();
+	~igdeNativeFoxMenuBar() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeFoxMenuBar* CreateNativeWidget(igdeMenuBar &owner);

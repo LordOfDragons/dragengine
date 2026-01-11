@@ -130,7 +130,7 @@ public:
 	
 	/** \brief Clean up force field. */
 protected:
-	virtual ~gdeOCForceField();
+	~gdeOCForceField() override;
 public:
 	/*@}*/
 	

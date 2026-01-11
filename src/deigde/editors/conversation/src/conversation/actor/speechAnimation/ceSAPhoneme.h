@@ -55,7 +55,7 @@ public:
 	ceSAPhoneme(int ipa);
 	/** Cleans up the phoneme. */
 protected:
-	virtual ~ceSAPhoneme();
+	~ceSAPhoneme() override;
 public:
 	/*@}*/
 	

@@ -53,7 +53,7 @@ public:
 	deClassInputSystem(deScriptingDragonScript &ds);
 	
 	/** Clean up script class. */
-	virtual ~deClassInputSystem();
+	~deClassInputSystem() override;
 	/*@}*/
 	
 	
@@ -61,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Create class members. */
-	virtual void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** Script module. */
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }

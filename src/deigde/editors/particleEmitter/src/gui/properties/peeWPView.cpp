@@ -109,7 +109,7 @@ public:
 	typedef deTObjectReference<cEditPosition> Ref;
 	cEditPosition(peeWPView &panel) : pPanel(panel){}
 	
-	virtual void OnVectorChanged(igdeEditVector *editVector){
+	void OnVectorChanged(igdeEditVector *editVector) override{
 		peeEmitter * const emitter = pPanel.GetEmitter();
 		if(emitter){
 			emitter->SetPosition(editVector->GetVector());
@@ -123,7 +123,7 @@ public:
 	typedef deTObjectReference<cEditRotation> Ref;
 	cEditRotation(peeWPView &panel) : pPanel(panel){}
 	
-	virtual void OnVectorChanged(igdeEditVector *editVector){
+	void OnVectorChanged(igdeEditVector *editVector) override{
 		peeEmitter * const emitter = pPanel.GetEmitter();
 		if(emitter){
 			emitter->SetOrientation(editVector->GetVector());
@@ -137,7 +137,7 @@ public:
 	typedef deTObjectReference<cEditBurstInterval> Ref;
 	cEditBurstInterval(peeWPView &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		peeEmitter * const emitter = pPanel.GetEmitter();
 		if(emitter){
 			emitter->SetBurstInterval(textField->GetFloat());
@@ -151,7 +151,7 @@ public:
 	typedef deTObjectReference<cEditWarmUpTime> Ref;
 	cEditWarmUpTime(peeWPView &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		peeEmitter * const emitter = pPanel.GetEmitter();
 		if(emitter){
 			emitter->SetWarmUpTime(textField->GetFloat());

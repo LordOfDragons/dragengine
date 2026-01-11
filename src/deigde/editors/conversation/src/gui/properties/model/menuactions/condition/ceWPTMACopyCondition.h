@@ -66,7 +66,7 @@ public:
 	inline ceConversationCondition *GetCondition() const{ return pCondition; }
 	
 	/** \brief Do menu action. */
-	virtual void OnAction();
+	void OnAction() override;
 	/*@}*/
 };
 

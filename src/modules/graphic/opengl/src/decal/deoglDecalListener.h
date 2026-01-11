@@ -46,7 +46,7 @@ public:
 	
 protected:
 	/** Clean up decal listener. */
-	virtual ~deoglDecalListener();
+	~deoglDecalListener() override;
 	/*@}*/
 	
 	

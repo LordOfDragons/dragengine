@@ -66,7 +66,7 @@ public:
 	inline const debpDCollisionCylinder &GetCollisionCylinder() const{ return pCCylinder; }
 	
 	/** Updates the collision volume using a transformation matrix. */
-	virtual void UpdateWithMatrix(const decDMatrix &transformation, const decDVector &scale);
+	void UpdateWithMatrix(const decDMatrix &transformation, const decDVector &scale) override;
 	/** Prints out on the console some debugging information about the shape. */
 	void PrintDebug(dePhysicsBullet &module) override;
 	/*@}*/

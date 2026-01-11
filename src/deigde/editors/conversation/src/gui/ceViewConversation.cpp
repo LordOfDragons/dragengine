@@ -71,7 +71,7 @@ public:
 	typedef deTObjectReference<cCameraMouseListener> Ref;
 	cCameraMouseListener(ceViewConversation &view) : pView(view){}
 	
-	virtual void OnCameraChanged(){
+	void OnCameraChanged() override{
 		if(pView.GetConversation()){
 			pView.GetConversation()->NotifyCameraChanged();
 		}
@@ -85,7 +85,7 @@ public:
 	typedef deTObjectReference<cPlaybackListener> Ref;
 	cPlaybackListener(ceViewConversation &view) : pView(view){}
 	
-	virtual void OnButtonPress(igdeWidget*, int, const decPoint &position, int){
+	void OnButtonPress(igdeWidget*, int, const decPoint &position, int) override{
 		if(!pView.GetConversation()){
 			return;
 		}
@@ -108,7 +108,7 @@ public:
 		playback.FastForwardSpeaking();
 	}
 	
-	virtual void OnMouseMoved(igdeWidget*, const decPoint &position, int){
+	void OnMouseMoved(igdeWidget*, const decPoint &position, int) override{
 		if(!pView.GetConversation()){
 			return;
 		}
@@ -119,7 +119,7 @@ public:
 		}
 	}
 	
-	virtual void OnKeyPress(igdeWidget*, deInputEvent::eKeyCodes keyCode, int){
+	void OnKeyPress(igdeWidget*, deInputEvent::eKeyCodes keyCode, int) override{
 		if(!pView.GetConversation()){
 			return;
 		}
@@ -140,7 +140,7 @@ public:
 		}
 	}
 	
-	virtual void OnMouseWheeled(igdeWidget*, const decPoint &, const decPoint &change, int){
+	void OnMouseWheeled(igdeWidget*, const decPoint &, const decPoint &change, int) override{
 		if(!pView.GetConversation()){
 			return;
 		}

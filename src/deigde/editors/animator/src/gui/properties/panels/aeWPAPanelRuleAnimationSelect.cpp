@@ -210,7 +210,7 @@ public:
 	typedef deTObjectReference<cListMoves> Ref;
 	cListMoves(aeWPAPanelRuleAnimationSelect &panel) : pPanel(panel){}
 	
-	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
+	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		
 		helper.MenuCommand(menu, cActionMoveAdd::Ref::New(pPanel));

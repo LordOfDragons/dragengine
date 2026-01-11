@@ -48,7 +48,7 @@ public:
 	deClassSynthesizerSystem(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
-	~deClassSynthesizerSystem();
+	~deClassSynthesizerSystem() override;
 	/*@}*/
 	
 	
@@ -56,7 +56,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Create class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Module. */
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }

@@ -49,7 +49,7 @@ public:
 	syneConfigurationXML(deLogger *logger, const char *loggerSource);
 	
 	/** \brief Clean up xml configuration read/write. */
-	virtual ~syneConfigurationXML();
+	~syneConfigurationXML() override;
 	/*@}*/
 	
 	

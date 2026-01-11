@@ -56,16 +56,16 @@ public:
 	aeUSetRuleSModEnableRot(aeRuleStateManipulator *rule);
 protected:
 	/** Clean up undo. */
-	virtual ~aeUSetRuleSModEnableRot();
+	~aeUSetRuleSModEnableRot() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

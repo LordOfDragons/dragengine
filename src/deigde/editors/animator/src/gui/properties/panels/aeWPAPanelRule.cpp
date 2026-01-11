@@ -150,7 +150,7 @@ public:
 	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(aeWPAPanelRule &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRule * const rule = pPanel.GetRule();
 		if(!animator || !rule){
@@ -174,7 +174,7 @@ public:
 	typedef deTObjectReference<cBaseComboBoxListener> Ref;
 	cBaseComboBoxListener(aeWPAPanelRule &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRule * const rule = pPanel.GetRule();
 		if(!animator || !rule){
@@ -479,7 +479,7 @@ public:
 		}
 	}*/
 	
-	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
+	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
 		if(!pPanel.GetRule()){
 			return;
 		}
@@ -709,7 +709,7 @@ public:
 	typedef deTObjectReference<cListVertexPositionSets> Ref;
 	cListVertexPositionSets(aeWPAPanelRule &panel) : pPanel(panel){}
 	
-	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
+	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
 		if(!pPanel.GetRule()){
 			return;
 		}
@@ -821,7 +821,7 @@ public:
 		}
 	}*/
 	
-	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
+	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
 		if(!pPanel.GetRule()){
 			return;
 		}

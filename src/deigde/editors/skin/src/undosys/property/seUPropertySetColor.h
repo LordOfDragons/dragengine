@@ -55,7 +55,7 @@ public:
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~seUPropertySetColor();
+	~seUPropertySetColor() override;
 	/*@}*/
 	
 	
@@ -63,9 +63,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

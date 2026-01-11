@@ -49,7 +49,7 @@ public:
 	igdeNativeFoxContainerFixed(igdeContainerFixed &owner, FXComposite *parent, int layoutFlags);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxContainerFixed();
+	~igdeNativeFoxContainerFixed() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeFoxContainerFixed* CreateNativeWidget(igdeContainerFixed &owner);

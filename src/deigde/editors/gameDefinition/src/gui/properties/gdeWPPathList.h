@@ -65,7 +65,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~gdeWPPathList();
+	~gdeWPPathList() override;
 	/*@}*/
 	
 	

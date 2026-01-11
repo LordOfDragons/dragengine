@@ -56,16 +56,16 @@ public:
 	ceUCAASpeakFaceSet(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *facePose, ceStrip *newStrip);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCAASpeakFaceSet();
+	~ceUCAASpeakFaceSet() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

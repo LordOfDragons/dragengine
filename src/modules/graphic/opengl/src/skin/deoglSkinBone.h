@@ -53,7 +53,7 @@ public:
 	
 protected:
 	/** Clean up skin bone. */
-	virtual ~deoglSkinBone();
+	~deoglSkinBone() override;
 	/*@}*/
 	
 	

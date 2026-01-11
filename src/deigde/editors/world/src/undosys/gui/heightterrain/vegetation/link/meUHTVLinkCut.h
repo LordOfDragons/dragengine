@@ -57,7 +57,7 @@ public:
 	/** \brief Clean up object. */
 
 protected:
-	virtual ~meUHTVLinkCut();
+	~meUHTVLinkCut() override;
 
 public:
 	/*@}*/
@@ -69,9 +69,9 @@ public:
 	inline const meHTVRLink::List &GetCutLinks() const{ return pLinks; }
 	
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -58,7 +58,7 @@ public:
 	
 protected:
 	/** \brief Clean up file format. */
-	virtual ~delFileFormat();
+	~delFileFormat() override;
 	/*@}*/
 	
 	

@@ -50,7 +50,7 @@ public:
 	deClassAnimatorController(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
-	virtual ~deClassAnimatorController();
+	~deClassAnimatorController() override;
 	/*@}*/
 	
 	
@@ -61,7 +61,7 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Creates class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Get parameters from object. */
 	void GetController(dsRealObject *myself, deAnimator *&animator,

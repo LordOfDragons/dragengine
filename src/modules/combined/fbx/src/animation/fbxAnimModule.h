@@ -49,7 +49,7 @@ public:
 	fbxAnimModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~fbxAnimModule();
+	~fbxAnimModule() override;
 	/*@}*/
 	
 	
@@ -57,10 +57,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Load animation. */
-	virtual void LoadAnimation(decBaseFileReader &reader, deAnimation &animation);
+	void LoadAnimation(decBaseFileReader &reader, deAnimation &animation) override;
 	
 	/** \brief Save animation. */
-	virtual void SaveAnimation(decBaseFileWriter &writer, const deAnimation &animation);
+	void SaveAnimation(decBaseFileWriter &writer, const deAnimation &animation) override;
 	/*@}*/
 	
 	

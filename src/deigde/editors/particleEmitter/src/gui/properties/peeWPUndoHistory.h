@@ -54,7 +54,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~peeWPUndoHistory();
+	~peeWPUndoHistory() override;
 	/*@}*/
 	
 	

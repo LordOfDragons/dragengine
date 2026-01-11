@@ -84,7 +84,7 @@ public:
 	
 protected:
 	/** Clean up render sky instance. */
-	virtual ~deoglRSkyInstance();
+	~deoglRSkyInstance() override;
 	/*@}*/
 	
 	

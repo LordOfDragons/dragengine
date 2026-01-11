@@ -126,7 +126,7 @@ public:
 	
 protected:
 	/** \brief Clean up constructed property view. */
-	virtual ~seViewConstructedView();
+	~seViewConstructedView() override;
 	/*@}*/
 	
 	
@@ -203,13 +203,13 @@ public:
 	void ResetView();
 	
 	/** \brief Create canvas. */
-	virtual void CreateCanvas();
+	void CreateCanvas() override;
 	
 	/** \brief Resize canvas to fit window size. */
-	virtual void OnResize();
+	void OnResize() override;
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate(float elapsed);
+	void OnFrameUpdate(float elapsed) override;
 	
 	/** \brief Get selection boundaries. */
 	void GetSelectionBoundary(const sePropertyNode::List &list, decVector2 &minBounds, decVector2 &maxBounds);

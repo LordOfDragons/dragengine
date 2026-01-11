@@ -65,7 +65,7 @@ protected:
 	deoglDynamicTBO(deoglRenderThread &renderThread, int componentCount, int dataTypeSize);
 	
 	/** Clean up dynamic tbo. */
-	virtual ~deoglDynamicTBO();
+	~deoglDynamicTBO() override;
 	/*@}*/
 	
 	

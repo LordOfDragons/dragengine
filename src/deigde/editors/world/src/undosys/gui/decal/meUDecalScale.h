@@ -52,15 +52,15 @@ public:
 	/** \brief Clean up undo. */
 
 protected:
-	virtual ~meUDecalScale();
+	~meUDecalScale() override;
 
 public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	virtual void Undo();
-	virtual void Redo();
+	void Undo() override;
+	void Redo() override;
 	void ProgressiveRedo() override;
 	/*@}*/
 };

@@ -67,7 +67,7 @@ public:
 	
 protected:
 	/** \brief Clean up connection. */
-	virtual ~fbxRig();
+	~fbxRig() override;
 	/*@}*/
 	
 	

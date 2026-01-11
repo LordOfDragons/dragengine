@@ -64,7 +64,7 @@ public:
 	void ClearActions() override;
 	
 	/** Remove device if matching type. */
-	virtual void RemoveDevice(deInputDevice::eDeviceTypes type);
+	void RemoveDevice(deInputDevice::eDeviceTypes type) override;
 	/*@}*/
 	
 	

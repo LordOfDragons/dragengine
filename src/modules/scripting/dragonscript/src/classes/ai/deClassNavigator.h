@@ -47,7 +47,7 @@ public:
 	/** Creates a new class. */
 	deClassNavigator(deScriptingDragonScript *ds);
 	/** Cleans up the class. */
-	virtual ~deClassNavigator();
+	~deClassNavigator() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -55,7 +55,7 @@ public:
 	/** Retrieves the module. */
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/** Creates class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** Retrieves the navigator or NULL if myself is NULL. */
 	deNavigator *GetNavigator(dsRealObject *myself) const;

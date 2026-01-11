@@ -49,7 +49,7 @@ public:
 	igdeNativeFoxContainerBorder(igdeContainerBorder &owner, FXComposite *parent, int layoutFlags);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxContainerBorder();
+	~igdeNativeFoxContainerBorder() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeFoxContainerBorder* CreateNativeWidget(igdeContainerBorder &owner);
@@ -65,7 +65,7 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void layout();
+	void layout() override;
 	/*@}*/
 	
 	

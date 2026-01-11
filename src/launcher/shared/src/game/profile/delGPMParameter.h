@@ -55,7 +55,7 @@ public:
 	
 protected:
 	/** \brief Clean up game profile. */
-	virtual ~delGPMParameter();
+	~delGPMParameter() override;
 	/*@}*/
 	
 	

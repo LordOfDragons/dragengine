@@ -65,7 +65,7 @@ public:
 	typedef deTObjectReference<cComboOperator> Ref;
 	cComboOperator(meWVNodeMath &node) : pNode(node){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		if(!pNode.GetRuleMath()){
 			return;
 		}
@@ -90,7 +90,7 @@ public:
 	typedef deTObjectReference<cTextValueA> Ref;
 	cTextValueA(meWVNodeMath &node) : pNode(node){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		const float value = textField->GetFloat();
 		if(fabsf(value - pNode.GetRuleMath()->GetValueA()) <= FLOAT_SAFE_EPSILON){
 			return;
@@ -110,7 +110,7 @@ public:
 	typedef deTObjectReference<cTextValueB> Ref;
 	cTextValueB(meWVNodeMath &node) : pNode(node){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		const float value = textField->GetFloat();
 		if(fabsf(value - pNode.GetRuleMath()->GetValueB()) <= FLOAT_SAFE_EPSILON){
 			return;

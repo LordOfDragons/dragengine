@@ -49,7 +49,7 @@ public:
 	igdeNativeFoxMenuSeparator(igdeMenuSeparator &owner, FXComposite *parent);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxMenuSeparator();
+	~igdeNativeFoxMenuSeparator() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeFoxMenuSeparator* CreateNativeWidget(igdeMenuSeparator &owner);

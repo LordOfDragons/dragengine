@@ -46,7 +46,7 @@ public:
 	/** Creates a new class. */
 	deClassTexMatrix(deScriptingDragonScript *ds);
 	/** Cleans up the class. */
-	virtual ~deClassTexMatrix();
+	~deClassTexMatrix() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -54,7 +54,7 @@ public:
 	/** Retrieves the module. */
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/** Creates class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** Retrieves the texture matrix from an object. */
 	const decTexMatrix &GetTexMatrix(dsRealObject *myself) const;

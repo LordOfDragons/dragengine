@@ -103,7 +103,7 @@ public:
 	debnConnection(deNetworkBasic *netBasic, deConnection *connection);
 	
 	/** \brief Clean up connection. */
-	virtual ~debnConnection();
+	~debnConnection() override;
 	/*@}*/
 	
 	
@@ -179,19 +179,19 @@ public:
 	void ProcessReliableLinkStateLong(decBaseFileReader &reader);
 	
 	/** \brief Connect to connection object on host. */
-	virtual bool ConnectTo(const char *address);
+	bool ConnectTo(const char *address) override;
 	
 	/** \brief Disconnect from remote connection if connected. */
-	virtual void Disconnect();
+	void Disconnect() override;
 	
 	/** \brief Send message to remote connection if connected. */
-	virtual void SendMessage(deNetworkMessage *message, int maxDelay);
+	void SendMessage(deNetworkMessage *message, int maxDelay) override;
 	
 	/** \brief Send reliable message to remote connection if connected. */
-	virtual void SendReliableMessage(deNetworkMessage *message);
+	void SendReliableMessage(deNetworkMessage *message) override;
 	
 	/** \brief Link network state to remote network state. */
-	virtual void LinkState(deNetworkMessage *message, deNetworkState *state, bool readOnly);
+	void LinkState(deNetworkMessage *message, deNetworkState *state, bool readOnly) override;
 	/*@}*/
 	
 	

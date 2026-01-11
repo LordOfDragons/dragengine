@@ -65,7 +65,7 @@ public:
 		int layoutFlags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxColorBox();
+	~igdeNativeFoxColorBox() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeFoxColorBox* CreateNativeWidget(igdeColorBox &owner);
@@ -81,8 +81,8 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual FXint getDefaultWidth();
-	virtual FXint getDefaultHeight();
+	FXint getDefaultWidth() override;
+	FXint getDefaultHeight() override;
 	
 	virtual void UpdateColor();
 	virtual void UpdateDescription();

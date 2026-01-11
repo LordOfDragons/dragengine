@@ -48,7 +48,7 @@ public:
 	projLauncherEngineConfig(deLogger *logger, const char *loggerSource);
 	
 	/** \brief Clean up loader. */
-	virtual ~projLauncherEngineConfig();
+	~projLauncherEngineConfig() override;
 	/*@}*/
 	
 	

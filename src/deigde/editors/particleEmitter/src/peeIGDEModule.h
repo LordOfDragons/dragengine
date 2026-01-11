@@ -40,7 +40,7 @@ public:
 	peeIGDEModule(igdeEnvironment &environment);
 	
 	/** \brief Clean up module. */
-	virtual ~peeIGDEModule();
+	~peeIGDEModule() override;
 	/*@}*/
 	
 	
@@ -48,7 +48,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Start module. */
-	virtual void Start();
+	void Start() override;
 	/*@}*/
 };
 

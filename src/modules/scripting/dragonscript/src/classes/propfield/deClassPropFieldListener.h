@@ -51,7 +51,7 @@ public:
 	/** Creates a new class. */
 	deClassPropFieldListener(deScriptingDragonScript *ds);
 	/** Cleans up the class. */
-	virtual ~deClassPropFieldListener();
+	~deClassPropFieldListener() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -59,7 +59,7 @@ public:
 	/** Retrieves the module. */
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/** Creates class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Function index createInstances(). */
 	inline int GetFuncIndexCreateInstances() const{ return pFuncIndexCreateInstances; }

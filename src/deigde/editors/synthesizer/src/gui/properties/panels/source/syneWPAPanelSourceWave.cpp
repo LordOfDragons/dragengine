@@ -63,7 +63,7 @@ protected:
 public:
 	cBaseTextFieldListener(syneWPAPanelSourceWave &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		syneSourceWave * const source = (syneSourceWave*)pPanel.GetSource();
 		if(!source){
 			return;
@@ -86,7 +86,7 @@ public:
 	typedef deTObjectReference<cComboType> Ref;
 	cComboType(syneWPAPanelSourceWave &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		syneSourceWave * const source = (syneSourceWave*)pPanel.GetSource();
 		if(!source || !comboBox->GetSelectedItem()){
 			return;
@@ -108,7 +108,7 @@ public:
 	typedef deTObjectReference<cTextMinFrequency> Ref;
 	cTextMinFrequency(syneWPAPanelSourceWave &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo::Ref  OnChanged(igdeTextField *textField, syneSourceWave *source){
+	igdeUndo::Ref  OnChanged(igdeTextField *textField, syneSourceWave *source) override{
 		const float value = (float)textField->GetInteger();
 		return fabsf(value - source->GetMinFrequency()) < FLOAT_SAFE_EPSILON
 			? syneUSourceWaveSetMinFrequency::Ref::New(source, value) : igdeUndo::Ref();
@@ -120,7 +120,7 @@ public:
 	typedef deTObjectReference<cTextMaxFrequency> Ref;
 	cTextMaxFrequency(syneWPAPanelSourceWave &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo::Ref  OnChanged(igdeTextField *textField, syneSourceWave *source){
+	igdeUndo::Ref  OnChanged(igdeTextField *textField, syneSourceWave *source) override{
 		const float value = (float)textField->GetInteger();
 		return fabsf(value - source->GetMaxFrequency()) < FLOAT_SAFE_EPSILON
 			? syneUSourceWaveSetMaxFrequency::Ref::New(source, value) : igdeUndo::Ref();

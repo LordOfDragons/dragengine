@@ -63,13 +63,13 @@ public:
 	typedef deTObjectReference<cListTextureNames> Ref;
 	cListTextureNames(seDialogAddTexture &dialog) : pDialog(dialog){}
 	
-	virtual void OnSelectionChanged(igdeListBox *listBox){
+	void OnSelectionChanged(igdeListBox *listBox) override{
 		if(listBox->GetSelectedItem()){
 			pDialog.SetTextureName(listBox->GetSelectedItem()->GetText());
 		}
 	}
 	
-	virtual void OnDoubleClickItem(igdeListBox *listBox, int index){
+	void OnDoubleClickItem(igdeListBox *listBox, int index) override{
 		pDialog.SetTextureName(listBox->GetItems().GetAt(index)->GetText());
 		pDialog.CloseDialog(true);
 	}
@@ -82,7 +82,7 @@ public:
 	typedef deTObjectReference<cTextTextureName> Ref;
 	cTextTextureName(seDialogAddTexture &dialog) : pDialog(dialog){}
 	
-	virtual void OnTextChanging(igdeTextField *textField){
+	void OnTextChanging(igdeTextField *textField) override{
 		pDialog.SetTextureName(textField->GetText());
 	}
 };

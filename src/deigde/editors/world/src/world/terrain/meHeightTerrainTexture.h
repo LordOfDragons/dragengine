@@ -80,7 +80,7 @@ public:
 	
 protected:
 	/** Cleans up the object. */
-	virtual ~meHeightTerrainTexture();
+	~meHeightTerrainTexture() override;
 	
 public:
 	/*@}*/

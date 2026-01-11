@@ -63,7 +63,7 @@ private:
 public:
 	// constructor, destructor
 	decrbPanelErrorTrace(decrbWindowMain *windowMain, FXComposite *container);
-	virtual ~decrbPanelErrorTrace();
+	~decrbPanelErrorTrace() override;
 	
 	// management
 	void UpdateTrace();

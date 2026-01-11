@@ -88,7 +88,7 @@ public:
 	
 protected:
 	/** Clean up tree model. */
-	~ceWPTTreeModel();
+	~ceWPTTreeModel() override;
 	/*@}*/
 	
 	

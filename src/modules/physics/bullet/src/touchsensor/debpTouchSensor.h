@@ -78,7 +78,7 @@ public:
 	debpTouchSensor(dePhysicsBullet &bullet, deTouchSensor &touchSensor);
 	
 	/** Clean up peer. */
-	virtual ~debpTouchSensor();
+	~debpTouchSensor() override;
 	/*@}*/
 	
 	
@@ -151,37 +151,37 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	/** Orientation changed. */
-	virtual void OrientationChanged();
+	void OrientationChanged() override;
 	
 	/** Layer mask changed. */
-	virtual void CollisionFilterChanged();
+	void CollisionFilterChanged() override;
 	
 	/** Ignore colliders changed. */
-	virtual void IgnoreCollidersChanged();
+	void IgnoreCollidersChanged() override;
 	
 	/** Track enter/leave changed. */
-	virtual void TrackEnterLeaveChanged();
+	void TrackEnterLeaveChanged() override;
 	
 	/** Enabled changed. */
-	virtual void EnabledChanged();
+	void EnabledChanged() override;
 	
 	/** Touch sensor contains no colliders. */
-	virtual bool IsEmpty();
+	bool IsEmpty() override;
 	
 	/** Number of colliders in touch sensor. */
-	virtual int GetColliderCount();
+	int GetColliderCount() override;
 	
 	/**
 	 * Collider at index in touch sensor.
 	 * \param collider Index of the collider retrieve.
 	 */
-	virtual deCollider *GetColliderAt(int collider);
+	deCollider *GetColliderAt(int collider) override;
 	
 	/** Shape changed. */
-	virtual void ShapeChanged();
+	void ShapeChanged() override;
 	/*@}*/
 	
 	
@@ -189,14 +189,14 @@ public:
 	/** \name Collision Detection */
 	/*@{*/
 	/** Test if a point is located inside the collider. */
-	virtual bool PointInside(const decDVector &point);
+	bool PointInside(const decDVector &point) override;
 	
 	/**
 	 * Visit all touching elements with listener.
 	 * 
 	 * To stop testing set StopTesting in the provided collision information object to true.
 	 */
-	virtual void AllHits(deBaseScriptingCollider *listener);
+	void AllHits(deBaseScriptingCollider *listener) override;
 	
 	/**
 	 * Test ray for collision with the element in the given shape.
@@ -206,8 +206,8 @@ public:
 	 * The distance parameter in the collision response represents the actual distance to the
 	 * ray origin along the ray direction.
 	 */
-	virtual void RayHits(const decDVector &rayOrigin, const decVector &rayDirection,
-	deBaseScriptingCollider *listener);
+	void RayHits(const decDVector &rayOrigin, const decVector &rayDirection,
+	deBaseScriptingCollider *listener) override;
 	
 	/**
 	 * Test collider for collision with scene elements.
@@ -216,7 +216,7 @@ public:
 	 * collider is called. To stop testing set StopTesting in the provided collision
 	 * information object to true.
 	 */
-	virtual void ColliderHits(deCollider *collider, deBaseScriptingCollider *listener);
+	void ColliderHits(deCollider *collider, deBaseScriptingCollider *listener) override;
 	
 	/**
 	 * Test moving collider for collision with scene elements.
@@ -225,8 +225,8 @@ public:
 	 * listener assigned to the collider is called. To stop testing set StopTesting in the
 	 * provided collision information object to true.
 	 */
-	virtual void ColliderMoveHits(deCollider *collider, const decVector &displacement,
-	deBaseScriptingCollider *listener);
+	void ColliderMoveHits(deCollider *collider, const decVector &displacement,
+	deBaseScriptingCollider *listener) override;
 	
 	/**
 	 * Test rotating collider for collision with scene elements.
@@ -235,8 +235,8 @@ public:
 	 * listener assigned to the collider is called. To stop testing set StopTesting in the
 	 * provided collision information object to true.
 	 */
-	virtual void ColliderRotateHits(deCollider *collider, const decVector &rotation,
-	deBaseScriptingCollider *listener);
+	void ColliderRotateHits(deCollider *collider, const decVector &rotation,
+	deBaseScriptingCollider *listener) override;
 	
 	/**
 	 * Test moving and rotating collider for collision with scene elements.
@@ -245,8 +245,8 @@ public:
 	 * listener assigned to the collider is called. To stop testing set StopTesting in the
 	 * provided collision information object to true.
 	 */
-	virtual void ColliderMoveRotateHits(deCollider *collider, const decVector &displacement,
-	const decVector &rotation, deBaseScriptingCollider *listener);
+	void ColliderMoveRotateHits(deCollider *collider, const decVector &displacement,
+	const decVector &rotation, deBaseScriptingCollider *listener) override;
 	/*@}*/
 	
 	

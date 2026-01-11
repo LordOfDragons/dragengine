@@ -69,7 +69,7 @@ private:
 public:
 	// constructor, destructor
 	decrbPanelConsole(decrbWindowMain *windowMain, FXComposite *container);
-	virtual ~decrbPanelConsole();
+	~decrbPanelConsole() override;
 	
 	// management
 	void UpdateModulesList();

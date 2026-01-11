@@ -69,7 +69,7 @@ public:
 	
 	/** \brief Clean up skin. */
 protected:
-	virtual ~gdeSkin();
+	~gdeSkin() override;
 public:
 	/*@}*/
 	

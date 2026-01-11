@@ -48,13 +48,13 @@ public:
 	/** Creates a new script class. */
 	deClassVideoPlayer(deScriptingDragonScript *ds);
 	/** Cleans up the script class. */
-	virtual ~deClassVideoPlayer();
+	~deClassVideoPlayer() override;
 	/*@}*/
 	
 	/** @name Management */
 	/*@{*/
 	/** Create class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	/** Retrieves the video player or NULL if myself is NULL. */
 	deVideoPlayer *GetVideoPlayer(dsRealObject *myself) const;
 	/** Pushes the video player on the stack. Video can be NULL to push a null object. */

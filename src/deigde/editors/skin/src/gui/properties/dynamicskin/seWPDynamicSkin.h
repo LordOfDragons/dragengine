@@ -87,7 +87,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~seWPDynamicSkin();
+	~seWPDynamicSkin() override;
 	/*@}*/
 	
 	

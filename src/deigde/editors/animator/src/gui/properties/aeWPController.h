@@ -80,7 +80,7 @@ public:
 	
 protected:
 	/** Clean up panel. */
-	virtual ~aeWPController();
+	~aeWPController() override;
 	/*@}*/
 	
 	

@@ -62,7 +62,7 @@ public:
 	
 protected:
 	/** Unmap block if mapped. */
-	virtual ~deoglSPBSingleUse();
+	~deoglSPBSingleUse() override;
 	/*@}*/
 	
 	

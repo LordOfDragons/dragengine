@@ -67,7 +67,7 @@ public:
 	
 	/** \brief Clean up view font image renderer. */
 protected:
-	virtual ~feViewFIImage();
+	~feViewFIImage() override;
 public:
 	/*@}*/
 	
@@ -108,13 +108,13 @@ public:
 	
 	
 	/** \brief Create canvas. */
-	virtual void CreateCanvas();
+	void CreateCanvas() override;
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate(float elapsed);
+	void OnFrameUpdate(float elapsed) override;
 	
 	/** \brief Widget size changed. */
-	virtual void OnResize();
+	void OnResize() override;
 	
 	
 	

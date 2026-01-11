@@ -125,7 +125,7 @@ protected:
 	sePropertyNode(const sePropertyNode &node);
 	
 	/** Clean up node. */
-	virtual ~sePropertyNode();
+	~sePropertyNode() override;
 	/*@}*/
 	
 	

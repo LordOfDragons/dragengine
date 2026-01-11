@@ -71,7 +71,7 @@ public:
 	typedef deTObjectReference<cComboCoordSystemID> Ref;
 	cComboCoordSystemID(ceWPACoordSystemAdd &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCACoordSystemAdd * const action = pPanel.GetAction();
 		if(!topic || !action  || comboBox->GetText() == action->GetCoordSystemID()){
@@ -90,7 +90,7 @@ public:
 	typedef deTObjectReference<cComboAliasID> Ref;
 	cComboAliasID(ceWPACoordSystemAdd &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCACoordSystemAdd * const action = pPanel.GetAction();
 		if(!topic || !action  || comboBox->GetText() == action->GetAliasID()){

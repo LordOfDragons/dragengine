@@ -68,7 +68,7 @@ public:
 	meCLSnapPoint(meWorld &world, meObject *object);
 	
 	/** \brief Clean up visitor. */
-	virtual ~meCLSnapPoint();
+	~meCLSnapPoint() override;
 	/*@}*/
 	
 	
@@ -125,13 +125,13 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Collision response. */
-	virtual void CollisionResponse(deCollider *owner, deCollisionInfo *info);
+	void CollisionResponse(deCollider *owner, deCollisionInfo *info) override;
 	
 	/** \brief Can hit collider. */
-	virtual bool CanHitCollider(deCollider *owner, deCollider *collider);
+	bool CanHitCollider(deCollider *owner, deCollider *collider) override;
 	
 	/** \brief Collider changed which is not used. */
-	virtual void ColliderChanged(deCollider *owner);
+	void ColliderChanged(deCollider *owner) override;
 	/*@}*/
 };
 

@@ -53,7 +53,7 @@ public:
 	typedef deTObjectReference<cTextVegetationType> Ref;
 	cTextVegetationType(meWVNodeClosestVegetation &node) : pNode(node){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		if(textField->GetText() == pNode.GetRuleClosestVegetation()->GetVegetationType()){
 			return;
 		}
@@ -73,7 +73,7 @@ public:
 	typedef deTObjectReference<cTextSearchRadius> Ref;
 	cTextSearchRadius(meWVNodeClosestVegetation &node) : pNode(node){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		const float value = textField->GetFloat();
 		if(fabsf(value - pNode.GetRuleClosestVegetation()->GetSearchRadius()) <= FLOAT_SAFE_EPSILON){
 			return;

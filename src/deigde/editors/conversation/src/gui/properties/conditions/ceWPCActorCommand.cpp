@@ -72,7 +72,7 @@ public:
 	typedef deTObjectReference<cComboActor> Ref;
 	cComboActor(ceWPCActorCommand &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionActorCommand * const condition = pPanel.GetCondition();
@@ -93,7 +93,7 @@ public:
 	typedef deTObjectReference<cTextCommand> Ref;
 	cTextCommand(ceWPCActorCommand &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionActorCommand * const condition = pPanel.GetCondition();

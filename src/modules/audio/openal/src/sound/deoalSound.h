@@ -53,7 +53,7 @@ public:
 	deoalSound(deAudioOpenAL &oal, deSound &sound);
 	
 	/** \brief Clean up sound peer. */
-	virtual ~deoalSound();
+	~deoalSound() override;
 	/*@}*/
 	
 	

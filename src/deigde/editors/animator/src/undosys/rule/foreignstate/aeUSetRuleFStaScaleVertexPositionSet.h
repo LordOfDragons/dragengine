@@ -51,16 +51,16 @@ public:
 	aeUSetRuleFStaScaleVertexPositionSet(aeRuleForeignState *rule, float newScale);
 protected:
 	/** Clean up undo. */
-	virtual ~aeUSetRuleFStaScaleVertexPositionSet();
+	~aeUSetRuleFStaScaleVertexPositionSet() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

@@ -62,7 +62,7 @@ public:
 	typedef deTObjectReference<cColorBackground> Ref;
 	cColorBackground(skyeWPSky &panel) : pPanel(panel){}
 	
-	virtual void OnColorChanged(igdeColorBox *colorBox){
+	void OnColorChanged(igdeColorBox *colorBox) override{
 		skyeSky * const sky = pPanel.GetSky();
 		if(!sky){
 			return;

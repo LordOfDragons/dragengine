@@ -57,7 +57,7 @@ public:
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~lpeULangPackSetMissingText();
+	~lpeULangPackSetMissingText() override;
 	/*@}*/
 	
 	
@@ -66,10 +66,10 @@ public:
 	/** \missingText Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

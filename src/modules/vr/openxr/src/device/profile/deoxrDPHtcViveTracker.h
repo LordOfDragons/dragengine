@@ -53,7 +53,7 @@ private:
 		
 		Tracker(const deoxrPath &path, int number);
 	protected:
-		virtual ~Tracker();
+		~Tracker() override;
 	};
 	
 	class RoleAction : public deObject{
@@ -66,7 +66,7 @@ private:
 		
 		RoleAction(const deoxrPath &path, deoxrAction *action);
 	protected:
-		virtual ~RoleAction();
+		~RoleAction() override;
 	};
 	
 	decTObjectOrderedSet<Tracker> pTrackers;

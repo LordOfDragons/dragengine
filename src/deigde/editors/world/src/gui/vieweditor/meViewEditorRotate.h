@@ -68,7 +68,7 @@ public:
 	/** \name Events */
 	/*@{*/
 	/** A key on the keyboard has been pressed. Return true if handled. */
-	virtual bool OnKeyPress(deInputEvent::eKeyCodes key, bool shift, bool control);
+	bool OnKeyPress(deInputEvent::eKeyCodes key, bool shift, bool control) override;
 	/** The left mouse button has been pressed. Return true if handled. */
 	void OnLeftMouseButtonPress(int x, int y, bool shift, bool control) override;
 	/** The left mouse button has been released. Return true if handled. */

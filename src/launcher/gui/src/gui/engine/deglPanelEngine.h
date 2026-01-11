@@ -56,7 +56,7 @@ public:
 			FXuint opts = ICONLIST_NORMAL, FXint x = 0, FXint y = 0,
 			FXint w = 0, FXint h = 0);
 		
-		~ExtIconList();
+		~ExtIconList() override;
 		
 		long onHeaderClicked(FXObject *sender, FXSelector selector, void *data);
 	};
@@ -99,7 +99,7 @@ public:
 	deglPanelEngine(deglWindowMain *windowMain, FXComposite *container);
 	
 	/** Clean up panel. */
-	virtual ~deglPanelEngine();
+	~deglPanelEngine() override;
 	/*@}*/
 	
 	

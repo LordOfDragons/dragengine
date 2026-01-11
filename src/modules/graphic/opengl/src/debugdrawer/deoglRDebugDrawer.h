@@ -82,7 +82,7 @@ public:
 	
 protected:
 	/** Cleans up render debug drawer. */
-	virtual ~deoglRDebugDrawer();
+	~deoglRDebugDrawer() override;
 	/*@}*/
 	
 	

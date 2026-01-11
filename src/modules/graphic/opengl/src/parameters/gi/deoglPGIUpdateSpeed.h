@@ -42,7 +42,7 @@ public:
 	
 	/** \name Parameter Value */
 	/*@{*/
-	virtual decString GetParameterValue();
+	decString GetParameterValue() override;
 	void SetParameterValue(const char *value) override;
 	/*@}*/
 };

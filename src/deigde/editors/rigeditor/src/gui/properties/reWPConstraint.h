@@ -85,7 +85,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~reWPConstraint();
+	~reWPConstraint() override;
 	/*@}*/
 	
 	

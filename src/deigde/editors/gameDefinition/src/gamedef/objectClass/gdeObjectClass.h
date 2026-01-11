@@ -125,7 +125,7 @@ public:
 	
 	/** Clean up object class. */
 protected:
-	virtual ~gdeObjectClass();
+	~gdeObjectClass() override;
 public:
 	/*@}*/
 	

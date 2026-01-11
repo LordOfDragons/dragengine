@@ -41,7 +41,7 @@ public:
 	
 protected:
 	/** \brief Clean up editor module. */
-	virtual ~ceIGDEModule();
+	~ceIGDEModule() override;
 	/*@}*/
 	
 	
@@ -50,7 +50,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Start module. */
-	virtual void Start();
+	void Start() override;
 	/*@}*/
 };
 

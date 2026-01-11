@@ -52,21 +52,21 @@ public:
 	/** Creates a new info object. */
 	dePng3DImageInfo(const char *nfilename);
 	/** Cleans up the info object. */
-	virtual ~dePng3DImageInfo();
+	~dePng3DImageInfo() override;
 	/*@}*/
 	
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the width in pixels. */
-	virtual int GetWidth();
+	int GetWidth() override;
 	/** Retrieves the height in pixels. */
-	virtual int GetHeight();
+	int GetHeight() override;
 	/** Retrieves the depth in pixels. */
-	virtual int GetDepth();
+	int GetDepth() override;
 	/** Retrieves the number of components. */
-	virtual int GetComponentCount();
+	int GetComponentCount() override;
 	/** Retrieves the bit count of each component. */
-	virtual int GetBitCount();
+	int GetBitCount() override;
 	/*@}*/
 };
 

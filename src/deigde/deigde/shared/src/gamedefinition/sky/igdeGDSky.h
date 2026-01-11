@@ -69,7 +69,7 @@ public:
 	
 protected:
 	/** \brief Clean up sky. */
-	virtual ~igdeGDSky();
+	~igdeGDSky() override;
 	/*@}*/
 	
 	

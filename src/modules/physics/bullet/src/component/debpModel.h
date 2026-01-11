@@ -89,7 +89,7 @@ public:
 	debpModel(dePhysicsBullet &bullet, deModel &model);
 	
 	/** \brief Clean up model peer. */
-	virtual ~debpModel();
+	~debpModel() override;
 	/*@}*/
 	
 	

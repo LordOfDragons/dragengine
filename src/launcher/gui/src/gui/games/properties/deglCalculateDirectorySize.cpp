@@ -141,12 +141,12 @@ public:
 	pOwner(owner), pAbort(abort){
 	}
 	
-	virtual bool VisitFile(const deVirtualFileSystem &vfs, const decPath &path){
+	bool VisitFile(const deVirtualFileSystem &vfs, const decPath &path) override{
 		pOwner.IncrementSize((int)vfs.GetFileSize(path));
 		return !pAbort;
 	}
 	
-	virtual bool VisitDirectory(const deVirtualFileSystem &vfs, const decPath &path){
+	bool VisitDirectory(const deVirtualFileSystem &vfs, const decPath &path) override{
 		vfs.SearchFiles(path, *this);
 		return !pAbort;
 	}

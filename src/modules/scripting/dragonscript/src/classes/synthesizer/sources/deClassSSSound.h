@@ -69,7 +69,7 @@ public:
 	deClassSSSound(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
-	virtual ~deClassSSSound();
+	~deClassSSSound() override;
 	/*@}*/
 	
 	
@@ -80,7 +80,7 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Source or \em NULL if deleted or myself is \em NULL. */
 	deSynthesizerSourceSound *GetSource(dsRealObject *myself) const;

@@ -53,7 +53,7 @@ public:
 	reBaseUndoScale();
 	
 protected:
-	virtual ~reBaseUndoScale();
+	~reBaseUndoScale() override;
 	/*@}*/
 	
 	

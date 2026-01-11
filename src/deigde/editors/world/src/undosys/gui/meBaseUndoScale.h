@@ -53,7 +53,7 @@ public:
 	meBaseUndoScale();
 	
 protected:
-	~meBaseUndoScale();
+	~meBaseUndoScale() override;
 	
 public:
 	// management

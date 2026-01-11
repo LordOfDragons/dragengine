@@ -70,7 +70,7 @@ public:
 	typedef deTObjectReference<cComboActorID> Ref;
 	cComboActorID(ceWPAActorRemove &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorRemove * const action = pPanel.GetAction();
 		if(!topic || !action  || comboBox->GetText() == action->GetActor()){

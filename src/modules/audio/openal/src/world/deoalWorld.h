@@ -68,7 +68,7 @@ public:
 	deoalWorld(deAudioOpenAL &oal, deWorld &world);
 	
 	/** \brief Clean up world peer. */
-	virtual ~deoalWorld();
+	~deoalWorld() override;
 	/*@}*/
 	
 	
@@ -136,60 +136,60 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Update world. */
-	virtual void Update(float elapsed);
+	void Update(float elapsed) override;
 	
 	/** \brief Size changed. */
-	virtual void SizeChanged();
+	void SizeChanged() override;
 	
 	/**
 	 * \brief Audio changed.
 	 * \version 1.16
 	 */
-	virtual void AudioChanged();
+	void AudioChanged() override;
 	
 	
 	
 	/** \brief Speaker has been added. */
-	virtual void SpeakerAdded(deSpeaker *speaker);
+	void SpeakerAdded(deSpeaker *speaker) override;
 	/** \brief Speaker has been removed. */
 	
-	virtual void SpeakerRemoved(deSpeaker *speaker);
+	void SpeakerRemoved(deSpeaker *speaker) override;
 	
 	/** \brief All speakers have been removed. */
-	virtual void AllSpeakersRemoved();
+	void AllSpeakersRemoved() override;
 	
 	
 	
 	/** \brief Microphone has been added. */
-	virtual void MicrophoneAdded(deMicrophone *microphone);
+	void MicrophoneAdded(deMicrophone *microphone) override;
 	
 	/** \brief Microphone has been removed. */
-	virtual void MicrophoneRemoved(deMicrophone *microphone);
+	void MicrophoneRemoved(deMicrophone *microphone) override;
 	
 	/** \brief All microphones have been removed. */
-	virtual void AllMicrophonesRemoved();
+	void AllMicrophonesRemoved() override;
 	
 	
 	
 	/** \brief Component has been added. */
-	virtual void ComponentAdded(deComponent *component);
+	void ComponentAdded(deComponent *component) override;
 	
 	/** \brief Component has been removed. */
-	virtual void ComponentRemoved(deComponent *component);
+	void ComponentRemoved(deComponent *component) override;
 	
 	/** \brief All components have been removed. */
-	virtual void AllComponentsRemoved();
+	void AllComponentsRemoved() override;
 	
 	
 	
 	/** \brief Sound level meter has been added. */
-	virtual void SoundLevelMeterAdded(deSoundLevelMeter *soundLevelMeter);
+	void SoundLevelMeterAdded(deSoundLevelMeter *soundLevelMeter) override;
 	
 	/** \brief Sound level meter has been removed. */
-	virtual void SoundLevelMeterRemoved(deSoundLevelMeter *soundLevelMeter);
+	void SoundLevelMeterRemoved(deSoundLevelMeter *soundLevelMeter) override;
 	
 	/** \brief All sound level meters have been removed. */
-	virtual void AllSoundLevelMetersRemoved();
+	void AllSoundLevelMetersRemoved() override;
 	/*@}*/
 	
 	

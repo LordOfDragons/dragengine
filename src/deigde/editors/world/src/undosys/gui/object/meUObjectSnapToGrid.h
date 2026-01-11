@@ -60,7 +60,7 @@ public:
 	/** \brief Clean up undo object. */
 
 protected:
-	virtual ~meUObjectSnapToGrid();
+	~meUObjectSnapToGrid() override;
 
 public:
 	/*@}*/
@@ -70,10 +70,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -113,14 +113,14 @@ public:
 	
 	cActivationListener(meWVNode &node) : pNode(node){}
 	
-	virtual void OnActivated(igdeNVNode*){
+	void OnActivated(igdeNVNode*) override{
 		meHTVegetationLayer * const vlayer = pNode.GetWindowVegetation().GetVLayer();
 		if(vlayer){
 			vlayer->SetActiveRule(pNode.GetRule());
 		}
 	}
 	
-	virtual void AddContextMenuEntries(igdeNVNode*, igdeMenuCascade &menu){
+	void AddContextMenuEntries(igdeNVNode*, igdeMenuCascade &menu) override{
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		
 		helper.MenuCommand(menu, cActionDeleteNode::Ref::New(pNode));
@@ -138,14 +138,14 @@ public:
 	cDragNodeListener(meWVNode &node, igdeUndo::Ref &undo) :
 		pNode(node), pUndo(undo){}
 	
-	virtual void OnDragBegin(igdeNVNode*){
+	void OnDragBegin(igdeNVNode*) override{
 		meHTVegetationLayer * const vlayer = pNode.GetWindowVegetation().GetVLayer();
 		if(vlayer){
 			pUndo = meUHTVRuleMove::Ref::New(vlayer, pNode.GetRule());
 		}
 	}
 	
-	virtual void OnDraging(igdeNVNode *node){
+	void OnDraging(igdeNVNode *node) override{
 		if(!pUndo){
 			return;
 		}
@@ -155,7 +155,7 @@ public:
 		pUndo->Redo();
 	}
 	
-	virtual void OnDragEnd(igdeNVNode*){
+	void OnDragEnd(igdeNVNode*) override{
 		if(!pUndo){
 			return;
 		}

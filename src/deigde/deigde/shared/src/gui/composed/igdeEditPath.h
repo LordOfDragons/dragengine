@@ -70,10 +70,10 @@ protected:
 		cListenerTextField(igdeEditPath &editPath);
 		
 	protected:
-		virtual ~cListenerTextField();
+		~cListenerTextField() override;
 		
 	public:
-		virtual void OnTextChanged(igdeTextField *textField);
+		void OnTextChanged(igdeTextField *textField) override;
 	};
 	
 	/** \brief Button action. */
@@ -86,11 +86,11 @@ protected:
 		cActionButton(igdeEditPath &editPath, const char *description);
 		
 	protected:
-		virtual ~cActionButton();
+		~cActionButton() override;
 		
 	public:
-		virtual void OnAction();
-		virtual void Update();
+		void OnAction() override;
+		void Update() override;
 	};
 	
 	/** \brief Button menu action. */
@@ -103,11 +103,11 @@ protected:
 		cActionButtonMenu(igdeEditPath &editPath, const char *description);
 		
 	protected:
-		virtual ~cActionButtonMenu();
+		~cActionButtonMenu() override;
 		
 	public:
-		virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu);
-		virtual void Update();
+		void AddContextMenuEntries(igdeMenuCascade &contextMenu) override;
+		void Update() override;
 	};
 	
 	/** \brief Select file using file dialog action. */
@@ -121,12 +121,12 @@ protected:
 		cActionSelectFileDialog(igdeEditPath &editPath, igdeTextField &textField);
 		
 	protected:
-		virtual ~cActionSelectFileDialog();
+		~cActionSelectFileDialog() override;
 		
 	public:
-		virtual void PrepareFile(decString &path);
-		virtual bool AcceptFile(decString &path);
-		virtual decString DefaultPath();
+		void PrepareFile(decString &path) override;
+		bool AcceptFile(decString &path) override;
+		decString DefaultPath() override;
 	};
 	
 	/** \brief Select skin resource using skin selection dialog. */
@@ -139,10 +139,10 @@ protected:
 		cActionSkinSelectDialog(igdeEditPath &editPath);
 		
 	protected:
-		virtual ~cActionSkinSelectDialog();
+		~cActionSkinSelectDialog() override;
 		
 	public:
-		virtual void OnAction();
+		void OnAction() override;
 	};
 	
 	/** \brief Browse file action. */
@@ -155,11 +155,11 @@ protected:
 		cActionBrowseFile(igdeEditPath &editPath);
 		
 	protected:
-		virtual ~cActionBrowseFile();
+		~cActionBrowseFile() override;
 		
 	public:
-		virtual void OnAction();
-		virtual void Update();
+		void OnAction() override;
+		void Update() override;
 	};
 	
 	/** \brief Convert to absolute path. */
@@ -172,11 +172,11 @@ protected:
 		cActionConvertAbsolute(igdeEditPath &editPath);
 		
 	protected:
-		virtual ~cActionConvertAbsolute();
+		~cActionConvertAbsolute() override;
 		
 	public:
-		virtual void OnAction();
-		virtual void Update();
+		void OnAction() override;
+		void Update() override;
 	};
 	
 	/** \brief Convert to relative path. */
@@ -189,11 +189,11 @@ protected:
 		cActionConvertRelative(igdeEditPath &editPath);
 		
 	protected:
-		virtual ~cActionConvertRelative();
+		~cActionConvertRelative() override;
 		
 	public:
-		virtual void OnAction();
-		virtual void Update();
+		void OnAction() override;
+		void Update() override;
 	};
 	
 	
@@ -238,7 +238,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeEditPath();
+	~igdeEditPath() override;
 	/*@}*/
 	
 	

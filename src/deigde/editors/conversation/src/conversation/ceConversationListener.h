@@ -58,7 +58,7 @@ class ceConversationListener : public deObject{
 	ceConversationListener();
 	/** Cleans up the listener. */
 protected:
-	virtual ~ceConversationListener();
+	~ceConversationListener() override;
 public:
 	/*@}*/
 	

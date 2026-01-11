@@ -54,16 +54,16 @@ public:
 	aeUSetRuleBlendMode(aeRule *rule, deAnimatorRule::eBlendModes newMode);
 protected:
 	/** Clean up undo. */
-	virtual ~aeUSetRuleBlendMode();
+	~aeUSetRuleBlendMode() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

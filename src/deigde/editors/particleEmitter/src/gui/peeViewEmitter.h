@@ -59,7 +59,7 @@ public:
 	
 protected:
 	/** \brief Clean up emitter view. */
-	virtual ~peeViewEmitter();
+	~peeViewEmitter() override;
 	/*@}*/
 	
 	
@@ -80,10 +80,10 @@ public:
 	void SetEmitter(peeEmitter *emitter);
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate(float elapsed);
+	void OnFrameUpdate(float elapsed) override;
 	
 	/** \brief Create canvas. */
-	virtual void CreateCanvas();
+	void CreateCanvas() override;
 	/*@}*/
 };
 

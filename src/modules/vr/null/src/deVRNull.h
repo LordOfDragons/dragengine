@@ -40,7 +40,7 @@ public:
 	deVRNull(deLoadableModule &loadableModule);
 	
 	/** Clean up null VR module. */
-	virtual ~deVRNull();
+	~deVRNull() override;
 	/*@}*/
 	
 	
@@ -52,10 +52,10 @@ public:
 	 * \returns true on success.
 	 * \note To access the os object of the engine use the GetOS function.
 	 */
-	virtual bool Init();
+	bool Init() override;
 	
 	/** Clean up module. */
-	virtual void CleanUp();
+	void CleanUp() override;
 	/*@}*/
 	
 	
@@ -67,7 +67,7 @@ public:
 	 * 
 	 * Returns true if a call to StartRuntime() is likely to succeed or not.
 	 */
-	virtual bool RuntimeUsable();
+	bool RuntimeUsable() override;
 	
 	/**
 	 * Start VR.
@@ -77,7 +77,7 @@ public:
 	 * and activates VR support on various modules. VR mode can be started and
 	 * stopped at any time.
 	 */
-	virtual void StartRuntime();
+	void StartRuntime() override;
 	
 	/**
 	 * Stop VR.
@@ -87,20 +87,20 @@ public:
 	 * and activates VR support on various modules. VR mode can be started and
 	 * stopped at any time.
 	 */
-	virtual void StopRuntime();
+	void StopRuntime() override;
 	
 	/**
 	 * \brief VR runtime is running.
 	 * \version 1.26
 	 */
-	virtual bool IsRuntimeRunning();
+	bool IsRuntimeRunning() override;
 	
 	/**
 	 * Set camera to render on head mounted display.
 	 * 
 	 * If set to nullptr fades back to safe scene as defined by VR Runtime.
 	 */
-	virtual void SetCamera(deCamera *camera);
+	void SetCamera(deCamera *camera) override;
 	/*@}*/
 	
 	
@@ -108,50 +108,50 @@ public:
 	/** \name Devices */
 	/*@{*/
 	/** Number of input devices. */
-	virtual int GetDeviceCount();
+	int GetDeviceCount() override;
 	
 	/** Information for input device at index. */
-	virtual deInputDevice::Ref GetDeviceAt(int index);
+	deInputDevice::Ref GetDeviceAt(int index) override;
 	
 	/** Index of device with identifier or -1 if absent. */
-	virtual int IndexOfDeviceWithID(const char *id);
+	int IndexOfDeviceWithID(const char *id) override;
 	
 	/** Index of button with identifier on device at index or -1 if absent. */
-	virtual int IndexOfButtonWithID(int device, const char *id);
+	int IndexOfButtonWithID(int device, const char *id) override;
 	
 	/** Index of axis with identifier on device at index or -1 if absent. */
-	virtual int IndexOfAxisWithID(int device, const char *id);
+	int IndexOfAxisWithID(int device, const char *id) override;
 	
 	/** Index of feedback with identifier on device at index or -1 if absent. */
-	virtual int IndexOfFeedbackWithID(int device, const char *id);
+	int IndexOfFeedbackWithID(int device, const char *id) override;
 	
 	/** \brief Index of component with identifier on device at index or -1 if absent. */
-	virtual int IndexOfComponentWithID(int device, const char *id);
+	int IndexOfComponentWithID(int device, const char *id) override;
 	
 	/** Button at index on device at index is pressed down. */
-	virtual bool GetButtonPressed(int device, int button);
+	bool GetButtonPressed(int device, int button) override;
 	
 	/** Button at index on device at index is touched. */
-	virtual bool GetButtonTouched(int device, int button);
+	bool GetButtonTouched(int device, int button) override;
 	
 	/** User finger is near button at index on device at index. */
-	virtual bool GetButtonNear(int device, int button);
+	bool GetButtonNear(int device, int button) override;
 	
 	/** Value of axis at index on device at index. */
-	virtual float GetAxisValue(int device, int axis);
+	float GetAxisValue(int device, int axis) override;
 	
 	/** Value of feedback at index on device at index. */
-	virtual float GetFeedbackValue(int device, int feedback);
+	float GetFeedbackValue(int device, int feedback) override;
 	
 	/** Set value of feedback at index on device at index. */
-	virtual void SetFeedbackValue(int device, int feedback, float value);
+	void SetFeedbackValue(int device, int feedback, float value) override;
 	
 	/** Device pose or identity if not supported. */
-	virtual void GetDevicePose(int device, deInputDevicePose &pose);
+	void GetDevicePose(int device, deInputDevicePose &pose) override;
 	
 	/** Device bone pose or identity if not supported. */
-	virtual void GetDeviceBonePose(int device, int bone,
-		bool withController, deInputDevicePose &pose);
+	void GetDeviceBonePose(int device, int bone,
+		bool withController, deInputDevicePose &pose) override;
 	/*@}*/
 	
 	
@@ -167,7 +167,7 @@ public:
 	 * queues to deliver system notification (like quitting the game) to the game
 	 * engine.
 	 */
-	virtual void ProcessEvents();
+	void ProcessEvents() override;
 	/*@}*/
 	
 	
@@ -175,33 +175,33 @@ public:
 	/** \name Graphic Module use only */
 	/*@{*/
 	/** VR recommended render target size. */
-	virtual decPoint GetRenderSize();
+	decPoint GetRenderSize() override;
 	
 	/** VR render projection matrix parameters. */
-	virtual void GetProjectionParameters(eEye eye, float &left,
-		float &right, float &top, float &bottom);
+	void GetProjectionParameters(eEye eye, float &left,
+		float &right, float &top, float &bottom) override;
 	
 	/** VR render matrix transforming from camera space to eye space. */
-	virtual decMatrix GetMatrixViewEye(eEye eye);
+	decMatrix GetMatrixViewEye(eEye eye) override;
 	
 	/** VR render hidden area model or nullptr if not supported. */
-	virtual deModel *GetHiddenArea(eEye eye);
+	deModel *GetHiddenArea(eEye eye) override;
 	
 	/** VR render distortion image or nullptr if not supported. */
-	virtual deImage *GetDistortionMap(eEye eye);
+	deImage *GetDistortionMap(eEye eye) override;
 	
 	/** Start begin frame. */
-	virtual void StartBeginFrame();
+	void StartBeginFrame() override;
 	
 	/** Wait for begin frame to be finished. */
-	virtual void WaitBeginFrameFinished();
+	void WaitBeginFrameFinished() override;
 	
 	/** Submit OpenGL rendered image to the HMD. */
-	virtual void SubmitOpenGLTexture2D(eEye eye, void *texture, const decVector2 &tcFrom,
-		const decVector2 &tcTo, bool distortionApplied);
+	void SubmitOpenGLTexture2D(eEye eye, void *texture, const decVector2 &tcFrom,
+		const decVector2 &tcTo, bool distortionApplied) override;
 	
 	/** End frame. */
-	virtual void EndFrame();
+	void EndFrame() override;
 	/*@}*/
 };
 

@@ -93,7 +93,7 @@ public:
 	
 	/** \brief Clean up the synthesizer source. */
 protected:
-	virtual ~syneSource();
+	~syneSource() override;
 public:
 	/*@}*/
 	

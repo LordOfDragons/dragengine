@@ -102,7 +102,7 @@ protected:
 public:
 	cBaseTextFieldListener(peeWPType &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		peeEmitter * const emitter = pPanel.GetEmitter();
 		peeType * const type = pPanel.GetType();
 		if(!emitter || !type){
@@ -127,7 +127,7 @@ public:
 	igdeAction(text, icon, description),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		peeEmitter * const emitter = pPanel.GetEmitter();
 		peeType * const type = pPanel.GetType();
 		if(!emitter || !type){
@@ -150,7 +150,7 @@ protected:
 public:
 	cBasePathListener(peeWPType &panel) : pPanel(panel){}
 	
-	virtual void OnEditPathChanged(igdeEditPath *editPath){
+	void OnEditPathChanged(igdeEditPath *editPath) override{
 		peeEmitter * const emitter = pPanel.GetEmitter();
 		peeType * const type = pPanel.GetType();
 		if(!emitter || !type){
@@ -173,7 +173,7 @@ protected:
 public:
 	cBaseComboBoxListener(peeWPType &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		peeEmitter * const emitter = pPanel.GetEmitter();
 		peeType * const type = pPanel.GetType();
 		if(!emitter || !type){
@@ -199,7 +199,7 @@ public:
 		"Determines if particles are emit as burst or continuous"),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		peeEmitter * const emitter = pPanel.GetEmitter();
 		if(!emitter){
 			return;
@@ -215,7 +215,7 @@ public:
 	typedef deTObjectReference<cTextBurstLifetime> Ref;
 	cTextBurstLifetime(peeWPType &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		peeEmitter * const emitter = pPanel.GetEmitter();
 		if(!emitter){
 			return;
@@ -238,7 +238,7 @@ public:
 	typedef deTObjectReference<cComboType> Ref;
 	cComboType(peeWPType &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox * comboBox){
+	void OnTextChanged(igdeComboBox * comboBox) override{
 		peeEmitter * const emitter = pPanel.GetEmitter();
 		if(!emitter){
 			return;
@@ -259,7 +259,7 @@ public:
 		"Edit type menu"),
 	pPanel(panel), pButton(button){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		peeEmitter * const emitter = pPanel.GetEmitter();
 		if(!emitter){
 			return;
@@ -283,7 +283,7 @@ public:
 		"Add type"),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		peeEmitter * const emitter = pPanel.GetEmitter();
 		if(!emitter){
 			return;
@@ -304,7 +304,7 @@ public:
 		}
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetEmitter().IsNotNull());
 	}
 };
@@ -316,11 +316,11 @@ public:
 	cBaseAction(panel, "Remove", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove selected type"){}
 	
-	virtual igdeUndo::Ref OnAction(peeEmitter*, peeType *type){
+	igdeUndo::Ref OnAction(peeEmitter*, peeType *type) override{
 		return peeUTypeRemove::Ref::New(type);
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetType() != nullptr);
 	}
 };
@@ -331,7 +331,7 @@ public:
 	cActionTypeRename(peeWPType &panel) :
 	cBaseAction(panel, "Rename...", nullptr, "Rename selected type"){}
 	
-	virtual igdeUndo::Ref OnAction(peeEmitter *emitter, peeType *type){
+	igdeUndo::Ref OnAction(peeEmitter *emitter, peeType *type) override{
 		decString name(type->GetName());
 		
 		while(igdeCommonDialogs::GetString(&pPanel, "Rename Type", "Name:", name)){
@@ -605,7 +605,7 @@ public:
 	typedef deTObjectReference<cListTypes> Ref;
 	cListTypes(peeWPType &panel) : pPanel(panel){}
 	
-	virtual void OnSelectionChanged(igdeListBox *listBox){
+	void OnSelectionChanged(igdeListBox *listBox) override{
 		peeType * const type = pPanel.GetType();
 		if(!type){
 			return;

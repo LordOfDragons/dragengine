@@ -127,7 +127,7 @@ public:
 	
 protected:
 	/** Cleans up the environment map. */
-	virtual ~deoglEnvironmentMap();
+	~deoglEnvironmentMap() override;
 	/*@}*/
 	
 public:

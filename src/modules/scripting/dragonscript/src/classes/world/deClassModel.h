@@ -47,7 +47,7 @@ public:
 	/** \brief Creates a new class. */
 	deClassModel(deScriptingDragonScript *ds);
 	/** \brief Cleans up the class. */
-	virtual ~deClassModel();
+	~deClassModel() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -55,7 +55,7 @@ public:
 	/** Retrieves the module. */
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/** \brief Creates class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Retrieves the model from an object. */
 	deModel *GetModel(dsRealObject *myself) const;

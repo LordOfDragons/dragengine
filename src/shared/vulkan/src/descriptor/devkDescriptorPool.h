@@ -68,7 +68,7 @@ public:
 	
 protected:
 	/** Clean up queue. */
-	virtual ~devkDescriptorPool();
+	~devkDescriptorPool() override;
 	/*@}*/
 	
 	

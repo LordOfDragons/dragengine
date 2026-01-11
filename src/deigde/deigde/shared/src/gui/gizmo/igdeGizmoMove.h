@@ -179,7 +179,7 @@ protected:
 	 * \param[in] modifiers Modifier keys pressed at the time of event. OR combination of
 	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	virtual bool OnStartEditing(const decDVector &rayOrigin, const decDVector &rayDirection,
+	bool OnStartEditing(const decDVector &rayOrigin, const decDVector &rayDirection,
 		const decDMatrix &viewMatrix, const decDVector &hitPoint,
 		const decString &shapeName, int modifiers) override;
 	
@@ -194,7 +194,7 @@ protected:
 	 * \param[in] modifiers Modifier keys pressed at the time of event. OR combination of
 	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	virtual void OnUpdateEditing(const decDVector &rayOrigin, const decDVector &rayDirection,
+	void OnUpdateEditing(const decDVector &rayOrigin, const decDVector &rayDirection,
 		const decDMatrix &viewMatrix, int modifiers) override;
 	
 	/**

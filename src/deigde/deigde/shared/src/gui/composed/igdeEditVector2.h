@@ -63,11 +63,11 @@ protected:
 		cListener(igdeEditVector2 &editVector2, igdeTextField *textX, igdeTextField *textY);
 		
 	protected:
-		virtual ~cListener();
+		~cListener() override;
 		
 	public:
-		virtual void OnTextChanged(igdeTextField *textField);
-		virtual void OnTextChanging(igdeTextField *textField);
+		void OnTextChanged(igdeTextField *textField) override;
+		void OnTextChanging(igdeTextField *textField) override;
 	};
 	
 	
@@ -106,7 +106,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       vectorer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeEditVector2();
+	~igdeEditVector2() override;
 	/*@}*/
 	
 	

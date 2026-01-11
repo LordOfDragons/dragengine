@@ -58,7 +58,7 @@ public:
 	/** \name First Stage Dispatch */
 	/*@{*/
 	bool VolumeHitsVolume(deoglCollisionVolume *volume) override;
-	virtual float VolumeMoveHitsVolume(deoglCollisionVolume *volume, const decVector &displacement, decVector *normal);
+	float VolumeMoveHitsVolume(deoglCollisionVolume *volume, const decVector &displacement, decVector *normal) override;
 	/*@}*/
 	
 	/** \name Second Stage Dispatch */
@@ -69,13 +69,13 @@ public:
 	bool BoxHitsVolume(deoglCollisionBox *box) override;
 	bool TriangleHitsVolume(deoglCollisionTriangle *triangle) override;
 	bool FrustumHitsVolume(deoglCollisionFrustum *frustum) override;
-	virtual float SphereMoveHitsVolume(deoglCollisionSphere *sphere, const decVector &displacement, decVector *normal);
-	virtual float CylinderMoveHitsVolume(deoglCollisionCylinder *cylinder, const decVector &displacement, decVector *normal);
-	virtual float CapsuleMoveHitsVolume(deoglCollisionCapsule *capsule, const decVector &displacement, decVector *normal);
-	virtual float BoxMoveHitsVolume(deoglCollisionBox *box, const decVector &displacement, decVector *normal);
-	virtual float TriangleMoveHitsVolume(deoglCollisionTriangle *triangle, const decVector &displacement, decVector *normal);
-	virtual float FrustumMoveHitsVolume(deoglCollisionFrustum *frustum, const decVector &displacement, decVector *normal);
-	virtual float PointMoveHitsVolume(const decVector &point, const decVector &displacement, decVector *normal);
+	float SphereMoveHitsVolume(deoglCollisionSphere *sphere, const decVector &displacement, decVector *normal) override;
+	float CylinderMoveHitsVolume(deoglCollisionCylinder *cylinder, const decVector &displacement, decVector *normal) override;
+	float CapsuleMoveHitsVolume(deoglCollisionCapsule *capsule, const decVector &displacement, decVector *normal) override;
+	float BoxMoveHitsVolume(deoglCollisionBox *box, const decVector &displacement, decVector *normal) override;
+	float TriangleMoveHitsVolume(deoglCollisionTriangle *triangle, const decVector &displacement, decVector *normal) override;
+	float FrustumMoveHitsVolume(deoglCollisionFrustum *frustum, const decVector &displacement, decVector *normal) override;
+	float PointMoveHitsVolume(const decVector &point, const decVector &displacement, decVector *normal) override;
 	/*@}*/
 	
 	/** \name Enclosing Volumes */
@@ -87,9 +87,9 @@ public:
 	/** \name Miscelanous Functions */
 	/*@{*/
 	/** Determines if a point is inside the volume. */
-	virtual bool IsPointInside(const decVector &point);
+	bool IsPointInside(const decVector &point) override;
 	/** Retrieves the closest point on the volume. */
-	virtual decVector ClosestPointTo(const decVector &point);
+	decVector ClosestPointTo(const decVector &point) override;
 	
 	/**
 	 * Retrieves the surface normal through the given point. The point is either right on the
@@ -99,7 +99,7 @@ public:
 	 * @param point Point to determine the normal for.
 	 * @return Surface normal at given point.
 	 */
-	virtual decVector NormalAtPoint(const decVector &point);
+	decVector NormalAtPoint(const decVector &point) override;
 	/**
 	 * Determines if a ray hits the volume.
 	 * @param rayOrigin Origin of the ray.
@@ -108,7 +108,7 @@ public:
 	 * to the collision point.
 	 * @return True if the ray hits the volume.
 	 */
-	virtual bool RayHitsVolume(const decVector &rayOrigin, const decVector &rayDirection, float &hitDistance);
+	bool RayHitsVolume(const decVector &rayOrigin, const decVector &rayDirection, float &hitDistance) override;
 	/*@}*/
 	
 	/** \name Visiting */

@@ -96,7 +96,7 @@ public:
 	
 protected:
 	/** \brief Clean up engine module. */
-	virtual ~delEngineModule();
+	~delEngineModule() override;
 	/*@}*/
 	
 	

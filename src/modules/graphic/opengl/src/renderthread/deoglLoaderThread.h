@@ -59,7 +59,7 @@ public:
 	deoglLoaderThread(deoglRenderThread &renderThread);
 	
 	/** Clean up loader thread. */
-	virtual ~deoglLoaderThread();
+	~deoglLoaderThread() override;
 	/*@}*/
 	
 	
@@ -67,7 +67,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Run render thread. */
-	virtual void Run();
+	void Run() override;
 	
 	/** Loader is enabled. */
 	bool IsEnabled();

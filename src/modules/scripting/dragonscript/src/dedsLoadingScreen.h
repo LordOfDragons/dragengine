@@ -57,7 +57,7 @@ public:
 	
 protected:
 	/** Clean up loading screen. */
-	virtual ~dedsLoadingScreen();
+	~dedsLoadingScreen() override;
 	/*@}*/
 	
 	

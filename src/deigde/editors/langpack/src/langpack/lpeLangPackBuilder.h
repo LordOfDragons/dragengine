@@ -44,13 +44,13 @@ public:
 	/** \brief Creates a new language pack builder. */
 	lpeLangPackBuilder(lpeLangPack *langpack);
 	/** \brief Cleans up the language pack builder. */
-	virtual ~lpeLangPackBuilder();
+	~lpeLangPackBuilder() override;
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** \brief Build language pack into the provided language pack object. */
-	virtual void BuildLanguagePack(deLanguagePack &langPack);
+	void BuildLanguagePack(deLanguagePack &langPack) override;
 	/*@}*/
 };
 

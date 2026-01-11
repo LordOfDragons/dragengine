@@ -70,7 +70,7 @@ public:
 	
 protected:
 	/** Clean up render lumimeter. */
-	virtual ~deoglRLumimeter();
+	~deoglRLumimeter() override;
 	/*@}*/
 	
 	

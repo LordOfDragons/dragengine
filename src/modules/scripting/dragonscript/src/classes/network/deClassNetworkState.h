@@ -49,7 +49,7 @@ public:
 	deClassNetworkState(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up native script class. */
-	virtual ~deClassNetworkState();
+	~deClassNetworkState() override;
 	/*@}*/
 	
 	
@@ -57,7 +57,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Create class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Script module. */
 	inline const deScriptingDragonScript &GetDS() const{ return pDS; }

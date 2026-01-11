@@ -45,7 +45,7 @@ public:
 	igdeNativeFoxSpacer(igdeSpacer &owner, FXComposite *parent, int childFlags);
 	
 	/** \brief Clean up container. */
-	virtual ~igdeNativeFoxSpacer();
+	~igdeNativeFoxSpacer() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeFoxSpacer* CreateNativeWidget(igdeSpacer &owner);
@@ -64,8 +64,8 @@ public:
 	/** \brief Set size. */
 	virtual void SetSize(int width, int height);
 	
-	virtual FXint getDefaultWidth();
-	virtual FXint getDefaultHeight();
+	FXint getDefaultWidth() override;
+	FXint getDefaultHeight() override;
 	
 	/** \brief Process layout flags. */
 	static int LayoutFlags(int childFlags);

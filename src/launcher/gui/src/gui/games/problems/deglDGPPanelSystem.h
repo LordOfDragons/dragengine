@@ -90,7 +90,7 @@ public:
 	deglDGPPanelSystem(deglDialogGameProblems *parentDialog, FXComposite *container);
 	
 	/** Clean up dialog. */
-	virtual ~deglDGPPanelSystem();
+	~deglDGPPanelSystem() override;
 	/*@}*/
 	
 	

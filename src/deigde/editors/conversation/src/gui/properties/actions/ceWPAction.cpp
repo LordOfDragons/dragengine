@@ -71,7 +71,7 @@ public:
 	typedef deTObjectReference<cTextDelay> Ref;
 	cTextDelay(ceWPAction &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		if(!topic || !action){
@@ -155,7 +155,7 @@ public:
 	typedef deTObjectReference<cComboWaitForActorID> Ref;
 	cComboWaitForActorID(ceWPAction &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		if(!topic || !action || comboBox->GetText() == action->GetWaitForActorID()){

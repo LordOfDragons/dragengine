@@ -51,7 +51,7 @@ public:
 	deoglSkin(deGraphicOpenGl &ogl, const deSkin &skin);
 	
 	/** Clean up skin. */
-	virtual ~deoglSkin();
+	~deoglSkin() override;
 	/*@}*/
 	
 	

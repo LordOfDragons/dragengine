@@ -61,7 +61,7 @@ protected:
 	/** \brief Clean up object. */
 
 protected:
-	virtual ~meUHTVRuleCurveSetCurve();
+	~meUHTVRuleCurveSetCurve() override;
 
 public:
 	/*@}*/
@@ -75,10 +75,10 @@ public:
 	void SetNewCurve(const decCurveBezier &curve);
 	
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

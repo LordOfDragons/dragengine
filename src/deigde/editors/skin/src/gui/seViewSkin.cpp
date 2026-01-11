@@ -50,7 +50,7 @@ public:
 	cCameraInteraction(seViewSkin &view) : pView(view){}
 	
 public:
-	virtual void OnCameraChanged(){
+	void OnCameraChanged() override{
 		if(pView.GetSkin()){
 			pView.GetSkin()->NotifyCameraChanged();
 		}

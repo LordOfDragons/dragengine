@@ -62,7 +62,7 @@ public:
 	
 protected:
 	/** Clean up speech animation view. */
-	virtual ~saeViewSAnimation();
+	~saeViewSAnimation() override;
 	/*@}*/
 	
 	
@@ -80,10 +80,10 @@ public:
 	void SetSAnimation(saeSAnimation *sanimation);
 	
 	/** Game like frame update. */
-	virtual void OnFrameUpdate(float elapsed);
+	void OnFrameUpdate(float elapsed) override;
 	
 	/** Create canvas. */
-	virtual void CreateCanvas();
+	void CreateCanvas() override;
 	/*@}*/
 };
 

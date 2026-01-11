@@ -60,7 +60,7 @@ public:
 	void FillIDList(decStringList &list) override;
 	
 	/** Default duration. */
-	virtual float DefaultDuration(const decString &id);
+	float DefaultDuration(const decString &id) override;
 	
 	/** \brief Create add strip undo action. */
 	igdeUndo::Ref UndoStripAdd(ceStrip *strip, int index) override;

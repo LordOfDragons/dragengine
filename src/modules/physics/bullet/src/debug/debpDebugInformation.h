@@ -71,7 +71,7 @@ public:
 	
 protected:
 	/** \brief Clean up debug information. */
-	virtual ~debpDebugInformation();
+	~debpDebugInformation() override;
 	/*@}*/
 	
 	

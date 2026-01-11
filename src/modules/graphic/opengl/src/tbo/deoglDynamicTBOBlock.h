@@ -64,7 +64,7 @@ public:
 	
 protected:
 	/** Clean up dynamic tbo block. */
-	virtual ~deoglDynamicTBOBlock();
+	~deoglDynamicTBOBlock() override;
 	/*@}*/
 	
 	

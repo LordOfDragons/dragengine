@@ -109,7 +109,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~peeWPType();
+	~peeWPType() override;
 	/*@}*/
 	
 	

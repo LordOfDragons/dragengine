@@ -109,7 +109,7 @@ public:
 	
 protected:
 	/** Clean up panel. */
-	virtual ~igdeWPCamera();
+	~igdeWPCamera() override;
 	/*@}*/
 	
 	
@@ -149,10 +149,10 @@ public:
 	virtual void OnAction();
 	
 	/** Action parameters changed. */
-	virtual void OnParameterChanged(igdeAction *action);
+	void OnParameterChanged(igdeAction *action) override;
 	
 	/** Action has been destroyed. */
-	virtual void OnDestroyed(igdeAction *action);
+	void OnDestroyed(igdeAction *action) override;
 	/*@}*/
 	
 	

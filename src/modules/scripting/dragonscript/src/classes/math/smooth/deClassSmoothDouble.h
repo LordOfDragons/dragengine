@@ -46,7 +46,7 @@ public:
 	deClassSmoothDouble(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up the class. */
-	virtual ~deClassSmoothDouble();
+	~deClassSmoothDouble() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -56,7 +56,7 @@ public:
 	inline const deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Smooth double from object. */
 	const decSmoothDouble &GetSmoothDouble(dsRealObject *myself) const;

@@ -53,7 +53,7 @@ public:
 	meUAddObjectDecal(meWorld *world, meObject *parentObject);
 	
 protected:
-	~meUAddObjectDecal();
+	~meUAddObjectDecal() override;
 	
 public:
 	// Management
@@ -63,8 +63,8 @@ public:
 	inline const meObject::Ref &GetParentObject() const{ return pParentObject; }
 	
 	// undo and redo operations
-	virtual void Undo();
-	virtual void Redo();
+	void Undo() override;
+	void Redo() override;
 	
 	// internal
 	void UpdateInfos();

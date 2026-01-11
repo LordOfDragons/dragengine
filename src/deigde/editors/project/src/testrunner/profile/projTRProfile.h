@@ -79,7 +79,7 @@ public:
 	
 protected:
 	/** \brief Clean up profile. */
-	virtual ~projTRProfile();
+	~projTRProfile() override;
 	/*@}*/
 	
 	

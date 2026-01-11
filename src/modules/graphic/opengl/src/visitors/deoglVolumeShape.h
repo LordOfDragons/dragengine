@@ -50,7 +50,7 @@ public:
 	/** Creates a new visitor. */
 	deoglVolumeShape(deoglRenderThread &renderThread);
 	/** Cleans up the visitor. */
-	~deoglVolumeShape();
+	~deoglVolumeShape() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -69,22 +69,22 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** Visit shape. */
-	virtual void VisitShape(decShape &shape);
+	void VisitShape(decShape &shape) override;
 	
 	/** Visit sphere shape. */
-	virtual void VisitShapeSphere(decShapeSphere &sphere);
+	void VisitShapeSphere(decShapeSphere &sphere) override;
 	
 	/** Visit box shape. */
-	virtual void VisitShapeBox(decShapeBox &box);
+	void VisitShapeBox(decShapeBox &box) override;
 	
 	/** Visit cylinder shape. */
-	virtual void VisitShapeCylinder(decShapeCylinder &cylinder);
+	void VisitShapeCylinder(decShapeCylinder &cylinder) override;
 	
 	/** Visit capsule shape. */
-	virtual void VisitShapeCapsule(decShapeCapsule &capsule);
+	void VisitShapeCapsule(decShapeCapsule &capsule) override;
 	
 	/** Visit hull shape. */
-	virtual void VisitShapeHull(decShapeHull &hull);
+	void VisitShapeHull(decShapeHull &hull) override;
 	/*@}*/
 };
 

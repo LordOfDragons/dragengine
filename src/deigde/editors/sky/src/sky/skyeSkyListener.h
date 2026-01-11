@@ -52,7 +52,7 @@ public:
 	
 protected:
 	/** \brief Clean up listener. */
-	virtual ~skyeSkyListener();
+	~skyeSkyListener() override;
 	/*@}*/
 	
 	

@@ -67,7 +67,7 @@ public:
 	
 	/** \brief Clean up conversation topic. */
 protected:
-	virtual ~ceConversationTopic();
+	~ceConversationTopic() override;
 public:
 	/*@}*/
 	

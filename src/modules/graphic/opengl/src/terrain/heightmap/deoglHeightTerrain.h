@@ -61,7 +61,7 @@ public:
 	deoglHeightTerrain(deGraphicOpenGl &ogl, const deHeightTerrain &heightTerrain);
 	
 	/** Clean up peer. */
-	virtual ~deoglHeightTerrain();
+	~deoglHeightTerrain() override;
 	/*@}*/
 	
 	
@@ -89,36 +89,36 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Parameter changes. */
-	virtual void ParametersChanged();
+	void ParametersChanged() override;
 	
 	/** Sector heights changed. */
-	virtual void HeightChanged(const decPoint &fromSector, const decPoint &fromCoordinates,
-		const decPoint &toSector, const decPoint &toCoordinates);
+	void HeightChanged(const decPoint &fromSector, const decPoint &fromCoordinates,
+		const decPoint &toSector, const decPoint &toCoordinates) override;
 	
 	
 	
 	/** Sector has been added. */
-	virtual void SectorAdded(deHeightTerrainSector *sector);
+	void SectorAdded(deHeightTerrainSector *sector) override;
 	
 	/** Sector has been removed. */
-	virtual void SectorRemoved(int index);
+	void SectorRemoved(int index) override;
 	
 	/** All sectors have been removed. */
-	virtual void AllSectorsRemoved();
+	void AllSectorsRemoved() override;
 	
 	/** Sector changed. */
-	virtual void SectorChanged(int index);
+	void SectorChanged(int index) override;
 	
 	
 	
 	/** Decal has been added. */
-	virtual void DecalAdded(int sector, deDecal *decal);
+	void DecalAdded(int sector, deDecal *decal) override;
 	
 	/** Decal has been removed. */
-	virtual void DecalRemoved(int sector, deDecal *decal);
+	void DecalRemoved(int sector, deDecal *decal) override;
 	
 	/** All decals have been removed. */
-	virtual void AllDecalsRemoved(int sector);
+	void AllDecalsRemoved(int sector) override;
 	/*@}*/
 	
 private:

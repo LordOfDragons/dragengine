@@ -77,7 +77,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~skyeWPController();
+	~skyeWPController() override;
 	/*@}*/
 	
 	

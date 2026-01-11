@@ -61,11 +61,11 @@ public:
 	meUObjectTextureSetSkin(meObjectTexture::List &textures, const char *newskin);
 	
 protected:
-	~meUObjectTextureSetSkin();
+	~meUObjectTextureSetSkin() override;
 	
 public:
 	// management
-	void Undo();
-	void Redo();
+	void Undo() override;
+	void Redo() override;
 };
 #endif

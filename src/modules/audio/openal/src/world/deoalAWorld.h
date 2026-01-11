@@ -79,7 +79,7 @@ public:
 	
 protected:
 	/** Clean up world peer. */
-	virtual ~deoalAWorld();
+	~deoalAWorld() override;
 	/*@}*/
 	
 	

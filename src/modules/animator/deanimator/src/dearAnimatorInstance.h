@@ -101,7 +101,7 @@ public:
 	dearAnimatorInstance(deDEAnimator &module, deAnimatorInstance &instance);
 	
 	/** Clean up peer. */
-	virtual ~dearAnimatorInstance();
+	~dearAnimatorInstance() override;
 	/*@}*/
 	
 	
@@ -176,19 +176,19 @@ public:
 	 *          resources take care of waiting for the result to become ready
 	 *          if required.
 	 */
-	virtual void Apply(bool direct);
+	void Apply(bool direct) override;
 	
 	/**
 	 * Capture current state of component into rules matching identifier.
 	 */
-	virtual void CaptureStateInto(int identifier);
+	void CaptureStateInto(int identifier) override;
 	
 	/**
 	 * Store animation frame from animation into rules matching identifier.
 	 * \details If \em moveName does not exist in the animation a default state is captured.
 	 * \throws deeInvalidParam \em moveName is nullptr.
 	 */
-	virtual void StoreFrameInto(int identifier, const char *moveName, float moveTime);
+	void StoreFrameInto(int identifier, const char *moveName, float moveTime) override;
 	/*@}*/
 	
 	
@@ -196,25 +196,25 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Animator changed. */
-	virtual void AnimatorChanged();
+	void AnimatorChanged() override;
 	
 	/** Component changed. */
-	virtual void ComponentChanged();
+	void ComponentChanged() override;
 	
 	/** Animation changed. */
-	virtual void AnimationChanged();
+	void AnimationChanged() override;
 	
 	/** Blend factor changed. */
-	virtual void BlendFactorChanged();
+	void BlendFactorChanged() override;
 	
 	/** Enable retargeting changed. */
-	virtual void EnableRetargetingChanged();
+	void EnableRetargetingChanged() override;
 	
 	/** Protect dynamic bones changed. */
-	virtual void ProtectDynamicBonesChanged();
+	void ProtectDynamicBonesChanged() override;
 	
 	/** Controller changed. */
-	virtual void ControllerChanged(int index);
+	void ControllerChanged(int index) override;
 	/*@}*/
 	
 	

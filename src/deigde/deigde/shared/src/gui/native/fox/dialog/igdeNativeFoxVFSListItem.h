@@ -50,7 +50,7 @@ public:
 	/** \brief Creates a new virtual file system list item. */
 	igdeNativeFoxVFSListItem(const decPath &path, const FXString &text, FXIcon *bi=nullptr, FXIcon *mi=nullptr);
 	/** \brief Cleans up the virtual file system list. */
-	virtual ~igdeNativeFoxVFSListItem();
+	~igdeNativeFoxVFSListItem() override;
 	/*@}*/
 	
 	/** \name Management */

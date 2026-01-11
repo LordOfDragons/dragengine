@@ -71,7 +71,7 @@ public:
 	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(reWPPush &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		reRig * const rig = pPanel.GetRig();
 		reRigPush * const push = pPanel.GetPush();
 		if(rig && push){
@@ -90,7 +90,7 @@ public:
 	typedef deTObjectReference<cBaseEditVectorListener> Ref;
 	cBaseEditVectorListener(reWPPush &panel) : pPanel(panel){}
 	
-	virtual void OnVectorChanged(igdeEditVector *editVector){
+	void OnVectorChanged(igdeEditVector *editVector) override{
 		reRig * const rig = pPanel.GetRig();
 		reRigPush * const push = pPanel.GetPush();
 		if(rig && push){
@@ -109,7 +109,7 @@ public:
 	typedef deTObjectReference<cBaseComboBoxListener> Ref;
 	cBaseComboBoxListener(reWPPush &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		reRig * const rig = pPanel.GetRig();
 		reRigPush * const push = pPanel.GetPush();
 		if(rig && push){
@@ -127,7 +127,7 @@ public:
 	typedef deTObjectReference<cComboType> Ref;
 	cComboType(reWPPush &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox, reRig *rig, reRigPush *push){
+	void OnTextChanged(igdeComboBox *comboBox, reRig *rig, reRigPush *push) override{
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
 		if(selection){
 			push->SetType((reRigPush::ePushTypes)(intptr_t)selection->GetData());
@@ -140,7 +140,7 @@ public:
 	typedef deTObjectReference<cEditPosition> Ref;
 	cEditPosition(reWPPush &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual void OnChanged(const decVector &vector, reRig *rig, reRigPush *push){
+	void OnChanged(const decVector &vector, reRig *rig, reRigPush *push) override{
 		push->SetPosition(vector);
 	}
 };
@@ -150,7 +150,7 @@ public:
 	typedef deTObjectReference<cEditRotation> Ref;
 	cEditRotation(reWPPush &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual void OnChanged(const decVector &vector, reRig *rig, reRigPush *push){
+	void OnChanged(const decVector &vector, reRig *rig, reRigPush *push) override{
 		push->SetOrientation(vector);
 	}
 };
@@ -160,7 +160,7 @@ public:
 	typedef deTObjectReference<cTextImpuls> Ref;
 	cTextImpuls(reWPPush &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual void OnChanged(igdeTextField *textField, reRig *rig, reRigPush *push){
+	void OnChanged(igdeTextField *textField, reRig *rig, reRigPush *push) override{
 		push->SetImpuls(textField->GetFloat());
 	}
 };
@@ -170,7 +170,7 @@ public:
 	typedef deTObjectReference<cTextRayCount> Ref;
 	cTextRayCount(reWPPush &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual void OnChanged(igdeTextField *textField, reRig *rig, reRigPush *push){
+	void OnChanged(igdeTextField *textField, reRig *rig, reRigPush *push) override{
 		push->SetRayCount(textField->GetInteger());
 	}
 };
@@ -180,7 +180,7 @@ public:
 	typedef deTObjectReference<cTextConeAngle> Ref;
 	cTextConeAngle(reWPPush &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual void OnChanged(igdeTextField *textField, reRig *rig, reRigPush *push){
+	void OnChanged(igdeTextField *textField, reRig *rig, reRigPush *push) override{
 		push->SetConeAngle(textField->GetFloat());
 	}
 };

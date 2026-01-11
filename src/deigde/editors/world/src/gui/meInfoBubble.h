@@ -66,7 +66,7 @@ public:
 	
 protected:
 	/** \brief Clean up information bubble. */
-	virtual ~meInfoBubble();
+	~meInfoBubble() override;
 	/*@}*/
 	
 	

@@ -111,9 +111,9 @@ public:
 	inline const meCLHitListEntry::List &GetCollectedElements() const{ return pElements; }
 	
 	
-	virtual void CollisionResponse(deCollider *owner, deCollisionInfo *info);
-	virtual bool CanHitCollider(deCollider *owner, deCollider *collider);
-	virtual void ColliderChanged(deCollider *owner);
+	void CollisionResponse(deCollider *owner, deCollisionInfo *info) override;
+	bool CanHitCollider(deCollider *owner, deCollider *collider) override;
+	void ColliderChanged(deCollider *owner) override;
 	/*@}*/
 };
 

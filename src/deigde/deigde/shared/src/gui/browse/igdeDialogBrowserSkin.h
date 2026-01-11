@@ -46,7 +46,7 @@ public:
 	
 protected:
 	/** \brief Clean up selection dialog. */
-	virtual ~igdeDialogBrowserSkin();
+	~igdeDialogBrowserSkin() override;
 	/*@}*/
 	
 	
@@ -72,10 +72,10 @@ public:
 	
 	
 protected:
-	virtual igdeGDCategory *GetRootCategory() const;
-	virtual void AddItemsToList(igdeGDAddToListVisitor &visitor);
-	virtual void RebuildItemPreview(igdeGDPreviewManager &pvmgr, igdeGDPreviewListener *listener);
-	virtual void GetSelectedItemInfo(decString &info);
+	igdeGDCategory *GetRootCategory() const override;
+	void AddItemsToList(igdeGDAddToListVisitor &visitor) override;
+	void RebuildItemPreview(igdeGDPreviewManager &pvmgr, igdeGDPreviewListener *listener) override;
+	void GetSelectedItemInfo(decString &info) override;
 };
 
 #endif

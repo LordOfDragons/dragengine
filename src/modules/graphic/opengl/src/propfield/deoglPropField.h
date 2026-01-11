@@ -67,7 +67,7 @@ public:
 	deoglPropField(deGraphicOpenGl &ogl, dePropField &propField);
 	
 	/** Clean up peer. */
-	virtual ~deoglPropField();
+	~deoglPropField() override;
 	/*@}*/
 	
 	
@@ -121,37 +121,37 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Ground changed. */
-	virtual void GroundChanged();
+	void GroundChanged() override;
 	
 	
 	
 	/** Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	
 	
 	/** Type has been added. */
-	virtual void TypeAdded(int index, dePropFieldType *type);
+	void TypeAdded(int index, dePropFieldType *type) override;
 	
 	/** Type has been removed. */
-	virtual void TypeRemoved(int index, dePropFieldType *type);
+	void TypeRemoved(int index, dePropFieldType *type) override;
 	
 	/** All types have been removed. */
-	virtual void AllTypesRemoved();
+	void AllTypesRemoved() override;
 	
 	/** Type changed. */
-	virtual void TypeChanged(int index, dePropFieldType *type);
+	void TypeChanged(int index, dePropFieldType *type) override;
 	
 	
 	
 	/** Instances changed. */
-	virtual void InstancesChanged(int index, dePropFieldType *type);
+	void InstancesChanged(int index, dePropFieldType *type) override;
 	
 	/** Instances to Bend States assignments changed. */
-	virtual void AssignmentsChanged(int index, dePropFieldType *type);
+	void AssignmentsChanged(int index, dePropFieldType *type) override;
 	
 	/** Bend States changed. */
-	virtual void BendStatesChanged(int index, dePropFieldType *type);
+	void BendStatesChanged(int index, dePropFieldType *type) override;
 	/*@}*/
 	
 private:

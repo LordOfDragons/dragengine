@@ -68,7 +68,7 @@ public:
 	
 protected:
 	/** Clean up render environment map probe. */
-	virtual ~deoglREnvMapProbe();
+	~deoglREnvMapProbe() override;
 	/*@}*/
 	
 	

@@ -40,7 +40,7 @@ public:
 	deDEAnimator(deLoadableModule &loadableModule);
 	
 	/** Clean up animator module. */
-	virtual ~deDEAnimator();
+	~deDEAnimator() override;
 	/*@}*/
 	
 	
@@ -48,10 +48,10 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** Initialize module. */
-	virtual bool Init();
+	bool Init() override;
 	
 	/** Shut down module and clean up. */
-	virtual void CleanUp();
+	void CleanUp() override;
 	/*@}*/
 	
 	
@@ -59,16 +59,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Create peer for animator. */
-	virtual deBaseAnimatorAnimator *CreateAnimator(deAnimator *animator);
+	deBaseAnimatorAnimator *CreateAnimator(deAnimator *animator) override;
 	
 	/** Create peer for animator instance. */
-	virtual deBaseAnimatorAnimatorInstance *CreateAnimatorInstance(deAnimatorInstance *instance);
+	deBaseAnimatorAnimatorInstance *CreateAnimatorInstance(deAnimatorInstance *instance) override;
 	
 	/** Create peer for animation. */
-	virtual deBaseAnimatorAnimation *CreateAnimation(deAnimation *animation);
+	deBaseAnimatorAnimation *CreateAnimation(deAnimation *animation) override;
 	
 	/** Create peer for component. */
-	virtual deBaseAnimatorComponent *CreateComponent(deComponent *component);
+	deBaseAnimatorComponent *CreateComponent(deComponent *component) override;
 	/*@}*/
 };
 

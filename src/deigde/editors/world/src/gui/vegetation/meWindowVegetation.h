@@ -65,7 +65,7 @@ public:
 	
 protected:
 	/** \brief Clean up view. */
-	virtual ~meWindowVegetation();
+	~meWindowVegetation() override;
 	/*@}*/
 	
 	

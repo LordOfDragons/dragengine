@@ -61,7 +61,7 @@ public:
 	
 protected:
 	/** Clean up the animation move. */
-	virtual ~dearAnimationMove();
+	~dearAnimationMove() override;
 	/*@}*/
 	
 	

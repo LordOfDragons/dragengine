@@ -71,7 +71,7 @@ public:
 	
 	/** \brief Clean up font image view. */
 protected:
-	virtual ~feViewFontImage();
+	~feViewFontImage() override;
 public:
 	/*@}*/
 	
@@ -97,7 +97,7 @@ public:
 	void OnBeforeEngineStop();
 	
 	/** \brief Widget size changed. */
-	virtual void OnResize();
+	void OnResize() override;
 	
 	
 	

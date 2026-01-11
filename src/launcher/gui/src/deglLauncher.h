@@ -67,7 +67,7 @@ public:
 	deglLauncher(deglWindowMain *windowMain, int argc, char **argv);
 	
 	/** Clean up launcher. */
-	virtual ~deglLauncher();
+	~deglLauncher() override;
 	/*@}*/
 	
 	

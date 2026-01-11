@@ -48,7 +48,7 @@ public:
 	/** Creates a new script class. */
 	deClassMath(deScriptingDragonScript *ds);
 	/** Cleans up the script class. */
-	virtual ~deClassMath();
+	~deClassMath() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -56,7 +56,7 @@ public:
 	/** Retrieves the module. */
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/** Creates class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	/*@}*/
 	
 private:

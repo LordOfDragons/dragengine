@@ -61,7 +61,7 @@ protected:
 public:
 	cBaseTextFieldListener(syneWPAPanelEffectStretch &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		syneEffectStretch * const effect = (syneEffectStretch*)pPanel.GetEffect();
 		if(!effect){
 			return;
@@ -82,7 +82,7 @@ public:
 	typedef deTObjectReference<cTextMinTime> Ref;
 	cTextMinTime(syneWPAPanelEffectStretch &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo::Ref  OnChanged(igdeTextField *textField, syneEffectStretch *effect){
+	igdeUndo::Ref  OnChanged(igdeTextField *textField, syneEffectStretch *effect) override{
 		const float value = textField->GetFloat();
 		return fabsf(value - effect->GetMinTime()) > FLOAT_SAFE_EPSILON
 			? syneUEffectStretchSetMinTime::Ref::New(effect, value) : igdeUndo::Ref();
@@ -94,7 +94,7 @@ public:
 	typedef deTObjectReference<cTextMaxTime> Ref;
 	cTextMaxTime(syneWPAPanelEffectStretch &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo::Ref  OnChanged(igdeTextField *textField, syneEffectStretch *effect){
+	igdeUndo::Ref  OnChanged(igdeTextField *textField, syneEffectStretch *effect) override{
 		const float value = textField->GetFloat();
 		return fabsf(value - effect->GetMaxTime()) > FLOAT_SAFE_EPSILON
 			? syneUEffectStretchSetMaxTime::Ref::New(effect, value) : igdeUndo::Ref();
@@ -106,7 +106,7 @@ public:
 	typedef deTObjectReference<cTextMinPitch> Ref;
 	cTextMinPitch(syneWPAPanelEffectStretch &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo::Ref  OnChanged(igdeTextField *textField, syneEffectStretch *effect){
+	igdeUndo::Ref  OnChanged(igdeTextField *textField, syneEffectStretch *effect) override{
 		const float value = textField->GetFloat();
 		return fabsf(value - effect->GetMinPitch()) > FLOAT_SAFE_EPSILON
 			? syneUEffectStretchSetMinPitch::Ref::New(effect, value) : igdeUndo::Ref();
@@ -118,7 +118,7 @@ public:
 	typedef deTObjectReference<cTextMaxPitch> Ref;
 	cTextMaxPitch(syneWPAPanelEffectStretch &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo::Ref  OnChanged(igdeTextField *textField, syneEffectStretch *effect){
+	igdeUndo::Ref  OnChanged(igdeTextField *textField, syneEffectStretch *effect) override{
 		const float value = textField->GetFloat();
 		return fabsf(value - effect->GetMaxPitch()) > FLOAT_SAFE_EPSILON
 			? syneUEffectStretchSetMaxPitch::Ref::New(effect, value) : igdeUndo::Ref();

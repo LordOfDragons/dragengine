@@ -59,7 +59,7 @@ public:
 	
 protected:
 	/** \brief Clean up controller target. */
-	~skyeControllerTarget();
+	~skyeControllerTarget() override;
 	/*@}*/
 	
 	

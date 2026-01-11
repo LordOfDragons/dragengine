@@ -75,7 +75,7 @@ protected:
 	 * \warning Subclass is responsible to calls StopEngine to shut down the engine
 	 *          before starting cleaning up widgets.
 	 */
-	virtual ~igdeMainWindow();
+	~igdeMainWindow() override;
 	/*@}*/
 	
 	
@@ -138,7 +138,7 @@ public:
 	
 	
 	/** \brief Close window bypassing CloseWindow(). */
-	virtual void Close();
+	void Close() override;
 	
 	
 	
@@ -159,19 +159,19 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Drop native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DropNativeWidget();
+	void DropNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
 	/*@}*/
 	
 	
@@ -181,31 +181,31 @@ protected:
 	 * \brief Window title changed.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void OnTitleChanged();
+	void OnTitleChanged() override;
 	
 	/**
 	 * \brief Window icon changed.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void OnIconChanged();
+	void OnIconChanged() override;
 	
 	/**
 	 * \brief Window size changed.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void OnSizeChanged();
+	void OnSizeChanged() override;
 	
 	/**
 	 * \brief Window position changed.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void OnPositionChanged();
+	void OnPositionChanged() override;
 	
 	/** \brief Visible changed. */
-	virtual void OnVisibleChanged();
+	void OnVisibleChanged() override;
 	
 	/** \brief Enabled changed. */
-	virtual void OnEnabledChanged();
+	void OnEnabledChanged() override;
 	
 	/** \brief Window state changed. */
 	virtual void OnWindowStateChanged();

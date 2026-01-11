@@ -58,7 +58,7 @@ public:
 	deglPEListItemModule(deglPanelEngine *panelEngine, delEngineModule *module);
 	
 	/** Clean up list item. */
-	virtual ~deglPEListItemModule();
+	~deglPEListItemModule() override;
 	/*@}*/
 	
 	

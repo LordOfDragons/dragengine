@@ -57,7 +57,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       vectorer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeEditVector2Listener();
+	~igdeEditVector2Listener() override;
 	/*@}*/
 	
 	

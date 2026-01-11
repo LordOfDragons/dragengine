@@ -52,7 +52,7 @@ public:
 	
 	/** Clean up listener. */
 protected:
-	virtual ~seSkinListener();
+	~seSkinListener() override;
 public:
 	/*@}*/
 	

@@ -56,7 +56,7 @@ protected:
 	/** \brief Clean up undo object. */
 
 protected:
-	virtual ~meUObjectSetProperty();
+	~meUObjectSetProperty() override;
 
 public:
 	/*@}*/
@@ -68,9 +68,9 @@ public:
 	void SetNewValue(const char *value);
 	
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/** Progressive redo. */
 	void ProgressiveRedo();
 	/*@}*/

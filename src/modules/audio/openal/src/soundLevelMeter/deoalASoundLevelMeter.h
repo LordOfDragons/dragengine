@@ -87,7 +87,7 @@ public:
 	
 protected:
 	/** \brief Clean up microphone. */
-	virtual ~deoalASoundLevelMeter();
+	~deoalASoundLevelMeter() override;
 	/*@}*/
 	
 	

@@ -60,7 +60,7 @@ public:
 	
 protected:
 	/** \brief Clean up object wrapper sub object. */
-	virtual ~igdeWOSOEnvMapProbe();
+	~igdeWOSOEnvMapProbe() override;
 	
 public:
 	/*@}*/
@@ -73,23 +73,23 @@ public:
 	inline const deEnvMapProbe::Ref &GetEnvMapProbe() const{ return pEnvMapProbe; }
 	
 	/** \brief Update parameters. */
-	virtual void UpdateParameters();
+	void UpdateParameters() override;
 	
 	/** \brief Layer masks changed. */
-	virtual void UpdateLayerMasks();
+	void UpdateLayerMasks() override;
 	
 	/** \brief All sub components finished loading. */
-	virtual void OnAllSubObjectsFinishedLoading();
+	void OnAllSubObjectsFinishedLoading() override;
 	
 	/** \brief Visit. */
-	virtual void Visit(igdeWOSOVisitor &visitor);
+	void Visit(igdeWOSOVisitor &visitor) override;
 	/*@}*/
 	
 	
 	
 protected:
-	void AttachToCollider();
-	void DetachFromCollider();
+	void AttachToCollider() override;
+	void DetachFromCollider() override;
 	
 	
 	

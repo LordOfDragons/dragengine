@@ -40,7 +40,7 @@ public:
 	projIGDEModule(igdeEnvironment &environment);
 	
 	/** \brief Clean up module. */
-	virtual ~projIGDEModule();
+	~projIGDEModule() override;
 	/*@}*/
 	
 	
@@ -48,7 +48,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Start module. */
-	virtual void Start();
+	void Start() override;
 	
 	/**
 	 * \brief Process command line arguments.
@@ -59,7 +59,7 @@ public:
 	 * wishes to close the application it has to return false. Return true to continue
 	 * processing command line arguments.
 	 */
-	virtual bool ProcessCommandLine(decUnicodeStringList &arguments);
+	bool ProcessCommandLine(decUnicodeStringList &arguments) override;
 	/*@}*/
 };
 

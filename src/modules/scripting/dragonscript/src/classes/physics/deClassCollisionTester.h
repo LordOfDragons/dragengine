@@ -52,7 +52,7 @@ public:
 	/** \brief Creates a new class. */
 	deClassCollisionTester(deScriptingDragonScript &ds);
 	/** \brief Cleans up the class. */
-	virtual ~deClassCollisionTester();
+	~deClassCollisionTester() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -61,7 +61,7 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Creates the class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	
 	

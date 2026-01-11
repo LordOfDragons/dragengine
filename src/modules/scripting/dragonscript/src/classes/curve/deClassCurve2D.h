@@ -53,7 +53,7 @@ public:
 	/** Creates a new class. */
 	deClassCurve2D(deScriptingDragonScript *ds);
 	/** Cleans up the class. */
-	virtual ~deClassCurve2D();
+	~deClassCurve2D() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -61,7 +61,7 @@ public:
 	/** Retrieves the module. */
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/** Creates class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** Retrieves the curve. */
 	const decCurve2D &GetCurve(dsRealObject *myself) const;

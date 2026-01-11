@@ -99,7 +99,7 @@ public:
 	
 	/** \brief Clean up controller. */
 protected:
-	virtual ~peeType();
+	~peeType() override;
 public:
 	/*@}*/
 	

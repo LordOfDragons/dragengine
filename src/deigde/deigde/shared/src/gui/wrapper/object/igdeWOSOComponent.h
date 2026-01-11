@@ -82,7 +82,7 @@ public:
 	
 protected:
 	/** \brief Clean up object wrapper sub object. */
-	virtual ~igdeWOSOComponent();
+	~igdeWOSOComponent() override;
 	
 public:
 	/*@}*/	
@@ -166,8 +166,8 @@ public:
 	
 	
 protected:
-	void AttachToCollider();
-	void DetachFromCollider();
+	void AttachToCollider() override;
+	void DetachFromCollider() override;
 	
 	
 	

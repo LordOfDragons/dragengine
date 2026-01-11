@@ -72,7 +72,7 @@ public:
 	igdeNativeFoxNVBoard(igdeNVBoard &owner, FXComposite *parent, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxNVBoard();
+	~igdeNativeFoxNVBoard() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeFoxNVBoard* CreateNativeWidget(igdeNVBoard &owner);
@@ -88,7 +88,7 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual FXbool canFocus() const;
+	FXbool canFocus() const override;
 	
 	
 	

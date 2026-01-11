@@ -91,7 +91,7 @@ public:
 	typedef deTObjectReference<cTreeSources> Ref;
 	cTreeSources(syneWPSource &panel) : pPanel(panel){}
 	
-	virtual void OnSelectionChanged(igdeTreeList *treeList){
+	void OnSelectionChanged(igdeTreeList *treeList) override{
 		syneSynthesizer * const synthesizer = pPanel.GetSynthesizer();
 		if(!synthesizer){
 			return;
@@ -107,7 +107,7 @@ public:
 		synthesizer->SetActiveSource(selection ? (syneSource*)selection->GetData() : nullptr);
 	}
 	
-	virtual void OnItemExpanded(igdeTreeList*, igdeTreeItem *item){
+	void OnItemExpanded(igdeTreeList*, igdeTreeItem *item) override{
 		syneSource * const source = (syneSource*)item->GetData();
 		if(!source){
 			return;
@@ -118,7 +118,7 @@ public:
 		}
 	}
 	
-	virtual void OnItemCollapsed(igdeTreeList*, igdeTreeItem *item){
+	void OnItemCollapsed(igdeTreeList*, igdeTreeItem *item) override{
 		syneSource * const source = (syneSource*)item->GetData();
 		if(!source){
 			return;
@@ -129,7 +129,7 @@ public:
 		}
 	}
 	
-	virtual void AddContextMenuEntries(igdeTreeList*, igdeMenuCascade &menu){
+	void AddContextMenuEntries(igdeTreeList*, igdeMenuCascade &menu) override{
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		
 		const syneWindowMain &windowMain = pPanel.GetViewSynthesizer().GetWindowMain();

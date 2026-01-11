@@ -52,7 +52,7 @@ public:
 	reRigNotifier();
 	/** Cleans up the rig notifier. */
 protected:
-	virtual ~reRigNotifier();
+	~reRigNotifier() override;
 public:
 	/*@}*/
 	

@@ -59,7 +59,7 @@ public:
 	
 protected:
 	/** \brief Clean up the undo object. */
-	virtual ~syneUPasteSource();
+	~syneUPasteSource() override;
 	/*@}*/
 	
 	
@@ -68,10 +68,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -134,7 +134,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~igdeWPWObject();
+	~igdeWPWObject() override;
 	/*@}*/
 	
 	
@@ -178,10 +178,10 @@ public:
 	virtual void OnAction();
 	
 	/** \brief Action parameters changed. */
-	virtual void OnParameterChanged(igdeAction *action);
+	void OnParameterChanged(igdeAction *action) override;
 	
 	/** \brief Action has been destroyed. */
-	virtual void OnDestroyed(igdeAction *action);
+	void OnDestroyed(igdeAction *action) override;
 	/*@}*/
 	
 	

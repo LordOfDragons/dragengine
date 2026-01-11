@@ -50,7 +50,7 @@ public:
 	projProjectXml(deLogger *logger, const char *loggerSource);
 	
 	/** \brief Clean up xml project. */
-	virtual ~projProjectXml();
+	~projProjectXml() override;
 	/*@}*/
 	
 	

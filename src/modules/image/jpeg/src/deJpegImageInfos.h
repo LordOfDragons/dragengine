@@ -64,7 +64,7 @@ public:
 	/** Creates a new information object. */
 	deJpegImageInfo(deJpegModule *module, const char *filename);
 	/** Cleans up the information object. */
-	virtual ~deJpegImageInfo();
+	~deJpegImageInfo() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -110,15 +110,15 @@ public:
 	/** @name Notifications */
 	/*@{*/
 	/** Retrieves the width in pixels. */
-	virtual int GetWidth();
+	int GetWidth() override;
 	/** Retrieves the height in pixels. */
-	virtual int GetHeight();
+	int GetHeight() override;
 	/** Retrieves the depth in pixels. */
-	virtual int GetDepth();
+	int GetDepth() override;
 	/** Retrieves the number of components. */
-	virtual int GetComponentCount();
+	int GetComponentCount() override;
 	/** Retrieves the bit count of each component. */
-	virtual int GetBitCount();
+	int GetBitCount() override;
 	/*@}*/
 };
 

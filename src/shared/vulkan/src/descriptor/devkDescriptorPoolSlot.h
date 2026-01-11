@@ -60,7 +60,7 @@ public:
 	
 protected:
 	/** Clean up descriptor pool slot. */
-	virtual ~devkDescriptorPoolSlot();
+	~devkDescriptorPoolSlot() override;
 	/*@}*/
 	
 	

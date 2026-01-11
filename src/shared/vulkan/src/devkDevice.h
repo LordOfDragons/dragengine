@@ -184,7 +184,7 @@ public:
 	
 protected:
 	/** Clean up device. */
-	virtual ~devkDevice();
+	~devkDevice() override;
 	/*@}*/
 	
 	

@@ -52,7 +52,7 @@ public:
 	
 protected:
 	/** Cleans up the skin renderable. */
-	virtual ~deoglSkinRenderable();
+	~deoglSkinRenderable() override;
 	/*@}*/
 	
 	

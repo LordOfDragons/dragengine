@@ -56,7 +56,7 @@ public:
 	
 protected:
 	/** Clean up skin mapped. */
-	virtual ~deoglSkinMapped();
+	~deoglSkinMapped() override;
 	/*@}*/
 	
 	

@@ -65,7 +65,7 @@ public:
 	inline ceConversationAction *GetAction() const{ return pAction; }
 	
 	/** \brief Do menu action. */
-	virtual void OnAction();
+	void OnAction() override;
 	/*@}*/
 };
 

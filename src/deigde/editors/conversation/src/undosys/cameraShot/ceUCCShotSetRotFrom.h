@@ -54,7 +54,7 @@ public:
 	ceUCCShotSetRotFrom(ceCameraShot *cameraShot, const decVector &newRot);
 	/** \brief Cleans up the undo action. */
 protected:
-	virtual ~ceUCCShotSetRotFrom();
+	~ceUCCShotSetRotFrom() override;
 public:
 	/*@}*/
 	
@@ -62,9 +62,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

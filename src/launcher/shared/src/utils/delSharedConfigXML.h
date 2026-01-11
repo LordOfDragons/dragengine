@@ -42,7 +42,7 @@ public:
 	delSharedConfigXML(deLogger *logger, const char *loggingSource);
 	
 	/** \brief Clean up shared config xml read/save. */
-	virtual ~delSharedConfigXML();
+	~delSharedConfigXML() override;
 	/*@}*/
 	
 	

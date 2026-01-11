@@ -58,7 +58,7 @@ public:
 	igdeNativeFoxToolBarDock(igdeToolBarDock &owner, FXComposite *parent);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxToolBarDock();
+	~igdeNativeFoxToolBarDock() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeFoxToolBarDock* CreateNativeWidget(igdeToolBarDock &owner);

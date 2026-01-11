@@ -116,7 +116,7 @@ public:
 	
 	/** Clean up gesture. */
 protected:
-	virtual ~ceGesture();
+	~ceGesture() override;
 public:
 	/*@}*/
 	

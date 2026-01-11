@@ -77,7 +77,7 @@ public:
 	
 protected:
 	/** Clean up shared shader parameter block. */
-	virtual ~deoglSharedBlockSPB();
+	~deoglSharedBlockSPB() override;
 	/*@}*/
 	
 	

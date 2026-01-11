@@ -137,7 +137,7 @@ public:
 	typedef deTObjectReference<cBaseTextField> Ref;
 	cBaseTextField(aeWPController &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeController * const controller = pPanel.GetController();
 		if(!animator || !controller){
@@ -228,14 +228,14 @@ public:
 	typedef deTObjectReference<cListControllers> Ref;
 	cListControllers(aeWPController &panel) : pPanel(panel){}
 	
-	virtual void OnSelectionChanged(igdeListBox *listBox){
+	void OnSelectionChanged(igdeListBox *listBox) override{
 		if(pPanel.GetAnimator()){
 			pPanel.GetAnimator()->SetActiveController(listBox->GetSelectedItem()
 				? (aeController*)listBox->GetSelectedItem()->GetData() : nullptr);
 		}
 	}
 	
-	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
+	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
 		const aeWindowMain &windowMain = pPanel.GetWindowProperties().GetWindowMain();
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		
@@ -353,14 +353,14 @@ public:
 	typedef deTObjectReference<cSlideValue> Ref;
 	cSlideValue(aeWPController &panel) : pPanel(panel){}
 	
-	virtual void OnSliderTextValueChanged(igdeEditSliderText *sliderText){
+	void OnSliderTextValueChanged(igdeEditSliderText *sliderText) override{
 		aeController * const controller = pPanel.GetController();
 		if(controller){
 			controller->SetCurrentValue(sliderText->GetValue());
 		}
 	}
 	
-	virtual void OnSliderTextValueChanging(igdeEditSliderText *sliderText){
+	void OnSliderTextValueChanging(igdeEditSliderText *sliderText) override{
 		OnSliderTextValueChanged(sliderText);
 	}
 };
@@ -372,7 +372,7 @@ public:
 	typedef deTObjectReference<cEditVector> Ref;
 	cEditVector(aeWPController &panel) : pPanel(panel){}
 	
-	virtual void OnVectorChanged(igdeEditVector *editVector){
+	void OnVectorChanged(igdeEditVector *editVector) override{
 		aeController * const controller = pPanel.GetController();
 		if(controller){
 			controller->SetVector(editVector->GetVector());
@@ -423,7 +423,7 @@ public:
 	typedef deTObjectReference<cComboLocoAttr> Ref;
 	cComboLocoAttr(aeWPController &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		aeController * const controller = pPanel.GetController();
 		if(controller && comboBox->GetSelectedItem()){
 			controller->SetLocomotionAttribute((aeAnimatorLocomotion::eLocomotionTypes)
@@ -453,7 +453,7 @@ public:
 	typedef deTObjectReference<cComboVectorSimulation> Ref;
 	cComboVectorSimulation(aeWPController &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		aeController * const controller = pPanel.GetController();
 		if(controller && comboBox->GetSelectedItem()){
 			controller->SetVectorSimulation((aeController::eVectorSimulation)
@@ -481,7 +481,7 @@ public:
 	typedef deTObjectReference<cEditDefaultVector> Ref;
 	cEditDefaultVector(aeWPController &panel) : pPanel(panel){}
 	
-	virtual void OnVectorChanged(igdeEditVector *editVector){
+	void OnVectorChanged(igdeEditVector *editVector) override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeController * const controller = pPanel.GetController();
 		if(!animator || !controller){

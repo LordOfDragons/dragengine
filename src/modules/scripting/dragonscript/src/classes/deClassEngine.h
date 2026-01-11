@@ -51,7 +51,7 @@ public:
 	deClassEngine(deScriptingDragonScript &ds);
 	
 	/** Clean up script class. */
-	virtual ~deClassEngine();
+	~deClassEngine() override;
 	
 	
 	
@@ -61,7 +61,7 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** Create class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** Debug timer. */
 	inline decTimer &GetDebugTimer(){ return pDebugTimer; }

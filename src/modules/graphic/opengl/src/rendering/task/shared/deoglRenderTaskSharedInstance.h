@@ -70,7 +70,7 @@ public:
 	
 protected:
 	/** Clean up shared render task instance. */
-	virtual ~deoglRenderTaskSharedInstance();
+	~deoglRenderTaskSharedInstance() override;
 	/*@}*/
 	
 	

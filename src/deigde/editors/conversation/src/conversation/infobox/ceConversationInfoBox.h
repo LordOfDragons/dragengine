@@ -72,7 +72,7 @@ public:
 	
 	/** \brief Clean up text box. */
 protected:
-	~ceConversationInfoBox();
+	~ceConversationInfoBox() override;
 public:
 	/*@}*/
 	

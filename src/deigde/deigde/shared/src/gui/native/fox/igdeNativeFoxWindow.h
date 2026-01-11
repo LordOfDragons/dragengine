@@ -58,7 +58,7 @@ public:
 	igdeNativeFoxWindow(igdeWindow &owner, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxWindow();
+	~igdeNativeFoxWindow() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeFoxWindow* CreateNativeWidget(igdeWindow &owner);

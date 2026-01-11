@@ -113,7 +113,7 @@ public:
 	
 	virtual igdeUndo::Ref OnAction(seSkin *skin, seProperty *property) = 0;
 	
-	virtual void Update(){
+	void Update() override{
 		seSkin * const skin = pView.GetSkin();
 		seProperty * const property = pView.GetActiveProperty();
 		if(skin && property){
@@ -136,7 +136,7 @@ public:
 	cBaseActionNode(seViewConstructedView &view, const char *text, igdeIcon *icon,
 		const char *description) : cBaseAction(view, text, icon, description){}
 	
-	virtual igdeUndo::Ref OnAction(seSkin *skin, seProperty *property){
+	igdeUndo::Ref OnAction(seSkin *skin, seProperty *property) override{
 		sePropertyNode * const node = pView.GetActiveNode();
 		return node ? OnActionNode(skin, property, node) : igdeUndo::Ref();
 	}
@@ -259,7 +259,7 @@ public:
 	cActionRemoveNode(seViewConstructedView &view) : cBaseActionNode(view, "Remove Nodes",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove nodes"){}
 	
-	virtual igdeUndo::Ref OnActionNode(seSkin*, seProperty *property, sePropertyNode *node){
+	igdeUndo::Ref OnActionNode(seSkin*, seProperty *property, sePropertyNode *node) override{
 		return seUPNGroupRemoveNodes::Ref::New(node->GetParent(), property->GetNodeSelection().GetSelected());
 	}
 };
@@ -270,7 +270,7 @@ public:
 	cActionCopyNode(seViewConstructedView &view) : cBaseActionNode(view, "Copy Nodes",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy), "Copy nodes"){}
 	
-	virtual igdeUndo::Ref OnActionNode(seSkin*, seProperty *property, sePropertyNode*){
+	igdeUndo::Ref OnActionNode(seSkin*, seProperty *property, sePropertyNode*) override{
 		pView.GetWindowMain().GetClipboard().Set(seClipboardDataPropertyNode::Ref::New(
 			property->GetNodeSelection().GetSelected()));
 		return {};
@@ -283,7 +283,7 @@ public:
 	cActionCutNode(seViewConstructedView &view) : cBaseActionNode(view, "Cut Nodes",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut), "Cut nodes"){}
 	
-	virtual igdeUndo::Ref OnActionNode(seSkin*, seProperty *property, sePropertyNode *node){
+	igdeUndo::Ref OnActionNode(seSkin*, seProperty *property, sePropertyNode *node) override{
 		pView.GetWindowMain().GetClipboard().Set(seClipboardDataPropertyNode::Ref::New(
 			property->GetNodeSelection().GetSelected()));
 		
@@ -318,7 +318,7 @@ public:
 	cActionEnterGroup(seViewConstructedView &view) : cBaseActionNode(view, "Enter Group",
 		nullptr, "Enter group"){}
 	
-	virtual igdeUndo::Ref OnActionNode(seSkin*, seProperty *property, sePropertyNode *node){
+	igdeUndo::Ref OnActionNode(seSkin*, seProperty *property, sePropertyNode *node) override{
 		if(node->GetNodeType() == sePropertyNode::entGroup){
 			property->GetNodeSelection().RemoveAll();
 			property->SetActiveNodeGroup((sePropertyNodeGroup*)node);
@@ -385,7 +385,7 @@ public:
 	cActionUngroupNodes(seViewConstructedView &view) : cBaseActionNode(view, "Ungroup Nodes",
 		nullptr, "Ungroup Nodes"){}
 	
-	virtual igdeUndo::Ref OnActionNode(seSkin*, seProperty*, sePropertyNode *node){
+	igdeUndo::Ref OnActionNode(seSkin*, seProperty*, sePropertyNode *node) override{
 		return node->GetNodeType() == sePropertyNode::entGroup
 			? seUPNUngroupNodes::Ref::New((sePropertyNodeGroup*)node) : igdeUndo::Ref();
 	}
@@ -401,7 +401,7 @@ public:
 	cBaseMoveNodes(seViewConstructedView &view, const char *text, igdeIcon *icon,
 		const char *description) : cBaseActionNode(view, text, icon, description){}
 	
-	virtual igdeUndo::Ref OnActionNode(seSkin *skin, seProperty *property, sePropertyNode *node){
+	igdeUndo::Ref OnActionNode(seSkin *skin, seProperty *property, sePropertyNode *node) override{
 		seUPNGroupMoveNodes::Ref undo;
 		if(node){
 			undo = CreateUndo(skin, property, node);
@@ -465,7 +465,7 @@ public:
 	cActionSetMask(seViewConstructedView &view) : cBaseActionNode(view, "Set Mask",
 		nullptr, "Set Mask"){}
 	
-	virtual igdeUndo::Ref OnActionNode(seSkin*, seProperty *property, sePropertyNode *node){
+	igdeUndo::Ref OnActionNode(seSkin*, seProperty *property, sePropertyNode *node) override{
 		const sePropertyNode::List &selection = property->GetNodeSelection().GetSelected();
 		if(node->GetMask() || selection.GetCount() != 2){
 			return {};
@@ -489,7 +489,7 @@ public:
 	cActionRemoveMask(seViewConstructedView &view) : cBaseActionNode(view, "Remove Mask",
 		nullptr, "Remove Mask"){}
 	
-	virtual igdeUndo::Ref OnActionNode(seSkin*, seProperty*, sePropertyNode *node){
+	igdeUndo::Ref OnActionNode(seSkin*, seProperty*, sePropertyNode *node) override{
 		return node->GetMask() ? seUPropertyNodeRemoveMask::Ref::New(node) : seUPropertyNodeRemoveMask::Ref();
 	}
 	
@@ -504,7 +504,7 @@ public:
 	cActionSizeFromImage(seViewConstructedView &view) : cBaseActionNode(view,
 		"Size from image size", nullptr, "Set image size to constructed size"){}
 	
-	virtual igdeUndo::Ref OnActionNode(seSkin*, seProperty*, sePropertyNode *node){
+	igdeUndo::Ref OnActionNode(seSkin*, seProperty*, sePropertyNode *node) override{
 		return node->GetNodeType() == sePropertyNode::entImage
 			&& ((sePropertyNodeImage*)node)->GetImage()
 			? seUPropertyNodeImageSizeFromImage::Ref::New((sePropertyNodeImage*)node) : igdeUndo::Ref();

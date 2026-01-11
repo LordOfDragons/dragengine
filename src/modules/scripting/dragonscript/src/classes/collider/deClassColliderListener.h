@@ -41,10 +41,10 @@ private:
 public:
 	// constructor
 	deClassColliderListener(deEngine *gameEngine, deScriptingDragonScript *scrMgr);
-	~deClassColliderListener();
+	~deClassColliderListener() override;
 	// internal functions
 	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	inline deEngine *GetGameEngine() const{ return pGameEngine; }
 	
 	/** \brief Function index for collisionResponse(). */

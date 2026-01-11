@@ -54,7 +54,7 @@ public:
 	igdeNativeFoxMenuOption(igdeMenuOption &owner, FXComposite *parent);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxMenuOption();
+	~igdeNativeFoxMenuOption() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeFoxMenuOption* CreateNativeWidget(igdeMenuOption &owner);

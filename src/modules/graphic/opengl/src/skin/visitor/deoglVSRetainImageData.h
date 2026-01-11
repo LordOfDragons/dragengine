@@ -76,22 +76,22 @@ public:
 	/** \name Visiting Property */
 	/*@{*/
 	/** Visit property. */
-	virtual void VisitProperty(deSkinProperty &property);
+	void VisitProperty(deSkinProperty &property) override;
 	
 	/** Visit single value property. */
-	virtual void VisitValue(deSkinPropertyValue &property);
+	void VisitValue(deSkinPropertyValue &property) override;
 	
 	/** Visit uniform color property. */
-	virtual void VisitColor(deSkinPropertyColor &property);
+	void VisitColor(deSkinPropertyColor &property) override;
 	
 	/** Visit image property. */
-	virtual void VisitImage(deSkinPropertyImage &property);
+	void VisitImage(deSkinPropertyImage &property) override;
 	
 	/** Visit video property. */
-	virtual void VisitVideo(deSkinPropertyVideo &property);
+	void VisitVideo(deSkinPropertyVideo &property) override;
 	
 	/** Visit complex property. */
-	virtual void VisitConstructed(deSkinPropertyConstructed &property);
+	void VisitConstructed(deSkinPropertyConstructed &property) override;
 	/*@}*/
 	
 	
@@ -99,19 +99,19 @@ public:
 	/** \name Visiting Node */
 	/*@{*/
 	/** Visit node. */
-	virtual void VisitNode(deSkinPropertyNode &node);
+	void VisitNode(deSkinPropertyNode &node) override;
 	
 	/** Visit group node. */
-	virtual void VisitGroup(deSkinPropertyNodeGroup &node);
+	void VisitGroup(deSkinPropertyNodeGroup &node) override;
 	
 	/** Visit image node. */
-	virtual void VisitImage(deSkinPropertyNodeImage &node);
+	void VisitImage(deSkinPropertyNodeImage &node) override;
 	
 	/** Visit shape node. */
-	virtual void VisitShape(deSkinPropertyNodeShape &node);
+	void VisitShape(deSkinPropertyNodeShape &node) override;
 	
 	/** Visit text node. */
-	virtual void VisitText(deSkinPropertyNodeText &node);
+	void VisitText(deSkinPropertyNodeText &node) override;
 	/*@}*/
 };
 

@@ -49,7 +49,7 @@ public:
 	gdeConfigurationXML(deLogger *logger, const char *loggerSource);
 	
 	/** \brief Clean up configuration xml read/save. */
-	virtual ~gdeConfigurationXML();
+	~gdeConfigurationXML() override;
 	/*@}*/
 	
 	

@@ -58,16 +58,16 @@ public:
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeUPasteRule();
+	~aeUPasteRule() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

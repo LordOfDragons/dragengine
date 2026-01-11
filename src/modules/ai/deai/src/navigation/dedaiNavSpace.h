@@ -56,7 +56,7 @@ public:
 	dedaiNavSpace(deDEAIModule &deai, const deNavigationSpace &navigationSpace);
 	
 	/** \brief Clean up peer. */
-	virtual ~dedaiNavSpace();
+	~dedaiNavSpace() override;
 	/*@}*/
 	
 	
@@ -88,28 +88,28 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	/** \brief Orientation changed. */
-	virtual void OrientationChanged();
+	void OrientationChanged() override;
 	
 	/** \brief Layer changed. */
-	virtual void LayerChanged();
+	void LayerChanged() override;
 	
 	/** \brief Type changed. */
-	virtual void TypeChanged();
+	void TypeChanged() override;
 	
 	/** \brief Snapping parameters changed. */
-	virtual void SnappingChanged();
+	void SnappingChanged() override;
 	
 	/** \brief Blocker shape list changed. */
-	virtual void BlockerShapeChanged();
+	void BlockerShapeChanged() override;
 	
 	/** \brief Layout changed. */
-	virtual void LayoutChanged();
+	void LayoutChanged() override;
 	
 	/** \brief Blocking priority changed. */
-	virtual void BlockingPriorityChanged();
+	void BlockingPriorityChanged() override;
 	/*@}*/
 	
 	

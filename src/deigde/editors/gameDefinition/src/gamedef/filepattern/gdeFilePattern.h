@@ -63,7 +63,7 @@ public:
 	
 	/** \brief Clean up file pattern. */
 protected:
-	virtual ~gdeFilePattern();
+	~gdeFilePattern() override;
 public:
 	/*@}*/
 	

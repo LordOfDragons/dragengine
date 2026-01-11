@@ -46,13 +46,13 @@ private:
 public:
 	// Constructor, destructor
 	deScriptSource(const deVirtualFileSystem &vfs, const decPath &path);
-	virtual ~deScriptSource();
+	~deScriptSource() override;
 	
 	// Management
-	virtual const char *GetName();
-	virtual void Open();
-	virtual int ReadData(char *Buffer, int Size);
-	virtual void Close();
+	const char *GetName() override;
+	void Open() override;
+	int ReadData(char *Buffer, int Size) override;
+	void Close() override;
 };
 
 #endif

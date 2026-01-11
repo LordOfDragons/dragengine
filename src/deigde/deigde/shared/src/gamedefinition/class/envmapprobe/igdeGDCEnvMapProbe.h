@@ -84,7 +84,7 @@ public:
 	
 protected:
 	/** \brief Clean up environment map probe. */
-	virtual ~igdeGDCEnvMapProbe();
+	~igdeGDCEnvMapProbe() override;
 	
 public:
 	/*@}*/	

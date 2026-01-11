@@ -53,7 +53,7 @@ public:
 	
 public:
 	igdeNativeFoxMenuCascadeCascade(igdeMenuCascade &powner, FXComposite *pparent, FXWindow *paneParent);
-	virtual ~igdeNativeFoxMenuCascadeCascade();
+	~igdeNativeFoxMenuCascadeCascade() override;
 	
 	void DestroyMenuPane();
 	
@@ -133,7 +133,7 @@ public:
 	
 public:
 	igdeNativeFoxMenuCascadeTitle(igdeMenuCascade &powner, FXComposite *pparent, FXWindow *paneParent);
-	virtual ~igdeNativeFoxMenuCascadeTitle();
+	~igdeNativeFoxMenuCascadeTitle() override;
 	
 	void DestroyMenuPane();
 	
@@ -200,20 +200,20 @@ public:
 	igdeNativeFoxMenuCascade_PopupWindow(igdeMenuCascade &menu);
 	
 protected:
-	virtual ~igdeNativeFoxMenuCascade_PopupWindow();
+	~igdeNativeFoxMenuCascade_PopupWindow() override;
 	
 public:
 	virtual void Popup(const decPoint &position);
 	
-	virtual void CreateNativeWidget();
-	virtual void DestroyNativeWidget();
+	void CreateNativeWidget() override;
+	void DestroyNativeWidget() override;
 	
 protected:
-	virtual void OnTitleChanged();
-	virtual void OnSizeChanged();
-	virtual void OnPositionChanged();
-	virtual void OnVisibleChanged();
-	virtual void OnEnabledChanged();
+	void OnTitleChanged() override;
+	void OnSizeChanged() override;
+	void OnPositionChanged() override;
+	void OnVisibleChanged() override;
+	void OnEnabledChanged() override;
 };
 
 

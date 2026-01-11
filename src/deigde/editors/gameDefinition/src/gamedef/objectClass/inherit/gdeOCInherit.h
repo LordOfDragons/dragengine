@@ -59,7 +59,7 @@ public:
 	
 protected:
 	/** \brief Cleans up the link. */
-	virtual ~gdeOCInherit();
+	~gdeOCInherit() override;
 	/*@}*/
 	
 	

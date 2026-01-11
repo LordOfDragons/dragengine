@@ -66,7 +66,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeToggleButton();
+	~igdeToggleButton() override;
 	/*@}*/
 	
 	
@@ -87,10 +87,10 @@ public:
 	 * 
 	 * Called if button is clicked by the user. Default implementation toggled button.
 	 */
-	virtual void OnAction();
+	void OnAction() override;
 	
 	/** \brief Action parameters changed. */
-	virtual void OnParameterChanged(igdeAction *action);
+	void OnParameterChanged(igdeAction *action) override;
 	/*@}*/
 	
 	
@@ -104,34 +104,34 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
 	
 	
 	
 protected:
 	/** \brief Style changed. */
-	virtual void OnStyleChanged();
+	void OnStyleChanged() override;
 	
 	/** \brief Text changed. */
-	virtual void OnTextChanged();
+	void OnTextChanged() override;
 	
 	/** \brief Description changed. */
-	virtual void OnDescriptionChanged();
+	void OnDescriptionChanged() override;
 	
 	/** \brief Icon changed. */
-	virtual void OnIconChanged();
+	void OnIconChanged() override;
 	
 	/** \brief Enabled changed. */
-	virtual void OnEnabledChanged();
+	void OnEnabledChanged() override;
 	
 	/** \brief Default changed. */
-	virtual void OnDefaultChanged();
+	void OnDefaultChanged() override;
 	
 	/** \brief Toggled changed. */
 	virtual void OnToggledChanged();

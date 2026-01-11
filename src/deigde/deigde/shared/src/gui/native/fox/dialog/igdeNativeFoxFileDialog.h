@@ -106,7 +106,7 @@ public:
 		const FXString& name, FXuint opts=0, FXint x=0, FXint y=0, FXint w=500, FXint h=300);
 	
 	/** Cleans up the file fialog. */
-	virtual ~igdeNativeFoxFileDialog();
+	~igdeNativeFoxFileDialog() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -141,7 +141,7 @@ public:
 	void UpdateFileTypeBox();
 	
 	/** Hide the window. */
-	virtual void hide();
+	void hide() override;
 	/*@}*/
 	
 	/** \name Events */

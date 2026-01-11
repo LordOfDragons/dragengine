@@ -45,7 +45,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Current value. */
-	virtual decString GetParameterValue();
+	decString GetParameterValue() override;
 	
 	/** Set current value. */
 	void SetParameterValue(const char *value) override;

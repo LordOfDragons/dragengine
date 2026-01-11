@@ -60,7 +60,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeBrowseItemGDPreviewListener();
+	~igdeBrowseItemGDPreviewListener() override;
 	/*@}*/
 	
 	
@@ -76,7 +76,7 @@ public:
 	 * manager release the reference to the listener. The subclass has to
 	 * add a reference to the image to hold it.
 	 */
-	virtual void ImageCreated(deImage *image);
+	void ImageCreated(deImage *image) override;
 	/*@}*/
 };
 

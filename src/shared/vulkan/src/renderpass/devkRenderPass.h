@@ -58,7 +58,7 @@ public:
 	
 protected:
 	/** Clean up pipeline. */
-	virtual ~devkRenderPass();
+	~devkRenderPass() override;
 	/*@}*/
 	
 	

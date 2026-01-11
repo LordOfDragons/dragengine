@@ -56,7 +56,7 @@ public:
 	deoalSynthesizerInstance(deAudioOpenAL &oal, deSynthesizerInstance &instance);
 	
 	/** \brief Clean up peer. */
-	virtual ~deoalSynthesizerInstance();
+	~deoalSynthesizerInstance() override;
 	/*@}*/
 	
 	
@@ -89,10 +89,10 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Synthesizer changed. */
-	virtual void SynthesizerChanged();
+	void SynthesizerChanged() override;
 	
 	/** \brief Play time changed. */
-	virtual void PlayTimeChanged();
+	void PlayTimeChanged() override;
 	/*@}*/
 };
 

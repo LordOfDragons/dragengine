@@ -70,7 +70,7 @@ public:
 	
 	/** \brief Clean up link. */
 protected:
-	virtual ~skyeLink();
+	~skyeLink() override;
 public:
 	/*@}*/
 	

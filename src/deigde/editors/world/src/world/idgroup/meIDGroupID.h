@@ -52,7 +52,7 @@ public:
 	
 protected:
 	/** \brief Clean up identifier group identifier. */
-	virtual ~meIDGroupID();
+	~meIDGroupID() override;
 	/*@}*/
 	
 	

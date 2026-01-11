@@ -52,16 +52,16 @@ public:
 	aeUAnimatorAddVertexPositionSet(aeAnimator *rule, const char *pattern);
 protected:
 	/** Clean up undo. */
-	virtual ~aeUAnimatorAddVertexPositionSet();
+	~aeUAnimatorAddVertexPositionSet() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

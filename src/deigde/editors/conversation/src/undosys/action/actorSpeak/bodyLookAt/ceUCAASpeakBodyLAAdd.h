@@ -54,16 +54,16 @@ public:
 	ceUCAASpeakBodyLAAdd(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *bodyLookAt, int index);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCAASpeakBodyLAAdd();
+	~ceUCAASpeakBodyLAAdd() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

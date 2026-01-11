@@ -54,7 +54,7 @@ public:
 	deoalModel(deAudioOpenAL &oal, const deModel &model);
 	
 	/** \brief Clean up model peer. */
-	virtual ~deoalModel();
+	~deoalModel() override;
 	/*@}*/
 	
 	

@@ -96,7 +96,7 @@ public:
 	
 protected:
 	/** \brief Clean up the game profile. */
-	virtual ~delGameProfile();
+	~delGameProfile() override;
 	/*@}*/
 	
 	

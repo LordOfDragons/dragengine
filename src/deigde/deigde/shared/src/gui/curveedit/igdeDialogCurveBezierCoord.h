@@ -62,7 +62,7 @@ public:
 	
 protected:
 	/** \brief Clean up dialog. */
-	virtual ~igdeDialogCurveBezierCoord();
+	~igdeDialogCurveBezierCoord() override;
 	/*@}*/
 	
 	

@@ -66,7 +66,7 @@ protected:
 public:
 	cBaseTextFieldListener(syneWPAPanelSourceSound &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		syneSourceSound * const source = (syneSourceSound*)pPanel.GetSource();
 		if(!source){
 			return;
@@ -89,7 +89,7 @@ public:
 	typedef deTObjectReference<cPathSound> Ref;
 	cPathSound(syneWPAPanelSourceSound &panel) : pPanel(panel){}
 	
-	virtual void OnEditPathChanged(igdeEditPath * editPath){
+	void OnEditPathChanged(igdeEditPath * editPath) override{
 		syneSourceSound * const source = (syneSourceSound*)pPanel.GetSource();
 		if(!source || source->GetPathSound() == editPath->GetPath()){
 			return;
@@ -105,7 +105,7 @@ public:
 	typedef deTObjectReference<cTextMinSpeed> Ref;
 	cTextMinSpeed(syneWPAPanelSourceSound &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo::Ref  OnChanged(igdeTextField *textField, syneSourceSound *source){
+	igdeUndo::Ref  OnChanged(igdeTextField *textField, syneSourceSound *source) override{
 		const float value = textField->GetFloat();
 		return fabsf(value - source->GetMinSpeed()) > FLOAT_SAFE_EPSILON
 			? syneUSetSourceSoundMinSpeed::Ref::New(source, value) : igdeUndo::Ref();
@@ -117,7 +117,7 @@ public:
 	typedef deTObjectReference<cTextMaxSpeed> Ref;
 	cTextMaxSpeed(syneWPAPanelSourceSound &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo::Ref  OnChanged(igdeTextField *textField, syneSourceSound *source){
+	igdeUndo::Ref  OnChanged(igdeTextField *textField, syneSourceSound *source) override{
 		const float value = textField->GetFloat();
 		return fabsf(value - source->GetMaxSpeed()) > FLOAT_SAFE_EPSILON
 			? syneUSetSourceSoundMaxSpeed::Ref::New(source, value) : igdeUndo::Ref();

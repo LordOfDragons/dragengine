@@ -64,11 +64,11 @@ protected:
 		cListenerSlider(igdeEditSliderText &sliderText);
 		
 	protected:
-		virtual ~cListenerSlider();
+		~cListenerSlider() override;
 		
 	public:
-		virtual void OnValueChanged(igdeSlider *slider);
-		virtual void OnValueChanging(igdeSlider *slider);
+		void OnValueChanged(igdeSlider *slider) override;
+		void OnValueChanging(igdeSlider *slider) override;
 	};
 	
 	/** \brief Text field listener. */
@@ -81,11 +81,11 @@ protected:
 		cListenerTextField(igdeEditSliderText &sliderText);
 		
 	protected:
-		virtual ~cListenerTextField();
+		~cListenerTextField() override;
 		
 	public:
-		virtual void OnTextChanged(igdeTextField *textField);
-		virtual void OnTextChanging(igdeTextField *textField);
+		void OnTextChanged(igdeTextField *textField) override;
+		void OnTextChanging(igdeTextField *textField) override;
 	};
 	
 	
@@ -117,7 +117,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeEditSliderText();
+	~igdeEditSliderText() override;
 	/*@}*/
 	
 	

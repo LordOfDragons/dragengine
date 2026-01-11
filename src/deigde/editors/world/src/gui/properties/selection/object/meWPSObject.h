@@ -146,7 +146,7 @@ public:
 	
 protected:
 	/** Clean up . */
-	virtual ~meWPSObject();
+	~meWPSObject() override;
 	/*@}*/
 	
 	

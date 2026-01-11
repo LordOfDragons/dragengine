@@ -55,7 +55,7 @@ public:
 	deoglCaptureCanvas(deGraphicOpenGl &ogl, deCaptureCanvas &captureCanvas);
 	
 	/** Clean up peer. */
-	virtual ~deoglCaptureCanvas();
+	~deoglCaptureCanvas() override;
 	/*@}*/
 	
 	
@@ -89,13 +89,13 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Canvas view changed. */
-	virtual void CanvasViewChanged();
+	void CanvasViewChanged() override;
 	
 	/** Image changed. */
-	virtual void ImageChanged();
+	void ImageChanged() override;
 	
 	/** Capture changed. */
-	virtual void CaptureChanged();
+	void CaptureChanged() override;
 	/*@}*/
 };
 

@@ -152,7 +152,7 @@ public:
 	deVROpenXR(deLoadableModule &loadableModule);
 	
 	/** Clean up null VR OpenXR. */
-	virtual ~deVROpenXR();
+	~deVROpenXR() override;
 	/*@}*/
 	
 	
@@ -243,10 +243,10 @@ public:
 	 * \returns true on success.
 	 * \note To access the os object of the engine use the GetOS function.
 	 */
-	virtual bool Init();
+	bool Init() override;
 	
 	/** Clean up ovr. */
-	virtual void CleanUp();
+	void CleanUp() override;
 	/*@}*/
 	
 	
@@ -258,13 +258,13 @@ public:
 	 * 
 	 * Returns true if a call to StartRuntime() is likely to succeed or not.
 	 */
-	virtual bool RuntimeUsable();
+	bool RuntimeUsable() override;
 	
 	/** Set feature request level for eye gaze tracking. */
-	virtual void RequestFeatureEyeGazeTracking(eFeatureSupportLevel level);
+	void RequestFeatureEyeGazeTracking(eFeatureSupportLevel level) override;
 	
 	/** Set feature request level for facial tracking. */
-	virtual void RequestFeatureFacialTracking(eFeatureSupportLevel level);
+	void RequestFeatureFacialTracking(eFeatureSupportLevel level) override;
 	
 	/**
 	 * Start VR.
@@ -274,7 +274,7 @@ public:
 	 * and activates VR support on various ovrs. VR mode can be started and
 	 * stopped at any time.
 	 */
-	virtual void StartRuntime();
+	void StartRuntime() override;
 	
 	/**
 	 * Stop VR.
@@ -284,28 +284,28 @@ public:
 	 * and activates VR support on various ovrs. VR mode can be started and
 	 * stopped at any time.
 	 */
-	virtual void StopRuntime();
+	void StopRuntime() override;
 	
 	/**
 	 * \brief VR runtime is running.
 	 * \version 1.26
 	 */
-	virtual bool IsRuntimeRunning();
+	bool IsRuntimeRunning() override;
 	
 	/** Camera or nullptr. */
 	inline const deCamera::Ref &GetCamera() const{ return pCamera; }
 	
 	/** Set camera to render on head mounted display. */
-	virtual void SetCamera(deCamera *camera);
+	void SetCamera(deCamera *camera) override;
 	
 	/** VR Runtime supports presenting user environment inside the rendered world. */
-	virtual bool SupportsPassthrough();
+	bool SupportsPassthrough() override;
 	
 	/** Enable presenting user environment inside the rendered world. */
-	virtual void SetEnablePassthrough(bool enable);
+	void SetEnablePassthrough(bool enable) override;
 	
 	/** Set transparency of user environment presented inside the rendered world. */
-	virtual void SetPassthroughTransparency(float transparency);
+	void SetPassthroughTransparency(float transparency) override;
 	
 	/**
 	 * \brief Center playspace with forward direction matching looking direction.
@@ -315,7 +315,7 @@ public:
 	 * any time later to center the playspace, for example if the player adjusted seating position
 	 * or if the VR runtime uses a broken playspace orientation.
 	 */
-	virtual void CenterPlayspace();
+	void CenterPlayspace() override;
 	/*@}*/
 	
 	
@@ -323,53 +323,53 @@ public:
 	/** \name Devices */
 	/*@{*/
 	/** Number of input devices. */
-	virtual int GetDeviceCount();
+	int GetDeviceCount() override;
 	
 	/** Information for input device at index. */
-	virtual deInputDevice::Ref GetDeviceAt(int index);
+	deInputDevice::Ref GetDeviceAt(int index) override;
 	
 	/** Index of device with identifier or -1 if absent. */
-	virtual int IndexOfDeviceWithID(const char *id);
+	int IndexOfDeviceWithID(const char *id) override;
 	
 	/** Index of button with identifier on device at index or -1 if absent. */
-	virtual int IndexOfButtonWithID(int device, const char *id);
+	int IndexOfButtonWithID(int device, const char *id) override;
 	
 	/** Index of axis with identifier on device at index or -1 if absent. */
-	virtual int IndexOfAxisWithID(int device, const char *id);
+	int IndexOfAxisWithID(int device, const char *id) override;
 	
 	/** Index of feedback with identifier on device at index or -1 if absent. */
-	virtual int IndexOfFeedbackWithID(int device, const char *id);
+	int IndexOfFeedbackWithID(int device, const char *id) override;
 	
 	/** Index of component with identifier on device at index or -1 if absent. */
-	virtual int IndexOfComponentWithID(int device, const char *id);
+	int IndexOfComponentWithID(int device, const char *id) override;
 	
 	/** Button at index on device at index is pressed down. */
-	virtual bool GetButtonPressed(int device, int button);
+	bool GetButtonPressed(int device, int button) override;
 	
 	/** Button at index on device at index is touched. */
-	virtual bool GetButtonTouched(int device, int button);
+	bool GetButtonTouched(int device, int button) override;
 	
 	/** User finger is near button at index on device at index. */
-	virtual bool GetButtonNear(int device, int button);
+	bool GetButtonNear(int device, int button) override;
 	
 	/** Value of axis at index on device at index. */
-	virtual float GetAxisValue(int device, int axis);
+	float GetAxisValue(int device, int axis) override;
 	
 	/** Value of feedback at index on device at index. */
-	virtual float GetFeedbackValue(int device, int feedback);
+	float GetFeedbackValue(int device, int feedback) override;
 	
 	/** Set value of feedback at index on device at index. */
-	virtual void SetFeedbackValue(int device, int feedback, float value);
+	void SetFeedbackValue(int device, int feedback, float value) override;
 	
 	/** Device pose or identity if not supported. */
-	virtual void GetDevicePose(int device, deInputDevicePose &pose);
+	void GetDevicePose(int device, deInputDevicePose &pose) override;
 	
 	/** Device bone pose or identity if not supported. */
-	virtual void GetDeviceBonePose(int device, int bone,
-		bool withController, deInputDevicePose &pose);
+	void GetDeviceBonePose(int device, int bone,
+		bool withController, deInputDevicePose &pose) override;
 	
 	/** Device face expression or 0 if not supported. */
-	virtual float GetDeviceFaceExpression(int device, int expression);
+	float GetDeviceFaceExpression(int device, int expression) override;
 	/*@}*/
 	
 	
@@ -385,7 +385,7 @@ public:
 	 * queues to deliver system notification (like quitting the game) to the game
 	 * engine.
 	 */
-	virtual void ProcessEvents();
+	void ProcessEvents() override;
 	/*@}*/
 	
 	
@@ -393,47 +393,47 @@ public:
 	/** \name Graphic Module use only */
 	/*@{*/
 	/** VR recommended render target size. */
-	virtual decPoint GetRenderSize();
+	decPoint GetRenderSize() override;
 	
 	/** VR required render format. */
-	virtual eVRRenderFormat GetRenderFormat();
+	eVRRenderFormat GetRenderFormat() override;
 	
 	/** VR render projection matrix parameters. */
-	virtual void GetProjectionParameters(eEye eye, float &left, float &right, float &top, float &bottom);
+	void GetProjectionParameters(eEye eye, float &left, float &right, float &top, float &bottom) override;
 	
 	/** VR render matrix transforming from camera space to eye space. */
-	virtual decMatrix GetMatrixViewEye(eEye eye);
+	decMatrix GetMatrixViewEye(eEye eye) override;
 	
 	/** VR render hidden area model or nullptr if not supported. */
-	virtual deModel *GetHiddenArea(eEye eye);
+	deModel *GetHiddenArea(eEye eye) override;
 	
 	/** VR render distortion image or nullptr if not supported. */
-	virtual deImage *GetDistortionMap(eEye eye);
+	deImage *GetDistortionMap(eEye eye) override;
 	
 	/** Get eye view images to use for rendering. */
-	virtual int GetEyeViewImages(eEye eye, int count, void *views);
+	int GetEyeViewImages(eEye eye, int count, void *views) override;
 	
 	/** Get eye view render texture coordinates. */
-	virtual void GetEyeViewRenderTexCoords(eEye eye, decVector2 &tcFrom, decVector2 &tcTo);
+	void GetEyeViewRenderTexCoords(eEye eye, decVector2 &tcFrom, decVector2 &tcTo) override;
 	
 	/** Start begin frame. */
-	virtual void StartBeginFrame();
+	void StartBeginFrame() override;
 	
 	/** Wait for begin frame to be finished. */
-	virtual void WaitBeginFrameFinished();
+	void WaitBeginFrameFinished() override;
 	
 	/** Acquire eye view image to render into. */
-	virtual int AcquireEyeViewImage(eEye eye);
+	int AcquireEyeViewImage(eEye eye) override;
 	
 	/** Release eye view image after render into. */
-	virtual void ReleaseEyeViewImage(eEye eye);
+	void ReleaseEyeViewImage(eEye eye) override;
 	
 	/** Submit OpenGL rendered image to the HMD. */
-	virtual void SubmitOpenGLTexture2D(eEye eye, void *texture, const decVector2 &tcFrom,
-		const decVector2 &tcTo, bool distortionApplied);
+	void SubmitOpenGLTexture2D(eEye eye, void *texture, const decVector2 &tcFrom,
+		const decVector2 &tcTo, bool distortionApplied) override;
 	
 	/** End frame. */
-	virtual void EndFrame();
+	void EndFrame() override;
 	/*@}*/
 	
 	
@@ -441,23 +441,23 @@ public:
 	/** \name Parameters */
 	/*@{*/
 	/** Number of parameters. */
-	virtual int GetParameterCount() const;
+	int GetParameterCount() const override;
 	
 	/**
 	 * Get information about parameter.
 	 * \param[in] index Index of the parameter
 	 * \param[in] parameter Object to fill with information about the parameter
 	 */
-	virtual void GetParameterInfo(int index, deModuleParameter &parameter) const;
+	void GetParameterInfo(int index, deModuleParameter &parameter) const override;
 	
 	/** Index of named parameter or -1 if not found. */
-	virtual int IndexOfParameterNamed(const char *name) const;
+	int IndexOfParameterNamed(const char *name) const override;
 	
 	/** Value of named parameter. */
-	virtual decString GetParameterValue(const char *name) const;
+	decString GetParameterValue(const char *name) const override;
 	
 	/** Set value of named parameter. */
-	virtual void SetParameterValue(const char *name, const char *value);
+	void SetParameterValue(const char *name, const char *value) override;
 	/*@}*/
 	
 	

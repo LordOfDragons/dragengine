@@ -60,11 +60,11 @@ public:
 protected:
 	void pPreparePipelines(const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched) override;
 	
-	virtual void pPipelineConfigGeometry(deoglPipelineConfiguration &config);
+	void pPipelineConfigGeometry(deoglPipelineConfiguration &config) override;
 	
-	virtual void pPrepareShadowOrthogonalCascaded(deoglPipelineConfiguration &basePipelineConfig,
+	void pPrepareShadowOrthogonalCascaded(deoglPipelineConfiguration &basePipelineConfig,
 		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
-		deoglBatchedShaderLoading &batched);
+		deoglBatchedShaderLoading &batched) override;
 };
 
 #endif

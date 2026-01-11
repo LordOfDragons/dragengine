@@ -53,12 +53,12 @@ public:
 	meUObjectRemoveTexture(meObjectTexture *texture);
 	
 protected:
-	virtual ~meUObjectRemoveTexture();
+	~meUObjectRemoveTexture() override;
 	
 public:
 	// management
-	void Undo();
-	void Redo();
+	void Undo() override;
+	void Redo() override;
 };
 
 // end of include only once

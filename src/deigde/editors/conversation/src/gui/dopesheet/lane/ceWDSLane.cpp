@@ -81,7 +81,7 @@ public:
 	
 	cListenerResetDuration(ceWDSLane &lane) : pLane(lane){}
 	
-	virtual float DefaultDuration (const decString &id){
+	float DefaultDuration (const decString &id) override{
 		return pLane.DefaultDuration(id);
 	}
 };
@@ -286,7 +286,7 @@ public:
 	
 	cMouseListener(ceWDSLane &lane) : pLane(lane), pDragMode(edmNone){}
 	
-	virtual bool OnDragBegin(){
+	bool OnDragBegin() override{
 		const ceCAActorSpeak * const action = pLane.GetWindow().GetActionASpeak();
 		if(!action){
 			return false;
@@ -321,7 +321,7 @@ public:
 		return false;
 	}
 	
-	virtual void OnDragUpdate(){
+	void OnDragUpdate() override{
 		const ceCAActorSpeak * const action = pLane.GetWindow().GetActionASpeak();
 		if(!action){
 			return;
@@ -377,7 +377,7 @@ public:
 		}
 	}
 	
-	virtual void OnDragFinish(bool){
+	void OnDragFinish(bool) override{
 		if(pUndoPause){
 			pLane.GetWindow().GetConversation()->GetUndoSystem()->Add(pUndoPause, false);
 			pUndoPause = nullptr;
@@ -397,7 +397,7 @@ public:
 		pLane.SetSelection(-1, -1);
 	}
 	
-	virtual void OnMouseWheeled(igdeWidget*, const decPoint &, const decPoint &change, int){
+	void OnMouseWheeled(igdeWidget*, const decPoint &, const decPoint &change, int) override{
 		switch(pDragMode){
 		case edmDuration:
 		case edmScale:
@@ -473,7 +473,7 @@ public:
 		pLane.SetSelection(pDragHandle - pScaleCount, pDragHandle);
 	}
 	
-	virtual void OnDoubleClicked(igdeWidget*, int button, const decPoint &position, int){
+	void OnDoubleClicked(igdeWidget*, int button, const decPoint &position, int) override{
 		if(button == deInputEvent::embcLeft){
 			const int index = pLane.GetStripAt(position.x);
 			if(index >= 0 && index < pLane.GetStripList().GetCount()){
@@ -482,7 +482,7 @@ public:
 		}
 	}
 	
-	virtual void OnButtonPress(igdeWidget *widget, int button, const decPoint &position, int modifiers){
+	void OnButtonPress(igdeWidget *widget, int button, const decPoint &position, int modifiers) override{
 		if(button != deInputEvent::embcRight){
 			igdeMouseDragListener::OnButtonPress(widget, button, position, modifiers);
 			return;

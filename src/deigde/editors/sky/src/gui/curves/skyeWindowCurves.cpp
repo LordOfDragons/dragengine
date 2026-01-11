@@ -59,7 +59,7 @@ public:
 	typedef deTObjectReference<cListLinks> Ref;
 	cListLinks(skyeWindowCurves &panel) : pPanel(panel){}
 	
-	virtual void OnSelectionChanged(igdeListBox *listBox){
+	void OnSelectionChanged(igdeListBox *listBox) override{
 		skyeSky * const sky = pPanel.GetSky();
 		if(!sky){
 			return;
@@ -74,7 +74,7 @@ public:
 		}
 	}
 	
-	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade&){
+	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade&) override{
 	}
 };
 
@@ -88,7 +88,7 @@ public:
 	pUndo(undo){
 	}
 	
-	virtual void OnCurveChanged(igdeViewCurveBezier *viewCurveBezier){
+	void OnCurveChanged(igdeViewCurveBezier *viewCurveBezier) override{
 		if(pUndo){
 			pUndo->SetNewCurve(viewCurveBezier->GetCurve());
 			
@@ -103,7 +103,7 @@ public:
 		pUndo = nullptr;
 	}
 	
-	virtual void OnCurveChanging(igdeViewCurveBezier *viewCurveBezier){
+	void OnCurveChanging(igdeViewCurveBezier *viewCurveBezier) override{
 		if(pUndo){
 			pUndo->SetNewCurve(viewCurveBezier->GetCurve());
 			pUndo->Redo();

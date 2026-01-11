@@ -63,12 +63,12 @@ private:
 	
 public:
 	igdeNativeFoxIconListBoxItem(igdeIconListBox &list, igdeListItem &listItem);
-	virtual ~igdeNativeFoxIconListBoxItem();
+	~igdeNativeFoxIconListBoxItem() override;
 	
 	inline igdeIconListBox &GetList() const{ return *pList; }
 	inline igdeListItem &GetItem() const{ return *pListItem; }
 	
-	virtual FXString getTipText() const;
+	FXString getTipText() const override;
 	void UpdateFromItem();
 };
 

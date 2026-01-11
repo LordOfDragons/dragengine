@@ -47,7 +47,7 @@ public:
 	deClassPhysicsSystem(deScriptingDragonScript &ds);
 	
 	/** \brief Cleans up the class. */
-	virtual ~deClassPhysicsSystem();
+	~deClassPhysicsSystem() override;
 	/*@}*/
 	
 	
@@ -55,7 +55,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Create class members. */
-	virtual void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Retrieves the module. */
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }

@@ -64,7 +64,7 @@ public:
 	
 protected:
 	/** \brief Clean up slot. */
-	virtual ~meWVNodeSlot();
+	~meWVNodeSlot() override;
 	/*@}*/
 	
 	

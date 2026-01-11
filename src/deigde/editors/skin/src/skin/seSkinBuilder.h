@@ -52,7 +52,7 @@ public:
 	seSkinBuilder(const seSkin &skin);
 	
 	/** Clean up skin builder. */
-	virtual ~seSkinBuilder();
+	~seSkinBuilder() override;
 	/*@}*/
 	
 	
@@ -60,7 +60,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Build skin into the provided skin object. */
-    virtual void BuildSkin(deSkin *engSkin);
+    void BuildSkin(deSkin *engSkin) override;
 	
 	/** Create skin property node group. */
 	void CreateNodeGroup(deSkinPropertyNodeGroup &engNodeGroup, const sePropertyNodeGroup &nodeGroup);

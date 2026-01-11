@@ -40,9 +40,9 @@ class deClassUnicodeString : public dsClass{
 public:
 	// constructor
 	deClassUnicodeString();
-	~deClassUnicodeString();
+	~deClassUnicodeString() override;
 	// internal functions
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	const decUnicodeString &GetUnicodeString(dsRealObject *myself) const;
 	const decString GetUTF8(dsRealObject *myself) const;
 	void PushUnicodeString(dsRunTime *rt, const decUnicodeString &string);

@@ -63,7 +63,7 @@ public:
 	
 protected:
 	/** \brief Clean up attached decal. */
-	~meAttachedDecal();
+	~meAttachedDecal() override;
 	
 public:
 	/*@}*/

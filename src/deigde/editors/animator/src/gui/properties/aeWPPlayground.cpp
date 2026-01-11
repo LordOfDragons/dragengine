@@ -110,7 +110,7 @@ public:
 	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(aeWPPlayground &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		if(animator){
 			OnChanged(*textField, *animator);
@@ -128,7 +128,7 @@ public:
 	typedef deTObjectReference<cBaseEditVectorListener> Ref;
 	cBaseEditVectorListener(aeWPPlayground &panel) : pPanel(panel){}
 	
-	virtual void OnVectorChanged(igdeEditVector *editVector){
+	void OnVectorChanged(igdeEditVector *editVector) override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		if(animator){
 			OnChanged(*editVector, *animator);
@@ -145,7 +145,7 @@ public:
 	typedef deTObjectReference<cComboLocomotionType> Ref;
 	cComboLocomotionType(aeWPPlayground &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		if(!animator || !comboBox->GetSelectedItem()){
 			return;
@@ -161,7 +161,7 @@ public:
 	typedef deTObjectReference<cTextLocoLimitUp> Ref;
 	cTextLocoLimitUp(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual void OnChanged(igdeTextField &textField, aeAnimator &animator){
+	void OnChanged(igdeTextField &textField, aeAnimator &animator) override{
 		animator.GetLocomotion().SetLimitLookUp(textField.GetFloat());
 	}
 };
@@ -171,7 +171,7 @@ public:
 	typedef deTObjectReference<cTextLocoLimitDown> Ref;
 	cTextLocoLimitDown(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual void OnChanged(igdeTextField &textField, aeAnimator &animator){
+	void OnChanged(igdeTextField &textField, aeAnimator &animator) override{
 		animator.GetLocomotion().SetLimitLookDown(textField.GetFloat());
 	}
 };
@@ -181,7 +181,7 @@ public:
 	typedef deTObjectReference<cTextLocoLimitLeft> Ref;
 	cTextLocoLimitLeft(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual void OnChanged(igdeTextField &textField, aeAnimator &animator){
+	void OnChanged(igdeTextField &textField, aeAnimator &animator) override{
 		animator.GetLocomotion().SetLimitLookLeft(textField.GetFloat());
 	}
 };
@@ -191,7 +191,7 @@ public:
 	typedef deTObjectReference<cTextLocoLimitRight> Ref;
 	cTextLocoLimitRight(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual void OnChanged(igdeTextField &textField, aeAnimator &animator){
+	void OnChanged(igdeTextField &textField, aeAnimator &animator) override{
 		animator.GetLocomotion().SetLimitLookRight(textField.GetFloat());
 	}
 };
@@ -201,7 +201,7 @@ public:
 	typedef deTObjectReference<cTextLocoSpeedWalk> Ref;
 	cTextLocoSpeedWalk(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual void OnChanged(igdeTextField &textField, aeAnimator &animator){
+	void OnChanged(igdeTextField &textField, aeAnimator &animator) override{
 		animator.GetLocomotion().SetWalkSpeed(textField.GetFloat());
 	}
 };
@@ -211,7 +211,7 @@ public:
 	typedef deTObjectReference<cTextLocoSpeedRun> Ref;
 	cTextLocoSpeedRun(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual void OnChanged(igdeTextField &textField, aeAnimator &animator){
+	void OnChanged(igdeTextField &textField, aeAnimator &animator) override{
 		animator.GetLocomotion().SetRunSpeed(textField.GetFloat());
 	}
 };
@@ -221,7 +221,7 @@ public:
 	typedef deTObjectReference<cTextLocoAdjTimeUD> Ref;
 	cTextLocoAdjTimeUD(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual void OnChanged(igdeTextField &textField, aeAnimator &animator){
+	void OnChanged(igdeTextField &textField, aeAnimator &animator) override{
 		const float value = textField.GetFloat();
 		if(fabs(animator.GetLocomotion().GetLookUpDown().GetAdjustTime() - value) < FLOAT_SAFE_EPSILON){
 			return;
@@ -238,7 +238,7 @@ public:
 	typedef deTObjectReference<cTextLocoAdjTimeLR> Ref;
 	cTextLocoAdjTimeLR(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual void OnChanged(igdeTextField &textField, aeAnimator &animator){
+	void OnChanged(igdeTextField &textField, aeAnimator &animator) override{
 		const float value = textField.GetFloat();
 		if(fabs(animator.GetLocomotion().GetLookLeftRight().GetAdjustTime() - value) < FLOAT_SAFE_EPSILON){
 			return;
@@ -255,7 +255,7 @@ public:
 	typedef deTObjectReference<cTextLocoAdjTimeStance> Ref;
 	cTextLocoAdjTimeStance(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual void OnChanged(igdeTextField &textField, aeAnimator &animator){
+	void OnChanged(igdeTextField &textField, aeAnimator &animator) override{
 		const float value = textField.GetFloat();
 		if(fabs(animator.GetLocomotion().GetStance().GetAdjustTime() - value) < FLOAT_SAFE_EPSILON){
 			return;
@@ -272,7 +272,7 @@ public:
 	typedef deTObjectReference<cTextLocoAdjTimeOrientation> Ref;
 	cTextLocoAdjTimeOrientation(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual void OnChanged(igdeTextField &textField, aeAnimator &animator){
+	void OnChanged(igdeTextField &textField, aeAnimator &animator) override{
 		const float value = textField.GetFloat();
 		if(fabs(animator.GetLocomotion().GetOrientation().GetAdjustTime() - value) < FLOAT_SAFE_EPSILON){
 			return;
@@ -289,7 +289,7 @@ public:
 	typedef deTObjectReference<cTextLocoAdjTimeVelocity> Ref;
 	cTextLocoAdjTimeVelocity(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual void OnChanged(igdeTextField &textField, aeAnimator &animator){
+	void OnChanged(igdeTextField &textField, aeAnimator &animator) override{
 		const float value = textField.GetFloat();
 		if(fabs(animator.GetLocomotion().GetLinearVelocity().GetAdjustTime() - value) < FLOAT_SAFE_EPSILON){
 			return;
@@ -306,7 +306,7 @@ public:
 	typedef deTObjectReference<cTextLocoAdjTimeTurnIP> Ref;
 	cTextLocoAdjTimeTurnIP(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual void OnChanged(igdeTextField &textField, aeAnimator &animator){
+	void OnChanged(igdeTextField &textField, aeAnimator &animator) override{
 		animator.GetLocomotion().SetAdjustTimeTurnIP(textField.GetFloat());
 	}
 };
@@ -316,7 +316,7 @@ public:
 	typedef deTObjectReference<cTextLocoLegBlendTime> Ref;
 	cTextLocoLegBlendTime(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual void OnChanged(igdeTextField &textField, aeAnimator &animator){
+	void OnChanged(igdeTextField &textField, aeAnimator &animator) override{
 		animator.GetLocomotion().SetLegBlendTime(textField.GetFloat());
 	}
 };
@@ -327,7 +327,7 @@ public:
 	typedef deTObjectReference<cSpinLocoUseLegPairs> Ref;
 	cSpinLocoUseLegPairs(aeWPPlayground &panel) : pPanel(panel){}
 	
-	virtual void OnValueChanged(igdeSpinTextField *textField){
+	void OnValueChanged(igdeSpinTextField *textField) override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		if(!animator){
 			return;
@@ -343,7 +343,7 @@ public:
 	typedef deTObjectReference<cSpinLocoLeg> Ref;
 	cSpinLocoLeg(aeWPPlayground &panel) : pPanel(panel){}
 	
-	virtual void OnValueChanged(igdeSpinTextField*){
+	void OnValueChanged(igdeSpinTextField*) override{
 		if(pPanel.GetAnimator()){
 			pPanel.UpdateLocomotionLeg();
 		}
@@ -355,7 +355,7 @@ public:
 	typedef deTObjectReference<cTextLocoLegLiftOffTime> Ref;
 	cTextLocoLegLiftOffTime(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual void OnChanged(igdeTextField &textField, aeAnimator &animator){
+	void OnChanged(igdeTextField &textField, aeAnimator &animator) override{
 		aeAnimatorLocomotionLeg * const leg = pPanel.GetLeg();
 		if(!leg){
 			return;
@@ -370,7 +370,7 @@ public:
 	typedef deTObjectReference<cTextLocoLegPutDownTime> Ref;
 	cTextLocoLegPutDownTime(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual void OnChanged(igdeTextField &textField, aeAnimator &animator){
+	void OnChanged(igdeTextField &textField, aeAnimator &animator) override{
 		aeAnimatorLocomotionLeg * const leg = pPanel.GetLeg();
 		if(!leg){
 			return;
@@ -385,7 +385,7 @@ public:
 	typedef deTObjectReference<cEditLocoLegPDPosStand> Ref;
 	cEditLocoLegPDPosStand(aeWPPlayground &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual void OnChanged(igdeEditVector &editVector, aeAnimator &animator){
+	void OnChanged(igdeEditVector &editVector, aeAnimator &animator) override{
 		aeAnimatorLocomotionLeg * const leg = pPanel.GetLeg();
 		if(!leg){
 			return;
@@ -400,7 +400,7 @@ public:
 	typedef deTObjectReference<cEditLocoLegPDPosWalk> Ref;
 	cEditLocoLegPDPosWalk(aeWPPlayground &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual void OnChanged(igdeEditVector &editVector, aeAnimator &animator){
+	void OnChanged(igdeEditVector &editVector, aeAnimator &animator) override{
 		aeAnimatorLocomotionLeg * const leg = pPanel.GetLeg();
 		if(!leg){
 			return;
@@ -415,7 +415,7 @@ public:
 	typedef deTObjectReference<cEditLocoLegPDPosRun> Ref;
 	cEditLocoLegPDPosRun(aeWPPlayground &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual void OnChanged(igdeEditVector &editVector, aeAnimator &animator){
+	void OnChanged(igdeEditVector &editVector, aeAnimator &animator) override{
 		aeAnimatorLocomotionLeg * const leg = pPanel.GetLeg();
 		if(!leg){
 			return;
@@ -470,14 +470,14 @@ public:
 	typedef deTObjectReference<cSliderController> Ref;
 	cSliderController(aeWPPlayground &panel, int index) : pPanel(panel), pIndex(index){}
 	
-	virtual void OnSliderTextValueChanged(igdeEditSliderText *sliderText){
+	void OnSliderTextValueChanged(igdeEditSliderText *sliderText) override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		if(animator){
 			OnChanged(sliderText->GetValue(), *animator);
 		}
 	}
 	
-	virtual void OnSliderTextValueChanging(igdeEditSliderText *sliderText){
+	void OnSliderTextValueChanging(igdeEditSliderText *sliderText) override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		if(animator){
 			OnChanged(sliderText->GetValue(), *animator);

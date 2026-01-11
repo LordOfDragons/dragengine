@@ -50,7 +50,7 @@ public:
 	/** Creates a new visitor. */
 	dearClosestHit();
 	/** Cleans up the visitor. */
-	virtual ~dearClosestHit();
+	~dearClosestHit() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -77,7 +77,7 @@ public:
 	 * you have to update the info object with the response to the collision. In
 	 * all other cases you do must not modify the info object.
 	 */
-	virtual void CollisionResponse(deCollider *owner, deCollisionInfo *info);
+	void CollisionResponse(deCollider *owner, deCollisionInfo *info) override;
 	/**
 	 * Determines if a collider can be hit. If this peer is used with a collider
 	 * then the script is asked to determine if the two collider can hit each
@@ -87,13 +87,13 @@ public:
 	 * @param collider Collider to test.
 	 * @return True if the owner/ray can hit the given collider.
 	 */
-	virtual bool CanHitCollider(deCollider *owner, deCollider *collider);
+	bool CanHitCollider(deCollider *owner, deCollider *collider) override;
 	/**
 	 * Notifies the scripts that the properties of this collider have changed and
 	 * that the attached element has to update. This is usually called after the
 	 * collision detection but can also be called multiple times.
 	 */
-	virtual void ColliderChanged(deCollider *owner);
+	void ColliderChanged(deCollider *owner) override;
 	/*@}*/
 };
 

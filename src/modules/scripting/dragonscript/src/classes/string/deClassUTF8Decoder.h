@@ -39,9 +39,9 @@ class deClassUTF8Decoder : public dsClass{
 public:
 	// constructor
 	deClassUTF8Decoder();
-	~deClassUTF8Decoder();
+	~deClassUTF8Decoder() override;
 	// internal functions
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	decUTF8Decoder &GetUTF8Decoder(dsRealObject *myself) const;
 	
 private:

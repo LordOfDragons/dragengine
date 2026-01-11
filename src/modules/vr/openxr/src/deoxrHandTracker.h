@@ -123,7 +123,7 @@ public:
 	
 protected:
 	/** Clean up space. */
-	virtual ~deoxrHandTracker();
+	~deoxrHandTracker() override;
 	/*@}*/
 	
 	

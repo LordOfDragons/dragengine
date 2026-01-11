@@ -60,7 +60,7 @@ public:
 	
 protected:
 	/** Clean up shader module. */
-	virtual ~devkShaderModule();
+	~devkShaderModule() override;
 	/*@}*/
 	
 	

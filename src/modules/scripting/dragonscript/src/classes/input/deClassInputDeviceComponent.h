@@ -50,7 +50,7 @@ public:
 	deClassInputDeviceComponent(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
-	virtual ~deClassInputDeviceComponent();
+	~deClassInputDeviceComponent() override;
 	/*@}*/
 	
 	
@@ -61,7 +61,7 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Creates class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Push component. */
 	void PushComponent(dsRunTime *rt, dedsInputDevice *device, int index);

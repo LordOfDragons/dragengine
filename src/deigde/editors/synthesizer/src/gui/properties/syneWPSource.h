@@ -83,7 +83,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~syneWPSource();
+	~syneWPSource() override;
 	/*@}*/
 	
 	

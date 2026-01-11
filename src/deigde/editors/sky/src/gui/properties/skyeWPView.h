@@ -61,7 +61,7 @@ public:
 	
 protected:
 	/** \brief Clean up rig. */
-	virtual ~skyeWPView();
+	~skyeWPView() override;
 	/*@}*/
 	
 	

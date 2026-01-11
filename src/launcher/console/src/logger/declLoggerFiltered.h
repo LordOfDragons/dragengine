@@ -53,7 +53,7 @@ public:
 	
 protected:
 	/** Clean up logger. */
-	virtual ~declLoggerFiltered();
+	~declLoggerFiltered() override;
 	/*@}*/
 	
 	
@@ -82,46 +82,46 @@ public:
 	
 	
 	/** Log an information message. */
-	virtual void LogInfo(const char *source, const char *message);
+	void LogInfo(const char *source, const char *message) override;
 	
 	/** Log a formated information message. */
-	virtual void LogInfoFormat(const char *source, const char *message, ...)
+	void LogInfoFormat(const char *source, const char *message, ...) override
 		#ifdef __GNUC__
 		__attribute__ ((format (printf, 3, 4)))
 		#endif
 		;
 	
 	/** Log a formated information message. */
-	virtual void LogInfoFormatUsing(const char *source, const char *message, va_list args);
+	void LogInfoFormatUsing(const char *source, const char *message, va_list args) override;
 	
 	/** Log a warning message. */
-	virtual void LogWarn(const char *source, const char *message);
+	void LogWarn(const char *source, const char *message) override;
 	
 	/** Log a formated warning message. */
-	virtual void LogWarnFormat(const char *source, const char *message, ...)
+	void LogWarnFormat(const char *source, const char *message, ...) override
 		#ifdef __GNUC__
 		__attribute__ ((format (printf, 3, 4)))
 		#endif
 		;
 		
 	/** Log a formated warning message. */
-	virtual void LogWarnFormatUsing(const char *source, const char *message, va_list args);
+	void LogWarnFormatUsing(const char *source, const char *message, va_list args) override;
 	
 	/** Log an error message. */
-	virtual void LogError(const char *source, const char *message);
+	void LogError(const char *source, const char *message) override;
 	
 	/** Log a formated error message. */
-	virtual void LogErrorFormat(const char *source, const char *message, ...)
+	void LogErrorFormat(const char *source, const char *message, ...) override
 		#ifdef __GNUC__
 		__attribute__ ((format (printf, 3, 4)))
 		#endif
 		;
 		
 	/** Log a formated error message. */
-	virtual void LogErrorFormatUsing(const char *source, const char *message, va_list args);
+	void LogErrorFormatUsing(const char *source, const char *message, va_list args) override;
 	
 	/** Log an exception as error message. */
-	virtual void LogException(const char *source, const deException &exception);
+	void LogException(const char *source, const deException &exception) override;
 	/*@}*/
 };
 

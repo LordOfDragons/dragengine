@@ -53,16 +53,16 @@ public:
 	ceUCAACmdSetActor(ceConversationTopic *topic, ceCAActorCommand *action, const char *newActorID);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCAACmdSetActor();
+	~ceUCAACmdSetActor() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

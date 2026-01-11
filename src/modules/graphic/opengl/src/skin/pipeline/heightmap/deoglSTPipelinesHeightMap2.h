@@ -58,7 +58,7 @@ public:
 	
 	
 protected:
-	virtual void pPipelineConfigGeometry(deoglPipelineConfiguration &config);
+	void pPipelineConfigGeometry(deoglPipelineConfiguration &config) override;
 };
 
 #endif

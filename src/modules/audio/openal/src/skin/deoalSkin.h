@@ -53,7 +53,7 @@ public:
 	deoalSkin(deAudioOpenAL &oal, const deSkin &skin);
 	
 	/** \brief Clean up skin peer. */
-	virtual ~deoalSkin();
+	~deoalSkin() override;
 	/*@}*/
 	
 	

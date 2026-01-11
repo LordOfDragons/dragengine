@@ -56,7 +56,7 @@ public:
 	aeControllerTarget(const aeControllerTarget &copy);
 	/** Cleans up the controller target. */
 protected:
-	~aeControllerTarget();
+	~aeControllerTarget() override;
 public:
 	/*@}*/
 	

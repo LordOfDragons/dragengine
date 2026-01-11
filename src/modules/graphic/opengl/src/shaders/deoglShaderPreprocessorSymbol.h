@@ -55,7 +55,7 @@ public:
 	
 protected:
 	/** Clean up shader preprocessor. */
-	virtual ~deoglShaderPreprocessorSymbol();
+	~deoglShaderPreprocessorSymbol() override;
 	/*@}*/
 	
 	

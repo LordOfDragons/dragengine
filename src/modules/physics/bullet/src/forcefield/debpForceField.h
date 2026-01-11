@@ -62,7 +62,7 @@ public:
 	debpForceField(dePhysicsBullet &bullet, const deForceField &forceField);
 	
 	/** \brief Clean up peer. */
-	virtual ~debpForceField();
+	~debpForceField() override;
 	/*@}*/
 	
 	
@@ -112,37 +112,37 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	/** \brief Orientation changed. */
-	virtual void OrientationChanged();
+	void OrientationChanged() override;
 	
 	/** \brief Influence area changed. */
-	virtual void InfluenceAreaChanged();
+	void InfluenceAreaChanged() override;
 	
 	/** \brief Radius changed. */
-	virtual void RadiusChanged();
+	void RadiusChanged() override;
 	
 	/** \brief Exponent changed. */
-	virtual void ExponentChanged();
+	void ExponentChanged() override;
 	
 	/** \brief Field or application type changed. */
-	virtual void TypeChanged();
+	void TypeChanged() override;
 	
 	/** \brief Direction changed. */
-	virtual void DirectionChanged();
+	void DirectionChanged() override;
 	
 	/** \brief Force changed. */
-	virtual void ForceChanged();
+	void ForceChanged() override;
 	
 	/** \brief Direction or force fluctuation changed. */
-	virtual void FluctuationChanged();
+	void FluctuationChanged() override;
 	
 	/** \brief Collision filter changed. */
-	virtual void CollisionFilterChanged();
+	void CollisionFilterChanged() override;
 	
 	/** \brief Enabled changed. */
-	virtual void EnabledChanged();
+	void EnabledChanged() override;
 	/*@}*/
 	
 	

@@ -54,7 +54,7 @@ public:
 	deClassCollider(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up the script class. */
-	virtual ~deClassCollider();
+	~deClassCollider() override;
 	/*@}*/
 	
 	
@@ -66,7 +66,7 @@ public:
 	inline const deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create script class members. */
-	virtual void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	
 	

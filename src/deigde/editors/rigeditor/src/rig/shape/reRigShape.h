@@ -92,7 +92,7 @@ public:
 	
 	/** \brief Clean up rig shape. */
 protected:
-	virtual ~reRigShape();
+	~reRigShape() override;
 public:
 	/*@}*/
 	

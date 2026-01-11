@@ -107,7 +107,7 @@ public:
 	
 protected:
 	/** Clean up panel. */
-	virtual ~aeWPPlayground();
+	~aeWPPlayground() override;
 	/*@}*/
 	
 	

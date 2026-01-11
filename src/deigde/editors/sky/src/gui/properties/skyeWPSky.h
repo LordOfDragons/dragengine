@@ -58,7 +58,7 @@ public:
 	
 	/** \brief Clean up panel. */
 protected:
-	virtual ~skyeWPSky();
+	~skyeWPSky() override;
 public:
 	/*@}*/
 	

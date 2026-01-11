@@ -237,7 +237,7 @@ public:
 	deoglRenderThread(deGraphicOpenGl &ogl);
 	
 	/** Clean up render thread. */
-	virtual ~deoglRenderThread();
+	~deoglRenderThread() override;
 	/*@}*/
 	
 	
@@ -431,7 +431,7 @@ public:
 	
 	
 	/** Run render thread. */
-	virtual void Run();
+	void Run() override;
 	
 	/** Finalize asynchronously loaded resources. */
 	void FinalizeAsyncResLoading();

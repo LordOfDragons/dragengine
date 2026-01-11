@@ -51,7 +51,7 @@ public:
 	
 protected:
 	/** Cleans up the info. */
-	virtual ~cePlaybackCommand();
+	~cePlaybackCommand() override;
 	/*@}*/
 	
 public:

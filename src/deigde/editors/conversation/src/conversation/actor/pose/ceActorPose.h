@@ -71,7 +71,7 @@ public:
 	
 protected:
 	/** Clean up actor pose. */
-	virtual ~ceActorPose();
+	~ceActorPose() override;
 	/*@}*/
 	
 	

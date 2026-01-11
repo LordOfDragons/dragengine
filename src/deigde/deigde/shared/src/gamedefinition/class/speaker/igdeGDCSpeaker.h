@@ -95,7 +95,7 @@ public:
 	
 protected:
 	/** \brief Clean up class speaker. */
-	virtual ~igdeGDCSpeaker();
+	~igdeGDCSpeaker() override;
 	/*@}*/
 	
 	

@@ -58,7 +58,7 @@ public:
 	dedsCollider(deScriptingDragonScript &ds, deCollider *collider);
 	
 	/** \brief Clean up peer. */
-	virtual ~dedsCollider();
+	~dedsCollider() override;
 	/*@}*/
 	
 	
@@ -92,23 +92,23 @@ public:
 	
 	
 	/** \brief Collision response. */
-	virtual void CollisionResponse(deCollider *owner, deCollisionInfo *info);
+	void CollisionResponse(deCollider *owner, deCollisionInfo *info) override;
 	
 	/** \brief Can hit collider query. */
-	virtual bool CanHitCollider(deCollider *owner, deCollider *collider);
+	bool CanHitCollider(deCollider *owner, deCollider *collider) override;
 	
 	/** \brief Collider changed. */
-	virtual void ColliderChanged(deCollider *owner);
+	void ColliderChanged(deCollider *owner) override;
 	
 	
 	
 	/** \brief Collider constraint has broken. */
-	virtual void ColliderConstraintBroke(deCollider *owner,
-		int index, deColliderConstraint *constraint);
+	void ColliderConstraintBroke(deCollider *owner,
+		int index, deColliderConstraint *constraint) override;
 	
 	/** \brief Collider rig constraint has broken. */
-	virtual void RigConstraintBroke(deCollider *owner,
-		int bone, int index, deRigConstraint *constraint);
+	void RigConstraintBroke(deCollider *owner,
+		int bone, int index, deRigConstraint *constraint) override;
 	/*@}*/
 };
 

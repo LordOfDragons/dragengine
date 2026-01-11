@@ -57,9 +57,9 @@ private:
 public:
 	// constructor
 	deClassTouchSensor(deEngine *gameEngine, deScriptingDragonScript *scrMgr);
-	~deClassTouchSensor();
+	~deClassTouchSensor() override;
 	// internal functions
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	deTouchSensor *GetTouchSensor(dsRealObject *myself) const;
 	void PushTouchSensor(dsRunTime *rt, deTouchSensor *touchSensor);
 	inline deEngine *GetGameEngine() const{ return pGameEngine; }

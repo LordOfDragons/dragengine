@@ -47,7 +47,7 @@ public:
 	/** \brief Creates a new class. */
 	deClassNavigationBlocker(deScriptingDragonScript *ds);
 	/** \brief Cleans up the class. */
-	virtual ~deClassNavigationBlocker();
+	~deClassNavigationBlocker() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -55,7 +55,7 @@ public:
 	/** \brief Retrieves the module. */
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/** \brief Creates class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Retrieves the navigation blocker or NULL if myself is NULL. */
 	deNavigationBlocker *GetNavigationBlocker(dsRealObject *myself) const;

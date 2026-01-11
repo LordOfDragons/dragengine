@@ -84,7 +84,7 @@ public:
 	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(skyeWPController &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		skyeSky * const sky = pPanel.GetSky();
 		skyeController * const controller = pPanel.GetController();
 		if(!sky || !controller){
@@ -192,7 +192,7 @@ public:
 	typedef deTObjectReference<cListControllers> Ref;
 	cListControllers(skyeWPController &panel) : pPanel(panel){}
 	
-	virtual void OnSelectionChanged(igdeListBox *listBox){
+	void OnSelectionChanged(igdeListBox *listBox) override{
 		skyeSky * const sky = pPanel.GetSky();
 		if(!sky){
 			return;
@@ -208,7 +208,7 @@ public:
 		}
 	}
 	
-	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
+	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
 		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelperProperties();
 		helper.MenuCommand(menu, pPanel.GetActionControllerAdd());
 		helper.MenuCommand(menu, pPanel.GetActionControllerRemove());
@@ -239,7 +239,7 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove the selected controller."){}
 	
-	virtual igdeUndo::Ref OnActionController(skyeSky *sky, skyeController *controller){
+	igdeUndo::Ref OnActionController(skyeSky *sky, skyeController *controller) override{
 		const int usageCount = sky->CountControllerUsage(controller);
 		
 		if(usageCount > 0 && igdeCommonDialogs::QuestionFormat(
@@ -268,7 +268,7 @@ public:
 		"Move controller up in the list."),
 	pListBox(listBox){}
 	
-	virtual igdeUndo::Ref OnActionController(skyeSky*, skyeController *controller){
+	igdeUndo::Ref OnActionController(skyeSky*, skyeController *controller) override{
 		return skyeUControllerMoveUp::Ref::New(controller);
 	}
 	
@@ -286,7 +286,7 @@ public:
 		"Move controller down in the list."),
 	pListBox(listBox){}
 	
-	virtual igdeUndo::Ref OnActionController(skyeSky*, skyeController *controller){
+	igdeUndo::Ref OnActionController(skyeSky*, skyeController *controller) override{
 		return skyeUControllerMoveDown::Ref::New(controller);
 	}
 	
@@ -345,11 +345,11 @@ public:
 	typedef deTObjectReference<cSliderValue> Ref;
 	cSliderValue(skyeWPController &panel) : pPanel(panel){}
 	
-	virtual void OnSliderTextValueChanging(igdeEditSliderText *sliderText){
+	void OnSliderTextValueChanging(igdeEditSliderText *sliderText) override{
 		OnSliderTextValueChanged(sliderText);
 	}
 	
-	virtual void OnSliderTextValueChanged(igdeEditSliderText *sliderText){
+	void OnSliderTextValueChanged(igdeEditSliderText *sliderText) override{
 		skyeController * const controller = pPanel.GetController();
 		if(controller){
 			controller->SetCurrentValue(sliderText->GetValue());
@@ -363,7 +363,7 @@ public:
 	cActionClamp(skyeWPController &panel) : cBaseActionController(panel, "Clamp value to range",
 		"Determines if the value of the controller is clamped to the given range."){ }
 	
-	virtual igdeUndo::Ref OnActionController(skyeSky*, skyeController *controller){
+	igdeUndo::Ref OnActionController(skyeSky*, skyeController *controller) override{
 		return skyeUControllerToggleClamp::Ref::New(controller);
 	}
 };
@@ -374,7 +374,7 @@ public:
 	cActionFrozen(skyeWPController &panel) : cBaseActionController(panel,
 		"Freeze Controller value", "Prevents the controller from changing the current value."){}
 	
-	virtual igdeUndo::Ref OnActionController(skyeSky*, skyeController *controller){
+	igdeUndo::Ref OnActionController(skyeSky*, skyeController *controller) override{
 		return skyeUControllerToggleFrozen::Ref::New(controller);
 	}
 };

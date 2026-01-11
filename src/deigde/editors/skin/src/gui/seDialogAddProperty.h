@@ -57,7 +57,7 @@ public:
 	
 protected:
 	/** \brief Clean up dialog. */
-	virtual ~seDialogAddProperty();
+	~seDialogAddProperty() override;
 	/*@}*/
 	
 	

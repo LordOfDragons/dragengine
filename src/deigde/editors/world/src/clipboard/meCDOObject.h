@@ -69,7 +69,7 @@ public:
 	
 protected:
 	/** Clean up object data object. */
-	~meCDOObject();
+	~meCDOObject() override;
 	/*@}*/
 	
 	

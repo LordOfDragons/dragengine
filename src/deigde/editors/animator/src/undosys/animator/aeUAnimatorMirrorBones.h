@@ -62,7 +62,7 @@ public:
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeUAnimatorMirrorBones();
+	~aeUAnimatorMirrorBones() override;
 	/*@}*/
 	
 	
@@ -76,10 +76,10 @@ public:
 	
 	
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

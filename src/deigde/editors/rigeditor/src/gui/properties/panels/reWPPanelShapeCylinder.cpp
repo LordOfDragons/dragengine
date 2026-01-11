@@ -62,7 +62,7 @@ public:
 	typedef deTObjectReference<cTextHalfHeight> Ref;
 	cTextHalfHeight(reWPPanelShapeCylinder &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		reRig * const rig = pPanel.GetRig();
 		reRigShapeCylinder * const cylinder = (reRigShapeCylinder*)pPanel.GetShape();
 		if(!rig || !cylinder){
@@ -88,7 +88,7 @@ public:
 	typedef deTObjectReference<cTextTopRadius> Ref;
 	cTextTopRadius(reWPPanelShapeCylinder &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		reRig * const rig = pPanel.GetRig();
 		reRigShapeCylinder * const cylinder = (reRigShapeCylinder*)pPanel.GetShape();
 		if(!rig || !cylinder){
@@ -114,7 +114,7 @@ public:
 	typedef deTObjectReference<cTextBottomRadius> Ref;
 	cTextBottomRadius(reWPPanelShapeCylinder &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		reRig * const rig = pPanel.GetRig();
 		reRigShapeCylinder * const cylinder = (reRigShapeCylinder*)pPanel.GetShape();
 		if(!rig || !cylinder){

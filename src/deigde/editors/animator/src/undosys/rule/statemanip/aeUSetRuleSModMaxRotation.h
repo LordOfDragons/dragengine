@@ -59,16 +59,16 @@ public:
 	aeUSetRuleSModMaxRotation(aeRuleStateManipulator *rule, const decVector &newMax);
 protected:
 	/** Clean up undo. */
-	virtual ~aeUSetRuleSModMaxRotation();
+	~aeUSetRuleSModMaxRotation() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

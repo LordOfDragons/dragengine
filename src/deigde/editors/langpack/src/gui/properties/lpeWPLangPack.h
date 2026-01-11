@@ -64,7 +64,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~lpeWPLangPack();
+	~lpeWPLangPack() override;
 	/*@}*/
 	
 	

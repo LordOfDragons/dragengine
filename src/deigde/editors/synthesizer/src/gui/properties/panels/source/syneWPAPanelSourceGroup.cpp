@@ -60,7 +60,7 @@ public:
 	typedef deTObjectReference<cComboApplicationType> Ref;
 	cComboApplicationType(syneWPAPanelSourceGroup &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		syneSourceGroup * const source = (syneSourceGroup*)pPanel.GetSource();
 		if(!source || !comboBox->GetSelectedItem()){
 			return;

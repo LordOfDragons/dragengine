@@ -73,7 +73,7 @@ public:
 	
 protected:
 	/** \brief Cleans up panel. */
-	virtual ~igdeDEParameters();
+	~igdeDEParameters() override;
 	/*@}*/
 	
 	

@@ -61,7 +61,7 @@ public:
 	
 protected:
 	/** \brief Clean up dialog. */
-	virtual ~igdeDialogCurveBezierClamp();
+	~igdeDialogCurveBezierClamp() override;
 	/*@}*/
 	
 	

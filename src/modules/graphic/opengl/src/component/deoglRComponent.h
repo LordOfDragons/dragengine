@@ -210,7 +210,7 @@ public:
 	
 protected:
 	/** Clean up render component. */
-	virtual ~deoglRComponent();
+	~deoglRComponent() override;
 	/*@}*/
 	
 	

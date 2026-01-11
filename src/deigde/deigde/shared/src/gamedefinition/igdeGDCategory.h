@@ -78,7 +78,7 @@ public:
 	
 protected:
 	/** \brief Clean up category. */
-	virtual ~igdeGDCategory();
+	~igdeGDCategory() override;
 	/*@}*/
 	
 	

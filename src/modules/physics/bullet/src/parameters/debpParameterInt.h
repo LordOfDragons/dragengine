@@ -47,7 +47,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Current value. */
-	virtual decString GetParameterValue();
+	decString GetParameterValue() override;
 	
 	/** \brief Set current value. */
 	void SetParameterValue(const char *value) override;

@@ -90,10 +90,10 @@ public:
 	deglWindowMain(FXApp* app, int argc, char **argv);
 	
 	/** Clean up main window. */
-	virtual ~deglWindowMain();
+	~deglWindowMain() override;
 	
 	/** Fox create window. */
-	virtual void create();
+	void create() override;
 	/*@}*/
 	
 	

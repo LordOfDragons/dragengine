@@ -97,7 +97,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~meWPPropertyList();
+	~meWPPropertyList() override;
 	/*@}*/
 	
 	

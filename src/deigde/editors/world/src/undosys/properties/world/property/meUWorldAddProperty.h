@@ -59,7 +59,7 @@ protected:
 	/** \brief Clean up undo object. */
 
 protected:
-	virtual ~meUWorldAddProperty();
+	~meUWorldAddProperty() override;
 
 public:
 	/*@}*/
@@ -73,10 +73,10 @@ public:
 	void SetValue(const char *value);
 	
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	
 	/** \brief Progressive redo. */
 	void ProgressiveRedo();

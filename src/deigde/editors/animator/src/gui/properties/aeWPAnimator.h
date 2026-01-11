@@ -74,7 +74,7 @@ public:
 	
 protected:
 	/** Clean up panel. */
-	virtual ~aeWPAnimator();
+	~aeWPAnimator() override;
 	/*@}*/
 	
 	

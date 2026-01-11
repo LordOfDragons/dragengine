@@ -53,7 +53,7 @@ public:
 	
 protected:
 	/** \brief Clean up listener. */
-	virtual ~igdeWindowLoggerListener();
+	~igdeWindowLoggerListener() override;
 	
 public:
 	/*@}*/
@@ -63,10 +63,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Message added to history. */
-	virtual void MessageAdded(igdeLoggerHistory *history, igdeLoggerHistoryEntry &entry);
+	void MessageAdded(igdeLoggerHistory *history, igdeLoggerHistoryEntry &entry) override;
 	
 	/** \brief History cleared. */
-	virtual void HistoryCleared(igdeLoggerHistory *history);
+	void HistoryCleared(igdeLoggerHistory *history) override;
 	/*@}*/
 };
 

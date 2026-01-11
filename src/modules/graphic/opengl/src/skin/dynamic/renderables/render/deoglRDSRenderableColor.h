@@ -69,7 +69,7 @@ public:
 	 * Get color if support or default color.
 	 * \details Default implementation returns default value.
 	 */
-	virtual decColor GetRenderColor(const decColor &defaultColor);
+	decColor GetRenderColor(const decColor &defaultColor) override;
 	
 	/**
 	 * Get texture to use for rendering or \em NULL if not applicable.

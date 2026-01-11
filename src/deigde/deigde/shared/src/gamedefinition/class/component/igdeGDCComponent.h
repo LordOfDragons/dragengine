@@ -108,7 +108,7 @@ public:
 	
 protected:
 	/** \brief Clean up component. */
-	virtual ~igdeGDCComponent();
+	~igdeGDCComponent() override;
 	
 public:
 	/*@}*/

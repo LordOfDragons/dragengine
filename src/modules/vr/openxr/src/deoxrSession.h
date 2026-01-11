@@ -142,7 +142,7 @@ public:
 	
 protected:
 	/** Clean up space. */
-	virtual ~deoxrSession();
+	~deoxrSession() override;
 	/*@}*/
 	
 	

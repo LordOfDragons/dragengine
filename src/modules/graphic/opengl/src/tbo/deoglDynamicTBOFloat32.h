@@ -129,7 +129,7 @@ public:
 	void DebugPrint() override;
 	
 	/** TBO format. */
-	virtual GLenum GetTBOFormat();
+	GLenum GetTBOFormat() override;
 	/*@}*/
 };
 

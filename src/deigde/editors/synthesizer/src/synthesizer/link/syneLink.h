@@ -74,7 +74,7 @@ public:
 	
 	/** Clean up link. */
 protected:
-	virtual ~syneLink();
+	~syneLink() override;
 public:
 	/*@}*/
 	

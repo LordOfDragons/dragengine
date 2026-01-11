@@ -53,7 +53,7 @@ public:
 	dedsSpeaker(deScriptingDragonScript &ds, deSpeaker *speaker);
 	
 	/** \brief Clean up peer. */
-	virtual ~dedsSpeaker();
+	~dedsSpeaker() override;
 	/*@}*/
 	
 	

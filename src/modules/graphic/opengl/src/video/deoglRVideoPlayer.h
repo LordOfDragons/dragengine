@@ -66,7 +66,7 @@ public:
 	
 protected:
 	/** Clean up video player target. */
-	virtual ~deoglRVideoPlayer();
+	~deoglRVideoPlayer() override;
 	/*@}*/
 	
 	

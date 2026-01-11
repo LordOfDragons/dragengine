@@ -117,7 +117,7 @@ public:
 	
 protected:
 	/** \brief Clean up widget. */
-	virtual ~igdeEditPropertyValue();
+	~igdeEditPropertyValue() override;
 	/*@}*/
 	
 	

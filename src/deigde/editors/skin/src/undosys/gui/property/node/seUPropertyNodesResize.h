@@ -63,7 +63,7 @@ public:
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~seUPropertyNodesResize();
+	~seUPropertyNodesResize() override;
 	/*@}*/
 	
 	
@@ -75,10 +75,10 @@ public:
 	void SetDistance(const decVector2 &distance);
 	
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 	

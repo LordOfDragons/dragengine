@@ -52,7 +52,7 @@ public:
 	
 protected:
 	/** Clean up light pipeline. */
-	virtual ~deoglLightPipeline();
+	~deoglLightPipeline() override;
 	/*@}*/
 	
 	

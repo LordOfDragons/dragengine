@@ -68,7 +68,7 @@ public:
 	
 protected:
 	/** \brief Clean up game aptch. */
-	virtual ~delPatch();
+	~delPatch() override;
 	/*@}*/
 	
 	

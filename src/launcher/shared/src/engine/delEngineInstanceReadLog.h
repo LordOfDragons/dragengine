@@ -55,7 +55,7 @@ public:
 	delEngineInstanceReadLog(delEngineInstance &engineInstance, deLogger *logger);
 	
 	/** \brief Clean up engine instance. */
-	virtual ~delEngineInstanceReadLog();
+	~delEngineInstanceReadLog() override;
 	/*@}*/
 	
 	
@@ -63,7 +63,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Run thread function. */
-	virtual void Run();
+	void Run() override;
 	
 	/**
 	 * \brief Read data from log pipe.

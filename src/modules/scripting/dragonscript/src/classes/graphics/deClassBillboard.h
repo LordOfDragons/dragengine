@@ -49,7 +49,7 @@ public:
 	deClassBillboard(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
-	virtual ~deClassBillboard();
+	~deClassBillboard() override;
 	/*@}*/
 	
 	
@@ -60,7 +60,7 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Billboard from object. */
 	deBillboard *GetBillboard(dsRealObject *myself) const;

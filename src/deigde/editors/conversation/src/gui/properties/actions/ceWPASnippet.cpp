@@ -68,7 +68,7 @@ public:
 	typedef deTObjectReference<cComboFile> Ref;
 	cComboFile(ceWPASnippet &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCASnippet * const action = pPanel.GetAction();
 		if(!topic || !action  || comboBox->GetText() == action->GetFile()){
@@ -87,7 +87,7 @@ public:
 	typedef deTObjectReference<cComboTopic> Ref;
 	cComboTopic(ceWPASnippet &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCASnippet * const action = pPanel.GetAction();
 		if(!topic || !action  || comboBox->GetText() == action->GetTopic()){

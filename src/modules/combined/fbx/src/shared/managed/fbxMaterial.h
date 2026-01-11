@@ -65,7 +65,7 @@ public:
 	
 protected:
 	/** Clean up connection. */
-	virtual ~fbxMaterial();
+	~fbxMaterial() override;
 	/*@}*/
 	
 	

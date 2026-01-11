@@ -72,7 +72,7 @@ public:
 	typedef deTObjectReference<cSpinNavSpace> Ref;
 	cSpinNavSpace(meWPSNavSpace &panel) : pPanel(panel){}
 	
-	virtual void OnValueChanged(igdeSpinTextField *textField){
+	void OnValueChanged(igdeSpinTextField *textField) override{
 		meWorld * const world = pPanel.GetWorld();
 		if(!world){
 			return;
@@ -101,7 +101,7 @@ public:
 	typedef deTObjectReference<cPathNavSpace> Ref;
 	cPathNavSpace(meWPSNavSpace &panel) : pPanel(panel){}
 	
-	virtual void OnEditPathChanged(igdeEditPath *editPath){
+	void OnEditPathChanged(igdeEditPath *editPath) override{
 		meNavigationSpace * const navspace = pPanel.GetNavigationSpace();
 		if(!navspace){
 			return;
@@ -123,7 +123,7 @@ public:
 	typedef deTObjectReference<cEditPosition> Ref;
 	cEditPosition(meWPSNavSpace &panel) : pPanel(panel){}
 	
-	virtual void OnDVectorChanged(igdeEditDVector *editDVector){
+	void OnDVectorChanged(igdeEditDVector *editDVector) override{
 		meNavigationSpace * const navspace = pPanel.GetNavigationSpace();
 		if(!navspace){
 			return;
@@ -145,7 +145,7 @@ public:
 	typedef deTObjectReference<cEditOrientation> Ref;
 	cEditOrientation(meWPSNavSpace &panel) : pPanel(panel){}
 	
-	virtual void OnVectorChanged(igdeEditVector *editVector){
+	void OnVectorChanged(igdeEditVector *editVector) override{
 		meNavigationSpace * const navspace = pPanel.GetNavigationSpace();
 		if(!navspace){
 			return;

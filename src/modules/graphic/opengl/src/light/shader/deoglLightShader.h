@@ -184,7 +184,7 @@ public:
 	
 protected:
 	/** Cleans up the skin shader. */
-	virtual ~deoglLightShader();
+	~deoglLightShader() override;
 	/*@}*/
 	
 	

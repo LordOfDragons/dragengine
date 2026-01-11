@@ -52,7 +52,7 @@ public:
 	deClassLight(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up native class. */
-	virtual ~deClassLight();
+	~deClassLight() override;
 	/*@}*/
 	
 	
@@ -60,7 +60,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Create class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Scripting module. */
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }

@@ -52,7 +52,7 @@ public:
 	/** \brief Clean up undo object. */
 
 protected:
-	virtual ~meUDeleteNavSpace();
+	~meUDeleteNavSpace() override;
 
 public:
 	/*@}*/
@@ -62,10 +62,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo the action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo the action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

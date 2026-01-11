@@ -70,7 +70,7 @@ public:
 	
 protected:
 	/** \brief Cleans up xml document. */
-	virtual ~dedsXmlDocument();
+	~dedsXmlDocument() override;
 	/*@}*/
 	
 	

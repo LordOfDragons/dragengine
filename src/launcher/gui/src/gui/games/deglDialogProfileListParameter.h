@@ -74,7 +74,7 @@ public:
 	
 protected:
 	/** Clean up parameter. */
-	virtual ~deglDialogProfileListParameter();
+	~deglDialogProfileListParameter() override;
 	/*@}*/
 	
 	

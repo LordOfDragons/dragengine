@@ -62,7 +62,7 @@ public:
 	
 protected:
 	/** Clean up hidden mesh. */
-	virtual ~deoxrHiddenMesh();
+	~deoxrHiddenMesh() override;
 	/*@}*/
 	
 	

@@ -53,7 +53,7 @@ public:
 	deWebp3DImageInfo(const decString &filename);
 	
 	/** Clean up image information. */
-	virtual ~deWebp3DImageInfo();
+	~deWebp3DImageInfo() override;
 	/*@}*/
 	
 	
@@ -67,19 +67,19 @@ public:
 	inline bool GetHasAlpha() const{ return hasAlpha; }
 	
 	/** Image width in pixels. */
-	virtual int GetWidth();
+	int GetWidth() override;
 	
 	/** Image height in pixels. */
-	virtual int GetHeight();
+	int GetHeight() override;
 	
 	/** Image depth in pixels. */
-	virtual int GetDepth();
+	int GetDepth() override;
 	
 	/** Image component count. */
-	virtual int GetComponentCount();
+	int GetComponentCount() override;
 	
 	/** Image bit count. */
-	virtual int GetBitCount();
+	int GetBitCount() override;
 	/*@}*/
 };
 

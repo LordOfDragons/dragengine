@@ -42,7 +42,7 @@ public:
 	delGameXML(deLogger *logger, const char *loggerSource);
 	
 	/** \brief Clean up game xml read. */
-	virtual ~delGameXML();
+	~delGameXML() override;
 	/*@}*/
 	
 	

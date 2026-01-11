@@ -163,7 +163,7 @@ public:
 	
 protected:
 	/** Cleans up the object. */
-	virtual ~meObject();
+	~meObject() override;
 	
 public:
 	/*@}*/

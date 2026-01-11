@@ -102,7 +102,7 @@ public:
 	
 protected:
 	/** \brief Clean up view. */
-	virtual ~meWPView();
+	~meWPView() override;
 	/*@}*/
 	
 	

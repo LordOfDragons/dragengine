@@ -56,7 +56,7 @@ protected:
 	/** \brief Clean up undo decal. */
 
 protected:
-	virtual ~meUDecalClonePropertiesToSelected();
+	~meUDecalClonePropertiesToSelected() override;
 
 public:
 	/*@}*/
@@ -75,10 +75,10 @@ public:
 	inline const decStringDictionary &GetPropertyList() const{ return pPropertyList; }
 	
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

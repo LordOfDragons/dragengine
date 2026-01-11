@@ -61,7 +61,7 @@ public:
 	typedef deTObjectReference<cTextProbability> Ref;
 	cTextProbability(meWVNodeResult &node) : pNode(node){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		const float value = textField->GetFloat();
 		if(fabsf(value - pNode.GetRuleResult()->GetProbability()) <= FLOAT_SAFE_EPSILON){
 			return;
@@ -81,7 +81,7 @@ public:
 	typedef deTObjectReference<cTextVariation> Ref;
 	cTextVariation(meWVNodeResult &node) : pNode(node){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		const int value = textField->GetInteger();
 		if(value == pNode.GetRuleResult()->GetVariation()){
 			return;

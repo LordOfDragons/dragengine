@@ -52,7 +52,7 @@ public:
 	igdeNativeFoxApplication(igdeApplication &owner);
 	
 	/** \brief Clean up application. */
-	~igdeNativeFoxApplication();
+	~igdeNativeFoxApplication() override;
 	
 	/** \brief Create native application. */
 	static igdeNativeFoxApplication* CreateNativeApplication(igdeApplication &application);

@@ -47,7 +47,7 @@ public:
 	typedef deTObjectReference<cComboIdentifier> Ref;
 	cComboIdentifier(ceDialogEditStrip &dialog) : pDialog(dialog){}
 	
-	virtual void OnTextChanged(igdeComboBox*){
+	void OnTextChanged(igdeComboBox*) override{
 		if(pDialog.GetAutoResetDuration()){
 			pDialog.ResetDuration();
 		}

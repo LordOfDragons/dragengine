@@ -65,7 +65,7 @@ public:
 	
 protected:
 	/** \brief Clean up snap point. */
-	virtual ~igdeGDCSnapPoint();
+	~igdeGDCSnapPoint() override;
 	/*@}*/
 	
 	

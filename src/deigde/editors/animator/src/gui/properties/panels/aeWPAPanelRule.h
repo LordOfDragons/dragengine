@@ -91,7 +91,7 @@ public:
 	
 protected:
 	/** Clean up panel. */
-	virtual ~aeWPAPanelRule();
+	~aeWPAPanelRule() override;
 	/*@}*/
 	
 	

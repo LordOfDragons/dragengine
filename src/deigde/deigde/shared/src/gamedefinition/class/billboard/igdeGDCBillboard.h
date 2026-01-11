@@ -87,7 +87,7 @@ public:
 	
 protected:
 	/** \brief Clean up billboard. */
-	virtual ~igdeGDCBillboard();
+	~igdeGDCBillboard() override;
 	
 public:
 	/*@}*/

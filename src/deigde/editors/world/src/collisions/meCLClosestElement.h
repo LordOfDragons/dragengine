@@ -78,7 +78,7 @@ public:
 	meCLClosestElement(meWorld &world);
 	
 	/**  Clean up visitor. */
-	virtual ~meCLClosestElement();
+	~meCLClosestElement() override;
 	/*@}*/
 	
 	
@@ -146,13 +146,13 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/**  Collision response. */
-	virtual void CollisionResponse(deCollider *owner, deCollisionInfo *info);
+	void CollisionResponse(deCollider *owner, deCollisionInfo *info) override;
 	
 	/**  Collider can hit another collider. */
-	virtual bool CanHitCollider(deCollider *owner, deCollider *collider);
+	bool CanHitCollider(deCollider *owner, deCollider *collider) override;
 	
 	/**  Collider changed. */
-	virtual void ColliderChanged(deCollider *owner);
+	void ColliderChanged(deCollider *owner) override;
 	/*@}*/
 };
 

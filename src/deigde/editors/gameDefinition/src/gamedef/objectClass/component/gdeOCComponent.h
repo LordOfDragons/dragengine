@@ -133,7 +133,7 @@ public:
 	
 	/** \brief Clean up component. */
 protected:
-	virtual ~gdeOCComponent();
+	~gdeOCComponent() override;
 public:
 	/*@}*/
 	

@@ -62,7 +62,7 @@ public:
 	typedef deTObjectReference<cTextX> Ref;
 	cTextX(meWVNodeCombine &node) : pNode(node){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		const float value = textField->GetFloat();
 		if(fabsf(value - pNode.GetRuleCombine()->GetX()) <= FLOAT_SAFE_EPSILON){
 			return;
@@ -82,7 +82,7 @@ public:
 	typedef deTObjectReference<cTextY> Ref;
 	cTextY(meWVNodeCombine &node) : pNode(node){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		const float value = textField->GetFloat();
 		if(fabsf(value - pNode.GetRuleCombine()->GetY()) <= FLOAT_SAFE_EPSILON){
 			return;
@@ -102,7 +102,7 @@ public:
 	typedef deTObjectReference<cTextZ> Ref;
 	cTextZ(meWVNodeCombine &node) : pNode(node){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		const float value = textField->GetFloat();
 		if(fabsf(value - pNode.GetRuleCombine()->GetZ()) <= FLOAT_SAFE_EPSILON){
 			return;

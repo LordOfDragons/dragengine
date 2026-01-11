@@ -48,7 +48,7 @@ public:
 	
 protected:
 	/** \brief Clean up listener. */
-	virtual ~delLoggerHistoryListener();
+	~delLoggerHistoryListener() override;
 	/*@}*/
 	
 	

@@ -60,7 +60,7 @@ public:
 	
 protected:
 	/** Clean up pipeline. */
-	virtual ~devkImageView();
+	~devkImageView() override;
 	/*@}*/
 	
 	

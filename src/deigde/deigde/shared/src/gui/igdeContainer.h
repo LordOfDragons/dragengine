@@ -59,7 +59,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeContainer();
+	~igdeContainer() override;
 	/*@}*/
 	
 	
@@ -91,7 +91,7 @@ public:
 	 * \brief Drop native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DropNativeWidget();
+	void DropNativeWidget() override;
 	
 	/**
 	 * \brief Get native container widget pointer.
@@ -109,7 +109,7 @@ protected:
 	virtual void CreateChildWidgetNativeWidgets();
 	
 	/** \brief GuiTheme changed. */
-	virtual void OnGuiThemeChanged();
+	void OnGuiThemeChanged() override;
 	
 	/**
 	 * \brief Notify children gui theme changed.

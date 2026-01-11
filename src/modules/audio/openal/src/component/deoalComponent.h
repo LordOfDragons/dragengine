@@ -88,7 +88,7 @@ public:
 	deoalComponent(deAudioOpenAL &audioThread, deComponent &component);
 	
 	/** \brief Clean up component peer. */
-	virtual ~deoalComponent();
+	~deoalComponent() override;
 	/*@}*/
 	
 	
@@ -154,53 +154,53 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	/** \brief Scaling changed. */
-	virtual void ScalingChanged();
+	void ScalingChanged() override;
 	
 	/** \brief Orientation changed. */
-	virtual void OrientationChanged();
+	void OrientationChanged() override;
 	
 	/** \brief Model object changed. */
-	virtual void ModelChanged();
+	void ModelChanged() override;
 	
 	/** \brief Rig object changed. */
-	virtual void RigChanged();
+	void RigChanged() override;
 	
 	/** \brief Skin object changed. */
-	virtual void SkinChanged();
+	void SkinChanged() override;
 	
 	/** \brief Model and skin object changed. */
-	virtual void ModelAndSkinChanged();
+	void ModelAndSkinChanged() override;
 	
 	/** \brief Audio model changed. */
-	virtual void AudioModelChanged();
+	void AudioModelChanged() override;
 	
 	/** \brief Visitility changed. */
-	virtual void VisibilityChanged();
+	void VisibilityChanged() override;
 	
 	/** \brief Extends changed. */
-	virtual void ExtendsChanged();
+	void ExtendsChanged() override;
 	
 	/**
 	 * \brief Mesh vertices have been invalidated.
 	 * 
 	 * Called if Model changed or bones have been invalidated.
 	 */
-	virtual void MeshDirty();
+	void MeshDirty() override;
 	
 	/** \brief Layer mask changed. */
-	virtual void LayerMaskChanged();
+	void LayerMaskChanged() override;
 	
 	/** \brief Parameter or hint changed. */
-	virtual void ParametersChanged();
+	void ParametersChanged() override;
 	
 	/** \brief Texture changed. */
-	virtual void TextureChanged(int index, deComponentTexture &texture);
+	void TextureChanged(int index, deComponentTexture &texture) override;
 	
 	/** \brief Dynamic skin changed. */
-	virtual void DynamicSkinChanged();
+	void DynamicSkinChanged() override;
 	/*@}*/
 	
 	

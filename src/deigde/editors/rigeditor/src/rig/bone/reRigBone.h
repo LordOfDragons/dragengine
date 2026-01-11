@@ -101,7 +101,7 @@ public:
 	reRigBone(deEngine *engine);
 	/** \brief Cleans up the rig controller. */
 protected:
-	virtual ~reRigBone();
+	~reRigBone() override;
 public:
 	/*@}*/
 	

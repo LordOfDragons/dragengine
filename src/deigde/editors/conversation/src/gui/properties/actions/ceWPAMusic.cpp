@@ -69,7 +69,7 @@ public:
 	typedef deTObjectReference<cTextName> Ref;
 	cTextName(ceWPAMusic &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAMusic * const action = pPanel.GetAction();
 		if(!topic || !action || textField->GetText() == action->GetName()){

@@ -48,7 +48,7 @@ public:
 	deClassMemoryFile(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
-	virtual ~deClassMemoryFile();
+	~deClassMemoryFile() override;
 	/*@}*/
 	
 	
@@ -56,7 +56,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Create class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Memory file or \em NULL if myself is \em NULL. */
 	decMemoryFile *GetMemoryFile(dsRealObject *myself) const;

@@ -64,7 +64,7 @@ public:
 	ceCoordSystem();
 	/** \brief Cleans up the conversation actor. */
 protected:
-	virtual ~ceCoordSystem();
+	~ceCoordSystem() override;
 public:
 	/*@}*/
 	

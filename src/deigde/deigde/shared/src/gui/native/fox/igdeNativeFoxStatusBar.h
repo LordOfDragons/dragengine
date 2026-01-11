@@ -60,7 +60,7 @@ public:
 		const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up text widget. */
-	virtual ~igdeNativeFoxStatusBar();
+	~igdeNativeFoxStatusBar() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeFoxStatusBar* CreateNativeWidget(igdeStatusBar &owner);

@@ -67,7 +67,7 @@ public:
 	
 protected:
 	/** \brief Clean up particle emitter. */
-	virtual ~igdeGDParticleEmitter();
+	~igdeGDParticleEmitter() override;
 	/*@}*/
 	
 	

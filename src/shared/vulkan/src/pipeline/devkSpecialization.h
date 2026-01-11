@@ -60,7 +60,7 @@ public:
 	
 protected:
 	/** Clean up specialization configuration. */
-	virtual ~devkSpecialization();
+	~devkSpecialization() override;
 	/*@}*/
 	
 	

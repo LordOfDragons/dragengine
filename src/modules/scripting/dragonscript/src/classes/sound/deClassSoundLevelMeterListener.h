@@ -51,7 +51,7 @@ public:
 	deClassSoundLevelMeterListener(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
-	virtual ~deClassSoundLevelMeterListener();
+	~deClassSoundLevelMeterListener() override;
 	/*@}*/
 	
 	
@@ -62,7 +62,7 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create script class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Function index for speakerAudible(). */
 	inline int GetFuncIndexSpeakerAudible() const{ return pFuncIndexSpeakerAudible; }

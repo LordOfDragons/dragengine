@@ -52,7 +52,7 @@ public:
 	
 protected:
 	/** Cleans up the game. */
-	virtual ~deglGameIcon();
+	~deglGameIcon() override;
 	/*@}*/
 	
 	
@@ -70,7 +70,7 @@ public:
 	
 	
 protected:
-	virtual void OnContentChanged();
+	void OnContentChanged() override;
 	
 	
 	

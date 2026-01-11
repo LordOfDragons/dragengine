@@ -119,7 +119,7 @@ public:
 	
 protected:
 	/** \brief Clean up template. */
-	virtual ~igdeTemplateReplace();
+	~igdeTemplateReplace() override;
 	/*@}*/
 	
 	

@@ -48,7 +48,7 @@ public:
 	/** Creates a new configuration xml read/save. */
 	aeConfigurationXML(deLogger *logger, const char *loggerSource);
 	/** Cleans up the configuration xml read/save. */
-	virtual ~aeConfigurationXML();
+	~aeConfigurationXML() override;
 	/*@}*/
 	
 	/** \name Management */

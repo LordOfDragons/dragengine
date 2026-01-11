@@ -50,7 +50,7 @@ public:
 	deClassSkin(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
-	virtual ~deClassSkin();
+	~deClassSkin() override;
 	/*@}*/
 	
 	
@@ -61,7 +61,7 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Skin from object. */
 	deSkin *GetSkin(dsRealObject *myself) const;

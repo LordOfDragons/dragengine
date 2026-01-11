@@ -74,7 +74,7 @@ public:
 	
 	/** \brief Clean up text box. */
 protected:
-	~cePlayerChoiceBox();
+	~cePlayerChoiceBox() override;
 public:
 	/*@}*/
 	

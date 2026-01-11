@@ -46,7 +46,7 @@ public:
 	/** Creates a new class. */
 	deClassSystem(deScriptingDragonScript *ds);
 	/** Cleans up the class. */
-	~deClassSystem();
+	~deClassSystem() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -54,7 +54,7 @@ public:
 	/** Retrieves the module. */
 	inline deScriptingDragonScript *GetDS(){ return pDS; }
 	/** Creates class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	/*@}*/
 	
 private:

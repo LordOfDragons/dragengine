@@ -59,7 +59,7 @@ public:
 	}
 	
 public:
-	virtual void OnCameraChanged(){
+	void OnCameraChanged() override{
 		if(pView.GetSky()){
 			pView.GetSky()->NotifyCameraChanged();
 		}

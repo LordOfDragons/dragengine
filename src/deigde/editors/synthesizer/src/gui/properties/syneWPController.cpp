@@ -80,7 +80,7 @@ protected:
 public:
 	cBaseTextFieldListener(syneWPController &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		syneController * const controller = pPanel.GetController();
 		if(!controller){
 			return;
@@ -128,7 +128,7 @@ public:
 	typedef deTObjectReference<cListControllers> Ref;
 	cListControllers(syneWPController &panel) : pPanel(panel){}
 	
-	virtual void OnSelectionChanged(igdeListBox *listBox){
+	void OnSelectionChanged(igdeListBox *listBox) override{
 		syneSynthesizer * const synthesizer = pPanel.GetSynthesizer();
 		if(!synthesizer){
 			return;
@@ -139,7 +139,7 @@ public:
 		pPanel.UpdateController();
 	}
 	
-	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
+	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		syneWindowMain &windowMain = pPanel.GetViewSynthesizer().GetWindowMain();
 		
@@ -214,7 +214,7 @@ public:
 	typedef deTObjectReference<cEditCurve> Ref;
 	cEditCurve(syneWPController &panel) : pPanel(panel){}
 	
-	virtual void OnCurveChanged(igdeViewCurveBezier *viewCurveBezier){
+	void OnCurveChanged(igdeViewCurveBezier *viewCurveBezier) override{
 		if(pUndo){
 			((syneUControllerSetCurve&)(igdeUndo&)pUndo).SetNewValue(viewCurveBezier->GetCurve());
 			
@@ -229,7 +229,7 @@ public:
 		pUndo = nullptr;
 	}
 	
-	virtual void OnCurveChanging(igdeViewCurveBezier *viewCurveBezier){
+	void OnCurveChanging(igdeViewCurveBezier *viewCurveBezier) override{
 		if(pUndo){
 			((syneUControllerSetCurve&)(igdeUndo&)pUndo).SetNewValue(viewCurveBezier->GetCurve());
 			pUndo->Redo();
@@ -286,7 +286,7 @@ public:
 		cActionSetCurve(panel, editCurve, "Const", nullptr, "Set curve to constant value"),
 	pEditConstValue(editConstValue){}
 	
-	virtual void CreateCurve(const syneController &controller, decCurveBezier &curve){
+	void CreateCurve(const syneController &controller, decCurveBezier &curve) override{
 		const float xmax = pPanel.GetSynthesizer()->GetPlayTime();
 		const float y = decMath::clamp(pEditConstValue->GetFloat(),
 			controller.GetMinimumValue(), controller.GetMaximumValue());
@@ -303,7 +303,7 @@ public:
 	cActionCurveSetLinear(syneWPController &panel, igdeViewCurveBezier *editCurve) :
 		cActionSetCurve(panel, editCurve, "Linear", nullptr, "Set curve to linear curve from 0 to 1"){}
 	
-	virtual void CreateCurve(const syneController &controller, decCurveBezier &curve){
+	void CreateCurve(const syneController &controller, decCurveBezier &curve) override{
 		const float xmax = pPanel.GetSynthesizer()->GetPlayTime();
 		const float ymin = controller.GetMinimumValue();
 		const float ymax = controller.GetMaximumValue();
@@ -324,7 +324,7 @@ public:
 	cActionCurveSetLinearInverse(syneWPController &panel, igdeViewCurveBezier *editCurve) :
 		cActionSetCurve(panel, editCurve, "Inverse", nullptr, "Set curve to linear curve from 1 to 0"){}
 	
-	virtual void CreateCurve(const syneController &controller, decCurveBezier &curve){
+	void CreateCurve(const syneController &controller, decCurveBezier &curve) override{
 		const float xmax = pPanel.GetSynthesizer()->GetPlayTime();
 		const float ymin = controller.GetMinimumValue();
 		const float ymax = controller.GetMaximumValue();
@@ -345,7 +345,7 @@ public:
 	cActionCurveSetBezier(syneWPController &panel, igdeViewCurveBezier *editCurve) :
 		cActionSetCurve(panel, editCurve, "Bezier", nullptr, "Set curve to bezier curve from 0 to 1"){}
 	
-	virtual void CreateCurve(const syneController &controller, decCurveBezier &curve){
+	void CreateCurve(const syneController &controller, decCurveBezier &curve) override{
 		const float xmax = pPanel.GetSynthesizer()->GetPlayTime();
 		const float ymin = controller.GetMinimumValue();
 		const float ymax = controller.GetMaximumValue();
@@ -364,7 +364,7 @@ public:
 	cActionCurveSetBezierInverse(syneWPController &panel, igdeViewCurveBezier *editCurve) :
 		cActionSetCurve(panel, editCurve, "Inverse", nullptr, "Set curve to bezier curve from 1 to 0"){}
 	
-	virtual void CreateCurve(const syneController &controller, decCurveBezier &curve){
+	void CreateCurve(const syneController &controller, decCurveBezier &curve) override{
 		const float xmax = pPanel.GetSynthesizer()->GetPlayTime();
 		const float ymin = controller.GetMinimumValue();
 		const float ymax = controller.GetMaximumValue();

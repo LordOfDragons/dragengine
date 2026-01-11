@@ -67,7 +67,7 @@ public:
 	
 protected:
 	/** \brief Clean up window. */
-	virtual ~skyeWindowProperties();
+	~skyeWindowProperties() override;
 	/*@}*/
 	
 	

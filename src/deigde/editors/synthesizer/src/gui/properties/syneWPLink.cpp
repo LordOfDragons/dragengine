@@ -79,7 +79,7 @@ protected:
 public:
 	cBaseTextFieldListener(syneWPLink &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		syneLink * const link = pPanel.GetLink();
 		if(!link){
 			return;
@@ -127,7 +127,7 @@ public:
 	typedef deTObjectReference<cListLinks> Ref;
 	cListLinks(syneWPLink &panel) : pPanel(panel){}
 	
-	virtual void OnSelectionChanged(igdeListBox *listBox){
+	void OnSelectionChanged(igdeListBox *listBox) override{
 		syneSynthesizer * const synthesizer = pPanel.GetSynthesizer();
 		if(!synthesizer){
 			return;
@@ -138,7 +138,7 @@ public:
 		pPanel.UpdateLink();
 	}
 	
-	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
+	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		helper.MenuCommand(menu, pPanel.GetActionLinkAdd());
 		helper.MenuCommand(menu, pPanel.GetActionLinkRemove());
@@ -197,7 +197,7 @@ public:
 	typedef deTObjectReference<cComboController> Ref;
 	cComboController(syneWPLink &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		syneLink * const link = pPanel.GetLink();
 		syneController * const controller = comboBox->GetSelectedItem()
 			? (syneController*)comboBox->GetSelectedItem()->GetData() : nullptr;
@@ -217,7 +217,7 @@ public:
 	typedef deTObjectReference<cSpinRepeat> Ref;
 	cSpinRepeat(syneWPLink &panel) : pPanel(panel){}
 	
-	virtual void OnValueChanged(igdeSpinTextField *textField){
+	void OnValueChanged(igdeSpinTextField *textField) override{
 		const int value = textField->GetValue();
 		syneLink * const link = pPanel.GetLink();
 		if(!link || value == link->GetRepeat()){
@@ -236,7 +236,7 @@ public:
 	typedef deTObjectReference<cEditCurve> Ref;
 	cEditCurve(syneWPLink &panel) : pPanel(panel){}
 	
-	virtual void OnCurveChanged(igdeViewCurveBezier *viewCurveBezier){
+	void OnCurveChanged(igdeViewCurveBezier *viewCurveBezier) override{
 		if(pUndo){
 			((syneULinkSetCurve&)(igdeUndo&)pUndo).SetNewCurve(viewCurveBezier->GetCurve());
 			
@@ -251,7 +251,7 @@ public:
 		pUndo = nullptr;
 	}
 	
-	virtual void OnCurveChanging(igdeViewCurveBezier *viewCurveBezier){
+	void OnCurveChanging(igdeViewCurveBezier *viewCurveBezier) override{
 		if(pUndo){
 			((syneULinkSetCurve&)(igdeUndo&)pUndo).SetNewCurve(viewCurveBezier->GetCurve());
 			pUndo->Redo();

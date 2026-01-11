@@ -41,10 +41,10 @@ public:
 		cModule(deModuleSystem *system);
 		
 	protected:
-		virtual ~cModule();
+		~cModule() override;
 		
 	public:
-		virtual void CreateModule();
+		void CreateModule() override;
 	};
 	
 	
@@ -56,7 +56,7 @@ public:
 	igdeNullCrashRecoveryModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~igdeNullCrashRecoveryModule();
+	~igdeNullCrashRecoveryModule() override;
 	/*@}*/
 	
 	
@@ -64,10 +64,10 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** \brief Initialize module. */
-	virtual bool Init();
+	bool Init() override;
 	
 	/** \brief Shut down module and cleans up. */
-	virtual void CleanUp();
+	void CleanUp() override;
 	/*@}*/
 	
 	
@@ -75,7 +75,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Crash recovery. */
-	virtual bool RecoverFromError();
+	bool RecoverFromError() override;
 	/*@}*/
 };
 

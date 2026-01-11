@@ -60,7 +60,7 @@ public:
 	/** \brief Clean up object. */
 
 protected:
-	virtual ~meUObjectDropToGround();
+	~meUObjectDropToGround() override;
 
 public:
 	/*@}*/
@@ -73,9 +73,9 @@ public:
 	void SetAlign(bool align);
 	
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

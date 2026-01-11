@@ -75,8 +75,8 @@ private:
 public:
 	// constructor, destructor
 	decrbWindowMain(FXApp* app, deCRBasic *crBasic);
-	virtual ~decrbWindowMain();
-	virtual void create();
+	~decrbWindowMain() override;
+	void create() override;
 	
 	// management
 	void CleanUp();

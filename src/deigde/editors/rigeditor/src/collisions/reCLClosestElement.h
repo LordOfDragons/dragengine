@@ -66,7 +66,7 @@ public:
 	/** \brief Creates a object. */
 	reCLClosestElement(reRig &rig);
 	/** \brief Cleans up the object. */
-	virtual ~reCLClosestElement();
+	~reCLClosestElement() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -113,7 +113,7 @@ public:
 	 *          with the response to the collision. In all other cases you do
 	 *          must not modify the info object.
 	 */
-	virtual void CollisionResponse(deCollider *owner, deCollisionInfo *info);
+	void CollisionResponse(deCollider *owner, deCollisionInfo *info) override;
 	/**
 	 * \brief Determines if a collider can be hit.
 	 * \details If this peer is used with a collider then the script is asked to
@@ -124,14 +124,14 @@ public:
 	 * \param collider Collider to test.
 	 * \return True if the owner/ray can hit the given collider.
 	 */
-	virtual bool CanHitCollider(deCollider *owner, deCollider *collider);
+	bool CanHitCollider(deCollider *owner, deCollider *collider) override;
 	/**
 	 * \brief Notifies the scripts that the properties of this collider have changed
 	 *        and that the attached element has to update.
 	 * \details This is usually called after the collision detection but can also be
 	 *          called multiple times.
 	 */
-	virtual void ColliderChanged(deCollider *owner);
+	void ColliderChanged(deCollider *owner) override;
 	/*@}*/
 	
 private:

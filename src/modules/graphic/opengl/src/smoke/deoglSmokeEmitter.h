@@ -61,7 +61,7 @@ public:
 	/** Creates a new peer. */
 	deoglSmokeEmitter(deGraphicOpenGl *ogl, deSmokeEmitter *smokeEmitter);
 	/** Cleans up the peer. */
-	virtual ~deoglSmokeEmitter();
+	~deoglSmokeEmitter() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -90,11 +90,11 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Volume position changed. */
-	virtual void VolumePositionChanged();
+	void VolumePositionChanged() override;
 	/** Skin changed. */
-	virtual void SkinChanged();
+	void SkinChanged() override;
 	/** Points changed. */
-	virtual void PointsChanged();
+	void PointsChanged() override;
 	/*@}*/
 	
 private:

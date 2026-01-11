@@ -49,13 +49,13 @@ private:
 	
 public:
 	cReflectionShapeVisitor(deoglREnvMapProbe &probe) : pProbe(probe){}
-	virtual ~cReflectionShapeVisitor(){}
+	~cReflectionShapeVisitor() override{}
 	
-	virtual void VisitShape(decShape &shape){
+	void VisitShape(decShape &shape) override{
 		pProbe.GetEnvironmentMap()->SetHasReflectionBox(false);
 	}
 	
-	virtual void VisitShapeBox(decShapeBox &box){
+	void VisitShapeBox(decShapeBox &box) override{
 		pProbe.GetEnvironmentMap()->SetMatrixReflectionBox(
 			decDMatrix::CreateScale(decDVector(box.GetHalfExtends()))
 			* decDMatrix::CreateWorld( decDVector( box.GetPosition() ), box.GetOrientation() )
@@ -72,9 +72,9 @@ private:
 	
 public:
 	cReflectionMaskShapeVisitor(deoglREnvMapProbe &probe) : pProbe(probe){}
-	virtual ~cReflectionMaskShapeVisitor(){}
+	~cReflectionMaskShapeVisitor() override{}
 	
-	virtual void VisitShapeBox(decShapeBox &box){
+	void VisitShapeBox(decShapeBox &box) override{
 		pProbe.GetEnvironmentMap()->AddReflectionMaskBoxMatrix(
 			decDMatrix::CreateScale(decDVector(box.GetHalfExtends()))
 			* decDMatrix::CreateWorld( decDVector( box.GetPosition() ), box.GetOrientation() )
@@ -90,16 +90,16 @@ private:
 	
 public:
 	cInfluenceShapeVisitor(deoglREnvMapProbe &probe) : pProbe(probe){}
-	virtual ~cInfluenceShapeVisitor(){}
+	~cInfluenceShapeVisitor() override{}
 	
-	virtual void VisitShape(decShape &shape){
+	void VisitShape(decShape &shape) override{
 		deoglEnvironmentMap &envMap = *pProbe.GetEnvironmentMap();
 		
 		envMap.SetInfluenceBoxScale(decVector(1.0f, 1.0f, 1.0f));
 		envMap.SetHasInfluenceBox(false);
 	}
 	
-	virtual void VisitShapeBox(decShapeBox &box){
+	void VisitShapeBox(decShapeBox &box) override{
 		deoglEnvironmentMap &envMap = *pProbe.GetEnvironmentMap();
 		const decVector &extends = box.GetHalfExtends();
 		const decVector &position = box.GetPosition();

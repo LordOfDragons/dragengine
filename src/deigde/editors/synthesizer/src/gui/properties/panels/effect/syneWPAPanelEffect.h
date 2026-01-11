@@ -74,7 +74,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~syneWPAPanelEffect();
+	~syneWPAPanelEffect() override;
 	/*@}*/
 	
 	

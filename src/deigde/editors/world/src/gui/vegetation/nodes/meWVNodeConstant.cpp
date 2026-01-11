@@ -60,7 +60,7 @@ public:
 	typedef deTObjectReference<cEditVector> Ref;
 	cEditVector(meWVNodeConstant &node) : pNode(node){}
 	
-	virtual void OnVectorChanged(igdeEditVector *editVector){
+	void OnVectorChanged(igdeEditVector *editVector) override{
 		if(editVector->GetVector().IsEqualTo(pNode.GetRuleConstant()->GetVector())){
 			return;
 		}

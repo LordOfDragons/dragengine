@@ -47,7 +47,7 @@ public:
 	/** \brief Create new configuration xml read/save. */
 	skyeConfigurationXML(deLogger *logger, const char *loggerSource);
 	/** \brief Clean up the configuration xml read/save. */
-	virtual ~skyeConfigurationXML();
+	~skyeConfigurationXML() override;
 	/*@}*/
 	
 	/** \name Management */

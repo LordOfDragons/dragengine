@@ -53,7 +53,7 @@ public:
 	ceUCAASpeakSetMinSpeechTime(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, float newTime);
 	/** \brief Cleans up the undo object. */
 protected:
-	virtual ~ceUCAASpeakSetMinSpeechTime();
+	~ceUCAASpeakSetMinSpeechTime() override;
 public:
 	/*@}*/
 	
@@ -61,9 +61,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

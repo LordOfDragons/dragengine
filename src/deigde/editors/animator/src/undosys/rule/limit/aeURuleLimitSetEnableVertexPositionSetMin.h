@@ -48,16 +48,16 @@ public:
 	aeURuleLimitSetEnableVertexPositionSetMin(aeRuleLimit *rule);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleLimitSetEnableVertexPositionSetMin();
+	~aeURuleLimitSetEnableVertexPositionSetMin() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

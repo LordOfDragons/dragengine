@@ -49,16 +49,16 @@ public:
 	aeURuleBTransSetEnableOrien(aeRuleBoneTransformator *rule);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleBTransSetEnableOrien();
+	~aeURuleBTransSetEnableOrien() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

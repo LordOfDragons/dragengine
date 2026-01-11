@@ -87,11 +87,11 @@ public:
 	igdeToggleTags_ListTags(igdeToggleTags &widget) : pWidget(widget){
 	}
 	
-	virtual void OnDoubleClickItem(igdeListBox *listBox, int index){
+	void OnDoubleClickItem(igdeListBox *listBox, int index) override{
 		pWidget.ToggleTagEnabled(index);
 	}
 	
-	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
+	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
 		igdeUIHelper &helper = pWidget.GetEnvironment().GetUIHelper();
 		helper.MenuCommand(menu, pWidget.GetActionEnableAll());
 		helper.MenuCommand(menu, pWidget.GetActionDisableAll());

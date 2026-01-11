@@ -76,7 +76,7 @@ public:
 	
 protected:
 	/** Clean up socket object. */
-	virtual ~debnSocket();
+	~debnSocket() override;
 	/*@}*/
 	
 	

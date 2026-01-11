@@ -58,7 +58,7 @@ public:
 	dewmVideoAudioDecoder(deVideoWebm &module, decBaseFileReader *file);
 	
 	/** Clean up decoder. */
-	virtual ~dewmVideoAudioDecoder();
+	~dewmVideoAudioDecoder() override;
 	/*@}*/
 	
 	
@@ -66,10 +66,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** File position in samples from the beginning. */
-	virtual int GetPosition();
+	int GetPosition() override;
 	
 	/** Set file position in samples from the beginning. */
-	virtual void SetPosition(int position);
+	void SetPosition(int position) override;
 	
 	/**
 	 * Read chunk of sound data from current file position and advance.
@@ -80,7 +80,7 @@ public:
 	 * has been reached. If reading fails an error is signaled using the engine error
 	 * signaling and 0 returned.
 	 */
-	virtual int ReadSamples(void *buffer, int size);
+	int ReadSamples(void *buffer, int size) override;
 	/*@}*/
 	
 	

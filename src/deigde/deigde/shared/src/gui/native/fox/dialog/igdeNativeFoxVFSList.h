@@ -91,7 +91,7 @@ public:
 		FXint x=0, FXint y=0, FXint w=0, FXint h=0);
 	
 	/** \brief Cleans up the virtual file system list. */
-	virtual ~igdeNativeFoxVFSList();
+	~igdeNativeFoxVFSList() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -121,11 +121,11 @@ public:
 	igdeNativeFoxVFSListItem *GetSelectedItem() const;
 	
 	/** \brief Create server-side resources. */
-	virtual void create();
+	void create() override;
 	/** \brief Detach server-side resources. */
-	virtual void detach();
+	void detach() override;
 	/** \brief Destroy server-side resources. */
-	virtual void destroy();
+	void destroy() override;
 	
 	/** \brief Icons. */
 	inline FXIcon *GetIconFolderBig() const{ return pIconFolderBig; }

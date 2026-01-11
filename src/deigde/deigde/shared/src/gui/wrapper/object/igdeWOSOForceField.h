@@ -63,7 +63,7 @@ public:
 	
 protected:
 	/** \brief Clean up object wrapper sub object. */
-	virtual ~igdeWOSOForceField();
+	~igdeWOSOForceField() override;
 	
 public:
 	/*@}*/
@@ -76,28 +76,28 @@ public:
 	inline const deForceField::Ref &GetForceField() const{ return pForceField; }
 	
 	/** \brief Update parameters. */
-	virtual void UpdateParameters();
+	void UpdateParameters() override;
 	
 	/** \brief Init triggers. */
-	virtual void InitTriggers();
+	void InitTriggers() override;
 	
 	/** \brief Update trigger. */
-	virtual void UpdateTriggers();
+	void UpdateTriggers() override;
 	
 	/** \brief Update visibility. */
-	virtual void UpdateVisibility();
+	void UpdateVisibility() override;
 	
 	/** \brief Layer masks changed. */
-	virtual void UpdateLayerMasks();
+	void UpdateLayerMasks() override;
 	
 	/** \brief Collision filter changed. */
-	virtual void UpdateCollisionFilter();
+	void UpdateCollisionFilter() override;
 	
 	/** \brief All sub components finished loading. */
-	virtual void OnAllSubObjectsFinishedLoading();
+	void OnAllSubObjectsFinishedLoading() override;
 	
 	/** \brief Visit. */
-	virtual void Visit(igdeWOSOVisitor &visitor);
+	void Visit(igdeWOSOVisitor &visitor) override;
 	
 	/** \brief For internal use only. */
 	void AsyncLoadFinished(bool success);
@@ -106,8 +106,8 @@ public:
 	
 	
 protected:
-	void AttachToCollider();
-	void DetachFromCollider();
+	void AttachToCollider() override;
+	void DetachFromCollider() override;
 	
 	
 	

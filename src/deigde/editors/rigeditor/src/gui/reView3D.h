@@ -71,7 +71,7 @@ public:
 	
 protected:
 	/** \brief Clean up 3d view. */
-	virtual ~reView3D();
+	~reView3D() override;
 	/*@}*/
 	
 	
@@ -92,10 +92,10 @@ public:
 	void SetRig(reRig *rig);
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate(float elapsed);
+	void OnFrameUpdate(float elapsed) override;
 	
 	/** \brief Create canvas. */
-	virtual void CreateCanvas();
+	void CreateCanvas() override;
 	/*@}*/
 };
 

@@ -48,13 +48,13 @@ public:
 	/** Creates a new class. */
 	deClassShapeList(deScriptingDragonScript *ds);
 	/** Cleans up the class. */
-	virtual ~deClassShapeList();
+	~deClassShapeList() override;
 	/*@}*/
 	
 	/** @name Management */
 	/*@{*/
 	/** Creates the class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	/** Retrieves the shape list stored in a real object. */
 	const decShapeList &GetShapeList(dsRealObject *myself) const;
 	/** Pushes a shape list onto the stack. */

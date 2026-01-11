@@ -42,9 +42,9 @@ private:
 public:
 	// constructor
 	deClassQuaternion(deEngine *gameEngine, deScriptingDragonScript *scriptManager);
-	~deClassQuaternion();
+	~deClassQuaternion() override;
 	// internal functions
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	inline deEngine *GetGameEngine() const{ return pGameEngine; }
 	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
 	const decQuaternion &GetQuaternion(dsRealObject *This) const;

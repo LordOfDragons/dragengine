@@ -46,7 +46,7 @@ public:
 	/** Creates a new class. */
 	deClassParticleEmitterInstance(deScriptingDragonScript *ds);
 	/** Cleans up the class. */
-	virtual ~deClassParticleEmitterInstance();
+	~deClassParticleEmitterInstance() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -54,7 +54,7 @@ public:
 	/** Retrieves the module. */
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/** Creates class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** Retrieves the instance or NULL if myself is NULL. */
 	deParticleEmitterInstance *GetInstance(dsRealObject *myself) const;

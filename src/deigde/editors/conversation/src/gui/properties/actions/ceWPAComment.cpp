@@ -69,7 +69,7 @@ public:
 	typedef deTObjectReference<cTextComment> Ref;
 	cTextComment(ceWPAComment &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextArea *textArea){
+	void OnTextChanged(igdeTextArea *textArea) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAComment * const action = pPanel.GetAction();
 		if(!topic || !action || textArea->GetText() == action->GetComment()){

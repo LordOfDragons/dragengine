@@ -52,7 +52,7 @@ public:
 	feFontNotifier();
 	/** Cleans up the font notifier. */
 protected:
-	virtual ~feFontNotifier();
+	~feFontNotifier() override;
 public:
 	/*@}*/
 	

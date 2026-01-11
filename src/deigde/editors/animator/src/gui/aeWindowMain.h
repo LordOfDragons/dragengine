@@ -180,7 +180,7 @@ public:
 	
 protected:
 	/** Clean up main window. */
-	virtual ~aeWindowMain();
+	~aeWindowMain() override;
 	/*@}*/
 	
 	
@@ -312,25 +312,25 @@ public:
 	
 	
 	/** Game engine is about to be started. */
-	virtual void OnBeforeEngineStart();
+	void OnBeforeEngineStart() override;
 	
 	/** Game engine has been started. */
-	virtual void OnAfterEngineStart();
+	void OnAfterEngineStart() override;
 	
 	/** Game engine is about to be stopped. */
-	virtual void OnBeforeEngineStop();
+	void OnBeforeEngineStop() override;
 	
 	/** Game engine has been stopped. */
-	virtual void OnAfterEngineStop();
+	void OnAfterEngineStop() override;
 	
 	/** Module has been activated. */
-	virtual void OnActivate();
+	void OnActivate() override;
 	
 	/** Module has been deactivated. */
-	virtual void OnDeactivate();
+	void OnDeactivate() override;
 	
 	/** Game like frame update. */
-	virtual void OnFrameUpdate(float elapsed);
+	void OnFrameUpdate(float elapsed) override;
 	
 	/**
 	 * Retrieves a list of changed documents.
@@ -341,12 +341,12 @@ public:
 	 * saving. The filename is later used in calls to \ref SaveDocument to save the file
 	 * if requested by the user. All other files are discarded.
 	 */
-	virtual void GetChangedDocuments(decStringList &list);
+	void GetChangedDocuments(decStringList &list) override;
 	
 	/**
 	 * Requests a document to be loaded.
 	 */
-	virtual void LoadDocument(const char *filename);
+	void LoadDocument(const char *filename) override;
 	
 	/**
 	 * Requests a document to be saved.
@@ -356,12 +356,12 @@ public:
 	 * 
 	 * \returns True if the saving has been successful or false otherwise.
 	 */
-	virtual bool SaveDocument(const char *filename);
+	bool SaveDocument(const char *filename) override;
 	
 	/**
 	 * Recent files changed.
 	 */
-	virtual void RecentFilesChanged();
+	void RecentFilesChanged() override;
 	
 	/**
 	 * The game project has changed.
@@ -371,7 +371,7 @@ public:
 	 * objects related to the previous game project. The old game project is kept
 	 * alive until all editor modules have processed the OnGameProjectChanged().
 	 */
-	virtual void OnGameProjectChanged();
+	void OnGameProjectChanged() override;
 	
 	/**
 	 * Project game definition changed.
@@ -385,7 +385,7 @@ public:
 	 * 
 	 * The default implementation returns \em nullptr.
 	 */
-	virtual igdeStepableTask::Ref OnGameDefinitionChanged();
+	igdeStepableTask::Ref OnGameDefinitionChanged() override;
 	/*@}*/
 	
 	

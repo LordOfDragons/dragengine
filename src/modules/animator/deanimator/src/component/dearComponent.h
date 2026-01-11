@@ -60,7 +60,7 @@ public:
 	dearComponent(deDEAnimator &module, deComponent &component);
 	
 	/** Clean up peer. */
-	virtual ~dearComponent();
+	~dearComponent() override;
 	/*@}*/
 	
 	
@@ -121,10 +121,10 @@ public:
 	
 	
 	/** Model changed. */
-	virtual void ModelChanged();
+	void ModelChanged() override;
 	
 	/** Rig changed. */
-	virtual void RigChanged();
+	void RigChanged() override;
 	/*@}*/
 };
 

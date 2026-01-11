@@ -62,7 +62,7 @@ public:
 	
 protected:
 	/** \brief Clean up skin peer. */
-	virtual ~deoalASkin();
+	~deoalASkin() override;
 	/*@}*/
 	
 	

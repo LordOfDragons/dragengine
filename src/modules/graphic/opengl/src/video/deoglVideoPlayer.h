@@ -74,7 +74,7 @@ public:
 	deoglVideoPlayer(deGraphicOpenGl &ogl, deVideoPlayer &videoPlayer);
 	
 	/** Clean up peer. */
-	virtual ~deoglVideoPlayer();
+	~deoglVideoPlayer() override;
 	/*@}*/
 	
 	
@@ -121,25 +121,25 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Sound source changed. */
-	virtual void SourceChanged();
+	void SourceChanged() override;
 	
 	/** Looping changed. */
-	virtual void LoopingChanged();
+	void LoopingChanged() override;
 	
 	/** Play range changed. */
-	virtual void PlayRangeChanged();
+	void PlayRangeChanged() override;
 	
 	/** Play speed changed. */
-	virtual void PlaySpeedChanged();
+	void PlaySpeedChanged() override;
 	
 	/**
 	 * Play position changed.
 	 * \param[in] seeking Changed due to seeking or by deVideoPlayer::Update().
 	 */
-	virtual void PlayPositionChanged(bool seeking);
+	void PlayPositionChanged(bool seeking) override;
 	
 	/** Play state changed. */
-	virtual void PlayStateChanged();
+	void PlayStateChanged() override;
 	/*@}*/
 	
 	

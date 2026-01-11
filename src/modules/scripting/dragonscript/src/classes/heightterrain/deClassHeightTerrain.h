@@ -53,7 +53,7 @@ public:
 	deClassHeightTerrain(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
-	virtual ~deClassHeightTerrain();
+	~deClassHeightTerrain() override;
 	/*@}*/
 	
 	
@@ -61,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Create class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Height terrain from object or NULL. */
 	deHeightTerrain *GetHeightTerrain(dsRealObject *myself) const;

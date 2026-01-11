@@ -59,7 +59,7 @@ public:
 	
 	igdeDEParameters_ComboModule(igdeDEParameters &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox*){
+	void OnTextChanged(igdeComboBox*) override{
 		pPanel.UpdateParametersList();
 		pPanel.UpdateParameter();
 	}
@@ -73,7 +73,7 @@ public:
 	
 	igdeDEParameters_ComboParameter(igdeDEParameters &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox*){
+	void OnTextChanged(igdeComboBox*) override{
 		pPanel.UpdateParameter();
 	}
 };

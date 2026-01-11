@@ -53,7 +53,7 @@ public:
 	/** Creates a new class. */
 	deClassFileSystem(deScriptingDragonScript *ds);
 	/** Cleans up the class. */
-	~deClassFileSystem();
+	~deClassFileSystem() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -61,7 +61,7 @@ public:
 	/** Retrieves the module. */
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/** Creates class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	inline dsClass *GetClassFileType() const{ return pClsFileType; }
 	inline dsClass *GetClassFileExtension() const{ return pClsFileExtension; }

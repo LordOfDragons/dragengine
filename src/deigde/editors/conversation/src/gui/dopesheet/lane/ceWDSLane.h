@@ -71,7 +71,7 @@ private:
 		
 	protected:
 protected:
-		virtual ~cStrip();
+		~cStrip() override;
 public:
 	};
 	
@@ -106,7 +106,7 @@ public:
 	
 protected:
 	/** Clean up dope sheet lane. */
-	virtual ~ceWDSLane();
+	~ceWDSLane() override;
 	/*@}*/
 	
 	

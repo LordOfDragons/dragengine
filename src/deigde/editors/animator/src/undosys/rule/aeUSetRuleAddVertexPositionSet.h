@@ -53,16 +53,16 @@ public:
 	aeUSetRuleAddVertexPositionSet(aeRule *rule, const char *pattern);
 protected:
 	/** Clean up undo. */
-	virtual ~aeUSetRuleAddVertexPositionSet();
+	~aeUSetRuleAddVertexPositionSet() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

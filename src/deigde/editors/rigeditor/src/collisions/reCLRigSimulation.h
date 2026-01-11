@@ -52,7 +52,7 @@ public:
 	reCLRigSimulation(reRig &rig);
 	
 	/** \brief Clean up collision listener. */
-	virtual ~reCLRigSimulation();
+	~reCLRigSimulation() override;
 	/*@}*/
 	
 	
@@ -64,19 +64,19 @@ public:
 	 * you have to update the info object with the response to the collision. In
 	 * all other cases you do must not modify the info object.
 	 */
-	virtual void CollisionResponse(deCollider *owner, deCollisionInfo *info);
+	void CollisionResponse(deCollider *owner, deCollisionInfo *info) override;
 	
 	/**
 	 * Determines if this collider can be hit by the given collider.
 	 */
-	virtual bool CanHitCollider(deCollider *owner, deCollider *collider);
+	bool CanHitCollider(deCollider *owner, deCollider *collider) override;
 	
 	/**
 	 * Notifies the scripts that the properties of this collider have changed and
 	 * that the attached element has to update. This is usually called after the
 	 * collision detection but can also be called multiple times.
 	 */
-	virtual void ColliderChanged(deCollider *owner);
+	void ColliderChanged(deCollider *owner) override;
 };
 
 #endif

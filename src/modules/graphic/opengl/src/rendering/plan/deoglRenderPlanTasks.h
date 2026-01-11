@@ -80,7 +80,7 @@ public:
 	
 protected:
 	/** Clean up render plan tasks. */
-	~deoglRenderPlanTasks();
+	~deoglRenderPlanTasks() override;
 	/*@}*/
 	
 	

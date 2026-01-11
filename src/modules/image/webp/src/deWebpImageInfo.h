@@ -55,7 +55,7 @@ public:
 	deWebpImageInfo(decBaseFileReader &reader);
 	
 	/** Clean up image information. */
-	virtual ~deWebpImageInfo();
+	~deWebpImageInfo() override;
 	/*@}*/
 	
 	
@@ -75,19 +75,19 @@ public:
 	inline bool GetIsGrayscale() const{ return pIsGrayscale; }
 	
 	/** Image width in pixels. */
-	virtual int GetWidth();
+	int GetWidth() override;
 	
 	/** Image height in pixels. */
-	virtual int GetHeight();
+	int GetHeight() override;
 	
 	/** Image depth in pixels. */
-	virtual int GetDepth();
+	int GetDepth() override;
 	
 	/** Image component count. */
-	virtual int GetComponentCount();
+	int GetComponentCount() override;
 	
 	/** Image bit count. */
-	virtual int GetBitCount();
+	int GetBitCount() override;
 	
 	/** Assert status code. .*/
 	void Assert(VP8StatusCode statusCode) const;

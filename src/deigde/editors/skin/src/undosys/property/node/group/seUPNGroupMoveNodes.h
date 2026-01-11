@@ -68,7 +68,7 @@ public:
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~seUPNGroupMoveNodes();
+	~seUPNGroupMoveNodes() override;
 	/*@}*/
 	
 	

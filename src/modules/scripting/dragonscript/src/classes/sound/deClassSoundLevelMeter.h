@@ -49,7 +49,7 @@ public:
 	deClassSoundLevelMeter(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
-	virtual ~deClassSoundLevelMeter();
+	~deClassSoundLevelMeter() override;
 	/*@}*/
 	
 	
@@ -60,7 +60,7 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create script class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Sound level meter from real object or NULL if real object is NULL. */
 	deSoundLevelMeter *GetSoundLevelMeter(dsRealObject *myself) const;

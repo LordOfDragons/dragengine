@@ -162,7 +162,7 @@ public:
 	
 protected:
 	/** Clean up global illumination instance. */
-	virtual ~deoglGIInstance();
+	~deoglGIInstance() override;
 	/*@}*/
 	
 	

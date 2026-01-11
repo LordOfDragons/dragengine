@@ -44,10 +44,10 @@ public:
 		cModule(deModuleSystem *system);
 		
 	protected:
-		virtual ~cModule();
+		~cModule() override;
 		
 	public:
-		virtual void CreateModule();
+		void CreateModule() override;
 	};
 	
 	
@@ -59,7 +59,7 @@ public:
 	igdeNullInputModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~igdeNullInputModule();
+	~igdeNullInputModule() override;
 	/*@}*/
 	
 	
@@ -67,10 +67,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Initialize module. */
-	virtual bool Init();
+	bool Init() override;
 	
 	/** \brief Clean up module. */
-	virtual void CleanUp();
+	void CleanUp() override;
 	/*@}*/
 	
 	
@@ -78,40 +78,40 @@ public:
 	/** \name Devices */
 	/*@{*/
 	/** \brief Number of input devices. */
-	virtual int GetDeviceCount();
+	int GetDeviceCount() override;
 	
 	/** \brief Information for input device at index. */
-	virtual deInputDevice::Ref GetDeviceAt(int index);
+	deInputDevice::Ref GetDeviceAt(int index) override;
 	
 	/** \brief Index of device with identifier or -1 if absent. */
-	virtual int IndexOfDeviceWithID(const char *id);
+	int IndexOfDeviceWithID(const char *id) override;
 	
 	/** \brief Index of button with identifier on device at index or -1 if absent. */
-	virtual int IndexOfButtonWithID(int device, const char *id);
+	int IndexOfButtonWithID(int device, const char *id) override;
 	
 	/** \brief Index of axis with identifier on device at index or -1 if absent. */
-	virtual int IndexOfAxisWithID(int device, const char *id);
+	int IndexOfAxisWithID(int device, const char *id) override;
 	
 	/** \brief Index of feedback with identifier on device at index or -1 if absent. */
-	virtual int IndexOfFeedbackWithID(int device, const char *id);
+	int IndexOfFeedbackWithID(int device, const char *id) override;
 	
 	/** \brief Button at index on device at index is pressed down. */
-	virtual bool GetButtonPressed(int device, int button);
+	bool GetButtonPressed(int device, int button) override;
 	
 	/** \brief Value of axis at index on device at index. */
-	virtual float GetAxisValue(int device, int axis);
+	float GetAxisValue(int device, int axis) override;
 	
 	/** \brief Value of feedback at index on device at index. */
-	virtual float GetFeedbackValue(int device, int feedback);
+	float GetFeedbackValue(int device, int feedback) override;
 	
 	/** \brief Set value of feedback at index on device at index. */
-	virtual void SetFeedbackValue(int device, int feedback, float value);
+	void SetFeedbackValue(int device, int feedback, float value) override;
 	
 	/** \brief Index of button best matching key code or -1 if not found. */
-	virtual int ButtonMatchingKeyCode(int device, deInputEvent::eKeyCodes keyCode);
+	int ButtonMatchingKeyCode(int device, deInputEvent::eKeyCodes keyCode) override;
 	
 	/** \brief Index of button best matching character or -1 if not found. */
-	virtual int ButtonMatchingKeyChar(int device, int character);
+	int ButtonMatchingKeyChar(int device, int character) override;
 	/*@}*/
 	
 	
@@ -119,13 +119,13 @@ public:
 	/** \name Events */
 	/*@{*/
 	/** \brief Process events. */
-	virtual void ProcessEvents();
+	void ProcessEvents() override;
 	
 	/** \brief Get event. */
 	virtual bool GetEvent(deInputEvent *event);
 	
 	/** \brief Clear events. */
-	virtual void ClearEvents();
+	void ClearEvents() override;
 	/*@}*/
 };
 

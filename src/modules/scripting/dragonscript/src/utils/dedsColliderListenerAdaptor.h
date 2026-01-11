@@ -56,7 +56,7 @@ public:
 	dedsColliderListenerAdaptor(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up listener. */
-	virtual ~dedsColliderListenerAdaptor();
+	~dedsColliderListenerAdaptor() override;
 	/*@}*/
 	
 	
@@ -75,10 +75,10 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Collision response. */
-	virtual void CollisionResponse(deCollider *owner, deCollisionInfo *info);
+	void CollisionResponse(deCollider *owner, deCollisionInfo *info) override;
 	
 	/** \brief Collider can be hit. */
-	virtual bool CanHitCollider(deCollider *owner, deCollider *collider);
+	bool CanHitCollider(deCollider *owner, deCollider *collider) override;
 	/*@}*/
 };
 

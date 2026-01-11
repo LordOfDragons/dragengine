@@ -50,7 +50,7 @@ public:
 	FXint y = 0, FXint w = 0, FXint h = 0, FXint pl = DEFAULT_MARGIN, FXint pr = DEFAULT_MARGIN,
 	FXint pt = DEFAULT_MARGIN, FXint pb = DEFAULT_MARGIN);
 	/** Cleans up the table. */
-	virtual ~deglWindowLoggerTable();
+	~deglWindowLoggerTable() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -59,7 +59,7 @@ public:
 	void SetCellTextProps(int row, int col, FXColor color, FXFont *font);
 	
 	/** Create item. */
-	virtual FXTableItem *createItem(const FXString &text, FXIcon *icon, void *ptr);
+	FXTableItem *createItem(const FXString &text, FXIcon *icon, void *ptr) override;
 	/*@}*/
 };
 

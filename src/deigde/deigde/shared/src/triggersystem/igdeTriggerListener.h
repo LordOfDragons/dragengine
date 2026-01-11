@@ -47,7 +47,7 @@ public:
 	
 protected:
 	/** \brief Clean up trigger listener. */
-	virtual ~igdeTriggerListener();
+	~igdeTriggerListener() override;
 	
 public:
 	/*@}*/

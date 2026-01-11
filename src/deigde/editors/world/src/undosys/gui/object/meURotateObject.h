@@ -47,12 +47,12 @@ public:
 	meURotateObject(meWorld *world, const meObject::List &objects);
 	
 protected:
-	virtual ~meURotateObject();
+	~meURotateObject() override;
 	
 public:
 	// undo and redo operations
-	virtual void Undo();
-	virtual void Redo();
+	void Undo() override;
+	void Redo() override;
 	void ProgressiveRedo() override;
 };
 

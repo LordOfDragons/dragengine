@@ -72,7 +72,7 @@ public:
 	typedef deTObjectReference<cTextFilter> Ref;
 	cTextFilter(lpeViewLangPack &view) : pView(view){}
 	
-	virtual void OnTextChanging(igdeTextField*){
+	void OnTextChanging(igdeTextField*) override{
 		pView.UpdateEntries();
 	}
 };
@@ -86,7 +86,7 @@ public:
 	typedef deTObjectReference<cTextName> Ref;
 	cTextName(lpeViewLangPack &view) : pView(view){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		lpeLangPackEntry * const entry = pView.GetActiveEntry();
 		if(!entry || entry->GetLangPack() != pView.GetLangPack()){
 			return;
@@ -121,7 +121,7 @@ public:
 	typedef deTObjectReference<cTextText> Ref;
 	cTextText(lpeViewLangPack &view) : pView(view){}
 	
-	virtual void OnTextChanged(igdeTextArea *textArea){
+	void OnTextChanged(igdeTextArea *textArea) override{
 		lpeLangPackEntry * const entry = pView.GetActiveEntry();
 		if(!entry){
 			return;
@@ -167,7 +167,7 @@ public:
 	typedef deTObjectReference<cListEntries> Ref;
 	cListEntries(lpeViewLangPack &view) : pView(view), pSorting(esNameAscending){}
 	
-	virtual void OnSelectionChanged(igdeIconListBox *listBox){
+	void OnSelectionChanged(igdeIconListBox *listBox) override{
 		lpeLangPack * const langpack = pView.GetLangPack();
 		if(!langpack || pView.preventUpdate){
 			return;
@@ -180,7 +180,7 @@ public:
 	// TODO add
 	// - SEL_RIGHTBUTTONPRESS, SEL_RIGHTBUTTONRELEASE
 	//   something like ListBoxClicked, ItemClicked
-	virtual void OnItemSelected(igdeIconListBox *listBox, int index){
+	void OnItemSelected(igdeIconListBox *listBox, int index) override{
 		lpeLangPack * const langpack = pView.GetLangPack();
 		if(!langpack || pView.preventUpdate){
 			return;
@@ -190,7 +190,7 @@ public:
 		langpack->NotifyEntrySelectionChanged();
 	}
 	
-	virtual void OnItemDeselected(igdeIconListBox *listBox, int index){
+	void OnItemDeselected(igdeIconListBox *listBox, int index) override{
 		lpeLangPack * const langpack = pView.GetLangPack();
 		if(!langpack || pView.preventUpdate){
 			return;
@@ -200,7 +200,7 @@ public:
 		langpack->NotifyEntrySelectionChanged();
 	}
 	
-	virtual void OnHeaderClicked(igdeIconListBox *listBox, int index){
+	void OnHeaderClicked(igdeIconListBox *listBox, int index) override{
 		if(index == 0){
 			pSorting = pSorting == esNameAscending ? esNameDescending : esNameAscending;
 			UpdateSorter(*listBox);

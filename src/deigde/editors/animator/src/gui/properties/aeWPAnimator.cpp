@@ -131,7 +131,7 @@ public:
 	typedef deTObjectReference<cPathRig> Ref;
 	cPathRig(aeWPAnimator &panel) : pPanel(panel){}
 	
-	virtual void OnEditPathChanged(igdeEditPath *editPath){
+	void OnEditPathChanged(igdeEditPath *editPath) override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		if(!animator || animator->GetRigPath() == editPath->GetPath()){
 			return;
@@ -151,7 +151,7 @@ public:
 	typedef deTObjectReference<cPathAnimation> Ref;
 	cPathAnimation(aeWPAnimator &panel) : pPanel(panel){}
 	
-	virtual void OnEditPathChanged(igdeEditPath *editPath){
+	void OnEditPathChanged(igdeEditPath *editPath) override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		if(!animator || animator->GetAnimationPath() == editPath->GetPath()){
 			return;
@@ -337,13 +337,13 @@ public:
 	typedef deTObjectReference<cListRigBones> Ref;
 	cListRigBones(aeWPAnimator &panel) : pPanel(panel){}
 	
-	virtual void OnSelectionChanged(igdeListBox *listBox){
+	void OnSelectionChanged(igdeListBox *listBox) override{
 		if(pPanel.GetAnimator() && listBox->GetSelectedItem()){
 			pPanel.SetCBRigBoneText(listBox->GetSelectedItem()->GetText());
 		}
 	}
 	
-	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
+	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
 		if(!pPanel.GetAnimator()){
 			return;
 		}
@@ -535,13 +535,13 @@ public:
 	typedef deTObjectReference<cListRigVertexPositionSets> Ref;
 	cListRigVertexPositionSets(aeWPAnimator &panel) : pPanel(panel){}
 	
-	virtual void OnSelectionChanged(igdeListBox *listBox){
+	void OnSelectionChanged(igdeListBox *listBox) override{
 		if(pPanel.GetAnimator() && listBox->GetSelectedItem()){
 			pPanel.SetCBModelVertexPositionSetText(listBox->GetSelectedItem()->GetText());
 		}
 	}
 	
-	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
+	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
 		if(!pPanel.GetAnimator()){
 			return;
 		}

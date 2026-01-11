@@ -107,7 +107,7 @@ protected:
 	meHTVRule(const meHTVRule &rule);
 	
 	/** Cleans up the rule. */
-	virtual ~meHTVRule();
+	~meHTVRule() override;
 	/*@}*/
 	
 	

@@ -54,7 +54,7 @@ public:
 	
 protected:
 	/** Cleans up the skin constructed property. */
-	virtual ~deoglSkinConstructedProperty();
+	~deoglSkinConstructedProperty() override;
 	/*@}*/
 	
 	

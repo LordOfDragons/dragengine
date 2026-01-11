@@ -59,16 +59,16 @@ public:
 	aeUSetRuleSModMinRotation(aeRuleStateManipulator *rule, const decVector &newMin);
 protected:
 	/** Clean up undo. */
-	virtual ~aeUSetRuleSModMinRotation();
+	~aeUSetRuleSModMinRotation() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

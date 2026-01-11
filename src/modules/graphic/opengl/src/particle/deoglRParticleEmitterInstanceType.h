@@ -89,7 +89,7 @@ public:
 	
 protected:
 	/** Clean up type. */
-	virtual ~deoglRParticleEmitterInstanceType();
+	~deoglRParticleEmitterInstanceType() override;
 	/*@}*/
 	
 	

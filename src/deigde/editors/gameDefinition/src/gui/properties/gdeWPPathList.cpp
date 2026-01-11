@@ -172,10 +172,10 @@ public:
 	typedef deTObjectReference<cListPaths> Ref;
 	cListPaths(gdeWPPathList &listBox) : pListBox(listBox){}
 	
-	virtual void OnSelectionChanged(igdeListBox*){
+	void OnSelectionChanged(igdeListBox*) override{
 	}
 	
-	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
+	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
 		igdeUIHelper &helper = pListBox.GetEnvironment().GetUIHelper();
 		helper.MenuCommand(menu, pListBox.GetActionAppend());
 		helper.MenuCommand(menu, pListBox.GetActionInsert());

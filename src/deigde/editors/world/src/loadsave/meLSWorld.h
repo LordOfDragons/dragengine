@@ -58,7 +58,7 @@ public:
 	meLSWorld();
 	
 protected:
-	virtual ~meLSWorld();
+	~meLSWorld() override;
 
 
 public:

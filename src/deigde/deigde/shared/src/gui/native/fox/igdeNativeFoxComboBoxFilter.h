@@ -66,7 +66,7 @@ public:
 		const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxComboBoxFilter();
+	~igdeNativeFoxComboBoxFilter() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeFoxComboBoxFilter* CreateNativeWidget(igdeComboBoxFilter &owner);

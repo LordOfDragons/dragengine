@@ -57,7 +57,7 @@ public:
 	
 protected:
 	/** \brief Clean up view. */
-	virtual ~seViewSkin();
+	~seViewSkin() override;
 	/*@}*/
 	
 	
@@ -75,10 +75,10 @@ public:
 	void SetSkin(seSkin *skin);
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate(float elapsed);
+	void OnFrameUpdate(float elapsed) override;
 	
 	/** \brief Create canvas. */
-	virtual void CreateCanvas();
+	void CreateCanvas() override;
 	/*@}*/
 };
 

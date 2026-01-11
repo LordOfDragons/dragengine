@@ -70,7 +70,7 @@ public:
 	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(lpeWPLangPack &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		lpeLangPack * const langpack = pPanel.GetLangPack();
 		if(!langpack){
 			return;
@@ -93,7 +93,7 @@ public:
 	typedef deTObjectReference<cBaseTextAreaListener> Ref;
 	cBaseTextAreaListener(lpeWPLangPack &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextArea *textArea){
+	void OnTextChanged(igdeTextArea *textArea) override{
 		lpeLangPack * const langpack = pPanel.GetLangPack();
 		if(!langpack){
 			return;

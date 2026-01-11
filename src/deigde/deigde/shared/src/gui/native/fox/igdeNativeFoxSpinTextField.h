@@ -60,7 +60,7 @@ public:
 		int layoutFlags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxSpinTextField();
+	~igdeNativeFoxSpinTextField() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeFoxSpinTextField* CreateNativeWidget(igdeSpinTextField &owner);

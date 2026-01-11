@@ -166,7 +166,7 @@ public:
 
 protected:
 	/** \brief Clean up wrapper. */
-	virtual ~igdeWObject();
+	~igdeWObject() override;
 	/*@}*/
 	
 	

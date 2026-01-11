@@ -39,7 +39,7 @@ public:
 	deGraphicNull(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~deGraphicNull();
+	~deGraphicNull() override;
 	/*@}*/
 	
 	
@@ -47,10 +47,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Init module. */
-	virtual bool Init(deRenderWindow *renderWindow);
+	bool Init(deRenderWindow *renderWindow) override;
 	
 	/** \brief Clean up module. */
-	virtual void CleanUp();
+	void CleanUp() override;
 	
 	/** \brief Set render window. */
 	virtual void SetRenderWindow(deRenderWindow *renderWindow);
@@ -65,39 +65,39 @@ public:
 	/*@}*/
 	
 	/** \brief Render windows. */
-	virtual void RenderWindows();
+	void RenderWindows() override;
 	
-	virtual void InputOverlayCanvasChanged();
+	void InputOverlayCanvasChanged() override;
 	
 	
-	virtual deBaseGraphicCanvas *CreateCanvas(deCanvas*);
-	virtual deBaseGraphicCaptureCanvas *CreateCaptureCanvas(deCaptureCanvas*);
-	virtual deBaseGraphicDynamicSkin *CreateDynamicSkin(deDynamicSkin*);
-	virtual deBaseGraphicEnvMapProbe *CreateEnvMapProbe(deEnvMapProbe*);
-	virtual deBaseGraphicOcclusionMesh *CreateOcclusionMesh(deOcclusionMesh*);
-	virtual deBaseGraphicModel *CreateModel(deModel*);
-	virtual deBaseGraphicSkin *CreateSkin(deSkin*);
-	virtual deBaseGraphicImage *CreateImage(deImage*);
-	virtual deBaseGraphicComponent *CreateComponent(deComponent*);
-	virtual deBaseGraphicLight *CreateLight(deLight*);
-	virtual deBaseGraphicFont *CreateFont(deFont*);
-	virtual deBaseGraphicSky *CreateSky(deSky*);
-	virtual deBaseGraphicSkyInstance *CreateSkyInstance(deSkyInstance*);
-	virtual deBaseGraphicWorld *CreateWorld(deWorld*);
-	virtual deBaseGraphicEffect *CreateEffect(deEffect*);
-	virtual deBaseGraphicDebugDrawer *CreateDebugDrawer(deDebugDrawer*);
-	virtual deBaseGraphicRenderWindow *CreateRenderWindow(deRenderWindow*);
-	virtual deBaseGraphicBillboard *CreateBillboard(deBillboard*);
-	virtual deBaseGraphicDecal *CreateDecal(deDecal*);
-	virtual deBaseGraphicCamera *CreateCamera(deCamera*);
-	virtual deBaseGraphicLumimeter *CreateLumimeter(deLumimeter*);
-	virtual deBaseGraphicHeightTerrain *CreateHeightTerrain(deHeightTerrain*);
-	virtual deBaseGraphicPropField *CreatePropField(dePropField*);
-	virtual deBaseGraphicParticleEmitter *CreateParticleEmitter(deParticleEmitter*);
-	virtual deBaseGraphicParticleEmitterInstance *CreateParticleEmitterInstance(deParticleEmitterInstance*);
-	virtual deBaseGraphicSmokeEmitter *CreateSmokeEmitter(deSmokeEmitter*);
-	virtual deBaseGraphicVideo *CreateVideo(deVideo*);
-	virtual deBaseGraphicVideoPlayer *CreateVideoPlayer(deVideoPlayer*);
+	deBaseGraphicCanvas *CreateCanvas(deCanvas*) override;
+	deBaseGraphicCaptureCanvas *CreateCaptureCanvas(deCaptureCanvas*) override;
+	deBaseGraphicDynamicSkin *CreateDynamicSkin(deDynamicSkin*) override;
+	deBaseGraphicEnvMapProbe *CreateEnvMapProbe(deEnvMapProbe*) override;
+	deBaseGraphicOcclusionMesh *CreateOcclusionMesh(deOcclusionMesh*) override;
+	deBaseGraphicModel *CreateModel(deModel*) override;
+	deBaseGraphicSkin *CreateSkin(deSkin*) override;
+	deBaseGraphicImage *CreateImage(deImage*) override;
+	deBaseGraphicComponent *CreateComponent(deComponent*) override;
+	deBaseGraphicLight *CreateLight(deLight*) override;
+	deBaseGraphicFont *CreateFont(deFont*) override;
+	deBaseGraphicSky *CreateSky(deSky*) override;
+	deBaseGraphicSkyInstance *CreateSkyInstance(deSkyInstance*) override;
+	deBaseGraphicWorld *CreateWorld(deWorld*) override;
+	deBaseGraphicEffect *CreateEffect(deEffect*) override;
+	deBaseGraphicDebugDrawer *CreateDebugDrawer(deDebugDrawer*) override;
+	deBaseGraphicRenderWindow *CreateRenderWindow(deRenderWindow*) override;
+	deBaseGraphicBillboard *CreateBillboard(deBillboard*) override;
+	deBaseGraphicDecal *CreateDecal(deDecal*) override;
+	deBaseGraphicCamera *CreateCamera(deCamera*) override;
+	deBaseGraphicLumimeter *CreateLumimeter(deLumimeter*) override;
+	deBaseGraphicHeightTerrain *CreateHeightTerrain(deHeightTerrain*) override;
+	deBaseGraphicPropField *CreatePropField(dePropField*) override;
+	deBaseGraphicParticleEmitter *CreateParticleEmitter(deParticleEmitter*) override;
+	deBaseGraphicParticleEmitterInstance *CreateParticleEmitterInstance(deParticleEmitterInstance*) override;
+	deBaseGraphicSmokeEmitter *CreateSmokeEmitter(deSmokeEmitter*) override;
+	deBaseGraphicVideo *CreateVideo(deVideo*) override;
+	deBaseGraphicVideoPlayer *CreateVideoPlayer(deVideoPlayer*) override;
 	/*@}*/
 };
 

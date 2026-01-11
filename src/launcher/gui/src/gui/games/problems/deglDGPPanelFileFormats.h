@@ -61,7 +61,7 @@ public:
 	deglDGPPanelFileFormats(deglDialogGameProblems *parentDialog, FXComposite *container);
 	
 	/** Clean up dialog. */
-	virtual ~deglDGPPanelFileFormats();
+	~deglDGPPanelFileFormats() override;
 	/*@}*/
 	
 	

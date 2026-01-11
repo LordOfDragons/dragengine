@@ -44,10 +44,10 @@ private:
 public:
 	// constructor
 	deClassNetworkStateListener(deEngine *gameEngine, deScriptingDragonScript *scrMgr);
-	~deClassNetworkStateListener();
+	~deClassNetworkStateListener() override;
 	// internal functions
 	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	inline deEngine *GetGameEngine() const{ return pGameEngine; }
 	
 private:

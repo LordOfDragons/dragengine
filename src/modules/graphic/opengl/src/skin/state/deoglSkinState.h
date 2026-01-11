@@ -102,7 +102,7 @@ public:
 	
 protected:
 	/** Clean up skin state. */
-	~deoglSkinState();
+	~deoglSkinState() override;
 	/*@}*/
 	
 	

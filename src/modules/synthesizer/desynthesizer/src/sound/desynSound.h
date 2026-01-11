@@ -59,7 +59,7 @@ public:
 	desynSound(deDESynthesizer &module, deSound &sound);
 	
 	/** \brief Clean up sound peer. */
-	virtual ~desynSound();
+	~desynSound() override;
 	/*@}*/
 	
 	

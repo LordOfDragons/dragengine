@@ -50,16 +50,16 @@ public:
 	aeURuleAnimDiffToggleEnableRotation(aeRuleAnimationDifference *rule);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleAnimDiffToggleEnableRotation();
+	~aeURuleAnimDiffToggleEnableRotation() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

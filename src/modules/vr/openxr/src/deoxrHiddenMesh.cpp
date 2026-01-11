@@ -77,7 +77,7 @@ private:
 public:
 	deoxrHiddenMesh_BuildModel(const XrVisibilityMaskKHR &mask) : pMask(mask){}
 	
-	virtual void BuildModel(deModel *model){
+	void BuildModel(deModel *model) override{
 		deModelLOD * const lod = new deModelLOD;
 		model->AddLOD(lod);
 		

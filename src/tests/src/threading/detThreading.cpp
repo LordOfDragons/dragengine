@@ -20,11 +20,11 @@ private:
 	detThreading *pThreading;
 	
 public:
-	cThreadSimple(detThreading *threading){
+	explicit cThreadSimple(detThreading *threading){
 		pThreading = threading;
 	}
-	virtual ~cThreadSimple(){}
-	virtual void Run(){
+	~cThreadSimple() override{}
+	void Run() override{
 		pThreading->mutex1->Lock();
 		pThreading->testValue = 1;
 		pThreading->mutex1->Unlock();

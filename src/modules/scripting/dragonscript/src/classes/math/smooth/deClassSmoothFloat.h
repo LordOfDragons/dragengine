@@ -46,7 +46,7 @@ public:
 	deClassSmoothFloat(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up the class. */
-	virtual ~deClassSmoothFloat();
+	~deClassSmoothFloat() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -56,7 +56,7 @@ public:
 	inline const deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Smooth float from object. */
 	const decSmoothFloat &GetSmoothFloat(dsRealObject *myself) const;

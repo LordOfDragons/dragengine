@@ -218,7 +218,7 @@ public:
 	
 protected:
 	/** Cleans up the world object. */
-	virtual ~meWorld();
+	~meWorld() override;
 	/*@}*/
 	
 	
@@ -524,9 +524,9 @@ public:
 	void NotifyLimitBoxChanged();
 	
 	/** Notifies all that the changed or saved state changed. */
-	virtual void NotifyStateChanged();
+	void NotifyStateChanged() override;
 	/** Notifies all that the undos changed. */
-	virtual void NotifyUndoChanged();
+	void NotifyUndoChanged() override;
 	/** Notifies all that the lumimeter changed. */
 	void NotifyLumimeterChanged();
 	/** Notifies all that the path find test changed. */

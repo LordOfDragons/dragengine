@@ -76,7 +76,7 @@ public:
 	deoglCamera(deGraphicOpenGl &ogl, const deCamera &camera);
 	
 	/** Clean up camera peer. */
-	virtual ~deoglCamera();
+	~deoglCamera() override;
 	/*@}*/
 	
 	
@@ -121,33 +121,33 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	/** Orientation changed. */
-	virtual void OrientationChanged();
+	void OrientationChanged() override;
 	
 	/** Camera parameter changed. */
-	virtual void ParameterChanged();
+	void ParameterChanged() override;
 	
 	/** Adaption parameter changed. */
-	virtual void AdaptionChanged();
+	void AdaptionChanged() override;
 	
 	/** Layer mask changed. */
-	virtual void LayerMaskChanged();
+	void LayerMaskChanged() override;
 	
 	/** Request graphic module to reset adapted intensity to optimal value. */
-	virtual void ResetAdaptedIntensity();
+	void ResetAdaptedIntensity() override;
 	
 	
 	
 	/** Effect has been added. */
-	virtual void EffectAdded(int index, deEffect *effect);
+	void EffectAdded(int index, deEffect *effect) override;
 	
 	/** Effect has been removed. */
-	virtual void EffectRemoved(int index, deEffect *effect);
+	void EffectRemoved(int index, deEffect *effect) override;
 	
 	/** All effects have been removed. */
-	virtual void AllEffectsRemoved();
+	void AllEffectsRemoved() override;
 	/*@}*/
 	
 	
@@ -155,13 +155,13 @@ public:
 	/** \name For use by VR Module only */
 	/*@{*/
 	/** Camera assigned to HMD. */
-	virtual void VRAssignedToHMD();
+	void VRAssignedToHMD() override;
 	
 	/** Camera resigned from HMD. */
-	virtual void VRResignedFromHMD();
+	void VRResignedFromHMD() override;
 	
 	/** VR Render parameters changed. */
-	virtual void VRRenderParametersChanged();
+	void VRRenderParametersChanged() override;
 	/*@}*/
 	
 	

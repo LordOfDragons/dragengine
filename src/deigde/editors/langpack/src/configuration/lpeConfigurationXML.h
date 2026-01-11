@@ -45,7 +45,7 @@ public:
 	/** Creates a new configuration xml read/save. */
 	lpeConfigurationXML(deLogger *logger, const char *loggerSource);
 	/** Cleans up the configuration xml read/save. */
-	virtual ~lpeConfigurationXML();
+	~lpeConfigurationXML() override;
 	/*@}*/
 	
 	/** @name Management */

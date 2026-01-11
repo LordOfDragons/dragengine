@@ -52,7 +52,7 @@ public:
 	deglDPLListItemParam(const FXString &text, const char *parameterName, FXFont *font);
 	
 	/** Clean up list item. */
-	virtual ~deglDPLListItemParam();
+	~deglDPLListItemParam() override;
 	/*@}*/
 	
 	
@@ -66,7 +66,7 @@ public:
 	void SetFont(FXFont *font);
 	
 	/** Draw item. */
-	virtual void draw(const FXList *list, FXDC &dc, FXint x, FXint y, FXint w, FXint h) const;
+	void draw(const FXList *list, FXDC &dc, FXint x, FXint y, FXint w, FXint h) const override;
 	/*@}*/
 };
 

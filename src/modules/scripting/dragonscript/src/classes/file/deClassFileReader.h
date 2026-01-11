@@ -45,13 +45,13 @@ public:
 	/** Creates a new script class. */
 	deClassFileReader(deScriptingDragonScript *ds);
 	/** Cleans up the script class. */
-	virtual ~deClassFileReader();
+	~deClassFileReader() override;
 	/*@}*/
 	
 	/** @name Management */
 	/*@{*/
 	/** Create class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	/** Retrieves the fileReader or NULL if myself is NULL. */
 	decBaseFileReader *GetFileReader(dsRealObject *myself) const;
 	/** Retrieves the stream version. */

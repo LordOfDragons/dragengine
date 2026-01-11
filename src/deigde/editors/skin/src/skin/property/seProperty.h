@@ -127,7 +127,7 @@ public:
 	
 	/** \brief Clean up property. */
 protected:
-	virtual ~seProperty();
+	~seProperty() override;
 public:
 	/*@}*/
 	

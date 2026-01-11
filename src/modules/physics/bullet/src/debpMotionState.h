@@ -47,7 +47,7 @@ private:
 public:
 	// constructor, destructor
 	debpMotionState();
-	~debpMotionState();
+	~debpMotionState() override;
 	// management
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	inline const decVector &GetScaling() const{ return pScaling; }
@@ -56,8 +56,8 @@ public:
 	void SetScaling(const decVector &scaling);
 	void SetOrientation(const decQuaternion &orientation);
 	// bullet management
-	virtual void getWorldTransform(btTransform &centerOfMassWorldTrans) const;
-	virtual void setWorldTransform(const btTransform &centerOfMassWorldTrans);
+	void getWorldTransform(btTransform &centerOfMassWorldTrans) const override;
+	void setWorldTransform(const btTransform &centerOfMassWorldTrans) override;
 	virtual bool deactivationCallback(void *userPointer);
 private:
 	void pCleanUp();

@@ -59,7 +59,7 @@ public:
 	typedef deTObjectReference<cEditHalfExtends> Ref;
 	cEditHalfExtends(reWPPanelShapeBox &panel) : pPanel(panel){}
 	
-	virtual void OnVectorChanged(igdeEditVector *editVector){
+	void OnVectorChanged(igdeEditVector *editVector) override{
 		reRig * const rig = pPanel.GetRig();
 		reRigShapeBox * const box = (reRigShapeBox*)pPanel.GetShape();
 		if(!rig || !box){

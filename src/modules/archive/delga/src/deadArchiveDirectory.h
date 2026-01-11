@@ -68,7 +68,7 @@ public:
 	
 protected:
 	/** \brief Clean up directory entry. */
-	virtual ~deadArchiveDirectory();
+	~deadArchiveDirectory() override;
 	/*@}*/
 	
 	

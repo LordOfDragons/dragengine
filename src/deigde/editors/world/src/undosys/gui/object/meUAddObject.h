@@ -56,7 +56,7 @@ public:
 	/** \brief Clean up undo object. */
 
 protected:
-	virtual ~meUAddObject();
+	~meUAddObject() override;
 
 public:
 	/*@}*/
@@ -67,9 +67,9 @@ public:
 	inline const meObject::Ref &GetObject() const{ return pObject; }
 	
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

@@ -53,16 +53,16 @@ public:
 	aeUAnimatorRemoveBone(aeAnimator *animator, const char *pattern);
 protected:
 	/** Clean up undo. */
-	virtual ~aeUAnimatorRemoveBone();
+	~aeUAnimatorRemoveBone() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

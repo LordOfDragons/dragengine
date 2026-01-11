@@ -49,7 +49,7 @@ public:
 	deClassSky(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
-	virtual ~deClassSky();
+	~deClassSky() override;
 	/*@}*/
 	
 	
@@ -60,7 +60,7 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Creates class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Sky or \em NULL if myself is \em NULL. */
 	deSky *GetSky(dsRealObject *myself) const;

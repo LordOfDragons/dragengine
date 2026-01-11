@@ -56,16 +56,16 @@ public:
 	ceUCCLogicRemove(ceConversationTopic *topic, ceConversationAction *action, ceCConditionLogic *logic, ceConversationCondition *condition);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCCLogicRemove();
+	~ceUCCLogicRemove() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

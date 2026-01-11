@@ -59,16 +59,16 @@ public:
 	aeURuleIKSetGoalRotation(aeRuleInverseKinematic *rule, const decVector &newRot);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleIKSetGoalRotation();
+	~aeURuleIKSetGoalRotation() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

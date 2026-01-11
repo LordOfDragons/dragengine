@@ -69,7 +69,7 @@ public:
 	
 protected:
 	/** Clean up descriptor set. */
-	virtual ~devkDescriptorSet();
+	~devkDescriptorSet() override;
 	/*@}*/
 	
 	

@@ -51,13 +51,13 @@ public:
 	meUDeleteDecal(meWorld *world);
 	
 protected:
-	~meUDeleteDecal();
+	~meUDeleteDecal() override;
 	
 public:
 	// Management
 	// undo and redo operations
-	virtual void Undo();
-	virtual void Redo();
+	void Undo() override;
+	void Redo() override;
 	
 	// internal
 	void UpdateInfos();

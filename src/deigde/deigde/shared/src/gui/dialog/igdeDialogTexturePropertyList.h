@@ -63,7 +63,7 @@ public:
 	
 protected:
 	/** \brief Clean up dialog. */
-	virtual ~igdeDialogTexturePropertyList();
+	~igdeDialogTexturePropertyList() override;
 	/*@}*/
 	
 	

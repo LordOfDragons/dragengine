@@ -65,7 +65,7 @@ public:
 		const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxTreeList();
+	~igdeNativeFoxTreeList() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeFoxTreeList* CreateNativeWidget(igdeTreeList &owner);

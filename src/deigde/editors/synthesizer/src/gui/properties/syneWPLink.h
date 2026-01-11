@@ -76,7 +76,7 @@ public:
 	
 protected:
 	/** \brief Clean up properties panel. */
-	virtual ~syneWPLink();
+	~syneWPLink() override;
 	/*@}*/
 	
 	

@@ -81,7 +81,7 @@ public:
 	deoglWorld(deGraphicOpenGl &ogl, const deWorld &world);
 	
 	/** Clean up world peer. */
-	virtual ~deoglWorld();
+	~deoglWorld() override;
 	/*@}*/
 	
 	
@@ -101,7 +101,7 @@ public:
 	inline deoglHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }
 	
 	/** Update dynamic parts of world like the skins. */
-	virtual void Update(float elapsed);
+	void Update(float elapsed) override;
 	
 	/** Shared video player list. */
 	inline deoglSharedVideoPlayerList &GetSharedVideoPlayerList() const{ return *pSharedVideoPlayerList; }
@@ -131,82 +131,82 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Size changed. */
-	virtual void SizeChanged();
+	void SizeChanged() override;
 	
 	/** Height Terrain has changed. */
-	virtual void HeightTerrainChanged();
+	void HeightTerrainChanged() override;
 	/** Global lighting parameters have changed. */
-	virtual void LightingChanged();
+	void LightingChanged() override;
 	
 	/** Sky has been added. */
-	virtual void SkyAdded(deSkyInstance *sky);
+	void SkyAdded(deSkyInstance *sky) override;
 	/** Sky has been removed. */
-	virtual void SkyRemoved(deSkyInstance *sky);
+	void SkyRemoved(deSkyInstance *sky) override;
 	/** All skys have been removed. */
-	virtual void AllSkiesRemoved();
+	void AllSkiesRemoved() override;
 	
 	/** Billboard has been added. */
-	virtual void BillboardAdded(deBillboard *billboard);
+	void BillboardAdded(deBillboard *billboard) override;
 	/** Billboard has been removed. */
-	virtual void BillboardRemoved(deBillboard *billboard);
+	void BillboardRemoved(deBillboard *billboard) override;
 	/** All billboards have been removed. */
-	virtual void AllBillboardsRemoved();
+	void AllBillboardsRemoved() override;
 	
 	/** Camera has been added. */
-	virtual void CameraAdded(deCamera *camera);
+	void CameraAdded(deCamera *camera) override;
 	/** Camera has been removed. */
-	virtual void CameraRemoved(deCamera *camera);
+	void CameraRemoved(deCamera *camera) override;
 	/** All cameras have been removed. */
-	virtual void AllCamerasRemoved();
+	void AllCamerasRemoved() override;
 	
 	/** Component has been added. */
-	virtual void ComponentAdded(deComponent *component);
+	void ComponentAdded(deComponent *component) override;
 	/** Component has been removed. */
-	virtual void ComponentRemoved(deComponent *component);
+	void ComponentRemoved(deComponent *component) override;
 	/** All components have been removed. */
-	virtual void AllComponentsRemoved();
+	void AllComponentsRemoved() override;
 	
 	/** Environment map probe has been added. */
-	virtual void EnvMapProbeAdded(deEnvMapProbe *envMapProbe);
+	void EnvMapProbeAdded(deEnvMapProbe *envMapProbe) override;
 	/** Environment map probe has been removed. */
-	virtual void EnvMapProbeRemoved(deEnvMapProbe *envMapProbe);
+	void EnvMapProbeRemoved(deEnvMapProbe *envMapProbe) override;
 	/** All environment map probes have been removed. */
-	virtual void AllEnvMapProbesRemoved();
+	void AllEnvMapProbesRemoved() override;
 	
 	/** Light has been added. */
-	virtual void LightAdded(deLight *light);
+	void LightAdded(deLight *light) override;
 	/** Light has been removed. */
-	virtual void LightRemoved(deLight *light);
+	void LightRemoved(deLight *light) override;
 	/** All lights have been removed. */
-	virtual void AllLightsRemoved();
+	void AllLightsRemoved() override;
 	
 	/** Lumimeter has been added. */
-	virtual void LumimeterAdded(deLumimeter *lumimeter);
+	void LumimeterAdded(deLumimeter *lumimeter) override;
 	/** Lumimeter has been removed. */
-	virtual void LumimeterRemoved(deLumimeter *lumimeter);
+	void LumimeterRemoved(deLumimeter *lumimeter) override;
 	/** All lumimeters have been removed. */
-	virtual void AllLumimetersRemoved();
+	void AllLumimetersRemoved() override;
 	
 	/** Particle emitter has been added. */
-	virtual void ParticleEmitterAdded(deParticleEmitterInstance *emitter);
+	void ParticleEmitterAdded(deParticleEmitterInstance *emitter) override;
 	/** Particle emitter has been removed. */
-	virtual void ParticleEmitterRemoved(deParticleEmitterInstance *emitter);
+	void ParticleEmitterRemoved(deParticleEmitterInstance *emitter) override;
 	/** All particle emitters have been removed. */
-	virtual void AllParticleEmittersRemoved();
+	void AllParticleEmittersRemoved() override;
 	
 	/** PropField has been added. */
-	virtual void PropFieldAdded(dePropField *propField);
+	void PropFieldAdded(dePropField *propField) override;
 	/** PropField has been removed. */
-	virtual void PropFieldRemoved(dePropField *propField);
+	void PropFieldRemoved(dePropField *propField) override;
 	/** All propFields have been removed. */
-	virtual void AllPropFieldsRemoved();
+	void AllPropFieldsRemoved() override;
 	
 	/** DebugDrawer has been added. */
-	virtual void DebugDrawerAdded(deDebugDrawer *debugDrawer);
+	void DebugDrawerAdded(deDebugDrawer *debugDrawer) override;
 	/** DebugDrawer has been removed. */
-	virtual void DebugDrawerRemoved(deDebugDrawer *debugDrawer);
+	void DebugDrawerRemoved(deDebugDrawer *debugDrawer) override;
 	/** All debugDrawers have been removed. */
-	virtual void AllDebugDrawersRemoved();
+	void AllDebugDrawersRemoved() override;
 	/*@}*/
 	
 private:

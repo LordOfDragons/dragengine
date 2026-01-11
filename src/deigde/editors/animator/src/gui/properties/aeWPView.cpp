@@ -124,7 +124,7 @@ public:
 	typedef deTObjectReference<cBaseTextField> Ref;
 	cBaseTextField(aeWPView &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		if(animator){
 			OnChanged(textField, animator);
@@ -142,7 +142,7 @@ public:
 	typedef deTObjectReference<cBaseComboBox> Ref;
 	cBaseComboBox(aeWPView &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		if(animator){
 			OnChanged(comboBox, animator);
@@ -160,7 +160,7 @@ public:
 	typedef deTObjectReference<cBaseEditPath> Ref;
 	cBaseEditPath(aeWPView &panel) : pPanel(panel){}
 	
-	virtual void OnEditPathChanged(igdeEditPath *editPath){
+	void OnEditPathChanged(igdeEditPath *editPath) override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		if(animator){
 			OnChanged(editPath, animator);
@@ -177,7 +177,7 @@ public:
 	typedef deTObjectReference<cPathDisplayModel> Ref;
 	cPathDisplayModel(aeWPView &panel) : cBaseEditPath(panel){}
 	
-	virtual void OnChanged(igdeEditPath *editPath, aeAnimator *animator){
+	void OnChanged(igdeEditPath *editPath, aeAnimator *animator) override{
 		animator->SetDisplayModelPath(editPath->GetPath());
 	}
 };
@@ -187,7 +187,7 @@ public:
 	typedef deTObjectReference<cPathDisplaySkin> Ref;
 	cPathDisplaySkin(aeWPView &panel) : cBaseEditPath(panel){}
 	
-	virtual void OnChanged(igdeEditPath *editPath, aeAnimator *animator){
+	void OnChanged(igdeEditPath *editPath, aeAnimator *animator) override{
 		animator->SetDisplaySkinPath(editPath->GetPath());
 	}
 };
@@ -197,7 +197,7 @@ public:
 	typedef deTObjectReference<cPathDisplayRig> Ref;
 	cPathDisplayRig(aeWPView &panel) : cBaseEditPath(panel){}
 	
-	virtual void OnChanged(igdeEditPath *editPath, aeAnimator *animator){
+	void OnChanged(igdeEditPath *editPath, aeAnimator *animator) override{
 		animator->SetDisplayRigPath(editPath->GetPath());
 	}
 };
@@ -208,7 +208,7 @@ public:
 	typedef deTObjectReference<cPathTestingAnimator> Ref;
 	cPathTestingAnimator(aeWPView &panel) : cBaseEditPath(panel){}
 	
-	virtual void OnChanged(igdeEditPath *editPath, aeAnimator *animator){
+	void OnChanged(igdeEditPath *editPath, aeAnimator *animator) override{
 		if(animator->GetTestingSubAnimator()->GetPathAnimator().Equals(editPath->GetPath())){
 			return;
 		}
@@ -299,7 +299,7 @@ public:
 	typedef deTObjectReference<cComboCamAttachBone> Ref;
 	cComboCamAttachBone(aeWPView &panel) : cBaseComboBox(panel){}
 	
-	virtual void OnChanged(igdeComboBox *comboBox, aeAnimator *animator){
+	void OnChanged(igdeComboBox *comboBox, aeAnimator *animator) override{
 		animator->GetCamera()->SetBone(comboBox->GetText());
 	}
 };
@@ -310,7 +310,7 @@ public:
 	typedef deTObjectReference<cEditCamRelPos> Ref;
 	cEditCamRelPos(aeWPView &panel) : pPanel(panel){}
 	
-	virtual void OnVectorChanged(igdeEditVector *editVector){
+	void OnVectorChanged(igdeEditVector *editVector) override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		if(animator){
 			animator->GetCamera()->SetRelativePosition(editVector->GetVector());
@@ -324,7 +324,7 @@ public:
 	typedef deTObjectReference<cEditCamRelRot> Ref;
 	cEditCamRelRot(aeWPView &panel) : pPanel(panel){}
 	
-	virtual void OnVectorChanged(igdeEditVector *editVector){
+	void OnVectorChanged(igdeEditVector *editVector) override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		if(animator){
 			animator->GetCamera()->SetRelativeOrientation(editVector->GetVector());
@@ -338,7 +338,7 @@ public:
 	typedef deTObjectReference<cTextPlaySpeed> Ref;
 	cTextPlaySpeed(aeWPView &panel) : cBaseTextField(panel){}
 	
-	virtual void OnChanged(igdeTextField *textField, aeAnimator *animator){
+	void OnChanged(igdeTextField *textField, aeAnimator *animator) override{
 		animator->SetPlaySpeed(textField->GetFloat());
 	}
 };
@@ -348,7 +348,7 @@ public:
 	typedef deTObjectReference<cTextTimeStep> Ref;
 	cTextTimeStep(aeWPView &panel) : cBaseTextField(panel){}
 	
-	virtual void OnChanged(igdeTextField *textField, aeAnimator *animator){
+	void OnChanged(igdeTextField *textField, aeAnimator *animator) override{
 		animator->SetTimeStep(textField->GetFloat());
 	}
 };
@@ -424,7 +424,7 @@ public:
 	typedef deTObjectReference<cComboAttachment> Ref;
 	cComboAttachment(aeWPView &panel) : cBaseComboBox(panel){}
 	
-	virtual void OnChanged(igdeComboBox *comboBox, aeAnimator *animator){
+	void OnChanged(igdeComboBox *comboBox, aeAnimator *animator) override{
 		animator->SetActiveAttachment(comboBox->GetSelectedItem()
 			? (aeAttachment*)comboBox->GetSelectedItem()->GetData() : nullptr);
 	}
@@ -545,7 +545,7 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Reset animation"),
 	pPanel(panel){}
 	
-	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
+	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override{
 		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
 		
 		helper.MenuCommand(contextMenu, cActionAttachmentAdd::Ref::New(pPanel));
@@ -563,7 +563,7 @@ public:
 	typedef deTObjectReference<cTextAttachmentName> Ref;
 	cTextAttachmentName(aeWPView &panel) : cBaseTextField(panel){}
 	
-	virtual void OnChanged(igdeTextField *textField, aeAnimator *animator){
+	void OnChanged(igdeTextField *textField, aeAnimator *animator) override{
 		aeAttachment * const attachment = pPanel.GetAttachment();
 		if(!attachment || textField->GetText() == attachment->GetName()){
 			return;
@@ -583,7 +583,7 @@ public:
 	typedef deTObjectReference<cComboAttachmentBone> Ref;
 	cComboAttachmentBone(aeWPView &panel) : cBaseComboBox(panel){}
 	
-	virtual void OnChanged(igdeComboBox *comboBox, aeAnimator*){
+	void OnChanged(igdeComboBox *comboBox, aeAnimator*) override{
 		aeAttachment * const attachment = pPanel.GetAttachment();
 		if(attachment){
 			attachment->SetBoneName(comboBox->GetText());
@@ -596,7 +596,7 @@ public:
 	typedef deTObjectReference<cComboAttachmentType> Ref;
 	cComboAttachmentType(aeWPView &panel) : cBaseComboBox(panel){}
 	
-	virtual void OnChanged(igdeComboBox *comboBox, aeAnimator*){
+	void OnChanged(igdeComboBox *comboBox, aeAnimator*) override{
 		aeAttachment * const attachment = pPanel.GetAttachment();
 		if(attachment && comboBox->GetSelectedItem()){
 			attachment->SetAttachType((aeAttachment::eAttachTypes)

@@ -72,7 +72,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~meWPAdd();
+	~meWPAdd() override;
 	/*@}*/
 	
 	

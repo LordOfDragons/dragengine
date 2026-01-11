@@ -57,7 +57,7 @@ public:
 		ceCConditionTrigger *condition, ceCConditionTrigger::eTestModes newTestMode);
 	/** \brief Cleans up the undo object. */
 protected:
-	virtual ~ceUCCTriggerSetTestMode();
+	~ceUCCTriggerSetTestMode() override;
 public:
 	/*@}*/
 	
@@ -65,9 +65,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

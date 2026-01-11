@@ -43,10 +43,10 @@ private:
 public:
 	// constructor
 	deClassTouchSensorListener(deEngine *gameEngine, deScriptingDragonScript *scrMgr);
-	~deClassTouchSensorListener();
+	~deClassTouchSensorListener() override;
 	// internal functions
 	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	inline deEngine *GetGameEngine() const{ return pGameEngine; }
 	inline deClassCollider *GetClassCollider() const{ return pClsCol; }
 	

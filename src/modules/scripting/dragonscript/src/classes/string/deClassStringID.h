@@ -57,7 +57,7 @@ public:
 	deClassStringID(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
-	virtual ~deClassStringID();
+	~deClassStringID() override;
 	/*@}*/
 	
 	
@@ -68,7 +68,7 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	
 	

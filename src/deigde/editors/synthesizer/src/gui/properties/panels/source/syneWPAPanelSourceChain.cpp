@@ -71,7 +71,7 @@ protected:
 public:
 	cBaseTextFieldListener(syneWPAPanelSourceChain &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		syneSourceChain * const source = (syneSourceChain*)pPanel.GetSource();
 		if(!source){
 			return;
@@ -130,7 +130,7 @@ public:
 	typedef deTObjectReference<cTextMinSpeed> Ref;
 	cTextMinSpeed(syneWPAPanelSourceChain &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo::Ref  OnChanged(igdeTextField *textField, syneSourceChain *source){
+	igdeUndo::Ref  OnChanged(igdeTextField *textField, syneSourceChain *source) override{
 		const float value = textField->GetFloat();
 		return fabsf(value - source->GetMinSpeed()) > FLOAT_SAFE_EPSILON
 			? syneUSetSourceChainMinSpeed::Ref::New(source, value) : igdeUndo::Ref();
@@ -142,7 +142,7 @@ public:
 	typedef deTObjectReference<cTextMaxSpeed> Ref;
 	cTextMaxSpeed(syneWPAPanelSourceChain &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo::Ref  OnChanged(igdeTextField *textField, syneSourceChain *source){
+	igdeUndo::Ref  OnChanged(igdeTextField *textField, syneSourceChain *source) override{
 		const float value = textField->GetFloat();
 		return fabsf(value - source->GetMaxSpeed()) > FLOAT_SAFE_EPSILON
 			? syneUSetSourceChainMaxSpeed::Ref::New(source, value) : igdeUndo::Ref();
@@ -157,11 +157,11 @@ public:
 	typedef deTObjectReference<cListSounds> Ref;
 	cListSounds(syneWPAPanelSourceChain &panel) : pPanel(panel){}
 	
-	virtual void OnSelectionChanged(igdeListBox*){
+	void OnSelectionChanged(igdeListBox*) override{
 		pPanel.UpdateSound();
 	}
 	
-	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
+	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		helper.MenuCommand(menu, pPanel.GetActionSoundAdd());
 		helper.MenuCommand(menu, pPanel.GetActionSoundRemove());
@@ -248,7 +248,7 @@ public:
 	typedef deTObjectReference<cPathSound> Ref;
 	cPathSound(syneWPAPanelSourceChain &panel) : pPanel(panel){}
 	
-	virtual void OnEditPathChanged(igdeEditPath * editPath){
+	void OnEditPathChanged(igdeEditPath * editPath) override{
 		syneSourceChain * const source = (syneSourceChain*)pPanel.GetSource();
 		const int selection = pPanel.GetSelectedSoundInList();
 		if(!source || selection == -1 || source->GetPathSounds().GetAt(selection) == editPath->GetPath()){

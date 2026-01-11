@@ -48,7 +48,7 @@ public:
 	deClassCanvasVideoPlayer(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
-	virtual ~deClassCanvasVideoPlayer();
+	~deClassCanvasVideoPlayer() override;
 	/*@}*/
 	
 	
@@ -60,7 +60,7 @@ public:
 	inline const deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create script class members. */
-	virtual void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/**
 	 * \brief Retrieve canvas video player from a script object.

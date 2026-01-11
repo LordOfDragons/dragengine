@@ -59,7 +59,7 @@ public:
 	
 protected:
 	/** \brief Clean up dialog. */
-	virtual ~igdeTriggerExpressionDialog();
+	~igdeTriggerExpressionDialog() override;
 	/*@}*/
 	
 	

@@ -48,7 +48,7 @@ public:
 	deClassEasyXMLElement(deScriptingDragonScript &ds);
 	
 	/** \brief Creates a new class. */
-	virtual ~deClassEasyXMLElement();
+	~deClassEasyXMLElement() override;
 	/*@}*/
 	
 	
@@ -59,7 +59,7 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Get xml element from object or \em NULL if \em myself is \em NULL. */
 	decXmlElement *GetElement(dsRealObject *myself) const;

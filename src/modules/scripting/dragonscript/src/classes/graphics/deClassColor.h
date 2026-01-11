@@ -42,10 +42,10 @@ private:
 public:
 	// constructor
 	deClassColor(deEngine *gameEngine, deScriptingDragonScript *scriptManager);
-	~deClassColor();
+	~deClassColor() override;
 	// internal functions
-	void CreateClassMembers(dsEngine *engine);
-	void InitStatics(dsRunTime *RT);
+	void CreateClassMembers(dsEngine *engine) override;
+	void InitStatics(dsRunTime *RT) override;
 	inline deEngine *GetGameEngine() const{ return pGameEngine; }
 	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
 	const decColor &GetColor(dsRealObject *This) const;

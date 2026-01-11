@@ -56,7 +56,7 @@ public:
 	
 protected:
 	/** Clean up shader source location. */
-	virtual ~deoglShaderSourceLocation();
+	~deoglShaderSourceLocation() override;
 	/*@}*/
 	
 	

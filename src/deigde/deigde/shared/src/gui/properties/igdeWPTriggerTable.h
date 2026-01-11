@@ -83,7 +83,7 @@ public:
 	
 protected:
 	/** \brief Clean up widget. */
-	virtual ~igdeWPTriggerTable();
+	~igdeWPTriggerTable() override;
 	/*@}*/
 	
 	
@@ -135,10 +135,10 @@ public:
 	virtual void OnAction();
 	
 	/** \brief Action parameters changed. */
-	virtual void OnParameterChanged(igdeAction *action);
+	void OnParameterChanged(igdeAction *action) override;
 	
 	/** \brief Action has been destroyed. */
-	virtual void OnDestroyed(igdeAction *action);
+	void OnDestroyed(igdeAction *action) override;
 	
 	/** \brief List box. */
 	inline const igdeListBox::Ref &GetListBox() const{ return pListTriggerTable; }

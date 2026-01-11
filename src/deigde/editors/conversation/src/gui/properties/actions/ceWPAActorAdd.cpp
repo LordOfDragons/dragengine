@@ -71,7 +71,7 @@ public:
 	typedef deTObjectReference<cComboActorID> Ref;
 	cComboActorID(ceWPAActorAdd &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorAdd * const action = pPanel.GetAction();
 		if(!topic || !action  || comboBox->GetText() == action->GetID()){
@@ -90,7 +90,7 @@ public:
 	typedef deTObjectReference<cComboAliasID> Ref;
 	cComboAliasID(ceWPAActorAdd &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorAdd * const action = pPanel.GetAction();
 		if(!topic || !action  || comboBox->GetText() == action->GetAliasID()){

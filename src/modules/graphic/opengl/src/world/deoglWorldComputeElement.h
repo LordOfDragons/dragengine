@@ -134,7 +134,7 @@ public:
 	
 protected:
 	/** Clean up world compute element. */
-	virtual ~deoglWorldComputeElement();
+	~deoglWorldComputeElement() override;
 	/*@}*/
 	
 	

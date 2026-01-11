@@ -57,13 +57,13 @@ public:
 	/** Creates a new script class. */
 	deClassColliderConstraint(deEngine *gameEngine, deScriptingDragonScript *scrDS);
 	/** Cleans up the script class. */
-	virtual ~deClassColliderConstraint();
+	~deClassColliderConstraint() override;
 	/*@}*/
 	
 	/** @name Management */
 	/*@{*/
 	/** Creates the class members. */
-	virtual void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** Retrieves the constraint. */
 	deColliderConstraint *GetConstraint(dsRealObject *myself) const;

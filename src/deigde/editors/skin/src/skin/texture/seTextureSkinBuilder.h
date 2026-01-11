@@ -53,7 +53,7 @@ public:
 	seTextureSkinBuilder(const seSkin &skin, const seTexture &texture);
 	
 	/** \brief Clean up texture skin builder. */
-	virtual ~seTextureSkinBuilder();
+	~seTextureSkinBuilder() override;
 	/*@}*/
 	
 	
@@ -61,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Build texture into the provided skin object. */
-    virtual void BuildSkin(deSkin *engSkin);
+    void BuildSkin(deSkin *engSkin) override;
 	
 	/** \brief Create skin property node group. */
 	void CreateNodeGroup(deSkinPropertyNodeGroup &engNodeGroup, const sePropertyNodeGroup &nodeGroup);

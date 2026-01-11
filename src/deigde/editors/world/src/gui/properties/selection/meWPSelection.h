@@ -67,7 +67,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~meWPSelection();
+	~meWPSelection() override;
 	/*@}*/
 	
 	

@@ -53,16 +53,16 @@ public:
 	ceUCASetVarSetValue(ceConversationTopic *topic, ceCASetVariable *action, int newValue);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCASetVarSetValue();
+	~ceUCASetVarSetValue() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

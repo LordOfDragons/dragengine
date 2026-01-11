@@ -52,7 +52,7 @@ public:
 	ceUndoCAction(ceConversationAction *action, ceConversationTopic *topic);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUndoCAction();
+	~ceUndoCAction() override;
 	/*@}*/
 	
 public:

@@ -79,7 +79,7 @@ public:
 	
 	igdeEditPropertyValue_TextField(igdeEditPropertyValue &widget) : pWidget(widget){}
 	
-	virtual void OnTextChanged(igdeTextField*){
+	void OnTextChanged(igdeTextField*) override{
 		pWidget.EditWidgetValueChanged(false);
 	}
 };
@@ -93,7 +93,7 @@ public:
 	
 	igdeEditPropertyValue_EditPoint(igdeEditPropertyValue &widget) : pWidget(widget){}
 	
-	virtual void OnPointChanged(igdeEditPoint*){
+	void OnPointChanged(igdeEditPoint*) override{
 		pWidget.EditWidgetValueChanged(false);
 	}
 };
@@ -107,7 +107,7 @@ public:
 	
 	igdeEditPropertyValue_EditPoint3(igdeEditPropertyValue &widget) : pWidget(widget){}
 	
-	virtual void OnPoint3Changed(igdeEditPoint3*){
+	void OnPoint3Changed(igdeEditPoint3*) override{
 		pWidget.EditWidgetValueChanged(false);
 	}
 };
@@ -121,7 +121,7 @@ public:
 	
 	igdeEditPropertyValue_EditVector(igdeEditPropertyValue &widget) : pWidget(widget){}
 	
-	virtual void OnVectorChanged(igdeEditVector*){
+	void OnVectorChanged(igdeEditVector*) override{
 		pWidget.EditWidgetValueChanged(false);
 	}
 };
@@ -135,7 +135,7 @@ public:
 	
 	igdeEditPropertyValue_EditVector2(igdeEditPropertyValue &widget) : pWidget(widget){}
 	
-	virtual void OnVector2Changed(igdeEditVector2*){
+	void OnVector2Changed(igdeEditVector2*) override{
 		pWidget.EditWidgetValueChanged(false);
 	}
 };
@@ -149,7 +149,7 @@ public:
 	
 	igdeEditPropertyValue_ColorBox(igdeEditPropertyValue &widget) : pWidget(widget){}
 	
-	virtual void OnColorChanged(igdeColorBox*){
+	void OnColorChanged(igdeColorBox*) override{
 		pWidget.EditWidgetValueChanged(false);
 	}
 };
@@ -183,7 +183,7 @@ public:
 	
 	igdeEditPropertyValue_EditPath(igdeEditPropertyValue &widget) : pWidget(widget){}
 	
-	virtual void OnEditPathChanged(igdeEditPath*){
+	void OnEditPathChanged(igdeEditPath*) override{
 		pWidget.EditWidgetValueChanged(false);
 	}
 };
@@ -197,11 +197,11 @@ public:
 	
 	igdeEditPropertyValue_EditSliderText(igdeEditPropertyValue &widget) : pWidget(widget){}
 	
-	virtual void OnSliderTextValueChanged(igdeEditSliderText*){
+	void OnSliderTextValueChanged(igdeEditSliderText*) override{
 		pWidget.EditWidgetValueChanged(false);
 	}
 	
-	virtual void OnSliderTextValueChanging(igdeEditSliderText*){
+	void OnSliderTextValueChanging(igdeEditSliderText*) override{
 		pWidget.EditWidgetValueChanged(true);
 	}
 };
@@ -215,7 +215,7 @@ public:
 	
 	igdeEditPropertyValue_ComboBox(igdeEditPropertyValue &widget) : pWidget(widget){}
 	
-	virtual void OnTextChanged(igdeComboBox*){
+	void OnTextChanged(igdeComboBox*) override{
 		pWidget.EditWidgetValueChanged(false);
 	}
 };

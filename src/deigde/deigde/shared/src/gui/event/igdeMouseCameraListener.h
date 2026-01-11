@@ -106,7 +106,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeMouseCameraListener();
+	~igdeMouseCameraListener() override;
 	/*@}*/
 	
 	
@@ -311,7 +311,7 @@ public:
 	 * 
 	 * Calls ChooseInteraction() to figure out what interaction to use.
 	 */
-	virtual bool OnDragBegin();
+	bool OnDragBegin() override;
 	
 	/**
 	 * \brief Update dragging.
@@ -319,7 +319,7 @@ public:
 	 * Called if state is not edsNone and mouse has been moved. Subclass has to update the
 	 * dragging process.
 	 */
-	virtual void OnDragUpdate();
+	void OnDragUpdate() override;
 	
 	/**
 	 * \brief Dragging ends.
@@ -327,7 +327,7 @@ public:
 	 * Called if state is not edsNone and mouse button used to start draggins has been
 	 * released. Subclass has to finish dragging operation.
 	 */
-	virtual void OnDragFinish(bool cancelled);
+	void OnDragFinish(bool cancelled) override;
 	/*@}*/
 };
 

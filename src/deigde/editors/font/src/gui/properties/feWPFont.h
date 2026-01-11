@@ -65,7 +65,7 @@ public:
 	
 	/** \brief Clean up panel. */
 protected:
-	virtual ~feWPFont();
+	~feWPFont() override;
 public:
 	/*@}*/
 	

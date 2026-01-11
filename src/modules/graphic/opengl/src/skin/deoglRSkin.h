@@ -104,7 +104,7 @@ public:
 	
 protected:
 	/** Clean up render skin. */
-	virtual ~deoglRSkin();
+	~deoglRSkin() override;
 	/*@}*/
 	
 	

@@ -162,13 +162,13 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Light type changed. */
-	virtual void TypeChanged();
+	void TypeChanged() override;
 	
 	/** Geomtry parameter changed. */
-	virtual void GeometryParameterChanged();
+	void GeometryParameterChanged() override;
 	
 	/** Attenuation changed. */
-	virtual void AttenuationChanged();
+	void AttenuationChanged() override;
 	
 	/**
 	 * Light parameter changed.
@@ -179,40 +179,40 @@ public:
 	 * - Spot Smoothness
 	 * - Spot Exponent
 	 */
-	virtual void LightParameterChanged();
+	void LightParameterChanged() override;
 	
 	/** Shadow parameter changed. */
-	virtual void ShadowParameterChanged();
+	void ShadowParameterChanged() override;
 	
 	/** Light shape changed. */
-	virtual void ShapeChanged();
+	void ShapeChanged() override;
 	
 	/** Layer mask changed. */
-	virtual void LayerMaskChanged();
+	void LayerMaskChanged() override;
 	
 	/** Shadow layer mask changed. */
-	virtual void ShadowLayerMaskChanged();
+	void ShadowLayerMaskChanged() override;
 	
 	/** Shadow ignore components changed. */
-	virtual void ShadowIgnoreComponentsChanged();
+	void ShadowIgnoreComponentsChanged() override;
 	
 	/** Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	/** Orientation changed. */
-	virtual void OrientationChanged();
+	void OrientationChanged() override;
 	
 	/** Image, video or canvas view changed. */
-	virtual void SourceChanged();
+	void SourceChanged() override;
 	
 	/** Transform changed. */
-	virtual void TransformChanged();
+	void TransformChanged() override;
 	
 	/** Activated changed. */
-	virtual void ActivatedChanged();
+	void ActivatedChanged() override;
 	
 	/** Hint changed. */
-	virtual void HintChanged();
+	void HintChanged() override;
 	
 	
 	

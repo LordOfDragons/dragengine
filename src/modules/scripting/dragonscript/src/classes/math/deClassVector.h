@@ -42,9 +42,9 @@ private:
 public:
 	// constructor
 	deClassVector(deEngine *gameEngine, deScriptingDragonScript *scriptManager);
-	~deClassVector();
+	~deClassVector() override;
 	// internal functions
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	inline deEngine *GetGameEngine() const{ return pGameEngine; }
 	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
 	const decVector &GetVector(dsRealObject *This) const;

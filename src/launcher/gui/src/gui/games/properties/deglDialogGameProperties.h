@@ -149,7 +149,7 @@ public:
 	deglDialogGameProperties(deglWindowMain *windowMain, delGame *game, FXWindow *owner);
 	
 	/** Clean up dialog. */
-	virtual ~deglDialogGameProperties();
+	~deglDialogGameProperties() override;
 	/*@}*/
 	
 	
@@ -184,7 +184,7 @@ public:
 	void SwitchToDiscUsage();
 	
 	/** Run modal invocation of the dialog. */
-	virtual FXuint execute(FXuint placement = PLACEMENT_OWNER);
+	FXuint execute(FXuint placement = PLACEMENT_OWNER) override;
 	/*@}*/
 	
 	

@@ -66,7 +66,7 @@ public:
 	
 protected:
 	/** Cleans up the temporary constraint. */
-	~reTemporaryConstraint();
+	~reTemporaryConstraint() override;
 	/*@}*/
 	
 public:

@@ -54,16 +54,16 @@ public:
 	ceUCAWaitSetCondition(ceConversationTopic *topic, ceCAWait *wait, ceConversationCondition *newCondition);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCAWaitSetCondition();
+	~ceUCAWaitSetCondition() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

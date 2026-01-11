@@ -74,7 +74,7 @@ public:
 	igdeNativeFoxRenderView(igdeViewRenderWindow &owner, FXComposite *parent, int layoutFlags);
 	
 	/** \brief Clean up widget. */
-	virtual ~igdeNativeFoxRenderView();
+	~igdeNativeFoxRenderView() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeFoxRenderView* CreateNativeWidget(igdeViewRenderWindow &owner);
@@ -90,8 +90,8 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void destroy();
-	FXbool canFocus() const;
+	void destroy() override;
+	FXbool canFocus() const override;
 	
 	inline bool GetCanRender() const{ return pCanRender; }
 	inline bool GetRenderWindowAttached() const{ return pRenderWindowAttached; }

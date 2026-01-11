@@ -71,7 +71,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~meWPSNavSpace();
+	~meWPSNavSpace() override;
 	/*@}*/
 	
 	

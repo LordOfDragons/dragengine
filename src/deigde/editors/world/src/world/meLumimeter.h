@@ -73,7 +73,7 @@ public:
 	
 protected:
 	/** Cleans up the lumimeter object. */
-	~meLumimeter();
+	~meLumimeter() override;
 	
 public:
 	/*@}*/

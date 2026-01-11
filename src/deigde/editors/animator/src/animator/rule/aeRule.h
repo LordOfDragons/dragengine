@@ -79,7 +79,7 @@ public:
 	aeRule(const aeRule &copy);
 	/** Clean up the animator rule. */
 protected:
-	virtual ~aeRule();
+	~aeRule() override;
 public:
 	/*@}*/
 	

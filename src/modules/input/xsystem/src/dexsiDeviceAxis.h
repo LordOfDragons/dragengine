@@ -86,7 +86,7 @@ public:
 	
 protected:
 	/** \brief Clean up device axis. */
-	virtual ~dexsiDeviceAxis();
+	~dexsiDeviceAxis() override;
 	/*@}*/
 	
 	

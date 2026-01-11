@@ -53,7 +53,7 @@ protected:
 	/** \brief Creates a new undo object. */
 	ceUCAASpeakStripSetDuration(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *strip, float newDuration);
 	/** \brief Cleans up the undo object. */
-	virtual ~ceUCAASpeakStripSetDuration();
+	~ceUCAASpeakStripSetDuration() override;
 	/*@}*/
 	
 public:
@@ -63,9 +63,9 @@ public:
 	void SetNewDuration(float duration);
 	
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/** \brief Progressive redo action. */
 	void ProgressiveRedo();
 	/*@}*/

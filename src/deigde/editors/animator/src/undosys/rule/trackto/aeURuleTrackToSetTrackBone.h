@@ -52,16 +52,16 @@ public:
 	aeURuleTrackToSetTrackBone(aeRuleTrackTo *rule, const char *newName);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleTrackToSetTrackBone();
+	~aeURuleTrackToSetTrackBone() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

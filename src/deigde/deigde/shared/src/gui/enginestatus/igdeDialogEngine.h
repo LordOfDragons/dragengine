@@ -58,7 +58,7 @@ public:
 	
 protected:
 	/** \brief Cleans up view. */
-	virtual ~igdeDialogEngine();
+	~igdeDialogEngine() override;
 	/*@}*/
 	
 	

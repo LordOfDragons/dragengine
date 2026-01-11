@@ -45,7 +45,7 @@ public:
 	/** \brief Creates a new class. */
 	deClassLayerMask(deScriptingDragonScript *ds);
 	/** \brief Cleans up the class. */
-	virtual ~deClassLayerMask();
+	~deClassLayerMask() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -54,7 +54,7 @@ public:
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	
 	/** \brief Creates the class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Retrieves the layer stored in the given real object. */
 	const decLayerMask &GetLayerMask(dsRealObject *myself) const;

@@ -58,7 +58,7 @@ public:
 	
 protected:
 	/** \brief Clean up the sky view. */
-	virtual ~skyeViewSky();
+	~skyeViewSky() override;
 	/*@}*/
 	
 	
@@ -79,10 +79,10 @@ public:
 	void SetSky(skyeSky *sky);
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate(float elapsed);
+	void OnFrameUpdate(float elapsed) override;
 	
 	/** \brief Create canvas. */
-	virtual void CreateCanvas();
+	void CreateCanvas() override;
 	/*@}*/
 };
 

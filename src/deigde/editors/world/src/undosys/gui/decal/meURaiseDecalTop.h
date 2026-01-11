@@ -55,12 +55,12 @@ public:
 	meURaiseDecalTop(meWorld *world, meDecal *decal);
 	
 protected:
-	virtual ~meURaiseDecalTop();
+	~meURaiseDecalTop() override;
 	
 public:
 	// undo and redo operations
-	virtual void Undo();
-	virtual void Redo();
+	void Undo() override;
+	void Redo() override;
 };
 
 // end of include only once

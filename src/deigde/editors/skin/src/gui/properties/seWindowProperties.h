@@ -68,7 +68,7 @@ public:
 	
 protected:
 	/** \brief Cleanup window. */
-	virtual ~seWindowProperties();
+	~seWindowProperties() override;
 	/*@}*/
 	
 	

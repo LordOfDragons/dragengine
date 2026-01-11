@@ -64,7 +64,7 @@ public:
 	
 protected:
 	/** \brief Clean up sector. */
-	virtual ~dedaiHeightTerrainSector();
+	~dedaiHeightTerrainSector() override;
 	/*@}*/
 	
 	

@@ -84,7 +84,7 @@ private:
 public:
 	// constructor, destructor
 	debpColliderVolume(dePhysicsBullet *bullet, deColliderVolume &collider);
-	~debpColliderVolume();
+	~debpColliderVolume() override;
 	// information
 	inline const decVector &GetPredictedDisplacement() const{ return pPredictDisp; }
 	inline const decVector &GetPredictedRotation() const{ return pPredictRot; }

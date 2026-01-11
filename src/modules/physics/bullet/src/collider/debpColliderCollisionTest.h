@@ -55,7 +55,7 @@ public:
 	debpColliderCollisionTest(debpCollider &parentCollider, deColliderCollisionTest &collisionTest);
 	
 	/** \brief Clean up the collider attachment. */
-	virtual ~debpColliderCollisionTest();
+	~debpColliderCollisionTest() override;
 	/*@}*/
 	
 	
@@ -121,7 +121,7 @@ public:
 	 * you have to update the info object with the response to the collision. In
 	 * all other cases you do must not modify the info object.
 	 */
-	virtual void CollisionResponse(deCollider *owner, deCollisionInfo *info);
+	void CollisionResponse(deCollider *owner, deCollisionInfo *info) override;
 	
 	/**
 	 * Determines if a collider can be hit. If this peer is used with a collider
@@ -132,7 +132,7 @@ public:
 	 * \param collider Collider to test.
 	 * \return True if the owner/ray can hit the given collider.
 	 */
-	virtual bool CanHitCollider(deCollider *owner, deCollider *collider);
+	bool CanHitCollider(deCollider *owner, deCollider *collider) override;
 	/*@}*/
 };
 

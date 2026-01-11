@@ -66,7 +66,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~meWPSensors();
+	~meWPSensors() override;
 	/*@}*/
 	
 	

@@ -108,7 +108,7 @@ public:
 	
 protected:
 	/** Clean up component texture. */
-	virtual ~deoglRComponentTexture();
+	~deoglRComponentTexture() override;
 	/*@}*/
 	
 	

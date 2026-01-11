@@ -54,7 +54,7 @@ public:
 		decMemoryFile *verify, const deSkinPropertyConstructed &property);
 	
 	/** Clean up visitor. */
-	virtual ~deoglSCConstructedDefinition();
+	~deoglSCConstructedDefinition() override;
 	/*@}*/
 	
 	
@@ -70,16 +70,16 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** Visit group node. */
-	virtual void VisitGroup(deSkinPropertyNodeGroup &node);
+	void VisitGroup(deSkinPropertyNodeGroup &node) override;
 	
 	/** Visit image node. */
-	virtual void VisitImage(deSkinPropertyNodeImage &node);
+	void VisitImage(deSkinPropertyNodeImage &node) override;
 	
 	/** Visit shape node. */
-	virtual void VisitShape(deSkinPropertyNodeShape &node);
+	void VisitShape(deSkinPropertyNodeShape &node) override;
 	
 	/** Visit text node. */
-	virtual void VisitText(deSkinPropertyNodeText &node);
+	void VisitText(deSkinPropertyNodeText &node) override;
 	/*@}*/
 	
 	

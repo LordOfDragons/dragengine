@@ -85,7 +85,7 @@ public:
 	
 protected:
 	/** Clean up prop field type. */
-	virtual ~deoglRPropFieldType();
+	~deoglRPropFieldType() override;
 	/*@}*/
 	
 	

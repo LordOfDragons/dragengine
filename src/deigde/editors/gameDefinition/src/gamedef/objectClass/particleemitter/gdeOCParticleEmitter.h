@@ -90,7 +90,7 @@ public:
 	
 	/** \brief Clean up particle emitter. */
 protected:
-	virtual ~gdeOCParticleEmitter();
+	~gdeOCParticleEmitter() override;
 public:
 	/*@}*/
 	

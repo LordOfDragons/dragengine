@@ -52,7 +52,7 @@ public:
 	
 	/** \brief Clean up listener. */
 protected:
-	virtual ~projWindowMainListener();
+	~projWindowMainListener() override;
 public:
 	/*@}*/
 	

@@ -85,7 +85,7 @@ public:
 	
 protected:
 	/** \brief Clean up class navigation blocker. */
-	virtual ~igdeGDCNavigationBlocker();
+	~igdeGDCNavigationBlocker() override;
 	/*@}*/
 	
 	

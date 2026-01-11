@@ -176,7 +176,7 @@ public:
 	igdeActionContextMenu("", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
 	description), pPanel(panel){}
 	
-	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
+	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override{
 		ceConversation * const conversation = pPanel.GetConversation();
 		if(conversation){
 			AddContextMenuEntries(contextMenu, conversation);
@@ -210,7 +210,7 @@ public:
 	typedef deTObjectReference<cBaseComboBoxListener> Ref;
 	cBaseComboBoxListener(ceWPConversation &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversation * const conversation = pPanel.GetConversation();
 		if(conversation){
 			igdeUndo::Ref undo(OnChanged(*comboBox, conversation));
@@ -231,7 +231,7 @@ public:
 	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(ceWPConversation &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversation * const conversation = pPanel.GetConversation();
 		if(conversation){
 			igdeUndo::Ref undo(OnChanged(*textField, conversation));
@@ -252,7 +252,7 @@ public:
 	typedef deTObjectReference<cBaseEditVectorListener> Ref;
 	cBaseEditVectorListener(ceWPConversation &panel) : pPanel(panel){}
 	
-	virtual void OnVectorChanged(igdeEditVector *editVector){
+	void OnVectorChanged(igdeEditVector *editVector) override{
 		ceConversation * const conversation = pPanel.GetConversation();
 		if(conversation){
 			igdeUndo::Ref undo(OnChanged(*editVector, conversation));
@@ -407,7 +407,7 @@ public:
 	typedef deTObjectReference<cListImportConvo> Ref;
 	cListImportConvo(ceWPConversation &panel) : pPanel(panel){}
 	
-	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
+	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		helper.MenuCommand(menu, cActionImportConvoMoveUp::Ref::New(pPanel));
 		helper.MenuCommand(menu, cActionImportConvoMoveDown::Ref::New(pPanel));
@@ -507,7 +507,7 @@ public:
 	typedef deTObjectReference<cActionTargetMenu> Ref;
 	cActionTargetMenu(ceWPConversation &panel) : cBaseActionContextMenu(panel, "Target menu"){}
 	
-	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu, ceConversation*){
+	void AddContextMenuEntries(igdeMenuCascade &contextMenu, ceConversation*) override{
 		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
 		helper.MenuCommand(contextMenu, cActionTargetAdd::Ref::New(pPanel));
 		helper.MenuCommand(contextMenu, cActionTargetRemove::Ref::New(pPanel));
@@ -698,7 +698,7 @@ public:
 	typedef deTObjectReference<cActionCameraShotMenu> Ref;
 	cActionCameraShotMenu(ceWPConversation &panel) : cBaseActionContextMenu(panel, "Camera Shot menu"){}
 	
-	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu, ceConversation*){
+	void AddContextMenuEntries(igdeMenuCascade &contextMenu, ceConversation*) override{
 		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
 		helper.MenuCommand(contextMenu, cActionCameraShotAdd::Ref::New(pPanel));
 		helper.MenuCommand(contextMenu, cActionCameraShotRemove::Ref::New(pPanel));
@@ -1136,7 +1136,7 @@ public:
 	typedef deTObjectReference<cActionGestureMenu> Ref;
 	cActionGestureMenu(ceWPConversation &panel) : cBaseActionContextMenu(panel, "Gesture menu"){}
 	
-	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu, ceConversation*){
+	void AddContextMenuEntries(igdeMenuCascade &contextMenu, ceConversation*) override{
 		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
 		helper.MenuCommand(contextMenu, cActionGestureAdd::Ref::New(pPanel));
 		helper.MenuCommand(contextMenu, cActionGestureRemove::Ref::New(pPanel));
@@ -1280,7 +1280,7 @@ public:
 	typedef deTObjectReference<cActionFacePoseMenu> Ref;
 	cActionFacePoseMenu(ceWPConversation &panel) : cBaseActionContextMenu(panel, "Face Pose menu"){}
 	
-	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu, ceConversation*){
+	void AddContextMenuEntries(igdeMenuCascade &contextMenu, ceConversation*) override{
 		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
 		helper.MenuCommand(contextMenu, cActionFacePoseAdd::Ref::New(pPanel));
 		helper.MenuCommand(contextMenu, cActionFacePoseRemove::Ref::New(pPanel));
@@ -1366,7 +1366,7 @@ public:
 	cActionFacePoseControllerMenu(ceWPConversation &panel) :
 	cBaseActionContextMenu(panel, "Face Pose Controller menu"){}
 	
-	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu, ceConversation*){
+	void AddContextMenuEntries(igdeMenuCascade &contextMenu, ceConversation*) override{
 		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
 		helper.MenuCommand(contextMenu, cActionFacePoseControllerAdd::Ref::New(pPanel));
 		helper.MenuCommand(contextMenu, cActionFacePoseControllerRemove::Ref::New(pPanel));

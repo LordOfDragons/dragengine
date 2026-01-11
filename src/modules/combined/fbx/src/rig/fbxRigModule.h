@@ -45,7 +45,7 @@ public:
 	fbxRigModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~fbxRigModule();
+	~fbxRigModule() override;
 	/*@}*/
 	
 	
@@ -53,10 +53,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Load rig. */
-	virtual void LoadRig(decBaseFileReader &reader, deRig &rig);
+	void LoadRig(decBaseFileReader &reader, deRig &rig) override;
 	
 	/** \brief Save rig. */
-	virtual void SaveRig(decBaseFileWriter &writer, const deRig &rig);
+	void SaveRig(decBaseFileWriter &writer, const deRig &rig) override;
 	/*@}*/
 	
 	

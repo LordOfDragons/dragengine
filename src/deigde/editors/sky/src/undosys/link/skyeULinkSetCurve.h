@@ -56,7 +56,7 @@ public:
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~skyeULinkSetCurve();
+	~skyeULinkSetCurve() override;
 	/*@}*/
 	
 	
@@ -68,10 +68,10 @@ public:
 	void SetNewCurve(const decCurveBezier &curve);
 	
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

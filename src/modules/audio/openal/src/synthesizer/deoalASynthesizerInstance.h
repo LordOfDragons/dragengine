@@ -63,7 +63,7 @@ public:
 	
 protected:
 	/** \brief Clean up microphone. */
-	virtual ~deoalASynthesizerInstance();
+	~deoalASynthesizerInstance() override;
 	/*@}*/
 	
 	

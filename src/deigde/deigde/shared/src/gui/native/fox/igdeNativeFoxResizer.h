@@ -55,7 +55,7 @@ public:
 	igdeNativeFoxResizer(FXComposite *parent, FXObject *target, FXSelector selector);
 	
 	/** \brief Clean up resizer. */
-	virtual ~igdeNativeFoxResizer();
+	~igdeNativeFoxResizer() override;
 	/*@}*/
 	
 	
@@ -63,7 +63,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Default height. */
-	virtual FXint getDefaultHeight();
+	FXint getDefaultHeight() override;
 	
 	/** \brief Dragged distance from SEL_COMMAND event data object. */
 	static int SelCommandDraggedDistance(void *data);

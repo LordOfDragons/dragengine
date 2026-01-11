@@ -55,16 +55,16 @@ public:
 	ceUCCVarSetVariable(ceConversationTopic *topic, ceConversationAction *action, ceCConditionVariable *condition, const char *newVariable);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCCVarSetVariable();
+	~ceUCCVarSetVariable() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

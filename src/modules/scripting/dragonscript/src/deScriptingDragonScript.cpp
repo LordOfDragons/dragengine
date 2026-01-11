@@ -1649,7 +1649,7 @@ public:
 	deScriptingDragonScriptAddSource(dsPackage &package) : pPackage(package){
 	}
 	
-	virtual bool VisitFile(const deVirtualFileSystem &vfs, const decPath &path){
+	bool VisitFile(const deVirtualFileSystem &vfs, const decPath &path) override{
 		if(!path.GetLastComponent().MatchesPattern("*.ds")){
 			return true;
 		}
@@ -1669,7 +1669,7 @@ public:
 		return true;
 	}
 	
-	virtual bool VisitDirectory(const deVirtualFileSystem &vfs, const decPath &path){
+	bool VisitDirectory(const deVirtualFileSystem &vfs, const decPath &path) override{
 		vfs.SearchFiles(path, *this);
 		return true;
 	}

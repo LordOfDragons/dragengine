@@ -65,7 +65,7 @@ public:
 	typedef deTObjectReference<cSpinPoint> Ref;
 	cSpinPoint(reWPPanelShapeHull &panel) : pPanel(panel){}
 	
-	virtual void OnValueChanged(igdeSpinTextField*){
+	void OnValueChanged(igdeSpinTextField*) override{
 		pPanel.UpdatePoint();
 	}
 };
@@ -130,7 +130,7 @@ public:
 	typedef deTObjectReference<cEditPoint> Ref;
 	cEditPoint(reWPPanelShapeHull &panel) : pPanel(panel){}
 	
-	virtual void OnVectorChanged(igdeEditVector *editVector){
+	void OnVectorChanged(igdeEditVector *editVector) override{
 		reRig * const rig = pPanel.GetRig();
 		reRigShapeHull * const hull = (reRigShapeHull*)pPanel.GetShape();
 		const int index = pPanel.GetSelectedPoint();

@@ -50,16 +50,16 @@ public:
 	aeURuleAnimToggleEnableRotation(aeRuleAnimation *rule);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleAnimToggleEnableRotation();
+	~aeURuleAnimToggleEnableRotation() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

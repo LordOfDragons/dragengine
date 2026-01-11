@@ -75,7 +75,7 @@ public:
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~seUPropertyNodesRotate();
+	~seUPropertyNodesRotate() override;
 	/*@}*/
 	
 	
@@ -87,10 +87,10 @@ public:
 	void SetTarget(const decVector2 &target);
 	
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

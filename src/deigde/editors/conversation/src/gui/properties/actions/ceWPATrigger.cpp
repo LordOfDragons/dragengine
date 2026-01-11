@@ -71,7 +71,7 @@ public:
 	typedef deTObjectReference<cTextName> Ref;
 	cTextName(ceWPATrigger &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCATrigger * const action = pPanel.GetAction();
 		if(!topic || !action || textField->GetText() == action->GetName()){
@@ -90,7 +90,7 @@ public:
 	typedef deTObjectReference<cComboAction> Ref;
 	cComboAction(ceWPATrigger &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCATrigger * const action = pPanel.GetAction();
 		if(!topic || !action || !comboBox->GetSelectedItem()){

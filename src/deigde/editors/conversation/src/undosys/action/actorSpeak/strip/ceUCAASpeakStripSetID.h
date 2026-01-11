@@ -55,7 +55,7 @@ public:
 	ceUCAASpeakStripSetID(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *strip, const char *newID);
 	/** \brief Cleans up the undo object. */
 protected:
-	virtual ~ceUCAASpeakStripSetID();
+	~ceUCAASpeakStripSetID() override;
 public:
 	/*@}*/
 	
@@ -63,9 +63,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

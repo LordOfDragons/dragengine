@@ -57,19 +57,19 @@ public:
 	pModifySize(modifySize){
 	}
 	
-	virtual void VisitShapeSphere(decShapeSphere &sphere){
+	void VisitShapeSphere(decShapeSphere &sphere) override{
 		if(pModifySize){
 			sphere.SetRadius(sphere.GetRadius() * (pFactors.x + pFactors.y + pFactors.z) / 3.0f);
 		}
 	}
 	
-	virtual void VisitShapeBox(decShapeBox &box){
+	void VisitShapeBox(decShapeBox &box) override{
 		if(pModifySize){
 			box.SetHalfExtends(box.GetHalfExtends().Multiply(pFactors));
 		}
 	}
 	
-	virtual void VisitShapeCylinder(decShapeCylinder &cylinder){
+	void VisitShapeCylinder(decShapeCylinder &cylinder) override{
 		if(pModifySize){
 			const float factorRadius = (pFactors.x + pFactors.z) / 2.0f;
 			cylinder.SetTopRadius(cylinder.GetTopRadius() * factorRadius);
@@ -78,7 +78,7 @@ public:
 		}
 	}
 	
-	virtual void VisitShapeCapsule(decShapeCapsule &capsule){
+	void VisitShapeCapsule(decShapeCapsule &capsule) override{
 		if(pModifySize){
 			const float factorRadius = (pFactors.x + pFactors.z) / 2.0f;
 			capsule.SetTopRadius(capsule.GetTopRadius() * factorRadius);

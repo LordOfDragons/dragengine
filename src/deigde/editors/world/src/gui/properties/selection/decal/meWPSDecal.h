@@ -94,7 +94,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~meWPSDecal();
+	~meWPSDecal() override;
 	/*@}*/
 	
 	

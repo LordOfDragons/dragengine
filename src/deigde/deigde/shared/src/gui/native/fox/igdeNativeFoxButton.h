@@ -60,7 +60,7 @@ public:
 		int layoutFlags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxButton();
+	~igdeNativeFoxButton() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeFoxButton* CreateNativeWidget(igdeButton &owner);
@@ -76,7 +76,7 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual FXbool canFocus() const;
+	FXbool canFocus() const override;
 	
 	virtual void Focus();
 	virtual void UpdateStyle();

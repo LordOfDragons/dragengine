@@ -48,7 +48,7 @@ public:
 	deglConfigXML(deLogger *logger, const char *loggerSource);
 	
 	/** Clean up configuration xml read/save. */
-	virtual ~deglConfigXML();
+	~deglConfigXML() override;
 	/*@}*/
 	
 	

@@ -72,7 +72,7 @@ public:
 	
 protected:
 	/** Clean up render dynamic skin renderable. */
-	virtual ~deoglRDSRenderable();
+	~deoglRDSRenderable() override;
 	/*@}*/
 	
 	

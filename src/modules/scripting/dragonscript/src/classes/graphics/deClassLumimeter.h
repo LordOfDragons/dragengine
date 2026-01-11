@@ -54,10 +54,10 @@ private:
 public:
 	// constructor
 	deClassLumimeter(deEngine *gameEngine, deScriptingDragonScript *scrMgr);
-	virtual ~deClassLumimeter();
+	~deClassLumimeter() override;
 	
 	// internal functions
-	virtual void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	deLumimeter *GetLumimeter(dsRealObject *myself) const;
 	void PushLumimeter(dsRunTime *rt, deLumimeter *lumimeter);

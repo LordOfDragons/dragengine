@@ -69,7 +69,7 @@ public:
 	
 protected:
 	/** \brief Clean up snap point. */
-	virtual ~meObjectSnapPoint();
+	~meObjectSnapPoint() override;
 	
 public:
 	/*@}*/

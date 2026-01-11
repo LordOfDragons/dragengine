@@ -111,7 +111,7 @@ public:
 	
 	/** \brief Clean up font. */
 protected:
-	virtual ~feFont();
+	~feFont() override;
 public:
 	/*@}*/
 	
@@ -212,10 +212,10 @@ public:
 	
 	
 	/** \brief Notify listeners the changed or saved state changed. */
-	virtual void NotifyStateChanged();
+	void NotifyStateChanged() override;
 	
 	/** \brief Notify listeners undo system changed. */
-	virtual void NotifyUndoChanged();
+	void NotifyUndoChanged() override;
 	
 	/** \brief Notify all that the element or work mode changed. */
 	void NotifyModeChanged();

@@ -55,7 +55,7 @@ protected:
 	ceUCAASpeakStripSetPause(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *strip, float newPause);
 	
 	/** \brief Cleans up the undo object. */
-	virtual ~ceUCAASpeakStripSetPause();
+	~ceUCAASpeakStripSetPause() override;
 	/*@}*/
 	
 public:
@@ -65,9 +65,9 @@ public:
 	void SetNewPause(float pause);
 	
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/** \brief Progressive redo action. */
 	void ProgressiveRedo();
 	/*@}*/

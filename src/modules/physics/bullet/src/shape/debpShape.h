@@ -74,7 +74,7 @@ public:
 	
 protected:
 	/** \brief Clean up shape. */
-	virtual ~debpShape();
+	~debpShape() override;
 	/*@}*/
 	
 	

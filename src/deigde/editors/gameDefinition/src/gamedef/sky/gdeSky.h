@@ -74,7 +74,7 @@ public:
 	
 	/** \brief Clean up sky. */
 protected:
-	virtual ~gdeSky();
+	~gdeSky() override;
 public:
 	/*@}*/
 	

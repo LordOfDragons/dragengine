@@ -55,7 +55,7 @@ public:
 	ceStrip(const ceStrip &strip);
 	/** \brief Cleans up the strip. */
 protected:
-	virtual ~ceStrip();
+	~ceStrip() override;
 public:
 	/*@}*/
 	

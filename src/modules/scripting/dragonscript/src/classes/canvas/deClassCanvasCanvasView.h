@@ -48,7 +48,7 @@ public:
 	deClassCanvasCanvasView(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
-	virtual ~deClassCanvasCanvasView();
+	~deClassCanvasCanvasView() override;
 	/*@}*/
 	
 	
@@ -60,7 +60,7 @@ public:
 	inline const deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create script class members. */
-	virtual void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/**
 	 * \brief Retrieve canvas canvas view from a script object.

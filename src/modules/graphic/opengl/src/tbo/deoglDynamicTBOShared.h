@@ -62,7 +62,7 @@ public:
 	
 protected:
 	/** Cleans up shared dynamic TBO. */
-	virtual ~deoglDynamicTBOShared();
+	~deoglDynamicTBOShared() override;
 	/*@}*/
 	
 	

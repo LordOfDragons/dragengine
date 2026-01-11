@@ -42,7 +42,7 @@ public:
 	syneIGDEModule(igdeEnvironment &environment);
 	
 	/** \brief Clean up module. */
-	virtual ~syneIGDEModule();
+	~syneIGDEModule() override;
 	/*@}*/
 	
 	
@@ -50,7 +50,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Start module. */
-	virtual void Start();
+	void Start() override;
 	/*@}*/
 };
 

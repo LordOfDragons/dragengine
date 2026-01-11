@@ -46,7 +46,7 @@ public:
 	
 protected:
 	/** Clean up component listener. */
-	virtual ~deoglComponentListener();
+	~deoglComponentListener() override;
 	/*@}*/
 	
 	

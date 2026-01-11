@@ -62,7 +62,7 @@ public:
 	
 	/** \brief Clean up player choice box option. */
 protected:
-	virtual ~cePCBOption();
+	~cePCBOption() override;
 public:
 	/*@}*/
 	

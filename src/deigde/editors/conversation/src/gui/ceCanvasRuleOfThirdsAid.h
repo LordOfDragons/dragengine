@@ -52,7 +52,7 @@ public:
 	
 	/** \brief Clean up canvas. */
 protected:
-	~ceCanvasRuleOfThirdsAid();
+	~ceCanvasRuleOfThirdsAid() override;
 public:
 	/*@}*/
 	

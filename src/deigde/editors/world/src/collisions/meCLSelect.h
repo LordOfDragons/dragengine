@@ -81,7 +81,7 @@ public:
 	meCLSelect(meWorld &world);
 	
 	/** \brief Clean up listener. */
-	virtual ~meCLSelect();
+	~meCLSelect() override;
 	/*@}*/
 	
 	
@@ -175,13 +175,13 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Collision response. */
-	virtual void CollisionResponse(deCollider *owner, deCollisionInfo *info);
+	void CollisionResponse(deCollider *owner, deCollisionInfo *info) override;
 	
 	/** \brief Collider can be hit. */
-	virtual bool CanHitCollider(deCollider *owner, deCollider *collider);
+	bool CanHitCollider(deCollider *owner, deCollider *collider) override;
 	
 	/** \brief Collider changed during physics processing. */
-	virtual void ColliderChanged(deCollider *owner);
+	void ColliderChanged(deCollider *owner) override;
 	/*@}*/
 };
 

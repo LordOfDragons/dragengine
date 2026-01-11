@@ -87,7 +87,7 @@ public:
 	
 	/** \brief Clean up conversation action. */
 protected:
-	virtual ~ceConversationCondition();
+	~ceConversationCondition() override;
 public:
 	/*@}*/
 	

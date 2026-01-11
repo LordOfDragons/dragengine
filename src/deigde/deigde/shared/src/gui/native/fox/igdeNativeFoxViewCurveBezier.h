@@ -123,7 +123,7 @@ public:
 		int layoutFlags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxViewCurveBezierView();
+	~igdeNativeFoxViewCurveBezierView() override;
 	/*@}*/
 	
 	
@@ -173,8 +173,8 @@ public:
 	static int ViewCurveBezierFlags(const igdeViewCurveBezier &owner);
 	static igdeFont *ViewCurveBezierFont(const igdeViewCurveBezier &owner, const igdeGuiTheme &guitheme);
 	
-	virtual FXint getDefaultWidth();
-	virtual FXint getDefaultHeight();
+	FXint getDefaultWidth() override;
+	FXint getDefaultHeight() override;
 	/*@}*/
 	
 	
@@ -227,7 +227,7 @@ public:
 		const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxViewCurveBezier();
+	~igdeNativeFoxViewCurveBezier() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeFoxViewCurveBezier* CreateNativeWidget(igdeViewCurveBezier &owner);

@@ -108,7 +108,7 @@ public:
 	
 protected:
 	/** Clean up panel. */
-	virtual ~seWPTexture();
+	~seWPTexture() override;
 	/*@}*/
 	
 	

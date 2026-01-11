@@ -76,7 +76,7 @@ public:
 	typedef deTObjectReference<cComboName> Ref;
 	cComboName(ceWPACameraShot &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCACameraShot * const action = pPanel.GetAction();
 		if(!topic || !action  || comboBox->GetText() == action->GetName()){
@@ -95,7 +95,7 @@ public:
 	typedef deTObjectReference<cTextDuration> Ref;
 	cTextDuration(ceWPACameraShot &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCACameraShot * const action = pPanel.GetAction();
 		const float duration = textField->GetFloat();
@@ -115,7 +115,7 @@ public:
 	typedef deTObjectReference<cComboCameraTarget> Ref;
 	cComboCameraTarget(ceWPACameraShot &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCACameraShot * const action = pPanel.GetAction();
 		if(!topic || !action  || comboBox->GetText() == action->GetCameraTarget()){
@@ -134,7 +134,7 @@ public:
 	typedef deTObjectReference<cComboLookAtTarget> Ref;
 	cComboLookAtTarget(ceWPACameraShot &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCACameraShot * const action = pPanel.GetAction();
 		if(!topic || !action  || comboBox->GetText() == action->GetLookAtTarget()){

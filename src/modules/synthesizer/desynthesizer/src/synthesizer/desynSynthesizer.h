@@ -75,7 +75,7 @@ public:
 	desynSynthesizer(deDESynthesizer &module, deSynthesizer &synthesizer);
 	
 	/** \brief Clean up synthesizer peer. */
-	virtual ~desynSynthesizer();
+	~desynSynthesizer() override;
 	/*@}*/
 	
 	
@@ -163,16 +163,16 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Play time changed. */
-	virtual void ParametersChanged();
+	void ParametersChanged() override;
 	
 	/** \brief Controllers changed. */
-	virtual void ControllersChanged();
+	void ControllersChanged() override;
 	
 	/** \brief Links changed. */
-	virtual void LinksChanged();
+	void LinksChanged() override;
 	
 	/** \brief Sources changed. */
-	virtual void SourcesChanged();
+	void SourcesChanged() override;
 	/*@}*/
 	
 	

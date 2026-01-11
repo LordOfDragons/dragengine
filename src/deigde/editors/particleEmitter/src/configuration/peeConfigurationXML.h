@@ -47,7 +47,7 @@ public:
 	/** \brief Create a new configuration xml read/save. */
 	peeConfigurationXML(deLogger *logger, const char *loggerSource);
 	/** \brief Clean up the configuration xml read/save. */
-	virtual ~peeConfigurationXML();
+	~peeConfigurationXML() override;
 	/*@}*/
 	
 	/** \name Management */

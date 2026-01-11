@@ -112,7 +112,7 @@ public:
 	
 protected:
 	/** \brief Clean up game definition class light. */
-	virtual ~igdeGDCLight();
+	~igdeGDCLight() override;
 	/*@}*/
 	
 	

@@ -79,7 +79,7 @@ public:
 	
 protected:
 	/** \brief Clean up object texture. */
-	virtual ~meObjectTexture();
+	~meObjectTexture() override;
 	
 public:
 	/*@}*/

@@ -52,7 +52,7 @@ public:
 	
 protected:
 	/** Clean up listener. */
-	virtual ~deglWindowLoggerListener();
+	~deglWindowLoggerListener() override;
 	/*@}*/
 	
 	
@@ -64,13 +64,13 @@ public:
 	 * Message added.
 	 * \note Histroy mutex is locked while this method is called.
 	 */
-	virtual void MessageAdded(const delLoggerHistory &history, const delLoggerHistoryEntry &entry);
+	void MessageAdded(const delLoggerHistory &history, const delLoggerHistoryEntry &entry) override;
 	
 	/**
 	 * History cleared.
 	 * \note Histroy mutex is locked while this method is called.
 	 */
-	virtual void HistoryCleared(const delLoggerHistory &history);
+	void HistoryCleared(const delLoggerHistory &history) override;
 	/*@}*/
 };
 

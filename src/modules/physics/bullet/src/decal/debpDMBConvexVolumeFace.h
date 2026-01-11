@@ -47,7 +47,7 @@ public:
 	/** Creates a new decal mesh builder convex volume face. */
 	debpDMBConvexVolumeFace();
 	/** Cleans up the decal mesh builder convex volume face. */
-	virtual ~debpDMBConvexVolumeFace();
+	~debpDMBConvexVolumeFace() override;
 	/*@}*/
 	
 	/** @name Management */

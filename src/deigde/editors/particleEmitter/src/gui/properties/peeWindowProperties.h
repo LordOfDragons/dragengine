@@ -65,7 +65,7 @@ public:
 	
 protected:
 	/** \brief Clean up the window. */
-	virtual ~peeWindowProperties();
+	~peeWindowProperties() override;
 	/*@}*/
 	
 	

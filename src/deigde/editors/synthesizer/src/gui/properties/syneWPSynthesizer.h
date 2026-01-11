@@ -78,7 +78,7 @@ public:
 	
 protected:
 	/** \brief Clean up properties panel. */
-	virtual ~syneWPSynthesizer();
+	~syneWPSynthesizer() override;
 	/*@}*/
 	
 	

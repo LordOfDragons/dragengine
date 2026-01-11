@@ -65,7 +65,7 @@ public:
 	
 protected:
 	/** \brief Clean up link. */
-	virtual ~igdeGDClassInherit();
+	~igdeGDClassInherit() override;
 	/*@}*/
 	
 	

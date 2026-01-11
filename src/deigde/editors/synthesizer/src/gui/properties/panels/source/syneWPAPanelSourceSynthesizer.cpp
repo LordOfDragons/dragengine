@@ -65,7 +65,7 @@ public:
 	typedef deTObjectReference<cPathSynthesizer> Ref;
 	cPathSynthesizer(syneWPAPanelSourceSynthesizer &panel) : pPanel(panel){}
 	
-	virtual void OnEditPathChanged(igdeEditPath * editPath){
+	void OnEditPathChanged(igdeEditPath * editPath) override{
 		syneSourceSynthesizer * const source = (syneSourceSynthesizer*)pPanel.GetSource();
 		if(!source || source->GetPathSynthesizer() == editPath->GetPath()){
 			return;
@@ -83,7 +83,7 @@ public:
 	typedef deTObjectReference<cComboConTarget> Ref;
 	cComboConTarget(syneWPAPanelSourceSynthesizer &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox*){
+	void OnTextChanged(igdeComboBox*) override{
 		syneSourceSynthesizer * const source = (syneSourceSynthesizer*)pPanel.GetSource();
 		if(source){
 			pPanel.UpdateConnection();
@@ -147,7 +147,7 @@ public:
 	typedef deTObjectReference<cComboController> Ref;
 	cComboController(syneWPAPanelSourceSynthesizer &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		syneSourceSynthesizer * const source = (syneSourceSynthesizer*)pPanel.GetSource();
 		const int target = pPanel.GetCBControllerTarget();
 		if(!source || target == -1 || pPanel.GetPreventUpdate()){

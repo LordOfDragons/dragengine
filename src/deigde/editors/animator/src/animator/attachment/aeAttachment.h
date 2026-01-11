@@ -77,7 +77,7 @@ public:
 	
 	/** Clean up attachment. */
 protected:
-	virtual ~aeAttachment();
+	~aeAttachment() override;
 public:
 	/*@}*/
 	

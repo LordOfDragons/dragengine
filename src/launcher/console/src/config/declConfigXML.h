@@ -47,7 +47,7 @@ public:
 	/** Creates a new configuration xml read/save. */
 	declConfigXML(deLogger *logger, const char *loggerSource);
 	/** Cleans up the configuration xml read/save. */
-	virtual ~declConfigXML();
+	~declConfigXML() override;
 	/*@}*/
 	
 	/** @name Management */

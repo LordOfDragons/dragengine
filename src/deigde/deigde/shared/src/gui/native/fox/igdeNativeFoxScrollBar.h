@@ -58,7 +58,7 @@ public:
 	igdeNativeFoxScrollBar(igdeScrollBar &owner, FXComposite *parent, int layoutFlags);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxScrollBar();
+	~igdeNativeFoxScrollBar() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeFoxScrollBar* CreateNativeWidget(igdeScrollBar &owner);
@@ -74,7 +74,7 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual FXbool canFocus() const;
+	FXbool canFocus() const override;
 	
 	virtual void UpdateRange();
 	virtual void UpdateValue();

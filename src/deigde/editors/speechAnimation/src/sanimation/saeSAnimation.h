@@ -101,7 +101,7 @@ public:
 	saeSAnimation(igdeEnvironment *environment);
 	/** Cleans up the speech animation. */
 protected:
-	virtual ~saeSAnimation();
+	~saeSAnimation() override;
 public:
 	/*@}*/
 	
@@ -214,9 +214,9 @@ public:
 	void RemoveListener(saeSAnimationListener *listener);
 	
 	/** Notifies all listeners that the changed or saved state changed. */
-	virtual void NotifyStateChanged();
+	void NotifyStateChanged() override;
 	/** Notifies all listeners that the undo system changed. */
-	virtual void NotifyUndoChanged();
+	void NotifyUndoChanged() override;
 	/** Notifies all that view properties changed. */
 	void NotifyViewChanged();
 	/** Notifies all that the speech animation changed. */

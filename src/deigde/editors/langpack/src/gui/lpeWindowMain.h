@@ -107,7 +107,7 @@ public:
 	
 protected:
 	/** Clean up window. */
-	virtual ~lpeWindowMain();
+	~lpeWindowMain() override;
 	/*@}*/
 	
 	
@@ -171,23 +171,23 @@ public:
 	void SelectNextMissingEntry();
 	
 	/** List of unsaved open documents. */
-	void GetChangedDocuments(decStringList &list);
+	void GetChangedDocuments(decStringList &list) override;
 	
 	/**
 	 * Requests a document to be loaded.
 	 */
-	virtual void LoadDocument(const char *filename);
+	void LoadDocument(const char *filename) override;
 	
 	/** Request document to be saved. */
-	bool SaveDocument(const char *filename);
+	bool SaveDocument(const char *filename) override;
 	
 	/**
 	 * Recent files changed.
 	 */
-	virtual void RecentFilesChanged();
+	void RecentFilesChanged() override;
 	
 	/** Game project changed. */
-	void OnGameProjectChanged();
+	void OnGameProjectChanged() override;
 	/*@}*/
 	
 	

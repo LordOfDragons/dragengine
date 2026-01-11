@@ -50,7 +50,7 @@ public:
 	deClassSkyLayer(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
-	virtual ~deClassSkyLayer();
+	~deClassSkyLayer() override;
 	/*@}*/
 	
 	
@@ -61,7 +61,7 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Creates class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Push layer. */
 	void PushLayer(dsRunTime *rt, deSky *sky, int index);

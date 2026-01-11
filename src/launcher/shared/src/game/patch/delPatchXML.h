@@ -42,7 +42,7 @@ public:
 	delPatchXML(deLogger *logger, const char *loggerSource);
 	
 	/** \brief Clean up loader. */
-	virtual ~delPatchXML();
+	~delPatchXML() override;
 	/*@}*/
 	
 	

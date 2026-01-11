@@ -53,10 +53,10 @@ private:
 public:
 	// constructor
 	deClassMicrophone(deEngine *gameEngine, deScriptingDragonScript *scrMgr);
-	~deClassMicrophone();
+	~deClassMicrophone() override;
 	
 	// internal functions
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	deMicrophone *GetMicrophone(dsRealObject *myself) const;
 	void PushMicrophone(dsRunTime *rt, deMicrophone *camera);
 	inline deEngine *GetGameEngine() const{ return pGameEngine; }

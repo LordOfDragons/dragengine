@@ -63,7 +63,7 @@ public:
 	meCLInvalidateDecals(meWorld &world);
 	
 	/** \brief Clean visitor. */
-	virtual ~meCLInvalidateDecals();
+	~meCLInvalidateDecals() override;
 	/*@}*/
 	
 	

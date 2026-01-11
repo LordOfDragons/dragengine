@@ -61,7 +61,7 @@ public:
 		const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up text widget. */
-	virtual ~igdeNativeFoxProgressBar();
+	~igdeNativeFoxProgressBar() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeFoxProgressBar* CreateNativeWidget(igdeProgressBar &owner);

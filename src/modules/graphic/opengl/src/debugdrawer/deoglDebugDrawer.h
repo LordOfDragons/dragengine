@@ -54,7 +54,7 @@ public:
 	deoglDebugDrawer(deGraphicOpenGl &ogl, const deDebugDrawer &debugDrawer);
 	
 	/** Clean up peer. */
-	virtual ~deoglDebugDrawer();
+	~deoglDebugDrawer() override;
 	/*@}*/
 	
 	
@@ -81,35 +81,35 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	/** Orientation changed. */
-	virtual void OrientationChanged();
+	void OrientationChanged() override;
 	
 	/** Scaling changed. */
-	virtual void ScalingChanged();
+	void ScalingChanged() override;
 	
 	
 	
 	/** Visibile changed. */
-	virtual void VisibleChanged();
+	void VisibleChanged() override;
 	
 	/** X-Ray changed. */
-	virtual void XRayChanged();
+	void XRayChanged() override;
 	
 	
 	
 	/** Shape edge or fill colors changed. */
-	virtual void ShapeColorChanged();
+	void ShapeColorChanged() override;
 	
 	/** Shape position, orientation or scaling changed. */
-	virtual void ShapeGeometryChanged();
+	void ShapeGeometryChanged() override;
 	
 	/** Shape shapes or faces changed. */
-	virtual void ShapeContentChanged();
+	void ShapeContentChanged() override;
 	
 	/** Shapes have been added or removed. */
-	virtual void ShapeLayoutChanged();
+	void ShapeLayoutChanged() override;
 	/*@}*/
 	
 private:

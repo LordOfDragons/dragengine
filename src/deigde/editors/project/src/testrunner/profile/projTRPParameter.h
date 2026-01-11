@@ -53,7 +53,7 @@ public:
 	
 protected:
 	/** \brief Clean up profile module parameter. */
-	virtual ~projTRPParameter();
+	~projTRPParameter() override;
 	/*@}*/
 	
 	

@@ -57,7 +57,7 @@ protected:
 	public:
 		typedef deTObjectReference<cActionEnableAll> Ref;
 		cActionEnableAll(igdeToggleTags &widget);
-		virtual void OnAction();
+		void OnAction() override;
 	};
 	
 	/** \brief Action disable all tags. */
@@ -68,7 +68,7 @@ protected:
 	public:
 		typedef deTObjectReference<cActionDisableAll> Ref;
 		cActionDisableAll(igdeToggleTags &widget);
-		virtual void OnAction();
+		void OnAction() override;
 	};
 	
 	
@@ -99,7 +99,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~igdeToggleTags();
+	~igdeToggleTags() override;
 	/*@}*/
 	
 	
@@ -185,10 +185,10 @@ public:
 	virtual void OnAction();
 	
 	/** \brief Action parameters changed. */
-	virtual void OnParameterChanged(igdeAction *action);
+	void OnParameterChanged(igdeAction *action) override;
 	
 	/** \brief Action has been destroyed. */
-	virtual void OnDestroyed(igdeAction *action);
+	void OnDestroyed(igdeAction *action) override;
 	
 	
 	

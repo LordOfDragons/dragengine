@@ -44,7 +44,7 @@ private:
 	
 public:
 	igdeNativeFoxContainerFlowY(igdeContainerFlow &powner, FXComposite *pparent, int layoutFlags);
-	virtual ~igdeNativeFoxContainerFlowY();
+	~igdeNativeFoxContainerFlowY() override;
 	
 	inline FXVerticalFrame *GetContainer() const{ return pContainer; }
 	
@@ -148,7 +148,7 @@ private:
 	
 public:
 	igdeNativeFoxContainerFlowX(igdeContainerFlow &powner, FXComposite *pparent, int layoutFlags);
-	virtual ~igdeNativeFoxContainerFlowX();
+	~igdeNativeFoxContainerFlowX() override;
 	
 	inline FXHorizontalFrame *GetContainer() const{ return pContainer; }
 	

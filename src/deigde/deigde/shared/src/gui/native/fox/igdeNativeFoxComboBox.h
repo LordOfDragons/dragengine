@@ -63,7 +63,7 @@ public:
 		const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxComboBox();
+	~igdeNativeFoxComboBox() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeFoxComboBox* CreateNativeWidget(igdeComboBox &owner);

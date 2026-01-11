@@ -54,16 +54,16 @@ public:
 	ceUCAASpeakWordAdd(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *word, int index);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCAASpeakWordAdd();
+	~ceUCAASpeakWordAdd() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

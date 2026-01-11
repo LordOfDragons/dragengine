@@ -56,7 +56,7 @@ public:
 	
 	igdeDEModuleStatus_ComboModule(igdeDEModuleStatus &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox*){
+	void OnTextChanged(igdeComboBox*) override{
 		pPanel.UpdateModuleStatus();
 	}
 };

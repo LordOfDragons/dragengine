@@ -60,7 +60,7 @@ public:
 		const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxLabel();
+	~igdeNativeFoxLabel() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeFoxLabel* CreateNativeWidget(igdeLabel &owner);

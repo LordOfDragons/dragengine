@@ -61,7 +61,7 @@ public:
 	deadContainer(deArchiveDelga &module, decBaseFileReader &reader);
 	
 	/** \brief Clean up module. */
-	virtual ~deadContainer();
+	~deadContainer() override;
 	/*@}*/
 	
 	
@@ -89,7 +89,7 @@ public:
 	 * 
 	 * Path is elative to the root path.
 	 */
-	virtual bool ExistsFile(const decPath &path);
+	bool ExistsFile(const decPath &path) override;
 	
 	/**
 	 * \brief File can be read.
@@ -98,7 +98,7 @@ public:
 	 * is usually the same as of ExistsFile unless permissions prevent
 	 * reading of an existing file.
 	 */
-	virtual bool CanReadFile(const decPath &path);
+	bool CanReadFile(const decPath &path) override;
 	
 	/**
 	 * \brief File can be written.
@@ -110,14 +110,14 @@ public:
 	 * is also allowed in addition to creating a new file. If the
 	 * file exists permission flags can prevent writing.
 	 */
-	virtual bool CanWriteFile(const decPath &path);
+	bool CanWriteFile(const decPath &path) override;
 	
 	/**
 	 * \brief File can be deleted.
 	 * 
 	 * The path is relative to the root path.
 	 */
-	virtual bool CanDeleteFile(const decPath &path);
+	bool CanDeleteFile(const decPath &path) override;
 	
 	/**
 	 * \brief Open file for reading.
@@ -126,7 +126,7 @@ public:
 	 * found an exception is raised. Use the CanReadFile function to
 	 * test if a file can be opened for reading.
 	 */
-	virtual decBaseFileReader::Ref OpenFileForReading(const decPath &path);
+	decBaseFileReader::Ref OpenFileForReading(const decPath &path) override;
 	
 	/**
 	 * \brief Open file for writing.
@@ -137,41 +137,41 @@ public:
 	 * directories have to be created if the CanWriteFile function
 	 * returns true for a file whose parent directory does not exist yet.
 	 */
-	virtual decBaseFileWriter::Ref OpenFileForWriting(const decPath &path);
+	decBaseFileWriter::Ref OpenFileForWriting(const decPath &path) override;
 	
 	/**
 	 * \brief Delete file.
 	 * 
 	 * Path is relative to the root path.
 	 */
-	virtual void DeleteFile(const decPath &path);
+	void DeleteFile(const decPath &path) override;
 	
 	/** \brief Touch file setting the modification time to the current time. */
-	virtual void TouchFile(const decPath &path);
+	void TouchFile(const decPath &path) override;
 	
 	/** \brief Search files. */
-	virtual void SearchFiles(const decPath &directory, deContainerFileSearch &searcher);
+	void SearchFiles(const decPath &directory, deContainerFileSearch &searcher) override;
 	
 	/**
 	 * \brief Type of file.
 	 * 
 	 * If the file does not exist an exception is thrown.
 	 */
-	virtual deVFSContainer::eFileTypes GetFileType(const decPath &path);
+	deVFSContainer::eFileTypes GetFileType(const decPath &path) override;
 	
 	/**
 	 * \brief Size of file.
 	 * 
 	 * If the file does not exist an exception is thrown.
 	 */
-	virtual uint64_t GetFileSize(const decPath &path);
+	uint64_t GetFileSize(const decPath &path) override;
 	
 	/**
 	 * \brief Modification time of file.
 	 * 
 	 * If the file does not exist an exception is thrown.
 	 */
-	virtual TIME_SYSTEM GetFileModificationTime(const decPath &path);
+	TIME_SYSTEM GetFileModificationTime(const decPath &path) override;
 	/*@}*/
 	
 	

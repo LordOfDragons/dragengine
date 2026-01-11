@@ -63,7 +63,7 @@ public:
 	
 protected:
 	/** Clean up space. */
-	virtual ~deoxrActionSet();
+	~deoxrActionSet() override;
 	/*@}*/
 	
 	

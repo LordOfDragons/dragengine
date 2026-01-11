@@ -136,7 +136,7 @@ public:
 	
 protected:
 	/** Clean up panel. */
-	virtual ~ceWPTopic();
+	~ceWPTopic() override;
 	/*@}*/
 	
 	

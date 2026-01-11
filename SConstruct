@@ -838,6 +838,15 @@ parent_report['version'] = parent_env['version']
 
 
 
+# create compile commands database
+parent_env.Tool('compilation_db')
+parent_env['COMPILATIONDB_USE_ABSPATH'] = True
+targetCompileDb = parent_env.CompilationDatabase('compile_commands.json')
+
+# clean the database
+parent_env.AddPostAction(targetCompileDb,
+	'sed -i "s/-fsanitize=bounds-strict//g" compile_commands.json')
+
 # external libraries
 extdirs = []
 extdirs.append('extern/zlib')

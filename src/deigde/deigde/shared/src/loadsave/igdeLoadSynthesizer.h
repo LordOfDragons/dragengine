@@ -60,7 +60,7 @@ public:
 	igdeLoadSynthesizer(igdeEnvironment &environment, deLogger *logger, const char *loggerSource);
 	
 	/** \brief Clean up load object. */
-	~igdeLoadSynthesizer();
+	~igdeLoadSynthesizer() override;
 	/*@}*/
 	
 	

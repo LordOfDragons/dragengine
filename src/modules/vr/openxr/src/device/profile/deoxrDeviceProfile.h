@@ -110,7 +110,7 @@ public:
 	
 protected:
 	/** Clean up device profile. */
-	virtual ~deoxrDeviceProfile();
+	~deoxrDeviceProfile() override;
 	/*@}*/
 	
 	

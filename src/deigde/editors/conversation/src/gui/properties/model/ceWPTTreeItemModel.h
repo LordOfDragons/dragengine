@@ -124,7 +124,7 @@ public:
 	
 protected:
 	/** Clean up tree item model. */
-	virtual ~ceWPTTreeItemModel();
+	~ceWPTTreeItemModel() override;
 	/*@}*/
 	
 	

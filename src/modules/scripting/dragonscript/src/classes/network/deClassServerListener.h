@@ -47,10 +47,10 @@ private:
 public:
 	// constructor
 	deClassServerListener(deEngine *gameEngine, deScriptingDragonScript *scrMgr);
-	~deClassServerListener();
+	~deClassServerListener() override;
 	// internal functions
 	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	inline deEngine *GetGameEngine() const{ return pGameEngine; }
 	
 	inline deClassConnection *GetClassConnection() const{ return pClsCon; }

@@ -58,16 +58,16 @@ public:
 	aeULinkSetController(aeLink *link, aeController *newController);
 protected:
 	/** Clean up undo. */
-	virtual ~aeULinkSetController();
+	~aeULinkSetController() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

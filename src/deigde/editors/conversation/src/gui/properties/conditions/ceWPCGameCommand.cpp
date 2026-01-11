@@ -72,7 +72,7 @@ public:
 	typedef deTObjectReference<cTextCommand> Ref;
 	cTextCommand(ceWPCGameCommand &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionGameCommand * const condition = pPanel.GetCondition();

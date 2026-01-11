@@ -53,16 +53,16 @@ public:
 	ceUCACameraShotSetName(ceConversationTopic *topic, ceCACameraShot *cameraShot, const char *newName);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCACameraShotSetName();
+	~ceUCACameraShotSetName() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

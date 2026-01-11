@@ -62,7 +62,7 @@ public:
 	deoglCanvas(deGraphicOpenGl &ogl, deCanvas &canvas);
 	
 	/** Clean up peer. */
-	virtual ~deoglCanvas();
+	~deoglCanvas() override;
 	/*@}*/
 	
 	
@@ -106,34 +106,34 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	/** Size changed. */
-	virtual void SizeChanged();
+	void SizeChanged() override;
 	
 	/** Transform changed. */
-	virtual void TransformChanged();
+	void TransformChanged() override;
 	
 	/** Color transform changed. */
-	virtual void ColorTransformChanged();
+	void ColorTransformChanged() override;
 	
 	/** Visible changed. */
-	virtual void VisibleChanged();
+	void VisibleChanged() override;
 	
 	/** Render order changed. */
-	virtual void OrderChanged();
+	void OrderChanged() override;
 	
 	/** Transparency changed. */
-	virtual void TransparencyChanged();
+	void TransparencyChanged() override;
 	
 	/** Blend mode changed. */
-	virtual void BlendModeChanged();
+	void BlendModeChanged() override;
 	
 	/** Mask changed. */
-	virtual void MaskChanged();
+	void MaskChanged() override;
 	
 	/** Content changed. */
-	virtual void ContentChanged();
+	void ContentChanged() override;
 	/*@}*/
 	
 	

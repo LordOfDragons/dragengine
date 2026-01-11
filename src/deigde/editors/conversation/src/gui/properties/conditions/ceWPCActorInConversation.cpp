@@ -66,7 +66,7 @@ public:
 	typedef deTObjectReference<cComboActor> Ref;
 	cComboActor(ceWPCActorInConversation &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionActorInConversation * const condition = pPanel.GetCondition();

@@ -66,7 +66,7 @@ public:
 	
 protected:
 	/** \brief Clean up connection. */
-	virtual ~fbxModelCluster();
+	~fbxModelCluster() override;
 	/*@}*/
 	
 	

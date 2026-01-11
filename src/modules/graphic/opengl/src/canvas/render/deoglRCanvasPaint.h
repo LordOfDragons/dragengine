@@ -83,7 +83,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Set size. */
-	virtual void SetSize(const decVector2 &size);
+	void SetSize(const decVector2 &size) override;
 	
 	/** Shape type. */
 	inline deCanvasPaint::eShapeTypes GetShapeType() const{ return pShapeType; }

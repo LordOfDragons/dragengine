@@ -62,7 +62,7 @@ public:
 	
 protected:
 	/** Clean up panel. */
-	virtual ~saeWindowProperties();
+	~saeWindowProperties() override;
 	/*@}*/
 	
 	

@@ -68,7 +68,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~gdeWPTagList();
+	~gdeWPTagList() override;
 	/*@}*/
 	
 	

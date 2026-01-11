@@ -62,7 +62,7 @@ public:
 	
 	/** \brief Clean up window. */
 protected:
-	virtual ~feWindowProperties();
+	~feWindowProperties() override;
 public:
 	/*@}*/
 	

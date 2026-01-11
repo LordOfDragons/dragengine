@@ -70,7 +70,7 @@ public:
 	igdeLoadAnimator(igdeEnvironment &environment, deLogger *logger, const char *loggerSource);
 	
 	/** \brief Clean up load object. */
-	~igdeLoadAnimator();
+	~igdeLoadAnimator() override;
 	/*@}*/
 	
 	

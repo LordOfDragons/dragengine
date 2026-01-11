@@ -83,7 +83,7 @@ protected:
 public:
 	cBaseEditPathListener(saeWPView &panel) : pPanel(panel){}
 	
-	virtual void OnEditPathChanged(igdeEditPath *editPath){
+	void OnEditPathChanged(igdeEditPath *editPath) override{
 		saeSAnimation * const sanimation = pPanel.GetSAnimation();
 		if(sanimation){
 			OnChanged(editPath->GetPath(), *sanimation);
@@ -122,7 +122,7 @@ public:
 	typedef deTObjectReference<cEditDisplayModelPath> Ref;
 	cEditDisplayModelPath(saeWPView &panel) : cBaseEditPathListener(panel){}
 	
-	virtual void OnChanged(const decString &path, saeSAnimation &sanimation){
+	void OnChanged(const decString &path, saeSAnimation &sanimation) override{
 		sanimation.SetDisplayModelPath(path);
 	}
 };
@@ -132,7 +132,7 @@ public:
 	typedef deTObjectReference<cEditDisplaySkinPath> Ref;
 	cEditDisplaySkinPath(saeWPView &panel) : cBaseEditPathListener(panel){}
 	
-	virtual void OnChanged(const decString &path, saeSAnimation &sanimation){
+	void OnChanged(const decString &path, saeSAnimation &sanimation) override{
 		sanimation.SetDisplaySkinPath(path);
 	}
 };
@@ -142,7 +142,7 @@ public:
 	typedef deTObjectReference<cEditDisplayRigPath> Ref;
 	cEditDisplayRigPath(saeWPView &panel) : cBaseEditPathListener(panel){}
 	
-	virtual void OnChanged(const decString &path, saeSAnimation &sanimation){
+	void OnChanged(const decString &path, saeSAnimation &sanimation) override{
 		sanimation.SetDisplayRigPath(path);
 	}
 };

@@ -46,9 +46,9 @@ private:
 public:
 	// constructor
 	deClassImage(deEngine *GameEngine, deScriptingDragonScript *ScrMgr);
-	~deClassImage();
+	~deClassImage() override;
 	// internal functions
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	inline deEngine *GetGameEngine() const{ return p_gameEngine; }
 	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
 	deImage *GetImage(dsRealObject *This) const;

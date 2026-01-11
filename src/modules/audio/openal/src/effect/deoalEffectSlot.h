@@ -66,7 +66,7 @@ public:
 	
 protected:
 	/** Clean up openal effect slot. */
-	virtual ~deoalEffectSlot();
+	~deoalEffectSlot() override;
 	/*@}*/
 	
 	

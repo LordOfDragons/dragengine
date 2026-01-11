@@ -47,12 +47,12 @@ public:
 	meUScaleObject(meWorld *world, const meObject::List &objects);
 	
 protected:
-	virtual ~meUScaleObject();
+	~meUScaleObject() override;
 	
 public:
 	// undo and redo operations
-	virtual void Undo();
-	virtual void Redo();
+	void Undo() override;
+	void Redo() override;
 	void ProgressiveRedo() override;
 };
 

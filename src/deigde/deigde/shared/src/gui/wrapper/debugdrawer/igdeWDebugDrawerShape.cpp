@@ -65,7 +65,7 @@ public:
 		pDDShape = ddShape;
 	}
 	
-	virtual void VisitShapeSphere(decShapeSphere &sphere){
+	void VisitShapeSphere(decShapeSphere &sphere) override{
 		decShapeSphere *copy = nullptr;
 		
 		try{
@@ -80,7 +80,7 @@ public:
 		}
 	}
 	
-	virtual void VisitShapeBox(decShapeBox &box){
+	void VisitShapeBox(decShapeBox &box) override{
 		decShapeBox *copy = nullptr;
 		
 		try{
@@ -95,7 +95,7 @@ public:
 		}
 	}
 	
-	virtual void VisitShapeCylinder(decShapeCylinder &cylinder){
+	void VisitShapeCylinder(decShapeCylinder &cylinder) override{
 		decShapeCylinder *copy = nullptr;
 		
 		try{
@@ -112,7 +112,7 @@ public:
 		}
 	}
 	
-	virtual void VisitShapeCapsule(decShapeCapsule &capsule){
+	void VisitShapeCapsule(decShapeCapsule &capsule) override{
 		decShapeCapsule *copy = nullptr;
 		
 		try{
@@ -129,7 +129,7 @@ public:
 		}
 	}
 	
-	virtual void VisitShapeHull(decShapeHull &hull){
+	void VisitShapeHull(decShapeHull &hull) override{
 		decShapeHull *copy = nullptr;
 		
 		try{

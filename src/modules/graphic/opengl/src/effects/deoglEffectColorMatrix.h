@@ -71,7 +71,7 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Color matrix changed. */
-	virtual void ColorMatrixChanged();
+	void ColorMatrixChanged() override;
 	/*@}*/
 };
 

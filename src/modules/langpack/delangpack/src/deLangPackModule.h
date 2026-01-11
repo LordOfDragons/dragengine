@@ -45,17 +45,17 @@ public:
 	deLangPackModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~deLangPackModule();
+	~deLangPackModule() override;
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/** \brief Load  language pack. */
-	virtual void LoadLanguagePack(decBaseFileReader &reader, deLanguagePack &languagePack);
+	void LoadLanguagePack(decBaseFileReader &reader, deLanguagePack &languagePack) override;
 	
 	/** \brief Save language pack. */
-	virtual void SaveLanguagePack(decBaseFileWriter &writer, const deLanguagePack &languagePack);
+	void SaveLanguagePack(decBaseFileWriter &writer, const deLanguagePack &languagePack) override;
 	/*@}*/
 	
 private:

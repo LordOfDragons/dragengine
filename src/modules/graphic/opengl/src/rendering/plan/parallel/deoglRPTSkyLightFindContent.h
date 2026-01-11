@@ -53,7 +53,7 @@ public:
 	deoglRPTSkyLightFindContent(deoglRenderPlanSkyLight &plan);
 	
 	/** Clean up task. */
-	virtual ~deoglRPTSkyLightFindContent();
+	~deoglRPTSkyLightFindContent() override;
 	/*@}*/
 	
 	
@@ -61,13 +61,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Run task. */
-	virtual void Run();
+	void Run() override;
 	
 	/** Task finished. */
-	virtual void Finished();
+	void Finished() override;
 	
 	/** Debug name. */
-	virtual decString GetDebugName() const;
+	decString GetDebugName() const override;
 	
 	/** Elapsed time. */
 	inline float GetElapsedTime() const{ return pElapsedTime; }

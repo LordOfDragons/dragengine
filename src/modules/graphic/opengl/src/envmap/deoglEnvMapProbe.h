@@ -56,7 +56,7 @@ public:
 	deoglEnvMapProbe(deGraphicOpenGl &ogl, const deEnvMapProbe &envMapProbe);
 	
 	/** Clean up peer. */
-	virtual ~deoglEnvMapProbe();
+	~deoglEnvMapProbe() override;
 	/*@}*/
 	
 	
@@ -83,31 +83,31 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	/** Orientation changed. */
-	virtual void OrientationChanged();
+	void OrientationChanged() override;
 	
 	/** Scaling changed. */
-	virtual void ScalingChanged();
+	void ScalingChanged() override;
 	
 	/** Shape list influence changed. */
-	virtual void ShapeListInfluenceChanged();
+	void ShapeListInfluenceChanged() override;
 	
 	/** Shape reflection changed. */
-	virtual void ShapeReflectionChanged();
+	void ShapeReflectionChanged() override;
 	
 	/** Influence border size changed. */
-	virtual void InfluenceBorderSizeChanged();
+	void InfluenceBorderSizeChanged() override;
 	
 	/** Influence priority changed. */
-	virtual void InfluencePriorityChanged();
+	void InfluencePriorityChanged() override;
 	
 	/** Image changed. */
-	virtual void ImageChanged();
+	void ImageChanged() override;
 	
 	/** Layer mask changed. */
-	virtual void LayerMaskChanged();
+	void LayerMaskChanged() override;
 	/*@}*/
 	
 private:

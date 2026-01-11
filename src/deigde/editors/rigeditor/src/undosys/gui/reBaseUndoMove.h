@@ -47,7 +47,7 @@ public:
 	reBaseUndoMove();
 	
 protected:
-	virtual ~reBaseUndoMove();
+	~reBaseUndoMove() override;
 	/*@}*/
 	
 	

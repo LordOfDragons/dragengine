@@ -50,7 +50,7 @@ public:
 	/** Creates a new item. */
 	deglWindowLoggerTableItem(const FXString &text, FXIcon *ic = nullptr, void *ptr = nullptr);
 	/** Cleans up the item. */
-	virtual ~deglWindowLoggerTableItem();
+	~deglWindowLoggerTableItem() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -73,13 +73,13 @@ public:
 	*/
 	
 	/** Retrieves the width of the item. */
-	virtual FXint getWidth(const FXTable *table) const;
+	FXint getWidth(const FXTable *table) const override;
 	/** Retrieves the height of the item. */
-	virtual FXint getHeight(const FXTable *table) const;
+	FXint getHeight(const FXTable *table) const override;
 	/** Render background. */
-	virtual void drawBackground(const FXTable *table, FXDC &dc, FXint x, FXint y, FXint w, FXint h) const;
+	void drawBackground(const FXTable *table, FXDC &dc, FXint x, FXint y, FXint w, FXint h) const override;
 	/** Render text. */
-	virtual void drawContent(const FXTable *table, FXDC &dc, FXint x, FXint y, FXint w, FXint h) const;
+	void drawContent(const FXTable *table, FXDC &dc, FXint x, FXint y, FXint w, FXint h) const override;
 	/*@}*/
 };
 

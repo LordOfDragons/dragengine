@@ -93,7 +93,7 @@ public:
 	
 	
 	/** \brief Target changed. */
-    virtual void TargetChanged(skyeSky *sky, skyeLayer *layer, deSkyLayer::eTargets target);
+    void TargetChanged(skyeSky *sky, skyeLayer *layer, deSkyLayer::eTargets target) override;
 	
 	/** \brief Active target changed. */
 	void ActiveTargetChanged(skyeSky *sky, skyeLayer *layer) override;

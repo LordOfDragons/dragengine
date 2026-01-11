@@ -155,7 +155,7 @@ public:
 	deoalAudioThread& operator=(const deoalAudioThread&) = delete;
 
 	/** Clean up audio thread. */
-	virtual ~deoalAudioThread();
+	~deoalAudioThread() override;
 	/*@}*/
 	
 	
@@ -238,7 +238,7 @@ public:
 	
 	
 	/** Run audio thread. */
-	virtual void Run();
+	void Run() override;
 	
 	
 	

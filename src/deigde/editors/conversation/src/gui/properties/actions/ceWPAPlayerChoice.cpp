@@ -78,7 +78,7 @@ public:
 	typedef deTObjectReference<cTextVarName> Ref;
 	cTextVarName(ceWPAPlayerChoice &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAPlayerChoice * const action = pPanel.GetAction();
 		if(!topic || !action || textField->GetText() == action->GetVariableName()){
@@ -97,7 +97,7 @@ public:
 	typedef deTObjectReference<cTextOptionText> Ref;
 	cTextOptionText(ceWPAPlayerChoice &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAPlayerChoice * const action = pPanel.GetAction();
 		ceCAPlayerChoiceOption * const option = pPanel.GetActiveOption();

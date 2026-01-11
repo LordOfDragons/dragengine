@@ -82,7 +82,7 @@ public:
 	
 protected:
 	/** Clean up shader program. */
-	virtual ~deoglShaderProgram();
+	~deoglShaderProgram() override;
 	/*@}*/
 	
 	

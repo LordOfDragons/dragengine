@@ -51,7 +51,7 @@ public:
 	/** Creates a new class. */
 	deClassDynamicSkin(deScriptingDragonScript *ds);
 	/** Cleans up the class. */
-	virtual ~deClassDynamicSkin();
+	~deClassDynamicSkin() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -59,7 +59,7 @@ public:
 	/** Retrieves the module. */
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/** Creates class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** Retrieves the dynamic skin from an object. */
 	deDynamicSkin *GetDynamicSkin(dsRealObject *myself) const;

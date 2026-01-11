@@ -207,14 +207,14 @@ public:
 	typedef deTObjectReference<cListLinks> Ref;
 	cListLinks(aeWPLink &panel) : pPanel(panel){}
 	
-	virtual void OnSelectionChanged(igdeListBox *listBox){
+	void OnSelectionChanged(igdeListBox *listBox) override{
 		if(pPanel.GetAnimator()){
 			pPanel.GetAnimator()->SetActiveLink(listBox->GetSelectedItem()
 				? (aeLink*)listBox->GetSelectedItem()->GetData() : nullptr);
 		}
 	}
 	
-	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
+	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
 		const aeWindowMain &windowMain = pPanel.GetWindowProperties().GetWindowMain();
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		
@@ -237,7 +237,7 @@ public:
 	typedef deTObjectReference<cTextName> Ref;
 	cTextName(aeWPLink &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		const decString value = textField->GetText();
 		aeLink * const link = pPanel.GetLink();
 		if(!link || link->GetName() == value){
@@ -260,7 +260,7 @@ public:
 	cComboBone(aeWPLink &panel, bool &preventUpdate) :
 		pPanel(panel), pPreventUpdate(preventUpdate){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		if(pPreventUpdate){
 			return;
 		}
@@ -287,7 +287,7 @@ public:
 	cComboConnectionController(aeWPLink &panel, bool &preventUpdate) :
 		pPanel(panel), pPreventUpdate(preventUpdate){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		if(pPreventUpdate){
 			return;
 		}
@@ -313,7 +313,7 @@ public:
 	typedef deTObjectReference<cSpinRepeat> Ref;
 	cSpinRepeat(aeWPLink &panel) : pPanel(panel){}
 	
-	virtual void OnValueChanged(igdeSpinTextField *textField){
+	void OnValueChanged(igdeSpinTextField *textField) override{
 		const int value = textField->GetValue();
 		aeLink * const link = pPanel.GetLink();
 		if(!link || link->GetRepeat() == value){
@@ -363,7 +363,7 @@ public:
 	typedef deTObjectReference<cEditCurve> Ref;
 	cEditCurve(aeWPLink &panel) : pPanel(panel){}
 	
-	virtual void OnCurveChanged(igdeViewCurveBezier *viewCurveBezier){
+	void OnCurveChanged(igdeViewCurveBezier *viewCurveBezier) override{
 		if(pUndo){
 			((aeULinkSetCurve&)(igdeUndo&)pUndo).SetNewCurve(viewCurveBezier->GetCurve());
 			
@@ -378,7 +378,7 @@ public:
 		pUndo = nullptr;
 	}
 	
-	virtual void OnCurveChanging(igdeViewCurveBezier *viewCurveBezier){
+	void OnCurveChanging(igdeViewCurveBezier *viewCurveBezier) override{
 		if(pUndo){
 			((aeULinkSetCurve&)(igdeUndo&)pUndo).SetNewCurve(viewCurveBezier->GetCurve());
 			pUndo->Redo();
@@ -388,7 +388,7 @@ public:
 		}
 	}
 	
-	virtual void AddContextMenuEntries(igdeViewCurveBezier*, igdeMenuCascade &menu){
+	void AddContextMenuEntries(igdeViewCurveBezier*, igdeMenuCascade &menu) override{
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		
 		helper.MenuSeparator(menu);
@@ -403,7 +403,7 @@ public:
 	typedef deTObjectReference<cTextBone> Ref;
 	cTextBone(aeWPLink &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		const decString value(textField->GetText());
 		aeLink * const link = pPanel.GetLink();
 		if(!link || link->GetBone() == value){
@@ -424,7 +424,7 @@ public:
 	typedef deTObjectReference<cComboBoneParameter> Ref;
 	cComboBoneParameter(aeWPLink &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		deAnimatorLink::eBoneParameter parameter = comboBox->GetSelectedItem()
 			? (deAnimatorLink::eBoneParameter)(intptr_t)comboBox->GetSelectedItem()->GetData()
 			: deAnimatorLink::ebpPositionZ;
@@ -447,7 +447,7 @@ public:
 	typedef deTObjectReference<cTextBoneMinimum> Ref;
 	cTextBoneMinimum(aeWPLink &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		const float value = textField->GetFloat();
 		aeLink * const link = pPanel.GetLink();
 		if(!link || fabsf(link->GetBoneMinimum() - value) < FLOAT_SAFE_EPSILON){
@@ -468,7 +468,7 @@ public:
 	typedef deTObjectReference<cTextBoneMaximum> Ref;
 	cTextBoneMaximum(aeWPLink &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		const float value = textField->GetFloat();
 		aeLink * const link = pPanel.GetLink();
 		if(!link || fabsf(link->GetBoneMaximum() - value) < FLOAT_SAFE_EPSILON){
@@ -492,7 +492,7 @@ public:
 	cComboVertexPositionSet(aeWPLink &panel, bool &preventUpdate) :
 		pPanel(panel), pPreventUpdate(preventUpdate){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		if(pPreventUpdate){
 			return;
 		}
@@ -517,7 +517,7 @@ public:
 	typedef deTObjectReference<cTextVertexPositionSet> Ref;
 	cTextVertexPositionSet(aeWPLink &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		const decString value(textField->GetText());
 		aeLink * const link = pPanel.GetLink();
 		if(!link || link->GetVertexPositionSet() == value){
@@ -538,7 +538,7 @@ public:
 	typedef deTObjectReference<cTextVertexPositionSetMinimum> Ref;
 	cTextVertexPositionSetMinimum(aeWPLink &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		const float value = textField->GetFloat();
 		aeLink * const link = pPanel.GetLink();
 		if(!link || fabsf(link->GetVertexPositionSetMinimum() - value) < FLOAT_SAFE_EPSILON){
@@ -560,7 +560,7 @@ public:
 	typedef deTObjectReference<cTextVertexPositionSetMaximum> Ref;
 	cTextVertexPositionSetMaximum(aeWPLink &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		const float value = textField->GetFloat();
 		aeLink * const link = pPanel.GetLink();
 		if(!link || fabsf(link->GetVertexPositionSetMaximum() - value) < FLOAT_SAFE_EPSILON){

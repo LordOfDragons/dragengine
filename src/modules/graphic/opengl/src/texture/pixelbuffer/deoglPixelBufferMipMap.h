@@ -53,7 +53,7 @@ public:
 	
 protected:
 	/** Cleans up the opengl array texture. */
-	virtual ~deoglPixelBufferMipMap();
+	~deoglPixelBufferMipMap() override;
 	/*@}*/
 	
 	

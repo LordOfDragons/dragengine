@@ -60,7 +60,7 @@ public:
 	
 protected:
 	/** Clean up render emitter. */
-	virtual ~deoglRParticleEmitter();
+	~deoglRParticleEmitter() override;
 	/*@}*/
 	
 	

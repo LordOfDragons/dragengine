@@ -54,7 +54,7 @@ public:
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~skyeULayerSetTransparency();
+	~skyeULayerSetTransparency() override;
 	/*@}*/
 	
 	
@@ -66,10 +66,10 @@ public:
 	void SetNewTransparency(float transparency);
 	
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

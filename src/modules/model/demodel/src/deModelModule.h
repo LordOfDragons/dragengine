@@ -72,7 +72,7 @@ public:
 	deModelModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~deModelModule();
+	~deModelModule() override;
 	/*@}*/
 	
 	
@@ -80,10 +80,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Load model. */
-	virtual void LoadModel(decBaseFileReader &reader, deModel &model);
+	void LoadModel(decBaseFileReader &reader, deModel &model) override;
 	
 	/** \brief Save model. */
-	virtual void SaveModel(decBaseFileWriter &writer, const deModel &model);
+	void SaveModel(decBaseFileWriter &writer, const deModel &model) override;
 	/*@}*/
 	
 private:

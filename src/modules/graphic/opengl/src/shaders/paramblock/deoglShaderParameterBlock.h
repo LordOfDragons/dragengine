@@ -76,7 +76,7 @@ public:
 	
 protected:
 	/** Clean up shader storage buffer object. */
-	virtual ~deoglShaderParameterBlock();
+	~deoglShaderParameterBlock() override;
 	/*@}*/
 	
 	

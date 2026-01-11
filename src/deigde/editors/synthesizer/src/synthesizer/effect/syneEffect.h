@@ -79,7 +79,7 @@ public:
 	
 	/** \brief Clean up the synthesizer effect. */
 protected:
-	virtual ~syneEffect();
+	~syneEffect() override;
 public:
 	/*@}*/
 	

@@ -45,7 +45,7 @@ public:
 	delEngineModuleXML(deLogger *logger, const char *loggerSource);
 	
 	/** \brief Clean up engine module xml read. */
-	virtual ~delEngineModuleXML();
+	~delEngineModuleXML() override;
 	/*@}*/
 	
 	

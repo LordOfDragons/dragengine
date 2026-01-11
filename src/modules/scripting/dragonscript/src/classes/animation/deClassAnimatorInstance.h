@@ -48,13 +48,13 @@ public:
 	deClassAnimatorInstance(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
-	virtual ~deClassAnimatorInstance();
+	~deClassAnimatorInstance() override;
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** \brief Create class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Scripting module. */
 	inline deScriptingDragonScript &GetDS(){ return pDS; }

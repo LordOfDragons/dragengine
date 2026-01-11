@@ -56,7 +56,7 @@ public:
 	
 protected:
 	/** Clean up pipeline. */
-	virtual ~devkFramebuffer();
+	~devkFramebuffer() override;
 	/*@}*/
 	
 	

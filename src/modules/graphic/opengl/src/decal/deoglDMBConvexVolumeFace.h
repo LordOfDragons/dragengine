@@ -48,7 +48,7 @@ public:
 	deoglDMBConvexVolumeFace();
 	
 	/** Clean up decal mesh builder convex volume face. */
-	virtual ~deoglDMBConvexVolumeFace();
+	~deoglDMBConvexVolumeFace() override;
 	/*@}*/
 	
 	

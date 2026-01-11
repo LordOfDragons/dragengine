@@ -73,7 +73,7 @@ public:
 	typedef deTObjectReference<cComboKey> Ref;
 	cComboKey(meWPPropertyList &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		pPanel.UpdateProperty();
 		pPanel.UpdateInformation(comboBox->GetText());
 		pPanel.OnKeyChanged(comboBox->GetText());
@@ -88,7 +88,7 @@ public:
 	typedef deTObjectReference<cListProperties> Ref;
 	cListProperties(meWPPropertyList &panel) : pPanel(panel){}
 	
-	virtual void OnSelectionChanged(igdeIconListBox *listBox){
+	void OnSelectionChanged(igdeIconListBox *listBox) override{
 		pPanel.UpdateProperty();
 		
 		const igdeListItem * const selection = listBox->GetSelectedItem();
@@ -101,11 +101,11 @@ public:
 		}
 	}
 	
-	virtual void OnDoubleClickItem(igdeIconListBox*, int){
+	void OnDoubleClickItem(igdeIconListBox*, int) override{
 		pPanel.EditPropertyValueInDialog();
 	}
 	
-	virtual void AddContextMenuEntries(igdeIconListBox *listBox, igdeMenuCascade &menu){
+	void AddContextMenuEntries(igdeIconListBox *listBox, igdeMenuCascade &menu) override{
 		igdeUIHelper &helper = listBox->GetEnvironment().GetUIHelper();
 		
 		helper.MenuCommand(menu, pPanel.GetActionPropertyAdd());
@@ -508,7 +508,7 @@ public:
 	typedef deTObjectReference<cEditPropertyValue> Ref;
 	cEditPropertyValue(meWPPropertyList &panel) : pPanel(panel){}
 	
-	virtual void OnPropertyValueChanged(igdeEditPropertyValue*){
+	void OnPropertyValueChanged(igdeEditPropertyValue*) override{
 		const decString property(pPanel.GetProperty());
 		if(property.IsEmpty() || !pPanel.GetUndoSystem()){
 			return;
@@ -528,7 +528,7 @@ public:
 		}
 	}
 	
-	virtual void OnPropertyValueChanging(igdeEditPropertyValue*){
+	void OnPropertyValueChanging(igdeEditPropertyValue*) override{
 		const decString property(pPanel.GetProperty());
 		if(property.IsEmpty() || !pPanel.GetUndoSystem()){
 			return;

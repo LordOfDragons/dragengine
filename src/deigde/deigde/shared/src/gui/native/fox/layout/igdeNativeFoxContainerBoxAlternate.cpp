@@ -43,7 +43,7 @@ private:
 	
 public:
 	igdeNativeFoxContainerBoxAlternateY(igdeContainerBoxAlternate &powner, FXComposite *pparent, int layoutFlags);
-	virtual ~igdeNativeFoxContainerBoxAlternateY();
+	~igdeNativeFoxContainerBoxAlternateY() override;
 	
 	long onResize(FXObject*, FXSelector, void*);
 	long onChildLayoutFlags(FXObject*, FXSelector, void*);
@@ -103,7 +103,7 @@ private:
 	
 public:
 	igdeNativeFoxContainerBoxAlternateX(igdeContainerBoxAlternate &powner, FXComposite *pparent, int layoutFlags);
-	virtual ~igdeNativeFoxContainerBoxAlternateX();
+	~igdeNativeFoxContainerBoxAlternateX() override;
 	
 	long onResize(FXObject*, FXSelector, void*);
 	long onChildLayoutFlags(FXObject*, FXSelector, void*);

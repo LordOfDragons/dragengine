@@ -57,7 +57,7 @@ public:
 	deglPGListItemGame(deglPanelGames *panelGames, delGame *game);
 	
 	/** Clean up list item. */
-	virtual ~deglPGListItemGame();
+	~deglPGListItemGame() override;
 	/*@}*/
 	
 	

@@ -52,16 +52,16 @@ public:
 	ceUCCShotRemove(ceCameraShot *cameraShot);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCCShotRemove();
+	~ceUCCShotRemove() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

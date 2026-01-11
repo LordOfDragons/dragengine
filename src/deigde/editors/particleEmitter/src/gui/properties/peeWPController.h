@@ -78,7 +78,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~peeWPController();
+	~peeWPController() override;
 	/*@}*/
 	
 	

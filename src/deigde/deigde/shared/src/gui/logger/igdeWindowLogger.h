@@ -68,7 +68,7 @@ public:
 	
 protected:
 	/** \brief Clean up logger window. */
-	virtual ~igdeWindowLogger();
+	~igdeWindowLogger() override;
 	
 public:
 	/*@}*/
@@ -100,7 +100,7 @@ public:
 	 * Returns \em true to close window or \em false to keep it open. Default implementation
 	 * returns \em true.
 	 */
-	virtual bool CloseWindow();
+	bool CloseWindow() override;
 	
 	
 	
@@ -120,7 +120,7 @@ public:
 	
 protected:
 	/** \brief Visible changed. */
-	virtual void OnVisibleChanged();
+	void OnVisibleChanged() override;
 	/*@}*/
 	
 	

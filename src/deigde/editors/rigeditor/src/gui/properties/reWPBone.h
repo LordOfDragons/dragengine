@@ -77,7 +77,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~reWPBone();
+	~reWPBone() override;
 	/*@}*/
 	
 	

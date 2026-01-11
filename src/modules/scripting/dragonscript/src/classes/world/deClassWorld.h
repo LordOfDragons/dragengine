@@ -81,10 +81,10 @@ private:
 public:
 	// constructor
 	deClassWorld(deEngine *GameEngine, deScriptingDragonScript *ScrMgr);
-	~deClassWorld();
+	~deClassWorld() override;
 	
 	// internal functions
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	inline deEngine *GetGameEngine() const{ return pGameEngine; }
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }

@@ -60,10 +60,10 @@ public:
 protected:
 	void pPreparePipelines(const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched) override;
 	
-	virtual void pPipelineConfigGeometry(deoglPipelineConfiguration &config);
-	virtual void pPipelineConfigDepth(deoglPipelineConfiguration &config);
-	virtual void pPipelineConfigDepthReversed(deoglPipelineConfiguration &config);
-	virtual void pPipelineConfigCounter(deoglPipelineConfiguration &config);
+	void pPipelineConfigGeometry(deoglPipelineConfiguration &config) override;
+	void pPipelineConfigDepth(deoglPipelineConfiguration &config) override;
+	void pPipelineConfigDepthReversed(deoglPipelineConfiguration &config) override;
+	void pPipelineConfigCounter(deoglPipelineConfiguration &config) override;
 	
 	void pSetBase(deoglSkinShaderConfig &config) override;
 	void pSetGeometry(deoglSkinShaderConfig &config, const ChannelInfo &cinfo) override;

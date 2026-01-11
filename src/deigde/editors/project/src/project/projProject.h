@@ -70,7 +70,7 @@ public:
 	
 	/** \brief Clean up project. */
 protected:
-	virtual ~projProject();
+	~projProject() override;
 public:
 	/*@}*/
 	
@@ -177,10 +177,10 @@ public:
 	
 	
 	/** \brief Notify listeners the changed or saved state changed. */
-	virtual void NotifyStateChanged();
+	void NotifyStateChanged() override;
 	
 	/** \brief Notify listeners undo system changed. */
-	virtual void NotifyUndoChanged();
+	void NotifyUndoChanged() override;
 	
 	/** \brief Notify listeners project changed. */
 	void NotifyProjectChanged();

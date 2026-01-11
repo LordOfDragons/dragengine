@@ -53,16 +53,16 @@ public:
 	ceUCAMusicSetName(ceConversationTopic *topic, ceCAMusic *music, const char *newName);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCAMusicSetName();
+	~ceUCAMusicSetName() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

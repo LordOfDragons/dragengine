@@ -101,7 +101,7 @@ public:
 	
 protected:
 	/** Clean up connection. */
-	virtual ~fbxModel();
+	~fbxModel() override;
 	/*@}*/
 	
 	

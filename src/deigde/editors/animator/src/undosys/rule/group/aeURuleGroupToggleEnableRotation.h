@@ -50,16 +50,16 @@ public:
 	aeURuleGroupToggleEnableRotation(aeRuleGroup *rule);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleGroupToggleEnableRotation();
+	~aeURuleGroupToggleEnableRotation() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** <brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

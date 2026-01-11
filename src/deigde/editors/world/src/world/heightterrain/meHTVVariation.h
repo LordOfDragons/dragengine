@@ -75,7 +75,7 @@ public:
 	
 protected:
 	/** Cleans up the object. */
-	virtual ~meHTVVariation();
+	~meHTVVariation() override;
 	
 public:
 	/*@}*/

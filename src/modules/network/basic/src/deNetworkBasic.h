@@ -194,7 +194,7 @@ public:
 	/** Creates a new basic network module. */
 	deNetworkBasic(deLoadableModule &loadableModule);
 	/** Cleans up the basic network module. */
-	virtual ~deNetworkBasic();
+	~deNetworkBasic() override;
 	/*@}*/
 	
 	/** @name Module Management */
@@ -202,14 +202,14 @@ public:
 	/**
 	 * Called to init the module. Returns true on success or false otherwise.
 	 */
-	virtual bool Init();
+	bool Init() override;
 	/**
 	 * Called to cleanup the module. All resources have to be freed and running threads
 	 * stopped or killed if needed.
 	 */
-	virtual void CleanUp();
+	void CleanUp() override;
 	/** Process network. */
-	virtual void ProcessNetwork();
+	void ProcessNetwork() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -242,16 +242,16 @@ public:
 	
 	
 	
-	virtual int GetParameterCount() const;
-	virtual void GetParameterInfo(int index, deModuleParameter &parameter) const;
-	virtual int IndexOfParameterNamed(const char *name) const;
-	virtual decString GetParameterValue(const char *name) const;
-	virtual void SetParameterValue(const char *name, const char *value);
+	int GetParameterCount() const override;
+	void GetParameterInfo(int index, deModuleParameter &parameter) const override;
+	int IndexOfParameterNamed(const char *name) const override;
+	decString GetParameterValue(const char *name) const override;
+	void SetParameterValue(const char *name, const char *value) override;
 	
-	virtual deBaseNetworkWorld *CreateWorld(deWorld *world);
-	virtual deBaseNetworkServer *CreateServer(deServer *server);
-	virtual deBaseNetworkConnection *CreateConnection(deConnection *connection);
-	virtual deBaseNetworkState *CreateState(deNetworkState *state);
+	deBaseNetworkWorld *CreateWorld(deWorld *world) override;
+	deBaseNetworkServer *CreateServer(deServer *server) override;
+	deBaseNetworkConnection *CreateConnection(deConnection *connection) override;
+	deBaseNetworkState *CreateState(deNetworkState *state) override;
 	/*@}*/
 	
 private:

@@ -68,7 +68,7 @@ public:
 	
 	/** \brief Clean up particle emitter. */
 protected:
-	virtual ~gdeParticleEmitter();
+	~gdeParticleEmitter() override;
 public:
 	/*@}*/
 	

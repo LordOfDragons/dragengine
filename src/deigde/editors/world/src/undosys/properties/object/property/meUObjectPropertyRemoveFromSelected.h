@@ -52,7 +52,7 @@ protected:
 	/** \brief Clean up undo object. */
 
 protected:
-	virtual ~meUObjectPropertyRemoveFromSelected();
+	~meUObjectPropertyRemoveFromSelected() override;
 
 public:
 	/*@}*/
@@ -65,9 +65,9 @@ public:
 	inline const meUndoDataObjectProperty::List &GetList() const{ return pList; }
 	
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

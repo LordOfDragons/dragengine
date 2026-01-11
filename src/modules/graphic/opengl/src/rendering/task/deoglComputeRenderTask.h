@@ -174,7 +174,7 @@ public:
 	
 protected:
 	/** Clean up compute render task. */
-	~deoglComputeRenderTask();
+	~deoglComputeRenderTask() override;
 	/*@}*/
 	
 	

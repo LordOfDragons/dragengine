@@ -59,7 +59,7 @@ public:
 		const char *loggerSource);
 	
 	/** \brief Clean up loader. */
-	virtual ~igdeLoadParticleEmitter();
+	~igdeLoadParticleEmitter() override;
 	/*@}*/
 	
 	

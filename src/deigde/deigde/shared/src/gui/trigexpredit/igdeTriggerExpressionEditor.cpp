@@ -246,11 +246,11 @@ public:
 	
 	igdeTriggerExpressionEditor_TextExpression(igdeTriggerExpressionEditor &editor) : pEditor(editor){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		pEditor.SetExpression(textField->GetText());
 	}
 	
-	virtual void OnTextChanging(igdeTextField *textField){
+	void OnTextChanging(igdeTextField *textField) override{
 		OnTextChanged(textField);
 	}
 };
@@ -262,7 +262,7 @@ public:
 	
 	igdeTriggerExpressionEditor_TextTargetName(igdeTriggerExpressionEditor &editor) : pEditor(editor){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		igdeTriggerExpressionComponent * const component = pEditor.GetSelectedComponent();
 		if(component){
 			const decString name(textField->GetText());
@@ -275,7 +275,7 @@ public:
 		}
 	}
 	
-	virtual void OnTextChanging(igdeTextField *textField){
+	void OnTextChanging(igdeTextField *textField) override{
 		OnTextChanged(textField);
 	}
 };
@@ -289,7 +289,7 @@ public:
 	igdeTriggerExpressionEditor_ListTargets(igdeTriggerExpressionEditor &editor, igdeTextField &targetName) :
 	pEditor(editor), pTargetName(targetName) {}
 	
-	virtual void OnSelectionChanged(igdeListBox *listBox){
+	void OnSelectionChanged(igdeListBox *listBox) override{
 		igdeTriggerExpressionComponent * const component = pEditor.GetSelectedComponent();
 		if(component && component->GetType() == igdeTriggerExpressionComponent::ectTarget
 		&& listBox->GetSelectedItem()){
@@ -306,11 +306,11 @@ public:
 	
 	igdeTriggerExpressionEditor_TextFilterTargetName(igdeTriggerExpressionEditor &editor) : pEditor(editor){}
 	
-	virtual void OnTextChanged(igdeTextField*){
+	void OnTextChanged(igdeTextField*) override{
 		pEditor.UpdateFromTargetList();
 	}
 	
-	virtual void OnTextChanging(igdeTextField *textField){
+	void OnTextChanging(igdeTextField *textField) override{
 		OnTextChanged(textField);
 	}
 };
@@ -323,10 +323,10 @@ public:
 	
 	igdeTriggerExpressionEditor_TreeExpression(igdeTriggerExpressionEditor &editor) : pEditor(editor){}
 	
-	virtual void AddContextMenuEntries(igdeTreeList *treeList, igdeMenuCascade &menu){
+	void AddContextMenuEntries(igdeTreeList *treeList, igdeMenuCascade &menu) override{
 	}
 	
-	virtual void OnSelectionChanged(igdeTreeList*){
+	void OnSelectionChanged(igdeTreeList*) override{
 		pEditor.UpdateExpressionComponent();
 	}
 };

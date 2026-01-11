@@ -58,16 +58,16 @@ public:
 	aeUSetRuleAniDLeadMoveName(aeRuleAnimationDifference *rule, const char *newName);
 protected:
 	/** Clean up undo. */
-	virtual ~aeUSetRuleAniDLeadMoveName();
+	~aeUSetRuleAniDLeadMoveName() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

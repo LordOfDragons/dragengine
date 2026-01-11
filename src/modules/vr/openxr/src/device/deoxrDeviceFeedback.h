@@ -72,7 +72,7 @@ public:
 	
 protected:
 	/** Clean up device feedback. */
-	virtual ~deoxrDeviceFeedback();
+	~deoxrDeviceFeedback() override;
 	/*@}*/
 	
 	

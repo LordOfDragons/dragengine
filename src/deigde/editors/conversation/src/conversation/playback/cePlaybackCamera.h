@@ -116,7 +116,7 @@ public:
 	cePlaybackCamera(cePlayback &playback);
 	/** Cleans up the playback camera. */
 protected:
-	~cePlaybackCamera();
+	~cePlaybackCamera() override;
 public:
 	/*@}*/
 	

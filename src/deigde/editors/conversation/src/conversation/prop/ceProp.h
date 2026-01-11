@@ -62,7 +62,7 @@ public:
 	ceProp();
 	/** \brief Cleans up the prop. */
 protected:
-	virtual ~ceProp();
+	~ceProp() override;
 public:
 	/*@}*/
 	

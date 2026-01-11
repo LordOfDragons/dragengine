@@ -86,7 +86,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~syneWPAPanelSource();
+	~syneWPAPanelSource() override;
 	/*@}*/
 	
 	

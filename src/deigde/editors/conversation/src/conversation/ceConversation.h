@@ -164,7 +164,7 @@ public:
 	
 	/** Cleans up the conversation. */
 protected:
-	virtual ~ceConversation();
+	~ceConversation() override;
 public:
 	/*@}*/
 	
@@ -500,9 +500,9 @@ public:
 	void RemoveListener(ceConversationListener *listener);
 	
 	/** Notifies all listeners that the changed or saved state changed. */
-	virtual void NotifyStateChanged();
+	void NotifyStateChanged() override;
 	/** Notifies all listeners that the undo system changed. */
-	virtual void NotifyUndoChanged();
+	void NotifyUndoChanged() override;
 	/** Notifies all that view properties changed. */
 	void NotifyViewChanged();
 	/** Notifies all that the conversation changed. */

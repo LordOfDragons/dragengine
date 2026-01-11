@@ -49,7 +49,7 @@ public:
 	igdeNativeFoxContainerScroll(igdeContainerScroll &owner, FXComposite *parent, int layoutFlags);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxContainerScroll();
+	~igdeNativeFoxContainerScroll() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeFoxContainerScroll* CreateNativeWidget(igdeContainerScroll &owner);

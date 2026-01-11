@@ -74,7 +74,7 @@ public:
 	
 protected:
 	/** \brief Clean up device feedback. */
-	virtual ~dexsiDeviceFeedback();
+	~dexsiDeviceFeedback() override;
 	/*@}*/
 	
 	

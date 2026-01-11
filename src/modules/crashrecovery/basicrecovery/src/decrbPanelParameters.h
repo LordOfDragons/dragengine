@@ -75,7 +75,7 @@ private:
 public:
 	// constructor, destructor
 	decrbPanelParameters(decrbWindowMain *windowMain, FXComposite *container);
-	virtual ~decrbPanelParameters();
+	~decrbPanelParameters() override;
 	
 	// management
 	void UpdateParameter();

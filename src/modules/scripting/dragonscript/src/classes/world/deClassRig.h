@@ -46,7 +46,7 @@ public:
 	/** \brief Creates a new class. */
 	deClassRig(deScriptingDragonScript *ds);
 	/** \brief Cleans up the class. */
-	virtual ~deClassRig();
+	~deClassRig() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -54,7 +54,7 @@ public:
 	/** Retrieves the module. */
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/** Creates class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Retrieves the rig from an object. Returns NULL if myself is NULL. */
 	deRig *GetRig(dsRealObject *myself) const;

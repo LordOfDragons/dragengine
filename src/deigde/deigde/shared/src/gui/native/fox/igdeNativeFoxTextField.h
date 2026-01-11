@@ -63,7 +63,7 @@ public:
 		int layoutFlags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxTextField();
+	~igdeNativeFoxTextField() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeFoxTextField* CreateNativeWidget(igdeTextField &owner);

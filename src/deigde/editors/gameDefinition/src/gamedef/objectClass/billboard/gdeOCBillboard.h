@@ -100,7 +100,7 @@ public:
 	
 	/** \brief Clean up billboard. */
 protected:
-	virtual ~gdeOCBillboard();
+	~gdeOCBillboard() override;
 public:
 	/*@}*/
 	

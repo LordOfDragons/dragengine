@@ -49,7 +49,7 @@ public:
 	deClassSoundLevelMeterSpeaker(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
-	virtual ~deClassSoundLevelMeterSpeaker();
+	~deClassSoundLevelMeterSpeaker() override;
 	/*@}*/
 	
 	
@@ -60,7 +60,7 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create script class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Push sound level meter or NULL onto the stack. */
 	void PushSoundLevelMeterSpeaker(dsRunTime *rt, const deSoundLevelMeter::cAudibleSpeaker &speaker);

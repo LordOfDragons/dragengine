@@ -94,7 +94,7 @@ public:
 	
 protected:
 	/** Clean up system. */
-	virtual ~deoxrSystem();
+	~deoxrSystem() override;
 	/*@}*/
 	
 	

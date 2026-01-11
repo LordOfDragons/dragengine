@@ -56,7 +56,7 @@ public:
 	
 protected:
 	/** Clean up undo. */
-	virtual ~saeUWordAddList();
+	~saeUWordAddList() override;
 	/*@}*/
 	
 	
@@ -65,10 +65,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

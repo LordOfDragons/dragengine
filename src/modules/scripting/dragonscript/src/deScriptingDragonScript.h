@@ -505,7 +505,7 @@ private:
 public:
 	// constructor, destructor
 	deScriptingDragonScript(deLoadableModule &loadableModule);
-	~deScriptingDragonScript();
+	~deScriptingDragonScript() override;
 	
 	// runtime
 	/**

@@ -47,7 +47,7 @@ protected:
 	public:
 		typedef deTObjectReference<cEditPosition> Ref;
 		cEditPosition(reWPPanelShape &panel);
-		virtual void OnVectorChanged(igdeEditVector *editVector);
+		void OnVectorChanged(igdeEditVector *editVector) override;
 	};
 	
 	class cEditRotation : public igdeEditVectorListener{
@@ -55,7 +55,7 @@ protected:
 	public:
 		typedef deTObjectReference<cEditRotation> Ref;
 		cEditRotation(reWPPanelShape &panel);
-		virtual void OnVectorChanged(igdeEditVector *editVector);
+		void OnVectorChanged(igdeEditVector *editVector) override;
 	};
 	
 	
@@ -80,7 +80,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~reWPPanelShape();
+	~reWPPanelShape() override;
 	/*@}*/
 	
 	

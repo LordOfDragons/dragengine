@@ -64,7 +64,7 @@ public:
 	
 protected:
 	/** \brief Cleans up panel. */
-	virtual ~igdeDEStatus();
+	~igdeDEStatus() override;
 	/*@}*/
 	
 	

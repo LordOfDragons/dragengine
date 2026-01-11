@@ -45,7 +45,7 @@ public:
 	/** \brief Creates a new script class. */
 	deClassDebugDrawer(deScriptingDragonScript *ds);
 	/** \brief Cleans up the script class. */
-	virtual ~deClassDebugDrawer();
+	~deClassDebugDrawer() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -53,7 +53,7 @@ public:
 	/** \brief Retrieves the dragon script module. */
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/** \brief Create class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Retrieves the debug drawer or NULL if myself is NULL. */
 	deDebugDrawer *GetDebugDrawer(dsRealObject *myself) const;

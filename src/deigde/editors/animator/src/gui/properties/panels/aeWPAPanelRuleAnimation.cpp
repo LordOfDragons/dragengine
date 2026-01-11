@@ -120,7 +120,7 @@ public:
 	typedef deTObjectReference<cComboMoveName> Ref;
 	cComboMoveName(aeWPAPanelRuleAnimation &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		aeRuleAnimation * const rule = (aeRuleAnimation*)pPanel.GetRule();
 		if(!rule || rule->GetMoveName() == comboBox->GetText()){
 			return;
@@ -138,7 +138,7 @@ public:
 	typedef deTObjectReference<cTextMoveTime> Ref;
 	cTextMoveTime(aeWPAPanelRuleAnimation &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		aeRuleAnimation * const rule = (aeRuleAnimation*)pPanel.GetRule();
 		const float value = textField->GetFloat();
 		if(!rule || fabsf(rule->GetMoveTime() - value) < FLOAT_SAFE_EPSILON){

@@ -56,7 +56,7 @@ public:
 	
 protected:
 	/** \brief Clean up icon. */
-	virtual ~delGameIcon();
+	~delGameIcon() override;
 	
 public:
 	/*@}*/

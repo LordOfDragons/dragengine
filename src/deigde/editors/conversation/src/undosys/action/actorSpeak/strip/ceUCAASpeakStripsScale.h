@@ -67,7 +67,7 @@ protected:
 	ceUCAASpeakStripsScale(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak);
 	
 	/** \brief Cleans up the undo object. */
-	virtual ~ceUCAASpeakStripsScale();
+	~ceUCAASpeakStripsScale() override;
 	/*@}*/
 	
 public:
@@ -79,9 +79,9 @@ public:
 	void SetScaling(float scaling);
 	
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -55,7 +55,7 @@ public:
 	deSkinModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~deSkinModule();
+	~deSkinModule() override;
 	/*@}*/
 	
 	
@@ -63,10 +63,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Load skin. */
-	virtual void LoadSkin(decBaseFileReader &reader, deSkin &skin);
+	void LoadSkin(decBaseFileReader &reader, deSkin &skin) override;
 	
 	/** \brief Save skin. */
-	virtual void SaveSkin(decBaseFileWriter &writer, const deSkin &skin);
+	void SaveSkin(decBaseFileWriter &writer, const deSkin &skin) override;
 	/*@}*/
 	
 private:

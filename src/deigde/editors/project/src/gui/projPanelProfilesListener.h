@@ -51,7 +51,7 @@ public:
 	
 	/** \brief Clean up listener. */
 protected:
-	virtual ~projPanelProfilesListener();
+	~projPanelProfilesListener() override;
 public:
 	/*@}*/
 	

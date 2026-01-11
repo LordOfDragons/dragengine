@@ -127,10 +127,10 @@ public:
 	typedef deTObjectReference<cListTags> Ref;
 	cListTags(gdeWPTagList &listBox) : pListBox(listBox){}
 	
-	virtual void OnSelectionChanged(igdeListBox*){
+	void OnSelectionChanged(igdeListBox*) override{
 	}
 	
-	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
+	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
 		igdeUIHelper &helper = pListBox.GetEnvironment().GetUIHelper();
 		helper.MenuCommand(menu, pListBox.GetActionAdd());
 		helper.MenuCommand(menu, pListBox.GetActionRemove());

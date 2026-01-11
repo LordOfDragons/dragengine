@@ -56,7 +56,7 @@ public:
 	ceFacePose(const char *name = "Face Pose");
 	/** Cleans up the face pose. */
 protected:
-	virtual ~ceFacePose();
+	~ceFacePose() override;
 public:
 	/*@}*/
 	

@@ -82,7 +82,7 @@ protected:
 public:
 	cBaseTextFieldListener(skyeWPLink &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		skyeSky * const sky = pPanel.GetSky();
 		skyeLink * const link = pPanel.GetLink();
 		if(!sky || !link){
@@ -105,7 +105,7 @@ protected:
 public:
 	cBaseComboBoxListener(skyeWPLink &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		skyeSky * const sky = pPanel.GetSky();
 		skyeLink * const link = pPanel.GetLink();
 		if(!sky || !link){
@@ -185,7 +185,7 @@ public:
 	typedef deTObjectReference<cListLinks> Ref;
 	cListLinks(skyeWPLink &panel) : pPanel(panel){}
 	
-	virtual void OnSelectionChanged(igdeListBox *listBox){
+	void OnSelectionChanged(igdeListBox *listBox) override{
 		skyeSky * const sky = pPanel.GetSky();
 		if(!sky){
 			return;
@@ -201,7 +201,7 @@ public:
 		}
 	}
 	
-	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
+	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
 		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelperProperties();
 		helper.MenuCommand(menu, pPanel.GetActionLinkAdd());
 		helper.MenuCommand(menu, pPanel.GetActionLinkRemove());
@@ -227,7 +227,7 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove the selected link."){}
 	
-	virtual igdeUndo::Ref OnActionLink(skyeSky *sky, skyeLink *link){
+	igdeUndo::Ref OnActionLink(skyeSky *sky, skyeLink *link) override{
 		const int usageCount = sky->CountLinkUsage(link);
 		
 		if(usageCount > 0 && igdeCommonDialogs::QuestionFormat(
@@ -306,7 +306,7 @@ public:
 	typedef deTObjectReference<cEditCurve> Ref;
 	cEditCurve(skyeWPLink &panel) : pPanel(panel){}
 	
-	virtual void OnCurveChanged(igdeViewCurveBezier *viewCurveBezier){
+	void OnCurveChanged(igdeViewCurveBezier *viewCurveBezier) override{
 		if(pUndo){
 			((skyeULinkSetCurve&)(igdeUndo&)pUndo).SetNewCurve(viewCurveBezier->GetCurve());
 			
@@ -321,7 +321,7 @@ public:
 		pUndo = nullptr;
 	}
 	
-	virtual void OnCurveChanging(igdeViewCurveBezier *viewCurveBezier){
+	void OnCurveChanging(igdeViewCurveBezier *viewCurveBezier) override{
 		if(pUndo){
 			((skyeULinkSetCurve&)(igdeUndo&)pUndo).SetNewCurve(viewCurveBezier->GetCurve());
 			pUndo->Redo();

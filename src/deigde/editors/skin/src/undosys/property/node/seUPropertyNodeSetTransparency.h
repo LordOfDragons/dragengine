@@ -55,7 +55,7 @@ public:
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~seUPropertyNodeSetTransparency();
+	~seUPropertyNodeSetTransparency() override;
 	/*@}*/
 	
 	
@@ -67,10 +67,10 @@ public:
 	void SetNewValue(float value);
 	
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -52,7 +52,7 @@ public:
 	
 	/** Cleans up the controller value. */
 protected:
-	virtual ~ceControllerValue();
+	~ceControllerValue() override;
 public:
 	/*@}*/
 	

@@ -69,7 +69,7 @@ public:
 	typedef deTObjectReference<cTextInterval> Ref;
 	cTextInterval(ceWPAWait &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAWait * const action = pPanel.GetAction();
 		if(!topic || !action){

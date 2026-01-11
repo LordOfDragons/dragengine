@@ -69,7 +69,7 @@ public:
 	
 protected:
 	/** Clean up connection. */
-	virtual ~fbxTexture();
+	~fbxTexture() override;
 	/*@}*/
 	
 	

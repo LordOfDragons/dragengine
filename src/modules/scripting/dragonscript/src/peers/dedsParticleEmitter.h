@@ -53,7 +53,7 @@ public:
 	dedsParticleEmitter(deScriptingDragonScript *ds, deParticleEmitterInstance *emitter);
 	
 	/** \brief Clean up peer. */
-	virtual ~dedsParticleEmitter();
+	~dedsParticleEmitter() override;
 	/*@}*/
 	
 	
@@ -72,14 +72,14 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Last particle cast by this emitter died. */
-	virtual void LastParticleDied();
+	void LastParticleDied() override;
 	
 	/**
 	 * \brief Determine response for a custom particle collision.
 	 * 
 	 * Update \em collisionInfo with the particle response to use.
 	 */
-	virtual void CollisionResponse(deCollisionInfo *collisionInfo);
+	void CollisionResponse(deCollisionInfo *collisionInfo) override;
 	/*@}*/
 };
 

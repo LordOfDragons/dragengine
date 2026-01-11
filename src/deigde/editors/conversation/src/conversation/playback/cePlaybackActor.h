@@ -58,7 +58,7 @@ public:
 	cePlaybackActor();
 	/** Cleans up the playback actor. */
 protected:
-	~cePlaybackActor();
+	~cePlaybackActor() override;
 public:
 	/*@}*/
 	

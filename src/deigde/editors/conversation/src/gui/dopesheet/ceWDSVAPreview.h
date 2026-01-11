@@ -70,7 +70,7 @@ public:
 	
 	/** \brief Clean up dope sheet lane. */
 protected:
-	~ceWDSVAPreview();
+	~ceWDSVAPreview() override;
 public:
 	/*@}*/
 	

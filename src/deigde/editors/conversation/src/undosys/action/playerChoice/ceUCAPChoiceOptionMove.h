@@ -55,16 +55,16 @@ public:
 	ceUCAPChoiceOptionMove(ceConversationTopic *topic, ceCAPlayerChoice *playerChoice, ceCAPlayerChoiceOption *option, int newIndex);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCAPChoiceOptionMove();
+	~ceUCAPChoiceOptionMove() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

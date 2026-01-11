@@ -75,7 +75,7 @@ public:
 	typedef deTObjectReference<cComboActorID> Ref;
 	cComboActorID(ceWPASetAParam &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCASetActorParameter * const action = pPanel.GetAction();
 		if(!topic || !action  || comboBox->GetText() == action->GetActor()){
@@ -94,7 +94,7 @@ public:
 	typedef deTObjectReference<cTextName> Ref;
 	cTextName(ceWPASetAParam &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCASetActorParameter * const action = pPanel.GetAction();
 		if(!topic || !action || textField->GetText() == action->GetName()){
@@ -113,7 +113,7 @@ public:
 	typedef deTObjectReference<cComboOperator> Ref;
 	cComboOperator(ceWPASetAParam &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCASetActorParameter * const action = pPanel.GetAction();
 		if(!topic || !action || !comboBox->GetSelectedItem()){
@@ -138,7 +138,7 @@ public:
 	typedef deTObjectReference<cTextValue> Ref;
 	cTextValue(ceWPASetAParam &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCASetActorParameter * const action = pPanel.GetAction();
 		const int value = textField->GetInteger();
@@ -158,7 +158,7 @@ public:
 	typedef deTObjectReference<cTextValueVariable> Ref;
 	cTextValueVariable(ceWPASetAParam &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCASetActorParameter * const action = pPanel.GetAction();
 		if(!topic || !action || textField->GetText() == action->GetValueVariable()){

@@ -64,7 +64,7 @@ protected:
 	devkPipeline(devkDevice &device, const devkPipelineConfiguration &configuration);
 	
 	/** Clean up pipeline. */
-	virtual ~devkPipeline();
+	~devkPipeline() override;
 	/*@}*/
 	
 	

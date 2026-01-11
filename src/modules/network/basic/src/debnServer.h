@@ -60,7 +60,7 @@ public:
 	debnServer(deNetworkBasic *netBasic, deServer *server);
 	
 	/** \brief Clean up server object. */
-	virtual ~debnServer();
+	~debnServer() override;
 	/*@}*/
 	
 	
@@ -76,10 +76,10 @@ public:
 	/**
 	 * \brief Start listening on address for incoming connections.
 	 */
-	virtual bool ListenOn(const char *address);
+	bool ListenOn(const char *address) override;
 	
 	/** \brief Stop listening. */
-	virtual void StopListening();
+	void StopListening() override;
 	/*@}*/
 	
 	

@@ -53,7 +53,7 @@ private:
 public:
 	// constructor, destructor
 	debpDecal(deDecal *decal);
-	~debpDecal();
+	~debpDecal() override;
 	
 	// management
 	inline deDecal *GetDecal() const{ return pDecal; }
@@ -82,11 +82,11 @@ public:
 	/** @name Notifications */
 	/*@{*/
 	/** Skin changed. */
-	virtual void SkinChanged();
+	void SkinChanged() override;
 	/** Geometry changed. */
-	virtual void GeometryChanged();
+	void GeometryChanged() override;
 	/** Visible changed. */
-	virtual void VisibleChanged();
+	void VisibleChanged() override;
 	/*@}*/
 	
 private:

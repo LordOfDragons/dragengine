@@ -65,10 +65,10 @@ private:
 public:
 	// constructor
 	deClassComponent(deEngine *GameEngine, deScriptingDragonScript *ScrMgr);
-	~deClassComponent();
+	~deClassComponent() override;
 	
 	// internal functions
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	deComponent *GetComponent(dsRealObject *This) const;
 	void PushComponent(dsRunTime *rt, deComponent *component);
 	inline deEngine *GetGameEngine() const{ return pGameEngine; }

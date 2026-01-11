@@ -223,7 +223,7 @@ public:
 	typedef deTObjectReference<cScrollTime> Ref;
 	cScrollTime(ceWindowDopeSheet &window) : pWindow(window){}
 	
-	virtual void OnValueChanged(igdeScrollBar*){
+	void OnValueChanged(igdeScrollBar*) override{
 		ceConversation * const conversation = pWindow.GetConversation();
 		if(conversation){
 			pWindow.OnTimeChanged();
@@ -238,7 +238,7 @@ public:
 	typedef deTObjectReference<cComboTimeScale> Ref;
 	cComboTimeScale(ceWindowDopeSheet &window) : pWindow(window){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversation * const conversation = pWindow.GetConversation();
 		if(conversation){
 			pWindow.SetZoomTime(0.01f * decMath::clamp(comboBox->GetText().ToInt(), 10, 800));
@@ -271,28 +271,28 @@ public:
 		return nullptr;
 	}
 	
-	virtual void OnButtonPress(igdeWidget *widget, int button, const decPoint &position, int modifiers){
+	void OnButtonPress(igdeWidget *widget, int button, const decPoint &position, int modifiers) override{
 		pDragListener = GetListenerAtPosition(position);
 		if(pDragListener){
 			pDragListener->OnButtonPress(widget, button, position, modifiers);
 		}
 	}
 	
-	virtual void OnButtonRelease(igdeWidget *widget, int button, const decPoint &position, int modifiers){
+	void OnButtonRelease(igdeWidget *widget, int button, const decPoint &position, int modifiers) override{
 		if(pDragListener){
 			pDragListener->OnButtonRelease(widget, button, position, modifiers);
 			pDragListener = nullptr;
 		}
 	}
 	
-	virtual void OnDoubleClicked(igdeWidget *widget, int button, const decPoint &position, int modifiers){
+	void OnDoubleClicked(igdeWidget *widget, int button, const decPoint &position, int modifiers) override{
 		pDragListener = GetListenerAtPosition(position);
 		if(pDragListener){
 			pDragListener->OnDoubleClicked(widget, button, position, modifiers);
 		}
 	}
 	
-	virtual void OnMouseMoved(igdeWidget *widget, const decPoint &position, int modifiers){
+	void OnMouseMoved(igdeWidget *widget, const decPoint &position, int modifiers) override{
 		igdeMouseKeyListener *listener = pDragListener;
 		if(!listener){
 			listener = GetListenerAtPosition(position);
@@ -302,7 +302,7 @@ public:
 		}
 	}
 	
-	virtual void OnMouseWheeled(igdeWidget *widget, const decPoint &position, const decPoint &change, int modifiers){
+	void OnMouseWheeled(igdeWidget *widget, const decPoint &position, const decPoint &change, int modifiers) override{
 		igdeMouseKeyListener *listener = pDragListener;
 		if(!listener){
 			listener = GetListenerAtPosition(position);

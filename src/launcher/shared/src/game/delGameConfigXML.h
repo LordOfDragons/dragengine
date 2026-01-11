@@ -49,7 +49,7 @@ public:
 	delGameConfigXML(delLauncher &launcher);
 	
 	/** \brief Clean up game config xml read/save. */
-	virtual ~delGameConfigXML();
+	~delGameConfigXML() override;
 	/*@}*/
 	
 	

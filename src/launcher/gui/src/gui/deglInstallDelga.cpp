@@ -78,10 +78,10 @@ public:
 	pAbort(false), pFinished(false), pFilename(filename){
 	};
 	
-	~cTaskInstallDelga(){
+	~cTaskInstallDelga() override{
 	};
 	
-	virtual FXint run(){
+	FXint run() override{
 		char *buffer = nullptr;
 		
 		try{

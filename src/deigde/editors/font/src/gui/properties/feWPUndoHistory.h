@@ -53,7 +53,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~feWPUndoHistory();
+	~feWPUndoHistory() override;
 	/*@}*/
 	
 	

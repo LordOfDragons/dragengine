@@ -103,7 +103,7 @@ public:
 	
 protected:
 	/** Clean up . */
-	virtual ~meWPWorld();
+	~meWPWorld() override;
 	
 	
 	

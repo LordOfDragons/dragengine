@@ -117,7 +117,7 @@ public:
 	
 protected:
 	/** \brief Clean up main window. */
-	virtual ~seWindowMain();
+	~seWindowMain() override;
 	/*@}*/
 	
 	
@@ -173,25 +173,25 @@ public:
 	
 	
 	/** \brief Game engine is about to be started. */
-	virtual void OnBeforeEngineStart();
+	void OnBeforeEngineStart() override;
 	
 	/** \brief Game engine has been started. */
-	virtual void OnAfterEngineStart();
+	void OnAfterEngineStart() override;
 	
 	/** \brief Game engine is about to be stopped. */
-	virtual void OnBeforeEngineStop();
+	void OnBeforeEngineStop() override;
 	
 	/** \brief Game engine has been stopped. */
-	virtual void OnAfterEngineStop();
+	void OnAfterEngineStop() override;
 	
 	/** \brief Module has been activated. */
-	virtual void OnActivate();
+	void OnActivate() override;
 	
 	/** \brief Module has been deactivated. */
-	virtual void OnDeactivate();
+	void OnDeactivate() override;
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate(float elapsed);
+	void OnFrameUpdate(float elapsed) override;
 	
 	/**
 	 * \brief Retrieves a list of changed documents.
@@ -202,12 +202,12 @@ public:
 	 * saving. The filename is later used in calls to \ref SaveDocument to save the file
 	 * if requested by the user. All other files are discarded.
 	 */
-	virtual void GetChangedDocuments(decStringList &list);
+	void GetChangedDocuments(decStringList &list) override;
 	
 	/**
 	 * \brief Requests a document to be loaded.
 	 */
-	virtual void LoadDocument(const char *filename);
+	void LoadDocument(const char *filename) override;
 	
 	/**
 	 * \brief Requests a document to be saved.
@@ -217,12 +217,12 @@ public:
 	 * 
 	 * \returns True if the saving has been successful or false otherwise.
 	 */
-	virtual bool SaveDocument(const char *filename);
+	bool SaveDocument(const char *filename) override;
 	
 	/**
 	 * \brief Recent files changed.
 	 */
-	virtual void RecentFilesChanged();
+	void RecentFilesChanged() override;
 	
 	/**
 	 * \brief The game project has changed.
@@ -232,7 +232,7 @@ public:
 	 * objects related to the previous game project. The old game project is kept
 	 * alive until all editor modules have processed the OnGameProjectChanged().
 	 */
-	virtual void OnGameProjectChanged();
+	void OnGameProjectChanged() override;
 	
 	/**
 	 * \brief Project game definition changed.
@@ -246,7 +246,7 @@ public:
 	 * 
 	 * The default implementation returns \em nullptr.
 	 */
-	virtual igdeStepableTask::Ref OnGameDefinitionChanged();
+	igdeStepableTask::Ref OnGameDefinitionChanged() override;
 	/*@}*/
 	
 	

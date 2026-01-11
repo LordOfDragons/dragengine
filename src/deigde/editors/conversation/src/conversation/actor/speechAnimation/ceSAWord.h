@@ -51,7 +51,7 @@ public:
 	explicit ceSAWord(const char *name);
 	/** Cleans up the word. */
 protected:
-	virtual ~ceSAWord();
+	~ceSAWord() override;
 public:
 	/*@}*/
 	

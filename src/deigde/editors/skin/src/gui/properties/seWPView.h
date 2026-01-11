@@ -81,7 +81,7 @@ public:
 	
 protected:
 	/** \brief Cleanup panel. */
-	virtual ~seWPView();
+	~seWPView() override;
 	/*@}*/
 	
 	

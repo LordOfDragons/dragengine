@@ -50,7 +50,7 @@ public:
 	lpeWindowMainListener(lpeWindowMain &window);
 	
 	/** \brief Clean up listener. */
-	~lpeWindowMainListener();
+	~lpeWindowMainListener() override;
 	/*@}*/
 	
 	

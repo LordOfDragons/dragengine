@@ -77,7 +77,7 @@ public:
 	
 protected:
 	/** Clean up panel. */
-	virtual ~seWPMapped();
+	~seWPMapped() override;
 	/*@}*/
 	
 	

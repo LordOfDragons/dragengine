@@ -59,7 +59,7 @@ public:
 	typedef deTObjectReference<cTextRadius> Ref;
 	cTextRadius(reWPPanelShapeSphere &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		reRig * const rig = pPanel.GetRig();
 		reRigShapeSphere * const sphere = (reRigShapeSphere*)pPanel.GetShape();
 		if(!rig || !sphere){

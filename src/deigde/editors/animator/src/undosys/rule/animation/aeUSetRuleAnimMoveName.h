@@ -58,16 +58,16 @@ public:
 	aeUSetRuleAnimMoveName(aeRuleAnimation *rule, const char *newName);
 protected:
 	/** Clean up undo. */
-	virtual ~aeUSetRuleAnimMoveName();
+	~aeUSetRuleAnimMoveName() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

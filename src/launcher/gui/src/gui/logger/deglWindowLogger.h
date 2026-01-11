@@ -69,7 +69,7 @@ public:
 	deglWindowLogger(FXApp *app);
 	
 	/** Clean up logger window. */
-	virtual ~deglWindowLogger();
+	~deglWindowLogger() override;
 	/*@}*/
 	
 	
@@ -77,7 +77,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Create window. */
-	virtual void create();
+	void create() override;
 	
 	/** Logger to monitor or nullptr if none. */
 	inline const delLoggerHistory::Ref &GetLogger() const{ return pLogger; }

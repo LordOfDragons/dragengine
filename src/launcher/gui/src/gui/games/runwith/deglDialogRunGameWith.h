@@ -73,7 +73,7 @@ public:
 	deglDialogRunGameWith(deglWindowMain *windowMain, delGame *game, FXWindow *owner);
 	
 	/** Clean up dialog. */
-	virtual ~deglDialogRunGameWith();
+	~deglDialogRunGameWith() override;
 	/*@}*/
 	
 	

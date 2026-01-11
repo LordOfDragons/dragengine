@@ -68,7 +68,7 @@ public:
 	
 protected:
 	/** \brief Clean up convex face. */
-	virtual ~dedaiConvexFace();
+	~dedaiConvexFace() override;
 	/*@}*/
 	
 	

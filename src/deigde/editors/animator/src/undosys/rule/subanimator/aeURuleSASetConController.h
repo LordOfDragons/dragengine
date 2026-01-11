@@ -59,16 +59,16 @@ public:
 	aeURuleSASetConController(aeRuleSubAnimator *rule, int target, aeController *newController);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleSASetConController();
+	~aeURuleSASetConController() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

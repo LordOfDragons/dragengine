@@ -48,13 +48,13 @@ public:
 	/** Creates a new font builder. */
 	feFontBuilder(feFont *font);
 	/** Cleans up the font. */
-	virtual ~feFontBuilder();
+	~feFontBuilder() override;
 	/*@}*/
 	
 	/** @name Management */
 	/*@{*/
 	/** Build font into the provided font object. */
-	virtual void BuildFont(deFont *engFont);
+	void BuildFont(deFont *engFont) override;
 	/*@}*/
 };
 

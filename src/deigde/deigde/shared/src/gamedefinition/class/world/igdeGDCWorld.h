@@ -74,7 +74,7 @@ public:
 	
 protected:
 	/** \brief Clean up world property. */
-	virtual ~igdeGDCWorld();
+	~igdeGDCWorld() override;
 	
 public:
 	/*@}*/	

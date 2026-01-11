@@ -92,7 +92,7 @@ public:
 	
 protected:
 	/** Clean up panel. */
-	virtual ~aeWPRule();
+	~aeWPRule() override;
 	/*@}*/
 	
 	

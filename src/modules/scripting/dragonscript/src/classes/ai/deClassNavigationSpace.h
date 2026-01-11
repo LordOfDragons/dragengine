@@ -47,7 +47,7 @@ public:
 	/** Creates a new class. */
 	deClassNavigationSpace(deScriptingDragonScript *ds);
 	/** Cleans up the class. */
-	virtual ~deClassNavigationSpace();
+	~deClassNavigationSpace() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -55,7 +55,7 @@ public:
 	/** Retrieves the module. */
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/** Creates class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** Retrieves the navigation space or NULL if myself is NULL. */
 	deNavigationSpace *GetNavigationSpace(dsRealObject *myself) const;

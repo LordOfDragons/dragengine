@@ -80,7 +80,7 @@ public:
 	
 	/** Clean up link. */
 protected:
-	virtual ~aeLink();
+	~aeLink() override;
 public:
 	/*@}*/
 	

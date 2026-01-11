@@ -52,16 +52,16 @@ public:
 	aeURuleBTransSetTargetBone(aeRuleBoneTransformator *rule, const char *newBone);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleBTransSetTargetBone();
+	~aeURuleBTransSetTargetBone() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

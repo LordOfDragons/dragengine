@@ -55,7 +55,7 @@ public:
 	
 protected:
 	/** Clean up panel. */
-	virtual ~aeWPUndoHistory();
+	~aeWPUndoHistory() override;
 	/*@}*/
 	
 	

@@ -73,7 +73,7 @@ public:
 	
 protected:
 	/** Clean up render height terrain. */
-	virtual ~deoglRHeightTerrain();
+	~deoglRHeightTerrain() override;
 	/*@}*/
 	
 	

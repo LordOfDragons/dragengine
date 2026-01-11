@@ -82,7 +82,7 @@ public:
 	deoglImage(deGraphicOpenGl &ogl, deImage &image);
 	
 	/** Clean up image. */
-	virtual ~deoglImage();
+	~deoglImage() override;
 	/*@}*/
 	
 	
@@ -140,17 +140,17 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Image data changed. */
-	virtual void ImageDataChanged();
+	void ImageDataChanged() override;
 	
 	/** Image data has been restored from original file. */
-	virtual void ImageDataRestored();
+	void ImageDataRestored() override;
 	
 	/**
 	 * Graphic module requires image data to remain loaded.
 	 * 
 	 * Used to optimized memory consumption. Default implementation returns \em false.
 	 */
-	virtual bool RetainImageData();
+	bool RetainImageData() override;
 	/*@}*/
 	
 private:

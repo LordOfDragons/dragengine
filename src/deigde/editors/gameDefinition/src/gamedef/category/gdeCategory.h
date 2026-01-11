@@ -69,7 +69,7 @@ public:
 	
 	/** \brief Clean up category. */
 protected:
-	virtual ~gdeCategory();
+	~gdeCategory() override;
 public:
 	/*@}*/
 	

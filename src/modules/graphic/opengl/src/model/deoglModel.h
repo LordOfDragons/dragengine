@@ -50,7 +50,7 @@ public:
 	deoglModel(deGraphicOpenGl &ogl, const deModel &model);
 	
 	/** Cleans up the opengl model. */
-	virtual ~deoglModel();
+	~deoglModel() override;
 	/*@}*/
 	
 	

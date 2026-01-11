@@ -61,7 +61,7 @@ public:
 	
 protected:
 	/** Clean up undo action. */
-	virtual ~gdeUOCTextureSetColorTint();
+	~gdeUOCTextureSetColorTint() override;
 	/*@}*/
 	
 	
@@ -70,10 +70,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

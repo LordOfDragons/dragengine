@@ -78,7 +78,7 @@ public:
 	
 	/** \brief Clean up load/save system. */
 protected:
-	~ceLoadSaveSystem();
+	~ceLoadSaveSystem() override;
 public:
 	/*@}*/
 	

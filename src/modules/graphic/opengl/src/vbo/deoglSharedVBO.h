@@ -72,7 +72,7 @@ public:
 	
 protected:
 	/** Cleans up the shared vbo. */
-	virtual ~deoglSharedVBO();
+	~deoglSharedVBO() override;
 	/*@}*/
 	
 public:

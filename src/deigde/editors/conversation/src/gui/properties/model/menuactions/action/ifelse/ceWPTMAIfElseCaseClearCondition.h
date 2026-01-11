@@ -76,7 +76,7 @@ public:
 	inline ceCAIfElseCase *GetOption() const{ return pIfCase; }
 	
 	/** \brief Do menu action. */
-	virtual void OnAction();
+	void OnAction() override;
 	/*@}*/
 };
 

@@ -53,7 +53,7 @@ public:
 	
 protected:
 	/** \brief Clean up undo history panel. */
-	virtual ~ceWPUndoHistory();
+	~ceWPUndoHistory() override;
 	/*@}*/
 	
 	

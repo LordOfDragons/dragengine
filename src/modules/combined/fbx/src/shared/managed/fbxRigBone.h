@@ -90,7 +90,7 @@ public:
 	
 protected:
 	/** \brief Clean up connection. */
-	virtual ~fbxRigBone();
+	~fbxRigBone() override;
 	/*@}*/
 	
 	

@@ -82,7 +82,7 @@ public:
 	
 protected:
 	/** \brief Clean up profile. */
-	virtual ~projProfile();
+	~projProfile() override;
 	/*@}*/
 	
 	

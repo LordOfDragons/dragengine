@@ -54,16 +54,16 @@ public:
 	ceUCAASpeakEyesLAAdd(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *eyesLookAt, int index);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCAASpeakEyesLAAdd();
+	~ceUCAASpeakEyesLAAdd() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

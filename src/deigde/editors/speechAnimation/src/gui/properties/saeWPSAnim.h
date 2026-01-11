@@ -89,7 +89,7 @@ public:
 	
 protected:
 	/** Clean up panel. */
-	virtual ~saeWPSAnim();
+	~saeWPSAnim() override;
 	/*@}*/
 	
 	

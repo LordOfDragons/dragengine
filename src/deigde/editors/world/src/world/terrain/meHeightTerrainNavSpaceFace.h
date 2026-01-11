@@ -55,7 +55,7 @@ public:
 	
 protected:
 	/** \brief Clean up height terrain navigation space face. */
-	virtual ~meHeightTerrainNavSpaceFace();
+	~meHeightTerrainNavSpaceFace() override;
 	
 public:
 	/*@}*/

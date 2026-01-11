@@ -65,7 +65,7 @@ public:
 	
 protected:
 	/** Clean up height terrain sector. */
-	virtual ~deoglHTSector();
+	~deoglHTSector() override;
 	/*@}*/
 	
 	

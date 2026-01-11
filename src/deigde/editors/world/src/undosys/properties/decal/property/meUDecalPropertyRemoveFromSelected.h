@@ -54,7 +54,7 @@ protected:
 	/** \brief Clean up undo decal. */
 
 protected:
-	virtual ~meUDecalPropertyRemoveFromSelected();
+	~meUDecalPropertyRemoveFromSelected() override;
 
 public:
 	/*@}*/
@@ -69,10 +69,10 @@ public:
 	inline const meUndoDataDecalProperty::List &GetList() const{ return pList; }
 	
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

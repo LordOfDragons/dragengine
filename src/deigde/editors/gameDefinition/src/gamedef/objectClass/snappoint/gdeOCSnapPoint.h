@@ -65,7 +65,7 @@ public:
 	
 	/** \brief Clean up snap point. */
 protected:
-	virtual ~gdeOCSnapPoint();
+	~gdeOCSnapPoint() override;
 public:
 	/*@}*/
 	

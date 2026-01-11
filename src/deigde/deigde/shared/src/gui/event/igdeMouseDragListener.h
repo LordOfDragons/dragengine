@@ -79,7 +79,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeMouseDragListener();
+	~igdeMouseDragListener() override;
 	/*@}*/
 	
 	
@@ -196,7 +196,7 @@ public:
 	 * \param[in] modifiers Modifier keys pressed at the time of press. OR combination of
 	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	virtual void OnButtonPress(igdeWidget *widget, int button, const decPoint &position, int modifiers);
+	void OnButtonPress(igdeWidget *widget, int button, const decPoint &position, int modifiers) override;
 	
 	/**
 	 * \brief User released down mouse button.
@@ -208,7 +208,7 @@ public:
 	 * \param[in] modifiers Modifier keys pressed at the time of release. OR combination of
 	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	virtual void OnButtonRelease(igdeWidget *widget, int button, const decPoint &position, int modifiers);
+	void OnButtonRelease(igdeWidget *widget, int button, const decPoint &position, int modifiers) override;
 	
 	/**
 	 * \brief User moved mouse.
@@ -218,7 +218,7 @@ public:
 	 * \param[in] modifiers Modifier keys pressed at the time of release. OR combination of
 	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	virtual void OnMouseMoved(igdeWidget *widget, const decPoint &position, int modifiers);
+	void OnMouseMoved(igdeWidget *widget, const decPoint &position, int modifiers) override;
 	/*@}*/
 };
 

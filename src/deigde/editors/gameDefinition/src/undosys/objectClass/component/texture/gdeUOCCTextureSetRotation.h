@@ -61,7 +61,7 @@ public:
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCCTextureSetRotation();
+	~gdeUOCCTextureSetRotation() override;
 	/*@}*/
 	
 	
@@ -69,10 +69,10 @@ protected:
 	/** \rotation Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

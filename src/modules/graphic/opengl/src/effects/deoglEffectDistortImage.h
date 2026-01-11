@@ -72,10 +72,10 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Image changed. */
-	virtual void ImageChanged();
+	void ImageChanged() override;
 	
 	/** Strength changed. */
-	virtual void StrengthChanged();
+	void StrengthChanged() override;
 	/*@}*/
 };
 

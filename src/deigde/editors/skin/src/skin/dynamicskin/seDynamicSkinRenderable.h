@@ -101,7 +101,7 @@ public:
 	explicit seDynamicSkinRenderable(deEngine *engine, const char *name = "Renderable");
 	/** Cleans up the renderable. */
 protected:
-	virtual ~seDynamicSkinRenderable();
+	~seDynamicSkinRenderable() override;
 public:
 	/*@}*/
 	

@@ -63,7 +63,7 @@ public:
 	deoglDynamicSkin(deGraphicOpenGl &ogl, const deDynamicSkin &dynamicSkin);
 	
 	/** Clean up peer. */
-	virtual ~deoglDynamicSkin();
+	~deoglDynamicSkin() override;
 	/*@}*/
 	
 	
@@ -122,16 +122,16 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Renderable added. */
-	virtual void RenderableAdded(int index, deDSRenderable *renderable);
+	void RenderableAdded(int index, deDSRenderable *renderable) override;
 	
 	/** Renderable changed. */
-	virtual void RenderableChanged(int index, deDSRenderable *renderable);
+	void RenderableChanged(int index, deDSRenderable *renderable) override;
 	
 	/** Renderable removed. */
-	virtual void RenderableRemoved(int index, deDSRenderable *renderable);
+	void RenderableRemoved(int index, deDSRenderable *renderable) override;
 	
 	/** All renderables removed. */
-	virtual void AllRenderablesRemoved();
+	void AllRenderablesRemoved() override;
 	/*@}*/
 	
 	

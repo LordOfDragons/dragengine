@@ -204,7 +204,7 @@ public:
 	
 protected:
 	/** Cleans up the conversation actor. */
-	virtual ~ceConversationActor();
+	~ceConversationActor() override;
 	/*@}*/
 	
 	

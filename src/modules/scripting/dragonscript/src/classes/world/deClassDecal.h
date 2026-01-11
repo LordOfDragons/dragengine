@@ -49,7 +49,7 @@ public:
 	deClassDecal(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
-	virtual ~deClassDecal();
+	~deClassDecal() override;
 	/*@}*/
 	
 	
@@ -60,7 +60,7 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Decal from object. */
 	deDecal *GetDecal(dsRealObject *myself) const;

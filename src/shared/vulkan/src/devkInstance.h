@@ -103,7 +103,7 @@ public:
 	
 protected:
 	/** Clean up instance. */
-	virtual ~devkInstance();
+	~devkInstance() override;
 	/*@}*/
 	
 	

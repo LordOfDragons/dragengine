@@ -54,16 +54,16 @@ public:
 	ceUCTargetSetPosition(ceTarget *target, const decVector &newPosition);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCTargetSetPosition();
+	~ceUCTargetSetPosition() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

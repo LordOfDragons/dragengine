@@ -74,7 +74,7 @@ public:
 	
 protected:
 	/** Clean up device button. */
-	virtual ~dexsiDeviceButton();
+	~dexsiDeviceButton() override;
 	/*@}*/
 	
 	

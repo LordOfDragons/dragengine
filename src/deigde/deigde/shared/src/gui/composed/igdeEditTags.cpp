@@ -108,7 +108,7 @@ public:
 	igdeEditTags_ListTags(igdeEditTags &widget) : pWidget(widget){
 	}
 	
-	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
+	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
 		igdeUIHelper &helper = pWidget.GetEnvironment().GetUIHelper();
 		helper.MenuCommand(menu, pWidget.GetActionAdd());
 		helper.MenuCommand(menu, pWidget.GetActionRemove());

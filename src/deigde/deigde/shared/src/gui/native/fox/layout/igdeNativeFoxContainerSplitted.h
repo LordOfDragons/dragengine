@@ -55,7 +55,7 @@ public:
 	igdeNativeFoxContainerSplitted(igdeContainerSplitted &owner, FXComposite *parent, int layoutFlags);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxContainerSplitted();
+	~igdeNativeFoxContainerSplitted() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeFoxContainerSplitted* CreateNativeWidget(igdeContainerSplitted &owner);

@@ -104,7 +104,7 @@ public:
 	reRigConstraint(deEngine *engine);
 	/** \brief Cleans up the rig controller. */
 protected:
-	virtual ~reRigConstraint();
+	~reRigConstraint() override;
 public:
 	/*@}*/
 	

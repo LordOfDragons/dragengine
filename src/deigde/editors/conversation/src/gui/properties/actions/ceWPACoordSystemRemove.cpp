@@ -70,7 +70,7 @@ public:
 	typedef deTObjectReference<cComboCoordSystemID> Ref;
 	cComboCoordSystemID(ceWPACoordSystemRemove &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCACoordSystemRemove * const action = pPanel.GetAction();
 		if(!topic || !action  || comboBox->GetText() == action->GetCoordSystemID()){

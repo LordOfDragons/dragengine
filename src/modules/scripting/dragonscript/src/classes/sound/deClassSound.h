@@ -48,7 +48,7 @@ public:
 	deClassSound(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
-	virtual ~deClassSound();
+	~deClassSound() override;
 	/*@}*/
 	
 	
@@ -59,7 +59,7 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Get sound from object or \em NULL if \em myself is \em NULL. */
 	deSound *GetSound(dsRealObject *myself) const;

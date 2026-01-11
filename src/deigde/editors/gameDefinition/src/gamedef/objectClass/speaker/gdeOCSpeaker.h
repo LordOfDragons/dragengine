@@ -97,7 +97,7 @@ public:
 	
 	/** \brief Clean up speaker. */
 protected:
-	virtual ~gdeOCSpeaker();
+	~gdeOCSpeaker() override;
 public:
 	/*@}*/
 	

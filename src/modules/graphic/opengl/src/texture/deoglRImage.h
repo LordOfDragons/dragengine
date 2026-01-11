@@ -73,7 +73,7 @@ public:
 	
 protected:
 	/** Clean up render image. */
-	virtual ~deoglRImage();
+	~deoglRImage() override;
 	/*@}*/
 	
 	

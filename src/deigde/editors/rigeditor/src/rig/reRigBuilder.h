@@ -49,13 +49,13 @@ public:
 	/** Creates a new rig builder. */
 	reRigBuilder(reRig *rig);
 	/** Cleans up the rig. */
-	virtual ~reRigBuilder();
+	~reRigBuilder() override;
 	/*@}*/
 	
 	/** @name Management */
 	/*@{*/
 	/** Build rig into the provided rig object. */
-	virtual void BuildRig(deRig *engRig);
+	void BuildRig(deRig *engRig) override;
 	/** Build rig bone. */
 	void BuildRigBone(deRig *engRig, reRigBone *rigBone);
 	/*@}*/

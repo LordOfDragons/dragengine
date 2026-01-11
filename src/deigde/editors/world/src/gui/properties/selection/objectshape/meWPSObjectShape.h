@@ -102,7 +102,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~meWPSObjectShape();
+	~meWPSObjectShape() override;
 	/*@}*/
 	
 	

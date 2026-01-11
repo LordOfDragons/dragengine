@@ -117,7 +117,7 @@ protected:
 public:
 	cBaseTextFieldListener(skyeWPLayer &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField){
+	void OnTextChanged(igdeTextField *textField) override{
 		skyeSky * const sky = pPanel.GetSky();
 		skyeLayer * const layer = pPanel.GetLayer();
 		if(!sky || !layer){
@@ -140,7 +140,7 @@ protected:
 public:
 	cBaseEditVectorListener(skyeWPLayer &panel) : pPanel(panel){}
 	
-	virtual void OnVectorChanged(igdeEditVector *editVector){
+	void OnVectorChanged(igdeEditVector *editVector) override{
 		skyeSky * const sky = pPanel.GetSky();
 		skyeLayer * const layer = pPanel.GetLayer();
 		if(!sky || !layer){
@@ -163,7 +163,7 @@ protected:
 public:
 	cBaseEditVector2Listener(skyeWPLayer &panel) : pPanel(panel){}
 	
-	virtual void OnVector2Changed(igdeEditVector2 *editVector2){
+	void OnVector2Changed(igdeEditVector2 *editVector2) override{
 		skyeSky * const sky = pPanel.GetSky();
 		skyeLayer * const layer = pPanel.GetLayer();
 		if(!sky || !layer){
@@ -186,7 +186,7 @@ protected:
 public:
 	cBaseColorBoxListener(skyeWPLayer &panel) : pPanel(panel){}
 	
-	virtual void OnColorChanged(igdeColorBox *colorBox){
+	void OnColorChanged(igdeColorBox *colorBox) override{
 		skyeSky * const sky = pPanel.GetSky();
 		skyeLayer * const layer = pPanel.GetLayer();
 		if(!sky || !layer){
@@ -209,7 +209,7 @@ protected:
 public:
 	cBasePathListener(skyeWPLayer &panel) : pPanel(panel){}
 	
-	virtual void OnEditPathChanged(igdeEditPath *editPath){
+	void OnEditPathChanged(igdeEditPath *editPath) override{
 		skyeSky * const sky = pPanel.GetSky();
 		skyeLayer * const layer = pPanel.GetLayer();
 		if(!sky || !layer){
@@ -242,7 +242,7 @@ public:
 	igdeAction(text, icon, description),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		skyeSky * const sky = pPanel.GetSky();
 		if(!sky){
 			return;
@@ -256,7 +256,7 @@ public:
 	
 	virtual igdeUndo::Ref OnAction(skyeSky *sky) = 0;
 	
-	virtual void Update(){
+	void Update() override{
 		skyeSky * const sky = pPanel.GetSky();
 		if(sky){
 			UpdateSky(*sky);
@@ -282,7 +282,7 @@ public:
 	cBaseActionLayer(skyeWPLayer &panel, const char *text, igdeIcon *icon, const char *description) :
 	cBaseAction(panel, text, icon, description){}
 	
-	virtual igdeUndo::Ref OnAction(skyeSky *sky){
+	igdeUndo::Ref OnAction(skyeSky *sky) override{
 		skyeLayer * const layer = pPanel.GetLayer();
 		if(layer){
 			return OnActionLayer(sky, layer);
@@ -317,7 +317,7 @@ public:
 	typedef deTObjectReference<cListLayers> Ref;
 	cListLayers(skyeWPLayer &panel) : pPanel(panel){}
 	
-	virtual void OnSelectionChanged(igdeListBox *listBox){
+	void OnSelectionChanged(igdeListBox *listBox) override{
 		skyeSky * const sky = pPanel.GetSky();
 		if(!sky){
 			return;
@@ -327,7 +327,7 @@ public:
 		sky->SetActiveLayer(selection ? (skyeLayer*)selection->GetData() : nullptr);
 	}
 	
-	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
+	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
 		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelperProperties();
 		helper.MenuCommand(menu, pPanel.GetActionLayerAdd());
 		helper.MenuCommand(menu, pPanel.GetActionLayerRemove());
@@ -357,7 +357,7 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove the selected layer."){}
 	
-	virtual igdeUndo::Ref OnActionLayer(skyeSky*, skyeLayer *layer){
+	igdeUndo::Ref OnActionLayer(skyeSky*, skyeLayer *layer) override{
 		return skyeULayerRemove::Ref::New(layer);
 	}
 };
@@ -371,7 +371,7 @@ public:
 		"Move layer up in the list."),
 	pListBox(listBox){}
 	
-	virtual igdeUndo::Ref OnActionLayer(skyeSky*, skyeLayer *layer){
+	igdeUndo::Ref OnActionLayer(skyeSky*, skyeLayer *layer) override{
 		return skyeULayerMoveUp::Ref::New(layer);
 	}
 	
@@ -389,7 +389,7 @@ public:
 		"Move layer down in the list."),
 	pListBox(listBox){}
 	
-	virtual igdeUndo::Ref OnActionLayer(skyeSky*, skyeLayer *layer){
+	igdeUndo::Ref OnActionLayer(skyeSky*, skyeLayer *layer) override{
 		return skyeULayerMoveDown::Ref::New(layer);
 	}
 	
@@ -486,7 +486,7 @@ public:
 	typedef deTObjectReference<cSliderTransparency> Ref;
 	cSliderTransparency(skyeWPLayer &panel) : pPanel(panel){}
 	
-	virtual void OnSliderTextValueChanging(igdeEditSliderText *sliderText){
+	void OnSliderTextValueChanging(igdeEditSliderText *sliderText) override{
 		skyeSky * const sky = pPanel.GetSky();
 		skyeLayer * const layer = pPanel.GetLayer();
 		if(!sky || !layer){
@@ -503,7 +503,7 @@ public:
 		}
 	}
 	
-	virtual void OnSliderTextValueChanged(igdeEditSliderText *sliderText){
+	void OnSliderTextValueChanged(igdeEditSliderText *sliderText) override{
 		if(!pUndo){
 			return;
 		}
@@ -522,7 +522,7 @@ public:
 	cActionMulBySkyLight(skyeWPLayer &panel) : cBaseActionLayer(panel, "Multiply By Sky Light",
 		"Determines if the layer intensity is multiplied by the sky light intensity"){ }
 	
-	virtual igdeUndo::Ref OnActionLayer(skyeSky*, skyeLayer *layer){
+	igdeUndo::Ref OnActionLayer(skyeSky*, skyeLayer *layer) override{
 		return skyeULayerToggleMulBySkyLight::Ref::New(layer);
 	}
 };
@@ -533,7 +533,7 @@ public:
 	cActionMulBySkyColor(skyeWPLayer &panel) : cBaseActionLayer(panel, "Multiply By Sky Color",
 		"Determines if the layer color is multiplied by the sky light color"){ }
 	
-	virtual igdeUndo::Ref OnActionLayer(skyeSky*, skyeLayer *layer){
+	igdeUndo::Ref OnActionLayer(skyeSky*, skyeLayer *layer) override{
 		return skyeULayerToggleMulBySkyColor::Ref::New(layer);
 	}
 };
@@ -599,7 +599,7 @@ public:
 	typedef deTObjectReference<cSpinBody> Ref;
 	cSpinBody(skyeWPLayer &panel) : pPanel(panel){}
 	
-	virtual void OnValueChanged(igdeSpinTextField *textField){
+	void OnValueChanged(igdeSpinTextField *textField) override{
 		skyeLayer * const layer = pPanel.GetLayer();
 		if(!layer){
 			return;
@@ -623,7 +623,7 @@ public:
 	cActionBody(skyeWPLayer &panel, igdeButton::Ref &button) :
 	cBaseActionLayer(panel, "...", "Body menu"), pButton(button){}
 	
-	virtual igdeUndo::Ref OnActionLayer(skyeSky*, skyeLayer*){
+	igdeUndo::Ref OnActionLayer(skyeSky*, skyeLayer*) override{
 		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelperProperties();
 		igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::New(pPanel.GetEnvironment()));
 		helper.MenuCommand(menu, pPanel.GetActionBodyAdd());
@@ -643,7 +643,7 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Add body to end of list"){}
 	
-	virtual igdeUndo::Ref OnActionLayer(skyeSky*, skyeLayer *layer){
+	igdeUndo::Ref OnActionLayer(skyeSky*, skyeLayer *layer) override{
 		return skyeUBodyAdd::Ref::New(layer, skyeBody::Ref::New(pPanel.GetEngine()));
 	}
 };
@@ -655,7 +655,7 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove selected body from list"){}
 	
-	virtual igdeUndo::Ref OnActionLayer(skyeSky*, skyeLayer*){
+	igdeUndo::Ref OnActionLayer(skyeSky*, skyeLayer*) override{
 		skyeBody * const body = pPanel.GetBody();
 		if(!body){
 			return {};
@@ -678,7 +678,7 @@ public:
 		"Move body up in the list"),
 	pSpinTextField(spinTextField){}
 	
-	virtual igdeUndo::Ref OnActionLayer(skyeSky*, skyeLayer*){
+	igdeUndo::Ref OnActionLayer(skyeSky*, skyeLayer*) override{
 		skyeBody * const body = pPanel.GetBody();
 		const int index = pSpinTextField.GetValue();
 		if(body && index == pSpinTextField.GetLower()){
@@ -702,7 +702,7 @@ public:
 		"Move body down in the list"),
 	pSpinTextField(spinTextField){}
 	
-	virtual igdeUndo::Ref OnActionLayer(skyeSky*, skyeLayer*){
+	igdeUndo::Ref OnActionLayer(skyeSky*, skyeLayer*) override{
 		skyeBody * const body = pPanel.GetBody();
 		const int index = pSpinTextField.GetValue();
 		if(body && index == pSpinTextField.GetUpper()){
@@ -779,7 +779,7 @@ public:
 	typedef deTObjectReference<cComboTarget> Ref;
 	cComboTarget(skyeWPLayer &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		if(pPanel.GetLayer() && comboBox->GetSelectedItem()){
 			pPanel.GetLayer()->SetActiveTarget((deSkyLayer::eTargets)(intptr_t)
 				comboBox->GetSelectedItem()->GetData());
@@ -793,7 +793,7 @@ public:
 	typedef deTObjectReference<cListLinks> Ref;
 	cListLinks(skyeWPLayer &panel) : pPanel(panel){}
 	
-	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
+	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
 		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelperProperties();
 		helper.MenuCommand(menu, pPanel.GetActionLinkRemove());
 	}
@@ -808,7 +808,7 @@ public:
 		"Add link to target if not present"),
 	pComboLinks(comboLinks){}
 	
-	virtual igdeUndo::Ref OnActionLayer(skyeSky*, skyeLayer *layer){
+	igdeUndo::Ref OnActionLayer(skyeSky*, skyeLayer *layer) override{
 		const igdeListItem * const selection = pComboLinks.GetSelectedItem();
 		if(!selection){
 			return {};
@@ -837,7 +837,7 @@ public:
 		"Remove selected link from target"),
 	pListLinks(listLinks){}
 	
-	virtual igdeUndo::Ref OnActionLayer(skyeSky*, skyeLayer *layer){
+	igdeUndo::Ref OnActionLayer(skyeSky*, skyeLayer *layer) override{
 		const igdeListItem * const selection = pListLinks.GetSelectedItem();
 		if(!selection){
 			return {};

@@ -75,7 +75,7 @@ public:
 	
 protected:
 	/** \brief Clean up the input device. */
-	virtual ~dedsInputDevice();
+	~dedsInputDevice() override;
 	/*@}*/
 	
 	

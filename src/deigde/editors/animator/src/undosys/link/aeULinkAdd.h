@@ -56,16 +56,16 @@ public:
 	aeULinkAdd(aeAnimator *animator, aeLink *link);
 protected:
 	/** Clean up undo. */
-	virtual ~aeULinkAdd();
+	~aeULinkAdd() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

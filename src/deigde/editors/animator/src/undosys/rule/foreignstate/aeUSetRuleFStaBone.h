@@ -58,16 +58,16 @@ public:
 	aeUSetRuleFStaBone(aeRuleForeignState *rule, const char *newName);
 protected:
 	/** Clean up undo. */
-	virtual ~aeUSetRuleFStaBone();
+	~aeUSetRuleFStaBone() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

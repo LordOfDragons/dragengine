@@ -64,10 +64,10 @@ protected:
 		explicit cListenerTextField(igdeEditDirectory &editDirectory);
 		
 	protected:
-		virtual ~cListenerTextField();
+		~cListenerTextField() override;
 		
 	public:
-		virtual void OnTextChanged(igdeTextField *textField);
+		void OnTextChanged(igdeTextField *textField) override;
 	};
 	
 	/** \brief Button action. */
@@ -80,11 +80,11 @@ protected:
 		cActionButton(igdeEditDirectory &editDirectory, igdeTextField &textField, const char *description);
 		
 	protected:
-		virtual ~cActionButton();
+		~cActionButton() override;
 		
 	public:
-		virtual decString DefaultDirectory();
-		virtual void Update();
+		decString DefaultDirectory() override;
+		void Update() override;
 	};
 	
 	
@@ -118,7 +118,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeEditDirectory();
+	~igdeEditDirectory() override;
 	/*@}*/
 	
 	

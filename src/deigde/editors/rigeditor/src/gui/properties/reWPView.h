@@ -110,7 +110,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~reWPView();
+	~reWPView() override;
 	/*@}*/
 	
 	

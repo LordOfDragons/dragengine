@@ -114,7 +114,7 @@ private:
 public:
 	// constructor, destructor
 	debpColliderComponent(dePhysicsBullet *bullet, deColliderComponent &collider);
-	~debpColliderComponent();
+	~debpColliderComponent() override;
 	
 	// physics management
 	/** Retrieves the collider component. */

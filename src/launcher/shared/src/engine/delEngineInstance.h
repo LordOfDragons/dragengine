@@ -97,7 +97,7 @@ public:
 	
 protected:
 	/** \brief Clean up engine instance. */
-	virtual ~delEngineInstance();
+	~delEngineInstance() override;
 	/*@}*/
 	
 	

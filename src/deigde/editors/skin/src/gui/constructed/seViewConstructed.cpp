@@ -65,7 +65,7 @@ public:
 	typedef deTObjectReference<cScrollView> Ref;
 	cScrollView(seViewConstructed &view) : pView(view){}
 	
-	virtual void OnValueChanged(igdeScrollBar*){
+	void OnValueChanged(igdeScrollBar*) override{
 		if(pView.GetSkin()){
 			pView.OnScrolled();
 		}
@@ -79,7 +79,7 @@ public:
 	typedef deTObjectReference<cSpinLayer> Ref;
 	cSpinLayer(seViewConstructed &view) : pView(view){}
 	
-	virtual void OnValueChanged(igdeSpinTextField *textField){
+	void OnValueChanged(igdeSpinTextField *textField) override{
 		if(!pView.GetSkin()){
 			return;
 		}
@@ -98,7 +98,7 @@ public:
 	typedef deTObjectReference<cComboZoom> Ref;
 	cComboZoom(seViewConstructed &view) : pView(view){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		if(!pView.GetSkin() || !comboBox->GetSelectedItem()){
 			return;
 		}

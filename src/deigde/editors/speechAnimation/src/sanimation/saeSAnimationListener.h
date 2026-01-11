@@ -47,7 +47,7 @@ public:
 	saeSAnimationListener();
 	/** Cleans up the listener. */
 protected:
-	virtual ~saeSAnimationListener();
+	~saeSAnimationListener() override;
 public:
 	/*@}*/
 	

@@ -59,7 +59,7 @@ public:
 	deoglParticleEmitter(deGraphicOpenGl &ogl, const deParticleEmitter &emitter);
 	
 	/** Clean up peer. */
-	virtual ~deoglParticleEmitter();
+	~deoglParticleEmitter() override;
 	/*@}*/
 	
 	
@@ -97,16 +97,16 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Controller count changed. */
-	virtual void ControllerCountChanged();
+	void ControllerCountChanged() override;
 	
 	/** Controller changed. */
-	virtual void ControllerChanged(int controller);
+	void ControllerChanged(int controller) override;
 	
 	/** Type count changed. */
-	virtual void TypeCountChanged();
+	void TypeCountChanged() override;
 	
 	/** Type changed. */
-	virtual void TypeChanged(int type);
+	void TypeChanged(int type) override;
 	/*@}*/
 	
 private:

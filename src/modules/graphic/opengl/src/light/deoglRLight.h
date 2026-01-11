@@ -183,7 +183,7 @@ public:
 	
 protected:
 	/** Clean up render light. */
-	virtual ~deoglRLight();
+	~deoglRLight() override;
 	/*@}*/
 	
 	

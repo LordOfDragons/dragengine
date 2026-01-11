@@ -58,16 +58,16 @@ public:
 	aeUAddRule(aeAnimator *animator, aeRule *rule, int index);
 protected:
 	/** Clean up undo. */
-	virtual ~aeUAddRule();
+	~aeUAddRule() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

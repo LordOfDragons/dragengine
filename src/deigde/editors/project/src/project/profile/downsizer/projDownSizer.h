@@ -68,7 +68,7 @@ public:
 	
 protected:
 	/** \brief Clean up down-sizer. */
-	virtual ~projDownSizer();
+	~projDownSizer() override;
 	/*@}*/
 	
 	

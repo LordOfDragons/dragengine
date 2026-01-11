@@ -120,7 +120,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~ceWPConversation();
+	~ceWPConversation() override;
 	/*@}*/
 	
 	

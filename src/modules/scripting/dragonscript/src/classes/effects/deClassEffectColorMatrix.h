@@ -48,7 +48,7 @@ public:
 	deClassEffectColorMatrix(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
-	virtual ~deClassEffectColorMatrix();
+	~deClassEffectColorMatrix() override;
 	/*@}*/
 	
 	
@@ -60,7 +60,7 @@ public:
 	inline const deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create script class members. */
-	virtual void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/**
 	 * \brief Retrieve effect color matrix from a script object.

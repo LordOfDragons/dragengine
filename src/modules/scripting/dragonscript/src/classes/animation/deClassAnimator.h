@@ -56,13 +56,13 @@ public:
 	/** Creates a new script class. */
 	deClassAnimator(deScriptingDragonScript *ds);
 	/** Cleans up the script class. */
-	~deClassAnimator();
+	~deClassAnimator() override;
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** Creates the class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	/** Retrieves the scripting module. */
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	

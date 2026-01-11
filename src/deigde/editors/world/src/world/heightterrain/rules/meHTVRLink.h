@@ -56,7 +56,7 @@ public:
 	
 protected:
 	/** Cleans up the link. */
-	virtual ~meHTVRLink();
+	~meHTVRLink() override;
 	
 public:
 	/*@}*/

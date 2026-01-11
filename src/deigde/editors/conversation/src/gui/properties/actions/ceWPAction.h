@@ -58,7 +58,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~ceWPAction();
+	~ceWPAction() override;
 	/*@}*/
 	
 	

@@ -64,7 +64,7 @@ public:
 	
 protected:
 	/** \brief Clean up connection. */
-	virtual ~fbxAnimation();
+	~fbxAnimation() override;
 	/*@}*/
 	
 	

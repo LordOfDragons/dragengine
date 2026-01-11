@@ -56,7 +56,7 @@ public:
 	/** Creates a new peer. */
 	debpParticleEmitter(dePhysicsBullet *bullet, deParticleEmitter *emitter);
 	/** Cleans up the peer. */
-	virtual ~debpParticleEmitter();
+	~debpParticleEmitter() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -79,11 +79,11 @@ public:
 	/** @name Notifications */
 	/*@{*/
 	/** Type count changed. */
-	virtual void TypeCountChanged();
+	void TypeCountChanged() override;
 	/** Type changed. */
-	virtual void TypeChanged(int type);
+	void TypeChanged(int type) override;
 	/** Requests of the Graphic Module changed. */
-	virtual void GraphicModuleRequestsChanged();
+	void GraphicModuleRequestsChanged() override;
 	/*@}*/
 	
 private:

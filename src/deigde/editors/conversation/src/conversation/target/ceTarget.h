@@ -71,7 +71,7 @@ public:
 	ceTarget(const ceTarget &target);
 	/** Cleans up the target. */
 protected:
-	virtual ~ceTarget();
+	~ceTarget() override;
 public:
 	/*@}*/
 	

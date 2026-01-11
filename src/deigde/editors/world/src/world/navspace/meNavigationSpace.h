@@ -93,7 +93,7 @@ public:
 	
 protected:
 	/** \brief Cleans up the navigation space. */
-	virtual ~meNavigationSpace();
+	~meNavigationSpace() override;
 	
 public:
 	/*@}*/

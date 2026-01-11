@@ -59,7 +59,7 @@ public:
 	
 protected:
 	/** Cleans up the loader. */
-	virtual ~meLSHeightTerrain();
+	~meLSHeightTerrain() override;
 	
 public:
 	/*@}*/
