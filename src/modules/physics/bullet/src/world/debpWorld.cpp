@@ -124,8 +124,6 @@ pGhostPairCallback(NULL),
 pDirtyOctree(true),
 pDirtyDynWorldAABB(true),
 
-pLeftOverTime(0.0f),
-
 pDetNextCollider(NULL),
 pDetNextTouchSensor(NULL),
 

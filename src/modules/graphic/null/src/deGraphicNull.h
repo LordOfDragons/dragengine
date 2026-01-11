@@ -57,10 +57,10 @@ public:
 	
 	#ifdef OS_ANDROID
 	/** \brief Application window has been created. */
-	virtual void InitAppWindow();
+	void InitAppWindow() override;
 	
 	/** \brief Application window has been closed. */
-	virtual void TerminateAppWindow();
+	void TerminateAppWindow() override;
 	#endif
 	/*@}*/
 	

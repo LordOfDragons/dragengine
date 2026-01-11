@@ -78,8 +78,6 @@ private:
 	bool pDirtyOctree;
 	bool pDirtyDynWorldAABB;
 	
-	float pLeftOverTime;
-	
 	deCollider *pDetNextCollider;
 	deTouchSensor *pDetNextTouchSensor;
 	

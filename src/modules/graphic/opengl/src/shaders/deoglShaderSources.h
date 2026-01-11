@@ -61,7 +61,6 @@ private:
 	deoglShaderBindingList pTextureList;
 	decStringList pParameterList;
 	decTList<int> pParameterLocations;
-	bool pFeedbackInterleaved;
 	
 	
 	

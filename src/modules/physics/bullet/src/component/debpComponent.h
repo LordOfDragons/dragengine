@@ -68,7 +68,6 @@ private:
 	debpModel *pModel;
 	
 	decTList<int> pModelRigMappings;
-	bool pDirtyModelRigMappings;
 	decVector *pVertices;
 	decMatrix *pWeights;
 	int pVertexCount;

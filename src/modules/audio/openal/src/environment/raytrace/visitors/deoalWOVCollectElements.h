@@ -42,7 +42,6 @@ class deoalAComponent;
 class deoalWOVCollectElements : public deoalWorldOctreeVisitor{
 private:
 	decDVector pPosition;
-	float pRange;
 	decDVector pBoxMin;
 	decDVector pBoxMax;
 	

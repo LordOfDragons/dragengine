@@ -114,7 +114,7 @@ public:
 	 * This call is used by subclasses of constraint solvers to add constraint friction. This composes
 	 * of static and kinematic joint friction.
 	 */
-	virtual void GetConstraintFriction(btTypedConstraint::btConstraintInfo2 &info);
+	void GetConstraintFriction(btTypedConstraint::btConstraintInfo2 &info) override;
 	
 	
 	
@@ -122,13 +122,13 @@ public:
 	 * Bullet internal method used by the constraint solver.
 	 * \details Modified to support Drag[en]gine features.
 	 */
-	virtual void getInfo1(btConstraintInfo1 *info);
+	void getInfo1(btConstraintInfo1 *info) override;
 	
 	/**
 	 * Bullet internal method used by the constraint solver.
 	 * \details Modified to support Drag[en]gine features.
 	 */
-	virtual void getInfo2(btConstraintInfo2 *info);
+	void getInfo2(btConstraintInfo2 *info) override;
 	/*@}*/
 	
 	

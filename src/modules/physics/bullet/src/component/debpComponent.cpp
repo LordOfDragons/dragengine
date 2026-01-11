@@ -74,7 +74,6 @@ pBones(nullptr),
 pBoneCount(0),
 pModel(nullptr),
 
-pDirtyModelRigMappings(true),
 pVertices(nullptr),
 pWeights(nullptr),
 pVertexCount(0),
