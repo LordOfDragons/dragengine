@@ -99,10 +99,10 @@ public:
 	
 	#ifdef WITH_OPENGLES
 	/** Application window has been created. */
-	virtual void InitAppWindow();
+	void InitAppWindow() override;
 	
 	/** Application window has been closed. */
-	virtual void TerminateAppWindow();
+	void TerminateAppWindow() override;
 	#endif
 	
 	
