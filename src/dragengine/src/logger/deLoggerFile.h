@@ -46,7 +46,7 @@
 class DE_DLL_EXPORT deLoggerFile : public deLogger{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deLoggerFile> Ref;
+	using Ref = deTObjectReference<deLoggerFile>;
 	
 	
 private:

@@ -32,7 +32,7 @@
 /**
  * \brief List of strings.
  */
-typedef decTList<decString,const char*> decStringList;
+using decStringList = decTList<decString,const char*>;
 
 extern template class decTList<decString,const char*>;
 

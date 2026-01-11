@@ -61,7 +61,7 @@ public:
 	};
 	
 	/** For use by deoglSharedBlockSPB only! */
-	typedef deTObjectReference<deoglSharedBlockSPBElement> Ref;
+	using Ref = deTObjectReference<deoglSharedBlockSPBElement>;
 	
 	
 private:

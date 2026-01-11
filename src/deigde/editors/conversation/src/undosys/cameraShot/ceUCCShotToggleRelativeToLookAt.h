@@ -36,7 +36,7 @@
  */
 class ceUCCShotToggleRelativeToLookAt : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCCShotToggleRelativeToLookAt> Ref;
+	using Ref = deTObjectReference<ceUCCShotToggleRelativeToLookAt>;
 	
 	
 private:

@@ -64,8 +64,8 @@ private:
 	
 	
 public:
-	typedef deTObjectReference<meHeightTerrainPFType> Ref;
-	typedef decTObjectOrderedSet<meHeightTerrainPFType> List;
+	using Ref = deTObjectReference<meHeightTerrainPFType>;
+	using List = decTObjectOrderedSet<meHeightTerrainPFType>;
 	
 	
 	/** \name Constructors and Destructors */

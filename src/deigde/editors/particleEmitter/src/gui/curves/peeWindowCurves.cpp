@@ -61,7 +61,7 @@ namespace{
 class cListCurves : public igdeListBoxListener{
 	peeWindowCurves &pPanel;
 public:
-	typedef deTObjectReference<cListCurves> Ref;
+	using Ref = deTObjectReference<cListCurves>;
 	cListCurves(peeWindowCurves &panel) : pPanel(panel){}
 	
 	void OnSelectionChanged(igdeListBox*) override{
@@ -76,7 +76,7 @@ class cViewCurve : public igdeViewCurveBezierListener{
 	peeWindowCurves &pPanel;
 	igdeUndo::Ref pUndo;
 public:
-	typedef deTObjectReference<cViewCurve> Ref;
+	using Ref = deTObjectReference<cViewCurve>;
 	cViewCurve(peeWindowCurves &panel, igdeUndo::Ref &undo) :
 	pPanel(panel),
 	pUndo(undo){

@@ -36,9 +36,9 @@
  */
 class DE_DLL_EXPORT igdeFilePattern : public deObject{
 public:
-	typedef deTObjectReference<igdeFilePattern> Ref;
+	using Ref = deTObjectReference<igdeFilePattern>;
 	
-	typedef decTObjectList<igdeFilePattern> List;
+	using List = decTObjectList<igdeFilePattern>;
 	
 	
 private:

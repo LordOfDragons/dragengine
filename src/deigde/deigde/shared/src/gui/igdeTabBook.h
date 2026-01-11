@@ -39,7 +39,7 @@ class DE_DLL_EXPORT igdeTabBook : public igdeContainer{
 
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeTabBook> Ref;
+	using Ref = deTObjectReference<igdeTabBook>;
 	
 	
 	/**
@@ -48,8 +48,8 @@ public:
 	 */
 	class DE_DLL_EXPORT cHeader : public deObject{
 	public:
-		typedef deTObjectReference<cHeader> Ref;
-		typedef decTObjectOrderedSet<cHeader> List;
+		using Ref = deTObjectReference<cHeader>;
+		using List = decTObjectOrderedSet<cHeader>;
 		
 		decString text;
 		decString description;

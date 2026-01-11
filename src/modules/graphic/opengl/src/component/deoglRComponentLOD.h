@@ -58,7 +58,7 @@ class deoglGIBVHDynamic;
 class deoglRComponentLOD : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglRComponentLOD> Ref;
+	using Ref = deTObjectReference<deoglRComponentLOD>;
 	
 	
 	deoglRComponent &pComponent;

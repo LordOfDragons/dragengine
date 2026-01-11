@@ -55,10 +55,10 @@
 class DE_DLL_EXPORT deParticleEmitterType : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deParticleEmitterType> Ref;
+	using Ref = deTObjectReference<deParticleEmitterType>;
 	
 	/** \brief Particle emitter type list. */
-	typedef decTObjectOrderedSet<deParticleEmitterType> List;
+	using List = decTObjectOrderedSet<deParticleEmitterType>;
 	
 	
 	/** \brief Particle parameters. */

@@ -59,8 +59,8 @@ private:
 	decVector pOrientation;
 	
 public:
-	typedef deTObjectReference<ceTarget> Ref;
-	typedef decTObjectOrderedSet<ceTarget> List;
+	using Ref = deTObjectReference<ceTarget>;
+	using List = decTObjectOrderedSet<ceTarget>;
 
 
 	/** \name Constructors and Destructors */

@@ -35,7 +35,7 @@
  */
 class skyeUControllerToggleFrozen : public igdeUndo{
 public:
-	typedef deTObjectReference<skyeUControllerToggleFrozen> Ref;
+	using Ref = deTObjectReference<skyeUControllerToggleFrozen>;
 	
 	
 private:

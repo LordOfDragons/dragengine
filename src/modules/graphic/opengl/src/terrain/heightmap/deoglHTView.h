@@ -40,7 +40,7 @@ class deoglCollisionVolume;
  */
 class deoglHTView : public deoglHeightTerrainListener{
 public:
-	typedef deTObjectReference<deoglHTView> Ref;
+	using Ref = deTObjectReference<deoglHTView>;
 	
 	
 private:
@@ -48,7 +48,7 @@ private:
 		deoglHTView &pHTView;
 		
 	public:
-		typedef deTObjectReference<HTListener> Ref;
+		using Ref = deTObjectReference<HTListener>;
 		
 		explicit HTListener(deoglHTView &htview);
 		void SectorsChanged(deoglRHeightTerrain &heightTerrain) override;

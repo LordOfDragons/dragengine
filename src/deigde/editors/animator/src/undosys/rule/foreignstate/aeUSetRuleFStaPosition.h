@@ -42,7 +42,7 @@
  */
 class aeUSetRuleFStaPosition : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUSetRuleFStaPosition> Ref;
+	using Ref = deTObjectReference<aeUSetRuleFStaPosition>;
 	
 	
 private:

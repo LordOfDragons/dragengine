@@ -58,7 +58,7 @@ class cActionAppend : public igdeAction{
 	igdeListBox::Ref &pListBox;
 	
 public:
-	typedef deTObjectReference<cActionAppend> Ref;
+	using Ref = deTObjectReference<cActionAppend>;
 	cActionAppend (gdeWPPatternList &panel, igdeEditPath::Ref &editPath, igdeListBox::Ref &listBox) : 
 	igdeAction("Add", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add pattern"),
 	pPanel(panel), pEditPath(editPath), pListBox(listBox){}
@@ -81,7 +81,7 @@ class cActionRemove : public igdeAction{
 	igdeListBox::Ref &pListBox;
 	
 public:
-	typedef deTObjectReference<cActionRemove> Ref;
+	using Ref = deTObjectReference<cActionRemove>;
 	cActionRemove(gdeWPPatternList &panel, igdeListBox::Ref &listBox) :
 	igdeAction("Remove", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove pattern"), pPanel(panel), pListBox(listBox){}
@@ -107,7 +107,7 @@ class cActionClear : public igdeAction{
 	igdeListBox::Ref &pListBox;
 	
 public:
-	typedef deTObjectReference<cActionClear> Ref;
+	using Ref = deTObjectReference<cActionClear>;
 	cActionClear(gdeWPPatternList &panel, igdeListBox::Ref &listBox) :
 	igdeAction("Clear", nullptr, "Clear pattern"), pPanel(panel), pListBox(listBox){}
 	
@@ -124,7 +124,7 @@ class cListPatterns : public igdeListBoxListener{
 	gdeWPPatternList &pListBox;
 	
 public:
-	typedef deTObjectReference<cListPatterns> Ref;
+	using Ref = deTObjectReference<cListPatterns>;
 	cListPatterns(gdeWPPatternList &listBox) : pListBox(listBox){}
 	
 	void OnSelectionChanged(igdeListBox*) override{

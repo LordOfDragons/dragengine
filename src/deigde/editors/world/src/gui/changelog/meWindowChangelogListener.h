@@ -36,7 +36,7 @@ class meWindowChangelog;
  */
 class meWindowChangelogListener : public meWorldNotifier{
 public:
-	typedef deTObjectReference<meWindowChangelogListener> Ref;
+	using Ref = deTObjectReference<meWindowChangelogListener>;
 	
 	
 private:

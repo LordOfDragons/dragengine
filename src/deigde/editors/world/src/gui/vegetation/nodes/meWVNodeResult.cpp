@@ -58,7 +58,7 @@ protected:
 	meWVNodeResult &pNode;
 	
 public:
-	typedef deTObjectReference<cTextProbability> Ref;
+	using Ref = deTObjectReference<cTextProbability>;
 	cTextProbability(meWVNodeResult &node) : pNode(node){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -78,7 +78,7 @@ protected:
 	meWVNodeResult &pNode;
 	
 public:
-	typedef deTObjectReference<cTextVariation> Ref;
+	using Ref = deTObjectReference<cTextVariation>;
 	cTextVariation(meWVNodeResult &node) : pNode(node){}
 	
 	void OnTextChanged(igdeTextField *textField) override{

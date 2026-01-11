@@ -36,7 +36,7 @@
  */
 class reUToggleBoneDynamic : public igdeUndo{
 public:
-	typedef deTObjectReference<reUToggleBoneDynamic> Ref;
+	using Ref = deTObjectReference<reUToggleBoneDynamic>;
 	
 	
 private:

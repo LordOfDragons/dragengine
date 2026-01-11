@@ -38,7 +38,7 @@
  */
 class aeUSetRuleFStaDestCFrame : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUSetRuleFStaDestCFrame> Ref;
+	using Ref = deTObjectReference<aeUSetRuleFStaDestCFrame>;
 	
 	
 private:

@@ -118,6 +118,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxTabBook igdeNativeTabBook;
+using igdeNativeTabBook = igdeNativeFoxTabBook;
 
 #endif

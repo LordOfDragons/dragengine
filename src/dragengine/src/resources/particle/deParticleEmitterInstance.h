@@ -52,7 +52,7 @@ class deBaseScriptingParticleEmitterInstance;
 class DE_DLL_EXPORT deParticleEmitterInstance : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deParticleEmitterInstance> Ref;
+	using Ref = deTObjectReference<deParticleEmitterInstance>;
 	
 	
 private:

@@ -37,10 +37,10 @@
 class DE_DLL_EXPORT deParticleEmitterInstanceType : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deParticleEmitterInstanceType> Ref;
+	using Ref = deTObjectReference<deParticleEmitterInstanceType>;
 	
 	/** \brief Particle emitter instance type list. */
-	typedef decTObjectOrderedSet<deParticleEmitterInstanceType> List;
+	using List = decTObjectOrderedSet<deParticleEmitterInstanceType>;
 	
 	struct DE_DLL_EXPORT sParticle{// sizeCast = 6 bytes, sizeDynamic = 22 bytes, sizeTotal = 28 bytes
 		float lifetime; // unsigned char possible (1 frame accuracy for 5s particle at 60Hz)

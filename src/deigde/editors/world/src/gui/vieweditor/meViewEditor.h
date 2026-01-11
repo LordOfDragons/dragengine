@@ -55,8 +55,8 @@ class decCollisionFilter;
  */
 class meViewEditor : public deObject{
 public:
-	typedef deTObjectReference<meViewEditor> Ref;
-	typedef decTObjectOrderedSet<const meViewEditor> List;
+	using Ref = deTObjectReference<meViewEditor>;
+	using List = decTObjectOrderedSet<const meViewEditor>;
 	
 private:
 	meView3D &pView;

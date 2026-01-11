@@ -53,7 +53,7 @@ class meDecal;
  */
 class meWPSDecal : public igdeContainerScroll{
 public:
-	typedef deTObjectReference<meWPSDecal> Ref;
+	using Ref = deTObjectReference<meWPSDecal>;
 	
 private:
 	meWPSelection &pWPSelection;

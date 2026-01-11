@@ -115,7 +115,7 @@ deBaseVideoAudioDecoder *deVideoApng::CreateAudioDecoder(decBaseFileReader*){
 
 class deapngModuleInternal : public deInternalModule{
 public:
-	typedef deTObjectReference<deapngModuleInternal> Ref;
+	using Ref = deTObjectReference<deapngModuleInternal>;
 	
 	deapngModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("APNG");

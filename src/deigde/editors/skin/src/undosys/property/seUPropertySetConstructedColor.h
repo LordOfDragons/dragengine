@@ -38,7 +38,7 @@
  */
 class seUPropertySetConstructedColor : public igdeUndo{
 public:
-	typedef deTObjectReference<seUPropertySetConstructedColor> Ref;
+	using Ref = deTObjectReference<seUPropertySetConstructedColor>;
 	
 	
 private:

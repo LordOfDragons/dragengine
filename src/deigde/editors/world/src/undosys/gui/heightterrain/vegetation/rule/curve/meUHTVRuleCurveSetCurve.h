@@ -40,7 +40,7 @@
  */
 class meUHTVRuleCurveSetCurve : public igdeUndo{
 public:
-	typedef deTObjectReference<meUHTVRuleCurveSetCurve> Ref;
+	using Ref = deTObjectReference<meUHTVRuleCurveSetCurve>;
 	
 	
 private:

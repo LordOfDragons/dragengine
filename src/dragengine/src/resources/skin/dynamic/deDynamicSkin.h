@@ -40,7 +40,7 @@ class deBaseGraphicDynamicSkin;
 class DE_DLL_EXPORT deDynamicSkin : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deDynamicSkin> Ref;
+	using Ref = deTObjectReference<deDynamicSkin>;
 	
 	
 private:

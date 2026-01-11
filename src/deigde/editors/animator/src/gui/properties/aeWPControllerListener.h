@@ -37,7 +37,7 @@ class aeWPController;
 class aeWPControllerListener : public aeAnimatorNotifier{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeWPControllerListener> Ref;
+	using Ref = deTObjectReference<aeWPControllerListener>;
 	
 	
 private:

@@ -37,7 +37,7 @@
  */
 class meUObjectRemoveUnusedTextures : public igdeUndo{
 public:
-	typedef deTObjectReference<meUObjectRemoveUnusedTextures> Ref;
+	using Ref = deTObjectReference<meUObjectRemoveUnusedTextures>;
 	
 	
 private:

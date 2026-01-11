@@ -36,7 +36,7 @@
  */
 class seUPropertyNodeTextSetSize : public igdeUndo{
 public:
-	typedef deTObjectReference<seUPropertyNodeTextSetSize> Ref;
+	using Ref = deTObjectReference<seUPropertyNodeTextSetSize>;
 	
 	
 private:

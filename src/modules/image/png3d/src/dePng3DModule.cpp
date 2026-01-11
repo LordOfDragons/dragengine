@@ -128,7 +128,7 @@ void dePng3DModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 
 class dePng3DModuleInternal : public deInternalModule{
 public:
-	typedef deTObjectReference<dePng3DModuleInternal> Ref;
+	using Ref = deTObjectReference<dePng3DModuleInternal>;
 	
 	dePng3DModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("PNG-3D");

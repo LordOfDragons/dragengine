@@ -46,7 +46,7 @@ private:
 	
 	
 public:
-	typedef deTObjectReference<ceWPACameraShot> Ref;
+	using Ref = deTObjectReference<ceWPACameraShot>;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */

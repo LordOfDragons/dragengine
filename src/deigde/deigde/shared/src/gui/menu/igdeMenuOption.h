@@ -39,7 +39,7 @@
 class DE_DLL_EXPORT igdeMenuOption : public igdeMenuCommand{
 public:
 	/** \brief Strong reference. */
-	typedef deTObjectReference<igdeMenuOption> Ref;
+	using Ref = deTObjectReference<igdeMenuOption>;
 	
 	
 private:

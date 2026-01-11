@@ -76,7 +76,7 @@ protected:
 	aeWPAPanelRuleAnimationDifference &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseAction> Ref;
+	using Ref = deTObjectReference<cBaseAction>;
 	cBaseAction(aeWPAPanelRuleAnimationDifference &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description),
 	pPanel(panel){}
@@ -119,7 +119,7 @@ protected:
 	aeWPAPanelRuleAnimationDifference &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseTextFieldListener> Ref;
+	using Ref = deTObjectReference<cBaseTextFieldListener>;
 	cBaseTextFieldListener(aeWPAPanelRuleAnimationDifference &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -143,7 +143,7 @@ protected:
 	aeWPAPanelRuleAnimationDifference &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseComboBoxListener> Ref;
+	using Ref = deTObjectReference<cBaseComboBoxListener>;
 	cBaseComboBoxListener(aeWPAPanelRuleAnimationDifference &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -165,7 +165,7 @@ public:
 
 class cComboLeadingMoveName : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboLeadingMoveName> Ref;
+	using Ref = deTObjectReference<cComboLeadingMoveName>;
 	cComboLeadingMoveName(aeWPAPanelRuleAnimationDifference &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleAnimationDifference *rule) override{
@@ -176,7 +176,7 @@ public:
 
 class cTextLeadingMoveTime : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextLeadingMoveTime> Ref;
+	using Ref = deTObjectReference<cTextLeadingMoveTime>;
 	cTextLeadingMoveTime(aeWPAPanelRuleAnimationDifference &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator*, aeRuleAnimationDifference *rule) override{
@@ -188,7 +188,7 @@ public:
 
 class cComboReferenceMoveName : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboReferenceMoveName> Ref;
+	using Ref = deTObjectReference<cComboReferenceMoveName>;
 	cComboReferenceMoveName(aeWPAPanelRuleAnimationDifference &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleAnimationDifference *rule) override{
@@ -199,7 +199,7 @@ public:
 
 class cTextReferenceMoveTime : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextReferenceMoveTime> Ref;
+	using Ref = deTObjectReference<cTextReferenceMoveTime>;
 	cTextReferenceMoveTime(aeWPAPanelRuleAnimationDifference &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator*, aeRuleAnimationDifference *rule) override{
@@ -211,7 +211,7 @@ public:
 
 class cActionEnablePosition : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnablePosition> Ref;
+	using Ref = deTObjectReference<cActionEnablePosition>;
 	
 public:
 	cActionEnablePosition(aeWPAPanelRuleAnimationDifference &panel) : cBaseAction(panel,
@@ -229,7 +229,7 @@ public:
 
 class cActionEnableRotation : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableRotation> Ref;
+	using Ref = deTObjectReference<cActionEnableRotation>;
 	
 public:
 	cActionEnableRotation(aeWPAPanelRuleAnimationDifference &panel) : cBaseAction(panel,
@@ -247,7 +247,7 @@ public:
 
 class cActionEnableSize : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableSize> Ref;
+	using Ref = deTObjectReference<cActionEnableSize>;
 	
 public:
 	cActionEnableSize(aeWPAPanelRuleAnimationDifference &panel) : cBaseAction(panel,
@@ -265,7 +265,7 @@ public:
 
 class cActionEnableVertexPositionSet : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableVertexPositionSet> Ref;
+	using Ref = deTObjectReference<cActionEnableVertexPositionSet>;
 	
 public:
 	cActionEnableVertexPositionSet(aeWPAPanelRuleAnimationDifference &panel) : cBaseAction(panel,

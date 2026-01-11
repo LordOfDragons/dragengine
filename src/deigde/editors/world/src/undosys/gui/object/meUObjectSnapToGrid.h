@@ -39,7 +39,7 @@
  */
 class meUObjectSnapToGrid : public igdeUndo{
 public:
-	typedef deTObjectReference<meUObjectSnapToGrid> Ref;
+	using Ref = deTObjectReference<meUObjectSnapToGrid>;
 	
 	
 private:

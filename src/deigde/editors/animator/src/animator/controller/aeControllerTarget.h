@@ -40,8 +40,8 @@ class deAnimatorControllerTarget;
  */
 class aeControllerTarget : public deObject{
 public:
-	typedef deTObjectReference<aeControllerTarget> Ref;
-	typedef decTObjectOrderedSet<aeControllerTarget> List;
+	using Ref = deTObjectReference<aeControllerTarget>;
+	using List = decTObjectOrderedSet<aeControllerTarget>;
 	
 	
 private:

@@ -46,7 +46,7 @@ private:
 	
 	
 public:
-	typedef deTObjectReference<ceWPASetVariable> Ref;
+	using Ref = deTObjectReference<ceWPASetVariable>;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */

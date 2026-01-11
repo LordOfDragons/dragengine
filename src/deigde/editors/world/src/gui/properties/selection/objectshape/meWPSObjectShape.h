@@ -54,7 +54,7 @@ class decShapeCapsule;
  */
 class meWPSObjectShape : public igdeContainerScroll{
 public:
-	typedef deTObjectReference<meWPSObjectShape> Ref;
+	using Ref = deTObjectReference<meWPSObjectShape>;
 	
 private:
 	meWPSelection &pWPSelection;

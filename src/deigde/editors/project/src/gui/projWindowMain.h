@@ -56,7 +56,7 @@ class projConfiguration;
  */
 class projWindowMain : public igdeEditorWindow{
 public:
-	typedef deTObjectReference<projWindowMain> Ref;
+	using Ref = deTObjectReference<projWindowMain>;
 	
 	
 private:

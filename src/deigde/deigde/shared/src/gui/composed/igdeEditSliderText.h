@@ -47,10 +47,10 @@ class igdeUIHelper;
 class DE_DLL_EXPORT igdeEditSliderText : public igdeContainerFlow{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeEditSliderText> Ref;
+	using Ref = deTObjectReference<igdeEditSliderText>;
 	
 	/** \brief Type holding weak reference. */
-	typedef deTWeakObjectReference<igdeEditSliderText> WeakRef;
+	using WeakRef = deTWeakObjectReference<igdeEditSliderText>;
 	
 	
 protected:
@@ -60,7 +60,7 @@ protected:
 		igdeEditSliderText &pSliderText;
 		
 	public:
-		typedef deTObjectReference<cListenerSlider> Ref;
+		using Ref = deTObjectReference<cListenerSlider>;
 		cListenerSlider(igdeEditSliderText &sliderText);
 		
 	protected:
@@ -77,7 +77,7 @@ protected:
 		igdeEditSliderText &pSliderText;
 		
 	public:
-		typedef deTObjectReference<cListenerTextField> Ref;
+		using Ref = deTObjectReference<cListenerTextField>;
 		cListenerTextField(igdeEditSliderText &sliderText);
 		
 	protected:

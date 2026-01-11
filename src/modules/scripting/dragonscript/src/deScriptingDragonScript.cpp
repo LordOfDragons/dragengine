@@ -1981,7 +1981,7 @@ void deScriptingDragonScript::pPreprocessMouseMoveDpiAware(deInputEvent &event){
 
 class dedsModuleInternal : public deInternalModule{
 public:
-	typedef deTObjectReference<dedsModuleInternal> Ref;
+	using Ref = deTObjectReference<dedsModuleInternal>;
 	
 	dedsModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DragonScript");

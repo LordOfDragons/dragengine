@@ -43,7 +43,7 @@ class igdeCamera;
 class DE_DLL_EXPORT igdeMouseCameraListener : public igdeMouseDragListener{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeMouseCameraListener> Ref;
+	using Ref = deTObjectReference<igdeMouseCameraListener>;
 	
 	
 	/** \brief Interaction. */

@@ -37,7 +37,7 @@ class meCLVisibilityPaint;
  */
 class meViewEditorVisibilityPaint : public meViewEditorNavigation{
 public:
-	typedef deTObjectReference<meViewEditorVisibilityPaint> Ref;
+	using Ref = deTObjectReference<meViewEditorVisibilityPaint>;
 	
 private:
 	meCLVisibilityPaint *pVisPainter;

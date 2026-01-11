@@ -43,7 +43,7 @@
 class DE_DLL_EXPORT deLoggerBuffer : public deLogger{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deLoggerBuffer> Ref;
+	using Ref = deTObjectReference<deLoggerBuffer>;
 	
 	
 public:

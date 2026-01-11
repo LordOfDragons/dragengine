@@ -38,7 +38,7 @@
  */
 class ceUCAWaitSetCondition : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCAWaitSetCondition> Ref;
+	using Ref = deTObjectReference<ceUCAWaitSetCondition>;
 	
 	
 private:

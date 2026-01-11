@@ -34,7 +34,7 @@
  */
 class ceWPTTIMASnippet : public ceWPTTIMAction{
 public:
-	typedef deTObjectReference<ceWPTTIMASnippet> Ref;
+	using Ref = deTObjectReference<ceWPTTIMASnippet>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */

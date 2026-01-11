@@ -91,6 +91,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxStatusBar igdeNativeStatusBar;
+using igdeNativeStatusBar = igdeNativeFoxStatusBar;
 
 #endif

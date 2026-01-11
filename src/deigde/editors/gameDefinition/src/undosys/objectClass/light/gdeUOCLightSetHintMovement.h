@@ -40,7 +40,7 @@
  */
 class gdeUOCLightSetHintMovement : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCLightSetHintMovement> Ref;
+	using Ref = deTObjectReference<gdeUOCLightSetHintMovement>;
 	
 	
 private:

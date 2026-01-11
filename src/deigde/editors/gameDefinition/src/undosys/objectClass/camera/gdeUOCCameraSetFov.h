@@ -38,7 +38,7 @@
  */
 class gdeUOCCameraSetFov : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCCameraSetFov> Ref;
+	using Ref = deTObjectReference<gdeUOCCameraSetFov>;
 	
 	
 private:

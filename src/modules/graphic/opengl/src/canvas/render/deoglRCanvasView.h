@@ -39,7 +39,7 @@ class deoglRenderPlanMasked;
 class deoglRCanvasView : public deoglRCanvas{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglRCanvasView> Ref;
+	using Ref = deTObjectReference<deoglRCanvasView>;
 	
 	
 private:

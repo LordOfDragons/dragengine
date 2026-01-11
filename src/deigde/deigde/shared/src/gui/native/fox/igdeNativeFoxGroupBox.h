@@ -105,6 +105,6 @@ private:
 	int GetCollapsedHeight() const;
 };
 
-typedef igdeNativeFoxGroupBox igdeNativeGroupBox;
+using igdeNativeGroupBox = igdeNativeFoxGroupBox;
 
 #endif

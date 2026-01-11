@@ -45,7 +45,7 @@ class peeEmitter;
 class peeWindowProperties : public igdeTabBook{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<peeWindowProperties> Ref;
+	using Ref = deTObjectReference<peeWindowProperties>;
 	
 private:
 	peeWindowMain &pWindowMain;

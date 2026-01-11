@@ -41,7 +41,7 @@ class meCLSnapPoint;
  */
 class meViewEditorMove : public meViewEditorNavigation{
 public:
-	typedef deTObjectReference<meViewEditorMove> Ref;
+	using Ref = deTObjectReference<meViewEditorMove>;
 	
 private:
 	meBaseUndoMove::Ref pUndoMove;

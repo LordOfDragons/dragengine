@@ -40,10 +40,10 @@
 class gdeOCComponent : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeOCComponent> Ref;
+	using Ref = deTObjectReference<gdeOCComponent>;
 
 	/** \brief Type holding list. */
-	typedef decTObjectOrderedSet<gdeOCComponent> List;
+	using List = decTObjectOrderedSet<gdeOCComponent>;
 	
 	
 	/** \brief Properties. */

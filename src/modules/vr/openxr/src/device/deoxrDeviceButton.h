@@ -52,7 +52,7 @@ class deoxrDevice;
 class deoxrDeviceButton : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoxrDeviceButton> Ref;
+	using Ref = deTObjectReference<deoxrDeviceButton>;
 	
 	
 private:

@@ -37,7 +37,7 @@ class feViewFontImage;
 class feViewFontImageListener : public feFontNotifier{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<feViewFontImageListener> Ref;
+	using Ref = deTObjectReference<feViewFontImageListener>;
 	
 private:
 	feViewFontImage &pPanel;

@@ -57,7 +57,7 @@ private:
 	
 	
 public:
-	typedef deTObjectReference<ceCAWait> Ref;
+	using Ref = deTObjectReference<ceCAWait>;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new wait conversation action. */

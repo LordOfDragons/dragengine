@@ -104,7 +104,7 @@ public:
 	
 	
 private:
-	typedef decTOrderedSet<deTThreadSafeObjectReference<deResourceLoaderTask>, deResourceLoaderTask*> TaskList;
+	using TaskList = decTOrderedSet<deTThreadSafeObjectReference<deResourceLoaderTask>, deResourceLoaderTask*>;
 	
 	deEngine &pEngine;
 	

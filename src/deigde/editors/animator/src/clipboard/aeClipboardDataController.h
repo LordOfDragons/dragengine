@@ -37,7 +37,7 @@
 class aeClipboardDataController : public igdeClipboardData{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeClipboardDataController> Ref;
+	using Ref = deTObjectReference<aeClipboardDataController>;
 	
 	/** Type name. */
 	static const char * const TYPE_NAME;

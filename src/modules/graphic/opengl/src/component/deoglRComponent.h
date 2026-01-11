@@ -75,7 +75,7 @@ class deComponent;
 class deoglRComponent : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglRComponent> Ref;
+	using Ref = deTObjectReference<deoglRComponent>;
 	
 	
 	/** Render modes. */

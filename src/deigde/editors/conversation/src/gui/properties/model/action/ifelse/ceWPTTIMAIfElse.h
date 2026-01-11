@@ -42,7 +42,7 @@ private:
 	
 	
 public:
-	typedef deTObjectReference<ceWPTTIMAIfElse> Ref;
+	using Ref = deTObjectReference<ceWPTTIMAIfElse>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */

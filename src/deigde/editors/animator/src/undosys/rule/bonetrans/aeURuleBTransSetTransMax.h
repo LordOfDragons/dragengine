@@ -39,7 +39,7 @@
  */
 class aeURuleBTransSetTransMax : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleBTransSetTransMax> Ref;
+	using Ref = deTObjectReference<aeURuleBTransSetTransMax>;
 	
 	
 private:

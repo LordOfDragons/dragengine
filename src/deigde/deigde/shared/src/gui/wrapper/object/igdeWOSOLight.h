@@ -43,7 +43,7 @@ class igdeGDCLight;
 class DE_DLL_EXPORT igdeWOSOLight : public igdeWOSubObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeWOSOLight> Ref;
+	using Ref = deTObjectReference<igdeWOSOLight>;
 	
 	
 private:

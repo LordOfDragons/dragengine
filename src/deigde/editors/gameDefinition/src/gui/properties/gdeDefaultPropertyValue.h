@@ -42,7 +42,7 @@ class gdeProperty;
 class gdeDefaultPropertyValue : public igdeEditPropertyValue{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeDefaultPropertyValue> Ref;
+	using Ref = deTObjectReference<gdeDefaultPropertyValue>;
 	
 private:
 	igdeGDProperty::Ref pGDProperty;

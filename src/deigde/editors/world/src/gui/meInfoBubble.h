@@ -37,7 +37,7 @@ class igdeWidget;
  */
 class meInfoBubble : public deObject{
 public:
-	typedef deTObjectReference<meInfoBubble> Ref;
+	using Ref = deTObjectReference<meInfoBubble>;
 	
 	
 	enum ePlacement{

@@ -39,7 +39,7 @@
  */
 class cePlaybackActionStackEntry : public deObject{
 public:
-	typedef deTObjectReference<cePlaybackActionStackEntry> Ref;
+	using Ref = deTObjectReference<cePlaybackActionStackEntry>;
 	
 private:
 	ceConversationTopic::Ref pParentTopic;

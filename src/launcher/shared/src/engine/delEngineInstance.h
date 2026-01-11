@@ -54,7 +54,7 @@ class delGPModuleList;
 class DE_DLL_EXPORT delEngineInstance : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<delEngineInstance> Ref;
+	using Ref = deTObjectReference<delEngineInstance>;
 	
 	
 public:
@@ -65,7 +65,7 @@ public:
 	class DE_DLL_EXPORT Factory : public deObject{
 	public:
 		/** \brief Type holding strong reference. */
-		typedef deTObjectReference<Factory> Ref;
+		using Ref = deTObjectReference<Factory>;
 		
 		
 		/** \brief Factory constructor. */

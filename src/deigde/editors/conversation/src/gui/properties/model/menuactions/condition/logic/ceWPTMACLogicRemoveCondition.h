@@ -53,7 +53,7 @@ protected:
 	ceWPTMACLogicRemoveCondition();
 	
 public:
-	typedef deTObjectReference<ceWPTMACLogicRemoveCondition> Ref;
+	using Ref = deTObjectReference<ceWPTMACLogicRemoveCondition>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */

@@ -38,10 +38,10 @@
 class gdeOCParticleEmitter : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeOCParticleEmitter> Ref;
+	using Ref = deTObjectReference<gdeOCParticleEmitter>;
 
 	/** \brief Type holding list. */
-	typedef decTObjectOrderedSet<gdeOCParticleEmitter> List;
+	using List = decTObjectOrderedSet<gdeOCParticleEmitter>;
 	
 	
 	/** \brief Properties. */

@@ -44,7 +44,7 @@ class deoglShaderCompileUnitTask;
  */
 class deoglShaderProgramUnit : public deObject{
 public:
-	typedef deTObjectReference<deoglShaderProgramUnit> Ref;
+	using Ref = deTObjectReference<deoglShaderProgramUnit>;
 	
 	
 private:

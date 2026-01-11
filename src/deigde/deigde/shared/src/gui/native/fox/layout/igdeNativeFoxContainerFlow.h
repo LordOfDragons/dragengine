@@ -54,6 +54,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxContainerFlow igdeNativeContainerFlow;
+using igdeNativeContainerFlow = igdeNativeFoxContainerFlow;
 
 #endif

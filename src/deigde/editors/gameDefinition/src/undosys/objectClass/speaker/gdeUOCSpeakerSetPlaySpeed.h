@@ -38,7 +38,7 @@
  */
 class gdeUOCSpeakerSetPlaySpeed : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCSpeakerSetPlaySpeed> Ref;
+	using Ref = deTObjectReference<gdeUOCSpeakerSetPlaySpeed>;
 	
 	
 private:

@@ -70,7 +70,7 @@ class deoalRTWorldBVH;
 class deoalRTPTListen : public deParallelTask{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTThreadSafeObjectReference<deoalRTPTListen> Ref;
+	using Ref = deTThreadSafeObjectReference<deoalRTPTListen>;
 	
 	
 private:

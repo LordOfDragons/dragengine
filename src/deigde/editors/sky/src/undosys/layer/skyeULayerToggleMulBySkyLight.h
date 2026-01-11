@@ -35,7 +35,7 @@
  */
 class skyeULayerToggleMulBySkyLight : public igdeUndo{
 public:
-	typedef deTObjectReference<skyeULayerToggleMulBySkyLight> Ref;
+	using Ref = deTObjectReference<skyeULayerToggleMulBySkyLight>;
 	
 	
 private:

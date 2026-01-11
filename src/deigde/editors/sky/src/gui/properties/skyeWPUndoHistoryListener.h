@@ -36,7 +36,7 @@ class skyeWPUndoHistory;
  */
 class skyeWPUndoHistoryListener : public skyeSkyListener{
 public:
-	typedef deTObjectReference<skyeWPUndoHistoryListener> Ref;
+	using Ref = deTObjectReference<skyeWPUndoHistoryListener>;
 	
 private:
 	skyeWPUndoHistory &pPanel;

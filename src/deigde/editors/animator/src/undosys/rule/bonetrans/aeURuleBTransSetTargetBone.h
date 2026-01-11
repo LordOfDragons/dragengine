@@ -36,7 +36,7 @@
  */
 class aeURuleBTransSetTargetBone : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleBTransSetTargetBone> Ref;
+	using Ref = deTObjectReference<aeURuleBTransSetTargetBone>;
 	
 	
 private:

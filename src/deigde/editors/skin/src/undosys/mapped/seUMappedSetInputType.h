@@ -36,7 +36,7 @@
  */
 class seUMappedSetInputType : public igdeUndo{
 public:
-	typedef deTObjectReference<seUMappedSetInputType> Ref;
+	using Ref = deTObjectReference<seUMappedSetInputType>;
 	
 	
 private:

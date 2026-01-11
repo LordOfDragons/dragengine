@@ -40,7 +40,7 @@ class meWindowVegetation;
  */
 class meWVNode : public igdeNVNode{
 public:
-	typedef deTObjectReference<meWVNode> Ref;
+	using Ref = deTObjectReference<meWVNode>;
 	
 private:
 	meWindowVegetation &pWindowVegetation;

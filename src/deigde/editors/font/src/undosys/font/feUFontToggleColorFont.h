@@ -36,7 +36,7 @@ class feFont;
  */
 class feUFontToggleColorFont : public igdeUndo{
 public:
-	typedef deTObjectReference<feUFontToggleColorFont> Ref;
+	using Ref = deTObjectReference<feUFontToggleColorFont>;
 	
 	
 private:

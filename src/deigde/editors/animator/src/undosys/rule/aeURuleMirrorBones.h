@@ -45,7 +45,7 @@
  */
 class aeURuleMirrorBones : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleMirrorBones> Ref;
+	using Ref = deTObjectReference<aeURuleMirrorBones>;
 	
 	
 private:

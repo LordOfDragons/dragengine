@@ -49,7 +49,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceDialogEditStringWithList> Ref;
+	using Ref = deTObjectReference<ceDialogEditStringWithList>;
 	
 	/** \name Constructors and Destructors */
 	/*@{*/

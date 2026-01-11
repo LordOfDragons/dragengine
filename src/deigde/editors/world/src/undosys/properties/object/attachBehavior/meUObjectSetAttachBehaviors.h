@@ -36,7 +36,7 @@
  */
 class meUObjectSetAttachBehaviors : public igdeUndo{
 public:
-	typedef deTObjectReference<meUObjectSetAttachBehaviors> Ref;
+	using Ref = deTObjectReference<meUObjectSetAttachBehaviors>;
 	
 	
 private:

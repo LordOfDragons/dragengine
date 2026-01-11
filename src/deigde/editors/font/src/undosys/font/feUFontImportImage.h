@@ -39,7 +39,7 @@ class deImage;
  */
 class feUFontImportImage : public igdeUndo{
 public:
-	typedef deTObjectReference<feUFontImportImage> Ref;
+	using Ref = deTObjectReference<feUFontImportImage>;
 	
 	
 private:

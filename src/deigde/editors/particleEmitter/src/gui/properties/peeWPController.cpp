@@ -81,7 +81,7 @@ protected:
 	peeWPController &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseTextFieldListener> Ref;
+	using Ref = deTObjectReference<cBaseTextFieldListener>;
 	cBaseTextFieldListener(peeWPController &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -105,7 +105,7 @@ protected:
 	peeWPController &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseEditSliderTextListener> Ref;
+	using Ref = deTObjectReference<cBaseEditSliderTextListener>;
 	cBaseEditSliderTextListener(peeWPController &panel) : pPanel(panel){}
 	
 	virtual void OnVectorChanged(igdeEditSliderText *editSlider){
@@ -129,7 +129,7 @@ protected:
 	peeWPController &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseAction> Ref;
+	using Ref = deTObjectReference<cBaseAction>;
 	cBaseAction(peeWPController &panel, const char *text, const char *description) :
 	igdeAction(text, description),
 	pPanel(panel){}
@@ -186,7 +186,7 @@ public:
 class cListControllers : public igdeListBoxListener{
 	peeWPController &pPanel;
 public:
-	typedef deTObjectReference<cListControllers> Ref;
+	using Ref = deTObjectReference<cListControllers>;
 	cListControllers(peeWPController &panel) : pPanel(panel){}
 	
 	void OnSelectionChanged(igdeListBox *listBox) override{
@@ -217,7 +217,7 @@ public:
 
 class cActionControllerAdd : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionControllerAdd> Ref;
+	using Ref = deTObjectReference<cActionControllerAdd>;
 	cActionControllerAdd(peeWPController &panel) : cBaseAction(panel, "Add",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Add a controller to the end of the list."){}
@@ -236,7 +236,7 @@ public:
 
 class cActionControllerRemove : public cBaseActionController{
 public:
-	typedef deTObjectReference<cActionControllerRemove> Ref;
+	using Ref = deTObjectReference<cActionControllerRemove>;
 	cActionControllerRemove(peeWPController &panel) : cBaseActionController(panel, "Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove the selected controller."){}
@@ -253,7 +253,7 @@ public:
 class cActionControllerUp : public cBaseActionController{
 	igdeListBox &pListBox;
 public:
-	typedef deTObjectReference<cActionControllerUp> Ref;
+	using Ref = deTObjectReference<cActionControllerUp>;
 	cActionControllerUp(peeWPController &panel, igdeListBox &listBox) : cBaseActionController(
 		panel, "Move Up", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp),
 		"Move controller up in the list."),
@@ -271,7 +271,7 @@ public:
 class cActionControllerDown : public cBaseActionController{
 	igdeListBox &pListBox;
 public:
-	typedef deTObjectReference<cActionControllerDown> Ref;
+	using Ref = deTObjectReference<cActionControllerDown>;
 	cActionControllerDown(peeWPController &panel, igdeListBox &listBox) : cBaseActionController(
 		panel, "Move Down", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown),
 		"Move controller down in the list."),
@@ -290,7 +290,7 @@ public:
 
 class cTextName : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextName> Ref;
+	using Ref = deTObjectReference<cTextName>;
 	cTextName(peeWPController &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, peeEmitter*, peeController *controller) override{
@@ -304,7 +304,7 @@ public:
 
 class cTextMinimumValue : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextMinimumValue> Ref;
+	using Ref = deTObjectReference<cTextMinimumValue>;
 	cTextMinimumValue(peeWPController &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, peeEmitter*, peeController *controller) override{
@@ -318,7 +318,7 @@ public:
 
 class cTextMaximumValue : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextMaximumValue> Ref;
+	using Ref = deTObjectReference<cTextMaximumValue>;
 	cTextMaximumValue(peeWPController &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, peeEmitter*, peeController *controller) override{
@@ -333,7 +333,7 @@ public:
 class cSliderValue : public igdeEditSliderTextListener{
 	peeWPController &pPanel;
 public:
-	typedef deTObjectReference<cSliderValue> Ref;
+	using Ref = deTObjectReference<cSliderValue>;
 	cSliderValue(peeWPController &panel) : pPanel(panel){}
 	
 	void OnSliderTextValueChanging(igdeEditSliderText *sliderText) override{
@@ -350,7 +350,7 @@ public:
 
 class cActionClamp : public cBaseActionController{
 public:
-	typedef deTObjectReference<cActionClamp> Ref;
+	using Ref = deTObjectReference<cActionClamp>;
 	cActionClamp(peeWPController &panel) : cBaseActionController(panel, "Clamp value to range",
 		"Determines if the value of the controller is clamped to the given range."){ }
 	
@@ -361,7 +361,7 @@ public:
 
 class cActionFrozen : public cBaseActionController{
 public:
-	typedef deTObjectReference<cActionFrozen> Ref;
+	using Ref = deTObjectReference<cActionFrozen>;
 	cActionFrozen(peeWPController &panel) : cBaseActionController(panel,
 		"Freeze Controller value", "Prevents the controller from changing the current value."){}
 	

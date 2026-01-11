@@ -58,7 +58,7 @@ namespace {
 
 class cActionFromHeadLookAt : public igdeAction{
 public:
-	typedef deTObjectReference<cActionFromHeadLookAt> Ref;
+	using Ref = deTObjectReference<cActionFromHeadLookAt>;
 	
 private:
 protected:

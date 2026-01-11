@@ -42,7 +42,7 @@
  */
 class meUHTVLinkAdd : public igdeUndo{
 public:
-	typedef deTObjectReference<meUHTVLinkAdd> Ref;
+	using Ref = deTObjectReference<meUHTVLinkAdd>;
 	
 	
 public:

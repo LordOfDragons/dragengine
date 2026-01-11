@@ -41,7 +41,7 @@
  */
 class meViewEditorNavigation : public meViewEditor{
 public:
-	typedef deTObjectReference<meViewEditorNavigation> Ref;
+	using Ref = deTObjectReference<meViewEditorNavigation>;
 	
 private:
 	float pOldDist;

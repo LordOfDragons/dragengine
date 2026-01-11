@@ -56,7 +56,7 @@ class deoglWorldOctree;
 class deoglEnvironmentMap : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglEnvironmentMap> Ref;
+	using Ref = deTObjectReference<deoglEnvironmentMap>;
 	
 	
 private:

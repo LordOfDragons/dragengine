@@ -39,7 +39,7 @@ class DE_DLL_EXPORT igdeScrollBarListener : public deObject{
 
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeScrollBarListener> Ref;
+	using Ref = deTObjectReference<igdeScrollBarListener>;
 	
 	
 protected:

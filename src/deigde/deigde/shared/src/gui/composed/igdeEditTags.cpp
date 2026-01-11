@@ -103,7 +103,7 @@ class igdeEditTags_ListTags : public igdeListBoxListener {
 	igdeEditTags &pWidget;
 	
 public:
-	typedef deTObjectReference<igdeEditTags_ListTags> Ref;
+	using Ref = deTObjectReference<igdeEditTags_ListTags>;
 	
 	igdeEditTags_ListTags(igdeEditTags &widget) : pWidget(widget){
 	}

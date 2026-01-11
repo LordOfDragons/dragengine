@@ -35,7 +35,7 @@ class seWPMapped;
  */
 class seWPMappedListener : public seSkinListener{
 public:
-	typedef deTObjectReference<seWPMappedListener> Ref;
+	using Ref = deTObjectReference<seWPMappedListener>;
 	
 	
 private:

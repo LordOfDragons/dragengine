@@ -37,7 +37,7 @@
  */
 class reUSetShapeBoxHalfExtends : public igdeUndo{
 public:
-	typedef deTObjectReference<reUSetShapeBoxHalfExtends> Ref;
+	using Ref = deTObjectReference<reUSetShapeBoxHalfExtends>;
 	
 	
 private:

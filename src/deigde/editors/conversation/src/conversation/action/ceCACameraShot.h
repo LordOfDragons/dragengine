@@ -38,7 +38,7 @@
  */
 class ceCACameraShot : public ceConversationAction{
 public:
-	typedef deTObjectReference<ceCACameraShot> Ref;
+	using Ref = deTObjectReference<ceCACameraShot>;
 	
 	
 private:

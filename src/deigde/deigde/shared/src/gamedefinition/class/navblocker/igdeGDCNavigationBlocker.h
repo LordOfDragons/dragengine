@@ -40,10 +40,10 @@
 class DE_DLL_EXPORT igdeGDCNavigationBlocker : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeGDCNavigationBlocker> Ref;
+	using Ref = deTObjectReference<igdeGDCNavigationBlocker>;
 	
 	/** \brief Type holding list of objects. */
-	typedef decTObjectOrderedSet<igdeGDCNavigationBlocker> List;
+	using List = decTObjectOrderedSet<igdeGDCNavigationBlocker>;
 	
 	
 	/** \brief Properties. */

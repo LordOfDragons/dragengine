@@ -39,10 +39,10 @@
 class DE_DLL_EXPORT igdeGDCEnvMapProbe : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeGDCEnvMapProbe> Ref;
+	using Ref = deTObjectReference<igdeGDCEnvMapProbe>;
 	
 	/** \brief Type holding list of objects. */
-	typedef decTObjectOrderedSet<igdeGDCEnvMapProbe> List;
+	using List = decTObjectOrderedSet<igdeGDCEnvMapProbe>;
 	
 	
 	/** \brief Properties. */

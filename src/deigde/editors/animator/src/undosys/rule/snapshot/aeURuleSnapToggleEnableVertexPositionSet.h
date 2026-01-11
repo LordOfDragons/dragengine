@@ -36,7 +36,7 @@
  */
 class aeURuleSnapToggleEnableVertexPositionSet : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleSnapToggleEnableVertexPositionSet> Ref;
+	using Ref = deTObjectReference<aeURuleSnapToggleEnableVertexPositionSet>;
 	
 	
 private:

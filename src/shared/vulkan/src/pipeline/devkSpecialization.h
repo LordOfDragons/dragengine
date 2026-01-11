@@ -36,7 +36,7 @@
 class devkSpecialization : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<devkSpecialization> Ref;
+	using Ref = deTObjectReference<devkSpecialization>;
 	
 	
 private:

@@ -37,7 +37,7 @@ class meCLMaskPaint;
  */
 class meViewEditorMaskPaint : public meViewEditorNavigation{
 public:
-	typedef deTObjectReference<meViewEditorMaskPaint> Ref;
+	using Ref = deTObjectReference<meViewEditorMaskPaint>;
 	
 private:
 	meCLMaskPaint *pMaskPainter;

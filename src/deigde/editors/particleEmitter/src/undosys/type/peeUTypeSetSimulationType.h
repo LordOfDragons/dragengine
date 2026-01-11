@@ -37,7 +37,7 @@
  */
 class peeUTypeSetSimulationType : public igdeUndo{
 public:
-	typedef deTObjectReference<peeUTypeSetSimulationType> Ref;
+	using Ref = deTObjectReference<peeUTypeSetSimulationType>;
 	
 	
 private:

@@ -45,7 +45,7 @@ protected:
 	ceWPTMACopyAction();
 	
 public:
-	typedef deTObjectReference<ceWPTMACopyAction> Ref;
+	using Ref = deTObjectReference<ceWPTMACopyAction>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */

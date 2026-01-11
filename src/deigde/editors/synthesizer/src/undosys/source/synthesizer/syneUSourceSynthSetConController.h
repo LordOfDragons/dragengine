@@ -37,7 +37,7 @@
  */
 class syneUSourceSynthSetConController : public igdeUndo{
 public:
-	typedef deTObjectReference<syneUSourceSynthSetConController> Ref;
+	using Ref = deTObjectReference<syneUSourceSynthSetConController>;
 	
 	
 private:

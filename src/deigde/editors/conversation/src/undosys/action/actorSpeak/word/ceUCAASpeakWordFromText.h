@@ -43,7 +43,7 @@ class decUnicodeString;
  */
 class ceUCAASpeakWordFromText : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCAASpeakWordFromText> Ref;
+	using Ref = deTObjectReference<ceUCAASpeakWordFromText>;
 	
 	
 private:

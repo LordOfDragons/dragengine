@@ -138,7 +138,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoalASpeaker> Ref;
+	using Ref = deTObjectReference<deoalASpeaker>;
 
 
 	/** \name Constructors and Destructors */

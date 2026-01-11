@@ -37,7 +37,7 @@
  */
 class seUTextureImport : public igdeUndo{
 public:
-	typedef deTObjectReference<seUTextureImport> Ref;
+	using Ref = deTObjectReference<seUTextureImport>;
 	
 	
 private:

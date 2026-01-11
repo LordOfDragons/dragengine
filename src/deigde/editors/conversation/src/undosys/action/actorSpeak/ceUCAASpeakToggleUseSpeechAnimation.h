@@ -37,7 +37,7 @@
  */
 class ceUCAASpeakToggleUseSpeechAnimation : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCAASpeakToggleUseSpeechAnimation> Ref;
+	using Ref = deTObjectReference<ceUCAASpeakToggleUseSpeechAnimation>;
 	
 	
 private:

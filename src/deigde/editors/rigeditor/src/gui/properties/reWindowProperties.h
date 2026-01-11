@@ -49,7 +49,7 @@ class reRigConstraint;
  */
 class reWindowProperties : public igdeTabBook{
 public:
-	typedef deTObjectReference<reWindowProperties> Ref;
+	using Ref = deTObjectReference<reWindowProperties>;
 	
 private:
 	reWindowMain &pWindowMain;

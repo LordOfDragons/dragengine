@@ -44,7 +44,7 @@
 class DE_DLL_EXPORT deColliderVolume : public deCollider{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deColliderVolume> Ref;
+	using Ref = deTObjectReference<deColliderVolume>;
 	
 	
 private:

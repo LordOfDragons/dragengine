@@ -63,7 +63,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoalAVideoPlayer> Ref;
+	using Ref = deTObjectReference<deoalAVideoPlayer>;
 
 
 	/** \name Constructors and Destructors */

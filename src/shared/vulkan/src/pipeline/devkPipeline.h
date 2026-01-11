@@ -42,7 +42,7 @@ class decPath;
 class devkPipeline : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<devkPipeline> Ref;
+	using Ref = deTObjectReference<devkPipeline>;
 	
 	
 protected:

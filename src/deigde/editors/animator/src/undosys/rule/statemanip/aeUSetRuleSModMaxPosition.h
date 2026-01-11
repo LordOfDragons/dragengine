@@ -43,7 +43,7 @@
  */
 class aeUSetRuleSModMaxPosition : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUSetRuleSModMaxPosition> Ref;
+	using Ref = deTObjectReference<aeUSetRuleSModMaxPosition>;
 	
 	
 private:

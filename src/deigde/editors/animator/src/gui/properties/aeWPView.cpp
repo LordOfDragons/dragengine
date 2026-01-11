@@ -85,7 +85,7 @@ protected:
 	aeWPView &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseAction> Ref;
+	using Ref = deTObjectReference<cBaseAction>;
 	cBaseAction(aeWPView &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description),
 	pPanel(panel){}
@@ -121,7 +121,7 @@ protected:
 	aeWPView &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseTextField> Ref;
+	using Ref = deTObjectReference<cBaseTextField>;
 	cBaseTextField(aeWPView &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -139,7 +139,7 @@ protected:
 	aeWPView &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseComboBox> Ref;
+	using Ref = deTObjectReference<cBaseComboBox>;
 	cBaseComboBox(aeWPView &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -157,7 +157,7 @@ protected:
 	aeWPView &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseEditPath> Ref;
+	using Ref = deTObjectReference<cBaseEditPath>;
 	cBaseEditPath(aeWPView &panel) : pPanel(panel){}
 	
 	void OnEditPathChanged(igdeEditPath *editPath) override{
@@ -174,7 +174,7 @@ public:
 
 class cPathDisplayModel : public cBaseEditPath{
 public:
-	typedef deTObjectReference<cPathDisplayModel> Ref;
+	using Ref = deTObjectReference<cPathDisplayModel>;
 	cPathDisplayModel(aeWPView &panel) : cBaseEditPath(panel){}
 	
 	void OnChanged(igdeEditPath *editPath, aeAnimator *animator) override{
@@ -184,7 +184,7 @@ public:
 
 class cPathDisplaySkin : public cBaseEditPath{
 public:
-	typedef deTObjectReference<cPathDisplaySkin> Ref;
+	using Ref = deTObjectReference<cPathDisplaySkin>;
 	cPathDisplaySkin(aeWPView &panel) : cBaseEditPath(panel){}
 	
 	void OnChanged(igdeEditPath *editPath, aeAnimator *animator) override{
@@ -194,7 +194,7 @@ public:
 
 class cPathDisplayRig : public cBaseEditPath{
 public:
-	typedef deTObjectReference<cPathDisplayRig> Ref;
+	using Ref = deTObjectReference<cPathDisplayRig>;
 	cPathDisplayRig(aeWPView &panel) : cBaseEditPath(panel){}
 	
 	void OnChanged(igdeEditPath *editPath, aeAnimator *animator) override{
@@ -205,7 +205,7 @@ public:
 
 class cPathTestingAnimator : public cBaseEditPath{
 public:
-	typedef deTObjectReference<cPathTestingAnimator> Ref;
+	using Ref = deTObjectReference<cPathTestingAnimator>;
 	cPathTestingAnimator(aeWPView &panel) : cBaseEditPath(panel){}
 	
 	void OnChanged(igdeEditPath *editPath, aeAnimator *animator) override{
@@ -222,7 +222,7 @@ public:
 
 class cActionResetState : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionResetState> Ref;
+	using Ref = deTObjectReference<cActionResetState>;
 	
 public:
 	cActionResetState(aeWPView &panel) : cBaseAction(panel, "Reset Animation State", nullptr,
@@ -241,7 +241,7 @@ public:
 
 class cEditSky : public cBaseAction{
 public:
-	typedef deTObjectReference<cEditSky> Ref;
+	using Ref = deTObjectReference<cEditSky>;
 	
 public:
 	cEditSky(aeWPView &panel) : cBaseAction(panel, "", nullptr, ""){}
@@ -253,7 +253,7 @@ public:
 
 class cEditEnvObject : public cBaseAction{
 public:
-	typedef deTObjectReference<cEditEnvObject> Ref;
+	using Ref = deTObjectReference<cEditEnvObject>;
 	
 public:
 	cEditEnvObject(aeWPView &panel) : cBaseAction(panel, "", nullptr, ""){}
@@ -265,7 +265,7 @@ public:
 
 class cEditCamera : public cBaseAction{
 public:
-	typedef deTObjectReference<cEditCamera> Ref;
+	using Ref = deTObjectReference<cEditCamera>;
 	
 public:
 	cEditCamera(aeWPView &panel) : cBaseAction(panel, "", nullptr, ""){}
@@ -278,7 +278,7 @@ public:
 
 class cActionCamAttach : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionCamAttach> Ref;
+	using Ref = deTObjectReference<cActionCamAttach>;
 	
 public:
 	cActionCamAttach(aeWPView &panel) : cBaseAction(panel, "Attach camera to a bone", nullptr,
@@ -296,7 +296,7 @@ public:
 
 class cComboCamAttachBone : public cBaseComboBox{
 public:
-	typedef deTObjectReference<cComboCamAttachBone> Ref;
+	using Ref = deTObjectReference<cComboCamAttachBone>;
 	cComboCamAttachBone(aeWPView &panel) : cBaseComboBox(panel){}
 	
 	void OnChanged(igdeComboBox *comboBox, aeAnimator *animator) override{
@@ -307,7 +307,7 @@ public:
 class cEditCamRelPos : public igdeEditVectorListener{
 	aeWPView &pPanel;
 public:
-	typedef deTObjectReference<cEditCamRelPos> Ref;
+	using Ref = deTObjectReference<cEditCamRelPos>;
 	cEditCamRelPos(aeWPView &panel) : pPanel(panel){}
 	
 	void OnVectorChanged(igdeEditVector *editVector) override{
@@ -321,7 +321,7 @@ public:
 class cEditCamRelRot : public igdeEditVectorListener{
 	aeWPView &pPanel;
 public:
-	typedef deTObjectReference<cEditCamRelRot> Ref;
+	using Ref = deTObjectReference<cEditCamRelRot>;
 	cEditCamRelRot(aeWPView &panel) : pPanel(panel){}
 	
 	void OnVectorChanged(igdeEditVector *editVector) override{
@@ -335,7 +335,7 @@ public:
 
 class cTextPlaySpeed : public cBaseTextField{
 public:
-	typedef deTObjectReference<cTextPlaySpeed> Ref;
+	using Ref = deTObjectReference<cTextPlaySpeed>;
 	cTextPlaySpeed(aeWPView &panel) : cBaseTextField(panel){}
 	
 	void OnChanged(igdeTextField *textField, aeAnimator *animator) override{
@@ -345,7 +345,7 @@ public:
 
 class cTextTimeStep : public cBaseTextField{
 public:
-	typedef deTObjectReference<cTextTimeStep> Ref;
+	using Ref = deTObjectReference<cTextTimeStep>;
 	cTextTimeStep(aeWPView &panel) : cBaseTextField(panel){}
 	
 	void OnChanged(igdeTextField *textField, aeAnimator *animator) override{
@@ -355,7 +355,7 @@ public:
 
 class cActionFrameStep : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionFrameStep> Ref;
+	using Ref = deTObjectReference<cActionFrameStep>;
 	
 private:
 	const float pFactor;
@@ -373,7 +373,7 @@ public:
 
 class cActionFramePrev : public cActionFrameStep{
 public:
-	typedef deTObjectReference<cActionFramePrev> Ref;
+	using Ref = deTObjectReference<cActionFramePrev>;
 	cActionFramePrev(aeWPView &panel) : cActionFrameStep(panel,
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiLeft),
 		"Step animation backward by the given time step", -1.0f){}
@@ -381,7 +381,7 @@ public:
 
 class cActionFrameNext : public cActionFrameStep{
 public:
-	typedef deTObjectReference<cActionFrameNext> Ref;
+	using Ref = deTObjectReference<cActionFrameNext>;
 	cActionFrameNext(aeWPView &panel) : cActionFrameStep(panel,
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiRight),
 		"Step animation forward by the given time step", 1.0f){}
@@ -389,7 +389,7 @@ public:
 
 class cActionPaused : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionPaused> Ref;
+	using Ref = deTObjectReference<cActionPaused>;
 	
 public:
 	cActionPaused(aeWPView &panel) : cBaseAction(panel, "Pause", nullptr, "Paus animation playback"){}
@@ -406,7 +406,7 @@ public:
 
 class cActionReset : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionReset> Ref;
+	using Ref = deTObjectReference<cActionReset>;
 	
 public:
 	cActionReset(aeWPView &panel) : cBaseAction(panel, "Reset", nullptr, "Reset animation"){}
@@ -421,7 +421,7 @@ public:
 
 class cComboAttachment : public cBaseComboBox{
 public:
-	typedef deTObjectReference<cComboAttachment> Ref;
+	using Ref = deTObjectReference<cComboAttachment>;
 	cComboAttachment(aeWPView &panel) : cBaseComboBox(panel){}
 	
 	void OnChanged(igdeComboBox *comboBox, aeAnimator *animator) override{
@@ -432,7 +432,7 @@ public:
 
 class cActionAttachmentAdd : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionAttachmentAdd> Ref;
+	using Ref = deTObjectReference<cActionAttachmentAdd>;
 	
 public:
 	cActionAttachmentAdd(aeWPView &panel) : cBaseAction(panel, "Add",
@@ -454,7 +454,7 @@ public:
 
 class cActionAttachmentRemove : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionAttachmentRemove> Ref;
+	using Ref = deTObjectReference<cActionAttachmentRemove>;
 	
 public:
 	cActionAttachmentRemove(aeWPView &panel) : cBaseAction(panel, "Remove",
@@ -479,7 +479,7 @@ public:
 
 class cActionAttachmentClear : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionAttachmentClear> Ref;
+	using Ref = deTObjectReference<cActionAttachmentClear>;
 	
 public:
 	cActionAttachmentClear(aeWPView &panel) : cBaseAction(panel, "Clear",
@@ -496,7 +496,7 @@ public:
 
 class cActionAttachmentLoadConfig : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionAttachmentLoadConfig> Ref;
+	using Ref = deTObjectReference<cActionAttachmentLoadConfig>;
 	
 public:
 	cActionAttachmentLoadConfig(aeWPView &panel) : cBaseAction(panel, "Load configuration...",
@@ -517,7 +517,7 @@ public:
 
 class cActionAttachmentSaveConfig : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionAttachmentSaveConfig> Ref;
+	using Ref = deTObjectReference<cActionAttachmentSaveConfig>;
 	
 public:
 	cActionAttachmentSaveConfig(aeWPView &panel) : cBaseAction(panel, "Save configuration...",
@@ -539,7 +539,7 @@ public:
 class cActionMenuAttach : public igdeActionContextMenu{
 	aeWPView &pPanel;
 public:
-	typedef deTObjectReference<cActionMenuAttach> Ref;
+	using Ref = deTObjectReference<cActionMenuAttach>;
 	
 	cActionMenuAttach(aeWPView &panel) : igdeActionContextMenu("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Reset animation"),
@@ -560,7 +560,7 @@ public:
 
 class cTextAttachmentName : public cBaseTextField{
 public:
-	typedef deTObjectReference<cTextAttachmentName> Ref;
+	using Ref = deTObjectReference<cTextAttachmentName>;
 	cTextAttachmentName(aeWPView &panel) : cBaseTextField(panel){}
 	
 	void OnChanged(igdeTextField *textField, aeAnimator *animator) override{
@@ -580,7 +580,7 @@ public:
 
 class cComboAttachmentBone : public cBaseComboBox{
 public:
-	typedef deTObjectReference<cComboAttachmentBone> Ref;
+	using Ref = deTObjectReference<cComboAttachmentBone>;
 	cComboAttachmentBone(aeWPView &panel) : cBaseComboBox(panel){}
 	
 	void OnChanged(igdeComboBox *comboBox, aeAnimator*) override{
@@ -593,7 +593,7 @@ public:
 
 class cComboAttachmentType : public cBaseComboBox{
 public:
-	typedef deTObjectReference<cComboAttachmentType> Ref;
+	using Ref = deTObjectReference<cComboAttachmentType>;
 	cComboAttachmentType(aeWPView &panel) : cBaseComboBox(panel){}
 	
 	void OnChanged(igdeComboBox *comboBox, aeAnimator*) override{
@@ -607,7 +607,7 @@ public:
 
 class cEditAttachmentObject : public cBaseAction{
 public:
-	typedef deTObjectReference<cEditAttachmentObject> Ref;
+	using Ref = deTObjectReference<cEditAttachmentObject>;
 	
 public:
 	cEditAttachmentObject(aeWPView &panel) : cBaseAction(panel, "", nullptr, ""){}

@@ -34,7 +34,7 @@
  */
 class deoglREffectFilterKernel : public deoglREffect{
 public:
-	typedef deTObjectReference<deoglREffectFilterKernel> Ref;
+	using Ref = deTObjectReference<deoglREffectFilterKernel>;
 	
 	
 private:

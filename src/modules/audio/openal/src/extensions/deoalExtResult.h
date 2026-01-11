@@ -83,8 +83,8 @@ extern LPALAUXILIARYEFFECTSLOTFV palAuxiliaryEffectSlotfv;
 // ALC_SOFT_HRTF
 //////////////////
 
-typedef const ALCchar * (AL_APIENTRY *LPALCGETSTRINGI)(ALCdevice*, ALCenum, ALCsizei);
-typedef void (AL_APIENTRY *LPALCRESETDEVICE)(ALCdevice*, const ALCint*);
+using LPALCGETSTRINGI = ALCchar * (AL_APIENTRY *)(ALCdevice*, ALCenum, ALCsizei);
+using LPALCRESETDEVICE = void (AL_APIENTRY *)(ALCdevice*, const ALCint*);
 
 extern LPALCGETSTRINGI palcGetStringi;
 extern LPALCRESETDEVICE palcResetDevice;

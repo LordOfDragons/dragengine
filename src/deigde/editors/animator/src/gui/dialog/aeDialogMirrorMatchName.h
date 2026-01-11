@@ -45,7 +45,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeDialogMirrorMatchName> Ref;
+	using Ref = deTObjectReference<aeDialogMirrorMatchName>;
 	
 	/** \name Constructors and Destructors */
 	/*@{*/

@@ -40,7 +40,7 @@
  */
 class aeURuleTargetAddLink : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleTargetAddLink> Ref;
+	using Ref = deTObjectReference<aeURuleTargetAddLink>;
 	
 	
 private:

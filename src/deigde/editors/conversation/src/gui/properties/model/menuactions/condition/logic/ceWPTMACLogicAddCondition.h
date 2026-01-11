@@ -37,7 +37,7 @@ class ceConversationAction;
  */
 class ceWPTMACLogicAddCondition : public ceWPTMACreateCondition{
 public:
-	typedef deTObjectReference<ceWPTMACLogicAddCondition> Ref;
+	using Ref = deTObjectReference<ceWPTMACLogicAddCondition>;
 
 private:
 	ceConversationTopic *pTopic;

@@ -36,7 +36,7 @@
  */
 class syneUControllerSetMaximumValue : public igdeUndo{
 public:
-	typedef deTObjectReference<syneUControllerSetMaximumValue> Ref;
+	using Ref = deTObjectReference<syneUControllerSetMaximumValue>;
 	
 	
 private:

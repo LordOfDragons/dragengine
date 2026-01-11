@@ -82,7 +82,7 @@ protected:
 	aeWPAPanelRuleInverseKinematic &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseAction> Ref;
+	using Ref = deTObjectReference<cBaseAction>;
 	cBaseAction(aeWPAPanelRuleInverseKinematic &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description),
 	pPanel(panel){}
@@ -125,7 +125,7 @@ protected:
 	aeWPAPanelRuleInverseKinematic &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseComboBoxListener> Ref;
+	using Ref = deTObjectReference<cBaseComboBoxListener>;
 	cBaseComboBoxListener(aeWPAPanelRuleInverseKinematic &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -149,7 +149,7 @@ protected:
 	aeWPAPanelRuleInverseKinematic &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseTextFieldListener> Ref;
+	using Ref = deTObjectReference<cBaseTextFieldListener>;
 	cBaseTextFieldListener(aeWPAPanelRuleInverseKinematic &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -173,7 +173,7 @@ protected:
 	aeWPAPanelRuleInverseKinematic &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseEditVectorListener> Ref;
+	using Ref = deTObjectReference<cBaseEditVectorListener>;
 	cBaseEditVectorListener(aeWPAPanelRuleInverseKinematic &panel) : pPanel(panel){}
 	
 	void OnVectorChanged(igdeEditVector *editVector) override{
@@ -195,7 +195,7 @@ public:
 
 class cEditGoalPosition : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditGoalPosition> Ref;
+	using Ref = deTObjectReference<cEditGoalPosition>;
 	cEditGoalPosition(aeWPAPanelRuleInverseKinematic &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleInverseKinematic *rule) override{
@@ -206,7 +206,7 @@ public:
 
 class cEditGoalRotation : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditGoalRotation> Ref;
+	using Ref = deTObjectReference<cEditGoalRotation>;
 	cEditGoalRotation(aeWPAPanelRuleInverseKinematic &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleInverseKinematic *rule) override{
@@ -217,7 +217,7 @@ public:
 
 class cEditLocalPosition : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditLocalPosition> Ref;
+	using Ref = deTObjectReference<cEditLocalPosition>;
 	cEditLocalPosition(aeWPAPanelRuleInverseKinematic &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleInverseKinematic *rule) override{
@@ -228,7 +228,7 @@ public:
 
 class cEditLocalRotation : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditLocalRotation> Ref;
+	using Ref = deTObjectReference<cEditLocalRotation>;
 	cEditLocalRotation(aeWPAPanelRuleInverseKinematic &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleInverseKinematic *rule) override{
@@ -239,7 +239,7 @@ public:
 
 class cActionAdjustRotation : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionAdjustRotation> Ref;
+	using Ref = deTObjectReference<cActionAdjustRotation>;
 	
 public:
 	cActionAdjustRotation(aeWPAPanelRuleInverseKinematic &panel) : cBaseAction(panel,
@@ -257,7 +257,7 @@ public:
 
 class cComboSolverBone : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboSolverBone> Ref;
+	using Ref = deTObjectReference<cComboSolverBone>;
 	cComboSolverBone(aeWPAPanelRuleInverseKinematic &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleInverseKinematic *rule) override{
@@ -268,7 +268,7 @@ public:
 
 class cActionUseSolverBone : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionUseSolverBone> Ref;
+	using Ref = deTObjectReference<cActionUseSolverBone>;
 	
 public:
 	cActionUseSolverBone(aeWPAPanelRuleInverseKinematic &panel) : cBaseAction(panel,
@@ -287,7 +287,7 @@ public:
 
 class cTextReachRange : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextReachRange> Ref;
+	using Ref = deTObjectReference<cTextReachRange>;
 	cTextReachRange(aeWPAPanelRuleInverseKinematic &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator*, aeRuleInverseKinematic *rule) override{
@@ -299,7 +299,7 @@ public:
 
 class cComboReachBone : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboReachBone> Ref;
+	using Ref = deTObjectReference<cComboReachBone>;
 	cComboReachBone(aeWPAPanelRuleInverseKinematic &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleInverseKinematic *rule) override{
@@ -310,7 +310,7 @@ public:
 
 class cEditReachCenter : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditReachCenter> Ref;
+	using Ref = deTObjectReference<cEditReachCenter>;
 	cEditReachCenter(aeWPAPanelRuleInverseKinematic &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleInverseKinematic *rule) override{

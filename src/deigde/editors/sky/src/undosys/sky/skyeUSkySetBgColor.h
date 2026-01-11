@@ -38,7 +38,7 @@
  */
 class skyeUSkySetBgColor : public igdeUndo{
 public:
-	typedef deTObjectReference<skyeUSkySetBgColor> Ref;
+	using Ref = deTObjectReference<skyeUSkySetBgColor>;
 	
 	
 private:

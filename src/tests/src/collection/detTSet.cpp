@@ -9,9 +9,9 @@
 #include <dragengine/common/exceptions.h>
 
 // Type aliases
-typedef decTSet<int> decTSetInt;
-typedef decTSet<decString> decTSetString;
-typedef decTList<int> decTListInt;
+using decTSetInt = decTSet<int>;
+using decTSetString = decTSet<decString>;
+using decTListInt = decTList<int>;
 
 
 // Class detTSet

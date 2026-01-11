@@ -39,7 +39,7 @@ class DE_DLL_EXPORT igdeEditDirectoryListener : public deObject{
 
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeEditDirectoryListener> Ref;
+	using Ref = deTObjectReference<igdeEditDirectoryListener>;
 	
 	
 protected:

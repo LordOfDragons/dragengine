@@ -38,7 +38,7 @@
  */
 class gdeUOCComponentToggleAffectsAudio : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCComponentToggleAffectsAudio> Ref;
+	using Ref = deTObjectReference<gdeUOCComponentToggleAffectsAudio>;
 	
 	
 private:

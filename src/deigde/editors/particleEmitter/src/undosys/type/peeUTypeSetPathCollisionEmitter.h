@@ -36,7 +36,7 @@
  */
 class peeUTypeSetPathCollisionEmitter : public igdeUndo{
 public:
-	typedef deTObjectReference<peeUTypeSetPathCollisionEmitter> Ref;
+	using Ref = deTObjectReference<peeUTypeSetPathCollisionEmitter>;
 	
 	
 private:

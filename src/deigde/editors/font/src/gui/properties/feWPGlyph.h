@@ -43,7 +43,7 @@ class feWindowProperties;
  */
 class feWPGlyph : public igdeContainerScroll{
 public:
-	typedef deTObjectReference<feWPGlyph> Ref;
+	using Ref = deTObjectReference<feWPGlyph>;
 	
 private:
 	feWindowProperties &pWindowProperties;

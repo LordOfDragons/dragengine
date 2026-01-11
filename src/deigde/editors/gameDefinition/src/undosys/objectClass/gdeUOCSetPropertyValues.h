@@ -39,7 +39,7 @@
  */
 class gdeUOCSetPropertyValues : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCSetPropertyValues> Ref;
+	using Ref = deTObjectReference<gdeUOCSetPropertyValues>;
 	
 	
 private:

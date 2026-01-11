@@ -474,7 +474,7 @@ void deModio::pUpdateVFS(){
 
 class deModioModuleInternal : public deInternalModule{
 public:
-	typedef deTObjectReference<deModioModuleInternal> Ref;
+	using Ref = deTObjectReference<deModioModuleInternal>;
 	
 	deModioModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("Modio");

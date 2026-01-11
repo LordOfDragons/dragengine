@@ -39,7 +39,7 @@
 class DE_DLL_EXPORT igdeGuiThemeProperty : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeGuiThemeProperty> Ref;
+	using Ref = deTObjectReference<igdeGuiThemeProperty>;
 	
 	
 	/** \brief Type. */

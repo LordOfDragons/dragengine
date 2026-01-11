@@ -76,6 +76,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxMenuCascade igdeNativeMenuCascade;
+using igdeNativeMenuCascade = igdeNativeFoxMenuCascade;
 
 #endif

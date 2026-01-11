@@ -39,7 +39,7 @@ class ceWPTTIMAPlayerChoiceOption;
  */
 class ceWPTTIMAPlayerChoiceOptionCondition : public ceWPTTIMConditionContainer{
 public:
-	typedef deTObjectReference<ceWPTTIMAPlayerChoiceOptionCondition> Ref;
+	using Ref = deTObjectReference<ceWPTTIMAPlayerChoiceOptionCondition>;
 	
 private:
 	ceCAPlayerChoiceOption::Ref pOption;

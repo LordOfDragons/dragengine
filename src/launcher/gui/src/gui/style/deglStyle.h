@@ -37,7 +37,7 @@
 class deglStyle : public deObject{
 public:
 	/** Type holding strong reference. */
-	typedef deTObjectReference<deglStyle> Ref;
+	using Ref = deTObjectReference<deglStyle>;
 	
 	
 private:

@@ -34,7 +34,7 @@
  */
 class aeRuleStateManipulator : public aeRule{
 public:
-	typedef deTObjectReference<aeRuleStateManipulator> Ref;
+	using Ref = deTObjectReference<aeRuleStateManipulator>;
 	
 	
 private:

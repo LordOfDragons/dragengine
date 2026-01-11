@@ -38,7 +38,7 @@
 class DE_DLL_EXPORT deFontSize : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deFontSize> Ref;
+	using Ref = deTObjectReference<deFontSize>;
 	
 	
 private:

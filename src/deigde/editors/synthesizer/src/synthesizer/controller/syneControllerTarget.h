@@ -41,10 +41,10 @@ class deSynthesizerControllerTarget;
 class syneControllerTarget : public deObject{
 public:
 	/** Type holding strong reference. */
-	typedef deTObjectReference<syneControllerTarget> Ref;
+	using Ref = deTObjectReference<syneControllerTarget>;
 	
 	/** Type holding list of objects. */
-	typedef decTObjectOrderedSet<syneControllerTarget> List;
+	using List = decTObjectOrderedSet<syneControllerTarget>;
 
 
 private:

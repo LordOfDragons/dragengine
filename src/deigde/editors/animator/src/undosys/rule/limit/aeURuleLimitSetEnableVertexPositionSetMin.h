@@ -35,7 +35,7 @@
  */
 class aeURuleLimitSetEnableVertexPositionSetMin : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleLimitSetEnableVertexPositionSetMin> Ref;
+	using Ref = deTObjectReference<aeURuleLimitSetEnableVertexPositionSetMin>;
 	
 	
 private:

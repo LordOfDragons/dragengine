@@ -38,7 +38,7 @@ class gdeOCSpeaker;
  */
 class gdeUOCSetDefaultInheritPropertyPrefix : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCSetDefaultInheritPropertyPrefix> Ref;
+	using Ref = deTObjectReference<gdeUOCSetDefaultInheritPropertyPrefix>;
 	
 	
 private:

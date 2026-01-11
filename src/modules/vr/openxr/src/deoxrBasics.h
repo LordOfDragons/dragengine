@@ -45,10 +45,10 @@
 #elif defined OS_UNIX
 // 	#include <X11/Xlib.h>
 // 	#include <X11/Xutil.h>
-	typedef struct _XDisplay Display;
-	typedef unsigned long GLXDrawable;
-	typedef void *GLXFBConfig;
-	typedef void *GLXContext;
+	using Display = struct _XDisplay;
+	using GLXDrawable = unsigned long;
+	using GLXFBConfig = void *;
+	using GLXContext = void *;
 	
 	#define XR_USE_PLATFORM_XLIB
 	#define XR_USE_GRAPHICS_API_OPENGL

@@ -47,7 +47,7 @@ class reWPPanelShapeHull;
  */
 class reWPShape : public igdeContainerScroll{
 public:
-	typedef deTObjectReference<reWPShape> Ref;
+	using Ref = deTObjectReference<reWPShape>;
 	
 private:
 	reWindowProperties &pWindowProperties;

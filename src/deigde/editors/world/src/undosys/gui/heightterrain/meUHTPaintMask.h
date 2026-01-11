@@ -43,7 +43,7 @@ class meWorld;
  */
 class meUHTPaintMask : public igdeUndo{
 public:
-	typedef deTObjectReference<meUHTPaintMask> Ref;
+	using Ref = deTObjectReference<meUHTPaintMask>;
 	
 	
 private:

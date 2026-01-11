@@ -39,7 +39,7 @@
  */
 class ceUCAASpeakEyesLAFromHeadLA : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCAASpeakEyesLAFromHeadLA> Ref;
+	using Ref = deTObjectReference<ceUCAASpeakEyesLAFromHeadLA>;
 	
 	
 private:

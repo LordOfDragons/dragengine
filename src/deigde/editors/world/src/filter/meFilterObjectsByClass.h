@@ -48,7 +48,7 @@
  */
 class meFilterObjectsByClass : public meFilterObjects{
 public:
-	typedef deTObjectReference<meFilterObjectsByClass> Ref;
+	using Ref = deTObjectReference<meFilterObjectsByClass>;
 	
 private:
 	decStringSet pClassNames;

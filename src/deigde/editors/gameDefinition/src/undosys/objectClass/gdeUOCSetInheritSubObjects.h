@@ -39,7 +39,7 @@
  */
 class gdeUOCSetInheritSubObjects : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCSetInheritSubObjects> Ref;
+	using Ref = deTObjectReference<gdeUOCSetInheritSubObjects>;
 	
 	
 private:

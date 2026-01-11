@@ -56,7 +56,7 @@ class deWorld;
 class DE_DLL_EXPORT deSoundLevelMeter : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deSoundLevelMeter> Ref;
+	using Ref = deTObjectReference<deSoundLevelMeter>;
 	
 	
 public:

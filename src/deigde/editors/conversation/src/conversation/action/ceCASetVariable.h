@@ -36,7 +36,7 @@
  */
 class ceCASetVariable : public ceConversationAction{
 public:
-	typedef deTObjectReference<ceCASetVariable> Ref;
+	using Ref = deTObjectReference<ceCASetVariable>;
 	/** \brief Operator. */
 	enum eOperators{
 		/** \brief Set variable. */

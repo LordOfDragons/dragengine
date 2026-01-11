@@ -43,7 +43,7 @@ class lpeWindowMain;
  */
 class lpeViewLangPack : public igdeContainerBorder{
 public:
-	typedef deTObjectReference<lpeViewLangPack> Ref;
+	using Ref = deTObjectReference<lpeViewLangPack>;
 	
 private:
 	lpeWindowMain &pWindowMain;

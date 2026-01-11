@@ -47,10 +47,10 @@ class DE_DLL_EXPORT igdeTreeItem : public deObject{
 
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeTreeItem> Ref;
+	using Ref = deTObjectReference<igdeTreeItem>;
 	
 	/** \brief Tree item list. */
-	typedef decTObjectOrderedSet<igdeTreeItem> List;
+	using List = decTObjectOrderedSet<igdeTreeItem>;
 	
 	
 private:

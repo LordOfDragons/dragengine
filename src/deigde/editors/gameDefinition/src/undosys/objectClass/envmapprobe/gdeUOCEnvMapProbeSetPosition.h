@@ -40,7 +40,7 @@
  */
 class gdeUOCEnvMapProbeSetPosition : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCEnvMapProbeSetPosition> Ref;
+	using Ref = deTObjectReference<gdeUOCEnvMapProbeSetPosition>;
 	
 	
 private:

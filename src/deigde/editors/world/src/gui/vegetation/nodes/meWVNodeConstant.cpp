@@ -57,7 +57,7 @@ protected:
 	meWVNodeConstant &pNode;
 	
 public:
-	typedef deTObjectReference<cEditVector> Ref;
+	using Ref = deTObjectReference<cEditVector>;
 	cEditVector(meWVNodeConstant &node) : pNode(node){}
 	
 	void OnVectorChanged(igdeEditVector *editVector) override{

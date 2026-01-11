@@ -36,7 +36,7 @@
  */
 class aeURuleMirrorSetEnableRotation : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleMirrorSetEnableRotation> Ref;
+	using Ref = deTObjectReference<aeURuleMirrorSetEnableRotation>;
 	
 	
 private:

@@ -42,7 +42,7 @@
  */
 class aeUSetRuleFStaRotation : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUSetRuleFStaRotation> Ref;
+	using Ref = deTObjectReference<aeUSetRuleFStaRotation>;
 	
 	
 private:

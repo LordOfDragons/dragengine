@@ -36,7 +36,7 @@
  */
 class peeUTypeSetIntervalAsDistance : public igdeUndo{
 public:
-	typedef deTObjectReference<peeUTypeSetIntervalAsDistance> Ref;
+	using Ref = deTObjectReference<peeUTypeSetIntervalAsDistance>;
 	
 	
 private:

@@ -40,7 +40,7 @@
  */
 class gdeUOCTexPropertyRemove : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCTexPropertyRemove> Ref;
+	using Ref = deTObjectReference<gdeUOCTexPropertyRemove>;
 	
 	
 private:

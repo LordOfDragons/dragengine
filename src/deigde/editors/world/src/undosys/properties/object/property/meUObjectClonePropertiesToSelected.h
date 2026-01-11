@@ -38,7 +38,7 @@
  */
 class meUObjectClonePropertiesToSelected : public igdeUndo{
 public:
-	typedef deTObjectReference<meUObjectClonePropertiesToSelected> Ref;
+	using Ref = deTObjectReference<meUObjectClonePropertiesToSelected>;
 	
 	
 private:

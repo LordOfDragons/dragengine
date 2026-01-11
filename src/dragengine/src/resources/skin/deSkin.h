@@ -55,7 +55,7 @@ class deBasePhysicsSkin;
 class DE_DLL_EXPORT deSkin : public deFileResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deSkin> Ref;
+	using Ref = deTObjectReference<deSkin>;
 	
 	
 private:

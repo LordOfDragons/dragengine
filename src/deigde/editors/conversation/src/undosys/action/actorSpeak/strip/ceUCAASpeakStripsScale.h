@@ -38,13 +38,13 @@
  */
 class ceUCAASpeakStripsScale : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCAASpeakStripsScale> Ref;
+	using Ref = deTObjectReference<ceUCAASpeakStripsScale>;
 	
 	
 private:
 	class cStrip : public deObject{
 	public:
-		typedef deTObjectReference<cStrip> Ref;
+		using Ref = deTObjectReference<cStrip>;
 		const ceStrip::Ref strip;
 		const float pause;
 		const float duration;

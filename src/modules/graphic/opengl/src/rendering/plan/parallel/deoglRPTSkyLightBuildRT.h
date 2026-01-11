@@ -38,7 +38,7 @@ class deoglCollideList;
 class deoglRPTSkyLightBuildRT : public deParallelTask{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTThreadSafeObjectReference<deoglRPTSkyLightBuildRT> Ref;
+	using Ref = deTThreadSafeObjectReference<deoglRPTSkyLightBuildRT>;
 	
 	
 private:

@@ -41,7 +41,7 @@
  */
 class gdeUOCCTextureSetOffset : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCCTextureSetOffset> Ref;
+	using Ref = deTObjectReference<gdeUOCCTextureSetOffset>;
 	
 	
 private:

@@ -38,7 +38,7 @@
  */
 class gdeUOCNavBlockerSetBoneName : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCNavBlockerSetBoneName> Ref;
+	using Ref = deTObjectReference<gdeUOCNavBlockerSetBoneName>;
 	
 	
 private:

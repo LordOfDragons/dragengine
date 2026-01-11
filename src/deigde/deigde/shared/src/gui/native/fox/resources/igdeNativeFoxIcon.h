@@ -66,6 +66,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxIcon igdeNativeIcon;
+using igdeNativeIcon = igdeNativeFoxIcon;
 
 #endif

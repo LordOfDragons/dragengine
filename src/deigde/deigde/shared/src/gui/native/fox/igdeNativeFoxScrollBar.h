@@ -91,6 +91,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxScrollBar igdeNativeScrollBar;
+using igdeNativeScrollBar = igdeNativeFoxScrollBar;
 
 #endif

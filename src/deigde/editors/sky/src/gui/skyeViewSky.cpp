@@ -52,7 +52,7 @@ class cCameraInteraction : public igdeMouseCameraListener {
 	skyeViewSky &pView;
 	
 public:
-	typedef deTObjectReference<cCameraInteraction> Ref;
+	using Ref = deTObjectReference<cCameraInteraction>;
 	cCameraInteraction(skyeViewSky &view) : pView(view){
 		SetEnabledAll(false);
 		SetEnableRotate(true);

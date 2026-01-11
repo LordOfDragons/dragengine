@@ -37,7 +37,7 @@
 class dexsiDeviceCoreKeyboard : public dexsiDevice{
 public:
 	/** Type holding strong reference. */
-	typedef deTObjectReference<dexsiDeviceCoreKeyboard> Ref;
+	using Ref = deTObjectReference<dexsiDeviceCoreKeyboard>;
 	
 	
 	/** \name Constructors and Destructors */

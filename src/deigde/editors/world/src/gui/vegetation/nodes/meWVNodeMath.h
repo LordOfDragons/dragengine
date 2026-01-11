@@ -40,7 +40,7 @@ class meHTVRuleMath;
  */
 class meWVNodeMath : public meWVNode{
 public:
-	typedef deTObjectReference<meWVNodeMath> Ref;
+	using Ref = deTObjectReference<meWVNodeMath>;
 	
 private:
 	meHTVRuleMath *pRuleMath;

@@ -36,7 +36,7 @@
  */
 class reUShapeSetProperty : public igdeUndo{
 public:
-	typedef deTObjectReference<reUShapeSetProperty> Ref;
+	using Ref = deTObjectReference<reUShapeSetProperty>;
 	
 	
 private:

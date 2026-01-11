@@ -39,7 +39,7 @@
  */
 class gdeUOCForceFieldSetTriggerName : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCForceFieldSetTriggerName> Ref;
+	using Ref = deTObjectReference<gdeUOCForceFieldSetTriggerName>;
 	
 	
 private:

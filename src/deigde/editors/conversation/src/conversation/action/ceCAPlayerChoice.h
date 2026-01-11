@@ -49,7 +49,7 @@ private:
 	
 	
 public:
-	typedef deTObjectReference<ceCAPlayerChoice> Ref;
+	using Ref = deTObjectReference<ceCAPlayerChoice>;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new player choice conversation action. */

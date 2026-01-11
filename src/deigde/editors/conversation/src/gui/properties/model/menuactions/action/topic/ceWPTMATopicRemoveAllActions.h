@@ -36,7 +36,7 @@ class ceConversationTopic;
  */
 class ceWPTMATopicRemoveAllActions : public ceWPTMARemoveAllActions{
 public:
-	typedef deTObjectReference<ceWPTMATopicRemoveAllActions> Ref;
+	using Ref = deTObjectReference<ceWPTMATopicRemoveAllActions>;
 
 private:
 	ceConversationTopic *pTopic;

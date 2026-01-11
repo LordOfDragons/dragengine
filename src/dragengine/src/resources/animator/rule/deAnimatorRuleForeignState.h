@@ -44,7 +44,7 @@
 class DE_DLL_EXPORT deAnimatorRuleForeignState : public deAnimatorRule{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deAnimatorRuleForeignState> Ref;
+	using Ref = deTObjectReference<deAnimatorRuleForeignState>;
 	
 	
 public:

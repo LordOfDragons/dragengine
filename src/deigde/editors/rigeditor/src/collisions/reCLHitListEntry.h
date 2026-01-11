@@ -40,9 +40,9 @@
 class reCLHitListEntry : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<reCLHitListEntry> Ref;
+	using Ref = deTObjectReference<reCLHitListEntry>;
 	
-	typedef decTObjectOrderedSet<reCLHitListEntry> List;
+	using List = decTObjectOrderedSet<reCLHitListEntry>;
 	
 	
 private:

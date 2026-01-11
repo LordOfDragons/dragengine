@@ -37,7 +37,7 @@ class deoglRenderThread;
  */
 class deoglFence : public deObject{
 public:
-	typedef deTObjectReference<deoglFence> Ref;
+	using Ref = deTObjectReference<deoglFence>;
 	
 	
 private:

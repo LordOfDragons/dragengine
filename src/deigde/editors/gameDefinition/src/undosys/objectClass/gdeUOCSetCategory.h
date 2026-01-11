@@ -37,7 +37,7 @@
  */
 class gdeUOCSetCategory : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCSetCategory> Ref;
+	using Ref = deTObjectReference<gdeUOCSetCategory>;
 	
 	
 private:

@@ -38,7 +38,7 @@
  */
 class gdeUOCComponentSetAnimationPath : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCComponentSetAnimationPath> Ref;
+	using Ref = deTObjectReference<gdeUOCComponentSetAnimationPath>;
 	
 	
 private:

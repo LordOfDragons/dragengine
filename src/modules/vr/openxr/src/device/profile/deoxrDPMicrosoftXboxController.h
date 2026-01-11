@@ -33,7 +33,7 @@
  */
 class deoxrDPMicrosoftXboxController : public deoxrDeviceProfile{
 public:
-	typedef deTObjectReference<deoxrDPMicrosoftXboxController> Ref;
+	using Ref = deTObjectReference<deoxrDPMicrosoftXboxController>;
 	
 	/** \name Constructors and Destructors */
 	/*@{*/

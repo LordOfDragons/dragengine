@@ -41,7 +41,7 @@ class deoglRTLogger;
 class deoglDynamicTBOShared : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglDynamicTBOShared> Ref;
+	using Ref = deTObjectReference<deoglDynamicTBOShared>;
 	
 	
 	const deoglDynamicTBO::Ref pTBO;

@@ -74,7 +74,7 @@ class deLogger;
 class reRig : public igdeEditableEntity{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<reRig> Ref;
+	using Ref = deTObjectReference<reRig>;
 	
 	
 	/** Element modes. */

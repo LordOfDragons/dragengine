@@ -36,7 +36,7 @@ class deXSystemInput;
  */
 class dexsiParameter : public deObject{
 public:
-	typedef deTObjectReference<dexsiParameter> Ref;
+	using Ref = deTObjectReference<dexsiParameter>;
 	
 	
 protected:

@@ -37,7 +37,7 @@ class deSkin;
 class DE_DLL_EXPORT deRLTaskReadSkin : public deResourceLoaderTask {
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTThreadSafeObjectReference<deRLTaskReadSkin> Ref;
+	using Ref = deTThreadSafeObjectReference<deRLTaskReadSkin>;
 	
 	
 private:

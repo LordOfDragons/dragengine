@@ -36,7 +36,7 @@
  */
 class syneUSourceWaveSetMinFrequency : public igdeUndo{
 public:
-	typedef deTObjectReference<syneUSourceWaveSetMinFrequency> Ref;
+	using Ref = deTObjectReference<syneUSourceWaveSetMinFrequency>;
 	
 	
 private:

@@ -36,7 +36,7 @@
  */
 class saeUSAnimSetNeutralMoveName : public igdeUndo{
 public:
-	typedef deTObjectReference<saeUSAnimSetNeutralMoveName> Ref;
+	using Ref = deTObjectReference<saeUSAnimSetNeutralMoveName>;
 	
 	
 private:

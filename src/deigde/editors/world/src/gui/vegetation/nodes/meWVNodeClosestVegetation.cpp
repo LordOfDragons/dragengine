@@ -50,7 +50,7 @@ protected:
 	meWVNodeClosestVegetation &pNode;
 	
 public:
-	typedef deTObjectReference<cTextVegetationType> Ref;
+	using Ref = deTObjectReference<cTextVegetationType>;
 	cTextVegetationType(meWVNodeClosestVegetation &node) : pNode(node){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -70,7 +70,7 @@ protected:
 	meWVNodeClosestVegetation &pNode;
 	
 public:
-	typedef deTObjectReference<cTextSearchRadius> Ref;
+	using Ref = deTObjectReference<cTextSearchRadius>;
 	cTextSearchRadius(meWVNodeClosestVegetation &node) : pNode(node){}
 	
 	void OnTextChanged(igdeTextField *textField) override{

@@ -45,7 +45,7 @@ class deEngine;
  */
 class reTemporaryConstraint : public deObject{
 public:
-	typedef deTObjectReference<reTemporaryConstraint> Ref;
+	using Ref = deTObjectReference<reTemporaryConstraint>;
 	
 private:
 	deColliderComponent::Ref pEngSimCollider;

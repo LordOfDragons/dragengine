@@ -37,7 +37,7 @@
  */
 class ceUCAWaitSetInterval : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCAWaitSetInterval> Ref;
+	using Ref = deTObjectReference<ceUCAWaitSetInterval>;
 	
 	
 private:

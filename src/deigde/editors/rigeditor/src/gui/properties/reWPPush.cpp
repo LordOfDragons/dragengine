@@ -68,7 +68,7 @@ protected:
 	reWPPush &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseTextFieldListener> Ref;
+	using Ref = deTObjectReference<cBaseTextFieldListener>;
 	cBaseTextFieldListener(reWPPush &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -87,7 +87,7 @@ protected:
 	reWPPush &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseEditVectorListener> Ref;
+	using Ref = deTObjectReference<cBaseEditVectorListener>;
 	cBaseEditVectorListener(reWPPush &panel) : pPanel(panel){}
 	
 	void OnVectorChanged(igdeEditVector *editVector) override{
@@ -106,7 +106,7 @@ protected:
 	reWPPush &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseComboBoxListener> Ref;
+	using Ref = deTObjectReference<cBaseComboBoxListener>;
 	cBaseComboBoxListener(reWPPush &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -124,7 +124,7 @@ public:
 
 class cComboType : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboType> Ref;
+	using Ref = deTObjectReference<cComboType>;
 	cComboType(reWPPush &panel) : cBaseComboBoxListener(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox, reRig *rig, reRigPush *push) override{
@@ -137,7 +137,7 @@ public:
 
 class cEditPosition : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditPosition> Ref;
+	using Ref = deTObjectReference<cEditPosition>;
 	cEditPosition(reWPPush &panel) : cBaseEditVectorListener(panel){}
 	
 	void OnChanged(const decVector &vector, reRig *rig, reRigPush *push) override{
@@ -147,7 +147,7 @@ public:
 
 class cEditRotation : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditRotation> Ref;
+	using Ref = deTObjectReference<cEditRotation>;
 	cEditRotation(reWPPush &panel) : cBaseEditVectorListener(panel){}
 	
 	void OnChanged(const decVector &vector, reRig *rig, reRigPush *push) override{
@@ -157,7 +157,7 @@ public:
 
 class cTextImpuls : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextImpuls> Ref;
+	using Ref = deTObjectReference<cTextImpuls>;
 	cTextImpuls(reWPPush &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField *textField, reRig *rig, reRigPush *push) override{
@@ -167,7 +167,7 @@ public:
 
 class cTextRayCount : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextRayCount> Ref;
+	using Ref = deTObjectReference<cTextRayCount>;
 	cTextRayCount(reWPPush &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField *textField, reRig *rig, reRigPush *push) override{
@@ -177,7 +177,7 @@ public:
 
 class cTextConeAngle : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextConeAngle> Ref;
+	using Ref = deTObjectReference<cTextConeAngle>;
 	cTextConeAngle(reWPPush &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField *textField, reRig *rig, reRigPush *push) override{

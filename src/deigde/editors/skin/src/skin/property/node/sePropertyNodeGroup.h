@@ -34,7 +34,7 @@
  */
 class sePropertyNodeGroup : public sePropertyNode{
 public:
-	typedef deTObjectReference<sePropertyNodeGroup> Ref;
+	using Ref = deTObjectReference<sePropertyNodeGroup>;
 	
 	
 private:

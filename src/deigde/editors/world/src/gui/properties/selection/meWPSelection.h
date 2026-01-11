@@ -44,7 +44,7 @@ class meWindowProperties;
  */
 class meWPSelection : public igdeSwitcher{
 public:
-	typedef deTObjectReference<meWPSelection> Ref;
+	using Ref = deTObjectReference<meWPSelection>;
 	
 private:
 	meWindowProperties &pWindowProperties;

@@ -42,7 +42,7 @@ class deoglPipelineConfiguration;
  */
 class deoglPipelineManager : public deObject{
 public:
-	typedef deTObjectReference<deoglPipelineManager> Ref;
+	using Ref = deTObjectReference<deoglPipelineManager>;
 	
 	
 private:

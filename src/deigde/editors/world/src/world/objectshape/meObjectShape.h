@@ -57,10 +57,10 @@ class decShape;
 class meObjectShape : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meObjectShape> Ref;
+	using Ref = deTObjectReference<meObjectShape>;
 	
 	/** \brief List type. */
-	typedef decTObjectOrderedSet<meObjectShape> List;
+	using List = decTObjectOrderedSet<meObjectShape>;
 	
 	
 private:

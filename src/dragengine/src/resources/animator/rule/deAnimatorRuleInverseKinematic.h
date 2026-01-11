@@ -48,7 +48,7 @@
 class DE_DLL_EXPORT deAnimatorRuleInverseKinematic : public deAnimatorRule{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deAnimatorRuleInverseKinematic> Ref;
+	using Ref = deTObjectReference<deAnimatorRuleInverseKinematic>;
 	
 	
 private:

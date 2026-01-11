@@ -36,7 +36,7 @@
  */
 class syneUEffectStretchSetMinTime : public igdeUndo{
 public:
-	typedef deTObjectReference<syneUEffectStretchSetMinTime> Ref;
+	using Ref = deTObjectReference<syneUEffectStretchSetMinTime>;
 	
 	
 private:

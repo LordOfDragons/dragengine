@@ -47,8 +47,8 @@ private:
 	deCanvasView::Ref pCanvasView;
 	
 public:
-	typedef deTObjectReference<ceTextBoxText> Ref;
-	typedef decTObjectOrderedSet<ceTextBoxText> List;
+	using Ref = deTObjectReference<ceTextBoxText>;
+	using List = decTObjectOrderedSet<ceTextBoxText>;
 
 
 	/** \name Constructors and Destructors */

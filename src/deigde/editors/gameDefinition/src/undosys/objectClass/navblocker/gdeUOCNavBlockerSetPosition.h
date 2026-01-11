@@ -40,7 +40,7 @@
  */
 class gdeUOCNavBlockerSetPosition : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCNavBlockerSetPosition> Ref;
+	using Ref = deTObjectReference<gdeUOCNavBlockerSetPosition>;
 	
 	
 private:

@@ -63,7 +63,7 @@ class igdeDEStatus_ActionStart : public igdeAction{
 	igdeDEStatus &pPanel;
 	
 public:
-	typedef deTObjectReference<igdeDEStatus_ActionStart> Ref;
+	using Ref = deTObjectReference<igdeDEStatus_ActionStart>;
 	
 	igdeDEStatus_ActionStart(igdeDEStatus &panel) :
 		igdeAction("Start Engine", nullptr, "Start game engine"), pPanel(panel){}
@@ -81,7 +81,7 @@ class igdeDEStatus_ActionStop : public igdeAction{
 	igdeDEStatus &pPanel;
 	
 public:
-	typedef deTObjectReference<igdeDEStatus_ActionStop> Ref;
+	using Ref = deTObjectReference<igdeDEStatus_ActionStop>;
 	
 	igdeDEStatus_ActionStop(igdeDEStatus &panel) :
 		igdeAction("Stop Engine", nullptr, "Stop game engine"), pPanel(panel){}

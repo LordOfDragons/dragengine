@@ -58,7 +58,7 @@ class deBaseModule;
 class fbxProperty : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<fbxProperty> Ref;
+	using Ref = deTObjectReference<fbxProperty>;
 	
 	
 public:

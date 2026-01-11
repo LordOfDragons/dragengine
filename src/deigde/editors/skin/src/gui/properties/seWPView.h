@@ -48,7 +48,7 @@ class seWindowProperties;
  */
 class seWPView : public igdeContainerScroll{
 public:
-	typedef deTObjectReference<seWPView> Ref;
+	using Ref = deTObjectReference<seWPView>;
 	
 private:
 	seWindowProperties &pWindowProperties;

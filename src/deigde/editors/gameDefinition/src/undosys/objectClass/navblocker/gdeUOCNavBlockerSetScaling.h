@@ -40,7 +40,7 @@
  */
 class gdeUOCNavBlockerSetScaling : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCNavBlockerSetScaling> Ref;
+	using Ref = deTObjectReference<gdeUOCNavBlockerSetScaling>;
 	
 	
 private:

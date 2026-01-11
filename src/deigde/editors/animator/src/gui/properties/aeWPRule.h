@@ -56,7 +56,7 @@ class igdeTreeItem;
  */
 class aeWPRule : public igdeContainerScroll{
 public:
-	typedef deTObjectReference<aeWPRule> Ref;
+	using Ref = deTObjectReference<aeWPRule>;
 	
 	
 private:

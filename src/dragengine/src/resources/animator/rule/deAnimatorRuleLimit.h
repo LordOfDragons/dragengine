@@ -38,7 +38,7 @@
 class DE_DLL_EXPORT deAnimatorRuleLimit : public deAnimatorRule{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deAnimatorRuleLimit> Ref;
+	using Ref = deTObjectReference<deAnimatorRuleLimit>;
 	
 	
 public:

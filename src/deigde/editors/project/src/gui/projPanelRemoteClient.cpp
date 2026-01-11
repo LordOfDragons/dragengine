@@ -68,7 +68,7 @@ namespace{
 class cActionDisconnect : public igdeAction{
 	projPanelRemoteClient &pPanel;
 public:
-	typedef deTObjectReference<cActionDisconnect> Ref;
+	using Ref = deTObjectReference<cActionDisconnect>;
 	cActionDisconnect(projPanelRemoteClient &panel) : igdeAction("Disconnect",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiQuit), "Disconnect remote client"),
 	pPanel(panel){}
@@ -81,7 +81,7 @@ public:
 class cComboLaunchProfile : public igdeComboBoxListener{
 	projPanelRemoteClient &pPanel;
 public:
-	typedef deTObjectReference<cComboLaunchProfile> Ref;
+	using Ref = deTObjectReference<cComboLaunchProfile>;
 	cComboLaunchProfile(projPanelRemoteClient &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -102,7 +102,7 @@ public:
 class cActionSynchronize : public igdeAction{
 	projPanelRemoteClient &pPanel;
 public:
-	typedef deTObjectReference<cActionSynchronize> Ref;
+	using Ref = deTObjectReference<cActionSynchronize>;
 	cActionSynchronize(projPanelRemoteClient &panel) : igdeAction("Synchronize",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongRight),
 		"Synchronize profile specific project data to client"),
@@ -121,7 +121,7 @@ public:
 class cActionStart : public igdeAction{
 	projPanelRemoteClient &pPanel;
 public:
-	typedef deTObjectReference<cActionStart> Ref;
+	using Ref = deTObjectReference<cActionStart>;
 	
 	cActionStart(projPanelRemoteClient &panel) : igdeAction("Start",
 		panel.GetPanelTestRun().GetWindowMain().GetIconStart(), "Test-Run project using selected profile"),
@@ -139,7 +139,7 @@ public:
 class cActionStop : public igdeAction{
 	projPanelRemoteClient &pPanel;
 public:
-	typedef deTObjectReference<cActionStop> Ref;
+	using Ref = deTObjectReference<cActionStop>;
 	
 	cActionStop(projPanelRemoteClient &panel) : igdeAction("Stop",
 		panel.GetPanelTestRun().GetWindowMain().GetIconStop(), "Stop Test-Run project"),
@@ -157,7 +157,7 @@ public:
 class cActionKill : public igdeAction{
 	projPanelRemoteClient &pPanel;
 public:
-	typedef deTObjectReference<cActionKill> Ref;
+	using Ref = deTObjectReference<cActionKill>;
 	
 	cActionKill(projPanelRemoteClient &panel) : igdeAction("Kill",
 		panel.GetPanelTestRun().GetWindowMain().GetIconKill(), "Kill Test-Run project"),

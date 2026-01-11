@@ -55,7 +55,7 @@
 class DE_DLL_EXPORT deAnimatorRuleStateSnapshot : public deAnimatorRule{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deAnimatorRuleStateSnapshot> Ref;
+	using Ref = deTObjectReference<deAnimatorRuleStateSnapshot>;
 	
 	
 private:

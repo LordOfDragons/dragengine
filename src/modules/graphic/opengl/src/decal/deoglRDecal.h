@@ -61,7 +61,7 @@ class deoglDecalListener;
 class deoglRDecal : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglRDecal> Ref;
+	using Ref = deTObjectReference<deoglRDecal>;
 	
 	
 private:
@@ -69,7 +69,7 @@ private:
 	class WorldComputeElement: public deoglWorldComputeElement{
 		deoglRDecal &pDecal;
 	public:
-		typedef deTObjectReference<WorldComputeElement> Ref;
+		using Ref = deTObjectReference<WorldComputeElement>;
 		WorldComputeElement(deoglRDecal &decal);
 		void UpdateData(sDataElement &data) const override;
 		void UpdateDataGeometries(sDataElementGeometry *data) const override;

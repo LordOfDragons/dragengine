@@ -43,7 +43,7 @@
  */
 class aeURemoveRule : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURemoveRule> Ref;
+	using Ref = deTObjectReference<aeURemoveRule>;
 	
 	
 private:

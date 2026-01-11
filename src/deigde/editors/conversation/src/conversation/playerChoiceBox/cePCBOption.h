@@ -51,8 +51,8 @@ private:
 	deCanvasView::Ref pCanvasView;
 	
 public:
-	typedef deTObjectReference<cePCBOption> Ref;
-	typedef decTObjectOrderedSet<cePCBOption> List;
+	using Ref = deTObjectReference<cePCBOption>;
+	using List = decTObjectOrderedSet<cePCBOption>;
 
 
 	/** \name Constructors and Destructors */

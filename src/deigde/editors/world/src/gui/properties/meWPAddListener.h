@@ -36,7 +36,7 @@ class meWPAdd;
  */
 class meWPAddListener : public meWorldNotifier{
 public:
-	typedef deTObjectReference<meWPAddListener> Ref;
+	using Ref = deTObjectReference<meWPAddListener>;
 	
 private:
 	meWPAdd &pPanel;

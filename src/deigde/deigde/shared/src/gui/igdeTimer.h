@@ -38,7 +38,7 @@ class DE_DLL_EXPORT igdeTimer : public deObject{
 
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeTimer> Ref;
+	using Ref = deTObjectReference<igdeTimer>;
 	
 	
 private:

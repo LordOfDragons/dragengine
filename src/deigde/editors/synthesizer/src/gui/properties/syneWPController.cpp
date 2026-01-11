@@ -125,7 +125,7 @@ class cListControllers : public igdeListBoxListener{
 	syneWPController &pPanel;
 	
 public:
-	typedef deTObjectReference<cListControllers> Ref;
+	using Ref = deTObjectReference<cListControllers>;
 	cListControllers(syneWPController &panel) : pPanel(panel){}
 	
 	void OnSelectionChanged(igdeListBox *listBox) override{
@@ -152,7 +152,7 @@ public:
 
 class cTextName : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextName> Ref;
+	using Ref = deTObjectReference<cTextName>;
 	cTextName(syneWPController &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, syneController *controller) override{
@@ -173,7 +173,7 @@ public:
 
 class cTextMinimumValue : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextMinimumValue> Ref;
+	using Ref = deTObjectReference<cTextMinimumValue>;
 	cTextMinimumValue(syneWPController &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, syneController *controller) override{
@@ -185,7 +185,7 @@ public:
 
 class cTextMaximumValue : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextMaximumValue> Ref;
+	using Ref = deTObjectReference<cTextMaximumValue>;
 	cTextMaximumValue(syneWPController &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, syneController *controller) override{
@@ -197,7 +197,7 @@ public:
 
 class cActionClamp : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionClamp> Ref;
+	using Ref = deTObjectReference<cActionClamp>;
 	cActionClamp(syneWPController &panel) : cBaseAction(panel, "Clamp value to range",
 		nullptr, "Determines if the value of the controller is clamped to the given range"){ }
 	
@@ -211,7 +211,7 @@ class cEditCurve : public igdeViewCurveBezierListener{
 	igdeUndo::Ref pUndo;
 	
 public:
-	typedef deTObjectReference<cEditCurve> Ref;
+	using Ref = deTObjectReference<cEditCurve>;
 	cEditCurve(syneWPController &panel) : pPanel(panel){}
 	
 	void OnCurveChanged(igdeViewCurveBezier *viewCurveBezier) override{
@@ -242,7 +242,7 @@ public:
 
 class cTextCurveConstValue : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextCurveConstValue> Ref;
+	using Ref = deTObjectReference<cTextCurveConstValue>;
 	cTextCurveConstValue(syneWPController &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, syneController *controller) override{
@@ -255,7 +255,7 @@ class cActionSetCurve : public cBaseAction{
 	igdeViewCurveBezier::Ref pEditCurve;
 	
 public:
-	typedef deTObjectReference<cActionSetCurve> Ref;
+	using Ref = deTObjectReference<cActionSetCurve>;
 	cActionSetCurve(syneWPController &panel, igdeViewCurveBezier *editCurve,
 		const char *text, igdeIcon *icon, const char *description) :
 		cBaseAction(panel, text, icon, description), pEditCurve(editCurve){}
@@ -281,7 +281,7 @@ class cActionCurveSetConstValue : public cActionSetCurve{
 	igdeTextField::Ref pEditConstValue;
 	
 public:
-	typedef deTObjectReference<cActionCurveSetConstValue> Ref;
+	using Ref = deTObjectReference<cActionCurveSetConstValue>;
 	cActionCurveSetConstValue(syneWPController &panel, igdeViewCurveBezier *editCurve, igdeTextField *editConstValue) :
 		cActionSetCurve(panel, editCurve, "Const", nullptr, "Set curve to constant value"),
 	pEditConstValue(editConstValue){}
@@ -299,7 +299,7 @@ public:
 
 class cActionCurveSetLinear : public cActionSetCurve{
 public:
-	typedef deTObjectReference<cActionCurveSetLinear> Ref;
+	using Ref = deTObjectReference<cActionCurveSetLinear>;
 	cActionCurveSetLinear(syneWPController &panel, igdeViewCurveBezier *editCurve) :
 		cActionSetCurve(panel, editCurve, "Linear", nullptr, "Set curve to linear curve from 0 to 1"){}
 	
@@ -320,7 +320,7 @@ public:
 
 class cActionCurveSetLinearInverse : public cActionSetCurve{
 public:
-	typedef deTObjectReference<cActionCurveSetLinearInverse> Ref;
+	using Ref = deTObjectReference<cActionCurveSetLinearInverse>;
 	cActionCurveSetLinearInverse(syneWPController &panel, igdeViewCurveBezier *editCurve) :
 		cActionSetCurve(panel, editCurve, "Inverse", nullptr, "Set curve to linear curve from 1 to 0"){}
 	
@@ -341,7 +341,7 @@ public:
 
 class cActionCurveSetBezier : public cActionSetCurve{
 public:
-	typedef deTObjectReference<cActionCurveSetBezier> Ref;
+	using Ref = deTObjectReference<cActionCurveSetBezier>;
 	cActionCurveSetBezier(syneWPController &panel, igdeViewCurveBezier *editCurve) :
 		cActionSetCurve(panel, editCurve, "Bezier", nullptr, "Set curve to bezier curve from 0 to 1"){}
 	
@@ -360,7 +360,7 @@ public:
 
 class cActionCurveSetBezierInverse : public cActionSetCurve{
 public:
-	typedef deTObjectReference<cActionCurveSetBezierInverse> Ref;
+	using Ref = deTObjectReference<cActionCurveSetBezierInverse>;
 	cActionCurveSetBezierInverse(syneWPController &panel, igdeViewCurveBezier *editCurve) :
 		cActionSetCurve(panel, editCurve, "Inverse", nullptr, "Set curve to bezier curve from 1 to 0"){}
 	

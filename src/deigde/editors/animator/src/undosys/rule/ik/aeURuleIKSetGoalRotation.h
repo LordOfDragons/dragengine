@@ -43,7 +43,7 @@
  */
 class aeURuleIKSetGoalRotation : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleIKSetGoalRotation> Ref;
+	using Ref = deTObjectReference<aeURuleIKSetGoalRotation>;
 	
 	
 private:

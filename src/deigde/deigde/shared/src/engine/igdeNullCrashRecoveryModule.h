@@ -37,7 +37,7 @@ class DE_DLL_EXPORT igdeNullCrashRecoveryModule : public deBaseCrashRecoveryModu
 public:
 	class DE_DLL_EXPORT cModule : public deInternalModule{
 	public:
-		typedef deTObjectReference<cModule> Ref;
+		using Ref = deTObjectReference<cModule>;
 		cModule(deModuleSystem *system);
 		
 	protected:

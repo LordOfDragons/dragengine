@@ -35,7 +35,7 @@
  */
 class aeRuleBoneTransformator : public aeRule{
 public:
-	typedef deTObjectReference<aeRuleBoneTransformator> Ref;
+	using Ref = deTObjectReference<aeRuleBoneTransformator>;
 	
 	
 private:

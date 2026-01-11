@@ -78,6 +78,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxContainerForm igdeNativeContainerForm;
+using igdeNativeContainerForm = igdeNativeFoxContainerForm;
 
 #endif

@@ -39,7 +39,7 @@
 class cWaitableTask : public deoglLoaderThreadTask{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTThreadSafeObjectReference<cWaitableTask> Ref;
+	using Ref = deTThreadSafeObjectReference<cWaitableTask>;
 	
 private:
 	deoglRenderThread &pRenderThread;

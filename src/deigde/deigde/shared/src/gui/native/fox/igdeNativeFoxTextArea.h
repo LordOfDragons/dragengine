@@ -136,6 +136,6 @@ private:
 	void pBuildStylesArray();
 };
 
-typedef igdeNativeFoxTextArea igdeNativeTextArea;
+using igdeNativeTextArea = igdeNativeFoxTextArea;
 
 #endif

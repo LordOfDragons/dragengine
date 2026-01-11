@@ -38,7 +38,7 @@
  */
 class syneUEffectTargetAddLink : public igdeUndo{
 public:
-	typedef deTObjectReference<syneUEffectTargetAddLink> Ref;
+	using Ref = deTObjectReference<syneUEffectTargetAddLink>;
 	
 	
 private:

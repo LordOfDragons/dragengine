@@ -38,7 +38,7 @@
  */
 class gdeUOCBillboardToggleSizeFixedToScreen : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCBillboardToggleSizeFixedToScreen> Ref;
+	using Ref = deTObjectReference<gdeUOCBillboardToggleSizeFixedToScreen>;
 	
 	
 private:

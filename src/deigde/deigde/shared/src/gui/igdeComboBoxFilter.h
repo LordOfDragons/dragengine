@@ -47,7 +47,7 @@ class DE_DLL_EXPORT igdeComboBoxFilter : public igdeComboBox{
 
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeComboBoxFilter> Ref;
+	using Ref = deTObjectReference<igdeComboBoxFilter>;
 	
 	
 private:

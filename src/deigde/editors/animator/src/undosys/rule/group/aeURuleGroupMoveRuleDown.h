@@ -38,7 +38,7 @@ class aeRule;
  */
 class aeURuleGroupMoveRuleDown : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleGroupMoveRuleDown> Ref;
+	using Ref = deTObjectReference<aeURuleGroupMoveRuleDown>;
 	
 	
 private:

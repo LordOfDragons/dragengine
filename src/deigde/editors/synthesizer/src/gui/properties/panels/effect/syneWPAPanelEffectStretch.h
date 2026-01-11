@@ -34,7 +34,7 @@
  */
 class syneWPAPanelEffectStretch : public syneWPAPanelEffect{
 public:
-	typedef deTObjectReference<syneWPAPanelEffectStretch> Ref;
+	using Ref = deTObjectReference<syneWPAPanelEffectStretch>;
 	
 private:
 	igdeTextField::Ref pEditMinTime;

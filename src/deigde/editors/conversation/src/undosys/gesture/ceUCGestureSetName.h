@@ -42,7 +42,7 @@ class ceConversationTopic;
  */
 class ceUCGestureSetName : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCGestureSetName> Ref;
+	using Ref = deTObjectReference<ceUCGestureSetName>;
 	
 	
 private:

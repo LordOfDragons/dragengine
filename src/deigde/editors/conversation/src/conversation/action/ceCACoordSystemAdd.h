@@ -41,7 +41,7 @@ private:
 	decString pAliasID;
 	
 public:
-	typedef deTObjectReference<ceCACoordSystemAdd> Ref;
+	using Ref = deTObjectReference<ceCACoordSystemAdd>;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new conversation action. */

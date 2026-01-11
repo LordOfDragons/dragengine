@@ -36,7 +36,7 @@ class ceWindowMain;
  */
 class ceWPTMenuAction : public igdeAction{
 public:
-	typedef deTObjectReference<ceWPTMenuAction> Ref;
+	using Ref = deTObjectReference<ceWPTMenuAction>;
 	
 private:
 private:

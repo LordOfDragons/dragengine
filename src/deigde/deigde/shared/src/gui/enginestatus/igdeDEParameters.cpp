@@ -55,7 +55,7 @@ class igdeDEParameters_ComboModule : public igdeComboBoxListener{
 	igdeDEParameters &pPanel;
 	
 public:
-	typedef deTObjectReference<igdeDEParameters_ComboModule> Ref;
+	using Ref = deTObjectReference<igdeDEParameters_ComboModule>;
 	
 	igdeDEParameters_ComboModule(igdeDEParameters &panel) : pPanel(panel){}
 	
@@ -69,7 +69,7 @@ class igdeDEParameters_ComboParameter : public igdeComboBoxListener{
 	igdeDEParameters &pPanel;
 	
 public:
-	typedef deTObjectReference<igdeDEParameters_ComboParameter> Ref;
+	using Ref = deTObjectReference<igdeDEParameters_ComboParameter>;
 	
 	igdeDEParameters_ComboParameter(igdeDEParameters &panel) : pPanel(panel){}
 	
@@ -82,7 +82,7 @@ class igdeDEParameters_ActionSet : public igdeAction{
 	igdeDEParameters &pPanel;
 	
 public:
-	typedef deTObjectReference<igdeDEParameters_ActionSet> Ref;
+	using Ref = deTObjectReference<igdeDEParameters_ActionSet>;
 	
 	igdeDEParameters_ActionSet(igdeDEParameters &panel) :
 		igdeAction("Set", nullptr, "Set parameter value"), pPanel(panel){}
@@ -100,7 +100,7 @@ class igdeDEParameters_ActionReset : public igdeAction{
 	igdeDEParameters &pPanel;
 	
 public:
-	typedef deTObjectReference<igdeDEParameters_ActionReset> Ref;
+	using Ref = deTObjectReference<igdeDEParameters_ActionReset>;
 	
 	igdeDEParameters_ActionReset(igdeDEParameters &panel) :
 		igdeAction("Reset", nullptr, "Reset parameter value"), pPanel(panel){}

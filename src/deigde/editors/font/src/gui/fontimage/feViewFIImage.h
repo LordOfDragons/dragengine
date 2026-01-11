@@ -42,7 +42,7 @@ class feWindowMain;
 class feViewFIImage : public igdeViewRenderWindow{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<feViewFIImage> Ref;
+	using Ref = deTObjectReference<feViewFIImage>;
 	
 private:
 	feWindowMain &pWindowMain;

@@ -48,7 +48,7 @@
 class meHTVRuleClosestProp : public meHTVRule{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meHTVRuleClosestProp> Ref;
+	using Ref = deTObjectReference<meHTVRuleClosestProp>;
 	
 	
 	/** \brief Slots. */

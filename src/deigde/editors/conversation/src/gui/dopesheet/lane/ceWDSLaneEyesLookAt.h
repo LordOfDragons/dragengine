@@ -34,7 +34,7 @@
 class ceWDSLaneEyesLookAt : public ceWDSLane{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceWDSLaneEyesLookAt> Ref;
+	using Ref = deTObjectReference<ceWDSLaneEyesLookAt>;
 	
 	
 	/** \name Constructors and Destructors */

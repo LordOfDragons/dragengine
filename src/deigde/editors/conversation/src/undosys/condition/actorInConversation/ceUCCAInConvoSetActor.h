@@ -38,7 +38,7 @@
  */
 class ceUCCAInConvoSetActor : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCCAInConvoSetActor> Ref;
+	using Ref = deTObjectReference<ceUCCAInConvoSetActor>;
 	
 	
 private:

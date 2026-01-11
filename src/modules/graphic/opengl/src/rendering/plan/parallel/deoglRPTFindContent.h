@@ -37,7 +37,7 @@ class deoglRenderPlan;
 class deoglRPTFindContent : public deParallelTask{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTThreadSafeObjectReference<deoglRPTFindContent> Ref;
+	using Ref = deTThreadSafeObjectReference<deoglRPTFindContent>;
 	
 	
 private:

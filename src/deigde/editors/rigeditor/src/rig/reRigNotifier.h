@@ -42,7 +42,7 @@ class reRigConstraint;
  */
 class reRigNotifier : public deObject{
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<reRigNotifier> Ref;
+	using Ref = deTObjectReference<reRigNotifier>;
 
 
 public:

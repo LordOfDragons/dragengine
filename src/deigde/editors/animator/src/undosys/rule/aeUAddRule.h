@@ -43,7 +43,7 @@
  */
 class aeUAddRule : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUAddRule> Ref;
+	using Ref = deTObjectReference<aeUAddRule>;
 	
 	
 private:

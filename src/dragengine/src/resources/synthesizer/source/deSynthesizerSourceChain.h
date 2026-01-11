@@ -49,7 +49,7 @@ class deSound;
 class DE_DLL_EXPORT deSynthesizerSourceChain : public deSynthesizerSource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deSynthesizerSourceChain> Ref;
+	using Ref = deTObjectReference<deSynthesizerSourceChain>;
 	
 	
 private:

@@ -40,7 +40,7 @@
 class DE_DLL_EXPORT delPatch : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<delPatch> Ref;
+	using Ref = deTObjectReference<delPatch>;
 	
 	
 private:

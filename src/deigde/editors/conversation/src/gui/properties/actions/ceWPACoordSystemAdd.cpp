@@ -68,7 +68,7 @@ class cComboCoordSystemID : public igdeComboBoxListener {
 	ceWPACoordSystemAdd &pPanel;
 	
 public:
-	typedef deTObjectReference<cComboCoordSystemID> Ref;
+	using Ref = deTObjectReference<cComboCoordSystemID>;
 	cComboCoordSystemID(ceWPACoordSystemAdd &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -87,7 +87,7 @@ class cComboAliasID : public igdeComboBoxListener {
 	ceWPACoordSystemAdd &pPanel;
 	
 public:
-	typedef deTObjectReference<cComboAliasID> Ref;
+	using Ref = deTObjectReference<cComboAliasID>;
 	cComboAliasID(ceWPACoordSystemAdd &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{

@@ -41,7 +41,7 @@ class meWorld;
  */
 class meUObjectAddTexture : public igdeUndo{
 public:
-	typedef deTObjectReference<meUObjectAddTexture> Ref;
+	using Ref = deTObjectReference<meUObjectAddTexture>;
 	
 	
 public:

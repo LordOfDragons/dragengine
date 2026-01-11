@@ -36,7 +36,7 @@
  */
 class meUViewSetLimitBoxExtends : public igdeUndo{
 public:
-	typedef deTObjectReference<meUViewSetLimitBoxExtends> Ref;
+	using Ref = deTObjectReference<meUViewSetLimitBoxExtends>;
 	
 	
 private:

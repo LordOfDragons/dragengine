@@ -124,7 +124,7 @@ class cListLinks : public igdeListBoxListener{
 	syneWPLink &pPanel;
 	
 public:
-	typedef deTObjectReference<cListLinks> Ref;
+	using Ref = deTObjectReference<cListLinks>;
 	cListLinks(syneWPLink &panel) : pPanel(panel){}
 	
 	void OnSelectionChanged(igdeListBox *listBox) override{
@@ -150,7 +150,7 @@ class cActionLinkAdd : public igdeAction{
 	syneWPLink &pPanel;
 	
 public:
-	typedef deTObjectReference<cActionLinkAdd> Ref;
+	using Ref = deTObjectReference<cActionLinkAdd>;
 	cActionLinkAdd(syneWPLink &panel) : igdeAction("Add",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add link"),
 	pPanel(panel){}
@@ -171,7 +171,7 @@ public:
 
 class cActionLinkRemove : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionLinkRemove> Ref;
+	using Ref = deTObjectReference<cActionLinkRemove>;
 	cActionLinkRemove(syneWPLink &panel) : cBaseAction(panel, "Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove link"){}
 	
@@ -182,7 +182,7 @@ public:
 
 class cTextName : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextName> Ref;
+	using Ref = deTObjectReference<cTextName>;
 	cTextName(syneWPLink &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, syneLink *link) override{
@@ -194,7 +194,7 @@ class cComboController : public igdeComboBoxListener{
 	syneWPLink &pPanel;
 	
 public:
-	typedef deTObjectReference<cComboController> Ref;
+	using Ref = deTObjectReference<cComboController>;
 	cComboController(syneWPLink &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -214,7 +214,7 @@ class cSpinRepeat : public igdeSpinTextFieldListener{
 	syneWPLink &pPanel;
 	
 public:
-	typedef deTObjectReference<cSpinRepeat> Ref;
+	using Ref = deTObjectReference<cSpinRepeat>;
 	cSpinRepeat(syneWPLink &panel) : pPanel(panel){}
 	
 	void OnValueChanged(igdeSpinTextField *textField) override{
@@ -233,7 +233,7 @@ class cEditCurve : public igdeViewCurveBezierListener{
 	igdeUndo::Ref pUndo;
 	
 public:
-	typedef deTObjectReference<cEditCurve> Ref;
+	using Ref = deTObjectReference<cEditCurve>;
 	cEditCurve(syneWPLink &panel) : pPanel(panel){}
 	
 	void OnCurveChanged(igdeViewCurveBezier *viewCurveBezier) override{

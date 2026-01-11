@@ -40,7 +40,7 @@ class deDecal;
 class DE_DLL_EXPORT deDecalList : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deDecalList> Ref;
+	using Ref = deTObjectReference<deDecalList>;
 	
 	
 private:

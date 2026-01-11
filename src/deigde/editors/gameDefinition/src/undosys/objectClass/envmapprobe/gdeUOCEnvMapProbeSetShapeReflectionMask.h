@@ -40,7 +40,7 @@
  */
 class gdeUOCEnvMapProbeSetShapeReflectionMask : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCEnvMapProbeSetShapeReflectionMask> Ref;
+	using Ref = deTObjectReference<gdeUOCEnvMapProbeSetShapeReflectionMask>;
 	
 	
 private:

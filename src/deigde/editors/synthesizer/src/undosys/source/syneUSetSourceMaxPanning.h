@@ -37,7 +37,7 @@
  */
 class syneUSetSourceMaxPanning : public igdeUndo{
 public:
-	typedef deTObjectReference<syneUSetSourceMaxPanning> Ref;
+	using Ref = deTObjectReference<syneUSetSourceMaxPanning>;
 	
 	
 private:

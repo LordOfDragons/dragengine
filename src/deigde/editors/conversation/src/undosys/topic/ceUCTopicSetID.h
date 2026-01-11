@@ -42,7 +42,7 @@ class ceConversation;
  */
 class ceUCTopicSetID : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCTopicSetID> Ref;
+	using Ref = deTObjectReference<ceUCTopicSetID>;
 	
 	
 private:

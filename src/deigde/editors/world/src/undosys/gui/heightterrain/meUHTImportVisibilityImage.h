@@ -47,7 +47,7 @@ class deImage;
  */
 class meUHTImportVisibilityImage : public igdeUndo{
 public:
-	typedef deTObjectReference<meUHTImportVisibilityImage> Ref;
+	using Ref = deTObjectReference<meUHTImportVisibilityImage>;
 	
 	
 private:

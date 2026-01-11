@@ -51,7 +51,7 @@ class igdeGDPreviewListener;
 class DE_DLL_EXPORT igdeDialogBrowser : public igdeDialog{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeDialogBrowser> Ref;
+	using Ref = deTObjectReference<igdeDialogBrowser>;
 	
 	enum ePreviewSize{
 		epsLarge,

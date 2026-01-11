@@ -37,7 +37,7 @@
  */
 class ceUCAActorAddSetAliasID : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCAActorAddSetAliasID> Ref;
+	using Ref = deTObjectReference<ceUCAActorAddSetAliasID>;
 	
 	
 private:

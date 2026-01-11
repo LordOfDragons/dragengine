@@ -54,7 +54,7 @@ class deLogger;
  */
 class skyeSky : public igdeEditableEntity{
 public:
-	typedef deTObjectReference<skyeSky> Ref;
+	using Ref = deTObjectReference<skyeSky>;
 	
 private:
 	deWorld::Ref pEngWorld;

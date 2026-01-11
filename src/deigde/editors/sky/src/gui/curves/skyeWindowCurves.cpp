@@ -56,7 +56,7 @@ namespace{
 class cListLinks : public igdeListBoxListener{
 	skyeWindowCurves &pPanel;
 public:
-	typedef deTObjectReference<cListLinks> Ref;
+	using Ref = deTObjectReference<cListLinks>;
 	cListLinks(skyeWindowCurves &panel) : pPanel(panel){}
 	
 	void OnSelectionChanged(igdeListBox *listBox) override{
@@ -82,7 +82,7 @@ class cViewCurve : public igdeViewCurveBezierListener{
 	skyeWindowCurves &pPanel;
 	skyeULinkSetCurve::Ref &pUndo;
 public:
-	typedef deTObjectReference<cViewCurve> Ref;
+	using Ref = deTObjectReference<cViewCurve>;
 	cViewCurve(skyeWindowCurves &panel, skyeULinkSetCurve::Ref &undo) :
 	pPanel(panel),
 	pUndo(undo){

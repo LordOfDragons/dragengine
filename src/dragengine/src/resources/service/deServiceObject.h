@@ -46,7 +46,7 @@
 class DE_DLL_EXPORT deServiceObject : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deServiceObject> Ref;
+	using Ref = deTObjectReference<deServiceObject>;
 	
 	
 public:

@@ -81,7 +81,7 @@ class deRenderWindowManager;
 class DE_DLL_EXPORT deRenderWindow : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deRenderWindow> Ref;
+	using Ref = deTObjectReference<deRenderWindow>;
 	
 	
 private:

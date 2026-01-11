@@ -42,7 +42,7 @@ class ceWPTopic;
  */
 class ceWPCTrigger : public ceWPCondition{
 public:
-	typedef deTObjectReference<ceWPCTrigger> Ref;
+	using Ref = deTObjectReference<ceWPCTrigger>;
 
 private:
 	igdeComboBox::Ref pCBTestMode;

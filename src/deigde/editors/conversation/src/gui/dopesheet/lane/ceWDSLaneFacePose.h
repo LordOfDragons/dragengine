@@ -34,7 +34,7 @@
 class ceWDSLaneFacePose : public ceWDSLane{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceWDSLaneFacePose> Ref;
+	using Ref = deTObjectReference<ceWDSLaneFacePose>;
 	
 	
 	/** \name Constructors and Destructors */

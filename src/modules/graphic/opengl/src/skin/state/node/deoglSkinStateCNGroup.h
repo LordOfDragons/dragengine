@@ -37,7 +37,7 @@ class deSkinPropertyNodeGroup;
  */
 class deoglSkinStateCNGroup : public deoglSkinStateConstructedNode{
 public:
-	typedef deTObjectReference<deoglSkinStateCNGroup> Ref;
+	using Ref = deTObjectReference<deoglSkinStateCNGroup>;
 	
 	
 private:

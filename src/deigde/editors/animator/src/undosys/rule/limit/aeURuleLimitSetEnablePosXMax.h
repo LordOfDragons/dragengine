@@ -36,7 +36,7 @@
  */
 class aeURuleLimitSetEnablePosXMax : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleLimitSetEnablePosXMax> Ref;
+	using Ref = deTObjectReference<aeURuleLimitSetEnablePosXMax>;
 	
 	
 private:

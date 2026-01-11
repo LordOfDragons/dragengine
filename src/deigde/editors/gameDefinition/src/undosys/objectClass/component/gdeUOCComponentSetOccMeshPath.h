@@ -38,7 +38,7 @@
  */
 class gdeUOCComponentSetOccMeshPath : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCComponentSetOccMeshPath> Ref;
+	using Ref = deTObjectReference<gdeUOCComponentSetOccMeshPath>;
 	
 	
 private:

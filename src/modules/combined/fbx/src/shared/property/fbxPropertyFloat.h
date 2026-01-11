@@ -34,7 +34,7 @@
  */
 class fbxPropertyFloat : public fbxProperty{
 public:
-	typedef deTObjectReference<fbxPropertyFloat> Ref;
+	using Ref = deTObjectReference<fbxPropertyFloat>;
 	
 	
 private:

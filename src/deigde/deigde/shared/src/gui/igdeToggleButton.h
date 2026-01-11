@@ -35,7 +35,7 @@ class DE_DLL_EXPORT igdeToggleButton : public igdeButton{
 
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeToggleButton> Ref;
+	using Ref = deTObjectReference<igdeToggleButton>;
 	
 	
 private:

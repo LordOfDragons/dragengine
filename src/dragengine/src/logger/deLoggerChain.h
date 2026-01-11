@@ -42,7 +42,7 @@
 class DE_DLL_EXPORT deLoggerChain : public deLogger{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deLoggerChain> Ref;
+	using Ref = deTObjectReference<deLoggerChain>;
 	
 	
 private:

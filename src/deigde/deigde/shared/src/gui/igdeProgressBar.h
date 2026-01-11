@@ -38,7 +38,7 @@
 class DE_DLL_EXPORT igdeProgressBar : public igdeWidget{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeProgressBar> Ref;
+	using Ref = deTObjectReference<igdeProgressBar>;
 	
 	
 	/** \brief Orientation. */

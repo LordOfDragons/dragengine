@@ -43,10 +43,10 @@
 class DE_DLL_EXPORT igdeGDCComponent : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeGDCComponent> Ref;
+	using Ref = deTObjectReference<igdeGDCComponent>;
 	
 	/** \brief Type holding list. */
-	typedef decTObjectOrderedSet<igdeGDCComponent> List;
+	using List = decTObjectOrderedSet<igdeGDCComponent>;
 	
 	
 	/** \brief Properties. */

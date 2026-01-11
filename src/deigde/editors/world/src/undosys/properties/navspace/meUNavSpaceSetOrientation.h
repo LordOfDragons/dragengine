@@ -38,7 +38,7 @@
  */
 class meUNavSpaceSetOrientation : public igdeUndo{
 public:
-	typedef deTObjectReference<meUNavSpaceSetOrientation> Ref;
+	using Ref = deTObjectReference<meUNavSpaceSetOrientation>;
 	
 	
 private:

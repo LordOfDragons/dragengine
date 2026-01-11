@@ -36,7 +36,7 @@ class ceWPTTIMAWait;
  */
 class ceWPTTIMAWaitActions : public ceWPTTIMActions{
 public:
-	typedef deTObjectReference<ceWPTTIMAWaitActions> Ref;
+	using Ref = deTObjectReference<ceWPTTIMAWaitActions>;
 	
 	/** \brief Constructors and Destructors */
 	/*@{*/

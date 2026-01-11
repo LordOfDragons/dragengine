@@ -44,7 +44,7 @@ class cComboIdentifier : public igdeComboBoxListener{
 	ceDialogEditStrip &pDialog;
 	
 public:
-	typedef deTObjectReference<cComboIdentifier> Ref;
+	using Ref = deTObjectReference<cComboIdentifier>;
 	cComboIdentifier(ceDialogEditStrip &dialog) : pDialog(dialog){}
 	
 	void OnTextChanged(igdeComboBox*) override{
@@ -56,7 +56,7 @@ public:
 
 class cActionResetDuration : public igdeAction{
 public:
-	typedef deTObjectReference<cActionResetDuration> Ref;
+	using Ref = deTObjectReference<cActionResetDuration>;
 	
 private:
 	ceDialogEditStrip &pDialog;

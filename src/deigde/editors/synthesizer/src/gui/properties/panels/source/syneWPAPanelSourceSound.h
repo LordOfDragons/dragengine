@@ -36,7 +36,7 @@
  */
 class syneWPAPanelSourceSound : public syneWPAPanelSource{
 public:
-	typedef deTObjectReference<syneWPAPanelSourceSound> Ref;
+	using Ref = deTObjectReference<syneWPAPanelSourceSound>;
 	
 private:
 	igdeEditPath::Ref pEditPathSound;

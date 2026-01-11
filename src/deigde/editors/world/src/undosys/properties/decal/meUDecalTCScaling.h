@@ -38,7 +38,7 @@
  */
 class meUDecalTCScaling : public igdeUndo{
 public:
-	typedef deTObjectReference<meUDecalTCScaling> Ref;
+	using Ref = deTObjectReference<meUDecalTCScaling>;
 	
 	
 private:

@@ -42,7 +42,7 @@ class meWorld;
  */
 class meUHTPaintHeight : public igdeUndo{
 public:
-	typedef deTObjectReference<meUHTPaintHeight> Ref;
+	using Ref = deTObjectReference<meUHTPaintHeight>;
 	
 	
 private:

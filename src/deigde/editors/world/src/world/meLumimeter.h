@@ -63,7 +63,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meLumimeter> Ref;
+	using Ref = deTObjectReference<meLumimeter>;
 
 
 	/** \name Constructors and Destructors */

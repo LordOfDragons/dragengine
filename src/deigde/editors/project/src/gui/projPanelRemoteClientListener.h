@@ -39,7 +39,7 @@ private:
 	
 	
 public:
-	typedef deTObjectReference<projPanelRemoteClientListener> Ref;
+	using Ref = deTObjectReference<projPanelRemoteClientListener>;
 	
 	/** \name Constructors and Destructors */
 	/*@{*/

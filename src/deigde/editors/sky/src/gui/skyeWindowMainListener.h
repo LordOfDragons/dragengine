@@ -36,7 +36,7 @@ class skyeWindowMain;
  */
 class skyeWindowMainListener : public skyeSkyListener{
 public:
-	typedef deTObjectReference<skyeWindowMainListener> Ref;
+	using Ref = deTObjectReference<skyeWindowMainListener>;
 	
 private:
 	skyeWindowMain &pWindow;

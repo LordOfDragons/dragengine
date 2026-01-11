@@ -33,7 +33,7 @@
  */
 class deoxrDPEyeGazeInteraction : public deoxrDeviceProfile{
 public:
-	typedef deTObjectReference<deoxrDPEyeGazeInteraction> Ref;
+	using Ref = deTObjectReference<deoxrDPEyeGazeInteraction>;
 	
 	
 private:

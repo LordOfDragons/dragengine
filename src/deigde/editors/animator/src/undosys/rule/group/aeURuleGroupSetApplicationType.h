@@ -38,7 +38,7 @@
  */
 class aeURuleGroupSetApplicationType : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleGroupSetApplicationType> Ref;
+	using Ref = deTObjectReference<aeURuleGroupSetApplicationType>;
 	
 	
 private:

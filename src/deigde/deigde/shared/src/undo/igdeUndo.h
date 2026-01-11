@@ -38,7 +38,7 @@
 class DE_DLL_EXPORT igdeUndo : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeUndo> Ref;
+	using Ref = deTObjectReference<igdeUndo>;
 	
 	
 private:

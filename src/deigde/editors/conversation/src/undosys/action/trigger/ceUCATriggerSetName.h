@@ -37,7 +37,7 @@
  */
 class ceUCATriggerSetName : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCATriggerSetName> Ref;
+	using Ref = deTObjectReference<ceUCATriggerSetName>;
 	
 	
 private:

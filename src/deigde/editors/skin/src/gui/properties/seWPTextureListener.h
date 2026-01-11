@@ -36,7 +36,7 @@ class seWPTexture;
  */
 class seWPTextureListener : public seSkinListener{
 public:
-	typedef deTObjectReference<seWPTextureListener> Ref;
+	using Ref = deTObjectReference<seWPTextureListener>;
 	
 private:
 	seWPTexture &pPanel;

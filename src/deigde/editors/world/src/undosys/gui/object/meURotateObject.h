@@ -36,7 +36,7 @@
  */
 class meURotateObject : public meBaseUndoRotate{
 public:
-	typedef deTObjectReference<meURotateObject> Ref;
+	using Ref = deTObjectReference<meURotateObject>;
 	
 private:
 	meWorld *pWorld;

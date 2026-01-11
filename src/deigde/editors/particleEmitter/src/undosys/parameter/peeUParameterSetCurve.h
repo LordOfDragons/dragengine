@@ -40,7 +40,7 @@ class peeParameter;
  */
 class peeUParameterSetCurve : public igdeUndo{
 public:
-	typedef deTObjectReference<peeUParameterSetCurve> Ref;
+	using Ref = deTObjectReference<peeUParameterSetCurve>;
 	
 	
 protected:

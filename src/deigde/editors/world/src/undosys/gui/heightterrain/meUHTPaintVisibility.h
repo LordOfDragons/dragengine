@@ -43,7 +43,7 @@ class meBitArray;
  */
 class meUHTPaintVisibility : public igdeUndo{
 public:
-	typedef deTObjectReference<meUHTPaintVisibility> Ref;
+	using Ref = deTObjectReference<meUHTPaintVisibility>;
 	
 	
 private:

@@ -33,7 +33,7 @@
  */
 class dexsiPLogLevel : public dexsiParameter{
 public:
-	typedef deTObjectReference<dexsiPLogLevel> Ref;
+	using Ref = deTObjectReference<dexsiPLogLevel>;
 	
 	
 	/** \name Constructors and Destructors */

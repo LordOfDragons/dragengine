@@ -38,7 +38,7 @@
  */
 class gdeUOCLightSetAmbientRatio : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCLightSetAmbientRatio> Ref;
+	using Ref = deTObjectReference<gdeUOCLightSetAmbientRatio>;
 	
 	
 private:

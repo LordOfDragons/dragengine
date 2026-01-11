@@ -37,7 +37,7 @@
  */
 class reUConstraintSetOrientation : public igdeUndo{
 public:
-	typedef deTObjectReference<reUConstraintSetOrientation> Ref;
+	using Ref = deTObjectReference<reUConstraintSetOrientation>;
 	
 	
 private:

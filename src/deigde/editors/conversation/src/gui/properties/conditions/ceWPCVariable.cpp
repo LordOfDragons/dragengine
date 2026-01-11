@@ -69,7 +69,7 @@ class cComboOperator : public igdeComboBoxListener {
 	ceWPCVariable &pPanel;
 	
 public:
-	typedef deTObjectReference<cComboOperator> Ref;
+	using Ref = deTObjectReference<cComboOperator>;
 	cComboOperator(ceWPCVariable &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -95,7 +95,7 @@ class cTextVariable : public igdeTextFieldListener {
 	ceWPCVariable &pPanel;
 	
 public:
-	typedef deTObjectReference<cTextVariable> Ref;
+	using Ref = deTObjectReference<cTextVariable>;
 	cTextVariable(ceWPCVariable &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -115,7 +115,7 @@ class cTextTestValue : public igdeTextFieldListener {
 	ceWPCVariable &pPanel;
 	
 public:
-	typedef deTObjectReference<cTextTestValue> Ref;
+	using Ref = deTObjectReference<cTextTestValue>;
 	cTextTestValue(ceWPCVariable &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -140,7 +140,7 @@ class cTextTestVariable : public igdeTextFieldListener {
 	ceWPCVariable &pPanel;
 	
 public:
-	typedef deTObjectReference<cTextTestVariable> Ref;
+	using Ref = deTObjectReference<cTextTestVariable>;
 	cTextTestVariable(ceWPCVariable &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{

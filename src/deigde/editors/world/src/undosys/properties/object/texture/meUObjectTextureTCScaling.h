@@ -38,7 +38,7 @@
  */
 class meUObjectTextureTCScaling : public igdeUndo{
 public:
-	typedef deTObjectReference<meUObjectTextureTCScaling> Ref;
+	using Ref = deTObjectReference<meUObjectTextureTCScaling>;
 	
 	
 private:

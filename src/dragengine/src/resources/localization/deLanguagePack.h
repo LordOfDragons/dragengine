@@ -41,7 +41,7 @@ class deLanguagePackManager;
 class DE_DLL_EXPORT deLanguagePack : public deFileResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deLanguagePack> Ref;
+	using Ref = deTObjectReference<deLanguagePack>;
 	
 	
 private:

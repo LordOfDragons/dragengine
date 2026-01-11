@@ -39,7 +39,7 @@
  */
 class meUObjectAddUsedTextures : public igdeUndo{
 public:
-	typedef deTObjectReference<meUObjectAddUsedTextures> Ref;
+	using Ref = deTObjectReference<meUObjectAddUsedTextures>;
 	
 	
 private:

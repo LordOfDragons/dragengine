@@ -99,7 +99,7 @@ protected:
 	decVector2 pPosition;
 	
 public:
-	typedef deTObjectReference<cActionAddNode> Ref;
+	using Ref = deTObjectReference<cActionAddNode>;
 	cActionAddNode(meWindowVegetation &view, meHTVRule::eRuleTypes type,
 		const decVector2 &position, const char *text, igdeIcon *icon) :
 	igdeAction(text, icon, "Add Node"), pView(view), pType(type), pPosition(position){}
@@ -124,7 +124,7 @@ public:
 
 class cActionAddClosestProp : public cActionAddNode {
 public:
-	typedef deTObjectReference<cActionAddClosestProp> Ref;
+	using Ref = deTObjectReference<cActionAddClosestProp>;
 	cActionAddClosestProp(meWindowVegetation &view, const decVector2 &position) :
 	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Closest Prop", nullptr){}
 	
@@ -135,7 +135,7 @@ public:
 
 class cActionAddClosestVegetation : public cActionAddNode {
 public:
-	typedef deTObjectReference<cActionAddClosestVegetation> Ref;
+	using Ref = deTObjectReference<cActionAddClosestVegetation>;
 	cActionAddClosestVegetation(meWindowVegetation &view, const decVector2 &position) :
 	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Closest Vegetation", nullptr){}
 	
@@ -146,7 +146,7 @@ public:
 
 class cActionAddCombine : public cActionAddNode {
 public:
-	typedef deTObjectReference<cActionAddCombine> Ref;
+	using Ref = deTObjectReference<cActionAddCombine>;
 	cActionAddCombine(meWindowVegetation &view, const decVector2 &position) :
 	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Combine", nullptr){}
 	
@@ -157,7 +157,7 @@ public:
 
 class cActionAddComponents : public cActionAddNode {
 public:
-	typedef deTObjectReference<cActionAddComponents> Ref;
+	using Ref = deTObjectReference<cActionAddComponents>;
 	cActionAddComponents(meWindowVegetation &view, const decVector2 &position) :
 	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Components", nullptr){}
 	
@@ -168,7 +168,7 @@ public:
 
 class cActionAddCurve : public cActionAddNode {
 public:
-	typedef deTObjectReference<cActionAddCurve> Ref;
+	using Ref = deTObjectReference<cActionAddCurve>;
 	cActionAddCurve(meWindowVegetation &view, const decVector2 &position) :
 	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Curve", nullptr){}
 	
@@ -179,7 +179,7 @@ public:
 
 class cActionAddGeometry : public cActionAddNode {
 public:
-	typedef deTObjectReference<cActionAddGeometry> Ref;
+	using Ref = deTObjectReference<cActionAddGeometry>;
 	cActionAddGeometry(meWindowVegetation &view, const decVector2 &position) :
 	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Geometry", nullptr){}
 	
@@ -190,7 +190,7 @@ public:
 
 class cActionAddMapping : public cActionAddNode {
 public:
-	typedef deTObjectReference<cActionAddMapping> Ref;
+	using Ref = deTObjectReference<cActionAddMapping>;
 	cActionAddMapping(meWindowVegetation &view, const decVector2 &position) :
 	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Mapping", nullptr){}
 	
@@ -201,7 +201,7 @@ public:
 
 class cActionAddMath : public cActionAddNode {
 public:
-	typedef deTObjectReference<cActionAddMath> Ref;
+	using Ref = deTObjectReference<cActionAddMath>;
 	cActionAddMath(meWindowVegetation &view, const decVector2 &position) :
 	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Math", nullptr){}
 	
@@ -212,7 +212,7 @@ public:
 
 class cActionAddMultiMath : public cActionAddNode {
 public:
-	typedef deTObjectReference<cActionAddMultiMath> Ref;
+	using Ref = deTObjectReference<cActionAddMultiMath>;
 	cActionAddMultiMath(meWindowVegetation &view, const decVector2 &position) :
 	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Multi-Math", nullptr){}
 	
@@ -223,7 +223,7 @@ public:
 
 class cActionAddVectorMath : public cActionAddNode {
 public:
-	typedef deTObjectReference<cActionAddVectorMath> Ref;
+	using Ref = deTObjectReference<cActionAddVectorMath>;
 	cActionAddVectorMath(meWindowVegetation &view, const decVector2 &position) :
 	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Vector Math", nullptr){}
 	
@@ -234,7 +234,7 @@ public:
 
 class cActionAddRandom : public cActionAddNode {
 public:
-	typedef deTObjectReference<cActionAddRandom> Ref;
+	using Ref = deTObjectReference<cActionAddRandom>;
 	cActionAddRandom(meWindowVegetation &view, const decVector2 &position) :
 	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Random", nullptr){}
 	
@@ -245,7 +245,7 @@ public:
 
 class cActionAddConstant : public cActionAddNode {
 public:
-	typedef deTObjectReference<cActionAddConstant> Ref;
+	using Ref = deTObjectReference<cActionAddConstant>;
 	cActionAddConstant(meWindowVegetation &view, const decVector2 &position) :
 	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Constant", nullptr){}
 	
@@ -256,7 +256,7 @@ public:
 
 class cActionAddPropCount : public cActionAddNode {
 public:
-	typedef deTObjectReference<cActionAddPropCount> Ref;
+	using Ref = deTObjectReference<cActionAddPropCount>;
 	cActionAddPropCount(meWindowVegetation &view, const decVector2 &position) :
 	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Prop Count", nullptr){}
 	
@@ -270,7 +270,7 @@ class cActionViewAutoUpdate : public igdeAction {
 	meWindowVegetation &pView;
 	
 public:
-	typedef deTObjectReference<cActionViewAutoUpdate> Ref;
+	using Ref = deTObjectReference<cActionViewAutoUpdate>;
 	cActionViewAutoUpdate(meWindowVegetation &view) : igdeAction(
 		"Auto Update Vegetation", nullptr, "Auto Update Vegetation"), pView(view){}
 	
@@ -292,7 +292,7 @@ class cBoardListener : public igdeNVBoardListener {
 	meWindowVegetation &pView;
 	
 public:
-	typedef deTObjectReference<cBoardListener> Ref;
+	using Ref = deTObjectReference<cBoardListener>;
 	cBoardListener(meWindowVegetation &view) : pView(view){}
 	
 	meHTVRLink *RuleLinkForNodeLink(igdeNVSlot *sourceSlot, igdeNVSlot *targetSlot) const{

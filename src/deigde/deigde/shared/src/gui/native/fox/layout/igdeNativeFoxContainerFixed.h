@@ -69,6 +69,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxContainerFixed igdeNativeContainerFixed;
+using igdeNativeContainerFixed = igdeNativeFoxContainerFixed;
 
 #endif

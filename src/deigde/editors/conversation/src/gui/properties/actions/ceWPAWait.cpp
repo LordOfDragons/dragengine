@@ -66,7 +66,7 @@ class cTextInterval : public igdeTextFieldListener {
 	ceWPAWait &pPanel;
 	
 public:
-	typedef deTObjectReference<cTextInterval> Ref;
+	using Ref = deTObjectReference<cTextInterval>;
 	cTextInterval(ceWPAWait &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{

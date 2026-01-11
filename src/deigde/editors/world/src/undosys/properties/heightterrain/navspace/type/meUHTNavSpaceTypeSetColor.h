@@ -38,7 +38,7 @@
  */
 class meUHTNavSpaceTypeSetColor : public igdeUndo{
 public:
-	typedef deTObjectReference<meUHTNavSpaceTypeSetColor> Ref;
+	using Ref = deTObjectReference<meUHTNavSpaceTypeSetColor>;
 	
 	
 public:

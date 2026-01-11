@@ -38,7 +38,7 @@
  */
 class meUObjectTextureTCOffset : public igdeUndo{
 public:
-	typedef deTObjectReference<meUObjectTextureTCOffset> Ref;
+	using Ref = deTObjectReference<meUObjectTextureTCOffset>;
 	
 	
 private:

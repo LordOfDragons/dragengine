@@ -50,7 +50,7 @@ class igdeCamera;
 class saeSAnimation : public igdeEditableEntity{
 public:
 	/** Type holding strong reference. */
-	typedef deTObjectReference<saeSAnimation> Ref;
+	using Ref = deTObjectReference<saeSAnimation>;
 	
 	
 public:

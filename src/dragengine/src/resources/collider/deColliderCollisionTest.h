@@ -53,7 +53,7 @@ class deCollisionInfo;
 class DE_DLL_EXPORT deColliderCollisionTest : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deColliderCollisionTest> Ref;
+	using Ref = deTObjectReference<deColliderCollisionTest>;
 	
 	
 private:

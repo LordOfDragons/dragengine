@@ -134,6 +134,6 @@ private:
 	void pDropItemsNativeWidget(igdeTreeItem *parent);
 };
 
-typedef igdeNativeFoxTreeList igdeNativeTreeList;
+using igdeNativeTreeList = igdeNativeFoxTreeList;
 
 #endif

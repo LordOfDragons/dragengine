@@ -36,7 +36,7 @@ class reWindowMain;
  */
 class reWindowMainListener : public reRigNotifier{
 public:
-	typedef deTObjectReference<reWindowMainListener> Ref;
+	using Ref = deTObjectReference<reWindowMainListener>;
 	
 private:
 	reWindowMain &pWindow;

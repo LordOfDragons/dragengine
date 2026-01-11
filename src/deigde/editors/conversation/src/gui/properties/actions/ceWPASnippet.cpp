@@ -65,7 +65,7 @@ class cComboFile : public igdeComboBoxListener {
 	ceWPASnippet &pPanel;
 	
 public:
-	typedef deTObjectReference<cComboFile> Ref;
+	using Ref = deTObjectReference<cComboFile>;
 	cComboFile(ceWPASnippet &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -84,7 +84,7 @@ class cComboTopic : public igdeComboBoxListener {
 	ceWPASnippet &pPanel;
 	
 public:
-	typedef deTObjectReference<cComboTopic> Ref;
+	using Ref = deTObjectReference<cComboTopic>;
 	cComboTopic(ceWPASnippet &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -101,7 +101,7 @@ public:
 
 class cActionCreateSideLane : public igdeAction{
 public:
-	typedef deTObjectReference<cActionCreateSideLane> Ref;
+	using Ref = deTObjectReference<cActionCreateSideLane>;
 	
 private:
 	ceWPASnippet &pPanel;
@@ -126,7 +126,7 @@ class cActionJumpToTopic : public igdeAction {
 	ceWPASnippet &pPanel;
 	
 public:
-	typedef deTObjectReference<cActionJumpToTopic> Ref;
+	using Ref = deTObjectReference<cActionJumpToTopic>;
 	cActionJumpToTopic(ceWPASnippet &panel) : igdeAction("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallRight),
 		"Jump To Topic"), pPanel(panel){}

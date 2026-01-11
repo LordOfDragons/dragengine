@@ -43,7 +43,7 @@
  */
 class aeUSetRuleSModMinRotation : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUSetRuleSModMinRotation> Ref;
+	using Ref = deTObjectReference<aeUSetRuleSModMinRotation>;
 	
 	
 private:

@@ -36,7 +36,7 @@
  */
 class syneEffectStretch : public syneEffect{
 public:
-	typedef deTObjectReference<syneEffectStretch> Ref;
+	using Ref = deTObjectReference<syneEffectStretch>;
 	
 private:
 	float pMinTime;

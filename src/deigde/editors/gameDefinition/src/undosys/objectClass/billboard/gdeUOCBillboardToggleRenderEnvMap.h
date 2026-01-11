@@ -38,7 +38,7 @@
  */
 class gdeUOCBillboardToggleRenderEnvMap : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCBillboardToggleRenderEnvMap> Ref;
+	using Ref = deTObjectReference<gdeUOCBillboardToggleRenderEnvMap>;
 	
 	
 private:

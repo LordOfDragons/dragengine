@@ -43,7 +43,7 @@ class DE_DLL_EXPORT igdeActionUndo : public igdeAction{
 
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeActionUndo> Ref;
+	using Ref = deTObjectReference<igdeActionUndo>;
 	
 	
 private:

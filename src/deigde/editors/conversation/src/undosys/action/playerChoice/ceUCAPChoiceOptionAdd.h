@@ -38,7 +38,7 @@
  */
 class ceUCAPChoiceOptionAdd : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCAPChoiceOptionAdd> Ref;
+	using Ref = deTObjectReference<ceUCAPChoiceOptionAdd>;
 	
 	
 private:

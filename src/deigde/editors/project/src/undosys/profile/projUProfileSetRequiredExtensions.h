@@ -48,7 +48,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<projUProfileSetRequiredExtensions> Ref;
+	using Ref = deTObjectReference<projUProfileSetRequiredExtensions>;
 	
 	/** \name Constructors and Destructors */
 	/*@{*/

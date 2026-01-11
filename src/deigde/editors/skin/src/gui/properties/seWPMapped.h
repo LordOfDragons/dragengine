@@ -44,7 +44,7 @@ class seWindowProperties;
  */
 class seWPMapped : public igdeContainerScroll{
 public:
-	typedef deTObjectReference<seWPMapped> Ref;
+	using Ref = deTObjectReference<seWPMapped>;
 	
 private:
 	seWindowProperties &pWindowProperties;

@@ -42,7 +42,7 @@
  */
 class meUHTVRuleCombineSetY : public igdeUndo{
 public:
-	typedef deTObjectReference<meUHTVRuleCombineSetY> Ref;
+	using Ref = deTObjectReference<meUHTVRuleCombineSetY>;
 	
 	
 public:

@@ -37,7 +37,7 @@
  */
 class reRigShapeCapsule : public reRigShape{
 public:
-	typedef deTObjectReference<reRigShapeCapsule> Ref;
+	using Ref = deTObjectReference<reRigShapeCapsule>;
 	
 private:
 	float pTopRadius;

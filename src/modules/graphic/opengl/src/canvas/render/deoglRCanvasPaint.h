@@ -37,7 +37,7 @@
 class deoglRCanvasPaint : public deoglRCanvas{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglRCanvasPaint> Ref;
+	using Ref = deTObjectReference<deoglRCanvasPaint>;
 	
 	
 private:

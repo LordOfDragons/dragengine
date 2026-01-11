@@ -85,6 +85,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxToolBarDock igdeNativeToolBarDock;
+using igdeNativeToolBarDock = igdeNativeFoxToolBarDock;
 
 #endif

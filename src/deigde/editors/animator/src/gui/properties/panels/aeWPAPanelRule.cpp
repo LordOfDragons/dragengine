@@ -104,7 +104,7 @@ protected:
 	aeWPAPanelRule &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseAction> Ref;
+	using Ref = deTObjectReference<cBaseAction>;
 	cBaseAction(aeWPAPanelRule &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description),
 	pPanel(panel){}
@@ -147,7 +147,7 @@ protected:
 	aeWPAPanelRule &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseTextFieldListener> Ref;
+	using Ref = deTObjectReference<cBaseTextFieldListener>;
 	cBaseTextFieldListener(aeWPAPanelRule &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -171,7 +171,7 @@ protected:
 	aeWPAPanelRule &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseComboBoxListener> Ref;
+	using Ref = deTObjectReference<cBaseComboBoxListener>;
 	cBaseComboBoxListener(aeWPAPanelRule &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -193,7 +193,7 @@ public:
 
 class cTextName : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextName> Ref;
+	using Ref = deTObjectReference<cTextName>;
 	cTextName(aeWPAPanelRule &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator*, aeRule *rule) override{
@@ -203,7 +203,7 @@ public:
 
 class cComboBlendMode : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboBlendMode> Ref;
+	using Ref = deTObjectReference<cComboBlendMode>;
 	cComboBlendMode(aeWPAPanelRule &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRule *rule) override{
@@ -219,7 +219,7 @@ public:
 
 class cTextBlendFactor : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextBlendFactor> Ref;
+	using Ref = deTObjectReference<cTextBlendFactor>;
 	cTextBlendFactor(aeWPAPanelRule &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator*, aeRule *rule) override{
@@ -231,7 +231,7 @@ public:
 
 class cActionInvertBlendFactor : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionInvertBlendFactor> Ref;
+	using Ref = deTObjectReference<cActionInvertBlendFactor>;
 	
 public:
 	cActionInvertBlendFactor(aeWPAPanelRule &panel) : cBaseAction(panel,
@@ -249,7 +249,7 @@ public:
 
 class cActionEnabled : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnabled> Ref;
+	using Ref = deTObjectReference<cActionEnabled>;
 	
 public:
 	cActionEnabled(aeWPAPanelRule &panel) : cBaseAction(panel, "Enable Rule", nullptr,
@@ -268,7 +268,7 @@ public:
 
 class cActionBoneAdd : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionBoneAdd> Ref;
+	using Ref = deTObjectReference<cActionBoneAdd>;
 	
 public:
 	cActionBoneAdd(aeWPAPanelRule &panel) : cBaseAction(panel, "Add",
@@ -288,7 +288,7 @@ public:
 
 class cActionBoneRemoves : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionBoneRemoves> Ref;
+	using Ref = deTObjectReference<cActionBoneRemoves>;
 	
 public:
 	cActionBoneRemoves(aeWPAPanelRule &panel) : cBaseAction(panel, "Remove",
@@ -310,7 +310,7 @@ public:
 
 class cActionBoneRemovesAll : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionBoneRemovesAll> Ref;
+	using Ref = deTObjectReference<cActionBoneRemovesAll>;
 	
 public:
 	cActionBoneRemovesAll(aeWPAPanelRule &panel) : cBaseAction(panel, "Remove All",
@@ -328,7 +328,7 @@ public:
 
 class cActionBoneSelectedRemove : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionBoneSelectedRemove> Ref;
+	using Ref = deTObjectReference<cActionBoneSelectedRemove>;
 	
 public:
 	cActionBoneSelectedRemove(aeWPAPanelRule &panel) : cBaseAction(panel, "Remove",
@@ -346,7 +346,7 @@ public:
 
 class cActionMirrorRigBones : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionMirrorRigBones> Ref;
+	using Ref = deTObjectReference<cActionMirrorRigBones>;
 	
 public:
 	cActionMirrorRigBones(aeWPAPanelRule &panel) : cBaseAction(panel, "Mirror Bones",
@@ -364,7 +364,7 @@ public:
 
 class cActionCopyBones : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionCopyBones> Ref;
+	using Ref = deTObjectReference<cActionCopyBones>;
 	
 public:
 	cActionCopyBones(aeWPAPanelRule &panel) : cBaseAction(panel, "Copy",
@@ -379,7 +379,7 @@ public:
 
 class cActionPasteBones : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionPasteBones> Ref;
+	using Ref = deTObjectReference<cActionPasteBones>;
 	
 public:
 	cActionPasteBones(aeWPAPanelRule &panel) : cBaseAction(panel, "Paste",
@@ -404,7 +404,7 @@ public:
 
 class cActionExportBones : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionExportBones> Ref;
+	using Ref = deTObjectReference<cActionExportBones>;
 	
 public:
 	cActionExportBones(aeWPAPanelRule &panel) : cBaseAction(panel, "Export To Text",
@@ -432,7 +432,7 @@ public:
 
 class cActionImportBones : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionImportBones> Ref;
+	using Ref = deTObjectReference<cActionImportBones>;
 	
 public:
 	cActionImportBones(aeWPAPanelRule &panel) : cBaseAction(panel, "Import From Text",
@@ -470,7 +470,7 @@ class cListBones : public igdeListBoxListener{
 	aeWPAPanelRule &pPanel;
 	
 public:
-	typedef deTObjectReference<cListBones> Ref;
+	using Ref = deTObjectReference<cListBones>;
 	cListBones(aeWPAPanelRule &panel) : pPanel(panel){}
 	
 	/*virtual void OnSelectionChanged( igdeListBox *listBox ){
@@ -502,7 +502,7 @@ public:
 
 class cActionVertexPositionSetAdd : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionVertexPositionSetAdd> Ref;
+	using Ref = deTObjectReference<cActionVertexPositionSetAdd>;
 	
 public:
 	cActionVertexPositionSetAdd(aeWPAPanelRule &panel) : cBaseAction(panel, "Add",
@@ -522,7 +522,7 @@ public:
 
 class cActionVertexPositionSetRemoves : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionVertexPositionSetRemoves> Ref;
+	using Ref = deTObjectReference<cActionVertexPositionSetRemoves>;
 	
 public:
 	cActionVertexPositionSetRemoves(aeWPAPanelRule &panel) : cBaseAction(panel, "Remove",
@@ -544,7 +544,7 @@ public:
 
 class cActionVertexPositionSetRemovesAll : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionVertexPositionSetRemovesAll> Ref;
+	using Ref = deTObjectReference<cActionVertexPositionSetRemovesAll>;
 	
 public:
 	cActionVertexPositionSetRemovesAll(aeWPAPanelRule &panel) : cBaseAction(panel, "Remove All",
@@ -562,7 +562,7 @@ public:
 
 class cActionVertexPositionSetSelectedRemove : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionVertexPositionSetSelectedRemove> Ref;
+	using Ref = deTObjectReference<cActionVertexPositionSetSelectedRemove>;
 	
 public:
 	cActionVertexPositionSetSelectedRemove(aeWPAPanelRule &panel) : cBaseAction(panel, "Remove",
@@ -581,7 +581,7 @@ public:
 
 class cActionMirrorRigVertexPositionSets : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionMirrorRigVertexPositionSets> Ref;
+	using Ref = deTObjectReference<cActionMirrorRigVertexPositionSets>;
 	
 public:
 	cActionMirrorRigVertexPositionSets(aeWPAPanelRule &panel) : cBaseAction(panel,
@@ -599,7 +599,7 @@ public:
 
 class cActionCopyVertexPositionSets : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionCopyVertexPositionSets> Ref;
+	using Ref = deTObjectReference<cActionCopyVertexPositionSets>;
 	
 public:
 	cActionCopyVertexPositionSets(aeWPAPanelRule &panel) : cBaseAction(panel, "Copy",
@@ -614,7 +614,7 @@ public:
 
 class cActionPasteVertexPositionSets : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionPasteVertexPositionSets> Ref;
+	using Ref = deTObjectReference<cActionPasteVertexPositionSets>;
 	
 public:
 	cActionPasteVertexPositionSets(aeWPAPanelRule &panel) : cBaseAction(panel, "Paste",
@@ -640,7 +640,7 @@ public:
 
 class cActionExportVertexPositionSets : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionExportVertexPositionSets> Ref;
+	using Ref = deTObjectReference<cActionExportVertexPositionSets>;
 	
 public:
 	cActionExportVertexPositionSets(aeWPAPanelRule &panel) : cBaseAction(panel, "Export To Text",
@@ -668,7 +668,7 @@ public:
 
 class cActionImportVertexPositionSets : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionImportVertexPositionSets> Ref;
+	using Ref = deTObjectReference<cActionImportVertexPositionSets>;
 	
 public:
 	cActionImportVertexPositionSets(aeWPAPanelRule &panel) : cBaseAction(panel, "Import From Text",
@@ -706,7 +706,7 @@ class cListVertexPositionSets : public igdeListBoxListener{
 	aeWPAPanelRule &pPanel;
 	
 public:
-	typedef deTObjectReference<cListVertexPositionSets> Ref;
+	using Ref = deTObjectReference<cListVertexPositionSets>;
 	cListVertexPositionSets(aeWPAPanelRule &panel) : pPanel(panel){}
 	
 	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
@@ -732,7 +732,7 @@ public:
 
 class cComboTarget : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboTarget> Ref;
+	using Ref = deTObjectReference<cComboTarget>;
 	cComboTarget(aeWPAPanelRule &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRule*) override{
@@ -745,7 +745,7 @@ public:
 
 class cActionLinkAdd : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionLinkAdd> Ref;
+	using Ref = deTObjectReference<cActionLinkAdd>;
 	
 public:
 	cActionLinkAdd(aeWPAPanelRule &panel) : cBaseAction(panel, "Add",
@@ -767,7 +767,7 @@ public:
 
 class cActionLinkRemove : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionLinkRemove> Ref;
+	using Ref = deTObjectReference<cActionLinkRemove>;
 	
 public:
 	cActionLinkRemove(aeWPAPanelRule &panel) : cBaseAction(panel, "Remove",
@@ -789,7 +789,7 @@ public:
 
 class cActionLinkRemoveAll : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionLinkRemoveAll> Ref;
+	using Ref = deTObjectReference<cActionLinkRemoveAll>;
 	
 public:
 	cActionLinkRemoveAll(aeWPAPanelRule &panel) : cBaseAction(panel, "Remove All",
@@ -812,7 +812,7 @@ class cListLinks : public igdeListBoxListener{
 	aeWPAPanelRule &pPanel;
 	
 public:
-	typedef deTObjectReference<cListLinks> Ref;
+	using Ref = deTObjectReference<cListLinks>;
 	cListLinks(aeWPAPanelRule &panel) : pPanel(panel){}
 	
 	/*virtual void OnSelectionChanged( igdeListBox *listBox ){

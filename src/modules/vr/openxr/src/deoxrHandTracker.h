@@ -42,7 +42,7 @@ class deoxrAction;
 class deoxrHandTracker : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<deoxrHandTracker> Ref;
+	using Ref = deTObjectReference<deoxrHandTracker>;
 	
 	
 private:

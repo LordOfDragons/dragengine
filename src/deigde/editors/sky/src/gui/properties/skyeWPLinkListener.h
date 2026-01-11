@@ -35,7 +35,7 @@ class skyeWPLink;
  */
 class skyeWPLinkListener : public skyeSkyListener{
 public:
-	typedef deTObjectReference<skyeWPLinkListener> Ref;
+	using Ref = deTObjectReference<skyeWPLinkListener>;
 	
 private:
 	skyeWPLink &pPanel;

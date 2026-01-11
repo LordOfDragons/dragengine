@@ -37,7 +37,7 @@
  */
 class ceUCTopicPaste : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCTopicPaste> Ref;
+	using Ref = deTObjectReference<ceUCTopicPaste>;
 	
 	
 private:

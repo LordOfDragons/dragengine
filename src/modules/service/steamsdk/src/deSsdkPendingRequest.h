@@ -35,7 +35,7 @@
  */
 class deSsdkPendingRequest : public deObject{
 public:
-	typedef deTObjectReference<deSsdkPendingRequest> Ref;
+	using Ref = deTObjectReference<deSsdkPendingRequest>;
 	
 	
 	decUniqueID id;

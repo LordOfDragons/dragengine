@@ -42,7 +42,7 @@
  */
 class aeUSetRuleAniDRefMoveName : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUSetRuleAniDRefMoveName> Ref;
+	using Ref = deTObjectReference<aeUSetRuleAniDRefMoveName>;
 	
 	
 private:

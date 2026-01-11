@@ -49,7 +49,7 @@
  */
 class reUBoneMirror : public igdeUndo{
 public:
-	typedef deTObjectReference<reUBoneMirror> Ref;
+	using Ref = deTObjectReference<reUBoneMirror>;
 	
 	
 public:
@@ -57,7 +57,7 @@ public:
 private:
 	class cBone : public deObject{
 	public:
-		typedef deTObjectReference<cBone> Ref;
+		using Ref = deTObjectReference<cBone>;
 		
 		reRigBone::Ref boneSource;
 		reRigBone::Ref boneTarget;

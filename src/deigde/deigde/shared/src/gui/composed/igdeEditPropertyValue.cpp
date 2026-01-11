@@ -75,7 +75,7 @@ protected:
 	igdeEditPropertyValue &pWidget;
 	
 public:
-	typedef deTObjectReference<igdeEditPropertyValue_TextField> Ref;
+	using Ref = deTObjectReference<igdeEditPropertyValue_TextField>;
 	
 	igdeEditPropertyValue_TextField(igdeEditPropertyValue &widget) : pWidget(widget){}
 	
@@ -89,7 +89,7 @@ protected:
 	igdeEditPropertyValue &pWidget;
 	
 public:
-	typedef deTObjectReference<igdeEditPropertyValue_EditPoint> Ref;
+	using Ref = deTObjectReference<igdeEditPropertyValue_EditPoint>;
 	
 	igdeEditPropertyValue_EditPoint(igdeEditPropertyValue &widget) : pWidget(widget){}
 	
@@ -103,7 +103,7 @@ protected:
 	igdeEditPropertyValue &pWidget;
 	
 public:
-	typedef deTObjectReference<igdeEditPropertyValue_EditPoint3> Ref;
+	using Ref = deTObjectReference<igdeEditPropertyValue_EditPoint3>;
 	
 	igdeEditPropertyValue_EditPoint3(igdeEditPropertyValue &widget) : pWidget(widget){}
 	
@@ -117,7 +117,7 @@ protected:
 	igdeEditPropertyValue &pWidget;
 	
 public:
-	typedef deTObjectReference<igdeEditPropertyValue_EditVector> Ref;
+	using Ref = deTObjectReference<igdeEditPropertyValue_EditVector>;
 	
 	igdeEditPropertyValue_EditVector(igdeEditPropertyValue &widget) : pWidget(widget){}
 	
@@ -131,7 +131,7 @@ protected:
 	igdeEditPropertyValue &pWidget;
 	
 public:
-	typedef deTObjectReference<igdeEditPropertyValue_EditVector2> Ref;
+	using Ref = deTObjectReference<igdeEditPropertyValue_EditVector2>;
 	
 	igdeEditPropertyValue_EditVector2(igdeEditPropertyValue &widget) : pWidget(widget){}
 	
@@ -145,7 +145,7 @@ protected:
 	igdeEditPropertyValue &pWidget;
 	
 public:
-	typedef deTObjectReference<igdeEditPropertyValue_ColorBox> Ref;
+	using Ref = deTObjectReference<igdeEditPropertyValue_ColorBox>;
 	
 	igdeEditPropertyValue_ColorBox(igdeEditPropertyValue &widget) : pWidget(widget){}
 	
@@ -159,7 +159,7 @@ protected:
 	igdeEditPropertyValue &pWidget;
 	
 public:
-	typedef deTObjectReference<igdeEditPropertyValue_ActionBoolean> Ref;
+	using Ref = deTObjectReference<igdeEditPropertyValue_ActionBoolean>;
 	
 	igdeEditPropertyValue_ActionBoolean(igdeEditPropertyValue &widget) : 
 	igdeAction("Value", "Boolean property value"), pWidget(widget){}
@@ -179,7 +179,7 @@ protected:
 	igdeEditPropertyValue &pWidget;
 	
 public:
-	typedef deTObjectReference<igdeEditPropertyValue_EditPath> Ref;
+	using Ref = deTObjectReference<igdeEditPropertyValue_EditPath>;
 	
 	igdeEditPropertyValue_EditPath(igdeEditPropertyValue &widget) : pWidget(widget){}
 	
@@ -193,7 +193,7 @@ protected:
 	igdeEditPropertyValue &pWidget;
 	
 public:
-	typedef deTObjectReference<igdeEditPropertyValue_EditSliderText> Ref;
+	using Ref = deTObjectReference<igdeEditPropertyValue_EditSliderText>;
 	
 	igdeEditPropertyValue_EditSliderText(igdeEditPropertyValue &widget) : pWidget(widget){}
 	
@@ -211,7 +211,7 @@ protected:
 	igdeEditPropertyValue &pWidget;
 	
 public:
-	typedef deTObjectReference<igdeEditPropertyValue_ComboBox> Ref;
+	using Ref = deTObjectReference<igdeEditPropertyValue_ComboBox>;
 	
 	igdeEditPropertyValue_ComboBox(igdeEditPropertyValue &widget) : pWidget(widget){}
 	
@@ -226,7 +226,7 @@ protected:
 	igdeEditPropertyValue &pWidget;
 	
 public:
-	typedef deTObjectReference<igdeEditPropertyValue_ActionEditRawValue> Ref;
+	using Ref = deTObjectReference<igdeEditPropertyValue_ActionEditRawValue>;
 	
 	igdeEditPropertyValue_ActionEditRawValue(igdeEditPropertyValue &widget) : 
 	igdeAction("", widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiConfig),
@@ -252,7 +252,7 @@ protected:
 	igdeEditPropertyValue &pWidget;
 	
 public:
-	typedef deTObjectReference<igdeEditPropertyValue_ActionEditList> Ref;
+	using Ref = deTObjectReference<igdeEditPropertyValue_ActionEditList>;
 	
 	igdeEditPropertyValue_ActionEditList(igdeEditPropertyValue &widget) :
 		igdeAction("", widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiEdit),
@@ -272,7 +272,7 @@ protected:
 	igdeEditPropertyValue &pWidget;
 	
 public:
-	typedef deTObjectReference<igdeEditPropertyValue_ActionEditTriggerExpression> Ref;
+	using Ref = deTObjectReference<igdeEditPropertyValue_ActionEditTriggerExpression>;
 	
 	igdeEditPropertyValue_ActionEditTriggerExpression(igdeEditPropertyValue &widget) :
 		igdeAction("", widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiEdit),
@@ -308,7 +308,7 @@ protected:
 	igdeEditPropertyValue &pWidget;
 	
 public:
-	typedef deTObjectReference<igdeEditPropertyValue_ActionEditShape> Ref;
+	using Ref = deTObjectReference<igdeEditPropertyValue_ActionEditShape>;
 	
 	igdeEditPropertyValue_ActionEditShape(igdeEditPropertyValue &widget) :
 		igdeAction("", widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiEdit),
@@ -328,7 +328,7 @@ protected:
 	igdeEditPropertyValue &pWidget;
 	
 public:
-	typedef deTObjectReference<igdeEditPropertyValue_ActionEditShapeList> Ref;
+	using Ref = deTObjectReference<igdeEditPropertyValue_ActionEditShapeList>;
 	
 	igdeEditPropertyValue_ActionEditShapeList(igdeEditPropertyValue &widget) :
 		igdeAction("", widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiEdit),

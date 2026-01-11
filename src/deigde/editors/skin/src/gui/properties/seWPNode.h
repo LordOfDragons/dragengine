@@ -54,7 +54,7 @@ class igdeTreeItem;
  */
 class seWPNode : public igdeContainerScroll{
 public:
-	typedef deTObjectReference<seWPNode> Ref;
+	using Ref = deTObjectReference<seWPNode>;
 	
 private:
 	seWindowProperties &pWindowProperties;

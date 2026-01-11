@@ -66,7 +66,7 @@ protected:
 	igdeWPCamera &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseEditVectorListener> Ref;
+	using Ref = deTObjectReference<cBaseEditVectorListener>;
 	cBaseEditVectorListener(igdeWPCamera &panel) : pPanel(panel){}
 	
 	void OnVectorChanged(igdeEditVector *editVector) override{
@@ -83,7 +83,7 @@ protected:
 	igdeWPCamera &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseTextFieldListener> Ref;
+	using Ref = deTObjectReference<cBaseTextFieldListener>;
 	cBaseTextFieldListener(igdeWPCamera &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -101,7 +101,7 @@ protected:
 	igdeWPCamera &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseAction> Ref;
+	using Ref = deTObjectReference<cBaseAction>;
 	cBaseAction(igdeWPCamera &panel, const char *text, const char *description = "",
 		igdeIcon *icon = nullptr) : igdeAction(text, icon, description), pPanel(panel){}
 	
@@ -118,7 +118,7 @@ public:
 
 class cEditCameraPosition : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditCameraPosition> Ref;
+	using Ref = deTObjectReference<cEditCameraPosition>;
 	cEditCameraPosition(igdeWPCamera &panel) : cBaseEditVectorListener(panel){}
 	
 	void OnVectorChanged(igdeCamera &camera, const decVector &vector) override{
@@ -133,7 +133,7 @@ public:
 
 class cEditCameraRotation : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditCameraRotation> Ref;
+	using Ref = deTObjectReference<cEditCameraRotation>;
 	cEditCameraRotation(igdeWPCamera &panel) : cBaseEditVectorListener(panel){}
 	
 	void OnVectorChanged(igdeCamera &camera, const decVector &vector) override{
@@ -148,7 +148,7 @@ public:
 
 class cTextOrbitDistance : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextOrbitDistance> Ref;
+	using Ref = deTObjectReference<cTextOrbitDistance>;
 	cTextOrbitDistance(igdeWPCamera &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField *textField, igdeCamera &camera) override{
@@ -164,7 +164,7 @@ public:
 
 class cTextFov : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextFov> Ref;
+	using Ref = deTObjectReference<cTextFov>;
 	cTextFov(igdeWPCamera &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField *textField, igdeCamera &camera) override{
@@ -180,7 +180,7 @@ public:
 
 class cTextFovRatio : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextFovRatio> Ref;
+	using Ref = deTObjectReference<cTextFovRatio>;
 	cTextFovRatio(igdeWPCamera &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField *textField, igdeCamera &camera) override{
@@ -196,7 +196,7 @@ public:
 
 class cTextImageDistance : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextImageDistance> Ref;
+	using Ref = deTObjectReference<cTextImageDistance>;
 	cTextImageDistance(igdeWPCamera &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField *textField, igdeCamera &camera) override{
@@ -212,7 +212,7 @@ public:
 
 class cTextViewDistance : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextViewDistance> Ref;
+	using Ref = deTObjectReference<cTextViewDistance>;
 	cTextViewDistance(igdeWPCamera &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField *textField, igdeCamera &camera) override{
@@ -228,7 +228,7 @@ public:
 
 class cTextExposure : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextExposure> Ref;
+	using Ref = deTObjectReference<cTextExposure>;
 	cTextExposure(igdeWPCamera &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField *textField, igdeCamera &camera) override{
@@ -244,7 +244,7 @@ public:
 
 class cTextAdaptionTime : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextAdaptionTime> Ref;
+	using Ref = deTObjectReference<cTextAdaptionTime>;
 	cTextAdaptionTime(igdeWPCamera &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField *textField, igdeCamera &camera) override{
@@ -260,7 +260,7 @@ public:
 
 class cTextLowIntensity : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextLowIntensity> Ref;
+	using Ref = deTObjectReference<cTextLowIntensity>;
 	cTextLowIntensity(igdeWPCamera &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField *textField, igdeCamera &camera) override{
@@ -276,7 +276,7 @@ public:
 
 class cTextHighIntensity : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextHighIntensity> Ref;
+	using Ref = deTObjectReference<cTextHighIntensity>;
 	cTextHighIntensity(igdeWPCamera &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField *textField, igdeCamera &camera) override{
@@ -292,7 +292,7 @@ public:
 
 class cCheckEnableHDRR : public cBaseAction{
 public:
-	typedef deTObjectReference<cCheckEnableHDRR> Ref;
+	using Ref = deTObjectReference<cCheckEnableHDRR>;
 	cCheckEnableHDRR(igdeWPCamera &panel) : cBaseAction(panel, "Enable HDRR",
 		"Enable high definition range rendering (HDRR) if supported"){ }
 	
@@ -304,7 +304,7 @@ public:
 
 class cCheckEnableGI : public cBaseAction{
 public:
-	typedef deTObjectReference<cCheckEnableGI> Ref;
+	using Ref = deTObjectReference<cCheckEnableGI>;
 	cCheckEnableGI(igdeWPCamera &panel) : cBaseAction(panel, "Enable GI",
 		"Enable global illumination (GI) if supported"){ }
 	
@@ -316,7 +316,7 @@ public:
 
 class cTextWhiteIntensity : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextWhiteIntensity> Ref;
+	using Ref = deTObjectReference<cTextWhiteIntensity>;
 	cTextWhiteIntensity(igdeWPCamera &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField *textField, igdeCamera &camera) override{
@@ -333,7 +333,7 @@ public:
 
 class cTextBloomIntensity : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextBloomIntensity> Ref;
+	using Ref = deTObjectReference<cTextBloomIntensity>;
 	cTextBloomIntensity(igdeWPCamera &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField *textField, igdeCamera &camera) override{
@@ -349,7 +349,7 @@ public:
 
 class cTextBloomStrength : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextBloomStrength> Ref;
+	using Ref = deTObjectReference<cTextBloomStrength>;
 	cTextBloomStrength(igdeWPCamera &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField *textField, igdeCamera &camera) override{
@@ -366,7 +366,7 @@ public:
 class cSliderBloomSize : public igdeEditSliderTextListener{
 	igdeWPCamera &pPanel;
 public:
-	typedef deTObjectReference<cSliderBloomSize> Ref;
+	using Ref = deTObjectReference<cSliderBloomSize>;
 	cSliderBloomSize(igdeWPCamera &panel) : igdeEditSliderTextListener(), pPanel(panel){}
 	
 	void OnSliderTextValueChanging(igdeEditSliderText *sliderText) override{
@@ -392,7 +392,7 @@ public:
 class cSliderBloomBlend : public igdeEditSliderTextListener{
 	igdeWPCamera &pPanel;
 public:
-	typedef deTObjectReference<cSliderBloomBlend> Ref;
+	using Ref = deTObjectReference<cSliderBloomBlend>;
 	cSliderBloomBlend(igdeWPCamera &panel) : igdeEditSliderTextListener(), pPanel(panel){}
 	
 	void OnSliderTextValueChanging(igdeEditSliderText *sliderText) override{
@@ -418,7 +418,7 @@ public:
 class cEditToneMapCurve : public igdeViewCurveBezierListener{
 	igdeWPCamera &pPanel;
 public:
-	typedef deTObjectReference<cEditToneMapCurve> Ref;
+	using Ref = deTObjectReference<cEditToneMapCurve>;
 	cEditToneMapCurve(igdeWPCamera &panel) : igdeViewCurveBezierListener(), pPanel(panel){}
 	
 	void OnCurveChanging(igdeViewCurveBezier *viewCurveBezier) override{
@@ -444,7 +444,7 @@ public:
 class cActionCameraSetDefaultParams : public cBaseAction{
 	const float pLowestIntensity, pHighestIntensity, pAdaptionTime;
 public:
-	typedef deTObjectReference<cActionCameraSetDefaultParams> Ref;
+	using Ref = deTObjectReference<cActionCameraSetDefaultParams>;
 	cActionCameraSetDefaultParams(igdeWPCamera &panel, float lowestIntensity,
 		float highestIntensity, float adaptionTime, const char *text) : cBaseAction(panel,
 		text, "Set default parameters"), pLowestIntensity(lowestIntensity),
@@ -458,7 +458,7 @@ public:
 
 class cActionCameraLoad : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionCameraLoad> Ref;
+	using Ref = deTObjectReference<cActionCameraLoad>;
 	cActionCameraLoad(igdeWPCamera &panel) : cBaseAction(panel, "Load...", "Load parameters from file",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen)){}
 	
@@ -478,7 +478,7 @@ public:
 
 class cActionCameraSave : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionCameraSave> Ref;
+	using Ref = deTObjectReference<cActionCameraSave>;
 	cActionCameraSave(igdeWPCamera &panel) : cBaseAction(panel, "Save...", "Save parameters to file",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave)){}
 	
@@ -498,7 +498,7 @@ public:
 class cActionMenuCamera : public igdeActionContextMenu{
 	igdeWPCamera &pPanel;
 public:
-	typedef deTObjectReference<cActionMenuCamera> Ref;
+	using Ref = deTObjectReference<cActionMenuCamera>;
 	
 	cActionMenuCamera(igdeWPCamera &panel) : igdeActionContextMenu(
 		"...", nullptr, "Camera menu"), pPanel(panel){}

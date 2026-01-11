@@ -64,8 +64,8 @@ private:
 	float pRandomRotationMax;
 	
 public:
-	typedef deTObjectReference<meHTVVariation> Ref;
-	typedef decTObjectOrderedSet<meHTVVariation> List;
+	using Ref = deTObjectReference<meHTVVariation>;
+	using List = decTObjectOrderedSet<meHTVVariation>;
 	
 	
 	/** \name Constructors and Destructors */

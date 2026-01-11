@@ -42,7 +42,7 @@
 class meHTVRuleResult : public meHTVRule{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meHTVRuleResult> Ref;
+	using Ref = deTObjectReference<meHTVRuleResult>;
 	
 	
 	/** \brief Slots. */

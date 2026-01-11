@@ -41,7 +41,7 @@ class igdeGDCNavigationSpace;
 class DE_DLL_EXPORT igdeWOSONavigationSpace : public igdeWOSubObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeWOSONavigationSpace> Ref;
+	using Ref = deTObjectReference<igdeWOSONavigationSpace>;
 	
 	
 private:

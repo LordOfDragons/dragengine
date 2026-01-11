@@ -36,7 +36,7 @@
  */
 class aeURuleBTransSetEnableSize : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleBTransSetEnableSize> Ref;
+	using Ref = deTObjectReference<aeURuleBTransSetEnableSize>;
 	
 	
 private:

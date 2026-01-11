@@ -40,7 +40,7 @@
 class DE_DLL_EXPORT igdeMenuCommand : public igdeWidget, igdeActionListener{
 public:
 	/** \brief Strong reference. */
-	typedef deTObjectReference<igdeMenuCommand> Ref;
+	using Ref = deTObjectReference<igdeMenuCommand>;
 	
 	
 private:

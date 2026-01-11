@@ -61,7 +61,7 @@ class decShape;
 class DE_DLL_EXPORT deComponent : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deComponent> Ref;
+	using Ref = deTObjectReference<deComponent>;
 	
 	
 public:

@@ -39,7 +39,7 @@
  */
 class ceUCAASpeakSetTextBoxText : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCAASpeakSetTextBoxText> Ref;
+	using Ref = deTObjectReference<ceUCAASpeakSetTextBoxText>;
 	
 	
 private:

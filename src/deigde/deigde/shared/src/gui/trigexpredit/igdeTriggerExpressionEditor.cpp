@@ -61,7 +61,7 @@
 class igdeTriggerExpressionEditor_ActionNegate : public igdeAction {
 	igdeTriggerExpressionEditor &pEditor;
 public:
-	typedef deTObjectReference<igdeTriggerExpressionEditor_ActionNegate> Ref;
+	using Ref = deTObjectReference<igdeTriggerExpressionEditor_ActionNegate>;
 	
 	igdeTriggerExpressionEditor_ActionNegate(igdeTriggerExpressionEditor &editor) :
 	igdeAction("Not", nullptr, "Negate Result"), pEditor(editor){}
@@ -85,7 +85,7 @@ public:
 class igdeTriggerExpressionEditor_ActionCurState : public igdeAction {
 	igdeTriggerExpressionEditor &pEditor;
 public:
-	typedef deTObjectReference<igdeTriggerExpressionEditor_ActionCurState> Ref;
+	using Ref = deTObjectReference<igdeTriggerExpressionEditor_ActionCurState>;
 	
 	igdeTriggerExpressionEditor_ActionCurState(igdeTriggerExpressionEditor &editor) :
 	igdeAction("Now", nullptr, "Check if target is triggered now or ever"), pEditor(editor){}
@@ -110,7 +110,7 @@ public:
 class igdeTriggerExpressionEditor_ActionAnd : public igdeAction {
 	igdeTriggerExpressionEditor &pEditor;
 public:
-	typedef deTObjectReference<igdeTriggerExpressionEditor_ActionAnd> Ref;
+	using Ref = deTObjectReference<igdeTriggerExpressionEditor_ActionAnd>;
 	
 	igdeTriggerExpressionEditor_ActionAnd(igdeTriggerExpressionEditor &editor) :
 	igdeAction("And", nullptr, "All children have to evaluate to true"), pEditor(editor){}
@@ -134,7 +134,7 @@ public:
 class igdeTriggerExpressionEditor_ActionOr : public igdeAction {
 	igdeTriggerExpressionEditor &pEditor;
 public:
-	typedef deTObjectReference<igdeTriggerExpressionEditor_ActionOr> Ref;
+	using Ref = deTObjectReference<igdeTriggerExpressionEditor_ActionOr>;
 	
 	igdeTriggerExpressionEditor_ActionOr(igdeTriggerExpressionEditor &editor) :
 	igdeAction("Or", nullptr, "One or more children have to evaluate to true"), pEditor(editor){}
@@ -158,7 +158,7 @@ public:
 class igdeTriggerExpressionEditor_ActionTarget : public igdeAction {
 	igdeTriggerExpressionEditor &pEditor;
 public:
-	typedef deTObjectReference<igdeTriggerExpressionEditor_ActionTarget> Ref;
+	using Ref = deTObjectReference<igdeTriggerExpressionEditor_ActionTarget>;
 	
 	igdeTriggerExpressionEditor_ActionTarget(igdeTriggerExpressionEditor &editor) :
 	igdeAction("Target", nullptr, "Target to evaluate"), pEditor(editor){}
@@ -184,7 +184,7 @@ public:
 class igdeTriggerExpressionEditor_ActionAddChild : public igdeAction {
 	igdeTriggerExpressionEditor &pEditor;
 public:
-	typedef deTObjectReference<igdeTriggerExpressionEditor_ActionAddChild> Ref;
+	using Ref = deTObjectReference<igdeTriggerExpressionEditor_ActionAddChild>;
 	
 	igdeTriggerExpressionEditor_ActionAddChild(igdeTriggerExpressionEditor &editor) :
 	igdeAction("", editor.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
@@ -208,7 +208,7 @@ public:
 class igdeTriggerExpressionEditor_ActionRemoveChild : public igdeAction {
 	igdeTriggerExpressionEditor &pEditor;
 public:
-	typedef deTObjectReference<igdeTriggerExpressionEditor_ActionRemoveChild> Ref;
+	using Ref = deTObjectReference<igdeTriggerExpressionEditor_ActionRemoveChild>;
 	
 	igdeTriggerExpressionEditor_ActionRemoveChild(igdeTriggerExpressionEditor &editor) :
 	igdeAction("", editor.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
@@ -242,7 +242,7 @@ public:
 class igdeTriggerExpressionEditor_TextExpression : public igdeTextFieldListener{
 	igdeTriggerExpressionEditor &pEditor;
 public:
-	typedef deTObjectReference<igdeTriggerExpressionEditor_TextExpression> Ref;
+	using Ref = deTObjectReference<igdeTriggerExpressionEditor_TextExpression>;
 	
 	igdeTriggerExpressionEditor_TextExpression(igdeTriggerExpressionEditor &editor) : pEditor(editor){}
 	
@@ -258,7 +258,7 @@ public:
 class igdeTriggerExpressionEditor_TextTargetName : public igdeTextFieldListener{
 	igdeTriggerExpressionEditor &pEditor;
 public:
-	typedef deTObjectReference<igdeTriggerExpressionEditor_TextTargetName> Ref;
+	using Ref = deTObjectReference<igdeTriggerExpressionEditor_TextTargetName>;
 	
 	igdeTriggerExpressionEditor_TextTargetName(igdeTriggerExpressionEditor &editor) : pEditor(editor){}
 	
@@ -284,7 +284,7 @@ class igdeTriggerExpressionEditor_ListTargets : public igdeListBoxListener{
 	igdeTriggerExpressionEditor &pEditor;
 	igdeTextField &pTargetName;
 public:
-	typedef deTObjectReference<igdeTriggerExpressionEditor_ListTargets> Ref;
+	using Ref = deTObjectReference<igdeTriggerExpressionEditor_ListTargets>;
 	
 	igdeTriggerExpressionEditor_ListTargets(igdeTriggerExpressionEditor &editor, igdeTextField &targetName) :
 	pEditor(editor), pTargetName(targetName) {}
@@ -302,7 +302,7 @@ public:
 class igdeTriggerExpressionEditor_TextFilterTargetName : public igdeTextFieldListener{
 	igdeTriggerExpressionEditor &pEditor;
 public:
-	typedef deTObjectReference<igdeTriggerExpressionEditor_TextFilterTargetName> Ref;
+	using Ref = deTObjectReference<igdeTriggerExpressionEditor_TextFilterTargetName>;
 	
 	igdeTriggerExpressionEditor_TextFilterTargetName(igdeTriggerExpressionEditor &editor) : pEditor(editor){}
 	
@@ -319,7 +319,7 @@ public:
 class igdeTriggerExpressionEditor_TreeExpression : public igdeTreeListListener {
 	igdeTriggerExpressionEditor &pEditor;
 public:
-	typedef deTObjectReference<igdeTriggerExpressionEditor_TreeExpression> Ref;
+	using Ref = deTObjectReference<igdeTriggerExpressionEditor_TreeExpression>;
 	
 	igdeTriggerExpressionEditor_TreeExpression(igdeTriggerExpressionEditor &editor) : pEditor(editor){}
 	

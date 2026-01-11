@@ -68,7 +68,7 @@ class delSharedIcon;
 class DE_DLL_EXPORT delGame : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<delGame> Ref;
+	using Ref = deTObjectReference<delGame>;
 	
 	
 private:

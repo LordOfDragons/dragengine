@@ -38,7 +38,7 @@
 class lpeWPUndoHistory : public igdeWPUndoHistory{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<lpeWPUndoHistory> Ref;
+	using Ref = deTObjectReference<lpeWPUndoHistory>;
 	
 private:
 	lpeWPUndoHistoryListener::Ref pListener;

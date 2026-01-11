@@ -37,7 +37,7 @@
 class gdeClipboardDataOCForceField : public igdeClipboardData{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeClipboardDataOCForceField> Ref;
+	using Ref = deTObjectReference<gdeClipboardDataOCForceField>;
 	
 	/** \brief Type name. */
 	static const char * const TYPE_NAME;

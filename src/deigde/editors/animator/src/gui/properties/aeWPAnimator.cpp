@@ -88,7 +88,7 @@ protected:
 	aeWPAnimator &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseAction> Ref;
+	using Ref = deTObjectReference<cBaseAction>;
 	cBaseAction(aeWPAnimator &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description),
 	pPanel(panel){}
@@ -128,7 +128,7 @@ public:
 class cPathRig : public igdeEditPathListener{
 	aeWPAnimator &pPanel;
 public:
-	typedef deTObjectReference<cPathRig> Ref;
+	using Ref = deTObjectReference<cPathRig>;
 	cPathRig(aeWPAnimator &panel) : pPanel(panel){}
 	
 	void OnEditPathChanged(igdeEditPath *editPath) override{
@@ -148,7 +148,7 @@ public:
 class cPathAnimation : public igdeEditPathListener{
 	aeWPAnimator &pPanel;
 public:
-	typedef deTObjectReference<cPathAnimation> Ref;
+	using Ref = deTObjectReference<cPathAnimation>;
 	cPathAnimation(aeWPAnimator &panel) : pPanel(panel){}
 	
 	void OnEditPathChanged(igdeEditPath *editPath) override{
@@ -168,7 +168,7 @@ public:
 
 class cActionRigBoneAdd : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionRigBoneAdd> Ref;
+	using Ref = deTObjectReference<cActionRigBoneAdd>;
 	
 public:
 	cActionRigBoneAdd(aeWPAnimator &panel) : cBaseAction(panel, "Add",
@@ -188,7 +188,7 @@ public:
 
 class cActionRigBoneRemove : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionRigBoneRemove> Ref;
+	using Ref = deTObjectReference<cActionRigBoneRemove>;
 	
 public:
 	cActionRigBoneRemove(aeWPAnimator &panel) : cBaseAction(panel, "Remove",
@@ -208,7 +208,7 @@ public:
 
 class cActionMirrorRigBones : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionMirrorRigBones> Ref;
+	using Ref = deTObjectReference<cActionMirrorRigBones>;
 	
 public:
 	cActionMirrorRigBones(aeWPAnimator &panel) : cBaseAction(panel, "Mirror Bones",
@@ -226,7 +226,7 @@ public:
 
 class cActionCopyRigBones : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionCopyRigBones> Ref;
+	using Ref = deTObjectReference<cActionCopyRigBones>;
 	
 public:
 	cActionCopyRigBones(aeWPAnimator &panel) : cBaseAction(panel, "Copy",
@@ -241,7 +241,7 @@ public:
 
 class cActionPasteRigBones : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionPasteRigBones> Ref;
+	using Ref = deTObjectReference<cActionPasteRigBones>;
 	
 public:
 	cActionPasteRigBones(aeWPAnimator &panel) : cBaseAction(panel, "Paste",
@@ -268,7 +268,7 @@ public:
 
 class cActionExportRigBones : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionExportRigBones> Ref;
+	using Ref = deTObjectReference<cActionExportRigBones>;
 	
 public:
 	cActionExportRigBones(aeWPAnimator &panel) : cBaseAction(panel, "Export To Text",
@@ -296,7 +296,7 @@ public:
 
 class cActionImportRigBones : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionImportRigBones> Ref;
+	using Ref = deTObjectReference<cActionImportRigBones>;
 	
 public:
 	cActionImportRigBones(aeWPAnimator &panel) : cBaseAction(panel, "Import From Text",
@@ -334,7 +334,7 @@ protected:
 	aeWPAnimator &pPanel;
 	
 public:
-	typedef deTObjectReference<cListRigBones> Ref;
+	using Ref = deTObjectReference<cListRigBones>;
 	cListRigBones(aeWPAnimator &panel) : pPanel(panel){}
 	
 	void OnSelectionChanged(igdeListBox *listBox) override{
@@ -365,7 +365,7 @@ public:
 
 class cActionRigVertexPositionSetAdd : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionRigVertexPositionSetAdd> Ref;
+	using Ref = deTObjectReference<cActionRigVertexPositionSetAdd>;
 	
 public:
 	cActionRigVertexPositionSetAdd(aeWPAnimator &panel) : cBaseAction(panel, "Add",
@@ -385,7 +385,7 @@ public:
 
 class cActionRigVertexPositionSetRemove : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionRigVertexPositionSetRemove> Ref;
+	using Ref = deTObjectReference<cActionRigVertexPositionSetRemove>;
 	
 public:
 	cActionRigVertexPositionSetRemove(aeWPAnimator &panel) : cBaseAction(panel, "Remove",
@@ -405,7 +405,7 @@ public:
 
 class cActionMirrorRigVertexPositionSets : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionMirrorRigVertexPositionSets> Ref;
+	using Ref = deTObjectReference<cActionMirrorRigVertexPositionSets>;
 	
 public:
 	cActionMirrorRigVertexPositionSets(aeWPAnimator &panel) : cBaseAction(panel,
@@ -423,7 +423,7 @@ public:
 
 class cActionCopyRigVertexPositionSets : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionCopyRigVertexPositionSets> Ref;
+	using Ref = deTObjectReference<cActionCopyRigVertexPositionSets>;
 	
 public:
 	cActionCopyRigVertexPositionSets(aeWPAnimator &panel) : cBaseAction(panel, "Copy",
@@ -438,7 +438,7 @@ public:
 
 class cActionPasteRigVertexPositionSets : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionPasteRigVertexPositionSets> Ref;
+	using Ref = deTObjectReference<cActionPasteRigVertexPositionSets>;
 	
 public:
 	cActionPasteRigVertexPositionSets(aeWPAnimator &panel) : cBaseAction(panel, "Paste",
@@ -465,7 +465,7 @@ public:
 
 class cActionExportRigVertexPositionSets : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionExportRigVertexPositionSets> Ref;
+	using Ref = deTObjectReference<cActionExportRigVertexPositionSets>;
 	
 public:
 	cActionExportRigVertexPositionSets(aeWPAnimator &panel) : cBaseAction(panel, "Export To Text",
@@ -493,7 +493,7 @@ public:
 
 class cActionImportRigVertexPositionSets : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionImportRigVertexPositionSets> Ref;
+	using Ref = deTObjectReference<cActionImportRigVertexPositionSets>;
 	
 public:
 	cActionImportRigVertexPositionSets(aeWPAnimator &panel) : cBaseAction(panel, "Import From Text",
@@ -532,7 +532,7 @@ protected:
 	aeWPAnimator &pPanel;
 	
 public:
-	typedef deTObjectReference<cListRigVertexPositionSets> Ref;
+	using Ref = deTObjectReference<cListRigVertexPositionSets>;
 	cListRigVertexPositionSets(aeWPAnimator &panel) : pPanel(panel){}
 	
 	void OnSelectionChanged(igdeListBox *listBox) override{

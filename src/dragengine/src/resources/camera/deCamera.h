@@ -107,7 +107,7 @@ class deBaseGraphicCamera;
 class DE_DLL_EXPORT deCamera : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deCamera> Ref;
+	using Ref = deTObjectReference<deCamera>;
 	
 	
 private:

@@ -45,7 +45,7 @@ class deGraphicContext;
  */
 class ceTextBox : public deObject{
 public:
-	typedef deTObjectReference<ceTextBox> Ref;
+	using Ref = deTObjectReference<ceTextBox>;
 	
 private:
 	deEngine &pEngine;

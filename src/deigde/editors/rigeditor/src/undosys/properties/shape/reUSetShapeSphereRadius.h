@@ -37,7 +37,7 @@
  */
 class reUSetShapeSphereRadius : public igdeUndo{
 public:
-	typedef deTObjectReference<reUSetShapeSphereRadius> Ref;
+	using Ref = deTObjectReference<reUSetShapeSphereRadius>;
 	
 	
 private:

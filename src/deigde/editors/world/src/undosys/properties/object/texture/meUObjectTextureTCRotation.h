@@ -36,7 +36,7 @@
  */
 class meUObjectTextureTCRotation : public igdeUndo{
 public:
-	typedef deTObjectReference<meUObjectTextureTCRotation> Ref;
+	using Ref = deTObjectReference<meUObjectTextureTCRotation>;
 	
 	
 private:

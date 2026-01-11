@@ -37,7 +37,7 @@
  */
 class peeUTypeSetCastFrom : public igdeUndo{
 public:
-	typedef deTObjectReference<peeUTypeSetCastFrom> Ref;
+	using Ref = deTObjectReference<peeUTypeSetCastFrom>;
 	
 	
 private:

@@ -38,7 +38,7 @@
  */
 class gdeUOCNavSpaceSetSnapAngle : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCNavSpaceSetSnapAngle> Ref;
+	using Ref = deTObjectReference<gdeUOCNavSpaceSetSnapAngle>;
 	
 	
 private:

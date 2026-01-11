@@ -36,7 +36,7 @@
  */
 class ceUCAWaitPaste : public ceUCActionPaste{
 public:
-	typedef deTObjectReference<ceUCAWaitPaste> Ref;
+	using Ref = deTObjectReference<ceUCAWaitPaste>;
 
 private:
 	ceCAWait::Ref pWait;

@@ -42,7 +42,7 @@ class igdeUIHelper;
 class DE_DLL_EXPORT igdeEditTags : public igdeContainerFlow, igdeActionListener{
 public:
 	/** \brief Strong reference. */
-	typedef deTObjectReference<igdeEditTags> Ref;
+	using Ref = deTObjectReference<igdeEditTags>;
 	
 	
 protected:
@@ -52,7 +52,7 @@ protected:
 		igdeEditTags &pWidget;
 		
 	public:
-		typedef deTObjectReference<cActionAdd> Ref;
+		using Ref = deTObjectReference<cActionAdd>;
 		cActionAdd(igdeEditTags &widget);
 		void OnAction() override;
 	};
@@ -63,7 +63,7 @@ protected:
 		igdeEditTags &pWidget;
 		
 	public:
-		typedef deTObjectReference<cActionRemove> Ref;
+		using Ref = deTObjectReference<cActionRemove>;
 		cActionRemove(igdeEditTags &widget);
 		void OnAction() override;
 	};
@@ -74,7 +74,7 @@ protected:
 		igdeEditTags &pWidget;
 		
 	public:
-		typedef deTObjectReference<cActionClear> Ref;
+		using Ref = deTObjectReference<cActionClear>;
 		cActionClear(igdeEditTags &widget);
 		void OnAction() override;
 	};

@@ -36,7 +36,7 @@
  */
 class seUPropertyNodeSetTransparency : public igdeUndo{
 public:
-	typedef deTObjectReference<seUPropertyNodeSetTransparency> Ref;
+	using Ref = deTObjectReference<seUPropertyNodeSetTransparency>;
 	
 	
 private:

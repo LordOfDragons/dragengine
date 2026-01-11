@@ -36,7 +36,7 @@
  */
 class ceUCASnippetToggleCreateSideLane : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCASnippetToggleCreateSideLane> Ref;
+	using Ref = deTObjectReference<ceUCASnippetToggleCreateSideLane>;
 	
 	
 private:

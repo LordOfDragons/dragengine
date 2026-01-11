@@ -36,7 +36,7 @@
  */
 class peeUTypeSetModelSkinPath : public igdeUndo{
 public:
-	typedef deTObjectReference<peeUTypeSetModelSkinPath> Ref;
+	using Ref = deTObjectReference<peeUTypeSetModelSkinPath>;
 	
 	
 private:

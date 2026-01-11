@@ -34,7 +34,7 @@
  */
 class ceWPTTIMACameraShot : public ceWPTTIMAction{
 public:
-	typedef deTObjectReference<ceWPTTIMACameraShot> Ref;
+	using Ref = deTObjectReference<ceWPTTIMACameraShot>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */

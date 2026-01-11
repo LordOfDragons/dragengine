@@ -40,10 +40,10 @@
 class gdeOCNavigationSpace : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeOCNavigationSpace> Ref;
+	using Ref = deTObjectReference<gdeOCNavigationSpace>;
 
 	/** \brief Type holding list. */
-	typedef decTObjectOrderedSet<gdeOCNavigationSpace> List;
+	using List = decTObjectOrderedSet<gdeOCNavigationSpace>;
 	
 	
 	/** \brief Properties. */

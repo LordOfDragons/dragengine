@@ -149,7 +149,7 @@ public:
 
 class cTextName : public cBaseTextFieldListener {
 public:
-	typedef deTObjectReference<cTextName> Ref;
+	using Ref = deTObjectReference<cTextName>;
 	cTextName(syneWPAPanelSource &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref  OnChanged(igdeTextField *textField, syneSource *source) override{
@@ -160,7 +160,7 @@ public:
 
 class cComboMixMode : public cBaseComboBoxListener {
 public:
-	typedef deTObjectReference<cComboMixMode> Ref;
+	using Ref = deTObjectReference<cComboMixMode>;
 	cComboMixMode(syneWPAPanelSource &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref  OnChanged(igdeComboBox *comboBox, syneSource *source) override{
@@ -177,7 +177,7 @@ public:
 
 class cTextBlendFactor : public cBaseTextFieldListener {
 public:
-	typedef deTObjectReference<cTextBlendFactor> Ref;
+	using Ref = deTObjectReference<cTextBlendFactor>;
 	cTextBlendFactor(syneWPAPanelSource &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref  OnChanged(igdeTextField *textField, syneSource *source) override{
@@ -189,7 +189,7 @@ public:
 
 class cTextMinVolume : public cBaseTextFieldListener {
 public:
-	typedef deTObjectReference<cTextMinVolume> Ref;
+	using Ref = deTObjectReference<cTextMinVolume>;
 	cTextMinVolume(syneWPAPanelSource &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref  OnChanged(igdeTextField *textField, syneSource *source) override{
@@ -201,7 +201,7 @@ public:
 
 class cTextMaxVolume : public cBaseTextFieldListener {
 public:
-	typedef deTObjectReference<cTextMaxVolume> Ref;
+	using Ref = deTObjectReference<cTextMaxVolume>;
 	cTextMaxVolume(syneWPAPanelSource &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref  OnChanged(igdeTextField *textField, syneSource *source) override{
@@ -213,7 +213,7 @@ public:
 
 class cTextMinPanning : public cBaseTextFieldListener {
 public:
-	typedef deTObjectReference<cTextMinPanning> Ref;
+	using Ref = deTObjectReference<cTextMinPanning>;
 	cTextMinPanning(syneWPAPanelSource &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref  OnChanged(igdeTextField *textField, syneSource *source) override{
@@ -225,7 +225,7 @@ public:
 
 class cTextMaxPanning : public cBaseTextFieldListener {
 public:
-	typedef deTObjectReference<cTextMaxPanning> Ref;
+	using Ref = deTObjectReference<cTextMaxPanning>;
 	cTextMaxPanning(syneWPAPanelSource &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref  OnChanged(igdeTextField *textField, syneSource *source) override{
@@ -237,7 +237,7 @@ public:
 
 class cActionEnable : public cBaseAction {
 public:
-	typedef deTObjectReference<cActionEnable> Ref;
+	using Ref = deTObjectReference<cActionEnable>;
 	cActionEnable(syneWPAPanelSource &panel) : cBaseAction(panel, "Enable source",
 		NULL, "Determines if the source is affecting the model"){ }
 	
@@ -249,7 +249,7 @@ public:
 
 class cComboTarget : public cBaseComboBoxListener {
 public:
-	typedef deTObjectReference<cComboTarget> Ref;
+	using Ref = deTObjectReference<cComboTarget>;
 	cComboTarget(syneWPAPanelSource &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref  OnChanged(igdeComboBox*, syneSource*) override{
@@ -262,7 +262,7 @@ class cListLinks : public igdeListBoxListener{
 	syneWPAPanelSource &pPanel;
 	
 public:
-	typedef deTObjectReference<cListLinks> Ref;
+	using Ref = deTObjectReference<cListLinks>;
 	cListLinks(syneWPAPanelSource &panel) : pPanel(panel){}
 	
 	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
@@ -274,7 +274,7 @@ public:
 
 class cActionLinkAdd : public cBaseAction {
 public:
-	typedef deTObjectReference<cActionLinkAdd> Ref;
+	using Ref = deTObjectReference<cActionLinkAdd>;
 	cActionLinkAdd(syneWPAPanelSource &panel) : cBaseAction(panel, "Add",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add link"){}
 	
@@ -294,7 +294,7 @@ public:
 
 class cActionLinkRemove : public cBaseAction {
 public:
-	typedef deTObjectReference<cActionLinkRemove> Ref;
+	using Ref = deTObjectReference<cActionLinkRemove>;
 	cActionLinkRemove(syneWPAPanelSource &panel) : cBaseAction(panel, "Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove link"){}
 	

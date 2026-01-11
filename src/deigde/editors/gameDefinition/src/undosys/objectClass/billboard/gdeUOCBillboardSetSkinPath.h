@@ -38,7 +38,7 @@
  */
 class gdeUOCBillboardSetSkinPath : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCBillboardSetSkinPath> Ref;
+	using Ref = deTObjectReference<gdeUOCBillboardSetSkinPath>;
 	
 	
 private:

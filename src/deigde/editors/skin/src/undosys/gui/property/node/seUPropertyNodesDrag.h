@@ -40,7 +40,7 @@ class sePropertyNode;
  */
 class seUPropertyNodesDrag : public igdeUndo{
 public:
-	typedef deTObjectReference<seUPropertyNodesDrag> Ref;
+	using Ref = deTObjectReference<seUPropertyNodesDrag>;
 	
 	
 private:

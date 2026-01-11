@@ -36,7 +36,7 @@
  */
 class ceCConditionActorParameter : public ceConversationCondition{
 public:
-	typedef deTObjectReference<ceCConditionActorParameter> Ref;
+	using Ref = deTObjectReference<ceCConditionActorParameter>;
 
 public:
 	/** \brief Compare operators. */

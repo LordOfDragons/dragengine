@@ -75,7 +75,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglRPropFieldType> Ref;
+	using Ref = deTObjectReference<deoglRPropFieldType>;
 
 
 	/** \name Constructors and Destructors */

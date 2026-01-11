@@ -39,7 +39,7 @@
 class DE_DLL_EXPORT igdeDialogTexturePropertyList : public igdeDialog{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeDialogTexturePropertyList> Ref;
+	using Ref = deTObjectReference<igdeDialogTexturePropertyList>;
 	
 	
 private:

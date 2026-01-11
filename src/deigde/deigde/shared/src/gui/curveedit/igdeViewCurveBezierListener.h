@@ -40,7 +40,7 @@ class DE_DLL_EXPORT igdeViewCurveBezierListener : public deObject{
 
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeViewCurveBezierListener> Ref;
+	using Ref = deTObjectReference<igdeViewCurveBezierListener>;
 	
 	
 protected:

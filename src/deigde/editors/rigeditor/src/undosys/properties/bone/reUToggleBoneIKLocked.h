@@ -36,7 +36,7 @@
  */
 class reUToggleBoneIKLocked : public igdeUndo{
 public:
-	typedef deTObjectReference<reUToggleBoneIKLocked> Ref;
+	using Ref = deTObjectReference<reUToggleBoneIKLocked>;
 	
 	
 private:

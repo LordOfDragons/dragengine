@@ -37,7 +37,7 @@ class dearAnimatorInstance;
 class dearTaskApplyRules : public deParallelTask{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTThreadSafeObjectReference<dearTaskApplyRules> Ref;
+	using Ref = deTThreadSafeObjectReference<dearTaskApplyRules>;
 	
 	
 private:

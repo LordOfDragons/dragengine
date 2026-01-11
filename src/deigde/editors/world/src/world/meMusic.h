@@ -37,7 +37,7 @@ class meWorld;
  */
 class meMusic : public deObject{
 public:
-	typedef deTObjectReference<meMusic> Ref;
+	using Ref = deTObjectReference<meMusic>;
 	
 	
 private:

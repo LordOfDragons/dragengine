@@ -39,7 +39,7 @@ class ceWPTTIMAIfElseIfCase;
  */
 class ceWPTTIMAIfElseIfCase : public ceWPTTreeItemModel{
 public:
-	typedef deTObjectReference<ceWPTTIMAIfElseIfCase> Ref;
+	using Ref = deTObjectReference<ceWPTTIMAIfElseIfCase>;
 	
 private:
 	ceCAIfElseCase::Ref pIfCase;

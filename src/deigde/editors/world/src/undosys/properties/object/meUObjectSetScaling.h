@@ -43,7 +43,7 @@
  */
 class meUObjectSetScaling : public igdeUndo{
 public:
-	typedef deTObjectReference<meUObjectSetScaling> Ref;
+	using Ref = deTObjectReference<meUObjectSetScaling>;
 	
 	
 private:

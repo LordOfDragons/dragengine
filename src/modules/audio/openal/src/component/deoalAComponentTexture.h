@@ -59,7 +59,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoalAComponentTexture> Ref;
+	using Ref = deTObjectReference<deoalAComponentTexture>;
 
 
 	/** \name Constructors and Destructors */

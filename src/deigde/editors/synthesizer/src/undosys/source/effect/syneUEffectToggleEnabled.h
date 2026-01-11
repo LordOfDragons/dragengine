@@ -37,7 +37,7 @@
  */
 class syneUEffectToggleEnabled : public igdeUndo{
 public:
-	typedef deTObjectReference<syneUEffectToggleEnabled> Ref;
+	using Ref = deTObjectReference<syneUEffectToggleEnabled>;
 	
 	
 private:

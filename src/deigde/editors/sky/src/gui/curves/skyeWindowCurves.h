@@ -43,7 +43,7 @@ class skyeLink;
  */
 class skyeWindowCurves : public igdeContainerSplitted{
 public:
-	typedef deTObjectReference<skyeWindowCurves> Ref;
+	using Ref = deTObjectReference<skyeWindowCurves>;
 	
 private:
 	skyeWindowMain &pWindowMain;

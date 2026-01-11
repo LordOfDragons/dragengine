@@ -35,7 +35,7 @@
  */
 class feUGlyphSetBearingY : public igdeUndo{
 public:
-	typedef deTObjectReference<feUGlyphSetBearingY> Ref;
+	using Ref = deTObjectReference<feUGlyphSetBearingY>;
 	
 	
 private:

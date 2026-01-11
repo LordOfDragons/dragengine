@@ -70,7 +70,7 @@ private:
 	
 public:
 	/** Type holding strong reference. */
-	typedef deTObjectReference<meHeightTerrain> Ref;
+	using Ref = deTObjectReference<meHeightTerrain>;
 
 
 	/** \name Constructors and Destructors */

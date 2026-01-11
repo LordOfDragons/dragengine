@@ -56,7 +56,7 @@ namespace {
 class cTextRadius : public igdeTextFieldListener{
 	reWPPanelShapeSphere &pPanel;
 public:
-	typedef deTObjectReference<cTextRadius> Ref;
+	using Ref = deTObjectReference<cTextRadius>;
 	cTextRadius(reWPPanelShapeSphere &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{

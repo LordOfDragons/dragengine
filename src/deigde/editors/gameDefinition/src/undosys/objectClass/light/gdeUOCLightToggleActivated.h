@@ -38,7 +38,7 @@
  */
 class gdeUOCLightToggleActivated : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCLightToggleActivated> Ref;
+	using Ref = deTObjectReference<gdeUOCLightToggleActivated>;
 	
 	
 private:

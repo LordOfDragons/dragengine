@@ -55,8 +55,8 @@ class deDecal;
  */
 class meDecal : public deObject{
 public:
-	typedef deTObjectReference<meDecal> Ref;
-	typedef decTObjectOrderedSet<meDecal> List;
+	using Ref = deTObjectReference<meDecal>;
+	using List = decTObjectOrderedSet<meDecal>;
 	
 	
 private:

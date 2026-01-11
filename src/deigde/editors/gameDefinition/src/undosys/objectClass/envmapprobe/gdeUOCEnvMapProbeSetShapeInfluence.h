@@ -40,7 +40,7 @@
  */
 class gdeUOCEnvMapProbeSetShapeInfluence : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCEnvMapProbeSetShapeInfluence> Ref;
+	using Ref = deTObjectReference<gdeUOCEnvMapProbeSetShapeInfluence>;
 	
 	
 private:

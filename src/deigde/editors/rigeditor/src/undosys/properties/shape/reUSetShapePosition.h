@@ -37,7 +37,7 @@
  */
 class reUSetShapePosition : public igdeUndo{
 public:
-	typedef deTObjectReference<reUSetShapePosition> Ref;
+	using Ref = deTObjectReference<reUSetShapePosition>;
 	
 	
 private:

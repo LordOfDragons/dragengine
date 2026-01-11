@@ -35,7 +35,7 @@
  */
 class peeUControllerSetUpper : public igdeUndo{
 public:
-	typedef deTObjectReference<peeUControllerSetUpper> Ref;
+	using Ref = deTObjectReference<peeUControllerSetUpper>;
 	
 	
 private:

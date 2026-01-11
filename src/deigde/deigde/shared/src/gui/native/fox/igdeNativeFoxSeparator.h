@@ -46,6 +46,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxSeparator igdeNativeSeparator;
+using igdeNativeSeparator = igdeNativeFoxSeparator;
 
 #endif

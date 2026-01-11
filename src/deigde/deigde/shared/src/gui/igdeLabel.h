@@ -37,10 +37,10 @@
 class DE_DLL_EXPORT igdeLabel : public igdeWidget{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeLabel> Ref;
+	using Ref = deTObjectReference<igdeLabel>;
 	
 	/** \brief Type holding weak reference. */
-	typedef deTWeakObjectReference<igdeLabel> WeakRef;
+	using WeakRef = deTWeakObjectReference<igdeLabel>;
 	
 	
 	/** \brief Alignment. */

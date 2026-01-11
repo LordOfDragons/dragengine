@@ -33,7 +33,7 @@
  */
 class seUMappedDuplicate : public seUMappedAdd{
 public:
-	typedef deTObjectReference<seUMappedDuplicate> Ref;
+	using Ref = deTObjectReference<seUMappedDuplicate>;
 	
 	/** \name Constructors and Destructors */
 	/*@{*/

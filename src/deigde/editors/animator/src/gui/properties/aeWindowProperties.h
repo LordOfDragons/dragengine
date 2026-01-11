@@ -45,7 +45,7 @@ class aeAnimator;
  */
 class aeWindowProperties : public igdeTabBook{
 public:
-	typedef deTObjectReference<aeWindowProperties> Ref;
+	using Ref = deTObjectReference<aeWindowProperties>;
 	
 	
 private:

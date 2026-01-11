@@ -42,7 +42,7 @@
  */
 class meUHTSetHeightScaling : public igdeUndo{
 public:
-	typedef deTObjectReference<meUHTSetHeightScaling> Ref;
+	using Ref = deTObjectReference<meUHTSetHeightScaling>;
 	
 	
 private:

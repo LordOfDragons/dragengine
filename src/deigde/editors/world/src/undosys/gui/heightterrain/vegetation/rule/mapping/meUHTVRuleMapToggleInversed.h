@@ -42,7 +42,7 @@
  */
 class meUHTVRuleMapToggleInversed : public igdeUndo{
 public:
-	typedef deTObjectReference<meUHTVRuleMapToggleInversed> Ref;
+	using Ref = deTObjectReference<meUHTVRuleMapToggleInversed>;
 	
 	
 public:

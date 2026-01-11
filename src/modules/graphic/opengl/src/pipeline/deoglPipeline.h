@@ -114,7 +114,7 @@ class deoglShaderCompiled;
  */
 class deoglPipeline : public deObject{
 public:
-	typedef deTObjectReference<deoglPipeline> Ref;
+	using Ref = deTObjectReference<deoglPipeline>;
 	
 	
 private:

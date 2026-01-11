@@ -41,7 +41,7 @@
  */
 class meUHTVVarSetRotPerForce : public igdeUndo{
 public:
-	typedef deTObjectReference<meUHTVVarSetRotPerForce> Ref;
+	using Ref = deTObjectReference<meUHTVVarSetRotPerForce>;
 	
 	
 private:

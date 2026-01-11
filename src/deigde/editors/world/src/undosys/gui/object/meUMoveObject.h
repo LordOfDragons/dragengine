@@ -36,7 +36,7 @@
  */
 class meUMoveObject : public meBaseUndoMove{
 public:
-	typedef deTObjectReference<meUMoveObject> Ref;
+	using Ref = deTObjectReference<meUMoveObject>;
 	
 private:
 	meWorld *pWorld;

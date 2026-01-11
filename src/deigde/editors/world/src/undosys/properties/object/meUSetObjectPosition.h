@@ -40,7 +40,7 @@
  */
 class meUSetObjectPosition : public igdeUndo{
 public:
-	typedef deTObjectReference<meUSetObjectPosition> Ref;
+	using Ref = deTObjectReference<meUSetObjectPosition>;
 	
 	
 private:

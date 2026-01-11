@@ -39,7 +39,7 @@ class meHTVRuleComponents;
  */
 class meWVNodeComponents : public meWVNode{
 public:
-	typedef deTObjectReference<meWVNodeComponents> Ref;
+	using Ref = deTObjectReference<meWVNodeComponents>;
 	
 private:
 	meHTVRuleComponents *pRuleComponents;

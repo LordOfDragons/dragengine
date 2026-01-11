@@ -52,8 +52,8 @@ class igdeMenuCascade;
  */
 class ceWPTTreeItemModel : public deObject{
 public:
-	typedef deTObjectReference<ceWPTTreeItemModel> Ref;
-	typedef decTObjectOrderedSet<ceWPTTreeItemModel> ModelList;
+	using Ref = deTObjectReference<ceWPTTreeItemModel>;
+	using ModelList = decTObjectOrderedSet<ceWPTTreeItemModel>;
 	
 	
 	/** Tree item types. */

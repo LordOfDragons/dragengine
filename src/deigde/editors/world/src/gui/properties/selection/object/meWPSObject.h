@@ -62,7 +62,7 @@ class meWPSelection;
  */
 class meWPSObject : public igdeContainerScroll{
 public:
-	typedef deTObjectReference<meWPSObject> Ref;
+	using Ref = deTObjectReference<meWPSObject>;
 	
 private:
 	meWPSelection &pWPSelection;

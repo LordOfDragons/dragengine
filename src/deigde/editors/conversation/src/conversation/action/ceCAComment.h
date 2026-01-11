@@ -36,7 +36,7 @@
  */
 class ceCAComment : public ceConversationAction{
 public:
-	typedef deTObjectReference<ceCAComment> Ref;
+	using Ref = deTObjectReference<ceCAComment>;
 	
 	
 private:

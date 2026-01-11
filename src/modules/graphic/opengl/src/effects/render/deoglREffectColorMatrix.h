@@ -36,7 +36,7 @@
  */
 class deoglREffectColorMatrix : public deoglREffect{
 public:
-	typedef deTObjectReference<deoglREffectColorMatrix> Ref;
+	using Ref = deTObjectReference<deoglREffectColorMatrix>;
 	
 	
 private:

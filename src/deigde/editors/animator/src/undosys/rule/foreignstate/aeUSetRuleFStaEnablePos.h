@@ -42,7 +42,7 @@
  */
 class aeUSetRuleFStaEnablePos : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUSetRuleFStaEnablePos> Ref;
+	using Ref = deTObjectReference<aeUSetRuleFStaEnablePos>;
 	
 	
 private:

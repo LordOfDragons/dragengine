@@ -33,7 +33,7 @@
  */
 class deoglSTPipelinesHeightMap2 : public deoglSTPipelinesHeightMap1{
 public:
-	typedef deTObjectReference<deoglSTPipelinesHeightMap2> Ref;
+	using Ref = deTObjectReference<deoglSTPipelinesHeightMap2>;
 	
 	
 	/** \name Constructors and Destructors */

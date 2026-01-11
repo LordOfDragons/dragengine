@@ -36,7 +36,7 @@
  */
 class saeUPhonemeSetIPA : public igdeUndo{
 public:
-	typedef deTObjectReference<saeUPhonemeSetIPA> Ref;
+	using Ref = deTObjectReference<saeUPhonemeSetIPA>;
 	
 	
 private:

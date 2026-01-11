@@ -45,7 +45,7 @@
  */
 class meUHTSetTexMask : public igdeUndo{
 public:
-	typedef deTObjectReference<meUHTSetTexMask> Ref;
+	using Ref = deTObjectReference<meUHTSetTexMask>;
 	
 	
 private:

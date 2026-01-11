@@ -36,7 +36,7 @@
  */
 class peeUTypeSetName : public igdeUndo{
 public:
-	typedef deTObjectReference<peeUTypeSetName> Ref;
+	using Ref = deTObjectReference<peeUTypeSetName>;
 	
 	
 private:

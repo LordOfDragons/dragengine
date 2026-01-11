@@ -38,7 +38,7 @@
 class deoglDynamicTBOFloat8 : public deoglDynamicTBO{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglDynamicTBOFloat8> Ref;
+	using Ref = deTObjectReference<deoglDynamicTBOFloat8>;
 	
 	
 	/** \name Constructors and Destructors */

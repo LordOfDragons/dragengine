@@ -65,7 +65,7 @@ class deCollider;
 class DE_DLL_EXPORT deTouchSensor : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deTouchSensor> Ref;
+	using Ref = deTObjectReference<deTouchSensor>;
 	
 	
 private:

@@ -573,7 +573,7 @@ void deNetworkBasic::pProcessConnections(float elapsedTime){
 
 class denbModuleInternal : public deInternalModule{
 public:
-	typedef deTObjectReference<denbModuleInternal> Ref;
+	using Ref = deTObjectReference<denbModuleInternal>;
 	
 	denbModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("BasicNetwork");

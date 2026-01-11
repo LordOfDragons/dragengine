@@ -47,7 +47,7 @@ class deAnimatorController;
 class DE_DLL_EXPORT igdeWOSOComponent : public igdeWOSubObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeWOSOComponent> Ref;
+	using Ref = deTObjectReference<igdeWOSOComponent>;
 	
 	
 private:

@@ -87,6 +87,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxLabel igdeNativeLabel;
+using igdeNativeLabel = igdeNativeFoxLabel;
 
 #endif

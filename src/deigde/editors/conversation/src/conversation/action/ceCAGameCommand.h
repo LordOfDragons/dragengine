@@ -40,7 +40,7 @@
  */
 class ceCAGameCommand : public ceConversationAction{
 public:
-	typedef deTObjectReference<ceCAGameCommand> Ref;
+	using Ref = deTObjectReference<ceCAGameCommand>;
 	
 	
 private:

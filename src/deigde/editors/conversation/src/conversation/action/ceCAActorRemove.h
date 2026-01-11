@@ -40,7 +40,7 @@ private:
 	decString pActor;
 	
 public:
-	typedef deTObjectReference<ceCAActorRemove> Ref;
+	using Ref = deTObjectReference<ceCAActorRemove>;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new conversation action. */

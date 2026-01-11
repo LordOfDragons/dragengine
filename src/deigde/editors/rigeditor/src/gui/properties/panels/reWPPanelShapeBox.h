@@ -38,7 +38,7 @@ class reRigShapeBox;
  */
 class reWPPanelShapeBox : public reWPPanelShape{
 public:
-	typedef deTObjectReference<reWPPanelShapeBox> Ref;
+	using Ref = deTObjectReference<reWPPanelShapeBox>;
 	
 private:
 	igdeEditVector::Ref pEditPosition;

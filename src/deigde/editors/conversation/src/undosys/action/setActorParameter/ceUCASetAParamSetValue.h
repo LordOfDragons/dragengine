@@ -37,7 +37,7 @@
  */
 class ceUCASetAParamSetValue : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCASetAParamSetValue> Ref;
+	using Ref = deTObjectReference<ceUCASetAParamSetValue>;
 	
 	
 private:

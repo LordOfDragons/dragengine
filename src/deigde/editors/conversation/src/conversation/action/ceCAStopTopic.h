@@ -39,7 +39,7 @@
  */
 class ceCAStopTopic : public ceConversationAction{
 public:
-	typedef deTObjectReference<ceCAStopTopic> Ref;
+	using Ref = deTObjectReference<ceCAStopTopic>;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create stop topic conversation action. */

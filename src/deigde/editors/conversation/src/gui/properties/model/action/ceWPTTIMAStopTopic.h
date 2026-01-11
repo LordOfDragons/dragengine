@@ -34,7 +34,7 @@
  */
 class ceWPTTIMAStopTopic : public ceWPTTIMAction{
 public:
-	typedef deTObjectReference<ceWPTTIMAStopTopic> Ref;
+	using Ref = deTObjectReference<ceWPTTIMAStopTopic>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */

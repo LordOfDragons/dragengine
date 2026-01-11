@@ -40,7 +40,7 @@
  */
 class aeUPasteRule : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUPasteRule> Ref;
+	using Ref = deTObjectReference<aeUPasteRule>;
 	
 	
 private:

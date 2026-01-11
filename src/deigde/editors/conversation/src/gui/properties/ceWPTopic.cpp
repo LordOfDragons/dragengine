@@ -191,7 +191,7 @@ class cComboFile : public igdeComboBoxListener{
 	ceWPTopic &pPanel;
 	
 public:
-	typedef deTObjectReference<cComboFile> Ref;
+	using Ref = deTObjectReference<cComboFile>;
 	cComboFile(ceWPTopic &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -205,7 +205,7 @@ public:
 
 class cActionGroupAdd : public igdeAction{
 public:
-	typedef deTObjectReference<cActionGroupAdd> Ref;
+	using Ref = deTObjectReference<cActionGroupAdd>;
 	
 private:
 	ceWPTopic &pPanel;
@@ -244,7 +244,7 @@ public:
 
 class cActionGroupRemove : public igdeAction{
 public:
-	typedef deTObjectReference<cActionGroupRemove> Ref;
+	using Ref = deTObjectReference<cActionGroupRemove>;
 	
 private:
 	ceWPTopic &pPanel;
@@ -268,7 +268,7 @@ public:
 
 class cActionGroupRename : public igdeAction{
 public:
-	typedef deTObjectReference<cActionGroupRename> Ref;
+	using Ref = deTObjectReference<cActionGroupRename>;
 	
 private:
 	ceWPTopic &pPanel;
@@ -305,7 +305,7 @@ public:
 
 class cActionGroupCopy : public igdeAction{
 public:
-	typedef deTObjectReference<cActionGroupCopy> Ref;
+	using Ref = deTObjectReference<cActionGroupCopy>;
 	
 private:
 	ceWPTopic &pPanel;
@@ -333,7 +333,7 @@ public:
 
 class cActionGroupPaste : public igdeAction{
 public:
-	typedef deTObjectReference<cActionGroupPaste> Ref;
+	using Ref = deTObjectReference<cActionGroupPaste>;
 	
 private:
 	ceWPTopic &pPanel;
@@ -363,7 +363,7 @@ public:
 
 class cActionGroupDuplicate : public igdeAction{
 public:
-	typedef deTObjectReference<cActionGroupDuplicate> Ref;
+	using Ref = deTObjectReference<cActionGroupDuplicate>;
 	
 private:
 	ceWPTopic &pPanel;
@@ -401,7 +401,7 @@ public:
 
 class cActionGroupMissingWords : public igdeAction{
 public:
-	typedef deTObjectReference<cActionGroupMissingWords> Ref;
+	using Ref = deTObjectReference<cActionGroupMissingWords>;
 	
 private:
 	ceWPTopic &pPanel;
@@ -432,7 +432,7 @@ class cActionFileMenu : public igdeActionContextMenu{
 	ceWPTopic &pPanel;
 	
 public:
-	typedef deTObjectReference<cActionFileMenu> Ref;
+	using Ref = deTObjectReference<cActionFileMenu>;
 	cActionFileMenu(ceWPTopic &panel) : igdeActionContextMenu("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Show File Menu"),
 		pPanel(panel){}
@@ -464,7 +464,7 @@ class cComboTopic : public igdeComboBoxListener{
 	ceWPTopic &pPanel;
 	
 public:
-	typedef deTObjectReference<cComboTopic> Ref;
+	using Ref = deTObjectReference<cComboTopic>;
 	cComboTopic(ceWPTopic &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -478,7 +478,7 @@ public:
 
 class cActionTopicAdd : public igdeAction{
 public:
-	typedef deTObjectReference<cActionTopicAdd> Ref;
+	using Ref = deTObjectReference<cActionTopicAdd>;
 	
 private:
 	ceWPTopic &pPanel;
@@ -517,7 +517,7 @@ public:
 
 class cActionTopicRemove : public igdeAction{
 public:
-	typedef deTObjectReference<cActionTopicRemove> Ref;
+	using Ref = deTObjectReference<cActionTopicRemove>;
 	
 private:
 	ceWPTopic &pPanel;
@@ -541,7 +541,7 @@ public:
 
 class cActionTopicRename : public igdeAction{
 public:
-	typedef deTObjectReference<cActionTopicRename> Ref;
+	using Ref = deTObjectReference<cActionTopicRename>;
 	
 private:
 	ceWPTopic &pPanel;
@@ -579,7 +579,7 @@ public:
 
 class cActionTopicMissingWords : public igdeAction{
 public:
-	typedef deTObjectReference<cActionTopicMissingWords> Ref;
+	using Ref = deTObjectReference<cActionTopicMissingWords>;
 	
 private:
 	ceWPTopic &pPanel;
@@ -606,7 +606,7 @@ public:
 
 class cActionTopicCopy : public igdeAction{
 public:
-	typedef deTObjectReference<cActionTopicCopy> Ref;
+	using Ref = deTObjectReference<cActionTopicCopy>;
 	
 private:
 	ceWPTopic &pPanel;
@@ -634,7 +634,7 @@ public:
 
 class cActionTopicPaste : public igdeAction{
 public:
-	typedef deTObjectReference<cActionTopicPaste> Ref;
+	using Ref = deTObjectReference<cActionTopicPaste>;
 	
 private:
 	ceWPTopic &pPanel;
@@ -664,7 +664,7 @@ public:
 
 class cActionTopicDuplicate : public igdeAction{
 public:
-	typedef deTObjectReference<cActionTopicDuplicate> Ref;
+	using Ref = deTObjectReference<cActionTopicDuplicate>;
 	
 private:
 	ceWPTopic &pPanel;
@@ -704,7 +704,7 @@ class cActionTopicMenu : public igdeActionContextMenu{
 	ceWPTopic &pPanel;
 	
 public:
-	typedef deTObjectReference<cActionTopicMenu> Ref;
+	using Ref = deTObjectReference<cActionTopicMenu>;
 	cActionTopicMenu(ceWPTopic &panel) : igdeActionContextMenu("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Show Topic Menu"),
 		pPanel(panel){}
@@ -736,7 +736,7 @@ class cTreeActionsListener : public igdeTreeListListener{
 	ceWPTopic &pPanel;
 	
 public:
-	typedef deTObjectReference<cTreeActionsListener> Ref;
+	using Ref = deTObjectReference<cTreeActionsListener>;
 	cTreeActionsListener(ceWPTopic &panel) : pPanel(panel){}
 	
 	void OnSelectionChanged(igdeTreeList *treeList) override{

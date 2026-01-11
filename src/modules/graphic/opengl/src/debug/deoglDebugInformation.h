@@ -49,7 +49,7 @@
  */
 class deoglDebugInformation : public deObject{
 public:
-	typedef deTObjectReference<deoglDebugInformation> Ref;
+	using Ref = deTObjectReference<deoglDebugInformation>;
 	
 	
 private:

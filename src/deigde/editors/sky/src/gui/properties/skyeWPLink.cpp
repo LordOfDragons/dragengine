@@ -182,7 +182,7 @@ public:
 class cListLinks : public igdeListBoxListener{
 	skyeWPLink &pPanel;
 public:
-	typedef deTObjectReference<cListLinks> Ref;
+	using Ref = deTObjectReference<cListLinks>;
 	cListLinks(skyeWPLink &panel) : pPanel(panel){}
 	
 	void OnSelectionChanged(igdeListBox *listBox) override{
@@ -210,7 +210,7 @@ public:
 
 class cActionLinkAdd : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionLinkAdd> Ref;
+	using Ref = deTObjectReference<cActionLinkAdd>;
 	cActionLinkAdd(skyeWPLink &panel) : cBaseAction(panel, "Add",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Add a link to the end of the list."){}
@@ -222,7 +222,7 @@ public:
 
 class cActionLinkRemove : public cBaseActionLink{
 public:
-	typedef deTObjectReference<cActionLinkRemove> Ref;
+	using Ref = deTObjectReference<cActionLinkRemove>;
 	cActionLinkRemove(skyeWPLink &panel) : cBaseActionLink(panel, "Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove the selected link."){}
@@ -251,7 +251,7 @@ public:
 
 class cTextName : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextName> Ref;
+	using Ref = deTObjectReference<cTextName>;
 	cTextName(skyeWPLink &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, skyeSky*, skyeLink *link) override{
@@ -265,7 +265,7 @@ public:
 
 class cComboController : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboController> Ref;
+	using Ref = deTObjectReference<cComboController>;
 	cComboController(skyeWPLink &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, skyeSky*, skyeLink *link) override{
@@ -285,7 +285,7 @@ public:
 
 class cTextRepeat : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextRepeat> Ref;
+	using Ref = deTObjectReference<cTextRepeat>;
 	cTextRepeat(skyeWPLink &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, skyeSky*, skyeLink *link) override{
@@ -303,7 +303,7 @@ protected:
 	igdeUndo::Ref pUndo;
 	
 public:
-	typedef deTObjectReference<cEditCurve> Ref;
+	using Ref = deTObjectReference<cEditCurve>;
 	cEditCurve(skyeWPLink &panel) : pPanel(panel){}
 	
 	void OnCurveChanged(igdeViewCurveBezier *viewCurveBezier) override{

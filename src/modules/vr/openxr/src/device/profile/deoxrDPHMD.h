@@ -39,7 +39,7 @@ private:
 	
 	
 public:
-	typedef deTObjectReference<deoxrDPHMD> Ref;
+	using Ref = deTObjectReference<deoxrDPHMD>;
 	
 	/** \name Constructors and Destructors */
 	/*@{*/

@@ -36,7 +36,7 @@
  */
 class aeURuleIKSetReachBone : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleIKSetReachBone> Ref;
+	using Ref = deTObjectReference<aeURuleIKSetReachBone>;
 	
 	
 private:

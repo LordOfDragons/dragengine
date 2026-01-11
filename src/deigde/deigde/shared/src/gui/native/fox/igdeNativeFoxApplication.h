@@ -122,6 +122,6 @@ private:
 	igdeFont::sConfiguration pAppFontConfig;
 };
 
-typedef igdeNativeFoxApplication igdeNativeApplication;
+using igdeNativeApplication = igdeNativeFoxApplication;
 
 #endif

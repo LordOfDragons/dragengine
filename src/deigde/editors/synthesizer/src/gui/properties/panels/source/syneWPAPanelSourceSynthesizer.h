@@ -36,7 +36,7 @@
  */
 class syneWPAPanelSourceSynthesizer : public syneWPAPanelSource{
 public:
-	typedef deTObjectReference<syneWPAPanelSourceSynthesizer> Ref;
+	using Ref = deTObjectReference<syneWPAPanelSourceSynthesizer>;
 	
 private:
 	igdeEditPath::Ref pEditPathSynthesizer;

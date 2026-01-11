@@ -38,7 +38,7 @@
  */
 class gdeUOCLightSetHintShadowImportance : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCLightSetHintShadowImportance> Ref;
+	using Ref = deTObjectReference<gdeUOCLightSetHintShadowImportance>;
 	
 	
 private:

@@ -36,7 +36,7 @@
  */
 class aeULinkSetCurve : public igdeUndo{
 public:
-	typedef deTObjectReference<aeULinkSetCurve> Ref;
+	using Ref = deTObjectReference<aeULinkSetCurve>;
 	
 	
 private:

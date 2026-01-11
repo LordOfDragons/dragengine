@@ -37,7 +37,7 @@
  */
 class peeUTypeSetCollisionResponse : public igdeUndo{
 public:
-	typedef deTObjectReference<peeUTypeSetCollisionResponse> Ref;
+	using Ref = deTObjectReference<peeUTypeSetCollisionResponse>;
 	
 	
 private:

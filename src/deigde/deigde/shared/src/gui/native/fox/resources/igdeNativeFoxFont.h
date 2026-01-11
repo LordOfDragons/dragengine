@@ -71,6 +71,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxFont igdeNativeFont;
+using igdeNativeFont = igdeNativeFoxFont;
 
 #endif

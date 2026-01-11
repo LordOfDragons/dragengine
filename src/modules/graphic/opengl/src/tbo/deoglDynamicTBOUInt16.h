@@ -37,7 +37,7 @@
 class deoglDynamicTBOUInt16 : public deoglDynamicTBO{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglDynamicTBOUInt16> Ref;
+	using Ref = deTObjectReference<deoglDynamicTBOUInt16>;
 	
 	
 	/** \name Constructors and Destructors */

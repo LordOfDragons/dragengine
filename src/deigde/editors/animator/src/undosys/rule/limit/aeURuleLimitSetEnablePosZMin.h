@@ -36,7 +36,7 @@
  */
 class aeURuleLimitSetEnablePosZMin : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleLimitSetEnablePosZMin> Ref;
+	using Ref = deTObjectReference<aeURuleLimitSetEnablePosZMin>;
 	
 	
 private:

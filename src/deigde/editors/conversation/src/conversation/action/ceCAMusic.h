@@ -40,7 +40,7 @@ private:
 	decString pName;
 	
 public:
-	typedef deTObjectReference<ceCAMusic> Ref;
+	using Ref = deTObjectReference<ceCAMusic>;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new music conversation action. */

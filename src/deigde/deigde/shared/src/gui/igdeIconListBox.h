@@ -47,7 +47,7 @@ class igdeListItem;
 class DE_DLL_EXPORT igdeIconListBox : public igdeWidget{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeIconListBox> Ref;
+	using Ref = deTObjectReference<igdeIconListBox>;
 	
 	
 	/** \brief Selection mode. */

@@ -45,7 +45,7 @@ class decMemoryFile;
 class DE_DLL_EXPORT deVFSMemoryFiles : public deVFSContainer{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deVFSMemoryFiles> Ref;
+	using Ref = deTObjectReference<deVFSMemoryFiles>;
 	
 	
 private:

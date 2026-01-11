@@ -36,7 +36,7 @@
  */
 class sePropertyNodeShape : public sePropertyNode{
 public:
-	typedef deTObjectReference<sePropertyNodeShape> Ref;
+	using Ref = deTObjectReference<sePropertyNodeShape>;
 	
 	
 	enum eShapeMapped{

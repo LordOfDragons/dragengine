@@ -41,7 +41,7 @@ class ceConversationAction;
  */
 class ceWPTTIMConditionContainer : public ceWPTTreeItemModel{
 public:
-	typedef deTObjectReference<ceWPTTIMConditionContainer> Ref;
+	using Ref = deTObjectReference<ceWPTTIMConditionContainer>;
 	
 private:
 	ceConversationAction *pAction;

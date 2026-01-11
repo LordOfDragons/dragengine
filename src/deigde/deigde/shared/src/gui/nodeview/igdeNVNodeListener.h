@@ -40,7 +40,7 @@ class DE_DLL_EXPORT igdeNVNodeListener : public deObject{
 
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeNVNodeListener> Ref;
+	using Ref = deTObjectReference<igdeNVNodeListener>;
 	
 	
 protected:

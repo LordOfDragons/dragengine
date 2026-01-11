@@ -39,7 +39,7 @@ class ceCConditionHasActor;
  */
 class ceWPCHasActor : public ceWPCondition{
 public:
-	typedef deTObjectReference<ceWPCHasActor> Ref;
+	using Ref = deTObjectReference<ceWPCHasActor>;
 
 private:
 	igdeComboBox::Ref pCBActor;

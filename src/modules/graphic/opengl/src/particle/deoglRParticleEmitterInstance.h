@@ -53,7 +53,7 @@ class deParticleEmitterInstance;
 class deoglRParticleEmitterInstance : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglRParticleEmitterInstance> Ref;
+	using Ref = deTObjectReference<deoglRParticleEmitterInstance>;
 	
 	
 	/** Particle data. */
@@ -76,7 +76,7 @@ private:
 	class WorldComputeElement: public deoglWorldComputeElement{
 		deoglRParticleEmitterInstance &pEmitter;
 	public:
-		typedef deTObjectReference<WorldComputeElement> Ref;
+		using Ref = deTObjectReference<WorldComputeElement>;
 		explicit WorldComputeElement(deoglRParticleEmitterInstance &emitter);
 		void UpdateData(sDataElement &data) const override;
 		void UpdateDataGeometries(sDataElementGeometry *data) const override;

@@ -45,7 +45,7 @@ class igdeWidget;
 class DE_DLL_EXPORT igdeDialog : public igdeWindow{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeDialog> Ref;
+	using Ref = deTObjectReference<igdeDialog>;
 	
 	
 	/**
@@ -56,7 +56,7 @@ public:
 		igdeDialog &pDialog;
 		
 	public:
-		typedef deTObjectReference<AcceptDialog> Ref;
+		using Ref = deTObjectReference<AcceptDialog>;
 		
 		AcceptDialog(igdeDialog &dialog, const char *text, igdeIcon *icon = nullptr);
 		
@@ -76,7 +76,7 @@ public:
 		igdeDialog &pDialog;
 		
 	public:
-		typedef deTObjectReference<CancelDialog> Ref;
+		using Ref = deTObjectReference<CancelDialog>;
 		
 		CancelDialog(igdeDialog &dialog, const char *text, igdeIcon *icon = nullptr);
 		

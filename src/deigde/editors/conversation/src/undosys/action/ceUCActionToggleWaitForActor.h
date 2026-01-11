@@ -37,7 +37,7 @@
  */
 class ceUCActionToggleWaitForActor : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCActionToggleWaitForActor> Ref;
+	using Ref = deTObjectReference<ceUCActionToggleWaitForActor>;
 	
 	
 private:

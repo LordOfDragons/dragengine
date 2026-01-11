@@ -37,7 +37,7 @@
  */
 class syneUSourceChainPathSoundRemove : public igdeUndo{
 public:
-	typedef deTObjectReference<syneUSourceChainPathSoundRemove> Ref;
+	using Ref = deTObjectReference<syneUSourceChainPathSoundRemove>;
 	
 	
 private:

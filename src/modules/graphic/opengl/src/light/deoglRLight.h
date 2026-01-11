@@ -67,7 +67,7 @@ class decShapeBox;
 class deoglRLight : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglRLight> Ref;
+	using Ref = deTObjectReference<deoglRLight>;
 	
 	
 private:
@@ -75,7 +75,7 @@ private:
 	class WorldComputeElement: public deoglWorldComputeElement{
 		deoglRLight &pLight;
 	public:
-		typedef deTObjectReference<WorldComputeElement> Ref;
+		using Ref = deTObjectReference<WorldComputeElement>;
 		explicit WorldComputeElement(deoglRLight &light);
 		void UpdateData(sDataElement &data) const override;
 	};

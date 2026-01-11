@@ -98,6 +98,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxWindow igdeNativeWindow;
+using igdeNativeWindow = igdeNativeFoxWindow;
 
 #endif

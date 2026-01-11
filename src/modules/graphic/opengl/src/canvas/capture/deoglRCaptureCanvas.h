@@ -51,7 +51,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglRCaptureCanvas> Ref;
+	using Ref = deTObjectReference<deoglRCaptureCanvas>;
 
 
 	/** \name Constructors and Destructors */

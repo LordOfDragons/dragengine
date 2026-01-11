@@ -42,7 +42,7 @@
  */
 class meUHTVRuleMapSetUpper : public igdeUndo{
 public:
-	typedef deTObjectReference<meUHTVRuleMapSetUpper> Ref;
+	using Ref = deTObjectReference<meUHTVRuleMapSetUpper>;
 	
 	
 public:

@@ -38,7 +38,7 @@
  */
 class gdeUOCComponentToggleDoNotScale : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCComponentToggleDoNotScale> Ref;
+	using Ref = deTObjectReference<gdeUOCComponentToggleDoNotScale>;
 	
 	
 private:

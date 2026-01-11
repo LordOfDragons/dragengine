@@ -43,7 +43,7 @@
 class DE_DLL_EXPORT igdeContainerBorder : public igdeContainer{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeContainerBorder> Ref;
+	using Ref = deTObjectReference<igdeContainerBorder>;
 	
 	
 	/** \brief Area. */

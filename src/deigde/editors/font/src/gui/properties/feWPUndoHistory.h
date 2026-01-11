@@ -37,7 +37,7 @@
  */
 class feWPUndoHistory : public igdeWPUndoHistory{
 public:
-	typedef deTObjectReference<feWPUndoHistory> Ref;
+	using Ref = deTObjectReference<feWPUndoHistory>;
 	
 private:
 	feFont::Ref pFont;

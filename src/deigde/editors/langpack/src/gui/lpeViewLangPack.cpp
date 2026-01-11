@@ -69,7 +69,7 @@ protected:
 	lpeViewLangPack &pView;
 	
 public:
-	typedef deTObjectReference<cTextFilter> Ref;
+	using Ref = deTObjectReference<cTextFilter>;
 	cTextFilter(lpeViewLangPack &view) : pView(view){}
 	
 	void OnTextChanging(igdeTextField*) override{
@@ -83,7 +83,7 @@ protected:
 	lpeViewLangPack &pView;
 	
 public:
-	typedef deTObjectReference<cTextName> Ref;
+	using Ref = deTObjectReference<cTextName>;
 	cTextName(lpeViewLangPack &view) : pView(view){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -118,7 +118,7 @@ protected:
 	lpeViewLangPack &pView;
 	
 public:
-	typedef deTObjectReference<cTextText> Ref;
+	using Ref = deTObjectReference<cTextText>;
 	cTextText(lpeViewLangPack &view) : pView(view){}
 	
 	void OnTextChanged(igdeTextArea *textArea) override{
@@ -164,7 +164,7 @@ protected:
 	eSorting pSorting;
 	
 public:
-	typedef deTObjectReference<cListEntries> Ref;
+	using Ref = deTObjectReference<cListEntries>;
 	cListEntries(lpeViewLangPack &view) : pView(view), pSorting(esNameAscending){}
 	
 	void OnSelectionChanged(igdeIconListBox *listBox) override{

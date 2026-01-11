@@ -45,7 +45,7 @@ class skyeSky;
  */
 class skyeWindowProperties : public igdeTabBook{
 public:
-	typedef deTObjectReference<skyeWindowProperties> Ref;
+	using Ref = deTObjectReference<skyeWindowProperties>;
 	
 private:
 	skyeWindowMain &pWindowMain;

@@ -38,7 +38,7 @@
  */
 class ceUCTargetSetOrientation : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCTargetSetOrientation> Ref;
+	using Ref = deTObjectReference<ceUCTargetSetOrientation>;
 	
 	
 private:

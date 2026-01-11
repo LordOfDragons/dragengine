@@ -43,7 +43,7 @@ class devkFormat;
 class devkDevice : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<devkDevice> Ref;
+	using Ref = deTObjectReference<devkDevice>;
 	
 	
 	/** Configuration to use for new device. */

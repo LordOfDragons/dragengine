@@ -48,7 +48,7 @@ public:
 	static const char *styleWarning;
 	static const char *styleError;
 	
-	typedef deTObjectReference<projPanelRemoteClient> Ref;
+	using Ref = deTObjectReference<projPanelRemoteClient>;
 	
 	
 	bool preventUpdate;

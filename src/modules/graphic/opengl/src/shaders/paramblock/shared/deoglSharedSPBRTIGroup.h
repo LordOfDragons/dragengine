@@ -43,7 +43,7 @@ class deoglRenderTaskSharedInstance;
  */
 class deoglSharedSPBRTIGroup : public deObject{
 public:
-	typedef deTObjectReference<deoglSharedSPBRTIGroup> Ref;
+	using Ref = deTObjectReference<deoglSharedSPBRTIGroup>;
 	
 	
 private:

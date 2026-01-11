@@ -40,7 +40,7 @@
  */
 class meUSetObjectRotation : public igdeUndo{
 public:
-	typedef deTObjectReference<meUSetObjectRotation> Ref;
+	using Ref = deTObjectReference<meUSetObjectRotation>;
 	
 	
 private:

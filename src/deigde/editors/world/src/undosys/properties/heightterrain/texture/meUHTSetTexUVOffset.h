@@ -45,7 +45,7 @@
  */
 class meUHTSetTexUVOffset : public igdeUndo{
 public:
-	typedef deTObjectReference<meUHTSetTexUVOffset> Ref;
+	using Ref = deTObjectReference<meUHTSetTexUVOffset>;
 	
 	
 private:

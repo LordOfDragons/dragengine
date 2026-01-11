@@ -36,7 +36,7 @@
 class DE_DLL_EXPORT decMemoryFile : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<decMemoryFile> Ref;
+	using Ref = deTObjectReference<decMemoryFile>;
 	
 	
 private:

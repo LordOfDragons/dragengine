@@ -70,7 +70,7 @@ class deBaseScriptingCollider;
 class DE_DLL_EXPORT igdeWObject : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeWObject> Ref;
+	using Ref = deTObjectReference<igdeWObject>;
 	
 	
 	/** \brief Asynchronous loading finished. */

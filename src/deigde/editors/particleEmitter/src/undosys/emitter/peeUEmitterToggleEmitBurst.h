@@ -36,7 +36,7 @@
  */
 class peeUEmitterToggleEmitBurst : public igdeUndo{
 public:
-	typedef deTObjectReference<peeUEmitterToggleEmitBurst> Ref;
+	using Ref = deTObjectReference<peeUEmitterToggleEmitBurst>;
 	
 	
 private:

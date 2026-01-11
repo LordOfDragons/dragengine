@@ -36,7 +36,7 @@
  */
 class seUPropertyNodeImageSetPath : public igdeUndo{
 public:
-	typedef deTObjectReference<seUPropertyNodeImageSetPath> Ref;
+	using Ref = deTObjectReference<seUPropertyNodeImageSetPath>;
 	
 	
 private:

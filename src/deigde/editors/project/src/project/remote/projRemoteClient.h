@@ -47,8 +47,8 @@ class decXmlWriter;
  */
 class projRemoteClient : public derlRemoteClient{
 public:
-	typedef std::shared_ptr<projRemoteClient> Ref;
-	typedef std::unordered_set<Ref> Set;
+	using Ref = std::shared_ptr<projRemoteClient>;
+	using Set = std::unordered_set<Ref>;
 	
 	struct sSystemProperty{
 		std::string property, value;
@@ -56,7 +56,7 @@ public:
 	
 	
 private:
-	typedef std::vector<sSystemProperty> ListSysProps;
+	using ListSysProps = std::vector<sSystemProperty>;
 	
 	projProject &pProject;
 	

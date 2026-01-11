@@ -40,7 +40,7 @@
  */
 class gdeUOCParticleEmitterSetRotation : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCParticleEmitterSetRotation> Ref;
+	using Ref = deTObjectReference<gdeUOCParticleEmitterSetRotation>;
 	
 	
 private:

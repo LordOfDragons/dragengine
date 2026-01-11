@@ -36,7 +36,7 @@
  */
 class aeURuleLimitSetEnableRotYMax : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleLimitSetEnableRotYMax> Ref;
+	using Ref = deTObjectReference<aeURuleLimitSetEnableRotYMax>;
 	
 	
 private:

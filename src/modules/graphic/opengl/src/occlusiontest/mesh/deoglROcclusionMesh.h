@@ -47,7 +47,7 @@ class deoglRayTraceField;
 class deoglROcclusionMesh : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglROcclusionMesh> Ref;
+	using Ref = deTObjectReference<deoglROcclusionMesh>;
 	
 	
 	/** Mesh weight. */

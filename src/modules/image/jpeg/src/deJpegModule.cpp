@@ -345,7 +345,7 @@ void deJpegModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 
 class deJpegModuleInternal : public deInternalModule{
 public:
-	typedef deTObjectReference<deJpegModuleInternal> Ref;
+	using Ref = deTObjectReference<deJpegModuleInternal>;
 	
 	deJpegModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("JPEG");

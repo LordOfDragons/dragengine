@@ -35,7 +35,7 @@
  */
 class aeURuleBTransSetInputSource : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleBTransSetInputSource> Ref;
+	using Ref = deTObjectReference<aeURuleBTransSetInputSource>;
 	
 	
 private:

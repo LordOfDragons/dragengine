@@ -40,7 +40,7 @@
  */
 class gdeUOCTextureSetColorTint : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCTextureSetColorTint> Ref;
+	using Ref = deTObjectReference<gdeUOCTextureSetColorTint>;
 	
 	
 private:

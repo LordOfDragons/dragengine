@@ -33,7 +33,7 @@
  */
 class deoxrDPGoogleDaydreamController : public deoxrDPBaseTwoHandController{
 public:
-	typedef deTObjectReference<deoxrDPGoogleDaydreamController> Ref;
+	using Ref = deTObjectReference<deoxrDPGoogleDaydreamController>;
 	
 	/** \name Constructors and Destructors */
 	/*@{*/

@@ -46,7 +46,7 @@ class dePhysicsBullet;
 class debpShape : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<debpShape> Ref;
+	using Ref = deTObjectReference<debpShape>;
 	
 	
 	/** \brief Shape types. */

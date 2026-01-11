@@ -36,7 +36,7 @@
  */
 class aeULinkSetVertexPositionSet : public igdeUndo{
 public:
-	typedef deTObjectReference<aeULinkSetVertexPositionSet> Ref;
+	using Ref = deTObjectReference<aeULinkSetVertexPositionSet>;
 	
 	
 private:

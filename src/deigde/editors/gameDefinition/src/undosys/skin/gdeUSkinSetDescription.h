@@ -38,7 +38,7 @@ class gdeOCSpeaker;
  */
 class gdeUSkinSetDescription : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUSkinSetDescription> Ref;
+	using Ref = deTObjectReference<gdeUSkinSetDescription>;
 	
 	
 private:

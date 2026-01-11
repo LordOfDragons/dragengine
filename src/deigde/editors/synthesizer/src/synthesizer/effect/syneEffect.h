@@ -63,10 +63,10 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<syneEffect> Ref;
+	using Ref = deTObjectReference<syneEffect>;
 	
 	/** \brief Type holding list of objects. */
-	typedef decTObjectOrderedSet<syneEffect> List;
+	using List = decTObjectOrderedSet<syneEffect>;
 
 
 	/** \name Constructors and Destructors */

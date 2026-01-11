@@ -39,14 +39,14 @@
  */
 class meUObjectAttachTo : public igdeUndo{
 public:
-	typedef deTObjectReference<meUObjectAttachTo> Ref;
+	using Ref = deTObjectReference<meUObjectAttachTo>;
 	
 	
 private:
 	class cObject : public deObject{
 	public:
-		typedef deTObjectReference<cObject> Ref;
-		typedef decTObjectOrderedSet<cObject> List;
+		using Ref = deTObjectReference<cObject>;
+		using List = decTObjectOrderedSet<cObject>;
 		
 		meObject::Ref object, oldAttachTo;
 		

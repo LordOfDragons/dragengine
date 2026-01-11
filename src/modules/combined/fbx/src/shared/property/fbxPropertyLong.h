@@ -36,7 +36,7 @@
  */
 class fbxPropertyLong : public fbxProperty{
 public:
-	typedef deTObjectReference<fbxPropertyLong> Ref;
+	using Ref = deTObjectReference<fbxPropertyLong>;
 	
 	
 private:

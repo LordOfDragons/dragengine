@@ -37,7 +37,7 @@
  */
 class syneUSetSourceBlendFactor : public igdeUndo{
 public:
-	typedef deTObjectReference<syneUSetSourceBlendFactor> Ref;
+	using Ref = deTObjectReference<syneUSetSourceBlendFactor>;
 	
 	
 private:

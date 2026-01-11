@@ -35,7 +35,7 @@ class skyeWindowCurves;
  */
 class skyeWindowCurvesListener : public skyeSkyListener{
 public:
-	typedef deTObjectReference<skyeWindowCurvesListener> Ref;
+	using Ref = deTObjectReference<skyeWindowCurvesListener>;
 	
 private:
 	skyeWindowCurves &pWindow;

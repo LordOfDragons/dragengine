@@ -36,7 +36,7 @@ class saeWindowMain;
  */
 class saeWindowMainListener : public saeSAnimationListener{
 public:
-	typedef deTObjectReference<saeWindowMainListener> Ref;
+	using Ref = deTObjectReference<saeWindowMainListener>;
 	
 private:
 	saeWindowMain &pWindow;

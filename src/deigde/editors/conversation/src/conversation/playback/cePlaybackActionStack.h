@@ -45,8 +45,8 @@ class ceConversationTopic;
  */
 class cePlaybackActionStack : public deObject{
 public:
-	typedef deTObjectReference<cePlaybackActionStack> Ref;
-	typedef decTOrderedSet<Ref> List;
+	using Ref = deTObjectReference<cePlaybackActionStack>;
+	using List = decTOrderedSet<Ref>;
 	
 	
 private:

@@ -70,7 +70,7 @@ class cComboKey : public igdeComboBoxListener {
 	meWPPropertyList &pPanel;
 	
 public:
-	typedef deTObjectReference<cComboKey> Ref;
+	using Ref = deTObjectReference<cComboKey>;
 	cComboKey(meWPPropertyList &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -85,7 +85,7 @@ class cListProperties : public igdeIconListBoxListener {
 	meWPPropertyList &pPanel;
 	
 public:
-	typedef deTObjectReference<cListProperties> Ref;
+	using Ref = deTObjectReference<cListProperties>;
 	cListProperties(meWPPropertyList &panel) : pPanel(panel){}
 	
 	void OnSelectionChanged(igdeIconListBox *listBox) override{
@@ -131,7 +131,7 @@ class cActionPropertyAdd : public igdeAction {
 	meWPPropertyList &pPanel;
 	
 public:
-	typedef deTObjectReference<cActionPropertyAdd> Ref;
+	using Ref = deTObjectReference<cActionPropertyAdd>;
 	cActionPropertyAdd(meWPPropertyList &panel) :
 	igdeAction("Add", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Add property"),
@@ -161,7 +161,7 @@ class cActionPropertyRemove : public igdeAction {
 	meWPPropertyList &pPanel;
 	
 public:
-	typedef deTObjectReference<cActionPropertyRemove> Ref;
+	using Ref = deTObjectReference<cActionPropertyRemove>;
 	cActionPropertyRemove(meWPPropertyList &panel) :
 	igdeAction("Remove", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove selected property"),
@@ -188,7 +188,7 @@ class cActionPropertyClear : public igdeAction {
 	meWPPropertyList &pPanel;
 	
 public:
-	typedef deTObjectReference<cActionPropertyClear> Ref;
+	using Ref = deTObjectReference<cActionPropertyClear>;
 	cActionPropertyClear(meWPPropertyList &panel) :
 	igdeAction("Clear", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove all properties"),
@@ -214,7 +214,7 @@ class cActionPropertyRename : public igdeAction {
 	meWPPropertyList &pPanel;
 	
 public:
-	typedef deTObjectReference<cActionPropertyRename> Ref;
+	using Ref = deTObjectReference<cActionPropertyRename>;
 	cActionPropertyRename(meWPPropertyList &panel) :
 	igdeAction("Rename...", nullptr, "Rename property"),
 	pPanel(panel){}
@@ -256,7 +256,7 @@ protected:
 	meWPPropertyList &pPanel;
 	
 public:
-	typedef deTObjectReference<cActionPropertyCopy> Ref;
+	using Ref = deTObjectReference<cActionPropertyCopy>;
 	cActionPropertyCopy(meWPPropertyList &panel) :
 	igdeAction("Copy", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 		"Copy selected property"),
@@ -283,7 +283,7 @@ protected:
 	meWPPropertyList &pPanel;
 	
 public:
-	typedef deTObjectReference<cActionPropertyCopyAll> Ref;
+	using Ref = deTObjectReference<cActionPropertyCopyAll>;
 	cActionPropertyCopyAll(meWPPropertyList &panel) :
 	igdeAction("Copy All", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 		"Copy all properties"),
@@ -304,7 +304,7 @@ public:
 
 class cActionPropertyCut : public cActionPropertyCopy {
 public:
-	typedef deTObjectReference<cActionPropertyCut> Ref;
+	using Ref = deTObjectReference<cActionPropertyCut>;
 	cActionPropertyCut(meWPPropertyList &panel) : cActionPropertyCopy(panel){
 		SetText("Cut");
 		SetIcon(panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut));
@@ -332,7 +332,7 @@ public:
 
 class cActionPropertyCutAll : public cActionPropertyCopyAll {
 public:
-	typedef deTObjectReference<cActionPropertyCutAll> Ref;
+	using Ref = deTObjectReference<cActionPropertyCutAll>;
 	cActionPropertyCutAll(meWPPropertyList &panel) : cActionPropertyCopyAll(panel){
 		SetText("Cut All");
 		SetIcon(panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut));
@@ -361,7 +361,7 @@ class cActionPropertyPaste : public igdeAction {
 	meWPPropertyList &pPanel;
 	
 public:
-	typedef deTObjectReference<cActionPropertyPaste> Ref;
+	using Ref = deTObjectReference<cActionPropertyPaste>;
 	cActionPropertyPaste(meWPPropertyList &panel) :
 	igdeAction("Paste", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
 		"Paste property"),
@@ -401,7 +401,7 @@ protected:
 	meWPPropertyList &pPanel;
 	
 public:
-	typedef deTObjectReference<cActionPropertyExport> Ref;
+	using Ref = deTObjectReference<cActionPropertyExport>;
 	cActionPropertyExport(meWPPropertyList &panel) :
 	igdeAction("Export All To Text...", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSaveAs),
 		"Show dialog with all properties in text form"),
@@ -435,7 +435,7 @@ class cActionPropertyImport : public igdeAction {
 	meWPPropertyList &pPanel;
 	
 public:
-	typedef deTObjectReference<cActionPropertyImport> Ref;
+	using Ref = deTObjectReference<cActionPropertyImport>;
 	cActionPropertyImport(meWPPropertyList &panel) :
 	igdeAction("Import From Text...", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
 		"Show dialog to enter properties to import in text form."),
@@ -505,7 +505,7 @@ protected:
 	decString pOldValue;
 	
 public:
-	typedef deTObjectReference<cEditPropertyValue> Ref;
+	using Ref = deTObjectReference<cEditPropertyValue>;
 	cEditPropertyValue(meWPPropertyList &panel) : pPanel(panel){}
 	
 	void OnPropertyValueChanged(igdeEditPropertyValue*) override{

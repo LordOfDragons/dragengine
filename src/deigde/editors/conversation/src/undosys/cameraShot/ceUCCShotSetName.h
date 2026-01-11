@@ -42,7 +42,7 @@ class ceConversationTopic;
  */
 class ceUCCShotSetName : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCCShotSetName> Ref;
+	using Ref = deTObjectReference<ceUCCShotSetName>;
 	
 	
 private:

@@ -38,7 +38,7 @@
  */
 class gdeUOCLightSetHalfIntDist : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCLightSetHalfIntDist> Ref;
+	using Ref = deTObjectReference<gdeUOCLightSetHalfIntDist>;
 	
 	
 private:

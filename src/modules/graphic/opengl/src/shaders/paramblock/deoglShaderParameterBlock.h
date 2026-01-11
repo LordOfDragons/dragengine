@@ -43,7 +43,7 @@ class deoglSPBParameter;
  */
 class deoglShaderParameterBlock : public deObject{
 public:
-	typedef deTObjectReference<deoglShaderParameterBlock> Ref;
+	using Ref = deTObjectReference<deoglShaderParameterBlock>;
 	
 	
 private:

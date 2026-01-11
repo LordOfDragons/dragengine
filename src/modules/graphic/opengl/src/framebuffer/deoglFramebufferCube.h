@@ -34,7 +34,7 @@
  */
 class deoglFramebufferCube : public deObject{
 public:
-	typedef deTObjectReference<deoglFramebufferCube> Ref;
+	using Ref = deTObjectReference<deoglFramebufferCube>;
 	
 	
 private:

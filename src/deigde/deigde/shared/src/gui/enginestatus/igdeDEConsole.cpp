@@ -52,7 +52,7 @@ class igdeDEConsole_TextCommand : public igdeTextFieldListener{
 	igdeDEConsole &pPanel;
 	
 public:
-	typedef deTObjectReference<igdeDEConsole_TextCommand> Ref;
+	using Ref = deTObjectReference<igdeDEConsole_TextCommand>;
 	
 	igdeDEConsole_TextCommand(igdeDEConsole &panel) : pPanel(panel){}
 	

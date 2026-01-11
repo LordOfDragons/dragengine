@@ -58,7 +58,7 @@ protected:
 	meWVNodeMultiMath &pNode;
 	
 public:
-	typedef deTObjectReference<cComboOperator> Ref;
+	using Ref = deTObjectReference<cComboOperator>;
 	cComboOperator(meWVNodeMultiMath &node) : pNode(node){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{

@@ -41,7 +41,7 @@ class devkLoader;
 class deSharedVulkan : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<deSharedVulkan> Ref;
+	using Ref = deTObjectReference<deSharedVulkan>;
 	
 	
 private:

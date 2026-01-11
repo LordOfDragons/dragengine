@@ -50,7 +50,7 @@ protected:
 	ceWPTMACreateCondition();
 	
 public:
-	typedef deTObjectReference<ceWPTMACreateCondition> Ref;
+	using Ref = deTObjectReference<ceWPTMACreateCondition>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu condition. */

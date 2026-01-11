@@ -38,7 +38,7 @@
  */
 class gdeUOCBillboardSetBoneName : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCBillboardSetBoneName> Ref;
+	using Ref = deTObjectReference<gdeUOCBillboardSetBoneName>;
 	
 	
 private:

@@ -47,7 +47,7 @@ class deWorld;
 class DE_DLL_EXPORT deNetworkState : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deNetworkState> Ref;
+	using Ref = deTObjectReference<deNetworkState>;
 	
 	
 private:

@@ -36,7 +36,7 @@ class reWPBone;
  */
 class reWPBoneListener : public reRigNotifier{
 public:
-	typedef deTObjectReference<reWPBoneListener> Ref;
+	using Ref = deTObjectReference<reWPBoneListener>;
 	
 private:
 	reWPBone &pPanel;

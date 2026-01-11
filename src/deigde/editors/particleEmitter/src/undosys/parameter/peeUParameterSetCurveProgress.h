@@ -34,7 +34,7 @@
  */
 class peeUParameterSetCurveProgress : public peeUParameterSetCurve{
 public:
-	typedef deTObjectReference<peeUParameterSetCurveProgress> Ref;
+	using Ref = deTObjectReference<peeUParameterSetCurveProgress>;
 	
 	
 	/** \name Constructors and Destructors */

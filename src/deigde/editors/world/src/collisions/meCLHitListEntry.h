@@ -42,10 +42,10 @@
 class meCLHitListEntry : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meCLHitListEntry> Ref;
+	using Ref = deTObjectReference<meCLHitListEntry>;
 	
 	/** \brief List type. */
-	typedef decTObjectOrderedSet<meCLHitListEntry> List;
+	using List = decTObjectOrderedSet<meCLHitListEntry>;
 	
 	
 private:

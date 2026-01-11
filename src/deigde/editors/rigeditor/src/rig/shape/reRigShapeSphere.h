@@ -37,7 +37,7 @@
  */
 class reRigShapeSphere : public reRigShape{
 public:
-	typedef deTObjectReference<reRigShapeSphere> Ref;
+	using Ref = deTObjectReference<reRigShapeSphere>;
 	
 private:
 	float pRadius;

@@ -38,7 +38,7 @@
  */
 class gdeUOCSpeakerSetVolume : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCSpeakerSetVolume> Ref;
+	using Ref = deTObjectReference<gdeUOCSpeakerSetVolume>;
 	
 	
 private:

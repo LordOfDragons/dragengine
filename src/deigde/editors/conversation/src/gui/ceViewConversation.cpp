@@ -68,7 +68,7 @@ class cCameraMouseListener : public igdeMouseCameraListener {
 	ceViewConversation &pView;
 	
 public:
-	typedef deTObjectReference<cCameraMouseListener> Ref;
+	using Ref = deTObjectReference<cCameraMouseListener>;
 	cCameraMouseListener(ceViewConversation &view) : pView(view){}
 	
 	void OnCameraChanged() override{
@@ -82,7 +82,7 @@ class cPlaybackListener : public igdeMouseKeyListener {
 	ceViewConversation &pView;
 	
 public:
-	typedef deTObjectReference<cPlaybackListener> Ref;
+	using Ref = deTObjectReference<cPlaybackListener>;
 	cPlaybackListener(ceViewConversation &view) : pView(view){}
 	
 	void OnButtonPress(igdeWidget*, int, const decPoint &position, int) override{

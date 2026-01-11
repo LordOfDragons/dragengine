@@ -35,7 +35,7 @@
 class deoglRCanvasVideoPlayer : public deoglRCanvas{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglRCanvasVideoPlayer> Ref;
+	using Ref = deTObjectReference<deoglRCanvasVideoPlayer>;
 	
 	
 private:

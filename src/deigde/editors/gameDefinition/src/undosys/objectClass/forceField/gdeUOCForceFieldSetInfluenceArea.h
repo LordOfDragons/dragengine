@@ -39,7 +39,7 @@
  */
 class gdeUOCForceFieldSetInfluenceArea : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCForceFieldSetInfluenceArea> Ref;
+	using Ref = deTObjectReference<gdeUOCForceFieldSetInfluenceArea>;
 	
 	
 private:

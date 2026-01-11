@@ -39,7 +39,7 @@
  */
 class gdeUOCSetScaleMode : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCSetScaleMode> Ref;
+	using Ref = deTObjectReference<gdeUOCSetScaleMode>;
 	
 	
 private:

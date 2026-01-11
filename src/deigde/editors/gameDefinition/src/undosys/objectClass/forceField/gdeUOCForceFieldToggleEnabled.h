@@ -38,7 +38,7 @@
  */
 class gdeUOCForceFieldToggleEnabled : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCForceFieldToggleEnabled> Ref;
+	using Ref = deTObjectReference<gdeUOCForceFieldToggleEnabled>;
 	
 	
 private:

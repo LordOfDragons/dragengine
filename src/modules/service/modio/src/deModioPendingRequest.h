@@ -35,7 +35,7 @@
  */
 class deModioPendingRequest : public deObject{
 public:
-	typedef deTObjectReference<deModioPendingRequest> Ref;
+	using Ref = deTObjectReference<deModioPendingRequest>;
 	
 	
 	decUniqueID id;

@@ -45,7 +45,7 @@ class deoxrActionSet;
 class deoxrSession : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<deoxrSession> Ref;
+	using Ref = deTObjectReference<deoxrSession>;
 	
 	
 	/** Graphic Api. */

@@ -81,7 +81,7 @@ public:
 private:
 	class cGesture : public deObject{
 	public:
-		typedef deTObjectReference<cGesture> Ref;
+		using Ref = deTObjectReference<cGesture>;
 		ceGesture *gesture;
 		float pause;
 		float length;
@@ -93,7 +93,7 @@ private:
 	
 	class cFacePose : public deObject{
 	public:
-		typedef deTObjectReference<cFacePose> Ref;
+		using Ref = deTObjectReference<cFacePose>;
 		ceFacePose::Ref facePose;
 		float pause;
 		float length;
@@ -105,7 +105,7 @@ private:
 	
 	class cLookAt : public deObject{
 	public:
-		typedef deTObjectReference<cLookAt> Ref;
+		using Ref = deTObjectReference<cLookAt>;
 		ceTarget::Ref lookAt;
 		float pause;
 		float duration;

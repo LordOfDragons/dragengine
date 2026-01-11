@@ -76,7 +76,7 @@ protected:
 	aeWPAPanelRuleSubAnimator &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseAction> Ref;
+	using Ref = deTObjectReference<cBaseAction>;
 	cBaseAction(aeWPAPanelRuleSubAnimator &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description),
 	pPanel(panel){}
@@ -119,7 +119,7 @@ protected:
 	aeWPAPanelRuleSubAnimator &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseComboBoxListener> Ref;
+	using Ref = deTObjectReference<cBaseComboBoxListener>;
 	cBaseComboBoxListener(aeWPAPanelRuleSubAnimator &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -143,7 +143,7 @@ class cPathAnimator : public igdeEditPathListener{
 	aeWPAPanelRuleSubAnimator &pPanel;
 	
 public:
-	typedef deTObjectReference<cPathAnimator> Ref;
+	using Ref = deTObjectReference<cPathAnimator>;
 	cPathAnimator(aeWPAPanelRuleSubAnimator &panel) : pPanel(panel){}
 	
 	void OnEditPathChanged(igdeEditPath *editPath) override{
@@ -159,7 +159,7 @@ public:
 
 class cComboConnection : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboConnection> Ref;
+	using Ref = deTObjectReference<cComboConnection>;
 	cComboConnection(aeWPAPanelRuleSubAnimator &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox*, aeAnimator*, aeRuleSubAnimator*) override{
@@ -170,7 +170,7 @@ public:
 
 class cActionEnablePosition : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnablePosition> Ref;
+	using Ref = deTObjectReference<cActionEnablePosition>;
 	
 public:
 	cActionEnablePosition(aeWPAPanelRuleSubAnimator &panel) : cBaseAction(panel,
@@ -188,7 +188,7 @@ public:
 
 class cActionEnableRotation : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableRotation> Ref;
+	using Ref = deTObjectReference<cActionEnableRotation>;
 	
 public:
 	cActionEnableRotation(aeWPAPanelRuleSubAnimator &panel) : cBaseAction(panel,
@@ -206,7 +206,7 @@ public:
 
 class cActionEnableSize : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableSize> Ref;
+	using Ref = deTObjectReference<cActionEnableSize>;
 	
 public:
 	cActionEnableSize(aeWPAPanelRuleSubAnimator &panel) : cBaseAction(panel,
@@ -224,7 +224,7 @@ public:
 
 class cActionEnableVertexPositionSet : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableVertexPositionSet> Ref;
+	using Ref = deTObjectReference<cActionEnableVertexPositionSet>;
 	
 public:
 	cActionEnableVertexPositionSet(aeWPAPanelRuleSubAnimator &panel) : cBaseAction(panel,
@@ -245,7 +245,7 @@ class cComboConnectionController : public cBaseComboBoxListener{
 	bool &pPreventUpdate;
 	
 public:
-	typedef deTObjectReference<cComboConnectionController> Ref;
+	using Ref = deTObjectReference<cComboConnectionController>;
 	cComboConnectionController(aeWPAPanelRuleSubAnimator &panel, bool &preventUpdate) :
 	cBaseComboBoxListener(panel), pPreventUpdate(preventUpdate){}
 	

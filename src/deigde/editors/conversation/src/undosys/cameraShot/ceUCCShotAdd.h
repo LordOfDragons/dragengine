@@ -37,7 +37,7 @@
  */
 class ceUCCShotAdd : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCCShotAdd> Ref;
+	using Ref = deTObjectReference<ceUCCShotAdd>;
 	
 	
 private:

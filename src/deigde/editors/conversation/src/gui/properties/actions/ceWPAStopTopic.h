@@ -36,7 +36,7 @@ class ceCAStopTopic;
  */
 class ceWPAStopTopic : public ceWPAction{
 public:
-	typedef deTObjectReference<ceWPAStopTopic> Ref;
+	using Ref = deTObjectReference<ceWPAStopTopic>;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create conversation action property window. */

@@ -43,7 +43,7 @@ private:
 	
 	
 public:
-	typedef deTObjectReference<ceWPACoordSystemRemove> Ref;
+	using Ref = deTObjectReference<ceWPACoordSystemRemove>;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */

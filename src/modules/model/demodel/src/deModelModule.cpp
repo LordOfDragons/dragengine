@@ -2289,7 +2289,7 @@ void deModelModule::pSaveTriangles(decBaseFileWriter &writer, const deModelLOD &
 
 class demdlModuleInternal : public deInternalModule{
 public:
-	typedef deTObjectReference<demdlModuleInternal> Ref;
+	using Ref = deTObjectReference<demdlModuleInternal>;
 	
 	demdlModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DEModel");

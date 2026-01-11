@@ -34,7 +34,7 @@
  */
 class syneWPAPanelSourceGroup : public syneWPAPanelSource{
 public:
-	typedef deTObjectReference<syneWPAPanelSourceGroup> Ref;
+	using Ref = deTObjectReference<syneWPAPanelSourceGroup>;
 	
 private:
 	igdeComboBox::Ref pCBApplicationType;

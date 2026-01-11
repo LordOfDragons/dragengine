@@ -43,11 +43,11 @@ class deVirtualFileSystem;
  */
 class projRemoteServer : public derlServer{
 public:
-	typedef std::shared_ptr<projRemoteServer> Ref;
+	using Ref = std::shared_ptr<projRemoteServer>;
 	
 	/** \brief Profile data for use by task processors. */
 	struct TaskProfileData{
-		typedef std::shared_ptr<TaskProfileData> Ref;
+		using Ref = std::shared_ptr<TaskProfileData>;
 		
 		decStringSet excludePatterns;
 		dePathList excludeBaseGameDefPath;

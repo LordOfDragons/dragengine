@@ -38,7 +38,7 @@ class meHTVRuleGeometry;
  */
 class meWVNodeGeometry : public meWVNode{
 public:
-	typedef deTObjectReference<meWVNodeGeometry> Ref;
+	using Ref = deTObjectReference<meWVNodeGeometry>;
 	
 private:
 	meHTVRuleGeometry *pRuleGeometry;

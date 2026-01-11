@@ -39,7 +39,7 @@ class meWorld;
  */
 class meClipboardDataObject : public igdeClipboardData{
 public:
-	typedef deTObjectReference<meClipboardDataObject> Ref;
+	using Ref = deTObjectReference<meClipboardDataObject>;
 	
 	/** \brief Type name. */
 	static const char * const TYPE_NAME;

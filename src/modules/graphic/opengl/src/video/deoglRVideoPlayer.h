@@ -56,7 +56,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglRVideoPlayer> Ref;
+	using Ref = deTObjectReference<deoglRVideoPlayer>;
 
 
 	/** \name Constructors and Destructors */

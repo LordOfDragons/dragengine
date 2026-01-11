@@ -37,7 +37,7 @@
  */
 class aeURuleSnapToggleEnableSize : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleSnapToggleEnableSize> Ref;
+	using Ref = deTObjectReference<aeURuleSnapToggleEnableSize>;
 	
 	
 private:

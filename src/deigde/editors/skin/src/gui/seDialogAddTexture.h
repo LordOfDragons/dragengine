@@ -46,7 +46,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seDialogAddTexture> Ref;
+	using Ref = deTObjectReference<seDialogAddTexture>;
 	
 	/** \name Constructors and Destructors */
 	/*@{*/

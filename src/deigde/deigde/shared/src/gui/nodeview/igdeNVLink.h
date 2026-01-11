@@ -39,7 +39,7 @@ class DE_DLL_EXPORT igdeNVLink : public deObject{
 
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeNVLink> Ref;
+	using Ref = deTObjectReference<igdeNVLink>;
 	
 	
 private:

@@ -44,7 +44,7 @@
 class meHTVRuleMultiMath : public meHTVRule{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meHTVRuleMultiMath> Ref;
+	using Ref = deTObjectReference<meHTVRuleMultiMath>;
 	
 	
 	/** Operators. */

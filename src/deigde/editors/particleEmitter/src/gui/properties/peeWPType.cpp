@@ -194,7 +194,7 @@ public:
 class cActionEmitBurst : public igdeAction{
 	peeWPType &pPanel;
 public:
-	typedef deTObjectReference<cActionEmitBurst> Ref;
+	using Ref = deTObjectReference<cActionEmitBurst>;
 	cActionEmitBurst(peeWPType &panel) : igdeAction("Emit Burst", nullptr,
 		"Determines if particles are emit as burst or continuous"),
 	pPanel(panel){}
@@ -212,7 +212,7 @@ public:
 class cTextBurstLifetime : public igdeTextFieldListener{
 	peeWPType &pPanel;
 public:
-	typedef deTObjectReference<cTextBurstLifetime> Ref;
+	using Ref = deTObjectReference<cTextBurstLifetime>;
 	cTextBurstLifetime(peeWPType &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -235,7 +235,7 @@ public:
 class cComboType : public igdeComboBoxListener{
 	peeWPType &pPanel;
 public:
-	typedef deTObjectReference<cComboType> Ref;
+	using Ref = deTObjectReference<cComboType>;
 	cComboType(peeWPType &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox * comboBox) override{
@@ -253,7 +253,7 @@ class cActionType : public igdeAction{
 	peeWPType &pPanel;
 	igdeButton::Ref &pButton;
 public:
-	typedef deTObjectReference<cActionType> Ref;
+	using Ref = deTObjectReference<cActionType>;
 	cActionType(peeWPType &panel, igdeButton::Ref &button) :
 	igdeAction("", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
 		"Edit type menu"),
@@ -277,7 +277,7 @@ public:
 class cActionTypeAdd : public igdeAction{
 	peeWPType &pPanel;
 public:
-	typedef deTObjectReference<cActionTypeAdd> Ref;
+	using Ref = deTObjectReference<cActionTypeAdd>;
 	cActionTypeAdd(peeWPType &panel) :
 	igdeAction("Add...", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Add type"),
@@ -311,7 +311,7 @@ public:
 
 class cActionTypeRemove : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionTypeRemove> Ref;
+	using Ref = deTObjectReference<cActionTypeRemove>;
 	cActionTypeRemove(peeWPType &panel) :
 	cBaseAction(panel, "Remove", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove selected type"){}
@@ -327,7 +327,7 @@ public:
 
 class cActionTypeRename : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionTypeRename> Ref;
+	using Ref = deTObjectReference<cActionTypeRename>;
 	cActionTypeRename(peeWPType &panel) :
 	cBaseAction(panel, "Rename...", nullptr, "Rename selected type"){}
 	
@@ -356,7 +356,7 @@ public:
 
 class cPathSkin : public cBasePathListener{
 public:
-	typedef deTObjectReference<cPathSkin> Ref;
+	using Ref = deTObjectReference<cPathSkin>;
 	cPathSkin(peeWPType &panel) : cBasePathListener(panel){}
 	
 	igdeUndo::Ref OnChanged(const decString &path, peeEmitter*, peeType *type) override{
@@ -369,7 +369,7 @@ public:
 
 class cPathModel : public cBasePathListener{
 public:
-	typedef deTObjectReference<cPathModel> Ref;
+	using Ref = deTObjectReference<cPathModel>;
 	cPathModel(peeWPType &panel) : cBasePathListener(panel){}
 	
 	igdeUndo::Ref OnChanged(const decString &path, peeEmitter*, peeType *type) override{
@@ -382,7 +382,7 @@ public:
 
 class cPathModelSkin : public cBasePathListener{
 public:
-	typedef deTObjectReference<cPathModelSkin> Ref;
+	using Ref = deTObjectReference<cPathModelSkin>;
 	cPathModelSkin(peeWPType &panel) : cBasePathListener(panel){}
 	
 	igdeUndo::Ref OnChanged(const decString &path, peeEmitter*, peeType *type) override{
@@ -395,7 +395,7 @@ public:
 
 class cComboCastFrom : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboCastFrom> Ref;
+	using Ref = deTObjectReference<cComboCastFrom>;
 	cComboCastFrom(peeWPType &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, peeEmitter*, peeType *type) override{
@@ -415,7 +415,7 @@ public:
 
 class cComboSimType : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboSimType> Ref;
+	using Ref = deTObjectReference<cComboSimType>;
 	cComboSimType(peeWPType &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, peeEmitter*, peeType *type) override{
@@ -435,7 +435,7 @@ public:
 
 class cActionIntervalAsDistance : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionIntervalAsDistance> Ref;
+	using Ref = deTObjectReference<cActionIntervalAsDistance>;
 	cActionIntervalAsDistance(peeWPType &panel) :
 	cBaseAction(panel, "Interval As Distance", nullptr,
 		"Determines if the interval is used with distance instead of time"){ }
@@ -447,7 +447,7 @@ public:
 
 class cTextPhysicsSize : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextPhysicsSize> Ref;
+	using Ref = deTObjectReference<cTextPhysicsSize>;
 	cTextPhysicsSize(peeWPType &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, peeEmitter*, peeType *type) override{
@@ -462,7 +462,7 @@ public:
 
 class cPathTrailEmitter : public cBasePathListener{
 public:
-	typedef deTObjectReference<cPathTrailEmitter> Ref;
+	using Ref = deTObjectReference<cPathTrailEmitter>;
 	cPathTrailEmitter(peeWPType &panel) : cBasePathListener(panel){}
 	
 	igdeUndo::Ref OnChanged(const decString &path, peeEmitter*, peeType *type) override{
@@ -475,7 +475,7 @@ public:
 
 class cComboTrailController : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboTrailController> Ref;
+	using Ref = deTObjectReference<cComboTrailController>;
 	cComboTrailController(peeWPType &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, peeEmitter*, peeType *type) override{
@@ -493,7 +493,7 @@ public:
 class cTextTrailTargetController : public cBaseTextFieldListener{
 	igdeComboBox &pComboBox;
 public:
-	typedef deTObjectReference<cTextTrailTargetController> Ref;
+	using Ref = deTObjectReference<cTextTrailTargetController>;
 	cTextTrailTargetController(peeWPType &panel, igdeComboBox &comboBox) :
 	cBaseTextFieldListener(panel),
 	pComboBox(comboBox){}
@@ -514,7 +514,7 @@ public:
 
 class cComboCollisionResponse : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboCollisionResponse> Ref;
+	using Ref = deTObjectReference<cComboCollisionResponse>;
 	cComboCollisionResponse(peeWPType &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, peeEmitter*, peeType *type) override{
@@ -535,7 +535,7 @@ public:
 
 class cPathCollisionEmitter : public cBasePathListener{
 public:
-	typedef deTObjectReference<cPathCollisionEmitter> Ref;
+	using Ref = deTObjectReference<cPathCollisionEmitter>;
 	cPathCollisionEmitter(peeWPType &panel) : cBasePathListener(panel){}
 	
 	igdeUndo::Ref OnChanged(const decString &path, peeEmitter*, peeType *type) override{
@@ -548,7 +548,7 @@ public:
 
 class cTextEmitMinImpulse : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextEmitMinImpulse> Ref;
+	using Ref = deTObjectReference<cTextEmitMinImpulse>;
 	cTextEmitMinImpulse(peeWPType &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, peeEmitter*, peeType *type) override{
@@ -562,7 +562,7 @@ public:
 
 class cComboEmitController : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboEmitController> Ref;
+	using Ref = deTObjectReference<cComboEmitController>;
 	cComboEmitController(peeWPType &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, peeEmitter*, peeType *type) override{
@@ -580,7 +580,7 @@ public:
 class cTextEmitTargetController : public cBaseTextFieldListener{
 	igdeComboBox &pComboBox;
 public:
-	typedef deTObjectReference<cTextEmitTargetController> Ref;
+	using Ref = deTObjectReference<cTextEmitTargetController>;
 	cTextEmitTargetController(peeWPType &panel, igdeComboBox &comboBox) :
 	cBaseTextFieldListener(panel),
 	pComboBox(comboBox){}
@@ -602,7 +602,7 @@ public:
 class cListTypes : public igdeListBoxListener{
 	peeWPType &pPanel;
 public:
-	typedef deTObjectReference<cListTypes> Ref;
+	using Ref = deTObjectReference<cListTypes>;
 	cListTypes(peeWPType &panel) : pPanel(panel){}
 	
 	void OnSelectionChanged(igdeListBox *listBox) override{
@@ -624,7 +624,7 @@ public:
 
 class cTextParamValue : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextParamValue> Ref;
+	using Ref = deTObjectReference<cTextParamValue>;
 	cTextParamValue(peeWPType &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, peeEmitter*, peeType *type) override{
@@ -639,7 +639,7 @@ public:
 
 class cTextParamSpread : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextParamSpread> Ref;
+	using Ref = deTObjectReference<cTextParamSpread>;
 	cTextParamSpread(peeWPType &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, peeEmitter*, peeType *type) override{
@@ -655,7 +655,7 @@ public:
 class cComboControllerValue : public cBaseComboBoxListener{
 	bool &pPreventUpdate;
 public:
-	typedef deTObjectReference<cComboControllerValue> Ref;
+	using Ref = deTObjectReference<cComboControllerValue>;
 	cComboControllerValue(peeWPType &panel, bool &preventUpdate) :
 	cBaseComboBoxListener(panel), pPreventUpdate(preventUpdate){}
 	
@@ -678,7 +678,7 @@ public:
 class cComboControllerSpread : public cBaseComboBoxListener{
 	bool &pPreventUpdate;
 public:
-	typedef deTObjectReference<cComboControllerSpread> Ref;
+	using Ref = deTObjectReference<cComboControllerSpread>;
 	cComboControllerSpread(peeWPType &panel, bool &preventUpdate) :
 	cBaseComboBoxListener(panel), pPreventUpdate(preventUpdate){}
 	

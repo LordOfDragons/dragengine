@@ -38,7 +38,7 @@ class peeParameter;
  */
 class peeUParameterSetValue : public igdeUndo{
 public:
-	typedef deTObjectReference<peeUParameterSetValue> Ref;
+	using Ref = deTObjectReference<peeUParameterSetValue>;
 	
 	
 private:

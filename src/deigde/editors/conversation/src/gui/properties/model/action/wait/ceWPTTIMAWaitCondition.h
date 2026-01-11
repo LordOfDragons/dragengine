@@ -36,7 +36,7 @@ class ceWPTTIMAWait;
  */
 class ceWPTTIMAWaitCondition : public ceWPTTIMConditionContainer{
 public:
-	typedef deTObjectReference<ceWPTTIMAWaitCondition> Ref;
+	using Ref = deTObjectReference<ceWPTTIMAWaitCondition>;
 	
 private:
 	ceCAWait::Ref pAction;

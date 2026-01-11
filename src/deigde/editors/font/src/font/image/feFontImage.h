@@ -56,7 +56,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<feFontImage> Ref;
+	using Ref = deTObjectReference<feFontImage>;
 
 
 	/** @name Constructors and Destructors */

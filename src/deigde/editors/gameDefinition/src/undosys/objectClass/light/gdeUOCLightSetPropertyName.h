@@ -39,7 +39,7 @@
  */
 class gdeUOCLightSetPropertyName : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCLightSetPropertyName> Ref;
+	using Ref = deTObjectReference<gdeUOCLightSetPropertyName>;
 	
 	
 private:

@@ -36,7 +36,7 @@
  */
 class aeURuleBTransSetEnablePos : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleBTransSetEnablePos> Ref;
+	using Ref = deTObjectReference<aeURuleBTransSetEnablePos>;
 	
 	
 private:

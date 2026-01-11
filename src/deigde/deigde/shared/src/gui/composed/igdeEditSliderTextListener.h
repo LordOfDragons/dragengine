@@ -39,7 +39,7 @@ class DE_DLL_EXPORT igdeEditSliderTextListener : public deObject{
 
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeEditSliderTextListener> Ref;
+	using Ref = deTObjectReference<igdeEditSliderTextListener>;
 	
 	
 protected:

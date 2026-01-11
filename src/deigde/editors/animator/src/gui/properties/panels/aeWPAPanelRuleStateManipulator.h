@@ -37,7 +37,7 @@
  */
 class aeWPAPanelRuleStateManipulator : public aeWPAPanelRule{
 public:
-	typedef deTObjectReference<aeWPAPanelRuleStateManipulator> Ref;
+	using Ref = deTObjectReference<aeWPAPanelRuleStateManipulator>;
 	
 	
 private:

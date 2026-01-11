@@ -42,7 +42,7 @@ class deVirtualFileSystem;
 class DE_DLL_EXPORT deVFSRedirect : public deVFSContainer{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deVFSRedirect> Ref;
+	using Ref = deTObjectReference<deVFSRedirect>;
 	
 	
 private:

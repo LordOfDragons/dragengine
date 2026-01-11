@@ -86,6 +86,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxTimer igdeNativeTimer;
+using igdeNativeTimer = igdeNativeFoxTimer;
 
 #endif

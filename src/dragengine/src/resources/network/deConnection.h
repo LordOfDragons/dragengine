@@ -48,7 +48,7 @@ class deBaseScriptingConnection;
 class DE_DLL_EXPORT deConnection : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deConnection> Ref;
+	using Ref = deTObjectReference<deConnection>;
 	
 	
 private:

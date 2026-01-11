@@ -69,7 +69,7 @@ class cComboActor : public igdeComboBoxListener {
 	ceWPCActorCommand &pPanel;
 	
 public:
-	typedef deTObjectReference<cComboActor> Ref;
+	using Ref = deTObjectReference<cComboActor>;
 	cComboActor(ceWPCActorCommand &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -90,7 +90,7 @@ class cTextCommand : public igdeTextFieldListener {
 	ceWPCActorCommand &pPanel;
 	
 public:
-	typedef deTObjectReference<cTextCommand> Ref;
+	using Ref = deTObjectReference<cTextCommand>;
 	cTextCommand(ceWPCActorCommand &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -110,7 +110,7 @@ class cActionEditCommand : public igdeAction {
 	ceWPCActorCommand &pPanel;
 	
 public:
-	typedef deTObjectReference<cActionEditCommand> Ref;
+	using Ref = deTObjectReference<cActionEditCommand>;
 	cActionEditCommand(ceWPCActorCommand &panel) : igdeAction("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
 		"Edit command in larger dialog"), pPanel(panel){}
@@ -140,7 +140,7 @@ class cActionNegate : public igdeAction {
 	ceWPCActorCommand &pPanel;
 	
 public:
-	typedef deTObjectReference<cActionNegate> Ref;
+	using Ref = deTObjectReference<cActionNegate>;
 	cActionNegate(ceWPCActorCommand &panel) : igdeAction("Negate", nullptr,
 		"True if the result of the command is negated"), pPanel(panel){ }
 	

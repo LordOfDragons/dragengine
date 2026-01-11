@@ -40,7 +40,7 @@
  */
 class syneUSourcePasteEffect : public igdeUndo{
 public:
-	typedef deTObjectReference<syneUSourcePasteEffect> Ref;
+	using Ref = deTObjectReference<syneUSourcePasteEffect>;
 	
 	
 private:

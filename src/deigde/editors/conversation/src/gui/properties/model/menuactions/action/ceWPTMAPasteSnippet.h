@@ -47,7 +47,7 @@ protected:
 	ceWPTMAPasteSnippet();
 	
 public:
-	typedef deTObjectReference<ceWPTMAPasteSnippet> Ref;
+	using Ref = deTObjectReference<ceWPTMAPasteSnippet>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */

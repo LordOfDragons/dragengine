@@ -34,7 +34,7 @@
  */
 class aeRuleInverseKinematic : public aeRule{
 public:
-	typedef deTObjectReference<aeRuleInverseKinematic> Ref;
+	using Ref = deTObjectReference<aeRuleInverseKinematic>;
 	
 	
 private:

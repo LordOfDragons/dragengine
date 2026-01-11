@@ -37,7 +37,7 @@
  */
 class syneUSetSourceSoundMaxSpeed : public igdeUndo{
 public:
-	typedef deTObjectReference<syneUSetSourceSoundMaxSpeed> Ref;
+	using Ref = deTObjectReference<syneUSetSourceSoundMaxSpeed>;
 	
 	
 private:

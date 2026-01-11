@@ -55,7 +55,7 @@
 
 #define LOGSOURCE "Dragengine"
 
-typedef deBaseModule* (*FUNC_CREATEMODULE)(deLoadableModule*);
+using FUNC_CREATEMODULE = deBaseModule* (*)(deLoadableModule*);
 
 
 

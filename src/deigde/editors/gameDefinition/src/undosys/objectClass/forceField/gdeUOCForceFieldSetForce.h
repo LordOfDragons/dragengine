@@ -38,7 +38,7 @@
  */
 class gdeUOCForceFieldSetForce : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCForceFieldSetForce> Ref;
+	using Ref = deTObjectReference<gdeUOCForceFieldSetForce>;
 	
 	
 private:

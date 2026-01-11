@@ -39,7 +39,7 @@
  */
 class syneUPasteSource : public igdeUndo{
 public:
-	typedef deTObjectReference<syneUPasteSource> Ref;
+	using Ref = deTObjectReference<syneUPasteSource>;
 	
 	
 private:

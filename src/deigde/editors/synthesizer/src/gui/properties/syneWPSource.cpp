@@ -88,7 +88,7 @@ class cTreeSources : public igdeTreeListListener{
 	syneWPSource &pPanel;
 	
 public:
-	typedef deTObjectReference<cTreeSources> Ref;
+	using Ref = deTObjectReference<cTreeSources>;
 	cTreeSources(syneWPSource &panel) : pPanel(panel){}
 	
 	void OnSelectionChanged(igdeTreeList *treeList) override{
@@ -174,7 +174,7 @@ class cActionSourceCopy : public igdeAction{
 	syneWPSource &pPanel;
 	
 public:
-	typedef deTObjectReference<cActionSourceCopy> Ref;
+	using Ref = deTObjectReference<cActionSourceCopy>;
 	cActionSourceCopy(syneWPSource &panel) : igdeAction("Copy",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 		"Copy source to clipboard"), pPanel(panel){}
@@ -198,7 +198,7 @@ class cActionSourceCut : public igdeAction{
 	syneWPSource &pPanel;
 	
 public:
-	typedef deTObjectReference<cActionSourceCut> Ref;
+	using Ref = deTObjectReference<cActionSourceCut>;
 	cActionSourceCut(syneWPSource &panel) : igdeAction("Cut",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
 		"Cut source to clipboard"), pPanel(panel){}
@@ -232,7 +232,7 @@ protected:
 	syneWPSource &pPanel;
 	
 public:
-	typedef deTObjectReference<cActionSourcePaste> Ref;
+	using Ref = deTObjectReference<cActionSourcePaste>;
 	cActionSourcePaste(syneWPSource &panel) : igdeAction("Paste",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
 		"Paste source from clipboard"), pPanel(panel){}
@@ -273,7 +273,7 @@ public:
 
 class cActionSourcePasteIntoGroup : public cActionSourcePaste{
 public:
-	typedef deTObjectReference<cActionSourcePasteIntoGroup> Ref;
+	using Ref = deTObjectReference<cActionSourcePasteIntoGroup>;
 	cActionSourcePasteIntoGroup(syneWPSource &panel) : cActionSourcePaste(panel){
 		SetText("Paste Into Group");
 		SetDescription("Paste source from clipboard into group");

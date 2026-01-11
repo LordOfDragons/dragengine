@@ -36,7 +36,7 @@
  */
 class aeURuleLimitSetTargetBone : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleLimitSetTargetBone> Ref;
+	using Ref = deTObjectReference<aeURuleLimitSetTargetBone>;
 	
 	
 private:

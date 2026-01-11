@@ -36,7 +36,7 @@
  */
 class ceUCTargetSetBone : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCTargetSetBone> Ref;
+	using Ref = deTObjectReference<ceUCTargetSetBone>;
 	
 	
 private:

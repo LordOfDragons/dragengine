@@ -34,7 +34,7 @@
  */
 class peeUParameterSetCurveSpread : public peeUParameterSetCurve{
 public:
-	typedef deTObjectReference<peeUParameterSetCurveSpread> Ref;
+	using Ref = deTObjectReference<peeUParameterSetCurveSpread>;
 	
 	
 	/** \name Constructors and Destructors */

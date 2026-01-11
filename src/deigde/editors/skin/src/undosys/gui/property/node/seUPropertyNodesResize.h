@@ -39,7 +39,7 @@
  */
 class seUPropertyNodesResize : public igdeUndo{
 public:
-	typedef deTObjectReference<seUPropertyNodesResize> Ref;
+	using Ref = deTObjectReference<seUPropertyNodesResize>;
 	
 	
 private:

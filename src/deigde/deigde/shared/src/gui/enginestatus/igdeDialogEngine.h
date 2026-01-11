@@ -39,7 +39,7 @@ class igdeMainWindow;
 class DE_DLL_EXPORT igdeDialogEngine : public igdeDialog{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeDialogEngine> Ref;
+	using Ref = deTObjectReference<igdeDialogEngine>;
 	
 	
 private:

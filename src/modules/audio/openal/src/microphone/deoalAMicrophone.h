@@ -94,7 +94,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoalAMicrophone> Ref;
+	using Ref = deTObjectReference<deoalAMicrophone>;
 
 
 	/** \name Constructors and Destructors */

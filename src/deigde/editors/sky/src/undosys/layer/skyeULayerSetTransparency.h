@@ -35,7 +35,7 @@
  */
 class skyeULayerSetTransparency : public igdeUndo{
 public:
-	typedef deTObjectReference<skyeULayerSetTransparency> Ref;
+	using Ref = deTObjectReference<skyeULayerSetTransparency>;
 	
 	
 private:

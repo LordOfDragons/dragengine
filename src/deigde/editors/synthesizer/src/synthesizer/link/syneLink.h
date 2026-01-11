@@ -58,10 +58,10 @@ private:
 	
 public:
 	/** Type holding strong reference. */
-	typedef deTObjectReference<syneLink> Ref;
+	using Ref = deTObjectReference<syneLink>;
 	
 	/** Type holding list of objects. */
-	typedef decTObjectOrderedSet<syneLink> List;
+	using List = decTObjectOrderedSet<syneLink>;
 	
 	
 	/** \name Constructors and Destructors */

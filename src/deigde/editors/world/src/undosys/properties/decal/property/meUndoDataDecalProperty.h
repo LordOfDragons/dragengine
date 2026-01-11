@@ -46,8 +46,8 @@ private:
 	
 	
 public:
-	typedef deTObjectReference<meUndoDataDecalProperty> Ref;
-	typedef decTObjectOrderedSet<meUndoDataDecalProperty> List;
+	using Ref = deTObjectReference<meUndoDataDecalProperty>;
+	using List = decTObjectOrderedSet<meUndoDataDecalProperty>;
 	
 	
 	/** \name Constructors and Destructors */

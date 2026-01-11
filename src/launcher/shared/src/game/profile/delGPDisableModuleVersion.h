@@ -36,7 +36,7 @@
 class DE_DLL_EXPORT delGPDisableModuleVersion : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<delGPDisableModuleVersion> Ref;
+	using Ref = deTObjectReference<delGPDisableModuleVersion>;
 	
 	
 private:

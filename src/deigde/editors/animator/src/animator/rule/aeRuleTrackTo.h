@@ -35,7 +35,7 @@
  */
 class aeRuleTrackTo : public aeRule{
 public:
-	typedef deTObjectReference<aeRuleTrackTo> Ref;
+	using Ref = deTObjectReference<aeRuleTrackTo>;
 	
 	
 private:

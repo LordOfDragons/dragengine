@@ -40,7 +40,7 @@
  */
 class gdeUOCLightSetPosition : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCLightSetPosition> Ref;
+	using Ref = deTObjectReference<gdeUOCLightSetPosition>;
 	
 	
 private:

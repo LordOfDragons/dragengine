@@ -52,7 +52,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoalASkin> Ref;
+	using Ref = deTObjectReference<deoalASkin>;
 
 
 	/** \name Constructors and Destructors */

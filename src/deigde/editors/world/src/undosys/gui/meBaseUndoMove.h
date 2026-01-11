@@ -37,8 +37,8 @@
  */
 class meBaseUndoMove : public igdeUndo{
 public:
-	typedef deTObjectReference<meBaseUndoMove> Ref;
-	typedef decTObjectOrderedSet<meBaseUndoMove> List;
+	using Ref = deTObjectReference<meBaseUndoMove>;
+	using List = decTObjectOrderedSet<meBaseUndoMove>;
 	
 	
 private:

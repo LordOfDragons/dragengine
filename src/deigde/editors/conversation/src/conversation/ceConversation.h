@@ -69,8 +69,8 @@ class deAnimatorInstance;
  */
 class ceConversation : public igdeEditableEntity{
 public:
-	typedef deTObjectReference<ceConversation> Ref;
-	typedef decTObjectOrderedSet<ceConversation> List;
+	using Ref = deTObjectReference<ceConversation>;
+	using List = decTObjectOrderedSet<ceConversation>;
 	
 	
 	/** Paste snippet dialog parameters. */

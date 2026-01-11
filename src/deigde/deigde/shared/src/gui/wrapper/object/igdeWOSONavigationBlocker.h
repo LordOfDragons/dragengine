@@ -41,7 +41,7 @@ class igdeGDCNavigationBlocker;
 class DE_DLL_EXPORT igdeWOSONavigationBlocker : public igdeWOSubObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeWOSONavigationBlocker> Ref;
+	using Ref = deTObjectReference<igdeWOSONavigationBlocker>;
 	
 	
 private:

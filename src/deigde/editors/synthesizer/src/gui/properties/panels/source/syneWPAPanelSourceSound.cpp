@@ -86,7 +86,7 @@ class cPathSound : public igdeEditPathListener{
 	syneWPAPanelSourceSound &pPanel;
 	
 public:
-	typedef deTObjectReference<cPathSound> Ref;
+	using Ref = deTObjectReference<cPathSound>;
 	cPathSound(syneWPAPanelSourceSound &panel) : pPanel(panel){}
 	
 	void OnEditPathChanged(igdeEditPath * editPath) override{
@@ -102,7 +102,7 @@ public:
 
 class cTextMinSpeed : public cBaseTextFieldListener {
 public:
-	typedef deTObjectReference<cTextMinSpeed> Ref;
+	using Ref = deTObjectReference<cTextMinSpeed>;
 	cTextMinSpeed(syneWPAPanelSourceSound &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref  OnChanged(igdeTextField *textField, syneSourceSound *source) override{
@@ -114,7 +114,7 @@ public:
 
 class cTextMaxSpeed : public cBaseTextFieldListener {
 public:
-	typedef deTObjectReference<cTextMaxSpeed> Ref;
+	using Ref = deTObjectReference<cTextMaxSpeed>;
 	cTextMaxSpeed(syneWPAPanelSourceSound &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref  OnChanged(igdeTextField *textField, syneSourceSound *source) override{
@@ -128,7 +128,7 @@ class cActionLooping : public igdeAction {
 	syneWPAPanelSourceSound &pPanel;
 	
 public:
-	typedef deTObjectReference<cActionLooping> Ref;
+	using Ref = deTObjectReference<cActionLooping>;
 	cActionLooping(syneWPAPanelSourceSound &panel) : igdeAction("Looping",
 		nullptr, "Sound is played back looping"), pPanel(panel){}
 	

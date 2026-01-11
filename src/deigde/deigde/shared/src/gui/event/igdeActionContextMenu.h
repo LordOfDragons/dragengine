@@ -45,7 +45,7 @@ class igdeMenuCascade;
 class DE_DLL_EXPORT igdeActionContextMenu : public igdeAction{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeActionContextMenu> Ref;
+	using Ref = deTObjectReference<igdeActionContextMenu>;
 	
 	
 private:

@@ -39,7 +39,7 @@
  */
 class gdeUOCLightSetTriggerName : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCLightSetTriggerName> Ref;
+	using Ref = deTObjectReference<gdeUOCLightSetTriggerName>;
 	
 	
 private:

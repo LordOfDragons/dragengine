@@ -36,7 +36,7 @@
  */
 class deoglSkinStateCNText : public deoglSkinStateConstructedNode{
 public:
-	typedef deTObjectReference<deoglSkinStateCNText> Ref;
+	using Ref = deTObjectReference<deoglSkinStateCNText>;
 	
 	
 private:

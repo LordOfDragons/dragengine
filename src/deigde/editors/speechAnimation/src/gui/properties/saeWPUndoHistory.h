@@ -37,7 +37,7 @@
  */
 class saeWPUndoHistory : public igdeWPUndoHistory{
 public:
-	typedef deTObjectReference<saeWPUndoHistory> Ref;
+	using Ref = deTObjectReference<saeWPUndoHistory>;
 	
 private:
 	saeSAnimation::Ref pSAnimation;

@@ -37,14 +37,14 @@
  */
 class meUDecalSkin : public igdeUndo{
 public:
-	typedef deTObjectReference<meUDecalSkin> Ref;
+	using Ref = deTObjectReference<meUDecalSkin>;
 	
 	
 private:
 	class cDecal : public deObject{
 	public:
-		typedef deTObjectReference<cDecal> Ref;
-		typedef decTObjectOrderedSet<cDecal> List;
+		using Ref = deTObjectReference<cDecal>;
+		using List = decTObjectOrderedSet<cDecal>;
 		
 		meDecal::Ref decal;
 		decString oldskin, newskin;

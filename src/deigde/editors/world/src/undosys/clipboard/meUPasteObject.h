@@ -45,7 +45,7 @@ class meClipboardDataObject;
  */
 class meUPasteObject : public igdeUndo{
 public:
-	typedef deTObjectReference<meUPasteObject> Ref;
+	using Ref = deTObjectReference<meUPasteObject>;
 	
 	
 private:

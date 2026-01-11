@@ -37,7 +37,7 @@
  */
 class aeURuleTrackToSetUpAxis : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleTrackToSetUpAxis> Ref;
+	using Ref = deTObjectReference<aeURuleTrackToSetUpAxis>;
 	
 	
 private:

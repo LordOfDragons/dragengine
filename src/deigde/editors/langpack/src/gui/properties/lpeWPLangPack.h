@@ -41,7 +41,7 @@ class lpeWindowProperties;
 class lpeWPLangPack : public igdeContainerScroll{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<lpeWPLangPack> Ref;
+	using Ref = deTObjectReference<lpeWPLangPack>;
 	
 private:
 	lpeWindowProperties &pWindowProperties;

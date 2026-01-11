@@ -49,7 +49,7 @@ class igdeAction;
 class DE_DLL_EXPORT igdeTextArea : public igdeWidget{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeTextArea> Ref;
+	using Ref = deTObjectReference<igdeTextArea>;
 	
 	
 private:

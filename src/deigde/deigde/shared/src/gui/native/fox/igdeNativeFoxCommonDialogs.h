@@ -165,6 +165,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxCommonDialogs igdeNativeCommonDialogs;
+using igdeNativeCommonDialogs = igdeNativeFoxCommonDialogs;
 
 #endif

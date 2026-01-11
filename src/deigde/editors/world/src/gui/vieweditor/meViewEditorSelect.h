@@ -43,7 +43,7 @@ class meCLCollect;
  */
 class meViewEditorSelect : public meViewEditorNavigation{
 public:
-	typedef deTObjectReference<meViewEditorSelect> Ref;
+	using Ref = deTObjectReference<meViewEditorSelect>;
 	
 private:
 	meCLSelect *pCLSelect, *pCLBubbleInfo;

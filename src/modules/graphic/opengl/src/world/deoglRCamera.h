@@ -89,7 +89,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglRCamera> Ref;
+	using Ref = deTObjectReference<deoglRCamera>;
 
 
 	/** \name Constructors and Destructors */

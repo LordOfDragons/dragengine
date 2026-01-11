@@ -58,7 +58,7 @@ protected:
 	igdeUndo::Ref pUndo;
 	
 public:
-	typedef deTObjectReference<cEditCurve> Ref;
+	using Ref = deTObjectReference<cEditCurve>;
 	cEditCurve(meWVNodeCurve &node) : pNode(node){}
 	
 	void OnCurveChanged(igdeViewCurveBezier *viewCurveBezier) override{

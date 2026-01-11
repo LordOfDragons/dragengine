@@ -38,7 +38,7 @@ class ceWPTTIMAIfElseIfCase;
  */
 class ceWPTTIMAIfElseIfCaseCondition : public ceWPTTIMConditionContainer{
 public:
-	typedef deTObjectReference<ceWPTTIMAIfElseIfCaseCondition> Ref;
+	using Ref = deTObjectReference<ceWPTTIMAIfElseIfCaseCondition>;
 	
 private:
 	ceCAIfElseCase::Ref pIfCase;

@@ -1214,7 +1214,7 @@ Modio::ErrorCode ec, Modio::Optional<Modio::ModInfoList> results){
 
 class cLoadResourceTask : public deParallelTask{
 public:
-	typedef deTThreadSafeObjectReference<cLoadResourceTask> Ref;
+	using Ref = deTThreadSafeObjectReference<cLoadResourceTask>;
 	
 private:
 	deModioService &pService;

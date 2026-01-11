@@ -47,11 +47,11 @@ class deException;
 class DE_DLL_EXPORT igdeEditorWindow : public igdeContainerBox{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeEditorWindow> Ref;
+	using Ref = deTObjectReference<igdeEditorWindow>;
 	
-	typedef decTOrderedSet<deTObjectReference<igdeMenuCascade>, igdeMenuCascade*> SharedMenusList;
-	typedef decTOrderedSet<deTObjectReference<igdeToolBar>, igdeToolBar*> SharedToolBarsList;
-	typedef decTOrderedSet<deTObjectReference<igdeAction>, igdeAction*> UpdateActionsList;
+	using SharedMenusList = decTOrderedSet<deTObjectReference<igdeMenuCascade>, igdeMenuCascade*>;
+	using SharedToolBarsList = decTOrderedSet<deTObjectReference<igdeToolBar>, igdeToolBar*>;
+	using UpdateActionsList = decTOrderedSet<deTObjectReference<igdeAction>, igdeAction*>;
 	
 	
 private:

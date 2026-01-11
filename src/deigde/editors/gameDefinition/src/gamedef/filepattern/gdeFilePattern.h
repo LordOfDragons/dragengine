@@ -44,10 +44,10 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeFilePattern> Ref;
+	using Ref = deTObjectReference<gdeFilePattern>;
 
 	/** \brief Type holding list. */
-	typedef decTObjectOrderedSet<gdeFilePattern> List;
+	using List = decTObjectOrderedSet<gdeFilePattern>;
 
 
 	/** \name Constructors and Destructors */

@@ -36,7 +36,7 @@
  */
 class ceCConditionActorInConversation : public ceConversationCondition{
 public:
-	typedef deTObjectReference<ceCConditionActorInConversation> Ref;
+	using Ref = deTObjectReference<ceCConditionActorInConversation>;
 
 private:
 	decString pActor;

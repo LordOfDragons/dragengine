@@ -38,7 +38,7 @@
  */
 class seUPropertyNodeSetPosition : public igdeUndo{
 public:
-	typedef deTObjectReference<seUPropertyNodeSetPosition> Ref;
+	using Ref = deTObjectReference<seUPropertyNodeSetPosition>;
 	
 	
 private:

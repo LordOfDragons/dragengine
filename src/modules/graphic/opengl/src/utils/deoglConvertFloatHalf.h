@@ -30,7 +30,7 @@
 /**
  * Convert Float to Half and vice verse.
  */
-typedef uint16_t HALF_FLOAT;
+using HALF_FLOAT = uint16_t;
 
 /**
  * Converts a 32-bit float value to a 16-bit float value suitable for OpenGL 16-bit textures.

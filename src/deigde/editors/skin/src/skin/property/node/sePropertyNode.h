@@ -44,8 +44,8 @@ class deEngine;
  */
 class sePropertyNode : public deObject{
 public:
-	typedef deTObjectReference<sePropertyNode> Ref;
-	typedef decTObjectOrderedSet<sePropertyNode> List;
+	using Ref = deTObjectReference<sePropertyNode>;
+	using List = decTObjectOrderedSet<sePropertyNode>;
 	
 	
 	/** Node types. */

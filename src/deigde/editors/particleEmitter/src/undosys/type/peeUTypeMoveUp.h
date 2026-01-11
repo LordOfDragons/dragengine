@@ -36,7 +36,7 @@
  */
 class peeUTypeMoveUp : public igdeUndo{
 public:
-	typedef deTObjectReference<peeUTypeMoveUp> Ref;
+	using Ref = deTObjectReference<peeUTypeMoveUp>;
 	
 	
 private:

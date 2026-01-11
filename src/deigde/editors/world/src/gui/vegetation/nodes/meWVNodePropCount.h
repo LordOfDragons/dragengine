@@ -42,7 +42,7 @@ class meHTVRulePropCount;
  */
 class meWVNodePropCount : public meWVNode{
 public:
-	typedef deTObjectReference<meWVNodePropCount> Ref;
+	using Ref = deTObjectReference<meWVNodePropCount>;
 	
 private:
 	meHTVRulePropCount *pRulePC;

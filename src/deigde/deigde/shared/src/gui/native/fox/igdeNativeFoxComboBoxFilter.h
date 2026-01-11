@@ -116,6 +116,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxComboBoxFilter igdeNativeComboBoxFilter;
+using igdeNativeComboBoxFilter = igdeNativeFoxComboBoxFilter;
 
 #endif

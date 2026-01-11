@@ -43,7 +43,7 @@ class feFont;
  */
 class feWindowProperties : public igdeTabBook{
 public:
-	typedef deTObjectReference<feWindowProperties> Ref;
+	using Ref = deTObjectReference<feWindowProperties>;
 	
 private:
 	feWindowMain &pWindowMain;

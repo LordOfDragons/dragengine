@@ -37,7 +37,7 @@
  */
 class skyeWPUndoHistory : public igdeWPUndoHistory{
 public:
-	typedef deTObjectReference<skyeWPUndoHistory> Ref;
+	using Ref = deTObjectReference<skyeWPUndoHistory>;
 	
 private:
 	skyeWPUndoHistoryListener::Ref pListener;

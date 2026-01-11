@@ -59,7 +59,7 @@ class deWorld;
 class DE_DLL_EXPORT deBillboard : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deBillboard> Ref;
+	using Ref = deTObjectReference<deBillboard>;
 	
 	
 private:

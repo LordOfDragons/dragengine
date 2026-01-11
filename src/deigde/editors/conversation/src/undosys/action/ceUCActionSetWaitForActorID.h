@@ -37,7 +37,7 @@
  */
 class ceUCActionSetWaitForActorID : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCActionSetWaitForActorID> Ref;
+	using Ref = deTObjectReference<ceUCActionSetWaitForActorID>;
 	
 	
 private:

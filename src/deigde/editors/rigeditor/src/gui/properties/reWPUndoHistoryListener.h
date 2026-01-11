@@ -36,7 +36,7 @@ class reWPUndoHistory;
  */
 class reWPUndoHistoryListener : public reRigNotifier{
 public:
-	typedef deTObjectReference<reWPUndoHistoryListener> Ref;
+	using Ref = deTObjectReference<reWPUndoHistoryListener>;
 	
 private:
 	reWPUndoHistory &pPanel;

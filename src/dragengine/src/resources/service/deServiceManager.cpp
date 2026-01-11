@@ -39,7 +39,7 @@
 
 class cEvent : public deObject{
 public:
-	typedef deTObjectReference<cEvent> Ref;
+	using Ref = deTObjectReference<cEvent>;
 	
 	enum eEvents{
 		eeRequestResponse,

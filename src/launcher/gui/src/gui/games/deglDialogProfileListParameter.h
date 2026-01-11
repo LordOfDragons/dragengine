@@ -42,7 +42,7 @@ class delGameProfile;
 class deglDialogProfileListParameter : public deObject{
 public:
 	/** Type holding strong reference. */
-	typedef deTObjectReference<deglDialogProfileListParameter> Ref;
+	using Ref = deTObjectReference<deglDialogProfileListParameter>;
 	
 	
 private:

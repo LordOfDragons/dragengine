@@ -37,10 +37,10 @@
 class igdeTemplateReplace : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeTemplateReplace> Ref;
+	using Ref = deTObjectReference<igdeTemplateReplace>;
 
 	/** \brief List of template replacements. */
-	typedef decTObjectOrderedSet<igdeTemplateReplace> List;
+	using List = decTObjectOrderedSet<igdeTemplateReplace>;
 
 
 	/** \brief Replacement value. */

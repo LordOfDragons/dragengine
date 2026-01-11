@@ -75,7 +75,7 @@ class cTextVarName : public igdeTextFieldListener {
 	ceWPAPlayerChoice &pPanel;
 	
 public:
-	typedef deTObjectReference<cTextVarName> Ref;
+	using Ref = deTObjectReference<cTextVarName>;
 	cTextVarName(ceWPAPlayerChoice &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -94,7 +94,7 @@ class cTextOptionText : public igdeTextFieldListener {
 	ceWPAPlayerChoice &pPanel;
 	
 public:
-	typedef deTObjectReference<cTextOptionText> Ref;
+	using Ref = deTObjectReference<cTextOptionText>;
 	cTextOptionText(ceWPAPlayerChoice &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -115,7 +115,7 @@ class cActionEditOptionText : public igdeAction {
 	ceWPAPlayerChoice &pPanel;
 	
 public:
-	typedef deTObjectReference<cActionEditOptionText> Ref;
+	using Ref = deTObjectReference<cActionEditOptionText>;
 	cActionEditOptionText(ceWPAPlayerChoice &panel) : igdeAction("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
 		"Edit command in larger dialog"), pPanel(panel){}

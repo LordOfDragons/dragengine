@@ -39,7 +39,7 @@ class meHTVRuleResult;
  */
 class meWVNodeResult : public meWVNode{
 public:
-	typedef deTObjectReference<meWVNodeResult> Ref;
+	using Ref = deTObjectReference<meWVNodeResult>;
 	
 private:
 	meHTVRuleResult *pRuleResult;

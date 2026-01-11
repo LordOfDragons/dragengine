@@ -50,7 +50,7 @@ class deRigConstraint;
 class DE_DLL_EXPORT deColliderRig : public deCollider{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deColliderRig> Ref;
+	using Ref = deTObjectReference<deColliderRig>;
 	
 	
 private:

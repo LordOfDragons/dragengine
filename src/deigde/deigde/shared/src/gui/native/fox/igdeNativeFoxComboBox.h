@@ -111,6 +111,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxComboBox igdeNativeComboBox;
+using igdeNativeComboBox = igdeNativeFoxComboBox;
 
 #endif

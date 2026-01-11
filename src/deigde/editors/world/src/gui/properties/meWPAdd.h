@@ -44,7 +44,7 @@ class meWindowProperties;
  */
 class meWPAdd : public igdeContainerScroll{
 public:
-	typedef deTObjectReference<meWPAdd> Ref;
+	using Ref = deTObjectReference<meWPAdd>;
 	
 private:
 	meWindowProperties &pWindowProperties;

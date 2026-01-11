@@ -37,7 +37,7 @@ class peeWPType;
 class peeWPTypeListener : public peeEmitterListener{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<peeWPTypeListener> Ref;
+	using Ref = deTObjectReference<peeWPTypeListener>;
 	
 private:
 	peeWPType &pPanel;

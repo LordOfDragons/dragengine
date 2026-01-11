@@ -145,7 +145,7 @@ class decShape;
 class DE_DLL_EXPORT deLight : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deLight> Ref;
+	using Ref = deTObjectReference<deLight>;
 	
 	
 public:

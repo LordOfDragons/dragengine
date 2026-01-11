@@ -34,7 +34,7 @@
  */
 class aeUControllerToggleFrozen : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUControllerToggleFrozen> Ref;
+	using Ref = deTObjectReference<aeUControllerToggleFrozen>;
 	
 	
 private:

@@ -35,7 +35,7 @@
 class deoglLoaderThreadTask : public deThreadSafeObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTThreadSafeObjectReference<deoglLoaderThreadTask> Ref;
+	using Ref = deTThreadSafeObjectReference<deoglLoaderThreadTask>;
 	
 	
 public:

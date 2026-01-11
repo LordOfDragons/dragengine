@@ -42,7 +42,7 @@ class decCurveBezierEvaluator;
  */
 class deoglSkinCalculatedProperty : public deObject{
 public:
-	typedef deTObjectReference<deoglSkinCalculatedProperty> Ref;
+	using Ref = deTObjectReference<deoglSkinCalculatedProperty>;
 	
 	
 private:

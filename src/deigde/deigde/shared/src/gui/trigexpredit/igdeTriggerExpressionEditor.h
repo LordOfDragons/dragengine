@@ -50,7 +50,7 @@ class igdeTreeItem;
 class DE_DLL_EXPORT igdeTriggerExpressionEditor : public igdeContainerFlow, igdeActionListener{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeTriggerExpressionEditor> Ref;
+	using Ref = deTObjectReference<igdeTriggerExpressionEditor>;
 	
 	
 private:

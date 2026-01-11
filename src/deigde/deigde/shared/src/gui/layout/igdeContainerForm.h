@@ -41,7 +41,7 @@
 class DE_DLL_EXPORT igdeContainerForm : public igdeContainer{
 public:
 	/** \brief Strong reference. */
-	typedef deTObjectReference<igdeContainerForm> Ref;
+	using Ref = deTObjectReference<igdeContainerForm>;
 	
 	
 	/** \brief Stretching. */

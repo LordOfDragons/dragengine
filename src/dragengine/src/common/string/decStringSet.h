@@ -33,7 +33,7 @@
 /**
  * \brief Set of strings.
  */
-typedef decTSet<decString> decStringSet;
+using decStringSet = decTSet<decString>;
 
 extern template class decTSet<decString>;
 
@@ -41,7 +41,7 @@ extern template class decTSet<decString>;
 /**
  * \brief Ordered set of strings.
  */
-typedef decTOrderedSet<decString> decStringOrderedSet;
+using decStringOrderedSet = decTOrderedSet<decString>;
 
 extern template class decTOrderedSet<decString>;
 

@@ -36,7 +36,7 @@
  */
 class seUPropertyNodeShapeSetThickness : public igdeUndo{
 public:
-	typedef deTObjectReference<seUPropertyNodeShapeSetThickness> Ref;
+	using Ref = deTObjectReference<seUPropertyNodeShapeSetThickness>;
 	
 	
 private:

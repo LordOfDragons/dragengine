@@ -102,7 +102,7 @@ class deBaseScriptingCollider;
  */
 class meWorld : public igdeEditableEntity{
 public:
-	typedef deTObjectReference<meWorld> Ref;
+	using Ref = deTObjectReference<meWorld>;
 	
 	
 public:

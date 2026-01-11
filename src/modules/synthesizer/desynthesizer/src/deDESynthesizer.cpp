@@ -227,7 +227,7 @@ void deDESynthesizer::SendCommand(const decUnicodeArgumentList &command, decUnic
 
 class desynModuleInternal : public deInternalModule{
 public:
-	typedef deTObjectReference<desynModuleInternal> Ref;
+	using Ref = deTObjectReference<desynModuleInternal>;
 	
 	desynModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DESynthesizer");

@@ -38,7 +38,7 @@
  */
 class reUConstraintDofSetStaticFriction : public igdeUndo{
 public:
-	typedef deTObjectReference<reUConstraintDofSetStaticFriction> Ref;
+	using Ref = deTObjectReference<reUConstraintDofSetStaticFriction>;
 	
 	
 private:

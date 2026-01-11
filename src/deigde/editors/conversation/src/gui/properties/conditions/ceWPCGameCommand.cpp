@@ -69,7 +69,7 @@ class cTextCommand : public igdeTextFieldListener {
 	ceWPCGameCommand &pPanel;
 	
 public:
-	typedef deTObjectReference<cTextCommand> Ref;
+	using Ref = deTObjectReference<cTextCommand>;
 	cTextCommand(ceWPCGameCommand &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -89,7 +89,7 @@ class cActionEditCommand : public igdeAction {
 	ceWPCGameCommand &pPanel;
 	
 public:
-	typedef deTObjectReference<cActionEditCommand> Ref;
+	using Ref = deTObjectReference<cActionEditCommand>;
 	cActionEditCommand(ceWPCGameCommand &panel) : igdeAction("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
 		"Edit command in larger dialog"), pPanel(panel){}
@@ -119,7 +119,7 @@ class cActionNegate : public igdeAction {
 	ceWPCGameCommand &pPanel;
 	
 public:
-	typedef deTObjectReference<cActionNegate> Ref;
+	using Ref = deTObjectReference<cActionNegate>;
 	cActionNegate(ceWPCGameCommand &panel) : igdeAction("Negate", nullptr,
 		"True if the result of the command is negated"), pPanel(panel){ }
 	

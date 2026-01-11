@@ -38,7 +38,7 @@
 class DE_DLL_EXPORT igdeDialogCurveBezierCoord : public igdeDialog{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeDialogCurveBezierCoord> Ref;
+	using Ref = deTObjectReference<igdeDialogCurveBezierCoord>;
 	
 	
 private:

@@ -45,7 +45,7 @@
  */
 class deoglSharedSPB : public deObject{
 public:
-	typedef deTObjectReference<deoglSharedSPB> Ref;
+	using Ref = deTObjectReference<deoglSharedSPB>;
 	
 	
 private:

@@ -39,7 +39,7 @@ class ceConversationCondition;
  */
 class ceUCCLogicRemove : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCCLogicRemove> Ref;
+	using Ref = deTObjectReference<ceUCCLogicRemove>;
 	
 	
 private:

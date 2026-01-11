@@ -13,9 +13,9 @@
 #include <dragengine/common/xmlparser/decXmlElementTag.h>
 
 // Type definition for template with object references
-typedef decTOrderedSet<int> decTOrderedSetInt;
-typedef decTOrderedSet<decString> decTOrderedSetString;
-typedef decTObjectOrderedSet<decXmlElementTag> decTOrderedSetXmlElementTag;
+using decTOrderedSetInt = decTOrderedSet<int>;
+using decTOrderedSetString = decTOrderedSet<decString>;
+using decTOrderedSetXmlElementTag = decTObjectOrderedSet<decXmlElementTag>;
 
 
 // Class detTOrderedSet

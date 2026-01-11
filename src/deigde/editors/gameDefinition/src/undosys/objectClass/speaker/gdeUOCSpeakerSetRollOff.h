@@ -38,7 +38,7 @@
  */
 class gdeUOCSpeakerSetRollOff : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCSpeakerSetRollOff> Ref;
+	using Ref = deTObjectReference<gdeUOCSpeakerSetRollOff>;
 	
 	
 private:

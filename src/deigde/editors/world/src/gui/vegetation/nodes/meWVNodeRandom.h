@@ -38,7 +38,7 @@ class meHTVRuleRandom;
  */
 class meWVNodeRandom : public meWVNode{
 public:
-	typedef deTObjectReference<meWVNodeRandom> Ref;
+	using Ref = deTObjectReference<meWVNodeRandom>;
 	
 private:
 	meHTVRuleRandom *pRuleRandom;

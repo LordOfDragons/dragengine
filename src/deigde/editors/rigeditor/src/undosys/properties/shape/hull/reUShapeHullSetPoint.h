@@ -39,7 +39,7 @@ class reRigShapeHull;
  */
 class reUShapeHullSetPoint : public igdeUndo{
 public:
-	typedef deTObjectReference<reUShapeHullSetPoint> Ref;
+	using Ref = deTObjectReference<reUShapeHullSetPoint>;
 	
 	
 private:

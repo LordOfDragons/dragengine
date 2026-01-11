@@ -39,7 +39,7 @@
  */
 class gdeUOCToggleCanInstantiate : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCToggleCanInstantiate> Ref;
+	using Ref = deTObjectReference<gdeUOCToggleCanInstantiate>;
 	
 	
 private:

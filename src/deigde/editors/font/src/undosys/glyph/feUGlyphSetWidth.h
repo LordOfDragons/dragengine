@@ -36,7 +36,7 @@
  */
 class feUGlyphSetWidth : public igdeUndo{
 public:
-	typedef deTObjectReference<feUGlyphSetWidth> Ref;
+	using Ref = deTObjectReference<feUGlyphSetWidth>;
 	
 	
 private:

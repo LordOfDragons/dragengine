@@ -36,7 +36,7 @@ class projRemoteClient;
 class projRemoteClientListener : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<projRemoteClientListener> Ref;
+	using Ref = deTObjectReference<projRemoteClientListener>;
 	
 	
 	/** \name Constructors and Destructors */

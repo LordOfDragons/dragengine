@@ -66,7 +66,7 @@ class deBaseAIHeightTerrain;
 class DE_DLL_EXPORT deHeightTerrain : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deHeightTerrain> Ref;
+	using Ref = deTObjectReference<deHeightTerrain>;
 	
 	
 private:

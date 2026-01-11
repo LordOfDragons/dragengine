@@ -48,7 +48,7 @@ class deFileSearchVisitor;
  */
 class deadArchiveDirectory : public deObject{
 public:
-	typedef deTObjectReference<deadArchiveDirectory> Ref;
+	using Ref = deTObjectReference<deadArchiveDirectory>;
 	
 	
 private:

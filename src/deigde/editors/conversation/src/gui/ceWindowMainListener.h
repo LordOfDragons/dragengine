@@ -36,7 +36,7 @@ class ceWindowMain;
  */
 class ceWindowMainListener : public ceConversationListener{
 public:
-	typedef deTObjectReference<ceWindowMainListener> Ref;
+	using Ref = deTObjectReference<ceWindowMainListener>;
 	
 private:
 	ceWindowMain &pWindow;

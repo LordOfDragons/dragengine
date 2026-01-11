@@ -50,7 +50,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglRParticleEmitter> Ref;
+	using Ref = deTObjectReference<deoglRParticleEmitter>;
 
 
 	/** \name Constructors and Destructors */

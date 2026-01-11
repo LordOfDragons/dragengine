@@ -39,7 +39,7 @@ class meHTVRuleMultiMath;
  */
 class meUHTVRuleMultiMathSetOp : public igdeUndo{
 public:
-	typedef deTObjectReference<meUHTVRuleMultiMathSetOp> Ref;
+	using Ref = deTObjectReference<meUHTVRuleMultiMathSetOp>;
 	
 	
 public:

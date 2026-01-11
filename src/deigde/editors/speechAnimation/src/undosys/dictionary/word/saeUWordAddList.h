@@ -39,7 +39,7 @@
  */
 class saeUWordAddList : public igdeUndo{
 public:
-	typedef deTObjectReference<saeUWordAddList> Ref;
+	using Ref = deTObjectReference<saeUWordAddList>;
 	
 	
 private:

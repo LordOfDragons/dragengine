@@ -39,7 +39,7 @@
  */
 class ceUCCTriggerSetTestMode : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCCTriggerSetTestMode> Ref;
+	using Ref = deTObjectReference<ceUCCTriggerSetTestMode>;
 	
 	
 private:

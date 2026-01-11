@@ -38,7 +38,7 @@
  */
 class ceUCAASpeakStripSetDuration : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCAASpeakStripSetDuration> Ref;
+	using Ref = deTObjectReference<ceUCAASpeakStripSetDuration>;
 	
 	
 private:

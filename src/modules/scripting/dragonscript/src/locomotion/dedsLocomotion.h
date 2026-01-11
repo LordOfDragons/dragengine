@@ -45,7 +45,7 @@ class decBaseFileWriter;
 class dedsLocomotion : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<dedsLocomotion> Ref;
+	using Ref = deTObjectReference<dedsLocomotion>;
 	
 	
 	/** \brief Tilt modes. */

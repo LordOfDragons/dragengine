@@ -59,7 +59,7 @@ protected:
 	skyeWPSky &pPanel;
 	
 public:
-	typedef deTObjectReference<cColorBackground> Ref;
+	using Ref = deTObjectReference<cColorBackground>;
 	cColorBackground(skyeWPSky &panel) : pPanel(panel){}
 	
 	void OnColorChanged(igdeColorBox *colorBox) override{

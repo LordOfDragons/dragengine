@@ -9,7 +9,7 @@
 // Test object class
 class TestRefObject : public deObject{
 public:
-	typedef deTObjectReference<TestRefObject> Ref;
+	using Ref = deTObjectReference<TestRefObject>;
 	
 	int id;
 	static int constructCount;
@@ -32,7 +32,7 @@ int TestRefObject::destructCount = 0;
 // Base and derived classes for casting tests
 class TestRefBase : public deObject{
 public:
-	typedef deTObjectReference<TestRefBase> Ref;
+	using Ref = deTObjectReference<TestRefBase>;
 	int baseValue;
 	static int constructCount;
 	static int destructCount;
@@ -51,7 +51,7 @@ int TestRefBase::destructCount = 0;
 
 class TestRefDerived : public TestRefBase{
 public:
-	typedef deTObjectReference<TestRefDerived> Ref;
+	using Ref = deTObjectReference<TestRefDerived>;
 	int derivedValue;
 	static int constructCountDerived;
 	static int destructCountDerived;
@@ -69,9 +69,9 @@ int TestRefDerived::constructCountDerived = 0;
 int TestRefDerived::destructCountDerived = 0;
 
 // Typedefs for easier use
-typedef deTObjectReference<TestRefObject> TestRefObjectRef;
-typedef deTObjectReference<TestRefBase> TestRefBaseRef;
-typedef deTObjectReference<TestRefDerived> TestRefDerivedRef;
+using TestRefObjectRef = deTObjectReference<TestRefObject>;
+using TestRefBaseRef = deTObjectReference<TestRefBase>;
+using TestRefDerivedRef = deTObjectReference<TestRefDerived>;
 
 
 // Class detObjectReference

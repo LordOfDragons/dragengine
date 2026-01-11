@@ -36,7 +36,7 @@ class seViewConstructed;
  */
 class seViewConstructedListener : public seSkinListener{
 public:
-	typedef deTObjectReference<seViewConstructedListener> Ref;
+	using Ref = deTObjectReference<seViewConstructedListener>;
 	
 private:
 	seViewConstructed &pView;

@@ -37,7 +37,7 @@
  */
 class aeURuleSnapSetID : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleSnapSetID> Ref;
+	using Ref = deTObjectReference<aeURuleSnapSetID>;
 	
 	
 private:

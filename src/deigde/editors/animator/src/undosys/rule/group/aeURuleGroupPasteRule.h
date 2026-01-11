@@ -40,7 +40,7 @@
  */
 class aeURuleGroupPasteRule : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleGroupPasteRule> Ref;
+	using Ref = deTObjectReference<aeURuleGroupPasteRule>;
 	
 	
 private:

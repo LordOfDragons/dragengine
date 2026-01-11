@@ -39,7 +39,7 @@ class meHTVRuleCurve;
  */
 class meWVNodeCurve : public meWVNode{
 public:
-	typedef deTObjectReference<meWVNodeCurve> Ref;
+	using Ref = deTObjectReference<meWVNodeCurve>;
 	
 private:
 	meHTVRuleCurve *pRuleCurve;

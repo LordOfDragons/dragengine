@@ -52,7 +52,7 @@ class igdeDEModuleStatus_ComboModule : public igdeComboBoxListener{
 	igdeDEModuleStatus &pPanel;
 	
 public:
-	typedef deTObjectReference<igdeDEModuleStatus_ComboModule> Ref;
+	using Ref = deTObjectReference<igdeDEModuleStatus_ComboModule>;
 	
 	igdeDEModuleStatus_ComboModule(igdeDEModuleStatus &panel) : pPanel(panel){}
 	

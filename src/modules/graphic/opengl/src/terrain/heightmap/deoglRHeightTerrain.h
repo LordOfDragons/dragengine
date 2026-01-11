@@ -46,7 +46,7 @@ class deHeightTerrain;
  */
 class deoglRHeightTerrain : public deObject{
 public:
-	typedef deTObjectReference<deoglRHeightTerrain> Ref;
+	using Ref = deTObjectReference<deoglRHeightTerrain>;
 	
 	
 private:

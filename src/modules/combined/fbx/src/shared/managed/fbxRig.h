@@ -47,7 +47,7 @@ class deBaseModule;
 class fbxRig : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<fbxRig> Ref;
+	using Ref = deTObjectReference<fbxRig>;
 	
 	
 private:

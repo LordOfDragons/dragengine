@@ -34,7 +34,7 @@
  */
 class ceWPTTIMATrigger : public ceWPTTIMAction{
 public:
-	typedef deTObjectReference<ceWPTTIMATrigger> Ref;
+	using Ref = deTObjectReference<ceWPTTIMATrigger>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */

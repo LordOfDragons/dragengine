@@ -39,7 +39,7 @@ class aeController;
 class aeGizmoControllerIKPosition : public igdeGizmoMove, aeElementVisitable{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeGizmoControllerIKPosition> Ref;
+	using Ref = deTObjectReference<aeGizmoControllerIKPosition>;
 	
 	
 private:

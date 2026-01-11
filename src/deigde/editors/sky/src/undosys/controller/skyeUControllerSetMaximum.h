@@ -35,7 +35,7 @@
  */
 class skyeUControllerSetMaximum : public igdeUndo{
 public:
-	typedef deTObjectReference<skyeUControllerSetMaximum> Ref;
+	using Ref = deTObjectReference<skyeUControllerSetMaximum>;
 	
 	
 private:

@@ -39,7 +39,7 @@ class meWorld;
  */
 class meUObjectCopyRotation : public igdeUndo{
 public:
-	typedef deTObjectReference<meUObjectCopyRotation> Ref;
+	using Ref = deTObjectReference<meUObjectCopyRotation>;
 	
 	
 private:

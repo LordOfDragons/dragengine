@@ -35,7 +35,7 @@ class DE_DLL_EXPORT igdeSwitcher : public igdeContainer{
 
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeSwitcher> Ref;
+	using Ref = deTObjectReference<igdeSwitcher>;
 	
 	
 private:

@@ -36,7 +36,7 @@
  */
 class dedsSTNText : public dedsStyledTextNode{
 public:
-	typedef deTObjectReference<dedsSTNText> Ref;
+	using Ref = deTObjectReference<dedsSTNText>;
 	
 	
 private:

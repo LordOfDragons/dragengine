@@ -39,7 +39,7 @@ class syneSynthesizer;
  */
 class syneUSourceAddEffect : public igdeUndo{
 public:
-	typedef deTObjectReference<syneUSourceAddEffect> Ref;
+	using Ref = deTObjectReference<syneUSourceAddEffect>;
 	
 	
 public:

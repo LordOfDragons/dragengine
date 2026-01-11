@@ -43,7 +43,7 @@ class meCLSnapPoint;
  */
 class meViewEditorAddNew : public meViewEditorNavigation{
 public:
-	typedef deTObjectReference<meViewEditorAddNew> Ref;
+	using Ref = deTObjectReference<meViewEditorAddNew>;
 	
 private:
 	meCLClosestElement *pClosestElement;

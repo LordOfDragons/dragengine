@@ -38,7 +38,7 @@ class gdeOCSpeaker;
  */
 class gdeUOCSetDescription : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCSetDescription> Ref;
+	using Ref = deTObjectReference<gdeUOCSetDescription>;
 	
 	
 private:

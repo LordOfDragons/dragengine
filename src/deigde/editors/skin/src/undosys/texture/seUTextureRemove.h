@@ -37,7 +37,7 @@
  */
 class seUTextureRemove : public igdeUndo{
 public:
-	typedef deTObjectReference<seUTextureRemove> Ref;
+	using Ref = deTObjectReference<seUTextureRemove>;
 	
 	
 private:

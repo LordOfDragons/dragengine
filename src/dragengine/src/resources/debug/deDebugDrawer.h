@@ -57,7 +57,7 @@ class deWorld;
 class DE_DLL_EXPORT deDebugDrawer : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deDebugDrawer> Ref;
+	using Ref = deTObjectReference<deDebugDrawer>;
 	
 	
 private:

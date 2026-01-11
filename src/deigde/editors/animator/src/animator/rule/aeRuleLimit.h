@@ -36,7 +36,7 @@
  */
 class aeRuleLimit : public aeRule{
 public:
-	typedef deTObjectReference<aeRuleLimit> Ref;
+	using Ref = deTObjectReference<aeRuleLimit>;
 	
 	
 private:

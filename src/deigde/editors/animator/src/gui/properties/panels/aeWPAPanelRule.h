@@ -52,7 +52,7 @@ class aeWindowMain;
 class aeWPAPanelRule : public igdeContainerFlow{
 public:
 	/** \brief Strong reference. */
-	typedef deTObjectReference<aeWPAPanelRule> Ref;
+	using Ref = deTObjectReference<aeWPAPanelRule>;
 	
 	
 private:

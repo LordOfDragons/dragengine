@@ -68,7 +68,7 @@ class cComboActorID : public igdeComboBoxListener {
 	ceWPAActorAdd &pPanel;
 	
 public:
-	typedef deTObjectReference<cComboActorID> Ref;
+	using Ref = deTObjectReference<cComboActorID>;
 	cComboActorID(ceWPAActorAdd &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -87,7 +87,7 @@ class cComboAliasID : public igdeComboBoxListener {
 	ceWPAActorAdd &pPanel;
 	
 public:
-	typedef deTObjectReference<cComboAliasID> Ref;
+	using Ref = deTObjectReference<cComboAliasID>;
 	cComboAliasID(ceWPAActorAdd &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{

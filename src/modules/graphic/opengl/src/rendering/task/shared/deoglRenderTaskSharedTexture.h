@@ -36,7 +36,7 @@ class deoglTexUnitsConfig;
  */
 class deoglRenderTaskSharedTexture : public deObject{
 public:
-	typedef deTObjectReference<deoglRenderTaskSharedTexture> Ref;
+	using Ref = deTObjectReference<deoglRenderTaskSharedTexture>;
 	
 	
 private:

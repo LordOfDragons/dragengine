@@ -37,7 +37,7 @@
  */
 class ceUCAASpeakSetMinSpeechTime : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCAASpeakSetMinSpeechTime> Ref;
+	using Ref = deTObjectReference<ceUCAASpeakSetMinSpeechTime>;
 	
 	
 private:

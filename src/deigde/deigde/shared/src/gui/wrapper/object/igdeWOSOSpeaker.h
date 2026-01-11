@@ -43,7 +43,7 @@ class igdeGDCSpeaker;
 class DE_DLL_EXPORT igdeWOSOSpeaker : public igdeWOSubObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeWOSOSpeaker> Ref;
+	using Ref = deTObjectReference<igdeWOSOSpeaker>;
 	
 	
 private:

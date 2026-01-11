@@ -40,7 +40,7 @@ class ceCConditionLogic;
  */
 class ceUCCLogicSetOperator : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCCLogicSetOperator> Ref;
+	using Ref = deTObjectReference<ceUCCLogicSetOperator>;
 	
 	
 private:

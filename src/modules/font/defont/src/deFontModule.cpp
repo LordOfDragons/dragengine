@@ -327,7 +327,7 @@ void deFontModule::pWriteFont(decXmlWriter& writer, const deFont& font) {
 
 class deFontModuleInternal : public deInternalModule{
 public:
-	typedef deTObjectReference<deFontModuleInternal> Ref;
+	using Ref = deTObjectReference<deFontModuleInternal>;
 	
 	deFontModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DEFont");

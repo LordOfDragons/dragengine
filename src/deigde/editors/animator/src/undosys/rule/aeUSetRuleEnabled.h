@@ -42,7 +42,7 @@
  */
 class aeUSetRuleEnabled : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUSetRuleEnabled> Ref;
+	using Ref = deTObjectReference<aeUSetRuleEnabled>;
 	
 	
 private:

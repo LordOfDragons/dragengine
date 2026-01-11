@@ -61,7 +61,7 @@ class deoglGIState;
  */
 class deoglRWorld : public deObject{
 public:
-	typedef deTObjectReference<deoglRWorld> Ref;
+	using Ref = deTObjectReference<deoglRWorld>;
 	
 	
 private:

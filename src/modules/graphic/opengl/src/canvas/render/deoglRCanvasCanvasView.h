@@ -35,7 +35,7 @@
 class deoglRCanvasCanvasView : public deoglRCanvas{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglRCanvasCanvasView> Ref;
+	using Ref = deTObjectReference<deoglRCanvasCanvasView>;
 	
 	
 private:

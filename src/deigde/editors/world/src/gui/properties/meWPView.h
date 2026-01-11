@@ -51,7 +51,7 @@ class meCamera;
  */
 class meWPView : public igdeContainerScroll{
 public:
-	typedef deTObjectReference<meWPView> Ref;
+	using Ref = deTObjectReference<meWPView>;
 	
 private:
 	meWindowProperties &pWindowProperties;

@@ -10,8 +10,8 @@
 // Test object class
 class TestWeakRefObject : public deObject{
 public:
-	typedef deTObjectReference<TestWeakRefObject> Ref;
-	typedef deTWeakObjectReference<TestWeakRefObject> WeakRef;
+	using Ref = deTObjectReference<TestWeakRefObject>;
+	using WeakRef = deTWeakObjectReference<TestWeakRefObject>;
 	
 	int id;
 	static int constructCount;
@@ -34,8 +34,8 @@ int TestWeakRefObject::destructCount = 0;
 // Base and derived classes for casting tests
 class TestWeakRefBase : public deObject{
 public:
-	typedef deTObjectReference<TestWeakRefBase> Ref;
-	typedef deTWeakObjectReference<TestWeakRefBase> WeakRef;
+	using Ref = deTObjectReference<TestWeakRefBase>;
+	using WeakRef = deTWeakObjectReference<TestWeakRefBase>;
 	int baseValue;
 	explicit TestWeakRefBase(int v = 0) : baseValue(v){}
 protected:
@@ -44,8 +44,8 @@ protected:
 
 class TestWeakRefDerived : public TestWeakRefBase{
 public:
-	typedef deTObjectReference<TestWeakRefDerived> Ref;
-	typedef deTWeakObjectReference<TestWeakRefDerived> WeakRef;
+	using Ref = deTObjectReference<TestWeakRefDerived>;
+	using WeakRef = deTWeakObjectReference<TestWeakRefDerived>;
 	int derivedValue;
 	explicit TestWeakRefDerived(int b = 0, int d = 0) : TestWeakRefBase(b), derivedValue(d){}
 protected:

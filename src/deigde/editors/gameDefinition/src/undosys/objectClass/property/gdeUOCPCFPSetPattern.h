@@ -41,7 +41,7 @@
  */
 class gdeUOCPCFPSetPattern : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCPCFPSetPattern> Ref;
+	using Ref = deTObjectReference<gdeUOCPCFPSetPattern>;
 	
 	
 private:

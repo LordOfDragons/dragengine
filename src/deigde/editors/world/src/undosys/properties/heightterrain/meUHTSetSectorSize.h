@@ -36,7 +36,7 @@
  */
 class meUHTSetSectorSize : public igdeUndo{
 public:
-	typedef deTObjectReference<meUHTSetSectorSize> Ref;
+	using Ref = deTObjectReference<meUHTSetSectorSize>;
 	
 	
 private:

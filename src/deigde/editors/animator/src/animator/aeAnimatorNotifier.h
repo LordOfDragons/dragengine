@@ -43,7 +43,7 @@ class aeAttachment;
 class aeAnimatorNotifier : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeAnimatorNotifier> Ref;
+	using Ref = deTObjectReference<aeAnimatorNotifier>;
 	
 	
 	/** \name Constructors and Destructors */

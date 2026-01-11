@@ -38,7 +38,7 @@ class saeWord;
  */
 class saeSAnimationListener : public deObject{
 public:
-	typedef deTObjectReference<saeSAnimationListener> Ref;
+	using Ref = deTObjectReference<saeSAnimationListener>;
 	
 	
 	/** \name Constructors and Destructors */

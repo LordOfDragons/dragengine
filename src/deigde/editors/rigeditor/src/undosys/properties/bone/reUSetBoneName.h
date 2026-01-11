@@ -36,7 +36,7 @@
  */
 class reUSetBoneName : public igdeUndo{
 public:
-	typedef deTObjectReference<reUSetBoneName> Ref;
+	using Ref = deTObjectReference<reUSetBoneName>;
 	
 	
 private:

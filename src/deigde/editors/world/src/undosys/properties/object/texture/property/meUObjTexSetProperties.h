@@ -38,7 +38,7 @@
  */
 class meUObjTexSetProperties : public igdeUndo{
 public:
-	typedef deTObjectReference<meUObjTexSetProperties> Ref;
+	using Ref = deTObjectReference<meUObjTexSetProperties>;
 	
 	
 private:

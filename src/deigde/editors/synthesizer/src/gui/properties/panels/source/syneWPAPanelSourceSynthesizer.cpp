@@ -62,7 +62,7 @@ class cPathSynthesizer : public igdeEditPathListener{
 	syneWPAPanelSourceSynthesizer &pPanel;
 	
 public:
-	typedef deTObjectReference<cPathSynthesizer> Ref;
+	using Ref = deTObjectReference<cPathSynthesizer>;
 	cPathSynthesizer(syneWPAPanelSourceSynthesizer &panel) : pPanel(panel){}
 	
 	void OnEditPathChanged(igdeEditPath * editPath) override{
@@ -80,7 +80,7 @@ class cComboConTarget : public igdeComboBoxListener{
 	syneWPAPanelSourceSynthesizer &pPanel;
 	
 public:
-	typedef deTObjectReference<cComboConTarget> Ref;
+	using Ref = deTObjectReference<cComboConTarget>;
 	cComboConTarget(syneWPAPanelSourceSynthesizer &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox*) override{
@@ -95,7 +95,7 @@ class cActionConTargetMore : public igdeAction {
 	syneWPAPanelSourceSynthesizer &pPanel;
 	
 public:
-	typedef deTObjectReference<cActionConTargetMore> Ref;
+	using Ref = deTObjectReference<cActionConTargetMore>;
 	cActionConTargetMore(syneWPAPanelSourceSynthesizer &panel) : igdeAction("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Increase the number of targets"), pPanel(panel){}
@@ -119,7 +119,7 @@ class cActionConTargetLess : public igdeAction {
 	syneWPAPanelSourceSynthesizer &pPanel;
 	
 public:
-	typedef deTObjectReference<cActionConTargetLess> Ref;
+	using Ref = deTObjectReference<cActionConTargetLess>;
 	cActionConTargetLess(syneWPAPanelSourceSynthesizer &panel) : igdeAction("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Decrease the number of targets"), pPanel(panel){}
@@ -144,7 +144,7 @@ class cComboController : public igdeComboBoxListener{
 	syneWPAPanelSourceSynthesizer &pPanel;
 	
 public:
-	typedef deTObjectReference<cComboController> Ref;
+	using Ref = deTObjectReference<cComboController>;
 	cComboController(syneWPAPanelSourceSynthesizer &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{

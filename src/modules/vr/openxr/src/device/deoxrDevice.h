@@ -60,7 +60,7 @@ class deInputDevicePose;
 class deoxrDevice : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoxrDevice> Ref;
+	using Ref = deTObjectReference<deoxrDevice>;
 	
 	
 private:

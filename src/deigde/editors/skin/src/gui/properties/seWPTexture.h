@@ -53,7 +53,7 @@ class seWindowProperties;
  */
 class seWPTexture : public igdeContainerScroll{
 public:
-	typedef deTObjectReference<seWPTexture> Ref;
+	using Ref = deTObjectReference<seWPTexture>;
 	
 private:
 	seWindowProperties &pWindowProperties;

@@ -43,7 +43,7 @@ class reWindowMain;
 class reDialogImportBone : public igdeDialog{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<reDialogImportBone> Ref;
+	using Ref = deTObjectReference<reDialogImportBone>;
 	
 	
 private:

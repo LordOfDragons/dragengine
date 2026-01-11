@@ -41,7 +41,7 @@ class deBaseSystem;
 class DE_DLL_EXPORT igdeDEStatus : public igdeContainerFlow{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeDEStatus> Ref;
+	using Ref = deTObjectReference<igdeDEStatus>;
 	
 	
 private:

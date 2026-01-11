@@ -50,7 +50,7 @@ protected:
 	ceWPTMACreateAction();
 	
 public:
-	typedef deTObjectReference<ceWPTMACreateAction> Ref;
+	using Ref = deTObjectReference<ceWPTMACreateAction>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */

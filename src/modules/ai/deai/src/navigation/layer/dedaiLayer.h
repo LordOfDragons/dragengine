@@ -54,7 +54,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<dedaiLayer> Ref;
+	using Ref = deTObjectReference<dedaiLayer>;
 
 
 	/** \name Constructors and Destructors */

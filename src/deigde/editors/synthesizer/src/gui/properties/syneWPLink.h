@@ -46,7 +46,7 @@ class syneViewSynthesizer;
  */
 class syneWPLink : public igdeContainerScroll{
 public:
-	typedef deTObjectReference<syneWPLink> Ref;
+	using Ref = deTObjectReference<syneWPLink>;
 	
 private:
 	syneViewSynthesizer &pViewSynthesizer;

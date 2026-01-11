@@ -41,7 +41,7 @@ class deoxrAction;
 class deoxrSpace : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<deoxrSpace> Ref;
+	using Ref = deTObjectReference<deoxrSpace>;
 	
 	
 	/** Valid data. */

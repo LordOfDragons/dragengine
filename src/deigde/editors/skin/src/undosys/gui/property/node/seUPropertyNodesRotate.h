@@ -39,14 +39,14 @@
  */
 class seUPropertyNodesRotate : public igdeUndo{
 public:
-	typedef deTObjectReference<seUPropertyNodesRotate> Ref;
+	using Ref = deTObjectReference<seUPropertyNodesRotate>;
 	
 	
 private:
 	class cNode : public deObject{
 	public:
-		typedef deTObjectReference<cNode> Ref;
-		typedef decTObjectOrderedSet<cNode> List;
+		using Ref = deTObjectReference<cNode>;
+		using List = decTObjectOrderedSet<cNode>;
 		
 		sePropertyNode::Ref node;
 		decPoint3 position;

@@ -39,7 +39,7 @@
  */
 class gdeUOCBillboardSetPropertyName : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCBillboardSetPropertyName> Ref;
+	using Ref = deTObjectReference<gdeUOCBillboardSetPropertyName>;
 	
 	
 private:

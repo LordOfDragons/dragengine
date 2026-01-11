@@ -36,7 +36,7 @@
  */
 class meUDecalTCRotation : public igdeUndo{
 public:
-	typedef deTObjectReference<meUDecalTCRotation> Ref;
+	using Ref = deTObjectReference<meUDecalTCRotation>;
 	
 	
 private:

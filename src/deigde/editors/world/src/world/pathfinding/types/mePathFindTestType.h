@@ -37,10 +37,10 @@
 class mePathFindTestType : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<mePathFindTestType> Ref;
+	using Ref = deTObjectReference<mePathFindTestType>;
 	
 	/** \brief List type. */
-	typedef decTObjectOrderedSet<mePathFindTestType> List;
+	using List = decTObjectOrderedSet<mePathFindTestType>;
 	
 	
 private:

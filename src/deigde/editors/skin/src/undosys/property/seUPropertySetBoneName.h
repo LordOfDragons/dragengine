@@ -35,7 +35,7 @@
  */
 class seUPropertySetBoneName : public igdeUndo{
 public:
-	typedef deTObjectReference<seUPropertySetBoneName> Ref;
+	using Ref = deTObjectReference<seUPropertySetBoneName>;
 	
 	
 private:

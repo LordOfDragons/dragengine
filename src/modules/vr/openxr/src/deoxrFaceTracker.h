@@ -40,7 +40,7 @@ class deoxrSession;
 class deoxrFaceTracker : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<deoxrFaceTracker> Ref;
+	using Ref = deTObjectReference<deoxrFaceTracker>;
 	
 	
 private:

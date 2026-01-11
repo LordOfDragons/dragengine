@@ -38,7 +38,7 @@
  */
 class gdeUOCSnapPointSetSnapDistance : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCSnapPointSetSnapDistance> Ref;
+	using Ref = deTObjectReference<gdeUOCSnapPointSetSnapDistance>;
 	
 	
 private:

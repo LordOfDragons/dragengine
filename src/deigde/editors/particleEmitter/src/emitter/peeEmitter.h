@@ -57,7 +57,7 @@ class deLogger;
  */
 class peeEmitter : public igdeEditableEntity{
 public:
-	typedef deTObjectReference<peeEmitter> Ref;
+	using Ref = deTObjectReference<peeEmitter>;
 	
 	
 	/** Layer masks for colliders. */

@@ -43,7 +43,7 @@ class ceTextBox;
  */
 class cePlaybackActor : public deObject{
 public:
-	typedef deTObjectReference<cePlaybackActor> Ref;
+	using Ref = deTObjectReference<cePlaybackActor>;
 	
 private:
 	float pSpeechLength;

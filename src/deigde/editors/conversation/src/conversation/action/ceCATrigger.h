@@ -36,7 +36,7 @@
  */
 class ceCATrigger : public ceConversationAction{
 public:
-	typedef deTObjectReference<ceCATrigger> Ref;
+	using Ref = deTObjectReference<ceCATrigger>;
 	/** \brief Action. */
 	enum eActions{
 		/** \brief Fire trigger. */

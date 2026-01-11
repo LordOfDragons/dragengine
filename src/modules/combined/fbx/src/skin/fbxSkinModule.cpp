@@ -379,7 +379,7 @@ void fbxSkinModule::pAddPropertyImage(deSkinTexture &texture, const char *name, 
 
 class fbxSkinModuleInternal : public deInternalModule{
 public:
-	typedef deTObjectReference<fbxSkinModuleInternal> Ref;
+	using Ref = deTObjectReference<fbxSkinModuleInternal>;
 	
 	fbxSkinModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("FBXSkin");

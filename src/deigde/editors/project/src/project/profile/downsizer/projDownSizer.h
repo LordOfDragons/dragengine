@@ -55,7 +55,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<projDownSizer> Ref;
+	using Ref = deTObjectReference<projDownSizer>;
 
 
 	/** \name Constructors and Destructors */

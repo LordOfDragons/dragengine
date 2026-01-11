@@ -70,7 +70,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<mePathFindTest> Ref;
+	using Ref = deTObjectReference<mePathFindTest>;
 
 
 	/** \name Constructors and Destructors */

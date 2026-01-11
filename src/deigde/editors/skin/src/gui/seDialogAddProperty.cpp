@@ -61,7 +61,7 @@ namespace {
 
 class cActionDetails : public igdeAction{
 public:
-	typedef deTObjectReference<cActionDetails> Ref;
+	using Ref = deTObjectReference<cActionDetails>;
 	
 private:
 	seDialogAddProperty &pDialog;

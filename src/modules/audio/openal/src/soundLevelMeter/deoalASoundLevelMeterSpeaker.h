@@ -41,7 +41,7 @@ class deoalRayTraceResult;
 class deoalASoundLevelMeterSpeaker : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoalASoundLevelMeterSpeaker> Ref;
+	using Ref = deTObjectReference<deoalASoundLevelMeterSpeaker>;
 	
 	
 private:

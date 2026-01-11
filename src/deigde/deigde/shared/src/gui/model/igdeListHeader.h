@@ -43,10 +43,10 @@ class DE_DLL_EXPORT igdeListHeader : public deObject{
 
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeListHeader> Ref;
+	using Ref = deTObjectReference<igdeListHeader>;
 	
 	/** \brief List header list. */
-	typedef decTObjectOrderedSet<igdeListHeader> List;
+	using List = decTObjectOrderedSet<igdeListHeader>;
 	
 	
 private:

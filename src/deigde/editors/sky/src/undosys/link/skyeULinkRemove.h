@@ -40,14 +40,14 @@
  */
 class skyeULinkRemove : public igdeUndo{
 public:
-	typedef deTObjectReference<skyeULinkRemove> Ref;
+	using Ref = deTObjectReference<skyeULinkRemove>;
 	
 	
 private:
 	class cTarget : public deObject{
 	public:
-		typedef deTObjectReference<cTarget> Ref;
-		typedef decTObjectOrderedSet<cTarget> List;
+		using Ref = deTObjectReference<cTarget>;
+		using List = decTObjectOrderedSet<cTarget>;
 		
 		skyeLayer::Ref layer;
 		deSkyLayer::eTargets target;

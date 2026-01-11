@@ -44,7 +44,7 @@
 class DE_DLL_EXPORT deAnimatorRuleAnimationDifference : public deAnimatorRule{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deAnimatorRuleAnimationDifference> Ref;
+	using Ref = deTObjectReference<deAnimatorRuleAnimationDifference>;
 	
 	
 private:

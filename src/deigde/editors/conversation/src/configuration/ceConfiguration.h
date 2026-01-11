@@ -36,7 +36,7 @@ class ceWindowMain;
  */
 class ceConfiguration : public deObject{
 public:
-	typedef deTObjectReference<ceConfiguration> Ref;
+	using Ref = deTObjectReference<ceConfiguration>;
 	
 private:
 	ceWindowMain &pWindowMain;

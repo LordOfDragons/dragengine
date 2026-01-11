@@ -37,7 +37,7 @@
 class seClipboardDataPropertyNode : public igdeClipboardData{
 public:
 	/** Type holding strong reference. */
-	typedef deTObjectReference<seClipboardDataPropertyNode> Ref;
+	using Ref = deTObjectReference<seClipboardDataPropertyNode>;
 	
 	/** Type name. */
 	static const char * const TYPE_NAME;

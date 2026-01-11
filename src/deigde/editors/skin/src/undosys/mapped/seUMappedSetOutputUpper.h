@@ -36,7 +36,7 @@
  */
 class seUMappedSetOutputUpper : public igdeUndo{
 public:
-	typedef deTObjectReference<seUMappedSetOutputUpper> Ref;
+	using Ref = deTObjectReference<seUMappedSetOutputUpper>;
 	
 	
 private:

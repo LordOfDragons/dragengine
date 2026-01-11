@@ -35,7 +35,7 @@
  */
 class reBaseUndoScale : public igdeUndo{
 public:
-	typedef deTObjectReference<reBaseUndoScale> Ref;
+	using Ref = deTObjectReference<reBaseUndoScale>;
 	
 	
 private:

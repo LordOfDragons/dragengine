@@ -39,7 +39,7 @@ class DE_DLL_EXPORT igdeColorBoxListener : public deObject{
 
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeColorBoxListener> Ref;
+	using Ref = deTObjectReference<igdeColorBoxListener>;
 	
 	
 protected:

@@ -45,7 +45,7 @@ class DE_DLL_EXPORT igdeTreeList : public igdeWidget{
 
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeTreeList> Ref;
+	using Ref = deTObjectReference<igdeTreeList>;
 	
 	
 private:

@@ -39,7 +39,7 @@ class devkCommandPool;
 class devkQueue : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<devkQueue> Ref;
+	using Ref = deTObjectReference<devkQueue>;
 	
 	
 private:

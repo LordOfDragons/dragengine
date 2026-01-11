@@ -34,7 +34,7 @@
 class DE_DLL_EXPORT deSynthesizerSourceWave : public deSynthesizerSource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deSynthesizerSourceWave> Ref;
+	using Ref = deTObjectReference<deSynthesizerSourceWave>;
 	
 	
 public:

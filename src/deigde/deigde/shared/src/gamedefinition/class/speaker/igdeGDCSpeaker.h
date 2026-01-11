@@ -38,10 +38,10 @@
 class DE_DLL_EXPORT igdeGDCSpeaker : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeGDCSpeaker> Ref;
+	using Ref = deTObjectReference<igdeGDCSpeaker>;
 	
 	/** \brief Type holding list of objects. */
-	typedef decTObjectOrderedSet<igdeGDCSpeaker> List;
+	using List = decTObjectOrderedSet<igdeGDCSpeaker>;
 	
 	
 	/** \brief Properties. */

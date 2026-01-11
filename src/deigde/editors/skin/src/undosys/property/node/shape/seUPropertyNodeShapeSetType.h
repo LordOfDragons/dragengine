@@ -38,7 +38,7 @@
  */
 class seUPropertyNodeShapeSetType : public igdeUndo{
 public:
-	typedef deTObjectReference<seUPropertyNodeShapeSetType> Ref;
+	using Ref = deTObjectReference<seUPropertyNodeShapeSetType>;
 	
 	
 private:

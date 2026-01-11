@@ -107,7 +107,7 @@ class deWorld;
 class DE_DLL_EXPORT deNavigationSpace : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deNavigationSpace> Ref;
+	using Ref = deTObjectReference<deNavigationSpace>;
 	
 	
 public:

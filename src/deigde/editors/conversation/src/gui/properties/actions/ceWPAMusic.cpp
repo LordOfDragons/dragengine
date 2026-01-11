@@ -66,7 +66,7 @@ class cTextName : public igdeTextFieldListener {
 	ceWPAMusic &pPanel;
 	
 public:
-	typedef deTObjectReference<cTextName> Ref;
+	using Ref = deTObjectReference<cTextName>;
 	cTextName(ceWPAMusic &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{

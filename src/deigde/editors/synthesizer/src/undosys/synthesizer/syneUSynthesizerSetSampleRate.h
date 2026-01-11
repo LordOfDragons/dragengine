@@ -37,7 +37,7 @@
  */
 class syneUSynthesizerSetSampleRate : public igdeUndo{
 public:
-	typedef deTObjectReference<syneUSynthesizerSetSampleRate> Ref;
+	using Ref = deTObjectReference<syneUSynthesizerSetSampleRate>;
 	
 	
 private:

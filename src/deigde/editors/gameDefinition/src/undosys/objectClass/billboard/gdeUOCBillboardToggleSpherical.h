@@ -38,7 +38,7 @@
  */
 class gdeUOCBillboardToggleSpherical : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCBillboardToggleSpherical> Ref;
+	using Ref = deTObjectReference<gdeUOCBillboardToggleSpherical>;
 	
 	
 private:

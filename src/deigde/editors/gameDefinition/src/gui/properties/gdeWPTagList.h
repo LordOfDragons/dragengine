@@ -45,7 +45,7 @@ class igdeUndoSystem;
 class gdeWPTagList : public igdeContainerFlow{
 public:
 	/** \brief Strong reference. */
-	typedef deTObjectReference<gdeWPTagList> Ref;
+	using Ref = deTObjectReference<gdeWPTagList>;
 	
 private:
 	igdeComboBoxFilter::Ref pComboBox;

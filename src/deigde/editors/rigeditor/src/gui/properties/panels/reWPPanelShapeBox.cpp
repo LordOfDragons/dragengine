@@ -56,7 +56,7 @@ namespace {
 class cEditHalfExtends : public igdeEditVectorListener{
 	reWPPanelShapeBox &pPanel;
 public:
-	typedef deTObjectReference<cEditHalfExtends> Ref;
+	using Ref = deTObjectReference<cEditHalfExtends>;
 	cEditHalfExtends(reWPPanelShapeBox &panel) : pPanel(panel){}
 	
 	void OnVectorChanged(igdeEditVector *editVector) override{

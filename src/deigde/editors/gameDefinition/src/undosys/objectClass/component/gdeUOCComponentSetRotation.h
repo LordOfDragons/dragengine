@@ -40,7 +40,7 @@
  */
 class gdeUOCComponentSetRotation : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCComponentSetRotation> Ref;
+	using Ref = deTObjectReference<gdeUOCComponentSetRotation>;
 	
 	
 private:

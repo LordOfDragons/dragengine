@@ -38,7 +38,7 @@ class deSynthesizerEffectVisitor;
 class DE_DLL_EXPORT deSynthesizerEffect : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deSynthesizerEffect> Ref;
+	using Ref = deTObjectReference<deSynthesizerEffect>;
 	
 	
 private:

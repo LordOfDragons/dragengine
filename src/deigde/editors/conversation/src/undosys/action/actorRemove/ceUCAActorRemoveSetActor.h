@@ -37,7 +37,7 @@
  */
 class ceUCAActorRemoveSetActor : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCAActorRemoveSetActor> Ref;
+	using Ref = deTObjectReference<ceUCAActorRemoveSetActor>;
 	
 	
 private:

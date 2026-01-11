@@ -57,7 +57,7 @@ class igdeTriggerTargetList;
  */
 class meWPPropertyList : public igdeContainerFlow{
 public:
-	typedef deTObjectReference<meWPPropertyList> Ref;
+	using Ref = deTObjectReference<meWPPropertyList>;
 	
 private:
 	igdeUndoSystem *pUndoSystem;

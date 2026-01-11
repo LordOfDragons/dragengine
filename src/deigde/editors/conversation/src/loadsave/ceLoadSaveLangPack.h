@@ -41,8 +41,8 @@ class decBaseFileWriter;
  */
 class ceLoadSaveLangPack : public deObject{
 public:
-	typedef deTObjectReference<ceLoadSaveLangPack> Ref;
-	typedef decTObjectOrderedSet<ceLoadSaveLangPack> List;
+	using Ref = deTObjectReference<ceLoadSaveLangPack>;
+	using List = decTObjectOrderedSet<ceLoadSaveLangPack>;
 	
 	
 private:

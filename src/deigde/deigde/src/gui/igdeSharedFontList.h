@@ -41,7 +41,7 @@ class igdeSharedFontList{
 private:
 	class cFont : public deObject{
 	public:
-		typedef deTObjectReference<cFont> Ref;
+		using Ref = deTObjectReference<cFont>;
 		
 		const igdeFont::sConfiguration config;
 		const igdeFont::Ref font;

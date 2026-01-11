@@ -40,7 +40,7 @@ class deDSRenderableCanvas;
 class deoglRDSRenderableCanvas : public deoglRDSRenderable{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglRDSRenderableCanvas> Ref;
+	using Ref = deTObjectReference<deoglRDSRenderableCanvas>;
 	
 	
 private:

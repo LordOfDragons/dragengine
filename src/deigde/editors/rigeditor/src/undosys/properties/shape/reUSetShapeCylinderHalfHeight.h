@@ -37,7 +37,7 @@
  */
 class reUSetShapeCylinderHalfHeight : public igdeUndo{
 public:
-	typedef deTObjectReference<reUSetShapeCylinderHalfHeight> Ref;
+	using Ref = deTObjectReference<reUSetShapeCylinderHalfHeight>;
 	
 	
 private:

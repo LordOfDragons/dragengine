@@ -37,7 +37,7 @@
 class meHTVRuleCurve : public meHTVRule{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meHTVRuleCurve> Ref;
+	using Ref = deTObjectReference<meHTVRuleCurve>;
 	
 	
 	/** \brief Slots. */

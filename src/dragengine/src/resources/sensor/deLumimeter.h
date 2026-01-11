@@ -53,7 +53,7 @@ class deWorld;
 class DE_DLL_EXPORT deLumimeter : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deLumimeter> Ref;
+	using Ref = deTObjectReference<deLumimeter>;
 	
 	
 private:

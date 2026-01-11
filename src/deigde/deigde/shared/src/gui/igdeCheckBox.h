@@ -34,7 +34,7 @@
 class DE_DLL_EXPORT igdeCheckBox : public igdeButton{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeCheckBox> Ref;
+	using Ref = deTObjectReference<igdeCheckBox>;
 	
 	
 private:

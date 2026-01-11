@@ -96,7 +96,7 @@ protected:
 	projPanelProfiles &pPanel;
 	
 public:
-	typedef deTObjectReference<cActionBase> Ref;
+	using Ref = deTObjectReference<cActionBase>;
 	cActionBase(projPanelProfiles &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description),
 	pPanel(panel){}
@@ -126,7 +126,7 @@ protected:
 	projPanelProfiles &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseTextFieldListener> Ref;
+	using Ref = deTObjectReference<cBaseTextFieldListener>;
 	cBaseTextFieldListener(projPanelProfiles &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -155,7 +155,7 @@ protected:
 	projPanelProfiles &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseTextAreaListener> Ref;
+	using Ref = deTObjectReference<cBaseTextAreaListener>;
 	cBaseTextAreaListener(projPanelProfiles &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextArea *textArea) override{
@@ -184,7 +184,7 @@ protected:
 	projPanelProfiles &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseEditPointListener> Ref;
+	using Ref = deTObjectReference<cBaseEditPointListener>;
 	cBaseEditPointListener(projPanelProfiles &panel) : pPanel(panel){}
 	
 	void OnPointChanged(igdeEditPoint *editPoint) override{
@@ -215,7 +215,7 @@ protected:
 	projPanelProfiles &pPanel;
 	
 public:
-	typedef deTObjectReference<cListProfile> Ref;
+	using Ref = deTObjectReference<cListProfile>;
 	cListProfile(projPanelProfiles &panel) : pPanel(panel){}
 	
 	void OnSelectionChanged(igdeListBox *listBox) override{
@@ -238,7 +238,7 @@ public:
 
 class cTextName : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextName> Ref;
+	using Ref = deTObjectReference<cTextName>;
 	cTextName(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject *project,
@@ -261,7 +261,7 @@ public:
 
 class cTextDescription : public cBaseTextAreaListener{
 public:
-	typedef deTObjectReference<cTextDescription> Ref;
+	using Ref = deTObjectReference<cTextDescription>;
 	cTextDescription(projPanelProfiles &panel) : cBaseTextAreaListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextArea *textArea, projProject*,
@@ -275,7 +275,7 @@ public:
 
 class cTextScriptDirectory : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextScriptDirectory> Ref;
+	using Ref = deTObjectReference<cTextScriptDirectory>;
 	cTextScriptDirectory(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
@@ -288,7 +288,7 @@ public:
 
 class cActionScriptDirectory : public cActionBase{
 public:
-	typedef deTObjectReference<cActionScriptDirectory> Ref;
+	using Ref = deTObjectReference<cActionScriptDirectory>;
 	
 	cActionScriptDirectory(projPanelProfiles &panel) : cActionBase(panel,
 		"...", nullptr, "VFS directory where the game scripts are located"){}
@@ -300,7 +300,7 @@ public:
 
 class cTextGameObject : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextGameObject> Ref;
+	using Ref = deTObjectReference<cTextGameObject>;
 	cTextGameObject(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
@@ -313,7 +313,7 @@ public:
 
 class cTextPathConfig : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextPathConfig> Ref;
+	using Ref = deTObjectReference<cTextPathConfig>;
 	cTextPathConfig(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
@@ -326,7 +326,7 @@ public:
 
 class cActionPathConfig : public cActionBase{
 public:
-	typedef deTObjectReference<cActionPathConfig> Ref;
+	using Ref = deTObjectReference<cActionPathConfig>;
 	
 	cActionPathConfig(projPanelProfiles &panel) : cActionBase(panel,
 		"...", nullptr, "VFS directory where the game stores configuration files"){}
@@ -338,7 +338,7 @@ public:
 
 class cTextPathCapture : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextPathCapture> Ref;
+	using Ref = deTObjectReference<cTextPathCapture>;
 	cTextPathCapture(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
@@ -351,7 +351,7 @@ public:
 
 class cActionPathCapture : public cActionBase{
 public:
-	typedef deTObjectReference<cActionPathCapture> Ref;
+	using Ref = deTObjectReference<cActionPathCapture>;
 	
 	cActionPathCapture(projPanelProfiles &panel) : cActionBase(panel,
 		"...", nullptr, "VFS directory where the game stores captured files"){}
@@ -363,7 +363,7 @@ public:
 
 class cActionGenerateIdentifier : public cActionBase{
 public:
-	typedef deTObjectReference<cActionGenerateIdentifier> Ref;
+	using Ref = deTObjectReference<cActionGenerateIdentifier>;
 	
 	cActionGenerateIdentifier(projPanelProfiles &panel) : cActionBase(panel,
 		"Generate Identifier", nullptr, "Generate Identifier"){}
@@ -382,7 +382,7 @@ class cActionMenuIdentifier : public igdeActionContextMenu{
 	projPanelProfiles &pPanel;
 	
 public:
-	typedef deTObjectReference<cActionMenuIdentifier> Ref;
+	using Ref = deTObjectReference<cActionMenuIdentifier>;
 	
 	cActionMenuIdentifier(projPanelProfiles &panel) : igdeActionContextMenu("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Identifier menu"),
@@ -400,7 +400,7 @@ public:
 
 class cTextIdentifier : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextIdentifier> Ref;
+	using Ref = deTObjectReference<cTextIdentifier>;
 	cTextIdentifier(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
@@ -420,7 +420,7 @@ public:
 
 class cTextAliasIdentifier : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextAliasIdentifier> Ref;
+	using Ref = deTObjectReference<cTextAliasIdentifier>;
 	cTextAliasIdentifier(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
@@ -433,7 +433,7 @@ public:
 
 class cTextTitle : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextTitle> Ref;
+	using Ref = deTObjectReference<cTextTitle>;
 	cTextTitle(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
@@ -446,7 +446,7 @@ public:
 
 class cTextGameDescription : public cBaseTextAreaListener{
 public:
-	typedef deTObjectReference<cTextGameDescription> Ref;
+	using Ref = deTObjectReference<cTextGameDescription>;
 	cTextGameDescription(projPanelProfiles &panel) : cBaseTextAreaListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextArea *textArea, projProject*, projProfile *profile) override{
@@ -459,7 +459,7 @@ public:
 
 class cTextCreator : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextCreator> Ref;
+	using Ref = deTObjectReference<cTextCreator>;
 	cTextCreator(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
@@ -472,7 +472,7 @@ public:
 
 class cTextWebsite : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextWebsite> Ref;
+	using Ref = deTObjectReference<cTextWebsite>;
 	cTextWebsite(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
@@ -485,7 +485,7 @@ public:
 
 class cEditWindowSize : public cBaseEditPointListener{
 public:
-	typedef deTObjectReference<cEditWindowSize> Ref;
+	using Ref = deTObjectReference<cEditWindowSize>;
 	cEditWindowSize(projPanelProfiles &panel) : cBaseEditPointListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeEditPoint *editPoint, projProject*, projProfile *profile) override{
@@ -502,7 +502,7 @@ class cActionAddIcon : public cActionBase{
 	igdeEditPath &pEditPath;
 	
 public:
-	typedef deTObjectReference<cActionAddIcon> Ref;
+	using Ref = deTObjectReference<cActionAddIcon>;
 	
 	cActionAddIcon(projPanelProfiles &panel, igdeEditPath &editPath) :
 	cActionBase(panel, "", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallPlus), "Add icon"),
@@ -523,7 +523,7 @@ class cActionRemoveIcon : public cActionBase{
 	igdeListBox &pListIcons;
 	
 public:
-	typedef deTObjectReference<cActionRemoveIcon> Ref;
+	using Ref = deTObjectReference<cActionRemoveIcon>;
 	
 	cActionRemoveIcon(projPanelProfiles &panel, igdeListBox &listPatterns) :
 	cActionBase(panel, "", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallMinus),
@@ -553,7 +553,7 @@ class cActionAddExcludePattern : public cActionBase{
 	igdeTextField &pTextPattern;
 	
 public:
-	typedef deTObjectReference<cActionAddExcludePattern> Ref;
+	using Ref = deTObjectReference<cActionAddExcludePattern>;
 	
 	cActionAddExcludePattern(projPanelProfiles &panel, igdeTextField &textPattern) :
 	cActionBase(panel, "", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallPlus),
@@ -575,7 +575,7 @@ class cActionRemoveExcludePattern : public cActionBase{
 	igdeListBox &pListPatterns;
 	
 public:
-	typedef deTObjectReference<cActionRemoveExcludePattern> Ref;
+	using Ref = deTObjectReference<cActionRemoveExcludePattern>;
 	
 	cActionRemoveExcludePattern(projPanelProfiles &panel, igdeListBox &listPatterns) :
 	cActionBase(panel, "", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallMinus),
@@ -605,7 +605,7 @@ class cActionAddRequiredExtension : public cActionBase{
 	igdeTextField &pTextExtension;
 	
 public:
-	typedef deTObjectReference<cActionAddRequiredExtension> Ref;
+	using Ref = deTObjectReference<cActionAddRequiredExtension>;
 	
 	cActionAddRequiredExtension(projPanelProfiles &panel, igdeTextField &textExtension) :
 	cActionBase(panel, "", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallPlus),
@@ -627,7 +627,7 @@ class cActionRemoveRequiredExtension : public cActionBase{
 	igdeListBox &pListPatterns;
 	
 public:
-	typedef deTObjectReference<cActionRemoveRequiredExtension> Ref;
+	using Ref = deTObjectReference<cActionRemoveRequiredExtension>;
 	
 	cActionRemoveRequiredExtension(projPanelProfiles &panel, igdeListBox &listPatterns) :
 	cActionBase(panel, "", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallMinus),
@@ -655,7 +655,7 @@ public:
 
 class cTextDelgaPath : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextDelgaPath> Ref;
+	using Ref = deTObjectReference<cTextDelgaPath>;
 	cTextDelgaPath(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
@@ -668,7 +668,7 @@ public:
 
 class cActionDelgaPath : public cActionBase{
 public:
-	typedef deTObjectReference<cActionDelgaPath> Ref;
+	using Ref = deTObjectReference<cActionDelgaPath>;
 	
 	cActionDelgaPath(projPanelProfiles &panel) : cActionBase(panel,
 		"...", nullptr, "VFS directory where to place the build DELGA file"){}
@@ -682,7 +682,7 @@ public:
 
 class cTextRunArguments : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextRunArguments> Ref;
+	using Ref = deTObjectReference<cTextRunArguments>;
 	cTextRunArguments(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{

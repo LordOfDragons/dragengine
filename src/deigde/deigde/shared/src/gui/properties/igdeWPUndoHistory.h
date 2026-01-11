@@ -42,7 +42,7 @@ class DE_DLL_EXPORT igdeWPUndoHistory : public igdeContainerBox{
 
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeWPUndoHistory> Ref;
+	using Ref = deTObjectReference<igdeWPUndoHistory>;
 	
 	
 private:

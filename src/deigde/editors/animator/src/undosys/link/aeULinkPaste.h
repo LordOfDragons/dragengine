@@ -38,7 +38,7 @@
  */
 class aeULinkPaste : public igdeUndo{
 public:
-	typedef deTObjectReference<aeULinkPaste> Ref;
+	using Ref = deTObjectReference<aeULinkPaste>;
 	
 	
 private:

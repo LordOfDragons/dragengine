@@ -38,7 +38,7 @@
  */
 class reUConstraintDofSetLowerLimit : public igdeUndo{
 public:
-	typedef deTObjectReference<reUConstraintDofSetLowerLimit> Ref;
+	using Ref = deTObjectReference<reUConstraintDofSetLowerLimit>;
 	
 	
 private:

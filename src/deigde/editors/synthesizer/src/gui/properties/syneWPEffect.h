@@ -46,7 +46,7 @@ class syneViewSynthesizer;
  */
 class syneWPEffect : public igdeContainerFlow{
 public:
-	typedef deTObjectReference<syneWPEffect> Ref;
+	using Ref = deTObjectReference<syneWPEffect>;
 	
 private:
 	syneViewSynthesizer &pViewSynthesizer;

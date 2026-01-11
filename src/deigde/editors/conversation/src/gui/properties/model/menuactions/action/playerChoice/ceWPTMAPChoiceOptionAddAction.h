@@ -49,7 +49,7 @@ protected:
 	ceWPTMAPChoiceOptionAddAction();
 	
 public:
-	typedef deTObjectReference<ceWPTMAPChoiceOptionAddAction> Ref;
+	using Ref = deTObjectReference<ceWPTMAPChoiceOptionAddAction>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */

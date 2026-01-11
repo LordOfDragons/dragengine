@@ -41,7 +41,7 @@ class igdeDialogEngine;
  */
 class DE_DLL_EXPORT igdeDEConsole : public igdeContainerFlow{
 public:
-	typedef deTObjectReference<igdeDEConsole> Ref;
+	using Ref = deTObjectReference<igdeDEConsole>;
 	
 	
 private:

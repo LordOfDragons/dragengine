@@ -42,7 +42,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglSkinRenderable> Ref;
+	using Ref = deTObjectReference<deoglSkinRenderable>;
 
 
 	/** \name Constructors and Destructors */

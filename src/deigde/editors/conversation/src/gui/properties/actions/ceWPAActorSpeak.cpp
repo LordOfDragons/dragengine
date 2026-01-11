@@ -81,7 +81,7 @@ class cComboActorID : public igdeComboBoxListener {
 	ceWPAActorSpeak &pPanel;
 	
 public:
-	typedef deTObjectReference<cComboActorID> Ref;
+	using Ref = deTObjectReference<cComboActorID>;
 	cComboActorID(ceWPAActorSpeak &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -100,7 +100,7 @@ class cTextTextBoxText : public igdeTextFieldListener {
 	ceWPAActorSpeak &pPanel;
 	
 public:
-	typedef deTObjectReference<cTextTextBoxText> Ref;
+	using Ref = deTObjectReference<cTextTextBoxText>;
 	cTextTextBoxText(ceWPAActorSpeak &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -120,7 +120,7 @@ class cActionEditTextBoxText : public igdeAction {
 	ceWPAActorSpeak &pPanel;
 	
 public:
-	typedef deTObjectReference<cActionEditTextBoxText> Ref;
+	using Ref = deTObjectReference<cActionEditTextBoxText>;
 	cActionEditTextBoxText(ceWPAActorSpeak &panel) : igdeAction("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
 		"Edit command in larger dialog"), pPanel(panel){}
@@ -150,7 +150,7 @@ class cTextTextBoxTextTranslate : public igdeTextFieldListener {
 	ceWPAActorSpeak &pPanel;
 	
 public:
-	typedef deTObjectReference<cTextTextBoxTextTranslate> Ref;
+	using Ref = deTObjectReference<cTextTextBoxTextTranslate>;
 	cTextTextBoxTextTranslate(ceWPAActorSpeak &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -167,7 +167,7 @@ public:
 
 class cActionTbt2TranslationEntry : public igdeAction{
 public:
-	typedef deTObjectReference<cActionTbt2TranslationEntry> Ref;
+	using Ref = deTObjectReference<cActionTbt2TranslationEntry>;
 	
 private:
 	ceWPAActorSpeak &pPanel;
@@ -219,7 +219,7 @@ public:
 
 class cActionTbtFromTranslationEntry : public igdeAction{
 public:
-	typedef deTObjectReference<cActionTbtFromTranslationEntry> Ref;
+	using Ref = deTObjectReference<cActionTbtFromTranslationEntry>;
 	
 private:
 	ceWPAActorSpeak &pPanel;
@@ -259,7 +259,7 @@ public:
 
 class cActionShowTranslationEntry : public igdeAction{
 public:
-	typedef deTObjectReference<cActionShowTranslationEntry> Ref;
+	using Ref = deTObjectReference<cActionShowTranslationEntry>;
 	
 private:
 	ceWPAActorSpeak &pPanel;
@@ -300,7 +300,7 @@ class cActionTextBoxTextTranslateMenu : public igdeActionContextMenu{
 	ceWPAActorSpeak &pPanel;
 	
 public:
-	typedef deTObjectReference<cActionTextBoxTextTranslateMenu> Ref;
+	using Ref = deTObjectReference<cActionTextBoxTextTranslateMenu>;
 	cActionTextBoxTextTranslateMenu(ceWPAActorSpeak &panel) : igdeActionContextMenu("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
 		"Show Text Box Text Translate Menu"), pPanel(panel){}
@@ -319,7 +319,7 @@ class cTextTextBoxStyle : public igdeTextFieldListener {
 	ceWPAActorSpeak &pPanel;
 	
 public:
-	typedef deTObjectReference<cTextTextBoxStyle> Ref;
+	using Ref = deTObjectReference<cTextTextBoxStyle>;
 	cTextTextBoxStyle(ceWPAActorSpeak &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -338,7 +338,7 @@ class cTextMovement : public igdeTextFieldListener {
 	ceWPAActorSpeak &pPanel;
 	
 public:
-	typedef deTObjectReference<cTextMovement> Ref;
+	using Ref = deTObjectReference<cTextMovement>;
 	cTextMovement(ceWPAActorSpeak &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -357,7 +357,7 @@ class cPathSound : public igdeEditPathListener {
 	ceWPAActorSpeak &pPanel;
 	
 public:
-	typedef deTObjectReference<cPathSound> Ref;
+	using Ref = deTObjectReference<cPathSound>;
 	cPathSound(ceWPAActorSpeak &panel) : pPanel(panel){}
 	
 	void OnEditPathChanged(igdeEditPath *editPath) override{
@@ -376,7 +376,7 @@ class cTextMinSpeechTime : public igdeTextFieldListener {
 	ceWPAActorSpeak &pPanel;
 	
 public:
-	typedef deTObjectReference<cTextMinSpeechTime> Ref;
+	using Ref = deTObjectReference<cTextMinSpeechTime>;
 	cTextMinSpeechTime(ceWPAActorSpeak &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -396,7 +396,7 @@ class cActionUseSpeechAnimation : public igdeAction {
 	ceWPAActorSpeak &pPanel;
 	
 public:
-	typedef deTObjectReference<cActionUseSpeechAnimation> Ref;
+	using Ref = deTObjectReference<cActionUseSpeechAnimation>;
 	cActionUseSpeechAnimation(ceWPAActorSpeak &panel) : igdeAction("Use Speech Animation",
 		nullptr, "Speech animation is played back or not (for example thinking)"), pPanel(panel){ }
 	

@@ -38,10 +38,10 @@
 class DE_DLL_EXPORT igdeGDCBillboard : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeGDCBillboard> Ref;
+	using Ref = deTObjectReference<igdeGDCBillboard>;
 	
 	/** \brief Type holding list. */
-	typedef decTObjectOrderedSet<igdeGDCBillboard> List;
+	using List = decTObjectOrderedSet<igdeGDCBillboard>;
 	
 	
 	/** \brief Properties. */

@@ -59,7 +59,7 @@ class cBaseAction : public igdeAction{
 protected:
 	peeWPView &pPanel;
 public:
-	typedef deTObjectReference<cBaseAction> Ref;
+	using Ref = deTObjectReference<cBaseAction>;
 	cBaseAction(peeWPView &panel, const char *text, const char *description) :
 	igdeAction(text, description), pPanel(panel){}
 	
@@ -75,7 +75,7 @@ public:
 
 class cActionSkyChanged : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionSkyChanged> Ref;
+	using Ref = deTObjectReference<cActionSkyChanged>;
 	cActionSkyChanged(peeWPView &panel) : cBaseAction(panel, "", ""){}
 	
 	void OnAction(peeEmitter &emitter) override{
@@ -85,7 +85,7 @@ public:
 
 class cActionCameraChanged : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionCameraChanged> Ref;
+	using Ref = deTObjectReference<cActionCameraChanged>;
 	cActionCameraChanged(peeWPView &panel) : cBaseAction(panel, "", ""){}
 	
 	void OnAction(peeEmitter &emitter) override{
@@ -95,7 +95,7 @@ public:
 
 class cActionEnvObjChanged : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnvObjChanged> Ref;
+	using Ref = deTObjectReference<cActionEnvObjChanged>;
 	cActionEnvObjChanged(peeWPView &panel) : cBaseAction(panel, "", ""){}
 	
 	void OnAction(peeEmitter &emitter) override{
@@ -106,7 +106,7 @@ public:
 class cEditPosition : public igdeEditVectorListener{
 	peeWPView &pPanel;
 public:
-	typedef deTObjectReference<cEditPosition> Ref;
+	using Ref = deTObjectReference<cEditPosition>;
 	cEditPosition(peeWPView &panel) : pPanel(panel){}
 	
 	void OnVectorChanged(igdeEditVector *editVector) override{
@@ -120,7 +120,7 @@ public:
 class cEditRotation : public igdeEditVectorListener{
 	peeWPView &pPanel;
 public:
-	typedef deTObjectReference<cEditRotation> Ref;
+	using Ref = deTObjectReference<cEditRotation>;
 	cEditRotation(peeWPView &panel) : pPanel(panel){}
 	
 	void OnVectorChanged(igdeEditVector *editVector) override{
@@ -134,7 +134,7 @@ public:
 class cEditBurstInterval : public igdeTextFieldListener{
 	peeWPView &pPanel;
 public:
-	typedef deTObjectReference<cEditBurstInterval> Ref;
+	using Ref = deTObjectReference<cEditBurstInterval>;
 	cEditBurstInterval(peeWPView &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -148,7 +148,7 @@ public:
 class cEditWarmUpTime : public igdeTextFieldListener{
 	peeWPView &pPanel;
 public:
-	typedef deTObjectReference<cEditWarmUpTime> Ref;
+	using Ref = deTObjectReference<cEditWarmUpTime>;
 	cEditWarmUpTime(peeWPView &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -161,7 +161,7 @@ public:
 
 class cActionEnableCasting : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableCasting> Ref;
+	using Ref = deTObjectReference<cActionEnableCasting>;
 	cActionEnableCasting(peeWPView &panel) :
 	cBaseAction(panel, "Enable Casting", "Determines if casting is enabled"){ }
 	

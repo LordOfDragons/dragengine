@@ -47,7 +47,7 @@
 class meHTVRuleClosestVegetation : public meHTVRule{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meHTVRuleClosestVegetation> Ref;
+	using Ref = deTObjectReference<meHTVRuleClosestVegetation>;
 	
 	
 	/** \brief Slots. */

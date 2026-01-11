@@ -39,7 +39,7 @@
  */
 class meUDecalRotate : public meBaseUndoRotate{
 public:
-	typedef deTObjectReference<meUDecalRotate> Ref;
+	using Ref = deTObjectReference<meUDecalRotate>;
 	
 private:
 	meWorld *pWorld;

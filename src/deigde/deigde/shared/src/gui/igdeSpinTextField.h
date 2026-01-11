@@ -41,7 +41,7 @@ class DE_DLL_EXPORT igdeSpinTextField : public igdeWidget{
 
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeSpinTextField> Ref;
+	using Ref = deTObjectReference<igdeSpinTextField>;
 	
 	
 private:

@@ -37,7 +37,7 @@
  */
 class reUSetShapeOrientation : public igdeUndo{
 public:
-	typedef deTObjectReference<reUSetShapeOrientation> Ref;
+	using Ref = deTObjectReference<reUSetShapeOrientation>;
 	
 	
 private:

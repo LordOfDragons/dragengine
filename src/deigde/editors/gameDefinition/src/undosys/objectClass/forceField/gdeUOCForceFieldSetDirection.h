@@ -39,7 +39,7 @@
  */
 class gdeUOCForceFieldSetDirection : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCForceFieldSetDirection> Ref;
+	using Ref = deTObjectReference<gdeUOCForceFieldSetDirection>;
 	
 	
 private:

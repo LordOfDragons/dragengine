@@ -36,7 +36,7 @@
  */
 class reURigToggleDynamic : public igdeUndo{
 public:
-	typedef deTObjectReference<reURigToggleDynamic> Ref;
+	using Ref = deTObjectReference<reURigToggleDynamic>;
 	
 	
 private:

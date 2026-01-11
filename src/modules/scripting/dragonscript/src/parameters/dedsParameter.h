@@ -36,7 +36,7 @@ class deScriptingDragonScript;
  */
 class dedsParameter : public deObject{
 public:
-	typedef deTObjectReference<dedsParameter> Ref;
+	using Ref = deTObjectReference<dedsParameter>;
 	
 	
 protected:

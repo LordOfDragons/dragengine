@@ -36,7 +36,7 @@ class aeWPPlayground;
  */
 class aeWPPlaygroundListener : public aeAnimatorNotifier{
 public:
-	typedef deTObjectReference<aeWPPlaygroundListener> Ref;
+	using Ref = deTObjectReference<aeWPPlaygroundListener>;
 	
 	
 private:

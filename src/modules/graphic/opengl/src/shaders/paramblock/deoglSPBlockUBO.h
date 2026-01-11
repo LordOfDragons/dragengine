@@ -37,7 +37,7 @@
  */
 class deoglSPBlockUBO : public deoglShaderParameterBlock{
 public:
-	typedef deTObjectReference<deoglSPBlockUBO> Ref;
+	using Ref = deTObjectReference<deoglSPBlockUBO>;
 	
 	
 private:

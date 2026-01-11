@@ -44,7 +44,7 @@
  */
 class meUAddDecal : public igdeUndo{
 public:
-	typedef deTObjectReference<meUAddDecal> Ref;
+	using Ref = deTObjectReference<meUAddDecal>;
 	
 	
 private:

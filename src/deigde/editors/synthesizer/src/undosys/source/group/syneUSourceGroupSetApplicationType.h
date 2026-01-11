@@ -38,7 +38,7 @@
  */
 class syneUSourceGroupSetApplicationType : public igdeUndo{
 public:
-	typedef deTObjectReference<syneUSourceGroupSetApplicationType> Ref;
+	using Ref = deTObjectReference<syneUSourceGroupSetApplicationType>;
 	
 	
 private:

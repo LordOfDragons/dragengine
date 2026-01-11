@@ -51,7 +51,7 @@ class deBaseModule;
 class DE_DLL_EXPORT deLoadableModule : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deLoadableModule> Ref;
+	using Ref = deTObjectReference<deLoadableModule>;
 	
 	
 	/** \brief Error Codes. */

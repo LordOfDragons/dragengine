@@ -37,7 +37,7 @@ class ceCAIfElse;
  */
 class ceWPAIfElse : public ceWPAction{
 public:
-	typedef deTObjectReference<ceWPAIfElse> Ref;
+	using Ref = deTObjectReference<ceWPAIfElse>;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create view. */

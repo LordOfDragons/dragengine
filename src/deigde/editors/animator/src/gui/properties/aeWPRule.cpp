@@ -84,7 +84,7 @@ protected:
 	aeWPRule &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseAction> Ref;
+	using Ref = deTObjectReference<cBaseAction>;
 	cBaseAction(aeWPRule &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description),
 	pPanel(panel){}
@@ -125,7 +125,7 @@ public:
 
 class cActionCopy : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionCopy> Ref;
+	using Ref = deTObjectReference<cActionCopy>;
 	
 public:
 	cActionCopy(aeWPRule &panel) : cBaseAction(panel, "Copy",
@@ -141,7 +141,7 @@ public:
 
 class cActionCut : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionCut> Ref;
+	using Ref = deTObjectReference<cActionCut>;
 	
 public:
 	cActionCut(aeWPRule &panel) : cBaseAction(panel, "Cut",
@@ -163,7 +163,7 @@ public:
 
 class cActionPaste : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionPaste> Ref;
+	using Ref = deTObjectReference<cActionPaste>;
 	
 private:
 protected:
@@ -200,7 +200,7 @@ public:
 
 class cActionPasteAppend : public cActionPaste{
 public:
-	typedef deTObjectReference<cActionPasteAppend> Ref;
+	using Ref = deTObjectReference<cActionPasteAppend>;
 	cActionPasteAppend(aeWPRule &panel) : cActionPaste(panel, "Paste Append",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
 		"Paste and append rule from clipboard", false){}
@@ -208,7 +208,7 @@ public:
 
 class cActionPasteInsert : public cActionPaste{
 public:
-	typedef deTObjectReference<cActionPasteInsert> Ref;
+	using Ref = deTObjectReference<cActionPasteInsert>;
 	cActionPasteInsert(aeWPRule &panel) : cActionPaste(panel, "Paste Insert",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
 		"Paste and insert rule from clipboard ", true){}
@@ -216,7 +216,7 @@ public:
 
 class cActionPasteIntoGroup : public cActionPaste{
 public:
-	typedef deTObjectReference<cActionPasteIntoGroup> Ref;
+	using Ref = deTObjectReference<cActionPasteIntoGroup>;
 	cActionPasteIntoGroup(aeWPRule &panel) : cActionPaste(panel, "Paste Into Group",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
 		"Paste rules from clipboard into group", false){}
@@ -244,7 +244,7 @@ class cTreeRules : public igdeTreeListListener{
 	aeWPRule &pPanel;
 	
 public:
-	typedef deTObjectReference<cTreeRules> Ref;
+	using Ref = deTObjectReference<cTreeRules>;
 	cTreeRules(aeWPRule &panel) : pPanel(panel){}
 	
 	void OnSelectionChanged(igdeTreeList *treeList) override{

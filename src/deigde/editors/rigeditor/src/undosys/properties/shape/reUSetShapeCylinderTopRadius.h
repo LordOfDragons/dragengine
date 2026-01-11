@@ -37,7 +37,7 @@
  */
 class reUSetShapeCylinderTopRadius : public igdeUndo{
 public:
-	typedef deTObjectReference<reUSetShapeCylinderTopRadius> Ref;
+	using Ref = deTObjectReference<reUSetShapeCylinderTopRadius>;
 	
 	
 private:

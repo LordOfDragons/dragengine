@@ -43,7 +43,7 @@ class deInternalModule;
 class DE_DLL_EXPORT delEngineModule : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<delEngineModule> Ref;
+	using Ref = deTObjectReference<delEngineModule>;
 	
 	
 public:

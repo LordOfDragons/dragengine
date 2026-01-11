@@ -102,6 +102,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxDialog igdeNativeDialog;
+using igdeNativeDialog = igdeNativeFoxDialog;
 
 #endif

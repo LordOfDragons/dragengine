@@ -40,10 +40,10 @@
 class gdeOCNavigationBlocker : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeOCNavigationBlocker> Ref;
+	using Ref = deTObjectReference<gdeOCNavigationBlocker>;
 
 	/** \brief Type holding list. */
-	typedef decTObjectOrderedSet<gdeOCNavigationBlocker> List;
+	using List = decTObjectOrderedSet<gdeOCNavigationBlocker>;
 	
 	
 	/** \brief Properties. */

@@ -50,8 +50,8 @@ class ceCameraShot;
  */
 class cePlayback : public deObject{
 public:
-	typedef deTObjectReference<cePlayback> Ref;
-	typedef decTStringDictionary<int> VariableMap;
+	using Ref = deTObjectReference<cePlayback>;
+	using VariableMap = decTStringDictionary<int>;
 	
 	/** Camera handling. */
 	enum eCameraHandling{

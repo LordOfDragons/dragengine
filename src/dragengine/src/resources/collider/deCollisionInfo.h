@@ -44,7 +44,7 @@ class deHeightTerrainSector;
 class DE_DLL_EXPORT deCollisionInfo : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deCollisionInfo> Ref;
+	using Ref = deTObjectReference<deCollisionInfo>;
 	
 	
 private:

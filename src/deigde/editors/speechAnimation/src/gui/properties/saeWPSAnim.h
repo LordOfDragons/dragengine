@@ -48,7 +48,7 @@ class saeWord;
  */
 class saeWPSAnim : public igdeContainerScroll{
 public:
-	typedef deTObjectReference<saeWPSAnim> Ref;
+	using Ref = deTObjectReference<saeWPSAnim>;
 	
 private:
 	saeWindowProperties &pWindowProperties;

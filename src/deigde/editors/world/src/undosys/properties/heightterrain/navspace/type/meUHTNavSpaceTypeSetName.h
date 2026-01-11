@@ -36,7 +36,7 @@
  */
 class meUHTNavSpaceTypeSetName : public igdeUndo{
 public:
-	typedef deTObjectReference<meUHTNavSpaceTypeSetName> Ref;
+	using Ref = deTObjectReference<meUHTNavSpaceTypeSetName>;
 	
 	
 private:

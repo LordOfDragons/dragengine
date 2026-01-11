@@ -112,7 +112,7 @@ class deBasePhysicsParticleEmitter;
 class DE_DLL_EXPORT deParticleEmitter : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deParticleEmitter> Ref;
+	using Ref = deTObjectReference<deParticleEmitter>;
 	
 	
 private:

@@ -72,7 +72,7 @@ class deBaseAIWorld;
 class DE_DLL_EXPORT deWorld : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deWorld> Ref;
+	using Ref = deTObjectReference<deWorld>;
 	
 	
 private:

@@ -43,7 +43,7 @@
  */
 class meUHTSetTexUVRotation : public igdeUndo{
 public:
-	typedef deTObjectReference<meUHTSetTexUVRotation> Ref;
+	using Ref = deTObjectReference<meUHTSetTexUVRotation>;
 	
 	
 private:

@@ -54,7 +54,7 @@ class igdeStepableTask;
  */
 class skyeWindowMain : public igdeEditorWindow{
 public:
-	typedef deTObjectReference<skyeWindowMain> Ref;
+	using Ref = deTObjectReference<skyeWindowMain>;
 	
 	
 private:

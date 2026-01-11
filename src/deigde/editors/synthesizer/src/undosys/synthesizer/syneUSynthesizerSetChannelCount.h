@@ -37,7 +37,7 @@
  */
 class syneUSynthesizerSetChannelCount : public igdeUndo{
 public:
-	typedef deTObjectReference<syneUSynthesizerSetChannelCount> Ref;
+	using Ref = deTObjectReference<syneUSynthesizerSetChannelCount>;
 	
 	
 private:

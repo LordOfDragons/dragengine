@@ -39,7 +39,7 @@ class ceConversationAction;
  */
 class ceWPTMACLogicCutCondition : public ceWPTMACopyCondition{
 public:
-	typedef deTObjectReference<ceWPTMACLogicCutCondition> Ref;
+	using Ref = deTObjectReference<ceWPTMACLogicCutCondition>;
 	
 private:
 	ceConversation *pConversation;

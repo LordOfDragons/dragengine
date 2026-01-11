@@ -49,10 +49,10 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeOCSnapPoint> Ref;
+	using Ref = deTObjectReference<gdeOCSnapPoint>;
 
 	/** \brief Type holding list. */
-	typedef decTObjectOrderedSet<gdeOCSnapPoint> List;
+	using List = decTObjectOrderedSet<gdeOCSnapPoint>;
 
 
 	/** \name Constructors and Destructors */

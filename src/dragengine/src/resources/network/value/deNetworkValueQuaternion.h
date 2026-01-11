@@ -38,7 +38,7 @@
 class DE_DLL_EXPORT deNetworkValueQuaternion : public deNetworkValue{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deNetworkValueQuaternion> Ref;
+	using Ref = deTObjectReference<deNetworkValueQuaternion>;
 	
 	
 private:

@@ -42,8 +42,8 @@ class deEngine;
  */
 class meAttachedDecal : public deObject{
 public:
-	typedef deTObjectReference<meAttachedDecal> Ref;
-	typedef decTObjectOrderedSet<meAttachedDecal> List;
+	using Ref = deTObjectReference<meAttachedDecal>;
+	using List = decTObjectOrderedSet<meAttachedDecal>;
 	
 	
 private:

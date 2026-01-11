@@ -46,7 +46,7 @@ class deoglRenderTaskSharedInstance;
  */
 class deoglWorldComputeElement : public deObject{
 public:
-	typedef deTObjectReference<deoglWorldComputeElement> Ref;
+	using Ref = deTObjectReference<deoglWorldComputeElement>;
 	
 	
 	/** Compute shader element types. */

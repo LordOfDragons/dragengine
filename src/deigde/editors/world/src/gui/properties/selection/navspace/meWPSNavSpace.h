@@ -46,7 +46,7 @@ class meNavigationSpace;
  */
 class meWPSNavSpace : public igdeContainerScroll{
 public:
-	typedef deTObjectReference<meWPSNavSpace> Ref;
+	using Ref = deTObjectReference<meWPSNavSpace>;
 	
 private:
 	meWPSelection &pWPSelection;

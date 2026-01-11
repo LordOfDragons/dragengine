@@ -39,8 +39,8 @@ class deSkyControllerTarget;
  */
 class skyeControllerTarget : public deObject{
 public:
-	typedef deTObjectReference<skyeControllerTarget> Ref;
-	typedef decTObjectOrderedSet<skyeControllerTarget> List;
+	using Ref = deTObjectReference<skyeControllerTarget>;
+	using List = decTObjectOrderedSet<skyeControllerTarget>;
 	
 	
 private:

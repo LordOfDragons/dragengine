@@ -51,7 +51,7 @@ class deWorld;
 class DE_DLL_EXPORT dePropField : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<dePropField> Ref;
+	using Ref = deTObjectReference<dePropField>;
 	
 	
 private:

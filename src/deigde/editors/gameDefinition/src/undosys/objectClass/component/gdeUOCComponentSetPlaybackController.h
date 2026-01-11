@@ -38,7 +38,7 @@
  */
 class gdeUOCComponentSetPlaybackController : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCComponentSetPlaybackController> Ref;
+	using Ref = deTObjectReference<gdeUOCComponentSetPlaybackController>;
 	
 	
 private:

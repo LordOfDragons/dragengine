@@ -43,7 +43,7 @@ class saeSAnimation;
  */
 class saeWindowProperties : public igdeTabBook{
 public:
-	typedef deTObjectReference<saeWindowProperties> Ref;
+	using Ref = deTObjectReference<saeWindowProperties>;
 	
 private:
 	saeWindowMain &pWindowMain;

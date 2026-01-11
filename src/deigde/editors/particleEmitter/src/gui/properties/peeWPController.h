@@ -46,7 +46,7 @@ class peeWindowProperties;
 class peeWPController : public igdeContainerScroll{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<peeWPController> Ref;
+	using Ref = deTObjectReference<peeWPController>;
 	
 private:
 	peeWindowProperties &pWindowProperties;

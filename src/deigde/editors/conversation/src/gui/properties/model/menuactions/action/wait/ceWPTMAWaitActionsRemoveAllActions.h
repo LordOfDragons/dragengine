@@ -37,7 +37,7 @@ class ceCAWait;
  */
 class ceWPTMAWaitActionsRemoveAllActions : public ceWPTMARemoveAllActions{
 public:
-	typedef deTObjectReference<ceWPTMAWaitActionsRemoveAllActions> Ref;
+	using Ref = deTObjectReference<ceWPTMAWaitActionsRemoveAllActions>;
 
 private:
 	ceConversationTopic *pTopic;

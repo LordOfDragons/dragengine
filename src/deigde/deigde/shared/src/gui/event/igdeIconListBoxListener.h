@@ -40,7 +40,7 @@ class DE_DLL_EXPORT igdeIconListBoxListener : public deObject{
 
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeIconListBoxListener> Ref;
+	using Ref = deTObjectReference<igdeIconListBoxListener>;
 	
 	
 protected:

@@ -107,6 +107,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxColorBox igdeNativeColorBox;
+using igdeNativeColorBox = igdeNativeFoxColorBox;
 
 #endif

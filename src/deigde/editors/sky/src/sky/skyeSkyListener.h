@@ -41,7 +41,7 @@ class skyeSky;
  */
 class skyeSkyListener : public deObject{
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<skyeSkyListener> Ref;
+	using Ref = deTObjectReference<skyeSkyListener>;
 
 
 public:

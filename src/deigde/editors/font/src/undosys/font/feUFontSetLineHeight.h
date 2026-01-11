@@ -36,7 +36,7 @@ class feFont;
  */
 class feUFontSetLineHeight : public igdeUndo{
 public:
-	typedef deTObjectReference<feUFontSetLineHeight> Ref;
+	using Ref = deTObjectReference<feUFontSetLineHeight>;
 	
 	
 private:

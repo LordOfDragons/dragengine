@@ -36,7 +36,7 @@
  */
 class seUPropertySetVideoPath : public igdeUndo{
 public:
-	typedef deTObjectReference<seUPropertySetVideoPath> Ref;
+	using Ref = deTObjectReference<seUPropertySetVideoPath>;
 	
 	
 private:

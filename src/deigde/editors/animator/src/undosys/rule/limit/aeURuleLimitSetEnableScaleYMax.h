@@ -36,7 +36,7 @@
  */
 class aeURuleLimitSetEnableScaleYMax : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleLimitSetEnableScaleYMax> Ref;
+	using Ref = deTObjectReference<aeURuleLimitSetEnableScaleYMax>;
 	
 	
 private:

@@ -44,7 +44,7 @@ class decXmlElementTag;
  */
 class deoglShaderSources : public deObject{
 public:
-	typedef deTObjectReference<deoglShaderSources> Ref;
+	using Ref = deTObjectReference<deoglShaderSources>;
 	
 	
 private:

@@ -47,7 +47,7 @@ class deCanvasRenderWorld;
 class DE_DLL_EXPORT igdeViewRenderWindow : public igdeWidget{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeViewRenderWindow> Ref;
+	using Ref = deTObjectReference<igdeViewRenderWindow>;
 	
 	
 private:

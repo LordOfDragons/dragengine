@@ -22,6 +22,7 @@ Files matching the following glob pattern must not be changed:
 - `src/dragengine/src/extern/**/*`
 - `src/deigde/editors/project/minizip/**/*`
 - `src/modules/archive/delga/minizip/**/*`
+- `src/modules/graphic/opengl/src/convexhull3d/**/*`
 - `src/modules/graphic/opengl/src/extensions/*gl*.h`
 - `src/modules/graphic/opengl/src/extensions/*khr*.h`
 - `src/modules/graphic/opengl/squish/**/*`

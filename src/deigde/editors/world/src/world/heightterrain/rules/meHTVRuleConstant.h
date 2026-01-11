@@ -43,7 +43,7 @@
 class meHTVRuleConstant : public meHTVRule{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meHTVRuleConstant> Ref;
+	using Ref = deTObjectReference<meHTVRuleConstant>;
 	
 	
 	/** \brief Slots. */

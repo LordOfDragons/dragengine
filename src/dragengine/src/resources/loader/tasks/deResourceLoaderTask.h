@@ -42,7 +42,7 @@ class deFileResource;
 class DE_DLL_EXPORT deResourceLoaderTask : public deParallelTask{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTThreadSafeObjectReference<deResourceLoaderTask> Ref;
+	using Ref = deTThreadSafeObjectReference<deResourceLoaderTask>;
 	
 	
 	/** \brief States. */

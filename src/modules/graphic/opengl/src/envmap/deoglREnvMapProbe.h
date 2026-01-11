@@ -58,7 +58,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglREnvMapProbe> Ref;
+	using Ref = deTObjectReference<deoglREnvMapProbe>;
 
 
 	/** \name Constructors and Destructors */

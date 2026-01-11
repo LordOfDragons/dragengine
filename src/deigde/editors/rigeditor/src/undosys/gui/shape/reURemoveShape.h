@@ -39,13 +39,13 @@
  */
 class reURemoveShape : public igdeUndo{
 public:
-	typedef deTObjectReference<reURemoveShape> Ref;
+	using Ref = deTObjectReference<reURemoveShape>;
 	
 	
 private:
 	class cEntry : public deObject{
 	public:
-		typedef deTObjectReference<cEntry> Ref;
+		using Ref = deTObjectReference<cEntry>;
 		
 		reRigShape::Ref shape;
 		reRigBone::Ref bone;

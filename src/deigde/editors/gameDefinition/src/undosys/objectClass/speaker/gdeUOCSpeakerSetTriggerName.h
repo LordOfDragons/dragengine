@@ -39,7 +39,7 @@
  */
 class gdeUOCSpeakerSetTriggerName : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCSpeakerSetTriggerName> Ref;
+	using Ref = deTObjectReference<gdeUOCSpeakerSetTriggerName>;
 	
 	
 private:

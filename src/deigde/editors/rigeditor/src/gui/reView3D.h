@@ -47,7 +47,7 @@ class decLayerMask;
  */
 class reView3D : public igdeViewRenderWindow{
 public:
-	typedef deTObjectReference<reView3D> Ref;
+	using Ref = deTObjectReference<reView3D>;
 	
 private:
 	reWindowMain &pWindowMain;

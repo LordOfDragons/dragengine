@@ -38,7 +38,7 @@
  */
 class reUConstraintDofSetSpringStiffness : public igdeUndo{
 public:
-	typedef deTObjectReference<reUConstraintDofSetSpringStiffness> Ref;
+	using Ref = deTObjectReference<reUConstraintDofSetSpringStiffness>;
 	
 	
 private:

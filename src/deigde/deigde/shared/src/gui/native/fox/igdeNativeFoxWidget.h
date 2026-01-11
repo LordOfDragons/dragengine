@@ -91,6 +91,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxWidget igdeNativeWidget;
+using igdeNativeWidget = igdeNativeFoxWidget;
 
 #endif

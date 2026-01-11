@@ -81,7 +81,7 @@ protected:
 	skyeWPController &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseTextFieldListener> Ref;
+	using Ref = deTObjectReference<cBaseTextFieldListener>;
 	cBaseTextFieldListener(skyeWPController &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -105,7 +105,7 @@ protected:
 	skyeWPController &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseEditSliderTextListener> Ref;
+	using Ref = deTObjectReference<cBaseEditSliderTextListener>;
 	cBaseEditSliderTextListener(skyeWPController &panel) : pPanel(panel){}
 	
 	virtual void OnVectorChanged(igdeEditSliderText *editSlider){
@@ -129,7 +129,7 @@ protected:
 	skyeWPController &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseAction> Ref;
+	using Ref = deTObjectReference<cBaseAction>;
 	cBaseAction(skyeWPController &panel, const char *text, const char *description) :
 	igdeAction(text, description),
 	pPanel(panel){}
@@ -159,7 +159,7 @@ public:
 
 class cBaseActionController : public cBaseAction{
 public:
-	typedef deTObjectReference<cBaseActionController> Ref;
+	using Ref = deTObjectReference<cBaseActionController>;
 	
 public:
 	cBaseActionController(skyeWPController &panel, const char *text, const char *description) :
@@ -189,7 +189,7 @@ public:
 class cListControllers : public igdeListBoxListener{
 	skyeWPController &pPanel;
 public:
-	typedef deTObjectReference<cListControllers> Ref;
+	using Ref = deTObjectReference<cListControllers>;
 	cListControllers(skyeWPController &panel) : pPanel(panel){}
 	
 	void OnSelectionChanged(igdeListBox *listBox) override{
@@ -220,7 +220,7 @@ public:
 
 class cActionControllerAdd : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionControllerAdd> Ref;
+	using Ref = deTObjectReference<cActionControllerAdd>;
 	
 public:
 	cActionControllerAdd(skyeWPController &panel) : cBaseAction(panel, "Add",
@@ -234,7 +234,7 @@ public:
 
 class cActionControllerRemove : public cBaseActionController{
 public:
-	typedef deTObjectReference<cActionControllerRemove> Ref;
+	using Ref = deTObjectReference<cActionControllerRemove>;
 	cActionControllerRemove(skyeWPController &panel) : cBaseActionController(panel, "Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove the selected controller."){}
@@ -262,7 +262,7 @@ public:
 class cActionControllerUp : public cBaseActionController{
 	igdeListBox &pListBox;
 public:
-	typedef deTObjectReference<cActionControllerUp> Ref;
+	using Ref = deTObjectReference<cActionControllerUp>;
 	cActionControllerUp(skyeWPController &panel, igdeListBox &listBox) : cBaseActionController(
 		panel, "Move Up", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp),
 		"Move controller up in the list."),
@@ -280,7 +280,7 @@ public:
 class cActionControllerDown : public cBaseActionController{
 	igdeListBox &pListBox;
 public:
-	typedef deTObjectReference<cActionControllerDown> Ref;
+	using Ref = deTObjectReference<cActionControllerDown>;
 	cActionControllerDown(skyeWPController &panel, igdeListBox &listBox) : cBaseActionController(
 		panel, "Move Down", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown),
 		"Move controller down in the list."),
@@ -299,7 +299,7 @@ public:
 
 class cTextName : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextName> Ref;
+	using Ref = deTObjectReference<cTextName>;
 	cTextName(skyeWPController &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, skyeSky*, skyeController *controller) override{
@@ -313,7 +313,7 @@ public:
 
 class cTextMinimumValue : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextMinimumValue> Ref;
+	using Ref = deTObjectReference<cTextMinimumValue>;
 	cTextMinimumValue(skyeWPController &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, skyeSky*, skyeController *controller) override{
@@ -327,7 +327,7 @@ public:
 
 class cTextMaximumValue : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextMaximumValue> Ref;
+	using Ref = deTObjectReference<cTextMaximumValue>;
 	cTextMaximumValue(skyeWPController &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, skyeSky*, skyeController *controller) override{
@@ -342,7 +342,7 @@ public:
 class cSliderValue : public igdeEditSliderTextListener{
 	skyeWPController &pPanel;
 public:
-	typedef deTObjectReference<cSliderValue> Ref;
+	using Ref = deTObjectReference<cSliderValue>;
 	cSliderValue(skyeWPController &panel) : pPanel(panel){}
 	
 	void OnSliderTextValueChanging(igdeEditSliderText *sliderText) override{
@@ -359,7 +359,7 @@ public:
 
 class cActionClamp : public cBaseActionController{
 public:
-	typedef deTObjectReference<cActionClamp> Ref;
+	using Ref = deTObjectReference<cActionClamp>;
 	cActionClamp(skyeWPController &panel) : cBaseActionController(panel, "Clamp value to range",
 		"Determines if the value of the controller is clamped to the given range."){ }
 	
@@ -370,7 +370,7 @@ public:
 
 class cActionFrozen : public cBaseActionController{
 public:
-	typedef deTObjectReference<cActionFrozen> Ref;
+	using Ref = deTObjectReference<cActionFrozen>;
 	cActionFrozen(skyeWPController &panel) : cBaseActionController(panel,
 		"Freeze Controller value", "Prevents the controller from changing the current value."){}
 	

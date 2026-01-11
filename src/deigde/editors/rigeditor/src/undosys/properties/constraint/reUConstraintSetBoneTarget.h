@@ -37,7 +37,7 @@
  */
 class reUConstraintSetBoneTarget : public igdeUndo{
 public:
-	typedef deTObjectReference<reUConstraintSetBoneTarget> Ref;
+	using Ref = deTObjectReference<reUConstraintSetBoneTarget>;
 	
 	
 private:

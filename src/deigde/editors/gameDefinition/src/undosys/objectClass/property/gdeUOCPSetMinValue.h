@@ -40,7 +40,7 @@
  */
 class gdeUOCPSetMinValue : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCPSetMinValue> Ref;
+	using Ref = deTObjectReference<gdeUOCPSetMinValue>;
 	
 	
 private:

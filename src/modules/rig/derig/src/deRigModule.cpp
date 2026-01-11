@@ -1558,7 +1558,7 @@ const char *tagName, bool linearConstraint){
 
 class dermModuleInternal : public deInternalModule{
 public:
-	typedef deTObjectReference<dermModuleInternal> Ref;
+	using Ref = deTObjectReference<dermModuleInternal>;
 	
 	dermModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DERig");

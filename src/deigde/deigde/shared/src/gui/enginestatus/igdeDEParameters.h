@@ -44,7 +44,7 @@ class deLoadableModule;
  */
 class DE_DLL_EXPORT igdeDEParameters : public igdeContainerFlow{
 public:
-	typedef deTObjectReference<igdeDEParameters> Ref;
+	using Ref = deTObjectReference<igdeDEParameters>;
 	
 	
 private:

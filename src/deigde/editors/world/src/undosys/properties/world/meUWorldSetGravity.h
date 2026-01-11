@@ -37,7 +37,7 @@
  */
 class meUWorldSetGravity : public igdeUndo{
 public:
-	typedef deTObjectReference<meUWorldSetGravity> Ref;
+	using Ref = deTObjectReference<meUWorldSetGravity>;
 	
 	
 private:

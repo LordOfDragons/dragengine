@@ -57,7 +57,7 @@ protected:
 	syneWPAPanelSourceGroup &pPanel;
 	
 public:
-	typedef deTObjectReference<cComboApplicationType> Ref;
+	using Ref = deTObjectReference<cComboApplicationType>;
 	cComboApplicationType(syneWPAPanelSourceGroup &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{

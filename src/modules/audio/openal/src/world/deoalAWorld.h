@@ -69,7 +69,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoalAWorld> Ref;
+	using Ref = deTObjectReference<deoalAWorld>;
 
 
 	/** \name Constructors and Destructors */

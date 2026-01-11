@@ -43,7 +43,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglREffect> Ref;
+	using Ref = deTObjectReference<deoglREffect>;
 
 
 	/** \name Constructors and Destructors */

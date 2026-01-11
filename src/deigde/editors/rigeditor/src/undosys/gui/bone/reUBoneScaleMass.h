@@ -42,13 +42,13 @@
  */
 class reUBoneScaleMass : public igdeUndo{
 public:
-	typedef deTObjectReference<reUBoneScaleMass> Ref;
+	using Ref = deTObjectReference<reUBoneScaleMass>;
 	
 	
 private:
 	class cBone : public deObject{
 	public:
-		typedef deTObjectReference<cBone> Ref;
+		using Ref = deTObjectReference<cBone>;
 		
 		reRigBone::Ref bone;
 		float oldMass = 0.0f;

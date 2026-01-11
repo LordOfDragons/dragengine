@@ -51,10 +51,10 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<saePhoneme> Ref;
+	using Ref = deTObjectReference<saePhoneme>;
 
 	/** \brief List of objects. */
-	typedef decTOrderedSet<deTObjectReference<saePhoneme>, saePhoneme*> List;
+	using List = decTOrderedSet<deTObjectReference<saePhoneme>, saePhoneme*>;
 
 
 	/** \name Constructors and Destructors */

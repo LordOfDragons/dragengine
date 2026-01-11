@@ -36,7 +36,7 @@ class ceCAWait;
  */
 class ceWPTMAWaitActionsPasteCondition : public ceWPTMAPasteCondition{
 public:
-	typedef deTObjectReference<ceWPTMAWaitActionsPasteCondition> Ref;
+	using Ref = deTObjectReference<ceWPTMAWaitActionsPasteCondition>;
 
 private:
 	ceConversationTopic *pTopic;

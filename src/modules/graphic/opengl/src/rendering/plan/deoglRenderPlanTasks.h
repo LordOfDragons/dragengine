@@ -39,7 +39,7 @@ class deoglRenderPlanMasked;
  */
 class deoglRenderPlanTasks : public deObject{
 public:
-	typedef deTObjectReference<deoglRenderPlanTasks> Ref;
+	using Ref = deTObjectReference<deoglRenderPlanTasks>;
 	
 	
 private:

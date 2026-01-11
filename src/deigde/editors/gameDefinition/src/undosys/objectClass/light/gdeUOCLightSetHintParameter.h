@@ -40,7 +40,7 @@
  */
 class gdeUOCLightSetHintParameter : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCLightSetHintParameter> Ref;
+	using Ref = deTObjectReference<gdeUOCLightSetHintParameter>;
 	
 	
 private:

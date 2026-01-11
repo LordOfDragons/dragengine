@@ -38,7 +38,7 @@
  */
 class gdeUOCRemoveInherit : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCRemoveInherit> Ref;
+	using Ref = deTObjectReference<gdeUOCRemoveInherit>;
 	
 	
 private:

@@ -43,7 +43,7 @@ class saeGameDefinition;
  */
 class saeWPView : public igdeContainerScroll{
 public:
-	typedef deTObjectReference<saeWPView> Ref;
+	using Ref = deTObjectReference<saeWPView>;
 	
 private:
 	saeWindowProperties &pWindowProperties;

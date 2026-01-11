@@ -38,7 +38,7 @@
 class peeWPUndoHistory : public igdeWPUndoHistory{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<peeWPUndoHistory> Ref;
+	using Ref = deTObjectReference<peeWPUndoHistory>;
 	
 private:
 	peeWPUndoHistoryListener::Ref pListener;

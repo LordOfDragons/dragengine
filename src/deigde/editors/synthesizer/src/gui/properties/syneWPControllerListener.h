@@ -36,7 +36,7 @@ class syneWPController;
  */
 class syneWPControllerListener : public syneSynthesizerNotifier{
 public:
-	typedef deTObjectReference<syneWPControllerListener> Ref;
+	using Ref = deTObjectReference<syneWPControllerListener>;
 	
 private:
 	syneWPController &pPanel;

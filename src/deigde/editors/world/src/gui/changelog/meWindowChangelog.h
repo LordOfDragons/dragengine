@@ -41,7 +41,7 @@ class meWCEntry;
  */
 class meWindowChangelog : public igdeContainerBorder{
 public:
-	typedef deTObjectReference<meWindowChangelog> Ref;
+	using Ref = deTObjectReference<meWindowChangelog>;
 	
 private:
 	meWindowMain &pWindowMain;

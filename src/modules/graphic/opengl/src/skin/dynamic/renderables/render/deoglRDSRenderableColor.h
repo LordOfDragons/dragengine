@@ -37,7 +37,7 @@
 class deoglRDSRenderableColor : public deoglRDSRenderable{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglRDSRenderableColor> Ref;
+	using Ref = deTObjectReference<deoglRDSRenderableColor>;
 	
 	
 private:

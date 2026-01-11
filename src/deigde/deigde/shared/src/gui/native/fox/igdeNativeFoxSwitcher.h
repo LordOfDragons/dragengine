@@ -78,6 +78,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxSwitcher igdeNativeSwitcher;
+using igdeNativeSwitcher = igdeNativeFoxSwitcher;
 
 #endif

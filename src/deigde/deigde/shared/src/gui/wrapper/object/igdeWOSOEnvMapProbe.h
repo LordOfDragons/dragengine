@@ -41,7 +41,7 @@ class igdeGDCEnvMapProbe;
 class DE_DLL_EXPORT igdeWOSOEnvMapProbe : public igdeWOSubObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeWOSOEnvMapProbe> Ref;
+	using Ref = deTObjectReference<igdeWOSOEnvMapProbe>;
 	
 	
 private:

@@ -41,7 +41,7 @@ class syneWindowMain;
  */
 class syneViewSynthesizer : public igdeContainerBorder{
 public:
-	typedef deTObjectReference<syneViewSynthesizer> Ref;
+	using Ref = deTObjectReference<syneViewSynthesizer>;
 	
 private:
 	syneWindowMain &pWindowMain;

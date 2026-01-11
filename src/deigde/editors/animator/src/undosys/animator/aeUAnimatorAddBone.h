@@ -37,7 +37,7 @@ class aeAnimator;
  */
 class aeUAnimatorAddBone : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUAnimatorAddBone> Ref;
+	using Ref = deTObjectReference<aeUAnimatorAddBone>;
 	
 	
 private:

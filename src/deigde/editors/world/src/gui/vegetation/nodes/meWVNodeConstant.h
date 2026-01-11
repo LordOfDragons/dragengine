@@ -39,7 +39,7 @@ class meHTVRuleConstant;
  */
 class meWVNodeConstant : public meWVNode{
 public:
-	typedef deTObjectReference<meWVNodeConstant> Ref;
+	using Ref = deTObjectReference<meWVNodeConstant>;
 	
 private:
 	meHTVRuleConstant *pRuleConstant;

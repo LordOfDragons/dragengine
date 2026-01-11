@@ -46,7 +46,7 @@ class DE_DLL_EXPORT igdeEditPoint : public igdeContainerBoxAlternate{
 
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeEditPoint> Ref;
+	using Ref = deTObjectReference<igdeEditPoint>;
 	
 	
 protected:
@@ -58,7 +58,7 @@ protected:
 		igdeTextField::WeakRef pTextY;
 		
 	public:
-		typedef deTObjectReference<cListener> Ref;
+		using Ref = deTObjectReference<cListener>;
 		
 		cListener(igdeEditPoint &editPoint, igdeTextField *textX, igdeTextField *textY);
 		

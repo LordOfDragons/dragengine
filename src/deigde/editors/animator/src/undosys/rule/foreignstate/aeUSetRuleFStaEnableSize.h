@@ -42,7 +42,7 @@
  */
 class aeUSetRuleFStaEnableSize : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUSetRuleFStaEnableSize> Ref;
+	using Ref = deTObjectReference<aeUSetRuleFStaEnableSize>;
 	
 	
 private:

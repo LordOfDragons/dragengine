@@ -105,6 +105,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxToggleButton igdeNativeToggleButton;
+using igdeNativeToggleButton = igdeNativeFoxToggleButton;
 
 #endif

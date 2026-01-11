@@ -36,7 +36,7 @@
  */
 class seUPropertyConstructedSetBitCount : public igdeUndo{
 public:
-	typedef deTObjectReference<seUPropertyConstructedSetBitCount> Ref;
+	using Ref = deTObjectReference<seUPropertyConstructedSetBitCount>;
 	
 	
 private:

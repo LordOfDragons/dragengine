@@ -38,7 +38,7 @@
  */
 class ceUCAWaitRemoveAll : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCAWaitRemoveAll> Ref;
+	using Ref = deTObjectReference<ceUCAWaitRemoveAll>;
 	
 	
 private:

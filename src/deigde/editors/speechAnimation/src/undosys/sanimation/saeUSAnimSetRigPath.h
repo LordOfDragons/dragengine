@@ -36,7 +36,7 @@
  */
 class saeUSAnimSetRigPath : public igdeUndo{
 public:
-	typedef deTObjectReference<saeUSAnimSetRigPath> Ref;
+	using Ref = deTObjectReference<saeUSAnimSetRigPath>;
 	
 	
 private:

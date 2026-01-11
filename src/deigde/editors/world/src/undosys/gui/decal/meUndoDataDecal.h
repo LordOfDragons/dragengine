@@ -39,8 +39,8 @@
  */
 class meUndoDataDecal : public deObject{
 public:
-	typedef deTObjectReference<meUndoDataDecal> Ref;
-	typedef decTObjectOrderedSet<meUndoDataDecal> List;
+	using Ref = deTObjectReference<meUndoDataDecal>;
+	using List = decTObjectOrderedSet<meUndoDataDecal>;
 	
 private:
 	meDecal::Ref pDecal;

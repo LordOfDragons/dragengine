@@ -40,8 +40,8 @@ private:
 	float pValue;
 	
 public:
-	typedef deTObjectReference<ceControllerValue> Ref;
-	typedef decTObjectOrderedSet<ceControllerValue> List;
+	using Ref = deTObjectReference<ceControllerValue>;
+	using List = decTObjectOrderedSet<ceControllerValue>;
 
 
 	/** \name Constructors and Destructors */

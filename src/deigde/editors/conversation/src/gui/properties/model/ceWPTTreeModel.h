@@ -50,8 +50,8 @@ class igdeMenuCascade;
  */
 class ceWPTTreeModel : public deObject{
 public:
-	typedef deTObjectReference<ceWPTTreeModel> Ref;
-	typedef decTObjectOrderedSet<ceWPTTreeItemModel> ModelList;
+	using Ref = deTObjectReference<ceWPTTreeModel>;
+	using ModelList = decTObjectOrderedSet<ceWPTTreeItemModel>;
 	
 	class PreventUpdateGuard{
 		ceWPTTreeModel &pModel;

@@ -36,7 +36,7 @@
  */
 class reURemovePush : public igdeUndo{
 public:
-	typedef deTObjectReference<reURemovePush> Ref;
+	using Ref = deTObjectReference<reURemovePush>;
 	
 	
 private:

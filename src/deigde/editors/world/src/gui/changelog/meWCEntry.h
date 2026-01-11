@@ -42,7 +42,7 @@ class meWindowChangelog;
  */
 class meWCEntry : public igdeListItem{
 public:
-	typedef deTObjectReference<meWCEntry> Ref;
+	using Ref = deTObjectReference<meWCEntry>;
 	
 	/** \brief Element type. */
 	enum eElementTypes{

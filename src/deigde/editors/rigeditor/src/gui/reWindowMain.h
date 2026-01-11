@@ -64,7 +64,7 @@ class igdeEnvironment;
  */
 class reWindowMain : public igdeEditorWindow{
 public:
-	typedef deTObjectReference<reWindowMain> Ref;
+	using Ref = deTObjectReference<reWindowMain>;
 	
 	
 private:

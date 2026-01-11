@@ -37,7 +37,7 @@
  */
 class gdeUOCToggleIsAttachableBehavior : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCToggleIsAttachableBehavior> Ref;
+	using Ref = deTObjectReference<gdeUOCToggleIsAttachableBehavior>;
 	
 	
 private:

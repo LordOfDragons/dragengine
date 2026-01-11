@@ -48,7 +48,7 @@ class deBaseGraphicVideo;
 class DE_DLL_EXPORT deVideo : public deFileResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deVideo> Ref;
+	using Ref = deTObjectReference<deVideo>;
 	
 	
 private:

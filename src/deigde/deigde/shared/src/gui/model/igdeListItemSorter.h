@@ -45,7 +45,7 @@ class DE_DLL_EXPORT igdeListItemSorter : public deObject{
 
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeListItemSorter> Ref;
+	using Ref = deTObjectReference<igdeListItemSorter>;
 	
 	
 private:

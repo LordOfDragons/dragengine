@@ -36,7 +36,7 @@
  */
 class seUTextureSetName : public igdeUndo{
 public:
-	typedef deTObjectReference<seUTextureSetName> Ref;
+	using Ref = deTObjectReference<seUTextureSetName>;
 	
 	
 private:

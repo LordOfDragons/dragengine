@@ -38,7 +38,7 @@
 class DE_DLL_EXPORT deNetworkValueVector2 : public deNetworkValue{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deNetworkValueVector2> Ref;
+	using Ref = deTObjectReference<deNetworkValueVector2>;
 	
 	
 private:

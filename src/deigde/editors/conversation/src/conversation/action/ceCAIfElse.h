@@ -51,7 +51,7 @@ private:
 	
 	
 public:
-	typedef deTObjectReference<ceCAIfElse> Ref;
+	using Ref = deTObjectReference<ceCAIfElse>;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create if-else conversation action. */

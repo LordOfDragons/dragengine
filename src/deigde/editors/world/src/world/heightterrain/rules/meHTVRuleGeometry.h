@@ -42,7 +42,7 @@
 class meHTVRuleGeometry : public meHTVRule{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meHTVRuleGeometry> Ref;
+	using Ref = deTObjectReference<meHTVRuleGeometry>;
 	
 	
 	/** \brief Slots. */

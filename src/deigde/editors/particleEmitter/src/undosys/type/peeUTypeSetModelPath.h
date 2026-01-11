@@ -36,7 +36,7 @@
  */
 class peeUTypeSetModelPath : public igdeUndo{
 public:
-	typedef deTObjectReference<peeUTypeSetModelPath> Ref;
+	using Ref = deTObjectReference<peeUTypeSetModelPath>;
 	
 	
 private:

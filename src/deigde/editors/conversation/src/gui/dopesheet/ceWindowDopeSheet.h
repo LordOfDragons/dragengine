@@ -63,7 +63,7 @@ class ceWDSLane;
  */
 class ceWindowDopeSheet : public igdeContainerFlow{
 public:
-	typedef deTObjectReference<ceWindowDopeSheet> Ref;
+	using Ref = deTObjectReference<ceWindowDopeSheet>;
 	
 	/** \brief Lanes. */
 	enum eLanes{
@@ -78,7 +78,7 @@ public:
 	/** \brief Dope sheet view. */
 	class cDopeSheet : public igdeViewRenderWindow{
 	public:
-		typedef deTObjectReference<cDopeSheet> Ref;
+		using Ref = deTObjectReference<cDopeSheet>;
 		
 	private:
 		ceWindowDopeSheet &pWindow;

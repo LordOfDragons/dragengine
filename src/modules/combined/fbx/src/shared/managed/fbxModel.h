@@ -50,7 +50,7 @@ class deModelWeight;
 class fbxModel : public deObject{
 public:
 	/** Type holding strong reference. */
-	typedef deTObjectReference<fbxModel> Ref;
+	using Ref = deTObjectReference<fbxModel>;
 	
 	
 private:

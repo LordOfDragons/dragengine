@@ -36,7 +36,7 @@
  */
 class aeULinkSetBoneMaximum : public igdeUndo{
 public:
-	typedef deTObjectReference<aeULinkSetBoneMaximum> Ref;
+	using Ref = deTObjectReference<aeULinkSetBoneMaximum>;
 	
 	
 private:

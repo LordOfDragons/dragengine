@@ -37,7 +37,7 @@
  */
 class seWPUndoHistory : public igdeWPUndoHistory{
 public:
-	typedef deTObjectReference<seWPUndoHistory> Ref;
+	using Ref = deTObjectReference<seWPUndoHistory>;
 	
 private:
 	seWPUndoHistoryListener::Ref pListener;

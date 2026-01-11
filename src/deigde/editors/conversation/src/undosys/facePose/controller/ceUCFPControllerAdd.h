@@ -37,7 +37,7 @@
  */
 class ceUCFPControllerAdd : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCFPControllerAdd> Ref;
+	using Ref = deTObjectReference<ceUCFPControllerAdd>;
 	
 	
 private:

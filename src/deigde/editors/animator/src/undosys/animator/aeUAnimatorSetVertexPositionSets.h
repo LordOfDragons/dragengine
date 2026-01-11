@@ -36,7 +36,7 @@ class aeAnimator;
  */
 class aeUAnimatorSetVertexPositionSets : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUAnimatorSetVertexPositionSets> Ref;
+	using Ref = deTObjectReference<aeUAnimatorSetVertexPositionSets>;
 	
 	
 private:

@@ -35,7 +35,7 @@
  */
 class skyeULayerSetIntensity : public igdeUndo{
 public:
-	typedef deTObjectReference<skyeULayerSetIntensity> Ref;
+	using Ref = deTObjectReference<skyeULayerSetIntensity>;
 	
 	
 private:

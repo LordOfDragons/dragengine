@@ -36,7 +36,7 @@ class reWPRig;
  */
 class reWPRigListener : public reRigNotifier{
 public:
-	typedef deTObjectReference<reWPRigListener> Ref;
+	using Ref = deTObjectReference<reWPRigListener>;
 	
 private:
 	reWPRig &pPanel;

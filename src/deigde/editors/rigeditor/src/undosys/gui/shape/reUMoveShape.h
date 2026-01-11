@@ -35,7 +35,7 @@
  */
 class reUMoveShape : public reBaseUndoMove{
 public:
-	typedef deTObjectReference<reUMoveShape> Ref;
+	using Ref = deTObjectReference<reUMoveShape>;
 	
 private:
 	reUndoDataShape::List pShapes;

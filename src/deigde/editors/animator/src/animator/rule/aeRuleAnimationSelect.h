@@ -36,7 +36,7 @@
  */
 class aeRuleAnimationSelect : public aeRule{
 public:
-	typedef deTObjectReference<aeRuleAnimationSelect> Ref;
+	using Ref = deTObjectReference<aeRuleAnimationSelect>;
 	
 	
 private:

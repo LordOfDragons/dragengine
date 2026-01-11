@@ -213,7 +213,7 @@ void deCRBasic::LogTraceSubValues(const deErrorTraceValue &traceValue, const cha
 
 class decrbModuleInternal : public deInternalModule{
 public:
-	typedef deTObjectReference<decrbModuleInternal> Ref;
+	using Ref = deTObjectReference<decrbModuleInternal>;
 	
 	decrbModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("BasicRecovery");

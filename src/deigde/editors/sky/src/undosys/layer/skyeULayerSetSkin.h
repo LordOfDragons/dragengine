@@ -35,7 +35,7 @@
  */
 class skyeULayerSetSkin : public igdeUndo{
 public:
-	typedef deTObjectReference<skyeULayerSetSkin> Ref;
+	using Ref = deTObjectReference<skyeULayerSetSkin>;
 	
 	
 private:

@@ -55,7 +55,7 @@ class igdeTreeItem;
  */
 class meWPBrowser : public igdeContainerBox{
 public:
-	typedef deTObjectReference<meWPBrowser> Ref;
+	using Ref = deTObjectReference<meWPBrowser>;
 	
 	enum ePreviewSize{
 		epsLarge,

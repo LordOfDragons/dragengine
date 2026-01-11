@@ -37,7 +37,7 @@
  */
 class syneUSetSourceMaxVolume : public igdeUndo{
 public:
-	typedef deTObjectReference<syneUSetSourceMaxVolume> Ref;
+	using Ref = deTObjectReference<syneUSetSourceMaxVolume>;
 	
 	
 private:

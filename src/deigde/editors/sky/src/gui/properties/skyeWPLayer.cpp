@@ -314,7 +314,7 @@ public:
 class cListLayers : public igdeListBoxListener{
 	skyeWPLayer &pPanel;
 public:
-	typedef deTObjectReference<cListLayers> Ref;
+	using Ref = deTObjectReference<cListLayers>;
 	cListLayers(skyeWPLayer &panel) : pPanel(panel){}
 	
 	void OnSelectionChanged(igdeListBox *listBox) override{
@@ -339,7 +339,7 @@ public:
 
 class cActionLayerAdd : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionLayerAdd> Ref;
+	using Ref = deTObjectReference<cActionLayerAdd>;
 	cActionLayerAdd(skyeWPLayer &panel) : cBaseAction(panel, "Add",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Add a layer to the end of the list."){}
@@ -352,7 +352,7 @@ public:
 
 class cActionLayerRemove : public cBaseActionLayer{
 public:
-	typedef deTObjectReference<cActionLayerRemove> Ref;
+	using Ref = deTObjectReference<cActionLayerRemove>;
 	cActionLayerRemove(skyeWPLayer &panel) : cBaseActionLayer(panel, "Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove the selected layer."){}
@@ -365,7 +365,7 @@ public:
 class cActionLayerUp : public cBaseActionLayer{
 	igdeListBox &pListBox;
 public:
-	typedef deTObjectReference<cActionLayerUp> Ref;
+	using Ref = deTObjectReference<cActionLayerUp>;
 	cActionLayerUp(skyeWPLayer &panel, igdeListBox &listBox) : cBaseActionLayer(panel,
 		"Move Up", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp),
 		"Move layer up in the list."),
@@ -383,7 +383,7 @@ public:
 class cActionLayerDown : public cBaseActionLayer{
 	igdeListBox &pListBox;
 public:
-	typedef deTObjectReference<cActionLayerDown> Ref;
+	using Ref = deTObjectReference<cActionLayerDown>;
 	cActionLayerDown(skyeWPLayer &panel, igdeListBox &listBox) : cBaseActionLayer(panel,
 		"Move Down", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown),
 		"Move layer down in the list."),
@@ -402,7 +402,7 @@ public:
 
 class cTextName : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextName> Ref;
+	using Ref = deTObjectReference<cTextName>;
 	cTextName(skyeWPLayer &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, skyeSky*, skyeLayer *layer) override{
@@ -415,7 +415,7 @@ public:
 
 class cPathSkin : public cBasePathListener{
 public:
-	typedef deTObjectReference<cPathSkin> Ref;
+	using Ref = deTObjectReference<cPathSkin>;
 	cPathSkin(skyeWPLayer &panel) : cBasePathListener(panel){}
 	
 	igdeUndo::Ref OnChanged(const decString &path, skyeSky*, skyeLayer *layer) override{
@@ -428,7 +428,7 @@ public:
 
 class cEditOffset : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditOffset> Ref;
+	using Ref = deTObjectReference<cEditOffset>;
 	cEditOffset(skyeWPLayer &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(const decVector &vector, skyeSky*, skyeLayer *layer) override{
@@ -441,7 +441,7 @@ public:
 
 class cEditOrientation : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditOrientation> Ref;
+	using Ref = deTObjectReference<cEditOrientation>;
 	cEditOrientation(skyeWPLayer &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(const decVector &vector, skyeSky*, skyeLayer *layer) override{
@@ -454,7 +454,7 @@ public:
 
 class cEditColor : public cBaseColorBoxListener{
 public:
-	typedef deTObjectReference<cEditColor> Ref;
+	using Ref = deTObjectReference<cEditColor>;
 	cEditColor(skyeWPLayer &panel) : cBaseColorBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(const decColor &color, skyeSky*, skyeLayer *layer) override{
@@ -467,7 +467,7 @@ public:
 
 class cTextIntensity : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextIntensity> Ref;
+	using Ref = deTObjectReference<cTextIntensity>;
 	cTextIntensity(skyeWPLayer &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, skyeSky*, skyeLayer *layer) override{
@@ -483,7 +483,7 @@ class cSliderTransparency : public igdeEditSliderTextListener{
 	skyeWPLayer &pPanel;
 	igdeUndo::Ref pUndo;
 public:
-	typedef deTObjectReference<cSliderTransparency> Ref;
+	using Ref = deTObjectReference<cSliderTransparency>;
 	cSliderTransparency(skyeWPLayer &panel) : pPanel(panel){}
 	
 	void OnSliderTextValueChanging(igdeEditSliderText *sliderText) override{
@@ -518,7 +518,7 @@ public:
 
 class cActionMulBySkyLight : public cBaseActionLayer{
 public:
-	typedef deTObjectReference<cActionMulBySkyLight> Ref;
+	using Ref = deTObjectReference<cActionMulBySkyLight>;
 	cActionMulBySkyLight(skyeWPLayer &panel) : cBaseActionLayer(panel, "Multiply By Sky Light",
 		"Determines if the layer intensity is multiplied by the sky light intensity"){ }
 	
@@ -529,7 +529,7 @@ public:
 
 class cActionMulBySkyColor : public cBaseActionLayer{
 public:
-	typedef deTObjectReference<cActionMulBySkyColor> Ref;
+	using Ref = deTObjectReference<cActionMulBySkyColor>;
 	cActionMulBySkyColor(skyeWPLayer &panel) : cBaseActionLayer(panel, "Multiply By Sky Color",
 		"Determines if the layer color is multiplied by the sky light color"){ }
 	
@@ -540,7 +540,7 @@ public:
 
 class cEditLightColor : public cBaseColorBoxListener{
 public:
-	typedef deTObjectReference<cEditLightColor> Ref;
+	using Ref = deTObjectReference<cEditLightColor>;
 	cEditLightColor(skyeWPLayer &panel) : cBaseColorBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(const decColor &color, skyeSky*, skyeLayer *layer) override{
@@ -553,7 +553,7 @@ public:
 
 class cTextLightIntensity : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextLightIntensity> Ref;
+	using Ref = deTObjectReference<cTextLightIntensity>;
 	cTextLightIntensity(skyeWPLayer &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, skyeSky*, skyeLayer *layer) override{
@@ -567,7 +567,7 @@ public:
 
 class cTextAmbientIntensity : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextAmbientIntensity> Ref;
+	using Ref = deTObjectReference<cTextAmbientIntensity>;
 	cTextAmbientIntensity(skyeWPLayer &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, skyeSky*, skyeLayer *layer) override{
@@ -581,7 +581,7 @@ public:
 
 class cEditLightOrientation : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditLightOrientation> Ref;
+	using Ref = deTObjectReference<cEditLightOrientation>;
 	cEditLightOrientation(skyeWPLayer &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(const decVector &vector, skyeSky*, skyeLayer *layer) override{
@@ -596,7 +596,7 @@ public:
 class cSpinBody : public igdeSpinTextFieldListener{
 	skyeWPLayer &pPanel;
 public:
-	typedef deTObjectReference<cSpinBody> Ref;
+	using Ref = deTObjectReference<cSpinBody>;
 	cSpinBody(skyeWPLayer &panel) : pPanel(panel){}
 	
 	void OnValueChanged(igdeSpinTextField *textField) override{
@@ -619,7 +619,7 @@ public:
 class cActionBody : public cBaseActionLayer{
 	igdeButton::Ref &pButton;
 public:
-	typedef deTObjectReference<cActionBody> Ref;
+	using Ref = deTObjectReference<cActionBody>;
 	cActionBody(skyeWPLayer &panel, igdeButton::Ref &button) :
 	cBaseActionLayer(panel, "...", "Body menu"), pButton(button){}
 	
@@ -638,7 +638,7 @@ public:
 
 class cActionBodyAdd : public cBaseActionLayer{
 public:
-	typedef deTObjectReference<cActionBodyAdd> Ref;
+	using Ref = deTObjectReference<cActionBodyAdd>;
 	cActionBodyAdd(skyeWPLayer &panel) : cBaseActionLayer(panel, "Add",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Add body to end of list"){}
@@ -650,7 +650,7 @@ public:
 
 class cActionBodyRemove : public cBaseActionLayer{
 public:
-	typedef deTObjectReference<cActionBodyRemove> Ref;
+	using Ref = deTObjectReference<cActionBodyRemove>;
 	cActionBodyRemove(skyeWPLayer &panel) : cBaseActionLayer(panel, "Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove selected body from list"){}
@@ -671,7 +671,7 @@ public:
 class cActionBodyUp : public cBaseActionLayer{
 	igdeSpinTextField &pSpinTextField;
 public:
-	typedef deTObjectReference<cActionBodyUp> Ref;
+	using Ref = deTObjectReference<cActionBodyUp>;
 	cActionBodyUp(skyeWPLayer &panel, igdeSpinTextField &spinTextField) :
 	cBaseActionLayer(panel, "Move Up",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp),
@@ -695,7 +695,7 @@ public:
 class cActionBodyDown : public cBaseActionLayer{
 	igdeSpinTextField &pSpinTextField;
 public:
-	typedef deTObjectReference<cActionBodyDown> Ref;
+	using Ref = deTObjectReference<cActionBodyDown>;
 	cActionBodyDown(skyeWPLayer &panel, igdeSpinTextField &spinTextField) :
 	cBaseActionLayer(panel, "Move Down",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown),
@@ -718,7 +718,7 @@ public:
 
 class cPathBodySkin : public cBasePathListener{
 public:
-	typedef deTObjectReference<cPathBodySkin> Ref;
+	using Ref = deTObjectReference<cPathBodySkin>;
 	cPathBodySkin(skyeWPLayer &panel) : cBasePathListener(panel){}
 	
 	igdeUndo::Ref OnChanged(const decString &path, skyeSky*, skyeLayer*) override{
@@ -732,7 +732,7 @@ public:
 
 class cEditBodyOrientation : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditBodyOrientation> Ref;
+	using Ref = deTObjectReference<cEditBodyOrientation>;
 	cEditBodyOrientation(skyeWPLayer &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(const decVector &vector, skyeSky*, skyeLayer*) override{
@@ -746,7 +746,7 @@ public:
 
 class cEditBodySize : public cBaseEditVector2Listener{
 public:
-	typedef deTObjectReference<cEditBodySize> Ref;
+	using Ref = deTObjectReference<cEditBodySize>;
 	cEditBodySize(skyeWPLayer &panel) : cBaseEditVector2Listener(panel){}
 	
 	igdeUndo::Ref OnChanged(const decVector2 &vector, skyeSky*, skyeLayer*) override{
@@ -760,7 +760,7 @@ public:
 
 class cEditBodyColor : public cBaseColorBoxListener{
 public:
-	typedef deTObjectReference<cEditBodyColor> Ref;
+	using Ref = deTObjectReference<cEditBodyColor>;
 	cEditBodyColor(skyeWPLayer &panel) : cBaseColorBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(const decColor &color, skyeSky*, skyeLayer *layer) override{
@@ -776,7 +776,7 @@ public:
 class cComboTarget : public igdeComboBoxListener{
 	skyeWPLayer &pPanel;
 public:
-	typedef deTObjectReference<cComboTarget> Ref;
+	using Ref = deTObjectReference<cComboTarget>;
 	cComboTarget(skyeWPLayer &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -790,7 +790,7 @@ public:
 class cListLinks : public igdeListBoxListener{
 	skyeWPLayer &pPanel;
 public:
-	typedef deTObjectReference<cListLinks> Ref;
+	using Ref = deTObjectReference<cListLinks>;
 	cListLinks(skyeWPLayer &panel) : pPanel(panel){}
 	
 	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
@@ -802,7 +802,7 @@ public:
 class cActionLinkAdd : public cBaseActionLayer{
 	igdeComboBox &pComboLinks;
 public:
-	typedef deTObjectReference<cActionLinkAdd> Ref;
+	using Ref = deTObjectReference<cActionLinkAdd>;
 	cActionLinkAdd(skyeWPLayer &panel, igdeComboBox &comboLinks) : cBaseActionLayer(panel,
 		"", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallPlus),
 		"Add link to target if not present"),
@@ -831,7 +831,7 @@ public:
 class cActionLinkRemove : public cBaseActionLayer{
 	igdeListBox &pListLinks;
 public:
-	typedef deTObjectReference<cActionLinkRemove> Ref;
+	using Ref = deTObjectReference<cActionLinkRemove>;
 	cActionLinkRemove(skyeWPLayer &panel, igdeListBox &listLinks) : cBaseActionLayer(panel,
 		"Remove", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove selected link from target"),

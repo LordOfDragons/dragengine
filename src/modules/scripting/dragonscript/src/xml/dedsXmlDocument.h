@@ -35,7 +35,7 @@
 class dedsXmlDocument : public decXmlDocument{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<dedsXmlDocument> Ref;
+	using Ref = deTObjectReference<dedsXmlDocument>;
 	
 	
 	/** \brief Element types. */

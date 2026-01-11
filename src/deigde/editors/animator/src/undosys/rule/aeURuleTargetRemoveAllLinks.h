@@ -37,7 +37,7 @@
  */
 class aeURuleTargetRemoveAllLinks : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleTargetRemoveAllLinks> Ref;
+	using Ref = deTObjectReference<aeURuleTargetRemoveAllLinks>;
 	
 	
 private:

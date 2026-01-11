@@ -57,7 +57,7 @@ class deFileSearchVisitor;
 class DE_DLL_EXPORT deVirtualFileSystem : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deVirtualFileSystem> Ref;
+	using Ref = deTObjectReference<deVirtualFileSystem>;
 	
 	
 private:

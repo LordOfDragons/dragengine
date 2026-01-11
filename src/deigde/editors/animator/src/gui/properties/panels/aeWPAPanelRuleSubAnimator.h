@@ -38,7 +38,7 @@ class aeController;
  */
 class aeWPAPanelRuleSubAnimator : public aeWPAPanelRule{
 public:
-	typedef deTObjectReference<aeWPAPanelRuleSubAnimator> Ref;
+	using Ref = deTObjectReference<aeWPAPanelRuleSubAnimator>;
 	
 	
 private:

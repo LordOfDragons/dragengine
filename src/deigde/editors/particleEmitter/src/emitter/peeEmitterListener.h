@@ -40,7 +40,7 @@ class peeParameter;
 class peeEmitterListener : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<peeEmitterListener> Ref;
+	using Ref = deTObjectReference<peeEmitterListener>;
 
 
 	/** \name Constructors and Destructors */

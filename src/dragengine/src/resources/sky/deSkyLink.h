@@ -45,7 +45,7 @@
 class DE_DLL_EXPORT deSkyLink : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deSkyLink> Ref;
+	using Ref = deTObjectReference<deSkyLink>;
 	
 	
 private:

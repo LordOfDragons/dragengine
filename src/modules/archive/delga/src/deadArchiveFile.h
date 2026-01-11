@@ -41,7 +41,7 @@ class deArchiveDelga;
  */
 class deadArchiveFile : public deObject{
 public:
-	typedef deTObjectReference<deadArchiveFile> Ref;
+	using Ref = deTObjectReference<deadArchiveFile>;
 	
 	
 private:

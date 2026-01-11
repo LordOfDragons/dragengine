@@ -33,7 +33,7 @@
  */
 class aeWPAPanelRuleAnimation : public aeWPAPanelRule{
 public:
-	typedef deTObjectReference<aeWPAPanelRuleAnimation> Ref;
+	using Ref = deTObjectReference<aeWPAPanelRuleAnimation>;
 	
 	
 private:

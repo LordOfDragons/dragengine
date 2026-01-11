@@ -39,8 +39,8 @@
  */
 class meMapIDGroup : public deObject{
 public:
-	typedef deTObjectReference<meMapIDGroup> Ref;
-	typedef decTObjectOrderedSet<meMapIDGroup> List;
+	using Ref = deTObjectReference<meMapIDGroup>;
+	using List = decTObjectOrderedSet<meMapIDGroup>;
 	
 	
 private:

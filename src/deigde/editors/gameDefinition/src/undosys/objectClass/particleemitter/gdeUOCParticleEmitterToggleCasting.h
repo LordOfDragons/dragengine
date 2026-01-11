@@ -38,7 +38,7 @@
  */
 class gdeUOCParticleEmitterToggleCasting : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCParticleEmitterToggleCasting> Ref;
+	using Ref = deTObjectReference<gdeUOCParticleEmitterToggleCasting>;
 	
 	
 private:

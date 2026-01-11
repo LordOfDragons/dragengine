@@ -38,7 +38,7 @@
  */
 class meUDecalColorTint : public igdeUndo{
 public:
-	typedef deTObjectReference<meUDecalColorTint> Ref;
+	using Ref = deTObjectReference<meUDecalColorTint>;
 	
 	
 private:

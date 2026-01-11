@@ -38,7 +38,7 @@
  */
 class ceUCAASpeakGestureRemove : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCAASpeakGestureRemove> Ref;
+	using Ref = deTObjectReference<ceUCAASpeakGestureRemove>;
 	
 	
 private:

@@ -36,7 +36,7 @@
  */
 class aeUSetRuleSModMaxVertexPositionSet : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUSetRuleSModMaxVertexPositionSet> Ref;
+	using Ref = deTObjectReference<aeUSetRuleSModMaxVertexPositionSet>;
 	
 	
 private:

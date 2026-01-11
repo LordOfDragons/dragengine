@@ -37,8 +37,8 @@
 class reRigShapeHull : public reRigShape{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<reRigShapeHull> Ref;
-	typedef decTList<decVector> PointList;
+	using Ref = deTObjectReference<reRigShapeHull>;
+	using PointList = decTList<decVector>;
 	
 	
 private:

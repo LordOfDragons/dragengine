@@ -39,7 +39,7 @@ class projWindowMain;
  */
 class projPanelUndoHistory : public igdeWPUndoHistory{
 public:
-	typedef deTObjectReference<projPanelUndoHistory> Ref;
+	using Ref = deTObjectReference<projPanelUndoHistory>;
 	
 	
 private:

@@ -71,7 +71,7 @@ class deBaseAudioSynthesizerInstance;
 class DE_DLL_EXPORT deSynthesizerInstance : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deSynthesizerInstance> Ref;
+	using Ref = deTObjectReference<deSynthesizerInstance>;
 	
 	
 private:

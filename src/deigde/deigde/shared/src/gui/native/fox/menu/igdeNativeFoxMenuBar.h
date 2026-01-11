@@ -69,6 +69,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxMenuBar igdeNativeMenuBar;
+using igdeNativeMenuBar = igdeNativeFoxMenuBar;
 
 #endif

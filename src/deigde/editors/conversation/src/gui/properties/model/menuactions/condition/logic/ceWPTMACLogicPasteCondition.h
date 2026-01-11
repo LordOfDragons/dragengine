@@ -37,7 +37,7 @@ class ceConversationAction;
  */
 class ceWPTMACLogicPasteCondition : public ceWPTMAPasteCondition{
 public:
-	typedef deTObjectReference<ceWPTMACLogicPasteCondition> Ref;
+	using Ref = deTObjectReference<ceWPTMACLogicPasteCondition>;
 
 private:
 	ceConversationTopic *pTopic;

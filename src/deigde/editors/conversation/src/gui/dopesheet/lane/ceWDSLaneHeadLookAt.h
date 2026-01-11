@@ -34,7 +34,7 @@
 class ceWDSLaneHeadLookAt : public ceWDSLane{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceWDSLaneHeadLookAt> Ref;
+	using Ref = deTObjectReference<ceWDSLaneHeadLookAt>;
 	
 	
 	/** \name Constructors and Destructors */

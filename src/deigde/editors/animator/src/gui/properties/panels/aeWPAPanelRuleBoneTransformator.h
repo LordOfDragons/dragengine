@@ -36,7 +36,7 @@
  */
 class aeWPAPanelRuleBoneTransformator : public aeWPAPanelRule{
 public:
-	typedef deTObjectReference<aeWPAPanelRuleBoneTransformator> Ref;
+	using Ref = deTObjectReference<aeWPAPanelRuleBoneTransformator>;
 	
 	
 private:

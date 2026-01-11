@@ -38,7 +38,7 @@
  */
 class reUAddConstraint : public igdeUndo{
 public:
-	typedef deTObjectReference<reUAddConstraint> Ref;
+	using Ref = deTObjectReference<reUAddConstraint>;
 	
 	
 private:

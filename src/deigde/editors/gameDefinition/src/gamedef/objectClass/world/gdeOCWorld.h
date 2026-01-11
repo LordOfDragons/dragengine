@@ -39,10 +39,10 @@
 class gdeOCWorld : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeOCWorld> Ref;
+	using Ref = deTObjectReference<gdeOCWorld>;
 
 	/** \brief Type holding list. */
-	typedef decTObjectOrderedSet<gdeOCWorld> List;
+	using List = decTObjectOrderedSet<gdeOCWorld>;
 	
 	
 	/** \brief Properties. */

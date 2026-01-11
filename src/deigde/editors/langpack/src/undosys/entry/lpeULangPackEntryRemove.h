@@ -36,7 +36,7 @@
  */
 class lpeULangPackEntryRemove : public igdeUndo{
 public:
-	typedef deTObjectReference<lpeULangPackEntryRemove> Ref;
+	using Ref = deTObjectReference<lpeULangPackEntryRemove>;
 	
 	
 private:

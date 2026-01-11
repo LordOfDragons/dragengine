@@ -36,7 +36,7 @@
  */
 class seUPropertyNodeSetBrightness : public igdeUndo{
 public:
-	typedef deTObjectReference<seUPropertyNodeSetBrightness> Ref;
+	using Ref = deTObjectReference<seUPropertyNodeSetBrightness>;
 	
 	
 private:

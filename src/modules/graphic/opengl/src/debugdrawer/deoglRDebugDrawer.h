@@ -72,7 +72,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglRDebugDrawer> Ref;
+	using Ref = deTObjectReference<deoglRDebugDrawer>;
 
 
 	/** \name Constructors and Destructors */

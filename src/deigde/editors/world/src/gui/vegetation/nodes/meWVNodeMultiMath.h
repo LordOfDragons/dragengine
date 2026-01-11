@@ -39,7 +39,7 @@ class meHTVRuleMultiMath;
  */
 class meWVNodeMultiMath : public meWVNode{
 public:
-	typedef deTObjectReference<meWVNodeMultiMath> Ref;
+	using Ref = deTObjectReference<meWVNodeMultiMath>;
 	
 private:
 	meHTVRuleMultiMath *pRuleMultiMath;

@@ -37,7 +37,7 @@
  */
 class aeURuleGroupToggleEnablePosition : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleGroupToggleEnablePosition> Ref;
+	using Ref = deTObjectReference<aeURuleGroupToggleEnablePosition>;
 	
 	
 private:

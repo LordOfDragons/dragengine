@@ -36,7 +36,7 @@
  */
 class syneUSourceWaveSetMaxFrequency : public igdeUndo{
 public:
-	typedef deTObjectReference<syneUSourceWaveSetMaxFrequency> Ref;
+	using Ref = deTObjectReference<syneUSourceWaveSetMaxFrequency>;
 	
 	
 private:

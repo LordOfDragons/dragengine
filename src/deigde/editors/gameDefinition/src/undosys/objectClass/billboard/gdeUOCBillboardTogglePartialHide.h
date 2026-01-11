@@ -38,7 +38,7 @@
  */
 class gdeUOCBillboardTogglePartialHide : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCBillboardTogglePartialHide> Ref;
+	using Ref = deTObjectReference<gdeUOCBillboardTogglePartialHide>;
 	
 	
 private:

@@ -36,7 +36,7 @@ class decShape;
  */
 class meUObjectShapeAdd : public igdeUndo{
 public:
-	typedef deTObjectReference<meUObjectShapeAdd> Ref;
+	using Ref = deTObjectReference<meUObjectShapeAdd>;
 	
 	
 private:

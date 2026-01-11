@@ -35,7 +35,7 @@
  */
 class sePropertyNodeImage : public sePropertyNode{
 public:
-	typedef deTObjectReference<sePropertyNodeImage> Ref;
+	using Ref = deTObjectReference<sePropertyNodeImage>;
 	
 	
 private:

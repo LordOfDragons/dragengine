@@ -38,7 +38,7 @@
  */
 class gdeUOCComponentSetAudioModelPath : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCComponentSetAudioModelPath> Ref;
+	using Ref = deTObjectReference<gdeUOCComponentSetAudioModelPath>;
 	
 	
 private:

@@ -49,8 +49,8 @@
 
 class deVROpenXR;
 
-typedef unsigned int GAOglFbo;
-typedef unsigned int GAOglImage;
+using GAOglFbo = unsigned int;
+using GAOglImage = unsigned int;
 
 /**
  * Oxr instance.
@@ -59,7 +59,7 @@ class deoxrGraphicApiOpenGL{
 public:
 	class Framebuffer : public deObject{
 	public:
-		typedef deTObjectReference<Framebuffer> Ref;
+		using Ref = deTObjectReference<Framebuffer>;
 	
 	
 		Framebuffer(deoxrGraphicApiOpenGL &gaogl, unsigned int image);

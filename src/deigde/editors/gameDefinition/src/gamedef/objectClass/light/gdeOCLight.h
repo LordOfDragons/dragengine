@@ -39,10 +39,10 @@
 class gdeOCLight : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeOCLight> Ref;
+	using Ref = deTObjectReference<gdeOCLight>;
 
 	/** \brief Type holding list. */
-	typedef decTObjectOrderedSet<gdeOCLight> List;
+	using List = decTObjectOrderedSet<gdeOCLight>;
 	
 	
 	/** \brief Properties. */

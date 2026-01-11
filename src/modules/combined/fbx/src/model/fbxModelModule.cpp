@@ -549,7 +549,7 @@ void fbxModelModule::pEnsureTextureIndex(deModel &model, int count){
 
 class fbxModelModuleInternal : public deInternalModule{
 public:
-	typedef deTObjectReference<fbxModelModuleInternal> Ref;
+	using Ref = deTObjectReference<fbxModelModuleInternal>;
 	
 	fbxModelModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("FBXModel");

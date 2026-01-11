@@ -36,7 +36,7 @@
  */
 class aeULinkSetVertexPositionSetMinimum : public igdeUndo{
 public:
-	typedef deTObjectReference<aeULinkSetVertexPositionSetMinimum> Ref;
+	using Ref = deTObjectReference<aeULinkSetVertexPositionSetMinimum>;
 	
 	
 private:

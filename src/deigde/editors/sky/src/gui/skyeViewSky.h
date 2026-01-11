@@ -39,7 +39,7 @@ class skyeWindowMain;
  */
 class skyeViewSky : public igdeViewRenderWindow{
 public:
-	typedef deTObjectReference<skyeViewSky> Ref;
+	using Ref = deTObjectReference<skyeViewSky>;
 	
 private:
 	skyeWindowMain &pWindowMain;

@@ -35,7 +35,7 @@
  */
 class aeURuleBTransSetMinAngle : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleBTransSetMinAngle> Ref;
+	using Ref = deTObjectReference<aeURuleBTransSetMinAngle>;
 	
 	
 private:

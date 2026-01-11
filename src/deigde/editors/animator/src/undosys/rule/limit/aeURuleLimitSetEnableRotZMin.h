@@ -36,7 +36,7 @@
  */
 class aeURuleLimitSetEnableRotZMin : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleLimitSetEnableRotZMin> Ref;
+	using Ref = deTObjectReference<aeURuleLimitSetEnableRotZMin>;
 	
 	
 private:

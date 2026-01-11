@@ -38,14 +38,14 @@
  */
 class seUPNGroupRemoveNodes : public igdeUndo{
 public:
-	typedef deTObjectReference<seUPNGroupRemoveNodes> Ref;
+	using Ref = deTObjectReference<seUPNGroupRemoveNodes>;
 	
 	
 private:
 	class cNode : public deObject{
 	public:
-		typedef deTObjectReference<cNode> Ref;
-		typedef decTObjectOrderedSet<cNode> List;
+		using Ref = deTObjectReference<cNode>;
+		using List = decTObjectOrderedSet<cNode>;
 		
 		sePropertyNode::Ref node;
 		int index = -1;

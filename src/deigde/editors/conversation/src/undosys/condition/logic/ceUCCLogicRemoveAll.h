@@ -39,7 +39,7 @@
  */
 class ceUCCLogicRemoveAll : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCCLogicRemoveAll> Ref;
+	using Ref = deTObjectReference<ceUCCLogicRemoveAll>;
 	
 	
 private:

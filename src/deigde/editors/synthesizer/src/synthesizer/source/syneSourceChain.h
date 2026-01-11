@@ -40,7 +40,7 @@ class deEngine;
  */
 class syneSourceChain : public syneSource{
 public:
-	typedef deTObjectReference<syneSourceChain> Ref;
+	using Ref = deTObjectReference<syneSourceChain>;
 	
 private:
 	deEngine *pEngine;

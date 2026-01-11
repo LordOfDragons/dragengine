@@ -36,7 +36,7 @@
 class deoglPixelBuffer : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglPixelBuffer> Ref;
+	using Ref = deTObjectReference<deoglPixelBuffer>;
 	
 	
 public:

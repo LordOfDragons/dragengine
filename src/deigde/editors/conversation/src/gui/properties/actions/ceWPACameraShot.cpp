@@ -73,7 +73,7 @@ class cComboName : public igdeComboBoxListener {
 	ceWPACameraShot &pPanel;
 	
 public:
-	typedef deTObjectReference<cComboName> Ref;
+	using Ref = deTObjectReference<cComboName>;
 	cComboName(ceWPACameraShot &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -92,7 +92,7 @@ class cTextDuration : public igdeTextFieldListener {
 	ceWPACameraShot &pPanel;
 	
 public:
-	typedef deTObjectReference<cTextDuration> Ref;
+	using Ref = deTObjectReference<cTextDuration>;
 	cTextDuration(ceWPACameraShot &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -112,7 +112,7 @@ class cComboCameraTarget : public igdeComboBoxListener {
 	ceWPACameraShot &pPanel;
 	
 public:
-	typedef deTObjectReference<cComboCameraTarget> Ref;
+	using Ref = deTObjectReference<cComboCameraTarget>;
 	cComboCameraTarget(ceWPACameraShot &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -131,7 +131,7 @@ class cComboLookAtTarget : public igdeComboBoxListener {
 	ceWPACameraShot &pPanel;
 	
 public:
-	typedef deTObjectReference<cComboLookAtTarget> Ref;
+	using Ref = deTObjectReference<cComboLookAtTarget>;
 	cComboLookAtTarget(ceWPACameraShot &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{

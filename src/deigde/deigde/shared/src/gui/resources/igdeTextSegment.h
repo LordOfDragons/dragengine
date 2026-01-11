@@ -43,10 +43,10 @@ class DE_DLL_EXPORT igdeTextSegment : public deObject{
 
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeTextSegment> Ref;
+	using Ref = deTObjectReference<igdeTextSegment>;
 	
 	/** \brief Text segment list. */
-	typedef decTObjectOrderedSet<igdeTextSegment> List;
+	using List = decTObjectOrderedSet<igdeTextSegment>;
 	
 	
 private:

@@ -37,7 +37,7 @@
 class deoglRDSRenderableValue : public deoglRDSRenderable{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglRDSRenderableValue> Ref;
+	using Ref = deTObjectReference<deoglRDSRenderableValue>;
 	
 	
 private:

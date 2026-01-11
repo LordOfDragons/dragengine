@@ -82,7 +82,7 @@ class igdeToggleTags_ListTags : public igdeListBoxListener {
 	igdeToggleTags &pWidget;
 	
 public:
-	typedef deTObjectReference<igdeToggleTags_ListTags> Ref;
+	using Ref = deTObjectReference<igdeToggleTags_ListTags>;
 	
 	igdeToggleTags_ListTags(igdeToggleTags &widget) : pWidget(widget){
 	}

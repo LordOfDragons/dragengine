@@ -37,7 +37,7 @@
  */
 class reUConstraintSetPosition : public igdeUndo{
 public:
-	typedef deTObjectReference<reUConstraintSetPosition> Ref;
+	using Ref = deTObjectReference<reUConstraintSetPosition>;
 	
 	
 private:

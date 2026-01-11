@@ -36,7 +36,7 @@
  */
 class fbxPropertyBinary : public fbxProperty{
 public:
-	typedef deTObjectReference<fbxPropertyBinary> Ref;
+	using Ref = deTObjectReference<fbxPropertyBinary>;
 	
 	
 private:

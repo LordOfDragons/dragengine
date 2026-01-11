@@ -57,10 +57,10 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<skyeLink> Ref;
+	using Ref = deTObjectReference<skyeLink>;
 
 	/** \brief List type. */
-	typedef decTObjectOrderedSet<skyeLink> List;
+	using List = decTObjectOrderedSet<skyeLink>;
 
 
 	/** \name Constructors and Destructors */

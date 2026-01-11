@@ -39,7 +39,7 @@
  */
 class seUPropertyNodesShear : public igdeUndo{
 public:
-	typedef deTObjectReference<seUPropertyNodesShear> Ref;
+	using Ref = deTObjectReference<seUPropertyNodesShear>;
 	
 	
 private:

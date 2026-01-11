@@ -36,7 +36,7 @@ class meWPHeightTerrain;
  */
 class meWPHeightTerrainListener : public meWorldNotifier{
 public:
-	typedef deTObjectReference<meWPHeightTerrainListener> Ref;
+	using Ref = deTObjectReference<meWPHeightTerrainListener>;
 	
 private:
 	meWPHeightTerrain &pPanel;

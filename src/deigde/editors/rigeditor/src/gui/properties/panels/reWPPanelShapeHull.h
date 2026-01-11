@@ -40,7 +40,7 @@ class reRigShapeHull;
  */
 class reWPPanelShapeHull : public reWPPanelShape{
 public:
-	typedef deTObjectReference<reWPPanelShapeHull> Ref;
+	using Ref = deTObjectReference<reWPPanelShapeHull>;
 	
 private:
 	igdeEditVector::Ref pEditPosition;

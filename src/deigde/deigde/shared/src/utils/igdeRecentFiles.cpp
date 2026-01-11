@@ -53,7 +53,7 @@ class igdeRecentFiles_ActionOpenFile : public igdeAction{
 	decString pFilename;
 	
 public:
-	typedef deTObjectReference<igdeRecentFiles_ActionOpenFile> Ref;
+	using Ref = deTObjectReference<igdeRecentFiles_ActionOpenFile>;
 	
 	igdeRecentFiles_ActionOpenFile(igdeRecentFiles &recentFiles, const char *filename) :
 	pRecentFiles(recentFiles), pFilename(filename){
@@ -84,7 +84,7 @@ class igdeRecentFiles_ActionClear : public igdeAction{
 	igdeRecentFiles &pRecentFiles;
 	
 public:
-	typedef deTObjectReference<igdeRecentFiles_ActionClear> Ref;
+	using Ref = deTObjectReference<igdeRecentFiles_ActionClear>;
 	
 	igdeRecentFiles_ActionClear(igdeRecentFiles &recentFiles) : igdeAction("Clear List",
 	recentFiles.GetEnvironment().GetStockIcon(igdeEnvironment::esiDelete),

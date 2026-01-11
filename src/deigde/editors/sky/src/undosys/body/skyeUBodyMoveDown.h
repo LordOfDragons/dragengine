@@ -36,7 +36,7 @@
  */
 class skyeUBodyMoveDown : public igdeUndo{
 public:
-	typedef deTObjectReference<skyeUBodyMoveDown> Ref;
+	using Ref = deTObjectReference<skyeUBodyMoveDown>;
 	
 	
 private:

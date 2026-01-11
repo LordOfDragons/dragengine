@@ -104,7 +104,7 @@ protected:
 	aeWPAPanelRuleLimit &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseAction> Ref;
+	using Ref = deTObjectReference<cBaseAction>;
 	cBaseAction(aeWPAPanelRuleLimit &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description),
 	pPanel(panel){}
@@ -147,7 +147,7 @@ protected:
 	aeWPAPanelRuleLimit &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseComboBoxListener> Ref;
+	using Ref = deTObjectReference<cBaseComboBoxListener>;
 	cBaseComboBoxListener(aeWPAPanelRuleLimit &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -171,7 +171,7 @@ protected:
 	aeWPAPanelRuleLimit &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseEditVectorListener> Ref;
+	using Ref = deTObjectReference<cBaseEditVectorListener>;
 	cBaseEditVectorListener(aeWPAPanelRuleLimit &panel) : pPanel(panel){}
 	
 	void OnVectorChanged(igdeEditVector *editVector) override{
@@ -195,7 +195,7 @@ protected:
 	aeWPAPanelRuleLimit &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseTextFieldListener> Ref;
+	using Ref = deTObjectReference<cBaseTextFieldListener>;
 	cBaseTextFieldListener(aeWPAPanelRuleLimit &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -217,7 +217,7 @@ public:
 
 class cEditPositionMinimum : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditPositionMinimum> Ref;
+	using Ref = deTObjectReference<cEditPositionMinimum>;
 	cEditPositionMinimum(aeWPAPanelRuleLimit &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleLimit *rule) override{
@@ -228,7 +228,7 @@ public:
 
 class cEditPositionMaximum : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditPositionMaximum> Ref;
+	using Ref = deTObjectReference<cEditPositionMaximum>;
 	cEditPositionMaximum(aeWPAPanelRuleLimit &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleLimit *rule) override{
@@ -239,7 +239,7 @@ public:
 
 class cEditRotationMinimum : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditRotationMinimum> Ref;
+	using Ref = deTObjectReference<cEditRotationMinimum>;
 	cEditRotationMinimum(aeWPAPanelRuleLimit &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleLimit *rule) override{
@@ -250,7 +250,7 @@ public:
 
 class cEditRotationMaximum : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditRotationMaximum> Ref;
+	using Ref = deTObjectReference<cEditRotationMaximum>;
 	cEditRotationMaximum(aeWPAPanelRuleLimit &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleLimit *rule) override{
@@ -261,7 +261,7 @@ public:
 
 class cEditScalingMinimum : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditScalingMinimum> Ref;
+	using Ref = deTObjectReference<cEditScalingMinimum>;
 	cEditScalingMinimum(aeWPAPanelRuleLimit &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleLimit *rule) override{
@@ -272,7 +272,7 @@ public:
 
 class cEditScalingMaximum : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditScalingMaximum> Ref;
+	using Ref = deTObjectReference<cEditScalingMaximum>;
 	cEditScalingMaximum(aeWPAPanelRuleLimit &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleLimit *rule) override{
@@ -283,7 +283,7 @@ public:
 
 class cEditVertexPositionSetMinimum : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cEditVertexPositionSetMinimum> Ref;
+	using Ref = deTObjectReference<cEditVertexPositionSetMinimum>;
 	cEditVertexPositionSetMinimum(aeWPAPanelRuleLimit &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator*, aeRuleLimit *rule) override{
@@ -295,7 +295,7 @@ public:
 
 class cEditVertexPositionSetMaximum : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cEditVertexPositionSetMaximum> Ref;
+	using Ref = deTObjectReference<cEditVertexPositionSetMaximum>;
 	cEditVertexPositionSetMaximum(aeWPAPanelRuleLimit &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator*, aeRuleLimit *rule) override{
@@ -307,7 +307,7 @@ public:
 
 class cComboCoordFrame : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboCoordFrame> Ref;
+	using Ref = deTObjectReference<cComboCoordFrame>;
 	cComboCoordFrame(aeWPAPanelRuleLimit &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleLimit *rule) override{
@@ -324,7 +324,7 @@ public:
 
 class cActionEnablePositionMinX : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnablePositionMinX> Ref;
+	using Ref = deTObjectReference<cActionEnablePositionMinX>;
 	
 public:
 	cActionEnablePositionMinX(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
@@ -342,7 +342,7 @@ public:
 
 class cActionEnablePositionMinY : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnablePositionMinY> Ref;
+	using Ref = deTObjectReference<cActionEnablePositionMinY>;
 	
 public:
 	cActionEnablePositionMinY(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
@@ -360,7 +360,7 @@ public:
 
 class cActionEnablePositionMinZ : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnablePositionMinZ> Ref;
+	using Ref = deTObjectReference<cActionEnablePositionMinZ>;
 	
 public:
 	cActionEnablePositionMinZ(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
@@ -378,7 +378,7 @@ public:
 
 class cActionEnablePositionMaxX : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnablePositionMaxX> Ref;
+	using Ref = deTObjectReference<cActionEnablePositionMaxX>;
 	
 public:
 	cActionEnablePositionMaxX(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
@@ -396,7 +396,7 @@ public:
 
 class cActionEnablePositionMaxY : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnablePositionMaxY> Ref;
+	using Ref = deTObjectReference<cActionEnablePositionMaxY>;
 	
 public:
 	cActionEnablePositionMaxY(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
@@ -414,7 +414,7 @@ public:
 
 class cActionEnablePositionMaxZ : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnablePositionMaxZ> Ref;
+	using Ref = deTObjectReference<cActionEnablePositionMaxZ>;
 	
 public:
 	cActionEnablePositionMaxZ(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
@@ -433,7 +433,7 @@ public:
 
 class cActionEnableRotationMinX : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableRotationMinX> Ref;
+	using Ref = deTObjectReference<cActionEnableRotationMinX>;
 	
 public:
 	cActionEnableRotationMinX(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
@@ -451,7 +451,7 @@ public:
 
 class cActionEnableRotationMinY : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableRotationMinY> Ref;
+	using Ref = deTObjectReference<cActionEnableRotationMinY>;
 	
 public:
 	cActionEnableRotationMinY(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
@@ -469,7 +469,7 @@ public:
 
 class cActionEnableRotationMinZ : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableRotationMinZ> Ref;
+	using Ref = deTObjectReference<cActionEnableRotationMinZ>;
 	
 public:
 	cActionEnableRotationMinZ(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
@@ -487,7 +487,7 @@ public:
 
 class cActionEnableRotationMaxX : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableRotationMaxX> Ref;
+	using Ref = deTObjectReference<cActionEnableRotationMaxX>;
 	
 public:
 	cActionEnableRotationMaxX(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
@@ -505,7 +505,7 @@ public:
 
 class cActionEnableRotationMaxY : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableRotationMaxY> Ref;
+	using Ref = deTObjectReference<cActionEnableRotationMaxY>;
 	
 public:
 	cActionEnableRotationMaxY(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
@@ -523,7 +523,7 @@ public:
 
 class cActionEnableRotationMaxZ : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableRotationMaxZ> Ref;
+	using Ref = deTObjectReference<cActionEnableRotationMaxZ>;
 	
 public:
 	cActionEnableRotationMaxZ(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
@@ -542,7 +542,7 @@ public:
 
 class cActionEnableScalingMinX : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableScalingMinX> Ref;
+	using Ref = deTObjectReference<cActionEnableScalingMinX>;
 	
 public:
 	cActionEnableScalingMinX(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
@@ -560,7 +560,7 @@ public:
 
 class cActionEnableScalingMinY : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableScalingMinY> Ref;
+	using Ref = deTObjectReference<cActionEnableScalingMinY>;
 	
 public:
 	cActionEnableScalingMinY(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
@@ -578,7 +578,7 @@ public:
 
 class cActionEnableScalingMinZ : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableScalingMinZ> Ref;
+	using Ref = deTObjectReference<cActionEnableScalingMinZ>;
 	
 public:
 	cActionEnableScalingMinZ(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
@@ -596,7 +596,7 @@ public:
 
 class cActionEnableScalingMaxX : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableScalingMaxX> Ref;
+	using Ref = deTObjectReference<cActionEnableScalingMaxX>;
 	
 public:
 	cActionEnableScalingMaxX(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
@@ -614,7 +614,7 @@ public:
 
 class cActionEnableScalingMaxY : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableScalingMaxY> Ref;
+	using Ref = deTObjectReference<cActionEnableScalingMaxY>;
 	
 public:
 	cActionEnableScalingMaxY(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
@@ -632,7 +632,7 @@ public:
 
 class cActionEnableScalingMaxZ : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableScalingMaxZ> Ref;
+	using Ref = deTObjectReference<cActionEnableScalingMaxZ>;
 	
 public:
 	cActionEnableScalingMaxZ(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
@@ -650,7 +650,7 @@ public:
 
 class cActionEnableVertexPositionSetMin : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableVertexPositionSetMin> Ref;
+	using Ref = deTObjectReference<cActionEnableVertexPositionSetMin>;
 	
 public:
 	cActionEnableVertexPositionSetMin(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
@@ -668,7 +668,7 @@ public:
 
 class cActionEnableVertexPositionSetMax : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableVertexPositionSetMax> Ref;
+	using Ref = deTObjectReference<cActionEnableVertexPositionSetMax>;
 	
 public:
 	cActionEnableVertexPositionSetMax(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
@@ -687,7 +687,7 @@ public:
 
 class cComboTargetBone : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboTargetBone> Ref;
+	using Ref = deTObjectReference<cComboTargetBone>;
 	cComboTargetBone(aeWPAPanelRuleLimit &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleLimit *rule) override{

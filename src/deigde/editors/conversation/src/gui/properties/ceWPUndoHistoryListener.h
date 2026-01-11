@@ -36,7 +36,7 @@ class ceWPUndoHistory;
  */
 class ceWPUndoHistoryListener : public ceConversationListener{
 public:
-	typedef deTObjectReference<ceWPUndoHistoryListener> Ref;
+	using Ref = deTObjectReference<ceWPUndoHistoryListener>;
 	
 private:
 	ceWPUndoHistory &pPanel;

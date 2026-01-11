@@ -38,7 +38,7 @@
  */
 class gdeUOCLightSetSpotAngle : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCLightSetSpotAngle> Ref;
+	using Ref = deTObjectReference<gdeUOCLightSetSpotAngle>;
 	
 	
 private:

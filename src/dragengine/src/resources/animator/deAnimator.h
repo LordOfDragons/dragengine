@@ -55,7 +55,7 @@ class deBaseAnimatorAnimator;
 class DE_DLL_EXPORT deAnimator : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deAnimator> Ref;
+	using Ref = deTObjectReference<deAnimator>;
 	
 	
 private:

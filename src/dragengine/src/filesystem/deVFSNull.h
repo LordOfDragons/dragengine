@@ -38,7 +38,7 @@
 class DE_DLL_EXPORT deVFSNull : public deVFSContainer{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deVFSNull> Ref;
+	using Ref = deTObjectReference<deVFSNull>;
 	
 	
 public:

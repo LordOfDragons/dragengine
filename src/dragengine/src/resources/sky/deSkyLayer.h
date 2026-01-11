@@ -112,7 +112,7 @@ class deSkyLayerBody;
 class DE_DLL_EXPORT deSkyLayer : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deSkyLayer> Ref;
+	using Ref = deTObjectReference<deSkyLayer>;
 	
 	/** \brief Targets. */
 	enum eTargets{

@@ -52,7 +52,7 @@ class deBaseGraphicOcclusionMesh;
 class DE_DLL_EXPORT deOcclusionMesh : public deFileResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deOcclusionMesh> Ref;
+	using Ref = deTObjectReference<deOcclusionMesh>;
 	
 	
 private:

@@ -35,7 +35,7 @@
  */
 class skyeULayerToggleMulBySkyColor : public igdeUndo{
 public:
-	typedef deTObjectReference<skyeULayerToggleMulBySkyColor> Ref;
+	using Ref = deTObjectReference<skyeULayerToggleMulBySkyColor>;
 	
 	
 private:

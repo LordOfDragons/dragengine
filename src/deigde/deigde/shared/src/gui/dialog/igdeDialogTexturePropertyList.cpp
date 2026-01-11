@@ -48,7 +48,7 @@
 class igdeDialogTexturePropertyList_ListBox : public igdeListBoxListener {
 	igdeDialogTexturePropertyList &pDialog;
 public:
-	typedef deTObjectReference<igdeDialogTexturePropertyList_ListBox> Ref;
+	using Ref = deTObjectReference<igdeDialogTexturePropertyList_ListBox>;
 	
 	igdeDialogTexturePropertyList_ListBox(igdeDialogTexturePropertyList &dialog) : pDialog(dialog){}
 	

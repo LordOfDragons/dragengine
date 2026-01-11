@@ -39,10 +39,10 @@
 class DE_DLL_EXPORT igdeGDCWorld : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeGDCWorld> Ref;
+	using Ref = deTObjectReference<igdeGDCWorld>;
 	
 	/** \brief Type holding list of objects. */
-	typedef decTObjectOrderedSet<igdeGDCWorld> List;
+	using List = decTObjectOrderedSet<igdeGDCWorld>;
 	
 	
 public:

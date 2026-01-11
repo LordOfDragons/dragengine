@@ -37,7 +37,7 @@ class deoglRenderPlanSkyLight;
 class deoglRPTSkyLightFindContent : public deParallelTask{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTThreadSafeObjectReference<deoglRPTSkyLightFindContent> Ref;
+	using Ref = deTThreadSafeObjectReference<deoglRPTSkyLightFindContent>;
 	
 	
 private:

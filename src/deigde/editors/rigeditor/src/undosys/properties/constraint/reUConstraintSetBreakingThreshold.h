@@ -36,7 +36,7 @@
  */
 class reUConstraintSetBreakingThreshold : public igdeUndo{
 public:
-	typedef deTObjectReference<reUConstraintSetBreakingThreshold> Ref;
+	using Ref = deTObjectReference<reUConstraintSetBreakingThreshold>;
 	
 	
 private:

@@ -53,7 +53,7 @@ class skyeWindowProperties;
  */
 class skyeWPLayer : public igdeContainerScroll{
 public:
-	typedef deTObjectReference<skyeWPLayer> Ref;
+	using Ref = deTObjectReference<skyeWPLayer>;
 	
 private:
 	skyeWindowProperties &pWindowProperties;

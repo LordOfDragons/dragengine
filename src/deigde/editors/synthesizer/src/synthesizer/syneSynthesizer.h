@@ -53,7 +53,7 @@ class igdeEnvironment;
 class syneSynthesizer : public igdeEditableEntity{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<syneSynthesizer> Ref;
+	using Ref = deTObjectReference<syneSynthesizer>;
 	
 	
 private:

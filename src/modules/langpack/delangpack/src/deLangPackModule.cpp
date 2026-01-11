@@ -253,7 +253,7 @@ void deLangPackModule::pWriteLangPackEntry(decXmlWriter &writer, const deLanguag
 
 class delpModuleInternal : public deInternalModule{
 public:
-	typedef deTObjectReference<delpModuleInternal> Ref;
+	using Ref = deTObjectReference<delpModuleInternal>;
 	
 	delpModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DELangPack");

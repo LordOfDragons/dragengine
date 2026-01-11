@@ -39,13 +39,13 @@
  */
 class reURemoveConstraint : public igdeUndo{
 public:
-	typedef deTObjectReference<reURemoveConstraint> Ref;
+	using Ref = deTObjectReference<reURemoveConstraint>;
 	
 	
 private:
 	class cEntry : public deObject{
 	public:
-		typedef deTObjectReference<cEntry> Ref;
+		using Ref = deTObjectReference<cEntry>;
 		
 		reRigConstraint::Ref constraint;
 		reRigBone::Ref bone;

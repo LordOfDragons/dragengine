@@ -74,7 +74,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglRSkyInstance> Ref;
+	using Ref = deTObjectReference<deoglRSkyInstance>;
 
 
 	/** \name Constructors and Destructors */

@@ -58,7 +58,7 @@ class gdeSkyController;
  */
 class gdeGameDefinitionListener : public deObject{
 public:
-	typedef deTObjectReference<gdeGameDefinitionListener> Ref;
+	using Ref = deTObjectReference<gdeGameDefinitionListener>;
 	
 	/** \name Constructors and Destructors */
 	/*@{*/

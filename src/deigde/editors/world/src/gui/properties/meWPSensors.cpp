@@ -58,7 +58,7 @@ class cActionLMTrackCam : public igdeAction{
 	meWPSensors &pPanel;
 	
 public:
-	typedef deTObjectReference<cActionLMTrackCam> Ref;
+	using Ref = deTObjectReference<cActionLMTrackCam>;
 	cActionLMTrackCam(meWPSensors &panel) : igdeAction("Track Camera", "Track camera."),
 	pPanel(panel){}
 	
@@ -75,7 +75,7 @@ class cEditLMPos : public igdeEditDVectorListener{
 	meWPSensors &pPanel;
 	
 public:
-	typedef deTObjectReference<cEditLMPos> Ref;
+	using Ref = deTObjectReference<cEditLMPos>;
 	cEditLMPos(meWPSensors &panel) : pPanel(panel){}
 	
 	void OnDVectorChanged(igdeEditDVector *editDVector) override{
@@ -92,7 +92,7 @@ class cEditLMDir : public igdeEditVectorListener{
 	meWPSensors &pPanel;
 	
 public:
-	typedef deTObjectReference<cEditLMDir> Ref;
+	using Ref = deTObjectReference<cEditLMDir>;
 	cEditLMDir(meWPSensors &panel) : pPanel(panel){}
 	
 	void OnVectorChanged(igdeEditVector *editVector) override{
@@ -109,7 +109,7 @@ class cTextLMConeIA : public igdeTextFieldListener{
 	meWPSensors &pPanel;
 	
 public:
-	typedef deTObjectReference<cTextLMConeIA> Ref;
+	using Ref = deTObjectReference<cTextLMConeIA>;
 	cTextLMConeIA(meWPSensors &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -125,7 +125,7 @@ class cTextLMConeOA : public igdeTextFieldListener{
 	meWPSensors &pPanel;
 	
 public:
-	typedef deTObjectReference<cTextLMConeOA> Ref;
+	using Ref = deTObjectReference<cTextLMConeOA>;
 	cTextLMConeOA(meWPSensors &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -141,7 +141,7 @@ class cTextLMConeExp : public igdeTextFieldListener{
 	meWPSensors &pPanel;
 	
 public:
-	typedef deTObjectReference<cTextLMConeExp> Ref;
+	using Ref = deTObjectReference<cTextLMConeExp>;
 	cTextLMConeExp(meWPSensors &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{

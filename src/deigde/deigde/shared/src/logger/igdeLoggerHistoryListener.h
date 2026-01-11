@@ -41,7 +41,7 @@ class igdeLoggerHistoryEntry;
 class DE_DLL_EXPORT igdeLoggerHistoryListener : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeLoggerHistoryListener> Ref;
+	using Ref = deTObjectReference<igdeLoggerHistoryListener>;
 	
 	
 	/** \name Constructors and Destructors */

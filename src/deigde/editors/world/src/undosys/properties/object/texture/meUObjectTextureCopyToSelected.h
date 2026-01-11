@@ -37,7 +37,7 @@
  */
 class meUObjectTextureCopyToSelected : public igdeUndo{
 public:
-	typedef deTObjectReference<meUObjectTextureCopyToSelected> Ref;
+	using Ref = deTObjectReference<meUObjectTextureCopyToSelected>;
 	
 	
 private:

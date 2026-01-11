@@ -34,7 +34,7 @@
  */
 class ceWPTTIMACoordSystemRemove : public ceWPTTIMAction{
 public:
-	typedef deTObjectReference<ceWPTTIMACoordSystemRemove> Ref;
+	using Ref = deTObjectReference<ceWPTTIMACoordSystemRemove>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */

@@ -43,7 +43,7 @@ class deoglShaderCompiled;
  */
 class deoglShaderProgram : public deObject{
 public:
-	typedef deTObjectReference<deoglShaderProgram> Ref;
+	using Ref = deTObjectReference<deoglShaderProgram>;
 	
 	
 private:

@@ -41,7 +41,7 @@ class deoxrSession;
 class deoxrSwapchain : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<deoxrSwapchain> Ref;
+	using Ref = deTObjectReference<deoxrSwapchain>;
 	
 	
 	/** Image. */

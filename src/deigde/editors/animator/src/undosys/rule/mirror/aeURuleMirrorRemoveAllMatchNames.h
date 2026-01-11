@@ -36,7 +36,7 @@
  */
 class aeURuleMirrorRemoveAllMatchNames : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleMirrorRemoveAllMatchNames> Ref;
+	using Ref = deTObjectReference<aeURuleMirrorRemoveAllMatchNames>;
 	
 	
 private:

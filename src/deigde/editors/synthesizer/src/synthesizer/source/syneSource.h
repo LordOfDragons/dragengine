@@ -50,10 +50,10 @@ class deEngine;
 class syneSource : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<syneSource> Ref;
+	using Ref = deTObjectReference<syneSource>;
 	
 	/** \brief Type holding list of objects. */
-	typedef decTObjectOrderedSet<syneSource> List;
+	using List = decTObjectOrderedSet<syneSource>;
 
 
 private:

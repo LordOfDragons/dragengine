@@ -35,7 +35,7 @@
  */
 class saeUPhonemeSetVertexPositionSet : public igdeUndo{
 public:
-	typedef deTObjectReference<saeUPhonemeSetVertexPositionSet> Ref;
+	using Ref = deTObjectReference<saeUPhonemeSetVertexPositionSet>;
 	
 	
 private:

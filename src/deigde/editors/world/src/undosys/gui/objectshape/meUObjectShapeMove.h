@@ -38,7 +38,7 @@
  */
 class meUObjectShapeMove : public meBaseUndoMove{
 public:
-	typedef deTObjectReference<meUObjectShapeMove> Ref;
+	using Ref = deTObjectReference<meUObjectShapeMove>;
 	
 private:
 	meObject::Ref pObject;

@@ -66,7 +66,7 @@ class deoxrActionSet;
 class deoxrDeviceProfile : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<deoxrDeviceProfile> Ref;
+	using Ref = deTObjectReference<deoxrDeviceProfile>;
 	
 	
 protected:

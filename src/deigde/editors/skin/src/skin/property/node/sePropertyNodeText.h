@@ -37,7 +37,7 @@
 class sePropertyNodeText : public sePropertyNode{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<sePropertyNodeText> Ref;
+	using Ref = deTObjectReference<sePropertyNodeText>;
 	
 	
 	enum eTextMapped{

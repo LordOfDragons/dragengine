@@ -49,7 +49,7 @@
 class DE_DLL_EXPORT igdeStepableTask : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeStepableTask> Ref;
+	using Ref = deTObjectReference<igdeStepableTask>;
 	
 	
 private:

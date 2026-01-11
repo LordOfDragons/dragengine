@@ -41,7 +41,7 @@ class syneSource;
 class syneSynthesizerNotifier : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<syneSynthesizerNotifier> Ref;
+	using Ref = deTObjectReference<syneSynthesizerNotifier>;
 
 
 	/** \name Constructors and Destructors */

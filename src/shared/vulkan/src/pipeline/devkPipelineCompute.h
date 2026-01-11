@@ -34,7 +34,7 @@
 class devkPipelineCompute : public devkPipeline{
 public:
 	/** Reference. */
-	typedef deTObjectReference<devkPipelineCompute> Ref;
+	using Ref = deTObjectReference<devkPipelineCompute>;
 	
 	
 public:

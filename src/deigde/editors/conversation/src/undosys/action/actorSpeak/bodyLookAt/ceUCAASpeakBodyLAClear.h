@@ -38,7 +38,7 @@
  */
 class ceUCAASpeakBodyLAClear : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCAASpeakBodyLAClear> Ref;
+	using Ref = deTObjectReference<ceUCAASpeakBodyLAClear>;
 	
 	
 private:

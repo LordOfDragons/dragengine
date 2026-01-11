@@ -74,7 +74,7 @@ protected:
 	reWPRig &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseTextFieldListener> Ref;
+	using Ref = deTObjectReference<cBaseTextFieldListener>;
 	cBaseTextFieldListener(reWPRig &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -97,7 +97,7 @@ protected:
 	reWPRig &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseEditVectorListener> Ref;
+	using Ref = deTObjectReference<cBaseEditVectorListener>;
 	cBaseEditVectorListener(reWPRig &panel) : pPanel(panel){}
 	
 	void OnVectorChanged(igdeEditVector *editVector) override{
@@ -120,7 +120,7 @@ protected:
 	reWPRig &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseAction> Ref;
+	using Ref = deTObjectReference<cBaseAction>;
 	cBaseAction(reWPRig &panel, const char *text, const char *description) :
 	igdeAction(text, description),
 	pPanel(panel){}
@@ -145,7 +145,7 @@ protected:
 	reWPRig &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseComboBoxListener> Ref;
+	using Ref = deTObjectReference<cBaseComboBoxListener>;
 	cBaseComboBoxListener(reWPRig &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -167,7 +167,7 @@ public:
 
 class cComboRootBone : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboRootBone> Ref;
+	using Ref = deTObjectReference<cComboRootBone>;
 	cComboRootBone(reWPRig &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnTextChanged(igdeComboBox *comboBox, reRig *rig) override{
@@ -185,7 +185,7 @@ public:
 
 class cCheckDynamic : public cBaseAction{
 public:
-	typedef deTObjectReference<cCheckDynamic> Ref;
+	using Ref = deTObjectReference<cCheckDynamic>;
 	cCheckDynamic(reWPRig &panel) :
 	cBaseAction(panel, "Dynamic", "Determines if the rig is afflicted by dynamic physics."){ }
 	
@@ -196,7 +196,7 @@ public:
 
 class cCheckModelCollision : public cBaseAction{
 public:
-	typedef deTObjectReference<cCheckModelCollision> Ref;
+	using Ref = deTObjectReference<cCheckModelCollision>;
 	cCheckModelCollision(reWPRig &panel) :
 	cBaseAction(panel, "Model Collision", "Use model collision instead of shapes."){}
 	
@@ -207,7 +207,7 @@ public:
 
 class cEditCentralMassPoint : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditCentralMassPoint> Ref;
+	using Ref = deTObjectReference<cEditCentralMassPoint>;
 	cEditCentralMassPoint(reWPRig &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(const decVector &vector, reRig *rig) override{
@@ -220,7 +220,7 @@ public:
 
 class cEditMass : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cEditMass> Ref;
+	using Ref = deTObjectReference<cEditMass>;
 	cEditMass(reWPRig &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, reRig *rig) override{

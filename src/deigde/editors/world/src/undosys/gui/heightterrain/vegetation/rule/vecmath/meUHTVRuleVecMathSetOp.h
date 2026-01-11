@@ -39,7 +39,7 @@ class meHTVRuleVectorMath;
  */
 class meUHTVRuleVecMathSetOp : public igdeUndo{
 public:
-	typedef deTObjectReference<meUHTVRuleVecMathSetOp> Ref;
+	using Ref = deTObjectReference<meUHTVRuleVecMathSetOp>;
 	
 	
 public:

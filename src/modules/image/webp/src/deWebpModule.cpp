@@ -208,7 +208,7 @@ void deWebpModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 
 class deWebpModuleInternal : public deInternalModule{
 public:
-	typedef deTObjectReference<deWebpModuleInternal> Ref;
+	using Ref = deTObjectReference<deWebpModuleInternal>;
 	
 	deWebpModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("WebP");

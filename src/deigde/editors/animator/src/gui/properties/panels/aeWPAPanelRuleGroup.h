@@ -34,7 +34,7 @@
  */
 class aeWPAPanelRuleGroup : public aeWPAPanelRule{
 public:
-	typedef deTObjectReference<aeWPAPanelRuleGroup> Ref;
+	using Ref = deTObjectReference<aeWPAPanelRuleGroup>;
 	
 	
 private:

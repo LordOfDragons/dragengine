@@ -36,7 +36,7 @@ class syneWindowMain;
  */
 class syneWindowMainListener : public syneSynthesizerNotifier{
 public:
-	typedef deTObjectReference<syneWindowMainListener> Ref;
+	using Ref = deTObjectReference<syneWindowMainListener>;
 	
 private:
 	syneWindowMain &pWindowMain;

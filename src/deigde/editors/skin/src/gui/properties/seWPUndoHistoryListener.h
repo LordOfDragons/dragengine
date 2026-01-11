@@ -36,7 +36,7 @@ class seWPUndoHistory;
  */
 class seWPUndoHistoryListener : public seSkinListener{
 public:
-	typedef deTObjectReference<seWPUndoHistoryListener> Ref;
+	using Ref = deTObjectReference<seWPUndoHistoryListener>;
 	
 private:
 	seWPUndoHistory &pPanel;

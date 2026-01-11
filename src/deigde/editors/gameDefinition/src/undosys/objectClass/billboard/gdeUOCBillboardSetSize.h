@@ -40,7 +40,7 @@
  */
 class gdeUOCBillboardSetSize : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCBillboardSetSize> Ref;
+	using Ref = deTObjectReference<gdeUOCBillboardSetSize>;
 	
 	
 private:

@@ -37,7 +37,7 @@
  */
 class meUDecalScale : public meBaseUndoScale{
 public:
-	typedef deTObjectReference<meUDecalScale> Ref;
+	using Ref = deTObjectReference<meUDecalScale>;
 	
 private:
 	meWorld *pWorld;

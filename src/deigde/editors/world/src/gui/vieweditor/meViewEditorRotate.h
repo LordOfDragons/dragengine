@@ -40,7 +40,7 @@ class meObject;
  */
 class meViewEditorRotate : public meViewEditorNavigation{
 public:
-	typedef deTObjectReference<meViewEditorRotate> Ref;
+	using Ref = deTObjectReference<meViewEditorRotate>;
 	
 private:
 	meBaseUndoRotate::Ref pUndoRotate;

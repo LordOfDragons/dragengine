@@ -39,7 +39,7 @@ class meHTVRuleClosestVegetation;
  */
 class meWVNodeClosestVegetation : public meWVNode{
 public:
-	typedef deTObjectReference<meWVNodeClosestVegetation> Ref;
+	using Ref = deTObjectReference<meWVNodeClosestVegetation>;
 	
 private:
 	meHTVRuleClosestVegetation *pRuleCV;

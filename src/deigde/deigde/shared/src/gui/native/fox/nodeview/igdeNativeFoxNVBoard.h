@@ -186,6 +186,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxNVBoard igdeNativeNVBoard;
+using igdeNativeNVBoard = igdeNativeFoxNVBoard;
 
 #endif

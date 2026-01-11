@@ -72,7 +72,7 @@ protected:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglDynamicTBO> Ref;
+	using Ref = deTObjectReference<deoglDynamicTBO>;
 
 
 	/** \name Management */

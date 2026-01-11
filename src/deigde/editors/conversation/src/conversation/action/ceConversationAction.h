@@ -36,8 +36,8 @@
  */
 class ceConversationAction : public deObject{
 public:
-	typedef deTObjectReference<ceConversationAction> Ref;
-	typedef decTObjectOrderedSet<ceConversationAction> List;
+	using Ref = deTObjectReference<ceConversationAction>;
+	using List = decTObjectOrderedSet<ceConversationAction>;
 	
 	
 	/** \brief Action types. */

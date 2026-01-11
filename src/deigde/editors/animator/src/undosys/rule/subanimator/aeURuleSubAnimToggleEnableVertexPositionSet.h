@@ -35,7 +35,7 @@
  */
 class aeURuleSubAnimToggleEnableVertexPositionSet : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleSubAnimToggleEnableVertexPositionSet> Ref;
+	using Ref = deTObjectReference<aeURuleSubAnimToggleEnableVertexPositionSet>;
 	
 	
 private:

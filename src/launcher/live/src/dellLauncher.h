@@ -55,7 +55,7 @@ public:
 	class PreloadLibrary : public deObject{
 		void * const pHandle;
 	public:
-		typedef deTObjectReference<PreloadLibrary> Ref;
+		using Ref = deTObjectReference<PreloadLibrary>;
 		PreloadLibrary(const decPath &basePath, const char *filename);
 	protected:
 		~PreloadLibrary() override;

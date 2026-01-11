@@ -35,7 +35,7 @@
  */
 class aeUSetRuleFStaScaleVertexPositionSet : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUSetRuleFStaScaleVertexPositionSet> Ref;
+	using Ref = deTObjectReference<aeUSetRuleFStaScaleVertexPositionSet>;
 	
 	
 private:

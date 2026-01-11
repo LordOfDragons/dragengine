@@ -40,7 +40,7 @@ class ceWPTTIMAPlayerChoiceOption;
  */
 class ceWPTTIMAPlayerChoiceOption : public ceWPTTreeItemModel{
 public:
-	typedef deTObjectReference<ceWPTTIMAPlayerChoiceOption> Ref;
+	using Ref = deTObjectReference<ceWPTTIMAPlayerChoiceOption>;
 	
 private:
 	ceCAPlayerChoiceOption::Ref pOption;

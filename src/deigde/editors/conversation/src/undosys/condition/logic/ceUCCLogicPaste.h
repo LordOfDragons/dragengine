@@ -40,7 +40,7 @@
  */
 class ceUCCLogicPaste : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCCLogicPaste> Ref;
+	using Ref = deTObjectReference<ceUCCLogicPaste>;
 	
 	
 private:

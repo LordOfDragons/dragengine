@@ -37,7 +37,7 @@ class peeWPUndoHistory;
 class peeWPUndoHistoryListener : public peeEmitterListener{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<peeWPUndoHistoryListener> Ref;
+	using Ref = deTObjectReference<peeWPUndoHistoryListener>;
 	
 private:
 	peeWPUndoHistory &pPanel;

@@ -34,7 +34,7 @@
  */
 class aeUControllerSetMinimumValue : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUControllerSetMinimumValue> Ref;
+	using Ref = deTObjectReference<aeUControllerSetMinimumValue>;
 	
 	
 private:

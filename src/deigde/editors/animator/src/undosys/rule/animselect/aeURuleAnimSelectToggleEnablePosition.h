@@ -37,7 +37,7 @@
  */
 class aeURuleAnimSelectToggleEnablePosition : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleAnimSelectToggleEnablePosition> Ref;
+	using Ref = deTObjectReference<aeURuleAnimSelectToggleEnablePosition>;
 	
 	
 private:

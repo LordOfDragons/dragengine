@@ -47,7 +47,7 @@ class decXmlNamespace;
 class DE_DLL_EXPORT decXmlElement : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<decXmlElement> Ref;
+	using Ref = deTObjectReference<decXmlElement>;
 	
 	
 public:

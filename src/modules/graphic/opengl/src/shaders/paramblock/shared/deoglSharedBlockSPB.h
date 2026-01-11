@@ -52,7 +52,7 @@ class deoglRTLogger;
  */
 class deoglSharedBlockSPB : public deObject{
 public:
-	typedef deTObjectReference<deoglSharedBlockSPB> Ref;
+	using Ref = deTObjectReference<deoglSharedBlockSPB>;
 	
 	
 private:

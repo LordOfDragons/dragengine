@@ -47,7 +47,7 @@ class deBaseModule;
 class fbxAnimation : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<fbxAnimation> Ref;
+	using Ref = deTObjectReference<fbxAnimation>;
 	
 	
 private:

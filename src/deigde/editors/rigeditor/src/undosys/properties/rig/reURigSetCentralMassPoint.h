@@ -37,7 +37,7 @@
  */
 class reURigSetCentralMassPoint : public igdeUndo{
 public:
-	typedef deTObjectReference<reURigSetCentralMassPoint> Ref;
+	using Ref = deTObjectReference<reURigSetCentralMassPoint>;
 	
 	
 private:

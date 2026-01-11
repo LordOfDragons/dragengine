@@ -38,7 +38,7 @@
  */
 class seUPropertyNodeShapeSetLineColor : public igdeUndo{
 public:
-	typedef deTObjectReference<seUPropertyNodeShapeSetLineColor> Ref;
+	using Ref = deTObjectReference<seUPropertyNodeShapeSetLineColor>;
 	
 	
 private:

@@ -46,7 +46,7 @@ class deWorld;
 class DE_DLL_EXPORT deSkyInstance : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deSkyInstance> Ref;
+	using Ref = deTObjectReference<deSkyInstance>;
 	
 	
 private:

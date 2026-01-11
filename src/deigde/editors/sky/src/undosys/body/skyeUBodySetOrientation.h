@@ -37,7 +37,7 @@
  */
 class skyeUBodySetOrientation : public igdeUndo{
 public:
-	typedef deTObjectReference<skyeUBodySetOrientation> Ref;
+	using Ref = deTObjectReference<skyeUBodySetOrientation>;
 	
 	
 private:

@@ -36,7 +36,7 @@
  */
 class seUPropertyConstructedToggleTileY : public igdeUndo{
 public:
-	typedef deTObjectReference<seUPropertyConstructedToggleTileY> Ref;
+	using Ref = deTObjectReference<seUPropertyConstructedToggleTileY>;
 	
 	
 private:

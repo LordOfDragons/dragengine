@@ -141,6 +141,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxNVNode igdeNativeNVNode;
+using igdeNativeNVNode = igdeNativeFoxNVNode;
 
 #endif

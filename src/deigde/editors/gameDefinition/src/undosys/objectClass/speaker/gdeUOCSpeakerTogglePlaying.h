@@ -38,7 +38,7 @@
  */
 class gdeUOCSpeakerTogglePlaying : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCSpeakerTogglePlaying> Ref;
+	using Ref = deTObjectReference<gdeUOCSpeakerTogglePlaying>;
 	
 	
 private:

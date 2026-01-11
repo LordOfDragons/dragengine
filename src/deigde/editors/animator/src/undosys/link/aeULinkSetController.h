@@ -42,7 +42,7 @@
  */
 class aeULinkSetController : public igdeUndo{
 public:
-	typedef deTObjectReference<aeULinkSetController> Ref;
+	using Ref = deTObjectReference<aeULinkSetController>;
 	
 	
 private:

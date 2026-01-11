@@ -40,8 +40,8 @@ private:
 	bool pValue;
 	
 public:
-	typedef deTObjectReference<cePlaybackCommand> Ref;
-	typedef decTObjectOrderedSet<cePlaybackCommand> List;
+	using Ref = deTObjectReference<cePlaybackCommand>;
+	using List = decTObjectOrderedSet<cePlaybackCommand>;
 
 
 	/** \name Constructors and Destructors */

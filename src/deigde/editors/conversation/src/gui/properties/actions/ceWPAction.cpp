@@ -68,7 +68,7 @@ class cTextDelay : public igdeTextFieldListener {
 	ceWPAction &pPanel;
 	
 public:
-	typedef deTObjectReference<cTextDelay> Ref;
+	using Ref = deTObjectReference<cTextDelay>;
 	cTextDelay(ceWPAction &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -90,7 +90,7 @@ public:
 
 class cActionWaitForActor : public igdeAction{
 public:
-	typedef deTObjectReference<cActionWaitForActor> Ref;
+	using Ref = deTObjectReference<cActionWaitForActor>;
 	
 private:
 	ceWPAction &pPanel;
@@ -120,7 +120,7 @@ public:
 
 class cActionWaitSpeakOnly : public igdeAction{
 public:
-	typedef deTObjectReference<cActionWaitSpeakOnly> Ref;
+	using Ref = deTObjectReference<cActionWaitSpeakOnly>;
 	
 private:
 	ceWPAction &pPanel;
@@ -152,7 +152,7 @@ class cComboWaitForActorID : public igdeComboBoxListener {
 	ceWPAction &pPanel;
 	
 public:
-	typedef deTObjectReference<cComboWaitForActorID> Ref;
+	using Ref = deTObjectReference<cComboWaitForActorID>;
 	cComboWaitForActorID(ceWPAction &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{

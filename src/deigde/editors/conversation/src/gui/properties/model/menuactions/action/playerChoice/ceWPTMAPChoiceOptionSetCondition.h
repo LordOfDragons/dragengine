@@ -37,7 +37,7 @@ class ceCAPlayerChoiceOption;
  */
 class ceWPTMAPChoiceOptionSetCondition : public ceWPTMACreateCondition{
 public:
-	typedef deTObjectReference<ceWPTMAPChoiceOptionSetCondition> Ref;
+	using Ref = deTObjectReference<ceWPTMAPChoiceOptionSetCondition>;
 
 private:
 	ceConversationTopic *pTopic;

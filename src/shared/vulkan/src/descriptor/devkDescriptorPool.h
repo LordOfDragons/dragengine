@@ -45,7 +45,7 @@ class devkDevice;
 class devkDescriptorPool : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<devkDescriptorPool> Ref;
+	using Ref = deTObjectReference<devkDescriptorPool>;
 	
 	
 private:

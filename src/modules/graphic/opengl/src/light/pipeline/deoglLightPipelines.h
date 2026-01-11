@@ -39,7 +39,7 @@
  */
 class deoglLightPipelines : public deObject{
 public:
-	typedef deTObjectReference<deoglLightPipelines> Ref;
+	using Ref = deTObjectReference<deoglLightPipelines>;
 	
 	
 	/** Type. */

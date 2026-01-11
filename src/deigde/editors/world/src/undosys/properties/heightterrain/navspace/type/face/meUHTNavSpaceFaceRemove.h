@@ -41,14 +41,14 @@ class meHeightTerrainNavSpaceType;
  */
 class meUHTNavSpaceFaceRemove : public igdeUndo{
 public:
-	typedef deTObjectReference<meUHTNavSpaceFaceRemove> Ref;
+	using Ref = deTObjectReference<meUHTNavSpaceFaceRemove>;
 	
 	
 private:
 	class cFace : public deObject{
 	public:
-		typedef deTObjectReference<cFace> Ref;
-		typedef decTObjectOrderedSet<cFace> List;
+		using Ref = deTObjectReference<cFace>;
+		using List = decTObjectOrderedSet<cFace>;
 		
 		meHeightTerrainNavSpaceType::Ref type;
 		meHeightTerrainNavSpaceFace::Ref face;

@@ -38,7 +38,7 @@
  */
 class gdeUOCWorldSetRotation : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCWorldSetRotation> Ref;
+	using Ref = deTObjectReference<gdeUOCWorldSetRotation>;
 	
 	
 private:

@@ -49,7 +49,7 @@ class deLoadableModule;
 class DE_DLL_EXPORT delEngineInstanceDirect : public delEngineInstance{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<delEngineInstanceDirect> Ref;
+	using Ref = deTObjectReference<delEngineInstanceDirect>;
 	
 	
 	/** \brief Factory creating engine instances. */
@@ -66,7 +66,7 @@ public:
 		
 	public:
 		/** \brief Type holding strong reference. */
-		typedef deTObjectReference<Factory> Ref;
+		using Ref = deTObjectReference<Factory>;
 		
 		
 		/** \brief Factory constructor. */
@@ -121,7 +121,7 @@ private:
 	class cModuleParamState : public deObject{
 	public:
 		/** \brief Type holding strong reference. */
-		typedef deTObjectReference<cModuleParamState> Ref;
+		using Ref = deTObjectReference<cModuleParamState>;
 		
 		deLoadableModule *module;
 		decStringDictionary parameters;

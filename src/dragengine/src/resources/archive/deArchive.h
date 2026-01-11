@@ -47,7 +47,7 @@ class deBaseArchiveContainer;
 class DE_DLL_EXPORT deArchive : public deFileResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deArchive> Ref;
+	using Ref = deTObjectReference<deArchive>;
 	
 	
 private:

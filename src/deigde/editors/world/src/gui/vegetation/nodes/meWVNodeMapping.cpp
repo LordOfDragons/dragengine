@@ -62,7 +62,7 @@ protected:
 	meWVNodeMapping &pNode;
 	
 public:
-	typedef deTObjectReference<cTextLower> Ref;
+	using Ref = deTObjectReference<cTextLower>;
 	cTextLower(meWVNodeMapping &node) : pNode(node){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -82,7 +82,7 @@ protected:
 	meWVNodeMapping &pNode;
 	
 public:
-	typedef deTObjectReference<cTextUpper> Ref;
+	using Ref = deTObjectReference<cTextUpper>;
 	cTextUpper(meWVNodeMapping &node) : pNode(node){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -102,7 +102,7 @@ protected:
 	meWVNodeMapping &pNode;
 	
 public:
-	typedef deTObjectReference<cTextValue> Ref;
+	using Ref = deTObjectReference<cTextValue>;
 	cTextValue(meWVNodeMapping &node) : pNode(node){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -122,7 +122,7 @@ protected:
 	meWVNodeMapping &pNode;
 	
 public:
-	typedef deTObjectReference<cActionInversed> Ref;
+	using Ref = deTObjectReference<cActionInversed>;
 	cActionInversed(meWVNodeMapping &node) :
 		igdeAction("Inversed", nullptr, "Invert value"), pNode(node){}
 	

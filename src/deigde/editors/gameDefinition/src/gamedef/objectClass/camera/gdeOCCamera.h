@@ -45,10 +45,10 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeOCCamera> Ref;
+	using Ref = deTObjectReference<gdeOCCamera>;
 
 	/** \brief Type holding list. */
-	typedef decTObjectOrderedSet<gdeOCCamera> List;
+	using List = decTObjectOrderedSet<gdeOCCamera>;
 
 
 	/** \name Constructors and Destructors */

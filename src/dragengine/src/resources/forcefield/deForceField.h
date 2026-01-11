@@ -95,7 +95,7 @@ class deWorld;
 class DE_DLL_EXPORT deForceField : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deForceField> Ref;
+	using Ref = deTObjectReference<deForceField>;
 	
 	
 public:

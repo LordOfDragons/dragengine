@@ -36,7 +36,7 @@
  */
 class peeUControllerToggleLinkToTime : public igdeUndo{
 public:
-	typedef deTObjectReference<peeUControllerToggleLinkToTime> Ref;
+	using Ref = deTObjectReference<peeUControllerToggleLinkToTime>;
 	
 	
 private:

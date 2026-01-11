@@ -36,7 +36,7 @@
  */
 class meUHTNavSpaceSetSnapAngle : public igdeUndo{
 public:
-	typedef deTObjectReference<meUHTNavSpaceSetSnapAngle> Ref;
+	using Ref = deTObjectReference<meUHTNavSpaceSetSnapAngle>;
 	
 	
 private:

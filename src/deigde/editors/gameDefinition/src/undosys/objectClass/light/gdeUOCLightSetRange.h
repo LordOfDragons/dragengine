@@ -38,7 +38,7 @@
  */
 class gdeUOCLightSetRange : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCLightSetRange> Ref;
+	using Ref = deTObjectReference<gdeUOCLightSetRange>;
 	
 	
 private:

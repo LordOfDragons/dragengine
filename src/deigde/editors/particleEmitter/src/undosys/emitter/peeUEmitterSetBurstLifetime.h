@@ -36,7 +36,7 @@
  */
 class peeUEmitterSetBurstLifetime : public igdeUndo{
 public:
-	typedef deTObjectReference<peeUEmitterSetBurstLifetime> Ref;
+	using Ref = deTObjectReference<peeUEmitterSetBurstLifetime>;
 	
 	
 private:

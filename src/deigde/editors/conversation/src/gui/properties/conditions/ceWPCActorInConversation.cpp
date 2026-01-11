@@ -63,7 +63,7 @@ class cComboActor : public igdeComboBoxListener {
 	ceWPCActorInConversation &pPanel;
 	
 public:
-	typedef deTObjectReference<cComboActor> Ref;
+	using Ref = deTObjectReference<cComboActor>;
 	cComboActor(ceWPCActorInConversation &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -83,7 +83,7 @@ class cActionNegate : public igdeAction {
 	ceWPCActorInConversation &pPanel;
 	
 public:
-	typedef deTObjectReference<cActionNegate> Ref;
+	using Ref = deTObjectReference<cActionNegate>;
 	cActionNegate(ceWPCActorInConversation &panel) : igdeAction("Negate", nullptr,
 		"True if the information is missing instead of existing"), pPanel(panel){ }
 	

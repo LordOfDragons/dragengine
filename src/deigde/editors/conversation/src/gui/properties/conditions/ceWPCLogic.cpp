@@ -63,7 +63,7 @@ class cComboOperator : public igdeComboBoxListener {
 	ceWPCLogic &pPanel;
 	
 public:
-	typedef deTObjectReference<cComboOperator> Ref;
+	using Ref = deTObjectReference<cComboOperator>;
 	cComboOperator(ceWPCLogic &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{

@@ -36,7 +36,7 @@ class ceWPTTIMAIfElse;
  */
 class ceWPTTIMAIfElseElse : public ceWPTTIMActions{
 public:
-	typedef deTObjectReference<ceWPTTIMAIfElseElse> Ref;
+	using Ref = deTObjectReference<ceWPTTIMAIfElseElse>;
 	
 	/** \brief Constructors and Destructors */
 	/*@{*/

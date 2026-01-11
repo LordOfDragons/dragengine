@@ -33,7 +33,7 @@
  */
 class dexsiPRawMouseInputSensivity : public dexsiParameterFloat{
 public:
-	typedef deTObjectReference<dexsiPRawMouseInputSensivity> Ref;
+	using Ref = deTObjectReference<dexsiPRawMouseInputSensivity>;
 	
 	
 private:

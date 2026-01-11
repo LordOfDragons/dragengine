@@ -10,7 +10,7 @@
 // Test object class
 class TestTSRefObject : public deThreadSafeObject{
 public:
-	typedef deTThreadSafeObjectReference<TestTSRefObject> Ref;
+	using Ref = deTThreadSafeObjectReference<TestTSRefObject>;
 	
 	int id;
 	static int constructCount;
@@ -33,7 +33,7 @@ int TestTSRefObject::destructCount = 0;
 // Base and derived classes for casting tests
 class TestTSRefBase : public deThreadSafeObject{
 public:
-	typedef deTThreadSafeObjectReference<TestTSRefBase> Ref;
+	using Ref = deTThreadSafeObjectReference<TestTSRefBase>;
 	int baseValue;
 	static int constructCount;
 	static int destructCount;
@@ -52,7 +52,7 @@ int TestTSRefBase::destructCount = 0;
 
 class TestTSRefDerived : public TestTSRefBase{
 public:
-	typedef deTThreadSafeObjectReference<TestTSRefDerived> Ref;
+	using Ref = deTThreadSafeObjectReference<TestTSRefDerived>;
 	int derivedValue;
 	static int constructCountDerived;
 	static int destructCountDerived;

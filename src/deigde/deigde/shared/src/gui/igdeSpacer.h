@@ -35,7 +35,7 @@ class DE_DLL_EXPORT igdeSpacer : public igdeWidget{
 
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeSpacer> Ref;
+	using Ref = deTObjectReference<igdeSpacer>;
 	
 	
 private:

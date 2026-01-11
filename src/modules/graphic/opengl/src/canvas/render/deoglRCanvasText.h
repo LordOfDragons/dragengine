@@ -36,7 +36,7 @@
  */
 class deoglRCanvasText : public deoglRCanvas{
 public:
-	typedef deTObjectReference<deoglRCanvasText> Ref;
+	using Ref = deTObjectReference<deoglRCanvasText>;
 	
 private:
 	deoglRFont::Ref pFont;

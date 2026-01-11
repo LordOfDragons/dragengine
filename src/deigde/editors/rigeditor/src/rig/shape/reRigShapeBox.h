@@ -37,7 +37,7 @@
  */
 class reRigShapeBox : public reRigShape{
 public:
-	typedef deTObjectReference<reRigShapeBox> Ref;
+	using Ref = deTObjectReference<reRigShapeBox>;
 	
 private:
 	decVector pHalfExtends;

@@ -362,7 +362,7 @@ decTimer debugTimer;
 
 class deciModuleInternal : public deInternalModule{
 public:
-	typedef deTObjectReference<deciModuleInternal> Ref;
+	using Ref = deTObjectReference<deciModuleInternal>;
 	
 	deciModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("ConsoleInput");

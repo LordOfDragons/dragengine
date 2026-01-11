@@ -77,6 +77,6 @@ private:
 	int pHeight;
 };
 
-typedef igdeNativeFoxSpacer igdeNativeSpacer;
+using igdeNativeSpacer = igdeNativeFoxSpacer;
 
 #endif

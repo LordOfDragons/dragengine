@@ -38,7 +38,7 @@ class meCLSelect;
  */
 class meViewEditorNavSpaceEdit : public meViewEditorNavigation{
 public:
-	typedef deTObjectReference<meViewEditorNavSpaceEdit> Ref;
+	using Ref = deTObjectReference<meViewEditorNavSpaceEdit>;
 	
 private:
 	deCollider::Ref pColVol;

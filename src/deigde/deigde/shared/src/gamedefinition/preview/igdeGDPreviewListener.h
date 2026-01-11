@@ -36,7 +36,7 @@ class deImage;
  */
 class DE_DLL_EXPORT igdeGDPreviewListener : public deObject{
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeGDPreviewListener> Ref;
+	using Ref = deTObjectReference<igdeGDPreviewListener>;
 
 
 public:

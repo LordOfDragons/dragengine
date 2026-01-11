@@ -43,7 +43,7 @@ class deoglShaderDefines;
  */
 class deoglLightShader : public deObject{
 public:
-	typedef deTObjectReference<deoglLightShader> Ref;
+	using Ref = deTObjectReference<deoglLightShader>;
 	
 	
 	/** Texture targets. */

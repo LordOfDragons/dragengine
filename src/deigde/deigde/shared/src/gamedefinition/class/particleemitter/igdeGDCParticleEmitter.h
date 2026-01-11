@@ -38,10 +38,10 @@
 class DE_DLL_EXPORT igdeGDCParticleEmitter : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeGDCParticleEmitter> Ref;
+	using Ref = deTObjectReference<igdeGDCParticleEmitter>;
 	
 	/** \brief Type holding list of objects. */
-	typedef decTObjectOrderedSet<igdeGDCParticleEmitter> List;
+	using List = decTObjectOrderedSet<igdeGDCParticleEmitter>;
 	
 	
 	/** \brief Properties. */

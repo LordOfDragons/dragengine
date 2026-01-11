@@ -36,7 +36,7 @@
  */
 class aeULinkSetBoneMinimum : public igdeUndo{
 public:
-	typedef deTObjectReference<aeULinkSetBoneMinimum> Ref;
+	using Ref = deTObjectReference<aeULinkSetBoneMinimum>;
 	
 	
 private:

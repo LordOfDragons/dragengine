@@ -40,7 +40,7 @@ class deSkinPropertyNodeImage;
  */
 class deoglSkinStateCNImage : public deoglSkinStateConstructedNode{
 public:
-	typedef deTObjectReference<deoglSkinStateCNImage> Ref;
+	using Ref = deTObjectReference<deoglSkinStateCNImage>;
 	
 	
 private:

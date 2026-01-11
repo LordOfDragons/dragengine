@@ -43,7 +43,7 @@ class fbxProperty;
 class fbxAnimationCurve : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<fbxAnimationCurve> Ref;
+	using Ref = deTObjectReference<fbxAnimationCurve>;
 	
 	
 private:

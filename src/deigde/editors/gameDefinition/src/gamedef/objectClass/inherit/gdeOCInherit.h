@@ -43,10 +43,10 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeOCInherit> Ref;
+	using Ref = deTObjectReference<gdeOCInherit>;
 
 	/** \brief Type holding list. */
-	typedef decTObjectOrderedSet<gdeOCInherit> List;
+	using List = decTObjectOrderedSet<gdeOCInherit>;
 
 
 	/** \name Constructors and Destructors */

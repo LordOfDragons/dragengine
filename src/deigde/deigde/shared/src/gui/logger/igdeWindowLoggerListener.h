@@ -37,7 +37,7 @@ class igdeWindowLogger;
 class DE_DLL_EXPORT igdeWindowLoggerListener : public igdeLoggerHistoryListener{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeWindowLoggerListener> Ref;
+	using Ref = deTObjectReference<igdeWindowLoggerListener>;
 	
 	
 private:

@@ -41,7 +41,7 @@ class meHTVRuleVectorMath;
  */
 class meWVNodeVectorMath : public meWVNode{
 public:
-	typedef deTObjectReference<meWVNodeVectorMath> Ref;
+	using Ref = deTObjectReference<meWVNodeVectorMath>;
 	
 private:
 	meHTVRuleVectorMath *pRuleVectorMath;

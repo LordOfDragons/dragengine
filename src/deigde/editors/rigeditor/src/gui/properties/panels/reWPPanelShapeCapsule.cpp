@@ -58,7 +58,7 @@ namespace {
 class cTextHalfHeight : public igdeTextFieldListener{
 	reWPPanelShapeCapsule &pPanel;
 public:
-	typedef deTObjectReference<cTextHalfHeight> Ref;
+	using Ref = deTObjectReference<cTextHalfHeight>;
 	cTextHalfHeight(reWPPanelShapeCapsule &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -84,7 +84,7 @@ public:
 class cTextTopRadius : public igdeTextFieldListener{
 	reWPPanelShapeCapsule &pPanel;
 public:
-	typedef deTObjectReference<cTextTopRadius> Ref;
+	using Ref = deTObjectReference<cTextTopRadius>;
 	cTextTopRadius(reWPPanelShapeCapsule &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -109,7 +109,7 @@ public:
 class cTextBottomRadius : public igdeTextFieldListener{
 	reWPPanelShapeCapsule &pPanel;
 public:
-	typedef deTObjectReference<cTextBottomRadius> Ref;
+	using Ref = deTObjectReference<cTextBottomRadius>;
 	cTextBottomRadius(reWPPanelShapeCapsule &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{

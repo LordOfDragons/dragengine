@@ -38,7 +38,7 @@
  */
 class gdeUOCComponentSetMove : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCComponentSetMove> Ref;
+	using Ref = deTObjectReference<gdeUOCComponentSetMove>;
 	
 	
 private:

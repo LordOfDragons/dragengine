@@ -43,7 +43,7 @@ class DE_DLL_EXPORT igdeActionSelectDirectory : public igdeAction{
 
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeActionSelectDirectory> Ref;
+	using Ref = deTObjectReference<igdeActionSelectDirectory>;
 	
 	
 private:

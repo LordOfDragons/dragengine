@@ -38,7 +38,7 @@
  */
 class reUSetBoneIKLimitsUpper : public igdeUndo{
 public:
-	typedef deTObjectReference<reUSetBoneIKLimitsUpper> Ref;
+	using Ref = deTObjectReference<reUSetBoneIKLimitsUpper>;
 	
 	
 private:

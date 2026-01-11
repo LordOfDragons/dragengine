@@ -44,7 +44,7 @@ private:
 	
 	
 public:
-	typedef deTObjectReference<seVCIKeyHandling> Ref;
+	using Ref = deTObjectReference<seVCIKeyHandling>;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */

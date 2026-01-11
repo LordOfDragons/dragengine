@@ -62,6 +62,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxMenuSeparator igdeNativeMenuSeparator;
+using igdeNativeMenuSeparator = igdeNativeFoxMenuSeparator;
 
 #endif

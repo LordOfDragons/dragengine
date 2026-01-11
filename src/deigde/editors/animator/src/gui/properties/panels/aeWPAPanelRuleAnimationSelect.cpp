@@ -74,7 +74,7 @@ protected:
 	aeWPAPanelRuleAnimationSelect &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseAction> Ref;
+	using Ref = deTObjectReference<cBaseAction>;
 	cBaseAction(aeWPAPanelRuleAnimationSelect &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description),
 	pPanel(panel){}
@@ -116,7 +116,7 @@ public:
 
 class cActionMoveAdd: public cBaseAction{
 public:
-	typedef deTObjectReference<cActionMoveAdd> Ref;
+	using Ref = deTObjectReference<cActionMoveAdd>;
 	cActionMoveAdd(aeWPAPanelRuleAnimationSelect &panel) : cBaseAction(panel, "Add",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add move to list"){}
 	
@@ -138,7 +138,7 @@ public:
 
 class cActionMoveRemove: public cBaseAction{
 public:
-	typedef deTObjectReference<cActionMoveRemove> Ref;
+	using Ref = deTObjectReference<cActionMoveRemove>;
 	cActionMoveRemove(aeWPAPanelRuleAnimationSelect &panel) : cBaseAction(panel, "Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove move to list"){}
 	
@@ -160,7 +160,7 @@ public:
 
 class cActionMoveUp: public cBaseAction{
 public:
-	typedef deTObjectReference<cActionMoveUp> Ref;
+	using Ref = deTObjectReference<cActionMoveUp>;
 	cActionMoveUp(aeWPAPanelRuleAnimationSelect &panel) : cBaseAction(panel, "Move Up",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp), "Move move up in list"){}
 	
@@ -182,7 +182,7 @@ public:
 
 class cActionMoveDown: public cBaseAction{
 public:
-	typedef deTObjectReference<cActionMoveDown> Ref;
+	using Ref = deTObjectReference<cActionMoveDown>;
 	cActionMoveDown(aeWPAPanelRuleAnimationSelect &panel) : cBaseAction(panel, "Move Down",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown), "Move move down in list"){}
 	
@@ -207,7 +207,7 @@ class cListMoves : public igdeListBoxListener{
 	aeWPAPanelRuleAnimationSelect &pPanel;
 	
 public:
-	typedef deTObjectReference<cListMoves> Ref;
+	using Ref = deTObjectReference<cListMoves>;
 	cListMoves(aeWPAPanelRuleAnimationSelect &panel) : pPanel(panel){}
 	
 	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
@@ -224,7 +224,7 @@ public:
 
 class cActionEnablePosition : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnablePosition> Ref;
+	using Ref = deTObjectReference<cActionEnablePosition>;
 	
 public:
 	cActionEnablePosition(aeWPAPanelRuleAnimationSelect &panel) : cBaseAction(panel,
@@ -242,7 +242,7 @@ public:
 
 class cActionEnableRotation : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableRotation> Ref;
+	using Ref = deTObjectReference<cActionEnableRotation>;
 	
 public:
 	cActionEnableRotation(aeWPAPanelRuleAnimationSelect &panel) : cBaseAction(panel,
@@ -260,7 +260,7 @@ public:
 
 class cActionEnableSize : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableSize> Ref;
+	using Ref = deTObjectReference<cActionEnableSize>;
 	
 public:
 	cActionEnableSize(aeWPAPanelRuleAnimationSelect &panel) : cBaseAction(panel,
@@ -278,7 +278,7 @@ public:
 
 class cActionEnableVertexPositionSet : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableVertexPositionSet> Ref;
+	using Ref = deTObjectReference<cActionEnableVertexPositionSet>;
 	
 public:
 	cActionEnableVertexPositionSet(aeWPAPanelRuleAnimationSelect &panel) : cBaseAction(panel,

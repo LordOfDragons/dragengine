@@ -38,7 +38,7 @@
  */
 class gdeUOCNavBlockerSetLayer : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCNavBlockerSetLayer> Ref;
+	using Ref = deTObjectReference<gdeUOCNavBlockerSetLayer>;
 	
 	
 private:

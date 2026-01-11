@@ -58,7 +58,7 @@ class cActionAppend : public igdeAction{
 	igdeListBox::Ref &pListBox;
 	
 public:
-	typedef deTObjectReference<cActionAppend> Ref;
+	using Ref = deTObjectReference<cActionAppend>;
 	cActionAppend (gdeWPTagList &panel, igdeComboBoxFilter::Ref &comboBox, igdeListBox::Ref &listBox) : 
 	igdeAction("Add...", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add tag"),
 	pPanel(panel), pComboBox(comboBox), pListBox(listBox){}
@@ -81,7 +81,7 @@ class cActionRemove : public igdeAction{
 	igdeListBox::Ref &pListBox;
 	
 public:
-	typedef deTObjectReference<cActionRemove> Ref;
+	using Ref = deTObjectReference<cActionRemove>;
 	cActionRemove(gdeWPTagList &panel, igdeListBox::Ref &listBox) :
 	igdeAction("Remove", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove tag"), pPanel(panel), pListBox(listBox){}
@@ -107,7 +107,7 @@ class cActionClear : public igdeAction{
 	igdeListBox::Ref &pListBox;
 	
 public:
-	typedef deTObjectReference<cActionClear> Ref;
+	using Ref = deTObjectReference<cActionClear>;
 	cActionClear(gdeWPTagList &panel, igdeListBox::Ref &listBox) :
 	igdeAction("Clear", nullptr, "Clear tag"), pPanel(panel), pListBox(listBox){}
 	
@@ -124,7 +124,7 @@ class cListTags : public igdeListBoxListener{
 	gdeWPTagList &pListBox;
 	
 public:
-	typedef deTObjectReference<cListTags> Ref;
+	using Ref = deTObjectReference<cListTags>;
 	cListTags(gdeWPTagList &listBox) : pListBox(listBox){}
 	
 	void OnSelectionChanged(igdeListBox*) override{

@@ -38,7 +38,7 @@
  */
 class gdeUOCLightSetSpotSmoothness : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCLightSetSpotSmoothness> Ref;
+	using Ref = deTObjectReference<gdeUOCLightSetSpotSmoothness>;
 	
 	
 private:

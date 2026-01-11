@@ -35,7 +35,7 @@
  */
 class skyeUControllerSetName : public igdeUndo{
 public:
-	typedef deTObjectReference<skyeUControllerSetName> Ref;
+	using Ref = deTObjectReference<skyeUControllerSetName>;
 	
 	
 private:

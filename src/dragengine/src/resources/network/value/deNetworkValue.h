@@ -46,10 +46,10 @@ class deNetworkValueVisitor;
 class DE_DLL_EXPORT deNetworkValue : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deNetworkValue> Ref;
+	using Ref = deTObjectReference<deNetworkValue>;
 	
 	/** \brief Value list. */
-	typedef decTObjectOrderedSet<deNetworkValue> List;
+	using List = decTObjectOrderedSet<deNetworkValue>;
 	
 	
 public:

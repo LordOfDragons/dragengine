@@ -40,7 +40,7 @@ class meHTVRuleMapping;
  */
 class meWVNodeMapping : public meWVNode{
 public:
-	typedef deTObjectReference<meWVNodeMapping> Ref;
+	using Ref = deTObjectReference<meWVNodeMapping>;
 	
 private:
 	meHTVRuleMapping *pRuleMapping;

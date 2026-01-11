@@ -33,7 +33,7 @@
  */
 class aeWPAPanelRuleTrackTo : public aeWPAPanelRule{
 public:
-	typedef deTObjectReference<aeWPAPanelRuleTrackTo> Ref;
+	using Ref = deTObjectReference<aeWPAPanelRuleTrackTo>;
 	
 	
 private:

@@ -113,6 +113,6 @@ private:
 	igdeMainWindow *pOwner;
 };
 
-typedef igdeNativeFoxMainWindow igdeNativeMainWindow;
+using igdeNativeMainWindow = igdeNativeFoxMainWindow;
 
 #endif

@@ -38,7 +38,7 @@ class deoglRenderPlanMasked;
 class deoglRPTBuildRTsGeometry : public deParallelTask{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTThreadSafeObjectReference<deoglRPTBuildRTsGeometry> Ref;
+	using Ref = deTThreadSafeObjectReference<deoglRPTBuildRTsGeometry>;
 	
 	
 private:

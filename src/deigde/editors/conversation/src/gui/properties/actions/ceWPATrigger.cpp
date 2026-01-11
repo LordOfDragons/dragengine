@@ -68,7 +68,7 @@ class cTextName : public igdeTextFieldListener {
 	ceWPATrigger &pPanel;
 	
 public:
-	typedef deTObjectReference<cTextName> Ref;
+	using Ref = deTObjectReference<cTextName>;
 	cTextName(ceWPATrigger &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -87,7 +87,7 @@ class cComboAction : public igdeComboBoxListener {
 	ceWPATrigger &pPanel;
 	
 public:
-	typedef deTObjectReference<cComboAction> Ref;
+	using Ref = deTObjectReference<cComboAction>;
 	cComboAction(ceWPATrigger &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{

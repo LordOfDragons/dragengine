@@ -40,7 +40,7 @@
  */
 class gdeUOCComponentSetColRespType : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCComponentSetColRespType> Ref;
+	using Ref = deTObjectReference<gdeUOCComponentSetColRespType>;
 	
 	
 private:

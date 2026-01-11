@@ -40,7 +40,7 @@ class igdeDialogEngine;
  */
 class DE_DLL_EXPORT igdeDEModuleStatus : public igdeContainerFlow{
 public:
-	typedef deTObjectReference<igdeDEModuleStatus> Ref;
+	using Ref = deTObjectReference<igdeDEModuleStatus>;
 	
 	
 private:

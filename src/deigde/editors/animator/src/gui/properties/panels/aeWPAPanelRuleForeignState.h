@@ -34,7 +34,7 @@
  */
 class aeWPAPanelRuleForeignState : public aeWPAPanelRule{
 public:
-	typedef deTObjectReference<aeWPAPanelRuleForeignState> Ref;
+	using Ref = deTObjectReference<aeWPAPanelRuleForeignState>;
 	
 	
 private:

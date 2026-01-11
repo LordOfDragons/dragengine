@@ -35,7 +35,7 @@
  */
 class aeURuleBTransSetInputBone : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleBTransSetInputBone> Ref;
+	using Ref = deTObjectReference<aeURuleBTransSetInputBone>;
 	
 	
 private:

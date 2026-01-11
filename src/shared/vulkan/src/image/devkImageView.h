@@ -37,7 +37,7 @@
 class devkImageView : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<devkImageView> Ref;
+	using Ref = deTObjectReference<devkImageView>;
 	
 	
 protected:

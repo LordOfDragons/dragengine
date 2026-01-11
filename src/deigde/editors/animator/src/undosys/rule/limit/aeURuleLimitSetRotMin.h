@@ -39,7 +39,7 @@
  */
 class aeURuleLimitSetRotMin : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleLimitSetRotMin> Ref;
+	using Ref = deTObjectReference<aeURuleLimitSetRotMin>;
 	
 	
 private:

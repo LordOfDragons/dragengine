@@ -50,7 +50,7 @@ class DE_DLL_EXPORT igdeEditDirectory : public igdeContainerFlow{
 
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeEditDirectory> Ref;
+	using Ref = deTObjectReference<igdeEditDirectory>;
 	
 	
 protected:
@@ -60,7 +60,7 @@ protected:
 		igdeEditDirectory &pEditDirectory;
 		
 	public:
-		typedef deTObjectReference<cListenerTextField> Ref;
+		using Ref = deTObjectReference<cListenerTextField>;
 		explicit cListenerTextField(igdeEditDirectory &editDirectory);
 		
 	protected:
@@ -76,7 +76,7 @@ protected:
 		igdeEditDirectory &pEditDirectory;
 		
 	public:
-		typedef deTObjectReference<cActionButton> Ref;
+		using Ref = deTObjectReference<cActionButton>;
 		cActionButton(igdeEditDirectory &editDirectory, igdeTextField &textField, const char *description);
 		
 	protected:

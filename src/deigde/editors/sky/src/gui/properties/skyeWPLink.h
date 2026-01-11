@@ -47,7 +47,7 @@ class igdeViewCurveBezier;
  */
 class skyeWPLink : public igdeContainerScroll{
 public:
-	typedef deTObjectReference<skyeWPLink> Ref;
+	using Ref = deTObjectReference<skyeWPLink>;
 	
 private:
 	skyeWindowProperties &pWindowProperties;

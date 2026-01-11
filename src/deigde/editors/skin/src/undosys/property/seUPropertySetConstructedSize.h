@@ -38,7 +38,7 @@
  */
 class seUPropertySetConstructedSize : public igdeUndo{
 public:
-	typedef deTObjectReference<seUPropertySetConstructedSize> Ref;
+	using Ref = deTObjectReference<seUPropertySetConstructedSize>;
 	
 	
 private:

@@ -37,7 +37,7 @@
  */
 class ceUCTopicDuplicate : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCTopicDuplicate> Ref;
+	using Ref = deTObjectReference<ceUCTopicDuplicate>;
 	
 	
 private:

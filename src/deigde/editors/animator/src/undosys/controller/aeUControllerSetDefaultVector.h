@@ -32,7 +32,7 @@
  */
 class aeUControllerSetDefaultVector : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUControllerSetDefaultVector> Ref;
+	using Ref = deTObjectReference<aeUControllerSetDefaultVector>;
 	
 	
 private:

@@ -44,7 +44,7 @@
  */
 class meUHTVRuleMove : public igdeUndo{
 public:
-	typedef deTObjectReference<meUHTVRuleMove> Ref;
+	using Ref = deTObjectReference<meUHTVRuleMove>;
 	
 	
 private:

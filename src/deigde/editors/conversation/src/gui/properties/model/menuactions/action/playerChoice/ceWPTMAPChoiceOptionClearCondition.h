@@ -50,7 +50,7 @@ protected:
 	ceWPTMAPChoiceOptionClearCondition();
 	
 public:
-	typedef deTObjectReference<ceWPTMAPChoiceOptionClearCondition> Ref;
+	using Ref = deTObjectReference<ceWPTMAPChoiceOptionClearCondition>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */

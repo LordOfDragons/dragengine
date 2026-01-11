@@ -42,7 +42,7 @@
 class DE_DLL_EXPORT deEffectOverlayImage : public deEffect{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deEffectOverlayImage> Ref;
+	using Ref = deTObjectReference<deEffectOverlayImage>;
 	
 	
 private:

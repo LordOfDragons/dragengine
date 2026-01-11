@@ -38,7 +38,7 @@
  */
 class gdeUSkyControllerSetName : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUSkyControllerSetName> Ref;
+	using Ref = deTObjectReference<gdeUSkyControllerSetName>;
 	
 	
 private:

@@ -61,7 +61,7 @@ class deBillboard;
 class deoglRBillboard : public deObject, public deoglOcclusionTestListener{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglRBillboard> Ref;
+	using Ref = deTObjectReference<deoglRBillboard>;
 	
 	
 private:
@@ -69,7 +69,7 @@ private:
 	class WorldComputeElement : public deoglWorldComputeElement{
 		deoglRBillboard &pBillboard;
 	public:
-		typedef deTObjectReference<WorldComputeElement> Ref;
+		using Ref = deTObjectReference<WorldComputeElement>;
 		WorldComputeElement(deoglRBillboard &billboard);
 		void UpdateData(sDataElement &data) const override;
 		void UpdateDataGeometries(sDataElementGeometry *data) const override;

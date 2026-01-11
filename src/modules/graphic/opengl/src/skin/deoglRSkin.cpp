@@ -68,7 +68,7 @@ private:
 	deoglRSkin &pSkin;
 	
 public:
-	typedef deTThreadSafeObjectReference<cTaskPrepareTexturePipelines> Ref;
+	using Ref = deTThreadSafeObjectReference<cTaskPrepareTexturePipelines>;
 	
 	cTaskPrepareTexturePipelines(deoglRSkin &skin) : pSkin(skin){}
 	

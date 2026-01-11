@@ -229,7 +229,7 @@ deBaseGraphicVideoPlayer *deGraphicNull::CreateVideoPlayer(deVideoPlayer*){
 
 class degnModuleInternal : public deInternalModule{
 public:
-	typedef deTObjectReference<degnModuleInternal> Ref;
+	using Ref = deTObjectReference<degnModuleInternal>;
 	
 	degnModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("NullGraphic");

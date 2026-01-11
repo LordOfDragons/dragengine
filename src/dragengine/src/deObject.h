@@ -43,7 +43,7 @@
 class DE_DLL_EXPORT deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deObject> Ref;
+	using Ref = deTObjectReference<deObject>;
 	
 	
 	/** \brief Weak reference data. */

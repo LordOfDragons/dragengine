@@ -41,7 +41,7 @@ class skyeLayer;
  */
 class skyeUControllerRemove : public igdeUndo{
 public:
-	typedef deTObjectReference<skyeUControllerRemove> Ref;
+	using Ref = deTObjectReference<skyeUControllerRemove>;
 	
 	
 private:

@@ -39,7 +39,7 @@
  */
 class gdeUOCToggleIsGhost : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCToggleIsGhost> Ref;
+	using Ref = deTObjectReference<gdeUOCToggleIsGhost>;
 	
 	
 private:

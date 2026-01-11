@@ -37,7 +37,7 @@
  */
 class reUSetBonePosition : public igdeUndo{
 public:
-	typedef deTObjectReference<reUSetBonePosition> Ref;
+	using Ref = deTObjectReference<reUSetBonePosition>;
 	
 	
 private:

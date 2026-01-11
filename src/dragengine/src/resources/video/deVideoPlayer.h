@@ -40,7 +40,7 @@ class deBaseAudioVideoPlayer;
 class DE_DLL_EXPORT deVideoPlayer : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deVideoPlayer> Ref;
+	using Ref = deTObjectReference<deVideoPlayer>;
 	
 	
 public:

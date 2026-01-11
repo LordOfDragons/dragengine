@@ -40,7 +40,7 @@
  */
 class gdeUOCNavSpaceSetRotation : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCNavSpaceSetRotation> Ref;
+	using Ref = deTObjectReference<gdeUOCNavSpaceSetRotation>;
 	
 	
 private:

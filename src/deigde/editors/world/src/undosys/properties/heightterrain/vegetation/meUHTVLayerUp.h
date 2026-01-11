@@ -43,7 +43,7 @@
  */
 class meUHTVLayerUp : public igdeUndo{
 public:
-	typedef deTObjectReference<meUHTVLayerUp> Ref;
+	using Ref = deTObjectReference<meUHTVLayerUp>;
 	
 	
 private:

@@ -43,8 +43,8 @@ class meWorld;
  */
 class meUndoDataObject : public deObject{
 public:
-	typedef deTObjectReference<meUndoDataObject> Ref;
-	typedef decTObjectOrderedSet<meUndoDataObject> List;
+	using Ref = deTObjectReference<meUndoDataObject>;
+	using List = decTObjectOrderedSet<meUndoDataObject>;
 	
 	
 private:

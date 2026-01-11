@@ -38,7 +38,7 @@
  */
 class gdeUOCLightSetIntensity : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCLightSetIntensity> Ref;
+	using Ref = deTObjectReference<gdeUOCLightSetIntensity>;
 	
 	
 private:

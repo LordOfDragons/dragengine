@@ -70,6 +70,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxContainerScroll igdeNativeContainerScroll;
+using igdeNativeContainerScroll = igdeNativeFoxContainerScroll;
 
 #endif

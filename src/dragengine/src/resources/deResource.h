@@ -46,7 +46,7 @@ class decBaseFileReader;
 class DE_DLL_EXPORT deResource : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deResource> Ref;
+	using Ref = deTObjectReference<deResource>;
 	
 	
 private:

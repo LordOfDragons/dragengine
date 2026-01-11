@@ -38,7 +38,7 @@ class ceCAIfElseCase;
  */
 class ceWPTMAIfElseCaseRemoveAllActions : public ceWPTMARemoveAllActions{
 public:
-	typedef deTObjectReference<ceWPTMAIfElseCaseRemoveAllActions> Ref;
+	using Ref = deTObjectReference<ceWPTMAIfElseCaseRemoveAllActions>;
 
 private:
 	ceConversationTopic *pTopic;

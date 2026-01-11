@@ -37,7 +37,7 @@
  */
 class ceUCActionToggleWaitSpeakOnly : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCActionToggleWaitSpeakOnly> Ref;
+	using Ref = deTObjectReference<ceUCActionToggleWaitSpeakOnly>;
 	
 	
 private:

@@ -48,7 +48,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<debpBulletShape> Ref;
+	using Ref = deTObjectReference<debpBulletShape>;
 
 
 	/** \name Constructors and Destructors */

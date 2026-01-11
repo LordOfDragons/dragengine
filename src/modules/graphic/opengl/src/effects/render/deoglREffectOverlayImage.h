@@ -37,7 +37,7 @@
  */
 class deoglREffectOverlayImage : public deoglREffect{
 public:
-	typedef deTObjectReference<deoglREffectOverlayImage> Ref;
+	using Ref = deTObjectReference<deoglREffectOverlayImage>;
 	
 	
 private:

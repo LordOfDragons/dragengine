@@ -40,7 +40,7 @@ class igdeTriggerTargetList;
 class DE_DLL_EXPORT igdeTriggerExpressionDialog : public igdeDialog{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeTriggerExpressionDialog> Ref;
+	using Ref = deTObjectReference<igdeTriggerExpressionDialog>;
 	
 	
 private:

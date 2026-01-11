@@ -39,7 +39,7 @@
 class DE_DLL_EXPORT deNavigatorPath : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deNavigatorPath> Ref;
+	using Ref = deTObjectReference<deNavigatorPath>;
 	
 	
 private:

@@ -36,7 +36,7 @@
  */
 class seUMappedSetBone : public igdeUndo{
 public:
-	typedef deTObjectReference<seUMappedSetBone> Ref;
+	using Ref = deTObjectReference<seUMappedSetBone>;
 	
 	
 private:

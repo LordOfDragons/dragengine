@@ -48,7 +48,7 @@ class ceLangPack;
  */
 class ceLoadSaveSystem: public deObject{
 public:
-	typedef deTObjectReference<ceLoadSaveSystem> Ref;
+	using Ref = deTObjectReference<ceLoadSaveSystem>;
 	
 private:
 	ceWindowMain &pWindowMain;

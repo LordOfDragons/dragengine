@@ -36,7 +36,7 @@
  */
 class peeUTypeSetPhysicsSize : public igdeUndo{
 public:
-	typedef deTObjectReference<peeUTypeSetPhysicsSize> Ref;
+	using Ref = deTObjectReference<peeUTypeSetPhysicsSize>;
 	
 	
 private:

@@ -70,7 +70,7 @@ class deBasePhysicsRig;
 class DE_DLL_EXPORT deRig : public deFileResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deRig> Ref;
+	using Ref = deTObjectReference<deRig>;
 	
 	
 private:

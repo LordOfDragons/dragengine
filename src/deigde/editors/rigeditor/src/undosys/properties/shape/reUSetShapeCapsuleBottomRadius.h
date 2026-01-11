@@ -37,7 +37,7 @@
  */
 class reUSetShapeCapsuleBottomRadius : public igdeUndo{
 public:
-	typedef deTObjectReference<reUSetShapeCapsuleBottomRadius> Ref;
+	using Ref = deTObjectReference<reUSetShapeCapsuleBottomRadius>;
 	
 	
 private:

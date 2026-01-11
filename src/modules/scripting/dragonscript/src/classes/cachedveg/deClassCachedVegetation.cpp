@@ -404,7 +404,7 @@ public:
 
 class dedsCachedVegetation : public deObject{
 public:
-	typedef deTObjectReference<dedsCachedVegetation> Ref;
+	using Ref = deTObjectReference<dedsCachedVegetation>;
 	
 private:
 	deEngine *pEngine;

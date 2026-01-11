@@ -37,13 +37,13 @@
  */
 class aeRuleMirror : public aeRule{
 public:
-	typedef deTObjectReference<aeRuleMirror> Ref;
+	using Ref = deTObjectReference<aeRuleMirror>;
 	
 	
 	class MatchName : public deObject {
 	public:
-		typedef deTObjectReference<MatchName> Ref;
-		typedef decTObjectOrderedSet<MatchName> List;
+		using Ref = deTObjectReference<MatchName>;
+		using List = decTObjectOrderedSet<MatchName>;
 		
 		const decString first;
 		const decString second;

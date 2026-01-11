@@ -50,7 +50,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<dedsNavigationInfo> Ref;
+	using Ref = deTObjectReference<dedsNavigationInfo>;
 	
 	
 	/** \name Constructors and Destructors */

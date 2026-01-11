@@ -35,7 +35,7 @@
  */
 class aeURuleBTransSetMaxAngle : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleBTransSetMaxAngle> Ref;
+	using Ref = deTObjectReference<aeURuleBTransSetMaxAngle>;
 	
 	
 private:

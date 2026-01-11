@@ -106,6 +106,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxTextField igdeNativeTextField;
+using igdeNativeTextField = igdeNativeFoxTextField;
 
 #endif

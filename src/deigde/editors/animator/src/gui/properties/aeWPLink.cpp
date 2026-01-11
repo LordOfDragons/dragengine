@@ -96,7 +96,7 @@ protected:
 	aeWPLink &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseAction> Ref;
+	using Ref = deTObjectReference<cBaseAction>;
 	cBaseAction(aeWPLink &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description),
 	pPanel(panel){}
@@ -137,7 +137,7 @@ public:
 
 class cActionCopy : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionCopy> Ref;
+	using Ref = deTObjectReference<cActionCopy>;
 	
 public:
 	cActionCopy(aeWPLink &panel) : cBaseAction(panel, "Copy",
@@ -153,7 +153,7 @@ public:
 
 class cActionCut : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionCut> Ref;
+	using Ref = deTObjectReference<cActionCut>;
 	
 public:
 	cActionCut(aeWPLink &panel) : cBaseAction(panel, "Cut",
@@ -169,7 +169,7 @@ public:
 
 class cActionPaste : public igdeAction{
 public:
-	typedef deTObjectReference<cActionPaste> Ref;
+	using Ref = deTObjectReference<cActionPaste>;
 	
 private:
 	aeWPLink &pPanel;
@@ -204,7 +204,7 @@ class cListLinks : public igdeListBoxListener{
 	aeWPLink &pPanel;
 	
 public:
-	typedef deTObjectReference<cListLinks> Ref;
+	using Ref = deTObjectReference<cListLinks>;
 	cListLinks(aeWPLink &panel) : pPanel(panel){}
 	
 	void OnSelectionChanged(igdeListBox *listBox) override{
@@ -234,7 +234,7 @@ class cTextName : public igdeTextFieldListener{
 	aeWPLink &pPanel;
 	
 public:
-	typedef deTObjectReference<cTextName> Ref;
+	using Ref = deTObjectReference<cTextName>;
 	cTextName(aeWPLink &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -256,7 +256,7 @@ class cComboBone : public igdeComboBoxListener{
 	bool &pPreventUpdate;
 	
 public:
-	typedef deTObjectReference<cComboBone> Ref;
+	using Ref = deTObjectReference<cComboBone>;
 	cComboBone(aeWPLink &panel, bool &preventUpdate) :
 		pPanel(panel), pPreventUpdate(preventUpdate){}
 	
@@ -283,7 +283,7 @@ class cComboConnectionController : public igdeComboBoxListener{
 	bool &pPreventUpdate;
 	
 public:
-	typedef deTObjectReference<cComboConnectionController> Ref;
+	using Ref = deTObjectReference<cComboConnectionController>;
 	cComboConnectionController(aeWPLink &panel, bool &preventUpdate) :
 		pPanel(panel), pPreventUpdate(preventUpdate){}
 	
@@ -310,7 +310,7 @@ class cSpinRepeat : public igdeSpinTextFieldListener{
 	aeWPLink &pPanel;
 	
 public:
-	typedef deTObjectReference<cSpinRepeat> Ref;
+	using Ref = deTObjectReference<cSpinRepeat>;
 	cSpinRepeat(aeWPLink &panel) : pPanel(panel){}
 	
 	void OnValueChanged(igdeSpinTextField *textField) override{
@@ -329,7 +329,7 @@ public:
 
 class cActionCurveInsertAt : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionCurveInsertAt> Ref;
+	using Ref = deTObjectReference<cActionCurveInsertAt>;
 	
 public:
 	cActionCurveInsertAt(aeWPLink &panel) : cBaseAction(panel, "Insert Value At Controller",
@@ -360,7 +360,7 @@ class cEditCurve : public igdeViewCurveBezierListener{
 	igdeUndo::Ref pUndo;
 	
 public:
-	typedef deTObjectReference<cEditCurve> Ref;
+	using Ref = deTObjectReference<cEditCurve>;
 	cEditCurve(aeWPLink &panel) : pPanel(panel){}
 	
 	void OnCurveChanged(igdeViewCurveBezier *viewCurveBezier) override{
@@ -400,7 +400,7 @@ class cTextBone : public igdeTextFieldListener{
 	aeWPLink &pPanel;
 	
 public:
-	typedef deTObjectReference<cTextBone> Ref;
+	using Ref = deTObjectReference<cTextBone>;
 	cTextBone(aeWPLink &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -421,7 +421,7 @@ class cComboBoneParameter : public igdeComboBoxListener{
 	aeWPLink &pPanel;
 	
 public:
-	typedef deTObjectReference<cComboBoneParameter> Ref;
+	using Ref = deTObjectReference<cComboBoneParameter>;
 	cComboBoneParameter(aeWPLink &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -444,7 +444,7 @@ class cTextBoneMinimum : public igdeTextFieldListener{
 	aeWPLink &pPanel;
 	
 public:
-	typedef deTObjectReference<cTextBoneMinimum> Ref;
+	using Ref = deTObjectReference<cTextBoneMinimum>;
 	cTextBoneMinimum(aeWPLink &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -465,7 +465,7 @@ class cTextBoneMaximum : public igdeTextFieldListener{
 	aeWPLink &pPanel;
 	
 public:
-	typedef deTObjectReference<cTextBoneMaximum> Ref;
+	using Ref = deTObjectReference<cTextBoneMaximum>;
 	cTextBoneMaximum(aeWPLink &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -488,7 +488,7 @@ class cComboVertexPositionSet : public igdeComboBoxListener{
 	bool &pPreventUpdate;
 	
 public:
-	typedef deTObjectReference<cComboVertexPositionSet> Ref;
+	using Ref = deTObjectReference<cComboVertexPositionSet>;
 	cComboVertexPositionSet(aeWPLink &panel, bool &preventUpdate) :
 		pPanel(panel), pPreventUpdate(preventUpdate){}
 	
@@ -514,7 +514,7 @@ class cTextVertexPositionSet : public igdeTextFieldListener{
 	aeWPLink &pPanel;
 	
 public:
-	typedef deTObjectReference<cTextVertexPositionSet> Ref;
+	using Ref = deTObjectReference<cTextVertexPositionSet>;
 	cTextVertexPositionSet(aeWPLink &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -535,7 +535,7 @@ class cTextVertexPositionSetMinimum : public igdeTextFieldListener{
 	aeWPLink &pPanel;
 	
 public:
-	typedef deTObjectReference<cTextVertexPositionSetMinimum> Ref;
+	using Ref = deTObjectReference<cTextVertexPositionSetMinimum>;
 	cTextVertexPositionSetMinimum(aeWPLink &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -557,7 +557,7 @@ class cTextVertexPositionSetMaximum : public igdeTextFieldListener{
 	aeWPLink &pPanel;
 	
 public:
-	typedef deTObjectReference<cTextVertexPositionSetMaximum> Ref;
+	using Ref = deTObjectReference<cTextVertexPositionSetMaximum>;
 	cTextVertexPositionSetMaximum(aeWPLink &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -578,7 +578,7 @@ public:
 
 class cCheckWrapY : public cBaseAction{
 public:
-	typedef deTObjectReference<cCheckWrapY> Ref;
+	using Ref = deTObjectReference<cCheckWrapY>;
 	
 public:
 	cCheckWrapY(aeWPLink &panel) : cBaseAction(panel, "Wrap Y", nullptr,

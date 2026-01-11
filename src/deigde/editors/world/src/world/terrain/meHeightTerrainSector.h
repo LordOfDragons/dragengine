@@ -60,9 +60,9 @@ class igdeWDebugDrawerShape;
  */
 class meHeightTerrainSector : public deObject{
 public:
-	typedef deTObjectReference<meHeightTerrainSector> Ref;
-	typedef decTObjectOrderedSet<meHeightTerrainSector> List;
-	typedef decTObjectOrderedSet<deDebugDrawer> DDEdgeList;
+	using Ref = deTObjectReference<meHeightTerrainSector>;
+	using List = decTObjectOrderedSet<meHeightTerrainSector>;
+	using DDEdgeList = decTObjectOrderedSet<deDebugDrawer>;
 	
 	
 	/** Data types. */
@@ -81,8 +81,8 @@ public:
 	/** Debug drawer cluster for performance optimization. */
 	class cDDCluster : public deObject{
 	public:
-		typedef deTObjectReference<cDDCluster> Ref;
-		typedef decTObjectOrderedSet<cDDCluster> List;
+		using Ref = deTObjectReference<cDDCluster>;
+		using List = decTObjectOrderedSet<cDDCluster>;
 		
 		decPoint pointFrom;
 		decPoint pointTo;

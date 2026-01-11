@@ -62,7 +62,7 @@ class meWindowProperties;
  */
 class meWPHeightTerrain : public igdeContainerScroll{
 public:
-	typedef deTObjectReference<meWPHeightTerrain> Ref;
+	using Ref = deTObjectReference<meWPHeightTerrain>;
 	
 private:
 	meWindowProperties &pWindowProperties;

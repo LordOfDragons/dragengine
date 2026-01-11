@@ -46,7 +46,7 @@ class decShapeCapsule;
  */
 class debpShapeCapsule : public debpShape{
 public:
-	typedef deTObjectReference<debpShapeCapsule> Ref;
+	using Ref = deTObjectReference<debpShapeCapsule>;
 	
 	
 private:

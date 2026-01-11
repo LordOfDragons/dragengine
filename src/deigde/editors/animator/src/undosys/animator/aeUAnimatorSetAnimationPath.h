@@ -36,7 +36,7 @@ class aeAnimator;
  */
 class aeUAnimatorSetAnimationPath : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUAnimatorSetAnimationPath> Ref;
+	using Ref = deTObjectReference<aeUAnimatorSetAnimationPath>;
 	
 	
 private:

@@ -80,7 +80,7 @@ class cListEffects : public igdeListBoxListener{
 	syneWPEffect &pPanel;
 	
 public:
-	typedef deTObjectReference<cListEffects> Ref;
+	using Ref = deTObjectReference<cListEffects>;
 	cListEffects(syneWPEffect &panel) : pPanel(panel){}
 	
 	void OnSelectionChanged(igdeListBox *listBox) override{
@@ -123,7 +123,7 @@ class cActionEffectCopy : public igdeAction{
 	syneWPEffect &pPanel;
 
 public:
-	typedef deTObjectReference<cActionEffectCopy> Ref;
+	using Ref = deTObjectReference<cActionEffectCopy>;
 	cActionEffectCopy(syneWPEffect &panel) : igdeAction("Copy",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 		"Copy effect to clipboard"), pPanel(panel){}
@@ -147,7 +147,7 @@ class cActionEffectCut : public igdeAction{
 	syneWPEffect &pPanel;
 	
 public:
-	typedef deTObjectReference<cActionEffectCut> Ref;
+	using Ref = deTObjectReference<cActionEffectCut>;
 	cActionEffectCut(syneWPEffect &panel) : igdeAction("Cut",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
 		"Cut effect to clipboard"), pPanel(panel){}
@@ -176,7 +176,7 @@ protected:
 	syneWPEffect &pPanel;
 	
 public:
-	typedef deTObjectReference<cActionEffectPasteAdd> Ref;
+	using Ref = deTObjectReference<cActionEffectPasteAdd>;
 	cActionEffectPasteAdd(syneWPEffect &panel) : igdeAction("Paste",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
 		"Paste effect from clipboard"), pPanel(panel){}
@@ -208,7 +208,7 @@ public:
 
 class cActionEffectPasteInsert : public cActionEffectPasteAdd{
 public:
-	typedef deTObjectReference<cActionEffectPasteInsert> Ref;
+	using Ref = deTObjectReference<cActionEffectPasteInsert>;
 	cActionEffectPasteInsert(syneWPEffect &panel) : cActionEffectPasteAdd(panel){
 		SetText("Paste Append");
 		SetDescription("Paste effect from clipboard");

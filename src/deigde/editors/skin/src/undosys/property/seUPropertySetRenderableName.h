@@ -36,7 +36,7 @@
  */
 class seUPropertySetRenderableName : public igdeUndo{
 public:
-	typedef deTObjectReference<seUPropertySetRenderableName> Ref;
+	using Ref = deTObjectReference<seUPropertySetRenderableName>;
 	
 	
 private:

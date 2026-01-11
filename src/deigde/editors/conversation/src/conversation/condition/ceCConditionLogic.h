@@ -34,7 +34,7 @@
  */
 class ceCConditionLogic : public ceConversationCondition{
 public:
-	typedef deTObjectReference<ceCConditionLogic> Ref;
+	using Ref = deTObjectReference<ceCConditionLogic>;
 	
 	/** Logic operators. */
 	enum eOperators{

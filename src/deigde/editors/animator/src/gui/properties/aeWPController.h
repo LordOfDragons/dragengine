@@ -45,7 +45,7 @@ class aeWindowProperties;
  */
 class aeWPController : public igdeContainerScroll{
 public:
-	typedef deTObjectReference<aeWPController> Ref;
+	using Ref = deTObjectReference<aeWPController>;
 	
 	
 private:

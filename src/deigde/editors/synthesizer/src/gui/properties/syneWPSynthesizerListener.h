@@ -36,7 +36,7 @@ class syneWPSynthesizer;
  */
 class syneWPSynthesizerListener : public syneSynthesizerNotifier{
 public:
-	typedef deTObjectReference<syneWPSynthesizerListener> Ref;
+	using Ref = deTObjectReference<syneWPSynthesizerListener>;
 	
 	
 private:

@@ -45,7 +45,7 @@ class igdeUIHelper;
 class DE_DLL_EXPORT igdeEditPoint3 : public igdeContainerBoxAlternate{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeEditPoint3> Ref;
+	using Ref = deTObjectReference<igdeEditPoint3>;
 	
 	
 protected:
@@ -58,7 +58,7 @@ protected:
 		igdeTextField::WeakRef pTextZ;
 		
 	public:
-		typedef deTObjectReference<cListener> Ref;
+		using Ref = deTObjectReference<cListener>;
 		
 		cListener(igdeEditPoint3 &editPoint, igdeTextField *textX,
 			igdeTextField *textY, igdeTextField *textZ);

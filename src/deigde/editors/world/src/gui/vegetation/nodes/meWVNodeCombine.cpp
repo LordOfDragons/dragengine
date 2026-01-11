@@ -59,7 +59,7 @@ protected:
 	meWVNodeCombine &pNode;
 	
 public:
-	typedef deTObjectReference<cTextX> Ref;
+	using Ref = deTObjectReference<cTextX>;
 	cTextX(meWVNodeCombine &node) : pNode(node){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -79,7 +79,7 @@ protected:
 	meWVNodeCombine &pNode;
 	
 public:
-	typedef deTObjectReference<cTextY> Ref;
+	using Ref = deTObjectReference<cTextY>;
 	cTextY(meWVNodeCombine &node) : pNode(node){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -99,7 +99,7 @@ protected:
 	meWVNodeCombine &pNode;
 	
 public:
-	typedef deTObjectReference<cTextZ> Ref;
+	using Ref = deTObjectReference<cTextZ>;
 	cTextZ(meWVNodeCombine &node) : pNode(node){}
 	
 	void OnTextChanged(igdeTextField *textField) override{

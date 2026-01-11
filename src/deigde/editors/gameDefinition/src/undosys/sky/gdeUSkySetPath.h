@@ -37,7 +37,7 @@
  */
 class gdeUSkySetPath : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUSkySetPath> Ref;
+	using Ref = deTObjectReference<gdeUSkySetPath>;
 	
 	
 private:

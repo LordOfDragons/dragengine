@@ -38,7 +38,7 @@ class deoglSkinStateMapped;
  */
 class deoglSkinMapped : public deObject{
 public:
-	typedef deTObjectReference<deoglSkinMapped> Ref;
+	using Ref = deTObjectReference<deoglSkinMapped>;
 	
 	
 private:

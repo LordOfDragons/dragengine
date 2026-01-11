@@ -63,8 +63,8 @@ private:
 	int pInstanceCount;
 	
 public:
-	typedef deTObjectReference<mePropFieldType> Ref;
-	typedef decTObjectOrderedSet<mePropFieldType> List;
+	using Ref = deTObjectReference<mePropFieldType>;
+	using List = decTObjectOrderedSet<mePropFieldType>;
 	
 	
 	/** \name Constructors and Destructors */

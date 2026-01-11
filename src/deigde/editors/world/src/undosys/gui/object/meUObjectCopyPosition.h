@@ -39,7 +39,7 @@ class meWorld;
  */
 class meUObjectCopyPosition : public igdeUndo{
 public:
-	typedef deTObjectReference<meUObjectCopyPosition> Ref;
+	using Ref = deTObjectReference<meUObjectCopyPosition>;
 	
 	
 private:

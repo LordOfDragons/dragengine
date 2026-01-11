@@ -36,8 +36,8 @@
  */
 class meBaseUndoScale : public igdeUndo{
 public:
-	typedef deTObjectReference<meBaseUndoScale> Ref;
-	typedef decTObjectOrderedSet<meBaseUndoScale> List;
+	using Ref = deTObjectReference<meBaseUndoScale>;
+	using List = decTObjectOrderedSet<meBaseUndoScale>;
 	
 	
 private:

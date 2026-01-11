@@ -162,7 +162,7 @@ void fbxRigModule::pLoadRig(deRig &rig, fbxScene &scene){
 
 class fbxRigModuleInternal : public deInternalModule{
 public:
-	typedef deTObjectReference<fbxRigModuleInternal> Ref;
+	using Ref = deTObjectReference<fbxRigModuleInternal>;
 	
 	fbxRigModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("FBXRig");

@@ -44,7 +44,7 @@ class decPath;
 class DE_DLL_EXPORT igdeIcon : public deObject{
 public:
 	/** \brief Strong reference. */
-	typedef deTObjectReference<igdeIcon> Ref;
+	using Ref = deTObjectReference<igdeIcon>;
 	
 	
 private:

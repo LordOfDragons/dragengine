@@ -38,7 +38,7 @@
  */
 class ceUCAASpeakSetTextBoxTextTranslate : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCAASpeakSetTextBoxTextTranslate> Ref;
+	using Ref = deTObjectReference<ceUCAASpeakSetTextBoxTextTranslate>;
 	
 	
 private:

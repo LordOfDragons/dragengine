@@ -81,7 +81,7 @@ protected:
 	reWPBone &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseTextFieldListener> Ref;
+	using Ref = deTObjectReference<cBaseTextFieldListener>;
 	cBaseTextFieldListener(reWPBone &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -105,7 +105,7 @@ protected:
 	reWPBone &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseEditVectorListener> Ref;
+	using Ref = deTObjectReference<cBaseEditVectorListener>;
 	cBaseEditVectorListener(reWPBone &panel) : pPanel(panel){}
 	
 	void OnVectorChanged(igdeEditVector *editVector) override{
@@ -129,7 +129,7 @@ protected:
 	reWPBone &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseAction> Ref;
+	using Ref = deTObjectReference<cBaseAction>;
 	cBaseAction(reWPBone &panel, const char *text, const char *description) :
 	igdeAction(text, description),
 	pPanel(panel){}
@@ -155,7 +155,7 @@ protected:
 	reWPBone &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseComboBoxListener> Ref;
+	using Ref = deTObjectReference<cBaseComboBoxListener>;
 	cBaseComboBoxListener(reWPBone &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -178,7 +178,7 @@ public:
 
 class cTextName : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextName> Ref;
+	using Ref = deTObjectReference<cTextName>;
 	cTextName(reWPBone &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, reRig *rig, reRigBone *bone) override{
@@ -197,7 +197,7 @@ public:
 
 class cComboParent : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboParent> Ref;
+	using Ref = deTObjectReference<cComboParent>;
 	cComboParent(reWPBone &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnTextChanged(igdeComboBox *comboBox, reRig *rig, reRigBone *bone) override{
@@ -224,7 +224,7 @@ public:
 
 class cEditPosition : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditPosition> Ref;
+	using Ref = deTObjectReference<cEditPosition>;
 	cEditPosition(reWPBone &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(const decVector &vector, reRig *rig, reRigBone *bone) override{
@@ -237,7 +237,7 @@ public:
 
 class cEditRotation : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditRotation> Ref;
+	using Ref = deTObjectReference<cEditRotation>;
 	cEditRotation(reWPBone &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(const decVector &vector, reRig *rig, reRigBone *bone) override{
@@ -250,7 +250,7 @@ public:
 
 class cEditCentralMassPoint : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditCentralMassPoint> Ref;
+	using Ref = deTObjectReference<cEditCentralMassPoint>;
 	cEditCentralMassPoint(reWPBone &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(const decVector &vector, reRig *rig, reRigBone *bone) override{
@@ -263,7 +263,7 @@ public:
 
 class cTextMass : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextMass> Ref;
+	using Ref = deTObjectReference<cTextMass>;
 	cTextMass(reWPBone &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, reRig *rig, reRigBone *bone) override{
@@ -277,7 +277,7 @@ public:
 
 class cCheckDynamic : public cBaseAction{
 public:
-	typedef deTObjectReference<cCheckDynamic> Ref;
+	using Ref = deTObjectReference<cCheckDynamic>;
 	
 public:
 	cCheckDynamic(reWPBone &panel) : cBaseAction(panel, "Dynamic",
@@ -290,7 +290,7 @@ public:
 
 class cEditIKLimitsLower : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditIKLimitsLower> Ref;
+	using Ref = deTObjectReference<cEditIKLimitsLower>;
 	cEditIKLimitsLower(reWPBone &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(const decVector &vector, reRig*, reRigBone *bone) override{
@@ -303,7 +303,7 @@ public:
 
 class cEditIKLimitsUpper : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditIKLimitsUpper> Ref;
+	using Ref = deTObjectReference<cEditIKLimitsUpper>;
 	cEditIKLimitsUpper(reWPBone &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(const decVector &vector, reRig*, reRigBone *bone) override{
@@ -316,7 +316,7 @@ public:
 
 class cEditIKResistance : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditIKResistance> Ref;
+	using Ref = deTObjectReference<cEditIKResistance>;
 	cEditIKResistance(reWPBone &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(const decVector &vector, reRig*, reRigBone *bone) override{
@@ -329,7 +329,7 @@ public:
 
 class cCheckIKLocked : public cBaseAction{
 public:
-	typedef deTObjectReference<cCheckIKLocked> Ref;
+	using Ref = deTObjectReference<cCheckIKLocked>;
 	
 private:
 	const int pAxis;

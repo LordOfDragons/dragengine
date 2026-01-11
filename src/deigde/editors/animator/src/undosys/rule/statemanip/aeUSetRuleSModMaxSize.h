@@ -43,7 +43,7 @@
  */
 class aeUSetRuleSModMaxSize : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUSetRuleSModMaxSize> Ref;
+	using Ref = deTObjectReference<aeUSetRuleSModMaxSize>;
 	
 	
 private:

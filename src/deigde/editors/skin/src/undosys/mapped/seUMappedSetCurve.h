@@ -36,7 +36,7 @@
  */
 class seUMappedSetCurve : public igdeUndo{
 public:
-	typedef deTObjectReference<seUMappedSetCurve> Ref;
+	using Ref = deTObjectReference<seUMappedSetCurve>;
 	
 	
 private:

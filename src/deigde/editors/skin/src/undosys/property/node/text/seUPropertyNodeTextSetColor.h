@@ -38,7 +38,7 @@
  */
 class seUPropertyNodeTextSetColor : public igdeUndo{
 public:
-	typedef deTObjectReference<seUPropertyNodeTextSetColor> Ref;
+	using Ref = deTObjectReference<seUPropertyNodeTextSetColor>;
 	
 	
 private:

@@ -74,7 +74,7 @@ protected:
 	aeWPAPanelRuleAnimation &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseAction> Ref;
+	using Ref = deTObjectReference<cBaseAction>;
 	cBaseAction(aeWPAPanelRuleAnimation &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description),
 	pPanel(panel){}
@@ -117,7 +117,7 @@ class cComboMoveName : public igdeComboBoxListener{
 	aeWPAPanelRuleAnimation &pPanel;
 	
 public:
-	typedef deTObjectReference<cComboMoveName> Ref;
+	using Ref = deTObjectReference<cComboMoveName>;
 	cComboMoveName(aeWPAPanelRuleAnimation &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -135,7 +135,7 @@ class cTextMoveTime : public igdeTextFieldListener{
 	aeWPAPanelRuleAnimation &pPanel;
 	
 public:
-	typedef deTObjectReference<cTextMoveTime> Ref;
+	using Ref = deTObjectReference<cTextMoveTime>;
 	cTextMoveTime(aeWPAPanelRuleAnimation &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -151,7 +151,7 @@ public:
 
 class cActionEnablePosition : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnablePosition> Ref;
+	using Ref = deTObjectReference<cActionEnablePosition>;
 	
 public:
 	cActionEnablePosition(aeWPAPanelRuleAnimation &panel) : cBaseAction(panel,
@@ -169,7 +169,7 @@ public:
 
 class cActionEnableRotation : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableRotation> Ref;
+	using Ref = deTObjectReference<cActionEnableRotation>;
 	
 public:
 	cActionEnableRotation(aeWPAPanelRuleAnimation &panel) : cBaseAction(panel,
@@ -187,7 +187,7 @@ public:
 
 class cActionEnableSize : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableSize> Ref;
+	using Ref = deTObjectReference<cActionEnableSize>;
 	
 public:
 	cActionEnableSize(aeWPAPanelRuleAnimation &panel) : cBaseAction(panel,
@@ -205,7 +205,7 @@ public:
 
 class cActionEnableVertexPositionSet : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableVertexPositionSet> Ref;
+	using Ref = deTObjectReference<cActionEnableVertexPositionSet>;
 	
 public:
 	cActionEnableVertexPositionSet(aeWPAPanelRuleAnimation &panel) : cBaseAction(panel,

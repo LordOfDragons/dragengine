@@ -43,8 +43,8 @@ class deLogger;
  */
 class meLSHeightTerrain : public deObject, public igdeBaseXML{
 public:
-	typedef deTObjectReference<meLSHeightTerrain> Ref;
-	typedef decTObjectOrderedSet<meLSHeightTerrain> List;
+	using Ref = deTObjectReference<meLSHeightTerrain>;
+	using List = decTObjectOrderedSet<meLSHeightTerrain>;
 	
 	
 private:

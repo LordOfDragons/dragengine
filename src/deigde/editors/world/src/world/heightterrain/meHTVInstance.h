@@ -37,8 +37,8 @@
  */
 class meHTVInstance : public deObject{
 public:
-	typedef deTObjectReference<meHTVInstance> Ref;
-	typedef decTObjectOrderedSet<meHTVInstance> List;
+	using Ref = deTObjectReference<meHTVInstance>;
+	using List = decTObjectOrderedSet<meHTVInstance>;
 	
 private:
 	short pVLayer;

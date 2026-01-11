@@ -36,7 +36,7 @@
 class DE_DLL_EXPORT decDiskFileReader : public decBaseFileReader{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<decDiskFileReader> Ref;
+	using Ref = deTObjectReference<decDiskFileReader>;
 	
 	
 private:

@@ -94,7 +94,7 @@ protected:
 	seViewConstructedView &pView;
 	
 public:
-	typedef deTObjectReference<cBaseAction> Ref;
+	using Ref = deTObjectReference<cBaseAction>;
 	cBaseAction(seViewConstructedView &view, const char *text, igdeIcon *icon,
 		const char *description) : igdeAction(text, icon, description), pView(view){}
 	
@@ -163,7 +163,7 @@ public:
 
 class cActionConstructedFromImage : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionConstructedFromImage> Ref;
+	using Ref = deTObjectReference<cActionConstructedFromImage>;
 	
 public:
 	cActionConstructedFromImage(seViewConstructedView &view) : cBaseAction(view,
@@ -177,7 +177,7 @@ public:
 
 class cBaseActionAddNode : public cBaseAction{
 public:
-	typedef deTObjectReference<cBaseActionAddNode> Ref;
+	using Ref = deTObjectReference<cBaseActionAddNode>;
 	
 public:
 	cBaseActionAddNode(seViewConstructedView &view, const char *text, igdeIcon *icon,
@@ -200,7 +200,7 @@ public:
 
 class cActionAddShape : public cBaseActionAddNode{
 public:
-	typedef deTObjectReference<cActionAddShape> Ref;
+	using Ref = deTObjectReference<cActionAddShape>;
 	cActionAddShape(seViewConstructedView &view) : cBaseActionAddNode(view, "Add Shape",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add shape node"){}
 	
@@ -211,7 +211,7 @@ public:
 
 class cActionAddImage : public cBaseActionAddNode{
 public:
-	typedef deTObjectReference<cActionAddImage> Ref;
+	using Ref = deTObjectReference<cActionAddImage>;
 	cActionAddImage(seViewConstructedView &view) : cBaseActionAddNode(view, "Add Image ...",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add image node"){}
 	
@@ -239,7 +239,7 @@ public:
 
 class cActionAddText : public cBaseActionAddNode{
 public:
-	typedef deTObjectReference<cActionAddText> Ref;
+	using Ref = deTObjectReference<cActionAddText>;
 	cActionAddText(seViewConstructedView &view) : cBaseActionAddNode(view, "Add Text",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add text node"){}
 	
@@ -255,7 +255,7 @@ public:
 
 class cActionRemoveNode : public cBaseActionNode{
 public:
-	typedef deTObjectReference<cActionRemoveNode> Ref;
+	using Ref = deTObjectReference<cActionRemoveNode>;
 	cActionRemoveNode(seViewConstructedView &view) : cBaseActionNode(view, "Remove Nodes",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove nodes"){}
 	
@@ -266,7 +266,7 @@ public:
 
 class cActionCopyNode : public cBaseActionNode{
 public:
-	typedef deTObjectReference<cActionCopyNode> Ref;
+	using Ref = deTObjectReference<cActionCopyNode>;
 	cActionCopyNode(seViewConstructedView &view) : cBaseActionNode(view, "Copy Nodes",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy), "Copy nodes"){}
 	
@@ -279,7 +279,7 @@ public:
 
 class cActionCutNode : public cBaseActionNode{
 public:
-	typedef deTObjectReference<cActionCutNode> Ref;
+	using Ref = deTObjectReference<cActionCutNode>;
 	cActionCutNode(seViewConstructedView &view) : cBaseActionNode(view, "Cut Nodes",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut), "Cut nodes"){}
 	
@@ -293,7 +293,7 @@ public:
 
 class cActionPasteNode : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionPasteNode> Ref;
+	using Ref = deTObjectReference<cActionPasteNode>;
 	
 public:
 	cActionPasteNode(seViewConstructedView &view) : cBaseAction(view, "Paste Nodes",
@@ -314,7 +314,7 @@ public:
 
 class cActionEnterGroup : public cBaseActionNode{
 public:
-	typedef deTObjectReference<cActionEnterGroup> Ref;
+	using Ref = deTObjectReference<cActionEnterGroup>;
 	cActionEnterGroup(seViewConstructedView &view) : cBaseActionNode(view, "Enter Group",
 		nullptr, "Enter group"){}
 	
@@ -333,7 +333,7 @@ public:
 
 class cActionExitGroup : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionExitGroup> Ref;
+	using Ref = deTObjectReference<cActionExitGroup>;
 	
 public:
 	cActionExitGroup(seViewConstructedView &view) : cBaseAction(view, "Exit Group",
@@ -363,7 +363,7 @@ public:
 
 class cActionGroupNodes : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionGroupNodes> Ref;
+	using Ref = deTObjectReference<cActionGroupNodes>;
 	
 public:
 	cActionGroupNodes(seViewConstructedView &view) : cBaseAction(view, "Group Nodes",
@@ -381,7 +381,7 @@ public:
 
 class cActionUngroupNodes : public cBaseActionNode{
 public:
-	typedef deTObjectReference<cActionUngroupNodes> Ref;
+	using Ref = deTObjectReference<cActionUngroupNodes>;
 	cActionUngroupNodes(seViewConstructedView &view) : cBaseActionNode(view, "Ungroup Nodes",
 		nullptr, "Ungroup Nodes"){}
 	
@@ -397,7 +397,7 @@ public:
 
 class cBaseMoveNodes : public cBaseActionNode{
 public:
-	typedef deTObjectReference<cBaseMoveNodes> Ref;
+	using Ref = deTObjectReference<cBaseMoveNodes>;
 	cBaseMoveNodes(seViewConstructedView &view, const char *text, igdeIcon *icon,
 		const char *description) : cBaseActionNode(view, text, icon, description){}
 	
@@ -417,7 +417,7 @@ public:
 
 class cActionMoveNodesTop : public cBaseMoveNodes{
 public:
-	typedef deTObjectReference<cActionMoveNodesTop> Ref;
+	using Ref = deTObjectReference<cActionMoveNodesTop>;
 	cActionMoveNodesTop(seViewConstructedView &view) : cBaseMoveNodes(view, "Move Node Top",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongUp), "Move node to top"){}
 	
@@ -428,7 +428,7 @@ public:
 
 class cActionMoveNodesUp : public cBaseMoveNodes{
 public:
-	typedef deTObjectReference<cActionMoveNodesUp> Ref;
+	using Ref = deTObjectReference<cActionMoveNodesUp>;
 	cActionMoveNodesUp(seViewConstructedView &view) : cBaseMoveNodes(view, "Move Node Up",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp), "Move node up"){}
 	
@@ -439,7 +439,7 @@ public:
 
 class cActionMoveNodesDown : public cBaseMoveNodes{
 public:
-	typedef deTObjectReference<cActionMoveNodesDown> Ref;
+	using Ref = deTObjectReference<cActionMoveNodesDown>;
 	cActionMoveNodesDown(seViewConstructedView &view) : cBaseMoveNodes(view, "Move Node Down",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown), "Move node down"){}
 	
@@ -450,7 +450,7 @@ public:
 
 class cActionMoveNodesBottom : public cBaseMoveNodes{
 public:
-	typedef deTObjectReference<cActionMoveNodesBottom> Ref;
+	using Ref = deTObjectReference<cActionMoveNodesBottom>;
 	cActionMoveNodesBottom(seViewConstructedView &view) : cBaseMoveNodes(view, "Move Node Bottom",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongDown), "Move node to bottom"){}
 	
@@ -461,7 +461,7 @@ public:
 
 class cActionSetMask : public cBaseActionNode{
 public:
-	typedef deTObjectReference<cActionSetMask> Ref;
+	using Ref = deTObjectReference<cActionSetMask>;
 	cActionSetMask(seViewConstructedView &view) : cBaseActionNode(view, "Set Mask",
 		nullptr, "Set Mask"){}
 	
@@ -485,7 +485,7 @@ public:
 
 class cActionRemoveMask : public cBaseActionNode{
 public:
-	typedef deTObjectReference<cActionRemoveMask> Ref;
+	using Ref = deTObjectReference<cActionRemoveMask>;
 	cActionRemoveMask(seViewConstructedView &view) : cBaseActionNode(view, "Remove Mask",
 		nullptr, "Remove Mask"){}
 	
@@ -500,7 +500,7 @@ public:
 
 class cActionSizeFromImage : public cBaseActionNode{
 public:
-	typedef deTObjectReference<cActionSizeFromImage> Ref;
+	using Ref = deTObjectReference<cActionSizeFromImage>;
 	cActionSizeFromImage(seViewConstructedView &view) : cBaseActionNode(view,
 		"Size from image size", nullptr, "Set image size to constructed size"){}
 	

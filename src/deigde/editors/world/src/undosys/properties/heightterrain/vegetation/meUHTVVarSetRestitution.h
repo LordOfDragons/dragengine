@@ -41,7 +41,7 @@
  */
 class meUHTVVarSetRestitution : public igdeUndo{
 public:
-	typedef deTObjectReference<meUHTVVarSetRestitution> Ref;
+	using Ref = deTObjectReference<meUHTVVarSetRestitution>;
 	
 	
 private:

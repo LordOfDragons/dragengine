@@ -37,7 +37,7 @@ class lpeLangPackEntry;
  */
 class lpeLangPackListener : public deObject{
 public:
-	typedef deTObjectReference<lpeLangPackListener> Ref;
+	using Ref = deTObjectReference<lpeLangPackListener>;
 	
 	
 public:

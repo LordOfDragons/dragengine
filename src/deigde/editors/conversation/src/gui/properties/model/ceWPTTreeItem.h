@@ -41,7 +41,7 @@ class igdeMenuCascade;
 class ceWPTTreeItem : public igdeTreeItem{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceWPTTreeItem> Ref;
+	using Ref = deTObjectReference<ceWPTTreeItem>;
 	
 	
 private:

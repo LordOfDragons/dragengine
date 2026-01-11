@@ -36,7 +36,7 @@
  */
 class ceUCTargetSetActor : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCTargetSetActor> Ref;
+	using Ref = deTObjectReference<ceUCTargetSetActor>;
 	
 	
 private:

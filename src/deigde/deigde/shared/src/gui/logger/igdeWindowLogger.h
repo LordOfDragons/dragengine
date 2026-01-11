@@ -40,7 +40,7 @@ class igdeLoggerHistoryEntry;
 class DE_DLL_EXPORT igdeWindowLogger : public igdeWindow{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeWindowLogger> Ref;
+	using Ref = deTObjectReference<igdeWindowLogger>;
 	
 	
 	/** \brief Warning style name. */

@@ -37,9 +37,9 @@
 class DE_DLL_EXPORT igdeContainer : public igdeWidget{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeContainer> Ref;
+	using Ref = deTObjectReference<igdeContainer>;
 	
-	typedef decTObjectOrderedSet<igdeWidget> ChildrenList;
+	using ChildrenList = decTObjectOrderedSet<igdeWidget>;
 	
 	
 private:

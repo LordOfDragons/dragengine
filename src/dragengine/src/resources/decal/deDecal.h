@@ -55,7 +55,7 @@ class deBaseAudioDecal;
 class DE_DLL_EXPORT deDecal : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deDecal> Ref;
+	using Ref = deTObjectReference<deDecal>;
 	
 	
 private:

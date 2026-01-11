@@ -33,7 +33,7 @@
  */
 class deoxrDPHTCHandInteraction : public deoxrDPBaseTwoHandController{
 public:
-	typedef deTObjectReference<deoxrDPHTCHandInteraction> Ref;
+	using Ref = deTObjectReference<deoxrDPHTCHandInteraction>;
 	
 	/** \name Constructors and Destructors */
 	/*@{*/

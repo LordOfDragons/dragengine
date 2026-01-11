@@ -152,7 +152,7 @@ void deDEAIModule::SendCommand(const decUnicodeArgumentList &command, decUnicode
 
 class deaiModuleInternal : public deInternalModule{
 public:
-	typedef deTObjectReference<deaiModuleInternal> Ref;
+	using Ref = deTObjectReference<deaiModuleInternal>;
 	
 	deaiModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DEAI");

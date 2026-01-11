@@ -38,7 +38,7 @@
  */
 class meUNavSpaceSetPosition : public igdeUndo{
 public:
-	typedef deTObjectReference<meUNavSpaceSetPosition> Ref;
+	using Ref = deTObjectReference<meUNavSpaceSetPosition>;
 	
 	
 private:

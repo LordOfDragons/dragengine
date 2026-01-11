@@ -74,7 +74,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeEditableEntity> Ref;
+	using Ref = deTObjectReference<igdeEditableEntity>;
 
 
 	/** \name Constructors and Destructors */

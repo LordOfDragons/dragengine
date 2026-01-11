@@ -61,7 +61,7 @@ namespace {
 
 class cActionWordsFromText : public igdeAction{
 public:
-	typedef deTObjectReference<cActionWordsFromText> Ref;
+	using Ref = deTObjectReference<cActionWordsFromText>;
 	
 private:
 protected:

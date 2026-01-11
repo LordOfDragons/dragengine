@@ -37,7 +37,7 @@ class meCLHeightPaint;
  */
 class meViewEditorHeightPaint : public meViewEditorNavigation{
 public:
-	typedef deTObjectReference<meViewEditorHeightPaint> Ref;
+	using Ref = deTObjectReference<meViewEditorHeightPaint>;
 	
 private:
 	float pPainterElapsedTime;

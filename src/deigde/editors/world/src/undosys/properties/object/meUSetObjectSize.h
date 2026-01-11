@@ -40,7 +40,7 @@
  */
 class meUSetObjectSize : public igdeUndo{
 public:
-	typedef deTObjectReference<meUSetObjectSize> Ref;
+	using Ref = deTObjectReference<meUSetObjectSize>;
 	
 	
 private:

@@ -38,7 +38,7 @@
  */
 class ceUCCVarSetVariable : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCCVarSetVariable> Ref;
+	using Ref = deTObjectReference<ceUCCVarSetVariable>;
 	
 	
 private:

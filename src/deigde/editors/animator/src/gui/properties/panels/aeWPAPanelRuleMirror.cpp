@@ -80,7 +80,7 @@ protected:
 	aeWPAPanelRuleMirror &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseAction> Ref;
+	using Ref = deTObjectReference<cBaseAction>;
 	cBaseAction(aeWPAPanelRuleMirror &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description),
 	pPanel(panel){}
@@ -123,7 +123,7 @@ protected:
 	aeWPAPanelRuleMirror &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseComboBoxListener> Ref;
+	using Ref = deTObjectReference<cBaseComboBoxListener>;
 	cBaseComboBoxListener(aeWPAPanelRuleMirror &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -145,7 +145,7 @@ public:
 
 class cComboMirrorAxis : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboMirrorAxis> Ref;
+	using Ref = deTObjectReference<cComboMirrorAxis>;
 	cComboMirrorAxis(aeWPAPanelRuleMirror &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleMirror *rule) override{
@@ -161,7 +161,7 @@ public:
 
 class cComboMirrorBone : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboMirrorBone> Ref;
+	using Ref = deTObjectReference<cComboMirrorBone>;
 	cComboMirrorBone(aeWPAPanelRuleMirror &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleMirror *rule) override{
@@ -173,7 +173,7 @@ public:
 
 class cActionMatchNameAdd : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionMatchNameAdd> Ref;
+	using Ref = deTObjectReference<cActionMatchNameAdd>;
 	
 public:
 	cActionMatchNameAdd(aeWPAPanelRuleMirror &panel) : cBaseAction(panel, "Add...",
@@ -188,7 +188,7 @@ public:
 
 class cActionMatchNameAddTemplate : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionMatchNameAddTemplate> Ref;
+	using Ref = deTObjectReference<cActionMatchNameAddTemplate>;
 	
 private:
 	const decString pFirst;
@@ -238,7 +238,7 @@ public:
 
 class cActionMatchNameEdit : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionMatchNameEdit> Ref;
+	using Ref = deTObjectReference<cActionMatchNameEdit>;
 	
 	cActionMatchNameEdit(aeWPAPanelRuleMirror &panel) :
 	cBaseAction(panel, "Edit...", nullptr, "Edit match name"){}
@@ -270,7 +270,7 @@ public:
 
 class cActionMatchNameRemove : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionMatchNameRemove> Ref;
+	using Ref = deTObjectReference<cActionMatchNameRemove>;
 	
 public:
 	cActionMatchNameRemove(aeWPAPanelRuleMirror &panel) : cBaseAction(panel, "Remove...",
@@ -288,7 +288,7 @@ public:
 
 class cActionMatchNameRemoveAll : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionMatchNameRemoveAll> Ref;
+	using Ref = deTObjectReference<cActionMatchNameRemoveAll>;
 	
 public:
 	cActionMatchNameRemoveAll(aeWPAPanelRuleMirror &panel) : cBaseAction(panel, "Remove All",
@@ -309,7 +309,7 @@ class cListMatchNames : public igdeListBoxListener{
 	aeWPAPanelRuleMirror &pPanel;
 	
 public:
-	typedef deTObjectReference<cListMatchNames> Ref;
+	using Ref = deTObjectReference<cListMatchNames>;
 	cListMatchNames(aeWPAPanelRuleMirror &panel) : pPanel(panel){}
 	
 	void OnDoubleClickItem(igdeListBox*, int) override{
@@ -341,7 +341,7 @@ public:
 
 class cActionEnablePosition : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnablePosition> Ref;
+	using Ref = deTObjectReference<cActionEnablePosition>;
 	
 public:
 	cActionEnablePosition(aeWPAPanelRuleMirror &panel) : cBaseAction(panel,
@@ -360,7 +360,7 @@ public:
 
 class cActionEnableRotation : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableRotation> Ref;
+	using Ref = deTObjectReference<cActionEnableRotation>;
 	
 public:
 	cActionEnableRotation(aeWPAPanelRuleMirror &panel) : cBaseAction(panel,
@@ -379,7 +379,7 @@ public:
 
 class cActionEnableSize : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableSize> Ref;
+	using Ref = deTObjectReference<cActionEnableSize>;
 	
 public:
 	cActionEnableSize(aeWPAPanelRuleMirror &panel) : cBaseAction(panel,
@@ -398,7 +398,7 @@ public:
 
 class cActionEnableVertexPositionSet : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableVertexPositionSet> Ref;
+	using Ref = deTObjectReference<cActionEnableVertexPositionSet>;
 	
 public:
 	cActionEnableVertexPositionSet(aeWPAPanelRuleMirror &panel) : cBaseAction(panel,

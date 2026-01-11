@@ -41,7 +41,7 @@ class deoxrInstance;
 class deoxrActionSet : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<deoxrActionSet> Ref;
+	using Ref = deTObjectReference<deoxrActionSet>;
 	
 	
 private:

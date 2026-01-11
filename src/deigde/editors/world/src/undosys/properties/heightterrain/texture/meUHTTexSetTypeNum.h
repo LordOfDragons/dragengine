@@ -43,7 +43,7 @@
  */
 class meUHTTexSetTypeNum : public igdeUndo{
 public:
-	typedef deTObjectReference<meUHTTexSetTypeNum> Ref;
+	using Ref = deTObjectReference<meUHTTexSetTypeNum>;
 	
 	
 private:

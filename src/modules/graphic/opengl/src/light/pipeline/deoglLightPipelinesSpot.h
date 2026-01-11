@@ -33,7 +33,7 @@
  */
 class deoglLightPipelinesSpot : public deoglLightPipelinesRanged{
 public:
-	typedef deTObjectReference<deoglLightPipelinesSpot> Ref;
+	using Ref = deTObjectReference<deoglLightPipelinesSpot>;
 	
 	
 	/** \name Constructors and Destructors */

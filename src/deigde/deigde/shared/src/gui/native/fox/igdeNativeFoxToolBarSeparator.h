@@ -62,6 +62,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxToolBarSeparator igdeNativeToolBarSeparator;
+using igdeNativeToolBarSeparator = igdeNativeFoxToolBarSeparator;
 
 #endif

@@ -36,7 +36,7 @@
  */
 class syneUEffectStretchSetMinPitch : public igdeUndo{
 public:
-	typedef deTObjectReference<syneUEffectStretchSetMinPitch> Ref;
+	using Ref = deTObjectReference<syneUEffectStretchSetMinPitch>;
 	
 	
 private:

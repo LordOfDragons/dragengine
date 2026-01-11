@@ -40,7 +40,7 @@
  */
 class gdeUOCSpeakerSetRotation : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCSpeakerSetRotation> Ref;
+	using Ref = deTObjectReference<gdeUOCSpeakerSetRotation>;
 	
 	
 private:

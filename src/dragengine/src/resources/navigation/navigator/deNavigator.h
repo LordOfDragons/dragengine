@@ -47,7 +47,7 @@ class deWorld;
 class DE_DLL_EXPORT deNavigator : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deNavigator> Ref;
+	using Ref = deTObjectReference<deNavigator>;
 	
 	
 private:

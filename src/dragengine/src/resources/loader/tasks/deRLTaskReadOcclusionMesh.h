@@ -35,7 +35,7 @@
 class DE_DLL_EXPORT deRLTaskReadOcclusionMesh : public deResourceLoaderTask {
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTThreadSafeObjectReference<deRLTaskReadOcclusionMesh> Ref;
+	using Ref = deTThreadSafeObjectReference<deRLTaskReadOcclusionMesh>;
 	
 	
 private:

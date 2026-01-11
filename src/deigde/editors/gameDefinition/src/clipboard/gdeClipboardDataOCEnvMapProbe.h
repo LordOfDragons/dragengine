@@ -37,7 +37,7 @@
 class gdeClipboardDataOCEnvMapProbe : public igdeClipboardData{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeClipboardDataOCEnvMapProbe> Ref;
+	using Ref = deTObjectReference<gdeClipboardDataOCEnvMapProbe>;
 	
 	/** \brief Type name. */
 	static const char * const TYPE_NAME;

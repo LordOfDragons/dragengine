@@ -34,7 +34,7 @@
  */
 class aeWPAPanelRuleAnimationDifference : public aeWPAPanelRule{
 public:
-	typedef deTObjectReference<aeWPAPanelRuleAnimationDifference> Ref;
+	using Ref = deTObjectReference<aeWPAPanelRuleAnimationDifference>;
 	
 	
 private:

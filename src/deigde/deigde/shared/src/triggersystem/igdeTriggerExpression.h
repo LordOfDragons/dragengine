@@ -42,10 +42,10 @@ class DE_DLL_EXPORT igdeTriggerExpression : public deObject{
 
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeTriggerExpression> Ref;
+	using Ref = deTObjectReference<igdeTriggerExpression>;
 	
 	/** \brief List of trigger expressions. */
-	typedef decTObjectOrderedSet<igdeTriggerExpression> List;
+	using List = decTObjectOrderedSet<igdeTriggerExpression>;
 	
 	
 private:

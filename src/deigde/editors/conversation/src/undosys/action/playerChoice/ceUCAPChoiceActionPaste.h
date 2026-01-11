@@ -37,7 +37,7 @@
  */
 class ceUCAPChoiceActionPaste : public ceUCActionPaste{
 public:
-	typedef deTObjectReference<ceUCAPChoiceActionPaste> Ref;
+	using Ref = deTObjectReference<ceUCAPChoiceActionPaste>;
 
 private:
 	ceCAPlayerChoice::Ref pPlayerChoice;

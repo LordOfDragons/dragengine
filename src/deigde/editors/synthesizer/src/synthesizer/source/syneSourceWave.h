@@ -36,7 +36,7 @@
  */
 class syneSourceWave : public syneSource{
 public:
-	typedef deTObjectReference<syneSourceWave> Ref;
+	using Ref = deTObjectReference<syneSourceWave>;
 	
 private:
 	deSynthesizerSourceWave::eWaveType pWaveType;

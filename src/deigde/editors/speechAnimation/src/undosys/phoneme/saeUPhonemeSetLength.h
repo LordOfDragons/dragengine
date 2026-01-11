@@ -36,7 +36,7 @@
  */
 class saeUPhonemeSetLength : public igdeUndo{
 public:
-	typedef deTObjectReference<saeUPhonemeSetLength> Ref;
+	using Ref = deTObjectReference<saeUPhonemeSetLength>;
 	
 	
 private:

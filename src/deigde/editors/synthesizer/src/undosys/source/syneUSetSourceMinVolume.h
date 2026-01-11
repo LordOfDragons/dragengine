@@ -37,7 +37,7 @@
  */
 class syneUSetSourceMinVolume : public igdeUndo{
 public:
-	typedef deTObjectReference<syneUSetSourceMinVolume> Ref;
+	using Ref = deTObjectReference<syneUSetSourceMinVolume>;
 	
 	
 private:

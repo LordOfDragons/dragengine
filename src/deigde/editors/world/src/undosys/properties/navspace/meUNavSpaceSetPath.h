@@ -36,7 +36,7 @@
  */
 class meUNavSpaceSetPath : public igdeUndo{
 public:
-	typedef deTObjectReference<meUNavSpaceSetPath> Ref;
+	using Ref = deTObjectReference<meUNavSpaceSetPath>;
 	
 	
 private:

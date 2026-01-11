@@ -37,7 +37,7 @@
  */
 class aeURuleSASetPathAnimator : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleSASetPathAnimator> Ref;
+	using Ref = deTObjectReference<aeURuleSASetPathAnimator>;
 	
 	
 private:

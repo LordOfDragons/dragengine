@@ -36,7 +36,7 @@ class ceCAPlayerChoice;
  */
 class ceWPTMAPChoiceActionsCopyActions : public ceWPTMACopyActions{
 public:
-	typedef deTObjectReference<ceWPTMAPChoiceActionsCopyActions> Ref;
+	using Ref = deTObjectReference<ceWPTMAPChoiceActionsCopyActions>;
 	
 protected:
 	/** \brief FOX constructor. */

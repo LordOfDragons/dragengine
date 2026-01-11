@@ -36,7 +36,7 @@ class ceCAWait;
  */
 class ceWPTMAWaitActionsCopyActions : public ceWPTMACopyActions{
 public:
-	typedef deTObjectReference<ceWPTMAWaitActionsCopyActions> Ref;
+	using Ref = deTObjectReference<ceWPTMAWaitActionsCopyActions>;
 	
 protected:
 	/** \brief FOX constructor. */

@@ -34,7 +34,7 @@
  */
 class syneWPAPanelSourceWave : public syneWPAPanelSource{
 public:
-	typedef deTObjectReference<syneWPAPanelSourceWave> Ref;
+	using Ref = deTObjectReference<syneWPAPanelSourceWave>;
 	
 private:
 	igdeComboBox::Ref pCBType;

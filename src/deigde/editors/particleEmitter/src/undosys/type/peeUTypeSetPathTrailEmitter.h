@@ -36,7 +36,7 @@
  */
 class peeUTypeSetPathTrailEmitter : public igdeUndo{
 public:
-	typedef deTObjectReference<peeUTypeSetPathTrailEmitter> Ref;
+	using Ref = deTObjectReference<peeUTypeSetPathTrailEmitter>;
 	
 	
 private:

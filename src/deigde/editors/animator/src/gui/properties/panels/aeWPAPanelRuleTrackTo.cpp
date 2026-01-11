@@ -75,7 +75,7 @@ protected:
 	aeWPAPanelRuleTrackTo &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseComboBoxListener> Ref;
+	using Ref = deTObjectReference<cBaseComboBoxListener>;
 	cBaseComboBoxListener(aeWPAPanelRuleTrackTo &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -97,7 +97,7 @@ public:
 
 class cComboTrackBone : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboTrackBone> Ref;
+	using Ref = deTObjectReference<cComboTrackBone>;
 	cComboTrackBone(aeWPAPanelRuleTrackTo &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleTrackTo *rule) override{
@@ -108,7 +108,7 @@ public:
 
 class cComboTrackAxis : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboTrackAxis> Ref;
+	using Ref = deTObjectReference<cComboTrackAxis>;
 	cComboTrackAxis(aeWPAPanelRuleTrackTo &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleTrackTo *rule) override{
@@ -124,7 +124,7 @@ public:
 
 class cComboUpAxis : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboUpAxis> Ref;
+	using Ref = deTObjectReference<cComboUpAxis>;
 	cComboUpAxis(aeWPAPanelRuleTrackTo &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleTrackTo *rule) override{
@@ -140,7 +140,7 @@ public:
 
 class cComboUpTarget : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboUpTarget> Ref;
+	using Ref = deTObjectReference<cComboUpTarget>;
 	cComboUpTarget(aeWPAPanelRuleTrackTo &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleTrackTo *rule) override{
@@ -156,7 +156,7 @@ public:
 
 class cComboLockedAxis : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboLockedAxis> Ref;
+	using Ref = deTObjectReference<cComboLockedAxis>;
 	cComboLockedAxis(aeWPAPanelRuleTrackTo &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleTrackTo *rule) override{

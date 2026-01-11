@@ -54,7 +54,7 @@ class igdeNVBoardActionDeleteLink : public igdeAction {
 	igdeNVLink *pLink;
 	
 public:
-	typedef deTObjectReference<igdeNVBoardActionDeleteLink> Ref;
+	using Ref = deTObjectReference<igdeNVBoardActionDeleteLink>;
 	
 	igdeNVBoardActionDeleteLink(igdeNVBoard &board, igdeNVLink *link) : igdeAction("Delete Link",
 		board.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallMinus), "Delete link"),
@@ -76,7 +76,7 @@ class igdeNVBoardActionClearLinks : public igdeAction {
 	igdeNVBoard &pBoard;
 	
 public:
-	typedef deTObjectReference<igdeNVBoardActionClearLinks> Ref;
+	using Ref = deTObjectReference<igdeNVBoardActionClearLinks>;
 	
 	igdeNVBoardActionClearLinks(igdeNVBoard &board) : igdeAction("Clear Links",
 		board.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallMinus), "Delete all links"),

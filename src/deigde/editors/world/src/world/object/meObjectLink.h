@@ -47,8 +47,8 @@ class deDebugDrawerShape;
  */
 class meObjectLink : public deObject{
 public:
-	typedef deTObjectReference<meObjectLink> Ref;
-	typedef decTObjectOrderedSet<meObjectLink> List;
+	using Ref = deTObjectReference<meObjectLink>;
+	using List = decTObjectOrderedSet<meObjectLink>;
 	
 	
 private:

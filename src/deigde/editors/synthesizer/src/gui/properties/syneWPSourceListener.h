@@ -36,7 +36,7 @@ class syneWPSource;
  */
 class syneWPSourceListener : public syneSynthesizerNotifier{
 public:
-	typedef deTObjectReference<syneWPSourceListener> Ref;
+	using Ref = deTObjectReference<syneWPSourceListener>;
 	
 private:
 	syneWPSource &pPanel;

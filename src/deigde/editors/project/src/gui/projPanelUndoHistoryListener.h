@@ -36,7 +36,7 @@ class projPanelUndoHistory;
  */
 class projPanelUndoHistoryListener : public projProjectListener{
 public:
-	typedef deTObjectReference<projPanelUndoHistoryListener> Ref;
+	using Ref = deTObjectReference<projPanelUndoHistoryListener>;
 	
 	
 private:

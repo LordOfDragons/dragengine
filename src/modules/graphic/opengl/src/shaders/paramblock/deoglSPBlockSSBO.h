@@ -36,7 +36,7 @@
  */
 class deoglSPBlockSSBO : public deoglShaderParameterBlock{
 public:
-	typedef deTObjectReference<deoglSPBlockSSBO> Ref;
+	using Ref = deTObjectReference<deoglSPBlockSSBO>;
 	
 	
 	/** Type. */

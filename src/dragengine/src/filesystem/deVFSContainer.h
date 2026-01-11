@@ -59,10 +59,10 @@ class deContainerFileSearch;
 class DE_DLL_EXPORT deVFSContainer : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deVFSContainer> Ref;
+	using Ref = deTObjectReference<deVFSContainer>;
 	
 	/** \brief Container list. */
-	typedef decTObjectOrderedSet<deVFSContainer> List;
+	using List = decTObjectOrderedSet<deVFSContainer>;
 	
 	
 public:

@@ -36,7 +36,7 @@ class reWPView;
  */
 class reWPViewListener : public reRigNotifier{
 public:
-	typedef deTObjectReference<reWPViewListener> Ref;
+	using Ref = deTObjectReference<reWPViewListener>;
 	
 private:
 	reWPView &pPanel;

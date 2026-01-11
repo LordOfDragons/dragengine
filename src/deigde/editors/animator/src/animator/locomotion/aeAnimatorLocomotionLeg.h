@@ -47,7 +47,7 @@ class aeAnimatorLocomotion;
  */
 class aeAnimatorLocomotionLeg : public deObject{
 public:
-	typedef deTObjectReference<aeAnimatorLocomotionLeg> Ref;
+	using Ref = deTObjectReference<aeAnimatorLocomotionLeg>;
 	
 	
 private:

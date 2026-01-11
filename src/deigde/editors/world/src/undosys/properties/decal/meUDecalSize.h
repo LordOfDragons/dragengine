@@ -38,7 +38,7 @@
  */
 class meUDecalSize : public igdeUndo{
 public:
-	typedef deTObjectReference<meUDecalSize> Ref;
+	using Ref = deTObjectReference<meUDecalSize>;
 	
 	
 private:

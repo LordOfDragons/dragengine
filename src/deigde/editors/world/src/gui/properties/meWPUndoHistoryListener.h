@@ -36,7 +36,7 @@ class meWPUndoHistory;
  */
 class meWPUndoHistoryListener : public meWorldNotifier{
 public:
-	typedef deTObjectReference<meWPUndoHistoryListener> Ref;
+	using Ref = deTObjectReference<meWPUndoHistoryListener>;
 	
 private:
 	meWPUndoHistory &pPanel;

@@ -34,7 +34,7 @@
 class devkPipelineGraphic : public devkPipeline{
 public:
 	/** Reference. */
-	typedef deTObjectReference<devkPipelineGraphic> Ref;
+	using Ref = deTObjectReference<devkPipelineGraphic>;
 	
 	
 public:

@@ -98,6 +98,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxSpinTextField igdeNativeSpinTextField;
+using igdeNativeSpinTextField = igdeNativeFoxSpinTextField;
 
 #endif

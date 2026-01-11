@@ -419,7 +419,7 @@ void dePngModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 
 class dePngModuleInternal : public deInternalModule{
 public:
-	typedef deTObjectReference<dePngModuleInternal> Ref;
+	using Ref = deTObjectReference<dePngModuleInternal>;
 	
 	dePngModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("PNG");

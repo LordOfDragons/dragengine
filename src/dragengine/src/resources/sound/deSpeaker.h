@@ -67,7 +67,7 @@ class deBaseScriptingSpeaker;
 class DE_DLL_EXPORT deSpeaker : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deSpeaker> Ref;
+	using Ref = deTObjectReference<deSpeaker>;
 	
 	
 public:

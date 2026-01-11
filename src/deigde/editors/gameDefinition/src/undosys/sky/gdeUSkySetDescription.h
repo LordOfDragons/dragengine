@@ -37,7 +37,7 @@
  */
 class gdeUSkySetDescription : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUSkySetDescription> Ref;
+	using Ref = deTObjectReference<gdeUSkySetDescription>;
 	
 	
 private:

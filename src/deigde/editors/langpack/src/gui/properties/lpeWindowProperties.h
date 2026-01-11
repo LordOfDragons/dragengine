@@ -40,7 +40,7 @@ class lpeWindowMain;
  */
 class lpeWindowProperties : public igdeTabBook{
 public:
-	typedef deTObjectReference<lpeWindowProperties> Ref;
+	using Ref = deTObjectReference<lpeWindowProperties>;
 	
 private:
 	lpeWindowMain &pWindowMain;

@@ -81,7 +81,7 @@ class deWorld;
 class DE_DLL_EXPORT deCollider : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deCollider> Ref;
+	using Ref = deTObjectReference<deCollider>;
 	
 	
 public:

@@ -37,7 +37,7 @@
 class ceClipboardDataAction : public igdeClipboardData{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceClipboardDataAction> Ref;
+	using Ref = deTObjectReference<ceClipboardDataAction>;
 	
 	/** \brief Type name. */
 	static const char * const TYPE_NAME;

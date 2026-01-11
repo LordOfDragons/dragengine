@@ -37,7 +37,7 @@
  */
 class reUConstraintSetOffset : public igdeUndo{
 public:
-	typedef deTObjectReference<reUConstraintSetOffset> Ref;
+	using Ref = deTObjectReference<reUConstraintSetOffset>;
 	
 	
 private:

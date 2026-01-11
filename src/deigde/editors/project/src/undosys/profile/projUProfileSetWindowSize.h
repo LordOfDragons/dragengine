@@ -48,7 +48,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<projUProfileSetWindowSize> Ref;
+	using Ref = deTObjectReference<projUProfileSetWindowSize>;
 	
 	/** \name Constructors and Destructors */
 	/*@{*/

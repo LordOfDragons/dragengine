@@ -59,7 +59,7 @@ class deWorld;
 class DE_DLL_EXPORT deEnvMapProbe : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deEnvMapProbe> Ref;
+	using Ref = deTObjectReference<deEnvMapProbe>;
 	
 	
 private:

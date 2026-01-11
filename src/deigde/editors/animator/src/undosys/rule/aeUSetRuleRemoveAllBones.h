@@ -34,7 +34,7 @@
  */
 class aeUSetRuleRemoveAllBones : public aeUSetRuleBones{
 public:
-	typedef deTObjectReference<aeUSetRuleRemoveAllBones> Ref;
+	using Ref = deTObjectReference<aeUSetRuleRemoveAllBones>;
 	
 	/** \name Constructors and Destructors */
 	/*@{*/

@@ -48,8 +48,8 @@ private:
 	bool pSelected, pActive;
 	
 public:
-	typedef deTObjectReference<feFontGlyph> Ref;
-	typedef decTObjectOrderedSet<feFontGlyph> List;
+	using Ref = deTObjectReference<feFontGlyph>;
+	using List = decTObjectOrderedSet<feFontGlyph>;
 	
 	
 	/** @name Constructors and Destructors */

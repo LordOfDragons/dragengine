@@ -39,7 +39,7 @@ class DE_DLL_EXPORT igdeSpinTextFieldListener : public deObject{
 
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeSpinTextFieldListener> Ref;
+	using Ref = deTObjectReference<igdeSpinTextFieldListener>;
 	
 	
 protected:

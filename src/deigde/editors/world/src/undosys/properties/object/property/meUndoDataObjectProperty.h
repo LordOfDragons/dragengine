@@ -45,8 +45,8 @@ private:
 	decStringDictionary pOldProperties;
 	
 public:
-	typedef deTObjectReference<meUndoDataObjectProperty> Ref;
-	typedef decTObjectOrderedSet<meUndoDataObjectProperty> List;
+	using Ref = deTObjectReference<meUndoDataObjectProperty>;
+	using List = decTObjectOrderedSet<meUndoDataObjectProperty>;
 	
 	
 	/** \name Constructors and Destructors */

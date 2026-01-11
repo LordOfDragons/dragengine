@@ -142,6 +142,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxIconListBox igdeNativeIconListBox;
+using igdeNativeIconListBox = igdeNativeFoxIconListBox;
 
 #endif

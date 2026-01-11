@@ -38,7 +38,7 @@
  */
 class gdeUOCComponentSetSkinPath : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCComponentSetSkinPath> Ref;
+	using Ref = deTObjectReference<gdeUOCComponentSetSkinPath>;
 	
 	
 private:

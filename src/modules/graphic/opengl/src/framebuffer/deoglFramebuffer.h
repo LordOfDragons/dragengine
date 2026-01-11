@@ -44,7 +44,7 @@ class deErrorTracePoint;
  */
 class deoglFramebuffer : public deObject{
 public:
-	typedef deTObjectReference<deoglFramebuffer> Ref;
+	using Ref = deTObjectReference<deoglFramebuffer>;
 	
 	
 private:

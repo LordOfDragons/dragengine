@@ -48,7 +48,7 @@ class decLayerMask;
 class DE_DLL_EXPORT igdeWOSubObject : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeWOSubObject> Ref;
+	using Ref = deTObjectReference<igdeWOSubObject>;
 	
 	
 private:

@@ -48,7 +48,7 @@ class devkCommandPool;
 class devkCommandBuffer : public deObject{
 public:
 	/** Reference. */
-	typedef devkTPoolReference<devkCommandBuffer> Ref;
+	using Ref = devkTPoolReference<devkCommandBuffer>;
 	
 	
 	

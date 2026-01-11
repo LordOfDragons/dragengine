@@ -35,7 +35,7 @@
  */
 class meUObjectPropertyRemoveFromSelected : public igdeUndo{
 public:
-	typedef deTObjectReference<meUObjectPropertyRemoveFromSelected> Ref;
+	using Ref = deTObjectReference<meUObjectPropertyRemoveFromSelected>;
 	
 	
 private:

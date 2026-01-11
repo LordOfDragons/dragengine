@@ -36,7 +36,7 @@
  */
 class gdeUOCCameraSetPropertyRotation : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCCameraSetPropertyRotation> Ref;
+	using Ref = deTObjectReference<gdeUOCCameraSetPropertyRotation>;
 	
 	
 private:

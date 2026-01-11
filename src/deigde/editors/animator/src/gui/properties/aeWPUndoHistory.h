@@ -38,7 +38,7 @@
 class aeWPUndoHistory : public igdeWPUndoHistory{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeWPUndoHistory> Ref;
+	using Ref = deTObjectReference<aeWPUndoHistory>;
 	
 	
 private:

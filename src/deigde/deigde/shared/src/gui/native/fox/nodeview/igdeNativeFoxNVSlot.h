@@ -155,6 +155,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxNVSlot igdeNativeNVSlot;
+using igdeNativeNVSlot = igdeNativeFoxNVSlot;
 
 #endif

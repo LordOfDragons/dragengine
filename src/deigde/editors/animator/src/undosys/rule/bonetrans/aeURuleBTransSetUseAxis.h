@@ -34,7 +34,7 @@
  */
 class aeURuleBTransSetUseAxis : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleBTransSetUseAxis> Ref;
+	using Ref = deTObjectReference<aeURuleBTransSetUseAxis>;
 	
 	
 private:

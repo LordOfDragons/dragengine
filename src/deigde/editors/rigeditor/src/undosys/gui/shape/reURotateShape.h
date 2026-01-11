@@ -35,7 +35,7 @@
  */
 class reURotateShape : public reBaseUndoRotate{
 public:
-	typedef deTObjectReference<reURotateShape> Ref;
+	using Ref = deTObjectReference<reURotateShape>;
 	
 private:
 	reUndoDataShape::List pShapes;

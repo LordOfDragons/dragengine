@@ -35,7 +35,7 @@
  */
 class ceUCGestureSetDuration : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCGestureSetDuration> Ref;
+	using Ref = deTObjectReference<ceUCGestureSetDuration>;
 	
 	
 private:

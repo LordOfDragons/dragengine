@@ -45,7 +45,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<dedsStyledTextNode> Ref;
+	using Ref = deTObjectReference<dedsStyledTextNode>;
 
 
 	/** @name Constructors and Destructors */

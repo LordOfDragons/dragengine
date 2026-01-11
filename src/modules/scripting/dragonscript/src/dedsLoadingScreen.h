@@ -38,7 +38,7 @@ class deScriptingDragonScript;
  */
 class dedsLoadingScreen : public deObject{
 public:
-	typedef deTObjectReference<dedsLoadingScreen> Ref;
+	using Ref = deTObjectReference<dedsLoadingScreen>;
 	
 	
 private:

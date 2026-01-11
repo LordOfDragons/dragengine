@@ -44,7 +44,7 @@ class deoglWorldComputeElement;
  */
 class deoglWorldCompute : public deObject{
 public:
-	typedef deTObjectReference<deoglWorldCompute> Ref;
+	using Ref = deTObjectReference<deoglWorldCompute>;
 	
 	
 	/** Element flags. */

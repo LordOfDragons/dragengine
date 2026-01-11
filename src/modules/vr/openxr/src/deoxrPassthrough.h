@@ -38,7 +38,7 @@ class deoxrSession;
 class deoxrPassthrough : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoxrPassthrough> Ref;
+	using Ref = deTObjectReference<deoxrPassthrough>;
 	
 	
 private:

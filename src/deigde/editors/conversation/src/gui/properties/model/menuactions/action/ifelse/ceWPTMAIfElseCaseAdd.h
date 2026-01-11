@@ -48,7 +48,7 @@ protected:
 	ceWPTMAIfElseCaseAdd();
 	
 public:
-	typedef deTObjectReference<ceWPTMAIfElseCaseAdd> Ref;
+	using Ref = deTObjectReference<ceWPTMAIfElseCaseAdd>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */

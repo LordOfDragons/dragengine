@@ -37,7 +37,7 @@
  */
 class syneUSetSourceChainMinSpeed : public igdeUndo{
 public:
-	typedef deTObjectReference<syneUSetSourceChainMinSpeed> Ref;
+	using Ref = deTObjectReference<syneUSetSourceChainMinSpeed>;
 	
 	
 private:

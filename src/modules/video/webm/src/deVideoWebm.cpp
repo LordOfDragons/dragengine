@@ -128,7 +128,7 @@ deBaseVideoAudioDecoder *deVideoWebm::CreateAudioDecoder(decBaseFileReader *read
 
 class dewebmModuleInternal : public deInternalModule{
 public:
-	typedef deTObjectReference<dewebmModuleInternal> Ref;
+	using Ref = deTObjectReference<dewebmModuleInternal>;
 	
 	dewebmModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("WebM");

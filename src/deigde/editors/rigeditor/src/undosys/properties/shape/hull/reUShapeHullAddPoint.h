@@ -36,7 +36,7 @@
  */
 class reUShapeHullAddPoint : public igdeUndo{
 public:
-	typedef deTObjectReference<reUShapeHullAddPoint> Ref;
+	using Ref = deTObjectReference<reUShapeHullAddPoint>;
 	
 	
 private:

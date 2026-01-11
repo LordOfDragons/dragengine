@@ -42,7 +42,7 @@ class ceConversationTopic;
  */
 class ceUCFacePoseSetName : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCFacePoseSetName> Ref;
+	using Ref = deTObjectReference<ceUCFacePoseSetName>;
 	
 	
 private:

@@ -36,7 +36,7 @@
  */
 class aeRuleGroup : public aeRule{
 public:
-	typedef deTObjectReference<aeRuleGroup> Ref;
+	using Ref = deTObjectReference<aeRuleGroup>;
 	
 	
 private:

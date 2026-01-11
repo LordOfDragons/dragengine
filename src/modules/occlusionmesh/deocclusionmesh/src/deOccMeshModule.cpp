@@ -326,7 +326,7 @@ void deOccMeshModule::pLoadFaces(decBaseFileReader &reader, deOcclusionMesh &mes
 
 class deoccmModuleInternal : public deInternalModule{
 public:
-	typedef deTObjectReference<deoccmModuleInternal> Ref;
+	using Ref = deTObjectReference<deoccmModuleInternal>;
 	
 	deoccmModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DEOcclusionMesh");

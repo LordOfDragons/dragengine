@@ -33,7 +33,7 @@
  */
 class aeWPAPanelRuleStateSnapshot : public aeWPAPanelRule{
 public:
-	typedef deTObjectReference<aeWPAPanelRuleStateSnapshot> Ref;
+	using Ref = deTObjectReference<aeWPAPanelRuleStateSnapshot>;
 	
 	
 private:

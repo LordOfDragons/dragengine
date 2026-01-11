@@ -39,7 +39,7 @@ class reRigShapeCylinder;
  */
 class reWPPanelShapeCylinder : public reWPPanelShape{
 public:
-	typedef deTObjectReference<reWPPanelShapeCylinder> Ref;
+	using Ref = deTObjectReference<reWPPanelShapeCylinder>;
 	
 private:
 	igdeEditVector::Ref pEditPosition;

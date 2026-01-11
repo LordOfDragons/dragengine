@@ -36,7 +36,7 @@
  */
 class ceUCCShotToggleLockUpAxis : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCCShotToggleLockUpAxis> Ref;
+	using Ref = deTObjectReference<ceUCCShotToggleLockUpAxis>;
 	
 	
 private:

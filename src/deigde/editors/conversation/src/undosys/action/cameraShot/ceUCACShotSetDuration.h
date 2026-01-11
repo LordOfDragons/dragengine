@@ -37,7 +37,7 @@
  */
 class ceUCACShotSetDuration : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCACShotSetDuration> Ref;
+	using Ref = deTObjectReference<ceUCACShotSetDuration>;
 	
 	
 private:

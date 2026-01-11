@@ -38,7 +38,7 @@
  */
 class meUObjectShapeRotate : public meBaseUndoRotate{
 public:
-	typedef deTObjectReference<meUObjectShapeRotate> Ref;
+	using Ref = deTObjectReference<meUObjectShapeRotate>;
 	
 private:
 	meObject::Ref pObject;

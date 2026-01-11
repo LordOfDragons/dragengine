@@ -36,7 +36,7 @@
  */
 class aeRuleForeignState : public aeRule{
 public:
-	typedef deTObjectReference<aeRuleForeignState> Ref;
+	using Ref = deTObjectReference<aeRuleForeignState>;
 	
 	
 private:

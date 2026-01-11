@@ -52,7 +52,7 @@ class ceControllerValue;
  */
 class ceWPConversation : public igdeContainerScroll{
 public:
-	typedef deTObjectReference<ceWPConversation> Ref;
+	using Ref = deTObjectReference<ceWPConversation>;
 	
 private:
 	ceWindowProperties &pWindowProperties;

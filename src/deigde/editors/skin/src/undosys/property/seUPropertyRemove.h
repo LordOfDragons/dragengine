@@ -37,7 +37,7 @@
  */
 class seUPropertyRemove : public igdeUndo{
 public:
-	typedef deTObjectReference<seUPropertyRemove> Ref;
+	using Ref = deTObjectReference<seUPropertyRemove>;
 	
 	
 private:

@@ -38,7 +38,7 @@
  */
 class gdeUOCInheritSetName : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCInheritSetName> Ref;
+	using Ref = deTObjectReference<gdeUOCInheritSetName>;
 	
 	
 private:

@@ -38,7 +38,7 @@
  */
 class saeUWordSetPhonetics : public igdeUndo{
 public:
-	typedef deTObjectReference<saeUWordSetPhonetics> Ref;
+	using Ref = deTObjectReference<saeUWordSetPhonetics>;
 	
 	
 private:

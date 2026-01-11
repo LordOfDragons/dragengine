@@ -38,7 +38,7 @@
 class deoalRTPTRoomEstimateFinish : public deParallelTask{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTThreadSafeObjectReference<deoalRTPTRoomEstimateFinish> Ref;
+	using Ref = deTThreadSafeObjectReference<deoalRTPTRoomEstimateFinish>;
 	
 	
 private:

@@ -66,7 +66,7 @@ class cTextComment : public igdeTextAreaListener {
 	ceWPAComment &pPanel;
 	
 public:
-	typedef deTObjectReference<cTextComment> Ref;
+	using Ref = deTObjectReference<cTextComment>;
 	cTextComment(ceWPAComment &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextArea *textArea) override{

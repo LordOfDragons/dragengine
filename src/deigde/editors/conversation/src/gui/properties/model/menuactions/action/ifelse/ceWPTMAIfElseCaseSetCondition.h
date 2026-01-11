@@ -37,7 +37,7 @@ class ceCAIfElseCase;
  */
 class ceWPTMAIfElseCaseSetCondition : public ceWPTMACreateCondition{
 public:
-	typedef deTObjectReference<ceWPTMAIfElseCaseSetCondition> Ref;
+	using Ref = deTObjectReference<ceWPTMAIfElseCaseSetCondition>;
 
 private:
 	ceConversationTopic *pTopic;

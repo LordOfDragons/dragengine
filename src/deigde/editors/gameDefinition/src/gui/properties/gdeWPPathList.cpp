@@ -57,7 +57,7 @@ class cActionAppend : public igdeAction{
 	igdeListBox::Ref &pListBox;
 	
 public:
-	typedef deTObjectReference<cActionAppend> Ref;
+	using Ref = deTObjectReference<cActionAppend>;
 	cActionAppend(gdeWPPathList &panel, igdeEditPath::Ref &editPath, igdeListBox::Ref &listBox) : 
 	igdeAction("Append", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Append path"),
 	pPanel(panel), pEditPath(editPath), pListBox(listBox){}
@@ -85,7 +85,7 @@ class cActionInsert : public igdeAction{
 	igdeListBox::Ref &pListBox;
 	
 public:
-	typedef deTObjectReference<cActionInsert> Ref;
+	using Ref = deTObjectReference<cActionInsert>;
 	cActionInsert(gdeWPPathList &panel, igdeEditPath::Ref &editPath, igdeListBox::Ref &listBox) : 
 	igdeAction("Insert", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Insert path"),
 	pPanel(panel), pEditPath(editPath), pListBox(listBox){}
@@ -123,7 +123,7 @@ class cActionRemove : public igdeAction{
 	igdeListBox::Ref &pListBox;
 	
 public:
-	typedef deTObjectReference<cActionRemove> Ref;
+	using Ref = deTObjectReference<cActionRemove>;
 	cActionRemove(gdeWPPathList &panel, igdeListBox::Ref &listBox) :
 	igdeAction("Remove", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove path"), pPanel(panel), pListBox(listBox){}
@@ -152,7 +152,7 @@ class cActionClear : public igdeAction{
 	igdeListBox::Ref &pListBox;
 	
 public:
-	typedef deTObjectReference<cActionClear> Ref;
+	using Ref = deTObjectReference<cActionClear>;
 	cActionClear(gdeWPPathList &panel, igdeListBox::Ref &listBox) :
 	igdeAction("Clear", nullptr, "Clear path"), pPanel(panel), pListBox(listBox){}
 	
@@ -169,7 +169,7 @@ class cListPaths : public igdeListBoxListener{
 	gdeWPPathList &pListBox;
 	
 public:
-	typedef deTObjectReference<cListPaths> Ref;
+	using Ref = deTObjectReference<cListPaths>;
 	cListPaths(gdeWPPathList &listBox) : pListBox(listBox){}
 	
 	void OnSelectionChanged(igdeListBox*) override{

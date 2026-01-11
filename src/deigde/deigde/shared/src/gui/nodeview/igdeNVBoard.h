@@ -45,10 +45,10 @@ class igdeNVSlot;
 class DE_DLL_EXPORT igdeNVBoard : public igdeContainer{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeNVBoard> Ref;
+	using Ref = deTObjectReference<igdeNVBoard>;
 	
-	typedef decTObjectOrderedSet<igdeNVNode> NodesList;
-	typedef decTObjectOrderedSet<igdeNVLink> LinksList;
+	using NodesList = decTObjectOrderedSet<igdeNVNode>;
+	using LinksList = decTObjectOrderedSet<igdeNVLink>;
 	
 	
 private:

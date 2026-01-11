@@ -40,14 +40,14 @@ class syneControllerTarget;
  */
 class syneULinkRemove : public igdeUndo{
 public:
-	typedef deTObjectReference<syneULinkRemove> Ref;
+	using Ref = deTObjectReference<syneULinkRemove>;
 	
 	
 private:
 	class cTarget : public deObject{
 	public:
-		typedef deTObjectReference<cTarget> Ref;
-		typedef decTObjectOrderedSet<cTarget> List;
+		using Ref = deTObjectReference<cTarget>;
+		using List = decTObjectOrderedSet<cTarget>;
 		
 		syneSource::Ref source;
 		syneControllerTarget::Ref target;

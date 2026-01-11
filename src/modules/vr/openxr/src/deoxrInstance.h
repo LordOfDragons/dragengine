@@ -43,7 +43,7 @@ class deoxrAction;
 class deoxrInstance : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<deoxrInstance> Ref;
+	using Ref = deTObjectReference<deoxrInstance>;
 	
 	
 	/** Extension. */

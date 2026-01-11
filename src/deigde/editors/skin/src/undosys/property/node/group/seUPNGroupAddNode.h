@@ -38,7 +38,7 @@ class sePropertyNode;
  */
 class seUPNGroupAddNode : public igdeUndo{
 public:
-	typedef deTObjectReference<seUPNGroupAddNode> Ref;
+	using Ref = deTObjectReference<seUPNGroupAddNode>;
 	
 	
 private:

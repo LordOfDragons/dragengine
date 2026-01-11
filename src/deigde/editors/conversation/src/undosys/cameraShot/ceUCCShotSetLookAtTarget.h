@@ -36,7 +36,7 @@
  */
 class ceUCCShotSetLookAtTarget : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCCShotSetLookAtTarget> Ref;
+	using Ref = deTObjectReference<ceUCCShotSetLookAtTarget>;
 	
 	
 private:

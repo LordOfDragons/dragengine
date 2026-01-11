@@ -33,7 +33,7 @@
  */
 class dedsPLogLevel : public dedsParameter{
 public:
-	typedef deTObjectReference<dedsPLogLevel> Ref;
+	using Ref = deTObjectReference<dedsPLogLevel>;
 	
 	
 	/** \name Constructors and Destructors */

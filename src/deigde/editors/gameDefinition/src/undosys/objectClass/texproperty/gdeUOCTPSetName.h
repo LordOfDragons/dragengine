@@ -40,7 +40,7 @@
  */
 class gdeUOCTPSetName : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCTPSetName> Ref;
+	using Ref = deTObjectReference<gdeUOCTPSetName>;
 	
 	
 private:

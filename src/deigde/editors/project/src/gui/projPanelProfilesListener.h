@@ -41,7 +41,7 @@ private:
 	
 	
 public:
-	typedef deTObjectReference<projPanelProfilesListener> Ref;
+	using Ref = deTObjectReference<projPanelProfilesListener>;
 	
 	
 	/** \name Constructors and Destructors */

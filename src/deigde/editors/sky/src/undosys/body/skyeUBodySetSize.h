@@ -37,7 +37,7 @@
  */
 class skyeUBodySetSize : public igdeUndo{
 public:
-	typedef deTObjectReference<skyeUBodySetSize> Ref;
+	using Ref = deTObjectReference<skyeUBodySetSize>;
 	
 	
 private:

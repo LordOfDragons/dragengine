@@ -38,7 +38,7 @@
  */
 class lpeULangPackSetDescription : public igdeUndo{
 public:
-	typedef deTObjectReference<lpeULangPackSetDescription> Ref;
+	using Ref = deTObjectReference<lpeULangPackSetDescription>;
 	
 	
 private:

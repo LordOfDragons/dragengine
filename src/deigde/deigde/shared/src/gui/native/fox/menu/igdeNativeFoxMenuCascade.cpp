@@ -191,7 +191,7 @@ long igdeNativeFoxMenuCascadeTitle::updateMenuAction(FXObject*, FXSelector, void
 
 class igdeNativeFoxMenuCascade_PopupWindow : public igdeWindow{
 public:
-	typedef deTObjectReference<igdeNativeFoxMenuCascade_PopupWindow> Ref;
+	using Ref = deTObjectReference<igdeNativeFoxMenuCascade_PopupWindow>;
 	
 private:
 	igdeMenuCascade &pMenu;

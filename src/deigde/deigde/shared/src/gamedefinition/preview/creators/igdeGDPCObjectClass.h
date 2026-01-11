@@ -44,7 +44,7 @@ class igdeWSky;
 class DE_DLL_EXPORT igdeGDPCObjectClass : public igdeGDPreviewCreator{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeGDPCObjectClass> Ref;
+	using Ref = deTObjectReference<igdeGDPCObjectClass>;
 	
 	
 private:

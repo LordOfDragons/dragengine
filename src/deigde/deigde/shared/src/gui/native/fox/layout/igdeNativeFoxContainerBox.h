@@ -48,6 +48,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxContainerBox igdeNativeContainerBox;
+using igdeNativeContainerBox = igdeNativeFoxContainerBox;
 
 #endif

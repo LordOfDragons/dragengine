@@ -38,7 +38,7 @@ class aeRule;
  */
 class aeULinkRemoveUnused : public igdeUndo{
 public:
-	typedef deTObjectReference<aeULinkRemoveUnused> Ref;
+	using Ref = deTObjectReference<aeULinkRemoveUnused>;
 	
 	
 private:

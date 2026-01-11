@@ -49,7 +49,7 @@ class feLoadSaveSystem;
  */
 class feWindowMain : public igdeEditorWindow{
 public:
-	typedef deTObjectReference<feWindowMain> Ref;
+	using Ref = deTObjectReference<feWindowMain>;
 	
 	
 private:

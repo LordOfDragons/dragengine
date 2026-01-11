@@ -77,6 +77,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxContainerBorder igdeNativeContainerBorder;
+using igdeNativeContainerBorder = igdeNativeFoxContainerBorder;
 
 #endif

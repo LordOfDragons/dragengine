@@ -131,7 +131,7 @@ protected:
 	ceWPConversation &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseAction> Ref;
+	using Ref = deTObjectReference<cBaseAction>;
 	cBaseAction(ceWPConversation &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description), pPanel(panel){}
 	
@@ -171,7 +171,7 @@ protected:
 	ceWPConversation &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseActionContextMenu> Ref;
+	using Ref = deTObjectReference<cBaseActionContextMenu>;
 	cBaseActionContextMenu(ceWPConversation &panel, const char *description) :
 	igdeActionContextMenu("", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
 	description), pPanel(panel){}
@@ -207,7 +207,7 @@ protected:
 	ceWPConversation &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseComboBoxListener> Ref;
+	using Ref = deTObjectReference<cBaseComboBoxListener>;
 	cBaseComboBoxListener(ceWPConversation &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -228,7 +228,7 @@ protected:
 	ceWPConversation &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseTextFieldListener> Ref;
+	using Ref = deTObjectReference<cBaseTextFieldListener>;
 	cBaseTextFieldListener(ceWPConversation &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -249,7 +249,7 @@ protected:
 	ceWPConversation &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseEditVectorListener> Ref;
+	using Ref = deTObjectReference<cBaseEditVectorListener>;
 	cBaseEditVectorListener(ceWPConversation &panel) : pPanel(panel){}
 	
 	void OnVectorChanged(igdeEditVector *editVector) override{
@@ -269,7 +269,7 @@ public:
 
 class cActionImportConvoAdd : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionImportConvoAdd> Ref;
+	using Ref = deTObjectReference<cActionImportConvoAdd>;
 	
 public:
 	cActionImportConvoAdd(ceWPConversation &panel) : cBaseAction(panel, "",
@@ -291,7 +291,7 @@ public:
 
 class cActionImportConvoRemove : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionImportConvoRemove> Ref;
+	using Ref = deTObjectReference<cActionImportConvoRemove>;
 	
 public:
 	cActionImportConvoRemove(ceWPConversation &panel) : cBaseAction(panel, "Remove",
@@ -321,7 +321,7 @@ public:
 
 class cActionImportConvoMoveUp : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionImportConvoMoveUp> Ref;
+	using Ref = deTObjectReference<cActionImportConvoMoveUp>;
 	
 public:
 	cActionImportConvoMoveUp(ceWPConversation &panel) : cBaseAction(panel, "Move Up",
@@ -352,7 +352,7 @@ public:
 
 class cActionImportConvoMoveDown : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionImportConvoMoveDown> Ref;
+	using Ref = deTObjectReference<cActionImportConvoMoveDown>;
 	
 public:
 	cActionImportConvoMoveDown(ceWPConversation &panel) : cBaseAction(panel, "Move Down",
@@ -384,7 +384,7 @@ public:
 
 class cActionImportConvoClear : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionImportConvoClear> Ref;
+	using Ref = deTObjectReference<cActionImportConvoClear>;
 	
 public:
 	cActionImportConvoClear(ceWPConversation &panel) : cBaseAction(panel, "Remove All",
@@ -404,7 +404,7 @@ public:
 class cListImportConvo : public igdeListBoxListener{
 	ceWPConversation &pPanel;
 public:
-	typedef deTObjectReference<cListImportConvo> Ref;
+	using Ref = deTObjectReference<cListImportConvo>;
 	cListImportConvo(ceWPConversation &panel) : pPanel(panel){}
 	
 	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
@@ -420,7 +420,7 @@ public:
 
 class cComboTarget : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboTarget> Ref;
+	using Ref = deTObjectReference<cComboTarget>;
 	cComboTarget(ceWPConversation &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox &comboBox, ceConversation *conversation) override{
@@ -432,7 +432,7 @@ public:
 
 class cActionTargetAdd : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionTargetAdd> Ref;
+	using Ref = deTObjectReference<cActionTargetAdd>;
 	
 public:
 	cActionTargetAdd(ceWPConversation &panel) : cBaseAction(panel, "Add...",
@@ -455,7 +455,7 @@ public:
 
 class cActionTargetRemove : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionTargetRemove> Ref;
+	using Ref = deTObjectReference<cActionTargetRemove>;
 	
 public:
 	cActionTargetRemove(ceWPConversation &panel) : cBaseAction(panel, "Remove",
@@ -472,7 +472,7 @@ public:
 
 class cActionTargetRename : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionTargetRename> Ref;
+	using Ref = deTObjectReference<cActionTargetRename>;
 	
 public:
 	cActionTargetRename(ceWPConversation &panel) : cBaseAction(panel,
@@ -504,7 +504,7 @@ public:
 
 class cActionTargetMenu : public cBaseActionContextMenu{
 public:
-	typedef deTObjectReference<cActionTargetMenu> Ref;
+	using Ref = deTObjectReference<cActionTargetMenu>;
 	cActionTargetMenu(ceWPConversation &panel) : cBaseActionContextMenu(panel, "Target menu"){}
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu, ceConversation*) override{
@@ -517,7 +517,7 @@ public:
 
 class cComboTargetActorID : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboTargetActorID> Ref;
+	using Ref = deTObjectReference<cComboTargetActorID>;
 	cComboTargetActorID(ceWPConversation &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox &comboBox, ceConversation*) override{
@@ -529,7 +529,7 @@ public:
 
 class cTextTargetEntityID : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextTargetEntityID> Ref;
+	using Ref = deTObjectReference<cTextTargetEntityID>;
 	cTextTargetEntityID(ceWPConversation &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField &textField, ceConversation*) override{
@@ -541,7 +541,7 @@ public:
 
 class cTextTargetBone : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextTargetBone> Ref;
+	using Ref = deTObjectReference<cTextTargetBone>;
 	cTextTargetBone(ceWPConversation &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField &textField, ceConversation*) override{
@@ -553,7 +553,7 @@ public:
 
 class cVectorTargetPosition : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cVectorTargetPosition> Ref;
+	using Ref = deTObjectReference<cVectorTargetPosition>;
 	cVectorTargetPosition(ceWPConversation &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeEditVector &editVector, ceConversation*) override{
@@ -565,7 +565,7 @@ public:
 
 class cVectorTargetOrientation : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cVectorTargetOrientation> Ref;
+	using Ref = deTObjectReference<cVectorTargetOrientation>;
 	cVectorTargetOrientation(ceWPConversation &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeEditVector &editVector, ceConversation*) override{
@@ -579,7 +579,7 @@ public:
 
 class cComboCameraShot : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboCameraShot> Ref;
+	using Ref = deTObjectReference<cComboCameraShot>;
 	cComboCameraShot(ceWPConversation &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox &comboBox, ceConversation *conversation) override{
@@ -591,7 +591,7 @@ public:
 
 class cActionCameraShotAdd : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionCameraShotAdd> Ref;
+	using Ref = deTObjectReference<cActionCameraShotAdd>;
 	
 public:
 	cActionCameraShotAdd(ceWPConversation &panel) : cBaseAction(panel, "Add...",
@@ -613,7 +613,7 @@ public:
 
 class cActionCameraShotRemove : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionCameraShotRemove> Ref;
+	using Ref = deTObjectReference<cActionCameraShotRemove>;
 	
 public:
 	cActionCameraShotRemove(ceWPConversation &panel) : cBaseAction(panel, "Remove",
@@ -630,7 +630,7 @@ public:
 
 class cActionCameraShotRename : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionCameraShotRename> Ref;
+	using Ref = deTObjectReference<cActionCameraShotRename>;
 	
 public:
 	cActionCameraShotRename(ceWPConversation &panel) : cBaseAction(panel,
@@ -662,7 +662,7 @@ public:
 
 class cActionCameraDuplicate : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionCameraDuplicate> Ref;
+	using Ref = deTObjectReference<cActionCameraDuplicate>;
 	
 public:
 	cActionCameraDuplicate(ceWPConversation &panel) : cBaseAction(panel,
@@ -695,7 +695,7 @@ public:
 
 class cActionCameraShotMenu : public cBaseActionContextMenu{
 public:
-	typedef deTObjectReference<cActionCameraShotMenu> Ref;
+	using Ref = deTObjectReference<cActionCameraShotMenu>;
 	cActionCameraShotMenu(ceWPConversation &panel) : cBaseActionContextMenu(panel, "Camera Shot menu"){}
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu, ceConversation*) override{
@@ -709,7 +709,7 @@ public:
 
 class cTextCShotActorCount : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextCShotActorCount> Ref;
+	using Ref = deTObjectReference<cTextCShotActorCount>;
 	cTextCShotActorCount(ceWPConversation &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField &textField, ceConversation*) override{
@@ -723,7 +723,7 @@ public:
 
 class cComboCameraShotCameraTarget : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboCameraShotCameraTarget> Ref;
+	using Ref = deTObjectReference<cComboCameraShotCameraTarget>;
 	cComboCameraShotCameraTarget(ceWPConversation &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox &comboBox, ceConversation*) override{
@@ -735,7 +735,7 @@ public:
 
 class cVectorCShotOffCamFrom : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cVectorCShotOffCamFrom> Ref;
+	using Ref = deTObjectReference<cVectorCShotOffCamFrom>;
 	cVectorCShotOffCamFrom(ceWPConversation &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeEditVector &editVector, ceConversation*) override{
@@ -747,7 +747,7 @@ public:
 
 class cVectorCShotOffCamTo : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cVectorCShotOffCamTo> Ref;
+	using Ref = deTObjectReference<cVectorCShotOffCamTo>;
 	cVectorCShotOffCamTo(ceWPConversation &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeEditVector &editVector, ceConversation*) override{
@@ -760,7 +760,7 @@ public:
 
 class cComboCameraShotCameraLookAt : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboCameraShotCameraLookAt> Ref;
+	using Ref = deTObjectReference<cComboCameraShotCameraLookAt>;
 	cComboCameraShotCameraLookAt(ceWPConversation &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox &comboBox, ceConversation*) override{
@@ -772,7 +772,7 @@ public:
 
 class cVectorCShotOffLookAtFrom : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cVectorCShotOffLookAtFrom> Ref;
+	using Ref = deTObjectReference<cVectorCShotOffLookAtFrom>;
 	cVectorCShotOffLookAtFrom(ceWPConversation &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeEditVector &editVector, ceConversation*) override{
@@ -784,7 +784,7 @@ public:
 
 class cVectorCShotOffLookAtTo : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cVectorCShotOffLookAtTo> Ref;
+	using Ref = deTObjectReference<cVectorCShotOffLookAtTo>;
 	cVectorCShotOffLookAtTo(ceWPConversation &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeEditVector &editVector, ceConversation*) override{
@@ -796,7 +796,7 @@ public:
 
 class cVectorCShotCamOrbitFrom : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cVectorCShotCamOrbitFrom> Ref;
+	using Ref = deTObjectReference<cVectorCShotCamOrbitFrom>;
 	cVectorCShotCamOrbitFrom(ceWPConversation &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeEditVector &editVector, ceConversation*) override{
@@ -808,7 +808,7 @@ public:
 
 class cVectorCShotCamOrbitTo : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cVectorCShotCamOrbitTo> Ref;
+	using Ref = deTObjectReference<cVectorCShotCamOrbitTo>;
 	cVectorCShotCamOrbitTo(ceWPConversation &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeEditVector &editVector, ceConversation*) override{
@@ -820,7 +820,7 @@ public:
 
 class cTextCShotCamDistanceFrom : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextCShotCamDistanceFrom> Ref;
+	using Ref = deTObjectReference<cTextCShotCamDistanceFrom>;
 	cTextCShotCamDistanceFrom(ceWPConversation &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField &textField, ceConversation*) override{
@@ -833,7 +833,7 @@ public:
 
 class cTextCShotCamDistanceTo : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextCShotCamDistanceTo> Ref;
+	using Ref = deTObjectReference<cTextCShotCamDistanceTo>;
 	cTextCShotCamDistanceTo(ceWPConversation &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField &textField, ceConversation*) override{
@@ -847,7 +847,7 @@ public:
 
 class cVectorCShotPositionFrom : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cVectorCShotPositionFrom> Ref;
+	using Ref = deTObjectReference<cVectorCShotPositionFrom>;
 	cVectorCShotPositionFrom(ceWPConversation &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeEditVector &editVector, ceConversation*) override{
@@ -859,7 +859,7 @@ public:
 
 class cVectorCShotPositionTo : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cVectorCShotPositionTo> Ref;
+	using Ref = deTObjectReference<cVectorCShotPositionTo>;
 	cVectorCShotPositionTo(ceWPConversation &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeEditVector &editVector, ceConversation*) override{
@@ -871,7 +871,7 @@ public:
 
 class cVectorCShotRotationFrom : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cVectorCShotRotationFrom> Ref;
+	using Ref = deTObjectReference<cVectorCShotRotationFrom>;
 	cVectorCShotRotationFrom(ceWPConversation &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeEditVector &editVector, ceConversation*) override{
@@ -883,7 +883,7 @@ public:
 
 class cVectorCShotRotationTo : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cVectorCShotRotationTo> Ref;
+	using Ref = deTObjectReference<cVectorCShotRotationTo>;
 	cVectorCShotRotationTo(ceWPConversation &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeEditVector &editVector, ceConversation*) override{
@@ -895,7 +895,7 @@ public:
 
 class cTextCShotTiltFrom : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextCShotTiltFrom> Ref;
+	using Ref = deTObjectReference<cTextCShotTiltFrom>;
 	cTextCShotTiltFrom(ceWPConversation &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField &textField, ceConversation*) override{
@@ -908,7 +908,7 @@ public:
 
 class cTextCShotTiltTo : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextCShotTiltTo> Ref;
+	using Ref = deTObjectReference<cTextCShotTiltTo>;
 	cTextCShotTiltTo(ceWPConversation &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField &textField, ceConversation*) override{
@@ -921,7 +921,7 @@ public:
 
 class cTextCShotFovFrom : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextCShotFovFrom> Ref;
+	using Ref = deTObjectReference<cTextCShotFovFrom>;
 	cTextCShotFovFrom(ceWPConversation &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField &textField, ceConversation*) override{
@@ -934,7 +934,7 @@ public:
 
 class cTextCShotFovTo : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextCShotFovTo> Ref;
+	using Ref = deTObjectReference<cTextCShotFovTo>;
 	cTextCShotFovTo(ceWPConversation &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField &textField, ceConversation*) override{
@@ -947,7 +947,7 @@ public:
 
 class cActionCShotAlignTargets : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionCShotAlignTargets> Ref;
+	using Ref = deTObjectReference<cActionCShotAlignTargets>;
 	
 public:
 	cActionCShotAlignTargets(ceWPConversation &panel) : cBaseAction(panel,
@@ -967,7 +967,7 @@ public:
 
 class cActionCShotLockUpAxis : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionCShotLockUpAxis> Ref;
+	using Ref = deTObjectReference<cActionCShotLockUpAxis>;
 	
 public:
 	cActionCShotLockUpAxis(ceWPConversation &panel) : cBaseAction(panel,
@@ -987,7 +987,7 @@ public:
 
 class cActionCShotRelativeToLookAt : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionCShotRelativeToLookAt> Ref;
+	using Ref = deTObjectReference<cActionCShotRelativeToLookAt>;
 	
 public:
 	cActionCShotRelativeToLookAt(ceWPConversation &panel) : cBaseAction(panel,
@@ -1007,7 +1007,7 @@ public:
 
 class cActionCShotLockCameraTarget : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionCShotLockCameraTarget> Ref;
+	using Ref = deTObjectReference<cActionCShotLockCameraTarget>;
 	
 public:
 	cActionCShotLockCameraTarget(ceWPConversation &panel) : cBaseAction(panel,
@@ -1027,7 +1027,7 @@ public:
 
 class cActionCShotLockLookAtTarget : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionCShotLockLookAtTarget> Ref;
+	using Ref = deTObjectReference<cActionCShotLockLookAtTarget>;
 	
 public:
 	cActionCShotLockLookAtTarget(ceWPConversation &panel) : cBaseAction(panel,
@@ -1049,7 +1049,7 @@ public:
 
 class cComboGesture : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboGesture> Ref;
+	using Ref = deTObjectReference<cComboGesture>;
 	cComboGesture(ceWPConversation &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox &comboBox, ceConversation *conversation) override{
@@ -1061,7 +1061,7 @@ public:
 
 class cActionGestureAdd : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionGestureAdd> Ref;
+	using Ref = deTObjectReference<cActionGestureAdd>;
 	
 public:
 	cActionGestureAdd(ceWPConversation &panel) : cBaseAction(panel, "Add...",
@@ -1084,7 +1084,7 @@ public:
 
 class cActionGestureRemove : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionGestureRemove> Ref;
+	using Ref = deTObjectReference<cActionGestureRemove>;
 	
 public:
 	cActionGestureRemove(ceWPConversation &panel) : cBaseAction(panel, "Remove",
@@ -1101,7 +1101,7 @@ public:
 
 class cActionGestureRename : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionGestureRename> Ref;
+	using Ref = deTObjectReference<cActionGestureRename>;
 	
 public:
 	cActionGestureRename(ceWPConversation &panel) : cBaseAction(panel,
@@ -1133,7 +1133,7 @@ public:
 
 class cActionGestureMenu : public cBaseActionContextMenu{
 public:
-	typedef deTObjectReference<cActionGestureMenu> Ref;
+	using Ref = deTObjectReference<cActionGestureMenu>;
 	cActionGestureMenu(ceWPConversation &panel) : cBaseActionContextMenu(panel, "Gesture menu"){}
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu, ceConversation*) override{
@@ -1146,7 +1146,7 @@ public:
 
 class cTextGestureAnimator : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextGestureAnimator> Ref;
+	using Ref = deTObjectReference<cTextGestureAnimator>;
 	cTextGestureAnimator(ceWPConversation &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField &textField, ceConversation*) override{
@@ -1158,7 +1158,7 @@ public:
 
 class cActionGestureHold : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionGestureHold> Ref;
+	using Ref = deTObjectReference<cActionGestureHold>;
 	
 public:
 	cActionGestureHold(ceWPConversation &panel) : cBaseAction(panel,
@@ -1178,7 +1178,7 @@ public:
 
 class cTextGestureDuration : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextGestureDuration> Ref;
+	using Ref = deTObjectReference<cTextGestureDuration>;
 	cTextGestureDuration(ceWPConversation &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField &textField, ceConversation*) override{
@@ -1193,7 +1193,7 @@ public:
 
 class cComboFacePose : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboFacePose> Ref;
+	using Ref = deTObjectReference<cComboFacePose>;
 	cComboFacePose(ceWPConversation &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox &comboBox, ceConversation *conversation) override{
@@ -1205,7 +1205,7 @@ public:
 
 class cActionFacePoseAdd : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionFacePoseAdd> Ref;
+	using Ref = deTObjectReference<cActionFacePoseAdd>;
 	
 public:
 	cActionFacePoseAdd(ceWPConversation &panel) : cBaseAction(panel, "Add...",
@@ -1228,7 +1228,7 @@ public:
 
 class cActionFacePoseRemove : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionFacePoseRemove> Ref;
+	using Ref = deTObjectReference<cActionFacePoseRemove>;
 	
 public:
 	cActionFacePoseRemove(ceWPConversation &panel) : cBaseAction(panel, "Remove",
@@ -1245,7 +1245,7 @@ public:
 
 class cActionFacePoseRename : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionFacePoseRename> Ref;
+	using Ref = deTObjectReference<cActionFacePoseRename>;
 	
 public:
 	cActionFacePoseRename(ceWPConversation &panel) : cBaseAction(panel,
@@ -1277,7 +1277,7 @@ public:
 
 class cActionFacePoseMenu : public cBaseActionContextMenu{
 public:
-	typedef deTObjectReference<cActionFacePoseMenu> Ref;
+	using Ref = deTObjectReference<cActionFacePoseMenu>;
 	cActionFacePoseMenu(ceWPConversation &panel) : cBaseActionContextMenu(panel, "Face Pose menu"){}
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu, ceConversation*) override{
@@ -1290,7 +1290,7 @@ public:
 
 class cComboFacePoseController : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboFacePoseController> Ref;
+	using Ref = deTObjectReference<cComboFacePoseController>;
 	cComboFacePoseController(ceWPConversation &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox&, ceConversation*) override{
@@ -1304,7 +1304,7 @@ public:
 
 class cActionFacePoseControllerAdd : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionFacePoseControllerAdd> Ref;
+	using Ref = deTObjectReference<cActionFacePoseControllerAdd>;
 	
 public:
 	cActionFacePoseControllerAdd(ceWPConversation &panel) : cBaseAction(panel, "Add...",
@@ -1343,7 +1343,7 @@ public:
 
 class cActionFacePoseControllerRemove : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionFacePoseControllerRemove> Ref;
+	using Ref = deTObjectReference<cActionFacePoseControllerRemove>;
 	
 public:
 	cActionFacePoseControllerRemove(ceWPConversation &panel) : cBaseAction(panel, "Remove",
@@ -1362,7 +1362,7 @@ public:
 
 class cActionFacePoseControllerMenu : public cBaseActionContextMenu{
 public:
-	typedef deTObjectReference<cActionFacePoseControllerMenu> Ref;
+	using Ref = deTObjectReference<cActionFacePoseControllerMenu>;
 	cActionFacePoseControllerMenu(ceWPConversation &panel) :
 	cBaseActionContextMenu(panel, "Face Pose Controller menu"){}
 	
@@ -1375,7 +1375,7 @@ public:
 
 class cTextFPControllerValue : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextFPControllerValue> Ref;
+	using Ref = deTObjectReference<cTextFPControllerValue>;
 	cTextFPControllerValue(ceWPConversation &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField &textField, ceConversation*) override{

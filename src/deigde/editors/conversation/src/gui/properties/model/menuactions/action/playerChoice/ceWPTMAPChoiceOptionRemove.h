@@ -50,7 +50,7 @@ protected:
 	ceWPTMAPChoiceOptionRemove();
 	
 public:
-	typedef deTObjectReference<ceWPTMAPChoiceOptionRemove> Ref;
+	using Ref = deTObjectReference<ceWPTMAPChoiceOptionRemove>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */

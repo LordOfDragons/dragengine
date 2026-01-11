@@ -42,7 +42,7 @@
  */
 class aeURuleIKSetAdjustOrientation : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleIKSetAdjustOrientation> Ref;
+	using Ref = deTObjectReference<aeURuleIKSetAdjustOrientation>;
 	
 	
 private:

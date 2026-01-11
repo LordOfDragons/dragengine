@@ -46,7 +46,7 @@ class cCameraInteraction : public igdeMouseCameraListener {
 	seViewSkin &pView;
 	
 public:
-	typedef deTObjectReference<cCameraInteraction> Ref;
+	using Ref = deTObjectReference<cCameraInteraction>;
 	cCameraInteraction(seViewSkin &view) : pView(view){}
 	
 public:

@@ -115,7 +115,7 @@ void deIesModule::SaveImage(decBaseFileWriter&, const deImage &){
 
 class deIesModuleInternal : public deInternalModule{
 public:
-	typedef deTObjectReference<deIesModuleInternal> Ref;
+	using Ref = deTObjectReference<deIesModuleInternal>;
 	
 	deIesModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("IES");

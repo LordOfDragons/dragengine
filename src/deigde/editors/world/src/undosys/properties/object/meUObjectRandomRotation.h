@@ -36,7 +36,7 @@
  */
 class meUObjectRandomRotation : public igdeUndo{
 public:
-	typedef deTObjectReference<meUObjectRandomRotation> Ref;
+	using Ref = deTObjectReference<meUObjectRandomRotation>;
 	
 	
 private:

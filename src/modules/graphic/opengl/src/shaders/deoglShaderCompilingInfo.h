@@ -42,7 +42,7 @@ class deGraphicOpenGl;
  */
 class deoglShaderCompilingInfo : public deObject{
 public:
-	typedef deTObjectReference<deoglShaderCompilingInfo> Ref;
+	using Ref = deTObjectReference<deoglShaderCompilingInfo>;
 	
 	
 private:

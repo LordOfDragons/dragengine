@@ -47,9 +47,9 @@ class deEngine;
 class reRigShape : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<reRigShape> Ref;
+	using Ref = deTObjectReference<reRigShape>;
 	
-	typedef decTObjectOrderedSet<reRigShape> List;
+	using List = decTObjectOrderedSet<reRigShape>;
 	
 	
 	/** \brief Shape type. */

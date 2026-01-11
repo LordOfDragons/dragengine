@@ -76,7 +76,7 @@
 class DE_DLL_EXPORT deColliderConstraint : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deColliderConstraint> Ref;
+	using Ref = deTObjectReference<deColliderConstraint>;
 	
 	
 	/** \brief Degrees of freedom. */

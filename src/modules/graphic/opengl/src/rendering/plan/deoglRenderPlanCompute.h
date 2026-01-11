@@ -37,7 +37,7 @@ class deoglRenderPlan;
  */
 class deoglRenderPlanCompute : public deObject{
 public:
-	typedef deTObjectReference<deoglRenderPlanCompute> Ref;
+	using Ref = deTObjectReference<deoglRenderPlanCompute>;
 	
 	
 	/** Find config parameters. */

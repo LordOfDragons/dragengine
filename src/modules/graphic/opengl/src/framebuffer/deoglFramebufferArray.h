@@ -34,7 +34,7 @@
  */
 class deoglFramebufferArray : public deObject{
 public:
-	typedef deTObjectReference<deoglFramebufferArray> Ref;
+	using Ref = deTObjectReference<deoglFramebufferArray>;
 	
 	
 private:

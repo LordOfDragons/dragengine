@@ -39,7 +39,7 @@
  */
 class gdeUOCComponentSetPropertyName : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCComponentSetPropertyName> Ref;
+	using Ref = deTObjectReference<gdeUOCComponentSetPropertyName>;
 	
 	
 private:

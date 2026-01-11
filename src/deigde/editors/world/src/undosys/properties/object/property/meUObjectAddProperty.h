@@ -38,7 +38,7 @@
  */
 class meUObjectAddProperty : public igdeUndo{
 public:
-	typedef deTObjectReference<meUObjectAddProperty> Ref;
+	using Ref = deTObjectReference<meUObjectAddProperty>;
 	
 	
 private:

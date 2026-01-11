@@ -39,7 +39,7 @@ class projProfile;
 class projProjectListener : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<projProjectListener> Ref;
+	using Ref = deTObjectReference<projProjectListener>;
 	
 	
 	/** \name Constructors and Destructors */

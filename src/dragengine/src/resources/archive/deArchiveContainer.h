@@ -39,7 +39,7 @@
 class DE_DLL_EXPORT deArchiveContainer : public deVFSContainer{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deArchiveContainer> Ref;
+	using Ref = deTObjectReference<deArchiveContainer>;
 	
 	
 private:

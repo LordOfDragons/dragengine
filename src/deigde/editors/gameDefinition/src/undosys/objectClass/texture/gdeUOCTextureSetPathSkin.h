@@ -38,7 +38,7 @@
  */
 class gdeUOCTextureSetPathSkin : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCTextureSetPathSkin> Ref;
+	using Ref = deTObjectReference<gdeUOCTextureSetPathSkin>;
 	
 	
 private:

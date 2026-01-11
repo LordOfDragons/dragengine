@@ -127,7 +127,7 @@ public:
 
 class cTextMinSpeed : public cBaseTextFieldListener {
 public:
-	typedef deTObjectReference<cTextMinSpeed> Ref;
+	using Ref = deTObjectReference<cTextMinSpeed>;
 	cTextMinSpeed(syneWPAPanelSourceChain &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref  OnChanged(igdeTextField *textField, syneSourceChain *source) override{
@@ -139,7 +139,7 @@ public:
 
 class cTextMaxSpeed : public cBaseTextFieldListener {
 public:
-	typedef deTObjectReference<cTextMaxSpeed> Ref;
+	using Ref = deTObjectReference<cTextMaxSpeed>;
 	cTextMaxSpeed(syneWPAPanelSourceChain &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref  OnChanged(igdeTextField *textField, syneSourceChain *source) override{
@@ -154,7 +154,7 @@ class cListSounds : public igdeListBoxListener{
 	syneWPAPanelSourceChain &pPanel;
 	
 public:
-	typedef deTObjectReference<cListSounds> Ref;
+	using Ref = deTObjectReference<cListSounds>;
 	cListSounds(syneWPAPanelSourceChain &panel) : pPanel(panel){}
 	
 	void OnSelectionChanged(igdeListBox*) override{
@@ -172,7 +172,7 @@ public:
 
 class cActionSoundAdd : public cBaseAction {
 public:
-	typedef deTObjectReference<cActionSoundAdd> Ref;
+	using Ref = deTObjectReference<cActionSoundAdd>;
 	cActionSoundAdd(syneWPAPanelSourceChain &panel) : cBaseAction(panel, "Add",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add sound to list"){}
 	
@@ -194,7 +194,7 @@ public:
 
 class cActionSoundRemove : public cBaseAction {
 public:
-	typedef deTObjectReference<cActionSoundRemove> Ref;
+	using Ref = deTObjectReference<cActionSoundRemove>;
 	cActionSoundRemove(syneWPAPanelSourceChain &panel) : cBaseAction(panel, "Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove sound from list"){}
 	
@@ -210,7 +210,7 @@ public:
 
 class cActionSoundUp : public cBaseAction {
 public:
-	typedef deTObjectReference<cActionSoundUp> Ref;
+	using Ref = deTObjectReference<cActionSoundUp>;
 	cActionSoundUp(syneWPAPanelSourceChain &panel) : cBaseAction(panel, "Move Up",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp), "Move sound up in list"){}
 	
@@ -226,7 +226,7 @@ public:
 
 class cActionSoundDown : public cBaseAction {
 public:
-	typedef deTObjectReference<cActionSoundDown> Ref;
+	using Ref = deTObjectReference<cActionSoundDown>;
 	cActionSoundDown(syneWPAPanelSourceChain &panel) : cBaseAction(panel, "Move Up",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp), "Move sound up in list"){}
 	
@@ -245,7 +245,7 @@ class cPathSound : public igdeEditPathListener{
 	syneWPAPanelSourceChain &pPanel;
 	
 public:
-	typedef deTObjectReference<cPathSound> Ref;
+	using Ref = deTObjectReference<cPathSound>;
 	cPathSound(syneWPAPanelSourceChain &panel) : pPanel(panel){}
 	
 	void OnEditPathChanged(igdeEditPath * editPath) override{

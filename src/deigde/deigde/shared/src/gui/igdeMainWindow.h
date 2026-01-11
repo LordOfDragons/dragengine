@@ -42,7 +42,7 @@ class igdeApplication;
 class DE_DLL_EXPORT igdeMainWindow : public igdeWindow{
 public:
 	/** \brief Strong reference. */
-	typedef deTObjectReference<igdeMainWindow> Ref;
+	using Ref = deTObjectReference<igdeMainWindow>;
 	
 	
 	/** \brief Window state. */

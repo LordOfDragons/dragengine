@@ -265,7 +265,7 @@ const fbxAnimationMove &loadMove){
 
 class fbxAnimModuleInternal : public deInternalModule{
 public:
-	typedef deTObjectReference<fbxAnimModuleInternal> Ref;
+	using Ref = deTObjectReference<fbxAnimModuleInternal>;
 	
 	fbxAnimModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("FBXAnim");

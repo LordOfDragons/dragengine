@@ -35,7 +35,7 @@ class projPanelTestRun;
  */
 class projPanelTestRunListener : public projProjectListener{
 public:
-	typedef deTObjectReference<projPanelTestRunListener> Ref;
+	using Ref = deTObjectReference<projPanelTestRunListener>;
 	
 	
 private:

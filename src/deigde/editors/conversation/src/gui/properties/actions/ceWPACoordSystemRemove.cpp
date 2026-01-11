@@ -67,7 +67,7 @@ class cComboCoordSystemID : public igdeComboBoxListener {
 	ceWPACoordSystemRemove &pPanel;
 	
 public:
-	typedef deTObjectReference<cComboCoordSystemID> Ref;
+	using Ref = deTObjectReference<cComboCoordSystemID>;
 	cComboCoordSystemID(ceWPACoordSystemRemove &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{

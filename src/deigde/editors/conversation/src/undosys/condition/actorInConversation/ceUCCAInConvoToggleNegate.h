@@ -38,7 +38,7 @@
  */
 class ceUCCAInConvoToggleNegate : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCCAInConvoToggleNegate> Ref;
+	using Ref = deTObjectReference<ceUCCAInConvoToggleNegate>;
 	
 	
 private:

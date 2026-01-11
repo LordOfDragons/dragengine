@@ -43,7 +43,7 @@ class deBaseVideoAudioDecoder;
 class DE_DLL_EXPORT deVideoAudioDecoder : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deVideoAudioDecoder> Ref;
+	using Ref = deTObjectReference<deVideoAudioDecoder>;
 	
 	
 private:

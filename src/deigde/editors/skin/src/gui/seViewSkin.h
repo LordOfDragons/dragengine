@@ -40,7 +40,7 @@ class seWindowMain;
  */
 class seViewSkin : public igdeViewRenderWindow{
 public:
-	typedef deTObjectReference<seViewSkin> Ref;
+	using Ref = deTObjectReference<seViewSkin>;
 	
 private:
 	seWindowMain &pWindowMain;

@@ -48,7 +48,7 @@ class deBaseGraphicEffect;
 class DE_DLL_EXPORT deEffect : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deEffect> Ref;
+	using Ref = deTObjectReference<deEffect>;
 	
 	
 private:

@@ -49,7 +49,7 @@ class peeLoadSaveSystem;
  */
 class peeWindowMain : public igdeEditorWindow{
 public:
-	typedef deTObjectReference<peeWindowMain> Ref;
+	using Ref = deTObjectReference<peeWindowMain>;
 	
 	
 private:

@@ -38,7 +38,7 @@
  */
 class ceUCCHasActorToggleNegate : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCCHasActorToggleNegate> Ref;
+	using Ref = deTObjectReference<ceUCCHasActorToggleNegate>;
 	
 	
 private:

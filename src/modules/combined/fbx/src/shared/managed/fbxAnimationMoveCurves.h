@@ -48,7 +48,7 @@ class deBaseModule;
 class fbxAnimationMoveCurves : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<fbxAnimationMoveCurves> Ref;
+	using Ref = deTObjectReference<fbxAnimationMoveCurves>;
 	
 	
 public:

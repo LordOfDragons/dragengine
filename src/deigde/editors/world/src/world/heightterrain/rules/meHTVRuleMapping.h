@@ -44,7 +44,7 @@
 class meHTVRuleMapping : public meHTVRule{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meHTVRuleMapping> Ref;
+	using Ref = deTObjectReference<meHTVRuleMapping>;
 	
 	
 	/** \brief Slots. */

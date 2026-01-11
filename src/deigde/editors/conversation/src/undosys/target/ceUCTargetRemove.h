@@ -38,7 +38,7 @@ class ceConversation;
  */
 class ceUCTargetRemove : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCTargetRemove> Ref;
+	using Ref = deTObjectReference<ceUCTargetRemove>;
 	
 	
 private:

@@ -41,7 +41,7 @@
 class meHTVRuleComponents : public meHTVRule{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meHTVRuleComponents> Ref;
+	using Ref = deTObjectReference<meHTVRuleComponents>;
 	
 	
 	/** \brief Slots. */

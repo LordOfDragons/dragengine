@@ -35,7 +35,7 @@
 class dexsiDeviceLibEvent : public dexsiDevice{
 public:
 	/** Type holding strong reference. */
-	typedef deTObjectReference<dexsiDeviceLibEvent> Ref;
+	using Ref = deTObjectReference<dexsiDeviceLibEvent>;
 	
 	
 private:

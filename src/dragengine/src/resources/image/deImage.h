@@ -144,7 +144,7 @@ struct DE_DLL_EXPORT sRGBA32{
 class DE_DLL_EXPORT deImage : public deFileResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deImage> Ref;
+	using Ref = deTObjectReference<deImage>;
 	
 	
 private:

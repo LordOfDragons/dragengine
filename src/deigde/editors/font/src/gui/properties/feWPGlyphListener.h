@@ -36,7 +36,7 @@ class feWPGlyph;
  */
 class feWPGlyphListener : public feFontNotifier{
 public:
-	typedef deTObjectReference<feWPGlyphListener> Ref;
+	using Ref = deTObjectReference<feWPGlyphListener>;
 	
 private:
 	feWPGlyph &pPanel;

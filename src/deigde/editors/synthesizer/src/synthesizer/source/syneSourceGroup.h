@@ -36,7 +36,7 @@
  */
 class syneSourceGroup : public syneSource{
 public:
-	typedef deTObjectReference<syneSourceGroup> Ref;
+	using Ref = deTObjectReference<syneSourceGroup>;
 	
 private:
 	syneSource::List pSources;

@@ -36,7 +36,7 @@
 class DE_DLL_EXPORT igdeMouseDragListener : public igdeMouseKeyListener{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeMouseDragListener> Ref;
+	using Ref = deTObjectReference<igdeMouseDragListener>;
 	
 	
 	/** \brief Drag state. */

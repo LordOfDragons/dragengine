@@ -34,7 +34,7 @@
  */
 class aeRuleAnimationDifference : public aeRule{
 public:
-	typedef deTObjectReference<aeRuleAnimationDifference> Ref;
+	using Ref = deTObjectReference<aeRuleAnimationDifference>;
 	
 	
 private:

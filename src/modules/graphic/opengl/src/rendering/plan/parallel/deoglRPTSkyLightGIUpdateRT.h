@@ -38,7 +38,7 @@ class deoglRComponent;
 class deoglRPTSkyLightGIUpdateRT : public deParallelTask{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTThreadSafeObjectReference<deoglRPTSkyLightGIUpdateRT> Ref;
+	using Ref = deTThreadSafeObjectReference<deoglRPTSkyLightGIUpdateRT>;
 	
 	
 private:

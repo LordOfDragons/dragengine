@@ -886,7 +886,7 @@ void deAnimModule::pWriteKeyframeWeight(decBaseFileWriter &writer, const sConfig
 
 class deanimModuleInternal : public deInternalModule{
 public:
-	typedef deTObjectReference<deanimModuleInternal> Ref;
+	using Ref = deTObjectReference<deanimModuleInternal>;
 	
 	deanimModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DEAnim");

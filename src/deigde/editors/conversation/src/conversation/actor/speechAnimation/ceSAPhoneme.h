@@ -45,8 +45,8 @@ private:
 	
 	
 public:
-	typedef deTObjectReference<ceSAPhoneme> Ref;
-	typedef decTObjectDictionary<ceSAPhoneme,int> Map;
+	using Ref = deTObjectReference<ceSAPhoneme>;
+	using Map = decTObjectDictionary<ceSAPhoneme,int>;
 	
 	
 	/** \name Constructors and Destructors */

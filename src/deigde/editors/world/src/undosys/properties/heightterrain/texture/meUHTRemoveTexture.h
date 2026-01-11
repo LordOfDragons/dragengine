@@ -43,7 +43,7 @@
  */
 class meUHTRemoveTexture : public igdeUndo{
 public:
-	typedef deTObjectReference<meUHTRemoveTexture> Ref;
+	using Ref = deTObjectReference<meUHTRemoveTexture>;
 	
 	
 private:

@@ -35,7 +35,7 @@
  */
 class syneWPAPanelSourceChain : public syneWPAPanelSource{
 public:
-	typedef deTObjectReference<syneWPAPanelSourceChain> Ref;
+	using Ref = deTObjectReference<syneWPAPanelSourceChain>;
 	
 private:
 	igdeListBox::Ref pListSounds;

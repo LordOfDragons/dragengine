@@ -45,14 +45,14 @@ class decXmlElementTag;
 class DE_DLL_EXPORT igdeWOSOWorld : public igdeWOSubObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeWOSOWorld> Ref;
+	using Ref = deTObjectReference<igdeWOSOWorld>;
 	
 	
 	/** \brief Child object texture. */
 	class ChildObjectTexture : public deObject{
 	public:
 		/** \brief Type holding strong reference. */
-		typedef deTObjectReference<ChildObjectTexture> Ref;
+		using Ref = deTObjectReference<ChildObjectTexture>;
 	
 	
 		/** \brief Texture name. */
@@ -88,7 +88,7 @@ public:
 	class ChildObject : public deObject{
 	public:
 		/** \brief Type holding strong reference. */
-		typedef deTObjectReference<ChildObject> Ref;
+		using Ref = deTObjectReference<ChildObject>;
 	
 	
 	private:
@@ -143,7 +143,7 @@ private:
 	private:
 		class Texture : public deObject{
 		public:
-			typedef deTObjectReference<Texture> Ref;
+			using Ref = deTObjectReference<Texture>;
 			
 			const ChildObject::Ref object;
 			const ChildObjectTexture::Ref texture;
@@ -158,7 +158,7 @@ private:
 		decTObjectOrderedSet<Texture> pTextures;
 		
 	public:
-		typedef deTObjectReference<LoadObjectResources> Ref;
+		using Ref = deTObjectReference<LoadObjectResources>;
 		LoadObjectResources(igdeWOSOWorld &owner);
 		void Drop();
 		void LoadTexture(ChildObject &object, ChildObjectTexture &texture);

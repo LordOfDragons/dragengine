@@ -38,7 +38,7 @@
  */
 class gdeUOCForceFieldSetFluctuationDirection : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCForceFieldSetFluctuationDirection> Ref;
+	using Ref = deTObjectReference<gdeUOCForceFieldSetFluctuationDirection>;
 	
 	
 private:

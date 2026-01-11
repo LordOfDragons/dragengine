@@ -39,7 +39,7 @@
  */
 class gdeUOCCTextureSetRotation : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCCTextureSetRotation> Ref;
+	using Ref = deTObjectReference<gdeUOCCTextureSetRotation>;
 	
 	
 private:

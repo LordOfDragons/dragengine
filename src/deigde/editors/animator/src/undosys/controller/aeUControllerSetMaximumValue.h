@@ -34,7 +34,7 @@
  */
 class aeUControllerSetMaximumValue : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUControllerSetMaximumValue> Ref;
+	using Ref = deTObjectReference<aeUControllerSetMaximumValue>;
 	
 	
 private:

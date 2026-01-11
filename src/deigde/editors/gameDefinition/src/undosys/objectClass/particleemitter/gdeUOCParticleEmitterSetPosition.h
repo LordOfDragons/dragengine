@@ -40,7 +40,7 @@
  */
 class gdeUOCParticleEmitterSetPosition : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCParticleEmitterSetPosition> Ref;
+	using Ref = deTObjectReference<gdeUOCParticleEmitterSetPosition>;
 	
 	
 private:

@@ -43,7 +43,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoalFakeSpeaker> Ref;
+	using Ref = deTObjectReference<deoalFakeSpeaker>;
 
 
 	/** \name Constructors and Destructors */

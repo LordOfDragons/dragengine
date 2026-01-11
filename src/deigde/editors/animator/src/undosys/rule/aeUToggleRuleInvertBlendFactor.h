@@ -36,7 +36,7 @@
  */
 class aeUToggleRuleInvertBlendFactor : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUToggleRuleInvertBlendFactor> Ref;
+	using Ref = deTObjectReference<aeUToggleRuleInvertBlendFactor>;
 	
 	
 private:

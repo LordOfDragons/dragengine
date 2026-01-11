@@ -36,7 +36,7 @@ class ceWPTTIMAPlayerChoice;
  */
 class ceWPTTIMAPlayerChoiceActions : public ceWPTTIMActions{
 public:
-	typedef deTObjectReference<ceWPTTIMAPlayerChoiceActions> Ref;
+	using Ref = deTObjectReference<ceWPTTIMAPlayerChoiceActions>;
 	
 	/** \brief Constructors and Destructors */
 	/*@{*/

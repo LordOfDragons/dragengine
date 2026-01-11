@@ -49,13 +49,13 @@ class decLayerMask;
  */
 class deoglGIInstance : public deObject{
 public:
-	typedef deTObjectReference<deoglGIInstance> Ref;
+	using Ref = deTObjectReference<deoglGIInstance>;
 	
 	
 private:
 	class cListenerLink{
 	public:
-		typedef deTObjectReference<cListenerLink> Ref;
+		using Ref = deTObjectReference<cListenerLink>;
 		
 		deoglGIInstance &instance;
 		
@@ -74,7 +74,7 @@ private:
 		const cListenerLink pLink;
 		
 	public:
-		typedef deTObjectReference<cComponentListener> Ref;
+		using Ref = deTObjectReference<cComponentListener>;
 		
 		cComponentListener(deoglGIInstance &instance);
 		void ComponentDestroyed(deoglRComponent &component) override;
@@ -95,7 +95,7 @@ private:
 		const cListenerLink pLink;
 		
 	public:
-		typedef deTObjectReference<cDecalListener> Ref;
+		using Ref = deTObjectReference<cDecalListener>;
 		
 		cDecalListener(deoglGIInstance &instance);
 		void DecalDestroyed(deoglRDecal &decal) override;
@@ -109,7 +109,7 @@ private:
 		const cListenerLink pLink;
 		
 	public:
-		typedef deTObjectReference<cDecalComponentListener> Ref;
+		using Ref = deTObjectReference<cDecalComponentListener>;
 		
 		cDecalComponentListener(deoglGIInstance &instance);
 		void BoundariesChanged(deoglRComponent &component) override;

@@ -42,7 +42,7 @@ class meWindowProperties;
  */
 class meWPSensors : public igdeContainerScroll{
 public:
-	typedef deTObjectReference<meWPSensors> Ref;
+	using Ref = deTObjectReference<meWPSensors>;
 	
 private:
 	meWindowProperties &pWindowProperties;

@@ -43,7 +43,7 @@
  */
 class DE_DLL_EXPORT deInternalModule : public deLoadableModule{
 public:
-	typedef deTObjectReference<deInternalModule> Ref;
+	using Ref = deTObjectReference<deInternalModule>;
 	
 	
 	/** \name Constructors and Destructors */

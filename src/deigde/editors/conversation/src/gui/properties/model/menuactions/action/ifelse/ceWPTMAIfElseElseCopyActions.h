@@ -36,7 +36,7 @@ class ceCAIfElse;
  */
 class ceWPTMAIfElseElseCopyActions : public ceWPTMACopyActions{
 public:
-	typedef deTObjectReference<ceWPTMAIfElseElseCopyActions> Ref;
+	using Ref = deTObjectReference<ceWPTMAIfElseElseCopyActions>;
 	
 protected:
 	/** \brief FOX constructor. */

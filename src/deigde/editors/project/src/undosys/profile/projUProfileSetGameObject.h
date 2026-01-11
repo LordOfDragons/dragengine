@@ -46,7 +46,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<projUProfileSetGameObject> Ref;
+	using Ref = deTObjectReference<projUProfileSetGameObject>;
 	
 	/** \name Constructors and Destructors */
 	/*@{*/

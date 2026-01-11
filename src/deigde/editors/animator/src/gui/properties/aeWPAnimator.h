@@ -43,7 +43,7 @@ class aeWindowProperties;
  */
 class aeWPAnimator : public igdeContainerScroll{
 public:
-	typedef deTObjectReference<aeWPAnimator> Ref;
+	using Ref = deTObjectReference<aeWPAnimator>;
 	
 	
 private:

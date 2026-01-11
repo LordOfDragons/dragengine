@@ -36,7 +36,7 @@
  */
 class reURigToggleModelCollision : public igdeUndo{
 public:
-	typedef deTObjectReference<reURigToggleModelCollision> Ref;
+	using Ref = deTObjectReference<reURigToggleModelCollision>;
 	
 	
 private:

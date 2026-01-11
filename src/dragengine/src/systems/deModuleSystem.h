@@ -160,7 +160,7 @@ public:
 	
 public:
 	/** \brief Loadable module list type. */
-	typedef decTObjectOrderedSet<deLoadableModule> ModuleList;
+	using ModuleList = decTObjectOrderedSet<deLoadableModule>;
 	
 private:
 	deEngine *pEngine;
@@ -351,7 +351,7 @@ public:
 	 * 
 	 * For internal use only!
 	 */
-	typedef deTObjectReference<deInternalModule> (*FPRegisterInternalModule)(deModuleSystem*);
+	using FPRegisterInternalModule = deTObjectReference<deInternalModule> (*)(deModuleSystem*);
 	/*@}*/
 	
 	

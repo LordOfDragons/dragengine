@@ -67,7 +67,7 @@ protected:
 	lpeWPLangPack &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseTextFieldListener> Ref;
+	using Ref = deTObjectReference<cBaseTextFieldListener>;
 	cBaseTextFieldListener(lpeWPLangPack &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -90,7 +90,7 @@ protected:
 	lpeWPLangPack &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseTextAreaListener> Ref;
+	using Ref = deTObjectReference<cBaseTextAreaListener>;
 	cBaseTextAreaListener(lpeWPLangPack &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextArea *textArea) override{
@@ -112,7 +112,7 @@ public:
 
 class cTextIdentifier : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextIdentifier> Ref;
+	using Ref = deTObjectReference<cTextIdentifier>;
 	cTextIdentifier(lpeWPLangPack &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, lpeLangPack *langpack) override{
@@ -123,7 +123,7 @@ public:
 
 class cTextName : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextName> Ref;
+	using Ref = deTObjectReference<cTextName>;
 	cTextName(lpeWPLangPack &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, lpeLangPack *langpack) override{
@@ -137,7 +137,7 @@ public:
 
 class cTextDescription : public cBaseTextAreaListener{
 public:
-	typedef deTObjectReference<cTextDescription> Ref;
+	using Ref = deTObjectReference<cTextDescription>;
 	cTextDescription(lpeWPLangPack &panel) : cBaseTextAreaListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextArea *textArea, lpeLangPack *langpack) override{
@@ -151,7 +151,7 @@ public:
 
 class cTextMissingText : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextMissingText> Ref;
+	using Ref = deTObjectReference<cTextMissingText>;
 	cTextMissingText(lpeWPLangPack &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, lpeLangPack *langpack) override{

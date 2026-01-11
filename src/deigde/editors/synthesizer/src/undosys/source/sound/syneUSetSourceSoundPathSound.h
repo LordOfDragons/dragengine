@@ -37,7 +37,7 @@
  */
 class syneUSetSourceSoundPathSound : public igdeUndo{
 public:
-	typedef deTObjectReference<syneUSetSourceSoundPathSound> Ref;
+	using Ref = deTObjectReference<syneUSetSourceSoundPathSound>;
 	
 	
 private:

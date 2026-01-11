@@ -38,7 +38,7 @@
  */
 class gdeUOCComponentToggleRenderEnvMap : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCComponentToggleRenderEnvMap> Ref;
+	using Ref = deTObjectReference<gdeUOCComponentToggleRenderEnvMap>;
 	
 	
 private:

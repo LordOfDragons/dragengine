@@ -53,7 +53,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoalASynthesizerInstance> Ref;
+	using Ref = deTObjectReference<deoalASynthesizerInstance>;
 
 
 	/** \name Constructors and Destructors */

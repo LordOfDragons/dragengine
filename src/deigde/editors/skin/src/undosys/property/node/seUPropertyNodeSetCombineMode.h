@@ -38,7 +38,7 @@
  */
 class seUPropertyNodeSetCombineMode : public igdeUndo{
 public:
-	typedef deTObjectReference<seUPropertyNodeSetCombineMode> Ref;
+	using Ref = deTObjectReference<seUPropertyNodeSetCombineMode>;
 	
 	
 private:

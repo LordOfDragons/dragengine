@@ -43,7 +43,7 @@
  */
 class aeUSetRuleSModMaxRotation : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUSetRuleSModMaxRotation> Ref;
+	using Ref = deTObjectReference<aeUSetRuleSModMaxRotation>;
 	
 	
 private:

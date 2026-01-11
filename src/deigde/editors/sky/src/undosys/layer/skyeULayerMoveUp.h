@@ -35,7 +35,7 @@
  */
 class skyeULayerMoveUp : public igdeUndo{
 public:
-	typedef deTObjectReference<skyeULayerMoveUp> Ref;
+	using Ref = deTObjectReference<skyeULayerMoveUp>;
 	
 	
 private:

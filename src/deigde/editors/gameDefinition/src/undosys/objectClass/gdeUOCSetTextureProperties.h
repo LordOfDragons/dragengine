@@ -41,7 +41,7 @@
  */
 class gdeUOCSetTextureProperties : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCSetTextureProperties> Ref;
+	using Ref = deTObjectReference<gdeUOCSetTextureProperties>;
 	
 	
 private:

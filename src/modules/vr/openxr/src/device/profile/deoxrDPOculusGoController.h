@@ -33,7 +33,7 @@
  */
 class deoxrDPOculusGoController : public deoxrDPBaseTwoHandController{
 public:
-	typedef deTObjectReference<deoxrDPOculusGoController> Ref;
+	using Ref = deTObjectReference<deoxrDPOculusGoController>;
 	
 	/** \name Constructors and Destructors */
 	/*@{*/

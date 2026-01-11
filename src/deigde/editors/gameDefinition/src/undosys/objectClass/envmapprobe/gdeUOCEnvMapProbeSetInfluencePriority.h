@@ -38,7 +38,7 @@
  */
 class gdeUOCEnvMapProbeSetInfluencePriority : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCEnvMapProbeSetInfluencePriority> Ref;
+	using Ref = deTObjectReference<gdeUOCEnvMapProbeSetInfluencePriority>;
 	
 	
 private:

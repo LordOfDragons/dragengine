@@ -46,7 +46,7 @@ private:
 	
 	
 public:
-	typedef deTObjectReference<ceWPAPlayerChoice> Ref;
+	using Ref = deTObjectReference<ceWPAPlayerChoice>;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create view. */

@@ -48,8 +48,8 @@ class deAnimatorRuleVisitor;
 class aeRule : public deObject{
 public:
 	/** Type holding strong reference. */
-	typedef deTObjectReference<aeRule> Ref;
-	typedef decTObjectOrderedSet<aeRule> List;
+	using Ref = deTObjectReference<aeRule>;
+	using List = decTObjectOrderedSet<aeRule>;
 	
 	
 private:

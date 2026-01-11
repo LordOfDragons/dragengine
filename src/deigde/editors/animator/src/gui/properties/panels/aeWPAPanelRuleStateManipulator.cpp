@@ -81,7 +81,7 @@ protected:
 	aeWPAPanelRuleStateManipulator &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseAction> Ref;
+	using Ref = deTObjectReference<cBaseAction>;
 	cBaseAction(aeWPAPanelRuleStateManipulator &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description),
 	pPanel(panel){}
@@ -124,7 +124,7 @@ protected:
 	aeWPAPanelRuleStateManipulator &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseEditVectorListener> Ref;
+	using Ref = deTObjectReference<cBaseEditVectorListener>;
 	cBaseEditVectorListener(aeWPAPanelRuleStateManipulator &panel) : pPanel(panel){}
 	
 	void OnVectorChanged(igdeEditVector *editVector) override{
@@ -148,7 +148,7 @@ protected:
 	aeWPAPanelRuleStateManipulator &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseTextFieldListener> Ref;
+	using Ref = deTObjectReference<cBaseTextFieldListener>;
 	cBaseTextFieldListener(aeWPAPanelRuleStateManipulator &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -170,7 +170,7 @@ public:
 
 class cEditPositionMinimum : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditPositionMinimum> Ref;
+	using Ref = deTObjectReference<cEditPositionMinimum>;
 	cEditPositionMinimum(aeWPAPanelRuleStateManipulator &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleStateManipulator *rule) override{
@@ -181,7 +181,7 @@ public:
 
 class cEditPositionMaximum : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditPositionMaximum> Ref;
+	using Ref = deTObjectReference<cEditPositionMaximum>;
 	cEditPositionMaximum(aeWPAPanelRuleStateManipulator &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleStateManipulator *rule) override{
@@ -192,7 +192,7 @@ public:
 
 class cEditRotationMinimum : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditRotationMinimum> Ref;
+	using Ref = deTObjectReference<cEditRotationMinimum>;
 	cEditRotationMinimum(aeWPAPanelRuleStateManipulator &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleStateManipulator *rule) override{
@@ -203,7 +203,7 @@ public:
 
 class cEditRotationMaximum : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditRotationMaximum> Ref;
+	using Ref = deTObjectReference<cEditRotationMaximum>;
 	cEditRotationMaximum(aeWPAPanelRuleStateManipulator &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleStateManipulator *rule) override{
@@ -214,7 +214,7 @@ public:
 
 class cEditScalingMinimum : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditScalingMinimum> Ref;
+	using Ref = deTObjectReference<cEditScalingMinimum>;
 	cEditScalingMinimum(aeWPAPanelRuleStateManipulator &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleStateManipulator *rule) override{
@@ -225,7 +225,7 @@ public:
 
 class cEditScalingMaximum : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditScalingMaximum> Ref;
+	using Ref = deTObjectReference<cEditScalingMaximum>;
 	cEditScalingMaximum(aeWPAPanelRuleStateManipulator &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleStateManipulator *rule) override{
@@ -236,7 +236,7 @@ public:
 
 class cEditVertexPositionSetMinimum : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cEditVertexPositionSetMinimum> Ref;
+	using Ref = deTObjectReference<cEditVertexPositionSetMinimum>;
 	cEditVertexPositionSetMinimum(aeWPAPanelRuleStateManipulator &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator*, aeRuleStateManipulator *rule) override{
@@ -248,7 +248,7 @@ public:
 
 class cEditVertexPositionSetMaximum : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cEditVertexPositionSetMaximum> Ref;
+	using Ref = deTObjectReference<cEditVertexPositionSetMaximum>;
 	cEditVertexPositionSetMaximum(aeWPAPanelRuleStateManipulator &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator*, aeRuleStateManipulator *rule) override{
@@ -261,7 +261,7 @@ public:
 
 class cActionEnablePosition : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnablePosition> Ref;
+	using Ref = deTObjectReference<cActionEnablePosition>;
 	
 public:
 	cActionEnablePosition(aeWPAPanelRuleStateManipulator &panel) : cBaseAction(panel,
@@ -279,7 +279,7 @@ public:
 
 class cActionEnableRotation : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableRotation> Ref;
+	using Ref = deTObjectReference<cActionEnableRotation>;
 	
 public:
 	cActionEnableRotation(aeWPAPanelRuleStateManipulator &panel) : cBaseAction(panel,
@@ -297,7 +297,7 @@ public:
 
 class cActionEnableSize : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableSize> Ref;
+	using Ref = deTObjectReference<cActionEnableSize>;
 	
 public:
 	cActionEnableSize(aeWPAPanelRuleStateManipulator &panel) : cBaseAction(panel,
@@ -315,7 +315,7 @@ public:
 
 class cActionEnableVertexPositionSet : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableVertexPositionSet> Ref;
+	using Ref = deTObjectReference<cActionEnableVertexPositionSet>;
 	
 public:
 	cActionEnableVertexPositionSet(aeWPAPanelRuleStateManipulator &panel) : cBaseAction(panel,

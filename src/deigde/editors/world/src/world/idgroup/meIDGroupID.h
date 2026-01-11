@@ -41,8 +41,8 @@ private:
 	
 	
 public:
-	typedef deTObjectReference<meIDGroupID> Ref;
-	typedef decTObjectDictionary<meIDGroupID> Map;
+	using Ref = deTObjectReference<meIDGroupID>;
+	using Map = decTObjectDictionary<meIDGroupID>;
 	
 	
 	/** \name Constructors and Destructors */

@@ -43,7 +43,7 @@
  */
 class aeUMoveControllerUp : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUMoveControllerUp> Ref;
+	using Ref = deTObjectReference<aeUMoveControllerUp>;
 	
 	
 private:

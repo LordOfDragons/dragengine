@@ -62,7 +62,7 @@ namespace {
 class cSpinPoint : public igdeSpinTextFieldListener{
 	reWPPanelShapeHull &pPanel;
 public:
-	typedef deTObjectReference<cSpinPoint> Ref;
+	using Ref = deTObjectReference<cSpinPoint>;
 	cSpinPoint(reWPPanelShapeHull &panel) : pPanel(panel){}
 	
 	void OnValueChanged(igdeSpinTextField*) override{
@@ -73,7 +73,7 @@ public:
 class cActionAddPoint : public igdeAction{
 	reWPPanelShapeHull &pPanel;
 public:
-	typedef deTObjectReference<cActionAddPoint> Ref;
+	using Ref = deTObjectReference<cActionAddPoint>;
 	cActionAddPoint(reWPPanelShapeHull &panel) : igdeAction("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add point"),
 		pPanel(panel){}
@@ -100,7 +100,7 @@ public:
 class cActionRemovePoint : public igdeAction{
 	reWPPanelShapeHull &pPanel;
 public:
-	typedef deTObjectReference<cActionRemovePoint> Ref;
+	using Ref = deTObjectReference<cActionRemovePoint>;
 	cActionRemovePoint(reWPPanelShapeHull &panel) : igdeAction("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove point"),
 		pPanel(panel){}
@@ -127,7 +127,7 @@ public:
 class cEditPoint : public igdeEditVectorListener{
 	reWPPanelShapeHull &pPanel;
 public:
-	typedef deTObjectReference<cEditPoint> Ref;
+	using Ref = deTObjectReference<cEditPoint>;
 	cEditPoint(reWPPanelShapeHull &panel) : pPanel(panel){}
 	
 	void OnVectorChanged(igdeEditVector *editVector) override{

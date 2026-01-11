@@ -36,7 +36,7 @@
  */
 class ceUCCShotToggleLockCameraTarget : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCCShotToggleLockCameraTarget> Ref;
+	using Ref = deTObjectReference<ceUCCShotToggleLockCameraTarget>;
 	
 	
 private:

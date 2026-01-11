@@ -35,7 +35,7 @@
 class dexsiDeviceCoreMouse : public dexsiDevice{
 public:
 	/** Type holding strong reference. */
-	typedef deTObjectReference<dexsiDeviceCoreMouse> Ref;
+	using Ref = deTObjectReference<dexsiDeviceCoreMouse>;
 	
 	
 	/** \name Constructors and Destructors */

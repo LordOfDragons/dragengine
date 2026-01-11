@@ -38,7 +38,7 @@
  */
 class deoalEffectSlot : public deObject{
 public:
-	typedef deTObjectReference<deoalEffectSlot> Ref;
+	using Ref = deTObjectReference<deoalEffectSlot>;
 	
 	
 private:

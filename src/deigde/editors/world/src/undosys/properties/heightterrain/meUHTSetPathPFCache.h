@@ -44,7 +44,7 @@
  */
 class meUHTSetPathPFCache : public igdeUndo{
 public:
-	typedef deTObjectReference<meUHTSetPathPFCache> Ref;
+	using Ref = deTObjectReference<meUHTSetPathPFCache>;
 	
 	
 private:

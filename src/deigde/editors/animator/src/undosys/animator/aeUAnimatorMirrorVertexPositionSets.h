@@ -45,7 +45,7 @@ class aeAnimator;
  */
 class aeUAnimatorMirrorVertexPositionSets : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUAnimatorMirrorVertexPositionSets> Ref;
+	using Ref = deTObjectReference<aeUAnimatorMirrorVertexPositionSets>;
 	
 	
 private:

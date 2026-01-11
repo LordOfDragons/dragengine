@@ -36,7 +36,7 @@
  */
 class ceUCCShotToggleAlignTargets : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCCShotToggleAlignTargets> Ref;
+	using Ref = deTObjectReference<ceUCCShotToggleAlignTargets>;
 	
 	
 private:

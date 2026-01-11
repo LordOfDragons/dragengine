@@ -34,7 +34,7 @@
  */
 class fbxPropertyShort : public fbxProperty{
 public:
-	typedef deTObjectReference<fbxPropertyShort> Ref;
+	using Ref = deTObjectReference<fbxPropertyShort>;
 	
 	
 private:

@@ -38,7 +38,7 @@
  */
 class gdeUOCLightToggleCastShadows : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCLightToggleCastShadows> Ref;
+	using Ref = deTObjectReference<gdeUOCLightToggleCastShadows>;
 	
 	
 private:

@@ -36,7 +36,7 @@
  */
 class aeURuleMirrorSetEnableVertexPositionSet : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleMirrorSetEnableVertexPositionSet> Ref;
+	using Ref = deTObjectReference<aeURuleMirrorSetEnableVertexPositionSet>;
 	
 	
 private:

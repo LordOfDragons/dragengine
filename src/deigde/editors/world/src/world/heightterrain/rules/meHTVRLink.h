@@ -45,8 +45,8 @@ private:
 	int pDestSlot;
 	
 public:
-	typedef deTObjectReference<meHTVRLink> Ref;
-	typedef decTObjectOrderedSet<meHTVRLink> List;
+	using Ref = deTObjectReference<meHTVRLink>;
+	using List = decTObjectOrderedSet<meHTVRLink>;
 	
 	
 	/** \name Constructors and Destructors */

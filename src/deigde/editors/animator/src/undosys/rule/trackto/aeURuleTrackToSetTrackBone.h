@@ -36,7 +36,7 @@
  */
 class aeURuleTrackToSetTrackBone : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleTrackToSetTrackBone> Ref;
+	using Ref = deTObjectReference<aeURuleTrackToSetTrackBone>;
 	
 	
 private:

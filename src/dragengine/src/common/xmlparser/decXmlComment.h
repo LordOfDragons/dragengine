@@ -35,7 +35,7 @@
 class DE_DLL_EXPORT decXmlComment : public decXmlElement{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<decXmlComment> Ref;
+	using Ref = deTObjectReference<decXmlComment>;
 	
 	
 private:

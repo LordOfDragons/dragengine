@@ -42,8 +42,8 @@ class meObject;
  */
 class meFilterObjects : public deObject{
 public:
-	typedef deTObjectReference<meFilterObjects> Ref;
-	typedef decTObjectOrderedSet<meFilterObjects> List;
+	using Ref = deTObjectReference<meFilterObjects>;
+	using List = decTObjectOrderedSet<meFilterObjects>;
 	
 	
 	/** \name Constructors and Destructors */

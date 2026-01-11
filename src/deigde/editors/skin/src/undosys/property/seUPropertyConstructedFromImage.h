@@ -40,7 +40,7 @@
  */
 class seUPropertyConstructedFromImage : public igdeUndo{
 public:
-	typedef deTObjectReference<seUPropertyConstructedFromImage> Ref;
+	using Ref = deTObjectReference<seUPropertyConstructedFromImage>;
 	
 	
 private:

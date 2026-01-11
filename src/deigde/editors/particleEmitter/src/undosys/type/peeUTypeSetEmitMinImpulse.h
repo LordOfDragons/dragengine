@@ -36,7 +36,7 @@
  */
 class peeUTypeSetEmitMinImpulse : public igdeUndo{
 public:
-	typedef deTObjectReference<peeUTypeSetEmitMinImpulse> Ref;
+	using Ref = deTObjectReference<peeUTypeSetEmitMinImpulse>;
 	
 	
 private:

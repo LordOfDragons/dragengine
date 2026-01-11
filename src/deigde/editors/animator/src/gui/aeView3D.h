@@ -44,7 +44,7 @@ class aeWindowMain;
 class aeView3D : public igdeViewRenderWindow{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeView3D> Ref;
+	using Ref = deTObjectReference<aeView3D>;
 	
 	
 private:

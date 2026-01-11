@@ -36,7 +36,7 @@
  */
 class syneUSourceSynthSetPathSynthesizer : public igdeUndo{
 public:
-	typedef deTObjectReference<syneUSourceSynthSetPathSynthesizer> Ref;
+	using Ref = deTObjectReference<syneUSourceSynthSetPathSynthesizer>;
 	
 	
 private:

@@ -36,7 +36,7 @@
 class DE_DLL_EXPORT deNetworkValueFloat : public deNetworkValue{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deNetworkValueFloat> Ref;
+	using Ref = deTObjectReference<deNetworkValueFloat>;
 	
 	
 private:

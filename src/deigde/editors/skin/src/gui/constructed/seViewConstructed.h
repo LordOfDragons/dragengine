@@ -45,7 +45,7 @@ class seWindowMain;
  */
 class seViewConstructed : public igdeContainerBorder{
 public:
-	typedef deTObjectReference<seViewConstructed> Ref;
+	using Ref = deTObjectReference<seViewConstructed>;
 	
 private:
 	seWindowMain &pWindowMain;

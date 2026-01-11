@@ -46,7 +46,7 @@ class deEngine;
  */
 class ceCAActorSpeak : public ceConversationAction{
 public:
-	typedef deTObjectReference<ceCAActorSpeak> Ref;
+	using Ref = deTObjectReference<ceCAActorSpeak>;
 	
 	
 private:

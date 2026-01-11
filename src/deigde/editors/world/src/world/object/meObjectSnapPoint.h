@@ -45,8 +45,8 @@ class meColliderOwner;
  */
 class meObjectSnapPoint : public deObject{
 public:
-	typedef deTObjectReference<meObjectSnapPoint> Ref;
-	typedef decTObjectOrderedSet<meObjectSnapPoint> List;
+	using Ref = deTObjectReference<meObjectSnapPoint>;
+	using List = decTObjectOrderedSet<meObjectSnapPoint>;
 	
 	
 private:

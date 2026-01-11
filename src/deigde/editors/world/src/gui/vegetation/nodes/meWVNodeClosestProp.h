@@ -41,7 +41,7 @@ class meHTVRuleClosestProp;
  */
 class meWVNodeClosestProp : public meWVNode{
 public:
-	typedef deTObjectReference<meWVNodeClosestProp> Ref;
+	using Ref = deTObjectReference<meWVNodeClosestProp>;
 	
 private:
 	meHTVRuleClosestProp *pRuleCP;

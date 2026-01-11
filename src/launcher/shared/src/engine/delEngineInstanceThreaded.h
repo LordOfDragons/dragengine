@@ -43,14 +43,14 @@
 class DE_DLL_EXPORT delEngineInstanceThreaded : public delEngineInstance{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<delEngineInstanceThreaded> Ref;
+	using Ref = deTObjectReference<delEngineInstanceThreaded>;
 	
 	
 	/** \brief Factory creating engine instances. */
 	class DE_DLL_EXPORT Factory : public delEngineInstance::Factory{
 	public:
 		/** \brief Type holding strong reference. */
-		typedef deTObjectReference<Factory> Ref;
+		using Ref = deTObjectReference<Factory>;
 		
 		/** \brief Factory constructor. */
 		Factory();

@@ -120,7 +120,7 @@ void deftModule::SaveFont(decBaseFileWriter &file, const deFont &font){
 
 class deftModuleInternal : public deInternalModule{
 public:
-	typedef deTObjectReference<deftModuleInternal> Ref;
+	using Ref = deTObjectReference<deftModuleInternal>;
 	
 	deftModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("FreeType");

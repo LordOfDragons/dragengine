@@ -37,7 +37,7 @@
  */
 class reUConstraintToggleIsRope : public igdeUndo{
 public:
-	typedef deTObjectReference<reUConstraintToggleIsRope> Ref;
+	using Ref = deTObjectReference<reUConstraintToggleIsRope>;
 	
 	
 private:

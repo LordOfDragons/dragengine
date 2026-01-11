@@ -55,10 +55,10 @@ class deOcclusionMesh;
 class DE_DLL_EXPORT igdeWDebugDrawerShape : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeWDebugDrawerShape> Ref;
+	using Ref = deTObjectReference<igdeWDebugDrawerShape>;
 	
 	/** \brief List of debug drawer shapes. */
-	typedef decTObjectOrderedSet<igdeWDebugDrawerShape> List;
+	using List = decTObjectOrderedSet<igdeWDebugDrawerShape>;
 	
 	
 private:

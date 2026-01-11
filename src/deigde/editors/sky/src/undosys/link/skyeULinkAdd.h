@@ -36,7 +36,7 @@
  */
 class skyeULinkAdd : public igdeUndo{
 public:
-	typedef deTObjectReference<skyeULinkAdd> Ref;
+	using Ref = deTObjectReference<skyeULinkAdd>;
 	
 	
 private:

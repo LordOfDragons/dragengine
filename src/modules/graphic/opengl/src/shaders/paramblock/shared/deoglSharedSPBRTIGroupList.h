@@ -40,7 +40,7 @@ class deoglSharedSPB;
  */
 class deoglSharedSPBRTIGroupList : public deObject{
 public:
-	typedef deTObjectReference<deoglSharedSPBRTIGroupList> Ref;
+	using Ref = deTObjectReference<deoglSharedSPBRTIGroupList>;
 	
 	
 private:

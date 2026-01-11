@@ -38,7 +38,7 @@
  */
 class ceUCCShotSetPosFrom : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCCShotSetPosFrom> Ref;
+	using Ref = deTObjectReference<ceUCCShotSetPosFrom>;
 	
 	
 private:

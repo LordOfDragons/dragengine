@@ -39,7 +39,7 @@ class ceLoadSaveSystem;
  */
 class ceUConvoSetImportConvoPath : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUConvoSetImportConvoPath> Ref;
+	using Ref = deTObjectReference<ceUConvoSetImportConvoPath>;
 	
 	
 private:

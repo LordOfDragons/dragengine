@@ -34,7 +34,7 @@
 class DE_DLL_EXPORT igdeToolBar : public igdeContainer{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeToolBar> Ref;
+	using Ref = deTObjectReference<igdeToolBar>;
 	
 	
 	/** \name Constructors and Destructors */

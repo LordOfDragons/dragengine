@@ -39,7 +39,7 @@ class meWorld;
  */
 class meUObjectCopyScale : public igdeUndo{
 public:
-	typedef deTObjectReference<meUObjectCopyScale> Ref;
+	using Ref = deTObjectReference<meUObjectCopyScale>;
 	
 	
 private:

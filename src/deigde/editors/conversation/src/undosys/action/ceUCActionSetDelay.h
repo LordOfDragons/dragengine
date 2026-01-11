@@ -37,7 +37,7 @@
  */
 class ceUCActionSetDelay : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCActionSetDelay> Ref;
+	using Ref = deTObjectReference<ceUCActionSetDelay>;
 	
 	
 private:

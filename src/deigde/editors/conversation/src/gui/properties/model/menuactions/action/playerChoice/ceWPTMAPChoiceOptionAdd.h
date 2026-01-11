@@ -48,7 +48,7 @@ protected:
 	ceWPTMAPChoiceOptionAdd();
 	
 public:
-	typedef deTObjectReference<ceWPTMAPChoiceOptionAdd> Ref;
+	using Ref = deTObjectReference<ceWPTMAPChoiceOptionAdd>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */

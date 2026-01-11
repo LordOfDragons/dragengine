@@ -95,6 +95,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxSlider igdeNativeSlider;
+using igdeNativeSlider = igdeNativeFoxSlider;
 
 #endif

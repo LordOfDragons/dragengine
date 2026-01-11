@@ -37,7 +37,7 @@
 class gdeClipboardDataOCComponent : public igdeClipboardData{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeClipboardDataOCComponent> Ref;
+	using Ref = deTObjectReference<gdeClipboardDataOCComponent>;
 	
 	/** \brief Type name. */
 	static const char * const TYPE_NAME;

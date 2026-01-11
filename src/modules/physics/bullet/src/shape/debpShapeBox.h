@@ -46,7 +46,7 @@ class decShapeBox;
  */
 class debpShapeBox : public debpShape{
 public:
-	typedef deTObjectReference<debpShapeBox> Ref;
+	using Ref = deTObjectReference<debpShapeBox>;
 	
 	
 private:

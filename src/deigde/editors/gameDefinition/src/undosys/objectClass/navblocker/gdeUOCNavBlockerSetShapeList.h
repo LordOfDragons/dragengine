@@ -40,7 +40,7 @@
  */
 class gdeUOCNavBlockerSetShapeList : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCNavBlockerSetShapeList> Ref;
+	using Ref = deTObjectReference<gdeUOCNavBlockerSetShapeList>;
 	
 	
 private:

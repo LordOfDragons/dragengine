@@ -73,7 +73,7 @@ class cMouseListener : public igdeMouseDragListener {
 	eDragModes pDragMode;
 	
 public:
-	typedef deTObjectReference<cMouseListener> Ref;
+	using Ref = deTObjectReference<cMouseListener>;
 	
 	cMouseListener(ceWDSVAPreview &lane) : pVAPreview(lane), pDragMode(edmNone){}
 	

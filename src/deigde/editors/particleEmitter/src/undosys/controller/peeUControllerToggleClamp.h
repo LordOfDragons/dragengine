@@ -36,7 +36,7 @@
  */
 class peeUControllerToggleClamp : public igdeUndo{
 public:
-	typedef deTObjectReference<peeUControllerToggleClamp> Ref;
+	using Ref = deTObjectReference<peeUControllerToggleClamp>;
 	
 	
 private:

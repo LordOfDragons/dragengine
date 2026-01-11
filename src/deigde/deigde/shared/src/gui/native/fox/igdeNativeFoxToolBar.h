@@ -93,6 +93,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxToolBar igdeNativeToolBar;
+using igdeNativeToolBar = igdeNativeFoxToolBar;
 
 #endif

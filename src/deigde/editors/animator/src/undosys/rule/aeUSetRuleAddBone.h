@@ -39,7 +39,7 @@
  */
 class aeUSetRuleAddBone : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUSetRuleAddBone> Ref;
+	using Ref = deTObjectReference<aeUSetRuleAddBone>;
 	
 	
 private:

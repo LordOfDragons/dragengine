@@ -68,7 +68,7 @@ protected:
 	aeWPAPanelRuleGroup &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseAction> Ref;
+	using Ref = deTObjectReference<cBaseAction>;
 	cBaseAction(aeWPAPanelRuleGroup &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description),
 	pPanel(panel){}
@@ -111,7 +111,7 @@ class cComboApplicationType : public igdeComboBoxListener{
 	aeWPAPanelRuleGroup &pPanel;
 	
 public:
-	typedef deTObjectReference<cComboApplicationType> Ref;
+	using Ref = deTObjectReference<cComboApplicationType>;
 	cComboApplicationType(aeWPAPanelRuleGroup &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -134,7 +134,7 @@ public:
 
 class cActionEnablePosition : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnablePosition> Ref;
+	using Ref = deTObjectReference<cActionEnablePosition>;
 	
 public:
 	cActionEnablePosition(aeWPAPanelRuleGroup &panel) : cBaseAction(panel,
@@ -152,7 +152,7 @@ public:
 
 class cActionEnableRotation : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableRotation> Ref;
+	using Ref = deTObjectReference<cActionEnableRotation>;
 	
 public:
 	cActionEnableRotation(aeWPAPanelRuleGroup &panel) : cBaseAction(panel,
@@ -170,7 +170,7 @@ public:
 
 class cActionEnableSize : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableSize> Ref;
+	using Ref = deTObjectReference<cActionEnableSize>;
 	
 public:
 	cActionEnableSize(aeWPAPanelRuleGroup &panel) : cBaseAction(panel,
@@ -188,7 +188,7 @@ public:
 
 class cActionEnableVertexPositionSet : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableVertexPositionSet> Ref;
+	using Ref = deTObjectReference<cActionEnableVertexPositionSet>;
 	
 public:
 	cActionEnableVertexPositionSet(aeWPAPanelRuleGroup &panel) : cBaseAction(panel,
@@ -207,7 +207,7 @@ public:
 
 class cActionUseCurrentState : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionUseCurrentState> Ref;
+	using Ref = deTObjectReference<cActionUseCurrentState>;
 	
 public:
 	cActionUseCurrentState(aeWPAPanelRuleGroup &panel) : cBaseAction(panel,

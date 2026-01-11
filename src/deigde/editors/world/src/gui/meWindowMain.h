@@ -66,7 +66,7 @@ class deLogger;
  */
 class meWindowMain : public igdeEditorWindow{
 public:
-	typedef deTObjectReference<meWindowMain> Ref;
+	using Ref = deTObjectReference<meWindowMain>;
 	
 	
 private:

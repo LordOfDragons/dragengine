@@ -36,7 +36,7 @@
  */
 class seUPropertyNodeSetContrast : public igdeUndo{
 public:
-	typedef deTObjectReference<seUPropertyNodeSetContrast> Ref;
+	using Ref = deTObjectReference<seUPropertyNodeSetContrast>;
 	
 	
 private:

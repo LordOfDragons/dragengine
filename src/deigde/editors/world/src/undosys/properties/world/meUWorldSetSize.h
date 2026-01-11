@@ -37,7 +37,7 @@
  */
 class meUWorldSetSize : public igdeUndo{
 public:
-	typedef deTObjectReference<meUWorldSetSize> Ref;
+	using Ref = deTObjectReference<meUWorldSetSize>;
 	
 	
 private:

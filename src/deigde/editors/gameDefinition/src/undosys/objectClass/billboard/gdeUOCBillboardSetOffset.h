@@ -40,7 +40,7 @@
  */
 class gdeUOCBillboardSetOffset : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCBillboardSetOffset> Ref;
+	using Ref = deTObjectReference<gdeUOCBillboardSetOffset>;
 	
 	
 private:

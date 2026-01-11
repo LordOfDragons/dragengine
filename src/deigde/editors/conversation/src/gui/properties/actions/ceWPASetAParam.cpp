@@ -72,7 +72,7 @@ class cComboActorID : public igdeComboBoxListener {
 	ceWPASetAParam &pPanel;
 	
 public:
-	typedef deTObjectReference<cComboActorID> Ref;
+	using Ref = deTObjectReference<cComboActorID>;
 	cComboActorID(ceWPASetAParam &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -91,7 +91,7 @@ class cTextName : public igdeTextFieldListener {
 	ceWPASetAParam &pPanel;
 	
 public:
-	typedef deTObjectReference<cTextName> Ref;
+	using Ref = deTObjectReference<cTextName>;
 	cTextName(ceWPASetAParam &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -110,7 +110,7 @@ class cComboOperator : public igdeComboBoxListener {
 	ceWPASetAParam &pPanel;
 	
 public:
-	typedef deTObjectReference<cComboOperator> Ref;
+	using Ref = deTObjectReference<cComboOperator>;
 	cComboOperator(ceWPASetAParam &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -135,7 +135,7 @@ class cTextValue : public igdeTextFieldListener {
 	ceWPASetAParam &pPanel;
 	
 public:
-	typedef deTObjectReference<cTextValue> Ref;
+	using Ref = deTObjectReference<cTextValue>;
 	cTextValue(ceWPASetAParam &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -155,7 +155,7 @@ class cTextValueVariable : public igdeTextFieldListener {
 	ceWPASetAParam &pPanel;
 	
 public:
-	typedef deTObjectReference<cTextValueVariable> Ref;
+	using Ref = deTObjectReference<cTextValueVariable>;
 	cTextValueVariable(ceWPASetAParam &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{

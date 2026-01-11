@@ -44,7 +44,7 @@
 class meHTVRulePropCount : public meHTVRule{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meHTVRulePropCount> Ref;
+	using Ref = deTObjectReference<meHTVRulePropCount>;
 	
 	
 	/** \brief Slots. */

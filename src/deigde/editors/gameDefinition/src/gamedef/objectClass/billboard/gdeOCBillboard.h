@@ -38,10 +38,10 @@
 class gdeOCBillboard : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeOCBillboard> Ref;
+	using Ref = deTObjectReference<gdeOCBillboard>;
 
 	/** \brief Type holding list. */
-	typedef decTObjectOrderedSet<gdeOCBillboard> List;
+	using List = decTObjectOrderedSet<gdeOCBillboard>;
 	
 	
 	/** \brief Properties. */

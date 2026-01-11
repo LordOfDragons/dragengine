@@ -38,7 +38,7 @@
  */
 class gdeUOCNavSpaceSetBlockingPriority : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCNavSpaceSetBlockingPriority> Ref;
+	using Ref = deTObjectReference<gdeUOCNavSpaceSetBlockingPriority>;
 	
 	
 private:

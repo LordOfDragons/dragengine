@@ -39,7 +39,7 @@ class DE_DLL_EXPORT igdeComboBoxListener : public deObject{
 
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeComboBoxListener> Ref;
+	using Ref = deTObjectReference<igdeComboBoxListener>;
 	
 	
 protected:

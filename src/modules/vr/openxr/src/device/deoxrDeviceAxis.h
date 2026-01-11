@@ -42,7 +42,7 @@ class deoxrDevice;
 class deoxrDeviceAxis : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoxrDeviceAxis> Ref;
+	using Ref = deTObjectReference<deoxrDeviceAxis>;
 	
 	
 private:

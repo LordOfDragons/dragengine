@@ -36,7 +36,7 @@
  */
 class ceCConditionTrigger : public ceConversationCondition{
 public:
-	typedef deTObjectReference<ceCConditionTrigger> Ref;
+	using Ref = deTObjectReference<ceCConditionTrigger>;
 
 public:
 	/** \brief Test mode. */

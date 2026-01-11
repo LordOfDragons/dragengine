@@ -46,7 +46,7 @@ class decBoundary;
  */
 class ceViewConversation : public igdeViewRenderWindow{
 public:
-	typedef deTObjectReference<ceViewConversation> Ref;
+	using Ref = deTObjectReference<ceViewConversation>;
 	
 private:
 	ceWindowMain &pWindowMain;

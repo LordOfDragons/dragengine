@@ -37,7 +37,7 @@
  */
 class skyeULinkSetCurve : public igdeUndo{
 public:
-	typedef deTObjectReference<skyeULinkSetCurve> Ref;
+	using Ref = deTObjectReference<skyeULinkSetCurve>;
 	
 	
 private:

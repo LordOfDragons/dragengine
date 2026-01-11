@@ -50,7 +50,7 @@ class aeAnimatorLocomotionLeg;
  */
 class aeWPPlayground : public igdeContainerScroll{
 public:
-	typedef deTObjectReference<aeWPPlayground> Ref;
+	using Ref = deTObjectReference<aeWPPlayground>;
 	
 	
 private:

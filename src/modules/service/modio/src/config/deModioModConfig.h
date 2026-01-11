@@ -37,7 +37,7 @@ class decBaseFileWriter;
  */
 class deModioModConfig : public deObject{
 public:
-	typedef deTObjectReference<deModioModConfig> Ref;
+	using Ref = deTObjectReference<deModioModConfig>;
 	
 	
 	decString id;

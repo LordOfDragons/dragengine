@@ -43,8 +43,8 @@ class meLoadSaveSystem;
  */
 class meLSWorld : public deObject{
 public:
-	typedef deTObjectReference<meLSWorld> Ref;
-	typedef decTObjectOrderedSet<meLSWorld> List;
+	using Ref = deTObjectReference<meLSWorld>;
+	using List = decTObjectOrderedSet<meLSWorld>;
 	
 	
 private:

@@ -49,7 +49,7 @@ class deModelWeight;
 class DE_DLL_EXPORT deModel : public deFileResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deModel> Ref;
+	using Ref = deTObjectReference<deModel>;
 	
 	
 private:

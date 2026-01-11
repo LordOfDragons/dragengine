@@ -38,7 +38,7 @@
  */
 class meUDecalVisible : public igdeUndo{
 public:
-	typedef deTObjectReference<meUDecalVisible> Ref;
+	using Ref = deTObjectReference<meUDecalVisible>;
 	
 	
 private:

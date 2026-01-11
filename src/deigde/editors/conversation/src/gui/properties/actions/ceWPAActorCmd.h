@@ -47,7 +47,7 @@ private:
 	
 	
 public:
-	typedef deTObjectReference<ceWPAActorCmd> Ref;
+	using Ref = deTObjectReference<ceWPAActorCmd>;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */

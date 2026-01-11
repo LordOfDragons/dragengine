@@ -36,7 +36,7 @@ class deoglSkinState;
  */
 class deoglSkinBone : public deObject{
 public:
-	typedef deTObjectReference<deoglSkinBone> Ref;
+	using Ref = deTObjectReference<deoglSkinBone>;
 	
 	
 private:

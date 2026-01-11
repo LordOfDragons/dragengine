@@ -52,7 +52,7 @@ class aeAttachment;
  */
 class aeWPView : public igdeContainerScroll{
 public:
-	typedef deTObjectReference<aeWPView> Ref;
+	using Ref = deTObjectReference<aeWPView>;
 	
 	
 private:

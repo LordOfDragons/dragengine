@@ -40,7 +40,7 @@ class delLoggerHistoryListener;
 class DE_DLL_EXPORT delLoggerHistory : public deLogger{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<delLoggerHistory> Ref;
+	using Ref = deTObjectReference<delLoggerHistory>;
 	
 	
 private:

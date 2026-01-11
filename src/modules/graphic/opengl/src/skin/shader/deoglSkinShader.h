@@ -49,7 +49,7 @@ class deoglShaderParameterBlock;
  */
 class deoglSkinShader : public deObject{
 public:
-	typedef deTObjectReference<deoglSkinShader> Ref;
+	using Ref = deTObjectReference<deoglSkinShader>;
 	
 	
 	enum eReflectionTestMode{

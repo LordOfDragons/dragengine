@@ -258,6 +258,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxViewCurveBezier igdeNativeViewCurveBezier;
+using igdeNativeViewCurveBezier = igdeNativeFoxViewCurveBezier;
 
 #endif

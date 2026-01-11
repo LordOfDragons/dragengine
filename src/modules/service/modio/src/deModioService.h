@@ -51,7 +51,7 @@ public:
 	class cInvalidator : public deObject{
 	public:
 		bool invalidated;
-		typedef deTObjectReference<cInvalidator> Ref;
+		using Ref = deTObjectReference<cInvalidator>;
 		cInvalidator();
 	protected:
 		~cInvalidator() override = default;

@@ -61,7 +61,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<debpDebugInformation> Ref;
+	using Ref = deTObjectReference<debpDebugInformation>;
 
 
 	/** \name Constructors and Destructors */

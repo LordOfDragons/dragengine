@@ -148,7 +148,7 @@ public:
 
 class cComboChannelCount : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboChannelCount> Ref;
+	using Ref = deTObjectReference<cComboChannelCount>;
 	cComboChannelCount(syneWPSynthesizer &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, syneSynthesizer *synthesizer) override{
@@ -160,7 +160,7 @@ public:
 
 class cComboSampleRate : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboSampleRate> Ref;
+	using Ref = deTObjectReference<cComboSampleRate>;
 	cComboSampleRate(syneWPSynthesizer &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, syneSynthesizer *synthesizer) override{
@@ -172,7 +172,7 @@ public:
 
 class cComboBytesPerSample : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboBytesPerSample> Ref;
+	using Ref = deTObjectReference<cComboBytesPerSample>;
 	cComboBytesPerSample(syneWPSynthesizer &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, syneSynthesizer *synthesizer) override{
@@ -184,7 +184,7 @@ public:
 
 class cTextSampleCount : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextSampleCount> Ref;
+	using Ref = deTObjectReference<cTextSampleCount>;
 	cTextSampleCount(syneWPSynthesizer &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, syneSynthesizer *synthesizer) override{
@@ -197,7 +197,7 @@ public:
 class cTextPlayTime : public cBaseTextFieldListener{
 	bool &pPreventUpdate;
 public:
-	typedef deTObjectReference<cTextPlayTime> Ref;
+	using Ref = deTObjectReference<cTextPlayTime>;
 	cTextPlayTime(syneWPSynthesizer &panel, bool &preventUpdate) :
 	cBaseTextFieldListener(panel), pPreventUpdate(preventUpdate){}
 	
@@ -214,7 +214,7 @@ public:
 
 class cActionLooping : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionLooping> Ref;
+	using Ref = deTObjectReference<cActionLooping>;
 	cActionLooping(syneWPSynthesizer &panel) : cBaseAction(panel, "Looping",
 		nullptr, "Playback looping"){}
 	
@@ -226,7 +226,7 @@ public:
 
 class cActionPlay : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionPlay> Ref;
+	using Ref = deTObjectReference<cActionPlay>;
 	cActionPlay(syneWPSynthesizer &panel) : cBaseAction(panel, "Play",
 		panel.GetViewSynthesizer().GetWindowMain().GetIconPlay(),
 		"Start playing back"){}
@@ -243,7 +243,7 @@ public:
 
 class cActionPause : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionPause> Ref;
+	using Ref = deTObjectReference<cActionPause>;
 	cActionPause(syneWPSynthesizer &panel) : cBaseAction(panel, "Pause",
 		panel.GetViewSynthesizer().GetWindowMain().GetIconPause(),
 		"Pause playing back"){}
@@ -260,7 +260,7 @@ public:
 
 class cActionStop : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionStop> Ref;
+	using Ref = deTObjectReference<cActionStop>;
 	cActionStop(syneWPSynthesizer &panel) : cBaseAction(panel, "Stop",
 		panel.GetViewSynthesizer().GetWindowMain().GetIconStop(),
 		"Stop playing back"){}

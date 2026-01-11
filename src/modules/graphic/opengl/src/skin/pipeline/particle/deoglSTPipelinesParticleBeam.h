@@ -33,7 +33,7 @@
  */
 class deoglSTPipelinesParticleBeam : public deoglSTPipelinesParticle{
 public:
-	typedef deTObjectReference<deoglSTPipelinesParticleBeam> Ref;
+	using Ref = deTObjectReference<deoglSTPipelinesParticleBeam>;
 	
 	
 	/** \name Constructors and Destructors */

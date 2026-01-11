@@ -57,14 +57,14 @@
 class DE_DLL_EXPORT igdeWPWObject : public igdeContainerFlow, igdeActionListener{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeWPWObject> Ref;
+	using Ref = deTObjectReference<igdeWPWObject>;
 	
 	
 	/** \brief Undo changes done by igdeWPWObject. */
 	class DE_DLL_EXPORT UndoChanges : public igdeUndo{
 	public:
 		/** \brief Type holding strong reference. */
-		typedef deTObjectReference<UndoChanges> Ref;
+		using Ref = deTObjectReference<UndoChanges>;
 	
 	
 	private:

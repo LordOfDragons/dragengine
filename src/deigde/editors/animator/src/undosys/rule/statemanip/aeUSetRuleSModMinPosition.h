@@ -43,7 +43,7 @@
  */
 class aeUSetRuleSModMinPosition : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUSetRuleSModMinPosition> Ref;
+	using Ref = deTObjectReference<aeUSetRuleSModMinPosition>;
 	
 	
 private:

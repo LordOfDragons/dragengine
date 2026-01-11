@@ -48,8 +48,8 @@ class igdeEnvironment;
  */
 class meHeightTerrainPropField : public deObject{
 public:
-	typedef deTObjectReference<meHeightTerrainPropField> Ref;
-	typedef decTObjectOrderedSet<meHeightTerrainPropField> List;
+	using Ref = deTObjectReference<meHeightTerrainPropField>;
+	using List = decTObjectOrderedSet<meHeightTerrainPropField>;
 	
 	
 private:

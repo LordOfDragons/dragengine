@@ -42,7 +42,7 @@
 class meHTVRuleCombine : public meHTVRule{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meHTVRuleCombine> Ref;
+	using Ref = deTObjectReference<meHTVRuleCombine>;
 	
 	
 	/** \brief Slots. */

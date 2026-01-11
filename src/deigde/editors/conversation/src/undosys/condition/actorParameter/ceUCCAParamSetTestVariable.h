@@ -38,7 +38,7 @@
  */
 class ceUCCAParamSetTestVariable : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCCAParamSetTestVariable> Ref;
+	using Ref = deTObjectReference<ceUCCAParamSetTestVariable>;
 	
 	
 private:

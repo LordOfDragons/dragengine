@@ -33,7 +33,7 @@
  */
 class deoxrDPMetaQuestTouchProController : public deoxrDPBaseTwoHandController{
 public:
-	typedef deTObjectReference<deoxrDPMetaQuestTouchProController> Ref;
+	using Ref = deTObjectReference<deoxrDPMetaQuestTouchProController>;
 	
 	/** \name Constructors and Destructors */
 	/*@{*/

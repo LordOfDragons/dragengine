@@ -37,7 +37,7 @@ class ceCAWait;
  */
 class ceWPTMAWaitActionsPasteActions : public ceWPTMAPasteActions{
 public:
-	typedef deTObjectReference<ceWPTMAWaitActionsPasteActions> Ref;
+	using Ref = deTObjectReference<ceWPTMAWaitActionsPasteActions>;
 
 private:
 	ceConversationTopic *pTopic;

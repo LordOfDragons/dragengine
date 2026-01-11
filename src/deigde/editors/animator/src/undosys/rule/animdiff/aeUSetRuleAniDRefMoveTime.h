@@ -42,7 +42,7 @@
  */
 class aeUSetRuleAniDRefMoveTime : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUSetRuleAniDRefMoveTime> Ref;
+	using Ref = deTObjectReference<aeUSetRuleAniDRefMoveTime>;
 	
 	
 private:

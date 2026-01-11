@@ -38,7 +38,7 @@
  */
 class syneUAddController : public igdeUndo{
 public:
-	typedef deTObjectReference<syneUAddController> Ref;
+	using Ref = deTObjectReference<syneUAddController>;
 	
 	
 private:

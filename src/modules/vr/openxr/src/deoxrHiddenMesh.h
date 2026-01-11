@@ -39,7 +39,7 @@ class deoxrSession;
 class deoxrHiddenMesh : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoxrHiddenMesh> Ref;
+	using Ref = deTObjectReference<deoxrHiddenMesh>;
 	
 	
 private:

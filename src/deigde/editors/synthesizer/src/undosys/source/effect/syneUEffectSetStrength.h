@@ -37,7 +37,7 @@
  */
 class syneUEffectSetStrength : public igdeUndo{
 public:
-	typedef deTObjectReference<syneUEffectSetStrength> Ref;
+	using Ref = deTObjectReference<syneUEffectSetStrength>;
 	
 	
 private:

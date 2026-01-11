@@ -41,8 +41,8 @@ private:
 	float pDuration;
 	
 public:
-	typedef deTObjectReference<ceStrip> Ref;
-	typedef decTObjectOrderedSet<ceStrip> List;
+	using Ref = deTObjectReference<ceStrip>;
+	using List = decTObjectOrderedSet<ceStrip>;
 
 
 	/** \name Constructors and Destructors */

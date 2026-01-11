@@ -38,7 +38,7 @@
  */
 class deoglSPBlockMemory : public deoglShaderParameterBlock{
 public:
-	typedef deTObjectReference<deoglSPBlockMemory> Ref;
+	using Ref = deTObjectReference<deoglSPBlockMemory>;
 	
 	
 private:

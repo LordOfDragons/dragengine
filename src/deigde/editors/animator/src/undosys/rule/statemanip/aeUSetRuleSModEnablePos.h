@@ -42,7 +42,7 @@
  */
 class aeUSetRuleSModEnablePos : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUSetRuleSModEnablePos> Ref;
+	using Ref = deTObjectReference<aeUSetRuleSModEnablePos>;
 	
 	
 private:

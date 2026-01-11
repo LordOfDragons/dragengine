@@ -36,7 +36,7 @@
  */
 class feUGlyphSetAdvance : public igdeUndo{
 public:
-	typedef deTObjectReference<feUGlyphSetAdvance> Ref;
+	using Ref = deTObjectReference<feUGlyphSetAdvance>;
 	
 	
 private:

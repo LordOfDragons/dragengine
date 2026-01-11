@@ -96,7 +96,7 @@ protected:
 	reWPConstraint &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseTextFieldListener> Ref;
+	using Ref = deTObjectReference<cBaseTextFieldListener>;
 	cBaseTextFieldListener(reWPConstraint &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -120,7 +120,7 @@ protected:
 	reWPConstraint &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseEditVectorListener> Ref;
+	using Ref = deTObjectReference<cBaseEditVectorListener>;
 	cBaseEditVectorListener(reWPConstraint &panel) : pPanel(panel){}
 	
 	void OnVectorChanged(igdeEditVector *editVector) override{
@@ -144,7 +144,7 @@ protected:
 	reWPConstraint &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseAction> Ref;
+	using Ref = deTObjectReference<cBaseAction>;
 	cBaseAction(reWPConstraint &panel, const char *text, const char *description) :
 	igdeAction(text, description),
 	pPanel(panel){}
@@ -170,7 +170,7 @@ protected:
 	reWPConstraint &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseComboBoxListener> Ref;
+	using Ref = deTObjectReference<cBaseComboBoxListener>;
 	cBaseComboBoxListener(reWPConstraint &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -194,7 +194,7 @@ public:
 class cComboTarget : public cBaseComboBoxListener{
 	bool &pPreventUpdate;
 public:
-	typedef deTObjectReference<cComboTarget> Ref;
+	using Ref = deTObjectReference<cComboTarget>;
 	cComboTarget(reWPConstraint &panel, bool &preventUpdate) :
 	cBaseComboBoxListener(panel), pPreventUpdate(preventUpdate){}
 	
@@ -214,7 +214,7 @@ public:
 
 class cEditPosition : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditPosition> Ref;
+	using Ref = deTObjectReference<cEditPosition>;
 	cEditPosition(reWPConstraint &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(const decVector &vector, reRig*, reRigConstraint *constraint) override{
@@ -225,7 +225,7 @@ public:
 
 class cEditRotation : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditRotation> Ref;
+	using Ref = deTObjectReference<cEditRotation>;
 	cEditRotation(reWPConstraint &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(const decVector &vector, reRig*, reRigConstraint *constraint) override{
@@ -236,7 +236,7 @@ public:
 
 class cEditOffset : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditOffset> Ref;
+	using Ref = deTObjectReference<cEditOffset>;
 	cEditOffset(reWPConstraint &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(const decVector &vector, reRig*, reRigConstraint *constraint) override{
@@ -248,7 +248,7 @@ public:
 class cTextDofLower : public cBaseTextFieldListener{
 	deColliderConstraint::eDegreesOfFreedom pDof;
 public:
-	typedef deTObjectReference<cTextDofLower> Ref;
+	using Ref = deTObjectReference<cTextDofLower>;
 	cTextDofLower(reWPConstraint &panel, deColliderConstraint::eDegreesOfFreedom dof) :
 	cBaseTextFieldListener(panel), pDof(dof){}
 	
@@ -263,7 +263,7 @@ public:
 class cTextDofUpper : public cBaseTextFieldListener{
 	deColliderConstraint::eDegreesOfFreedom pDof;
 public:
-	typedef deTObjectReference<cTextDofUpper> Ref;
+	using Ref = deTObjectReference<cTextDofUpper>;
 	cTextDofUpper(reWPConstraint &panel, deColliderConstraint::eDegreesOfFreedom dof) :
 	cBaseTextFieldListener(panel), pDof(dof){}
 	
@@ -278,7 +278,7 @@ public:
 class cTextDofFrictionStatic : public cBaseTextFieldListener{
 	deColliderConstraint::eDegreesOfFreedom pDof;
 public:
-	typedef deTObjectReference<cTextDofFrictionStatic> Ref;
+	using Ref = deTObjectReference<cTextDofFrictionStatic>;
 	cTextDofFrictionStatic(reWPConstraint &panel, deColliderConstraint::eDegreesOfFreedom dof) :
 	cBaseTextFieldListener(panel), pDof(dof){}
 	
@@ -292,7 +292,7 @@ public:
 class cTextDofFrictionKinematic : public cBaseTextFieldListener{
 	deColliderConstraint::eDegreesOfFreedom pDof;
 public:
-	typedef deTObjectReference<cTextDofFrictionKinematic> Ref;
+	using Ref = deTObjectReference<cTextDofFrictionKinematic>;
 	cTextDofFrictionKinematic(reWPConstraint &panel, deColliderConstraint::eDegreesOfFreedom dof) :
 	cBaseTextFieldListener(panel), pDof(dof){}
 	
@@ -306,7 +306,7 @@ public:
 class cTextDofSpringStiffness : public cBaseTextFieldListener{
 	deColliderConstraint::eDegreesOfFreedom pDof;
 public:
-	typedef deTObjectReference<cTextDofSpringStiffness> Ref;
+	using Ref = deTObjectReference<cTextDofSpringStiffness>;
 	cTextDofSpringStiffness(reWPConstraint &panel, deColliderConstraint::eDegreesOfFreedom dof) :
 	cBaseTextFieldListener(panel), pDof(dof){}
 	
@@ -319,7 +319,7 @@ public:
 
 class cTextDampingLinear : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextDampingLinear> Ref;
+	using Ref = deTObjectReference<cTextDampingLinear>;
 	cTextDampingLinear(reWPConstraint &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, reRig*, reRigConstraint *constraint) override{
@@ -331,7 +331,7 @@ public:
 
 class cTextDampingAngular : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextDampingAngular> Ref;
+	using Ref = deTObjectReference<cTextDampingAngular>;
 	cTextDampingAngular(reWPConstraint &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, reRig*, reRigConstraint *constraint) override{
@@ -343,7 +343,7 @@ public:
 
 class cTextDampingSpring : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextDampingSpring> Ref;
+	using Ref = deTObjectReference<cTextDampingSpring>;
 	cTextDampingSpring(reWPConstraint &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, reRig*, reRigConstraint *constraint) override{
@@ -355,7 +355,7 @@ public:
 
 class cCheckRope : public cBaseAction{
 public:
-	typedef deTObjectReference<cCheckRope> Ref;
+	using Ref = deTObjectReference<cCheckRope>;
 	cCheckRope(reWPConstraint &panel) : cBaseAction(panel, "Use rope physics",
 		"Determines if this constraint is a rope constraint."){ }
 	
@@ -366,7 +366,7 @@ public:
 
 class cTextBreakingThreshold : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextBreakingThreshold> Ref;
+	using Ref = deTObjectReference<cTextBreakingThreshold>;
 	cTextBreakingThreshold(reWPConstraint &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, reRig*, reRigConstraint *constraint) override{
@@ -378,7 +378,7 @@ public:
 
 class cCheckShowJointError : public cBaseAction{
 public:
-	typedef deTObjectReference<cCheckShowJointError> Ref;
+	using Ref = deTObjectReference<cCheckShowJointError>;
 	cCheckShowJointError(reWPConstraint &panel) : cBaseAction(panel, "Show joint error",
 		"Shows joint errors visually during simulation."){}
 	

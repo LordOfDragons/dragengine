@@ -41,7 +41,7 @@ class igdeEnvironment;
 class DE_DLL_EXPORT igdeFont : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeFont> Ref;
+	using Ref = deTObjectReference<igdeFont>;
 	
 	
 	/** \brief Font configuration. */

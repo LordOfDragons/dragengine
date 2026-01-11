@@ -33,7 +33,7 @@
  */
 class deoglSTPipelinesPropFieldImposter : public deoglSTPipelinesPropField{
 public:
-	typedef deTObjectReference<deoglSTPipelinesPropFieldImposter> Ref;
+	using Ref = deTObjectReference<deoglSTPipelinesPropFieldImposter>;
 	
 	
 	/** \name Constructors and Destructors */

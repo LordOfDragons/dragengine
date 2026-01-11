@@ -47,7 +47,7 @@ class meWindowMain;
  */
 class meView3D : public igdeViewRenderWindow{
 public:
-	typedef deTObjectReference<meView3D> Ref;
+	using Ref = deTObjectReference<meView3D>;
 	
 private:
 	meWindowMain &pWindowMain;

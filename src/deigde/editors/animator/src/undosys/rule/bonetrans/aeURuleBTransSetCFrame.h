@@ -37,7 +37,7 @@
  */
 class aeURuleBTransSetCFrame : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleBTransSetCFrame> Ref;
+	using Ref = deTObjectReference<aeURuleBTransSetCFrame>;
 	
 	
 private:

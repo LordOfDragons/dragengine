@@ -44,7 +44,7 @@ private:
 	
 	
 public:
-	typedef deTObjectReference<ceWPAGameCommand> Ref;
+	using Ref = deTObjectReference<ceWPAGameCommand>;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */

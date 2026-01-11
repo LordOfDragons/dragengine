@@ -38,7 +38,7 @@
  */
 class gdeUOCComponentTogglePartialHide : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCComponentTogglePartialHide> Ref;
+	using Ref = deTObjectReference<gdeUOCComponentTogglePartialHide>;
 	
 	
 private:

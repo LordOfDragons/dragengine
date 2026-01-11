@@ -60,7 +60,7 @@ private:
 	class WorldComputeElement: public deoglWorldComputeElement{
 		deoglPropFieldCluster &pCluster;
 	public:
-		typedef deTObjectReference<WorldComputeElement> Ref;
+		using Ref = deTObjectReference<WorldComputeElement>;
 		explicit WorldComputeElement(deoglPropFieldCluster &cluster);
 		void UpdateData(sDataElement &data) const override;
 		void UpdateDataGeometries(sDataElementGeometry *data) const override;

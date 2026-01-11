@@ -63,7 +63,7 @@
 class DE_DLL_EXPORT deAnimatorLink : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deAnimatorLink> Ref;
+	using Ref = deTObjectReference<deAnimatorLink>;
 	
 	/**
 	 * \brief Bone parameter to use.

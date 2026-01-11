@@ -43,7 +43,7 @@
  */
 class aeUAddController : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUAddController> Ref;
+	using Ref = deTObjectReference<aeUAddController>;
 	
 	
 private:

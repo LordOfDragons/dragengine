@@ -39,7 +39,7 @@ class deEngine;
  */
 class syneSourceSound : public syneSource{
 public:
-	typedef deTObjectReference<syneSourceSound> Ref;
+	using Ref = deTObjectReference<syneSourceSound>;
 	
 private:
 	deEngine *pEngine;

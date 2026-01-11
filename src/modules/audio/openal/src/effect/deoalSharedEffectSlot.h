@@ -39,7 +39,7 @@ class deoalEnvironment;
  */
 class deoalSharedEffectSlot : public deObject{
 public:
-	typedef deTObjectReference<deoalSharedEffectSlot> Ref;
+	using Ref = deTObjectReference<deoalSharedEffectSlot>;
 	
 	
 private:

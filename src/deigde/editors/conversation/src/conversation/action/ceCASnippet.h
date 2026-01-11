@@ -41,7 +41,7 @@ private:
 	
 	
 public:
-	typedef deTObjectReference<ceCASnippet> Ref;
+	using Ref = deTObjectReference<ceCASnippet>;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create snippet conversation action. */

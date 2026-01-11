@@ -36,9 +36,9 @@
  */
 class ceConversationCondition : public deObject{
 public:
-	typedef deTObjectReference<ceConversationCondition> Ref;
-	typedef decTObjectOrderedSet<ceConversationCondition> List;
-	typedef decTSet<int> IndexSet;
+	using Ref = deTObjectReference<ceConversationCondition>;
+	using List = decTObjectOrderedSet<ceConversationCondition>;
+	using IndexSet = decTSet<int>;
 	
 	
 	/** \brief Condition types. */

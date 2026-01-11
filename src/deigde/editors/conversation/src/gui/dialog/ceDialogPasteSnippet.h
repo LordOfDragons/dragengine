@@ -63,7 +63,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceDialogPasteSnippet> Ref;
+	using Ref = deTObjectReference<ceDialogPasteSnippet>;
 	
 	/** \name Constructors and Destructors */
 	/*@{*/

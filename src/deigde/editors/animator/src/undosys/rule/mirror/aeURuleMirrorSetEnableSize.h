@@ -36,7 +36,7 @@
  */
 class aeURuleMirrorSetEnableSize : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleMirrorSetEnableSize> Ref;
+	using Ref = deTObjectReference<aeURuleMirrorSetEnableSize>;
 	
 	
 private:

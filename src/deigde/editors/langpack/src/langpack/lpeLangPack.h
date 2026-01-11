@@ -41,7 +41,7 @@ class lpeLangPackListener;
  */
 class lpeLangPack : public igdeEditableEntity{
 public:
-	typedef deTObjectReference<lpeLangPack> Ref;
+	using Ref = deTObjectReference<lpeLangPack>;
 	
 	
 private:

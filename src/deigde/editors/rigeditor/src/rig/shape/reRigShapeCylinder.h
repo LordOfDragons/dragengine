@@ -37,7 +37,7 @@
  */
 class reRigShapeCylinder : public reRigShape{
 public:
-	typedef deTObjectReference<reRigShapeCylinder> Ref;
+	using Ref = deTObjectReference<reRigShapeCylinder>;
 	
 private:
 	float pTopRadius;

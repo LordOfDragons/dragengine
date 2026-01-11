@@ -38,7 +38,7 @@ class ceCAPlayerChoiceOption;
  */
 class ceWPTMAPChoiceOptionRemoveAllActions : public ceWPTMARemoveAllActions{
 public:
-	typedef deTObjectReference<ceWPTMAPChoiceOptionRemoveAllActions> Ref;
+	using Ref = deTObjectReference<ceWPTMAPChoiceOptionRemoveAllActions>;
 
 private:
 	ceConversationTopic *pTopic;

@@ -65,13 +65,13 @@ class deParallelProcessing;
 class DE_DLL_EXPORT deParallelTask : public deThreadSafeObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTThreadSafeObjectReference<deParallelTask> Ref;
+	using Ref = deTThreadSafeObjectReference<deParallelTask>;
 	
 	/** \brief List of tasks. */
-	typedef decTThreadSafeObjectOrderedSet<deParallelTask> TaskList;
+	using TaskList = decTThreadSafeObjectOrderedSet<deParallelTask>;
 	
 	/** \brief List of task pointers. */
-	typedef decTOrderedSet<deParallelTask*> TaskPointerList;
+	using TaskPointerList = decTOrderedSet<deParallelTask*>;
 	
 	
 private:

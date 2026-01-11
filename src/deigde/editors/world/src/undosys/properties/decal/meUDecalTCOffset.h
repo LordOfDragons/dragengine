@@ -38,7 +38,7 @@
  */
 class meUDecalTCOffset : public igdeUndo{
 public:
-	typedef deTObjectReference<meUDecalTCOffset> Ref;
+	using Ref = deTObjectReference<meUDecalTCOffset>;
 	
 	
 private:

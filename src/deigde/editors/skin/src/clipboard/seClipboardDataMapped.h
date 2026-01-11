@@ -34,7 +34,7 @@
 class seClipboardDataMapped : public igdeClipboardData{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seClipboardDataMapped> Ref;
+	using Ref = deTObjectReference<seClipboardDataMapped>;
 	
 	/** Type name. */
 	static const char * const TYPE_NAME;

@@ -42,7 +42,7 @@
  */
 class aeURuleSASetConController : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleSASetConController> Ref;
+	using Ref = deTObjectReference<aeURuleSASetConController>;
 	
 	
 private:

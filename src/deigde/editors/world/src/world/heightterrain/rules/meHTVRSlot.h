@@ -39,8 +39,8 @@ class meHTVRule;
  */
 class meHTVRSlot : public deObject{
 public:
-	typedef deTObjectReference<meHTVRSlot> Ref;
-	typedef decTObjectOrderedSet<meHTVRSlot> List;
+	using Ref = deTObjectReference<meHTVRSlot>;
+	using List = decTObjectOrderedSet<meHTVRSlot>;
 	
 	
 private:

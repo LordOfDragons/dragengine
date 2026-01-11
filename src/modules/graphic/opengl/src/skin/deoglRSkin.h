@@ -51,7 +51,7 @@ class deSkin;
 class deoglRSkin : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglRSkin> Ref;
+	using Ref = deTObjectReference<deoglRSkin>;
 	
 	
 	enum ePropertyStates{

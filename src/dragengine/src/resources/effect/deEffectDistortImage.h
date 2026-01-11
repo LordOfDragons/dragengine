@@ -43,7 +43,7 @@ class deEffectChain;
 class DE_DLL_EXPORT deEffectDistortImage : public deEffect{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deEffectDistortImage> Ref;
+	using Ref = deTObjectReference<deEffectDistortImage>;
 	
 	
 private:

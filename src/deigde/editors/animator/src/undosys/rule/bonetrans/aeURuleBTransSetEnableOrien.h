@@ -36,7 +36,7 @@
  */
 class aeURuleBTransSetEnableOrien : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleBTransSetEnableOrien> Ref;
+	using Ref = deTObjectReference<aeURuleBTransSetEnableOrien>;
 	
 	
 private:

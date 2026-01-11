@@ -45,10 +45,10 @@ class deException;
 class DE_DLL_EXPORT deLogger : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deLogger> Ref;
+	using Ref = deTObjectReference<deLogger>;
 	
 	/** \brief Logger list. */
-	typedef decTObjectOrderedSet<deLogger> List;
+	using List = decTObjectOrderedSet<deLogger>;
 	
 	
 public:

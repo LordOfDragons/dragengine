@@ -61,7 +61,7 @@ namespace{
 class cTextProperty : public igdeTextFieldListener{
 	reWPPanelShape &pPanel;
 public:
-	typedef deTObjectReference<cTextProperty> Ref;
+	using Ref = deTObjectReference<cTextProperty>;
 	cTextProperty(reWPPanelShape &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{

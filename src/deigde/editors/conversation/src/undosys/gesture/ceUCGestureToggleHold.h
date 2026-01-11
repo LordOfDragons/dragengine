@@ -36,7 +36,7 @@
  */
 class ceUCGestureToggleHold : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCGestureToggleHold> Ref;
+	using Ref = deTObjectReference<ceUCGestureToggleHold>;
 	
 	
 private:

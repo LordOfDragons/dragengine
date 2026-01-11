@@ -38,7 +38,7 @@
  */
 class aeURuleLimitSetVertexPositionSetMax : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleLimitSetVertexPositionSetMax> Ref;
+	using Ref = deTObjectReference<aeURuleLimitSetVertexPositionSetMax>;
 	
 	
 private:

@@ -40,7 +40,7 @@
  */
 class gdeUOCEnvMapProbeSetScaling : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCEnvMapProbeSetScaling> Ref;
+	using Ref = deTObjectReference<gdeUOCEnvMapProbeSetScaling>;
 	
 	
 private:

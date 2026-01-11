@@ -38,7 +38,7 @@
  */
 class syneUSetSourceMixMode : public igdeUndo{
 public:
-	typedef deTObjectReference<syneUSetSourceMixMode> Ref;
+	using Ref = deTObjectReference<syneUSetSourceMixMode>;
 	
 	
 private:

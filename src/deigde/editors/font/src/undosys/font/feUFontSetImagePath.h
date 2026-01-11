@@ -36,7 +36,7 @@
  */
 class feUFontSetImagePath : public igdeUndo{
 public:
-	typedef deTObjectReference<feUFontSetImagePath> Ref;
+	using Ref = deTObjectReference<feUFontSetImagePath>;
 	
 	
 private:

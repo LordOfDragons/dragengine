@@ -37,7 +37,7 @@
 class syneClipboardDataEffect : public igdeClipboardData{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<syneClipboardDataEffect> Ref;
+	using Ref = deTObjectReference<syneClipboardDataEffect>;
 	
 	/** \brief Type name. */
 	static const char * const TYPE_NAME;

@@ -9,9 +9,9 @@
 #include <dragengine/common/xmlparser/decXmlElementTag.h>
 
 // Type aliases
-typedef decTList<int> decTListInt;
-typedef decStringList decTListString;
-typedef decTObjectList<decXmlElementTag> decTListXmlElementTag;
+using decTListInt = decTList<int>;
+using decTListString = decStringList;
+using decTListXmlElementTag = decTObjectList<decXmlElementTag>;
 
 
 // Class detTList

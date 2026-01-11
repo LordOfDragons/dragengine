@@ -36,7 +36,7 @@ class feWPFont;
  */
 class feWPFontListener : public feFontNotifier{
 public:
-	typedef deTObjectReference<feWPFontListener> Ref;
+	using Ref = deTObjectReference<feWPFontListener>;
 	
 private:
 	feWPFont &pPanel;

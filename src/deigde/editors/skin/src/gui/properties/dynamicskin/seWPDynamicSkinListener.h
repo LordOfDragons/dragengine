@@ -36,7 +36,7 @@ class seWPDynamicSkin;
  */
 class seWPDynamicSkinListener : public seSkinListener{
 public:
-	typedef deTObjectReference<seWPDynamicSkinListener> Ref;
+	using Ref = deTObjectReference<seWPDynamicSkinListener>;
 	
 private:
 	seWPDynamicSkin &pPanel;

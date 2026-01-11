@@ -37,7 +37,7 @@
  */
 class ceUCActionMove : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCActionMove> Ref;
+	using Ref = deTObjectReference<ceUCActionMove>;
 	
 	
 private:

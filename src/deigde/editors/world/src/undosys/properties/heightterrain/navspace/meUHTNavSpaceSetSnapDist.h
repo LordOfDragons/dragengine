@@ -36,7 +36,7 @@
  */
 class meUHTNavSpaceSetSnapDist : public igdeUndo{
 public:
-	typedef deTObjectReference<meUHTNavSpaceSetSnapDist> Ref;
+	using Ref = deTObjectReference<meUHTNavSpaceSetSnapDist>;
 	
 	
 private:

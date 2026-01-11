@@ -36,7 +36,7 @@ class igdeEnvironment;
  */
 class ceCanvasRuleOfThirdsAid : public deObject{
 public:
-	typedef deTObjectReference<ceCanvasRuleOfThirdsAid> Ref;
+	using Ref = deTObjectReference<ceCanvasRuleOfThirdsAid>;
 	
 private:
 	igdeEnvironment &pEnvironment;

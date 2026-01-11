@@ -55,7 +55,7 @@ class syneEffect;
  */
 class syneWindowMain : public igdeEditorWindow{
 public:
-	typedef deTObjectReference<syneWindowMain> Ref;
+	using Ref = deTObjectReference<syneWindowMain>;
 	
 	
 private:

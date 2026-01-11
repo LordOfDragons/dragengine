@@ -34,7 +34,7 @@
  */
 class ceWPTTIMCActorCommand : public ceWPTTIMCondition{
 public:
-	typedef deTObjectReference<ceWPTTIMCActorCommand> Ref;
+	using Ref = deTObjectReference<ceWPTTIMCActorCommand>;
 
 public:
 	/** \brief Constructors and Destructors */

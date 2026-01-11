@@ -39,7 +39,7 @@
  */
 class meUDecalDuplicate : public igdeUndo{
 public:
-	typedef deTObjectReference<meUDecalDuplicate> Ref;
+	using Ref = deTObjectReference<meUDecalDuplicate>;
 	
 	
 private:

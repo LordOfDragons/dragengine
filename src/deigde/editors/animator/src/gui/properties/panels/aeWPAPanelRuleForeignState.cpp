@@ -84,7 +84,7 @@ protected:
 	aeWPAPanelRuleForeignState &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseAction> Ref;
+	using Ref = deTObjectReference<cBaseAction>;
 	cBaseAction(aeWPAPanelRuleForeignState &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description),
 	pPanel(panel){}
@@ -127,7 +127,7 @@ protected:
 	aeWPAPanelRuleForeignState &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseComboBoxListener> Ref;
+	using Ref = deTObjectReference<cBaseComboBoxListener>;
 	cBaseComboBoxListener(aeWPAPanelRuleForeignState &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -151,7 +151,7 @@ protected:
 	aeWPAPanelRuleForeignState &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseTextFieldListener> Ref;
+	using Ref = deTObjectReference<cBaseTextFieldListener>;
 	cBaseTextFieldListener(aeWPAPanelRuleForeignState &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -173,7 +173,7 @@ public:
 
 class cComboBone : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboBone> Ref;
+	using Ref = deTObjectReference<cComboBone>;
 	cComboBone(aeWPAPanelRuleForeignState &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleForeignState *rule) override{
@@ -184,7 +184,7 @@ public:
 
 class cComboVertexPositionSet : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboVertexPositionSet> Ref;
+	using Ref = deTObjectReference<cComboVertexPositionSet>;
 	cComboVertexPositionSet(aeWPAPanelRuleForeignState &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleForeignState *rule) override{
@@ -195,7 +195,7 @@ public:
 
 class cComboCoordFrameSource : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboCoordFrameSource> Ref;
+	using Ref = deTObjectReference<cComboCoordFrameSource>;
 	cComboCoordFrameSource(aeWPAPanelRuleForeignState &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleForeignState *rule) override{
@@ -211,7 +211,7 @@ public:
 
 class cComboCoordFrameDestination : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboCoordFrameDestination> Ref;
+	using Ref = deTObjectReference<cComboCoordFrameDestination>;
 	cComboCoordFrameDestination(aeWPAPanelRuleForeignState &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleForeignState *rule) override{
@@ -227,7 +227,7 @@ public:
 
 class cTextScalePosition : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextScalePosition> Ref;
+	using Ref = deTObjectReference<cTextScalePosition>;
 	cTextScalePosition(aeWPAPanelRuleForeignState &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator*, aeRuleForeignState *rule) override{
@@ -239,7 +239,7 @@ public:
 
 class cTextScaleRotation : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextScaleRotation> Ref;
+	using Ref = deTObjectReference<cTextScaleRotation>;
 	cTextScaleRotation(aeWPAPanelRuleForeignState &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator*, aeRuleForeignState *rule) override{
@@ -251,7 +251,7 @@ public:
 
 class cTextScaleSize : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextScaleSize> Ref;
+	using Ref = deTObjectReference<cTextScaleSize>;
 	cTextScaleSize(aeWPAPanelRuleForeignState &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator*, aeRuleForeignState *rule) override{
@@ -263,7 +263,7 @@ public:
 
 class cTextScaleVertexPositionSet : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextScaleVertexPositionSet> Ref;
+	using Ref = deTObjectReference<cTextScaleVertexPositionSet>;
 	cTextScaleVertexPositionSet(aeWPAPanelRuleForeignState &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator*, aeRuleForeignState *rule) override{
@@ -275,7 +275,7 @@ public:
 
 class cActionEnablePosition : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnablePosition> Ref;
+	using Ref = deTObjectReference<cActionEnablePosition>;
 	
 public:
 	cActionEnablePosition(aeWPAPanelRuleForeignState &panel) : cBaseAction(panel,
@@ -293,7 +293,7 @@ public:
 
 class cActionEnableRotation : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableRotation> Ref;
+	using Ref = deTObjectReference<cActionEnableRotation>;
 	
 public:
 	cActionEnableRotation(aeWPAPanelRuleForeignState &panel) : cBaseAction(panel,
@@ -311,7 +311,7 @@ public:
 
 class cActionEnableSize : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableSize> Ref;
+	using Ref = deTObjectReference<cActionEnableSize>;
 	
 public:
 	cActionEnableSize(aeWPAPanelRuleForeignState &panel) : cBaseAction(panel,
@@ -329,7 +329,7 @@ public:
 
 class cActionEnableVertexPositionSet : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableVertexPositionSet> Ref;
+	using Ref = deTObjectReference<cActionEnableVertexPositionSet>;
 	
 public:
 	cActionEnableVertexPositionSet(aeWPAPanelRuleForeignState &panel) : cBaseAction(panel,

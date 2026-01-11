@@ -36,7 +36,7 @@
  */
 class seUPropertyNodeSetRotation : public igdeUndo{
 public:
-	typedef deTObjectReference<seUPropertyNodeSetRotation> Ref;
+	using Ref = deTObjectReference<seUPropertyNodeSetRotation>;
 	
 	
 private:

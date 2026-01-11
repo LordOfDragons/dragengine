@@ -37,7 +37,7 @@
  */
 class saeUSAnimSetNeutralVertexPositionSets : public igdeUndo{
 public:
-	typedef deTObjectReference<saeUSAnimSetNeutralVertexPositionSets> Ref;
+	using Ref = deTObjectReference<saeUSAnimSetNeutralVertexPositionSets>;
 	
 	
 private:

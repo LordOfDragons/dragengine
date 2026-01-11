@@ -46,7 +46,7 @@ class meWindowMain;
  */
 class meWindowProperties : public igdeTabBook{
 public:
-	typedef deTObjectReference<meWindowProperties> Ref;
+	using Ref = deTObjectReference<meWindowProperties>;
 	
 private:
 	meWindowMain &pWindowMain;

@@ -79,7 +79,7 @@ class ceWPTTreeItem;
  */
 class ceWPTopic : public igdeContainerFlow{
 public:
-	typedef deTObjectReference<ceWPTopic> Ref;
+	using Ref = deTObjectReference<ceWPTopic>;
 	
 private:
 	ceWindowProperties &pWindowProperties;

@@ -37,7 +37,7 @@
  */
 class aeURuleGroupToggleUseCurrentState : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleGroupToggleUseCurrentState> Ref;
+	using Ref = deTObjectReference<aeURuleGroupToggleUseCurrentState>;
 	
 	
 private:

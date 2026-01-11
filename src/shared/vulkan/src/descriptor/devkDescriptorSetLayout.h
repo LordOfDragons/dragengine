@@ -39,7 +39,7 @@ class devkDevice;
 class devkDescriptorSetLayout : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<devkDescriptorSetLayout> Ref;
+	using Ref = deTObjectReference<devkDescriptorSetLayout>;
 	
 	
 private:

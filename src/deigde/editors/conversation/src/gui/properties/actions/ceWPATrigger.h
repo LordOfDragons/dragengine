@@ -44,7 +44,7 @@ private:
 	
 	
 public:
-	typedef deTObjectReference<ceWPATrigger> Ref;
+	using Ref = deTObjectReference<ceWPATrigger>;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */

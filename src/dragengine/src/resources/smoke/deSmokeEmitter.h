@@ -67,7 +67,7 @@ struct DE_DLL_EXPORT deSmokeDensityPoint{
 class DE_DLL_EXPORT deSmokeEmitter : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deSmokeEmitter> Ref;
+	using Ref = deTObjectReference<deSmokeEmitter>;
 	
 	
 private:

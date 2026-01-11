@@ -38,7 +38,7 @@
  */
 class deoglSkinStateCNShape : public deoglSkinStateConstructedNode{
 public:
-	typedef deTObjectReference<deoglSkinStateCNShape> Ref;
+	using Ref = deTObjectReference<deoglSkinStateCNShape>;
 	
 	
 private:

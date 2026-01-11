@@ -38,7 +38,7 @@
  */
 class gdeUOCNavBlockerToggleEnabled : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCNavBlockerToggleEnabled> Ref;
+	using Ref = deTObjectReference<gdeUOCNavBlockerToggleEnabled>;
 	
 	
 private:

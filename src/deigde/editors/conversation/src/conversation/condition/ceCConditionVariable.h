@@ -36,7 +36,7 @@
  */
 class ceCConditionVariable : public ceConversationCondition{
 public:
-	typedef deTObjectReference<ceCConditionVariable> Ref;
+	using Ref = deTObjectReference<ceCConditionVariable>;
 
 public:
 	/** \brief Compare operators. */

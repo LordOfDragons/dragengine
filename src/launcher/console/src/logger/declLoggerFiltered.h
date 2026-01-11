@@ -35,7 +35,7 @@
 class declLoggerFiltered : public deLogger{
 public:
 	/** Type holding strong reference. */
-	typedef deTObjectReference<declLoggerFiltered> Ref;
+	using Ref = deTObjectReference<declLoggerFiltered>;
 	
 	
 private:

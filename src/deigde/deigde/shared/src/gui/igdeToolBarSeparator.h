@@ -37,7 +37,7 @@
 class DE_DLL_EXPORT igdeToolBarSeparator : public igdeWidget{
 public:
 	/** \brief Strong reference. */
-	typedef deTObjectReference<igdeToolBarSeparator> Ref;
+	using Ref = deTObjectReference<igdeToolBarSeparator>;
 	
 	
 	/** \text Constructors and Destructors */

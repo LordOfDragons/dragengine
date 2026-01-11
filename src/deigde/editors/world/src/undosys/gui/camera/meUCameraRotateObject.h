@@ -38,7 +38,7 @@
  */
 class meUCameraRotateObject : public igdeUndo{
 public:
-	typedef deTObjectReference<meUCameraRotateObject> Ref;
+	using Ref = deTObjectReference<meUCameraRotateObject>;
 	
 	
 private:

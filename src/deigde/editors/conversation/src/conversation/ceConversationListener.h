@@ -49,7 +49,7 @@ class ceTarget;
 class ceConversationListener : public deObject{
 	public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceConversationListener> Ref;
+	using Ref = deTObjectReference<ceConversationListener>;
 	
 	
 	/** \name Constructors and Destructors */

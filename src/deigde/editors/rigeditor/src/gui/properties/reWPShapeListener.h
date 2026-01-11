@@ -36,7 +36,7 @@ class reWPShape;
  */
 class reWPShapeListener : public reRigNotifier{
 public:
-	typedef deTObjectReference<reWPShapeListener> Ref;
+	using Ref = deTObjectReference<reWPShapeListener>;
 	
 private:
 	reWPShape &pPanel;

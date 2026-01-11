@@ -57,8 +57,8 @@ class deComponent;
  */
 class deoglSkinState : public deObject{
 public:
-	typedef deTObjectReference<deoglSkinState> Ref;
-	typedef decTObjectOrderedSet<deoglSkinState> List;
+	using Ref = deTObjectReference<deoglSkinState>;
+	using List = decTObjectOrderedSet<deoglSkinState>;
 	
 private:
 	deoglRenderThread &pRenderThread;

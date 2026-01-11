@@ -36,7 +36,7 @@ class meWindowMain;
  */
 class meWindowMainListener : public meWorldNotifier{
 public:
-	typedef deTObjectReference<meWindowMainListener> Ref;
+	using Ref = deTObjectReference<meWindowMainListener>;
 	
 private:
 	meWindowMain &pWindowMain;

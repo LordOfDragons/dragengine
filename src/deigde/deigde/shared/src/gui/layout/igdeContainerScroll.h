@@ -35,7 +35,7 @@ class DE_DLL_EXPORT igdeContainerScroll : public igdeContainer{
 
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeContainerScroll> Ref;
+	using Ref = deTObjectReference<igdeContainerScroll>;
 	
 	
 private:

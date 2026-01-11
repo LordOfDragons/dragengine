@@ -42,7 +42,7 @@
  */
 class meUHTVRuleCPSetRadius : public igdeUndo{
 public:
-	typedef deTObjectReference<meUHTVRuleCPSetRadius> Ref;
+	using Ref = deTObjectReference<meUHTVRuleCPSetRadius>;
 	
 	
 public:

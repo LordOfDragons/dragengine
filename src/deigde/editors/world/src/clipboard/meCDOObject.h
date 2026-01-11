@@ -44,8 +44,8 @@ class meObject;
  */
 class meCDOObject : public deObject{
 public:
-	typedef deTObjectReference<meCDOObject> Ref;
-	typedef decTObjectOrderedSet<meCDOObject> List;
+	using Ref = deTObjectReference<meCDOObject>;
+	using List = decTObjectOrderedSet<meCDOObject>;
 	
 	
 private:

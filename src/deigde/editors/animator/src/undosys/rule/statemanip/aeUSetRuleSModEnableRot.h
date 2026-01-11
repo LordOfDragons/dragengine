@@ -43,7 +43,7 @@
  */
 class aeUSetRuleSModEnableRot : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUSetRuleSModEnableRot> Ref;
+	using Ref = deTObjectReference<aeUSetRuleSModEnableRot>;
 	
 	
 private:

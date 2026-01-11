@@ -220,7 +220,7 @@ void deVRNull::EndFrame(){
 
 class denvrModuleInternal : public deInternalModule{
 public:
-	typedef deTObjectReference<denvrModuleInternal> Ref;
+	using Ref = deTObjectReference<denvrModuleInternal>;
 	
 	denvrModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("NullVR");

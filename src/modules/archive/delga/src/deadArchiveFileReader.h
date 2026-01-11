@@ -39,7 +39,7 @@ class deadArchiveFile;
 class deadArchiveFileReader : public decBaseFileReader{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deadArchiveFileReader> Ref;
+	using Ref = deTObjectReference<deadArchiveFileReader>;
 	
 	
 private:

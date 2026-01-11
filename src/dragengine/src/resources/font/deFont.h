@@ -48,7 +48,7 @@ class cFontSize;
 class DE_DLL_EXPORT deFont : public deFileResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deFont> Ref;
+	using Ref = deTObjectReference<deFont>;
 	
 	
 private:

@@ -40,7 +40,7 @@
 class DE_DLL_EXPORT igdeContainerSplitted : public igdeContainer{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeContainerSplitted> Ref;
+	using Ref = deTObjectReference<igdeContainerSplitted>;
 	
 	
 	/** \brief Side widget placement. */

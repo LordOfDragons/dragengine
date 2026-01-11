@@ -36,7 +36,7 @@ class ceWPTTreeModel;
  */
 class ceWPTTreeModelListener : public ceConversationListener{
 public:
-	typedef deTObjectReference<ceWPTTreeModelListener> Ref;
+	using Ref = deTObjectReference<ceWPTTreeModelListener>;
 	
 private:
 	ceWPTTreeModel &pModel;

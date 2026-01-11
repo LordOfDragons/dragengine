@@ -39,7 +39,7 @@
 class DE_DLL_EXPORT deThreadSafeObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTThreadSafeObjectReference<deThreadSafeObject> Ref;
+	using Ref = deTThreadSafeObjectReference<deThreadSafeObject>;
 	
 	
 

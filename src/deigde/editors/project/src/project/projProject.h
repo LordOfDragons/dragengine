@@ -43,7 +43,7 @@ class igdeEnvironment;
  */
 class projProject : public igdeEditableEntity{
 public:
-	typedef deTObjectReference<projProject> Ref;
+	using Ref = deTObjectReference<projProject>;
 	
 	
 private:

@@ -38,7 +38,7 @@
  */
 class seUPropertyNodeImageSetRepeat : public igdeUndo{
 public:
-	typedef deTObjectReference<seUPropertyNodeImageSetRepeat> Ref;
+	using Ref = deTObjectReference<seUPropertyNodeImageSetRepeat>;
 	
 	
 private:

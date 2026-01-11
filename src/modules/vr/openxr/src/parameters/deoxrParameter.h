@@ -37,7 +37,7 @@ class deVROpenXR;
 class deoxrParameter : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<deoxrParameter> Ref;
+	using Ref = deTObjectReference<deoxrParameter>;
 	
 	
 protected:

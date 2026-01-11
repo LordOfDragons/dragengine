@@ -39,7 +39,7 @@
  */
 class gdeUOCNavBlockerSetPropertyName : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCNavBlockerSetPropertyName> Ref;
+	using Ref = deTObjectReference<gdeUOCNavBlockerSetPropertyName>;
 	
 	
 private:

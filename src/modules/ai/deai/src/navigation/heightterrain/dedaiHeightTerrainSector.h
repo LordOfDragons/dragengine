@@ -42,7 +42,7 @@ class deHeightTerrainSector;
 class dedaiHeightTerrainSector : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<dedaiHeightTerrainSector> Ref;
+	using Ref = deTObjectReference<dedaiHeightTerrainSector>;
 	
 	
 private:

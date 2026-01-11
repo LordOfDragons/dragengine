@@ -62,7 +62,7 @@ class cScrollView : public igdeScrollBarListener{
 	seViewConstructed &pView;
 	
 public:
-	typedef deTObjectReference<cScrollView> Ref;
+	using Ref = deTObjectReference<cScrollView>;
 	cScrollView(seViewConstructed &view) : pView(view){}
 	
 	void OnValueChanged(igdeScrollBar*) override{
@@ -76,7 +76,7 @@ class cSpinLayer : public igdeSpinTextFieldListener{
 	seViewConstructed &pView;
 	
 public:
-	typedef deTObjectReference<cSpinLayer> Ref;
+	using Ref = deTObjectReference<cSpinLayer>;
 	cSpinLayer(seViewConstructed &view) : pView(view){}
 	
 	void OnValueChanged(igdeSpinTextField *textField) override{
@@ -95,7 +95,7 @@ class cComboZoom : public igdeComboBoxListener{
 	seViewConstructed &pView;
 	
 public:
-	typedef deTObjectReference<cComboZoom> Ref;
+	using Ref = deTObjectReference<cComboZoom>;
 	cComboZoom(seViewConstructed &view) : pView(view){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{

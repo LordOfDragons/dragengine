@@ -35,7 +35,7 @@
 class DE_DLL_EXPORT delGPMParameter : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<delGPMParameter> Ref;
+	using Ref = deTObjectReference<delGPMParameter>;
 	
 	
 private:

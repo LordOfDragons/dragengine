@@ -39,7 +39,7 @@ class seClipboardDataPropertyNode;
  */
 class seUPNGroupPasteNodes : public igdeUndo{
 public:
-	typedef deTObjectReference<seUPNGroupPasteNodes> Ref;
+	using Ref = deTObjectReference<seUPNGroupPasteNodes>;
 	
 	
 private:

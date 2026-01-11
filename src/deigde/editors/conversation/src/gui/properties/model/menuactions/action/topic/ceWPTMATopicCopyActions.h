@@ -36,7 +36,7 @@ class ceConversationTopic;
  */
 class ceWPTMATopicCopyActions : public ceWPTMACopyActions{
 public:
-	typedef deTObjectReference<ceWPTMATopicCopyActions> Ref;
+	using Ref = deTObjectReference<ceWPTMATopicCopyActions>;
 	
 protected:
 	/** \brief FOX constructor. */

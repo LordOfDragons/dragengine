@@ -74,8 +74,8 @@ private:
 	decVector2 pViewCenter;
 	
 public:
-	typedef deTObjectReference<meHTVegetationLayer> Ref;
-	typedef decTObjectOrderedSet<meHTVegetationLayer> List;
+	using Ref = deTObjectReference<meHTVegetationLayer>;
+	using List = decTObjectOrderedSet<meHTVegetationLayer>;
 	
 	
 	/** \name Constructors and Destructors */

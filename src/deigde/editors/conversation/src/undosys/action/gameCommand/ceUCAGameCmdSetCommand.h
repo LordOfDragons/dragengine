@@ -37,7 +37,7 @@
  */
 class ceUCAGameCmdSetCommand : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCAGameCmdSetCommand> Ref;
+	using Ref = deTObjectReference<ceUCAGameCmdSetCommand>;
 	
 	
 private:

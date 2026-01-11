@@ -41,7 +41,7 @@ class deNavigationSpaceFace;
 class dedaiHeightTerrainNavSpace : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<dedaiHeightTerrainNavSpace> Ref;
+	using Ref = deTObjectReference<dedaiHeightTerrainNavSpace>;
 	
 	
 	struct sEdge{

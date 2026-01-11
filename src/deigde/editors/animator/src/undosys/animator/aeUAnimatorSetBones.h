@@ -36,7 +36,7 @@ class aeAnimator;
  */
 class aeUAnimatorSetBones : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUAnimatorSetBones> Ref;
+	using Ref = deTObjectReference<aeUAnimatorSetBones>;
 	
 	
 private:

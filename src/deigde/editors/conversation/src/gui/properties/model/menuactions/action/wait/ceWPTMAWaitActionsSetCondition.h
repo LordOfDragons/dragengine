@@ -36,7 +36,7 @@ class ceCAWait;
  */
 class ceWPTMAWaitActionsSetCondition : public ceWPTMACreateCondition{
 public:
-	typedef deTObjectReference<ceWPTMAWaitActionsSetCondition> Ref;
+	using Ref = deTObjectReference<ceWPTMAWaitActionsSetCondition>;
 
 private:
 	ceConversationTopic *pTopic;

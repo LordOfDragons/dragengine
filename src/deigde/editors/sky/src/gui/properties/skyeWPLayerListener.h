@@ -36,7 +36,7 @@ class skyeWPLayer;
  */
 class skyeWPLayerListener : public skyeSkyListener{
 public:
-	typedef deTObjectReference<skyeWPLayerListener> Ref;
+	using Ref = deTObjectReference<skyeWPLayerListener>;
 	
 private:
 	skyeWPLayer &pPanel;

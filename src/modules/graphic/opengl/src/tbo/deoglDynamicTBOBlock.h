@@ -41,7 +41,7 @@ class deoglDynamicTBOShared;
 class deoglDynamicTBOBlock : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglDynamicTBOBlock> Ref;
+	using Ref = deTObjectReference<deoglDynamicTBOBlock>;
 	
 	
 	deoglDynamicTBOShared *pSharedTBO;

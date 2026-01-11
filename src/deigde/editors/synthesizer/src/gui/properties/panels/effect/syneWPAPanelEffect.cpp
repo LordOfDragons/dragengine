@@ -141,7 +141,7 @@ public:
 
 class cTextStrength : public cBaseTextFieldListener {
 public:
-	typedef deTObjectReference<cTextStrength> Ref;
+	using Ref = deTObjectReference<cTextStrength>;
 	cTextStrength(syneWPAPanelEffect &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref  OnChanged(igdeTextField *textField, syneEffect *effect) override{
@@ -153,7 +153,7 @@ public:
 
 class cActionEnable : public cBaseAction {
 public:
-	typedef deTObjectReference<cActionEnable> Ref;
+	using Ref = deTObjectReference<cActionEnable>;
 	cActionEnable(syneWPAPanelEffect &panel) : cBaseAction(panel, "Enable effect",
 		NULL, "Determines if the effect is affecting the source"){ }
 	
@@ -165,7 +165,7 @@ public:
 
 class cComboTarget : public cBaseComboBoxListener {
 public:
-	typedef deTObjectReference<cComboTarget> Ref;
+	using Ref = deTObjectReference<cComboTarget>;
 	cComboTarget(syneWPAPanelEffect &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref  OnChanged(igdeComboBox*, syneEffect*) override{
@@ -178,7 +178,7 @@ class cListLinks : public igdeListBoxListener{
 	syneWPAPanelEffect &pPanel;
 	
 public:
-	typedef deTObjectReference<cListLinks> Ref;
+	using Ref = deTObjectReference<cListLinks>;
 	cListLinks(syneWPAPanelEffect &panel) : pPanel(panel){}
 	
 	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
@@ -190,7 +190,7 @@ public:
 
 class cActionLinkAdd : public cBaseAction {
 public:
-	typedef deTObjectReference<cActionLinkAdd> Ref;
+	using Ref = deTObjectReference<cActionLinkAdd>;
 	cActionLinkAdd(syneWPAPanelEffect &panel) : cBaseAction(panel, "Add",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add link"){}
 	
@@ -210,7 +210,7 @@ public:
 
 class cActionLinkRemove : public cBaseAction {
 public:
-	typedef deTObjectReference<cActionLinkRemove> Ref;
+	using Ref = deTObjectReference<cActionLinkRemove>;
 	cActionLinkRemove(syneWPAPanelEffect &panel) : cBaseAction(panel, "Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove link"){}
 	

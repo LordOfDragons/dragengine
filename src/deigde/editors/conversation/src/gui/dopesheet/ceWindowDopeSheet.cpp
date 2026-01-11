@@ -92,7 +92,7 @@ protected:
 	ceWindowDopeSheet &pWindow;
 	
 public:
-	typedef deTObjectReference<cBaseAction> Ref;
+	using Ref = deTObjectReference<cBaseAction>;
 	cBaseAction(ceWindowDopeSheet &window, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description),
 	pWindow(window){}
@@ -125,7 +125,7 @@ public:
 
 class cActionPlayAction : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionPlayAction> Ref;
+	using Ref = deTObjectReference<cActionPlayAction>;
 	
 public:
 	cActionPlayAction(ceWindowDopeSheet &window) : cBaseAction(window, "",
@@ -146,7 +146,7 @@ public:
 
 class cActionPlayFromHere : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionPlayFromHere> Ref;
+	using Ref = deTObjectReference<cActionPlayFromHere>;
 	
 public:
 	cActionPlayFromHere(ceWindowDopeSheet &window) : cBaseAction(window, "",
@@ -164,7 +164,7 @@ public:
 
 class cActionPause : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionPause> Ref;
+	using Ref = deTObjectReference<cActionPause>;
 	
 public:
 	cActionPause(ceWindowDopeSheet &window) : cBaseAction(window, "",
@@ -185,7 +185,7 @@ public:
 
 class cActionSelectCurAction : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionSelectCurAction> Ref;
+	using Ref = deTObjectReference<cActionSelectCurAction>;
 	
 public:
 	cActionSelectCurAction(ceWindowDopeSheet &window) : cBaseAction(window, "",
@@ -220,7 +220,7 @@ class cScrollTime : public igdeScrollBarListener{
 	ceWindowDopeSheet &pWindow;
 	
 public:
-	typedef deTObjectReference<cScrollTime> Ref;
+	using Ref = deTObjectReference<cScrollTime>;
 	cScrollTime(ceWindowDopeSheet &window) : pWindow(window){}
 	
 	void OnValueChanged(igdeScrollBar*) override{
@@ -235,7 +235,7 @@ class cComboTimeScale : public igdeComboBoxListener{
 	ceWindowDopeSheet &pWindow;
 	
 public:
-	typedef deTObjectReference<cComboTimeScale> Ref;
+	using Ref = deTObjectReference<cComboTimeScale>;
 	cComboTimeScale(ceWindowDopeSheet &window) : pWindow(window){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -253,7 +253,7 @@ class cMouseKeyListener : public igdeMouseKeyListener{
 	igdeMouseKeyListener::Ref pDragListener;
 	
 public:
-	typedef deTObjectReference<cMouseKeyListener> Ref;
+	using Ref = deTObjectReference<cMouseKeyListener>;
 	
 	cMouseKeyListener(ceWindowDopeSheet &window) : pWindow(window){}
 	

@@ -777,7 +777,7 @@ void deGraphicOpenGl::pCreateParameters() {
 
 class deoglModuleInternal : public deInternalModule{
 public:
-	typedef deTObjectReference<deoglModuleInternal> Ref;
+	using Ref = deTObjectReference<deoglModuleInternal>;
 	
 	deoglModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("OpenGL");

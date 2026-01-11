@@ -39,7 +39,7 @@
 class DE_DLL_EXPORT igdeScrollBar : public igdeWidget{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeScrollBar> Ref;
+	using Ref = deTObjectReference<igdeScrollBar>;
 	
 	
 	/** \brief Orientation. */

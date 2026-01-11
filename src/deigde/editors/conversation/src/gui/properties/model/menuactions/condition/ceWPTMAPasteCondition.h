@@ -49,7 +49,7 @@ protected:
 	ceWPTMAPasteCondition();
 	
 public:
-	typedef deTObjectReference<ceWPTMAPasteCondition> Ref;
+	using Ref = deTObjectReference<ceWPTMAPasteCondition>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */

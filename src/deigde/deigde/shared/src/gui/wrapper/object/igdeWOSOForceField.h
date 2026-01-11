@@ -42,7 +42,7 @@ class igdeGDCForceField;
 class DE_DLL_EXPORT igdeWOSOForceField : public igdeWOSubObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeWOSOForceField> Ref;
+	using Ref = deTObjectReference<igdeWOSOForceField>;
 	
 	
 private:

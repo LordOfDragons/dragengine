@@ -36,7 +36,7 @@ class ceViewConversation;
  */
 class ceViewConversationListener : public ceConversationListener{
 public:
-	typedef deTObjectReference<ceViewConversationListener> Ref;
+	using Ref = deTObjectReference<ceViewConversationListener>;
 	
 private:
 	ceViewConversation &pView;

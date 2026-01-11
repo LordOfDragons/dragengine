@@ -37,7 +37,7 @@
  */
 class ceUCASnippetSetFile : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCASnippetSetFile> Ref;
+	using Ref = deTObjectReference<ceUCASnippetSetFile>;
 	
 	
 private:

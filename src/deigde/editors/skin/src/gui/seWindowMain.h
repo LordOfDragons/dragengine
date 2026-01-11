@@ -57,7 +57,7 @@ class igdeStepableTask;
  */
 class seWindowMain : public igdeEditorWindow{
 public:
-	typedef deTObjectReference<seWindowMain> Ref;
+	using Ref = deTObjectReference<seWindowMain>;
 	
 	
 private:

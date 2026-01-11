@@ -73,7 +73,7 @@
 
 class meDecalTimerReattachDecals : public igdeTimer {
 public:
-	typedef deTObjectReference<meDecalTimerReattachDecals> Ref;
+	using Ref = deTObjectReference<meDecalTimerReattachDecals>;
 	
 private:
 	meDecal &pDecal;

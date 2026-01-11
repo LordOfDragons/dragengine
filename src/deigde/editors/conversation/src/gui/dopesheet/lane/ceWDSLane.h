@@ -53,13 +53,13 @@ class igdeMenuCascade;
 class ceWDSLane : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceWDSLane> Ref;
+	using Ref = deTObjectReference<ceWDSLane>;
 	
 	
 private:
 	class cStrip : public deObject{
 	public:
-		typedef deTObjectReference<cStrip> Ref;
+		using Ref = deTObjectReference<cStrip>;
 		
 		deCanvasView::Ref handlePause;
 		deCanvasPaint::Ref handlePauseBg;

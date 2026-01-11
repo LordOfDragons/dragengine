@@ -34,7 +34,7 @@
  */
 class ceWPTTIMAMusic : public ceWPTTIMAction{
 public:
-	typedef deTObjectReference<ceWPTTIMAMusic> Ref;
+	using Ref = deTObjectReference<ceWPTTIMAMusic>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */

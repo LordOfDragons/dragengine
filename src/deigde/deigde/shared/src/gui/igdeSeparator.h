@@ -37,7 +37,7 @@
 class DE_DLL_EXPORT igdeSeparator : public igdeWidget{
 public:
 	/** \brief Strong reference. */
-	typedef deTObjectReference<igdeSeparator> Ref;
+	using Ref = deTObjectReference<igdeSeparator>;
 	
 	
 	/** \brief Orientation. */

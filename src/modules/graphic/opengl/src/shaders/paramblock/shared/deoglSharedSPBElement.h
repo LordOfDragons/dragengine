@@ -38,7 +38,7 @@ class deoglShaderParameterBlock;
 class deoglSharedSPBElement : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglSharedSPBElement> Ref;
+	using Ref = deTObjectReference<deoglSharedSPBElement>;
 	
 	
 	deoglSharedSPB &pSPB;

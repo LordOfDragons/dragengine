@@ -42,7 +42,7 @@ class reWindowProperties;
  */
 class reWPPush : public igdeContainerScroll{
 public:
-	typedef deTObjectReference<reWPPush> Ref;
+	using Ref = deTObjectReference<reWPPush>;
 	
 private:
 	reWindowProperties &pWindowProperties;

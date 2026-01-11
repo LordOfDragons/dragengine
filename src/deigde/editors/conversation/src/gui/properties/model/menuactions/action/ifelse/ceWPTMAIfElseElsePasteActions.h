@@ -37,7 +37,7 @@ class ceCAIfElse;
  */
 class ceWPTMAIfElseElsePasteActions : public ceWPTMAPasteActions{
 public:
-	typedef deTObjectReference<ceWPTMAIfElseElsePasteActions> Ref;
+	using Ref = deTObjectReference<ceWPTMAIfElseElsePasteActions>;
 
 private:
 	ceConversationTopic *pTopic;

@@ -40,9 +40,9 @@ class ceConversation;
 class ceCameraShot : public deObject{
 	public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceCameraShot> Ref;
+	using Ref = deTObjectReference<ceCameraShot>;
 	
-	typedef decTCollectionQueryByName<decTObjectOrderedSet<ceCameraShot>,ceCameraShot> List;
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<ceCameraShot>,ceCameraShot>;
 	
 	
 	/** Camera shot parameters. */

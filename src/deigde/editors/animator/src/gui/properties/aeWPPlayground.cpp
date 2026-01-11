@@ -71,7 +71,7 @@ protected:
 	aeWPPlayground &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseAction> Ref;
+	using Ref = deTObjectReference<cBaseAction>;
 	cBaseAction(aeWPPlayground &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description),
 	pPanel(panel){}
@@ -107,7 +107,7 @@ protected:
 	aeWPPlayground &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseTextFieldListener> Ref;
+	using Ref = deTObjectReference<cBaseTextFieldListener>;
 	cBaseTextFieldListener(aeWPPlayground &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -125,7 +125,7 @@ protected:
 	aeWPPlayground &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseEditVectorListener> Ref;
+	using Ref = deTObjectReference<cBaseEditVectorListener>;
 	cBaseEditVectorListener(aeWPPlayground &panel) : pPanel(panel){}
 	
 	void OnVectorChanged(igdeEditVector *editVector) override{
@@ -142,7 +142,7 @@ public:
 class cComboLocomotionType : public igdeComboBoxListener{
 	aeWPPlayground &pPanel;
 public:
-	typedef deTObjectReference<cComboLocomotionType> Ref;
+	using Ref = deTObjectReference<cComboLocomotionType>;
 	cComboLocomotionType(aeWPPlayground &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -158,7 +158,7 @@ public:
 
 class cTextLocoLimitUp : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextLocoLimitUp> Ref;
+	using Ref = deTObjectReference<cTextLocoLimitUp>;
 	cTextLocoLimitUp(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField &textField, aeAnimator &animator) override{
@@ -168,7 +168,7 @@ public:
 
 class cTextLocoLimitDown : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextLocoLimitDown> Ref;
+	using Ref = deTObjectReference<cTextLocoLimitDown>;
 	cTextLocoLimitDown(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField &textField, aeAnimator &animator) override{
@@ -178,7 +178,7 @@ public:
 
 class cTextLocoLimitLeft : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextLocoLimitLeft> Ref;
+	using Ref = deTObjectReference<cTextLocoLimitLeft>;
 	cTextLocoLimitLeft(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField &textField, aeAnimator &animator) override{
@@ -188,7 +188,7 @@ public:
 
 class cTextLocoLimitRight : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextLocoLimitRight> Ref;
+	using Ref = deTObjectReference<cTextLocoLimitRight>;
 	cTextLocoLimitRight(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField &textField, aeAnimator &animator) override{
@@ -198,7 +198,7 @@ public:
 
 class cTextLocoSpeedWalk : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextLocoSpeedWalk> Ref;
+	using Ref = deTObjectReference<cTextLocoSpeedWalk>;
 	cTextLocoSpeedWalk(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField &textField, aeAnimator &animator) override{
@@ -208,7 +208,7 @@ public:
 
 class cTextLocoSpeedRun : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextLocoSpeedRun> Ref;
+	using Ref = deTObjectReference<cTextLocoSpeedRun>;
 	cTextLocoSpeedRun(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField &textField, aeAnimator &animator) override{
@@ -218,7 +218,7 @@ public:
 
 class cTextLocoAdjTimeUD : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextLocoAdjTimeUD> Ref;
+	using Ref = deTObjectReference<cTextLocoAdjTimeUD>;
 	cTextLocoAdjTimeUD(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField &textField, aeAnimator &animator) override{
@@ -235,7 +235,7 @@ public:
 
 class cTextLocoAdjTimeLR : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextLocoAdjTimeLR> Ref;
+	using Ref = deTObjectReference<cTextLocoAdjTimeLR>;
 	cTextLocoAdjTimeLR(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField &textField, aeAnimator &animator) override{
@@ -252,7 +252,7 @@ public:
 
 class cTextLocoAdjTimeStance : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextLocoAdjTimeStance> Ref;
+	using Ref = deTObjectReference<cTextLocoAdjTimeStance>;
 	cTextLocoAdjTimeStance(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField &textField, aeAnimator &animator) override{
@@ -269,7 +269,7 @@ public:
 
 class cTextLocoAdjTimeOrientation : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextLocoAdjTimeOrientation> Ref;
+	using Ref = deTObjectReference<cTextLocoAdjTimeOrientation>;
 	cTextLocoAdjTimeOrientation(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField &textField, aeAnimator &animator) override{
@@ -286,7 +286,7 @@ public:
 
 class cTextLocoAdjTimeVelocity : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextLocoAdjTimeVelocity> Ref;
+	using Ref = deTObjectReference<cTextLocoAdjTimeVelocity>;
 	cTextLocoAdjTimeVelocity(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField &textField, aeAnimator &animator) override{
@@ -303,7 +303,7 @@ public:
 
 class cTextLocoAdjTimeTurnIP : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextLocoAdjTimeTurnIP> Ref;
+	using Ref = deTObjectReference<cTextLocoAdjTimeTurnIP>;
 	cTextLocoAdjTimeTurnIP(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField &textField, aeAnimator &animator) override{
@@ -313,7 +313,7 @@ public:
 
 class cTextLocoLegBlendTime : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextLocoLegBlendTime> Ref;
+	using Ref = deTObjectReference<cTextLocoLegBlendTime>;
 	cTextLocoLegBlendTime(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField &textField, aeAnimator &animator) override{
@@ -324,7 +324,7 @@ public:
 class cSpinLocoUseLegPairs : public igdeSpinTextFieldListener{
 	aeWPPlayground &pPanel;
 public:
-	typedef deTObjectReference<cSpinLocoUseLegPairs> Ref;
+	using Ref = deTObjectReference<cSpinLocoUseLegPairs>;
 	cSpinLocoUseLegPairs(aeWPPlayground &panel) : pPanel(panel){}
 	
 	void OnValueChanged(igdeSpinTextField *textField) override{
@@ -340,7 +340,7 @@ public:
 class cSpinLocoLeg : public igdeSpinTextFieldListener{
 	aeWPPlayground &pPanel;
 public:
-	typedef deTObjectReference<cSpinLocoLeg> Ref;
+	using Ref = deTObjectReference<cSpinLocoLeg>;
 	cSpinLocoLeg(aeWPPlayground &panel) : pPanel(panel){}
 	
 	void OnValueChanged(igdeSpinTextField*) override{
@@ -352,7 +352,7 @@ public:
 
 class cTextLocoLegLiftOffTime : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextLocoLegLiftOffTime> Ref;
+	using Ref = deTObjectReference<cTextLocoLegLiftOffTime>;
 	cTextLocoLegLiftOffTime(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField &textField, aeAnimator &animator) override{
@@ -367,7 +367,7 @@ public:
 
 class cTextLocoLegPutDownTime : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextLocoLegPutDownTime> Ref;
+	using Ref = deTObjectReference<cTextLocoLegPutDownTime>;
 	cTextLocoLegPutDownTime(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField &textField, aeAnimator &animator) override{
@@ -382,7 +382,7 @@ public:
 
 class cEditLocoLegPDPosStand : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditLocoLegPDPosStand> Ref;
+	using Ref = deTObjectReference<cEditLocoLegPDPosStand>;
 	cEditLocoLegPDPosStand(aeWPPlayground &panel) : cBaseEditVectorListener(panel){}
 	
 	void OnChanged(igdeEditVector &editVector, aeAnimator &animator) override{
@@ -397,7 +397,7 @@ public:
 
 class cEditLocoLegPDPosWalk : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditLocoLegPDPosWalk> Ref;
+	using Ref = deTObjectReference<cEditLocoLegPDPosWalk>;
 	cEditLocoLegPDPosWalk(aeWPPlayground &panel) : cBaseEditVectorListener(panel){}
 	
 	void OnChanged(igdeEditVector &editVector, aeAnimator &animator) override{
@@ -412,7 +412,7 @@ public:
 
 class cEditLocoLegPDPosRun : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditLocoLegPDPosRun> Ref;
+	using Ref = deTObjectReference<cEditLocoLegPDPosRun>;
 	cEditLocoLegPDPosRun(aeWPPlayground &panel) : cBaseEditVectorListener(panel){}
 	
 	void OnChanged(igdeEditVector &editVector, aeAnimator &animator) override{
@@ -427,7 +427,7 @@ public:
 
 class cActionLocoShowShapes : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionLocoShowShapes> Ref;
+	using Ref = deTObjectReference<cActionLocoShowShapes>;
 	
 public:
 	cActionLocoShowShapes(aeWPPlayground &panel) : cBaseAction(panel,
@@ -445,7 +445,7 @@ public:
 
 class cActionLocoUseFoGIK : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionLocoUseFoGIK> Ref;
+	using Ref = deTObjectReference<cActionLocoUseFoGIK>;
 	
 public:
 	cActionLocoUseFoGIK(aeWPPlayground &panel) : cBaseAction(panel,
@@ -467,7 +467,7 @@ class cSliderController : public igdeEditSliderTextListener{
 	int pIndex;
 	
 public:
-	typedef deTObjectReference<cSliderController> Ref;
+	using Ref = deTObjectReference<cSliderController>;
 	cSliderController(aeWPPlayground &panel, int index) : pPanel(panel), pIndex(index){}
 	
 	void OnSliderTextValueChanged(igdeEditSliderText *sliderText) override{

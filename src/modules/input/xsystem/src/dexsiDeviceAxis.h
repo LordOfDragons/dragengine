@@ -43,7 +43,7 @@ class deXSystemInput;
  */
 class dexsiDeviceAxis : public deObject{
 public:
-	typedef deTObjectReference<dexsiDeviceAxis> Ref;
+	using Ref = deTObjectReference<dexsiDeviceAxis>;
 	
 	
 private:

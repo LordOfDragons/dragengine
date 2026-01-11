@@ -44,7 +44,7 @@ class deBaseVRModule;
 class dedsInputDevice : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<dedsInputDevice> Ref;
+	using Ref = deTObjectReference<dedsInputDevice>;
 	
 	
 private:

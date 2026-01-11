@@ -37,7 +37,7 @@
  */
 class aeURuleLimitSetCFrame : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleLimitSetCFrame> Ref;
+	using Ref = deTObjectReference<aeURuleLimitSetCFrame>;
 	
 	
 private:

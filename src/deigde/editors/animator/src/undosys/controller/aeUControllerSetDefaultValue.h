@@ -32,7 +32,7 @@
  */
 class aeUControllerSetDefaultValue : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUControllerSetDefaultValue> Ref;
+	using Ref = deTObjectReference<aeUControllerSetDefaultValue>;
 	
 	
 private:

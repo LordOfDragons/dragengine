@@ -36,7 +36,7 @@
  */
 class syneUEffectStretchSetMaxTime : public igdeUndo{
 public:
-	typedef deTObjectReference<syneUEffectStretchSetMaxTime> Ref;
+	using Ref = deTObjectReference<syneUEffectStretchSetMaxTime>;
 	
 	
 private:

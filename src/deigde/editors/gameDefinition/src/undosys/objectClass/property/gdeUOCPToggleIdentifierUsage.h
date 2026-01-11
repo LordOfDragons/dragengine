@@ -40,7 +40,7 @@
  */
 class gdeUOCPToggleIdentifierUsage : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCPToggleIdentifierUsage> Ref;
+	using Ref = deTObjectReference<gdeUOCPToggleIdentifierUsage>;
 	
 	
 private:

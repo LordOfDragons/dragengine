@@ -40,7 +40,7 @@ class lpeWindowMain;
  */
 class lpeLoadSaveSystem{
 public:
-	typedef decTObjectOrderedSet<lpeLoadSaveLangPack> LSLangPackList;
+	using LSLangPackList = decTObjectOrderedSet<lpeLoadSaveLangPack>;
 	
 	
 private:

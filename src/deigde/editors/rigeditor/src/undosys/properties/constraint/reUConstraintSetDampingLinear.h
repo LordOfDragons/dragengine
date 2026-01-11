@@ -37,7 +37,7 @@
  */
 class reUConstraintSetDampingLinear : public igdeUndo{
 public:
-	typedef deTObjectReference<reUConstraintSetDampingLinear> Ref;
+	using Ref = deTObjectReference<reUConstraintSetDampingLinear>;
 	
 	
 private:

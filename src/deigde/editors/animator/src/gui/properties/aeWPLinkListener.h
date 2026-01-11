@@ -36,7 +36,7 @@ class aeWPLink;
  */
 class aeWPLinkListener : public aeAnimatorNotifier{
 public:
-	typedef deTObjectReference<aeWPLinkListener> Ref;
+	using Ref = deTObjectReference<aeWPLinkListener>;
 	
 	
 private:

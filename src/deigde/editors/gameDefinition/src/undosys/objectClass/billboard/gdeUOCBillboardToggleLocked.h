@@ -38,7 +38,7 @@
  */
 class gdeUOCBillboardToggleLocked : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCBillboardToggleLocked> Ref;
+	using Ref = deTObjectReference<gdeUOCBillboardToggleLocked>;
 	
 	
 private:

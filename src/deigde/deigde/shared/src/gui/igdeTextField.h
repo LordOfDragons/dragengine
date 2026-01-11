@@ -41,10 +41,10 @@ class DE_DLL_EXPORT igdeTextField : public igdeWidget{
 
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeTextField> Ref;
+	using Ref = deTObjectReference<igdeTextField>;
 	
 	/** \brief Type holding weak reference. */
-	typedef deTWeakObjectReference<igdeTextField> WeakRef;
+	using WeakRef = deTWeakObjectReference<igdeTextField>;
 	
 	
 private:

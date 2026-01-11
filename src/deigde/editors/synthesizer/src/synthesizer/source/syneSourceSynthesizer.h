@@ -40,8 +40,8 @@ class deSynthesizerSourceSynthesizer;
  */
 class syneSourceSynthesizer : public syneSource{
 public:
-	typedef deTObjectReference<syneSourceSynthesizer> Ref;
-	typedef decTObjectList<syneController> ConnectionList;
+	using Ref = deTObjectReference<syneSourceSynthesizer>;
+	using ConnectionList = decTObjectList<syneController>;
 	
 private:
 	deEngine *pEngine;

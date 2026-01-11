@@ -91,7 +91,7 @@ protected:
 	aeWPController &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseAction> Ref;
+	using Ref = deTObjectReference<cBaseAction>;
 	cBaseAction(aeWPController &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description),
 	pPanel(panel){}
@@ -134,7 +134,7 @@ protected:
 	aeWPController &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseTextField> Ref;
+	using Ref = deTObjectReference<cBaseTextField>;
 	cBaseTextField(aeWPController &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -157,7 +157,7 @@ public:
 
 class cActionCopy : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionCopy> Ref;
+	using Ref = deTObjectReference<cActionCopy>;
 	
 public:
 	cActionCopy(aeWPController &panel) : cBaseAction(panel, "Copy",
@@ -173,7 +173,7 @@ public:
 
 class cActionCut : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionCut> Ref;
+	using Ref = deTObjectReference<cActionCut>;
 	
 public:
 	cActionCut(aeWPController &panel) : cBaseAction(panel, "Cut",
@@ -189,7 +189,7 @@ public:
 
 class cActionPaste : public igdeAction{
 public:
-	typedef deTObjectReference<cActionPaste> Ref;
+	using Ref = deTObjectReference<cActionPaste>;
 	
 private:
 	aeWPController &pPanel;
@@ -225,7 +225,7 @@ class cListControllers : public igdeListBoxListener{
 	aeWPController &pPanel;
 	
 public:
-	typedef deTObjectReference<cListControllers> Ref;
+	using Ref = deTObjectReference<cListControllers>;
 	cListControllers(aeWPController &panel) : pPanel(panel){}
 	
 	void OnSelectionChanged(igdeListBox *listBox) override{
@@ -256,7 +256,7 @@ public:
 
 class cTextName : public cBaseTextField{
 public:
-	typedef deTObjectReference<cTextName> Ref;
+	using Ref = deTObjectReference<cTextName>;
 	
 	cTextName(aeWPController &panel) : cBaseTextField(panel){}
 	
@@ -276,7 +276,7 @@ public:
 
 class cTextMinimumValue : public cBaseTextField{
 public:
-	typedef deTObjectReference<cTextMinimumValue> Ref;
+	using Ref = deTObjectReference<cTextMinimumValue>;
 	cTextMinimumValue(aeWPController &panel) : cBaseTextField(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator*, aeController *controller) override{
@@ -288,7 +288,7 @@ public:
 
 class cTextMaximumValue : public cBaseTextField{
 public:
-	typedef deTObjectReference<cTextMaximumValue> Ref;
+	using Ref = deTObjectReference<cTextMaximumValue>;
 	cTextMaximumValue(aeWPController &panel) : cBaseTextField(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator*, aeController *controller) override{
@@ -300,7 +300,7 @@ public:
 
 class cActionSetFromMove : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionSetFromMove> Ref;
+	using Ref = deTObjectReference<cActionSetFromMove>;
 	
 public:
 	cActionSetFromMove(aeWPController &panel) : cBaseAction(panel, "Set From Move",
@@ -333,7 +333,7 @@ public:
 
 class cActionResetValue : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionResetValue> Ref;
+	using Ref = deTObjectReference<cActionResetValue>;
 	
 public:
 	cActionResetValue(aeWPController &panel) : cBaseAction(panel, "Reset",
@@ -350,7 +350,7 @@ class cSlideValue : public igdeEditSliderTextListener{
 	aeWPController &pPanel;
 	
 public:
-	typedef deTObjectReference<cSlideValue> Ref;
+	using Ref = deTObjectReference<cSlideValue>;
 	cSlideValue(aeWPController &panel) : pPanel(panel){}
 	
 	void OnSliderTextValueChanged(igdeEditSliderText *sliderText) override{
@@ -369,7 +369,7 @@ class cEditVector : public igdeEditVectorListener{
 	aeWPController &pPanel;
 	
 public:
-	typedef deTObjectReference<cEditVector> Ref;
+	using Ref = deTObjectReference<cEditVector>;
 	cEditVector(aeWPController &panel) : pPanel(panel){}
 	
 	void OnVectorChanged(igdeEditVector *editVector) override{
@@ -382,7 +382,7 @@ public:
 
 class cActionClamp : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionClamp> Ref;
+	using Ref = deTObjectReference<cActionClamp>;
 	
 public:
 	cActionClamp(aeWPController &panel) : cBaseAction(panel, "Clamp value to range",
@@ -400,7 +400,7 @@ public:
 
 class cActionFrozen : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionFrozen> Ref;
+	using Ref = deTObjectReference<cActionFrozen>;
 	
 public:
 	cActionFrozen(aeWPController &panel) : cBaseAction(panel, "Freeze Controller value",
@@ -420,7 +420,7 @@ class cComboLocoAttr : public igdeComboBoxListener{
 	aeWPController &pPanel;
 	
 public:
-	typedef deTObjectReference<cComboLocoAttr> Ref;
+	using Ref = deTObjectReference<cComboLocoAttr>;
 	cComboLocoAttr(aeWPController &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -434,7 +434,7 @@ public:
 
 class cTextLocoLeg : public cBaseTextField{
 public:
-	typedef deTObjectReference<cTextLocoLeg> Ref;
+	using Ref = deTObjectReference<cTextLocoLeg>;
 	cTextLocoLeg(aeWPController &panel) : cBaseTextField(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator *animator, aeController *controller) override{
@@ -450,7 +450,7 @@ class cComboVectorSimulation : public igdeComboBoxListener{
 	aeWPController &pPanel;
 	
 public:
-	typedef deTObjectReference<cComboVectorSimulation> Ref;
+	using Ref = deTObjectReference<cComboVectorSimulation>;
 	cComboVectorSimulation(aeWPController &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -464,7 +464,7 @@ public:
 
 class cTextDefaultValue : public cBaseTextField{
 public:
-	typedef deTObjectReference<cTextDefaultValue> Ref;
+	using Ref = deTObjectReference<cTextDefaultValue>;
 	cTextDefaultValue(aeWPController &panel) : cBaseTextField(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator*, aeController *controller) override{
@@ -478,7 +478,7 @@ class cEditDefaultVector : public igdeEditVectorListener{
 	aeWPController &pPanel;
 	
 public:
-	typedef deTObjectReference<cEditDefaultVector> Ref;
+	using Ref = deTObjectReference<cEditDefaultVector>;
 	cEditDefaultVector(aeWPController &panel) : pPanel(panel){}
 	
 	void OnVectorChanged(igdeEditVector *editVector) override{

@@ -51,7 +51,7 @@ class syneControllerTarget;
  */
 class syneWPAPanelSource : public igdeContainerFlow{
 public:
-	typedef deTObjectReference<syneWPAPanelSource> Ref;
+	using Ref = deTObjectReference<syneWPAPanelSource>;
 	
 private:
 	syneWPSource &pWPSource;

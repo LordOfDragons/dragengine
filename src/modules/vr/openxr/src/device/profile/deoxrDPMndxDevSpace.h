@@ -37,13 +37,13 @@
  */
 class deoxrDPMndxDevSpace : public deoxrDeviceProfile{
 public:
-	typedef deTObjectReference<deoxrDPMndxDevSpace> Ref;
+	using Ref = deTObjectReference<deoxrDPMndxDevSpace>;
 	
 	
 private:
 	class Device : public deObject{
 	public:
-		typedef deTObjectReference<Device> Ref;
+		using Ref = deTObjectReference<Device>;
 	
 	
 		deoxrDPMndxDevSpace &profile;

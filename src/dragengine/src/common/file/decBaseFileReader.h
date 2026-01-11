@@ -41,7 +41,7 @@ class decDataChunk;
 class DE_DLL_EXPORT decBaseFileReader : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<decBaseFileReader> Ref;
+	using Ref = deTObjectReference<decBaseFileReader>;
 	
 	
 public:

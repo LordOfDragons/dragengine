@@ -35,7 +35,7 @@
  */
 class reBaseUndoRotate : public igdeUndo{
 public:
-	typedef deTObjectReference<reBaseUndoRotate> Ref;
+	using Ref = deTObjectReference<reBaseUndoRotate>;
 	
 	
 private:

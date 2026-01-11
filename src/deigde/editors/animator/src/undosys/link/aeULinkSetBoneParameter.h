@@ -37,7 +37,7 @@
  */
 class aeULinkSetBoneParameter : public igdeUndo{
 public:
-	typedef deTObjectReference<aeULinkSetBoneParameter> Ref;
+	using Ref = deTObjectReference<aeULinkSetBoneParameter>;
 	
 	
 private:

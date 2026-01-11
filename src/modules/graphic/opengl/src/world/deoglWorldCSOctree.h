@@ -41,7 +41,7 @@ class decLayerMask;
  */
 class deoglWorldCSOctree : public deObject{
 public:
-	typedef deTObjectReference<deoglWorldCSOctree> Ref;
+	using Ref = deTObjectReference<deoglWorldCSOctree>;
 	
 	
 	/** Compute shader element flags. */

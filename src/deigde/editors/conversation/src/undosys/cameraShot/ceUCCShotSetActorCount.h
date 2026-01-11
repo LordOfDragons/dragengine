@@ -36,7 +36,7 @@
  */
 class ceUCCShotSetActorCount : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCCShotSetActorCount> Ref;
+	using Ref = deTObjectReference<ceUCCShotSetActorCount>;
 	
 	
 private:

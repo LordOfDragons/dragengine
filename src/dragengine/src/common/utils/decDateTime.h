@@ -29,7 +29,7 @@
 
 
 /** \brief System time value. */
-typedef long long TIME_SYSTEM;
+using TIME_SYSTEM = long long;
 
 
 /**

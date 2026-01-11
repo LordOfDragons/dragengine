@@ -37,7 +37,7 @@
 class DE_DLL_EXPORT decXmlContainer : public decXmlElement{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<decXmlContainer> Ref;
+	using Ref = deTObjectReference<decXmlContainer>;
 	
 	
 private:

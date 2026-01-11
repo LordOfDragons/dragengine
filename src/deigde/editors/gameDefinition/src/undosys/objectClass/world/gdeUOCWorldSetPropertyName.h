@@ -37,7 +37,7 @@
  */
 class gdeUOCWorldSetPropertyName : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCWorldSetPropertyName> Ref;
+	using Ref = deTObjectReference<gdeUOCWorldSetPropertyName>;
 	
 	
 private:

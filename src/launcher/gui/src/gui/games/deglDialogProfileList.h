@@ -124,7 +124,7 @@ private:
 		~cEditProfile() override;
 		
 	public:
-		typedef deTObjectReference<cEditProfile> Ref;
+		using Ref = deTObjectReference<cEditProfile>;
 		cEditProfile(deglDialogProfileList &dialog, const char *name);
 		cEditProfile(deglDialogProfileList &dialog, delGameProfile *profile, delGame *gameCustom);
 		inline const delGameProfile::Ref &GetOriginal() const{ return pOriginal; }
@@ -146,7 +146,7 @@ private:
 	
 	class Parameter : public deObject{
 	public:
-		typedef deTObjectReference<Parameter> Ref;
+		using Ref = deTObjectReference<Parameter>;
 		delEMParameter *parameter;
 		FXLabel *label;
 		FXComboBox *combobox;

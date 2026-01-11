@@ -62,7 +62,7 @@ class DE_DLL_EXPORT igdeEditPropertyValue : public igdeContainerFlow{
 
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeEditPropertyValue> Ref;
+	using Ref = deTObjectReference<igdeEditPropertyValue>;
 	
 	
 private:

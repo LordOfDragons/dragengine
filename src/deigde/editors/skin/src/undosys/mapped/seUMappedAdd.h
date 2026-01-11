@@ -39,7 +39,7 @@ class seSkin;
  */
 class seUMappedAdd : public igdeUndo{
 public:
-	typedef deTObjectReference<seUMappedAdd> Ref;
+	using Ref = deTObjectReference<seUMappedAdd>;
 	
 	
 protected:

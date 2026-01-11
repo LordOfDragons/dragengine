@@ -52,7 +52,7 @@ class cCameraInteraction : public igdeMouseCameraListener {
 	peeViewEmitter &pView;
 	
 public:
-	typedef deTObjectReference<cCameraInteraction> Ref;
+	using Ref = deTObjectReference<cCameraInteraction>;
 	
 	cCameraInteraction(peeViewEmitter &view) : pView(view){
 		SetEnabledAll(false);

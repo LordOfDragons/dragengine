@@ -91,7 +91,7 @@ protected:
 	aeWPAPanelRuleBoneTransformator &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseAction> Ref;
+	using Ref = deTObjectReference<cBaseAction>;
 	cBaseAction(aeWPAPanelRuleBoneTransformator &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description),
 	pPanel(panel){}
@@ -134,7 +134,7 @@ protected:
 	aeWPAPanelRuleBoneTransformator &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseComboBoxListener> Ref;
+	using Ref = deTObjectReference<cBaseComboBoxListener>;
 	cBaseComboBoxListener(aeWPAPanelRuleBoneTransformator &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -158,7 +158,7 @@ protected:
 	aeWPAPanelRuleBoneTransformator &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseEditVectorListener> Ref;
+	using Ref = deTObjectReference<cBaseEditVectorListener>;
 	cBaseEditVectorListener(aeWPAPanelRuleBoneTransformator &panel) : pPanel(panel){}
 	
 	void OnVectorChanged(igdeEditVector *editVector) override{
@@ -182,7 +182,7 @@ protected:
 	aeWPAPanelRuleBoneTransformator &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseTextFieldListener> Ref;
+	using Ref = deTObjectReference<cBaseTextFieldListener>;
 	cBaseTextFieldListener(aeWPAPanelRuleBoneTransformator &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -204,7 +204,7 @@ public:
 
 class cEditTranslationMinimum : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditTranslationMinimum> Ref;
+	using Ref = deTObjectReference<cEditTranslationMinimum>;
 	cEditTranslationMinimum(aeWPAPanelRuleBoneTransformator &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleBoneTransformator *rule) override{
@@ -215,7 +215,7 @@ public:
 
 class cEditTranslationMaximum : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditTranslationMaximum> Ref;
+	using Ref = deTObjectReference<cEditTranslationMaximum>;
 	cEditTranslationMaximum(aeWPAPanelRuleBoneTransformator &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleBoneTransformator *rule) override{
@@ -226,7 +226,7 @@ public:
 
 class cEditRotationMinimum : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditRotationMinimum> Ref;
+	using Ref = deTObjectReference<cEditRotationMinimum>;
 	cEditRotationMinimum(aeWPAPanelRuleBoneTransformator &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleBoneTransformator *rule) override{
@@ -237,7 +237,7 @@ public:
 
 class cEditRotationMaximum : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditRotationMaximum> Ref;
+	using Ref = deTObjectReference<cEditRotationMaximum>;
 	cEditRotationMaximum(aeWPAPanelRuleBoneTransformator &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleBoneTransformator *rule) override{
@@ -248,7 +248,7 @@ public:
 
 class cEditScalingMinimum : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditScalingMinimum> Ref;
+	using Ref = deTObjectReference<cEditScalingMinimum>;
 	cEditScalingMinimum(aeWPAPanelRuleBoneTransformator &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleBoneTransformator *rule) override{
@@ -259,7 +259,7 @@ public:
 
 class cEditScalingMaximum : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditScalingMaximum> Ref;
+	using Ref = deTObjectReference<cEditScalingMaximum>;
 	cEditScalingMaximum(aeWPAPanelRuleBoneTransformator &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleBoneTransformator *rule) override{
@@ -270,7 +270,7 @@ public:
 
 class cEditAxis : public cBaseEditVectorListener{
 public:
-	typedef deTObjectReference<cEditAxis> Ref;
+	using Ref = deTObjectReference<cEditAxis>;
 	cEditAxis(aeWPAPanelRuleBoneTransformator &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleBoneTransformator *rule) override{
@@ -281,7 +281,7 @@ public:
 
 class cEditMinimumAngle : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cEditMinimumAngle> Ref;
+	using Ref = deTObjectReference<cEditMinimumAngle>;
 	cEditMinimumAngle(aeWPAPanelRuleBoneTransformator &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator*, aeRuleBoneTransformator *rule) override{
@@ -293,7 +293,7 @@ public:
 
 class cEditMaximumAngle : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cEditMaximumAngle> Ref;
+	using Ref = deTObjectReference<cEditMaximumAngle>;
 	cEditMaximumAngle(aeWPAPanelRuleBoneTransformator &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator*, aeRuleBoneTransformator *rule) override{
@@ -305,7 +305,7 @@ public:
 
 class cComboCoordFrame : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboCoordFrame> Ref;
+	using Ref = deTObjectReference<cComboCoordFrame>;
 	cComboCoordFrame(aeWPAPanelRuleBoneTransformator &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleBoneTransformator *rule) override{
@@ -321,7 +321,7 @@ public:
 
 class cActionEnablePosition : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnablePosition> Ref;
+	using Ref = deTObjectReference<cActionEnablePosition>;
 	
 public:
 	cActionEnablePosition(aeWPAPanelRuleBoneTransformator &panel) : cBaseAction(panel,
@@ -339,7 +339,7 @@ public:
 
 class cActionEnableRotation : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableRotation> Ref;
+	using Ref = deTObjectReference<cActionEnableRotation>;
 	
 public:
 	cActionEnableRotation(aeWPAPanelRuleBoneTransformator &panel) : cBaseAction(panel,
@@ -357,7 +357,7 @@ public:
 
 class cActionEnableSize : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableSize> Ref;
+	using Ref = deTObjectReference<cActionEnableSize>;
 	
 public:
 	cActionEnableSize(aeWPAPanelRuleBoneTransformator &panel) : cBaseAction(panel,
@@ -375,7 +375,7 @@ public:
 
 class cActionUseAxis : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionUseAxis> Ref;
+	using Ref = deTObjectReference<cActionUseAxis>;
 	
 public:
 	cActionUseAxis(aeWPAPanelRuleBoneTransformator &panel) : cBaseAction(panel,
@@ -393,7 +393,7 @@ public:
 
 class cComboTargetBone : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboTargetBone> Ref;
+	using Ref = deTObjectReference<cComboTargetBone>;
 	cComboTargetBone(aeWPAPanelRuleBoneTransformator &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleBoneTransformator *rule) override{
@@ -404,7 +404,7 @@ public:
 
 class cComboInputBone : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboInputBone> Ref;
+	using Ref = deTObjectReference<cComboInputBone>;
 	cComboInputBone(aeWPAPanelRuleBoneTransformator &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleBoneTransformator *rule) override{
@@ -415,7 +415,7 @@ public:
 
 class cComboInputSource : public cBaseComboBoxListener{
 public:
-	typedef deTObjectReference<cComboInputSource> Ref;
+	using Ref = deTObjectReference<cComboInputSource>;
 	cComboInputSource(aeWPAPanelRuleBoneTransformator &panel) : cBaseComboBoxListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleBoneTransformator *rule) override{

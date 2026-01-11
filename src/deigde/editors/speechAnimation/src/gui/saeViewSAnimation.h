@@ -42,7 +42,7 @@ class saeWindowMain;
  */
 class saeViewSAnimation : public igdeViewRenderWindow{
 public:
-	typedef deTObjectReference<saeViewSAnimation> Ref;
+	using Ref = deTObjectReference<saeViewSAnimation>;
 	
 private:
 	saeWindowMain &pWindowMain;

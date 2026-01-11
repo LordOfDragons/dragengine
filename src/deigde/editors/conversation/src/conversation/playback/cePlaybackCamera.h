@@ -52,7 +52,7 @@ class igdeCamera;
  */
 class cePlaybackCamera : public deObject{
 public:
-	typedef deTObjectReference<cePlaybackCamera> Ref;
+	using Ref = deTObjectReference<cePlaybackCamera>;
 	
 	/** Camera shot parameters. */
 	enum eParameters{

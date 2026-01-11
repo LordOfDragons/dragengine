@@ -69,8 +69,8 @@ class deEngine;
  */
 class meObject : public deObject{
 public:
-	typedef deTObjectReference<meObject> Ref;
-	typedef decTObjectOrderedSet<meObject> List;
+	using Ref = deTObjectReference<meObject>;
+	using List = decTObjectOrderedSet<meObject>;
 	
 	
 private:
@@ -86,7 +86,7 @@ private:
 	
 	class cWOTexture : public deObject{
 	public:
-		typedef deTObjectReference<cWOTexture> Ref;
+		using Ref = deTObjectReference<cWOTexture>;
 		
 		deSkin::Ref skin;
 		int texture;

@@ -33,7 +33,7 @@
  */
 class dedsPForceDpiAware : public dedsParameterBool{
 public:
-	typedef deTObjectReference<dedsPForceDpiAware> Ref;
+	using Ref = deTObjectReference<dedsPForceDpiAware>;
 	
 	
 	/** \name Constructors and Destructors */

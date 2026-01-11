@@ -72,10 +72,10 @@ void dbgCheckOalError(deoalAudioThread &audioThread, const char *file, int line)
 
 
 /** \brief 8-bit sample type. */
-typedef signed char Sample8;
+using Sample8 = signed char;
 
 /** \brief 16-bit sample type. */
-typedef signed short Sample16;
+using Sample16 = signed short;
 
 
 

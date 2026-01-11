@@ -38,7 +38,7 @@ class ceCAPlayerChoiceOption;
  */
 class ceWPTMAPChoiceOptionPasteSnippet : public ceWPTMAPasteSnippet{
 public:
-	typedef deTObjectReference<ceWPTMAPChoiceOptionPasteSnippet> Ref;
+	using Ref = deTObjectReference<ceWPTMAPChoiceOptionPasteSnippet>;
 
 private:
 	ceConversationTopic *pTopic;

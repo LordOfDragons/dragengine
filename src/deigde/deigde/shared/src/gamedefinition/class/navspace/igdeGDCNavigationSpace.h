@@ -40,10 +40,10 @@
 class DE_DLL_EXPORT igdeGDCNavigationSpace : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeGDCNavigationSpace> Ref;
+	using Ref = deTObjectReference<igdeGDCNavigationSpace>;
 	
 	/** \brief Type holding list of objects. */
-	typedef decTObjectOrderedSet<igdeGDCNavigationSpace> List;
+	using List = decTObjectOrderedSet<igdeGDCNavigationSpace>;
 	
 	
 	/** \brief Properties. */

@@ -37,7 +37,7 @@
 class syneClipboardDataSource : public igdeClipboardData{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<syneClipboardDataSource> Ref;
+	using Ref = deTObjectReference<syneClipboardDataSource>;
 	
 	/** \brief Type name. */
 	static const char * const TYPE_NAME;

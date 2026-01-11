@@ -39,7 +39,7 @@ class deoglTexture;
  */
 class deoglRenderTarget : public deObject{
 public:
-	typedef deTObjectReference<deoglRenderTarget> Ref;
+	using Ref = deTObjectReference<deoglRenderTarget>;
 	
 	
 private:

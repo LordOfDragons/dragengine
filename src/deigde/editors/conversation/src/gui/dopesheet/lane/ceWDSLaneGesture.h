@@ -34,7 +34,7 @@
 class ceWDSLaneGesture : public ceWDSLane{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceWDSLaneGesture> Ref;
+	using Ref = deTObjectReference<ceWDSLaneGesture>;
 	
 	
 	/** \name Constructors and Destructors */

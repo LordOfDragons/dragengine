@@ -43,7 +43,7 @@ class decXmlVisitorStripComments;
 class DE_DLL_EXPORT decXmlDocument : public decXmlContainer{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<decXmlDocument> Ref;
+	using Ref = deTObjectReference<decXmlDocument>;
 	
 	
 private:

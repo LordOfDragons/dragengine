@@ -46,7 +46,7 @@ class deoglRTLogger;
  */
 class deoglComputeRenderTask : public deObject{
 public:
-	typedef deTObjectReference<deoglComputeRenderTask> Ref;
+	using Ref = deTObjectReference<deoglComputeRenderTask>;
 	
 	
 	/** Config parameters. */

@@ -49,7 +49,7 @@ class dsRealObject;
  */
 class dedsCollisionTester : public deBaseScriptingCollider, public deObject{
 public:
-	typedef deTObjectReference<dedsCollisionTester> Ref;
+	using Ref = deTObjectReference<dedsCollisionTester>;
 	
 private:
 	deScriptingDragonScript &pDS;

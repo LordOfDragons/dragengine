@@ -35,7 +35,7 @@
 class DE_DLL_EXPORT deNetworkMessageReader : public decBaseFileReader{
 public:
 	/** \brief Type holding strong . */
-	typedef deTObjectReference<deNetworkMessageReader> Ref;
+	using Ref = deTObjectReference<deNetworkMessageReader>;
 	
 	
 private:

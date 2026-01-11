@@ -58,7 +58,7 @@ namespace {
 
 class cActionFromEyesLookAt : public igdeAction{
 public:
-	typedef deTObjectReference<cActionFromEyesLookAt> Ref;
+	using Ref = deTObjectReference<cActionFromEyesLookAt>;
 	
 private:
 protected:

@@ -42,7 +42,7 @@
 
 class cFontSize : public deObject{
 public:
-	typedef deTObjectReference<cFontSize> Ref;
+	using Ref = deTObjectReference<cFontSize>;
 	
 private:
 	deFont &pFont;

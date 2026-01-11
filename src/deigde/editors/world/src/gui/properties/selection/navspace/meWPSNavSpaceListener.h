@@ -36,7 +36,7 @@ class meWPSNavSpace;
  */
 class meWPSNavSpaceListener : public meWorldNotifier{
 public:
-	typedef deTObjectReference<meWPSNavSpaceListener> Ref;
+	using Ref = deTObjectReference<meWPSNavSpaceListener>;
 	
 private:
 	meWPSNavSpace &pPanel;

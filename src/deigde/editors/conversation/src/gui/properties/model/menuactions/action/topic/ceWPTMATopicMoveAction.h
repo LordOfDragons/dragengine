@@ -50,7 +50,7 @@ protected:
 	ceWPTMATopicMoveAction();
 	
 public:
-	typedef deTObjectReference<ceWPTMATopicMoveAction> Ref;
+	using Ref = deTObjectReference<ceWPTMATopicMoveAction>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu action. */

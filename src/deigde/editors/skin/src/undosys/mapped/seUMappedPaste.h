@@ -35,7 +35,7 @@ class seClipboardDataMapped;
  */
 class seUMappedPaste : public seUMappedAdd{
 public:
-	typedef deTObjectReference<seUMappedPaste> Ref;
+	using Ref = deTObjectReference<seUMappedPaste>;
 	
 	/** \name Constructors and Destructors */
 	/*@{*/

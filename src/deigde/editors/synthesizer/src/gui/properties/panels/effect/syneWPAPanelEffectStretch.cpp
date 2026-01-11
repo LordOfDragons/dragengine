@@ -79,7 +79,7 @@ public:
 
 class cTextMinTime : public cBaseTextFieldListener {
 public:
-	typedef deTObjectReference<cTextMinTime> Ref;
+	using Ref = deTObjectReference<cTextMinTime>;
 	cTextMinTime(syneWPAPanelEffectStretch &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref  OnChanged(igdeTextField *textField, syneEffectStretch *effect) override{
@@ -91,7 +91,7 @@ public:
 
 class cTextMaxTime : public cBaseTextFieldListener {
 public:
-	typedef deTObjectReference<cTextMaxTime> Ref;
+	using Ref = deTObjectReference<cTextMaxTime>;
 	cTextMaxTime(syneWPAPanelEffectStretch &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref  OnChanged(igdeTextField *textField, syneEffectStretch *effect) override{
@@ -103,7 +103,7 @@ public:
 
 class cTextMinPitch : public cBaseTextFieldListener {
 public:
-	typedef deTObjectReference<cTextMinPitch> Ref;
+	using Ref = deTObjectReference<cTextMinPitch>;
 	cTextMinPitch(syneWPAPanelEffectStretch &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref  OnChanged(igdeTextField *textField, syneEffectStretch *effect) override{
@@ -115,7 +115,7 @@ public:
 
 class cTextMaxPitch : public cBaseTextFieldListener {
 public:
-	typedef deTObjectReference<cTextMaxPitch> Ref;
+	using Ref = deTObjectReference<cTextMaxPitch>;
 	cTextMaxPitch(syneWPAPanelEffectStretch &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref  OnChanged(igdeTextField *textField, syneEffectStretch *effect) override{

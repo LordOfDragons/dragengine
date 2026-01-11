@@ -38,7 +38,7 @@ class gdeOCSpeaker;
  */
 class gdeUParticleEmitterSetPath : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUParticleEmitterSetPath> Ref;
+	using Ref = deTObjectReference<gdeUParticleEmitterSetPath>;
 	
 	
 private:

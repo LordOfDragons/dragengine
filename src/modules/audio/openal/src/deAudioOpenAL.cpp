@@ -354,7 +354,7 @@ void deAudioOpenAL::SendCommand(const decUnicodeArgumentList &command, decUnicod
 
 class deoalModuleInternal : public deInternalModule{
 public:
-	typedef deTObjectReference<deoalModuleInternal> Ref;
+	using Ref = deTObjectReference<deoalModuleInternal>;
 	
 	deoalModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("OpenAL");

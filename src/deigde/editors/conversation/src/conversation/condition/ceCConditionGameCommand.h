@@ -40,7 +40,7 @@
  */
 class ceCConditionGameCommand : public ceConversationCondition{
 public:
-	typedef deTObjectReference<ceCConditionGameCommand> Ref;
+	using Ref = deTObjectReference<ceCConditionGameCommand>;
 
 private:
 	decString pCommand;

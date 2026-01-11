@@ -49,8 +49,8 @@ private:
 	
 	
 public:
-	typedef deTObjectReference<ceCAPlayerChoiceOption> Ref;
-	typedef decTObjectOrderedSet<ceCAPlayerChoiceOption> List;
+	using Ref = deTObjectReference<ceCAPlayerChoiceOption>;
+	using List = decTObjectOrderedSet<ceCAPlayerChoiceOption>;
 
 
 	/** \name Constructors and Destructors */

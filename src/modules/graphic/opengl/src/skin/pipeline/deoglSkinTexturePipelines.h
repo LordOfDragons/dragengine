@@ -44,7 +44,7 @@ class deoglSkinShaderConfig;
  */
 class deoglSkinTexturePipelines : public deObject{
 public:
-	typedef deTObjectReference<deoglSkinTexturePipelines> Ref;
+	using Ref = deTObjectReference<deoglSkinTexturePipelines>;
 	
 	
 	/** Type. */

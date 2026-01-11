@@ -38,7 +38,7 @@
  */
 class syneUControllerSetCurve : public igdeUndo{
 public:
-	typedef deTObjectReference<syneUControllerSetCurve> Ref;
+	using Ref = deTObjectReference<syneUControllerSetCurve>;
 	
 	
 private:

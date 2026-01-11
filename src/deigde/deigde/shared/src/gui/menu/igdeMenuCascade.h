@@ -39,7 +39,7 @@
 class DE_DLL_EXPORT igdeMenuCascade : public igdeContainer{
 public:
 	/** \brief Strong reference. */
-	typedef deTObjectReference<igdeMenuCascade> Ref;
+	using Ref = deTObjectReference<igdeMenuCascade>;
 	
 	
 private:

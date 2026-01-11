@@ -51,7 +51,7 @@ class mePathFindTestType;
  */
 class meWPWorld : public igdeContainerScroll{
 public:
-	typedef deTObjectReference<meWPWorld> Ref;
+	using Ref = deTObjectReference<meWPWorld>;
 	
 private:
 	meWindowProperties &pWindowProperties;

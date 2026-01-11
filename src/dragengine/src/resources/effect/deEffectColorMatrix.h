@@ -42,7 +42,7 @@
 class DE_DLL_EXPORT deEffectColorMatrix : public deEffect{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deEffectColorMatrix> Ref;
+	using Ref = deTObjectReference<deEffectColorMatrix>;
 	
 	
 private:

@@ -58,7 +58,7 @@ class igdeCamera;
 class DE_DLL_EXPORT igdeWPCamera : public igdeContainerFlow, igdeActionListener{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeWPCamera> Ref;
+	using Ref = deTObjectReference<igdeWPCamera>;
 	
 	
 private:

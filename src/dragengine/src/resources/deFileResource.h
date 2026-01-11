@@ -53,7 +53,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deFileResource> Ref;
+	using Ref = deTObjectReference<deFileResource>;
 
 
 	/** \name Constructors and Destructors */

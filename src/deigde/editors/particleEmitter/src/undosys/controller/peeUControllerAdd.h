@@ -37,7 +37,7 @@
  */
 class peeUControllerAdd : public igdeUndo{
 public:
-	typedef deTObjectReference<peeUControllerAdd> Ref;
+	using Ref = deTObjectReference<peeUControllerAdd>;
 	
 	
 private:

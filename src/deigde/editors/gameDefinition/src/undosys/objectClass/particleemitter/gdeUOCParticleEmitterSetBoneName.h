@@ -38,7 +38,7 @@
  */
 class gdeUOCParticleEmitterSetBoneName : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCParticleEmitterSetBoneName> Ref;
+	using Ref = deTObjectReference<gdeUOCParticleEmitterSetBoneName>;
 	
 	
 private:

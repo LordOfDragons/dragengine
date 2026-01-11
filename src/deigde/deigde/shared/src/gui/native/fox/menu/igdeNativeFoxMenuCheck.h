@@ -84,6 +84,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxMenuCheck igdeNativeMenuCheck;
+using igdeNativeMenuCheck = igdeNativeFoxMenuCheck;
 
 #endif

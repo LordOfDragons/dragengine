@@ -37,7 +37,7 @@ class igdeGDSkin;
 class DE_DLL_EXPORT igdeDialogBrowserSkin : public igdeDialogBrowser{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeDialogBrowserSkin> Ref;
+	using Ref = deTObjectReference<igdeDialogBrowserSkin>;
 	
 	/** \name Constructors and Destructors */
 	/*@{*/

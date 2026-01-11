@@ -49,7 +49,7 @@ protected:
 	ceWPTMAWaitActionsCutAction();
 	
 public:
-	typedef deTObjectReference<ceWPTMAWaitActionsCutAction> Ref;
+	using Ref = deTObjectReference<ceWPTMAWaitActionsCutAction>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */

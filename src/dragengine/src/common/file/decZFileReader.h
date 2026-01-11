@@ -46,7 +46,7 @@
 class DE_DLL_EXPORT decZFileReader : public decBaseFileReader{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<decZFileReader> Ref;
+	using Ref = deTObjectReference<decZFileReader>;
 	
 	
 private:

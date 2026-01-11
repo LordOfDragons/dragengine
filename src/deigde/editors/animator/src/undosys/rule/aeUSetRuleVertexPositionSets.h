@@ -37,7 +37,7 @@
  */
 class aeUSetRuleVertexPositionSets : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUSetRuleVertexPositionSets> Ref;
+	using Ref = deTObjectReference<aeUSetRuleVertexPositionSets>;
 	
 	
 protected:

@@ -83,7 +83,7 @@ class cComboType : public igdeComboBoxListener{
 	syneWPAPanelSourceWave &pPanel;
 	
 public:
-	typedef deTObjectReference<cComboType> Ref;
+	using Ref = deTObjectReference<cComboType>;
 	cComboType(syneWPAPanelSourceWave &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -105,7 +105,7 @@ public:
 
 class cTextMinFrequency : public cBaseTextFieldListener {
 public:
-	typedef deTObjectReference<cTextMinFrequency> Ref;
+	using Ref = deTObjectReference<cTextMinFrequency>;
 	cTextMinFrequency(syneWPAPanelSourceWave &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref  OnChanged(igdeTextField *textField, syneSourceWave *source) override{
@@ -117,7 +117,7 @@ public:
 
 class cTextMaxFrequency : public cBaseTextFieldListener {
 public:
-	typedef deTObjectReference<cTextMaxFrequency> Ref;
+	using Ref = deTObjectReference<cTextMaxFrequency>;
 	cTextMaxFrequency(syneWPAPanelSourceWave &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref  OnChanged(igdeTextField *textField, syneSourceWave *source) override{

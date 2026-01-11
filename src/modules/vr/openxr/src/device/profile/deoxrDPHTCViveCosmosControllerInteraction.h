@@ -33,7 +33,7 @@
  */
 class deoxrDPHTCViveCosmosControllerInteraction : public deoxrDPBaseTwoHandController{
 public:
-	typedef deTObjectReference<deoxrDPHTCViveCosmosControllerInteraction> Ref;
+	using Ref = deTObjectReference<deoxrDPHTCViveCosmosControllerInteraction>;
 	
 	/** \name Constructors and Destructors */
 	/*@{*/

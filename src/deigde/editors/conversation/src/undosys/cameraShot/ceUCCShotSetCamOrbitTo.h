@@ -38,7 +38,7 @@
  */
 class ceUCCShotSetCamOrbitTo : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCCShotSetCamOrbitTo> Ref;
+	using Ref = deTObjectReference<ceUCCShotSetCamOrbitTo>;
 	
 	
 private:

@@ -44,7 +44,7 @@ class deImage;
  */
 class deoglRImage : public deObject{
 public:
-	typedef deTObjectReference<deoglRImage> Ref;
+	using Ref = deTObjectReference<deoglRImage>;
 	
 	
 private:

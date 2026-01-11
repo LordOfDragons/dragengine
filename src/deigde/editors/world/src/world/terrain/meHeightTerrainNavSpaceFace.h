@@ -37,8 +37,8 @@ class meHeightTerrainNavSpaceType;
  */
 class meHeightTerrainNavSpaceFace : public deObject{
 public:
-	typedef deTObjectReference<meHeightTerrainNavSpaceFace> Ref;
-	typedef decTObjectOrderedSet<meHeightTerrainNavSpaceFace> List;
+	using Ref = deTObjectReference<meHeightTerrainNavSpaceFace>;
+	using List = decTObjectOrderedSet<meHeightTerrainNavSpaceFace>;
 	
 	
 private:

@@ -39,7 +39,7 @@
  */
 class gdeUOCEnvMapProbeSetPropertyName : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCEnvMapProbeSetPropertyName> Ref;
+	using Ref = deTObjectReference<gdeUOCEnvMapProbeSetPropertyName>;
 	
 	
 private:

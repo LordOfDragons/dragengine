@@ -43,7 +43,7 @@
 class DE_DLL_EXPORT deEffectFilterKernel : public deEffect{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deEffectFilterKernel> Ref;
+	using Ref = deTObjectReference<deEffectFilterKernel>;
 	
 	
 private:

@@ -44,7 +44,7 @@
  */
 class meUHTSetPathHI : public igdeUndo{
 public:
-	typedef deTObjectReference<meUHTSetPathHI> Ref;
+	using Ref = deTObjectReference<meUHTSetPathHI>;
 	
 	
 private:

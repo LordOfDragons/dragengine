@@ -34,7 +34,7 @@
  */
 class aeUControllerSetFromMove : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUControllerSetFromMove> Ref;
+	using Ref = deTObjectReference<aeUControllerSetFromMove>;
 	
 	
 private:

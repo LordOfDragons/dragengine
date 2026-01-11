@@ -38,7 +38,7 @@
 class DE_DLL_EXPORT igdeSlider : public igdeWidget{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeSlider> Ref;
+	using Ref = deTObjectReference<igdeSlider>;
 	
 	
 	/** \brief Orientation. */

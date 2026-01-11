@@ -104,6 +104,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxButton igdeNativeButton;
+using igdeNativeButton = igdeNativeFoxButton;
 
 #endif

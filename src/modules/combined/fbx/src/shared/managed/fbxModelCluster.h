@@ -47,7 +47,7 @@ class fbxRigBone;
 class fbxModelCluster : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<fbxModelCluster> Ref;
+	using Ref = deTObjectReference<fbxModelCluster>;
 	
 	
 private:

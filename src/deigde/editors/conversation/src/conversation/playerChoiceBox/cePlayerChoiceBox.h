@@ -44,7 +44,7 @@ class ceConversation;
  */
 class cePlayerChoiceBox : public deObject{
 public:
-	typedef deTObjectReference<cePlayerChoiceBox> Ref;
+	using Ref = deTObjectReference<cePlayerChoiceBox>;
 	
 private:
 	ceConversation &pConversation;

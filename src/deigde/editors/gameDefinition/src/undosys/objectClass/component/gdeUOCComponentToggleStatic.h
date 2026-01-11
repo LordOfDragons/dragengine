@@ -38,7 +38,7 @@
  */
 class gdeUOCComponentToggleStatic : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCComponentToggleStatic> Ref;
+	using Ref = deTObjectReference<gdeUOCComponentToggleStatic>;
 	
 	
 private:

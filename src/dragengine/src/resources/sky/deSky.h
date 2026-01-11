@@ -54,7 +54,7 @@ class deSkyManager;
 class DE_DLL_EXPORT deSky : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deSky> Ref;
+	using Ref = deTObjectReference<deSky>;
 	
 	
 private:

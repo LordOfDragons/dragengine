@@ -41,9 +41,9 @@ class deAnimatorRuleSubAnimator;
  */
 class aeRuleSubAnimator : public aeRule{
 public:
-	typedef deTObjectReference<aeRuleSubAnimator> Ref;
+	using Ref = deTObjectReference<aeRuleSubAnimator>;
 	
-	typedef decTObjectList<aeController> ConnectionList;
+	using ConnectionList = decTObjectList<aeController>;
 	
 	
 private:

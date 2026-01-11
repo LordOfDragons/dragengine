@@ -37,7 +37,7 @@
  */
 class ceUCAMusicSetName : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCAMusicSetName> Ref;
+	using Ref = deTObjectReference<ceUCAMusicSetName>;
 	
 	
 private:

@@ -37,7 +37,7 @@
  */
 class meWPUndoHistory : public igdeWPUndoHistory{
 public:
-	typedef deTObjectReference<meWPUndoHistory> Ref;
+	using Ref = deTObjectReference<meWPUndoHistory>;
 	
 private:
 	meWorld::Ref pWorld;

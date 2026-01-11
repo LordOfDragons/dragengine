@@ -37,7 +37,7 @@
 class gdeClipboardDataOCParticleEmitter : public igdeClipboardData{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeClipboardDataOCParticleEmitter> Ref;
+	using Ref = deTObjectReference<gdeClipboardDataOCParticleEmitter>;
 	
 	/** \brief Type name. */
 	static const char * const TYPE_NAME;

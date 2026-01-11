@@ -42,7 +42,7 @@
  */
 class meUHTVVariationRemove : public igdeUndo{
 public:
-	typedef deTObjectReference<meUHTVVariationRemove> Ref;
+	using Ref = deTObjectReference<meUHTVVariationRemove>;
 	
 	
 private:

@@ -41,7 +41,7 @@
 class DE_DLL_EXPORT delLoggerWritePipe : public deLogger{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<delLoggerWritePipe> Ref;
+	using Ref = deTObjectReference<delLoggerWritePipe>;
 	
 	
 private:

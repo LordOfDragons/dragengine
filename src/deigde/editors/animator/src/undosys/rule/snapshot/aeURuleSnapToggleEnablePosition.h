@@ -37,7 +37,7 @@
  */
 class aeURuleSnapToggleEnablePosition : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleSnapToggleEnablePosition> Ref;
+	using Ref = deTObjectReference<aeURuleSnapToggleEnablePosition>;
 	
 	
 private:

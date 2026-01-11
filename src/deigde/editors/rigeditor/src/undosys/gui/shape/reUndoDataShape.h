@@ -37,8 +37,8 @@
  */
 class reUndoDataShape : public deObject{
 public:
-	typedef deTObjectReference<reUndoDataShape> Ref;
-	typedef decTObjectOrderedSet<reUndoDataShape> List;
+	using Ref = deTObjectReference<reUndoDataShape>;
+	using List = decTObjectOrderedSet<reUndoDataShape>;
 	
 private:
 	reRigShape::Ref pShape;

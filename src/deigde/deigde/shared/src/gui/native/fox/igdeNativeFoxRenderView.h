@@ -160,6 +160,6 @@ private:
 	void pSyncSizes();
 };
 
-typedef igdeNativeFoxRenderView igdeNativeRenderView;
+using igdeNativeRenderView = igdeNativeFoxRenderView;
 
 #endif

@@ -37,7 +37,7 @@ class deoglRWorld;
 class deoglRCanvasRenderWorld : public deoglRCanvas{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglRCanvasRenderWorld> Ref;
+	using Ref = deTObjectReference<deoglRCanvasRenderWorld>;
 	
 	
 private:

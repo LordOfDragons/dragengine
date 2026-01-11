@@ -38,7 +38,7 @@
  */
 class gdeUOCSnapPointToggleSnapToRotation : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCSnapPointToggleSnapToRotation> Ref;
+	using Ref = deTObjectReference<gdeUOCSnapPointToggleSnapToRotation>;
 	
 	
 private:

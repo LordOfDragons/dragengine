@@ -35,7 +35,7 @@
 class DE_DLL_EXPORT decNullFileWriter : public decBaseFileWriter{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<decNullFileWriter> Ref;
+	using Ref = deTObjectReference<decNullFileWriter>;
 	
 	
 private:

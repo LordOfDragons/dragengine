@@ -46,7 +46,7 @@
 class DE_DLL_EXPORT deAnimatorRuleBoneTransformator : public deAnimatorRule{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deAnimatorRuleBoneTransformator> Ref;
+	using Ref = deTObjectReference<deAnimatorRuleBoneTransformator>;
 	
 	
 	/** \brief Coordinate frame. */

@@ -64,7 +64,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<dexsiDeviceFeedback> Ref;
+	using Ref = deTObjectReference<dexsiDeviceFeedback>;
 
 
 	/** \name Constructors and Destructors */

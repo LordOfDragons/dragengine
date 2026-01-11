@@ -38,14 +38,14 @@
  */
 class meUSetObjectClass : public igdeUndo{
 public:
-	typedef deTObjectReference<meUSetObjectClass> Ref;
+	using Ref = deTObjectReference<meUSetObjectClass>;
 	
 	
 private:
 	class cObject : public deObject{
 	public:
-		typedef deTObjectReference<cObject> Ref;
-		typedef decTObjectOrderedSet<cObject> List;
+		using Ref = deTObjectReference<cObject>;
+		using List = decTObjectOrderedSet<cObject>;
 		
 		meObject::Ref object;
 		decString oldcname, newcname;

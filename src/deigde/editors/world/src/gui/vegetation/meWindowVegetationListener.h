@@ -36,7 +36,7 @@ class meWindowVegetation;
  */
 class meWindowVegetationListener : public meWorldNotifier{
 public:
-	typedef deTObjectReference<meWindowVegetationListener> Ref;
+	using Ref = deTObjectReference<meWindowVegetationListener>;
 	
 private:
 	meWindowVegetation &pWindow;

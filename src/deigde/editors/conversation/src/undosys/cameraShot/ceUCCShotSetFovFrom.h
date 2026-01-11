@@ -36,7 +36,7 @@
  */
 class ceUCCShotSetFovFrom : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCCShotSetFovFrom> Ref;
+	using Ref = deTObjectReference<ceUCCShotSetFovFrom>;
 	
 	
 private:

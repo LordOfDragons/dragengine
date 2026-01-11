@@ -40,14 +40,14 @@
  */
 class seUPNGroupNodes : public igdeUndo{
 public:
-	typedef deTObjectReference<seUPNGroupNodes> Ref;
+	using Ref = deTObjectReference<seUPNGroupNodes>;
 	
 	
 private:
 	class cNode : public deObject{
 	public:
-		typedef deTObjectReference<cNode> Ref;
-		typedef decTObjectOrderedSet<cNode> List;
+		using Ref = deTObjectReference<cNode>;
+		using List = decTObjectOrderedSet<cNode>;
 		
 		sePropertyNode::Ref node;
 		decPoint3 position;

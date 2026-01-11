@@ -38,7 +38,7 @@
  */
 class gdeUOCCameraSetPropertyName : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCCameraSetPropertyName> Ref;
+	using Ref = deTObjectReference<gdeUOCCameraSetPropertyName>;
 	
 	
 private:

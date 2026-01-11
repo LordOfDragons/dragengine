@@ -40,7 +40,7 @@ class decBaseFileReader;
 class devkShaderModule : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<devkShaderModule> Ref;
+	using Ref = deTObjectReference<devkShaderModule>;
 	
 	
 private:

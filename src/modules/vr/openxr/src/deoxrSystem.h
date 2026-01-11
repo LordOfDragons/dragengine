@@ -40,7 +40,7 @@ class deoxrInstance;
 class deoxrSystem : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<deoxrSystem> Ref;
+	using Ref = deTObjectReference<deoxrSystem>;
 	
 	
 	/** System. */

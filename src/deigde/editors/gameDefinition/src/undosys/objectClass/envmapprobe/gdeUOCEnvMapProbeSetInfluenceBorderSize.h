@@ -38,7 +38,7 @@
  */
 class gdeUOCEnvMapProbeSetInfluenceBorderSize : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCEnvMapProbeSetInfluenceBorderSize> Ref;
+	using Ref = deTObjectReference<gdeUOCEnvMapProbeSetInfluenceBorderSize>;
 	
 	
 private:

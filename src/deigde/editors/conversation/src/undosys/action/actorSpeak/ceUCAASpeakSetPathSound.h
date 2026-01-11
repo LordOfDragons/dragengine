@@ -37,7 +37,7 @@
  */
 class ceUCAASpeakSetPathSound : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCAASpeakSetPathSound> Ref;
+	using Ref = deTObjectReference<ceUCAASpeakSetPathSound>;
 	
 	
 private:

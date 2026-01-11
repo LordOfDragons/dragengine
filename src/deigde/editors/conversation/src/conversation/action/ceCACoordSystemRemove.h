@@ -40,7 +40,7 @@ private:
 	decString pCoordSystemID;
 	
 public:
-	typedef deTObjectReference<ceCACoordSystemRemove> Ref;
+	using Ref = deTObjectReference<ceCACoordSystemRemove>;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new conversation action. */

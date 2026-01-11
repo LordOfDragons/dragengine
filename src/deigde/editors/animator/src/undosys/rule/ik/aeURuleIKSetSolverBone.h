@@ -42,7 +42,7 @@
  */
 class aeURuleIKSetSolverBone : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleIKSetSolverBone> Ref;
+	using Ref = deTObjectReference<aeURuleIKSetSolverBone>;
 	
 	
 private:

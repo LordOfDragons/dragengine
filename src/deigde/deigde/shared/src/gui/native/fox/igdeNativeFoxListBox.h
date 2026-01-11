@@ -128,6 +128,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxListBox igdeNativeListBox;
+using igdeNativeListBox = igdeNativeFoxListBox;
 
 #endif

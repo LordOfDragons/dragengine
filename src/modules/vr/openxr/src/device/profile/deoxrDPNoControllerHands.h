@@ -33,7 +33,7 @@
  */
 class deoxrDPNoControllerHands : public deoxrDeviceProfile{
 public:
-	typedef deTObjectReference<deoxrDPNoControllerHands> Ref;
+	using Ref = deTObjectReference<deoxrDPNoControllerHands>;
 	
 	
 protected:

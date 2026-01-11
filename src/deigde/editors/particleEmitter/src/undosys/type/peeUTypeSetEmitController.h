@@ -38,7 +38,7 @@
  */
 class peeUTypeSetEmitController : public igdeUndo{
 public:
-	typedef deTObjectReference<peeUTypeSetEmitController> Ref;
+	using Ref = deTObjectReference<peeUTypeSetEmitController>;
 	
 	
 private:

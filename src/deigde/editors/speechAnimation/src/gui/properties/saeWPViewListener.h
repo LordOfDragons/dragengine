@@ -36,7 +36,7 @@ class saeWPView;
  */
 class saeWPViewListener : public saeSAnimationListener{
 public:
-	typedef deTObjectReference<saeWPViewListener> Ref;
+	using Ref = deTObjectReference<saeWPViewListener>;
 	
 private:
 	saeWPView &pPanel;

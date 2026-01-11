@@ -72,7 +72,7 @@ private:
 	
 	class cCacheShaderTask : public deParallelTask{
 	public:
-		typedef deTObjectReference<cCacheShaderTask> Ref;
+		using Ref = deTObjectReference<cCacheShaderTask>;
 	
 	
 	private:

@@ -38,7 +38,7 @@
  */
 class reUSetBoneIKResistance : public igdeUndo{
 public:
-	typedef deTObjectReference<reUSetBoneIKResistance> Ref;
+	using Ref = deTObjectReference<reUSetBoneIKResistance>;
 	
 	
 private:

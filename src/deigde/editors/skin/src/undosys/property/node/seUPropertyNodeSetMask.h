@@ -38,7 +38,7 @@
  */
 class seUPropertyNodeSetMask : public igdeUndo{
 public:
-	typedef deTObjectReference<seUPropertyNodeSetMask> Ref;
+	using Ref = deTObjectReference<seUPropertyNodeSetMask>;
 	
 	
 private:

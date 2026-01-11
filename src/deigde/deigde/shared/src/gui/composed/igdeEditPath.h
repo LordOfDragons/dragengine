@@ -56,7 +56,7 @@ class DE_DLL_EXPORT igdeEditPath : public igdeContainerFlow{
 
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeEditPath> Ref;
+	using Ref = deTObjectReference<igdeEditPath>;
 	
 	
 protected:
@@ -66,7 +66,7 @@ protected:
 		igdeEditPath &pEditPath;
 		
 	public:
-		typedef deTObjectReference<cListenerTextField> Ref;
+		using Ref = deTObjectReference<cListenerTextField>;
 		cListenerTextField(igdeEditPath &editPath);
 		
 	protected:
@@ -82,7 +82,7 @@ protected:
 		igdeEditPath &pEditPath;
 		
 	public:
-		typedef deTObjectReference<cActionButton> Ref;
+		using Ref = deTObjectReference<cActionButton>;
 		cActionButton(igdeEditPath &editPath, const char *description);
 		
 	protected:
@@ -99,7 +99,7 @@ protected:
 		igdeEditPath &pEditPath;
 		
 	public:
-		typedef deTObjectReference<cActionButtonMenu> Ref;
+		using Ref = deTObjectReference<cActionButtonMenu>;
 		cActionButtonMenu(igdeEditPath &editPath, const char *description);
 		
 	protected:
@@ -117,7 +117,7 @@ protected:
 		bool pUseRelativePath;
 		
 	public:
-		typedef deTObjectReference<cActionSelectFileDialog> Ref;
+		using Ref = deTObjectReference<cActionSelectFileDialog>;
 		cActionSelectFileDialog(igdeEditPath &editPath, igdeTextField &textField);
 		
 	protected:
@@ -135,7 +135,7 @@ protected:
 		igdeEditPath &pEditPath;
 		
 	public:
-		typedef deTObjectReference<cActionSkinSelectDialog> Ref;
+		using Ref = deTObjectReference<cActionSkinSelectDialog>;
 		cActionSkinSelectDialog(igdeEditPath &editPath);
 		
 	protected:
@@ -151,7 +151,7 @@ protected:
 		igdeEditPath &pEditPath;
 		
 	public:
-		typedef deTObjectReference<cActionBrowseFile> Ref;
+		using Ref = deTObjectReference<cActionBrowseFile>;
 		cActionBrowseFile(igdeEditPath &editPath);
 		
 	protected:
@@ -168,7 +168,7 @@ protected:
 		igdeEditPath &pEditPath;
 		
 	public:
-		typedef deTObjectReference<cActionConvertAbsolute> Ref;
+		using Ref = deTObjectReference<cActionConvertAbsolute>;
 		cActionConvertAbsolute(igdeEditPath &editPath);
 		
 	protected:
@@ -185,7 +185,7 @@ protected:
 		igdeEditPath &pEditPath;
 		
 	public:
-		typedef deTObjectReference<cActionConvertRelative> Ref;
+		using Ref = deTObjectReference<cActionConvertRelative>;
 		cActionConvertRelative(igdeEditPath &editPath);
 		
 	protected:

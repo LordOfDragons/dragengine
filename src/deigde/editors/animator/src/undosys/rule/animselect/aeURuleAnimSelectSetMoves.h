@@ -38,7 +38,7 @@
  */
 class aeURuleAnimSelectSetMoves : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleAnimSelectSetMoves> Ref;
+	using Ref = deTObjectReference<aeURuleAnimSelectSetMoves>;
 	
 	
 private:

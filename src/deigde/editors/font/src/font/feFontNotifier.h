@@ -43,7 +43,7 @@ class feFontGlyph;
 class feFontNotifier : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<feFontNotifier> Ref;
+	using Ref = deTObjectReference<feFontNotifier>;
 
 
 	/** @name Constructors and Destructors */

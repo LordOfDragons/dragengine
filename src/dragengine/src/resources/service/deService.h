@@ -53,7 +53,7 @@ class deBaseScriptingService;
 class DE_DLL_EXPORT deService : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deService> Ref;
+	using Ref = deTObjectReference<deService>;
 	
 	
 private:

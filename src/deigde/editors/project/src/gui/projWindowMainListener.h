@@ -36,7 +36,7 @@ class projWindowMain;
  */
 class projWindowMainListener : public projProjectListener{
 public:
-	typedef deTObjectReference<projWindowMainListener> Ref;
+	using Ref = deTObjectReference<projWindowMainListener>;
 	
 	
 private:

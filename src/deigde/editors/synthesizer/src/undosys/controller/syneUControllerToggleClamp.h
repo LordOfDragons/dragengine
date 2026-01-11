@@ -35,7 +35,7 @@
  */
 class syneUControllerToggleClamp : public igdeUndo{
 public:
-	typedef deTObjectReference<syneUControllerToggleClamp> Ref;
+	using Ref = deTObjectReference<syneUControllerToggleClamp>;
 	
 	
 private:

@@ -43,7 +43,7 @@ class delEngineInstance;
 class DE_DLL_EXPORT delGameProfile : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<delGameProfile> Ref;
+	using Ref = deTObjectReference<delGameProfile>;
 	
 	
 private:

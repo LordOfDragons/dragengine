@@ -43,7 +43,7 @@
  */
 class meUHTVVarSetSkin : public igdeUndo{
 public:
-	typedef deTObjectReference<meUHTVVarSetSkin> Ref;
+	using Ref = deTObjectReference<meUHTVVarSetSkin>;
 	
 	
 private:

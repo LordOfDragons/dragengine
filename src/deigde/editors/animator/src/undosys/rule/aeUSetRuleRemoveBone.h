@@ -37,7 +37,7 @@
  */
 class aeUSetRuleRemoveBone : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUSetRuleRemoveBone> Ref;
+	using Ref = deTObjectReference<aeUSetRuleRemoveBone>;
 	
 	
 private:

@@ -37,7 +37,7 @@
  */
 class aeURuleAnimToggleEnableSize : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleAnimToggleEnableSize> Ref;
+	using Ref = deTObjectReference<aeURuleAnimToggleEnableSize>;
 	
 	
 private:

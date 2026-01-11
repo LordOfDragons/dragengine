@@ -35,7 +35,7 @@ class deoglRComponent;
  */
 class deoglRComponentWCElement : public deoglWorldComputeElement{
 public:
-	typedef deTObjectReference<deoglRComponentWCElement> Ref;
+	using Ref = deTObjectReference<deoglRComponentWCElement>;
 	
 	
 private:

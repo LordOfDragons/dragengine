@@ -36,7 +36,7 @@ class deoglRenderTaskSharedPool;
  */
 class deoglRenderTaskSharedVAO : public deObject{
 public:
-	typedef deTObjectReference<deoglRenderTaskSharedVAO> Ref;
+	using Ref = deTObjectReference<deoglRenderTaskSharedVAO>;
 	
 	
 private:

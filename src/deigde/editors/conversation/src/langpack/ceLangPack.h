@@ -38,8 +38,8 @@ class ceLangPackEntry;
  */
 class ceLangPack : public deObject{
 public:
-	typedef deTObjectReference<ceLangPack> Ref;
-	typedef decTStringDictionary<decUnicodeString> EntryMap;
+	using Ref = deTObjectReference<ceLangPack>;
+	using EntryMap = decTStringDictionary<decUnicodeString>;
 	
 	
 private:

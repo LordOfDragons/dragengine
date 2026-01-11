@@ -40,7 +40,7 @@
  */
 class gdeUOCNavBlockerSetRotation : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCNavBlockerSetRotation> Ref;
+	using Ref = deTObjectReference<gdeUOCNavBlockerSetRotation>;
 	
 	
 private:

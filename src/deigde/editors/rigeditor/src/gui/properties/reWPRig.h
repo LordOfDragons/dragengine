@@ -43,7 +43,7 @@ class reWindowProperties;
  */
 class reWPRig : public igdeContainerScroll{
 public:
-	typedef deTObjectReference<reWPRig> Ref;
+	using Ref = deTObjectReference<reWPRig>;
 	
 private:
 	reWindowProperties &pWindowProperties;

@@ -37,7 +37,7 @@
  */
 class deoglREffectDistortImage : public deoglREffect{
 public:
-	typedef deTObjectReference<deoglREffectDistortImage> Ref;
+	using Ref = deTObjectReference<deoglREffectDistortImage>;
 	
 	
 private:

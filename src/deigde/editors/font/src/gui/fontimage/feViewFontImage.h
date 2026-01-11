@@ -46,7 +46,7 @@ class feWindowMain;
 class feViewFontImage : public igdeContainerBorder{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<feViewFontImage> Ref;
+	using Ref = deTObjectReference<feViewFontImage>;
 	
 private:
 	feWindowMain &pWindowMain;

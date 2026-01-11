@@ -50,7 +50,7 @@ class deHeightTerrainSector;
 class deoglRHTSector : public deObject{
 public:
 	/** Type holding strong reference. */
-	typedef deTObjectReference<deoglRHTSector> Ref;
+	using Ref = deTObjectReference<deoglRHTSector>;
 	
 	
 private:

@@ -38,7 +38,7 @@
  */
 class ceUCAASpeakMoveTbt2Translation : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCAASpeakMoveTbt2Translation> Ref;
+	using Ref = deTObjectReference<ceUCAASpeakMoveTbt2Translation>;
 	
 	
 private:

@@ -38,7 +38,7 @@
  */
 class gdeUOCComponentSetRigPath : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCComponentSetRigPath> Ref;
+	using Ref = deTObjectReference<gdeUOCComponentSetRigPath>;
 	
 	
 private:

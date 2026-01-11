@@ -38,10 +38,10 @@
 class gdeOCSpeaker : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeOCSpeaker> Ref;
+	using Ref = deTObjectReference<gdeOCSpeaker>;
 
 	/** \brief Type holding list. */
-	typedef decTObjectOrderedSet<gdeOCSpeaker> List;
+	using List = decTObjectOrderedSet<gdeOCSpeaker>;
 	
 	
 	/** \brief Properties. */

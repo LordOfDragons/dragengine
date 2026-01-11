@@ -41,8 +41,8 @@ class reRig;
  */
 class reRigTexture : public deObject{
 public:
-	typedef deTObjectReference<reRigTexture> Ref;
-	typedef decTObjectOrderedSet<reRigTexture> List;
+	using Ref = deTObjectReference<reRigTexture>;
+	using List = decTObjectOrderedSet<reRigTexture>;
 	
 	
 private:

@@ -53,7 +53,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeResourceLoaderTask> Ref;
+	using Ref = deTObjectReference<igdeResourceLoaderTask>;
 
 
 	/** \name Constructors and Destructors */

@@ -37,7 +37,7 @@ class DE_DLL_EXPORT igdeDialogMultilineValue : public igdeDialog{
 
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeDialogMultilineValue> Ref;
+	using Ref = deTObjectReference<igdeDialogMultilineValue>;
 	
 	
 private:

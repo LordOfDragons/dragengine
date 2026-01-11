@@ -34,7 +34,7 @@
  */
 class ceWPTTIMAction : public ceWPTTreeItemModel{
 public:
-	typedef deTObjectReference<ceWPTTIMAction> Ref;
+	using Ref = deTObjectReference<ceWPTTIMAction>;
 	
 private:
 	ceConversationAction::Ref pAction;

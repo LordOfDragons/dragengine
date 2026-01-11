@@ -36,7 +36,7 @@
  */
 class aeWPAPanelRuleLimit : public aeWPAPanelRule{
 public:
-	typedef deTObjectReference<aeWPAPanelRuleLimit> Ref;
+	using Ref = deTObjectReference<aeWPAPanelRuleLimit>;
 	
 	
 private:

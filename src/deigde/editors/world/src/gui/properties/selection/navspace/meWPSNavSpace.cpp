@@ -69,7 +69,7 @@ class cSpinNavSpace : public igdeSpinTextFieldListener{
 	meWPSNavSpace &pPanel;
 	
 public:
-	typedef deTObjectReference<cSpinNavSpace> Ref;
+	using Ref = deTObjectReference<cSpinNavSpace>;
 	cSpinNavSpace(meWPSNavSpace &panel) : pPanel(panel){}
 	
 	void OnValueChanged(igdeSpinTextField *textField) override{
@@ -98,7 +98,7 @@ class cPathNavSpace : public igdeEditPathListener{
 	meWPSNavSpace &pPanel;
 	
 public:
-	typedef deTObjectReference<cPathNavSpace> Ref;
+	using Ref = deTObjectReference<cPathNavSpace>;
 	cPathNavSpace(meWPSNavSpace &panel) : pPanel(panel){}
 	
 	void OnEditPathChanged(igdeEditPath *editPath) override{
@@ -120,7 +120,7 @@ class cEditPosition : public igdeEditDVectorListener{
 	meWPSNavSpace &pPanel;
 	
 public:
-	typedef deTObjectReference<cEditPosition> Ref;
+	using Ref = deTObjectReference<cEditPosition>;
 	cEditPosition(meWPSNavSpace &panel) : pPanel(panel){}
 	
 	void OnDVectorChanged(igdeEditDVector *editDVector) override{
@@ -142,7 +142,7 @@ class cEditOrientation : public igdeEditVectorListener{
 	meWPSNavSpace &pPanel;
 	
 public:
-	typedef deTObjectReference<cEditOrientation> Ref;
+	using Ref = deTObjectReference<cEditOrientation>;
 	cEditOrientation(meWPSNavSpace &panel) : pPanel(panel){}
 	
 	void OnVectorChanged(igdeEditVector *editVector) override{

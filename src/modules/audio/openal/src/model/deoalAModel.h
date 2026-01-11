@@ -47,7 +47,7 @@ class deModelLOD;
 class deoalAModel : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoalAModel> Ref;
+	using Ref = deTObjectReference<deoalAModel>;
 	
 	
 	/** \brief Weight. */

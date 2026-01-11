@@ -38,7 +38,7 @@
  */
 class gdeUOCBillboardToggleDoNotScale : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCBillboardToggleDoNotScale> Ref;
+	using Ref = deTObjectReference<gdeUOCBillboardToggleDoNotScale>;
 	
 	
 private:

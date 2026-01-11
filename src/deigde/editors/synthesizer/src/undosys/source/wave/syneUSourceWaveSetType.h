@@ -37,7 +37,7 @@
  */
 class syneUSourceWaveSetType : public igdeUndo{
 public:
-	typedef deTObjectReference<syneUSourceWaveSetType> Ref;
+	using Ref = deTObjectReference<syneUSourceWaveSetType>;
 	
 	
 private:

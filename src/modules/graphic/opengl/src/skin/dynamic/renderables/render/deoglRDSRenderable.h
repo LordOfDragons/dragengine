@@ -43,7 +43,7 @@ class deoglRenderPlanMasked;
 class deoglRDSRenderable : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglRDSRenderable> Ref;
+	using Ref = deTObjectReference<deoglRDSRenderable>;
 	
 	
 	enum eType{

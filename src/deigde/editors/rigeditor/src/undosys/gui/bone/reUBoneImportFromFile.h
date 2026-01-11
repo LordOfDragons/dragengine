@@ -45,13 +45,13 @@
  */
 class reUBoneImportFromFile : public igdeUndo{
 public:
-	typedef deTObjectReference<reUBoneImportFromFile> Ref;
+	using Ref = deTObjectReference<reUBoneImportFromFile>;
 	
 	
 private:
 	class cBone : public deObject{
 	public:
-		typedef deTObjectReference<cBone> Ref;
+		using Ref = deTObjectReference<cBone>;
 		
 		reRigBone::Ref bone;
 		reRigBone::Ref importBone;

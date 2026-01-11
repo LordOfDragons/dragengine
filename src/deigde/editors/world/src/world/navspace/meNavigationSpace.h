@@ -53,10 +53,10 @@ class meWorld;
 class meNavigationSpace : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meNavigationSpace> Ref;
+	using Ref = deTObjectReference<meNavigationSpace>;
 	
 	/** \brief List type. */
-	typedef decTObjectOrderedSet<meNavigationSpace> List;
+	using List = decTObjectOrderedSet<meNavigationSpace>;
 	
 	
 private:

@@ -38,7 +38,7 @@
  */
 class gdeUOCComponentToggleLightShadowIgnore : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCComponentToggleLightShadowIgnore> Ref;
+	using Ref = deTObjectReference<gdeUOCComponentToggleLightShadowIgnore>;
 	
 	
 private:

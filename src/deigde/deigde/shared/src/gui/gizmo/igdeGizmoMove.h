@@ -37,7 +37,7 @@
 class DE_DLL_EXPORT igdeGizmoMove : public igdeGizmo{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeGizmoMove> Ref;
+	using Ref = deTObjectReference<igdeGizmoMove>;
 	
 	
 	/** \brief Action. */

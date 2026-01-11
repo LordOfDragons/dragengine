@@ -37,7 +37,7 @@
  */
 class aeURuleTrackToSetLockedAxis : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleTrackToSetLockedAxis> Ref;
+	using Ref = deTObjectReference<aeURuleTrackToSetLockedAxis>;
 	
 	
 private:

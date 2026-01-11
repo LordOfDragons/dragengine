@@ -49,10 +49,10 @@ class deLogger;
 class DE_DLL_EXPORT igdeWidget : public deObject{
 public:
 	/** \brief Strong reference. */
-	typedef deTObjectReference<igdeWidget> Ref;
+	using Ref = deTObjectReference<igdeWidget>;
 	
 	/** \brief Weak reference. */
-	typedef deTWeakObjectReference<igdeWidget> WeakRef;
+	using WeakRef = deTWeakObjectReference<igdeWidget>;
 	
 	
 private:

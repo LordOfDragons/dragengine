@@ -38,7 +38,7 @@
  */
 class ceUCCGameCmdToggleNegate : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCCGameCmdToggleNegate> Ref;
+	using Ref = deTObjectReference<ceUCCGameCmdToggleNegate>;
 	
 	
 private:

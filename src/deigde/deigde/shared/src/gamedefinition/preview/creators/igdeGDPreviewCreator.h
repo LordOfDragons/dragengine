@@ -67,7 +67,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeGDPreviewCreator> Ref;
+	using Ref = deTObjectReference<igdeGDPreviewCreator>;
 
 
 	/** \name Constructors and Destructors */

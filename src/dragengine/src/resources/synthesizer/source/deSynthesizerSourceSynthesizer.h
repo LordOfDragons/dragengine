@@ -35,7 +35,7 @@
 class DE_DLL_EXPORT deSynthesizerSourceSynthesizer : public deSynthesizerSource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deSynthesizerSourceSynthesizer> Ref;
+	using Ref = deTObjectReference<deSynthesizerSourceSynthesizer>;
 	
 	
 private:

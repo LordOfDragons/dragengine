@@ -70,7 +70,7 @@ public:
 
 class cActionCameraChanged : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionCameraChanged> Ref;
+	using Ref = deTObjectReference<cActionCameraChanged>;
 	cActionCameraChanged(skyeWPView &panel) : cBaseAction(panel, "", ""){}
 	
 	void OnAction(skyeSky &sky) override{
@@ -80,7 +80,7 @@ public:
 
 class cActionEnvObjChanged : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnvObjChanged> Ref;
+	using Ref = deTObjectReference<cActionEnvObjChanged>;
 	cActionEnvObjChanged(skyeWPView &panel) : cBaseAction(panel, "", ""){}
 	
 	void OnAction(skyeSky &sky) override{

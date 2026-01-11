@@ -41,7 +41,7 @@
 class meHTVRuleRandom : public meHTVRule{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meHTVRuleRandom> Ref;
+	using Ref = deTObjectReference<meHTVRuleRandom>;
 	
 	
 	/** \brief Slots. */

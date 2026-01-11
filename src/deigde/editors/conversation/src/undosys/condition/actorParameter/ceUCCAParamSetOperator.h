@@ -40,7 +40,7 @@ class ceCConditionActorParameter;
  */
 class ceUCCAParamSetOperator : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCCAParamSetOperator> Ref;
+	using Ref = deTObjectReference<ceUCCAParamSetOperator>;
 	
 	
 private:

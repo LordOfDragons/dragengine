@@ -34,7 +34,7 @@
  */
 class ceUCTopicActionPaste : public ceUCActionPaste{
 public:
-	typedef deTObjectReference<ceUCTopicActionPaste> Ref;
+	using Ref = deTObjectReference<ceUCTopicActionPaste>;
 
 public:
 	/** \name Constructors and Destructors */

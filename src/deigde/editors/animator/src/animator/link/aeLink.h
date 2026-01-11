@@ -43,8 +43,8 @@ class deAnimatorLink;
  */
 class aeLink : public deObject{
 public:
-	typedef deTObjectReference<aeLink> Ref;
-	typedef decTObjectOrderedSet<aeLink> List;
+	using Ref = deTObjectReference<aeLink>;
+	using List = decTObjectOrderedSet<aeLink>;
 	
 	
 private:

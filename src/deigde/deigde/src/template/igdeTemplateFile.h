@@ -39,10 +39,10 @@
 class igdeTemplateFile : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeTemplateFile> Ref;
+	using Ref = deTObjectReference<igdeTemplateFile>;
 
 	/** \brief List of template files. */
-	typedef decTObjectOrderedSet<igdeTemplateFile> List;
+	using List = decTObjectOrderedSet<igdeTemplateFile>;
 
 
 	/** \brief Directories. */

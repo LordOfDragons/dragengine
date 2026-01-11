@@ -43,7 +43,7 @@ class deImage;
  */
 class meUHTImportHeightImage : public igdeUndo{
 public:
-	typedef deTObjectReference<meUHTImportHeightImage> Ref;
+	using Ref = deTObjectReference<meUHTImportHeightImage>;
 	
 	
 public:

@@ -60,7 +60,7 @@ class mePropFieldType;
  */
 class meWorldNotifier : public deObject{
 public:
-	typedef deTObjectReference<meWorldNotifier> Ref;
+	using Ref = deTObjectReference<meWorldNotifier>;
 	
 	
 	/** \name Constructors and Destructors */

@@ -43,7 +43,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<projTRPParameter> Ref;
+	using Ref = deTObjectReference<projTRPParameter>;
 
 
 	/** \name Constructors and Destructors */

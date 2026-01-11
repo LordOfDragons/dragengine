@@ -34,7 +34,7 @@
 /** Undo action property node set mapped. */
 class seUPropertyNodeSetMapped : public igdeUndo{
 public:
-	typedef deTObjectReference<seUPropertyNodeSetMapped> Ref;
+	using Ref = deTObjectReference<seUPropertyNodeSetMapped>;
 	
 	
 private:

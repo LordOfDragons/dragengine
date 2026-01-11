@@ -60,7 +60,7 @@ class cListTextureNames : public igdeListBoxListener{
 	seDialogAddTexture &pDialog;
 	
 public:
-	typedef deTObjectReference<cListTextureNames> Ref;
+	using Ref = deTObjectReference<cListTextureNames>;
 	cListTextureNames(seDialogAddTexture &dialog) : pDialog(dialog){}
 	
 	void OnSelectionChanged(igdeListBox *listBox) override{
@@ -79,7 +79,7 @@ class cTextTextureName : public igdeTextFieldListener{
 	seDialogAddTexture &pDialog;
 	
 public:
-	typedef deTObjectReference<cTextTextureName> Ref;
+	using Ref = deTObjectReference<cTextTextureName>;
 	cTextTextureName(seDialogAddTexture &dialog) : pDialog(dialog){}
 	
 	void OnTextChanging(igdeTextField *textField) override{

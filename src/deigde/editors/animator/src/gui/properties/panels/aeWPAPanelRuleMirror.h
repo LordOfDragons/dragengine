@@ -37,7 +37,7 @@
  */
 class aeWPAPanelRuleMirror : public aeWPAPanelRule{
 public:
-	typedef deTObjectReference<aeWPAPanelRuleMirror> Ref;
+	using Ref = deTObjectReference<aeWPAPanelRuleMirror>;
 	
 	
 private:

@@ -34,7 +34,7 @@
  */
 class aeUSetRuleRemoveAllVertexPositionSets : public aeUSetRuleVertexPositionSets{
 public:
-	typedef deTObjectReference<aeUSetRuleRemoveAllVertexPositionSets> Ref;
+	using Ref = deTObjectReference<aeUSetRuleRemoveAllVertexPositionSets>;
 	
 	/** \name Constructors and Destructors */
 	/*@{*/

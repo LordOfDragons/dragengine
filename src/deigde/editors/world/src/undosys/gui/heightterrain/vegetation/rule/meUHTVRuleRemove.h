@@ -36,7 +36,7 @@
  */
 class meUHTVRuleRemove : public igdeUndo{
 public:
-	typedef deTObjectReference<meUHTVRuleRemove> Ref;
+	using Ref = deTObjectReference<meUHTVRuleRemove>;
 	
 	
 private:

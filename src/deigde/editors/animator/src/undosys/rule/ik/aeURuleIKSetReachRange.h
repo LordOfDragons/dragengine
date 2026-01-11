@@ -36,7 +36,7 @@
  */
 class aeURuleIKSetReachRange : public igdeUndo{
 public:
-	typedef deTObjectReference<aeURuleIKSetReachRange> Ref;
+	using Ref = deTObjectReference<aeURuleIKSetReachRange>;
 	
 	
 private:

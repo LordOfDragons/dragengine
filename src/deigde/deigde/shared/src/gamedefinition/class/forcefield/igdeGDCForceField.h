@@ -39,10 +39,10 @@
 class DE_DLL_EXPORT igdeGDCForceField : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeGDCForceField> Ref;
+	using Ref = deTObjectReference<igdeGDCForceField>;
 	
 	/** \brief Type holding list of objects. */
-	typedef decTObjectOrderedSet<igdeGDCForceField> List;
+	using List = decTObjectOrderedSet<igdeGDCForceField>;
 	
 	
 	/** \brief Properties. */

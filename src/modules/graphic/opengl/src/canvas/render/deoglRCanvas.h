@@ -43,7 +43,7 @@ class deoglRenderPlanMasked;
 class deoglRCanvas : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglRCanvas> Ref;
+	using Ref = deTObjectReference<deoglRCanvas>;
 	
 	
 	static const int BlendModeCount = deCanvas::ebmAdd + 1;

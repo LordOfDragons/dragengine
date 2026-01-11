@@ -38,7 +38,7 @@
  */
 class lpeULangPackSetMissingText : public igdeUndo{
 public:
-	typedef deTObjectReference<lpeULangPackSetMissingText> Ref;
+	using Ref = deTObjectReference<lpeULangPackSetMissingText>;
 	
 	
 private:

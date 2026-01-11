@@ -35,7 +35,7 @@
  */
 class meUDecalPropertyCopyToSelected : public igdeUndo{
 public:
-	typedef deTObjectReference<meUDecalPropertyCopyToSelected> Ref;
+	using Ref = deTObjectReference<meUDecalPropertyCopyToSelected>;
 	
 	
 private:

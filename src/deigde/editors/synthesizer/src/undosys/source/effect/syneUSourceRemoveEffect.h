@@ -38,7 +38,7 @@
  */
 class syneUSourceRemoveEffect : public igdeUndo{
 public:
-	typedef deTObjectReference<syneUSourceRemoveEffect> Ref;
+	using Ref = deTObjectReference<syneUSourceRemoveEffect>;
 	
 	
 private:

@@ -45,7 +45,7 @@ class igdeUIHelper;
 class DE_DLL_EXPORT igdeToggleTags : public igdeContainerFlow, igdeActionListener{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeToggleTags> Ref;
+	using Ref = deTObjectReference<igdeToggleTags>;
 	
 	
 protected:
@@ -55,7 +55,7 @@ protected:
 		igdeToggleTags &pWidget;
 		
 	public:
-		typedef deTObjectReference<cActionEnableAll> Ref;
+		using Ref = deTObjectReference<cActionEnableAll>;
 		cActionEnableAll(igdeToggleTags &widget);
 		void OnAction() override;
 	};
@@ -66,7 +66,7 @@ protected:
 		igdeToggleTags &pWidget;
 		
 	public:
-		typedef deTObjectReference<cActionDisableAll> Ref;
+		using Ref = deTObjectReference<cActionDisableAll>;
 		cActionDisableAll(igdeToggleTags &widget);
 		void OnAction() override;
 	};

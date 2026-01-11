@@ -39,7 +39,7 @@ class meHTVRuleCombine;
  */
 class meWVNodeCombine : public meWVNode{
 public:
-	typedef deTObjectReference<meWVNodeCombine> Ref;
+	using Ref = deTObjectReference<meWVNodeCombine>;
 	
 private:
 	meHTVRuleCombine *pRuleCombine;

@@ -39,7 +39,7 @@ class devkDevice;
 class devkRenderPass : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<devkRenderPass> Ref;
+	using Ref = deTObjectReference<devkRenderPass>;
 	
 	
 protected:

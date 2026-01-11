@@ -52,8 +52,8 @@ private:
 	bool pVisible;
 	
 public:
-	typedef deTObjectReference<ceProp> Ref;
-	typedef decTObjectOrderedSet<ceProp> List;
+	using Ref = deTObjectReference<ceProp>;
+	using List = decTObjectOrderedSet<ceProp>;
 
 
 	/** \name Constructors and Destructors */

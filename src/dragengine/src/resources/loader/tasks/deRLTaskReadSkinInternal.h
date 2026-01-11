@@ -42,7 +42,7 @@ class deSkinPropertyNodeText;
 class DE_DLL_EXPORT deRLTaskReadSkinInternal : public deResourceLoaderTask {
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTThreadSafeObjectReference<deRLTaskReadSkinInternal> Ref;
+	using Ref = deTThreadSafeObjectReference<deRLTaskReadSkinInternal>;
 	
 	
 	/**
@@ -56,7 +56,7 @@ public:
 	class DE_DLL_EXPORT cInternalTask : public deThreadSafeObject{
 	public:
 		/** \brief Type holding strong reference. */
-		typedef deTThreadSafeObjectReference<cInternalTask> Ref;
+		using Ref = deTThreadSafeObjectReference<cInternalTask>;
 		
 		
 	private:

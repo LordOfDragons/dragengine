@@ -1660,7 +1660,7 @@ void deSkinModule::pWriteProperty(decXmlWriter &writer, const deSkin &skin, deSk
 
 class desmModuleInternal : public deInternalModule{
 public:
-	typedef deTObjectReference<desmModuleInternal> Ref;
+	using Ref = deTObjectReference<desmModuleInternal>;
 	
 	desmModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DESkin");

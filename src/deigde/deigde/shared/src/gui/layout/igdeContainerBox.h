@@ -39,7 +39,7 @@
 class DE_DLL_EXPORT igdeContainerBox : public igdeContainer{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeContainerBox> Ref;
+	using Ref = deTObjectReference<igdeContainerBox>;
 	
 	
 	/** \brief Layout axis for subclasses. */

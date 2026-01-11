@@ -55,7 +55,7 @@ class deLogger;
  */
 class aeAnimatorLocomotion{
 public:
-	typedef decTObjectOrderedSet<aeAnimatorLocomotionLeg> LegList;
+	using LegList = decTObjectOrderedSet<aeAnimatorLocomotionLeg>;
 	
 	/** Locomotion type. */
 	enum eLocomotionTypes{

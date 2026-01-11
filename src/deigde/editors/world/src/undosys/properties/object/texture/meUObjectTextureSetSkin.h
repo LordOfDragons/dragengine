@@ -35,14 +35,14 @@
  */
 class meUObjectTextureSetSkin : public igdeUndo{
 public:
-	typedef deTObjectReference<meUObjectTextureSetSkin> Ref;
+	using Ref = deTObjectReference<meUObjectTextureSetSkin>;
 	
 	
 private:
 	class cTexture : public deObject{
 	public:
-		typedef deTObjectReference<cTexture> Ref;
-		typedef decTObjectOrderedSet<cTexture> List;
+		using Ref = deTObjectReference<cTexture>;
+		using List = decTObjectOrderedSet<cTexture>;
 		
 		meObjectTexture::Ref texture;
 		decString oldskin, newskin;

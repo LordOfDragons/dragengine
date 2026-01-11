@@ -144,7 +144,7 @@ deBaseVideoAudioDecoder *deVideoTheora::CreateAudioDecoder(decBaseFileReader *re
 
 class dethModuleInternal : public deInternalModule{
 public:
-	typedef deTObjectReference<dethModuleInternal> Ref;
+	using Ref = deTObjectReference<dethModuleInternal>;
 	
 	dethModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("Theora");

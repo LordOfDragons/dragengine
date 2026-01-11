@@ -41,7 +41,7 @@ class ceWPTopic;
  */
 class ceWPCGameCommand : public ceWPCondition{
 public:
-	typedef deTObjectReference<ceWPCGameCommand> Ref;
+	using Ref = deTObjectReference<ceWPCGameCommand>;
 
 private:
 	igdeTextField::Ref pEditCommand;

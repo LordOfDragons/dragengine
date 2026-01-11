@@ -37,7 +37,7 @@ class ceWPTTIMAIfElseIfCase;
  */
 class ceWPTTIMAIfElseIfCaseActions : public ceWPTTIMActions{
 public:
-	typedef deTObjectReference<ceWPTTIMAIfElseIfCaseActions> Ref;
+	using Ref = deTObjectReference<ceWPTTIMAIfElseIfCaseActions>;
 	
 	/** \brief Constructors and Destructors */
 	/*@{*/

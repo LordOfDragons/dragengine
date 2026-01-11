@@ -36,7 +36,7 @@
 class deglSharedIcon : public deObject{
 public:
 	/** Type holding strong reference. */
-	typedef deTObjectReference<deglSharedIcon> Ref;
+	using Ref = deTObjectReference<deglSharedIcon>;
 	
 	
 private:

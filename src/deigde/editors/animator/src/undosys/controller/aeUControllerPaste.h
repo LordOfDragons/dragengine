@@ -37,7 +37,7 @@
  */
 class aeUControllerPaste : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUControllerPaste> Ref;
+	using Ref = deTObjectReference<aeUControllerPaste>;
 	
 	
 private:

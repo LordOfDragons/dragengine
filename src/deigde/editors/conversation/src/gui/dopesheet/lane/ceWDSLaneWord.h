@@ -34,7 +34,7 @@
 class ceWDSLaneWord : public ceWDSLane{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceWDSLaneWord> Ref;
+	using Ref = deTObjectReference<ceWDSLaneWord>;
 	
 	
 	/** \name Constructors and Destructors */

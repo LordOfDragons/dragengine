@@ -48,7 +48,7 @@ class aeEditLinkMapping;
  */
 class aeWPLink : public igdeContainerScroll{
 public:
-	typedef deTObjectReference<aeWPLink> Ref;
+	using Ref = deTObjectReference<aeWPLink>;
 	
 	
 private:

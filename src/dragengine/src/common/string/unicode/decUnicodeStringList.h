@@ -32,7 +32,7 @@
 /**
  * \brief List of unicode strings.
  */
-typedef decTList<decUnicodeString> decUnicodeStringList;
+using decUnicodeStringList = decTList<decUnicodeString>;
 
 extern template class decTList<decUnicodeString>;
 

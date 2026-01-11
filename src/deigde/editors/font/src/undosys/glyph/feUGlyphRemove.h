@@ -37,7 +37,7 @@
  */
 class feUGlyphRemove : public igdeUndo{
 public:
-	typedef deTObjectReference<feUGlyphRemove> Ref;
+	using Ref = deTObjectReference<feUGlyphRemove>;
 	
 	
 private:

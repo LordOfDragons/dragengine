@@ -39,7 +39,7 @@ class reRigShapeCapsule;
  */
 class reWPPanelShapeCapsule : public reWPPanelShape{
 public:
-	typedef deTObjectReference<reWPPanelShapeCapsule> Ref;
+	using Ref = deTObjectReference<reWPPanelShapeCapsule>;
 	
 private:
 	igdeEditVector::Ref pEditPosition;

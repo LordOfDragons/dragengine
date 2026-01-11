@@ -33,7 +33,7 @@
  */
 class deoglSTPipelinesDecal : public deoglSkinTexturePipelines{
 public:
-	typedef deTObjectReference<deoglSTPipelinesDecal> Ref;
+	using Ref = deTObjectReference<deoglSTPipelinesDecal>;
 	
 	
 	/** \name Constructors and Destructors */

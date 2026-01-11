@@ -34,7 +34,7 @@
  */
 class reBaseClip : public deObject{
 public:
-	typedef deTObjectReference<reBaseClip> Ref;
+	using Ref = deTObjectReference<reBaseClip>;
 	
 	enum eClipTypes{
 		ectObject

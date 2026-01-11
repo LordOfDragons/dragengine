@@ -41,7 +41,7 @@ class deoglRenderCanvasContext;
  */
 class deoglSkinStateConstructedNode : public deObject{
 public:
-	typedef deTObjectReference<deoglSkinStateConstructedNode> Ref;
+	using Ref = deTObjectReference<deoglSkinStateConstructedNode>;
 	
 	
 	enum eType{

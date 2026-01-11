@@ -50,8 +50,8 @@ private:
 	
 	
 public:
-	typedef deTObjectReference<ceConversationFile> Ref;
-	typedef decTObjectOrderedSet<ceConversationFile> List;
+	using Ref = deTObjectReference<ceConversationFile>;
+	using List = decTObjectOrderedSet<ceConversationFile>;
 
 
 	/** \name Constructors and Destructors */

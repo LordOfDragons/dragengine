@@ -39,7 +39,7 @@ class DE_DLL_EXPORT igdeTextFieldListener : public deObject{
 
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeTextFieldListener> Ref;
+	using Ref = deTObjectReference<igdeTextFieldListener>;
 	
 	
 protected:

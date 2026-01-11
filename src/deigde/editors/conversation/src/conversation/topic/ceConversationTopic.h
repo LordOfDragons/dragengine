@@ -42,8 +42,8 @@ class ceConversationCondition;
  */
 class ceConversationTopic : public deObject{
 public:
-	typedef deTObjectReference<ceConversationTopic> Ref;
-	typedef decTObjectOrderedSet<ceConversationTopic> List;
+	using Ref = deTObjectReference<ceConversationTopic>;
+	using List = decTObjectOrderedSet<ceConversationTopic>;
 	
 	
 private:

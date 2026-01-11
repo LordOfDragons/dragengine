@@ -39,7 +39,7 @@
  */
 class seUPropertyAdd : public igdeUndo{
 public:
-	typedef deTObjectReference<seUPropertyAdd> Ref;
+	using Ref = deTObjectReference<seUPropertyAdd>;
 	
 	
 private:

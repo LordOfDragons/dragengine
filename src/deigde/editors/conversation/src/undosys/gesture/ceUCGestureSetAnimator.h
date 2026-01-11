@@ -36,7 +36,7 @@
  */
 class ceUCGestureSetAnimator : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCGestureSetAnimator> Ref;
+	using Ref = deTObjectReference<ceUCGestureSetAnimator>;
 	
 	
 private:

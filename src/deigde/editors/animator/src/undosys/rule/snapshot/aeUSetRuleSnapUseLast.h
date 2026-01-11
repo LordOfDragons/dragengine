@@ -42,7 +42,7 @@
  */
 class aeUSetRuleSnapUseLast : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUSetRuleSnapUseLast> Ref;
+	using Ref = deTObjectReference<aeUSetRuleSnapUseLast>;
 	
 	
 private:

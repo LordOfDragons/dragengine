@@ -49,7 +49,7 @@ class projWindowMain;
  */
 class projPanelProfiles : public igdeContainerSplitted{
 public:
-	typedef deTObjectReference<projPanelProfiles> Ref;
+	using Ref = deTObjectReference<projPanelProfiles>;
 	
 	
 private:

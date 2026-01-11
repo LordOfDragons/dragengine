@@ -44,7 +44,7 @@ private:
 	
 	
 public:
-	typedef deTObjectReference<ceWPACoordSystemAdd> Ref;
+	using Ref = deTObjectReference<ceWPACoordSystemAdd>;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */

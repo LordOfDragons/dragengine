@@ -51,7 +51,7 @@ class lpeIGDEModule;
  */
 class lpeWindowMain : public igdeEditorWindow{
 public:
-	typedef deTObjectReference<lpeWindowMain> Ref;
+	using Ref = deTObjectReference<lpeWindowMain>;
 	
 	
 private:

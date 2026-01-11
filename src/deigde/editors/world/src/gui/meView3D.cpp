@@ -72,7 +72,7 @@ class cEditorInteraction : public igdeMouseKeyListener {
 	meView3D &pView;
 	
 public:
-	typedef deTObjectReference<cEditorInteraction> Ref;
+	using Ref = deTObjectReference<cEditorInteraction>;
 	cEditorInteraction(meView3D &view) : pView(view){}
 	
 public:

@@ -35,7 +35,7 @@
 class DE_DLL_EXPORT deRLTaskReadImage : public deResourceLoaderTask {
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTThreadSafeObjectReference<deRLTaskReadImage> Ref;
+	using Ref = deTThreadSafeObjectReference<deRLTaskReadImage>;
 	
 	
 private:

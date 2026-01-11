@@ -34,7 +34,7 @@
  */
 class ceWPTTIMAGameCommand : public ceWPTTIMAction{
 public:
-	typedef deTObjectReference<ceWPTTIMAGameCommand> Ref;
+	using Ref = deTObjectReference<ceWPTTIMAGameCommand>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */

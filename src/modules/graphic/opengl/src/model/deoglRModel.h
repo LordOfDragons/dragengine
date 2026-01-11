@@ -44,7 +44,7 @@ class deModel;
 class deoglRModel : public deObject{
 public:
 	/** Type holding strong reference. */
-	typedef deTObjectReference<deoglRModel> Ref;
+	using Ref = deTObjectReference<deoglRModel>;
 	
 	
 public:

@@ -35,7 +35,7 @@
  */
 class syneUControllerSetMinimumValue : public igdeUndo{
 public:
-	typedef deTObjectReference<syneUControllerSetMinimumValue> Ref;
+	using Ref = deTObjectReference<syneUControllerSetMinimumValue>;
 	
 	
 private:

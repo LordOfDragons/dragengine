@@ -37,7 +37,7 @@
  */
 class syneUSetSourceSoundMinSpeed : public igdeUndo{
 public:
-	typedef deTObjectReference<syneUSetSourceSoundMinSpeed> Ref;
+	using Ref = deTObjectReference<syneUSetSourceSoundMinSpeed>;
 	
 	
 private:

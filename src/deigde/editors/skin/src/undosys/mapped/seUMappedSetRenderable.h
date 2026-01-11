@@ -36,7 +36,7 @@
  */
 class seUMappedSetRenderable : public igdeUndo{
 public:
-	typedef deTObjectReference<seUMappedSetRenderable> Ref;
+	using Ref = deTObjectReference<seUMappedSetRenderable>;
 	
 	
 private:

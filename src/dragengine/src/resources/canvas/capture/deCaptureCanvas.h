@@ -55,7 +55,7 @@ class deCaptureCanvasManager;
 class DE_DLL_EXPORT deCaptureCanvas : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deCaptureCanvas> Ref;
+	using Ref = deTObjectReference<deCaptureCanvas>;
 	
 	
 private:

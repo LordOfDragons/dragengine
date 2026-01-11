@@ -41,13 +41,13 @@
 class DE_DLL_EXPORT igdeColorBox : public igdeWidget{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeColorBox> Ref;
+	using Ref = deTObjectReference<igdeColorBox>;
 	
 	
 	class DE_DLL_EXPORT cActionCopy : public igdeAction{
 		igdeColorBox &pColorBox;
 	public:
-		typedef deTObjectReference<cActionCopy> Ref;
+		using Ref = deTObjectReference<cActionCopy>;
 		cActionCopy(igdeColorBox &colorBox);
 		void OnAction() override;
 	};
@@ -55,7 +55,7 @@ public:
 	class DE_DLL_EXPORT cActionCopyHex : public igdeAction{
 		igdeColorBox &pColorBox;
 	public:
-		typedef deTObjectReference<cActionCopyHex> Ref;
+		using Ref = deTObjectReference<cActionCopyHex>;
 		cActionCopyHex(igdeColorBox &colorBox);
 		void OnAction() override;
 	};
@@ -63,7 +63,7 @@ public:
 	class DE_DLL_EXPORT cActionPaste : public igdeAction{
 		igdeColorBox &pColorBox;
 	public:
-		typedef deTObjectReference<cActionPaste> Ref;
+		using Ref = deTObjectReference<cActionPaste>;
 		cActionPaste(igdeColorBox &colorBox);
 		void OnAction() override;
 	};
@@ -71,7 +71,7 @@ public:
 	class DE_DLL_EXPORT cActionPasteHex : public igdeAction{
 		igdeColorBox &pColorBox;
 	public:
-		typedef deTObjectReference<cActionPasteHex> Ref;
+		using Ref = deTObjectReference<cActionPasteHex>;
 		cActionPasteHex(igdeColorBox &colorBox);
 		void OnAction() override;
 	};
@@ -79,7 +79,7 @@ public:
 	class DE_DLL_EXPORT cActionEditValues : public igdeAction{
 		igdeColorBox &pColorBox;
 	public:
-		typedef deTObjectReference<cActionEditValues> Ref;
+		using Ref = deTObjectReference<cActionEditValues>;
 		cActionEditValues(igdeColorBox &colorBox);
 		void OnAction() override;
 	};
@@ -87,7 +87,7 @@ public:
 	class DE_DLL_EXPORT cActionEditHex : public igdeAction{
 		igdeColorBox &pColorBox;
 	public:
-		typedef deTObjectReference<cActionEditHex> Ref;
+		using Ref = deTObjectReference<cActionEditHex>;
 		cActionEditHex(igdeColorBox &colorBox);
 		void OnAction() override;
 	};

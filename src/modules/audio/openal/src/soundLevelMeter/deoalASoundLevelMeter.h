@@ -77,7 +77,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoalASoundLevelMeter> Ref;
+	using Ref = deTObjectReference<deoalASoundLevelMeter>;
 	
 	
 	/** \name Constructors and Destructors */

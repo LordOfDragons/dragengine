@@ -37,7 +37,7 @@
  */
 class reWPUndoHistory : public igdeWPUndoHistory{
 public:
-	typedef deTObjectReference<reWPUndoHistory> Ref;
+	using Ref = deTObjectReference<reWPUndoHistory>;
 	
 private:
 	reRig::Ref pRig;

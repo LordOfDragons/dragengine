@@ -35,7 +35,7 @@
  */
 class skyeUControllerSetMinimum : public igdeUndo{
 public:
-	typedef deTObjectReference<skyeUControllerSetMinimum> Ref;
+	using Ref = deTObjectReference<skyeUControllerSetMinimum>;
 	
 	
 private:

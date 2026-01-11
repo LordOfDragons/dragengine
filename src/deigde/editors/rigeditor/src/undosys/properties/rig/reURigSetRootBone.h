@@ -37,7 +37,7 @@
  */
 class reURigSetRootBone : public igdeUndo{
 public:
-	typedef deTObjectReference<reURigSetRootBone> Ref;
+	using Ref = deTObjectReference<reURigSetRootBone>;
 	
 	
 private:

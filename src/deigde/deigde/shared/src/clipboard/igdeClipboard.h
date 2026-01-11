@@ -40,7 +40,7 @@ class igdeClipboardData;
  */
 class DE_DLL_EXPORT igdeClipboard {
 public:
-	typedef decTObjectList<igdeClipboardData> DataList;
+	using DataList = decTObjectList<igdeClipboardData>;
 	
 	
 private:

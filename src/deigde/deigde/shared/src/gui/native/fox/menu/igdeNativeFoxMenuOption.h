@@ -84,6 +84,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxMenuOption igdeNativeMenuOption;
+using igdeNativeMenuOption = igdeNativeFoxMenuOption;
 
 #endif

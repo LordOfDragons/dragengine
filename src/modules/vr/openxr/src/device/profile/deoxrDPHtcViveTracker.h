@@ -36,13 +36,13 @@
  */
 class deoxrDPHtcViveTracker : public deoxrDeviceProfile{
 public:
-	typedef deTObjectReference<deoxrDPHtcViveTracker> Ref;
+	using Ref = deTObjectReference<deoxrDPHtcViveTracker>;
 	
 	
 private:
 	class Tracker : public deObject{
 	public:
-		typedef deTObjectReference<Tracker> Ref;
+		using Ref = deTObjectReference<Tracker>;
 	
 	
 		const deoxrPath path;
@@ -58,7 +58,7 @@ private:
 	
 	class RoleAction : public deObject{
 	public:
-		typedef deTObjectReference<RoleAction> Ref;
+		using Ref = deTObjectReference<RoleAction>;
 		
 		
 		const deoxrPath path;

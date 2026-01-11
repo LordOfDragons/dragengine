@@ -56,7 +56,7 @@ class decBaseFileReader;
 class DE_DLL_EXPORT deLibraryModule : public deLoadableModule{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deLibraryModule> Ref;
+	using Ref = deTObjectReference<deLibraryModule>;
 	
 	
 	/** \brief Error Codes. */

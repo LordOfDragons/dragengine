@@ -45,7 +45,7 @@
 class DE_DLL_EXPORT deSynthesizerController : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deSynthesizerController> Ref;
+	using Ref = deTObjectReference<deSynthesizerController>;
 	
 	
 private:

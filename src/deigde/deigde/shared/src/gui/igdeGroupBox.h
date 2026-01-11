@@ -36,7 +36,7 @@
 class DE_DLL_EXPORT igdeGroupBox : public igdeContainer{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeGroupBox> Ref;
+	using Ref = deTObjectReference<igdeGroupBox>;
 	
 	
 	/** \brief Title alignment. */

@@ -37,7 +37,7 @@ class deSkinPropertyConstructed;
  */
 class deoglSkinConstructedProperty : public deObject{
 public:
-	typedef deTObjectReference<deoglSkinConstructedProperty> Ref;
+	using Ref = deTObjectReference<deoglSkinConstructedProperty>;
 	
 	
 private:

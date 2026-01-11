@@ -52,7 +52,7 @@ protected:
 	ceWPTMAIfElseElseMoveAction();
 	
 public:
-	typedef deTObjectReference<ceWPTMAIfElseElseMoveAction> Ref;
+	using Ref = deTObjectReference<ceWPTMAIfElseElseMoveAction>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu action. */

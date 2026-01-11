@@ -40,7 +40,7 @@
  */
 class gdeUOCSpeakerSetPosition : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCSpeakerSetPosition> Ref;
+	using Ref = deTObjectReference<gdeUOCSpeakerSetPosition>;
 	
 	
 private:

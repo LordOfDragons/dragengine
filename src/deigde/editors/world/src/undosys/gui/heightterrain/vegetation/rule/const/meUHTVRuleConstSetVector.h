@@ -44,7 +44,7 @@
  */
 class meUHTVRuleConstSetVector : public igdeUndo{
 public:
-	typedef deTObjectReference<meUHTVRuleConstSetVector> Ref;
+	using Ref = deTObjectReference<meUHTVRuleConstSetVector>;
 	
 	
 private:

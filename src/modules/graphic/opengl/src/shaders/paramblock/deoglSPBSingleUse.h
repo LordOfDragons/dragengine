@@ -41,7 +41,7 @@
  */
 class deoglSPBSingleUse : public deObject{
 public:
-	typedef deTObjectReference<deoglSPBSingleUse> Ref;
+	using Ref = deTObjectReference<deoglSPBSingleUse>;
 	
 	
 private:

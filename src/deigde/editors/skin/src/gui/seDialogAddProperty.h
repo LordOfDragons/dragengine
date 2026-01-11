@@ -48,7 +48,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seDialogAddProperty> Ref;
+	using Ref = deTObjectReference<seDialogAddProperty>;
 	
 	/** \name Constructors and Destructors */
 	/*@{*/

@@ -104,6 +104,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxCheckBox igdeNativeCheckBox;
+using igdeNativeCheckBox = igdeNativeFoxCheckBox;
 
 #endif

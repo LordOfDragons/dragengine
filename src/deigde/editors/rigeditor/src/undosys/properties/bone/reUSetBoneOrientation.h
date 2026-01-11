@@ -37,7 +37,7 @@
  */
 class reUSetBoneOrientation : public igdeUndo{
 public:
-	typedef deTObjectReference<reUSetBoneOrientation> Ref;
+	using Ref = deTObjectReference<reUSetBoneOrientation>;
 	
 	
 private:

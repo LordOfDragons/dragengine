@@ -48,8 +48,8 @@ private:
 	
 	
 public:
-	typedef deTObjectReference<seUPropertyNodeData> Ref;
-	typedef decTObjectOrderedSet<seUPropertyNodeData> List;
+	using Ref = deTObjectReference<seUPropertyNodeData>;
+	using List = decTObjectOrderedSet<seUPropertyNodeData>;
 	
 	
 	/** \name Constructors and Destructors */

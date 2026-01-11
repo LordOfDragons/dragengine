@@ -34,7 +34,7 @@
 class DE_DLL_EXPORT deVFSDiskDirectory : public deVFSContainer{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deVFSDiskDirectory> Ref;
+	using Ref = deTObjectReference<deVFSDiskDirectory>;
 	
 	
 private:

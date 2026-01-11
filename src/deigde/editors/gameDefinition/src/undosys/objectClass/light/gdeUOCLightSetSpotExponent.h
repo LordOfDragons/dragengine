@@ -38,7 +38,7 @@
  */
 class gdeUOCLightSetSpotExponent : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCLightSetSpotExponent> Ref;
+	using Ref = deTObjectReference<gdeUOCLightSetSpotExponent>;
 	
 	
 private:

@@ -77,7 +77,7 @@ protected:
 	aeWPAPanelRuleStateSnapshot &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseAction> Ref;
+	using Ref = deTObjectReference<cBaseAction>;
 	cBaseAction(aeWPAPanelRuleStateSnapshot &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description),
 	pPanel(panel){}
@@ -119,7 +119,7 @@ class cBaseTextFieldListener : public igdeTextFieldListener{
 	aeWPAPanelRuleStateSnapshot &pPanel;
 	
 public:
-	typedef deTObjectReference<cBaseTextFieldListener> Ref;
+	using Ref = deTObjectReference<cBaseTextFieldListener>;
 	cBaseTextFieldListener(aeWPAPanelRuleStateSnapshot &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -141,7 +141,7 @@ public:
 
 class cActionUseLastState : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionUseLastState> Ref;
+	using Ref = deTObjectReference<cActionUseLastState>;
 	
 public:
 	cActionUseLastState(aeWPAPanelRuleStateSnapshot &panel) : cBaseAction(panel,
@@ -160,7 +160,7 @@ public:
 
 class cTextID : public cBaseTextFieldListener{
 public:
-	typedef deTObjectReference<cTextID> Ref;
+	using Ref = deTObjectReference<cTextID>;
 	cTextID(aeWPAPanelRuleStateSnapshot &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator*, aeRuleStateSnapshot *rule) override{
@@ -171,7 +171,7 @@ public:
 
 class cActionEnablePosition : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnablePosition> Ref;
+	using Ref = deTObjectReference<cActionEnablePosition>;
 	
 public:
 	cActionEnablePosition(aeWPAPanelRuleStateSnapshot &panel) : cBaseAction(panel,
@@ -189,7 +189,7 @@ public:
 
 class cActionEnableRotation : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableRotation> Ref;
+	using Ref = deTObjectReference<cActionEnableRotation>;
 	
 public:
 	cActionEnableRotation(aeWPAPanelRuleStateSnapshot &panel) : cBaseAction(panel,
@@ -207,7 +207,7 @@ public:
 
 class cActionEnableSize : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableSize> Ref;
+	using Ref = deTObjectReference<cActionEnableSize>;
 	
 public:
 	cActionEnableSize(aeWPAPanelRuleStateSnapshot &panel) : cBaseAction(panel,
@@ -225,7 +225,7 @@ public:
 
 class cActionEnableVertexPositionSet : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionEnableVertexPositionSet> Ref;
+	using Ref = deTObjectReference<cActionEnableVertexPositionSet>;
 	
 public:
 	cActionEnableVertexPositionSet(aeWPAPanelRuleStateSnapshot &panel) : cBaseAction(panel,
@@ -244,7 +244,7 @@ public:
 
 class cActionSnapshot : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionSnapshot> Ref;
+	using Ref = deTObjectReference<cActionSnapshot>;
 	
 public:
 	cActionSnapshot(aeWPAPanelRuleStateSnapshot &panel) : cBaseAction(panel, "State", nullptr,
@@ -261,7 +261,7 @@ public:
 
 class cActionGetFrame : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionGetFrame> Ref;
+	using Ref = deTObjectReference<cActionGetFrame>;
 	
 public:
 	cActionGetFrame(aeWPAPanelRuleStateSnapshot &panel) : cBaseAction(panel, "Animation", nullptr,

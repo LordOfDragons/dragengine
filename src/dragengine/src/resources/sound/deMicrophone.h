@@ -52,7 +52,7 @@ class deBaseAudioMicrophone;
 class DE_DLL_EXPORT deMicrophone : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deMicrophone> Ref;
+	using Ref = deTObjectReference<deMicrophone>;
 	
 	
 public:

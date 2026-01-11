@@ -47,8 +47,8 @@ private:
 	meObjectTexture::List pNewTextureList;
 	
 public:
-	typedef deTObjectReference<meUndoDataObjectTexture> Ref;
-	typedef decTObjectOrderedSet<meUndoDataObjectTexture> List;
+	using Ref = deTObjectReference<meUndoDataObjectTexture>;
+	using List = decTObjectOrderedSet<meUndoDataObjectTexture>;
 	
 	
 	/** \name Constructors and Destructors */

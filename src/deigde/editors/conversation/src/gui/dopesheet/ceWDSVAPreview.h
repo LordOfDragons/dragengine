@@ -43,7 +43,7 @@ class deSpeaker;
  */
 class ceWDSVAPreview : public deObject{
 public:
-	typedef deTObjectReference<ceWDSVAPreview> Ref;
+	using Ref = deTObjectReference<ceWDSVAPreview>;
 	
 private:
 	ceWindowDopeSheet &pWindow;

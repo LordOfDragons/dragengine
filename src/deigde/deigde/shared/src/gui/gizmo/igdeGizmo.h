@@ -60,13 +60,13 @@ class deCollider;
 class DE_DLL_EXPORT igdeGizmo : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeGizmo> Ref;
+	using Ref = deTObjectReference<igdeGizmo>;
 	
 	
 private:
 	class cShapeColor : public deObject{
 	public:
-		typedef deTObjectReference<cShapeColor> Ref;
+		using Ref = deTObjectReference<cShapeColor>;
 		
 		decString name;
 		decColor color;

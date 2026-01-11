@@ -40,7 +40,7 @@
  */
 class gdeUOCPSetMaxValue : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCPSetMaxValue> Ref;
+	using Ref = deTObjectReference<gdeUOCPSetMaxValue>;
 	
 	
 private:

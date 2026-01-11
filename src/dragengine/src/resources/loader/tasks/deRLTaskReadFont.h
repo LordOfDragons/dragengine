@@ -37,7 +37,7 @@ class deFont;
 class DE_DLL_EXPORT deRLTaskReadFont : public deResourceLoaderTask {
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTThreadSafeObjectReference<deRLTaskReadFont> Ref;
+	using Ref = deTThreadSafeObjectReference<deRLTaskReadFont>;
 	
 	
 private:

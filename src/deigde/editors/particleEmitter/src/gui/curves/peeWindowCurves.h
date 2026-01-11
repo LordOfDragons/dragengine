@@ -46,7 +46,7 @@ class peeWindowMain;
  */
 class peeWindowCurves : public igdeContainerSplitted{
 public:
-	typedef deTObjectReference<peeWindowCurves> Ref;
+	using Ref = deTObjectReference<peeWindowCurves>;
 	
 	/** \brief Curve to edit. */
 	enum eCurves{

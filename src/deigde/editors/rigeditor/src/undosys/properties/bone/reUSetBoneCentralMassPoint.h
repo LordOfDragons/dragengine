@@ -38,7 +38,7 @@
  */
 class reUSetBoneCentralMassPoint : public igdeUndo{
 public:
-	typedef deTObjectReference<reUSetBoneCentralMassPoint> Ref;
+	using Ref = deTObjectReference<reUSetBoneCentralMassPoint>;
 	
 	
 private:

@@ -41,7 +41,7 @@ private:
 	
 	
 public:
-	typedef deTObjectReference<lpeViewLangPackListener> Ref;
+	using Ref = deTObjectReference<lpeViewLangPackListener>;
 	
 	
 	/** \name Constructors and Destructors */

@@ -34,7 +34,7 @@
  */
 class ceWPTTIMCTrigger : public ceWPTTIMCondition{
 public:
-	typedef deTObjectReference<ceWPTTIMCTrigger> Ref;
+	using Ref = deTObjectReference<ceWPTTIMCTrigger>;
 
 public:
 	/** \brief Constructors and Destructors */

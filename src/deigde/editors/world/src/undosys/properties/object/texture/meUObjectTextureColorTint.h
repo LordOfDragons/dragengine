@@ -38,7 +38,7 @@
  */
 class meUObjectTextureColorTint : public igdeUndo{
 public:
-	typedef deTObjectReference<meUObjectTextureColorTint> Ref;
+	using Ref = deTObjectReference<meUObjectTextureColorTint>;
 	
 	
 private:

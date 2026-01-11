@@ -38,7 +38,7 @@
 class devkFramebuffer : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<devkFramebuffer> Ref;
+	using Ref = deTObjectReference<devkFramebuffer>;
 	
 	
 protected:

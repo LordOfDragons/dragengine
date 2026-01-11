@@ -111,7 +111,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoalAComponent> Ref;
+	using Ref = deTObjectReference<deoalAComponent>;
 
 
 	/** \name Constructors and Destructors */

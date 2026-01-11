@@ -36,7 +36,7 @@
  */
 class seUPropertyNodeTextSetPath : public igdeUndo{
 public:
-	typedef deTObjectReference<seUPropertyNodeTextSetPath> Ref;
+	using Ref = deTObjectReference<seUPropertyNodeTextSetPath>;
 	
 	
 private:

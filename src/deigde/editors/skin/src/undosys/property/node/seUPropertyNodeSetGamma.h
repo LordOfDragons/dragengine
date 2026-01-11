@@ -36,7 +36,7 @@
  */
 class seUPropertyNodeSetGamma : public igdeUndo{
 public:
-	typedef deTObjectReference<seUPropertyNodeSetGamma> Ref;
+	using Ref = deTObjectReference<seUPropertyNodeSetGamma>;
 	
 	
 private:

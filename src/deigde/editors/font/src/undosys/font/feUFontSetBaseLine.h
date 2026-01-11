@@ -35,7 +35,7 @@ class feFont;
  */
 class feUFontSetBaseLine : public igdeUndo{
 public:
-	typedef deTObjectReference<feUFontSetBaseLine> Ref;
+	using Ref = deTObjectReference<feUFontSetBaseLine>;
 	
 	
 private:

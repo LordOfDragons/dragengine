@@ -41,7 +41,7 @@ class ceConversation;
  */
 class ceWindowProperties : public igdeTabBook{
 public:
-	typedef deTObjectReference<ceWindowProperties> Ref;
+	using Ref = deTObjectReference<ceWindowProperties>;
 	
 	
 private:

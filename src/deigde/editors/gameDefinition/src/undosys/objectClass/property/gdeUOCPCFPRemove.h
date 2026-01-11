@@ -41,7 +41,7 @@
  */
 class gdeUOCPCFPRemove : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCPCFPRemove> Ref;
+	using Ref = deTObjectReference<gdeUOCPCFPRemove>;
 	
 	
 private:

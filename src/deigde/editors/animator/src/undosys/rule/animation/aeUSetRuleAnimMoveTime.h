@@ -42,7 +42,7 @@
  */
 class aeUSetRuleAnimMoveTime : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUSetRuleAnimMoveTime> Ref;
+	using Ref = deTObjectReference<aeUSetRuleAnimMoveTime>;
 	
 	
 private:

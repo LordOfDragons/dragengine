@@ -36,7 +36,7 @@ class ceWPView;
  */
 class ceWPViewListener : public ceConversationListener{
 public:
-	typedef deTObjectReference<ceWPViewListener> Ref;
+	using Ref = deTObjectReference<ceWPViewListener>;
 	
 private:
 	ceWPView &pPanel;

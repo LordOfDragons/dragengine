@@ -97,7 +97,7 @@ public:
 
 class cActionCameraChanged : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionCameraChanged> Ref;
+	using Ref = deTObjectReference<cActionCameraChanged>;
 	cActionCameraChanged(saeWPView &panel) : cBaseAction(panel, "", ""){}
 	
 	void OnAction(saeSAnimation &sanimation) override{
@@ -107,7 +107,7 @@ public:
 
 class cActionSkyChanged : public cBaseAction{
 public:
-	typedef deTObjectReference<cActionSkyChanged> Ref;
+	using Ref = deTObjectReference<cActionSkyChanged>;
 	cActionSkyChanged(saeWPView &panel) : cBaseAction(panel, "", ""){}
 	
 	void OnAction(saeSAnimation &sanimation) override{
@@ -119,7 +119,7 @@ public:
 
 class cEditDisplayModelPath : public cBaseEditPathListener{
 public:
-	typedef deTObjectReference<cEditDisplayModelPath> Ref;
+	using Ref = deTObjectReference<cEditDisplayModelPath>;
 	cEditDisplayModelPath(saeWPView &panel) : cBaseEditPathListener(panel){}
 	
 	void OnChanged(const decString &path, saeSAnimation &sanimation) override{
@@ -129,7 +129,7 @@ public:
 
 class cEditDisplaySkinPath : public cBaseEditPathListener{
 public:
-	typedef deTObjectReference<cEditDisplaySkinPath> Ref;
+	using Ref = deTObjectReference<cEditDisplaySkinPath>;
 	cEditDisplaySkinPath(saeWPView &panel) : cBaseEditPathListener(panel){}
 	
 	void OnChanged(const decString &path, saeSAnimation &sanimation) override{
@@ -139,7 +139,7 @@ public:
 
 class cEditDisplayRigPath : public cBaseEditPathListener{
 public:
-	typedef deTObjectReference<cEditDisplayRigPath> Ref;
+	using Ref = deTObjectReference<cEditDisplayRigPath>;
 	cEditDisplayRigPath(saeWPView &panel) : cBaseEditPathListener(panel){}
 	
 	void OnChanged(const decString &path, saeSAnimation &sanimation) override{

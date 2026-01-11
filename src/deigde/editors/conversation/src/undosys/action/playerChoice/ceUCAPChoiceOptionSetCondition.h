@@ -38,7 +38,7 @@
  * \brief Undo action player choice option conversation action set case condition.*/
 class ceUCAPChoiceOptionSetCondition : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCAPChoiceOptionSetCondition> Ref;
+	using Ref = deTObjectReference<ceUCAPChoiceOptionSetCondition>;
 	
 	
 private:

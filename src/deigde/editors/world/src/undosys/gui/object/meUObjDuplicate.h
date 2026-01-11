@@ -40,7 +40,7 @@
  */
 class meUObjDuplicate : public igdeUndo{
 public:
-	typedef deTObjectReference<meUObjDuplicate> Ref;
+	using Ref = deTObjectReference<meUObjDuplicate>;
 	
 	
 private:

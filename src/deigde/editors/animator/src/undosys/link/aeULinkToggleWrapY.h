@@ -36,7 +36,7 @@
  */
 class aeULinkToggleWrapY : public igdeUndo{
 public:
-	typedef deTObjectReference<aeULinkToggleWrapY> Ref;
+	using Ref = deTObjectReference<aeULinkToggleWrapY>;
 	
 	
 private:

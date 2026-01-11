@@ -38,7 +38,7 @@
  */
 class gdeUOCLightSetLightSkinPath : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCLightSetLightSkinPath> Ref;
+	using Ref = deTObjectReference<gdeUOCLightSetLightSkinPath>;
 	
 	
 private:

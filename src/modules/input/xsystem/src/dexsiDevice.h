@@ -47,7 +47,7 @@ class deInputDevice;
 class dexsiDevice : public deObject{
 public:
 	/** Type holding strong reference. */
-	typedef deTObjectReference<dexsiDevice> Ref;
+	using Ref = deTObjectReference<dexsiDevice>;
 	
 	
 	/** Source identifier. */

@@ -48,7 +48,7 @@ class seWindowProperties;
  */
 class seWPDynamicSkin : public igdeContainerScroll{
 public:
-	typedef deTObjectReference<seWPDynamicSkin> Ref;
+	using Ref = deTObjectReference<seWPDynamicSkin>;
 	
 private:
 	seWindowProperties &pWindowProperties;

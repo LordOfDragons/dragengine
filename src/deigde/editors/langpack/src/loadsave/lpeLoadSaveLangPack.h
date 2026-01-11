@@ -40,7 +40,7 @@ class decBaseFileWriter;
  */
 class lpeLoadSaveLangPack : public deObject{
 public:
-	typedef deTObjectReference<lpeLoadSaveLangPack> Ref;
+	using Ref = deTObjectReference<lpeLoadSaveLangPack>;
 	
 	
 private:

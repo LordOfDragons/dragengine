@@ -40,7 +40,7 @@
  */
 class gdeUOCBillboardSetAxis : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCBillboardSetAxis> Ref;
+	using Ref = deTObjectReference<gdeUOCBillboardSetAxis>;
 	
 	
 private:

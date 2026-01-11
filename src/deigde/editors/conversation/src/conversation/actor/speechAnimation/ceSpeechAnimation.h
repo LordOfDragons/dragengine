@@ -45,13 +45,13 @@ class deEngine;
  */
 class ceSpeechAnimation : public deObject{
 public:
-	typedef deTObjectReference<ceSpeechAnimation> Ref;
+	using Ref = deTObjectReference<ceSpeechAnimation>;
 	
 	
 private:
 	class cSpeakPhoneme : public deObject{
 	public:
-		typedef deTObjectReference<cSpeakPhoneme> Ref;
+		using Ref = deTObjectReference<cSpeakPhoneme>;
 		int ipa;
 		float length;
 		cSpeakPhoneme(int aipa, float alength) : ipa(aipa), length(alength){}

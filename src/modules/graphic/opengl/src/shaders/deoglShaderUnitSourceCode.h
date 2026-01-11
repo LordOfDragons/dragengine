@@ -48,7 +48,7 @@ class decPath;
  */
 class deoglShaderUnitSourceCode : public deObject{
 public:
-	typedef deTObjectReference<deoglShaderUnitSourceCode> Ref;
+	using Ref = deTObjectReference<deoglShaderUnitSourceCode>;
 	
 	
 private:

@@ -36,7 +36,7 @@
  */
 class seUPropertyToggleVideoSharedTime : public igdeUndo{
 public:
-	typedef deTObjectReference<seUPropertyToggleVideoSharedTime> Ref;
+	using Ref = deTObjectReference<seUPropertyToggleVideoSharedTime>;
 	
 	
 private:

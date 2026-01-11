@@ -9,8 +9,8 @@
 #include <dragengine/common/xmlparser/decXmlElementTag.h>
 
 // Type aliases
-typedef decTStringDictionary<int> decTStringIntDict;
-typedef decTStringDictionary<decXmlElementTag::Ref, decXmlElementTag*> decTStringXmlTagDict;
+using decTStringIntDict = decTStringDictionary<int>;
+using decTStringXmlTagDict = decTStringDictionary<decXmlElementTag::Ref, decXmlElementTag*>;
 
 
 // Class detTDictionary

@@ -91,6 +91,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxProgressBar igdeNativeProgressBar;
+using igdeNativeProgressBar = igdeNativeFoxProgressBar;
 
 #endif

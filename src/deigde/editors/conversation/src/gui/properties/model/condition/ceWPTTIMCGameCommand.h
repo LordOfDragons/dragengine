@@ -34,7 +34,7 @@
  */
 class ceWPTTIMCGameCommand : public ceWPTTIMCondition{
 public:
-	typedef deTObjectReference<ceWPTTIMCGameCommand> Ref;
+	using Ref = deTObjectReference<ceWPTTIMCGameCommand>;
 
 public:
 	/** \brief Constructors and Destructors */

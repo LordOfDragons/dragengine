@@ -36,7 +36,7 @@ class meView3D;
  */
 class meView3DListener : public meWorldNotifier{
 public:
-	typedef deTObjectReference<meView3DListener> Ref;
+	using Ref = deTObjectReference<meView3DListener>;
 	
 private:
 	meView3D &pView3D;

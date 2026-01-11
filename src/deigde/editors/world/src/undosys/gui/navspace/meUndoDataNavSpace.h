@@ -44,8 +44,8 @@
  */
 class meUndoDataNavSpace : public deObject{
 public:
-	typedef deTObjectReference<meUndoDataNavSpace> Ref;
-	typedef decTObjectOrderedSet<meUndoDataNavSpace> List;
+	using Ref = deTObjectReference<meUndoDataNavSpace>;
+	using List = decTObjectOrderedSet<meUndoDataNavSpace>;
 	
 private:
 	meNavigationSpace::Ref pNavSpace;

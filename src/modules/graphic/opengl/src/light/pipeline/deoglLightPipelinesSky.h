@@ -36,7 +36,7 @@ class deoglLightShaderConfig;
  */
 class deoglLightPipelinesSky : public deoglLightPipelines{
 public:
-	typedef deTObjectReference<deoglLightPipelinesSky> Ref;
+	using Ref = deTObjectReference<deoglLightPipelinesSky>;
 	
 	
 private:

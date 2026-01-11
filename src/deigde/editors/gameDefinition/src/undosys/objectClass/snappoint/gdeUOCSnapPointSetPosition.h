@@ -40,7 +40,7 @@
  */
 class gdeUOCSnapPointSetPosition : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCSnapPointSetPosition> Ref;
+	using Ref = deTObjectReference<gdeUOCSnapPointSetPosition>;
 	
 	
 private:

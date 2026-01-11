@@ -37,7 +37,7 @@
  */
 class syneUSetSourceMinPanning : public igdeUndo{
 public:
-	typedef deTObjectReference<syneUSetSourceMinPanning> Ref;
+	using Ref = deTObjectReference<syneUSetSourceMinPanning>;
 	
 	
 private:

@@ -45,9 +45,9 @@ class deEngine;
 class reRigPush : public deObject{
 	public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<reRigPush> Ref;
+	using Ref = deTObjectReference<reRigPush>;
 	
-	typedef decTObjectOrderedSet<reRigPush> List;
+	using List = decTObjectOrderedSet<reRigPush>;
 	
 	
 	/** \brief Push type. */

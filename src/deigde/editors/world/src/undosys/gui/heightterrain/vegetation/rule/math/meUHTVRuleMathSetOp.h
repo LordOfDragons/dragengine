@@ -38,7 +38,7 @@
  */
 class meUHTVRuleMathSetOp : public igdeUndo{
 public:
-	typedef deTObjectReference<meUHTVRuleMathSetOp> Ref;
+	using Ref = deTObjectReference<meUHTVRuleMathSetOp>;
 	
 	
 public:

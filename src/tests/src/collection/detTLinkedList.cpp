@@ -9,7 +9,7 @@
 // TestLLObject implementation
 class TestLLObject : public deObject{
 public:
-	typedef deTObjectReference<TestLLObject> Ref;
+	using Ref = deTObjectReference<TestLLObject>;
 
 	int id;
 	decTObjectLinkedList<TestLLObject>::Element entry;
@@ -19,7 +19,7 @@ protected:
 	~TestLLObject() override = default;
 };
 
-typedef decTObjectLinkedList<TestLLObject> TestLLList;
+using TestLLList = decTObjectLinkedList<TestLLObject>;
 
 
 // Class detTLinkedList

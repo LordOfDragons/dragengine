@@ -210,7 +210,7 @@ void deTgaModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 
 class deTgaModuleInternal : public deInternalModule{
 public:
-	typedef deTObjectReference<deTgaModuleInternal> Ref;
+	using Ref = deTObjectReference<deTgaModuleInternal>;
 	
 	deTgaModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("Targa");

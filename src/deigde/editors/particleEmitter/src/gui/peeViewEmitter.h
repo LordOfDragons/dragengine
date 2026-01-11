@@ -40,7 +40,7 @@ class peeWindowMain;
  */
 class peeViewEmitter : public igdeViewRenderWindow{
 public:
-	typedef deTObjectReference<peeViewEmitter> Ref;
+	using Ref = deTObjectReference<peeViewEmitter>;
 	
 private:
 	peeWindowMain &pWindowMain;

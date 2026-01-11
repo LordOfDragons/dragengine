@@ -37,7 +37,7 @@
 class deoglRDSRenderableImage : public deoglRDSRenderable{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglRDSRenderableImage> Ref;
+	using Ref = deTObjectReference<deoglRDSRenderableImage>;
 	
 	
 private:

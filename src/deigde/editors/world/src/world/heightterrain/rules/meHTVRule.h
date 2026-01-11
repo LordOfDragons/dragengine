@@ -50,8 +50,8 @@ class meHTVEvaluationEnvironment;
  */
 class meHTVRule : public deObject{
 public:
-	typedef deTObjectReference<meHTVRule> Ref;
-	typedef decTObjectOrderedSet<meHTVRule> List;
+	using Ref = deTObjectReference<meHTVRule>;
+	using List = decTObjectOrderedSet<meHTVRule>;
 	
 	
 	/** Rule types. */

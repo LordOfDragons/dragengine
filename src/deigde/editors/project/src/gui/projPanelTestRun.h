@@ -52,7 +52,7 @@ class projWindowMain;
  */
 class projPanelTestRun : public igdeContainerSplitted{
 public:
-	typedef deTObjectReference<projPanelTestRun> Ref;
+	using Ref = deTObjectReference<projPanelTestRun>;
 	
 	
 	static const char *styleWarning;

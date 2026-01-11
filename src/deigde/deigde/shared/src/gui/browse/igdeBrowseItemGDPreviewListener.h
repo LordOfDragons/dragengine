@@ -37,7 +37,7 @@
 class DE_DLL_EXPORT igdeBrowseItemGDPreviewListener : public igdeGDPreviewListener{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeBrowseItemGDPreviewListener> Ref;
+	using Ref = deTObjectReference<igdeBrowseItemGDPreviewListener>;
 	
 	
 private:

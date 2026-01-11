@@ -37,7 +37,7 @@
  */
 class ceUCACoordSysRemoveSetCoordSysID : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCACoordSysRemoveSetCoordSysID> Ref;
+	using Ref = deTObjectReference<ceUCACoordSysRemoveSetCoordSysID>;
 	
 	
 private:

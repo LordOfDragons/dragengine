@@ -77,7 +77,7 @@ class cListenerResetDuration : public ceDialogEditStrip::Listener{
 	ceWDSLane &pLane;
 	
 public:
-	typedef deTObjectReference<cListenerResetDuration> Ref;
+	using Ref = deTObjectReference<cListenerResetDuration>;
 	
 	cListenerResetDuration(ceWDSLane &lane) : pLane(lane){}
 	
@@ -88,7 +88,7 @@ public:
 
 class cActionStripAdd : public igdeAction{
 public:
-	typedef deTObjectReference<cActionStripAdd> Ref;
+	using Ref = deTObjectReference<cActionStripAdd>;
 	
 private:
 	ceWDSLane &pLane;
@@ -132,7 +132,7 @@ public:
 
 class cActionStripRemove : public igdeAction{
 public:
-	typedef deTObjectReference<cActionStripRemove> Ref;
+	using Ref = deTObjectReference<cActionStripRemove>;
 	
 private:
 	ceWDSLane &pLane;
@@ -159,7 +159,7 @@ public:
 
 class cActionStripRemoveAll : public igdeAction{
 public:
-	typedef deTObjectReference<cActionStripRemoveAll> Ref;
+	using Ref = deTObjectReference<cActionStripRemoveAll>;
 	
 private:
 	ceWDSLane &pLane;
@@ -185,7 +185,7 @@ public:
 
 class cActionStripMoveLeft : public igdeAction{
 public:
-	typedef deTObjectReference<cActionStripMoveLeft> Ref;
+	using Ref = deTObjectReference<cActionStripMoveLeft>;
 	
 private:
 	ceWDSLane &pLane;
@@ -212,7 +212,7 @@ public:
 
 class cActionStripMoveRight : public igdeAction{
 public:
-	typedef deTObjectReference<cActionStripMoveRight> Ref;
+	using Ref = deTObjectReference<cActionStripMoveRight>;
 	
 private:
 	ceWDSLane &pLane;
@@ -240,7 +240,7 @@ public:
 
 class cActionStripEdit : public igdeAction{
 public:
-	typedef deTObjectReference<cActionStripEdit> Ref;
+	using Ref = deTObjectReference<cActionStripEdit>;
 	
 private:
 	ceWDSLane &pLane;
@@ -282,7 +282,7 @@ class cMouseListener : public igdeMouseDragListener {
 	igdeUndo::Ref pUndoScale;
 	
 public:
-	typedef deTObjectReference<cMouseListener> Ref;
+	using Ref = deTObjectReference<cMouseListener>;
 	
 	cMouseListener(ceWDSLane &lane) : pLane(lane), pDragMode(edmNone){}
 	

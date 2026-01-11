@@ -34,7 +34,7 @@
  */
 class ceWPTTIMASetVariable : public ceWPTTIMAction{
 public:
-	typedef deTObjectReference<ceWPTTIMASetVariable> Ref;
+	using Ref = deTObjectReference<ceWPTTIMASetVariable>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */

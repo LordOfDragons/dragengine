@@ -46,7 +46,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<projUProjectSetPathConfig> Ref;
+	using Ref = deTObjectReference<projUProjectSetPathConfig>;
 	
 	/** \name Constructors and Destructors */
 	/*@{*/

@@ -37,7 +37,7 @@
  */
 class ceUCACommentSetComment : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCACommentSetComment> Ref;
+	using Ref = deTObjectReference<ceUCACommentSetComment>;
 	
 	
 private:

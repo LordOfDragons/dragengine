@@ -50,7 +50,7 @@ class sePropertyNodeList;
  */
 class seViewConstructedView : public igdeViewRenderWindow{
 public:
-	typedef deTObjectReference<seViewConstructedView> Ref;
+	using Ref = deTObjectReference<seViewConstructedView>;
 	
 private:
 	seWindowMain &pWindowMain;

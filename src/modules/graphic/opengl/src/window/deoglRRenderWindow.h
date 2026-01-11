@@ -63,7 +63,7 @@ class deoglRenderThread;
 class deoglRRenderWindow : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglRRenderWindow> Ref;
+	using Ref = deTObjectReference<deoglRRenderWindow>;
 	
 	
 private:

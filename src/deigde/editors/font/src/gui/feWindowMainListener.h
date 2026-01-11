@@ -36,7 +36,7 @@ class feWindowMain;
  */
 class feWindowMainListener : public feFontNotifier{
 public:
-	typedef deTObjectReference<feWindowMainListener> Ref;
+	using Ref = deTObjectReference<feWindowMainListener>;
 	
 private:
 	feWindowMain &pWindow;

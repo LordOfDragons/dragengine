@@ -43,7 +43,7 @@ private:
 	
 	
 public:
-	typedef deTObjectReference<ceWPTTIMAWait> Ref;
+	using Ref = deTObjectReference<ceWPTTIMAWait>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */

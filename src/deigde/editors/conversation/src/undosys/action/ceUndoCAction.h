@@ -43,7 +43,7 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUndoCAction> Ref;
+	using Ref = deTObjectReference<ceUndoCAction>;
 
 
 	/** \name Constructors and Destructors */

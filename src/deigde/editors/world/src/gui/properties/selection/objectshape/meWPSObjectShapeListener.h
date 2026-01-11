@@ -36,7 +36,7 @@ class meWPSObjectShape;
  */
 class meWPSObjectShapeListener : public meWorldNotifier{
 public:
-	typedef deTObjectReference<meWPSObjectShapeListener> Ref;
+	using Ref = deTObjectReference<meWPSObjectShapeListener>;
 	
 private:
 	meWPSObjectShape &pPanel;

@@ -39,7 +39,7 @@ class deoxrDevice;
 class deoxrDeviceComponent : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoxrDeviceComponent> Ref;
+	using Ref = deTObjectReference<deoxrDeviceComponent>;
 	
 	
 private:

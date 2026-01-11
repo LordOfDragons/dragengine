@@ -52,7 +52,7 @@ class igdeActionListener;
 class DE_DLL_EXPORT igdeAction : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeAction> Ref;
+	using Ref = deTObjectReference<igdeAction>;
 	
 	
 private:

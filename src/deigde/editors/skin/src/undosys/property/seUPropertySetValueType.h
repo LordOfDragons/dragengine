@@ -36,7 +36,7 @@
  */
 class seUPropertySetValueType : public igdeUndo{
 public:
-	typedef deTObjectReference<seUPropertySetValueType> Ref;
+	using Ref = deTObjectReference<seUPropertySetValueType>;
 	
 	
 private:

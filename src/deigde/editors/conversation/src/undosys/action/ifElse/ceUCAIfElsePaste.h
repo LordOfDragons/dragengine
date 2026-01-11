@@ -37,7 +37,7 @@
  */
 class ceUCAIfElsePaste : public ceUCActionPaste{
 public:
-	typedef deTObjectReference<ceUCAIfElsePaste> Ref;
+	using Ref = deTObjectReference<ceUCAIfElsePaste>;
 
 private:
 	ceCAIfElse::Ref pIfElse;

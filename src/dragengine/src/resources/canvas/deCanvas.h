@@ -55,7 +55,7 @@ class deCanvasView;
 class DE_DLL_EXPORT deCanvas : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deCanvas> Ref;
+	using Ref = deTObjectReference<deCanvas>;
 	
 	
 public:

@@ -39,10 +39,10 @@
 class gdeOCForceField : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeOCForceField> Ref;
+	using Ref = deTObjectReference<gdeOCForceField>;
 
 	/** \brief Type holding list. */
-	typedef decTObjectOrderedSet<gdeOCForceField> List;
+	using List = decTObjectOrderedSet<gdeOCForceField>;
 	
 	
 	/** \brief Properties. */

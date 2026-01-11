@@ -42,7 +42,7 @@ private:
 	
 	
 public:
-	typedef deTObjectReference<ceWPTTIMAPlayerChoice> Ref;
+	using Ref = deTObjectReference<ceWPTTIMAPlayerChoice>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */

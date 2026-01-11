@@ -37,7 +37,7 @@
  */
 class syneUSynthesizerSetSampleCount : public igdeUndo{
 public:
-	typedef deTObjectReference<syneUSynthesizerSetSampleCount> Ref;
+	using Ref = deTObjectReference<syneUSynthesizerSetSampleCount>;
 	
 	
 private:

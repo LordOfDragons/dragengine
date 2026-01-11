@@ -39,7 +39,7 @@
  */
 class ceUCAIfElseCaseSetCondition : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCAIfElseCaseSetCondition> Ref;
+	using Ref = deTObjectReference<ceUCAIfElseCaseSetCondition>;
 	
 	
 private:

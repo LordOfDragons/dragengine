@@ -43,7 +43,7 @@
  */
 class aeUSetRuleSModMinSize : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUSetRuleSModMinSize> Ref;
+	using Ref = deTObjectReference<aeUSetRuleSModMinSize>;
 	
 	
 private:

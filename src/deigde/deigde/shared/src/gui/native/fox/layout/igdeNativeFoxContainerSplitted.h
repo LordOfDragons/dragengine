@@ -86,6 +86,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxContainerSplitted igdeNativeContainerSplitted;
+using igdeNativeContainerSplitted = igdeNativeFoxContainerSplitted;
 
 #endif

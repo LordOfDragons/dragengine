@@ -68,7 +68,7 @@ class deInputDeviceComponent;
 class DE_DLL_EXPORT deInputDevice : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deInputDevice> Ref;
+	using Ref = deTObjectReference<deInputDevice>;
 	
 	
 public:

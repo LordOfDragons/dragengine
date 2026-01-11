@@ -39,14 +39,14 @@
  */
 class seUMappedRemove : public igdeUndo{
 public:
-	typedef deTObjectReference<seUMappedRemove> Ref;
+	using Ref = deTObjectReference<seUMappedRemove>;
 	
 	
 private:
 	class cDependency : public deObject{
 	public:
-		typedef deTObjectReference<cDependency> Ref;
-		typedef decTObjectOrderedSet<cDependency> List;
+		using Ref = deTObjectReference<cDependency>;
+		using List = decTObjectOrderedSet<cDependency>;
 		
 		
 		const seProperty::Ref property;

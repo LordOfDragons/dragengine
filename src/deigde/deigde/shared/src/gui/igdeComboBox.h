@@ -49,7 +49,7 @@ class DE_DLL_EXPORT igdeComboBox : public igdeWidget{
 
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeComboBox> Ref;
+	using Ref = deTObjectReference<igdeComboBox>;
 	
 	
 private:

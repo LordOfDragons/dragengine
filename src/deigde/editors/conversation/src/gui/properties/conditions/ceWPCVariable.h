@@ -42,7 +42,7 @@ class ceWPTopic;
  */
 class ceWPCVariable : public ceWPCondition{
 public:
-	typedef deTObjectReference<ceWPCVariable> Ref;
+	using Ref = deTObjectReference<ceWPCVariable>;
 
 private:
 	igdeComboBox::Ref pCBOperator;

@@ -40,7 +40,7 @@ class deSharedVulkan;
 class devkInstance : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<devkInstance> Ref;
+	using Ref = deTObjectReference<devkInstance>;
 	
 	/** Extension. */
 	enum eExtension{

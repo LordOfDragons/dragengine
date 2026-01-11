@@ -67,7 +67,7 @@ class cComboTestMode : public igdeComboBoxListener {
 	ceWPCTrigger &pPanel;
 	
 public:
-	typedef deTObjectReference<cComboTestMode> Ref;
+	using Ref = deTObjectReference<cComboTestMode>;
 	cComboTestMode(ceWPCTrigger &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -93,7 +93,7 @@ class cTextTrigger : public igdeTextFieldListener {
 	ceWPCTrigger &pPanel;
 	
 public:
-	typedef deTObjectReference<cTextTrigger> Ref;
+	using Ref = deTObjectReference<cTextTrigger>;
 	cTextTrigger(ceWPCTrigger &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{

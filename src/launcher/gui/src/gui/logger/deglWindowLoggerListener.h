@@ -36,7 +36,7 @@ class deglWindowLogger;
  */
 class deglWindowLoggerListener : public delLoggerHistoryListener{
 public:
-	typedef deTObjectReference<deglWindowLoggerListener> Ref;
+	using Ref = deTObjectReference<deglWindowLoggerListener>;
 	
 	
 private:

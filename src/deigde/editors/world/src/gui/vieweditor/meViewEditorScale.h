@@ -38,7 +38,7 @@
  */
 class meViewEditorScale : public meViewEditorNavigation{
 public:
-	typedef deTObjectReference<meViewEditorScale> Ref;
+	using Ref = deTObjectReference<meViewEditorScale>;
 	
 private:
 	meBaseUndoScale::Ref pUndoScale;

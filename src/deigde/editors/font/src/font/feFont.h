@@ -49,7 +49,7 @@ class deLogger;
 class feFont : public igdeEditableEntity{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<feFont> Ref;
+	using Ref = deTObjectReference<feFont>;
 	
 	
 	/** Element modes. */

@@ -41,7 +41,7 @@ class devkCommandPool;
 class devkImage : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<devkImage> Ref;
+	using Ref = deTObjectReference<devkImage>;
 	
 	
 protected:

@@ -37,7 +37,7 @@
  */
 class aeUSetRuleBlendFactor : public igdeUndo{
 public:
-	typedef deTObjectReference<aeUSetRuleBlendFactor> Ref;
+	using Ref = deTObjectReference<aeUSetRuleBlendFactor>;
 	
 	
 private:

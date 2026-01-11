@@ -40,7 +40,7 @@ class igdeGDClassManager;
 class DE_DLL_EXPORT igdeGDClassInherit : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeGDClassInherit> Ref;
+	using Ref = deTObjectReference<igdeGDClassInherit>;
 	
 	
 private:

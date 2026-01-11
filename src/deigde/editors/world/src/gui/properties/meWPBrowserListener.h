@@ -36,7 +36,7 @@ class meWPBrowser;
  */
 class meWPBrowserListener : public meWorldNotifier{
 public:
-	typedef deTObjectReference<meWPBrowserListener> Ref;
+	using Ref = deTObjectReference<meWPBrowserListener>;
 	
 private:
 	meWPBrowser &pPanel;

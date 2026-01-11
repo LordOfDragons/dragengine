@@ -36,7 +36,7 @@
  */
 class aeULinkSetVertexPositionSetMaximum : public igdeUndo{
 public:
-	typedef deTObjectReference<aeULinkSetVertexPositionSetMaximum> Ref;
+	using Ref = deTObjectReference<aeULinkSetVertexPositionSetMaximum>;
 	
 	
 private:

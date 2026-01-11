@@ -36,7 +36,7 @@ class deoglShaderCompileListener;
  */
 class deoglShaderCompileTask : public deObject{
 public:
-	typedef deTObjectReference<deoglShaderCompileTask> Ref;
+	using Ref = deTObjectReference<deoglShaderCompileTask>;
 	
 	
 private:

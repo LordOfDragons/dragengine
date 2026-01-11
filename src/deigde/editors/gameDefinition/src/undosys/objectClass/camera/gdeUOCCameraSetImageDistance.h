@@ -38,7 +38,7 @@
  */
 class gdeUOCCameraSetImageDistance : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCCameraSetImageDistance> Ref;
+	using Ref = deTObjectReference<gdeUOCCameraSetImageDistance>;
 	
 	
 private:

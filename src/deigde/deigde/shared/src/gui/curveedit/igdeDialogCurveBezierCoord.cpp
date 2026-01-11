@@ -44,7 +44,7 @@ class igdeDialogCurveBezierCoordEditPoint : public igdeEditVector2Listener {
 	igdeDialogCurveBezierCoord &pDialog;
 	
 public:
-	typedef deTObjectReference<igdeDialogCurveBezierCoordEditPoint> Ref;
+	using Ref = deTObjectReference<igdeDialogCurveBezierCoordEditPoint>;
 	
 	igdeDialogCurveBezierCoordEditPoint(igdeDialogCurveBezierCoord &dialog) :
 	pDialog(dialog){}
@@ -61,7 +61,7 @@ class igdeDialogCurveBezierCoordEditHandle1 : public igdeEditVector2Listener {
 	igdeDialogCurveBezierCoord &pDialog;
 	
 public:
-	typedef deTObjectReference<igdeDialogCurveBezierCoordEditHandle1> Ref;
+	using Ref = deTObjectReference<igdeDialogCurveBezierCoordEditHandle1>;
 	
 	igdeDialogCurveBezierCoordEditHandle1(igdeDialogCurveBezierCoord &dialog) :
 	pDialog(dialog){}
@@ -77,7 +77,7 @@ class igdeDialogCurveBezierCoordEditHandle2 : public igdeEditVector2Listener {
 	igdeDialogCurveBezierCoord &pDialog;
 	
 public:
-	typedef deTObjectReference<igdeDialogCurveBezierCoordEditHandle2> Ref;
+	using Ref = deTObjectReference<igdeDialogCurveBezierCoordEditHandle2>;
 	
 	igdeDialogCurveBezierCoordEditHandle2(igdeDialogCurveBezierCoord &dialog) :
 	pDialog(dialog){}

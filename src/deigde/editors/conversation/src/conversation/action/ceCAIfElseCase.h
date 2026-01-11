@@ -42,8 +42,8 @@ private:
 	bool pTIMExpanded, pTIMConditionExpanded, pTIMActionsExpanded;
 	
 public:
-	typedef deTObjectReference<ceCAIfElseCase> Ref;
-	typedef decTObjectOrderedSet<ceCAIfElseCase> List;
+	using Ref = deTObjectReference<ceCAIfElseCase>;
+	using List = decTObjectOrderedSet<ceCAIfElseCase>;
 
 
 	/** \name Constructors and Destructors */

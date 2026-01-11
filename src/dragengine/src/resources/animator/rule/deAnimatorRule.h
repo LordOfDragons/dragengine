@@ -59,7 +59,7 @@ class deAnimatorRuleVisitor;
 class DE_DLL_EXPORT deAnimatorRule : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deAnimatorRule> Ref;
+	using Ref = deTObjectReference<deAnimatorRule>;
 	
 	
 public:

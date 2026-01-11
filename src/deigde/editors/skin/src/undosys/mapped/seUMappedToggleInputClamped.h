@@ -35,7 +35,7 @@
  */
 class seUMappedToggleInputClamped : public igdeUndo{
 public:
-	typedef deTObjectReference<seUMappedToggleInputClamped> Ref;
+	using Ref = deTObjectReference<seUMappedToggleInputClamped>;
 	
 	
 private:

@@ -37,7 +37,7 @@
  */
 class ceUCACameraShotSetName : public igdeUndo{
 public:
-	typedef deTObjectReference<ceUCACameraShotSetName> Ref;
+	using Ref = deTObjectReference<ceUCACameraShotSetName>;
 	
 	
 private:

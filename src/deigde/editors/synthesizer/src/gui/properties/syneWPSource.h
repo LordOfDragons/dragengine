@@ -50,7 +50,7 @@ class igdeTreeItem;
  */
 class syneWPSource : public igdeContainerScroll{
 public:
-	typedef deTObjectReference<syneWPSource> Ref;
+	using Ref = deTObjectReference<syneWPSource>;
 	
 private:
 	syneViewSynthesizer &pViewSynthesizer;

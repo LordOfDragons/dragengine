@@ -38,7 +38,7 @@
  */
 class gdeUOCSpeakerSetPathSound : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCSpeakerSetPathSound> Ref;
+	using Ref = deTObjectReference<gdeUOCSpeakerSetPathSound>;
 	
 	
 private:

@@ -39,7 +39,7 @@
  */
 class seUPropertySetMappedComponent : public igdeUndo{
 public:
-	typedef deTObjectReference<seUPropertySetMappedComponent> Ref;
+	using Ref = deTObjectReference<seUPropertySetMappedComponent>;
 	
 	
 private:

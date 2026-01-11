@@ -38,7 +38,7 @@
  */
 class skyeUTargetRemoveLink : public igdeUndo{
 public:
-	typedef deTObjectReference<skyeUTargetRemoveLink> Ref;
+	using Ref = deTObjectReference<skyeUTargetRemoveLink>;
 	
 	
 private:

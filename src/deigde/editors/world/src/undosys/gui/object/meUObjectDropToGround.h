@@ -42,7 +42,7 @@
  */
 class meUObjectDropToGround : public igdeUndo{
 public:
-	typedef deTObjectReference<meUObjectDropToGround> Ref;
+	using Ref = deTObjectReference<meUObjectDropToGround>;
 	
 private:
 	meWorld *pWorld;

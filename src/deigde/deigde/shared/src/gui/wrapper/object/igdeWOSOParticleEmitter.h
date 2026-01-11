@@ -43,7 +43,7 @@ class igdeGDCParticleEmitter;
 class DE_DLL_EXPORT igdeWOSOParticleEmitter : public igdeWOSubObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeWOSOParticleEmitter> Ref;
+	using Ref = deTObjectReference<igdeWOSOParticleEmitter>;
 	
 	
 private:

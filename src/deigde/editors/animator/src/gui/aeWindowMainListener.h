@@ -36,7 +36,7 @@ class aeWindowMain;
  */
 class aeWindowMainListener : public aeAnimatorNotifier{
 public:
-	typedef deTObjectReference<aeWindowMainListener> Ref;
+	using Ref = deTObjectReference<aeWindowMainListener>;
 	
 	
 private:

@@ -35,7 +35,7 @@
  */
 class aeWPAPanelRuleInverseKinematic : public aeWPAPanelRule{
 public:
-	typedef deTObjectReference<aeWPAPanelRuleInverseKinematic> Ref;
+	using Ref = deTObjectReference<aeWPAPanelRuleInverseKinematic>;
 	
 	
 private:

@@ -36,7 +36,7 @@
 class deglGameIcon : public delGameIcon{
 public:
 	/** Type holding strong reference. */
-	typedef deTObjectReference<deglGameIcon> Ref;
+	using Ref = deTObjectReference<deglGameIcon>;
 	
 	
 private:

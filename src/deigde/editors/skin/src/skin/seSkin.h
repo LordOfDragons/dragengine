@@ -63,7 +63,7 @@ class deParticleEmitter;
  */
 class seSkin : public igdeEditableEntity{
 public:
-	typedef deTObjectReference<seSkin> Ref;
+	using Ref = deTObjectReference<seSkin>;
 	
 	
 	enum ePreviewMode{

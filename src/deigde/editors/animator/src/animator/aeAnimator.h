@@ -76,9 +76,9 @@ class deLogger;
  */
 class aeAnimator : public igdeEditableEntity{
 public:
-	typedef deTObjectReference<aeAnimator> Ref;
-	typedef decTObjectOrderedSet<aeAttachment> AttachmentSet;
-	typedef decTObjectOrderedSet<aeAnimatorNotifier> NotifierSet;
+	using Ref = deTObjectReference<aeAnimator>;
+	using AttachmentSet = decTObjectOrderedSet<aeAttachment>;
+	using NotifierSet = decTObjectOrderedSet<aeAnimatorNotifier>;
 	
 public:
 	/** Collision Layers. */

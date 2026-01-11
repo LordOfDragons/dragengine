@@ -36,7 +36,7 @@
 class deoglPixelBufferMipMap : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglPixelBufferMipMap> Ref;
+	using Ref = deTObjectReference<deoglPixelBufferMipMap>;
 	
 	
 private:

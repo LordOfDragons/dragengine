@@ -57,7 +57,7 @@ class cActionDeleteNode : public igdeAction {
 	meWVNode &pNode;
 	
 public:
-	typedef deTObjectReference<cActionDeleteNode> Ref;
+	using Ref = deTObjectReference<cActionDeleteNode>;
 	cActionDeleteNode(meWVNode &node) : igdeAction("Delete Node",
 		node.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Delete Node"),
 	pNode(node){}
@@ -81,7 +81,7 @@ class cActionDuplicateNode : public igdeAction {
 	meWVNode &pNode;
 	
 public:
-	typedef deTObjectReference<cActionDuplicateNode> Ref;
+	using Ref = deTObjectReference<cActionDuplicateNode>;
 	cActionDuplicateNode(meWVNode &node) : igdeAction("Duplicate Node",
 		node.GetEnvironment().GetStockIcon(igdeEnvironment::esiDuplicate), "Duplicate Node"),
 	pNode(node){}
@@ -109,7 +109,7 @@ class cActivationListener : public igdeNVNodeListener{
 	meWVNode &pNode;
 	
 public:
-	typedef deTObjectReference<cActivationListener> Ref;
+	using Ref = deTObjectReference<cActivationListener>;
 	
 	cActivationListener(meWVNode &node) : pNode(node){}
 	
@@ -133,7 +133,7 @@ class cDragNodeListener : public igdeNVNodeListener{
 	igdeUndo::Ref &pUndo;
 	
 public:
-	typedef deTObjectReference<cDragNodeListener> Ref;
+	using Ref = deTObjectReference<cDragNodeListener>;
 	
 	cDragNodeListener(meWVNode &node, igdeUndo::Ref &undo) :
 		pNode(node), pUndo(undo){}

@@ -41,7 +41,7 @@
  */
 class gdeUOCCTextureSetScale : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCCTextureSetScale> Ref;
+	using Ref = deTObjectReference<gdeUOCCTextureSetScale>;
 	
 	
 private:

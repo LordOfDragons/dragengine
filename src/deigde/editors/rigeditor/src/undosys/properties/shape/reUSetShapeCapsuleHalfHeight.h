@@ -37,7 +37,7 @@
  */
 class reUSetShapeCapsuleHalfHeight : public igdeUndo{
 public:
-	typedef deTObjectReference<reUSetShapeCapsuleHalfHeight> Ref;
+	using Ref = deTObjectReference<reUSetShapeCapsuleHalfHeight>;
 	
 	
 private:

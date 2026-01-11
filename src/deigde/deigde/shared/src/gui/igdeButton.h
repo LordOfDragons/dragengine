@@ -39,7 +39,7 @@
 class DE_DLL_EXPORT igdeButton : public igdeWidget, igdeActionListener{
 public:
 	/** \brief Strong reference. */
-	typedef deTObjectReference<igdeButton> Ref;
+	using Ref = deTObjectReference<igdeButton>;
 	
 	
 	/** \brief Button style. */

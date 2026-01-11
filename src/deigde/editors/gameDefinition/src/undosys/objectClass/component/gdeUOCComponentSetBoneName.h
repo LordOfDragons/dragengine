@@ -38,7 +38,7 @@
  */
 class gdeUOCComponentSetBoneName : public igdeUndo{
 public:
-	typedef deTObjectReference<gdeUOCComponentSetBoneName> Ref;
+	using Ref = deTObjectReference<gdeUOCComponentSetBoneName>;
 	
 	
 private:

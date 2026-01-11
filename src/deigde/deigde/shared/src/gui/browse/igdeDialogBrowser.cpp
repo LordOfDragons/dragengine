@@ -67,7 +67,7 @@ class igdeDialogBrowser_TreeCategories : public igdeTreeListListener{
 	igdeDialogBrowser &pDialog;
 	
 public:
-	typedef deTObjectReference<igdeDialogBrowser_TreeCategories> Ref;
+	using Ref = deTObjectReference<igdeDialogBrowser_TreeCategories>;
 	
 	igdeDialogBrowser_TreeCategories(igdeDialogBrowser &dialog) : pDialog(dialog){}
 	
@@ -81,7 +81,7 @@ class igdeDialogBrowser_TextFilter : public igdeTextFieldListener{
 	igdeDialogBrowser &pDialog;
 	
 public:
-	typedef deTObjectReference<igdeDialogBrowser_TextFilter> Ref;
+	using Ref = deTObjectReference<igdeDialogBrowser_TextFilter>;
 	
 	igdeDialogBrowser_TextFilter(igdeDialogBrowser &dialog) : pDialog(dialog){}
 	
@@ -100,7 +100,7 @@ class igdeDialogBrowser_ActionPreviewSize : public igdeAction{
 	const igdeDialogBrowser::ePreviewSize pSize;
 	
 public:
-	typedef deTObjectReference<igdeDialogBrowser_ActionPreviewSize> Ref;
+	using Ref = deTObjectReference<igdeDialogBrowser_ActionPreviewSize>;
 	
 	igdeDialogBrowser_ActionPreviewSize(igdeDialogBrowser &dialog, igdeDialogBrowser::ePreviewSize size,
 	const char *text, igdeIcon *icon, const char *description) :
@@ -120,7 +120,7 @@ class igdeDialogBrowser_ActionViewMode : public igdeAction{
 	const igdeDialogBrowser::eViewModes pMode;
 	
 public:
-	typedef deTObjectReference<igdeDialogBrowser_ActionViewMode> Ref;
+	using Ref = deTObjectReference<igdeDialogBrowser_ActionViewMode>;
 	
 	igdeDialogBrowser_ActionViewMode(igdeDialogBrowser &dialog, igdeDialogBrowser::eViewModes mode,
 	const char *text, igdeIcon *icon, const char *description) :
@@ -139,7 +139,7 @@ class igdeDialogBrowser_ActionPIRebuild : public igdeAction{
 	igdeDialogBrowser &pDialog;
 	
 public:
-	typedef deTObjectReference<igdeDialogBrowser_ActionPIRebuild> Ref;
+	using Ref = deTObjectReference<igdeDialogBrowser_ActionPIRebuild>;
 	
 	igdeDialogBrowser_ActionPIRebuild(igdeDialogBrowser &dialog) : igdeAction(
 		"Rebuild Preview", nullptr, "Rebuild Preview"), pDialog(dialog){}
@@ -157,7 +157,7 @@ class igdeDialogBrowser_ListItems : public igdeIconListBoxListener{
 	igdeDialogBrowser &pDialog;
 	
 public:
-	typedef deTObjectReference<igdeDialogBrowser_ListItems> Ref;
+	using Ref = deTObjectReference<igdeDialogBrowser_ListItems>;
 	
 	igdeDialogBrowser_ListItems(igdeDialogBrowser &dialog) : pDialog(dialog){}
 	

@@ -35,7 +35,7 @@
  */
 class ceWPTTIMConditions : public ceWPTTIMCondition{
 public:
-	typedef deTObjectReference<ceWPTTIMConditions> Ref;
+	using Ref = deTObjectReference<ceWPTTIMConditions>;
 
 private:
 	const ceConversationCondition::List &pConditions;

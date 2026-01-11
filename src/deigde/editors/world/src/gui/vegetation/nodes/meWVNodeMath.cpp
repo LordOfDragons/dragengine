@@ -62,7 +62,7 @@ protected:
 	meWVNodeMath &pNode;
 	
 public:
-	typedef deTObjectReference<cComboOperator> Ref;
+	using Ref = deTObjectReference<cComboOperator>;
 	cComboOperator(meWVNodeMath &node) : pNode(node){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -87,7 +87,7 @@ protected:
 	meWVNodeMath &pNode;
 	
 public:
-	typedef deTObjectReference<cTextValueA> Ref;
+	using Ref = deTObjectReference<cTextValueA>;
 	cTextValueA(meWVNodeMath &node) : pNode(node){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -107,7 +107,7 @@ protected:
 	meWVNodeMath &pNode;
 	
 public:
-	typedef deTObjectReference<cTextValueB> Ref;
+	using Ref = deTObjectReference<cTextValueB>;
 	cTextValueB(meWVNodeMath &node) : pNode(node){}
 	
 	void OnTextChanged(igdeTextField *textField) override{

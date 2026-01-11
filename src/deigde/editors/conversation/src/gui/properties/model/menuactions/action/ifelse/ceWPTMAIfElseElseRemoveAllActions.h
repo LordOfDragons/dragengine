@@ -37,7 +37,7 @@ class ceCAIfElse;
  */
 class ceWPTMAIfElseElseRemoveAllActions : public ceWPTMARemoveAllActions{
 public:
-	typedef deTObjectReference<ceWPTMAIfElseElseRemoveAllActions> Ref;
+	using Ref = deTObjectReference<ceWPTMAIfElseElseRemoveAllActions>;
 
 private:
 	ceConversationTopic *pTopic;

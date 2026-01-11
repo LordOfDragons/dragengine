@@ -37,7 +37,7 @@
  */
 class meUObjectShapeScale : public meBaseUndoScale{
 public:
-	typedef deTObjectReference<meUObjectShapeScale> Ref;
+	using Ref = deTObjectReference<meUObjectShapeScale>;
 	
 private:
 	meObject::Ref pObject;

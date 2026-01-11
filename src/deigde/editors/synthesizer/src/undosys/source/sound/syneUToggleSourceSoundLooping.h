@@ -37,7 +37,7 @@
  */
 class syneUToggleSourceSoundLooping : public igdeUndo{
 public:
-	typedef deTObjectReference<syneUToggleSourceSoundLooping> Ref;
+	using Ref = deTObjectReference<syneUToggleSourceSoundLooping>;
 	
 	
 private:

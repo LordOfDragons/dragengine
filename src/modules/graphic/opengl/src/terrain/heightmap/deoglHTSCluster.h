@@ -65,7 +65,7 @@ private:
 	class WorldComputeElement: public deoglWorldComputeElement{
 		deoglHTSCluster &pCluster;
 	public:
-		typedef deTObjectReference<WorldComputeElement> Ref;
+		using Ref = deTObjectReference<WorldComputeElement>;
 		explicit WorldComputeElement(deoglHTSCluster &cluster);
 		void UpdateData(sDataElement &data) const override;
 		void UpdateDataGeometries(sDataElementGeometry *data) const override;

@@ -39,10 +39,10 @@
 class gdeOCEnvMapProbe : public deObject{
 	public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeOCEnvMapProbe> Ref;
+	using Ref = deTObjectReference<gdeOCEnvMapProbe>;
 
 	/** \brief Type holding list. */
-	typedef decTObjectOrderedSet<gdeOCEnvMapProbe> List;
+	using List = decTObjectOrderedSet<gdeOCEnvMapProbe>;
 	
 	
 	/** \brief Properties. */
