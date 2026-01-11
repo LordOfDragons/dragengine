@@ -97,12 +97,19 @@ public:
 	/** Input system overlay canvas view changed. */
 	void InputOverlayCanvasChanged() override;
 	
-	#ifdef WITH_OPENGLES
+	#ifdef OS_ANDROID
 	/** Application window has been created. */
 	void InitAppWindow() override;
 	
 	/** Application window has been closed. */
 	void TerminateAppWindow() override;
+	
+	#elif defined WITH_OPENGLES
+	/** Application window has been created. */
+	void InitAppWindow();
+	
+	/** \brief Application window has been closed. */
+	void TerminateAppWindow();
 	#endif
 	
 	
