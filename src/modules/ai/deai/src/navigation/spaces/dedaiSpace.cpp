@@ -526,206 +526,174 @@ void dedaiSpace::AddBlockerSplitters(decConvexVolumeList &list){
 	
 	const decDVector &minExtend = GetMinimumExtends();
 	const decDVector &maxExtend = GetMaximumExtends();
-	decConvexVolumeFace *volumeFace = nullptr;
-	decConvexVolume *volume = nullptr;
 	int i, j, k;
 	
-	// add splitter volumes from all overlapping blockers of appropriate priority
-	try{
-		deNavigationBlocker *engNavBlocker = pParentWorld->GetWorld().GetRootNavigationBlocker();
-		while(engNavBlocker){
-			if(!engNavBlocker->GetEnabled()){
-				engNavBlocker = engNavBlocker->GetLLWorldNext();
-				continue;
-			}
-			
-			if(engNavBlocker->GetSpaceType() != pType){
-				engNavBlocker = engNavBlocker->GetLLWorldNext();
-				continue;
-			}
-			
-			// only blocked by blockers on the same layer
-			if(engNavBlocker->GetLayer() != pLayer->GetLayer()){
-				engNavBlocker = engNavBlocker->GetLLWorldNext();
-				continue;
-			}
-			
-			// only blocked by blockers of equal or larger priority
-			if(engNavBlocker->GetBlockingPriority() < pBlockingPriority){
-				engNavBlocker = engNavBlocker->GetLLWorldNext();
-				continue;
-			}
-			
-			// only blocked by overlapping blockers. this is a performance optimization
-			dedaiNavBlocker &blocker = *((dedaiNavBlocker*)engNavBlocker->GetPeerAI());
-			
-			const decDVector &blockerMinExtend = blocker.GetMinimumExtends();
-			const decDVector &blockerMaxExtend = blocker.GetMaximumExtends();
-			
-			if(blockerMaxExtend < minExtend || blockerMinExtend > maxExtend){
-				engNavBlocker = engNavBlocker->GetLLWorldNext();
-				continue;
-			}
-			
-			// add blocker to splitter list
-			const decConvexVolumeList &bcvlist = blocker.GetConvexVolumeList();
-			const int bcvcount = bcvlist.GetVolumeCount();
-			
-			if(bcvcount > 0){
-				const decMatrix matrix(blocker.GetMatrix() * GetInverseMatrix());
-				
-				for(i=0; i< bcvcount; i++){
-					const decConvexVolume &bcv = *bcvlist.GetVolumeAt(i);
-					const int vertexCount = bcv.GetVertexCount();
-					const int faceCount = bcv.GetFaceCount();
-					
-					volume = new decConvexVolume;
-					for(j=0; j<vertexCount; j++){
-						volume->AddVertex(matrix * bcv.GetVertexAt(j));
-					}
-					for(j=0; j<faceCount; j++){
-						const decConvexVolumeFace &bcvface = *bcv.GetFaceAt(j);
-						const int cornerCount = bcvface.GetVertexCount();
-						
-						if(cornerCount >= 3){
-							volumeFace = new decConvexVolumeFace;
-							for(k=0; k<cornerCount; k++){
-								volumeFace->AddVertex(bcvface.GetVertexAt(k));
-							}
-							
-							const decVector &fv1 = volume->GetVertexAt(bcvface.GetVertexAt(0));
-							const decVector &fv2 = volume->GetVertexAt(bcvface.GetVertexAt(1));
-							const decVector &fv3 = volume->GetVertexAt(bcvface.GetVertexAt(2));
-							const decVector edgeVector((fv2 - fv1) % (fv3 - fv2));
-							if(!edgeVector.IsZero()){
-								volumeFace->SetNormal(edgeVector.Normalized());
-								
-							}else{
-								volumeFace->SetNormal(decVector(0.0f, 1.0f, 0.0f));
-							}
-							
-							volume->AddFace(volumeFace);
-							volumeFace = nullptr;
-						}
-					}
-					
-					list.AddVolume(volume);
-					volume = nullptr;
-				}
-			}
-			
+	deNavigationBlocker *engNavBlocker = pParentWorld->GetWorld().GetRootNavigationBlocker();
+	while(engNavBlocker){
+		if(!engNavBlocker->GetEnabled()){
 			engNavBlocker = engNavBlocker->GetLLWorldNext();
+			continue;
 		}
 		
-	}catch(const deException &){
-		if(volumeFace){
-			delete volumeFace;
+		if(engNavBlocker->GetSpaceType() != pType){
+			engNavBlocker = engNavBlocker->GetLLWorldNext();
+			continue;
 		}
-		if(volume){
-			delete volume;
+		
+		// only blocked by blockers on the same layer
+		if(engNavBlocker->GetLayer() != pLayer->GetLayer()){
+			engNavBlocker = engNavBlocker->GetLLWorldNext();
+			continue;
 		}
-		throw;
+		
+		// only blocked by blockers of equal or larger priority
+		if(engNavBlocker->GetBlockingPriority() < pBlockingPriority){
+			engNavBlocker = engNavBlocker->GetLLWorldNext();
+			continue;
+		}
+		
+		// only blocked by overlapping blockers. this is a performance optimization
+		dedaiNavBlocker &blocker = *((dedaiNavBlocker*)engNavBlocker->GetPeerAI());
+		
+		const decDVector &blockerMinExtend = blocker.GetMinimumExtends();
+		const decDVector &blockerMaxExtend = blocker.GetMaximumExtends();
+		
+		if(blockerMaxExtend < minExtend || blockerMinExtend > maxExtend){
+			engNavBlocker = engNavBlocker->GetLLWorldNext();
+			continue;
+		}
+		
+		// add blocker to splitter list
+		const decConvexVolumeList &bcvlist = blocker.GetConvexVolumeList();
+		const int bcvcount = bcvlist.GetVolumeCount();
+		
+		if(bcvcount > 0){
+			const decMatrix matrix(blocker.GetMatrix() * GetInverseMatrix());
+			
+			for(i=0; i< bcvcount; i++){
+				const decConvexVolume &bcv = bcvlist.GetVolumeAt(i);
+				const int vertexCount = bcv.GetVertexCount();
+				const int faceCount = bcv.GetFaceCount();
+				
+				decConvexVolume::Ref volume = decConvexVolume::Ref::New();
+				for(j=0; j<vertexCount; j++){
+					volume->AddVertex(matrix * bcv.GetVertexAt(j));
+				}
+				for(j=0; j<faceCount; j++){
+					const decConvexVolumeFace &bcvface = *bcv.GetFaceAt(j);
+					const int cornerCount = bcvface.GetVertexCount();
+					
+					if(cornerCount >= 3){
+						decConvexVolumeFace::Ref volumeFace = decConvexVolumeFace::Ref::New();
+						for(k=0; k<cornerCount; k++){
+							volumeFace->AddVertex(bcvface.GetVertexAt(k));
+						}
+						
+						const decVector &fv1 = volume->GetVertexAt(bcvface.GetVertexAt(0));
+						const decVector &fv2 = volume->GetVertexAt(bcvface.GetVertexAt(1));
+						const decVector &fv3 = volume->GetVertexAt(bcvface.GetVertexAt(2));
+						const decVector edgeVector((fv2 - fv1) % (fv3 - fv2));
+						if(!edgeVector.IsZero()){
+							volumeFace->SetNormal(edgeVector.Normalized());
+							
+						}else{
+							volumeFace->SetNormal(decVector(0.0f, 1.0f, 0.0f));
+						}
+						
+						volume->AddFace(std::move(volumeFace));
+					}
+				}
+				
+				list.AddVolume(std::move(volume));
+			}
+		}
+		
+		engNavBlocker = engNavBlocker->GetLLWorldNext();
 	}
 }
 
 void dedaiSpace::AddSpaceBlockerSplitters(decConvexVolumeList &list){
 	const decDVector &minExtend = GetMinimumExtends();
 	const decDVector &maxExtend = GetMaximumExtends();
-	decConvexVolumeFace *volumeFace = nullptr;
-	decConvexVolume *volume = nullptr;
 	int i, j, k;
 	
-	// add splitter volumes from all overlapping navigation space blockers except ourself
-	try{
-		deNavigationSpace *engNavSpace = pParentWorld->GetWorld().GetRootNavigationSpace();
-		while(engNavSpace){
-			dedaiNavSpace * const navspace = (dedaiNavSpace*)engNavSpace->GetPeerAI();
-			
-			// only blocked by a different navigation space than our owner
-			if(navspace == pOwnerNavSpace){
-				engNavSpace = engNavSpace->GetLLWorldNext();
-				continue;
-			}
-			
-			// only blocked by navigation space blockers on the same layer
-			if(engNavSpace->GetLayer() != pLayer->GetLayer()){
-				engNavSpace = engNavSpace->GetLLWorldNext();
-				continue;
-			}
-			
-			// only blocked by navigation space blockers of equal or larger priority
-			if(engNavSpace->GetBlockingPriority() < pBlockingPriority){
-				engNavSpace = engNavSpace->GetLLWorldNext();
-				continue;
-			}
-			
-			// only blocked by overlapping navigation space blockers. this is a performance optimization
-			dedaiSpace &space = *navspace->GetSpace();
-			const decDVector &blockerMinExtend = space.GetMinimumExtends();
-			const decDVector &blockerMaxExtend = space.GetMaximumExtends();
-			
-			if(blockerMaxExtend < minExtend || blockerMinExtend > maxExtend){
-				engNavSpace = engNavSpace->GetLLWorldNext();
-				continue;
-			}
-			
-			const decConvexVolumeList &bcvlist = space.GetBlockerConvexVolumeList();
-			const int bcvcount = bcvlist.GetVolumeCount();
-			
-			if(bcvcount > 0){
-				const decMatrix matrix(space.GetMatrix() * GetInverseMatrix());
-				
-				for(i=0; i< bcvcount; i++){
-					const decConvexVolume &bcv = *bcvlist.GetVolumeAt(i);
-					const int vertexCount = bcv.GetVertexCount();
-					const int faceCount = bcv.GetFaceCount();
-					
-					volume = new decConvexVolume;
-					for(j=0; j<vertexCount; j++){
-						volume->AddVertex(matrix * bcv.GetVertexAt(j));
-					}
-					for(j=0; j<faceCount; j++){
-						const decConvexVolumeFace &bcvface = *bcv.GetFaceAt(j);
-						const int cornerCount = bcvface.GetVertexCount();
-						
-						if(cornerCount >= 3){
-							volumeFace = new decConvexVolumeFace;
-							for(k=0; k<cornerCount; k++){
-								volumeFace->AddVertex(bcvface.GetVertexAt(k));
-							}
-							
-							const decVector &fv1 = volume->GetVertexAt(bcvface.GetVertexAt(0));
-							const decVector &fv2 = volume->GetVertexAt(bcvface.GetVertexAt(1));
-							const decVector &fv3 = volume->GetVertexAt(bcvface.GetVertexAt(2));
-							const decVector edgeVector((fv2 - fv1) % (fv3 - fv2));
-							if(!edgeVector.IsZero()){
-								volumeFace->SetNormal(edgeVector.Normalized());
-								
-							}else{
-								volumeFace->SetNormal(decVector(0.0f, 1.0f, 0.0f));
-							}
-							
-							volume->AddFace(volumeFace);
-							volumeFace = nullptr;
-						}
-					}
-					
-					list.AddVolume(volume);
-					volume = nullptr;
-				}
-			}
-			
+	deNavigationSpace *engNavSpace = pParentWorld->GetWorld().GetRootNavigationSpace();
+	while(engNavSpace){
+		dedaiNavSpace * const navspace = (dedaiNavSpace*)engNavSpace->GetPeerAI();
+		
+		// only blocked by a different navigation space than our owner
+		if(navspace == pOwnerNavSpace){
 			engNavSpace = engNavSpace->GetLLWorldNext();
+			continue;
 		}
 		
-	}catch(const deException &){
-		if(volumeFace){
-			delete volumeFace;
+		// only blocked by navigation space blockers on the same layer
+		if(engNavSpace->GetLayer() != pLayer->GetLayer()){
+			engNavSpace = engNavSpace->GetLLWorldNext();
+			continue;
 		}
-		if(volume){
-			delete volume;
+		
+		// only blocked by navigation space blockers of equal or larger priority
+		if(engNavSpace->GetBlockingPriority() < pBlockingPriority){
+			engNavSpace = engNavSpace->GetLLWorldNext();
+			continue;
 		}
-		throw;
+		
+		// only blocked by overlapping navigation space blockers. this is a performance optimization
+		dedaiSpace &space = *navspace->GetSpace();
+		const decDVector &blockerMinExtend = space.GetMinimumExtends();
+		const decDVector &blockerMaxExtend = space.GetMaximumExtends();
+		
+		if(blockerMaxExtend < minExtend || blockerMinExtend > maxExtend){
+			engNavSpace = engNavSpace->GetLLWorldNext();
+			continue;
+		}
+		
+		const decConvexVolumeList &bcvlist = space.GetBlockerConvexVolumeList();
+		const int bcvcount = bcvlist.GetVolumeCount();
+		
+		if(bcvcount > 0){
+			const decMatrix matrix(space.GetMatrix() * GetInverseMatrix());
+			
+			for(i=0; i< bcvcount; i++){
+				const decConvexVolume &bcv = bcvlist.GetVolumeAt(i);
+				const int vertexCount = bcv.GetVertexCount();
+				const int faceCount = bcv.GetFaceCount();
+				
+				decConvexVolume::Ref volume = decConvexVolume::Ref::New();
+				for(j=0; j<vertexCount; j++){
+					volume->AddVertex(matrix * bcv.GetVertexAt(j));
+				}
+				for(j=0; j<faceCount; j++){
+					const decConvexVolumeFace &bcvface = *bcv.GetFaceAt(j);
+					const int cornerCount = bcvface.GetVertexCount();
+					
+					if(cornerCount >= 3){
+						decConvexVolumeFace::Ref volumeFace = decConvexVolumeFace::Ref::New();
+						for(k=0; k<cornerCount; k++){
+							volumeFace->AddVertex(bcvface.GetVertexAt(k));
+						}
+						
+						const decVector &fv1 = volume->GetVertexAt(bcvface.GetVertexAt(0));
+						const decVector &fv2 = volume->GetVertexAt(bcvface.GetVertexAt(1));
+						const decVector &fv3 = volume->GetVertexAt(bcvface.GetVertexAt(2));
+						const decVector edgeVector((fv2 - fv1) % (fv3 - fv2));
+						if(!edgeVector.IsZero()){
+							volumeFace->SetNormal(edgeVector.Normalized());
+							
+						}else{
+							volumeFace->SetNormal(decVector(0.0f, 1.0f, 0.0f));
+						}
+						
+						volume->AddFace(std::move(volumeFace));
+					}
+				}
+				
+				list.AddVolume(std::move(volume));
+			}
+		}
+		
+		engNavSpace = engNavSpace->GetLLWorldNext();
 	}
 }
 
@@ -791,7 +759,7 @@ void dedaiSpace::pUpdateExtendsNavSpace(){
 	int i, j, k;
 	
 	for(i=0; i< volumeCount; i++){
-		const decConvexVolume &volume = *pBlockerConvexVolumeList.GetVolumeAt(i);
+		const decConvexVolume &volume = pBlockerConvexVolumeList.GetVolumeAt(i);
 		const int faceCount = volume.GetFaceCount();
 		
 		for(j=0; j<faceCount; j++){

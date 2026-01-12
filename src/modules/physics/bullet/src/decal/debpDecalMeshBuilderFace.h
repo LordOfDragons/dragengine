@@ -45,6 +45,11 @@ public:
 	/*@{*/
 	/** Creates a new decal mesh builder face. */
 	debpDecalMeshBuilderFace();
+	
+	/** Copy. */
+	debpDecalMeshBuilderFace(const debpDecalMeshBuilderFace &other) = default;
+	debpDecalMeshBuilderFace &operator=(const debpDecalMeshBuilderFace &other) = default;
+	
 	/** Cleans up the decal mesh builder face. */
 	~debpDecalMeshBuilderFace();
 	/*@}*/

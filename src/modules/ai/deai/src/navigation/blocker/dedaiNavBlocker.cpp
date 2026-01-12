@@ -361,7 +361,7 @@ void dedaiNavBlocker::pUpdateExtends(){
 		int i, j, k;
 		
 		for(i=0; i< volumeCount; i++){
-			const decConvexVolume &volume = *pConvexVolumeList.GetVolumeAt(i);
+			const decConvexVolume &volume = pConvexVolumeList.GetVolumeAt(i);
 			const int faceCount = volume.GetFaceCount();
 			
 			for(j=0; j<faceCount; j++){

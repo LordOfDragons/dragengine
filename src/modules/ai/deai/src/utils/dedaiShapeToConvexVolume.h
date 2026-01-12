@@ -102,14 +102,14 @@ public:
 	 * \details Overwrite to provide your own subclass instance. The default
 	 *          implementation create an instance of decConvexVolume.
 	 */
-	virtual decConvexVolume *CreateVolume();
+	virtual decConvexVolume::Ref CreateVolume();
 	
 	/**
 	 * \brief Create convex volume face and adds it to the volume.
 	 * \details Overwrite to provide your own subclass instance. The default
 	 *          implementation create an instance of decConvexVolumeFace.
 	 */
-	virtual decConvexVolumeFace *CreateFace();
+	virtual decConvexVolumeFace::Ref CreateFace();
 	/*@}*/
 	
 	

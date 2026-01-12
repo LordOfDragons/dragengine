@@ -27,6 +27,7 @@
 
 #include "../occlusiontest/deoglOcclusionTestListener.h"
 
+#include <dragengine/deTUniqueReference.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglRLight;
@@ -46,7 +47,7 @@ private:
 	bool pCameraInside;
 	bool pCameraInsideOccQueryBox;
 	
-	deoglOcclusionQuery *pOcclusionQuery;
+	deTUniqueReference<deoglOcclusionQuery> pOcclusionQuery;
 	bool pOccQueryValid;
 	
 	
@@ -104,7 +105,7 @@ public:
 	void OcclusionTestInvisible() override;
 	
 	/** Has occlusion query. */
-	inline bool HasOcclusionQuery() const{ return pOcclusionQuery != nullptr; }
+	inline bool HasOcclusionQuery() const{ return pOcclusionQuery.IsNotNull(); }
 	
 	/** Occlusion query. */
 	deoglOcclusionQuery &GetOcclusionQuery();

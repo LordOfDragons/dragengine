@@ -39,6 +39,8 @@
  */
 class debpDMBConvexVolumeFace : public decConvexVolumeFace{
 public:
+	using Ref = deTUniqueReference<debpDMBConvexVolumeFace>;
+	
 	bool pDecalFace;
 	
 public:
@@ -46,6 +48,8 @@ public:
 	/*@{*/
 	/** Creates a new decal mesh builder convex volume face. */
 	debpDMBConvexVolumeFace();
+	explicit debpDMBConvexVolumeFace(bool decalFace);
+	
 	/** Cleans up the decal mesh builder convex volume face. */
 	~debpDMBConvexVolumeFace() override;
 	/*@}*/

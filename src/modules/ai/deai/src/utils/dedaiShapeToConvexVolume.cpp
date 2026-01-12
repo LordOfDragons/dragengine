@@ -76,62 +76,42 @@ void dedaiShapeToConvexVolume::SetSphereSegmentsCount(int segmentCount) {
 
 
 void dedaiShapeToConvexVolume::AddTriangle(decConvexVolume &volume, int p1, int p2, int p3){
-	decConvexVolumeFace *face = nullptr;
+	decConvexVolumeFace::Ref face = CreateFace();
+	face->AddVertex(p1);
+	face->AddVertex(p2);
+	face->AddVertex(p3);
 	
-	try{
-		face = CreateFace();
-		face->AddVertex(p1);
-		face->AddVertex(p2);
-		face->AddVertex(p3);
-		
-		const decVector &pos1 = volume.GetVertexAt(p1);
-		const decVector &pos2 = volume.GetVertexAt(p2);
-		const decVector &pos3 = volume.GetVertexAt(p3);
-		face->SetNormal(((pos2 - pos1) % (pos3 - pos2)).Normalized());
-		
-		volume.AddFace(face);
-		
-	}catch(const deException &){
-		if(face){
-			delete face;
-		}
-		throw;
-	}
+	const decVector &pos1 = volume.GetVertexAt(p1);
+	const decVector &pos2 = volume.GetVertexAt(p2);
+	const decVector &pos3 = volume.GetVertexAt(p3);
+	face->SetNormal(((pos2 - pos1) % (pos3 - pos2)).Normalized());
+	
+	volume.AddFace(std::move(face));
 }
 
 void dedaiShapeToConvexVolume::AddQuad(decConvexVolume &volume, int p1, int p2, int p3, int p4){
-	decConvexVolumeFace *face = nullptr;
+	decConvexVolumeFace::Ref face = CreateFace();
+	face->AddVertex(p1);
+	face->AddVertex(p2);
+	face->AddVertex(p3);
+	face->AddVertex(p4);
 	
-	try{
-		face = CreateFace();
-		face->AddVertex(p1);
-		face->AddVertex(p2);
-		face->AddVertex(p3);
-		face->AddVertex(p4);
-		
-		const decVector &pos1 = volume.GetVertexAt(p1);
-		const decVector &pos2 = volume.GetVertexAt(p2);
-		const decVector &pos3 = volume.GetVertexAt(p3);
-		face->SetNormal(((pos2 - pos1) % (pos3 - pos2)).Normalized());
-		
-		volume.AddFace(face);
-		
-	}catch(const deException &){
-		if(face){
-			delete face;
-		}
-		throw;
-	}
+	const decVector &pos1 = volume.GetVertexAt(p1);
+	const decVector &pos2 = volume.GetVertexAt(p2);
+	const decVector &pos3 = volume.GetVertexAt(p3);
+	face->SetNormal(((pos2 - pos1) % (pos3 - pos2)).Normalized());
+	
+	volume.AddFace(std::move(face));
 }
 
 
 
-decConvexVolume *dedaiShapeToConvexVolume::CreateVolume(){
-	return new decConvexVolume;
+decConvexVolume::Ref dedaiShapeToConvexVolume::CreateVolume(){
+	return decConvexVolume::Ref::New();
 }
 
-decConvexVolumeFace *dedaiShapeToConvexVolume::CreateFace(){
-	return new decConvexVolumeFace;
+decConvexVolumeFace::Ref dedaiShapeToConvexVolume::CreateFace(){
+	return decConvexVolumeFace::Ref::New();
 }
 
 
@@ -156,55 +136,45 @@ void dedaiShapeToConvexVolume::VisitShapeSphere(decShapeSphere &sphere){
 	float angle, radiusRing, heightRing;
 	int i, j, base;
 	
-	decConvexVolume *volume = nullptr;
+	decConvexVolume::Ref volume = CreateVolume();
 	
-	try{
-		volume = CreateVolume();
+	// add vertices
+	volume->AddVertex(matrix.Transform(0.0f, 1.0f, 0.0f)); // top pole
+	
+	for(i=0; i<pSphereRingCount; i++){
+		angle = stepAngleRing * (float)(i + 1); // first ring is actually at i=1
+		radiusRing = sinf(angle);
+		heightRing = cosf(angle);
 		
-		// add vertices
-		volume->AddVertex(matrix.Transform(0.0f, 1.0f, 0.0f)); // top pole
-		
-		for(i=0; i<pSphereRingCount; i++){
-			angle = stepAngleRing * (float)(i + 1); // first ring is actually at i=1
-			radiusRing = sinf(angle);
-			heightRing = cosf(angle);
-			
-			for(j=0; j<pSphereSegmentCount; j++){
-				angle = stepAngleSegment * (float)j;
-				volume->AddVertex(matrix.Transform(sinf(angle) * radiusRing, heightRing, cosf(angle) * radiusRing));
-			}
+		for(j=0; j<pSphereSegmentCount; j++){
+			angle = stepAngleSegment * (float)j;
+			volume->AddVertex(matrix.Transform(sinf(angle) * radiusRing, heightRing, cosf(angle) * radiusRing));
 		}
-		
-		volume->AddVertex(matrix.Transform(0.0f, -1.0f, 0.0f)); // bottom pole
-		
-		// add faces
-		for(i=0; i<pSphereSegmentCount; i++){
-			AddTriangle(*volume, 0, 1 + i, 1 + (i + 1) % pSphereSegmentCount);
-		}
-		
-		for(i=0; i<pSphereRingCount-1; i++){
-			base = 1 + pSphereSegmentCount * i;
-			for(j=0; j<pSphereSegmentCount; j++){
-				AddQuad(*volume, base + j, base + pSphereSegmentCount + j,
-					base + pSphereSegmentCount + (j + 1) % pSphereSegmentCount,
-					base + (j + 1) % pSphereSegmentCount);
-			}
-		}
-		
-		base = 1 + pSphereSegmentCount * (pSphereRingCount - 1);
-		const int last = volume->GetVertexCount() - 1;
-		for(i=0; i<pSphereSegmentCount; i++){
-			AddTriangle(*volume, last, base + (i + 1) % pSphereSegmentCount, base + i);
-		}
-		
-		pList->AddVolume(volume);
-		
-	}catch(const deException &){
-		if(volume){
-			delete volume;
-		}
-		throw;
 	}
+	
+	volume->AddVertex(matrix.Transform(0.0f, -1.0f, 0.0f)); // bottom pole
+	
+	// add faces
+	for(i=0; i<pSphereSegmentCount; i++){
+		AddTriangle(*volume, 0, 1 + i, 1 + (i + 1) % pSphereSegmentCount);
+	}
+	
+	for(i=0; i<pSphereRingCount-1; i++){
+		base = 1 + pSphereSegmentCount * i;
+		for(j=0; j<pSphereSegmentCount; j++){
+			AddQuad(*volume, base + j, base + pSphereSegmentCount + j,
+				base + pSphereSegmentCount + (j + 1) % pSphereSegmentCount,
+				base + (j + 1) % pSphereSegmentCount);
+		}
+	}
+	
+	base = 1 + pSphereSegmentCount * (pSphereRingCount - 1);
+	const int last = volume->GetVertexCount() - 1;
+	for(i=0; i<pSphereSegmentCount; i++){
+		AddTriangle(*volume, last, base + (i + 1) % pSphereSegmentCount, base + i);
+	}
+	
+	pList->AddVolume(std::move(volume));
 }
 
 void dedaiShapeToConvexVolume::VisitShapeBox(decShapeBox &box){
@@ -215,35 +185,25 @@ void dedaiShapeToConvexVolume::VisitShapeBox(decShapeBox &box){
 	const decMatrix matrix(decMatrix::CreateWorld(box.GetPosition(), box.GetOrientation(), box.GetHalfExtends()));
 	const decVector2 &tapering = box.GetTapering();
 	
-	decConvexVolume *volume = nullptr;
+	decConvexVolume::Ref volume = CreateVolume();
 	
-	try{
-		volume = CreateVolume();
-		
-		volume->AddVertex(matrix.Transform(-tapering.x, 1.0f,  tapering.y));
-		volume->AddVertex(matrix.Transform(tapering.x, 1.0f,  tapering.y));
-		volume->AddVertex(matrix.Transform(tapering.x, 1.0f, -tapering.y));
-		volume->AddVertex(matrix.Transform(-tapering.x, 1.0f, -tapering.y));
-		volume->AddVertex(matrix.Transform(-1.0f, -1.0f,  1.0f));
-		volume->AddVertex(matrix.Transform(1.0f, -1.0f,  1.0f));
-		volume->AddVertex(matrix.Transform(1.0f, -1.0f, -1.0f));
-		volume->AddVertex(matrix.Transform(-1.0f, -1.0f, -1.0f));
-		
-		AddQuad(*volume, 0, 1, 2, 3); // top (y+)
-		AddQuad(*volume, 7, 6, 5, 4); // bottom (y-)
-		AddQuad(*volume, 6, 7, 3, 2); // front (z+)
-		AddQuad(*volume, 4, 5, 1, 0); // back (z-)
-		AddQuad(*volume, 5, 6, 2, 1); // left (x+)
-		AddQuad(*volume, 7, 4, 0, 3); // right (x-)
-		
-		pList->AddVolume(volume);
-		
-	}catch(const deException &){
-		if(volume){
-			delete volume;
-		}
-		throw;
-	}
+	volume->AddVertex(matrix.Transform(-tapering.x, 1.0f,  tapering.y));
+	volume->AddVertex(matrix.Transform(tapering.x, 1.0f,  tapering.y));
+	volume->AddVertex(matrix.Transform(tapering.x, 1.0f, -tapering.y));
+	volume->AddVertex(matrix.Transform(-tapering.x, 1.0f, -tapering.y));
+	volume->AddVertex(matrix.Transform(-1.0f, -1.0f,  1.0f));
+	volume->AddVertex(matrix.Transform(1.0f, -1.0f,  1.0f));
+	volume->AddVertex(matrix.Transform(1.0f, -1.0f, -1.0f));
+	volume->AddVertex(matrix.Transform(-1.0f, -1.0f, -1.0f));
+	
+	AddQuad(*volume, 0, 1, 2, 3); // top (y+)
+	AddQuad(*volume, 7, 6, 5, 4); // bottom (y-)
+	AddQuad(*volume, 6, 7, 3, 2); // front (z+)
+	AddQuad(*volume, 4, 5, 1, 0); // back (z-)
+	AddQuad(*volume, 5, 6, 2, 1); // left (x+)
+	AddQuad(*volume, 7, 4, 0, 3); // right (x-)
+	
+	pList->AddVolume(std::move(volume));
 }
 
 void dedaiShapeToConvexVolume::VisitShapeCylinder(decShapeCylinder &cylinder){

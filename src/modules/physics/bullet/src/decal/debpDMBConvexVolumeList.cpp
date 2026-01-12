@@ -51,16 +51,7 @@ debpDMBConvexVolumeList::~debpDMBConvexVolumeList(){
 // Subclassing
 ////////////////
 
-decConvexVolumeFace *debpDMBConvexVolumeList::CreateVolumeFace(decConvexVolumeFace *face){
-	debpDMBConvexVolumeFace *newFace = nullptr;
-	
-	newFace = new debpDMBConvexVolumeFace;
-	
-	if(face){
-		debpDMBConvexVolumeFace *dmbFace = (debpDMBConvexVolumeFace*)face;
-		
-		newFace->SetDecalFace(dmbFace->GetDecalFace());
-	}
-	
-	return newFace;
+decConvexVolumeFace::Ref debpDMBConvexVolumeList::CreateVolumeFace(const decConvexVolumeFace *face){
+	return debpDMBConvexVolumeFace::Ref::New(face
+		? dynamic_cast<const debpDMBConvexVolumeFace*>(face)->GetDecalFace() : false);
 }

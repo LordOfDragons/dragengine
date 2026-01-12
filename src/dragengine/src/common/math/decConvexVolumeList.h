@@ -25,9 +25,10 @@
 #ifndef _DECCONVEXVOLUMELIST_H_
 #define _DECCONVEXVOLUMELIST_H_
 
+#include "decConvexVolume.h"
 #include "decMath.h"
+#include "../collection/decTList.h"
 
-class decConvexVolume;
 class decConvexVolumeFace;
 
 
@@ -56,32 +57,37 @@ class decConvexVolumeFace;
  * convex volumes without deleting them.
  */
 class DE_DLL_EXPORT decConvexVolumeList{
-private:
-	decConvexVolume **pVolumes;
-	int pVolumeCount;
-	int pVolumeSize;
+public:
+	/** \brief List of volumes. */
+	using VolumeList = decTUniqueList<decConvexVolume>;
 	
+	
+private:
+	VolumeList pVolumes;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create empty list. */
-	decConvexVolumeList();
+	decConvexVolumeList() = default;
 	
 	/** \brief Clean up list. */
-	virtual ~decConvexVolumeList();
+	virtual ~decConvexVolumeList() = default;
 	/*@}*/
 	
 	
 	
 	/** \name Volume Management */
 	/*@{*/
+	/** \brief Volumes. */
+	inline const VolumeList &GetVolumes() const{ return pVolumes; }
+	
 	/** \brief Number of volumes. */
-	inline int GetVolumeCount() const{ return pVolumeCount; }
+	inline int GetVolumeCount() const{ return pVolumes.GetCount(); }
 	
 	/** \brief Volume at index. */
-	decConvexVolume *GetVolumeAt(int index) const;
+	const decConvexVolume::Ref &GetVolumeAt(int index) const;
 	
 	/** \brief Volume is present. */
 	bool HasVolume(decConvexVolume *volume) const;
@@ -90,19 +96,13 @@ public:
 	int IndexOfVolume(decConvexVolume *volume) const;
 	
 	/** \brief Add volume. */
-	void AddVolume(decConvexVolume *volume);
+	void AddVolume(decConvexVolume::Ref &&volume);
 	
 	/** \brief Remove volume. */
 	void RemoveVolume(decConvexVolume *volume);
 	
 	/** \brief Remove volume at index. */
 	void RemoveVolumeAt(int index);
-	
-	/** \brief Remove volume without deleting itt. */
-	void ExtractVolume(decConvexVolume *volume);
-	
-	/** \brief Remove volume at index without deleting it. */
-	void ExtractVolumeAt(int index);
 	
 	/** \brief Remove all volumes. */
 	void RemoveAllVolumes();
@@ -126,7 +126,7 @@ public:
 	 * be part of any volume.
 	 */
 	void SplitByPlane(const decVector &splitNormal, const decVector &splitPosition,
-		bool deleteBackVolume, decConvexVolumeFace *cutFaceInit);
+		bool deleteBackVolume, const decConvexVolumeFace *cutFaceInit);
 	
 	/**
 	 * \brief Split volumes using convex face.
@@ -158,7 +158,7 @@ public:
 	 * of a clip plane and is only used if a volume has been specified. The
 	 * default implementation creates a convex volume of type decConvexVolume.
 	 */
-	virtual decConvexVolume *CreateVolume(decConvexVolume *volume, bool front);
+	virtual decConvexVolume::Ref CreateVolume(const decConvexVolume *volume, bool front);
 	
 	/**
 	 * \brief Create convex volume face similar to another face.
@@ -170,7 +170,7 @@ public:
 	 * 
 	 * The default implementation creates a convex volume face of type decConvexVolumeFace.
 	 */
-	virtual decConvexVolumeFace *CreateVolumeFace(decConvexVolumeFace *face);
+	virtual decConvexVolumeFace::Ref CreateVolumeFace(const decConvexVolumeFace *face);
 	/*@}*/
 	
 	
@@ -181,7 +181,7 @@ private:
 		const decConvexVolumeFace &splitFace) const;
 	int pTestByPlane(int volume, const decVector &splitNormal, float splitDot) const;
 	int pSplitByPlane(int volume, const decVector &splitNormal, float splitDot,
-		bool deleteBackVolume, decConvexVolumeFace *face);
+		bool deleteBackVolume, const decConvexVolumeFace *face);
 	int pSplitByVolume(int volume, const decConvexVolume &splitVolume);
 };
 

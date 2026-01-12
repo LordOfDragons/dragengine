@@ -539,12 +539,12 @@ void detConvexVolume::TestCropVolumeByVolume(){
 	
 	// test if the volumes are kind of cubes
 	ASSERT_TRUE(list.GetVolumeCount() == 6);
-	ASSERT_TRUE(pIsKindOfCube(*list.GetVolumeAt(0)));
-	ASSERT_TRUE(pIsKindOfCube(*list.GetVolumeAt(1)));
-	ASSERT_TRUE(pIsKindOfCube(*list.GetVolumeAt(2)));
-	ASSERT_TRUE(pIsKindOfCube(*list.GetVolumeAt(3)));
-	ASSERT_TRUE(pIsKindOfCube(*list.GetVolumeAt(4)));
-	ASSERT_TRUE(pIsKindOfCube(*list.GetVolumeAt(5)));
+	ASSERT_TRUE(pIsKindOfCube(list.GetVolumeAt(0)));
+	ASSERT_TRUE(pIsKindOfCube(list.GetVolumeAt(1)));
+	ASSERT_TRUE(pIsKindOfCube(list.GetVolumeAt(2)));
+	ASSERT_TRUE(pIsKindOfCube(list.GetVolumeAt(3)));
+	ASSERT_TRUE(pIsKindOfCube(list.GetVolumeAt(4)));
+	ASSERT_TRUE(pIsKindOfCube(list.GetVolumeAt(5)));
 	
 	// set the collision boxes
 	for(b=0; b<6; b++){
@@ -749,66 +749,53 @@ void detConvexVolume::TestSpecial1(){
 	
 	// special test
 	decConvexVolumeList cvl1, cvl2;
-	decConvexVolume *cv = nullptr;
-	decConvexVolumeFace *cvf = nullptr;
 	int i, j;
 	
-	try{
-		// volume to split
-		cv = new decConvexVolume;
-		const decVector v[4] = {
-			decVector(-4.299999,0.000000,14.300001),
-			decVector(-4.299997,0.000000,25.000000),
-			decVector(4.300003,0.000000,25.000000),
-			decVector(4.300001,0.000000,14.300001)};
-		for(i=0; i<4; i++){
-			cv->AddVertex(v[i]);
+	// volume to split
+	{
+	decConvexVolume::Ref cv = decConvexVolume::Ref::New();
+	const decVector v[4] = {
+		decVector(-4.299999,0.000000,14.300001),
+		decVector(-4.299997,0.000000,25.000000),
+		decVector(4.300003,0.000000,25.000000),
+		decVector(4.300001,0.000000,14.300001)};
+	for(i=0; i<4; i++){
+		cv->AddVertex(v[i]);
+	}
+	decConvexVolumeFace::Ref cvf = decConvexVolumeFace::Ref::New();
+	for(i=0; i<4; i++){
+		cvf->AddVertex(i);
+	}
+	cvf->SetNormal(((v[1]-v[0])%(v[2]-v[1])).Normalized());
+	cv->AddFace(std::move(cvf));
+	cvl1.AddVolume(std::move(cv));
+	}
+	
+	// splitter volume
+	{
+	decConvexVolume::Ref cv = decConvexVolume::Ref::New();
+	const decVector v2[8] = {
+		decVector(-0.338018,1.300000,22.241497),
+		decVector(-1.931929,1.300000,22.102049),
+		decVector(-2.071378,1.300000,23.695961),
+		decVector(-0.477467,1.300000,23.835409),
+		decVector(-0.338018,-0.300000,22.241497),
+		decVector(-1.931929,-0.300000,22.102049),
+		decVector(-2.071378,-0.300000,23.695961),
+		decVector(-0.477467,-0.300000,23.835409)};
+	for(i=0; i<8; i++){
+		cv->AddVertex(v2[i]);
+	}
+	const int f2[6][4] = {{0,1,2,3}, {7,6,5,4}, {6,7,3,2}, {4,5,1,0}, {5,6,2,1}, {7,4,0,3}};
+	for(i=0; i<6; i++){
+		decConvexVolumeFace::Ref cvf = decConvexVolumeFace::Ref::New();
+		for(j=0; j<4; j++){
+			cvf->AddVertex(f2[i][j]);
 		}
-		cvf = new decConvexVolumeFace;
-		for(i=0; i<4; i++){
-			cvf->AddVertex(i);
-		}
-		cvf->SetNormal(((v[1]-v[0])%(v[2]-v[1])).Normalized());
-		cv->AddFace(cvf);
-		cvf = nullptr;
-		cvl1.AddVolume(cv);
-		cv = nullptr;
-		
-		// splitter volume
-		cv = new decConvexVolume;
-		const decVector v2[8] = {
-			decVector(-0.338018,1.300000,22.241497),
-			decVector(-1.931929,1.300000,22.102049),
-			decVector(-2.071378,1.300000,23.695961),
-			decVector(-0.477467,1.300000,23.835409),
-			decVector(-0.338018,-0.300000,22.241497),
-			decVector(-1.931929,-0.300000,22.102049),
-			decVector(-2.071378,-0.300000,23.695961),
-			decVector(-0.477467,-0.300000,23.835409)};
-		for(i=0; i<8; i++){
-			cv->AddVertex(v2[i]);
-		}
-		const int f2[6][4] = {{0,1,2,3}, {7,6,5,4}, {6,7,3,2}, {4,5,1,0}, {5,6,2,1}, {7,4,0,3}};
-		for(i=0; i<6; i++){
-			cvf = new decConvexVolumeFace;
-			for(j=0; j<4; j++){
-				cvf->AddVertex(f2[i][j]);
-			}
-			cvf->SetNormal(((v2[f2[i][1]]-v2[f2[i][0]])%(v2[f2[i][2]]-v2[f2[i][1]])).Normalized());
-			cv->AddFace(cvf);
-			cvf = nullptr;
-		}
-		cvl2.AddVolume(cv);
-		cv = nullptr;
-		
-	}catch(const deException &){
-		if(cvf){
-			delete cvf;
-		}
-		if(cv){
-			delete cv;
-		}
-		throw;
+		cvf->SetNormal(((v2[f2[i][1]]-v2[f2[i][0]])%(v2[f2[i][2]]-v2[f2[i][1]])).Normalized());
+		cv->AddFace(std::move(cvf));
+	}
+	cvl2.AddVolume(std::move(cv));
 	}
 	
 	// split and test result
@@ -831,37 +818,37 @@ void detConvexVolume::TestSpecial1(){
 	int testSetFound[4] = {0, 0, 0, 0};
 	
 	for(i=0; i<4; i++){
-		cv = cvl1.GetVolumeAt(i);
-		cvf = cv->GetFaceAt(0);
+		const decConvexVolume &cv = cvl1.GetVolumeAt(i);
+		const decConvexVolumeFace &cvf = cv.GetFaceAt(0);
 		
-		if(cv->GetVertexAt(cvf->GetVertexAt(0)).IsEqualTo(decVector(-4.299997,0.000000,23.500980), THRESHOLD_EQUAL_FLOAT)
-		&& cv->GetVertexAt(cvf->GetVertexAt(1)).IsEqualTo(decVector(-4.299997,0.000000,25.000000), THRESHOLD_EQUAL_FLOAT)
-		&& cv->GetVertexAt(cvf->GetVertexAt(2)).IsEqualTo(decVector(4.300003,0.000000,25.000000), THRESHOLD_EQUAL_FLOAT)
-		&& cv->GetVertexAt(cvf->GetVertexAt(3)).IsEqualTo(decVector(4.300003,0.000000,24.253380), THRESHOLD_EQUAL_FLOAT)){
+		if(cv.GetVertexAt(cvf.GetVertexAt(0)).IsEqualTo(decVector(-4.299997,0.000000,23.500980), THRESHOLD_EQUAL_FLOAT)
+		&& cv.GetVertexAt(cvf.GetVertexAt(1)).IsEqualTo(decVector(-4.299997,0.000000,25.000000), THRESHOLD_EQUAL_FLOAT)
+		&& cv.GetVertexAt(cvf.GetVertexAt(2)).IsEqualTo(decVector(4.300003,0.000000,25.000000), THRESHOLD_EQUAL_FLOAT)
+		&& cv.GetVertexAt(cvf.GetVertexAt(3)).IsEqualTo(decVector(4.300003,0.000000,24.253380), THRESHOLD_EQUAL_FLOAT)){
 			testSetFound[0]++;
 			continue;
 		}
 		
-		if(cv->GetVertexAt(cvf->GetVertexAt(0)).IsEqualTo(decVector(-4.299999,0.000000,14.300001), THRESHOLD_EQUAL_FLOAT)
-		&& cv->GetVertexAt(cvf->GetVertexAt(1)).IsEqualTo(decVector(-4.299998,0.000000,21.894873), THRESHOLD_EQUAL_FLOAT)
-		&& cv->GetVertexAt(cvf->GetVertexAt(2)).IsEqualTo(decVector(4.300003,0.000000,22.647270), THRESHOLD_EQUAL_FLOAT)
-		&& cv->GetVertexAt(cvf->GetVertexAt(3)).IsEqualTo(decVector(4.300001,0.000000,14.300001), THRESHOLD_EQUAL_FLOAT)){
+		if(cv.GetVertexAt(cvf.GetVertexAt(0)).IsEqualTo(decVector(-4.299999,0.000000,14.300001), THRESHOLD_EQUAL_FLOAT)
+		&& cv.GetVertexAt(cvf.GetVertexAt(1)).IsEqualTo(decVector(-4.299998,0.000000,21.894873), THRESHOLD_EQUAL_FLOAT)
+		&& cv.GetVertexAt(cvf.GetVertexAt(2)).IsEqualTo(decVector(4.300003,0.000000,22.647270), THRESHOLD_EQUAL_FLOAT)
+		&& cv.GetVertexAt(cvf.GetVertexAt(3)).IsEqualTo(decVector(4.300001,0.000000,14.300001), THRESHOLD_EQUAL_FLOAT)){
 			testSetFound[1]++;
 			continue;
 		}
 		
-		if(cv->GetVertexAt(cvf->GetVertexAt(0)).IsEqualTo(decVector(-4.299998,0.000000,21.894873), THRESHOLD_EQUAL_FLOAT)
-		&& cv->GetVertexAt(cvf->GetVertexAt(1)).IsEqualTo(decVector(-4.299997,0.000000,23.500980), THRESHOLD_EQUAL_FLOAT)
-		&& cv->GetVertexAt(cvf->GetVertexAt(2)).IsEqualTo(decVector(-2.071378,0.000000,23.695959), THRESHOLD_EQUAL_FLOAT)
-		&& cv->GetVertexAt(cvf->GetVertexAt(3)).IsEqualTo(decVector(-1.931929,0.000000,22.102051), THRESHOLD_EQUAL_FLOAT)){
+		if(cv.GetVertexAt(cvf.GetVertexAt(0)).IsEqualTo(decVector(-4.299998,0.000000,21.894873), THRESHOLD_EQUAL_FLOAT)
+		&& cv.GetVertexAt(cvf.GetVertexAt(1)).IsEqualTo(decVector(-4.299997,0.000000,23.500980), THRESHOLD_EQUAL_FLOAT)
+		&& cv.GetVertexAt(cvf.GetVertexAt(2)).IsEqualTo(decVector(-2.071378,0.000000,23.695959), THRESHOLD_EQUAL_FLOAT)
+		&& cv.GetVertexAt(cvf.GetVertexAt(3)).IsEqualTo(decVector(-1.931929,0.000000,22.102051), THRESHOLD_EQUAL_FLOAT)){
 			testSetFound[2]++;
 			continue;
 		}
 		
-		if(cv->GetVertexAt(cvf->GetVertexAt(0)).IsEqualTo(decVector(-0.477467,0.000000,23.835407), THRESHOLD_EQUAL_FLOAT)
-		&& cv->GetVertexAt(cvf->GetVertexAt(1)).IsEqualTo(decVector(4.300003,0.000000,24.253380), THRESHOLD_EQUAL_FLOAT)
-		&& cv->GetVertexAt(cvf->GetVertexAt(2)).IsEqualTo(decVector(4.300003,0.000000,22.647270), THRESHOLD_EQUAL_FLOAT)
-		&& cv->GetVertexAt(cvf->GetVertexAt(3)).IsEqualTo(decVector(-0.338018,0.000000,22.241499), THRESHOLD_EQUAL_FLOAT)){
+		if(cv.GetVertexAt(cvf.GetVertexAt(0)).IsEqualTo(decVector(-0.477467,0.000000,23.835407), THRESHOLD_EQUAL_FLOAT)
+		&& cv.GetVertexAt(cvf.GetVertexAt(1)).IsEqualTo(decVector(4.300003,0.000000,24.253380), THRESHOLD_EQUAL_FLOAT)
+		&& cv.GetVertexAt(cvf.GetVertexAt(2)).IsEqualTo(decVector(4.300003,0.000000,22.647270), THRESHOLD_EQUAL_FLOAT)
+		&& cv.GetVertexAt(cvf.GetVertexAt(3)).IsEqualTo(decVector(-0.338018,0.000000,22.241499), THRESHOLD_EQUAL_FLOAT)){
 			testSetFound[3]++;
 			continue;
 		}
@@ -1334,8 +1321,7 @@ void detConvexVolume::pSetSplitVolume(decConvexVolume &volume, const decVector &
 	volume.AddVertex(v4);
 	
 	// create test face
-	decConvexVolumeFace *face = new decConvexVolumeFace;
-	if(!face) DETHROW(deeOutOfMemory);
+	decConvexVolumeFace::Ref face = decConvexVolumeFace::Ref::New();
 	
 	// set face normal
 	face->SetNormal(normal);
@@ -1347,7 +1333,7 @@ void detConvexVolume::pSetSplitVolume(decConvexVolume &volume, const decVector &
 	face->AddVertex(3);
 	
 	// add face to volume
-	volume.AddFace(face);
+	volume.AddFace(std::move(face));
 }
 
 void detConvexVolume::pInvertSplitFace(decConvexVolume &volume){

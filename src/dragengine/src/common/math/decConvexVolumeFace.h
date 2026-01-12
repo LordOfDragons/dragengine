@@ -26,8 +26,9 @@
 #define _DECCONVEXVOLUMEFACE_H_
 
 #include "decMath.h"
+#include "../collection/decTList.h"
+#include "../../deTUniqueReference.h"
 
-// definitions
 class decConvexVolume;
 
 
@@ -46,9 +47,16 @@ class decConvexVolume;
  * which can be set to an integer value.
  */
 class DE_DLL_EXPORT decConvexVolumeFace{
+public:
+	/** \brief Unique reference. */
+	using Ref = deTUniqueReference<decConvexVolumeFace>;
+	
+	/** \brief List of vertex indices. */
+	using VertexList = decTList<int>;
+	
+	
 private:
-	int *pVertices;
-	int pVertexCount;
+	VertexList pVertices;
 	decVector pNormal;
 	int pMarker;
 	
@@ -59,9 +67,10 @@ public:
 	/*@{*/
 	/** \brief Creates an empty convex volume face. */
 	decConvexVolumeFace();
+	explicit decConvexVolumeFace(int marker);
 	
 	/** \brief Clean up convex volume face. */
-	virtual ~decConvexVolumeFace();
+	virtual ~decConvexVolumeFace() = default;
 	/*@}*/
 	
 	
@@ -80,8 +89,11 @@ public:
 	/** \brief Set marker value. */
 	void SetMarker(int marker);
 	
+	/** \brief Vertices. */
+	inline const VertexList &GetVertices() const{ return pVertices; }
+	
 	/** \brief Number of vertices. */
-	inline int GetVertexCount() const{ return pVertexCount; }
+	inline int GetVertexCount() const{ return pVertices.GetCount(); }
 	
 	/** \brief Index of the vertex at the given position. */
 	int GetVertexAt(int position) const;

@@ -51,44 +51,12 @@
 // Class debpDecalMeshBuilder
 ///////////////////////////////
 
-// Constructor, destructor
-////////////////////////////
-
-debpDecalMeshBuilder::debpDecalMeshBuilder(){
-	pCVolList = nullptr;
-	pDistance = 0.0f;
-	pDecalBox = nullptr;
-	
-	pPoints = nullptr;
-	pPointCount = 0;
-	pPointSize = 0;
-	pFaces = nullptr;
-	pFaceCount = 0;
-	pFaceSize = 0;
-}
-
-debpDecalMeshBuilder::~debpDecalMeshBuilder(){
-	if(pFaces) delete [] pFaces;
-	if(pPoints) delete [] pPoints;
-	if(pDecalBox) delete pDecalBox;
-	if(pCVolList) delete pCVolList;
-}
-
-
-
 // Management
 ///////////////
 
 void debpDecalMeshBuilder::Init(deDecal *decal, float distance){
 	if(!decal || distance < 1e-3f) DETHROW(deeInvalidParam);
 	decVector halfSize(decal->GetSize() * 0.5f);
-	decConvexVolume *volume = nullptr;
-	
-	// free the old stuff
-	if(pCVolList){
-		delete pCVolList;
-		pCVolList = nullptr;
-	}
 	
 	// tuck away the infos
 	pDecalMatrix = decMatrix::CreateFromQuaternion(decal->GetOrientation())
@@ -100,41 +68,33 @@ void debpDecalMeshBuilder::Init(deDecal *decal, float distance){
 	pProjVector = -pDecalView * pDistance; // small offset just to make sure
 	
 	// create decal box
-	if(pDecalBox){
-		delete pDecalBox;
-		pDecalBox = nullptr;
-	}
-	pDecalBox = new debpDCollisionBox(pOrigin - pDecalView * (pDistance * 0.5f),
-		decVector(halfSize.x, halfSize.y, pDistance * 0.5f), decal->GetOrientation());
+	pDecalBox = deTUniqueReference<debpDCollisionBox>::New(
+		pOrigin - pDecalView * (pDistance * 0.5f),
+		decVector(halfSize.x, halfSize.y, pDistance * 0.5f),
+		decal->GetOrientation());
 	
 	// create convex volume list
-	try{
-		pCVolList = new debpDMBConvexVolumeList;
-		
-		volume = new decConvexVolume;
-		
-		volume->AddVertex(pDecalMatrix * decVector(halfSize.x,  halfSize.y, 0.0f));
-		volume->AddVertex(pDecalMatrix * decVector(-halfSize.x,  halfSize.y, 0.0f));
-		volume->AddVertex(pDecalMatrix * decVector(-halfSize.x, -halfSize.y, 0.0f));
-		volume->AddVertex(pDecalMatrix * decVector(halfSize.x, -halfSize.y, 0.0f));
-		volume->AddVertex(pDecalMatrix * decVector(halfSize.x,  halfSize.y, -pDistance));
-		volume->AddVertex(pDecalMatrix * decVector(-halfSize.x,  halfSize.y, -pDistance));
-		volume->AddVertex(pDecalMatrix * decVector(-halfSize.x, -halfSize.y, -pDistance));
-		volume->AddVertex(pDecalMatrix * decVector(halfSize.x, -halfSize.y, -pDistance));
-		
-		pVolumeAddFace(volume, 0, 1, 2, 3, pDecalView, false); // front
-		pVolumeAddFace(volume, 4, 5, 1, 0, pDecalMatrix.TransformUp(), false); // top
-		pVolumeAddFace(volume, 1, 5, 6, 2, -pDecalMatrix.TransformRight(), false); // right
-		pVolumeAddFace(volume, 3, 2, 6, 7, -pDecalMatrix.TransformUp(), false); // bottom
-		pVolumeAddFace(volume, 4, 0, 3, 7, pDecalMatrix.TransformRight(), false); // left
-		pVolumeAddFace(volume, 5, 4, 7, 6, -pDecalView, false); // back
-		
-		pCVolList->AddVolume(volume);
-		
-	}catch(const deException &){
-		if(volume) delete volume;
-		throw;
-	}
+	pCVolList = deTUniqueReference<debpDMBConvexVolumeList>::New();
+	
+	decConvexVolume::Ref volume = decConvexVolume::Ref::New();
+	
+	volume->AddVertex(pDecalMatrix * decVector(halfSize.x,  halfSize.y, 0.0f));
+	volume->AddVertex(pDecalMatrix * decVector(-halfSize.x,  halfSize.y, 0.0f));
+	volume->AddVertex(pDecalMatrix * decVector(-halfSize.x, -halfSize.y, 0.0f));
+	volume->AddVertex(pDecalMatrix * decVector(halfSize.x, -halfSize.y, 0.0f));
+	volume->AddVertex(pDecalMatrix * decVector(halfSize.x,  halfSize.y, -pDistance));
+	volume->AddVertex(pDecalMatrix * decVector(-halfSize.x,  halfSize.y, -pDistance));
+	volume->AddVertex(pDecalMatrix * decVector(-halfSize.x, -halfSize.y, -pDistance));
+	volume->AddVertex(pDecalMatrix * decVector(halfSize.x, -halfSize.y, -pDistance));
+	
+	pVolumeAddFace(volume, 0, 1, 2, 3, pDecalView, false); // front
+	pVolumeAddFace(volume, 4, 5, 1, 0, pDecalMatrix.TransformUp(), false); // top
+	pVolumeAddFace(volume, 1, 5, 6, 2, -pDecalMatrix.TransformRight(), false); // right
+	pVolumeAddFace(volume, 3, 2, 6, 7, -pDecalMatrix.TransformUp(), false); // bottom
+	pVolumeAddFace(volume, 4, 0, 3, 7, pDecalMatrix.TransformRight(), false); // left
+	pVolumeAddFace(volume, 5, 4, 7, 6, -pDecalView, false); // back
+	
+	pCVolList->AddVolume(std::move(volume));
 }
 
 void debpDecalMeshBuilder::CutTriangle(const decVector &v1, const decVector &v2, const decVector &v3){
@@ -361,97 +321,65 @@ void debpDecalMeshBuilder::BuildMeshForComponent(debpComponent *oglComponent){
 
 void debpDecalMeshBuilder::Debug(dePhysicsBullet &module){
 	int v, volumeCount = pCVolList->GetVolumeCount();
-	debpDMBConvexVolumeFace *volumeFace;
 	decConvexVolume *volume;
 	int x, vertexCount;
-	int f, faceCount;
 	
 	module.LogInfo("DecalMeshBuilder: Convex volume infos");
 	for(v=0; v<volumeCount; v++){
 		volume = pCVolList->GetVolumeAt(v);
 		module.LogInfoFormat("  volume %i: vertices(%i)", v + 1, volume->GetVertexCount());
-		faceCount = volume->GetFaceCount();
-		for(f=0; f<faceCount; f++){
-			volumeFace = (debpDMBConvexVolumeFace*)volume->GetFaceAt(f);
-			vertexCount = volumeFace->GetVertexCount();
-			module.LogInfoFormat("    face %i: decal(%i)", f + 1, volumeFace->GetDecalFace() ? 1 : 0);
+		volume->GetFaces().VisitIndexed([&](int f, const decConvexVolumeFace &face){
+			const debpDMBConvexVolumeFace &volumeFace = dynamic_cast<const debpDMBConvexVolumeFace&>(face);
+			vertexCount = volumeFace.GetVertexCount();
+			module.LogInfoFormat("    face %i: decal(%i)", f + 1, volumeFace.GetDecalFace() ? 1 : 0);
 			for(x=0; x<vertexCount; x++){
-				const decVector &vertex = volume->GetVertexAt(volumeFace->GetVertexAt(x));
+				const decVector &vertex = volume->GetVertexAt(volumeFace.GetVertexAt(x));
 				module.LogInfoFormat("      vertex %i: %g, %g, %g", x + 1, vertex.x, vertex.y, vertex.z);
 			}
-		}
+		});
 	}
 	
 	module.LogInfo("DecalMeshBuilder: Build mesh infos");
-	for(f=0; f<pFaceCount; f++){
+	pFaces.VisitIndexed([&](int f, const debpDecalMeshBuilderFace &face){
 		module.LogInfoFormat("  face %i: index(%i) v1(%g,%g,%g) v2(%g,%g,%g) v3(%g,%g,%g)", f + 1,
-			pFaces[f].GetFaceIndex(), pPoints[pFaces[f].GetPoint1()].x,
-			pPoints[pFaces[f].GetPoint1()].y, pPoints[pFaces[f].GetPoint1()].z,
-			pPoints[pFaces[f].GetPoint2()].x, pPoints[pFaces[f].GetPoint2()].y,
-			pPoints[pFaces[f].GetPoint2()].z, pPoints[pFaces[f].GetPoint3()].x,
-			pPoints[pFaces[f].GetPoint3()].y, pPoints[pFaces[f].GetPoint3()].z);
-	}
+			face.GetFaceIndex(), pPoints[face.GetPoint1()].x,
+			pPoints[face.GetPoint1()].y, pPoints[face.GetPoint1()].z,
+			pPoints[face.GetPoint2()].x, pPoints[face.GetPoint2()].y,
+			pPoints[face.GetPoint2()].z, pPoints[face.GetPoint3()].x,
+			pPoints[face.GetPoint3()].y, pPoints[face.GetPoint3()].z);
+	});
 }
 
 
 const decVector &debpDecalMeshBuilder::GetPointAt(int index) const{
-	if(index < 0 || index >= pPointCount) DETHROW(deeInvalidParam);
-	
-	return pPoints[index];
+	return pPoints.GetAt(index);
 }
 
 int debpDecalMeshBuilder::AddPoint(const decVector &point){
-	int index = pIndexOfPoint(point);
-	
-	if(index == -1){
-		if(pPointCount == pPointSize){
-			int newSize = pPointSize * 3 / 2 + 1;
-			decVector *newArray = new decVector[newSize];
-			if(pPoints){
-				memcpy(newArray, pPoints, sizeof(decVector) * pPointSize);
-				delete [] pPoints;
-			}
-			pPoints = newArray;
-			pPointSize = newSize;
-		}
-		
-		pPoints[pPointCount] = point;
-		index = pPointCount;
-		pPointCount++;
+	int index = pPoints.IndexOf(point);
+	if(index != -1){
+		return index;
 	}
 	
-	return index;
+	pPoints.Add(point);
+	return pPoints.GetCount() - 1;
 }
 
 void debpDecalMeshBuilder::RemoveAllPoints(){
-	pPointCount = 0;
+	pPoints.RemoveAll();
 }
 
-debpDecalMeshBuilderFace *debpDecalMeshBuilder::GetFaceAt(int index) const{
-	if(index < 0 || index >= pFaceCount) DETHROW(deeInvalidParam);
-	
-	return pFaces + index;
+const debpDecalMeshBuilderFace &debpDecalMeshBuilder::GetFaceAt(int index) const{
+	return pFaces.GetAt(index);
 }
 
-debpDecalMeshBuilderFace *debpDecalMeshBuilder::AddFace(){
-	if(pFaceCount == pFaceSize){
-		int newSize = pFaceSize * 3 / 2 + 1;
-		debpDecalMeshBuilderFace *newArray = new debpDecalMeshBuilderFace[newSize];
-		if(pFaces){
-			memcpy(newArray, pFaces, sizeof(debpDecalMeshBuilderFace) * pFaceSize);
-			delete [] pFaces;
-		}
-		pFaces = newArray;
-		pFaceSize = newSize;
-	}
-	
-	pFaceCount++;
-	
-	return pFaces + (pFaceCount - 1);
+debpDecalMeshBuilderFace &debpDecalMeshBuilder::AddFace(){
+	pFaces.Add({});
+	return pFaces.Last();
 }
 
 void debpDecalMeshBuilder::RemoveAllFaces(){
-	pFaceCount = 0;
+	pFaces.RemoveAll();
 }
 
 
@@ -460,62 +388,24 @@ void debpDecalMeshBuilder::RemoveAllFaces(){
 //////////////////////
 
 void debpDecalMeshBuilder::pVolumeAddFace(decConvexVolume *volume, int p1, int p2, int p3, const decVector &normal, bool decal){
-	debpDMBConvexVolumeFace *face = nullptr;
-	decVector faceNormal;
+	debpDMBConvexVolumeFace::Ref face = debpDMBConvexVolumeFace::Ref::New();
+	face->SetNormal(normal.Normalized());
+	face->AddVertex(p1);
+	face->AddVertex(p2);
+	face->AddVertex(p3);
+	face->SetDecalFace(decal);
 	
-	try{
-		face = new debpDMBConvexVolumeFace;
-		
-		faceNormal = normal;
-		faceNormal.Normalize();
-		face->SetNormal(faceNormal);
-		
-		face->AddVertex(p1);
-		face->AddVertex(p2);
-		face->AddVertex(p3);
-		
-		face->SetDecalFace(decal);
-		
-		volume->AddFace(face);
-		
-	}catch(const deException &){
-		if(face) delete face;
-		throw;
-	}
+	volume->AddFace(std::move(face));
 }
 
 void debpDecalMeshBuilder::pVolumeAddFace(decConvexVolume *volume, int p1, int p2, int p3, int p4, const decVector &normal, bool decal){
-	debpDMBConvexVolumeFace *face = nullptr;
-	decVector faceNormal;
+	debpDMBConvexVolumeFace::Ref face = debpDMBConvexVolumeFace::Ref::New();
+	face->SetNormal(normal.Normalized());
+	face->AddVertex(p1);
+	face->AddVertex(p2);
+	face->AddVertex(p3);
+	face->AddVertex(p4);
+	face->SetDecalFace(decal);
 	
-	try{
-		face = new debpDMBConvexVolumeFace;
-		
-		faceNormal = normal;
-		faceNormal.Normalize();
-		face->SetNormal(faceNormal);
-		
-		face->AddVertex(p1);
-		face->AddVertex(p2);
-		face->AddVertex(p3);
-		face->AddVertex(p4);
-		
-		face->SetDecalFace(decal);
-		
-		volume->AddFace(face);
-		
-	}catch(const deException &){
-		if(face) delete face;
-		throw;
-	}
-}
-
-int debpDecalMeshBuilder::pIndexOfPoint(const decVector &point) const{
-	int i;
-	
-	for(i=0; i<pPointCount; i++){
-		if(point.IsEqualTo(pPoints[i])) return i;
-	}
-	
-	return -1;
+	volume->AddFace(std::move(face));
 }

@@ -45,6 +45,10 @@ public:
 	/** Create decal mesh builder face. */
 	deoglDecalMeshBuilderFace();
 	
+	/** Copy. */
+	deoglDecalMeshBuilderFace(const deoglDecalMeshBuilderFace &face) = default;
+	deoglDecalMeshBuilderFace &operator=(const deoglDecalMeshBuilderFace &face) = default;
+	
 	/** Clean up decal mesh builder face. */
 	~deoglDecalMeshBuilderFace();
 	/*@}*/

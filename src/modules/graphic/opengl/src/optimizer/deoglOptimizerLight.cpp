@@ -233,7 +233,6 @@ void deoglOptimizerLight::pBuildTriangleList(){
 }
 
 void deoglOptimizerLight::pPrepareCroping(){
-	decConvexVolume *volume = nullptr;
 	float xn, yn, xf, yf;
 	float range;
 	float offset;
@@ -281,79 +280,72 @@ void deoglOptimizerLight::pPrepareCroping(){
 	if(pLight->GetLightType() == deLight::eltPoint){
 		offset = (sqrtf(2.0f) - 1.0f) * range;
 		
-		// add the light volume
-		try{
-			// create convex volume
-			volume = new decConvexVolume;
-			
-			// add vertices
-			volume->AddVertex(lightPosition + decVector(-offset, range, -offset));
-			volume->AddVertex(lightPosition + decVector(offset, range, -offset));
-			volume->AddVertex(lightPosition + decVector(-offset, range, offset));
-			volume->AddVertex(lightPosition + decVector(offset, range, offset));
-			
-			volume->AddVertex(lightPosition + decVector(-range, offset, -offset));
-			volume->AddVertex(lightPosition + decVector(-offset, offset, -range));
-			volume->AddVertex(lightPosition + decVector(offset, offset, -range));
-			volume->AddVertex(lightPosition + decVector(range, offset, -offset));
-			volume->AddVertex(lightPosition + decVector(-range, offset, offset));
-			volume->AddVertex(lightPosition + decVector(-offset, offset, range));
-			volume->AddVertex(lightPosition + decVector(offset, offset, range));
-			volume->AddVertex(lightPosition + decVector(range, offset, offset));
-			
-			volume->AddVertex(lightPosition + decVector(-range, -offset, -offset));
-			volume->AddVertex(lightPosition + decVector(-offset, -offset, -range));
-			volume->AddVertex(lightPosition + decVector(offset, -offset, -range));
-			volume->AddVertex(lightPosition + decVector(range, -offset, -offset));
-			volume->AddVertex(lightPosition + decVector(-range, -offset, offset));
-			volume->AddVertex(lightPosition + decVector(-offset, -offset, range));
-			volume->AddVertex(lightPosition + decVector(offset, -offset, range));
-			volume->AddVertex(lightPosition + decVector(range, -offset, offset));
-			
-			volume->AddVertex(lightPosition + decVector(-offset, -range, -offset));
-			volume->AddVertex(lightPosition + decVector(offset, -range, -offset));
-			volume->AddVertex(lightPosition + decVector(-offset, -range, offset));
-			volume->AddVertex(lightPosition + decVector(offset, -range, offset));
-			
-			// add faces
-			pVolumeAddFace(volume, 2, 3, 1, 0, decVector(0.0f, 1.0f, 0.0f)); // top
-			
-			pVolumeAddFace(volume, 0, 1, 6, 5, decVector(0.0f, 1.0f, -1.0f)); // first band
-			pVolumeAddFace(volume, 1, 7, 6, decVector(1.0f, 1.0f, -1.0f));
-			pVolumeAddFace(volume, 1, 3, 11, 7, decVector(1.0f, 1.0f, 0.0f));
-			pVolumeAddFace(volume, 3, 10, 11, decVector(1.0f, 1.0f, 1.0f));
-			pVolumeAddFace(volume, 3, 2, 9, 10, decVector(0.0f, 1.0f, 1.0f));
-			pVolumeAddFace(volume, 2, 8, 9, decVector(-1.0f, 1.0f, 1.0f));
-			pVolumeAddFace(volume, 2, 0, 4, 8, decVector(-1.0f, 1.0f, 0.0f));
-			pVolumeAddFace(volume, 0, 5, 4, decVector(-1.0f, 1.0f, -1.0f));
-			
-			pVolumeAddFace(volume, 5, 6, 14, 13, decVector(0.0f, 0.0f, -1.0f)); // second band
-			pVolumeAddFace(volume, 6, 7, 15, 14, decVector(1.0f, 0.0f, -1.0f));
-			pVolumeAddFace(volume, 7, 11, 19, 15, decVector(1.0f, 0.0f, 0.0f));
-			pVolumeAddFace(volume, 11, 10, 18, 19, decVector(1.0f, 0.0f, 1.0f));
-			pVolumeAddFace(volume, 10, 9, 17, 18, decVector(0.0f, 0.0f, 1.0f));
-			pVolumeAddFace(volume, 9, 8, 16, 17, decVector(-1.0f, 0.0f, 1.0f));
-			pVolumeAddFace(volume, 8, 4, 12, 16, decVector(-1.0f, 0.0f, 0.0f));
-			pVolumeAddFace(volume, 4, 5, 13, 12, decVector(-1.0f, 0.0f, -1.0f));
-			
-			pVolumeAddFace(volume, 13, 14, 21, 20, decVector(0.0f, -1.0f, -1.0f)); // third band
-			pVolumeAddFace(volume, 14, 15, 21, decVector(1.0f, -1.0f, -1.0f));
-			pVolumeAddFace(volume, 15, 19, 23, 21, decVector(1.0f, -1.0f, 0.0f));
-			pVolumeAddFace(volume, 19, 18, 23, decVector(1.0f, -1.0f, 1.0f));
-			pVolumeAddFace(volume, 18, 17, 22, 23, decVector(0.0f, -1.0f, 1.0f));
-			pVolumeAddFace(volume, 17, 16, 22, decVector(-1.0f, -1.0f, 1.0f));
-			pVolumeAddFace(volume, 16, 12, 20, 22, decVector(-1.0f, -1.0f, 0.0f));
-			pVolumeAddFace(volume, 12, 13, 20, decVector(-1.0f, -1.0f, -1.0f));
-			
-			pVolumeAddFace(volume, 20, 21, 23, 22, decVector(0.0f, -1.0f, 0.0f)); // bottom face
-			
-			// add volume to list
-			pConvexVolumeList->AddVolume(volume);
-			
-		}catch(const deException &){
-			if(volume) delete volume;
-			throw;
-		}
+		// create convex volume
+		decConvexVolume::Ref volume = decConvexVolume::Ref::New();
+		
+		// add vertices
+		volume->AddVertex(lightPosition + decVector(-offset, range, -offset));
+		volume->AddVertex(lightPosition + decVector(offset, range, -offset));
+		volume->AddVertex(lightPosition + decVector(-offset, range, offset));
+		volume->AddVertex(lightPosition + decVector(offset, range, offset));
+		
+		volume->AddVertex(lightPosition + decVector(-range, offset, -offset));
+		volume->AddVertex(lightPosition + decVector(-offset, offset, -range));
+		volume->AddVertex(lightPosition + decVector(offset, offset, -range));
+		volume->AddVertex(lightPosition + decVector(range, offset, -offset));
+		volume->AddVertex(lightPosition + decVector(-range, offset, offset));
+		volume->AddVertex(lightPosition + decVector(-offset, offset, range));
+		volume->AddVertex(lightPosition + decVector(offset, offset, range));
+		volume->AddVertex(lightPosition + decVector(range, offset, offset));
+		
+		volume->AddVertex(lightPosition + decVector(-range, -offset, -offset));
+		volume->AddVertex(lightPosition + decVector(-offset, -offset, -range));
+		volume->AddVertex(lightPosition + decVector(offset, -offset, -range));
+		volume->AddVertex(lightPosition + decVector(range, -offset, -offset));
+		volume->AddVertex(lightPosition + decVector(-range, -offset, offset));
+		volume->AddVertex(lightPosition + decVector(-offset, -offset, range));
+		volume->AddVertex(lightPosition + decVector(offset, -offset, range));
+		volume->AddVertex(lightPosition + decVector(range, -offset, offset));
+		
+		volume->AddVertex(lightPosition + decVector(-offset, -range, -offset));
+		volume->AddVertex(lightPosition + decVector(offset, -range, -offset));
+		volume->AddVertex(lightPosition + decVector(-offset, -range, offset));
+		volume->AddVertex(lightPosition + decVector(offset, -range, offset));
+		
+		// add faces
+		pVolumeAddFace(volume, 2, 3, 1, 0, decVector(0.0f, 1.0f, 0.0f)); // top
+		
+		pVolumeAddFace(volume, 0, 1, 6, 5, decVector(0.0f, 1.0f, -1.0f)); // first band
+		pVolumeAddFace(volume, 1, 7, 6, decVector(1.0f, 1.0f, -1.0f));
+		pVolumeAddFace(volume, 1, 3, 11, 7, decVector(1.0f, 1.0f, 0.0f));
+		pVolumeAddFace(volume, 3, 10, 11, decVector(1.0f, 1.0f, 1.0f));
+		pVolumeAddFace(volume, 3, 2, 9, 10, decVector(0.0f, 1.0f, 1.0f));
+		pVolumeAddFace(volume, 2, 8, 9, decVector(-1.0f, 1.0f, 1.0f));
+		pVolumeAddFace(volume, 2, 0, 4, 8, decVector(-1.0f, 1.0f, 0.0f));
+		pVolumeAddFace(volume, 0, 5, 4, decVector(-1.0f, 1.0f, -1.0f));
+		
+		pVolumeAddFace(volume, 5, 6, 14, 13, decVector(0.0f, 0.0f, -1.0f)); // second band
+		pVolumeAddFace(volume, 6, 7, 15, 14, decVector(1.0f, 0.0f, -1.0f));
+		pVolumeAddFace(volume, 7, 11, 19, 15, decVector(1.0f, 0.0f, 0.0f));
+		pVolumeAddFace(volume, 11, 10, 18, 19, decVector(1.0f, 0.0f, 1.0f));
+		pVolumeAddFace(volume, 10, 9, 17, 18, decVector(0.0f, 0.0f, 1.0f));
+		pVolumeAddFace(volume, 9, 8, 16, 17, decVector(-1.0f, 0.0f, 1.0f));
+		pVolumeAddFace(volume, 8, 4, 12, 16, decVector(-1.0f, 0.0f, 0.0f));
+		pVolumeAddFace(volume, 4, 5, 13, 12, decVector(-1.0f, 0.0f, -1.0f));
+		
+		pVolumeAddFace(volume, 13, 14, 21, 20, decVector(0.0f, -1.0f, -1.0f)); // third band
+		pVolumeAddFace(volume, 14, 15, 21, decVector(1.0f, -1.0f, -1.0f));
+		pVolumeAddFace(volume, 15, 19, 23, 21, decVector(1.0f, -1.0f, 0.0f));
+		pVolumeAddFace(volume, 19, 18, 23, decVector(1.0f, -1.0f, 1.0f));
+		pVolumeAddFace(volume, 18, 17, 22, 23, decVector(0.0f, -1.0f, 1.0f));
+		pVolumeAddFace(volume, 17, 16, 22, decVector(-1.0f, -1.0f, 1.0f));
+		pVolumeAddFace(volume, 16, 12, 20, 22, decVector(-1.0f, -1.0f, 0.0f));
+		pVolumeAddFace(volume, 12, 13, 20, decVector(-1.0f, -1.0f, -1.0f));
+		
+		pVolumeAddFace(volume, 20, 21, 23, 22, decVector(0.0f, -1.0f, 0.0f)); // bottom face
+		
+		// add volume to list
+		pConvexVolumeList->AddVolume(std::move(volume));
 		
 	}else{
 		const decVector2 angles(pLight->GetSpotAngle() * 0.5f,
@@ -365,35 +357,29 @@ void deoglOptimizerLight::pPrepareCroping(){
 		float cosY = cosf(angles.y);
 		const decMatrix matrix(pLight->GetMatrix());
 		
-		try{
-			// create convex volume
-			volume = new decConvexVolume;
-			
-			// add vertices
-			volume->AddVertex(matrix * decVector(-xn, yn, 0.0f));
-			volume->AddVertex(matrix * decVector(xn, yn, 0.0f));
-			volume->AddVertex(matrix * decVector(xn, -yn, 0.0f));
-			volume->AddVertex(matrix * decVector(-xn, -yn, 0.0f));
-			volume->AddVertex(matrix * decVector(-xf, yf, range));
-			volume->AddVertex(matrix * decVector(xf, yf, range));
-			volume->AddVertex(matrix * decVector(xf, -yf, range));
-			volume->AddVertex(matrix * decVector(-xf, -yf, range));
-			
-			// add faces
-			pVolumeAddFace(volume, 1, 5, 6, 2, matrix.TransformNormal(decVector(cosX, 0.0f, -sinX))); // right
-			pVolumeAddFace(volume, 4, 0, 3, 7, matrix.TransformNormal(decVector(-cosX, 0.0f, -sinX))); // left
-			pVolumeAddFace(volume, 4, 5, 1, 0, matrix.TransformNormal(decVector(0.0f, cosY, -sinY))); // top
-			pVolumeAddFace(volume, 3, 2, 6, 7, matrix.TransformNormal(decVector(0.0f, -cosY, -sinY))); // bottom
-			pVolumeAddFace(volume, 5, 4, 7, 6, matrix.TransformView()); // back
-			pVolumeAddFace(volume, 0, 1, 2, 3, -matrix.TransformView()); // front
-			
-			// add volume to list
-			pConvexVolumeList->AddVolume(volume);
-			
-		}catch(const deException &){
-			if(volume) delete volume;
-			throw;
-		}
+		// create convex volume
+		decConvexVolume::Ref volume = decConvexVolume::Ref::New();
+		
+		// add vertices
+		volume->AddVertex(matrix * decVector(-xn, yn, 0.0f));
+		volume->AddVertex(matrix * decVector(xn, yn, 0.0f));
+		volume->AddVertex(matrix * decVector(xn, -yn, 0.0f));
+		volume->AddVertex(matrix * decVector(-xn, -yn, 0.0f));
+		volume->AddVertex(matrix * decVector(-xf, yf, range));
+		volume->AddVertex(matrix * decVector(xf, yf, range));
+		volume->AddVertex(matrix * decVector(xf, -yf, range));
+		volume->AddVertex(matrix * decVector(-xf, -yf, range));
+		
+		// add faces
+		pVolumeAddFace(volume, 1, 5, 6, 2, matrix.TransformNormal(decVector(cosX, 0.0f, -sinX))); // right
+		pVolumeAddFace(volume, 4, 0, 3, 7, matrix.TransformNormal(decVector(-cosX, 0.0f, -sinX))); // left
+		pVolumeAddFace(volume, 4, 5, 1, 0, matrix.TransformNormal(decVector(0.0f, cosY, -sinY))); // top
+		pVolumeAddFace(volume, 3, 2, 6, 7, matrix.TransformNormal(decVector(0.0f, -cosY, -sinY))); // bottom
+		pVolumeAddFace(volume, 5, 4, 7, 6, matrix.TransformView()); // back
+		pVolumeAddFace(volume, 0, 1, 2, 3, -matrix.TransformView()); // front
+		
+		// add volume to list
+		pConvexVolumeList->AddVolume(std::move(volume));
 	}
 }
 
@@ -561,48 +547,34 @@ decVector deoglOptimizerLight::pGetSectorOffset(const decVector &sectorSize, con
 }
 
 void deoglOptimizerLight::pVolumeAddFace(decConvexVolume *volume, int p1, int p2, int p3, const decVector &normal){
-	decConvexVolumeFace *face = nullptr;
 	decVector faceNormal;
 	
-	try{
-		face = new decConvexVolumeFace;
-		
-		faceNormal = normal;
-		faceNormal.Normalize();
-		face->SetNormal(faceNormal);
-		
-		face->AddVertex(p1);
-		face->AddVertex(p2);
-		face->AddVertex(p3);
-		
-		volume->AddFace(face);
-		
-	}catch(const deException &){
-		if(face) delete face;
-		throw;
-	}
+	decConvexVolumeFace::Ref face = decConvexVolumeFace::Ref::New();
+	
+	faceNormal = normal;
+	faceNormal.Normalize();
+	face->SetNormal(faceNormal);
+	
+	face->AddVertex(p1);
+	face->AddVertex(p2);
+	face->AddVertex(p3);
+	
+	volume->AddFace(std::move(face));
 }
 
 void deoglOptimizerLight::pVolumeAddFace(decConvexVolume *volume, int p1, int p2, int p3, int p4, const decVector &normal){
-	decConvexVolumeFace *face = nullptr;
 	decVector faceNormal;
 	
-	try{
-		face = new decConvexVolumeFace;
-		
-		faceNormal = normal;
-		faceNormal.Normalize();
-		face->SetNormal(faceNormal);
-		
-		face->AddVertex(p1);
-		face->AddVertex(p2);
-		face->AddVertex(p3);
-		face->AddVertex(p4);
-		
-		volume->AddFace(face);
-		
-	}catch(const deException &){
-		if(face) delete face;
-		throw;
-	}
+	decConvexVolumeFace::Ref face = decConvexVolumeFace::Ref::New();
+	
+	faceNormal = normal;
+	faceNormal.Normalize();
+	face->SetNormal(faceNormal);
+	
+	face->AddVertex(p1);
+	face->AddVertex(p2);
+	face->AddVertex(p3);
+	face->AddVertex(p4);
+	
+	volume->AddFace(std::move(face));
 }

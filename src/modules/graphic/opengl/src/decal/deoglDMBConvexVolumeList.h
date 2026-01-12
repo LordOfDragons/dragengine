@@ -57,7 +57,7 @@ public:
 	 * create convex volume face of specialized subclasses. The default
 	 * implementation creates a convex volume face of type decConvexVolumeFace.
 	 */
-	decConvexVolumeFace *CreateVolumeFace(decConvexVolumeFace *face) override;
+	decConvexVolumeFace::Ref CreateVolumeFace(const decConvexVolumeFace *face) override;
 	/*@}*/
 };
 

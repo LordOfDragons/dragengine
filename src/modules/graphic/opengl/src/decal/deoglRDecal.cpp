@@ -426,6 +426,10 @@ deoglTexUnitsConfig *deoglRDecal::GetTUCForPipelineType(deoglSkinTexturePipeline
 		return GetTUCGeometry();
 		
 	case deoglSkinTexturePipelines::etDepth:
+	case deoglSkinTexturePipelines::etDepthClipPlane:
+	case deoglSkinTexturePipelines::etDepthReversed:
+	case deoglSkinTexturePipelines::etDepthClipPlaneReversed:
+	case deoglSkinTexturePipelines::etMask:
 		return GetTUCDepth();
 		
 	case deoglSkinTexturePipelines::etCounter:
@@ -577,7 +581,7 @@ void deoglRDecal::PrepareGILocalBVH(){
 		int i;
 		
 		for(i=0; i<faceCount; i++){
-			const deoglDecalMeshBuilderFace &face = *meshBuilder.GetFaceAt(i);
+			const deoglDecalMeshBuilderFace &face = meshBuilder.GetFaceAt(i);
 			const decVector &v1 = meshBuilder.GetPointAt(face.GetPoint3());
 			const decVector &v2 = meshBuilder.GetPointAt(face.GetPoint2());
 			const decVector &v3 = meshBuilder.GetPointAt(face.GetPoint1());
@@ -618,7 +622,7 @@ void deoglRDecal::PrepareGILocalBVH(){
 			
 			// write values
 			for(i=0; i<faceCount; i++){
-				const deoglDecalMeshBuilderFace &face = *meshBuilder.GetFaceAt(i);
+				const deoglDecalMeshBuilderFace &face = meshBuilder.GetFaceAt(i);
 				
 				const decVector &v1 = meshBuilder.GetPointAt(face.GetPoint3());
 				const decVector &v2 = meshBuilder.GetPointAt(face.GetPoint2());
@@ -825,7 +829,7 @@ void deoglRDecal::pCreateMeshComponent(){
 	int i;
 	
 	for(i=0; i<faceCount; i++){
-		const deoglDecalMeshBuilderFace &face = *meshBuilder.GetFaceAt(i);
+		const deoglDecalMeshBuilderFace &face = meshBuilder.GetFaceAt(i);
 		const decVector &normal = face.GetFaceNormal();
 		const decVector &vertex1 = meshBuilder.GetPointAt(face.GetPoint3());
 		const decVector &vertex2 = meshBuilder.GetPointAt(face.GetPoint2());

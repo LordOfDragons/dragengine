@@ -25,6 +25,8 @@
 #ifndef _DEOGLDECALMESHBUILDER_H_
 #define _DEOGLDECALMESHBUILDER_H_
 
+#include <dragengine/deTUniqueReference.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglRDecal;
@@ -51,21 +53,17 @@ class deoglDecalMeshBuilder{
 public:
 	deoglRenderThread &pRenderThread;
 	
-	deoglDMBConvexVolumeList *pCVolList;
+	deTUniqueReference<deoglDMBConvexVolumeList> pCVolList;
 	decMatrix pDecalMatrix;
 	decVector pDecalView;
 	decVector pOrigin;
 	decVector pProjVector;
 	decVector pSize;
 	float pDistance;
-	deoglDCollisionBox *pDecalBox;
+	deTUniqueReference<deoglDCollisionBox> pDecalBox;
 	
-	decVector *pPoints;
-	int pPointCount;
-	int pPointSize;
-	deoglDecalMeshBuilderFace *pFaces;
-	int pFaceCount;
-	int pFaceSize;
+	decTList<decVector> pPoints;
+	decTList<deoglDecalMeshBuilderFace> pFaces;
 	
 	
 	
@@ -99,7 +97,7 @@ public:
 	
 	
 	/** Number of points. */
-	inline int GetPointCount() const{ return pPointCount; }
+	inline int GetPointCount() const{ return pPoints.GetCount(); }
 	
 	/** Point at index. */
 	const decVector &GetPointAt(int index) const;
@@ -117,13 +115,13 @@ public:
 	
 	
 	/** Number of faces. */
-	inline int GetFaceCount() const{ return pFaceCount; }
+	inline int GetFaceCount() const{ return pFaces.GetCount(); }
 	
 	/** Face at index. */
-	deoglDecalMeshBuilderFace *GetFaceAt(int index) const;
+	const deoglDecalMeshBuilderFace &GetFaceAt(int index) const;
 	
 	/** Add face. */
-	deoglDecalMeshBuilderFace *AddFace();
+	deoglDecalMeshBuilderFace &AddFace();
 	
 	/** Remove all faces. */
 	void RemoveAllFaces();
@@ -136,7 +134,6 @@ private:
 		const decVector &normal, bool decalFace);
 	void pVolumeAddFace(decConvexVolume *volume, int p1, int p2, int p3, int p4,
 		const decVector &normal, bool decalFace);
-	int pIndexOfPoint(const decVector &point) const;
 };
 
 #endif

@@ -644,7 +644,7 @@ void igdeCodecPropertyString::EncodeColor4(const decColor &color, decString &str
 }
 
 void igdeCodecPropertyString::EncodeShapeList(const decShapeList &list, decString &string) const{
-	igdePropertyStringEncodeShapeList visitor(&string);
+	igdePropertyStringEncodeShapeList visitor(string);
 	const int count = list.GetCount();
 	int i;
 	

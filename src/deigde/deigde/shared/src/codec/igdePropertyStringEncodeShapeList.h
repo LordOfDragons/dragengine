@@ -64,7 +64,7 @@ class decString;
  */
 class DE_DLL_EXPORT igdePropertyStringEncodeShapeList : public decShapeVisitor{
 private:
-	decString  *pString;
+	decString &pString;
 	bool pRequiresSeparator;
 	
 	
@@ -73,7 +73,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create analytic shape visitor. */
-	igdePropertyStringEncodeShapeList(decString *string);
+	explicit igdePropertyStringEncodeShapeList(decString &string);
 	
 	/** \brief Clean up analytic shape visitor. */
 	~igdePropertyStringEncodeShapeList() override;

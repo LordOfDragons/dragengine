@@ -58,82 +58,75 @@ igdeShapeBuilder::~igdeShapeBuilder(){
 void igdeShapeBuilder::CreateSphere(decConvexVolumeList &list, const decVector &center, float radius) const{
 	if(radius < 1e-5f) DETHROW(deeInvalidParam);
 	float offset = (sqrtf(2.0f) - 1.0f) * radius;
-	decConvexVolume *volume = nullptr;
 	
 	list.RemoveAllVolumes();
 	
-	try{
-		// create convex volume
-		volume = new decConvexVolume;
-		
-		// add vertices
-		volume->AddVertex(center + decVector(-offset, radius, -offset));
-		volume->AddVertex(center + decVector(offset, radius, -offset));
-		volume->AddVertex(center + decVector(-offset, radius, offset));
-		volume->AddVertex(center + decVector(offset, radius, offset));
-		
-		volume->AddVertex(center + decVector(-radius, offset, -offset));
-		volume->AddVertex(center + decVector(-offset, offset, -radius));
-		volume->AddVertex(center + decVector(offset, offset, -radius));
-		volume->AddVertex(center + decVector(radius, offset, -offset));
-		volume->AddVertex(center + decVector(-radius, offset, offset));
-		volume->AddVertex(center + decVector(-offset, offset, radius));
-		volume->AddVertex(center + decVector(offset, offset, radius));
-		volume->AddVertex(center + decVector(radius, offset, offset));
-		
-		volume->AddVertex(center + decVector(-radius, -offset, -offset));
-		volume->AddVertex(center + decVector(-offset, -offset, -radius));
-		volume->AddVertex(center + decVector(offset, -offset, -radius));
-		volume->AddVertex(center + decVector(radius, -offset, -offset));
-		volume->AddVertex(center + decVector(-radius, -offset, offset));
-		volume->AddVertex(center + decVector(-offset, -offset, radius));
-		volume->AddVertex(center + decVector(offset, -offset, radius));
-		volume->AddVertex(center + decVector(radius, -offset, offset));
-		
-		volume->AddVertex(center + decVector(-offset, -radius, -offset));
-		volume->AddVertex(center + decVector(offset, -radius, -offset));
-		volume->AddVertex(center + decVector(-offset, -radius, offset));
-		volume->AddVertex(center + decVector(offset, -radius, offset));
-		
-		// add faces
-		pVolumeAddFace(volume, 2, 3, 1, 0, decVector(0.0f, 1.0f, 0.0f)); // top
-		
-		pVolumeAddFace(volume, 0, 1, 6, 5, decVector(0.0f, 1.0f, -1.0f)); // first band
-		pVolumeAddFace(volume, 1, 7, 6, decVector(1.0f, 1.0f, -1.0f));
-		pVolumeAddFace(volume, 1, 3, 11, 7, decVector(1.0f, 1.0f, 0.0f));
-		pVolumeAddFace(volume, 3, 10, 11, decVector(1.0f, 1.0f, 1.0f));
-		pVolumeAddFace(volume, 3, 2, 9, 10, decVector(0.0f, 1.0f, 1.0f));
-		pVolumeAddFace(volume, 2, 8, 9, decVector(-1.0f, 1.0f, 1.0f));
-		pVolumeAddFace(volume, 2, 0, 4, 8, decVector(-1.0f, 1.0f, 0.0f));
-		pVolumeAddFace(volume, 0, 5, 4, decVector(-1.0f, 1.0f, -1.0f));
-		
-		pVolumeAddFace(volume, 5, 6, 14, 13, decVector(0.0f, 0.0f, -1.0f)); // second band
-		pVolumeAddFace(volume, 6, 7, 15, 14, decVector(1.0f, 0.0f, -1.0f));
-		pVolumeAddFace(volume, 7, 11, 19, 15, decVector(1.0f, 0.0f, 0.0f));
-		pVolumeAddFace(volume, 11, 10, 18, 19, decVector(1.0f, 0.0f, 1.0f));
-		pVolumeAddFace(volume, 10, 9, 17, 18, decVector(0.0f, 0.0f, 1.0f));
-		pVolumeAddFace(volume, 9, 8, 16, 17, decVector(-1.0f, 0.0f, 1.0f));
-		pVolumeAddFace(volume, 8, 4, 12, 16, decVector(-1.0f, 0.0f, 0.0f));
-		pVolumeAddFace(volume, 4, 5, 13, 12, decVector(-1.0f, 0.0f, -1.0f));
-		
-		pVolumeAddFace(volume, 13, 14, 21, 20, decVector(0.0f, -1.0f, -1.0f)); // third band
-		pVolumeAddFace(volume, 14, 15, 21, decVector(1.0f, -1.0f, -1.0f));
-		pVolumeAddFace(volume, 15, 19, 23, 21, decVector(1.0f, -1.0f, 0.0f));
-		pVolumeAddFace(volume, 19, 18, 23, decVector(1.0f, -1.0f, 1.0f));
-		pVolumeAddFace(volume, 18, 17, 22, 23, decVector(0.0f, -1.0f, 1.0f));
-		pVolumeAddFace(volume, 17, 16, 22, decVector(-1.0f, -1.0f, 1.0f));
-		pVolumeAddFace(volume, 16, 12, 20, 22, decVector(-1.0f, -1.0f, 0.0f));
-		pVolumeAddFace(volume, 12, 13, 20, decVector(-1.0f, -1.0f, -1.0f));
-		
-		pVolumeAddFace(volume, 20, 21, 23, 22, decVector(0.0f, -1.0f, 0.0f)); // bottom face
-		
-		// add volume to list
-		list.AddVolume(volume);
-		
-	}catch(const deException &){
-		if(volume) delete volume;
-		throw;
-	}
+	// create convex volume
+	decConvexVolume::Ref volume = decConvexVolume::Ref::New();
+	
+	// add vertices
+	volume->AddVertex(center + decVector(-offset, radius, -offset));
+	volume->AddVertex(center + decVector(offset, radius, -offset));
+	volume->AddVertex(center + decVector(-offset, radius, offset));
+	volume->AddVertex(center + decVector(offset, radius, offset));
+	
+	volume->AddVertex(center + decVector(-radius, offset, -offset));
+	volume->AddVertex(center + decVector(-offset, offset, -radius));
+	volume->AddVertex(center + decVector(offset, offset, -radius));
+	volume->AddVertex(center + decVector(radius, offset, -offset));
+	volume->AddVertex(center + decVector(-radius, offset, offset));
+	volume->AddVertex(center + decVector(-offset, offset, radius));
+	volume->AddVertex(center + decVector(offset, offset, radius));
+	volume->AddVertex(center + decVector(radius, offset, offset));
+	
+	volume->AddVertex(center + decVector(-radius, -offset, -offset));
+	volume->AddVertex(center + decVector(-offset, -offset, -radius));
+	volume->AddVertex(center + decVector(offset, -offset, -radius));
+	volume->AddVertex(center + decVector(radius, -offset, -offset));
+	volume->AddVertex(center + decVector(-radius, -offset, offset));
+	volume->AddVertex(center + decVector(-offset, -offset, radius));
+	volume->AddVertex(center + decVector(offset, -offset, radius));
+	volume->AddVertex(center + decVector(radius, -offset, offset));
+	
+	volume->AddVertex(center + decVector(-offset, -radius, -offset));
+	volume->AddVertex(center + decVector(offset, -radius, -offset));
+	volume->AddVertex(center + decVector(-offset, -radius, offset));
+	volume->AddVertex(center + decVector(offset, -radius, offset));
+	
+	// add faces
+	pVolumeAddFace(volume, 2, 3, 1, 0, decVector(0.0f, 1.0f, 0.0f)); // top
+	
+	pVolumeAddFace(volume, 0, 1, 6, 5, decVector(0.0f, 1.0f, -1.0f)); // first band
+	pVolumeAddFace(volume, 1, 7, 6, decVector(1.0f, 1.0f, -1.0f));
+	pVolumeAddFace(volume, 1, 3, 11, 7, decVector(1.0f, 1.0f, 0.0f));
+	pVolumeAddFace(volume, 3, 10, 11, decVector(1.0f, 1.0f, 1.0f));
+	pVolumeAddFace(volume, 3, 2, 9, 10, decVector(0.0f, 1.0f, 1.0f));
+	pVolumeAddFace(volume, 2, 8, 9, decVector(-1.0f, 1.0f, 1.0f));
+	pVolumeAddFace(volume, 2, 0, 4, 8, decVector(-1.0f, 1.0f, 0.0f));
+	pVolumeAddFace(volume, 0, 5, 4, decVector(-1.0f, 1.0f, -1.0f));
+	
+	pVolumeAddFace(volume, 5, 6, 14, 13, decVector(0.0f, 0.0f, -1.0f)); // second band
+	pVolumeAddFace(volume, 6, 7, 15, 14, decVector(1.0f, 0.0f, -1.0f));
+	pVolumeAddFace(volume, 7, 11, 19, 15, decVector(1.0f, 0.0f, 0.0f));
+	pVolumeAddFace(volume, 11, 10, 18, 19, decVector(1.0f, 0.0f, 1.0f));
+	pVolumeAddFace(volume, 10, 9, 17, 18, decVector(0.0f, 0.0f, 1.0f));
+	pVolumeAddFace(volume, 9, 8, 16, 17, decVector(-1.0f, 0.0f, 1.0f));
+	pVolumeAddFace(volume, 8, 4, 12, 16, decVector(-1.0f, 0.0f, 0.0f));
+	pVolumeAddFace(volume, 4, 5, 13, 12, decVector(-1.0f, 0.0f, -1.0f));
+	
+	pVolumeAddFace(volume, 13, 14, 21, 20, decVector(0.0f, -1.0f, -1.0f)); // third band
+	pVolumeAddFace(volume, 14, 15, 21, decVector(1.0f, -1.0f, -1.0f));
+	pVolumeAddFace(volume, 15, 19, 23, 21, decVector(1.0f, -1.0f, 0.0f));
+	pVolumeAddFace(volume, 19, 18, 23, decVector(1.0f, -1.0f, 1.0f));
+	pVolumeAddFace(volume, 18, 17, 22, 23, decVector(0.0f, -1.0f, 1.0f));
+	pVolumeAddFace(volume, 17, 16, 22, decVector(-1.0f, -1.0f, 1.0f));
+	pVolumeAddFace(volume, 16, 12, 20, 22, decVector(-1.0f, -1.0f, 0.0f));
+	pVolumeAddFace(volume, 12, 13, 20, decVector(-1.0f, -1.0f, -1.0f));
+	
+	pVolumeAddFace(volume, 20, 21, 23, 22, decVector(0.0f, -1.0f, 0.0f)); // bottom face
+	
+	// add volume to list
+	list.AddVolume(std::move(volume));
 }
 
 void igdeShapeBuilder::CreateFrustum(decConvexVolumeList &list, const decVector &position, const decQuaternion &orientation, float sizeX, float sizeY, float angleX, float angleY, float distance) const{
@@ -147,45 +140,37 @@ void igdeShapeBuilder::CreateFrustum(decConvexVolumeList &list, const decVector 
 	float cosY = cosf(angleY);
 	decMatrix matrix = decMatrix::CreateFromQuaternion(orientation)
 		* decMatrix::CreateTranslation( position );
-	decConvexVolume *volume = nullptr;
 	
 	list.RemoveAllVolumes();
 	
-	try{
-		// create convex volume
-		volume = new decConvexVolume;
-		
-		// add vertices
-		volume->AddVertex(matrix * decVector(-xn, yn, 0.0f));
-		volume->AddVertex(matrix * decVector(xn, yn, 0.0f));
-		volume->AddVertex(matrix * decVector(xn, -yn, 0.0f));
-		volume->AddVertex(matrix * decVector(-xn, -yn, 0.0f));
-		volume->AddVertex(matrix * decVector(-xf, yf, distance));
-		volume->AddVertex(matrix * decVector(xf, yf, distance));
-		volume->AddVertex(matrix * decVector(xf, -yf, distance));
-		volume->AddVertex(matrix * decVector(-xf, -yf, distance));
-		
-		// add faces
-		pVolumeAddFace(volume, 1, 5, 6, 2, matrix.TransformNormal(decVector(cosX, 0.0f, -sinX))); // right
-		pVolumeAddFace(volume, 4, 0, 3, 7, matrix.TransformNormal(decVector(-cosX, 0.0f, -sinX))); // left
-		pVolumeAddFace(volume, 4, 5, 1, 0, matrix.TransformNormal(decVector(0.0f, cosY, -sinY))); // top
-		pVolumeAddFace(volume, 3, 2, 6, 7, matrix.TransformNormal(decVector(0.0f, -cosY, -sinY))); // bottom
-		pVolumeAddFace(volume, 5, 4, 7, 6, matrix.TransformView()); // back
-		pVolumeAddFace(volume, 0, 1, 2, 3, -matrix.TransformView()); // front
-		
-		// add volume to list
-		list.AddVolume(volume);
-		
-	}catch(const deException &){
-		if(volume) delete volume;
-		throw;
-	}
+	// create convex volume
+	decConvexVolume::Ref volume = decConvexVolume::Ref::New();
+	
+	// add vertices
+	volume->AddVertex(matrix * decVector(-xn, yn, 0.0f));
+	volume->AddVertex(matrix * decVector(xn, yn, 0.0f));
+	volume->AddVertex(matrix * decVector(xn, -yn, 0.0f));
+	volume->AddVertex(matrix * decVector(-xn, -yn, 0.0f));
+	volume->AddVertex(matrix * decVector(-xf, yf, distance));
+	volume->AddVertex(matrix * decVector(xf, yf, distance));
+	volume->AddVertex(matrix * decVector(xf, -yf, distance));
+	volume->AddVertex(matrix * decVector(-xf, -yf, distance));
+	
+	// add faces
+	pVolumeAddFace(volume, 1, 5, 6, 2, matrix.TransformNormal(decVector(cosX, 0.0f, -sinX))); // right
+	pVolumeAddFace(volume, 4, 0, 3, 7, matrix.TransformNormal(decVector(-cosX, 0.0f, -sinX))); // left
+	pVolumeAddFace(volume, 4, 5, 1, 0, matrix.TransformNormal(decVector(0.0f, cosY, -sinY))); // top
+	pVolumeAddFace(volume, 3, 2, 6, 7, matrix.TransformNormal(decVector(0.0f, -cosY, -sinY))); // bottom
+	pVolumeAddFace(volume, 5, 4, 7, 6, matrix.TransformView()); // back
+	pVolumeAddFace(volume, 0, 1, 2, 3, -matrix.TransformView()); // front
+	
+	// add volume to list
+	list.AddVolume(std::move(volume));
 }
 
 void igdeShapeBuilder::CreateArrow(decConvexVolumeList &list, const decVector &from, const decVector &to, float headRadius, float headLength, float tailRadius) const{
 	if(headRadius <= 0.0f || headLength <= 0.0f || tailRadius < 0.0f) DETHROW(deeInvalidParam);
 	decVector direction, up, right, base;
-	decConvexVolume *volume = nullptr;
 	float length, factor;
 	bool hasTail;
 	
@@ -215,61 +200,54 @@ void igdeShapeBuilder::CreateArrow(decConvexVolumeList &list, const decVector &f
 		tailRadius *= factor;
 	}
 	
-	// create the volume
-	try{
-		// create convex volume
-		volume = new decConvexVolume;
+	// create convex volume
+	decConvexVolume::Ref volume = decConvexVolume::Ref::New();
+	
+	// add vertices
+	volume->AddVertex(to);
+	
+	base = to - direction * headLength;
+	volume->AddVertex(base + up * headRadius);
+	volume->AddVertex(base + right * headRadius);
+	volume->AddVertex(base - up * headRadius);
+	volume->AddVertex(base - right * headRadius);
+	
+	if(hasTail){
+		volume->AddVertex(base + up * tailRadius);
+		volume->AddVertex(base + right * tailRadius);
+		volume->AddVertex(base - up * tailRadius);
+		volume->AddVertex(base - right * tailRadius);
 		
-		// add vertices
-		volume->AddVertex(to);
-		
-		base = to - direction * headLength;
-		volume->AddVertex(base + up * headRadius);
-		volume->AddVertex(base + right * headRadius);
-		volume->AddVertex(base - up * headRadius);
-		volume->AddVertex(base - right * headRadius);
-		
-		if(hasTail){
-			volume->AddVertex(base + up * tailRadius);
-			volume->AddVertex(base + right * tailRadius);
-			volume->AddVertex(base - up * tailRadius);
-			volume->AddVertex(base - right * tailRadius);
-			
-			volume->AddVertex(from + up * tailRadius);
-			volume->AddVertex(from + right * tailRadius);
-			volume->AddVertex(from - up * tailRadius);
-			volume->AddVertex(from - right * tailRadius);
-		}
-		
-		// add faces
-		pVolumeAddFace(volume, 0, 2, 1); // head
-		pVolumeAddFace(volume, 0, 3, 2);
-		pVolumeAddFace(volume, 0, 4, 3);
-		pVolumeAddFace(volume, 0, 1, 4);
-		if(hasTail){
-			pVolumeAddFace(volume, 1, 2, 6, 5, -direction);
-			pVolumeAddFace(volume, 2, 3, 7, 6, -direction);
-			pVolumeAddFace(volume, 3, 4, 8, 7, -direction);
-			pVolumeAddFace(volume, 4, 1, 5, 8, -direction);
-			
-			pVolumeAddFace(volume, 5, 6, 10, 9, up + right); // tail
-			pVolumeAddFace(volume, 6, 7, 11, 10, right - up);
-			pVolumeAddFace(volume, 7, 8, 12, 11, -(up + right));
-			pVolumeAddFace(volume, 8, 5, 9, 12, up - right);
-			
-			pVolumeAddFace(volume, 9, 10, 11, 12, -direction);
-			
-		}else{
-			pVolumeAddFace(volume, 1, 2, 3, 4, -direction);
-		}
-		
-		// add volume to list
-		list.AddVolume(volume);
-		
-	}catch(const deException &){
-		if(volume) delete volume;
-		throw;
+		volume->AddVertex(from + up * tailRadius);
+		volume->AddVertex(from + right * tailRadius);
+		volume->AddVertex(from - up * tailRadius);
+		volume->AddVertex(from - right * tailRadius);
 	}
+	
+	// add faces
+	pVolumeAddFace(volume, 0, 2, 1); // head
+	pVolumeAddFace(volume, 0, 3, 2);
+	pVolumeAddFace(volume, 0, 4, 3);
+	pVolumeAddFace(volume, 0, 1, 4);
+	if(hasTail){
+		pVolumeAddFace(volume, 1, 2, 6, 5, -direction);
+		pVolumeAddFace(volume, 2, 3, 7, 6, -direction);
+		pVolumeAddFace(volume, 3, 4, 8, 7, -direction);
+		pVolumeAddFace(volume, 4, 1, 5, 8, -direction);
+		
+		pVolumeAddFace(volume, 5, 6, 10, 9, up + right); // tail
+		pVolumeAddFace(volume, 6, 7, 11, 10, right - up);
+		pVolumeAddFace(volume, 7, 8, 12, 11, -(up + right));
+		pVolumeAddFace(volume, 8, 5, 9, 12, up - right);
+		
+		pVolumeAddFace(volume, 9, 10, 11, 12, -direction);
+		
+	}else{
+		pVolumeAddFace(volume, 1, 2, 3, 4, -direction);
+	}
+	
+	// add volume to list
+	list.AddVolume(std::move(volume));
 }
 
 void igdeShapeBuilder::CreateArrowHead(decConvexVolumeList &list, const decVector &from, const decVector &to, float headRadius) const{
@@ -278,7 +256,6 @@ void igdeShapeBuilder::CreateArrowHead(decConvexVolumeList &list, const decVecto
 	}
 	
 	decVector direction, up, right, base;
-	decConvexVolume *volume = nullptr;
 	float length;
 	
 	// clear the volume
@@ -299,36 +276,27 @@ void igdeShapeBuilder::CreateArrowHead(decConvexVolumeList &list, const decVecto
 	right = up % direction;
 	up = direction % right;
 	
-	// create the volume
-	try{
-		// create convex volume
-		volume = new decConvexVolume;
-		
-		// add vertices
-		volume->AddVertex(to);
-		
-		base = to - direction * length;
-		volume->AddVertex(base + up * headRadius);
-		volume->AddVertex(base + right * headRadius);
-		volume->AddVertex(base - up * headRadius);
-		volume->AddVertex(base - right * headRadius);
-		
-		// add faces
-		pVolumeAddFace(volume, 0, 2, 1); // head
-		pVolumeAddFace(volume, 0, 3, 2);
-		pVolumeAddFace(volume, 0, 4, 3);
-		pVolumeAddFace(volume, 0, 1, 4);
-		pVolumeAddFace(volume, 1, 2, 3, 4, -direction);
-		
-		// add volume to list
-		list.AddVolume(volume);
-		
-	}catch(const deException &){
-		if(volume){
-			delete volume;
-		}
-		throw;
-	}
+	// create convex volume
+	decConvexVolume::Ref volume = decConvexVolume::Ref::New();
+	
+	// add vertices
+	volume->AddVertex(to);
+	
+	base = to - direction * length;
+	volume->AddVertex(base + up * headRadius);
+	volume->AddVertex(base + right * headRadius);
+	volume->AddVertex(base - up * headRadius);
+	volume->AddVertex(base - right * headRadius);
+	
+	// add faces
+	pVolumeAddFace(volume, 0, 2, 1); // head
+	pVolumeAddFace(volume, 0, 3, 2);
+	pVolumeAddFace(volume, 0, 4, 3);
+	pVolumeAddFace(volume, 0, 1, 4);
+	pVolumeAddFace(volume, 1, 2, 3, 4, -direction);
+	
+	// add volume to list
+	list.AddVolume(std::move(volume));
 }
 
 
@@ -574,75 +542,39 @@ const decVector &p2, const decVector &p3, const decVector &p4, const decVector &
 //////////////////////
 
 void igdeShapeBuilder::pVolumeAddFace(decConvexVolume *volume, int p1, int p2, int p3, const decVector &normal) const{
-	decConvexVolumeFace *face = nullptr;
-	decVector faceNormal;
+	decConvexVolumeFace::Ref face = decConvexVolumeFace::Ref::New();
 	
-	try{
-		face = new decConvexVolumeFace;
-		
-		faceNormal = normal;
-		faceNormal.Normalize();
-		face->SetNormal(faceNormal);
-		
-		face->AddVertex(p1);
-		face->AddVertex(p2);
-		face->AddVertex(p3);
-		
-		volume->AddFace(face);
-		
-	}catch(const deException &){
-		if(face) delete face;
-		throw;
-	}
+	face->SetNormal(normal.Normalized());
+	face->AddVertex(p1);
+	face->AddVertex(p2);
+	face->AddVertex(p3);
+	
+	volume->AddFace(std::move(face));
 }
 
 void igdeShapeBuilder::pVolumeAddFace(decConvexVolume *volume, int p1, int p2, int p3, int p4, const decVector &normal) const{
-	decConvexVolumeFace *face = nullptr;
-	decVector faceNormal;
+	decConvexVolumeFace::Ref face = decConvexVolumeFace::Ref::New();
 	
-	try{
-		face = new decConvexVolumeFace;
-		
-		faceNormal = normal;
-		faceNormal.Normalize();
-		face->SetNormal(faceNormal);
-		
-		face->AddVertex(p1);
-		face->AddVertex(p2);
-		face->AddVertex(p3);
-		face->AddVertex(p4);
-		
-		volume->AddFace(face);
-		
-	}catch(const deException &){
-		if(face) delete face;
-		throw;
-	}
+	face->SetNormal(normal.Normalized());
+	face->AddVertex(p1);
+	face->AddVertex(p2);
+	face->AddVertex(p3);
+	face->AddVertex(p4);
+	
+	volume->AddFace(std::move(face));
 }
 
 void igdeShapeBuilder::pVolumeAddFace(decConvexVolume *volume, int p1, int p2, int p3) const{
-	decConvexVolumeFace *face = nullptr;
-	decVector faceNormal;
+	decConvexVolumeFace::Ref face = decConvexVolumeFace::Ref::New();
 	
-	try{
-		face = new decConvexVolumeFace;
-		
-		const decVector &v1 = volume->GetVertexAt(p1);
-		const decVector &v2 = volume->GetVertexAt(p2);
-		const decVector &v3 = volume->GetVertexAt(p3);
-		
-		faceNormal = (v2 - v1) % (v3 - v2);
-		faceNormal.Normalize();
-		face->SetNormal(faceNormal);
-		
-		face->AddVertex(p1);
-		face->AddVertex(p2);
-		face->AddVertex(p3);
-		
-		volume->AddFace(face);
-		
-	}catch(const deException &){
-		if(face) delete face;
-		throw;
-	}
+	const decVector &v1 = volume->GetVertexAt(p1);
+	const decVector &v2 = volume->GetVertexAt(p2);
+	const decVector &v3 = volume->GetVertexAt(p3);
+	
+	face->SetNormal(((v2 - v1) % (v3 - v2)).Normalized());
+	face->AddVertex(p1);
+	face->AddVertex(p2);
+	face->AddVertex(p3);
+	
+	volume->AddFace(std::move(face));
 }

@@ -50,7 +50,6 @@ pLight(nullptr),
 pCulled(false),
 pCameraInside(false),
 pCameraInsideOccQueryBox(true),
-pOcclusionQuery(nullptr),
 pOccQueryValid(false){
 }
 
@@ -59,14 +58,10 @@ pLight(light),
 pCulled(false),
 pCameraInside(false),
 pCameraInsideOccQueryBox(true),
-pOcclusionQuery(nullptr),
 pOccQueryValid(false){
 }
 
 deoglCollideListLight::~deoglCollideListLight(){
-	if(pOcclusionQuery){
-		delete pOcclusionQuery;
-	}
 }
 
 
@@ -152,7 +147,7 @@ void deoglCollideListLight::TestInside(const deoglRenderPlan &plan){
 	pCameraInside = false;
 	
 	for(i=0; i<volumeCount; i++){
-		const decConvexVolume &convexVolume = *convexVolumeList.GetVolumeAt(i);
+		const decConvexVolume &convexVolume = convexVolumeList.GetVolumeAt(i);
 		const int faceCount = convexVolume.GetFaceCount();
 		
 		insideVolume = true;
@@ -193,9 +188,9 @@ void deoglCollideListLight::OcclusionTestInvisible(){
 deoglOcclusionQuery &deoglCollideListLight::GetOcclusionQuery(){
 	if(!pOcclusionQuery){
 		DEASSERT_NOTNULL(pLight)
-		pOcclusionQuery = new deoglOcclusionQuery(pLight->GetRenderThread());
+		pOcclusionQuery = deTUniqueReference<deoglOcclusionQuery>::New(pLight->GetRenderThread());
 	}
-	return *pOcclusionQuery;
+	return pOcclusionQuery;
 }
 
 bool deoglCollideListLight::IsHiddenByOccQuery() const{

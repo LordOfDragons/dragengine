@@ -598,7 +598,7 @@ void dedaiSpaceMesh::UpdateBlocking(){
 		
 		// split by all splitter volumes
 		for(j=0; j<splitterCount; j++){
-			convexFaceList.SplitByVolume(*splitterList.GetVolumeAt(j));
+			convexFaceList.SplitByVolume(splitterList.GetVolumeAt(j));
 		}
 		
 		// if there is more than one face or the first face is not equal to the original face

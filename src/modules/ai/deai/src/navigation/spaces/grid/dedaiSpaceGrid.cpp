@@ -778,7 +778,7 @@ void dedaiSpaceGrid::pDisableVertices(const decConvexVolumeList &list){
 		const decVector &position = pVertices[i].GetPosition();
 		
 		for(j=0; j<splitterCount; j++){
-			const decConvexVolume &volume = *list.GetVolumeAt(j);
+			const decConvexVolume &volume = list.GetVolumeAt(j);
 			const int faceCount = volume.GetFaceCount();
 			
 			for(k=0; k<faceCount; k++){

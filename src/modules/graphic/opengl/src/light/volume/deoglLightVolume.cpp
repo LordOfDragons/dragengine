@@ -198,7 +198,7 @@ void deoglLightVolume::CreateFrom(const decConvexVolumeList &list){
 	pMaxExtend.SetZero();
 	
 	for(i=0; i<volumeCount; i++){
-		const decConvexVolume &volume = *list.GetVolumeAt(i);
+		const decConvexVolume &volume = list.GetVolumeAt(i);
 		
 		// count triangles required to render this face
 		faceCount = volume.GetFaceCount();
@@ -256,7 +256,7 @@ void deoglLightVolume::CreateFrom(const decConvexVolumeList &list){
 		oglVector3 *vboDataPointer = pPoints;
 		
 		for(i=0; i<volumeCount; i++){
-			const decConvexVolume &volume = *list.GetVolumeAt(i);
+			const decConvexVolume &volume = list.GetVolumeAt(i);
 			
 			faceCount = volume.GetFaceCount();
 			

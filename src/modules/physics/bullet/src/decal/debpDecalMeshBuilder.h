@@ -22,14 +22,13 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _DEBPDECALMESHBUILDER_H_
 #define _DEBPDECALMESHBUILDER_H_
 
-// includes
+#include <dragengine/deTUniqueReference.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
-// predefintions
 class debpDMBConvexVolumeList;
 class debpDMBConvexVolumeFace;
 class debpDecalMeshBuilderFace;
@@ -52,28 +51,22 @@ class deDecal;
  */
 class debpDecalMeshBuilder{
 public:
-	debpDMBConvexVolumeList *pCVolList;
+	deTUniqueReference<debpDMBConvexVolumeList> pCVolList;
 	decMatrix pDecalMatrix;
 	decVector pDecalView;
 	decVector pOrigin;
 	decVector pProjVector;
 	float pDistance;
-	debpDCollisionBox *pDecalBox;
+	deTUniqueReference<debpDCollisionBox> pDecalBox;
 	
-	decVector *pPoints;
-	int pPointCount;
-	int pPointSize;
-	debpDecalMeshBuilderFace *pFaces;
-	int pFaceCount;
-	int pFaceSize;
+	decTList<decVector> pPoints;
+	decTList<debpDecalMeshBuilderFace> pFaces;
 	
 public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new decal mesh builder. */
-	debpDecalMeshBuilder();
-	/** Cleans up the decal mesh builder. */
-	~debpDecalMeshBuilder();
+	debpDecalMeshBuilder() = default;
 	/*@}*/
 	
 	/** @name Management */
@@ -88,7 +81,7 @@ public:
 	void Debug(dePhysicsBullet &module);
 	
 	/** Retrieves the number of points. */
-	inline int GetPointCount() const{ return pPointCount; }
+	inline int GetPointCount() const{ return pPoints.GetCount(); }
 	/** Retrieves the point at the given index. */
 	const decVector &GetPointAt(int index) const;
 	/**
@@ -100,11 +93,11 @@ public:
 	void RemoveAllPoints();
 	
 	/** Retrieves the number of faces. */
-	inline int GetFaceCount() const{ return pFaceCount; }
+	inline int GetFaceCount() const{ return pFaces.GetCount(); }
 	/** Retrieves the face at the given index. */
-	debpDecalMeshBuilderFace *GetFaceAt(int index) const;
+	const debpDecalMeshBuilderFace &GetFaceAt(int index) const;
 	/** Adds a new face. */
-	debpDecalMeshBuilderFace *AddFace();
+	debpDecalMeshBuilderFace &AddFace();
 	/** Removes all faces. */
 	void RemoveAllFaces();
 	/*@}*/
@@ -112,8 +105,6 @@ public:
 private:
 	void pVolumeAddFace(decConvexVolume *volume, int p1, int p2, int p3, const decVector &normal, bool decal);
 	void pVolumeAddFace(decConvexVolume *volume, int p1, int p2, int p3, int p4, const decVector &normal, bool decal);
-	int pIndexOfPoint(const decVector &point) const;
 };
 
-// end of include only once
 #endif

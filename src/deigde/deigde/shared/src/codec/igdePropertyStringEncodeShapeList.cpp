@@ -45,13 +45,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdePropertyStringEncodeShapeList::igdePropertyStringEncodeShapeList(decString *string){
-	if(!string){
-		DETHROW(deeInvalidParam);
-	}
-	
-	pString = string;
-	pRequiresSeparator = false;
+igdePropertyStringEncodeShapeList::igdePropertyStringEncodeShapeList(decString &string) :
+pString(string),
+pRequiresSeparator(false){
 }
 
 igdePropertyStringEncodeShapeList::~igdePropertyStringEncodeShapeList(){
@@ -80,9 +76,9 @@ void igdePropertyStringEncodeShapeList::VisitShapeSphere(decShapeSphere &sphere)
 	const float radius = sphere.GetRadius();
 	
 	pAddSeparator();
-	pString->Append("sphere");
-	pString->AppendFormat(":position,%g,%g,%g", position.x, position.y, position.z);
-	pString->AppendFormat(":radius,%g", radius);
+	pString.Append("sphere");
+	pString.AppendFormat(":position,%g,%g,%g", position.x, position.y, position.z);
+	pString.AppendFormat(":radius,%g", radius);
 }
 
 void igdePropertyStringEncodeShapeList::VisitShapeBox(decShapeBox &box){
@@ -91,12 +87,12 @@ void igdePropertyStringEncodeShapeList::VisitShapeBox(decShapeBox &box){
 	const decVector &extends = box.GetHalfExtends();
 	
 	pAddSeparator();
-	pString->Append("box");
-	pString->AppendFormat(":position,%g,%g,%g", position.x, position.y, position.z);
+	pString.Append("box");
+	pString.AppendFormat(":position,%g,%g,%g", position.x, position.y, position.z);
 	if(!rotation.IsEqualTo(decVector())){
-		pString->AppendFormat(":rotation,%g,%g,%g", rotation.x, rotation.y, rotation.z);
+		pString.AppendFormat(":rotation,%g,%g,%g", rotation.x, rotation.y, rotation.z);
 	}
-	pString->AppendFormat(":extends,%g,%g,%g", extends.x, extends.y, extends.z);
+	pString.AppendFormat(":extends,%g,%g,%g", extends.x, extends.y, extends.z);
 }
 
 void igdePropertyStringEncodeShapeList::VisitShapeCylinder(decShapeCylinder &cylinder){
@@ -109,17 +105,17 @@ void igdePropertyStringEncodeShapeList::VisitShapeCylinder(decShapeCylinder &cyl
 	const decVector2 &bottomAxisScaling = cylinder.GetBottomAxisScaling();
 	
 	pAddSeparator();
-	pString->Append("cylinder");
-	pString->AppendFormat(":position,%g,%g,%g", position.x, position.y, position.z);
+	pString.Append("cylinder");
+	pString.AppendFormat(":position,%g,%g,%g", position.x, position.y, position.z);
 	if(!rotation.IsEqualTo(decVector())){
-		pString->AppendFormat(":rotation,%g,%g,%g", rotation.x, rotation.y, rotation.z);
+		pString.AppendFormat(":rotation,%g,%g,%g", rotation.x, rotation.y, rotation.z);
 	}
-	pString->AppendFormat(":height,%g:radius,%g,%g", height, topRadius, bottomRadius);
+	pString.AppendFormat(":height,%g:radius,%g,%g", height, topRadius, bottomRadius);
 	if(!topAxisScaling.IsEqualTo(decVector2(1.0f, 1.0f))){
-		pString->AppendFormat(":topAxisScaling,%g,%g", topAxisScaling.x, topAxisScaling.y);
+		pString.AppendFormat(":topAxisScaling,%g,%g", topAxisScaling.x, topAxisScaling.y);
 	}
 	if(!bottomAxisScaling.IsEqualTo(decVector2(1.0f, 1.0f))){
-		pString->AppendFormat(":bottomAxisScaling,%g,%g", bottomAxisScaling.x, bottomAxisScaling.y);
+		pString.AppendFormat(":bottomAxisScaling,%g,%g", bottomAxisScaling.x, bottomAxisScaling.y);
 	}
 }
 
@@ -133,17 +129,17 @@ void igdePropertyStringEncodeShapeList::VisitShapeCapsule(decShapeCapsule &capsu
 	const decVector2 &bottomAxisScaling = capsule.GetBottomAxisScaling();
 	
 	pAddSeparator();
-	pString->Append("capsule");
-	pString->AppendFormat(":position,%g,%g,%g", position.x, position.y, position.z);
+	pString.Append("capsule");
+	pString.AppendFormat(":position,%g,%g,%g", position.x, position.y, position.z);
 	if(!rotation.IsEqualTo(decVector())){
-		pString->AppendFormat(":rotation,%g,%g,%g", rotation.x, rotation.y, rotation.z);
+		pString.AppendFormat(":rotation,%g,%g,%g", rotation.x, rotation.y, rotation.z);
 	}
-	pString->AppendFormat(":height,%g:radius,%g,%g", height, topRadius, bottomRadius);
+	pString.AppendFormat(":height,%g:radius,%g,%g", height, topRadius, bottomRadius);
 	if(!topAxisScaling.IsEqualTo(decVector2(1.0f, 1.0f))){
-		pString->AppendFormat(":topAxisScaling,%g,%g", topAxisScaling.x, topAxisScaling.y);
+		pString.AppendFormat(":topAxisScaling,%g,%g", topAxisScaling.x, topAxisScaling.y);
 	}
 	if(!bottomAxisScaling.IsEqualTo(decVector2(1.0f, 1.0f))){
-		pString->AppendFormat(":bottomAxisScaling,%g,%g", bottomAxisScaling.x, bottomAxisScaling.y);
+		pString.AppendFormat(":bottomAxisScaling,%g,%g", bottomAxisScaling.x, bottomAxisScaling.y);
 	}
 }
 
@@ -153,17 +149,17 @@ void igdePropertyStringEncodeShapeList::VisitShapeHull(decShapeHull &hull){
 	const int pointCount = hull.GetPointCount();
 	
 	pAddSeparator();
-	pString->Append("hull");
-	pString->AppendFormat(":position,%g,%g,%g", position.x, position.y, position.z);
+	pString.Append("hull");
+	pString.AppendFormat(":position,%g,%g,%g", position.x, position.y, position.z);
 	if(!rotation.IsEqualTo(decVector())){
-		pString->AppendFormat(":rotation,%g,%g,%g", rotation.x, rotation.y, rotation.z);
+		pString.AppendFormat(":rotation,%g,%g,%g", rotation.x, rotation.y, rotation.z);
 	}
 	if(pointCount > 0){
 		int i;
-		pString->Append(":points");
+		pString.Append(":points");
 		for(i=0; i<pointCount; i++){
 			const decVector &point = hull.GetPointAt(i);
-			pString->AppendFormat(",%g,%g,%g", point.x, point.y, point.z);
+			pString.AppendFormat(",%g,%g,%g", point.x, point.y, point.z);
 		}
 	}
 }
@@ -175,7 +171,7 @@ void igdePropertyStringEncodeShapeList::VisitShapeHull(decShapeHull &hull){
 
 void igdePropertyStringEncodeShapeList::pAddSeparator(){
 	if(pRequiresSeparator){
-		pString->AppendCharacter(' ');
+		pString.AppendCharacter(' ');
 	}
 	pRequiresSeparator = true;
 }
