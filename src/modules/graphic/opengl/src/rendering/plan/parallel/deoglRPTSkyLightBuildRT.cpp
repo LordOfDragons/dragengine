@@ -164,7 +164,7 @@ void deoglRPTSkyLightBuildRT::pFilter(int layerIndex){
 	// components
 	const int componentCount = collideList.GetComponentCount();
 	for(i=0; i<componentCount; i++){
-		const deoglCollideListComponent &clcomponent = *collideList.GetComponentAt(i);
+		const deoglCollideListComponent &clcomponent = collideList.GetComponentAt(i);
 		if((clcomponent.GetCascadeMask() & cascadeMask) == cascadeMask){
 			pTempCollideList.AddComponent(clcomponent.GetComponent());
 		}
@@ -173,7 +173,7 @@ void deoglRPTSkyLightBuildRT::pFilter(int layerIndex){
 	// height terrain
 	const int htsectorCount = collideList.GetHTSectorCount();
 	for(i=0; i<htsectorCount; i++){
-		const deoglCollideListHTSector &sector = *collideList.GetHTSectorAt(i);
+		const deoglCollideListHTSector &sector = collideList.GetHTSectorAt(i);
 		const int clusterCount = sector.GetClusterCount();
 		
 		deoglCollideListHTSector *addSector = nullptr;
@@ -181,7 +181,7 @@ void deoglRPTSkyLightBuildRT::pFilter(int layerIndex){
 			const deoglCollideListHTSCluster &cluster = sector.GetClusterAt(j);
 			if((cluster.GetCascadeMask() & cascadeMask) == cascadeMask){
 				if(!addSector){
-					addSector = pTempCollideList.AddHTSector(sector.GetSector());
+					addSector = &pTempCollideList.AddHTSector(sector.GetSector());
 				}
 				addSector->AddCluster(cluster.GetCoordinates());
 			}
@@ -190,7 +190,7 @@ void deoglRPTSkyLightBuildRT::pFilter(int layerIndex){
 	
 	const int htsclusterCount = collideList.GetHTSClusterCount();
 	for(i=0; i<htsclusterCount; i++){
-		const deoglCollideListHTSCluster &cluster = *collideList.GetHTSClusterAt(i);
+		const deoglCollideListHTSCluster &cluster = collideList.GetHTSClusterAt(i);
 		if((cluster.GetCascadeMask() & cascadeMask) == cascadeMask){
 			pTempCollideList.AddHTSCluster(cluster.GetCluster());
 		}
@@ -199,7 +199,7 @@ void deoglRPTSkyLightBuildRT::pFilter(int layerIndex){
 	// prop fields
 	const int propfieldCount = collideList.GetPropFieldCount();
 	for(i=0; i<propfieldCount; i++){
-		const deoglCollideListPropField &propfield = *collideList.GetPropFieldAt(i);
+		const deoglCollideListPropField &propfield = collideList.GetPropFieldAt(i);
 		const int typeCount = propfield.GetTypeCount();
 		
 		deoglCollideListPropField *addPropField = nullptr;
@@ -212,7 +212,7 @@ void deoglRPTSkyLightBuildRT::pFilter(int layerIndex){
 				const deoglCollideListPropFieldCluster &cluster = type.GetClusterAt(k);
 				if((cluster.GetCascadeMask() & cascadeMask) == cascadeMask){
 					if(!addPropField){
-						addPropField = pTempCollideList.AddPropField(propfield.GetPropField());
+						addPropField = &pTempCollideList.AddPropField(propfield.GetPropField());
 					}
 					if(!addType){
 						addType = addPropField->AddType(type.GetType());
@@ -225,7 +225,7 @@ void deoglRPTSkyLightBuildRT::pFilter(int layerIndex){
 	
 	const int propfieldClusterCount = collideList.GetPropFieldClusterCount();
 	for(i=0; i<propfieldClusterCount; i++){
-		const deoglCollideListPropFieldCluster &cluster = *collideList.GetPropFieldClusterAt(i);
+		const deoglCollideListPropFieldCluster &cluster = collideList.GetPropFieldClusterAt(i);
 		if((cluster.GetCascadeMask() & cascadeMask) == cascadeMask){
 			pTempCollideList.AddPropFieldCluster(cluster.GetCluster());
 		}

@@ -448,7 +448,7 @@ void deoglRenderPlanSkyLight::ReadVisibleElements(){
 		
 		switch(element.GetType()){
 		case deoglWorldComputeElement::eetComponent:{
-			deoglCollideListComponent &clcomponent = *pCollideList.AddComponent((deoglRComponent*)element.GetOwner());
+			deoglCollideListComponent &clcomponent = pCollideList.AddComponent((deoglRComponent*)element.GetOwner());
 			clcomponent.SetCascadeMask(cascadeMask);
 			clcomponent.SetSpecialFlags(cascadeMask);
 			clcomponent.StartOcclusionTest(occlusionTest, referencePosition);
@@ -461,15 +461,14 @@ void deoglRenderPlanSkyLight::ReadVisibleElements(){
 			}break;
 			
 		case deoglWorldComputeElement::eetPropFieldCluster:
-			pCollideList.AddPropFieldCluster((deoglPropFieldCluster*)element.GetOwner())
-				->SetCascadeMask(cascadeMask);
+			pCollideList.AddPropFieldCluster((deoglPropFieldCluster*)element.GetOwner()).SetCascadeMask(cascadeMask);
 			break;
 			
 		case deoglWorldComputeElement::eetHeightTerrainSectorCluster:
 			if(htview){
 				const deoglHTSCluster &cluster = *(deoglHTSCluster*)element.GetOwner();
 				pCollideList.AddHTSCluster(&htview->GetSectorAt(cluster.GetHTSector()->GetIndex())
-					->GetClusterAt(cluster.GetIndex()))->SetCascadeMask(cascadeMask);
+					->GetClusterAt(cluster.GetIndex())).SetCascadeMask(cascadeMask);
 			}
 			break;
 			

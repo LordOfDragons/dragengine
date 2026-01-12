@@ -33,22 +33,17 @@
  */
 class deoglSTPipelinesHeightMap2 : public deoglSTPipelinesHeightMap1{
 public:
-	using Ref = deTObjectReference<deoglSTPipelinesHeightMap2>;
-	
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin texture pipeline. */
 	explicit deoglSTPipelinesHeightMap2(const deoglSkinTexture &texture);
 	
-protected:
 	/** Clean up skin texture pipeline. */
 	~deoglSTPipelinesHeightMap2() override;
 	/*@}*/
 	
 	
 	
-public:
 	/** \name Management */
 	/*@{*/
 	/** Debug name. */

@@ -262,8 +262,10 @@ void deoglCapsFmtSupport::pDetectTex2DFormats(){
 	// find a format to use for the list of possible types
 	for(p=0; p<TEST_PROGRAM_COUNT; p++){
 		if(!pUseTex2DFormats[vTestProgram[p].target]){
-			pUseTex2DFormats[vTestProgram[p].target] = pFoundTex2DFormats.GetFormatWith(
-				vTestTextureFormats[vTestProgram[p].testFormat].format);
+			const GLint searchFormat = vTestTextureFormats[vTestProgram[p].testFormat].format;
+			pFoundTex2DFormats.Find([&](const deoglCapsTextureFormat &fmt){
+				return fmt.GetFormat() == searchFormat;
+			}, pUseTex2DFormats[vTestProgram[p].target]);
 		}
 	}
 	
@@ -286,9 +288,9 @@ void deoglCapsFmtSupport::pDetectTex2DFormats(){
 			
 			pCapabilities.GetRenderThread().GetLogger().LogError("Supported formats:");
 			int i;
-			for(i=0; i<pFoundTex2DFormats.GetFormatCount(); i++){
+			for(i=0; i<pFoundTex2DFormats.GetCount(); i++){
 				pCapabilities.GetRenderThread().GetLogger().LogErrorFormat("- %s",
-					pFoundTex2DFormats.GetFormatAt(i)->GetName().GetString());
+					pFoundTex2DFormats.GetAt(i).GetName().GetString());
 			}
 			
 			DETHROW(deeInvalidParam);
@@ -309,8 +311,10 @@ void deoglCapsFmtSupport::pDetectTexCubeFormats(){
 	// find a format to use for the list of possible types
 	for(p=0; p<TEST_PROGRAM_COUNT; p++){
 		if(!pUseTexCubeFormats[vTestProgram[p].target]){
-			pUseTexCubeFormats[vTestProgram[p].target] = pFoundTexCubeFormats.GetFormatWith(
-				vTestTextureFormats[vTestProgram[p].testFormat].format);
+			const GLint searchFormat = vTestTextureFormats[vTestProgram[p].testFormat].format;
+			pFoundTexCubeFormats.Find([&](const deoglCapsTextureFormat &fmt){
+				return fmt.GetFormat() == searchFormat;
+			}, pUseTexCubeFormats[vTestProgram[p].target]);
 		}
 	}
 	
@@ -333,9 +337,9 @@ void deoglCapsFmtSupport::pDetectTexCubeFormats(){
 			
 			pCapabilities.GetRenderThread().GetLogger().LogError("Supported formats:");
 			int i;
-			for(i=0; i<pFoundTexCubeFormats.GetFormatCount(); i++){
+			for(i=0; i<pFoundTexCubeFormats.GetCount(); i++){
 				pCapabilities.GetRenderThread().GetLogger().LogErrorFormat("- %s",
-					pFoundTexCubeFormats.GetFormatAt(i)->GetName().GetString());
+					pFoundTexCubeFormats.GetAt(i).GetName().GetString());
 			}
 			
 			DETHROW(deeInvalidParam);
@@ -356,8 +360,10 @@ void deoglCapsFmtSupport::pDetectArrayTexFormats(){
 	// find a format to use for the list of possible types
 	for(p=0; p<TEST_PROGRAM_COUNT; p++){
 		if(!pUseArrTexFormats[vTestProgram[p].target]){
-			pUseArrTexFormats[vTestProgram[p].target] = pFoundArrTexFormats.GetFormatWith(
-				vTestTextureFormats[vTestProgram[p].testFormat].format);
+			const GLint searchFormat = vTestTextureFormats[vTestProgram[p].testFormat].format;
+			pFoundArrTexFormats.Find([&](const deoglCapsTextureFormat &fmt){
+				return fmt.GetFormat() == searchFormat;
+			}, pUseArrTexFormats[vTestProgram[p].target]);
 		}
 	}
 	
@@ -381,9 +387,9 @@ void deoglCapsFmtSupport::pDetectArrayTexFormats(){
 			
 			pCapabilities.GetRenderThread().GetLogger().LogError("Supported formats:");
 			int i;
-			for(i=0; i<pFoundArrTexFormats.GetFormatCount(); i++){
+			for(i=0; i<pFoundArrTexFormats.GetCount(); i++){
 				pCapabilities.GetRenderThread().GetLogger().LogErrorFormat("- %s",
-					pFoundArrTexFormats.GetFormatAt(i)->GetName().GetString());
+					pFoundArrTexFormats.GetAt(i).GetName().GetString());
 			}
 			
 			DETHROW(deeInvalidParam);
@@ -405,12 +411,12 @@ void deoglCapsFmtSupport::pDetectFBOTex2DFormats(GLuint fbo){
 	// find a format to use for the list of possible types
 	for(p=0; p<TEST_PROGRAM_COUNT; p++){
 		if(!pUseFBOTex2DFormats[vTestProgram[p].target]){
-			pUseFBOTex2DFormats[vTestProgram[p].target] = pFoundFBOTex2DFormats.GetFormatWith(
-					vTestTextureFormats[vTestProgram[p].testFormat].format);
+			const GLint searchFormat = vTestTextureFormats[vTestProgram[p].testFormat].format;
+			pFoundFBOTex2DFormats.Find([&](const deoglCapsTextureFormat &fmt){
+				return fmt.GetFormat() == searchFormat;
+			}, pUseFBOTex2DFormats[vTestProgram[p].target]);
 		}
-	}
-	
-	for(p=0; p<TEST_FALLBACK_COUNT; p++){
+	}	for(p=0; p<TEST_FALLBACK_COUNT; p++){
 		if(!pUseFBOTex2DFormats[vTestFallback[p].target]){
 			pUseFBOTex2DFormats[vTestFallback[p].target] =
 				pUseFBOTex2DFormats[vTestFallback[p].fallbackTarget];
@@ -429,9 +435,9 @@ void deoglCapsFmtSupport::pDetectFBOTex2DFormats(GLuint fbo){
 			
 			pCapabilities.GetRenderThread().GetLogger().LogError("Supported formats:");
 			int i;
-			for(i=0; i<pFoundFBOTex2DFormats.GetFormatCount(); i++){
+			for(i=0; i<pFoundFBOTex2DFormats.GetCount(); i++){
 				pCapabilities.GetRenderThread().GetLogger().LogErrorFormat("- %s",
-					pFoundFBOTex2DFormats.GetFormatAt(i)->GetName().GetString());
+					pFoundFBOTex2DFormats.GetAt(i).GetName().GetString());
 			}
 			
 			DETHROW(deeInvalidParam);
@@ -453,8 +459,10 @@ void deoglCapsFmtSupport::pDetectFBOTexCubeFormats(GLuint fbo){
 	// find a format to use for the list of possible types
 	for(p=0; p<TEST_PROGRAM_COUNT; p++){
 		if(!pUseFBOTexCubeFormats[vTestProgram[p].target]){
-			pUseFBOTexCubeFormats[vTestProgram[p].target] = pFoundFBOTexCubeFormats.GetFormatWith(
-				vTestTextureFormats[vTestProgram[p].testFormat].format);
+			const GLint searchFormat = vTestTextureFormats[vTestProgram[p].testFormat].format;
+			pFoundFBOTexCubeFormats.Find([&](const deoglCapsTextureFormat &fmt){
+				return fmt.GetFormat() == searchFormat;
+			}, pUseFBOTexCubeFormats[vTestProgram[p].target]);
 		}
 	}
 	
@@ -477,9 +485,9 @@ void deoglCapsFmtSupport::pDetectFBOTexCubeFormats(GLuint fbo){
 			
 			pCapabilities.GetRenderThread().GetLogger().LogError("Supported formats:");
 			int i;
-			for(i=0; i<pFoundFBOTexCubeFormats.GetFormatCount(); i++){
+			for(i=0; i<pFoundFBOTexCubeFormats.GetCount(); i++){
 				pCapabilities.GetRenderThread().GetLogger().LogErrorFormat("- %s",
-					pFoundFBOTexCubeFormats.GetFormatAt(i)->GetName().GetString());
+					pFoundFBOTexCubeFormats.GetAt(i).GetName().GetString());
 			}
 			
 			DETHROW(deeInvalidParam);
@@ -501,8 +509,10 @@ void deoglCapsFmtSupport::pDetectFBOArrayTexFormats(GLuint fbo){
 	// find a format to use for the list of possible types
 	for(p=0; p<TEST_PROGRAM_COUNT; p++){
 		if(!pUseFBOArrTexFormats[vTestProgram[p].target]){
-			pUseFBOArrTexFormats[vTestProgram[p].target] = pFoundFBOArrTexFormats.GetFormatWith(
-				vTestTextureFormats[vTestProgram[p].testFormat].format);
+			const GLint searchFormat = vTestTextureFormats[vTestProgram[p].testFormat].format;
+			pFoundFBOArrTexFormats.Find([&](const deoglCapsTextureFormat &fmt){
+				return fmt.GetFormat() == searchFormat;
+			}, pUseFBOArrTexFormats[vTestProgram[p].target]);
 		}
 	}
 	
@@ -527,9 +537,9 @@ void deoglCapsFmtSupport::pDetectFBOArrayTexFormats(GLuint fbo){
 			
 			pCapabilities.GetRenderThread().GetLogger().LogError("Supported formats:");
 			int i;
-			for(i=0; i<pFoundFBOArrTexFormats.GetFormatCount(); i++){
+			for(i=0; i<pFoundFBOArrTexFormats.GetCount(); i++){
 				pCapabilities.GetRenderThread().GetLogger().LogErrorFormat("- %s",
-					pFoundFBOArrTexFormats.GetFormatAt(i)->GetName().GetString());
+					pFoundFBOArrTexFormats.GetAt(i).GetName().GetString());
 			}
 			
 			DETHROW(deeInvalidParam);
@@ -582,9 +592,9 @@ int bitsPerPixel, int flags, const char *name){
 	OGL_CHECK(renderThread, glDeleteTextures(1, &texture));
 	
 	if(errorCode == GL_NO_ERROR){
-		pFoundTex2DFormats.AddFormat(format, pixelFormat, pixelType, bitsPerPixel,
+		pFoundTex2DFormats.Add(deoglCapsTextureFormat(format, pixelFormat, pixelType, bitsPerPixel,
 			HAS_FLAG_DEPTH(flags), HAS_FLAG_DEPTH_FLOAT(flags), HAS_FLAG_STENCIL(flags),
-			HAS_FLAG_COMPRESSED(flags), name);
+			HAS_FLAG_COMPRESSED(flags), name));
 	}
 		
 	return errorCode == GL_NO_ERROR;
@@ -633,9 +643,9 @@ int bitsPerPixel, int flags, const char *name){
 	OGL_CHECK(renderThread, glDeleteTextures(1, &texture));
 	
 	if(errorCode == GL_NO_ERROR){
-		pFoundTexCubeFormats.AddFormat(format, pixelFormat, pixelType, bitsPerPixel,
+		pFoundTexCubeFormats.Add(deoglCapsTextureFormat(format, pixelFormat, pixelType, bitsPerPixel,
 			HAS_FLAG_DEPTH(flags), HAS_FLAG_DEPTH_FLOAT(flags), HAS_FLAG_STENCIL(flags),
-			HAS_FLAG_COMPRESSED(flags), name);
+			HAS_FLAG_COMPRESSED(flags), name));
 	}
 	
 	return errorCode == GL_NO_ERROR;
@@ -683,9 +693,9 @@ int bitsPerPixel, int flags, const char *name){
 	OGL_CHECK(renderThread, glDeleteTextures(1, &texture));
 	
 	if(errorCode == GL_NO_ERROR){
-		pFoundArrTexFormats.AddFormat(format, pixelFormat, pixelType, bitsPerPixel,
+		pFoundArrTexFormats.Add(deoglCapsTextureFormat(format, pixelFormat, pixelType, bitsPerPixel,
 			HAS_FLAG_DEPTH(flags), HAS_FLAG_DEPTH_FLOAT(flags), HAS_FLAG_STENCIL(flags),
-			HAS_FLAG_COMPRESSED(flags), name);
+			HAS_FLAG_COMPRESSED(flags), name));
 	}
 	
 	return errorCode == GL_NO_ERROR;
@@ -771,9 +781,9 @@ int bitsPerPixel, int flags, const char *name, int what){
 			errorCode = pglCheckFramebufferStatus(GL_FRAMEBUFFER);
 			if(errorCode == GL_FRAMEBUFFER_COMPLETE){
 				errorCode = GL_NO_ERROR;
-				pFoundFBOTex2DFormats.AddFormat(format, pixelFormat, pixelType, bitsPerPixel,
+				pFoundFBOTex2DFormats.Add(deoglCapsTextureFormat(format, pixelFormat, pixelType, bitsPerPixel,
 					HAS_FLAG_DEPTH(flags), HAS_FLAG_DEPTH_FLOAT(flags),
-					HAS_FLAG_STENCIL(flags), HAS_FLAG_COMPRESSED(flags), name);
+					HAS_FLAG_STENCIL(flags), HAS_FLAG_COMPRESSED(flags), name));
 			}
 		}
 		
@@ -875,9 +885,9 @@ GLenum pixelType, int bitsPerPixel, int flags, const char *name, int what){
 			errorCode = pglCheckFramebufferStatus(GL_FRAMEBUFFER);
 			if(errorCode == GL_FRAMEBUFFER_COMPLETE){
 				errorCode = GL_NO_ERROR;
-				pFoundFBOTexCubeFormats.AddFormat(format, pixelFormat, pixelType, bitsPerPixel,
+				pFoundFBOTexCubeFormats.Add(deoglCapsTextureFormat(format, pixelFormat, pixelType, bitsPerPixel,
 					HAS_FLAG_DEPTH(flags), HAS_FLAG_DEPTH_FLOAT(flags),
-					HAS_FLAG_STENCIL(flags), HAS_FLAG_COMPRESSED(flags), name);
+					HAS_FLAG_STENCIL(flags), HAS_FLAG_COMPRESSED(flags), name));
 			}
 		}
 		
@@ -973,9 +983,9 @@ GLenum pixelType, int bitsPerPixel, int flags, const char *name, int what){
 			errorCode = pglCheckFramebufferStatus(GL_FRAMEBUFFER);
 			if(errorCode == GL_FRAMEBUFFER_COMPLETE){
 				errorCode = GL_NO_ERROR;
-				pFoundFBOArrTexFormats.AddFormat(format, pixelFormat, pixelType, bitsPerPixel,
+				pFoundFBOArrTexFormats.Add(deoglCapsTextureFormat(format, pixelFormat, pixelType, bitsPerPixel,
 					HAS_FLAG_DEPTH(flags), HAS_FLAG_DEPTH_FLOAT(flags),
-					HAS_FLAG_STENCIL(flags), HAS_FLAG_COMPRESSED(flags), name);
+					HAS_FLAG_STENCIL(flags), HAS_FLAG_COMPRESSED(flags), name));
 			}
 		}
 		
@@ -997,7 +1007,7 @@ GLenum pixelType, int bitsPerPixel, int flags, const char *name, int what){
 
 const deoglCapsTextureFormat &deoglCapsFmtSupport::pRequireFormat(const char *categoryName,
 eUseTextureFormats type, const deoglCapsTextureFormat **listUse,
-const deoglCapsTextureFormatList &listSupported) const{
+const deoglCapsTextureFormat::List &listSupported) const{
 	const deoglCapsTextureFormat * const fmt = listUse[type];
 	if(!fmt){
 		const decString names(pSupportedFormats(listSupported));
@@ -1016,12 +1026,10 @@ const deoglCapsTextureFormatList &listSupported) const{
 }
 
 decString deoglCapsFmtSupport::pSupportedFormats(
-const deoglCapsTextureFormatList &listSupported) const{
-	decStringList supnames;
-	const int count = listSupported.GetFormatCount();
-	int i;
-	for(i=0; i<count; i++){
-		supnames.Add(listSupported.GetFormatAt(i)->GetName());
-	}
-	return DEJoin(supnames, ", ");
+const deoglCapsTextureFormat::List &listSupported) const{
+	decStringList names;
+	listSupported.Visit([&](const deoglCapsTextureFormat &format){
+		names.Add(format.GetName());
+	});
+	return DEJoin(names, ", ");
 }

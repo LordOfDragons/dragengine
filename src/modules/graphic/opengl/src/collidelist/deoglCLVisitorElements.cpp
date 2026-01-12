@@ -74,8 +74,8 @@ void deoglCLVisitorElements::VisitNode(deoglDOctree *node, int intersection){
 	int i;
 	
 	if(GetVisitParticleEmitters()){
-		const deoglParticleEmitterInstanceList &nodeList = sonode.GetParticleEmittersList();
-		deoglParticleEmitterInstanceList &clList = pCollideList->GetParticleEmitterList();
+		const deoglRParticleEmitterInstance::List &nodeList = sonode.GetParticleEmittersList();
+		deoglRParticleEmitterInstance::List &clList = pCollideList->GetParticleEmitterList();
 		const int count = nodeList.GetCount();
 		
 		if(intersection == deoglDCollisionDetection::eirInside){

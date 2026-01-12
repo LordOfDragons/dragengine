@@ -35,7 +35,6 @@
 #include "../component/debpModel.h"
 #include "../component/debpModelOctree.h"
 #include "../shape/debpShape.h"
-#include "../shape/debpShapeList.h"
 
 #include <dragengine/resources/component/deComponent.h>
 #include <dragengine/resources/model/deModel.h>
@@ -127,11 +126,11 @@ void debpCDVHitModelFace::VisitNode(debpDOctree *node, int intersection){
 			}
 			
 		}else if(pColliderVolume){
-			const debpShapeList &shapes = pColliderVolume->GetShapes();
-			int s, shapeCount = shapes.GetShapes().GetCount();
+			const debpShape::List &shapes = pColliderVolume->GetShapes();
+			int s, shapeCount = shapes.GetCount();
 			
 			for(s=0; s<shapeCount; s++){
-				debpShape &shape = *shapes.GetShapes().GetAt(s);
+				debpShape &shape = *shapes.GetAt(s);
 				
 				for(f=0; f<faceCount; f++){
 					faceIndex = rnode.GetFaceAt(f);

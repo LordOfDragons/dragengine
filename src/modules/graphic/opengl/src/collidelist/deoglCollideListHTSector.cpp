@@ -47,6 +47,11 @@ pSector(nullptr),
 pClusterCount(0){
 }
 
+deoglCollideListHTSector::deoglCollideListHTSector(deoglHTViewSector *sector) :
+pSector(sector),
+pClusterCount(0){
+}
+
 deoglCollideListHTSector::~deoglCollideListHTSector(){
 	pClusters.Visit([](deoglCollideListHTSCluster *cluster){
 		delete cluster;

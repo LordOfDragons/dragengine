@@ -25,7 +25,7 @@
 #ifndef _DEBPCOLLIDERBONE_H_
 #define _DEBPCOLLIDERBONE_H_
 
-#include "../shape/debpShapeList.h"
+#include "../shape/debpShape.h"
 #include "../debpCollisionObject.h"
 #include "../debpBulletShape.h"
 
@@ -82,7 +82,7 @@ private:
 	
 	decTOrderedSet<debpColliderConstraint*> pConstraints;
 	
-	debpShapeList pShapes;
+	debpShape::List pShapes;
 	
 	btGhostObject *pStaticCollisionTest;
 	debpBulletShape::Ref pStaticCollisionTestShape;
@@ -153,8 +153,8 @@ public:
 	inline const decDVector &GetOffset() const{ return pOffset; }
 	
 	/** Shapes. */
-	inline debpShapeList &GetShapes(){ return pShapes; }
-	inline const debpShapeList &GetShapes() const{ return pShapes; }
+	inline debpShape::List &GetShapes(){ return pShapes; }
+	inline const debpShape::List &GetShapes() const{ return pShapes; }
 	
 	/** Set parameters from rig bone. */
 	void SetFromRigBone(const deRigBone &bone);

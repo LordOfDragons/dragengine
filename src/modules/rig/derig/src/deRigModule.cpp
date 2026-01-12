@@ -27,7 +27,6 @@
 #include <string.h>
 
 #include "deRigModule.h"
-#include "dermNameList.h"
 #include "dermWriteShape.h"
 
 #include <dragengine/deEngine.h>
@@ -211,10 +210,9 @@ float deRigModule::pGetAttributeFloat(decXmlElementTag *tag, const char *name){
 void deRigModule::pParseRig(decXmlElementTag *root, deRig &rig){
 	const char *rootBone = nullptr;
 	decXmlCharacterData *cdata;
-	dermNameList boneNameList;
+	dermName::List boneNameList;
 	decXmlElementTag *tag;
 	int c, constraintCount;
-	int b, boneCount;
 	decVector vector;
 	int i;
 	
@@ -279,13 +277,13 @@ void deRigModule::pParseRig(decXmlElementTag *root, deRig &rig){
 	rig.SetShapes(shapes);
 	rig.SetShapeProperties(shapeProperties);
 	
-	boneCount = boneNameList.GetNameCount();
-	if(boneCount > 0){
-		for(b=0; b<boneCount; b++){
-			boneNameList.SetNameNumberAt(b, rig.IndexOfBoneNamed(boneNameList.GetNameAt(b)));
-		}
+	if(boneNameList.IsNotEmpty()){
+		boneNameList.Visit([&](dermName &name){
+			name.SetNumber(rig.IndexOfBoneNamed(name.GetName()));
+		});
 		
-		boneCount = rig.GetBoneCount();
+		const int boneCount = rig.GetBoneCount();
+		int b;
 		for(b=0; b<boneCount; b++){
 			deRigBone &bone = rig.GetBoneAt(b);
 			constraintCount = bone.GetConstraintCount();
@@ -294,7 +292,7 @@ void deRigModule::pParseRig(decXmlElementTag *root, deRig &rig){
 				deRigConstraint &constraint = bone.GetConstraintAt(c);
 				
 				if(constraint.GetParentBone() != -1){
-					constraint.SetParentBone(boneNameList.GetNameNumberAt(constraint.GetParentBone()));
+					constraint.SetParentBone(boneNameList.GetAt(constraint.GetParentBone()).GetNumber());
 				}
 			}
 		}
@@ -304,6 +302,8 @@ void deRigModule::pParseRig(decXmlElementTag *root, deRig &rig){
 		rig.SetRootBone(rig.IndexOfBoneNamed(rootBone));
 		
 	}else{
+		const int boneCount = rig.GetBoneCount();
+		int b;
 		for(b=0; b<boneCount; b++){
 			if(rig.GetBoneAt(b).GetParent() == -1){
 				rig.SetRootBone(b);
@@ -313,7 +313,7 @@ void deRigModule::pParseRig(decXmlElementTag *root, deRig &rig){
 	}
 }
 
-void deRigModule::pParseBone(decXmlElementTag *root, deRig &rig, dermNameList &boneNameList){
+void deRigModule::pParseBone(decXmlElementTag *root, deRig &rig, dermName::List &boneNameList){
 	decVector ikLimitsLower(TWO_PI, TWO_PI, TWO_PI);
 	decVector ikLimitsUpper(0.0f, 0.0f, 0.0f);
 	decVector ikResistance(0.0f, 0.0f, 0.0f);
@@ -906,7 +906,7 @@ void deRigModule::pParseHull(decXmlElementTag *root, decShapeList &shapes, decSt
 	}
 }
 
-void deRigModule::pParseConstraint(decXmlElementTag *root, deRig &rig, deRigBone *bone, dermNameList &boneNameList){
+void deRigModule::pParseConstraint(decXmlElementTag *root, deRig &rig, deRigBone *bone, dermName::List &boneNameList){
 	deRigConstraint *constraint = nullptr;
 	decXmlCharacterData *cdata;
 	decXmlElementTag *tag;

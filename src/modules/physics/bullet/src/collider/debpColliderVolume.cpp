@@ -220,12 +220,12 @@ void debpColliderVolume::UpdateFromBody(){
 }
 
 void debpColliderVolume::UpdateExtends(){
-	if(pShapes.GetShapes().IsEmpty()){
+	if(pShapes.IsEmpty()){
 		SetExtends(decDVector(), decDVector());
 		return;
 	}
 	
-	int s, shapeCount = pShapes.GetShapes().GetCount();
+	int s, shapeCount = pShapes.GetCount();
 	decDVector distance(pPredictDisp * 0.5);
 	decDVector minExtendShape, maxExtendShape;
 	decDVector minExtendAll, maxExtendAll;
@@ -235,12 +235,12 @@ void debpColliderVolume::UpdateExtends(){
 	UpdateShapes();
 	
 	// determine the bounding box of all collision volumes
-	pShapes.GetShapes().First()->GetCollisionVolume()->GetEnclosingBox(&colBox);
+	pShapes.First()->GetCollisionVolume()->GetEnclosingBox(&colBox);
 	minExtendAll = colBox.GetCenter() - colBox.GetHalfSize();
 	maxExtendAll = colBox.GetCenter() + colBox.GetHalfSize();
 	
 	for(s=1; s<shapeCount; s++){
-		pShapes.GetShapes().GetAt(s)->GetCollisionVolume()->GetEnclosingBox(&colBox);
+		pShapes.GetAt(s)->GetCollisionVolume()->GetEnclosingBox(&colBox);
 		
 		minExtendAll.SetSmallest(colBox.GetCenter() - colBox.GetHalfSize());
 		maxExtendAll.SetLargest(colBox.GetCenter() + colBox.GetHalfSize());
@@ -450,7 +450,7 @@ void debpColliderVolume::DetectCustomCollision(float elapsed){
 					debpColliderComponent &cc = *c.CastToComponent();
 					const decDVector &ccp = cc.GetPosition();
 					GetBullet()->LogInfoFormat("  Collider(%g,%g,%g) s=%d", ccp.x, ccp.y, ccp.z, colinfo->GetShape());
-					const debpShape &s = *cc.GetRigShapes().GetShapes().GetAt(colinfo->GetShape());
+					const debpShape &s = *cc.GetRigShapes().GetAt(colinfo->GetShape());
 					if(s.GetType() == debpShape::estBox){
 						const debpShapeBox &sb = (debpShapeBox&)s;
 // 						const decDMatrix m(decDMatrix::CreateWorld(sb.GetShapeBox()->GetPosition(), sb.GetShapeBox()->GetOrientation()) * cc.GetMatrix());
@@ -706,24 +706,24 @@ void debpColliderVolume::UpdateShapesWithMatrix(const decDMatrix &transformation
 }
 
 void debpColliderVolume::UpdateShapeExtends(){
-	if(pShapes.GetShapes().IsEmpty()){
+	if(pShapes.IsEmpty()){
 		SetShapeExtends(decDVector(), decDVector());
 		return;
 	}
 	
-	int s, shapeCount = pShapes.GetShapes().GetCount();
+	int s, shapeCount = pShapes.GetCount();
 	decDVector distance(pPredictDisp * 0.5);
 	decDVector minExtendShape, maxExtendShape;
 	decDVector minExtendAll, maxExtendAll;
 	debpDCollisionBox colBox;
 	
 	// determine the bounding box of all collision volumes
-	pShapes.GetShapes().First()->GetCollisionVolume()->GetEnclosingBox(&colBox);
+	pShapes.First()->GetCollisionVolume()->GetEnclosingBox(&colBox);
 	minExtendAll = colBox.GetCenter() - colBox.GetHalfSize();
 	maxExtendAll = colBox.GetCenter() + colBox.GetHalfSize();
 	
 	for(s=1; s<shapeCount; s++){
-		pShapes.GetShapes().GetAt(s)->GetCollisionVolume()->GetEnclosingBox(&colBox);
+		pShapes.GetAt(s)->GetCollisionVolume()->GetEnclosingBox(&colBox);
 		
 		minExtendAll.SetSmallest(colBox.GetCenter() - colBox.GetHalfSize());
 		maxExtendAll.SetLargest(colBox.GetCenter() + colBox.GetHalfSize());
@@ -1111,11 +1111,11 @@ void debpColliderVolume::ConstraintChanged(int index, deColliderConstraint* cons
 bool debpColliderVolume::PointInside(const decDVector &point){
 	UpdateShapes();
 	
-	const int shapeCount = pShapes.GetShapes().GetCount();
+	const int shapeCount = pShapes.GetCount();
 	int i;
 	
 	for(i=0; i<shapeCount; i++){
-		const debpShape &shape = *pShapes.GetShapes().GetAt(i);
+		const debpShape &shape = *pShapes.GetAt(i);
 		if(shape.GetCollisionVolume()->IsPointInside(point)){
 			return true;
 		}
@@ -1396,12 +1396,12 @@ void debpColliderVolume::pRebuildShapeList(){
 	int s, shapeCount = shapes.GetCount();
 	debpCreateShape createShape;
 	
-	pShapes.RemoveAllShapes();
+	pShapes.RemoveAll();
 	
 	for(s=0; s<shapeCount; s++){
 		shapes.GetAt(s)->Visit(createShape);
 		if(createShape.GetCreatedShape()){
-			pShapes.AddShape(createShape.GetCreatedShape());
+			pShapes.Add(createShape.GetCreatedShape());
 			createShape.SetCreatedShape(NULL);
 		}
 	}
@@ -1467,7 +1467,7 @@ void debpColliderVolume::pUpdateStaticCollisionTest(){
 }
 
 void debpColliderVolume::pUpdateUseFakeDynamics(){
-	if(pShapes.GetShapes().IsNotEmpty()){
+	if(pShapes.IsNotEmpty()){
 		bool useFakeDynamics = false;
 		debpDCollisionBox boundingBox;
 		
@@ -1481,7 +1481,7 @@ void debpColliderVolume::pUpdateUseFakeDynamics(){
 		// volume but not using the one in the shape to avoid lots of calculations. for this
 		// though we have to check which shape type we have. hard coded stuff like this is
 		// bad but since it's just a temporary hack it will be tolerated for the time being.
-		const debpShape * const shape = pShapes.GetShapes().First();
+		const debpShape * const shape = pShapes.First();
 		
 		if(shape->GetType() == debpShape::estSphere){
 			const decShapeSphere &sphere = *((const debpShapeSphere*)shape)->GetShapeSphere();

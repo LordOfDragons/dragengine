@@ -26,6 +26,7 @@
 #define _DEBPSHAPE_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 
 class decShape;
@@ -47,6 +48,25 @@ class debpShape : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	using Ref = deTObjectReference<debpShape>;
+	
+	/** \brief Shape list type. */
+	class List : public decTObjectOrderedSet<debpShape>{
+	public:
+		using decTObjectOrderedSet<debpShape>::decTObjectOrderedSet;
+		
+		/** \brief Update collision volumes of all shapes using a transformation matrix. */
+		void UpdateWithMatrix(const decDMatrix &transformation){
+			UpdateWithMatrix(transformation, transformation.GetScale());
+		}
+		
+		/** \brief Update collision volumes of all shapes using a transformation matrix. */
+		void UpdateWithMatrix(const decDMatrix &transformation, const decDVector &scale){
+			const int count = GetCount();
+			for(int i=0; i<count; i++){
+				GetAt(i)->UpdateWithMatrix(transformation, scale);
+			}
+		}
+	};
 	
 	
 	/** \brief Shape types. */

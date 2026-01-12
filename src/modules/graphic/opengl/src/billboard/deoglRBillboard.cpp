@@ -722,7 +722,7 @@ void deoglRBillboard::SetRenderEnvMap(deoglEnvironmentMap *envmap){
 	const deoglEnvironmentMap::Ref guard(pRenderEnvMap);
 	
 	if(pRenderEnvMap){
-		pRenderEnvMap->GetBillboardList().RemoveIfExisting(this);
+		pRenderEnvMap->GetBillboardList().Remove(this);
 	}
 	
 	pRenderEnvMap = envmap;
@@ -746,7 +746,7 @@ void deoglRBillboard::SetRenderEnvMapFade(deoglEnvironmentMap *envmap){
 	}
 	
 	if(pRenderEnvMapFade){
-		pRenderEnvMapFade->GetBillboardList().RemoveIfExisting(this);
+		pRenderEnvMapFade->GetBillboardList().Remove(this);
 	}
 	
 	pRenderEnvMapFade = envmap;

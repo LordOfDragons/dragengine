@@ -25,11 +25,17 @@
 #ifndef _DEOCCMWEIGHTSET_H_
 #define _DEOCCMWEIGHTSET_H_
 
+#include <dragengine/common/collection/decTList.h>
+
 
 /**
  * @brief Weight Set.
  */
 class deoccmWeightSet{
+public:
+	using Ref = deTUniqueReference<deoccmWeightSet>;
+	using List = decTUniqueList<deoccmWeightSet>;
+	
 private:
 	struct sWeight{
 		int bone;
@@ -46,6 +52,7 @@ public:
 	/*@{*/
 	/** Creates a new weight set. */
 	deoccmWeightSet();
+	
 	/** Cleans up the weight set. */
 	~deoccmWeightSet();
 	/*@}*/

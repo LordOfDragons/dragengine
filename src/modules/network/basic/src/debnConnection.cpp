@@ -32,7 +32,6 @@
 #include "deNetworkBasic.h"
 #include "states/debnState.h"
 #include "states/debnStateLink.h"
-#include "states/debnStateLinkList.h"
 #include "states/debnStateLinkManager.h"
 #include "messages/debnMessage.h"
 #include "messages/debnMessageManager.h"
@@ -73,7 +72,6 @@ debnConnection::debnConnection(deNetworkBasic *netBasic, deConnection *connectio
 	pElapsedConnectTimeout = 0.0f;
 	
 	pStateLinks = nullptr;
-	pModifiedStateLinks = nullptr;
 	
 	pReliableMessagesSend = nullptr;
 	pReliableMessagesRecv = nullptr;
@@ -89,7 +87,6 @@ debnConnection::debnConnection(deNetworkBasic *netBasic, deConnection *connectio
 	
 	try{
 		pStateLinks = new debnStateLinkManager;
-		pModifiedStateLinks = new debnStateLinkList;
 		pReliableMessagesSend = new debnMessageManager;
 		pReliableMessagesRecv = new debnMessageManager;
 		
@@ -132,8 +129,8 @@ void debnConnection::InvalidateState(debnState *state){
 		nextLink = stateLink->GetNextLink();
 		
 		if(state == stateLink->GetState()){
-			if(state->GetLinks()->HasLink(stateLink)){
-				state->GetLinks()->RemoveLink(stateLink);
+			if(state->GetLinks().Has(stateLink)){
+				state->GetLinks().Remove(stateLink);
 			}
 			
 			pStateLinks->RemoveLink(stateLink);
@@ -765,7 +762,7 @@ void debnConnection::LinkState(deNetworkMessage *message, deNetworkState *state,
 			throw;
 		}
 		
-		bnState->GetLinks()->AddLink(stateLink);
+		bnState->GetLinks().Add(stateLink);
 	}
 	
 	//pNetBasic->LogInfoFormat( "Linking state %p using link %i", state, stateLink->GetIdentifier() );
@@ -841,9 +838,6 @@ void debnConnection::pCleanUp(){
 	if(pStateLinks){
 		delete pStateLinks;
 	}
-	if(pModifiedStateLinks){
-		delete pModifiedStateLinks;
-	}
 	if(pReliableMessagesRecv){
 		delete pReliableMessagesRecv;
 	}
@@ -856,12 +850,12 @@ void debnConnection::pDisconnect(){
 	debnStateLink *stateLink;
 	
 	// clean up linked states
-	pModifiedStateLinks->RemoveAllLinks();
+	pModifiedStateLinks.RemoveAll();
 	
 	stateLink = pStateLinks->GetHeadLink();
 	while(stateLink){
 		if(stateLink->GetState()){
-			stateLink->GetState()->GetLinks()->RemoveLinkIfExisting(stateLink);
+			stateLink->GetState()->GetLinks().Remove(stateLink);
 		}
 		stateLink = stateLink->GetNextLink();
 	}
@@ -886,14 +880,14 @@ void debnConnection::pDisconnect(){
 }
 
 void debnConnection::pUpdateStates(){
-	int linkCount = pModifiedStateLinks->GetLinkCount();
+	int linkCount = pModifiedStateLinks.GetCount();
 	if(linkCount == 0){
 		return;
 	}
 	
 	int i, changedCount = 0;
 	for(i=0; i<linkCount; i++){
-		const debnStateLink &stateLink = *pModifiedStateLinks->GetLinkAt(i);
+		const debnStateLink &stateLink = *pModifiedStateLinks.GetAt(i);
 		if(stateLink.GetLinkState() == debnStateLink::elsUp && stateLink.GetChanged()){
 			changedCount++;
 		}
@@ -912,7 +906,7 @@ void debnConnection::pUpdateStates(){
 	sendWriter.WriteByte((uint8_t)changedCount);
 	
 	for(i=0; i<linkCount; i++){
-		debnStateLink &stateLink = *pModifiedStateLinks->GetLinkAt(i);
+		debnStateLink &stateLink = *pModifiedStateLinks.GetAt(i);
 		if(stateLink.GetLinkState() != debnStateLink::elsUp || !stateLink.GetChanged()){
 			continue;
 		}
@@ -923,7 +917,7 @@ void debnConnection::pUpdateStates(){
 			stateLink.GetState()->LinkWriteValues(sendWriter, stateLink);
 		}
 		
-		pModifiedStateLinks->RemoveLink(&stateLink);
+		pModifiedStateLinks.Remove(&stateLink);
 		linkCount--;
 		i--;
 		
@@ -1125,7 +1119,7 @@ void debnConnection::pProcessLinkState(int number, decBaseFileReader &reader){
 					throw;
 				}
 				
-				bnState->GetLinks()->AddLink(stateLink);
+				bnState->GetLinks().Add(stateLink);
 			}
 			
 			// mark the link as established
@@ -1263,7 +1257,7 @@ void debnConnection::pProcessLinkStateLong(int number, decBaseFileReader &reader
 					throw;
 				}
 				
-				bnState->GetLinks()->AddLink(stateLink);
+				bnState->GetLinks().Add(stateLink);
 			}
 			
 			// mark the link as established

@@ -25,7 +25,6 @@
 #ifndef _DEOGLCAPABILITIES_H_
 #define _DEOGLCAPABILITIES_H_
 
-#include "deoglCapsTextureFormatList.h"
 #include "deoglCapsFmtSupport.h"
 #include "checks/deoglCapCheckATLUnbind.h"
 #include "checks/deoglCapCheckUBOIndirectMatrixAccess.h"

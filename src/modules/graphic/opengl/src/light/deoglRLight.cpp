@@ -38,6 +38,7 @@
 #include "volume/deoglLightVolumeBuilder.h"
 #include "deoglNotifyEnvMapLightChanged.h"
 #include "../canvas/render/deoglRCanvasView.h"
+#include "../component/deoglRComponent.h"
 #include "../collidelist/deoglCollideListComponent.h"
 #include "../collidelist/deoglCollideList.h"
 #include "../component/deoglRComponent.h"
@@ -508,12 +509,12 @@ void deoglRLight::SetDirtyCollisionVolume(){
 
 
 
-const deoglCollideList *deoglRLight::GetStaticCollideList(){
+deoglCollideList *deoglRLight::GetStaticCollideList(){
 	pUpdateCollideLists();
 	return pStaticCollideList;
 }
 
-const deoglCollideList *deoglRLight::GetDynamicCollideList(){
+deoglCollideList *deoglRLight::GetDynamicCollideList(){
 	pUpdateCollideLists();
 	return pDynamicCollideList;
 }
@@ -783,7 +784,7 @@ void deoglRLight::PrepareQuickDispose(){
 
 void deoglRLight::AddComponent(deoglRComponent *component){
 	if(component->GetRenderStatic() && pHintMovement == deLight::emhStationary){
-		if(pStaticComponentList.AddIfMissing(component)){
+		if(pStaticComponentList.Add(component)){
 			pDirtyStaticShadows = true;
 			pDirtyCollideLists = true;
 			SetLightVolumeCropBox(nullptr);
@@ -794,7 +795,7 @@ void deoglRLight::AddComponent(deoglRComponent *component){
 		}
 		
 	}else{
-		if(pDynamicComponentList.AddIfMissing(component)){
+		if(pDynamicComponentList.Add(component)){
 			pDirtyDynamicShadows = true;
 			pDirtyCollideLists = true;
 		}
@@ -802,7 +803,7 @@ void deoglRLight::AddComponent(deoglRComponent *component){
 }
 
 void deoglRLight::RemoveComponent(deoglRComponent *component){
-	if(pStaticComponentList.RemoveIfExisting(component)){
+	if(pStaticComponentList.Remove(component)){
 		pDirtyCollideLists = true;
 		
 		if(pUpdateOnRemoveComponent){
@@ -815,7 +816,7 @@ void deoglRLight::RemoveComponent(deoglRComponent *component){
 		}
 	}
 	
-	if(pDynamicComponentList.RemoveIfExisting(component)){
+	if(pDynamicComponentList.Remove(component)){
 		pDirtyDynamicShadows = true;
 		pDirtyCollideLists = true;
 	}
@@ -827,7 +828,7 @@ void deoglRLight::RemoveAllComponents(){
 	count = pStaticComponentList.GetCount();
 	if(count > 0){
 		for(i=0; i<count; i++){
-			pStaticComponentList.GetAt(i)->GetLightList().RemoveIfExisting(this);
+			pStaticComponentList.GetAt(i)->GetLightList().Remove(this);
 		}
 		pStaticComponentList.RemoveAll();
 		pDirtyStaticShadows = true;
@@ -838,7 +839,7 @@ void deoglRLight::RemoveAllComponents(){
 	count = pDynamicComponentList.GetCount();
 	if(count > 0){
 		for(i=0; i<count; i++){
-			pDynamicComponentList.GetAt(i)->GetLightList().RemoveIfExisting(this);
+			pDynamicComponentList.GetAt(i)->GetLightList().Remove(this);
 		}
 		pDynamicComponentList.RemoveAll();
 		pDirtyDynamicShadows = true;
@@ -973,11 +974,11 @@ void deoglRLight::TestComponent(deoglRComponent *component){
 	
 	if(touchesLight){
 		AddComponent(component);
-		component->GetLightList().AddIfMissing(this);
+		component->GetLightList().Add(this);
 		
 	}else{
 		RemoveComponent(component);
-		component->GetLightList().RemoveIfExisting(this);
+		component->GetLightList().Remove(this);
 	}
 }
 
@@ -1253,8 +1254,13 @@ void deoglRLight::pCheckTouching(){
 	
 	//if( pLight->GetHintMovement() == deLight::emhStationary ){
 	
-	pStaticComponentList.MarkAll(true);
-	pDynamicComponentList.MarkAll(true);
+	// Mark all components first
+	pStaticComponentList.Visit([](deoglRComponent *component){
+		component->SetMarked(true);
+	});
+	pDynamicComponentList.Visit([](deoglRComponent *component){
+		component->SetMarked(true);
+	});
 	
 	if(pActive && pParentWorld){
 		pUpdateExtends();
@@ -1266,31 +1272,24 @@ void deoglRLight::pCheckTouching(){
 		pUpdateOnRemoveComponent = true;
 	}
 	
-	// remove light from all non-marked components. act like pUpdateOnRemoveComponent is false.
+	// remove light from all marked components and remove them from the lists.
 	// this is required or else components still hold to this light pointer although it is
-	// freed some time later. RemoveAllMarked only removes the components but does not remove
-	// the light from them.
-	const int dynamicComponentCount = pDynamicComponentList.GetCount();
-	const int staticComponentCount = pStaticComponentList.GetCount();
-	int i;
-	
-	for(i=0; i<staticComponentCount; i++){
-		deoglRComponent &component = *pStaticComponentList.GetAt(i);
-		if(component.GetMarked()){
-			component.GetLightList().RemoveIfExisting(this);
+	// freed some time later.
+	pStaticComponentList.RemoveIf([&](deoglRComponent *component){
+		if(component->GetMarked()){
+			component->GetLightList().Remove(this);
+			return true;
 		}
-	}
+		return false;
+	});
 	
-	for(i=0; i<dynamicComponentCount; i++){
-		deoglRComponent &component = *pDynamicComponentList.GetAt(i);
-		if(component.GetMarked()){
-			component.GetLightList().RemoveIfExisting(this);
+	pDynamicComponentList.RemoveIf([&](deoglRComponent *component){
+		if(component->GetMarked()){
+			component->GetLightList().Remove(this);
+			return true;
 		}
-	}
-	
-	// now the components can be safely removed in an efficient way
-	pStaticComponentList.RemoveAllMarked(true);
-	pDynamicComponentList.RemoveAllMarked(true);
+		return false;
+	});
 }
 
 void deoglRLight::pUpdateCollisionVolume(){

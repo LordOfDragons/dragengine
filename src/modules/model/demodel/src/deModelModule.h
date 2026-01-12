@@ -25,12 +25,13 @@
 #ifndef _DEMODELMODULE_H_
 #define _DEMODELMODULE_H_
 
+#include "demdlWeightSet.h"
+
 #include <dragengine/systems/modules/model/deBaseModelModule.h>
 #include <dragengine/threading/deMutex.h>
 
 class deCacheHelper;
 class demdlTexCoordSorter;
-class demdlWeightSetList;
 class deModelLOD;
 
 struct sModelInfos{
@@ -47,7 +48,7 @@ struct sModelInfos{
 	int triangleCount;
 	int quadCount;
 	int faceCount;
-	demdlWeightSetList *weightSetList;
+	demdlWeightSet::List *weightSetList;
 	demdlTexCoordSorter *texCoordSorter;
 	bool isLargeModel;
 	const char *filename;

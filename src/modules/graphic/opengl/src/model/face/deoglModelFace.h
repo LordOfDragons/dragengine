@@ -26,6 +26,7 @@
 #define _DEOGLMODELFACE_H_
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 
 
@@ -33,6 +34,9 @@
  * Model Face.
  */
 class deoglModelFace{
+public:
+	using List = decTOrderedSet<deoglModelFace*>;
+	
 private:
 	int pVertices[3];
 	decVector pFaceNormal;

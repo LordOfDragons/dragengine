@@ -56,6 +56,12 @@ public:
 	/** Create collide list component. */
 	deoglCollideListComponent();
 	
+	deoglCollideListComponent(deoglRComponent *component);
+	
+	/** Copy. */
+	deoglCollideListComponent(const deoglCollideListComponent &other) = default;
+	deoglCollideListComponent &operator=(const deoglCollideListComponent &other) = default;
+	
 	/** Clean up collide list component. */
 	~deoglCollideListComponent() override;
 	/*@}*/

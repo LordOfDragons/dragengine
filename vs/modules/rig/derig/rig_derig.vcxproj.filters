@@ -19,7 +19,7 @@
     <None Include="..\..\..\..\src\modules\rig\derig\SConscript" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\rig\derig\src\dermNameList.cpp">
+    <ClCompile Include="..\..\..\..\src\modules\rig\derig\src\dermName.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\rig\derig\src\dermWriteShape.cpp">
@@ -30,7 +30,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\rig\derig\src\dermNameList.h">
+    <ClInclude Include="..\..\..\..\src\modules\rig\derig\src\dermName.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\rig\derig\src\dermWriteShape.h">

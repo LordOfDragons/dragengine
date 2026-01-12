@@ -25,18 +25,20 @@
 #ifndef _DEOGLCOLLIDELIST_H_
 #define _DEOGLCOLLIDELIST_H_
 
+#include "deoglCollideListComponent.h"
+#include "deoglCollideListLight.h"
+#include "deoglCollideListHTSector.h"
+#include "deoglCollideListHTSCluster.h"
+#include "deoglCollideListPropField.h"
+#include "deoglCollideListPropFieldCluster.h"
+
+#include "../particle/deoglRParticleEmitterInstance.h"
+#include "../envmap/deoglEnvironmentMap.h"
+
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/math/decMath.h>
 
-#include "../particle/deoglParticleEmitterInstanceList.h"
-#include "../envmap/deoglEnvironmentMapList.h"
-
-class deoglCollideListComponent;
-class deoglCollideListHTSector;
-class deoglCollideListHTSCluster;
-class deoglCollideListLight;
-class deoglCollideListPropField;
-class deoglCollideListPropFieldCluster;
 class deoglDCollisionFrustum;
 class deoglDCollisionVolume;
 class deoglHTView;
@@ -60,36 +62,16 @@ class deoglRTLogger;
  */
 class deoglCollideList{
 private:
-	deoglParticleEmitterInstanceList pParticleEmitterList;
-	deoglEnvironmentMapList pEnvMapList;
+	deoglRParticleEmitterInstance::List pParticleEmitterList;
+	deoglEnvironmentMap::List pEnvMapList;
 	
-	deoglCollideListComponent **pComponents;
-	int pComponentCount;
-	int pComponentSize;
-	
-	deoglCollideListLight **pLights;
-	int pLightCount;
-	int pLightSize;
-	
-	deoglRBillboard **pBillboards;
-	int pBillboardCount;
-	int pBillboardSize;
-	
-	deoglCollideListHTSector **pHTSectors;
-	int pHTSectorCount;
-	int pHTSectorSize;
-	
-	deoglCollideListHTSCluster **pHTSClusters;
-	int pHTSClusterCount;
-	int pHTSClusterSize;
-	
-	deoglCollideListPropField **pPropFields;
-	int pPropFieldCount;
-	int pPropFieldSize;
-	
-	deoglCollideListPropFieldCluster **pPropFieldClusters;
-	int pPropFieldClusterCount;
-	int pPropFieldClusterSize;
+	decTList<deoglCollideListComponent> pComponents;
+	decTList<deoglCollideListLight> pLights;
+	decTList<deoglRBillboard*> pBillboards;
+	decTList<deoglCollideListHTSector> pHTSectors;
+	decTList<deoglCollideListHTSCluster> pHTSClusters;
+	decTList<deoglCollideListPropField> pPropFields;
+	decTList<deoglCollideListPropFieldCluster> pPropFieldClusters;
 	
 	deoglTransformVolume *pTransformVolume;
 	
@@ -133,14 +115,14 @@ public:
 	void UpdateOccMeshCubeFaceMasks(const decDVector &position) const;
 	
 	/** Retrieves the list of particle emitters. */
-	inline deoglParticleEmitterInstanceList &GetParticleEmitterList(){ return pParticleEmitterList; }
-	inline const deoglParticleEmitterInstanceList &GetParticleEmitterList() const{ return pParticleEmitterList; }
+	inline deoglRParticleEmitterInstance::List &GetParticleEmitterList(){ return pParticleEmitterList; }
+	inline const deoglRParticleEmitterInstance::List &GetParticleEmitterList() const{ return pParticleEmitterList; }
 	/** Adds all particle emitters colliding with the given volume. */
 	void AddParticleEmittersColliding(deoglWorldOctree &octree, deoglDCollisionVolume *volume);
 	
 	/** Retrieves the list of environment maps. */
-	inline deoglEnvironmentMapList &GetEnvironmentMapList(){ return pEnvMapList; }
-	inline const deoglEnvironmentMapList &GetEnvironmentMapList() const{ return pEnvMapList; }
+	inline deoglEnvironmentMap::List &GetEnvironmentMapList(){ return pEnvMapList; }
+	inline const deoglEnvironmentMap::List &GetEnvironmentMapList() const{ return pEnvMapList; }
 	/** Adds all environment maps colliding with the given volume. */
 	void AddEnvironmentMapsColliding(deoglWorldOctree &octree, deoglDCollisionVolume *volume);
 	
@@ -152,11 +134,16 @@ public:
 	
 	/** \name Components */
 	/*@{*/
+	/** Components. */
+	inline decTList<deoglCollideListComponent> &GetComponents(){ return pComponents; }
+	inline const decTList<deoglCollideListComponent> &GetComponents() const{ return pComponents; }
+	
 	/** Count of components. */
-	inline int GetComponentCount() const{ return pComponentCount; }
+	inline int GetComponentCount() const{ return pComponents.GetCount(); }
 	
 	/** Component at index. */
-	deoglCollideListComponent *GetComponentAt(int index) const;
+	deoglCollideListComponent &GetComponentAt(int index);
+	const deoglCollideListComponent &GetComponentAt(int index) const;
 	
 	/** Index of component or -1 if absent. */
 	int IndexOfComponent(deoglRComponent *component) const;
@@ -165,7 +152,7 @@ public:
 	bool HasComponent(deoglRComponent *component) const;
 	
 	/** Add component. */
-	deoglCollideListComponent *AddComponent(deoglRComponent *component);
+	deoglCollideListComponent &AddComponent(deoglRComponent *component);
 	
 	/** Remove component. */
 	void RemoveComponent(deoglRComponent *component);
@@ -202,11 +189,16 @@ public:
 	
 	/** \name Lights */
 	/*@{*/
+	/** Lights. */
+	inline decTList<deoglCollideListLight> &GetLights(){ return pLights; }
+	inline const decTList<deoglCollideListLight> &GetLights() const{ return pLights; }
+	
 	/** Count of lights. */
-	inline int GetLightCount() const{ return pLightCount; }
+	inline int GetLightCount() const{ return pLights.GetCount(); }
 	
 	/** Light at index. */
-	deoglCollideListLight *GetLightAt(int index) const;
+	deoglCollideListLight &GetLightAt(int index);
+	const deoglCollideListLight &GetLightAt(int index) const;
 	
 	/** Index of light or -1 if absent. */
 	int IndexOfLight(deoglRLight *light) const;
@@ -215,7 +207,7 @@ public:
 	bool HasLight(deoglRLight *light) const;
 	
 	/** Add light. */
-	deoglCollideListLight *AddLight(deoglRLight *light);
+	deoglCollideListLight &AddLight(deoglRLight *light);
 	
 	/** Remove light. */
 	void RemoveLight(deoglRLight *light);
@@ -240,8 +232,12 @@ public:
 	
 	/** \name Billboards */
 	/*@{*/
+	/** Billboards. */
+	inline decTList<deoglRBillboard*> &GetBillboards(){ return pBillboards; }
+	inline const decTList<deoglRBillboard*> &GetBillboards() const{ return pBillboards; }
+	
 	/** Count of billboards. */
-	inline int GetBillboardCount() const{ return pBillboardCount; }
+	inline int GetBillboardCount() const{ return pBillboards.GetCount(); }
 	
 	/** Billboard at index. */
 	deoglRBillboard *GetBillboardAt(int index) const;
@@ -263,14 +259,19 @@ public:
 	
 	/** \name Height Terrain Sectors */
 	/*@{*/
+	/** Height terrain sectors. */
+	inline decTList<deoglCollideListHTSector> &GetHTSectors(){ return pHTSectors; }
+	inline const decTList<deoglCollideListHTSector> &GetHTSectors() const{ return pHTSectors; }
+	
 	/** Count of height terrain sectors. */
-	inline int GetHTSectorCount() const{ return pHTSectorCount; }
+	inline int GetHTSectorCount() const{ return pHTSectors.GetCount(); }
 	
 	/** Height terrain sector at index. */
-	deoglCollideListHTSector *GetHTSectorAt(int index) const;
+	deoglCollideListHTSector &GetHTSectorAt(int index);
+	const deoglCollideListHTSector &GetHTSectorAt(int index) const;
 	
 	/** Add height terrain sector. */
-	deoglCollideListHTSector *AddHTSector(deoglHTViewSector *sector);
+	deoglCollideListHTSector &AddHTSector(deoglHTViewSector *sector);
 	
 	/** Add height terrain sector colliding with volume. */
 	void AddHTSector(deoglHTViewSector *sector, deoglDCollisionVolume *volume);
@@ -286,14 +287,19 @@ public:
 	
 	/** \name Height Terrain Sector Clusters */
 	/*@{*/
+	/** Height terrain sector clusters. */
+	inline decTList<deoglCollideListHTSCluster> &GetHTSClusters(){ return pHTSClusters; }
+	inline const decTList<deoglCollideListHTSCluster> &GetHTSClusters() const{ return pHTSClusters; }
+	
 	/** Count of height terrain sector clusters. */
-	inline int GetHTSClusterCount() const{ return pHTSClusterCount; }
+	inline int GetHTSClusterCount() const{ return pHTSClusters.GetCount(); }
 	
 	/** Height terrain sector cluster at index. */
-	deoglCollideListHTSCluster *GetHTSClusterAt(int index) const;
+	deoglCollideListHTSCluster &GetHTSClusterAt(int index);
+	const deoglCollideListHTSCluster &GetHTSClusterAt(int index) const;
 	
 	/** Add height terrain sector cluster. */
-	deoglCollideListHTSCluster *AddHTSCluster(deoglHTViewSectorCluster *cluster);
+	deoglCollideListHTSCluster &AddHTSCluster(deoglHTViewSectorCluster *cluster);
 	
 	/** Remove all height terrain sector clusters. */
 	void RemoveAllHTSClusters();
@@ -303,14 +309,19 @@ public:
 	
 	/** \name Prop Fields */
 	/*@{*/
+	/** Prop fields. */
+	inline decTList<deoglCollideListPropField> &GetPropFields(){ return pPropFields; }
+	inline const decTList<deoglCollideListPropField> &GetPropFields() const{ return pPropFields; }
+	
 	/** Count of prop fields. */
-	inline int GetPropFieldCount() const{ return pPropFieldCount; }
+	inline int GetPropFieldCount() const{ return pPropFields.GetCount(); }
 	
 	/** Prop field at index. */
-	deoglCollideListPropField *GetPropFieldAt(int index) const;
+	deoglCollideListPropField &GetPropFieldAt(int index);
+	const deoglCollideListPropField &GetPropFieldAt(int index) const;
 	
 	/** Add prop field. */
-	deoglCollideListPropField *AddPropField(deoglRPropField *propField);
+	deoglCollideListPropField &AddPropField(deoglRPropField *propField);
 	
 	/** Add prop field if colliding with volume. */
 	void AddPropField(deoglRPropField *propField, deoglDCollisionVolume &volume);
@@ -326,14 +337,19 @@ public:
 	
 	/** \name Prop Field Clusters */
 	/*@{*/
+	/** Prop field clusters. */
+	inline decTList<deoglCollideListPropFieldCluster> &GetPropFieldClusters(){ return pPropFieldClusters; }
+	inline const decTList<deoglCollideListPropFieldCluster> &GetPropFieldClusters() const{ return pPropFieldClusters; }
+	
 	/** Count of prop field clusters. */
-	inline int GetPropFieldClusterCount() const{ return pPropFieldClusterCount; }
+	inline int GetPropFieldClusterCount() const{ return pPropFieldClusters.GetCount(); }
 	
 	/** Prop field cluster at index. */
-	deoglCollideListPropFieldCluster *GetPropFieldClusterAt(int index) const;
+	deoglCollideListPropFieldCluster &GetPropFieldClusterAt(int index);
+	const deoglCollideListPropFieldCluster &GetPropFieldClusterAt(int index) const;
 	
 	/** Add prop field cluster. */
-	deoglCollideListPropFieldCluster *AddPropFieldCluster(deoglPropFieldCluster *cluster);
+	deoglCollideListPropFieldCluster &AddPropFieldCluster(deoglPropFieldCluster *cluster);
 	
 	/** Remove all prop field clusters. */
 	void RemoveAllPropFieldClusters();
@@ -341,7 +357,6 @@ public:
 	
 private:
 	void pCleanUp();
-	void pSortCompByDist(int left, int right);
 };
 
 // end of include only once

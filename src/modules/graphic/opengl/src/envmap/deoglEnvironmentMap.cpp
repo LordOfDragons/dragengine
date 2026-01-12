@@ -832,13 +832,8 @@ void deoglEnvironmentMap::UpdateConvexVolumeList(){
 	
 	if(pWorld){
 		if(true){
-			const deoglEnvironmentMapList &list = pWorld->GetEnvMapList();
-			const int count = list.GetCount();
-			int i;
-			
-			for(i=0; i<count; i++){
-				const deoglEnvironmentMap &envmap = *list.GetAt(i);
-				const decDVector &position = envmap.GetPosition();
+			pWorld->GetEnvMapList().Visit([&](const deoglEnvironmentMap *envmap){
+				const decDVector &position = envmap->GetPosition();
 				
 				if(position >= boxMinExtend && position <= boxMaxExtend && !pPosition.IsEqualTo(position, 0.01)){
 					const decVector splitPosition = ((position - pPosition) * 0.5).ToVector();
@@ -846,7 +841,7 @@ void deoglEnvironmentMap::UpdateConvexVolumeList(){
 					
 					pConvexVolumeList->SplitByPlane(splitNormal, splitPosition, true, nullptr);
 				}
-			}
+			});
 			
 		}else{
 #if 0

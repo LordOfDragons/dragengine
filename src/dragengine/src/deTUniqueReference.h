@@ -102,7 +102,7 @@ public:
 	/** \brief Move constructor. */
 	template<typename U, typename = typename std::enable_if<std::is_base_of<T, U>::value>::type>
 	explicit deTUniqueReference(deTUniqueReference<U> &&other) noexcept : pObject(static_cast<T*>(other.Pointer())){
-		other = nullptr;
+		other.pObject = nullptr;
 	}
 	
 	/**
@@ -216,7 +216,7 @@ public:
 	deTUniqueReference& operator=(deTUniqueReference<U> &&other) noexcept{
 		Clear();
 		pObject = static_cast<T*>(other.Pointer());
-		other = nullptr;
+		other.pObject = nullptr;
 		return *this;
 	}
 	

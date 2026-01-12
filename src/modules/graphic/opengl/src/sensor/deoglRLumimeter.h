@@ -25,7 +25,7 @@
 #ifndef _DEOGLRLUMIMETER_H_
 #define _DEOGLRLUMIMETER_H_
 
-#include "../light/deoglLightList.h"
+#include "../light/deoglRLight.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/deObject.h>
@@ -58,7 +58,7 @@ public:
 	
 	bool pDirtyMeasurements;
 	
-	deoglLightList pLights;
+	deoglRLight::List pLights;
 	
 	bool pWorldMarkedRemove;
 	

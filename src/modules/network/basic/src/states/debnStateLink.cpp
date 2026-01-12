@@ -28,7 +28,6 @@
 
 #include "debnState.h"
 #include "debnStateLink.h"
-#include "debnStateLinkList.h"
 #include "../debnConnection.h"
 
 #include <dragengine/common/exceptions.h>
@@ -100,7 +99,7 @@ void debnStateLink::SetChanged(bool changed){
 	pChanged = changed;
 	
 	if(changed){
-		pConnection.GetModifiedStateLinks()->AddLink(this);
+		pConnection.GetModifiedStateLinks().Add(this);
 	}
 }
 

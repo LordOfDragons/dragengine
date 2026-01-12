@@ -26,7 +26,7 @@
 #define _DEBPCOLLIDERRIGGED_H_
 
 #include "debpCollider.h"
-#include "../shape/debpShapeList.h"
+#include "../shape/debpShape.h"
 
 class deColliderConstraint;
 class deColliderRig;
@@ -76,7 +76,7 @@ private:
 	debpColliderBones *pBones;
 	
 	debpRig *pRig;
-	debpShapeList pRigShapes;
+	debpShape::List pRigShapes;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -141,8 +141,8 @@ public:
 	/** Retrieves the rig or NULL if not set. */
 	inline debpRig *GetRig() const{ return pRig; }
 	/** Retrieves the list of rig shapes. */
-	inline debpShapeList &GetRigShapes(){ return pRigShapes; }
-	inline const debpShapeList &GetRigShapes() const{ return pRigShapes; }
+	inline debpShape::List &GetRigShapes(){ return pRigShapes; }
+	inline const debpShape::List &GetRigShapes() const{ return pRigShapes; }
 	
 	/** Updates shapes with the current matrix. */
 	void UpdateShapes() override;

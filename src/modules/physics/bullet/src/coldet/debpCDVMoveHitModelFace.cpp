@@ -34,7 +34,6 @@
 #include "../component/debpModel.h"
 #include "../component/debpModelOctree.h"
 #include "../shape/debpShape.h"
-#include "../shape/debpShapeList.h"
 
 #include <dragengine/resources/component/deComponent.h>
 #include <dragengine/resources/model/deModel.h>

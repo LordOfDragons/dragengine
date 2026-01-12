@@ -27,7 +27,6 @@
 
 #include "pipeline/deoglLightPipelines.h"
 #include "../canvas/render/deoglRCanvasView.h"
-#include "../component/deoglComponentSet.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../skin/deoglRSkin.h"
 #include "../skin/dynamic/deoglRDynamicSkin.h"
@@ -36,6 +35,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decTSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decLayerMask.h>
@@ -69,6 +69,9 @@ public:
 	/** \brief Type holding strong reference. */
 	using Ref = deTObjectReference<deoglRLight>;
 	
+	/** \brief Light list type. */
+	using List = decTObjectOrderedSet<deoglRLight>;
+	
 	
 private:
 	/** World compute element. */
@@ -79,6 +82,8 @@ private:
 		explicit WorldComputeElement(deoglRLight &light);
 		void UpdateData(sDataElement &data) const override;
 	};
+	
+	using ComponentList = decTOrderedSet<deoglRComponent*>;
 	
 	
 	
@@ -135,8 +140,8 @@ private:
 	bool pDirtyStaticShadows;
 	bool pDirtyDynamicShadows;
 	
-	deoglComponentSet pStaticComponentList;
-	deoglComponentSet pDynamicComponentList;
+	ComponentList pStaticComponentList;
+	ComponentList pDynamicComponentList;
 	deoglCollideList *pStaticCollideList;
 	deoglCollideList *pDynamicCollideList;
 	bool pDirtyCollideLists;
@@ -419,24 +424,24 @@ public:
 	
 	
 	/** Static component list. */
-	inline deoglComponentSet &GetStaticComponentList(){ return pStaticComponentList; }
-	inline const deoglComponentSet &GetStaticComponentList() const{ return pStaticComponentList; }
+	inline ComponentList &GetStaticComponentList(){ return pStaticComponentList; }
+	inline const ComponentList &GetStaticComponentList() const{ return pStaticComponentList; }
 	
 	/** Dynamic component list. */
-	inline deoglComponentSet &GetDynamicComponentList(){ return pDynamicComponentList; }
-	inline const deoglComponentSet &GetDynamicComponentList() const{ return pDynamicComponentList; }
+	inline ComponentList &GetDynamicComponentList(){ return pDynamicComponentList; }
+	inline const ComponentList &GetDynamicComponentList() const{ return pDynamicComponentList; }
 	
 	/**
 	 * Static collide list.
 	 * \details Updates it if not updated already.
 	 */
-	const deoglCollideList *GetStaticCollideList();
+	deoglCollideList *GetStaticCollideList();
 	
 	/**
 	 * Retrieves the dynamic collide list.
 	 * \details Updates it if not updated already.
 	 */
-	const deoglCollideList *GetDynamicCollideList();
+	deoglCollideList *GetDynamicCollideList();
 	
 	/** Mark collide lists dirty. */
 	void SetDirtyCollideLists();

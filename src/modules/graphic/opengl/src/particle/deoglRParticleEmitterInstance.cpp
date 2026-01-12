@@ -159,7 +159,7 @@ void deoglRParticleEmitterInstance::SetParentWorld(deoglRWorld *world){
 	}
 	
 	if(pRenderEnvMap){
-		pRenderEnvMap->GetParticleEmitterInstanceList().RemoveIfExisting(this);
+		pRenderEnvMap->GetParticleEmitterInstanceList().Remove(this);
 		pRenderEnvMap = nullptr;
 	}
 	pWorldComputeElement->RemoveFromCompute();
@@ -265,7 +265,7 @@ void deoglRParticleEmitterInstance::SetRenderEnvMap(deoglEnvironmentMap *envmap)
 	}
 	
 	if(pRenderEnvMap){
-		pRenderEnvMap->GetParticleEmitterInstanceList().RemoveIfExisting(this);
+		pRenderEnvMap->GetParticleEmitterInstanceList().Remove(this);
 	}
 	
 	pRenderEnvMap = envmap;

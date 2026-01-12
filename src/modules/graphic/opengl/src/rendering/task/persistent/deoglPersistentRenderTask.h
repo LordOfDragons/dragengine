@@ -26,7 +26,7 @@
 #define _DEOGLPERSISTENTRENDERTASK_H_
 
 #include "../../../deoglBasics.h"
-#include "../../../shaders/paramblock/deoglShaderParameterBlockList.h"
+#include "../../../shaders/paramblock/deoglShaderParameterBlock.h"
 
 #include <dragengine/common/collection/decTDictionary.h>
 #include <dragengine/common/collection/decTLinkedList.h>
@@ -58,7 +58,7 @@ private:
 	
 	deoglSPBlockUBO *pRenderParamBlock;
 	GLuint pTBOInstances;
-	deoglShaderParameterBlockList pSPBInstances;
+	deoglShaderParameterBlock::List pSPBInstances;
 	int pSPBInstanceMaxEntries;
 	bool pUseSPBInstanceFlags;
 	decTLinkedList<deoglPersistentRenderTaskOwner> pOwners;

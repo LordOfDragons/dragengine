@@ -25,6 +25,7 @@
 #ifndef _FBXSCENE_H_
 #define _FBXSCENE_H_
 
+#include "fbxNode.h"
 
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
@@ -34,7 +35,6 @@
 class decBaseFileReader;
 class decBaseFileWriter;
 class deBaseModule;
-class fbxNode;
 class fbxObjectMap;
 class fbxConnectionMap;
 class fbxConnection;
@@ -89,7 +89,7 @@ public:
 	
 private:
 	int pVersion;
-	fbxNode *pNode;
+	fbxNode::Ref pNode;
 	
 	// global settings
 	eAxis pUpAxis;
@@ -97,8 +97,8 @@ private:
 	eAxis pCoordAxis;
 	float pUnitScaleFactor;
 	
-	fbxNode *pNodeObjects;
-	fbxNode *pNodeConnections;
+	fbxNode::Ref pNodeObjects;
+	fbxNode::Ref pNodeConnections;
 	fbxObjectMap *pObjectMap;
 	decTObjectOrderedSet<fbxConnection> pConnections;
 	fbxConnectionMap *pConnectionMap;
@@ -134,10 +134,10 @@ public:
 	
 	
 	/** Root node. */
-	inline fbxNode *GetNode() const{ return pNode; }
+	inline const fbxNode::Ref &GetNode() const{ return pNode; }
 	
 	/** Root node. */
-	inline fbxNode *GetNodeObjects() const{ return pNodeObjects; }
+	inline const fbxNode::Ref &GetNodeObjects() const{ return pNodeObjects; }
 	
 	/** Scene transformation. */
 	inline const decMatrix &GetTransformation() const{ return pTransformation; }

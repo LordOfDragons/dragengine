@@ -125,7 +125,7 @@ void deoglRPTFindContent::Run(){
 		
 		const int lightCount = collideList.GetLightCount();
 		for(i=0; i<lightCount; i++){
-			deoglCollideListLight &cllight = *collideList.GetLightAt(i);
+			deoglCollideListLight &cllight = collideList.GetLightAt(i);
 			cllight.TestInside(pPlan);
 		}
 		SPECIAL_TIMER_PRINT("Lights")
@@ -151,7 +151,7 @@ void deoglRPTFindContent::Run(){
 		
 		
 		// HACK: add environment maps using a simple hack until we have something better
-		const deoglEnvironmentMapList &envMapList = world.GetEnvMapList();
+		const deoglEnvironmentMap::List &envMapList = world.GetEnvMapList();
 		deoglDCollisionSphere envMapSphere(decDVector(), 20.0);
 		const int envMapCount = envMapList.GetCount();
 		deoglEnvironmentMap *envMap;

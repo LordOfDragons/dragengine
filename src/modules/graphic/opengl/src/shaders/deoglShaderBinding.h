@@ -22,66 +22,60 @@
  * SOFTWARE.
  */
 
-#ifndef _DEOSLSHADERBINDINGLIST_H_
-#define _DEOSLSHADERBINDINGLIST_H_
+#ifndef _DEOSLSHADERBINDING_H_
+#define _DEOSLSHADERBINDING_H_
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decString.h>
 
 
 /**
- * Shader Shader Binding List.
+ * Shader Shader Binding.
  */
-class deoglShaderBindingList{
-private:
-	/** Bindings. */
-	struct sBinding{
-		decString name;
-		int target;
+class deoglShaderBinding{
+public:
+	class List : public decTList<deoglShaderBinding>{
+	public:
+		using decTList<deoglShaderBinding>::decTList;
+		
+		/** Has named binding. */
+		bool HasNamed(const char *name);
+		
+		/** Index of named binding or -1. */
+		int IndexOfNamed(const char *name) const;
 	};
 	
 	
-	
 private:
-	sBinding *pBindings;
-	int pCount;
-	int pSize;
-	
+	decString pName;
+	int pTarget;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create binding list. */
-	deoglShaderBindingList();
+	/** Create binding. */
+	deoglShaderBinding();
+	deoglShaderBinding(const char *name, int target);
 	
-	/** Clean up binding list. */
-	~deoglShaderBindingList();
+	/** Copy binding. */
+	deoglShaderBinding(const deoglShaderBinding &binding);
+	deoglShaderBinding operator=(const deoglShaderBinding &binding);
+	
+	/** Move binding. */
+	deoglShaderBinding(deoglShaderBinding &&binding) noexcept;
+	deoglShaderBinding operator=(deoglShaderBinding &&binding) noexcept;
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** Number of bindings. */
-	inline int GetCount() const{ return pCount; }
+	/** Name. */
+	inline const decString &GetName() const{ return pName; }
 	
-	/** Named binding is present. */
-	bool HasNamed(const char *name);
-	
-	/** Index of named binding or -1 if absent. */
-	int IndexOfNamed(const char *name) const;
-	
-	/** Binding name at index. */
-	const decString &GetNameAt(int index) const;
-	
-	/** Binding target at index. */
-	int GetTargetAt(int index) const;
-	
-	/** Add binding. */
-	void Add(const char *name, int target);
-	
-	/** Remove all bindings. */
-	void RemoveAll();
+	/** Target. */
+	inline int GetTarget() const{ return pTarget; }
 	/*@}*/
 };
 

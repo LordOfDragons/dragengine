@@ -59,17 +59,17 @@ public:
 	void SetLodOffset(int offset);
 	
 	/** Set lod level of all components to 0. */
-	void SetComponentLOD0(const deoglCollideList &collideList);
+	void SetComponentLOD0(deoglCollideList &collideList);
 	
 	/** Set lod level of all components to highest. */
-	void SetComponentLODMax(const deoglCollideList &collideList);
+	void SetComponentLODMax(deoglCollideList &collideList);
 	
 	/** Calculate projective lod levels for all components. */
-	void SetComponentLODProjection(const deoglCollideList &collideList, const decDVector &position,
+	void SetComponentLODProjection(deoglCollideList &collideList, const decDVector &position,
 		const decDVector &view, float fovX, float fovY, int screenWidth, int screenHeight);
 	
 	/** Calculate orthographic lod levels for all components. */
-	void SetComponentLODOrtho(const deoglCollideList &collideList, float boxWidth, float boxHeight,
+	void SetComponentLODOrtho(deoglCollideList &collideList, float boxWidth, float boxHeight,
 		int screenWidth, int screenHeight);
 	
 	/** Calculate orthographic lod levels for all components. */
@@ -77,7 +77,7 @@ public:
 		float boxHeight, int screenWidth, int screenHeight);
 	
 	/** Calculate omnidirection lod levels for all components. */
-	void SetComponentLODOmniDir(const deoglCollideList &collideList, const decDVector &position, int size);
+	void SetComponentLODOmniDir(deoglCollideList &collideList, const decDVector &position, int size);
 	/*@}*/
 };
 

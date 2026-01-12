@@ -28,9 +28,9 @@
 #include <dragengine/common/math/decMath.h>
 
 #include "../world/deoglWorldOctreeVisitor.h"
+#include "../envmap/deoglEnvironmentMap.h"
 
-class deoglEnvironmentMap;
-class deoglEnvironmentMapList;
+class deoglWorldOctree;
 
 
 
@@ -83,7 +83,7 @@ public:
 	void VisitNode(deoglDOctree *node, int intersection) override;
 	
 	/** Test all environment maps in a list of environment maps. */
-	void VisitList(const deoglEnvironmentMapList &list);
+	void VisitList(const deoglEnvironmentMap::List &list);
 	/*@}*/
 };
 

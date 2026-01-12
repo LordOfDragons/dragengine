@@ -2574,7 +2574,7 @@ void deoglRenderThread::pCleanUpThread(){
 #endif
 	
 	if(pDebug){
-		deoglDebugInformationList &dilist = pDebug->GetDebugInformationList();
+		deoglDebugInformation::List &dilist = pDebug->GetDebugInformationList();
 		dilist.Remove(pDebugInfoModule);
 		dilist.Remove(pDebugInfoFrameLimiter);
 	}

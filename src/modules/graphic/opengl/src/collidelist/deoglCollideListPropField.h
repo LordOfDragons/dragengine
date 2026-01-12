@@ -52,6 +52,12 @@ public:
 	/** Create collide list prop field. */
 	deoglCollideListPropField();
 	
+	deoglCollideListPropField(deoglRPropField *propField);
+	
+	/** Copy. */
+	deoglCollideListPropField(const deoglCollideListPropField &other) = default;
+	deoglCollideListPropField &operator=(const deoglCollideListPropField &other) = default;
+	
 	/** Clean up collide list prop field. */
 	~deoglCollideListPropField();
 	/*@}*/

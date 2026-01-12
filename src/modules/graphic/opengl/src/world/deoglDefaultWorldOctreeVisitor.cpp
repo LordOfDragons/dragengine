@@ -93,12 +93,10 @@ void deoglDefaultWorldOctreeVisitor::VisitNode(deoglDOctree *node, int intersect
 	int i;
 	
 	if(pVisitBillboards){
-		const deoglBillboardList &list = sonode.GetBillboardList();
-		const int count = list.GetCount();
 		
-		for(i=0; i<count; i++){
-			VisitBillboard(list.GetAt(i));
-		}
+		sonode.GetBillboardList().Visit([&](deoglRBillboard *billboard){
+			VisitBillboard(billboard);
+		});
 	}
 	
 	if(pVisitComponents){
@@ -110,12 +108,9 @@ void deoglDefaultWorldOctreeVisitor::VisitNode(deoglDOctree *node, int intersect
 	}
 	
 	if(pVisitEnvMaps){
-		const deoglEnvironmentMapList &list = sonode.GetEnvMapList();
-		const int count = list.GetCount();
-		
-		for(i=0; i<count; i++){
-			VisitEnvMaps(list.GetAt(i));
-		}
+		sonode.GetEnvMapList().Visit([&](deoglEnvironmentMap *envmap){
+			VisitEnvMaps(envmap);
+		});
 	}
 	
 	if(pVisitLights){
@@ -127,12 +122,9 @@ void deoglDefaultWorldOctreeVisitor::VisitNode(deoglDOctree *node, int intersect
 	}
 	
 	if(pVisitParticleEmitters){
-		const deoglParticleEmitterInstanceList &list = sonode.GetParticleEmittersList();
-		const int count = list.GetCount();
-		
-		for(i=0; i<count; i++){
-			VisitParticleEmitter(list.GetAt(i));
-		}
+		sonode.GetParticleEmittersList().Visit([&](deoglRParticleEmitterInstance *emitter){
+			VisitParticleEmitter(emitter);
+		});
 	}
 }
 

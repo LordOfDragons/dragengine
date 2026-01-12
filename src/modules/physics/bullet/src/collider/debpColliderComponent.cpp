@@ -356,13 +356,13 @@ void debpColliderComponent::UpdateExtends(){
 		}break;
 		
 	case etmRigShape:{
-		const int shapeCount = pRigShapes.GetShapes().GetCount();
+		const int shapeCount = pRigShapes.GetCount();
 		debpDCollisionBox colBox;
 		bool hasExtend = false;
 		int i;
 		
 		for(i=0; i<shapeCount; i++){
-			pRigShapes.GetShapes().GetAt(i)->GetCollisionVolume()->GetEnclosingBox(&colBox);
+			pRigShapes.GetAt(i)->GetCollisionVolume()->GetEnclosingBox(&colBox);
 			
 			if(hasExtend){
 				minExtend.SetSmallest(colBox.GetCenter() - colBox.GetHalfSize());
@@ -998,7 +998,7 @@ void debpColliderComponent::UpdateShapes(){
 void debpColliderComponent::UpdateShapesWithMatrix(const decDMatrix &transformation){
 	pDirtyShapes = true;
 	
-	if(pRigShapes.GetShapes().IsNotEmpty()){
+	if(pRigShapes.IsNotEmpty()){
 		if(pHasRigOffset){
 			pRigShapes.UpdateWithMatrix(decDMatrix::CreateTranslation(-pRigOffset)
 				.QuickMultiply(GetInverseMatrix()).QuickMultiply(transformation));
@@ -1036,13 +1036,13 @@ void debpColliderComponent::UpdateShapeExtends(){
 		}break;
 		
 	case etmRigShape:{
-		const int shapeCount = pRigShapes.GetShapes().GetCount();
+		const int shapeCount = pRigShapes.GetCount();
 		debpDCollisionBox colBox;
 		bool hasExtend = false;
 		int i;
 		
 		for(i=0; i<shapeCount; i++){
-			pRigShapes.GetShapes().GetAt(i)->GetCollisionVolume()->GetEnclosingBox(&colBox);
+			pRigShapes.GetAt(i)->GetCollisionVolume()->GetEnclosingBox(&colBox);
 			
 			if(hasExtend){
 				minExtend.SetSmallest(colBox.GetCenter() - colBox.GetHalfSize());
@@ -1991,11 +1991,11 @@ bool debpColliderComponent::PointInside(const decDVector &point){
 		
 		UpdateShapes();
 		
-		const int shapeCount = pRigShapes.GetShapes().GetCount();
+		const int shapeCount = pRigShapes.GetCount();
 		int i;
 		
 		for(i=0; i<shapeCount; i++){
-			const debpShape &shape = *pRigShapes.GetShapes().GetAt(i);
+			const debpShape &shape = *pRigShapes.GetAt(i);
 			if(shape.GetCollisionVolume()->IsPointInside(point)){
 				return true;
 			}
@@ -2375,7 +2375,7 @@ void debpColliderComponent::pUpdateBones(){
 	}
 	
 	// remove shapes
-	pRigShapes.RemoveAllShapes();
+	pRigShapes.RemoveAll();
 	pHasRigOffset = false;
 	pRigOffset.SetZero();
 	
@@ -2546,7 +2546,7 @@ void debpColliderComponent::pUpdateBones(){
 			for(s=0; s<shapeCount; s++){
 				rig->GetShapes().GetAt(s)->Visit(createShape);
 				if(createShape.GetCreatedShape()){
-					pRigShapes.AddShape(createShape.GetCreatedShape());
+					pRigShapes.Add(createShape.GetCreatedShape());
 					createShape.SetCreatedShape(NULL);
 				}
 			}

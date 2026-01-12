@@ -29,6 +29,7 @@
 #include "../../deoglBasics.h"
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/deObject.h>
 
 class deoglRenderThread;
@@ -44,6 +45,9 @@ class deoglSPBParameter;
 class deoglShaderParameterBlock : public deObject{
 public:
 	using Ref = deTObjectReference<deoglShaderParameterBlock>;
+	
+	/** \brief Shader parameter block list type. */
+	using List = decTObjectOrderedSet<deoglShaderParameterBlock>;
 	
 	
 private:

@@ -100,19 +100,16 @@ void deoglAddToRenderTaskParticles::SetSkinPipelineModifier(int modifier){
 
 
 
-void deoglAddToRenderTaskParticles::AddParticles(const deoglParticleEmitterInstanceList &list){
-	const int count = list.GetCount();
-	int e, p;
-	
-	for(e=0; e<count; e++){
-		deoglRParticleEmitterInstance &instance = *list.GetAt(e);
-		const deoglRParticleEmitterInstance::sParticle * const particles = instance.GetParticles();
-		const int particleCount = instance.GetParticleCount();
+void deoglAddToRenderTaskParticles::AddParticles(const deoglRParticleEmitterInstance::List &list){
+	list.Visit([&](deoglRParticleEmitterInstance *instance){
+		const deoglRParticleEmitterInstance::sParticle * const particles = instance->GetParticles();
+		const int particleCount = instance->GetParticleCount();
+		int p;
 		
 		for(p=0; p<particleCount; p++){
-			AddParticle(instance, particles + p);
+			AddParticle(*instance, particles + p);
 		}
-	}
+	});
 }
 
 void deoglAddToRenderTaskParticles::AddParticle(deoglRParticleEmitterInstance &emitterInstance,

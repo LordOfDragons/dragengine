@@ -352,7 +352,7 @@ void deoglGIInstances::AddComponents(const deoglCollideList &list, bool invalida
 	const int count = list.GetComponentCount();
 	int i;
 	for(i=0; i<count; i++){
-		AddComponent(list.GetComponentAt(i)->GetComponent(), invalidate);
+		AddComponent(list.GetComponentAt(i).GetComponent(), invalidate);
 	}
 }
 
@@ -383,7 +383,7 @@ void deoglGIInstances::RemoveComponents(const deoglCollideList &list){
 	const int count = list.GetComponentCount();
 	int i;
 	for(i=0; i<count; i++){
-		deoglGIInstance * const instance = GetInstanceWithComponent(list.GetComponentAt(i)->GetComponent());
+		deoglGIInstance * const instance = GetInstanceWithComponent(list.GetComponentAt(i).GetComponent());
 		if(!instance){
 			continue;
 		}

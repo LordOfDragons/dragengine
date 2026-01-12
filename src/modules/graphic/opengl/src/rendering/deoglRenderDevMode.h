@@ -26,9 +26,8 @@
 #define _DEOGLRENDERDEVMODE_H_
 
 #include "deoglRenderBase.h"
+#include "../debug/deoglDebugInformation.h"
 
-class deoglDebugInformationList;
-class deoglDebugInformation;
 class decString;
 
 
@@ -111,13 +110,13 @@ public:
 	
 	/** Log visible debug information. */
 	void LogDebugInformation();
-	void LogDebugInformation(const deoglDebugInformationList &list, const decString &prefix);
+	void LogDebugInformation(const deoglDebugInformation::List &list, const decString &prefix);
 	
 	/** Layout visible debug information for rendering. */
 	void LayoutDebugInformation(const decPoint &viewport, const decPoint &position, decPoint &size,
-		const deoglDebugInformationList &list, int minWidth, int maxWidth, bool alignSidewards);
+		const deoglDebugInformation::List &list, int minWidth, int maxWidth, bool alignSidewards);
 	
-	void ChildMaxNameLen(const deoglDebugInformationList &list, int &maxNameWidth,
+	void ChildMaxNameLen(const deoglDebugInformation::List &list, int &maxNameWidth,
 		bool &siblingsHaveElapsedTime, bool &siblingsHaveCounter) const;
 	
 	/** Layout visible debug information for rendering. */

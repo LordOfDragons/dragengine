@@ -54,6 +54,22 @@ pTransmittedRayCount(ray.pTransmittedRayCount),
 pOutside(ray.pOutside){
 }
 
+deoalSoundRay::deoalSoundRay(int firstSegment, int firstTransmittedRay) :
+pFirstSegment(firstSegment),
+pSegmentCount(0),
+pFirstTransmittedRay(firstTransmittedRay),
+pTransmittedRayCount(0),
+pOutside(false){
+}
+
+deoalSoundRay::deoalSoundRay(int firstSegment, int segmentCount, int firstTransmittedRay,
+	int transmittedRayCount, bool outside) :
+pFirstSegment(firstSegment),
+pSegmentCount(segmentCount),
+pFirstTransmittedRay(firstTransmittedRay),
+pTransmittedRayCount(transmittedRayCount),
+pOutside(outside){
+}
 
 
 // Manegement

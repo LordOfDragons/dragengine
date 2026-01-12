@@ -692,7 +692,7 @@ const deoglRenderPlanMasked *mask){
 			
 			count = clistStatic.GetComponentCount();
 			for(i=0; i<count; i++){
-				const deoglRComponent &component = *clistStatic.GetComponentAt(i)->GetComponent();
+				const deoglRComponent &component = *clistStatic.GetComponentAt(i).GetComponent();
 				if(component.GetSolid()){
 					continue;
 				}
@@ -709,7 +709,7 @@ const deoglRenderPlanMasked *mask){
 			
 			count = clistDynamic.GetComponentCount();
 			for(i=0; i<count; i++){
-				const deoglRComponent &component = *clistDynamic.GetComponentAt(i)->GetComponent();
+				const deoglRComponent &component = *clistDynamic.GetComponentAt(i).GetComponent();
 				if(component.GetSolid()){
 					continue;
 				}
@@ -1243,8 +1243,7 @@ DEBUG_PRINT_TIMER("Shadow Static");
 	// dynamic shadow map with transparency if required
 	if(shadowType == deoglShadowCaster::estDynamicOnly
 	||  shadowType == deoglShadowCaster::estStaticAndDynamic){
-		const deoglCollideList *clist1 = nullptr;
-		const deoglCollideList *clist2 = nullptr;
+		deoglCollideList *clist1 = nullptr, *clist2 = nullptr;
 		
 		if(refilterShadow){
 			const decLayerMask &layerMask = plan.GetLayerMask();
@@ -1253,7 +1252,7 @@ DEBUG_PRINT_TIMER("Shadow Static");
 			clist1 = light.GetStaticCollideList();
 			int i, count = clist1->GetComponentCount();
 			for(i=0; i<count; i++){
-				deoglRComponent * const component = clist1->GetComponentAt(i)->GetComponent();
+				deoglRComponent * const component = clist1->GetComponentAt(i).GetComponent();
 				if(component->GetLayerMask().IsEmpty() || layerMask.Matches(component->GetLayerMask())){
 					pCollideList.AddComponent(component);
 				}
@@ -1262,7 +1261,7 @@ DEBUG_PRINT_TIMER("Shadow Static");
 			clist1 = light.GetDynamicCollideList();
 			count = clist1->GetComponentCount();
 			for(i=0; i<count; i++){
-				deoglRComponent * const component = clist1->GetComponentAt(i)->GetComponent();
+				deoglRComponent * const component = clist1->GetComponentAt(i).GetComponent();
 				if(component->GetLayerMask().IsEmpty() || layerMask.Matches(component->GetLayerMask())){
 					pCollideList.AddComponent(component);
 				}

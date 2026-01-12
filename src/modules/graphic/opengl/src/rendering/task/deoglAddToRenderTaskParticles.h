@@ -31,7 +31,6 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class deoglParticleEmitterInstanceList;
 class deoglRenderTaskParticles;
 class deoglRenderThread;
 
@@ -79,7 +78,7 @@ public:
 	
 	
 	/** Add particle emitter particless from all emitters in a list to the render task. */
-	void AddParticles(const deoglParticleEmitterInstanceList &list);
+	void AddParticles(const deoglRParticleEmitterInstance::List &list);
 	
 	/** Add a particle emitter particles to the render task. */
 	void AddParticle(deoglRParticleEmitterInstance &emitter, const deoglRParticleEmitterInstance::sParticle *particle);

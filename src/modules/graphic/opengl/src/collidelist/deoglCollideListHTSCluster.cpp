@@ -53,6 +53,15 @@ pCulled(false),
 pCascadeMask(0){
 }
 
+deoglCollideListHTSCluster::deoglCollideListHTSCluster(deoglHTViewSectorCluster *cluster) :
+pCluster(nullptr),
+pIndex(0),
+pCulled(false),
+pCascadeMask(0)
+{
+	SetCluster(cluster);
+}
+
 deoglCollideListHTSCluster::~deoglCollideListHTSCluster(){
 }
 

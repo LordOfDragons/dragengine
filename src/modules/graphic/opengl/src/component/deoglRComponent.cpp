@@ -379,11 +379,9 @@ void deoglRComponent::SetLayerMask(const decLayerMask &layerMask){
 	pLayerMask = layerMask;
 	
 	// light shadow matching potentially changed
-	const deoglLightList list(pLightList);
-	int i, count = list.GetCount();
-	for(i=0; i<count; i++){
-		list.GetAt(i)->TestComponent(this);
-	}
+	pLightList.Visit([&](deoglRLight &light){
+		light.TestComponent(this);
+	});
 	
 	if(/*pRenderStatic*/ pMovementHint == deComponent::emhStationary && pRenderMode == ermStatic){
 		NotifySkiesUpdateStatic();
@@ -1028,23 +1026,19 @@ void deoglRComponent::SetRenderStatic(bool isStatic){
 	
 	pRenderStatic = isStatic;
 	
-	const int lightCount = pLightList.GetCount();
-	int i;
-	for(i=0; i<lightCount; i++){
-		deoglRLight &light = *pLightList.GetAt(i);
+	pLightList.Visit([&](deoglRLight &light){
 		light.RemoveComponent(this);
 		light.AddComponent(this);
-	}
+	});
 	
 	NotifyRenderStaticChanged();
 // 	NotifySkiesUpdateStatic();
 	
 	pWorldComputeElement->ComputeUpdateElement();
 	
-	const int decalCount = pDecals.GetCount();
-	for(i=0; i<decalCount; i++){
-		((deoglRDecal*)pDecals.GetAt(i))->UpdateWorldCompute();
-	}
+	pDecals.Visit([&](deoglRDecal &decal){
+		decal.UpdateWorldCompute();
+	});
 }
 
 void deoglRComponent::ResetRenderStatic(){
@@ -1076,7 +1070,7 @@ void deoglRComponent::SetRenderEnvMap(deoglEnvironmentMap *envmap){
 	const deoglEnvironmentMap::Ref guard(pRenderEnvMap);
 	
 	if(pRenderEnvMap){
-		pRenderEnvMap->GetComponentList().RemoveIfExisting(this);
+		pRenderEnvMap->GetComponentList().Remove(this);
 	}
 	
 	pRenderEnvMap = envmap;
@@ -1100,7 +1094,7 @@ void deoglRComponent::SetRenderEnvMapFade(deoglEnvironmentMap *envmap){
 	}
 	
 	if(pRenderEnvMapFade){
-		pRenderEnvMapFade->GetComponentList().RemoveIfExisting(this);
+		pRenderEnvMapFade->GetComponentList().Remove(this);
 	}
 	
 	pRenderEnvMapFade = envmap;
@@ -1678,12 +1672,9 @@ void deoglRComponent::NotifyLightsDirtyLightVolume(){
 		return;
 	}
 	
-	const int lightCount = pLightList.GetCount();
-	int i;
-	
-	for(i=0; i<lightCount; i++){
-		pLightList.GetAt(i)->SetLightVolumeDirty();
-	}
+	pLightList.Visit([](deoglRLight &light){
+		light.SetLightVolumeDirty();
+	});
 }
 
 void deoglRComponent::NotifySkiesUpdateStatic(){
@@ -2362,13 +2353,9 @@ void deoglRComponent::pResizeBoneMatrices(){
 
 
 void deoglRComponent::pRemoveFromAllLights(){
-	const int count = pLightList.GetCount();
-	int i;
-	
-	for(i=0; i< count; i++){
-		pLightList.GetAt(i)->RemoveComponent(this);
-	}
-	
+	pLightList.Visit([&](deoglRLight &light){
+		light.RemoveComponent(this);
+	});
 	pLightList.RemoveAll();
 }
 

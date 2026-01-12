@@ -28,7 +28,7 @@
 
 // includes
 #include "debpCollider.h"
-#include "../shape/debpShapeList.h"
+#include "../shape/debpShape.h"
 #include "../debpBulletShape.h"
 #include "../debpCollisionObject.h"
 
@@ -72,7 +72,7 @@ private:
 	bool pPreventAttNotify;
 	bool pUseFakeDynamics;
 	
-	debpShapeList pShapes;
+	debpShape::List pShapes;
 	debpSweepCollisionTest *pSweepCollisionTest;
 	
 	btGhostObject *pStaticCollisionTest;
@@ -92,8 +92,8 @@ public:
 	inline deColliderVolume &GetColliderVolume() const{ return pColliderVolume; }
 	
 	/** Retrieves the list of shapes. */
-	inline debpShapeList &GetShapes(){ return pShapes; }
-	inline const debpShapeList &GetShapes() const{ return pShapes; }
+	inline debpShape::List &GetShapes(){ return pShapes; }
+	inline const debpShape::List &GetShapes() const{ return pShapes; }
 	
 	/** Retrieves the physics body. */
 	inline debpPhysicsBody *GetPhysicsBody() const{ return pPhyBody; }

@@ -403,11 +403,11 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 	|| (computeRenderTask && computeRenderTask->GetStepCount() > 0)){
 		if(planDebug && plan.GetRenderPassNumber() == 1){
 			const int componentCount = collideList.GetComponentCount();
-			deoglEnvironmentMapList envMapList;
+			deoglEnvironmentMap::List envMapList;
 			int i;
 			
 			for(i=0; i<componentCount; i++){
-				const deoglCollideListComponent &clistComponent = *collideList.GetComponentAt(i);
+				const deoglCollideListComponent &clistComponent = collideList.GetComponentAt(i);
 				const deoglRComponent &component = *clistComponent.GetComponent();
 				const deoglModelLOD &modelLOD = component.GetModel()->GetLODAt(clistComponent.GetLODLevel());
 				

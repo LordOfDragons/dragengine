@@ -217,18 +217,24 @@ public:
 	 * \brief First element.
 	 * \throws deeInvalidParam if list is empty.
 	 */
-	const T &First() const{
-		DEASSERT_TRUE(pCount > 0)
-		return pElements[0];
+	inline T &First(){
+		return GetAt(0);
+	}
+	
+	inline const T &First() const{
+		return GetAt(0);
 	}
 	
 	/**
 	 * \brief Last element.
 	 * \throws deeInvalidParam if list is empty.
 	 */
-	const T &Last() const{
-		DEASSERT_TRUE(pCount > 0)
-		return pElements[pCount - 1];
+	inline T &Last(){
+		return GetAt(pCount - 1);
+	}
+	
+	inline const T &Last() const{
+		return GetAt(pCount - 1);
 	}
 	
 	/**
@@ -1160,7 +1166,20 @@ public:
 	}
 	
 	template<typename Evaluator>
+	bool Find(Evaluator &evaluator, T* &found, int from, int to, int step = 1){
+		const T *cfound = nullptr;
+		const bool result = Find<Evaluator>(evaluator, cfound, from, to, step);
+		found = const_cast<T*>(cfound);
+		return result;
+	}
+	
+	template<typename Evaluator>
 	inline bool Find(Evaluator &&evaluator, const T* &found, int from, int to, int step = 1) const{
+		return Find<Evaluator>(evaluator, found, from, to, step);
+	}
+	
+	template<typename Evaluator>
+	inline bool Find(Evaluator &&evaluator, T* &found, int from, int to, int step = 1){
 		return Find<Evaluator>(evaluator, found, from, to, step);
 	}
 	
@@ -1183,7 +1202,20 @@ public:
 	}
 	
 	template<typename Evaluator>
+	bool Find(Evaluator &evaluator, T* &found, int from){
+		const T *cfound = nullptr;
+		const bool result = Find<Evaluator>(evaluator, cfound, from);
+		found = const_cast<T*>(cfound);
+		return result;
+	}
+	
+	template<typename Evaluator>
 	inline bool Find(Evaluator &&evaluator, const T* &found, int from) const{
+		return Find<Evaluator>(evaluator, found, from);
+	}
+	
+	template<typename Evaluator>
+	inline bool Find(Evaluator &&evaluator, T* &found, int from){
 		return Find<Evaluator>(evaluator, found, from);
 	}
 	
@@ -1200,7 +1232,20 @@ public:
 	}
 	
 	template<typename Evaluator>
+	inline bool Find(Evaluator &evaluator, T* &found){
+		const T *cfound = nullptr;
+		const bool result = Find<Evaluator>(evaluator, cfound);
+		found = const_cast<T*>(cfound);
+		return result;
+	}
+	
+	template<typename Evaluator>
 	inline bool Find(Evaluator &&evaluator, const T* &found) const{
+		return Find<Evaluator>(evaluator, found);
+	}
+	
+	template<typename Evaluator>
+	inline bool Find(Evaluator &&evaluator, T* &found){
 		return Find<Evaluator>(evaluator, found);
 	}
 	
@@ -1217,7 +1262,20 @@ public:
 	}
 	
 	template<typename Evaluator>
+	inline bool FindReverse(Evaluator &evaluator, T* &found){
+		const T *cfound = nullptr;
+		const bool result = FindReverse<Evaluator>(evaluator, cfound);
+		found = const_cast<T*>(cfound);
+		return result;
+	}
+	
+	template<typename Evaluator>
 	inline bool FindReverse(Evaluator &&evaluator, const T* &found) const{
+		return FindReverse<Evaluator>(evaluator, found);
+	}
+	
+	template<typename Evaluator>
+	inline bool FindReverse(Evaluator &&evaluator, T* &found){
 		return FindReverse<Evaluator>(evaluator, found);
 	}
 	

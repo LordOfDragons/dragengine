@@ -99,7 +99,7 @@ deoglRenderLightParticles::~deoglRenderLightParticles(){
 //////////////
 
 void deoglRenderLightParticles::RenderLights(deoglRenderPlan &plan){
-	const deoglParticleEmitterInstanceList &instanceList = plan.GetCollideList().GetParticleEmitterList();
+	const deoglRParticleEmitterInstance::List &instanceList = plan.GetCollideList().GetParticleEmitterList();
 	const int instanceCount = instanceList.GetCount();
 	
 	if(instanceCount == 0){

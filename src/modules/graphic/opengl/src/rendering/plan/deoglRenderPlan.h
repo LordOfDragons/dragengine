@@ -29,12 +29,13 @@
 #include "deoglRenderPlanCompute.h"
 #include "parallel/deoglRPTFindContent.h"
 #include "../../collidelist/deoglCollideList.h"
-#include "../../component/deoglComponentList.h"
+#include "../../component/deoglRComponent.h"
 #include "../../envmap/deoglEnvMapFader.h"
 #include "../../terrain/heightmap/deoglHTView.h"
 #include "../../utils/collision/deoglDCollisionFrustum.h"
 
 #include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decLayerMask.h>
 #include <dragengine/common/string/decString.h>
@@ -78,6 +79,8 @@ class deoglRSkyInstanceLayer;
  */
 class deoglRenderPlan{
 public:
+	using List = decTOrderedSet<deoglRenderPlan*>;
+	
 	enum eRenderVR{
 		ervrNone,
 		ervrLeftEye,
@@ -149,7 +152,7 @@ private:
 	bool pDirtyProjMat;
 	
 	deoglCollideList pCollideList;
-	deoglComponentList pComponentsOccMap;
+	deoglRComponent::List pComponentsOccMap;
 	
 	bool pNoRenderedOccMesh;
 	bool pFlipCulling;
@@ -542,7 +545,7 @@ public:
 	inline deoglCollideList &GetCollideList(){ return pCollideList; }
 	
 	/** Occlusion map component list. */
-	inline deoglComponentList &GetComponentsOccMap(){ return pComponentsOccMap; }
+	inline deoglRComponent::List &GetComponentsOccMap(){ return pComponentsOccMap; }
 	
 	
 	
@@ -730,7 +733,7 @@ public:
 	deoglRenderPlanLight *GetLightAt(int index) const;
 	
 	/** Plan light for the given light. If no plan light exists yet a new one is created. */
-	deoglRenderPlanLight *GetLightFor(deoglCollideListLight *light);
+	deoglRenderPlanLight *GetLightFor(deoglCollideListLight &light);
 	
 	/** Remove all plan lights. */
 	void RemoveAllLights();
@@ -814,7 +817,7 @@ private:
 	void pDebugVisibleNoCull();
 	void pDebugVisibleCulled();
 	
-	int pIndexOfLightWith(deoglCollideListLight *light) const;
+	int pIndexOfLightWith(deoglCollideListLight &light) const;
 	
 	void pCheckTransparency();
 	void pBuildRenderPlan();

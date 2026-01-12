@@ -57,6 +57,12 @@ public:
 	/** Create collide list light. */
 	deoglCollideListLight();
 	
+	deoglCollideListLight(deoglRLight *light);
+	
+	/** Copy. */
+	deoglCollideListLight(const deoglCollideListLight &other) = default;
+	deoglCollideListLight &operator=(const deoglCollideListLight &other) = default;
+	
 	/** Clean up collide list light. */
 	~deoglCollideListLight() override;
 	/*@}*/

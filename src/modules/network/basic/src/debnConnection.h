@@ -28,6 +28,7 @@
 #include "deNetworkBasic.h"
 #include "debnAddress.h"
 #include "debnSocket.h"
+#include "states/debnStateLink.h"
 
 #include <dragengine/resources/network/deNetworkMessage.h>
 #include <dragengine/systems/modules/network/deBaseNetworkConnection.h>
@@ -37,7 +38,6 @@ class deNetworkBasic;
 class debnMessageManager;
 class debnState;
 class debnStateLinkManager;
-class debnStateLinkList;
 class debnMessageAckList;
 class deNetworkMessage;
 class decBaseFileReader;
@@ -76,7 +76,7 @@ private:
 	
 	eProtocols pProtocol;
 	debnStateLinkManager *pStateLinks;
-	debnStateLinkList *pModifiedStateLinks;
+	debnStateLink::List pModifiedStateLinks;
 	
 	// reliable messages
 	debnMessageManager *pReliableMessagesSend;
@@ -131,7 +131,8 @@ public:
 	
 	
 	/** \brief List of modified state links. */
-	debnStateLinkList *GetModifiedStateLinks() const{ return pModifiedStateLinks; }
+	inline debnStateLink::List &GetModifiedStateLinks(){ return pModifiedStateLinks; }
+	inline const debnStateLink::List &GetModifiedStateLinks() const{ return pModifiedStateLinks; }
 	
 	/** \brief Process connection. */
 	void Process(float elapsedTime);

@@ -28,7 +28,6 @@
 
 #include "deModelModule.h"
 #include "demdlWeightSet.h"
-#include "demdlWeightSetList.h"
 #include "demdlTexCoordSorter.h"
 
 #include <dragengine/resources/model/deModel.h>
@@ -170,12 +169,10 @@ void deModelModule::pLoadVersion0(decBaseFileReader &reader, deModel &model){
 	char checkSig[24];
 	int i, j, k, version, /*reserved, */count;
 	int width, height, parent, boneCount;
-	int boneIndex, vertexIndex, normalIndex, textureIndex, weightsIndex;
+	int boneIndex, vertexIndex, normalIndex, textureIndex;
 	int vertexCount = 0, normalCount = 0;
-	demdlWeightSetList weightSetList;
-	demdlWeightSet *weightSet;
+	demdlWeightSet::List weightSetList;
 	int weightGroupCount;
-	int weightSetCount;
 	int weightCount;
 	int faceCount;
 	decVector2 texPos;
@@ -280,40 +277,26 @@ void deModelModule::pLoadVersion0(decBaseFileReader &reader, deModel &model){
 		// weights
 		boneCount = reader.ReadByte();
 		if(boneCount > 0){
-			weightSet = new demdlWeightSet;
+			demdlWeightSet::Ref weightSet = demdlWeightSet::Ref::New();
 			
-			try{
-				for(j=0; j<boneCount; j++){
-					boneIndex = reader.ReadShort();
-					if(boneIndex < 0 || boneIndex >= model.GetBoneCount()){
-						DETHROW(deeInvalidFormat);
-					}
-					
-					curWeight = (float)reader.ReadShort() / 1000.0f;
-					weightSet->Set(boneIndex, curWeight);
+			for(j=0; j<boneCount; j++){
+				boneIndex = reader.ReadShort();
+				if(boneIndex < 0 || boneIndex >= model.GetBoneCount()){
+					DETHROW(deeInvalidFormat);
 				}
 				
-				weightSet->Normalize();
-				weightsIndex = weightSetList.IndexOfEqual(*weightSet);
-				
-				if(weightsIndex == -1){
-					weightSetList.Add(weightSet);
-					weightSet = nullptr;
-					
-					vertex.SetWeightSet(weightSetList.GetCount() - 1);
-					
-				}else{
-					delete weightSet;
-					weightSet = nullptr;
-					
-					vertex.SetWeightSet(weightsIndex);
-				}
-				
-			}catch(const deException &){
-				if(weightSet){
-					delete weightSet;
-				}
-				throw;
+				curWeight = (float)reader.ReadShort() / 1000.0f;
+				weightSet->Set(boneIndex, curWeight);
+			}
+			
+			weightSet->Normalize();
+			vertex.SetWeightSet(weightSetList.IndexOfMatching([&](const demdlWeightSet &ws){
+				return ws.Equals(*weightSet);
+			}));
+			
+			if(vertex.GetWeightSet() == -1){
+				weightSetList.Add(std::move(weightSet));
+				vertex.SetWeightSet(weightSetList.GetCount() - 1);
 			}
 		}
 		
@@ -322,12 +305,17 @@ void deModelModule::pLoadVersion0(decBaseFileReader &reader, deModel &model){
 	}
 	
 	// sort weight sets by the number of weights stored inside from the lowest to the highest
-	weightGroupCount = weightSetList.GetLargestWeightCount();
-	weightSetCount = weightSetList.GetCount();
+	weightGroupCount = 0;
+	weightSetList.Visit([&](const demdlWeightSet &ws) {
+		if(ws.GetCount() > weightGroupCount){
+			weightGroupCount = ws.GetCount();
+		}
+	});
+	
 	weightCount = 0;
-	for(i=0; i<weightSetCount; i++){
-		weightCount += weightSetList.GetAt(i)->GetCount();
-	}
+	weightSetList.Visit([&](const demdlWeightSet &ws){
+		weightCount += ws.GetCount();
+	});
 	
 	lod->SetWeightGroupCount(weightGroupCount);
 	lod->SetWeightCount(weightCount);
@@ -342,9 +330,7 @@ void deModelModule::pLoadVersion0(decBaseFileReader &reader, deModel &model){
 		
 		modelWeightGroups[i] = 0;
 		
-		for(j=0; j<weightSetCount; j++){
-			demdlWeightSet &weightSet2 = *weightSetList.GetAt(j);
-			
+		weightSetList.Visit([&](demdlWeightSet &weightSet2) {
 			if(weightSet2.GetCount() == tempCount){
 				for(k=0; k<tempCount; k++){
 					modelWeights[weightCount + k].SetBone(weightSet2.GetBoneAt(k));
@@ -357,7 +343,7 @@ void deModelModule::pLoadVersion0(decBaseFileReader &reader, deModel &model){
 				weightCount += tempCount;
 				modelWeightGroups[i]++;
 			}
-		}
+		});
 	}
 	
 	// adjust the weight set of all vertices to point to the new location
@@ -641,7 +627,7 @@ void deModelModule::pLoadModel(decBaseFileReader &reader, deModel &model){
 	infos.flags = reader.ReadUShort();
 	
 	try{
-		infos.weightSetList = new demdlWeightSetList;
+		infos.weightSetList = new demdlWeightSet::List;
 		
 		switch(infos.version){
 		case 1:{
@@ -1018,49 +1004,42 @@ void deModelModule::pLoadVertPosSets(decBaseFileReader& reader, deModel& model, 
 }
 
 void deModelModule::pLoadWeights(decBaseFileReader &reader, sModelInfos &infos, deModelLOD &lodMesh){
-	demdlWeightSet *weightSet = nullptr;
 	int w, b, boneCount;
 	float factor;
 	int bone;
 	
-	try{
-		for(w=0; w<infos.weightsCount; w++){
-			weightSet = new demdlWeightSet;
-			
-			boneCount = (int)reader.ReadByte();
-			for(b=0; b<boneCount; b++){
-				bone = reader.ReadUShort();
-				if(bone >= infos.boneCount){
-					DETHROW(deeInvalidFormat);
-				}
-				
-				factor = (float)reader.ReadUShort() / 1000.0f;
-				
-				weightSet->Set(bone, factor);
+	for(w=0; w<infos.weightsCount; w++){
+		demdlWeightSet::Ref weightSet = demdlWeightSet::Ref::New();
+		
+		boneCount = (int)reader.ReadByte();
+		for(b=0; b<boneCount; b++){
+			bone = reader.ReadUShort();
+			if(bone >= infos.boneCount){
+				DETHROW(deeInvalidFormat);
 			}
 			
-			weightSet->Normalize();
+			factor = (float)reader.ReadUShort() / 1000.0f;
 			
-			infos.weightSetList->Add(weightSet);
-			weightSet = nullptr;
+			weightSet->Set(bone, factor);
 		}
 		
-	}catch(const deException &){
-		if(weightSet){
-			delete weightSet;
-		}
-		
-		throw;
+		weightSet->Normalize();
+		infos.weightSetList->Add(std::move(weightSet));
 	}
 	
 	// add weights sorted by the number of weights stored inside from the lowest to the highest
-	const int weightGroupCount = infos.weightSetList->GetLargestWeightCount();
-	const int weightSetCount = infos.weightSetList->GetCount();
-	int i, j, k, weightCount = 0, weightSetIndex = 0;
+	int weightGroupCount = 0;
+	infos.weightSetList->Visit([&](const demdlWeightSet &ws){
+		if(ws.GetCount() > weightGroupCount){
+			weightGroupCount = ws.GetCount();
+		}
+	});
 	
-	for(i=0; i<weightSetCount; i++){
-		weightCount += infos.weightSetList->GetAt(i)->GetCount();
-	}
+	int i, k, weightCount = 0, weightSetIndex = 0;
+	
+	infos.weightSetList->Visit([&](const demdlWeightSet &ws){
+		weightCount += ws.GetCount();
+	});
 	
 	lodMesh.SetWeightGroupCount(weightGroupCount);
 	lodMesh.SetWeightCount(weightCount);
@@ -1075,9 +1054,7 @@ void deModelModule::pLoadWeights(decBaseFileReader &reader, sModelInfos &infos, 
 		
 		modelWeightGroups[i] = 0;
 		
-		for(j=0; j<weightSetCount; j++){
-			demdlWeightSet &weightSet2 = *infos.weightSetList->GetAt(j);
-			
+		infos.weightSetList->Visit([&](demdlWeightSet &weightSet2){
 			if(weightSet2.GetCount() == tempCount){
 				for(k=0; k<tempCount; k++){
 					modelWeights[weightCount + k].SetBone(weightSet2.GetBoneAt(k));
@@ -1090,7 +1067,7 @@ void deModelModule::pLoadWeights(decBaseFileReader &reader, sModelInfos &infos, 
 				weightCount += tempCount;
 				modelWeightGroups[i]++;
 			}
-		}
+		});
 	}
 }
 

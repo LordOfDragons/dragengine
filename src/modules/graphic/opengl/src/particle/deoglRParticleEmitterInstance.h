@@ -33,6 +33,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decLayerMask.h>
@@ -42,7 +43,6 @@ class deoglRParticleEmitterInstanceType;
 class deoglVAO;
 class deoglRWorld;
 class deoglWorldOctree;
-class deoglEnvironmentMap;
 
 class deParticleEmitterInstance;
 
@@ -54,6 +54,9 @@ class deoglRParticleEmitterInstance : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	using Ref = deTObjectReference<deoglRParticleEmitterInstance>;
+	
+	/** \brief Particle emitter instance list type. */
+	using List = decTOrderedSet<deoglRParticleEmitterInstance*>;
 	
 	
 	/** Particle data. */

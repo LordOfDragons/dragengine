@@ -27,6 +27,8 @@
 
 #include "../../deoglBasics.h"
 #include "../../skin/deoglSkinTexture.h"
+#include "../../component/deoglRComponent.h"
+#include "../../particle/deoglRParticleEmitterInstance.h"
 
 #include <dragengine/common/math/decMath.h>
 
@@ -37,10 +39,8 @@ class deoglCollideListHTSCluster;
 class deoglCollideListPropField;
 class deoglCollideListPropFieldType;
 class deoglCollideListPropFieldCluster;
-class deoglComponentList;
 class deoglCubeMap;
 class deoglHTViewSector;
-class deoglParticleEmitterInstanceList;
 class deoglModelLOD;
 class deoglPipeline;
 class deoglRBillboard;
@@ -322,10 +322,8 @@ public:
 		const deoglPipeline *pipelineSingle, const deoglPipeline *pipelineDouble);
 	
 	/** Add occlusion meshes for all components from list. */
-	void AddOcclusionMeshes(const deoglComponentList &list,
-		const deoglPipeline *pipelineSingle, const deoglPipeline *pipelineDouble);
-	
-	/** Add a continuous run of faces of an occlusion mesh. */
+	void AddOcclusionMeshes(const deoglRComponent::List &list,
+		const deoglPipeline *pipelineSingle, const deoglPipeline *pipelineDouble);	/** Add a continuous run of faces of an occlusion mesh. */
 	void AddOcclusionMeshFaces(const deoglRComponent &component, bool doubleSided,
 		deoglRenderTaskTexture *taskTexture, int specialFlags);
 	
@@ -335,7 +333,7 @@ public:
 	void AddParticles(const deoglCollideList &list);
 	
 	/** Add particles from all emitters in list. */
-	void AddParticles(const deoglParticleEmitterInstanceList &list);
+	void AddParticles(const deoglRParticleEmitterInstance::List &list);
 	
 	/** Add particles from all emitters in list. */
 	void AddParticles(deoglRParticleEmitterInstance &emitter);

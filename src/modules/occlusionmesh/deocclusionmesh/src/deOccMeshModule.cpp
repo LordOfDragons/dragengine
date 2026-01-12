@@ -28,7 +28,6 @@
 
 #include "deOccMeshModule.h"
 #include "deoccmWeightSet.h"
-#include "deoccmWeightSetList.h"
 
 #include <dragengine/resources/occlusionmesh/deOcclusionMesh.h>
 #include <dragengine/resources/occlusionmesh/deOcclusionMeshBone.h>
@@ -130,10 +129,9 @@ void deOccMeshModule::pLoadMesh(decBaseFileReader &reader, deOcclusionMesh &mesh
 	infos.version = (int)reader.ReadUShort();
 	infos.flags = (int)reader.ReadUShort();
 	infos.boneCount = (int)reader.ReadUShort();
-	infos.weightSetList = nullptr;
+	infos.weightSetList = new deoccmWeightSet::List;
 	
 	try{
-		infos.weightSetList = new deoccmWeightSetList;
 		
 		if(infos.version == 1){
 			infos.weightsCount = (int)reader.ReadUShort();
@@ -190,43 +188,33 @@ void deOccMeshModule::pLoadBones(decBaseFileReader &reader, deOcclusionMesh &mes
 }
 
 void deOccMeshModule::pLoadWeights(decBaseFileReader &reader, deOcclusionMesh &mesh, sMeshInfos &infos){
-	deoccmWeightSet *weightSet = nullptr;
 	int w, b, boneCount;
 	float factor;
 	int bone;
 	
-	try{
-		for(w=0; w<infos.weightsCount; w++){
-			weightSet = new deoccmWeightSet;
-			
-			boneCount = (int)reader.ReadByte();
-			for(b=0; b<boneCount; b++){
-				bone = (int)reader.ReadUShort();
-				if(bone >= infos.boneCount){
-					DETHROW(deeInvalidFormat);
-				}
-				
-				factor = (float)reader.ReadUShort() / 1000.0f;
-				
-				weightSet->Set(bone, factor);
+	for(w=0; w<infos.weightsCount; w++){
+		deoccmWeightSet::Ref weightSet = deoccmWeightSet::Ref::New();
+		
+		boneCount = (int)reader.ReadByte();
+		for(b=0; b<boneCount; b++){
+			bone = (int)reader.ReadUShort();
+			if(bone >= infos.boneCount){
+				DETHROW(deeInvalidFormat);
 			}
 			
-			weightSet->Normalize();
+			factor = (float)reader.ReadUShort() / 1000.0f;
 			
-			infos.weightSetList->Add(weightSet);
-			weightSet = nullptr;
+			weightSet->Set(bone, factor);
 		}
 		
-	}catch(const deException &){
-		if(weightSet){
-			delete weightSet;
-		}
-		
-		throw;
+		weightSet->Normalize();
+		infos.weightSetList->Add(std::move(weightSet));
 	}
 	
 	// add weights sorted by the number of weights stored inside from the lowest to the highest
-	const int weightGroupCount = infos.weightSetList->GetLargestWeightCount();
+	const int weightGroupCount = infos.weightSetList->Inject(0, [](int largest, const deoccmWeightSet &ws){
+		return decMath::max(largest, ws.GetCount());
+	});
 	const int weightSetCount = infos.weightSetList->GetCount();
 	int i, j, k, weightCount = 0, weightSetIndex = 0;
 	
@@ -248,7 +236,7 @@ void deOccMeshModule::pLoadWeights(decBaseFileReader &reader, deOcclusionMesh &m
 		meshWeightGroups[i] = 0;
 		
 		for(j=0; j<weightSetCount; j++){
-			deoccmWeightSet &weightSet2 = *infos.weightSetList->GetAt(j);
+			deoccmWeightSet &weightSet2 = infos.weightSetList->GetAt(j);
 			
 			if(weightSet2.GetCount() == tempCount){
 				for(k=0; k<tempCount; k++){

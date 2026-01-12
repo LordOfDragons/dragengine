@@ -28,7 +28,6 @@
 #include "deoglRComponentWCElement.h"
 #include "../deoglBasics.h"
 #include "../envmap/deoglEnvironmentMap.h"
-#include "../light/deoglLightList.h"
 #include "../model/deoglRModel.h"
 #include "../occlusiontest/mesh/deoglROcclusionMesh.h"
 #include "../skin/deoglRSkin.h"
@@ -56,6 +55,7 @@ class deoglRCamera;
 class deoglRComponentLOD;
 class deoglRComponentTexture;
 class deoglRDecal;
+class deoglRLight;
 class deoglRWorld;
 class deoglRenderPlan;
 class deoglRenderThread;
@@ -77,6 +77,9 @@ public:
 	/** \brief Type holding strong reference. */
 	using Ref = deTObjectReference<deoglRComponent>;
 	
+	/** \brief List type. */
+	using List = decTOrderedSet<deoglRComponent*>;
+	
 	
 	/** Render modes. */
 	enum eRenderModes{
@@ -88,6 +91,8 @@ public:
 	};
 	
 private:
+	using LightList = decTObjectOrderedSet<deoglRLight>;
+	
 	deoglRenderThread &pRenderThread;
 	
 	deoglRWorld *pParentWorld;
@@ -173,7 +178,7 @@ private:
 	float pCullSphereRadius;
 	bool pDirtyCulling;
 	
-	deoglLightList pLightList;
+	LightList pLightList;
 	
 	float *pVertexPositionSetWeights;
 	int pVertexPositionSetCount;
@@ -483,8 +488,8 @@ public:
 	bool IsGIStatic() const;
 	
 	/** Light list. */
-	inline deoglLightList &GetLightList(){ return pLightList; }
-	inline const deoglLightList &GetLightList() const{ return pLightList; }
+	inline LightList &GetLightList(){ return pLightList; }
+	inline const LightList &GetLightList() const{ return pLightList; }
 	
 	
 	

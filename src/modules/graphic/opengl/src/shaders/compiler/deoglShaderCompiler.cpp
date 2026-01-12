@@ -731,14 +731,12 @@ void deoglShaderCompiler::pAfterLinkShader(const deoglShaderProgram& program){
 		SC_OGL_CHECK(renderThread, pglUseProgram(compiled.GetHandleShader()));
 		
 		// bind textures
-		const deoglShaderBindingList &textureList = sources.GetTextureList();
-		count = textureList.GetCount();
-		for(i=0; i<count; i++){
-			location = pglGetUniformLocation(handleShader, textureList.GetNameAt(i));
+		sources.GetTextureList().Visit([&](const deoglShaderBinding &binding){
+			location = pglGetUniformLocation(handleShader, binding.GetName());
 			if(location != -1){
-				SC_OGL_CHECK(renderThread, pglUniform1i(location, textureList.GetTargetAt(i)));
+				SC_OGL_CHECK(renderThread, pglUniform1i(location, binding.GetTarget()));
 			}
-		}
+		});
 		
 		// resolve parameters
 		const decStringList &parameterList = sources.GetParameterList();

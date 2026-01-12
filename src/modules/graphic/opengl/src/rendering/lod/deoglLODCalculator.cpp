@@ -67,25 +67,25 @@ void deoglLODCalculator::SetLodOffset(int offset){
 
 
 
-void deoglLODCalculator::SetComponentLOD0(const deoglCollideList &collideList){
+void deoglLODCalculator::SetComponentLOD0(deoglCollideList &collideList){
 	const int count = collideList.GetComponentCount();
 	int i;
 	
 	for(i=0; i<count; i++){
-		collideList.GetComponentAt(i)->SetLODLevel(0);
+		collideList.GetComponentAt(i).SetLODLevel(0);
 	}
 }
 
-void deoglLODCalculator::SetComponentLODMax(const deoglCollideList &collideList){
+void deoglLODCalculator::SetComponentLODMax(deoglCollideList &collideList){
 	const int count = collideList.GetComponentCount();
 	int i;
 	
 	for(i=0; i<count; i++){
-		collideList.GetComponentAt(i)->SetLODLevelMax();
+		collideList.GetComponentAt(i).SetLODLevelMax();
 	}
 }
 
-void deoglLODCalculator::SetComponentLODProjection(const deoglCollideList &collideList, const decDVector &position,
+void deoglLODCalculator::SetComponentLODProjection(deoglCollideList &collideList, const decDVector &position,
 const decDVector &view, float fovX, float fovY, int screenWidth, int screenHeight){
 	// test lod levels starting with the smallest one for the first lod level which still
 	// yields an error on screen not larger than the maximum pixel error.
@@ -105,7 +105,7 @@ const decDVector &view, float fovX, float fovY, int screenWidth, int screenHeigh
 	int i, j;
 	
 	for(i=0; i<componentCount; i++){
-		deoglCollideListComponent &clistComponent = *collideList.GetComponentAt(i);
+		deoglCollideListComponent &clistComponent = collideList.GetComponentAt(i);
 		const deoglRComponent &component = *clistComponent.GetComponent();
 		int lodLevel = 0;
 		
@@ -147,7 +147,7 @@ const decDVector &view, float fovX, float fovY, int screenWidth, int screenHeigh
 	}
 }
 
-void deoglLODCalculator::SetComponentLODOrtho(const deoglCollideList &collideList,
+void deoglLODCalculator::SetComponentLODOrtho(deoglCollideList &collideList,
 float boxWidth, float boxHeight, int screenWidth, int screenHeight){
 	// test lod levels starting with the smallest one for the first lod level which still
 	// yields an error on screen not larger than the maximum pixel error. in contrary to
@@ -172,7 +172,7 @@ float boxWidth, float boxHeight, int screenWidth, int screenHeight){
 	int i, j;
 	
 	for(i=0; i<componentCount; i++){
-		deoglCollideListComponent &clistComponent = *collideList.GetComponentAt(i);
+		deoglCollideListComponent &clistComponent = collideList.GetComponentAt(i);
 		const deoglRComponent &component = *clistComponent.GetComponent();
 		
 		if(!component.GetModel()){
@@ -244,14 +244,14 @@ float boxWidth, float boxHeight, int screenWidth, int screenHeight){
 	clistComponent.SetLODLevel(decMath::clamp(lodLevel + pLodOffset, 0, lodLevelCount - 1));
 }
 
-void deoglLODCalculator::SetComponentLODOmniDir(const deoglCollideList &collideList,
+void deoglLODCalculator::SetComponentLODOmniDir(deoglCollideList &collideList,
 const decDVector &position, int size){
 	const int componentCount = collideList.GetComponentCount();
 	const float factor = (float)pMaxPixelError / (float)size;
 	int i, j;
 	
 	for(i=0; i<componentCount; i++){
-		deoglCollideListComponent &clistComponent = *collideList.GetComponentAt(i);
+		deoglCollideListComponent &clistComponent = collideList.GetComponentAt(i);
 		const deoglRComponent &component = *clistComponent.GetComponent();
 		int lodLevel = 0;
 		

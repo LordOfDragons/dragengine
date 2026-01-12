@@ -758,7 +758,7 @@ const deoglRenderPlanMasked *mask, bool inbetween){
 	
 DBG_ENTER_PARAM2("RenderVolumetricPass", "%p", mask, "%d", inbetween)
 	const deoglDebugTraceGroup debugTrace(renderThread, "VolumetricPass");
-	const deoglParticleEmitterInstanceList &particleEmitterList = plan.GetCollideList().GetParticleEmitterList();
+	const deoglRParticleEmitterInstance::List &particleEmitterList = plan.GetCollideList().GetParticleEmitterList();
 	const int particleEmitterCount = particleEmitterList.GetCount();
 	
 	if(particleEmitterCount == 0){

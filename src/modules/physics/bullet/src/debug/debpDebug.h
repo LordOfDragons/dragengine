@@ -26,7 +26,7 @@
 #define _DEBPDEBUG_H_
 
 #include "debpDebugInformation.h"
-#include "debpDebugInformationList.h"
+#include "debpDebugInformation.h"
 
 class dePhysicsBullet;
 class debpWorld;
@@ -42,7 +42,7 @@ private:
 	
 	bool pEnabled;
 	
-	debpDebugInformationList pDebugInfoList;
+	debpDebugInformation::List pDebugInfoList;
 	
 	debpDebugInformation::Ref pDIColliderPrepareDetection;
 	debpDebugInformation::Ref pDIColliderDetectCustomCollision;

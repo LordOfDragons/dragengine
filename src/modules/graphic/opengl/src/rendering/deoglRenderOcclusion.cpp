@@ -833,11 +833,11 @@ const deoglRenderPlanMasked *mask, bool perspective){
 	// fumble up binding points so we have to make sure all bindings required for
 	// rendering are done after all parameter blocks have been updated
 	const decDVector &referencePosition = plan.GetWorld()->GetReferencePosition();
-	const deoglCollideList &clist = plan.GetCollideList();
+	deoglCollideList &clist = plan.GetCollideList();
 	const int lightCount = clist.GetLightCount();
 	
 	for(i=0; i<lightCount; i++){
-		const deoglCollideListLight &cllight = *clist.GetLightAt(i);
+		const deoglCollideListLight &cllight = clist.GetLightAt(i);
 		if(cllight.GetCameraInside()){
 			continue;
 		}
@@ -861,7 +861,7 @@ const deoglRenderPlanMasked *mask, bool perspective){
 	pRenderParamBlock->Activate();
 	
 	for(i=0; i<lightCount; i++){
-		deoglCollideListLight &cllight = *clist.GetLightAt(i);
+		deoglCollideListLight &cllight = clist.GetLightAt(i);
 		cllight.SetOcclusionQueryValid(false);
 		
 		if(cllight.GetCulled() || cllight.GetCameraInside() || cllight.GetCameraInsideOccQueryBox()){
@@ -1209,7 +1209,7 @@ void deoglRenderOcclusion::DebugOcclusionMap(deoglRenderPlan &plan){
 	debug.IncrementOccMapObjects(componentCount);
 	
 	for(i=0; i<componentCount; i++){
-		const deoglCollideListComponent &clistComponent = *clist.GetComponentAt(i);
+		const deoglCollideListComponent &clistComponent = clist.GetComponentAt(i);
 		const deoglRComponent &component = *clistComponent.GetComponent();
 		
 		if(!component.GetModel()){

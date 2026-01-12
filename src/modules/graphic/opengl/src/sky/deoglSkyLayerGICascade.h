@@ -26,7 +26,6 @@
 #define _DEOGLSKYLAYERTGICASCADE_H_
 
 #include "deoglSkyLayerTracker.h"
-#include "../component/deoglComponentSet.h"
 
 class deoglRSkyInstanceLayer;
 class deoglGICascade;

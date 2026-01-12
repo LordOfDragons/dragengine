@@ -29,7 +29,6 @@
 
 #include "debnState.h"
 #include "debnStateLink.h"
-#include "debnStateLinkList.h"
 #include "../debnConnection.h"
 #include "../deNetworkBasic.h"
 #include "../values/debnValue.h"
@@ -59,21 +58,14 @@ pState(state),
 pValues(nullptr),
 pValueCount(0),
 pValueSize(0),
-pLinks(nullptr),
-pParentWorld(nullptr)
-{
-	pLinks = new debnStateLinkList;
+pParentWorld(nullptr){
 }
 
 debnState::~debnState(){
-	if(pLinks){
-		const int count = pLinks->GetLinkCount();
-		int i;
-		for(i=0; i<count; i++){
-			pLinks->GetLinkAt(i)->DropState();
-		}
-		delete pLinks;
-	}
+	pLinks.Visit([](debnStateLink *link){
+		link->DropState();
+	});
+	pLinks.RemoveAll();
 	
 	if(pValues){
 		while(pValueCount > 0){
@@ -208,20 +200,15 @@ void debnState::LinkWriteValues(decBaseFileWriter &writer, debnStateLink &link){
 }
 
 void debnState::InvalidateValue(int index){
-	const int count = pLinks->GetLinkCount();
-	int i;
-	for(i=0; i<count; i++){
-		pLinks->GetLinkAt(i)->SetValueChangedAt(index, true);
-	}
+	pLinks.Visit([&](debnStateLink *link){
+		link->SetValueChangedAt(index, true);
+	});
 }
 
 void debnState::InvalidateValueExcept(int index, debnStateLink &link){
-	const int count = pLinks->GetLinkCount();
-	int i;
-	for(i=0; i<count; i++){
-		debnStateLink * const updateLink = pLinks->GetLinkAt(i);
+	pLinks.Visit([&](debnStateLink *updateLink){
 		updateLink->SetValueChangedAt(index, updateLink != &link);
-	}
+	});
 }
 
 
@@ -264,10 +251,7 @@ void debnState::ValueChanged(int index, deNetworkValue*){
 		return;
 	}
 	
-	const int count = pLinks->GetLinkCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		pLinks->GetLinkAt(i)->SetValueChangedAt(index, true);
-	}
+	pLinks.Visit([&](debnStateLink *link){
+		link->SetValueChangedAt(index, true);
+	});
 }

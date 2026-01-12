@@ -47,6 +47,11 @@ pPropField(nullptr),
 pTypeCount(0){
 }
 
+deoglCollideListPropField::deoglCollideListPropField(deoglRPropField *propField) :
+pPropField(propField),
+pTypeCount(0){
+}
+
 deoglCollideListPropField::~deoglCollideListPropField(){
 	const int count = pTypes.GetCount();
 	int i;

@@ -49,7 +49,6 @@
 #include "../../component/deoglRComponent.h"
 #include "../../component/deoglRComponentLOD.h"
 #include "../../component/deoglRComponentTexture.h"
-#include "../../component/deoglComponentList.h"
 #include "../../configuration/deoglConfiguration.h"
 #include "../../decal/deoglRDecal.h"
 #include "../../envmap/deoglEnvironmentMap.h"
@@ -337,7 +336,7 @@ void deoglAddToRenderTask::AddComponents(const deoglCollideList &clist){
 	debug1 = 0.0f; debug1b = 0;
 	#endif
 	for(i=0; i<count; i++){
-		AddComponent(*clist.GetComponentAt(i));
+		AddComponent(clist.GetComponentAt(i));
 	}
 	#ifdef SPECIAL_DEBUG_ON
 	pRenderThread.GetLogger().LogInfoFormat("deoglAddToRenderTask::AddComponents(%i) = %iys",
@@ -549,7 +548,7 @@ void deoglAddToRenderTask::AddDecals(const deoglCollideList &clist){
 	int i;
 	
 	for(i=0; i<count; i++){
-		const deoglCollideListComponent &clcomponent = *clist.GetComponentAt(i);
+		const deoglCollideListComponent &clcomponent = clist.GetComponentAt(i);
 		AddDecals(*clcomponent.GetComponent(), clcomponent.GetLODLevel());
 	}
 }
@@ -633,7 +632,7 @@ void deoglAddToRenderTask::AddPropFieldClusters(const deoglCollideList &clist, b
 	int i;
 	
 	for(i=0; i<count; i++){
-		AddPropFieldCluster(*clist.GetPropFieldClusterAt(i), imposters);
+		AddPropFieldCluster(clist.GetPropFieldClusterAt(i), imposters);
 	}
 }
 
@@ -727,7 +726,7 @@ void deoglAddToRenderTask::AddPropFields(const deoglCollideList &clist, bool imp
 	int i;
 	
 	for(i=0; i<count; i++){
-		AddPropField(*clist.GetPropFieldAt(i), imposters);
+		AddPropField(clist.GetPropFieldAt(i), imposters);
 	}
 }
 
@@ -812,7 +811,7 @@ void deoglAddToRenderTask::AddHeightTerrainSectorClusters(const deoglCollideList
 	int i;
 	
 	for(i=0; i<count; i++){
-		AddHeightTerrainSectorCluster(*clist.GetHTSClusterAt(i), firstMask);
+		AddHeightTerrainSectorCluster(clist.GetHTSClusterAt(i), firstMask);
 	}
 }
 
@@ -896,7 +895,7 @@ void deoglAddToRenderTask::AddHeightTerrains(const deoglCollideList &clist, bool
 	int i;
 	
 	for(i=0; i<sectorCount; i++){
-		AddHeightTerrainSector(*clist.GetHTSectorAt(i), firstMask);
+		AddHeightTerrainSector(clist.GetHTSectorAt(i), firstMask);
 	}
 }
 
@@ -947,17 +946,15 @@ const deoglPipeline *pipelineSingle, const deoglPipeline *pipelineDouble){
 	const int count = clist.GetComponentCount();
 	int i;
 	for(i=0; i<count; i++){
-		AddOcclusionMesh(*clist.GetComponentAt(i), pipelineSingle, pipelineDouble);
+		AddOcclusionMesh(clist.GetComponentAt(i), pipelineSingle, pipelineDouble);
 	}
 }
 
-void deoglAddToRenderTask::AddOcclusionMeshes(const deoglComponentList &list,
+void deoglAddToRenderTask::AddOcclusionMeshes(const deoglRComponent::List &list,
 const deoglPipeline *pipelineSingle, const deoglPipeline *pipelineDouble){
-	const int count = list.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		AddOcclusionMesh(*list.GetAt(i), pipelineSingle, pipelineDouble);
-	}
+	list.Visit([&](deoglRComponent *component){
+		AddOcclusionMesh(*component, pipelineSingle, pipelineDouble);
+	});
 }
 
 void deoglAddToRenderTask::AddOcclusionMeshFaces(const deoglRComponent &component,
@@ -977,13 +974,10 @@ void deoglAddToRenderTask::AddParticles(const deoglCollideList &list){
 	AddParticles(list.GetParticleEmitterList());
 }
 
-void deoglAddToRenderTask::AddParticles(const deoglParticleEmitterInstanceList &list){
-	const int count = list.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		AddParticles(*list.GetAt(i));
-	}
+void deoglAddToRenderTask::AddParticles(const deoglRParticleEmitterInstance::List &list){
+	list.Visit([&](deoglRParticleEmitterInstance *emitter){
+		AddParticles(*emitter);
+	});
 }
 
 void deoglAddToRenderTask::AddParticles(deoglRParticleEmitterInstance &emitter){

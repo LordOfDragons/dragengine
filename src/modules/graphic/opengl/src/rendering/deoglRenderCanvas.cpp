@@ -1101,7 +1101,7 @@ void deoglRenderCanvas::SampleDebugInfoPlanPrepareFinish(deoglRenderPlan &plan){
 
 
 void deoglRenderCanvas::AddTopLevelDebugInfo(){
-	deoglDebugInformationList &list = GetRenderThread().GetDebug().GetDebugInformationList();
+	deoglDebugInformation::List &list = GetRenderThread().GetDebug().GetDebugInformationList();
 	list.Add(pDebugInfoPlanPrepare);
 	list.Add(pDebugInfoCanvas);
 }
@@ -1123,7 +1123,7 @@ void deoglRenderCanvas::pCleanUp(){
 	dops.DeleteOpenGLVertexArray(pVAOShapes);
 	dops.DeleteOpenGLBuffer(pVBOShapes);
 	
-	deoglDebugInformationList &dilist = GetRenderThread().GetDebug().GetDebugInformationList();
+	deoglDebugInformation::List &dilist = GetRenderThread().GetDebug().GetDebugInformationList();
 	dilist.Remove(pDebugInfoCanvas);
 	dilist.Remove(pDebugInfoPlanPrepare);
 }

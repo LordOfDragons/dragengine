@@ -35,9 +35,6 @@ class deoglShaderSourceLocation;
 
 class deoglShaderDefines;
 class deoglShaderProgram;
-#ifdef WITH_OPENGLES
-class deoglShaderBindingList;
-#endif
 
 
 

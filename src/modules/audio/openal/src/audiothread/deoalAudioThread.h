@@ -27,6 +27,7 @@
 
 #include "deoalATLeakTracker.h"
 #include "../configuration/deoalConfiguration.h"
+#include "../environment/raytrace/deoalRayTraceHitElement.h"
 #include "../environment/raytrace/deoalSoundRayInteraction.h"
 #include "../microphone/deoalAMicrophone.h"
 #include "../world/deoalAWorld.h"
@@ -52,7 +53,6 @@ class deoalDecodeBuffer;
 class deoalDevMode;
 class deoalExtensions;
 class deoalRTParallelEnvProbe;
-class deoalRayTraceHitElementList;
 class deoalRayTraceResult;
 class deoalSharedBufferList;
 class deoalEffectSlotManager;
@@ -107,7 +107,7 @@ private:
 	
 	deoalRTParallelEnvProbe *pRTParallelEnvProbe;
 	deoalRayTraceResult *pRTResultDirect;
-	deoalRayTraceHitElementList *pRTHitElementList;
+	deoalRayTraceHitElement::List pRTHitElementList;
 	deoalSoundRayInteraction::List pSRInteractionList;
 	deoalWOVRayHitsElement *pWOVRayHitsElement;
 	deoalWOVCollectElements *pWOVCollectElements;
@@ -305,7 +305,8 @@ public:
 	inline deoalRayTraceResult &GetRTResultDirect() const{ return *pRTResultDirect; }
 	
 	/** Shared ray trace hit element list. */
-	inline deoalRayTraceHitElementList &GetRTHitElementList() const{ return *pRTHitElementList; }
+	inline deoalRayTraceHitElement::List &GetRTHitElementList(){ return pRTHitElementList; }
+	inline const deoalRayTraceHitElement::List &GetRTHitElementList() const{ return pRTHitElementList; }
 	
 	/** Shared sound ray interaction list. */
 	inline deoalSoundRayInteraction::List &GetSRInteractionList(){ return pSRInteractionList; }

@@ -54,6 +54,15 @@ pOcclusionQuery(nullptr),
 pOccQueryValid(false){
 }
 
+deoglCollideListLight::deoglCollideListLight(deoglRLight *light) :
+pLight(light),
+pCulled(false),
+pCameraInside(false),
+pCameraInsideOccQueryBox(true),
+pOcclusionQuery(nullptr),
+pOccQueryValid(false){
+}
+
 deoglCollideListLight::~deoglCollideListLight(){
 	if(pOcclusionQuery){
 		delete pOcclusionQuery;

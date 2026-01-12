@@ -25,11 +25,10 @@
 #ifndef _DEOGLDEBUGINFORMATION_H_
 #define _DEOGLDEBUGINFORMATION_H_
 
-#include "deoglDebugInformationList.h"
-
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 
 
@@ -50,6 +49,7 @@
 class deoglDebugInformation : public deObject{
 public:
 	using Ref = deTObjectReference<deoglDebugInformation>;
+	using List = decTObjectOrderedSet<deoglDebugInformation>;
 	
 	
 private:
@@ -62,7 +62,7 @@ private:
 	bool pHasElapsedTime;
 	bool pHasCounter;
 	bool pVisible;
-	deoglDebugInformationList pChildren;
+	List pChildren;
 	
 	float pLastElapsedTime;
 	float pSlidingElapsedTimeFactor;
@@ -116,8 +116,8 @@ public:
 	void SetVisible(bool visible);
 	
 	/** Children. */
-	inline deoglDebugInformationList &GetChildren(){ return pChildren; }
-	inline const deoglDebugInformationList &GetChildren() const{ return pChildren; }
+	inline List &GetChildren(){ return pChildren; }
+	inline const List &GetChildren() const{ return pChildren; }
 	
 	
 	

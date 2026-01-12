@@ -25,12 +25,13 @@
 #ifndef _DEOALRAYCACHE_H_
 #define _DEOALRAYCACHE_H_
 
+#include "../../environment/raytrace/deoalRayTraceHitElement.h"
+
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/threading/deMutex.h>
 
 
 class deoalRayCacheRay;
-class deoalRayTraceHitElementList;
 class deoalRayTraceResult;
 class deoalRayCacheOctree;
 class deoalAudioThread;
@@ -78,7 +79,7 @@ public:
 	
 	/** \brief Cache ray if not present or longer than present cached ray. */
 	void CacheRay(const decVector &origin, const decVector &direction, float length,
-		const deoalRayTraceHitElementList &elements);
+		const deoalRayTraceHitElement::List &elements);
 	
 	/** \brief Cache ray if not present or longer than present cached ray. */
 	void CacheRay(const decVector &origin, const decVector &direction, float length,

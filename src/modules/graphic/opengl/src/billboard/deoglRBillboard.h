@@ -38,6 +38,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decTLinkedList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decLayerMask.h>
 
@@ -62,6 +63,9 @@ class deoglRBillboard : public deObject, public deoglOcclusionTestListener{
 public:
 	/** \brief Type holding strong reference. */
 	using Ref = deTObjectReference<deoglRBillboard>;
+	
+	/** \brief List of billboards. */
+	using List = decTOrderedSet<deoglRBillboard*>;
 	
 	
 private:

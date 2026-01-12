@@ -954,7 +954,7 @@ void deoglRWorld::AddEnvMap(deoglEnvironmentMap *envmap){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pEnvMapList.Add(envmap);
+	pEnvMapList.AddOrThrow(envmap);
 	envmap->SetWorld(this);
 	
 	InvalidateEnvMapLayout();

@@ -46,6 +46,12 @@ pCulled(false),
 pCascadeMask(0){
 }
 
+deoglCollideListPropFieldCluster::deoglCollideListPropFieldCluster(deoglPropFieldCluster *cluster) :
+pCluster(cluster),
+pCulled(false),
+pCascadeMask(0){
+}
+
 deoglCollideListPropFieldCluster::~deoglCollideListPropFieldCluster(){
 }
 

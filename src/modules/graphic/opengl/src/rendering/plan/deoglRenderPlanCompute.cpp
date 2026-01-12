@@ -162,7 +162,7 @@ void deoglRenderPlanCompute::ReadVisibleElements(){
 	
 	// read written visible element indices
 	deoglCollideList &collideList = pPlan.GetCollideList();
-	deoglParticleEmitterInstanceList &clistParticleEmitterInstanceList = collideList.GetParticleEmitterList();
+	deoglRParticleEmitterInstance::List &clistParticleEmitterInstanceList = collideList.GetParticleEmitterList();
 	deoglHTView * const htview = pPlan.GetHeightTerrainView();
 	
 	pSSBOVisibleElements->GPUReadToCPU(((indexCount - 1) / 4) + 1);
@@ -191,7 +191,7 @@ void deoglRenderPlanCompute::ReadVisibleElements(){
 			break;
 			
 		case deoglWorldComputeElement::eetLight:
-			collideList.AddLight((deoglRLight*)element.GetOwner())->TestInside(pPlan);
+			collideList.AddLight((deoglRLight*)element.GetOwner()).TestInside(pPlan);
 			break;
 			
 		case deoglWorldComputeElement::eetPropFieldCluster:

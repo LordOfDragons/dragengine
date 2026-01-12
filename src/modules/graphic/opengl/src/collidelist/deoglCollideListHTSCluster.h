@@ -53,6 +53,12 @@ public:
 	/** Create cluster. */
 	deoglCollideListHTSCluster();
 	
+	deoglCollideListHTSCluster(deoglHTViewSectorCluster *cluster);
+	
+	/** Copy. */
+	deoglCollideListHTSCluster(const deoglCollideListHTSCluster &cluster) = default;
+	deoglCollideListHTSCluster &operator=(const deoglCollideListHTSCluster &cluster) = default;
+	
 	/** Clean up cluster. */
 	~deoglCollideListHTSCluster() override;
 	/*@}*/

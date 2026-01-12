@@ -25,7 +25,7 @@
 #ifndef _DEOGLMODELOCTREE_H_
 #define _DEOGLMODELOCTREE_H_
 
-#include "../face/deoglModelFaceList.h"
+#include "../face/deoglModelFace.h"
 
 #include "../../utils/octree/deoglOctree.h"
 
@@ -39,7 +39,7 @@ class deoglCollisionVolume;
  */
 class deoglModelOctree : public deoglOctree{
 private:
-	deoglModelFaceList pFaces;
+	deoglModelFace::List pFaces;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -69,8 +69,8 @@ public:
 	void VisitNodesCollidingVolume(deoglModelOctreeVisitor &visitor, deoglCollisionVolume &volume);
 	
 	/** Retrieves the list of faces. */
-	inline deoglModelFaceList &GetFaceList(){ return pFaces; }
-	inline const deoglModelFaceList &GetFaceList() const{ return pFaces; }
+	inline deoglModelFace::List &GetFaceList(){ return pFaces; }
+	inline const deoglModelFace::List &GetFaceList() const{ return pFaces; }
 	/*@}*/
 	
 private:

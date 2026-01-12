@@ -30,7 +30,6 @@
 #include "deoalRayCacheRayHit.h"
 #include "../../environment/raytrace/deoalRayTraceResult.h"
 #include "../../environment/raytrace/deoalRayTraceHitElement.h"
-#include "../../environment/raytrace/deoalRayTraceHitElementList.h"
 #include "../../component/deoalAComponent.h"
 #include "../../model/deoalAModel.h"
 #include "../../model/deoalModelFace.h"
@@ -46,7 +45,7 @@
 ////////////////////////////
 
 deoalRayCacheRay::deoalRayCacheRay(const decVector &origin, const decVector &direction,
-	float length, const deoalRayTraceHitElementList &elements) :
+	float length, const deoalRayTraceHitElement::List &elements) :
 pOrigin(origin),
 pDirection(direction),
 pLength(length),

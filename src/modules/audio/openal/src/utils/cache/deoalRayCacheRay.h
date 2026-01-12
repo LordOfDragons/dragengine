@@ -25,12 +25,13 @@
 #ifndef _DEOALRAYCACHERAY_H_
 #define _DEOALRAYCACHERAY_H_
 
+#include "../../environment/raytrace/deoalRayTraceHitElement.h"
+
 #include <dragengine/common/math/decMath.h>
 
 
 class deoalRayCacheOctree;
 class deoalRayCacheRayHit;
-class deoalRayTraceHitElementList;
 class deoalRayTraceResult;
 
 
@@ -57,7 +58,7 @@ public:
 	/*@{*/
 	/** \brief Create model ray cache ray. */
 	deoalRayCacheRay(const decVector &origin, const decVector &direction,
-		float length, const deoalRayTraceHitElementList &elements);
+		float length, const deoalRayTraceHitElement::List &elements);
 	
 	/** \brief Create model ray cache ray. */
 	deoalRayCacheRay(const decVector &origin, const decVector &direction,

@@ -69,22 +69,14 @@ void deoglFindBestEnvMap::VisitNode(deoglDOctree *node, int intersection){
 	VisitList(((deoglWorldOctree*)node)->GetEnvMapList());
 }
 
-void deoglFindBestEnvMap::VisitList(const deoglEnvironmentMapList &list){
-	const int count = list.GetCount();
-	deoglEnvironmentMap *envmap;
-	double distance;
-	int i;
-	
-	for(i=0; i<count; i++){
-		envmap = list.GetAt(i);
-		
+void deoglFindBestEnvMap::VisitList(const deoglEnvironmentMap::List &list){
+	list.Visit([&](deoglEnvironmentMap *envmap){
 		if(!envmap->GetSkyOnly()){
-			distance = (envmap->GetPosition() - pPosition).Length();
-			
+			const double distance = (envmap->GetPosition() - pPosition).Length();
 			if(!pEnvMap || distance < pDistance){
 				pEnvMap = envmap;
 				pDistance = distance;
 			}
 		}
-	}
+	});
 }

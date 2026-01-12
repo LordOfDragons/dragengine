@@ -28,16 +28,16 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include "../utils/collision/deoglDCollisionBox.h"
-#include "../billboard/deoglBillboardList.h"
-#include "../component/deoglComponentSet.h"
-#include "../particle/deoglParticleEmitterInstanceList.h"
-#include "../rendering/plan/deoglRenderPlanList.h"
-
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/utils/decLayerMask.h>
 #include <dragengine/common/string/decString.h>
 
 
+class deoglRComponent;
+class deoglRBillboard;
 class deoglRLight;
+class deoglRenderPlan;
+class deoglRParticleEmitterInstance;
 class decConvexVolumeList;
 class deoglCubeMap;
 class deoglArrayTexture;
@@ -57,6 +57,13 @@ class deoglEnvironmentMap : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	using Ref = deTObjectReference<deoglEnvironmentMap>;
+	using List = decTOrderedSet<deoglEnvironmentMap*>;
+	
+private:
+	using BillboardList = decTOrderedSet<deoglRBillboard*>;
+	using RenderPlanList = decTOrderedSet<deoglRenderPlan*>;
+	using ComponentList = decTOrderedSet<deoglRComponent*>;
+	using ParticleEmitterInstanceList = decTOrderedSet<deoglRParticleEmitterInstance*>;
 	
 	
 private:
@@ -104,10 +111,10 @@ private:
 	int pPlanUsageCount;
 	bool pDestroyIfUnused;
 	
-	deoglBillboardList pBillboardList;
-	deoglComponentSet pComponentList;
-	deoglParticleEmitterInstanceList pParticleEmitterInstanceList;
-	deoglRenderPlanList pRenderPlanList;
+	BillboardList pBillboardList;
+	ComponentList pComponentList;
+	ParticleEmitterInstanceList pParticleEmitterInstanceList;
+	RenderPlanList pRenderPlanList;
 	
 	bool pMarked;
 	
@@ -241,19 +248,20 @@ public:
 	
 	
 	/** Retrieves the component list. */
-	inline deoglComponentSet &GetComponentList(){ return pComponentList; }
-	inline const deoglComponentSet &GetComponentList() const{ return pComponentList; }
+	inline ComponentList &GetComponentList(){ return pComponentList; }
+	inline const ComponentList &GetComponentList() const{ return pComponentList; }
 	
 	/** Billboard list. */
-	inline deoglBillboardList &GetBillboardList(){ return pBillboardList; }
-	inline const deoglBillboardList &GetBillboardList() const{ return pBillboardList; }
+	inline BillboardList &GetBillboardList(){ return pBillboardList; }
+	inline const BillboardList &GetBillboardList() const{ return pBillboardList; }
 	
 	/** Retrieves the particle emitter instance list. */
-	inline deoglParticleEmitterInstanceList &GetParticleEmitterInstanceList(){ return pParticleEmitterInstanceList; }
-	inline const deoglParticleEmitterInstanceList &GetParticleEmitterInstanceList() const{ return pParticleEmitterInstanceList; }
+	inline ParticleEmitterInstanceList &GetParticleEmitterInstanceList(){ return pParticleEmitterInstanceList; }
+	inline const ParticleEmitterInstanceList &GetParticleEmitterInstanceList() const{ return pParticleEmitterInstanceList; }
+	
 	/** Retrieves the render plan list. */
-	inline deoglRenderPlanList &GetRenderPlanList(){ return pRenderPlanList; }
-	inline const deoglRenderPlanList &GetRenderPlanList() const{ return pRenderPlanList; }
+	inline RenderPlanList &GetRenderPlanList(){ return pRenderPlanList; }
+	inline const RenderPlanList &GetRenderPlanList() const{ return pRenderPlanList; }
 	
 	/** Retrieves the render plan usage count. */
 	inline int GetPlanUsageCount() const{ return pPlanUsageCount; }

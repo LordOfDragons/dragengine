@@ -309,7 +309,7 @@ void deoglRenderDebug::RenderComponentsStatic(sRenderParameters &params){
 	int i;
 	
 	for(i=0; i<count; i++){
-		deoglRComponent &component = *clist.GetComponentAt(i)->GetComponent();
+		deoglRComponent &component = *clist.GetComponentAt(i).GetComponent();
 		
 		if(component.GetRenderStatic()){
 			RenderComponentBox(params, component, decColor(0.0f, 0.5f, 0.0f, 1.0f));

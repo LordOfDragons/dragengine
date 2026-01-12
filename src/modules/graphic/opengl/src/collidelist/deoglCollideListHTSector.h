@@ -51,6 +51,12 @@ public:
 	/** Create height terrain sector. */
 	deoglCollideListHTSector();
 	
+	deoglCollideListHTSector(deoglHTViewSector *sector);
+	
+	/** Copy. */
+	deoglCollideListHTSector(const deoglCollideListHTSector &sector) = default;
+	deoglCollideListHTSector& operator=(const deoglCollideListHTSector &sector) = default;
+	
 	/** Clean up height terrain sector. */
 	~deoglCollideListHTSector();
 	/*@}*/

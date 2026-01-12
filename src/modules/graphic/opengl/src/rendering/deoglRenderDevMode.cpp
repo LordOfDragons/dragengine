@@ -285,7 +285,7 @@ void deoglRenderDevMode::RenderVisComponent(deoglRenderPlan &plan){
 	
 	shader.SetParameterFloat(spsc3dColor, colorSolid.r, colorSolid.g, colorSolid.b, colorSolid.a);
 	for(c=0; c<componentCount; c++){
-		deoglRComponent &component = *collideList.GetComponentAt(c)->GetComponent();
+		deoglRComponent &component = *collideList.GetComponentAt(c).GetComponent();
 		
 		box.SetFromExtends(component.GetMinimumExtend(), component.GetMaximumExtend());
 		shader.SetParameterDMatrix4x4(spsc3dMatrixMVP, decDMatrix::CreateScale(box.GetHalfSize()) * decDMatrix::CreateTranslation(box.GetCenter()) * matrixVP);
@@ -295,7 +295,7 @@ void deoglRenderDevMode::RenderVisComponent(deoglRenderPlan &plan){
 	
 	shader.SetParameterFloat(spsc3dColor, colorWire.r, colorWire.g, colorWire.b, colorWire.a);
 	for(c=0; c<componentCount; c++){
-		deoglRComponent &component = *collideList.GetComponentAt(c)->GetComponent();
+		deoglRComponent &component = *collideList.GetComponentAt(c).GetComponent();
 		
 		box.SetFromExtends(component.GetMinimumExtend(), component.GetMaximumExtend());
 		shader.SetParameterDMatrix4x4(spsc3dMatrixMVP, decDMatrix::CreateScale(box.GetHalfSize()) * decDMatrix::CreateTranslation(box.GetCenter()) * matrixVP);
@@ -325,7 +325,7 @@ void deoglRenderDevMode::RenderVisLight(deoglRenderPlan &plan){
 	
 	shader.SetParameterFloat(spsc3dColor, colorSolid.r, colorSolid.g, colorSolid.b, colorSolid.a);
 	for(l=0; l<lightCount; l++){
-		deoglRLight &light = *collideList.GetLightAt(l)->GetLight();
+		deoglRLight &light = *collideList.GetLightAt(l).GetLight();
 		box.SetFromExtends(light.GetMinimumExtend(), light.GetMaximumExtend());
 		shader.SetParameterDMatrix4x4(spsc3dMatrixMVP, decDMatrix::CreateScale(box.GetHalfSize()) * decDMatrix::CreateTranslation(box.GetCenter()) * matrixVP);
 		shapeBox.RenderFaces();
@@ -333,7 +333,7 @@ void deoglRenderDevMode::RenderVisLight(deoglRenderPlan &plan){
 	
 	shader.SetParameterFloat(spsc3dColor, colorWire.r, colorWire.g, colorWire.b, colorWire.a);
 	for(l=0; l<lightCount; l++){
-		deoglRLight &light = *collideList.GetLightAt(l)->GetLight();
+		deoglRLight &light = *collideList.GetLightAt(l).GetLight();
 		box.SetFromExtends(light.GetMinimumExtend(), light.GetMaximumExtend());
 		shader.SetParameterDMatrix4x4(spsc3dMatrixMVP, decDMatrix::CreateScale(box.GetHalfSize()) * decDMatrix::CreateTranslation(box.GetCenter()) * matrixVP);
 		shapeBox.RenderLines();
@@ -344,7 +344,7 @@ void deoglRenderDevMode::RenderVisLight(deoglRenderPlan &plan){
 void deoglRenderDevMode::RenderComponentLodLevels(deoglRenderPlan &plan){
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace(renderThread, "DevMode.RenderComponentLodLevels");
-	const deoglCollideList &collideList = plan.GetCollideList();
+	deoglCollideList &collideList = plan.GetCollideList();
 	const deoglShapeManager &shapeManager = renderThread.GetBufferObject().GetShapeManager();
 	deoglShape &shapeBox = *shapeManager.GetShapeAt(deoglRTBufferObject::esBox);
 	const decDMatrix &matrixVP = plan.GetCameraMatrix() * decDMatrix(plan.GetProjectionMatrix());
@@ -367,7 +367,7 @@ void deoglRenderDevMode::RenderComponentLodLevels(deoglRenderPlan &plan){
 	shapeBox.ActivateVAO();
 	
 	for(c=0; c<componentCount; c++){
-		deoglCollideListComponent &clComponent = *collideList.GetComponentAt(c);
+		deoglCollideListComponent &clComponent = collideList.GetComponentAt(c);
 		deoglRComponent &component = *clComponent.GetComponent();
 		
 		const int lodLevel = decMath::min(clComponent.GetLODLevel(), 5);
@@ -380,7 +380,7 @@ void deoglRenderDevMode::RenderComponentLodLevels(deoglRenderPlan &plan){
 	}
 	
 	for(c=0; c<componentCount; c++){
-		deoglCollideListComponent &clComponent = *collideList.GetComponentAt(c);
+		deoglCollideListComponent &clComponent = collideList.GetComponentAt(c);
 		deoglRComponent &component = *clComponent.GetComponent();
 		
 		const int lodLevel = decMath::min(clComponent.GetLODLevel(), 5);
@@ -414,7 +414,7 @@ void deoglRenderDevMode::RenderHighlightTransparentObjects(deoglRenderPlan &plan
 	
 	shader.SetParameterFloat(spsc3dColor, colorSolid.r, colorSolid.g, colorSolid.b, colorSolid.a);
 	for(c=0; c<componentCount; c++){
-		const deoglRComponent &component = *collideList.GetComponentAt(c)->GetComponent();
+		const deoglRComponent &component = *collideList.GetComponentAt(c).GetComponent();
 		
 		if(component.GetSkin() && !component.GetSkin()->GetIsSolid()){
 			box.SetFromExtends(component.GetMinimumExtend(), component.GetMaximumExtend());
@@ -427,7 +427,7 @@ void deoglRenderDevMode::RenderHighlightTransparentObjects(deoglRenderPlan &plan
 	
 	shader.SetParameterFloat(spsc3dColor, colorWire.r, colorWire.g, colorWire.b, colorWire.a);
 	for(c=0; c<componentCount; c++){
-		const deoglRComponent &component = *collideList.GetComponentAt(c)->GetComponent();
+		const deoglRComponent &component = *collideList.GetComponentAt(c).GetComponent();
 		
 		if(component.GetSkin() && !component.GetSkin()->GetIsSolid()){
 			box.SetFromExtends(component.GetMinimumExtend(), component.GetMaximumExtend());
@@ -507,7 +507,7 @@ void deoglRenderDevMode::RenderPropFieldInfo(deoglRenderPlan &plan){
 		const decColor colorWire(colorSolid.r, colorSolid.g, colorSolid.b, alphaWire);
 		
 		for(i=0; i<propFieldCount; i++){
-			deoglRPropField &propField = *collideList.GetPropFieldAt(i)->GetPropField();
+			deoglRPropField &propField = *collideList.GetPropFieldAt(i).GetPropField();
 			
 			box.SetFromExtends(propField.GetMinimumExtend(), propField.GetMaximumExtend());
 			
@@ -527,7 +527,7 @@ void deoglRenderDevMode::RenderPropFieldInfo(deoglRenderPlan &plan){
 		const decColor colorWire(colorSolid.r, colorSolid.g, colorSolid.b, alphaWire);
 		
 		for(i=0; i<propFieldCount; i++){
-			const deoglCollideListPropField &clPropField = *collideList.GetPropFieldAt(i);
+			const deoglCollideListPropField &clPropField = collideList.GetPropFieldAt(i);
 			deoglRPropField &propField = *clPropField.GetPropField();
 			const decDVector propFieldOffset = propField.GetPosition();
 			const int typeCount = clPropField.GetTypeCount();
@@ -586,7 +586,7 @@ void deoglRenderDevMode::RenderLightInfos(deoglRenderPlan &plan){
 		const decColor colorWire(colorSolid.r, colorSolid.g, colorSolid.b, alphaWire);
 		
 		for(l=0; l<lightCount; l++){
-			deoglRLight &light = *collideList.GetLightAt(l)->GetLight();
+			deoglRLight &light = *collideList.GetLightAt(l).GetLight();
 			
 			box.SetFromExtends(light.GetMinimumExtend(), light.GetMaximumExtend());
 			
@@ -606,7 +606,7 @@ void deoglRenderDevMode::RenderLightInfos(deoglRenderPlan &plan){
 		const decColor colorWire(colorSolid.r, colorSolid.g, colorSolid.b, alphaWire);
 		
 		for(l=0; l<lightCount; l++){
-			deoglRLight &light = *collideList.GetLightAt(l)->GetLight();
+			deoglRLight &light = *collideList.GetLightAt(l).GetLight();
 			
 			box.SetFromExtends(light.GetFullMinExtend(), light.GetFullMaxExtend());
 			
@@ -628,7 +628,7 @@ void deoglRenderDevMode::RenderLightInfos(deoglRenderPlan &plan){
 		shader->SetParameterFloat(spsSCToDTC, defren.GetPixelSizeU(), defren.GetPixelSizeV());
 		
 		for(l=0; l<lightCount; l++){
-			const deoglCollideListLight &cllight = *collideList.GetLightAt(l);
+			const deoglCollideListLight &cllight = collideList.GetLightAt(l);
 			const deoglRLight &light = *cllight.GetLight();
 			const deoglLightVolume &lightVolume = *light.GetLightVolume();
 			
@@ -651,7 +651,7 @@ void deoglRenderDevMode::RenderLightInfos(deoglRenderPlan &plan){
 		shader->SetParameterFloat(spsSCToDTC, defren.GetPixelSizeU(), defren.GetPixelSizeV());
 		
 		for(l=0; l<lightCount; l++){
-			const deoglCollideListLight &cllight = *collideList.GetLightAt(l);
+			const deoglCollideListLight &cllight = collideList.GetLightAt(l);
 			const deoglRLight &light = *cllight.GetLight();
 			const deoglLightVolume &lightVolume = *light.GetLightVolume();
 			
@@ -674,14 +674,14 @@ void deoglRenderDevMode::RenderLightInfos(deoglRenderPlan &plan){
 		shader = &pPipelineShape->GetShader();
 		
 		const decQuaternion orientationCylinder = decMatrix::CreateRotationX(DEG2RAD * 90.0f).ToQuaternion();
-		const deoglCollideListLight &cllight = *collideList.GetLightAt(devMode.GetShowLightVisualInfo());
+		const deoglCollideListLight &cllight = collideList.GetLightAt(devMode.GetShowLightVisualInfo());
 		const deoglRLight &light = *cllight.GetLight();
 		decMatrix matrix1, matrix2;
 		decDMatrix matrixMVP;
 		
 		if(light.GetLightType() == deLight::eltSpot){
-			const deoglComponentSet &listStatic = light.GetStaticComponentList();
-			const deoglComponentSet &listDynamic = light.GetDynamicComponentList();
+			const deoglRComponent::List &listStatic = light.GetStaticComponentList();
+			const deoglRComponent::List &listDynamic = light.GetDynamicComponentList();
 			const float cutOffDist = light.GetRange();
 			int i, count;
 			
@@ -789,7 +789,7 @@ void deoglRenderDevMode::RenderEnvMapInfo(deoglRenderPlan &plan){
 	const deoglDebugTraceGroup debugTrace(renderThread, "DevMode.RenderEnvMapInfo");
 	const decDMatrix &matrixV = plan.GetCameraMatrix();
 	const decDMatrix &matrixVP = matrixV * decDMatrix(plan.GetProjectionMatrix());
-	const deoglEnvironmentMapList &list = plan.GetWorld()->GetEnvMapList();
+	const deoglEnvironmentMap::List &list = plan.GetWorld()->GetEnvMapList();
 	const deoglDeveloperMode &devMode = renderThread.GetDebug().GetDeveloperMode();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	const int envmapCount = list.GetCount();
@@ -1670,7 +1670,7 @@ const decPoint &viewport, const decPoint &position, decPoint &size){
 
 void deoglRenderDevMode::RenderDebugInformation(const decPoint &viewport,
 const decPoint &position, decPoint &size, bool forceSolid){
-	const deoglDebugInformationList &list = GetRenderThread().GetDebug().GetDebugInformationList();
+	const deoglDebugInformation::List &list = GetRenderThread().GetDebug().GetDebugInformationList();
 	const int count = list.GetCount();
 	if(count == 0){
 		return;
@@ -1698,7 +1698,7 @@ const decPoint &position, decPoint &size, bool forceSolid){
 }
 
 void deoglRenderDevMode::LogDebugInformation(){
-	const deoglDebugInformationList &list = GetRenderThread().GetDebug().GetDebugInformationList();
+	const deoglDebugInformation::List &list = GetRenderThread().GetDebug().GetDebugInformationList();
 	const int count = list.GetCount();
 	if(count == 0){
 		return;
@@ -1709,7 +1709,7 @@ void deoglRenderDevMode::LogDebugInformation(){
 	LogDebugInformation(list, decString());
 }
 
-void deoglRenderDevMode::LogDebugInformation(const deoglDebugInformationList &list, const decString &prefix){
+void deoglRenderDevMode::LogDebugInformation(const deoglDebugInformation::List &list, const decString &prefix){
 	deoglRTLogger &logger = GetRenderThread().GetLogger();
 	const int count = list.GetCount();
 	int i;
@@ -1740,7 +1740,7 @@ void deoglRenderDevMode::LogDebugInformation(const deoglDebugInformationList &li
 }
 
 void deoglRenderDevMode::LayoutDebugInformation(const decPoint &viewport,
-const decPoint &position, decPoint &size, const deoglDebugInformationList &list,
+const decPoint &position, decPoint &size, const deoglDebugInformation::List &list,
 int minWidth, int maxWidth, bool alignSidewards) {
 	const int count = list.GetCount();
 	bool siblingsHaveElapsedTime = false;
@@ -1806,7 +1806,7 @@ int minWidth, int maxWidth, bool alignSidewards) {
 	size.y = childPos.y - position.y;
 }
 
-void deoglRenderDevMode::ChildMaxNameLen(const deoglDebugInformationList &list,
+void deoglRenderDevMode::ChildMaxNameLen(const deoglDebugInformation::List &list,
 int &maxNameWidth, bool &siblingsHaveElapsedTime, bool &siblingsHaveCounter) const{
 	const int count = list.GetCount();
 	int i;
@@ -1829,7 +1829,7 @@ void deoglRenderDevMode::LayoutDebugInformation(const decPoint &viewport, int ma
 deoglDebugInformation& debugInformation, int minWidth, int maxWidth,
 bool siblingsHaveElapsedTime, bool siblingsHaveCounter){
 	deoglRenderThread &renderThread = GetRenderThread();
-	const deoglDebugInformationList &children = debugInformation.GetChildren();
+	const deoglDebugInformation::List &children = debugInformation.GetChildren();
 	deoglRenderDebug &renderDebug = renderThread.GetRenderers().GetDebug();
 	const int charWidth = renderDebug.GetDebugFont().GetGlyphs()[32].width;
 	const int fontHeight = renderDebug.GetDebugFont().GetFontHeight();
@@ -1900,7 +1900,7 @@ bool siblingsHaveElapsedTime, bool siblingsHaveCounter){
 void deoglRenderDevMode::RenderDebugInformation(const decPoint &viewport,
 const decPoint &parentPosition, const deoglDebugInformation &debugInformation, bool forceSolid){
 	deoglRenderThread &renderThread = GetRenderThread();
-	const deoglDebugInformationList &children = debugInformation.GetChildren();
+	const deoglDebugInformation::List &children = debugInformation.GetChildren();
 	deoglRenderDebug &renderDebug = renderThread.GetRenderers().GetDebug();
 	const int fontHeight = renderDebug.GetDebugFont().GetFontHeight();
 	const int count = children.GetCount();

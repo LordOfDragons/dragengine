@@ -25,7 +25,7 @@
 #ifndef _DEOSLSHADERSOURCES_H_
 #define _DEOSLSHADERSOURCES_H_
 
-#include "deoglShaderBindingList.h"
+#include "deoglShaderBinding.h"
 
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/collection/decTList.h>
@@ -58,7 +58,7 @@ private:
 	decString pPathSCVertex;
 	decString pPathSCFragment;
 	
-	deoglShaderBindingList pTextureList;
+	deoglShaderBinding::List pTextureList;
 	decStringList pParameterList;
 	decTList<int> pParameterLocations;
 	
@@ -89,8 +89,8 @@ public:
 	inline const decString &GetFilename() const{ return pFilename; }
 	
 	/** Retrieves the texture binding list. */
-	inline deoglShaderBindingList &GetTextureList(){ return pTextureList; }
-	inline const deoglShaderBindingList &GetTextureList() const{ return pTextureList; }
+	inline deoglShaderBinding::List &GetTextureList(){ return pTextureList; }
+	inline const deoglShaderBinding::List &GetTextureList() const{ return pTextureList; }
 	
 	/** Retrieves the parameter list. */
 	inline const decStringList &GetParameterList() const{ return pParameterList; }

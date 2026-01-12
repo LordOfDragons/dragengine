@@ -226,7 +226,7 @@ void debpColliderRig::UpdateExtends(){
 	decDVector minExtend, maxExtend;
 	
 	if(pRig){
-		int b, s, shapeCount = pRigShapes.GetShapes().GetCount();
+		int b, s, shapeCount = pRigShapes.GetCount();
 		decDVector distance(pPredictDisp * 0.5);
 		decDVector minExtendShape, maxExtendShape;
 		debpDCollisionBox colBox;
@@ -237,7 +237,7 @@ void debpColliderRig::UpdateExtends(){
 		
 		// determine the bounding box of all collision volumes
 		for(s=0; s<shapeCount; s++){
-			pRigShapes.GetShapes().GetAt(s)->GetCollisionVolume()->GetEnclosingBox(&colBox);
+			pRigShapes.GetAt(s)->GetCollisionVolume()->GetEnclosingBox(&colBox);
 			
 			if(first){
 				minExtend = colBox.GetCenter() - colBox.GetHalfSize();
@@ -262,12 +262,12 @@ void debpColliderRig::UpdateExtends(){
 			const int bpcount = pBones->GetBonePhysicsCount();
 			
 			for(b=0; b<bpcount; b++){
-				const debpShapeList &shapeList = pBones->GetBonePhysicsAt(b).GetShapes();
+				const debpShape::List &shapeList = pBones->GetBonePhysicsAt(b).GetShapes();
 				
-				shapeCount = shapeList.GetShapes().GetCount();
+				shapeCount = shapeList.GetCount();
 				
 				for(s=0; s<shapeCount; s++){
-					shapeList.GetShapes().GetAt(s)->GetCollisionVolume()->GetEnclosingBox(&colBox);
+					shapeList.GetAt(s)->GetCollisionVolume()->GetEnclosingBox(&colBox);
 					
 					if(first){
 						minExtend = colBox.GetCenter() - colBox.GetHalfSize();
@@ -446,14 +446,14 @@ void debpColliderRig::pUpdateShapeExtends(){
 	decDVector minExtend, maxExtend;
 	
 	if(pRig){
-		int b, s, shapeCount = pRigShapes.GetShapes().GetCount();
+		int b, s, shapeCount = pRigShapes.GetCount();
 		decDVector distance(pPredictDisp * 0.5);
 		decDVector minExtendShape, maxExtendShape;
 		debpDCollisionBox colBox;
 		bool first = true;
 		
 		for(s=0; s<shapeCount; s++){
-			pRigShapes.GetShapes().GetAt(s)->GetCollisionVolume()->GetEnclosingBox(&colBox);
+			pRigShapes.GetAt(s)->GetCollisionVolume()->GetEnclosingBox(&colBox);
 			
 			if(first){
 				minExtend = colBox.GetCenter() - colBox.GetHalfSize();
@@ -478,12 +478,12 @@ void debpColliderRig::pUpdateShapeExtends(){
 			const int bpcount = pBones->GetBonePhysicsCount();
 			
 			for(b=0; b<bpcount; b++){
-				const debpShapeList &shapeList = pBones->GetBonePhysicsAt(b).GetShapes();
+				const debpShape::List &shapeList = pBones->GetBonePhysicsAt(b).GetShapes();
 				
-				shapeCount = shapeList.GetShapes().GetCount();
+				shapeCount = shapeList.GetCount();
 				
 				for(s=0; s<shapeCount; s++){
-					shapeList.GetShapes().GetAt(s)->GetCollisionVolume()->GetEnclosingBox(&colBox);
+					shapeList.GetAt(s)->GetCollisionVolume()->GetEnclosingBox(&colBox);
 					
 					if(first){
 						minExtend = colBox.GetCenter() - colBox.GetHalfSize();
@@ -1219,7 +1219,7 @@ void debpColliderRig::pUpdateBones(){
 			engRig->GetShapes().GetAt(s)->Visit(createShape);
 			
 			if(createShape.GetCreatedShape()){
-				pRigShapes.AddShape(createShape.GetCreatedShape());
+				pRigShapes.Add(createShape.GetCreatedShape());
 				createShape.SetCreatedShape(NULL);
 			}
 		}

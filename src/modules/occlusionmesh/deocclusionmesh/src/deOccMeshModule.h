@@ -27,7 +27,7 @@
 
 #include <dragengine/systems/modules/occlusionmesh/deBaseOcclusionMeshModule.h>
 
-class deoccmWeightSetList;
+#include "deoccmWeightSet.h"
 
 struct sMeshInfos{
 	int version;
@@ -38,7 +38,7 @@ struct sMeshInfos{
 	int cornerCount;
 	int faceCount;
 	int doubleSidedFaceCount;
-	deoccmWeightSetList *weightSetList;
+	deoccmWeightSet::List *weightSetList;
 };
 
 

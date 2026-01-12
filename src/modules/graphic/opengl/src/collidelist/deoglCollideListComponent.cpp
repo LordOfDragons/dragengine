@@ -52,6 +52,16 @@ pCubeFaceMask(0x2f),
 pSpecialFlags(0){
 }
 
+deoglCollideListComponent::deoglCollideListComponent(deoglRComponent *component) :
+pComponent(component),
+pLODLevel(0),
+pComponentLOD(&pComponent->GetLODAt(pLODLevel)),
+pCulled(false),
+pCascadeMask(0),
+pCubeFaceMask(0x2f),
+pSpecialFlags(0){
+}
+
 deoglCollideListComponent::~deoglCollideListComponent(){
 }
 

@@ -27,6 +27,8 @@
 
 #include "deoglSkinTexturePipelines.h"
 
+#include <dragengine/deTUniqueReference.h>
+
 class deoglBatchedShaderLoading;
 
 
@@ -54,7 +56,7 @@ public:
 	
 	
 private:
-	deoglSkinTexturePipelines::Ref pPipelines[PipelineTypesCount];
+	deTUniqueReference<deoglSkinTexturePipelines> pPipelines[PipelineTypesCount];
 	
 	
 	

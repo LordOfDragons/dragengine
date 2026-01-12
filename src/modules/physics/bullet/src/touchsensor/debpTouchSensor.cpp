@@ -433,14 +433,14 @@ bool debpTouchSensor::TestCollider(debpCollider *collider){
 						pBullet.LogInfoFormat("BulletBug.TouchSensor.TestCollider: %d", r);
 						
 						if(r){
-							const debpShapeList &sl = component.GetRigShapes();
-							const int count = sl.GetShapes().GetCount();
+							const debpShape::List &sl = component.GetRigShapes();
+							const int count = sl.GetCount();
 							debpShapeToLog visitor;
 							int i;
 							for(i=0; i<count; i++){
-								if(sl.GetShapes().GetAt(i)->GetShape()){
+								if(sl.GetAt(i)->GetShape()){
 									visitor.Reset();
-									sl.GetShapes().GetAt(i)->GetShape()->Visit(visitor);
+									sl.GetAt(i)->GetShape()->Visit(visitor);
 									pBullet.LogWarnFormat("  %d: %s", i, visitor.GetLog().GetString());
 								}
 							}
@@ -491,11 +491,11 @@ bool debpTouchSensor::TestCollider(debpCollider *collider){
 		
 	}else{
 		const decDVector scale(transformation.GetScale());
-		const int count = pShape.GetShapes().GetCount();
+		const int count = pShape.GetCount();
 		int i;
 		
 		for(i=0; i<count; i++){
-			debpShape &shape = *pShape.GetShapes().GetAt(i);
+			debpShape &shape = *pShape.GetAt(i);
 			shape.UpdateWithMatrix(transformation, scale);
 			if(shape.GetCollisionVolume()->BoxHitsVolume(&approxColliderBox)){
 				return true;
@@ -609,7 +609,7 @@ void debpTouchSensor::ShapeChanged(){
 	const decShapeList &shapeList = pTouchSensor.GetShape();
 	const int count = shapeList.GetCount();
 	
-	pShape.RemoveAllShapes();
+	pShape.RemoveAll();
 	if(count == 0){
 		return;
 	}
@@ -621,7 +621,7 @@ void debpTouchSensor::ShapeChanged(){
 		if(!createShape.GetCreatedShape()){
 			DETHROW(deeInvalidParam);
 		}
-		pShape.AddShape(createShape.GetCreatedShape());
+		pShape.Add(createShape.GetCreatedShape());
 	}
 	
 	// update ghost object shape

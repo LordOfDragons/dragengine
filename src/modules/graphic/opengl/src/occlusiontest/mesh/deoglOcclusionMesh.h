@@ -28,6 +28,7 @@
 #include "deoglROcclusionMesh.h"
 
 #include <dragengine/systems/modules/graphic/deBaseGraphicOcclusionMesh.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class deOcclusionMesh;
 class deGraphicOpenGl;
@@ -38,6 +39,9 @@ class deGraphicOpenGl;
  * Occlusion mesh peer.
  */
 class deoglOcclusionMesh : public deBaseGraphicOcclusionMesh{
+public:
+	using List = decTOrderedSet<deoglOcclusionMesh*>;
+	
 public:
 	deGraphicOpenGl &pOgl;
 	const deOcclusionMesh &pOcclusionMesh;

@@ -27,9 +27,9 @@
 
 #include <stdint.h>
 
-#include "../billboard/deoglBillboardList.h"
-#include "../envmap/deoglEnvironmentMapList.h"
-#include "../particle/deoglParticleEmitterInstanceList.h"
+#include "../billboard/deoglRBillboard.h"
+#include "../envmap/deoglEnvironmentMap.h"
+#include "../particle/deoglRParticleEmitterInstance.h"
 #include "../utils/octree/deoglDOctree.h"
 
 #include <dragengine/common/collection/decTList.h>
@@ -50,9 +50,9 @@ class deoglWorldOctree : public deoglDOctree{
 private:
 	int pInsertDepth;
 	
-	deoglBillboardList pBillboards;
-	deoglEnvironmentMapList pEnvMaps;
-	deoglParticleEmitterInstanceList pParticleEmitters;
+	deoglRBillboard::List pBillboards;
+	deoglEnvironmentMap::List pEnvMaps;
+	deoglRParticleEmitterInstance::List pParticleEmitters;
 	
 	decTList<deoglRComponent*> pComponents;
 	decTList<deoglRLight*> pLights;
@@ -219,7 +219,7 @@ public:
 	/** \name Billboards */
 	/*@{*/
 	/** List of billboards. */
-	inline const deoglBillboardList &GetBillboardList() const{ return pBillboards; }
+	inline const deoglRBillboard::List &GetBillboardList() const{ return pBillboards; }
 	
 	/** Add billboard. */
 	void AddBillboard(deoglRBillboard *billboard);
@@ -236,7 +236,7 @@ public:
 	/** \name EnvMaps */
 	/*@{*/
 	/** List of environment maps. */
-	inline const deoglEnvironmentMapList &GetEnvMapList() const{ return pEnvMaps; }
+	inline const deoglEnvironmentMap::List &GetEnvMapList() const{ return pEnvMaps; }
 	
 	/** Add envmap. */
 	void AddEnvMap(deoglEnvironmentMap *envmap);
@@ -253,7 +253,7 @@ public:
 	/** \name ParticleEmitters */
 	/*@{*/
 	/** List of particle emitters. */
-	inline const deoglParticleEmitterInstanceList &GetParticleEmittersList() const{ return pParticleEmitters; }
+	inline const deoglRParticleEmitterInstance::List &GetParticleEmittersList() const{ return pParticleEmitters; }
 	
 	/** Add emitter. */
 	void AddParticleEmitter(deoglRParticleEmitterInstance *emitter);

@@ -49,17 +49,17 @@
 ////////////////////////////
 
 deoglSkinTexturePipelinesList::deoglSkinTexturePipelinesList(const deoglSkinTexture &texture){
-	pPipelines[eptComponent] = deoglSTPipelinesComponent::Ref::New(texture);
-	pPipelines[eptBillboard] = deoglSTPipelinesBillboard::Ref::New(texture);
-	pPipelines[eptDecal] = deoglSTPipelinesDecal::Ref::New(texture);
-	pPipelines[eptPropField] = deoglSTPipelinesPropField::Ref::New(texture);
-	pPipelines[eptPropFieldImposter] = deoglSTPipelinesPropFieldImposter::Ref::New(texture);
-	pPipelines[eptHeightMap1] = deoglSTPipelinesHeightMap1::Ref::New(texture);
-	pPipelines[eptHeightMap2] = deoglSTPipelinesHeightMap2::Ref::New(texture);
-	pPipelines[eptParticle] = deoglSTPipelinesParticle::Ref::New(texture);
-	pPipelines[eptParticleRibbon] = deoglSTPipelinesParticleRibbon::Ref::New(texture);
-	pPipelines[eptParticleBeam] = deoglSTPipelinesParticleBeam::Ref::New(texture);
-	pPipelines[eptOutline] = deoglSTPipelinesOutline::Ref::New(texture);
+	pPipelines[eptComponent] = deTUniqueReference<deoglSTPipelinesComponent>::New(texture);
+	pPipelines[eptBillboard] = deTUniqueReference<deoglSTPipelinesBillboard>::New(texture);
+	pPipelines[eptDecal] = deTUniqueReference<deoglSTPipelinesDecal>::New(texture);
+	pPipelines[eptPropField] = deTUniqueReference<deoglSTPipelinesPropField>::New(texture);
+	pPipelines[eptPropFieldImposter] = deTUniqueReference<deoglSTPipelinesPropFieldImposter>::New(texture);
+	pPipelines[eptHeightMap1] = deTUniqueReference<deoglSTPipelinesHeightMap1>::New(texture);
+	pPipelines[eptHeightMap2] = deTUniqueReference<deoglSTPipelinesHeightMap2>::New(texture);
+	pPipelines[eptParticle] = deTUniqueReference<deoglSTPipelinesParticle>::New(texture);
+	pPipelines[eptParticleRibbon] = deTUniqueReference<deoglSTPipelinesParticleRibbon>::New(texture);
+	pPipelines[eptParticleBeam] = deTUniqueReference<deoglSTPipelinesParticleBeam>::New(texture);
+	pPipelines[eptOutline] = deTUniqueReference<deoglSTPipelinesOutline>::New(texture);
 }
 
 deoglSkinTexturePipelinesList::~deoglSkinTexturePipelinesList(){

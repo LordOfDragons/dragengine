@@ -280,7 +280,7 @@ deoalRayCacheRay *deoalRayCache::FindRay(const decVector &origin, const decVecto
 }
 
 void deoalRayCache::CacheRay(const decVector &origin, const decVector &direction,
-float length, const deoalRayTraceHitElementList &elements){
+float length, const deoalRayTraceHitElement::List &elements){
 	deMutexGuard lock(pMutexWrite);
 	pCacheRay(new deoalRayCacheRay(origin, direction.Normalized(), length, elements));
 }

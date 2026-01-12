@@ -27,6 +27,7 @@
 #include <string.h>
 
 #include "deoalRayTraceHitElement.h"
+#include "../../component/deoalAComponent.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -97,4 +98,15 @@ deoalRayTraceHitElement &deoalRayTraceHitElement::operator=(const deoalRayTraceH
 	pComponent = element.pComponent;
 	pComponentFace = element.pComponentFace;
 	return *this;
+}
+
+
+
+// Class deoalRayTraceHitElement::List
+////////////////////////////////////////
+
+void deoalRayTraceHitElement::List::AddComponentFace(float distance, const decDVector &point,
+const decDVector &normal, deoalAComponent *component, int face, bool frontFacing){
+	decTList<deoalRayTraceHitElement>::Add(
+		deoalRayTraceHitElement{distance, point, normal, component, face, frontFacing});
 }

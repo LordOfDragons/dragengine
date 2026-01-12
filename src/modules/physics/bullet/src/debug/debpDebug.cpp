@@ -28,7 +28,6 @@
 
 #include "debpDebug.h"
 #include "debpDebugInformation.h"
-#include "debpDebugInformationList.h"
 #include "../dePhysicsBullet.h"
 
 #include <dragengine/common/exceptions.h>

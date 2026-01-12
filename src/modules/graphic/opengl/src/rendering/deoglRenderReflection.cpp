@@ -1088,7 +1088,7 @@ void deoglRenderReflection::RenderReflections(deoglRenderPlan &plan){
 void deoglRenderReflection::UpdateEnvMapSlots(deoglRenderPlan &plan){
 	deoglRenderThread &renderThread = GetRenderThread();
 	
-	const deoglEnvironmentMapList &list = plan.GetCollideList().GetEnvironmentMapList();
+	const deoglEnvironmentMap::List &list = plan.GetCollideList().GetEnvironmentMapList();
 	deoglEnvMapSlotManager &envMapSlotMgr = renderThread.GetEnvMapSlotManager();
 	const int envMapCount = list.GetCount();
 	int envMapIndex;

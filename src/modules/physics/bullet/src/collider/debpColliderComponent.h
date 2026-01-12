@@ -27,7 +27,7 @@
 
 #include "debpCollider.h"
 #include "../debpBulletShape.h"
-#include "../shape/debpShapeList.h"
+#include "../shape/debpShape.h"
 #include "../debpCollisionObject.h"
 #include "../forcefield/debpForceFieldFluctuation.h"
 
@@ -91,7 +91,7 @@ private:
 	eTestModes pTestMode;
 	debpPhysicsBody *pSimplePhyBody;
 	
-	debpShapeList pRigShapes;
+	debpShape::List pRigShapes;
 	decDVector pRigOffset;
 	bool pHasRigOffset;
 	
@@ -200,8 +200,8 @@ public:
 	void UpdateCollisionObjectAABBs() override;
 	
 	/** Retrieves the list of rig shapes. */
-	inline debpShapeList &GetRigShapes(){ return pRigShapes; }
-	inline const debpShapeList &GetRigShapes() const{ return pRigShapes; }
+	inline debpShape::List &GetRigShapes(){ return pRigShapes; }
+	inline const debpShape::List &GetRigShapes() const{ return pRigShapes; }
 	
 	/** Updates the octree position. */
 	void UpdateOctreePosition() override;

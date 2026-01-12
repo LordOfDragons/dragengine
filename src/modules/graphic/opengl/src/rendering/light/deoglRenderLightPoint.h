@@ -64,8 +64,8 @@ public:
 		bool solid;
 		bool transparentStaticShadow;
 		bool transparentDynamicShadow;
-		const deoglCollideList *collideList1;
-		const deoglCollideList *collideList2;
+		deoglCollideList *collideList1;
+		deoglCollideList *collideList2;
 		int solidShadowMapSize;
 		int transpShadowMapSize;
 		int ambientMapSize;

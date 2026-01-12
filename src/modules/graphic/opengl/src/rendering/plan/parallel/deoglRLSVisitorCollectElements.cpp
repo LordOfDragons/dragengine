@@ -437,7 +437,7 @@ void deoglRLSVisitorCollectElements::VisitHTView(const deoglHTView &htview){
 				}
 				
 				if(!clsector){
-					clsector = pCollideList.AddHTSector(&sector);
+					clsector = &pCollideList.AddHTSector(&sector);
 				}
 				clsector->AddCluster(si)->SetCascadeMask(cascadeMask);
 			}
@@ -478,7 +478,7 @@ void deoglRLSVisitorCollectElements::VisitPropFields(const deoglRWorld &world){
 				}
 				
 				if(!clpropfield){
-					clpropfield = pCollideList.AddPropField(&propField);
+					clpropfield = &pCollideList.AddPropField(&propField);
 				}
 				if(!cltype){
 					cltype = clpropfield->AddType(&type);
@@ -662,7 +662,7 @@ void deoglRLSVisitorCollectElements::pVisitComponents(const deoglWorldOctree &so
 			continue;
 		}
 		
-		deoglCollideListComponent &clcomponent = *pCollideList.AddComponent(addComponent);
+		deoglCollideListComponent &clcomponent = pCollideList.AddComponent(addComponent);
 		clcomponent.SetCascadeMask(cascadeMask);
 		clcomponent.SetSpecialFlags(cascadeMask);
 		

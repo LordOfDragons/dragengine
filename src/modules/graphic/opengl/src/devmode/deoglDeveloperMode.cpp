@@ -722,30 +722,26 @@ void deoglDeveloperMode::pCmdStats(const decUnicodeArgumentList &command, decUni
 
 void deoglDeveloperMode::pCmdCapabilities(const decUnicodeArgumentList &command, decUnicodeString &answer){
 	deoglCapabilities &caps = pRenderThread.GetCapabilities();
-	const deoglCapsTextureFormat *format;
-	int f, formatCount;
 	
 	if(command.GetArgumentCount() == 2){
 		if(command.MatchesArgumentAt(1, "tex2D_found")){
-			const deoglCapsTextureFormatList &formatList = caps.GetFormats().GetFoundTex2DFormats();
-			formatCount = formatList.GetFormatCount();
-			
+			const auto &formatList = caps.GetFormats().GetFoundTex2DFormats();
 			answer.SetFromUTF8("Found 2D-Texture formats:\n");
-			for(f=0; f<formatCount; f++){
-				format = formatList.GetFormatAt(f);
+			formatList.Visit([&](const deoglCapsTextureFormat &format){
 				answer.AppendFromUTF8("- ");
-				answer.AppendFromUTF8(format->GetName().GetString());
+				answer.AppendFromUTF8(format.GetName());
 				answer.AppendFromUTF8("\n");
-			}
+			});
 			return;
 			
 		}else if(command.MatchesArgumentAt(1, "tex2D_use")){
 			answer.SetFromUTF8("Used 2D-Texture formats:\n");
-			for(f=0; f<deoglCapsFmtSupport::UseTextureFormatCount; f++){
-				format = caps.GetFormats().GetUseTex2DFormatFor(ST_UseTextureFormats[f].type);
+			int i;
+			for(i=0; i<deoglCapsFmtSupport::UseTextureFormatCount; i++){
+				const deoglCapsTextureFormat *format = caps.GetFormats().GetUseTex2DFormatFor(ST_UseTextureFormats[i].type);
 				
 				answer.AppendFromUTF8("- ");
-				answer.AppendFromUTF8(ST_UseTextureFormats[f].name);
+				answer.AppendFromUTF8(ST_UseTextureFormats[i].name);
 				answer.AppendFromUTF8(" => ");
 				if(format){
 					answer.AppendFromUTF8(format->GetName().GetString());
@@ -758,28 +754,25 @@ void deoglDeveloperMode::pCmdCapabilities(const decUnicodeArgumentList &command,
 			return;
 			
 		}else if(command.MatchesArgumentAt(1, "texCube_found")){
-			const deoglCapsTextureFormatList &formatList = caps.GetFormats().GetFoundTexCubeFormats();
-			formatCount = formatList.GetFormatCount();
-			
 			answer.SetFromUTF8("Found Cube-Texture formats:\n");
-			for(f=0; f<formatCount; f++){
-				format = formatList.GetFormatAt(f);
+			caps.GetFormats().GetFoundTexCubeFormats().Visit([&](const deoglCapsTextureFormat &format){
 				answer.AppendFromUTF8("- ");
-				answer.AppendFromUTF8(format->GetName().GetString());
+				answer.AppendFromUTF8(format.GetName());
 				answer.AppendFromUTF8("\n");
-			}
+			});
 			return;
 			
 		}else if(command.MatchesArgumentAt(1, "texCube_use")){
 			answer.SetFromUTF8("Used Cube-Texture formats:\n");
-			for(f=0; f<deoglCapsFmtSupport::UseTextureFormatCount; f++){
-				format = caps.GetFormats().GetUseTexCubeFormatFor(ST_UseTextureFormats[f].type);
+			int i;
+			for(i=0; i<deoglCapsFmtSupport::UseTextureFormatCount; i++){
+				const deoglCapsTextureFormat *format = caps.GetFormats().GetUseTexCubeFormatFor(ST_UseTextureFormats[i].type);
 				
 				answer.AppendFromUTF8("- ");
-				answer.AppendFromUTF8(ST_UseTextureFormats[f].name);
+				answer.AppendFromUTF8(ST_UseTextureFormats[i].name);
 				answer.AppendFromUTF8(" => ");
 				if(format){
-					answer.AppendFromUTF8(format->GetName().GetString());
+					answer.AppendFromUTF8(format->GetName());
 					
 				}else{
 					answer.AppendFromUTF8("< Unsupported >");
@@ -789,28 +782,25 @@ void deoglDeveloperMode::pCmdCapabilities(const decUnicodeArgumentList &command,
 			return;
 			
 		}else if(command.MatchesArgumentAt(1, "arrTex_found")){
-			const deoglCapsTextureFormatList &formatList = caps.GetFormats().GetFoundArrayTexFormats();
-			formatCount = formatList.GetFormatCount();
-			
 			answer.SetFromUTF8("Found Array-Texture formats:\n");
-			for(f=0; f<formatCount; f++){
-				format = formatList.GetFormatAt(f);
+			caps.GetFormats().GetFoundArrayTexFormats().Visit([&](const deoglCapsTextureFormat &format){
 				answer.AppendFromUTF8("- ");
-				answer.AppendFromUTF8(format->GetName().GetString());
+				answer.AppendFromUTF8(format.GetName());
 				answer.AppendFromUTF8("\n");
-			}
+			});
 			return;
 			
 		}else if(command.MatchesArgumentAt(1, "arrTex_use")){
 			answer.SetFromUTF8("Used Array-Texture formats:\n");
-			for(f=0; f<deoglCapsFmtSupport::UseTextureFormatCount; f++){
-				format = caps.GetFormats().GetUseArrayTexFormatFor(ST_UseTextureFormats[f].type);
+			int i;
+			for(i=0; i<deoglCapsFmtSupport::UseTextureFormatCount; i++){
+				const deoglCapsTextureFormat *format = caps.GetFormats().GetUseArrayTexFormatFor(ST_UseTextureFormats[i].type);
 				
 				answer.AppendFromUTF8("- ");
-				answer.AppendFromUTF8(ST_UseTextureFormats[f].name);
+				answer.AppendFromUTF8(ST_UseTextureFormats[i].name);
 				answer.AppendFromUTF8(" => ");
 				if(format){
-					answer.AppendFromUTF8(format->GetName().GetString());
+					answer.AppendFromUTF8(format->GetName());
 					
 				}else{
 					answer.AppendFromUTF8("< Unsupported >");
@@ -820,28 +810,25 @@ void deoglDeveloperMode::pCmdCapabilities(const decUnicodeArgumentList &command,
 			return;
 			
 		}else if(command.MatchesArgumentAt(1, "fboTex2D_found")){
-			const deoglCapsTextureFormatList &formatList = caps.GetFormats().GetFoundFBOTex2DFormats();
-			formatCount = formatList.GetFormatCount();
-			
 			answer.SetFromUTF8("Found FBO 2D-Texture formats:\n");
-			for(f=0; f<formatCount; f++){
-				format = formatList.GetFormatAt(f);
+			caps.GetFormats().GetFoundFBOTex2DFormats().Visit([&](const deoglCapsTextureFormat &format){
 				answer.AppendFromUTF8("- ");
-				answer.AppendFromUTF8(format->GetName().GetString());
+				answer.AppendFromUTF8(format.GetName());
 				answer.AppendFromUTF8("\n");
-			}
+			});
 			return;
 			
 		}else if(command.MatchesArgumentAt(1, "fboTex2D_use")){
 			answer.SetFromUTF8("Used FBO 2D-Texture formats:\n");
-			for(f=0; f<deoglCapsFmtSupport::UseTextureFormatCount; f++){
-				format = caps.GetFormats().GetUseFBOTex2DFormatFor(ST_UseTextureFormats[f].type);
+			int i;
+			for(i=0; i<deoglCapsFmtSupport::UseTextureFormatCount; i++){
+				const deoglCapsTextureFormat *format = caps.GetFormats().GetUseFBOTex2DFormatFor(ST_UseTextureFormats[i].type);
 				
 				answer.AppendFromUTF8("- ");
-				answer.AppendFromUTF8(ST_UseTextureFormats[f].name);
+				answer.AppendFromUTF8(ST_UseTextureFormats[i].name);
 				answer.AppendFromUTF8(" => ");
 				if(format){
-					answer.AppendFromUTF8(format->GetName().GetString());
+					answer.AppendFromUTF8(format->GetName());
 					
 				}else{
 					answer.AppendFromUTF8("< Unsupported >");
@@ -851,28 +838,25 @@ void deoglDeveloperMode::pCmdCapabilities(const decUnicodeArgumentList &command,
 			return;
 			
 		}else if(command.MatchesArgumentAt(1, "fboTexCube_found")){
-			const deoglCapsTextureFormatList &formatList = caps.GetFormats().GetFoundFBOTexCubeFormats();
-			formatCount = formatList.GetFormatCount();
-			
 			answer.SetFromUTF8("Found FBO Cube-Texture formats:\n");
-			for(f=0; f<formatCount; f++){
-				format = formatList.GetFormatAt(f);
+			caps.GetFormats().GetFoundFBOTexCubeFormats().Visit([&](const deoglCapsTextureFormat &format){
 				answer.AppendFromUTF8("- ");
-				answer.AppendFromUTF8(format->GetName().GetString());
+				answer.AppendFromUTF8(format.GetName());
 				answer.AppendFromUTF8("\n");
-			}
+			});
 			return;
 			
 		}else if(command.MatchesArgumentAt(1, "fboTexCube_use")){
 			answer.SetFromUTF8("Used FBO Cube-Texture formats:\n");
-			for(f=0; f<deoglCapsFmtSupport::UseTextureFormatCount; f++){
-				format = caps.GetFormats().GetUseFBOTexCubeFormatFor(ST_UseTextureFormats[f].type);
+			int i;
+			for(i=0; i<deoglCapsFmtSupport::UseTextureFormatCount; i++){
+				const deoglCapsTextureFormat *format = caps.GetFormats().GetUseFBOTexCubeFormatFor(ST_UseTextureFormats[i].type);
 				
 				answer.AppendFromUTF8("- ");
-				answer.AppendFromUTF8(ST_UseTextureFormats[f].name);
+				answer.AppendFromUTF8(ST_UseTextureFormats[i].name);
 				answer.AppendFromUTF8(" => ");
 				if(format){
-					answer.AppendFromUTF8(format->GetName().GetString());
+					answer.AppendFromUTF8(format->GetName());
 					
 				}else{
 					answer.AppendFromUTF8("< Unsupported >");
@@ -882,28 +866,25 @@ void deoglDeveloperMode::pCmdCapabilities(const decUnicodeArgumentList &command,
 			return;
 			
 		}else if(command.MatchesArgumentAt(1, "fboArrTex_found")){
-			const deoglCapsTextureFormatList &formatList = caps.GetFormats().GetFoundFBOArrayTexFormats();
-			formatCount = formatList.GetFormatCount();
-			
 			answer.SetFromUTF8("Found FBO Array-Texture formats:\n");
-			for(f=0; f<formatCount; f++){
-				format = formatList.GetFormatAt(f);
+			caps.GetFormats().GetFoundFBOArrayTexFormats().Visit([&](const deoglCapsTextureFormat &format){
 				answer.AppendFromUTF8("- ");
-				answer.AppendFromUTF8(format->GetName().GetString());
+				answer.AppendFromUTF8(format.GetName());
 				answer.AppendFromUTF8("\n");
-			}
+			});
 			return;
 			
 		}else if(command.MatchesArgumentAt(1, "fboArrTex_use")){
 			answer.SetFromUTF8("Used FBO Array-Texture formats:\n");
-			for(f=0; f<deoglCapsFmtSupport::UseTextureFormatCount; f++){
-				format = caps.GetFormats().GetUseFBOArrayTexFormatFor(ST_UseTextureFormats[f].type);
+			int i;
+			for(i=0; i<deoglCapsFmtSupport::UseTextureFormatCount; i++){
+				const deoglCapsTextureFormat *format = caps.GetFormats().GetUseFBOArrayTexFormatFor(ST_UseTextureFormats[i].type);
 				
 				answer.AppendFromUTF8("- ");
-				answer.AppendFromUTF8(ST_UseTextureFormats[f].name);
+				answer.AppendFromUTF8(ST_UseTextureFormats[i].name);
 				answer.AppendFromUTF8(" => ");
 				if(format){
-					answer.AppendFromUTF8(format->GetName().GetString());
+					answer.AppendFromUTF8(format->GetName());
 					
 				}else{
 					answer.AppendFromUTF8("< Unsupported >");

@@ -605,7 +605,7 @@ void deoglWorldOctree::AddBillboard(deoglRBillboard *billboard){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pBillboards.Add(billboard);
+	pBillboards.AddOrThrow(billboard);
 	
 	billboard->SetOctreeNode(this);
 }

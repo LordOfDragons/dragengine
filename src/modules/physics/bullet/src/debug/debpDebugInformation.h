@@ -25,9 +25,8 @@
 #ifndef _DEBPDEBUGINFORMATION_H_
 #define _DEBPDEBUGINFORMATION_H_
 
-#include "debpDebugInformationList.h"
-
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
@@ -48,6 +47,10 @@
  * need to add and remove debug information all time.
  */
 class debpDebugInformation : public deObject{
+public:
+	using Ref = deTObjectReference<debpDebugInformation>;
+	using List = decTObjectOrderedSet<debpDebugInformation>;
+	
 private:
 	decString pName;
 	float pElapsedTime;
@@ -59,11 +62,7 @@ private:
 	
 	
 	
-public:
-	/** \brief Type holding strong reference. */
-	using Ref = deTObjectReference<debpDebugInformation>;
-
-
+	public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create debug information. */

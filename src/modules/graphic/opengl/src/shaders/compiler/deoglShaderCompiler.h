@@ -40,7 +40,6 @@ class deoglShaderCompiled;
 class deoglShaderProgram;
 class deoglShaderProgramUnit;
 class deoglRenderThread;
-class deoglShaderBindingList;
 
 
 

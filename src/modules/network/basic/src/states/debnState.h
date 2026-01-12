@@ -25,6 +25,8 @@
 #ifndef _DEBNSTATE_H_
 #define _DEBNSTATE_H_
 
+#include "debnStateLink.h"
+
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/network/deBaseNetworkState.h>
 
@@ -35,7 +37,6 @@ class debnWorld;
 class debnValue;
 class debnStateLink;
 class debnConnection;
-class debnStateLinkList;
 class decBaseFileReader;
 class decBaseFileWriter;
 
@@ -51,7 +52,7 @@ private:
 	int pValueCount;
 	int pValueSize;
 	
-	debnStateLinkList *pLinks;
+	debnStateLink::List pLinks;
 	
 	debnWorld *pParentWorld;
 	
@@ -75,7 +76,8 @@ public:
 	inline deNetworkState &GetState() const{ return pState; }
 	
 	/** Retrieves the list of state links. */
-	inline debnStateLinkList *GetLinks() const{ return pLinks; }
+	inline debnStateLink::List &GetLinks(){ return pLinks; }
+	inline const debnStateLink::List &GetLinks() const{ return pLinks; }
 	
 	/** Update state. */
 	void Update();

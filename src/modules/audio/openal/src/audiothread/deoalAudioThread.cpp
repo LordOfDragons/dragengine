@@ -43,7 +43,6 @@
 #include "../effect/deoalEffectSlotManager.h"
 #include "../effect/deoalSharedEffectSlotManager.h"
 #include "../environment/raytrace/deoalRayTraceResult.h"
-#include "../environment/raytrace/deoalRayTraceHitElementList.h"
 #include "../environment/raytrace/deoalSoundRayInteraction.h"
 #include "../environment/raytrace/parallel/deoalRTParallelEnvProbe.h"
 #include "../environment/raytrace/visitors/deoalWOVRayHitsElement.h"
@@ -127,7 +126,6 @@ pSharedBufferList(nullptr),
 
 pRTParallelEnvProbe(nullptr),
 pRTResultDirect(nullptr),
-pRTHitElementList(nullptr),
 pWOVRayHitsElement(nullptr),
 pWOVCollectElements(nullptr),
 
@@ -691,7 +689,6 @@ void deoalAudioThread::pInitThreadPhase1(){
 	
 	pRTParallelEnvProbe = new deoalRTParallelEnvProbe(*this);
 	pRTResultDirect = new deoalRayTraceResult;
-	pRTHitElementList = new deoalRayTraceHitElementList;
 	pWOVRayHitsElement = new deoalWOVRayHitsElement;
 	pWOVCollectElements = new deoalWOVCollectElements;
 	
@@ -720,9 +717,7 @@ void deoalAudioThread::pCleanUpThread(){
 	if(pWOVRayHitsElement){
 		delete pWOVRayHitsElement;
 	}
-	if(pRTHitElementList){
-		delete pRTHitElementList;
-	}
+	pRTHitElementList.RemoveAll();
 	if(pRTResultDirect){
 		delete pRTResultDirect;
 	}

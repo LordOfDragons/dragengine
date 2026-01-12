@@ -417,7 +417,7 @@ void deoglRenderPlan::pBarePrepareRender(const deoglRenderPlanMasked *mask){
 	SPECIAL_TIMER_PRINT("UpdateHTViewRTSInstances")
 	
 	// prepare particles for rendering
-	const deoglParticleEmitterInstanceList &particleEmitterList = pCollideList.GetParticleEmitterList();
+	const deoglRParticleEmitterInstance::List &particleEmitterList = pCollideList.GetParticleEmitterList();
 	const int particleEmitterCount = particleEmitterList.GetCount();
 	int i;
 	
@@ -438,7 +438,7 @@ void deoglRenderPlan::pBarePrepareRender(const deoglRenderPlanMasked *mask){
 	// NOTE these calls indirectly access projection matrix. this requires per-eye updating
 	const int componentCount = pCollideList.GetComponentCount();
 	for(i=0; i<componentCount; i++){
-		pCollideList.GetComponentAt(i)->GetComponent()->AddSkinStateRenderPlans(*this);
+		pCollideList.GetComponentAt(i).GetComponent()->AddSkinStateRenderPlans(*this);
 	}
 	
 	const int billboardCount = pCollideList.GetBillboardCount();
@@ -493,7 +493,7 @@ void deoglRenderPlan::pBarePrepareRenderRightEye(){
 	// and masked rendering if required
 	const int componentCount = pCollideList.GetComponentCount();
 	for(i=0; i<componentCount; i++){
-		pCollideList.GetComponentAt(i)->GetComponent()->AddSkinStateRenderPlans(*this);
+		pCollideList.GetComponentAt(i).GetComponent()->AddSkinStateRenderPlans(*this);
 	}
 	
 	const int billboardCount = pCollideList.GetBillboardCount();
@@ -895,7 +895,7 @@ void deoglRenderPlan::pPlanLODLevels(){
 }
 
 void deoglRenderPlan::pPlanEnvMaps(){
-	const deoglEnvironmentMapList &envmapList = pWorld->GetEnvMapList();
+	const deoglEnvironmentMap::List &envmapList = pWorld->GetEnvMapList();
 	const int envmapCount = envmapList.GetCount();
 	deoglEnvironmentMap *envmap;
 	float distance;
@@ -1359,14 +1359,14 @@ void deoglRenderPlan::pDebugVisibleNoCull(){
 	if(pDebug){
 		const int componentCount = pCollideList.GetComponentCount();
 		const int lightCount = pCollideList.GetLightCount();
-		deoglEnvironmentMapList envMapList;
+		deoglEnvironmentMap::List envMapList;
 		int i;
 		
 		pDebug->IncrementViewObjects(componentCount);
 		pDebug->IncrementViewLights(lightCount);
 		
 		for(i=0; i<componentCount; i++){
-			const deoglCollideListComponent &clistComponent = *pCollideList.GetComponentAt(i);
+			const deoglCollideListComponent &clistComponent = pCollideList.GetComponentAt(i);
 			const deoglRComponent &component = *clistComponent.GetComponent();
 			
 			if(component.GetModel()){
@@ -1414,7 +1414,7 @@ void deoglRenderPlan::pDebugVisibleCulled(){
 		pDebug->IncrementCullPSLights(lightCount);
 		
 		for(i=0; i<componentCount; i++){
-			const deoglCollideListComponent &clistComponent = *pCollideList.GetComponentAt(i);
+			const deoglCollideListComponent &clistComponent = pCollideList.GetComponentAt(i);
 			const deoglRComponent &component = *clistComponent.GetComponent();
 			
 			if(!component.GetModel()){
@@ -1943,11 +1943,7 @@ deoglRenderPlanLight *deoglRenderPlan::GetLightAt(int index) const{
 	return pLights[index];
 }
 
-deoglRenderPlanLight *deoglRenderPlan::GetLightFor(deoglCollideListLight *light){
-	if(!light){
-		DETHROW(deeInvalidParam);
-	}
-	
+deoglRenderPlanLight *deoglRenderPlan::GetLightFor(deoglCollideListLight &light){
 	int index = pIndexOfLightWith(light);
 	if(index == -1){
 		if(pLightCount == pLightSize){
@@ -1969,7 +1965,7 @@ deoglRenderPlanLight *deoglRenderPlan::GetLightFor(deoglCollideListLight *light)
 		}
 		
 		index = pLightCount;
-		pLights[pLightCount]->SetLight(light);
+		pLights[pLightCount]->SetLight(&light);
 		pLightCount++;
 	}
 	
@@ -2080,11 +2076,11 @@ void deoglRenderPlan::RemoveAllMaskedPlans(){
 // Private Functions
 //////////////////////
 
-int deoglRenderPlan::pIndexOfLightWith(deoglCollideListLight *light) const{
+int deoglRenderPlan::pIndexOfLightWith(deoglCollideListLight &light) const{
 	int i;
 	
 	for(i=0; i<pLightCount; i++){
-		if(light == pLights[i]->GetLight()){
+		if(&light == pLights[i]->GetLight()){
 			return i;
 		}
 	}
@@ -2102,7 +2098,7 @@ void deoglRenderPlan::pCheckTransparency(){
 	const int componentCount = pCollideList.GetComponentCount();
 	int i;
 	for(i=0; i<componentCount; i++){
-		const deoglRComponent &component = *pCollideList.GetComponentAt(i)->GetComponent();
+		const deoglRComponent &component = *pCollideList.GetComponentAt(i).GetComponent();
 		if(!component.GetSolid() || !component.GetOutlineSolid()){
 			pHasTransparency = true;
 		}
@@ -2133,7 +2129,7 @@ void deoglRenderPlan::pCheckTransparency(){
 	
 	// particles
 	if(pRenderThread.GetChoices().GetRealTransparentParticles()){
-		const deoglParticleEmitterInstanceList &peinstList = pCollideList.GetParticleEmitterList();
+		const deoglRParticleEmitterInstance::List &peinstList = pCollideList.GetParticleEmitterList();
 		const int peinstCount = peinstList.GetCount();
 		int j;
 		
@@ -2167,7 +2163,7 @@ void deoglRenderPlan::pCheckTransparency(){
 		// NOTE this check below only catches the case of a particle using a non-solid
 		//      skin. it is though possible a solid skin is used with transparency curve
 		//      in which case the skin becomes non-solid
-		const deoglParticleEmitterInstanceList &peinstList = pCollideList.GetParticleEmitterList();
+		const deoglRParticleEmitterInstance::List &peinstList = pCollideList.GetParticleEmitterList();
 		const int peinstCount = peinstList.GetCount();
 		int j;
 		
@@ -2232,7 +2228,7 @@ void deoglRenderPlan::pBuildLightPlan(){
 	for(i=0; i<count; i++){
 		// we have to add lights here. earlier is not possible since the elements in the
 		// collide list are potentially removed due to culling
-		deoglRenderPlanLight &planLight = *GetLightFor(pCollideList.GetLightAt(i)) ;
+		deoglRenderPlanLight &planLight = *GetLightFor(pCollideList.GetLightAt(i));
 		
 		planLight.Init();
 		planLight.PlanShadowCasting();
@@ -2281,6 +2277,6 @@ void deoglRenderPlan::pDropLightsTemporary(){
 	const int count = pCollideList.GetLightCount();
 	int i;
 	for(i=0; i<count; i++){
-		pCollideList.GetLightAt(i)->GetLight()->GetShadowCaster()->DropTemporary();
+		pCollideList.GetLightAt(i).GetLight()->GetShadowCaster()->DropTemporary();
 	}
 }

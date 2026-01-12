@@ -22,58 +22,60 @@
  * SOFTWARE.
  */
 
-// includes
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "debnMessageAckList.h"
+#include "deoglShaderBinding.h"
+
 #include <dragengine/common/exceptions.h>
 
 
+// Class deoglShaderBinding::List
+///////////////////////////////////
 
-// Class debnMessageAckList
+bool deoglShaderBinding::List::HasNamed(const char *name){
+	return HasMatching([&](const deoglShaderBinding &binding){
+		return binding.GetName() == name;
+	});
+}
+
+int deoglShaderBinding::List::IndexOfNamed(const char *name) const{
+	return IndexOfMatching([&](const deoglShaderBinding &binding){
+		return binding.GetName() == name;
+	});
+}
+
+
+// Class deoglShaderBinding
 /////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-debnMessageAckList::debnMessageAckList(){
-	pAcks = nullptr;
-	pAckCount = 0;
-	pAckSize = 0;
+deoglShaderBinding::deoglShaderBinding() :
+pTarget(-1){
 }
 
-debnMessageAckList::~debnMessageAckList(){
-	if(pAcks) delete [] pAcks;
+deoglShaderBinding::deoglShaderBinding(const char *name, int target) :
+pName(name),
+pTarget(target){
 }
 
-
-
-// Management
-///////////////
-
-int debnMessageAckList::GetAckAt(int index) const{
-	if(index < 0 || index >= pAckCount) DETHROW(deeInvalidParam);
-	
-	return pAcks[index];
+deoglShaderBinding::deoglShaderBinding(const deoglShaderBinding &binding) :
+pName(binding.pName),
+pTarget(binding.pTarget){
 }
 
-void debnMessageAckList::AddAck(int number){
-	if(pAckCount == pAckSize){
-		int newSize = pAckSize * 3 / 2 + 1;
-		int *newArray = new int[newSize];
-		if(pAcks){
-			memcpy(newArray, pAcks, sizeof(int) * pAckSize);
-			delete [] pAcks;
-		}
-		pAcks = newArray;
-		pAckSize = newSize;
-	}
-	
-	pAcks[pAckCount] = number;
-	pAckCount++;
+deoglShaderBinding deoglShaderBinding::operator=(const deoglShaderBinding &binding){
+	pName = binding.pName;
+	pTarget = binding.pTarget;
+	return *this;
 }
 
-void debnMessageAckList::RemoveAllAcks(){
-	pAckCount = 0;
+deoglShaderBinding::deoglShaderBinding(deoglShaderBinding &&binding) noexcept :
+pName(std::move(binding.pName)),
+pTarget(binding.pTarget){
+}
+
+deoglShaderBinding deoglShaderBinding::operator=(deoglShaderBinding &&binding) noexcept{
+	pName = std::move(binding.pName);
+	pTarget = binding.pTarget;
+	return *this;
 }

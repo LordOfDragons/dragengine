@@ -153,15 +153,14 @@ void deoccmWeightSet::Normalize(){
 	}
 }
 
-bool deoccmWeightSet::Equals(const deoccmWeightSet &weight) const{
-	int i;
-	
-	if(pCount != weight.pCount){
+bool deoccmWeightSet::Equals(const deoccmWeightSet &other) const{
+	if(pCount != other.pCount){
 		return false;
 	}
 	
+	int i;
 	for(i=0; i<pCount; i++){
-		if(fabs(pWeights[i].weight - weight.GetWeightFor(pWeights[i].bone)) > 0.001f){
+		if(fabs(pWeights[i].weight - other.GetWeightFor(pWeights[i].bone)) > 0.001f){
 			return false;
 		}
 	}

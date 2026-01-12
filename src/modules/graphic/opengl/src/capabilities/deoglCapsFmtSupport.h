@@ -25,7 +25,7 @@
 #ifndef _DEOGLCAPFMTSUPPORT_H_
 #define _DEOGLCAPFMTSUPPORT_H_
 
-#include "deoglCapsTextureFormatList.h"
+#include "deoglCapsTextureFormat.h"
 #include "../deoglBasics.h"
 
 #include <dragengine/common/string/decString.h>
@@ -119,12 +119,12 @@ public:
 private:
 	deoglCapabilities &pCapabilities;
 	
-	deoglCapsTextureFormatList pFoundTex2DFormats;
-	deoglCapsTextureFormatList pFoundTexCubeFormats;
-	deoglCapsTextureFormatList pFoundArrTexFormats;
-	deoglCapsTextureFormatList pFoundFBOTex2DFormats;
-	deoglCapsTextureFormatList pFoundFBOTexCubeFormats;
-	deoglCapsTextureFormatList pFoundFBOArrTexFormats;
+	deoglCapsTextureFormat::List pFoundTex2DFormats;
+	deoglCapsTextureFormat::List pFoundTexCubeFormats;
+	deoglCapsTextureFormat::List pFoundArrTexFormats;
+	deoglCapsTextureFormat::List pFoundFBOTex2DFormats;
+	deoglCapsTextureFormat::List pFoundFBOTexCubeFormats;
+	deoglCapsTextureFormat::List pFoundFBOArrTexFormats;
 	
 	const deoglCapsTextureFormat *pUseTex2DFormats[UseTextureFormatCount];
 	const deoglCapsTextureFormat *pUseTexCubeFormats[UseTextureFormatCount];
@@ -147,28 +147,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** List of found texture 2d formats. */
-	const deoglCapsTextureFormatList &GetFoundTex2DFormats() const{ return pFoundTex2DFormats; }
-	deoglCapsTextureFormatList &GetFoundTex2DFormats(){return pFoundTex2DFormats;}
+	const deoglCapsTextureFormat::List &GetFoundTex2DFormats() const{ return pFoundTex2DFormats; }
+	deoglCapsTextureFormat::List &GetFoundTex2DFormats(){return pFoundTex2DFormats;}
 	
 	/** List of found texture cube formats. */
-	const deoglCapsTextureFormatList &GetFoundTexCubeFormats() const{ return pFoundTexCubeFormats; }
-	deoglCapsTextureFormatList &GetFoundTexCubeFormats(){return pFoundTexCubeFormats;}
+	const deoglCapsTextureFormat::List &GetFoundTexCubeFormats() const{ return pFoundTexCubeFormats; }
+	deoglCapsTextureFormat::List &GetFoundTexCubeFormats(){return pFoundTexCubeFormats;}
 	
 	/** List of found array texture formats. */
-	const deoglCapsTextureFormatList &GetFoundArrayTexFormats() const{ return pFoundArrTexFormats; }
-	deoglCapsTextureFormatList &GetFoundArrayTexFormats(){return pFoundArrTexFormats;}
+	const deoglCapsTextureFormat::List &GetFoundArrayTexFormats() const{ return pFoundArrTexFormats; }
+	deoglCapsTextureFormat::List &GetFoundArrayTexFormats(){return pFoundArrTexFormats;}
 	
 	/** List of found fbo texture 2d formats. */
-	const deoglCapsTextureFormatList &GetFoundFBOTex2DFormats() const{ return pFoundFBOTex2DFormats; }
-	deoglCapsTextureFormatList &GetFoundFBOTex2DFormats(){return pFoundFBOTex2DFormats;}
+	const deoglCapsTextureFormat::List &GetFoundFBOTex2DFormats() const{ return pFoundFBOTex2DFormats; }
+	deoglCapsTextureFormat::List &GetFoundFBOTex2DFormats(){return pFoundFBOTex2DFormats;}
 	
 	/** List of found fbo texture cube formats. */
-	const deoglCapsTextureFormatList &GetFoundFBOTexCubeFormats() const{ return pFoundFBOTexCubeFormats; }
-	deoglCapsTextureFormatList &GetFoundFBOTexCubeFormats(){return pFoundFBOTexCubeFormats;}
+	const deoglCapsTextureFormat::List &GetFoundFBOTexCubeFormats() const{ return pFoundFBOTexCubeFormats; }
+	deoglCapsTextureFormat::List &GetFoundFBOTexCubeFormats(){return pFoundFBOTexCubeFormats;}
 	
 	/** List of found fbo array texture formats. */
-	const deoglCapsTextureFormatList &GetFoundFBOArrayTexFormats() const{ return pFoundFBOArrTexFormats; }
-	deoglCapsTextureFormatList &GetFoundFBOArrayTexFormats(){return pFoundFBOArrTexFormats;}
+	const deoglCapsTextureFormat::List &GetFoundFBOArrayTexFormats() const{ return pFoundFBOArrTexFormats; }
+	deoglCapsTextureFormat::List &GetFoundFBOArrayTexFormats(){return pFoundFBOArrTexFormats;}
 	
 	
 	
@@ -253,9 +253,9 @@ private:
 	
 	const deoglCapsTextureFormat &pRequireFormat(const char *categoryName,
 		eUseTextureFormats type, const deoglCapsTextureFormat **listUse,
-		const deoglCapsTextureFormatList &listSupported) const;
+		const deoglCapsTextureFormat::List &listSupported) const;
 	
-	decString pSupportedFormats(const deoglCapsTextureFormatList &listSupported) const;
+	decString pSupportedFormats(const deoglCapsTextureFormat::List &listSupported) const;
 };
 
 #endif

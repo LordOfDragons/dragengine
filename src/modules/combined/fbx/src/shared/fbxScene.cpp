@@ -60,7 +60,7 @@
 
 fbxScene::fbxScene() :
 pVersion(0),
-pNode(new fbxNode),
+pNode(fbxNode::Ref::New()),
 pUpAxis(eaYPos),
 pFrontAxis(eaZNeg),
 pCoordAxis(eaXPos),
@@ -73,7 +73,7 @@ pConnectionMap(nullptr){
 
 fbxScene::fbxScene(decBaseFileReader &reader) :
 pVersion(0),
-pNode(new fbxNode),
+pNode(fbxNode::Ref::New()),
 pUpAxis(eaYPos),
 pFrontAxis(eaZNeg),
 pCoordAxis(eaXPos),

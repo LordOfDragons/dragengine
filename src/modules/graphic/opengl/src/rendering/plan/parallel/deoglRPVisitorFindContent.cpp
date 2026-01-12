@@ -220,7 +220,7 @@ void deoglRPVisitorFindContent::pVisitNode(const deoglWorldOctree &node, bool in
 	
 	int i;
 	for(i=0; i<8; i++){
-		const deoglWorldOctree * const child = (const deoglWorldOctree*) node.GetNodeAt(i);
+		const deoglWorldOctree * const child = (const deoglWorldOctree*)node.GetNodeAt(i);
 		if(!child){
 			continue;
 		}
@@ -267,7 +267,7 @@ void deoglRPVisitorFindContent::pVisitNodeGICascade(const deoglWorldOctree &node
 	
 	int i;
 	for(i=0; i<8; i++){
-		const deoglWorldOctree * const child = (const deoglWorldOctree*) node.GetNodeAt(i);
+		const deoglWorldOctree * const child = (const deoglWorldOctree*)node.GetNodeAt(i);
 		if(!child){
 			continue;
 		}
@@ -296,7 +296,7 @@ void deoglRPVisitorFindContent::pVisitNodeGICascade(const deoglWorldOctree &node
 void deoglRPVisitorFindContent::pVisitComponents(const deoglWorldOctree &node, bool intersect){
 	deoglOcclusionTest &occlusionTest = *pPlan.GetOcclusionTest();
 	const decDVector &cameraPosition = pPlan.GetCameraPosition();
-	deoglComponentList &componentsOccMap = pPlan.GetComponentsOccMap();
+	deoglRComponent::List &componentsOccMap = pPlan.GetComponentsOccMap();
 	deoglCollideList &collideList = pPlan.GetCollideList();
 	const int count = node.GetComponentCount();
 	int i;
@@ -342,11 +342,11 @@ void deoglRPVisitorFindContent::pVisitComponents(const deoglWorldOctree &node, b
 		}
 		
 		// add component and add occlusion test input
-		collideList.AddComponent(addComponent)->StartOcclusionTest(occlusionTest, cameraPosition);
+		collideList.AddComponent(addComponent).StartOcclusionTest(occlusionTest, cameraPosition);
 		
 		// add to occlusion map if required
 		if(addComponent->GetOcclusionMesh()){
-			componentsOccMap.Add(addComponent);
+			componentsOccMap.AddOrThrow(addComponent);
 		}
 	}
 }
@@ -414,12 +414,12 @@ void deoglRPVisitorFindContent::pVisitLights(const deoglWorldOctree &node, bool 
 		
 		if(intersect && !light.GetCollisionVolume()->FrustumHitsVolume(pFrustum)){
 			if(pWithGICascade && light.GetCollisionVolume()->BoxHitsVolume(&pGICascadeBox)){
-				collideList.AddLight(addLight)->SetCulled(true);
+				collideList.AddLight(addLight).SetCulled(true);
 			}
 			continue;
 		}
 		
-		collideList.AddLight(addLight)->StartOcclusionTest(occlusionTest, cameraPosition);
+		collideList.AddLight(addLight).StartOcclusionTest(occlusionTest, cameraPosition);
 	}
 }
 
@@ -441,14 +441,14 @@ void deoglRPVisitorFindContent::pVisitLightsGICascade(const deoglWorldOctree& no
 			continue;
 		}
 		
-		collideList.AddLight(addLight)->SetCulled(true);
+		collideList.AddLight(addLight).SetCulled(true);
 	}
 }
 
 void deoglRPVisitorFindContent::pVisitParticleEmitters(const deoglWorldOctree &node, bool intersect){
-	const deoglParticleEmitterInstanceList &nodeParticleEmitterInstanceList = node.GetParticleEmittersList();
+	const deoglRParticleEmitterInstance::List &nodeParticleEmitterInstanceList = node.GetParticleEmittersList();
 	deoglCollideList &collideList = pPlan.GetCollideList();
-	deoglParticleEmitterInstanceList &clistParticleEmitterInstanceList = collideList.GetParticleEmitterList();
+	deoglRParticleEmitterInstance::List &clistParticleEmitterInstanceList = collideList.GetParticleEmitterList();
 	const int count = nodeParticleEmitterInstanceList.GetCount();
 	int i;
 	

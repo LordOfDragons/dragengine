@@ -187,7 +187,7 @@ void deoglShaderSources::pParseShader(deLogger &logger, const decXmlElementTag &
 				DETHROW(deeInvalidParam);
 			}
 			
-			pTextureList.Add(attrName, attribute->GetValue().ToInt());
+			pTextureList.Add({attrName, attribute->GetValue().ToInt()});
 			
 		}else if(strcmp(tag->GetName(), "parameter") == 0){
 			const decXmlAttValue * const attribute = pFindAttribute(*tag, "name");

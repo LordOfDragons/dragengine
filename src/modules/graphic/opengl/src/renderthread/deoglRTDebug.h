@@ -26,7 +26,7 @@
 #define _DEOGLRRTDEBUG_H_
 
 #include "../deoglBasics.h"
-#include "../debug/deoglDebugInformationList.h"
+#include "../debug/deoglDebugInformation.h"
 #include "../debug/deoglDebugMemoryConsumption.h"
 
 #include <dragengine/common/file/decBaseFileWriter.h>
@@ -46,7 +46,7 @@ private:
 	deoglRenderThread &pRenderThread;
 	deoglDebugSaveTexture *pDebugSaveTexture;
 	deoglDeveloperMode *pDeveloperMode;
-	deoglDebugInformationList pDebugInformation;
+	deoglDebugInformation::List pDebugInformation;
 	bool pEnableHwDebugOutput;
 	deoglDebugMemoryConsumption pDebugMemoryConsumption;
 	bool pEnableDebugTrace;
@@ -81,8 +81,8 @@ public:
 	decBaseFileWriter::Ref OpenFileForWriting(const decPath &path);
 	
 	/** Debug information list. */
-	inline deoglDebugInformationList &GetDebugInformationList(){ return pDebugInformation; }
-	inline const deoglDebugInformationList &GetDebugInformationList() const{ return pDebugInformation; }
+	inline deoglDebugInformation::List &GetDebugInformationList(){ return pDebugInformation; }
+	inline const deoglDebugInformation::List &GetDebugInformationList() const{ return pDebugInformation; }
 	
 	/** Enable hardware debug output. */
 	inline bool GetEnableHwDebugOutput() const{ return pEnableHwDebugOutput; }

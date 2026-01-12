@@ -25,6 +25,8 @@
 #ifndef _DEBNSTATELINK_H_
 #define _DEBNSTATELINK_H_
 
+#include <dragengine/common/collection/decTOrderedSet.h>
+
 class debnState;
 class debnConnection;
 
@@ -34,6 +36,10 @@ class debnConnection;
  * \brief State link.
  */
 class debnStateLink{
+public:
+	/** State link list type. */
+	using List = decTOrderedSet<debnStateLink*>;
+	
 public:
 	/** \brief Link states. */
 	enum eLinkStates{

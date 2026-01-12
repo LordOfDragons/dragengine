@@ -25,7 +25,7 @@
 #ifndef _DEBPTOUCHSENSOR_H_
 #define _DEBPTOUCHSENSOR_H_
 
-#include "../shape/debpShapeList.h"
+#include "../shape/debpShape.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
@@ -61,7 +61,7 @@ private:
 	bool pDirtyMatrix;
 	bool pDirtyExtends;
 	
-	debpShapeList pShape;
+	debpShape::List pShape;
 	decTOrderedSet<debpCollider*> pTouchingColliders;
 	decTOrderedSet<debpCollider*> pLeavingColliders;
 	debpGhostObject *pGhostObject;
@@ -94,7 +94,7 @@ public:
 	
 	
 	/** Shape. */
-	inline const debpShapeList &GetShape() const{ return pShape; }
+	inline const debpShape::List &GetShape() const{ return pShape; }
 	
 	/** Retrieves the ghost object. */
 	inline debpGhostObject *GetGhostObject() const{ return pGhostObject; }

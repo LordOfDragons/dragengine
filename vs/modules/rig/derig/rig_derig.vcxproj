@@ -410,12 +410,12 @@
   </ImportGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\src\modules\rig\derig\src\deRigModule.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\rig\derig\src\dermNameList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\rig\derig\src\dermName.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\rig\derig\src\dermWriteShape.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\modules\rig\derig\src\deRigModule.h" />
-    <ClInclude Include="..\..\..\..\src\modules\rig\derig\src\dermNameList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\rig\derig\src\dermName.h" />
     <ClInclude Include="..\..\..\..\src\modules\rig\derig\src\dermWriteShape.h" />
   </ItemGroup>
 </Project>

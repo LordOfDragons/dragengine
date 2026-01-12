@@ -29,7 +29,7 @@
 #include <dragengine/common/math/decMath.h>
 
 #include "../../deoglBasics.h"
-#include "../../shaders/paramblock/deoglShaderParameterBlockList.h"
+#include "../../shaders/paramblock/deoglShaderParameterBlock.h"
 
 class deoglQuickSorter;
 class deoglRenderTaskPipeline;
@@ -79,7 +79,7 @@ private:
 	
 	deoglSPBlockUBO *pRenderParamBlock;
 	GLuint pTBOInstances;
-	deoglShaderParameterBlockList pSPBInstances;
+	deoglShaderParameterBlock::List pSPBInstances;
 	int pSPBInstanceMaxEntries;
 	int pSPBInstanceIndexCount;
 	bool pUseSPBInstanceFlags;

@@ -42,11 +42,8 @@ class deoglSkinShaderConfig;
 /**
  * Geometry specific skin texture pipelines.
  */
-class deoglSkinTexturePipelines : public deObject{
+class deoglSkinTexturePipelines{
 public:
-	using Ref = deTObjectReference<deoglSkinTexturePipelines>;
-	
-	
 	/** Type. */
 	enum eTypes{
 		etGeometry,
@@ -114,14 +111,12 @@ public:
 	/** Create skin texture pipeline. */
 	deoglSkinTexturePipelines(const deoglSkinTexture &texture);
 	
-protected:
 	/** Clean up skin texture pipeline. */
-	~deoglSkinTexturePipelines() override;
+	virtual ~deoglSkinTexturePipelines();
 	/*@}*/
 	
 	
 	
-public:
 	/** \name Management */
 	/*@{*/
 	/** Texture. */

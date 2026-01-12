@@ -213,7 +213,7 @@ void deoglRenderWorldInfo::ClearAll(){
 }
 
 void deoglRenderWorldInfo::AddTopLevelDebugInfo(){
-	deoglDebugInformationList &list = GetRenderThread().GetDebug().GetDebugInformationList();
+	deoglDebugInformation::List &list = GetRenderThread().GetDebug().GetDebugInformationList();
 	list.Add(infoWorld);
 	list.Add(infoSolidGeometryDetails);
 	list.Add(infoTransparentDetails);
@@ -239,7 +239,7 @@ void deoglRenderWorldInfo::DevModeDebugInfoChanged(){
 //////////////////////
 
 void deoglRenderWorldInfo::pCleanUp(){
-	deoglDebugInformationList &dilist = GetRenderThread().GetDebug().GetDebugInformationList();
+	deoglDebugInformation::List &dilist = GetRenderThread().GetDebug().GetDebugInformationList();
 	dilist.Remove(infoWorld);
 	dilist.Remove(infoSolidGeometryDetails);
 	dilist.Remove(infoTransparentDetails);

@@ -50,6 +50,12 @@ public:
 	/** Create cluster. */
 	deoglCollideListPropFieldCluster();
 	
+	deoglCollideListPropFieldCluster(deoglPropFieldCluster *cluster);
+	
+	/** Copy. */
+	deoglCollideListPropFieldCluster(const deoglCollideListPropFieldCluster &cluster) = default;
+	deoglCollideListPropFieldCluster &operator=(const deoglCollideListPropFieldCluster &cluster) = default;
+	
 	/** Clean up cluster. */
 	~deoglCollideListPropFieldCluster() override;
 	/*@}*/

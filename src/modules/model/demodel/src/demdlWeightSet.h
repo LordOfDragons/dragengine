@@ -25,11 +25,17 @@
 #ifndef _DEMDLWEIGHTSET_H_
 #define _DEMDLWEIGHTSET_H_
 
+#include <dragengine/common/collection/decTList.h>
+
 
 /**
  * @brief Weight Set.
  */
 class demdlWeightSet{
+public:
+	using Ref = deTUniqueReference<demdlWeightSet>;
+	using List = decTUniqueList<demdlWeightSet>;
+	
 private:
 	struct sWeight{
 		int bone;

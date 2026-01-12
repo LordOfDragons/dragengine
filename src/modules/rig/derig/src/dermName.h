@@ -22,56 +22,70 @@
  * SOFTWARE.
  */
 
-#ifndef _DEOALRAYTRACEHITELEMENTLIST_H_
-#define _DEOALRAYTRACEHITELEMENTLIST_H_
+#ifndef _DERMNAME_H_
+#define _DERMNAME_H_
 
 #include <dragengine/common/collection/decTList.h>
-
-class deoalRayTraceHitElement;
+#include <dragengine/common/string/decString.h>
 
 
 /**
- * \brief Ray tracing hit element list.
- * 
- * List memory is not shrinking to avoid memory allocations.
+ * Name with index.
  */
-class deoalRayTraceHitElementList{
+class dermName{
+public:
+	class List : public decTList<dermName>{
+	public:
+		using decTList<dermName>::decTList;
+		
+		/** Has name. */
+		bool HasName(const char *name);
+		
+		/** Index of name or -1. */
+		int IndexOfName(const char *name) const;
+		
+		/** Get name. */
+		dermName &GetName(const char *name);
+		const dermName &GetName(const char *name) const;
+		
+		/** Add name returning index. */
+		int AddName(const char *name);
+	};
+	
+	
 private:
-	decTList<deoalRayTraceHitElement> pElements;
+	decString pName;
+	int pNumber;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create ray trace hit element list. */
-	deoalRayTraceHitElementList();
+	/** Create name. */
+	dermName();
+	dermName(const char *name, int number);
 	
-	deoalRayTraceHitElementList(const deoalRayTraceHitElementList&) = delete;
-	deoalRayTraceHitElementList& operator=(const deoalRayTraceHitElementList&) = delete;
+	/** Copy name. */
+	dermName(const dermName &name);
+	dermName operator=(const dermName &name);
 	
-	/** \brief Clean up ray trace hit element list. */
-	~deoalRayTraceHitElementList();
+	/** Move binding. */
+	dermName(dermName &&name) noexcept;
+	dermName operator=(dermName &&name) noexcept;
 	/*@}*/
 	
-	
-	
-	/** \name Manegement */
+
+
+	/** @name Management */
 	/*@{*/
-	/** \brief Number of elements. */
-	inline int GetCount() const{ return pElements.GetCount(); }
+	/** Name. */
+	inline const decString &GetName() const{ return pName; }
 	
-	/** \brief Element at index. */
-	const deoalRayTraceHitElement &GetAt(int index) const;
+	/** Number. */
+	inline int GetNumber() const{ return pNumber; }
 	
-	/** \brief Add element. */
-	void Add(const deoalRayTraceHitElement &element);
-	
-	/** \brief Add element to hit component face. */
-	void AddComponentFace(float distance, const decDVector &point, const decDVector &normal,
-		deoalAComponent *component, int face, bool frontFacing);
-	
-	/** \brief Remove all elements. */
-	void RemoveAll();
+	/** Set number. */
+	void SetNumber(int number);
 	/*@}*/
 };
 

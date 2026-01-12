@@ -27,7 +27,7 @@
 
 #include "deoglWorldCompute.h"
 #include "../envmap/deoglEnvironmentMap.h"
-#include "../envmap/deoglEnvironmentMapList.h"
+#include "../envmap/deoglEnvironmentMap.h"
 #include "../terrain/heightmap/deoglRHeightTerrain.h"
 
 #include <dragengine/deObject.h>
@@ -37,8 +37,7 @@
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/collection/decTLinkedList.h>
 
-class deoglEnvironmentMapList;
-class deoglRBillboard;
+class deoglDebugDrawer;
 class deoglRComponent;
 class deoglRDebugDrawer;
 class deoglRenderPlan;
@@ -101,7 +100,7 @@ private:
 	decDVector pReferencePosition;
 	double pValidReferenceDistance;
 	
-	deoglEnvironmentMapList pEnvMapList;
+	deoglEnvironmentMap::List pEnvMapList;
 	int pEnvMapUpdateCount;
 	deoglRenderPlan *pEnvMapRenderPlan;
 	bool pDirtyEnvMapLayout;
@@ -385,7 +384,7 @@ public:
 	/** \name Environment maps */
 	/*@{*/
 	/** Environment map list. */
-	inline const deoglEnvironmentMapList &GetEnvMapList() const{ return pEnvMapList; }
+	inline const deoglEnvironmentMap::List &GetEnvMapList() const{ return pEnvMapList; }
 	
 	/** Add environment map. */
 	void AddEnvMap(deoglEnvironmentMap *envmap);

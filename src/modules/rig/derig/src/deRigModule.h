@@ -25,6 +25,8 @@
 #ifndef _DERIGMODULE_H_
 #define _DERIGMODULE_H_
 
+#include "dermName.h"
+
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/collider/deColliderConstraint.h>
 #include <dragengine/systems/modules/rig/deBaseRigModule.h>
@@ -34,7 +36,6 @@ class decXmlElementTag;
 class decXmlAttValue;
 class deRigBone;
 class deRigConstraint;
-class dermNameList;
 class decXmlWriter;
 
 
@@ -76,7 +77,7 @@ private:
 	float pGetAttributeFloat(decXmlElementTag *tag, const char *name);
 	
 	void pParseRig(decXmlElementTag *root, deRig &rig);
-	void pParseBone(decXmlElementTag *root, deRig &rig, dermNameList &boneNameList);
+	void pParseBone(decXmlElementTag *root, deRig &rig, dermName::List &boneNameList);
 	void pParseBoneIK(decXmlElementTag *root, float &lower, float &upper, float &resistance, bool &locked);
 	void pParseSphere(decXmlElementTag *root, decShapeList &shapes, decStringList &shapeProperties);
 	void pParseCylinder(decXmlElementTag *root, decShapeList &shapes, decStringList &shapeProperties);
@@ -84,7 +85,7 @@ private:
 	void pParseBox(decXmlElementTag *root, decShapeList &shapes, decStringList &shapeProperties);
 	void pParseHull(decXmlElementTag *root, decShapeList &shapes, decStringList &shapeProperties);
 	void pParseVector(decXmlElementTag *root, decVector &vector);
-	void pParseConstraint(decXmlElementTag *root, deRig &rig, deRigBone *bone, dermNameList &boneNameList);
+	void pParseConstraint(decXmlElementTag *root, deRig &rig, deRigBone *bone, dermName::List &boneNameList);
 	void pParseConstraintDof(const decXmlElementTag &root, deColliderConstraintDof &dof, bool linearConstraint);
 	void pParseConstraintLimits(decXmlElementTag *root, deRigConstraint *constraint);
 	void pParseConstraintLimitsLinear(decXmlElementTag *root, deRigConstraint *constraint);

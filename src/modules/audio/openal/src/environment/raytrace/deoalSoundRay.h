@@ -30,7 +30,7 @@
 
 
 /**
- * \brief Parameters of a sound ray.
+ * Parameters of a sound ray.
  */
 class deoalSoundRay{
 private:
@@ -45,56 +45,63 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create sound ray. */
+	/** Create sound ray. */
 	deoalSoundRay();
 	
-	/** \brief Create copy of sound ray. */
+	/** Create copy of sound ray. */
 	deoalSoundRay(const deoalSoundRay &ray);
+	
+	/** Create sound ray. */
+	deoalSoundRay(int firstSegment, int firstTransmittedRay);
+	
+	/** Create sound ray. */
+	deoalSoundRay(int firstSegment, int segmentCount, int firstTransmittedRay,
+		int transmittedRayCount, bool outside);
 	/*@}*/
 	
 	
 	
 	/** \name Manegement */
 	/*@{*/
-	/** \brief Index of first segment. */
+	/** Index of first segment. */
 	inline int GetFirstSegment() const{ return pFirstSegment; }
 	
-	/** \brief Set index of first segment. */
+	/** Set index of first segment. */
 	void SetFirstSegment(int index);
 	
-	/** \brief Number of segments. */
+	/** Number of segments. */
 	inline int GetSegmentCount() const{ return pSegmentCount; }
 	
-	/** \brief Set number of segments. */
+	/** Set number of segments. */
 	void SetSegmentCount(int count);
 		
-	/** \brief Increment number of segments by one. */
+	/** Increment number of segments by one. */
 	void IncSegmentCount();
 
-	/** \brief Index of first transmitted ray. */
+	/** Index of first transmitted ray. */
 	inline int GetFirstTransmittedRay() const{ return pFirstTransmittedRay; }
 	
-	/** \brief Set index of first transmitted ray. */
+	/** Set index of first transmitted ray. */
 	void SetFirstTransmittedRay(int index);
 	
-	/** \brief Number of transmitted rays. */
+	/** Number of transmitted rays. */
 	inline int GetTransmittedRayCount() const{ return pTransmittedRayCount; }
 	
-	/** \brief Set number of transmitted rays. */
+	/** Set number of transmitted rays. */
 	void SetTransmittedRayCount(int count);
 	
-	/** \brief Increment number of transmitted rays by one. */
+	/** Increment number of transmitted rays by one. */
 	void IncTransmittedRayCount();
 	
-	/** \brief Ray is outside. */
+	/** Ray is outside. */
 	inline bool GetOutside() const{ return pOutside; }
 	
-	/** \brief Set if ray is outside. */
+	/** Set if ray is outside. */
 	void SetOutside(bool outside);
 	
 	
 	
-	/** \brief Set from other ray. */
+	/** Set from other ray. */
 	deoalSoundRay &operator=(const deoalSoundRay &ray);
 	/*@}*/
 };

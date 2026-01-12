@@ -881,7 +881,7 @@ void deoglRenderLight::ResetDebugInfo(){
 }
 
 void deoglRenderLight::AddTopLevelDebugInfo(){
-	deoglDebugInformationList &list = GetRenderThread().GetDebug().GetDebugInformationList();
+	deoglDebugInformation::List &list = GetRenderThread().GetDebug().GetDebugInformationList();
 	
 	list.Add(pDebugInfoSolid);
 	pRenderLightSky->AddTopLevelDebugInfoSolid();
@@ -938,7 +938,7 @@ void deoglRenderLight::pCleanUp(){
 		delete pRenderTask;
 	}
 	
-	deoglDebugInformationList &dilist = GetRenderThread().GetDebug().GetDebugInformationList();
+	deoglDebugInformation::List &dilist = GetRenderThread().GetDebug().GetDebugInformationList();
 	dilist.Remove(pDebugInfoSolid);
 	dilist.Remove(pDebugInfoTransparent);
 }
