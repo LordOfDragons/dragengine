@@ -784,13 +784,13 @@ void deComponent::WaitAnimatorTaskFinished(){
 // Collision Detection
 ////////////////////////
 
-void deComponent::FindDecalsAt(const decVector &point, deDecalList &list) const{
+void deComponent::FindDecalsAt(const decVector &point, deDecal::List &list) const{
 	if(pPeerPhysics){
 		pPeerPhysics->FindDecalsAt(point, list);
 	}
 }
 
-void deComponent::FindDecalsTouching(decShape *shape, deDecalList &list) const{
+void deComponent::FindDecalsTouching(decShape *shape, deDecal::List &list) const{
 	if(pPeerPhysics){
 		pPeerPhysics->FindDecalsTouching(shape, list);
 	}

@@ -43,7 +43,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#include "dePathList.h"
 #include "deVFSCacheDiskDirectory.h"
 #include "../common/exceptions.h"
 

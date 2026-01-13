@@ -28,7 +28,7 @@
 #include "../foxIcons.h"
 
 #include <dragengine/common/exceptions.h>
-#include <dragengine/filesystem/dePathList.h>
+
 #include <dragengine/filesystem/deVFSContainer.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 

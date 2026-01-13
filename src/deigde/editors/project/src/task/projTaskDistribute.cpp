@@ -236,7 +236,7 @@ void projTaskDistribute::SeekDelgaFile(long offset, int zlibOrigin){
 void projTaskDistribute::pBuildExcludeBaseGameDefPath(){
 	pWindowMain.GetGameProject()->GetBaseGameDefinitionList().Visit([&](const igdeGameDefinition &gd){
 		if(!gd.GetVFSPath().IsEmpty()){
-			pExcludeBaseGameDefPath.AddIfAbsent(decPath::CreatePathUnix(gd.GetVFSPath()));
+			pExcludeBaseGameDefPath.Add(decPath::CreatePathUnix(gd.GetVFSPath()));
 		}
 	});
 }

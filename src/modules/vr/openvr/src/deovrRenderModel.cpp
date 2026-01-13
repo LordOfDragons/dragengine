@@ -140,12 +140,11 @@ public:
 		lod->SetTextureCoordinatesSetCount(1);
 		deModelTextureCoordinatesSet &tcset = lod->GetTextureCoordinatesSetAt(0);
 		
-		tcset.SetTextureCoordinatesCount(vertexCount);
-		decVector2 * const tcs = tcset.GetTextureCoordinates();
-		
+		tcset.GetTextureCoordinates().RemoveAll();
+		tcset.GetTextureCoordinates().EnlargeCapacity(vertexCount);
 		for(i=0; i<vertexCount; i++){
 			const vr::RenderModel_Vertex_t &v = pRenderModel.rVertexData[i];
-			tcs[i].Set(v.rfTextureCoord[0], v.rfTextureCoord[1]);
+			tcset.GetTextureCoordinates().Add(v.rfTextureCoord[0], v.rfTextureCoord[1]);
 		}
 	}
 };

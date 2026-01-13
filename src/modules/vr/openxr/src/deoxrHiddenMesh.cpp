@@ -133,8 +133,8 @@ public:
 		lod->SetTextureCoordinatesSetCount(1);
 		deModelTextureCoordinatesSet &tcset = lod->GetTextureCoordinatesSetAt(0);
 		
-		tcset.SetTextureCoordinatesCount(1);
-		tcset.SetTextureCoordinatesAt(0, decVector2());
+		tcset.GetTextureCoordinates().RemoveAll();
+		tcset.GetTextureCoordinates().Add({});
 	}
 };
 

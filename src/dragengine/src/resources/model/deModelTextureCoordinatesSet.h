@@ -26,6 +26,7 @@
 #define _DEMODELTEXTURECOORDINATESSET_H_
 
 #include "../../common/math/decMath.h"
+#include "../../common/collection/decTList.h"
 
 
 /**
@@ -34,9 +35,16 @@
  * in the model.
  */
 class DE_DLL_EXPORT deModelTextureCoordinatesSet{
+public:
+	/** \brief List typedef. */
+	using List = decTList<deModelTextureCoordinatesSet>;
+	
+	/** \brief List of texture coordinates. */
+	using TextureCoordinatesList = decTList<decVector2>;
+	
+	
 private:
-	decVector2 *pTextureCoordinates;
-	int pTextureCoordinatesCount;
+	TextureCoordinatesList pTextureCoordinates;
 	
 	
 	
@@ -46,6 +54,14 @@ public:
 	/** \brief Create new model texture coordinate set. */
 	deModelTextureCoordinatesSet();
 	
+	/** \brief Copy model texture coordinate set. */
+	deModelTextureCoordinatesSet(const deModelTextureCoordinatesSet &set);
+	deModelTextureCoordinatesSet(deModelTextureCoordinatesSet &&set) noexcept;
+	
+	/** \brief Move texture coordinates set. */
+	deModelTextureCoordinatesSet &operator=(deModelTextureCoordinatesSet &&set) noexcept;
+	deModelTextureCoordinatesSet &operator=(const deModelTextureCoordinatesSet &set);
+	
 	/** \brief Clean up model texture coordinate set. */
 	~deModelTextureCoordinatesSet();
 	/*@}*/
@@ -54,20 +70,11 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of texture coordinates. */
-	inline int GetTextureCoordinatesCount() const{ return pTextureCoordinatesCount; }
+	/** \brief Texture coordinates list. */
+	inline const TextureCoordinatesList &GetTextureCoordinates() const{ return pTextureCoordinates; }
 	
-	/** \brief Set number of texture coordinates. */
-	void SetTextureCoordinatesCount(int count);
-	
-	/** \brief Texture coordinates by index. */
-	const decVector2 &GetTextureCoordinatesAt(int index) const;
-	
-	/** \brief Set texture coordinates  by index. */
-	void SetTextureCoordinatesAt(int index, const decVector2 &textureCoordinates);
-	
-	/** \brief Pointer to the texture coordinates. */
-	inline decVector2 *GetTextureCoordinates() const{ return pTextureCoordinates; }
+	/** \brief Texture coordinates list. */
+	inline TextureCoordinatesList &GetTextureCoordinates(){ return pTextureCoordinates; }
 	/*@}*/
 };
 

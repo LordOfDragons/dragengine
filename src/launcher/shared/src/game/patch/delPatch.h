@@ -31,7 +31,6 @@
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 #include <dragengine/common/utils/decUuid.h>
-#include <dragengine/common/utils/decUuidSet.h>
 
 
 /**
@@ -53,7 +52,7 @@ private:
 	decString pDataDirectory;
 	
 	decUuid pGameID;
-	decUuidSet pRequiresPatches;
+	decUuid::Set pRequiresPatches;
 	
 	decString pDelgaFile;
 	decStringSet pHiddenPath;
@@ -125,8 +124,8 @@ public:
 	void SetGameID(const decUuid &id);
 	
 	/** \brief Required patch identifiers. */
-	inline decUuidSet &GetRequiredPatches(){ return pRequiresPatches; }
-	inline const decUuidSet &GetRequiredPatches() const{ return pRequiresPatches; }
+	inline decUuid::Set &GetRequiredPatches(){ return pRequiresPatches; }
+	inline const decUuid::Set &GetRequiredPatches() const{ return pRequiresPatches; }
 	
 	/** \brief Delga file or empty string. */
 	inline const decString &GetDelgaFile() const{ return pDelgaFile; }

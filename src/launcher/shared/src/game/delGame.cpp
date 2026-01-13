@@ -615,7 +615,7 @@ void delGame::FindPatches(delPatchList &list) const{
 void delGame::SortPatches(delPatchList &sorted, const delPatchList &patches) const{
 	const int count = patches.GetCount();
 	bool hasAdded = true;
-	int i, j;
+	int i;
 	
 	sorted.RemoveAll();
 	
@@ -628,17 +628,11 @@ void delGame::SortPatches(delPatchList &sorted, const delPatchList &patches) con
 				continue;
 			}
 			
-			const decUuidSet &requiredPatches = patch->GetRequiredPatches();
-			const int requiredPatchCount = requiredPatches.GetCount();
-			if(requiredPatchCount > 0){
-				for(j=0; j<requiredPatchCount; j++){
-					if(sorted.HasWithID(requiredPatches.GetAt(j))){
-						break;
-					}
-				}
-				if(j == requiredPatchCount){
-					continue;
-				}
+			if(patch->GetRequiredPatches().IsNotEmpty()
+			&& patch->GetRequiredPatches().NoneMatching([&](const decUuid &id){
+				return sorted.HasWithID(id);
+			})){
+				continue;
 			}
 			
 			sorted.Add(patch);

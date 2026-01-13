@@ -25,13 +25,11 @@
 #ifndef _DEANIMMODULE_H_
 #define _DEANIMMODULE_H_
 
-#include <dragengine/common/math/decMath.h>
+#include <dragengine/resources/animation/deAnimationKeyframe.h>
+#include <dragengine/resources/animation/deAnimationKeyframeVertexPositionSet.h>
 #include <dragengine/systems/modules/animation/deBaseAnimationModule.h>
 
 class deAnimationMove;
-class deAnimationKeyframeList;
-class deAnimationKeyframe;
-class deAnimationKeyframeVertexPositionSetList;
 class deAnimationKeyframeVertexPositionSet;
 
 
@@ -109,11 +107,11 @@ private:
 	void pReadMoves(decBaseFileReader &reader, deAnimation &animation, sInfo &info);
 	void pReadMoveFps(decBaseFileReader &reader, deAnimationMove &move, sInfo &info);
 	void pReadMoveBones(decBaseFileReader &reader, deAnimationMove &move, sInfo &info);
-	void pReadKeyframes(decBaseFileReader &reader, deAnimationKeyframeList &list, sInfo &info);
-	void pReadKeyframe(decBaseFileReader &reader, deAnimationKeyframeList &list, sInfo &info, int frameNumber);
+	void pReadKeyframes(decBaseFileReader &reader, deAnimationKeyframe::List &list, sInfo &info);
+	void pReadKeyframe(decBaseFileReader &reader, deAnimationKeyframe::List &list, sInfo &info, int frameNumber);
 	void pReadMoveVertexPositionSets(decBaseFileReader &reader, deAnimationMove &move, sInfo &info);
-	void pReadKeyframes(decBaseFileReader &reader, deAnimationKeyframeVertexPositionSetList &list, sInfo &info);
-	void pReadKeyframe(decBaseFileReader &reader, deAnimationKeyframeVertexPositionSetList &list, sInfo &info, int frameNumber);
+	void pReadKeyframes(decBaseFileReader &reader, deAnimationKeyframeVertexPositionSet::List &list, sInfo &info);
+	void pReadKeyframe(decBaseFileReader &reader, deAnimationKeyframeVertexPositionSet::List &list, sInfo &info, int frameNumber);
 	
 	void pWriteKeyframeData(decBaseFileWriter &writer, const sConfig &config,
 		const deAnimationKeyframe &keyframe);

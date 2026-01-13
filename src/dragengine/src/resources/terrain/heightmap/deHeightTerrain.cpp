@@ -29,7 +29,6 @@
 #include "deHeightTerrain.h"
 #include "deHeightTerrainManager.h"
 #include "deHeightTerrainSector.h"
-#include "../../decal/deDecalList.h"
 #include "../../../deEngine.h"
 #include "../../../common/exceptions.h"
 #include "../../../systems/modules/ai/deBaseAIHeightTerrain.h"
@@ -238,13 +237,13 @@ void deHeightTerrain::NotifySectorChanged(int sector){
 // Collision Detection
 ////////////////////////
 
-void deHeightTerrain::FindDecalsAt(const decDVector &point, deDecalList &list){
+void deHeightTerrain::FindDecalsAt(const decDVector &point, deDecal::List &list){
 	if(pPeerPhysics){
 		pPeerPhysics->FindDecalsAt(point, list);
 	}
 }
 
-void deHeightTerrain::FindDecalsTouching(const decShape &shape, deDecalList &list){
+void deHeightTerrain::FindDecalsTouching(const decShape &shape, deDecal::List &list){
 	if(pPeerPhysics){
 		pPeerPhysics->FindDecalsTouching(shape, list);
 	}

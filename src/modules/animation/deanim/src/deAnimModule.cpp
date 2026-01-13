@@ -29,9 +29,8 @@
 #include <dragengine/resources/animation/deAnimation.h>
 #include <dragengine/resources/animation/deAnimationBone.h>
 #include <dragengine/resources/animation/deAnimationKeyframe.h>
-#include <dragengine/resources/animation/deAnimationKeyframeList.h>
+
 #include <dragengine/resources/animation/deAnimationKeyframeVertexPositionSet.h>
-#include <dragengine/resources/animation/deAnimationKeyframeVertexPositionSetList.h>
 #include <dragengine/resources/animation/deAnimationMove.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
@@ -180,14 +179,14 @@ void deAnimModule::SaveAnimation(decBaseFileWriter &writer, const deAnimation &a
 		int playtimeFrames = 0;
 		
 		for(j=0; j<kflCount; j++){
-			const deAnimationKeyframeList &kfl = *move.GetKeyframeList(j);
-			const int keyframeCount = kfl.GetKeyframeCount();
+			const deAnimationKeyframe::List &kfl = *move.GetKeyframeList(j);
+			const int keyframeCount = kfl.GetCount();
 			const float fps = move.GetFPS();
 			int realKeyframeCount = 0;
 			int lastFrame = -1;
 			
 			for(k=0; k<keyframeCount; k++){
-				const int frame = (int)(fps * kfl.GetKeyframe(k)->GetTime() + 0.5f);
+				const int frame = (int)(fps * kfl.GetAt(k).GetTime() + 0.5f);
 				if(frame != lastFrame){
 					lastFrame = frame;
 					realKeyframeCount++;
@@ -198,14 +197,14 @@ void deAnimModule::SaveAnimation(decBaseFileWriter &writer, const deAnimation &a
 		}
 		
 		for(j=0; j<kflvpsCount; j++){
-			const deAnimationKeyframeVertexPositionSetList &kfl = *move.GetVertexPositionSetKeyframeList(j);
-			const int keyframeCount = kfl.GetKeyframeCount();
+			const deAnimationKeyframeVertexPositionSet::List &kfl = *move.GetVertexPositionSetKeyframeList(j);
+			const int keyframeCount = kfl.GetCount();
 			const float fps = move.GetFPS();
 			int realKeyframeCount = 0;
 			int lastFrame = -1;
 			
 			for(k=0; k<keyframeCount; k++){
-				const int frame = (int)(fps * kfl.GetKeyframe(k)->GetTime() + 0.5f);
+				const int frame = (int)(fps * kfl.GetAt(k).GetTime() + 0.5f);
 				if(frame != lastFrame){
 					lastFrame = frame;
 					realKeyframeCount++;
@@ -230,8 +229,8 @@ void deAnimModule::SaveAnimation(decBaseFileWriter &writer, const deAnimation &a
 		
 		// write bones
 		for(j=0; j<boneCount; j++){
-			const deAnimationKeyframeList &kfl = *move.GetKeyframeList(j);
-			const int keyframeCount = kfl.GetKeyframeCount();
+			const deAnimationKeyframe::List &kfl = *move.GetKeyframeList(j);
+			const int keyframeCount = kfl.GetCount();
 			
 			// TODO optimize writing using flags
 			sConfig config;
@@ -273,7 +272,7 @@ void deAnimModule::SaveAnimation(decBaseFileWriter &writer, const deAnimation &a
 					int lastFrame = -1;
 					
 					for(k=0; k<keyframeCount; k++){
-						const int frame = (int)(timeFactor * kfl.GetKeyframe(k)->GetTime() + 0.5f);
+						const int frame = (int)(timeFactor * kfl.GetAt(k).GetTime() + 0.5f);
 						if(frame != lastFrame){
 							lastFrame = frame;
 							realKeyframeCount++;
@@ -287,9 +286,9 @@ void deAnimModule::SaveAnimation(decBaseFileWriter &writer, const deAnimation &a
 					int lastFrame = -1;
 					
 					for(k=0; k<keyframeCount; k++){
-						const deAnimationKeyframe &keyframe = *kfl.GetKeyframe(k);
+						const deAnimationKeyframe &keyframe = kfl.GetAt(k);
 						
-						const int frame = (int)(timeFactor * kfl.GetKeyframe(k)->GetTime() + 0.5f);
+						const int frame = (int)(timeFactor * kfl.GetAt(k).GetTime() + 0.5f);
 						if(frame == lastFrame){
 							continue;
 						}
@@ -304,31 +303,31 @@ void deAnimModule::SaveAnimation(decBaseFileWriter &writer, const deAnimation &a
 					const int endFrameIndex = playtimeFrames - 1;
 					
 					int lastFrame = 0;
-					pWriteKeyframeData(writer, config, *kfl.GetKeyframe(0));
+					pWriteKeyframeData(writer, config, kfl.First());
 					
 					for(k=1; k<keyframeCount-1; k++){
-						const deAnimationKeyframe &keyframe = *kfl.GetKeyframe(k);
+						const deAnimationKeyframe &keyframe = kfl.GetAt(k);
 						
 						const int frame = decMath::clamp((int)(timeFactor
-							* kfl.GetKeyframe( k )->GetTime() + 0.5f ), 0, endFrameIndex );
+							* kfl.GetAt( k ).GetTime() + 0.5f ), 0, endFrameIndex );
 						if(frame == lastFrame){
 							continue;
 						}
 						
 						pWriteKeyframeDataInterpolate(writer, config,
-							*kfl.GetKeyframe( k - 1 ), keyframe, frame - lastFrame );
+							kfl.GetAt( k - 1 ), keyframe, frame - lastFrame );
 						lastFrame = frame;
 					}
 					
 					if(lastFrame < endFrameIndex){
 						pWriteKeyframeDataInterpolate(writer, config,
-							*kfl.GetKeyframe( keyframeCount - 2 ),
-							*kfl.GetKeyframe( keyframeCount - 1 ), endFrameIndex - lastFrame );
+							kfl.GetAt( keyframeCount - 2 ),
+							kfl.GetAt( keyframeCount - 1 ), endFrameIndex - lastFrame );
 					}
 					
 				}else if(keyframeCount == 1){
 					for(k=0; k<playtimeFrames; k++){
-						pWriteKeyframeData(writer, config, *kfl.GetKeyframe(0));
+						pWriteKeyframeData(writer, config, kfl.First());
 					}
 				}
 			}
@@ -336,8 +335,8 @@ void deAnimModule::SaveAnimation(decBaseFileWriter &writer, const deAnimation &a
 		
 		// write vertex position sets
 		for(j=0; j<vertexPositionSetCount; j++){
-			const deAnimationKeyframeVertexPositionSetList &kfl = *move.GetVertexPositionSetKeyframeList(j);
-			const int keyframeCount = kfl.GetKeyframeCount();
+			const deAnimationKeyframeVertexPositionSet::List &kfl = *move.GetVertexPositionSetKeyframeList(j);
+			const int keyframeCount = kfl.GetCount();
 			
 			sConfig2 config;
 			config.hasVarWeight = true;
@@ -370,7 +369,7 @@ void deAnimModule::SaveAnimation(decBaseFileWriter &writer, const deAnimation &a
 					int lastFrame = -1;
 					
 					for(k=0; k<keyframeCount; k++){
-						const int frame = (int)(timeFactor * kfl.GetKeyframe(k)->GetTime() + 0.5f);
+						const int frame = (int)(timeFactor * kfl.GetAt(k).GetTime() + 0.5f);
 						if(frame != lastFrame){
 							lastFrame = frame;
 							realKeyframeCount++;
@@ -384,9 +383,9 @@ void deAnimModule::SaveAnimation(decBaseFileWriter &writer, const deAnimation &a
 					int lastFrame = -1;
 					
 					for(k=0; k<keyframeCount; k++){
-						const deAnimationKeyframeVertexPositionSet &keyframe = *kfl.GetKeyframe(k);
+						const deAnimationKeyframeVertexPositionSet &keyframe = kfl.GetAt(k);
 						
-						const int frame = (int)(timeFactor * kfl.GetKeyframe(k)->GetTime() + 0.5f);
+						const int frame = (int)(timeFactor * kfl.GetAt(k).GetTime() + 0.5f);
 						if(frame == lastFrame){
 							continue;
 						}
@@ -401,31 +400,31 @@ void deAnimModule::SaveAnimation(decBaseFileWriter &writer, const deAnimation &a
 					const int endFrameIndex = playtimeFrames - 1;
 					
 					int lastFrame = 0;
-					pWriteKeyframeData(writer, config, *kfl.GetKeyframe(0));
+					pWriteKeyframeData(writer, config, kfl.First());
 					
 					for(k=1; k<keyframeCount-1; k++){
-						const deAnimationKeyframeVertexPositionSet &keyframe = *kfl.GetKeyframe(k);
+						const deAnimationKeyframeVertexPositionSet &keyframe = kfl.GetAt(k);
 						
 						const int frame = decMath::clamp((int)(timeFactor
-							* kfl.GetKeyframe( k )->GetTime() + 0.5f ), 0, endFrameIndex );
+							* kfl.GetAt( k ).GetTime() + 0.5f ), 0, endFrameIndex );
 						if(frame == lastFrame){
 							continue;
 						}
 						
 						pWriteKeyframeDataInterpolate(writer, config,
-							*kfl.GetKeyframe( k - 1 ), keyframe, frame - lastFrame );
+							kfl.GetAt( k - 1 ), keyframe, frame - lastFrame );
 						lastFrame = frame;
 					}
 					
 					if(lastFrame < endFrameIndex){
 						pWriteKeyframeDataInterpolate(writer, config,
-							*kfl.GetKeyframe( keyframeCount - 2 ),
-							*kfl.GetKeyframe( keyframeCount - 1 ), endFrameIndex - lastFrame );
+							kfl.GetAt( keyframeCount - 2 ),
+							kfl.GetAt( keyframeCount - 1 ), endFrameIndex - lastFrame );
 					}
 					
 				}else if(keyframeCount == 1){
 					for(k=0; k<playtimeFrames; k++){
-						pWriteKeyframeData(writer, config, *kfl.GetKeyframe(0));
+						pWriteKeyframeData(writer, config, kfl.First());
 					}
 				}
 			}
@@ -541,7 +540,7 @@ void deAnimModule::pReadMoveBones(decBaseFileReader &reader, deAnimationMove &mo
 	int i;
 	
 	for(i=0; i<info.boneCount; i++){
-		deAnimationKeyframeList * const list = new deAnimationKeyframeList;
+		deAnimationKeyframe::List * const list = new deAnimationKeyframe::List;
 		
 		try{
 			info.boneFlags = reader.ReadByte();
@@ -556,19 +555,10 @@ void deAnimModule::pReadMoveBones(decBaseFileReader &reader, deAnimationMove &mo
 				pReadKeyframes(reader, *list, info);
 			}
 			
-			if(list->GetKeyframeCount() == 0){
+			if(list->GetCount() == 0){
 				// if there is no keyframe add a dummy one
-				deAnimationKeyframe * const keyframe = new deAnimationKeyframe;
-				
-				try{
-					list->AddKeyframe(keyframe);
-					
-				}catch(const deException &){
-					delete keyframe;
-					throw;
-				}
+				list->Add({});
 			}
-			
 			move.AddKeyframeList(list);
 			
 		}catch(const deException &){
@@ -578,7 +568,7 @@ void deAnimModule::pReadMoveBones(decBaseFileReader &reader, deAnimationMove &mo
 	}
 }
 
-void deAnimModule::pReadKeyframes(decBaseFileReader &reader, deAnimationKeyframeList &list, sInfo &info){
+void deAnimModule::pReadKeyframes(decBaseFileReader &reader, deAnimationKeyframe::List &list, sInfo &info){
 	int i, keyframeCount;
 	
 	if(info.fewKeyframes){
@@ -598,88 +588,80 @@ void deAnimModule::pReadKeyframes(decBaseFileReader &reader, deAnimationKeyframe
 	}
 }
 
-void deAnimModule::pReadKeyframe(decBaseFileReader &reader, deAnimationKeyframeList &list,
+void deAnimModule::pReadKeyframe(decBaseFileReader &reader, deAnimationKeyframe::List &list,
 sInfo &info, int frameNumber){
-	deAnimationKeyframe * const keyframe = new deAnimationKeyframe;
+	deAnimationKeyframe keyframe;
 	
-	try{
-		// read time if we have few keyframes
-		if(info.fewKeyframes){
-			keyframe->SetTime(info.timeFactor * (float)reader.ReadUShort());
-			if(keyframe->GetTime() < 0){
-				DETHROW(deeInvalidFormat);
-			}
+	// read time if we have few keyframes
+	if(info.fewKeyframes){
+		keyframe.SetTime(info.timeFactor * (float)reader.ReadUShort());
+		if(keyframe.GetTime() < 0){
+			DETHROW(deeInvalidFormat);
+		}
+		
+	}else{
+		keyframe.SetTime(info.timeFactor * (float)frameNumber);
+	}
+	
+	if(info.hasVarPos){
+		decVector position;
+		
+		if(info.formatFloat){
+			position.x = reader.ReadFloat();
+			position.y = reader.ReadFloat();
+			position.z = reader.ReadFloat();
 			
 		}else{
-			keyframe->SetTime(info.timeFactor * (float)frameNumber);
+			position.x = 0.001f * (float)reader.ReadShort();
+			position.y = 0.001f * (float)reader.ReadShort();
+			position.z = 0.001f * (float)reader.ReadShort();
 		}
 		
-		if(info.hasVarPos){
-			decVector position;
-			
-			if(info.formatFloat){
-				position.x = reader.ReadFloat();
-				position.y = reader.ReadFloat();
-				position.z = reader.ReadFloat();
-				
-			}else{
-				position.x = 0.001f * (float)reader.ReadShort();
-				position.y = 0.001f * (float)reader.ReadShort();
-				position.z = 0.001f * (float)reader.ReadShort();
-			}
-			
-			keyframe->SetPosition(position);
-		}
-		
-		if(info.hasVarRot){
-			decVector rotation;
-			
-			if(info.formatFloat){
-				rotation.x = reader.ReadFloat();
-				rotation.y = reader.ReadFloat();
-				rotation.z = reader.ReadFloat();
-				
-			}else{
-				rotation.x = (0.01f * (float)reader.ReadShort()) * DEG2RAD;
-				rotation.y = (0.01f * (float)reader.ReadShort()) * DEG2RAD;
-				rotation.z = (0.01f * (float)reader.ReadShort()) * DEG2RAD;
-			}
-			
-			keyframe->SetRotation(rotation);
-		}
-		
-		if(info.hasVarScale){
-			decVector scale;
-			
-			if(info.formatFloat){
-				scale.x = reader.ReadFloat();
-				scale.y = reader.ReadFloat();
-				scale.z = reader.ReadFloat();
-				
-			}else{
-				scale.x = 0.01f * (float)reader.ReadShort();
-				scale.y = 0.01f * (float)reader.ReadShort();
-				scale.z = 0.01f * (float)reader.ReadShort();
-			}
-			
-			keyframe->SetScale(scale);
-		}
-		
-		list.AddKeyframe(keyframe);
-		
-	}catch(const deException &){
-		if(keyframe){
-			delete keyframe;
-		}
-		throw;
+		keyframe.SetPosition(position);
 	}
+	
+	if(info.hasVarRot){
+		decVector rotation;
+		
+		if(info.formatFloat){
+			rotation.x = reader.ReadFloat();
+			rotation.y = reader.ReadFloat();
+			rotation.z = reader.ReadFloat();
+			
+		}else{
+			rotation.x = (0.01f * (float)reader.ReadShort()) * DEG2RAD;
+			rotation.y = (0.01f * (float)reader.ReadShort()) * DEG2RAD;
+			rotation.z = (0.01f * (float)reader.ReadShort()) * DEG2RAD;
+		}
+		
+		keyframe.SetRotation(rotation);
+	}
+	
+	if(info.hasVarScale){
+		decVector scale;
+		
+		if(info.formatFloat){
+			scale.x = reader.ReadFloat();
+			scale.y = reader.ReadFloat();
+			scale.z = reader.ReadFloat();
+			
+		}else{
+			scale.x = 0.01f * (float)reader.ReadShort();
+			scale.y = 0.01f * (float)reader.ReadShort();
+			scale.z = 0.01f * (float)reader.ReadShort();
+		}
+		
+		keyframe.SetScale(scale);
+	}
+	
+	list.Add(keyframe);
 }
 
 void deAnimModule::pReadMoveVertexPositionSets(decBaseFileReader &reader, deAnimationMove &move, sInfo &info){
 	int i;
 	
 	for(i=0; i<info.vertexPositionSetCount; i++){
-		deAnimationKeyframeVertexPositionSetList * const list = new deAnimationKeyframeVertexPositionSetList;
+		deAnimationKeyframeVertexPositionSet::List * const list = new deAnimationKeyframeVertexPositionSet::List;
 		
 		try{
 			info.vertexPositionSetFlags = reader.ReadByte();
@@ -692,17 +674,9 @@ void deAnimModule::pReadMoveVertexPositionSets(decBaseFileReader &reader, deAnim
 				pReadKeyframes(reader, *list, info);
 			}
 			
-			if(list->GetKeyframeCount() == 0){
+			if(list->GetCount() == 0){
 				// if there is no keyframe add a dummy one
-				deAnimationKeyframeVertexPositionSet * const keyframe = new deAnimationKeyframeVertexPositionSet;
-				
-				try{
-					list->AddKeyframe(keyframe);
-					
-				}catch(const deException &){
-					delete keyframe;
-					throw;
-				}
+				list->Add({});
 			}
 			
 			move.AddVertexPositionSetKeyframeList(list);
@@ -715,7 +689,7 @@ void deAnimModule::pReadMoveVertexPositionSets(decBaseFileReader &reader, deAnim
 }
 
 void deAnimModule::pReadKeyframes(decBaseFileReader &reader,
-deAnimationKeyframeVertexPositionSetList &list, sInfo &info){
+deAnimationKeyframeVertexPositionSet::List &list, sInfo &info){
 	int i, keyframeCount;
 	
 	if(info.fewKeyframes){
@@ -731,38 +705,30 @@ deAnimationKeyframeVertexPositionSetList &list, sInfo &info){
 }
 
 void deAnimModule::pReadKeyframe(decBaseFileReader &reader,
-deAnimationKeyframeVertexPositionSetList &list, sInfo &info, int frameNumber){
-	deAnimationKeyframeVertexPositionSet * const keyframe = new deAnimationKeyframeVertexPositionSet;
+deAnimationKeyframeVertexPositionSet::List &list, sInfo &info, int frameNumber){
+	deAnimationKeyframeVertexPositionSet keyframe;
 	
-	try{
-		// read time if we have few keyframes
-		if(info.fewKeyframes){
-			keyframe->SetTime(info.timeFactor * (float)reader.ReadUShort());
-			if(keyframe->GetTime() < 0){
-				DETHROW(deeInvalidFormat);
-			}
+	// read time if we have few keyframes
+	if(info.fewKeyframes){
+		keyframe.SetTime(info.timeFactor * (float)reader.ReadUShort());
+		if(keyframe.GetTime() < 0){
+			DETHROW(deeInvalidFormat);
+		}
+		
+	}else{
+		keyframe.SetTime(info.timeFactor * (float)frameNumber);
+	}
+	
+	if(info.hasVarWeight){
+		if(info.formatFloat){
+			keyframe.SetWeight(reader.ReadFloat());
 			
 		}else{
-			keyframe->SetTime(info.timeFactor * (float)frameNumber);
+			keyframe.SetWeight(0.001f * (float)reader.ReadShort());
 		}
-		
-		if(info.hasVarWeight){
-			if(info.formatFloat){
-				keyframe->SetWeight(reader.ReadFloat());
-				
-			}else{
-				keyframe->SetWeight(0.001f * (float)reader.ReadShort());
-			}
-		}
-		
-		list.AddKeyframe(keyframe);
-		
-	}catch(const deException &){
-		if(keyframe){
-			delete keyframe;
-		}
-		throw;
 	}
+	
+	list.Add(keyframe);
 }
 
 void deAnimModule::pWriteKeyframeData(decBaseFileWriter &writer, const sConfig &config,

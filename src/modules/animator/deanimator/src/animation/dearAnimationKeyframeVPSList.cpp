@@ -28,7 +28,6 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/animation/deAnimationMove.h>
-#include <dragengine/resources/animation/deAnimationKeyframeVertexPositionSetList.h>
 
 
 
@@ -39,7 +38,7 @@
 /////////////////////////////////
 
 dearAnimationKeyframeVPSList::dearAnimationKeyframeVPSList(
-	const deAnimationKeyframeVertexPositionSetList &list) :
+	const deAnimationKeyframeVertexPositionSet::List &list) :
 pKeyframes(nullptr),
 pKeyframeCount(0)
 {
@@ -99,8 +98,8 @@ void dearAnimationKeyframeVPSList::pCleanUp(){
 }
 
 void dearAnimationKeyframeVPSList::pCreateKeyframes(
-const deAnimationKeyframeVertexPositionSetList &list){
-	const int count = list.GetKeyframeCount();
+const deAnimationKeyframeVertexPositionSet::List &list){
+	const int count = list.GetCount();
 	if(count == 0){
 		return;
 	}
@@ -109,11 +108,10 @@ const deAnimationKeyframeVertexPositionSetList &list){
 	
 	while(pKeyframeCount < count){
 		if(pKeyframeCount < count - 1){
-			pKeyframes[pKeyframeCount].Set(*list.GetKeyframe(pKeyframeCount),
-				*list.GetKeyframe( pKeyframeCount + 1 ) );
+			pKeyframes[pKeyframeCount].Set(list.GetAt(pKeyframeCount), list.GetAt(pKeyframeCount + 1));
 			
 		}else{
-			pKeyframes[pKeyframeCount].Set(*list.GetKeyframe(pKeyframeCount));
+			pKeyframes[pKeyframeCount].Set(list.GetAt(pKeyframeCount));
 		}
 		
 		pKeyframeCount++;

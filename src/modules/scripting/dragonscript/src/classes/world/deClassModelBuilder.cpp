@@ -546,7 +546,11 @@ void deClassModelBuilder::nfSetTextureCoordinateSetAtSetCount::RunFunction(dsRun
 	
 	deModelLOD &lod = *builder->GetModel()->GetLODAt(rt->GetValue(0)->GetInt());
 	deModelTextureCoordinatesSet &tcs = lod.GetTextureCoordinatesSetAt(rt->GetValue(1)->GetInt());
-	tcs.SetTextureCoordinatesCount(rt->GetValue(2)->GetInt());
+	tcs.GetTextureCoordinates().RemoveAll();
+	const int count = rt->GetValue(2)->GetInt();
+	for(int i=0; i<count; i++){
+		tcs.GetTextureCoordinates().Add({});
+	}
 }
 
 // protected func void setTextureCoordinateSetAtSetAt( int lod, int index, int index2, Vector2 tc )
@@ -568,8 +572,8 @@ void deClassModelBuilder::nfSetTextureCoordinateSetAtSetAt::RunFunction(dsRunTim
 	const deScriptingDragonScript &ds = (static_cast<deClassModelBuilder*>(GetOwnerClass()))->GetDS();
 	deModelLOD &lod = *builder->GetModel()->GetLODAt(rt->GetValue(0)->GetInt());
 	deModelTextureCoordinatesSet &tcs = lod.GetTextureCoordinatesSetAt(rt->GetValue(1)->GetInt());
-	tcs.SetTextureCoordinatesAt(rt->GetValue(2)->GetInt(),
-		ds.GetClassVector2()->GetVector2(rt->GetValue(3)->GetRealObject()));
+	tcs.GetTextureCoordinates().GetAt(rt->GetValue(2)->GetInt()) =
+		ds.GetClassVector2()->GetVector2(rt->GetValue(3)->GetRealObject());
 }
 
 

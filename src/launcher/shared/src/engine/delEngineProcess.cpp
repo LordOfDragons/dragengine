@@ -63,7 +63,7 @@
 #include <dragengine/common/string/decStringDictionary.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/utils/decUuid.h>
-#include <dragengine/filesystem/dePathList.h>
+
 #include <dragengine/filesystem/deVFSContainer.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
@@ -1479,7 +1479,7 @@ void delEngineProcess::CommandDelgaReadGameDefs(){
 		
 		deCollectFileSearchVisitor collect("*.degame", true);
 		vfs->SearchFiles(decPath::CreatePathUnix("/"), collect);
-		const dePathList &files = collect.GetFiles();
+		const decPath::List &files = collect.GetFiles();
 		const int fileCount = files.GetCount();
 		int i;
 		
@@ -1542,7 +1542,7 @@ void delEngineProcess::CommandDelgaReadPatchDefs(){
 		
 		deCollectFileSearchVisitor collect("*.depatch", true);
 		vfs->SearchFiles(decPath::CreatePathUnix("/"), collect);
-		const dePathList &files = collect.GetFiles();
+		const decPath::List &files = collect.GetFiles();
 		const int fileCount = files.GetCount();
 		int i;
 		

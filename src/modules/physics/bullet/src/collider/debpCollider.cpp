@@ -209,7 +209,7 @@ void debpCollider::SetParentWorld(debpWorld *parentWorld){
 			debpTouchSensor &touchSensor = *((debpTouchSensor*)pTrackingTouchSensors.GetAt(i));
 			if(touchSensor.GetTouchingColliders().Has(this)){
 				touchSensor.GetTouchingColliders().Remove(this);
-				touchSensor.GetLeavingColliders().AddIfAbsent(this);
+				touchSensor.GetLeavingColliders().Add(this);
 			}
 		}
 		*/

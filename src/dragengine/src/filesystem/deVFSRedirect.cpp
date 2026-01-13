@@ -25,7 +25,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "dePathList.h"
 #include "deVFSRedirect.h"
 #include "deContainerFileSearch.h"
 #include "deFileSearchVisitor.h"

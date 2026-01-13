@@ -138,7 +138,7 @@ void projRemoteServer::pUpdateTaskProfileData(){
 	
 	env.GetGameProject()->GetBaseGameDefinitionList().Visit([&](const igdeGameDefinition &gd){
 		if(!gd.GetVFSPath().IsEmpty()){
-			pTaskProfileData->excludeBaseGameDefPath.AddIfAbsent(decPath::CreatePathUnix(gd.GetVFSPath()));
+			pTaskProfileData->excludeBaseGameDefPath.Add(decPath::CreatePathUnix(gd.GetVFSPath()));
 		}
 	});
 	

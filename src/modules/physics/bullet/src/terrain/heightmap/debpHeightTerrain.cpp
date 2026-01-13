@@ -221,10 +221,10 @@ void debpHeightTerrain::AllDecalsRemoved(int sector){
 // Collision Detection
 ////////////////////////
 
-void debpHeightTerrain::FindDecalsAt(const decDVector &point, deDecalList &list){
+void debpHeightTerrain::FindDecalsAt(const decDVector &point, deDecal::List &list){
 }
 
-void debpHeightTerrain::FindDecalsTouching(const decShape &shape, deDecalList &list){
+void debpHeightTerrain::FindDecalsTouching(const decShape &shape, deDecal::List &list){
 }
 
 

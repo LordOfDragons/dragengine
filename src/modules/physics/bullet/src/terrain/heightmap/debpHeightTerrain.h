@@ -122,11 +122,11 @@ public:
 	 * list. The point is best taken from an earlier collision test and is in world
 	 * coordinates.
 	 */
-	void FindDecalsAt(const decDVector &point, deDecalList &list) override;
+	void FindDecalsAt(const decDVector &point, deDecal::List &list) override;
 	/**
 	 * Stores all decals in contact with the given shape into the provided list.
 	 */
-	void FindDecalsTouching(const decShape &shape, deDecalList &list) override;
+	void FindDecalsTouching(const decShape &shape, deDecal::List &list) override;
 	/*@}*/
 	
 private:

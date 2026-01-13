@@ -40,7 +40,7 @@
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/exceptions.h>
-#include <dragengine/filesystem/dePathList.h>
+
 #include <dragengine/filesystem/deVFSContainer.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
@@ -81,7 +81,7 @@ void delGameManager::LoadGames(delEngineInstance &instance){
 	deCollectDirectorySearchVisitor collect;
 	vfs.SearchFiles(decPath::CreatePathUnix("/config/user/games"), collect);
 	
-	const dePathList &directories = collect.GetDirectories();
+	const decPath::List &directories = collect.GetDirectories();
 	const int count = directories.GetCount();
 	delGame::Ref game;
 	delGameList list;
@@ -390,13 +390,9 @@ const decPath &baseDir, const decPath &directory){
 	collect.SetRecursive(true);
 	vfs.SearchFiles(directory, collect);
 	
-	const dePathList &result = collect.GetFiles();
-	const int count = result.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		pProcessFoundFiles(instance, baseDir + result.GetAt(i));
-	}
+	collect.GetFiles().Visit([&](const decPath &filePath){
+		pProcessFoundFiles(instance, baseDir + filePath);
+	});
 }
 
 void delGameManager::pProcessFoundFiles(delEngineInstance &instance, const decPath &path){

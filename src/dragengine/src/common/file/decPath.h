@@ -26,6 +26,7 @@
 #define _DECPATH_H_
 
 #include "../string/decStringList.h"
+#include "../collection/decTOrderedSet.h"
 
 
 /**
@@ -37,6 +38,11 @@
  * operating system below.
  */
 class DE_DLL_EXPORT decPath{
+public:
+	/** \brief List type. */
+	using List = decTOrderedSet<decPath>;
+	
+	
 private:
 	decStringList pComponents;
 	decString pPrefix;

@@ -102,11 +102,9 @@ void meModelBuilderBox::BuildModel(deModel *model){
 	modelLOD->SetTextureCoordinatesSetCount(1);
 	
 	deModelTextureCoordinatesSet &tcset = modelLOD->GetTextureCoordinatesSetAt(0);
-	tcset.SetTextureCoordinatesCount(4);
-	tcset.SetTextureCoordinatesAt(0, decVector2(0.0f, 0.0f));
-	tcset.SetTextureCoordinatesAt(1, decVector2(1.0f, 0.0f));
-	tcset.SetTextureCoordinatesAt(2, decVector2(1.0f, 1.0f));
-	tcset.SetTextureCoordinatesAt(3, decVector2(0.0f, 1.0f));
+	tcset.GetTextureCoordinates() = deModelTextureCoordinatesSet::TextureCoordinatesList{
+		decVector2{0.0f, 0.0f}, decVector2{1.0f, 0.0f},
+		decVector2{1.0f, 1.0f}, decVector2{0.0f, 1.0f}};
 	
 	// add faces
 	const int indices[] = {0, 1, 2, 3,   1, 5, 6, 2,    5, 4, 7, 6,   4, 0, 3, 7,    4, 5, 1, 0,    3, 2, 6, 7};

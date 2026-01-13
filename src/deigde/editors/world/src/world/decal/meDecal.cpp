@@ -45,7 +45,6 @@
 #include <dragengine/resources/collider/deColliderVolume.h>
 #include <dragengine/resources/collider/deColliderManager.h>
 #include <dragengine/resources/decal/deDecal.h>
-#include <dragengine/resources/decal/deDecalList.h>
 #include <dragengine/resources/decal/deDecalManager.h>
 #include <dragengine/resources/image/deImage.h>
 #include <dragengine/resources/skin/deSkin.h>

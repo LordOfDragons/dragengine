@@ -26,9 +26,8 @@
 #define _DEBASEPHASICSCOMPONENT_H_
 
 #include "../../../common/math/decMath.h"
+#include "../../../resources/decal/deDecal.h"
 
-class deDecal;
-class deDecalList;
 class decShape;
 
 
@@ -104,7 +103,7 @@ public:
 	 * \param[in] point Point on the surface to test.
 	 * \param[out] list List of decals to fill in. Not emptied before filling.
 	 */
-	virtual void FindDecalsAt(const decVector &point, deDecalList &list);
+	virtual void FindDecalsAt(const decVector &point, deDecal::List &list);
 	
 	/**
 	 * \brief Collect decals in contact with shape.
@@ -114,7 +113,7 @@ public:
 	 * \param[in] shape Shape to test.
 	 * \param[out] list List of decals to fill in. Not emptied before filling.
 	 */
-	virtual void FindDecalsTouching(decShape *shape, deDecalList &list);
+	virtual void FindDecalsTouching(decShape *shape, deDecal::List &list);
 	/*@}*/
 };
 

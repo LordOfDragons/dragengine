@@ -203,7 +203,7 @@ public:
 	 * \param[in] point Point on the surface to test.
 	 * \param[out] list List of decals to fill in. Not emptied before filling.
 	 */
-	void FindDecalsAt(const decVector &point, deDecalList &list) override;
+	void FindDecalsAt(const decVector &point, deDecal::List &list) override;
 	
 	/**
 	 * \brief Collect decals in contact with shape.
@@ -213,7 +213,7 @@ public:
 	 * \param[in] shape Shape to test.
 	 * \param[out] list List of decals to fill in. Not emptied before filling.
 	 */
-	void FindDecalsTouching(decShape *shape, deDecalList &list) override;
+	void FindDecalsTouching(decShape *shape, deDecal::List &list) override;
 	/*@}*/
 	
 	

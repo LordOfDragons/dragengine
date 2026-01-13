@@ -32,6 +32,7 @@
 #include "../skin/dynamic/deDynamicSkin.h"
 #include "../occlusionmesh/deOcclusionMesh.h"
 #include "../animator/deAnimator.h"
+#include "../decal/deDecal.h"
 #include "../../parallel/deParallelTask.h"
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decLayerMask.h"
@@ -45,8 +46,6 @@ class deBasePhysicsComponent;
 class deComponentBone;
 class deComponentManager;
 class deComponentTexture;
-class deDecal;
-class deDecalList;
 class deWorld;
 class decShape;
 
@@ -426,7 +425,7 @@ public:
 	 * \param[in] point Point on the surface to test.
 	 * \param[out] list List of decals to fill in. Not emptied before filling.
 	 */
-	void FindDecalsAt(const decVector &point, deDecalList &list) const;
+	void FindDecalsAt(const decVector &point, deDecal::List &list) const;
 	
 	/**
 	 * \brief Collect decals in contact with shape.
@@ -436,7 +435,7 @@ public:
 	 * \param[in] shape Shape to test.
 	 * \param[out] list List of decals to fill in. Not emptied before filling.
 	 */
-	void FindDecalsTouching(decShape *shape, deDecalList &list) const;
+	void FindDecalsTouching(decShape *shape, deDecal::List &list) const;
 	/*@}*/
 	
 	

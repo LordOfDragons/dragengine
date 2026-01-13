@@ -125,7 +125,11 @@ void meModelBuilderNavSpace::BuildNavGrid(deModel* model){
 	modelLOD->SetTextureCoordinatesSetCount(1);
 	
 	deModelTextureCoordinatesSet &tcset = modelLOD->GetTextureCoordinatesSetAt(0);
-	tcset.SetTextureCoordinatesCount(modelLOD->GetVertexCount());
+	tcset.GetTextureCoordinates().RemoveAll();
+	tcset.GetTextureCoordinates().EnlargeCapacity(modelLOD->GetVertexCount());
+	for(v=0; v<modelLOD->GetVertexCount(); v++){
+		tcset.GetTextureCoordinates().Add({});
+	}
 	
 	for(e=0; e<edgeCount; e++){
 		const decVector &bp1 = vertices[edges[e].GetVertex1()];
@@ -165,7 +169,7 @@ void meModelBuilderNavSpace::BuildNavGrid(deModel* model){
 		indexVertex = e * 8;
 		for(v=0; v<8; v++){
 			modelLOD->GetVertexAt(indexVertex + v).SetPosition(boxVertices[v]);
-			tcset.SetTextureCoordinatesAt(indexVertex + v, decVector2(boxVertices[v].x, boxVertices[v].z));
+			tcset.GetTextureCoordinates().SetAt(indexVertex + v, {boxVertices[v].x, boxVertices[v].z});
 		}
 		
 		for(v=0; v<6; v++){
@@ -269,15 +273,16 @@ void meModelBuilderNavSpace::BuildNavMesh(deModel* model){
 	
 	modelLOD->SetVertexCount(vertexCount);
 	modelLOD->SetFaceCount(totalFaceCount);
-	modelLOD->SetTextureCoordinatesCount(modelLOD->GetVertexCount());
+	modelLOD->SetTextureCoordinatesCount(vertexCount);
 	modelLOD->SetTextureCoordinatesSetCount(1);
 	
 	deModelTextureCoordinatesSet &tcset = modelLOD->GetTextureCoordinatesSetAt(0);
-	tcset.SetTextureCoordinatesCount(modelLOD->GetVertexCount());
+	tcset.GetTextureCoordinates().RemoveAll();
+	tcset.GetTextureCoordinates().EnlargeCapacity(vertexCount);
 	
 	for(v=0; v<vertexCount; v++){
 		modelLOD->GetVertexAt(v).SetPosition(vertices[v]);
-		tcset.SetTextureCoordinatesAt(v, decVector2(vertices[v].x, vertices[v].z));
+		tcset.GetTextureCoordinates().Add({vertices[v].x, vertices[v].z});
 	}
 	
 	corners = pNavSpace->GetCorners();

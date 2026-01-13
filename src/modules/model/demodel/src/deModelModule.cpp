@@ -589,9 +589,10 @@ void deModelModule::pLoadVersion0(decBaseFileReader &reader, deModel &model){
 	
 	count = texCoordSorter.GetTexCoordCount();
 	lod->SetTextureCoordinatesCount(count);
-	tcset.SetTextureCoordinatesCount(count);
+	tcset.GetTextureCoordinates().RemoveAll();
+	tcset.GetTextureCoordinates().EnlargeCapacity(count);
 	for(i=0; i<count; i++){
-		tcset.SetTextureCoordinatesAt(i, texCoordSorter.GetTexCoordAt(i, 0));
+		tcset.GetTextureCoordinates().Add(texCoordSorter.GetTexCoordAt(i, 0));
 	}
 	
 	count = texCoordSorter.GetFaceCount();
@@ -1123,11 +1124,11 @@ void deModelModule::pLoadTexCoords(decBaseFileReader &reader, sModelInfos &infos
 		if(i == 0){
 			lodMesh.SetTextureCoordinatesCount(count);
 		}
-		tcset.SetTextureCoordinatesCount(count);
+		tcset.GetTextureCoordinates().RemoveAll();
+		tcset.GetTextureCoordinates().EnlargeCapacity(count);
 		
-		decVector2 * const texCoords = tcset.GetTextureCoordinates();
 		for(j=0; j<count; j++){
-			texCoords[j] = reader.ReadVector2();
+			tcset.GetTextureCoordinates().Add(reader.ReadVector2());
 		}
 	}
 }
@@ -1561,7 +1562,7 @@ void deModelModule::pLoadTriangles(decBaseFileReader &reader, sModelInfos &infos
 			}else{
 				index = reader.ReadUShort();
 			}
-			if(index >= tcset.GetTextureCoordinatesCount()){
+			if(index >= tcset.GetTextureCoordinates().GetCount()){
 				DETHROW(deeInvalidFormat);
 			}
 			face.SetTextureCoordinates1(index);
@@ -1572,7 +1573,7 @@ void deModelModule::pLoadTriangles(decBaseFileReader &reader, sModelInfos &infos
 			}else{
 				index = reader.ReadUShort();
 			}
-			if(index >= tcset.GetTextureCoordinatesCount()){
+			if(index >= tcset.GetTextureCoordinates().GetCount()){
 				DETHROW(deeInvalidFormat);
 			}
 			face.SetTextureCoordinates2(index);
@@ -1583,7 +1584,7 @@ void deModelModule::pLoadTriangles(decBaseFileReader &reader, sModelInfos &infos
 			}else{
 				index = reader.ReadUShort();
 			}
-			if(index >= tcset.GetTextureCoordinatesCount()){
+			if(index >= tcset.GetTextureCoordinates().GetCount()){
 				DETHROW(deeInvalidFormat);
 			}
 			face.SetTextureCoordinates3(index);
@@ -1747,7 +1748,7 @@ void deModelModule::pLoadQuads(decBaseFileReader &reader, sModelInfos &infos, de
 			}else{
 				index = reader.ReadUShort();
 			}
-			if(index >= tcset.GetTextureCoordinatesCount()){
+			if(index >= tcset.GetTextureCoordinates().GetCount()){
 				DETHROW(deeInvalidFormat);
 			}
 			face1.SetTextureCoordinates1(index);
@@ -1759,7 +1760,7 @@ void deModelModule::pLoadQuads(decBaseFileReader &reader, sModelInfos &infos, de
 			}else{
 				index = reader.ReadUShort();
 			}
-			if(index >= tcset.GetTextureCoordinatesCount()){
+			if(index >= tcset.GetTextureCoordinates().GetCount()){
 				DETHROW(deeInvalidFormat);
 			}
 			face1.SetTextureCoordinates2(index);
@@ -1770,7 +1771,7 @@ void deModelModule::pLoadQuads(decBaseFileReader &reader, sModelInfos &infos, de
 			}else{
 				index = reader.ReadUShort();
 			}
-			if(index >= tcset.GetTextureCoordinatesCount()){
+			if(index >= tcset.GetTextureCoordinates().GetCount()){
 				DETHROW(deeInvalidFormat);
 			}
 			face1.SetTextureCoordinates3(index);
@@ -1782,7 +1783,7 @@ void deModelModule::pLoadQuads(decBaseFileReader &reader, sModelInfos &infos, de
 			}else{
 				index = reader.ReadUShort();
 			}
-			if(index >= tcset.GetTextureCoordinatesCount()){
+			if(index >= tcset.GetTextureCoordinates().GetCount()){
 				DETHROW(deeInvalidFormat);
 			}
 			face2.SetTextureCoordinates3(index);
@@ -1853,14 +1854,11 @@ void deModelModule::pUpdateFaceTexCoordIndices(deModel &model, sModelInfos &info
 			count = cacheReader->ReadInt();
 			lodMesh.SetTextureCoordinatesCount(count);
 			for(i=0; i<texCoordSetCount; i++){
-				lodMesh.GetTextureCoordinatesSetAt(i).SetTextureCoordinatesCount(count);
-			}
-			
-			for(i=0; i<texCoordSetCount; i++){
 				deModelTextureCoordinatesSet &tcset = lodMesh.GetTextureCoordinatesSetAt(i);
-				
+				tcset.GetTextureCoordinates().RemoveAll();
+				tcset.GetTextureCoordinates().EnlargeCapacity(count);
 				for(j=0; j<count; j++){
-					tcset.SetTextureCoordinatesAt(j, cacheReader->ReadVector2());
+					tcset.GetTextureCoordinates().Add(cacheReader->ReadVector2());
 				}
 			}
 			
@@ -1910,14 +1908,11 @@ void deModelModule::pUpdateFaceTexCoordIndices(deModel &model, sModelInfos &info
 	count = texCoordSorter.GetTexCoordCount();
 	lodMesh.SetTextureCoordinatesCount(count);
 	for(i=0; i<texCoordSetCount; i++){
-		lodMesh.GetTextureCoordinatesSetAt(i).SetTextureCoordinatesCount(count);
-	}
-	
-	for(i=0; i<texCoordSetCount; i++){
 		deModelTextureCoordinatesSet &tcset = lodMesh.GetTextureCoordinatesSetAt(i);
-		
+		tcset.GetTextureCoordinates().RemoveAll();
+		tcset.GetTextureCoordinates().EnlargeCapacity(count);
 		for(j=0; j<count; j++){
-			tcset.SetTextureCoordinatesAt(j, texCoordSorter.GetTexCoordAt(j, i));
+			tcset.GetTextureCoordinates().Add(texCoordSorter.GetTexCoordAt(j, i));
 		}
 	}
 	
@@ -2160,8 +2155,8 @@ void deModelModule::pSaveTexCoords(decBaseFileWriter &writer, const deModelLOD &
 	
 	for(i=0; i<count; i++){
 		const deModelTextureCoordinatesSet &tcset = tcsets[i];
-		const decVector2 * const texCoords = tcset.GetTextureCoordinates();
-		const int texCoordCount = tcset.GetTextureCoordinatesCount();
+		const deModelTextureCoordinatesSet::TextureCoordinatesList &texCoords = tcset.GetTextureCoordinates();
+		const int texCoordCount = texCoords.GetCount();
 		
 		if(largeModel){
 			writer.WriteInt(texCoordCount);

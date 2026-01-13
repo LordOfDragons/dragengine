@@ -365,11 +365,11 @@ public:
 	 * Stores all decals in contact with the given surface point into the provided list.
 	 * \details The point is best taken from an earlier collision test and is in world coordinates.
 	 */
-	void FindDecalsAt(const decVector &point, deDecalList *list);
+	void FindDecalsAt(const decVector &point, deDecal::List *list);
 	/**
 	 * Stores all decals in contact with the given shape into the provided list.
 	 */
-	void FindDecalsTouching(decShape *shape, deDecalList *list);
+	void FindDecalsTouching(decShape *shape, deDecal::List *list);
 	
 	/** Update trigger targets. */
 	void UpdateTriggerTargets();

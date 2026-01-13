@@ -47,7 +47,7 @@
 #include <dragengine/common/utils/decUuid.h>
 #include <dragengine/common/xmlparser/decXmlWriter.h>
 #include <dragengine/logger/deLogger.h>
-#include <dragengine/filesystem/dePathList.h>
+
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/filesystem/deVFSContainer.h>
 #include <dragengine/filesystem/deCollectFileSearchVisitor.h>
@@ -410,7 +410,7 @@ void igdeCreateProject::pApplyTemplate(){
 }
 
 void igdeCreateProject::pTemplateCreateFile(const igdeTemplateFile &file){
-	dePathList list;
+	decPath::List list;
 	
 	// set up replacements if present
 	decStringList replaceTokens, replaceValues;

@@ -26,12 +26,18 @@
 #define _DEANIMATIONKEYFRAME_H_
 
 #include "../../common/math/decMath.h"
+#include "../../common/collection/decTList.h"
 
 
 /**
  * \brief Animation bone keyframe.
  */
 class DE_DLL_EXPORT deAnimationKeyframe{
+public:
+	/** \brief List type. */
+	using List = decTList<deAnimationKeyframe>;
+	
+	
 private:
 	float pTime;
 	decVector pPosition;

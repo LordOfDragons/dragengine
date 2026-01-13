@@ -48,7 +48,7 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/filesystem/deCacheHelper.h>
 #include <dragengine/filesystem/deCollectFileSearchVisitor.h>
-#include <dragengine/filesystem/dePathList.h>
+
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/threading/deMutexGuard.h>
@@ -648,7 +648,7 @@ void deoglShaderManager::pLoadUnitSourceCodesIn(const char *directory){
 		searchPath.AddUnixPath(directory);
 		vfs.SearchFiles(searchPath, collect);
 		
-		const dePathList &pathList = collect.GetFiles();
+		const decPath::List &pathList = collect.GetFiles();
 		const int count = pathList.GetCount();
 		decString validationString;
 		
@@ -693,7 +693,7 @@ void deoglShaderManager::pLoadIncludableSourcesIn(const char *directory){
 		searchPath.AddUnixPath(directory);
 		vfs.SearchFiles(searchPath, collect);
 		
-		const dePathList &pathList = collect.GetFiles();
+		const decPath::List &pathList = collect.GetFiles();
 		const int count = pathList.GetCount();
 		
 		for(i=0; i<count; i++){
@@ -737,7 +737,7 @@ void deoglShaderManager::pLoadSourcesIn(const char *directory){
 		searchPath.AddUnixPath(directory);
 		vfs.SearchFiles(searchPath, collect);
 		
-		const dePathList &pathList = collect.GetFiles();
+		const decPath::List &pathList = collect.GetFiles();
 		const int count = pathList.GetCount();
 		decString validationString;
 		

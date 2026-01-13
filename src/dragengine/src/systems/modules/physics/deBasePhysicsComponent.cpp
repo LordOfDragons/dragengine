@@ -84,8 +84,8 @@ void deBasePhysicsComponent::AllDecalsRemoved(){
 // Collision Detection
 ////////////////////////
 
-void deBasePhysicsComponent::FindDecalsAt(const decVector &point, deDecalList &list){
+void deBasePhysicsComponent::FindDecalsAt(const decVector &point, deDecal::List &list){
 }
 
-void deBasePhysicsComponent::FindDecalsTouching(decShape *shape, deDecalList &list){
+void deBasePhysicsComponent::FindDecalsTouching(decShape *shape, deDecal::List &list){
 }

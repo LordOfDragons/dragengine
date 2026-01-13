@@ -45,7 +45,7 @@
 
 #include <dragengine/deEngine.h>
 #include "dragengine/input/deInputEvent.h"
-#include <dragengine/filesystem/dePathList.h>
+
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/common/file/decPath.h>

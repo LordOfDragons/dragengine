@@ -26,11 +26,10 @@
 #define _DEBASEPHYSICSHEIGHTTERRAIN_H_
 
 #include "../../../common/math/decMath.h"
+#include "../../../resources/decal/deDecal.h"
 
 class deHeightTerrain;
 class deHeightTerrainSector;
-class deDecal;
-class deDecalList;
 class decShape;
 
 
@@ -97,12 +96,12 @@ public:
 	 * list. The point is best taken from an earlier collision test and is in world
 	 * coordinates.
 	 */
-	virtual void FindDecalsAt(const decDVector &point, deDecalList &list);
+	virtual void FindDecalsAt(const decDVector &point, deDecal::List &list);
 	
 	/**
 	 * Stores all decals in contact with the given shape into the provided list.
 	 */
-	virtual void FindDecalsTouching(const decShape &shape, deDecalList &list);
+	virtual void FindDecalsTouching(const decShape &shape, deDecal::List &list);
 	/*@}*/
 };
 

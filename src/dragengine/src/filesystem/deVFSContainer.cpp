@@ -69,11 +69,11 @@ bool deVFSContainer::HasHiddenPath(const decPath &path) const{
 }
 
 void deVFSContainer::AddHiddenPath(const decPath &path){
-	pHiddenPath.AddIfAbsent(path);
+	pHiddenPath.Add(path);
 }
 
 void deVFSContainer::RemoveHiddenPath(const decPath &path){
-	pHiddenPath.RemoveIfPresent(path);
+	pHiddenPath.Remove(path);
 }
 
 void deVFSContainer::RemoveAllHiddenPath(){

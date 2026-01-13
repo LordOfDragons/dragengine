@@ -190,8 +190,9 @@ bool deModel::Verify(){
 			return false;
 		}
 		
+		
 		for(j=0; j<texCoordSetCount; j++){
-			if(pLODs[i]->GetTextureCoordinatesSetAt(j).GetTextureCoordinatesCount() != texCoordCount){
+			if(pLODs[i]->GetTextureCoordinatesSetAt(j).GetTextureCoordinates().GetCount() != texCoordCount){
 				return false;
 			}
 		}

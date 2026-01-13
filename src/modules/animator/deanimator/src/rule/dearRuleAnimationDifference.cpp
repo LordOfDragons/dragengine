@@ -44,9 +44,8 @@
 #include <dragengine/resources/animation/deAnimationBone.h>
 #include <dragengine/resources/animation/deAnimationMove.h>
 #include <dragengine/resources/animation/deAnimationKeyframe.h>
-#include <dragengine/resources/animation/deAnimationKeyframeList.h>
+
 #include <dragengine/resources/animation/deAnimationKeyframeVertexPositionSet.h>
-#include <dragengine/resources/animation/deAnimationKeyframeVertexPositionSetList.h>
 #include <dragengine/resources/animator/deAnimator.h>
 #include <dragengine/resources/animator/controller/deAnimatorController.h>
 #include <dragengine/resources/animator/controller/deAnimatorControllerTarget.h>

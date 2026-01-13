@@ -60,7 +60,7 @@
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/utils/decUuid.h>
 #include <dragengine/errortracing/deErrorTrace.h>
-#include <dragengine/filesystem/dePathList.h>
+
 #include <dragengine/filesystem/deVFSContainer.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
@@ -884,7 +884,7 @@ void delEngineInstanceDirect::ReadDelgaGameDefs(const char *delgaFile, decString
 	
 	deCollectFileSearchVisitor collect("*.degame", true);
 	vfs->SearchFiles(decPath::CreatePathUnix("/"), collect);
-	const dePathList &files = collect.GetFiles();
+	const decPath::List &files = collect.GetFiles();
 	const int fileCount = files.GetCount();
 	decString gameDef;
 	int i;
@@ -925,7 +925,7 @@ void delEngineInstanceDirect::ReadDelgaPatchDefs(const char *delgaFile, decStrin
 	
 	deCollectFileSearchVisitor collect("*.depatch", true);
 	vfs->SearchFiles(decPath::CreatePathUnix("/"), collect);
-	const dePathList &files = collect.GetFiles();
+	const decPath::List &files = collect.GetFiles();
 	const int fileCount = files.GetCount();
 	decString patchDef;
 	int i;
@@ -1018,7 +1018,7 @@ const char *delgaFile, decStringList &list){
 	
 	deCollectFileSearchVisitor collect("*.degame", true);
 	vfs->SearchFiles(decPath::CreatePathUnix("/"), collect);
-	const dePathList &files = collect.GetFiles();
+	const decPath::List &files = collect.GetFiles();
 	const int fileCount = files.GetCount();
 	decString gameDef;
 	int i;

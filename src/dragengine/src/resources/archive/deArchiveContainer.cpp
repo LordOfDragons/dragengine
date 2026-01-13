@@ -29,7 +29,7 @@
 #include "deArchiveContainer.h"
 #include "deArchiveManager.h"
 #include "../../common/exceptions.h"
-#include "../../filesystem/dePathList.h"
+
 #include "../../filesystem/deContainerFileSearch.h"
 #include "../../systems/modules/archive/deBaseArchiveContainer.h"
 

@@ -26,8 +26,8 @@
 #define _DEARANIMATIONKEYFRAMEVPSLIST_H_
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/resources/animation/deAnimationKeyframeVertexPositionSet.h>
 
-class deAnimationKeyframeVertexPositionSetList;
 class dearAnimationKeyframeVPS;
 
 
@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create keyframe list. */
-	explicit dearAnimationKeyframeVPSList(const deAnimationKeyframeVertexPositionSetList &list);
+	explicit dearAnimationKeyframeVPSList(const deAnimationKeyframeVertexPositionSet::List &list);
 	
 	/** Clean up keyframe list. */
 	~dearAnimationKeyframeVPSList();
@@ -71,7 +71,7 @@ public:
 private:
 	void pCleanUp();
 	
-	void pCreateKeyframes(const deAnimationKeyframeVertexPositionSetList &list);
+	void pCreateKeyframes(const deAnimationKeyframeVertexPositionSet::List &list);
 };
 
 #endif

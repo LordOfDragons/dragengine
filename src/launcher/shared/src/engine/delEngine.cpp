@@ -54,7 +54,7 @@
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
-#include <dragengine/filesystem/dePathList.h>
+
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/filesystem/deVFSContainer.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
@@ -205,13 +205,13 @@ void delEngine::AddModulesFrom(const char *directory, deModuleSystem::eModuleTyp
 	deCollectDirectorySearchVisitor collect;
 	vfs.SearchFiles(decPath::CreatePathUnix(directory), collect);
 	
-	const dePathList &moduleDirs = collect.GetDirectories();
+	const decPath::List &moduleDirs = collect.GetDirectories();
 	const int count = moduleDirs.GetCount();
 	for(i=0; i<count; i++){
 		deCollectDirectorySearchVisitor collect2;
 		vfs.SearchFiles(moduleDirs.GetAt(i), collect2);
 		
-		const dePathList &versionDirs = collect2.GetDirectories();
+		const decPath::List &versionDirs = collect2.GetDirectories();
 		const int count2 = versionDirs.GetCount();
 		for(j=0; j<count2; j++){
 			const decPath &versionDir = versionDirs.GetAt(j);

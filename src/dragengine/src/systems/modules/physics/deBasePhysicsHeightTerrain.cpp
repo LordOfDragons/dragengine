@@ -85,8 +85,8 @@ void deBasePhysicsHeightTerrain::AllDecalsRemoved(int){
 // Collision Detection
 ////////////////////////
 
-void deBasePhysicsHeightTerrain::FindDecalsAt(const decDVector &, deDecalList &){
+void deBasePhysicsHeightTerrain::FindDecalsAt(const decDVector &, deDecal::List &){
 }
 
-void deBasePhysicsHeightTerrain::FindDecalsTouching(const decShape &, deDecalList &){
+void deBasePhysicsHeightTerrain::FindDecalsTouching(const decShape &, deDecal::List &){
 }

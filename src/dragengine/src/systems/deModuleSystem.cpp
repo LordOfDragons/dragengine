@@ -38,7 +38,7 @@
 #include "../app/deOS.h"
 #include "../common/file/decPath.h"
 #include "../common/exceptions.h"
-#include "../filesystem/dePathList.h"
+
 #include "../filesystem/deCollectDirectorySearchVisitor.h"
 #include "../filesystem/deCollectFileSearchVisitor.h"
 #include "../filesystem/deVFSDiskDirectory.h"
@@ -811,13 +811,13 @@ void deModuleSystem::pDetectModulesIn(const char *basePath, const char *director
 		deCollectDirectorySearchVisitor collect;
 		vfs->SearchFiles(decPath::CreatePathUnix("/"), collect);
 		
-		const dePathList &pathList = collect.GetDirectories();
+		const decPath::List &pathList = collect.GetDirectories();
 		for(i=0; i<pathList.GetCount(); i++){
 			// search for version directories
 			deCollectDirectorySearchVisitor collect2;
 			vfs->SearchFiles(pathList.GetAt(i), collect2);
 			
-			const dePathList &pathListVersion = collect2.GetDirectories();
+			const decPath::List &pathListVersion = collect2.GetDirectories();
 			for(j=0; j<pathListVersion.GetCount(); j++){
 				// create path for module definition file
 				modulePath.SetFrom(pathListVersion.GetAt(j));
@@ -920,7 +920,7 @@ void deModuleSystem::pInitAssetLibrary(){
 	deCollectFileSearchVisitor collect("dragengine-*.deal");
 	pVFSAssetLibraries->SearchFiles(decPath::CreatePathUnix("/"), collect);
 	
-	const dePathList &pathList = collect.GetFiles();
+	const decPath::List &pathList = collect.GetFiles();
 	deArchiveManager &arcMgr = *pEngine->GetArchiveManager();
 	int i;
 	

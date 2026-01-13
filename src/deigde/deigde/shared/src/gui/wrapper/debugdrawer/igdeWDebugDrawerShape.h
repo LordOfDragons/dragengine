@@ -143,7 +143,7 @@ public:
 	
 	/** \name Shapes */
 	/*@{*/
-	/** rief Add shape. */
+	/** \brief Add shape. */
 	void AddShape(decShape::Ref &&shape);
 	
 	/** \brief Add shapes. */

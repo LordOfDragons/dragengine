@@ -29,6 +29,7 @@
 #include "../skin/deSkin.h"
 #include "../skin/dynamic/deDynamicSkin.h"
 #include "../../common/math/decMath.h"
+#include "../../common/collection/decTOrderedSet.h"
 
 class deDecalManager;
 class deComponent;
@@ -56,6 +57,9 @@ class DE_DLL_EXPORT deDecal : public deResource{
 public:
 	/** \brief Type holding strong reference. */
 	using Ref = deTObjectReference<deDecal>;
+	
+	/** \brief List typedef. */
+	using List = decTObjectOrderedSet<deDecal>;
 	
 	
 private:

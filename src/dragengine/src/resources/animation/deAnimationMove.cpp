@@ -25,9 +25,8 @@
 #include "deAnimation.h"
 #include "deAnimationMove.h"
 #include "deAnimationKeyframe.h"
-#include "deAnimationKeyframeList.h"
+
 #include "deAnimationKeyframeVertexPositionSet.h"
-#include "deAnimationKeyframeVertexPositionSetList.h"
 #include "../../common/exceptions.h"
 #include "../../common/curve/decCurveBezier.h"
 #include "../../common/curve/decCurveBezierPoint.h"
@@ -89,20 +88,20 @@ void deAnimationMove::SetFPS(float fps){
 	pFPS = decMath::max(fps, 1.0f);
 }
 
-deAnimationKeyframeList *deAnimationMove::GetKeyframeList(int index) const{
+deAnimationKeyframe::List *deAnimationMove::GetKeyframeList(int index) const{
 	DEASSERT_TRUE(index >= 0)
 	DEASSERT_TRUE(index < pListCount)
 	
 	return pLists[index];
 }
 
-void deAnimationMove::AddKeyframeList(deAnimationKeyframeList *list){
+void deAnimationMove::AddKeyframeList(deAnimationKeyframe::List *list){
 	DEASSERT_NOTNULL(list);
 	
 	if(pListCount == pListSize){
 		const int newSize = pListCount * 3 / 2 + 1;
 		int i;
-		deAnimationKeyframeList ** const newArray = new deAnimationKeyframeList*[newSize];
+		deAnimationKeyframe::List ** const newArray = new deAnimationKeyframe::List*[newSize];
 		if(pLists){
 			for(i=0; i<pListCount; i++){
 				newArray[i] = pLists[i];
@@ -117,21 +116,21 @@ void deAnimationMove::AddKeyframeList(deAnimationKeyframeList *list){
 	pListCount++;
 }
 
-deAnimationKeyframeVertexPositionSetList *deAnimationMove::GetVertexPositionSetKeyframeList(int index) const{
+deAnimationKeyframeVertexPositionSet::List *deAnimationMove::GetVertexPositionSetKeyframeList(int index) const{
 	DEASSERT_TRUE(index >= 0)
 	DEASSERT_TRUE(index < pVertexPositionSetListCount)
 	
 	return pVertexPositionSetLists[index];
 }
 
-void deAnimationMove::AddVertexPositionSetKeyframeList(deAnimationKeyframeVertexPositionSetList *list){
+void deAnimationMove::AddVertexPositionSetKeyframeList(deAnimationKeyframeVertexPositionSet::List *list){
 	DEASSERT_NOTNULL(list);
 	
 	if(pVertexPositionSetListCount == pVertexPositionSetListSize){
 		const int newSize = pVertexPositionSetListCount * 3 / 2 + 1;
 		int i;
-		deAnimationKeyframeVertexPositionSetList ** const newArray =
-			new deAnimationKeyframeVertexPositionSetList*[newSize];
+		deAnimationKeyframeVertexPositionSet::List ** const newArray =
+			new deAnimationKeyframeVertexPositionSet::List*[newSize];
 		if(pVertexPositionSetLists){
 			for(i=0; i<pVertexPositionSetListCount; i++){
 				newArray[i] = pVertexPositionSetLists[i];
@@ -148,18 +147,12 @@ void deAnimationMove::AddVertexPositionSetKeyframeList(deAnimationKeyframeVertex
 
 void deAnimationMove::GetKeyframeCurve(decCurveBezier &curve, int index,
 BoneParameter parameter) const{
-	const deAnimationKeyframeList &list = *GetKeyframeList(index);
-	
 	curve.RemoveAllPoints();
 	curve.SetInterpolationMode(decCurveBezier::eimLinear);
 	
-	const int count = list.GetKeyframeCount();
 	float value = 0.0f;
-	int i;
 	
-	for(i=0; i<count; i++){
-		const deAnimationKeyframe &kf = *list.GetKeyframe(i);
-		
+	GetKeyframeList(index)->Visit([&](const deAnimationKeyframe &kf){
 		switch(parameter){
 		case BoneParameter::positionX:
 			value = kf.GetPosition().x;
@@ -199,19 +192,14 @@ BoneParameter parameter) const{
 		}
 		
 		curve.AddPoint(decCurveBezierPoint(decVector2(kf.GetTime(), value)));
-	}
+	});
 }
 
 void deAnimationMove::GetVertexPositionSetKeyframeCurve(decCurveBezier &curve, int index) const{
-	const deAnimationKeyframeVertexPositionSetList &list = *GetVertexPositionSetKeyframeList(index);
-	
 	curve.RemoveAllPoints();
 	curve.SetInterpolationMode(decCurveBezier::eimLinear);
 	
-	const int count = list.GetKeyframeCount();
-	int i;
-	for(i=0; i<count; i++){
-		const deAnimationKeyframeVertexPositionSet &kf = *list.GetKeyframe(i);
+	GetVertexPositionSetKeyframeList(index)->Visit([&](const deAnimationKeyframeVertexPositionSet &kf){
 		curve.AddPoint(decCurveBezierPoint(decVector2(kf.GetTime(), kf.GetWeight())));
-	}
+	});
 }

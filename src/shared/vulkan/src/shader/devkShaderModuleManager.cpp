@@ -34,7 +34,7 @@
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/exceptions.h>
-#include <dragengine/filesystem/dePathList.h>
+
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/filesystem/deCollectFileSearchVisitor.h>
@@ -121,7 +121,7 @@ void devkShaderModuleManager::Load(const char *directory){
 	deCollectFileSearchVisitor collect("*.spv", true);
 	vfs.SearchFiles(basePath, collect);
 	
-	const dePathList &pathList = collect.GetFiles();
+	const decPath::List &pathList = collect.GetFiles();
 	const int count = pathList.GetCount();
 	int i;
 	

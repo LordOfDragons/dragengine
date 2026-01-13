@@ -41,7 +41,6 @@
 #include <dragengine/resources/component/deComponent.h>
 #include <dragengine/resources/component/deComponentBone.h>
 #include <dragengine/resources/decal/deDecal.h>
-#include <dragengine/resources/decal/deDecalList.h>
 #include <dragengine/resources/model/deModel.h>
 #include <dragengine/resources/model/deModelBone.h>
 #include <dragengine/resources/model/deModelLOD.h>
@@ -220,21 +219,21 @@ void debpComponent::MeshDirty(){
 // Collision Detection
 ////////////////////////
 
-void debpComponent::FindDecalsAt(const decVector &point, deDecalList &list){
+void debpComponent::FindDecalsAt(const decVector &point, deDecal::List &list){
 	const decVector localPoint(pComponent->GetInverseMatrix() * point);
 	deDecal *engDecal = pComponent->GetRootDecal();
 	
 	while(engDecal){
 		const debpDecal &decal = *((debpDecal*)engDecal->GetPeerPhysics());
 		if(decal.TouchesPoint(localPoint)){
-			list.AddDecal(engDecal);
+			list.Add(engDecal);
 		}
 		
 		engDecal = engDecal->GetLLComponentNext();
 	}
 }
 
-void debpComponent::FindDecalsTouching(decShape *shape, deDecalList &list){
+void debpComponent::FindDecalsTouching(decShape *shape, deDecal::List &list){
 	debpShapeToVolume shapeToVolume;
 	shapeToVolume.SetMatrix(pComponent->GetInverseMatrix());
 	debpDCollisionVolume * const volume = shapeToVolume.GetVolumeFor(shape);
@@ -244,7 +243,7 @@ void debpComponent::FindDecalsTouching(decShape *shape, deDecalList &list){
 	while(engDecal){
 		const debpDecal &decal = *((debpDecal*)engDecal->GetPeerPhysics());
 		if(decal.TouchesVolume(volume)){
-			list.AddDecal(engDecal);
+			list.Add(engDecal);
 		}
 		
 		engDecal = engDecal->GetLLComponentNext();

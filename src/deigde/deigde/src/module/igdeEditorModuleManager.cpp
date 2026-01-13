@@ -38,7 +38,7 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
-#include <dragengine/filesystem/dePathList.h>
+
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/filesystem/deVFSContainer.h>
@@ -278,7 +278,7 @@ void igdeEditorModuleManager::pScanForModules(){
 		deCollectDirectorySearchVisitor collectDirectories;
 		vfs->SearchFiles(decPath::CreatePathUnix("/"), collectDirectories);
 		
-		const dePathList &pathList = collectDirectories.GetDirectories();
+		const decPath::List &pathList = collectDirectories.GetDirectories();
 		const int count = pathList.GetCount();
 		for(i=0; i<count; i++){
 			// create path for module definition file

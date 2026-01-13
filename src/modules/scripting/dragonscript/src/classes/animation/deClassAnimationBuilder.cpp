@@ -42,9 +42,8 @@
 #include <dragengine/resources/animation/deAnimationBone.h>
 #include <dragengine/resources/animation/deAnimationBuilder.h>
 #include <dragengine/resources/animation/deAnimationKeyframe.h>
-#include <dragengine/resources/animation/deAnimationKeyframeList.h>
+
 #include <dragengine/resources/animation/deAnimationKeyframeVertexPositionSet.h>
-#include <dragengine/resources/animation/deAnimationKeyframeVertexPositionSetList.h>
 #include <dragengine/resources/animation/deAnimationManager.h>
 #include <dragengine/resources/animation/deAnimationMove.h>
 
@@ -279,10 +278,10 @@ void deClassAnimationBuilder::nfSetKeyframeListCount::RunFunction(dsRunTime *rt,
 	deAnimationMove &move = *builder->GetAnimation()->GetMove(rt->GetValue(0)->GetInt());
 	const int count = rt->GetValue(1)->GetInt();
 	
-	deAnimationKeyframeList *kflist = nullptr;
+	deAnimationKeyframe::List *kflist = nullptr;
 	try{
 		while(move.GetKeyframeListCount() < count){
-			kflist = new deAnimationKeyframeList;
+			kflist = new deAnimationKeyframe::List;
 			move.AddKeyframeList(kflist);
 			kflist = nullptr;
 		}
@@ -313,19 +312,13 @@ void deClassAnimationBuilder::nfAddKeyframe::RunFunction(dsRunTime *rt, dsValue 
 	const deScriptingDragonScript &ds = static_cast<deClassAnimationBuilder*>(GetOwnerClass())->GetDS();
 	deAnimationMove &move = *builder->GetAnimation()->GetMove(rt->GetValue(0)->GetInt());
 	
-	deAnimationKeyframe * const keyframe = new deAnimationKeyframe;
-	try{
-		deAnimationKeyframeList &kflist = *move.GetKeyframeList(rt->GetValue(1)->GetInt());
-		keyframe->SetTime(rt->GetValue(2)->GetFloat());
-		keyframe->SetPosition(ds.GetClassVector()->GetVector(rt->GetValue(3)->GetRealObject()));
-		keyframe->SetRotation(ds.GetClassVector()->GetVector(rt->GetValue(4)->GetRealObject()) * DEG2RAD);
-		keyframe->SetScale(ds.GetClassVector()->GetVector(rt->GetValue(5)->GetRealObject()));
-		kflist.AddKeyframe(keyframe);
-		
-	}catch(...){
-		delete keyframe;
-		throw;
-	}
+	deAnimationKeyframe::List &kflist = *move.GetKeyframeList(rt->GetValue(1)->GetInt());
+	deAnimationKeyframe keyframe;
+	keyframe.SetTime(rt->GetValue(2)->GetFloat());
+	keyframe.SetPosition(ds.GetClassVector()->GetVector(rt->GetValue(3)->GetRealObject()));
+	keyframe.SetRotation(ds.GetClassVector()->GetVector(rt->GetValue(4)->GetRealObject()) * DEG2RAD);
+	keyframe.SetScale(ds.GetClassVector()->GetVector(rt->GetValue(5)->GetRealObject()));
+	kflist.Add(keyframe);
 }
 
 // protected func void setVertexPositionSetKeyframeListCount(int move, int count)
@@ -343,11 +336,11 @@ void deClassAnimationBuilder::nfSetVertexPositionSetKeyframeListCount::RunFuncti
 	
 	const int count = rt->GetValue(1)->GetInt();
 	
-	deAnimationKeyframeVertexPositionSetList *kflist = nullptr;
+	deAnimationKeyframeVertexPositionSet::List *kflist = nullptr;
 	try{
 		deAnimationMove &move = *builder->GetAnimation()->GetMove(rt->GetValue(0)->GetInt());
 		while(move.GetVertexPositionSetKeyframeListCount() < count){
-			kflist = new deAnimationKeyframeVertexPositionSetList;
+			kflist = new deAnimationKeyframeVertexPositionSet::List;
 			move.AddVertexPositionSetKeyframeList(kflist);
 			kflist = nullptr;
 		}
@@ -375,19 +368,13 @@ void deClassAnimationBuilder::nfAddVertexPositionSetKeyframe::RunFunction(dsRunT
 	
 	deAnimationMove &move = *builder->GetAnimation()->GetMove(rt->GetValue(0)->GetInt());
 	
-	deAnimationKeyframeVertexPositionSet * const keyframe = new deAnimationKeyframeVertexPositionSet;
-	try{
-		deAnimationKeyframeVertexPositionSetList &kflist =
-			*move.GetVertexPositionSetKeyframeList( rt->GetValue( 1 )->GetInt() );
-		
-		keyframe->SetTime(rt->GetValue(2)->GetFloat());
-		keyframe->SetWeight(rt->GetValue(3)->GetFloat());
-		kflist.AddKeyframe(keyframe);
-		
-	}catch(...){
-		delete keyframe;
-		throw;
-	}
+	deAnimationKeyframeVertexPositionSet::List &kflist =
+		*move.GetVertexPositionSetKeyframeList( rt->GetValue( 1 )->GetInt() );
+	
+	deAnimationKeyframeVertexPositionSet keyframe;
+	keyframe.SetTime(rt->GetValue(2)->GetFloat());
+	keyframe.SetWeight(rt->GetValue(3)->GetFloat());
+	kflist.Add(keyframe);
 }
 
 

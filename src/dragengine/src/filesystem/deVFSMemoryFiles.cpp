@@ -25,7 +25,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "dePathList.h"
+
 #include "deContainerFileSearch.h"
 #include "deVFSMemoryFiles.h"
 #include "../common/file/decPath.h"
@@ -220,7 +220,7 @@ void deVFSMemoryFiles::pRebuildDirectories(){
 		path.RemoveLastComponent();
 		
 		while(path.GetComponentCount() > 0){
-			pDirectories.AddIfAbsent(path);
+			pDirectories.Add(path);
 			path.RemoveLastComponent();
 		}
 	});

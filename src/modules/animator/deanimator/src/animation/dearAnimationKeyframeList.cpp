@@ -31,7 +31,7 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/animation/deAnimationMove.h>
-#include <dragengine/resources/animation/deAnimationKeyframeList.h>
+
 
 
 
@@ -41,7 +41,7 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dearAnimationKeyframeList::dearAnimationKeyframeList(const deAnimationKeyframeList &list){
+dearAnimationKeyframeList::dearAnimationKeyframeList(const deAnimationKeyframe::List &list){
 	pKeyframes = nullptr;
 	pKeyframeCount = 0;
 	
@@ -102,8 +102,8 @@ void dearAnimationKeyframeList::pCleanUp(){
 
 
 
-void dearAnimationKeyframeList::pCreateKeyframes(const deAnimationKeyframeList &list){
-	const int count = list.GetKeyframeCount();
+void dearAnimationKeyframeList::pCreateKeyframes(const deAnimationKeyframe::List &list){
+	const int count = list.GetCount();
 	if(count == 0){
 		return;
 	}
@@ -113,11 +113,10 @@ void dearAnimationKeyframeList::pCreateKeyframes(const deAnimationKeyframeList &
 	
 	while(pKeyframeCount < count){
 		if(pKeyframeCount < count - 1){
-			pKeyframes[pKeyframeCount].Set(*list.GetKeyframe(pKeyframeCount),
-				*list.GetKeyframe( pKeyframeCount + 1 ), negate );
+			pKeyframes[pKeyframeCount].Set(list.GetAt(pKeyframeCount), list.GetAt(pKeyframeCount + 1), negate);
 			
 		}else{
-			pKeyframes[pKeyframeCount].Set(*list.GetKeyframe(pKeyframeCount), negate);
+			pKeyframes[pKeyframeCount].Set(list.GetAt(pKeyframeCount), negate);
 		}
 		
 		pKeyframeCount++;

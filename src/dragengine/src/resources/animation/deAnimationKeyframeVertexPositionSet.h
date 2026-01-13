@@ -26,6 +26,7 @@
 #define _DEANIMATIONKEYFRAMEVERTEXPOSITIONSET_H_
 
 #include "../../common/math/decMath.h"
+#include "../../common/collection/decTList.h"
 
 
 /**
@@ -33,6 +34,11 @@
  * \version 1.17
  */
 class DE_DLL_EXPORT deAnimationKeyframeVertexPositionSet{
+public:
+	/** \brief List typedef. */
+	using List = decTList<deAnimationKeyframeVertexPositionSet>;
+	
+	
 private:
 	float pTime;
 	float pWeight;

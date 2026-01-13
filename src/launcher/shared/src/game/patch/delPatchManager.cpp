@@ -39,7 +39,7 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decDiskFileReader.h>
-#include <dragengine/filesystem/dePathList.h>
+
 #include <dragengine/filesystem/deVFSContainer.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
@@ -164,13 +164,9 @@ const decPath &baseDir, const decPath &directory, delPatchList &list){
 	collect.SetRecursive(true);
 	vfs.SearchFiles(directory, collect);
 	
-	const dePathList &result = collect.GetFiles();
-	const int count = result.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		pProcessFoundFiles(instance, baseDir + result.GetAt(i), list);
-	}
+	collect.GetFiles().Visit([&](const decPath &path){
+		pProcessFoundFiles(instance, baseDir + path, list);
+	});
 }
 
 void delPatchManager::pProcessFoundFiles(delEngineInstance &instance,

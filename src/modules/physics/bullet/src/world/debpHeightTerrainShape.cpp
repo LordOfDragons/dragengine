@@ -35,7 +35,6 @@
 #include "../terrain/heightmap/debpHeightTerrain.h"
 
 #include <dragengine/resources/decal/deDecal.h>
-#include <dragengine/resources/decal/deDecalList.h>
 #include <dragengine/resources/image/deImage.h>
 #include <dragengine/resources/terrain/heightmap/deHeightTerrain.h>
 #include <dragengine/resources/terrain/heightmap/deHeightTerrainSector.h>

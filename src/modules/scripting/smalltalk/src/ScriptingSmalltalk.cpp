@@ -46,7 +46,7 @@
 
 #include <dragengine/deEngine.h>
 #include "dragengine/input/deInputEvent.h"
-#include <dragengine/filesystem/dePathList.h>
+
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/filesystem/deCollectFileSearchVisitor.h>
@@ -603,7 +603,7 @@ void ScriptingSmalltalk::pAddScripts(deVirtualFileSystem &vfs, const char *path)
 		deCollectFileSearchVisitor collect("*.st", true);
 		vfs.SearchFiles(decPath::CreatePathUnix(path), collect);
 		
-		const dePathList &pathList = collect.GetFiles();
+		const decPath::List &pathList = collect.GetFiles();
 		for(p=0; p<pathList.GetCount(); p++){
 			const decPath &path = pathList.GetAt(p);
 			const decString filename(path.GetPathUnix());

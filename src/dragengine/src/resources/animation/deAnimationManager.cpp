@@ -260,5 +260,5 @@ void deAnimationManager::SystemAnimatorUnload(){
 
 
 void deAnimationManager::RemoveResource(deResource *resource){
-	pAnimations.RemoveIfPresent(resource);
+	pAnimations.Remove(resource);
 }

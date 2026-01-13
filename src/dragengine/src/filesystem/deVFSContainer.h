@@ -27,7 +27,7 @@
 
 #include <stdint.h>
 
-#include "dePathList.h"
+
 #include "../deObject.h"
 #include "../common/collection/decTOrderedSet.h"
 #include "../common/file/decPath.h"
@@ -83,7 +83,7 @@ public:
 private:
 	const decPath pRootPath;
 	bool pHidden;
-	dePathList pHiddenPath;
+	decPath::List pHiddenPath;
 	
 	
 	

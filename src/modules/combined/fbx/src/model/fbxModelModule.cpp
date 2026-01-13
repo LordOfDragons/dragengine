@@ -379,15 +379,25 @@ const fbxModel &loadModel, const fbxRig *loadRig){
 	
 	if(propUV && (propUVIndex || uvMit == fbxScene::emitByVertex)){
 		const int count = propUV->GetValueCount() / 2;
+		
 		lod.SetTextureCoordinatesCount(count);
-		tcs.SetTextureCoordinatesCount(count);
+		
+		tcs.GetTextureCoordinates().RemoveAll();
+		tcs.GetTextureCoordinates().EnlargeCapacity(count);
 		for(i=0; i<count; i++){
-			tcs.SetTextureCoordinatesAt(i, fbxScene::ConvUVFbxToDe(propUV->GetValueAtAsVector2(i)));
+			tcs.GetTextureCoordinates().Add(fbxScene::ConvUVFbxToDe(propUV->GetValueAtAsVector2(i)));
 		}
 		
 	}else{
-		lod.SetTextureCoordinatesCount(faceCount * 3);
-		tcs.SetTextureCoordinatesCount(faceCount * 3);
+		const int count = faceCount * 3;
+		
+		lod.SetTextureCoordinatesCount(count);
+		
+		tcs.GetTextureCoordinates().RemoveAll();
+		tcs.GetTextureCoordinates().EnlargeCapacity(count);
+		for(i=0; i<count; i++){
+			tcs.GetTextureCoordinates().Add({});
+		}
 	}
 	
 	// now build the faces
@@ -460,11 +470,11 @@ const fbxModel &loadModel, const fbxRig *loadRig){
 		
 		if(propUV){
 			if(uvMit == fbxScene::emitByPolygonVertex && uvRit == fbxScene::eritDirect){
-				tcs.SetTextureCoordinatesAt(texCoordIndex, uv);
+				tcs.GetTextureCoordinates().SetAt(texCoordIndex, uv);
 				face.SetTextureCoordinates1(texCoordIndex++);
-				tcs.SetTextureCoordinatesAt(texCoordIndex, faceUVLast);
+				tcs.GetTextureCoordinates().SetAt(texCoordIndex, faceUVLast);
 				face.SetTextureCoordinates2(texCoordIndex++);
-				tcs.SetTextureCoordinatesAt(texCoordIndex, faceUV0);
+				tcs.GetTextureCoordinates().SetAt(texCoordIndex, faceUV0);
 				face.SetTextureCoordinates3(texCoordIndex++);
 				faceUVLast = uv;
 				

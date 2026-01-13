@@ -103,7 +103,7 @@
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/filesystem/deVFSContainer.h>
 #include <dragengine/filesystem/deVFSRedirect.h>
-#include <dragengine/filesystem/dePathList.h>
+
 #include <dragengine/filesystem/deCollectDirectorySearchVisitor.h>
 #include <dragengine/filesystem/deCollectFileSearchVisitor.h>
 #include <dragengine/logger/deLoggerConsoleColor.h>
@@ -1882,9 +1882,9 @@ void igdeWindowMain::pLoadTemplates(){
 	deCollectDirectorySearchVisitor collectDirectories;
 	vfs->SearchFiles(decPath::CreatePathUnix("/"), collectDirectories);
 	
-	const dePathList &dirList = collectDirectories.GetDirectories();
+	const decPath::List &dirList = collectDirectories.GetDirectories();
 	const int dirCount = dirList.GetCount();
-	dePathList pathList;
+	decPath::List pathList;
 	int i;
 	
 	for(i=0; i<dirCount; i++){
@@ -1947,7 +1947,7 @@ void igdeWindowMain::pLoadSharedGameDefinitions(){
 	const deVirtualFileSystem::Ref &vfsAssetLibraries =
 		GetEngine()->GetModuleSystem()->GetVFSAssetLibraries();
 	
-	const dePathList &pathList = collectFiles.GetFiles();
+	const decPath::List &pathList = collectFiles.GetFiles();
 	igdeXMLGameDefinition loadGameDef(pEnvironmentIGDE, &logger);
 	const int count = pathList.GetCount();
 	int i;

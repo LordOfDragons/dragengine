@@ -26,13 +26,13 @@
 #define _DEHEIGHTTERRAIN_H_
 
 #include "../../deResource.h"
+#include "../../decal/deDecal.h"
 #include "../../../common/math/decMath.h"
 #include "../../../common/utils/decCollisionFilter.h"
 #include "../../../common/collection/decTOrderedSet.h"
 
 class deHeightTerrainManager;
 class deHeightTerrainSector;
-class deDecalList;
 class decShape;
 
 class deBaseAudioHeightTerrain;
@@ -203,14 +203,14 @@ public:
 	 * \param point Point on the surface to test.
 	 * \param list List of decals to fill in. Not emptied before filling.
 	 */
-	void FindDecalsAt(const decDVector &point, deDecalList &list);
+	void FindDecalsAt(const decDVector &point, deDecal::List &list);
 	
 	/**
 	 * Stores all decals in contact with the given shape into the provided list.
 	 * \param shape Shape to test.
 	 * \param list List of decals to fill in. Not emptied before filling.
 	 */
-	void FindDecalsTouching(const decShape &shape, deDecalList &list);
+	void FindDecalsTouching(const decShape &shape, deDecal::List &list);
 	/*@}*/
 	
 	

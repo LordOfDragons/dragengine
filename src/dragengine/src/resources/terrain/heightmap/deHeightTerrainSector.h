@@ -33,7 +33,6 @@ class deHeightTerrain;
 class deHeightTerrainNavSpace;
 class deHeightTerrainTexture;
 class deDecal;
-class deDecalList;
 
 
 /**

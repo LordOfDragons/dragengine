@@ -1287,8 +1287,9 @@ void deoglModelLOD::pBuildArrays(const deModel &engModel){
 		pTexCoordCount = modelTexCoordCount;
 		
 		if(pTexCoordCount > 0){
-			memcpy(pTexCoords, modelTexCoordSets[0].GetTextureCoordinates(),
-				sizeof(decVector2) * pTexCoordCount);
+			for(j=0; j<pTexCoordCount; j++){
+				pTexCoords[j] = modelTexCoordSets[0].GetTextureCoordinates().GetAt(j);
+			}
 		}
 	}
 	
@@ -1301,9 +1302,9 @@ void deoglModelLOD::pBuildArrays(const deModel &engModel){
 			
 			tcs.SetTextureCoordinateCount(pTexCoordCount, false);
 			if(pTexCoordCount > 0){
-				memcpy(tcs.GetTextureCoordinates(),
-					modelTexCoordSets[i + 1].GetTextureCoordinates(),
-					sizeof(decVector2) * pTexCoordCount);
+				for(j=0; j<pTexCoordCount; j++){
+					tcs.GetTextureCoordinates()[j] = modelTexCoordSets[i + 1].GetTextureCoordinates().GetAt(j);
+				}
 			}
 		}
 	}

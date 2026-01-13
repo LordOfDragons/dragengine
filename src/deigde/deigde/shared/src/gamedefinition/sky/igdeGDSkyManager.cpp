@@ -34,7 +34,7 @@
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
-#include <dragengine/filesystem/dePathList.h>
+
 #include <dragengine/filesystem/deFileSearchVisitor.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 

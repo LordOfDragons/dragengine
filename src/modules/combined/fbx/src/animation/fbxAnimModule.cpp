@@ -49,7 +49,7 @@
 #include <dragengine/resources/animation/deAnimation.h>
 #include <dragengine/resources/animation/deAnimationBone.h>
 #include <dragengine/resources/animation/deAnimationKeyframe.h>
-#include <dragengine/resources/animation/deAnimationKeyframeList.h>
+
 #include <dragengine/resources/animation/deAnimationMove.h>
 
 
@@ -168,7 +168,7 @@ const fbxAnimationMove &loadMove){
 	int i, j, k;
 	const int boneCount = animation.GetBoneCount();
 	for(i=0; i<boneCount; i++){
-		move.AddKeyframeList(new deAnimationKeyframeList);
+		move.AddKeyframeList(new deAnimationKeyframe::List);
 	}
 	
 	int playtime = 0;
@@ -196,9 +196,9 @@ const fbxAnimationMove &loadMove){
 			}
 		}
 		
-		deAnimationKeyframeList &kflist = *move.GetKeyframeList(c.GetRigBone()->GetIndex());
+		deAnimationKeyframe::List &kflist = *move.GetKeyframeList(c.GetRigBone()->GetIndex());
 		for(j=0; j<=lastTime; j++){
-			kflist.AddKeyframe(new deAnimationKeyframe);
+			kflist.Add({});
 		}
 		
 		playtime = decMath::max(playtime, lastTime);
@@ -214,7 +214,7 @@ const fbxAnimationMove &loadMove){
 		switch(c.GetTargetProperty()){
 		case fbxAnimationMoveCurves::etpPosition:
 			for(k=0; k<=lastTime; k++){
-				deAnimationKeyframe &kf = *kflist.GetKeyframe(k);
+				deAnimationKeyframe &kf = kflist.GetAt(k);
 				kf.SetTime(loadMove.FrameToTime(k));
 				kf.SetPosition(animMatrix.Transform(evaluators[0].NextValue(),
 					evaluators[1].NextValue(), evaluators[2].NextValue()));
@@ -223,7 +223,7 @@ const fbxAnimationMove &loadMove){
 			
 		case fbxAnimationMoveCurves::etpRotation:
 			for(k=0; k<=lastTime; k++){
-				deAnimationKeyframe &kf = *kflist.GetKeyframe(k);
+				deAnimationKeyframe &kf = kflist.GetAt(k);
 				kf.SetTime(loadMove.FrameToTime(k));
 				kf.SetRotation(
 					fbxScene::CreateRotationMatrix(
@@ -238,7 +238,7 @@ const fbxAnimationMove &loadMove){
 			
 		case fbxAnimationMoveCurves::etpScale:
 			for(k=0; k<=lastTime; k++){
-				deAnimationKeyframe &kf = *kflist.GetKeyframe(k);
+				deAnimationKeyframe &kf = kflist.GetAt(k);
 				kf.SetTime(loadMove.FrameToTime(k));
 				kf.SetScale(
 					decMatrix::CreateScale(evaluators[0].NextValue(),

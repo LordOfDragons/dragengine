@@ -25,7 +25,7 @@
 #ifndef _DECOLLECTFILESEARCHVISITOR_H_
 #define _DECOLLECTFILESEARCHVISITOR_H_
 
-#include "dePathList.h"
+#include "../common/file/decPath.h"
 #include "deFileSearchVisitor.h"
 
 
@@ -38,9 +38,9 @@
  */
 class DE_DLL_EXPORT deCollectFileSearchVisitor : public deFileSearchVisitor{
 private:
-	dePathList pPatterns;
+	decPath::List pPatterns;
 	bool pRecursive;
-	dePathList pFiles;
+	decPath::List pFiles;
 	
 	
 	
@@ -62,8 +62,8 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief List of patterns to match. */
-	inline dePathList &GetPatterns(){ return pPatterns; }
-	inline const dePathList &GetPatterns() const{ return pPatterns; }
+	inline decPath::List &GetPatterns(){ return pPatterns; }
+	inline const decPath::List &GetPatterns() const{ return pPatterns; }
 	
 	/** \brief Add pattern. */
 	void AddPattern(const char *pattern);
@@ -75,8 +75,8 @@ public:
 	void SetRecursive(bool recursive);
 	
 	/** \brief Found files. */
-	inline dePathList &GetFiles(){ return pFiles; }
-	inline const dePathList &GetFiles() const{ return pFiles; }
+	inline decPath::List &GetFiles(){ return pFiles; }
+	inline const decPath::List &GetFiles() const{ return pFiles; }
 	/*@}*/
 	
 	

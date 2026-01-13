@@ -27,10 +27,10 @@
 
 #include "../../common/string/decString.h"
 #include "../../common/math/decMath.h"
+#include "deAnimationKeyframe.h"
+#include "deAnimationKeyframeVertexPositionSet.h"
 
 class deAnimation;
-class deAnimationKeyframeList;
-class deAnimationKeyframeVertexPositionSetList;
 class decCurveBezier;
 
 
@@ -79,11 +79,11 @@ private:
 	float pPlaytime;
 	float pFPS;
 	
-	deAnimationKeyframeList **pLists;
+	deAnimationKeyframe::List **pLists;
 	int pListCount;
 	int pListSize;
 	
-	deAnimationKeyframeVertexPositionSetList **pVertexPositionSetLists;
+	deAnimationKeyframeVertexPositionSet::List **pVertexPositionSetLists;
 	int pVertexPositionSetListCount;
 	int pVertexPositionSetListSize;
 	
@@ -134,10 +134,10 @@ public:
 	inline int GetKeyframeListCount() const{ return pListCount; }
 	
 	/** \brief Keyframe at the given index. */
-	deAnimationKeyframeList *GetKeyframeList(int index) const;
+	deAnimationKeyframe::List *GetKeyframeList(int index) const;
 	
 	/** \brief Adds a keyframe list */
-	void AddKeyframeList(deAnimationKeyframeList *list);
+	void AddKeyframeList(deAnimationKeyframe::List *list);
 	
 	/**
 	 * \brief Count of keyframe lists.
@@ -149,13 +149,13 @@ public:
 	 * \brief Keyframe at the given index.
 	 * \version 1.17
 	 */
-	deAnimationKeyframeVertexPositionSetList *GetVertexPositionSetKeyframeList(int index) const;
+	deAnimationKeyframeVertexPositionSet::List *GetVertexPositionSetKeyframeList(int index) const;
 	
 	/**
 	 * \brief Adds a keyframe list.
 	 * \version 1.17
 	 */
-	void AddVertexPositionSetKeyframeList(deAnimationKeyframeVertexPositionSetList *list);
+	void AddVertexPositionSetKeyframeList(deAnimationKeyframeVertexPositionSet::List *list);
 	
 	/**
 	 * \brief Create bezier curve from bone keyframes.

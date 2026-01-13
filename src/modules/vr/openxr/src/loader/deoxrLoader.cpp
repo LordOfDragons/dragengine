@@ -36,7 +36,7 @@
 #include <dragengine/common/file/decDiskFileReader.h>
 #include <dragengine/common/utils/decTimer.h>
 #include <dragengine/filesystem/deContainerFileSearch.h>
-#include <dragengine/filesystem/dePathList.h>
+
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/systems/modules/deBaseModule.h>
 #include <dragengine/threading/deThread.h>

@@ -60,7 +60,7 @@
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/string/decStringList.h>
-#include <dragengine/filesystem/dePathList.h>
+
 #include <dragengine/filesystem/deVFSContainer.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>

@@ -32,7 +32,7 @@
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/utils/decDateTime.h>
-#include <dragengine/filesystem/dePathList.h>
+
 
 
 class deArchiveDelga;

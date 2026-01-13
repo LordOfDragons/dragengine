@@ -34,7 +34,7 @@
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/string/decStringSet.h>
-#include <dragengine/filesystem/dePathList.h>
+
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/systems/deModuleSystem.h>
 
@@ -60,10 +60,8 @@ private:
 		typedef deTObjectReference<cProcessDirectory> Ref;
 		
 		decString path;
-		dePathList directories;
-		dePathList files;
-		int nextDirectory;
-		int nextFile;
+		decPath::List directories, files;
+		int nextDirectory, nextFile;
 		bool hasCountedDir;
 		
 	protected:
@@ -87,7 +85,7 @@ private:
 	eStates pState;
 	decStringSet pUsedFileExtensions;
 	decStringSet pExcludePatterns;
-	dePathList pExcludeBaseGameDefPath;
+	decPath::List pExcludeBaseGameDefPath;
 	
 	zipFile pZipFile;
 	decString pDelgaPath;

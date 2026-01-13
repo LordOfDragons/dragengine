@@ -26,7 +26,7 @@
 #include <string.h>
 
 #include "deVFSNull.h"
-#include "dePathList.h"
+
 #include "../common/file/decPath.h"
 #include "../common/file/decNullFileWriter.h"
 #include "../common/exceptions.h"

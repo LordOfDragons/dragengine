@@ -25,8 +25,8 @@
 #ifndef _DEVFSMEMORYFILES_H_
 #define _DEVFSMEMORYFILES_H_
 
+#include "../common/file/decPath.h"
 #include "deVFSContainer.h"
-#include "dePathList.h"
 #include "../common/collection/decTList.h"
 
 class decMemoryFile;
@@ -50,7 +50,7 @@ public:
 	
 private:
 	decTObjectList<decMemoryFile> pFiles;
-	dePathList pDirectories;
+	decPath::List pDirectories;
 	bool pDirtyDirectories;
 	
 	

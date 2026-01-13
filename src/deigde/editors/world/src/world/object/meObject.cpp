@@ -1593,7 +1593,7 @@ void meObject::MoveDecalTo(meDecal *decal, int index){
 // Collision Detection
 ////////////////////////
 
-void meObject::FindDecalsAt(const decVector &point, deDecalList *list){
+void meObject::FindDecalsAt(const decVector &point, deDecal::List *list){
 	const deComponent * const component = pWObject->GetComponent();
 	
 	if(component){
@@ -1601,7 +1601,7 @@ void meObject::FindDecalsAt(const decVector &point, deDecalList *list){
 	}
 }
 
-void meObject::FindDecalsTouching(decShape *shape, deDecalList *list){
+void meObject::FindDecalsTouching(decShape *shape, deDecal::List *list){
 	const deComponent * const component = pWObject->GetComponent();
 	
 	if(component){

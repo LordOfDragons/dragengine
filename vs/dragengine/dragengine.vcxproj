@@ -546,8 +546,6 @@
     <ClCompile Include="..\..\src\dragengine\src\common\utils\decTimer.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\common\utils\decUniqueID.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\common\utils\decUuid.cpp" />
-    <ClCompile Include="..\..\src\dragengine\src\common\utils\decUuidList.cpp" />
-    <ClCompile Include="..\..\src\dragengine\src\common\utils\decUuidSet.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\common\utils\decXpmImage.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\common\xmlparser\decXmlAttValue.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\common\xmlparser\decXmlCDSect.cpp" />
@@ -580,7 +578,6 @@
     <ClCompile Include="..\..\src\dragengine\src\filesystem\deCollectFileSearchVisitor.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\filesystem\deContainerFileSearch.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\filesystem\deFileSearchVisitor.cpp" />
-    <ClCompile Include="..\..\src\dragengine\src\filesystem\dePathList.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\filesystem\deVFSCacheDiskDirectory.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\filesystem\deVFSContainer.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\filesystem\deVFSDiskDirectory.cpp" />
@@ -609,9 +606,7 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\animation\deAnimationBone.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\animation\deAnimationBuilder.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\animation\deAnimationKeyframe.cpp" />
-    <ClCompile Include="..\..\src\dragengine\src\resources\animation\deAnimationKeyframeList.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\animation\deAnimationKeyframeVertexPositionSet.cpp" />
-    <ClCompile Include="..\..\src\dragengine\src\resources\animation\deAnimationKeyframeVertexPositionSetList.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\animation\deAnimationManager.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\animation\deAnimationMove.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\animator\controller\deAnimatorController.cpp" />
@@ -686,7 +681,6 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\debug\deDebugDrawerShapeFace.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\decal\deDecal.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\decal\deDecalBoneState.cpp" />
-    <ClCompile Include="..\..\src\dragengine\src\resources\decal\deDecalList.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\decal\deDecalManager.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\effect\deEffect.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\effect\deEffectChain.cpp" />
@@ -740,11 +734,9 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelBuilder.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelFace.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelLOD.cpp" />
-    <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelLodVertexPositionSet.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelLodVertexPositionSetPosition.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelManager.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelTexture.cpp" />
-    <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelTextureCoordinatesSet.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelVertex.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelVertexPositionSet.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelWeight.cpp" />
@@ -1139,8 +1131,6 @@
     <ClInclude Include="..\..\src\dragengine\src\common\utils\decTimer.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\utils\decUniqueID.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\utils\decUuid.h" />
-    <ClInclude Include="..\..\src\dragengine\src\common\utils\decUuidList.h" />
-    <ClInclude Include="..\..\src\dragengine\src\common\utils\decUuidSet.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\utils\decXpmImage.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\xmlparser\decXmlAttValue.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\xmlparser\decXmlCDSect.h" />
@@ -1178,7 +1168,6 @@
     <ClInclude Include="..\..\src\dragengine\src\filesystem\deCollectFileSearchVisitor.h" />
     <ClInclude Include="..\..\src\dragengine\src\filesystem\deContainerFileSearch.h" />
     <ClInclude Include="..\..\src\dragengine\src\filesystem\deFileSearchVisitor.h" />
-    <ClInclude Include="..\..\src\dragengine\src\filesystem\dePathList.h" />
     <ClInclude Include="..\..\src\dragengine\src\filesystem\deVFSCacheDiskDirectory.h" />
     <ClInclude Include="..\..\src\dragengine\src\filesystem\deVFSContainer.h" />
     <ClInclude Include="..\..\src\dragengine\src\filesystem\deVFSDiskDirectory.h" />
@@ -1207,9 +1196,7 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\animation\deAnimationBone.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\animation\deAnimationBuilder.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\animation\deAnimationKeyframe.h" />
-    <ClInclude Include="..\..\src\dragengine\src\resources\animation\deAnimationKeyframeList.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\animation\deAnimationKeyframeVertexPositionSet.h" />
-    <ClInclude Include="..\..\src\dragengine\src\resources\animation\deAnimationKeyframeVertexPositionSetList.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\animation\deAnimationManager.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\animation\deAnimationMove.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\animator\controller\deAnimatorController.h" />
@@ -1284,7 +1271,6 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\debug\deDebugDrawerShapeFace.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\decal\deDecal.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\decal\deDecalBoneState.h" />
-    <ClInclude Include="..\..\src\dragengine\src\resources\decal\deDecalList.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\decal\deDecalManager.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\effect\deEffect.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\effect\deEffectChain.h" />
@@ -1338,11 +1324,9 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelBuilder.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelFace.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelLOD.h" />
-    <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelLodVertexPositionSet.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelLodVertexPositionSetPosition.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelManager.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelTexture.h" />
-    <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelTextureCoordinatesSet.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelVertex.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelVertexPositionSet.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelWeight.h" />

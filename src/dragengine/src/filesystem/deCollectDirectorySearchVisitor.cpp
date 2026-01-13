@@ -25,7 +25,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "dePathList.h"
 #include "deCollectDirectorySearchVisitor.h"
 #include "deVirtualFileSystem.h"
 #include "../common/file/decPath.h"

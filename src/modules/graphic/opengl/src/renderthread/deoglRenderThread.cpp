@@ -1795,7 +1795,6 @@ void deoglRenderThread::pRenderSingleFrame(){
 #include <dragengine/resources/model/deModelLOD.h>
 #include <dragengine/resources/model/deModelFace.h>
 #include <dragengine/resources/model/deModelVertex.h>
-#include <dragengine/resources/model/deModelTextureCoordinatesSet.h>
 #include <dragengine/resources/model/deModelWeight.h>
 #include <dragengine/resources/model/deModelManager.h>
 #include <dragengine/resources/video/deVideo.h>
@@ -2094,7 +2093,7 @@ void deoglRenderThread::DebugMemoryUsage(const char *prefix){
 				+ sizeof(int) * lod.GetWeightGroupCount()
 				+ sizeof(deModelVertex) * lod.GetVertexCount()
 				+ sizeof(deModelFace) * lod.GetFaceCount()
-				+ sizeof(decVector2) * (lod.GetTextureCoordinatesSetCount() * lod.GetTextureCoordinatesCount());
+				+ sizeof(decVector2) * (lod.GetTextureCoordinatesSetCount() * lod.GetCount());
 		}
 		modelCount++;
 		scanModel = (deModel*)scanModel->GetLLManagerNext();
@@ -2110,15 +2109,15 @@ void deoglRenderThread::DebugMemoryUsage(const char *prefix){
 		int l;
 		for(l=0; l<lodCount; l++){
 			const deoglModelLOD &lod = rmodel.GetLODAt(l);
-			modelMemUsage += sizeof(oglModelPosition) * lod.GetPositionCount()
-				+ sizeof(decVector2) * lod.GetTextureCoordinatesCount()
+			modelMemUsage += sizeof(oglModelPosition) * lod.GetCount()
+				+ sizeof(decVector2) * lod.GetCount()
 				+ sizeof(decVector) * lod.GetNormalCount()
 				+ (sizeof(decVector) + sizeof(bool)) * lod.GetTangentCount()
 				+ sizeof(oglModelWeight *) * lod.GetWeightsEntryCount()
 				+ sizeof(int) * lod.GetWeightsCount()
 				+ sizeof(oglModelVertex) * lod.GetVertexCount()
 				+ sizeof(deoglModelFace) * lod.GetFaceCount()
-				+ (sizeof(decVector2) + sizeof(decVector) + sizeof(bool)) * lod.GetTextureCoordinatesCount();
+				+ (sizeof(decVector2) + sizeof(decVector) + sizeof(bool)) * lod.GetCount();
 		}
 		modelCount++;
 		scanModel = (deModel*)scanModel->GetLLManagerNext();
@@ -2178,7 +2177,7 @@ void deoglRenderThread::DebugMemoryUsage(const char *prefix){
 					componentMemUsage += sizeof(oglMatrix3x4) + mlod.GetWeightsCount();
 				}
 				if(lod.GetPositions()){
-					componentMemUsage += sizeof(oglVector) * mlod.GetPositionCount();
+					componentMemUsage += sizeof(oglVector) * mlod.GetCount();
 				}
 				if(lod.GetNormals()){
 					componentMemUsage += sizeof(oglVector) * mlod.GetNormalCount();

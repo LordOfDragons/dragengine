@@ -25,9 +25,8 @@
 #ifndef _DEARANIMATIONKEYFRAMELIST_H_
 #define _DEARANIMATIONKEYFRAMELIST_H_
 
-#include <dragengine/common/math/decMath.h>
+#include <dragengine/resources/animation/deAnimationKeyframe.h>
 
-class deAnimationKeyframeList;
 class dearAnimationKeyframe;
 
 
@@ -44,7 +43,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new animation move keyframe list. */
-	explicit dearAnimationKeyframeList(const deAnimationKeyframeList &list);
+	explicit dearAnimationKeyframeList(const deAnimationKeyframe::List &list);
 	/** Cleans up the animation move keyframe list. */
 	~dearAnimationKeyframeList();
 	/*@}*/
@@ -65,7 +64,7 @@ public:
 private:
 	void pCleanUp();
 	
-	void pCreateKeyframes(const deAnimationKeyframeList &list);
+	void pCreateKeyframes(const deAnimationKeyframe::List &list);
 };
 
 #endif

@@ -29,7 +29,7 @@
 #include "deCacheHelper.h"
 #include "deVirtualFileSystem.h"
 #include "deCollectFileSearchVisitor.h"
-#include "dePathList.h"
+
 #include "../common/file/decPath.h"
 #include "../common/file/decBaseFileReader.h"
 #include "../common/file/decBaseFileWriter.h"
@@ -207,7 +207,7 @@ void deCacheHelper::BuildMapping(){
 	pVFS->SearchFiles(pCachePath, collect);
 	
 	// determine the largest slot number used by all the cache files
-	const dePathList &files = collect.GetFiles();
+	const decPath::List &files = collect.GetFiles();
 	const int count = files.GetCount();
 	int maxSlot = 0;
 	int i;

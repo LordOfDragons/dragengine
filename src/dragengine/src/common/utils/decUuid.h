@@ -27,7 +27,8 @@
 
 #include <stdint.h>
 #include "../string/decString.h"
-
+#include "../collection/decTList.h"
+#include "../collection/decTOrderedSet.h"
 
 /**
  * \brief UUID.
@@ -35,6 +36,14 @@
  * Universally unique identifier using randomness.
  */
 class DE_DLL_EXPORT decUuid{
+public:
+	/** \brief List type. */
+	using List = decTList<decUuid, decUuid>;
+	
+	/** \brief Set type. */
+	using Set = decTOrderedSet<decUuid, decUuid>;
+	
+	
 private:
 	uint8_t pValues[16];
 	

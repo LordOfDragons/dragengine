@@ -25,7 +25,7 @@
 #ifndef _DECOLLECTDIRECTORYSEARCHVISITOR_H_
 #define _DECOLLECTDIRECTORYSEARCHVISITOR_H_
 
-#include "dePathList.h"
+#include "../common/file/decPath.h"
 #include "deFileSearchVisitor.h"
 
 
@@ -38,7 +38,7 @@
 class DE_DLL_EXPORT deCollectDirectorySearchVisitor : public deFileSearchVisitor{
 private:
 	bool pRecursion;
-	dePathList pDirectories;
+	decPath::List pDirectories;
 	
 	
 	
@@ -63,8 +63,8 @@ public:
 	void SetRecursion(bool recursion);
 	
 	/** \brief Found directories. */
-	inline dePathList &GetDirectories(){ return pDirectories; }
-	inline const dePathList &GetDirectories() const{ return pDirectories; }
+	inline decPath::List &GetDirectories(){ return pDirectories; }
+	inline const decPath::List &GetDirectories() const{ return pDirectories; }
 	/*@}*/
 	
 	
