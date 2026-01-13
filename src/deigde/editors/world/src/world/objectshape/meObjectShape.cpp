@@ -73,8 +73,6 @@ pColliderOwner(this)
 	pWorld = nullptr;
 	pParentObject = nullptr;
 	
-	pShape = nullptr;
-	
 	pSelected = false;
 	pActive = false;
 	
@@ -155,23 +153,7 @@ void meObjectShape::SetParentObject(meObject *parentObject){
 
 
 void meObjectShape::SetShape(const decShape &shape){
-	decShape *newShape = nullptr;
-	
-	try{
-		newShape = shape.Copy();
-		if(pShape){
-			delete pShape;
-		}
-		
-	}catch(const deException &){
-		if(newShape){
-			delete newShape;
-		}
-		throw;
-	}
-	
-	pShape = newShape;
-	
+	pShape = shape.Copy();
 	UpdateShape();
 }
 
@@ -200,25 +182,12 @@ void meObjectShape::SetActive(bool active){
 void meObjectShape::UpdateShape(){
 	// scaling is a problem. get first the scaling from the parent object or whatever parent we have.
 	// then for the created shape the scaling would have to be applied which is a problem.
-	decShape *shape = nullptr;
-	decShapeList shapeList;
+	decShape::List shapeList;
 	
 	pDDSShape->RemoveAllShapes();
 	
-	try{
-		shape = pShape->Copy();
-		shapeList.Add(shape);
-		shape = nullptr;
-		
-		shape = pShape->Copy();
-		pDDSShape->AddShape(shape);
-		
-	}catch(const deException &){
-		if(shape){
-			delete shape;
-		}
-		throw;
-	}
+	shapeList.Add(pShape->Copy());
+	pDDSShape->AddShape(pShape->Copy());
 	
 	pEngCollider->SetShapes(shapeList);
 	
@@ -270,29 +239,17 @@ void meObjectShape::ShowStateChanged(){
 
 
 
-void meObjectShape::CreateShapeList(const List &list, decShapeList &result){
-	decShape *shape = nullptr;
-	
+void meObjectShape::CreateShapeList(const List &list, decShape::List &result){
 	result.RemoveAll();
 	
-	try{
-		list.Visit([&](const meObjectShape &s){
-			shape = s.GetShape()->Copy();
-			result.Add(shape);
-			shape = nullptr;
-		});
-		
-	}catch(const deException &){
-		if(shape){
-			delete shape;
-		}
-		throw;
-	}
+	list.Visit([&](const meObjectShape &s){
+		result.Add(s.GetShape()->Copy());
+	});
 }
 
 void meObjectShape::CreatePropertyString(const List &list, decString &result){
 	igdeCodecPropertyString codec;
-	decShapeList sl;
+	decShape::List sl;
 	CreateShapeList(list, sl);
 	codec.EncodeShapeList(sl, result);
 }
@@ -307,9 +264,5 @@ void meObjectShape::pCleanUp(){
 	
 	if(pEngCollider){
 		pEnvironment->SetColliderUserPointer(pEngCollider, nullptr);
-	}
-	
-	if(pShape){
-		delete pShape;
 	}
 }

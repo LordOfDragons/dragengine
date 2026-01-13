@@ -581,7 +581,6 @@
     <ClCompile Include="..\..\src\dragengine\src\filesystem\deContainerFileSearch.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\filesystem\deFileSearchVisitor.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\filesystem\dePathList.cpp" />
-    <ClCompile Include="..\..\src\dragengine\src\filesystem\dePatternList.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\filesystem\deVFSCacheDiskDirectory.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\filesystem\deVFSContainer.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\filesystem\deVFSDiskDirectory.cpp" />
@@ -1180,7 +1179,6 @@
     <ClInclude Include="..\..\src\dragengine\src\filesystem\deContainerFileSearch.h" />
     <ClInclude Include="..\..\src\dragengine\src\filesystem\deFileSearchVisitor.h" />
     <ClInclude Include="..\..\src\dragengine\src\filesystem\dePathList.h" />
-    <ClInclude Include="..\..\src\dragengine\src\filesystem\dePatternList.h" />
     <ClInclude Include="..\..\src\dragengine\src\filesystem\deVFSCacheDiskDirectory.h" />
     <ClInclude Include="..\..\src\dragengine\src\filesystem\deVFSContainer.h" />
     <ClInclude Include="..\..\src\dragengine\src\filesystem\deVFSDiskDirectory.h" />

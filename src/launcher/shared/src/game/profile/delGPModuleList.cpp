@@ -28,7 +28,6 @@
 
 #include "delGPModule.h"
 #include "delGPModuleList.h"
-#include "delGPMParameter.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -133,28 +132,14 @@ void delGPModuleList::RemoveAll(){
 
 void delGPModuleList::Update(const delGPModuleList &list){
 	const int moduleCount = list.GetCount();
-	int i, j;
+	int i;
 	
 	for(i=0; i<moduleCount; i++){
 		const delGPModule &moduleChanges = *list.GetAt (i);
 		delGPModule * const module = GetNamed(moduleChanges.GetName());
 		
 		if(module){
-			delGPMParameterList &parameters = module->GetParameters();
-			const delGPMParameterList &paramsChanges = moduleChanges.GetParameters();
-			const int paramCount = paramsChanges.GetCount();
-			
-			for(j=0; j<paramCount; j++){
-				const delGPMParameter &paramChanges = *paramsChanges.GetAt (j);
-				delGPMParameter * const parameter = parameters.GetNamed (paramChanges.GetName());
-				
-				if(parameter){
-					parameter->SetValue(paramChanges.GetValue());
-					
-				}else{
-					parameters.Add (delGPMParameter::Ref::New(paramChanges));
-				}
-			}
+			module->GetParameters() += moduleChanges.GetParameters();
 			
 		}else{
 			Add(delGPModule::Ref::New(moduleChanges));

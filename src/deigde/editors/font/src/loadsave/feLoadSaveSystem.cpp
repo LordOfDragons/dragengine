@@ -38,7 +38,6 @@
 #include <dragengine/systems/deModuleSystem.h>
 #include <dragengine/systems/modules/deLoadableModule.h>
 #include <dragengine/systems/modules/font/deBaseFontModule.h>
-#include <dragengine/filesystem/dePatternList.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decDiskFileReader.h>

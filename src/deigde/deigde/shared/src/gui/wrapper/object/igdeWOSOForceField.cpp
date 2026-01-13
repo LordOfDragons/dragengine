@@ -43,7 +43,7 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/shape/decShape.h>
-#include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/shape/decShape.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/resources/forcefield/deForceField.h>
 #include <dragengine/resources/forcefield/deForceFieldManager.h>
@@ -152,7 +152,6 @@ void igdeWOSOForceField::pUpdateForceField(){
 	}
 	
 	igdeCodecPropertyString codec;
-	decShapeList shapeList;
 	decString value;
 	
 	pForceField->SetRadius(GetFloatProperty(
@@ -217,7 +216,7 @@ void igdeWOSOForceField::pUpdateForceField(){
 	
 	// influence area property
 	if(GetPropertyValue(pGDForceField.GetPropertyName(igdeGDCForceField::epInfluenceArea), value)){
-		decShapeList list;
+		decShape::List list;
 		codec.DecodeShapeList(value, list);
 		pForceField->SetInfluenceArea(list);
 		
@@ -227,7 +226,7 @@ void igdeWOSOForceField::pUpdateForceField(){
 	
 	// shape property
 	if(GetPropertyValue(pGDForceField.GetPropertyName(igdeGDCForceField::epShape), value)){
-		decShapeList list;
+		decShape::List list;
 		codec.DecodeShapeList(value, list);
 		pForceField->SetShape(list);
 		

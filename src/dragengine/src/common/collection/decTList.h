@@ -128,12 +128,24 @@ public:
 	
 	/** \brief Create list with content from another collection. */
 	template<typename C>
-	explicit decTList(const C &collection) : pElements(nullptr), pCount(0), pSize(0){
+	explicit decTList(const C &collection,
+		typename std::enable_if_t<
+			std::is_same_v<decltype(std::declval<C>().cbegin()),
+				decltype(std::declval<C>().cbegin())>, int> = 0)
+	: pElements(nullptr), pCount(0), pSize(0){
 		auto first = collection.cbegin();
 		auto last = collection.cend();
 		for(; first != last; ++first){
 			Add(*first);
 		}
+	}
+	
+	/** \brief Create list with content from variable count of arguments. */
+	template<typename... A>
+	requires ((std::is_same<std::decay_t<A>, T>::value) && ...)
+	explicit decTList(A&&... args) : pElements(nullptr), pCount(0), pSize(0){
+		EnlargeCapacity(static_cast<int>(sizeof...(args)));
+		(Add(std::forward<A>(args)), ...);
 	}
 	
 	/** \brief Clean up the list. */
@@ -1789,6 +1801,29 @@ public:
 	decTList<T,TP> GetSortedDescending() const{
 		return GetSorted<decDesendingComparator<T>>(decDesendingComparator<T>());
 	}
+	
+	
+	/**
+	 * \brief Swap content with another list.
+	 * \note This also swaps the capacities.
+	 */
+	void Swap(decTList<T,TP> &list){
+		if(&list == this){
+			return;
+		}
+		
+		T *tempElements = pElements;
+		int tempCount = pCount;
+		int tempSize = pSize;
+		
+		pElements = list.pElements;
+		pCount = list.pCount;
+		pSize = list.pSize;
+		
+		list.pElements = tempElements;
+		list.pCount = tempCount;
+		list.pSize = tempSize;
+	}
 	/*@}*/
 	
 	
@@ -2145,7 +2180,7 @@ public:
 private:
 	template<typename Comparator>
 	void pSort(Comparator &comparator, int left, int right){
-		const T pivot = pElements[left];
+		T pivot = std::move(pElements[left]);
 		const int r_hold = right;
 		const int l_hold = left;
 		
@@ -2154,19 +2189,19 @@ private:
 				right--;
 			}
 			if(left != right){
-				pElements[left] = pElements[right];
+				pElements[left] = std::move(pElements[right]);
 				left++;
 			}
 			while(left < right && comparator(pElements[left], pivot) <= 0){
 				left++;
 			}
 			if(left != right){
-				pElements[right] = pElements[left];
+				pElements[right] = std::move(pElements[left]);
 				right--;
 			}
 		}
 		
-		pElements[left] = pivot;
+		pElements[left] = std::move(pivot);
 		if(l_hold < left){
 			pSort<Comparator>(comparator, l_hold, left - 1);
 		}

@@ -211,31 +211,8 @@ void dedaiNavBlocker::UpdateDDSBlockerShape(){
 		return;
 	}
 	
-	const decShapeList &shapeList = pNavBlocker.GetShapeList();
-	const int count = shapeList.GetCount();
-	
 	pDDSBlocker->RemoveAllFaces();
-	pDDSBlocker->GetShapeList().RemoveAll();
-	
-	if(count > 0){
-		decShape *shape = nullptr;
-		int i;
-		
-		try{
-			for(i=0; i<count; i++){
-				shape = shapeList.GetAt(i)->Copy();
-				pDDSBlocker->GetShapeList().Add(shape);
-				shape = nullptr;
-			}
-			
-		}catch(const deException &){
-			if(shape){
-				delete shape;
-			}
-			throw;
-		}
-	}
-	
+	pDDSBlocker->GetShapeList() = pNavBlocker.GetShapeList();
 	pDebugDrawer->NotifyShapeContentChanged();
 }
 
@@ -405,13 +382,9 @@ void dedaiNavBlocker::pUpdateConvexVolumeList(){
 	
 	pConvexVolumeList.RemoveAllVolumes();
 	
-	const decShapeList &shapeList = pNavBlocker.GetShapeList();
-	const int shapeCount = shapeList.GetCount();
-	int i;
-	
-	for(i=0; i<shapeCount; i++){
-		shapeList.GetAt(i)->Visit(visitor);
-	}
+	pNavBlocker.GetShapeList().Visit([&](decShape &shape){
+		shape.Visit(visitor);
+	});
 }
 
 void dedaiNavBlocker::pInvalidateLayerBlocking(){

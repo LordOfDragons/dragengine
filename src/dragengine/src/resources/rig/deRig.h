@@ -27,7 +27,7 @@
 
 #include "../deFileResource.h"
 #include "../../common/math/decMath.h"
-#include "../../common/shape/decShapeList.h"
+#include "../../common/shape/decShape.h"
 #include "../../common/string/decStringList.h"
 
 class deRigBone;
@@ -46,7 +46,7 @@ class deBasePhysicsRig;
  * 
  * \par Shapes
  * Shapes define the physical shape of resource and are only used by the physics system.
- * See decShapeList for information about the available shape types. Shapes can be
+ * See decShape::List for information about the available shape types. Shapes can be
  * defined for bones as well as the rig as a whole. For static rigs shapes are only
  * placed on the rig itself. For articulated rigs shapes are only placed on bines. Shapes
  * on the entire rig are ignored for articulated rigs.
@@ -82,7 +82,7 @@ private:
 	decVector pCMP;
 	bool pModelCollision;
 	
-	decShapeList pShapes;
+	decShape::List pShapes;
 	decStringList pShapeProperties;
 	
 	deBasePhysicsRig *pPeerPhysics;
@@ -175,14 +175,14 @@ public:
 	/** \name Shapes */
 	/*@{*/
 	/** \brief Shapes. */
-	inline const decShapeList &GetShapes() const{ return pShapes; }
+	inline const decShape::List &GetShapes() const{ return pShapes; }
 	
 	/**
 	 * \brief Set shapes.
 	 * 
 	 * Resets shape properties to empty strings for all shapes.
 	 */
-	void SetShapes(const decShapeList &shapes);
+	void SetShapes(const decShape::List &shapes);
 	
 	/** \brief Shape properties. */
 	inline const decStringList &GetShapeProperties() const{ return pShapeProperties; }

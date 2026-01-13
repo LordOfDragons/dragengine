@@ -41,15 +41,12 @@
 
 igdeGDCEnvMapProbe::igdeGDCEnvMapProbe(){
 	pScaling.Set(1.0f, 1.0f, 1.0f);
-	pShapeReflection = nullptr;
 	pInfluenceBorderSize = 0.1f;
 	pInfluencePriority = 0;
 }
 
 igdeGDCEnvMapProbe::igdeGDCEnvMapProbe(const igdeGDCEnvMapProbe &probe){
 	int i;
-	
-	pShapeReflection = nullptr;
 	
 	try{
 		pPosition = probe.GetPosition();
@@ -97,21 +94,20 @@ void igdeGDCEnvMapProbe::SetScaling(const decVector &scaling){
 
 
 
-void igdeGDCEnvMapProbe::SetShapeListInfluence(const decShapeList &shapeList){
+void igdeGDCEnvMapProbe::SetShapeListInfluence(const decShape::List &shapeList){
 	pShapeListInfluence = shapeList;
 }
 
-void igdeGDCEnvMapProbe::SetShapeReflection(decShape *shape){
-	if(shape != pShapeReflection){
-		if(pShapeReflection){
-			delete pShapeReflection;
-		}
+void igdeGDCEnvMapProbe::SetShapeReflection(const decShape *shape){
+	if(shape){
+		pShapeReflection = shape->Copy();
 		
-		pShapeReflection = shape;
+	}else{
+		pShapeReflection.Clear();
 	}
 }
 
-void igdeGDCEnvMapProbe::SetShapeListReflectionMask(const decShapeList &shapeList){
+void igdeGDCEnvMapProbe::SetShapeListReflectionMask(const decShape::List &shapeList){
 	pShapeListReflectionMask = shapeList;
 }
 
@@ -167,7 +163,4 @@ bool igdeGDCEnvMapProbe::HasPropertyWithName(const char *name) const{
 //////////////////////
 
 void igdeGDCEnvMapProbe::pCleanUp(){
-	if(pShapeReflection){
-		delete pShapeReflection;
-	}
 }

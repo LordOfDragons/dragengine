@@ -28,7 +28,7 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/shape/decShape.h>
 #include <dragengine/common/string/decString.h>
 
 
@@ -76,9 +76,9 @@ private:
 	decVector pRotation;
 	decVector pScaling;
 	
-	decShapeList pShapeListInfluence;
-	decShape *pShapeReflection;
-	decShapeList pShapeListReflectionMask;
+	decShape::List pShapeListInfluence;
+	decShape::Ref pShapeReflection;
+	decShape::List pShapeListReflectionMask;
 	float pInfluenceBorderSize;
 	int pInfluencePriority;
 	
@@ -126,18 +126,18 @@ public:
 	
 	
 	/** \brief Influence shape list. */
-	inline decShapeList &GetShapeListInfluence(){ return pShapeListInfluence; }
-	inline const decShapeList &GetShapeListInfluence() const{ return pShapeListInfluence; }
+	inline decShape::List &GetShapeListInfluence(){ return pShapeListInfluence; }
+	inline const decShape::List &GetShapeListInfluence() const{ return pShapeListInfluence; }
 	
 	/** \brief Reflection shape or \em nullptr if probe is global. */
-	inline decShape *GetShapeReflection() const{ return pShapeReflection; }
+	inline const decShape::Ref &GetShapeReflection() const{ return pShapeReflection; }
 	
 	/** \brief Set reflection shape or \em nullptr if probe is global. */
-	void SetShapeReflection(decShape *shape);
+	void SetShapeReflection(const decShape *shape);
 	
 	/** \brief Reflection mask shape list. */
-	inline decShapeList &GetShapeListReflectionMask(){ return pShapeListReflectionMask; }
-	inline const decShapeList &GetShapeListReflectionMask() const{ return pShapeListReflectionMask; }
+	inline decShape::List &GetShapeListReflectionMask(){ return pShapeListReflectionMask; }
+	inline const decShape::List &GetShapeListReflectionMask() const{ return pShapeListReflectionMask; }
 	
 	/** \brief Influence border size. */
 	inline float GetInfluenceBorderSize() const{ return pInfluenceBorderSize; }

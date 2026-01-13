@@ -41,7 +41,7 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/shape/decShapeBox.h>
-#include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/shape/decShape.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/resources/billboard/deBillboard.h>
@@ -171,13 +171,13 @@ void gdeVAOBillboard::pCreateBillboard(){
 }
 
 void gdeVAOBillboard::pCreateCollider(){
-	decShapeList shapeList;
+	decShape::List shapeList;
 	if(pBillboard){
-		shapeList.Add(new decShapeBox(decVector(
+		shapeList.Add(decShapeBox::Ref::New(decVector(
 			pOCBillboard->GetSize().x * 0.5f, pOCBillboard->GetSize().y * 0.5f, 0.02f)));
 		
 	}else{
-		shapeList.Add(new decShapeBox(decVector(0.1f, 0.1f, 0.1f)));
+		shapeList.Add(decShapeBox::Ref::New(decVector(0.1f, 0.1f, 0.1f)));
 	}
 	
 	pCollider = pView.GetGameDefinition()->GetEngine()->GetColliderManager()->CreateColliderVolume();

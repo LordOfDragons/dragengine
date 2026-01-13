@@ -63,9 +63,7 @@ reRigBuilder::~reRigBuilder(){
 
 void reRigBuilder::BuildRig(deRig *engRig){
 	if(!engRig) DETHROW(deeInvalidParam);
-	decShape *shape = nullptr;
 	decStringList shapeProperties;
-	decShapeList shapes;
 	
 	// TODO: constraints are wrong if the rig changes while a pose different
 	// than the rest pose is used. most probably some incorrect bone position
@@ -78,40 +76,34 @@ void reRigBuilder::BuildRig(deRig *engRig){
 		bone.SetPoseFromRest();
 	});
 	
-	try{
-		// parameters
-		engRig->SetCentralMassPoint(pRig->GetCentralMassPoint());
-		engRig->SetModelCollision(pRig->GetModelCollision());
+	// parameters
+	engRig->SetCentralMassPoint(pRig->GetCentralMassPoint());
+	engRig->SetModelCollision(pRig->GetModelCollision());
+	
+	// add bones. we have to respect the order of the bones to create
+	// a valid engine rig.
+	const int boneCount = pRig->GetBones().GetCount();
+	int i;
+	for(i=0; i<boneCount; i++){
+		BuildRigBone(engRig, pRig->GetBones().FindOrDefault([&](const reRigBone &b){
+			return b.GetOrder() == i;
+		}));
+	}
+	
+	// add shapes
+	decShape::List shapes;
+	pRig->GetShapes().Visit([&](reRigShape &rigShape){
+		shapes.Add(rigShape.CreateShape());
 		
-		// add bones. we have to respect the order of the bones to create
-		// a valid engine rig.
-		const int boneCount = pRig->GetBones().GetCount();
-		int i;
-		for(i=0; i<boneCount; i++){
-			BuildRigBone(engRig, pRig->GetBones().FindOrDefault([&](const reRigBone &b){
-				return b.GetOrder() == i;
-			}));
-		}
+		shapeProperties.Add(rigShape.GetProperty());
+	});
+	
+	// root bone
+	if(pRig->GetRootBone()){
+		engRig->SetRootBone(pRig->GetRootBone()->GetOrder());
 		
-		// add shapes
-		pRig->GetShapes().Visit([&](reRigShape &rigShape){
-			shape = rigShape.CreateShape();
-			shapes.Add(shape);
-			shape = nullptr;
-			
-			shapeProperties.Add(rigShape.GetProperty());
-		});
-		
-		// root bone
-		if(pRig->GetRootBone()){
-			engRig->SetRootBone(pRig->GetRootBone()->GetOrder());
-			
-		}else{
-			engRig->SetRootBone(-1);
-		}
-		
-	}catch(const deException &){
-		if(shape) delete shape;
+	}else{
+		engRig->SetRootBone(-1);
 	}
 	
 	engRig->SetShapes(shapes);
@@ -123,9 +115,8 @@ void reRigBuilder::BuildRigBone(deRig *engRig, reRigBone *rigBone){
 	
 	deRigConstraint *engConstraint = nullptr;
 	deRigBone *engBone = nullptr;
-	decShape *shape = nullptr;
 	decStringList shapeProperties;
-	decShapeList shapes;
+	decShape::List shapes;
 	
 	try{
 		// create engine bone
@@ -155,9 +146,7 @@ void reRigBuilder::BuildRigBone(deRig *engRig, reRigBone *rigBone){
 		
 		// add shapes
 		rigBone->GetShapes().Visit([&](reRigShape &rigShape){
-			shape = rigShape.CreateShape();
-			shapes.Add(shape);
-			shape = nullptr;
+			shapes.Add(rigShape.CreateShape());
 			
 			shapeProperties.Add(rigShape.GetProperty());
 		});
@@ -174,7 +163,6 @@ void reRigBuilder::BuildRigBone(deRig *engRig, reRigBone *rigBone){
 		
 	}catch(const deException &){
 		if(engConstraint) delete engConstraint;
-		if(shape) delete shape;
 		if(engBone) delete engBone;
 	}
 	

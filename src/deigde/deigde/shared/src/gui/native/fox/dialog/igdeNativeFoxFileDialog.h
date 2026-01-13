@@ -33,7 +33,6 @@ class igdeEnvironment;
 class deVirtualFileSystem;
 class igdeNativeFoxVFSList;
 class igdeNativeFoxVFSDirectoryBox;
-class dePatternList;
 class decPath;
 class igdeWidget;
 

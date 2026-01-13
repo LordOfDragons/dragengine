@@ -31,7 +31,7 @@
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/shape/decShape.h>
-#include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/shape/decShape.h>
 #include <deigde/codec/igdeCodecPropertyString.h>
 
 
@@ -106,7 +106,7 @@ void meUObjectShapeRotate::Redo(){
 	const int count = pList.GetCount();
 	igdeCodecPropertyString codec;
 	decDVector position, rotation;
-	decShapeList shapeList;
+	decShape::List shapeList;
 	decString newValue;
 	int i;
 	

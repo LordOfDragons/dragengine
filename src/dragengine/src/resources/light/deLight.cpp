@@ -249,7 +249,7 @@ void deLight::SetSpotExponent(float exponent){
 	}
 }
 
-void deLight::SetShape(const decShapeList &shape){
+void deLight::SetShape(const decShape::List &shape){
 	pShape = shape;
 	
 	if(pPeerGraphic){
@@ -369,7 +369,7 @@ void deLight::SetHintParameter(eParameterHints hint){
 	}
 }
 
-void deLight::SetCage(const decShapeList &cage){
+void deLight::SetCage(const decShape::List &cage){
 	pCage = cage;
 	
 	if(pPeerGraphic){

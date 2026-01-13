@@ -319,96 +319,69 @@ void aeAnimatorLocomotion::SetColliderRadius(float radius){
 
 void aeAnimatorLocomotion::UpdateCollider(){
 	if(pCollider){
-		decShape *shape = nullptr;
-		decShapeList shapeList;
-		int i;
+		decShape::List shapeList;
 		
 		// update shape of movement collider
-		try{
-			if(pUseLegPairCount == 1){
-				shape = new decShapeSphere(pColliderRadius, pColliderPosition);				shapeList.Add(shape);
-				shape = nullptr;
-				
-			}else{
-				shape = new decShapeSphere(pColliderRadius, pColliderPosition);				shapeList.Add(shape);
-				shape = nullptr;
-				shape = new decShapeSphere(0.4f, decVector(0.0f, 0.8f, 0.6f));				shapeList.Add(shape);
-				shape = nullptr;
-				shape = new decShapeSphere(0.4f, decVector(0.0f, 0.8f, -0.6f));				shapeList.Add(shape);
-				shape = nullptr;
-				/*
-				shape = new decShapeBox(pDragonColBodySize * 0.5f, pDragonColBodyPos, decMatrix::CreateRotation(pDragonColBodyRot * DEG2RAD).ToQuaternion());				shapeList.AddShape(shape);
-				shape = nullptr;
-				*/
-			}
+		if(pUseLegPairCount == 1){
+			shapeList.Add(decShapeSphere::Ref::New(pColliderRadius, pColliderPosition));
 			
-		}catch(const deException &){
-			if(shape) delete shape;
-			throw;
+		}else{
+			shapeList.Add(decShapeSphere::Ref::New(pColliderRadius, pColliderPosition));
+			shapeList.Add(decShapeSphere::Ref::New(0.4f, decVector(0.0f, 0.8f, 0.6f)));
+			shapeList.Add(decShapeSphere::Ref::New(0.4f, decVector(0.0f, 0.8f, -0.6f)));
+			/*
+			shape = new decShapeBox(pDragonColBodySize * 0.5f, pDragonColBodyPos, decMatrix::CreateRotation(pDragonColBodyRot * DEG2RAD).ToQuaternion());				shapeList.AddShape(shape);
+			shape = nullptr;
+			*/
 		}
+		
 		pCollider->SetShapes(shapeList);
 		
-		decShapeList shapeListTG;
-		decShapeList shapeListDCB;
+		decShape::List shapeListTG;
+		decShape::List shapeListDCB;
 		// update shape of ground checker collider
 		//pGroundCheckCollider->RemoveAllShapes();
 		//pFootCollider->RemoveAllShapes();
 		
-		try{
-			if(pUseLegPairCount == 1){
-				/*
-				shape = new decShapeSphere(pColliderRadius, pColliderPosition);				pGroundCheckCollider->AddShape(shape);
-				shape = nullptr;
-				*/
-				/*
-				shape = new decShapeSphere(pColliderRadius);				pGroundCheckCollider->AddShape(shape);
-				shape = nullptr;
-				*/
-				shape = new decShapeBox(decVector(0.01f, 0.05f, 0.15f), decVector(0.0f, 0.05f, 0.0f));				shapeListTG.Add(shape);
-				shape = nullptr;
-				
-			}else{
-				/*
-				shape = new decShapeSphere(pDragonColHandsRadius);				pGroundCheckCollider->AddShape(shape);
-				shape = nullptr;
-				*/
-				/*
-				shape = new decShapeSphere(pDragonFootRadius);				pFootCollider->AddShape(shape);
-				shape = nullptr;
-				*/
-				
-				/*
-				shape = new decShapeBox(pDragonColBodySize * 0.5f, pDragonColBodyPos, decMatrix::CreateRotation(pDragonColBodyRot * DEG2RAD).ToQuaternion());				pDragonColBody->AddShape(shape);
-				shape = nullptr;
-				*/
-				shape = new decShapeSphere(0.4f, decVector(0.0f, 0.8f, 0.6f));				shapeListDCB.Add(shape);
-				shape = nullptr;
-				shape = new decShapeSphere(0.4f, decVector(0.0f, 0.8f, -0.6f));				shapeListDCB.Add(shape);
-				shape = nullptr;
-				
-				shape = new decShapeBox(decVector(0.06f, 0.05f, 0.15f), decVector(0.0f, 0.05f, 0.0f));				shapeListTG.Add(shape);
-				shape = nullptr;
-			}
+		if(pUseLegPairCount == 1){
+			/*
+			shape = new decShapeSphere(pColliderRadius, pColliderPosition);				pGroundCheckCollider->AddShape(shape);
+			shape = nullptr;
+			*/
+			/*
+			shape = new decShapeSphere(pColliderRadius);				pGroundCheckCollider->AddShape(shape);
+			shape = nullptr;
+			*/
+			shapeListTG.Add(decShapeBox::Ref::New(decVector(0.01f, 0.05f, 0.15f), decVector(0.0f, 0.05f, 0.0f)));
 			
-		}catch(const deException &){
-			if(shape) delete shape;
-			throw;
+		}else{
+			/*
+			shape = new decShapeSphere(pDragonColHandsRadius);				pGroundCheckCollider->AddShape(shape);
+			shape = nullptr;
+			*/
+			/*
+			shape = new decShapeSphere(pDragonFootRadius);				pFootCollider->AddShape(shape);
+			shape = nullptr;
+			*/
+			
+			/*
+			shape = new decShapeBox(pDragonColBodySize * 0.5f, pDragonColBodyPos, decMatrix::CreateRotation(pDragonColBodyRot * DEG2RAD).ToQuaternion());				pDragonColBody->AddShape(shape);
+			shape = nullptr;
+			*/
+			shapeListDCB.Add(decShapeSphere::Ref::New(0.4f, decVector(0.0f, 0.8f, 0.6f)));
+			shapeListDCB.Add(decShapeSphere::Ref::New(0.4f, decVector(0.0f, 0.8f, -0.6f)));
+			
+			shapeListTG.Add(decShapeBox::Ref::New(decVector(0.06f, 0.05f, 0.15f), decVector(0.0f, 0.05f, 0.0f)));
 		}
+		
 		pTGCollider->SetShapes(shapeListTG);
 		pDragonColBody->SetShapes(shapeListDCB);
 		
 		// update shape of ground plane collider
-		decShapeList shapeListGPC;
+		decShape::List shapeListGPC;
 		
-		try{
-			shape = new decShapeSphere(pGroundPlaneRadius, decVector(0.0f, pGroundPlaneRadius, 0.0f));
-			shapeListGPC.Add(shape);
-			shape = nullptr;
-			
-		}catch(const deException &){
-			if(shape) delete shape;
-			throw;
-		}
+		shapeListGPC.Add(decShapeSphere::Ref::New(pGroundPlaneRadius, decVector(0.0f, pGroundPlaneRadius, 0.0f)));
+		
 		pGroundPlaneCollider->SetShapes(shapeListGPC);
 		
 		// update debug drawer
@@ -418,111 +391,65 @@ void aeAnimatorLocomotion::UpdateCollider(){
 		pDDSDragonColHands->RemoveAllShapes();
 		pDDSDragonColFeet->RemoveAllShapes();
 		
+		int i;
 		for(i=0; i<4; i++){
 			pDDSGroundPlane[i]->RemoveAllShapes();
 		}
 		
-		try{
-			if(pUseLegPairCount == 1){
-				shape = new decShapeSphere(pColliderRadius, pColliderPosition);
-				pDDSCollider->AddShape(shape);
-				shape = nullptr;
-				
-				shape = new decShapeSphere(pColliderRadius);
-				pDDSDragonColHands->AddShape(shape);
-				shape = nullptr;
-				
-				shape = new decShapeSphere(pColliderRadius);
-				pDDSDragonColFeet->AddShape(shape);
-				shape = nullptr;
-				
-			}else{
-				shape = new decShapeSphere(pColliderRadius, pColliderPosition);
-				pDDSCollider->AddShape(shape);
-				shape = nullptr;
-				shape = new decShapeSphere(0.4f, decVector(0.0f, 0.8f, 0.6f));
-				pDDSCollider->AddShape(shape);
-				shape = nullptr;
-				shape = new decShapeSphere(0.4f, decVector(0.0f, 0.8f, -0.6f));
-				pDDSCollider->AddShape(shape);
-				shape = nullptr;
-				/*
-				shape = new decShapeBox(pDragonColBodySize * 0.5f, pDragonColBodyPos, decMatrix::CreateRotation(pDragonColBodyRot * DEG2RAD).ToQuaternion());
-				pDDSCollider->AddShape(shape);
-				shape = nullptr;
-				*/
-				
-				shape = new decShapeSphere(0.4f, decVector(0.0f, 0.8f, 0.6f));
-				pDDSDragonColBody->AddShape(shape);
-				shape = nullptr;
-				shape = new decShapeSphere(0.4f, decVector(0.0f, 0.8f, -0.6f));
-				pDDSDragonColBody->AddShape(shape);
-				shape = nullptr;
-				/*
-				shape = new decShapeBox(pDragonColBodySize * 0.5f, pDragonColBodyPos, decMatrix::CreateRotation(pDragonColBodyRot * DEG2RAD).ToQuaternion());
-				pDDSDragonColBody->AddShape(shape);
-				shape = nullptr;
-				*/
-				
-				shape = new decShapeSphere(pDragonColHandsRadius);
-				pDDSDragonColHands->AddShape(shape);
-				shape = nullptr;
-				
-				shape = new decShapeSphere(pDragonColFeetRadius);
-				pDDSDragonColFeet->AddShape(shape);
-				shape = nullptr;
-			}
+		if(pUseLegPairCount == 1){
+			pDDSCollider->AddShape(decShapeSphere::Ref::New(pColliderRadius, pColliderPosition));
 			
-			for(i=0; i<4; i++){
-				shape = new decShapeSphere(pGroundPlaneRadius, decVector(0.0f, pGroundPlaneRadius, 0.0f));
-				pDDSGroundPlane[i]->AddShape(shape);
-				shape = nullptr;
-			}
+			pDDSDragonColHands->AddShape(decShapeSphere::Ref::New(pColliderRadius));
 			
-		}catch(const deException &){
-			if(shape) delete shape;
-			throw;
+			pDDSDragonColFeet->AddShape(decShapeSphere::Ref::New(pColliderRadius));
+			
+		}else{
+			pDDSCollider->AddShape(decShapeSphere::Ref::New(pColliderRadius, pColliderPosition));
+			pDDSCollider->AddShape(decShapeSphere::Ref::New(0.4f, decVector(0.0f, 0.8f, 0.6f)));
+			pDDSCollider->AddShape(decShapeSphere::Ref::New(0.4f, decVector(0.0f, 0.8f, -0.6f)));
+			/*
+			shape = new decShapeBox(pDragonColBodySize * 0.5f, pDragonColBodyPos, decMatrix::CreateRotation(pDragonColBodyRot * DEG2RAD).ToQuaternion());
+			pDDSCollider->AddShape(shape);
+			shape = nullptr;
+			*/
+			
+			pDDSDragonColBody->AddShape(decShapeSphere::Ref::New(0.4f, decVector(0.0f, 0.8f, 0.6f)));
+			pDDSDragonColBody->AddShape(decShapeSphere::Ref::New(0.4f, decVector(0.0f, 0.8f, -0.6f)));
+			/*
+			shape = new decShapeBox(pDragonColBodySize * 0.5f, pDragonColBodyPos, decMatrix::CreateRotation(pDragonColBodyRot * DEG2RAD).ToQuaternion());
+			pDDSDragonColBody->AddShape(shape);
+			shape = nullptr;
+			*/
+			
+			pDDSDragonColHands->AddShape(decShapeSphere::Ref::New(pDragonColHandsRadius));
+			
+			pDDSDragonColFeet->AddShape(decShapeSphere::Ref::New(pDragonColFeetRadius));
+		}
+		
+		for(i=0; i<4; i++){
+			pDDSGroundPlane[i]->AddShape(decShapeSphere::Ref::New(pGroundPlaneRadius, decVector(0.0f, pGroundPlaneRadius, 0.0f)));
 		}
 	}
 }
 
 void aeAnimatorLocomotion::UpdateTouchSensors(){
 	// touch sensor shapes
-	decShapeBox *shape = nullptr;
-	decShapeList list;
+	decShape::List list;
 	
-	try{
-		shape = new decShapeBox(pTSGroundExtents * 0.5f, pTSGroundPosition);
-		list.Add(shape);
-		shape = nullptr;
-		/*
-		shape = new decShapeBox(pTSDragonBodySize * 0.5f, pTSDragonBodyPosition);
-		list.Add(shape);
-		shape = nullptr;
-		*/
-		pTouchSensor->SetShape(list);
-		
-	}catch(const deException &){
-		if(shape){
-			delete shape;
-		}
-		throw;
-	}
+	list.Add(decShapeBox::Ref::New(pTSGroundExtents * 0.5f, pTSGroundPosition));
+	/*
+	shape = new decShapeBox(pTSDragonBodySize * 0.5f, pTSDragonBodyPosition);
+	list.Add(shape);
+	shape = nullptr;
+	*/
+	pTouchSensor->SetShape(list);
 	
 	// debug drawer shapes
 	pDDSSensorGround->RemoveAllShapes();
 	
-	try{
-		shape = new decShapeBox(pTSGroundExtents * 0.5f, pTSGroundPosition);		pDDSSensorGround->AddShape(shape);
-		shape = nullptr;
-		
-		shape = new decShapeBox(pTSDragonBodySize * 0.5f, pTSDragonBodyPosition);		pDDSSensorGround->AddShape(shape);
-		shape = nullptr;
-		
-	}catch(const deException &){
-		if(shape) delete shape;
-		throw;
-	}
+	pDDSSensorGround->AddShape(decShapeBox::Ref::New(pTSGroundExtents * 0.5f, pTSGroundPosition));
+	
+	pDDSSensorGround->AddShape(decShapeBox::Ref::New(pTSDragonBodySize * 0.5f, pTSDragonBodyPosition));
 }
 
 void aeAnimatorLocomotion::UpdateTSColors(){

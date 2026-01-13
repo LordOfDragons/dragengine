@@ -324,9 +324,8 @@ void reRigPush::pUpdateDDPushGeometry(){
 void reRigPush::pUpdateColliderShape(){
 	if(pCollider && pRig){
 		decMatrix matrix = decMatrix::CreateRotation(pOrientation * DEG2RAD);
-		decShapeBox *box = nullptr;
 		decVector arrowStart;
-		decShapeList shapeList;
+		decShape::List shapeList;
 		
 		arrowStart = pPosition - matrix.TransformView() * 0.5f;
 		
@@ -334,15 +333,7 @@ void reRigPush::pUpdateColliderShape(){
 		pCollider->SetOrientation(matrix.ToQuaternion());
 		pCollider->SetEnabled(IsVisible());
 		
-		try{
-			box = new decShapeBox(decVector(0.05f, 0.05f, 0.5f));
-			shapeList.Add(box);
-			
-		}catch(const deException &){
-			if(box){
-				delete box;
-			}
-		}
+		shapeList.Add(decShapeBox::Ref::New(decVector(0.05f, 0.05f, 0.5f)));
 		
 		pCollider->SetShapes(shapeList);
 	}

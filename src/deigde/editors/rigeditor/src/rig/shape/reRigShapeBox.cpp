@@ -80,6 +80,7 @@ void reRigShapeBox::Scale(float scale){
 	pHalfExtends *= scale;
 }
 
-decShape *reRigShapeBox::CreateShape(){
-	return new decShapeBox(pHalfExtends, GetPosition(), decQuaternion::CreateFromEuler(GetOrientation() * DEG2RAD));
+decShape::Ref reRigShapeBox::CreateShape(){
+	return decShapeBox::Ref::New(pHalfExtends, GetPosition(),
+		decQuaternion::CreateFromEuler(GetOrientation() * DEG2RAD));
 }

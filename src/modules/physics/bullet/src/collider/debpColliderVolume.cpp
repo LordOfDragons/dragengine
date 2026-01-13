@@ -624,7 +624,7 @@ void debpColliderVolume::DetectCustomCollision(float elapsed){
 				if(bpcol){
 					if(bpcol->IsVolume()){
 						const debpColliderVolume &bpcv = *bpcol->CastToVolume();
-						const decShapeList &sl = bpcv.GetColliderVolume().GetShapes();
+						const decShape::List &sl = bpcv.GetColliderVolume().GetShapes();
 						const int count = sl.GetCount();
 						debpShapeToLog visitor;
 						
@@ -1392,7 +1392,7 @@ void debpColliderVolume::pCleanUp(){
 
 
 void debpColliderVolume::pRebuildShapeList(){
-	const decShapeList &shapes = pColliderVolume.GetShapes();
+	const decShape::List &shapes = pColliderVolume.GetShapes();
 	int s, shapeCount = shapes.GetCount();
 	debpCreateShape createShape;
 	
@@ -1418,7 +1418,7 @@ void debpColliderVolume::pUpdateSweepCollisionTest(){
 	}
 	
 	if(pDirtySweepTest){
-		const decShapeList &shapes = pColliderVolume.GetShapes();
+		const decShape::List &shapes = pColliderVolume.GetShapes();
 		const decVector &scale = pColliderVolume.GetScale();
 		const int count = shapes.GetCount();
 		int i;
@@ -1532,7 +1532,7 @@ void debpColliderVolume::pUpdateBPShape(){
 }
 
 debpBulletShape::Ref debpColliderVolume::pCreateBPShape(){
-	const decShapeList &shapes = pColliderVolume.GetShapes();
+	const decShape::List &shapes = pColliderVolume.GetShapes();
 	const int count = shapes.GetCount();
 
 	if(count == 0){

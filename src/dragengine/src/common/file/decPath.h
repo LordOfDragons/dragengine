@@ -52,6 +52,9 @@ public:
 	/** \brief Create copy of path. */
 	decPath(const decPath &path);
 	
+	/** \brief Move path. */
+	decPath(decPath &&path) noexcept;
+	
 	/** \brief Clean up path. */
 	~decPath();
 	/*@}*/
@@ -330,6 +333,9 @@ public:
 	
 	/** \brief Copy another path to this path. */
 	decPath &operator=(const decPath &path);
+	
+	/** \brief Move path. */
+	decPath &operator=(decPath &&path) noexcept;
 	
 	/** \brief Add another path to this path. */
 	decPath &operator+=(const decPath &path);

@@ -271,7 +271,7 @@ const decDMatrix &matrixModel, deoglRDebugDrawer &debugDrawer){
 		const deoglDebugDrawerShape &ddshape = debugDrawer.GetShapeAt(i);
 		
 		// render debug drawer volume
-		const decShapeList &shapeList = ddshape.GetShapeList();
+		const decShape::List &shapeList = ddshape.GetShapeList();
 		const int shapeShapeCount = shapeList.GetCount();
 		
 		if(shapeShapeCount == 0){

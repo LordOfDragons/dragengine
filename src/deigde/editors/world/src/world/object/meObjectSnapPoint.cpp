@@ -38,7 +38,7 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/shape/decShapeSphere.h>
-#include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/shape/decShape.h>
 #include <dragengine/resources/collider/deColliderAttachment.h>
 #include <dragengine/resources/collider/deColliderManager.h>
 #include <dragengine/resources/collider/deColliderVolume.h>
@@ -85,8 +85,8 @@ pColliderOwner(this)
 		pCollider->SetUseLocalGravity(true);
 		pCollider->SetCollisionFilter(decCollisionFilter(collisionCategory, collisionFilter));
 		
-		decShapeList colliderShape;
-		colliderShape.Add(new decShapeSphere(snapPoint->GetSnapDistance()));
+		decShape::List colliderShape;
+		colliderShape.Add(decShapeSphere::Ref::New(snapPoint->GetSnapDistance()));
 		pCollider->SetShapes(colliderShape);
 		
 		object->GetEnvironment()->SetColliderUserPointer(pCollider, &pColliderOwner);

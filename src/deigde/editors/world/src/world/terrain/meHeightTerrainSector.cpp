@@ -1714,7 +1714,7 @@ void meHeightTerrainSector::pUpdateDDSelNavPointsColors(){
 
 void meHeightTerrainSector::pUpdateDDSelNavPointsShapes(){
 	deDebugDrawerShape &ddshape = *pDDSelNavPoints->GetShapeAt(0);
-	decShapeList &shapes = ddshape.GetShapeList();
+	decShape::List &shapes = ddshape.GetShapeList();
 	
 	shapes.RemoveAll();
 	
@@ -1731,7 +1731,7 @@ void meHeightTerrainSector::pUpdateDDSelNavPointsShapes(){
 				sectorSize * ((float)(navpoint % sectorResolution) * invPointLast - 0.5f),
 				heightScale * heights[navpoint].value,
 				sectorSize * (0.5f - (float)(navpoint / sectorResolution) * invPointLast));
-			shapes.Add(new decShapeSphere(radius, center));
+			shapes.Add(decShapeSphere::Ref::New(radius, center));
 		});
 	}
 	
@@ -1746,7 +1746,7 @@ void meHeightTerrainSector::pUpdateDDSelNavPointHeights(){
 	const sGrayscale32 * const heights = pHeightImage->GetDataGrayscale32();
 	deDebugDrawerShape &ddshape = *pDDSelNavPoints->GetShapeAt(0);
 	const float heightScale = pHeightTerrain->GetHeightScaling();
-	decShapeList &shapes = ddshape.GetShapeList();
+	decShape::List &shapes = ddshape.GetShapeList();
 	
 	pSelectedNavPoints.VisitIndexed([&](int i, int navpoint){
 		decShape &shape = *shapes.GetAt(i);

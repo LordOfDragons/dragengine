@@ -26,7 +26,6 @@
 #include <string.h>
 
 #include "dePathList.h"
-#include "dePatternList.h"
 #include "deContainerFileSearch.h"
 #include "deVFSMemoryFiles.h"
 #include "../common/file/decPath.h"

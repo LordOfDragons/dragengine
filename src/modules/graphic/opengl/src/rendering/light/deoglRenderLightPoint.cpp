@@ -599,7 +599,7 @@ void deoglRenderLightPoint::CalculateBoxBoundary(deoglRenderPlanLight &planLight
 	
 	boundaryMin -= decVector(0.01f, 0.01f, 0.01f); // just to make sure the box is not too small
 	boundaryMax += decVector(0.01f, 0.01f, 0.01f); // just to make sure the box is not too small
-	light.SetLightVolumeCropBox(new decShapeBox(
+	light.SetLightVolumeCropBox(decShapeBox::Ref::New(
 		(boundaryMax - boundaryMin) * 0.5f, (boundaryMin + boundaryMax) * 0.5f));
 	
 	/*{

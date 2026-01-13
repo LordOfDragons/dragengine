@@ -273,7 +273,7 @@ const decVector &displacement, const decVector &rotation, deBaseScriptingCollide
 // Shapes
 ///////////
 
-void deTouchSensor::SetShape(const decShapeList &shape){
+void deTouchSensor::SetShape(const decShape::List &shape){
 	pShape = shape;
 	if(pPeerPhysics){
 		pPeerPhysics->ShapeChanged();

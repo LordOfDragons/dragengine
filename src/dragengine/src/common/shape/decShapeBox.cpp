@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-
 #include "decShapeBox.h"
 #include "decShapeVisitor.h"
 #include "../exceptions.h"
@@ -69,9 +67,6 @@ const decVector &position, const decQuaternion &orientation) : decShape(position
 	SetTapering(tapering);
 }
 
-decShapeBox::~decShapeBox(){
-}
-
 
 
 // Management
@@ -87,8 +82,8 @@ void decShapeBox::SetTapering(const decVector2 &tapering){
 
 
 
-decShape *decShapeBox::Copy() const{
-	return new decShapeBox(pHalfExtends, pTapering, GetPosition(), GetOrientation());
+decShape::Ref decShapeBox::Copy() const{
+	return Ref::New(pHalfExtends, pTapering, GetPosition(), GetOrientation());
 }
 
 

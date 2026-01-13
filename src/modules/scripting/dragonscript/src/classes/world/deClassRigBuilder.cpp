@@ -230,7 +230,7 @@ void deClassRigBuilder::nfAddBone::RunFunction(dsRunTime *rt, dsValue *myself){
 	const bool ikLockedX = rt->GetValue(10)->GetBool();
 	const bool ikLockedY = rt->GetValue(11)->GetBool();
 	const bool ikLockedZ = rt->GetValue(12)->GetBool();
-	const decShapeList &shapes = ds.GetClassShapeList()->GetShapeList(rt->GetValue(13)->GetRealObject());
+	const decShape::List &shapes = ds.GetClassShapeList()->GetShapeList(rt->GetValue(13)->GetRealObject());
 	
 	deRigBone * const bone = new deRigBone(name);
 	try{

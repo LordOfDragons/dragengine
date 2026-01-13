@@ -66,89 +66,23 @@ public:
 	}
 	
 	void VisitShapeSphere(decShapeSphere &sphere) override{
-		decShapeSphere *copy = nullptr;
-		
-		try{
-			copy = new decShapeSphere(sphere.GetRadius(), sphere.GetAxisScaling(), sphere.GetPosition());
-			pDDShape->GetShapeList().Add(copy);
-			
-		}catch(const deException &){
-			if(copy){
-				delete copy;
-			}
-			throw;
-		}
+		pDDShape->GetShapeList().Add(sphere.Copy());
 	}
 	
 	void VisitShapeBox(decShapeBox &box) override{
-		decShapeBox *copy = nullptr;
-		
-		try{
-			copy = new decShapeBox(box.GetHalfExtends(), box.GetTapering(), box.GetPosition(), box.GetOrientation());
-			pDDShape->GetShapeList().Add(copy);
-			
-		}catch(const deException &){
-			if(copy){
-				delete copy;
-			}
-			throw;
-		}
+		pDDShape->GetShapeList().Add(box.Copy());
 	}
 	
 	void VisitShapeCylinder(decShapeCylinder &cylinder) override{
-		decShapeCylinder *copy = nullptr;
-		
-		try{
-			copy = new decShapeCylinder(cylinder.GetHalfHeight(), cylinder.GetTopRadius(),
-				cylinder.GetBottomRadius(), cylinder.GetTopAxisScaling(), cylinder.GetBottomAxisScaling(),
-				 cylinder.GetPosition(), cylinder.GetOrientation());
-			pDDShape->GetShapeList().Add(copy);
-			
-		}catch(const deException &){
-			if(copy){
-				delete copy;
-			}
-			throw;
-		}
+		pDDShape->GetShapeList().Add(cylinder.Copy());
 	}
 	
 	void VisitShapeCapsule(decShapeCapsule &capsule) override{
-		decShapeCapsule *copy = nullptr;
-		
-		try{
-			copy = new decShapeCapsule(capsule.GetHalfHeight(), capsule.GetTopRadius(),
-				capsule.GetBottomRadius(), capsule.GetTopAxisScaling(), capsule.GetBottomAxisScaling(),
-				capsule.GetPosition(), capsule.GetOrientation());
-			pDDShape->GetShapeList().Add(copy);
-			
-		}catch(const deException &){
-			if(copy){
-				delete copy;
-			}
-			throw;
-		}
+		pDDShape->GetShapeList().Add(capsule.Copy());
 	}
 	
 	void VisitShapeHull(decShapeHull &hull) override{
-		decShapeHull *copy = nullptr;
-		
-		try{
-			copy = new decShapeHull(hull.GetPosition(), hull.GetOrientation());
-			const int count = hull.GetPointCount();
-			int i;
-			copy->SetPointCount(count);
-			for(i=0; i<count; i++){
-				copy->SetPointAt(i, hull.GetPointAt(i));
-			}
-			
-			pDDShape->GetShapeList().Add(copy);
-			
-		}catch(const deException &){
-			if(copy){
-				delete copy;
-			}
-			throw;
-		}
+		pDDShape->GetShapeList().Add(hull.Copy());
 	}
 };
 
@@ -291,187 +225,77 @@ void igdeWDebugDrawerShape::SetVisible(bool visible){
 // Shapes
 ///////////
 
-void igdeWDebugDrawerShape::AddShape(decShape *shape){
+void igdeWDebugDrawerShape::AddShape(decShape::Ref &&shape){
 	if(!shape){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pShapes.Add(shape);
+	pShapes.Add(std::move(shape));
 	pRebuildShapes();
 }
 
-void igdeWDebugDrawerShape::AddShapes(const decShapeList &shapes){
-	const int count = shapes.GetCount();
-	decShape *shape = nullptr;
-	int i;
-	
-	for(i=0; i<count; i++){
-		try{
-			shape = shapes.GetAt(i)->Copy();
-			pShapes.Add(shape);
-			shape = nullptr;
-			
-		}catch(const deException &){
-			if(shape){
-				delete shape;
-			}
-			throw;
-		}
-	}
-	
+void igdeWDebugDrawerShape::AddShapes(const decShape::List &shapes){
+	shapes.Visit([&](decShape &shape){
+		pShapes.Add(shape.Copy());
+	});
 	pRebuildShapes();
 }
 
 void igdeWDebugDrawerShape::AddSphereShape(float radius, const decVector &position){
-	decShapeSphere *sphere = nullptr;
-	
-	try{
-		sphere = new decShapeSphere(radius, position);
-		AddShape(sphere);
-		
-	}catch(const deException &){
-		if(sphere){
-			delete sphere;
-		}
-		throw;
-	}
+	AddShape(decShapeSphere::Ref::New(radius, position));
 }
 
-void igdeWDebugDrawerShape::AddSphereShape(float radius, const decVector2 &axisScaling, const decVector &position){
-	decShapeSphere *sphere = nullptr;
-	
-	try{
-		sphere = new decShapeSphere(radius, axisScaling, position);
-		AddShape(sphere);
-		
-	}catch(const deException &){
-		if(sphere){
-			delete sphere;
-		}
-		throw;
-	}
+void igdeWDebugDrawerShape::AddSphereShape(float radius, const decVector2 &axisScaling,
+const decVector &position){
+	AddShape(decShapeSphere::Ref::New(radius, axisScaling, position));
 }
 
 void igdeWDebugDrawerShape::AddBoxShape(const decVector &halfExtends, const decVector &position,
 const decQuaternion &orientation){
-	decShapeBox *box = nullptr;
-	
-	try{
-		box = new decShapeBox(halfExtends, position, orientation);
-		AddShape(box);
-		
-	}catch(const deException &){
-		if(box){
-			delete box;
-		}
-		throw;
-	}
+	AddShape(decShapeBox::Ref::New(halfExtends, position, orientation));
 }
 
 void igdeWDebugDrawerShape::AddBoxShape(const decVector &halfExtends, const decVector2 &axiscaling,
 const decVector &position, const decQuaternion &orientation){
-	decShapeBox *box = nullptr;
-	
-	try{
-		box = new decShapeBox(halfExtends, axiscaling, position, orientation);
-		AddShape(box);
-		
-	}catch(const deException &){
-		if(box){
-			delete box;
-		}
-		throw;
-	}
+	AddShape(decShapeBox::Ref::New(halfExtends, axiscaling, position, orientation));
 }
 
 void igdeWDebugDrawerShape::AddCylinderShape(float halfHeight, float topRadius, float bottomRadius,
 const decVector &position, const decQuaternion &orientation){
-	decShapeCylinder *cylinder = nullptr;
-	
-	try{
-		cylinder = new decShapeCylinder(halfHeight, topRadius, bottomRadius, position, orientation);
-		AddShape(cylinder);
-		
-	}catch(const deException &){
-		if(cylinder){
-			delete cylinder;
-		}
-		throw;
-	}
+	AddShape(decShapeCylinder::Ref::New(halfHeight, topRadius, bottomRadius, position, orientation));
 }
 
 void igdeWDebugDrawerShape::AddCylinderShape(float halfHeight, float topRadius, float bottomRadius,
 const decVector2 &topAxisScaling, const decVector2 &bottomAxisScaling, const decVector &position,
 const decQuaternion &orientation){
-	decShapeCylinder *cylinder = nullptr;
-	
-	try{
-		cylinder = new decShapeCylinder(halfHeight, topRadius, bottomRadius, topAxisScaling, bottomAxisScaling, position, orientation);
-		AddShape(cylinder);
-		
-	}catch(const deException &){
-		if(cylinder){
-			delete cylinder;
-		}
-		throw;
-	}
+	AddShape(decShapeCylinder::Ref::New(halfHeight, topRadius, bottomRadius,
+		topAxisScaling, bottomAxisScaling, position, orientation));
 }
 
 void igdeWDebugDrawerShape::AddCapsuleShape(float halfHeight, float topRadius, float bottomRadius,
 const decVector &position, const decQuaternion &orientation){
-	decShapeCapsule *capsule = nullptr;
-	
-	try{
-		capsule = new decShapeCapsule(halfHeight, topRadius, bottomRadius, position, orientation);
-		AddShape(capsule);
-		
-	}catch(const deException &){
-		if(capsule){
-			delete capsule;
-		}
-		throw;
-	}
+	AddShape(decShapeCapsule::Ref::New(halfHeight, topRadius, bottomRadius, position, orientation));
 }
 
 void igdeWDebugDrawerShape::AddCapsuleShape(float halfHeight, float topRadius, float bottomRadius,
 const decVector2 &topAxisScaling, const decVector2 &bottomAxisScaling, const decVector &position,
 const decQuaternion &orientation){
-	decShapeCapsule *capsule = nullptr;
-	
-	try{
-		capsule = new decShapeCapsule(halfHeight, topRadius, bottomRadius, topAxisScaling, bottomAxisScaling, position, orientation);
-		AddShape(capsule);
-		
-	}catch(const deException &){
-		if(capsule){
-			delete capsule;
-		}
-		throw;
-	}
+	AddShape(decShapeCapsule::Ref::New(halfHeight, topRadius, bottomRadius,
+		topAxisScaling, bottomAxisScaling, position, orientation));
 }
 
 void igdeWDebugDrawerShape::AddHullShape(const decVector &position,
 const decQuaternion &orientation, int pointCount, const decVector *points){
-	if(pointCount < 0 || !points){
-		DETHROW(deeInvalidParam);
-	}
-	decShapeHull *hull = nullptr;
+	DEASSERT_NOTNULL(points)
+	DEASSERT_TRUE(pointCount >= 0)
 	
-	try{
-		hull = new decShapeHull(position, orientation);
-		hull->SetPointCount(pointCount);
-		int i;
-		for(i=0; i<pointCount; i++){
-			hull->SetPointAt(i, points[i]);
-		}
-		AddShape(hull);
-		
-	}catch(const deException &){
-		if(hull){
-			delete hull;
-		}
-		throw;
+	decShapeHull::Ref hull = decShapeHull::Ref::New(position, orientation);
+	hull->SetPointCount(pointCount);
+	int i;
+	for(i=0; i<pointCount; i++){
+		hull->SetPointAt(i, points[i]);
 	}
+	AddShape(std::move(hull));
 }
 
 void igdeWDebugDrawerShape::RemoveAllShapes(){

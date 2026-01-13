@@ -129,11 +129,9 @@ void reCreateRigShape::VisitShapeHull(decShapeHull &hull){
 	const reRigShapeHull::Ref rigHull(reRigShapeHull::Ref::New(pEngine));
 	rigHull->SetPosition(hull.GetPosition());
 	rigHull->SetOrientation(decMatrix::CreateFromQuaternion(hull.GetOrientation()).GetEulerAngles() * RAD2DEG);
-	const int count = hull.GetPointCount();
-	int i;
-	for(i=0; i<count; i++){
-		rigHull->AddPoint(hull.GetPointAt(i));
-	}
+	hull.GetPoints().Visit([&](const decVector &point){
+		rigHull->AddPoint(point);
+	});
 	
 	pRigShape = rigHull;
 }

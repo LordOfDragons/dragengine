@@ -94,7 +94,7 @@ void gdeOCForceField::SetBoneName(const char *boneName){
 	pBoneName = boneName;
 }
 
-void gdeOCForceField::SetInfluenceArea(const decShapeList &area){
+void gdeOCForceField::SetInfluenceArea(const decShape::List &area){
 	pInfluenceArea = area;
 }
 
@@ -130,7 +130,7 @@ void gdeOCForceField::SetFluctuationForce(float fluctuation){
 	pFluctuationForce = fluctuation;
 }
 
-void gdeOCForceField::SetShape(const decShapeList &shape){
+void gdeOCForceField::SetShape(const decShape::List &shape){
 	pShape = shape;
 }
 

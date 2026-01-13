@@ -32,7 +32,7 @@
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/shape/decShape.h>
-#include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/shape/decShape.h>
 #include <deigde/codec/igdeCodecPropertyString.h>
 
 
@@ -102,7 +102,7 @@ void meUObjectShapeMove::Redo(){
 	const int count = pList.GetCount();
 	decDMatrix matrixParentInverse;
 	igdeCodecPropertyString codec;
-	decShapeList shapeList;
+	decShape::List shapeList;
 	decVector distance;
 	decString newValue;
 	int i;

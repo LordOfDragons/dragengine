@@ -35,8 +35,7 @@ class delFileFormat;
  */
 class DE_DLL_EXPORT delFileFormatList{
 private:
-	decTObjectList<delFileFormat> pFormats;
-	
+	decTList<delFileFormat*> pFormats;
 	
 	
 public:
@@ -51,7 +50,6 @@ public:
 	/** \brief Clean up file format list. */
 	~delFileFormatList();
 	/*@}*/
-	
 	
 	
 	/** \name Management */

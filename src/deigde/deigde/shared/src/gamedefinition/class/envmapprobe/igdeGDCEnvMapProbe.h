@@ -27,7 +27,7 @@
 
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/shape/decShape.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/deObject.h>
 
@@ -63,9 +63,9 @@ private:
 	decQuaternion pOrientation;
 	decVector pScaling;
 	
-	decShapeList pShapeListInfluence;
-	decShape *pShapeReflection;
-	decShapeList pShapeListReflectionMask;
+	decShape::List pShapeListInfluence;
+	decShape::Ref pShapeReflection;
+	decShape::List pShapeListReflectionMask;
 	float pInfluenceBorderSize;
 	int pInfluencePriority;
 	
@@ -110,22 +110,22 @@ public:
 	void SetScaling(const decVector &scaling);
 	
 	/** \brief Influence shape list. */
-	inline const decShapeList &GetShapeListInfluence() const{ return pShapeListInfluence; }
+	inline const decShape::List &GetShapeListInfluence() const{ return pShapeListInfluence; }
 	
 	/** \brief Set influence shape list. */
-	void SetShapeListInfluence(const decShapeList &shapeList);
+	void SetShapeListInfluence(const decShape::List &shapeList);
 	
 	/** \brief Reflection shape or nullptr if the environment map is global. */
-	inline decShape *GetShapeReflection() const{ return pShapeReflection; }
+	inline const decShape::Ref &GetShapeReflection() const{ return pShapeReflection; }
 	
 	/** \brief Set reflection shape or nullptr if the environment map is global. */
-	void SetShapeReflection(decShape *shape);
+	void SetShapeReflection(const decShape *shape);
 	
 	/** \brief Reflection mask shape list. */
-	inline const decShapeList &GetShapeListReflectionMask() const{ return pShapeListReflectionMask; }
+	inline const decShape::List &GetShapeListReflectionMask() const{ return pShapeListReflectionMask; }
 	
 	/** \brief Set reflection mask shape list. */
-	void SetShapeListReflectionMask(const decShapeList &shapeList);
+	void SetShapeListReflectionMask(const decShape::List &shapeList);
 	
 	/** \brief Influence border size. */
 	inline float GetInfluenceBorderSize() const{ return pInfluenceBorderSize; }

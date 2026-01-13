@@ -44,7 +44,6 @@
 #include <dragengine/deEngine.h>
 #include <libdscript/exceptions.h>
 #include <dragengine/common/shape/decShape.h>
-#include <dragengine/common/shape/decShapeList.h>
 #include <dragengine/resources/collider/deColliderVolume.h>
 #include <dragengine/resources/collider/deColliderManager.h>
 
@@ -115,8 +114,7 @@ void deClassColliderVolume::nfSetShape::RunFunction(dsRunTime *rt, dsValue *myse
 	deColliderVolume &collider = dedsGetNativeData<sColVolNatDat>(p_GetNativeData(myself)).collider;
 	const deScriptingDragonScript &ds = (static_cast<deClassColliderVolume*>(GetOwnerClass()))->GetDS();
 	
-	const decShapeList &shapeList = ds.GetClassShapeList()->GetShapeList(rt->GetValue(0)->GetRealObject());
-	collider.SetShapes(shapeList);
+	collider.SetShapes(ds.GetClassShapeList()->GetShapeList(rt->GetValue(0)->GetRealObject()));
 }
 
 

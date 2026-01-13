@@ -534,7 +534,7 @@ void deoglRenderDevMode::RenderPropFieldInfo(deoglRenderPlan &plan){
 			
 			for(j=0; j<typeCount; j++){
 				if(j == typeIndex){
-					const deoglCollideListPropFieldType &cltype = *clPropField.GetTypeAt(j);
+					const deoglCollideListPropFieldType &cltype = clPropField.GetTypeAt(j);
 					const int clusterCount = cltype.GetClusterCount();
 					
 					for(k=0; k<clusterCount; k++){

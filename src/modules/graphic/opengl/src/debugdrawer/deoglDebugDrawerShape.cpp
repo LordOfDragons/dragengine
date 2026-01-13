@@ -68,7 +68,7 @@ deoglDebugDrawerShape::~deoglDebugDrawerShape(){
 
 void deoglDebugDrawerShape::SetMatrix(const decMatrix &matrix){
 	pMatrix = matrix;
-	pDirtyHulls |= pHullIndices.GetCount() > 0;
+	pDirtyHulls |= pHullIndices.IsNotEmpty();
 }
 
 void deoglDebugDrawerShape::SetEdgeColor(const decColor &color){
@@ -79,9 +79,9 @@ void deoglDebugDrawerShape::SetFillColor(const decColor &color){
 	pFillColor = color;
 }
 
-void deoglDebugDrawerShape::SetShapeList(const decShapeList &shapes){
+void deoglDebugDrawerShape::SetShapeList(const decShape::List &shapes){
 	pShapeList = shapes;
-	pDirtyHulls = shapes.GetCount() > 0;
+	pDirtyHulls = shapes.IsNotEmpty();
 }
 
 void deoglDebugDrawerShape::SetFillFirstPoint(int firstPoint){
@@ -263,7 +263,8 @@ public:
 	}
 	
 	void VisitShapeHull(decShapeHull &hull) override{
-		const int count = hull.GetPointCount();
+		const decShapeHull::PointList &points = hull.GetPoints();
+		const int count = points.GetCount();
 		if(count < 3){
 			return;
 		}
@@ -271,7 +272,7 @@ public:
 		deoglConvexHull3D calculator;
 		int i;
 		for(i=0; i<count; i++){
-			calculator.AddPoint(hull.GetPointAt(i));
+			calculator.AddPoint(points.GetAt(i));
 		}
 		calculator.CalculateHull();
 		
@@ -291,7 +292,7 @@ public:
 		*pHullPointCount += count;
 		
 		for(i=0; i<count; i++){
-			newArray[offset + i] = hull.GetPointAt(i);
+			newArray[offset + i] = points.GetAt(i);
 		}
 		
 		for(i=0; i<indices.GetCount(); i++){

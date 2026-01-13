@@ -58,10 +58,13 @@ public:
 	/*@{*/
 	/** Creates a new shape. */
 	debpShapeBox(decShapeBox *shape);
+	
+protected:
 	/** Cleans up the shape. */
 	~debpShapeBox() override;
 	/*@}*/
 	
+public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the box shape. */

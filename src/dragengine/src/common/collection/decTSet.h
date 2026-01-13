@@ -107,12 +107,23 @@ public:
 	 * Duplicate elements are ignored.
 	 */
 	template<typename C>
-	explicit decTSet(const C &collection) : pElements(nullptr), pCount(0), pSize(0){
+	explicit decTSet(const C &collection,
+		typename std::enable_if_t<
+			std::is_same_v<decltype(std::declval<C>().cbegin()),
+				decltype(std::declval<C>().cbegin())>, int> = 0)
+	: pElements(nullptr), pCount(0), pSize(0){
 		auto first = collection.cbegin();
 		auto last = collection.cend();
 		for(; first != last; ++first){
 			Add(*first);
 		}
+	}
+	
+	/** \brief Create set with content from variable count of arguments. */
+	template<typename... A>
+	requires ((std::is_same<std::decay_t<A>, T>::value) && ...)
+	explicit decTSet(A&&... args) : pElements(nullptr), pCount(0), pSize(0){
+		(Add(std::forward<A>(args)), ...);
 	}
 	
 	/** \brief Clean up the set. */

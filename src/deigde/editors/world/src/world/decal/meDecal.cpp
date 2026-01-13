@@ -766,8 +766,6 @@ void meDecal::pUpdateDDSColors(){
 }
 
 void meDecal::pUpdateShapes(){
-	decShapeBox *box = nullptr;
-	
 	// size has to be kept above a minimum to avoid problems and to keep the decal selectable by the user
 	const decVector size(decVector(0.01f, 0.01f, 0.01f).Largest(decVector(pSize * 0.5f)));
 	decVector position = decVector(0.0f, 0.0f, -size.z);
@@ -777,18 +775,10 @@ void meDecal::pUpdateShapes(){
 	pDDSDecal->AddBoxShape(size, position, decQuaternion());
 	
 	// update collider shape
-	decShapeList shapeList;
+	decShape::List shapeList;
 	
 	if(pCollider){
-		try{
-			box = new decShapeBox(size, position);
-			shapeList.Add(box);
-			box = nullptr;
-			
-		}catch(const deException &){
-			if(box) delete box;
-			throw;
-		}
+		shapeList.Add(decShapeBox::Ref::New(size, position));
 	}
 	
 	pCollider->SetShapes(shapeList);
@@ -844,14 +834,7 @@ void meDecal::pUpdateShapes(){
 		
 		pDDVolume->RemoveAllShapes();
 		
-		try{
-			shapeBox = new decShapeBox(size, pos, matrix.ToQuaternion());
-			
-			pDDVolume->AddShape(shapeBox);
-			
-		}catch(const deException &){
-			if(shapeBox) delete shapeBox;
-		}
+		pDDVolume->AddShape(decShapeBox::Ref::New(size, pos, matrix.ToQuaternion()));
 	}
 }
 */

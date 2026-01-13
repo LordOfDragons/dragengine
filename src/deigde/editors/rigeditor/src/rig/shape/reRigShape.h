@@ -180,7 +180,7 @@ public:
 	virtual void Scale(float scale) = 0;
 	
 	/** \brief Create shape. */
-	virtual decShape *CreateShape() = 0;
+	virtual decShape::Ref CreateShape() = 0;
 	/*@}*/
 	
 private:

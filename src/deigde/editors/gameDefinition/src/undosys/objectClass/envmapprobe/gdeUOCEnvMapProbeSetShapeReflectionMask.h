@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/shape/decShape.h>
 
 #include "../../../gamedef/objectClass/envmapprobe/gdeOCEnvMapProbe.h"
 #include "../../../gamedef/objectClass/gdeObjectClass.h"
@@ -47,8 +47,8 @@ private:
 	gdeObjectClass::Ref pObjectClass;
 	gdeOCEnvMapProbe::Ref pEnvMapProbe;
 	
-	decShapeList pOldValue;
-	decShapeList pNewValue;
+	decShape::List pOldValue;
+	decShape::List pNewValue;
 	
 	
 	
@@ -57,7 +57,7 @@ public:
 	/*@{*/
 	/** \brief Create undo action. */
 	gdeUOCEnvMapProbeSetShapeReflectionMask(gdeObjectClass *objectClass,
-		gdeOCEnvMapProbe *component, const decShapeList &newValue);
+		gdeOCEnvMapProbe *component, const decShape::List &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

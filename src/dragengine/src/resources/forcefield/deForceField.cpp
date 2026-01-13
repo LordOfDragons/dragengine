@@ -94,7 +94,7 @@ void deForceField::SetOrientation(const decQuaternion &orientation){
 
 
 
-void deForceField::SetInfluenceArea(const decShapeList &area){
+void deForceField::SetInfluenceArea(const decShape::List &area){
 	pInfluenceArea = area;
 	if(pPeerPhysics){
 		pPeerPhysics->InfluenceAreaChanged();
@@ -203,7 +203,7 @@ void deForceField::SetFluctuationForce(float fluctuation){
 
 
 
-void deForceField::SetShape(const decShapeList &shape){
+void deForceField::SetShape(const decShape::List &shape){
 	pShape = shape;
 	
 	if(pPeerPhysics){

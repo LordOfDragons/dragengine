@@ -32,11 +32,11 @@
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/shape/decShapeVisitor.h>
+#include <dragengine/common/shape/decShape.h>
 
 class debpCollisionDetection;
 class debpCollider;
 class debpGhostObject;
-class decShapeList;
 class btConvexShape;
 class btGhostObject;
 
@@ -103,8 +103,8 @@ public:
 	
 	/** \brief Add a shape from a decShape. */
 	void AddShape(decShape &shape, const decVector &scale);
-	/** \brief Adds all shapes from a decShapeList. */
-	void AddShapes(const decShapeList &list, const decVector &scale);
+	/** \brief Adds all shapes from a decShape::List. */
+	void AddShapes(const decShape::List &list, const decVector &scale);
 	/** \brief Remove all shapes. */
 	void RemoveAllShapes();
 	

@@ -41,7 +41,7 @@
 ////////////////////////////
 
 gdeUOCEnvMapProbeSetShapeInfluence::gdeUOCEnvMapProbeSetShapeInfluence(gdeObjectClass *objectClass,
-gdeOCEnvMapProbe *envMapProbe, const decShapeList &newValue) :
+gdeOCEnvMapProbe *envMapProbe, const decShape::List &newValue) :
 
 pEnvMapProbe(nullptr)
 {

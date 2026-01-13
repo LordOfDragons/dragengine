@@ -44,7 +44,6 @@
 
 deEnvMapProbe::deEnvMapProbe(deEnvMapProbeManager *manager) : deResource(manager){
 	pScaling.Set(1.0f, 1.0f, 1.0f);
-	pShapeReflection = nullptr;
 	pInfluenceBorderSize = 0.1f;
 	pInfluencePriority = 0;
 	
@@ -61,10 +60,6 @@ deEnvMapProbe::~deEnvMapProbe(){
 	if(pPeerGraphic){
 		delete pPeerGraphic;
 		pPeerGraphic = nullptr;
-	}
-	
-	if(pShapeReflection){
-		delete pShapeReflection;
 	}
 }
 
@@ -113,16 +108,15 @@ void deEnvMapProbe::NotifyShapeListInfluenceChanged(){
 
 
 
-void deEnvMapProbe::SetShapeReflection(decShape *shape){
-	if(shape != pShapeReflection){
-		if(pShapeReflection){
-			delete pShapeReflection;
-		}
+void deEnvMapProbe::SetShapeReflection(const decShape *shape){
+	if(shape){
+		pShapeReflection = shape->Copy();
 		
-		pShapeReflection = shape;
-		
-		NotifyShapeReflectionChanged();
+	}else{
+		pShapeReflection.Clear();
 	}
+	
+	NotifyShapeReflectionChanged();
 }
 
 void deEnvMapProbe::NotifyShapeReflectionChanged(){

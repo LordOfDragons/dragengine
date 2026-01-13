@@ -841,7 +841,6 @@ void reRigConstraint::pUpdateDDJointError(){
 		decVector currentLocation, correctLocation;
 		decVector up(0.0, 1.0f, 0.0f);
 		decQuaternion orientation;
-		decShapeBox *box = nullptr;
 		
 		if(pRigBone){
 			currentLocation = pRigBone->GetPoseMatrix().ToMatrix() * pPosition;
@@ -883,17 +882,9 @@ void reRigConstraint::pUpdateDDJointError(){
 		
 		pDDSJointError->RemoveAllShapes();
 		
-		try{
-			box = new decShapeBox(decVector(0.001f, 0.001f, (correctLocation - currentLocation).Length() * 0.5f),
-				(currentLocation + correctLocation) * 0.5f, orientation);
-			
-			pDDSJointError->AddShape(box);
-			
-		}catch(const deException &){
-			if(box){
-				delete box;
-			}
-		}
+		pDDSJointError->AddShape(decShapeBox::Ref::New(
+			decVector(0.001f, 0.001f, (correctLocation - currentLocation).Length() * 0.5f),
+			(currentLocation + correctLocation) * 0.5f, orientation));
 	}
 }
 
@@ -903,7 +894,6 @@ void reRigConstraint::pUpdateColliderShape(){
 		decVector up(0.0, 1.0f, 0.0f);
 		decVector arrowStart, arrowEnd;
 		decQuaternion orientation;
-		decShape *shape = nullptr;
 		float arrowLen;
 		
 		if(pRigBone){
@@ -942,24 +932,15 @@ void reRigConstraint::pUpdateColliderShape(){
 		pCollider->SetOrientation(orientation);
 		pCollider->SetEnabled(IsVisible());
 		
-		decShapeList shapeList;
+		decShape::List shapeList;
 		
 		arrowLen = (arrowEnd - arrowStart).Length();
 		
-		try{
-			if(arrowLen > 0.001f){
-				shape = new decShapeBox(decVector(0.025f, 0.025f, arrowLen * 0.5f + 0.025f));
-			
-			}else{
-				shape = new decShapeSphere(0.04f);
-			}
-			
-			shapeList.Add(shape);
-			
-		}catch(const deException &){
-			if(shape){
-				delete shape;
-			}
+		if(arrowLen > 0.001f){
+			shapeList.Add(decShapeBox::Ref::New(decVector(0.025f, 0.025f, arrowLen * 0.5f + 0.025f)));
+		
+		}else{
+			shapeList.Add(decShapeSphere::Ref::New(0.04f));
 		}
 		
 		pCollider->SetShapes(shapeList);

@@ -36,7 +36,6 @@
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decDiskFileReader.h>
 #include <dragengine/common/file/decDiskFileWriter.h>
-#include <dragengine/filesystem/dePatternList.h>
 
 
 

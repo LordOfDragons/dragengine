@@ -66,7 +66,7 @@ public:
 	void Scale(float scale) override;
 	
 	/** Creates shape. */
-	decShape *CreateShape() override;
+	decShape::Ref CreateShape() override;
 	/*@}*/
 };
 

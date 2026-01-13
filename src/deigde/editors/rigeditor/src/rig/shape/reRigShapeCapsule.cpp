@@ -100,7 +100,7 @@ void reRigShapeCapsule::Scale(float scale){
 	pBottomRadius *= scale;
 }
 
-decShape *reRigShapeCapsule::CreateShape(){
-	return new decShapeCapsule(pHalfHeight, pTopRadius, pBottomRadius,
+decShape::Ref reRigShapeCapsule::CreateShape(){
+	return decShapeCapsule::Ref::New(pHalfHeight, pTopRadius, pBottomRadius,
 		GetPosition(), decQuaternion::CreateFromEuler(GetOrientation() * DEG2RAD));
 }

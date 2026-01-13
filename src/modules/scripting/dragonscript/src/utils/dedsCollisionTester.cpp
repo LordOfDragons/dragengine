@@ -119,7 +119,7 @@ void dedsCollisionTester::SetCollisionRay(){
 	pCollider = nullptr;
 }
 
-void dedsCollisionTester::SetCollisionShape(const decShapeList &shapeList){
+void dedsCollisionTester::SetCollisionShape(const decShape::List &shapeList){
 	pCollider = nullptr;
 	
 	if(shapeList.GetCount() > 0){

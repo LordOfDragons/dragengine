@@ -22,14 +22,10 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "debpShapeHackBox.h"
 #include "../dePhysicsBullet.h"
 
 #include <dragengine/common/shape/decShapeBox.h>
-
 
 
 // Class debpShapeHackBox
@@ -38,10 +34,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpShapeHackBox::debpShapeHackBox(decShapeBox *shape) :
-debpShapeBox(shape){
-}
-
-debpShapeHackBox::~debpShapeHackBox(){
-	delete GetShapeBox();
+debpShapeHackBox::debpShapeHackBox(decShapeBox::Ref &&shape) :
+debpShapeBox(shape),
+pHackBox(std::move(shape)){
 }

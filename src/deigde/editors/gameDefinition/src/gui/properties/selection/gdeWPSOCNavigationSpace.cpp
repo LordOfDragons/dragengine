@@ -308,7 +308,7 @@ public:
 			return {};
 		}
 		
-		decShapeList shapeList;
+		decShape::List shapeList;
 		try{
 			codec.DecodeShapeList(encoded, shapeList);
 			

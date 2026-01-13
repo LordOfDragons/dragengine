@@ -26,6 +26,7 @@
 #define _DETOBJECTREFERENCE_H_
 
 #include <type_traits>
+#include <utility>
 
 #include "common/exceptions_reduced.h"
 
@@ -177,7 +178,7 @@ public:
 	 */
 	template<typename... A> static deTObjectReference New(A&&... args){
 		deTObjectReference reference;
-		reference.pObject = new T(static_cast<A>(args)...);
+		reference.pObject = new T(std::forward<A>(args)...);
 		return reference;
 	}
 	

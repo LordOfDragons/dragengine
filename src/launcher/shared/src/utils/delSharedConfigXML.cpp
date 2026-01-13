@@ -29,9 +29,7 @@
 #include "delSharedConfigXML.h"
 #include "../game/profile/delGameProfile.h"
 #include "../game/profile/delGPModule.h"
-#include "../game/profile/delGPMParameter.h"
 #include "../game/profile/delGPDisableModuleVersion.h"
-#include "../game/profile/delGPDisableModuleVersionList.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileReader.h>
@@ -143,23 +141,18 @@ void delSharedConfigXML::WriteProfileSystems(decXmlWriter &writer, const delGame
 }
 
 void delSharedConfigXML::WriteProfileDisableModuleVersions(decXmlWriter &writer, const delGameProfile &profile){
-	const delGPDisableModuleVersionList &list = profile.GetDisableModuleVersions();
-	const int count = list.GetCount();
-	int i;
-	
-	if(count == 0){
+	if(profile.GetDisableModuleVersions().IsEmpty()){
 		return;
 	}
 	
 	writer.WriteOpeningTag("disableModuleVersions", false, true);
 	
-	for(i=0; i<count; i++){
-		const delGPDisableModuleVersion &version = *list.GetAt(i);
+	profile.GetDisableModuleVersions().Visit([&](const delGPDisableModuleVersion &version){
 		writer.WriteOpeningTagStart("disableModuleVersion");
 		writer.WriteAttributeString("name", version.GetName());
 		writer.WriteAttributeString("version", version.GetVersion());
 		writer.WriteOpeningTagEnd(true);
-	}
+	});
 	
 	writer.WriteClosingTag("disableModuleVersions", true);
 }
@@ -192,20 +185,15 @@ void delSharedConfigXML::WriteProfileModule(decXmlWriter &writer, const delGPMod
 }
 
 void delSharedConfigXML::WriteProfileModuleParameters(decXmlWriter &writer, const delGPModule &module){
-	const delGPMParameterList &parametersList = module.GetParameters();
-	int i, count = parametersList.GetCount();
-	
 	writer.WriteOpeningTag("parameters", false, true);
 	
-	for(i=0; i<count; i++){
-		const delGPMParameter &parameters = *parametersList.GetAt (i);
-		
+	module.GetParameters().Visit([&](const decString &name, const decString &value){
 		writer.WriteOpeningTagStart("parameter");
-		writer.WriteAttributeString("name", parameters.GetName());
+		writer.WriteAttributeString("name", name);
 		writer.WriteOpeningTagEnd(false, false);
-		writer.WriteTextString(parameters.GetValue());
+		writer.WriteTextString(value);
 		writer.WriteClosingTag("parameter", false);
-	}
+	});
 	
 	writer.WriteClosingTag("parameters", true);
 }
@@ -336,8 +324,8 @@ void delSharedConfigXML::ReadProfileDisableModuleVersions(const decXmlElementTag
 		}
 		
 		if(tag->GetName() == "disableModuleVersion"){
-			profile.GetDisableModuleVersions().Add(delGPDisableModuleVersion::Ref::New(GetAttributeString(*tag, "name"),
-					GetAttributeString(*tag, "version")));
+			profile.GetDisableModuleVersions().Add(delGPDisableModuleVersion(
+				GetAttributeString(*tag, "name"), GetAttributeString(*tag, "version")));
 		}
 	}
 }
@@ -379,7 +367,6 @@ void delSharedConfigXML::ReadProfileModule(const decXmlElementTag &root, delGame
 }
 
 void delSharedConfigXML::ReadProfileModuleParameters(const decXmlElementTag &root, delGPModule &module){
-	delGPMParameterList &parametersList = module.GetParameters();
 	const int count = root.GetElementCount();
 	int i;
 	
@@ -390,7 +377,7 @@ void delSharedConfigXML::ReadProfileModuleParameters(const decXmlElementTag &roo
 		}
 		
 		if(tag->GetName() == "parameter"){
-			parametersList.Add (delGPMParameter::Ref::New(GetAttributeString(*tag, "name"), GetCDataString(*tag)));
+			module.GetParameters().SetAt(GetAttributeString(*tag, "name"), GetCDataString(*tag));
 		}
 	}
 }

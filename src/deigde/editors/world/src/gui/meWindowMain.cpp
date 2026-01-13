@@ -112,7 +112,7 @@
 #include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/exceptions.h>
-#include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/shape/decShape.h>
 #include <dragengine/common/shape/decShapeSphere.h>
 #include <dragengine/common/shape/decShapeBox.h>
 #include <dragengine/common/shape/decShapeCylinder.h>
@@ -1346,9 +1346,8 @@ public:
 		meObjectShapeSelection &selection = world->GetSelectionObjectShape();
 		igdeUndo::Ref undo;
 		
-		decShape * const shape = CreateShape();
+		decShape::Ref shape = CreateShape();
 		undo = meUObjectShapeAdd::Ref::New(object, property, *shape);
-		delete shape;
 		
 		world->GetUndoSystem()->Add(undo);
 		
@@ -1359,7 +1358,7 @@ public:
 		return {};
 	}
 	
-	virtual decShape *CreateShape() = 0;
+	virtual decShape::Ref CreateShape() = 0;
 };
 
 class cActionObjectShapeAddSphere : public cActionObjectShapeAdd{
@@ -1368,8 +1367,8 @@ public:
 	cActionObjectShapeAddSphere(meWindowMain &window) : cActionObjectShapeAdd(window,
 		"Add Sphere Shape", nullptr, "Add sphere shape", deInputEvent::ekcS){}
 	
-	decShape *CreateShape() override{
-		return new decShapeSphere(0.5f);
+	decShape::Ref CreateShape() override{
+		return decShapeSphere::Ref::New(0.5f);
 	}
 };
 
@@ -1379,8 +1378,8 @@ public:
 	cActionObjectShapeAddBox(meWindowMain &window) : cActionObjectShapeAdd(window,
 		"Add Box Shape", nullptr, "Add box shape", deInputEvent::ekcB){}
 	
-	decShape *CreateShape() override{
-		return new decShapeBox(decVector(0.5f, 0.5f, 0.5f));
+	decShape::Ref CreateShape() override{
+		return decShapeBox::Ref::New(decVector(0.5f, 0.5f, 0.5f));
 	}
 };
 
@@ -1390,8 +1389,8 @@ public:
 	cActionObjectShapeAddCylinder(meWindowMain &window) : cActionObjectShapeAdd(window,
 		"Add Cylinder Shape", nullptr, "Add cylinder shape", deInputEvent::ekcC){}
 	
-	decShape *CreateShape() override{
-		return new decShapeCylinder(0.5f, 0.25f);
+	decShape::Ref CreateShape() override{
+		return decShapeCylinder::Ref::New(0.5f, 0.25f);
 	}
 };
 
@@ -1401,8 +1400,8 @@ public:
 	cActionObjectShapeAddCapsule(meWindowMain &window) : cActionObjectShapeAdd(window,
 		"Add Capsule Shape", nullptr, "Add capsule shape", deInputEvent::ekcP){}
 	
-	decShape *CreateShape() override{
-		return new decShapeCapsule(0.5f, 0.25f, 0.25f);
+	decShape::Ref CreateShape() override{
+		return decShapeCapsule::Ref::New(0.5f, 0.25f, 0.25f);
 	}
 };
 

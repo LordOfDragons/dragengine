@@ -32,7 +32,6 @@
 #include "../delLauncher.h"
 #include "../game/profile/delGPModule.h"
 #include "../game/profile/delGPModuleList.h"
-#include "../game/profile/delGPMParameter.h"
 
 #if defined OS_ANDROID
 #	include <dragengine/app/deOSAndroid.h>
@@ -798,7 +797,7 @@ const char *gameObject, delGPModuleList *collectChangedParams){
 					collectChangedParams->Add(gpmodule);
 				}
 				
-				gpmodule->GetParameters().Add(delGPMParameter::Ref::New(name, value));
+				gpmodule->GetParameters().SetAt(name, value);
 			}
 		}
 	}
@@ -1156,7 +1155,7 @@ void delEngineInstanceDirect::RunSingleFrameUpdate(){
 						pGameCollectChangedParams->Add(gpmodule);
 					}
 					
-					gpmodule->GetParameters().Add(delGPMParameter::Ref::New(name, value));
+					gpmodule->GetParameters().SetAt(name, value);
 				}
 			}
 			

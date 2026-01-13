@@ -26,7 +26,7 @@
 #define _DETOUCHSENSOR_H_
 
 #include "../deResource.h"
-#include "../../common/shape/decShapeList.h"
+#include "../../common/shape/decShape.h"
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decCollisionFilter.h"
 #include "../../common/collection/decTOrderedSet.h"
@@ -79,7 +79,7 @@ private:
 	bool pTrackEnterLeave;
 	bool pEnabled;
 	
-	decShapeList pShape;
+	decShape::List pShape;
 	
 	deBasePhysicsTouchSensor *pPeerPhysics;
 	deBaseScriptingTouchSensor *pPeerScripting;
@@ -145,10 +145,10 @@ public:
 	void SetEnabled(bool enabled);
 	
 	/** \brief Shape. */
-	inline const decShapeList &GetShape() const{ return pShape; }
+	inline const decShape::List &GetShape() const{ return pShape; }
 	
 	/** \brief Set shape. */
-	void SetShape(const decShapeList &shape);
+	void SetShape(const decShape::List &shape);
 	
 	
 	

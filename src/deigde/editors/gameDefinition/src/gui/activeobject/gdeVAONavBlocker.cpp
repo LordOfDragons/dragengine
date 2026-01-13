@@ -133,7 +133,7 @@ void gdeVAONavBlocker::pCreateDebugDrawer(){
 void gdeVAONavBlocker::pBuildDDSBlocker(){
 	pDDSBlocker->RemoveAllShapes();
 	
-	const decShapeList &blockerShape = pOCNavBlocker->GetShapeList();
+	const decShape::List &blockerShape = pOCNavBlocker->GetShapeList();
 	if(blockerShape.GetCount() == 0){
 		return;
 	}

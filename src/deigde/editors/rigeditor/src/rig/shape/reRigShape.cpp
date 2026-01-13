@@ -272,34 +272,14 @@ void reRigShape::pUpdateShapes(){
 	}
 	
 	// debug drawer shape
-	decShape *shape = nullptr;
 	pDDSShape->RemoveAllShapes();
 	
-	try{
-		shape = CreateShape();
-		pDDSShape->AddShape(shape);
-		
-	}catch(const deException &){
-		if(shape){
-			delete shape;
-		}
-		throw;
-	}
+	pDDSShape->AddShape(CreateShape());
 	
 	// collider
-	shape = nullptr;
-	decShapeList shapeList;
+	decShape::List shapeList;
 	
-	try{
-		shape = CreateShape();
-		shapeList.Add(shape);
-		
-	}catch(const deException &){
-		if(shape){
-			delete shape;
-		}
-		throw;
-	}
+	shapeList.Add(CreateShape());
 	
 	pCollider->SetShapes(shapeList);
 	

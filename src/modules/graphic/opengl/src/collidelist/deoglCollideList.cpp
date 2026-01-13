@@ -572,7 +572,7 @@ const deoglCollideListPropField &deoglCollideList::GetPropFieldAt(int index) con
 deoglCollideListPropField &deoglCollideList::AddPropField(deoglRPropField *propField){
 	DEASSERT_NOTNULL(propField)
 	
-	pPropFields.Add({propField});
+	pPropFields.Add(deoglCollideListPropField(propField));
 	return pPropFields.Last();
 }
 
@@ -605,7 +605,7 @@ void deoglCollideList::AddPropField(deoglRPropField *propField, deoglDCollisionV
 				clpropfield = &AddPropField(propField);
 			}
 			if(!cltype){
-				cltype = clpropfield->AddType(&type);
+				cltype = &clpropfield->AddType(&type);
 			}
 			cltype->AddCluster(&cluster);
 		}

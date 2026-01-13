@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-
 #include "decShapeCapsule.h"
 #include "decShapeVisitor.h"
 #include "../exceptions.h"
@@ -110,9 +108,6 @@ const decVector2 &bottomAxisScaling, const decVector &position, const decQuatern
 	SetBottomAxisScaling(bottomAxisScaling);
 }
 
-decShapeCapsule::~decShapeCapsule(){
-}
-
 
 
 // Management
@@ -147,8 +142,8 @@ void decShapeCapsule::SetBottomAxisScaling(const decVector2 &axisScaling){
 
 
 
-decShape *decShapeCapsule::Copy() const{
-	return new decShapeCapsule(pHalfHeight, pTopRadius, pBottomRadius,
+decShape::Ref decShapeCapsule::Copy() const{
+	return Ref::New(pHalfHeight, pTopRadius, pBottomRadius,
 		pTopAxisScaling, pBottomAxisScaling, GetPosition(), GetOrientation());
 }
 

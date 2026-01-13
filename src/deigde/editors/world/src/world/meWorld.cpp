@@ -306,25 +306,14 @@ void meWorld::InitDelegates(){
 
 void meWorld::CollisionTestBox(const decDVector &position, const decQuaternion &orientation,
 const decVector &halfExtends, deBaseScriptingCollider *listener, const decCollisionFilter &filter){
-	decShapeBox *box = nullptr;
-	decShapeList shapeList;
+	decShape::List shapeList;
 	
 	pEngColCollider->SetCollisionFilter(filter);
 	
 	pEngColCollider->SetPosition(position);
 	pEngColCollider->SetOrientation(orientation);
 	
-	try{
-		box = new decShapeBox(halfExtends);
-		shapeList.Add(box);
-		box = nullptr;
-		
-	}catch(const deException &){
-		if(box){
-			delete box;
-		}
-		throw;
-	}
+	shapeList.Add(decShapeBox::Ref::New(halfExtends));
 	
 	pEngColCollider->SetShapes(shapeList);
 	

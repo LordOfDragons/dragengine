@@ -1081,7 +1081,7 @@ void igdeXMLGameDefinition::pParseClassForceField(const decXmlElementTag &root, 
 			field->SetBoneName(GetCDataString(*tag));
 			
 		}else if(tagName == "influenceArea"){
-			decShapeList list;
+			decShape::List list;
 			codec.DecodeShapeList(GetCDataString(*tag), list);
 			field->SetInfluenceArea(list);
 			
@@ -1141,7 +1141,7 @@ void igdeXMLGameDefinition::pParseClassForceField(const decXmlElementTag &root, 
 			field->SetFluctuationForce(GetCDataFloat(*tag));
 			
 		}else if(tagName == "shape"){
-			decShapeList list;
+			decShape::List list;
 			codec.DecodeShapeList(GetCDataString(*tag), list);
 			field->SetShape(list);
 			
@@ -1218,7 +1218,7 @@ void igdeXMLGameDefinition::pParseClassEnvMapProbe(const decXmlElementTag &root,
 	const igdeGDCEnvMapProbe::Ref envMapProbe(igdeGDCEnvMapProbe::Ref::New());
 	const int elementCount = root.GetElementCount();
 	igdeCodecPropertyString codec;
-	decShapeList shapeList;
+	decShape::List shapeList;
 	const char *value;
 	int e;
 	
@@ -1417,7 +1417,7 @@ void igdeXMLGameDefinition::pParseClassSpeaker(const decXmlElementTag &root, igd
 void igdeXMLGameDefinition::pParseClassNavigationSpace(const decXmlElementTag &root, igdeGDClass &gdclass){
 	const igdeGDCNavigationSpace::Ref gdcNavSpace(igdeGDCNavigationSpace::Ref::New());
 	igdeCodecPropertyString codec;
-	decShapeList shapeList;
+	decShape::List shapeList;
 	int i;
 	
 	for(i=0; i<root.GetElementCount(); i++){
@@ -1518,7 +1518,7 @@ void igdeXMLGameDefinition::pParseClassNavigationSpace(const decXmlElementTag &r
 void igdeXMLGameDefinition::pParseClassNavigationBlocker(const decXmlElementTag &root, igdeGDClass &gdclass){
 	const igdeGDCNavigationBlocker::Ref gdcNavBlocker(igdeGDCNavigationBlocker::Ref::New());
 	igdeCodecPropertyString codec;
-	decShapeList shapeList;
+	decShape::List shapeList;
 	int i;
 	
 	for(i=0; i<root.GetElementCount(); i++){

@@ -41,7 +41,7 @@
 ////////////////////////////
 
 gdeUOCNavSpaceSetBlockerShapeList::gdeUOCNavSpaceSetBlockerShapeList(gdeObjectClass *objectClass,
-gdeOCNavigationSpace *navspace, const decShapeList &newValue) :
+gdeOCNavigationSpace *navspace, const decShape::List &newValue) :
 pObjectClass(nullptr)
 {
 	if(!objectClass || !navspace){

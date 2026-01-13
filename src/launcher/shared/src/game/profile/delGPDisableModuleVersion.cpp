@@ -31,6 +31,27 @@
 #include <dragengine/common/exceptions.h>
 
 
+// Class delGPDisableModuleVersion::List
+//////////////////////////////////////////
+
+const delGPDisableModuleVersion *delGPDisableModuleVersion::List::GetWith(
+const char *name, const char *version) const{
+	const delGPDisableModuleVersion *found;
+	return Find([&](const delGPDisableModuleVersion &m){
+		return m.GetName() == name && m.GetVersion() == version;
+	}, found) ? found : nullptr;
+}
+
+bool delGPDisableModuleVersion::List::HasWith(const char *name, const char *version) const{
+	return GetWith(name, version) != nullptr;
+}
+
+int delGPDisableModuleVersion::List::IndexOfWith(const char *name, const char *version) const{
+	return IndexOfMatching([&](const delGPDisableModuleVersion &m){
+		return m.GetName() == name && m.GetVersion() == version;
+	});
+}
+
 
 // Class delGPDisableModuleVersion
 ////////////////////////////////////
@@ -49,6 +70,19 @@ pVersion(version){
 delGPDisableModuleVersion::delGPDisableModuleVersion(const delGPDisableModuleVersion &copy) :
 pName(copy.pName),
 pVersion(copy.pVersion){
+}
+
+delGPDisableModuleVersion::delGPDisableModuleVersion(delGPDisableModuleVersion &&other) noexcept :
+pName(std::move(other.pName)),
+pVersion(std::move(other.pVersion)){
+}
+
+delGPDisableModuleVersion &delGPDisableModuleVersion::operator=(delGPDisableModuleVersion &&other) noexcept{
+	if(this != &other){
+		pName = std::move(other.pName);
+		pVersion = std::move(other.pVersion);
+	}
+	return *this;
 }
 
 delGPDisableModuleVersion::~delGPDisableModuleVersion(){

@@ -227,7 +227,7 @@ deClassEnvMapProbe::nfGetShapeReflection::nfGetShapeReflection(const sInitData &
 void deClassEnvMapProbe::nfGetShapeReflection::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deEnvMapProbe &envMapProbe = dedsGetNativeData<sEmpNatDat>(p_GetNativeData(myself)).envMapProbe;
 	const deScriptingDragonScript &ds = *((static_cast<deClassEnvMapProbe*>(GetOwnerClass()))->GetDS());
-	decShapeList shapeList;
+	decShape::List shapeList;
 	
 	if(envMapProbe.GetShapeReflection()){
 		shapeList.Add(envMapProbe.GetShapeReflection()->Copy());
@@ -247,10 +247,10 @@ void deClassEnvMapProbe::nfSetShapeReflection::RunFunction(dsRunTime *rt, dsValu
 	dsRealObject * const objShape = rt->GetValue(0)->GetRealObject();
 	
 	if(objShape){
-		const decShapeList &shapeList = ds.GetClassShapeList()->GetShapeList(objShape);
+		const decShape::List &shapeList = ds.GetClassShapeList()->GetShapeList(objShape);
 		
-		if(shapeList.GetCount() > 0){
-			envMapProbe.SetShapeReflection(shapeList.GetAt(0)->Copy());
+		if(shapeList.IsNotEmpty()){
+			envMapProbe.SetShapeReflection(shapeList.First()->Copy());
 			
 		}else{
 			envMapProbe.SetShapeReflection(nullptr);

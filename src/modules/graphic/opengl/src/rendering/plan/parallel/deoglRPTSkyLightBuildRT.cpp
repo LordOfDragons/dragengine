@@ -204,7 +204,7 @@ void deoglRPTSkyLightBuildRT::pFilter(int layerIndex){
 		
 		deoglCollideListPropField *addPropField = nullptr;
 		for(j=0; j<typeCount; j++){
-			const deoglCollideListPropFieldType &type = *propfield.GetTypeAt(j);
+			const deoglCollideListPropFieldType &type = propfield.GetTypeAt(j);
 			const int clusterCount = type.GetClusterCount();
 			
 			deoglCollideListPropFieldType *addType = nullptr;
@@ -215,7 +215,7 @@ void deoglRPTSkyLightBuildRT::pFilter(int layerIndex){
 						addPropField = &pTempCollideList.AddPropField(propfield.GetPropField());
 					}
 					if(!addType){
-						addType = addPropField->AddType(type.GetType());
+						addType = &addPropField->AddType(type.GetType());
 					}
 					addType->AddCluster(cluster.GetCluster());
 				}

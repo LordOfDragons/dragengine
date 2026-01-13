@@ -38,9 +38,16 @@
  * points after the shape has been added to a collider.
  */
 class DE_DLL_EXPORT decShapeHull : public decShape{
+public:
+	/** \brief Reference. */
+	using Ref = deTUniqueReference<decShapeHull>;
+	
+	/** \brief List of points. */
+	using PointList = decTList<decVector>;
+	
+	
 private:
-	decVector *pPoints;
-	int pPointCount;
+	PointList pPoints;
 	
 	
 	
@@ -56,8 +63,9 @@ public:
 	/** \brief Create hull shape. */
 	decShapeHull(const decVector &position, const decQuaternion &orientation);
 	
-	/** \brief Clean up hull shape. */
-	~decShapeHull() override;
+	/** \brief Create hull shape. */
+	decShapeHull(const decVector &position, const decQuaternion &orientation, const PointList &points);
+	decShapeHull(const decVector &position, const decQuaternion &orientation, PointList &&points);
 	/*@}*/
 	
 	
@@ -65,10 +73,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Point arrays. */
-	inline decVector *GetPoints() const{ return pPoints; }
-	
-	/** \brief Number of points. */
-	inline int GetPointCount() const{ return pPointCount; }
+	inline const PointList &GetPoints() const{ return pPoints; }
 	
 	/**
 	 * \brief Set number of points.
@@ -81,12 +86,6 @@ public:
 	void SetPointCount(int count);
 	
 	/**
-	 * \brief Point at index.
-	 * \throws deeOutOfBoundary \em count is less than 0 or greater than or equal to GetPointCount().
-	 */
-	const decVector &GetPointAt(int index) const;
-	
-	/**
 	 * \brief Set point at index.
 	 * \throws deeOutOfBoundary \em count is less than 0 or greater than or equal to GetPointCount().
 	 */
@@ -95,7 +94,7 @@ public:
 	
 	
 	/** \brief Create copy of shape. */
-	decShape *Copy() const override;
+	decShape::Ref Copy() const override;
 	/*@}*/
 	
 	

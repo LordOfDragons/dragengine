@@ -36,7 +36,6 @@
 #include <delauncher/engine/modules/delEngineModule.h>
 #include <delauncher/game/fileformat/delFileFormat.h>
 #include <delauncher/game/profile/delGPModule.h>
-#include <delauncher/game/profile/delGPMParameter.h>
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/systems/modules/deLoadableModule.h>
@@ -116,14 +115,7 @@ const std::string &parameter, const std::string &value){
 		pModuleParameters->Add(gpmodule);
 	}
 	
-	delGPMParameter::Ref gpparam(gpmodule->GetParameters().GetNamed(parameter.c_str()));
-	if(gpparam){
-		gpparam->SetValue(value.c_str());
-		
-	}else{
-		gpparam = delGPMParameter::Ref::New(parameter.c_str(), value.c_str());
-		gpmodule->GetParameters().Add(gpparam);
-	}
+	gpmodule->GetParameters().SetAt(parameter.c_str(), value.c_str());
 }
 
 

@@ -94,7 +94,7 @@ void igdeGDCForceField::SetBoneName(const char *boneName){
 	pBoneName = boneName;
 }
 
-void igdeGDCForceField::SetInfluenceArea(const decShapeList &area){
+void igdeGDCForceField::SetInfluenceArea(const decShape::List &area){
 	pInfluenceArea = area;
 }
 
@@ -130,7 +130,7 @@ void igdeGDCForceField::SetFluctuationForce(float fluctuation){
 	pFluctuationForce = fluctuation;
 }
 
-void igdeGDCForceField::SetShape(const decShapeList &shape){
+void igdeGDCForceField::SetShape(const decShape::List &shape){
 	pShape = shape;
 }
 

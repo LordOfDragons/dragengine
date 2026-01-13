@@ -383,7 +383,8 @@ void deoalEnvironment::DebugUpdateDirect(deDebugDrawer &debugDrawer, const deoal
 			ddsface->SetNormal(decVector(0.0f, 0.0f, 1.0f));
 			ddshape->AddFace(ddsface);
 			ddsface = nullptr;
-			ddshape->GetShapeList().Add(new decShapeSphere(sphereRadius, lastPosition - pPosition));
+			
+			ddshape->GetShapeList().Add(decShapeSphere::Ref::New(sphereRadius, lastPosition - pPosition));
 			debugDrawer.AddShape(ddshape);
 			ddshape = nullptr;
 			lastPosition = hitElement.GetPoint();
@@ -397,6 +398,7 @@ void deoalEnvironment::DebugUpdateDirect(deDebugDrawer &debugDrawer, const deoal
 			ddshape->SetFillColor(decColor(1.0f, 0.0f, 0.0f));
 			ddshape->SetEdgeColor(decColor(1.0f, 0.0f, 0.0f));
 		}
+		
 		ddsface = new deDebugDrawerShapeFace;
 		ddsface->AddVertex(lastPosition - pPosition);
 		ddsface->AddVertex(microphone.GetPosition() - pPosition);
@@ -404,8 +406,8 @@ void deoalEnvironment::DebugUpdateDirect(deDebugDrawer &debugDrawer, const deoal
 		ddsface->SetNormal(decVector(0.0f, 0.0f, 1.0f));
 		ddshape->AddFace(ddsface);
 		ddsface = nullptr;
-		ddshape->GetShapeList().Add(new decShapeSphere(sphereRadius, lastPosition - pPosition));
-		ddshape->GetShapeList().Add(new decShapeSphere(sphereRadius, microphone.GetPosition() - pPosition));
+		ddshape->GetShapeList().Add(decShapeSphere::Ref::New(sphereRadius, lastPosition - pPosition));
+		ddshape->GetShapeList().Add(decShapeSphere::Ref::New(sphereRadius, microphone.GetPosition() - pPosition));
 		debugDrawer.AddShape(ddshape);
 		
 	}catch(const deException &){

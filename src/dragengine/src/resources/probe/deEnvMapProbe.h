@@ -28,7 +28,7 @@
 #include "../deResource.h"
 #include "../image/deImage.h"
 #include "../../common/math/decMath.h"
-#include "../../common/shape/decShapeList.h"
+#include "../../common/shape/decShape.h"
 #include "../../common/string/decString.h"
 #include "../../common/utils/decLayerMask.h"
 
@@ -67,9 +67,9 @@ private:
 	decQuaternion pOrientation;
 	decVector pScaling;
 	
-	decShapeList pShapeListInfluence;
-	decShape *pShapeReflection;
-	decShapeList pShapeListReflectionMask;
+	decShape::List pShapeListInfluence;
+	decShape::Ref pShapeReflection;
+	decShape::List pShapeListReflectionMask;
 	float pInfluenceBorderSize;
 	int pInfluencePriority;
 	
@@ -125,21 +125,21 @@ public:
 	void SetScaling(const decVector &scaling);
 	
 	/** \brief Influence shape list. */
-	inline decShapeList &GetShapeListInfluence(){ return pShapeListInfluence; }
-	inline const decShapeList &GetShapeListInfluence() const{ return pShapeListInfluence; }
+	inline decShape::List &GetShapeListInfluence(){ return pShapeListInfluence; }
+	inline const decShape::List &GetShapeListInfluence() const{ return pShapeListInfluence; }
 	
 	/** \brief Notifies the peers that the influence shape list changed. */
 	void NotifyShapeListInfluenceChanged();
 	
 	/** \brief Reflection shape or NULL if the environment map is global. */
-	inline decShape *GetShapeReflection() const{ return pShapeReflection; }
+	inline const decShape::Ref &GetShapeReflection() const{ return pShapeReflection; }
 	
 	/** \brief Set reflection shape or NULL if the environment map is global. */
-	void SetShapeReflection(decShape *shape);
+	void SetShapeReflection(const decShape *shape);
 	
 	/** \brief Reflection mask shape list. */
-	inline decShapeList &GetShapeListReflectionMask(){ return pShapeListReflectionMask; }
-	inline const decShapeList &GetShapeListReflectionMask() const{ return pShapeListReflectionMask; }
+	inline decShape::List &GetShapeListReflectionMask(){ return pShapeListReflectionMask; }
+	inline const decShape::List &GetShapeListReflectionMask() const{ return pShapeListReflectionMask; }
 	
 	/** \brief Notifies the peers that the reflection shape changed. */
 	void NotifyShapeReflectionChanged();

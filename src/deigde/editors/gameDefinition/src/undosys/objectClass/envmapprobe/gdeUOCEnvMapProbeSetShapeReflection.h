@@ -26,11 +26,12 @@
 #ifndef _GDEUOCENVMAPPROBESETSHAPEREFLECTION_H_
 #define _GDEUOCENVMAPPROBESETSHAPEREFLECTION_H_
 
+#include <dragengine/common/shape/decShape.h>
+
 #include <deigde/undo/igdeUndo.h>
 
 #include "../../../gamedef/objectClass/envmapprobe/gdeOCEnvMapProbe.h"
 #include "../../../gamedef/objectClass/gdeObjectClass.h"
-class decShape;
 
 
 
@@ -45,10 +46,7 @@ public:
 private:
 	gdeObjectClass::Ref pObjectClass;
 	gdeOCEnvMapProbe::Ref pEnvMapProbe;
-	
-	const decShape *pOldValue;
-	const decShape *pNewValue;
-	
+	decShape::Ref pOldValue, pNewValue;
 	
 	
 public:

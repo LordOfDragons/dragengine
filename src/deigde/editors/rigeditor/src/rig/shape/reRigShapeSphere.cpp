@@ -80,6 +80,6 @@ void reRigShapeSphere::Scale(float scale){
 	pRadius *= scale;
 }
 
-decShape *reRigShapeSphere::CreateShape(){
-	return new decShapeSphere(pRadius, GetPosition());
+decShape::Ref reRigShapeSphere::CreateShape(){
+	return decShapeSphere::Ref::New(pRadius, GetPosition());
 }

@@ -40,7 +40,7 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/shape/decShape.h>
-#include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/shape/decShape.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/resources/probe/deEnvMapProbe.h>
 #include <dragengine/resources/probe/deEnvMapProbeManager.h>
@@ -110,7 +110,6 @@ void igdeWOSOEnvMapProbe::pUpdateEnvMapProbe(){
 	}
 	
 	igdeCodecPropertyString codec;
-	decShapeList shapeList;
 	decString value;
 	
 	pEnvMapProbe->SetInfluencePriority(GetIntProperty(
@@ -131,13 +130,14 @@ void igdeWOSOEnvMapProbe::pUpdateEnvMapProbe(){
 	
 	// reflection shape
 	if(GetPropertyValue(pGDEnvMapProbe.GetPropertyName(igdeGDCEnvMapProbe::epReflectionShape), value)){
+		decShape::List shapeList;
 		codec.DecodeShapeList(value, shapeList);
 		
 		if(shapeList.GetCount() == 0){
 			pEnvMapProbe->SetShapeReflection(nullptr);
 			
 		}else{
-			pEnvMapProbe->SetShapeReflection(shapeList.GetAt(0)->Copy());
+			pEnvMapProbe->SetShapeReflection(shapeList.First()->Copy());
 		}
 		
 	}else{

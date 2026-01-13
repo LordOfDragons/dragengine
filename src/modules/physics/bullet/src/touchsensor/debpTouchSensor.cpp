@@ -606,7 +606,7 @@ deCollider *debpTouchSensor::GetColliderAt(int collider){
 
 
 void debpTouchSensor::ShapeChanged(){
-	const decShapeList &shapeList = pTouchSensor.GetShape();
+	const decShape::List &shapeList = pTouchSensor.GetShape();
 	const int count = shapeList.GetCount();
 	
 	pShape.RemoveAll();
@@ -1073,7 +1073,7 @@ void debpTouchSensor::pUpdateExtends(){
 }
 
 void debpTouchSensor::pCalculateBasicExtends(){
-	const decShapeList &list = pTouchSensor.GetShape();
+	const decShape::List &list = pTouchSensor.GetShape();
 	debpShapeGroupExtends shapeGroupExtends;
 	const int count = list.GetCount();
 	int i;

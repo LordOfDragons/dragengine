@@ -25,12 +25,13 @@
 #ifndef _DEOGLCOLLIDELISTHTSECTOR_H_
 #define _DEOGLCOLLIDELISTHTSECTOR_H_
 
+#include "deoglCollideListHTSCluster.h"
+
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglHTViewSector;
 class deoglOcclusionTest;
-class deoglCollideListHTSCluster;
 
 
 /**
@@ -40,8 +41,7 @@ class deoglCollideListHTSector{
 private:
 	deoglHTViewSector *pSector;
 	
-	decTList<deoglCollideListHTSCluster*> pClusters;
-	int pClusterCount;
+	decTList<deoglCollideListHTSCluster> pClusters;
 	
 	
 	
@@ -54,11 +54,12 @@ public:
 	deoglCollideListHTSector(deoglHTViewSector *sector);
 	
 	/** Copy. */
-	deoglCollideListHTSector(const deoglCollideListHTSector &sector) = default;
-	deoglCollideListHTSector& operator=(const deoglCollideListHTSector &sector) = default;
+	deoglCollideListHTSector(const deoglCollideListHTSector &sector) = delete;
+	deoglCollideListHTSector& operator=(const deoglCollideListHTSector &sector) = delete;
 	
-	/** Clean up height terrain sector. */
-	~deoglCollideListHTSector();
+	/** Move. */
+	deoglCollideListHTSector(deoglCollideListHTSector &&other) noexcept;
+	deoglCollideListHTSector& operator=(deoglCollideListHTSector &&other) noexcept;
 	/*@}*/
 	
 	
@@ -80,13 +81,14 @@ public:
 	void SetSector(deoglHTViewSector *sector);
 	
 	/** Count of clusters. */
-	inline int GetClusterCount() const{ return pClusterCount; }
+	inline int GetClusterCount() const{ return pClusters.GetCount(); }
 	
 	/** Cluster at index. */
-	deoglCollideListHTSCluster &GetClusterAt(int index) const;
+	deoglCollideListHTSCluster &GetClusterAt(int index);
+	const deoglCollideListHTSCluster &GetClusterAt(int index) const;
 	
 	/** Add cluster. */
-	deoglCollideListHTSCluster *AddCluster(const decPoint &coordinates);
+	deoglCollideListHTSCluster &AddCluster(const decPoint &coordinates);
 	
 	/** Remove all clusters. */
 	void RemoveAllClusters();

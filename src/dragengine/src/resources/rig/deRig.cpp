@@ -268,7 +268,7 @@ void deRig::SetRootBone(int rootBone){
 // Shapes
 ///////////
 
-void deRig::SetShapes(const decShapeList &shapes){
+void deRig::SetShapes(const decShape::List &shapes){
 	const int count = shapes.GetCount();
 	int i;
 	

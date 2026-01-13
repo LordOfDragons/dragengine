@@ -34,7 +34,6 @@ class meWorld;
 class meObject;
 class meObjectSnapPoint;
 class igdeGDCSnapPoint;
-class decShapeList;
 
 
 
@@ -92,7 +91,7 @@ public:
 	 * relative to the object center. Thus set the collider position and orientation to
 	 * match the object position and orientation.
 	 */
-	void CalcBoundingBoxShape(decShapeList &list);
+	void CalcBoundingBoxShape(decShape::List &list);
 	
 	
 	

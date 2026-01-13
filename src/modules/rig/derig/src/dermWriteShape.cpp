@@ -215,16 +215,13 @@ void dermWriteShape::VisitShapeHull(decShapeHull &hull){
 	pWriter.WriteAttributeFloat("z", rotation.z);
 	pWriter.WriteOpeningTagEnd(true);
 	
-	const int count = hull.GetPointCount();
-	int i;
-	for(i=0; i<count; i++){
-		const decVector &point = hull.GetPointAt(i);
+	hull.GetPoints().Visit([&](const decVector &point){
 		pWriter.WriteOpeningTagStart("point");
 		pWriter.WriteAttributeFloat("x", point.x);
 		pWriter.WriteAttributeFloat("y", point.y);
 		pWriter.WriteAttributeFloat("z", point.z);
 		pWriter.WriteOpeningTagEnd(true);
-	}
+	});
 	
 	if(!pProperty.IsEmpty()){
 		pWriter.WriteDataTagString("property", pProperty);

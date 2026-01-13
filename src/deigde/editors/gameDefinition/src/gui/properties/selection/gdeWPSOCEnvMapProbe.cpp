@@ -183,9 +183,10 @@ public:
 			return {};
 		}
 		
-		decShapeList shapeList;
 		try{
+			decShape::List shapeList;
 			codec.DecodeShapeList(encoded, shapeList);
+			return gdeUOCEnvMapProbeSetShapeInfluence::Ref::New(objectClass, envprobe, shapeList);
 			
 		}catch(const deException &){
 			igdeCommonDialogs::Error(pPanel.GetParentWindow(), "Invalid Input",
@@ -193,8 +194,6 @@ public:
 			textField.Focus();
 			return {};
 		}
-		
-		return gdeUOCEnvMapProbeSetShapeInfluence::Ref::New(objectClass, envprobe, shapeList);
 	}
 };
 
@@ -206,7 +205,7 @@ public:
 	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
 	gdeOCEnvMapProbe *envprobe){
 		igdeCodecPropertyString codec;
-		decShapeList shapeList;
+		decShape::List shapeList;
 		if(envprobe->GetShapeReflection()){
 			shapeList.Add(envprobe->GetShapeReflection()->Copy());
 		}
@@ -228,7 +227,7 @@ public:
 		}
 		
 		return gdeUOCEnvMapProbeSetShapeReflection::Ref::New(
-			objectClass, envprobe, shapeList.GetAt(0)->Copy());
+			objectClass, envprobe, shapeList.First());
 	}
 };
 
@@ -247,7 +246,7 @@ public:
 			return {};
 		}
 		
-		decShapeList shapeList;
+		decShape::List shapeList;
 		try{
 			codec.DecodeShapeList(encoded, shapeList);
 			
@@ -477,7 +476,7 @@ void gdeWPSOCEnvMapProbe::UpdateEnvMapProbe(){
 		codec.EncodeShapeList(envprobe->GetShapeListInfluence(), encoded);
 		pEditShapeInfluence->SetText(encoded);
 		
-		decShapeList shapeList;
+		decShape::List shapeList;
 		if(envprobe->GetShapeReflection()){
 			shapeList.Add(envprobe->GetShapeReflection()->Copy());
 		}

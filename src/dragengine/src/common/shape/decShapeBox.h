@@ -37,6 +37,11 @@
  * the box.
  */
 class DE_DLL_EXPORT decShapeBox : public decShape{
+public:
+	/** \brief Reference. */
+	using Ref = deTUniqueReference<decShapeBox>;
+	
+	
 private:
 	decVector pHalfExtends;
 	decVector2 pTapering;
@@ -66,9 +71,6 @@ public:
 	/** \brief Create tapered box shape. */
 	decShapeBox(const decVector &halfExtends, const decVector2 &tapering,
 		const decVector &position, const decQuaternion &orientation);
-	
-	/** \brief Clean up box shape. */
-	~decShapeBox() override;
 	/*@}*/
 	
 	
@@ -90,7 +92,7 @@ public:
 	
 	
 	/** \brief Create copy of shape. */
-	decShape *Copy() const override;
+	decShape::Ref Copy() const override;
 	/*@}*/
 	
 	

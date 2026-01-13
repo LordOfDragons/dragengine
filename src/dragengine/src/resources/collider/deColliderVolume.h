@@ -26,7 +26,7 @@
 #define _DECOLLIDERVOLUME_H_
 
 #include "deCollider.h"
-#include "../../common/shape/decShapeList.h"
+#include "../../common/shape/decShape.h"
 
 
 /**
@@ -48,7 +48,7 @@ public:
 	
 	
 private:
-	decShapeList pShapes;
+	decShape::List pShapes;
 	
 	
 	
@@ -74,10 +74,10 @@ public:
 	/** \name Shapes */
 	/*@{*/
 	/** \brief Shapes. */
-	inline const decShapeList &GetShapes() const{ return pShapes; }
+	inline const decShape::List &GetShapes() const{ return pShapes; }
 	
 	/** \brief Set shapes. */
-	void SetShapes(const decShapeList &shapes);
+	void SetShapes(const decShape::List &shapes);
 	/*@}*/
 	
 	

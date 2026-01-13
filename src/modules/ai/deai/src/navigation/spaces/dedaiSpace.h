@@ -60,7 +60,7 @@ private:
 	float pSnapDistance;
 	float pSnapAngle;
 	int pBlockingPriority;
-	decShapeList pBlockerShape;
+	decShape::List pBlockerShape;
 	
 	dedaiSpaceGrid *pGrid;
 	dedaiSpaceMesh *pMesh;
@@ -176,10 +176,10 @@ public:
 	void SetBlockingPriority(int priority);
 	
 	/** \brief Blocker shape. */
-	inline const decShapeList &GetBlockerShape() const{ return pBlockerShape; }
+	inline const decShape::List &GetBlockerShape() const{ return pBlockerShape; }
 	
 	/** \brief Set blocker shape. */
-	void SetBlockerShape(const decShapeList &shape);
+	void SetBlockerShape(const decShape::List &shape);
 	
 	
 	

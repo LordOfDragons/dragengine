@@ -45,7 +45,7 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
-#include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/shape/decShape.h>
 #include <dragengine/common/shape/decShapeBox.h>
 #include <dragengine/resources/collider/deColliderManager.h>
 #include <dragengine/resources/collider/deColliderVolume.h>
@@ -137,7 +137,7 @@ void meViewEditorMove::OnLeftMouseButtonPress(int x, int y, bool shift, bool con
 			});
 		});
 		
-		decShapeList shapeList;
+		decShape::List shapeList;
 		pCLSnapPoint->CalcBoundingBoxShape(shapeList);
 		pCLCollider.DynamicCast<deColliderVolume>()->SetShapes(shapeList);
 		

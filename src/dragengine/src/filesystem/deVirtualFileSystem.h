@@ -31,7 +31,6 @@
 #include "../common/file/decBaseFileWriter.h"
 
 class decPath;
-class dePatternList;
 class dePathList;
 class deFileSearchVisitor;
 

@@ -200,7 +200,7 @@ void gdeVAONavSpace::pBuildDDSSpace(){
 void gdeVAONavSpace::pBuildDDSBlocker(){
 	pDDSBlocker->RemoveAllShapes();
 	
-	decShapeList blockerShape;
+	decShape::List blockerShape;
 	PropertyShapeList(pOCNavSpace->GetPropertyName(gdeOCNavigationSpace::epBlockerShape),
 		blockerShape, pOCNavSpace->GetBlockerShapeList());
 	if(blockerShape.GetCount() == 0){

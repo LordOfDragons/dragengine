@@ -655,25 +655,14 @@ void meObject::UpdateDDSObjectShapes(){
 			return;
 		}
 		
-		decShapeList shapeList;
+		decShape::List shapeList;
 		codec.DecodeShapeList(value, shapeList);
 		
 		const int shapeCount = shapeList.GetCount();
-		decShape *shape = nullptr;
 		int i;
 		
-		try{
-			for(i=0; i<shapeCount; i++){
-				shape = shapeList.GetAt(i)->Copy();
-				pDDSObjectShapes->AddShape(shape);
-				shape = nullptr;
-			}
-			
-		}catch(const deException &){
-			if(shape){
-				delete shape;
-			}
-			throw;
+		for(i=0; i<shapeCount; i++){
+			pDDSObjectShapes->AddShape(shapeList.GetAt(i)->Copy());
 		}
 	});
 }
@@ -1739,7 +1728,7 @@ void meObject::pUpdateDDSNavSpaces(){
 			}
 		}
 		
-		void Blocker(const decShapeList &shapes){
+		void Blocker(const decShape::List &shapes){
 			igdeWDebugDrawerShape::Ref ddshape;
 			
 			if(count < ddShapes.GetCount()){
@@ -1849,18 +1838,9 @@ void meObject::pUpdateShapes(){
 	
 	// update collider shape
 	if(pColDetCollider){
-		decShapeBox *box = nullptr;
-		decShapeList shapeList;
+		decShape::List shapeList;
 		
-		try{
-			box = new decShapeBox(halfExtends, position);
-			shapeList.Add(box);
-			box = nullptr;
-			
-		}catch(const deException &){
-			if(box) delete box;
-			throw;
-		}
+		shapeList.Add(decShapeBox::Ref::New(halfExtends, position));
 		
 		pColDetCollider->SetShapes(shapeList);
 	}

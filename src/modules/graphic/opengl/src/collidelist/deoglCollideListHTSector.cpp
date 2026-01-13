@@ -35,7 +35,6 @@
 #include <dragengine/common/exceptions.h>
 
 
-
 // Class deoglCollideListHTSector
 ///////////////////////////////////
 
@@ -43,21 +42,32 @@
 ////////////////////////////
 
 deoglCollideListHTSector::deoglCollideListHTSector() :
-pSector(nullptr),
-pClusterCount(0){
+pSector(nullptr){
 }
 
 deoglCollideListHTSector::deoglCollideListHTSector(deoglHTViewSector *sector) :
-pSector(sector),
-pClusterCount(0){
+pSector(sector){
 }
 
-deoglCollideListHTSector::~deoglCollideListHTSector(){
-	pClusters.Visit([](deoglCollideListHTSCluster *cluster){
-		delete cluster;
-	});
+deoglCollideListHTSector::deoglCollideListHTSector(deoglCollideListHTSector &&other) noexcept :
+pSector(other.pSector),
+pClusters(std::move(other.pClusters))
+{
+	other.pSector = nullptr;
 }
 
+deoglCollideListHTSector& deoglCollideListHTSector::operator=(deoglCollideListHTSector &&other) noexcept{
+	if(this != &other){
+		pSector = other.pSector;
+		other.pSector = nullptr;
+		
+		pClusters.RemoveAll();
+		if(other.pClusters.IsNotEmpty()){
+			pClusters.Swap(other.pClusters);
+		}
+	}
+	return *this;
+}
 
 
 // Management
@@ -76,56 +86,31 @@ void deoglCollideListHTSector::SetSector(deoglHTViewSector *sector){
 void deoglCollideListHTSector::StartOcclusionTest(deoglOcclusionTest &occlusionTest,
 const decDVector &referencePosition){
 	const decVector offset(pSector->GetSector().CalcWorldPosition(referencePosition));
-	int i;
-	
-	for(i=0; i<pClusterCount; i++){
-		pClusters.GetAt(i)->StartOcclusionTest(occlusionTest, offset);
-	}
+	pClusters.Visit([&](deoglCollideListHTSCluster &cluster){
+		cluster.StartOcclusionTest(occlusionTest, offset);
+	});
 }
 
 
-
-deoglCollideListHTSCluster &deoglCollideListHTSector::GetClusterAt(int index) const{
-	return *pClusters.GetAt(index);
+deoglCollideListHTSCluster &deoglCollideListHTSector::GetClusterAt(int index){
+	return pClusters.GetAt(index);
 }
 
-deoglCollideListHTSCluster *deoglCollideListHTSector::AddCluster(const decPoint &coordinates){
-	deoglCollideListHTSCluster *cluster = nullptr;
-	
-	if(pClusterCount < pClusters.GetCount()){
-		cluster = pClusters.GetAt(pClusterCount);
-		
-	}else{
-		cluster = new deoglCollideListHTSCluster;
-		pClusters.Add(cluster);
-	}
-	
-	cluster->SetCluster(&pSector->GetClusterAt(coordinates));
-	pClusterCount++;
-	return cluster;
+const deoglCollideListHTSCluster &deoglCollideListHTSector::GetClusterAt(int index) const{
+	return pClusters.GetAt(index);
+}
+
+deoglCollideListHTSCluster &deoglCollideListHTSector::AddCluster(const decPoint &coordinates){
+	pClusters.Add(deoglCollideListHTSCluster(&pSector->GetClusterAt(coordinates)));
+	return pClusters.Last();
 }
 
 void deoglCollideListHTSector::RemoveAllClusters(){
-	while(pClusterCount > 0){
-		pClusters.GetAt(--pClusterCount)->Clear();
-	}
+	pClusters.RemoveAll();
 }
 
 void deoglCollideListHTSector::RemoveCulledClusters(){
-	int i, last = 0;
-	for(i=0; i<pClusterCount; i++){
-		deoglCollideListHTSCluster &cluster = *((deoglCollideListHTSCluster*)pClusters.GetAt(i));
-		if(cluster.GetCulled()){
-			cluster.Clear();
-			continue;
-		}
-		
-		if(i != last){
-			deoglCollideListHTSCluster * const exchange = pClusters.GetAt(last);
-			pClusters.SetAt(last, pClusters.GetAt(i));
-			pClusters.SetAt(i, exchange);
-		}
-		last++;
-	}
-	pClusterCount = last;
+	pClusters.RemoveIf([](const deoglCollideListHTSCluster &cluster){
+		return cluster.GetCulled();
+	});
 }

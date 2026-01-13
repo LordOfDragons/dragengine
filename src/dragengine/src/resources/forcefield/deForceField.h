@@ -28,7 +28,7 @@
 #include "../deResource.h"
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decCollisionFilter.h"
-#include "../../common/shape/decShapeList.h"
+#include "../../common/shape/decShape.h"
 
 class deForceFieldManager;
 class deBasePhysicsForceField;
@@ -132,7 +132,7 @@ private:
 	decDVector pPosition;
 	decQuaternion pOrientation;
 	
-	decShapeList pInfluenceArea;
+	decShape::List pInfluenceArea;
 	float pRadius;
 	float pExponent;
 	
@@ -143,7 +143,7 @@ private:
 	float pFluctuationDirection;
 	float pFluctuationForce;
 	
-	decShapeList pShape;
+	decShape::List pShape;
 	decCollisionFilter pCollisionFilter;
 	bool pEnabled;
 	
@@ -191,10 +191,10 @@ public:
 	
 	
 	/** \brief Influence area. */
-	inline const decShapeList &GetInfluenceArea() const{ return pInfluenceArea; }
+	inline const decShape::List &GetInfluenceArea() const{ return pInfluenceArea; }
 	
 	/** \brief Set influence area. */
-	void SetInfluenceArea(const decShapeList &area);
+	void SetInfluenceArea(const decShape::List &area);
 	
 	/** \brief Falloff radius. */
 	inline float GetRadius() const{ return pRadius; }
@@ -249,10 +249,10 @@ public:
 	
 	
 	/** \brief Sound shape. */
-	inline const decShapeList &GetShape() const{ return pShape; }
+	inline const decShape::List &GetShape() const{ return pShape; }
 	
 	/** \brief Set sound shape. */
-	void SetShape(const decShapeList &shape);
+	void SetShape(const decShape::List &shape);
 	
 	/** \brief Collision filter. */
 	inline const decCollisionFilter &GetCollisionFilter() const{ return pCollisionFilter; }

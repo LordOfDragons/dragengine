@@ -37,6 +37,11 @@
  * applied to the radius in the x and z direction.
  */
 class DE_DLL_EXPORT decShapeSphere : public decShape{
+public:
+	/** \brief Reference. */
+	using Ref = deTUniqueReference<decShapeSphere>;
+	
+	
 private:
 	float pRadius;
 	decVector2 pAxisScaling;
@@ -81,7 +86,7 @@ public:
 	
 	
 	/** \brief Create copy of shape. */
-	decShape *Copy() const override;
+	decShape::Ref Copy() const override;
 	/*@}*/
 	
 	

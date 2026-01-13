@@ -49,7 +49,7 @@ class decShape;
 
 /**
  * \brief Object Shape.
- * \details A single shape in an object shape. Whereas the meObjectShape::List corresponds to a decShapeList the
+ * \details A single shape in an object shape. Whereas the meObjectShape::List corresponds to a decShape::List the
  *          meObjectShape corresponds to an actual decShape inside the list. The shape is located in the coordinate
  *          system of the world. The user is responsible to transform the shape from and to the world coordinate
  *          system and whatever target element holds the object shape list.
@@ -73,7 +73,7 @@ private:
 	igdeWDebugDrawerShape::Ref pDDSShape;
 	deColliderVolume::Ref pEngCollider;
 	
-	decShape *pShape;
+	decShape::Ref pShape;
 	
 	bool pSelected;
 	bool pActive;
@@ -113,7 +113,7 @@ public:
 	void SetParentObject(meObject *parentObject);
 	
 	/** \brief Retrieves the shape. */
-	inline const decShape *GetShape() const{ return pShape; }
+	inline const decShape::Ref &GetShape() const{ return pShape; }
 	/** \brief Sets the shape. Make sure it is of the matching shape type. */
 	void SetShape(const decShape &shape);
 	
@@ -136,7 +136,7 @@ public:
 	
 	
 	/** Creates a shape list from this list. */
-	static void CreateShapeList(const List &list, decShapeList &result);
+	static void CreateShapeList(const List &list, decShape::List &result);
 	
 	/** Create property string from shape list. */
 	static void CreatePropertyString(const List &list, decString &result);

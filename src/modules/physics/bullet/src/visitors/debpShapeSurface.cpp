@@ -102,24 +102,19 @@ void debpShapeSurface::VisitShapeCapsule(decShapeCapsule &capsule){
 void debpShapeSurface::VisitShapeHull(decShapeHull &hull) {
 	// TODO calculate volume
 	// use for the time being the surface of a sphere containing all points
-	const int count = hull.GetPointCount();
-	if(count == 0){
+	if(hull.GetPoints().IsEmpty()){
 		pSurface = 0.0f;
 		return;
 	}
 	
-	decVector center;
-	int i;
-	
-	for(i=0; i<count; i++){
-		center += hull.GetPointAt(i);
-	}
-	center /= (float)count;
+	const decVector center(hull.GetPoints().Inject(decVector(), [](const decVector &c, const decVector &p){
+		return c + p;
+	}) / (float)hull.GetPoints().GetCount());
 	
 	float radiusSquared = 0.0f;
-	for(i=0; i<count; i++){
-		radiusSquared = decMath::max(radiusSquared, (hull.GetPointAt(i) - center).LengthSquared());
-	}
+	hull.GetPoints().Visit([&](const decVector &point){
+		radiusSquared = decMath::max(radiusSquared, (point - center).LengthSquared());
+	});
 	
 	pSurface += 4.0f * PI * radiusSquared;
 }

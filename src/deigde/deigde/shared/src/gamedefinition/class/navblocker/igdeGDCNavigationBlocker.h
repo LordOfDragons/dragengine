@@ -27,7 +27,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/shape/decShape.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/resources/navigation/space/deNavigationSpace.h>
@@ -68,7 +68,7 @@ private:
 	deNavigationSpace::eSpaceTypes pType;
 	int pBlockingPriority;
 	
-	decShapeList pShapeList;
+	decShape::List pShapeList;
 	
 	decString pPropertyNames[epAttachRotation + 1];
 	
@@ -150,10 +150,10 @@ public:
 	void SetBlockingPriority(int priority);
 	
 	/** \brief Shape list. */
-	inline const decShapeList &GetShapeList() const{ return pShapeList; }
+	inline const decShape::List &GetShapeList() const{ return pShapeList; }
 	
 	/** \brief Set shape list. */
-	void SetShapeList(const decShapeList &shapeList);
+	void SetShapeList(const decShape::List &shapeList);
 	
 	/** \brief Determines if a property name is set or not (empty string). */
 	bool IsPropertySet(eProperties property) const;

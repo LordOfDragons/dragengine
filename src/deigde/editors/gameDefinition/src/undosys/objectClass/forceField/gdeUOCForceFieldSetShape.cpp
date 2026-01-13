@@ -41,7 +41,7 @@
 ////////////////////////////
 
 gdeUOCForceFieldSetShape::gdeUOCForceFieldSetShape(gdeObjectClass *objectClass,
-gdeOCForceField *forceField, const decShapeList &newValue) :
+gdeOCForceField *forceField, const decShape::List &newValue) :
 
 pForceField(nullptr)
 {

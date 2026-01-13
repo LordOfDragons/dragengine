@@ -45,7 +45,6 @@
 #include <sys/stat.h>
 
 #include "dePathList.h"
-#include "dePatternList.h"
 #include "deContainerFileSearch.h"
 #include "deVFSDiskDirectory.h"
 #include "../common/file/decDiskFileReader.h"

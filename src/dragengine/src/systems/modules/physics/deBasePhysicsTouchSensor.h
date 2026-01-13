@@ -27,7 +27,6 @@
 
 #include "../../../common/math/decMath.h"
 
-class decShapeList;
 class deCollider;
 class deBaseScriptingCollider;
 

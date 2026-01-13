@@ -770,21 +770,17 @@ void deglDialogProfileList::UpdateListDisabledModuleVersions(){
 	pListDisableModuleVersions->clearItems();
 	
 	if(pGetSelectedProfile()){
-		const delGPDisableModuleVersionList &list = pGetSelectedProfile()->GetEdit()->GetDisableModuleVersions();
-		const int count = list.GetCount();
 		FXString selection;
 		FXString text;
-		int i;
 		
 		if(pListDisableModuleVersions->getCurrentItem() != -1){
 			selection = pListDisableModuleVersions->getItemText(pListDisableModuleVersions->getCurrentItem());
 		}
 		
-		for(i=0; i<count; i++){
-			delGPDisableModuleVersion * const version = list.GetAt(i);
-			text.format("%s (%s)", version->GetName().GetString(), version->GetVersion().GetString());
-			pListDisableModuleVersions->appendItem(text, nullptr, version);
-		}
+		pGetSelectedProfile()->GetEdit()->GetDisableModuleVersions().Visit([&](delGPDisableModuleVersion &version){
+			text.format("%s (%s)", version.GetName().GetString(), version.GetVersion().GetString());
+			pListDisableModuleVersions->appendItem(text, nullptr, &version);
+		});
 		
 		pListDisableModuleVersions->setCurrentItem(pListDisableModuleVersions->findItem(selection));
 	}
@@ -1760,10 +1756,10 @@ long deglDialogProfileList::onBtnDisableModuleVersionAdd(FXObject*, FXSelector, 
 		return 1;
 	}
 	
-	delGPDisableModuleVersionList &list = pGetSelectedProfile()->GetEdit()->GetDisableModuleVersions();
+	delGPDisableModuleVersion::List &list = pGetSelectedProfile()->GetEdit()->GetDisableModuleVersions();
 	if(!list.HasWith(selectedModule.text(), selectedVersion.text())){
 		try{
-			list.Add(delGPDisableModuleVersion::Ref::New(selectedModule.text(), selectedVersion.text()));
+			list.Add(delGPDisableModuleVersion(selectedModule.text(), selectedVersion.text()));
 		}catch(const deException &e){
 			GetWindowMain()->DisplayException(e);
 			return 1;
@@ -1783,9 +1779,8 @@ long deglDialogProfileList::onBtnDisableModuleVersionRemove(FXObject*, FXSelecto
 		return 1;
 	}
 	
-	delGPDisableModuleVersion * const version =
-		(delGPDisableModuleVersion*)pListDisableModuleVersions->getItemData(selection);
-	pGetSelectedProfile()->GetEdit()->GetDisableModuleVersions().Remove(version);
+	delGPDisableModuleVersion::List &list = pGetSelectedProfile()->GetEdit()->GetDisableModuleVersions();
+	list.RemoveFrom(list.IndexOf(*static_cast<delGPDisableModuleVersion*>(pListDisableModuleVersions->getItemData(selection))));
 	
 	UpdateListDisabledModuleVersions();
 	return 1;

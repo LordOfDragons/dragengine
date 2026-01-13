@@ -62,9 +62,36 @@ pCascadeMask(0)
 	SetCluster(cluster);
 }
 
-deoglCollideListHTSCluster::~deoglCollideListHTSCluster(){
+deoglCollideListHTSCluster::deoglCollideListHTSCluster(deoglCollideListHTSCluster &&other) noexcept :
+pCluster(other.pCluster),
+pCoordinates(other.pCoordinates),
+pIndex(other.pIndex),
+pCulled(other.pCulled),
+pCascadeMask(other.pCascadeMask)
+{
+	other.pCluster = nullptr;
+	other.pCoordinates.SetZero();
+	other.pIndex = 0;
+	other.pCulled = false;
+	other.pCascadeMask = 0;
 }
 
+deoglCollideListHTSCluster &deoglCollideListHTSCluster::operator=(deoglCollideListHTSCluster &&other) noexcept{
+	if(this != &other){
+		pCluster = other.pCluster;
+		pCoordinates = other.pCoordinates;
+		pIndex = other.pIndex;
+		pCulled = other.pCulled;
+		pCascadeMask = other.pCascadeMask;
+		
+		other.pCluster = nullptr;
+		other.pCoordinates.SetZero();
+		other.pIndex = 0;
+		other.pCulled = false;
+		other.pCascadeMask = 0;
+	}
+	return *this;
+}
 
 
 // Management

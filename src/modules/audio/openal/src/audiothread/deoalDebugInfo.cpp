@@ -762,7 +762,7 @@ void deoalDebugInfo::UpdateVisAudSpeakers(){
 				dd->SetXRay(true);
 				
 				deDebugDrawerShape * const shape = new deDebugDrawerShape;
-				shape->GetShapeList().Add(new decShapeSphere(0.05f));
+				shape->GetShapeList().Add(decShapeSphere::Ref::New(0.05f));
 				dd->AddShape(shape);
 				
 				world.AddDebugDrawer(dd);

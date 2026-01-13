@@ -76,7 +76,6 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/shape/decShape.h>
-#include <dragengine/common/shape/decShapeList.h>
 #include <dragengine/resources/billboard/deBillboard.h>
 #include <dragengine/resources/collider/deColliderAttachment.h>
 #include <dragengine/resources/collider/deColliderBone.h>

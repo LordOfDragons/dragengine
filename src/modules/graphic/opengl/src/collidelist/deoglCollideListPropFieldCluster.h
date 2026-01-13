@@ -53,8 +53,12 @@ public:
 	deoglCollideListPropFieldCluster(deoglPropFieldCluster *cluster);
 	
 	/** Copy. */
-	deoglCollideListPropFieldCluster(const deoglCollideListPropFieldCluster &cluster) = default;
-	deoglCollideListPropFieldCluster &operator=(const deoglCollideListPropFieldCluster &cluster) = default;
+	deoglCollideListPropFieldCluster(const deoglCollideListPropFieldCluster &cluster) = delete;
+	deoglCollideListPropFieldCluster &operator=(const deoglCollideListPropFieldCluster &cluster) = delete;
+	
+	/** Move. */
+	deoglCollideListPropFieldCluster(deoglCollideListPropFieldCluster &&other) noexcept;
+	deoglCollideListPropFieldCluster &operator=(deoglCollideListPropFieldCluster &&other) noexcept;
 	
 	/** Clean up cluster. */
 	~deoglCollideListPropFieldCluster() override;

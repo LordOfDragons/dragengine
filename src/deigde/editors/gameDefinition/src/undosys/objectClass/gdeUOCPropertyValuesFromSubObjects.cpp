@@ -40,7 +40,6 @@
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/shape/decShape.h>
-#include <dragengine/common/shape/decShapeList.h>
 
 #include <deigde/codec/igdeCodecPropertyString.h>
 
@@ -141,7 +140,7 @@ igdeCodecPropertyString codec, const gdeOCEnvMapProbe &envMapProbe){
 	}
 	
 	if(envMapProbe.IsPropertySet(gdeOCEnvMapProbe::epReflectionShape)){
-		decShapeList list;
+		decShape::List list;
 		if(envMapProbe.GetShapeReflection()){
 			list.Add(envMapProbe.GetShapeReflection()->Copy());
 		}

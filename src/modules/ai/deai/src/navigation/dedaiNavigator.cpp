@@ -257,53 +257,38 @@ void dedaiNavigator::UpdateDDSPathShape(const deNavigatorPath &path){
 	const decVector upAlt(0.0f, 0.0f, 1.0f);
 	const decVector up(0.0f, 1.0f, 0.0f);
 	decQuaternion orientation;
-	decShape *shape = nullptr;
 	decVector p1, p2, pd;
 	int i;
 	
-	try{
-		if(count > 0){
-			shape = new decShapeSphere(0.05f);
-			pDDSPath->GetShapeList().Add(shape);
-			shape = nullptr;
+	if(count > 0){
+		pDDSPath->GetShapeList().Add(decShapeSphere::Ref::New(0.05f));
+	}
+	
+	if(count > 1){
+		pDDSPath->GetShapeList().Add(decShapeSphere::Ref::New(0.05f, (path.GetAt(count - 1) - refpos).ToVector()));
+	}
+	
+	for(i=0; i<count; i++){
+		if(i > 0){
+			p1 = (path.GetAt(i - 1) - refpos).ToVector();
 		}
+		p2 = (path.GetAt(i) - refpos).ToVector();
+		pd = p2 - p1;
 		
-		if(count > 1){
-			shape = new decShapeSphere(0.05f, (path.GetAt(count - 1) - refpos).ToVector());
-			pDDSPath->GetShapeList().Add(shape);
-			shape = nullptr;
-		}
+		halfExtends.z = pd.Length() * 0.5f;
 		
-		for(i=0; i<count; i++){
-			if(i > 0){
-				p1 = (path.GetAt(i - 1) - refpos).ToVector();
-			}
-			p2 = (path.GetAt(i) - refpos).ToVector();
-			pd = p2 - p1;
+		if(halfExtends.z > FLOAT_SAFE_EPSILON){
+			pd.Normalize();
 			
-			halfExtends.z = pd.Length() * 0.5f;
-			
-			if(halfExtends.z > FLOAT_SAFE_EPSILON){
-				pd.Normalize();
+			if(fabsf(pd.y) < 0.99f){
+				orientation = decMatrix::CreateWorld(p1, pd, up).ToQuaternion();
 				
-				if(fabsf(pd.y) < 0.99f){
-					orientation = decMatrix::CreateWorld(p1, pd, up).ToQuaternion();
-					
-				}else{
-					orientation = decMatrix::CreateWorld(p1, pd, upAlt).ToQuaternion();
-				}
-				
-				shape = new decShapeBox(halfExtends, (p1 + p2) * 0.5f, orientation);
-				pDDSPath->GetShapeList().Add(shape);
-				shape = nullptr;
+			}else{
+				orientation = decMatrix::CreateWorld(p1, pd, upAlt).ToQuaternion();
 			}
+			
+			pDDSPath->GetShapeList().Add(decShapeBox::Ref::New(halfExtends, (p1 + p2) * 0.5f, orientation));
 		}
-		
-	}catch(const deException &){
-		if(shape){
-			delete shape;
-		}
-		throw;
 	}
 }
 

@@ -27,7 +27,7 @@
 #define _GDEUOCFORCEFIELDSETINFLUENCEAREA_H_
 
 #include <deigde/undo/igdeUndo.h>
-#include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/shape/decShape.h>
 
 #include "../../../gamedef/objectClass/forceField/gdeOCForceField.h"
 #include "../../../gamedef/objectClass/gdeObjectClass.h"
@@ -46,8 +46,8 @@ private:
 	gdeObjectClass::Ref pObjectClass;
 	gdeOCForceField::Ref pForceField;
 	
-	decShapeList pOldValue;
-	decShapeList pNewValue;
+	decShape::List pOldValue;
+	decShape::List pNewValue;
 	
 	
 	
@@ -56,7 +56,7 @@ public:
 	/*@{*/
 	/** \brief Create undo action. */
 	gdeUOCForceFieldSetInfluenceArea(gdeObjectClass *objectClass,
-		gdeOCForceField *forceField, const decShapeList &newValue);
+		gdeOCForceField *forceField, const decShape::List &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

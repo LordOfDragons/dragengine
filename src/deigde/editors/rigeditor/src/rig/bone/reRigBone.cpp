@@ -709,21 +709,12 @@ void reRigBone::pUpdateColliderShape(){
 	}
 	
 	decVector halfExtends(0.02f, 0.02f, 0.06f);
-	decShapeBox *box = nullptr;
-	decShapeList shapeList;
+	decShape::List shapeList;
 	
 	pCollider->SetPosition(pPoseMatrix * decVector(0.0f, 0.0f, halfExtends.z));
 	pCollider->SetOrientation(pPoseMatrix.ToQuaternion());
 	
-	try{
-		box = new decShapeBox(halfExtends);
-		shapeList.Add(box);
-		
-	}catch(const deException &){
-		if(box){
-			delete box;
-		}
-	}
+	shapeList.Add(decShapeBox::Ref::New(halfExtends));
 	
 	pCollider->SetShapes(shapeList);
 }

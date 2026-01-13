@@ -83,6 +83,11 @@ pComponents(path.pComponents),
 pPrefix(path.pPrefix){
 }
 
+decPath::decPath(decPath &&path) noexcept :
+pComponents(std::move(path.pComponents)),
+pPrefix(std::move(path.pPrefix)){
+}
+
 decPath::~decPath(){
 }
 
@@ -563,6 +568,12 @@ bool decPath::operator!=(const decPath &path) const{
 decPath &decPath::operator=(const decPath &path){
 	pPrefix = path.pPrefix;
 	pComponents = path.pComponents;
+	return *this;
+}
+
+decPath &decPath::operator=(decPath &&path) noexcept{
+	pPrefix = std::move(path.pPrefix);
+	pComponents = std::move(path.pComponents);
 	return *this;
 }
 

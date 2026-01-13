@@ -47,7 +47,6 @@
 #include "../delLauncher.h"
 #include "../game/profile/delGPModule.h"
 #include "../game/profile/delGPModuleList.h"
-#include "../game/profile/delGPMParameter.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
@@ -1192,7 +1191,7 @@ int delEngineInstanceThreaded::IsGameRunning(){
 				ReadString16FromPipe(paramName);
 				ReadString16FromPipe(paramValue);
 				
-				module->GetParameters().Add(delGPMParameter::Ref::New(paramName, paramValue));
+				module->GetParameters().SetAt(paramName, paramValue);
 			}
 			
 			// write any byte to pipe to signal process can exit now

@@ -25,43 +25,28 @@
 #ifndef _DELGAMEICONLIST_H_
 #define _DELGAMEICONLIST_H_
 
-#include <dragengine/common/collection/decTList.h>
+#include "delGameIcon.h"
 
-class delGameIcon;
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 
 /**
  * \brief Icon icon list.
  */
-class DE_DLL_EXPORT delGameIconList{
-private:
-	decTObjectList<delGameIcon> pIcons;
-	
-	
-	
+class DE_DLL_EXPORT delGameIconList : public decTObjectOrderedSet<delGameIcon>{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create list. */
-	delGameIconList();
+	using decTObjectOrderedSet<delGameIcon>::decTObjectOrderedSet;
 	
-	delGameIconList(const delGameIconList& other) = delete;
-	delGameIconList& operator=(const delGameIconList& other) = delete;
-
-	/** \brief Clean up list. */
-	~delGameIconList();
+	/** \brief Copy list. */
+	delGameIconList(const delGameIconList &list);
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Count of icons. */
-	int GetCount() const;
-	
-	/** \brief Icon at index. */
-	delGameIcon *GetAt(int index) const;
-	
 	/** \brief Icon with size or nullptr if absent. */
 	delGameIcon *GetWithSize(int size) const;
 	
@@ -77,26 +62,11 @@ public:
 	/** \brief Icon with smallest size larger than or equal or nullptr if absent. */
 	delGameIcon *GetSmallest() const;
 	
-	/** \brief Icon is present. */
-	bool Has(delGameIcon *icon) const;
-	
 	/** \brief Icon with size. */
 	bool HasWithSize(int size) const;
 	
-	/** \brief Index of icon or -1 if absent. */
-	int IndexOf(delGameIcon *icon) const;
-	
 	/** \brief Index of icon with size or -1 if absent. */
 	int IndexOfWithSize(int size) const;
-	
-	/** \brief Add icon. */
-	void Add(delGameIcon *icon);
-	
-	/** \brief Remove icon. */
-	void Remove(delGameIcon *icon);
-	
-	/** \brief Remove all icons. */
-	void RemoveAll();
 	/*@}*/
 };
 

@@ -31,7 +31,7 @@
 #include "../skin/dynamic/deDynamicSkin.h"
 #include "../../common/collection/decTSet.h"
 #include "../../common/math/decMath.h"
-#include "../../common/shape/decShapeList.h"
+#include "../../common/shape/decShape.h"
 #include "../../common/utils/decLayerMask.h"
 
 class deComponent;
@@ -204,7 +204,7 @@ private:
 	float pSpotRatio;
 	float pSpotSmoothness;
 	float pSpotExponent;
-	decShapeList pShape;
+	decShape::List pShape;
 	
 	deSkin::Ref pLightSkin;
 	deCanvasView::Ref pLightCanvas;
@@ -218,7 +218,7 @@ private:
 	int pHintShadowImportance;
 	eMovementHints pHintMovement;
 	eParameterHints pHintParameter;
-	decShapeList pCage;
+	decShape::List pCage;
 	
 	decLayerMask pLayerMask;
 	decLayerMask pLayerMaskShadow;
@@ -329,10 +329,10 @@ public:
 	void SetSpotExponent(float exponent);
 	
 	/** \brief Light shape. */
-	inline const decShapeList &GetShape() const{ return pShape; }
+	inline const decShape::List &GetShape() const{ return pShape; }
 	
 	/** \brief Set light shape. */
-	void SetShape(const decShapeList &shape);
+	void SetShape(const decShape::List &shape);
 	
 	
 	
@@ -387,10 +387,10 @@ public:
 	void SetHintParameter(eParameterHints hint);
 	
 	/** \brief Light cage. */
-	inline const decShapeList &GetCage() const{ return pCage; }
+	inline const decShape::List &GetCage() const{ return pCage; }
 	
 	/** \brief Set light cage. */
-	void SetCage(const decShapeList &cage);
+	void SetCage(const decShape::List &cage);
 	
 	
 	

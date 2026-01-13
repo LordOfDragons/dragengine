@@ -315,7 +315,10 @@ void deSpeaker::SetDistanceOffset(float distanceOffset){
 	}
 }
 
-void deSpeaker::SetShape(const decShapeList &shape){
+// Shapes
+///////////
+
+void deSpeaker::SetShape(const decShape::List &shape){
 	pShape = shape;
 	
 	if(pPeerAudio){

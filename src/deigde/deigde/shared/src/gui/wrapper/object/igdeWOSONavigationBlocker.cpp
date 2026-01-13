@@ -40,7 +40,6 @@
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/shape/decShape.h>
-#include <dragengine/common/shape/decShapeList.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/resources/navigation/blocker/deNavigationBlocker.h>
@@ -102,7 +101,6 @@ void igdeWOSONavigationBlocker::pUpdateNavigationBlocker(){
 	}
 	
 	igdeCodecPropertyString codec;
-	decShapeList shapeList;
 	decString value;
 	
 	pNavigationBlocker->SetLayer(GetIntProperty(

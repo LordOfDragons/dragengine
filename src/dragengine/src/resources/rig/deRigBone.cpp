@@ -138,7 +138,7 @@ void deRigBone::SetIKLockedZ(bool locked){
 // Shapes
 ///////////
 
-void deRigBone::SetShapes(const decShapeList &shapes){
+void deRigBone::SetShapes(const decShape::List &shapes){
 	const int count = shapes.GetCount();
 	int i;
 	

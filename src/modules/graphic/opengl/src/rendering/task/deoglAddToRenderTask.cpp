@@ -716,7 +716,7 @@ void deoglAddToRenderTask::AddPropField(const deoglCollideListPropField &clPropF
 	int i;
 	
 	for(i=0; i<count; i++){
-		AddPropFieldType(*clPropField.GetTypeAt(i), propField.GetTypeAt(i), imposters);
+		AddPropFieldType(clPropField.GetTypeAt(i), propField.GetTypeAt(i), imposters);
 	}
 }
 

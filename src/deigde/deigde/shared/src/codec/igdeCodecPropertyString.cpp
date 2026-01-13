@@ -31,7 +31,7 @@
 #include <dragengine/common/shape/decShapeCapsule.h>
 #include <dragengine/common/shape/decShapeCylinder.h>
 #include <dragengine/common/shape/decShapeBox.h>
-#include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/shape/decShape.h>
 #include <dragengine/common/shape/decShapeSphere.h>
 #include <dragengine/common/shape/decShapeHull.h>
 
@@ -253,319 +253,288 @@ const decColor &defaultColor) const{
 	}
 }
 
-void igdeCodecPropertyString::DecodeShapeList(const char *string, decShapeList &list) const{
+void igdeCodecPropertyString::DecodeShapeList(const char *string, decShape::List &list) const{
 	const decStringList tokenShapeList = decString(string).Split(vSeparators);
-	decShapeCylinder *cylinder = nullptr;
-	decShapeCapsule *capsule = nullptr;
-	decShapeSphere *sphere = nullptr;
-	decShapeHull *hull = nullptr;
-	decQuaternion orientation;
-	decShapeBox *box = nullptr;
-	decVector vector;
 	int i, j;
 	
 	list.RemoveAll();
 	
-	try{
-		const int tokenSphereCount = tokenShapeList.GetCount();
+	const int tokenSphereCount = tokenShapeList.GetCount();
+	
+	for(i=0; i<tokenSphereCount; i++){
+		const decStringList tokenParamList = tokenShapeList.GetAt(i).Split(':');
+		const decString &tokenShapeType = tokenParamList.GetAt(0);
+		const int tokenParamCount = tokenParamList.GetCount();
 		
-		for(i=0; i<tokenSphereCount; i++){
-			const decStringList tokenParamList = tokenShapeList.GetAt(i).Split(':');
-			const decString &tokenShapeType = tokenParamList.GetAt(0);
-			const int tokenParamCount = tokenParamList.GetCount();
+		if(tokenShapeType == "sphere"){
+			decShapeSphere::Ref sphere = decShapeSphere::Ref::New(1.0f);
 			
-			if(tokenShapeType == "sphere"){
-				sphere = new decShapeSphere(1.0f);
+			for(j=1; j<tokenParamCount; j++){
+				const decStringList tokenValueList = tokenParamList.GetAt(j).Split(',');
+				const decString &tokenParamName = tokenValueList.GetAt(0);
+				const int tokenValueCount = tokenValueList.GetCount();
 				
-				for(j=1; j<tokenParamCount; j++){
-					const decStringList tokenValueList = tokenParamList.GetAt(j).Split(',');
-					const decString &tokenParamName = tokenValueList.GetAt(0);
-					const int tokenValueCount = tokenValueList.GetCount();
-					
-					if(tokenParamName == "position"){
-						if(tokenValueCount != 4){
-							DETHROW(deeInvalidParam);
-						}
-						
-						sphere->SetPosition(decVector(
-							tokenValueList.GetAt(1).ToFloatValid(),
-							tokenValueList.GetAt(2).ToFloatValid(),
-							tokenValueList.GetAt(3).ToFloatValid()));
-						
-					}else if(tokenParamName == "radius"){
-						if(tokenValueCount != 2){
-							DETHROW(deeInvalidParam);
-						}
-						
-						sphere->SetRadius(tokenValueList.GetAt(1).ToFloatValid());
-						
-					}else{
+				if(tokenParamName == "position"){
+					if(tokenValueCount != 4){
 						DETHROW(deeInvalidParam);
 					}
-				}
-				
-				list.Add(sphere);
-				sphere = nullptr;
-				
-			}else if(tokenShapeType == "box"){
-				box = new decShapeBox(decVector());
-				
-				for(j=1; j<tokenParamCount; j++){
-					const decStringList tokenValueList = tokenParamList.GetAt(j).Split(',');
-					const decString &tokenParamName = tokenValueList.GetAt(0);
-					const int tokenValueCount = tokenValueList.GetCount();
 					
-					if(tokenParamName == "position"){
-						if(tokenValueCount != 4){
-							DETHROW(deeInvalidParam);
-						}
-						
-						box->SetPosition(decVector(
-							tokenValueList.GetAt(1).ToFloatValid(),
-							tokenValueList.GetAt(2).ToFloatValid(),
-							tokenValueList.GetAt(3).ToFloatValid()));
-						
-					}else if(tokenParamName == "rotation"){
-						if(tokenValueCount != 4){
-							DETHROW(deeInvalidParam);
-						}
-						
-						box->SetOrientation(decMatrix::CreateRotation(
-							tokenValueList.GetAt(1).ToFloatValid() * DEG2RAD,
-							tokenValueList.GetAt(2).ToFloatValid() * DEG2RAD,
-							tokenValueList.GetAt(3).ToFloatValid() * DEG2RAD).ToQuaternion());
-						
-					}else if(tokenParamName == "extends"){
-						if(tokenValueCount != 4){
-							DETHROW(deeInvalidParam);
-						}
-						
-						box->SetHalfExtends(decVector(
-							tokenValueList.GetAt(1).ToFloatValid(),
-							tokenValueList.GetAt(2).ToFloatValid(),
-							tokenValueList.GetAt(3).ToFloatValid()));
-						
-					}else{
+					sphere->SetPosition(decVector(
+						tokenValueList.GetAt(1).ToFloatValid(),
+						tokenValueList.GetAt(2).ToFloatValid(),
+						tokenValueList.GetAt(3).ToFloatValid()));
+					
+				}else if(tokenParamName == "radius"){
+					if(tokenValueCount != 2){
 						DETHROW(deeInvalidParam);
 					}
-				}
-				
-				list.Add(box);
-				box = nullptr;
-				
-			}else if(tokenShapeType == "cylinder"){
-				cylinder = new decShapeCylinder(1.0f, 1.0f);
-				
-				for(j=1; j<tokenParamCount; j++){
-					const decStringList tokenValueList = tokenParamList.GetAt(j).Split(',');
-					const decString &tokenParamName = tokenValueList.GetAt(0);
-					const int tokenValueCount = tokenValueList.GetCount();
 					
-					if(tokenParamName == "position"){
-						if(tokenValueCount != 4){
-							DETHROW(deeInvalidParam);
-						}
-						
-						cylinder->SetPosition(decVector(
-							tokenValueList.GetAt(1).ToFloatValid(),
-							tokenValueList.GetAt(2).ToFloatValid(),
-							tokenValueList.GetAt(3).ToFloatValid()));
-						
-					}else if(tokenParamName == "rotation"){
-						if(tokenValueCount != 4){
-							DETHROW(deeInvalidParam);
-						}
-						
-						cylinder->SetOrientation(decMatrix::CreateRotation(
-							tokenValueList.GetAt(1).ToFloatValid() * DEG2RAD,
-							tokenValueList.GetAt(2).ToFloatValid() * DEG2RAD,
-							tokenValueList.GetAt(3).ToFloatValid() * DEG2RAD).ToQuaternion());
-						
-					}else if(tokenParamName == "height"){
-						if(tokenValueCount != 2){
-							DETHROW(deeInvalidParam);
-						}
-						
-						cylinder->SetHalfHeight(tokenValueList.GetAt(1).ToFloatValid());
-						
-					}else if(tokenParamName == "radius"){
-						if(tokenValueCount != 3){
-							DETHROW(deeInvalidParam);
-						}
-						
-						cylinder->SetTopRadius(tokenValueList.GetAt(1).ToFloatValid());
-						cylinder->SetBottomRadius(tokenValueList.GetAt(2).ToFloatValid());
-						
-					}else if(tokenParamName == "topAxisScaling"){
-						if(tokenValueCount != 3){
-							DETHROW(deeInvalidParam);
-						}
-						
-						cylinder->SetTopAxisScaling(decVector2(
-							tokenValueList.GetAt(1).ToFloatValid(),
-							tokenValueList.GetAt(2).ToFloatValid()));
-						
-					}else if(tokenParamName == "bottomAxisScaling"){
-						if(tokenValueCount != 3){
-							DETHROW(deeInvalidParam);
-						}
-						
-						cylinder->SetBottomAxisScaling(decVector2(
-							tokenValueList.GetAt(1).ToFloatValid(),
-							tokenValueList.GetAt(2).ToFloatValid()));
-						
-					}else{
-						DETHROW(deeInvalidParam);
-					}
-				}
-				
-				list.Add(cylinder);
-				cylinder = nullptr;
-				
-			}else if(tokenShapeType == "capsule"){
-				capsule = new decShapeCapsule(1.0f, 1.0f);
-				
-				for(j=1; j<tokenParamCount; j++){
-					const decStringList tokenValueList = tokenParamList.GetAt(j).Split(',');
-					const decString &tokenParamName = tokenValueList.GetAt(0);
-					const int tokenValueCount = tokenValueList.GetCount();
+					sphere->SetRadius(tokenValueList.GetAt(1).ToFloatValid());
 					
-					if(tokenParamName == "position"){
-						if(tokenValueCount != 4){
-							DETHROW(deeInvalidParam);
-						}
-						
-						capsule->SetPosition(decVector(
-							tokenValueList.GetAt(1).ToFloatValid(),
-							tokenValueList.GetAt(2).ToFloatValid(),
-							tokenValueList.GetAt(3).ToFloatValid()));
-						
-					}else if(tokenParamName == "rotation"){
-						if(tokenValueCount != 4){
-							DETHROW(deeInvalidParam);
-						}
-						
-						capsule->SetOrientation(decMatrix::CreateRotation(
-							tokenValueList.GetAt(1).ToFloatValid() * DEG2RAD,
-							tokenValueList.GetAt(2).ToFloatValid() * DEG2RAD,
-							tokenValueList.GetAt(3).ToFloatValid() * DEG2RAD).ToQuaternion());
-						
-					}else if(tokenParamName == "height"){
-						if(tokenValueCount != 2){
-							DETHROW(deeInvalidParam);
-						}
-						
-						capsule->SetHalfHeight(tokenValueList.GetAt(1).ToFloatValid());
-						
-					}else if(tokenParamName == "radius"){
-						if(tokenValueCount != 3){
-							DETHROW(deeInvalidParam);
-						}
-						
-						capsule->SetTopRadius(tokenValueList.GetAt(1).ToFloatValid());
-						capsule->SetBottomRadius(tokenValueList.GetAt(2).ToFloatValid());
-						
-					}else if(tokenParamName == "topAxisScaling"){
-						if(tokenValueCount != 3){
-							DETHROW(deeInvalidParam);
-						}
-						
-						capsule->SetTopAxisScaling(decVector2(
-							tokenValueList.GetAt(1).ToFloatValid(),
-							tokenValueList.GetAt(2).ToFloatValid()));
-						
-					}else if(tokenParamName == "bottomAxisScaling"){
-						if(tokenValueCount != 3){
-							DETHROW(deeInvalidParam);
-						}
-						
-						capsule->SetBottomAxisScaling(decVector2(
-							tokenValueList.GetAt(1).ToFloatValid(),
-							tokenValueList.GetAt(2).ToFloatValid()));
-						
-					}else{
-						DETHROW(deeInvalidParam);
-					}
+				}else{
+					DETHROW(deeInvalidParam);
 				}
-				
-				list.Add(capsule);
-				capsule = nullptr;
-				
-			}else if(tokenShapeType == "hull"){
-				hull = new decShapeHull;
-				
-				for(j=1; j<tokenParamCount; j++){
-					const decStringList tokenValueList = tokenParamList.GetAt(j).Split(',');
-					const decString &tokenParamName = tokenValueList.GetAt(0);
-					const int tokenValueCount = tokenValueList.GetCount();
-					
-					if(tokenParamName == "position"){
-						if(tokenValueCount != 4){
-							DETHROW(deeInvalidParam);
-						}
-						
-						hull->SetPosition(decVector(
-							tokenValueList.GetAt(1).ToFloatValid(),
-							tokenValueList.GetAt(2).ToFloatValid(),
-							tokenValueList.GetAt(3).ToFloatValid()));
-						
-					}else if(tokenParamName == "rotation"){
-						if(tokenValueCount != 4){
-							DETHROW(deeInvalidParam);
-						}
-						
-						hull->SetOrientation(decMatrix::CreateRotation(
-							tokenValueList.GetAt(1).ToFloatValid() * DEG2RAD,
-							tokenValueList.GetAt(2).ToFloatValid() * DEG2RAD,
-							tokenValueList.GetAt(3).ToFloatValid() * DEG2RAD).ToQuaternion());
-						
-					}else if(tokenParamName == "points"){
-						if(((tokenValueCount - 1) % 3) != 0){
-							DETHROW(deeInvalidParam);
-						}
-						
-						const int pointCount = (tokenValueCount - 1) / 3;
-						hull->SetPointCount(pointCount);
-						int k;
-						for(k=0; k<pointCount; k++){
-							const int index = 1 + k * 3;
-							hull->SetPointAt(k, decVector(
-								tokenValueList.GetAt(index).ToFloatValid(),
-								tokenValueList.GetAt(index + 1).ToFloatValid(),
-								tokenValueList.GetAt(index + 2).ToFloatValid()));
-						}
-						
-					}else{
-						DETHROW(deeInvalidParam);
-					}
-				}
-				
-				list.Add(box);
-				box = nullptr;
-				
-			}else{
-				DETHROW(deeInvalidParam);
 			}
+			
+			list.Add(std::move(sphere));
+			
+		}else if(tokenShapeType == "box"){
+			decShapeBox::Ref box = decShapeBox::Ref::New(decVector());
+			
+			for(j=1; j<tokenParamCount; j++){
+				const decStringList tokenValueList = tokenParamList.GetAt(j).Split(',');
+				const decString &tokenParamName = tokenValueList.GetAt(0);
+				const int tokenValueCount = tokenValueList.GetCount();
+				
+				if(tokenParamName == "position"){
+					if(tokenValueCount != 4){
+						DETHROW(deeInvalidParam);
+					}
+					
+					box->SetPosition(decVector(
+						tokenValueList.GetAt(1).ToFloatValid(),
+						tokenValueList.GetAt(2).ToFloatValid(),
+						tokenValueList.GetAt(3).ToFloatValid()));
+					
+				}else if(tokenParamName == "rotation"){
+					if(tokenValueCount != 4){
+						DETHROW(deeInvalidParam);
+					}
+					
+					box->SetOrientation(decMatrix::CreateRotation(
+						tokenValueList.GetAt(1).ToFloatValid() * DEG2RAD,
+						tokenValueList.GetAt(2).ToFloatValid() * DEG2RAD,
+						tokenValueList.GetAt(3).ToFloatValid() * DEG2RAD).ToQuaternion());
+					
+				}else if(tokenParamName == "extends"){
+					if(tokenValueCount != 4){
+						DETHROW(deeInvalidParam);
+					}
+					
+					box->SetHalfExtends(decVector(
+						tokenValueList.GetAt(1).ToFloatValid(),
+						tokenValueList.GetAt(2).ToFloatValid(),
+						tokenValueList.GetAt(3).ToFloatValid()));
+					
+				}else{
+					DETHROW(deeInvalidParam);
+				}
+			}
+			
+			list.Add(std::move(box));
+			
+		}else if(tokenShapeType == "cylinder"){
+			decShapeCylinder::Ref cylinder = decShapeCylinder::Ref::New(1.0f, 1.0f);
+			
+			for(j=1; j<tokenParamCount; j++){
+				const decStringList tokenValueList = tokenParamList.GetAt(j).Split(',');
+				const decString &tokenParamName = tokenValueList.GetAt(0);
+				const int tokenValueCount = tokenValueList.GetCount();
+				
+				if(tokenParamName == "position"){
+					if(tokenValueCount != 4){
+						DETHROW(deeInvalidParam);
+					}
+					
+					cylinder->SetPosition(decVector(
+						tokenValueList.GetAt(1).ToFloatValid(),
+						tokenValueList.GetAt(2).ToFloatValid(),
+						tokenValueList.GetAt(3).ToFloatValid()));
+					
+				}else if(tokenParamName == "rotation"){
+					if(tokenValueCount != 4){
+						DETHROW(deeInvalidParam);
+					}
+					
+					cylinder->SetOrientation(decMatrix::CreateRotation(
+						tokenValueList.GetAt(1).ToFloatValid() * DEG2RAD,
+						tokenValueList.GetAt(2).ToFloatValid() * DEG2RAD,
+						tokenValueList.GetAt(3).ToFloatValid() * DEG2RAD).ToQuaternion());
+					
+				}else if(tokenParamName == "height"){
+					if(tokenValueCount != 2){
+						DETHROW(deeInvalidParam);
+					}
+					
+					cylinder->SetHalfHeight(tokenValueList.GetAt(1).ToFloatValid());
+					
+				}else if(tokenParamName == "radius"){
+					if(tokenValueCount != 3){
+						DETHROW(deeInvalidParam);
+					}
+					
+					cylinder->SetTopRadius(tokenValueList.GetAt(1).ToFloatValid());
+					cylinder->SetBottomRadius(tokenValueList.GetAt(2).ToFloatValid());
+					
+				}else if(tokenParamName == "topAxisScaling"){
+					if(tokenValueCount != 3){
+						DETHROW(deeInvalidParam);
+					}
+					
+					cylinder->SetTopAxisScaling(decVector2(
+						tokenValueList.GetAt(1).ToFloatValid(),
+						tokenValueList.GetAt(2).ToFloatValid()));
+					
+				}else if(tokenParamName == "bottomAxisScaling"){
+					if(tokenValueCount != 3){
+						DETHROW(deeInvalidParam);
+					}
+					
+					cylinder->SetBottomAxisScaling(decVector2(
+						tokenValueList.GetAt(1).ToFloatValid(),
+						tokenValueList.GetAt(2).ToFloatValid()));
+					
+				}else{
+					DETHROW(deeInvalidParam);
+				}
+			}
+			
+			list.Add(std::move(cylinder));
+			
+		}else if(tokenShapeType == "capsule"){
+			decShapeCapsule::Ref capsule = decShapeCapsule::Ref::New(1.0f, 1.0f);
+			
+			for(j=1; j<tokenParamCount; j++){
+				const decStringList tokenValueList = tokenParamList.GetAt(j).Split(',');
+				const decString &tokenParamName = tokenValueList.GetAt(0);
+				const int tokenValueCount = tokenValueList.GetCount();
+				
+				if(tokenParamName == "position"){
+					if(tokenValueCount != 4){
+						DETHROW(deeInvalidParam);
+					}
+					
+					capsule->SetPosition(decVector(
+						tokenValueList.GetAt(1).ToFloatValid(),
+						tokenValueList.GetAt(2).ToFloatValid(),
+						tokenValueList.GetAt(3).ToFloatValid()));
+					
+				}else if(tokenParamName == "rotation"){
+					if(tokenValueCount != 4){
+						DETHROW(deeInvalidParam);
+					}
+					
+					capsule->SetOrientation(decMatrix::CreateRotation(
+						tokenValueList.GetAt(1).ToFloatValid() * DEG2RAD,
+						tokenValueList.GetAt(2).ToFloatValid() * DEG2RAD,
+						tokenValueList.GetAt(3).ToFloatValid() * DEG2RAD).ToQuaternion());
+					
+				}else if(tokenParamName == "height"){
+					if(tokenValueCount != 2){
+						DETHROW(deeInvalidParam);
+					}
+					
+					capsule->SetHalfHeight(tokenValueList.GetAt(1).ToFloatValid());
+					
+				}else if(tokenParamName == "radius"){
+					if(tokenValueCount != 3){
+						DETHROW(deeInvalidParam);
+					}
+					
+					capsule->SetTopRadius(tokenValueList.GetAt(1).ToFloatValid());
+					capsule->SetBottomRadius(tokenValueList.GetAt(2).ToFloatValid());
+					
+				}else if(tokenParamName == "topAxisScaling"){
+					if(tokenValueCount != 3){
+						DETHROW(deeInvalidParam);
+					}
+					
+					capsule->SetTopAxisScaling(decVector2(
+						tokenValueList.GetAt(1).ToFloatValid(),
+						tokenValueList.GetAt(2).ToFloatValid()));
+					
+				}else if(tokenParamName == "bottomAxisScaling"){
+					if(tokenValueCount != 3){
+						DETHROW(deeInvalidParam);
+					}
+					
+					capsule->SetBottomAxisScaling(decVector2(
+						tokenValueList.GetAt(1).ToFloatValid(),
+						tokenValueList.GetAt(2).ToFloatValid()));
+					
+				}else{
+					DETHROW(deeInvalidParam);
+				}
+			}
+			
+			list.Add(std::move(capsule));
+			
+		}else if(tokenShapeType == "hull"){
+			decShapeHull::Ref hull = decShapeHull::Ref::New();
+			
+			for(j=1; j<tokenParamCount; j++){
+				const decStringList tokenValueList = tokenParamList.GetAt(j).Split(',');
+				const decString &tokenParamName = tokenValueList.GetAt(0);
+				const int tokenValueCount = tokenValueList.GetCount();
+				
+				if(tokenParamName == "position"){
+					if(tokenValueCount != 4){
+						DETHROW(deeInvalidParam);
+					}
+					
+					hull->SetPosition(decVector(
+						tokenValueList.GetAt(1).ToFloatValid(),
+						tokenValueList.GetAt(2).ToFloatValid(),
+						tokenValueList.GetAt(3).ToFloatValid()));
+					
+				}else if(tokenParamName == "rotation"){
+					if(tokenValueCount != 4){
+						DETHROW(deeInvalidParam);
+					}
+					
+					hull->SetOrientation(decMatrix::CreateRotation(
+						tokenValueList.GetAt(1).ToFloatValid() * DEG2RAD,
+						tokenValueList.GetAt(2).ToFloatValid() * DEG2RAD,
+						tokenValueList.GetAt(3).ToFloatValid() * DEG2RAD).ToQuaternion());
+					
+				}else if(tokenParamName == "points"){
+					if(((tokenValueCount - 1) % 3) != 0){
+						DETHROW(deeInvalidParam);
+					}
+					
+					const int pointCount = (tokenValueCount - 1) / 3;
+					hull->SetPointCount(pointCount);
+					int k;
+					for(k=0; k<pointCount; k++){
+						const int index = 1 + k * 3;
+						hull->SetPointAt(k, decVector(
+							tokenValueList.GetAt(index).ToFloatValid(),
+							tokenValueList.GetAt(index + 1).ToFloatValid(),
+							tokenValueList.GetAt(index + 2).ToFloatValid()));
+					}
+					
+				}else{
+					DETHROW(deeInvalidParam);
+				}
+			}
+			
+			list.Add(std::move(hull));
+			
+		}else{
+			DETHROW(deeInvalidParam);
 		}
-		
-	}catch(const deException &){
-		if(capsule){
-			delete capsule;
-		}
-		if(cylinder){
-			delete cylinder;
-		}
-		if(box){
-			delete box;
-		}
-		if(sphere){
-			delete sphere;
-		}
-		throw;
 	}
 }
-
-
 
 // Encoding
 /////////////
@@ -643,14 +612,10 @@ void igdeCodecPropertyString::EncodeColor4(const decColor &color, decString &str
 	string.Format("%g %g %g %g", color.r, color.g, color.b, color.a);
 }
 
-void igdeCodecPropertyString::EncodeShapeList(const decShapeList &list, decString &string) const{
+void igdeCodecPropertyString::EncodeShapeList(const decShape::List &list, decString &string) const{
 	igdePropertyStringEncodeShapeList visitor(string);
-	const int count = list.GetCount();
-	int i;
-	
-	string = "";
-	
-	for(i=0; i<count; i++){
-		list.GetAt(i)->Visit(visitor);
-	}
+	string.Empty();
+	list.Visit([&](decShape &shape){
+		shape.Visit(visitor);
+	});
 }

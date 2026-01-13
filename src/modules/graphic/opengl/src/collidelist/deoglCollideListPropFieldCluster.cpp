@@ -52,6 +52,28 @@ pCulled(false),
 pCascadeMask(0){
 }
 
+deoglCollideListPropFieldCluster::deoglCollideListPropFieldCluster(deoglCollideListPropFieldCluster &&other) noexcept :
+pCluster(other.pCluster),
+pCulled(other.pCulled),
+pCascadeMask(other.pCascadeMask){
+	other.pCluster = nullptr;
+	other.pCulled = false;
+	other.pCascadeMask = 0;
+}
+
+deoglCollideListPropFieldCluster &deoglCollideListPropFieldCluster::operator=(deoglCollideListPropFieldCluster &&other) noexcept{
+	if(this != &other){
+		pCluster = other.pCluster;
+		pCulled = other.pCulled;
+		pCascadeMask = other.pCascadeMask;
+		
+		other.pCluster = nullptr;
+		other.pCulled = false;
+		other.pCascadeMask = 0;
+	}
+	return *this;
+}
+
 deoglCollideListPropFieldCluster::~deoglCollideListPropFieldCluster(){
 }
 

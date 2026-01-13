@@ -98,24 +98,7 @@ void reRigShapeHull::Scale(float scale){
 	});
 }
 
-decShape *reRigShapeHull::CreateShape(){
-	decShapeHull * const shape = new decShapeHull(GetPosition(),
-		decQuaternion::CreateFromEuler(GetOrientation() * DEG2RAD));
-	
-	if(pPoints.IsNotEmpty()){
-		try{
-			const int count = pPoints.GetCount();
-			int i;
-			shape->SetPointCount(count);
-			for(i=0; i<count; i++){
-				shape->SetPointAt(i, pPoints.GetAt(i));
-			}
-			
-		}catch(const deException &){
-			delete shape;
-			throw;
-		}
-	}
-	
-	return shape;
+decShape::Ref reRigShapeHull::CreateShape(){
+	return decShapeHull::Ref::New(GetPosition(),
+		decQuaternion::CreateFromEuler(GetOrientation() * DEG2RAD), pPoints);
 }

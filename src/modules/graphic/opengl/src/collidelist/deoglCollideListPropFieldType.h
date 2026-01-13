@@ -25,11 +25,11 @@
 #ifndef _DEOGLCOLLIDELISTPROPFIELDTYPE_H_
 #define _DEOGLCOLLIDELISTPROPFIELDTYPE_H_
 
+#include "deoglCollideListPropFieldCluster.h"
+
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
-class deoglCollideListPropField;
-class deoglCollideListPropFieldCluster;
 class deoglOcclusionTest;
 class deoglRPropFieldType;
 class deoglPropFieldCluster;
@@ -40,12 +40,8 @@ class deoglPropFieldCluster;
  */
 class deoglCollideListPropFieldType{
 private:
-	deoglCollideListPropField &pPropField;
-	
 	deoglRPropFieldType *pType;
-	
-	decTList<deoglCollideListPropFieldCluster*> pClusters;
-	int pClusterCount;
+	decTList<deoglCollideListPropFieldCluster> pClusters;
 	
 	
 	
@@ -53,10 +49,16 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create prop field type. */
-	deoglCollideListPropFieldType(deoglCollideListPropField &propField);
+	deoglCollideListPropFieldType();
+	explicit deoglCollideListPropFieldType(deoglRPropFieldType *type);
 	
-	/** Clean up prop field type. */
-	~deoglCollideListPropFieldType();
+	/** No copy. */
+	deoglCollideListPropFieldType(const deoglCollideListPropFieldType &other) = delete;
+	deoglCollideListPropFieldType &operator=(const deoglCollideListPropFieldType &other) = delete;
+	
+	/** Move. */
+	deoglCollideListPropFieldType(deoglCollideListPropFieldType &&other) noexcept;
+	deoglCollideListPropFieldType &operator=(deoglCollideListPropFieldType &&other) noexcept;
 	/*@}*/
 	
 	
@@ -78,13 +80,14 @@ public:
 	void SetType(deoglRPropFieldType *type);
 	
 	/** Count of clusters. */
-	inline int GetClusterCount() const{ return pClusterCount; }
+	inline int GetClusterCount() const{ return pClusters.GetCount(); }
 	
 	/** Cluster at index. */
-	deoglCollideListPropFieldCluster &GetClusterAt(int index) const;
+	deoglCollideListPropFieldCluster &GetClusterAt(int index);
+	const deoglCollideListPropFieldCluster &GetClusterAt(int index) const;
 	
 	/** Add cluster. */
-	deoglCollideListPropFieldCluster *AddCluster(deoglPropFieldCluster *cluster);
+	deoglCollideListPropFieldCluster &AddCluster(deoglPropFieldCluster *cluster);
 	
 	/** Remove all clusters. */
 	void RemoveAllClusters();
@@ -95,10 +98,10 @@ public:
 	
 	
 	/** Prop field type is empty. */
-	inline bool GetIsEmpty() const{ return pClusterCount == 0; }
+	inline bool GetIsEmpty() const{ return pClusters.IsEmpty(); }
 	
 	/** Prop field type is not empty. */
-	inline bool GetIsNotEmpty() const{ return pClusterCount > 0; }
+	inline bool GetIsNotEmpty() const{ return pClusters.IsNotEmpty(); }
 	/*@}*/
 };
 

@@ -161,7 +161,6 @@ pLLPrepareForRenderWorld(this)
 	pDynamicCollideList = nullptr;
 	
 	pLightVolume = nullptr;
-	pLightVolumeCropBox = nullptr;
 	
 	pDirtyTouching = true;
 	pMarked = false;
@@ -539,17 +538,8 @@ void deoglRLight::SetLightVolumeDirty(){
 
 
 
-void deoglRLight::SetLightVolumeCropBox(decShapeBox *box){
-	if(box == pLightVolumeCropBox){
-		return;
-	}
-	
-	if(pLightVolumeCropBox){
-		delete pLightVolumeCropBox;
-	}
-	
-	pLightVolumeCropBox = box;
-	
+void deoglRLight::SetLightVolumeCropBox(decShapeBox::Ref &&box){
+	pLightVolumeCropBox = std::move(box);
 	SetLightVolumeDirty();
 }
 
@@ -787,7 +777,7 @@ void deoglRLight::AddComponent(deoglRComponent *component){
 		if(pStaticComponentList.Add(component)){
 			pDirtyStaticShadows = true;
 			pDirtyCollideLists = true;
-			SetLightVolumeCropBox(nullptr);
+			SetLightVolumeCropBox({});
 			
 			if(component->GetOcclusionMesh()){
 				SetLightVolumeDirty();
@@ -808,7 +798,7 @@ void deoglRLight::RemoveComponent(deoglRComponent *component){
 		
 		if(pUpdateOnRemoveComponent){
 			pDirtyStaticShadows = true;
-			SetLightVolumeCropBox(nullptr);
+			SetLightVolumeCropBox({});
 			
 			if(component->GetOcclusionMesh()){
 				SetLightVolumeDirty();
@@ -833,7 +823,7 @@ void deoglRLight::RemoveAllComponents(){
 		pStaticComponentList.RemoveAll();
 		pDirtyStaticShadows = true;
 		pDirtyCollideLists = true;
-		SetLightVolumeCropBox(nullptr);
+		SetLightVolumeCropBox({});
 	}
 	
 	count = pDynamicComponentList.GetCount();
@@ -1058,9 +1048,6 @@ void deoglRLight::pCleanUp(){
 	
 	if(pOptimizer){
 		pRenderThread.GetOptimizerManager().RemoveOptimizer(pOptimizer);
-	}
-	if(pLightVolumeCropBox){
-		delete pLightVolumeCropBox;
 	}
 	if(pConvexVolumeList){
 		delete pConvexVolumeList;

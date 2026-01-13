@@ -39,7 +39,7 @@
 #include "../utils/collision/deoglDCollisionBox.h"
 #include <dragengine/common/shape/decShapeVisitor.h>
 #include <dragengine/common/shape/decShapeBox.h>
-#include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/shape/decShape.h>
 
 
 
@@ -201,7 +201,7 @@ void deoglREnvMapProbe::SetMatrix(const decDMatrix &matrix){
 
 
 
-void deoglREnvMapProbe::UpdateInfluenceShape(const decShapeList &shapeList){
+void deoglREnvMapProbe::UpdateInfluenceShape(const decShape::List &shapeList){
 	const int count = shapeList.GetCount();
 	
 	if(count > 0){
@@ -214,7 +214,7 @@ void deoglREnvMapProbe::UpdateInfluenceShape(const decShapeList &shapeList){
 	}
 }
 
-void deoglREnvMapProbe::UpdateReflectionShape(const decShapeList &maskShapeList, decShape *shape){
+void deoglREnvMapProbe::UpdateReflectionShape(const decShape::List &maskShapeList, decShape *shape){
 	if(shape){
 		cReflectionShapeVisitor visitor(*this);
 		shape->Visit(visitor);

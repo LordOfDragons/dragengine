@@ -29,7 +29,6 @@
 #include "deDebugDrawerShape.h"
 #include "deDebugDrawerShapeFace.h"
 #include "../../common/shape/decShape.h"
-#include "../../common/shape/decShapeList.h"
 #include "../../common/exceptions.h"
 
 

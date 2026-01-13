@@ -160,7 +160,7 @@ void meViewEditorAddNew::OnLeftMouseButtonPress(int x, int y, bool shift, bool c
 		// create snap point visitor
 		pCLSnapPoint = new meCLSnapPoint(world, object);
 		
-		decShapeList shapeList;
+		decShape::List shapeList;
 		pCLSnapPoint->CalcBoundingBoxShape(shapeList);
 		((deColliderVolume&)(deCollider&)pCLCollider).SetShapes(shapeList);
 		

@@ -27,7 +27,6 @@
 #include <string.h>
 
 #include "delGPModule.h"
-#include "delGPMParameter.h"
 #include "../../delLauncher.h"
 #include "../../engine/delEngine.h"
 #include "../../engine/delEngineInstance.h"
@@ -72,15 +71,11 @@ delEngineInstance &engineInstance) const{
 	}
 	
 	const delEMParameterList &parameters = module->GetParameters();
-	const int count = pParameters.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const delGPMParameter &parameter = *pParameters.GetAt (i);
-		if(parameters.HasNamed(parameter.GetName())){
-			engineInstance.SetModuleParameter(pName, version, parameter.GetName(), parameter.GetValue());
+	pParameters.Visit([&](const decString &name, const decString &value){
+		if(parameters.HasNamed(name)){
+			engineInstance.SetModuleParameter(pName, version, name, value);
 		}
-	}
+	});
 }
 
 
@@ -89,17 +84,7 @@ delEngineInstance &engineInstance) const{
 //////////////
 
 delGPModule &delGPModule::operator=(const delGPModule &module){
-	const delGPMParameterList &parameters = module.GetParameters();
-	const int count = parameters.GetCount();
-	int i;
-	
 	pName = module.pName;
-	
-	pParameters.RemoveAll();
-	
-	for(i=0; i<count; i++){
-		pParameters.Add (delGPMParameter::Ref::New(*parameters.GetAt (i)));
-	}
-	
+	pParameters = module.pParameters;
 	return *this;
 }

@@ -404,7 +404,7 @@ void deClassNavigatorPath::nfUpdateDebugDrawer::RunFunction(dsRunTime *rt, dsVal
 		DSTHROW(dueNullPointer);
 	}
 	
-	decShapeList &shapes = debugDrawer->GetShapeAt(rt->GetValue(1)->GetInt())->GetShapeList();
+	decShape::List &shapes = debugDrawer->GetShapeAt(rt->GetValue(1)->GetInt())->GetShapeList();
 	const float scale = rt->GetValue(2)->GetFloat();
 	const decDMatrix matrix(decDMatrix::CreateWorld(
 		debugDrawer->GetPosition(), debugDrawer->GetOrientation()).QuickInvert());
@@ -416,54 +416,40 @@ void deClassNavigatorPath::nfUpdateDebugDrawer::RunFunction(dsRunTime *rt, dsVal
 		const float boxSize = 0.02f * scale;
 		const decVector upAlt(0.0f, 0.0f, 1.0f);
 		const decVector up(0.0f, 1.0f, 0.0f);
-		decShape *shape = nullptr;
 		
-		try{
-			// start of path
-			decVector lastPoint(matrix * path.GetAt(0));
+		// start of path
+		decVector lastPoint(matrix * path.GetAt(0));
+		
+		shapes.Add(decShapeSphere::Ref::New(0.05f * scale, lastPoint));
 			
-			shape = new decShapeSphere(0.05f * scale, lastPoint);
-			shapes.Add(shape);
-			shape = nullptr;
+		
+		// end of path
+		if(pointCount > 1){
+			shapes.Add(decShapeSphere::Ref::New(0.05f * scale, (matrix * path.GetAt(pointCount - 1)).ToVector()));
+		}
+		
+		// path segments
+		int i;
+		for(i=0; i<pointCount; i++){
+			const decVector nextPoint(matrix * path.GetAt(i));
+			const decVector direction(nextPoint - lastPoint);
 			
-			// end of path
-			if(pointCount > 1){
-				shape = new decShapeSphere(0.05f * scale, (matrix * path.GetAt(pointCount - 1)).ToVector());
-				shapes.Add(shape);
-				shape = nullptr;
+			const decVector halfExtends(boxSize, boxSize, direction.Length() * 0.5f);
+			if(halfExtends.z < 0.001f){
+				continue;
 			}
 			
-			// path segments
-			int i;
-			for(i=0; i<pointCount; i++){
-				const decVector nextPoint(matrix * path.GetAt(i));
-				const decVector direction(nextPoint - lastPoint);
+			const decVector view(direction.Normalized());
+			decQuaternion orientation;
+			
+			if(fabsf(view.y) < 0.99f){
+				orientation = decMatrix::CreateWorld(lastPoint, view, up).ToQuaternion();
 				
-				const decVector halfExtends(boxSize, boxSize, direction.Length() * 0.5f);
-				if(halfExtends.z < 0.001f){
-					continue;
-				}
-				
-				const decVector view(direction.Normalized());
-				decQuaternion orientation;
-				
-				if(fabsf(view.y) < 0.99f){
-					orientation = decMatrix::CreateWorld(lastPoint, view, up).ToQuaternion();
-					
-				}else{
-					orientation = decMatrix::CreateWorld(lastPoint, view, upAlt).ToQuaternion();
-				}
-				
-				shape = new decShapeBox(halfExtends, (lastPoint + nextPoint) * 0.5f, orientation);
-				shapes.Add(shape);
-				shape = nullptr;
+			}else{
+				orientation = decMatrix::CreateWorld(lastPoint, view, upAlt).ToQuaternion();
 			}
 			
-		}catch(...){
-			if(shape){
-				delete shape;
-			}
-			throw;
+			shapes.Add(decShapeBox::Ref::New(halfExtends, (lastPoint + nextPoint) * 0.5f, orientation));
 		}
 	}
 	

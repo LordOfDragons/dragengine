@@ -39,7 +39,7 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/shape/decShapeBox.h>
-#include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/shape/decShape.h>
 #include <dragengine/resources/collider/deCollider.h>
 #include <dragengine/resources/collider/deCollisionInfo.h>
 
@@ -72,7 +72,7 @@ bool meCLSnapPoint::IsSnappingEnabled() const{
 	return pWorld.GetGuiParameters().GetSnapToSnapPoints();
 }
 
-void meCLSnapPoint::CalcBoundingBoxShape(decShapeList &shape){
+void meCLSnapPoint::CalcBoundingBoxShape(decShape::List &shape){
 	decVector boxMin, boxMax;
 	
 	if(pObject->GetGDClass()){
@@ -85,20 +85,9 @@ void meCLSnapPoint::CalcBoundingBoxShape(decShapeList &shape){
 	
 	shape.RemoveAll();
 	
-	decShapeBox *shapeBox = nullptr;
-	
-	try{
-		shapeBox = new decShapeBox(
-			(boxMax - boxMin) * 0.5f + decVector(0.01f, 0.01f, 0.01f),
-			(boxMax + boxMin) * 0.5f);
-		shape.Add(shapeBox);
-		
-	}catch(const deException &){
-		if(shapeBox){
-			delete shapeBox;
-		}
-		throw;
-	}
+	shape.Add(decShapeBox::Ref::New(
+		(boxMax - boxMin) * 0.5f + decVector(0.01f, 0.01f, 0.01f),
+		(boxMax + boxMin) * 0.5f));
 }
 
 

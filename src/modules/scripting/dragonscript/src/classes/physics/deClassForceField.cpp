@@ -170,8 +170,7 @@ void deClassForceField::nfSetInfluenceArea::RunFunction(dsRunTime *rt, dsValue *
 	deForceField &forcefield = *(dedsGetNativeData<sFFNatDat>(p_GetNativeData(myself)).forcefield);
 	const deScriptingDragonScript &ds = static_cast<deClassForceField*>(GetOwnerClass())->GetDS();
 	
-	const decShapeList &area = ds.GetClassShapeList()->GetShapeList(rt->GetValue(0)->GetRealObject());
-	forcefield.SetInfluenceArea(area);
+	forcefield.SetInfluenceArea(ds.GetClassShapeList()->GetShapeList(rt->GetValue(0)->GetRealObject()));
 }
 
 

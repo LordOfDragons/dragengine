@@ -22,262 +22,131 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include "delEngineModule.h"
 #include "delEngineModuleList.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/systems/deModuleSystem.h>
 
 
-
 // Class delEngineModuleList
 ///////////////////////////////
 
-// Constructors and Destructors
-/////////////////////////////////
+// Constructor
+////////////////
 
-delEngineModuleList::delEngineModuleList(){
+delEngineModuleList::delEngineModuleList(decTObjectOrderedSet<delEngineModule> &&list) :
+decTObjectOrderedSet<delEngineModule>(std::move(list)){
 }
-
-delEngineModuleList::~delEngineModuleList(){
-	RemoveAll();
-}
-
 
 
 // Management
 ///////////////
-
-int delEngineModuleList::GetCount() const{
-	return pModules.GetCount();
-}
-
-delEngineModule *delEngineModuleList::GetAt(int index) const{
-	return (delEngineModule*)pModules.GetAt(index);
-}
 
 delEngineModule *delEngineModuleList::GetNamed(const char *name) const{
 	if(!name){
 		DETHROW_INFO(deeNullPointer, "name");
 	}
 	
-	const int count = pModules.GetCount();
 	delEngineModule *latestModule = nullptr;
-	int i;
-	
-	for(i=0; i<count; i++){
-		delEngineModule * const module = (delEngineModule*)pModules.GetAt(i);
-		if(module->GetName() != name){
-			continue;
+	Visit([&](delEngineModule *m){
+		if(m->GetName() != name){
+			return;
 		}
-		if(latestModule && deModuleSystem::CompareVersion(
-				module->GetVersion(), latestModule->GetVersion()) <= 0){
-			continue;
+		if(latestModule && deModuleSystem::CompareVersion(m->GetVersion(), latestModule->GetVersion()) <= 0){
+			return;
 		}
 		
-		latestModule = module;
-	}
+		latestModule = m;
+	});
 	
 	return latestModule;
 }
 
 delEngineModule *delEngineModuleList::GetNamed(const char *name, const char *version) const{
-	if(!name){
-		DETHROW_INFO(deeNullPointer, "name");
-	}
-	if(!version){
-		DETHROW_INFO(deeNullPointer, "version");
-	}
+	DEASSERT_NOTNULL(name)
+	DEASSERT_NOTNULL(version)
 	
-	const int count = pModules.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		delEngineModule * const module = (delEngineModule*)pModules.GetAt(i);
-		if(module->GetName() == name && module->GetVersion() == version){
-			return module;
-		}
-	}
-	
-	return nullptr;
+	return FindOrDefault([&](const delEngineModule &module){
+		return module.GetName() == name && module.GetVersion() == version;
+	});
 }
 
 delEngineModule *delEngineModuleList::GetNamedAtLeast(const char *name, const char *version) const{
-	if(!name){
-		DETHROW_INFO(deeNullPointer, "name");
-	}
-	if(!version){
-		DETHROW_INFO(deeNullPointer, "version");
-	}
+	DEASSERT_NOTNULL(name)
+	DEASSERT_NOTNULL(version)
 	
-	const int count = pModules.GetCount();
 	delEngineModule *latestModule = nullptr;
-	int i;
-	
-	for(i=0; i<count; i++){
-		delEngineModule * const module = (delEngineModule*)pModules.GetAt(i);
-		if(module->GetName() != name || deModuleSystem::CompareVersion(
-				module->GetVersion(), version) < 0){
-			continue;
+	Visit([&](delEngineModule *m){
+		if(m->GetName() != name || deModuleSystem::CompareVersion(m->GetVersion(), version) < 0){
+			return;
 		}
-		if(latestModule && deModuleSystem::CompareVersion(
-				module->GetVersion(), latestModule->GetVersion()) <= 0){
-			continue;
+		if(latestModule && deModuleSystem::CompareVersion(m->GetVersion(), latestModule->GetVersion()) <= 0){
+			return;
 		}
 		
-		latestModule = module;
-	}
+		latestModule = m;
+	});
 	
 	return latestModule;
 }
 
-void delEngineModuleList::GetNamed(decTObjectList<delEngineModule> &list, const char *name) const{
-	if(!name){
-		DETHROW_INFO(deeNullPointer, "name");
-	}
-	
-	const int count = pModules.GetCount();
-	int i;
-	
-	list.RemoveAll();
-	
-	for(i=0; i<count; i++){
-		delEngineModule * const module = (delEngineModule*)pModules.GetAt(i);
-		if(module->GetName() == name){
-			list.Add(module);
-		}
-	}
+delEngineModuleList delEngineModuleList::CollectNamed(const char *name) const{
+	DEASSERT_NOTNULL(name)
+	return Collect([&](const delEngineModule &m){
+		return m.GetName() == name;
+	});
 }
 
-void delEngineModuleList::GetNames(decStringList &list) const{
-	const int count = pModules.GetCount();
-	int i;
-	
-	list.RemoveAll();
-	
-	for(i=0; i<count; i++){
-		delEngineModule * const module = (delEngineModule*)pModules.GetAt(i);
-		if(!list.Has(module->GetName())){
-			list.Add(module->GetName());
-		}
-	}
-}
-
-bool delEngineModuleList::Has(delEngineModule *module) const{
-	return pModules.Has(module);
+decStringSet delEngineModuleList::GetNames() const{
+	decStringSet names;
+	Visit([&](const delEngineModule &m){
+		names.Add(m.GetName());
+	});
+	return names;
 }
 
 bool delEngineModuleList::HasNamed(const char *name) const{
-	if(!name){
-		DETHROW_INFO(deeNullPointer, "name");
-	}
+	DEASSERT_NOTNULL(name)
 	
-	const int count = pModules.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const delEngineModule &module = *((delEngineModule*)pModules.GetAt(i));
-		if(module.GetName() == name){
-			return true;
-		}
-	}
-	
-	return false;
+	return HasMatching([&](const delEngineModule &m){
+		return m.GetName() == name;
+	});
 }
 
-bool delEngineModuleList::HasNamed(const char *name, const char *version) const{
-	if(!name){
-		DETHROW_INFO(deeNullPointer, "name");
-	}
-	if(!version){
-		DETHROW_INFO(deeNullPointer, "version");
-	}
+bool delEngineModuleList::HasWith(const char *name, const char *version) const{
+	DEASSERT_NOTNULL(name)
+	DEASSERT_NOTNULL(version)
 	
-	const int count = pModules.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const delEngineModule &module = *((delEngineModule*)pModules.GetAt(i));
-		if(module.GetName() == name && module.GetVersion() == version){
-			return true;
-		}
-	}
-	
-	return false;
-}
-
-int delEngineModuleList::IndexOf(delEngineModule *module) const{
-	return pModules.IndexOf(module);
+	return HasMatching([&](const delEngineModule &m){
+		return m.GetName() == name && m.GetVersion() == version;
+	});
 }
 
 int delEngineModuleList::IndexOfNamed(const char *name) const{
-	if(!name){
-		DETHROW_INFO(deeNullPointer, "name");
-	}
+	DEASSERT_NOTNULL(name)
 	
-	const int count = pModules.GetCount();
 	const delEngineModule *latestModule = nullptr;
 	int latestIndex = -1;
-	int i;
 	
-	for(i=0; i<count; i++){
-		const delEngineModule * const module = (delEngineModule*)pModules.GetAt(i);
-		if(module->GetName() == name){
-			if(!latestModule || deModuleSystem::CompareVersion(
-					module->GetVersion(), latestModule->GetVersion()) > 0){
-				latestModule = module;
-				latestIndex = i;
-			}
+	VisitIndexed([&](int i, delEngineModule *m){
+		if(m->GetName() != name){
+			return;
 		}
-	}
+		
+		if(!latestModule || deModuleSystem::CompareVersion(m->GetVersion(), latestModule->GetVersion()) > 0){
+			latestModule = m;
+			latestIndex = i;
+		}
+	});
 	
 	return latestIndex;
 }
 
-int delEngineModuleList::IndexOfNamed(const char *name, const char *version) const{
-	if(!name){
-		DETHROW_INFO(deeNullPointer, "name");
-	}
-	if(!version){
-		DETHROW_INFO(deeNullPointer, "version");
-	}
+int delEngineModuleList::IndexOfWith(const char *name, const char *version) const{
+	DEASSERT_NOTNULL(name)
+	DEASSERT_NOTNULL(version)
 	
-	const int count = pModules.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const delEngineModule &module = *((delEngineModule*)pModules.GetAt(i));
-		if(module.GetName() == name && module.GetVersion() == version){
-			return i;
-		}
-	}
-	
-	return -1;
-}
-
-void delEngineModuleList::Add(delEngineModule *module){
-	if(!module){
-		DETHROW_INFO(deeNullPointer, "module");
-	}
-	if(HasNamed(module->GetName(), module->GetVersion())){
-		DETHROW_INFO(deeInvalidParam, "named module with version is present");
-	}
-	
-	pModules.Add(module);
-}
-
-void delEngineModuleList::Remove(delEngineModule *module){
-	const int index = IndexOf (module);
-	if(index == -1){
-		DETHROW_INFO(deeInvalidParam, "moduel is absent");
-	}
-	pModules.RemoveFrom(index);
-}
-
-void delEngineModuleList::RemoveAll(){
-	pModules.RemoveAll();
+	return IndexOfMatching([&](const delEngineModule &m){
+		return m.GetName() == name && m.GetVersion() == version;
+	});
 }

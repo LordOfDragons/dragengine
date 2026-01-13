@@ -100,7 +100,7 @@ private:
 	decQuaternion pOrientation;
 	decString pBoneName;
 	
-	decShapeList pInfluenceArea;
+	decShape::List pInfluenceArea;
 	float pRadius;
 	float pExponent;
 	
@@ -111,7 +111,7 @@ private:
 	float pFluctuationDirection;
 	float pFluctuationForce;
 	
-	decShapeList pShape;
+	decShape::List pShape;
 	bool pEnabled;
 	
 	decString pPropertyNames[epAttachRotation + 1];
@@ -157,10 +157,10 @@ public:
 	void SetBoneName(const char *boneName);
 	
 	/** \brief Influence area. */
-	inline const decShapeList &GetInfluenceArea() const{ return pInfluenceArea; }
+	inline const decShape::List &GetInfluenceArea() const{ return pInfluenceArea; }
 	
 	/** \brief Set influence area. */
-	void SetInfluenceArea(const decShapeList &area);
+	void SetInfluenceArea(const decShape::List &area);
 	
 	/** \brief Falloff radius. */
 	inline float GetRadius() const{ return pRadius; }
@@ -211,10 +211,10 @@ public:
 	void SetFluctuationForce(float fluctuation);
 	
 	/** \brief Sound shape. */
-	inline const decShapeList &GetShape() const{ return pShape; }
+	inline const decShape::List &GetShape() const{ return pShape; }
 	
 	/** \brief Set sound shape. */
-	void SetShape(const decShapeList &shape);
+	void SetShape(const decShape::List &shape);
 	
 	/** \brief Force field is enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }

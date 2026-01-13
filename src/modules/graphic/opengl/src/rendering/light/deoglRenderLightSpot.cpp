@@ -496,7 +496,7 @@ void deoglRenderLightSpot::CalculateBoxBoundary(deoglRenderPlanLight &planLight)
 	const decVector cbExtends((boundaryMax - boundaryMin) * 0.5f);
 	const decVector cbPosition((boundaryMin + boundaryMax) * 0.5f);
 	
-	light.SetLightVolumeCropBox(new decShapeBox(cbExtends, cbPosition));
+	light.SetLightVolumeCropBox(decShapeBox::Ref::New(cbExtends, cbPosition));
 	
 	// DEBUG
 	/*

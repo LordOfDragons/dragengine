@@ -53,7 +53,7 @@ deColliderVolume::~deColliderVolume(){
 // Shapes
 ///////////
 
-void deColliderVolume::SetShapes(const decShapeList &shapes){
+void deColliderVolume::SetShapes(const decShape::List &shapes){
 	pShapes = shapes;
 	pNotifyCollisionVolumeChanged();
 }

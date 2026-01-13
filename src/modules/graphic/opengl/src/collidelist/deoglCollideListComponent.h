@@ -59,8 +59,12 @@ public:
 	deoglCollideListComponent(deoglRComponent *component);
 	
 	/** Copy. */
-	deoglCollideListComponent(const deoglCollideListComponent &other) = default;
-	deoglCollideListComponent &operator=(const deoglCollideListComponent &other) = default;
+	deoglCollideListComponent(const deoglCollideListComponent &other) = delete;
+	deoglCollideListComponent &operator=(const deoglCollideListComponent &other) = delete;
+	
+	/** Move. */
+	deoglCollideListComponent(deoglCollideListComponent &&other) noexcept;
+	deoglCollideListComponent &operator=(deoglCollideListComponent &&other) noexcept;
 	
 	/** Clean up collide list component. */
 	~deoglCollideListComponent() override;

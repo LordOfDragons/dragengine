@@ -69,7 +69,7 @@
 #include <dragengine/common/shape/decShapeBox.h>
 #include <dragengine/common/shape/decShapeCylinder.h>
 #include <dragengine/common/shape/decShapeCapsule.h>
-#include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/shape/decShape.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/logger/deLogger.h>
 
@@ -328,7 +328,7 @@ void meWPSObjectShape::UpdateListProperties(bool retainSelection){
 	// rebuild the shape list from the currently selected property
 	if(isPropertyShape){
 		igdeCodecPropertyString codec;
-		decShapeList shapeList;
+		decShape::List shapeList;
 		int i, count;
 		
 		try{
@@ -507,53 +507,45 @@ void meWPSObjectShape::OnShapeChanged(){
 	}
 	
 	igdeUndo::Ref undo;
-	decShape *shape = nullptr;
+	decShape::Ref shape;
 	
-	try{
-		switch(activePanel){
-		case espSphere:
-			shape = new decShapeSphere(
-				decMath::max(pEditSphereRadius->GetFloat(), 0.001f),
-				pEditSpherePosition->GetVector());
-			break;
-			
-		case espBox:
-			shape = new decShapeBox(
-				decVector(0.001f, 0.001f, 0.001f).Largest(pEditBoxExtends->GetVector()),
-				pEditBoxPosition->GetVector(),
-				decMatrix::CreateRotation(pEditBoxRotation->GetVector() * DEG2RAD).ToQuaternion());
-			break;
-			
-		case espCylinder:
-			shape = new decShapeCylinder(
-				decMath::max(pEditCylinderHeight->GetFloat(), 0.001f),
-				decMath::max(pEditCylinderRadiusTop->GetFloat(), 0.001f),
-				decMath::max(pEditCylinderRadiusBottom->GetFloat(), 0.001f),
-				pEditCylinderPosition->GetVector(),
-				decMatrix::CreateRotation(pEditCylinderRotation->GetVector() * DEG2RAD).ToQuaternion());
-			break;
-			
-		case espCapsule:
-			shape = new decShapeCapsule(
-				decMath::max(pEditCapsuleHeight->GetFloat(), 0.001f),
-				decMath::max(pEditCapsuleRadiusTop->GetFloat(), 0.001f),
-				decMath::max(pEditCapsuleRadiusBottom->GetFloat(), 0.001f),
-				pEditCapsulePosition->GetVector(),
-				decMatrix::CreateRotation(pEditCapsuleRotation->GetVector() * DEG2RAD).ToQuaternion());
-			break;
-			
-		default:
-			return;
-		}
+	switch(activePanel){
+	case espSphere:
+		shape = decShapeSphere::Ref::New(
+			decMath::max(pEditSphereRadius->GetFloat(), 0.001f),
+			pEditSpherePosition->GetVector());
+		break;
 		
-		undo = meUObjectShapeReplace::Ref::New(object, activeProperty, shapeIndex, *shape);
+	case espBox:
+		shape = decShapeBox::Ref::New(
+			decVector(0.001f, 0.001f, 0.001f).Largest(pEditBoxExtends->GetVector()),
+			pEditBoxPosition->GetVector(),
+			decMatrix::CreateRotation(pEditBoxRotation->GetVector() * DEG2RAD).ToQuaternion());
+		break;
 		
-	}catch(const deException &){
-		if(shape){
-			delete shape;
-		}
-		throw;
+	case espCylinder:
+		shape = decShapeCylinder::Ref::New(
+			decMath::max(pEditCylinderHeight->GetFloat(), 0.001f),
+			decMath::max(pEditCylinderRadiusTop->GetFloat(), 0.001f),
+			decMath::max(pEditCylinderRadiusBottom->GetFloat(), 0.001f),
+			pEditCylinderPosition->GetVector(),
+			decMatrix::CreateRotation(pEditCylinderRotation->GetVector() * DEG2RAD).ToQuaternion());
+		break;
+		
+	case espCapsule:
+		shape = decShapeCapsule::Ref::New(
+			decMath::max(pEditCapsuleHeight->GetFloat(), 0.001f),
+			decMath::max(pEditCapsuleRadiusTop->GetFloat(), 0.001f),
+			decMath::max(pEditCapsuleRadiusBottom->GetFloat(), 0.001f),
+			pEditCapsulePosition->GetVector(),
+			decMatrix::CreateRotation(pEditCapsuleRotation->GetVector() * DEG2RAD).ToQuaternion());
+		break;
+		
+	default:
+		return;
 	}
+	
+	undo = meUObjectShapeReplace::Ref::New(object, activeProperty, shapeIndex, *shape);
 	
 	pWorld->GetUndoSystem()->Add(undo);
 }

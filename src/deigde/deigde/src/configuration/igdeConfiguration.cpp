@@ -88,7 +88,7 @@
 #include <dragengine/common/shape/decShapeCapsule.h>
 #include <dragengine/common/shape/decShapeCylinder.h>
 #include <dragengine/common/shape/decShapeBox.h>
-#include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/shape/decShape.h>
 #include <dragengine/common/shape/decShapeSphere.h>
 #endif
 
@@ -135,8 +135,8 @@ pMaxRecentProjectEntries(10)
 	
 	
 	
-	decShapeList shapeList1, shapeList2;
-	shapeList1.AddShape(new decShapeSphere(0.5f, decVector(2.0f, 6.5f, -3.2f)));
+	decShape::List shapeList1, shapeList2;
+	shapeList1.Add(decShapeSphere::Ref::New(0.5f, decVector(2.0f, 6.5f, -3.2f)));
 	codec.EncodeShapeList(shapeList1, string1);
 	printf("encode sphere shape='%s'\n", string1.GetString());
 	codec.DecodeShapeList(string1.GetString(), shapeList2);
@@ -144,7 +144,7 @@ pMaxRecentProjectEntries(10)
 	printf("decode sphere shape='%s'\n", string2.GetString());
 	
 	shapeList1.RemoveAllShapes();
-	shapeList1.AddShape(new decShapeBox(decVector(1.5f, 2.0f, 0.5f), decVector(2.0f, -1.0f, 0.2f)));
+	shapeList1.Add(decShapeBox::Ref::New(decVector(1.5f, 2.0f, 0.5f), decVector(2.0f, -1.0f, 0.2f)));
 	codec.EncodeShapeList(shapeList1, string1);
 	printf("encode box shape='%s'\n", string1.GetString());
 	codec.DecodeShapeList(string1.GetString(), shapeList2);
@@ -152,7 +152,7 @@ pMaxRecentProjectEntries(10)
 	printf("decode box shape='%s'\n", string2.GetString());
 	
 	shapeList1.RemoveAllShapes();
-	shapeList1.AddShape(new decShapeBox(decVector(1.5f, 2.0f, 0.5f), decVector(2.0f, -1.0f, 0.2f),
+	shapeList1.Add(decShapeBox::Ref::New(decVector(1.5f, 2.0f, 0.5f), decVector(2.0f, -1.0f, 0.2f),
 		decMatrix::CreateRotation(10.0f * DEG2RAD, 120.0f * DEG2RAD, -90.0f * DEG2RAD).ToQuaternion()));
 	codec.EncodeShapeList(shapeList1, string1);
 	printf("encode box shape='%s'\n", string1.GetString());
@@ -161,7 +161,7 @@ pMaxRecentProjectEntries(10)
 	printf("decode box shape='%s'\n", string2.GetString());
 	
 	shapeList1.RemoveAllShapes();
-	shapeList1.AddShape(new decShapeCylinder(3.5f, 0.5f, 1.0f, decVector(2.0f, -1.0f, 0.2f)));
+	shapeList1.Add(decShapeCylinder::Ref::New(3.5f, 0.5f, 1.0f, decVector(2.0f, -1.0f, 0.2f)));
 	codec.EncodeShapeList(shapeList1, string1);
 	printf("encode cylinder shape='%s'\n", string1.GetString());
 	codec.DecodeShapeList(string1.GetString(), shapeList2);
@@ -169,7 +169,7 @@ pMaxRecentProjectEntries(10)
 	printf("decode cylinder shape='%s'\n", string2.GetString());
 	
 	shapeList1.RemoveAllShapes();
-	shapeList1.AddShape(new decShapeCylinder(3.5f, 0.5f, 1.0f, decVector(2.0f, -1.0f, 0.2f),
+	shapeList1.Add(decShapeCylinder::Ref::New(3.5f, 0.5f, 1.0f, decVector(2.0f, -1.0f, 0.2f),
 		decMatrix::CreateRotation(10.0f * DEG2RAD, 120.0f * DEG2RAD, -90.0f * DEG2RAD).ToQuaternion()));
 	codec.EncodeShapeList(shapeList1, string1);
 	printf("encode cylinder shape='%s'\n", string1.GetString());
@@ -178,7 +178,7 @@ pMaxRecentProjectEntries(10)
 	printf("decode cylinder shape='%s'\n", string2.GetString());
 	
 	shapeList1.RemoveAllShapes();
-	shapeList1.AddShape(new decShapeCapsule(3.5f, 0.5f, 1.0f, decVector(2.0f, -1.0f, 0.2f)));
+	shapeList1.Add(decShapeCapsule::Ref::New(3.5f, 0.5f, 1.0f, decVector(2.0f, -1.0f, 0.2f)));
 	codec.EncodeShapeList(shapeList1, string1);
 	printf("encode capsule shape='%s'\n", string1.GetString());
 	codec.DecodeShapeList(string1.GetString(), shapeList2);
@@ -186,7 +186,7 @@ pMaxRecentProjectEntries(10)
 	printf("decode capsule shape='%s'\n", string2.GetString());
 	
 	shapeList1.RemoveAllShapes();
-	shapeList1.AddShape(new decShapeCapsule(3.5f, 0.5f, 1.0f, decVector(2.0f, -1.0f, 0.2f),
+	shapeList1.Add(decShapeCapsule::Ref::New(3.5f, 0.5f, 1.0f, decVector(2.0f, -1.0f, 0.2f),
 		decMatrix::CreateRotation(10.0f * DEG2RAD, 120.0f * DEG2RAD, -90.0f * DEG2RAD).ToQuaternion()));
 	codec.EncodeShapeList(shapeList1, string1);
 	printf("encode capsule shape='%s'\n", string1.GetString());
@@ -195,10 +195,10 @@ pMaxRecentProjectEntries(10)
 	printf("decode capsule shape='%s'\n", string2.GetString());
 	
 	shapeList1.RemoveAllShapes();
-	shapeList1.AddShape(new decShapeSphere(0.5f, decVector(2.0f, 6.5f, -3.2f)));
-	shapeList1.AddShape(new decShapeBox(decVector(1.5f, 2.0f, 0.5f), decVector(2.0f, -1.0f, 0.2f)));
-	shapeList1.AddShape(new decShapeCylinder(3.5f, 0.5f, 1.0f, decVector(2.0f, -1.0f, 0.2f)));
-	shapeList1.AddShape(new decShapeCapsule(3.5f, 0.5f, 1.0f, decVector(2.0f, -1.0f, 0.2f)));
+	shapeList1.Add(decShapeSphere::Ref::New(0.5f, decVector(2.0f, 6.5f, -3.2f)));
+	shapeList1.Add(decShapeBox::Ref::New(decVector(1.5f, 2.0f, 0.5f), decVector(2.0f, -1.0f, 0.2f)));
+	shapeList1.Add(decShapeCylinder::Ref::New(3.5f, 0.5f, 1.0f, decVector(2.0f, -1.0f, 0.2f)));
+	shapeList1.Add(decShapeCapsule::Ref::New(3.5f, 0.5f, 1.0f, decVector(2.0f, -1.0f, 0.2f)));
 	codec.EncodeShapeList(shapeList1, string1);
 	printf("encode shape list='%s'\n", string1.GetString());
 	codec.DecodeShapeList(string1.GetString(), shapeList2);

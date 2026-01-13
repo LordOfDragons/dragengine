@@ -204,8 +204,8 @@ pAnyContentVisible(false)
 		pColliderFallback->SetEnabled(true);
 		pColliderFallback->SetResponseType(deCollider::ertStatic);
 		pColliderFallback->SetUseLocalGravity(true);
-		decShapeList shapeList;
-		shapeList.Add(new decShapeBox(decVector(0.1f, 0.1f, 0.1f)));
+		decShape::List shapeList;
+		shapeList.Add(decShapeBox::Ref::New(decVector(0.1f, 0.1f, 0.1f)));
 		pColliderFallback->SetShapes(shapeList);
 		pColliderFallback->SetMass(5.0f);
 		
@@ -1164,7 +1164,7 @@ void igdeWObject::pUpdateColliderShapes(){
 	}
 	
 	pDirtyFallbackColliderShape = false;
-	decShapeList shapeList;
+	decShape::List shapeList;
 	
 	pSubObjects.Visit([&](igdeWOSubObject &so){
 		if(!so.HasBoxExtends()){
@@ -1183,12 +1183,12 @@ void igdeWObject::pUpdateColliderShapes(){
 		boxCenter.y *= pScaling.y;
 		boxCenter.z *= pScaling.z;
 		
-		shapeList.Add(new decShapeBox(boxSize, boxCenter));
+		shapeList.Add(decShapeBox::Ref::New(boxSize, boxCenter));
 	});
 	
 	if(shapeList.GetCount() == 0){
 		// ensure the user can still select the object
-		shapeList.Add(new decShapeBox(decVector(0.1f, 0.1f, 0.1f)));
+		shapeList.Add(decShapeBox::Ref::New(decVector(0.1f, 0.1f, 0.1f)));
 	}
 	
 	pColliderFallback->SetShapes(shapeList);

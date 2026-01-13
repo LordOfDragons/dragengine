@@ -146,7 +146,6 @@ void igdePropertyStringEncodeShapeList::VisitShapeCapsule(decShapeCapsule &capsu
 void igdePropertyStringEncodeShapeList::VisitShapeHull(decShapeHull &hull){
 	const decVector &position = hull.GetPosition();
 	const decVector rotation(decMatrix::CreateFromQuaternion(hull.GetOrientation()).GetEulerAngles() * RAD2DEG);
-	const int pointCount = hull.GetPointCount();
 	
 	pAddSeparator();
 	pString.Append("hull");
@@ -154,13 +153,11 @@ void igdePropertyStringEncodeShapeList::VisitShapeHull(decShapeHull &hull){
 	if(!rotation.IsEqualTo(decVector())){
 		pString.AppendFormat(":rotation,%g,%g,%g", rotation.x, rotation.y, rotation.z);
 	}
-	if(pointCount > 0){
-		int i;
+	if(hull.GetPoints().IsNotEmpty()){
 		pString.Append(":points");
-		for(i=0; i<pointCount; i++){
-			const decVector &point = hull.GetPointAt(i);
+		hull.GetPoints().Visit([&](const decVector &point){
 			pString.AppendFormat(",%g,%g,%g", point.x, point.y, point.z);
-		}
+		});
 	}
 }
 

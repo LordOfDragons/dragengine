@@ -151,17 +151,9 @@ void meViewEditorSelect::UpdateRectSelection(){
 	pColVol->SetOrientation(decQuaternion());
 	pColVol->SetCollisionFilter(decCollisionFilter(collisionCategory, collisionFilter));
 	
-	decShapeHull * const shapeHull = new decShapeHull;
-	shapeHull->SetPointCount(5);
-	shapeHull->SetPointAt(0, decVector());
-	shapeHull->SetPointAt(1, corner1);
-	shapeHull->SetPointAt(2, corner2);
-	shapeHull->SetPointAt(3, corner3);
-	shapeHull->SetPointAt(4, corner4);
-	
-	decShapeList shapeList;
-	shapeList.Add(shapeHull);
-	((deColliderVolume&)(deCollider&)pColVol).SetShapes(shapeList);
+	pColVol.DynamicCast<deColliderVolume>()->SetShapes(decShape::List(
+		decShapeHull::Ref::New(decVector(), decQuaternion(),
+			decTList<decVector>(decVector(), corner1, corner2, corner3, corner4))));
 	
 	// test with this frustum for selection
 	pCLSelect->Prepare();

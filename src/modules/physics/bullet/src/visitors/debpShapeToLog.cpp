@@ -158,18 +158,11 @@ void debpShapeToLog::VisitShapeHull(decShapeHull &hull) {
 		pLog.AppendFormat(" o=(%f,%f,%f)", o.x, o.y, o.z);
 	}
 	
-	const int count = hull.GetPointCount();
-	if(count > 0){
-		const decVector * const pts = hull.GetPoints();
-		int i;
-		
+	if(hull.GetPoints().IsNotEmpty()){
 		pLog.Append(" pts=[");
-		
-		for(i=0; i<count; i++){
-			pLog.AppendFormat("%s(%f,%f,%f)", i == 0 ? "" : ", ",
-				pts[i].x, pts[i].y, pts[i].z);
-		}
-		
+		hull.GetPoints().VisitIndexed([&](int i, const decVector &p){
+			pLog.AppendFormat("%s(%f,%f,%f)", i == 0 ? "" : ", ", p.x, p.y, p.z);
+		});
 		pLog.Append("]");
 	}
 	

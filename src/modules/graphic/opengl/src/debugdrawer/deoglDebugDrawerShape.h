@@ -29,7 +29,7 @@
 
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/shape/decShape.h>
 
 class deDebugDrawerShape;
 
@@ -45,7 +45,7 @@ private:
 	decColor pEdgeColor;
 	decColor pFillColor;
 	
-	decShapeList pShapeList;
+	decShape::List pShapeList;
 	
 	int pFillFirstPoint;
 	int pFillPointCount;
@@ -96,10 +96,10 @@ public:
 	
 	
 	/** Shape list. */
-	inline const decShapeList &GetShapeList() const{ return pShapeList; }
+	inline const decShape::List &GetShapeList() const{ return pShapeList; }
 	
 	/** Set shape list. */
-	void SetShapeList(const decShapeList &shapes);
+	void SetShapeList(const decShape::List &shapes);
 	
 	
 	

@@ -27,6 +27,29 @@
 #include "../exceptions.h"
 
 
+// Class decShape::List
+//////////////////////////
+
+decShape::List::List(const List &list) : decTUniqueList<decShape>(){
+	list.Visit([&](const decShape &s){
+		Add(s.Copy());
+	});
+}
+
+decShape::List& decShape::List::operator=(const List &list){
+	RemoveAll();
+	list.Visit([&](const decShape &s){
+		Add(s.Copy());
+	});
+	return *this;
+}
+
+void decShape::List::Visit(decShapeVisitor &visitor){
+	Visit([&](decShape &s){
+		s.Visit(visitor);
+	});
+}
+
 
 // Class decShape
 ///////////////////
@@ -34,8 +57,7 @@
 // Constructors, destructors
 //////////////////////////////
 
-decShape::decShape(){
-}
+decShape::decShape() = default;
 
 decShape::decShape(const decVector &position) :
 pPosition(position){
@@ -46,8 +68,7 @@ pPosition(position),
 pOrientation(orientation){
 }
 
-decShape::~decShape(){
-}
+decShape::~decShape() = default;
 
 
 
@@ -60,12 +81,6 @@ void decShape::SetPosition(const decVector &position){
 
 void decShape::SetOrientation(const decQuaternion &orientation){
 	pOrientation = orientation;
-}
-
-
-
-decShape *decShape::Copy() const{
-	return new decShape(pPosition, pOrientation);
 }
 
 

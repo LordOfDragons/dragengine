@@ -74,8 +74,8 @@ void decShapeSphere::SetAxisScaling(const decVector2 &axisScaling){
 
 
 
-decShape *decShapeSphere::Copy() const{
-	return new decShapeSphere(pRadius, pAxisScaling, GetPosition());
+decShape::Ref decShapeSphere::Copy() const{
+	return Ref::New(pRadius, pAxisScaling, GetPosition());
 }
 
 

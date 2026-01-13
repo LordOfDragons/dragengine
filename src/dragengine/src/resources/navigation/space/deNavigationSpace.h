@@ -27,7 +27,7 @@
 
 #include "../../deResource.h"
 #include "../../../common/math/decMath.h"
-#include "../../../common/shape/decShapeList.h"
+#include "../../../common/shape/decShape.h"
 
 class deNavigationSpaceEdge;
 class deNavigationSpaceCorner;
@@ -147,7 +147,7 @@ private:
 	float pSnapDistance;
 	float pSnapAngle;
 	
-	decShapeList pBlockerShapeList;
+	decShape::List pBlockerShapeList;
 	int pBlockingPriority;
 	
 	deBaseAINavigationSpace *pPeerAI;
@@ -232,8 +232,8 @@ public:
 	void SetSnapAngle(float angle);
 	
 	/** \brief Blocker shape list. */
-	inline decShapeList &GetBlockerShapeList(){ return pBlockerShapeList; }
-	inline const decShapeList &GetBlockerShapeList() const{ return pBlockerShapeList; }
+	inline decShape::List &GetBlockerShapeList(){ return pBlockerShapeList; }
+	inline const decShape::List &GetBlockerShapeList() const{ return pBlockerShapeList; }
 	
 	/** \brief Notifies the peers that the blocker shape list changed. */
 	void NotifyBlockerShapeListChanged();

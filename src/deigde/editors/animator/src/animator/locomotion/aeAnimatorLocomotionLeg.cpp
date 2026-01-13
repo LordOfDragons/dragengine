@@ -461,23 +461,14 @@ void aeAnimatorLocomotionLeg::UpdateDebugDrawers(){
 
 
 void aeAnimatorLocomotionLeg::UpdateShapes(){
-	decShape *shape = nullptr;
 	
 	pDDSLocked->RemoveAllShapes();
 	pDDSPredict->RemoveAllShapes();
 	
-	try{
-		shape = new decShapeBox(decVector(0.06f, 0.05f, 0.15f), decVector(0.0f, 0.05f, 0.0f));
-		//shape = new decShapeSphere( 0.05 );		pDDSLocked->AddShape(shape);
-		shape = nullptr;
-		
-		shape = new decShapeSphere(0.05f);		pDDSPredict->AddShape(shape);
-		shape = nullptr;
-		
-	}catch(const deException &){
-		if(shape) delete shape;
-		throw;
-	}
+	//shape = new decShapeBox(decVector(0.06f, 0.05f, 0.15f), decVector(0.0f, 0.05f, 0.0f));
+	//shape = new decShapeSphere( 0.05 );	pDDSLocked->AddShape(shape);
+	
+	pDDSPredict->AddShape(decShapeSphere::Ref::New(0.05f));
 }
 
 void aeAnimatorLocomotionLeg::RepositionShapes(){

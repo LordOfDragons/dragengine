@@ -298,7 +298,7 @@ void deoglLight::SyncToRender(){
 	}
 	
 	if(pDirtyConvexVolumeList){
-		pRLight->SetLightVolumeCropBox(nullptr);
+			pRLight->SetLightVolumeCropBox({});
 		pRLight->SetLightVolumeDirty();
 		pDirtyConvexVolumeList = false;
 	}

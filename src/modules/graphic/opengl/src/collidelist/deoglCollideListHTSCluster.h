@@ -56,11 +56,15 @@ public:
 	deoglCollideListHTSCluster(deoglHTViewSectorCluster *cluster);
 	
 	/** Copy. */
-	deoglCollideListHTSCluster(const deoglCollideListHTSCluster &cluster) = default;
-	deoglCollideListHTSCluster &operator=(const deoglCollideListHTSCluster &cluster) = default;
+	deoglCollideListHTSCluster(const deoglCollideListHTSCluster &cluster) = delete;
+	deoglCollideListHTSCluster &operator=(const deoglCollideListHTSCluster &cluster) = delete;
+	
+	/** Move. */
+	deoglCollideListHTSCluster(deoglCollideListHTSCluster &&other) noexcept;
+	deoglCollideListHTSCluster &operator=(deoglCollideListHTSCluster &&other) noexcept;
 	
 	/** Clean up cluster. */
-	~deoglCollideListHTSCluster() override;
+	~deoglCollideListHTSCluster() override = default;
 	/*@}*/
 	
 	

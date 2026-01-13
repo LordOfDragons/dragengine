@@ -1238,7 +1238,7 @@ const decXmlElementTag &root, gdeObjectClass &objectClass){
 			field->SetBoneName(GetCDataString(*tag));
 			
 		}else if(tagName == "influenceArea"){
-			decShapeList list;
+			decShape::List list;
 			codec.DecodeShapeList(GetCDataString(*tag), list);
 			field->SetInfluenceArea(list);
 			
@@ -1298,7 +1298,7 @@ const decXmlElementTag &root, gdeObjectClass &objectClass){
 			field->SetFluctuationForce(GetCDataFloat(*tag));
 			
 		}else if(tagName == "shape"){
-			decShapeList list;
+			decShape::List list;
 			codec.DecodeShapeList(GetCDataString(*tag), list);
 			field->SetShape(list);
 			
@@ -1405,14 +1405,14 @@ void gdeLoadSaveGameDefinition::pReadObjectClassEnvMapProbe(const decXmlElementT
 			codec.DecodeShapeList(GetCDataString(*tag), envMapProbe->GetShapeListInfluence());
 			
 		}else if(tagName == "reflectionShape"){
-			decShapeList shapeList;
+			decShape::List shapeList;
 			codec.DecodeShapeList(GetCDataString(*tag), shapeList);
 			
 			if(shapeList.GetCount() == 0){
 				envMapProbe->SetShapeReflection(nullptr);
 				
 			}else{
-				envMapProbe->SetShapeReflection(shapeList.GetAt(0)->Copy());
+				envMapProbe->SetShapeReflection(shapeList.First());
 			}
 			
 		}else if(tagName == "reflectionMask"){
@@ -3171,7 +3171,7 @@ decXmlWriter &writer, const gdeOCEnvMapProbe &envMapProbe){
 	
 	if(envMapProbe.GetShapeReflection()){
 		decString value;
-		decShapeList shapeList;
+		decShape::List shapeList;
 		shapeList.Add(envMapProbe.GetShapeReflection()->Copy());
 		codec.EncodeShapeList(shapeList, value);
 		writer.WriteDataTagString("reflectionShape", value);

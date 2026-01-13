@@ -41,7 +41,6 @@
 
 gdeOCEnvMapProbe::gdeOCEnvMapProbe() :
 pScaling(1.0f, 1.0f, 1.0f),
-pShapeReflection(nullptr),
 pInfluenceBorderSize(0.1f),
 pInfluencePriority(0){
 }
@@ -51,7 +50,6 @@ pPosition(probe.GetPosition()),
 pRotation(probe.GetRotation()),
 pScaling(probe.GetScaling()),
 pShapeListInfluence(probe.GetShapeListInfluence()),
-pShapeReflection(nullptr),
 pShapeListReflectionMask(probe.GetShapeListReflectionMask()),
 pInfluenceBorderSize(probe.pInfluenceBorderSize),
 pInfluencePriority(probe.pInfluencePriority)
@@ -96,16 +94,13 @@ void gdeOCEnvMapProbe::SetScaling(const decVector &scaling){
 
 
 
-void gdeOCEnvMapProbe::SetShapeReflection(decShape *shape){
-	if(shape == pShapeReflection){
-		return;
+void gdeOCEnvMapProbe::SetShapeReflection(const decShape *shape){
+	if(shape){
+		pShapeReflection = shape->Copy();
+		
+	}else{
+		pShapeReflection.Clear();
 	}
-	
-	if(pShapeReflection){
-		delete pShapeReflection;
-	}
-	
-	pShapeReflection = shape;
 }
 
 void gdeOCEnvMapProbe::SetInfluenceBorderSize(float borderSize){
@@ -157,7 +152,4 @@ bool gdeOCEnvMapProbe::HasPropertyWithName(const char *name) const{
 //////////////////////
 
 void gdeOCEnvMapProbe::pCleanUp(){
-	if(pShapeReflection){
-		delete pShapeReflection;
-	}
 }

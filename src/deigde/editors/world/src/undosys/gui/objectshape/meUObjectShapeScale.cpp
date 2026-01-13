@@ -35,7 +35,7 @@
 #include <dragengine/common/shape/decShapeSphere.h>
 #include <dragengine/common/shape/decShapeCylinder.h>
 #include <dragengine/common/shape/decShapeCapsule.h>
-#include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/shape/decShape.h>
 #include <dragengine/common/shape/decShapeVisitor.h>
 #include <deigde/codec/igdeCodecPropertyString.h>
 
@@ -148,7 +148,7 @@ void meUObjectShapeScale::Redo(){
 	const decDMatrix matrixParentInverse(matrixParent.Invert());
 	const bool modifyPosition = GetModifyPosition();
 	
-	decShapeList shapeList;
+	decShape::List shapeList;
 	igdeCodecPropertyString codec;
 	codec.DecodeShapeList(pOldValue.GetString(), shapeList);
 	

@@ -25,18 +25,29 @@
 #ifndef _DELGPDISABLEMODULEVERSION_H_
 #define _DELGPDISABLEMODULEVERSION_H_
 
-#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decString.h>
-
 
 
 /**
  * \brief Game profile module version disabling.
  */
-class DE_DLL_EXPORT delGPDisableModuleVersion : public deObject{
+class DE_DLL_EXPORT delGPDisableModuleVersion{
 public:
-	/** \brief Type holding strong reference. */
-	using Ref = deTObjectReference<delGPDisableModuleVersion>;
+	/** \brief Game profile module version disabling list. */
+	class List : public decTList<delGPDisableModuleVersion>{
+	public:
+		using decTList<delGPDisableModuleVersion>::decTList;
+		
+		/** \brief Matching entry or nullptr if absent. */
+		const delGPDisableModuleVersion *GetWith(const char *name, const char *version) const;
+		
+		/** \brief Matching entry is present. */
+		bool HasWith(const char *name, const char *version) const;
+		
+		/** \brief Index of matching entry or -1 if absent. */
+		int IndexOfWith(const char *name, const char *version) const;
+	};
 	
 	
 private:
@@ -57,14 +68,15 @@ public:
 	/** \brief Create copy of game profile disable module version. */
 	delGPDisableModuleVersion(const delGPDisableModuleVersion &copy);
 	
-protected:
+	/** \brief Move. */
+	delGPDisableModuleVersion(delGPDisableModuleVersion &&other) noexcept;
+	delGPDisableModuleVersion &operator=(delGPDisableModuleVersion &&other) noexcept;
+	
 	/** \brief Clean up game profile disable module version. */
-	~delGPDisableModuleVersion() override;
+	~delGPDisableModuleVersion();
 	/*@}*/
 	
 	
-	
-public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module name. */

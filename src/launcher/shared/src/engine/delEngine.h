@@ -121,8 +121,13 @@ public:
 	/** \brief Set engine log filename. */
 	void SetLogFile(const char *path);
 	
-	/** \brief Modules. */
+	/**
+	 * \brief Modules.
+	 * \note Add modules only if HasWith(name,version) returns false.
+	 */
 	inline delEngineModuleList &GetModules(){ return pModules; }
+	
+	/** \brief Modules. */
 	inline const delEngineModuleList &GetModules() const{ return pModules; }
 	
 	/** \brief Reload list of modules from module directory. */

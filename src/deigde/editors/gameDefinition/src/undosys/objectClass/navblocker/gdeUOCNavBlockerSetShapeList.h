@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/shape/decShape.h>
 
 #include "../../../gamedef/objectClass/navblocker/gdeOCNavigationBlocker.h"
 #include "../../../gamedef/objectClass/gdeObjectClass.h"
@@ -47,8 +47,8 @@ private:
 	gdeObjectClass::Ref pObjectClass;
 	gdeOCNavigationBlocker::Ref pNavBlocker;
 	
-	decShapeList pOldValue;
-	decShapeList pNewValue;
+	decShape::List pOldValue;
+	decShape::List pNewValue;
 	
 	
 	
@@ -57,7 +57,7 @@ public:
 	/*@{*/
 	/** \brief Create undo action. */
 	gdeUOCNavBlockerSetShapeList(gdeObjectClass *objectClass,
-		gdeOCNavigationBlocker *navblocker, const decShapeList &newValue);
+		gdeOCNavigationBlocker *navblocker, const decShape::List &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

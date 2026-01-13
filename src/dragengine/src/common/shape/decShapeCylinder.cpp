@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-
 #include "decShapeCylinder.h"
 #include "decShapeVisitor.h"
 #include "../exceptions.h"
@@ -110,9 +108,6 @@ const decVector2 &bottomAxisScaling, const decVector &position, const decQuatern
 	SetBottomAxisScaling(bottomAxisScaling);
 }
 
-decShapeCylinder::~decShapeCylinder(){
-}
-
 
 
 // Management
@@ -147,8 +142,8 @@ void decShapeCylinder::SetBottomAxisScaling(const decVector2 &axisScaling){
 
 
 
-decShape *decShapeCylinder::Copy() const{
-	return new decShapeCylinder(pHalfHeight, pTopRadius, pBottomRadius,
+decShape::Ref decShapeCylinder::Copy() const{
+	return Ref::New(pHalfHeight, pTopRadius, pBottomRadius,
 		pTopAxisScaling, pBottomAxisScaling, GetPosition(), GetOrientation());
 }
 

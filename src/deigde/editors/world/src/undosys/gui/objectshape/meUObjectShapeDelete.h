@@ -28,7 +28,7 @@
 #include "../../../world/object/meObject.h"
 #include "../../../world/objectshape/meObjectShape.h"
 
-#include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/shape/decShape.h>
 
 #include <deigde/undo/igdeUndo.h>
 

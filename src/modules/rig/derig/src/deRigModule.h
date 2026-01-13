@@ -30,8 +30,8 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/collider/deColliderConstraint.h>
 #include <dragengine/systems/modules/rig/deBaseRigModule.h>
+#include <dragengine/common/shape/decShape.h>
 
-class decShapeList;
 class decXmlElementTag;
 class decXmlAttValue;
 class deRigBone;
@@ -79,11 +79,11 @@ private:
 	void pParseRig(decXmlElementTag *root, deRig &rig);
 	void pParseBone(decXmlElementTag *root, deRig &rig, dermName::List &boneNameList);
 	void pParseBoneIK(decXmlElementTag *root, float &lower, float &upper, float &resistance, bool &locked);
-	void pParseSphere(decXmlElementTag *root, decShapeList &shapes, decStringList &shapeProperties);
-	void pParseCylinder(decXmlElementTag *root, decShapeList &shapes, decStringList &shapeProperties);
-	void pParseCapsule(decXmlElementTag *root, decShapeList &shapes, decStringList &shapeProperties);
-	void pParseBox(decXmlElementTag *root, decShapeList &shapes, decStringList &shapeProperties);
-	void pParseHull(decXmlElementTag *root, decShapeList &shapes, decStringList &shapeProperties);
+	void pParseSphere(decXmlElementTag *root, decShape::List &shapes, decStringList &shapeProperties);
+	void pParseCylinder(decXmlElementTag *root, decShape::List &shapes, decStringList &shapeProperties);
+	void pParseCapsule(decXmlElementTag *root, decShape::List &shapes, decStringList &shapeProperties);
+	void pParseBox(decXmlElementTag *root, decShape::List &shapes, decStringList &shapeProperties);
+	void pParseHull(decXmlElementTag *root, decShape::List &shapes, decStringList &shapeProperties);
 	void pParseVector(decXmlElementTag *root, decVector &vector);
 	void pParseConstraint(decXmlElementTag *root, deRig &rig, deRigBone *bone, dermName::List &boneNameList);
 	void pParseConstraintDof(const decXmlElementTag &root, deColliderConstraintDof &dof, bool linearConstraint);

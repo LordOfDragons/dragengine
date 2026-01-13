@@ -218,16 +218,13 @@ void delGameProfile::Activate(delLauncher &launcher, delEngineInstance &engineIn
 	// disable module versions. this affects all modules
 	const delEngineModuleList &engineModuleList = launcher.GetEngine().GetModules();
 	const int moduleCount = pModules.GetCount();
-	const int disableModuleVersionCount = pDisableModuleVersions.GetCount();
-	int i;
 	
-	for(i=0; i<disableModuleVersionCount; i++){
-		const delGPDisableModuleVersion &version = *pDisableModuleVersions.GetAt(i);
-		delEngineModule * const module = engineModuleList.GetNamed (version.GetName(), version.GetVersion());
-		if(module){
-			engineInstance.EnableModule(module->GetName(), module->GetVersion(), false);
+	pDisableModuleVersions.Visit([&](const delGPDisableModuleVersion &v){
+		const delEngineModule * const m = engineModuleList.GetNamed(v.GetName(), v.GetVersion());
+		if(m){
+			engineInstance.EnableModule(m->GetName(), m->GetVersion(), false);
 		}
-	}
+	});
 	
 	// activate modules
 	engineInstance.ActivateModule(pModuleCrashRecovery, pModuleCrashRecoveryVersion);
@@ -242,9 +239,10 @@ void delGameProfile::Activate(delLauncher &launcher, delEngineInstance &engineIn
 	engineInstance.ActivateModule(pModuleVR, pModuleVRVersion);
 	
 	// set module properties
+	int i;
 	for(i=0; i<moduleCount; i++){
-		delGPModule &module = *pModules.GetAt (i);
-		delEngineModule * const engineModule = engineModuleList.GetNamed (module.GetName());
+		const delGPModule &module = *pModules.GetAt(i);
+		delEngineModule * const engineModule = engineModuleList.GetNamed(module.GetName());
 		if(engineModule){
 			module.ApplyParameters(engineModule->GetVersion(), launcher, engineInstance);
 		}
@@ -287,7 +285,7 @@ delGameProfile &delGameProfile::operator=(const delGameProfile &profile){
 	const int moduleCount = moduleList.GetCount();
 	int i;
 	for(i=0; i<moduleCount; i++){
-		pModules.Add (delGPModule::Ref::New(*moduleList.GetAt (i)));
+		pModules.Add(delGPModule::Ref::New(*moduleList.GetAt (i)));
 	}
 	
 	pRunArgs = profile.pRunArgs;

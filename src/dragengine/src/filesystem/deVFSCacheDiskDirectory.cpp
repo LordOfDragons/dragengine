@@ -44,7 +44,6 @@
 #include <sys/stat.h>
 
 #include "dePathList.h"
-#include "dePatternList.h"
 #include "deVFSCacheDiskDirectory.h"
 #include "../common/exceptions.h"
 

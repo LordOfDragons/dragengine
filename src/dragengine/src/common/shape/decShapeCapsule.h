@@ -37,6 +37,11 @@
  * to the top and bottom radius along the x and z direction.
  */
 class DE_DLL_EXPORT decShapeCapsule : public decShape{
+public:
+	/** \brief Reference. */
+	using Ref = deTUniqueReference<decShapeCapsule>;
+	
+	
 private:
 	float pTopRadius;
 	float pBottomRadius;
@@ -83,9 +88,6 @@ public:
 	decShapeCapsule(float halfHeight, float topRadius, float bottomRadius,
 		const decVector2 &topAxisScaling, const decVector2 &bottomAxisScaling,
 		const decVector &position, const decQuaternion &orientation);
-	
-	/** \brief Clean up capsule shape. */
-	~decShapeCapsule() override;
 	/*@}*/
 	
 	
@@ -128,7 +130,7 @@ public:
 	
 	
 	/** \brief Create copy of shape. */
-	decShape *Copy() const override;
+	decShape::Ref Copy() const override;
 	/*@}*/
 	
 	

@@ -100,7 +100,7 @@ void reRigShapeCylinder::Scale(float scale){
 	pHalfHeight *= scale;
 }
 
-decShape *reRigShapeCylinder::CreateShape(){
-	return new decShapeCylinder(pHalfHeight, pTopRadius, pBottomRadius,
+decShape::Ref reRigShapeCylinder::CreateShape(){
+	return decShapeCylinder::Ref::New(pHalfHeight, pTopRadius, pBottomRadius,
 		GetPosition(), decQuaternion::CreateFromEuler(GetOrientation() * DEG2RAD));
 }

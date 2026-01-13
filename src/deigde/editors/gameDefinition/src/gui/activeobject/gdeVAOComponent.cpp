@@ -396,8 +396,8 @@ void gdeVAOComponent::pCreateCollider(){
 		((deColliderComponent&)(deCollider&)pCollider).SetComponent(pComponent);
 		
 	}else{
-		decShapeList shapeList;
-		shapeList.Add(new decShapeBox(decVector(0.1f, 0.1f, 0.1f)));
+		decShape::List shapeList;
+		shapeList.Add(decShapeBox::Ref::New(decVector(0.1f, 0.1f, 0.1f)));
 		
 		pCollider = pView.GetGameDefinition()->GetEngine()->GetColliderManager()->CreateColliderVolume();
 		pCollider->SetEnabled(true);

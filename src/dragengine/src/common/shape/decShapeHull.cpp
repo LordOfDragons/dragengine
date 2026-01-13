@@ -36,27 +36,25 @@
 // Constructors, destructors
 //////////////////////////////
 
-decShapeHull::decShapeHull() :
-pPoints(nullptr),
-pPointCount(0){
-}
-
+decShapeHull::decShapeHull() = default;
 decShapeHull::decShapeHull(const decVector &position) :
-decShape(position),
-pPoints(nullptr),
-pPointCount(0){
+decShape(position){
 }
 
 decShapeHull::decShapeHull(const decVector &position, const decQuaternion &orientation) :
-decShape(position, orientation),
-pPoints(nullptr),
-pPointCount(0){
+decShape(position, orientation){
 }
 
-decShapeHull::~decShapeHull(){
-	if(pPoints){
-		delete [] pPoints;
-	}
+decShapeHull::decShapeHull(const decVector &position, const decQuaternion &orientation,
+	const PointList &points) :
+decShape(position, orientation),
+pPoints(points){
+}
+
+decShapeHull::decShapeHull(const decVector &position, const decQuaternion &orientation,
+	PointList &&points) :
+decShape(position, orientation),
+pPoints(std::move(points)){
 }
 
 
@@ -65,64 +63,20 @@ decShapeHull::~decShapeHull(){
 ///////////////
 
 void decShapeHull::SetPointCount(int count){
-	if(count < 0){
-		DETHROW(deeInvalidParam);
+	if(count != pPoints.GetCount()){
+		pPoints = PointList(count, decVector());
 	}
-	
-	if(count == pPointCount){
-		return;
-	}
-	
-	if(pPoints){
-		delete [] pPoints;
-		pPoints = nullptr;
-		pPointCount = 0;
-	}
-	
-	if(count > 0){
-		pPoints = new decVector[count];
-		pPointCount = count;
-	}
-}
-
-const decVector &decShapeHull::GetPointAt(int index) const{
-	if(index < 0 || index >= pPointCount){
-		DETHROW(deeOutOfBoundary);
-	}
-	
-	return pPoints[index];
 }
 
 void decShapeHull::SetPointAt(int index, const decVector &point){
-	if(index < 0 || index >= pPointCount){
-		DETHROW(deeOutOfBoundary);
-	}
-	
-	pPoints[index] = point;
+	pPoints.SetAt(index, point);
 }
 
 
 
-decShape *decShapeHull::Copy() const{
-	decShapeHull * const shape = new decShapeHull(GetPosition(), GetOrientation());
-	int i;
-	
-	try{
-		shape->SetPointCount(pPointCount);
-		for(i=0; i<pPointCount; i++){
-			shape->SetPointAt(i, pPoints[i]);
-		}
-		
-	}catch(const deException &){
-		if(shape){
-			delete shape;
-		}
-		throw;
-	}
-	
-	return shape;
+decShape::Ref decShapeHull::Copy() const{
+	return Ref::New(GetPosition(), GetOrientation(), pPoints);
 }
-
 
 
 // Visiting

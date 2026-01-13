@@ -27,7 +27,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
-#include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/shape/decShape.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/resources/debug/deDebugDrawer.h>
@@ -74,7 +74,7 @@ private:
 	
 	bool pVisible;
 	
-	decShapeList pShapes;
+	decShape::List pShapes;
 	
 	decTList<deDebugDrawerShapeFace*> pFaces;
 	
@@ -143,11 +143,11 @@ public:
 	
 	/** \name Shapes */
 	/*@{*/
-	/** \brief Add shape. */
-	void AddShape(decShape *shape);
+	/** rief Add shape. */
+	void AddShape(decShape::Ref &&shape);
 	
 	/** \brief Add shapes. */
-	void AddShapes(const decShapeList &shapes);
+	void AddShapes(const decShape::List &shapes);
 	
 	/** \brief Adds a sphere shape. */
 	void AddSphereShape(float radius, const decVector &position);

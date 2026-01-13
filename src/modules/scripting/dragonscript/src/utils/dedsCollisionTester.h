@@ -33,12 +33,10 @@
 #include <dragengine/resources/sensor/deTouchSensor.h>
 #include <dragengine/resources/world/deWorld.h>
 #include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
+#include <dragengine/common/shape/decShape.h>
 
 class deScriptingDragonScript;
-
 class deColliderVolume;
-class decShapeList;
-
 class dsValue;
 class dsRealObject;
 
@@ -107,7 +105,7 @@ public:
 	void SetCollisionRay();
 	
 	/** \brief Set collision testing to use a collision volume. */
-	void SetCollisionShape(const decShapeList &shapeList);
+	void SetCollisionShape(const decShape::List &shapeList);
 	
 	/** \brief Collider or null if not set. */
 	inline const deCollider::Ref &GetCollider() const{ return pCollider; }

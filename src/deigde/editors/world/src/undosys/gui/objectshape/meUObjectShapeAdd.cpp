@@ -33,7 +33,7 @@
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/shape/decShape.h>
-#include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/shape/decShape.h>
 
 #include <deigde/codec/igdeCodecPropertyString.h>
 
@@ -54,8 +54,7 @@ meUObjectShapeAdd::meUObjectShapeAdd(meObject *object, const char *property, con
 	}
 	
 	igdeCodecPropertyString codec;
-	decShape *copyShape = nullptr;
-	decShapeList shapeList;
+	decShape::List shapeList;
 	
 	pObject = nullptr;
 	
@@ -69,16 +68,7 @@ meUObjectShapeAdd::meUObjectShapeAdd(meObject *object, const char *property, con
 	
 	codec.DecodeShapeList(pOldValue.GetString(), shapeList);
 	
-	try{
-		copyShape = shape.Copy();
-		shapeList.Add(copyShape);
-		
-	}catch(const deException &){
-		if(copyShape){
-			delete copyShape;
-		}
-		throw;
-	}
+	shapeList.Add(shape.Copy());
 	
 	codec.EncodeShapeList(shapeList, pNewValue);
 	

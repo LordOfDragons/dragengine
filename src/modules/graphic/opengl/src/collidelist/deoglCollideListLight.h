@@ -25,6 +25,7 @@
 #ifndef _DEOGLCOLLIDELISTLIGHT_H_
 #define _DEOGLCOLLIDELISTLIGHT_H_
 
+#include "../occquery/deoglOcclusionQuery.h"
 #include "../occlusiontest/deoglOcclusionTestListener.h"
 
 #include <dragengine/deTUniqueReference.h>
@@ -33,7 +34,6 @@
 class deoglRLight;
 class deoglOcclusionTest;
 class deoglRenderPlan;
-class deoglOcclusionQuery;
 
 
 
@@ -61,11 +61,15 @@ public:
 	deoglCollideListLight(deoglRLight *light);
 	
 	/** Copy. */
-	deoglCollideListLight(const deoglCollideListLight &other) = default;
-	deoglCollideListLight &operator=(const deoglCollideListLight &other) = default;
+	deoglCollideListLight(const deoglCollideListLight &other) = delete;
+	deoglCollideListLight &operator=(const deoglCollideListLight &other) = delete;
+	
+	/** Move. */
+	deoglCollideListLight(deoglCollideListLight &&other) noexcept;
+	deoglCollideListLight &operator=(deoglCollideListLight &&other) noexcept;
 	
 	/** Clean up collide list light. */
-	~deoglCollideListLight() override;
+	~deoglCollideListLight() override = default;
 	/*@}*/
 	
 	

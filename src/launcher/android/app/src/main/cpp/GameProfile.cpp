@@ -2,7 +2,6 @@
 
 #include <delauncher/game/profile/delGameProfile.h>
 #include <delauncher/game/profile/delGPDisableModuleVersion.h>
-#include <delauncher/game/profile/delGPMParameter.h>
 #include <delauncher/game/profile/delGPModule.h>
 
 // GameProfileConfig
@@ -66,17 +65,13 @@ jobject GameProfileConfig::Convert(const delGameProfile &profile) {
         const JniObject objModule(pClsModule.New());
         pFldModuleName.Set(objModule, module.GetName());
 
-        const delGPMParameterList &params = module.GetParameters();
-        const int paramCount = params.GetCount();
         const JniObjectArray objParams(pEnv, pClsParameter, paramCount);
-        int j;
-        for(j=0; j<paramCount; j++){
-            const delGPMParameter &param = *params.GetAt(j);
+        module.GetParameters().Visit([](const decString &name, const decString &value){
             const JniObject objParam(pClsParameter.New());
-            pFldParamName.Set(objParam, param.GetName());
-            pFldParamValue.Set(objParam, param.GetValue());
+            pFldParamName.Set(objParam, name);
+            pFldParamValue.Set(objParam, value);
             objParams.SetAt(j, objParam);
-        }
+        });
         pFldModuleParameters.Set(objModule, objParams);
 
         objModules.SetAt(i, objModule);
@@ -173,10 +168,7 @@ void GameProfileConfig::Store(jobject objConfig, delGameProfile &profile) {
         int j;
         for(j=0; j<paramCount; j++){
             jobject objParam = objParams.GetAt(j);
-            const delGPMParameter::Ref param(delGPMParameter::Ref::New());
-            param->SetName(pFldParamName.Get(objParam));
-            param->SetValue(pFldParamValue.Get(objParam));
-            mod->GetParameters().Add(param);
+            mod->GetParameters().SetAt(pFldParamName.Get(objParam), pFldParamValue.Get(objParam));
         }
 
         profile.GetModules().Add(mod);

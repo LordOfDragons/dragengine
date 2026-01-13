@@ -79,6 +79,10 @@ private:
 	
 	
 public:
+	/** \brief Helper struct used to create inline dictionaries from arguments. */
+	struct Entry{ K key; VP value; };
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new dictionary. */
@@ -126,6 +130,13 @@ public:
 		dict.pBuckets = nullptr;
 		dict.pBucketCount = 0;
 		dict.pEntryCount = 0;
+	}
+	
+	/** \brief Create dictionary from arguments in the form "key1, value1, key2, value2, ...". */
+	template<typename... Entries>
+	requires ((std::is_same<std::decay_t<Entries>, Entry>::value) && ...)
+	explicit decTDictionary(Entries&&... entries) : decTDictionary(){
+		(SetAt(std::forward<Entries>(entries).key, std::forward<Entries>(entries).value), ...);
 	}
 	
 	/** \brief Clean up the dictionary. */

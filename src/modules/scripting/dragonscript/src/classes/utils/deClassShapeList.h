@@ -26,10 +26,10 @@
 #define _DECLASSSHAPELIST_H_
 
 #include <libdscript/libdscript.h>
+#include <dragengine/common/shape/decShape.h>
 
 class deEngine;
 class deScriptingDragonScript;
-class decShapeList;
 class decShapeHull;
 
 
@@ -56,9 +56,9 @@ public:
 	/** Creates the class members. */
 	void CreateClassMembers(dsEngine *engine) override;
 	/** Retrieves the shape list stored in a real object. */
-	const decShapeList &GetShapeList(dsRealObject *myself) const;
+	const decShape::List &GetShapeList(dsRealObject *myself) const;
 	/** Pushes a shape list onto the stack. */
-	void PushShapeList(dsRunTime *rt, const decShapeList &shapeList);
+	void PushShapeList(dsRunTime *rt, const decShape::List &shapeList);
 	
 	/** Retrieves the scripting module. */
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }

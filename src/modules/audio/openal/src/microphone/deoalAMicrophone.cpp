@@ -844,7 +844,7 @@ void deoalAMicrophone::pDebugCaptureRays(deDebugDrawer &debugDrawer, bool xray, 
 	deDebugDrawerShape * const shapeOrigin = new deDebugDrawerShape;
 	shapeOrigin->SetFillColor(decColor(1.0f, 1.0f, 1.0f, colorA * 0.25f));
 	shapeOrigin->SetEdgeColor(decColor(1.0f, 1.0f, 1.0f, colorA));
-	shapeOrigin->GetShapeList().Add(new decShapeSphere(0.05f));
+	shapeOrigin->GetShapeList().Add(decShapeSphere::Ref::New(0.05f));
 	debugDrawer.AddShape(shapeOrigin);
 	
 	for(i=0; i<rayCount; i++){

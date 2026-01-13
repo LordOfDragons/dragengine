@@ -61,9 +61,44 @@ pCameraInsideOccQueryBox(true),
 pOccQueryValid(false){
 }
 
-deoglCollideListLight::~deoglCollideListLight(){
+deoglCollideListLight::deoglCollideListLight(deoglCollideListLight &&other) noexcept :
+pLight(other.pLight),
+pCulled(other.pCulled),
+pCameraInside(other.pCameraInside),
+pCameraInsideOccQueryBox(other.pCameraInsideOccQueryBox),
+pOcclusionQuery(std::move(other.pOcclusionQuery)),
+pOccQueryValid(other.pOccQueryValid)
+{
+	other.pLight = nullptr;
+	other.pCulled = false;
+	other.pCameraInside = false;
+	other.pCameraInsideOccQueryBox = true;
+	other.pOccQueryValid = false;
 }
 
+deoglCollideListLight &deoglCollideListLight::operator=(deoglCollideListLight &&other) noexcept{
+	if(this == &other){
+		return *this;
+	}
+	
+	pLight = other.pLight;
+	pCulled = other.pCulled;
+	pCameraInside = other.pCameraInside;
+	pCameraInsideOccQueryBox = other.pCameraInsideOccQueryBox;
+	
+	other.pLight = nullptr;
+	other.pCulled = false;
+	other.pCameraInside = false;
+	other.pCameraInsideOccQueryBox = true;
+	
+	if(other.pOcclusionQuery){
+		pOcclusionQuery.Swap(other.pOcclusionQuery);
+	}
+	pOccQueryValid = other.pOccQueryValid;
+	other.pOccQueryValid = false;
+	
+	return *this;
+}
 
 
 // Management

@@ -41,7 +41,7 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
-#include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/shape/decShape.h>
 #include <dragengine/logger/deLogger.h>
 
 
@@ -162,7 +162,7 @@ decQuaternion gdeVAOSubObject::PropertyQuaternion(const decString &name, const d
 	return decQuaternion::CreateFromEuler(PropertyVector(name, defaultValue) * DEG2RAD);
 }
 
-void gdeVAOSubObject::PropertyShapeList(const decString &name, decShapeList &list, const decShapeList &defaultValue) const{
+void gdeVAOSubObject::PropertyShapeList(const decString &name, decShape::List &list, const decShape::List &defaultValue) const{
 	list.RemoveAll();
 	const char * const value = pPropertyValue(name);
 	if(!value){

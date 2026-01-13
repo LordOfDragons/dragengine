@@ -32,9 +32,7 @@
 #include "icon/delGameIcon.h"
 #include "profile/delGameProfile.h"
 #include "profile/delGPModule.h"
-#include "profile/delGPMParameter.h"
 #include "profile/delGPDisableModuleVersion.h"
-#include "profile/delGPDisableModuleVersionList.h"
 #include "../delLauncher.h"
 
 #include <dragengine/logger/deLogger.h>

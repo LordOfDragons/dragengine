@@ -87,7 +87,7 @@ void debpCreateShape::VisitShapeCylinder(decShapeCylinder &cylinder){
 	// hack required because of debpCollisionWorld::contactTest with USE_BULLET_COLLISION disabled
 	printf("[TEMPORARY HACK] debpCreateShape::VisitShapeCylinder\n");
 	const float radius = cylinder.GetTopRadius() / 1.414213f;
-	pShape = debpShapeHackBox::Ref::New(new decShapeBox(
+	pShape = debpShapeHackBox::Ref::New(decShapeBox::Ref::New(
 		decVector(radius, cylinder.GetHalfHeight(), radius),
 		cylinder.GetPosition(), cylinder.GetOrientation()));
 	

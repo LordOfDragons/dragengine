@@ -32,7 +32,6 @@
 #include <delauncher/engine/delEngineInstanceDirect.h>
 #include <delauncher/engine/modules/delEngineModule.h>
 #include <delauncher/game/profile/delGPModule.h>
-#include <delauncher/game/profile/delGPMParameter.h>
 #include <delauncher/game/fileformat/delFileFormat.h>
 
 #include <dragengine/common/exceptions.h>
@@ -323,14 +322,7 @@ bool declRunGame::ParseModuleParameter(const decString &value){
 		pModuleParameters->Add(module);
 	}
 	
-	delGPMParameter::Ref parameter(module->GetParameters().GetNamed(parameterName));
-	if(!parameter){
-		parameter = delGPMParameter::Ref::New();
-		parameter->SetName(parameterName);
-		module->GetParameters().Add(parameter);
-	}
-	
-	parameter->SetValue(parameterValue);
+	module->GetParameters().SetAt(parameterName, parameterValue);
 	
 	return true;
 }

@@ -271,9 +271,7 @@ void deClassLight::nfSetShape::RunFunction(dsRunTime *rt, dsValue *myself){
 	deLight &light = *(dedsGetNativeData<sLigNatDat>(p_GetNativeData(myself)).light);
 	const deScriptingDragonScript &ds = static_cast<deClassLight*>(GetOwnerClass())->GetDS();
 	
-	const decShapeList &shape = ds.GetClassShapeList()->GetShapeList(
-		rt->GetValue(0)->GetRealObject());
-	light.SetShape(shape);
+	light.SetShape(ds.GetClassShapeList()->GetShapeList(rt->GetValue(0)->GetRealObject()));
 }
 
 // public func LayerMask getLayerMask()

@@ -439,7 +439,7 @@ void deoglRLSVisitorCollectElements::VisitHTView(const deoglHTView &htview){
 				if(!clsector){
 					clsector = &pCollideList.AddHTSector(&sector);
 				}
-				clsector->AddCluster(si)->SetCascadeMask(cascadeMask);
+				clsector->AddCluster(si).SetCascadeMask(cascadeMask);
 			}
 		}
 		
@@ -481,9 +481,9 @@ void deoglRLSVisitorCollectElements::VisitPropFields(const deoglRWorld &world){
 					clpropfield = &pCollideList.AddPropField(&propField);
 				}
 				if(!cltype){
-					cltype = clpropfield->AddType(&type);
+					cltype = &clpropfield->AddType(&type);
 				}
-				cltype->AddCluster(&cluster)->SetCascadeMask(cascadeMask);
+				cltype->AddCluster(&cluster).SetCascadeMask(cascadeMask);
 			}
 		}
 		

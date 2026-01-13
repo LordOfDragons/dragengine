@@ -360,9 +360,6 @@
     <ClCompile Include="..\..\src\dragengine\src\filesystem\dePathList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\filesystem\dePatternList.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\filesystem\deVFSCacheDiskDirectory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -2151,9 +2148,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\filesystem\dePathList.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\filesystem\dePatternList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\filesystem\deVFSCacheDiskDirectory.h">

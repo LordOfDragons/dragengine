@@ -216,7 +216,7 @@ void deRigModule::pParseRig(decXmlElementTag *root, deRig &rig){
 	decVector vector;
 	int i;
 	
-	decShapeList shapes;
+	decShape::List shapes;
 	decStringList shapeProperties;
 	
 	for(i=0; i<root->GetElementCount(); i++){
@@ -325,7 +325,7 @@ void deRigModule::pParseBone(decXmlElementTag *root, deRig &rig, dermName::List 
 	decVector vector;
 	int i;
 	
-	decShapeList shapes;
+	decShape::List shapes;
 	decStringList shapeProperties;
 	
 //	if( pFindAttribute( root, "name" ) ){
@@ -515,74 +515,65 @@ void deRigModule::pParseBoneIK(decXmlElementTag *root, float &lower, float &uppe
 	}
 }
 
-void deRigModule::pParseSphere(decXmlElementTag *root, decShapeList &shapes, decStringList &shapeProperties){
-	decShapeSphere *sphere = nullptr;
+void deRigModule::pParseSphere(decXmlElementTag *root, decShape::List &shapes, decStringList &shapeProperties){
 	decXmlCharacterData *cdata;
 	decXmlElementTag *tag;
 	decString property;
 	decVector vector;
 	int i;
 	
-	try{
-		sphere = new decShapeSphere(1.0f);
-		
-		for(i=0; i<root->GetElementCount(); i++){
-			tag = pGetTagAt(root, i);
-			if(tag){
-				if(strcmp(tag->GetName(), "center") == 0){
-					vector.Set(0.0f, 0.0f, 0.0f);
-					pParseVector(tag, vector);
-					sphere->SetPosition(vector);
+	decShapeSphere::Ref sphere = decShapeSphere::Ref::New(1.0f);
+	
+	for(i=0; i<root->GetElementCount(); i++){
+		tag = pGetTagAt(root, i);
+		if(tag){
+			if(strcmp(tag->GetName(), "center") == 0){
+				vector.Set(0.0f, 0.0f, 0.0f);
+				pParseVector(tag, vector);
+				sphere->SetPosition(vector);
+				
+			}else if(strcmp(tag->GetName(), "position") == 0){
+				vector.Set(0.0f, 0.0f, 0.0f);
+				pParseVector(tag, vector);
+				sphere->SetPosition(vector);
+				
+			}else if(strcmp(tag->GetName(), "radius") == 0){
+				cdata = tag->GetFirstData();
+				
+				if(cdata){
+					sphere->SetRadius(strtof(cdata->GetData(), nullptr));
 					
-				}else if(strcmp(tag->GetName(), "position") == 0){
-					vector.Set(0.0f, 0.0f, 0.0f);
-					pParseVector(tag, vector);
-					sphere->SetPosition(vector);
+				}else{
+					sphere->SetRadius(0.0f);
+				}
+				
+			}else if(strcmp(tag->GetName(), "property") == 0){
+				cdata = tag->GetFirstData();
+				
+				if(cdata){
+					property = cdata->GetData();
 					
-				}else if(strcmp(tag->GetName(), "radius") == 0){
-					cdata = tag->GetFirstData();
-					
-					if(cdata){
-						sphere->SetRadius(strtof(cdata->GetData(), nullptr));
-						
-					}else{
-						sphere->SetRadius(0.0f);
-					}
-					
-				}else if(strcmp(tag->GetName(), "property") == 0){
-					cdata = tag->GetFirstData();
-					
-					if(cdata){
-						property = cdata->GetData();
-						
-					}else{
-						property.Empty();
-					}
+				}else{
+					property.Empty();
 				}
 			}
 		}
-		
-		shapeProperties.Add(property);
-		shapes.Add(sphere);
-		
-	}catch(const deException &){
-		if(sphere) delete sphere;
-		throw;
 	}
+	
+	shapeProperties.Add(property);
+	shapes.Add(std::move(sphere));
 }
 
-void deRigModule::pParseCylinder(decXmlElementTag *root, decShapeList &shapes, decStringList &shapeProperties){
-	decShapeCylinder *cylinder = nullptr;
+void deRigModule::pParseCylinder(decXmlElementTag *root, decShape::List &shapes, decStringList &shapeProperties){
 	decXmlCharacterData *cdata;
 	decXmlElementTag *tag;
 	decString property;
 	decVector vector;
 	int i;
 	
-	try{
-		cylinder = new decShapeCylinder(1.0f, 1.0f);
-		
-		for(i=0; i<root->GetElementCount(); i++){
+	decShapeCylinder::Ref cylinder = decShapeCylinder::Ref::New(1.0f, 1.0f);
+	
+	for(i=0; i<root->GetElementCount(); i++){
 			tag = pGetTagAt(root, i);
 			if(tag){
 				/*if( strcmp( tag->GetName(), "center" ) == 0 ){ // DEPRECATED
@@ -665,26 +656,19 @@ void deRigModule::pParseCylinder(decXmlElementTag *root, decShapeList &shapes, d
 		}
 		
 		shapeProperties.Add(property);
-		shapes.Add(cylinder);
-		
-	}catch(const deException &){
-		if(cylinder) delete cylinder;
-		throw;
-	}
+		shapes.Add(std::move(cylinder));
 }
 
-void deRigModule::pParseCapsule(decXmlElementTag *root, decShapeList &shapes, decStringList &shapeProperties){
-	decShapeCapsule *capsule = nullptr;
+void deRigModule::pParseCapsule(decXmlElementTag *root, decShape::List &shapes, decStringList &shapeProperties){
 	decXmlCharacterData *cdata;
 	decXmlElementTag *tag;
 	decString property;
 	decVector vector;
 	int i;
 	
-	try{
-		capsule = new decShapeCapsule(1.0f, 1.0f);
-		
-		for(i=0; i<root->GetElementCount(); i++){
+	decShapeCapsule::Ref capsule = decShapeCapsule::Ref::New(1.0f, 1.0f);
+	
+	for(i=0; i<root->GetElementCount(); i++){
 			tag = pGetTagAt(root, i);
 			if(tag){
 				/*if( strcmp( tag->GetName(), "center" ) == 0 ){ // DEPRECATED
@@ -761,25 +745,18 @@ void deRigModule::pParseCapsule(decXmlElementTag *root, decShapeList &shapes, de
 		}
 		
 		shapeProperties.Add(property);
-		shapes.Add(capsule);
-		
-	}catch(const deException &){
-		if(capsule) delete capsule;
-		throw;
-	}
+		shapes.Add(std::move(capsule));
 }
 
-void deRigModule::pParseBox(decXmlElementTag *root, decShapeList &shapes, decStringList &shapeProperties){
-	decShapeBox *box = nullptr;
+void deRigModule::pParseBox(decXmlElementTag *root, decShape::List &shapes, decStringList &shapeProperties){
 	decXmlElementTag *tag;
 	decString property;
 	decVector vector;
 	int i;
 	
-	try{
-		box = new decShapeBox(decVector(1.0f, 1.0f, 1.0f));
-		
-		for(i=0; i<root->GetElementCount(); i++){
+	decShapeBox::Ref box = decShapeBox::Ref::New(decVector(1.0f, 1.0f, 1.0f));
+	
+	for(i=0; i<root->GetElementCount(); i++){
 			tag = pGetTagAt(root, i);
 			if(tag){
 				/*if( strcmp( tag->GetName(), "center" ) == 0 ){ // DEPRECATED
@@ -835,22 +812,15 @@ void deRigModule::pParseBox(decXmlElementTag *root, decShapeList &shapes, decStr
 		}
 		
 		shapeProperties.Add(property);
-		shapes.Add(box);
-		
-	}catch(const deException &){
-		if(box) delete box;
-		throw;
-	}
+		shapes.Add(std::move(box));
 }
 
-void deRigModule::pParseHull(decXmlElementTag *root, decShapeList &shapes, decStringList &shapeProperties){
-	decShapeHull *hull = nullptr;
+void deRigModule::pParseHull(decXmlElementTag *root, decShape::List &shapes, decStringList &shapeProperties){
 	decString property;
 	decVector vector;
 	int i;
 	
-	try{
-		hull = new decShapeHull;
+	decShapeHull::Ref hull = decShapeHull::Ref::New();
 		
 		int pointCount = 0;
 		for(i=0; i<root->GetElementCount(); i++){
@@ -896,14 +866,7 @@ void deRigModule::pParseHull(decXmlElementTag *root, decShapeList &shapes, decSt
 		}
 		
 		shapeProperties.Add(property);
-		shapes.Add(hull);
-		
-	}catch(const deException &){
-		if(hull){
-			delete hull;
-		}
-		throw;
-	}
+		shapes.Add(std::move(hull));
 }
 
 void deRigModule::pParseConstraint(decXmlElementTag *root, deRig &rig, deRigBone *bone, dermName::List &boneNameList){
@@ -1260,7 +1223,7 @@ void deRigModule::pWriteRig(decXmlWriter &writer, const deRig &rig){
 	}
 	
 	const decStringList &shapeProperties = rig.GetShapeProperties();
-	const decShapeList &shapes = rig.GetShapes();
+	const decShape::List &shapes = rig.GetShapes();
 	const int shapeCount = shapes.GetCount();
 	for(i=0; i<shapeCount; i++){
 		writeShape.SetProperty(shapeProperties.GetAt(i));
@@ -1384,7 +1347,7 @@ void deRigModule::pWriteBone(decXmlWriter &writer, const deRig &rig, const deRig
 	}
 	
 	const decStringList &shapeProperties = bone.GetShapeProperties();
-	const decShapeList &shapes = bone.GetShapes();
+	const decShape::List &shapes = bone.GetShapes();
 	const int shapeCount = shapes.GetCount();
 	for(i=0; i<shapeCount; i++){
 		writeShape.SetProperty(shapeProperties.GetAt(i));

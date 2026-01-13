@@ -26,7 +26,7 @@
 #define _DEDEBUGDRAWERSHAPE_H_
 
 #include "../../common/math/decMath.h"
-#include "../../common/shape/decShapeList.h"
+#include "../../common/shape/decShape.h"
 #include "../../common/collection/decTList.h"
 
 class deDebugDrawerShapeFace;
@@ -48,7 +48,7 @@ private:
 	decQuaternion pOrientation;
 	decVector pScale;
 	
-	decShapeList pShapeList;
+	decShape::List pShapeList;
 	
 	decTList<deDebugDrawerShapeFace*> pFaces;
 	
@@ -104,8 +104,8 @@ public:
 	void SetFillColor(const decColor &color);
 	
 	/** \brief Shape list. */
-	inline decShapeList &GetShapeList(){ return pShapeList; }
-	inline const decShapeList &GetShapeList() const{ return pShapeList; }
+	inline decShape::List &GetShapeList(){ return pShapeList; }
+	inline const decShape::List &GetShapeList() const{ return pShapeList; }
 	/*@}*/
 	
 	

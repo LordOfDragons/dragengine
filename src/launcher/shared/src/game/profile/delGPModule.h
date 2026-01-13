@@ -25,9 +25,9 @@
 #ifndef _DELGPMODULE_H_
 #define _DELGPMODULE_H_
 
-#include "delGPMParameterList.h"
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/string/decStringDictionary.h>
 
 class delEngineInstance;
 class delLauncher;
@@ -47,7 +47,7 @@ public:
 	
 private:
 	decString pName;
-	delGPMParameterList pParameters;
+	decStringDictionary pParameters;
 	
 	
 	
@@ -77,8 +77,8 @@ public:
 	void SetName(const char *name);
 	
 	/** \brief Parameters. */
-	inline delGPMParameterList &GetParameters(){ return pParameters; }
-	inline const delGPMParameterList &GetParameters() const{ return pParameters; }
+	inline decStringDictionary &GetParameters(){ return pParameters; }
+	inline const decStringDictionary &GetParameters() const{ return pParameters; }
 	
 	/**
 	 * \brief Set parameters for a module version if possible.

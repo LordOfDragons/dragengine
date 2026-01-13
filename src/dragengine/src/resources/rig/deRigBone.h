@@ -28,7 +28,7 @@
 #include "../../common/math/decMath.h"
 #include "../../common/string/decString.h"
 #include "../../common/string/decStringList.h"
-#include "../../common/shape/decShapeList.h"
+#include "../../common/shape/decShape.h"
 
 class deRigConstraint;
 
@@ -40,7 +40,7 @@ class deRigConstraint;
  * 
  * \par Shapes
  * Shapes define the physical shape of the bone and are only used by the physics system.
- * See decShapeList for information about the available shape types.
+ * See decShape::List for information about the available shape types.
  * 
  * Shapes can be assigned a single shape property string. This allows to transport some
  * additional game specific information with individual shapes of a rig. A typical use
@@ -58,7 +58,7 @@ private:
 	decMatrix pInvMatrix;
 	decVector pCMP;
 	float pMass;
-	decShapeList pShapes;
+	decShape::List pShapes;
 	decStringList pShapeProperties;
 	bool pDynamic;
 	
@@ -185,14 +185,14 @@ public:
 	/** \name Shapes */
 	/*@{*/
 	/** \brief Shapes. */
-	inline const decShapeList &GetShapes() const{ return pShapes; }
+	inline const decShape::List &GetShapes() const{ return pShapes; }
 	
 	/**
 	 * \brief Set shapes.
 	 * 
 	 * Resets shape properties to empty strings for all shapes.
 	 */
-	void SetShapes(const decShapeList &shapes);
+	void SetShapes(const decShape::List &shapes);
 	
 	/** \brief Shape properties. */
 	inline const decStringList &GetShapeProperties() const{ return pShapeProperties; }

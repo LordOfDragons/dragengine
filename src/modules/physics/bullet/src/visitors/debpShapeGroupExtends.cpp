@@ -122,12 +122,9 @@ void debpShapeGroupExtends::VisitShapeCapsule(decShapeCapsule &capsule){
 }
 
 void debpShapeGroupExtends::VisitShapeHull(decShapeHull &hull){
-	const int count = hull.GetPointCount();
-	int i;
-	for(i=0; i<count; i++){
-		const decVector &point = hull.GetPointAt(i);
+	hull.GetPoints().Visit([&](const decVector &point){
 		pAddExtends(point, point);
-	}
+	});
 }
 
 

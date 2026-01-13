@@ -27,8 +27,8 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringList.h>
+#include <dragengine/common/shape/decShape.h>
 
-class decShapeList;
 class decShapeBox;
 
 
@@ -105,7 +105,7 @@ public:
 	void DecodeColor(const char *string, decColor &color, const decColor &defaultColor) const;
 	
 	/** \brief Decode property string into a shape list. */
-	void DecodeShapeList(const char *string, decShapeList &list) const;
+	void DecodeShapeList(const char *string, decShape::List &list) const;
 	/*@}*/
 	
 	
@@ -133,7 +133,7 @@ public:
 	void EncodeColor4(const decColor &color, decString &string) const;
 	
 	/** \brief Encode shape list into a property string. */
-	void EncodeShapeList(const decShapeList &list, decString &string) const;
+	void EncodeShapeList(const decShape::List &list, decString &string) const;
 	/*@}*/
 };
 

@@ -31,7 +31,7 @@
 #include "../video/deVideoPlayer.h"
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decLayerMask.h"
-#include "../../common/shape/decShapeList.h"
+#include "../../common/shape/decShape.h"
 
 class deSpeakerManager;
 class deWorld;
@@ -113,7 +113,7 @@ private:
 	float pRange;
 	float pRollOff;
 	float pDistanceOffset;
-	decShapeList pShape;
+	decShape::List pShape;
 	decLayerMask pLayerMask;
 	
 	deBaseAudioSpeaker *pPeerAudio;
@@ -272,10 +272,10 @@ public:
 	void SetDistanceOffset(float distanceOffset);
 	
 	/** \brief Sound shape. */
-	inline const decShapeList &GetShape() const{ return pShape; }
+	inline const decShape::List &GetShape() const{ return pShape; }
 	
 	/** \brief Set sound shape. */
-	void SetShape(const decShapeList &shape);
+	void SetShape(const decShape::List &shape);
 	
 	/** \brief Layer mask. */
 	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }

@@ -41,13 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCEnvMapProbeSetShapeReflection::gdeUOCEnvMapProbeSetShapeReflection(gdeObjectClass *objectClass,
-gdeOCEnvMapProbe *envMapProbe, const decShape *newValue) :
-
-
-pOldValue(nullptr),
-pNewValue(nullptr)
-{
+gdeUOCEnvMapProbeSetShapeReflection::gdeUOCEnvMapProbeSetShapeReflection(
+gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe, const decShape *newValue){
 	if(!objectClass || !envMapProbe){
 		DETHROW(deeInvalidParam);
 	}
@@ -66,12 +61,6 @@ pNewValue(nullptr)
 }
 
 gdeUOCEnvMapProbeSetShapeReflection::~gdeUOCEnvMapProbeSetShapeReflection(){
-	if(pNewValue){
-		delete pNewValue;
-	}
-	if(pOldValue){
-		delete pOldValue;
-	}
 }
 
 
@@ -80,23 +69,11 @@ gdeUOCEnvMapProbeSetShapeReflection::~gdeUOCEnvMapProbeSetShapeReflection(){
 ///////////////
 
 void gdeUOCEnvMapProbeSetShapeReflection::Undo(){
-	if(pOldValue){
-		pEnvMapProbe->SetShapeReflection(pOldValue->Copy());
-		
-	}else{
-		pEnvMapProbe->SetShapeReflection(nullptr);
-	}
-	
+	pEnvMapProbe->SetShapeReflection(pOldValue);
 	pObjectClass->NotifyEnvMapProbeChanged(pEnvMapProbe);
 }
 
 void gdeUOCEnvMapProbeSetShapeReflection::Redo(){
-	if(pNewValue){
-		pEnvMapProbe->SetShapeReflection(pNewValue->Copy());
-		
-	}else{
-		pEnvMapProbe->SetShapeReflection(nullptr);
-	}
-	
+	pEnvMapProbe->SetShapeReflection(pNewValue);
 	pObjectClass->NotifyEnvMapProbeChanged(pEnvMapProbe);
 }

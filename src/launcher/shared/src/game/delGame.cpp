@@ -35,7 +35,6 @@
 #include "patch/delPatch.h"
 #include "patch/delPatchManager.h"
 #include "profile/delGPModule.h"
-#include "profile/delGPMParameter.h"
 #include "profile/delGameProfile.h"
 #include "../delLauncher.h"
 #include "../engine/delEngine.h"

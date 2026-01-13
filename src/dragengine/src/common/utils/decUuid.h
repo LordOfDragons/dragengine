@@ -47,7 +47,7 @@ public:
 	decUuid();
 	
 	/** \brief Create uuid from integer value. */
-	decUuid(const uint8_t values[16]);
+	explicit decUuid(const uint8_t values[16]);
 	
 	/**
 	 * \brief Create uuid from hex string.

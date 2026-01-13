@@ -199,7 +199,6 @@ void delEngine::AddModulesFrom(const char *directory, deModuleSystem::eModuleTyp
 	delEngineModuleXML moduleXML(pLauncher.GetLogger(), pLauncher.GetLogSource());
 	deVirtualFileSystem &vfs = *pLauncher.GetVFS();
 	deLogger &logger = *pLauncher.GetLogger();
-	delEngineModule::Ref module;
 	decPath pattern;
 	int i, j;
 	
@@ -220,18 +219,26 @@ void delEngine::AddModulesFrom(const char *directory, deModuleSystem::eModuleTyp
 			pattern.SetFrom(versionDir);
 			pattern.AddComponent("module.xml");
 			
-			if(!vfs.ExistsFile(pattern)
-			|| vfs.GetFileType(pattern) != deVFSContainer::eftRegularFile){
+			if(!vfs.ExistsFile(pattern) || vfs.GetFileType(pattern) != deVFSContainer::eftRegularFile){
 				continue;
 			}
 			
 			logger.LogInfoFormat(pLauncher.GetLogSource(),
-				"Reading module definition from '%s'", pattern.GetPathUnix().GetString());
+			"Reading module definition from '%s'", pattern.GetPathUnix().GetString());
 			
 			try{
-				module = delEngineModule::Ref::New();
+				const delEngineModule::Ref module(delEngineModule::Ref::New());
 				moduleXML.ReadFromFile(pattern.GetPathUnix(), vfs.OpenFileForReading(pattern), module);
-				pModules.Add (module);
+				
+				if(pModules.HasWith(module->GetName(), module->GetVersion())){
+					logger.LogWarnFormat(pLauncher.GetLogSource(),
+						"Duplicate module '%s' version '%s' found in '%s'. Skipping module.",
+						module->GetName().GetString(), module->GetVersion().GetString(),
+						pattern.GetPathUnix().GetString());
+					continue;
+				}
+				
+				pModules.Add(module);
 				
 			}catch(const deException &e){
 				logger.LogErrorFormat(pLauncher.GetLogSource(), "Engine.AddModulesFrom failed"

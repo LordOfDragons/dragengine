@@ -28,10 +28,10 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/shape/decShape.h>
 
 class gdeViewActiveObject;
 class gdeObjectClass;
-class decShapeList;
 
 
 /**
@@ -89,7 +89,7 @@ public:
 	decVector PropertyVector(const decString &name, const decVector &defaultValue) const;
 	decVector2 PropertyVector2(const decString &name, const decVector2 &defaultValue) const;
 	decQuaternion PropertyQuaternion(const decString &name, const decVector &defaultValue) const;
-	void PropertyShapeList(const decString &name, decShapeList &list, const decShapeList &defaultValue) const;
+	void PropertyShapeList(const decString &name, decShape::List &list, const decShape::List &defaultValue) const;
 	/*@}*/
 	
 	

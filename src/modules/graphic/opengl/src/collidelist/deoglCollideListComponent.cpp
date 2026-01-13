@@ -62,6 +62,31 @@ pCubeFaceMask(0x2f),
 pSpecialFlags(0){
 }
 
+deoglCollideListComponent::deoglCollideListComponent(deoglCollideListComponent &&other) noexcept :
+pComponent(other.pComponent),
+pLODLevel(other.pLODLevel),
+pComponentLOD(other.pComponentLOD),
+pCulled(other.pCulled),
+pCascadeMask(other.pCascadeMask),
+pCubeFaceMask(other.pCubeFaceMask),
+pSpecialFlags(other.pSpecialFlags){
+	other.Clear();
+}
+
+deoglCollideListComponent &deoglCollideListComponent::operator=(deoglCollideListComponent &&other) noexcept{
+	if(this != &other){
+		pComponent = other.pComponent;
+		pLODLevel = other.pLODLevel;
+		pComponentLOD = other.pComponentLOD;
+		pCulled = other.pCulled;
+		pCascadeMask = other.pCascadeMask;
+		pCubeFaceMask = other.pCubeFaceMask;
+		pSpecialFlags = other.pSpecialFlags;
+		other.Clear();
+	}
+	return *this;;
+}
+
 deoglCollideListComponent::~deoglCollideListComponent(){
 }
 

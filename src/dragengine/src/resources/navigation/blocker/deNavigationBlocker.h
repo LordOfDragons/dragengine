@@ -28,7 +28,7 @@
 #include "../space/deNavigationSpace.h"
 #include "../../deResource.h"
 #include "../../../common/math/decMath.h"
-#include "../../../common/shape/decShapeList.h"
+#include "../../../common/shape/decShape.h"
 
 class deBaseAINavigationBlocker;
 class deNavigationBlockerManager;
@@ -63,7 +63,7 @@ private:
 	int pBlockingPriority;
 	bool pEnabled;
 	
-	decShapeList pShapeList;
+	decShape::List pShapeList;
 	
 	deBaseAINavigationBlocker *pPeerAI;
 	
@@ -145,8 +145,8 @@ public:
 	void SetEnabled(bool enabled);
 	
 	/** \brief Shape list. */
-	inline decShapeList &GetShapeList(){ return pShapeList; }
-	inline const decShapeList &GetShapeList() const{ return pShapeList; }
+	inline decShape::List &GetShapeList(){ return pShapeList; }
+	inline const decShape::List &GetShapeList() const{ return pShapeList; }
 	
 	/** \brief Notifies the peers that the shape list changed. */
 	void NotifyShapeListChanged();

@@ -38,6 +38,7 @@
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/shape/decShapeBox.h>
 #include <dragengine/common/utils/decLayerMask.h>
 #include <dragengine/resources/light/deLight.h>
 
@@ -57,7 +58,6 @@ class deoglWorldOctree;
 
 class decConvexVolumeList;
 class deoglDCollisionVolume;
-class decShapeBox;
 
 
 
@@ -150,7 +150,7 @@ private:
 	decDMatrix pInverseMatrix;
 	
 	deoglLightVolume *pLightVolume;
-	decShapeBox *pLightVolumeCropBox;
+	decShapeBox::Ref pLightVolumeCropBox;
 	bool pDirtyConvexVolumeList;
 	
 	decVector2 pTrackAngles;
@@ -455,10 +455,10 @@ public:
 	inline deoglLightVolume *GetLightVolume() const{ return pLightVolume; }
 	
 	/** Light volume crop box or \em NULL if not set. */
-	inline decShapeBox *GetLightVolumeCropBox() const{ return pLightVolumeCropBox; }
+	inline const decShapeBox::Ref &GetLightVolumeCropBox() const{ return pLightVolumeCropBox; }
 	
 	/** Set light volume crop box or NULL if not set. */
-	void SetLightVolumeCropBox(decShapeBox *box);
+	void SetLightVolumeCropBox(decShapeBox::Ref &&box);
 	
 	
 	

@@ -45,7 +45,7 @@
 #include <dragengine/common/shape/decShapeBox.h>
 #include <dragengine/common/shape/decShapeCapsule.h>
 #include <dragengine/common/shape/decShapeCylinder.h>
-#include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/shape/decShape.h>
 #include <dragengine/common/shape/decShapeSphere.h>
 #include <dragengine/resources/debug/deDebugDrawer.h>
 #include <dragengine/resources/debug/deDebugDrawerManager.h>
@@ -323,9 +323,8 @@ void deClassDebugDrawer::nfShapeSetShapes::RunFunction(dsRunTime *rt, dsValue *m
 	const deScriptingDragonScript &ds = *((static_cast<deClassDebugDrawer*>(GetOwnerClass()))->GetDS());
 	
 	deDebugDrawerShape &ddshape = *ddrawer.GetShapeAt(rt->GetValue(0)->GetInt());
-	const decShapeList &shapeList = ds.GetClassShapeList()->GetShapeList(rt->GetValue(1)->GetRealObject());
+	ddshape.GetShapeList() = ds.GetClassShapeList()->GetShapeList(rt->GetValue(1)->GetRealObject());
 	
-	ddshape.GetShapeList() = shapeList;
 	ddrawer.NotifyShapeContentChanged();
 }
 

@@ -26,6 +26,8 @@
 #define _DECSHAPE_H_
 
 #include "../math/decMath.h"
+#include "../collection/decTList.h"
+#include "../../deTUniqueReference.h"
 
 class decShapeVisitor;
 
@@ -39,6 +41,33 @@ class decShapeVisitor;
  * and the orientation.
  */
 class DE_DLL_EXPORT decShape{
+public:
+	/** \brief Reference. */
+	using Ref = deTUniqueReference<decShape>;
+	
+	/**
+	 * \brief List of shapes.
+	 * 
+	 * Provides support for visiting shapes in the list.
+	 */
+	class DE_DLL_EXPORT List : public decTUniqueList<decShape>{
+	public:
+		using decTUniqueList<decShape>::decTUniqueList;
+		using decTUniqueList<decShape>::Visit;
+		
+		/** \brief Create deep copy of list. */
+		List(const List &list);
+		List& operator=(const List &list);
+		
+		/** \brief Move list. */
+		List(List&&) = default;
+		List& operator=(List&&) = default;
+		
+		/** \brief Visit shapes. */
+		void Visit(decShapeVisitor &visitor);
+	};
+	
+	
 private:
 	decVector pPosition;
 	decQuaternion pOrientation;
@@ -80,7 +109,7 @@ public:
 	
 	
 	/** \brief Create copy of shape. */
-	virtual decShape *Copy() const;
+	virtual Ref Copy() const = 0;
 	/*@}*/
 	
 	

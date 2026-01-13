@@ -26,7 +26,7 @@
 #define _DELGAMEPROFILE_H_
 
 #include "delGPModuleList.h"
-#include "delGPDisableModuleVersionList.h"
+#include "delGPDisableModuleVersion.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
@@ -71,7 +71,7 @@ private:
 	decString pModuleNetworkVersion;
 	decString pModuleVRVersion;
 	
-	delGPDisableModuleVersionList pDisableModuleVersions;
+	delGPDisableModuleVersion::List pDisableModuleVersions;
 	
 	delGPModuleList pModules;
 	
@@ -237,8 +237,8 @@ public:
 	
 	
 	/** \brief List of module versions to enable or disable. */
-	inline delGPDisableModuleVersionList &GetDisableModuleVersions(){ return pDisableModuleVersions; }
-	inline const delGPDisableModuleVersionList &GetDisableModuleVersions() const{ return pDisableModuleVersions; }
+	inline delGPDisableModuleVersion::List &GetDisableModuleVersions(){ return pDisableModuleVersions; }
+	inline const delGPDisableModuleVersion::List &GetDisableModuleVersions() const{ return pDisableModuleVersions; }
 	
 	/** \brief Lodule list. */
 	inline delGPModuleList &GetModules(){ return pModules; }

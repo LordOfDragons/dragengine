@@ -73,8 +73,6 @@ aeWakeboard::aeWakeboard(aeAnimator *animator){
 	decLayerMask layermask;
 	deSkin::Ref engSkin;
 	deModel::Ref engModel;
-	decShape *shapeBox = nullptr;
-	decShapeList shapeList;
 	
 	//layermask.SetBit( aeAnimator::eclTerrain );
 	//layermask.SetBit( aeAnimator::eclElements );
@@ -117,17 +115,13 @@ aeWakeboard::aeWakeboard(aeAnimator *animator){
 		pEngCollider->SetCollisionFilter(decCollisionFilter(layermask));
 		pEngCollider->SetEnabled(pEnabled);
 		
-		shapeBox = new decShapeBox(boxHalfSize, boxPosition);
-		shapeList.Add(shapeBox);
-		shapeBox = nullptr;
+		decShape::List shapeList;
+		shapeList.Add(decShapeBox::Ref::New(boxHalfSize, boxPosition));
 		pEngCollider->SetShapes(shapeList);
 		
 		engWorld.AddCollider(pEngCollider);
 		
 	}catch(const deException &){
-		if(shapeBox){
-			delete shapeBox;
-		}
 		pCleanUp();
 		throw;
 	}

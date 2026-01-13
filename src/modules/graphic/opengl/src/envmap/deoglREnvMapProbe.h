@@ -29,9 +29,8 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/shape/decShape.h>
 
-class decShape;
-class decShapeList;
 class deoglRenderThread;
 class deoglRWorld;
 class deoglWorldOctree;
@@ -116,10 +115,10 @@ public:
 	
 	
 	/** Update influence shape. */
-	void UpdateInfluenceShape(const decShapeList &shapeList);
+	void UpdateInfluenceShape(const decShape::List &shapeList);
 	
 	/** Update reflection shape. */
-	void UpdateReflectionShape(const decShapeList &maskShapeList, decShape *shape);
+	void UpdateReflectionShape(const decShape::List &maskShapeList, decShape *shape);
 	
 	
 	

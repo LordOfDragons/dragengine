@@ -51,7 +51,7 @@
 #include <dragengine/common/shape/decShapeSphere.h>
 #include <dragengine/common/shape/decShapeCylinder.h>
 #include <dragengine/common/shape/decShapeCapsule.h>
-#include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/shape/decShape.h>
 #include <dragengine/common/shape/decShapeHull.h>
 #include <dragengine/common/exceptions.h>
 
@@ -96,15 +96,12 @@ void debpSweepCollisionTest::AddShape(decShape &shape, const decVector &scale){
 	shape.Visit(*this);
 }
 
-void debpSweepCollisionTest::AddShapes(const decShapeList &list, const decVector &scale){
-	const int count = list.GetCount();
-	int i;
-	
+void debpSweepCollisionTest::AddShapes(const decShape::List &list, const decVector &scale){
 	pScale = scale;
 	
-	for(i=0; i<count; i++){
-		list.GetAt(i)->Visit(*this);
-	}
+	list.Visit([&](decShape &shape){
+		shape.Visit(*this);
+	});
 }
 
 void debpSweepCollisionTest::RemoveAllShapes(){

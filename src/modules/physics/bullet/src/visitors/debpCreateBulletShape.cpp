@@ -464,7 +464,7 @@ capsuleShape->getSphereRadius(0), capsuleShape->getSphereRadius(0));
 void debpCreateBulletShape::VisitShapeHull(decShapeHull &hull){
 	const decVector position(hull.GetPosition() + pOffset);
 	const decQuaternion &orientation = hull.GetOrientation();
-	const int pointCount = hull.GetPointCount();
+	const int pointCount = hull.GetPoints().GetCount();
 	const bool hasNoShape = pBulletShape.IsNull();
 	decVector center, minExtends, maxExtends;
 	debpBulletShape::Ref bulletShapeHull;
@@ -475,7 +475,7 @@ void debpCreateBulletShape::VisitShapeHull(decShapeHull &hull){
 	hullShape = new btConvexHullShape;
 	
 	for(i=0; i<pointCount; i++){
-		const decVector &p = hull.GetPointAt(i);
+		const decVector &p = hull.GetPoints().GetAt(i);
 		center += p;
 		minExtends.SetSmallest(p);
 		maxExtends.SetLargest(p);
@@ -514,7 +514,7 @@ void debpCreateBulletShape::VisitShapeHull(decShapeHull &hull){
 	if(pointCount > 0){
 		center /= (float)pointCount;
 		for(i=0; i<pointCount; i++){
-			ccdRadius = decMath::max(ccdRadius, (hull.GetPointAt(i) - center).LengthSquared());
+			ccdRadius = decMath::max(ccdRadius, (hull.GetPoints().GetAt(i) - center).LengthSquared());
 		}
 		ccdRadius = sqrtf(ccdRadius);
 	}

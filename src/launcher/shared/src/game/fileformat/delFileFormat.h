@@ -25,7 +25,6 @@
 #ifndef _DELFILEFORMAT_H_
 #define _DELFILEFORMAT_H_
 
-#include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
 
 #include <dragengine/systems/deModuleSystem.h>
@@ -34,12 +33,7 @@
 /**
  * \brief File Format.
  */
-class DE_DLL_EXPORT delFileFormat : public deObject{
-public:
-	/** \brief Type holding strong reference. */
-	using Ref = deTObjectReference<delFileFormat>;
-	
-	
+class DE_DLL_EXPORT delFileFormat{
 private:
 	deModuleSystem::eModuleTypes pType;
 	decString pPattern;
@@ -56,14 +50,17 @@ public:
 	/** \brief Create file format. */
 	delFileFormat(deModuleSystem::eModuleTypes type, const char *pattern);
 	
-protected:
-	/** \brief Clean up file format. */
-	~delFileFormat() override;
+	/** \brief Copy file format. */
+	delFileFormat(const delFileFormat &other);
+	delFileFormat& operator=(const delFileFormat &other);
+	
+	/** \brief Move file format. */
+	delFileFormat(delFileFormat &&other) noexcept;
+	delFileFormat& operator=(delFileFormat &&other) noexcept;
 	/*@}*/
 	
 	
 	
-public:
 	/** \name Management */
 	/*@{*/
 	/** \brief File type. */

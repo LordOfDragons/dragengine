@@ -34,8 +34,6 @@
 #include <delauncher/engine/modules/parameter/delEMParameter.h>
 #include <delauncher/game/profile/delGameProfile.h>
 #include <delauncher/game/profile/delGPModule.h>
-#include <delauncher/game/profile/delGPMParameter.h>
-#include <delauncher/game/profile/delGPMParameterList.h>
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/decString.h>
@@ -245,19 +243,7 @@ void deglDialogProfileListParameter::SetParameterValue(const char *value){
 		pProfile.GetModules().Add(profileModule);
 	}
 	
-	delGPMParameterList &mpParamList = profileModule->GetParameters();
-	
-	const decString &parameterName = pParameter.GetInfo().GetName();
-	delGPMParameter::Ref profileParameter(mpParamList.GetNamed(parameterName));
-	if(!profileParameter){
-		if(pParameter.GetValue() == value){
-			return;
-		}
-		profileParameter = delGPMParameter::Ref::New(parameterName);
-		mpParamList.Add(profileParameter);
-	}
-	
-	profileParameter->SetValue(value);
+	profileModule->GetParameters().SetAt(pParameter.GetInfo().GetName(), value);
 	
 	Update();
 }
@@ -290,10 +276,9 @@ void deglDialogProfileListParameter::Update(){
 	
 	const delGPModule * const module = pProfile.GetModules().GetNamed(pModuleName);
 	if(module){
-		const delGPMParameter * const parameter = module->GetParameters()
-			.GetNamed(pParameter.GetInfo().GetName());
-		if(parameter){
-			value = parameter->GetValue();
+		const decString *foundValue;
+		if(module->GetParameters().GetAt(pParameter.GetInfo().GetName(), foundValue)){
+			value = *foundValue;
 			pCustomized = true;
 		}
 	}
@@ -348,18 +333,11 @@ void deglDialogProfileListParameter::Update(){
 }
 
 void deglDialogProfileListParameter::Reset(){
-	delGPMParameter *parameter = nullptr;
 	delGPModule * const module = pProfile.GetModules().GetNamed(pModuleName);
 	if(module){
-		parameter = module->GetParameters().GetNamed(pParameter.GetInfo().GetName());
-	}
-	
-	if(module){
-		if(parameter){
-			module->GetParameters().Remove(parameter);
-		}
+		module->GetParameters().RemoveIfPresent(pParameter.GetInfo().GetName());
 		
-		if(module->GetParameters().GetCount() == 0){
+		if(module->GetParameters().IsEmpty()){
 			pProfile.GetModules().Remove(module);
 		}
 	}

@@ -37,7 +37,6 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/systems/deModuleSystem.h>
 #include <dragengine/systems/modules/deLoadableModule.h>
-#include <dragengine/filesystem/dePatternList.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/file/decPath.h>

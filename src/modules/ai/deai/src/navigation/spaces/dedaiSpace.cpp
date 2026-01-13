@@ -295,7 +295,7 @@ void dedaiSpace::SetBlockingPriority(int priority){
 	pInvalidateLayerBlocking();
 }
 
-void dedaiSpace::SetBlockerShape(const decShapeList &shape){
+void dedaiSpace::SetBlockerShape(const decShape::List &shape){
 	pBlockerShape = shape;
 	
 	pUpdateBlockerConvexVolumeList();

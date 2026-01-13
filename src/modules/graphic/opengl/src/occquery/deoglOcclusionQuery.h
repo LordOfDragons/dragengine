@@ -61,7 +61,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create occlusion query. */
-	deoglOcclusionQuery(deoglRenderThread &renderThread);
+	explicit deoglOcclusionQuery(deoglRenderThread &renderThread);
 	
 	/** Clean up occlusion query. */
 	~deoglOcclusionQuery();

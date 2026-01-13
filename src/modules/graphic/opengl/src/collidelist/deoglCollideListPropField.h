@@ -25,12 +25,13 @@
 #ifndef _DEOGLCOLLIDELISTPROPFIELD_H_
 #define _DEOGLCOLLIDELISTPROPFIELD_H_
 
+#include "deoglCollideListPropFieldType.h"
+
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglRPropField;
 class deoglRPropFieldType;
-class deoglCollideListPropFieldType;
 class deoglOcclusionTest;
 
 
@@ -40,10 +41,7 @@ class deoglOcclusionTest;
 class deoglCollideListPropField{
 private:
 	deoglRPropField *pPropField;
-	
-	decTList<deoglCollideListPropFieldType*> pTypes;
-	int pTypeCount;
-	
+	decTList<deoglCollideListPropFieldType> pTypes;
 	
 	
 public:
@@ -52,14 +50,15 @@ public:
 	/** Create collide list prop field. */
 	deoglCollideListPropField();
 	
-	deoglCollideListPropField(deoglRPropField *propField);
+	explicit deoglCollideListPropField(deoglRPropField *propField);
 	
 	/** Copy. */
-	deoglCollideListPropField(const deoglCollideListPropField &other) = default;
-	deoglCollideListPropField &operator=(const deoglCollideListPropField &other) = default;
+	deoglCollideListPropField(const deoglCollideListPropField &other) = delete;
+	deoglCollideListPropField &operator=(const deoglCollideListPropField &other) = delete;
 	
-	/** Clean up collide list prop field. */
-	~deoglCollideListPropField();
+	/** Move. */
+	deoglCollideListPropField(deoglCollideListPropField &&other) noexcept;
+	deoglCollideListPropField &operator=(deoglCollideListPropField &&other) noexcept;
 	/*@}*/
 	
 	
@@ -84,13 +83,14 @@ public:
 	void SetPropField(deoglRPropField *propField);
 	
 	/** Count of types. */
-	inline int GetTypeCount() const{ return pTypeCount; }
+	inline int GetTypeCount() const{ return pTypes.GetCount(); }
 	
 	/** Type at the index. */
-	deoglCollideListPropFieldType *GetTypeAt(int index) const;
+	deoglCollideListPropFieldType &GetTypeAt(int index);
+	const deoglCollideListPropFieldType &GetTypeAt(int index) const;
 	
 	/** Add type. */
-	deoglCollideListPropFieldType *AddType(deoglRPropFieldType *type);
+	deoglCollideListPropFieldType &AddType(deoglRPropFieldType *type);
 	
 	/** Remove all types. */
 	void RemoveAllTypes();

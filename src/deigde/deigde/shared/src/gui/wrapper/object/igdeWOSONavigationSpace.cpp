@@ -41,7 +41,6 @@
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/shape/decShape.h>
-#include <dragengine/common/shape/decShapeList.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/resources/navigation/space/deNavigationSpace.h>
@@ -143,7 +142,6 @@ void igdeWOSONavigationSpace::pUpdateNavigationSpace(){
 	}
 	
 	igdeCodecPropertyString codec;
-	decShapeList shapeList;
 	decString value;
 	
 	pNavigationSpace->SetLayer(GetIntProperty(

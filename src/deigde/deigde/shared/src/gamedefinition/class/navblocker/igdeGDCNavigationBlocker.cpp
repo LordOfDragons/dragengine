@@ -108,7 +108,7 @@ void igdeGDCNavigationBlocker::SetBlockingPriority(int priority){
 
 
 
-void igdeGDCNavigationBlocker::SetShapeList(const decShapeList &shapeList){
+void igdeGDCNavigationBlocker::SetShapeList(const decShape::List &shapeList){
 	pShapeList = shapeList;
 }
 
