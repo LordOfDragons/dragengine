@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace = "ch.dragondreams.delauncher"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "ch.dragondreams.delauncher"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 35
 
         versionCode = (findProperty("build.version.code") as String? ?: "99999").toInt()
         versionName = findProperty("build.version.name") as String? ?: "99999"
