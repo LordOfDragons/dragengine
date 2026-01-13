@@ -65,28 +65,27 @@ jobject GameProfileConfig::Convert(const delGameProfile &profile) {
         const JniObject objModule(pClsModule.New());
         pFldModuleName.Set(objModule, module.GetName());
 
-        const JniObjectArray objParams(pEnv, pClsParameter, paramCount);
-        module.GetParameters().Visit([](const decString &name, const decString &value){
+        const JniObjectArray objParams(pEnv, pClsParameter, module.GetParameters().GetCount());
+        int j = 0;
+        module.GetParameters().Visit([&](const decString &name, const decString &value){
             const JniObject objParam(pClsParameter.New());
             pFldParamName.Set(objParam, name);
             pFldParamValue.Set(objParam, value);
-            objParams.SetAt(j, objParam);
+            objParams.SetAt(j++, objParam);
         });
         pFldModuleParameters.Set(objModule, objParams);
 
         objModules.SetAt(i, objModule);
     }
 
-    const delGPDisableModuleVersionList &disModVers = profile.GetDisableModuleVersions();
-    const int disModVerCount = disModVers.GetCount();
-    const JniObjectArray objDisModVers(pEnv, pClsModuleVersion, disModVerCount);
-    for(i=0; i<disModVerCount; i++){
-        const delGPDisableModuleVersion &disModVer = *disModVers.GetAt(i);
+    const delGPDisableModuleVersion::List &disModVers = profile.GetDisableModuleVersions();
+    const JniObjectArray objDisModVers(pEnv, pClsModuleVersion, disModVers.GetCount());
+    disModVers.VisitIndexed([&](int j, const delGPDisableModuleVersion &disModVer){
         const JniObject objVer(pClsModuleVersion.New());
         pFldModVerName.Set(objVer, disModVer.GetName());
         pFldModVerVersion.Set(objVer, disModVer.GetVersion());
-        objDisModVers.SetAt(i, objVer);
-    }
+        objDisModVers.SetAt(j, objVer);
+    });
 
     JniObject objProfile(pClsProfile.New());
     pFldProfileName.Set(objProfile, profile.GetName());
@@ -150,9 +149,9 @@ void GameProfileConfig::Store(jobject objConfig, delGameProfile &profile) {
     int i;
     for(i=0; i<disObjVersCount; i++){
         jobject objVer = objDisModVers.GetAt(i);
-        const delGPDisableModuleVersion::Ref ver(delGPDisableModuleVersion::Ref::New());
-        ver->SetName(pFldModVerName.Get(objVer));
-        ver->SetVersion(pFldModVerVersion.Get(objVer));
+        delGPDisableModuleVersion ver;
+        ver.SetName(pFldModVerName.Get(objVer));
+        ver.SetVersion(pFldModVerVersion.Get(objVer));
         profile.GetDisableModuleVersions().Add(ver);
     }
 

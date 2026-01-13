@@ -45,7 +45,6 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
-#include <dragengine/common/shape/decShapeList.h>
 #include <dragengine/common/shape/decShapeSphere.h>
 #include <dragengine/common/shape/decShapeBox.h>
 #include <dragengine/common/shape/decShapeCylinder.h>
