@@ -50,9 +50,6 @@ public:
 	deoglDMBConvexVolumeFace();
 	explicit deoglDMBConvexVolumeFace(bool decalFace);
 	
-	deoglDMBConvexVolumeFace(const deoglDMBConvexVolumeFace &) = delete;
-	deoglDMBConvexVolumeFace &operator=(const deoglDMBConvexVolumeFace &) = delete;
-	
 	/** Clean up decal mesh builder convex volume face. */
 	~deoglDMBConvexVolumeFace() override;
 	/*@}*/

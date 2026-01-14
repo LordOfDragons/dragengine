@@ -88,9 +88,6 @@ public:
 	decShapeCapsule(float halfHeight, float topRadius, float bottomRadius,
 		const decVector2 &topAxisScaling, const decVector2 &bottomAxisScaling,
 		const decVector &position, const decQuaternion &orientation);
-	
-	decShapeCapsule(const decShapeCapsule &) = delete;
-	decShapeCapsule &operator=(const decShapeCapsule &) = delete;
 	/*@}*/
 	
 	

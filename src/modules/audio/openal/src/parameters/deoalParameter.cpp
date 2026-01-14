@@ -33,5 +33,3 @@
 
 deoalParameter::deoalParameter(deAudioOpenAL &oal) : pOal(oal){
 }
-
-deoalParameter::~deoalParameter() = default;

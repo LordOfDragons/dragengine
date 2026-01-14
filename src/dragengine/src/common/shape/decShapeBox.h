@@ -71,9 +71,6 @@ public:
 	/** \brief Create tapered box shape. */
 	decShapeBox(const decVector &halfExtends, const decVector2 &tapering,
 		const decVector &position, const decQuaternion &orientation);
-	
-	decShapeBox(const decShapeBox &) = delete;
-	decShapeBox &operator=(const decShapeBox &) = delete;
 	/*@}*/
 	
 	

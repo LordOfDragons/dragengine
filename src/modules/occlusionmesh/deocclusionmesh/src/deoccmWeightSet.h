@@ -53,9 +53,6 @@ public:
 	/** Creates a new weight set. */
 	deoccmWeightSet();
 	
-	deoccmWeightSet(const deoccmWeightSet &) = delete;
-	deoccmWeightSet &operator=(const deoccmWeightSet &) = delete;
-	
 	/** Cleans up the weight set. */
 	~deoccmWeightSet();
 	/*@}*/

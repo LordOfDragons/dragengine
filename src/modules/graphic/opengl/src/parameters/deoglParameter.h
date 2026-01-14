@@ -72,9 +72,6 @@ public:
 	/** Create parameter. */
 	deoglParameter(deGraphicOpenGl &ogl);
 	
-	deoglParameter(const deoglParameter &) = delete;
-	deoglParameter &operator=(const deoglParameter &) = delete;
-	
 	/** Clean up parameter. */
 	virtual ~deoglParameter();
 	/*@}*/

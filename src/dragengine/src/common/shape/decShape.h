@@ -86,9 +86,6 @@ public:
 	/** \brief Create shape with the given position and orientation. */
 	decShape(const decVector &position, const decQuaternion &orientation);
 	
-	decShape(const decShape &) = delete;
-	decShape &operator=(const decShape &) = delete;
-	
 	/** \brief Clean up shape. */
 	virtual ~decShape();
 	/*@}*/

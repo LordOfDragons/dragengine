@@ -88,9 +88,6 @@ public:
 	decShapeCylinder(float halfHeight, float topRadius, float bottomRadius,
 		const decVector2 &topAxisScaling, const decVector2 &bottomAxisScaling,
 		const decVector &position, const decQuaternion &orientation);
-	
-	decShapeCylinder(const decShapeCylinder &) = delete;
-	decShapeCylinder &operator=(const decShapeCylinder &) = delete;
 	/*@}*/
 	
 	

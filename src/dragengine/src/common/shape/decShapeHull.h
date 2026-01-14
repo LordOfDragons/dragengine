@@ -66,9 +66,6 @@ public:
 	/** \brief Create hull shape. */
 	decShapeHull(const decVector &position, const decQuaternion &orientation, const PointList &points);
 	decShapeHull(const decVector &position, const decQuaternion &orientation, PointList &&points);
-	
-	decShapeHull(const decShapeHull &) = delete;
-	decShapeHull &operator=(const decShapeHull &) = delete;
 	/*@}*/
 	
 	
