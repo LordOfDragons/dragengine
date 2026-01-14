@@ -412,12 +412,10 @@
     <ClCompile Include="..\..\..\..\src\modules\model\demodel\src\deModelModule.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\model\demodel\src\demdlTexCoordSorter.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\model\demodel\src\demdlWeightSet.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\model\demodel\src\demdlWeightSetList.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\modules\model\demodel\src\deModelModule.h" />
     <ClInclude Include="..\..\..\..\src\modules\model\demodel\src\demdlTexCoordSorter.h" />
     <ClInclude Include="..\..\..\..\src\modules\model\demodel\src\demdlWeightSet.h" />
-    <ClInclude Include="..\..\..\..\src\modules\model\demodel\src\demdlWeightSetList.h" />
   </ItemGroup>
 </Project>

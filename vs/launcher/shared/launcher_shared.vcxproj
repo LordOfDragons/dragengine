@@ -292,7 +292,6 @@
     <ClCompile Include="..\..\..\src\launcher\shared\src\game\patch\delPatchXML.cpp" />
     <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGPDisableModuleVersion.cpp" />
     <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGPModule.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGPModuleList.cpp" />
     <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGameProfile.cpp" />
     <ClCompile Include="..\..\..\src\launcher\shared\src\logger\delLoggerHistory.cpp" />
     <ClCompile Include="..\..\..\src\launcher\shared\src\logger\delLoggerHistoryEntry.cpp" />
@@ -329,7 +328,6 @@
     <ClInclude Include="..\..\..\src\launcher\shared\src\game\patch\delPatchXML.h" />
     <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGPDisableModuleVersion.h" />
     <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGPModule.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGPModuleList.h" />
     <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGameProfile.h" />
     <ClInclude Include="..\..\..\src\launcher\shared\src\logger\delLoggerHistory.h" />
     <ClInclude Include="..\..\..\src\launcher\shared\src\logger\delLoggerHistoryEntry.h" />

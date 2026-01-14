@@ -428,7 +428,6 @@
   </ImportGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\billboard\deoglBillboard.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\billboard\deoglBillboardList.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\billboard\deoglRBillboard.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\capture\deoglCaptureCanvas.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\capture\deoglCaptureCanvasList.cpp" />
@@ -459,7 +458,6 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\deoglCapabilities.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\deoglCapsFmtSupport.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\deoglCapsTextureFormat.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\deoglCapsTextureFormatList.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCLVisitorElements.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideList.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListComponent.cpp" />
@@ -473,9 +471,7 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\commands\deoglCommandExecuter.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglComponent.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglComponentLOD.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglComponentList.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglComponentListener.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglComponentSet.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglComponentTestForTouch.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglComponentTexture.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglMeshData.cpp" />
@@ -487,7 +483,6 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\configuration\deoglLSConfiguration.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\deGraphicOpenGl.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\debug\deoglDebugInformation.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\debug\deoglDebugInformationList.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\debug\deoglDebugMemoryConsumption.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\debug\deoglDebugOverlay.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\debug\deoglDebugSaveTexture.cpp" />
@@ -532,7 +527,6 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\envmap\deoglEnvMapSlot.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\envmap\deoglEnvMapSlotManager.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\envmap\deoglEnvironmentMap.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\envmap\deoglEnvironmentMapList.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\envmap\deoglREnvMapProbe.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\androidfix.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\deoglExtResult.cpp" />
@@ -568,7 +562,6 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\light\deoglLight.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\light\deoglLightBoundaryMap.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\light\deoglLightGatherOcclusionMeshes.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\light\deoglLightList.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\light\deoglLightTestForTouch.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\light\deoglNotifyEnvMapLightChanged.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\light\deoglRLight.cpp" />
@@ -603,7 +596,6 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\model\deoglModelLODVisitor.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\model\deoglRModel.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\model\face\deoglModelFace.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\model\face\deoglModelFaceList.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\model\octree\deoglModelOctree.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\model\octree\deoglModelOctreeVisitor.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\model\octree\visitors\deoglMOVClosestFace.cpp" />
@@ -615,7 +607,6 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\occlusiontest\deoglOcclusionTestPool.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\occlusiontest\mesh\deoglDynamicOcclusionMesh.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\occlusiontest\mesh\deoglOcclusionMesh.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\occlusiontest\mesh\deoglOcclusionMeshList.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\occlusiontest\mesh\deoglROcclusionMesh.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\occquery\deoglOcclusionQuery.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\occquery\deoglOcclusionQueryManager.cpp" />
@@ -674,7 +665,6 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\vr\deoglPVRRenderScale.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglParticleEmitter.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglParticleEmitterInstance.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglParticleEmitterInstanceList.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglParticleEmitterInstanceType.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglParticleEmitterType.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglParticleSorter.cpp" />
@@ -732,7 +722,6 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanDebug.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanEnvMap.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanLight.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanList.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanMasked.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanSkyLight.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanTasks.cpp" />
@@ -816,7 +805,6 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBlockSSBO.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBlockUBO.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglShaderParameterBlock.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglShaderParameterBlockList.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedBlockSPB.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedBlockSPBElement.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedSPB.cpp" />
@@ -1052,7 +1040,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\billboard\deoglBillboard.h" />
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\billboard\deoglBillboardList.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\billboard\deoglRBillboard.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\capture\deoglCaptureCanvas.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\capture\deoglCaptureCanvasList.h" />
@@ -1084,7 +1071,6 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\deoglCapsFmtSupport.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\deoglCapsFmtSupportSetup.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\deoglCapsTextureFormat.h" />
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\deoglCapsTextureFormatList.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCLVisitorElements.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideList.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListComponent.h" />
@@ -1098,9 +1084,7 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\commands\deoglCommandExecuter.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglComponent.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglComponentLOD.h" />
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglComponentList.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglComponentListener.h" />
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglComponentSet.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglComponentTestForTouch.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglComponentTexture.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglMeshData.h" />
@@ -1113,7 +1097,6 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\deGraphicOpenGl.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\debug\debugSnapshot.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\debug\deoglDebugInformation.h" />
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\debug\deoglDebugInformationList.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\debug\deoglDebugMemoryConsumption.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\debug\deoglDebugOverlay.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\debug\deoglDebugSaveTexture.h" />
@@ -1159,7 +1142,6 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\envmap\deoglEnvMapSlot.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\envmap\deoglEnvMapSlotManager.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\envmap\deoglEnvironmentMap.h" />
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\envmap\deoglEnvironmentMapList.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\envmap\deoglREnvMapProbe.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\androidfix.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\deoglExtResult.h" />
@@ -1203,7 +1185,6 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\light\deoglLight.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\light\deoglLightBoundaryMap.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\light\deoglLightGatherOcclusionMeshes.h" />
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\light\deoglLightList.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\light\deoglLightTestForTouch.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\light\deoglNotifyEnvMapLightChanged.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\light\deoglRLight.h" />
@@ -1238,7 +1219,6 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\model\deoglModelLODVisitor.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\model\deoglRModel.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\model\face\deoglModelFace.h" />
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\model\face\deoglModelFaceList.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\model\octree\deoglModelOctree.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\model\octree\deoglModelOctreeVisitor.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\model\octree\visitors\deoglMOVClosestFace.h" />
@@ -1250,7 +1230,6 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\occlusiontest\deoglOcclusionTestPool.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\occlusiontest\mesh\deoglDynamicOcclusionMesh.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\occlusiontest\mesh\deoglOcclusionMesh.h" />
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\occlusiontest\mesh\deoglOcclusionMeshList.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\occlusiontest\mesh\deoglROcclusionMesh.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\occquery\deoglOcclusionQuery.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\occquery\deoglOcclusionQueryManager.h" />
@@ -1309,7 +1288,6 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\vr\deoglPVRRenderScale.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglParticleEmitter.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglParticleEmitterInstance.h" />
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglParticleEmitterInstanceList.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglParticleEmitterInstanceType.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglParticleEmitterType.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglParticleSorter.h" />
@@ -1368,7 +1346,6 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanDebug.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanEnvMap.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanLight.h" />
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanList.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanMasked.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanSkyLight.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanTasks.h" />
@@ -1453,7 +1430,6 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBlockSSBO.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBlockUBO.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglShaderParameterBlock.h" />
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglShaderParameterBlockList.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedBlockSPB.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedBlockSPBElement.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedSPB.h" />

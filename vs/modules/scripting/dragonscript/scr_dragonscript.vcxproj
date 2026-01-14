@@ -703,6 +703,7 @@
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\deClassGame.h" />
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\deClassModuleParameter.h" />
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\debug\deClassDebugDrawer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\dedsHelpers.h" />
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\effects\deClassEffect.h" />
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\effects\deClassEffectColorMatrix.h" />
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\effects\deClassEffectDistortImage.h" />

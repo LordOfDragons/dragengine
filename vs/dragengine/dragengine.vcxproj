@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -467,7 +467,6 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
   <ItemGroup>
-    <ClCompile Include="..\..\src\dragengine\src\debug\debugfont.c" />
     <ClCompile Include="..\..\src\dragengine\src\app\deCmdLineArgs.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\app\deOS.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\app\deOSWindows.cpp" />
@@ -524,7 +523,6 @@
     <ClCompile Include="..\..\src\dragengine\src\common\shape\decShapeCapsule.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\common\shape\decShapeCylinder.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\common\shape\decShapeHull.cpp" />
-    <ClCompile Include="..\..\src\dragengine\src\common\shape\decShapeList.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\common\shape\decShapeSphere.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\common\shape\decShapeVisitor.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\common\shape\decShapeVisitorIdentify.cpp" />
@@ -734,9 +732,11 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelBuilder.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelFace.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelLOD.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelLodVertexPositionSet.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelLodVertexPositionSetPosition.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelManager.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelTexture.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelTextureCoordinatesSet.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelVertex.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelVertexPositionSet.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelWeight.cpp" />
@@ -1040,6 +1040,7 @@
     <ClCompile Include="..\..\src\dragengine\src\threading\deThread.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\threading\deThreadSafeObject.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\threading\deWriteLockGuard.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\debug\debugfont.c" />
     <ClCompile Include="..\..\src\dragengine\base64\base64.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -1109,7 +1110,6 @@
     <ClInclude Include="..\..\src\dragengine\src\common\shape\decShapeCapsule.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\shape\decShapeCylinder.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\shape\decShapeHull.h" />
-    <ClInclude Include="..\..\src\dragengine\src\common\shape\decShapeList.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\shape\decShapeSphere.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\shape\decShapeVisitor.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\shape\decShapeVisitorIdentify.h" />
@@ -1154,7 +1154,9 @@
     <ClInclude Include="..\..\src\dragengine\src\deObject.h" />
     <ClInclude Include="..\..\src\dragengine\src\deObjectDebug.h" />
     <ClInclude Include="..\..\src\dragengine\src\deTObjectReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\deTUniqueReference.h" />
     <ClInclude Include="..\..\src\dragengine\src\deTWeakObjectReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\deTypeTraits.h" />
     <ClInclude Include="..\..\src\dragengine\src\debug\deDebugBlockInfo.h" />
     <ClInclude Include="..\..\src\dragengine\src\doxy_main.h" />
     <ClInclude Include="..\..\src\dragengine\src\dragengine_configuration.h" />
@@ -1324,9 +1326,11 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelBuilder.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelFace.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelLOD.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelLodVertexPositionSet.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelLodVertexPositionSetPosition.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelManager.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelTexture.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelTextureCoordinatesSet.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelVertex.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelVertexPositionSet.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelWeight.h" />

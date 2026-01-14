@@ -461,7 +461,6 @@
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalImpulseResponse.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalRayTraceConfig.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalRayTraceHitElement.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalRayTraceHitElementList.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalRayTraceResult.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalSoundRay.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalSoundRayInteraction.cpp" />
@@ -611,7 +610,6 @@
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalImpulseResponse.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalRayTraceConfig.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalRayTraceHitElement.h" />
-    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalRayTraceHitElementList.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalRayTraceResult.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalSoundRay.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalSoundRayInteraction.h" />

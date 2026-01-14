@@ -483,7 +483,6 @@
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\debug\debpDebug.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\debug\debpDebugDrawerColors.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\debug\debpDebugInformation.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\debug\debpDebugInformationList.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\decal\debpConvexFaceClipper.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\decal\debpDMBConvexVolumeFace.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\decal\debpDMBConvexVolumeList.cpp" />
@@ -514,7 +513,6 @@
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\shape\debpShapeCapsule.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\shape\debpShapeCylinder.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\shape\debpShapeHackBox.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\shape\debpShapeList.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\shape\debpShapeSphere.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\shape\debpShapeTransform.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\skin\debpSkinPropertyMap.cpp" />
@@ -807,7 +805,6 @@
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\debug\debpDebug.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\debug\debpDebugDrawerColors.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\debug\debpDebugInformation.h" />
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\debug\debpDebugInformationList.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\decal\debpConvexFaceClipper.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\decal\debpDMBConvexVolumeFace.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\decal\debpDMBConvexVolumeList.h" />
@@ -838,7 +835,6 @@
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\shape\debpShapeCapsule.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\shape\debpShapeCylinder.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\shape\debpShapeHackBox.h" />
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\shape\debpShapeList.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\shape\debpShapeSphere.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\shape\debpShapeTransform.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\skin\debpSkinPropertyMap.h" />

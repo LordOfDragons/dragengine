@@ -430,7 +430,6 @@
     <ClCompile Include="..\..\..\..\src\modules\network\basic\src\debnWorld.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\network\basic\src\half\half.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\network\basic\src\messages\debnMessage.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\messages\debnMessageAckList.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\network\basic\src\messages\debnMessageManager.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\network\basic\src\parameters\debnParameter.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\network\basic\src\parameters\debnParameterBool.cpp" />
@@ -443,7 +442,6 @@
     <ClCompile Include="..\..\..\..\src\modules\network\basic\src\parameters\reliability\debnPReliableTimeout.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\network\basic\src\states\debnState.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\network\basic\src\states\debnStateLink.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\states\debnStateLinkList.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\network\basic\src\states\debnStateLinkManager.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\network\basic\src\values\debnValue.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\network\basic\src\values\debnValueData.cpp" />
@@ -470,7 +468,6 @@
     <ClInclude Include="..\..\..\..\src\modules\network\basic\src\debnWorld.h" />
     <ClInclude Include="..\..\..\..\src\modules\network\basic\src\half\half.h" />
     <ClInclude Include="..\..\..\..\src\modules\network\basic\src\messages\debnMessage.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\messages\debnMessageAckList.h" />
     <ClInclude Include="..\..\..\..\src\modules\network\basic\src\messages\debnMessageManager.h" />
     <ClInclude Include="..\..\..\..\src\modules\network\basic\src\parameters\debnParameter.h" />
     <ClInclude Include="..\..\..\..\src\modules\network\basic\src\parameters\debnParameterBool.h" />
@@ -483,7 +480,6 @@
     <ClInclude Include="..\..\..\..\src\modules\network\basic\src\parameters\reliability\debnPReliableTimeout.h" />
     <ClInclude Include="..\..\..\..\src\modules\network\basic\src\states\debnState.h" />
     <ClInclude Include="..\..\..\..\src\modules\network\basic\src\states\debnStateLink.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\states\debnStateLinkList.h" />
     <ClInclude Include="..\..\..\..\src\modules\network\basic\src\states\debnStateLinkManager.h" />
     <ClInclude Include="..\..\..\..\src\modules\network\basic\src\values\debnValue.h" />
     <ClInclude Include="..\..\..\..\src\modules\network\basic\src\values\debnValueData.h" />

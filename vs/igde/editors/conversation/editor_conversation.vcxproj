@@ -1091,7 +1091,6 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\word\ceUCAASpeakWordFromText.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\word\ceUCAASpeakWordMove.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\word\ceUCAASpeakWordRemove.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\word\ceUCAASpeakWordScale.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\word\ceUCAASpeakWordSet.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\word\ceUCAASpeakWordSetDuration.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\word\ceUCAASpeakWordSetName.h" />

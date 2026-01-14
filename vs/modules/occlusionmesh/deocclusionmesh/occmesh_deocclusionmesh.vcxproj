@@ -411,11 +411,9 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deOccMeshModule.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deoccmWeightSet.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deoccmWeightSetList.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deOccMeshModule.h" />
     <ClInclude Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deoccmWeightSet.h" />
-    <ClInclude Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deoccmWeightSetList.h" />
   </ItemGroup>
 </Project>
