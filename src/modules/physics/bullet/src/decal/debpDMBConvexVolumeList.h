@@ -44,8 +44,9 @@ public:
 	/*@{*/
 	/** Creates a new decal mesh builder convex volume list. */
 	debpDMBConvexVolumeList();
-	/** Cleans up the decal mesh builder convex volume list. */
-	~debpDMBConvexVolumeList() override;
+	
+	debpDMBConvexVolumeList(const debpDMBConvexVolumeList &) = delete;
+	debpDMBConvexVolumeList &operator=(const debpDMBConvexVolumeList &) = delete;
 	/*@}*/
 	
 	/** @name Subclassing */

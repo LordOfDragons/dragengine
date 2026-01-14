@@ -111,6 +111,9 @@ public:
 	/** Create skin texture pipeline. */
 	deoglSkinTexturePipelines(const deoglSkinTexture &texture);
 	
+	deoglSkinTexturePipelines(const deoglSkinTexturePipelines &) = delete;
+	deoglSkinTexturePipelines &operator=(const deoglSkinTexturePipelines &) = delete;
+	
 	/** Clean up skin texture pipeline. */
 	virtual ~deoglSkinTexturePipelines();
 	/*@}*/

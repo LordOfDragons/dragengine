@@ -72,8 +72,11 @@ public:
 	/** \brief Create parameter. */
 	deoalParameter(deAudioOpenAL &oal);
 	
+	deoalParameter(const deoalParameter &) = delete;
+	deoalParameter &operator=(const deoalParameter &) = delete;
+	
 	/** \brief Clean up parameter. */
-	virtual ~deoalParameter() = default;
+	virtual ~deoalParameter();
 	/*@}*/
 	
 	

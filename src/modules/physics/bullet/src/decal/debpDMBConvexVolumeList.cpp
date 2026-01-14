@@ -40,11 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpDMBConvexVolumeList::debpDMBConvexVolumeList(){
-}
-
-debpDMBConvexVolumeList::~debpDMBConvexVolumeList(){
-}
+debpDMBConvexVolumeList::debpDMBConvexVolumeList() = default;
 
 
 

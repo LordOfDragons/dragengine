@@ -44,9 +44,6 @@ debpDMBConvexVolumeFace::debpDMBConvexVolumeFace(bool decalFace) :
 pDecalFace(decalFace){
 }
 
-debpDMBConvexVolumeFace::~debpDMBConvexVolumeFace(){
-}
-
 
 
 // Management

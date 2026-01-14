@@ -50,8 +50,8 @@ public:
 	debpDMBConvexVolumeFace();
 	explicit debpDMBConvexVolumeFace(bool decalFace);
 	
-	/** Cleans up the decal mesh builder convex volume face. */
-	~debpDMBConvexVolumeFace() override;
+	debpDMBConvexVolumeFace(const debpDMBConvexVolumeFace &) = delete;
+	debpDMBConvexVolumeFace &operator=(const debpDMBConvexVolumeFace &) = delete;
 	/*@}*/
 	
 	/** @name Management */

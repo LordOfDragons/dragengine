@@ -52,6 +52,10 @@ public:
 	/*@{*/
 	/** Creates a new weight set. */
 	demdlWeightSet();
+	
+	demdlWeightSet(const demdlWeightSet &) = delete;
+	demdlWeightSet &operator=(const demdlWeightSet &) = delete;
+	
 	/** Cleans up the weight set. */
 	~demdlWeightSet();
 	/*@}*/
