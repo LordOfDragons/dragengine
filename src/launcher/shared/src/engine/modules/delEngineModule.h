@@ -25,7 +25,7 @@
 #ifndef _DELENGINEMODULE_H_
 #define _DELENGINEMODULE_H_
 
-#include "parameter/delEMParameterList.h"
+#include "parameter/delEMParameter.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
@@ -81,7 +81,7 @@ private:
 	decString pLibFileHashIs;
 	decString pLibFileEntryPoint;
 	
-	delEMParameterList pParameters;
+	delEMParameter::List pParameters;
 	
 	
 	
@@ -215,8 +215,8 @@ public:
 	void SetLibFileEntryPoint(const char *name);
 	
 	/** \brief Parameters. */
-	inline delEMParameterList &GetParameters(){ return pParameters; }
-	inline const delEMParameterList &GetParameters() const{ return pParameters; }
+	inline delEMParameter::List &GetParameters(){ return pParameters; }
+	inline const delEMParameter::List &GetParameters() const{ return pParameters; }
 	
 	/** \brief Calculate file size and hashes. */
 	void CalcSizeAndHashes(delLauncher &launcher);

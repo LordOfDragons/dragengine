@@ -90,7 +90,7 @@ void declListProfiles::Run(){
 	
 	pLauncher.Prepare();
 	
-	const delGameProfileList &profiles = pLauncher.GetGameManager().GetProfiles();
+	const delGameProfile::List &profiles = pLauncher.GetGameManager().GetProfiles();
 	int i, count;
 	
 	printf("Available Game Profiles:\n");

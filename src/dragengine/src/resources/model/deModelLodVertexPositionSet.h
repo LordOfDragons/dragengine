@@ -26,8 +26,7 @@
 #define _DEMODELLODVERTEXPOSITIONSET_H_
 
 #include "../../common/math/decMath.h"
-
-class deModelLodVertexPositionSetPosition;
+#include "deModelLodVertexPositionSetPosition.h"
 
 
 /**
@@ -55,10 +54,11 @@ class deModelLodVertexPositionSetPosition;
  * in a vertex position set use the original model vertex position.
  */
 class DE_DLL_EXPORT deModelLodVertexPositionSet{
-private:
-	deModelLodVertexPositionSetPosition *pPositions;
-	int pPositionCount;
+public:
+	/** \brief List of positions. */
+	using PositionsList = deModelLodVertexPositionSetPosition::List;
 	
+	PositionsList pPositions;
 	
 	
 public:
@@ -67,26 +67,24 @@ public:
 	/** \brief Create new model vertex position set. */
 	deModelLodVertexPositionSet();
 	
-	/** \brief Clean up model vertex position set. */
-	~deModelLodVertexPositionSet();
+	/** \brief Copy model vertex position set. */
+	deModelLodVertexPositionSet(const deModelLodVertexPositionSet &set);
+	deModelLodVertexPositionSet(deModelLodVertexPositionSet &&set) noexcept;
+	
+	/** \brief Move model vertex position set. */
+	deModelLodVertexPositionSet &operator=(deModelLodVertexPositionSet &&set) noexcept;
+	deModelLodVertexPositionSet &operator=(const deModelLodVertexPositionSet &set);
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Count of vertex positions. */
-	inline int GetPositionCount() const{ return pPositionCount; }
+	/** \brief Positions list. */
+	inline const PositionsList &GetPositions() const{ return pPositions; }
 	
-	/** \brief Set count of vertex positions. */
-	void SetPositionCount(int count);
-	
-	/** \brief Vertex position at index. */
-	deModelLodVertexPositionSetPosition &GetPositionAt(int index);
-	const deModelLodVertexPositionSetPosition &GetPositionAt(int index) const;
-	
-	/** \brief Pointer to vertex positions. */
-	inline deModelLodVertexPositionSetPosition *GetPositions() const{ return pPositions; }
+	/** \brief Positions list. */
+	inline PositionsList &GetPositions(){ return pPositions; }
 	/*@}*/
 };
 

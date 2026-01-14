@@ -135,7 +135,7 @@ int declActionDelga::pContent(){
 	delga.Load();
 	
 	printf("Games (alias (identifier) => title):\n");
-	const delGameList &games = delga.GetGames();
+	const delGame::List &games = delga.GetGames();
 	const int gameCount = games.GetCount();
 	int i;
 	for(i=0; i<gameCount; i++){
@@ -147,11 +147,11 @@ int declActionDelga::pContent(){
 	}
 	
 	printf("\nPatches (name (patch alias) => identifier (patch identifier):\n");
-	const delPatchList &patches = delga.GetPatches();
+	const delPatch::List &patches = delga.GetPatches();
 	const int patchCount = patches.GetCount();
 	for(i=0; i<patchCount; i++){
 		const delPatch &patch = *patches.GetAt(i);
-		const delGame * const game = pLauncher.GetGameManager().GetGames().GetWithID(patch.GetGameID());
+		const delGame * const game = pLauncher.GetGameManager().GetGames().FindWithId(patch.GetGameID());
 		printf("- '%s' (%s) => %s (%s)\n",
 			patch.GetName().ToUTF8().GetString(),
 			game ? game->GetTitle().ToUTF8().GetString() : "?",
@@ -178,18 +178,18 @@ int declActionDelga::pInstall(){
 	}
 	
 	// check if any of the games inside are installed
-	const delGameList &games = delga.GetGames();
+	const delGame::List &games = delga.GetGames();
 	int i;
 	for(i=0; i<games.GetCount(); i++){
-		if(pLauncher.GetGameManager().GetGames().HasWithID(games.GetAt(i)->GetIdentifier())){
+		if(pLauncher.GetGameManager().GetGames().FindWithId(games.GetAt(i)->GetIdentifier())){
 			printf("Game '%s' is already installed\n", games.GetAt(i)->GetTitle().ToUTF8().GetString());
 			return -1;
 		}
 	}
 	
-	const delPatchList &patches = delga.GetPatches();
+	const delPatch::List &patches = delga.GetPatches();
 	for(i=0; i<patches.GetCount(); i++){
-		if(pLauncher.GetPatchManager().GetPatches().HasWithID(patches.GetAt(i)->GetIdentifier())){
+		if(pLauncher.GetPatchManager().GetPatches().FindWithId(patches.GetAt(i)->GetIdentifier())){
 			printf("Patch '%s' is already installed\n", patches.GetAt(i)->GetName().ToUTF8().GetString());
 			return -1;
 		}
@@ -203,9 +203,9 @@ int declActionDelga::pInstall(){
 	}
 	for(i=0; i<patches.GetCount(); i++){
 		const delPatch &patch = *patches.GetAt(i);
-		const delGame *game = pLauncher.GetGameManager().GetGames().GetWithID(patch.GetGameID());
+		const delGame *game = pLauncher.GetGameManager().GetGames().FindWithId(patch.GetGameID());
 		if(!game){
-			game = delga.GetGames().GetWithID(patch.GetGameID());
+			game = delga.GetGames().FindWithId(patch.GetGameID());
 		}
 		printf("- Patch '%s' for game '%s'\n",
 			patch.GetName().ToUTF8().GetString(),

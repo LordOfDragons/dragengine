@@ -26,6 +26,7 @@
 #define _DELGPMODULE_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringDictionary.h>
 
@@ -43,6 +44,15 @@ class DE_DLL_EXPORT delGPModule : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	using Ref = deTObjectReference<delGPModule>;
+	
+	/** \brief List type. */
+	class List : public decTCollectionQueryByName<decTObjectOrderedSet<delGPModule>, delGPModule>{
+	public:
+		using decTCollectionQueryByName<decTObjectOrderedSet<delGPModule>, delGPModule>::decTCollectionQueryByName;
+		
+		/** \brief Update using modules from another list. */
+		void Update(const List &list);
+	};
 	
 	
 private:

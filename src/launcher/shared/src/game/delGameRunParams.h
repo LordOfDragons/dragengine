@@ -25,7 +25,7 @@
 #ifndef _DELGAMERUNPARAMS_H_
 #define _DELGAMERUNPARAMS_H_
 
-#include "patch/delPatchList.h"
+#include "patch/delPatch.h"
 #include "profile/delGameProfile.h"
 
 #include <dragengine/common/string/decString.h>
@@ -48,7 +48,7 @@ private:
 	int pWidth;
 	int pHeight;
 	bool pFullScreen;
-	delPatchList pPatches;
+	delPatch::List pPatches;
 	
 	
 	
@@ -100,8 +100,8 @@ public:
 	void SetFullScreen(bool fullScreen);
 	
 	/** \brief Patches to apply. */
-	inline delPatchList &GetPatches(){ return pPatches; }
-	inline const delPatchList &GetPatches() const{ return pPatches; }
+	inline delPatch::List &GetPatches(){ return pPatches; }
+	inline const delPatch::List &GetPatches() const{ return pPatches; }
 	
 	/** \brief Find patches to use. */
 	bool FindPatches(const delGame &game, bool useLatestPatch,

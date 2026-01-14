@@ -1147,17 +1147,20 @@ void deModelModule::pLoadVertPosSets(decBaseFileReader& reader, sModelInfos& inf
 			vertexCount = reader.ReadUShort();
 		}
 		
-		vpset.SetPositionCount(vertexCount);
-		deModelLodVertexPositionSetPosition * const positions = vpset.GetPositions();
+		vpset.GetPositions().RemoveAll();
+		vpset.GetPositions().EnlargeCapacity(vertexCount);
+		for(j=0; j<vertexCount; j++){
+			vpset.GetPositions().Add({});
+		}
 		
 		for(j=0; j<vertexCount; j++){
 			if(infos.isLargeModel){
-				positions[j].SetVertex(reader.ReadInt());
+				vpset.GetPositions().GetAt(j).SetVertex(reader.ReadInt());
 				
 			}else{
-				positions[j].SetVertex(reader.ReadUShort());
+				vpset.GetPositions().GetAt(j).SetVertex(reader.ReadUShort());
 			}
-			positions[j].SetPosition(reader.ReadVector());
+			vpset.GetPositions().GetAt(j).SetPosition(reader.ReadVector());
 		}
 	}
 }
@@ -2177,8 +2180,8 @@ void deModelModule::pSaveVertPosSets(decBaseFileWriter& writer, const deModelLOD
 	
 	for(i=0; i<setCount; i++){
 		const deModelLodVertexPositionSet &vpset = lodMesh.GetVertexPositionSetAt(i);
-		const deModelLodVertexPositionSetPosition * const positions = vpset.GetPositions();
-		const int positionCount = vpset.GetPositionCount();
+		const deModelLodVertexPositionSet::PositionsList &positions = vpset.GetPositions();
+		const int positionCount = positions.GetCount();
 		
 		if(largeModel){
 			writer.WriteInt(positionCount);

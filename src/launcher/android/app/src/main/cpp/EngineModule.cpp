@@ -83,7 +83,7 @@ jobject EngineModule::Convert(const delEngineModule &module) {
     pFldModLibFileHashIs.Set(objMod, module.GetLibFileHashIs());
     pFldModLibFileEntryPoint.Set(objMod, module.GetLibFileEntryPoint());
 
-    const delEMParameterList &params = module.GetParameters();
+    const delEMParameter::List &params = module.GetParameters();
     const int paramCount = params.GetCount();
     int j;
 

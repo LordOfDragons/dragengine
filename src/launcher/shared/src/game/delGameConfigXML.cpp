@@ -202,7 +202,7 @@ void delGameConfigXML::pReadConfig(const decXmlElementTag &root, delGame &game){
 				game.SetActiveProfile(game.GetCustomProfile());
 				
 			}else{
-				game.SetActiveProfile(pLauncher.GetGameManager().GetProfiles().GetNamed (name));
+				game.SetActiveProfile(pLauncher.GetGameManager().GetProfiles().FindNamed(name));
 				if(!game.GetActiveProfile()){
 					GetLogger()->LogWarnFormat(GetLoggerSource(), "%s(%i:%i): Profile '%s' does not exist",
 						tag->GetName().GetString(), tag->GetLineNumber(), tag->GetPositionNumber(), name.GetString());

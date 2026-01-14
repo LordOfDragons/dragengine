@@ -22,14 +22,29 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "delPatch.h"
 
 #include <dragengine/common/exceptions.h>
 
+
+// class delPatch::List
+/////////////////////////
+
+bool delPatch::List::HasWithId(const decUuid &id) const{
+	DEASSERT_NOTNULL(id)
+	
+	return HasMatching([&](const delPatch &patch){
+		return patch.GetIdentifier() == id;
+	});
+}
+
+delPatch::Ref delPatch::List::FindWithId(const decUuid &id) const{
+	DEASSERT_NOTNULL(id)
+	
+	return FindOrDefault([&](const delPatch &patch){
+		return patch.GetIdentifier() == id;
+	});
+}
 
 
 // Class delPatch

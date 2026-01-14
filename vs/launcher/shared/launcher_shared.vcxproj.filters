@@ -67,16 +67,10 @@
     <ClCompile Include="..\..\..\src\launcher\shared\src\engine\modules\parameter\delEMParameter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\modules\parameter\delEMParameterList.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\launcher\shared\src\game\delGame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\launcher\shared\src\game\delGameConfigXML.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\game\delGameList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\launcher\shared\src\game\delGameManager.cpp">
@@ -91,9 +85,6 @@
     <ClCompile Include="..\..\..\src\launcher\shared\src\game\fileformat\delFileFormat.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\game\fileformat\delFileFormatList.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\launcher\shared\src\game\icon\delGameIcon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -103,9 +94,6 @@
     <ClCompile Include="..\..\..\src\launcher\shared\src\game\patch\delPatch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\game\patch\delPatchList.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\launcher\shared\src\game\patch\delPatchManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -113,9 +101,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGameProfile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGameProfileList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGPDisableModuleVersion.cpp">
@@ -189,16 +174,10 @@
     <ClInclude Include="..\..\..\src\launcher\shared\src\engine\modules\parameter\delEMParameter.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\modules\parameter\delEMParameterList.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\launcher\shared\src\game\delGame.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\launcher\shared\src\game\delGameConfigXML.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\game\delGameList.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\launcher\shared\src\game\delGameManager.h">
@@ -213,9 +192,6 @@
     <ClInclude Include="..\..\..\src\launcher\shared\src\game\fileformat\delFileFormat.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\game\fileformat\delFileFormatList.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\launcher\shared\src\game\icon\delGameIcon.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -223,9 +199,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\launcher\shared\src\game\patch\delPatch.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\game\patch\delPatchList.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\launcher\shared\src\game\patch\delPatchManager.h">
@@ -238,9 +211,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGameProfile.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGameProfileList.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGPDisableModuleVersion.h">

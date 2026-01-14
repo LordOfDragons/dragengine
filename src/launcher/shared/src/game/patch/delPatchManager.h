@@ -25,7 +25,7 @@
 #ifndef _DELPATCHMANAGER_H_
 #define _DELPATCHMANAGER_H_
 
-#include "delPatchList.h"
+#include "delPatch.h"
 
 #include <dragengine/common/string/decString.h>
 
@@ -41,7 +41,7 @@ class delEngineInstance;
 class DE_DLL_EXPORT delPatchManager{
 private:
 	delLauncher &pLauncher;
-	delPatchList pPatches;
+	delPatch::List pPatches;
 	
 	
 	
@@ -63,20 +63,20 @@ public:
 	inline delLauncher &GetLauncher() const{ return pLauncher; }
 	
 	/** \brief Game list. */
-	inline delPatchList &GetPatches(){ return pPatches; }
-	inline const delPatchList &GetPatches() const{ return pPatches; }
+	inline delPatch::List &GetPatches(){ return pPatches; }
+	inline const delPatch::List &GetPatches() const{ return pPatches; }
 	
 	/** \brief Load list of game patches from game patch directory. */
 	void LoadPatches(delEngineInstance &instance);
 	
 	/** \brief Load a game patch from a disk file. */
-	void LoadPatchFromDisk(delEngineInstance &instance, const decString &path, delPatchList &list);
+	void LoadPatchFromDisk(delEngineInstance &instance, const decString &path, delPatch::List &list);
 	
 	/**
 	 * \brief Search and load patches inside and below directory.
 	 * \version 1.13
 	 */
-	void LoadPatchesFromDisk(delEngineInstance &instance, const decString &baseDir, delPatchList &list);
+	void LoadPatchesFromDisk(delEngineInstance &instance, const decString &baseDir, delPatch::List &list);
 	
 	/** \brief Clear. */
 	void Clear();
@@ -86,9 +86,9 @@ public:
 	
 protected:
 	void pScanPatchDefFiles(delEngineInstance &instance, deVirtualFileSystem &vfs,
-		const decPath &baseDir, const decPath &directory, delPatchList &list);
+		const decPath &baseDir, const decPath &directory, delPatch::List &list);
 	
-	void pProcessFoundFiles(delEngineInstance &instance, const decPath &path, delPatchList &list);
+	void pProcessFoundFiles(delEngineInstance &instance, const decPath &path, delPatch::List &list);
 };
 
 #endif

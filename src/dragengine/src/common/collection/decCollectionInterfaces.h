@@ -131,10 +131,16 @@ class decTCollectionQueryByName : public Base{
 public:
 	using Base::Base;
 	
-	/** \brief Create copy of collection. */
-	explicit decTCollectionQueryByName(const Base &base) : Base(base){}
+	/**
+	 * \brief Create copy of collection.
+	 * \note Not explicit on purpose.
+	 */
+	decTCollectionQueryByName(const Base &base) : Base(base){}
 	
-	/** \brief Move collection. */
+	/**
+	 * \brief Move collection.
+	 * \note Not explicit on purpose.
+	 */
 	decTCollectionQueryByName(Base &&base) : Base(base){}
 	
 	/** \brief One or more elements match name. */
@@ -166,10 +172,16 @@ class decTCollectionQueryByPath : public Base{
 public:
 	using Base::Base;
 	
-	/** \brief Create copy of collection. */
-	explicit decTCollectionQueryByPath(const Base &base) : Base(base){}
+	/**
+	 * \brief Create copy of collection.
+	 * \note Not explicit on purpose.
+	 */
+	decTCollectionQueryByPath(const Base &base) : Base(base){}
 	
-	/** \brief Move collection. */
+	/**
+	 * \brief Move collection.
+	 * \note Not explicit on purpose.
+	 */
 	decTCollectionQueryByPath(Base &&base) : Base(base){}
 	
 	/** \brief One or more elements match path. */
@@ -203,10 +215,16 @@ class decTCollectionQueryByPathOrName : public decTCollectionQueryByPath<decTCol
 public:
 	using BaseType::decTCollectionQueryByPath;
 	
-	/** \brief Create copy of collection. */
-	explicit decTCollectionQueryByPathOrName(const BaseType &base) : BaseType(base){}
+	/**
+	 * \brief Create copy of collection.
+	 * \note Not explicit on purpose.
+	 */
+	decTCollectionQueryByPathOrName(const BaseType &base) : BaseType(base){}
 	
-	/** \brief Move collection. */
+	/**
+	 * \brief Move collection.
+	 * \note Not explicit on purpose.
+	 */
 	decTCollectionQueryByPathOrName(BaseType &&base) : BaseType(base){}
 	
 	/** \brief One or more elements match path or name. */
@@ -238,10 +256,16 @@ class decTCollectionQueryById : public Base{
 public:
 	using Base::Base;
 	
-	/** \brief Create copy of collection. */
-	explicit decTCollectionQueryById(const Base &base) : Base(base){}
+	/**
+	 * \brief Create copy of collection.
+	 * \note Not explicit on purpose.
+	 */
+	decTCollectionQueryById(const Base &base) : Base(base){}
 	
-	/** \brief Move collection. */
+	/**
+	 * \brief Move collection.
+	 * \note Not explicit on purpose.
+	 */
 	decTCollectionQueryById(Base &&base) : Base(base){}
 	
 	/** \brief One or more elements match identifier. */

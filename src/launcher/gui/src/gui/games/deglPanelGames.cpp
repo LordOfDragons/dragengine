@@ -184,7 +184,7 @@ void deglPanelGames::SetSelectedGame(delGame *game){
 
 
 void deglPanelGames::UpdateGameList(){
-	const delGameList &gameList = pWindowMain->GetLauncher()->GetGameManager().GetGames();
+	const delGame::List &gameList = pWindowMain->GetLauncher()->GetGameManager().GetGames();
 	delGame *selectedGame = GetSelectedGame();
 	const int count = gameList.GetCount();
 	deglPGListItemGame *listItem;

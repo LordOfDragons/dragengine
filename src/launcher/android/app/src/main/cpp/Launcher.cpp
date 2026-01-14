@@ -30,8 +30,8 @@ pFDContainer(FDVFSContainer::Ref::New(decPath::CreatePathUnix("/fds"))){
 Launcher::~Launcher(){
 }
 
-delGameList Launcher::ReadDelgaGames(const decString &path){
-    delGameList games;
+delGame::List Launcher::ReadDelgaGames(const decString &path){
+    delGame::List games;
     const delEngineInstance::Ref instance(GetEngineInstanceFactory().
         CreateEngineInstance(*this, GetEngine().GetLogFile()));
     instance->StartEngine();
@@ -127,7 +127,7 @@ JNIEnv *env, jobject thiz, jlong plauncher) {
     JniHelpers h(env);
     try {
         const Launcher &launcher = *((Launcher *) (intptr_t) plauncher);
-        const delGameList &games = launcher.GetGameManager().GetGames();
+        const delGame::List &games = launcher.GetGameManager().GetGames();
         const int gameCount = games.GetCount();
         int i;
 
@@ -183,7 +183,7 @@ JNIEnv *env, jobject thiz, jlong plauncher, jstring path){
     try {
         Launcher &launcher = *((Launcher *) (intptr_t) plauncher);
 
-        const delGameList games(launcher.ReadDelgaGames(h.convertString(path)));
+        const delGame::List games(launcher.ReadDelgaGames(h.convertString(path)));
         const int gameCount = games.GetCount();
         int i;
 
@@ -212,7 +212,7 @@ JNIEnv *env, jobject thiz, jlong plauncher){
     JniHelpers h(env);
     try {
         const Launcher &launcher = *((Launcher*)(intptr_t)plauncher);
-        const delGameProfileList &profiles = launcher.GetGameManager().GetProfiles();
+        const delGameProfile::List &profiles = launcher.GetGameManager().GetProfiles();
         const int profileCount = profiles.GetCount();
         int i;
 

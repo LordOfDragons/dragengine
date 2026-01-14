@@ -37,47 +37,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-deModelLodVertexPositionSet::deModelLodVertexPositionSet() :
-pPositions(nullptr),
-pPositionCount(0){
+deModelLodVertexPositionSet::deModelLodVertexPositionSet() = default;
+
+deModelLodVertexPositionSet::deModelLodVertexPositionSet(const deModelLodVertexPositionSet &set) :
+pPositions(set.pPositions){
 }
 
-deModelLodVertexPositionSet::~deModelLodVertexPositionSet(){
-	if(pPositions){
-		delete [] pPositions;
+deModelLodVertexPositionSet &deModelLodVertexPositionSet::operator=(const deModelLodVertexPositionSet &set){
+	if(this != &set){
+		pPositions = set.pPositions;
 	}
+	return *this;
 }
 
+deModelLodVertexPositionSet::deModelLodVertexPositionSet(deModelLodVertexPositionSet &&set) noexcept :
+pPositions(std::move(set.pPositions)){
+}
 
-
-// Management
-///////////////
-
-void deModelLodVertexPositionSet::SetPositionCount(int count){
-	DEASSERT_TRUE(count >= 0)
-	
-	if(pPositions){
-		delete [] pPositions;
-		pPositions = nullptr;
-		pPositionCount = 0;
+deModelLodVertexPositionSet &deModelLodVertexPositionSet::operator=(deModelLodVertexPositionSet &&set) noexcept{
+	if(this != &set){
+		pPositions = std::move(set.pPositions);
 	}
-	
-	if(count > 0){
-		pPositions = new deModelLodVertexPositionSetPosition[count];
-		pPositionCount = count;
-	}
-}
-
-deModelLodVertexPositionSetPosition &deModelLodVertexPositionSet::GetPositionAt(int index){
-	DEASSERT_TRUE(index >= 0)
-	DEASSERT_TRUE(index < pPositionCount);
-	
-	return pPositions[index];
-}
-
-const deModelLodVertexPositionSetPosition &deModelLodVertexPositionSet::GetPositionAt(int index) const{
-	DEASSERT_TRUE(index >= 0)
-	DEASSERT_TRUE(index < pPositionCount);
-	
-	return pPositions[index];
+	return *this;
 }

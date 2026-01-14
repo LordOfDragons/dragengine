@@ -1459,14 +1459,14 @@ void deoglModelLOD::pBuildArrays(const deModel &engModel){
 		for(i=0; i<pVertPosSetCount; i++){
 			const int baseSetIndex = engModel.GetVertexPositionSetAt(i)->GetBaseSet();
 			const deModelLodVertexPositionSet &modelVps = modelVertPosSets[i];
-			const deModelLodVertexPositionSetPosition * const modelVpsPos = modelVps.GetPositions();
-			const int positionCount = modelVps.GetPositionCount();
+			const deModelLodVertexPositionSet::PositionsList &modelVpsPos = modelVps.GetPositions();
+			const int positionCount = modelVpsPos.GetCount();
 			deoglModelLODVertPosSet &vps = pVertPosSets[i];
 			
 			// determine the count of points affected by all positions
 			int pointCount = 0;
 			for(j=0; j<positionCount; j++){
-				const int vertex = modelVpsPos[j].GetVertex();
+				const int vertex = modelVpsPos.GetAt(j).GetVertex();
 				
 				for(k=0; k<pVertexCount; k++){
 					if(pVertices[k].position == vertex){
@@ -1480,25 +1480,25 @@ void deoglModelLOD::pBuildArrays(const deModel &engModel){
 			vps.SetPositionCount(pointCount);
 			
 			deoglModelLODVertPosSet::sPosition *vpsPosition = vps.GetPositions();
-			const deModelLodVertexPositionSetPosition *modelVpsBasePos = nullptr;
+			const deModelLodVertexPositionSet::PositionsList *modelVpsBasePos = nullptr;
 			int basePositionCount = 0;
 			
 			if(baseSetIndex != -1){
 				const deModelLodVertexPositionSet &modelVpsBase = modelVertPosSets[baseSetIndex];
-				modelVpsBasePos = modelVpsBase.GetPositions();
-				basePositionCount = modelVpsBase.GetPositionCount();
+				modelVpsBasePos = &modelVpsBase.GetPositions();
+				basePositionCount = modelVpsBasePos->GetCount();
 			}
 			
 			for(j=0; j<positionCount; j++){
-				const int vertex = modelVpsPos[j].GetVertex();
+				const int vertex = modelVpsPos.GetAt(j).GetVertex();
 				
 				// calculate position which is either relative to the base position or relative
 				// to another vertex position set position
-				decVector position(modelVpsPos[j].GetPosition());
+				decVector position(modelVpsPos.GetAt(j).GetPosition());
 				
 				if(modelVpsBasePos){
 					for(k=0; k<basePositionCount; k++){
-						const deModelLodVertexPositionSetPosition &basePos = modelVpsBasePos[k];
+						const deModelLodVertexPositionSetPosition &basePos = modelVpsBasePos->GetAt(k);
 						if(basePos.GetVertex() == vertex){
 							position -= basePos.GetPosition();
 							break;

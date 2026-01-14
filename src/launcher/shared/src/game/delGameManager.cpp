@@ -84,7 +84,7 @@ void delGameManager::LoadGames(delEngineInstance &instance){
 	const decPath::List &directories = collect.GetDirectories();
 	const int count = directories.GetCount();
 	delGame::Ref game;
-	delGameList list;
+	delGame::List list;
 	int i;
 	
 	for(i=0; i<count; i++){
@@ -102,7 +102,7 @@ void delGameManager::LoadGames(delEngineInstance &instance){
 				continue;
 			}
 			
-			delGame * const matchingGame = list.GetWithID(game->GetIdentifier());
+			delGame * const matchingGame = list.FindWithId(game->GetIdentifier());
 			if(matchingGame){
 				game = matchingGame;
 			}
@@ -112,7 +112,7 @@ void delGameManager::LoadGames(delEngineInstance &instance){
 			game->SetTitle(decUnicodeString::NewFromUTF8(game->GetIdentifier().ToHexString(false)));
 		}
 		
-		if(!pGames.HasWithID(game->GetIdentifier())){
+		if(!pGames.HasWithId(game->GetIdentifier())){
 			pGames.Add(game);
 		}
 	}
@@ -132,14 +132,14 @@ void delGameManager::Verify(){
 	if(pDefaultProfile){
 		pDefaultProfile->Verify(pLauncher);
 	}
-	pProfiles.ValidateAll(pLauncher);
 	
-	const int count = pGames.GetCount();
-	int i;
+	pProfiles.Visit([&](delGameProfile &profile){
+		profile.Verify(pLauncher);
+	});
 	
-	for(i=0; i<count; i++){
-		pGames.GetAt(i)->VerifyRequirements();
-	}
+	pGames.Visit([&](delGame &game){
+		game.VerifyRequirements();
+	});
 }
 
 void delGameManager::ApplyProfileChanges(){
@@ -156,7 +156,7 @@ void delGameManager::ApplyProfileChanges(){
 	}
 }
 
-void delGameManager::LoadGameFromDisk(delEngineInstance &instance, const decString &path, delGameList &list){
+void delGameManager::LoadGameFromDisk(delEngineInstance &instance, const decString &path, delGame::List &list){
 #ifdef OS_ANDROID
 	if(path.BeginsWith("/fds/")){
 		return; // shared files can not be read so do not spam the logs
@@ -169,7 +169,7 @@ void delGameManager::LoadGameFromDisk(delEngineInstance &instance, const decStri
 	logger.LogInfoFormat(pLauncher.GetLogSource(), "Reading game file '%s'", path.GetString());
 	
 	if(path.EndsWith(".delga")){
-		delGameList delgaGames;
+		delGame::List delgaGames;
 		pLauncher.GetEngine().ReadDelgaGameDefs(instance, path, delgaGames);
 		
 		const int count = delgaGames.GetCount();
@@ -227,7 +227,7 @@ void delGameManager::LoadGameFromDisk(delEngineInstance &instance, const decStri
 	// load patches located in the same directory or below
 	decPath baseDir(decPath::CreatePathNative(path));
 	baseDir.RemoveLastComponent();
-	delPatchList patches;
+	delPatch::List patches;
 	pLauncher.GetPatchManager().LoadPatchesFromDisk(instance, baseDir.GetPathNative(), patches);
 	
 	const int gameCount = list.GetCount();
@@ -396,7 +396,7 @@ const decPath &baseDir, const decPath &directory){
 }
 
 void delGameManager::pProcessFoundFiles(delEngineInstance &instance, const decPath &path){
-	delGameList list;
+	delGame::List list;
 	try{
 		LoadGameFromDisk(instance, path.GetPathNative(), list);
 		
@@ -409,7 +409,7 @@ void delGameManager::pProcessFoundFiles(delEngineInstance &instance, const decPa
 	int i;
 	for(i=0; i<count; i++){
 		delGame * const game = list.GetAt(i);
-		if(pGames.HasWithID(game->GetIdentifier())){
+		if(pGames.HasWithId(game->GetIdentifier())){
 // 			pLauncher.GetLogger()->LogWarnFormat( pLauncher.GetLogSource(), "Ignore duplicate game '%s'",
 // 				game->GetIdentifier().ToHexString( false ).GetString() );
 			continue;

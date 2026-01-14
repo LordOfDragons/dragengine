@@ -79,7 +79,7 @@ void delPatchManager::LoadPatches(delEngineInstance &instance){
 	pPatches.RemoveAll();
 	
 	// load patches from known delga directories
-	const delGameList &games = pLauncher.GetGameManager().GetGames();
+	const delGame::List &games = pLauncher.GetGameManager().GetGames();
 	const int gameCount = games.GetCount();
 	decPath pathSearch;
 	int i;
@@ -105,14 +105,14 @@ void delPatchManager::LoadPatches(delEngineInstance &instance){
 	pScanPatchDefFiles(instance, vfs, pathDisk, pathRoot, pPatches);
 }
 
-void delPatchManager::LoadPatchFromDisk(delEngineInstance &instance, const decString &path, delPatchList &list){
+void delPatchManager::LoadPatchFromDisk(delEngineInstance &instance, const decString &path, delPatch::List &list){
 	deLogger &logger = *pLauncher.GetLogger();
 	delPatchXML patchXML(&logger, pLauncher.GetLogSource());
 	
 	logger.LogInfoFormat(pLauncher.GetLogSource(), "Reading patch file '%s'", path.GetString());
 	
 	if(path.EndsWith(".delga")){
-		delPatchList delgaPatches;
+		delPatch::List delgaPatches;
 		pLauncher.GetEngine().ReadDelgaPatchDefs(instance, path, delgaPatches);
 		
 		const int count = delgaPatches.GetCount();
@@ -138,7 +138,7 @@ void delPatchManager::LoadPatchFromDisk(delEngineInstance &instance, const decSt
 	}
 }
 
-void delPatchManager::LoadPatchesFromDisk(delEngineInstance &instance, const decString &baseDir, delPatchList &list){
+void delPatchManager::LoadPatchesFromDisk(delEngineInstance &instance, const decString &baseDir, delPatch::List &list){
 	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::New());
 	const decPath pathRoot(decPath::CreatePathUnix("/"));
 	const decPath pathDisk(decPath::CreatePathNative(baseDir));
@@ -157,7 +157,7 @@ void delPatchManager::Clear(){
 ////////////////////////
 
 void delPatchManager::pScanPatchDefFiles(delEngineInstance &instance, deVirtualFileSystem &vfs,
-const decPath &baseDir, const decPath &directory, delPatchList &list){
+const decPath &baseDir, const decPath &directory, delPatch::List &list){
 	deCollectFileSearchVisitor collect;
 	collect.AddPattern("*.depatch");
 	collect.AddPattern("*.delga");
@@ -170,8 +170,8 @@ const decPath &baseDir, const decPath &directory, delPatchList &list){
 }
 
 void delPatchManager::pProcessFoundFiles(delEngineInstance &instance,
-const decPath &path, delPatchList &list){
-	delPatchList subList;
+const decPath &path, delPatch::List &list){
+	delPatch::List subList;
 	try{
 		LoadPatchFromDisk(instance, path.GetPathNative(), subList);
 		
@@ -184,7 +184,14 @@ const decPath &path, delPatchList &list){
 	int i;
 	for(i=0; i<count; i++){
 		delPatch * const patch = subList.GetAt(i);
-		if(!list.HasWithID(patch->GetIdentifier())){
+		bool hasPatch = false;
+		for(int j=0; j<list.GetCount(); j++){
+			if(list.GetAt(j)->GetIdentifier() == patch->GetIdentifier()){
+				hasPatch = true;
+				break;
+			}
+		}
+		if(!hasPatch){
 			list.Add(patch);
 		}
 	}

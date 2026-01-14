@@ -157,7 +157,7 @@ bool dellRunGame::LocateProfile(){
 		profile = pGame->GetProfileToUse();
 		
 	}else{
-		profile = gameManager.GetProfiles().GetNamed(pProfileName);
+		profile = gameManager.GetProfiles().FindNamed(pProfileName);
 		
 		if(!profile){
 			logger.LogErrorFormat(LOGSOURCE, "No profile found with name '%s'",
@@ -223,7 +223,7 @@ void dellRunGame::UpdateRunArguments(){
 }
 
 void dellRunGame::ShowGameProblems(){
-	const delFileFormatList &fileFormatList = pGame->GetFileFormats();
+	const delFileFormat::List &fileFormatList = pGame->GetFileFormats();
 	const int fileFormatCount = fileFormatList.GetCount();
 	deLogger &logger = *pLauncher.GetLauncher().GetLogger();
 	int i;
@@ -232,7 +232,7 @@ void dellRunGame::ShowGameProblems(){
 		pGame->GetAliasIdentifier().GetString());
 	
 	for(i=0; i<fileFormatCount; i++){
-		const delFileFormat &fileFormat = *fileFormatList.GetAt(i);
+		const delFileFormat &fileFormat = fileFormatList.GetAt(i);
 		
 		if(!fileFormat.GetSupported()){
 			if(deModuleSystem::IsSingleType(fileFormat.GetType())){

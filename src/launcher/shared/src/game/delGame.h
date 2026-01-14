@@ -26,13 +26,14 @@
 #define _DELGAME_H_
 
 #include "icon/delGameIconList.h"
-#include "fileformat/delFileFormatList.h"
-#include "patch/delPatchList.h"
+#include "fileformat/delFileFormat.h"
+#include "patch/delPatch.h"
 #include "profile/delGameProfile.h"
-#include "profile/delGPModuleList.h"
+#include "profile/delGPModule.h"
 #include "../engine/delEngineInstance.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/file/decMemoryFile.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
@@ -70,6 +71,25 @@ public:
 	/** \brief Type holding strong reference. */
 	using Ref = deTObjectReference<delGame>;
 	
+	/** \brief List of games. */
+	class List : public decTObjectOrderedSet<delGame>{
+	public:
+		using decTObjectOrderedSet<delGame>::decTObjectOrderedSet;
+		using decTObjectOrderedSet<delGame>::operator=;
+		
+		/** \brief Copy list. */
+		List(const decTObjectOrderedSet<delGame> &set);
+		
+		/** \brief Has game with identifier. */
+		bool HasWithId(const decUuid &id) const;
+		
+		/** \brief Find game with identifier or nullptr if not found. */
+		delGame *FindWithId(const decUuid &id) const;
+		
+		/** \brief Collect games with alias identifier. */
+		List CollectWithAliasId(const decString &aliasId) const;
+	};
+	
 	
 private:
 	delLauncher &pLauncher;
@@ -89,13 +109,13 @@ private:
 	decString pScriptModule;
 	decString pScriptModuleVersion;
 	decPoint pWindowSize;
-	delFileFormatList pFileFormats;
+	delFileFormat::List pFileFormats;
 	
 	decString pPathConfig;
 	decString pPathCapture;
 	
 	delEngineInstance::Ref pEngineInstance;
-	delGPModuleList pCollectChangedParams;
+	delGPModule::List pCollectChangedParams;
 	delGameProfile::Ref pCollectChangedParamsProfile;
 	
 	bool pAllFormatsSupported;
@@ -116,7 +136,7 @@ private:
 	
 	bool pUseLatestPatch;
 	decUuid pUseCustomPatch;
-	delPatchList pLocalPatches;
+	delPatch::List pLocalPatches;
 	
 	decStringDictionary pCustomProperties;
 	
@@ -232,8 +252,8 @@ public:
 	void SetWindowSize(const decPoint &size);
 	
 	/** Retrieves the file format list. */
-	inline delFileFormatList &GetFileFormats(){ return pFileFormats; }
-	inline const delFileFormatList &GetFileFormats() const{ return pFileFormats; }
+	inline delFileFormat::List &GetFileFormats(){ return pFileFormats; }
+	inline const delFileFormat::List &GetFileFormats() const{ return pFileFormats; }
 	
 	
 	
@@ -345,8 +365,8 @@ public:
 	 * \brief Patches local to the DELGA file.
 	 * \version 1.13
 	 */
-	inline delPatchList &GetLocalPatches(){ return pLocalPatches; }
-	inline const delPatchList &GetLocalPatches() const{ return pLocalPatches; }
+	inline delPatch::List &GetLocalPatches(){ return pLocalPatches; }
+	inline const delPatch::List &GetLocalPatches() const{ return pLocalPatches; }
 	
 	/**
 	 * \brief Custom properties.
@@ -401,10 +421,10 @@ public:
 	delGameProfile *GetProfileToUse() const;
 	
 	/** \brief Find patches for this game. */
-	void FindPatches(delPatchList &list) const;
+	void FindPatches(delPatch::List &list) const;
 	
 	/** \brief Sort patches by dependencies so the newest is first. */
-	void SortPatches(delPatchList &sorted, const delPatchList &patches) const;
+	void SortPatches(delPatch::List &sorted, const delPatch::List &patches) const;
 	/*@}*/
 	
 	

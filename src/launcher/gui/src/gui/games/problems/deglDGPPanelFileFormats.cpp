@@ -98,7 +98,7 @@ void deglDGPPanelFileFormats::RebuildFormatList(){
 	delGame &game = *pParentDialog->GetGame();
 	const delEngine &engine = pParentDialog->GetWindowMain()->GetLauncher()->GetEngine();
 	const delEngineModuleList &modules = engine.GetModules();
-	delFileFormatList &fileFormats = game.GetFileFormats();
+	delFileFormat::List &fileFormats = game.GetFileFormats();
 	int f, formatCount = fileFormats.GetCount();
 	int m, moduleCount = modules.GetCount();
 	delEngineModule *matchingModule;
@@ -109,7 +109,7 @@ void deglDGPPanelFileFormats::RebuildFormatList(){
 	pListFormats->clearItems();
 	
 	for(f=0; f<formatCount; f++){
-		delFileFormat &format = *fileFormats.GetAt(f);
+		delFileFormat &format = fileFormats.GetAt(f);
 		const decString &formatPattern = format.GetPattern();
 		formatType = format.GetType();
 		

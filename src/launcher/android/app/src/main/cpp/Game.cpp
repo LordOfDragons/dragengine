@@ -2,7 +2,7 @@
 #include <cstring>
 #include <delauncher/delLauncher.h>
 #include <delauncher/game/delGame.h>
-#include <delauncher/game/delGameList.h>
+#include <delauncher/game/delGame.h>
 #include <delauncher/game/delGameXML.h>
 #include <delauncher/game/icon/delGameIcon.h>
 #include <delauncher/game/fileformat/delFileFormat.h>
@@ -60,11 +60,11 @@ jobject GameInfo::Convert(const delGame &game) {
         objIcons.SetAt(j, objIcon);
     }
 
-    const delFileFormatList &formats = game.GetFileFormats();
+    const delFileFormat::List &formats = game.GetFileFormats();
     const int formatCount = formats.GetCount();
     const JniObjectArray objFormats(pEnv, pClsFormat, formatCount);
     for(j=0; j<formatCount; j++){
-        const delFileFormat &format = *formats.GetAt(j);
+        const delFileFormat &format = formats.GetAt(j);
         const JniObject objFormat(pClsFormat.New());
         pFldFormatType.Set(objFormat, (int)format.GetType());
         pFldFormatPattern.Set(objFormat, format.GetPattern());

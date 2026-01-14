@@ -83,7 +83,7 @@ private:
 	
 	delGame::Ref pGame;
 	delGameProfile::Ref pProfile;
-	delGPModuleList *pModuleParameters;
+	delGPModule::List *pModuleParameters;
 	decUuid pPatchIdentifier;
 	bool pHasPatchIdentifier, pPatchesValid;
 	delGameRunParams pRunParams;

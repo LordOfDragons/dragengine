@@ -28,6 +28,7 @@
 #include <dragengine/common/string/decString.h>
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/systems/modules/deModuleParameter.h>
 
 
@@ -39,6 +40,9 @@ class DE_DLL_EXPORT delEMParameter : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	using Ref = deTObjectReference<delEMParameter>;
+	
+	/** \brief List type. */
+	using List = decTObjectOrderedSet<delEMParameter>;
 	
 	
 private:

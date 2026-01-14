@@ -54,6 +54,31 @@
 #include <dragengine/common/file/decMemoryFile.h>
 
 
+// Class delGame::List
+////////////////////////
+
+delGame::List::List(const decTObjectOrderedSet<delGame> &set) :
+decTObjectOrderedSet<delGame>(set){
+}
+
+bool delGame::List::HasWithId(const decUuid &id) const{
+	return this->HasMatching([&](const delGame &g){
+		return g.GetIdentifier() == id;
+	});
+}
+
+delGame *delGame::List::FindWithId(const decUuid &id) const{
+	return this->FindOrDefault([&](const delGame &g){
+		return g.GetIdentifier() == id;
+	});
+}
+
+delGame::List delGame::List::CollectWithAliasId(const decString &aliasId) const{
+	return Collect([&](const delGame &g){
+		return g.GetAliasIdentifier() == aliasId;
+	});
+}
+
 
 // Class delGame
 //////////////////
@@ -176,7 +201,7 @@ void delGame::VerifyRequirements(){
 	pAllFormatsSupported = true;
 	
 	for(f=0; f<formatCount; f++){
-		delFileFormat &format = *pFileFormats.GetAt (f);
+		delFileFormat &format = pFileFormats.GetAt (f);
 		const deModuleSystem::eModuleTypes formatType = format.GetType();
 		
 		format.SetSupported(false);
@@ -597,22 +622,18 @@ delGameProfile *delGame::GetProfileToUse() const{
 	return gameManager.GetDefaultProfile();
 }
 
-void delGame::FindPatches(delPatchList &list) const{
-	delPatchList patches(pLauncher.GetPatchManager().GetPatches());
+void delGame::FindPatches(delPatch::List &list) const{
+	delPatch::List patches(pLauncher.GetPatchManager().GetPatches());
 	patches.AddAll(pLocalPatches);
 	
-	const int count = patches.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		delPatch * const patch = patches.GetAt(i);
+	patches.Visit([&](delPatch *patch){
 		if(patch->GetGameID() == pIdentifier){
 			list.Add(patch);
 		}
-	}
+	});
 }
 
-void delGame::SortPatches(delPatchList &sorted, const delPatchList &patches) const{
+void delGame::SortPatches(delPatch::List &sorted, const delPatch::List &patches) const{
 	const int count = patches.GetCount();
 	bool hasAdded = true;
 	int i;
@@ -630,7 +651,7 @@ void delGame::SortPatches(delPatchList &sorted, const delPatchList &patches) con
 			
 			if(patch->GetRequiredPatches().IsNotEmpty()
 			&& patch->GetRequiredPatches().NoneMatching([&](const decUuid &id){
-				return sorted.HasWithID(id);
+				return sorted.HasWithId(id);
 			})){
 				continue;
 			}

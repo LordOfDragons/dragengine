@@ -107,17 +107,10 @@ void delEngineConfigXML::pWriteConfig(decXmlWriter &writer, const delLauncher &l
 }
 
 void delEngineConfigXML::pWriteProfiles(decXmlWriter &writer, const delLauncher &launcher){
-	const delGameManager &gameManager = launcher.GetGameManager();
-	const delGameProfileList &profileList = gameManager.GetProfiles();
-	const int count = profileList.GetCount();
-	int i;
-	
 	writer.WriteOpeningTag("profiles", false, true);
-	
-	for(i=0; i<count; i++){
-		WriteProfile(writer, *profileList.GetAt (i), "profile");
-	}
-	
+	launcher.GetGameManager().GetProfiles().Visit([&](const delGameProfile::Ref &profile){
+		WriteProfile(writer, profile, "profile");
+	});
 	writer.WriteClosingTag("profiles", true);
 }
 
@@ -144,7 +137,7 @@ void delEngineConfigXML::pReadConfig(const decXmlElementTag &root, delLauncher &
 				gameManager.SetActiveProfile(nullptr);
 				
 			}else{
-				gameManager.SetActiveProfile(gameManager.GetProfiles().GetNamed(profileName));
+				gameManager.SetActiveProfile(gameManager.GetProfiles().FindNamed(profileName));
 				if(!gameManager.GetActiveProfile()){
 					GetLogger()->LogWarnFormat(GetLoggerSource().GetString(),
 						"%s(%i:%i): Profile '%s' does not exist", tag->GetName().GetString(),
@@ -174,8 +167,8 @@ void delEngineConfigXML::pReadProfiles(const decXmlElementTag &root, delLauncher
 			ReadProfile(*tag, profile);
 			
 			if(!profile->GetName().IsEmpty()
-			&& !gameManager.GetProfiles().HasNamed (profile->GetName())){
-				gameManager.GetProfiles().Add (profile);
+			&& !gameManager.GetProfiles().HasNamed(profile->GetName())){
+				gameManager.GetProfiles().Add(profile);
 			}
 			
 		}else{

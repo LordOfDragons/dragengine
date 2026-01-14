@@ -312,10 +312,10 @@ bool declRunGame::ParseModuleParameter(const decString &value){
 	parameterValue = value.GetMiddle(separator2 + 1);
 	
 	if(!pModuleParameters){
-		pModuleParameters = new delGPModuleList;
+		pModuleParameters = new delGPModule::List;
 	}
 	
-	delGPModule::Ref module(pModuleParameters->GetNamed(moduleName));
+	delGPModule::Ref module(pModuleParameters->FindNamed(moduleName));
 	if(!module){
 		module = delGPModule::Ref::New();
 		module->SetName(moduleName);
@@ -334,13 +334,13 @@ bool declRunGame::LocateGame(){
 	// locate the game to run
 	if(pGameDefFile.IsEmpty()){
 		try{
-			pGame = gameManager.GetGames().GetWithID(decUuid(pGameIdentifier, false));
+			pGame = gameManager.GetGames().FindWithId({pGameIdentifier, false});
 		}catch(const deException &){
 			// ignore. could be identifier
 		}
 		
 		if(!pGame){
-			const delGameList matching(gameManager.GetGames().GetWithAlias(pGameIdentifier));
+			const delGame::List matching(gameManager.GetGames().CollectWithAliasId(pGameIdentifier));
 			if(matching.GetCount() == 1){
 				pGame = matching.GetAt(0);
 				
@@ -356,7 +356,7 @@ bool declRunGame::LocateGame(){
 		// always used even if a game with the same identifier is already installed. running a
 		// game by explicit game file overrides the installed one. otherwise it is difficult
 		// for the user to understand why something else happens than he indented
-		delGameList list;
+		delGame::List list;
 		
 		{
 		const delEngineInstance::Ref instance(pLauncher.GetEngineInstanceFactory().
@@ -377,7 +377,7 @@ bool declRunGame::LocateGame(){
 		
 		// load configuration if the game is not installed. this allows to keep the parameter
 		// changes alive done by the player inside the game
-		if(!gameManager.GetGames().HasWithID(pGame->GetIdentifier())){
+		if(!gameManager.GetGames().HasWithId(pGame->GetIdentifier())){
 			pGame->LoadConfig();
 		}
 		
@@ -404,7 +404,7 @@ bool declRunGame::LocateProfile(){
 		profile = pGame->GetProfileToUse();
 		
 	}else{
-		profile = gameManager.GetProfiles().GetNamed(pProfileName);
+		profile = gameManager.GetProfiles().FindNamed(pProfileName);
 		if(!profile){
 			logger.LogErrorFormat(LOGSOURCE, "No profile found with name '%s'", pProfileName.GetString());
 			return false;
@@ -502,7 +502,7 @@ void declRunGame::ApplyCustomModuleParameters(){
 }
 
 void declRunGame::PrintGameProblems(){
-	const delFileFormatList &fileFormatList = pGame->GetFileFormats();
+	const delFileFormat::List &fileFormatList = pGame->GetFileFormats();
 	const int fileFormatCount = fileFormatList.GetCount();
 	deLogger &logger = *pLauncher.GetLogger();
 	int i;
@@ -511,7 +511,7 @@ void declRunGame::PrintGameProblems(){
 		pGame->GetAliasIdentifier().GetString(), pGame->GetIdentifier().ToHexString(false).GetString());
 	
 	for(i=0; i<fileFormatCount; i++){
-		const delFileFormat &fileFormat = *fileFormatList.GetAt(i);
+		const delFileFormat &fileFormat = fileFormatList.GetAt(i);
 		
 		if(!fileFormat.GetSupported()){
 			if(deModuleSystem::IsSingleType(fileFormat.GetType())){

@@ -131,7 +131,7 @@ bool deglLauncher::RunCommandLineGame(){
 		// for the user to understand why something else happens than he indented
 		GetLogger()->LogInfoFormat(GetLogSource(), "Run Game: '%s'", pRunGame.GetString());
 		
-		delGameList list;
+		delGame::List list;
 		
 		try{
 			const delEngineInstance::Ref instance(GetEngineInstanceFactory().
@@ -168,13 +168,13 @@ bool deglLauncher::RunCommandLineGame(){
 		
 	}else{
 		try{
-			game = GetGameManager().GetGames().GetWithID(decUuid(pRunGame, false));
+			game = GetGameManager().GetGames().FindWithId({pRunGame, false});
 		}catch(const deException &){
 			// not an UUID
 		}
 		
 		if(!game){
-			const delGameList matching(GetGameManager().GetGames().GetWithAlias(pRunGame));
+			const delGame::List matching(GetGameManager().GetGames().CollectWithAliasId(pRunGame));
 			
 			if(matching.GetCount() == 1){
 				game = matching.GetAt(0);
@@ -199,7 +199,7 @@ bool deglLauncher::RunCommandLineGame(){
 		delGameProfile *profile = game->GetProfileToUse();
 		
 		if(!pRunProfileName.IsEmpty()){
-			profile = GetGameManager().GetProfiles().GetNamed(pRunProfileName);
+			profile = GetGameManager().GetProfiles().FindNamed(pRunProfileName);
 			if(!profile){
 				FXMessageBox::error(pWindowMain->getApp(), MBOX_OK, "Run Game",
 					"No profile found named '%s'", pRunProfileName.GetString());

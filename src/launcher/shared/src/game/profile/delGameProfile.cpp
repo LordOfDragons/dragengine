@@ -281,7 +281,7 @@ delGameProfile &delGameProfile::operator=(const delGameProfile &profile){
 	
 	pModules.RemoveAll();
 	
-	const delGPModuleList &moduleList = profile.GetModules();
+	const delGPModule::List &moduleList = profile.GetModules();
 	const int moduleCount = moduleList.GetCount();
 	int i;
 	for(i=0; i<moduleCount; i++){

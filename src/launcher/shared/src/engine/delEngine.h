@@ -27,6 +27,8 @@
 
 
 #include "modules/delEngineModuleList.h"
+#include "../game/delGame.h"
+#include "../game/patch/delPatch.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
@@ -37,8 +39,6 @@
 #endif
 
 class delLauncher;
-class delGameList;
-class delPatchList;
 class delEngineInstance;
 
 
@@ -176,15 +176,15 @@ public:
 	
 	
 	/** \brief Read game definitions from DELGA file. */
-	void ReadDelgaGameDefs(delEngineInstance &instance, const char *filename, delGameList &list);
+	void ReadDelgaGameDefs(delEngineInstance &instance, const char *filename, delGame::List &list);
 	
 	/** \brief Read game patch definitions from DELGA file. */
-	void ReadDelgaPatchDefs(delEngineInstance &instance, const char *filename, delPatchList &list);
+	void ReadDelgaPatchDefs(delEngineInstance &instance, const char *filename, delPatch::List &list);
 	
 #ifdef OS_ANDROID
 	/** \brief Read game definitions from DELGA file using VFS container. */
 	void ReadDelgaGameDefsVfs(delEngineInstance &instance, const deVFSContainer::Ref &container,
-		const char *filename, delGameList &list);
+		const char *filename, delGame::List &list);
 #endif
 	
 	

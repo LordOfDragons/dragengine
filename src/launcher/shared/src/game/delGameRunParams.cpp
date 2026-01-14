@@ -96,7 +96,7 @@ const decUuid &useCustomPatch, decString &error){
 	
 	// use latest patch
 	if(useLatestPatch){
-		delPatchList collected;
+		delPatch::List collected;
 		game.FindPatches(collected);
 		game.SortPatches(pPatches, collected);
 		return true;
@@ -108,11 +108,11 @@ const decUuid &useCustomPatch, decString &error){
 	}
 	
 	// use custom patch
-	delPatchList patches, collected;
+	delPatch::List patches, collected;
 	game.FindPatches(collected);
 	game.SortPatches(patches, collected);
 	
-	delPatch *usePatch = patches.GetWithID(useCustomPatch);
+	delPatch *usePatch = patches.FindWithId(useCustomPatch);
 	if(!usePatch){
 		error.Format("No patch found with identifier '%s'",
 			useCustomPatch.ToHexString(false).GetString());
@@ -127,7 +127,7 @@ const decUuid &useCustomPatch, decString &error){
 		const delPatch &verifyPatch = *usePatch;
 		
 		for(i=0; i<verifyPatch.GetRequiredPatches().GetCount(); i++){
-			delPatch * const findPatch = patches.GetWithID(verifyPatch.GetRequiredPatches().GetAt(i));
+			delPatch * const findPatch = patches.FindWithId(verifyPatch.GetRequiredPatches().GetAt(i));
 			if(findPatch){
 				collected.Add(findPatch);
 				usePatch = findPatch;

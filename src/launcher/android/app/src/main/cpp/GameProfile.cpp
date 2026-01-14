@@ -56,7 +56,7 @@ pFldProfileReplaceRunArgs(pClsProfile.GetFieldBool("replaceRunArgs")){
 }
 
 jobject GameProfileConfig::Convert(const delGameProfile &profile) {
-    const delGPModuleList &modules = profile.GetModules();
+    const delGPModule::List &modules = profile.GetModules();
     const int moduleCount = modules.GetCount();
     const JniObjectArray objModules(pEnv, pClsModule, moduleCount);
     int i;

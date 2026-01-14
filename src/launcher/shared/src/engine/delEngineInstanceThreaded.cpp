@@ -46,7 +46,6 @@
 #include "modules/parameter/delEMParameter.h"
 #include "../delLauncher.h"
 #include "../game/profile/delGPModule.h"
-#include "../game/profile/delGPModuleList.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
@@ -736,7 +735,7 @@ void delEngineInstanceThreaded::GetModuleParams(delEngineModule &module){
 	
 	if(ReadUCharFromPipe() != delEngineProcess::ercSuccess) DETHROW(deeInvalidAction);
 	
-	delEMParameterList &parameters = module.GetParameters();
+	delEMParameter::List &parameters = module.GetParameters();
 	deModuleParameter::SelectionEntry entry;
 	const int count = ReadUShortFromPipe();
 	decString string;
@@ -1069,12 +1068,12 @@ const char *windowTitle, const char *iconPath){
 }
 
 void delEngineInstanceThreaded::StartGame(const char *scriptDirectory, const char *gameObject,
-delGPModuleList *collectChangedParams){
+delGPModule::List *collectChangedParams){
 	StartGame(scriptDirectory, "", gameObject, collectChangedParams);
 }
 
 void delEngineInstanceThreaded::StartGame(const char *scriptDirectory, const char *scriptVersion,
-const char *gameObject, delGPModuleList *collectChangedParams){
+const char *gameObject, delGPModule::List *collectChangedParams){
 	if(!scriptDirectory || !scriptVersion){
 		DETHROW_INFO(deeNullPointer, "scriptDirectory");
 	}
@@ -1182,7 +1181,15 @@ int delEngineInstanceThreaded::IsGameRunning(){
 					break; // end of list marker
 				}
 				
-				module = pGameCollectChangedParams->GetNamed(moduleName);
+				// Find module by name
+				const int pcount = pGameCollectChangedParams->GetCount();
+				int k;
+				for(k=0; k<pcount; k++){
+					if(pGameCollectChangedParams->GetAt(k)->GetName() == moduleName){
+						module = pGameCollectChangedParams->GetAt(k);
+						break;
+					}
+				}
 				if(!module){
 					module = delGPModule::Ref::New(moduleName);
 					pGameCollectChangedParams->Add(module);

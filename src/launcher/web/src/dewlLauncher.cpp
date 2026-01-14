@@ -227,7 +227,7 @@ void dewlLauncher::pInitLogger(){
 }
 
 void dewlLauncher::pGameProblems(std::vector<std::string> &problems){
-	const delFileFormatList &fileFormatList = pGame->GetFileFormats();
+	const delFileFormat::List &fileFormatList = pGame->GetFileFormats();
 	const int fileFormatCount = fileFormatList.GetCount();
 	deLogger &logger = *GetLogger();
 	decString problem;
@@ -238,7 +238,7 @@ void dewlLauncher::pGameProblems(std::vector<std::string> &problems){
 		pGame->GetIdentifier().ToHexString(false).GetString());
 	
 	for(i=0; i<fileFormatCount; i++){
-		const delFileFormat &fileFormat = *fileFormatList.GetAt(i);
+		const delFileFormat &fileFormat = fileFormatList.GetAt(i);
 		
 		if(!fileFormat.GetSupported()){
 			if(deModuleSystem::IsSingleType(fileFormat.GetType())){
@@ -540,7 +540,7 @@ void dewlLauncher::pLocateGame(){
 	delGameManager &gameManager = GetGameManager();
 	deLogger &logger = *GetLogger();
 	
-	delGameList list;
+	delGame::List list;
 	
 	{
 	const delEngineInstance::Ref instance(GetEngineInstanceFactory().
@@ -561,7 +561,7 @@ void dewlLauncher::pLocateGame(){
 	
 	// load configuration if the game is not installed. this allows to keep the parameter
 	// changes alive done by the player inside the game
-	if(!gameManager.GetGames().HasWithID(pGame->GetIdentifier())){
+	if(!gameManager.GetGames().FindWithId(pGame->GetIdentifier())){
 		pGame->LoadConfig();
 	}
 	

@@ -30,7 +30,6 @@
 #include "delGameXML.h"
 #include "icon/delGameIcon.h"
 #include "fileformat/delFileFormat.h"
-#include "fileformat/delFileFormatList.h"
 #include "../delLauncher.h"
 
 #include <dragengine/logger/deLogger.h>
@@ -87,7 +86,7 @@ void delGameXML::ReadFromFile(decBaseFileReader &reader, delGame &game){
 //////////////////////
 
 void delGameXML::pReadGame(const decXmlElementTag &root, delGame &game){
-	delFileFormatList &fileFormats = game.GetFileFormats();
+	delFileFormat::List &fileFormats = game.GetFileFormats();
 	const int count = root.GetElementCount();
 	int i;
 	
@@ -161,7 +160,7 @@ void delGameXML::pReadGame(const decXmlElementTag &root, delGame &game){
 				DETHROW_INFO(deeInvalidParam, "invalid tag value");
 			}
 			
-			fileFormats.Add(new delFileFormat(formatType, GetCDataString(*tag)));
+			fileFormats.Add(delFileFormat(formatType, GetCDataString(*tag)));
 			
 		}else{
 			ErrorUnknownTag(root, *tag);

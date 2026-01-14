@@ -191,8 +191,8 @@ bool deglInstallDelga::Run(const char *forceFilename){
 	
 	// load delga file
 	deglLauncher &launcher = *pWindow.GetLauncher();
-	delPatchList patches;
-	delGameList games;
+	delPatch::List patches;
+	delGame::List games;
 	
 	try{
 		const delEngineInstance::Ref instance(launcher.GetEngineInstanceFactory().
@@ -212,7 +212,7 @@ bool deglInstallDelga::Run(const char *forceFilename){
 	const int gameCount = games.GetCount();
 	int i;
 	for(i=0; i<gameCount; i++){
-		if(launcher.GetGameManager().GetGames().HasWithID(games.GetAt(i)->GetIdentifier())){
+		if(launcher.GetGameManager().GetGames().HasWithId(games.GetAt(i)->GetIdentifier())){
 			FXMessageBox::information(&pWindow, MBOX_OK, "Install DELGA",
 				"Game '%s' is already installed", games.GetAt(i)->GetTitle().ToUTF8().GetString());
 			return false;
@@ -221,7 +221,7 @@ bool deglInstallDelga::Run(const char *forceFilename){
 	
 	const int patchCount = patches.GetCount();
 	for(i=0; i<patchCount; i++){
-		if(launcher.GetPatchManager().GetPatches().HasWithID(patches.GetAt(i)->GetIdentifier())){
+		if(launcher.GetPatchManager().GetPatches().HasWithId(patches.GetAt(i)->GetIdentifier())){
 			FXMessageBox::information(&pWindow, MBOX_OK, "Install DELGA",
 				"Patch '%s' is already installed", patches.GetAt(i)->GetName().ToUTF8().GetString());
 			return false;
@@ -236,9 +236,9 @@ bool deglInstallDelga::Run(const char *forceFilename){
 	}
 	for(i=0; i<patches.GetCount(); i++){
 		const delPatch &patch = *patches.GetAt(i);
-		const delGame *game = launcher.GetGameManager().GetGames().GetWithID(patch.GetGameID());
+		const delGame *game = launcher.GetGameManager().GetGames().FindWithId(patch.GetGameID());
 		if(!game){
-			game = games.GetWithID(patch.GetGameID());
+			game = games.FindWithId(patch.GetGameID());
 		}
 		text.AppendFormat("- Patch '%s' for game '%s'\n",
 			patch.GetName().ToUTF8().GetString(),

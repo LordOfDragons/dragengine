@@ -137,7 +137,7 @@ void deglDialogRunGameWith::SetProfile(delGameProfile *profile){
 
 void deglDialogRunGameWith::UpdateGame(){
 	const delGameManager &gameManager = pWindowMain->GetLauncher()->GetGameManager();
-	const delGameProfileList &profiles = gameManager.GetProfiles();
+	const delGameProfile::List &profiles = gameManager.GetProfiles();
 	
 	pCBProfile->clearItems();
 	pCBProfile->appendItem("< Default Profile >", nullptr);
@@ -205,7 +205,9 @@ long deglDialogRunGameWith::onBtnEditProfiles(FXObject*, FXSelector, void*){
 		
 		if(deglDialogProfileList(pWindowMain, this, profile).execute()){
 			pWindowMain->GetLauncher()->GetEngine().SaveConfig();
-			gameManager.GetProfiles().ValidateAll(*pWindowMain->GetLauncher());
+			gameManager.GetProfiles().Visit([&](delGameProfile &p){
+				p.Verify(*pWindowMain->GetLauncher());
+			});
 			gameManager.ApplyProfileChanges();
 			gameManager.SaveGameConfigs();
 			UpdateGame();

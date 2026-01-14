@@ -743,7 +743,7 @@ void deglDialogProfileList::UpdateMPParameterList(){
 		return;
 	}
 	
-	const delEMParameterList &list = engineModule->GetParameters();
+	const delEMParameter::List &list = engineModule->GetParameters();
 	const int count = list.GetCount();
 	decStringSet names;
 	int i;
@@ -756,9 +756,18 @@ void deglDialogProfileList::UpdateMPParameterList(){
 	
 	delGameProfile &profile = *pGetSelectedProfile()->GetEdit();
 	sortedNames.Visit([&](const decString &name){
-		pMPParameters.Add(deglDialogProfileListParameter::Ref::New(
-			*list.GetNamed(name), profile, moduleName.text(),
-			pFrameMPParameters, this, ID_MPPARAM_LABEL, ID_MPPARAM_VALUE));
+		delEMParameter *parameter = nullptr;
+		for(i=0; i<count; i++){
+			if(list.GetAt(i)->GetInfo().GetName() == name){
+				parameter = list.GetAt(i);
+				break;
+			}
+		}
+		if(parameter){
+			pMPParameters.Add(deglDialogProfileListParameter::Ref::New(
+				*parameter, profile, moduleName.text(),
+				pFrameMPParameters, this, ID_MPPARAM_LABEL, ID_MPPARAM_VALUE));
+		}
 	});
 	
 	pUpdateMPParamVisiblity();

@@ -71,7 +71,7 @@ bool deglUninstall::UninstallGame(delGame &game){
 	}
 	
 	// check if another game or patch shares the same delga file
-	const delGameList &gameList = pWindow.GetLauncher()->GetGameManager().GetGames();
+	const delGame::List &gameList = pWindow.GetLauncher()->GetGameManager().GetGames();
 	decString text;
 	int i, count = gameList.GetCount();
 	for(i=0; i<count; i++){
@@ -85,7 +85,7 @@ bool deglUninstall::UninstallGame(delGame &game){
 			checkGame.GetIdentifier().ToHexString(false).GetString());
 	}
 	
-	const delPatchList &patchList = pWindow.GetLauncher()->GetPatchManager().GetPatches();
+	const delPatch::List &patchList = pWindow.GetLauncher()->GetPatchManager().GetPatches();
 	count = patchList.GetCount();
 	
 	for(i=0; i<count; i++){
@@ -94,7 +94,7 @@ bool deglUninstall::UninstallGame(delGame &game){
 			continue;
 		}
 		
-		const delGame * const pgame = gameList.GetWithID(checkPatch.GetGameID());
+		const delGame * const pgame = gameList.FindWithId(checkPatch.GetGameID());
 		text.AppendFormat("Patch '%s'(%s) for game '%s' shares the same *.delga file.\n",
 			checkPatch.GetName().ToUTF8().GetString(),
 			checkPatch.GetIdentifier().ToHexString(false).GetString(),
@@ -131,7 +131,7 @@ bool deglUninstall::UninstallPatch(delPatch &patch){
 	}
 	
 	// check if another game or patch shares the same delga file
-	const delGameList &gameList = pWindow.GetLauncher()->GetGameManager().GetGames();
+	const delGame::List &gameList = pWindow.GetLauncher()->GetGameManager().GetGames();
 	decString text;
 	int i, count = gameList.GetCount();
 	for(i=0; i<count; i++){
@@ -145,7 +145,7 @@ bool deglUninstall::UninstallPatch(delPatch &patch){
 			checkGame.GetIdentifier().ToHexString(false).GetString());
 	}
 	
-	const delPatchList &patchList = pWindow.GetLauncher()->GetPatchManager().GetPatches();
+	const delPatch::List &patchList = pWindow.GetLauncher()->GetPatchManager().GetPatches();
 	count = patchList.GetCount();
 	
 	for(i=0; i<count; i++){
@@ -154,7 +154,7 @@ bool deglUninstall::UninstallPatch(delPatch &patch){
 			continue;
 		}
 		
-		const delGame * const game = gameList.GetWithID(checkPatch.GetGameID());
+		const delGame * const game = gameList.FindWithId(checkPatch.GetGameID());
 		text.AppendFormat("Patch '%s'(%s) for game '%s' shares the same *.delga file.\n",
 			checkPatch.GetName().ToUTF8().GetString(),
 			checkPatch.GetIdentifier().ToHexString(false).GetString(),

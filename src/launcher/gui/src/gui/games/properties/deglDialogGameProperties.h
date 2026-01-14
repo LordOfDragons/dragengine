@@ -31,7 +31,6 @@
 #include <delauncher/game/delGame.h>
 
 class deglWindowMain;
-class delGameProfileList;
 class deglCalculateDirectorySize;
 
 

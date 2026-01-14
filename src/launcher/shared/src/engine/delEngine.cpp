@@ -38,11 +38,9 @@
 #include "modules/delEngineModuleXML.h"
 #include "../delLauncher.h"
 #include "../game/delGame.h"
-#include "../game/delGameList.h"
 #include "../game/delGameXML.h"
 #include "../game/icon/delGameIcon.h"
 #include "../game/patch/delPatch.h"
-#include "../game/patch/delPatchList.h"
 #include "../game/patch/delPatchXML.h"
 
 #include <dragengine/common/exceptions.h>
@@ -503,7 +501,7 @@ void delEngine::UpdateScaleFactor(delEngineInstance& instance){
 
 
 
-void delEngine::ReadDelgaGameDefs(delEngineInstance &instance, const char *filename, delGameList &list){
+void delEngine::ReadDelgaGameDefs(delEngineInstance &instance, const char *filename, delGame::List &list){
 	// read content of all game definition files in delga file
 	decStringList fileContents;
 	
@@ -574,7 +572,7 @@ void delEngine::ReadDelgaGameDefs(delEngineInstance &instance, const char *filen
 	}
 }
 
-void delEngine::ReadDelgaPatchDefs(delEngineInstance &instance, const char *filename, delPatchList &list){
+void delEngine::ReadDelgaPatchDefs(delEngineInstance &instance, const char *filename, delPatch::List &list){
 	// read content of all patch definition files in delga file
 	decStringList fileContents;
 	
@@ -618,7 +616,7 @@ void delEngine::ReadDelgaPatchDefs(delEngineInstance &instance, const char *file
 
 #ifdef OS_ANDROID
 void delEngine::ReadDelgaGameDefsVfs(delEngineInstance &instance,
-const deVFSContainer::Ref &container, const char *filename, delGameList &list){
+const deVFSContainer::Ref &container, const char *filename, delGame::List &list){
 	// read content of all game definition files in delga file
 	decStringList fileContents;
 	

@@ -495,7 +495,7 @@ void deglDialogGameProperties::UpdateGame(){
 	pCBProfile->clearItems();
 	pCBProfile->appendItem(game.GetCustomProfile() ? "< Custom Profile >" : "< Default Profile >", nullptr);
 	
-	const delGameProfileList &profiles = gameManager.GetProfiles();
+	const delGameProfile::List &profiles = gameManager.GetProfiles();
 	const int profileCount = profiles.GetCount();
 	int i;
 	for(i=0; i<profileCount; i++){
@@ -533,7 +533,7 @@ void deglDialogGameProperties::UpdateGame(){
 	
 	pEditRunArgs->setText(game.GetRunArguments().GetString());
 	
-	delPatchList patches, sorted;
+	delPatch::List patches, sorted;
 	game.FindPatches(patches);
 	game.SortPatches(sorted, patches);
 	
@@ -548,7 +548,7 @@ void deglDialogGameProperties::UpdateGame(){
 		pCBPatches->setCurrentItem(0);
 		
 	}else if(game.GetUseCustomPatch()){
-		delPatch * const patch = pWindowMain->GetLauncher()->GetPatchManager().GetPatches().GetWithID(game.GetUseCustomPatch());
+		delPatch * const patch = pWindowMain->GetLauncher()->GetPatchManager().GetPatches().FindWithId(game.GetUseCustomPatch());
 		const int index = patch ? pCBPatches->findItemByData(patch) : -1;
 		if(index != -1){
 			pCBPatches->setCurrentItem(index);
@@ -583,7 +583,7 @@ void deglDialogGameProperties::UpdateFileFormatList(){
 	const delEngine &engine = pWindowMain->GetLauncher()->GetEngine();
 	const delEngineModuleList &moduleList = engine.GetModules();
 	const delGame &game = GetGame();
-	const delFileFormatList &fileFormatList = game.GetFileFormats();
+	const delFileFormat::List &fileFormatList = game.GetFileFormats();
 	int f, formatCount = fileFormatList.GetCount();
 	int m, moduleCount = moduleList.GetCount();
 	delEngineModule *matchingModule;
@@ -595,7 +595,7 @@ void deglDialogGameProperties::UpdateFileFormatList(){
 	pListFileFormats->clearItems();
 	
 	for(f=0; f<formatCount; f++){
-		delFileFormat &format = *fileFormatList.GetAt(f);
+		const delFileFormat &format = fileFormatList.GetAt(f);
 		const decString &formatPattern = format.GetPattern();
 		formatType = format.GetType();
 		
@@ -897,7 +897,9 @@ long deglDialogGameProperties::onBtnEditProfiles(FXObject*, FXSelector, void*){
 		
 		if(deglDialogProfileList(pWindowMain, this, profile).execute()){
 			pWindowMain->GetLauncher()->GetEngine().SaveConfig();
-			gameManager.GetProfiles().ValidateAll(*pWindowMain->GetLauncher());
+			gameManager.GetProfiles().Visit([&](delGameProfile &p){
+				p.Verify(*pWindowMain->GetLauncher());
+			});
 			gameManager.ApplyProfileChanges();
 			gameManager.SaveGameConfigs();
 			UpdateGame();
@@ -987,7 +989,7 @@ long deglDialogGameProperties::onPUPatchUninstall(FXObject*, FXSelector, void*){
 	
 	if(patch.GetGameID()){
 		delGame * const game = pWindowMain->GetLauncher()->GetGameManager().
-			GetGames().GetWithID(patch.GetGameID());
+			GetGames().FindWithId(patch.GetGameID());
 		if(game){
 			if(game->IsRunning()){
 				FXMessageBox::information(this, MBOX_OK, "Uninstall Patch",
@@ -1011,7 +1013,7 @@ long deglDialogGameProperties::onPUPatchUninstall(FXObject*, FXSelector, void*){
 		
 		pWindowMain->ReloadGamesAndPatches();
 		
-		pGame = pWindowMain->GetLauncher()->GetGameManager().GetGames().GetWithID(gameID);
+		pGame = pWindowMain->GetLauncher()->GetGameManager().GetGames().FindWithId(gameID);
 		pWindowMain->GetPanelGames()->SetSelectedGame(&GetGame());
 		
 		UpdateGame();

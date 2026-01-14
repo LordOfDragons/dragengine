@@ -25,10 +25,11 @@
 #ifndef _DELGAMEPROFILE_H_
 #define _DELGAMEPROFILE_H_
 
-#include "delGPModuleList.h"
+#include "delGPModule.h"
 #include "delGPDisableModuleVersion.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringSet.h>
 
@@ -44,6 +45,9 @@ class DE_DLL_EXPORT delGameProfile : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	using Ref = deTObjectReference<delGameProfile>;
+	
+	/** \brief List type. */
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<delGameProfile>, delGameProfile>;
 	
 	
 private:
@@ -73,7 +77,7 @@ private:
 	
 	delGPDisableModuleVersion::List pDisableModuleVersions;
 	
-	delGPModuleList pModules;
+	delGPModule::List pModules;
 	
 	decString pRunArgs;
 	bool pReplaceRunArgs;
@@ -241,8 +245,8 @@ public:
 	inline const delGPDisableModuleVersion::List &GetDisableModuleVersions() const{ return pDisableModuleVersions; }
 	
 	/** \brief Lodule list. */
-	inline delGPModuleList &GetModules(){ return pModules; }
-	inline const delGPModuleList &GetModules() const{ return pModules; }
+	inline delGPModule::List &GetModules(){ return pModules; }
+	inline const delGPModule::List &GetModules() const{ return pModules; }
 	
 	/** \brief Run arguments. */
 	inline const decString &GetRunArguments() const{ return pRunArgs; }

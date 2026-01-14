@@ -56,10 +56,10 @@ decString::decString(){
 	pString = new char[1]{0};
 }
 
-decString::decString(const char *string){
-	if(!string){
-		DETHROW(deeInvalidParam);
-	}
+decString::decString(const char *string) :
+pString(nullptr)
+{
+	DEASSERT_NOTNULL(string)
 	const int length = (int)strlen(string);
 	
 	pString = new char[length + 1];
@@ -95,10 +95,10 @@ decString::decString(const decString &string1, const decString &string2){
 	#endif
 }
 
-decString::decString(const decString &string1, const char *string2){
-	if(!string2){
-		DETHROW(deeInvalidParam);
-	}
+decString::decString(const decString &string1, const char *string2) :
+pString(nullptr)
+{
+	DEASSERT_NOTNULL(string2)
 	
 	const int length1 = (int)strlen(string1.pString);
 	const int length2 = (int)strlen(string2);
@@ -183,6 +183,10 @@ void decString::SetAt(int position, int character){
 
 
 void decString::Set(const decString &string){
+	if(&string == this){
+		return;
+	}
+	
 	const int length = (int)strlen(string.pString);
 	
 	char * const newString = new char[length + 1];
@@ -1790,7 +1794,10 @@ decString &decString::operator=(const char *string){
 }
 
 decString & decString::operator=(decString &&string){
-	delete [] pString;
+	if(&string == this){
+		return *this;
+	}
+	
 	pString = string.pString;
 	string.pString = new char[1]{0};
 	return *this;

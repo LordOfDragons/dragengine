@@ -27,6 +27,7 @@
 
 #include <delauncher/game/delGame.h>
 #include <delauncher/game/delGameRunParams.h>
+#include <delauncher/game/profile/delGPModule.h>
 
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
@@ -35,7 +36,6 @@
 
 class declLauncher;
 class delGameProfile;
-class delGPModuleList;
 
 
 /**
@@ -53,7 +53,7 @@ private:
 	decUnicodeArgumentList pGameArgs;
 	
 	delGame::Ref pGame;
-	delGPModuleList *pModuleParameters;
+	delGPModule::List *pModuleParameters;
 	decUuid pPatchIdentifier;
 	bool pHasPatchIdentifier;
 	delGameRunParams pRunParams;

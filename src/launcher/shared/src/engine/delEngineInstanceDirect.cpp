@@ -31,7 +31,6 @@
 #include "modules/parameter/delEMParameter.h"
 #include "../delLauncher.h"
 #include "../game/profile/delGPModule.h"
-#include "../game/profile/delGPModuleList.h"
 
 #if defined OS_ANDROID
 #	include <dragengine/app/deOSAndroid.h>
@@ -370,7 +369,7 @@ void delEngineInstanceDirect::GetModuleParams(delEngineModule &module){
 	const deBaseModule * const baseModule = engModule->GetModule();
 	DEASSERT_NOTNULL(baseModule)
 	
-	delEMParameterList &parameters = module.GetParameters();
+	delEMParameter::List &parameters = module.GetParameters();
 	const int count = baseModule->GetParameterCount();
 	int i;
 	
@@ -663,12 +662,12 @@ const char *windowTitle, const char *iconPath){
 }
 
 void delEngineInstanceDirect::StartGame(const char *scriptDirectory, const char *gameObject,
-delGPModuleList *collectChangedParams){
+delGPModule::List *collectChangedParams){
 	StartGame(scriptDirectory, "", gameObject, collectChangedParams);
 }
 
 void delEngineInstanceDirect::StartGame(const char *scriptDirectory, const char *scriptVersion,
-const char *gameObject, delGPModuleList *collectChangedParams){
+const char *gameObject, delGPModule::List *collectChangedParams){
 	DEASSERT_NOTNULL(scriptDirectory)
 	DEASSERT_NOTNULL(scriptVersion)
 	
@@ -791,7 +790,16 @@ const char *gameObject, delGPModuleList *collectChangedParams){
 				
 				const decString &moduleName = module->GetLoadableModule().GetName();
 				
-				delGPModule::Ref gpmodule(collectChangedParams->GetNamed(moduleName));
+				// Find module by name
+				delGPModule::Ref gpmodule;
+				const int cpcount = collectChangedParams->GetCount();
+				int k;
+				for(k=0; k<cpcount; k++){
+					if(collectChangedParams->GetAt(k)->GetName() == moduleName){
+						gpmodule = collectChangedParams->GetAt(k);
+						break;
+					}
+				}
 				if(!gpmodule){
 					gpmodule = delGPModule::Ref::New(moduleName);
 					collectChangedParams->Add(gpmodule);

@@ -25,6 +25,8 @@
 #ifndef _DELENGINEINSTANCE_H_
 #define _DELENGINEINSTANCE_H_
 
+#include "../game/profile/delGPModule.h"
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
@@ -44,7 +46,6 @@ struct android_input_buffer;
 class delEngineModule;
 class delEngineModuleList;
 class delLauncher;
-class delGPModuleList;
 
 
 
@@ -230,14 +231,14 @@ public:
 	 * \deprecated Use StartGame(const char*, const char*, const char*, delGPModuleList*).
 	 */
 	virtual void StartGame(const char *scriptDirectory, const char *gameObject,
-		delGPModuleList *collectChangedParams = nullptr) = 0;
+		delGPModule::List *collectChangedParams = nullptr) = 0;
 	
 	/**
 	 * \brief Start game.
 	 * \version 1.9
 	 */
 	virtual void StartGame(const char *scriptDirectory, const char *scriptVersion, const char *gameObject,
-		delGPModuleList *collectChangedParams = nullptr) = 0;
+		delGPModule::List *collectChangedParams = nullptr) = 0;
 	
 	/** \brief Stop game. */
 	virtual void StopGame() = 0;

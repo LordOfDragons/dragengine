@@ -36,6 +36,21 @@
 #include <dragengine/common/exceptions.h>
 
 
+// class delGPModule::List
+////////////////////////////
+
+void delGPModule::List::Update(const List &list){
+	list.Visit([&](const delGPModule &moduleChanges){
+		delGPModule * const module = FindNamed(moduleChanges.GetName());
+		if(module){
+			module->GetParameters() += moduleChanges.GetParameters();
+			
+		}else{
+			Add(delGPModule::Ref::New(moduleChanges));
+		}
+	});
+}
+
 
 // Class delGPModule
 ///////////////////////
@@ -70,10 +85,13 @@ delEngineInstance &engineInstance) const{
 		return;
 	}
 	
-	const delEMParameterList &parameters = module->GetParameters();
+	const delEMParameter::List &parameters = module->GetParameters();
 	pParameters.Visit([&](const decString &name, const decString &value){
-		if(parameters.HasNamed(name)){
-			engineInstance.SetModuleParameter(pName, version, name, value);
+		for(const auto &parameter : parameters){
+			if(parameter->GetInfo().GetName() == name){
+				engineInstance.SetModuleParameter(pName, version, name, value);
+				break;
+			}
 		}
 	});
 }

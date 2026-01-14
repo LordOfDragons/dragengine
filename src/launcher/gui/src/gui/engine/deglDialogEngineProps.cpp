@@ -169,7 +169,7 @@ void deglDialogEngineProps::SetFromEngine(){
 
 void deglDialogEngineProps::UpdateProfileList(){
 	const delGameManager &gameManager = pWindowMain->GetLauncher()->GetGameManager();
-	const delGameProfileList &profiles = gameManager.GetProfiles();
+	const delGameProfile::List &profiles = gameManager.GetProfiles();
 	int i, count = profiles.GetCount();
 	
 	pCBActiveProfile->clearItems();
@@ -201,7 +201,9 @@ long deglDialogEngineProps::onBtnEditProfiles(FXObject*, FXSelector, void*){
 	try{
 		if(deglDialogProfileList(pWindowMain, this, gameManager.GetActiveProfile()).execute()){
 			pWindowMain->GetLauncher()->GetEngine().SaveConfig();
-			gameManager.GetProfiles().ValidateAll(*pWindowMain->GetLauncher());
+			gameManager.GetProfiles().Visit([&](delGameProfile &p){
+				p.Verify(*pWindowMain->GetLauncher());
+			});
 			gameManager.ApplyProfileChanges();
 			gameManager.SaveGameConfigs();
 			UpdateProfileList();

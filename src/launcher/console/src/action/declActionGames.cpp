@@ -132,7 +132,7 @@ int declActionGames::Run(){
 //////////////////////
 
 int declActionGames::pListGames(){
-	const delGameList &gameList = pLauncher.GetGameManager().GetGames();
+	const delGame::List &gameList = pLauncher.GetGameManager().GetGames();
 	const int gameCount = gameList.GetCount();
 	int i;
 	
@@ -155,11 +155,11 @@ int declActionGames::pIsInstalled(){
 		return -2;
 	}
 	
-	const delGameList &gameList = pLauncher.GetGameManager().GetGames();
+	const delGame::List &gameList = pLauncher.GetGameManager().GetGames();
 	const decString identifier(argumentList.GetArgumentAt(2)->ToUTF8());
 	
 	try{
-		if(gameList.HasWithID(decUuid(identifier, false))){
+		if(gameList.FindWithId({identifier, false})){
 			printf("Game '%s' is installed\n", identifier.GetString());
 			return 0;
 		}
@@ -168,7 +168,7 @@ int declActionGames::pIsInstalled(){
 		// not a uuid
 	}
 	
-	if(gameList.GetWithAlias(identifier).GetCount() > 0){
+	if(gameList.CollectWithAliasId(identifier).IsNotEmpty()){
 		printf("Game '%s' is installed\n", identifier.GetString());
 		return 0;
 	}
@@ -185,12 +185,12 @@ int declActionGames::pUninstall(){
 	}
 	
 	// find game to uninstall
-	const delGameList &gameList = pLauncher.GetGameManager().GetGames();
+	const delGame::List &gameList = pLauncher.GetGameManager().GetGames();
 	const decString identifier(argumentList.GetArgumentAt(2)->ToUTF8());
-	delGameList games;
+	delGame::List games;
 	
 	try{
-		delGame * const game = gameList.GetWithID(decUuid(identifier, false));
+		delGame * const game = gameList.FindWithId({identifier, false});
 		if(game){
 			games.Add(game);
 		}
@@ -200,7 +200,7 @@ int declActionGames::pUninstall(){
 	}
 	
 	if(games.GetCount() == 0){
-		games = gameList.GetWithAlias(identifier);
+		games = gameList.CollectWithAliasId(identifier);
 	}
 	
 	if(games.GetCount() == 0){
@@ -242,7 +242,7 @@ int declActionGames::pUninstall(){
 		hasSharedGamesPatches = true;
 	}
 	
-	const delPatchList &patchList = pLauncher.GetPatchManager().GetPatches();
+	const delPatch::List &patchList = pLauncher.GetPatchManager().GetPatches();
 	count = patchList.GetCount();
 	
 	for(i=0; i<count; i++){
@@ -251,7 +251,7 @@ int declActionGames::pUninstall(){
 			continue;
 		}
 		
-		const delGame * const pgame = pLauncher.GetGameManager().GetGames().GetWithID(checkPatch.GetGameID());
+		const delGame * const pgame = pLauncher.GetGameManager().GetGames().FindWithId(checkPatch.GetGameID());
 		printf("Patch '%s'(%s) for game '%s' shares the same *.delga file.\n",
 			checkPatch.GetName().ToUTF8().GetString(),
 			checkPatch.GetIdentifier().ToHexString(false).GetString(),

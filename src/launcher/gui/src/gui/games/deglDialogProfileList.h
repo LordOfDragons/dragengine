@@ -28,7 +28,7 @@
 #include "../foxtoolkit.h"
 
 #include <delauncher/game/delGame.h>
-#include <delauncher/game/delGameList.h>
+#include <delauncher/game/delGame.h>
 #include <delauncher/game/profile/delGameProfile.h>
 
 #include <dragengine/common/collection/decTOrderedSet.h>
@@ -200,7 +200,7 @@ private:
 	FXList *pListDisableModuleVersions;
 	
 	deglDialogProfileListParameter *pPUMPParameter;
-	delGameList pDropCustomGameProfiles;
+	delGame::List pDropCustomGameProfiles;
 	
 	
 public:

@@ -158,19 +158,14 @@ void delSharedConfigXML::WriteProfileDisableModuleVersions(decXmlWriter &writer,
 }
 
 void delSharedConfigXML::WriteProfileModules(decXmlWriter &writer, const delGameProfile &profile){
-	const delGPModuleList &moduleList = profile.GetModules();
-	int i, count = moduleList.GetCount();
-	
-	if(count == 0){
+	if(profile.GetModules().IsEmpty()){
 		return;
 	}
 	
 	writer.WriteOpeningTag("modules", false, true);
-	
-	for(i=0; i<count; i++){
-		WriteProfileModule(writer, *moduleList.GetAt (i));
-	}
-	
+	profile.GetModules().Visit([&](const delGPModule &module){
+		WriteProfileModule(writer, module);
+	});
 	writer.WriteClosingTag("modules", true);
 }
 

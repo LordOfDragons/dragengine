@@ -26,6 +26,7 @@
 #define _DELFILEFORMAT_H_
 
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/collection/decTList.h>
 
 #include <dragengine/systems/deModuleSystem.h>
 
@@ -34,6 +35,11 @@
  * \brief File Format.
  */
 class DE_DLL_EXPORT delFileFormat{
+public:
+	/** \brief List type. */
+	using List = decTList<delFileFormat>;
+	
+	
 private:
 	deModuleSystem::eModuleTypes pType;
 	decString pPattern;

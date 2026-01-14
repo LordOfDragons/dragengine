@@ -234,7 +234,7 @@ bool deglDialogProfileListParameter::ProcessSelChanged(FXObject *sender){
 }
 
 void deglDialogProfileListParameter::SetParameterValue(const char *value){
-	delGPModule::Ref profileModule(pProfile.GetModules().GetNamed(pModuleName));
+	delGPModule::Ref profileModule(pProfile.GetModules().FindNamed(pModuleName));
 	if(!profileModule){
 		if(pParameter.GetValue() == value){
 			return;
@@ -274,7 +274,7 @@ void deglDialogProfileListParameter::Update(){
 	decString value(pParameter.GetValue());
 	pCustomized = false;
 	
-	const delGPModule * const module = pProfile.GetModules().GetNamed(pModuleName);
+	const delGPModule * const module = pProfile.GetModules().FindNamed(pModuleName);
 	if(module){
 		const decString *foundValue;
 		if(module->GetParameters().GetAt(pParameter.GetInfo().GetName(), foundValue)){
@@ -333,7 +333,7 @@ void deglDialogProfileListParameter::Update(){
 }
 
 void deglDialogProfileListParameter::Reset(){
-	delGPModule * const module = pProfile.GetModules().GetNamed(pModuleName);
+	delGPModule * const module = pProfile.GetModules().FindNamed(pModuleName);
 	if(module){
 		module->GetParameters().RemoveIfPresent(pParameter.GetInfo().GetName());
 		

@@ -67,7 +67,7 @@ public:
 	
 	
 private:
-	delGPModuleList *pGameCollectChangedParams;
+	delGPModule::List *pGameCollectChangedParams;
 	
 #ifdef OS_W32
 	HANDLE pPipeIn;
@@ -276,14 +276,14 @@ public:
 	 * \deprecated Use StartGame(const char*, const char*, const char*, delGPModuleList*).
 	 */
 	void StartGame(const char *scriptDirectory, const char *gameObject,
-		delGPModuleList *collectChangedParams = nullptr) override;
+		delGPModule::List *collectChangedParams = nullptr) override;
 	
 	/**
 	 * \brief Start game.
 	 * \version 1.9
 	 */
 	void StartGame(const char *scriptDirectory, const char *scriptVersion, const char *gameObject,
-		delGPModuleList *collectChangedParams = nullptr) override;
+		delGPModule::List *collectChangedParams = nullptr) override;
 	
 	/** \brief Stop game. */
 	void StopGame() override;
