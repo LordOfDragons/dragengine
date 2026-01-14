@@ -69,11 +69,8 @@ public:
 	decConvexVolumeFace();
 	explicit decConvexVolumeFace(int marker);
 	
-	decConvexVolumeFace(const decConvexVolumeFace &) = delete;
-	decConvexVolumeFace &operator=(const decConvexVolumeFace &) = delete;
-	
 	/** \brief Clean up convex volume face. */
-	virtual ~decConvexVolumeFace();
+	virtual ~decConvexVolumeFace() = default;
 	/*@}*/
 	
 	

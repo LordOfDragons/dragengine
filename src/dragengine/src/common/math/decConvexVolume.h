@@ -61,11 +61,8 @@ public:
 	/** \brief Creates an empty convex volume. */
 	decConvexVolume() = default;
 	
-	decConvexVolume(const decConvexVolume &) = delete;
-	decConvexVolume &operator=(const decConvexVolume &) = delete;
-	
 	/** \brief Clean up convex volume. */
-	virtual ~decConvexVolume();
+	virtual ~decConvexVolume() = default;
 	/*@}*/
 	
 	
