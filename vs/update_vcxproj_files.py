@@ -61,7 +61,7 @@ def make_relative_path(file_path: str, project_dir: str) -> str:
 def get_source_dir_from_vcxproj(vcxproj_path: Path) -> List[Path]:
 	"""Determine the source directory from .vcxproj file location."""
 	# Map vcxproj path to source directory
-	vcxproj_str = str(vcxproj_path)
+	vcxproj_str = str(vcxproj_path.resolve())
 	vs_dir = Path(__file__).parent.resolve()
 	root_dir = vs_dir.parent
 	
@@ -295,17 +295,78 @@ def update_vcxproj_file(vcxproj_path: Path, dry_run: bool = False) -> bool:
 	
 	if dry_run:
 		print(f"  DRY RUN: Would update {vcxproj_path}")
+	else:
+		# Write back to file
+		try:
+			# Format the XML nicely
+			indent_xml(root)
+			tree.write(vcxproj_path, encoding='utf-8', xml_declaration=True)
+			print(f"  ✓ Updated successfully")
+		except Exception as e:
+			print(f"  ERROR: Failed to write XML: {e}")
+			return False
+	
+	# Also update the .filters file if it exists
+	filters_path = vcxproj_path.with_suffix('.vcxproj.filters')
+	if filters_path.exists():
+		if not update_vcxproj_filters_file(filters_path, cpp_files, header_files, project_dir, dry_run):
+			print(f"  WARNING: Failed to update filters file")
+			# Don't fail the whole operation if filters update fails
+	
+	return True
+
+
+def update_vcxproj_filters_file(filters_path: Path, cpp_files: List[str], header_files: List[str], 
+                                  project_dir: Path, dry_run: bool = False) -> bool:
+	"""Update a .vcxproj.filters file to match the .vcxproj file."""
+	print(f"  Updating filters: {filters_path.name}")
+	
+	try:
+		tree = ET.parse(filters_path)
+		root = tree.getroot()
+	except Exception as e:
+		print(f"    ERROR: Failed to parse filters XML: {e}")
+		return False
+	
+	# Remove existing ClCompile and ClInclude ItemGroups
+	for item_group in root.findall('msbuild:ItemGroup', NS):
+		has_compile = item_group.find('msbuild:ClCompile', NS) is not None
+		has_include = item_group.find('msbuild:ClInclude', NS) is not None
+		if has_compile or has_include:
+			root.remove(item_group)
+	
+	# Create new ItemGroup for source files if any exist
+	if cpp_files:
+		compile_group = ET.SubElement(root, 'ItemGroup')
+		for cpp_file in cpp_files:
+			rel_path = make_relative_path(cpp_file, project_dir)
+			compile_elem = ET.SubElement(compile_group, 'ClCompile')
+			compile_elem.set('Include', rel_path)
+			filter_elem = ET.SubElement(compile_elem, 'Filter')
+			filter_elem.text = 'Source Files'
+	
+	# Create new ItemGroup for header files if any exist
+	if header_files:
+		include_group = ET.SubElement(root, 'ItemGroup')
+		for header_file in header_files:
+			rel_path = make_relative_path(header_file, project_dir)
+			include_elem = ET.SubElement(include_group, 'ClInclude')
+			include_elem.set('Include', rel_path)
+			filter_elem = ET.SubElement(include_elem, 'Filter')
+			filter_elem.text = 'Header Files'
+	
+	if dry_run:
+		print(f"    DRY RUN: Would update {filters_path}")
 		return True
 	
 	# Write back to file
 	try:
-		# Format the XML nicely
 		indent_xml(root)
-		tree.write(vcxproj_path, encoding='utf-8', xml_declaration=True)
-		print(f"  ✓ Updated successfully")
+		tree.write(filters_path, encoding='utf-8', xml_declaration=True)
+		print(f"    ✓ Filters updated successfully")
 		return True
 	except Exception as e:
-		print(f"  ERROR: Failed to write XML: {e}")
+		print(f"    ERROR: Failed to write filters XML: {e}")
 		return False
 
 

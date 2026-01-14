@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <ItemGroup>
     <Filter Include="Source Files">
@@ -15,9 +15,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\src\deigde\deigde\SConscript"/>
-    <None Include="post_build.ps1"/>
-    <None Include="pre_build.ps1"/>
+    <None Include="..\..\..\src\deigde\deigde\SConscript" />
+    <None Include="post_build.ps1" />
+    <None Include="pre_build.ps1" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\clipboard\igdeClipboard.cpp">
@@ -50,9 +50,6 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\engine\textureProperties\igdeTextureProperty.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\engine\textureProperties\igdeTexturePropertyList.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\engine\textureProperties\igdeXMLLoadTexturePropertyList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -62,31 +59,16 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\billboard\igdeGDCBillboard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\billboard\igdeGDCBillboardList.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\component\igdeGDCCTexture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\component\igdeGDCCTextureList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\component\igdeGDCComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\component\igdeGDCComponentList.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\envmapprobe\igdeGDCEnvMapProbe.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\envmapprobe\igdeGDCEnvMapProbeList.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\forcefield\igdeGDCForceField.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\forcefield\igdeGDCForceFieldList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\igdeGDCamera.cpp">
@@ -104,52 +86,28 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\light\igdeGDCLight.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\light\igdeGDCLightList.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\navblocker\igdeGDCNavigationBlocker.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\navblocker\igdeGDCNavigationBlockerList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\navspace\igdeGDCNavigationSpace.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\navspace\igdeGDCNavigationSpaceList.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\particleemitter\igdeGDCParticleEmitter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\particleemitter\igdeGDCParticleEmitterList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\snappoint\igdeGDCSnapPoint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\snappoint\igdeGDCSnapPointList.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\speaker\igdeGDCSpeaker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\speaker\igdeGDCSpeakerList.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\world\igdeGDCWorld.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\world\igdeGDCWorldList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeGDCategory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeGameDefinition.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeGameDefinitionList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeTagManager.cpp">
@@ -162,9 +120,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\particleemitter\igdeGDParticleEmitter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\particleemitter\igdeGDParticleEmitterList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\particleemitter\igdeGDParticleEmitterManager.cpp">
@@ -191,9 +146,6 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\property\igdeGDProperty.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\property\igdeGDPropertyList.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\skin\igdeGDSkin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -204,9 +156,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\sky\igdeGDSkyController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\sky\igdeGDSkyList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\sky\igdeGDSkyManager.cpp">
@@ -405,9 +354,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\filedialog\igdeFilePattern.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\filedialog\igdeFilePatternList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\gizmo\igdeGizmo.cpp">
@@ -1025,9 +971,6 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\debugdrawer\igdeWDebugDrawerShape.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\debugdrawer\igdeWDebugDrawerShapeList.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\igdeWObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1118,9 +1061,6 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerExpressionComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerExpressionList.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerExpressionParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1183,9 +1123,6 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\engine\textureProperties\igdeTextureProperty.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\engine\textureProperties\igdeTexturePropertyList.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\engine\textureProperties\igdeXMLLoadTexturePropertyList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1195,31 +1132,16 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\billboard\igdeGDCBillboard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\billboard\igdeGDCBillboardList.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\component\igdeGDCCTexture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\component\igdeGDCCTextureList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\component\igdeGDCComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\component\igdeGDCComponentList.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\envmapprobe\igdeGDCEnvMapProbe.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\envmapprobe\igdeGDCEnvMapProbeList.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\forcefield\igdeGDCForceField.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\forcefield\igdeGDCForceFieldList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\igdeGDCamera.h">
@@ -1237,52 +1159,28 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\light\igdeGDCLight.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\light\igdeGDCLightList.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\navblocker\igdeGDCNavigationBlocker.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\navblocker\igdeGDCNavigationBlockerList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\navspace\igdeGDCNavigationSpace.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\navspace\igdeGDCNavigationSpaceList.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\particleemitter\igdeGDCParticleEmitter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\particleemitter\igdeGDCParticleEmitterList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\snappoint\igdeGDCSnapPoint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\snappoint\igdeGDCSnapPointList.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\speaker\igdeGDCSpeaker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\speaker\igdeGDCSpeakerList.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\world\igdeGDCWorld.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\world\igdeGDCWorldList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeGDCategory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeGameDefinition.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeGameDefinitionList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeTagManager.h">
@@ -1295,9 +1193,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\particleemitter\igdeGDParticleEmitter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\particleemitter\igdeGDParticleEmitterList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\particleemitter\igdeGDParticleEmitterManager.h">
@@ -1324,9 +1219,6 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\property\igdeGDProperty.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\property\igdeGDPropertyList.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\skin\igdeGDSkin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1337,9 +1229,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\sky\igdeGDSkyController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\sky\igdeGDSkyList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\sky\igdeGDSkyManager.h">
@@ -1538,9 +1427,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\filedialog\igdeFilePattern.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\filedialog\igdeFilePatternList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\gizmo\igdeGizmo.h">
@@ -2170,9 +2056,6 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\debugdrawer\igdeWDebugDrawerShape.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\debugdrawer\igdeWDebugDrawerShapeList.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\igdeWObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -2261,9 +2144,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerExpressionComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerExpressionList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerExpressionParser.h">

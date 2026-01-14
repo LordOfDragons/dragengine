@@ -861,6 +861,17 @@
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\world\debpOverlapFilterCallback.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\world\debpSharedCollisionFiltering.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\world\debpWorld.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDConfig.hpp" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDConfigBuiltin.hpp" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDConfigEigen.hpp" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDErrorMessages.hpp" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDMath.hpp" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\MultiBodyTree.hpp" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\IDEigenInterface.hpp" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\IDLinearMathInterface.hpp" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\IDMatVec.hpp" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\MultiBodyTreeImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\MultiBodyTreeInitCache.hpp" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\BroadPhaseCollision\b3BroadphaseCallback.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\BroadPhaseCollision\b3DynamicBvh.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\BroadPhaseCollision\b3DynamicBvhBroadphase.h" />
@@ -1207,16 +1218,5 @@
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btVector3.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\btBulletCollisionCommon.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\btBulletDynamicsCommon.h" />
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDConfig.hpp" />
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDConfigBuiltin.hpp" />
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDConfigEigen.hpp" />
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDErrorMessages.hpp" />
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDMath.hpp" />
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\MultiBodyTree.hpp" />
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\IDEigenInterface.hpp" />
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\IDLinearMathInterface.hpp" />
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\IDMatVec.hpp" />
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\MultiBodyTreeImpl.hpp" />
-    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\MultiBodyTreeInitCache.hpp" />
   </ItemGroup>
 </Project>

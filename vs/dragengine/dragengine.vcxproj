@@ -467,6 +467,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
   <ItemGroup>
+    <ClCompile Include="..\..\src\dragengine\src\debug\debugfont.c" />
     <ClCompile Include="..\..\src\dragengine\src\app\deCmdLineArgs.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\app\deOS.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\app\deOSWindows.cpp" />
@@ -1040,7 +1041,6 @@
     <ClCompile Include="..\..\src\dragengine\src\threading\deThread.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\threading\deThreadSafeObject.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\threading\deWriteLockGuard.cpp" />
-    <ClCompile Include="..\..\src\dragengine\src\debug\debugfont.c" />
     <ClCompile Include="..\..\src\dragengine\base64\base64.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -1,5 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version='1.0' encoding='utf-8'?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <ItemGroup>
     <Filter Include="Source Files">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
@@ -19,6 +19,11 @@
     <None Include="..\..\..\..\src\modules\sound\oggvorbis\SConscript" />
   </ItemGroup>
   <ItemGroup>
+    <Xml Include="..\..\..\..\src\modules\sound\oggvorbis\src\module.xml">
+      <Filter>Source Files</Filter>
+    </Xml>
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="..\..\..\..\src\modules\sound\oggvorbis\src\deSoundOGG.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -28,15 +33,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\modules\sound\oggvorbis\src\deSoundOGG.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\sound\oggvorbis\src\deoggSoundDecoder.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Xml Include="..\..\..\..\src\modules\sound\oggvorbis\src\module.xml">
-      <Filter>Source Files</Filter>
-    </Xml>
   </ItemGroup>
 </Project>
