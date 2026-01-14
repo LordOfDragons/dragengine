@@ -493,7 +493,7 @@ void debpColliderComponent::DetectCustomCollision(float elapsed){
 	decVector unstuckVelocity;
 	debpDCollisionBox colBox;
 	
-	int cspmax = 20;
+	const int cspmax = 20;
 	int cheapStuckPrevention = 0;
 	BP_DEBUG_IF(float csphist[cspmax + 1])
 	

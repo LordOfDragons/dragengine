@@ -106,10 +106,10 @@ void dewlLauncher::RemoveAllModuleParameters(){
 void dewlLauncher::AddModuleParameter(const std::string &module,
 const std::string &parameter, const std::string &value){
 	if(!pModuleParameters){
-		pModuleParameters = new delGPModuleList;
+		pModuleParameters = new delGPModule::List;
 	}
 	
-	delGPModule::Ref gpmodule(pModuleParameters->GetNamed(module.c_str()));
+	delGPModule::Ref gpmodule(pModuleParameters->FindNamed(module.c_str()));
 	if(!gpmodule){
 		gpmodule = delGPModule::Ref::New(module.c_str());
 		pModuleParameters->Add(gpmodule);
@@ -576,7 +576,7 @@ void dewlLauncher::pLocateProfile(){
 		pProfile = pGame->GetProfileToUse();
 		
 	}else{
-		pProfile = gameManager.GetProfiles().GetNamed(pProfileName);
+		pProfile = gameManager.GetProfiles().FindNamed(pProfileName);
 		if(!pProfile){
 			decString message;
 			message.Format("No profile found with name '%s'", pProfileName.GetString());
