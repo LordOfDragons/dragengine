@@ -51,6 +51,12 @@
 // Class decConvexVolumeList
 //////////////////////////////
 
+// Constructors and Destructors
+/////////////////////////////////
+
+decConvexVolumeList::~decConvexVolumeList() = default;
+
+
 // Volume Management
 //////////////////////
 

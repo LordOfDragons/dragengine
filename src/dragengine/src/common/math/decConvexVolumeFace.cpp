@@ -47,6 +47,8 @@ decConvexVolumeFace::decConvexVolumeFace(int marker) :
 pMarker(marker){
 }
 
+decConvexVolumeFace::~decConvexVolumeFace() = default;
+
 
 // Management
 ///////////////

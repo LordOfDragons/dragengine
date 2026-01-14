@@ -72,8 +72,11 @@ public:
 	/** \brief Create empty list. */
 	decConvexVolumeList() = default;
 	
+	decConvexVolumeList(const decConvexVolumeList &) = delete;
+	decConvexVolumeList &operator=(const decConvexVolumeList &) = delete;
+	
 	/** \brief Clean up list. */
-	virtual ~decConvexVolumeList() = default;
+	virtual ~decConvexVolumeList();
 	/*@}*/
 	
 	

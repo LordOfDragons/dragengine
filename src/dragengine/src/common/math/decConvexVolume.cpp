@@ -30,6 +30,12 @@
 // Class decConvexVolume
 //////////////////////////
 
+// Constructors and Destructors
+/////////////////////////////////
+
+decConvexVolume::~decConvexVolume() = default;
+
+
 // Vertex Management
 //////////////////////
 
