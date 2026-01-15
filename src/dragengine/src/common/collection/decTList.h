@@ -132,7 +132,7 @@ public:
 	
 	/** \brief Create list with content from variable count of arguments. */
 	template<typename... A>
-	requires ((std::is_same<std::decay_t<A>, T>::value) && ...)
+	requires (sizeof...(A) > 0 && (std::convertible_to<A, T> && ...))
 	explicit decTList(A&&... args) : pElements(nullptr), pCount(0), pSize(0){
 		EnlargeCapacity(static_cast<int>(sizeof...(args)));
 		(Add(std::forward<A>(args)), ...);
@@ -243,14 +243,14 @@ public:
 	 * \brief Set element at index.
 	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
 	 */
+	template<typename U = TP>
+	requires (!std::same_as<U, T>)
 	void SetAt(int index, const TP &element){
 		DEASSERT_TRUE(index >= 0)
 		DEASSERT_TRUE(index < pCount)
 		pElements[index] = element;
 	}
 	
-	template<typename U = T>
-	requires (!std::is_same<U, TP>::value)
 	void SetAt(int index, const T &element){
 		DEASSERT_TRUE(index >= 0)
 		DEASSERT_TRUE(index < pCount)
@@ -269,7 +269,7 @@ public:
 	}
 	
 	template<typename U = T>
-	requires (!std::is_same<U, TP>::value)
+	requires (!std::same_as<U, TP>)
 	int IndexOf(const T &element) const{
 		return IndexOf(element, 0);
 	}
@@ -292,7 +292,7 @@ public:
 	}
 	
 	template<typename U = T>
-	requires (!std::is_same<U, TP>::value)
+	requires (!std::same_as<U, TP>)
 	int IndexOf(const T &element, int start) const{
 		DEASSERT_TRUE(start >= 0)
 		DEASSERT_TRUE(start <= pCount)
@@ -358,7 +358,7 @@ public:
 	}
 	
 	template<typename U = T>
-	requires (!std::is_same<U, TP>::value)
+	requires (!std::same_as<U, TP>)
 	bool Has(const T &element) const{
 		int p;
 		
@@ -445,7 +445,7 @@ public:
 	}
 	
 	template<typename U = T>
-	requires (!std::is_same<U, TP>::value)
+	requires (!std::same_as<U, TP>)
 	int CountOccurance(const T &element) const{
 		int count = 0;
 		int p;
@@ -460,6 +460,8 @@ public:
 	}
 	
 	/** \brief Add element. */
+	template<typename U = TP>
+	requires (!std::same_as<U, T>)
 	void Add(const TP &element){
 		if(pCount == pSize){
 			int newSize = pSize * 3 / 2 + 1;
@@ -478,8 +480,6 @@ public:
 		pElements[pCount++] = element;
 	}
 	
-	template<typename U = T>
-	requires (!std::is_same<U, TP>::value)
 	void Add(const T &element){
 		if(pCount == pSize){
 			int newSize = pSize * 3 / 2 + 1;
@@ -520,6 +520,8 @@ public:
 	 * \brief Insert element.
 	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
 	 */
+	template<typename U = TP>
+	requires (!std::same_as<U, T>)
 	void Insert(const TP &element, int index){
 		DEASSERT_TRUE(index >= 0)
 		DEASSERT_TRUE(index <= pCount)
@@ -546,8 +548,6 @@ public:
 		pCount++;
 	}
 	
-	template<typename U = T>
-	requires (!std::is_same<U, TP>::value)
 	void Insert(const T &element, int index){
 		DEASSERT_TRUE(index >= 0)
 		DEASSERT_TRUE(index <= pCount)
