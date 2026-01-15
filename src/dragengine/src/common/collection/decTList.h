@@ -243,20 +243,14 @@ public:
 	 * \brief Set element at index.
 	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
 	 */
-	template<typename U = TP>
-	requires (!std::same_as<U, T>)
 	void SetAt(int index, const TP &element){
 		DEASSERT_TRUE(index >= 0)
 		DEASSERT_TRUE(index < pCount)
 		pElements[index] = element;
 	}
 	
-	void SetAt(int index, const T &element){
-		DEASSERT_TRUE(index >= 0)
-		DEASSERT_TRUE(index < pCount)
-		pElements[index] = element;
-	}
-	
+	template<typename U = T>
+	requires (!std::is_lvalue_reference_v<U>)
 	void SetAt(int index, T &&element){
 		DEASSERT_TRUE(index >= 0)
 		DEASSERT_TRUE(index < pCount)
@@ -460,8 +454,6 @@ public:
 	}
 	
 	/** \brief Add element. */
-	template<typename U = TP>
-	requires (!std::same_as<U, T>)
 	void Add(const TP &element){
 		if(pCount == pSize){
 			int newSize = pSize * 3 / 2 + 1;
@@ -480,24 +472,8 @@ public:
 		pElements[pCount++] = element;
 	}
 	
-	void Add(const T &element){
-		if(pCount == pSize){
-			int newSize = pSize * 3 / 2 + 1;
-			T * const newArray = new T[newSize];
-			if(pElements){
-				int i;
-				for(i=0; i<pSize; i++){
-					newArray[i] = std::move(pElements[i]);
-				}
-				delete [] pElements;
-			}
-			pElements = newArray;
-			pSize = newSize;
-		}
-		
-		pElements[pCount++] = element;
-	}
-	
+	template<typename U = T>
+	requires (!std::is_lvalue_reference_v<U>)
 	void Add(T &&element){
 		if(pCount == pSize){
 			int newSize = pSize * 3 / 2 + 1;
@@ -520,8 +496,6 @@ public:
 	 * \brief Insert element.
 	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
 	 */
-	template<typename U = TP>
-	requires (!std::same_as<U, T>)
 	void Insert(const TP &element, int index){
 		DEASSERT_TRUE(index >= 0)
 		DEASSERT_TRUE(index <= pCount)
@@ -548,32 +522,8 @@ public:
 		pCount++;
 	}
 	
-	void Insert(const T &element, int index){
-		DEASSERT_TRUE(index >= 0)
-		DEASSERT_TRUE(index <= pCount)
-		
-		if(pCount == pSize){
-			int newSize = pSize * 3 / 2 + 1;
-			T * const newArray = new T[newSize];
-			if(pElements){
-				int i;
-				for(i=0; i<pSize; i++){
-					newArray[i] = std::move(pElements[i]);
-				}
-				delete [] pElements;
-			}
-			pElements = newArray;
-			pSize = newSize;
-		}
-		
-		int i;
-		for(i=pCount; i>index; i--){
-			pElements[i] = std::move(pElements[i - 1]);
-		}
-		pElements[index] = element;
-		pCount++;
-	}
-	
+	template<typename U = T>
+	requires (!std::is_lvalue_reference_v<U>)
 	void Insert(T &&element, int index){
 		DEASSERT_TRUE(index >= 0)
 		DEASSERT_TRUE(index <= pCount)
