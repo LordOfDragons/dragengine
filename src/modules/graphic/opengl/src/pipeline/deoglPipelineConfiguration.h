@@ -33,7 +33,6 @@
 #include <dragengine/common/math/decMath.h>
 
 class deoglRenderThread;
-class deoglShaderSources;
 class deoglShaderDefines;
 
 

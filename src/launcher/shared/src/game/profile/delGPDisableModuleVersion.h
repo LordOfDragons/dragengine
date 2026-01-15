@@ -35,7 +35,7 @@
 class DE_DLL_EXPORT delGPDisableModuleVersion{
 public:
 	/** \brief Game profile module version disabling list. */
-	class List : public decTList<delGPDisableModuleVersion>{
+	class DE_DLL_EXPORT List : public decTList<delGPDisableModuleVersion>{
 	public:
 		using decTList<delGPDisableModuleVersion>::decTList;
 		

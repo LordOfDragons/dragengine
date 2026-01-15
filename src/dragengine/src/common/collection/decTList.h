@@ -36,7 +36,6 @@
 #include "../exceptions_reduced.h"
 #include "../../deTypeTraits.h"
 #include "../../deTObjectReference.h"
-#include "../../deTUniqueReference.h"
 #include "../../threading/deTThreadSafeObjectReference.h"
 
 
@@ -78,11 +77,6 @@ public:
 	 * \throws deeInvalidParam \em count is less than 0.
 	 */
 	decTList(int count, const T &element) : pElements(nullptr), pCount(0), pSize(0){
-		// do not use
-		//    template <typename U = T>
-		//    requires de_copy_constructible<U>
-		// before constructor declaration or template instantiation potentially requires
-		// full class definition of T
 		DEASSERT_TRUE(count >= 0)
 		
 		if(count > 0){
@@ -93,12 +87,8 @@ public:
 		}
 	}
 	
-	
 	/** \brief Create a copy of a list. */
-	decTList(const decTList<T,TP> &list) : pElements(nullptr), pCount(0), pSize(0){
-		// do not use
-		//    requires de_copy_constructible<T>
-		// after argument list or template instantiation requires full class definition of T
+	decTList(const decTList &list) : pElements(nullptr), pCount(0), pSize(0){
 		if(list.pCount == 0){
 			return;
 		}
@@ -112,7 +102,7 @@ public:
 	}
 	
 	/** \brief Move list. */
-	decTList(decTList<T,TP> &&list) noexcept : pElements(list.pElements), pCount(list.pCount), pSize(list.pSize){
+	decTList(decTList &&list) noexcept : pElements(list.pElements), pCount(list.pCount), pSize(list.pSize){
 		list.pElements = nullptr;
 		list.pCount = 0;
 		list.pSize = 0;
@@ -253,8 +243,6 @@ public:
 	 * \brief Set element at index.
 	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
 	 */
-	template <typename U = T>
-	requires de_copy_constructible<U>
 	void SetAt(int index, const TP &element){
 		DEASSERT_TRUE(index >= 0)
 		DEASSERT_TRUE(index < pCount)
@@ -262,7 +250,7 @@ public:
 	}
 	
 	template<typename U = T>
-	requires (!std::is_same<U, TP>::value) && de_copy_constructible<U>
+	requires (!std::is_same<U, TP>::value)
 	void SetAt(int index, const T &element){
 		DEASSERT_TRUE(index >= 0)
 		DEASSERT_TRUE(index < pCount)
@@ -472,8 +460,6 @@ public:
 	}
 	
 	/** \brief Add element. */
-	template<typename U = T>
-	requires de_copy_constructible<U>
 	void Add(const TP &element){
 		if(pCount == pSize){
 			int newSize = pSize * 3 / 2 + 1;
@@ -493,7 +479,7 @@ public:
 	}
 	
 	template<typename U = T>
-	requires (!std::is_same<U, TP>::value) && de_copy_constructible<U>
+	requires (!std::is_same<U, TP>::value)
 	void Add(const T &element){
 		if(pCount == pSize){
 			int newSize = pSize * 3 / 2 + 1;
@@ -534,8 +520,6 @@ public:
 	 * \brief Insert element.
 	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
 	 */
-	template<typename U = T>
-	requires de_copy_constructible<U>
 	void Insert(const TP &element, int index){
 		DEASSERT_TRUE(index >= 0)
 		DEASSERT_TRUE(index <= pCount)
@@ -563,7 +547,7 @@ public:
 	}
 	
 	template<typename U = T>
-	requires (!std::is_same<U, TP>::value) && de_copy_constructible<U>
+	requires (!std::is_same<U, TP>::value)
 	void Insert(const T &element, int index){
 		DEASSERT_TRUE(index >= 0)
 		DEASSERT_TRUE(index <= pCount)
@@ -677,7 +661,7 @@ public:
 	}
 	
 	/** \brief Determine if this list is equal to another list. */
-	bool Equals(const decTList<T,TP> &list) const{
+	bool Equals(const decTList &list) const{
 		int p;
 		
 		if(list.pCount != pCount){
@@ -685,7 +669,7 @@ public:
 		}
 		
 		for(p=0; p<pCount; p++){
-			if(!(pElements[p] == list.pElements[p])){
+			if(pElements[p] != list.pElements[p]){
 				return false;
 			}
 		}
@@ -697,19 +681,17 @@ public:
 	 * \brief New list with the values from the beginning of this list.
 	 * \throws deeInvalidParam \em count is less than 0.
 	 */
-	template<typename U = T>
-	requires de_copy_constructible<U>
-	decTList<T,TP> GetHead(int count) const{
+	decTList GetHead(int count) const{
 		DEASSERT_TRUE(count >= 0)
 		
 		if(count > pCount){
 			count = pCount;
 		}
 		if(count == 0){
-			return decTList<T,TP>();
+			return decTList();
 		}
 		
-		decTList<T,TP> list(count);
+		decTList list(count);
 		for(list.pCount=0; list.pCount<count; list.pCount++){
 			list.pElements[list.pCount] = pElements[list.pCount];
 		}
@@ -721,9 +703,7 @@ public:
 	 * \brief Set list to values from the beginning of this list.
 	 * \throws deeInvalidParam \em count is less than 0.
 	 */
-	template<typename U = T>
-	requires de_copy_constructible<U>
-	void GetHead(decTList<T,TP> &list, int count) const{
+	void GetHead(decTList &list, int count) const{
 		DEASSERT_TRUE(count >= 0)
 		
 		if(count > pCount){
@@ -748,19 +728,17 @@ public:
 	 * \brief New list with values from the end of this list.
 	 * \throws deeInvalidParam \em count is less than 0.
 	 */
-	template<typename U = T>
-	requires de_copy_constructible<U>
-	decTList<T,TP> GetTail(int count) const{
+	decTList GetTail(int count) const{
 		DEASSERT_TRUE(count >= 0)
 		
 		if(count > pCount){
 			count = pCount;
 		}
 		if(count == 0){
-			return decTList<T,TP>();
+			return decTList();
 		}
 		
-		decTList<T,TP> list(count);
+		decTList list(count);
 		int from = pCount - count;
 		
 		for(list.pCount=0; list.pCount<count; list.pCount++){
@@ -774,9 +752,7 @@ public:
 	 * \brief Set list to values from the end of this list.
 	 * \throws deeInvalidParam \em count is less than 0.
 	 */
-	template<typename U = T>
-	requires de_copy_constructible<U>
-	void GetTail(decTList<T,TP> &list, int count) const{
+	void GetTail(decTList &list, int count) const{
 		DEASSERT_TRUE(count >= 0)
 		
 		if(count > pCount){
@@ -807,9 +783,7 @@ public:
 	 * \throws deeInvalidParam \em from is less than 0.
 	 * \throws deeInvalidParam \em to is less than \em from.
 	 */
-	template<typename U = T>
-	requires de_copy_constructible<U>
-	decTList<T,TP> GetMiddle(int from, int to) const{
+	decTList GetMiddle(int from, int to) const{
 		if(from < 0){
 			from = pCount + from;
 		}
@@ -824,10 +798,10 @@ public:
 			count = pCount - from;
 		}
 		if(count == 0){
-			return decTList<T,TP>();
+			return decTList();
 		}
 		
-		decTList<T,TP> list(count);
+		decTList list(count);
 		
 		for(list.pCount=0; list.pCount<count; list.pCount++){
 			list.pElements[list.pCount] = pElements[from + list.pCount];
@@ -844,9 +818,7 @@ public:
 	 * \throws deeInvalidParam \em from is less than 0.
 	 * \throws deeInvalidParam \em to is less than \em from.
 	 */
-	template<typename U = T>
-	requires de_copy_constructible<U>
-	void GetMiddle(decTList<T,TP> &list, int from, int to) const{
+	void GetMiddle(decTList &list, int from, int to) const{
 		if(from < 0){
 			from = pCount + from;
 		}
@@ -884,14 +856,12 @@ public:
 	 * \throws deeInvalidParam \em to is less than \em from.
 	 * \throws deeInvalidParam \em step is less than 1.
 	 */
-	template<typename U = T>
-	requires de_copy_constructible<U>
-	decTList<T,TP> GetSliced(int from, int to, int step) const{
+	decTList GetSliced(int from, int to, int step) const{
 		if(step == 1){
 			return GetMiddle(from, to);
 			
 		}else{
-			decTList<T,TP> list;
+			decTList list;
 			GetSliced(list, from, to, step);
 			return list;
 		}
@@ -906,9 +876,7 @@ public:
 	 * \throws deeInvalidParam \em to is less than \em from.
 	 * \throws deeInvalidParam \em step is less than 1.
 	 */
-	template<typename U = T>
-	requires de_copy_constructible<U>
-	void GetSliced(decTList<T,TP> &list, int from, int to, int step) const{
+	void GetSliced(decTList &list, int from, int to, int step) const{
 		if(step == 1){
 			GetMiddle(list, from, to);
 			return;
@@ -1299,54 +1267,46 @@ public:
 	 * \param[in] step Step size. Can be negative but not 0.
 	 * \return Found element or default value if not found.
 	 */
-	template<typename Evaluator, typename U = T>
-	requires de_copy_constructible<U>
+	template<typename Evaluator>
 	T FindOrDefault(Evaluator &evaluator, const T &defaultValue, int from, int to, int step = 1) const{
 		const T *found = nullptr;
 		return Find<Evaluator>(evaluator, found, from, to, step) ? *found : defaultValue;
 	}
 	
-	template<typename Evaluator, typename U = T>
-	requires de_copy_constructible<U>
+	template<typename Evaluator>
 	inline T FindOrDefault(Evaluator &&evaluator, const T &defaultValue, int from, int to, int step = 1) const{
 		return FindOrDefault<Evaluator>(evaluator, defaultValue, from, to, step);
 	}
 	
-	template<typename Evaluator, typename U = T>
-	requires de_copy_constructible<U>
+	template<typename Evaluator>
 	T FindOrDefault(Evaluator &evaluator, const T &defaultValue, int from) const{
 		const T *found = nullptr;
 		return Find<Evaluator>(evaluator, found, from) ? *found : defaultValue;
 	}
 	
-	template<typename Evaluator, typename U = T>
-	requires de_copy_constructible<U>
+	template<typename Evaluator>
 	inline T FindOrDefault(Evaluator &&evaluator, const T &defaultValue, int from) const{
 		return FindOrDefault<Evaluator>(evaluator, defaultValue, from);
 	}
 	
-	template<typename Evaluator, typename U = T>
-	requires de_copy_constructible<U>
+	template<typename Evaluator>
 	inline T FindOrDefault(Evaluator &evaluator, const T &defaultValue = T()) const{
 		const T *found = nullptr;
 		return Find<Evaluator>(evaluator, found) ? *found : defaultValue;
 	}
 	
-	template<typename Evaluator, typename U = T>
-	requires de_copy_constructible<U>
+	template<typename Evaluator>
 	inline T FindOrDefault(Evaluator &&evaluator, const T &defaultValue = T()) const{
 		return FindOrDefault<Evaluator>(evaluator, defaultValue);
 	}
 	
-	template<typename Evaluator, typename U = T>
-	requires de_copy_constructible<U>
+	template<typename Evaluator>
 	inline T FindReverseOrDefault(Evaluator &evaluator, const T &defaultValue = T()) const{
 		const T *found = nullptr;
 		return FindReverse<Evaluator>(evaluator, found) ? *found : defaultValue;
 	}
 	
-	template<typename Evaluator, typename U = T>
-	requires de_copy_constructible<U>
+	template<typename Evaluator>
 	inline T FindReverseOrDefault(Evaluator &&evaluator, const T &defaultValue = T()) const{
 		return FindReverseOrDefault<Evaluator>(evaluator, defaultValue);
 	}
@@ -1359,9 +1319,8 @@ public:
 	 * \param[in] to One past last index to visit. Negative counts from end of list.
 	 * \param[in] step Step size. Can be negative but not 0.
 	 */
-	template<typename Evaluator, typename U = T>
-	requires de_copy_constructible<U>
-	decTList<T,TP> Collect(Evaluator &evaluator, int from, int to, int step = 1) const{
+	template<typename Evaluator>
+	decTList Collect(Evaluator &evaluator, int from, int to, int step = 1) const{
 		DEASSERT_TRUE(step != 0)
 		
 		if(from < 0){
@@ -1374,7 +1333,7 @@ public:
 		}
 		DEASSERT_TRUE(to >= 0)
 		
-		decTList<T,TP> collected;
+		decTList collected;
 		int i;
 		if(step > 0){
 			DEASSERT_TRUE(to <= pCount)
@@ -1399,22 +1358,20 @@ public:
 		return collected;
 	}
 	
-	template<typename Evaluator, typename U = T>
-	requires de_copy_constructible<U>
-	inline decTList<T,TP> Collect(Evaluator &&evaluator, int from, int to, int step = 1) const{
+	template<typename Evaluator>
+	inline decTList Collect(Evaluator &&evaluator, int from, int to, int step = 1) const{
 		return Collect<Evaluator>(evaluator, from, to, step);
 	}
 	
-	template<typename Evaluator, typename U = T>
-	requires de_copy_constructible<U>
-	decTList<T,TP> Collect(Evaluator &evaluator, int from) const{
+	template<typename Evaluator>
+	decTList Collect(Evaluator &evaluator, int from) const{
 		if(from < 0){
 			from = pCount + from;
 		}
 		DEASSERT_TRUE(from >= 0)
 		DEASSERT_TRUE(from <= pCount)
 		
-		decTList<T,TP> collected;
+		decTList collected;
 		int i;
 		for(i=from; i<pCount; i++){
 			if(evaluator(pElements[i])){
@@ -1424,15 +1381,14 @@ public:
 		return collected;
 	}
 	
-	template<typename Evaluator, typename U = T>
-	requires de_copy_constructible<U>
-	inline decTList<T,TP> Collect(Evaluator &&evaluator, int from) const{
+	template<typename Evaluator>
+	inline decTList Collect(Evaluator &&evaluator, int from) const{
 		return Collect<Evaluator>(evaluator, from);
 	}
 	
 	template<typename Evaluator>
-	inline decTList<T,TP> Collect(Evaluator &evaluator) const{
-		decTList<T,TP> collected;
+	inline decTList Collect(Evaluator &evaluator) const{
+		decTList collected;
 		int i;
 		for(i=0; i<pCount; i++){
 			if(evaluator(pElements[i])){
@@ -1442,9 +1398,8 @@ public:
 		return collected;
 	}
 	
-	template<typename Evaluator, typename U = T>
-	requires de_copy_constructible<U>
-	inline decTList<T,TP> Collect(Evaluator &&evaluator) const{
+	template<typename Evaluator>
+	inline decTList Collect(Evaluator &&evaluator) const{
 		return Collect<Evaluator>(evaluator);
 	}
 	
@@ -1458,8 +1413,7 @@ public:
 	 * \throws deeInvalidParam \em step is 0.
 	 * \return Accumulated value or default constructed T() if no elements in range.
 	 */
-	template<typename Combiner, typename U = T>
-	requires de_copy_constructible<U>
+	template<typename Combiner>
 	T Fold(Combiner &combiner, int from, int to, int step = 1) const{
 		DEASSERT_TRUE(step != 0)
 		
@@ -1502,8 +1456,7 @@ public:
 		}
 	}
 	
-	template<typename Combiner, typename U = T>
-	requires de_copy_constructible<U>
+	template<typename Combiner>
 	inline T Fold(Combiner &&combiner, int from, int to, int step = 1) const{
 		return Fold<Combiner>(combiner, from, to, step);
 	}
@@ -1514,14 +1467,12 @@ public:
 	 * \throws deeInvalidParam \em from is less than 0 or larger than GetCount()-1.
 	 * \return Accumulated value or default constructed T() if no elements in range.
 	 */
-	template<typename Combiner, typename U = T>
-	requires de_copy_constructible<U>
+	template<typename Combiner>
 	T Fold(Combiner &combiner, int from) const{
 		return Fold<Combiner>(combiner, from, pCount);
 	}
 	
-	template<typename Combiner, typename U = T>
-	requires de_copy_constructible<U>
+	template<typename Combiner>
 	inline T Fold(Combiner &&combiner, int from) const{
 		return Fold<Combiner>(combiner, from);
 	}
@@ -1531,8 +1482,7 @@ public:
 	 * \param[in] combiner Combiner callable invoked as combiner(accumulator, element) -> accumulator.
 	 * \return Accumulated value or default constructed T() if no elements.
 	 */
-	template<typename Combiner, typename U = T>
-	requires de_copy_constructible<U>
+	template<typename Combiner>
 	T Fold(Combiner &combiner) const{
 		DEASSERT_TRUE(IsNotEmpty())
 		T acc = pElements[0];
@@ -1543,8 +1493,7 @@ public:
 		return acc;
 	}
 	
-	template<typename Combiner, typename U = T>
-	requires de_copy_constructible<U>
+	template<typename Combiner>
 	inline T Fold(Combiner &&combiner) const{
 		return Fold<Combiner>(combiner);
 	}
@@ -1556,7 +1505,6 @@ public:
 	 * \param[in] combiner Combiner callable invoked as combiner(accumulator, element) -> accumulator.
 	 */
 	template<typename R, typename Combiner>
-	requires de_copy_constructible<R>
 	R Inject(const R &value, Combiner &combiner, int from, int to, int step = 1) const{
 		DEASSERT_TRUE(step != 0)
 		
@@ -1590,25 +1538,21 @@ public:
 	}
 	
 	template<typename R, typename Combiner>
-	requires de_copy_constructible<R>
 	inline R Inject(const R &value, Combiner &&combiner, int from, int to, int step = 1) const{
 		return Inject<R,Combiner>(value, combiner, from, to, step);
 	}
 	
 	template<typename R, typename Combiner>
-	requires de_copy_constructible<R>
 	R Inject(const R &value, Combiner &combiner, int from) const{
 		return Inject<R,Combiner>(value, combiner, from, pCount);
 	}
 	
 	template<typename R, typename Combiner>
-	requires de_copy_constructible<R>
 	inline R Inject(const R &value, Combiner &&combiner, int from) const{
 		return Inject<R,Combiner>(value, combiner, from);
 	}
 	
 	template<typename R, typename Combiner>
-	requires de_copy_constructible<R>
 	R Inject(const R &value, Combiner &combiner) const{
 		R acc = value;
 		int i;
@@ -1619,7 +1563,6 @@ public:
 	}
 	
 	template<typename R, typename Combiner>
-	requires de_copy_constructible<R>
 	inline R Inject(const R &value, Combiner &&combiner) const{
 		return Inject<R,Combiner>(value, combiner);
 	}
@@ -1640,8 +1583,8 @@ public:
 	/**
 	 * \brief Set with elements in reverse order.
 	 */
-	decTList<T,TP> GetReversed() const{
-		decTList<T,TP> reversed(pCount);
+	decTList GetReversed() const{
+		decTList reversed(pCount);
 		int i;
 		for(i=0; i<pCount; i++){
 			reversed.pElements[i] = pElements[pCount - 1 - i];
@@ -1765,41 +1708,57 @@ public:
 	
 	/** \brief Sort using decAscendingComparator. */
 	void SortAscending(){
-		Sort<decAscendingComparator<T>>(decAscendingComparator<T>());
+		if constexpr (requires(const T& a, const T& b) { { DECompare(a, b) } -> std::convertible_to<int>; }) {
+			Sort<decAscendingComparator<T>>(decAscendingComparator<T>());
+
+		}else{
+			DEThrowInvalidParam(__FILE__, __LINE__, DE_CUR_FUNC_NAME);
+		}
 	}
 	
 	/** \brief Sort using decDescendingComparator. */
 	void SortDescending(){
-		Sort<decDesendingComparator<T>>(decDesendingComparator<T>());
+		if constexpr (requires(const T & a, const T & b) { { DECompare(a, b) } -> std::convertible_to<int>; }) {
+			Sort<decDesendingComparator<T>>(decDesendingComparator<T>());
+
+		} else {
+			DEThrowInvalidParam(__FILE__, __LINE__, DE_CUR_FUNC_NAME);
+		}
 	}
 	
 	/** \brief Sort elements as new list. */
-	template<typename Comparator, typename U = T>
-	requires de_copy_constructible<U>
-	decTList<T,TP> GetSorted(Comparator &comparator) const{
-		decTList<T,TP> copy(*this);
+	template<typename Comparator>
+	decTList GetSorted(Comparator &comparator) const{
+		decTList copy(*this);
 		copy.Sort<Comparator>(comparator);
 		return copy;
 	}
 	
-	template<typename Comparator, typename U = T>
-	requires de_copy_constructible<U>
-	inline decTList<T,TP> GetSorted(Comparator &&comparator) const{
+	template<typename Comparator>
+	inline decTList GetSorted(Comparator &&comparator) const{
 		return GetSorted<Comparator>(comparator);
 	}
 	
 	/** \brief Sort as new list using decAscendingComparator. */
-	template<typename U = T>
-	requires de_copy_constructible<U>
-	decTList<T,TP> GetSortedAscending() const{
-		return GetSorted<decAscendingComparator<T>>(decAscendingComparator<T>());
+	decTList GetSortedAscending() const{
+		if constexpr (requires(const T & a, const T & b) { { DECompare(a, b) } -> std::convertible_to<int>; }) {
+			return GetSorted<decAscendingComparator<T>>(decAscendingComparator<T>());
+
+		}else{
+			DEThrowInvalidParam(__FILE__, __LINE__, DE_CUR_FUNC_NAME);
+			return {}; // we never get here. keep MSVC from complaining
+		}
 	}
 	
 	/** \brief Sort as new list using decDescendingComparator. */
-	template<typename U = T>
-	requires de_copy_constructible<U>
-	decTList<T,TP> GetSortedDescending() const{
-		return GetSorted<decDesendingComparator<T>>(decDesendingComparator<T>());
+	decTList GetSortedDescending() const{
+		if constexpr (requires(const T & a, const T & b) { { DECompare(a, b) } -> std::convertible_to<int>; }) {
+			return GetSorted<decDesendingComparator<T>>(decDesendingComparator<T>());
+
+		}else{
+			DEThrowInvalidParam(__FILE__, __LINE__, DE_CUR_FUNC_NAME);
+			return {}; // we never get here. keep MSVC from complaining
+		}
 	}
 	
 	
@@ -1807,7 +1766,7 @@ public:
 	 * \brief Swap content with another list.
 	 * \note This also swaps the capacities.
 	 */
-	void Swap(decTList<T,TP> &list){
+	void Swap(decTList &list){
 		if(&list == this){
 			return;
 		}
@@ -1830,20 +1789,18 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Determine if this list is equal to another list. */
-	bool operator==(const decTList<T,TP> &list) const{
+	bool operator==(const decTList &list) const{
 		return Equals(list);
 	}
 	
 	/** \brief Determine if this list is not equal to another list. */
-	bool operator!=(const decTList<T,TP> &list) const{
+	bool operator!=(const decTList &list) const{
 		return !Equals(list);
 	}
 	
 	/** \brief New list containing all values of this list followed by all values of another list. */
-	template<typename U = T>
-	requires de_copy_constructible<U>
-	decTList<T,TP> operator+(const decTList<T,TP> &list) const{
-		decTList<T,TP> nlist(pCount + list.pCount);
+	decTList operator+(const decTList &list) const{
+		decTList nlist(pCount + list.pCount);
 		int i;
 		
 		for(i=0; i<pCount; i++){
@@ -1878,10 +1835,7 @@ public:
 	}
 	
 	/** \brief Copy list to this list. */
-	decTList<T,TP> &operator=(const decTList<T,TP> &list){
-		// do not use
-		//    requires de_copy_constructible<T>
-		// after argument list or template instantiation requires full class definition of T
+	decTList &operator=(const decTList &list){
 		if(&list == this){
 			return *this;
 		}
@@ -1891,7 +1845,7 @@ public:
 	}
 	
 	/** \brief Move list. */
-	decTList<T,TP> &operator=(decTList<T,TP> &&list){
+	decTList &operator=(decTList &&list){
 		if(&list == this){
 			return *this;
 		}
@@ -1914,9 +1868,7 @@ public:
 	}
 	
 	/** \brief Append values of list to this list. */
-	template<typename U = T>
-	requires de_copy_constructible<U>
-	decTList<T,TP> &operator+=(const decTList<T,TP> &list){
+	decTList &operator+=(const decTList &list){
 		if(list.pCount > 0){
 			int count = pCount + list.pCount;
 			EnlargeCapacity(count);
@@ -1942,7 +1894,7 @@ public:
 		using pointer = const T*;
 		using reference = const T&;
 		
-		explicit const_iterator(const decTList<T,TP>* owner = nullptr, int index = 0) :
+		explicit const_iterator(const decTList* owner = nullptr, int index = 0) :
 		pOwner(owner), pIndex(index){
 		}
 		
@@ -2027,7 +1979,7 @@ public:
 		}
 		
 	private:
-		const decTList<T,TP>* pOwner;
+		const decTList* pOwner;
 		int pIndex;
 	};
 	
@@ -2039,7 +1991,7 @@ public:
 		using pointer = T*;
 		using reference = T&;
 		
-		explicit iterator(decTList<T,TP>* owner = nullptr, int index = 0) :
+		explicit iterator(decTList* owner = nullptr, int index = 0) :
 		pOwner(owner), pIndex(index){
 		}
 		
@@ -2124,7 +2076,7 @@ public:
 		}
 		
 	private:
-		decTList<T,TP>* pOwner;
+		decTList* pOwner;
 		int pIndex;
 	};
 	
@@ -2233,15 +2185,5 @@ using decTObjectList = decTList<deTObjectReference<T>, T*>;
  */
 template<typename T>
 using decTThreadSafeObjectList = decTList<deTThreadSafeObjectReference<T>, T*>;
-
-/**
- * \brief Unique object list template class.
- * 
- * All objects including nullptr are allowed.
- * 
- * This template uses deTUniqueReference.
- */
-template<typename T>
-using decTUniqueList = decTList<deTUniqueReference<T>, T*>;
 
 #endif

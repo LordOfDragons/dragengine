@@ -43,9 +43,24 @@ debpDecalMeshBuilderFace::debpDecalMeshBuilderFace(){
 	pFaceIndex = -1;
 }
 
-debpDecalMeshBuilderFace::~debpDecalMeshBuilderFace(){
+debpDecalMeshBuilderFace::debpDecalMeshBuilderFace(const debpDecalMeshBuilderFace &other){
+	pPoints[0] = other.pPoints[0];
+	pPoints[1] = other.pPoints[1];
+	pPoints[2] = other.pPoints[2];
+	pFaceIndex = other.pFaceIndex;
 }
 
+debpDecalMeshBuilderFace &debpDecalMeshBuilderFace::operator=(const debpDecalMeshBuilderFace &other){
+	if(this != &other){
+		pPoints[0] = other.pPoints[0];
+		pPoints[1] = other.pPoints[1];
+		pPoints[2] = other.pPoints[2];
+		pFaceIndex = other.pFaceIndex;
+	}
+	return *this;
+}
+
+debpDecalMeshBuilderFace::~debpDecalMeshBuilderFace() = default;
 
 
 // Management

@@ -35,7 +35,6 @@
 class deoglShaderLanguage;
 
 class deoglShaderDefines;
-class deoglShaderSources;
 class deoglShaderCompiled;
 class deoglShaderProgram;
 class deoglShaderProgramUnit;

@@ -34,7 +34,6 @@
 #include <dragengine/deObject.h>
 
 class deoglRenderThread;
-class deoglShaderSources;
 class deoglShaderDefines;
 
 

@@ -25,7 +25,7 @@
 #ifndef _DEOCCMWEIGHTSET_H_
 #define _DEOCCMWEIGHTSET_H_
 
-#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTUniqueList.h>
 
 
 /**

@@ -366,7 +366,16 @@ public:
 	int Compare(const deTObjectReference<T> &other) const{
 		DEASSERT_NOTNULL(pObject)
 		DEASSERT_NOTNULL(other.pObject)
-		return DECompare(*pObject, *other.pObject);
+
+		if constexpr (requires { DECompare(*pObject, *other.pObject); }) {
+			return DECompare(*pObject, *other.pObject);
+
+		} else {
+			// fallback in case no compare function is present. this is mainly
+			// required for MSVC since it tries to fully instantiate templates
+			// if template types are virtual
+			return DECompare(pObject, other.pObject);
+		}
 	}
 	/*@}*/
 };

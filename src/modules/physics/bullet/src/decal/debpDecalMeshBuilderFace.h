@@ -47,8 +47,8 @@ public:
 	debpDecalMeshBuilderFace();
 	
 	/** Copy. */
-	debpDecalMeshBuilderFace(const debpDecalMeshBuilderFace &other) = default;
-	debpDecalMeshBuilderFace &operator=(const debpDecalMeshBuilderFace &other) = default;
+	debpDecalMeshBuilderFace(const debpDecalMeshBuilderFace &other);
+	debpDecalMeshBuilderFace &operator=(const debpDecalMeshBuilderFace &other);
 	
 	/** Cleans up the decal mesh builder face. */
 	~debpDecalMeshBuilderFace();

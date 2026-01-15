@@ -72,6 +72,10 @@ inline int DECompare(const void *a, const void *b){
 	return (a < b) ? -1 : ((a > b) ? 1 : 0);
 }
 
+inline int DECompare(void* a, void* b) {
+	return (a < b) ? -1 : ((a > b) ? 1 : 0);
+}
+
 template<typename T, typename = std::enable_if_t<
 	std::is_convertible<
 		decltype(std::declval<T&>().Compare(std::declval<const T&>())),

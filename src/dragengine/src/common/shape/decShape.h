@@ -26,8 +26,7 @@
 #define _DECSHAPE_H_
 
 #include "../math/decMath.h"
-#include "../collection/decTList.h"
-#include "../../deTUniqueReference.h"
+#include "../collection/decTUniqueList.h"
 
 class decShapeVisitor;
 
@@ -60,9 +59,9 @@ public:
 		List& operator=(const List &list);
 		
 		/** \brief Move list. */
-		List(List&&) = default;
+		List(List&&) noexcept = default;
 		List& operator=(List&&) = default;
-		
+
 		/** \brief Visit shapes. */
 		void Visit(decShapeVisitor &visitor);
 	};
@@ -86,6 +85,12 @@ public:
 	/** \brief Create shape with the given position and orientation. */
 	decShape(const decVector &position, const decQuaternion &orientation);
 	
+	decShape(const decShape&) = delete;
+	decShape& operator=(const decShape&) = delete;
+
+	decShape(decShape&&) noexcept = default;
+	decShape& operator=(decShape&&) noexcept = default;
+
 	/** \brief Clean up shape. */
 	virtual ~decShape();
 	/*@}*/

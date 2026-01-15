@@ -43,7 +43,7 @@ public:
 	using Ref = deTObjectReference<delPatch>;
 	
 	/** \brief List type. */
-	class List : public decTObjectOrderedSet<delPatch>{
+	class DE_DLL_EXPORT List : public decTObjectOrderedSet<delPatch>{
 	public:
 		using decTObjectOrderedSet<delPatch>::decTObjectOrderedSet;
 		

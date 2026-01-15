@@ -27,7 +27,7 @@
 
 #include "decConvexVolume.h"
 #include "decMath.h"
-#include "../collection/decTList.h"
+#include "../collection/decTUniqueList.h"
 
 class decConvexVolumeFace;
 

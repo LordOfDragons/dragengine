@@ -26,6 +26,7 @@
 #define _DECSHAPEHULL_H_
 
 #include "decShape.h"
+#include "../collection/decTList.h"
 #include "../math/decMath.h"
 
 

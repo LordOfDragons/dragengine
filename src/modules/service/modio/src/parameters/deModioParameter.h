@@ -25,7 +25,7 @@
 #ifndef _DEMODIOPARAMETER_H_
 #define _DEMODIOPARAMETER_H_
 
-#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/systems/modules/deModuleParameter.h>
 
 class deModio;

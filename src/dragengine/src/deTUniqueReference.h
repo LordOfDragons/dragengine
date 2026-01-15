@@ -220,21 +220,20 @@ public:
 		return *this;
 	}
 	
+	/** \brief Unique references are equal. */
+	inline bool operator==(const deTUniqueReference<T> &other) const noexcept{
+		return pObject == other.pObject;
+	}
+
 	/** \brief Test if object is held by this holder. */
 	inline bool operator==(T *object) const noexcept{
 		return pObject == object;
 	}
 	
-	/** \brief Test if object is held by this holder. */
-	inline bool operator==(const T *object) const noexcept{
+	inline bool operator==(const T* object) const noexcept {
 		return pObject == object;
 	}
-	
-	/** \brief Test if object is not held by this holder. */
-	inline bool operator!=(T *object) const noexcept{
-		return pObject != object;
-	}
-	
+
 	/**
 	 * Static cast to a deTUniqueReference<U> when called on an rvalue (moves ownership).
 	 */
@@ -254,30 +253,17 @@ public:
 	int Compare(const deTUniqueReference<T> &other) const{
 		DEASSERT_NOTNULL(pObject)
 		DEASSERT_NOTNULL(other.pObject)
-		return DECompare(*pObject, *other.pObject);
+
+		if constexpr (requires { DECompare(*pObject, *other.pObject); }) {
+			return DECompare(*pObject, *other.pObject);
+
+		} else {
+			// fallback in case no compare function is present. this is mainly
+			// required for MSVC since it tries to fully instantiate templates
+			// if template types are virtual
+			return DECompare(pObject, other.pObject);
+		}
 	}
 };
-
-
-// avoid compile errors with reverse order checks like "a == b" if b is T::Ref
-template<class T>
-inline bool operator==(T *a, const deTUniqueReference<T> &b){
-	return b == a;
-}
-
-template<class T>
-inline bool operator==(const T *a, const deTUniqueReference<T> &b){
-	return b == a;
-}
-
-template<class T>
-inline bool operator!=(T *a, const deTUniqueReference<T> &b){
-	return b != a;
-}
-
-template<class T>
-inline bool operator!=(const T *a, const deTUniqueReference<T> &b){
-	return b != a;
-}
 
 #endif

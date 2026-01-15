@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <string.h>
-#include <stdio.h>
-
 #include "decShape.h"
 #include "decShapeBox.h"
 #include "decShapeSphere.h"

@@ -87,4 +87,13 @@ extern DE_DLL_EXPORT void DEThrowInvalidParam(const char *file, int line, const 
 #define DEASSERT_FALSE_IF(precondition, condition) if((precondition) && (condition)) \
 	DEThrowInvalidParam(__FILE__, __LINE__, "assertFalse(" #precondition " -> " #condition ")");
 
+
+
+/** Helper macros. */
+#ifdef _MSC_VER
+	#define DE_CUR_FUNC_NAME __FUNCSIG__
+#else
+	#define DE_CUR_FUNC_NAME __PRETTY_FUNCTION__
+#endif
+
 #endif

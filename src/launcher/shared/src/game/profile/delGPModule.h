@@ -46,7 +46,7 @@ public:
 	using Ref = deTObjectReference<delGPModule>;
 	
 	/** \brief List type. */
-	class List : public decTCollectionQueryByName<decTObjectOrderedSet<delGPModule>, delGPModule>{
+	class DE_DLL_EXPORT List : public decTCollectionQueryByName<decTObjectOrderedSet<delGPModule>, delGPModule>{
 	public:
 		using decTCollectionQueryByName<decTObjectOrderedSet<delGPModule>, delGPModule>::decTCollectionQueryByName;
 		

@@ -37,7 +37,6 @@
 #include <dragengine/threading/deSemaphore.h>
 
 class deoglShaderDefines;
-class deoglShaderSources;
 class deoglShaderCompiled;
 class deoglShaderProgram;
 class deoglRenderThread;

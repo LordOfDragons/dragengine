@@ -211,8 +211,6 @@ void dewiDevice::SetDirtyAxesValues(bool dirty){
 
 
 void dewiDevice::GetInfo(deInputDevice &info) const{
-	int i;
-	
 	info.SetID(pID);
 	info.SetName(pName);
 	info.SetType(pType);

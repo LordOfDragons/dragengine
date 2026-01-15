@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -1056,6 +1056,7 @@
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decTList.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decTOrderedSet.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decTSet.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\collection\decTUniqueList.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\curve\decCurve2D.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\curve\decCurveBezier.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\curve\decCurveBezier3D.h" />

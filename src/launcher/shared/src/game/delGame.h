@@ -72,7 +72,7 @@ public:
 	using Ref = deTObjectReference<delGame>;
 	
 	/** \brief List of games. */
-	class List : public decTObjectOrderedSet<delGame>{
+	class DE_DLL_EXPORT List : public decTObjectOrderedSet<delGame>{
 	public:
 		using decTObjectOrderedSet<delGame>::decTObjectOrderedSet;
 		using decTObjectOrderedSet<delGame>::operator=;

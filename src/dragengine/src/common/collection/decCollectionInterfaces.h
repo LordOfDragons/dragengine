@@ -250,7 +250,7 @@ public:
 };
 
 
-/** \brief Template function bundle for classes supporting queries using GetId(). */
+/** \brief Template function bundle for classes supporting queries using GetId() or GetIdentifier(). */
 template<typename Base, typename T>
 class decTCollectionQueryById : public Base{
 public:
@@ -271,21 +271,33 @@ public:
 	/** \brief One or more elements match identifier. */
 	inline bool HasWithId(const char *id) const{
 		return this->HasMatching([&](const T &e){
-			return e.GetId() == id;
+			if constexpr (requires { e.GetIdentifier(); }) {
+				return e.GetIdentifier() == id;
+			} else {
+				return e.GetId() == id;
+			}
 		});
 	}
 	
 	/** \brief Index of first element matching identifier or -1 if absent. */
 	inline int IndexOfWithId(const char *id) const{
 		return this->IndexOfMatching([&](const T &e){
-			return e.GetId() == id;
+			if constexpr (requires { e.GetIdentifier(); }) {
+				return e.GetIdentifier() == id;
+			} else {
+				return e.GetId() == id;
+			}
 		});
 	}
 	
 	/** \brief First element matching identifier or nullptr if absent. */
 	inline T *FindWithId(const char *id) const{
 		return this->FindOrDefault([&](const T &e){
-			return e.GetId() == id;
+			if constexpr (requires { e.GetIdentifier(); }) {
+				return e.GetIdentifier() == id;
+			} else {
+				return e.GetId() == id;
+			}
 		});
 	}
 };

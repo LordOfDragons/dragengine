@@ -25,7 +25,7 @@
 #ifndef _DEBPPARAMETER_H_
 #define _DEBPPARAMETER_H_
 
-#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/systems/modules/deModuleParameter.h>
 
