@@ -42,27 +42,15 @@
 
 deoglImposterBillboard::deoglImposterBillboard(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
-pChannelTextures(nullptr)
+pChannelTextures((int)deoglSkinChannel::CHANNEL_COUNT)
 {
 	int i;
-	pChannelTextures = new deoglArrayTexture*[deoglSkinChannel::CHANNEL_COUNT];
 	for(i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++){
-		pChannelTextures[i] = nullptr;
+		pChannelTextures.Add({});
 	}
 }
 
 deoglImposterBillboard::~deoglImposterBillboard(){
-	if(pChannelTextures){
-		int i;
-		
-		for(i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++){
-			if(pChannelTextures[i]){
-				delete pChannelTextures[i];
-			}
-		}
-		
-		delete [] pChannelTextures;
-	}
 }
 
 
@@ -71,41 +59,24 @@ deoglImposterBillboard::~deoglImposterBillboard(){
 ///////////////
 
 deoglArrayTexture *deoglImposterBillboard::GetChannelTextureAt(int channel) const{
-	if(channel < 0 || channel >= deoglSkinChannel::CHANNEL_COUNT){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return pChannelTextures[channel];
+	return pChannelTextures.GetAt(channel);
 }
 
 void deoglImposterBillboard::EnableChannelTexture(int channel, bool enable){
-	if(channel < 0 || channel >= deoglSkinChannel::CHANNEL_COUNT){
-		DETHROW(deeInvalidParam);
-	}
-	
 	if(enable){
-		if(pChannelTextures[channel]){
+		if(pChannelTextures.GetAt(channel)){
 			return;
 		}
 		
-		pChannelTextures[channel] = new deoglArrayTexture(pRenderThread);
+		pChannelTextures.SetAt(channel, deoglArrayTexture::Ref::New(pRenderThread));
 		
 	}else{
-		if(!pChannelTextures[channel]){
-			return;
-		}
-		
-		delete pChannelTextures[channel];
-		pChannelTextures[channel] = nullptr;
+		pChannelTextures.SetAt(channel, {});
 	}
 }
 
 bool deoglImposterBillboard::IsChannelTextureEnabled(int channel) const{
-	if(channel < 0 || channel >= deoglSkinChannel::CHANNEL_COUNT){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return pChannelTextures[channel] != nullptr;
+	return pChannelTextures.GetAt(channel).IsNotNull();
 }
 
 

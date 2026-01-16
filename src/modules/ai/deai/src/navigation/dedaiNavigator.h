@@ -28,6 +28,7 @@
 #include <dragengine/systems/modules/ai/deBaseAINavigator.h>
 #include <dragengine/resources/debug/deDebugDrawer.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deDEAIModule;
 class dedaiCostTable;
@@ -51,8 +52,7 @@ private:
 	
 	dedaiWorld *pParentWorld;
 	
-	deNavigatorType **pTypeMappings;
-	int pTypeMappingCount;
+	decTList<deNavigatorType*> pTypeMappings;
 	bool pDirtyTypeMappings;
 	
 	dedaiLayer *pLayer;
@@ -110,7 +110,6 @@ public:
 	
 	
 	/** \brief Type mappings. */
-	inline deNavigatorType **GetTypeMappings() const{ return pTypeMappings; }
 	
 	/** \brief Cost parameters for the given cost table entry. */
 	void GetCostParametersFor(int costTableEntry, float &fixCost, float &costPerMeter) const;
@@ -119,7 +118,7 @@ public:
 	float GetFixCostFor(int costTableEntry) const;
 	
 	/** \brief Number of type mappings. */
-	inline int GetTypeMappingCount() const{ return pTypeMappingCount; }
+	inline int GetTypeMappingCount() const{ return pTypeMappings.GetCount(); }
 	
 	
 	

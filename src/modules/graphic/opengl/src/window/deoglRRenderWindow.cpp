@@ -1355,7 +1355,11 @@ int deoglRRenderWindow::pGetDisplayScaleFactor(){
 	
 	XrmValue value;
 	char *type = nullptr;
-	if(XrmGetResource(db, "Xft.dpi", "String", &type, &value) != True || !value.addr){
+	const auto result = XrmGetResource(db, "Xft.dpi", "String", &type, &value);
+	
+	XrmDestroyDatabase(db);
+	
+	if(result != True || !value.addr){
 		return scale;
 	}
 	

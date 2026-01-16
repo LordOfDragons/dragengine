@@ -25,6 +25,8 @@
 #ifndef _DEOGLSKINTEXTURE_H_
 #define _DEOGLSKINTEXTURE_H_
 
+#include <dragengine/deTUniqueReference.h>
+
 #include "deoglSkinTextureProperty.h"
 #include "channel/deoglSkinChannel.h"
 #include "pipeline/deoglSkinTexturePipelinesList.h"
@@ -49,6 +51,8 @@ class deSkinProperty;
  */
 class deoglSkinTexture{
 public:
+	using Ref = deTUniqueReference<deoglSkinTexture>;
+	
 	/** Material parameters. */
 	enum eMaterialParameters{
 		empAbsorption,

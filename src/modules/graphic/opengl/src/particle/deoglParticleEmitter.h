@@ -28,6 +28,7 @@
 #include "deoglRParticleEmitter.h"
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicParticleEmitter.h>
 
 class deoglParticleEmitterType;
@@ -47,8 +48,7 @@ private:
 	
 	deoglRParticleEmitter::Ref pREmitter;
 	
-	deoglParticleEmitterType **pTypes;
-	int pTypeCount;
+	decTUniqueList<deoglParticleEmitterType> pTypes;
 	
 	bool pDirtyTypes;
 	
@@ -82,8 +82,11 @@ public:
 	
 	
 	
+	/** Types. */
+	inline const decTUniqueList<deoglParticleEmitterType> &GetTypes() const{ return pTypes; }
+	
 	/** Number of types. */
-	inline int GetTypeCount() const{ return pTypeCount; }
+	inline int GetTypeCount() const{ return pTypes.GetCount(); }
 	
 	/** Type at index. */
 	deoglParticleEmitterType &GetTypeAt(int index) const;

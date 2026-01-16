@@ -27,7 +27,9 @@
 
 #include "../../deoglBasics.h"
 
+#include <dragengine/deTUniqueReference.h>
 #include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTUniqueList.h>
 
 class deoglRenderTaskSharedTexture;
 class deoglRenderTaskSharedVAO;
@@ -38,15 +40,16 @@ class deoglRenderTaskVAO;
  * Render Task Texture.
  */
 class deoglRenderTaskTexture{
+public:
+	/** \brief Type holding unique reference. */
+	using Ref = deTUniqueReference<deoglRenderTaskTexture>;
+	
 private:
 	const deoglRenderTaskSharedTexture *pTexture;
 	
-	decTList<deoglRenderTaskVAO*> pVAOs;
+	decTList<deoglRenderTaskVAO*> pHasVAO;
+	decTUniqueList<deoglRenderTaskVAO> pVAOs;
 	int pVAOCount;
-	
-	deoglRenderTaskVAO **pHasVAO;
-	int pHasVAOCount;
-	int pHasVAOSize;
 	
 	
 	
@@ -85,6 +88,9 @@ public:
 	void SetTexture(const deoglRenderTaskSharedTexture *texture);
 	
 	
+	
+	/** VAOs. */
+	inline const decTUniqueList<deoglRenderTaskVAO> &GetVAOs() const{ return pVAOs; }
 	
 	/** Count of render task vaos. */
 	inline int GetVAOCount() const{ return pVAOCount; }

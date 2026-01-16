@@ -63,6 +63,11 @@ class deException;
  * on the file type to handle.
  */
 class DE_DLL_EXPORT deBaseSystem{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTUniqueReference<deBaseSystem>;
+	
+	
 private:
 	const decString pSystemName;
 	deEngine * const pEngine;

@@ -64,9 +64,6 @@ pInstance(instance),
 
 pEmitter(nullptr),
 
-pTypes(nullptr),
-pTypeCount(0),
-
 pDirtyEmitter(true),
 pDirtyExtends(true),
 pDirtyOctreeNode(true),
@@ -121,17 +118,15 @@ void deoglParticleEmitterInstance::SyncToRender(){
 	// types
 	if(pDirtyTypes){
 		pRInstance->RemoveAllTypes();
-		int i;
-		for(i=0; i<pTypeCount; i++){
-			pRInstance->AddType(pTypes[i]->GetRType());
-		}
+		pTypes.Visit([&](deoglParticleEmitterInstanceType &t){
+			pRInstance->AddType(t.GetRType());
+		});
 		pDirtyTypes = false;
 	}
 	
-	int i;
-	for(i=0; i<pTypeCount; i++){
-		pTypes[i]->SyncToRender();
-	}
+	pTypes.Visit([&](deoglParticleEmitterInstanceType &t){
+		t.SyncToRender();
+	});
 	
 	// extends and octree
 	if(pDirtyExtends){
@@ -154,10 +149,7 @@ void deoglParticleEmitterInstance::SyncToRender(){
 
 
 deoglParticleEmitterInstanceType &deoglParticleEmitterInstance::GetTypeAt(int index){
-	if(index < 0 || index >= pTypeCount){
-		DETHROW(deeInvalidParam);
-	}
-	return *pTypes[index];
+	return pTypes.GetAt(index);
 }
 
 
@@ -217,7 +209,7 @@ void deoglParticleEmitterInstance::ControllerChanged(int){
 }
 
 void deoglParticleEmitterInstance::TypeChanged(int type){
-	pTypes[type]->TypeChanged();
+	pTypes.GetAt(type)->TypeChanged();
 	
 	pDirtyOctreeNode = true;
 	pDirtyExtends = true;
@@ -243,13 +235,7 @@ void deoglParticleEmitterInstance::KillAllParticles(){
 //////////////////////
 
 void deoglParticleEmitterInstance::pCleanUp(){
-	if(pTypes){
-		int i;
-		for(i=0; i<pTypeCount; i++){
-			delete pTypes[i];
-		}
-		delete [] pTypes;
-	}
+	pTypes.RemoveAll();
 	
 	// types holds a reference to pRInstance. do not remove it earlier
 	if(pRInstance){
@@ -260,22 +246,11 @@ void deoglParticleEmitterInstance::pCleanUp(){
 void deoglParticleEmitterInstance::pUpdateTypes(){
 	const int typeCount = pInstance.GetTypes().GetCount();
 	
-	if(pTypes){
-		int i;
-		for(i=0; i<pTypeCount; i++){
-			delete pTypes[i];
-		}
-		delete [] pTypes;
-		pTypes = nullptr;
-	}
-	pTypeCount = 0;
+	pTypes.RemoveAll();
 	
-	if(typeCount > 0){
-		pTypes = new deoglParticleEmitterInstanceType*[typeCount];
-		
-		for(pTypeCount=0; pTypeCount<typeCount; pTypeCount++){
-			pTypes[pTypeCount] = new deoglParticleEmitterInstanceType(*this, pTypeCount);
-		}
+	int i;
+	for(i=0; i<typeCount; i++){
+		pTypes.Add(deoglParticleEmitterInstanceType::Ref::New(*this, i));
 	}
 	
 	pDirtyTypes = true;

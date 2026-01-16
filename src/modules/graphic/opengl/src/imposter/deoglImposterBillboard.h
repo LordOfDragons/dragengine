@@ -25,11 +25,11 @@
 #ifndef _DEOGLIMPOSTERBILLBOARD_H_
 #define _DEOGLIMPOSTERBILLBOARD_H_
 
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglRenderThread;
 class deoglArrayTexture;
-
 
 
 /**
@@ -47,7 +47,7 @@ class deoglImposterBillboard{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	deoglArrayTexture **pChannelTextures;
+	decTUniqueList<deoglArrayTexture> pChannelTextures;
 	
 	decVector2 pMinExtend;
 	decVector2 pMaxExtend;
@@ -65,6 +65,9 @@ public:
 	/*@{*/
 	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	
+	/** Channels. */
+	inline const decTUniqueList<deoglArrayTexture> &GetChannelTextures() const{ return pChannelTextures; }
 	
 	/** Retrieves the array texture for a skin texture channel. */
 	deoglArrayTexture *GetChannelTextureAt(int channel) const;

@@ -45,23 +45,10 @@
 
 deoglRenderTaskVAO::deoglRenderTaskVAO() :
 pVAO(nullptr),
-pInstanceCount(0),
-pHasInstance(nullptr),
-pHasInstanceCount(0),
-pHasInstanceSize(0){
+pInstanceCount(0){
 }
 
 deoglRenderTaskVAO::~deoglRenderTaskVAO(){
-	if(pHasInstance){
-		delete [] pHasInstance;
-	}
-	
-	const int instanceCount = pInstances.GetCount();
-	int i;
-	for(i=0; i<instanceCount; i++){
-		delete pInstances.GetAt(i);
-	}
-	pInstances.RemoveAll();
 }
 
 
@@ -71,8 +58,8 @@ deoglRenderTaskVAO::~deoglRenderTaskVAO(){
 
 void deoglRenderTaskVAO::Reset(){
 	pVAO = nullptr;
+	pHasInstance.RemoveAll();
 	pInstanceCount = 0;
-	pHasInstanceCount = 0;
 }
 
 
@@ -84,22 +71,16 @@ void deoglRenderTaskVAO::SetVAO(const deoglRenderTaskSharedVAO *vao){
 
 
 int deoglRenderTaskVAO::GetTotalPointCount() const{
-	int i, pointCount = 0;
-	for(i=0; i<pInstanceCount; i++){
-		const deoglRenderTaskSharedInstance &instance =
-			*( ( deoglRenderTaskInstance* )pInstances.GetAt( i ) )->GetInstance();
-		pointCount += (instance.GetIndexCount() + instance.GetPointCount())
-			* decMath::max( instance.GetSubInstanceCount(), 1 );
-	}
-	return pointCount;
+	return pInstances.Inject(0, [](int sum, const deoglRenderTaskInstance &inst) {
+		const deoglRenderTaskSharedInstance &si = *inst.GetInstance();
+		return sum + (si.GetIndexCount() + si.GetPointCount()) * decMath::max(si.GetSubInstanceCount(), 1);
+	}, 0, pInstanceCount);
 }
 
 int deoglRenderTaskVAO::GetTotalSubInstanceCount() const{
-	int i, subInstanceCount = 0;
-	for(i=0; i<pInstanceCount; i++){
-		subInstanceCount += pInstances.GetAt(i)->GetSubInstanceCount();
-	}
-	return subInstanceCount;
+	return pInstances.Inject(0, [](int sum, const deoglRenderTaskInstance &inst) {
+		return sum + inst.GetSubInstanceCount();
+	}, 0, pInstanceCount);
 }
 
 
@@ -109,42 +90,22 @@ deoglRenderTaskInstance *deoglRenderTaskVAO::GetInstanceAt(int index) const{
 }
 
 deoglRenderTaskInstance *deoglRenderTaskVAO::AddInstance(const deoglRenderTaskSharedInstance *instance){
-	if(!instance){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(instance)
 	
 	const int index = instance->GetIndex();
 	
-	if(index >= pHasInstanceCount){
-		if(index >= pHasInstanceSize){
-			deoglRenderTaskInstance ** const newArray = new deoglRenderTaskInstance*[index + 1];
-			
-			if(pHasInstance){
-				if(pHasInstanceCount > 0){
-					memcpy(newArray, pHasInstance, sizeof(deoglRenderTaskInstance*) * pHasInstanceCount);
-				}
-				delete [] pHasInstance;
-			}
-			
-			pHasInstance = newArray;
-			pHasInstanceSize = index + 1;
-		}
-		
-		if(pHasInstanceCount <= index){
-			memset(pHasInstance + pHasInstanceCount, 0,
-				sizeof(deoglRenderTaskInstance*) * (index - pHasInstanceCount + 1));
-			pHasInstanceCount = index + 1;
-		}
+	while(index >= pHasInstance.GetCount()){
+		pHasInstance.Add(nullptr);
 	}
 	
-	deoglRenderTaskInstance *rtinstance = pHasInstance[index];
+	deoglRenderTaskInstance *rtinstance = pHasInstance.GetAt(index);
 	if(rtinstance){
 		return rtinstance;
 	}
 	
 	if(pInstanceCount == pInstances.GetCount()){
-		rtinstance = new deoglRenderTaskInstance;
-		pInstances.Add(rtinstance);
+		pInstances.Add(deoglRenderTaskInstance::Ref::New());
+		rtinstance = pInstances.Last();
 		
 	}else{
 		rtinstance = pInstances.GetAt(pInstanceCount);
@@ -153,7 +114,7 @@ deoglRenderTaskInstance *deoglRenderTaskVAO::AddInstance(const deoglRenderTaskSh
 	pInstanceCount++;
 	
 	rtinstance->SetInstance(instance);
-	pHasInstance[index] = rtinstance;
+	pHasInstance.SetAt(index, rtinstance);
 	return rtinstance;
 }
 

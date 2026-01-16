@@ -27,6 +27,7 @@
 
 #include "dedsResourceLoader.h"
 
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 class deFileResource;
@@ -47,12 +48,10 @@ private:
 	decString pFilename;
 	deResourceLoader::eResourceType pResourceType;
 	
-	dsValue **pListeners;
-	int pListenerCount;
-	int pListenerSize;
+	decTOrderedSet<dsValue*> pListeners;
 	
 	
-	
+
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -73,7 +72,7 @@ public:
 	bool Matches(const char *filename, deResourceLoader::eResourceType resourceType) const;
 	
 	/** Retrieves the number of listeners. */
-	inline int GetListenerCount() const{ return pListenerCount; }
+	inline int GetListenerCount() const{ return pListeners.GetCount(); }
 	/** Adds a listener. */
 	void AddListener(dsRealObject *listener);
 	/** Removes a listener. */

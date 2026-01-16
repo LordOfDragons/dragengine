@@ -25,6 +25,8 @@
 #ifndef _DEOGLSKINSTATERENDERABLE_H_
 #define _DEOGLSKINSTATERENDERABLE_H_
 
+#include <dragengine/deTUniqueReference.h>
+
 class deoglRenderPlan;
 class deoglRenderThread;
 class deoglTexture;
@@ -40,6 +42,9 @@ class deoglRDynamicSkin;
  * objects required for masked rendering if required.
  */
 class deoglSkinStateRenderable{
+public:
+	using Ref = deTUniqueReference<deoglSkinStateRenderable>;
+	
 private:
 	deoglSkinState &pSkinState;
 	int pIndex;

@@ -27,6 +27,7 @@
 
 #include "deoglRComponentTexture.h"
 #include "../skin/dynamic/deoglDynamicSkinListener.h"
+#include <dragengine/deTUniqueReference.h>
 
 class deoglComponent;
 class deoglDynamicSkin;
@@ -40,6 +41,10 @@ class deComponentTexture;
  * Component texture.
  */
 class deoglComponentTexture : public deoglDynamicSkinListener{
+public:
+	/** \brief Type holding unique reference. */
+	using Ref = deTUniqueReference<deoglComponentTexture>;
+	
 private:
 	deoglComponent &pComponent;
 	const int pIndex;

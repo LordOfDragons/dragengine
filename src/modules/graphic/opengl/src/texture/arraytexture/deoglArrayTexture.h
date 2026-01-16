@@ -31,6 +31,7 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/deTUniqueReference.h>
 
 class deoglRenderThread;
 class deoglCapsTextureFormat;
@@ -51,6 +52,10 @@ class deoglTexture;
  */
 class deoglArrayTexture{
 public:
+	/** \brief Reference. */
+	using Ref = deTUniqueReference<deoglArrayTexture>;
+	
+
 	deoglRenderThread &pRenderThread;
 	
 	GLuint pTexture;

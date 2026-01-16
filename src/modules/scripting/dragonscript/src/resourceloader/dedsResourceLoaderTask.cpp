@@ -73,10 +73,7 @@ dedsResourceLoaderTask::dedsResourceLoaderTask(deScriptingDragonScript *ds,
 const char *filename, deResourceLoader::eResourceType resourceType) :
 pDS(ds),
 pFilename(filename),
-pResourceType(resourceType),
-pListeners(nullptr),
-pListenerCount(0),
-pListenerSize(0)
+pResourceType(resourceType)
 {
 	if(!ds){
 		DETHROW(deeInvalidParam);
@@ -85,9 +82,6 @@ pListenerSize(0)
 
 dedsResourceLoaderTask::~dedsResourceLoaderTask(){
 	pClearListeners();
-	if(pListeners){
-		delete [] pListeners;
-	}
 }
 
 
@@ -106,39 +100,24 @@ void dedsResourceLoaderTask::AddListener(dsRealObject *listener){
 	}
 	dsRunTime *rt = pDS->GetScriptEngine()->GetMainRunTime();
 	
-	if(pListenerCount == pListenerSize){
-		int newSize = pListenerSize * 3 / 2 + 1;
-		dsValue **newArray = new dsValue*[newSize];
-		if(pListeners){
-			memcpy(newArray, pListeners, sizeof(dsValue*) * pListenerSize);
-			delete [] pListeners;
-		}
-		pListeners = newArray;
-		pListenerSize = newSize;
-	}
-	
-	pListeners[pListenerCount] = rt->CreateValue(pDS->GetClassResourceListener());
-	rt->SetObject(pListeners[pListenerCount], listener);
-	rt->CastValueTo(pListeners[pListenerCount], pListeners[pListenerCount], pDS->GetClassResourceListener());
-	pListenerCount++;
+	dsValue * const v = rt->CreateValue(pDS->GetClassResourceListener());
+	rt->SetObject(v, listener);
+	rt->CastValueTo(v, v, pDS->GetClassResourceListener());
+	pListeners.Add(v);
 }
 
 void dedsResourceLoaderTask::RemoveListener(dsRealObject *listener){
-	if(!listener){
-		DETHROW(deeInvalidParam);
-	}
-	dsRunTime *rt = pDS->GetScriptEngine()->GetMainRunTime();
-	int i, j;
+	DEASSERT_NOTNULL(listener)
 	
-	for(i=0; i<pListenerCount; i++){
-		if(listener == pListeners[i]->GetRealObject()){
-			rt->FreeValue(pListeners[i]);
-			for(j=i+1; j<pListenerCount; j++){
-				pListeners[i - 1] = pListeners[i];
-			}
-			return;
-		}
+	const int index = pListeners.IndexOfMatching([&](const dsValue *v){
+		return listener == v->GetRealObject();
+	});
+	if(index == -1){
+		return;
 	}
+	
+	pDS->GetScriptEngine()->GetMainRunTime()->FreeValue(pListeners.GetAt(index));
+	pListeners.RemoveFrom(index);
 }
 
 void dedsResourceLoaderTask::NotifyLoadingFinished(deFileResource *resource){
@@ -147,10 +126,10 @@ void dedsResourceLoaderTask::NotifyLoadingFinished(deFileResource *resource){
 	}
 	
 	const int funcIndex = pDS->GetClassResourceListener()->GetFuncIndexFinishedLoading();
-	dsRunTime *rt = pDS->GetScriptEngine()->GetMainRunTime();
-	int i;
+	dsRunTime * const rt = pDS->GetScriptEngine()->GetMainRunTime();
+	dsValue * const rtval = pDS->GetClassResourceLoaderType()->GetVariable(pResourceType)->GetStaticValue();
 	
-	for(i=0; i<pListenerCount; i++){
+	pListeners.Visit([&](dsValue *v){
 		// finishedLoading( filename, resourceType, resource )
 		switch(pResourceType){
 		case deResourceLoader::ertAnimation:
@@ -196,25 +175,26 @@ void dedsResourceLoaderTask::NotifyLoadingFinished(deFileResource *resource){
 		default:
 			DETHROW(deeInvalidParam); // TODO do something more smart here
 		}
-		rt->PushValue(pDS->GetClassResourceLoaderType()->GetVariable(pResourceType)->GetStaticValue());
+		
+		rt->PushValue(rtval);
 		rt->PushString(pFilename);
-		rt->RunFunctionFast(pListeners[i], funcIndex);
-	}
+		rt->RunFunctionFast(v, funcIndex);
+	});
 	
 	pClearListeners();
 }
 
 void dedsResourceLoaderTask::NotifyLoadingFailed(){
 	const int funcIndex = pDS->GetClassResourceListener()->GetFuncIndexFailedLoading();
-	dsRunTime *rt = pDS->GetScriptEngine()->GetMainRunTime();
-	int i;
+	dsRunTime * const rt = pDS->GetScriptEngine()->GetMainRunTime();
+	dsValue * const rtval = pDS->GetClassResourceLoaderType()->GetVariable(pResourceType)->GetStaticValue();
 	
-	for(i=0; i<pListenerCount; i++){
+	pListeners.Visit([&](dsValue *v){
 		// failedLoading( filename, resourceType )
-		rt->PushValue(pDS->GetClassResourceLoaderType()->GetVariable(pResourceType)->GetStaticValue());
+		rt->PushValue(rtval);
 		rt->PushString(pFilename);
-		rt->RunFunctionFast(pListeners[i], funcIndex);
-	}
+		rt->RunFunctionFast(v, funcIndex);
+	});
 	
 	pClearListeners();
 }
@@ -225,12 +205,13 @@ void dedsResourceLoaderTask::NotifyLoadingFailed(){
 //////////////////////
 
 void dedsResourceLoaderTask::pClearListeners(){
-	if(pListeners){
-		dsRunTime *rt = pDS->GetScriptEngine()->GetMainRunTime();
-		
-		while(pListenerCount > 0){
-			pListenerCount--;
-			rt->FreeValue(pListeners[pListenerCount]);
-		}
+	if(pListeners.IsEmpty()){
+		return;
 	}
+	
+	dsRunTime &rt = *pDS->GetScriptEngine()->GetMainRunTime();
+	pListeners.Visit([&](dsValue *v){
+		rt.FreeValue(v);
+	});
+	pListeners.RemoveAll();
 }

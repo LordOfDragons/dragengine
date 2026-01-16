@@ -25,7 +25,9 @@
 #ifndef _DEOGLRENDERTASKVAO_H_
 #define _DEOGLRENDERTASKVAO_H_
 
+#include <dragengine/deTUniqueReference.h>
 #include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/math/decMath.h>
 
 #include "../../deoglBasics.h"
@@ -41,15 +43,16 @@ class deoglRenderTaskSharedInstance;
  * Render Task VAO.
  */
 class deoglRenderTaskVAO{
+public:
+	/** \brief Type holding unique reference. */
+	using Ref = deTUniqueReference<deoglRenderTaskVAO>;
+	
 private:
 	const deoglRenderTaskSharedVAO *pVAO;
 	
-	decTList<deoglRenderTaskInstance*> pInstances;
+	decTList<deoglRenderTaskInstance*> pHasInstance;
+	decTUniqueList<deoglRenderTaskInstance> pInstances;
 	int pInstanceCount;
-	
-	deoglRenderTaskInstance **pHasInstance;
-	int pHasInstanceCount;
-	int pHasInstanceSize;
 	
 	
 	

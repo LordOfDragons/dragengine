@@ -48,29 +48,14 @@
 ////////////////////////////
 
 deoglRSky::deoglRSky(deoglRenderThread &renderThread) :
-pRenderThread(renderThread),
-pLinks(nullptr),
-pLinkCount(0),
-pLayers(nullptr),
-pLayerCount(0)
+pRenderThread(renderThread)
 {
 	LEAK_CHECK_CREATE(renderThread, Sky);
 }
 
 deoglRSky::~deoglRSky(){
-	if(pLayers){
-		while(pLayerCount > 0){
-			delete pLayers[--pLayerCount];
-		}
-		delete [] pLayers;
-	}
-	
-	if(pLinks){
-		while(pLinkCount > 0){
-			delete pLinks[--pLinkCount];
-		}
-		delete [] pLinks;
-	}
+	pLayers.RemoveAll();
+	pLinks.RemoveAll();
 	
 	LEAK_CHECK_FREE(pRenderThread, Sky);
 }
@@ -87,57 +72,27 @@ void deoglRSky::SetBgColor(const decColor &color){
 
 
 const deoglRSkyLink &deoglRSky::GetLinkAt(int index) const{
-	if(index < 0 || index >= pLinkCount){
-		DETHROW(deeInvalidParam);
-	}
-	return *pLinks[index];
+	return pLinks.GetAt(index);
 }
 
 void deoglRSky::RebuildLinks(const deSky &sky){
-	if(pLinks){
-		while(pLinkCount > 0){
-			delete pLinks[--pLinkCount];
-		}
-		delete [] pLinks;
-		pLinks = nullptr;
-	}
+	pLinks.RemoveAll();
 	
-	const int linkCount = sky.GetLinks().GetCount();
-	if(linkCount == 0){
-		return;
-	}
-	
-	pLinks = new deoglRSkyLink*[linkCount];
-	for(pLinkCount=0; pLinkCount<linkCount; pLinkCount++){
-		pLinks[pLinkCount] = new deoglRSkyLink(sky.GetLinks().GetAt(pLinkCount));
-	}
+	sky.GetLinks().Visit([&](const deSkyLink &l){
+		pLinks.Add(deoglRSkyLink::Ref::New(l));
+	});
 }
 
 
 
 deoglRSkyLayer &deoglRSky::GetLayerAt(int index) const{
-	if(index < 0 || index >= pLayerCount){
-		DETHROW(deeInvalidParam);
-	}
-	return *pLayers[index];
+	return pLayers.GetAt(index);
 }
 
 void deoglRSky::RebuildLayers(const deSky &sky){
-	if(pLayers){
-		while(pLayerCount > 0){
-			delete pLayers[--pLayerCount];
-		}
-		delete [] pLayers;
-		pLayers = nullptr;
-	}
+	pLayers.RemoveAll();
 	
-	const int layerCount = sky.GetLayers().GetCount();
-	if(layerCount == 0){
-		return;
-	}
-	
-	pLayers = new deoglRSkyLayer*[layerCount];
-	for(pLayerCount=0; pLayerCount<layerCount; pLayerCount++){
-		pLayers[pLayerCount] = new deoglRSkyLayer(sky.GetLayers().GetAt(pLayerCount));
-	}
+	sky.GetLayers().Visit([&](const deSkyLayer &l){
+		pLayers.Add(deoglRSkyLayer::Ref::New(l));
+	});
 }

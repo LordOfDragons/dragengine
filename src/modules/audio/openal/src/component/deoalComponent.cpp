@@ -22,9 +22,7 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <utility>
 
 #include "deoalAComponent.h"
 #include "deoalComponent.h"
@@ -39,6 +37,7 @@
 #include "../world/deoalWorld.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/deTUniqueReference.h>
 #include <dragengine/resources/component/deComponent.h>
 #include <dragengine/resources/component/deComponentTexture.h>
 #include <dragengine/resources/model/deModel.h>
@@ -55,8 +54,6 @@
 deoalComponent::deoalComponent(deAudioOpenAL &oal, deComponent &component) :
 pOal(oal),
 pComponent(component),
-pTextures(nullptr),
-pTextureCount(0),
 pParentWorld(nullptr),
 pModel(nullptr),
 pSkin(nullptr),
@@ -185,10 +182,7 @@ void deoalComponent::DevModeChanged(){
 
 
 deoalComponentTexture &deoalComponent::GetTextureAt(int index) const{
-	if(index < 0 || index >= pTextureCount){
-		DETHROW(deeInvalidParam);
-	}
-	return *pTextures[index];
+	return pTextures.GetAt(index);
 }
 
 
@@ -261,10 +255,9 @@ void deoalComponent::RigChanged(){
 }
 
 void deoalComponent::SkinChanged(){
-	int i;
-	for(i=0; i<pTextureCount; i++){
-		pTextures[i]->MarkDirty();
-	}
+	pTextures.Visit([](deoalComponentTexture &t){
+		t.MarkDirty();
+	});
 	
 	pDirtySkin = true;
 	pDirtyAffectsSound = true;
@@ -335,11 +328,7 @@ void deoalComponent::ParametersChanged(){
 }
 
 void deoalComponent::TextureChanged(int index, deComponentTexture &texture){
-	if(index < 0 || index >= pTextureCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	pTextures[index]->TextureChanged(texture);
+	pTextures.GetAt(index)->TextureChanged(texture);
 	
 	pTextureDynamicSkinRequiresSync = true;
 	pDirtyOctreeNode = true;
@@ -368,17 +357,7 @@ void deoalComponent::pCleanUp(){
 
 
 void deoalComponent::pDropTextures(){
-	if(!pTextures){
-		return;
-	}
-	
-	while(pTextureCount > 0){
-		pTextureCount--;
-		delete pTextures[pTextureCount];
-	}
-	delete [] pTextures;
-	pTextures = nullptr;
-	pTextureCount = 0;
+	pTextures.RemoveAll();
 }
 
 void deoalComponent::pCreateTextures(){
@@ -388,11 +367,9 @@ void deoalComponent::pCreateTextures(){
 	}
 	
 	const int textureCount = model->GetTextureCount();
-	
-	pTextures = new deoalComponentTexture*[textureCount];
-	
-	for(pTextureCount=0; pTextureCount<textureCount; pTextureCount++){
-		pTextures[pTextureCount] = new deoalComponentTexture(*this, pTextureCount);
+	int i;
+	for(i=0; i<textureCount; i++){
+		pTextures.Add(deTUniqueReference<deoalComponentTexture>::New(*this, i));
 	}
 }
 
@@ -453,20 +430,18 @@ void deoalComponent::pSyncDynamicSkin(){
 }
 
 void deoalComponent::pSyncTextures(){
-	int i;
-	
 	if(pDirtyTextures){
 		pAComponent->RemoveAllTextures();
-		for(i=0; i<pTextureCount; i++){
-			pAComponent->AddTexture(pTextures[i]->GetATexture());
-		}
+		pTextures.Visit([&](const deoalComponentTexture &t){
+			pAComponent->AddTexture(t.GetATexture());
+		});
 		
 		pDirtyTextures = false;
 	}
 	
-	for(i=0; i<pTextureCount; i++){
-		pTextures[i]->Synchronize();
-	}
+	pTextures.Visit([](deoalComponentTexture &t){
+		t.Synchronize();
+	});
 }
 
 

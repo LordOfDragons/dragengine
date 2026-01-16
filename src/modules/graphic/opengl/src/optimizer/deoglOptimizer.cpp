@@ -42,9 +42,6 @@ deoglOptimizer::deoglOptimizer(){
 	ResetRemainingTime();
 }
 
-deoglOptimizer::~deoglOptimizer(){
-}
-
 
 
 // Management

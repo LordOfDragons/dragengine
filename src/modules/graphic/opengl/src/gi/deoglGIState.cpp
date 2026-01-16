@@ -95,8 +95,6 @@ pIrradianceMapScale(1.0f / ((pSizeTexIrradiance + 2) * pProbeCount.x * pProbeCou
 pDistanceMapScale(1.0f / ((pSizeTexDistance + 2) * pProbeCount.x * pProbeCount.y + 2),
 	1.0f / ((pSizeTexDistance + 2) * pProbeCount.z + 2)),
 
-pCascades(nullptr),
-pCascadeCount(0),
 pActiveCascade(0),
 
 pCascaceUpdateCycle(nullptr),
@@ -126,7 +124,7 @@ pBVHDynamic(renderThread)
 		
 		pPrepareProbeVBO();
 		
-		pAreaTracker.SetHalfExtends(pCascades[pCascadeCount - 1]->GetDetectionBox());
+		pAreaTracker.SetHalfExtends(pCascades.Last()->GetDetectionBox());
 		
 		// update threshold defines the distance in meters before tracking is updated.
 		// the GI State position is used to update the tracking position. this position
@@ -181,10 +179,9 @@ void deoglGIState::SetWorld(deoglRWorld *world){
 	Invalidate();
 	
 	// in addition set all cascades to required full update of inside view probes
-	int i;
-	for(i=0; i<pCascadeCount; i++){
-		pCascades[i]->SetRequiresFullUpdateInsideView(true);
-	}
+	pCascades.Visit([&](deoglGICascade &c){
+		c.SetRequiresFullUpdateInsideView(true);
+	});
 }
 
 void deoglGIState::SetLayerMask(const decLayerMask &layerMask){
@@ -198,22 +195,19 @@ void deoglGIState::SetLayerMask(const decLayerMask &layerMask){
 }
 
 deoglGICascade &deoglGIState::GetCascadeAt(int index) const{
-	if(index < 0 || index >= pCascadeCount){
-		DETHROW(deeInvalidParam);
-	}
-	return *pCascades[index];
+	return pCascades.GetAt(index);
 }
 
 deoglGICascade &deoglGIState::GetActiveCascade() const{
-	return *pCascades[pActiveCascade];
+	return pCascades.GetAt(pActiveCascade);
 }
 
 deoglGICascade & deoglGIState::GetLastCascade() const{
-	return *pCascades[pLastFrameCascade];
+	return pCascades.GetAt(pLastFrameCascade);
 }
 
 deoglGICascade & deoglGIState::GetSkyShadowCascade() const{
-	return *pCascades[GetActiveCascade().GetSkyShadowCascade()];
+	return pCascades.GetAt(GetActiveCascade().GetSkyShadowCascade());
 }
 
 bool deoglGIState::CameraForceToneMapAdaption() const{
@@ -247,8 +241,8 @@ void deoglGIState::ActivateNextCascade(){
 	// update first all cascades requiring full update of all probes inside view. do this
 	// starting at the largest cascade going down to the smallest to ensure valid lighting
 	// results to be present as quickly as possible
-	for(pActiveCascade=pCascadeCount-1; pActiveCascade>=0; pActiveCascade--){
-		if(pCascades[pActiveCascade]->GetRequiresFullUpdateInsideView()){
+	for(pActiveCascade=pCascades.GetCount()-1; pActiveCascade>=0; pActiveCascade--){
+		if(pCascades.GetAt(pActiveCascade)->GetRequiresFullUpdateInsideView()){
 // 			pRenderThread.GetLogger().LogInfoFormat( "GIState: next cascade %d (requires full update inside view)", pActiveCascade );
 			return;
 		}
@@ -257,8 +251,8 @@ void deoglGIState::ActivateNextCascade(){
 	// update second all cascaded with invalid probes inside view. do this starting at the
 	// largest cascade going down to the smallest to ensure valid lighting results to be
 	// present as quickly as possible
-	for(pActiveCascade=pCascadeCount-1; pActiveCascade>=0; pActiveCascade--){
-		if(pCascades[pActiveCascade]->HasInvalidProbesInsideView()){
+	for(pActiveCascade=pCascades.GetCount()-1; pActiveCascade>=0; pActiveCascade--){
+		if(pCascades.GetAt(pActiveCascade)->HasInvalidProbesInsideView()){
 // 			pRenderThread.GetLogger().LogInfoFormat( "GIState: next cascade %d (has invalid probes inside view)", pActiveCascade );
 			return;
 		}
@@ -348,10 +342,9 @@ void deoglGIState::PrepareUBOStateRayCache() const{
 void deoglGIState::Invalidate(){
 	pInstances.Clear();
 	
-	int i;
-	for(i=0; i<pCascadeCount; i++){
-		pCascades[i]->Invalidate();
-	}
+	pCascades.Visit([&](deoglGICascade &c){
+		c.Invalidate();
+	});
 	
 	pClearMaps = true;
 	pProbesHaveMoved = false;
@@ -369,10 +362,9 @@ void deoglGIState::InvalidateArea(const decDVector &minExtend, const decDVector 
 		return;
 	}
 	
-	int i;
-	for(i=0; i<pCascadeCount; i++){
-		pCascades[i]->InvalidateArea(minExtend, maxExtend, hard);
-	}
+	pCascades.Visit([&](deoglGICascade &c){
+		c.InvalidateArea(minExtend, maxExtend, hard);
+	});
 	
 	pBVHStatic.MarkDirty();
 }
@@ -384,10 +376,9 @@ void deoglGIState::TouchDynamicArea(const decDVector &minExtend, const decDVecto
 		return;
 	}
 	
-	int i;
-	for(i=0; i<pCascadeCount; i++){
-		pCascades[i]->TouchDynamicArea(minExtend, maxExtend);
-	}
+	pCascades.Visit([&](deoglGICascade &c){
+		c.TouchDynamicArea(minExtend, maxExtend);
+	});
 	
 	pBVHDynamic.MarkDirty();
 }
@@ -464,21 +455,12 @@ void deoglGIState::StartReadBack(){
 //////////////////////
 
 void deoglGIState::pCleanUp(){
-	if(pCascades){
-		int i;
-		for(i=0; i<pCascadeCount; i++){
-			delete pCascades[i];
-		}
-		delete [] pCascades;
-	}
 	if(pCascaceUpdateCycle){
 		delete [] pCascaceUpdateCycle;
 	}
 }
 
 void deoglGIState::pInitCascades(){
-	pCascades = new deoglGICascade*[4];
-	
 	const float scaleFactor2nd = 2.0f;
 	const float offsetFactor2nd = 0.0f; // 0.25f; <= when using 5th cascade offset by 0.5
 	const float scaleFactor3rd = 1.0f / 3.0f;
@@ -488,23 +470,19 @@ void deoglGIState::pInitCascades(){
 	
 	decVector smallestSpacing(decVector(1.0f, 1.0f, 1.0f).Smallest(largestSpacing / 8.0f));
 	
-	pCascades[0] = new deoglGICascade(*this, 0, smallestSpacing, decVector());
-	pCascades[0]->SetFillUpUpdatesWithExpensiveProbes(true);
-	pCascadeCount = 1;
+	pCascades.Add(deoglGICascade::Ref::New(*this, 0, smallestSpacing, decVector()));
+	pCascades.GetAt(0)->SetFillUpUpdatesWithExpensiveProbes(true);
 	
-	pCascades[1] = new deoglGICascade(*this, 1, smallestSpacing * scaleFactor2nd,
-		smallestSpacing * offsetFactor2nd);
-	pCascades[1]->SetFillUpUpdatesWithExpensiveProbes(true);
-	pCascadeCount = 2;
+	pCascades.Add(deoglGICascade::Ref::New(*this, 1, smallestSpacing * scaleFactor2nd,
+		smallestSpacing * offsetFactor2nd));
+	pCascades.GetAt(1)->SetFillUpUpdatesWithExpensiveProbes(true);
 	
-	pCascades[2] = new deoglGICascade(*this, 2, (smallestSpacing * scaleFactor2nd).
-		Mix(largestSpacing, scaleFactor3rd), decVector());
-	pCascades[2]->SetFillUpUpdatesWithExpensiveProbes(true);
-	pCascadeCount = 3;
+	pCascades.Add(deoglGICascade::Ref::New(*this, 2, (smallestSpacing * scaleFactor2nd).
+		Mix(largestSpacing, scaleFactor3rd), decVector()));
+	pCascades.GetAt(2)->SetFillUpUpdatesWithExpensiveProbes(true);
 	
-	pCascades[3] = new deoglGICascade(*this, 3, largestSpacing, decVector());
-	pCascades[3]->SetFillUpUpdatesWithExpensiveProbes(true);
-	pCascadeCount = 4;
+	pCascades.Add(deoglGICascade::Ref::New(*this, 3, largestSpacing, decVector()));
+	pCascades.GetAt(3)->SetFillUpUpdatesWithExpensiveProbes(true);
 	
 	// what cascade to use depends on how GI shadow maps are handled.
 	// 
@@ -543,25 +521,24 @@ void deoglGIState::pInitCascades(){
 	// for the two other cascades the resolution depends on the camera view distance and is
 	// as bad as in the first solution. but this is less of a problem since the larger
 	// cascades are filler cascades for large distance where errors are less problematic
-// 	pCascades[ 0 ]->SetSkyShadowCascade( 3 );
-// 	pCascades[ 1 ]->SetSkyShadowCascade( 3 );
-// 	pCascades[ 2 ]->SetSkyShadowCascade( 3 );
-// 	pCascades[ 3 ]->SetSkyShadowCascade( 3 );
+// 	pCascades.GetAt( 0 )->SetSkyShadowCascade( 3 );
+// 	pCascades.GetAt( 1 )->SetSkyShadowCascade( 3 );
+// 	pCascades.GetAt( 2 )->SetSkyShadowCascade( 3 );
+// 	pCascades.GetAt( 3 )->SetSkyShadowCascade( 3 );
 	
-	pCascades[0]->SetSkyShadowCascade(1);
-	pCascades[2]->SetSkyShadowCascade(3);
+	pCascades.GetAt(0)->SetSkyShadowCascade(1);
+	pCascades.GetAt(2)->SetSkyShadowCascade(3);
 	
 	// debug
 	deoglRTLogger &logger = pRenderThread.GetLogger();
 	logger.LogInfo("GI Cascades:");
-	int i;
-	for(i=0; i<pCascadeCount; i++){
-		const decVector &size = pCascades[i]->GetFieldSize();
-		const decVector &spacing = pCascades[i]->GetProbeSpacing();
-		const decVector &detbox = pCascades[i]->GetDetectionBox();
+	pCascades.VisitIndexed([&](int i, const deoglGICascade &c){
+		const decVector &size = c.GetFieldSize();
+		const decVector &spacing = c.GetProbeSpacing();
+		const decVector &detbox = c.GetDetectionBox();
 		logger.LogInfoFormat("- %d: size=(%g,%g,%g) spacing=(%g,%g,%g) detbox=(%g,%g,%g)", i,
 			size.x, size.y, size.z, spacing.x, spacing.y, spacing.z, detbox.x, detbox.y, detbox.z);
-	}
+	});
 }
 
 void deoglGIState::pInitCascadeUpdateCycle(){
@@ -609,10 +586,9 @@ void deoglGIState::pInitUBOClearProbes(){
 }
 
 void deoglGIState::pInvalidateAllRayCaches(){
-	int i;
-	for(i=0; i<pCascadeCount; i++){
-		pCascades[i]->InvalidateAllRayCaches();
-	}
+	pCascades.Visit([&](deoglGICascade &c){
+		c.InvalidateAllRayCaches();
+	});
 }
 
 void deoglGIState::pFindContent(const decDVector &position){
@@ -723,7 +699,7 @@ void deoglGIState::pPrepareProbeTexturesAndFBO(){
 	if(!pTexProbeIrradiance.GetTexture()){
 		pTexProbeIrradiance.SetFBOFormat(4, true); // image load/store supports only 1, 2 and 4 not 3
 		pTexProbeIrradiance.SetSize((pSizeTexIrradiance + 2) * pProbeCount.x * pProbeCount.y + 2,
-			(pSizeTexIrradiance + 2) * pProbeCount.z + 2, pCascadeCount);
+			(pSizeTexIrradiance + 2) * pProbeCount.z + 2, pCascades.GetCount());
 		pTexProbeIrradiance.CreateTexture();
 	}
 	
@@ -736,13 +712,13 @@ void deoglGIState::pPrepareProbeTexturesAndFBO(){
 			pTexProbeDistance.SetFBOFormat(2, true);
 		}
 		pTexProbeDistance.SetSize((pSizeTexDistance + 2) * pProbeCount.x * pProbeCount.y + 2,
-			(pSizeTexDistance + 2) * pProbeCount.z + 2, pCascadeCount);
+			(pSizeTexDistance + 2) * pProbeCount.z + 2, pCascades.GetCount());
 		pTexProbeDistance.CreateTexture();
 	}
 	
 	if(!pTexProbeOffset.GetTexture()){
 		pTexProbeOffset.SetFBOFormat(4, true);
-		pTexProbeOffset.SetSize(pProbeCount.x * pProbeCount.y, pProbeCount.z, pCascadeCount);
+		pTexProbeOffset.SetSize(pProbeCount.x * pProbeCount.y, pProbeCount.z, pCascades.GetCount());
 		pTexProbeOffset.CreateTexture();
 	}
 	
@@ -761,7 +737,7 @@ void deoglGIState::pPrepareProbeTexturesAndFBO(){
 			pixbuf = deoglPixelBuffer(deoglPixelBuffer::epfInt1,
 				pTexProbeDistance.GetWidth(), pTexProbeDistance.GetHeight(),
 				pTexProbeDistance.GetLayerCount()));
-			const GLfloat maxProbeDistance = pCascades[pCascadeCount - 1]->GetMaxProbeDistance();
+			const GLfloat maxProbeDistance = pCascades.Last()->GetMaxProbeDistance();
 			const HALF_FLOAT hfvalue = convertFloatToHalf(maxProbeDistance);
 			const uint32_t value = (((uint32_t)hfvalue) << 16) | (uint32_t)hfvalue;
 			
@@ -771,7 +747,7 @@ void deoglGIState::pPrepareProbeTexturesAndFBO(){
 			pixbuf = deoglPixelBuffer::Ref::New(deoglPixelBuffer::epfFloat4,
 				pTexProbeDistance.GetWidth(), pTexProbeDistance.GetHeight(),
 				pTexProbeDistance.GetLayerCount());
-			const GLfloat maxProbeDistance = pCascades[pCascadeCount - 1]->GetMaxProbeDistance();
+			const GLfloat maxProbeDistance = pCascades.Last()->GetMaxProbeDistance();
 			pixbuf->SetToFloatColor(maxProbeDistance, maxProbeDistance, 0.0f, 0.0f);
 			pTexProbeDistance.SetPixels(pixbuf);
 			
@@ -779,7 +755,7 @@ void deoglGIState::pPrepareProbeTexturesAndFBO(){
 			pixbuf = deoglPixelBuffer::Ref::New(deoglPixelBuffer::epfFloat2,
 				pTexProbeDistance.GetWidth(), pTexProbeDistance.GetHeight(),
 				pTexProbeDistance.GetLayerCount());
-			const GLfloat maxProbeDistance = pCascades[pCascadeCount - 1]->GetMaxProbeDistance();
+			const GLfloat maxProbeDistance = pCascades.Last()->GetMaxProbeDistance();
 			pixbuf->SetToFloatColor(maxProbeDistance, maxProbeDistance, 0.0f, 0.0f);
 			pTexProbeDistance.SetPixels(pixbuf);
 		}

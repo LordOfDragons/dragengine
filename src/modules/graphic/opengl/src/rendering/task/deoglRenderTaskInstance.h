@@ -27,6 +27,8 @@
 
 #include "../../deoglBasics.h"
 
+#include <dragengine/deTUniqueReference.h>
+
 class deoglShaderParameterBlock;
 class deoglRenderTaskSharedInstance;
 
@@ -37,6 +39,8 @@ class deoglRenderTaskSharedInstance;
  */
 class deoglRenderTaskInstance{
 public:
+	using Ref = deTUniqueReference<deoglRenderTaskInstance>;
+	
 	/** Sub instance. */
 	struct sSubInstance{
 		int instance;

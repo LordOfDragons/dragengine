@@ -22,16 +22,12 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _DEBNVISITORVALUECREATE_H_
 #define _DEBNVISITORVALUECREATE_H_
 
-// includes
+#include "../values/debnValue.h"
+
 #include <dragengine/resources/network/value/deNetworkValueVisitor.h>
-
-// predefinitions
-class debnValue;
-
 
 
 /**
@@ -41,7 +37,7 @@ class debnValue;
  */
 class debnVisitorValueCreate : public deNetworkValueVisitor{
 private:
-	debnValue *pValue;
+	debnValue::Ref pValue;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -55,7 +51,7 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the created value. */
-	inline debnValue *GetValue() const{ return pValue; }
+	inline debnValue::Ref &GetValue(){ return pValue; }
 	/** Resets the visitor. */
 	void Reset();
 	/*@}*/

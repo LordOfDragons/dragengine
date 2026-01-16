@@ -183,20 +183,19 @@ void dedaiPathFinderNavGrid::pFindVertexPath(){
 #ifdef DEBUG
 			pWorld->GetDEAI().LogInfoFormat("   Testing Vertex: ng=%p v=%i", testVertex->GetGrid(), testVertex->GetIndex());
 #endif
-			const dedaiSpaceGrid &navgrid = *testVertex->GetGrid();
-			const unsigned short * const vertexEdges = navgrid.GetVertexEdges();
-			dedaiSpaceGridVertex * const vertices = navgrid.GetVertices();
-			const dedaiSpaceGridEdge * const edges = navgrid.GetEdges();
-			dedaiSpaceGridVertex ** const links = navgrid.GetLinks();
-			
-			// add linked vertices to the open list if free. the idea is rather simple here. since the linked
-			// vertices are at the exact same location in space as the test vertex is we can add them to the
-			// open list with the same values (including the parent) as the test vertex has. this way they
-			// will be tested later on too
-			linkCount = testVertex->GetLinkCount();
-			
-			for(l=0; l<linkCount; l++){
-				nextVertex = links[testVertex->GetFirstLink() + l];
+		const dedaiSpaceGrid &navgrid = *testVertex->GetGrid();
+		const unsigned short * const vertexEdges = navgrid.GetVertexEdges();
+		dedaiSpaceGridVertex * const vertices = navgrid.GetVertices();
+		const dedaiSpaceGridEdge * const edges = navgrid.GetEdges();
+		
+		// add linked vertices to the open list if free. the idea is rather simple here. since the linked
+		// vertices are at the exact same location in space as the test vertex is we can add them to the
+		// open list with the same values (including the parent) as the test vertex has. this way they
+		// will be tested later on too
+		linkCount = testVertex->GetLinkCount();
+		
+		for(l=0; l<linkCount; l++){
+			nextVertex = navgrid.GetLinks().GetAt(testVertex->GetFirstLink() + l);
 				if(!nextVertex->GetEnabled()){
 					continue;
 				}

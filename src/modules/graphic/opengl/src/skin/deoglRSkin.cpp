@@ -90,9 +90,6 @@ pRenderThread(renderThread),
 pOwnerSkin(&owner),
 pFilename(skin.GetFilename()),
 
-pTextures(nullptr),
-pTextureCount(0),
-
 pIsSolid(true),
 pHasHoles(false),
 pHasXRay(false),
@@ -114,14 +111,9 @@ pMemUse(renderThread.GetMemoryManager().GetConsumption().skin)
 {
 	// NOTE this is called during asynchronous resource loading. careful accessing other objects
 	
-	const int textureCount = skin.GetTextureCount();
-	const int mappedCount = skin.GetMapped().GetCount();
-	int i;
-	
 	try{
 		// created mapped
-		for(i=0; i<mappedCount; i++){
-			const deSkinMapped &mapped = *skin.GetMapped().GetAt(i);
+		skin.GetMapped().Visit([&](const deSkinMapped &mapped){
 			const deoglSkinMapped::Ref oglMapped(deoglSkinMapped::Ref::New(mapped));
 			
 			if(mapped.GetInputType() == deSkinMapped::eitRenderable && !mapped.GetRenderable().IsEmpty()){
@@ -129,18 +121,16 @@ pMemUse(renderThread.GetMemoryManager().GetConsumption().skin)
 			}
 			
 			pMapped.Add(oglMapped);
-		}
+		});
 		
 		// create textures. we create only what does not require an opengl call.
 		// these are delayed until a time where we can safely create opengl objects.
 		// loads textures from caches. skips already loaded shared images
-		pTextures = new deoglSkinTexture*[textureCount];
-		for(pTextureCount=0; pTextureCount<textureCount; pTextureCount++){
-			pTextures[pTextureCount] = new deoglSkinTexture(renderThread,
-				*this, skin.GetTextureAt( pTextureCount ) );
-		}
+		skin.GetTextures().Visit([&](deSkinTexture &t){
+			pTextures.Add(deoglSkinTexture::Ref::New(renderThread, *this, t));
+		});
 		
-		pHasRenderables = (pRenderables.GetCount() > 0);
+		pHasRenderables = pRenderables.IsNotEmpty();
 		
 		// optimize if enabled
 		if(renderThread.GetConfiguration().GetEnableRetainImageOptimization()){
@@ -182,61 +172,61 @@ pMemUse(renderThread.GetMemoryManager().GetConsumption().skin)
 		}
 		
 		// finish create textures
-		for(i=0; i<pTextureCount; i++){
+		pTextures.VisitIndexed([&](int i, deoglSkinTexture &t){
 			// build channel textures not loaded from caches and not provided by already
 			// loaded shared images. these are delayed until a time where we can safely
 			// create opengl objects.
-			pTextures[i]->BuildChannels(*this, skin.GetTextureAt(i));
+			t.BuildChannels(*this, skin.GetTextureAt(i));
 			
 			// determine optimization parameters for the entire skin
 			
 			// TODO add the real test. this one just assumes all transparent
 			// textures can be used in a quick transparent way. the real way
 			// is to look if ambient, diffuse and specular are black/0.
-			if(!pTextures[i]->GetSolid() && !pTextures[i]->GetHasHoles()){
-				pTextures[i]->SetQuickTransparency(true);
+			if(!t.GetSolid() && !t.GetHasHoles()){
+				t.SetQuickTransparency(true);
 			}
 			
-			if(!pTextures[i]->GetSolid()){
+			if(!t.GetSolid()){
 				pIsSolid = false;
 			}
-			if(pTextures[i]->GetHasHoles()){
+			if(t.GetHasHoles()){
 				pHasHoles = true;
 			}
-			if(pTextures[i]->GetXRay()){
+			if(t.GetXRay()){
 				pHasXRay = true;
 			}
-			if(pTextures[i]->GetMirror()){
+			if(t.GetMirror()){
 				pHasMirrors = true;
 			}
-			if(pTextures[i]->GetDynamicChannels()){
+			if(t.GetDynamicChannels()){
 				pHasDynamicChannels = true;
 			}
-			if(pTextures[i]->GetShadeless()){
+			if(t.GetShadeless()){
 				pShadeless = true;
 			}
 			
 			// shadow states
-			if(pTextures[i]->GetSolid()){
-				if(!pTextures[i]->GetShadowNone()){
+			if(t.GetSolid()){
+				if(!t.GetShadowNone()){
 					pCastSolidShadow = true;
 				}
 				
 			}else{
-				if(!pTextures[i]->GetShadowNone()){
+				if(!t.GetShadowNone()){
 					pCastTranspShadow = true;
 				}
 			}
 			
 			if(i == 0){
-				if(pTextures[i]->GetShadowNone()){
+				if(t.GetShadowNone()){
 					pShadowNone = epsAll;
 					
 				}else{
 					pShadowNone = epsNobody;
 				}
 				
-				if(pTextures[i]->GetReflected()){
+				if(t.GetReflected()){
 					pReflected = epsAll;
 					
 				}else{
@@ -244,7 +234,7 @@ pMemUse(renderThread.GetMemoryManager().GetConsumption().skin)
 				}
 				
 			}else{
-				if(pTextures[i]->GetShadowNone()){
+				if(t.GetShadowNone()){
 					if(pShadowNone == epsNobody){
 						pShadowNone = epsSome;
 					}
@@ -255,7 +245,7 @@ pMemUse(renderThread.GetMemoryManager().GetConsumption().skin)
 					}
 				}
 				
-				if(pTextures[i]->GetReflected()){
+				if(t.GetReflected()){
 					if(pReflected == epsNobody){
 						pReflected = epsSome;
 					}
@@ -267,10 +257,10 @@ pMemUse(renderThread.GetMemoryManager().GetConsumption().skin)
 				}
 			}
 			
-			if(pTextures[i]->GetShadowImportance() > pShadowImportance){
-				pShadowImportance = pTextures[i]->GetShadowImportance();
+			if(t.GetShadowImportance() > pShadowImportance){
+				pShadowImportance = t.GetShadowImportance();
 			}
-		}
+		});
 		
 		if(skin.GetAsynchron()){
 			// prepare texture pipelines using the loader thread and wait for the task to
@@ -311,10 +301,9 @@ void deoglRSkin::DropOwnerSkin(){
 }
 
 void deoglRSkin::FinalizeAsyncResLoading(){
-	int i;
-	for(i=0; i<pTextureCount; i++){
-		pTextures[i]->FinalizeAsyncResLoading();
-	}
+	pTextures.Visit([&](deoglSkinTexture &t){
+		t.FinalizeAsyncResLoading();
+	});
 	
 	// release retained image data
 	if(pVSRetainImageData){
@@ -338,10 +327,9 @@ void deoglRSkin::PrepareTexturePipelines(){
 	
 	deoglBatchedShaderLoading batched(pRenderThread, 1000.0f, true);
 	try{
-		int i;
-		for(i=0; i<pTextureCount; i++){
-			pTextures[i]->GetPipelines().Prepare(batched);
-		}
+		pTextures.Visit([&](deoglSkinTexture &t){
+			t.GetPipelines().Prepare(batched);
+		});
 		
 	}catch(const deException &){
 		batched.WaitAllCompileFinished();
@@ -355,11 +343,7 @@ void deoglRSkin::PrepareTexturePipelines(){
 
 
 deoglSkinTexture &deoglRSkin::GetTextureAt(int index) const{
-	if(index < 0 || index >= pTextureCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return *pTextures[index];
+	return pTextures.GetAt(index);
 }
 
 
@@ -490,10 +474,9 @@ int deoglRSkin::AddBone(const char *name){
 
 
 void deoglRSkin::DropAllCaches(){
-	int i;
-	for(i=0; i<pTextureCount; i++){
-		pTextures[i]->DropAllCaches();
-	}
+	pTextures.Visit([&](deoglSkinTexture &t){
+		t.DropAllCaches();
+	});
 }
 
 
@@ -510,16 +493,6 @@ void deoglRSkin::pCleanUp(){
 	deoglDelayedOperations &delop = pRenderThread.GetDelayedOperations();
 	delop.RemoveInitSkin(this);
 	delop.RemoveAsyncResInitSkin(this);
-	
-	if(pTextures){
-		int i;
-		for(i=0; i<pTextureCount; i++){
-			if(pTextures[i]){
-				delete pTextures[i];
-			}
-		}
-		delete [] pTextures;
-	}
 }
 
 
@@ -534,24 +507,18 @@ void deoglRSkin::pRetainImageData(const deSkin &skin){
 	#endif
 	
 	deoglSkinChannel::eChannelTypes channelType;
-	int i, j;
 	
-	for(i=0; i<pTextureCount; i++){
-		const deSkinTexture &texture = skin.GetTextureAt(i);
-		const int propertyCount = texture.GetPropertyCount();
-		
-		for(j=0; j<propertyCount; j++){
-			deSkinProperty &property = texture.GetPropertyAt(j);
-			const deoglSkinPropertyMap::ePropertyTypes propertyType =
-				deoglSkinPropertyMap::GetTypeFor(property.GetType());
+	skin.GetTextures().VisitIndexed([&](int i, deSkinTexture &t){
+		t.GetProperties().Visit([&](deSkinProperty &p){
+			const auto propertyType = deoglSkinPropertyMap::GetTypeFor(p.GetType());
 			
 			if(!deoglSkinChannel::ChannelTypeMatchingPropertyType(propertyType, channelType)){
-				continue;
+				return;
 			}
 			
-			deoglSkinChannel * const channel = pTextures[i]->GetChannelAt(channelType);
+			deoglSkinChannel * const channel = pTextures.GetAt(i)->GetChannelAt(channelType);
 			if(!channel){
-				continue;
+				return;
 			}
 			
 			if(channel->GetImage()){
@@ -572,7 +539,7 @@ void deoglRSkin::pRetainImageData(const deSkin &skin){
 				}
 				
 				if(hasUseSkin){
-					continue; // already loaded
+					return; // already loaded
 				}
 			}
 			
@@ -584,11 +551,11 @@ void deoglRSkin::pRetainImageData(const deSkin &skin){
 				// temporary solution. for combined images we have to force locking otherwise
 				// shared images being ready confuses the locking. once combined images are
 				// gone this hack is not required anymore
-				pVSRetainImageData->RetainPropertyImages(property, true);
-				continue;
+				pVSRetainImageData->RetainPropertyImages(p, true);
+				return;
 			}
 			
-			pVSRetainImageData->RetainPropertyImages(property, false);
-		}
-	}
+			pVSRetainImageData->RetainPropertyImages(p, false);
+		});
+	});
 }

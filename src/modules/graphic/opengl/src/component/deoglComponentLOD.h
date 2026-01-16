@@ -26,6 +26,7 @@
 #define _DEOGLCOMPONENTLOD_H_
 
 #include "deoglRComponentLOD.h"
+#include <dragengine/deTUniqueReference.h>
 
 class deoglComponent;
 
@@ -35,6 +36,9 @@ class deoglComponent;
  */
 class deoglComponentLOD{
 public:
+	/** \brief Type holding unique reference. */
+	using Ref = deTUniqueReference<deoglComponentLOD>;
+	
 	deoglComponent &pComponent;
 	const int pLODIndex;
 	

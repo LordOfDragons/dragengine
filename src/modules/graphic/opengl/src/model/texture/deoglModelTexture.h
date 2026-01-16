@@ -26,6 +26,7 @@
 #define _DEOGLMODELTEXTURE_H_
 
 #include <dragengine/common/string/decString.h>
+#include <dragengine/deTUniqueReference.h>
 
 #include "../../shaders/paramblock/shared/deoglSharedSPBRTIGroupList.h"
 
@@ -36,6 +37,10 @@ class deoglRenderThread;
  * Model texture.
  */
 class deoglModelTexture{
+public:
+	/** \brief Type holding unique reference. */
+	using Ref = deTUniqueReference<deoglModelTexture>;
+	
 private:
 	int pFirstFace;
 	int pFaceCount;

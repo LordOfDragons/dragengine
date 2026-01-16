@@ -25,10 +25,11 @@
 #ifndef _DEOGLSKINSTATE_H_
 #define _DEOGLSKINSTATE_H_
 
-#include <dragengine/deObject.h>
-#include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/collection/decTUniqueList.h>
+#include <dragengine/common/math/decMath.h>
+#include <dragengine/deObject.h>
 
 class deoglRenderPlan;
 class deoglRenderThread;
@@ -70,9 +71,7 @@ private:
 	deoglRDecal *pOwnerDecal;
 	deoglRLight *pOwnerLight;
 	
-	deoglSkinStateRenderable **pRenderables;
-	int pRenderableCount;
-	int pRenderableSize;
+	decTUniqueList<deoglSkinStateRenderable> pRenderables;
 	
 	decTObjectList<deoglRVideoPlayer> pVideoPlayers;
 	
@@ -176,8 +175,11 @@ public:
 	
 	
 	
+	/** Renderables. */
+	inline const decTUniqueList<deoglSkinStateRenderable> &GetRenderables() const{ return pRenderables; }
+	
 	/** Number of renderables. */
-	inline int GetRenderableCount() const{ return pRenderableCount; }
+	inline int GetRenderableCount() const{ return pRenderables.GetCount(); }
 	
 	/** Renderable at the given index. */
 	deoglSkinStateRenderable *GetRenderableAt(int index) const;

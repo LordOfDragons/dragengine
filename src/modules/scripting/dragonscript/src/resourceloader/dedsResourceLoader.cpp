@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include <libdscript/libdscript.h>
 #include <libdscript/exceptions.h>
 
@@ -55,15 +51,10 @@ dedsResourceLoader::dedsResourceLoader(deScriptingDragonScript *ds){
 	if(!ds) DSTHROW(dueInvalidParam);
 	
 	pDS = ds;
-	
-	pTasks = nullptr;
-	pTaskCount = 0;
-	pTaskSize = 0;
 }
 
 dedsResourceLoader::~dedsResourceLoader(){
 	CancelAllRequests();
-	if(pTasks) delete [] pTasks;
 }
 
 
@@ -90,10 +81,10 @@ void dedsResourceLoader::OnFrameUpdate(){
 			
 			try{
 				if(resource){
-					pTasks[task]->NotifyLoadingFinished(resource);
+					pTasks.GetAt(task)->NotifyLoadingFinished(resource);
 					
 				}else{
-					pTasks[task]->NotifyLoadingFailed();
+					pTasks.GetAt(task)->NotifyLoadingFailed();
 				}
 				
 			}catch(const duException &e){
@@ -130,27 +121,14 @@ deResourceLoader::eResourceType resourceType, dsRealObject* listener){
 	int index = pIndexOfTaskWith(filename, resourceType);
 	
 	if(index == -1){
-		if(pTaskCount == pTaskSize){
-			int newSize = pTaskSize * 3 / 2 + 1;
-			dedsResourceLoaderTask **newArray = new dedsResourceLoaderTask*[newSize];
-			if(pTasks){
-				memcpy(newArray, pTasks, sizeof(dedsResourceLoaderTask*) * pTaskSize);
-				delete [] pTasks;
-			}
-			pTasks = newArray;
-			pTaskSize = newSize;
-		}
-		
-		pTasks[pTaskCount] = new dedsResourceLoaderTask(pDS, filename, resourceType);
-		if(!pTasks[pTaskCount]) DSTHROW(dueOutOfMemory);
-		index = pTaskCount++;
+		pTasks.Add(deTUniqueReference<dedsResourceLoaderTask>::New(pDS, filename, resourceType));
+		index = pTasks.GetCount() - 1;
 		
 		deEngine &engine = *pDS->GetGameEngine();
-		engine.GetResourceLoader()->AddLoadRequest(engine.GetVirtualFileSystem(),
-			filename, resourceType);
+		engine.GetResourceLoader()->AddLoadRequest(engine.GetVirtualFileSystem(), filename, resourceType);
 	}
 	
-	pTasks[index]->AddListener(listener);
+	pTasks.GetAt(index)->AddListener(listener);
 }
 
 void dedsResourceLoader::CancelRequest(const char* filename,
@@ -158,18 +136,15 @@ deResourceLoader::eResourceType resourceType, dsRealObject* listener){
 	if(!filename || !listener) DSTHROW(dueInvalidParam);
 	int index = pIndexOfTaskWith(filename, resourceType);
 	if(index != -1){
-		pTasks[index]->RemoveListener(listener);
-		if(pTasks[index]->GetListenerCount() == 0){
+		pTasks.GetAt(index)->RemoveListener(listener);
+		if(pTasks.GetAt(index)->GetListenerCount() == 0){
 			pRemoveTaskFrom(index);
 		}
 	}
 }
 
 void dedsResourceLoader::CancelAllRequests(){
-	while(pTaskCount > 0){
-		pTaskCount--;
-		delete pTasks[pTaskCount];
-	}
+	pTasks.RemoveAll();
 }
 
 
@@ -179,23 +154,11 @@ void dedsResourceLoader::CancelAllRequests(){
 
 int dedsResourceLoader::pIndexOfTaskWith(const char* filename,
 deResourceLoader::eResourceType resourceType) const{
-	int i;
-	
-	for(i=0; i<pTaskCount; i++){
-		if(pTasks[i]->Matches(filename, resourceType)){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pTasks.IndexOfMatching([&](const dedsResourceLoaderTask &t){
+		return t.Matches(filename, resourceType);
+	});
 }
 
 void dedsResourceLoader::pRemoveTaskFrom(int index){
-	int i;
-	
-	delete pTasks[index];
-	for(i=index+1; i<pTaskCount; i++){
-		pTasks[i - 1] = pTasks[i];
-	}
-	pTaskCount--;
+	pTasks.RemoveFrom(index);
 }

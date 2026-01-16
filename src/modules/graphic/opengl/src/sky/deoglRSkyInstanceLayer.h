@@ -25,6 +25,8 @@
 #ifndef _DEOGLRSKYINSTANCELAYER_H_
 #define _DEOGLRSKYINSTANCELAYER_H_
 
+#include <dragengine/deTUniqueReference.h>
+
 #include "../light/pipeline/deoglLightPipelinesSky.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
 
@@ -48,6 +50,9 @@ class deoglRComponent;
  * Render sky Layer.
  */
 class deoglRSkyInstanceLayer{
+public:
+	using Ref = deTUniqueReference<deoglRSkyInstanceLayer>;
+	
 private:
 	deoglRSkyInstance &pInstance;
 	int pIndex;

@@ -27,6 +27,7 @@
 
 #include "deoglRSky.h"
 
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decLayerMask.h>
@@ -58,8 +59,7 @@ private:
 	float *pControllerStates;
 	int pControllerStateCount;
 	
-	deoglRSkyInstanceLayer **pLayers;
-	int pLayerCount;
+	decTUniqueList<deoglRSkyInstanceLayer> pLayers;
 	
 	float pTotalSkyLightIntensity;
 	float pTotalSkyAmbientIntensity;
@@ -148,8 +148,11 @@ public:
 	
 	
 	
+	/** Layers. */
+	inline const decTUniqueList<deoglRSkyInstanceLayer> &GetLayers() const{ return pLayers; }
+	
 	/** Number of layers. */
-	inline int GetLayerCount() const{ return pLayerCount; }
+	inline int GetLayerCount() const{ return pLayers.GetCount(); }
 	
 	/** Layer at index. */
 	deoglRSkyInstanceLayer &GetLayerAt(int index) const;

@@ -310,16 +310,16 @@ const deoglShaderSources *sources, const deoglShaderDefines &defines){
 	pRenderThread.GetLogger().LogInfoFormat("GetProgramWith(Sync): %s", sources->GetName().GetString());
 	
 	class cStoreProgram : public cGetProgramListener{
-		const deoglShaderProgram **pProgram;
+		const deoglShaderProgram *&pProgram;
 	public:
-		cStoreProgram(const deoglShaderProgram **program) : pProgram(program){}
+		cStoreProgram(const deoglShaderProgram *&program) : pProgram(program){}
 		void GetProgramFinished(const deoglShaderProgram *aprogram) override{
-			*pProgram = aprogram;
+			pProgram = aprogram;
 		}
 	};
 	
 	const deoglShaderProgram *program = nullptr;
-	GetProgramWithAsync(sources, defines, new cStoreProgram(&program));
+	GetProgramWithAsync(sources, defines, new cStoreProgram(program));
 	WaitAllProgramsCompiled();
 	return program;
 }

@@ -82,19 +82,12 @@ pVertexSize(0),
 
 pEdges(nullptr),
 pEdgeCount(0),
-pEdgeSize(0),
-
-pLinks(nullptr),
-pLinkCount(0),
-pLinkSize(0){
+pEdgeSize(0){
 }
 
 dedaiSpaceGrid::~dedaiSpaceGrid(){
 	Clear();
 	
-	if(pLinks){
-		delete [] pLinks;
-	}
 	if(pEdges){
 		delete [] pEdges;
 	}
@@ -245,32 +238,15 @@ int dedaiSpaceGrid::IndexOfEdgeMatching(unsigned short vertex1, unsigned short v
 
 
 dedaiSpaceGridVertex *dedaiSpaceGrid::GetLinkAt(int index) const{
-	if(index < 0 || index >= pLinkCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return pLinks[index];
+	return pLinks.GetAt(index);
 }
 
 void dedaiSpaceGrid::AddLink(dedaiSpaceGridVertex *vertex){
-	if(pLinkCount == pLinkSize){
-		int newSize = pLinkSize + 10;
-		dedaiSpaceGridVertex **newArray = new dedaiSpaceGridVertex*[newSize];
-		if(pLinks){
-			if(pLinkSize > 0){
-				memcpy(newArray, pLinks, sizeof(dedaiSpaceGridVertex*) * pLinkSize);
-			}
-			delete [] pLinks;
-		}
-		pLinks = newArray;
-		pLinkSize = newSize;
-	}
-	
-	pLinks[pLinkCount++] = vertex;
+	pLinks.Add(vertex);
 }
 
 void dedaiSpaceGrid::RemoveAllLinks(){
-	if(pLinkCount == 0){
+	if(pLinks.IsEmpty()){
 		return;
 	}
 	
@@ -281,7 +257,7 @@ void dedaiSpaceGrid::RemoveAllLinks(){
 		pVertices[i].SetLinkCount(0);
 	}
 	
-	pLinkCount = 0;
+	pLinks.RemoveAll();
 	
 	// tell the owner links have to be updated the next time
 	pSpace.LinksRemoves();
@@ -449,7 +425,7 @@ void dedaiSpaceGrid::LinkToOtherGrids(){
 		}
 		
 		for(i=0; i<pVertexCount; i++){
-			pVertices[i].SetFirstLink(pLinkCount);
+			pVertices[i].SetFirstLink(pLinks.GetCount());
 			
 			for(j=0; j<linkCount; j++){
 				if(links[j].vertexIndex == i){
@@ -457,7 +433,7 @@ void dedaiSpaceGrid::LinkToOtherGrids(){
 				}
 			}
 			
-			pVertices[i].SetLinkCount(pLinkCount - pVertices[i].GetFirstLink());
+			pVertices[i].SetLinkCount(pLinks.GetCount() - pVertices[i].GetFirstLink());
 		}
 		
 		if(links){
@@ -505,7 +481,7 @@ void dedaiSpaceGrid::UpdateBlocking(){
 }
 
 void dedaiSpaceGrid::Clear(){
-	pLinkCount = 0;
+	pLinks.RemoveAll();
 	pEdgeCount = 0;
 	pVertexCount = 0;
 	pVertexEdgeCount = 0;

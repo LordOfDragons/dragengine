@@ -45,11 +45,11 @@ public:
 		using decTUniqueList<desynParameter>::decTUniqueList;
 		
 		desynParameter &GetNamed(const char *name) const{
-			const deTUniqueReference<desynParameter> *found = nullptr;
-			DEASSERT_TRUE(Find([&](const desynParameter &p){
+			desynParameter * const found = FindOrNull([&](const desynParameter &p){
 				return p.GetName() == name;
-			}, found));
-			return **found;
+			});
+			DEASSERT_NOTNULL(found)
+			return *found;
 		}
 		
 		int IndexOfNamed(const char *name) const{

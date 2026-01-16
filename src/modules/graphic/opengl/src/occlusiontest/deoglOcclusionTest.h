@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
+// include only once
 #ifndef _DEOGLOCCLUSIONTEST_H_
 #define _DEOGLOCCLUSIONTEST_H_
 
@@ -29,6 +30,7 @@
 #include "../shaders/paramblock/deoglSPBlockSSBO.h"
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class deoglRenderThread;
 class deoglOcclusionMap;
@@ -52,7 +54,7 @@ private:
 	deoglSPBlockSSBO::Ref pSSBOInput;
 	deoglSPBlockSSBO::Ref pSSBOResult;
 
-	deoglOcclusionTestListener **pInputListeners;
+	decTOrderedSet<deoglOcclusionTestListener*> pInputListeners;
 	sInputData *pInputData;
 	int pInputDataCount;
 	int pInputDataSize;

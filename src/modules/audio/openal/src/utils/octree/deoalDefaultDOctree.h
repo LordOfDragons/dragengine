@@ -26,6 +26,7 @@
 #define _DEOALDEFAULTDOCTREE_H_
 
 #include "deoalDOctree.h"
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 #define DEOALDO_MAX_DEPTH 8
 
@@ -37,9 +38,7 @@
  */
 class deoalDefaultDOctree : public deoalDOctree{
 private:
-	void **pElements;
-	int pElementCount;
-	int pElementSize;
+	decTOrderedSet<void*> pElements;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -71,7 +70,7 @@ public:
 	/** @name Elements */
 	/*@{*/
 	/** Retrieves the number of elements. */
-	inline int GetElementCount() const{ return pElementCount; }
+	inline int GetElementCount() const{ return pElements.GetCount(); }
 	/** Retrieves the element at the given index. */
 	void *GetElementAt(int index) const;
 	/** Retrieves the index of the given element or -1 if not found. */

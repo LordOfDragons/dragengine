@@ -26,6 +26,7 @@
 #define _DEBNWORLD_H_
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/systems/modules/network/deBaseNetworkWorld.h>
 
 class deWorld;
@@ -44,8 +45,7 @@ private:
 	
 	bool pCanCreateStates;
 	
-	debnState **pStateSlots;
-	int pStateSlotCount;
+	decTList<debnState*> pStateSlots;
 	
 	debnNetwork *pParentNetwork;
 	

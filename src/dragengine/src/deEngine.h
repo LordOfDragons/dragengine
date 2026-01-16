@@ -25,6 +25,7 @@
 #ifndef _DEENGINE_H_
 #define _DEENGINE_H_
 
+#include "common/collection/decTUniqueList.h"
 #include "common/string/decString.h"
 #include "common/utils/decPRNG.h"
 #include "logger/deLogger.h"
@@ -137,12 +138,12 @@ private:
 	
 	// systems
 	deModuleSystem *pModSys;
-	deBaseSystem **pSystems;
+	decTUniqueList<deBaseSystem> pSystems;
 	deParallelProcessing *pParallelProcessing;
 	deResourceLoader *pResLoader;
 	
 	// resource managers
-	deResourceManager **pResMgrs;
+	decTUniqueList<deResourceManager> pResMgrs;
 	
 	// files
 	decString pPathData; // the path to the data files

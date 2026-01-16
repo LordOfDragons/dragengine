@@ -46,11 +46,11 @@ public:
 		using decTUniqueList<deoglParameter>::decTUniqueList;
 		
 		deoglParameter &GetNamed(const char *name) const{
-			const deTUniqueReference<deoglParameter> *found = nullptr;
-			DEASSERT_TRUE(Find([&](const deoglParameter &p){
+			deoglParameter * const found = FindOrNull([&](const deoglParameter &p){
 				return p.GetName() == name;
-			}, found));
-			return **found;
+			});
+			DEASSERT_NOTNULL(found)
+			return *found;
 		}
 		
 		int IndexOfNamed(const char *name) const{

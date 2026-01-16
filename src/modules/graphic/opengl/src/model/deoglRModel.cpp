@@ -79,8 +79,6 @@ pFilename(model.GetFilename()),
 pHasWeightlessExtends(false),
 pBoneExtends(nullptr),
 pBoneCount(0),
-pLODs(nullptr),
-pLODCount(0),
 pDoubleSided(false),
 pIsCached(false),
 pImposterBillboard(nullptr),
@@ -92,15 +90,7 @@ pSharedSPBListUBO(nullptr)
 		pLoadCached(model.GetLODCount(), model.GetBoneCount());
 		
 	}catch(const deException &){
-		if(pLODs){
-			int i;
-			for(i=0; i<pLODCount; i++){
-				delete pLODs[i];
-			}
-			delete [] pLODs;
-			pLODs = nullptr;
-			pLODCount = 0;
-		}
+		pLODs.RemoveAll();
 		
 		pDoubleSided = false;
 		pIsCached = false;
@@ -116,7 +106,7 @@ pSharedSPBListUBO(nullptr)
 		// debug
 		/*
 		for(int i=0; i<pLODCount; i++){
-			const deoglModelLOD &lod = *pLODs[i];
+			const deoglModelLOD &lod = pLODs.GetAt(i);
 			renderThread.GetOgl().LogInfoFormat("Model '%s' LOD %i: faces=%i double=%d decal=%d error(%g,%g)",
 				pFilename.GetString(), i, lod.GetFaceCount(), lod.GetDoubleSided(), lod.GetDecal(),
 				lod.GetAvgError(), lod.GetMaxError());
@@ -150,12 +140,9 @@ deoglRModel::~deoglRModel(){
 
 deoglModelLOD &deoglRModel::GetLODAt(int index) const{
 	if(index < 0){
-		index += pLODCount;
+		index += pLODs.GetCount();
 	}
-	if(index < 0 || index >= pLODCount){
-		DETHROW(deeInvalidParam);
-	}
-	return *pLODs[index];
+	return pLODs.GetAt(index);
 }
 
 void deoglRModel::PrepareImposterBillboard(){
@@ -175,31 +162,29 @@ deoglSharedSPBListUBO &deoglRModel::GetSharedSPBListUBO(){
 
 
 void deoglRModel::PrepareOctrees(){
-	int i;
-	for(i=0; i<pLODCount; i++){
-		pLODs[i]->PrepareOctree();
-	}
+	pLODs.Visit([&](deoglModelLOD &lod){
+		lod.PrepareOctree();
+	});
 }
 
 void deoglRModel::PrintDebugInfo(){
-	if(pLODCount < 2){
+	if(pLODs.GetCount() < 2){
 		return;
 	}
 	
 	pRenderThread.GetLogger().LogInfoFormat("model '%s' lod information:", pFilename.GetString());
 	
-	int i;
-	for(i=1; i<pLODCount; i++){
+	pLODs.VisitIndexed([&](int i, const deoglModelLOD &lod){
 		pRenderThread.GetLogger().LogInfoFormat("- lod %i: maxError=%g avgError=%f", i,
-			pLODs[i]->GetMaxError(), pLODs[i]->GetAvgError());
-	}
+			lod.GetMaxError(), lod.GetAvgError());
+	});
 }
 
 void deoglRModel::DebugVCOptimize(){
 	deoglRTLogger &logger = pRenderThread.GetLogger();
 	decTimer timer;
 	
-	const deoglModelLOD &lod = *pLODs[0];
+	const deoglModelLOD &lod = pLODs.First();
 	const deoglModelFace * const lodFaces = lod.GetFaces();
 	deoglVCOptimizer optimizer;
 	int i, count;
@@ -303,13 +288,6 @@ void deoglRModel::pCleanUp(){
 	if(pImposterBillboard){
 		delete pImposterBillboard;
 	}
-	if(pLODs){
-		int i;
-		for(i=0; i<pLODCount; i++){
-			delete pLODs[i];
-		}
-		delete [] pLODs;
-	}
 }
 
 
@@ -343,28 +321,26 @@ void deoglRModel::pInitLODs(const deModel &engModel){
 	
 	//pRenderThread.GetOgl().LogInfoFormat( "Model '%s': Init without cache", pFilename .GetString());
 	
-	pLODs = new deoglModelLOD*[lodCount];
-	
 	if(lodCount == 0){
 		return;
 	}
 	
 	// init base lod
-	pLODs[0] = new deoglModelLOD(*this, pLODCount, engModel);
-	pDoubleSided = pLODs[0]->GetDoubleSided();
-	pLODCount = 1;
+	pLODs.Add(deoglModelLOD::Ref::New(*this, pLODs.GetCount(), engModel));
 	
 	// init extends. this has to come now and not after higher lods since error calculation
 	// requires creating octrees which in turn require the base lod extends
-	pInitExtends(engModel, *pLODs[0]);
+	pInitExtends(engModel, pLODs.First());
 	
 	// init higher lod levels
-	for(; pLODCount<lodCount; pLODCount++){
-		pLODs[pLODCount] = new deoglModelLOD(*this, pLODCount, engModel);
-		if(pLODs[pLODCount]->GetDoubleSided()){
-			pDoubleSided = true;
-		}
+	int i;
+	for(i=1; i<lodCount; i++){
+		pLODs.Add(deoglModelLOD::Ref::New(*this, i, engModel));
 	}
+	
+	pDoubleSided = pLODs.HasMatching([](const deoglModelLOD &lod){
+		return lod.GetDoubleSided();
+	});
 }
 
 void deoglRModel::pInitExtends(const deModel &engModel, const deoglModelLOD &baseLod){
@@ -514,15 +490,14 @@ void deoglRModel::pLoadCached(int lodCount, int boneCount){
 			}
 			
 			// create lods
-			pLODs = new deoglModelLOD*[lodCount];
-			
-			for(pLODCount=0; pLODCount<lodCount; pLODCount++){
-				pLODs[pLODCount] = new deoglModelLOD(*this, pLODCount, *reader);
-				
-				if(pLODs[pLODCount]->GetDoubleSided()){
-					pDoubleSided = true;
-				}
+			int i;
+			for(i=0; i<lodCount; i++){
+				pLODs.Add(deoglModelLOD::Ref::New(*this, i, *reader));
 			}
+			
+			pDoubleSided = pLODs.HasMatching([](const deoglModelLOD &lod){
+				return lod.GetDoubleSided();
+			});
 			
 			// read extends
 			pExtends.minimum = reader->ReadVector();
@@ -564,9 +539,7 @@ void deoglRModel::pLoadCached(int lodCount, int boneCount){
 		DETHROW(deeInvalidAction);
 	}
 	
-	if(pLODCount == 0){ // sanity check
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_TRUE(pLODs.IsNotEmpty()) // sanity check
 }
 
 void deoglRModel::pSaveCached(){
@@ -595,9 +568,9 @@ void deoglRModel::pSaveCached(){
 	writer->WriteUInt((unsigned int)vfs.GetFileModificationTime(path));
 	
 	// write lods
-	for(i=0; i<pLODCount; i++){
-		pLODs[i]->SaveToCache(*writer);
-	}
+	pLODs.Visit([&](deoglModelLOD &lod){
+		lod.SaveToCache(*writer);
+	});
 	
 	// write extends
 	writer->WriteVector(pExtends.minimum);
@@ -614,19 +587,15 @@ void deoglRModel::pSaveCached(){
 }
 
 void deoglRModel::pCreateImposterBillboard(){
-	if(pLODCount < 1){
-		DETHROW(deeInvalidParam);
-	}
-	
-	pImposterBillboard = new deoglImposterBillboard(pRenderThread);
-	
 	// calculate the extends from the first lod mesh
-	const oglModelPosition * const positions = pLODs[0]->GetPositions();
-	const int positionCount = pLODs[0]->GetPositionCount();
+	const oglModelPosition * const positions = pLODs.First()->GetPositions();
+	const int positionCount = pLODs.First()->GetPositionCount();
 	decVector axisView, axisUp, position;
 	decVector2 minExtend, maxExtend;
 	decMatrix matrix;
 	int i;
+	
+	pImposterBillboard = new deoglImposterBillboard(pRenderThread);
 	
 	axisUp.Set(0.0f, 1.0f, 0.0f);
 	axisView.Set(0.0f, 0.0f, -1.0f);

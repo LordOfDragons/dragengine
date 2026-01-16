@@ -30,6 +30,7 @@
 #include "../vbo/deoglSharedVBOBlock.h"
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTUniqueList.h>
 
 class deoglRModel;
 class deoglModelFace;
@@ -74,11 +75,13 @@ struct oglModelVertex{
  */
 class deoglModelLOD{
 public:
+	/** \brief Type holding unique reference. */
+	using Ref = deTUniqueReference<deoglModelLOD>;
+	
 	deoglRModel &pModel;
 	const int pLODIndex;
 	
-	deoglModelTexture **pTextures;
-	int pTextureCount;
+	decTUniqueList<deoglModelTexture> pTextures;
 	
 	oglModelPosition *pPositions;
 	int pPositionCount;
@@ -176,8 +179,11 @@ public:
 	
 	
 	
+	/** Textures. */
+	inline const decTUniqueList<deoglModelTexture> &GetTextures() const{ return pTextures; }
+	
 	/** Number of textures. */
-	inline int GetTextureCount() const{ return pTextureCount; }
+	inline int GetTextureCount() const{ return pTextures.GetCount(); }
 	
 	/** Texture at index. */
 	deoglModelTexture &GetTextureAt(int index);

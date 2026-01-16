@@ -26,6 +26,7 @@
 #define _DEOGLRENDERTASK_H_
 
 #include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/math/decMath.h>
 
 #include "../../deoglBasics.h"
@@ -87,11 +88,9 @@ private:
 	GLuint pVBODrawIndirect;
 	//int pVBODrawIndirectSize;
 	
-	decTList<deoglRenderTaskPipeline*> pPipelines;
+	decTList<deoglRenderTaskPipeline*> pHasPipeline;
+	decTUniqueList<deoglRenderTaskPipeline> pPipelines;
 	int pPipelineCount;
-	deoglRenderTaskPipeline **pHasPipeline;
-	int pHasPipelineCount;
-	int pHasPipelineSize;
 	
 	sConfigTexture *pConfigTextures;
 	int pConfigTextureCount;

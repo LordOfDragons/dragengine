@@ -27,6 +27,8 @@
 
 #include "../deNetworkBasic.h"
 
+#include <dragengine/deTUniqueReference.h>
+
 class deNetworkMessage;
 class decBaseFileReader;
 class decBaseFileWriter;
@@ -36,6 +38,11 @@ class decBaseFileWriter;
  * \brief Network value.
  */
 class debnValue{
+public:
+	/** \brief Reference. */
+	using Ref = deTUniqueReference<debnValue>;
+	
+	
 private:
 	eValueTypes pDataType;
 	

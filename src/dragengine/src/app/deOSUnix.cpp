@@ -728,8 +728,11 @@ int deOSUnix::pGetGlobalScaling() const{
 	
 	XrmValue value;
 	char *type = nullptr;
+	const auto result = XrmGetResource(db, "Xft.dpi", "String", &type, &value);
 	
-	if(XrmGetResource(db, "Xft.dpi", "String", &type, &value) != True){
+	XrmDestroyDatabase(db);
+	
+	if(result != True){
 		return 100;
 	}
 	if(!value.addr){

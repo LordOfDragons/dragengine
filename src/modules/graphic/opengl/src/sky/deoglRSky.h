@@ -25,6 +25,7 @@
 #ifndef _DEOGLRSKY_H_
 #define _DEOGLRSKY_H_
 
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/deObject.h>
 
@@ -43,11 +44,8 @@ class deoglRSky : public deObject{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	deoglRSkyLink **pLinks;
-	int pLinkCount;
-	
-	deoglRSkyLayer **pLayers;
-	int pLayerCount;
+	decTUniqueList<deoglRSkyLink> pLinks;
+	decTUniqueList<deoglRSkyLayer> pLayers;
 	
 	decColor pBgColor;
 	
@@ -84,9 +82,8 @@ public:
 	void SetBgColor(const decColor &color);
 	
 	
-	
-	/** Number of layers. */
-	inline int GetLayerCount() const{ return pLayerCount; }
+	/** Links. */
+	inline const decTUniqueList<deoglRSkyLink> &GetLinks() const{ return pLinks; }
 	
 	/** Get link at index. */
 	const deoglRSkyLink &GetLinkAt(int index) const;
@@ -99,6 +96,12 @@ public:
 	void RebuildLinks(const deSky &sky);
 	
 	
+	
+	/** Layers. */
+	inline const decTUniqueList<deoglRSkyLayer> &GetLayers() const{ return pLayers; }
+	
+	/** Number of layers. */
+	inline int GetLayerCount() const{ return pLayers.GetCount(); }
 	
 	/** Layer at index. */
 	deoglRSkyLayer &GetLayerAt(int index) const;

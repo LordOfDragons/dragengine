@@ -53,8 +53,6 @@ pOrder(0),
 pPassthroughTransparency(0.0f),
 pControllerStates(nullptr),
 pControllerStateCount(0),
-pLayers(nullptr),
-pLayerCount(0),
 pTotalSkyLightIntensity(0.0f),
 pTotalSkyAmbientIntensity(0.0f),
 pEnvMapTimer(0.0f),
@@ -67,12 +65,7 @@ pWorldMarkedRemove(false)
 deoglRSkyInstance::~deoglRSkyInstance(){
 	LEAK_CHECK_FREE(pRenderThread, SkyInstance);
 	
-	if(pLayers){
-		while(pLayerCount > 0){
-			delete pLayers[--pLayerCount];
-		}
-		delete [] pLayers;
-	}
+	pLayers.RemoveAll();
 	
 	if(pControllerStates){
 		delete [] pControllerStates;
@@ -171,23 +164,13 @@ void deoglRSkyInstance::UpdateControllerStates(const deSkyInstance &instance){
 
 
 deoglRSkyInstanceLayer &deoglRSkyInstance::GetLayerAt(int index) const{
-	if(index < 0 || index >= pLayerCount){
-		DETHROW(deeInvalidParam);
-	}
-	return *pLayers[index];
+	return pLayers.GetAt(index);
 }
 
 void deoglRSkyInstance::RebuildLayers(){
 	pSkyNeedsUpdate = true;
 	
-	if(pLayers){
-		while(pLayerCount > 0){
-			delete pLayers[--pLayerCount];
-		}
-		delete [] pLayers;
-		pLayers = nullptr;
-		pLayerCount = 0;
-	}
+	pLayers.RemoveAll();
 	
 	if(!pRSky){
 		return;
@@ -198,9 +181,9 @@ void deoglRSkyInstance::RebuildLayers(){
 		return;
 	}
 	
-	pLayers = new deoglRSkyInstanceLayer*[layerCount];
-	for(pLayerCount=0; pLayerCount<layerCount; pLayerCount++){
-		pLayers[pLayerCount] = new deoglRSkyInstanceLayer(*this, pLayerCount);
+	int i;
+	for(i=0; i<layerCount; i++){
+		pLayers.Add(deoglRSkyInstanceLayer::Ref::New(*this, i));
 	}
 }
 
@@ -211,27 +194,27 @@ void deoglRSkyInstance::UpdateLayers(){
 	pTotalSkyAmbientIntensity = 0.0f;
 	pTotalSkyLightColor.SetZero();
 	
-	for(i=0; i<pLayerCount; i++){
-		pLayers[i]->Update();
+	pLayers.Visit([&](deoglRSkyInstanceLayer &l){
+		l.Update();
 		
-		const float ambientIntensity = pLayers[i]->GetAmbientIntensity();
-		const float lightIntensity = ambientIntensity + pLayers[i]->GetLightIntensity();
+		const float ambientIntensity = l.GetAmbientIntensity();
+		const float lightIntensity = ambientIntensity + l.GetLightIntensity();
 		
 		pTotalSkyLightIntensity += lightIntensity;
 		pTotalSkyAmbientIntensity += ambientIntensity;
-		pTotalSkyLightColor += pLayers[i]->GetLightColor() * lightIntensity;
+		pTotalSkyLightColor += l.GetLightColor() * lightIntensity;
 		
-		pSkyNeedsUpdate |= pLayers[i]->GetSkyNeedsUpdate();
-	}
+		pSkyNeedsUpdate |= l.GetSkyNeedsUpdate();
+	});
 	
 	if(pTotalSkyLightIntensity > FLOAT_SAFE_EPSILON){
 		pTotalSkyLightColor /= pTotalSkyLightIntensity;
 		pTotalSkyLightColor.a = 1.0f;
 	}
 	
-	for(i=0; i<pLayerCount; i++){
-		pLayers[i]->UpdateWithModifiers();
-	}
+	pLayers.Visit([&](deoglRSkyInstanceLayer &l){
+		l.UpdateWithModifiers();
+	});
 }
 
 
@@ -257,17 +240,15 @@ void deoglRSkyInstance::NotifySkyChanged(){
 }
 
 void deoglRSkyInstance::DropGIState(const deoglGIState *giState){
-	int i;
-	for(i=0; i<pLayerCount; i++){
-		pLayers[i]->RemoveAllGICascades(*giState);
-	}
+	pLayers.Visit([&](deoglRSkyInstanceLayer &l){
+		l.RemoveAllGICascades(*giState);
+	});
 }
 
 void deoglRSkyInstance::DropAllGIStates(){
-	int i;
-	for(i=0; i<pLayerCount; i++){
-		pLayers[i]->RemoveAllGICascades();
-	}
+	pLayers.Visit([&](deoglRSkyInstanceLayer &l){
+		l.RemoveAllGICascades();
+	});
 }
 
 
@@ -277,10 +258,9 @@ void deoglRSkyInstance::PrepareQuickDispose(){
 }
 
 void deoglRSkyInstance::NotifyUpdateStaticComponent(deoglRComponent *component){
-	int i;
-	for(i=0; i<pLayerCount; i++){
-		pLayers[i]->NotifyUpdateStaticComponent(component);
-	}
+	pLayers.Visit([&](deoglRSkyInstanceLayer &l){
+		l.NotifyUpdateStaticComponent(component);
+	});
 }
 
 

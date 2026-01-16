@@ -25,6 +25,8 @@
 #ifndef _DEOGLGICASCADE_H_
 #define _DEOGLGICASCADE_H_
 
+#include <dragengine/deTUniqueReference.h>
+
 #include <stdint.h>
 #include <dragengine/common/math/decMath.h>
 
@@ -39,6 +41,8 @@ class deoglGIBVH;
  */
 class deoglGICascade{
 public:
+	using Ref = deTUniqueReference<deoglGICascade>;
+	
 	/** Probe flags. */
 	enum eProbeFlags{
 		epfSmoothUpdate = 0x1,

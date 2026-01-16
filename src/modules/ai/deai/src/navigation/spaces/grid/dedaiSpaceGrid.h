@@ -25,6 +25,7 @@
 #ifndef _DEDAISPACEGRID_H_
 #define _DEDAISPACEGRID_H_
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class dedaiSpace;
@@ -54,9 +55,7 @@ private:
 	int pEdgeCount;
 	int pEdgeSize;
 	
-	dedaiSpaceGridVertex **pLinks;
-	int pLinkCount;
-	int pLinkSize;
+	decTList<dedaiSpaceGridVertex*> pLinks;
 	
 	
 	
@@ -128,10 +127,10 @@ public:
 	
 	
 	/** \brief Number of links. */
-	inline int GetLinkCount() const{ return pLinkCount; }
+	inline int GetLinkCount() const{ return pLinks.GetCount(); }
 	
-	/** \brief Array of links. */
-	inline dedaiSpaceGridVertex **GetLinks() const{ return pLinks; }
+	/** \brief Links. */
+	inline const decTList<dedaiSpaceGridVertex*> &GetLinks() const{ return pLinks; }
 	
 	/** \brief Link by index. */
 	dedaiSpaceGridVertex *GetLinkAt(int index) const;

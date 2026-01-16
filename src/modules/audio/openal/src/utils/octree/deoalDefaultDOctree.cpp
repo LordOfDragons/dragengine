@@ -39,14 +39,9 @@
 /////////////////////////////////
 
 deoalDefaultDOctree::deoalDefaultDOctree(const decDVector &center, const decDVector &halfSize) : deoalDOctree(center, halfSize){
-	pElements = nullptr;
-	pElementCount = 0;
-	pElementSize = 0;
 }
 
 deoalDefaultDOctree::~deoalDefaultDOctree(){
-	RemoveAllElements();
-	if(pElements) delete [] pElements;
 }
 
 
@@ -107,45 +102,22 @@ deoalDefaultDOctree *deoalDefaultDOctree::InsertIntoTree(void *element, const de
 /////////////
 
 void *deoalDefaultDOctree::GetElementAt(int index) const{
-	if(index < 0 || index >= pElementCount) DETHROW(deeInvalidParam);
-	return pElements[index];
+	return pElements.GetAt(index);
 }
 
 int deoalDefaultDOctree::IndexOfElement(void *element) const{
-	int i;
-	for(i=0; i<pElementCount; i++){
-		if(pElements[i] == element) return i;
-	}
-	return -1;
+	return pElements.IndexOf(element);
 }
 
 void deoalDefaultDOctree::AddElement(void *element){
 	if(!element) DETHROW(deeInvalidParam);
-	
-	if(pElementCount == pElementSize){
-		int i, newSize = pElementSize * 3 / 2 + 1;
-		void **newArray = new void*[newSize];
-		if(pElements){
-			for(i=0; i<pElementSize; i++) newArray[i] = pElements[i];
-			delete [] pElements;
-		}
-		pElements = newArray;
-		pElementSize = newSize;
-	}
-	
-	pElements[pElementCount] = element;
-	pElementCount++;
+	pElements.Add(element);
 }
 
 void deoalDefaultDOctree::RemoveElement(void *element){
-	int i, index = IndexOfElement(element);
-	if(index == -1) DETHROW(deeInvalidParam);
-	
-	for(i=index+1; i<pElementCount; i++) pElements[i - 1] = pElements[i];
-	pElements[pElementCount - 1] = nullptr;
-	pElementCount--;
+	pElements.Remove(element);
 }
 
 void deoalDefaultDOctree::RemoveAllElements(){
-	pElementCount = 0;
+	pElements.RemoveAll();
 }

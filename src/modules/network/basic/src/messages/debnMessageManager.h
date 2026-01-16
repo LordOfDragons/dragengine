@@ -26,8 +26,9 @@
 #ifndef _DEBNMESSAGEMANAGER_H_
 #define _DEBNMESSAGEMANAGER_H_
 
-// predefintions
-class debnMessage;
+#include "debnMessage.h"
+
+#include <dragengine/common/collection/decTUniqueList.h>
 
 
 
@@ -37,9 +38,7 @@ class debnMessage;
  */
 class debnMessageManager{
 private:
-	debnMessage **pMessages;
-	int pMessageCount;
-	int pMessageSize;
+	decTUniqueList<debnMessage> pMessages;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -52,8 +51,11 @@ public:
 	
 	/** @name Messages */
 	/*@{*/
+	/** Messages. */
+	inline const decTUniqueList<debnMessage> &GetMessages() const{ return pMessages; }
+	
 	/** Retrieves the number of messages. */
-	inline int GetMessageCount() const{ return pMessageCount; }
+	inline int GetMessageCount() const{ return pMessages.GetCount(); }
 	/** Retrieves the message at the given index. */
 	debnMessage *GetMessageAt(int index) const;
 	/** Retrieves the index of the message with the given number or -1 if not found. */
@@ -62,8 +64,8 @@ public:
 	int IndexOfMessage(debnMessage *message) const;
 	/** Determines if the message exists. */
 	bool HasMessage(debnMessage *message) const;
-	/** Adds a message. */
-	void AddMessage(debnMessage *message);
+		/** Adds a new message throwing an exception if it already exists. */
+	void AddMessage(debnMessage::Ref &&message);
 	/** Removes a message. */
 	void RemoveMessage(debnMessage *message);
 	/** Removes the message at the given index. */

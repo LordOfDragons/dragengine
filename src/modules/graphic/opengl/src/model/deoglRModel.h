@@ -28,6 +28,7 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTUniqueList.h>
 
 class deoglImposterBillboard;
 class deoglModelLOD;
@@ -69,8 +70,7 @@ private:
 	decStringList pTextureNames;
 	decStringList pVPSNames;
 	
-	deoglModelLOD **pLODs;
-	int pLODCount;
+	decTUniqueList<deoglModelLOD> pLODs;
 	
 	bool pDoubleSided;
 	bool pIsCached;
@@ -128,8 +128,11 @@ public:
 	
 	
 	
+	/** LODs. */
+	inline const decTUniqueList<deoglModelLOD> &GetLODs() const{ return pLODs; }
+	
 	/** Number of lods. */
-	inline int GetLODCount() const{ return pLODCount; }
+	inline int GetLODCount() const{ return pLODs.GetCount(); }
 	
 	/** Lod at index. */
 	deoglModelLOD &GetLODAt(int index) const;

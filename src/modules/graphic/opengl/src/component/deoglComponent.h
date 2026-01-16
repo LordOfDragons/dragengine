@@ -29,6 +29,7 @@
 #include "../skin/dynamic/deoglDynamicSkinListener.h"
 
 #include <dragengine/common/collection/decTLinkedList.h>
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicComponent.h>
 
 class deoglDynamicSkin;
@@ -55,11 +56,8 @@ public:
 	
 	deoglDynamicSkin *pDynamicSkin;
 	
-	deoglComponentLOD **pLODs;
-	int pLODCount;
-	
-	deoglComponentTexture **pTextures;
-	int pTextureCount;
+	decTUniqueList<deoglComponentLOD> pLODs;
+	decTUniqueList<deoglComponentTexture> pTextures;
 	
 	float pAccumUpdate;
 	
@@ -147,16 +145,22 @@ public:
 	
 	
 	
+	/** LODs. */
+	inline const decTUniqueList<deoglComponentLOD> &GetLODs() const{ return pLODs; }
+	
 	/** Number of LODs. */
-	inline int GetLODCount() const{ return pLODCount; }
+	inline int GetLODCount() const{ return pLODs.GetCount(); }
 	
 	/** LOD at index. */
 	deoglComponentLOD &GetLODAt(int index) const;
 	
 	
 	
+	/** Textures. */
+	inline const decTUniqueList<deoglComponentTexture> &GetTextures() const{ return pTextures; }
+	
 	/** Number of textures. */
-	inline int GetTextureCount() const{ return pTextureCount; }
+	inline int GetTextureCount() const{ return pTextures.GetCount(); }
 	
 	/** Texture at index. */
 	deoglComponentTexture &GetTextureAt(int index);

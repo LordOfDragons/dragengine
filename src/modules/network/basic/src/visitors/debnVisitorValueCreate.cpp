@@ -61,7 +61,6 @@
 ////////////////////////////
 
 debnVisitorValueCreate::debnVisitorValueCreate(){
-	pValue = nullptr;
 }
 
 debnVisitorValueCreate::~debnVisitorValueCreate(){
@@ -73,7 +72,7 @@ debnVisitorValueCreate::~debnVisitorValueCreate(){
 ///////////////
 
 void debnVisitorValueCreate::Reset(){
-	pValue = nullptr;
+	pValue.Clear();
 }
 
 
@@ -86,37 +85,37 @@ void debnVisitorValueCreate::VisitValue(deNetworkValue*){
 }
 
 void debnVisitorValueCreate::VisitInteger(deNetworkValueInteger *value){
-	pValue = new debnValueInteger(*value);
+	pValue = deTUniqueReference<debnValueInteger>::New(*value);
 }
 
 void debnVisitorValueCreate::VisitFloat(deNetworkValueFloat *value){
-	pValue = new debnValueFloat(*value);
+	pValue = deTUniqueReference<debnValueFloat>::New(*value);
 }
 
 void debnVisitorValueCreate::VisitString(deNetworkValueString *value){
-	pValue = new debnValueString(*value);
+	pValue = deTUniqueReference<debnValueString>::New(*value);
 }
 
 void debnVisitorValueCreate::VisitData(deNetworkValueData *value){
-	pValue = new debnValueData(*value);
+	pValue = deTUniqueReference<debnValueData>::New(*value);
 }
 
 void debnVisitorValueCreate::VisitPoint2(deNetworkValuePoint2 *value){
-	pValue = new debnValuePoint2(*value);
+	pValue = deTUniqueReference<debnValuePoint2>::New(*value);
 }
 
 void debnVisitorValueCreate::VisitPoint3(deNetworkValuePoint3 *value){
-	pValue = new debnValuePoint3(*value);
+	pValue = deTUniqueReference<debnValuePoint3>::New(*value);
 }
 
 void debnVisitorValueCreate::VisitVector2(deNetworkValueVector2 *value){
-	pValue = new debnValueVector2(*value);
+	pValue = deTUniqueReference<debnValueVector2>::New(*value);
 }
 
 void debnVisitorValueCreate::VisitVector3(deNetworkValueVector3 *value){
-	pValue = new debnValueVector3(*value);
+	pValue = deTUniqueReference<debnValueVector3>::New(*value);
 }
 
 void debnVisitorValueCreate::VisitQuaternion(deNetworkValueQuaternion *value){
-	pValue = new debnValueQuaternion(*value);
+	pValue = deTUniqueReference<debnValueQuaternion>::New(*value);
 }

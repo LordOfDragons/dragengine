@@ -646,8 +646,6 @@ void debnConnection::SendReliableMessage(deNetworkMessage *message){
 		int i, offset = 0;
 		
 		for(i=0; i<partCount; i++){
-			debnMessage *bnMessage = nullptr;
-			
 			uint8_t flags = 0;
 			if(i == 0){
 				flags |= (uint8_t)elmfFirst;
@@ -661,29 +659,21 @@ void debnConnection::SendReliableMessage(deNetworkMessage *message){
 				partLength = pLongMessagePartSize;
 			}
 			
-			try{
-				// create message
-				bnMessage = new debnMessage;
-				bnMessage->SetType(eccReliableMessageLong);
-				bnMessage->SetNumber((pReliableNumberSend
-					+ pReliableMessagesSend->GetMessageCount()) % 65535);
-				bnMessage->SetState(debnMessage::emsPending);
-				
-				// build message
-				deNetworkMessageWriter::Ref writer(deNetworkMessageWriter::Ref::New(
-					bnMessage->GetMessage(), false));
-				writer->WriteByte(eccReliableMessage);
-				writer->WriteUShort((uint16_t)bnMessage->GetNumber());
-				writer->WriteByte(flags);
-				writer->Write(data + offset, partLength);
-				
-				// add
-				pReliableMessagesSend->AddMessage(bnMessage);
-				
-			}catch(const deException &){
-				if(bnMessage) delete bnMessage;
-				throw;
-			}
+			// create message
+			auto bnMessage = debnMessage::Ref::New();
+			bnMessage->SetType(eccReliableMessageLong);
+			bnMessage->SetNumber((pReliableNumberSend + pReliableMessagesSend->GetMessageCount()) % 65535);
+			bnMessage->SetState(debnMessage::emsPending);
+			
+			// build message
+			deNetworkMessageWriter::Ref writer(deNetworkMessageWriter::Ref::New(bnMessage->GetMessage(), false));
+			writer->WriteByte(eccReliableMessage);
+			writer->WriteUShort((uint16_t)bnMessage->GetNumber());
+			writer->WriteByte(flags);
+			writer->Write(data + offset, partLength);
+			
+			// add
+			pReliableMessagesSend->AddMessage(std::move(bnMessage));
 			
 			offset += partLength;
 		}
@@ -692,29 +682,19 @@ void debnConnection::SendReliableMessage(deNetworkMessage *message){
 		
 	}else{
 		// add message
-		debnMessage *bnMessage = nullptr;
+		auto bnMessage = debnMessage::Ref::New();
+		bnMessage->SetType(eccReliableMessage);
+		bnMessage->SetNumber((pReliableNumberSend + pReliableMessagesSend->GetMessageCount()) % 65535);
+		bnMessage->SetState(debnMessage::emsPending);
 		
-		try{
-			// create message
-			bnMessage = new debnMessage;
-			bnMessage->SetType(eccReliableMessage);
-			bnMessage->SetNumber((pReliableNumberSend + pReliableMessagesSend->GetMessageCount()) % 65535);
-			bnMessage->SetState(debnMessage::emsPending);
-			
-			// build message
-			deNetworkMessageWriter::Ref writer(deNetworkMessageWriter::Ref::New(
-				bnMessage->GetMessage(), false));
-			writer->WriteByte(eccReliableMessage);
-			writer->WriteUShort((uint16_t)bnMessage->GetNumber());
-			writer->Write(message->GetBuffer(), message->GetDataLength());
-			
-			// add
-			pReliableMessagesSend->AddMessage(bnMessage);
-			
-		}catch(const deException &){
-			if(bnMessage) delete bnMessage;
-			throw;
-		}
+		// build message
+		deNetworkMessageWriter::Ref writer(deNetworkMessageWriter::Ref::New(bnMessage->GetMessage(), false));
+		writer->WriteByte(eccReliableMessage);
+		writer->WriteUShort((uint16_t)bnMessage->GetNumber());
+		writer->Write(message->GetBuffer(), message->GetDataLength());
+		
+		// add
+		pReliableMessagesSend->AddMessage(std::move(bnMessage));
 		
 		// if the message fits into the window send it right now
 		if(pReliableMessagesSend->GetMessageCount() <= pReliableWindowSize){
@@ -768,35 +748,25 @@ void debnConnection::LinkState(deNetworkMessage *message, deNetworkState *state,
 	//pNetBasic->LogInfoFormat( "Linking state %p using link %i", state, stateLink->GetIdentifier() );
 	
 	// add message
-	debnMessage *bnMessage = nullptr;
+	auto bnMessage = debnMessage::Ref::New();
+	bnMessage->SetType(eccReliableLinkState);
+	bnMessage->SetNumber((pReliableNumberSend + pReliableMessagesSend->GetMessageCount()) % 65535);
+	bnMessage->SetState(debnMessage::emsPending);
 	
-	try{
-		// create message
-		bnMessage = new debnMessage;
-		bnMessage->SetType(eccReliableLinkState);
-		bnMessage->SetNumber((pReliableNumberSend + pReliableMessagesSend->GetMessageCount()) % 65535);
-		bnMessage->SetState(debnMessage::emsPending);
-		
-		// build message
-		deNetworkMessageWriter::Ref writer(deNetworkMessageWriter::Ref::New(
-			bnMessage->GetMessage(), false));
-		writer->WriteByte(eccReliableLinkState);
-		writer->WriteUShort((uint16_t)bnMessage->GetNumber());
-		writer->WriteUShort((uint16_t)stateLink->GetIdentifier());
-		writer->WriteByte(readOnly ? 1 : 0); // flags: readOnly=0x1
-		
-		writer->WriteUShort(message->GetDataLength());
-		writer->Write(message->GetBuffer(), message->GetDataLength());
-		
-		bnState->LinkWriteValuesWithVerify(writer);
-		
-		// add
-		pReliableMessagesSend->AddMessage(bnMessage);
-		
-	}catch(const deException &){
-		if(bnMessage) delete bnMessage;
-		throw;
-	}
+	// build message
+	deNetworkMessageWriter::Ref writer(deNetworkMessageWriter::Ref::New(bnMessage->GetMessage(), false));
+	writer->WriteByte(eccReliableLinkState);
+	writer->WriteUShort((uint16_t)bnMessage->GetNumber());
+	writer->WriteUShort((uint16_t)stateLink->GetIdentifier());
+	writer->WriteByte(readOnly ? 1 : 0); // flags: readOnly=0x1
+	
+	writer->WriteUShort(message->GetDataLength());
+	writer->Write(message->GetBuffer(), message->GetDataLength());
+	
+	bnState->LinkWriteValuesWithVerify(writer);
+	
+	// add
+	pReliableMessagesSend->AddMessage(std::move(bnMessage));
 	
 	// if the message fits into the window send it right now
 	if(pReliableMessagesSend->GetMessageCount() <= pReliableWindowSize){
@@ -1288,29 +1258,21 @@ void debnConnection::pProcessLinkStateLong(int number, decBaseFileReader &reader
 }
 
 void debnConnection::pAddReliableReceive(int type, int number, decBaseFileReader &reader){
-	debnMessage *bnMessage = nullptr;
-	
 	// length of the message
 	const int length = reader.GetLength() - reader.GetPosition();
 	
 	// add message
-	try{
-		bnMessage = new debnMessage;
-		
-		deNetworkMessage * const localMessage = bnMessage->GetMessage();
-		localMessage->SetDataLength(length);
-		reader.Read(localMessage->GetBuffer(), length);
-		
-		bnMessage->SetType(type);
-		bnMessage->SetNumber(number);
-		bnMessage->SetState(debnMessage::emsDone);
-		
-		pReliableMessagesRecv->AddMessage(bnMessage);
-		
-	}catch(const deException &){
-		if(bnMessage) delete bnMessage;
-		throw;
-	}
+	auto bnMessage = debnMessage::Ref::New();
+	
+	deNetworkMessage * const localMessage = bnMessage->GetMessage();
+	localMessage->SetDataLength(length);
+	reader.Read(localMessage->GetBuffer(), length);
+	
+	bnMessage->SetType(type);
+	bnMessage->SetNumber(number);
+	bnMessage->SetState(debnMessage::emsDone);
+	
+	pReliableMessagesRecv->AddMessage(std::move(bnMessage));
 }
 
 void debnConnection::pRemoveSendReliablesDone(){

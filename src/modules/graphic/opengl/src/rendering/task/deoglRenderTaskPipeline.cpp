@@ -45,24 +45,10 @@
 deoglRenderTaskPipeline::deoglRenderTaskPipeline() :
 pPipeline(nullptr),
 
-pTextureCount(0),
-
-pHasTexture(nullptr),
-pHasTextureCount(0),
-pHasTextureSize(0){
+pTextureCount(0){
 }
 
 deoglRenderTaskPipeline::~deoglRenderTaskPipeline(){
-	if(pHasTexture){
-		delete [] pHasTexture;
-	}
-	
-	const int textureCount = pTextures.GetCount();
-	int i;
-	for(i=0; i<textureCount; i++){
-		delete pTextures.GetAt(i);
-	}
-	pTextures.RemoveAll();
 }
 
 
@@ -72,42 +58,34 @@ deoglRenderTaskPipeline::~deoglRenderTaskPipeline(){
 
 void deoglRenderTaskPipeline::Reset(){
 	pPipeline = nullptr;
-	pHasTextureCount = 0;
+	pHasTexture.RemoveAll();
 	pTextureCount = 0;
 }
 
 
 
 int deoglRenderTaskPipeline::GetTotalPointCount() const{
-	int i, pointCount = 0;
-	for(i=0; i<pTextureCount; i++){
-		pointCount += pTextures.GetAt(i)->GetTotalPointCount();
-	}
-	return pointCount;
+	return pTextures.Inject(0, [](int sum, const deoglRenderTaskTexture &t){
+		return sum + t.GetTotalPointCount();
+	}, 0, pTextureCount);
 }
 
 int deoglRenderTaskPipeline::GetTotalVAOCount() const{
-	int i, vaoCount = 0;
-	for(i=0; i<pTextureCount; i++){
-		vaoCount += pTextures.GetAt(i)->GetVAOCount();
-	}
-	return vaoCount;
+	return pTextures.Inject(0, [](int sum, const deoglRenderTaskTexture &t){
+		return sum + t.GetVAOCount();
+	}, 0, pTextureCount);
 }
 
 int deoglRenderTaskPipeline::GetTotalInstanceCount() const{
-	int i, instanceCount = 0;
-	for(i=0; i<pTextureCount; i++){
-		instanceCount += pTextures.GetAt(i)->GetTotalInstanceCount();
-	}
-	return instanceCount;
+	return pTextures.Inject(0, [](int sum, const deoglRenderTaskTexture &t){
+		return sum + t.GetTotalInstanceCount();
+	}, 0, pTextureCount);
 }
 
 int deoglRenderTaskPipeline::GetTotalSubInstanceCount() const{
-	int i, subInstanceCount = 0;
-	for(i=0; i<pTextureCount; i++){
-		subInstanceCount += pTextures.GetAt(i)->GetTotalSubInstanceCount();
-	}
-	return subInstanceCount;
+	return pTextures.Inject(0, [](int sum, const deoglRenderTaskTexture &t){
+		return sum + t.GetTotalSubInstanceCount();
+	}, 0, pTextureCount);
 }
 
 
@@ -127,35 +105,18 @@ deoglRenderTaskTexture *deoglRenderTaskPipeline::AddTexture(const deoglRenderTas
 	
 	const int index = texture->GetIndex();
 	
-	if(index >= pHasTextureCount){
-		if(index >= pHasTextureSize){
-			deoglRenderTaskTexture ** const newArray = new deoglRenderTaskTexture*[index + 1];
-			
-			if(pHasTexture){
-				if(pHasTextureCount > 0){
-					memcpy(newArray, pHasTexture, sizeof(deoglRenderTaskTexture*) * pHasTextureCount);
-				}
-				delete [] pHasTexture;
-			}
-			
-			pHasTexture = newArray;
-			pHasTextureSize = index + 1;
-		}
-		
-		if(pHasTextureCount <= index){
-			memset(pHasTexture + pHasTextureCount, 0, sizeof(deoglRenderTaskTexture*) * (index - pHasTextureCount + 1));
-			pHasTextureCount = index + 1;
-		}
+	while(index >= pHasTexture.GetCount()){
+		pHasTexture.Add(nullptr);
 	}
 	
-	deoglRenderTaskTexture *rttexture = pHasTexture[index];
+	deoglRenderTaskTexture *rttexture = pHasTexture.GetAt(index);
 	if(rttexture){
 		return rttexture;
 	}
 	
 	if(pTextureCount == pTextures.GetCount()){
-		rttexture = new deoglRenderTaskTexture;
-		pTextures.Add(rttexture);
+		pTextures.Add(deoglRenderTaskTexture::Ref::New());
+		rttexture = pTextures.Last();
 		
 	}else{
 		rttexture = pTextures.GetAt(pTextureCount);
@@ -164,6 +125,6 @@ deoglRenderTaskTexture *deoglRenderTaskPipeline::AddTexture(const deoglRenderTas
 	pTextureCount++;
 	
 	rttexture->SetTexture(texture);
-	pHasTexture[index] = rttexture;
+	pHasTexture.SetAt(index, rttexture);
 	return rttexture;
 }

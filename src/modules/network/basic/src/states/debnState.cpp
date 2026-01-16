@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <utility>
 
 #include "debnState.h"
 #include "debnStateLink.h"
@@ -55,9 +56,6 @@
 
 debnState::debnState(deNetworkState &state) :
 pState(state),
-pValues(nullptr),
-pValueCount(0),
-pValueSize(0),
 pParentWorld(nullptr){
 }
 
@@ -66,14 +64,6 @@ debnState::~debnState(){
 		link->DropState();
 	});
 	pLinks.RemoveAll();
-	
-	if(pValues){
-		while(pValueCount > 0){
-			pValueCount--;
-			delete pValues[pValueCount];
-		}
-		delete [] pValues;
-	}
 }
 
 
@@ -91,11 +81,11 @@ void debnState::LinkReadValues(decBaseFileReader &reader, debnStateLink &link){
 	
 	for(i=0; i<count; i++){
 		const int index = reader.ReadUShort();
-		if(index < 0 || index >= pValueCount){
+		if(index < 0 || index >= pValues.GetCount()){
 			DETHROW(deeInvalidParam);
 		}
 		
-		pValues[index]->ReadValue(reader);
+		pValues.GetAt(index)->ReadValue(reader);
 		InvalidateValueExcept(index, link);
 		
 		if(scrState){
@@ -112,7 +102,7 @@ void debnState::LinkReadAllValues(decBaseFileReader &reader, debnStateLink &link
 	int i;
 	
 	for(i=0; i<count; i++){
-		pValues[i]->ReadValue(reader);
+		pValues.GetAt(i)->ReadValue(reader);
 		InvalidateValue(i);
 		
 		if(scrState){
@@ -129,17 +119,17 @@ bool debnState::LinkReadAndVerifyAllValues(decBaseFileReader &reader){
 	deBaseScriptingNetworkState *scrState = pState.GetPeerScripting();
 	int i;
 	
-	if(reader.ReadUShort() != pValueCount){
+	if(reader.ReadUShort() != pValues.GetCount()){
 		return false;
 	}
 	
-	for(i=0; i<pValueCount; i++){
+	for(i=0; i<pValues.GetCount(); i++){
 		const eValueTypes type = (eValueTypes)reader.ReadByte();
-		if(type != pValues[i]->GetDataType()){
+		if(type != pValues.GetAt(i)->GetDataType()){
 			return false;
 		}
 		
-		pValues[i]->ReadValue(reader);
+		pValues.GetAt(i)->ReadValue(reader);
 		InvalidateValue(i);
 		
 		if(scrState){
@@ -147,29 +137,29 @@ bool debnState::LinkReadAndVerifyAllValues(decBaseFileReader &reader){
 		}
 	}
 	
-	return i == pValueCount;
+	return i == pValues.GetCount();
 }
 
 void debnState::LinkWriteValues(decBaseFileWriter &writer){
 	int i;
-	for(i=0; i<pValueCount; i++){
-		pValues[i]->WriteValue(writer);
+	for(i=0; i<pValues.GetCount(); i++){
+		pValues.GetAt(i)->WriteValue(writer);
 	}
 }
 
 void debnState::LinkWriteValuesWithVerify(decBaseFileWriter &writer){
-	writer.WriteUShort(pValueCount);
+	writer.WriteUShort(pValues.GetCount());
 	
 	int i;
-	for(i=0; i<pValueCount; i++){
-		writer.WriteByte((uint8_t)pValues[i]->GetDataType());
-		pValues[i]->WriteValue(writer);
+	for(i=0; i<pValues.GetCount(); i++){
+		writer.WriteByte((uint8_t)pValues.GetAt(i)->GetDataType());
+		pValues.GetAt(i)->WriteValue(writer);
 	}
 }
 
 void debnState::LinkWriteValues(decBaseFileWriter &writer, debnStateLink &link){
 	int i, changedCount = 0;
-	for(i=0; i<pValueCount; i++){
+	for(i=0; i<pValues.GetCount(); i++){
 		if(link.GetValueChangedAt(i)){
 			changedCount++;
 		}
@@ -180,13 +170,13 @@ void debnState::LinkWriteValues(decBaseFileWriter &writer, debnStateLink &link){
 	
 	writer.WriteByte((uint8_t)changedCount);
 	
-	for(i=0; i<pValueCount; i++){
+	for(i=0; i<pValues.GetCount(); i++){
 		if(!link.GetValueChangedAt(i)){
 			continue;
 		}
 		
 		writer.WriteUShort((uint16_t)i);
-		pValues[i]->WriteValue(writer);
+		pValues.GetAt(i)->WriteValue(writer);
 		
 		link.SetValueChangedAt(i, false);
 		
@@ -226,27 +216,15 @@ void debnState::ValueAdded(int index, deNetworkValue *value){
 	if(!value) DETHROW(deeInvalidParam);
 	debnVisitorValueCreate visitorCreate;
 	
-	if(pValueCount == pValueSize){
-		int newSize = pValueSize * 3 / 2 + 1;
-		debnValue **newArray = new debnValue*[newSize];
-		if(pValues){
-			memcpy(newArray, pValues, sizeof(debnValue*) * pValueSize);
-			delete [] pValues;
-		}
-		pValues = newArray;
-		pValueSize = newSize;
-	}
-	
 	value->Visit(visitorCreate);
 	if(!visitorCreate.GetValue()) DETHROW(deeInvalidParam);
 	
-	pValues[pValueCount] = visitorCreate.GetValue();
-	pValueCount++;
+	pValues.Add(std::move(visitorCreate.GetValue()));
 }
 
 void debnState::ValueChanged(int index, deNetworkValue*){
 //	printf( "value %i at state %p changed\n", index, pState );
-	if(!pValues[index]->UpdateValue(false)){
+	if(!pValues.GetAt(index)->UpdateValue(false)){
 		// value did not change enough to require synchronize links
 		return;
 	}

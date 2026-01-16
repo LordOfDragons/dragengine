@@ -27,6 +27,7 @@
 
 #include "debnStateLink.h"
 
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/network/deBaseNetworkState.h>
 
@@ -48,9 +49,7 @@ class debnState : public deBaseNetworkState{
 private:
 	deNetworkState &pState;
 	
-	debnValue **pValues;
-	int pValueCount;
-	int pValueSize;
+	decTUniqueList<debnValue> pValues;
 	
 	debnStateLink::List pLinks;
 	
@@ -83,7 +82,7 @@ public:
 	void Update();
 	
 	/** Retrieves the number of values. */
-	inline int GetValueCount() const{ return pValueCount; }
+	inline int GetValueCount() const{ return pValues.GetCount(); }
 	
 	/** \brief Read values from message. */
 	void LinkReadValues(decBaseFileReader &reader, debnStateLink &link);

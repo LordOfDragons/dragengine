@@ -46,7 +46,6 @@
 ////////////////////////////
 
 deoglOcclusionTest::deoglOcclusionTest(deoglRenderThread &renderThread) :
-pInputListeners(nullptr),
 pInputData(nullptr),
 pInputDataCount(0),
 pInputDataSize(0)
@@ -99,13 +98,14 @@ deoglOcclusionTestListener *listener){
 	inputData.maxExtend.y = (GLfloat)maxExtend.y;
 	inputData.maxExtend.z = (GLfloat)maxExtend.z;
 	
-	pInputListeners[pInputDataCount] = listener;
+	pInputListeners.Add(listener);
 	
 	return pInputDataCount++;
 }
 
 void deoglOcclusionTest::RemoveAllInputData(){
 	pInputDataCount = 0;
+	pInputListeners.RemoveAll();
 }
 
 
@@ -147,8 +147,8 @@ void deoglOcclusionTest::UpdateResults(){
 	int i;
 	
 	for(i=0; i<pInputDataCount; i++){
-		if(!result[i] && pInputListeners[i]){
-			pInputListeners[i]->OcclusionTestInvisible();
+		if(!result[i] && pInputListeners.GetCount() > i && pInputListeners.GetAt(i)){
+			pInputListeners.GetAt(i)->OcclusionTestInvisible();
 		}
 	}
 }
@@ -159,9 +159,6 @@ void deoglOcclusionTest::UpdateResults(){
 //////////////////////
 
 void deoglOcclusionTest::pCleanUp(){
-	if(pInputListeners){
-		delete [] pInputListeners;
-	}
 	if(pInputData){
 		delete [] pInputData;
 	}
@@ -179,11 +176,4 @@ void deoglOcclusionTest::pResizeInputData(int size){
 	}
 	pInputDataSize = size;
 	pInputData = newInputData;
-	
-	deoglOcclusionTestListener ** const newListeners = new deoglOcclusionTestListener*[size];
-	if(pInputListeners){
-		memcpy(newListeners, pInputListeners, sizeof(deoglOcclusionTestListener*) * pInputDataCount);
-		delete [] pInputListeners;
-	}
-	pInputListeners = newListeners;
 }

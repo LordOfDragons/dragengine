@@ -41,11 +41,11 @@ public:
 		using decTUniqueList<dexsiParameter>::decTUniqueList;
 		
 		dexsiParameter &GetNamed(const char *name) const{
-			const deTUniqueReference<dexsiParameter> *found = nullptr;
-			DEASSERT_TRUE(Find([&](const dexsiParameter &p){
+			dexsiParameter * const found = FindOrNull([&](const dexsiParameter &p){
 				return p.GetParameter().GetName() == name;
-			}, found));
-			return **found;
+			});
+			DEASSERT_NOTNULL(found)
+			return *found;
 		}
 		
 		int IndexOfNamed(const char *name) const{

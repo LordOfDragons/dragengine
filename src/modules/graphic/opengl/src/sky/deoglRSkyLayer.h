@@ -25,6 +25,8 @@
 #ifndef _DEOGLRSKYLAYER_H_
 #define _DEOGLRSKYLAYER_H_
 
+#include <dragengine/deTUniqueReference.h>
+
 #include "../skin/deoglRSkin.h"
 
 #include <dragengine/common/math/decMath.h>
@@ -39,6 +41,8 @@ class deoglRSkyControllerTarget;
  */
 class deoglRSkyLayer{
 public:
+	using Ref = deTUniqueReference<deoglRSkyLayer>;
+	
 	/** Sky layer body. */
 	struct sBody {
 		deoglRSkin::Ref skin;

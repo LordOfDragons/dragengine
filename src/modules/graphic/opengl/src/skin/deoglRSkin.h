@@ -26,8 +26,9 @@
 #define _DEOGLRSKIN_H_
 #include "../memory/consumption/deoglMemoryConsumptionSkinUse.h"
 
-#include <dragengine/deObject.h>
 #include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTUniqueList.h>
+#include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
@@ -65,8 +66,7 @@ private:
 	deoglSkin *pOwnerSkin;
 	decString pFilename;
 	
-	deoglSkinTexture **pTextures;
-	int pTextureCount;
+	decTUniqueList<deoglSkinTexture> pTextures;
 	
 	bool pIsSolid;
 	bool pHasHoles;
@@ -172,8 +172,11 @@ public:
 	
 	
 	
+	/** Textures. */
+	inline const decTUniqueList<deoglSkinTexture> &GetTextures() const{ return pTextures; }
+	
 	/** Number of textures. */
-	inline int GetTextureCount() const{ return pTextureCount; }
+	inline int GetTextureCount() const{ return pTextures.GetCount(); }
 	
 	/** Texture at index. */
 	deoglSkinTexture &GetTextureAt(int index) const;

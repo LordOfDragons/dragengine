@@ -26,15 +26,22 @@
 #define _DEOGLPARTICLEEMITTERINSTANCETYPE_H_
 
 #include "deoglRParticleEmitterInstanceType.h"
+#include <dragengine/deTUniqueReference.h>
+
+class deoglParticleEmitterInstance;
 
 class deParticleEmitterInstanceType;
-class deoglParticleEmitterInstance;
+
 
 
 /**
- * Particle emitter instance type.
+ * Particle Emitter Instance Peer Type.
  */
 class deoglParticleEmitterInstanceType{
+public:
+	/** \brief Type holding unique reference. */
+	using Ref = deTUniqueReference<deoglParticleEmitterInstanceType>;
+	
 private:
 	deoglParticleEmitterInstance &pEmitterInstance;
 	const int pIndex;

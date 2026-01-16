@@ -26,6 +26,7 @@
 #ifndef _DEBNMESSAGE_H_
 #define _DEBNMESSAGE_H_
 
+#include <dragengine/deTUniqueReference.h>
 #include <dragengine/resources/network/deNetworkMessage.h>
 
 class debnMessage;
@@ -38,6 +39,8 @@ class debnAddress;
  */
 class debnMessage{
 public:
+	using Ref = deTUniqueReference<debnMessage>;
+	
 	enum eMessageStates{
 		emsPending,
 		emsSend,

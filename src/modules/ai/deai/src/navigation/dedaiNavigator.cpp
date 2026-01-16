@@ -71,8 +71,6 @@ pNavigator(navigator),
 
 pParentWorld(nullptr),
 
-pTypeMappings(nullptr),
-pTypeMappingCount(0),
 pDirtyTypeMappings(true),
 
 pLayer(nullptr),
@@ -119,11 +117,11 @@ void dedaiNavigator::SetParentWorld(dedaiWorld *world){
 
 
 float dedaiNavigator::GetFixCostFor(int costTableEntry) const{
-	if(costTableEntry < 0 || costTableEntry >= pTypeMappingCount){
+	if(costTableEntry < 0 || costTableEntry >= pTypeMappings.GetCount()){
 		return pNavigator.GetDefaultFixCost();
 		
-	}else if(pTypeMappings[costTableEntry]){
-		return pTypeMappings[costTableEntry]->GetFixCost();
+	}else if(pTypeMappings.GetAt(costTableEntry)){
+		return pTypeMappings.GetAt(costTableEntry)->GetFixCost();
 		
 	}else{
 		return pNavigator.GetDefaultFixCost();
@@ -131,13 +129,13 @@ float dedaiNavigator::GetFixCostFor(int costTableEntry) const{
 }
 
 void dedaiNavigator::GetCostParametersFor(int costTableEntry, float &fixCost, float &costPerMeter) const{
-	if(costTableEntry < 0 || costTableEntry >= pTypeMappingCount){
+	if(costTableEntry < 0 || costTableEntry >= pTypeMappings.GetCount()){
 		fixCost = pNavigator.GetDefaultFixCost();
 		costPerMeter = pNavigator.GetDefaultCostPerMeter();
 		
-	}else if(pTypeMappings[costTableEntry]){
-		fixCost = pTypeMappings[costTableEntry]->GetFixCost();
-		costPerMeter = pTypeMappings[costTableEntry]->GetCostPerMeter();
+	}else if(pTypeMappings.GetAt(costTableEntry)){
+		fixCost = pTypeMappings.GetAt(costTableEntry)->GetFixCost();
+		costPerMeter = pTypeMappings.GetAt(costTableEntry)->GetCostPerMeter();
 		
 	}else{
 		fixCost = pNavigator.GetDefaultFixCost();
@@ -603,28 +601,14 @@ int &hitAfterPoint, float &hitDistance){
 
 void dedaiNavigator::pCleanUp(){
 	SetParentWorld(nullptr);
-	
-	if(pTypeMappings){
-		delete [] pTypeMappings;
-	}
 }
 
 void dedaiNavigator::pUpdateTypeMappings(){
 	const int typeCount = pLayer->GetCostTable().GetTypeCount();
-	if(typeCount != pTypeMappingCount){
-		if(pTypeMappings){
-			delete [] pTypeMappings;
-			pTypeMappings = nullptr;
-			pTypeMappingCount = 0;
-		}
-		
-		if(typeCount > 0){
-			pTypeMappings = new deNavigatorType*[typeCount];
-		}
-	}
+	pTypeMappings.RemoveAll();
 	
-	for(pTypeMappingCount=0; pTypeMappingCount<typeCount; pTypeMappingCount++){
-		pTypeMappings[pTypeMappingCount] = pNavigator.GetTypeWith(pLayer->GetCostTable().GetTypeAt(pTypeMappingCount));
+	for(int i=0; i<typeCount; i++){
+		pTypeMappings.Add(pNavigator.GetTypeWith(pLayer->GetCostTable().GetTypeAt(i)));
 	}
 }
 

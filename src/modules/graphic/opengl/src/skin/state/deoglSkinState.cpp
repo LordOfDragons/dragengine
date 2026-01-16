@@ -98,10 +98,7 @@ pRenderThread(renderThread)
 deoglSkinState::~deoglSkinState(){
 	SetVideoPlayerCount(0);
 	
-	RemoveAllRenderables();
-	if(pRenderables){
-		delete [] pRenderables;
-	}
+	pRenderables.RemoveAll();
 	
 	SetCalculatedPropertyCount(0);
 	SetConstructedPropertyCount(0);
@@ -219,29 +216,26 @@ const deoglRenderPlanMasked *renderPlanMask){
 		}
 	}
 	
-	for(i=0; i<pRenderableCount; i++){
-		deoglSkinStateRenderable &skinStateRenderable = *pRenderables[i];
-		skinStateRenderable.Clear();
+	pRenderables.Visit([&](deoglSkinStateRenderable &r){
+		r.Clear();
 		
-		const int hostIndex = skinStateRenderable.GetHostRenderable();
+		const int hostIndex = r.GetHostRenderable();
 		if(hostIndex != -1 && dynamicSkin){
 			dynamicSkin->GetRenderableAt(hostIndex)->PrepareForRender(renderPlanMask);
 		}
-	}
+	});
 }
 
 void deoglSkinState::RenderRenderables(deoglRSkin *skin, deoglRDynamicSkin *dynamicSkin,
 const deoglRenderPlanMasked *renderPlanMask){
-	int i;
-	for(i=0; i<pRenderableCount; i++){
-		deoglSkinStateRenderable &skinStateRenderable = *pRenderables[i];
-		skinStateRenderable.Clear();
+	pRenderables.Visit([&](deoglSkinStateRenderable &r){
+		r.Clear();
 		
-		const int hostIndex = skinStateRenderable.GetHostRenderable();
+		const int hostIndex = r.GetHostRenderable();
 		if(hostIndex != -1 && dynamicSkin){
 			dynamicSkin->GetRenderableAt(hostIndex)->Render(renderPlanMask);
 		}
-	}
+	});
 }
 
 void deoglSkinState::AddRenderPlans(deoglRenderPlan &plan){
@@ -254,10 +248,9 @@ void deoglSkinState::AddRenderPlans(deoglRenderPlan &plan){
 	// renderable related plans are wrapped by a dirty-skin test and can be
 	// skipped the second time.
 	// required to verify if this is an issue or not ( and acting accordingly ).
-	int i;
-	for(i=0; i<pRenderableCount; i++){
-		pRenderables[i]->AddRenderPlans(plan);
-	}
+	pRenderables.Visit([&](deoglSkinStateRenderable &r){
+		r.AddRenderPlans(plan);
+	});
 }
 
 
@@ -266,31 +259,12 @@ void deoglSkinState::AddRenderPlans(deoglRenderPlan &plan){
 ////////////////
 
 deoglSkinStateRenderable *deoglSkinState::GetRenderableAt(int index) const{
-	if(index < 0 || index >= pRenderableCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return pRenderables[index];
+	return pRenderables.GetAt(index);
 }
 
 deoglSkinStateRenderable *deoglSkinState::AddRenderable(){
-	deoglSkinStateRenderable * const renderable = new deoglSkinStateRenderable(*this, pRenderableCount);
-	
-	if(pRenderableCount == pRenderableSize){
-		int newSize = pRenderableSize * 3 / 2 + 1;
-		deoglSkinStateRenderable **newArray = new deoglSkinStateRenderable*[newSize];
-		if(pRenderables){
-			memcpy(newArray, pRenderables, sizeof(deoglSkinStateRenderable*) * pRenderableSize);
-			delete [] pRenderables;
-		}
-		pRenderables = newArray;
-		pRenderableSize = newSize;
-	}
-	
-	pRenderables[pRenderableCount] = renderable;
-	pRenderableCount++;
-	
-	return renderable;
+	pRenderables.Add(deoglSkinStateRenderable::Ref::New(*this, pRenderables.GetCount()));
+	return pRenderables.Last();
 }
 
 void deoglSkinState::AddRenderables(deoglRSkin &skin, deoglRDynamicSkin &dynamicSkin){
@@ -304,10 +278,7 @@ void deoglSkinState::AddRenderables(deoglRSkin &skin, deoglRDynamicSkin &dynamic
 }
 
 void deoglSkinState::RemoveAllRenderables(){
-	while(pRenderableCount > 0){
-		pRenderableCount--;
-		delete pRenderables[pRenderableCount];
-	}
+	pRenderables.RemoveAll();
 }
 
 
@@ -514,10 +485,6 @@ void deoglSkinState::pSharedInit(){
 	pOwnerLight = nullptr;
 	
 	pTime = 0.0f;
-	
-	pRenderables = nullptr;
-	pRenderableCount = 0;
-	pRenderableSize = 0;
 	
 	pMapped = nullptr;
 	pMappedCount = 0;

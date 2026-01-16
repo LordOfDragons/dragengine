@@ -44,11 +44,11 @@ public:
 		using decTUniqueList<deModioParameter>::decTUniqueList;
 		
 		deModioParameter &GetNamed(const char *name) const{
-			const deTUniqueReference<deModioParameter> *found = nullptr;
-			DEASSERT_TRUE(Find([&](const deModioParameter &p){
+			deModioParameter * const found = FindOrNull([&](const deModioParameter &p){
 				return p.GetName() == name;
-			}, found));
-			return **found;
+			});
+			DEASSERT_NOTNULL(found)
+			return *found;
 		}
 		
 		int IndexOfNamed(const char *name) const{

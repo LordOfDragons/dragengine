@@ -36,6 +36,7 @@
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../shaders/paramblock/deoglSPBlockSSBO.h"
 
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decTimer.h>
 
@@ -83,8 +84,7 @@ private:
 	decVector2 pIrradianceMapScale;
 	decVector2 pDistanceMapScale;
 	
-	deoglGICascade **pCascades;
-	int pCascadeCount;
+	decTUniqueList<deoglGICascade> pCascades;
 	int pActiveCascade;
 	int pLastFrameCascade;
 	
@@ -168,7 +168,7 @@ public:
 	
 	
 	/** Cascade count. */
-	inline int GetCascadeCount() const{ return pCascadeCount; }
+	inline int GetCascadeCount() const{ return pCascades.GetCount(); }
 	
 	/** Cascade at index. */
 	deoglGICascade &GetCascadeAt(int index) const;

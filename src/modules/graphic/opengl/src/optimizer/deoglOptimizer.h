@@ -26,14 +26,20 @@
 #ifndef _DEOGLOPTIMIZER_H_
 #define _DEOGLOPTIMIZER_H_
 
+#include <dragengine/deObject.h>
+#include <dragengine/deTObjectReference.h>
+
 
 
 /**
  * Optimizer.
  * Optimizers are able to optimize progessively an engine object over time.
  */
-class deoglOptimizer{
+class deoglOptimizer : public deObject{
 public:
+	/** \brief Reference. */
+	using Ref = deTObjectReference<deoglOptimizer>;
+	
 	enum ePriorities{
 		epLowest,
 		epLower,
@@ -52,10 +58,13 @@ public:
 	/*@{*/
 	/** Creates a new optimizer. */
 	deoglOptimizer();
+	
+protected:
 	/** Cleans up the optimizer. */
-	virtual ~deoglOptimizer();
+	~deoglOptimizer() override = default;
 	/*@}*/
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the remaining time for this optimizer in micro-seconds. */

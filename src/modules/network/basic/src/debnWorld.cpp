@@ -47,24 +47,17 @@ debnWorld::debnWorld(deNetworkBasic *netBasic, deWorld *world){
 		DETHROW(deeInvalidParam);
 	}
 	
-	int i;
-	
 	pWorld = world;
 	
 	pCanCreateStates = false;
 	
-	pStateSlots = nullptr;
-	pStateSlotCount = 0;
-	
 	pParentNetwork = nullptr;
 	
 	try{
-		pStateSlots = new debnState*[1000];
-		
-		pStateSlotCount = 1000;
-		
-		for(i=0; i<pStateSlotCount; i++){
-			pStateSlots[i] = nullptr;
+		pStateSlots.EnlargeCapacity(1000);
+		int i;
+		for(i=0; i<1000; i++){
+			pStateSlots.Add(nullptr);
 		}
 		
 	}catch(const deException &){
@@ -151,15 +144,13 @@ void debnWorld::AllNetworkStatesRemoved(){
 
 void debnWorld::pCleanUp(){
 	AllNetworkStatesRemoved();
-	
-	if(pStateSlots) delete [] pStateSlots;
 }
 
 int debnWorld::pNextFreeSlot(){
 	int i;
 	
-	for(i=0; i<pStateSlotCount; i++){
-		if(!pStateSlots[i]){
+	for(i=0; i<pStateSlots.GetCount(); i++){
+		if(!pStateSlots.GetAt(i)){
 			return i;
 		}
 	}

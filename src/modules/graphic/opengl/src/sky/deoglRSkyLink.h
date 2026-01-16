@@ -25,6 +25,8 @@
 #ifndef _DEOGLRSKYLINK_H_
 #define _DEOGLRSKYLINK_H_
 
+#include <dragengine/deTUniqueReference.h>
+
 #include <dragengine/common/math/decMath.h>
 
 class deoglRSkyInstance;
@@ -37,6 +39,9 @@ class deSkyLink;
  * Render sky link.
  */
 class deoglRSkyLink{
+public:
+	using Ref = deTUniqueReference<deoglRSkyLink>;
+	
 private:
 	const int pController;
 	const int pRepeat;

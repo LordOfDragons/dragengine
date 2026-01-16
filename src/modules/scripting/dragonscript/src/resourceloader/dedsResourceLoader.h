@@ -25,6 +25,7 @@
 #ifndef _DEDSRESOURCELOADER_H_
 #define _DEDSRESOURCELOADER_H_
 
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/resources/loader/deResourceLoader.h>
 
 class deScriptingDragonScript;
@@ -41,10 +42,7 @@ class dedsResourceLoader{
 private:
 	deScriptingDragonScript *pDS;
 	
-	dedsResourceLoaderTask **pTasks;
-	int pTaskCount;
-	int pTaskSize;
-	
+	decTUniqueList<dedsResourceLoaderTask> pTasks;
 	
 	
 public:
@@ -59,10 +57,10 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the number of tasks. */
-	inline int GetTaskCount() const{ return pTaskCount; }
+	inline int GetTaskCount() const{ return pTasks.GetCount(); }
 	
 	/** Determines if there are still some resources left to load. */
-	inline bool HasResourcesLeft() const{ return pTaskCount > 0; }
+	inline bool HasResourcesLeft() const{ return pTasks.IsNotEmpty(); }
 	/** Update. */
 	void OnFrameUpdate();
 	
