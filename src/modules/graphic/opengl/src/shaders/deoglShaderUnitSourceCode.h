@@ -62,9 +62,13 @@ public:
 	/*@{*/
 	/** Create source code. */
 	deoglShaderUnitSourceCode(deGraphicOpenGl &ogl, const decPath &path);
+	
+protected:
+	~deoglShaderUnitSourceCode() override = default;
 	/*@}*/
 	
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Name. */

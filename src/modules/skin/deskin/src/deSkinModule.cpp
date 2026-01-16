@@ -840,22 +840,22 @@ deSkinPropertyNode::Ref deSkinModule::pParsePropertyNode(const decXmlElementTag 
 		if(tagName == "group"){
 			auto node = deSkinPropertyNodeGroup::Ref::New();
 			pParsePropertyNodeGroup(tag, skin, node);
-			return node;
+			return std::move(node);
 			
 		}else if(tagName == "image"){
 			auto node = deSkinPropertyNodeImage::Ref::New();
 			pParsePropertyNodeImage(tag, skin, node);
-			return node;
+			return std::move(node);
 			
 		}else if(tagName == "shape"){
 			auto node = deSkinPropertyNodeShape::Ref::New();
 			pParsePropertyNodeShape(tag, skin, node);
-			return node;
+			return std::move(node);
 			
 		}else if(tagName == "text"){
 			auto node = deSkinPropertyNodeText::Ref::New();
 			pParsePropertyNodeText(tag, skin, node);
-			return node;
+			return std::move(node);
 			
 		}else{
 			DETHROW(deeInvalidParam);
