@@ -77,7 +77,7 @@ void deoglRCanvasView::AddChild(deoglRCanvas *canvas){
 	//      for the beginning though it should not be required since the number of
 	//      child canvas are low so a linear search is fine.
 	for(i=0; i<count; i++){
-		const deoglRCanvas &child = *((deoglRCanvas*)pChildren.GetAt(i));
+		const deoglRCanvas &child = pChildren.GetAt(i);
 		
 		if(order < child.GetOrder()){
 			pChildren.Insert(canvas, i);
@@ -187,7 +187,7 @@ void deoglRCanvasView::PrepareForRender(const deoglRenderPlanMasked *renderPlanM
 	
 	int i;
 	for(i=0; i<count; i++){
-		deoglRCanvas &child = *((deoglRCanvas*)pChildren.GetAt(i));
+		deoglRCanvas &child = pChildren.GetAt(i);
 		if(child.GetVisible()){
 			child.PrepareForRender(renderPlanMask);
 		}
@@ -204,7 +204,7 @@ void deoglRCanvasView::PrepareForRenderRender(const deoglRenderPlanMasked *rende
 	
 	int i;
 	for(i=0; i<count; i++){
-		deoglRCanvas &child = *((deoglRCanvas*)pChildren.GetAt(i));
+		deoglRCanvas &child = pChildren.GetAt(i);
 		if(child.GetVisible()){
 			child.PrepareForRenderRender(renderPlanMask);
 		}
@@ -222,7 +222,7 @@ void deoglRCanvasView::Render(const deoglRenderCanvasContext &context){
 	int i;
 	
 	for(i=0; i<count; i++){
-		deoglRCanvas &child = *((deoglRCanvas*)pChildren.GetAt(i));
+		deoglRCanvas &child = pChildren.GetAt(i);
 		if(child.GetVisible()){
 			child.Render(childContext);
 		}

@@ -58,8 +58,7 @@ syneUControllerToggleClamp::~syneUControllerToggleClamp(){
 ///////////////
 
 void syneUControllerToggleClamp::Undo(){
-	syneController &controller = (syneController&)(deObject&)pController;
-	controller.SetClamp(!controller.GetClamp());
+	pController->SetClamp(!pController->GetClamp());
 }
 
 void syneUControllerToggleClamp::Redo(){

@@ -70,7 +70,7 @@ void deoalSkinTexture::ProcessProperties(const deSkinTexture &texture){
 	pName = texture.GetName();
 	
 	for(i=0; i<count; i++){
-		deSkinProperty &property = *texture.GetPropertyAt(i);
+		deSkinProperty &property = texture.GetPropertyAt(i);
 		
 		if(property.GetType() == "sound.none"){
 			property.Visit(identify);

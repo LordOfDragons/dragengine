@@ -73,8 +73,7 @@ const dearAnimator &animator, const decTList<int> &controllerMapping, int firstL
 pInstance(instance),
 pAnimator(animator),
 pControllerMapping(controllerMapping),
-pFirstLink(firstLink),
-pCreatedRule(nullptr){
+pFirstLink(firstLink){
 }
 
 dearCreateRuleVisitor::~dearCreateRuleVisitor(){
@@ -86,14 +85,14 @@ dearCreateRuleVisitor::~dearCreateRuleVisitor(){
 ///////////////
 
 void dearCreateRuleVisitor::Reset(){
-	pCreatedRule = nullptr;
+	pCreatedRule.Clear();
 }
 
 bool dearCreateRuleVisitor::HasCreatedRule() const{
-	return pCreatedRule;
+	return pCreatedRule.IsNotNull();
 }
 
-dearRule *dearCreateRuleVisitor::CreateRuleFrom(deAnimatorRule &engRule){
+deTUniqueReference<dearRule> &dearCreateRuleVisitor::CreateRuleFrom(deAnimatorRule &engRule){
 	Reset();
 	engRule.Visit(*this);
 	return pCreatedRule;
@@ -105,57 +104,57 @@ dearRule *dearCreateRuleVisitor::CreateRuleFrom(deAnimatorRule &engRule){
 /////////////
 
 void dearCreateRuleVisitor::VisitRule(deAnimatorRule&){
-	pCreatedRule = nullptr;
+	pCreatedRule.Clear();
 }
 
 void dearCreateRuleVisitor::VisitAnimation(deAnimatorRuleAnimation &rule){
-	pCreatedRule = new dearRuleAnimation(pInstance, pAnimator, pFirstLink, rule);
+	pCreatedRule = deTUniqueReference<dearRuleAnimation>::New(pInstance, pAnimator, pFirstLink, rule);
 }
 
 void dearCreateRuleVisitor::VisitAnimationDifference(deAnimatorRuleAnimationDifference &rule){
-	pCreatedRule = new dearRuleAnimationDifference(pInstance, pAnimator, pFirstLink, rule);
+	pCreatedRule = deTUniqueReference<dearRuleAnimationDifference>::New(pInstance, pAnimator, pFirstLink, rule);
 }
 
 void dearCreateRuleVisitor::VisitAnimationSelect(deAnimatorRuleAnimationSelect &rule){
-	pCreatedRule = new dearRuleAnimationSelect(pInstance, pAnimator, pFirstLink, rule);
+	pCreatedRule = deTUniqueReference<dearRuleAnimationSelect>::New(pInstance, pAnimator, pFirstLink, rule);
 }
 
 void dearCreateRuleVisitor::VisitBoneTransformator(deAnimatorRuleBoneTransformator &rule){
-	pCreatedRule = new dearRuleBoneTransformator(pInstance, pAnimator, pFirstLink, rule);
+	pCreatedRule = deTUniqueReference<dearRuleBoneTransformator>::New(pInstance, pAnimator, pFirstLink, rule);
 }
 
 void dearCreateRuleVisitor::VisitInverseKinematic(deAnimatorRuleInverseKinematic &rule){
-	pCreatedRule = new dearRuleInverseKinematic(pInstance, pAnimator, pFirstLink, rule);
+	pCreatedRule = deTUniqueReference<dearRuleInverseKinematic>::New(pInstance, pAnimator, pFirstLink, rule);
 }
 
 void dearCreateRuleVisitor::VisitStateManipulator(deAnimatorRuleStateManipulator &rule){
-	pCreatedRule = new dearRuleStateManipulator(pInstance, pAnimator, pFirstLink, rule);
+	pCreatedRule = deTUniqueReference<dearRuleStateManipulator>::New(pInstance, pAnimator, pFirstLink, rule);
 }
 
 void dearCreateRuleVisitor::VisitStateSnapshot(deAnimatorRuleStateSnapshot &rule){
-	pCreatedRule = new dearRuleStateSnapshot(pInstance, pAnimator, pFirstLink, rule);
+	pCreatedRule = deTUniqueReference<dearRuleStateSnapshot>::New(pInstance, pAnimator, pFirstLink, rule);
 }
 
 void dearCreateRuleVisitor::VisitForeignState(deAnimatorRuleForeignState &rule){
-	pCreatedRule = new dearRuleForeignState(pInstance, pAnimator, pFirstLink, rule);
+	pCreatedRule = deTUniqueReference<dearRuleForeignState>::New(pInstance, pAnimator, pFirstLink, rule);
 }
 
 void dearCreateRuleVisitor::VisitGroup(deAnimatorRuleGroup &rule){
-	pCreatedRule = new dearRuleGroup(pInstance, pAnimator, pFirstLink, rule, pControllerMapping);
+	pCreatedRule = deTUniqueReference<dearRuleGroup>::New(pInstance, pAnimator, pFirstLink, rule, pControllerMapping);
 }
 
 void dearCreateRuleVisitor::VisitSubAnimator(deAnimatorRuleSubAnimator &rule){
-	pCreatedRule = new dearRuleSubAnimator(pInstance, pAnimator, pFirstLink, rule, pControllerMapping);
+	pCreatedRule = deTUniqueReference<dearRuleSubAnimator>::New(pInstance, pAnimator, pFirstLink, rule, pControllerMapping);
 }
 
 void dearCreateRuleVisitor::VisitTrackTo(deAnimatorRuleTrackTo &rule){
-	pCreatedRule = new dearRuleTrackTo(pInstance, pAnimator, pFirstLink, rule);
+	pCreatedRule = deTUniqueReference<dearRuleTrackTo>::New(pInstance, pAnimator, pFirstLink, rule);
 }
 
 void dearCreateRuleVisitor::VisitLimit(deAnimatorRuleLimit &rule){
-	pCreatedRule = new dearRuleLimit(pInstance, pAnimator, pFirstLink, rule);
+	pCreatedRule = deTUniqueReference<dearRuleLimit>::New(pInstance, pAnimator, pFirstLink, rule);
 }
 
 void dearCreateRuleVisitor::VisitMirror(deAnimatorRuleMirror &rule){
-	pCreatedRule = new dearRuleMirror(pInstance, pAnimator, pFirstLink, rule);
+	pCreatedRule = deTUniqueReference<dearRuleMirror>::New(pInstance, pAnimator, pFirstLink, rule);
 }

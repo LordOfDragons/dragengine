@@ -258,7 +258,7 @@ deEosSdkPendingRequest *deEosSdkServiceEos::GetPendingRequestWithId(const decUni
 	int i;
 	
 	for(i=0; i<count; i++){
-		deEosSdkPendingRequest * const pr = (deEosSdkPendingRequest*)pPendingRequests.GetAt(i);
+		deEosSdkPendingRequest * const pr = pPendingRequests.GetAt(i);
 		if(pr->id == id){
 			return pr;
 		}
@@ -273,7 +273,7 @@ const decUniqueID &id){
 	int i;
 	
 	for(i=0; i<count; i++){
-		deEosSdkPendingRequest * const pr = (deEosSdkPendingRequest*)pPendingRequests.GetAt(i);
+		deEosSdkPendingRequest * const pr = pPendingRequests.GetAt(i);
 		if(pr->id == id){
 			const deEosSdkPendingRequest::Ref prr(pr);
 			pPendingRequests.RemoveFrom(i);
@@ -290,7 +290,7 @@ const char *function){
 	int i;
 	
 	for(i=0; i<count; i++){
-		deEosSdkPendingRequest * const pr = (deEosSdkPendingRequest*)pPendingRequests.GetAt(i);
+		deEosSdkPendingRequest * const pr = pPendingRequests.GetAt(i);
 		if(pr->function == function){
 			const deEosSdkPendingRequest::Ref prr(pr);
 			pPendingRequests.RemoveFrom(i);
@@ -531,8 +531,8 @@ void deEosSdkServiceEos::FrameUpdate(float elapsed){
 //////////////////////
 
 void deEosSdkServiceEos::pCleanUp(){
-	while(pPendingRequests.GetCount() > 0){
-		CancelRequest(((deEosSdkPendingRequest*)pPendingRequests.GetAt(0))->id);
+	while(pPendingRequests.IsNotEmpty()){
+		CancelRequest(pPendingRequests.First()->id);
 	}
 	if(pHandlePlatform){
 		EOS_Platform_Tick(pHandlePlatform);

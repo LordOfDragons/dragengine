@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-// includes
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "deErrorTraceValue.h"
 #include "../common/exceptions.h"
 
@@ -39,15 +35,10 @@
 
 deErrorTraceValue::deErrorTraceValue(const char *name, const char *value) :
 pName(name),
-pValue(value),
-pSubValues(nullptr),
-pSubValueCount(0),
-pSubValueSize(0){
+pValue(value){
 }
 
 deErrorTraceValue::~deErrorTraceValue(){
-	RemoveAllSubValues();
-	if(pSubValues) delete [] pSubValues;
 }
 
 		
@@ -68,42 +59,25 @@ void deErrorTraceValue::SetValueFrom(float value){
 // Trace SubValue Management
 //////////////////////////////
 
-deErrorTraceValue *deErrorTraceValue::GetSubValue(int index) const{
-	if(index < 0 || index >= pSubValueCount) DETHROW(deeInvalidParam);
-	return pSubValues[index];
+const deErrorTraceValue::Ref &deErrorTraceValue::GetSubValue(int index) const{
+	return pSubValues.GetAt(index);
 }
 
 deErrorTraceValue *deErrorTraceValue::FindSubValue(const char *name) const{
 	if(!name) DETHROW(deeInvalidParam);
-	int i;
-	for(i=0; i<pSubValueCount; i++){
-		if(strcmp(name, pSubValues[i]->GetName()) == 0) return pSubValues[i];
-	}
-	return nullptr;
+	const Ref *found = nullptr;
+	return pSubValues.Find([&](const deErrorTraceValue &value){
+		return value.GetName() == name;
+	}, found) ? found->Pointer() : nullptr;
 }
 
-void deErrorTraceValue::AddSubValue(deErrorTraceValue *value){
+void deErrorTraceValue::AddSubValue(deTUniqueReference<deErrorTraceValue> &&value){
 	if(!value || FindSubValue(value->GetName())) DETHROW(deeInvalidParam);
-	if(pSubValueCount == pSubValueSize){
-		int i, newSize = pSubValueSize * 3 / 2 + 1;
-		deErrorTraceValue **newArray = new deErrorTraceValue*[newSize];
-		if(pSubValues){
-			for(i=0; i<pSubValueCount; i++) newArray[i] = pSubValues[i];
-			delete [] pSubValues;
-		}
-		pSubValues = newArray;
-		pSubValueSize = newSize;
-	}
-	pSubValues[pSubValueCount] = value;
-	pSubValueCount++;
+	pSubValues.Add(std::move(value));
 }
 
 void deErrorTraceValue::RemoveAllSubValues(){
-	int i;
-	for(i=0; i<pSubValueCount; i++){
-		if(pSubValues[i]) delete pSubValues[i];
-	}
-	pSubValueCount = 0;
+	pSubValues.RemoveAll();
 }
 
 
@@ -111,66 +85,34 @@ void deErrorTraceValue::RemoveAllSubValues(){
 // Convenience Functions
 //////////////////////////
 
-deErrorTraceValue *deErrorTraceValue::AddSubValue(const char *name, const char *value){
-	deErrorTraceValue *newSubValue = nullptr;
-	try{
-		newSubValue = new deErrorTraceValue(name, value);
-		AddSubValue(newSubValue);
-	}catch(const deException &){
-		if(newSubValue) delete newSubValue;
-		throw;
-	}
-	return newSubValue;
+const deErrorTraceValue::Ref &deErrorTraceValue::AddSubValue(const char *name, const char *value){
+	AddSubValue(Ref::New(name, value));
+	return pSubValues.Last();
 }
 
-deErrorTraceValue *deErrorTraceValue::AddSubValueInt(const char *name, int value){
-	deErrorTraceValue *newSubValue = nullptr;
+const deErrorTraceValue::Ref &deErrorTraceValue::AddSubValueInt(const char *name, int value){
 	char buffer[20];
 	#ifdef _MSC_VER
 		sprintf_s(reinterpret_cast<char*>(&buffer), 20, "%i", value);
 	#else
 		sprintf(reinterpret_cast<char*>(&buffer), "%i", value);
 	#endif
-	try{
-		newSubValue = new deErrorTraceValue(name, buffer);
-		AddSubValue(newSubValue);
-	}catch(const deException &){
-		if(newSubValue) delete newSubValue;
-		throw;
-	}
-	return newSubValue;
+	AddSubValue(Ref::New(name, buffer));
+	return pSubValues.Last();
 }
 
-deErrorTraceValue *deErrorTraceValue::AddSubValueFloat(const char *name, float value){
-	deErrorTraceValue *newSubValue = nullptr;
+const deErrorTraceValue::Ref &deErrorTraceValue::AddSubValueFloat(const char *name, float value){
 	char buffer[20];
 	#ifdef _MSC_VER
 		sprintf_s(reinterpret_cast<char*>(&buffer), 20, "%g", value);
 	#else
 		sprintf(reinterpret_cast<char*>(&buffer), "%g", value);
 	#endif
-	try{
-		newSubValue = new deErrorTraceValue(name, buffer);
-		AddSubValue(newSubValue);
-	}catch(const deException &){
-		if(newSubValue) delete newSubValue;
-		throw;
-	}
-	return newSubValue;
+	AddSubValue(Ref::New(name, buffer));
+	return pSubValues.Last();
 }
 
-deErrorTraceValue *deErrorTraceValue::AddSubValueBool(const char *name, bool value){
-	deErrorTraceValue *newSubValue = nullptr;
-	try{
-		if(value){
-			newSubValue = new deErrorTraceValue(name, "True");
-		}else{
-			newSubValue = new deErrorTraceValue(name, "False");
-		}		
-		AddSubValue(newSubValue);
-	}catch(const deException &){
-		if(newSubValue) delete newSubValue;
-		throw;
-	}
-	return newSubValue;
+const deErrorTraceValue::Ref &deErrorTraceValue::AddSubValueBool(const char *name, bool value){
+	AddSubValue(Ref::New(name, value ? "True" : "False"));
+	return pSubValues.Last();
 }

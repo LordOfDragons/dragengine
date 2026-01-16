@@ -25,8 +25,9 @@
 #ifndef _DEEFFECT_H_
 #define _DEEFFECT_H_
 
-#include "../../common/math/decMath.h"
 #include "../deResource.h"
+#include "../../common/collection/decTOrderedSet.h"
+#include "../../common/math/decMath.h"
 
 
 class deEffectFilterKernel;
@@ -49,6 +50,9 @@ class DE_DLL_EXPORT deEffect : public deResource{
 public:
 	/** \brief Type holding strong reference. */
 	using Ref = deTObjectReference<deEffect>;
+	
+	/** \brief List. */
+	using List = decTObjectOrderedSet<deEffect>;
 	
 	
 private:

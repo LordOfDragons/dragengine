@@ -226,12 +226,12 @@ void gdeViewActiveObject::OnFrameUpdate(float elapsed){
 	int i;
 	const int componentCount = pOCComponents.GetCount();
 	for(i=0; i<componentCount; i++){
-		((gdeVAOComponent*)pOCComponents.GetAt(i))->Update(elapsed);
+		pOCComponents.GetAt(i)->Update(elapsed);
 	}
 	
 	const int lightCount = pOCLights.GetCount();
 	for(i=0; i<lightCount; i++){
-		((gdeVAOLight*)pOCLights.GetAt(i))->Update(elapsed);
+		pOCLights.GetAt(i)->Update(elapsed);
 	}
 }
 
@@ -441,7 +441,7 @@ deCollider *gdeViewActiveObject::GetAttachComponentCollider() const{
 		return nullptr;
 	}
 	
-	return ((gdeVAOComponent*)pOCComponents.GetAt(0))->GetCollider();
+	return pOCComponents.First()->GetCollider();
 }
 
 void gdeViewActiveObject::RebuildOCComponents(){
@@ -458,7 +458,7 @@ void gdeViewActiveObject::RebuildOCComponent(gdeOCComponent *occomponent){
 	int i;
 	
 	for(i=0; i<count; i++){
-		gdeVAOComponent * const vao = (gdeVAOComponent*)pOCComponents.GetAt(i);
+		gdeVAOComponent * const vao = pOCComponents.GetAt(i);
 		if(vao->GetOCComponent() != occomponent){
 			continue;
 		}
@@ -475,7 +475,7 @@ gdeOCComponentTexture *texture){
 	int i;
 	
 	for(i=0; i<count; i++){
-		gdeVAOComponent * const vao = (gdeVAOComponent*)pOCComponents.GetAt(i);
+		gdeVAOComponent * const vao = pOCComponents.GetAt(i);
 		if(occomponent && vao->GetOCComponent() != occomponent){
 			continue;
 		}
@@ -499,7 +499,7 @@ void gdeViewActiveObject::RebuildOCBillboard(gdeOCBillboard *ocbillboard){
 	int i;
 	
 	for(i=0; i<count; i++){
-		gdeVAOBillboard * const vao = (gdeVAOBillboard*)pOCBillboards.GetAt(i);
+		gdeVAOBillboard * const vao = pOCBillboards.GetAt(i);
 		if(vao->GetOCBillboard() != ocbillboard){
 			continue;
 		}
@@ -523,7 +523,7 @@ void gdeViewActiveObject::RebuildOCCamera(gdeOCCamera *occamera){
 	int i;
 	
 	for(i=0; i<count; i++){
-		gdeVAOCamera * const vao = (gdeVAOCamera*)pOCCameras.GetAt(i);
+		gdeVAOCamera * const vao = pOCCameras.GetAt(i);
 		if(vao->GetOCCamera() != occamera){
 			continue;
 		}
@@ -546,7 +546,7 @@ void gdeViewActiveObject::RebuildOCLight(gdeOCLight *oclight){
 	int i;
 	
 	for(i=0; i<count; i++){
-		gdeVAOLight * const vao = (gdeVAOLight*)pOCLights.GetAt(i);
+		gdeVAOLight * const vao = pOCLights.GetAt(i);
 		if(vao->GetOCLight() != oclight){
 			continue;
 		}
@@ -569,7 +569,7 @@ void gdeViewActiveObject::RebuildOCEnvMapProbe(gdeOCEnvMapProbe *ocenvMapProbe){
 	int i;
 	
 	for(i=0; i<count; i++){
-		gdeVAOEnvMapProbe * const vao = (gdeVAOEnvMapProbe*)pOCEnvMapProbes.GetAt(i);
+		gdeVAOEnvMapProbe * const vao = pOCEnvMapProbes.GetAt(i);
 		if(vao->GetOCEnvMapProbe() != ocenvMapProbe){
 			continue;
 		}
@@ -592,7 +592,7 @@ void gdeViewActiveObject::RebuildOCNavSpace(gdeOCNavigationSpace *ocnavspace){
 	int i;
 	
 	for(i=0; i<count; i++){
-		gdeVAONavSpace * const vao = (gdeVAONavSpace*)pOCNavSpaces.GetAt(i);
+		gdeVAONavSpace * const vao = pOCNavSpaces.GetAt(i);
 		if(vao->GetOCNavSpace() != ocnavspace){
 			continue;
 		}
@@ -615,7 +615,7 @@ void gdeViewActiveObject::RebuildOCNavBlocker(gdeOCNavigationBlocker *ocnavblock
 	int i;
 	
 	for(i=0; i<count; i++){
-		gdeVAONavBlocker * const vao = (gdeVAONavBlocker*)pOCNavBlockers.GetAt(i);
+		gdeVAONavBlocker * const vao = pOCNavBlockers.GetAt(i);
 		if(vao->GetOCNavBlocker() != ocnavblocker){
 			continue;
 		}
@@ -638,7 +638,7 @@ void gdeViewActiveObject::RebuildOCParticleEmitter(gdeOCParticleEmitter *ocemitt
 	int i;
 	
 	for(i=0; i<count; i++){
-		gdeVAOParticleEmitter * const vao = (gdeVAOParticleEmitter*)pOCParticleEmitters.GetAt(i);
+		gdeVAOParticleEmitter * const vao = pOCParticleEmitters.GetAt(i);
 		if(vao->GetOCParticleEmitter() != ocemitter){
 			continue;
 		}
@@ -661,7 +661,7 @@ void gdeViewActiveObject::RebuildOCForceField(gdeOCForceField *ocfield){
 	int i;
 	
 	for(i=0; i<count; i++){
-		gdeVAOForceField * const vao = (gdeVAOForceField*)pOCForceFields.GetAt(i);
+		gdeVAOForceField * const vao = pOCForceFields.GetAt(i);
 		if(vao->GetOCForceField() != ocfield){
 			continue;
 		}
@@ -684,7 +684,7 @@ void gdeViewActiveObject::RebuildOCSnapPoint(gdeOCSnapPoint *ocsnapPoint){
 	int i;
 	
 	for(i=0; i<count; i++){
-		gdeVAOSnapPoint * const vao = (gdeVAOSnapPoint*)pOCSnapPoints.GetAt(i);
+		gdeVAOSnapPoint * const vao = pOCSnapPoints.GetAt(i);
 		if(vao->GetOCSnapPoint() != ocsnapPoint){
 			continue;
 		}
@@ -707,7 +707,7 @@ void gdeViewActiveObject::RebuildOCSpeaker(gdeOCSpeaker *ocspeaker){
 	int i;
 	
 	for(i=0; i<count; i++){
-		gdeVAOSpeaker * const vao = (gdeVAOSpeaker*)pOCSpeakers.GetAt(i);
+		gdeVAOSpeaker * const vao = pOCSpeakers.GetAt(i);
 		if(vao->GetOCSpeaker() != ocspeaker){
 			continue;
 		}
@@ -730,7 +730,7 @@ void gdeViewActiveObject::RebuildOCWorld(gdeOCWorld *ocworld){
 	int i;
 	
 	for(i=0; i<count; i++){
-		gdeVAOWorld * const vao = (gdeVAOWorld*)pOCWorlds.GetAt(i);
+		gdeVAOWorld * const vao = pOCWorlds.GetAt(i);
 		if(vao->GetOCWorld() != ocworld){
 			continue;
 		}
@@ -753,7 +753,7 @@ void gdeViewActiveObject::SetShowEnvMapProbes(bool show){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((gdeVAOEnvMapProbe*)pOCEnvMapProbes.GetAt(i))->UpdateDDVisibility();
+		pOCEnvMapProbes.GetAt(i)->UpdateDDVisibility();
 	}
 }
 
@@ -766,12 +766,12 @@ void gdeViewActiveObject::SetShowNavBlockers(bool show){
 	
 	int i, count = pOCNavSpaces.GetCount();
 	for(i=0; i<count; i++){
-		((gdeVAONavSpace*)pOCNavSpaces.GetAt(i))->UpdateDDVisibility();
+		pOCNavSpaces.GetAt(i)->UpdateDDVisibility();
 	}
 	
 	count = pOCNavBlockers.GetCount();
 	for(i=0; i<count; i++){
-		((gdeVAONavBlocker*)pOCNavBlockers.GetAt(i))->UpdateDDVisibility();
+		pOCNavBlockers.GetAt(i)->UpdateDDVisibility();
 	}
 }
 
@@ -1069,13 +1069,13 @@ void gdeViewActiveObject::pAddComponentShadowIgnore(){
 	int i, j;
 	
 	for(i=0; i<componentCount; i++){
-		const gdeVAOComponent &occomp = *((gdeVAOComponent*)pOCComponents.GetAt(i));
+		const gdeVAOComponent &occomp = pOCComponents.GetAt(i);
 		if(!occomp.GetOCComponent()->GetLightShadowIgnore()){
 			continue;
 		}
 		
 		for(j=0; j<lightCount; j++){
-			((gdeVAOLight*)pOCLights.GetAt(j))->ShadowIgnoreComponent(occomp.GetComponent());
+			pOCLights.GetAt(j)->ShadowIgnoreComponent(occomp.GetComponent());
 		}
 	}
 }
@@ -1278,7 +1278,7 @@ void gdeViewActiveObject::pOCReattachAllObjects(){
 	// remove all attachments
 	int i, count = pOCComponents.GetCount();
 	for(i=0; i<count; i++){
-		deCollider * const collider = ((gdeVAOComponent*)pOCComponents.GetAt(i))->GetCollider();
+		deCollider * const collider = pOCComponents.GetAt(i)->GetCollider();
 		if(collider){
 			collider->RemoveAllAttachments();
 		}
@@ -1287,17 +1287,17 @@ void gdeViewActiveObject::pOCReattachAllObjects(){
 	// attach all objects
 	count = pOCLights.GetCount();
 	for(i=0; i<count; i++){
-		((gdeVAOLight*)pOCLights.GetAt(i))->AttachResources();
+		pOCLights.GetAt(i)->AttachResources();
 	}
 	
 	count = pOCParticleEmitters.GetCount();
 	for(i=0; i<count; i++){
-		((gdeVAOParticleEmitter*)pOCParticleEmitters.GetAt(i))->AttachResources();
+		pOCParticleEmitters.GetAt(i)->AttachResources();
 	}
 	
 	count = pOCForceFields.GetCount();
 	for(i=0; i<count; i++){
-		((gdeVAOForceField*)pOCForceFields.GetAt(i))->AttachResources();
+		pOCForceFields.GetAt(i)->AttachResources();
 	}
 }
 
@@ -1311,7 +1311,7 @@ void gdeViewActiveObject::pCenterOnObjectClass(igdeCamera &camera){
 	
 	const int componentCount = pOCComponents.GetCount();
 	for(i=0; i<componentCount; i++){
-		((gdeVAOComponent*)pOCComponents.GetAt(i))->GetExtends(resMinExtend, resMaxExtend);
+		pOCComponents.GetAt(i)->GetExtends(resMinExtend, resMaxExtend);
 		
 		if(first){
 			boxMinExtend = resMinExtend;
@@ -1326,7 +1326,7 @@ void gdeViewActiveObject::pCenterOnObjectClass(igdeCamera &camera){
 	
 	const int billboardCount = pOCBillboards.GetCount();
 	for(i=0; i<billboardCount; i++){
-		((gdeVAOBillboard*)pOCBillboards.GetAt(i))->GetExtends(resMinExtend, resMaxExtend);
+		pOCBillboards.GetAt(i)->GetExtends(resMinExtend, resMaxExtend);
 		
 		if(first){
 			boxMinExtend = resMinExtend;

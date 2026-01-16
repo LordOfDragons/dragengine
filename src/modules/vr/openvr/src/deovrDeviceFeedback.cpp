@@ -132,7 +132,7 @@ void deovrDeviceFeedback::GetInfo(deInputDeviceFeedback &info) const{
 	
 	info.SetDisplayImage(pDisplayImage);
 	for(i=0; i<pDisplayIcons.GetCount(); i++){
-		info.AddDisplayIcon((deImage*)pDisplayIcons.GetAt(i));
+		info.AddDisplayIcon(pDisplayIcons.GetAt(i));
 	}
 	info.SetDisplayText(pDisplayText);
 }

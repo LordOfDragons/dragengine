@@ -95,7 +95,7 @@ deoglRenderTaskSharedInstance *deoglHTViewSectorCluster::GetRTSInstanceAt(int te
 	if(rtsIndex >= pRTSInstances.GetCount()){
 		return nullptr;
 	}
-	return (deoglRenderTaskSharedInstance*)pRTSInstances.GetAt(rtsIndex);
+	return pRTSInstances.GetAt(rtsIndex);
 }
 
 void deoglHTViewSectorCluster::UpdateRTSInstances(){
@@ -171,8 +171,7 @@ void deoglHTViewSectorCluster::pRemoveAllRTSInstances(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		deoglRenderTaskSharedInstance * const rtinstance =
-			(deoglRenderTaskSharedInstance*)pRTSInstances.GetAt(i);
+		deoglRenderTaskSharedInstance * const rtinstance = pRTSInstances.GetAt(i);
 		if(rtinstance){
 			rtinstance->ReturnToPool();
 		}

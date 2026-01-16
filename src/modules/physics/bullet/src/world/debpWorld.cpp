@@ -1292,7 +1292,6 @@ void debpWorld::pStepForceFields(float elapsed){
 	float bx, bz, rotPerForce, bvx, bvz;
 	dePropFieldBendState *engPFBendStates;
 	debpPropFieldBendState *pfBendStates;
-	dePropFieldType *engPFType;
 	int ptb, pftBendStateCount;
 	debpPropFieldType *pfType;
 	decVector localPosition;
@@ -1348,16 +1347,16 @@ void debpWorld::pStepForceFields(float elapsed){
 			localPosition = (ffpos - pfpos).ToVector();
 			
 			for(pt=0; pt<pfTypeCount; pt++){
-				engPFType = propField->GetTypeAt(pt);
+				dePropFieldType &engPFType = propField->GetTypeAt(pt);
 				
-				if(forceField->GetCollisionFilter().CollidesNot(engPFType->GetCollisionFilter())){
+				if(forceField->GetCollisionFilter().CollidesNot(engPFType.GetCollisionFilter())){
 					continue;
 				}
 				
 				pfType = btPropField.GetTypeAt(pt);
 				
-				pftBendStateCount = engPFType->GetBendStateCount();
-				engPFBendStates = engPFType->GetBendStates();
+				pftBendStateCount = engPFType.GetBendStateCount();
+				engPFBendStates = engPFType.GetBendStates();
 				
 				switch(ffApplyType){
 				case deForceField::eatDirect:
@@ -1382,7 +1381,7 @@ void debpWorld::pStepForceFields(float elapsed){
 					DETHROW(deeInvalidParam);
 				}
 				
-				rotPerForce = ffForce * forceFactor * engPFType->GetRotationPerForce();
+				rotPerForce = ffForce * forceFactor * engPFType.GetRotationPerForce();
 				
 				pfBendStates = pfType->GetBendStates();
 				
@@ -1442,10 +1441,10 @@ void debpWorld::pStepForceFields(float elapsed){
 		pfTypeCount = propField->GetTypeCount();
 		
 		for(pt=0; pt<pfTypeCount; pt++){
-			engPFType = propField->GetTypeAt(pt);
-			pftBendStateCount = engPFType->GetBendStateCount();
-			engPFBendStates = engPFType->GetBendStates();
-			restitution = engPFType->GetRestitution() * elapsed;
+			dePropFieldType &engPFType = propField->GetTypeAt(pt);
+			pftBendStateCount = engPFType.GetBendStateCount();
+			engPFBendStates = engPFType.GetBendStates();
+			restitution = engPFType.GetRestitution() * elapsed;
 			
 			for(ptb=0; ptb<pftBendStateCount; ptb++){
 				dePropFieldBendState &engBState = engPFBendStates[ptb];

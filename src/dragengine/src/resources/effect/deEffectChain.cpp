@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-// includes
-#include <stdio.h>
-#include <stdlib.h>
-#include "deEffect.h"
 #include "deEffectChain.h"
 #include "deEffectVisitor.h"
 #include "../../deEngine.h"
@@ -40,14 +36,9 @@
 ////////////////////////////
 
 deEffectChain::deEffectChain(){
-	pEffects = nullptr;
-	pEffectCount = 0;
-	pEffectSize = 0;
 }
 
 deEffectChain::~deEffectChain(){
-	RemoveAllEffects();
-	if(pEffects) delete [] pEffects;
 }
 
 
@@ -55,68 +46,32 @@ deEffectChain::~deEffectChain(){
 // Effect management
 //////////////////////
 
-deEffect *deEffectChain::GetEffectAt(int index) const{
-	if(index < 0 || index >= pEffectCount) DETHROW(deeInvalidParam);
-	return pEffects[index];
+const deEffect::Ref &deEffectChain::GetEffectAt(int index) const{
+	return pEffects.GetAt(index);
 }
 
 bool deEffectChain::HasEffect(deEffect *effect) const{
-	return IndexOfEffect(effect) != -1;
+	return pEffects.Has(effect);
 }
 
 int deEffectChain::IndexOfEffect(deEffect *effect) const{
-	if(!effect) DETHROW(deeInvalidParam);
-	int i;
-	for(i=0; i<pEffectCount; i++){
-		if(pEffects[i] == effect) return i;
-	}
-	return -1;
+	return pEffects.IndexOf(effect);
 }
 
 void deEffectChain::AddEffect(deEffect *effect){
-	InsertEffect(effect, pEffectCount);
+	pEffects.Add(effect);
 }
 
 void deEffectChain::InsertEffect(deEffect *effect, int position){
-	if(HasEffect(effect) || position < 0 || position > pEffectCount) DETHROW(deeInvalidParam);
-	int i;
-	if(pEffectCount == pEffectSize){
-		int newSize = pEffectSize * 3 / 2 + 1;
-		deEffect **newArray = new deEffect*[newSize];
-		if(pEffects){
-			for(i=0; i<pEffectSize; i++){
-				newArray[i] = pEffects[i];
-			}
-			delete [] pEffects;
-		}
-		pEffects = newArray;
-		pEffectSize = newSize;
-	}
-	for(i=pEffectCount; i>position; i--){
-		pEffects[i] = pEffects[i - 1];
-	}
-	pEffects[position] = effect;
-	pEffectCount++;
-	effect->AddReference();
+	pEffects.Insert(effect, position);
 }
 
 void deEffectChain::RemoveEffect(deEffect *effect){
-	int i, index = IndexOfEffect(effect);
-	if(index == -1) DETHROW(deeInvalidParam);
-	for(i=index; i<pEffectCount-1; i++){
-		pEffects[i] = pEffects[i + 1];
-	}
-	pEffects[pEffectCount - 1] = nullptr;
-	pEffectCount--;
-	effect->FreeReference();
+	pEffects.Remove(effect);
 }
 
 void deEffectChain::RemoveAllEffects(){
-	while(pEffectCount > 0){
-		pEffects[pEffectCount - 1]->FreeReference();
-		pEffects[pEffectCount - 1] = nullptr;
-		pEffectCount--;
-	}
+	pEffects.RemoveAll();
 }
 
 void deEffectChain::MoveEffect(deEffect *effect, int newPosition){
@@ -129,8 +84,7 @@ void deEffectChain::MoveEffect(deEffect *effect, int newPosition){
 /////////////
 
 void deEffectChain::VisitEffects(deEffectVisitor &visitor){
-	int i;
-	for(i=0; i<pEffectCount; i++){
-		pEffects[i]->Visit(visitor);
-	}
+	pEffects.Visit([&visitor](deEffect &effect){
+		effect.Visit(visitor);
+	});
 }

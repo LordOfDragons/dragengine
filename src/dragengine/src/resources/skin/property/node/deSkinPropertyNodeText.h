@@ -35,6 +35,9 @@
  */
 class DE_DLL_EXPORT deSkinPropertyNodeText : public deSkinPropertyNode{
 public:
+	/** \brief Reference. */
+	using Ref = deTUniqueReference<deSkinPropertyNodeText>;
+	
 	/** \brief Mapped. */
 	enum eTextMapped{
 		etmFontSize, //!< Font size

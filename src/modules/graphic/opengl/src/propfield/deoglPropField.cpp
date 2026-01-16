@@ -108,7 +108,7 @@ void deoglPropField::SyncToRender(){
 		pRPropField->RemoveAllTypes();
 		
 		for(i=0; i<count; i++){
-			deoglPropFieldType &type = *((deoglPropFieldType*)pTypes.GetAt(i));
+			deoglPropFieldType &type = *pTypes.GetAt(i);
 			type.SyncToRender();
 			pRPropField->AddType(type.GetRType());
 		}
@@ -118,7 +118,7 @@ void deoglPropField::SyncToRender(){
 		
 	}else{
 		for(i=0; i<count; i++){
-			((deoglPropFieldType*)pTypes.GetAt(i))->SyncToRender();
+			pTypes.GetAt(i)->SyncToRender();
 		}
 	}
 	
@@ -205,7 +205,7 @@ void deoglPropField::UpdateInstanceCounts(){
 	
 	// instance counts most probably changed. force an update
 	for(i=0; i<count; i++){
-		((deoglPropFieldType*)pTypes.GetAt(i))->InstanceCountChanged();
+		pTypes.GetAt(i)->InstanceCountChanged();
 	}
 	
 	// extends need to be updated now
@@ -237,7 +237,7 @@ int deoglPropField::GetTypeCount() const{
 }
 
 deoglPropFieldType &deoglPropField::GetTypeAt(int index) const{
-	return *((deoglPropFieldType*)pTypes.GetAt(index));
+	return *pTypes.GetAt(index);
 }
 
 
@@ -263,7 +263,7 @@ void deoglPropField::TypeAdded(int index, dePropFieldType *type){
 }
 
 void deoglPropField::TypeRemoved(int index, dePropFieldType *type){
-	delete (deoglPropFieldType*)pTypes.GetAt(index);
+	delete pTypes.GetAt(index);
 	pTypes.RemoveFrom(index);
 	
 	pDirtyTypes = true;
@@ -275,7 +275,7 @@ void deoglPropField::AllTypesRemoved(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		delete (deoglPropFieldType*)pTypes.GetAt(i);
+		delete pTypes.GetAt(i);
 	}
 	pTypes.RemoveAll();
 	
@@ -284,23 +284,23 @@ void deoglPropField::AllTypesRemoved(){
 }
 
 void deoglPropField::TypeChanged(int index, dePropFieldType *type){
-	((deoglPropFieldType*)pTypes.GetAt(index))->TypeChanged();
+	pTypes.GetAt(index)->TypeChanged();
 	
 	pDirtyExtends = true;
 }
 
 void deoglPropField::InstancesChanged(int index, dePropFieldType *type){
-	((deoglPropFieldType*)pTypes.GetAt(index))->InstancesChanged();
+	pTypes.GetAt(index)->InstancesChanged();
 	
 	pDirtyExtends = true;
 }
 
 void deoglPropField::AssignmentsChanged(int index, dePropFieldType *type){
-	((deoglPropFieldType*)pTypes.GetAt(index))->AssignmentsChanged();
+	pTypes.GetAt(index)->AssignmentsChanged();
 }
 
 void deoglPropField::BendStatesChanged(int index, dePropFieldType *type){
-	((deoglPropFieldType*)pTypes.GetAt(index))->BendStatesChanged();
+	pTypes.GetAt(index)->BendStatesChanged();
 }
 
 

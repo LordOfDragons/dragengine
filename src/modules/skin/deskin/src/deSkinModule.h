@@ -27,19 +27,19 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/skin/deSkinMapped.h>
+#include <dragengine/resources/skin/deSkinTexture.h>
+#include <dragengine/resources/skin/property/node/deSkinPropertyNode.h>
 #include <dragengine/systems/modules/skin/deBaseSkinModule.h>
 
 class decXmlElementTag;
 class decXmlAttValue;
 class decXmlWriter;
-class deSkinTexture;
 class deSkinProperty;
 class deSkinPropertyConstructed;
 class decPath;
 class decCurveBezier;
 class decCurveBezierPoint;
 class deSkinPropertyMapped;
-class deSkinPropertyNode;
 class deSkinPropertyNodeGroup;
 class deSkinPropertyNodeImage;
 class deSkinPropertyNodeShape;
@@ -83,11 +83,11 @@ private:
 	void pParseMappedCurve(const decXmlElementTag &root, decCurveBezier &curve);
 	void pParseMappedCurvePoint(const decXmlElementTag &root, decCurveBezier &curve);
 	
-	deSkinTexture *pParseTexture(const decXmlElementTag &root, decPath &basePath, deSkin &skin);
+	deSkinTexture::Ref pParseTexture(const decXmlElementTag &root, decPath &basePath, deSkin &skin);
 	void pParsePropertyMapped(const decXmlElementTag &root, deSkin &skin, deSkinPropertyMapped &property);
 	void pParsePropertyConstructed(const decXmlElementTag &root, const deSkin &skin, deSkinPropertyConstructed &property);
 	
-	deSkinPropertyNode *pParsePropertyNode(const decXmlElementTag &tag, const deSkin &skin);
+	deSkinPropertyNode::Ref pParsePropertyNode(const decXmlElementTag &tag, const deSkin &skin);
 	bool pParsePropertyNodeCommon(const decXmlElementTag &tag, const deSkin &skin, deSkinPropertyNode &node);
 	void pParsePropertyNodeGroup(const decXmlElementTag &root, const deSkin &skin, deSkinPropertyNodeGroup &group);
 	void pParsePropertyNodeImage(const decXmlElementTag &root, const deSkin &skin, deSkinPropertyNodeImage &group);

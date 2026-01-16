@@ -45,7 +45,7 @@ deoglSkinStateConstructedNode(node, etGroup)
 	const int count = node.GetNodeCount();
 	int i;
 	for(i=0; i<count; i++){
-		pNodes.Add(CreateNode(*node.GetNodeAt(i)));
+		pNodes.Add(CreateNode(node.GetNodeAt(i)));
 	}
 }
 
@@ -55,7 +55,7 @@ deoglSkinStateConstructedNode(node)
 	const int count = node.pNodes.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		pNodes.Add(((deoglSkinStateConstructedNode*)node.pNodes.GetAt(i))->Copy());
+		pNodes.Add(node.pNodes.GetAt(i)->Copy());
 	}
 }
 
@@ -72,7 +72,7 @@ int deoglSkinStateCNGroup::GetNodeCount() const{
 }
 
 deoglSkinStateConstructedNode *deoglSkinStateCNGroup::GetNodeAt(int index) const{
-	return (deoglSkinStateConstructedNode*)pNodes.GetAt(index);
+	return pNodes.GetAt(index);
 }
 
 
@@ -87,7 +87,7 @@ void deoglSkinStateCNGroup::Update(deoglSkinState &state){
 	
 	int i;
 	for(i=0; i<count; i++){
-		((deoglSkinStateConstructedNode*)pNodes.GetAt(i))->Update(state);
+		pNodes.GetAt(i)->Update(state);
 	}
 }
 
@@ -101,7 +101,7 @@ void deoglSkinStateCNGroup::PrepareForRender(deoglSkinState &state){
 	
 	int i;
 	for(i=0; i<count; i++){
-		((deoglSkinStateConstructedNode*)pNodes.GetAt(i))->PrepareForRender(state);
+		pNodes.GetAt(i)->PrepareForRender(state);
 	}
 }
 
@@ -118,7 +118,7 @@ void deoglSkinStateCNGroup::Render(deoglSkinState &state, const deoglRenderCanva
 	
 	int i;
 	for(i=0; i<count; i++){
-		((deoglSkinStateConstructedNode*)pNodes.GetAt(i))->Render(state, childContext);
+		pNodes.GetAt(i)->Render(state, childContext);
 	}
 }
 

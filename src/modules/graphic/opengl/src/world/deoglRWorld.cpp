@@ -160,17 +160,17 @@ void deoglRWorld::SetSize(const decDVector &size){
 	
 	count = pLights.GetCount();
 	for(i=0; i<count; i++){
-		((deoglRLight*)pLights.GetAt(i))->UpdateOctreeNode();
+		pLights.GetAt(i)->UpdateOctreeNode();
 	}
 	
 	count = pParticleEmitterInstances.GetCount();
 	for(i=0; i<count; i++){
-		((deoglRParticleEmitterInstance*)pParticleEmitterInstances.GetAt(i))->UpdateOctreeNode();
+		pParticleEmitterInstances.GetAt(i)->UpdateOctreeNode();
 	}
 	
 	count = pLumimeters.GetCount();
 	for(i=0; i<count; i++){
-		((deoglRLumimeter*)pLumimeters.GetAt(i))->UpdateOctreeNode();
+		pLumimeters.GetAt(i)->UpdateOctreeNode();
 	}
 }
 
@@ -384,7 +384,7 @@ void deoglRWorld::PrepareForRender(deoglRenderPlan &plan, const deoglRenderPlanM
 	// prepare debug drawers
 	count = pDebugDrawers.GetCount();
 	for(i=0; i<count; i++){
-		deoglRDebugDrawer * const ddrawer = (deoglRDebugDrawer*)pDebugDrawers.GetAt(i);
+		deoglRDebugDrawer * const ddrawer = pDebugDrawers.GetAt(i);
 		if(ddrawer->GetVisible()){ // skip if invisible
 			ddrawer->UpdateVBO();
 		}
@@ -411,7 +411,7 @@ void deoglRWorld::PrepareForRenderRender(deoglRenderPlan &plan, const deoglRende
 		
 		count = pParticleEmitterInstances.GetCount();
 		for(i=0; i<count; i++){
-			((deoglRParticleEmitterInstance*)pParticleEmitterInstances.GetAt(i))->UpdateRenderEnvMap();
+			pParticleEmitterInstances.GetAt(i)->UpdateRenderEnvMap();
 		}
 	}
 		SPECIAL_TIMER_PRINT("EnvMaps")
@@ -419,7 +419,7 @@ void deoglRWorld::PrepareForRenderRender(deoglRenderPlan &plan, const deoglRende
 	// prepare sky
 	count = pSkies.GetCount();
 	for(i=0; i<count; i++){
-		((deoglRSkyInstance*)pSkies.GetAt(i))->PrepareForRender();
+		pSkies.GetAt(i)->PrepareForRender();
 	}
 	
 	if(pDirtySkyOrder){
@@ -443,7 +443,7 @@ void deoglRWorld::PrepareForRenderRender(deoglRenderPlan &plan, const deoglRende
 	// prepare render components
 	count = pListPrepareRenderComponents.GetCount();
 	for(i=0; i<count; i++){
-		((deoglRComponent*)pListPrepareRenderComponents.GetAt(i))->PrepareForRenderRender(plan, mask);
+		pListPrepareRenderComponents.GetAt(i)->PrepareForRenderRender(plan, mask);
 	}
 	pListPrepareRenderComponents.RemoveAll();
 		SPECIAL_TIMER_PRINT("Components2")
@@ -451,7 +451,7 @@ void deoglRWorld::PrepareForRenderRender(deoglRenderPlan &plan, const deoglRende
 	// prepare render billboards
 	count = pListPrepareRenderBillboards.GetCount();
 	for(i=0; i<count; i++){
-		((deoglRBillboard*)pListPrepareRenderBillboards.GetAt(i))->PrepareForRenderRender(plan, mask);
+		pListPrepareRenderBillboards.GetAt(i)->PrepareForRenderRender(plan, mask);
 	}
 	pListPrepareRenderBillboards.RemoveAll();
 		SPECIAL_TIMER_PRINT("Billboards")
@@ -459,7 +459,7 @@ void deoglRWorld::PrepareForRenderRender(deoglRenderPlan &plan, const deoglRende
 	// prepare render lights
 	count = pListPrepareRenderLights.GetCount();
 	for(i=0; i<count; i++){
-		((deoglRLight*)pListPrepareRenderLights.GetAt(i))->PrepareForRenderRender(mask);
+		pListPrepareRenderLights.GetAt(i)->PrepareForRenderRender(mask);
 	}
 	pListPrepareRenderLights.RemoveAll();
 		SPECIAL_TIMER_PRINT("Lights")
@@ -467,7 +467,7 @@ void deoglRWorld::PrepareForRenderRender(deoglRenderPlan &plan, const deoglRende
 	// prepare render prop fields
 	count = pListPrepareRenderPropFields.GetCount();
 	for(i=0; i<count; i++){
-		((deoglRPropField*)pListPrepareRenderPropFields.GetAt(i))->PrepareForRenderRender();
+		pListPrepareRenderPropFields.GetAt(i)->PrepareForRenderRender();
 	}
 	pListPrepareRenderPropFields.RemoveAll();
 		SPECIAL_TIMER_PRINT("PropFields")
@@ -567,12 +567,12 @@ void deoglRWorld::NotifyAllReferencePositionChanged(){
 	
 	count = pPropFields.GetCount();
 	for(i=0; i<count; i++){
-		((deoglRPropField*)pPropFields.GetAt(i))->WorldReferencePointChanged();
+		pPropFields.GetAt(i)->WorldReferencePointChanged();
 	}
 	
 	count = pParticleEmitterInstances.GetCount();
 	for(i=0; i<count; i++){
-		((deoglRParticleEmitterInstance*)pParticleEmitterInstances.GetAt(i))->WorldReferencePointChanged();
+		pParticleEmitterInstances.GetAt(i)->WorldReferencePointChanged();
 	}
 }
 
@@ -606,7 +606,7 @@ int deoglRWorld::GetPropFieldCount() const{
 }
 
 deoglRPropField *deoglRWorld::GetPropFieldAt(int index) const{
-	return (deoglRPropField*)pPropFields.GetAt(index);
+	return pPropFields.GetAt(index);
 }
 
 void deoglRWorld::AddPropField(deoglRPropField *propField){
@@ -635,7 +635,7 @@ void deoglRWorld::RemoveAllPropFields(){
 	const int count = pPropFields.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		((deoglRPropField*)pPropFields.GetAt(i))->SetParentWorld(nullptr);
+		pPropFields.GetAt(i)->SetParentWorld(nullptr);
 	}
 	pPropFields.RemoveAll();
 }
@@ -645,7 +645,7 @@ void deoglRWorld::RemoveRemovalMarkedPropFields(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		deoglRPropField * const propField = (deoglRPropField*)pPropFields.GetAt(i);
+		deoglRPropField * const propField = pPropFields.GetAt(i);
 		if(!propField->GetWorldMarkedRemove()){
 			continue;
 		}
@@ -667,7 +667,7 @@ int deoglRWorld::GetParticleEmitterInstanceCount() const{
 }
 
 deoglRParticleEmitterInstance *deoglRWorld::GetParticleEmitterInstanceAt(int index) const{
-	return (deoglRParticleEmitterInstance*)pParticleEmitterInstances.GetAt(index);
+	return pParticleEmitterInstances.GetAt(index);
 }
 
 void deoglRWorld::AddParticleEmitterInstance(deoglRParticleEmitterInstance *instance){
@@ -696,7 +696,7 @@ void deoglRWorld::RemoveAllParticleEmitterInstances(){
 	const int count = pParticleEmitterInstances.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		((deoglRParticleEmitterInstance*)pParticleEmitterInstances.GetAt(i))->SetParentWorld(nullptr);
+		pParticleEmitterInstances.GetAt(i)->SetParentWorld(nullptr);
 	}
 	pParticleEmitterInstances.RemoveAll();
 }
@@ -706,7 +706,7 @@ void deoglRWorld::RemoveRemovalMarkedParticleEmitterInstances(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		deoglRParticleEmitterInstance * const instance = (deoglRParticleEmitterInstance*)pParticleEmitterInstances.GetAt(i);
+		deoglRParticleEmitterInstance * const instance = pParticleEmitterInstances.GetAt(i);
 		if(!instance->GetWorldMarkedRemove()){
 			continue;
 		}
@@ -818,7 +818,7 @@ int deoglRWorld::GetLightCount() const{
 }
 
 deoglRLight *deoglRWorld::GetLightAt(int index) const{
-	return (deoglRLight*)pLights.GetAt(index);
+	return pLights.GetAt(index);
 }
 
 void deoglRWorld::AddLight(deoglRLight *light){
@@ -851,7 +851,7 @@ void deoglRWorld::RemoveAllLights(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		deoglRLight * const light = (deoglRLight*)pLights.GetAt(i);
+		deoglRLight * const light = pLights.GetAt(i);
 		RemovePrepareForRenderLight(light);
 		light->SetParentWorld(nullptr);
 	}
@@ -864,7 +864,7 @@ void deoglRWorld::RemoveRemovalMarkedLights(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		deoglRLight * const light = (deoglRLight*)pLights.GetAt(i);
+		deoglRLight * const light = pLights.GetAt(i);
 		if(!light->GetWorldMarkedRemove()){
 			continue;
 		}
@@ -886,7 +886,7 @@ int deoglRWorld::GetEnvMapProbeCount() const{
 }
 
 deoglREnvMapProbe *deoglRWorld::GetEnvMapProbeAt(int index) const{
-	return (deoglREnvMapProbe*)pEnvMapProbes.GetAt(index);
+	return pEnvMapProbes.GetAt(index);
 }
 
 void deoglRWorld::AddEnvMapProbe(deoglREnvMapProbe *envMapProbe){
@@ -921,7 +921,7 @@ void deoglRWorld::RemoveAllEnvMapProbes(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoglREnvMapProbe*)pEnvMapProbes.GetAt(i))->SetParentWorld(nullptr);
+		pEnvMapProbes.GetAt(i)->SetParentWorld(nullptr);
 	}
 	
 	pEnvMapProbes.RemoveAll();
@@ -932,7 +932,7 @@ void deoglRWorld::RemoveRemovalMarkedEnvMapProbes(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		deoglREnvMapProbe * const envMapProbe = (deoglREnvMapProbe*)pEnvMapProbes.GetAt(i);
+		deoglREnvMapProbe * const envMapProbe = pEnvMapProbes.GetAt(i);
 		if(!envMapProbe->GetWorldMarkedRemove()){
 			continue;
 		}
@@ -974,7 +974,7 @@ void deoglRWorld::RemoveEnvMap(deoglEnvironmentMap *envmap){
 	const int peiCount = pParticleEmitterInstances.GetCount();
 	int i;
 	for(i=0; i<peiCount; i++){
-		((deoglRParticleEmitterInstance*)pParticleEmitterInstances.GetAt(i))->InvalidateRenderEnvMapIf(envmap);
+		pParticleEmitterInstances.GetAt(i)->InvalidateRenderEnvMapIf(envmap);
 	}
 	
 	pEnvMapList.Remove(envmap);
@@ -993,7 +993,7 @@ void deoglRWorld::RemoveAllEnvMaps(){
 	const int peiCount = pParticleEmitterInstances.GetCount();
 	int i;
 	for(i=0; i<peiCount; i++){
-		((deoglRParticleEmitterInstance*)pParticleEmitterInstances.GetAt(i))->InvalidateRenderEnvMap();
+		pParticleEmitterInstances.GetAt(i)->InvalidateRenderEnvMap();
 	}
 	
 	const int envMapCount = pEnvMapList.GetCount();
@@ -1038,7 +1038,7 @@ int deoglRWorld::GetLumimeterCount() const{
 }
 
 deoglRLumimeter *deoglRWorld::GetLumimeterAt(int index) const{
-	return (deoglRLumimeter*)pLumimeters.GetAt(index);
+	return pLumimeters.GetAt(index);
 }
 
 void deoglRWorld::AddLumimeter(deoglRLumimeter *lumimeter){
@@ -1069,7 +1069,7 @@ void deoglRWorld::RemoveAllLumimeters(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoglRLumimeter*)pLumimeters.GetAt(i))->SetParentWorld(nullptr);
+		pLumimeters.GetAt(i)->SetParentWorld(nullptr);
 	}
 	
 	pLumimeters.RemoveAll();
@@ -1080,7 +1080,7 @@ void deoglRWorld::RemoveRemovalMarkedLumimeters(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		deoglRLumimeter * const lumimeter = (deoglRLumimeter*)pLumimeters.GetAt(i);
+		deoglRLumimeter * const lumimeter = pLumimeters.GetAt(i);
 		if(!lumimeter->GetWorldMarkedRemove()){
 			continue;
 		}
@@ -1198,7 +1198,7 @@ int deoglRWorld::GetSkyCount() const{
 }
 
 deoglRSkyInstance *deoglRWorld::GetSkyAt(int index) const{
-	return (deoglRSkyInstance*)pSkies.GetAt(index);
+	return pSkies.GetAt(index);
 }
 
 void deoglRWorld::AddSky(deoglRSkyInstance *sky){
@@ -1232,7 +1232,7 @@ void deoglRWorld::RemoveAllSkies(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoglRSkyInstance*)pSkies.GetAt(i))->SetParentWorld(nullptr);
+		pSkies.GetAt(i)->SetParentWorld(nullptr);
 	}
 	
 	pSkies.RemoveAll();
@@ -1245,7 +1245,7 @@ void deoglRWorld::RemoveRemovalMarkedSkies(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		deoglRSkyInstance * const sky = (deoglRSkyInstance*)pSkies.GetAt(i);
+		deoglRSkyInstance * const sky = pSkies.GetAt(i);
 		if(!sky->GetWorldMarkedRemove()){
 			continue;
 		}
@@ -1261,7 +1261,7 @@ void deoglRWorld::SkiesNotifyUpdateStaticComponent(deoglRComponent *component){
 	int count = pSkies.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		((deoglRSkyInstance*)pSkies.GetAt(i))->NotifyUpdateStaticComponent(component);
+		pSkies.GetAt(i)->NotifyUpdateStaticComponent(component);
 	}
 }
 
@@ -1275,7 +1275,7 @@ int deoglRWorld::GetDebugDrawerCount() const{
 }
 
 deoglRDebugDrawer *deoglRWorld::GetDebugDrawerAt(int index) const{
-	return (deoglRDebugDrawer*)pDebugDrawers.GetAt(index);
+	return pDebugDrawers.GetAt(index);
 }
 
 void deoglRWorld::AddDebugDrawer(deoglRDebugDrawer *debugDrawer){
@@ -1306,7 +1306,7 @@ void deoglRWorld::RemoveAllDebugDrawers(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoglRDebugDrawer*)pDebugDrawers.GetAt(i))->SetParentWorld(nullptr);
+		pDebugDrawers.GetAt(i)->SetParentWorld(nullptr);
 	}
 	
 	pDebugDrawers.RemoveAll();
@@ -1317,7 +1317,7 @@ void deoglRWorld::RemoveRemovalMarkedDebugDrawers(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		deoglRDebugDrawer * const debugDrawer = (deoglRDebugDrawer*)pDebugDrawers.GetAt(i);
+		deoglRDebugDrawer * const debugDrawer = pDebugDrawers.GetAt(i);
 		if(!debugDrawer->GetWorldMarkedRemove()){
 			continue;
 		}
@@ -1390,7 +1390,7 @@ void deoglRWorld::RemoveAllGICascades(){
 	const int skyCount = pSkies.GetCount();
 	int i;
 	for(i=0; i<skyCount; i++){
-		((deoglRSkyInstance*)pSkies.GetAt(i))->DropAllGIStates();
+		pSkies.GetAt(i)->DropAllGIStates();
 	}
 	
 	pGIStates.RemoveAll();
@@ -1431,27 +1431,27 @@ void deoglRWorld::pCleanUp(){
 	
 	count = pEnvMapProbes.GetCount();
 	for(i=0; i<count; i++){
-		((deoglREnvMapProbe*)pEnvMapProbes.GetAt(i))->PrepareQuickDispose();
+		pEnvMapProbes.GetAt(i)->PrepareQuickDispose();
 	}
 	pEnvMapProbes.RemoveAll();
 	
 	count = pParticleEmitterInstances.GetCount();
 	for(i=0; i<count; i++){
-		((deoglRParticleEmitterInstance*)pParticleEmitterInstances.GetAt(i))->PrepareQuickDispose();
+		pParticleEmitterInstances.GetAt(i)->PrepareQuickDispose();
 	}
 	pParticleEmitterInstances.RemoveAll();
 	
 	pListPrepareForRenderPropFields.RemoveAll();
 	/*count = pPropFields.GetCount();
 	for(i=0; i<count; i++){
-		((deoglRPropField*)pPropFields.GetAt(i))->SetParentWorld(NULL);
+		pPropFields.GetAt(i)->SetParentWorld(NULL);
 	}*/  // deoglRPropField has no special code in SetParentWorld or destructor
 	pPropFields.RemoveAll();
 	
 	pListPrepareForRenderLights.RemoveAll();
 	count = pLights.GetCount();
 	for(i=0; i<count; i++){
-		((deoglRLight*)pLights.GetAt(i))->PrepareQuickDispose();
+		pLights.GetAt(i)->PrepareQuickDispose();
 	}
 	pLights.RemoveAll();
 	
@@ -1473,19 +1473,19 @@ void deoglRWorld::pCleanUp(){
 	
 	count = pLumimeters.GetCount();
 	for(i=0; i<count; i++){
-		((deoglRLumimeter*)pLumimeters.GetAt(i))->PrepareQuickDispose();
+		pLumimeters.GetAt(i)->PrepareQuickDispose();
 	}
 	pLumimeters.RemoveAll();
 	
 	count = pDebugDrawers.GetCount();
 	for(i=0; i<count; i++){
-		((deoglRDebugDrawer*)pDebugDrawers.GetAt(i))->PrepareQuickDispose();
+		pDebugDrawers.GetAt(i)->PrepareQuickDispose();
 	}
 	pDebugDrawers.RemoveAll();
 	
 	count = pSkies.GetCount();
 	for(i=0; i<count; i++){
-		((deoglRSkyInstance*)pSkies.GetAt(i))->PrepareQuickDispose();
+		pSkies.GetAt(i)->PrepareQuickDispose();
 	}
 	pSkies.RemoveAll();
 	
@@ -1534,8 +1534,8 @@ void deoglRWorld::pReorderSkies(){
 	int i;
 	
 	for(i=1; i<count; i++){
-		const int order1 = ((deoglRSkyInstance*)pSkies.GetAt(i - 1))->GetOrder();
-		const int order2 = ((deoglRSkyInstance*)pSkies.GetAt(i))->GetOrder();
+		const int order1 = pSkies.GetAt(i - 1)->GetOrder();
+		const int order2 = pSkies.GetAt(i)->GetOrder();
 		if(order2 < order1){
 			pSkies.Move(i, i - 1);
 			if(i > 1){

@@ -38,20 +38,10 @@
 ////////////////////////////
 
 deSkinTexture::deSkinTexture(const char *name) :
-pName(name),
-pProperties(nullptr),
-pPropertyCount(0),
-pPropertySize(0){
+pName(name){
 }
 
 deSkinTexture::~deSkinTexture(){
-	if(pProperties){
-		while(pPropertyCount > 0){
-			pPropertyCount--;
-			delete pProperties[pPropertyCount];
-		}
-		delete [] pProperties;
-	}
 }
 
 
@@ -59,80 +49,32 @@ deSkinTexture::~deSkinTexture(){
 // Properties
 ///////////////
 
-deSkinProperty *deSkinTexture::GetPropertyAt(int index) const{
-	if(index < 0 || index >= pPropertyCount) DETHROW(deeOutOfBoundary);
-	
-	return pProperties[index];
-}
-
 deSkinProperty *deSkinTexture::GetPropertyWithType(const char *type) const{
-	int i;
-	
-	for(i=0; i<pPropertyCount; i++){
-		if(pProperties[i]->GetType().Equals(type)){
-			return pProperties[i];
-		}
-	}
-	
-	return nullptr;
+	const deSkinProperty::Ref *found = nullptr;
+	return pProperties.Find([&](const deSkinProperty &prop) {
+		return prop.GetType().Equals(type);
+	}, found) ? found->Pointer() : nullptr;
 }
 
 int deSkinTexture::IndexOfProperty(deSkinProperty *property) const{
 	if(!property) DETHROW(deeInvalidParam);
-	int i;
-	
-	for(i=0; i<pPropertyCount; i++){
-		if(property == pProperties[i]){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pProperties.IndexOf(property);
 }
 
 bool deSkinTexture::HasProperty(deSkinProperty *property) const{
 	if(!property) DETHROW(deeInvalidParam);
-	int i;
-	
-	for(i=0; i<pPropertyCount; i++){
-		if(property == pProperties[i]){
-			return true;
-		}
-	}
-	
-	return false;
+	return pProperties.Has(property);
 }
 
 bool deSkinTexture::HasPropertyWithType(const char *type) const{
-	int i;
-	
-	for(i=0; i<pPropertyCount; i++){
-		if(pProperties[i]->GetType().Equals(type)){
-			return true;
-		}
-	}
-	
-	return false;
+	return pProperties.HasMatching([&](const deSkinProperty &prop) {
+		return prop.GetType() == type;
+	});
 }
 
-void deSkinTexture::AddProperty(deSkinProperty *property){
-	if(!property || HasPropertyWithType(property->GetType().GetString())){
+void deSkinTexture::AddProperty(deTUniqueReference<deSkinProperty> &&property){
+	if(!property || HasPropertyWithType(property->GetType())){
 		DETHROW(deeInvalidParam);
 	}
-	
-	if(pPropertyCount == pPropertySize){
-		int newSize = pPropertySize * 3 / 2 + 1;
-		deSkinProperty **newArray = new deSkinProperty*[newSize];
-		
-		if(pProperties){
-			memcpy(newArray, pProperties, sizeof(deSkinProperty*) * pPropertySize);
-			delete [] pProperties;
-		}
-		
-		pProperties = newArray;
-		pPropertySize = newSize;
-	}
-	
-	pProperties[pPropertyCount] = property;
-	pPropertyCount++;
+	pProperties.Add(std::move(property));
 }

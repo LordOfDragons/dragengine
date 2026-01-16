@@ -25,12 +25,13 @@
 #ifndef _DERIG_H_
 #define _DERIG_H_
 
+#include "deRigBone.h"
 #include "../deFileResource.h"
 #include "../../common/math/decMath.h"
 #include "../../common/shape/decShape.h"
 #include "../../common/string/decStringList.h"
+#include "../../common/collection/decTUniqueList.h"
 
-class deRigBone;
 class deRigManager;
 class deBasePhysicsRig;
 
@@ -74,9 +75,7 @@ public:
 	
 	
 private:
-	deRigBone **pBones;
-	int pBoneCount;
-	int pBoneSize;
+	deRigBone::List pBones;
 	
 	int pRootBone;
 	decVector pCMP;
@@ -136,14 +135,17 @@ public:
 	
 	/** \name Bones */
 	/*@{*/
+	/** \brief Bones. */
+	inline const deRigBone::List &GetBones() const{ return pBones; }
+	
 	/** \brief Number of bones. */
-	inline int GetBoneCount() const{ return pBoneCount; }
+	inline int GetBoneCount() const{ return pBones.GetCount(); }
 	
 	/**
 	 * \brief Bone at index.
 	 * \throws deeOutOfBoundary \em index is less than 0 or greater than or equal to GetBoneCount().
 	 */
-	deRigBone &GetBoneAt(int index) const;
+	const deRigBone::Ref &GetBoneAt(int index) const{ return pBones.GetAt(index); }
 	
 	/** \brief Index of named bone or -1 if absent. */
 	int IndexOfBoneNamed(const char *name) const;
@@ -155,7 +157,7 @@ public:
 	 * \brief Add bone.
 	 * \throws deeInvalidParam Named bone is present.
 	 */
-	void AddBone(deRigBone *bone);
+	void AddBone(deRigBone::Ref &&bone);
 	
 	/** \brief Remove all bones. */
 	void RemoveAllBones();

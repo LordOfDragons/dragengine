@@ -58,50 +58,35 @@ meModelBuilderBox::~meModelBuilderBox(){
 ///////////////
 
 void meModelBuilderBox::BuildModel(deModel *model){
-	deModelTexture *modelTexture = nullptr;
 	const float halfSize = pSize * 0.5f;
-	deModelLOD *modelLOD = nullptr;
 	
 	// we need a lod mesh and a dummy texture
-	try{
-		modelLOD = new deModelLOD;
-		model->AddLOD(modelLOD);
-		
-		modelTexture = new deModelTexture("dummy", 1, 1);
-		model->AddTexture(modelTexture);
-		
-	}catch(const deException &){
-		if(modelTexture){
-			delete modelTexture;
-		}
-		if(modelLOD){
-			delete modelLOD;
-		}
-		
-		throw;
-	}
+	model->AddLOD(deModelLOD::Ref::New());
+	deModelLOD &modelLOD = model->GetLODs().Last();
+	
+	model->AddTexture(deModelTexture::Ref::New("dummy", 1, 1));
 	
 	// add vertices
-	modelLOD->SetVertexCount(8);
-	modelLOD->GetVertexAt(0).SetPosition(decVector(-halfSize,  halfSize,  halfSize));
-	modelLOD->GetVertexAt(1).SetPosition(decVector(halfSize,  halfSize,  halfSize));
-	modelLOD->GetVertexAt(2).SetPosition(decVector(halfSize, -halfSize,  halfSize));
-	modelLOD->GetVertexAt(3).SetPosition(decVector(-halfSize, -halfSize,  halfSize));
-	modelLOD->GetVertexAt(4).SetPosition(decVector(-halfSize,  halfSize, -halfSize));
-	modelLOD->GetVertexAt(5).SetPosition(decVector(halfSize,  halfSize, -halfSize));
-	modelLOD->GetVertexAt(6).SetPosition(decVector(halfSize, -halfSize, -halfSize));
-	modelLOD->GetVertexAt(7).SetPosition(decVector(-halfSize, -halfSize, -halfSize));
+	modelLOD.SetVertexCount(8);
+	modelLOD.GetVertexAt(0).SetPosition(decVector(-halfSize,  halfSize,  halfSize));
+	modelLOD.GetVertexAt(1).SetPosition(decVector(halfSize,  halfSize,  halfSize));
+	modelLOD.GetVertexAt(2).SetPosition(decVector(halfSize, -halfSize,  halfSize));
+	modelLOD.GetVertexAt(3).SetPosition(decVector(-halfSize, -halfSize,  halfSize));
+	modelLOD.GetVertexAt(4).SetPosition(decVector(-halfSize,  halfSize, -halfSize));
+	modelLOD.GetVertexAt(5).SetPosition(decVector(halfSize,  halfSize, -halfSize));
+	modelLOD.GetVertexAt(6).SetPosition(decVector(halfSize, -halfSize, -halfSize));
+	modelLOD.GetVertexAt(7).SetPosition(decVector(-halfSize, -halfSize, -halfSize));
 	
 	// add normals and tangents
-	modelLOD->SetNormalCount(6);
-	modelLOD->SetTangentCount(6);
+	modelLOD.SetNormalCount(6);
+	modelLOD.SetTangentCount(6);
 	
 	// add texture coordinates
 	model->GetTextureCoordinatesSetList().Add("default");
-	modelLOD->SetTextureCoordinatesCount(4);
-	modelLOD->SetTextureCoordinatesSetCount(1);
+	modelLOD.SetTextureCoordinatesCount(4);
+	modelLOD.SetTextureCoordinatesSetCount(1);
 	
-	deModelTextureCoordinatesSet &tcset = modelLOD->GetTextureCoordinatesSetAt(0);
+	deModelTextureCoordinatesSet &tcset = modelLOD.GetTextureCoordinatesSetAt(0);
 	tcset.GetTextureCoordinates() = deModelTextureCoordinatesSet::TextureCoordinatesList{
 		decVector2{0.0f, 0.0f}, decVector2{1.0f, 0.0f},
 		decVector2{1.0f, 1.0f}, decVector2{0.0f, 1.0f}};
@@ -112,14 +97,14 @@ void meModelBuilderBox::BuildModel(deModel *model){
 	const int tangents[] = {1, 0, 0,     0, 0, 1,       -1, 0, 0,     0, 0, -1,      1, 0, 0,       -1, 0, 0};
 	int i;
 	
-	modelLOD->SetFaceCount(12);
+	modelLOD.SetFaceCount(12);
 	
 	for(i=0; i<12; i++){
 		const int side = i / 2;
 		const int * const corners = &indices[side * 4];
 		const int * const fnormal = &normals[side * 3];
 		const int * const ftangent = &tangents[side * 3];
-		deModelFace &face = modelLOD->GetFaceAt(i);
+		deModelFace &face = modelLOD.GetFaceAt(i);
 		
 		face.SetNormal1(side);
 		face.SetNormal2(side);

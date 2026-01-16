@@ -53,7 +53,7 @@ private:
 	decUnicodeArgumentList pGameArgs;
 	
 	delGame::Ref pGame;
-	delGPModule::List *pModuleParameters;
+	deTUniqueReference<delGPModule::List> pModuleParameters;
 	decUuid pPatchIdentifier;
 	bool pHasPatchIdentifier;
 	delGameRunParams pRunParams;

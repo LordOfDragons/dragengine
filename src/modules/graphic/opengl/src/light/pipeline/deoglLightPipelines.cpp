@@ -136,7 +136,7 @@ const deoglLightPipeline &deoglLightPipelines::GetWithRef(eTypes type, int modif
 		int i;
 		for(i=0; i<ModifiersPerType; i++){
 			l.LogErrorFormat("- %s: %s", DebugNamesModifiers.SetName(i).GetString(),
-				(deoglLightPipeline*)pPipelines[type][i] ? "Present" : "Absent");
+				pPipelines[type][i] ? "Present" : "Absent");
 		}
 		throw;
 	}

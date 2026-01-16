@@ -525,7 +525,7 @@ void deglDialogProfileList::UpdateProfileList(){
 	const int count = pProfiles.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		cEditProfile * const profile = (cEditProfile*)pProfiles.GetAt(i);
+		cEditProfile * const profile = pProfiles.GetAt(i);
 		pListProfiles->appendItem(profile->GetText(), profile->GetIcon(), profile);
 	}
 	
@@ -858,7 +858,7 @@ FXuint deglDialogProfileList::execute(FXuint placement){
 	gameManager.GetProfiles().RemoveAll();
 	
 	for(i=0; i<profileCount; i++){
-		const cEditProfile &editProfile = *((cEditProfile*)pProfiles.GetAt(i));
+		const cEditProfile &editProfile = pProfiles.GetAt(i);
 		
 		if(editProfile.GetGameCustom()){
 			*editProfile.GetGameCustom()->GetCustomProfile() = *editProfile.GetEdit();
@@ -1541,7 +1541,7 @@ long deglDialogProfileList::onMPParameterValueCommand(FXObject *sender, FXSelect
 		const int count = pMPParameters.GetCount();
 		int i;
 		for(i=0; i<count; i++){
-			if(((deglDialogProfileListParameter*)pMPParameters.GetAt(i))->ProcessSelCommand(sender)){
+			if(pMPParameters.GetAt(i)->ProcessSelCommand(sender)){
 				break;
 			}
 		}
@@ -1556,7 +1556,7 @@ long deglDialogProfileList::onMPParameterValueChanged(FXObject *sender, FXSelect
 		const int count = pMPParameters.GetCount();
 		int i;
 		for(i=0; i<count; i++){
-			if(((deglDialogProfileListParameter*)pMPParameters.GetAt(i))->ProcessSelChanged(sender)){
+			if(pMPParameters.GetAt(i)->ProcessSelChanged(sender)){
 				break;
 			}
 		}
@@ -1570,7 +1570,7 @@ long deglDialogProfileList::onMPParameterValueFocusIn(FXObject *sender, FXSelect
 	const int count = pMPParameters.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		const deglDialogProfileListParameter &parameter = *((deglDialogProfileListParameter*)pMPParameters.GetAt(i));
+		const deglDialogProfileListParameter &parameter = pMPParameters.GetAt(i);
 		if(parameter.SenderMatchesEdit(sender)){
 			pTextMPParameterInfo->setText(parameter.GetDescription().GetString());
 			break;
@@ -1583,7 +1583,7 @@ long deglDialogProfileList::onMPParameterLabelLMPress(FXObject *sender, FXSelect
 	const int count = pMPParameters.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		const deglDialogProfileListParameter &parameter = *((deglDialogProfileListParameter*)pMPParameters.GetAt(i));
+		const deglDialogProfileListParameter &parameter = pMPParameters.GetAt(i);
 		if(parameter.SenderMatchesLabel(sender)){
 			pTextMPParameterInfo->setText(parameter.GetDescription().GetString());
 			break;
@@ -1601,7 +1601,7 @@ long deglDialogProfileList::onMPParameterLabelRMPress(FXObject *sender, FXSelect
 	int i;
 	
 	for(i=0; i<count; i++){
-		deglDialogProfileListParameter * const parameter = (deglDialogProfileListParameter*)pMPParameters.GetAt(i);
+		deglDialogProfileListParameter * const parameter = pMPParameters.GetAt(i);
 		if(!parameter->SenderMatchesLabel(sender)){
 			continue;
 		}
@@ -1846,7 +1846,7 @@ void deglDialogProfileList::pUpdateMPParamVisiblity(){
 	const int count = pMPParameters.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		((deglDialogProfileListParameter*)pMPParameters.GetAt(i))->UpdateVisibility(pMPParameterCategory);
+		pMPParameters.GetAt(i)->UpdateVisibility(pMPParameterCategory);
 	}
 	pFrameMPParameters->getParent()->recalc();
 }
@@ -1886,7 +1886,7 @@ deglDialogProfileList::cEditProfile *deglDialogProfileList::pGetProfileNamed(con
 	const int count = pProfiles.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		cEditProfile * const profile = (cEditProfile*)pProfiles.GetAt(i);
+		cEditProfile * const profile = pProfiles.GetAt(i);
 		if(!profile->GetGameCustom() && profile->GetEdit()->GetName() == name){
 			return profile;
 		}

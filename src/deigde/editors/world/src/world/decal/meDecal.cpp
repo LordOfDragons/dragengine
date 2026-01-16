@@ -237,7 +237,7 @@ decVector meDecal::GetDefaultSize(float baseSize) const{
 		return decVector(baseSize, baseSize, baseSize);
 	}
 	
-	const deSkinTexture &texture = *pEngSkin->GetTextureAt(0);
+	const deSkinTexture &texture = pEngSkin->GetTextureAt(0);
 	const int count = texture.GetPropertyCount();
 	deSkinPropertyVisitorIdentify identify;
 	decPoint size;
@@ -255,7 +255,7 @@ decVector meDecal::GetDefaultSize(float baseSize) const{
 			size.Set(video->GetWidth(), video->GetHeight());
 			
 		}else if(identify.IsConstructed()){
-			const decPoint3 &contentSize = identify.CastToConstructed().GetContent().GetSize();
+			const decPoint3 &contentSize = identify.CastToConstructed().GetContent()->GetSize();
 			size.Set(contentSize.x, contentSize.y);
 			
 		}else{
@@ -412,9 +412,9 @@ void meDecal::UpdateDynamicSkin(){
 		pDynamicSkin->RemoveAllRenderables();
 		
 		if(hasTint){
-			deDSRenderableColor *renderable = new deDSRenderableColor("tint");
+			auto renderable = deDSRenderableColor::Ref::New("tint");
 			renderable->SetColor(pColorTint);
-			pDynamicSkin->AddRenderable(renderable);
+			pDynamicSkin->AddRenderable(std::move(renderable));
 		}
 		
 	}else{

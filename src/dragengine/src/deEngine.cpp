@@ -798,11 +798,11 @@ bool deEngine::RunSingleFrame(){
 			if(inpSys.DropEvent(event)){
 				continue;
 			}
-			scrSys.SendEvent((deInputEvent*)&event);
+			scrSys.SendEvent(const_cast<deInputEvent*>(&event));
 			if(pScriptFailed){
-				deErrorTracePoint *tracePoint = pErrorTrace->AddPoint(
+				deErrorTracePoint &tracePoint = pErrorTrace->AddPoint(
 					nullptr, "deEngine::RunDoSingleFrame", __LINE__);
-				tracePoint->AddValueFloat("elapsedTime", pElapsedTime);
+				tracePoint.AddValueFloat("elapsedTime", pElapsedTime);
 				eventQueue.RemoveAllEvents();
 				return false;
 			}
@@ -817,11 +817,11 @@ bool deEngine::RunSingleFrame(){
 			if(inpSys.DropEvent(event)){
 				continue;
 			}
-			scrSys.SendEvent((deInputEvent*)&event);
+			scrSys.SendEvent(const_cast<deInputEvent*>(&event));
 			if(pScriptFailed){
-				deErrorTracePoint *tracePoint = pErrorTrace->AddPoint(
+				deErrorTracePoint &tracePoint = pErrorTrace->AddPoint(
 					nullptr, "deEngine::RunDoSingleFrame", __LINE__);
-				tracePoint->AddValueFloat("elapsedTime", pElapsedTime);
+				tracePoint.AddValueFloat("elapsedTime", pElapsedTime);
 				vrEventQueue.RemoveAllEvents();
 				return false;
 			}
@@ -837,9 +837,9 @@ bool deEngine::RunSingleFrame(){
 		scrSys.OnFrameUpdate();
 	DEBUG_PRINT_TIMER("DoFrame: Script OnFrameUpdate");
 		if(pScriptFailed){
-			deErrorTracePoint *tracePoint = pErrorTrace->AddPoint(
+			deErrorTracePoint &tracePoint = pErrorTrace->AddPoint(
 				nullptr, "deEngine::RunDoSingleFrame", __LINE__);
-			tracePoint->AddValueFloat("elapsedTime", pElapsedTime);
+			tracePoint.AddValueFloat("elapsedTime", pElapsedTime);
 			return false;
 		}
 		
@@ -858,9 +858,9 @@ bool deEngine::RunSingleFrame(){
 		
 		// check for problems
 		if(pScriptFailed){
-			deErrorTracePoint *tracePoint = pErrorTrace->AddPoint(
+			deErrorTracePoint &tracePoint = pErrorTrace->AddPoint(
 				nullptr, "deEngine::RunDoSingleFrame", __LINE__);
-			tracePoint->AddValueFloat("elapsedTime", pElapsedTime);
+			tracePoint.AddValueFloat("elapsedTime", pElapsedTime);
 			return false;
 		}
 		
@@ -868,8 +868,7 @@ bool deEngine::RunSingleFrame(){
 		pLogger->LogException("GameEngine", e);
 		
 		pErrorTrace->AddAndSetIfEmpty(e.GetName(), nullptr, e.GetFile(), e.GetLine());
-		deErrorTracePoint * const tracePoint = pErrorTrace->AddPoint(
-			nullptr, "deEngine::Run", __LINE__);
+		deErrorTracePoint &tracePoint = pErrorTrace->AddPoint(nullptr, "deEngine::Run", __LINE__);
 		
 		const decStringList &backtrace = e.GetBacktrace();
 		const int btcount = backtrace.GetCount();
@@ -878,7 +877,7 @@ bool deEngine::RunSingleFrame(){
 		for(i=0; i<btcount; i++){
 			decString bttext;
 			bttext.Format("Backtrace %i", i + 1);
-			tracePoint->AddValue(bttext, backtrace.GetAt(i));
+			tracePoint.AddValue(bttext, backtrace.GetAt(i));
 		}
 		return false;
 	}
@@ -953,8 +952,8 @@ const char *gameObject){
 			
 		}catch(const deException &e){
 			pErrorTrace->AddAndSetIfEmpty(e.GetName(), nullptr, e.GetFile(), e.GetLine());
-			deErrorTracePoint * const tracePoint = pErrorTrace->AddPoint(nullptr, "deEngine::Run", __LINE__);
-			tracePoint->AddValue("system", pSystems[i]->GetSystemName());
+			deErrorTracePoint &tracePoint = pErrorTrace->AddPoint(nullptr, "deEngine::Run", __LINE__);
+			tracePoint.AddValue("system", pSystems[i]->GetSystemName());
 			
 			hasErrors = true;
 		}
@@ -970,8 +969,8 @@ const char *gameObject){
 				
 			}catch(const deException &e){
 				pErrorTrace->AddAndSetIfEmpty(e.GetName(), nullptr, e.GetFile(), e.GetLine());
-				deErrorTracePoint * const tracePoint = pErrorTrace->AddPoint(nullptr, "deEngine::Run", __LINE__);
-				tracePoint->AddValue("system", pSystems[i]->GetSystemName());
+				deErrorTracePoint &tracePoint = pErrorTrace->AddPoint(nullptr, "deEngine::Run", __LINE__);
+				tracePoint.AddValue("system", pSystems[i]->GetSystemName());
 				
 				hasErrors = true;
 			}
@@ -1015,8 +1014,7 @@ bool deEngine::ResumeRun(){
 		pLogger->LogException("GameEngine", e);
 		
 		pErrorTrace->AddAndSetIfEmpty(e.GetName(), nullptr, e.GetFile(), e.GetLine());
-		deErrorTracePoint * const tracePoint = pErrorTrace->AddPoint(
-			nullptr, "deEngine::ResumeRun", __LINE__);
+		deErrorTracePoint &tracePoint = pErrorTrace->AddPoint(nullptr, "deEngine::ResumeRun", __LINE__);
 		
 		const decStringList &backtrace = e.GetBacktrace();
 		const int btcount = backtrace.GetCount();
@@ -1025,7 +1023,7 @@ bool deEngine::ResumeRun(){
 		for(i=0; i<btcount; i++){
 			decString bttext;
 			bttext.Format("Backtrace %i", i + 1);
-			tracePoint->AddValue(bttext, backtrace.GetAt(i));
+			tracePoint.AddValue(bttext, backtrace.GetAt(i));
 		}
 		return false;
 	}
@@ -1107,8 +1105,7 @@ DEBUG_PRINT_TIMER("Run: Process VR events");
 		pLogger->LogException("GameEngine", e);
 		
 		pErrorTrace->AddAndSetIfEmpty(e.GetName(), nullptr, e.GetFile(), e.GetLine());
-		deErrorTracePoint * const tracePoint = pErrorTrace->AddPoint(
-			nullptr, "deEngine::ProcessEvents", __LINE__);
+		deErrorTracePoint &tracePoint = pErrorTrace->AddPoint(nullptr, "deEngine::ProcessEvents", __LINE__);
 		
 		const decStringList &backtrace = e.GetBacktrace();
 		const int btcount = backtrace.GetCount();
@@ -1117,7 +1114,7 @@ DEBUG_PRINT_TIMER("Run: Process VR events");
 		for(i=0; i<btcount; i++){
 			decString bttext;
 			bttext.Format("Backtrace %i", i + 1);
-			tracePoint->AddValue(bttext, backtrace.GetAt(i));
+			tracePoint.AddValue(bttext, backtrace.GetAt(i));
 		}
 		return false;
 	}

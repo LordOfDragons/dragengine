@@ -263,7 +263,7 @@ void debpComponent::PrepareMesh(){
 	
 	PrepareWeights();
 	
-	const deModelLOD &lod = *pComponent->GetModel()->GetLODAt(0);
+	const deModelLOD &lod = pComponent->GetModel()->GetLODAt(0);
 	int i;
 	
 	for(i=0; i<pVertexCount; i++){
@@ -461,7 +461,7 @@ void debpComponent::PrepareBoneWeights(){
 	
 	int i;
 	for(i=0; i<pBoneCount; i++){
-		pBones[i].weightMatrix = rig->GetBoneAt(i).GetInverseMatrix()
+		pBones[i].weightMatrix = rig->GetBoneAt(i)->GetInverseMatrix()
 			.QuickMultiply(pComponent->GetBoneAt(i).GetMatrix());
 	}
 	

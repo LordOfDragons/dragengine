@@ -26,9 +26,10 @@
 #define _DECOLLIDERRIG_H_
 
 #include "deCollider.h"
+#include "deColliderBone.h"
 #include "../rig/deRig.h"
+#include "../../common/collection/decTUniqueList.h"
 
-class deColliderBone;
 class deRigConstraint;
 
 
@@ -56,8 +57,7 @@ public:
 private:
 	deRig::Ref pRig;
 	
-	deColliderBone **pBones;
-	int pBoneCount;
+	deColliderBone::List pBones;
 	
 	
 	
@@ -90,14 +90,17 @@ public:
 	
 	
 	
+	/** \brief Bones. */
+	inline const deColliderBone::List &GetBones() const{ return pBones; }
+	
 	/** \brief Number of bones. */
-	inline int GetBoneCount() const{ return pBoneCount; }
+	inline int GetBoneCount() const{ return pBones.GetCount(); }
 	
 	/**
 	 * \brief Bone at index.
 	 * \throws deeOutOfBoundary \em index is less than 0 or greater than or equal to GetBoneCount().
 	 */
-	deColliderBone &GetBoneAt(int index) const;
+	inline const deColliderBone::Ref &GetBoneAt(int index) const{ return pBones.GetAt(index); }
 	
 	
 	

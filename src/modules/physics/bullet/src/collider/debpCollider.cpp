@@ -413,7 +413,7 @@ void debpCollider::ProcessColliderCollisionTests(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((debpColliderCollisionTest*)pCollisionTests.GetAt(i))->Update();
+		pCollisionTests.GetAt(i)->Update();
 	}
 }
 
@@ -590,7 +590,7 @@ int debpCollider::GetCollisionTestCount() const{
 }
 
 debpColliderCollisionTest *debpCollider::GetCollisionTestAt(int index) const{
-	return (debpColliderCollisionTest*)pCollisionTests.GetAt(index);
+	return pCollisionTests.GetAt(index);
 }
 
 
@@ -833,7 +833,7 @@ void debpCollider::AllConstraintsRemoved(){
 
 
 void debpCollider::CollisionTestChanged(int index){
-	((debpColliderCollisionTest*)pCollisionTests.GetAt(index))->CollisionTestChanged();
+	pCollisionTests.GetAt(index)->CollisionTestChanged();
 }
 
 void debpCollider::CollisionTestEnabledChanged(int index){
@@ -856,8 +856,8 @@ void debpCollider::CollisionTestRemoved(int index){
 }
 
 void debpCollider::AllCollisionTestsRemoved(){
-	while(pCollisionTests.GetCount() > 0){
-		delete (debpColliderCollisionTest*)pCollisionTests.GetAt(pCollisionTests.GetCount() - 1);
+	while(pCollisionTests.IsNotEmpty()){
+		delete pCollisionTests.Last();
 		pCollisionTests.RemoveFrom(pCollisionTests.GetCount() - 1);
 	}
 	

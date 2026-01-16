@@ -77,7 +77,7 @@ int deoglPersistentRenderTaskOwner::GetInstanceCount() const{
 }
 
 deoglPersistentRenderTaskInstance *deoglPersistentRenderTaskOwner::GetInstanceAt(int index) const{
-	return (deoglPersistentRenderTaskInstance*)pInstances.GetAt(index);
+	return pInstances.GetAt(index);
 }
 
 void deoglPersistentRenderTaskOwner::AddInstance(deoglPersistentRenderTaskInstance *instance){
@@ -98,7 +98,7 @@ int deoglPersistentRenderTaskOwner::GetSubInstanceCount() const{
 }
 
 deoglPersistentRenderTaskSubInstance *deoglPersistentRenderTaskOwner::GetSubInstanceAt(int index) const{
-	return (deoglPersistentRenderTaskSubInstance*)pSubInstances.GetAt(index);
+	return pSubInstances.GetAt(index);
 }
 
 void deoglPersistentRenderTaskOwner::AddSubInstance(deoglPersistentRenderTaskSubInstance *subInstance){

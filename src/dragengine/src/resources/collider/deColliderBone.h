@@ -25,8 +25,9 @@
 #ifndef _DECOLLIDERBONE_H_
 #define _DECOLLIDERBONE_H_
 
-#include "../../common/math/decMath.h"
 #include "../deResource.h"
+#include "../../common/collection/decTUniqueList.h"
+#include "../../common/math/decMath.h"
 
 class deCollider;
 
@@ -38,6 +39,13 @@ class deCollider;
  * or component type.
  */
 class DE_DLL_EXPORT deColliderBone{
+public:
+	/** \brief Reference. */
+	using Ref = deTUniqueReference<deColliderBone>;
+	
+	/** \brief List type. */
+	using List = decTUniqueList<deColliderBone>;
+	
 private:
 	deCollider *pCollider;
 	int pIndex;

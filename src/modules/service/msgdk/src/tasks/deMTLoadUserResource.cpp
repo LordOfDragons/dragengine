@@ -48,14 +48,13 @@ public:
 
 		pTaskLoadResource = service.GetModule().GetGameEngine()->GetResourceLoader()->
 			AddLoadRequest(pVFS, memoryFile->GetFilename(), deResourceLoader::ertImage);
-		deResourceLoaderTask * const rlt = (deResourceLoaderTask*)(deThreadSafeObject*)pTaskLoadResource;
 		
-		switch(rlt->GetState())
+		switch(pTaskLoadResource->GetState())
 		{
 		case deResourceLoaderTask::esPending:
-			if(!GetDependsOn().Has(rlt))
+			if(!GetDependsOn().Has(pTaskLoadResource))
 			{
-				AddDependsOn(rlt);
+				AddDependsOn(pTaskLoadResource);
 			}
 			break;
 			

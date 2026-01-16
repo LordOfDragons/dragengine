@@ -218,10 +218,10 @@ deVideoDecoder::Ref deVideoManager::CreateDecoder(deVideo *video){
 		deErrorTrace &errorTrace = *GetEngine()->GetErrorTrace();
 		errorTrace.AddAndSetIfEmpty(e.GetName(), nullptr, e.GetFile(), e.GetLine());
 		
-		deErrorTracePoint &etp = *errorTrace.AddPoint(
+		deErrorTracePoint &etp = errorTrace.AddPoint(
 			nullptr, "deVideoManager::CreateDecoder", __LINE__);
 		
-		deErrorTraceValue &etv = *etp.AddValue("video", "<deVideo>");
+		deErrorTraceValue &etv = etp.AddValue("video", "<deVideo>");
 		etv.AddSubValue("filename", video->GetFilename());
 		if(module){
 			etp.AddValue("module", module->GetLoadableModule().GetName());
@@ -281,10 +281,10 @@ deVideoAudioDecoder::Ref deVideoManager::CreateAudioDecoder(deVideo *video){
 		deErrorTrace &errorTrace = *GetEngine()->GetErrorTrace();
 		errorTrace.AddAndSetIfEmpty(e.GetName(), nullptr, e.GetFile(), e.GetLine());
 		
-		deErrorTracePoint &etp = *errorTrace.AddPoint(
+		deErrorTracePoint &etp = errorTrace.AddPoint(
 			nullptr, "deVideoManager::CreateSoundDecoder", __LINE__);
 		
-		deErrorTraceValue &etv = *etp.AddValue("video", "<deVideo>");
+		deErrorTraceValue &etv = etp.AddValue("video", "<deVideo>");
 		etv.AddSubValue("filename", video->GetFilename());
 		if(module){
 			etp.AddValue("module", module->GetLoadableModule().GetName());

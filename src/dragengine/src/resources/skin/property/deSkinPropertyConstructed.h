@@ -26,17 +26,19 @@
 #define _DESKINPROPERTYCONSTRUCTED_H_
 
 #include "deSkinProperty.h"
+#include "node/deSkinPropertyNodeGroup.h"
 #include "../../../common/math/decMath.h"
-
-class deSkinPropertyNodeGroup;
 
 
 /**
  * \brief Skin texture constructed property.
  */
 class DE_DLL_EXPORT deSkinPropertyConstructed : public deSkinProperty{
+public:
+	using Ref = deTUniqueReference<deSkinPropertyConstructed>;
+	
 private:
-	deSkinPropertyNodeGroup *pContent;
+	deSkinPropertyNodeGroup::Ref pContent;
 	decColor pColor;
 	bool pTileX;
 	bool pTileY;
@@ -63,7 +65,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Content. */
-	inline deSkinPropertyNodeGroup &GetContent() const{ return *pContent; }
+	inline const deSkinPropertyNodeGroup::Ref &GetContent() const{ return pContent; }
 	
 	/** \brief Base color. */
 	inline const decColor &GetColor() const{ return pColor; }

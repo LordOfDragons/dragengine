@@ -169,7 +169,7 @@ pAttachment(nullptr)
 
 igdeWOSOLight::~igdeWOSOLight(){
 	if(pResLoad){
-		((igdeWOSOLightResLoadComponent&)(igdeResourceLoaderListener&)pResLoad).Drop();
+		pResLoad.DynamicCast<igdeWOSOLightResLoadComponent>()->Drop();
 		pResLoad = nullptr;
 	}
 	pDestroyLight();
@@ -239,7 +239,7 @@ void igdeWOSOLight::AsyncLoadFinished(bool success){
 		return;
 	}
 	
-	((igdeWOSOLightResLoadComponent&)(igdeResourceLoaderListener&)pResLoad).Drop();
+	pResLoad.DynamicCast<igdeWOSOLightResLoadComponent>()->Drop();
 	
 	GetWrapper().SubObjectFinishedLoading(*this, success);
 }
@@ -251,13 +251,12 @@ void igdeWOSOLight::AsyncLoadFinished(bool success){
 
 void igdeWOSOLight::pLoadResources(){
 	if(pResLoad){
-		((igdeWOSOLightResLoadComponent&)(igdeResourceLoaderListener&)pResLoad).Drop();
+		pResLoad.DynamicCast<igdeWOSOLightResLoadComponent>()->Drop();
 		pResLoad = nullptr;
 	}
 	
 	pResLoad = igdeWOSOLightResLoadComponent::Ref::New(*this);
-	igdeWOSOLightResLoadComponent &rl =
-		(igdeWOSOLightResLoadComponent&)(igdeResourceLoaderListener&)pResLoad;
+	igdeWOSOLightResLoadComponent &rl = pResLoad.DynamicCast<igdeWOSOLightResLoadComponent>();
 	
 	const decString pathLightSkin(GetStringProperty(
 		pGDLight.GetPropertyName(igdeGDCLight::epLightSkin), pGDLight.GetLightSkinPath()));
@@ -269,8 +268,7 @@ void igdeWOSOLight::pLoadResources(){
 }
 
 void igdeWOSOLight::pUpdateLight(){
-	const igdeWOSOLightResLoadComponent &rl =
-		(igdeWOSOLightResLoadComponent&)(igdeResourceLoaderListener&)pResLoad;
+	const igdeWOSOLightResLoadComponent &rl = pResLoad.DynamicCast<igdeWOSOLightResLoadComponent>();
 	
 	if(!pLight){
 		pLight = GetEngine().GetLightManager()->CreateLight();
@@ -378,39 +376,31 @@ void igdeWOSOLight::AttachToCollider(){
 	
 	deColliderComponent * const colliderComponent = GetAttachableColliderComponent();
 	deColliderVolume * const colliderFallback = GetWrapper().GetColliderFallback();
-	deColliderAttachment *attachment = nullptr;
 	
-	try{
-		attachment = new deColliderAttachment(pLight);
-		attachment->SetAttachType(deColliderAttachment::eatStatic);
-		attachment->SetPosition(GetVectorProperty(
-			pGDLight.GetPropertyName(igdeGDCLight::epAttachPosition),
-			pGDLight.GetPosition()));
-		attachment->SetOrientation(GetRotationProperty(
-			pGDLight.GetPropertyName(igdeGDCLight::epAttachRotation),
-			pGDLight.GetOrientation()));
-		
-		if(colliderComponent){
-			if(!pGDLight.GetBoneName().IsEmpty()){
-				attachment->SetAttachType(deColliderAttachment::eatBone);
-				attachment->SetTrackBone(pGDLight.GetBoneName());
-			}
-			colliderComponent->AddAttachment(attachment);
-			pAttachedToCollider = colliderComponent;
-			
-		}else{
-			colliderFallback->AddAttachment(attachment);
-			pAttachedToCollider = colliderFallback;
+	auto attachment = deColliderAttachment::Ref::New(pLight);
+	attachment->SetAttachType(deColliderAttachment::eatStatic);
+	attachment->SetPosition(GetVectorProperty(
+		pGDLight.GetPropertyName(igdeGDCLight::epAttachPosition),
+		pGDLight.GetPosition()));
+	attachment->SetOrientation(GetRotationProperty(
+		pGDLight.GetPropertyName(igdeGDCLight::epAttachRotation),
+		pGDLight.GetOrientation()));
+	auto attachmentPtr = attachment.Pointer();
+	
+	if(colliderComponent){
+		if(!pGDLight.GetBoneName().IsEmpty()){
+			attachment->SetAttachType(deColliderAttachment::eatBone);
+			attachment->SetTrackBone(pGDLight.GetBoneName());
 		}
+		colliderComponent->AddAttachment(std::move(attachment));
+		pAttachedToCollider = colliderComponent;
 		
-		pAttachment = attachment;
-		
-	}catch(const deException &){
-		if(attachment){
-			delete attachment;
-		}
-		throw;
+	}else{
+		colliderFallback->AddAttachment(std::move(attachment));
+		pAttachedToCollider = colliderFallback;
 	}
+	
+	pAttachment = attachmentPtr;
 }
 
 void igdeWOSOLight::DetachFromCollider(){

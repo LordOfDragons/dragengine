@@ -175,51 +175,45 @@ void meWindowChangelog::UpdateChangelog(){
 	
 	try{
 		if(pWorld->GetChanged()){
-			const igdeListItem::Ref refEntry(meWCEntry::Ref::New(*this, meWCEntry::eetWorld));
-			meWCEntry &entry = (meWCEntry&)(igdeListItem&)refEntry;
-			entry.SetWorld(pWorld);
-			entry.UpdateText();
-			
-			pListChanges->AddItem(refEntry);
+			auto entry = meWCEntry::Ref::New(*this, meWCEntry::eetWorld);
+			entry->SetWorld(pWorld);
+			entry->UpdateText();
+			pListChanges->AddItem(entry);
 		}
 		
 		if(pWorld->GetDepChanged()){
 			if(pWorld->GetHeightTerrain()->GetChanged()){
-				const igdeListItem::Ref refEntry(meWCEntry::Ref::New(*this, meWCEntry::eetHeightTerrain));
-				meWCEntry &entry = (meWCEntry&)(igdeListItem&)refEntry;
-				entry.SetWorld(pWorld);
-				entry.UpdateText();
-				pListChanges->AddItem(refEntry);
+				auto entry = meWCEntry::Ref::New(*this, meWCEntry::eetHeightTerrain);
+				entry->SetWorld(pWorld);
+				entry->UpdateText();
+				pListChanges->AddItem(entry);
 			}
 			
 			hterrain->GetSectors().Visit([&](meHeightTerrainSector &htsector){
 				const decPoint &scoord = htsector.GetCoordinates();
 				
 				if(htsector.GetHeightImageChanged()){
-					const igdeListItem::Ref refEntry(meWCEntry::Ref::New(*this, meWCEntry::eetHTHeight));
-					meWCEntry &entry = (meWCEntry&)(igdeListItem&)refEntry;
-					entry.SetWorld(pWorld);
-					entry.SetSector(decPoint3(scoord.x, 0, scoord.y));
-					entry.UpdateText();
-					pListChanges->AddItem(refEntry);
+					auto entry = meWCEntry::Ref::New(*this, meWCEntry::eetHTHeight);
+					entry->SetWorld(pWorld);
+					entry->SetSector(decPoint3(scoord.x, 0, scoord.y));
+					entry->UpdateText();
+					pListChanges->AddItem(entry);
 				}
 				
 				if(htsector.GetVisibilityChanged()){
-					const igdeListItem::Ref refEntry(meWCEntry::Ref::New(*this, meWCEntry::eetHTVisibility));
-					meWCEntry &entry = (meWCEntry&)(igdeListItem&)refEntry;
-					entry.SetWorld(pWorld);
-					entry.SetSector(decPoint3(scoord.x, 0, scoord.y));
-					entry.UpdateText();
-					pListChanges->AddItem(refEntry);
+					auto entry = meWCEntry::Ref::New(*this, meWCEntry::eetHTVisibility);
+					entry->SetWorld(pWorld);
+					entry->SetSector(decPoint3(scoord.x, 0, scoord.y));
+					entry->UpdateText();
+					pListChanges->AddItem(entry);
 				}
 				
 				if(htsector.GetPFCacheChanged()){
-					const igdeListItem::Ref refEntry(meWCEntry::Ref::New(*this, meWCEntry::eetHTPFCache));
-					meWCEntry &entry = (meWCEntry&)(igdeListItem&)refEntry;
-					entry.SetWorld(pWorld);
-					entry.SetSector(decPoint3(scoord.x, 0, scoord.y));
-					entry.UpdateText();
-					pListChanges->AddItem(refEntry);
+					auto entry = meWCEntry::Ref::New(*this, meWCEntry::eetHTPFCache);
+					entry->SetWorld(pWorld);
+					entry->SetSector(decPoint3(scoord.x, 0, scoord.y));
+					entry->UpdateText();
+					pListChanges->AddItem(entry);
 				}
 				
 				if(pWorld->GetHeightTerrain()->GetDepChanged()){
@@ -228,12 +222,11 @@ void meWindowChangelog::UpdateChangelog(){
 							return;
 						}
 						
-						const igdeListItem::Ref refEntry(meWCEntry::Ref::New(*this, meWCEntry::eetHTTextureMask));
-						meWCEntry &entry = (meWCEntry&)(igdeListItem&)refEntry;
-						entry.SetHTTexture(&httexture);
-						entry.SetSector(decPoint3(scoord.x, 0, scoord.y));
-						entry.UpdateText();
-						pListChanges->AddItem(refEntry);
+						auto entry = meWCEntry::Ref::New(*this, meWCEntry::eetHTTextureMask);
+						entry->SetHTTexture(&httexture);
+						entry->SetSector(decPoint3(scoord.x, 0, scoord.y));
+						entry->UpdateText();
+						pListChanges->AddItem(entry);
 					});
 				}
 				
@@ -242,12 +235,11 @@ void meWindowChangelog::UpdateChangelog(){
 						return;
 					}
 					
-					const igdeListItem::Ref refEntry(meWCEntry::Ref::New(*this, meWCEntry::eetHTNavSpace));
-					meWCEntry &entry = (meWCEntry&)(igdeListItem&)refEntry;
-					entry.SetHTNavSpace(navspace);
-					entry.SetSector(decPoint3(scoord.x, 0, scoord.y));
-					entry.UpdateText();
-					pListChanges->AddItem(refEntry);
+					auto entry = meWCEntry::Ref::New(*this, meWCEntry::eetHTNavSpace);
+					entry->SetHTNavSpace(navspace);
+					entry->SetSector(decPoint3(scoord.x, 0, scoord.y));
+					entry->UpdateText();
+					pListChanges->AddItem(entry);
 				});
 			});
 		}

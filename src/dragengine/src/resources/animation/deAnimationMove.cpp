@@ -40,35 +40,10 @@
 
 deAnimationMove::deAnimationMove() :
 pPlaytime(0),
-pFPS(25.0f),
-pLists(nullptr),
-pListCount(0),
-pListSize(0),
-pVertexPositionSetLists(nullptr),
-pVertexPositionSetListCount(0),
-pVertexPositionSetListSize(0){
+pFPS(25.0f){
 }
 
 deAnimationMove::~deAnimationMove(){
-	int i;
-	
-	if(pLists){
-		for(i=0; i<pListCount; i++){
-			if(pLists[i]){
-				delete pLists[i];
-			}
-		}
-		delete [] pLists;
-	}
-	
-	if(pVertexPositionSetLists){
-		for(i=0; i<pVertexPositionSetListCount; i++){
-			if(pVertexPositionSetLists[i]){
-				delete pVertexPositionSetLists[i];
-			}
-		}
-		delete [] pVertexPositionSetLists;
-	}
 }
 
 
@@ -88,61 +63,20 @@ void deAnimationMove::SetFPS(float fps){
 	pFPS = decMath::max(fps, 1.0f);
 }
 
-deAnimationKeyframe::List *deAnimationMove::GetKeyframeList(int index) const{
-	DEASSERT_TRUE(index >= 0)
-	DEASSERT_TRUE(index < pListCount)
-	
-	return pLists[index];
+const deAnimationMove::KeyframeListRef &deAnimationMove::GetKeyframeList(int index) const{
+	return pLists.GetAt(index);
 }
 
-void deAnimationMove::AddKeyframeList(deAnimationKeyframe::List *list){
-	DEASSERT_NOTNULL(list);
-	
-	if(pListCount == pListSize){
-		const int newSize = pListCount * 3 / 2 + 1;
-		int i;
-		deAnimationKeyframe::List ** const newArray = new deAnimationKeyframe::List*[newSize];
-		if(pLists){
-			for(i=0; i<pListCount; i++){
-				newArray[i] = pLists[i];
-			}
-			delete [] pLists;
-		}
-		pLists = newArray;
-		pListSize = newSize;
-	}
-	
-	pLists[pListCount] = list;
-	pListCount++;
+void deAnimationMove::AddKeyframeList(KeyframeListRef &&list){
+	pLists.Add(std::move(list));
 }
 
-deAnimationKeyframeVertexPositionSet::List *deAnimationMove::GetVertexPositionSetKeyframeList(int index) const{
-	DEASSERT_TRUE(index >= 0)
-	DEASSERT_TRUE(index < pVertexPositionSetListCount)
-	
-	return pVertexPositionSetLists[index];
+const deAnimationMove::VertexPositionSetKeyframeListRef &deAnimationMove::GetVertexPositionSetKeyframeList(int index) const{
+	return pVertexPositionSetLists.GetAt(index);
 }
 
-void deAnimationMove::AddVertexPositionSetKeyframeList(deAnimationKeyframeVertexPositionSet::List *list){
-	DEASSERT_NOTNULL(list);
-	
-	if(pVertexPositionSetListCount == pVertexPositionSetListSize){
-		const int newSize = pVertexPositionSetListCount * 3 / 2 + 1;
-		int i;
-		deAnimationKeyframeVertexPositionSet::List ** const newArray =
-			new deAnimationKeyframeVertexPositionSet::List*[newSize];
-		if(pVertexPositionSetLists){
-			for(i=0; i<pVertexPositionSetListCount; i++){
-				newArray[i] = pVertexPositionSetLists[i];
-			}
-			delete [] pVertexPositionSetLists;
-		}
-		pVertexPositionSetLists = newArray;
-		pVertexPositionSetListSize = newSize;
-	}
-	
-	pVertexPositionSetLists[pVertexPositionSetListCount] = list;
-	pVertexPositionSetListCount++;
+void deAnimationMove::AddVertexPositionSetKeyframeList(VertexPositionSetKeyframeListRef &&list){
+	pVertexPositionSetLists.Add(std::move(list));
 }
 
 void deAnimationMove::GetKeyframeCurve(decCurveBezier &curve, int index,

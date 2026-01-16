@@ -37,19 +37,15 @@
 
 deSkinPropertyConstructed::deSkinPropertyConstructed(const char *type) :
 deSkinProperty(type),
-pContent(nullptr),
+pContent(deSkinPropertyNodeGroup::Ref::New()),
 pTileX(false),
 pTileY(false),
 pBitCount(8)
 {
-	pContent = new deSkinPropertyNodeGroup;
 	pContent->SetSize(decVector(256.0f, 256.0f, 1.0f));
 }
 
 deSkinPropertyConstructed::~deSkinPropertyConstructed(){
-	if(pContent){
-		delete pContent;
-	}
 }
 
 

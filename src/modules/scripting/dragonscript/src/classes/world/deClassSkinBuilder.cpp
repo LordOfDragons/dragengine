@@ -120,13 +120,13 @@ public:
 		deSkinPropertyVisitorIdentify identify;
 		pSkin->GetTextureAt(indexTexture)->GetPropertyAt(indexProperty)->Visit(identify);
 		pOpenConstructed = &identify.CastToConstructed();
-		pOpenNodes.Add(&pOpenConstructed->GetContent());
+		pOpenNodes.Add(pOpenConstructed->GetContent());
 		pNextNodeAsMask = false;
-		return &pOpenConstructed->GetContent();
+		return pOpenConstructed->GetContent();
 	}
 	
 	deSkinPropertyNodeGroup *GetOpenNode(){
-		return (deSkinPropertyNodeGroup*)pOpenNodes.GetAt(pOpenNodes.GetCount() - 1);
+		return pOpenNodes.GetAt(pOpenNodes.GetCount() - 1);
 	}
 	
 	void OpenGroup(deSkinPropertyNodeGroup *group){
@@ -293,15 +293,7 @@ void deClassSkinBuilder::nfAddTexture::RunFunction(dsRunTime *rt, dsValue *mysel
 	}
 	
 	const char * const name = rt->GetValue(0)->GetString();
-	
-	deSkinTexture * const texture = new deSkinTexture(name);
-	try{
-		builder->GetSkin()->AddTexture(texture);
-		
-	}catch(...){
-		delete texture;
-		throw;
-	}
+	builder->GetSkin()->AddTexture(deSkinTexture::Ref::New(name));
 }
 
 // protected func void addPropertyValue( int texture, String type, String texCoordSet,
@@ -321,23 +313,17 @@ void deClassSkinBuilder::nfAddPropertyValue::RunFunction(dsRunTime *rt, dsValue 
 		DSTHROW(dueInvalidAction);
 	}
 	
-	deSkinTexture &texture = *builder->GetSkin()->GetTextureAt(rt->GetValue(0)->GetInt());
+	deSkinTexture &texture = builder->GetSkin()->GetTextureAt(rt->GetValue(0)->GetInt());
 	const char * const type = rt->GetValue(1)->GetString();
 	const char * const texCoordSet = rt->GetValue(2)->GetString();
 	const char * const renderable = rt->GetValue(3)->GetString();
 	const float value = rt->GetValue(4)->GetFloat();
 	
-	deSkinPropertyValue * const property = new deSkinPropertyValue(type);
-	try{
-		property->SetTexCoordSet(texCoordSet);
-		property->SetRenderable(renderable);
-		property->SetValue(value);
-		texture.AddProperty(property);
-		
-	}catch(...){
-		delete property;
-		throw;
-	}
+	auto property = deSkinPropertyValue::Ref::New(type);
+	property->SetTexCoordSet(texCoordSet);
+	property->SetRenderable(renderable);
+	property->SetValue(value);
+	texture.AddProperty(std::move(property));
 }
 
 // protected func void addPropertyColor( int texture, String type, String texCoordSet,
@@ -359,23 +345,17 @@ void deClassSkinBuilder::nfAddPropertyColor::RunFunction(dsRunTime *rt, dsValue 
 	}
 	
 	const deScriptingDragonScript &ds = static_cast<deClassSkinBuilder*>(GetOwnerClass())->GetDS();
-	deSkinTexture &texture = *builder->GetSkin()->GetTextureAt(rt->GetValue(0)->GetInt());
+	deSkinTexture &texture = builder->GetSkin()->GetTextureAt(rt->GetValue(0)->GetInt());
 	const char * const type = rt->GetValue(1)->GetString();
 	const char * const texCoordSet = rt->GetValue(2)->GetString();
 	const char * const renderable = rt->GetValue(3)->GetString();
 	const decColor &color = ds.GetClassColor()->GetColor(rt->GetValue(4)->GetRealObject());
 	
-	deSkinPropertyColor * const property = new deSkinPropertyColor(type);
-	try{
-		property->SetTexCoordSet(texCoordSet);
-		property->SetRenderable(renderable);
-		property->SetColor(color);
-		texture.AddProperty(property);
-		
-	}catch(...){
-		delete property;
-		throw;
-	}
+	auto property = deSkinPropertyColor::Ref::New(type);
+	property->SetTexCoordSet(texCoordSet);
+	property->SetRenderable(renderable);
+	property->SetColor(color);
+	texture.AddProperty(std::move(property));
 }
 
 // protected func void addPropertyImage( int texture, String type, String texCoordSet,
@@ -398,25 +378,19 @@ void deClassSkinBuilder::nfAddPropertyImage::RunFunction(dsRunTime *rt, dsValue 
 	}
 	
 	const deScriptingDragonScript &ds = static_cast<deClassSkinBuilder*>(GetOwnerClass())->GetDS();
-	deSkinTexture &texture = *builder->GetSkin()->GetTextureAt(rt->GetValue(0)->GetInt());
+	deSkinTexture &texture = builder->GetSkin()->GetTextureAt(rt->GetValue(0)->GetInt());
 	const char * const type = rt->GetValue(1)->GetString();
 	const char * const texCoordSet = rt->GetValue(2)->GetString();
 	const char * const renderable = rt->GetValue(3)->GetString();
 	const char * const pathImage = rt->GetValue(4)->GetString();
 	deImage * const image = ds.GetClassImage()->GetImage(rt->GetValue(5)->GetRealObject());
 	
-	deSkinPropertyImage * const property = new deSkinPropertyImage(type);
-	try{
-		property->SetTexCoordSet(texCoordSet);
-		property->SetRenderable(renderable);
-		property->SetPath(pathImage);
-		property->SetImage(image);
-		texture.AddProperty(property);
-		
-	}catch(...){
-		delete property;
-		throw;
-	}
+	auto property = deSkinPropertyImage::Ref::New(type);
+	property->SetTexCoordSet(texCoordSet);
+	property->SetRenderable(renderable);
+	property->SetPath(pathImage);
+	property->SetImage(image);
+	texture.AddProperty(std::move(property));
 }
 
 // protected func void addPropertyVideo( int texture, String type, String texCoordSet,
@@ -440,7 +414,7 @@ void deClassSkinBuilder::nfAddPropertyVideo::RunFunction(dsRunTime *rt, dsValue 
 	}
 	
 	const deScriptingDragonScript &ds = static_cast<deClassSkinBuilder*>(GetOwnerClass())->GetDS();
-	deSkinTexture &texture = *builder->GetSkin()->GetTextureAt(rt->GetValue(0)->GetInt());
+	deSkinTexture &texture = builder->GetSkin()->GetTextureAt(rt->GetValue(0)->GetInt());
 	const char * const type = rt->GetValue(1)->GetString();
 	const char * const texCoordSet = rt->GetValue(2)->GetString();
 	const char * const renderable = rt->GetValue(3)->GetString();
@@ -448,19 +422,13 @@ void deClassSkinBuilder::nfAddPropertyVideo::RunFunction(dsRunTime *rt, dsValue 
 	deVideo * const video = ds.GetClassVideo()->GetVideo(rt->GetValue(5)->GetRealObject());
 	const bool sharedTime = rt->GetValue(6)->GetBool();
 	
-	deSkinPropertyVideo * const property = new deSkinPropertyVideo(type);
-	try{
-		property->SetTexCoordSet(texCoordSet);
-		property->SetRenderable(renderable);
-		property->SetPath(pathVideo);
-		property->SetVideo(video);
-		property->SetSharedTime(sharedTime);
-		texture.AddProperty(property);
-		
-	}catch(...){
-		delete property;
-		throw;
-	}
+	auto property = deSkinPropertyVideo::Ref::New(type);
+	property->SetTexCoordSet(texCoordSet);
+	property->SetRenderable(renderable);
+	property->SetPath(pathVideo);
+	property->SetVideo(video);
+	property->SetSharedTime(sharedTime);
+	texture.AddProperty(std::move(property));
 }
 
 // protected func void addPropertyMapped( int texture, String type, String texCoordSet, String renderable,
@@ -508,7 +476,7 @@ void deClassSkinBuilder::nfAddPropertyMapped::RunFunction(dsRunTime *rt, dsValue
 	deClassCurveBezier &clsCurveBezier = *ds.GetClassCurveBezier();
 	deClassVector2 &clsVector2 = *ds.GetClassVector2();
 	dsClassEnumeration &clsEnum = *static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration());
-	deSkinTexture &texture = *builder->GetSkin()->GetTextureAt(rt->GetValue(0)->GetInt());
+	deSkinTexture &texture = builder->GetSkin()->GetTextureAt(rt->GetValue(0)->GetInt());
 	const char * const type = rt->GetValue(1)->GetString();
 	const char * const texCoordSet = rt->GetValue(2)->GetString();
 	const char * const renderable = rt->GetValue(3)->GetString();
@@ -542,72 +510,66 @@ void deClassSkinBuilder::nfAddPropertyMapped::RunFunction(dsRunTime *rt, dsValue
 	const char * const alphaBone = rt->GetValue(23)->GetString();
 	
 	
-	deSkinPropertyMapped * const property = new deSkinPropertyMapped(type);
+	auto property = deSkinPropertyMapped::Ref::New(type);
 	deSkinMapped::Ref mapped;
 	decString name;
 	
-	try{
-		property->SetTexCoordSet(texCoordSet);
-		property->SetRenderable(renderable);
-		
-		if(redCurve.GetPointCount() > 0){
-			const int index = builder->GetSkin()->GetMapped().GetCount();
-			name.Format("#generated%d", index);
-			mapped = deSkinMapped::Ref::New(name);
-			mapped->GetCurve() = redCurve;
-			mapped->SetInputType(redInputType);
-			mapped->SetInputLower(redInputRange.x);
-			mapped->SetInputUpper(redInputRange.y);
-			mapped->SetInputClamped(redInputClamped);
-			mapped->SetBone(redBone);
-			property->SetRed(index);
-		}
-		
-		if(greenCurve.GetPointCount() > 0){
-			const int index = builder->GetSkin()->GetMapped().GetCount();
-			name.Format("#generated%d", index);
-			mapped = deSkinMapped::Ref::New(name);
-			mapped->GetCurve() = greenCurve;
-			mapped->SetInputType(greenInputType);
-			mapped->SetInputLower(greenInputRange.x);
-			mapped->SetInputUpper(greenInputRange.y);
-			mapped->SetInputClamped(greenInputClamped);
-			mapped->SetBone(greenBone);
-			property->SetGreen(index);
-		}
-		
-		if(blueCurve.GetPointCount() > 0){
-			const int index = builder->GetSkin()->GetMapped().GetCount();
-			name.Format("#generated%d", index);
-			mapped = deSkinMapped::Ref::New(name);
-			mapped->GetCurve() = blueCurve;
-			mapped->SetInputType(blueInputType);
-			mapped->SetInputLower(blueInputRange.x);
-			mapped->SetInputUpper(blueInputRange.y);
-			mapped->SetInputClamped(blueInputClamped);
-			mapped->SetBone(blueBone);
-			property->SetBlue(index);
-		}
-		
-		if(alphaCurve.GetPointCount() > 0){
-			const int index = builder->GetSkin()->GetMapped().GetCount();
-			name.Format("#generated%d", index);
-			mapped = deSkinMapped::Ref::New(name);
-			mapped->GetCurve() = alphaCurve;
-			mapped->SetInputType(alphaInputType);
-			mapped->SetInputLower(alphaInputRange.x);
-			mapped->SetInputUpper(alphaInputRange.y);
-			mapped->SetInputClamped(alphaInputClamped);
-			mapped->SetBone(alphaBone);
-			property->SetAlpha(index);
-		}
-		
-		texture.AddProperty(property);
-		
-	}catch(...){
-		delete property;
-		throw;
+	property->SetTexCoordSet(texCoordSet);
+	property->SetRenderable(renderable);
+	
+	if(redCurve.GetPointCount() > 0){
+		const int index = builder->GetSkin()->GetMapped().GetCount();
+		name.Format("#generated%d", index);
+		mapped = deSkinMapped::Ref::New(name);
+		mapped->GetCurve() = redCurve;
+		mapped->SetInputType(redInputType);
+		mapped->SetInputLower(redInputRange.x);
+		mapped->SetInputUpper(redInputRange.y);
+		mapped->SetInputClamped(redInputClamped);
+		mapped->SetBone(redBone);
+		property->SetRed(index);
 	}
+	
+	if(greenCurve.GetPointCount() > 0){
+		const int index = builder->GetSkin()->GetMapped().GetCount();
+		name.Format("#generated%d", index);
+		mapped = deSkinMapped::Ref::New(name);
+		mapped->GetCurve() = greenCurve;
+		mapped->SetInputType(greenInputType);
+		mapped->SetInputLower(greenInputRange.x);
+		mapped->SetInputUpper(greenInputRange.y);
+		mapped->SetInputClamped(greenInputClamped);
+		mapped->SetBone(greenBone);
+		property->SetGreen(index);
+	}
+	
+	if(blueCurve.GetPointCount() > 0){
+		const int index = builder->GetSkin()->GetMapped().GetCount();
+		name.Format("#generated%d", index);
+		mapped = deSkinMapped::Ref::New(name);
+		mapped->GetCurve() = blueCurve;
+		mapped->SetInputType(blueInputType);
+		mapped->SetInputLower(blueInputRange.x);
+		mapped->SetInputUpper(blueInputRange.y);
+		mapped->SetInputClamped(blueInputClamped);
+		mapped->SetBone(blueBone);
+		property->SetBlue(index);
+	}
+	
+	if(alphaCurve.GetPointCount() > 0){
+		const int index = builder->GetSkin()->GetMapped().GetCount();
+		name.Format("#generated%d", index);
+		mapped = deSkinMapped::Ref::New(name);
+		mapped->GetCurve() = alphaCurve;
+		mapped->SetInputType(alphaInputType);
+		mapped->SetInputLower(alphaInputRange.x);
+		mapped->SetInputUpper(alphaInputRange.y);
+		mapped->SetInputClamped(alphaInputClamped);
+		mapped->SetBone(alphaBone);
+		property->SetAlpha(index);
+	}
+	
+	texture.AddProperty(std::move(property));
 }
 
 // protected func void addPropertyMapped(int texture, String type, String texCoordSet,
@@ -633,7 +595,7 @@ void deClassSkinBuilder::nfAddPropertyMapped2::RunFunction(dsRunTime *rt, dsValu
 	
 	const int mappedCount = builder->GetSkin()->GetMapped().GetCount();
 	
-	deSkinTexture &texture = *builder->GetSkin()->GetTextureAt(rt->GetValue(0)->GetInt());
+	deSkinTexture &texture = builder->GetSkin()->GetTextureAt(rt->GetValue(0)->GetInt());
 	const char * const type = rt->GetValue(1)->GetString();
 	const char * const texCoordSet = rt->GetValue(2)->GetString();
 	const char * const renderable = rt->GetValue(3)->GetString();
@@ -658,20 +620,14 @@ void deClassSkinBuilder::nfAddPropertyMapped2::RunFunction(dsRunTime *rt, dsValu
 		DETHROW(deeInvalidParam);
 	}
 	
-	deSkinPropertyMapped * const property = new deSkinPropertyMapped(type);
-	try{
-		property->SetTexCoordSet(texCoordSet);
-		property->SetRenderable(renderable);
-		property->SetRed(red);
-		property->SetGreen(green);
-		property->SetBlue(blue);
-		property->SetAlpha(alpha);
-		texture.AddProperty(property);
-		
-	}catch(...){
-		delete property;
-		throw;
-	}
+	auto property = deSkinPropertyMapped::Ref::New(type);
+	property->SetTexCoordSet(texCoordSet);
+	property->SetRenderable(renderable);
+	property->SetRed(red);
+	property->SetGreen(green);
+	property->SetBlue(blue);
+	property->SetAlpha(alpha);
+	texture.AddProperty(std::move(property));
 }
 
 // protected func void addPropertyConstructed( int texture, String type, String texCoordSet,
@@ -696,7 +652,7 @@ void deClassSkinBuilder::nfAddPropertyConstructed::RunFunction(dsRunTime *rt, ds
 	}
 	
 	const deScriptingDragonScript &ds = static_cast<deClassSkinBuilder*>(GetOwnerClass())->GetDS();
-	deSkinTexture &texture = *builder->GetSkin()->GetTextureAt(rt->GetValue(0)->GetInt());
+	deSkinTexture &texture = builder->GetSkin()->GetTextureAt(rt->GetValue(0)->GetInt());
 	const char * const type = rt->GetValue(1)->GetString();
 	const char * const texCoordSet = rt->GetValue(2)->GetString();
 	const char * const renderable = rt->GetValue(3)->GetString();
@@ -705,20 +661,14 @@ void deClassSkinBuilder::nfAddPropertyConstructed::RunFunction(dsRunTime *rt, ds
 	const bool tileY = rt->GetValue(6)->GetBool();
 	const decPoint3 &size = ds.GetClassPoint3()->GetPoint(rt->GetValue(7)->GetRealObject());
 	
-	deSkinPropertyConstructed * const property = new deSkinPropertyConstructed(type);
-	try{
-		property->SetTexCoordSet(texCoordSet);
-		property->SetRenderable(renderable);
-		property->SetColor(color);
-		property->SetTileX(tileX);
-		property->SetTileY(tileY);
-		property->GetContent().SetSize(size);
-		texture.AddProperty(property);
-		
-	}catch(...){
-		delete property;
-		throw;
-	}
+	auto property = deSkinPropertyConstructed::Ref::New(type);
+	property->SetTexCoordSet(texCoordSet);
+	property->SetRenderable(renderable);
+	property->SetColor(color);
+	property->SetTileX(tileX);
+	property->SetTileY(tileY);
+	property->GetContent()->SetSize(size);
+	texture.AddProperty(std::move(property));
 }
 
 // protected func void setPropertyBone(int texture, int property, String bone)
@@ -736,8 +686,8 @@ void deClassSkinBuilder::nfSetPropertyBone::RunFunction(dsRunTime *rt, dsValue *
 		DSTHROW(dueInvalidAction);
 	}
 	
-	deSkinTexture &texture = *builder->GetSkin()->GetTextureAt(rt->GetValue(0)->GetInt());
-	deSkinProperty &property = *texture.GetPropertyAt(rt->GetValue(1)->GetInt());
+	deSkinTexture &texture = builder->GetSkin()->GetTextureAt(rt->GetValue(0)->GetInt());
+	deSkinProperty &property = texture.GetPropertyAt(rt->GetValue(1)->GetInt());
 	property.SetBone(rt->GetValue(2)->GetString());
 }
 
@@ -806,32 +756,26 @@ void deClassSkinBuilder::nfAddNodeImage::RunFunction(dsRunTime *rt, dsValue *mys
 	deImage * const image = ds.GetClassImage()->GetImage(rt->GetValue(11)->GetRealObject());
 	const decPoint &repeat = ds.GetClassPoint()->GetPoint(rt->GetValue(12)->GetRealObject());
 	
-	deSkinPropertyNodeImage * const node = new deSkinPropertyNodeImage;
-	try{
-		node->SetPosition(position);
-		node->SetSize(size);
-		node->SetRotation(rotation);
-		node->SetShear(shear);
-		node->SetBrightness(brightness);
-		node->SetContrast(contrast);
-		node->SetGamma(gamma);
-		node->SetColorize(colorize);
-		node->SetTransparency(transparency);
-		node->SetPath(path);
-		node->SetImage(image);
-		node->SetRepeat(repeat);
-		node->SetCombineMode(combineMode);
+	auto node = deSkinPropertyNodeImage::Ref::New();
+	node->SetPosition(position);
+	node->SetSize(size);
+	node->SetRotation(rotation);
+	node->SetShear(shear);
+	node->SetBrightness(brightness);
+	node->SetContrast(contrast);
+	node->SetGamma(gamma);
+	node->SetColorize(colorize);
+	node->SetTransparency(transparency);
+	node->SetPath(path);
+	node->SetImage(image);
+	node->SetRepeat(repeat);
+	node->SetCombineMode(combineMode);
+	
+	if(builder->GetNextNodeAsMask()){
+		group->SetMask(std::move(node));
 		
-		if(builder->GetNextNodeAsMask()){
-			group->SetMask(node);
-			
-		}else{
-			group->AddNode(node);
-		}
-		
-	}catch(...){
-		delete node;
-		throw;
+	}else{
+		group->AddNode(std::move(node));
 	}
 }
 
@@ -885,34 +829,28 @@ void deClassSkinBuilder::nfAddNodeText::RunFunction(dsRunTime *rt, dsValue *myse
 	const char * const text = rt->GetValue(13)->GetString();
 	const decColor &color = ds.GetClassColor()->GetColor(rt->GetValue(14)->GetRealObject());
 	
-	deSkinPropertyNodeText * const node = new deSkinPropertyNodeText;
-	try{
-		node->SetPosition(position);
-		node->SetSize(size);
-		node->SetRotation(rotation);
-		node->SetShear(shear);
-		node->SetBrightness(brightness);
-		node->SetContrast(contrast);
-		node->SetGamma(gamma);
-		node->SetColorize(colorize);
-		node->SetTransparency(transparency);
-		node->SetCombineMode(combineMode);
-		node->SetPath(path);
-		node->SetFont(font);
-		node->SetFontSize(fontSize);
-		node->SetText(text);
-		node->SetColor(color);
+	auto node = deSkinPropertyNodeText::Ref::New();
+	node->SetPosition(position);
+	node->SetSize(size);
+	node->SetRotation(rotation);
+	node->SetShear(shear);
+	node->SetBrightness(brightness);
+	node->SetContrast(contrast);
+	node->SetGamma(gamma);
+	node->SetColorize(colorize);
+	node->SetTransparency(transparency);
+	node->SetCombineMode(combineMode);
+	node->SetPath(path);
+	node->SetFont(font);
+	node->SetFontSize(fontSize);
+	node->SetText(text);
+	node->SetColor(color);
+	
+	if(builder->GetNextNodeAsMask()){
+		group->SetMask(std::move(node));
 		
-		if(builder->GetNextNodeAsMask()){
-			group->SetMask(node);
-			
-		}else{
-			group->AddNode(node);
-		}
-		
-	}catch(...){
-		delete node;
-		throw;
+	}else{
+		group->AddNode(std::move(node));
 	}
 }
 
@@ -965,33 +903,27 @@ void deClassSkinBuilder::nfAddNodeShape::RunFunction(dsRunTime *rt, dsValue *mys
 	const decColor &lineColor = ds.GetClassColor()->GetColor(rt->GetValue(12)->GetRealObject());
 	const float thickness = rt->GetValue(13)->GetFloat();
 	
-	deSkinPropertyNodeShape * const node = new deSkinPropertyNodeShape;
-	try{
-		node->SetPosition(position);
-		node->SetSize(size);
-		node->SetRotation(rotation);
-		node->SetShear(shear);
-		node->SetBrightness(brightness);
-		node->SetContrast(contrast);
-		node->SetGamma(gamma);
-		node->SetColorize(colorize);
-		node->SetTransparency(transparency);
-		node->SetCombineMode(combineMode);
-		node->SetShapeType(shapeType);
-		node->SetFillColor(fillColor);
-		node->SetLineColor(lineColor);
-		node->SetThickness(thickness);
+	auto node = deSkinPropertyNodeShape::Ref::New();
+	node->SetPosition(position);
+	node->SetSize(size);
+	node->SetRotation(rotation);
+	node->SetShear(shear);
+	node->SetBrightness(brightness);
+	node->SetContrast(contrast);
+	node->SetGamma(gamma);
+	node->SetColorize(colorize);
+	node->SetTransparency(transparency);
+	node->SetCombineMode(combineMode);
+	node->SetShapeType(shapeType);
+	node->SetFillColor(fillColor);
+	node->SetLineColor(lineColor);
+	node->SetThickness(thickness);
+	
+	if(builder->GetNextNodeAsMask()){
+		group->SetMask(std::move(node));
 		
-		if(builder->GetNextNodeAsMask()){
-			group->SetMask(node);
-			
-		}else{
-			group->AddNode(node);
-		}
-		
-	}catch(...){
-		delete node;
-		throw;
+	}else{
+		group->AddNode(std::move(node));
 	}
 }
 
@@ -1034,32 +966,27 @@ void deClassSkinBuilder::nfAddNodeGroup::RunFunction(dsRunTime *rt, dsValue *mys
 		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 9 )->GetRealObject() );
 	
-	deSkinPropertyNodeGroup * const node = new deSkinPropertyNodeGroup;
-	try{
-		node->SetPosition(position);
-		node->SetSize(size);
-		node->SetRotation(rotation);
-		node->SetShear(shear);
-		node->SetBrightness(brightness);
-		node->SetContrast(contrast);
-		node->SetGamma(gamma);
-		node->SetColorize(colorize);
-		node->SetTransparency(transparency);
-		node->SetCombineMode(combineMode);
+	auto node = deSkinPropertyNodeGroup::Ref::New();
+	node->SetPosition(position);
+	node->SetSize(size);
+	node->SetRotation(rotation);
+	node->SetShear(shear);
+	node->SetBrightness(brightness);
+	node->SetContrast(contrast);
+	node->SetGamma(gamma);
+	node->SetColorize(colorize);
+	node->SetTransparency(transparency);
+	node->SetCombineMode(combineMode);
+	deSkinPropertyNodeGroup * const openGroup = node.Pointer();
+	
+	if(builder->GetNextNodeAsMask()){
+		group->SetMask(std::move(node));
 		
-		if(builder->GetNextNodeAsMask()){
-			group->SetMask(node);
-			
-		}else{
-			group->AddNode(node);
-		}
-		
-	}catch(...){
-		delete node;
-		throw;
+	}else{
+		group->AddNode(std::move(node));
 	}
 	
-	builder->OpenGroup(node);
+	builder->OpenGroup(openGroup);
 }
 
 // protected func void nextNodeAsMask()

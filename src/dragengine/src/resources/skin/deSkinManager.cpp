@@ -204,49 +204,34 @@ deSkin::Ref deSkinManager::LoadSkin(deVirtualFileSystem *vfs, const char *filena
 }
 
 deSkin::Ref deSkinManager::LoadDefault(){
-	deSkinPropertyImage * propDiff = nullptr;
-	deSkinTexture * skinTex = nullptr;
 	deSkin::Ref skin;
 	
-	try{
-		deSkin * const findSkin = (deSkin*)pSkins.GetWithFilename(
-			GetEngine()->GetVirtualFileSystem(), SKIN_NO_SKIN);
+	deSkin * const findSkin = (deSkin*)pSkins.GetWithFilename(
+		GetEngine()->GetVirtualFileSystem(), SKIN_NO_SKIN);
+	
+	if(findSkin){
+		if(!findSkin->GetPeerGraphic()){
+			GetGraphicSystem()->LoadSkin(findSkin);
+		}
+		skin = findSkin;
 		
-		if(findSkin){
-			if(!findSkin->GetPeerGraphic()){
-				GetGraphicSystem()->LoadSkin(findSkin);
-			}
-			skin = findSkin;
-			
-		}else{
-			skin = deSkin::Ref::New(this, GetEngine()->GetVirtualFileSystem(),
-				SKIN_NO_SKIN, decDateTime::GetSystemTime());
-			skinTex = new deSkinTexture("skin");
-			propDiff = new deSkinPropertyImage("color");
-			
-			propDiff->SetImage(GetImageManager()->LoadDefault());
-			
-			skinTex->AddProperty(propDiff);
-			propDiff = nullptr;
-			
-			skin->AddTexture(skinTex);
-			skinTex = nullptr;
-			
-			GetGraphicSystem()->LoadSkin(skin);
-			GetAudioSystem()->LoadSkin(skin);
-			GetPhysicsSystem()->LoadSkin(skin);
-			
-			pSkins.Add(skin);
-		}
+	}else{
+		skin = deSkin::Ref::New(this, GetEngine()->GetVirtualFileSystem(),
+			SKIN_NO_SKIN, decDateTime::GetSystemTime());
 		
-	}catch(const deException &){
-		if(propDiff){
-			delete propDiff;
-		}
-		if(skinTex){
-			delete skinTex;
-		}
-		throw;
+		auto skinTex = deSkinTexture::Ref::New("skin");
+		
+		auto propDiff = deSkinPropertyImage::Ref::New("color");
+		propDiff->SetImage(GetImageManager()->LoadDefault());
+		skinTex->AddProperty(std::move(propDiff));
+		
+		skin->AddTexture(std::move(skinTex));
+		
+		GetGraphicSystem()->LoadSkin(skin);
+		GetAudioSystem()->LoadSkin(skin);
+		GetPhysicsSystem()->LoadSkin(skin);
+		
+		pSkins.Add(skin);
 	}
 	
 	return skin;
@@ -265,9 +250,6 @@ void deSkinManager::AddLoadedSkin(deSkin *skin){
 
 
 void deSkinManager::LoadPropertyResources(deSkin &skin){
-	const int textureCount = skin.GetTextureCount();
-	int i, j;
-	
 	decPath basePath;
 	basePath.SetFromUnix(skin.GetFilename());
 	basePath.RemoveLastComponent();
@@ -276,14 +258,11 @@ void deSkinManager::LoadPropertyResources(deSkin &skin){
 	const decString strBasePath(basePath.GetPathUnix());
 	deSkinPropertyVisitorLoad visitor(*GetEngine(), skin.GetVirtualFileSystem(), strBasePath);
 	
-	for(i=0; i<textureCount; i++){
-		const deSkinTexture &texture = *skin.GetTextureAt(i);
-		const int propertyCount = texture.GetPropertyCount();
-		
-		for(j=0; j<propertyCount; j++){
-			texture.GetPropertyAt(j)->Visit(visitor);
-		}
-	}
+	skin.GetTextures().Visit([&](deSkinTexture &texture){
+		texture.GetProperties().Visit([&](deSkinProperty &property){
+			property.Visit(visitor);
+		});
+	});
 }
 
 

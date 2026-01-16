@@ -30,6 +30,7 @@
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/collection/decTUniqueList.h>
 
 #include "dearBoneStateList.h"
 #include "dearVPSStateList.h"
@@ -84,8 +85,7 @@ private:
 	
 	decTList<dearLink*> pLinks;
 	
-	dearRule **pRules;
-	int pRuleCount;
+	decTUniqueList<dearRule> pRules;
 	bool pDirtyRules;
 	
 	bool pCaptureComponentState;

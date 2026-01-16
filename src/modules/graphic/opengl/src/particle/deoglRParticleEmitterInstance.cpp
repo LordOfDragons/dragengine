@@ -355,7 +355,7 @@ void deoglRParticleEmitterInstance::UpdateParticles(const deParticleEmitterInsta
 	
 	if(pEmitter){
 		for(t=0; t<typeCount; t++){
-			deoglRParticleEmitterInstanceType &itype = *((deoglRParticleEmitterInstanceType*)pTypes.GetAt(t));
+			deoglRParticleEmitterInstanceType &itype = pTypes.GetAt(t);
 			const deoglRParticleEmitterType &etype = pEmitter->GetTypeAt(t);
 			const int typeParticleCount = instance.GetTypes().GetAt(t)->GetParticleCount();
 			
@@ -614,7 +614,7 @@ int deoglRParticleEmitterInstance::GetTypeCount() const{
 }
 
 deoglRParticleEmitterInstanceType &deoglRParticleEmitterInstance::GetTypeAt(int index) const{
-	return *((deoglRParticleEmitterInstanceType*)pTypes.GetAt(index));
+	return pTypes.GetAt(index);
 }
 
 void deoglRParticleEmitterInstance::RemoveAllTypes(){
@@ -630,7 +630,7 @@ void deoglRParticleEmitterInstance::InvalidateAllTypesParamBlocks(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoglRParticleEmitterInstanceType*)pTypes.GetAt(i))->InvalidateParamBlocks();
+		pTypes.GetAt(i)->InvalidateParamBlocks();
 	}
 }
 
@@ -639,7 +639,7 @@ void deoglRParticleEmitterInstance::MarkAllTypesParamBlocksDirty(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoglRParticleEmitterInstanceType*)pTypes.GetAt(i))->MarkParamBlocksDirty();
+		pTypes.GetAt(i)->MarkParamBlocksDirty();
 	}
 }
 
@@ -648,7 +648,7 @@ void deoglRParticleEmitterInstance::MarkAllTypesTUCsDirty(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoglRParticleEmitterInstanceType*)pTypes.GetAt(i))->MarkTUCsDirty();
+		pTypes.GetAt(i)->MarkTUCsDirty();
 	}
 }
 

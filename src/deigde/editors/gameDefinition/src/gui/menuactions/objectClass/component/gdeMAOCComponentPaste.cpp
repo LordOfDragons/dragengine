@@ -68,13 +68,8 @@ igdeUndo::Ref gdeMAOCComponentPaste::OnActionSubObject(gdeGameDefinition&, gdeOb
 		return {};
 	}
 	
-	const gdeClipboardDataOCComponent &clipOCComponent =
-		(const gdeClipboardDataOCComponent &)(igdeClipboardData&)clip;
-	
-	const gdeOCComponent::Ref component(gdeOCComponent::Ref::New(*clipOCComponent.GetComponent()));
-	
 	const igdeUndo::Ref undo = gdeUOCAddComponent::Ref::New(&objectClass,
-		component);
+		gdeOCComponent::Ref::New(*clip.DynamicCast<gdeClipboardDataOCComponent>()->GetComponent()));
 	undo->SetShortInfo("Paste object class component");
 	return undo;
 }

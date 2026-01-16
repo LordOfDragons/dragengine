@@ -58,7 +58,7 @@ aeUSetRuleAddBone::aeUSetRuleAddBone(aeRule *rule, const char *pattern){
 		int i;
 		
 		for(i=0; i<boneCount; i++){
-			const decString bone(engRig->GetBoneAt(i).GetName());
+			const decString bone(engRig->GetBoneAt(i)->GetName());
 			
 			if(bone.MatchesPattern(pattern) && !ruleBoneList.Has(bone)){
 				pBones.Add(bone);

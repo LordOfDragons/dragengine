@@ -591,7 +591,7 @@ void deComponent::CopyBonesToComponent(deComponent &component){
 	
 	int i;
 	for(i=0; i<pBoneCount; i++){
-		const int boneIndex = component.pRig->IndexOfBoneNamed(pRig->GetBoneAt(i).GetName());
+		const int boneIndex = component.pRig->IndexOfBoneNamed(pRig->GetBoneAt(i)->GetName());
 		if(boneIndex == -1){
 			continue;
 		}

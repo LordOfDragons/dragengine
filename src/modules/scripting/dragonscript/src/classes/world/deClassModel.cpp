@@ -179,7 +179,7 @@ dsFunction(init.clsMdl, "getMinimumExtend", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NA
 void deClassModel::nfGetMinimumExtend::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deModel &model = *dedsGetNativeData<sMdlNatDat>(p_GetNativeData(myself)).model;
 	const deScriptingDragonScript &ds = *(static_cast<deClassModel*>(GetOwnerClass()))->GetDS();
-	const deModelLOD &lod = *model.GetLODAt(0);
+	const deModelLOD &lod = model.GetLODAt(0);
 	
 	const int count = lod.GetVertexCount();
 	decVector extend;
@@ -205,7 +205,7 @@ dsFunction(init.clsMdl, "getMaximumExtend", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NA
 void deClassModel::nfGetMaximumExtend::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deModel &model = *dedsGetNativeData<sMdlNatDat>(p_GetNativeData(myself)).model;
 	const deScriptingDragonScript &ds = *(static_cast<deClassModel*>(GetOwnerClass()))->GetDS();
-	const deModelLOD &lod = *model.GetLODAt(0);
+	const deModelLOD &lod = model.GetLODAt(0);
 	
 	const int count = lod.GetVertexCount();
 	decVector extend;

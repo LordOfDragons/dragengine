@@ -233,7 +233,7 @@ void deovrDeviceManager::LogDevices(){
 	pOvr.LogInfo("Input Devices:");
 	
 	for(i=0; i<count; i++){
-		const deovrDevice &device = *((deovrDevice*)pDevices.GetAt(i));
+		const deovrDevice &device = pDevices.GetAt(i);
 		pOvr.LogInfoFormat("- '%s' (%s) %d [%d]", device.GetName().GetString(),
 			device.GetID().GetString(), device.GetDeviceIndex(), device.GetType());
 		

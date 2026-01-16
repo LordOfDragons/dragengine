@@ -212,7 +212,7 @@ void deoxrDeviceButton::GetInfo(deInputDeviceButton &info) const{
 	
 	int i;
 	for(i=0; i<pDisplayIcons.GetCount(); i++){
-		info.AddDisplayIcon((deImage*)pDisplayIcons.GetAt(i));
+		info.AddDisplayIcon(pDisplayIcons.GetAt(i));
 	}
 	info.SetDisplayText(pDisplayText);
 }

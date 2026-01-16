@@ -166,7 +166,7 @@ void deoalRTPTTraceSoundRaysFinish::pRun(){
 	int soundRayCount = 0;
 	
 	for(i=0; i<taskCount; i++){
-		const deoalRTPTTraceSoundRays &task = *((deoalRTPTTraceSoundRays*)pTasks.GetAt(i));
+		const deoalRTPTTraceSoundRays &task = *pTasks.GetAt(i);
 		
 		if(task.IsCancelled()){
 			DETHROW(deeInvalidAction); // task failed
@@ -182,7 +182,7 @@ void deoalRTPTTraceSoundRaysFinish::pRun(){
 	pSoundRayList->ReserveSize(soundRayCount, soundRaySegmentCount, soundRayTransmittedRayCount);
 	
 	for(i=0; i<taskCount; i++){
-		const deoalRTPTTraceSoundRays &task = *((deoalRTPTTraceSoundRays*)pTasks.GetAt(i));
+		const deoalRTPTTraceSoundRays &task = *pTasks.GetAt(i);
 		
 		if(i == 0){
 			pRoomParameters->minExtend = task.GetMinExtend();

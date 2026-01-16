@@ -26,13 +26,13 @@
 #define _DEBASEMODULE_H_
 
 #include "../../common/string/decString.h"
+#include "../../errortracing/deErrorTracePoint.h"
 #include "../../filesystem/deVirtualFileSystem.h"
 
 class deEngine;
 class deOS;
 class deModuleParameter;
 class deLoadableModule;
-class deErrorTracePoint;
 class deException;
 class decPath;
 class decUnicodeString;
@@ -274,7 +274,7 @@ public:
 	 * \param[in] sourceFunc Name of the source file where the error occurred.
 	 * \param[in] sourceLine The line number where the error occurred.
 	 */
-	deErrorTracePoint *AddErrorTracePoint(const char *sourceFunc, int sourceLine);
+	const deErrorTracePoint::Ref &AddErrorTracePoint(const char *sourceFunc, int sourceLine);
 	/*@}*/
 	
 	

@@ -65,14 +65,14 @@ int devkShaderModuleManager::GetCount() const{
 }
 
 devkShaderModule *devkShaderModuleManager::GetAt(int index) const{
-	return (devkShaderModule*)pSources.GetAt(index);
+	return pSources.GetAt(index);
 }
 
 devkShaderModule *devkShaderModuleManager::GetWithPath(const char *path) const{
 	const int count = pSources.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		devkShaderModule * const module = (devkShaderModule*)pSources.GetAt(i);
+		devkShaderModule * const module = pSources.GetAt(i);
 		if(module->GetPath() == path){
 			return module;
 		}
@@ -85,7 +85,7 @@ bool devkShaderModuleManager::HasWithPath(const char *path) const{
 	const int count = pSources.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		if(((devkShaderModule*)pSources.GetAt(i))->GetPath() == path){
+		if(pSources.GetAt(i)->GetPath() == path){
 			return true;
 		}
 	}

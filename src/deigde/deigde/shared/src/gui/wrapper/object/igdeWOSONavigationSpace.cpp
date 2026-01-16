@@ -200,39 +200,31 @@ void igdeWOSONavigationSpace::AttachToCollider(){
 	
 	deColliderComponent * const colliderComponent = GetAttachableColliderComponent();
 	deColliderVolume * const colliderFallback = GetWrapper().GetColliderFallback();
-	deColliderAttachment *attachment = nullptr;
 	
-	try{
-		attachment = new deColliderAttachment(pNavigationSpace);
-		attachment->SetAttachType(deColliderAttachment::eatStatic);
-		attachment->SetPosition(GetVectorProperty(
-			pGDNavigationSpace.GetPropertyName(igdeGDCNavigationSpace::epAttachPosition),
-			pGDNavigationSpace.GetPosition()));
-		attachment->SetOrientation(GetRotationProperty(
-			pGDNavigationSpace.GetPropertyName(igdeGDCNavigationSpace::epAttachRotation),
-			pGDNavigationSpace.GetOrientation()));
-		
-		if(colliderComponent){
-			if(!pGDNavigationSpace.GetBoneName().IsEmpty()){
-				attachment->SetAttachType(deColliderAttachment::eatBone);
-				attachment->SetTrackBone(pGDNavigationSpace.GetBoneName());
-			}
-			colliderComponent->AddAttachment(attachment);
-			pAttachedToCollider = colliderComponent;
-			
-		}else{
-			colliderFallback->AddAttachment(attachment);
-			pAttachedToCollider = colliderFallback;
+	auto attachment = deColliderAttachment::Ref::New(pNavigationSpace);
+	attachment->SetAttachType(deColliderAttachment::eatStatic);
+	attachment->SetPosition(GetVectorProperty(
+		pGDNavigationSpace.GetPropertyName(igdeGDCNavigationSpace::epAttachPosition),
+		pGDNavigationSpace.GetPosition()));
+	attachment->SetOrientation(GetRotationProperty(
+		pGDNavigationSpace.GetPropertyName(igdeGDCNavigationSpace::epAttachRotation),
+		pGDNavigationSpace.GetOrientation()));
+	auto attachmentPtr = attachment.Pointer();
+	
+	if(colliderComponent){
+		if(!pGDNavigationSpace.GetBoneName().IsEmpty()){
+			attachment->SetAttachType(deColliderAttachment::eatBone);
+			attachment->SetTrackBone(pGDNavigationSpace.GetBoneName());
 		}
+		colliderComponent->AddAttachment(std::move(attachment));
+		pAttachedToCollider = colliderComponent;
 		
-		pAttachment = attachment;
-		
-	}catch(const deException &){
-		if(attachment){
-			delete attachment;
-		}
-		throw;
+	}else{
+		colliderFallback->AddAttachment(std::move(attachment));
+		pAttachedToCollider = colliderFallback;
 	}
+	
+	pAttachment = attachmentPtr;
 }
 
 void igdeWOSONavigationSpace::DetachFromCollider(){

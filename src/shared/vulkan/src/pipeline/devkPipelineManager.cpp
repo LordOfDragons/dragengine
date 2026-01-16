@@ -55,14 +55,14 @@ int devkPipelineManager::GetCount() const{
 }
 
 devkPipeline *devkPipelineManager::GetAt(int index) const{
-	return (devkPipeline*)pLayouts.GetAt(index);
+	return pLayouts.GetAt(index);
 }
 
 devkPipeline *devkPipelineManager::GetWith(const devkPipelineConfiguration &configuration){
 	const int count = pLayouts.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		devkPipeline * const layout = (devkPipeline*)pLayouts.GetAt(i);
+		devkPipeline * const layout = pLayouts.GetAt(i);
 		if(layout->GetConfiguration() == configuration){
 			return layout;
 		}
@@ -91,7 +91,7 @@ bool devkPipelineManager::HasWith(const devkPipelineConfiguration &configuration
 	const int count = pLayouts.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		if(((devkPipeline*)pLayouts.GetAt(i))->GetConfiguration() == configuration){
+		if(pLayouts.GetAt(i)->GetConfiguration() == configuration){
 			return true;
 		}
 	}

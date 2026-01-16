@@ -25,11 +25,10 @@
 #ifndef _DEPROPFIELDGROUND_H_
 #define _DEPROPFIELDGROUND_H_
 
+#include "../component/deComponent.h"
 #include "../../dragengine_export.h"
 #include "../terrain/heightmap/deHeightTerrain.h"
-
-
-class deComponent;
+#include "../../common/collection/decTOrderedSet.h"
 
 
 /**
@@ -49,9 +48,7 @@ class DE_DLL_EXPORT dePropFieldGround{
 private:
 	deHeightTerrain::Ref pHeightTerrain;
 	
-	deComponent **pComponents;
-	int pComponentCount;
-	int pComponentSize;
+	deComponent::List pComponents;
 	
 	
 	
@@ -83,11 +80,15 @@ public:
 	
 	/** \name Components */
 	/*@{*/
+	/** \brief Components. */
+	inline deComponent::List &GetComponents(){ return pComponents; }
+	inline const deComponent::List &GetComponents() const{ return pComponents; }
+	
 	/** \brief Number of components. */
-	inline int GetComponentCount() const{ return pComponentCount; }
+	inline int GetComponentCount() const{ return pComponents.GetCount(); }
 	
 	/** \brief Component at the given index. */
-	deComponent *GetComponentAt(int index) const;
+	const deComponent::Ref &GetComponentAt(int index) const;
 	
 	/** \brief Index of the given component or -1 if not found. */
 	int IndexOfComponent(deComponent *component) const;

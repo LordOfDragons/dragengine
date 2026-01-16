@@ -521,7 +521,7 @@ void deoalDebugInfo::PrepareDIClosestSpeakers(int count){
 	}
 	
 	while(pDIClosestSpeakers.GetCount() > count){
-		delete (deDebugBlockInfo*)pDIClosestSpeakers.GetAt(pDIClosestSpeakers.GetCount() - 1);
+		delete pDIClosestSpeakers.GetAt(pDIClosestSpeakers.GetCount() - 1);
 		pDIClosestSpeakers.RemoveFrom(pDIClosestSpeakers.GetCount() - 1);
 	}
 }
@@ -578,7 +578,7 @@ void deoalDebugInfo::UpdateDIClosestSpeakers(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		deDebugBlockInfo &dbi = *((deDebugBlockInfo*)pDIClosestSpeakers.GetAt(i));
+		deDebugBlockInfo &dbi = *pDIClosestSpeakers.GetAt(i);
 		
 		if(i < speakers.GetCount()){
 			decString title;
@@ -611,8 +611,7 @@ void deoalDebugInfo::PrepareDDClosestSpeakersDirect(int count){
 	}
 	
 	while(pDDClosestSpeakersDirect.GetCount() > count){
-		deDebugDrawer * const dd = (deDebugDrawer*)
-			pDDClosestSpeakersDirect.GetAt(pDDClosestSpeakersDirect.GetCount() - 1);
+		deDebugDrawer * const dd = pDDClosestSpeakersDirect.GetAt(pDDClosestSpeakersDirect.GetCount() - 1);
 		if(dd->GetParentWorld()){
 			dd->GetParentWorld()->RemoveDebugDrawer(dd);
 		}
@@ -627,7 +626,7 @@ void deoalDebugInfo::PrepareDDClosestSpeakersDirect(int count){
 			? &microphone->GetParentWorld()->GetWorld() : nullptr;
 		
 		for(i=0; i<count; i++){
-			deDebugDrawer * const dd = (deDebugDrawer*)pDDClosestSpeakersDirect.GetAt(i);
+			deDebugDrawer * const dd = pDDClosestSpeakersDirect.GetAt(i);
 			if(dd->GetParentWorld() != world){
 				if(dd->GetParentWorld()){
 					dd->GetParentWorld()->RemoveDebugDrawer(dd);
@@ -640,7 +639,7 @@ void deoalDebugInfo::PrepareDDClosestSpeakersDirect(int count){
 		
 	}else{
 		for(i=0; i<count; i++){
-			deDebugDrawer * const dd = (deDebugDrawer*)pDDClosestSpeakersDirect.GetAt(i);
+			deDebugDrawer * const dd = pDDClosestSpeakersDirect.GetAt(i);
 			if(dd->GetParentWorld()){
 				dd->GetParentWorld()->RemoveDebugDrawer(dd);
 			}
@@ -702,7 +701,7 @@ void deoalDebugInfo::CaptureDDClosestSpeakersDirect(){
 	
 	int i;
 	for(i=0; i<captureCount; i++){
-		deDebugDrawer &dd = *((deDebugDrawer*)pDDClosestSpeakersDirect.GetAt(i));
+		deDebugDrawer &dd = pDDClosestSpeakersDirect.GetAt(i);
 		dd.RemoveAllShapes();
 		if(i < speakers.GetCount() && microphone){
 			speakers.GetAt(i)->GetEnvironment()->DebugUpdateDirect(dd, *microphone);
@@ -717,7 +716,7 @@ void deoalDebugInfo::VisAudSpeakers(int mode){
 		const int count = pDDVisAudSpeakers.GetCount();
 		int i;
 		for(i=0; i<count; i++){
-			deDebugDrawer * const dd = (deDebugDrawer*)pDDVisAudSpeakers.GetAt(i);
+			deDebugDrawer * const dd = pDDVisAudSpeakers.GetAt(i);
 			if(dd->GetParentWorld()){
 				dd->GetParentWorld()->RemoveDebugDrawer(dd);
 			}
@@ -769,7 +768,7 @@ void deoalDebugInfo::UpdateVisAudSpeakers(){
 				pDDVisAudSpeakers.Add(dd);
 			}
 			
-			deDebugDrawer &dd = *((deDebugDrawer*)pDDVisAudSpeakers.GetAt(count++));
+			deDebugDrawer &dd = pDDVisAudSpeakers.GetAt(count++);
 			
 			if(speaker.GetEnvironment() || speaker.GetEnvironment()->GetValid()){
 				const deoalEnvironment &env = *speaker.GetEnvironment();
@@ -837,7 +836,7 @@ void deoalDebugInfo::UpdateVisAudSpeakers(){
 	
 	while(pDDVisAudSpeakers.GetCount() > count){
 		const int index = pDDVisAudSpeakers.GetCount() - 1;
-		deDebugDrawer * const dd = (deDebugDrawer*)pDDVisAudSpeakers.GetAt(index);
+		deDebugDrawer * const dd = pDDVisAudSpeakers.GetAt(index);
 		if(dd->GetParentWorld()){
 			dd->GetParentWorld()->RemoveDebugDrawer(dd);
 		}

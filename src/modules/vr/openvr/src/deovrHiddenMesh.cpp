@@ -75,8 +75,8 @@ public:
 	deovrHiddenMesh_BuildModel(const vr::HiddenAreaMesh_t &mesh) : pMesh(mesh){}
 	
 	virtual void BuildModel(deModel *model){
-		deModelLOD * const lod = new deModelLOD;
-		model->AddLOD(lod);
+		model->AddLOD(deModelLOD::Ref::New());
+		deModelLOD &log = model->GetLODs().Last();
 		
 		model->AddTexture(new deModelTexture("material", 256, 256));
 		model->GetTextureAt(0)->SetDoubleSided(true);
@@ -85,22 +85,22 @@ public:
 		int i;
 		const int vertexCount = (int)pMesh.unTriangleCount * 3;
 		
-		lod->SetVertexCount(vertexCount);
-		deModelVertex * const vertices = lod->GetVertices();
+		lod.SetVertexCount(vertexCount);
+		deModelVertex * const vertices = lod.GetVertices();
 		
 		for(i=0; i<vertexCount; i++){
 			const vr::HmdVector2_t &p = pMesh.pVertexData[i];
 			vertices[i].SetPosition(decVector(p.v[0], p.v[1], 0.0f));
 		}
 		
-		lod->SetNormalCount(1);
-		lod->SetTangentCount(1);
+		lod.SetNormalCount(1);
+		lod.SetTangentCount(1);
 		
 		// add faces
 		const int faceCount = (int)pMesh.unTriangleCount;
 		
-		lod->SetFaceCount(faceCount);
-		deModelFace * const faces = lod->GetFaces();
+		lod.SetFaceCount(faceCount);
+		deModelFace * const faces = lod.GetFaces();
 		
 		for(i=0; i<faceCount; i++){
 			faces[i].SetTexture(0);
@@ -125,10 +125,10 @@ public:
 		// add texture coordinates
 		model->GetTextureCoordinatesSetList().Add("default");
 		
-		lod->SetTextureCoordinatesCount(1);
+		lod.SetTextureCoordinatesCount(1);
 		
-		lod->SetTextureCoordinatesSetCount(1);
-		deModelTextureCoordinatesSet &tcset = lod->GetTextureCoordinatesSetAt(0);
+		lod.SetTextureCoordinatesSetCount(1);
+		deModelTextureCoordinatesSet &tcset = lod.GetTextureCoordinatesSetAt(0);
 		
 		tcset.GetTextureCoordinates().RemoveAll();
 		tcset.GetTextureCoordinates().Add({});

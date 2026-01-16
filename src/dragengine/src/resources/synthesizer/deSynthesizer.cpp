@@ -142,7 +142,7 @@ int deSynthesizer::IndexOfControllerNamed(const char *name) const{
 	int i;
 	
 	for(i=0; i<count; i++){
-		if(((deSynthesizerController*)pControllers.GetAt(i))->GetName() == name){
+		if(pControllers.GetAt(i)->GetName() == name){
 			return i;
 		}
 	}

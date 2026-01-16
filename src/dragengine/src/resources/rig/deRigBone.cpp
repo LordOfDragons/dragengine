@@ -43,12 +43,7 @@ pName(name),
 pParent(-1),
 pMass(1.0f),
 pDynamic(false),
-pIKLimitsLower(TWO_PI, TWO_PI, TWO_PI),
-pIKLimitsUpper(0.0f, 0.0f, 0.0f),
-pIKResistance(0.0f, 0.0f, 0.0f),
-pConstraints(nullptr),
-pConstraintCount(0),
-pConstraintSize(0)
+pIKLimitsLower(TWO_PI, TWO_PI, TWO_PI)
 {
 	if(!name[0]){
 		DETHROW(deeInvalidParam);
@@ -60,13 +55,6 @@ pConstraintSize(0)
 }
 
 deRigBone::~deRigBone(){
-	if(pConstraints){
-		while(pConstraintCount > 0){
-			delete pConstraints[pConstraintCount - 1];
-			pConstraintCount--;
-		}
-		delete [] pConstraints;
-	}
 }
 
 
@@ -163,32 +151,11 @@ void deRigBone::SetShapeProperties(const decStringList &properties){
 // Constraints
 ////////////////
 
-deRigConstraint &deRigBone::GetConstraintAt(int index) const{
-	if(index < 0 || index >= pConstraintCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return *pConstraints[index];
-}
-
-void deRigBone::AddConstraint(deRigConstraint *constraint){
+void deRigBone::AddConstraint(deRigConstraint::Ref &&constraint){
 	if(pHasConstraint(constraint)){
 		DETHROW(deeInvalidParam);
 	}
-	
-	if(pConstraintCount == pConstraintSize){
-		const int newSize = pConstraintSize * 3 / 2 + 1;
-		deRigConstraint ** const newArray = new deRigConstraint*[newSize];
-		if(pConstraints){
-			memcpy(newArray, pConstraints, sizeof(deRigConstraint*) * pConstraintSize);
-			delete [] pConstraints;
-		}
-		pConstraints = newArray;
-		pConstraintSize = newSize;
-	}
-	
-	pConstraints[pConstraintCount] = constraint;
-	pConstraintCount++;
+	pConstraints.Add(std::move(constraint));
 }
 
 
@@ -201,13 +168,5 @@ bool deRigBone::pHasConstraint(deRigConstraint *constraint) const{
 		DETHROW(deeInvalidParam);
 	}
 	
-	int i;
-	
-	for(i=0; i<pConstraintCount; i++){
-		if(constraint == pConstraints[i]){
-			return true;
-		}
-	}
-	
-	return false;
+	return pConstraints.Has(constraint);
 }

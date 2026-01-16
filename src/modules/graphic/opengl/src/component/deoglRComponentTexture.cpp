@@ -448,7 +448,7 @@ void deoglRComponentTexture::UpdateRTSInstances(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		deoglSharedSPBRTIGroup * const group = (deoglSharedSPBRTIGroup*)pSharedSPBRTIGroup.GetAt(i);
+		deoglSharedSPBRTIGroup * const group = pSharedSPBRTIGroup.GetAt(i);
 		if(!group){
 			continue;
 		}
@@ -462,7 +462,7 @@ void deoglRComponentTexture::UpdateRTSInstances(){
 	
 	// shadow combine groups
 	for(i=0; i<count; i++){
-		deoglSharedSPBRTIGroup * const group = (deoglSharedSPBRTIGroup*)pSharedSPBRTIGroupShadow.GetAt(i);
+		deoglSharedSPBRTIGroup * const group = pSharedSPBRTIGroupShadow.GetAt(i);
 		if(!group){
 			continue;
 		}
@@ -481,15 +481,14 @@ void deoglRComponentTexture::UpdateRTSInstances(){
 }
 
 deoglSharedSPBRTIGroup &deoglRComponentTexture::GetSharedSPBRTIGroup(int lodLevel) const{
-	deoglSharedSPBRTIGroup * const group = ((deoglSharedSPBRTIGroup*)pSharedSPBRTIGroup.GetAt(
-		lodLevel >= 0 ? lodLevel : lodLevel + pComponent.GetLODCount()));
+	deoglSharedSPBRTIGroup * const group = pSharedSPBRTIGroup.GetAt(
+		lodLevel >= 0 ? lodLevel : lodLevel + pComponent.GetLODCount());
 	DEASSERT_NOTNULL(group)
 	return *group;
 }
 
 deoglSharedSPBRTIGroup *deoglRComponentTexture::GetSharedSPBRTIGroupShadow(int lodLevel) const{
-	return ((deoglSharedSPBRTIGroup*)pSharedSPBRTIGroupShadow.GetAt(
-		lodLevel >= 0 ? lodLevel : lodLevel + pComponent.GetLODCount()));
+	return pSharedSPBRTIGroupShadow.GetAt(lodLevel >= 0 ? lodLevel : lodLevel + pComponent.GetLODCount());
 }
 
 

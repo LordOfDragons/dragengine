@@ -61,7 +61,7 @@ pLayerCount(layerCount)
 ///////////////
 
 deoglFramebuffer *deoglFramebufferArray::GetLayerFBO(int layer) const{
-	return (deoglFramebuffer*)pLayerFBOs.GetAt(layer);
+	return pLayerFBOs.GetAt(layer);
 }
 
 deoglFramebuffer *deoglFramebufferArray::GetBaseFBO() const{

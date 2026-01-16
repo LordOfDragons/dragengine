@@ -326,7 +326,7 @@ public:
 			return {};
 		}
 		
-		const deAnimationMove &move = *animation->GetMove(animation->FindMove(names.GetAt(selection)));
+		const deAnimationMove &move = animation->GetMove(animation->FindMove(names.GetAt(selection)));
 		return aeUControllerSetFromMove::Ref::New(controller, 0.0f, move.GetPlaytime());
 	}
 };

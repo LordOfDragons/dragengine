@@ -95,7 +95,7 @@ void deoglSkinShaderManager::cPrepareShader::PrepareShaderFinished(deoglSkinShad
 	const int count = pListeners.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		cGetShaderListener * const listener = (cGetShaderListener*)pListeners.GetAt(i);
+		cGetShaderListener * const listener = pListeners.GetAt(i);
 		try{
 			listener->GetShaderFinished(useShader);
 			
@@ -141,7 +141,7 @@ int deoglSkinShaderManager::GetShaderCount(){
 
 const deoglSkinShader &deoglSkinShaderManager::GetShaderAt(int index){
 	const deMutexGuard guard(pMutex);
-	return *(const deoglSkinShader*)pShaderList.GetAt(index);
+	return pShaderList.GetAt(index);
 }
 
 deoglSkinShader *deoglSkinShaderManager::GetShaderWith(deoglSkinShaderConfig &configuration){
@@ -217,7 +217,7 @@ const deoglSkinShaderConfig &configuration) const{
 	int i;
 	
 	for(i=0; i<count; i++){
-		deoglSkinShader * const shader = (deoglSkinShader*)pShaderList.GetAt(i);
+		deoglSkinShader * const shader = pShaderList.GetAt(i);
 		if(shader->GetConfig() == configuration){
 			return shader;
 		}
@@ -232,7 +232,7 @@ const deoglSkinShaderConfig &configuration) const{
 	int i;
 	
 	for(i=0; i<count; i++){
-		cPrepareShader * const preparing = (cPrepareShader*)pPrepareShaders.GetAt(i);
+		cPrepareShader * const preparing = pPrepareShaders.GetAt(i);
 		if(preparing->GetShader()->GetConfig() == configuration){
 			return preparing;
 		}

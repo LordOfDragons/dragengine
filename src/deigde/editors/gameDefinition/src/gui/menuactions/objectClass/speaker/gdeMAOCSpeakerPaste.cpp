@@ -68,13 +68,9 @@ igdeUndo::Ref gdeMAOCSpeakerPaste::OnActionSubObject(gdeGameDefinition&, gdeObje
 		return {};
 	}
 	
-	const gdeClipboardDataOCSpeaker &clipOCSpeaker =
-		(const gdeClipboardDataOCSpeaker &)(igdeClipboardData&)clip;
+	const igdeUndo::Ref undo = gdeUOCAddSpeaker::Ref::New(&objectClass, 
+		gdeOCSpeaker::Ref::New(*clip.DynamicCast<gdeClipboardDataOCSpeaker>()->GetSpeaker()));
 	
-	const gdeOCSpeaker::Ref speaker(gdeOCSpeaker::Ref::New(*clipOCSpeaker.GetSpeaker()));
-	
-	const igdeUndo::Ref undo = gdeUOCAddSpeaker::Ref::New(&objectClass,
-		speaker);
 	undo->SetShortInfo("Paste object class speaker");
 	return undo;
 }

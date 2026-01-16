@@ -173,7 +173,7 @@ fbxModelCluster *fbxModel::GetClusterNamed(const char *name) const{
 	const int count = pClusters.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		fbxModelCluster * const cluster = (fbxModelCluster*)pClusters.GetAt(i);
+		fbxModelCluster * const cluster = pClusters.GetAt(i);
 		if(cluster->GetRigBone() && cluster->GetRigBone()->GetName() == name){
 			return cluster;
 		}
@@ -187,7 +187,7 @@ void fbxModel::MatchClusters(const fbxRig &rig){
 	int i;
 	
 	for(i=0; i<count; i++){
-		fbxModelCluster &cluster = *((fbxModelCluster*)pClusters.GetAt(i));
+		fbxModelCluster &cluster = pClusters.GetAt(i);
 		
 		connections.RemoveAll();
 		
@@ -211,7 +211,7 @@ void fbxModel::BuildWeights(){
 	int i, j;
 	
 	for(i=0; i<count; i++){
-		fbxModelCluster &cluster = *((fbxModelCluster*)pClusters.GetAt(i));
+		fbxModelCluster &cluster = pClusters.GetAt(i);
 		if(!cluster.GetRigBone()){
 			continue;
 		}

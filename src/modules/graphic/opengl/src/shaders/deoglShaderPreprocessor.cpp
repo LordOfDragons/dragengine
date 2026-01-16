@@ -121,7 +121,7 @@ void deoglShaderPreprocessor::LogSourceLocationMap(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		const deoglShaderSourceLocation &location = *((deoglShaderSourceLocation*)pSourceLocations.GetAt(i));
+		const deoglShaderSourceLocation &location = pSourceLocations.GetAt(i);
 		pRenderThread.GetLogger().LogInfoFormat("LineMap: %d -> %s:%d", location.GetOutputLine(),
 			location.GetInputFile().GetString(), location.GetInputLine());
 	}

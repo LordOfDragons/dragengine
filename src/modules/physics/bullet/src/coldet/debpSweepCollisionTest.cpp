@@ -109,7 +109,7 @@ void debpSweepCollisionTest::RemoveAllShapes(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		delete (cShape*)pShapeList.GetAt(i);
+		delete pShapeList.GetAt(i);
 	}
 	pShapeList.RemoveAll();
 }
@@ -122,7 +122,7 @@ const btTransform &to, debpCollisionWorld::ConvexResultCallback &resultCallback)
 	int i;
 	
 	for(i=0; i<count; i++){
-		const cShape &shape = *((cShape*)pShapeList.GetAt(i));
+		const cShape &shape = *pShapeList.GetAt(i);
 		const btTransform rfrom(from * shape.GetTransform());
 		const btTransform rto(to * shape.GetTransform());
 		world.safeConvexSweepTest(shape.GetShape(), rfrom, rto, resultCallback); //, 0.001);
@@ -150,7 +150,7 @@ const btTransform &to, btCollisionWorld::ConvexResultCallback &resultCallback){
 		int i, j;
 		
 		for(i=0; i<count; i++){
-			const cShape &shape = *((cShape*)pShapeList.GetAt(i));
+			const cShape &shape = *pShapeList.GetAt(i);
 			const btTransform rfrom(from * shape.GetTransform());
 			const btTransform rto(to * shape.GetTransform());
 			
@@ -198,7 +198,7 @@ const btTransform &to, btCollisionWorld::ConvexResultCallback &resultCallback){
 	int i;
 	
 	for(i=0; i<count; i++){
-		const cShape &shape = *((cShape*)pShapeList.GetAt(i));
+		const cShape &shape = *pShapeList.GetAt(i);
 		const btTransform rfrom(from * shape.GetTransform());
 		const btTransform rto(to * shape.GetTransform());
 		

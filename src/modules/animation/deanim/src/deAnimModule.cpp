@@ -167,7 +167,7 @@ void deAnimModule::SaveAnimation(decBaseFileWriter &writer, const deAnimation &a
 	writer.WriteUShort(moveCount);
 	
 	for(i=0; i<moveCount; i++){
-		const deAnimationMove &move = *animation.GetMove(i);
+		const deAnimationMove &move = animation.GetMove(i);
 		const int kflCount = move.GetKeyframeListCount();
 		const int kflvpsCount = move.GetVertexPositionSetKeyframeListCount();
 		
@@ -179,7 +179,7 @@ void deAnimModule::SaveAnimation(decBaseFileWriter &writer, const deAnimation &a
 		int playtimeFrames = 0;
 		
 		for(j=0; j<kflCount; j++){
-			const deAnimationKeyframe::List &kfl = *move.GetKeyframeList(j);
+			const deAnimationKeyframe::List &kfl = move.GetKeyframeList(j);
 			const int keyframeCount = kfl.GetCount();
 			const float fps = move.GetFPS();
 			int realKeyframeCount = 0;
@@ -197,7 +197,7 @@ void deAnimModule::SaveAnimation(decBaseFileWriter &writer, const deAnimation &a
 		}
 		
 		for(j=0; j<kflvpsCount; j++){
-			const deAnimationKeyframeVertexPositionSet::List &kfl = *move.GetVertexPositionSetKeyframeList(j);
+			const deAnimationKeyframeVertexPositionSet::List &kfl = move.GetVertexPositionSetKeyframeList(j);
 			const int keyframeCount = kfl.GetCount();
 			const float fps = move.GetFPS();
 			int realKeyframeCount = 0;
@@ -229,7 +229,7 @@ void deAnimModule::SaveAnimation(decBaseFileWriter &writer, const deAnimation &a
 		
 		// write bones
 		for(j=0; j<boneCount; j++){
-			const deAnimationKeyframe::List &kfl = *move.GetKeyframeList(j);
+			const deAnimationKeyframe::List &kfl = move.GetKeyframeList(j);
 			const int keyframeCount = kfl.GetCount();
 			
 			// TODO optimize writing using flags
@@ -335,7 +335,7 @@ void deAnimModule::SaveAnimation(decBaseFileWriter &writer, const deAnimation &a
 		
 		// write vertex position sets
 		for(j=0; j<vertexPositionSetCount; j++){
-			const deAnimationKeyframeVertexPositionSet::List &kfl = *move.GetVertexPositionSetKeyframeList(j);
+			const deAnimationKeyframeVertexPositionSet::List &kfl = move.GetVertexPositionSetKeyframeList(j);
 			const int keyframeCount = kfl.GetCount();
 			
 			sConfig2 config;
@@ -447,16 +447,9 @@ void deAnimModule::pReadBones(decBaseFileReader &reader, deAnimation &animation,
 	
 	int i;
 	for(i=0; i<info.boneCount; i++){
-		deAnimationBone * const bone = new deAnimationBone;
-		
-		try{
-			bone->SetName(reader.ReadString8());
-			animation.AddBone(bone);
-			
-		}catch(const deException &){
-			delete bone;
-			throw;
-		}
+		auto bone = deTUniqueReference<deAnimationBone>::New();
+		bone->SetName(reader.ReadString8());
+		animation.AddBone(std::move(bone));
 	}
 }
 
@@ -485,24 +478,17 @@ void deAnimModule::pReadMoves(decBaseFileReader &reader, deAnimation &animation,
 	
 	int i;
 	for(i=0; i<info.moveCount; i++){
-		deAnimationMove * const move = new deAnimationMove;
+		auto move = deTUniqueReference<deAnimationMove>::New();
+		move->SetName(reader.ReadString8());
 		
-		try{
-			move->SetName(reader.ReadString8());
-			
-			pReadMoveFps(reader, *move, info);
-			pReadMoveBones(reader, *move, info);
-			
-			if(info.version > 1){
-				pReadMoveVertexPositionSets(reader, *move, info);
-			}
-			
-			animation.AddMove(move);
-			
-		}catch(const deException &){
-			delete move;
-			throw;
+		pReadMoveFps(reader, *move, info);
+		pReadMoveBones(reader, *move, info);
+		
+		if(info.version > 1){
+			pReadMoveVertexPositionSets(reader, *move, info);
 		}
+		
+		animation.AddMove(std::move(move));
 	}
 }
 
@@ -540,31 +526,24 @@ void deAnimModule::pReadMoveBones(decBaseFileReader &reader, deAnimationMove &mo
 	int i;
 	
 	for(i=0; i<info.boneCount; i++){
-		deAnimationKeyframe::List * const list = new deAnimationKeyframe::List;
+		auto list = deAnimationMove::KeyframeListRef::New();
+		info.boneFlags = reader.ReadByte();
+		info.hasVarPos = (info.boneFlags & FLAG_KF_HAS_VAR_POS) == FLAG_KF_HAS_VAR_POS;
+		info.hasVarRot = (info.boneFlags & FLAG_KF_HAS_VAR_ROT) == FLAG_KF_HAS_VAR_ROT;
+		info.hasVarScale = (info.boneFlags & FLAG_KF_HAS_VAR_SCALE) == FLAG_KF_HAS_VAR_SCALE;
+		info.fewKeyframes = (info.boneFlags & FLAG_KF_HAS_FEW_KEYFRAMES) == FLAG_KF_HAS_FEW_KEYFRAMES;
+		info.ignoreBone = (info.boneFlags & FLAG_KF_IGNORE_BONE) == FLAG_KF_IGNORE_BONE;
+		info.formatFloat = (info.boneFlags & FLAG_KF_FORMAT_FLOAT) == FLAG_KF_FORMAT_FLOAT;
 		
-		try{
-			info.boneFlags = reader.ReadByte();
-			info.hasVarPos = (info.boneFlags & FLAG_KF_HAS_VAR_POS) == FLAG_KF_HAS_VAR_POS;
-			info.hasVarRot = (info.boneFlags & FLAG_KF_HAS_VAR_ROT) == FLAG_KF_HAS_VAR_ROT;
-			info.hasVarScale = (info.boneFlags & FLAG_KF_HAS_VAR_SCALE) == FLAG_KF_HAS_VAR_SCALE;
-			info.fewKeyframes = (info.boneFlags & FLAG_KF_HAS_FEW_KEYFRAMES) == FLAG_KF_HAS_FEW_KEYFRAMES;
-			info.ignoreBone = (info.boneFlags & FLAG_KF_IGNORE_BONE) == FLAG_KF_IGNORE_BONE;
-			info.formatFloat = (info.boneFlags & FLAG_KF_FORMAT_FLOAT) == FLAG_KF_FORMAT_FLOAT;
-			
-			if(!info.ignoreBone && (info.hasVarPos || info.hasVarRot || info.hasVarScale)){
-				pReadKeyframes(reader, *list, info);
-			}
-			
-			if(list->GetCount() == 0){
-				// if there is no keyframe add a dummy one
-				list->Add({});
-			}
-			move.AddKeyframeList(list);
-			
-		}catch(const deException &){
-			delete list;
-			throw;
+		if(!info.ignoreBone && (info.hasVarPos || info.hasVarRot || info.hasVarScale)){
+			pReadKeyframes(reader, *list, info);
 		}
+		
+		if(list->GetCount() == 0){
+			// if there is no keyframe add a dummy one
+			list->Add({});
+		}
+		move.AddKeyframeList(std::move(list));
 	}
 }
 
@@ -661,30 +640,23 @@ void deAnimModule::pReadMoveVertexPositionSets(decBaseFileReader &reader, deAnim
 	int i;
 	
 	for(i=0; i<info.vertexPositionSetCount; i++){
-		deAnimationKeyframeVertexPositionSet::List * const list = new deAnimationKeyframeVertexPositionSet::List;
+		auto list = deAnimationMove::VertexPositionSetKeyframeListRef::New();
+		info.vertexPositionSetFlags = reader.ReadByte();
+		info.hasVarWeight = (info.vertexPositionSetFlags & FLAG_KFVPS_HAS_VAR_WEIGHT) == FLAG_KFVPS_HAS_VAR_WEIGHT;
+		info.fewKeyframes = (info.vertexPositionSetFlags & FLAG_KFVPS_HAS_FEW_KEYFRAMES) == FLAG_KFVPS_HAS_FEW_KEYFRAMES;
+		info.ignoreSet = (info.vertexPositionSetFlags & FLAG_KFVPS_IGNORE_SET) == FLAG_KFVPS_IGNORE_SET;
+		info.formatFloat = (info.vertexPositionSetFlags & FLAG_KFVPS_FORMAT_FLOAT) == FLAG_KFVPS_FORMAT_FLOAT;
 		
-		try{
-			info.vertexPositionSetFlags = reader.ReadByte();
-			info.hasVarWeight = (info.vertexPositionSetFlags & FLAG_KFVPS_HAS_VAR_WEIGHT) == FLAG_KFVPS_HAS_VAR_WEIGHT;
-			info.fewKeyframes = (info.vertexPositionSetFlags & FLAG_KFVPS_HAS_FEW_KEYFRAMES) == FLAG_KFVPS_HAS_FEW_KEYFRAMES;
-			info.ignoreSet = (info.vertexPositionSetFlags & FLAG_KFVPS_IGNORE_SET) == FLAG_KFVPS_IGNORE_SET;
-			info.formatFloat = (info.vertexPositionSetFlags & FLAG_KFVPS_FORMAT_FLOAT) == FLAG_KFVPS_FORMAT_FLOAT;
-			
-			if(!info.ignoreSet && info.hasVarWeight){
-				pReadKeyframes(reader, *list, info);
-			}
-			
-			if(list->GetCount() == 0){
-				// if there is no keyframe add a dummy one
-				list->Add({});
-			}
-			
-			move.AddVertexPositionSetKeyframeList(list);
-			
-		}catch(const deException &){
-			delete list;
-			throw;
+		if(!info.ignoreSet && info.hasVarWeight){
+			pReadKeyframes(reader, *list, info);
 		}
+		
+		if(list->GetCount() == 0){
+			// if there is no keyframe add a dummy one
+			list->Add({});
+		}
+		
+		move.AddVertexPositionSetKeyframeList(std::move(list));
 	}
 }
 

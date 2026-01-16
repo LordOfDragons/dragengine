@@ -501,9 +501,9 @@ deFontSize *deFontManager::LoadFontSize(deFont &font, int size){
 		deErrorTrace &et = *GetEngine()->GetErrorTrace();
 		et.AddAndSetIfEmpty(e.GetName(), nullptr, e.GetFile(), e.GetLine());
 		
-		deErrorTracePoint &etp = *et.AddPoint(nullptr, "deFontManager::LoadFontSize", __LINE__);
+		deErrorTracePoint &etp = et.AddPoint(nullptr, "deFontManager::LoadFontSize", __LINE__);
 		
-		deErrorTraceValue &etv = *etp.AddValue("font", "<deFont>");
+		deErrorTraceValue &etv = etp.AddValue("font", "<deFont>");
 		etv.AddSubValue("filename", font.GetFilename());
 		etv.AddSubValueInt("size", size);
 		if(module){

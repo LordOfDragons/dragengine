@@ -25,15 +25,16 @@
 #ifndef _DECOLLIDER_H_
 #define _DECOLLIDER_H_
 
+#include "deColliderAttachment.h"
 #include "../deResource.h"
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decCollisionFilter.h"
 #include "../../common/collection/decTSet.h"
 #include "../../common/collection/decTOrderedSet.h"
+#include "../../common/collection/decTUniqueList.h"
 
 class deBasePhysicsCollider;
 class deBaseScriptingCollider;
-class deColliderAttachment;
 class deColliderConstraint;
 class deColliderManager;
 class deColliderVisitor;
@@ -116,9 +117,7 @@ private:
 	float pForceFieldMass;
 	float pForceFieldSpeed;
 	
-	deColliderAttachment **pAttachments;
-	int pAttachmentCount;
-	int pAttachmentSize;
+	deColliderAttachment::List pAttachments;
 	
 	decTObjectOrderedSet<deColliderConstraint> pConstraints;
 	decTObjectOrderedSet<deColliderCollisionTest> pCollisionTests;
@@ -342,14 +341,17 @@ public:
 	
 	/** \name Attachments */
 	/*@{*/
+	/** \brief Attachments. */
+	inline const deColliderAttachment::List &GetAttachments() const{ return pAttachments; }
+	
 	/** \brief Number of attachments. */
-	inline int GetAttachmentCount() const{ return pAttachmentCount; }
+	inline int GetAttachmentCount() const{ return pAttachments.GetCount(); }
 	
 	/**
 	 * \brief Attachment at index.
-	 * \throws deeOutOfBoundary \em index is less than 0 or greater than or equal to GetAttachmentCount().
+	 * \throws deeInvalidParam \em index is less than 0 or larger than or equal to GetAttachmentCount().
 	 */
-	deColliderAttachment *GetAttachmentAt(int index) const;
+	const deColliderAttachment::Ref &GetAttachmentAt(int index) const{ return pAttachments.GetAt(index); }
 	
 	/** \brief Resource is attached. */
 	bool HasAttachmentWith(deResource *resource) const;
@@ -361,7 +363,7 @@ public:
 	 * \brief Add attachment.
 	 * \throws deeInvalidParam Resource is already attached.
 	 */
-	void AddAttachment(deColliderAttachment *attachment);
+	void AddAttachment(deColliderAttachment::Ref &&attachment);
 	
 	/**
 	 * \brief Remove attachment.

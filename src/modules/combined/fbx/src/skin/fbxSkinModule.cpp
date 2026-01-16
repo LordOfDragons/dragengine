@@ -143,206 +143,184 @@ void fbxSkinModule::pLoadSkin(deSkin &skin, fbxScene &scene){
 }
 
 void fbxSkinModule::pLoadMaterial(deSkin &skin, fbxScene &scene, const fbxMaterial &material){
-	deSkinTexture *texture = nullptr;
+	auto texture = deSkinTexture::Ref::New(material.GetName());
 	
-	try{
-		texture = new deSkinTexture(material.GetName());
-		
-		// find properties
-		const fbxNode &nodeMaterial = material.GetNodeMaterial();
-		const decColor white(1.0f, 1.0f, 1.0f);
-		const decColor black(0.0f, 0.0f, 0.0f);
-		
-		const decColor fbxColor((nodeMaterial.GetPropertyColor("DiffuseColor", black)
-			* nodeMaterial.GetPropertyFloat( "DiffuseFactor", 1.0f ) ).Normalized() );
-		
-		const decColor fbxSpecular((nodeMaterial.GetPropertyColor("SpecularColor", black)
-			* nodeMaterial.GetPropertyFloat( "SpecularFactor", 1.0f ) ).Normalized() );
-		
-		const float fbxShininess = decMath::clamp(
-			nodeMaterial.GetPropertyFloat("Shininess", 0.0f), 0.0f, 64.0f);
-		// "ShininessExponent" ?
-		
-		const decColor fbxEmissiveColor(nodeMaterial.GetPropertyColor("EmissiveColor", black).Normalized());
-		const float fbxEmissiveFactor = decMath::max(nodeMaterial.GetPropertyFloat("EmissiveFactor", 0.0f), 0.0f);
-		
+	// find properties
+	const fbxNode &nodeMaterial = material.GetNodeMaterial();
+	const decColor white(1.0f, 1.0f, 1.0f);
+	const decColor black(0.0f, 0.0f, 0.0f);
+	
+	const decColor fbxColor((nodeMaterial.GetPropertyColor("DiffuseColor", black)
+		* nodeMaterial.GetPropertyFloat( "DiffuseFactor", 1.0f ) ).Normalized() );
+	
+	const decColor fbxSpecular((nodeMaterial.GetPropertyColor("SpecularColor", black)
+		* nodeMaterial.GetPropertyFloat( "SpecularFactor", 1.0f ) ).Normalized() );
+	
+	const float fbxShininess = decMath::clamp(
+		nodeMaterial.GetPropertyFloat("Shininess", 0.0f), 0.0f, 64.0f);
+	// "ShininessExponent" ?
+	
+	const decColor fbxEmissiveColor(nodeMaterial.GetPropertyColor("EmissiveColor", black).Normalized());
+	const float fbxEmissiveFactor = decMath::max(nodeMaterial.GetPropertyFloat("EmissiveFactor", 0.0f), 0.0f);
+	
 // 		const decColor fbxTransparentColor( nodeMaterial.GetPropertyColor( "TransparentColor", black ).Normalized() );
-		const float fbxTransparentFactor = decMath::clamp(
-				nodeMaterial.GetPropertyFloat("TransparentFactor", 0.0f), 0.0f, 1.0f);
-		
-		// "ReflectionColor", "ReflectionFactor"
-		
-		// convert to PBR as good as possible
-		// 
-		// shininess: spec = pow(max(dot(normal, halfwayDir), 0.0), shininess)
-		//            with dot(n,hd) = cos(angle)
-		//            and roughness = 0 -> 90 angle
-		//            and shininess = 0 -> 64
-		//            mapping shininess 64 to roughness 0 and shininess 0 to roughness 1
-		//            this mapping is not linear. good values would be:
-		//            shininess(0) = roughness(1)
-		//            shininess(8) = roughness(0.2)
-		//            shininess(64) = roughness(0)
-		//            using pow(1-shininess/64,12)
-		decColor color, reflectivity, emissivity;
-		float roughness, emissivityIntensity, solidity;
-		
-		reflectivity = fbxSpecular;
-		color.r = fbxColor.r * (1.0f - reflectivity.r);
-		color.g = fbxColor.g * (1.0f - reflectivity.g);
-		color.b = fbxColor.b * (1.0f - reflectivity.b);
-		
-		roughness = powf(1.0f - (fbxShininess / 64.0f), 12.0f);
-		
-		emissivityIntensity = 0.0f;
-		if(fbxEmissiveFactor > 1e-4f){
-			emissivityIntensity = fbxEmissiveFactor;
-			emissivity = fbxEmissiveColor;
-		}
-		
-		solidity = 1.0f - fbxTransparentFactor;
-		//fbxTransparentColor; // this would need to be mixed with "color"
-		
-		// find textures
-		const int64_t idMaterial = material.GetMaterialID();
-		decTList<fbxConnection*> texConns;
-		scene.FindConnections(idMaterial, texConns);
-		
-		fbxTexture::Ref fbxTexDiffuseColor, fbxTexSpecularColor, fbxTexShininess;
-		fbxTexture::Ref fbxTexEmissiveColor, fbxTexTransparencyFactor;
-		fbxTexture::Ref fbxTexBump;
-		
-		texConns.Visit([&](const fbxConnection *connection){
-			if(connection->GetTarget() != idMaterial){
-				return;
-			}
-			
-			fbxNode &node = *scene.NodeWithID(connection->OtherID(idMaterial));
-			if(node.GetName() != "Texture"){
-				return;
-			}
-			
-// 			node.DebugPrintStructure( *this, "Texture:", true );
-			
-			const decString &mpname = connection->GetProperty();
-// 			LogInfoFormat( "texture map '%s'", mpname.GetString() );
-			
-			if(mpname == "DiffuseColor"){
-				fbxTexDiffuseColor = fbxTexture::Ref::New(scene, node);
-				
-			}else if(mpname == "SpecularColor"){
-				fbxTexSpecularColor = fbxTexture::Ref::New(scene, node);
-				
-			}else if(mpname == "Shininess"){
-				fbxTexShininess = fbxTexture::Ref::New(scene, node);
-				
-			}else if(mpname == "EmissiveColor"){
-				fbxTexEmissiveColor = fbxTexture::Ref::New(scene, node);
-				
-			}else if(mpname == "TransparencyFactor"){
-				fbxTexTransparencyFactor = fbxTexture::Ref::New(scene, node);
-				
-			}else if(mpname == "Bump" || mpname == "NormalMap"){
-				fbxTexBump = fbxTexture::Ref::New(scene, node);
-			}
-		});
-		
-		// add texture properties
-		if(fbxTexDiffuseColor){
-			pAddPropertyImage(*texture, "color", fbxTexDiffuseColor);
-			
-		}else{
-			pAddPropertyColor(*texture, "color", color);
-		}
-		
-		if(fbxTexSpecularColor){
-			pAddPropertyImage(*texture, "reflectivity", fbxTexSpecularColor);
-			
-		}else{
-			pAddPropertyColor(*texture, "reflectivity", reflectivity);
-		}
-		
-		if(fbxTexShininess && false){
-			pAddPropertyImage(*texture, "roughness", fbxTexShininess);
-			
-		}else{
-			pAddPropertyValue(*texture, "roughness", roughness);
-		}
-		
-		if(fbxTexEmissiveColor){
-			pAddPropertyImage(*texture, "emissivity", fbxTexEmissiveColor);
-			
-		}else{
-			if(!emissivity.IsEqualTo(black)){
-				pAddPropertyColor(*texture, "emissivity", emissivity);
-			}
-		}
-		
-		if(emissivityIntensity > 1e-4f || fbxTexEmissiveColor){
-			pAddPropertyValue(*texture, "emissivity.intensity", emissivityIntensity);
-			pAddPropertyValue(*texture, "emissivity.camera.adapted", 1.0f);
-		}
-		
-		if(fbxTexTransparencyFactor){
-			// warning! TransparencyFactor is inverse to solidity (0=solid, 1=transparent)
-			pAddPropertyImage(*texture, "solidity", fbxTexTransparencyFactor);
-			pAddPropertyValue(*texture, "solidity.invert", 1.0f);
-			
-		}else if(solidity < 1.0f - 1e-4f){
-			pAddPropertyValue(*texture, "solidity", solidity);
-		}
-		
-		if(fbxTexBump){
-			pAddPropertyImage(*texture, "normal", fbxTexBump);
-		}
-		
-		skin.AddTexture(texture);
-		
-	}catch(const deException &){
-		if(texture){
-			delete texture;
-		}
-		throw;
+	const float fbxTransparentFactor = decMath::clamp(
+			nodeMaterial.GetPropertyFloat("TransparentFactor", 0.0f), 0.0f, 1.0f);
+	
+	// "ReflectionColor", "ReflectionFactor"
+	
+	// convert to PBR as good as possible
+	// 
+	// shininess: spec = pow(max(dot(normal, halfwayDir), 0.0), shininess)
+	//            with dot(n,hd) = cos(angle)
+	//            and roughness = 0 -> 90 angle
+	//            and shininess = 0 -> 64
+	//            mapping shininess 64 to roughness 0 and shininess 0 to roughness 1
+	//            this mapping is not linear. good values would be:
+	//            shininess(0) = roughness(1)
+	//            shininess(8) = roughness(0.2)
+	//            shininess(64) = roughness(0)
+	//            using pow(1-shininess/64,12)
+	decColor color, reflectivity, emissivity;
+	float roughness, emissivityIntensity, solidity;
+	
+	reflectivity = fbxSpecular;
+	color.r = fbxColor.r * (1.0f - reflectivity.r);
+	color.g = fbxColor.g * (1.0f - reflectivity.g);
+	color.b = fbxColor.b * (1.0f - reflectivity.b);
+	
+	roughness = powf(1.0f - (fbxShininess / 64.0f), 12.0f);
+	
+	emissivityIntensity = 0.0f;
+	if(fbxEmissiveFactor > 1e-4f){
+		emissivityIntensity = fbxEmissiveFactor;
+		emissivity = fbxEmissiveColor;
 	}
+	
+	solidity = 1.0f - fbxTransparentFactor;
+	//fbxTransparentColor; // this would need to be mixed with "color"
+	
+	// find textures
+	const int64_t idMaterial = material.GetMaterialID();
+	decTList<fbxConnection*> texConns;
+	scene.FindConnections(idMaterial, texConns);
+	
+	fbxTexture::Ref fbxTexDiffuseColor, fbxTexSpecularColor, fbxTexShininess;
+	fbxTexture::Ref fbxTexEmissiveColor, fbxTexTransparencyFactor;
+	fbxTexture::Ref fbxTexBump;
+	
+	texConns.Visit([&](const fbxConnection *connection){
+		if(connection->GetTarget() != idMaterial){
+			return;
+		}
+		
+		fbxNode &node = *scene.NodeWithID(connection->OtherID(idMaterial));
+		if(node.GetName() != "Texture"){
+			return;
+		}
+		
+// 			node.DebugPrintStructure( *this, "Texture:", true );
+		
+		const decString &mpname = connection->GetProperty();
+// 			LogInfoFormat( "texture map '%s'", mpname.GetString() );
+		
+		if(mpname == "DiffuseColor"){
+			fbxTexDiffuseColor = fbxTexture::Ref::New(scene, node);
+			
+		}else if(mpname == "SpecularColor"){
+			fbxTexSpecularColor = fbxTexture::Ref::New(scene, node);
+			
+		}else if(mpname == "Shininess"){
+			fbxTexShininess = fbxTexture::Ref::New(scene, node);
+			
+		}else if(mpname == "EmissiveColor"){
+			fbxTexEmissiveColor = fbxTexture::Ref::New(scene, node);
+			
+		}else if(mpname == "TransparencyFactor"){
+			fbxTexTransparencyFactor = fbxTexture::Ref::New(scene, node);
+			
+		}else if(mpname == "Bump" || mpname == "NormalMap"){
+			fbxTexBump = fbxTexture::Ref::New(scene, node);
+		}
+	});
+	
+	// add texture properties
+	if(fbxTexDiffuseColor){
+		pAddPropertyImage(*texture, "color", fbxTexDiffuseColor);
+		
+	}else{
+		pAddPropertyColor(*texture, "color", color);
+	}
+	
+	if(fbxTexSpecularColor){
+		pAddPropertyImage(*texture, "reflectivity", fbxTexSpecularColor);
+		
+	}else{
+		pAddPropertyColor(*texture, "reflectivity", reflectivity);
+	}
+	
+	if(fbxTexShininess && false){
+		pAddPropertyImage(*texture, "roughness", fbxTexShininess);
+		
+	}else{
+		pAddPropertyValue(*texture, "roughness", roughness);
+	}
+	
+	if(fbxTexEmissiveColor){
+		pAddPropertyImage(*texture, "emissivity", fbxTexEmissiveColor);
+		
+	}else{
+		if(!emissivity.IsEqualTo(black)){
+			pAddPropertyColor(*texture, "emissivity", emissivity);
+		}
+	}
+	
+	if(emissivityIntensity > 1e-4f || fbxTexEmissiveColor){
+		pAddPropertyValue(*texture, "emissivity.intensity", emissivityIntensity);
+		pAddPropertyValue(*texture, "emissivity.camera.adapted", 1.0f);
+	}
+	
+	if(fbxTexTransparencyFactor){
+		// warning! TransparencyFactor is inverse to solidity (0=solid, 1=transparent)
+		pAddPropertyImage(*texture, "solidity", fbxTexTransparencyFactor);
+		pAddPropertyValue(*texture, "solidity.invert", 1.0f);
+		
+	}else if(solidity < 1.0f - 1e-4f){
+		pAddPropertyValue(*texture, "solidity", solidity);
+	}
+	
+	if(fbxTexBump){
+		pAddPropertyImage(*texture, "normal", fbxTexBump);
+	}
+	
+	skin.AddTexture(std::move(texture));
 }
 
 void fbxSkinModule::pAddPropertyColor(deSkinTexture &texture, const char *name, const decColor &color){
-	deSkinPropertyColor *property = nullptr;
-	
 	try{
-		property = new deSkinPropertyColor(name);
+		auto property = deSkinPropertyColor::Ref::New(name);
 		property->SetColor(color);
-		texture.AddProperty(property);
+		texture.AddProperty(std::move(property));
 		
 	}catch(const deException &){
-		if(property){
-			delete property;
-		}
 		throw;
 	}
 }
 
 void fbxSkinModule::pAddPropertyValue(deSkinTexture &texture, const char *name, float value){
-	deSkinPropertyValue *property = nullptr;
-	
 	try{
-		property = new deSkinPropertyValue(name);
+		auto property = deSkinPropertyValue::Ref::New(name);
 		property->SetValue(value);
-		texture.AddProperty(property);
+		texture.AddProperty(std::move(property));
 		
 	}catch(const deException &){
-		if(property){
-			delete property;
-		}
 		throw;
 	}
 }
 
 void fbxSkinModule::pAddPropertyImage(deSkinTexture &texture, const char *name, const fbxTexture &fbxtex){
-	deSkinPropertyImage *property = nullptr;
-	
 	try{
-		property = new deSkinPropertyImage(name);
+		auto property = deSkinPropertyImage::Ref::New(name);
 		
 		// relative path can be with '/' or '\\' depending on the system the FBX file
 		// has been created on. we do not know which delimiter is used so we search
@@ -357,15 +335,12 @@ void fbxSkinModule::pAddPropertyImage(deSkinTexture &texture, const char *name, 
 			property->SetPath(relativeFilename.GetReplaced('\\', '/'));
 			
 		}else{
-			property->SetPath(relativeFilename);
-		}
-		
-		texture.AddProperty(property);
-		
+		property->SetPath(relativeFilename);
+	}
+	
+	texture.AddProperty(std::move(property));
+	
 	}catch(const deException &){
-		if(property){
-			delete property;
-		}
 		throw;
 	}
 }

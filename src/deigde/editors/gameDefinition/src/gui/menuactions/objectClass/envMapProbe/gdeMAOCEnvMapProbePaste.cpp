@@ -68,13 +68,9 @@ igdeUndo::Ref gdeMAOCEnvMapProbePaste::OnActionSubObject(gdeGameDefinition&, gde
 		return {};
 	}
 	
-	const gdeClipboardDataOCEnvMapProbe &clipOCEnvMapProbe =
-		(const gdeClipboardDataOCEnvMapProbe &)(igdeClipboardData&)clip;
-	
-	const gdeOCEnvMapProbe::Ref envMapProbe(gdeOCEnvMapProbe::Ref::New(*clipOCEnvMapProbe.GetEnvMapProbe()));
-	
 	const igdeUndo::Ref undo = gdeUOCAddEnvMapProbe::Ref::New(&objectClass,
-		envMapProbe);
+		gdeOCEnvMapProbe::Ref::New(*clip.DynamicCast<gdeClipboardDataOCEnvMapProbe>()->GetEnvMapProbe()));
+	
 	undo->SetShortInfo("Paste object class environment map probe");
 	return undo;
 }

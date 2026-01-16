@@ -26,6 +26,7 @@
 #define _DECOLLIDERATTACHEMENT_H_
 
 #include "../deResource.h"
+#include "../../common/collection/decTUniqueList.h"
 #include "../../common/math/decMath.h"
 #include "../../common/string/decString.h"
 
@@ -61,6 +62,12 @@
  */
 class DE_DLL_EXPORT deColliderAttachment{
 public:
+	/** \brief Reference type. */
+	using Ref = deTUniqueReference<deColliderAttachment>;
+	
+	/** \brief List type. */
+	using List = decTUniqueList<deColliderAttachment>;
+	
 	/** \brief Attachment types. */
 	enum eAttachType{
 		 /**

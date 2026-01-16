@@ -59,7 +59,7 @@ deoglRenderTaskVAO::~deoglRenderTaskVAO(){
 	const int instanceCount = pInstances.GetCount();
 	int i;
 	for(i=0; i<instanceCount; i++){
-		delete (deoglRenderTaskInstance*)pInstances.GetAt(i);
+		delete pInstances.GetAt(i);
 	}
 	pInstances.RemoveAll();
 }
@@ -97,7 +97,7 @@ int deoglRenderTaskVAO::GetTotalPointCount() const{
 int deoglRenderTaskVAO::GetTotalSubInstanceCount() const{
 	int i, subInstanceCount = 0;
 	for(i=0; i<pInstanceCount; i++){
-		subInstanceCount += ((deoglRenderTaskInstance*)pInstances.GetAt(i))->GetSubInstanceCount();
+		subInstanceCount += pInstances.GetAt(i)->GetSubInstanceCount();
 	}
 	return subInstanceCount;
 }
@@ -105,7 +105,7 @@ int deoglRenderTaskVAO::GetTotalSubInstanceCount() const{
 
 
 deoglRenderTaskInstance *deoglRenderTaskVAO::GetInstanceAt(int index) const{
-	return (deoglRenderTaskInstance*)pInstances.GetAt(index);
+	return pInstances.GetAt(index);
 }
 
 deoglRenderTaskInstance *deoglRenderTaskVAO::AddInstance(const deoglRenderTaskSharedInstance *instance){
@@ -147,7 +147,7 @@ deoglRenderTaskInstance *deoglRenderTaskVAO::AddInstance(const deoglRenderTaskSh
 		pInstances.Add(rtinstance);
 		
 	}else{
-		rtinstance = (deoglRenderTaskInstance*)pInstances.GetAt(pInstanceCount);
+		rtinstance = pInstances.GetAt(pInstanceCount);
 		rtinstance->Reset();
 	}
 	pInstanceCount++;

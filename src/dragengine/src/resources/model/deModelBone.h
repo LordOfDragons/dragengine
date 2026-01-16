@@ -25,6 +25,7 @@
 #ifndef _DEMODELBONE_H_
 #define _DEMODELBONE_H_
 
+#include "../../common/collection/decTUniqueList.h"
 #include "../../common/string/decString.h"
 #include "../../common/math/decMath.h"
 
@@ -33,6 +34,13 @@
  * \brief Model Bone.
  */
 class DE_DLL_EXPORT deModelBone{
+public:
+	/** \brief Reference type. */
+	using Ref = deTUniqueReference<deModelBone>;
+	
+	/** \brief List type. */
+	using List = decTUniqueList<deModelBone>;
+	
 private:
 	decString pName;
 	int pParent;

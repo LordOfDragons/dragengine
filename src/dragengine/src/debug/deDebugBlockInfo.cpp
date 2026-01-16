@@ -98,7 +98,7 @@ void deDebugBlockInfo::SetFont(deFont *font){
 	const int count = pEntries.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		sEntry &entry = *((sEntry*)pEntries.GetAt(i));
+		sEntry &entry = *pEntries.GetAt(i);
 		entry.viewLabel->SetFont(font);
 		entry.viewText->SetFont(font);
 		entry.viewLabel->SetSize(pTextSize(*font, entry.label));
@@ -226,34 +226,34 @@ const decColor &color, const decColor &bgColor){
 }
 
 void deDebugBlockInfo::SetEntryLabel(int index, const char *label){
-	sEntry &entry = *((sEntry*)pEntries.GetAt(index));
+	sEntry &entry = *pEntries.GetAt(index);
 	entry.label = label;
 	entry.viewLabel->SetText(label);
 	entry.viewLabel->SetSize(pTextSize(pFont, label));
 }
 
 void deDebugBlockInfo::SetEntryText(int index, const char *text){
-	sEntry &entry = *((sEntry*)pEntries.GetAt(index));
+	sEntry &entry = *pEntries.GetAt(index);
 	entry.text = text;
 	entry.viewText->SetText(text);
 	entry.viewText->SetSize(pTextSize(pFont, text));
 }
 
 void deDebugBlockInfo::SetEntryColor(int index, const decColor &color){
-	sEntry &entry = *((sEntry*)pEntries.GetAt(index));
+	sEntry &entry = *pEntries.GetAt(index);
 	entry.color = color;
 	entry.viewLabel->SetColor(color);
 	entry.viewText->SetColor(color);
 }
 
 void deDebugBlockInfo::SetEntryBgColor(int index, const decColor &color){
-	sEntry &entry = *((sEntry*)pEntries.GetAt(index));
+	sEntry &entry = *pEntries.GetAt(index);
 	entry.bgColor = color;
 	entry.viewBg->SetFillColor(color);
 }
 
 void deDebugBlockInfo::RemoveEntry(int index){
-	sEntry * const entry = (sEntry*)pEntries.GetAt(index);
+	sEntry * const entry = pEntries.GetAt(index);
 	pView->RemoveCanvas(entry->view);
 	delete entry;
 	pEntries.RemoveFrom(index);
@@ -274,7 +274,7 @@ void deDebugBlockInfo::UpdateView(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		const sEntry &entry = *((sEntry*)pEntries.GetAt(i));
+		const sEntry &entry = *pEntries.GetAt(i);
 		const decPoint &labelSize = entry.viewLabel->GetSize();
 		const decPoint &textSize = entry.viewText->GetSize();
 		if(labelSize.x > maxLabelWidth){
@@ -296,7 +296,7 @@ void deDebugBlockInfo::UpdateView(){
 	position.y += pViewTitleBg->GetSize().y;
 	
 	for(i=0; i<count; i++){
-		const sEntry &entry = *((sEntry*)pEntries.GetAt(i));
+		const sEntry &entry = *pEntries.GetAt(i);
 		entry.viewLabel->SetPosition(decPoint(offsetLabel, pPadding));
 		entry.viewText->SetPosition(decPoint(offsetText, pPadding));
 		entry.view->SetSize(decPoint(width, pPadding * 2 + decMath::max(

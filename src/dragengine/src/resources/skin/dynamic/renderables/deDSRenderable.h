@@ -25,6 +25,7 @@
 #ifndef _DEDSRENDERABLE_H_
 #define _DEDSRENDERABLE_H_
 
+#include "../../../../common/collection/decTUniqueList.h"
 #include "../../../../common/string/decString.h"
 
 class deDSRenderableVisitor;
@@ -43,6 +44,13 @@ class deDSRenderableVisitor;
  * to attach multiple renderables to one target object.
  */
 class DE_DLL_EXPORT deDSRenderable{
+public:
+	/** \brief Reference type. */
+	using Ref = deTUniqueReference<deDSRenderable>;
+	
+	/** \brief List type. */
+	using List = decTUniqueList<deDSRenderable>;
+	
 private:
 	decString pName;
 	

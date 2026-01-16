@@ -87,7 +87,7 @@ deadContextUnpack *deadContainer::AcquireContextUnpack(){
 	
 	if(pContextsUnpackFree.GetCount() > 0){
 		const int index = pContextsUnpackFree.GetCount() - 1;
-		context = (deadContextUnpack*)pContextsUnpackFree.GetAt(index);
+		context = pContextsUnpackFree.GetAt(index);
 		pContextsUnpackFree.RemoveFrom(index);
 		
 	}else{
@@ -222,6 +222,6 @@ void deadContainer::pCleanUp(){
 	const int count = pContextsUnpack.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		delete (deadContextUnpack*)pContextsUnpack.GetAt(i);
+		delete pContextsUnpack.GetAt(i);
 	}
 }

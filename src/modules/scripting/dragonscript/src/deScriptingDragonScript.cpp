@@ -654,10 +654,10 @@ bool deScriptingDragonScript::Init(const char *scriptDirectory, const char *game
 		}
 		SetErrorTraceDS(e);
 		LogExceptionDS(e);
-		deErrorTracePoint * const tracePoint = AddErrorTracePoint("deScriptingDragonScript::Init", __LINE__);
-		tracePoint->AddValue("scriptDirectory", scriptDirectory);
-		tracePoint->AddValue("gameObject", gameObject);
-		pAddExceptionTrace(tracePoint);
+		deErrorTracePoint &tracePoint = AddErrorTracePoint("deScriptingDragonScript::Init", __LINE__);
+		tracePoint.AddValue("scriptDirectory", scriptDirectory);
+		tracePoint.AddValue("gameObject", gameObject);
+		pAddExceptionTrace(&tracePoint);
 		pScriptEngine->GetMainRunTime()->ClearExceptionTrace();
 		return false;
 		
@@ -667,10 +667,10 @@ bool deScriptingDragonScript::Init(const char *scriptDirectory, const char *game
 		}
 		SetErrorTrace(e);
 		LogException(e);
-		deErrorTracePoint * const tracePoint = AddErrorTracePoint("deScriptingDragonScript::Init", __LINE__);
-		tracePoint->AddValue("scriptDirectory", scriptDirectory);
-		tracePoint->AddValue("gameObject", gameObject);
-		pAddExceptionTrace(tracePoint);
+		deErrorTracePoint &tracePoint = AddErrorTracePoint("deScriptingDragonScript::Init", __LINE__);
+		tracePoint.AddValue("scriptDirectory", scriptDirectory);
+		tracePoint.AddValue("gameObject", gameObject);
+		pAddExceptionTrace(&tracePoint);
 		pScriptEngine->GetMainRunTime()->ClearExceptionTrace();
 		return false;
 	}
@@ -776,12 +776,12 @@ void deScriptingDragonScript::LoadPackage(const char *name, const char *director
 		
 	}catch(const duException &e){
 		SetErrorTraceDS(e);
-		deErrorTracePoint *tracePoint = AddErrorTracePoint("deScriptingDragonScript::LoadPackage", __LINE__);
-		tracePoint->AddValue("name", name);
-		tracePoint->AddValue("directory", directory);
+		deErrorTracePoint &tracePoint = AddErrorTracePoint("deScriptingDragonScript::LoadPackage", __LINE__);
+		tracePoint.AddValue("name", name);
+		tracePoint.AddValue("directory", directory);
 		if(package){
-			tracePoint->AddValueInt("packageClassCount", package->GetClassCount());
-			tracePoint->AddValueInt("packageHostClassCount", package->GetHostClassCount());
+			tracePoint.AddValueInt("packageClassCount", package->GetClassCount());
+			tracePoint.AddValueInt("packageHostClassCount", package->GetHostClassCount());
 		}
 		LogExceptionDS(e);
 		pScriptEngine->GetMainRunTime()->ClearExceptionTrace();
@@ -792,12 +792,12 @@ void deScriptingDragonScript::LoadPackage(const char *name, const char *director
 		
 	}catch(const deException &e){
 		SetErrorTrace(e);
-		deErrorTracePoint *tracePoint = AddErrorTracePoint("deScriptingDragonScript::LoadPackage", __LINE__);
-		tracePoint->AddValue("name", name);
-		tracePoint->AddValue("directory", directory);
+		deErrorTracePoint &tracePoint = AddErrorTracePoint("deScriptingDragonScript::LoadPackage", __LINE__);
+		tracePoint.AddValue("name", name);
+		tracePoint.AddValue("directory", directory);
 		if(package){
-			tracePoint->AddValueInt("packageClassCount", package->GetClassCount());
-			tracePoint->AddValueInt("packageHostClassCount", package->GetHostClassCount());
+			tracePoint.AddValueInt("packageClassCount", package->GetClassCount());
+			tracePoint.AddValueInt("packageHostClassCount", package->GetHostClassCount());
 		}
 		pScriptEngine->GetMainRunTime()->ClearExceptionTrace();
 		LogException(e);
@@ -873,8 +873,8 @@ bool deScriptingDragonScript::ExitGame(){
 	}catch(const duException &e){
 		pGameObj = nullptr;
 		LogExceptionDS(e);
-		deErrorTracePoint *tracePoint = AddErrorTracePoint("deScriptingDragonScript::InitGame", __LINE__);
-		pAddExceptionTrace(tracePoint);
+		deErrorTracePoint &tracePoint = AddErrorTracePoint("deScriptingDragonScript::InitGame", __LINE__);
+		pAddExceptionTrace(&tracePoint);
 		pScriptEngine->GetMainRunTime()->ClearExceptionTrace();
 		return false;
 		
@@ -883,8 +883,8 @@ bool deScriptingDragonScript::ExitGame(){
 		SetErrorTrace(e);
 		LogException(e);
 		LogExceptionDSTrace();
-		deErrorTracePoint * const tracePoint = AddErrorTracePoint("deScriptingDragonScript::InitGame", __LINE__);
-		pAddExceptionTrace(tracePoint);
+		deErrorTracePoint &tracePoint = AddErrorTracePoint("deScriptingDragonScript::InitGame", __LINE__);
+		pAddExceptionTrace(&tracePoint);
 		pScriptEngine->GetMainRunTime()->ClearExceptionTrace();
 		return false;
 	}
@@ -957,20 +957,20 @@ bool deScriptingDragonScript::OnFrameUpdate(){
 		}catch(const duException &e){
 			SetErrorTraceDS(e);
 			LogExceptionDS(e);
-			deErrorTracePoint * const tracePoint = AddErrorTracePoint("deScriptingDragonScript::OnFrameUpdate", __LINE__);
-			tracePoint->AddValue("scriptDirectory", pInitScriptDirectory.GetString());
-			tracePoint->AddValue("gameObject", pInitGameObject.GetString());
-			pAddExceptionTrace(tracePoint);
+			deErrorTracePoint &tracePoint = AddErrorTracePoint("deScriptingDragonScript::OnFrameUpdate", __LINE__);
+			tracePoint.AddValue("scriptDirectory", pInitScriptDirectory.GetString());
+			tracePoint.AddValue("gameObject", pInitGameObject.GetString());
+			pAddExceptionTrace(&tracePoint);
 			pScriptEngine->GetMainRunTime()->ClearExceptionTrace();
 			return false;
 			
 		}catch(const deException &e){
 			SetErrorTrace(e);
 			LogException(e);
-			deErrorTracePoint * const tracePoint = AddErrorTracePoint("deScriptingDragonScript::OnFrameUpdate", __LINE__);
-			tracePoint->AddValue("scriptDirectory", pInitScriptDirectory.GetString());
-			tracePoint->AddValue("gameObject", pInitGameObject.GetString());
-			pAddExceptionTrace(tracePoint);
+			deErrorTracePoint &tracePoint = AddErrorTracePoint("deScriptingDragonScript::OnFrameUpdate", __LINE__);
+			tracePoint.AddValue("scriptDirectory", pInitScriptDirectory.GetString());
+			tracePoint.AddValue("gameObject", pInitGameObject.GetString());
+			pAddExceptionTrace(&tracePoint);
 			pScriptEngine->GetMainRunTime()->ClearExceptionTrace();
 			return false;
 		}
@@ -991,20 +991,20 @@ bool deScriptingDragonScript::OnFrameUpdate(){
 		}catch(const duException &e){
 			SetErrorTraceDS(e);
 			LogExceptionDS(e);
-			deErrorTracePoint * const tracePoint = AddErrorTracePoint("deScriptingDragonScript::OnFrameUpdate", __LINE__);
-			tracePoint->AddValue("scriptDirectory", pInitScriptDirectory.GetString());
-			tracePoint->AddValue("gameObject", pInitGameObject.GetString());
-			pAddExceptionTrace(tracePoint);
+			deErrorTracePoint &tracePoint = AddErrorTracePoint("deScriptingDragonScript::OnFrameUpdate", __LINE__);
+			tracePoint.AddValue("scriptDirectory", pInitScriptDirectory.GetString());
+			tracePoint.AddValue("gameObject", pInitGameObject.GetString());
+			pAddExceptionTrace(&tracePoint);
 			pScriptEngine->GetMainRunTime()->ClearExceptionTrace();
 			return false;
 			
 		}catch(const deException &e){
 			SetErrorTrace(e);
 			LogException(e);
-			deErrorTracePoint * const tracePoint = AddErrorTracePoint("deScriptingDragonScript::OnFrameUpdate", __LINE__);
-			tracePoint->AddValue("scriptDirectory", pInitScriptDirectory.GetString());
-			tracePoint->AddValue("gameObject", pInitGameObject.GetString());
-			pAddExceptionTrace(tracePoint);
+			deErrorTracePoint &tracePoint = AddErrorTracePoint("deScriptingDragonScript::OnFrameUpdate", __LINE__);
+			tracePoint.AddValue("scriptDirectory", pInitScriptDirectory.GetString());
+			tracePoint.AddValue("gameObject", pInitGameObject.GetString());
+			pAddExceptionTrace(&tracePoint);
 			pScriptEngine->GetMainRunTime()->ClearExceptionTrace();
 			return false;
 		}
@@ -1029,16 +1029,16 @@ bool deScriptingDragonScript::OnFrameUpdate(){
 		}catch(const duException &e){
 			SetErrorTraceDS(e);
 			LogExceptionDS(e);
-			deErrorTracePoint *tracePoint = AddErrorTracePoint("deScriptingDragonScript::OnFrameUpdate", __LINE__);
-			pAddExceptionTrace(tracePoint);
+			deErrorTracePoint &tracePoint = AddErrorTracePoint("deScriptingDragonScript::OnFrameUpdate", __LINE__);
+			pAddExceptionTrace(&tracePoint);
 			pScriptEngine->GetMainRunTime()->ClearExceptionTrace();
 			return false;
 			
 		}catch(const deException &e){
 			SetErrorTrace(e);
 			LogException(e);
-			deErrorTracePoint * const tracePoint = AddErrorTracePoint("deScriptingDragonScript::OnFrameUpdate", __LINE__);
-			pAddExceptionTrace(tracePoint);
+			deErrorTracePoint &tracePoint = AddErrorTracePoint("deScriptingDragonScript::OnFrameUpdate", __LINE__);
+			pAddExceptionTrace(&tracePoint);
 			pScriptEngine->GetMainRunTime()->ClearExceptionTrace();
 			return false;
 		}
@@ -1124,20 +1124,18 @@ bool deScriptingDragonScript::SendEvent(deInputEvent *event){
 	}catch(const duException &e){
 		SetErrorTraceDS(e);
 		LogExceptionDS(e);
-		deErrorTracePoint * const tracePoint = AddErrorTracePoint(
-			"deScriptingDragonScript::SendEvent", __LINE__);
-		pAddSendEventTrace(*tracePoint, *event);
-		pAddExceptionTrace(tracePoint);
+		deErrorTracePoint &tracePoint = AddErrorTracePoint("deScriptingDragonScript::SendEvent", __LINE__);
+		pAddSendEventTrace(tracePoint, *event);
+		pAddExceptionTrace(&tracePoint);
 		pScriptEngine->GetMainRunTime()->ClearExceptionTrace();
 		return false;
 		
 	}catch(const deException &e){
 		SetErrorTrace(e);
 		LogException(e);
-		deErrorTracePoint * const tracePoint = AddErrorTracePoint(
-			"deScriptingDragonScript::SendEvent", __LINE__);
-		pAddSendEventTrace(*tracePoint, *event);
-		pAddExceptionTrace(tracePoint);
+		deErrorTracePoint &tracePoint = AddErrorTracePoint("deScriptingDragonScript::SendEvent", __LINE__);
+		pAddSendEventTrace(tracePoint, *event);
+		pAddExceptionTrace(&tracePoint);
 		pScriptEngine->GetMainRunTime()->ClearExceptionTrace();
 		return false;
 	}
@@ -1158,16 +1156,16 @@ void deScriptingDragonScript::UserRequestQuit(){
 	}catch(const duException &e){
 		SetErrorTraceDS(e);
 		LogExceptionDS(e);
-		deErrorTracePoint *tracePoint = AddErrorTracePoint("deScriptingDragonScript::UserRequestQuit", __LINE__);
-		pAddExceptionTrace(tracePoint);
+		deErrorTracePoint &tracePoint = AddErrorTracePoint("deScriptingDragonScript::UserRequestQuit", __LINE__);
+		pAddExceptionTrace(&tracePoint);
 		pScriptEngine->GetMainRunTime()->ClearExceptionTrace();
 		GetGameEngine()->Quit();
 		
 	}catch(const deException &e){
 		SetErrorTrace(e);
 		LogException(e);
-		deErrorTracePoint *tracePoint = AddErrorTracePoint("deScriptingDragonScript::UserRequestQuit", __LINE__);
-		pAddExceptionTrace(tracePoint);
+		deErrorTracePoint &tracePoint = AddErrorTracePoint("deScriptingDragonScript::UserRequestQuit", __LINE__);
+		pAddExceptionTrace(&tracePoint);
 		pScriptEngine->GetMainRunTime()->ClearExceptionTrace();
 		GetGameEngine()->Quit();
 	}
@@ -1254,7 +1252,7 @@ void deScriptingDragonScript::AddValueDeleteLater(dsValue *value){
 void deScriptingDragonScript::DeleteValuesDeleteLater(){
 	while(pDeleteValuesLaterList.GetCount() > 0){
 		const int index = pDeleteValuesLaterList.GetCount() - 1;
-		pScriptEngine->GetMainRunTime()->FreeValue((dsValue*)pDeleteValuesLaterList.GetAt(index));
+		pScriptEngine->GetMainRunTime()->FreeValue(pDeleteValuesLaterList.GetAt(index));
 		pDeleteValuesLaterList.RemoveFrom(index);
 	}
 }
@@ -1527,8 +1525,8 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 		}
 		SetErrorTraceDS(e);
 		LogExceptionDS(e);
-		deErrorTracePoint *tracePoint = AddErrorTracePoint("deScriptingDragonScript::pLoadBasicPackage", __LINE__);
-		pAddExceptionTrace(tracePoint);
+		deErrorTracePoint &tracePoint = AddErrorTracePoint("deScriptingDragonScript::pLoadBasicPackage", __LINE__);
+		pAddExceptionTrace(&tracePoint);
 		pScriptEngine->GetMainRunTime()->ClearExceptionTrace();
 		throw;
 		
@@ -1539,8 +1537,8 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 		SetErrorTrace(e);
 		LogExceptionDSTrace();
 		LogException(e);
-		deErrorTracePoint *tracePoint = AddErrorTracePoint("deScriptingDragonScript::pLoadBasicPackage", __LINE__);
-		pAddExceptionTrace(tracePoint);
+		deErrorTracePoint &tracePoint = AddErrorTracePoint("deScriptingDragonScript::pLoadBasicPackage", __LINE__);
+		pAddExceptionTrace(&tracePoint);
 		pScriptEngine->GetMainRunTime()->ClearExceptionTrace();
 		throw;
 	}
@@ -1603,15 +1601,15 @@ void deScriptingDragonScript::pLoadGamePackage(const char *directory, const char
 	}catch(const duException &e){
 		SetErrorTraceDS(e);
 		LogExceptionDS(e);
-		deErrorTracePoint *tracePoint = AddErrorTracePoint("deScriptingDragonScript::pLoadGamePackage", __LINE__);
-		tracePoint->AddValue("directory", directory);
-		tracePoint->AddValue("gameClass", gameClass);
-		tracePoint->AddValueBool("gameClassPresent", pClsGame != nullptr);
+		deErrorTracePoint &tracePoint = AddErrorTracePoint("deScriptingDragonScript::pLoadGamePackage", __LINE__);
+		tracePoint.AddValue("directory", directory);
+		tracePoint.AddValue("gameClass", gameClass);
+		tracePoint.AddValueBool("gameClassPresent", pClsGame != nullptr);
 		if(package){
-			tracePoint->AddValueInt("packageClassCount", package->GetClassCount());
-			tracePoint->AddValueInt("packageHostClassCount", package->GetHostClassCount());
+			tracePoint.AddValueInt("packageClassCount", package->GetClassCount());
+			tracePoint.AddValueInt("packageHostClassCount", package->GetHostClassCount());
 		}
-		pAddExceptionTrace(tracePoint);
+		pAddExceptionTrace(&tracePoint);
 		pScriptEngine->GetMainRunTime()->ClearExceptionTrace();
 		throw;
 		
@@ -1619,16 +1617,16 @@ void deScriptingDragonScript::pLoadGamePackage(const char *directory, const char
 		SetErrorTrace(e);
 		LogExceptionDSTrace();
 		LogException(e);
-		deErrorTracePoint *tracePoint = AddErrorTracePoint("deScriptingDragonScript::pLoadGamePackage", __LINE__);
-		tracePoint->AddValue("directory", directory);
+		deErrorTracePoint &tracePoint = AddErrorTracePoint("deScriptingDragonScript::pLoadGamePackage", __LINE__);
+		tracePoint.AddValue("directory", directory);
 		if(pClsGame){
-			tracePoint->AddValue("clsGame", pClsGame->GetName());
+			tracePoint.AddValue("clsGame", pClsGame->GetName());
 		}
 		if(package){
-			tracePoint->AddValueInt("packageClassCount", package->GetClassCount());
-			tracePoint->AddValueInt("packageHostClassCount", package->GetHostClassCount());
+			tracePoint.AddValueInt("packageClassCount", package->GetClassCount());
+			tracePoint.AddValueInt("packageHostClassCount", package->GetHostClassCount());
 		}
-		pAddExceptionTrace(tracePoint);
+		pAddExceptionTrace(&tracePoint);
 		pScriptEngine->GetMainRunTime()->ClearExceptionTrace();
 		throw;
 	}
@@ -1684,18 +1682,18 @@ void deScriptingDragonScript::pAddScripts(dsPackage *package, deVirtualFileSyste
 	}catch(const duException &e){
 		SetErrorTraceDS(e);
 		LogExceptionDS(e);
-		deErrorTracePoint *tracePoint = AddErrorTracePoint("deScriptingDragonScript::pAddScripts", __LINE__);
-		tracePoint->AddValue("package", package->GetName());
-		tracePoint->AddValue("pathDir", pathDir);
+		deErrorTracePoint &tracePoint = AddErrorTracePoint("deScriptingDragonScript::pAddScripts", __LINE__);
+		tracePoint.AddValue("package", package->GetName());
+		tracePoint.AddValue("pathDir", pathDir);
 		pScriptEngine->GetMainRunTime()->ClearExceptionTrace();
 		throw;
 		
 	}catch(const deException &e){
 		SetErrorTrace(e);
 		LogExceptionDSTrace();
-		deErrorTracePoint *tracePoint = AddErrorTracePoint("deScriptingDragonScript::pAddScripts", __LINE__);
-		tracePoint->AddValue("package", package->GetName());
-		tracePoint->AddValue("pathDir", pathDir);
+		deErrorTracePoint &tracePoint = AddErrorTracePoint("deScriptingDragonScript::pAddScripts", __LINE__);
+		tracePoint.AddValue("package", package->GetName());
+		tracePoint.AddValue("pathDir", pathDir);
 		pScriptEngine->GetMainRunTime()->ClearExceptionTrace();
 		LogException(e);
 		throw;
@@ -1725,9 +1723,9 @@ bool deScriptingDragonScript::pCallFunction(const char *name){
 	}catch(const duException &e){
 		SetErrorTraceDS(e);
 		LogExceptionDS(e);
-		deErrorTracePoint *tracePoint = AddErrorTracePoint("deScriptingDragonScript::pCallFunction", __LINE__);
-		tracePoint->AddValue("function", name);
-		pAddExceptionTrace(tracePoint);
+		deErrorTracePoint &tracePoint = AddErrorTracePoint("deScriptingDragonScript::pCallFunction", __LINE__);
+		tracePoint.AddValue("function", name);
+		pAddExceptionTrace(&tracePoint);
 		pScriptEngine->GetMainRunTime()->ClearExceptionTrace();
 		return false;
 		
@@ -1735,9 +1733,9 @@ bool deScriptingDragonScript::pCallFunction(const char *name){
 		SetErrorTrace(e);
 		LogExceptionDSTrace();
 		LogException(e);
-		deErrorTracePoint *tracePoint = AddErrorTracePoint("deScriptingDragonScript::pCallFunction", __LINE__);
-		tracePoint->AddValue("function", name);
-		pAddExceptionTrace(tracePoint);
+		deErrorTracePoint &tracePoint = AddErrorTracePoint("deScriptingDragonScript::pCallFunction", __LINE__);
+		tracePoint.AddValue("function", name);
+		pAddExceptionTrace(&tracePoint);
 		pScriptEngine->GetMainRunTime()->ClearExceptionTrace();
 		return false;
 	}

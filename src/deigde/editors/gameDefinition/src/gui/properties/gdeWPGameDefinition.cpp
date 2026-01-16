@@ -564,23 +564,23 @@ void gdeWPGameDefinition::SetGameDefinition(gdeGameDefinition *gameDefinition){
 		return;
 	}
 	
-	gdeWPPropertyList &worldProperties = (gdeWPPropertyList&)(igdeWidget&)pEditWorldProperties;
+	gdeWPPropertyList &worldProperties = pEditWorldProperties.DynamicCast<gdeWPPropertyList>();
 	worldProperties.SetPropertyList(nullptr);
 	worldProperties.SetGameDefinition(nullptr);
 	
-	gdeWPPropertyList &decalProperties = (gdeWPPropertyList&)(igdeWidget&)pEditDecalProperties;
+	gdeWPPropertyList &decalProperties = pEditDecalProperties.DynamicCast<gdeWPPropertyList>();
 	decalProperties.SetPropertyList(nullptr);
 	decalProperties.SetGameDefinition(nullptr);
 	
-	gdeWPPathList &autoFindPathObjectClasses = (gdeWPPathList&)(igdeWidget&)pEditAutoFindPathObjectClasses;
+	gdeWPPathList &autoFindPathObjectClasses = pEditAutoFindPathObjectClasses.DynamicCast<gdeWPPathList>();
 	autoFindPathObjectClasses.SetPathList(nullptr);
 	autoFindPathObjectClasses.SetUndoSystem(nullptr);
 	
-	gdeWPPathList &autoFindPathSkins = (gdeWPPathList&)(igdeWidget&)pEditAutoFindPathSkins;
+	gdeWPPathList &autoFindPathSkins = pEditAutoFindPathSkins.DynamicCast<gdeWPPathList>();
 	autoFindPathSkins.SetPathList(nullptr);
 	autoFindPathSkins.SetUndoSystem(nullptr);
 	
-	gdeWPPathList &autoFindPathSkies = (gdeWPPathList&)(igdeWidget&)pEditAutoFindPathSkies;
+	gdeWPPathList &autoFindPathSkies = pEditAutoFindPathSkies.DynamicCast<gdeWPPathList>();
 	autoFindPathSkies.SetPathList(nullptr);
 	autoFindPathSkies.SetUndoSystem(nullptr);
 	
@@ -614,11 +614,11 @@ void gdeWPGameDefinition::SetGameDefinition(gdeGameDefinition *gameDefinition){
 
 
 gdeProperty *gdeWPGameDefinition::GetActiveWorldProperty() const{
-	return ((gdeWPPropertyList&)(igdeWidget&)pEditWorldProperties).GetProperty();
+	return pEditWorldProperties.DynamicCast<gdeWPPropertyList>()->GetProperty();
 }
 
 gdeProperty *gdeWPGameDefinition::GetActiveDecalProperty() const{
-	return ((gdeWPPropertyList&)(igdeWidget&)pEditDecalProperties).GetProperty();
+	return pEditDecalProperties.DynamicCast<gdeWPPropertyList>()->GetProperty();
 }
 
 
@@ -672,49 +672,49 @@ void gdeWPGameDefinition::UpdateWorld(){
 
 
 void gdeWPGameDefinition::UpdateWorldProperties(){
-	((gdeWPPropertyList&)(igdeWidget&)pEditWorldProperties).UpdateList();
+	pEditWorldProperties.DynamicCast<gdeWPPropertyList>()->UpdateList();
 }
 
 void gdeWPGameDefinition::UpdateWorldProperty(){
-	((gdeWPPropertyList&)(igdeWidget&)pEditWorldProperties).UpdateProperty();
+	pEditWorldProperties.DynamicCast<gdeWPPropertyList>()->UpdateProperty();
 }
 
 void gdeWPGameDefinition::UpdateWorldPropertyCustomPatternList(){
-	((gdeWPPropertyList&)(igdeWidget&)pEditWorldProperties).UpdateCustomPatternList();
+	pEditWorldProperties.DynamicCast<gdeWPPropertyList>()->UpdateCustomPatternList();
 }
 
 void gdeWPGameDefinition::UpdateWorldPropertyCustomPattern(){
-	((gdeWPPropertyList&)(igdeWidget&)pEditWorldProperties).UpdateCustomPattern();
+	pEditWorldProperties.DynamicCast<gdeWPPropertyList>()->UpdateCustomPattern();
 }
 
 
 
 void gdeWPGameDefinition::UpdateAutoFindPathObjectClasses(){
-	((gdeWPPathList&)(igdeWidget&)pEditAutoFindPathObjectClasses).UpdateList();
+	pEditAutoFindPathObjectClasses.DynamicCast<gdeWPPathList>()->UpdateList();
 }
 
 void gdeWPGameDefinition::UpdateAutoFindPathSkins(){
-	((gdeWPPathList&)(igdeWidget&)pEditAutoFindPathSkins).UpdateList();
+	pEditAutoFindPathSkins.DynamicCast<gdeWPPathList>()->UpdateList();
 }
 
 void gdeWPGameDefinition::UpdateAutoFindPathSkies(){
-	((gdeWPPathList&)(igdeWidget&)pEditAutoFindPathSkies).UpdateList();
+	pEditAutoFindPathSkies.DynamicCast<gdeWPPathList>()->UpdateList();
 }
 
 
 
 void gdeWPGameDefinition::UpdateDecalProperties(){
-	((gdeWPPropertyList&)(igdeWidget&)pEditDecalProperties).UpdateList();
+	pEditDecalProperties.DynamicCast<gdeWPPropertyList>()->UpdateList();
 }
 
 void gdeWPGameDefinition::UpdateDecalProperty(){
-	((gdeWPPropertyList&)(igdeWidget&)pEditDecalProperties).UpdateProperty();
+	pEditDecalProperties.DynamicCast<gdeWPPropertyList>()->UpdateProperty();
 }
 
 void gdeWPGameDefinition::UpdateDecalPropertyCustomPatternList(){
-	((gdeWPPropertyList&)(igdeWidget&)pEditDecalProperties).UpdateCustomPatternList();
+	pEditDecalProperties.DynamicCast<gdeWPPropertyList>()->UpdateCustomPatternList();
 }
 
 void gdeWPGameDefinition::UpdateDecalPropertyCustomPattern(){
-	((gdeWPPropertyList&)(igdeWidget&)pEditDecalProperties).UpdateCustomPattern();
+	pEditDecalProperties.DynamicCast<gdeWPPropertyList>()->UpdateCustomPattern();
 }

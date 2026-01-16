@@ -170,7 +170,7 @@ void dedaiPathFinderNavMesh::UpdateDDSShapeFaces(deDebugDrawerShape &dds){
 		
 		try{
 			for(i=0; i<count; i++){
-				const dedaiSpaceMeshFace &face = *((dedaiSpaceMeshFace*)pPathFaces.GetAt(i));
+				const dedaiSpaceMeshFace &face = *pPathFaces.GetAt(i);
 				const unsigned short cornerCount = face.GetCornerCount();
 				
 				if(cornerCount > 2){
@@ -219,13 +219,13 @@ void dedaiPathFinderNavMesh::pClearLists(){
 	
 	count = pListClosed.GetCount();
 	for(i=0; i<count; i++){
-		((dedaiSpaceMeshFace*)pListClosed.GetAt(i))->ClearPath();
+		pListClosed.GetAt(i)->ClearPath();
 	}
 	pListClosed.RemoveAll();
 	
 	count = pListOpen.GetCount();
 	for(i=0; i<count; i++){
-		((dedaiSpaceMeshFace*)pListOpen.GetAt(i))->ClearPath();
+		pListOpen.GetAt(i)->ClearPath();
 	}
 	pListOpen.RemoveAll();
 }
@@ -521,9 +521,9 @@ void dedaiPathFinderNavMesh::pFindFacePath(){
 				testFace = nullptr;
 				
 			}else{
-				testFace = (dedaiSpaceMeshFace*)pListOpen.GetAt(faceCount - 1);
+				testFace = pListOpen.GetAt(faceCount - 1);
 				for(f=faceCount-2; f>=0; f--){
-					nextFace = (dedaiSpaceMeshFace*)pListOpen.GetAt(f);
+					nextFace = pListOpen.GetAt(f);
 					
 					if(nextFace->GetPathCostF() < testFace->GetPathCostF()){
 						testFace = nextFace;
@@ -536,7 +536,7 @@ void dedaiPathFinderNavMesh::pFindFacePath(){
 		module.LogInfo("   Debug:");
 		module.LogInfo("      Open List:");
 		for(c=0; c<pListOpen.GetCount(); c++){
-			testFace = (dedaiSpaceMeshFace*)pListOpen.GetAt(c);
+			testFace = pListOpen.GetAt(c);
 			const decDVector c2 = testFace->GetMesh()->GetSpace().GetMatrix() * testFace->GetCenter();
 			module.LogInfoFormat("         Face: %p:%i p=%p:%i c=(%g,%g,%g) (%.3f,%.3f,%.3f)",
 				testFace->GetMesh(), testFace->GetIndex(), testFace->GetPathParent()?testFace->GetPathParent()->GetMesh():NULL,
@@ -545,7 +545,7 @@ void dedaiPathFinderNavMesh::pFindFacePath(){
 		}
 		module.LogInfo("      Closed List:");
 		for(c=0; c<pListClosed.GetCount(); c++){
-			testFace = (dedaiSpaceMeshFace*)pListClosed.GetAt(c);
+			testFace = pListClosed.GetAt(c);
 			const decDVector c2 = testFace->GetMesh()->GetSpace().GetMatrix() * testFace->GetCenter();
 			module.LogInfoFormat("         Face: %p:%i p=%p:%i c=(%g,%g,%g) (%.3f,%.3f,%.3f)",
 				testFace->GetMesh(), testFace->GetIndex(), testFace->GetPathParent()?testFace->GetPathParent()->GetMesh():NULL,
@@ -556,7 +556,7 @@ void dedaiPathFinderNavMesh::pFindFacePath(){
 	}
 	
 	if(pListClosed.GetCount() > 0){
-		testFace = (dedaiSpaceMeshFace*)pListClosed.GetAt(pListClosed.GetCount() - 1);
+		testFace = pListClosed.GetAt(pListClosed.GetCount() - 1);
 		
 		// if the last face in the closed list is not the end face then there is no path to get
 		// to the end face using the current configuration. in this case look for the face with
@@ -583,7 +583,7 @@ void dedaiPathFinderNavMesh::pFindFacePath(){
 #ifdef DEBUG
 	module.LogInfo("      Path Faces:");
 	for(f=0; f<pPathFaces.GetCount(); f++){
-		testFace = (dedaiSpaceMeshFace*)pPathFaces.GetAt(f);
+		testFace = pPathFaces.GetAt(f);
 		const decDVector c2 = testFace->GetMesh()->GetSpace().GetMatrix() * testFace->GetCenter();
 		module.LogInfoFormat("         Face: %p:%i p=(%p:%i) c=(%g,%g,%g) (%.3f,%.3f,%.3f)",
 			testFace->GetMesh(), testFace->GetIndex(), testFace->GetPathParent()?testFace->GetPathParent()->GetMesh():NULL,
@@ -632,8 +632,8 @@ void dedaiPathFinderNavMesh::pFindRealPath(){
 		
 		for(i=0; i<faceCount; i++){
 			if(i < faceCount - 1){
-				curFace = (dedaiSpaceMeshFace*)pPathFaces.GetAt(i);
-				nextFace = (dedaiSpaceMeshFace*)pPathFaces.GetAt(i + 1);
+				curFace = pPathFaces.GetAt(i);
+				nextFace = pPathFaces.GetAt(i + 1);
 				
 				curFaceEdge = pFindEdgeLeadingToFace(*curFace, *nextFace);
 				nextFaceEdge = pFindEdgeLeadingToFace(*nextFace, *curFace);
@@ -682,7 +682,7 @@ void dedaiPathFinderNavMesh::pFindRealPath(){
 				}
 				
 			}else{
-				curFace = (dedaiSpaceMeshFace*)pPathFaces.GetAt(i);
+				curFace = pPathFaces.GetAt(i);
 				curNavMesh = curFace->GetMesh();
 				
 				vertexLeft = (curFace->GetMesh()->GetSpace().GetInverseMatrix() * pEndPoint).ToVector();
@@ -1099,7 +1099,7 @@ void dedaiPathFinderNavMesh::pUpdateDDSListOpen(){
 	pDDSListOpen->GetShapeList().RemoveAll();
 	
 	if(pListOpen.GetCount() > 0){
-		dedaiSpace &space = ((dedaiSpaceMeshFace*)pListOpen.GetAt(0))->GetMesh()->GetSpace();
+		dedaiSpace &space = pListOpen.GetAt(0)->GetMesh()->GetSpace();
 		const decDMatrix &invMatrix = space.GetInverseMatrix();
 		deDebugDrawerShapeFace *ddsFace = nullptr;
 		const int count = pListOpen.GetCount();
@@ -1110,7 +1110,7 @@ void dedaiPathFinderNavMesh::pUpdateDDSListOpen(){
 		
 		try{
 			for(i=0; i<count; i++){
-				const dedaiSpaceMeshFace &face = *((dedaiSpaceMeshFace*)pListOpen.GetAt(i));
+				const dedaiSpaceMeshFace &face = *pListOpen.GetAt(i);
 				const unsigned short cornerCount = face.GetCornerCount();
 				
 				if(cornerCount > 2){
@@ -1147,7 +1147,7 @@ void dedaiPathFinderNavMesh::pUpdateDDSListClosed(){
 	pDDSListClosed->GetShapeList().RemoveAll();
 	
 	if(pListClosed.GetCount() > 0){
-		dedaiSpace &navspace = ((dedaiSpaceMeshFace*)pListClosed.GetAt(0))->GetMesh()->GetSpace();
+		dedaiSpace &navspace = pListClosed.GetAt(0)->GetMesh()->GetSpace();
 		const decDMatrix &invMatrix = navspace.GetInverseMatrix();
 		deDebugDrawerShapeFace *ddsFace = nullptr;
 		const int count = pListClosed.GetCount();
@@ -1158,7 +1158,7 @@ void dedaiPathFinderNavMesh::pUpdateDDSListClosed(){
 		
 		try{
 			for(i=0; i<count; i++){
-				const dedaiSpaceMeshFace &face = *((dedaiSpaceMeshFace*)pListClosed.GetAt(i));
+				const dedaiSpaceMeshFace &face = *pListClosed.GetAt(i);
 				const unsigned short cornerCount = face.GetCornerCount();
 				
 				if(cornerCount > 2){

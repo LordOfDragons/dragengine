@@ -66,13 +66,14 @@ public:
 	 * \brief Create a new list with an initial capacity.
 	 * \throws deeInvalidParam \em capacity is less than 0.
 	 */
-	explicit decTUniqueList(int capacity) : pElements(nullptr), pCount(0), pSize(0) {
+	template<typename U>
+	requires (std::same_as<U, int>)
+	explicit decTUniqueList(U capacity) : pElements(nullptr), pCount(0), pSize(0) {
 		DEASSERT_TRUE(capacity >= 0)
-
-			if (capacity > 0) {
-				pElements = new Ref[capacity];
-				pSize = capacity;
-			}
+		if (capacity > 0) {
+			pElements = new Ref[capacity];
+			pSize = capacity;
+		}
 	}
 
 	decTUniqueList(const decTUniqueList& list) = delete;
@@ -86,7 +87,7 @@ public:
 
 	/** \brief Create list with content from variable count of arguments. */
 	template<typename... A>
-		requires ((std::is_same<std::decay_t<A>, Ref>::value) && ...)
+	requires (sizeof...(A) > 0 && (std::convertible_to<A, Ref> && ...))
 	explicit decTUniqueList(A&&... args) : pElements(nullptr), pCount(0), pSize(0) {
 		EnlargeCapacity(static_cast<int>(sizeof...(args)));
 		(Add(std::forward<A>(args)), ...);
@@ -282,8 +283,8 @@ public:
 	 */
 	template<typename Evaluator>
 	bool HasMatching(Evaluator& evaluator) const {
-		const Ptr f;
-		return Find<Evaluator>(evaluator, f);
+		const Ref* cfound = nullptr;
+		return Find<Evaluator>(evaluator, cfound);
 	}
 
 	template<typename Evaluator>

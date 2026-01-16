@@ -117,7 +117,7 @@ void deoglVSDetermineChannelFormat::ProcessChannel(deoglSkinChannel::eChannelTyp
 	int i;
 	
 	for(i=0; i<propertyCount; i++){
-		VisitProperty(*pSkinTex.GetPropertyAt(i));
+		VisitProperty(pSkinTex.GetPropertyAt(i));
 	}
 	
 	// adjust depth if required
@@ -518,7 +518,7 @@ void deoglVSDetermineChannelFormat::pProcessPropertyValue(const deoglSkinPropert
 
 void deoglVSDetermineChannelFormat::pProcessPropertyConstructed(const deSkinPropertyConstructed &property,
 const deoglSkinPropertyMap::ePropertyTypes channelType){
-	const decPoint3 &size = property.GetContent().GetSize();
+	const decPoint3 &size = property.GetContent()->GetSize();
 	
 	switch(channelType){
 	case deoglSkinPropertyMap::eptColorTintMask:
@@ -625,7 +625,7 @@ deoglRImage* image, int requiredComponentCount){
 
 void deoglVSDetermineChannelFormat::pSetFromConstructed(
 const deSkinPropertyConstructed &property, int requiredComponentCount){
-	if(SetRequiredSize(property.GetContent().GetSize())){
+	if(SetRequiredSize(property.GetContent()->GetSize())){
 		pSharedImage = nullptr;
 		pIsDefined = true;
 		if(pRequiredComponentCount < requiredComponentCount){
@@ -640,7 +640,7 @@ const deSkinPropertyConstructed &property, int requiredComponentCount){
 
 void deoglVSDetermineChannelFormat::pSetFromConstructedCube(
 const deSkinPropertyConstructed &property, int requiredComponentCount){
-	const decPoint3 &size = property.GetContent().GetSize();
+	const decPoint3 &size = property.GetContent()->GetSize();
 	if(size.z == 6){
 		if(size.x != size.y){
 			WarnImageNotSquareSize(property);

@@ -178,7 +178,7 @@ deoalAComponentTexture &deoalAComponent::GetTextureAt(int index) const{
 		int i;
 		
 		for(i=0; i<count; i++){
-			deoalAComponentTexture &texture = *((deoalAComponentTexture*)pTextures.GetAt(i));
+			deoalAComponentTexture &texture = pTextures.GetAt(i);
 			texture.UpdateUseTexture();
 			texture.UpdateSoundParameters();
 		}
@@ -187,11 +187,11 @@ deoalAComponentTexture &deoalAComponent::GetTextureAt(int index) const{
 	}
 	*/
 	
-	return *((deoalAComponentTexture*)pTextures.GetAt(index));
+	return pTextures.GetAt(index);
 }
 
 deoalAComponentTexture &deoalAComponent::GetModelTextureAt(int index) const{
-	return *((deoalAComponentTexture*)pTextures.GetAt(pModelTextureMappings.GetAt(index)));
+	return pTextures.GetAt(pModelTextureMappings.GetAt(index));
 }
 
 void deoalAComponent::AddTexture(deoalAComponentTexture *texture){
@@ -238,7 +238,7 @@ void deoalAComponent::UpdateAffectsSound(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		deoalAComponentTexture &texture = *((deoalAComponentTexture*)pTextures.GetAt(i));
+		deoalAComponentTexture &texture = pTextures.GetAt(i);
 		if(texture.GetUseTexture() && texture.GetUseTexture()->GetAffectsSound()){
 			pAffectsSound = true;
 			break;
@@ -348,7 +348,7 @@ void deoalAComponent::PrepareOctree(){
 		int i;
 		
 		for(i=0; i<count; i++){
-			deoalAComponentTexture &texture = *((deoalAComponentTexture*)pTextures.GetAt(i));
+			deoalAComponentTexture &texture = pTextures.GetAt(i);
 			texture.UpdateUseTexture();
 			texture.UpdateSoundParameters();
 		}

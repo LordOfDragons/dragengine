@@ -149,28 +149,20 @@ void deClassPropField::nfAddType::RunFunction(dsRunTime *rt, dsValue *myself){
 	int instanceCount = rt->GetValue(5)->GetInt();
 	int index = propfield.GetTypeCount();
 	
-	dePropFieldType *type = nullptr;
+	auto type = dePropFieldType::Ref::New();
 	
-	try{
-		type = new dePropFieldType;
-		
-		if(objMdl){
-			type->SetModel(clsMdl.GetModel(objMdl));
-		}
-		if(objSkin){
-			type->SetSkin(clsSkin.GetSkin(objSkin));
-		}
-		type->SetRotationPerForce(rotPerForce * DEG2RAD);
-		type->SetRestitution(restitution);
-		type->SetCollisionFilter(collisionFilter);
-		type->SetInstanceCount(instanceCount);
-		
-		propfield.AddType(type);
-		
-	}catch(...){
-		if(type) delete type;
-		throw;
+	if(objMdl){
+		type->SetModel(clsMdl.GetModel(objMdl));
 	}
+	if(objSkin){
+		type->SetSkin(clsSkin.GetSkin(objSkin));
+	}
+	type->SetRotationPerForce(rotPerForce * DEG2RAD);
+	type->SetRestitution(restitution);
+	type->SetCollisionFilter(collisionFilter);
+	type->SetInstanceCount(instanceCount);
+	
+	propfield.AddType(std::move(type));
 	
 	rt->PushInt(index);
 }

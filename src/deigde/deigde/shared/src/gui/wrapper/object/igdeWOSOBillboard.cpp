@@ -153,7 +153,7 @@ pRenderEnvMap(false)
 
 igdeWOSOBillboard::~igdeWOSOBillboard(){
 	if(pResLoad){
-		((igdeWOSOBillboardResLoadComponent&)(igdeResourceLoaderListener&)pResLoad).Drop();
+		pResLoad.DynamicCast<igdeWOSOBillboardResLoadComponent>()->Drop();
 		pResLoad = nullptr;
 	}
 	pDestroyBillboard();
@@ -233,7 +233,7 @@ void igdeWOSOBillboard::AsyncLoadFinished(bool success){
 		return;
 	}
 	
-	((igdeWOSOBillboardResLoadComponent&)(igdeResourceLoaderListener&)pResLoad).Drop();
+	pResLoad.DynamicCast<igdeWOSOBillboardResLoadComponent>()->Drop();
 	
 // 	GetWrapper().GetEnvironment().GetLogger()->LogInfoFormat( "DEIGDE",
 // 		"igdeWOSOBillboard.AsyncLoadFinished: %p %d", &GetWrapper(), success );
@@ -250,13 +250,12 @@ bool igdeWOSOBillboard::IsContentVisible(){
 
 void igdeWOSOBillboard::pLoadResources(){
 	if(pResLoad){
-		((igdeWOSOBillboardResLoadComponent&)(igdeResourceLoaderListener&)pResLoad).Drop();
+		pResLoad.DynamicCast<igdeWOSOBillboardResLoadComponent>()->Drop();
 		pResLoad = nullptr;
 	}
 	
 	pResLoad = igdeWOSOBillboardResLoadComponent::Ref::New(*this);
-	igdeWOSOBillboardResLoadComponent &rl =
-		(igdeWOSOBillboardResLoadComponent&)(igdeResourceLoaderListener&)pResLoad;
+	igdeWOSOBillboardResLoadComponent &rl = pResLoad.DynamicCast<igdeWOSOBillboardResLoadComponent>();
 	
 	const decString pathSkin(GetStringProperty(
 		pGDBillboard.GetPropertyName(igdeGDCBillboard::epSkin), pGDBillboard.GetSkinPath()));
@@ -268,8 +267,7 @@ void igdeWOSOBillboard::pLoadResources(){
 }
 
 void igdeWOSOBillboard::pUpdateBillboard(){
-	const igdeWOSOBillboardResLoadComponent &rl =
-		(igdeWOSOBillboardResLoadComponent&)(igdeResourceLoaderListener&)pResLoad;
+	const igdeWOSOBillboardResLoadComponent &rl = pResLoad.DynamicCast<igdeWOSOBillboardResLoadComponent>();
 	
 	deSkin::Ref skin(rl.GetSkin());
 	if(!skin && GetWrapper().GetGDClass()){
@@ -349,37 +347,29 @@ void igdeWOSOBillboard::AttachToCollider(){
 	
 	deColliderComponent * const colliderComponent = GetAttachableColliderComponent();
 	deColliderVolume * const colliderFallback = GetWrapper().GetColliderFallback();
-	deColliderAttachment *attachment = nullptr;
 	
-	try{
-		attachment = new deColliderAttachment(pBillboard);
-		attachment->SetAttachType(deColliderAttachment::eatStatic);
-		attachment->SetPosition(GetVectorProperty(
-			pGDBillboard.GetPropertyName(igdeGDCBillboard::epAttachPosition),
-			pGDBillboard.GetPosition()));
-		attachment->SetNoScaling(true);
-		
-		if(colliderComponent){
-			if(!pGDBillboard.GetBoneName().IsEmpty()){
-				attachment->SetAttachType(deColliderAttachment::eatBone);
-				attachment->SetTrackBone(pGDBillboard.GetBoneName());
-			}
-			colliderComponent->AddAttachment(attachment);
-			pAttachedToCollider = colliderComponent;
-			
-		}else{
-			colliderFallback->AddAttachment(attachment);
-			pAttachedToCollider = colliderFallback;
+	auto attachment = deColliderAttachment::Ref::New(pBillboard);
+	attachment->SetAttachType(deColliderAttachment::eatStatic);
+	attachment->SetPosition(GetVectorProperty(
+		pGDBillboard.GetPropertyName(igdeGDCBillboard::epAttachPosition),
+		pGDBillboard.GetPosition()));
+	attachment->SetNoScaling(true);
+	auto attachmentPtr = attachment.Pointer();
+	
+	if(colliderComponent){
+		if(!pGDBillboard.GetBoneName().IsEmpty()){
+			attachment->SetAttachType(deColliderAttachment::eatBone);
+			attachment->SetTrackBone(pGDBillboard.GetBoneName());
 		}
+		colliderComponent->AddAttachment(std::move(attachment));
+		pAttachedToCollider = colliderComponent;
 		
-		pAttachment = attachment;
-		
-	}catch(const deException &){
-		if(attachment){
-			delete attachment;
-		}
-		throw;
+	}else{
+		colliderFallback->AddAttachment(std::move(attachment));
+		pAttachedToCollider = colliderFallback;
 	}
+	
+	pAttachment = attachmentPtr;
 }
 
 void igdeWOSOBillboard::DetachFromCollider(){

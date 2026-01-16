@@ -101,7 +101,7 @@ void reCLApplyPush::ApplyPush(){
 				colliderComponent.ApplyImpulsAt(pPush, (matrix * hitPoint).ToVector());
 				
 			}else{
-				const decDMatrix boneInvMatrix = colliderComponent.GetBoneAt(pClosestBone).GetInverseMatrix();
+				const decDMatrix boneInvMatrix = colliderComponent.GetBoneAt(pClosestBone)->GetInverseMatrix();
 				colliderComponent.ApplyBoneImpulsAt(pClosestBone, pPush, (boneInvMatrix * hitPoint).ToVector());
 			}
 		}

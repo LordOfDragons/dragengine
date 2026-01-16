@@ -28,6 +28,7 @@
 #include "dearRule.h"
 
 #include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleGroup.h>
 
 class deAnimator;
@@ -49,8 +50,7 @@ private:
 	dearVPSStateList *pVPSStateList;
 	dearVPSStateList *pVPSStateList2;
 	
-	dearRule **pRules;
-	int pRuleCount;
+	decTUniqueList<dearRule> pRules;
 	
 	dearControllerTarget pTargetSelect;
 	

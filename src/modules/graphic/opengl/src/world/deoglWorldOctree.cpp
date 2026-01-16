@@ -395,7 +395,7 @@ void deoglWorldOctree::WriteCSData(deoglWorldCSOctree &csoctree, int nodeIndex){
 	csoctree.AdvanceNextData(pCSChildCount);
 	
 	for(i=0; i<pComponents.GetCount(); i++){
-		deoglRComponent &component = *(deoglRComponent*)pComponents.GetAt(i);
+		deoglRComponent &component = *pComponents.GetAt(i);
 		uint32_t flags = deoglWorldCSOctree::ecsefComponent;
 		if(!component.GetRenderStatic()){
 			flags |= deoglWorldCSOctree::ecsefComponentDynamic;
@@ -410,7 +410,7 @@ void deoglWorldOctree::WriteCSData(deoglWorldCSOctree &csoctree, int nodeIndex){
 	}
 	
 	for(i=0; i<pBillboards.GetCount(); i++){
-		deoglRBillboard &billboard = *(deoglRBillboard*)pBillboards.GetAt(i);
+		deoglRBillboard &billboard = *pBillboards.GetAt(i);
 		
 		billboard.SetCSOctreeIndex((uint32_t)csoctree.NextElement(deoglWorldCSOctree::ecsetBillboard, &billboard));
 		deoglWorldCSOctree::sCSElement &element = csoctree.GetElementAt(billboard.GetCSOctreeIndex());
@@ -421,7 +421,7 @@ void deoglWorldOctree::WriteCSData(deoglWorldCSOctree &csoctree, int nodeIndex){
 	}
 	
 	for(i=0; i<pParticleEmitters.GetCount(); i++){
-		deoglRParticleEmitterInstance &emitter = *(deoglRParticleEmitterInstance*)pParticleEmitters.GetAt(i);
+		deoglRParticleEmitterInstance &emitter = *pParticleEmitters.GetAt(i);
 		
 		emitter.SetCSOctreeIndex((uint32_t)csoctree.NextElement(deoglWorldCSOctree::ecsetParticleEmitter, &emitter));
 		deoglWorldCSOctree::sCSElement &element = csoctree.GetElementAt(emitter.GetCSOctreeIndex());
@@ -432,7 +432,7 @@ void deoglWorldOctree::WriteCSData(deoglWorldCSOctree &csoctree, int nodeIndex){
 	}
 	
 	for(i=0; i<pLights.GetCount(); i++){
-		deoglRLight &light = *(deoglRLight*)pLights.GetAt(i);
+		deoglRLight &light = *pLights.GetAt(i);
 		
 		light.SetCSOctreeIndex((uint32_t)csoctree.NextElement(deoglWorldCSOctree::ecsetLight, &light));
 		deoglWorldCSOctree::sCSElement &element = csoctree.GetElementAt(light.GetCSOctreeIndex());
@@ -460,7 +460,7 @@ int deoglWorldOctree::GetComponentCount() const{
 }
 
 deoglRComponent *deoglWorldOctree::GetComponentAt(int index) const{
-	return (deoglRComponent*)pComponents.GetAt(index);
+	return pComponents.GetAt(index);
 }
 
 int deoglWorldOctree::IndexOfComponent(deoglRComponent *component) const{
@@ -493,7 +493,7 @@ void deoglWorldOctree::RemoveAllComponents(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoglRComponent*)pComponents.GetAt(i))->SetOctreeNode(nullptr);
+		pComponents.GetAt(i)->SetOctreeNode(nullptr);
 	}
 	
 	pComponents.RemoveAll();
@@ -509,7 +509,7 @@ int deoglWorldOctree::GetLightCount() const{
 }
 
 deoglRLight *deoglWorldOctree::GetLightAt(int index) const{
-	return (deoglRLight*)pLights.GetAt(index);
+	return pLights.GetAt(index);
 }
 
 int deoglWorldOctree::IndexOfLight(deoglRLight *light) const{
@@ -542,7 +542,7 @@ void deoglWorldOctree::RemoveAllLights(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoglRLight*)pLights.GetAt(i))->SetOctreeNode(nullptr);
+		pLights.GetAt(i)->SetOctreeNode(nullptr);
 	}
 	
 	pLights.RemoveAll();
@@ -589,7 +589,7 @@ void deoglWorldOctree::RemoveAllLumimeters(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoglRLight*)pLumimeters.GetAt(i))->SetOctreeNode(nullptr);
+		pLumimeters.GetAt(i)->SetOctreeNode(nullptr);
 	}
 	
 	pLumimeters.RemoveAll();
@@ -626,7 +626,7 @@ void deoglWorldOctree::RemoveAllBillboards(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoglRBillboard*)pBillboards.GetAt(i))->SetOctreeNode(nullptr);
+		pBillboards.GetAt(i)->SetOctreeNode(nullptr);
 	}
 	
 	pBillboards.RemoveAll();
@@ -663,7 +663,7 @@ void deoglWorldOctree::RemoveAllEnvMaps(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoglEnvironmentMap*)pEnvMaps.GetAt(i))->SetOctreeNode(nullptr);
+		pEnvMaps.GetAt(i)->SetOctreeNode(nullptr);
 	}
 	
 	pEnvMaps.RemoveAll();
@@ -700,7 +700,7 @@ void deoglWorldOctree::RemoveAllParticleEmitters(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoglRParticleEmitterInstance*)pParticleEmitters.GetAt(i))->SetOctreeNode(nullptr);
+		pParticleEmitters.GetAt(i)->SetOctreeNode(nullptr);
 	}
 	
 	pParticleEmitters.RemoveAll();

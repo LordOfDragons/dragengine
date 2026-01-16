@@ -162,7 +162,7 @@ void meViewEditorAddNew::OnLeftMouseButtonPress(int x, int y, bool shift, bool c
 		
 		decShape::List shapeList;
 		pCLSnapPoint->CalcBoundingBoxShape(shapeList);
-		((deColliderVolume&)(deCollider&)pCLCollider).SetShapes(shapeList);
+		pCLCollider.DynamicCast<deColliderVolume>()->SetShapes(shapeList);
 		
 		// update undo
 		pUndoAddObject->Redo(); // from here on we only manipulate the object parameters
@@ -257,11 +257,11 @@ void meViewEditorAddNew::pUpdateUndo(bool shift, bool control){
 	const decDVector rayPosition = camera.GetViewMatrix().GetPosition();
 	
 	if(elementMode == meWorldGuiParameters::eemObject){
-		if(!pUndoAddObject || !((meUAddObject&)(igdeUndo&)pUndoAddObject).GetObject()){
+		if(!pUndoAddObject || !pUndoAddObject.DynamicCast<meUAddObject>()->GetObject()){
 			return;
 		}
 		
-		meObject &undoObject = *((meUAddObject&)(igdeUndo&)pUndoAddObject).GetObject();
+		meObject &undoObject = *pUndoAddObject.DynamicCast<meUAddObject>()->GetObject();
 		sCastIntoWorldParams params{};
 		params.originalMatrix = undoObject.GetObjectMatrix();
 		params.rayDirection = rayDirection;
@@ -278,11 +278,11 @@ void meViewEditorAddNew::pUpdateUndo(bool shift, bool control){
 		GetWorld().NotifyObjectGeometryChanged(&undoObject);
 		
 	}else if(elementMode == meWorldGuiParameters::eemNavSpace){
-		if(!pUndoAddNavSpace || !((meUAddNavSpace&)(igdeUndo&)pUndoAddNavSpace).GetNavSpace()){
+		if(!pUndoAddNavSpace || !pUndoAddNavSpace.DynamicCast<meUAddNavSpace>()->GetNavSpace()){
 			return;
 		}
 		
-		meNavigationSpace &undoNavSpace = *((meUAddNavSpace&)(igdeUndo&)pUndoAddNavSpace).GetNavSpace();
+		meNavigationSpace &undoNavSpace = *pUndoAddNavSpace.DynamicCast<meUAddNavSpace>()->GetNavSpace();
 		sCastIntoWorldParams params{};
 		params.originalMatrix.SetRT(decDVector(undoNavSpace.GetOrientation() * DEG2RAD),
 			undoNavSpace.GetPosition());

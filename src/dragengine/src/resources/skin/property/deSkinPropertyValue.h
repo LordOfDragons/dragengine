@@ -34,6 +34,9 @@
  * Defines a value property of a skin texture.
  */
 class DE_DLL_EXPORT deSkinPropertyValue : public deSkinProperty{
+public:
+	using Ref = deTUniqueReference<deSkinPropertyValue>;
+	
 private:
 	float pValue;
 	

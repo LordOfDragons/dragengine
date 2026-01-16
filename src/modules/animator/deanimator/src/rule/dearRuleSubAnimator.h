@@ -27,6 +27,7 @@
 
 #include "dearRule.h"
 #include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTUniqueList.h>
 
 class dearAnimator;
 class deAnimatorRuleSubAnimator;
@@ -43,8 +44,7 @@ private:
 	dearAnimator *pArSubAnimator;
 	unsigned int pSubAnimatorUpdateTracker;
 	
-	dearRule **pRules;
-	int pRuleCount;
+	decTUniqueList<dearRule> pRules;
 	
 	dearBoneStateList *pStateList;
 	dearVPSStateList *pVPSStateList;

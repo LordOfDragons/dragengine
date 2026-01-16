@@ -65,7 +65,7 @@ void deoalSharedEffectSlotManager::SetMaxCount(int count){
 	
 	int i;
 	for(i=0; i<pMaxCount; i++){
-		((deoalSharedEffectSlot*)pSlots.GetAt(i))->RemoveAllSpeakers();
+		pSlots.GetAt(i)->RemoveAllSpeakers();
 	}
 	pSlots.RemoveAll();
 	
@@ -110,7 +110,7 @@ const deoalEnvironment &environment, float &bestDistance) const{
 	
 	for(i=0; i<pMaxCount; i++){
 		const deoalASpeaker * const refSpeaker =
-			((deoalSharedEffectSlot*)pSlots.GetAt(i))->GetReferenceSpeaker();
+			pSlots.GetAt(i)->GetReferenceSpeaker();
 		if(!refSpeaker || !refSpeaker->GetEnvironment()){
 			continue;
 		}
@@ -122,13 +122,13 @@ const deoalEnvironment &environment, float &bestDistance) const{
 		}
 	}
 	
-	return bestSlot != -1 ? (deoalSharedEffectSlot*)pSlots.GetAt(bestSlot) : nullptr;
+	return bestSlot != -1 ? pSlots.GetAt(bestSlot).Pointer() : nullptr;
 }
 
 deoalSharedEffectSlot *deoalSharedEffectSlotManager::FirstEmptySlot() const{
 	int i;
 	for(i=0; i<pMaxCount; i++){
-		deoalSharedEffectSlot * const slot = (deoalSharedEffectSlot*)pSlots.GetAt(i);
+		deoalSharedEffectSlot * const slot = pSlots.GetAt(i);
 		if(slot->IsEmpty()){
 			return slot;
 		}
@@ -141,7 +141,7 @@ void deoalSharedEffectSlotManager::DropEffects(){
 	
 	int i;
 	for(i=0; i<pMaxCount; i++){
-		((deoalSharedEffectSlot*)pSlots.GetAt(i))->RemoveAllSpeakers();
+		pSlots.GetAt(i)->RemoveAllSpeakers();
 	}
 }
 
@@ -151,14 +151,14 @@ void deoalSharedEffectSlotManager::DebugLogState(){
 	
 #if 0
 	for(i=0; i<pMaxCount; i++){
-		const deoalSharedEffectSlot &slot = *((deoalSharedEffectSlot*)pSlots.GetAt(i));
+		const deoalSharedEffectSlot &slot = pSlots.GetAt(i);
 		text.AppendFormat(" %d(%d)", i, slot.GetSpeakerCount());
 	}
 	pAudioThread.GetLogger().LogInfoFormat("SharedEffectSlots: %s", text.GetString());
 	
 	text.Empty();
 	for(i=0; i<pSpeakers.GetCount(); i++){
-		const deoalASpeaker &speaker = *((deoalASpeaker*)pSpeakers.GetAt(i));
+		const deoalASpeaker &speaker = pSpeakers.GetAt(i);
 		decString source;
 		if(speaker.GetSound()){
 			source = speaker.GetSound()->GetFilename();
@@ -174,7 +174,7 @@ void deoalSharedEffectSlotManager::DebugLogState(){
 	
 	text.Empty();
 	for(i=0; i<pMaxCount; i++){
-		const deoalSharedEffectSlot &slot = *((deoalSharedEffectSlot*)pSlots.GetAt(i));
+		const deoalSharedEffectSlot &slot = pSlots.GetAt(i);
 		const int speakerCount = slot.GetSpeakerCount();
 		
 		if(speakerCount == 0){
@@ -203,7 +203,7 @@ void deoalSharedEffectSlotManager::DebugLogState(){
 	
 	int totalSpeakerCount = 0;
 	for(i=0; i<pMaxCount; i++){
-		totalSpeakerCount += ((deoalSharedEffectSlot*)pSlots.GetAt(i))->GetSpeakerCount();
+		totalSpeakerCount += pSlots.GetAt(i)->GetSpeakerCount();
 	}
 	
 	pAudioThread.GetLogger().LogInfoFormat("SharedEffectSlots(%d): %s", totalSpeakerCount, text.GetString());
@@ -219,7 +219,7 @@ void deoalSharedEffectSlotManager::pCalcSpeakerParamDistances(){
 	int i, j;
 	
 	for(i=0; i<count; i++){
-		deoalASpeaker * const speaker = (deoalASpeaker*)pSpeakers.GetAt(i);
+		deoalASpeaker * const speaker = pSpeakers.GetAt(i);
 		const deoalEnvironment &environment = *speaker->GetEnvironment();
 		float distance = 0.0f;
 		
@@ -235,20 +235,20 @@ void deoalSharedEffectSlotManager::pCalcSpeakerParamDistances(){
 }
 
 void deoalSharedEffectSlotManager::pSortSpeakerParamByDistance(int left, int right){
-	deoalASpeaker * const pivotSpeaker = (deoalASpeaker*)pSpeakers.GetAt(left);
+	deoalASpeaker * const pivotSpeaker = pSpeakers.GetAt(left);
 	const float pivot = pivotSpeaker->GetSharedEffectSlotDistance();
 	const int r_hold = right;
 	const int l_hold = left;
 	
 	while(left < right){
-		while(left < right && ((deoalASpeaker*)pSpeakers.GetAt(right))->GetSharedEffectSlotDistance() >= pivot){
+		while(left < right && pSpeakers.GetAt(right)->GetSharedEffectSlotDistance() >= pivot){
 			right--;
 		}
 		if(left != right){
 			pSpeakers.SetAt(left, pSpeakers.GetAt(right));
 			left++;
 		}
-		while(left < right && ((deoalASpeaker*)pSpeakers.GetAt(left))->GetSharedEffectSlotDistance() <= pivot){
+		while(left < right && pSpeakers.GetAt(left)->GetSharedEffectSlotDistance() <= pivot){
 			left++;
 		}
 		if(left != right){
@@ -271,12 +271,12 @@ void deoalSharedEffectSlotManager::pAssignRefSpeaker(){
 	int i;
 	
 	for(i=0; i<pMaxCount; i++){
-		deoalSharedEffectSlot &slot = *((deoalSharedEffectSlot*)pSlots.GetAt(i));
+		deoalSharedEffectSlot &slot = pSlots.GetAt(i);
 		deoalASpeaker *speaker = nullptr;
 		
 		slot.RemoveAllSpeakers();
 		if(i < speakerCount){
-			speaker = (deoalASpeaker*)pSpeakers.GetAt(i);
+			speaker = pSpeakers.GetAt(i);
 			slot.AddSpeaker(speaker);
 		}
 		
@@ -294,7 +294,7 @@ void deoalSharedEffectSlotManager::pAssignSpeakers(){
 	int i;
 	
 	for(i=pMaxCount; i<speakerCount; i++){
-		deoalASpeaker * const speaker = (deoalASpeaker*)pSpeakers.GetAt(i);
+		deoalASpeaker * const speaker = pSpeakers.GetAt(i);
 		float bestDistance = 0.0f;
 		deoalSharedEffectSlot &slot = *BestMatchingSlot(*speaker->GetEnvironment(), bestDistance);
 		

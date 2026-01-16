@@ -161,7 +161,7 @@ void deoalRTPTRoomEstimateFinish::pRun(){
 	pRoomParameters->avgAbsorptionHigh = 0.0f;
 	
 	for(i=0; i<taskCount; i++){
-		const deoalRTPTRoomEstimate &task = *((deoalRTPTRoomEstimate*)pTasks.GetAt(i));
+		const deoalRTPTRoomEstimate &task = *pTasks.GetAt(i);
 		if(task.IsCancelled()){
 			DETHROW(deeInvalidAction); // task failed
 		}

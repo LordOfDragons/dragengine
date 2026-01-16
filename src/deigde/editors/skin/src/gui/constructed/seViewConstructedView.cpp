@@ -1204,7 +1204,7 @@ void seViewConstructedView::pRecreateContentCanvas(const sePropertyNodeGroup &no
 			
 		case sePropertyNodeImage::entGroup:
 			canvas = canvasManager.CreateCanvasView();
-			pRecreateContentCanvas((const sePropertyNodeGroup &)node, (deCanvasView&)(deCanvas&)canvas);
+			pRecreateContentCanvas((const sePropertyNodeGroup &)node, canvas.DynamicCast<deCanvasView>());
 			break;
 			
 		default:

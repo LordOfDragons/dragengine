@@ -102,7 +102,7 @@ int deoglFramebufferManager::GetFBOCount() const{
 }
 
 const deoglFramebuffer &deoglFramebufferManager::GetFBOAt(int index) const{
-	return *((deoglFramebuffer*)pFBOs[index]);
+	return pFBOs[index];
 }
 
 deoglFramebufferManager::Usage deoglFramebufferManager::GetFBOWithResolution(int width, int height){
@@ -112,7 +112,7 @@ deoglFramebufferManager::Usage deoglFramebufferManager::GetFBOWithResolution(int
 			pFBOs.Add(deoglFramebuffer::Ref::New(pRenderThread, false));
 		}
 		
-		deoglFramebuffer * const fbo = (deoglFramebuffer*)pFBOs[0];
+		deoglFramebuffer * const fbo = pFBOs[0];
 		fbo->SetUsageResolution(width, height);
 		return Usage(fbo);
 		
@@ -124,7 +124,7 @@ deoglFramebufferManager::Usage deoglFramebufferManager::GetFBOWithResolution(int
 		// try to find a framebuffer with the same dimensions or one that is reusable
 		const int count = pFBOs.GetCount();
 		for(i=0; i<count; i++){
-			deoglFramebuffer * const fbo = (deoglFramebuffer*)pFBOs[i];
+			deoglFramebuffer * const fbo = pFBOs[i];
 			if(fbo->GetUsageWidth() == width && fbo->GetUsageHeight() == height){
 				return Usage(fbo);
 			//	
@@ -143,7 +143,7 @@ deoglFramebufferManager::Usage deoglFramebufferManager::GetFBOWithResolution(int
 		// otherwise create a new fbo with the given size and hand it out
 		pFBOs.Add(deoglFramebuffer::Ref::New(pRenderThread, false));
 		
-		deoglFramebuffer * const fbo = (deoglFramebuffer*)pFBOs[pFBOs.GetCount() - 1];
+		deoglFramebuffer * const fbo = pFBOs[pFBOs.GetCount() - 1];
 		fbo->SetUsageResolution(width, height);
 		pRenderThread.GetLogger().LogInfoFormat("FBO Manager: Create FBO (%d x %d)", width, height);
 		return Usage(fbo);

@@ -303,19 +303,10 @@ pColliderAddedToWorld(false)
 	pColliderInteraction->SetResponseType(deCollider::ertKinematic);
 	pColliderInteraction->SetUseLocalGravity(true);
 	
-	deColliderAttachment *attachment = nullptr;
-	try{
-		attachment = new deColliderAttachment(pColliderInteraction);
-		attachment->SetAttachType(deColliderAttachment::eatRig);
-		attachment->SetNoScaling(true);
-		pCollider->AddAttachment(attachment);
-		
-	}catch(const deException &){
-		if(attachment){
-			delete attachment;
-		}
-		throw;
-	}
+	auto attachment = deColliderAttachment::Ref::New(pColliderInteraction);
+	attachment->SetAttachType(deColliderAttachment::eatRig);
+	attachment->SetNoScaling(true);
+	pCollider->AddAttachment(std::move(attachment));
 	
 	GetWrapper().GetWorld()->AddCollider(pCollider);
 	GetWrapper().GetWorld()->AddCollider(pColliderInteraction);
@@ -330,7 +321,7 @@ pColliderAddedToWorld(false)
 
 igdeWOSOComponent::~igdeWOSOComponent(){
 	if(pResLoad){
-		((igdeWOSOComponentResLoadComponent&)(igdeResourceLoaderListener&)pResLoad).Drop();
+		pResLoad.DynamicCast<igdeWOSOComponentResLoadComponent>()->Drop();
 		pResLoad = nullptr;
 	}
 	pReleaseOutlineComponent();
@@ -511,8 +502,7 @@ void igdeWOSOComponent::AsyncLoadFinished(bool success){
 		return;
 	}
 	
-	igdeWOSOComponentResLoadComponent &rl =
-		(igdeWOSOComponentResLoadComponent&)(igdeResourceLoaderListener&)pResLoad;
+	igdeWOSOComponentResLoadComponent &rl = pResLoad.DynamicCast<igdeWOSOComponentResLoadComponent>();
 	pTextureSkins = rl.GetTextureSkins();
 	rl.Drop();
 	
@@ -558,7 +548,7 @@ bool igdeWOSOComponent::IsContentVisible(){
 
 void igdeWOSOComponent::pLoadResources(){
 	if(pResLoad){
-		((igdeWOSOComponentResLoadComponent&)(igdeResourceLoaderListener&)pResLoad).Drop();
+		pResLoad.DynamicCast<igdeWOSOComponentResLoadComponent>()->Drop();
 		pResLoad = nullptr;
 	}
 	
@@ -623,8 +613,7 @@ void igdeWOSOComponent::pLoadResources(){
 }
 
 void igdeWOSOComponent::pUpdateComponent(){
-	const igdeWOSOComponentResLoadComponent &rl =
-		(igdeWOSOComponentResLoadComponent&)(igdeResourceLoaderListener&)pResLoad;
+	const igdeWOSOComponentResLoadComponent &rl = pResLoad.DynamicCast<igdeWOSOComponentResLoadComponent>();
 	
 	deModel *model = rl.GetModel();
 	if(!model && GetWrapper().GetGDClass()){
@@ -659,7 +648,7 @@ void igdeWOSOComponent::pUpdateComponent(){
 			// unless model collision is not possible in which case fallback has to be used
 			int i;
 			for(i=0; i<boneCount; i++){
-				if(rig->GetBoneAt(i).GetShapes().GetCount() > 0){
+				if(rig->GetBoneAt(i)->GetShapes().GetCount() > 0){
 					break;
 				}
 			}
@@ -776,7 +765,7 @@ void igdeWOSOComponent::pUpdateComponent(){
 			ClearBoxExtends();
 			
 		}else{
-			const deModelLOD &lod = *model->GetLODAt(0);
+			const deModelLOD &lod = model->GetLODAt(0);
 			const int vertexCount = lod.GetVertexCount();
 			if(vertexCount > 0){
 				const deModelVertex * const vertices = lod.GetVertices();
@@ -997,9 +986,9 @@ void igdeWOSOComponent::pUpdateTextures(){
 			if(gdctRequiresDynamicSkin){
 				gdctDynamicSkin = engine.GetDynamicSkinManager()->CreateDynamicSkin();
 				if(gdctHasTint){
-					deDSRenderableColor * const renderable = new deDSRenderableColor("tint");
+					auto renderable = deDSRenderableColor::Ref::New("tint");
 					renderable->SetColor(gdctColorTint);
-					gdctDynamicSkin->AddRenderable(renderable);
+					gdctDynamicSkin->AddRenderable(std::move(renderable));
 				}
 			}
 			
@@ -1072,40 +1061,32 @@ void igdeWOSOComponent::AttachToCollider(){
 	
 	deColliderComponent * const colliderComponent = GetAttachableColliderComponent();
 	deColliderVolume * const colliderFallback = GetWrapper().GetColliderFallback();
-	deColliderAttachment *attachment = nullptr;
 	
-	try{
-		attachment = new deColliderAttachment(/*pComponent*/ pCollider);
-		attachment->SetAttachType(deColliderAttachment::eatStatic);
-		attachment->SetPosition(GetVectorProperty(
-			pGDComponent.GetPropertyName(igdeGDCComponent::epAttachPosition),
-			pGDComponent.GetPosition()));
-		attachment->SetOrientation(GetRotationProperty(
-			pGDComponent.GetPropertyName(igdeGDCComponent::epAttachRotation),
-			pGDComponent.GetOrientation()));
-		attachment->SetNoScaling(true);
-		
-		if(colliderComponent){
-			if(!pGDComponent.GetBoneName().IsEmpty()){
-				attachment->SetAttachType(deColliderAttachment::eatBone);
-				attachment->SetTrackBone(pGDComponent.GetBoneName());
-			}
-			colliderComponent->AddAttachment(attachment);
-			pAttachedToCollider = colliderComponent;
-			
-		}else{
-			colliderFallback->AddAttachment(attachment);
-			pAttachedToCollider = colliderFallback;
+	auto attachment = deColliderAttachment::Ref::New(/*pComponent*/ pCollider);
+	attachment->SetAttachType(deColliderAttachment::eatStatic);
+	attachment->SetPosition(GetVectorProperty(
+		pGDComponent.GetPropertyName(igdeGDCComponent::epAttachPosition),
+		pGDComponent.GetPosition()));
+	attachment->SetOrientation(GetRotationProperty(
+		pGDComponent.GetPropertyName(igdeGDCComponent::epAttachRotation),
+		pGDComponent.GetOrientation()));
+	attachment->SetNoScaling(true);
+	auto attachmentPtr = attachment.Pointer();
+	
+	if(colliderComponent){
+		if(!pGDComponent.GetBoneName().IsEmpty()){
+			attachment->SetAttachType(deColliderAttachment::eatBone);
+			attachment->SetTrackBone(pGDComponent.GetBoneName());
 		}
+		colliderComponent->AddAttachment(std::move(attachment));
+		pAttachedToCollider = colliderComponent;
 		
-		pAttachment = attachment;
-		
-	}catch(const deException &){
-		if(attachment){
-			delete attachment;
-		}
-		throw;
+	}else{
+		colliderFallback->AddAttachment(std::move(attachment));
+		pAttachedToCollider = colliderFallback;
 	}
+	
+	pAttachment = attachmentPtr;
 }
 
 void igdeWOSOComponent::DetachFromCollider(){
@@ -1189,9 +1170,9 @@ void igdeWOSOComponent::pUpdateOutlineComponent(){
 	GetWrapper().GetWorld()->AddComponent(pOutlineComponent);
 	
 	// attach outline component
-	deColliderAttachment * const attachment = new deColliderAttachment(pOutlineComponent);
+	auto attachment = deColliderAttachment::Ref::New(pOutlineComponent);
 	attachment->SetAttachType(deColliderAttachment::eatRig);
-	pCollider->AddAttachment(attachment);
+	pCollider->AddAttachment(std::move(attachment));
 }
 
 void igdeWOSOComponent::pReleaseOutlineComponent(){

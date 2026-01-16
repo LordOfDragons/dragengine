@@ -76,7 +76,7 @@ deoglPersistentRenderTaskOwner *deoglPersistentRenderTaskPool::GetOwner(){
 	
 	const int index = pOwners.GetCount() - 1;
 	if(index > -1){
-		owner = (deoglPersistentRenderTaskOwner*)pOwners.GetAt(index);
+		owner = pOwners.GetAt(index);
 		pOwners.RemoveFrom(index);
 		
 	}else{
@@ -91,7 +91,7 @@ deoglPersistentRenderTaskPipeline *deoglPersistentRenderTaskPool::GetPipeline(){
 	
 	const int index = pPipelines.GetCount() - 1;
 	if(index > -1){
-		pipeline = (deoglPersistentRenderTaskPipeline*)pPipelines.GetAt(index);
+		pipeline = pPipelines.GetAt(index);
 		pPipelines.RemoveFrom(index);
 		
 	}else{
@@ -106,7 +106,7 @@ deoglPersistentRenderTaskTexture *deoglPersistentRenderTaskPool::GetTexture(){
 	
 	const int index = pTextures.GetCount() - 1;
 	if(index > -1){
-		texture = (deoglPersistentRenderTaskTexture*)pTextures.GetAt(index);
+		texture = pTextures.GetAt(index);
 		pTextures.RemoveFrom(index);
 		
 	}else{
@@ -121,7 +121,7 @@ deoglPersistentRenderTaskVAO *deoglPersistentRenderTaskPool::GetVAO(){
 	
 	const int index = pVAOs.GetCount() - 1;
 	if(index > -1){
-		vao = (deoglPersistentRenderTaskVAO*)pVAOs.GetAt(index);
+		vao = pVAOs.GetAt(index);
 		pVAOs.RemoveFrom(index);
 		
 	}else{
@@ -136,7 +136,7 @@ deoglPersistentRenderTaskInstance *deoglPersistentRenderTaskPool::GetInstance(){
 	
 	const int index = pInstances.GetCount() - 1;
 	if(index > -1){
-		instance = (deoglPersistentRenderTaskInstance*)pInstances.GetAt(index);
+		instance = pInstances.GetAt(index);
 		pInstances.RemoveFrom(index);
 		
 	}else{
@@ -151,7 +151,7 @@ deoglPersistentRenderTaskSubInstance *deoglPersistentRenderTaskPool::GetSubInsta
 	
 	const int index = pSubInstances.GetCount() - 1;
 	if(index > -1){
-		subInstance = (deoglPersistentRenderTaskSubInstance*)pSubInstances.GetAt(index);
+		subInstance = pSubInstances.GetAt(index);
 		pSubInstances.RemoveFrom(index);
 		
 	}else{
@@ -225,32 +225,32 @@ void deoglPersistentRenderTaskPool::ReturnSubInstance(deoglPersistentRenderTaskS
 void deoglPersistentRenderTaskPool::pCleanUp(){
 	int i, count = pSubInstances.GetCount();
 	for(i=0; i<count; i++){
-		delete (deoglPersistentRenderTaskSubInstance*)pSubInstances.GetAt(i);
+		delete pSubInstances.GetAt(i);
 	}
 	
 	count = pInstances.GetCount();
 	for(i=0; i<count; i++){
-		delete (deoglPersistentRenderTaskInstance*)pInstances.GetAt(i);
+		delete pInstances.GetAt(i);
 	}
 	
 	count = pVAOs.GetCount();
 	for(i=0; i<count; i++){
-		delete (deoglPersistentRenderTaskVAO*)pVAOs.GetAt(i);
+		delete pVAOs.GetAt(i);
 	}
 	
 	count = pTextures.GetCount();
 	for(i=0; i<count; i++){
-		delete (deoglPersistentRenderTaskTexture*)pTextures.GetAt(i);
+		delete pTextures.GetAt(i);
 	}
 	
 	count = pPipelines.GetCount();
 	for(i=0; i<count; i++){
-		delete (deoglPersistentRenderTaskPipeline*)pPipelines.GetAt(i);
+		delete pPipelines.GetAt(i);
 	}
 	
 	count = pOwners.GetCount();
 	for(i=0; i<count; i++){
-		delete (deoglPersistentRenderTaskOwner*)pOwners.GetAt(i);
+		delete pOwners.GetAt(i);
 	}
 }
 

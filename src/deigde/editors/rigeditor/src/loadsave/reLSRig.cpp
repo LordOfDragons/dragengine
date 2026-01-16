@@ -219,7 +219,7 @@ void reLSRig::LoadRig(reRig *rig, decBaseFileReader *file){
 	// parent linking has to be resolved now. the rigBone variable is not used anymore
 	// since it is protected with the try-catch and would backfire on us if used.
 	for(b=0; b<boneCount; b++){
-		const int index = engRig->GetBoneAt(b).GetParent();
+		const int index = engRig->GetBoneAt(b)->GetParent();
 		if(index != -1){
 			rig->GetBones().GetAt(b)->SetParentBone(rig->GetBones().GetAt(index));
 		}

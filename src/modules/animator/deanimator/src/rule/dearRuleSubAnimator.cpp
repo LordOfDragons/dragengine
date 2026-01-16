@@ -80,9 +80,6 @@ pSubAnimator(rule),
 pArSubAnimator(nullptr),
 pSubAnimatorUpdateTracker(0),
 
-pRules(nullptr),
-pRuleCount(0),
-
 pStateList(nullptr),
 pVPSStateList(nullptr),
 
@@ -139,16 +136,18 @@ dearRuleSubAnimator::~dearRuleSubAnimator(){
 ///////////////
 
 void dearRuleSubAnimator::CaptureStateInto(int identifier){
+	const int count = pRules.GetCount();
 	int i;
-	for(i=0; i<pRuleCount; i++){
-		pRules[i]->CaptureStateInto(identifier);
+	for(i=0; i<count; i++){
+		pRules.GetAt(i)->CaptureStateInto(identifier);
 	}
 }
 
 void dearRuleSubAnimator::StoreFrameInto(int identifier, const char *moveName, float moveTime){
+	const int count = pRules.GetCount();
 	int i;
-	for(i=0; i<pRuleCount; i++){
-		pRules[i]->StoreFrameInto(identifier, moveName, moveTime);
+	for(i=0; i<count; i++){
+		pRules.GetAt(i)->StoreFrameInto(identifier, moveName, moveTime);
 	}
 }
 
@@ -168,10 +167,11 @@ bool dearRuleSubAnimator::RebuildInstance() const{
 		return true;
 	}
 	
+	const int count = pRules.GetCount();
 	int i;
 	bool rebuild = false;
-	for(i=0; i<pRuleCount; i++){
-		rebuild |= pRules[i]->RebuildInstance();
+	for(i=0; i<count; i++){
+		rebuild |= pRules.GetAt(i)->RebuildInstance();
 	}
 	
 	return rebuild;
@@ -204,8 +204,9 @@ DEBUG_PRINT_TIMER("Prepare");
 		
 		if(directUse){
 			// direct use allows to directly use our states list without needing a copy/apply
-			for(i=0; i<pRuleCount; i++){
-				pRules[i]->Apply(stalist, vpsstalist);
+			const int count = pRules.GetCount();
+			for(i=0; i<count; i++){
+				pRules.GetAt(i)->Apply(stalist, vpsstalist);
 			}
 			
 DEBUG_PRINT_TIMER("Update Bone States Directly");
@@ -229,16 +230,15 @@ DEBUG_PRINT_TIMER("Update Bone States Directly");
 					continue;
 				}
 				
-				pVPSStateList->GetStateAt(animatorVps).SetFrom(vpsstalist.GetStateAt(animatorVps));
-			}
+			pVPSStateList->GetStateAt(animatorVps).SetFrom(vpsstalist.GetStateAt(animatorVps));
+		}
 DEBUG_PRINT_TIMER("Copy States");
 			
-			for(i=0; i<pRuleCount; i++){
-				pRules[i]->Apply(*pStateList, *pVPSStateList);
+			const int count = pRules.GetCount();
+			for(i=0; i<count; i++){
+				pRules.GetAt(i)->Apply(*pStateList, *pVPSStateList);
 			}
-DEBUG_PRINT_TIMER("Apply Rules");
-			
-			for(i=0; i<boneCount; i++){
+DEBUG_PRINT_TIMER("Apply Rules");			for(i=0; i<boneCount; i++){
 				const int animatorBone = GetBoneMappingFor(i);
 				if(animatorBone == -1){
 					continue;
@@ -290,14 +290,7 @@ DEBUG_PRINT_TIMER_TOTAL;
 //////////////////////
 
 void dearRuleSubAnimator::pCleanUp(){
-	if(pRules){
-		while(pRuleCount > 0){
-			delete pRules[pRuleCount - 1];
-			pRuleCount--;
-		}
-		
-		delete [] pRules;
-	}
+	pRules.RemoveAll();
 	
 	if(pVPSStateList){
 		delete pVPSStateList;
@@ -368,12 +361,10 @@ void dearRuleSubAnimator::pCreateRules(const decTList<int> &controllerMapping){
 	dearCreateRuleVisitor visitor(instance, *(dearAnimator*)animator->GetPeerAnimator(),
 		subControllerMapping, firstLink);
 	
-	pRules = new dearRule*[ruleCount];
-	
 	for(i=0; i<ruleCount; i++){
-		pRules[pRuleCount] = visitor.CreateRuleFrom(*animator->GetRules().GetAt(i));
-		if(pRules[pRuleCount]){
-			pRuleCount++;
+		auto &rule = visitor.CreateRuleFrom(*animator->GetRules().GetAt(i));
+		if(rule){
+			pRules.Add(std::move(rule));
 		}
 	}
 }

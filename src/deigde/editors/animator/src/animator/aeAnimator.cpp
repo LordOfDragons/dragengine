@@ -1300,7 +1300,7 @@ void aeAnimator::pUpdateComponent(){
 				pEngComponent = engine->GetComponentManager()->CreateComponent(displayModel, displaySkin);
 				pEngWorld->AddComponent(pEngComponent);
 				
-				pEngCollider->AddAttachment(new deColliderAttachment(pEngComponent));
+				pEngCollider->AddAttachment(deColliderAttachment::Ref::New(pEngComponent));
 			}
 			
 		}else if(pEngComponent){

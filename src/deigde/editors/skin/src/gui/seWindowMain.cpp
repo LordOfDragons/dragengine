@@ -518,8 +518,7 @@ public:
 		
 		for(i=0; i<textureCount; i++){
 			// create texture with the matching name
-			const seTexture::Ref texture(seTexture::Ref::New(
-				engine, model.GetTextureAt(i)->GetName()));
+			const seTexture::Ref texture(seTexture::Ref::New(engine, model.GetTextureAt(i)->GetName()));
 			
 			// create color property with a light gray color
 			property = seProperty::Ref::New(engine);

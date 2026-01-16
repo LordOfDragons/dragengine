@@ -73,7 +73,7 @@ pRayCache(nullptr)
 		return;
 	}
 	
-	const deModelLOD &lod = *model.GetLODAt(lodCount - 1);
+	const deModelLOD &lod = model.GetLODAt(lodCount - 1);
 	
 	try{
 		pInitBoneNames(model);

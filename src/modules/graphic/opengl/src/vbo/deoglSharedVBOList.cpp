@@ -81,7 +81,7 @@ int deoglSharedVBOList::GetCount() const{
 }
 
 deoglSharedVBO *deoglSharedVBOList::GetAt(int index) const{
-	return (deoglSharedVBO*)pVBOs.GetAt(index);
+	return pVBOs.GetAt(index);
 }
 
 deoglSharedVBOBlock::Ref deoglSharedVBOList::AddData(int size, int indexCount){
@@ -95,7 +95,7 @@ deoglSharedVBOBlock::Ref deoglSharedVBOList::AddData(int size, int indexCount){
 	
 	// if there is a vbo able to host the data add it there
 	for(i=0; i<count; i++){
-		block = ((deoglSharedVBO*)pVBOs.GetAt(i))->AddBlock(size, indexCount);
+		block = pVBOs.GetAt(i)->AddBlock(size, indexCount);
 		if(block){
 			return block;
 		}
@@ -116,7 +116,7 @@ deoglSharedVBOBlock::Ref deoglSharedVBOList::AddData(int size, int indexCount){
 	
 	pVBOs.Add(vbo);
 	
-	block = ((deoglSharedVBO*)pVBOs.GetAt(pVBOs.GetCount() - 1))->AddBlock(size, indexCount);
+	block = pVBOs.GetAt(pVBOs.GetCount() - 1)->AddBlock(size, indexCount);
 	if(!block){
 		DETHROW(deeInvalidAction);
 	}
@@ -131,6 +131,6 @@ void deoglSharedVBOList::PrepareVBOs(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoglSharedVBO*)pVBOs.GetAt(i))->Prepare();
+		pVBOs.GetAt(i)->Prepare();
 	}
 }

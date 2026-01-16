@@ -456,7 +456,7 @@ void deClassDebugDrawer::nfShapeSetFacesFromModel::RunFunction(dsRunTime *rt, ds
 	
 	const decMatrix &matrix = ds.GetClassMatrix()->GetMatrix(rt->GetValue(2)->GetRealObject());
 	
-	const deModelLOD &lod = *model->GetLODAt(0);
+	const deModelLOD &lod = model->GetLODAt(0);
 	const deModelVertex * const vertices = lod.GetVertices();
 	const deModelFace * const faces = lod.GetFaces();
 	deDebugDrawerShapeFace *ddsface = nullptr;
@@ -514,7 +514,7 @@ void deClassDebugDrawer::nfShapeSetFacesFromModel2::RunFunction(dsRunTime *rt, d
 	
 	const decMatrix &matrix = ds.GetClassMatrix()->GetMatrix(rt->GetValue(3)->GetRealObject());
 	
-	const deModelLOD &lod = *model->GetLODAt(0);
+	const deModelLOD &lod = model->GetLODAt(0);
 	const deModelVertex * const vertices = lod.GetVertices();
 	const deModelFace * const faces = lod.GetFaces();
 	deDebugDrawerShapeFace *ddsface = nullptr;

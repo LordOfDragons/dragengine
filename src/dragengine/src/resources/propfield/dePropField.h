@@ -25,10 +25,11 @@
 #ifndef _DEPROPFIELD_H_
 #define _DEPROPFIELD_H_
 
+#include "dePropFieldType.h"
 #include "../deResource.h"
 #include "../../common/math/decMath.h"
+#include "../../common/collection/decTUniqueList.h"
 
-class dePropFieldType;
 class dePropFieldManager;
 class dePropFieldGround;
 
@@ -57,17 +58,14 @@ public:
 private:
 	decDVector pPosition;
 	
-	dePropFieldType **pTypes;
-	int pTypeCount;
-	int pTypeSize;
+	dePropFieldType::List pTypes;
 	
 	deBaseGraphicPropField *pPeerGraphic;
 	deBasePhysicsPropField *pPeerPhysics;
 	deBaseScriptingPropField *pPeerScripting;
 	
 	deWorld *pParentWorld;
-	dePropField *pLLWorldPrev;
-	dePropField *pLLWorldNext;
+	dePropField *pLLWorldPrev, *pLLWorldNext;
 	
 	
 	
@@ -98,17 +96,20 @@ public:
 	/** \brief Set position. */
 	void SetPosition(const decDVector &position);
 	
+	/** \brief Types. */
+	inline const dePropFieldType::List &GetTypes() const{ return pTypes; }
+	
 	/** \brief Number of types. */
-	inline int GetTypeCount() const{ return pTypeCount; }
+	inline int GetTypeCount() const{ return pTypes.GetCount(); }
 	
 	/** \brief Type at the given index. */
-	dePropFieldType *GetTypeAt(int index) const;
+	inline const dePropFieldType::Ref &GetTypeAt(int index) const{ return pTypes.GetAt(index); }
 	
 	/** \brief Index of the given type of -1 if not found. */
 	int IndexOfType(dePropFieldType *type) const;
 	
 	/** \brief Adds a type. */
-	void AddType(dePropFieldType *type);
+	void AddType(dePropFieldType::Ref &&type);
 	
 	/** \brief Removes the given type. */
 	void RemoveType(dePropFieldType *type);

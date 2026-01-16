@@ -356,7 +356,7 @@ fbxNode *fbxNode::FirstNodeNamedOrNull(const char* name) const{
 	int i;
 	
 	for(i=0; i<count; i++){
-		fbxNode * const node = (fbxNode*)pNodes.GetAt(i);
+		fbxNode * const node = pNodes.GetAt(i);
 		if(node->GetName() == name){
 			return node;
 		}
@@ -370,7 +370,7 @@ void fbxNode::FindNodesNamed(decTList<fbxNode*> &list, const char *name) const{
 	int i;
 	
 	for(i=0; i<count; i++){
-		fbxNode * const node = (fbxNode*)pNodes.GetAt(i);
+		fbxNode * const node = pNodes.GetAt(i);
 		if(node->GetName() == name){
 			list.Add(node);
 		}
@@ -382,7 +382,7 @@ void fbxNode::GetNodeNames(decStringSet &list) const{
 	int i;
 	
 	for(i=0; i<count; i++){
-		list.Add(((fbxNode*)pNodes.GetAt(i))->GetName());
+		list.Add(pNodes.GetAt(i)->GetName());
 	}
 }
 
@@ -549,7 +549,7 @@ void fbxNode::pInitID(){
 		return;
 	}
 	
-	const fbxProperty &property = *((fbxProperty*)pProperties.GetAt(0));
+	const fbxProperty &property = pProperties.First();
 	if(property.GetType() != fbxProperty::etLong){
 		return;
 	}

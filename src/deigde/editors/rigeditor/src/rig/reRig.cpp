@@ -1525,8 +1525,8 @@ void reRig::pUpdateComponent(){
 			const int count = engModel.GetTextureCount();
 			int i;
 			for(i=0; i<count; i++){
-				pComponentTextures.Add(reRigTexture::Ref::New(GetEngine(),
-					engModel.GetTextureAt(i)->GetName()));
+				pComponentTextures.Add(reRigTexture::Ref::New(
+					GetEngine(), engModel.GetTextureAt(i)->GetName()));
 			}
 		}
 	}

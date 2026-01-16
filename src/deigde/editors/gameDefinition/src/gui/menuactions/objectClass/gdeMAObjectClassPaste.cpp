@@ -67,8 +67,7 @@ igdeUndo::Ref gdeMAObjectClassPaste::OnAction(gdeGameDefinition &gameDefinition)
 		return {};
 	}
 	
-	const gdeClipboardDataObjectClass &clipObjectClass =
-		(const gdeClipboardDataObjectClass &)(igdeClipboardData&)clip;
+	const gdeClipboardDataObjectClass &clipObjectClass = clip.DynamicCast<gdeClipboardDataObjectClass>();
 	
 	const gdeObjectClass::List &list = gameDefinition.GetObjectClasses();
 	decString name(clipObjectClass.GetObjectClass()->GetName());
@@ -88,11 +87,10 @@ igdeUndo::Ref gdeMAObjectClassPaste::OnAction(gdeGameDefinition &gameDefinition)
 		}
 	}
 	
-	const gdeObjectClass::Ref objectClass(gdeObjectClass::Ref::New(*clipObjectClass.GetObjectClass()));
-	((gdeObjectClass&)(deObject&)objectClass).SetName(name);
+	auto objectClass = gdeObjectClass::Ref::New(*clipObjectClass.GetObjectClass());
+	objectClass->SetName(name);
 	
-	const igdeUndo::Ref undo = gdeUAddObjectClass::Ref::New(
-		&gameDefinition, objectClass);
+	const igdeUndo::Ref undo = gdeUAddObjectClass::Ref::New(&gameDefinition, objectClass);
 	undo->SetShortInfo("Paste object class");
 	return undo;
 }

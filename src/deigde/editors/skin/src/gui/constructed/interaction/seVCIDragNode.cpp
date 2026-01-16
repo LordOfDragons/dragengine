@@ -254,7 +254,7 @@ void seVCIDragNode::pMove(){
 		pView.GetSkin()->GetUndoSystem()->Add(pUndo, false);
 	}
 	
-	((seUPropertyNodesDrag&)(igdeUndo&)pUndo).SetDistance(decPoint(pDragMatrix * decVector2(diff)));
+	pUndo.DynamicCast<seUPropertyNodesDrag>()->SetDistance(decPoint(pDragMatrix * decVector2(diff)));
 	pUndo->Redo();
 }
 
@@ -303,7 +303,7 @@ void seVCIDragNode::pRotate(){
 	const decVector2 target(decVector2(GetDragPosition()
 		- pView.GetCanvasContentBackground()->GetPosition()) / pView.GetZoomScale());
 	
-	((seUPropertyNodesRotate&)(igdeUndo&)pUndo).SetTarget(target);
+	pUndo.DynamicCast<seUPropertyNodesRotate>()->SetTarget(target);
 	pUndo->Redo();
 }
 
@@ -440,7 +440,7 @@ void seVCIDragNode::pResize(){
 		break;
 	}
 	
-	((seUPropertyNodesResize&)(igdeUndo&)pUndo).SetDistance(distance);
+	pUndo.DynamicCast<seUPropertyNodesResize>()->SetDistance(distance);
 	pUndo->Redo();
 }
 
@@ -547,7 +547,7 @@ void seVCIDragNode::pShear(){
 		pView.GetSkin()->GetUndoSystem()->Add(pUndo);
 	}
 	
-	((seUPropertyNodesShear&)(igdeUndo&)pUndo).SetDistance(
+	pUndo.DynamicCast<seUPropertyNodesShear>()->SetDistance(
 		axis * (axis * decVector2(diff) / pView.GetZoomScale()));
 	pUndo->Redo();
 }

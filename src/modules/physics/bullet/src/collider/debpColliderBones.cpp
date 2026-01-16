@@ -342,7 +342,7 @@ bool debpColliderBones::UpdateFromBody(){
 						matrix = matrix.QuickMultiply(component->GetBoneAt(parent).GetInverseMatrix());
 						
 					}else if(rig){
-						matrix = matrix.QuickMultiply(rig->GetBoneAt(parent).GetInverseMatrix());
+						matrix = matrix.QuickMultiply(rig->GetBoneAt(parent)->GetInverseMatrix());
 					}
 					matrix = matrix.QuickMultiply(pBones[i]->GetInverseLocalMatrix());
 				}
@@ -522,7 +522,7 @@ void debpColliderBones::UpdateFromKinematic(bool resetInterpolation){
 			int i;
 			for(i=0; i<pBoneCount; i++){
 				if(pBones[i]){
-					const decDMatrix boneMatrix(rig->GetBoneAt(i).GetMatrix().QuickMultiply(colMatrix));
+					const decDMatrix boneMatrix(rig->GetBoneAt(i)->GetMatrix().QuickMultiply(colMatrix));
 					debpPhysicsBody &phybody = *pBones[i]->GetPhysicsBody();
 					phybody.SetPosition(boneMatrix.GetPosition());
 					phybody.SetOrientation(boneMatrix.ToQuaternion());
@@ -556,12 +556,12 @@ void debpColliderBones::PrepareForDetection(float elapsed){
 		
 		decDMatrix goalMatrix;
 		if(rig){
-			goalMatrix.SetTranslation(rig->GetBoneAt(boneIndex).GetCentralMassPoint());
+			goalMatrix.SetTranslation(rig->GetBoneAt(boneIndex)->GetCentralMassPoint());
 		}
 		if(component){
 			goalMatrix = goalMatrix.QuickMultiply(component->GetBoneAt(boneIndex).GetMatrix());
 		}else if(rig){
-			goalMatrix = goalMatrix.QuickMultiply(rig->GetBoneAt(boneIndex).GetMatrix());
+			goalMatrix = goalMatrix.QuickMultiply(rig->GetBoneAt(boneIndex)->GetMatrix());
 		}
 		goalMatrix = goalMatrix.QuickMultiply(colMatrix);
 		
@@ -609,7 +609,7 @@ void debpColliderBones::CheckConstraintsBroke(){
 			
 			pEngColliderRig->GetPeerScripting()->RigConstraintBroke(
 				pEngColliderRig, boneIndex, constraintIndex,
-				&rig->GetBoneAt(boneIndex).GetConstraintAt(constraintIndex));
+				rig->GetBoneAt(boneIndex)->GetConstraintAt(constraintIndex));
 		}
 	}
 }
@@ -629,8 +629,9 @@ void debpColliderBones::UpdateShapes(){
 	// in the dynamic case the bone state is taken from the collider bones
 	if(pEngColliderRig->GetResponseType() == deCollider::ertDynamic){
 		for(i=0; i<pBonePhysicsCount; i++){
-			pBonesPhysics[i]->GetShapes().UpdateWithMatrix(				decDMatrix::CreateTranslation(pBonesPhysics[i]->GetOffset()).QuickMultiply(
-					pEngColliderRig->GetBoneAt(pBonesPhysics[i]->GetIndex()).GetMatrix()));
+			pBonesPhysics[i]->GetShapes().UpdateWithMatrix(
+				decDMatrix::CreateTranslation(pBonesPhysics[i]->GetOffset()).QuickMultiply(
+					pEngColliderRig->GetBoneAt(pBonesPhysics[i]->GetIndex())->GetMatrix()));
 		}
 		
 	// for the static and kinematic case taking the bone state from the collider
@@ -662,7 +663,7 @@ void debpColliderBones::UpdateShapes(){
 		}else if(rig){
 			for(i=0; i<pBonePhysicsCount; i++){
 				pBonesPhysics[i]->GetShapes().UpdateWithMatrix(
-					decDMatrix(rig->GetBoneAt(pBonesPhysics[i]->GetIndex()).GetMatrix())
+					decDMatrix(rig->GetBoneAt(pBonesPhysics[i]->GetIndex())->GetMatrix())
 					.QuickMultiply(matrix));
 			}
 		}
@@ -683,7 +684,7 @@ void debpColliderBones::UpdateShapes(const decDMatrix &transformation){
 		for(i=0; i<pBonePhysicsCount; i++){
 			pBonesPhysics[i]->GetShapes().UpdateWithMatrix(
 				decDMatrix::CreateTranslation(pBonesPhysics[i]->GetOffset())
-				.QuickMultiply(pEngColliderRig->GetBoneAt(pBonesPhysics[i]->GetIndex()).GetMatrix()
+				.QuickMultiply(pEngColliderRig->GetBoneAt(pBonesPhysics[i]->GetIndex())->GetMatrix()
 					.QuickMultiply(tmat)));
 		}
 		
@@ -717,7 +718,7 @@ void debpColliderBones::UpdateShapes(const decDMatrix &transformation){
 		}else if(rig){
 			for(i=0; i<pBonePhysicsCount; i++){
 				pBonesPhysics[i]->GetShapes().UpdateWithMatrix(
-					decDMatrix(rig->GetBoneAt(pBonesPhysics[i]->GetIndex()).GetMatrix())
+					decDMatrix(rig->GetBoneAt(pBonesPhysics[i]->GetIndex())->GetMatrix())
 					.QuickMultiply(transformation));
 			}
 		}
@@ -800,7 +801,7 @@ void debpColliderBones::UpdateDebugDrawersShape(){
 	for(i=0; i<pBonePhysicsCount; i++){
 		if(pBonesPhysics[i]->GetDDSShape()){
 			pBonesPhysics[i]->GetDDSShape()->GetShapeList() =
-				rig->GetBoneAt(pBonesPhysics[i]->GetIndex()).GetShapes();
+				rig->GetBoneAt(pBonesPhysics[i]->GetIndex())->GetShapes();
 		}
 	}
 }
@@ -855,7 +856,7 @@ void debpColliderBones::EnableConstraint(int bone, int constraint, bool enable){
 	}
 	
 	deRig * const rig = GetRig();
-	if(!rig || constraint < 0 || constraint >= rig->GetBoneAt(bone).GetConstraintCount()){
+	if(!rig || constraint < 0 || constraint >= rig->GetBoneAt(bone)->GetConstraintCount()){
 		return;
 	}
 	
@@ -971,7 +972,8 @@ void debpColliderBones::UpdatePhysicsType(deCollider::eResponseType responseType
 	
 	for(i=0; i<pBonePhysicsCount; i++){
 		pBonesPhysics[i]->SetDirty(true);
-		pBonesPhysics[i]->SetColBoneDynamic(pEngColliderRig->GetBoneAt(pBonesPhysics[i]->GetIndex()).GetDynamic());
+		pBonesPhysics[i]->SetColBoneDynamic(
+			pEngColliderRig->GetBoneAt(pBonesPhysics[i]->GetIndex())->GetDynamic());
 	}
 	
 	switch(responseType){
@@ -1006,7 +1008,7 @@ void debpColliderBones::UpdatePhysicsType(deCollider::eResponseType responseType
 	}
 	
 	pBones[bone]->SetDirty(true);
-	pBones[bone]->SetColBoneDynamic(pEngColliderRig->GetBoneAt(bone).GetDynamic());
+	pBones[bone]->SetColBoneDynamic(pEngColliderRig->GetBoneAt(bone)->GetDynamic());
 	
 	switch(responseType){
 	case deCollider::ertStatic:

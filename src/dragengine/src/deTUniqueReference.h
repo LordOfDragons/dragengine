@@ -41,41 +41,6 @@
  *
  * \note
  * This is a move-only type. Copy constructor and copy assignment are deleted.
- * 
- * \note
- * This template requires the full type definition of T to be present at instantiation
- * because it is copy constructible. The copy constructor calls T::AddReference() which
- * requires knowing the complete type definition. This can cause issues if you try to
- * use this template with forward-declared types in header files.
- * 
- * To avoid this, you can either:
- * 1. Delete the copy constructors if not needed
- * 2. Declare copy constructors in the header and define them in source files
- * 
- * Example to avoid requiring full type definition:
- * 
- * \code{cpp}
- * // In header file:
- * class MyClass;
- *
- * class MyContainer{
- * private:
- *    deTUniqueReference<MyClass> pObject;
- * public:
- *    MyContainer();
- *    ~MyContainer();
- *    MyContainer(const MyContainer &other); // declare only
- *    MyContainer &operator=(const MyContainer &other); // declare only
- * };
- * 
- * // In source file:
- * #include "MyClass.h" // full definition here
- * 
- * MyContainer::MyContainer() = default;
- * MyContainer::~MyContainer() = default;
- * MyContainer::MyContainer(const MyContainer &other) = default;
- * MyContainer &MyContainer::operator=(const MyContainer &other) = default;
- * \endcode
  */
 template<class T> class deTUniqueReference{
 private:
@@ -123,10 +88,44 @@ public:
 		return pObject;
 	}
 	
+	/**
+	 * \brief Static cast to pointer.
+	 */
+	template<typename U> U* PointerStaticCast() const{
+		return static_cast<U*>(pObject);
+	}
+	
+	/**
+	 * \brief Dynamic cast to pointer.
+	 * 
+	 * Can be nullptr if target class is not a sub class.
+	 */
+	template<typename U> U* PointerDynamicCast() const{
+		return dynamic_cast<U*>(pObject);
+	}
+	
 	/** \brief Reference to object. */
 	inline T& Reference() const{
 		DEASSERT_NOTNULL(pObject)
 		return *pObject;
+	}
+	
+	/**
+	 * \brief Static cast to reference.
+	 * 
+	 * Throws exception if nullptr.
+	 */
+	template<typename U> U& ReferenceStaticCast() const{
+		return static_cast<U&>(Reference());
+	}
+	
+	/**
+	 * \brief Dynamic cast to reference.
+	 * 
+	 * Throws exception if nullptr.
+	 */
+	template<typename U> U& ReferenceDynamicCast() const{
+		return dynamic_cast<U&>(Reference());
 	}
 	
 	/** \brief Object is nullptr. */

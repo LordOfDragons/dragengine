@@ -295,7 +295,7 @@ void meHeightTerrainNavSpace::SectorSizeOrResChanged(){
 	int i;
 	
 	for(i=0; i<typeCount; i++){
-		((meHeightTerrainNavSpaceType*)pTypes.GetAt(i))->RemoveAllFaces();
+		pTypes.GetAt(i)->RemoveAllFaces();
 	}
 	
 	UpdateNavSpaceFaces();
@@ -352,7 +352,7 @@ void meHeightTerrainNavSpace::UpdateDDColors(){
 		decColor color(0.5f, 0.5f, 0.5f, 1.0f);
 		
 		//if( pHeightTerrain->GetActive() ){
-			color = ((meHeightTerrainNavSpaceType*)pTypes.GetAt(i))->GetColor();
+			color = pTypes.GetAt(i)->GetColor();
 		//}
 		
 		shape.SetEdgeColor(color);
@@ -695,7 +695,7 @@ void meHeightTerrainNavSpace::pUpdateDDHeights(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((meHeightTerrainNavSpaceType*)pTypes.GetAt(i))->UpdateHeights();
+		pTypes.GetAt(i)->UpdateHeights();
 	}
 	pDDTypeFaces->NotifyShapeContentChanged();
 }

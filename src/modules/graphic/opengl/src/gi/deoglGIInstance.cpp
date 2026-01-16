@@ -501,7 +501,7 @@ int deoglGIInstance::GetTUCCount() const{
 }
 
 deoglTexUnitsConfig *deoglGIInstance::GetTUCAt(int index) const{
-	return (deoglTexUnitsConfig*)pTUCs.GetAt(index);
+	return pTUCs.GetAt(index);
 }
 
 void deoglGIInstance::RemoveAllTUCs(){
@@ -509,7 +509,7 @@ void deoglGIInstance::RemoveAllTUCs(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		deoglTexUnitsConfig * const tuc = (deoglTexUnitsConfig*)pTUCs.GetAt(i);
+		deoglTexUnitsConfig * const tuc = pTUCs.GetAt(i);
 		if(tuc){
 			tuc->RemoveMaterialUsage();
 			tuc->RemoveUsage();

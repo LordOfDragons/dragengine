@@ -79,7 +79,7 @@ void dedaiHeightTerrain::SetParentWorld(dedaiWorld *world){
 	int i;
 	
 	for(i=0; i<sectorCount; i++){
-		((dedaiHeightTerrainSector*)pSectors.GetAt(i))->ParentWorldChanged();
+		pSectors.GetAt(i)->ParentWorldChanged();
 	}
 }
 
@@ -98,7 +98,7 @@ void dedaiHeightTerrain::ParametersChanged(){
 	int i;
 	
 	for(i=0; i<sectorCount; i++){
-		((dedaiHeightTerrainSector*)pSectors.GetAt(i))->SectorChanged();
+		pSectors.GetAt(i)->SectorChanged();
 	}
 }
 
@@ -115,7 +115,7 @@ void dedaiHeightTerrain::AllSectorsRemoved(){
 }
 
 void dedaiHeightTerrain::SectorChanged(int index){
-	((dedaiHeightTerrainSector*)pSectors.GetAt(index))->SectorChanged();
+	pSectors.GetAt(index)->SectorChanged();
 }
 
 void dedaiHeightTerrain::HeightChanged(const decPoint &fromSector,
@@ -126,7 +126,7 @@ const decPoint &fromCoordinates, const decPoint &toSector, const decPoint &toCoo
 	int i;
 	
 	for(i=0; i<sectorCount; i++){
-		dedaiHeightTerrainSector &sector = *((dedaiHeightTerrainSector*)pSectors.GetAt(i));
+		dedaiHeightTerrainSector &sector = pSectors.GetAt(i);
 		const decPoint &scoord = sector.GetSector().GetSector();
 		
 		if(scoord.x + 1 >= fromSector.x && scoord.x - 1 <= toSector.x
@@ -190,31 +190,31 @@ const decPoint &fromCoordinates, const decPoint &toSector, const decPoint &toCoo
 }
 
 void dedaiHeightTerrain::NavSpaceAdded(int sector, deHeightTerrainNavSpace *navspace){
-	((dedaiHeightTerrainSector*)pSectors.GetAt(sector))->NavSpaceAdded(navspace);
+	pSectors.GetAt(sector)->NavSpaceAdded(navspace);
 }
 
 void dedaiHeightTerrain::NavSpaceRemoved(int sector, int index){
-	((dedaiHeightTerrainSector*)pSectors.GetAt(sector))->NavSpaceRemoved(index);
+	pSectors.GetAt(sector)->NavSpaceRemoved(index);
 }
 
 void dedaiHeightTerrain::AllNavSpacesRemoved(int sector){
-	((dedaiHeightTerrainSector*)pSectors.GetAt(sector))->AllNavSpacesRemoved();
+	pSectors.GetAt(sector)->AllNavSpacesRemoved();
 }
 
 void dedaiHeightTerrain::NavSpaceLayerChanged(int sector, int index){
-	((dedaiHeightTerrainSector*)pSectors.GetAt(sector))->NavSpaceLayerChanged(index);
+	pSectors.GetAt(sector)->NavSpaceLayerChanged(index);
 }
 
 void dedaiHeightTerrain::NavSpaceTypeChanged(int sector, int index){
-	((dedaiHeightTerrainSector*)pSectors.GetAt(sector))->NavSpaceTypeChanged(index);
+	pSectors.GetAt(sector)->NavSpaceTypeChanged(index);
 }
 
 void dedaiHeightTerrain::NavSpaceSnappingChanged(int sector, int index){
-	((dedaiHeightTerrainSector*)pSectors.GetAt(sector))->NavSpaceSnappingChanged(index);
+	pSectors.GetAt(sector)->NavSpaceSnappingChanged(index);
 }
 
 void dedaiHeightTerrain::NavSpaceLayoutChanged(int sector, int index){
-	((dedaiHeightTerrainSector*)pSectors.GetAt(sector))->NavSpaceLayoutChanged(index);
+	pSectors.GetAt(sector)->NavSpaceLayoutChanged(index);
 }
 
 

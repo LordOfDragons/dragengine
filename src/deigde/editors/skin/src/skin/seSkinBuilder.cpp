@@ -77,173 +77,140 @@ void seSkinBuilder::BuildSkin(deSkin *engSkin){
 
 void seSkinBuilder::CreateNodeGroup(deSkinPropertyNodeGroup &engNodeGroup,
 const sePropertyNodeGroup &nodeGroup){
-	deSkinPropertyNode *engNode = nullptr;
-	
-	try{
-		nodeGroup.GetNodes().Visit([&](const sePropertyNode &n){
-			engNode = CreateNode(n);
-			engNodeGroup.AddNode(engNode);
-			engNode = nullptr;
-		});
-		
-	}catch(const deException &){
-		if(engNode){
-			delete engNode;
-		}
-		throw;
-	}
+	nodeGroup.GetNodes().Visit([&](const sePropertyNode &n){
+		engNodeGroup.AddNode(CreateNode(n));
+	});
 }
 
-deSkinPropertyNode *seSkinBuilder::CreateNode(const sePropertyNode &node){
-	deSkinPropertyNode *engNode = nullptr;
+deSkinPropertyNode::Ref seSkinBuilder::CreateNode(const sePropertyNode &node){
+	deSkinPropertyNode::Ref engNode;
 	
-	try{
-		switch(node.GetNodeType()){
-		case sePropertyNode::entImage:{
-			const sePropertyNodeImage &nodeImage = (const sePropertyNodeImage&)node;
-			deSkinPropertyNodeImage * const engNodeImage = new deSkinPropertyNodeImage;
-			engNode = engNodeImage;
-			engNodeImage->SetPath(nodeImage.GetPath());
-			engNodeImage->SetImage(nodeImage.GetImage());
-			engNodeImage->SetRepeat(nodeImage.GetRepeat());
-			}break;
-			
-		case sePropertyNode::entShape:{
-			const sePropertyNodeShape &nodeShape = (const sePropertyNodeShape&)node;
-			deSkinPropertyNodeShape * const engNodeShape = new deSkinPropertyNodeShape;
-			engNode = engNodeShape;
-			engNodeShape->SetShapeType(nodeShape.GetShapeType());
-			engNodeShape->SetFillColor(nodeShape.GetFillColor());
-			engNodeShape->SetLineColor(nodeShape.GetLineColor());
-			engNodeShape->SetThickness(nodeShape.GetThickness());
-			
-			const struct sMappedShape{
-				sePropertyNodeShape::eShapeMapped from;
-				deSkinPropertyNodeShape::eShapeMapped to;
-			} mappingsShape[9] = {
-				{sePropertyNodeShape::esmFillColorRed, deSkinPropertyNodeShape::esmFillColorRed},
-				{sePropertyNodeShape::esmFillColorGreen, deSkinPropertyNodeShape::esmFillColorGreen},
-				{sePropertyNodeShape::esmFillColorBlue, deSkinPropertyNodeShape::esmFillColorBlue},
-				{sePropertyNodeShape::esmFillColorAlpha, deSkinPropertyNodeShape::esmFillColorAlpha},
-				{sePropertyNodeShape::esmLineColorRed, deSkinPropertyNodeShape::esmLineColorRed},
-				{sePropertyNodeShape::esmLineColorGreen, deSkinPropertyNodeShape::esmLineColorGreen},
-				{sePropertyNodeShape::esmLineColorBlue, deSkinPropertyNodeShape::esmLineColorBlue},
-				{sePropertyNodeShape::esmLineColorAlpha, deSkinPropertyNodeShape::esmLineColorAlpha},
-				{sePropertyNodeShape::esmThickness, deSkinPropertyNodeShape::esmThickness}
-			};
-			
-			int i;
-			for(i=0; i<9; i++){
-				seMapped * const mapped = nodeShape.GetMappedFor(mappingsShape[i].from);
-				if(mapped){
-					engNodeShape->SetShapeMappedFor(mappingsShape[i].to, pSkin.GetMapped().IndexOf(mapped));
-				}
-			}
-			
-			}break;
-			
-		case sePropertyNode::entText:{
-			const sePropertyNodeText &nodeText = (const sePropertyNodeText&)node;
-			deSkinPropertyNodeText * const engNodeText = new deSkinPropertyNodeText;
-			engNode = engNodeText;
-			engNodeText->SetPath(nodeText.GetPath());
-			engNodeText->SetFont(nodeText.GetFont());
-			engNodeText->SetFontSize(nodeText.GetTextSize());
-			engNodeText->SetText(nodeText.GetText());
-			engNodeText->SetColor(nodeText.GetColor());
-			
-			const struct sMappedText{
-				sePropertyNodeText::eTextMapped from;
-				deSkinPropertyNodeText::eTextMapped to;
-			} mappingsText[4] = {
-				{sePropertyNodeText::etmFontSize, deSkinPropertyNodeText::etmFontSize},
-				{sePropertyNodeText::etmColorRed, deSkinPropertyNodeText::etmColorRed},
-				{sePropertyNodeText::etmColorGreen, deSkinPropertyNodeText::etmColorGreen},
-				{sePropertyNodeText::etmColorBlue, deSkinPropertyNodeText::etmColorBlue}
-			};
-			
-			int i;
-			for(i=0; i<4; i++){
-				seMapped * const mapped = nodeText.GetMappedFor(mappingsText[i].from);
-				if(mapped){
-					engNodeText->SetTextMappedFor(mappingsText[i].to, pSkin.GetMapped().IndexOf(mapped));
-				}
-			}
-			
-			}break;
-			
-		case sePropertyNode::entGroup:{
-			deSkinPropertyNodeGroup * const engNodeGroup = new deSkinPropertyNodeGroup;
-			engNode = engNodeGroup;
-			CreateNodeGroup(*engNodeGroup, (const sePropertyNodeGroup&)node);
-			}break;
-			
-		default:
-			DETHROW(deeInvalidParam);
-		}
+	switch(node.GetNodeType()){
+	case sePropertyNode::entImage:{
+		const sePropertyNodeImage &nodeImage = (const sePropertyNodeImage&)node;
+		auto engNodeImage = deSkinPropertyNodeImage::Ref::New();
+		engNodeImage->SetPath(nodeImage.GetPath());
+		engNodeImage->SetImage(nodeImage.GetImage());
+		engNodeImage->SetRepeat(nodeImage.GetRepeat());
+		engNode = std::move(engNodeImage);
+		}break;
 		
-		engNode->SetPosition(node.GetPosition());
-		engNode->SetSize(node.GetSize());
-		engNode->SetRotation(node.GetRotation() * DEG2RAD);
-		engNode->SetShear(node.GetShearing() * DEG2RAD);
+	case sePropertyNode::entShape:{
+		const sePropertyNodeShape &nodeShape = (const sePropertyNodeShape&)node;
+		auto engNodeShape = deSkinPropertyNodeShape::Ref::New();
+		engNodeShape->SetShapeType(nodeShape.GetShapeType());
+		engNodeShape->SetFillColor(nodeShape.GetFillColor());
+		engNodeShape->SetLineColor(nodeShape.GetLineColor());
+		engNodeShape->SetThickness(nodeShape.GetThickness());
 		
-		engNode->SetBrightness(node.GetBrightness());
-		engNode->SetContrast(node.GetContrast());
-		engNode->SetGamma(node.GetGamma());
-		engNode->SetColorize(node.GetColorize());
-		
-		engNode->SetTransparency(node.GetTransparency());
-		engNode->SetCombineMode(node.GetCombineMode());
-		
-		if(node.GetMask()){
-			deSkinPropertyNode *engMask = nullptr;
-			
-			try{
-				engMask = CreateNode(*node.GetMask());
-				engNode->SetMask(engMask);
-				
-			}catch(const deException &){
-				if(engMask){
-					delete engMask;
-				}
-				throw;
-			}
-		}
-		
-		const struct sMapped{
-			sePropertyNode::eMapped from;
-			deSkinPropertyNode::eMapped to;
-		} mappings[15] = {
-			{sePropertyNode::emPositionX, deSkinPropertyNode::emPositionX},
-			{sePropertyNode::emPositionY, deSkinPropertyNode::emPositionY},
-			{sePropertyNode::emPositionZ, deSkinPropertyNode::emPositionZ},
-			{sePropertyNode::emSizeX, deSkinPropertyNode::emSizeX},
-			{sePropertyNode::emSizeY, deSkinPropertyNode::emSizeY},
-			{sePropertyNode::emSizeZ, deSkinPropertyNode::emSizeZ},
-			{sePropertyNode::emRotation, deSkinPropertyNode::emRotation},
-			{sePropertyNode::emShear, deSkinPropertyNode::emShear},
-			{sePropertyNode::emBrightness, deSkinPropertyNode::emBrightness},
-			{sePropertyNode::emContrast, deSkinPropertyNode::emContrast},
-			{sePropertyNode::emGamma, deSkinPropertyNode::emGamma},
-			{sePropertyNode::emColorizeRed, deSkinPropertyNode::emColorizeRed},
-			{sePropertyNode::emColorizeGreen, deSkinPropertyNode::emColorizeGreen},
-			{sePropertyNode::emColorizeBlue, deSkinPropertyNode::emColorizeBlue},
-			{sePropertyNode::emTransparency, deSkinPropertyNode::emTransparency}
+		const struct sMappedShape{
+			sePropertyNodeShape::eShapeMapped from;
+			deSkinPropertyNodeShape::eShapeMapped to;
+		} mappingsShape[9] = {
+			{sePropertyNodeShape::esmFillColorRed, deSkinPropertyNodeShape::esmFillColorRed},
+			{sePropertyNodeShape::esmFillColorGreen, deSkinPropertyNodeShape::esmFillColorGreen},
+			{sePropertyNodeShape::esmFillColorBlue, deSkinPropertyNodeShape::esmFillColorBlue},
+			{sePropertyNodeShape::esmFillColorAlpha, deSkinPropertyNodeShape::esmFillColorAlpha},
+			{sePropertyNodeShape::esmLineColorRed, deSkinPropertyNodeShape::esmLineColorRed},
+			{sePropertyNodeShape::esmLineColorGreen, deSkinPropertyNodeShape::esmLineColorGreen},
+			{sePropertyNodeShape::esmLineColorBlue, deSkinPropertyNodeShape::esmLineColorBlue},
+			{sePropertyNodeShape::esmLineColorAlpha, deSkinPropertyNodeShape::esmLineColorAlpha},
+			{sePropertyNodeShape::esmThickness, deSkinPropertyNodeShape::esmThickness}
 		};
 		
 		int i;
-		for(i=0; i<15; i++){
-			seMapped * const mapped = node.GetMappedFor(mappings[i].from);
+		for(i=0; i<9; i++){
+			seMapped * const mapped = nodeShape.GetMappedFor(mappingsShape[i].from);
 			if(mapped){
-				engNode->SetMappedFor(mappings[i].to, pSkin.GetMapped().IndexOf(mapped));
+				engNodeShape->SetShapeMappedFor(mappingsShape[i].to, pSkin.GetMapped().IndexOf(mapped));
 			}
 		}
+		engNode = std::move(engNodeShape);
+		}break;
 		
-	}catch(const deException &){
-		if(engNode){
-			delete engNode;
+	case sePropertyNode::entText:{
+		const sePropertyNodeText &nodeText = (const sePropertyNodeText&)node;
+		auto engNodeText = deSkinPropertyNodeText::Ref::New();
+		engNodeText->SetPath(nodeText.GetPath());
+		engNodeText->SetFont(nodeText.GetFont());
+		engNodeText->SetFontSize(nodeText.GetTextSize());
+		engNodeText->SetText(nodeText.GetText());
+		engNodeText->SetColor(nodeText.GetColor());
+		
+		const struct sMappedText{
+			sePropertyNodeText::eTextMapped from;
+			deSkinPropertyNodeText::eTextMapped to;
+		} mappingsText[4] = {
+			{sePropertyNodeText::etmFontSize, deSkinPropertyNodeText::etmFontSize},
+			{sePropertyNodeText::etmColorRed, deSkinPropertyNodeText::etmColorRed},
+			{sePropertyNodeText::etmColorGreen, deSkinPropertyNodeText::etmColorGreen},
+			{sePropertyNodeText::etmColorBlue, deSkinPropertyNodeText::etmColorBlue}
+		};
+		
+		int i;
+		for(i=0; i<4; i++){
+			seMapped * const mapped = nodeText.GetMappedFor(mappingsText[i].from);
+			if(mapped){
+				engNodeText->SetTextMappedFor(mappingsText[i].to, pSkin.GetMapped().IndexOf(mapped));
+			}
 		}
-		throw;
+		engNode = std::move(engNodeText);
+		}break;
+		
+	case sePropertyNode::entGroup:{
+		auto engNodeGroup = deSkinPropertyNodeGroup::Ref::New();
+		CreateNodeGroup(engNodeGroup, (const sePropertyNodeGroup&)node);
+		engNode = std::move(engNodeGroup);
+		}break;
+		
+	default:
+		DETHROW(deeInvalidParam);
+	}
+	
+	engNode->SetPosition(node.GetPosition());
+	engNode->SetSize(node.GetSize());
+	engNode->SetRotation(node.GetRotation() * DEG2RAD);
+	engNode->SetShear(node.GetShearing() * DEG2RAD);
+	
+	engNode->SetBrightness(node.GetBrightness());
+	engNode->SetContrast(node.GetContrast());
+	engNode->SetGamma(node.GetGamma());
+	engNode->SetColorize(node.GetColorize());
+	
+	engNode->SetTransparency(node.GetTransparency());
+	engNode->SetCombineMode(node.GetCombineMode());
+	
+	if(node.GetMask()){
+		engNode->SetMask(CreateNode(node.GetMask()));
+	}
+	
+	const struct sMapped{
+		sePropertyNode::eMapped from;
+		deSkinPropertyNode::eMapped to;
+	} mappings[15] = {
+		{sePropertyNode::emPositionX, deSkinPropertyNode::emPositionX},
+		{sePropertyNode::emPositionY, deSkinPropertyNode::emPositionY},
+		{sePropertyNode::emPositionZ, deSkinPropertyNode::emPositionZ},
+		{sePropertyNode::emSizeX, deSkinPropertyNode::emSizeX},
+		{sePropertyNode::emSizeY, deSkinPropertyNode::emSizeY},
+		{sePropertyNode::emSizeZ, deSkinPropertyNode::emSizeZ},
+		{sePropertyNode::emRotation, deSkinPropertyNode::emRotation},
+		{sePropertyNode::emShear, deSkinPropertyNode::emShear},
+		{sePropertyNode::emBrightness, deSkinPropertyNode::emBrightness},
+		{sePropertyNode::emContrast, deSkinPropertyNode::emContrast},
+		{sePropertyNode::emGamma, deSkinPropertyNode::emGamma},
+		{sePropertyNode::emColorizeRed, deSkinPropertyNode::emColorizeRed},
+		{sePropertyNode::emColorizeGreen, deSkinPropertyNode::emColorizeGreen},
+		{sePropertyNode::emColorizeBlue, deSkinPropertyNode::emColorizeBlue},
+		{sePropertyNode::emTransparency, deSkinPropertyNode::emTransparency}
+	};
+	
+	int i;
+	for(i=0; i<15; i++){
+		seMapped * const mapped = node.GetMappedFor(mappings[i].from);
+		if(mapped){
+			engNode->SetMappedFor(mappings[i].to, pSkin.GetMapped().IndexOf(mapped));
+		}
 	}
 	
 	return engNode;
@@ -275,135 +242,95 @@ void seSkinBuilder::pAddMapped(deSkin &engSkin){
 
 void seSkinBuilder::pAddTextures(deSkin &engSkin){
 	const seMapped::List &listMapped = pSkin.GetMapped();
-	deSkinPropertyConstructed *engPropertyConstructed = nullptr;
-	deSkinPropertyColor *engPropertyColor = nullptr;
-	deSkinPropertyImage *engPropertyImage = nullptr;
-	deSkinPropertyValue *engPropertyValue = nullptr;
-	deSkinPropertyVideo *engPropertyVideo = nullptr;
-	deSkinPropertyMapped *engPropertyMapped = nullptr;
-	deSkinTexture *engTexture = nullptr;
 	
-	try{
-		pSkin.GetTextures().Visit([&](const seTexture &texture){
-			engTexture = new deSkinTexture(texture.GetName());
-			
-			texture.GetProperties().Visit([&](const seProperty &property){
-				switch(property.GetValueType()){
-				case seProperty::evtValue:
-					engPropertyValue = new deSkinPropertyValue(property.GetName());
-					
-					engPropertyValue->SetValue(property.GetValue());
-					
-					engPropertyValue->SetRenderable(property.GetRenderableName());
-					engPropertyValue->SetBone(property.GetBoneName());
-					
-					engTexture->AddProperty(engPropertyValue);
-					engPropertyValue = nullptr;
-					break;
-					
-				case seProperty::evtColor:
-					engPropertyColor = new deSkinPropertyColor(property.GetName());
-					
-					engPropertyColor->SetColor(property.GetColor());
-					
-					engPropertyColor->SetRenderable(property.GetRenderableName());
-					engPropertyColor->SetBone(property.GetBoneName());
-					
-					engTexture->AddProperty(engPropertyColor);
-					engPropertyColor = nullptr;
-					break;
-					
-				case seProperty::evtImage:
-					engPropertyImage = new deSkinPropertyImage(property.GetName());
-					
-					engPropertyImage->SetPath(property.GetImagePath());
-					engPropertyImage->SetImage(property.GetEngineImage());
-					
-					engPropertyImage->SetRenderable(property.GetRenderableName());
-					engPropertyImage->SetBone(property.GetBoneName());
-					
-					engTexture->AddProperty(engPropertyImage);
-					engPropertyImage = nullptr;
-					break;
-					
-				case seProperty::evtVideo:
-					engPropertyVideo = new deSkinPropertyVideo(property.GetName());
-					
-					engPropertyVideo->SetPath(property.GetVideoPath());
-					engPropertyVideo->SetVideo(property.GetEngineVideo());
-					engPropertyVideo->SetSharedTime(property.GetVideoSharedTime());
-					
-					engPropertyVideo->SetRenderable(property.GetRenderableName());
-					engPropertyVideo->SetBone(property.GetBoneName());
-					
-					engTexture->AddProperty(engPropertyVideo);
-					engPropertyVideo = nullptr;
-					break;
-					
-				case seProperty::evtMapped:
-					engPropertyMapped = new deSkinPropertyMapped(property.GetName());
-					
-					engPropertyMapped->SetRed(listMapped.IndexOf(property.GetMappedComponent(0)));
-					engPropertyMapped->SetGreen(listMapped.IndexOf(property.GetMappedComponent(1)));
-					engPropertyMapped->SetBlue(listMapped.IndexOf(property.GetMappedComponent(2)));
-					engPropertyMapped->SetAlpha(listMapped.IndexOf(property.GetMappedComponent(3)));
-					
-					engPropertyMapped->SetRenderable(property.GetRenderableName());
-					engPropertyMapped->SetBone(property.GetBoneName());
-					
-					engTexture->AddProperty(engPropertyMapped);
-					engPropertyMapped = nullptr;
-					break;
-					
-				case seProperty::evtConstructed:
-					engPropertyConstructed = new deSkinPropertyConstructed(property.GetName());
-					
-					engPropertyConstructed->SetColor(property.GetNodeColor());
-					engPropertyConstructed->GetContent().SetSize(property.GetNodeGroup()->GetSize());
-					engPropertyConstructed->SetTileX(property.GetNodeTileX());
-					engPropertyConstructed->SetTileY(property.GetNodeTileY());
-					engPropertyConstructed->SetBitCount(property.GetNodeBitCount());
-					
-					CreateNodeGroup(engPropertyConstructed->GetContent(), *property.GetNodeGroup());
-					
-					engPropertyConstructed->SetRenderable(property.GetRenderableName());
-					engPropertyConstructed->SetBone(property.GetBoneName());
-					
-					engTexture->AddProperty(engPropertyConstructed);
-					engPropertyConstructed = nullptr;
-					break;
-					
-				default:
-					DETHROW(deeInvalidParam);
-				}
-			});
-			
-			engSkin.AddTexture(engTexture);
-			engTexture = nullptr;
+	pSkin.GetTextures().Visit([&](const seTexture &texture){
+		auto engTexture = deSkinTexture::Ref::New(texture.GetName());
+		
+		texture.GetProperties().Visit([&](const seProperty &property){
+			switch(property.GetValueType()){
+			case seProperty::evtValue:{
+				auto engPropertyValue = deSkinPropertyValue::Ref::New(property.GetName());
+				
+				engPropertyValue->SetValue(property.GetValue());
+				
+				engPropertyValue->SetRenderable(property.GetRenderableName());
+				engPropertyValue->SetBone(property.GetBoneName());
+				
+				engTexture->AddProperty(std::move(engPropertyValue));
+				}break;
+				
+			case seProperty::evtColor:{
+				auto engPropertyColor = deSkinPropertyColor::Ref::New(property.GetName());
+				
+				engPropertyColor->SetColor(property.GetColor());
+				
+				engPropertyColor->SetRenderable(property.GetRenderableName());
+				engPropertyColor->SetBone(property.GetBoneName());
+				
+				engTexture->AddProperty(std::move(engPropertyColor));
+				}break;
+				
+			case seProperty::evtImage:{
+				auto engPropertyImage = deSkinPropertyImage::Ref::New(property.GetName());
+				
+				engPropertyImage->SetPath(property.GetImagePath());
+				engPropertyImage->SetImage(property.GetEngineImage());
+				
+				engPropertyImage->SetRenderable(property.GetRenderableName());
+				engPropertyImage->SetBone(property.GetBoneName());
+				
+				engTexture->AddProperty(std::move(engPropertyImage));
+				}break;
+				
+			case seProperty::evtVideo:{
+				auto engPropertyVideo = deSkinPropertyVideo::Ref::New(property.GetName());
+				
+				engPropertyVideo->SetPath(property.GetVideoPath());
+				engPropertyVideo->SetVideo(property.GetEngineVideo());
+				engPropertyVideo->SetSharedTime(property.GetVideoSharedTime());
+				
+				engPropertyVideo->SetRenderable(property.GetRenderableName());
+				engPropertyVideo->SetBone(property.GetBoneName());
+				
+				engTexture->AddProperty(std::move(engPropertyVideo));
+				}break;
+				
+			case seProperty::evtMapped:{
+				auto engPropertyMapped = deSkinPropertyMapped::Ref::New(property.GetName());
+				
+				engPropertyMapped->SetRed(listMapped.IndexOf(property.GetMappedComponent(0)));
+				engPropertyMapped->SetGreen(listMapped.IndexOf(property.GetMappedComponent(1)));
+				engPropertyMapped->SetBlue(listMapped.IndexOf(property.GetMappedComponent(2)));
+				engPropertyMapped->SetAlpha(listMapped.IndexOf(property.GetMappedComponent(3)));
+				
+				engPropertyMapped->SetRenderable(property.GetRenderableName());
+				engPropertyMapped->SetBone(property.GetBoneName());
+				
+				engTexture->AddProperty(std::move(engPropertyMapped));
+				}break;
+				
+			case seProperty::evtConstructed:{
+				auto engPropertyConstructed = deSkinPropertyConstructed::Ref::New(property.GetName());
+				
+				engPropertyConstructed->SetColor(property.GetNodeColor());
+				engPropertyConstructed->GetContent()->SetSize(property.GetNodeGroup()->GetSize());
+				engPropertyConstructed->SetTileX(property.GetNodeTileX());
+				engPropertyConstructed->SetTileY(property.GetNodeTileY());
+				engPropertyConstructed->SetBitCount(property.GetNodeBitCount());
+				
+				CreateNodeGroup(engPropertyConstructed->GetContent(), *property.GetNodeGroup());
+				
+				engPropertyConstructed->SetRenderable(property.GetRenderableName());
+				engPropertyConstructed->SetBone(property.GetBoneName());
+				
+				engTexture->AddProperty(std::move(engPropertyConstructed));
+				}break;
+				
+			default:
+				DETHROW(deeInvalidParam);
+			}
 		});
 		
-	}catch(const deException &){
-		if(engPropertyConstructed){
-			delete engPropertyConstructed;
-		}
-		if(engPropertyMapped){
-			delete engPropertyMapped;
-		}
-		if(engPropertyVideo){
-			delete engPropertyVideo;
-		}
-		if(engPropertyImage){
-			delete engPropertyImage;
-		}
-		if(engPropertyColor){
-			delete engPropertyColor;
-		}
-		if(engPropertyValue){
-			delete engPropertyValue;
-		}
-		if(engTexture){
-			delete engTexture;
-		}
-		throw;
-	}
+		engSkin.AddTexture(std::move(engTexture));
+	});
 }

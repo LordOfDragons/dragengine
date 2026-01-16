@@ -78,8 +78,8 @@ public:
 	pRenderModel(renderModel){}
 	
 	virtual void BuildModel(deModel *model){
-		deModelLOD * const lod = new deModelLOD;
-		model->AddLOD(lod);
+		model->AddLOD(deModelLOD::Ref::New());
+		deModelLOD &lod = model->GetLODs().Last();
 		
 		model->AddTexture(new deModelTexture("material", 256, 256));
 		
@@ -87,8 +87,8 @@ public:
 		int i;
 		const int vertexCount = (int)pRenderModel.unVertexCount;
 		
-		lod->SetVertexCount(vertexCount);
-		deModelVertex * const vertices = lod->GetVertices();
+		lod.SetVertexCount(vertexCount);
+		deModelVertex * const vertices = lod.GetVertices();
 		
 		for(i=0; i<vertexCount; i++){
 			const vr::HmdVector3_t &p = pRenderModel.rVertexData[i].vPosition;
@@ -98,15 +98,15 @@ public:
 			// being do full smoothing
 		}
 		
-		lod->SetNormalCount(vertexCount);
-		lod->SetTangentCount(vertexCount);
+		lod.SetNormalCount(vertexCount);
+		lod.SetTangentCount(vertexCount);
 		
 		// add faces
 		const int faceCount = (int)pRenderModel.unTriangleCount;
 		const uint16_t *corners = pRenderModel.rIndexData;
 		
-		lod->SetFaceCount(faceCount);
-		deModelFace * const faces = lod->GetFaces();
+		lod.SetFaceCount(faceCount);
+		deModelFace * const faces = lod.GetFaces();
 		
 		for(i=0; i<faceCount; i++){
 			const int v3 = (int)*(corners++);
@@ -135,10 +135,10 @@ public:
 		// add texture coordinates
 		model->GetTextureCoordinatesSetList().Add("default");
 		
-		lod->SetTextureCoordinatesCount(vertexCount);
+		lod.SetTextureCoordinatesCount(vertexCount);
 		
-		lod->SetTextureCoordinatesSetCount(1);
-		deModelTextureCoordinatesSet &tcset = lod->GetTextureCoordinatesSetAt(0);
+		lod.SetTextureCoordinatesSetCount(1);
+		deModelTextureCoordinatesSet &tcset = lod.GetTextureCoordinatesSetAt(0);
 		
 		tcset.GetTextureCoordinates().RemoveAll();
 		tcset.GetTextureCoordinates().EnlargeCapacity(vertexCount);

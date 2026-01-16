@@ -26,12 +26,12 @@
 #define _SESKINBUILDER_H_
 
 #include <dragengine/resources/skin/deSkinBuilder.h>
+#include <dragengine/resources/skin/property/node/deSkinPropertyNode.h>
 
 class seSkin;
 class sePropertyNode;
 class sePropertyNodeGroup;
 
-class deSkinPropertyNode;
 class deSkinPropertyNodeGroup;
 
 
@@ -66,7 +66,7 @@ public:
 	void CreateNodeGroup(deSkinPropertyNodeGroup &engNodeGroup, const sePropertyNodeGroup &nodeGroup);
 	
 	/** Create skin property node. */
-	deSkinPropertyNode *CreateNode(const sePropertyNode &node);
+	deSkinPropertyNode::Ref CreateNode(const sePropertyNode &node);
 	/*@}*/
 	
 	

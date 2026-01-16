@@ -238,8 +238,7 @@ void deoglSharedBlockSPB::pCheckSize(){
 	
 	DEASSERT_TRUE(change > 0)
 	
-	deoglSharedBlockSPBElement * const element =
-		(deoglSharedBlockSPBElement*)pElements.GetAt(pElements.GetCount() - 1);
+	deoglSharedBlockSPBElement * const element = pElements.GetAt(pElements.GetCount() - 1);
 	if(element->GetEmpty()){
 		element->SetCount(element->GetCount() + change);
 		

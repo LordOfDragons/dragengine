@@ -109,7 +109,7 @@ void deoglShaderManager::cCompileProgram::CompileFinished(deoglShaderProgram *pr
 	const int count = pListeners.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		cGetProgramListener * const listener = (cGetProgramListener*)pListeners.GetAt(i);
+		cGetProgramListener * const listener = pListeners.GetAt(i);
 		try{
 			listener->GetProgramFinished(p);
 			
@@ -285,7 +285,7 @@ int deoglShaderManager::GetProgramUnitCount(){
 
 deoglShaderProgramUnit *deoglShaderManager::GetProgramUnitAt(int index){
 	const deMutexGuard guard(pMutexCompilePrograms);
-	return (deoglShaderProgramUnit*)pProgramUnits.GetAt(index);
+	return pProgramUnits.GetAt(index);
 }
 
 
@@ -592,7 +592,7 @@ const deoglShaderSources *sources, const deoglShaderDefines &defines) const{
 	int i;
 	
 	for(i=0; i<count; i++){
-		cCompileProgram * const compiling = (cCompileProgram*)pCompilePrograms.GetAt(i);
+		cCompileProgram * const compiling = pCompilePrograms.GetAt(i);
 		if(sources == compiling->GetProgram()->GetSources()
 		&& defines.Equals(compiling->GetProgram()->GetDefines())){
 			return compiling;
@@ -623,7 +623,7 @@ const deoglShaderUnitSourceCode *sources, const deoglShaderDefines &defines) con
 	int i;
 	
 	for(i=0; i<count; i++){
-		deoglShaderProgramUnit * const unit = (deoglShaderProgramUnit*)pProgramUnits.GetAt(i);
+		deoglShaderProgramUnit * const unit = pProgramUnits.GetAt(i);
 		if(sources == unit->GetSources() && defines.Equals(unit->GetDefines(), sources->GetDefines())){
 			return unit;
 		}

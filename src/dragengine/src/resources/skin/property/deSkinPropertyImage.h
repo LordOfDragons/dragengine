@@ -34,6 +34,9 @@
  * \brief Skin texture image property.
  */
 class DE_DLL_EXPORT deSkinPropertyImage : public deSkinProperty{
+public:
+	using Ref = deTUniqueReference<deSkinPropertyImage>;
+	
 private:
 	decString pPath;
 	deImage::Ref pImage;

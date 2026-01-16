@@ -38,8 +38,10 @@ The project uses **SCons** (Python-based build system) for Linux/cross-platform 
 
 ### Building on Linux
 
+To build in AI agent mode on Github requires installing additional packages to build the project. See section "Install required packages" and "Install GLSL Tools" in ".github/workflows/build_linux.yml" for details. Once installed the following build commands can be used:
+
 ```bash
-# Basic build
+# Build entire code base
 scons
 
 # With custom options
@@ -62,7 +64,7 @@ scons -h
 ### Building on Windows
 
 - Open `vs/dragengine.sln` in Visual Studio
-- Only 64-bit Release builds are officially supported
+- Only 64-bit Release builds are officially supported (target ReleaseDebug)
 - NuGet handles external dependencies automatically
 
 ## Coding Standards

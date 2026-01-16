@@ -159,7 +159,7 @@ const deoglSkinTexturePipeline &deoglSkinTexturePipelines::GetWithRef(eTypes typ
 		int i;
 		for(i=0; i<ModifiersPerType; i++){
 			l.LogErrorFormat("- %s: %s", DebugNamesModifiers.SetName(i).GetString(),
-				(deoglSkinTexturePipeline*)pPipelines[type][i] ? "Present" : "Absent");
+				pPipelines[type][i] ? "Present" : "Absent");
 		}
 		throw;
 	}

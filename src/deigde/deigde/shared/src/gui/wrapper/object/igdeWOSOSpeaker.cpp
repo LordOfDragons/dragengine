@@ -146,7 +146,7 @@ pAttachment(nullptr)
 
 igdeWOSOSpeaker::~igdeWOSOSpeaker(){
 	if(pResLoad){
-		((igdeWOSOSpeakerResLoadComponent&)(igdeResourceLoaderListener&)pResLoad).Drop();
+		pResLoad.DynamicCast<igdeWOSOSpeakerResLoadComponent>()->Drop();
 		pResLoad = nullptr;
 	}
 	pDestroySpeaker();
@@ -231,7 +231,7 @@ void igdeWOSOSpeaker::AsyncLoadFinished(bool success){
 		return;
 	}
 	
-	((igdeWOSOSpeakerResLoadComponent&)(igdeResourceLoaderListener&)pResLoad).Drop();
+	pResLoad.DynamicCast<igdeWOSOSpeakerResLoadComponent>()->Drop();
 	
 	GetWrapper().SubObjectFinishedLoading(*this, success);
 }
@@ -243,13 +243,12 @@ void igdeWOSOSpeaker::AsyncLoadFinished(bool success){
 
 void igdeWOSOSpeaker::pLoadResources(){
 	if(pResLoad){
-		((igdeWOSOSpeakerResLoadComponent&)(igdeResourceLoaderListener&)pResLoad).Drop();
+		pResLoad.DynamicCast<igdeWOSOSpeakerResLoadComponent>()->Drop();
 		pResLoad = nullptr;
 	}
 	
 	pResLoad = igdeWOSOSpeakerResLoadComponent::Ref::New(*this);
-	igdeWOSOSpeakerResLoadComponent &rl =
-		(igdeWOSOSpeakerResLoadComponent&)(igdeResourceLoaderListener&)pResLoad;
+	igdeWOSOSpeakerResLoadComponent &rl = pResLoad.DynamicCast<igdeWOSOSpeakerResLoadComponent>();
 	
 	const decString pathSound(GetStringProperty(
 		pGDSpeaker.GetPropertyName(igdeGDCSpeaker::epSound), pGDSpeaker.GetPathSound()));
@@ -261,8 +260,7 @@ void igdeWOSOSpeaker::pLoadResources(){
 }
 
 void igdeWOSOSpeaker::pUpdateSpeaker(){
-	const igdeWOSOSpeakerResLoadComponent &rl =
-		(igdeWOSOSpeakerResLoadComponent&)(igdeResourceLoaderListener&)pResLoad;
+	const igdeWOSOSpeakerResLoadComponent &rl = pResLoad.DynamicCast<igdeWOSOSpeakerResLoadComponent>();
 	
 	if(!pSpeaker){
 		pSpeaker = GetEngine().GetSpeakerManager()->CreateSpeaker();
@@ -326,39 +324,31 @@ void igdeWOSOSpeaker::AttachToCollider(){
 	
 	deColliderComponent * const colliderComponent = GetAttachableColliderComponent();
 	deColliderVolume * const colliderFallback = GetWrapper().GetColliderFallback();
-	deColliderAttachment *attachment = nullptr;
 	
-	try{
-		attachment = new deColliderAttachment(pSpeaker);
-		attachment->SetAttachType(deColliderAttachment::eatStatic);
-		attachment->SetPosition(GetVectorProperty(
-			pGDSpeaker.GetPropertyName(igdeGDCSpeaker::epAttachPosition),
-			pGDSpeaker.GetPosition()));
-		attachment->SetOrientation(GetRotationProperty(
-			pGDSpeaker.GetPropertyName(igdeGDCSpeaker::epAttachRotation),
-			pGDSpeaker.GetOrientation()));
-		
-		if(colliderComponent){
-			if(!pGDSpeaker.GetBoneName().IsEmpty()){
-				attachment->SetAttachType(deColliderAttachment::eatBone);
-				attachment->SetTrackBone(pGDSpeaker.GetBoneName());
-			}
-			colliderComponent->AddAttachment(attachment);
-			pAttachedToCollider = colliderComponent;
-			
-		}else{
-			colliderFallback->AddAttachment(attachment);
-			pAttachedToCollider = colliderFallback;
+	auto attachment = deColliderAttachment::Ref::New(pSpeaker);
+	attachment->SetAttachType(deColliderAttachment::eatStatic);
+	attachment->SetPosition(GetVectorProperty(
+		pGDSpeaker.GetPropertyName(igdeGDCSpeaker::epAttachPosition),
+		pGDSpeaker.GetPosition()));
+	attachment->SetOrientation(GetRotationProperty(
+		pGDSpeaker.GetPropertyName(igdeGDCSpeaker::epAttachRotation),
+		pGDSpeaker.GetOrientation()));
+	auto attachmentPtr = attachment.Pointer();
+	
+	if(colliderComponent){
+		if(!pGDSpeaker.GetBoneName().IsEmpty()){
+			attachment->SetAttachType(deColliderAttachment::eatBone);
+			attachment->SetTrackBone(pGDSpeaker.GetBoneName());
 		}
+		colliderComponent->AddAttachment(std::move(attachment));
+		pAttachedToCollider = colliderComponent;
 		
-		pAttachment = attachment;
-		
-	}catch(const deException &){
-		if(attachment){
-			delete attachment;
-		}
-		throw;
+	}else{
+		colliderFallback->AddAttachment(std::move(attachment));
+		pAttachedToCollider = colliderFallback;
 	}
+	
+	pAttachment = attachmentPtr;
 }
 
 void igdeWOSOSpeaker::DetachFromCollider(){

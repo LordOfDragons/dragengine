@@ -806,8 +806,7 @@ void deoglDeferredRendering::ActivateFBODepthLevel(int level){
 		ActivateFBODepth();
 		
 	}else{
-		pRenderThread.GetFramebuffer().Activate((deoglFramebuffer*)(
-			pModeDepth ? pFBOMipMapDepth1 : pFBOMipMapDepth2)[level - 1]);
+		pRenderThread.GetFramebuffer().Activate((pModeDepth ? pFBOMipMapDepth1 : pFBOMipMapDepth2)[level - 1]);
 	}
 }
 
@@ -878,7 +877,7 @@ void deoglDeferredRendering::ActivateFBOTemporary1Level(int level){
 		ActivateFBOTemporary1(false);
 		
 	}else{
-		pRenderThread.GetFramebuffer().Activate((deoglFramebuffer*)pFBOMipMapTemporary1[level - 1]);
+		pRenderThread.GetFramebuffer().Activate(pFBOMipMapTemporary1[level - 1]);
 	}
 }
 
@@ -896,7 +895,7 @@ void deoglDeferredRendering::ActivateFBOTemporary2Level(int level){
 		ActivateFBOTemporary2(false);
 		
 	}else{
-		pRenderThread.GetFramebuffer().Activate((deoglFramebuffer*)pFBOMipMapTemporary2[level - 1]);
+		pRenderThread.GetFramebuffer().Activate(pFBOMipMapTemporary2[level - 1]);
 	}
 }
 

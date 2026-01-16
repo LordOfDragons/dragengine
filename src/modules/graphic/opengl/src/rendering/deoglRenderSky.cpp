@@ -616,7 +616,7 @@ deoglEnvironmentMap &envmap){
 		deoglCubeMap::efPositiveY, deoglCubeMap::efNegativeY,
 		deoglCubeMap::efPositiveZ, deoglCubeMap::efNegativeZ};
 	
-	decColor engSkyColor(((deoglRSkyInstance*)pSkyInstances.GetAt(0))->GetRSky()->GetBgColor());
+	decColor engSkyColor(pSkyInstances.GetAt(0)->GetRSky()->GetBgColor());
 	engSkyColor.r = powf(engSkyColor.r, OGL_RENDER_GAMMA);
 	engSkyColor.g = powf(engSkyColor.g, OGL_RENDER_GAMMA);
 	engSkyColor.b = powf(engSkyColor.b, OGL_RENDER_GAMMA);
@@ -697,7 +697,7 @@ deoglEnvironmentMap &envmap){
 			PreparepRenderSkyIntoEnvMapParamBlock(plan);
 			
 			for(s=0; s<skyCount; s++){
-				deoglRSkyInstance &instance = *((deoglRSkyInstance*)pSkyInstances.GetAt(s));
+				deoglRSkyInstance &instance = *pSkyInstances.GetAt(s);
 				deoglRSky &sky = *instance.GetRSky();
 				const int layerCount = sky.GetLayerCount();
 				

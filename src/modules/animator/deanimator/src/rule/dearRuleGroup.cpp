@@ -77,9 +77,6 @@ pStateList2(nullptr),
 pVPSStateList(nullptr),
 pVPSStateList2(nullptr),
 
-pRules(nullptr),
-pRuleCount(0),
-
 pTargetSelect(rule.GetTargetSelect(), firstLink),
 
 pApplicationType(rule.GetApplicationType()),
@@ -109,24 +106,27 @@ dearRuleGroup::~dearRuleGroup(){
 ///////////////
 
 void dearRuleGroup::CaptureStateInto(int identifier){
+	const int count = pRules.GetCount();
 	int i;
-	for(i=0; i<pRuleCount; i++){
-		pRules[i]->CaptureStateInto(identifier);
+	for(i=0; i<count; i++){
+		pRules.GetAt(i)->CaptureStateInto(identifier);
 	}
 }
 
 void dearRuleGroup::StoreFrameInto(int identifier, const char *moveName, float moveTime){
+	const int count = pRules.GetCount();
 	int i;
-	for(i=0; i<pRuleCount; i++){
-		pRules[i]->StoreFrameInto(identifier, moveName, moveTime);
+	for(i=0; i<count; i++){
+		pRules.GetAt(i)->StoreFrameInto(identifier, moveName, moveTime);
 	}
 }
 
 bool dearRuleGroup::RebuildInstance() const{
+	const int count = pRules.GetCount();
 	int i;
 	bool rebuild = false;
-	for(i=0; i<pRuleCount; i++){
-		rebuild |= pRules[i]->RebuildInstance();
+	for(i=0; i<count; i++){
+		rebuild |= pRules.GetAt(i)->RebuildInstance();
 	}
 	
 	return rebuild;
@@ -134,7 +134,8 @@ bool dearRuleGroup::RebuildInstance() const{
 
 void dearRuleGroup::Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist){
 DEBUG_RESET_TIMERS;
-	if(pRuleCount < 1 || !GetEnabled()){
+	const int ruleCount = pRules.GetCount();
+	if(ruleCount < 1 || !GetEnabled()){
 		return;
 	}
 	
@@ -153,7 +154,7 @@ DEBUG_RESET_TIMERS;
 	float selectBlend = 0.0f;
 	int selectIndex = 0;
 	
-	if(pApplicationType == deAnimatorRuleGroup::eatSelect && pRuleCount > 1){
+	if(pApplicationType == deAnimatorRuleGroup::eatSelect && ruleCount > 1){
 		const float value = pTargetSelect.GetValue(instance, 0.0f);
 		
 		if(value <= 0.0f){
@@ -161,12 +162,12 @@ DEBUG_RESET_TIMERS;
 			selectBlend = 0.0f;
 			
 		}else if(value >= 1.0f){
-			selectIndex = pRuleCount - 1;
+			selectIndex = ruleCount - 1;
 			selectBlend = 0.0f;
 			
 		}else{
 			float intpart;
-			selectBlend = modff(value * (float)(pRuleCount - 1), &intpart);
+			selectBlend = modff(value * (float)(ruleCount - 1), &intpart);
 			selectIndex = (int)intpart;
 		}
 	}
@@ -194,8 +195,8 @@ DEBUG_RESET_TIMERS;
 		}
 		
 		// apply rules
-		for(i=0; i<pRuleCount; i++){
-			pRules[i]->Apply(*pStateList, *pVPSStateList);
+		for(i=0; i<ruleCount; i++){
+			pRules.GetAt(i)->Apply(*pStateList, *pVPSStateList);
 		}
 		
 		// apply the state
@@ -223,7 +224,7 @@ DEBUG_RESET_TIMERS;
 	// apply a blend between two selected rules
 	case deAnimatorRuleGroup::eatSelect:
 		// if there are no rules apply the empty state
-		if(pRuleCount == 0){
+		if(ruleCount == 0){
 			for(i=0; i<boneCount; i++){
 				const int animatorBone = GetBoneMappingFor(i);
 				if(animatorBone == -1){
@@ -278,10 +279,10 @@ DEBUG_RESET_TIMERS;
 		//      state if rule->Apply(instance,statelist) is called. it is though required
 		//      to merge in our own blending. in case of blending being blend(1) this
 		//      shortcut though would work
-		pRules[selectIndex]->Apply(*pStateList, *pVPSStateList);
+		pRules.GetAt(selectIndex)->Apply(*pStateList, *pVPSStateList);
 		
-		if(selectIndex < pRuleCount - 1){
-			pRules[selectIndex + 1]->Apply(*pStateList2, *pVPSStateList2);
+		if(selectIndex < ruleCount - 1){
+			pRules.GetAt(selectIndex + 1)->Apply(*pStateList2, *pVPSStateList2);
 			
 			for(i=0; i<boneCount; i++){
 				const int animatorBone = GetBoneMappingFor(i);
@@ -335,8 +336,9 @@ void dearRuleGroup::ControllerChanged(int controller){
 	dearRule::ControllerChanged(controller);
 	
 	int i;
-	for(i=0; i<pRuleCount; i++){
-		pRules[i]->ControllerChanged(controller);
+	const int ruleCount = pRules.GetCount();
+	for(i=0; i<ruleCount; i++){
+		pRules.GetAt(i)->ControllerChanged(controller);
 	}
 }
 
@@ -365,16 +367,17 @@ void dearRuleGroup::RuleChanged(){
 	}
 	
 	// update all child rules
+	const int count = pRules.GetCount();
 	int i;
-	for(i=0; i<pRuleCount; i++){
-		pRules[i]->RuleChanged();
+	for(i=0; i<count; i++){
+		pRules.GetAt(i)->RuleChanged();
 	}
 	
 	// create copies of the current bone state list if required
 	pStateList = instance.GetBoneStateList().CreateCopy();
 	pVPSStateList = instance.GetVPSStateList().CreateCopy();
 	
-	if(pApplicationType == deAnimatorRuleGroup::eatSelect && pRuleCount > 1){
+	if(pApplicationType == deAnimatorRuleGroup::eatSelect && pRules.GetCount() > 1){
 		pStateList2 = instance.GetBoneStateList().CreateCopy();
 		pVPSStateList2 = instance.GetVPSStateList().CreateCopy();
 	}
@@ -386,14 +389,7 @@ void dearRuleGroup::RuleChanged(){
 //////////////////////
 
 void dearRuleGroup::pCleanUp(){
-	if(pRules){
-		while(pRuleCount > 0){
-			delete pRules[pRuleCount - 1];
-			pRuleCount--;
-		}
-		
-		delete [] pRules;
-	}
+	pRules.RemoveAll();
 	
 	if(pStateList2){
 		delete pStateList2;
@@ -418,14 +414,10 @@ void dearRuleGroup::pCreateRules(int firstLink, const decTList<int> &controllerM
 	dearCreateRuleVisitor visitor(GetInstance(), GetAnimator(), controllerMapping, firstLink);
 	int i;
 	
-	pRules = new dearRule*[ruleCount];
-	
-	pRuleCount = 0;
 	for(i=0; i<ruleCount; i++){
-		pRules[pRuleCount] = visitor.CreateRuleFrom(*pGroup.GetRuleAt(i));
-		
-		if(pRules[pRuleCount]){
-			pRuleCount++;
+		auto &rule = visitor.CreateRuleFrom(*pGroup.GetRuleAt(i));
+		if(rule){
+			pRules.Add(std::move(rule));
 		}
 	}
 }

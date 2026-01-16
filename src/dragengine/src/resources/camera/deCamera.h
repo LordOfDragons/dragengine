@@ -26,13 +26,12 @@
 #define _DECAMERA_H_
 
 #include "../deResource.h"
+#include "../effect/deEffect.h"
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decLayerMask.h"
 #include "../../common/curve/decCurveBezier.h"
 
 class deWorld;
-class deEffect;
-class deEffectChain;
 class deCameraManager;
 class deBaseGraphicCamera;
 
@@ -135,7 +134,7 @@ private:
 	
 	decCurveBezier pToneMapCurve;
 	
-	deEffectChain *pEffects;
+	deEffect::List pEffects;
 	
 	decLayerMask pLayerMask;
 	
@@ -338,11 +337,14 @@ public:
 	
 	/** \name Effects */
 	/*@{*/
+	/** \brief Effects. */
+	const deEffect::List &GetEffects(){ return pEffects; }
+	
 	/** \brief Count of effects. */
 	int GetEffectCount() const;
 	
 	/** \brief Effect at the given index. */
-	deEffect *GetEffectAt(int index) const;
+	const deEffect::Ref &GetEffectAt(int index) const;
 	
 	/** \brief Adds an effect. */
 	void AddEffect(deEffect *effect);

@@ -60,7 +60,7 @@ deoglRenderTaskPipeline::~deoglRenderTaskPipeline(){
 	const int textureCount = pTextures.GetCount();
 	int i;
 	for(i=0; i<textureCount; i++){
-		delete (deoglRenderTaskTexture*)pTextures.GetAt(i);
+		delete pTextures.GetAt(i);
 	}
 	pTextures.RemoveAll();
 }
@@ -81,7 +81,7 @@ void deoglRenderTaskPipeline::Reset(){
 int deoglRenderTaskPipeline::GetTotalPointCount() const{
 	int i, pointCount = 0;
 	for(i=0; i<pTextureCount; i++){
-		pointCount += ((deoglRenderTaskTexture*)pTextures.GetAt(i))->GetTotalPointCount();
+		pointCount += pTextures.GetAt(i)->GetTotalPointCount();
 	}
 	return pointCount;
 }
@@ -89,7 +89,7 @@ int deoglRenderTaskPipeline::GetTotalPointCount() const{
 int deoglRenderTaskPipeline::GetTotalVAOCount() const{
 	int i, vaoCount = 0;
 	for(i=0; i<pTextureCount; i++){
-		vaoCount += ((deoglRenderTaskTexture*)pTextures.GetAt(i))->GetVAOCount();
+		vaoCount += pTextures.GetAt(i)->GetVAOCount();
 	}
 	return vaoCount;
 }
@@ -97,7 +97,7 @@ int deoglRenderTaskPipeline::GetTotalVAOCount() const{
 int deoglRenderTaskPipeline::GetTotalInstanceCount() const{
 	int i, instanceCount = 0;
 	for(i=0; i<pTextureCount; i++){
-		instanceCount += ((deoglRenderTaskTexture*)pTextures.GetAt(i))->GetTotalInstanceCount();
+		instanceCount += pTextures.GetAt(i)->GetTotalInstanceCount();
 	}
 	return instanceCount;
 }
@@ -105,7 +105,7 @@ int deoglRenderTaskPipeline::GetTotalInstanceCount() const{
 int deoglRenderTaskPipeline::GetTotalSubInstanceCount() const{
 	int i, subInstanceCount = 0;
 	for(i=0; i<pTextureCount; i++){
-		subInstanceCount += ((deoglRenderTaskTexture*)pTextures.GetAt(i))->GetTotalSubInstanceCount();
+		subInstanceCount += pTextures.GetAt(i)->GetTotalSubInstanceCount();
 	}
 	return subInstanceCount;
 }
@@ -119,7 +119,7 @@ void deoglRenderTaskPipeline::SetPipeline(const deoglPipeline *pipeline){
 
 
 deoglRenderTaskTexture *deoglRenderTaskPipeline::GetTextureAt(int index) const{
-	return (deoglRenderTaskTexture*)pTextures.GetAt(index);
+	return pTextures.GetAt(index);
 }
 
 deoglRenderTaskTexture *deoglRenderTaskPipeline::AddTexture(const deoglRenderTaskSharedTexture *texture){
@@ -158,7 +158,7 @@ deoglRenderTaskTexture *deoglRenderTaskPipeline::AddTexture(const deoglRenderTas
 		pTextures.Add(rttexture);
 		
 	}else{
-		rttexture = (deoglRenderTaskTexture*)pTextures.GetAt(pTextureCount);
+		rttexture = pTextures.GetAt(pTextureCount);
 		rttexture->Reset();
 	}
 	pTextureCount++;

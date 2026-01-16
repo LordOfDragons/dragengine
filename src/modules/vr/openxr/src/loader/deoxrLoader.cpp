@@ -113,7 +113,7 @@ int deoxrLoader::GetApiLayerCount() const{
 }
 
 deoxrApiLayer *deoxrLoader::GetApiLayerAt(int index) const{
-	return (deoxrApiLayer*)pApiLayers.GetAt(index);
+	return pApiLayers.GetAt(index);
 }
 
 

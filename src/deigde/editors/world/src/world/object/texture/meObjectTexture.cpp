@@ -220,14 +220,12 @@ void meObjectTexture::UpdateDynamicSkin(){
 			return;
 		}
 		
-		deDSRenderableColor * const renderable = new deDSRenderableColor("tint");
+		auto renderable = deDSRenderableColor::Ref::New("tint");
 		renderable->SetColor(pColorTint);
-		pDynamicSkin->AddRenderable(renderable);
+		pDynamicSkin->AddRenderable(std::move(renderable));
 		
-	}else{
-		if(pDynamicSkin){
-			pDynamicSkin = nullptr;
-		}
+	}else if(pDynamicSkin){
+		pDynamicSkin = nullptr;
 	}
 }
 

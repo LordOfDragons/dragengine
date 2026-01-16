@@ -133,7 +133,7 @@ int deoalModelOctree::GetFaceCount() const{
 }
 
 deoalModelFace *deoalModelOctree::GetFaceAt(int index) const{
-	return (deoalModelFace*)pFaces.GetAt(index);
+	return pFaces.GetAt(index);
 }
 
 

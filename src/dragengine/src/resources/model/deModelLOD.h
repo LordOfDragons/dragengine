@@ -25,6 +25,7 @@
 #ifndef _DEMODELLOD_H_
 #define _DEMODELLOD_H_
 
+#include "../../common/collection/decTUniqueList.h"
 #include "../../common/math/decMath.h"
 
 class deModelWeight;
@@ -50,6 +51,13 @@ class deModelLodVertexPositionSet;
  * in the sequence they are stored.
  */
 class DE_DLL_EXPORT deModelLOD{
+public:
+	/** \brief Reference type. */
+	using Ref = deTUniqueReference<deModelLOD>;
+	
+	/** \brief List type. */
+	using List = decTUniqueList<deModelLOD>;
+	
 private:
 	deModelWeight *pWeights;
 	int pWeightCount;

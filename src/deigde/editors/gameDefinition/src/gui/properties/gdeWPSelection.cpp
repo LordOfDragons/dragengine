@@ -230,23 +230,23 @@ void gdeWPSelection::SetGameDefinition(gdeGameDefinition *gameDefinition){
 		return;
 	}
 	
-	((gdeWPSCategory&)(igdeWidget&)pPanelCategory).SetGameDefinition(nullptr);
-	((gdeWPSObjectClass&)(igdeWidget&)pPanelObjectClass).SetGameDefinition(nullptr);
-	((gdeWPSOCBillboard&)(igdeWidget&)pPanelOCBillboard).SetGameDefinition(nullptr);
-	((gdeWPSOCCamera&)(igdeWidget&)pPanelOCCamera).SetGameDefinition(nullptr);
-	((gdeWPSOCComponent&)(igdeWidget&)pPanelOCComponent).SetGameDefinition(nullptr);
-	((gdeWPSOCEnvMapProbe&)(igdeWidget&)pPanelOCEnvMapProbe).SetGameDefinition(nullptr);
-	((gdeWPSOCLight&)(igdeWidget&)pPanelOCLight).SetGameDefinition(nullptr);
-	((gdeWPSOCNavigationBlocker&)(igdeWidget&)pPanelOCNavigationBlocker).SetGameDefinition(nullptr);
-	((gdeWPSOCNavigationSpace&)(igdeWidget&)pPanelOCNavigationSpace).SetGameDefinition(nullptr);
-	((gdeWPSOCParticleEmitter&)(igdeWidget&)pPanelOCParticleEmitter).SetGameDefinition(nullptr);
-	((gdeWPSOCForceField&)(igdeWidget&)pPanelOCForceField).SetGameDefinition(nullptr);
-	((gdeWPSOCSnapPoint&)(igdeWidget&)pPanelOCSnapPoint).SetGameDefinition(nullptr);
-	((gdeWPSOCSpeaker&)(igdeWidget&)pPanelOCSpeaker).SetGameDefinition(nullptr);
-	((gdeWPSOCWorld&)(igdeWidget&)pPanelOCWorld).SetGameDefinition(nullptr);
-	((gdeWPSParticleEmitter&)(igdeWidget&)pPanelParticleEmitter).SetGameDefinition(nullptr);
-	((gdeWPSSkin&)(igdeWidget&)pPanelSkin).SetGameDefinition(nullptr);
-	((gdeWPSSky&)(igdeWidget&)pPanelSky).SetGameDefinition(nullptr);
+	pPanelCategory.DynamicCast<gdeWPSCategory>()->SetGameDefinition(nullptr);
+	pPanelObjectClass.DynamicCast<gdeWPSObjectClass>()->SetGameDefinition(nullptr);
+	pPanelOCBillboard.DynamicCast<gdeWPSOCBillboard>()->SetGameDefinition(nullptr);
+	pPanelOCCamera.DynamicCast<gdeWPSOCCamera>()->SetGameDefinition(nullptr);
+	pPanelOCComponent.DynamicCast<gdeWPSOCComponent>()->SetGameDefinition(nullptr);
+	pPanelOCEnvMapProbe.DynamicCast<gdeWPSOCEnvMapProbe>()->SetGameDefinition(nullptr);
+	pPanelOCLight.DynamicCast<gdeWPSOCLight>()->SetGameDefinition(nullptr);
+	pPanelOCNavigationBlocker.DynamicCast<gdeWPSOCNavigationBlocker>()->SetGameDefinition(nullptr);
+	pPanelOCNavigationSpace.DynamicCast<gdeWPSOCNavigationSpace>()->SetGameDefinition(nullptr);
+	pPanelOCParticleEmitter.DynamicCast<gdeWPSOCParticleEmitter>()->SetGameDefinition(nullptr);
+	pPanelOCForceField.DynamicCast<gdeWPSOCForceField>()->SetGameDefinition(nullptr);
+	pPanelOCSnapPoint.DynamicCast<gdeWPSOCSnapPoint>()->SetGameDefinition(nullptr);
+	pPanelOCSpeaker.DynamicCast<gdeWPSOCSpeaker>()->SetGameDefinition(nullptr);
+	pPanelOCWorld.DynamicCast<gdeWPSOCWorld>()->SetGameDefinition(nullptr);
+	pPanelParticleEmitter.DynamicCast<gdeWPSParticleEmitter>()->SetGameDefinition(nullptr);
+	pPanelSkin.DynamicCast<gdeWPSSkin>()->SetGameDefinition(nullptr);
+	pPanelSky.DynamicCast<gdeWPSSky>()->SetGameDefinition(nullptr);
 	
 	if(pModelTreeObjects){
 		delete pModelTreeObjects;
@@ -264,23 +264,23 @@ void gdeWPSelection::SetGameDefinition(gdeGameDefinition *gameDefinition){
 		pModelTreeObjects = new gdeWPSTreeModel(pTreeObjects, pWindowProperties.GetWindowMain(), gameDefinition);
 	}
 	
-	((gdeWPSCategory&)(igdeWidget&)pPanelCategory).SetGameDefinition(gameDefinition);
-	((gdeWPSObjectClass&)(igdeWidget&)pPanelObjectClass).SetGameDefinition(gameDefinition);
-	((gdeWPSOCBillboard&)(igdeWidget&)pPanelOCBillboard).SetGameDefinition(gameDefinition);
-	((gdeWPSOCCamera&)(igdeWidget&)pPanelOCCamera).SetGameDefinition(gameDefinition);
-	((gdeWPSOCComponent&)(igdeWidget&)pPanelOCComponent).SetGameDefinition(gameDefinition);
-	((gdeWPSOCEnvMapProbe&)(igdeWidget&)pPanelOCEnvMapProbe).SetGameDefinition(gameDefinition);
-	((gdeWPSOCLight&)(igdeWidget&)pPanelOCLight).SetGameDefinition(gameDefinition);
-	((gdeWPSOCNavigationBlocker&)(igdeWidget&)pPanelOCNavigationBlocker).SetGameDefinition(gameDefinition);
-	((gdeWPSOCNavigationSpace&)(igdeWidget&)pPanelOCNavigationSpace).SetGameDefinition(gameDefinition);
-	((gdeWPSOCParticleEmitter&)(igdeWidget&)pPanelOCParticleEmitter).SetGameDefinition(gameDefinition);
-	((gdeWPSOCForceField&)(igdeWidget&)pPanelOCForceField).SetGameDefinition(gameDefinition);
-	((gdeWPSOCSnapPoint&)(igdeWidget&)pPanelOCSnapPoint).SetGameDefinition(gameDefinition);
-	((gdeWPSOCSpeaker&)(igdeWidget&)pPanelOCSpeaker).SetGameDefinition(gameDefinition);
-	((gdeWPSOCWorld&)(igdeWidget&)pPanelOCWorld).SetGameDefinition(gameDefinition);
-	((gdeWPSParticleEmitter&)(igdeWidget&)pPanelParticleEmitter).SetGameDefinition(gameDefinition);
-	((gdeWPSSkin&)(igdeWidget&)pPanelSkin).SetGameDefinition(gameDefinition);
-	((gdeWPSSky&)(igdeWidget&)pPanelSky).SetGameDefinition(gameDefinition);
+	pPanelCategory.DynamicCast<gdeWPSCategory>()->SetGameDefinition(gameDefinition);
+	pPanelObjectClass.DynamicCast<gdeWPSObjectClass>()->SetGameDefinition(gameDefinition);
+	pPanelOCBillboard.DynamicCast<gdeWPSOCBillboard>()->SetGameDefinition(gameDefinition);
+	pPanelOCCamera.DynamicCast<gdeWPSOCCamera>()->SetGameDefinition(gameDefinition);
+	pPanelOCComponent.DynamicCast<gdeWPSOCComponent>()->SetGameDefinition(gameDefinition);
+	pPanelOCEnvMapProbe.DynamicCast<gdeWPSOCEnvMapProbe>()->SetGameDefinition(gameDefinition);
+	pPanelOCLight.DynamicCast<gdeWPSOCLight>()->SetGameDefinition(gameDefinition);
+	pPanelOCNavigationBlocker.DynamicCast<gdeWPSOCNavigationBlocker>()->SetGameDefinition(gameDefinition);
+	pPanelOCNavigationSpace.DynamicCast<gdeWPSOCNavigationSpace>()->SetGameDefinition(gameDefinition);
+	pPanelOCParticleEmitter.DynamicCast<gdeWPSOCParticleEmitter>()->SetGameDefinition(gameDefinition);
+	pPanelOCForceField.DynamicCast<gdeWPSOCForceField>()->SetGameDefinition(gameDefinition);
+	pPanelOCSnapPoint.DynamicCast<gdeWPSOCSnapPoint>()->SetGameDefinition(gameDefinition);
+	pPanelOCSpeaker.DynamicCast<gdeWPSOCSpeaker>()->SetGameDefinition(gameDefinition);
+	pPanelOCWorld.DynamicCast<gdeWPSOCWorld>()->SetGameDefinition(gameDefinition);
+	pPanelParticleEmitter.DynamicCast<gdeWPSParticleEmitter>()->SetGameDefinition(gameDefinition);
+	pPanelSkin.DynamicCast<gdeWPSSkin>()->SetGameDefinition(gameDefinition);
+	pPanelSky.DynamicCast<gdeWPSSky>()->SetGameDefinition(gameDefinition);
 	
 	if(gameDefinition){
 		pModelTreeObjects->SetCurrentItemFromGameDef();

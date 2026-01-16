@@ -453,19 +453,19 @@ void aeView3D::SetAnimator(aeAnimator *animator){
 
 
 void aeView3D::StartLocomotionTesting(){
-	((cLocomotionInteraction&)(igdeMouseKeyListener&)pLocomotionInteraction).Start();
+	pLocomotionInteraction.DynamicCast<cLocomotionInteraction>()->Start();
 }
 
 void aeView3D::StopLocomotionTesting(){
-	((cLocomotionInteraction&)(igdeMouseKeyListener&)pLocomotionInteraction).Stop();
+	pLocomotionInteraction.DynamicCast<cLocomotionInteraction>()->Stop();
 }
 
 void aeView3D::StartWakeboarding(){
-	((cWakeboardInteraction&)(igdeMouseKeyListener&)pWakeboardInteraction).Start();
+	pWakeboardInteraction.DynamicCast<cWakeboardInteraction>()->Start();
 }
 
 void aeView3D::StopWakeboarding(){
-	((cWakeboardInteraction&)(igdeMouseKeyListener&)pWakeboardInteraction).Stop();
+	pWakeboardInteraction.DynamicCast<cWakeboardInteraction>()->Stop();
 }
 
 

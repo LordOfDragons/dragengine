@@ -25,6 +25,7 @@
 #ifndef _DESKINPROPERTYNODE_H_
 #define _DESKINPROPERTYNODE_H_
 
+#include "../../../../common/collection/decTUniqueList.h"
 #include "../../../../common/math/decMath.h"
 
 class deSkinPropertyNodeVisitor;
@@ -35,6 +36,12 @@ class deSkinPropertyNodeVisitor;
  */
 class DE_DLL_EXPORT deSkinPropertyNode{
 public:
+	/** \brief Reference type. */
+	using Ref = deTUniqueReference<deSkinPropertyNode>;
+	
+	/** \brief List type. */
+	using List = decTUniqueList<deSkinPropertyNode>;
+	
 	/**
 	 * \brief Combine modes indicating how the canvas is combined with the content below.
 	 * 
@@ -101,7 +108,7 @@ private:
 	decColor pColorize;
 	
 	float pTransparency;
-	deSkinPropertyNode *pMask;
+	deSkinPropertyNode::Ref pMask;
 	eCombineModes pCombineMode;
 	
 	int pMapped[MappedCount];
@@ -180,11 +187,11 @@ public:
 	/** \brief Set transparency in the range from 0 to 1 where 1 is opaque and 0 fully transparent. */
 	void SetTransparency(float transparency);
 	
-	/** \brief Mask node or NULL if not masked. */
-	inline deSkinPropertyNode *GetMask() const{ return pMask; }
+	/** \brief Mask node or nullptr if not masked. */
+	inline const deSkinPropertyNode::Ref &GetMask() const{ return pMask; }
 	
-	/** \brief Set mask node or NULL if not masked. */
-	void SetMask(deSkinPropertyNode *mask);
+	/** \brief Set mask node or nullptr if not masked. */
+	void SetMask(deSkinPropertyNode::Ref &&mask);
 	
 	/** \brief Combine mode. */
 	inline eCombineModes GetCombineMode() const{ return pCombineMode; }

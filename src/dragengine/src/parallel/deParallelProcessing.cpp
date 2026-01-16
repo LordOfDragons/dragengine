@@ -55,8 +55,6 @@
 deParallelProcessing::deParallelProcessing(deEngine &engine) :
 pEngine(engine),
 pCoreCount(4),
-pThreads(nullptr),
-pThreadCount(0),
 pPaused(false),
 pOutputDebugMessages(false)
 {
@@ -143,17 +141,18 @@ void deParallelProcessing::Pause(){
 	
 	lock.Unlock();
 	
+	const int threadCount = pThreads.GetCount();
 	int i = 0;
-	while(i < pThreadCount){
+	while(i < threadCount){
 		// check if all threads finished
-		for(i=0; i<pThreadCount; i++){
-			if(!pThreads[i]->IsWaiting()){
+		for(i=0; i<threadCount; i++){
+			if(!pThreads.GetAt(i)->IsWaiting()){
 				break;
 			}
 		}
 		
 		// if threads are still running notify modules to break through problematic situations
-		if(i < pThreadCount){
+		if(i < threadCount){
 			deModuleSystem &moduleSystem = *pEngine.GetModuleSystem();
 			moduleSystem.GetModules().Visit([&](const deLoadableModule &loadableModule){
 				if(loadableModule.IsLoaded() && loadableModule.GetModule()){
@@ -425,9 +424,10 @@ void deParallelProcessing::FinishAndRemoveTasksOwnedBy(deBaseModule *module){
 		
 	// cancel and wait for tasks in progress owned by module if not paused
 	}else{
+		const int threadCount = pThreads.GetCount();
 		int i;
-		for(i=0; i<pThreadCount; i++){
-			deParallelTask * const task = pThreads[i]->GetTask();
+		for(i=0; i<threadCount; i++){
+			deParallelTask * const task = pThreads.GetAt(i)->GetTask();
 			if(task && task->GetOwner() == module){
 				task->Cancel(*this);
 				
@@ -567,9 +567,10 @@ void deParallelProcessing::FinishAndRemoveAllTasks(){
 		
 	// cancel and wait for all tasks in progress if not paused
 	}else{
+		const int threadCount = pThreads.GetCount();
 		int i;
-		for(i=0; i<pThreadCount; i++){
-			deParallelTask * const task = pThreads[i]->GetTask();
+		for(i=0; i<threadCount; i++){
+			deParallelTask * const task = pThreads.GetAt(i)->GetTask();
 			if(!task){
 				continue;
 			}
@@ -751,9 +752,10 @@ void deParallelProcessing::LogThreadAndTasks(){
 	decString taskName, taskDetails;
 	
 	logger.LogInfoFormat(LOGSOURCE, "Parallel Processing%s - Threads:", paused);
+	const int threadCount = pThreads.GetCount();
 	int i;
-	for(i=0; i<pThreadCount; i++){
-		const deParallelTask * const task = pThreads[i]->GetTask();
+	for(i=0; i<threadCount; i++){
+		const deParallelTask * const task = pThreads.GetAt(i)->GetTask();
 		if(task){
 			pLogTask("- Running ", "  ", *task);
 			
@@ -822,39 +824,30 @@ void deParallelProcessing::pCreateThreads(int count){
 		return;
 	}
 	
-	pThreads = new deParallelThread*[count];
+	pThreads.EnlargeCapacity(count);
 	
-	while(pThreadCount < count){
-		pThreads[pThreadCount] = new deParallelThread(*this, pThreadCount, pThreadCount > 0);
-		pThreadCount++;
+	int threadCount = pThreads.GetCount();
+	while(threadCount < count){
+		auto thread = deTUniqueReference<deParallelThread>::New(*this, threadCount, threadCount > 0);
 		
 		#ifdef OS_BEOS
 		decString name;
-		name.Format("ParallelProcessing#%d", pThreadCount - 1);
-		pThreads[pThreadCount - 1]->SetName(name);
+		name.Format("ParallelProcessing#%d", threadCount);
+		thread->SetName(name);
 		#endif
 		
-		pThreads[pThreadCount - 1]->Start();
+		thread->Start();
+		pThreads.Add(std::move(thread));
+		threadCount++;
 	}
 	
 	if(pOutputDebugMessages){
-		pEngine.GetLogger()->LogInfoFormat(LOGSOURCE, "Created %i worker threads", pThreadCount);
+		pEngine.GetLogger()->LogInfoFormat(LOGSOURCE, "Created %i worker threads", pThreads.GetCount());
 	}
 }
 
 void deParallelProcessing::pDestroyThreads(){
-	if(!pThreads){
-		return;
-	}
-	
-	while(pThreadCount > 0){
-		pThreadCount--;
-		delete pThreads[pThreadCount];
-	}
-	delete [] pThreads;
-	
-	pThreads = nullptr;
-	pThreadCount = 0;
+	pThreads.RemoveAll();
 	
 	if(pOutputDebugMessages){
 		pEngine.GetLogger()->LogInfo(LOGSOURCE, "Destroyed worker threads");
@@ -862,23 +855,24 @@ void deParallelProcessing::pDestroyThreads(){
 }
 
 void deParallelProcessing::pStopAllThreads(){
+	const int threadCount = pThreads.GetCount();
 	int i;
 	
 	if(pOutputDebugMessages){
-		pEngine.GetLogger()->LogInfoFormat(LOGSOURCE, "Stopping %i thread", pThreadCount);
+		pEngine.GetLogger()->LogInfoFormat(LOGSOURCE, "Stopping %i thread", threadCount);
 	}
 	
 	// tell all threads to exit
-	for(i=0; i<pThreadCount; i++){
-		pThreads[i]->RequestExit();
+	for(i=0; i<threadCount; i++){
+		pThreads.GetAt(i)->RequestExit();
 	}
 	
 	// wake them all up so they all see the exit request and can properly exit
 	pSemaphoreNewTasks.SignalAll();
 	
 	// wait for all of them to stop
-	for(i=0; i<pThreadCount; i++){
-		pThreads[i]->WaitForExit();
+	for(i=0; i<threadCount; i++){
+		pThreads.GetAt(i)->WaitForExit();
 	}
 }
 
@@ -1044,10 +1038,11 @@ void deParallelProcessing::WaitForAllTasks(){
 	
 	while(!pPaused){
 		// check if all threads are sleeping
+		const int threadCount = pThreads.GetCount();
 		bool finished = true;
 		int i;
-		for(i=0; i<pThreadCount; i++){
-			if(!pThreads[i]->IsWaiting()){
+		for(i=0; i<threadCount; i++){
+			if(!pThreads.GetAt(i)->IsWaiting()){
 				finished = false;
 				break;
 			}

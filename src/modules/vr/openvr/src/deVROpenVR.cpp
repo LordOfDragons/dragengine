@@ -144,7 +144,7 @@ deovrTextureMap *deVROpenVR::GetTextureMapWithID(vr::TextureID_t id){
 	int i;
 	
 	for(i=0; i<count; i++){
-		deovrTextureMap * const textureMap = (deovrTextureMap*)pTextureMaps.GetAt(i);
+		deovrTextureMap * const textureMap = pTextureMaps.GetAt(i);
 		if(textureMap->GetID() == id){
 			return textureMap;
 		}

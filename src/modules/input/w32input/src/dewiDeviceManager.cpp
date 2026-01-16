@@ -314,7 +314,7 @@ void dewiDeviceManager::pUpdateDeviceIndices(){
 	const int count = pDevices.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		((dewiDevice*)pDevices.GetAt(i))->SetIndex(i);
+		pDevices.GetAt(i)->SetIndex(i);
 	}
 }
 

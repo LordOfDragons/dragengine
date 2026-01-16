@@ -167,7 +167,7 @@ void deoglRSkyInstanceLayer::NotifyUpdateStaticComponent(deoglRComponent *compon
 	const int count = pGICascades.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		((deoglSkyLayerGICascade*)pGICascades.GetAt(i))->NotifyUpdateStaticComponent(component);
+		pGICascades.GetAt(i)->NotifyUpdateStaticComponent(component);
 	}
 }
 
@@ -182,7 +182,7 @@ deoglSkyLayerGICascade *deoglRSkyInstanceLayer::GetGICascade(const deoglGICascad
 	int i;
 	
 	for(i=0; i<count; i++){
-		deoglSkyLayerGICascade * const slgc = (deoglSkyLayerGICascade*)pGICascades.GetAt(i);
+		deoglSkyLayerGICascade * const slgc = pGICascades.GetAt(i);
 		if(&slgc->GetGICascade() == &cascade){
 			return slgc;
 		}
@@ -207,7 +207,7 @@ void deoglRSkyInstanceLayer::RemoveGICascade(const deoglGICascade &cascade){
 	int i;
 	
 	for(i=0; i<count; i++){
-		deoglSkyLayerGICascade * const slgc = (deoglSkyLayerGICascade*)pGICascades.GetAt(i);
+		deoglSkyLayerGICascade * const slgc = pGICascades.GetAt(i);
 		if(&slgc->GetGICascade() == &cascade){
 			delete slgc;
 			pGICascades.RemoveFrom(i);
@@ -227,7 +227,7 @@ void deoglRSkyInstanceLayer::RemoveAllGICascades(const deoglGIState &state){
 void deoglRSkyInstanceLayer::RemoveAllGICascades(){
 	int count = pGICascades.GetCount();
 	while(count > 0){
-		delete (deoglSkyLayerGICascade*)pGICascades.GetAt(--count);
+		delete pGICascades.GetAt(--count);
 	}
 }
 

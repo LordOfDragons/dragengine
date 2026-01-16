@@ -66,8 +66,6 @@ pBloomStrength(0.25f),
 pBloomBlend(1.0f),
 pBloomSize(0.25f),
 
-pEffects(nullptr),
-
 pPeerGraphic(nullptr),
 
 pParentWorld(nullptr),
@@ -75,14 +73,6 @@ pLLWorldPrev(nullptr),
 pLLWorldNext(nullptr)
 {
 	pLayerMask.SetBit(0);
-	
-	try{
-		pEffects = new deEffectChain;
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
 }
 
 deCamera::~deCamera(){
@@ -364,27 +354,25 @@ void deCamera::ResetAdaptedIntensity(){
 ////////////
 
 int deCamera::GetEffectCount() const{
-	return pEffects->GetEffectCount();
+	return pEffects.GetCount();
 }
 
-deEffect *deCamera::GetEffectAt(int index) const{
-	return pEffects->GetEffectAt(index);
+const deEffect::Ref &deCamera::GetEffectAt(int index) const{
+	return pEffects.GetAt(index);
 }
 
 void deCamera::AddEffect(deEffect *effect){
-	pEffects->AddEffect(effect);
+	pEffects.Add(effect);
 	
 	if(pPeerGraphic){
-		pPeerGraphic->EffectAdded(pEffects->GetEffectCount() - 1, effect);
+		pPeerGraphic->EffectAdded(pEffects.GetCount() - 1, effect);
 	}
 }
 
 void deCamera::RemoveEffect(deEffect *effect){
-	const int index = pEffects->IndexOfEffect(effect);
-	if(index == -1){
-		DETHROW(deeInvalidParam);
-	}
-	pEffects->RemoveEffect(effect);
+	const int index = pEffects.IndexOf(effect);
+	DEASSERT_TRUE(index != -1)
+	pEffects.RemoveFrom(index);
 	
 	if(pPeerGraphic){
 		pPeerGraphic->EffectRemoved(index, effect);
@@ -392,7 +380,7 @@ void deCamera::RemoveEffect(deEffect *effect){
 }
 
 void deCamera::RemoveAllEffects(){
-	pEffects->RemoveAllEffects();
+	pEffects.RemoveAll();
 	
 	if(pPeerGraphic){
 		pPeerGraphic->AllEffectsRemoved();
@@ -442,9 +430,5 @@ void deCamera::pCleanUp(){
 	if(pPeerGraphic){
 		delete pPeerGraphic;
 		pPeerGraphic = nullptr;
-	}
-	
-	if(pEffects){
-		delete pEffects;
 	}
 }

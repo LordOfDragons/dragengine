@@ -56,7 +56,7 @@ deoglSharedVBOListList::~deoglSharedVBOListList(){
 	const int count = pLists.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		delete ((deoglSharedVBOList*)pLists.GetAt(i));
+		delete pLists.GetAt(i);
 	}
 	pLists.RemoveAll();
 }
@@ -71,7 +71,7 @@ int deoglSharedVBOListList::GetCount() const{
 }
 
 deoglSharedVBOList *deoglSharedVBOListList::GetAt(int index) const{
-	return (deoglSharedVBOList*)pLists.GetAt(index);
+	return pLists.GetAt(index);
 }
 
 bool deoglSharedVBOListList::HasWith(const deoglVBOLayout &layout, GLenum drawType) const{
@@ -79,7 +79,7 @@ bool deoglSharedVBOListList::HasWith(const deoglVBOLayout &layout, GLenum drawTy
 	int i;
 	
 	for(i=0; i<count; i++){
-		if(((deoglSharedVBOList*)pLists.GetAt(i))->Matches(layout, drawType)){
+		if(pLists.GetAt(i)->Matches(layout, drawType)){
 			return true;
 		}
 	}
@@ -93,7 +93,7 @@ deoglSharedVBOList *deoglSharedVBOListList::GetWith(const deoglVBOLayout &layout
 	int i;
 	
 	for(i=0; i<count; i++){
-		list = (deoglSharedVBOList*)pLists.GetAt(i);
+		list = pLists.GetAt(i);
 		if(list->Matches(layout, drawType)){
 			return list;
 		}
@@ -121,6 +121,6 @@ void deoglSharedVBOListList::PrepareAllLists(){
 	const int count = pLists.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		((deoglSharedVBOList*)pLists.GetAt(i))->PrepareVBOs();
+		pLists.GetAt(i)->PrepareVBOs();
 	}
 }

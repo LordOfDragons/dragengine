@@ -56,14 +56,10 @@ declRunGame::declRunGame(declLauncher &launcher) :
 pLauncher(launcher),
 pUseConsole(false),
 pLogAllToConsole(false),
-pModuleParameters(nullptr),
 pHasPatchIdentifier(false){
 }
 
 declRunGame::~declRunGame(){
-	if(pModuleParameters){
-		delete pModuleParameters;
-	}
 }
 
 
@@ -312,7 +308,7 @@ bool declRunGame::ParseModuleParameter(const decString &value){
 	parameterValue = value.GetMiddle(separator2 + 1);
 	
 	if(!pModuleParameters){
-		pModuleParameters = new delGPModule::List;
+		pModuleParameters = deTUniqueReference<delGPModule::List>::New();
 	}
 	
 	delGPModule::Ref module(pModuleParameters->FindNamed(moduleName));

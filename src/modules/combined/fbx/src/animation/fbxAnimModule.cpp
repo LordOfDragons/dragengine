@@ -133,29 +133,23 @@ void fbxAnimModule::pLoadAnimation(deAnimation &animation, fbxScene &scene){
 	//loadAnimation->DebugPrintStructure( *this, "", true );
 	
 	loadRig->GetBones().Visit([&](const fbxRigBone &rb){
-		deAnimationBone * const bone = new deAnimationBone;
+		auto bone = deAnimationBone::Ref::New();
 		bone->SetName(rb.GetName());
-		animation.AddBone(bone);
+		animation.AddBone(std::move(bone));
 	});
 	
 	pLoadMoves(animation, *loadAnimation);
 }
 
 void fbxAnimModule::pLoadMoves(deAnimation &animation, const fbxAnimation &loadAnimation){
-	deAnimationMove *move = nullptr;
-	
 	try{
 		loadAnimation.GetMoves().Visit([&](const fbxAnimationMove &m){
-			move = new deAnimationMove;
+			auto move = deAnimationMove::Ref::New();
 			pLoadMove(animation, *move, m);
-			animation.AddMove(move);
-			move = nullptr;
+			animation.AddMove(std::move(move));
 		});
 		
 	}catch(const deException &){
-		if(move){
-			delete move;
-		}
 		throw;
 	}
 }
@@ -168,7 +162,7 @@ const fbxAnimationMove &loadMove){
 	int i, j, k;
 	const int boneCount = animation.GetBoneCount();
 	for(i=0; i<boneCount; i++){
-		move.AddKeyframeList(new deAnimationKeyframe::List);
+		move.AddKeyframeList(deAnimationMove::KeyframeListRef::New());
 	}
 	
 	int playtime = 0;
@@ -196,7 +190,7 @@ const fbxAnimationMove &loadMove){
 			}
 		}
 		
-		deAnimationKeyframe::List &kflist = *move.GetKeyframeList(c.GetRigBone()->GetIndex());
+		deAnimationKeyframe::List &kflist = move.GetKeyframeList(c.GetRigBone()->GetIndex());
 		for(j=0; j<=lastTime; j++){
 			kflist.Add({});
 		}

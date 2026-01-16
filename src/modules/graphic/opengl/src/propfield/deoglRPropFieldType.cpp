@@ -109,7 +109,7 @@ void deoglRPropFieldType::SetModel(deoglRModel *model){
 	const int count = pClusters.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		((deoglPropFieldCluster*)pClusters.GetAt(i))->DirtyRTSInstance();
+		pClusters.GetAt(i)->DirtyRTSInstance();
 	}
 }
 
@@ -380,7 +380,7 @@ void deoglRPropFieldType::PrepareForRender(){
 		int i;
 		
 		for(i=0; i<count; i++){
-			((deoglPropFieldCluster*)pClusters.GetAt(i))->PrepareForRender();
+			pClusters.GetAt(i)->PrepareForRender();
 		}
 	}
 }
@@ -396,7 +396,7 @@ int deoglRPropFieldType::GetClusterCount() const{
 }
 
 deoglPropFieldCluster *deoglRPropFieldType::GetClusterAt(int index) const{
-	return (deoglPropFieldCluster*)pClusters.GetAt(index);
+	return pClusters.GetAt(index);
 }
 
 void deoglRPropFieldType::AddCluster(deoglPropFieldCluster *cluster){
@@ -417,12 +417,12 @@ void deoglRPropFieldType::RemoveAllClusters(){
 	
 	if(pPropField.GetParentWorld()){
 		for(i=0; i<clusterCount; i++){
-			((deoglPropFieldCluster*)pClusters.GetAt(i))->RemoveFromWorldCompute();
+			pClusters.GetAt(i)->RemoveFromWorldCompute();
 		}
 	}
 	
 	for(i=0; i<clusterCount; i++){
-		delete (deoglPropFieldCluster*)pClusters.GetAt(i);
+		delete pClusters.GetAt(i);
 	}
 	pClusters.RemoveAll();
 }
@@ -441,7 +441,7 @@ void deoglRPropFieldType::PrepareBendStateData(const dePropFieldType &type){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoglPropFieldCluster*)pClusters.GetAt(i))->PrepareBendStateData(type);
+		pClusters.GetAt(i)->PrepareBendStateData(type);
 	}
 	
 	ClusterRequiresPrepareForRender();
@@ -464,7 +464,7 @@ void deoglRPropFieldType::MarkTUCsDirty(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoglPropFieldCluster*)pClusters.GetAt(i))->MarkTUCsDirty();
+		pClusters.GetAt(i)->MarkTUCsDirty();
 	}
 	
 	pPropField.TypeRequiresPrepareForRender();
@@ -586,7 +586,7 @@ void deoglRPropFieldType::AddToWorldCompute(deoglWorldCompute &worldCompute){
 	const int clusterCount = pClusters.GetCount();
 	int i;
 	for(i=0; i<clusterCount; i++){
-		((deoglPropFieldCluster*)pClusters.GetAt(i))->AddToWorldCompute(worldCompute);
+		pClusters.GetAt(i)->AddToWorldCompute(worldCompute);
 	}
 }
 
@@ -598,7 +598,7 @@ void deoglRPropFieldType::UpdateWorldCompute(){
 	const int clusterCount = pClusters.GetCount();
 	int i;
 	for(i=0; i<clusterCount; i++){
-		((deoglPropFieldCluster*)pClusters.GetAt(i))->UpdateWorldCompute();
+		pClusters.GetAt(i)->UpdateWorldCompute();
 	}
 }
 
@@ -610,7 +610,7 @@ void deoglRPropFieldType::UpdateWorldComputeTextures(){
 	const int clusterCount = pClusters.GetCount();
 	int i;
 	for(i=0; i<clusterCount; i++){
-		((deoglPropFieldCluster*)pClusters.GetAt(i))->UpdateWorldComputeTextures();
+		pClusters.GetAt(i)->UpdateWorldComputeTextures();
 	}
 }
 
@@ -622,7 +622,7 @@ void deoglRPropFieldType::RemoveFromWorldCompute(){
 	const int clusterCount = pClusters.GetCount();
 	int i;
 	for(i=0; i<clusterCount; i++){
-		((deoglPropFieldCluster*)pClusters.GetAt(i))->RemoveFromWorldCompute();
+		pClusters.GetAt(i)->RemoveFromWorldCompute();
 	}
 }
 

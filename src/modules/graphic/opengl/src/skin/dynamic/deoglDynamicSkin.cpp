@@ -91,7 +91,7 @@ int deoglDynamicSkin::GetRenderableCount() const{
 }
 
 deoglDSRenderable *deoglDynamicSkin::GetRenderableAt(int index) const{
-	return (deoglDSRenderable*)pRenderables.GetAt(index);
+	return pRenderables.GetAt(index);
 }
 
 
@@ -104,7 +104,7 @@ void deoglDynamicSkin::SyncToRender(){
 		pRDynamicSkin->RemoveAllRenderables();
 		
 		for(i=0; i<count; i++){
-			deoglDSRenderable &renderable = *((deoglDSRenderable*)pRenderables.GetAt(i));
+			deoglDSRenderable &renderable = *pRenderables.GetAt(i);
 			renderable.SyncToRender();
 			pRDynamicSkin->AddRenderable(renderable.GetRRenderable());
 		}
@@ -113,7 +113,7 @@ void deoglDynamicSkin::SyncToRender(){
 	}
 	
 	for(i=0; i<count; i++){
-		((deoglDSRenderable*)pRenderables.GetAt(i))->SyncToRender();
+		pRenderables.GetAt(i)->SyncToRender();
 	}
 }
 
@@ -201,11 +201,11 @@ void deoglDynamicSkin::RenderableAdded(int, deDSRenderable *renderable){
 }
 
 void deoglDynamicSkin::RenderableChanged(int index, deDSRenderable *renderable){
-	((deoglDSRenderable*)pRenderables.GetAt(index))->RenderableChanged();
+	pRenderables.GetAt(index)->RenderableChanged();
 }
 
 void deoglDynamicSkin::RenderableRemoved(int index, deDSRenderable*){
-	delete (deoglDSRenderable*)pRenderables.GetAt(index);
+	delete pRenderables.GetAt(index);
 	pRenderables.RemoveFrom(index);
 	
 	pDirtyRenderables = true;
@@ -217,7 +217,7 @@ void deoglDynamicSkin::AllRenderablesRemoved(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		delete (deoglDSRenderable*)pRenderables.GetAt(i);
+		delete pRenderables.GetAt(i);
 	}
 	pRenderables.RemoveAll();
 	
@@ -233,7 +233,7 @@ void deoglDynamicSkin::AllRenderablesRemoved(){
 void deoglDynamicSkin::pCleanUp(){
 	int i, count = pRenderables.GetCount();
 	for(i=0; i<count; i++){
-		delete (deoglDSRenderable*)pRenderables.GetAt(i);
+		delete pRenderables.GetAt(i);
 	}
 	pRenderables.RemoveAll();
 	// notify owners we are about to be deleted. required since owners hold only a weak pointer

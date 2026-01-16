@@ -215,7 +215,7 @@ deoglRenderPlan::~deoglRenderPlan(){
 	
 	count = pSkyLights.GetCount();
 	for(i=0; i<count; i++){
-		delete (deoglRenderPlanSkyLight*)pSkyLights.GetAt(i);
+		delete pSkyLights.GetAt(i);
 	}
 	pSkyLights.RemoveAll();
 	
@@ -458,7 +458,7 @@ void deoglRenderPlan::pBarePrepareRender(const deoglRenderPlanMasked *mask){
 	
 	// finish preparations
 	for(i=0; i<pSkyLightCount; i++){
-		((deoglRenderPlanSkyLight*)pSkyLights.GetAt(i))->FinishPrepare();
+		pSkyLights.GetAt(i)->FinishPrepare();
 	}
 	renderCanvas.SampleDebugInfoPlanPrepareFinish(*this);
 	SPECIAL_TIMER_PRINT("Finish")
@@ -636,7 +636,7 @@ void deoglRenderPlan::pPlanSkyLight(){
 	int i, j, k;
 	
 	for(i=0; i<pSkyLightCount; i++){
-		((deoglRenderPlanSkyLight*)pSkyLights.GetAt(i))->ClearPlanned();
+		pSkyLights.GetAt(i)->ClearPlanned();
 	}
 	
 	for(i=0; i<skyCount; i++){
@@ -652,7 +652,7 @@ void deoglRenderPlan::pPlanSkyLight(){
 			deoglRenderPlanSkyLight *planSkyLight = nullptr;
 			
 			for(k=0; k<pSkyLightCount; k++){
-				deoglRenderPlanSkyLight * const check = (deoglRenderPlanSkyLight*)pSkyLights.GetAt(k);
+				deoglRenderPlanSkyLight * const check = pSkyLights.GetAt(k);
 				if(check->GetLayer() == &skyLayer){
 					planSkyLight = check;
 					break;
@@ -661,7 +661,7 @@ void deoglRenderPlan::pPlanSkyLight(){
 			
 			if(!planSkyLight){
 				if(pSkyLightCount < pSkyLights.GetCount()){
-					planSkyLight = (deoglRenderPlanSkyLight*)pSkyLights.GetAt(pSkyLightCount);
+					planSkyLight = pSkyLights.GetAt(pSkyLightCount);
 					
 				}else{
 					planSkyLight = new deoglRenderPlanSkyLight(*this);
@@ -677,7 +677,7 @@ void deoglRenderPlan::pPlanSkyLight(){
 	}
 	
 	for(i=0; i<pSkyLightCount; i++){
-		deoglRenderPlanSkyLight * const planSkyLight = (deoglRenderPlanSkyLight*)pSkyLights.GetAt(i);
+		deoglRenderPlanSkyLight * const planSkyLight = pSkyLights.GetAt(i);
 		if(planSkyLight->GetPlanned()){
 			continue;
 		}
@@ -812,7 +812,7 @@ void deoglRenderPlan::pStartFindContent(const deoglRenderPlanMasked *mask){
 	// sky lights
 	int i;
 	for(i=0; i<pSkyLightCount; i++){
-		((deoglRenderPlanSkyLight*)pSkyLights.GetAt(i))->StartFindContent();
+		pSkyLights.GetAt(i)->StartFindContent();
 	}
 }
 
@@ -1259,12 +1259,12 @@ void deoglRenderPlan::pRenderOcclusionTests(const deoglRenderPlanMasked *mask){
 		
 		int i;
 		for(i=0; i<pSkyLightCount; i++){
-			((deoglRenderPlanSkyLight*)pSkyLights.GetAt(i))->RenderOcclusionTests();
+			pSkyLights.GetAt(i)->RenderOcclusionTests();
 		}
 		SPECIAL_TIMER_PRINT("> SkyLightsRenderTests")
 		
 		for(i=0; i<pSkyLightCount; i++){
-			((deoglRenderPlanSkyLight*)pSkyLights.GetAt(i))->BuildComputeRenderTasks();
+			pSkyLights.GetAt(i)->BuildComputeRenderTasks();
 		}
 		SPECIAL_TIMER_PRINT("> SkyLightsBuildComputeRenderTasks")
 		
@@ -1493,7 +1493,7 @@ void deoglRenderPlan::Render(){
 void deoglRenderPlan::CleanUp(){
 	int i;
 	for(i=0; i<pSkyLightCount; i++){
-		((deoglRenderPlanSkyLight*)pSkyLights.GetAt(i))->CleanUp();
+		pSkyLights.GetAt(i)->CleanUp();
 	}
 	
 	if(pTasks){
@@ -1985,19 +1985,19 @@ void deoglRenderPlan::RemoveAllLights(){
 ///////////////
 
 deoglRenderPlanSkyLight *deoglRenderPlan::GetSkyLightAt(int index) const{
-	return (deoglRenderPlanSkyLight*)pSkyLights.GetAt(index);
+	return pSkyLights.GetAt(index);
 }
 
 void deoglRenderPlan::RemoveAllSkyLights(){
 	while(pSkyLightCount > 0){
-		((deoglRenderPlanSkyLight*)pSkyLights.GetAt(--pSkyLightCount))->Clear();
+		pSkyLights.GetAt(--pSkyLightCount)->Clear();
 	}
 }
 
 void deoglRenderPlan::SkyLightsStartBuildRT(){
 	int i;
 	for(i=0; i<pSkyLightCount; i++){
-		((deoglRenderPlanSkyLight*)pSkyLights.GetAt(i))->StartBuildRT();
+		pSkyLights.GetAt(i)->StartBuildRT();
 	}
 }
 

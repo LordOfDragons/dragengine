@@ -254,7 +254,7 @@ void aeWPAPanelRuleTrackTo::UpdateRigBoneList(){
 			const int count = rig->GetBoneCount();
 			int i;
 			for(i=0; i<count; i++){
-				pCBTrackBone->AddItem(rig->GetBoneAt(i).GetName());
+				pCBTrackBone->AddItem(rig->GetBoneAt(i)->GetName());
 			}
 		}
 		pCBTrackBone->SortItems();

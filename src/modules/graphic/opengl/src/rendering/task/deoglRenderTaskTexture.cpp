@@ -59,7 +59,7 @@ deoglRenderTaskTexture::~deoglRenderTaskTexture(){
 	const int vaoCount = pVAOs.GetCount();
 	int i;
 	for(i=0; i<vaoCount; i++){
-		delete (deoglRenderTaskVAO*)pVAOs.GetAt(i);
+		delete pVAOs.GetAt(i);
 	}
 	pVAOs.RemoveAll();
 }
@@ -80,7 +80,7 @@ void deoglRenderTaskTexture::Reset(){
 int deoglRenderTaskTexture::GetTotalPointCount() const{
 	int i, pointCount = 0;
 	for(i=0; i<pVAOCount; i++){
-		pointCount += ((deoglRenderTaskVAO*)pVAOs.GetAt(i))->GetTotalPointCount();
+		pointCount += pVAOs.GetAt(i)->GetTotalPointCount();
 	}
 	return pointCount;
 }
@@ -88,7 +88,7 @@ int deoglRenderTaskTexture::GetTotalPointCount() const{
 int deoglRenderTaskTexture::GetTotalInstanceCount() const{
 	int i, instanceCount = 0;
 	for(i=0; i<pVAOCount; i++){
-		instanceCount += ((deoglRenderTaskVAO*)pVAOs.GetAt(i))->GetInstanceCount();
+		instanceCount += pVAOs.GetAt(i)->GetInstanceCount();
 	}
 	return instanceCount;
 }
@@ -96,7 +96,7 @@ int deoglRenderTaskTexture::GetTotalInstanceCount() const{
 int deoglRenderTaskTexture::GetTotalSubInstanceCount() const{
 	int i, subInstanceCount = 0;
 	for(i=0; i<pVAOCount; i++){
-		subInstanceCount += ((deoglRenderTaskVAO*)pVAOs.GetAt(i))->GetTotalSubInstanceCount();
+		subInstanceCount += pVAOs.GetAt(i)->GetTotalSubInstanceCount();
 	}
 	return subInstanceCount;
 }
@@ -110,7 +110,7 @@ void deoglRenderTaskTexture::SetTexture(const deoglRenderTaskSharedTexture *text
 
 
 deoglRenderTaskVAO *deoglRenderTaskTexture::GetVAOAt(int index) const{
-	return (deoglRenderTaskVAO*)pVAOs.GetAt(index);
+	return pVAOs.GetAt(index);
 }
 
 deoglRenderTaskVAO *deoglRenderTaskTexture::AddVAO(const deoglRenderTaskSharedVAO *vao){
@@ -151,7 +151,7 @@ deoglRenderTaskVAO *deoglRenderTaskTexture::AddVAO(const deoglRenderTaskSharedVA
 		pVAOs.Add(rtvao);
 		
 	}else{
-		rtvao = (deoglRenderTaskVAO*)pVAOs.GetAt(pVAOCount);
+		rtvao = pVAOs.GetAt(pVAOCount);
 		rtvao->Reset();
 	}
 	pVAOCount++;

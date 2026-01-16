@@ -76,42 +76,43 @@ public:
 	
 	virtual void BuildSkin(deSkin *skin){
 		// add texture
-		deSkinTexture * const texture = new deSkinTexture("material");
-		skin->AddTexture(texture);
+		auto texture = deSkinTexture::Ref::New("material");
 		
 		// add "color" property
 		if(pImageColor){
-			deSkinPropertyImage * const property = new deSkinPropertyImage("color");
-			texture->AddProperty(property);
+			auto property = deSkinPropertyImage::Ref::New("color");
 			property->SetImage(pImageColor);
 			property->SetPath(pImageColor->GetFilename());
+			texture->AddProperty(std::move(property));
 			
 		}else{
-			deSkinPropertyColor * const property = new deSkinPropertyColor("color");
-			texture->AddProperty(property);
+			auto property = deSkinPropertyColor::Ref::New("color");
 			property->SetColor(decColor(0.5f, 0.5f, 0.5f));
+			texture->AddProperty(std::move(property));
 		}
 		
 		// add "solidity" property
 		if(pImageSolidity){
-			deSkinPropertyImage * const property = new deSkinPropertyImage("solidity");
-			texture->AddProperty(property);
+			auto property = deSkinPropertyImage::Ref::New("solidity");
 			property->SetImage(pImageSolidity);
 			property->SetPath(pImageSolidity->GetFilename());
+			texture->AddProperty(std::move(property));
 			
 		}else{
-			deSkinPropertyValue * const property = new deSkinPropertyValue("solidity");
-			texture->AddProperty(property);
+			auto property = deSkinPropertyValue::Ref::New("solidity");
 			property->SetValue(1.0f);
+			texture->AddProperty(std::move(property));
 		}
 		
 		// add "solidity.masked" property
 		// NOTE if this is set to 0 the skin fails... why?
 		{
-		deSkinPropertyValue * const property = new deSkinPropertyValue("solidity.masked");
-		texture->AddProperty(property);
+		auto property = deSkinPropertyValue::Ref::New("solidity.masked");
 		property->SetValue(1.0f);
+		texture->AddProperty(std::move(property));
 		}
+		
+		skin->AddTexture(std::move(texture));
 	}
 };
 

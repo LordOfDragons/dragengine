@@ -85,7 +85,7 @@ void deoglLightShaderManager::cPrepareShader::PrepareShaderFinished(deoglLightSh
 	const int count = pListeners.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		cGetShaderListener * const listener = (cGetShaderListener*)pListeners.GetAt(i);
+		cGetShaderListener * const listener = pListeners.GetAt(i);
 		try{
 			listener->GetShaderFinished(useShader);
 			
@@ -116,7 +116,7 @@ deoglLightShaderManager::~deoglLightShaderManager(){
 	int i;
 	
 	for(i=0; i<shaderCount; i++){
-		const deoglLightShader &shader = *((deoglLightShader*)pShaderList.GetAt(i));
+		const deoglLightShader &shader = pShaderList.GetAt(i);
 		
 		if(shader.GetRefCount() != 1){
 			shader.GetConfig().DebugGetConfigString(text);
@@ -213,7 +213,7 @@ void deoglLightShaderManager::Maintanance(){
 		int i;
 		
 		for(i=pShaderList.GetCount()-1; i>=0; i--){
-			shader = (deoglLightShader*)pShaderList.GetAt(i);
+			shader = pShaderList.GetAt(i);
 			
 			if(shader->GetRefCount() == 1){
 				pShaderList.Remove(shader);
@@ -234,7 +234,7 @@ const deoglLightShaderConfig &configuration) const{
 	int i;
 	
 	for(i=0; i<count; i++){
-		deoglLightShader * const shader = (deoglLightShader*)pShaderList.GetAt(i);
+		deoglLightShader * const shader = pShaderList.GetAt(i);
 		if(shader->GetConfig() == configuration){
 			return shader;
 		}
@@ -249,7 +249,7 @@ const deoglLightShaderConfig &configuration) const{
 	int i;
 	
 	for(i=0; i<count; i++){
-		cPrepareShader * const preparing = (cPrepareShader*)pPrepareShaders.GetAt(i);
+		cPrepareShader * const preparing = pPrepareShaders.GetAt(i);
 		if(preparing->GetShader()->GetConfig() == configuration){
 			return preparing;
 		}

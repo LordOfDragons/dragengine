@@ -323,7 +323,7 @@ int deoalWorldOctree::GetComponentCount() const{
 }
 
 deoalAComponent *deoalWorldOctree::GetComponentAt(int index) const{
-	return (deoalAComponent*)pComponents.GetAt(index);
+	return pComponents.GetAt(index);
 }
 
 int deoalWorldOctree::IndexOfComponent(deoalAComponent *component) const{
@@ -348,7 +348,7 @@ void deoalWorldOctree::RemoveAllComponents(){
 	int count = pComponents.GetCount();
 	while(count > 0){
 		count--;
-		((deoalAComponent*)pComponents.GetAt(count))->SetOctreeNode(nullptr);
+		pComponents.GetAt(count)->SetOctreeNode(nullptr);
 	}
 	pComponents.RemoveAll();
 }
@@ -363,7 +363,7 @@ int deoalWorldOctree::GetMicrophoneCount() const{
 }
 
 deoalAMicrophone *deoalWorldOctree::GetMicrophoneAt(int index) const{
-	return (deoalAMicrophone*)pMicrophones.GetAt(index);
+	return pMicrophones.GetAt(index);
 }
 
 int deoalWorldOctree::IndexOfMicrophone(deoalAMicrophone *microphone) const{
@@ -388,7 +388,7 @@ void deoalWorldOctree::RemoveAllMicrophones(){
 	int count = pMicrophones.GetCount();
 	while(count > 0){
 		count--;
-		((deoalAMicrophone*)pMicrophones.GetAt(count))->SetOctreeNode(nullptr);
+		pMicrophones.GetAt(count)->SetOctreeNode(nullptr);
 	}
 	pMicrophones.RemoveAll();
 }
@@ -403,7 +403,7 @@ int deoalWorldOctree::GetSpeakerCount() const{
 }
 
 deoalASpeaker *deoalWorldOctree::GetSpeakerAt(int index) const{
-	return (deoalASpeaker*)pSpeakers.GetAt(index);
+	return pSpeakers.GetAt(index);
 }
 
 int deoalWorldOctree::IndexOfSpeaker(deoalASpeaker *speaker) const{
@@ -428,7 +428,7 @@ void deoalWorldOctree::RemoveAllSpeakers(){
 	int count = pSpeakers.GetCount();
 	while(count > 0){
 		count--;
-		((deoalASpeaker*)pSpeakers.GetAt(count))->SetOctreeNode(nullptr);
+		pSpeakers.GetAt(count)->SetOctreeNode(nullptr);
 	}
 	pSpeakers.RemoveAll();
 }
@@ -443,7 +443,7 @@ int deoalWorldOctree::GetEnvProbeCount() const{
 }
 
 deoalEnvProbe *deoalWorldOctree::GetEnvProbeAt(int index) const{
-	return (deoalEnvProbe*)pEnvProbes.GetAt(index);
+	return pEnvProbes.GetAt(index);
 }
 
 int deoalWorldOctree::IndexOfEnvProbe(deoalEnvProbe *envProbe) const{
@@ -472,7 +472,7 @@ void deoalWorldOctree::RemoveAllEnvProbes(){
 	int count = pEnvProbes.GetCount();
 	while(count > 0){
 		count--;
-		((deoalEnvProbe*)pEnvProbes.GetAt(count))->SetOctreeNode(nullptr);
+		pEnvProbes.GetAt(count)->SetOctreeNode(nullptr);
 	}
 	pEnvProbes.RemoveAll();
 }
@@ -487,7 +487,7 @@ int deoalWorldOctree::GetSoundLevelMeterCount() const{
 }
 
 deoalASoundLevelMeter *deoalWorldOctree::GetSoundLevelMeterAt(int index) const{
-	return (deoalASoundLevelMeter*)pSoundLevelMeters.GetAt(index);
+	return pSoundLevelMeters.GetAt(index);
 }
 
 int deoalWorldOctree::IndexOfSoundLevelMeter(deoalASoundLevelMeter *soundLevelMeter) const{
@@ -512,7 +512,7 @@ void deoalWorldOctree::RemoveAllSoundLevelMeters(){
 	int count = pSoundLevelMeters.GetCount();
 	while(count > 0){
 		count--;
-		((deoalASoundLevelMeter*)pSoundLevelMeters.GetAt(count))->SetOctreeNode(nullptr);
+		pSoundLevelMeters.GetAt(count)->SetOctreeNode(nullptr);
 	}
 	pSoundLevelMeters.RemoveAll();
 }

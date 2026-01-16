@@ -166,7 +166,7 @@ void deCRBasic::LogTrace(){
 	LogError(decrbWindowMain::GetTextForError(trace.GetError()));
 	
 	for(i=0; i<pointCount; i++){
-		const deErrorTracePoint &tracePoint = *trace.GetPoint(i);
+		const deErrorTracePoint &tracePoint = trace.GetPoint(i);
 		
 		if(tracePoint.GetSourceModule()){
 			LogErrorFormat("Trace %i: %s, %s at %i", i + 1,
@@ -183,7 +183,7 @@ void deCRBasic::LogTrace(){
 		const int valueCount = tracePoint.GetValueCount();
 		int j;
 		for(j=0; j<valueCount; j++){
-			LogTraceSubValues(*tracePoint.GetValue(j), "  ");
+			LogTraceSubValues(tracePoint.GetValue(j), "  ");
 		}
 	}
 }
@@ -200,7 +200,7 @@ void deCRBasic::LogTraceSubValues(const deErrorTraceValue &traceValue, const cha
 	int i;
 	
 	for(i=0; i<valueCount; i++){
-		LogTraceSubValues(*traceValue.GetSubValue(i), indent);
+		LogTraceSubValues(traceValue.GetSubValue(i), indent);
 	}
 }
 

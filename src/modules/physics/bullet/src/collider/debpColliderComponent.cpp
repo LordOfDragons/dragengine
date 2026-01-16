@@ -1699,7 +1699,7 @@ void debpColliderComponent::InitWeightAttachment(deColliderAttachment &attachmen
 	}
 	
 	const deModel &model = *pColliderComponent.GetComponent()->GetModel();
-	const deModelLOD &lod = *model.GetLODAt(0);
+	const deModelLOD &lod = model.GetLODAt(0);
 	if(face < 0 || face >= lod.GetFaceCount()){
 		attachment.SetAttachType(deColliderAttachment::eatStatic);
 		return;
@@ -1777,7 +1777,7 @@ void debpColliderComponent::InitWeightAttachment(deColliderAttachment &attachmen
 	
 	for(i=0; i<entryCount; i++){
 		//LogInfoFormat( "Collider: add weight %s => %f", rig->GetBoneAt( weightBones[ i ] )->GetName(), weightFactors[ i ] );
-		attWeights[i].bone = rig.GetBoneAt(weightBones[i]).GetName();
+		attWeights[i].bone = rig.GetBoneAt(weightBones[i])->GetName();
 		attWeights[i].weight = weightFactors[i];
 	}
 }
@@ -1889,7 +1889,7 @@ void debpColliderComponent::BonePositionChanged(int index){
 	}
 	
 	if(!pPreventUpdate){
-		cbone->GetPhysicsBody()->SetPosition(pColliderComponent.GetBoneAt(index).GetPosition());
+		cbone->GetPhysicsBody()->SetPosition(pColliderComponent.GetBoneAt(index)->GetPosition());
 		if(pResetKinematicInterpolation){
 			cbone->GetPhysicsBody()->ResetKinematicInterpolation();
 		}
@@ -1914,7 +1914,7 @@ void debpColliderComponent::BoneOrientationChanged(int index){
 	}
 	
 	if(!pPreventUpdate){
-		cbone->GetPhysicsBody()->SetOrientation(pColliderComponent.GetBoneAt(index).GetOrientation());
+		cbone->GetPhysicsBody()->SetOrientation(pColliderComponent.GetBoneAt(index)->GetOrientation());
 		if(pResetKinematicInterpolation){
 			cbone->GetPhysicsBody()->ResetKinematicInterpolation();
 		}
@@ -1938,7 +1938,7 @@ void debpColliderComponent::BoneLinearVelocityChanged(int index){
 		return;
 	}
 	
-	cbone->GetPhysicsBody()->SetLinearVelocity(pColliderComponent.GetBoneAt(index).GetLinearVelocity());
+	cbone->GetPhysicsBody()->SetLinearVelocity(pColliderComponent.GetBoneAt(index)->GetLinearVelocity());
 	if(pResetKinematicInterpolation){
 		cbone->GetPhysicsBody()->ResetKinematicInterpolation();
 	}
@@ -1954,7 +1954,7 @@ void debpColliderComponent::BoneAngularVelocityChanged(int index){
 		return;
 	}
 	
-	cbone->GetPhysicsBody()->SetAngularVelocity(pColliderComponent.GetBoneAt(index).GetAngularVelocity());
+	cbone->GetPhysicsBody()->SetAngularVelocity(pColliderComponent.GetBoneAt(index)->GetAngularVelocity());
 	if(pResetKinematicInterpolation){
 		cbone->GetPhysicsBody()->ResetKinematicInterpolation();
 	}
@@ -1967,7 +1967,7 @@ void debpColliderComponent::BonePropertiesChanged(int index){
 	
 	debpColliderBone * const cbone = pBones->GetBoneAt(index);
 	if(cbone){
-		cbone->GetPhysicsBody()->SetMass(pColliderComponent.GetBoneAt(index).GetMass());
+		cbone->GetPhysicsBody()->SetMass(pColliderComponent.GetBoneAt(index)->GetMass());
 	}
 }
 
@@ -2404,7 +2404,7 @@ void debpColliderComponent::pUpdateBones(){
 	bool hasBonesWithShape = false;
 	if(shapeCount == 0){
 		for(b=0; b<boneCount; b++){
-			if(rig->GetBoneAt(b).GetShapes().GetCount() > 0){
+			if(rig->GetBoneAt(b)->GetShapes().GetCount() > 0){
 				hasBonesWithShape = true;
 				break;
 			}
@@ -2672,7 +2672,7 @@ void debpColliderComponent::pUpdateAttachments(bool force){
 						bpAttachment.SetBoneMappingCount(boneCount);
 						for(j=0; j<boneCount; j++){
 							bpAttachment.SetBoneMappingAt(j, rig->IndexOfBoneNamed(
-								attachedRig->GetBoneAt(j).GetName()));
+								attachedRig->GetBoneAt(j)->GetName()));
 						}
 						
 						bpAttachment.SetVpsMappingCount(vpsCount);

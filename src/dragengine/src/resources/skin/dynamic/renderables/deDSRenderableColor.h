@@ -39,6 +39,10 @@
  * very small ( possibly down to 1x1 ).
  */
 class DE_DLL_EXPORT deDSRenderableColor : public deDSRenderable{
+public:
+	/** \brief Reference type. */
+	using Ref = deTUniqueReference<deDSRenderableColor>;
+	
 private:
 	decColor pColor;
 	

@@ -73,18 +73,9 @@ pIsHovering(false)
 	
 	decLayerMask cfcategory, cffilter;
 	
-	deColliderAttachment *attachment = nullptr;
-	try{
-		attachment = new deColliderAttachment(pDebugDrawer);
-		attachment->SetAttachType(deColliderAttachment::eatStatic);
-		pCollider->AddAttachment(attachment);
-		
-	}catch(const deException &){
-		if(attachment){
-			delete attachment;
-		}
-		throw;
-	}
+	auto attachment = deColliderAttachment::Ref::New(pDebugDrawer);
+	attachment->SetAttachType(deColliderAttachment::eatStatic);
+	pCollider->AddAttachment(std::move(attachment));
 }
 
 igdeGizmo::~igdeGizmo(){
@@ -255,7 +246,7 @@ void igdeGizmo::SetShapeFromModel(const deModel &model){
 	pModelTextureNames.RemoveAll();
 	pDebugDrawer->RemoveAllShapes();
 	
-	const deModelLOD &lod = *model.GetLODAt(0);
+	const deModelLOD &lod = model.GetLODAt(0);
 	const deModelVertex * const vertices = lod.GetVertices();
 	const deModelFace * const faces = lod.GetFaces();
 	const int textureCount = model.GetTextureCount();
@@ -469,7 +460,7 @@ igdeGizmo::cShapeColor *igdeGizmo::pNamedShapeColor(const char *name) const{
 const decString &igdeGizmo::pCollisionShapeName(int bone, int shape) const{
 	if(pCollider->GetRig()){
 		if(bone != -1){
-			return pCollider->GetRig()->GetBoneAt(bone).GetName();
+			return pCollider->GetRig()->GetBoneAt(bone)->GetName();
 			
 		}else if(shape != -1){
 			return pCollider->GetRig()->GetShapeProperties().GetAt(shape);

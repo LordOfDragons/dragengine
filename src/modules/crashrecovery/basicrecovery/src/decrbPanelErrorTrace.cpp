@@ -91,7 +91,6 @@ decrbPanelErrorTrace::~decrbPanelErrorTrace(){
 void decrbPanelErrorTrace::UpdateTrace(){
 	deErrorTrace *trace = pWndMain->GetEngine()->GetErrorTrace();
 	int i, pointCount = trace->GetPointCount();
-	deErrorTracePoint *tracePoint;
 	FXTreeItem *treeItem;
 	FXString traceText;
 	int j, valueCount;
@@ -99,35 +98,35 @@ void decrbPanelErrorTrace::UpdateTrace(){
 	pEditError->setText(decrbWindowMain::GetTextForError(trace->GetError()));
 	
 	for(i=0; i<pointCount; i++){
-		tracePoint = trace->GetPoint(i);
+		deErrorTracePoint &tracePoint = trace->GetPoint(i);
 		
 		/*
-		if(tracePoint->GetSourceModule()){
-			traceText.format("%i) %s, %s at %i\n", i + 1, tracePoint->GetSourceModule()->GetName(),
-				tracePoint->GetSourceFunction(), tracePoint->GetSourceLine());
+		if(tracePoint.GetSourceModule()){
+			traceText.format("%i) %s, %s at %i\n", i + 1, tracePoint.GetSourceModule()->GetName(),
+				tracePoint.GetSourceFunction(), tracePoint.GetSourceLine());
 		}else{
-			traceText.format("%i) Game Engine, %s at %i\n", i + 1, tracePoint->GetSourceFunction(),
-				tracePoint->GetSourceLine());
+			traceText.format("%i) Game Engine, %s at %i\n", i + 1, tracePoint.GetSourceFunction(),
+				tracePoint.GetSourceLine());
 		}
 		pEditTrace->appendText(traceText.text(), traceText.length());
 		*/
 		
-		if(tracePoint->GetSourceModule()){
+		if(tracePoint.GetSourceModule()){
 			traceText.format("%i. %s, %s at %i", i + 1,
-				tracePoint->GetSourceModule()->GetName().GetString(),
-				tracePoint->GetSourceFunction().GetString(),
-				tracePoint->GetSourceLine());
+				tracePoint.GetSourceModule()->GetName().GetString(),
+				tracePoint.GetSourceFunction().GetString(),
+				tracePoint.GetSourceLine());
 			
 		}else{
 			traceText.format("%i. Game Engine, %s at %i", i + 1,
-				tracePoint->GetSourceFunction().GetString(),
-				tracePoint->GetSourceLine());
+				tracePoint.GetSourceFunction().GetString(),
+				tracePoint.GetSourceLine());
 		}
 		
 		treeItem = pTreeTrace->appendItem(nullptr, traceText, nullptr, nullptr, nullptr, false);
-		valueCount = tracePoint->GetValueCount();
+		valueCount = tracePoint.GetValueCount();
 		for(j=0; j<valueCount; j++){
-			pAddErrorTraceSubValues(0, treeItem, tracePoint->GetValue(j));
+			pAddErrorTraceSubValues(0, treeItem, tracePoint.GetValue(j));
 		}
 		
 		//pEditTrace->appendText( "\n", 1 );

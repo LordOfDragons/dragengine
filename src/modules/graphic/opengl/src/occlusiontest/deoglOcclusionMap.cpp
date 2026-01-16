@@ -73,7 +73,7 @@ deoglOcclusionMap::~deoglOcclusionMap(){
 ///////////////
 
 deoglFramebuffer *deoglOcclusionMap::GetFBOAt(int level){
-	return (deoglFramebuffer*)pFBOs.GetAt(level);
+	return pFBOs.GetAt(level);
 }
 
 

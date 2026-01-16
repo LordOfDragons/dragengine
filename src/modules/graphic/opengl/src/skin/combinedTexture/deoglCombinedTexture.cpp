@@ -122,10 +122,10 @@ unsigned int deoglCombinedTexture::CalcHashCodeFor(const decColor &color, const 
 	hashCode += (unsigned int)(color.b * 255.0);
 	hashCode += (unsigned int)(color.a * 255.0);
 	
-	hashCode += (unsigned int)((intptr_t)(deoglRImage*)images[0] & 0xffff);
-	hashCode += (unsigned int)((intptr_t)(deoglRImage*)images[1] & 0xffff);
-	hashCode += (unsigned int)((intptr_t)(deoglRImage*)images[2] & 0xffff);
-	hashCode += (unsigned int)((intptr_t)(deoglRImage*)images[3] & 0xffff);
+	hashCode += (unsigned int)((intptr_t)images[0].Pointer() & 0xffff);
+	hashCode += (unsigned int)((intptr_t)images[1].Pointer() & 0xffff);
+	hashCode += (unsigned int)((intptr_t)images[2].Pointer() & 0xffff);
+	hashCode += (unsigned int)((intptr_t)images[3].Pointer() & 0xffff);
 	
 	return hashCode;
 }

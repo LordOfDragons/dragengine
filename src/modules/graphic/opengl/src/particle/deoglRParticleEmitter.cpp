@@ -134,7 +134,7 @@ void deoglRParticleEmitter::PrepareForRender(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoglRParticleEmitterType*)pTypes.GetAt(i))->PrepareForRender();
+		pTypes.GetAt(i)->PrepareForRender();
 	}
 }
 
@@ -145,7 +145,7 @@ int deoglRParticleEmitter::GetTypeCount() const{
 }
 
 deoglRParticleEmitterType &deoglRParticleEmitter::GetTypeAt(int index) const{
-	return *((deoglRParticleEmitterType*)pTypes.GetAt(index));
+	return pTypes.GetAt(index);
 }
 
 void deoglRParticleEmitter::RemoveAllTypes(){

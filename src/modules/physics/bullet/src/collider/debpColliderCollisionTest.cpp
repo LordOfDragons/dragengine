@@ -154,7 +154,7 @@ void debpColliderCollisionTest::SetCollisionTestResult(){
 	
 	int i;
 	for(i=0; i<pCollisionInfoCount; i++){
-		pCollisionTest.AddCollisionInfo((deCollisionInfo*)pCollisionInfo.GetAt(i));
+		pCollisionTest.AddCollisionInfo(pCollisionInfo.GetAt(i));
 	}
 }
 
@@ -295,7 +295,7 @@ void debpColliderCollisionTest::CollisionResponse(deCollider *owner, deCollision
 		const float distance = info->GetDistance();
 		
 		for(index=0; index<pCollisionInfoCount; index++){
-			const deCollisionInfo &checkInfo = *((deCollisionInfo*)pCollisionInfo.GetAt(index));
+			const deCollisionInfo &checkInfo = pCollisionInfo.GetAt(index);
 			if(distance < checkInfo.GetDistance()){
 				break;
 			}
@@ -313,7 +313,7 @@ void debpColliderCollisionTest::CollisionResponse(deCollider *owner, deCollision
 		int i;
 		
 		for(i=0; i<pCollisionInfoCount; i++){
-			const deCollisionInfo &checkInfo = *((deCollisionInfo*)pCollisionInfo.GetAt(i));
+			const deCollisionInfo &checkInfo = pCollisionInfo.GetAt(i);
 			if(checkInfo.GetCollider() != info->GetCollider()){
 				continue;
 			}
@@ -360,7 +360,7 @@ void debpColliderCollisionTest::CollisionResponse(deCollider *owner, deCollision
 	}
 	
 	// fill information at index with information
-	deCollisionInfo * const updateInfo = (deCollisionInfo*)pCollisionInfo.GetAt(index);
+	deCollisionInfo * const updateInfo = pCollisionInfo.GetAt(index);
 	
 	if(info->GetCollider()){
 		updateInfo->SetCollider(info->GetCollider(), info->GetBone(), info->GetShape(), info->GetFace());

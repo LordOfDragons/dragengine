@@ -26,12 +26,12 @@
 #define _DESKIN_H_
 
 #include "deSkinMapped.h"
+#include "deSkinTexture.h"
 #include "../deFileResource.h"
 #include "../../common/collection/decTOrderedSet.h"
+#include "../../common/collection/decTUniqueList.h"
 
-class deSkinTexture;
 class deSkinManager;
-
 class deBaseGraphicSkin;
 class deBaseAudioSkin;
 class deBasePhysicsSkin;
@@ -59,8 +59,7 @@ public:
 	
 	
 private:
-	deSkinTexture **pTextures;
-	int pTextureCount, pTextureSize;
+	deSkinTexture::List pTextures;
 	
 	deSkinMapped::List pMapped;
 	
@@ -92,14 +91,17 @@ protected:
 public:
 	/** \name Texture Management */
 	/*@{*/
+	/** \brief Textures. */
+	inline const deSkinTexture::List &GetTextures() const{ return pTextures; }
+	
 	/** \brief Count of textures. */
-	inline int GetTextureCount() const{ return pTextureCount; }
+	inline int GetTextureCount() const{ return pTextures.GetCount(); }
 	
 	/** \brief Adds the given texture. */
-	void AddTexture(deSkinTexture *tex);
+	void AddTexture(deSkinTexture::Ref &&tex);
 	
 	/** \brief Texture with the given index. */
-	deSkinTexture *GetTextureAt(int index) const;
+	const deSkinTexture::Ref &GetTextureAt(int index) const;
 	
 	/** \brief Index of the texture with the given name or -1 if not found. */
 	int IndexOfTextureNamed(const char *name) const;

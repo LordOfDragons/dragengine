@@ -138,6 +138,6 @@ void fbxAnimationMoveCurves::DebugPrintStructure(deBaseModule &module, const dec
 	static const char * const tpnames[4] = {"position", "rotation", "scale", "unsupported"};
 	module.LogInfoFormat("%sCurves '%s': bone='%s'(%p) targetProperty=%s, curves(%p %p %p)",
 		prefix.GetString(), pNodeModel->GetProperties().GetAt(1)->CastString().GetValue().GetString(),
-		pBoneName.GetString(), pRigBone, tpnames[pTargetProperty], (deObject*)pCurveX,
-		(deObject*)pCurveY, (deObject*)pCurveZ);
+		pBoneName.GetString(), pRigBone, tpnames[pTargetProperty], pCurveX.Pointer(),
+		pCurveY.Pointer(), pCurveZ.Pointer());
 }

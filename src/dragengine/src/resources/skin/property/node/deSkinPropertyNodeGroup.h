@@ -35,8 +35,12 @@
  * Contains a list of nodes applied from first to last.
  */
 class DE_DLL_EXPORT deSkinPropertyNodeGroup : public deSkinPropertyNode{
+public:
+	/** \brief Reference. */
+	using Ref = deTUniqueReference<deSkinPropertyNodeGroup>;
+	
 private:
-	decTList<deSkinPropertyNode*> pNodes;
+	deSkinPropertyNode::List pNodes;
 	
 	
 	
@@ -55,16 +59,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Nodes. */
-	inline const decTList<deSkinPropertyNode*> &GetNodes() const{ return pNodes; }
+	inline const deSkinPropertyNode::List &GetNodes() const{ return pNodes; }
 	
 	/** \brief Number of child nodes. */
 	int GetNodeCount() const;
 	
 	/** \brief Node at index. */
-	deSkinPropertyNode *GetNodeAt(int index) const;
+	const deSkinPropertyNode::Ref &GetNodeAt(int index) const;
 	
 	/** \brief Add node. */
-	void AddNode(deSkinPropertyNode *node);
+	void AddNode(deSkinPropertyNode::Ref &&node);
 	/*@}*/
 	
 	

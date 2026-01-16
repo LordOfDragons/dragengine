@@ -145,7 +145,6 @@ deClassDynamicSkin::nfAddRenderable::nfAddRenderable(const sInitData &init) : ds
 void deClassDynamicSkin::nfAddRenderable::RunFunction(dsRunTime *rt, dsValue *myself){
 	deDynamicSkin &dynamicSkin = *(dedsGetNativeData<sDSkinNatDat>(p_GetNativeData(myself)).dynamicSkin);
 	const char *name = rt->GetValue(0)->GetString();
-	deDSRenderable *renderable = nullptr;
 	
 	if(dynamicSkin.HasRenderableNamed(name)){
 		DSTHROW(dueInvalidParam);
@@ -155,46 +154,40 @@ void deClassDynamicSkin::nfAddRenderable::RunFunction(dsRunTime *rt, dsValue *my
 	}
 	
 	const deDSRenderableVisitorIdentify::eRenderableTypes type = (deDSRenderableVisitorIdentify::eRenderableTypes)
-		(static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
-			*rt->GetValue( 1 )->GetRealObject() ) );
-	
+	(static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		*rt->GetValue( 1 )->GetRealObject() ) );
+		
+	deTUniqueReference<deDSRenderable> renderable;
 	switch(type){
 	case deDSRenderableVisitorIdentify::eptValue:
-		renderable = new deDSRenderableValue(name);
+		renderable = deTUniqueReference<deDSRenderableValue>::New(name);
 		break;
 		
 	case deDSRenderableVisitorIdentify::eptColor:
-		renderable = new deDSRenderableColor(name);
+		renderable = deTUniqueReference<deDSRenderableColor>::New(name);
 		break;
 		
 	case deDSRenderableVisitorIdentify::eptImage:
-		renderable = new deDSRenderableImage(name);
+		renderable = deTUniqueReference<deDSRenderableImage>::New(name);
 		break;
 		
 	case deDSRenderableVisitorIdentify::eptCanvas:
-		renderable = new deDSRenderableCanvas(name);
+		renderable = deTUniqueReference<deDSRenderableCanvas>::New(name);
 		break;
 		
 	case deDSRenderableVisitorIdentify::eptVideoFrame:
-		renderable = new deDSRenderableVideoFrame(name);
+		renderable = deTUniqueReference<deDSRenderableVideoFrame>::New(name);
 		break;
 		
 	case deDSRenderableVisitorIdentify::eptCamera:
-		renderable = new deDSRenderableCamera(name);
+		renderable = deTUniqueReference<deDSRenderableCamera>::New(name);
 		break;
 		
 	default:
 		DSTHROW(dueInvalidParam);
 	}
 	
-	try{
-		dynamicSkin.AddRenderable(renderable);
-		renderable = nullptr;
-		
-	}catch(...){
-		delete renderable;
-		throw;
-	}
+	dynamicSkin.AddRenderable(std::move(renderable));
 }
 
 // public func void removeRenderable( String name )

@@ -374,7 +374,7 @@ void deClassColliderRig::nfBoneGetPosition::RunFunction(dsRunTime *rt, dsValue *
 	const deScriptingDragonScript &ds = (static_cast<deClassColliderRig*>(GetOwnerClass()))->GetDS();
 	const int bone = rt->GetValue(0)->GetInt();
 	
-	ds.GetClassDVector()->PushDVector(rt, collider.GetBoneAt(bone).GetPosition());
+	ds.GetClassDVector()->PushDVector(rt, collider.GetBoneAt(bone)->GetPosition());
 }
 
 // public func boneSetPosition( int bone, DVector position )
@@ -404,7 +404,7 @@ void deClassColliderRig::nfBoneGetOrientation::RunFunction(dsRunTime *rt, dsValu
 	const deScriptingDragonScript &ds = (static_cast<deClassColliderRig*>(GetOwnerClass()))->GetDS();
 	const int bone = rt->GetValue(0)->GetInt();
 	
-	ds.GetClassQuaternion()->PushQuaternion(rt, collider.GetBoneAt(bone).GetOrientation());
+	ds.GetClassQuaternion()->PushQuaternion(rt, collider.GetBoneAt(bone)->GetOrientation());
 }
 
 // public func boneSetOrientation( int bone, Quaternion orientation )
@@ -434,7 +434,7 @@ void deClassColliderRig::nfBoneGetLinearVelocity::RunFunction(dsRunTime *rt, dsV
 	const deScriptingDragonScript &ds = (static_cast<deClassColliderRig*>(GetOwnerClass()))->GetDS();
 	const int bone = rt->GetValue(0)->GetInt();
 	
-	ds.GetClassVector()->PushVector(rt, collider.GetBoneAt(bone).GetLinearVelocity());
+	ds.GetClassVector()->PushVector(rt, collider.GetBoneAt(bone)->GetLinearVelocity());
 }
 
 // public func boneSetLinearVelocity( int bone, Vector velocity )
@@ -449,7 +449,7 @@ void deClassColliderRig::nfBoneSetLinearVelocity::RunFunction(dsRunTime *rt, dsV
 	const decVector &velocity = ds.GetClassVector()->GetVector(rt->GetValue(1)->GetRealObject());
 	const int bone = rt->GetValue(0)->GetInt();
 	
-	collider.GetBoneAt(bone).SetLinearVelocity(velocity);
+	collider.GetBoneAt(bone)->SetLinearVelocity(velocity);
 }
 
 // public func Vector boneGetAngularVelocity( int bone )
@@ -462,7 +462,7 @@ void deClassColliderRig::nfBoneGetAngularVelocity::RunFunction(dsRunTime *rt, ds
 	const deScriptingDragonScript &ds = (static_cast<deClassColliderRig*>(GetOwnerClass()))->GetDS();
 	const int bone = rt->GetValue(0)->GetInt();
 	
-	ds.GetClassVector()->PushVector(rt, collider.GetBoneAt(bone).GetAngularVelocity());
+	ds.GetClassVector()->PushVector(rt, collider.GetBoneAt(bone)->GetAngularVelocity());
 }
 
 // public func boneSetAngularVelocity( int bone, Vector velocity )
@@ -477,7 +477,7 @@ void deClassColliderRig::nfBoneSetAngularVelocity::RunFunction(dsRunTime *rt, ds
 	const decVector &velocity = ds.GetClassVector()->GetVector(rt->GetValue(1)->GetRealObject());
 	const int bone = rt->GetValue(0)->GetInt();
 	
-	collider.GetBoneAt(bone).SetAngularVelocity(velocity);
+	collider.GetBoneAt(bone)->SetAngularVelocity(velocity);
 }
 
 // public func DMatrix boneGetMatrix( int bone )
@@ -490,7 +490,7 @@ void deClassColliderRig::nfBoneGetMatrix::RunFunction(dsRunTime *rt, dsValue *my
 	const deScriptingDragonScript &ds = (static_cast<deClassColliderRig*>(GetOwnerClass()))->GetDS();
 	const int bone = rt->GetValue(0)->GetInt();
 	
-	ds.GetClassDMatrix()->PushDMatrix(rt, collider.GetBoneAt(bone).GetMatrix());
+	ds.GetClassDMatrix()->PushDMatrix(rt, collider.GetBoneAt(bone)->GetMatrix());
 }
 
 // public func DMatrix boneGetInverseMatrix( int bone )
@@ -503,7 +503,7 @@ void deClassColliderRig::nfBoneGetInverseMatrix::RunFunction(dsRunTime *rt, dsVa
 	const deScriptingDragonScript &ds = (static_cast<deClassColliderRig*>(GetOwnerClass()))->GetDS();
 	const int bone = rt->GetValue(0)->GetInt();
 	
-	ds.GetClassDMatrix()->PushDMatrix(rt, collider.GetBoneAt(bone).GetInverseMatrix());
+	ds.GetClassDMatrix()->PushDMatrix(rt, collider.GetBoneAt(bone)->GetInverseMatrix());
 }
 
 

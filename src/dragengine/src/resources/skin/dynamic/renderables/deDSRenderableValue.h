@@ -38,6 +38,10 @@
  * usually very small ( possibly down to 1x1 ).
  */
 class DE_DLL_EXPORT deDSRenderableValue : public deDSRenderable{
+public:
+	/** \brief Reference type. */
+	using Ref = deTUniqueReference<deDSRenderableValue>;
+	
 private:
 	float pValue;
 	

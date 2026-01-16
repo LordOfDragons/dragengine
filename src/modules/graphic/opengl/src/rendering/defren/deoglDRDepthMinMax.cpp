@@ -84,15 +84,15 @@ deoglDRDepthMinMax::~deoglDRDepthMinMax(){
 ///////////////
 
 deoglFramebuffer *deoglDRDepthMinMax::GetFBOAt(int level){
-	return (deoglFramebuffer*)pFBOs[level];
+	return pFBOs[level];
 }
 
 deoglFramebuffer *deoglDRDepthMinMax::GetFBOMinAt(int level){
-	return (deoglFramebuffer*)pFBOMin[level];
+	return pFBOMin[level];
 }
 
 deoglFramebuffer *deoglDRDepthMinMax::GetFBOMaxAt(int level){
-	return (deoglFramebuffer*)pFBOMax[level];
+	return pFBOMax[level];
 }
 
 

@@ -129,11 +129,9 @@ void fbxRigModule::pLoadRig(deRig &rig, fbxScene &scene){
 	*/
 	// scene.DebugPrintStructure( *this, true );
 	
-	deRigBone *rigBone = nullptr;
-	
 	try{
 		loadRig->GetBones().Visit([&](const fbxRigBone &b){
-			rigBone = new deRigBone(b.GetName());
+			auto rigBone = deRigBone::Ref::New(b.GetName());
 			
 			rigBone->SetPosition(b.GetPosition());
 			rigBone->SetRotation(b.GetOrientation().GetEulerAngles());
@@ -141,14 +139,10 @@ void fbxRigModule::pLoadRig(deRig &rig, fbxScene &scene){
 				rigBone->SetParent(b.GetParent()->GetIndex());
 			}
 			
-			rig.AddBone(rigBone);
-			rigBone = nullptr;
+			rig.AddBone(std::move(rigBone));
 		});
 		
 	}catch(const deException &){
-		if(rigBone){
-			delete rigBone;
-		}
 		throw;
 	}
 }

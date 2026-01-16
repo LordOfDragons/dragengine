@@ -398,8 +398,8 @@ void aeWPAPanelRuleInverseKinematic::UpdateRigBoneList(){
 			const int count = rig->GetBoneCount();
 			int i;
 			for(i=0; i<count; i++){
-				pCBSolverBone->AddItem(rig->GetBoneAt(i).GetName());
-				pCBReachBone->AddItem(rig->GetBoneAt(i).GetName());
+				pCBSolverBone->AddItem(rig->GetBoneAt(i)->GetName());
+				pCBReachBone->AddItem(rig->GetBoneAt(i)->GetName());
 			}
 		}
 		pCBSolverBone->SortItems();

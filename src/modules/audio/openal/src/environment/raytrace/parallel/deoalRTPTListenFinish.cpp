@@ -287,7 +287,7 @@ void deoalRTPTListenFinish::pRun(){
 	
 	// collect data from tasks
 	for(i=0; i<taskCount; i++){
-		const deoalRTPTListen &task = *((deoalRTPTListen*)pTasks.GetAt(i));
+		const deoalRTPTListen &task = *pTasks.GetAt(i);
 		
 		if(task.IsCancelled()){
 			DETHROW(deeInvalidAction); // task failed

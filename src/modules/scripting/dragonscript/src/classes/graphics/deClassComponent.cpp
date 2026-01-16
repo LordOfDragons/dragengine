@@ -494,7 +494,7 @@ void deClassComponent::nfBoneGetName::RunFunction(dsRunTime *rt, dsValue *myself
 		DSTHROW(dueOutOfBoundary);
 	}
 	
-	rt->PushString(rig->GetBoneAt(index).GetName());
+	rt->PushString(rig->GetBoneAt(index)->GetName());
 }
 
 // public func Vector boneGetPosition( int bone )

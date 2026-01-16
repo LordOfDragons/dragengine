@@ -25,6 +25,7 @@
 #ifndef _DESKINPROPERTY_H_
 #define _DESKINPROPERTY_H_
 
+#include "../../../common/collection/decTUniqueList.h"
 #include "../../../common/string/decString.h"
 
 class deSkinPropertyVisitor;
@@ -81,6 +82,13 @@ class deSkinPropertyVisitor;
  * bone coordinate system. Texture properties not using vertex position ignore this parameter.
  */
 class DE_DLL_EXPORT deSkinProperty{
+public:
+	/** \brief Reference type. */
+	using Ref = deTUniqueReference<deSkinProperty>;
+	
+	/** \brief List type. */
+	using List = decTUniqueList<deSkinProperty>;
+	
 private:
 	decString pType;
 	decString pTexCoordSet;

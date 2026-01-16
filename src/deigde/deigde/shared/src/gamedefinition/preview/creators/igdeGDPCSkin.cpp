@@ -223,7 +223,7 @@ pResLoadFinished(false)
 
 igdeGDPCSkin::~igdeGDPCSkin(){
 	if(pResLoader){
-		((igdeGDPCSkinResLoader&)(igdeResourceLoaderListener&)pResLoader).Drop();
+		pResLoader.DynamicCast<igdeGDPCSkinResLoader>()->Drop();
 		pResLoader = nullptr;
 	}
 	if(pSky){
@@ -291,12 +291,12 @@ void igdeGDPCSkin::PrepareCanvasForRender(){
 	// load resources. the light model is always loaded since we do not know yet if we
 	// need to show the skin using light preview
 	if(pResLoader){
-		((igdeGDPCSkinResLoader&)(igdeResourceLoaderListener&)pResLoader).Drop();
+		pResLoader.DynamicCast<igdeGDPCSkinResLoader>()->Drop();
 		pResLoader = nullptr;
 	}
 	pResLoadFinished = false;
 	pResLoader = igdeGDPCSkinResLoader::Ref::New(*this, pResLoadFinished);
-	igdeGDPCSkinResLoader &rl = (igdeGDPCSkinResLoader&)(igdeResourceLoaderListener&)pResLoader;
+	igdeGDPCSkinResLoader &rl = pResLoader.DynamicCast<igdeGDPCSkinResLoader>();
 	
 	rl.LoadModel("/igde/models/previewBuilder/skin.demodel");
 	if(!pGDSkin->GetPath().IsEmpty()){
@@ -318,7 +318,7 @@ bool igdeGDPCSkin::IsCanvasReadyForRender(){
 		return false;
 	}
 	
-	igdeGDPCSkinResLoader &rl = (igdeGDPCSkinResLoader&)(igdeResourceLoaderListener&)pResLoader;
+	igdeGDPCSkinResLoader &rl = pResLoader.DynamicCast<igdeGDPCSkinResLoader>();
 	
 	pModel = rl.GetModel();
 	pSkin = rl.GetSkin();
@@ -335,7 +335,7 @@ bool igdeGDPCSkin::IsCanvasReadyForRender(){
 		bool hasSingleTexPropColorOmni = false;
 		
 		if(pSkin->GetTextureCount() == 1){
-			const deSkinTexture &texture = *pSkin->GetTextureAt(0);
+			const deSkinTexture &texture = pSkin->GetTextureAt(0);
 			hasSingleTexPropColor = texture.HasPropertyWithType("color");
 			hasSingleTexPropColorOmni = texture.HasPropertyWithType("color.omnidir")
 				|| texture.HasPropertyWithType("color.omnidir.equirect");

@@ -170,29 +170,17 @@ void meHeightTerrainPropField::RebuildVegetationPropFieldTypes(){
 	
 	const decCollisionFilter collisionFilter(cfCategory, cfFilter);
 	
-	dePropFieldType *engPFType = nullptr;
-	
-	try{
-		pHTSector->GetHeightTerrain()->GetVLayers().Visit([&](const meHTVegetationLayer &vlayer){
-			vlayer.GetVariations().Visit([&](meHTVVariation &variation){
-				engPFType = new dePropFieldType;
-				engPFType->SetModel(variation.GetModel());
-				engPFType->SetSkin(variation.GetSkin());
-				engPFType->SetRotationPerForce(variation.GetRotationPerForce() * DEG2RAD);
-				engPFType->SetRestitution(variation.GetRestitution());
-				engPFType->SetCollisionFilter(collisionFilter);
-				
-				pEngPF->AddType(engPFType);
-				engPFType = nullptr;
-			});
+	pHTSector->GetHeightTerrain()->GetVLayers().Visit([&](const meHTVegetationLayer &vlayer){
+		vlayer.GetVariations().Visit([&](meHTVVariation &variation){
+			auto engPFType = dePropFieldType::Ref::New();
+			engPFType->SetModel(variation.GetModel());
+			engPFType->SetSkin(variation.GetSkin());
+			engPFType->SetRotationPerForce(variation.GetRotationPerForce() * DEG2RAD);
+			engPFType->SetRestitution(variation.GetRestitution());
+			engPFType->SetCollisionFilter(collisionFilter);
+			pEngPF->AddType(std::move(engPFType));
 		});
-		
-	}catch(const deException &){
-		if(engPFType){
-			delete engPFType;
-		}
-		throw;
-	}
+	});
 }
 
 

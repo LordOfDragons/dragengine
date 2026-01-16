@@ -129,8 +129,8 @@ deModioService::~deModioService(){
 	
 	pModule.StoreFailureStateIfFailed();
 	
-	while(pPendingRequests.GetCount() > 0){
-		CancelRequest(((deModioPendingRequest*)pPendingRequests.GetAt(0))->id);
+	while(pPendingRequests.IsNotEmpty()){
+		CancelRequest(pPendingRequests.First()->id);
 	}
 	
 	pPauseModManagement = true;
@@ -302,7 +302,7 @@ deModioPendingRequest *deModioService::GetPendingRequestWithId(const decUniqueID
 	int i;
 	
 	for(i=0; i<count; i++){
-		deModioPendingRequest * const pr = (deModioPendingRequest*)pPendingRequests.GetAt(i);
+		deModioPendingRequest * const pr = pPendingRequests.GetAt(i);
 		if(pr->id == id){
 			return pr;
 		}
@@ -317,7 +317,7 @@ const decUniqueID &id){
 	int i;
 	
 	for(i=0; i<count; i++){
-		deModioPendingRequest * const pr = (deModioPendingRequest*)pPendingRequests.GetAt(i);
+		deModioPendingRequest * const pr = pPendingRequests.GetAt(i);
 		if(pr->id == id){
 			const deModioPendingRequest::Ref prr(pr);
 			pPendingRequests.RemoveFrom(i);
@@ -334,7 +334,7 @@ const char *function){
 	int i;
 	
 	for(i=0; i<count; i++){
-		deModioPendingRequest * const pr = (deModioPendingRequest*)pPendingRequests.GetAt(i);
+		deModioPendingRequest * const pr = pPendingRequests.GetAt(i);
 		if(pr->function == function){
 			const deModioPendingRequest::Ref prr(pr);
 			pPendingRequests.RemoveFrom(i);

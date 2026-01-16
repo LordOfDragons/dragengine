@@ -526,13 +526,13 @@ void igdeWObject::SetOutlineSkin(deSkin *skin){
 		pOutlineDynamicSkin = pEnvironment.GetEngineController()->GetEngine()->
 			GetDynamicSkinManager()->CreateDynamicSkin();
 		
-		deDSRenderableColor * const renderableColor = new deDSRenderableColor("color");
+		auto renderableColor = deDSRenderableColor::Ref::New("color");
 		renderableColor->SetColor(pOutlineColor);
-		pOutlineDynamicSkin->AddRenderable(renderableColor);
+		pOutlineDynamicSkin->AddRenderable(std::move(renderableColor));
 		
-		deDSRenderableValue * const renderableThickess = new deDSRenderableValue("thickness");
+		auto renderableThickess = deDSRenderableValue::Ref::New("thickness");
 		renderableThickess->SetValue(0.005f);
-		pOutlineDynamicSkin->AddRenderable(renderableThickess);
+		pOutlineDynamicSkin->AddRenderable(std::move(renderableThickess));
 	}
 	
 	pSubObjects.Visit([&](igdeWOSubObject &so){
@@ -555,7 +555,7 @@ void igdeWObject::SetOutlineColor(const decColor &color){
 		return;
 	}
 	
-	((deDSRenderableColor*)pOutlineDynamicSkin->GetRenderableAt(0))->SetColor(color);
+	pOutlineDynamicSkin->GetRenderableAt(0).ReferenceDynamicCast<deDSRenderableColor>().SetColor(color);
 	pOutlineDynamicSkin->NotifyRenderableChanged(0);
 }
 
@@ -601,25 +601,15 @@ void igdeWObject::AttachColliderRig(deColliderComponent *parentCollider){
 	
 	DetachCollider();
 	
-	deColliderAttachment *attachment = nullptr;
-	try{
-		if(pColliderComponent){
-			attachment = new deColliderAttachment(pColliderComponent);
-			attachment->SetAttachType(deColliderAttachment::eatRig);
-			parentCollider->AddAttachment(attachment);
-			attachment = nullptr;
-		}
-		
-		attachment = new deColliderAttachment(pColliderFallback);
-		attachment->SetAttachType(deColliderAttachment::eatStatic);
-		parentCollider->AddAttachment(attachment);
-		
-	}catch(const deException &){
-		if(attachment){
-			delete attachment;
-		}
-		throw;
+	if(pColliderComponent){
+		auto attachment = deColliderAttachment::Ref::New(pColliderComponent);
+		attachment->SetAttachType(deColliderAttachment::eatRig);
+		parentCollider->AddAttachment(std::move(attachment));
 	}
+	
+	auto attachment = deColliderAttachment::Ref::New(pColliderFallback);
+	attachment->SetAttachType(deColliderAttachment::eatStatic);
+	parentCollider->AddAttachment(std::move(attachment));
 	
 	pParentCollider = parentCollider;
 }
@@ -633,31 +623,21 @@ const decVector &position, const decQuaternion &orientation){
 	DetachCollider();
 	
 	if(strlen(bone) > 0){
-		deColliderAttachment *attachment = nullptr;
-		try{
-			if(pColliderComponent){
-				attachment = new deColliderAttachment(pColliderComponent);
-				attachment->SetAttachType(deColliderAttachment::eatBone);
-				attachment->SetTrackBone(bone);
-				attachment->SetPosition(position);
-				attachment->SetOrientation(orientation);
-				parentCollider->AddAttachment(attachment);
-				attachment = nullptr;
-			}
-			
-			attachment = new deColliderAttachment(pColliderFallback);
+		if(pColliderComponent){
+			auto attachment = deColliderAttachment::Ref::New(pColliderComponent);
 			attachment->SetAttachType(deColliderAttachment::eatBone);
 			attachment->SetTrackBone(bone);
 			attachment->SetPosition(position);
 			attachment->SetOrientation(orientation);
-			parentCollider->AddAttachment(attachment);
-			
-		}catch(const deException &){
-			if(attachment){
-				delete attachment;
-			}
-			throw;
+			parentCollider->AddAttachment(std::move(attachment));
 		}
+		
+		auto attachment = deColliderAttachment::Ref::New(pColliderFallback);
+		attachment->SetAttachType(deColliderAttachment::eatBone);
+		attachment->SetTrackBone(bone);
+		attachment->SetPosition(position);
+		attachment->SetOrientation(orientation);
+		parentCollider->AddAttachment(std::move(attachment));
 		
 		pAttachToBone = bone;
 	}

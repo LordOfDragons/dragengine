@@ -274,7 +274,7 @@ int deoglRCamera::GetEffectCount() const{
 }
 
 deoglREffect &deoglRCamera::GetEffectAt(int index) const{
-	return *(deoglREffect*)pEffects.GetAt(index);
+	return pEffects.GetAt(index);
 }
 
 void deoglRCamera::AddEffect(deoglREffect *effect){
@@ -314,7 +314,7 @@ void deoglRCamera::PrepareForRender(){
 	const int effectCount = pEffects.GetCount();
 	int i;
 	for(i=0; i<effectCount; i++){
-		((deoglREffect*)pEffects.GetAt(i))->PrepareForRender();
+		pEffects.GetAt(i)->PrepareForRender();
 	}
 }
 

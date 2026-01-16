@@ -153,7 +153,7 @@ const char *filename, const char *basePath){
 			// load the file with it
 			anim = deAnimation::Ref::New(this, vfs, path.GetPathUnix(), modificationTime);
 			anim->SetAsynchron(false);
-			module->LoadAnimation(OpenFileForReading(*vfs, path.GetPathUnix()), *anim);
+			module->LoadAnimation(OpenFileForReading(*vfs, path.GetPathUnix()), anim);
 			
 			// load system peers
 			GetAnimatorSystem()->LoadAnimation(anim);

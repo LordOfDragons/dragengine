@@ -875,7 +875,7 @@ void deoglFramebuffer::AddConfigToTrace(deErrorTracePoint &tracePoint){
 	decString text;
 	int i;
 	
-	deErrorTraceValue &valueConfig = *tracePoint.AddValue("configuration", "Configuration of the Framebuffer");
+	deErrorTraceValue &valueConfig = tracePoint.AddValue("configuration", "Configuration of the Framebuffer");
 	
 	valueConfig.AddSubValueInt("fbo", pFBO);
 	valueConfig.AddSubValue("primary", pPrimary ? "yes" : "no");
@@ -886,7 +886,7 @@ void deoglFramebuffer::AddConfigToTrace(deErrorTracePoint &tracePoint){
 	for(i=0; i<FBO_MAX_ATTACHMENT_COUNT; i++){
 		text.Format("attachmentColor%i", i + 1);
 		
-		deErrorTraceValue &valueColor = *valueConfig.AddSubValue(text.GetString(), "<sAttachement>");
+		deErrorTraceValue &valueColor = valueConfig.AddSubValue(text.GetString(), "<sAttachement>");
 		
 		valueColor.AddSubValue("type", vAttTypeName[pAttColor[i].type]);
 		valueColor.AddSubValueInt("image", pAttColor[i].image);
@@ -894,13 +894,13 @@ void deoglFramebuffer::AddConfigToTrace(deErrorTracePoint &tracePoint){
 		valueColor.AddSubValueInt("level", pAttColor[i].level);
 	}
 	
-	deErrorTraceValue &valueDepth = *valueConfig.AddSubValue("attachmentDepth", "<sAttachement>");
+	deErrorTraceValue &valueDepth = valueConfig.AddSubValue("attachmentDepth", "<sAttachement>");
 	valueDepth.AddSubValue("type", vAttTypeName[pAttDepth.type]);
 	valueDepth.AddSubValueInt("image", pAttDepth.image);
 	valueDepth.AddSubValueInt("layer", pAttDepth.layer);
 	valueDepth.AddSubValueInt("level", pAttDepth.level);
 	
-	deErrorTraceValue &valueStencil = *valueConfig.AddSubValue("attachmentStencil", "<sAttachement>");
+	deErrorTraceValue &valueStencil = valueConfig.AddSubValue("attachmentStencil", "<sAttachement>");
 	valueStencil.AddSubValue("type", vAttTypeName[pAttStencil.type]);
 	valueStencil.AddSubValueInt("image", pAttStencil.image);
 	valueStencil.AddSubValueInt("layer", pAttStencil.layer);

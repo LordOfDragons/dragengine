@@ -70,7 +70,7 @@ void deoglVSRetainImageData::ReleaseImages(){
 	const int count = pImages.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		((deoglImage*)pImages.GetAt(i))->ReleasePixelBuffer();
+		pImages.GetAt(i)->ReleasePixelBuffer();
 	}
 	pImages.RemoveAll();
 }

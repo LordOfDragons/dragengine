@@ -26,6 +26,7 @@
 #define _DERIGCONSTRAINT_H_
 
 #include "../collider/deColliderConstraint.h"
+#include "../../common/collection/decTUniqueList.h"
 
 
 /**
@@ -53,6 +54,13 @@
  * By default a degree of freedom does not break.
  */
 class DE_DLL_EXPORT deRigConstraint{
+public:
+	/** \brief Reference. */
+	using Ref = deTUniqueReference<deRigConstraint>;
+	
+	/** \brief List. */
+	using List = decTUniqueList<deRigConstraint>;
+	
 private:
 	decVector pRefPosition;
 	decQuaternion pRefOrientation;

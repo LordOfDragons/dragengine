@@ -98,10 +98,9 @@ void dedsResourceLoader::OnFrameUpdate(){
 				
 			}catch(const duException &e){
 				pDS->SetErrorTraceDS(e);
-				deErrorTracePoint * const tracePoint = pDS->AddErrorTracePoint(
-					"dedsResourceLoader::Update", __LINE__);
-				tracePoint->AddValue("resource", info.GetPath());
-				pDS->pAddExceptionTrace(tracePoint);
+				deErrorTracePoint &tracePoint = pDS->AddErrorTracePoint("dedsResourceLoader::Update", __LINE__);
+				tracePoint.AddValue("resource", info.GetPath());
+				pDS->pAddExceptionTrace(&tracePoint);
 				pDS->GetScriptEngine()->GetMainRunTime()->PrintExceptionTrace(); // really?
 				pDS->LogExceptionDS(e);
 				pDS->GetScriptEngine()->GetMainRunTime()->ClearExceptionTrace();
@@ -109,10 +108,9 @@ void dedsResourceLoader::OnFrameUpdate(){
 				
 			}catch(const deException &e){
 				pDS->SetErrorTrace(e);
-				deErrorTracePoint * const tracePoint = pDS->AddErrorTracePoint(
-					"dedsResourceLoader::Update", __LINE__);
-				tracePoint->AddValue("resource", info.GetPath());
-				pDS->pAddExceptionTrace(tracePoint);
+				deErrorTracePoint &tracePoint = pDS->AddErrorTracePoint("dedsResourceLoader::Update", __LINE__);
+				tracePoint.AddValue("resource", info.GetPath());
+				pDS->pAddExceptionTrace(&tracePoint);
 				pDS->GetScriptEngine()->GetMainRunTime()->PrintExceptionTrace(); // really?
 				pDS->GetScriptEngine()->GetMainRunTime()->ClearExceptionTrace();
 				pDS->LogException(e);

@@ -22,12 +22,7 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "dePropFieldGround.h"
-#include "../component/deComponent.h"
 #include "../terrain/heightmap/deHeightTerrain.h"
 #include "../../common/exceptions.h"
 
@@ -40,14 +35,9 @@
 ////////////////////////////
 
 dePropFieldGround::dePropFieldGround(){
-	pComponents = nullptr;
-	pComponentCount = 0;
-	pComponentSize = 0;
 }
 
 dePropFieldGround::~dePropFieldGround(){
-	RemoveAllComponents();
-	if(pComponents) delete [] pComponents;
 }
 
 
@@ -56,7 +46,7 @@ dePropFieldGround::~dePropFieldGround(){
 ///////////////
 
 void dePropFieldGround::Clear(){
-	RemoveAllComponents();
+	pComponents.RemoveAll();
 	pHeightTerrain = nullptr;
 }
 
@@ -69,75 +59,26 @@ void dePropFieldGround::SetHeightTerrain(deHeightTerrain *heightTerrain){
 // Components
 //////////////
 
-deComponent *dePropFieldGround::GetComponentAt(int index) const{
-	if(index < 0 || index >= pComponentCount) DETHROW(deeOutOfBoundary);
-	
-	return pComponents[index];
+const deComponent::Ref &dePropFieldGround::GetComponentAt(int index) const{
+	return pComponents.GetAt(index);
 }
 
 int dePropFieldGround::IndexOfComponent(deComponent *component) const{
-	if(!component) DETHROW(deeInvalidParam);
-	
-	int t;
-	
-	for(t=0; t<pComponentCount; t++){
-		if(component == pComponents[t]){
-			return t;
-		}
-	}
-	
-	return -1;
+	return pComponents.IndexOf(component);
 }
 
 bool dePropFieldGround::HasComponent(deComponent *component) const{
-	if(!component) DETHROW(deeInvalidParam);
-	
-	int t;
-	
-	for(t=0; t<pComponentCount; t++){
-		if(component == pComponents[t]){
-			return true;
-		}
-	}
-	
-	return false;
+	return pComponents.Has(component);
 }
 
 void dePropFieldGround::AddComponent(deComponent *component){
-	if(!component) DETHROW(deeInvalidParam);
-	
-	if(pComponentCount == pComponentSize){
-		int newSize = pComponentSize * 3 / 2 + 1;
-		deComponent **newArray = new deComponent*[newSize];
-		if(pComponents){
-			memcpy(newArray, pComponents, sizeof(deComponent*) * pComponentSize);
-			delete [] pComponents;
-		}
-		pComponents = newArray;
-		pComponentSize = newSize;
-	}
-	
-	pComponents[pComponentCount] = component;
-	component->AddReference();
-	pComponentCount++;
+	pComponents.Add(component);
 }
 
 void dePropFieldGround::RemoveComponent(deComponent *component){
-	int i, index = IndexOfComponent(component);
-	
-	if(index == -1) DETHROW(deeInvalidParam);
-	
-	for(i=index+1; i<pComponentCount; i++){
-		pComponents[i - 1] = pComponents[i];
-	}
-	pComponentCount--;
-	
-	component->FreeReference();
+	pComponents.Remove(component);
 }
 
 void dePropFieldGround::RemoveAllComponents(){
-	while(pComponentCount > 0){
-		pComponentCount--;
-		pComponents[pComponentCount]->FreeReference();
-	}
+	pComponents.RemoveAll();
 }

@@ -895,21 +895,21 @@ const decString &meWPWorld::GetActiveProperty() const{
 }
 
 void meWPWorld::SelectActiveProperty(){
-	((meWPPropertyList&)(igdeWidget&)pEditProperties).SelectProperty(GetActiveProperty());
+	pEditProperties.DynamicCast<meWPPropertyList>()->SelectProperty(GetActiveProperty());
 }
 
 void meWPWorld::UpdatePropertyKeys(){
-	((meWPPropertyList&)(igdeWidget&)pEditProperties).UpdateKeys();
+	pEditProperties.DynamicCast<meWPPropertyList>()->UpdateKeys();
 }
 
 void meWPWorld::UpdateProperties(){
-	((meWPPropertyList&)(igdeWidget&)pEditProperties).SetProperties(
+	pEditProperties.DynamicCast<meWPPropertyList>()->SetProperties(
 		pWorld ? pWorld->GetProperties() : decStringDictionary());
 	SelectActiveProperty();
 }
 
 void meWPWorld::UpdateIdentifierLists(){
-	meWPPropertyList &editProperties = (meWPPropertyList&)(igdeWidget&)pEditProperties;
+	meWPPropertyList &editProperties = pEditProperties.DynamicCast<meWPPropertyList>();
 	const decString &property = GetActiveProperty();
 	decStringSet identifiers;
 	

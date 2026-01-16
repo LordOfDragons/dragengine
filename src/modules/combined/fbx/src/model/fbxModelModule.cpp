@@ -168,17 +168,12 @@ void fbxModelModule::pLoadModel(deModel &model, fbxScene &scene){
 	}
 	
 	// create and add lod
-	deModelLOD *modelLod = nullptr;
-	
 	try{
-		modelLod = new deModelLOD;
+		auto modelLod = deModelLOD::Ref::New();
 		pLoadModelLod(model, *modelLod, loadModel, loadRig);
-		model.AddLOD(modelLod);
+		model.AddLOD(std::move(modelLod));
 		
 	}catch(const deException &){
-		if(modelLod){
-			delete modelLod;
-		}
 		throw;
 	}
 }
@@ -190,20 +185,16 @@ void fbxModelModule::pLoadModelBones(deModel &model, const fbxRig &rig){
 }
 
 void fbxModelModule::pLoadModelBone(deModel &model, const fbxRigBone &rigBone){
-	deModelBone *bone = nullptr;
 	try{
-		bone = new deModelBone(rigBone.GetName());
+		auto bone = deModelBone::Ref::New(rigBone.GetName());
 		bone->SetPosition(rigBone.GetPosition());
 		bone->SetOrientation(rigBone.GetOrientation());
 		if(rigBone.GetParent()){
 			bone->SetParent(rigBone.GetParent()->GetIndex());
 		}
-		model.AddBone(bone);
+		model.AddBone(std::move(bone));
 		
 	}catch(const deException &){
-		if(bone){
-			delete bone;
-		}
 		throw;
 	}
 }
@@ -234,10 +225,12 @@ void fbxModelModule::pLoadModelTexture(deModel &model, const fbxModel &loadModel
 	
 	deModelTexture *texture = nullptr;
 	try{
-		texture = new deModelTexture(name, width, height);
+		auto refTexture = deModelTexture::Ref::New(name, width, height);
+		texture = refTexture.Pointer();
 		texture->SetDecalOffset(model.GetTextureCount());
 		texture->SetDoubleSided(!loadModel.GetCulling());
-		model.AddTexture(texture);
+		model.AddTexture(std::move(refTexture));
+		texture = nullptr;
 		
 	}catch(const deException &){
 		if(texture){
@@ -538,8 +531,8 @@ void fbxModelModule::pEnsureTextureIndex(deModel &model, int count){
 		}
 		
 		try{
-			texture = new deModelTexture(name, 1024, 1024);
-			model.AddTexture(texture);
+			auto refTexture = deModelTexture::Ref::New(name, 1024, 1024);
+			model.AddTexture(std::move(refTexture));
 			
 		}catch(const deException &){
 			if(texture){

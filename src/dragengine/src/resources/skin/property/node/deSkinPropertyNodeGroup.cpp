@@ -38,12 +38,6 @@ deSkinPropertyNodeGroup::deSkinPropertyNodeGroup(){
 }
 
 deSkinPropertyNodeGroup::~deSkinPropertyNodeGroup(){
-	const int count = pNodes.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		delete (deSkinPropertyNode*)pNodes.GetAt(i);
-	}
 }
 
 
@@ -55,13 +49,12 @@ int deSkinPropertyNodeGroup::GetNodeCount() const{
 	return pNodes.GetCount();
 }
 
-deSkinPropertyNode *deSkinPropertyNodeGroup::GetNodeAt(int index) const{
-	return (deSkinPropertyNode*)pNodes.GetAt(index);
+const deSkinPropertyNode::Ref &deSkinPropertyNodeGroup::GetNodeAt(int index) const{
+	return pNodes.GetAt(index);
 }
 
-void deSkinPropertyNodeGroup::AddNode(deSkinPropertyNode *node){
-	DEASSERT_NOTNULL(node)
-	pNodes.Add(node);
+void deSkinPropertyNodeGroup::AddNode(deSkinPropertyNode::Ref &&node){
+	pNodes.Add(std::move(node));
 }
 
 

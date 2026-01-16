@@ -133,13 +133,13 @@ void dedaiPathFinderNavGrid::pClearLists(){
 	
 	count = pListClosed.GetCount();
 	for(i=0; i<count; i++){
-		((dedaiSpaceGridVertex*)pListClosed.GetAt(i))->ClearPath();
+		pListClosed.GetAt(i)->ClearPath();
 	}
 	pListClosed.RemoveAll();
 	
 	count = pListOpen.GetCount();
 	for(i=0; i<count; i++){
-		((dedaiSpaceGridVertex*)pListOpen.GetAt(i))->ClearPath();
+		pListOpen.GetAt(i)->ClearPath();
 	}
 	pListOpen.RemoveAll();
 }
@@ -320,9 +320,9 @@ void dedaiPathFinderNavGrid::pFindVertexPath(){
 				testVertex = nullptr;
 				
 			}else{
-				testVertex = (dedaiSpaceGridVertex*)pListOpen.GetAt(vertexCount - 1);
+				testVertex = pListOpen.GetAt(vertexCount - 1);
 				for(v=vertexCount-2; v>=0; v--){
-					nextVertex = (dedaiSpaceGridVertex*)pListOpen.GetAt(v);
+					nextVertex = pListOpen.GetAt(v);
 					
 					if(nextVertex->GetPathCostF() < testVertex->GetPathCostF()){
 						testVertex = nextVertex;
@@ -336,14 +336,14 @@ void dedaiPathFinderNavGrid::pFindVertexPath(){
 		pWorld->GetDEAI().LogInfo("   Debug:");
 		pWorld->GetDEAI().LogInfo("      Open List:");
 		for(e=0; e<pListOpen.GetCount(); e++){
-			testVertex = (dedaiSpaceGridVertex*)pListOpen.GetAt(e);
+			testVertex = pListOpen.GetAt(e);
 			pWorld->GetDEAI().LogInfoFormat("         Vertex: ng=%p v=%i p=%i c=(%g,%g,%g)", testVertex->GetGrid(),
 				testVertex->GetIndex(), testVertex->GetPathParent()?testVertex->GetPathParent()->GetIndex():-1,
 				testVertex->GetPathCostF(), testVertex->GetPathCostG(), testVertex->GetPathCostH());
 		}
 		pWorld->GetDEAI().LogInfo("      Closed List:");
 		for(e=0; e<pListClosed.GetCount(); e++){
-			testVertex = (dedaiSpaceGridVertex*)pListClosed.GetAt(e);
+			testVertex = pListClosed.GetAt(e);
 			pWorld->GetDEAI().LogInfoFormat("         Vertex: ng=%p v=%i p=%i c=(%g,%g,%g)", testVertex->GetGrid(),
 				testVertex->GetIndex(), testVertex->GetPathParent()?testVertex->GetPathParent()->GetIndex():-1,
 				testVertex->GetPathCostF(), testVertex->GetPathCostG(), testVertex->GetPathCostH());
@@ -352,7 +352,7 @@ void dedaiPathFinderNavGrid::pFindVertexPath(){
 	}
 	
 	if(pListClosed.GetCount() > 0){
-		testVertex = (dedaiSpaceGridVertex*)pListClosed.GetAt(pListClosed.GetCount() - 1);
+		testVertex = pListClosed.GetAt(pListClosed.GetCount() - 1);
 		
 		// if the last vertex in the closed list is not the end vertex then there is no path to get
 		// to the end vertex using the current configuration. in this case look for the vertex with
@@ -379,7 +379,7 @@ void dedaiPathFinderNavGrid::pFindVertexPath(){
 #ifdef DEBUG
 	pWorld->GetDEAI().LogInfo("      Path Vertices:");
 	for(v=0; v<pPathVertices.GetCount(); v++){
-		testVertex = (dedaiSpaceGridVertex*)pPathVertices.GetAt(v);
+		testVertex = pPathVertices.GetAt(v);
 		pWorld->GetDEAI().LogInfoFormat("         Vertex: ng=%p v=%i p=%i c=(%g,%g,%g)", testVertex->GetGrid(),
 			testVertex->GetIndex(), testVertex->GetPathParent()?testVertex->GetPathParent()->GetIndex():-1,
 			testVertex->GetPathCostF(), testVertex->GetPathCostG(), testVertex->GetPathCostH());
@@ -392,7 +392,7 @@ void dedaiPathFinderNavGrid::pFindVertexPath(){
 	}
 	
 	for(v=0; v<count; v++){
-		testVertex = (dedaiSpaceGridVertex*)pPathVertices.GetAt(v);
+		testVertex = pPathVertices.GetAt(v);
 		AddPathPoint(testVertex->GetGrid()->GetSpace().GetMatrix() * testVertex->GetPosition());
 	}
 	

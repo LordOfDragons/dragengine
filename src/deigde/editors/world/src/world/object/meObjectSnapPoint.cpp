@@ -91,12 +91,11 @@ pColliderOwner(this)
 		
 		object->GetEnvironment()->SetColliderUserPointer(pCollider, &pColliderOwner);
 		
-		deColliderAttachment * const attachment = new deColliderAttachment(pCollider);
+		auto attachment = deColliderAttachment::Ref::New(pCollider);
 		attachment->SetAttachType(deColliderAttachment::eatStatic);
 		attachment->SetPosition(snapPoint->GetPosition());
-		attachment->SetOrientation(decQuaternion::CreateFromEuler(
-			snapPoint->GetRotation() * DEG2RAD));
-		object->GetColDetCollider()->AddAttachment(attachment);
+		attachment->SetOrientation(decQuaternion::CreateFromEuler(snapPoint->GetRotation() * DEG2RAD));
+		object->GetColDetCollider()->AddAttachment(std::move(attachment));
 		
 		// create debug drawer shape
 		pDDShape = igdeWDebugDrawerShape::Ref::New();

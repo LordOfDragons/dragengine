@@ -68,13 +68,9 @@ igdeUndo::Ref gdeMAOCBillboardPaste::OnActionSubObject(gdeGameDefinition&, gdeOb
 		return {};
 	}
 	
-	const gdeClipboardDataOCBillboard &clipOCBillboard =
-		(const gdeClipboardDataOCBillboard &)(igdeClipboardData&)clip;
-	
-	const gdeOCBillboard::Ref billboard(gdeOCBillboard::Ref::New(*clipOCBillboard.GetBillboard()));
-	
 	const igdeUndo::Ref undo = gdeUOCAddBillboard::Ref::New(&objectClass,
-		billboard);
+		gdeOCBillboard::Ref::New(*clip.DynamicCast<gdeClipboardDataOCBillboard>()->GetBillboard()));
+	
 	undo->SetShortInfo("Paste object class billboard");
 	return undo;
 }

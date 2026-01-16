@@ -78,12 +78,12 @@ gdeWindowProperties::~gdeWindowProperties(){
 ///////////////
 
 void gdeWindowProperties::SetGameDefinition(gdeGameDefinition *gameDefinition){
-	((gdeWPGameDefinition&)(igdeWidget&)pPanelGameDefinition).SetGameDefinition(gameDefinition);
-	((gdeWPSelection&)(igdeWidget&)pPanelSelection).SetGameDefinition(gameDefinition);
-	((gdeWPView&)(igdeWidget&)pPanelView).SetGameDefinition(gameDefinition);
-	((gdeWPUndoHistory&)(igdeWPUndoHistory&)pPanelUndoHistory).SetGameDefinition(gameDefinition);
+	pPanelGameDefinition.DynamicCast<gdeWPGameDefinition>()->SetGameDefinition(gameDefinition);
+	pPanelSelection.DynamicCast<gdeWPSelection>()->SetGameDefinition(gameDefinition);
+	pPanelView.DynamicCast<gdeWPView>()->SetGameDefinition(gameDefinition);
+	pPanelUndoHistory.DynamicCast<gdeWPUndoHistory>()->SetGameDefinition(gameDefinition);
 }
 
 gdeWPSelection &gdeWindowProperties::GetPanelSelection() const{
-	return (gdeWPSelection&)(igdeWidget&)pPanelSelection;
+	return pPanelSelection.DynamicCast<gdeWPSelection>();
 }

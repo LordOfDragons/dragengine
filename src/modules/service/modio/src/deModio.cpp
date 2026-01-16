@@ -339,7 +339,7 @@ void deModio::pSaveConfig(){
 		count = pModConfigs.GetCount();
 		writer->WriteInt(count);
 		for(i=0; i<count; i++){
-			((deModioModConfig*)pModConfigs.GetAt(i))->WriteToFile(writer);
+			pModConfigs.GetAt(i)->WriteToFile(writer);
 		}
 		
 		writer->WriteInt(pUserConfigs.GetCount());
@@ -388,7 +388,7 @@ void deModio::pCheckFailureState(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		const deModioModConfig &modConfig = *((deModioModConfig*)pModConfigs.GetAt(i));
+		const deModioModConfig &modConfig = pModConfigs.GetAt(i);
 		if(userConfig->GetModDisabled(modConfig.id)){
 			continue;
 		}
@@ -437,7 +437,7 @@ void deModio::pUpdateVFS(){
 	}
 	
 	for(i=0; i<count; i++){
-		const deModioModConfig &config = *((deModioModConfig*)pModConfigs.GetAt(i));
+		const deModioModConfig &config = pModConfigs.GetAt(i);
 		if(userConfig->GetModDisabled(config.id)){
 			LogInfoFormat("- %s: Mod disabled. Skipping mod", config.id.GetString());
 			continue;

@@ -368,14 +368,14 @@ deoglShaderCompileUnitTask::Ref &unitTask, deoglShaderLoadTask::Ref &loadTask){
 	const deMutexGuard guard(pMutexTasks);
 	
 	if(pLoadTasksPending.GetCount() > 0){
-		loadTask = (deoglShaderLoadTask*)pLoadTasksPending.GetAt(0);
+		loadTask = pLoadTasksPending.GetAt(0);
 		pLoadTasksPending.RemoveFrom(0);
 		pCompilingTaskCount++;
 		return;
 	}
 	
 	if(pUnitTasksPending.GetCount() > 0){
-		unitTask = (deoglShaderCompileUnitTask*)pUnitTasksPending.GetAt(0);
+		unitTask = pUnitTasksPending.GetAt(0);
 		pUnitTasksPending.RemoveFrom(0);
 		pCompilingTaskCount++;
 		return;
@@ -516,7 +516,7 @@ void deoglShaderLanguage::WaitAllTasksFinished(){
 	if(pglMaxShaderCompilerThreads){
 		int i, count = pUnitTasksPending.GetCount();
 		for(i=0; i<count; i++){
-			deoglShaderCompileUnitTask &task = *((deoglShaderCompileUnitTask*)pUnitTasksPending.GetAt(i));
+			deoglShaderCompileUnitTask &task = pUnitTasksPending.GetAt(i);
 			pCompiler->FinishCompileShaderUnit(*task.GetUnit());
 			task.GetUnit()->isCompiling = false;
 		}
@@ -571,7 +571,7 @@ void deoglShaderLanguage::Update(){
 	
 	int i, count = pLoadTasksPending.GetCount();
 	for(i=0; i<count; i++){
-		deoglShaderLoadTask &task = *((deoglShaderLoadTask*)pLoadTasksPending.GetAt(i));
+		deoglShaderLoadTask &task = pLoadTasksPending.GetAt(i);
 		deoglShaderProgram * const program = task.GetProgram();
 		
 		try{
@@ -616,7 +616,7 @@ void deoglShaderLanguage::Update(){
 	
 	count = pUnitTasksPending.GetCount();
 	for(i=0; i<count; i++){
-		deoglShaderCompileUnitTask &task = *((deoglShaderCompileUnitTask*)pUnitTasksPending.GetAt(i));
+		deoglShaderCompileUnitTask &task = pUnitTasksPending.GetAt(i);
 		
 		if(task.pending){
 			task.pending = false;

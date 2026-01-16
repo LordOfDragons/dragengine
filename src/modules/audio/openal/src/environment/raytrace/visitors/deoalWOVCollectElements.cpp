@@ -77,7 +77,7 @@ int deoalWOVCollectElements::GetComponentCount() const{
 }
 
 deoalAComponent *deoalWOVCollectElements::GetComponentAt(int index) const{
-	return (deoalAComponent*)pComponents.GetAt(index);
+	return pComponents.GetAt(index);
 }
 
 

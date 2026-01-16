@@ -42,7 +42,7 @@ pRenderThread(renderThread){
 deoglOcclusionTestPool::~deoglOcclusionTestPool(){
 	int count = pOcclusionTests.GetCount();
 	while(count > 0){
-		delete (deoglOcclusionTest*)pOcclusionTests.GetAt(--count);
+		delete pOcclusionTests.GetAt(--count);
 	}
 }
 
@@ -57,7 +57,7 @@ deoglOcclusionTest *deoglOcclusionTestPool::Get(){
 		return new deoglOcclusionTest(pRenderThread);
 	}
 	
-	deoglOcclusionTest * const occlusionTest = (deoglOcclusionTest*)pOcclusionTests.GetAt(index);
+	deoglOcclusionTest * const occlusionTest = pOcclusionTests.GetAt(index);
 	pOcclusionTests.RemoveFrom(index);
 	return occlusionTest;
 }

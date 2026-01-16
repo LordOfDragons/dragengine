@@ -25,6 +25,7 @@
 #ifndef _DEMODELVERTEXPOSITIONSET_H_
 #define _DEMODELVERTEXPOSITIONSET_H_
 
+#include "../../common/collection/decTUniqueList.h"
 #include "../../common/string/decString.h"
 
 
@@ -53,6 +54,14 @@
  * in a vertex position set use the original model vertex position.
  */
 class DE_DLL_EXPORT deModelVertexPositionSet{
+public:
+	/** \brief Reference type. */
+	using Ref = deTUniqueReference<deModelVertexPositionSet>;
+	
+	/** \brief List type. */
+	using List = decTUniqueList<deModelVertexPositionSet>;
+	
+	
 private:
 	decString pName;
 	int pBaseSet;

@@ -96,7 +96,7 @@ void deoalWOVInvalidateEnvProbes::VisitNode(deoalDOctree *node, int){
 	// remove collected environment probes
 	count = pRemoveEnvProbes.GetCount();
 	for(i=0; i<count; i++){
-		deoalEnvProbe * const envProbe = (deoalEnvProbe*)pRemoveEnvProbes.GetAt(i);
+		deoalEnvProbe * const envProbe = pRemoveEnvProbes.GetAt(i);
 		sonode.RemoveEnvProbe(envProbe);
 		envProbe->SetOctreeNode(nullptr);
 		envProbe->Invalidate();

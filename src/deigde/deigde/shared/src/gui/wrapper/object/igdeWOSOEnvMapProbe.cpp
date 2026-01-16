@@ -191,35 +191,27 @@ void igdeWOSOEnvMapProbe::AttachToCollider(){
 	
 	deColliderComponent * const colliderComponent = GetAttachableColliderComponent();
 	deColliderVolume * const colliderFallback = GetWrapper().GetColliderFallback();
-	deColliderAttachment *attachment = nullptr;
 	
-	try{
-		attachment = new deColliderAttachment(pEnvMapProbe);
-		attachment->SetAttachType(deColliderAttachment::eatStatic);
-		attachment->SetPosition(GetVectorProperty(
-			pGDEnvMapProbe.GetPropertyName(igdeGDCEnvMapProbe::epAttachPosition),
-			pGDEnvMapProbe.GetPosition()));
-		attachment->SetOrientation(GetRotationProperty(
-			pGDEnvMapProbe.GetPropertyName(igdeGDCEnvMapProbe::epAttachRotation),
-			pGDEnvMapProbe.GetOrientation()));
+	auto attachment = deColliderAttachment::Ref::New(pEnvMapProbe);
+	attachment->SetAttachType(deColliderAttachment::eatStatic);
+	attachment->SetPosition(GetVectorProperty(
+		pGDEnvMapProbe.GetPropertyName(igdeGDCEnvMapProbe::epAttachPosition),
+		pGDEnvMapProbe.GetPosition()));
+	attachment->SetOrientation(GetRotationProperty(
+		pGDEnvMapProbe.GetPropertyName(igdeGDCEnvMapProbe::epAttachRotation),
+		pGDEnvMapProbe.GetOrientation()));
+	auto attachmentPtr = attachment.Pointer();
+	
+	if(colliderComponent){
+		colliderComponent->AddAttachment(std::move(attachment));
+		pAttachedToCollider = colliderComponent;
 		
-		if(colliderComponent){
-			colliderComponent->AddAttachment(attachment);
-			pAttachedToCollider = colliderComponent;
-			
-		}else{
-			colliderFallback->AddAttachment(attachment);
-			pAttachedToCollider = colliderFallback;
-		}
-		
-		pAttachment = attachment;
-		
-	}catch(const deException &){
-		if(attachment){
-			delete attachment;
-		}
-		throw;
+	}else{
+		colliderFallback->AddAttachment(std::move(attachment));
+		pAttachedToCollider = colliderFallback;
 	}
+	
+	pAttachment = attachmentPtr;
 }
 
 void igdeWOSOEnvMapProbe::DetachFromCollider(){

@@ -121,46 +121,35 @@ void gdeVAOLight::AttachResources(){
 	const decQuaternion orientation(PropertyQuaternion(pOCLight->GetPropertyName(gdeOCLight::epAttachRotation), pOCLight->GetRotation()));
 	const decString &bone = pOCLight->GetBoneName();
 	
-	deColliderAttachment *attachment = nullptr;
-	try{
-		// attach light
-		attachment = new deColliderAttachment(pLight);
-		attachment->SetPosition(position);
-		attachment->SetOrientation(orientation);
+	// attach light
+	auto attachment = deColliderAttachment::Ref::New(pLight);
+	attachment->SetPosition(position);
+	attachment->SetOrientation(orientation);
+	
+	if(bone.IsEmpty()){
+		attachment->SetAttachType(deColliderAttachment::eatStatic);
 		
-		if(bone.IsEmpty()){
-			attachment->SetAttachType(deColliderAttachment::eatStatic);
-			
-		}else{
-			attachment->SetTrackBone(bone);
-			attachment->SetAttachType(deColliderAttachment::eatBone);
-		}
-		
-		attachCollider->AddAttachment(attachment);
-		attachment = nullptr;
-		
-		// attach debug drawer
-		attachment = new deColliderAttachment(pDebugDrawer);
-		attachment->SetPosition(position);
-		attachment->SetOrientation(orientation);
-		
-		if(bone.IsEmpty()){
-			attachment->SetAttachType(deColliderAttachment::eatStatic);
-			
-		}else{
-			attachment->SetTrackBone(bone);
-			attachment->SetAttachType(deColliderAttachment::eatBone);
-		}
-		
-		attachCollider->AddAttachment(attachment);
-		attachment = nullptr;
-		
-	}catch(const deException &){
-		if(attachment){
-			delete attachment;
-		}
-		throw;
+	}else{
+		attachment->SetTrackBone(bone);
+		attachment->SetAttachType(deColliderAttachment::eatBone);
 	}
+	
+	attachCollider->AddAttachment(std::move(attachment));
+	
+	// attach debug drawer
+	attachment = deColliderAttachment::Ref::New(pDebugDrawer);
+	attachment->SetPosition(position);
+	attachment->SetOrientation(orientation);
+	
+	if(bone.IsEmpty()){
+		attachment->SetAttachType(deColliderAttachment::eatStatic);
+		
+	}else{
+		attachment->SetTrackBone(bone);
+		attachment->SetAttachType(deColliderAttachment::eatBone);
+	}
+	
+	attachCollider->AddAttachment(std::move(attachment));
 }
 
 void gdeVAOLight::DetachResources(){

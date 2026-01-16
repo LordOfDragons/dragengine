@@ -79,7 +79,7 @@ void deoglGIBVHDynamic::UpdateBVHExtends(){
 	pWriteNodeExtends(0, pMinExtend, pMaxExtend);
 	
 	if(pBlockNode){
-		((deoglDynamicTBOBlock*)(deObject*)pBlockNode)->WriteToTBO();
+		pBlockNode.DynamicCast<deoglDynamicTBOBlock>()->WriteToTBO();
 	}
 }
 

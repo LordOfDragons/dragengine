@@ -90,7 +90,7 @@ int desynSynthesizer::GetLinkCount() const{
 }
 
 const desynSynthesizerLink &desynSynthesizer::GetLinkAt(int index) const{
-	return *((desynSynthesizerLink*)pLinks.GetAt(index));
+	return *pLinks.GetAt(index);
 }
 
 void desynSynthesizer::AddLink(desynSynthesizerLink *link){
@@ -209,7 +209,7 @@ void desynSynthesizer::pClearLinks(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		delete (desynSynthesizerLink*)pLinks.GetAt(i);
+		delete pLinks.GetAt(i);
 	}
 	
 	pLinks.RemoveAll();

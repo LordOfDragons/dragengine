@@ -79,15 +79,15 @@ deModuleSystem::~deModuleSystem(){
 	deLogger &logger = *pEngine->GetLogger();
 	
 	while(pModules.GetCount() > 0){
-		deLoadableModule * const module = (deLoadableModule*)pModules.GetAt(pModules.GetCount() - 1);
-		const decString moduleVersion(module->GetVersion());
-		const decString moduleName(module->GetName());
+		deLoadableModule &module = pModules.GetAt(pModules.GetCount() - 1).DynamicCast<deLoadableModule>();
+		const decString moduleVersion(module.GetVersion());
+		const decString moduleName(module.GetName());
 		
-		if(module->IsLocked()){
+		if(module.IsLocked()){
 			logger.LogWarnFormat(LOGSOURCE, "Module %s %s has not been unlocked properly",
 				moduleName.GetString(), moduleVersion.GetString());
 		}
-		if(module->GetRefCount() > 1){
+		if(module.GetRefCount() > 1){
 			logger.LogWarnFormat(LOGSOURCE, "Module %s %s has reference count greater than 1",
 				moduleName.GetString(), moduleVersion.GetString());
 		}
@@ -223,7 +223,7 @@ int deModuleSystem::GetModuleCountFor(eModuleTypes type) const{
 	int i;
 	
 	for(i=0; i<pModules.GetCount(); i++){
-		if(((deLoadableModule*)pModules.GetAt(i))->GetType() == type){
+		if(pModules.GetAt(i).DynamicCast<deLoadableModule>()->GetType() == type){
 			count++;
 		}
 	}
@@ -236,7 +236,7 @@ int deModuleSystem::GetLoadedModuleCountFor(eModuleTypes type) const{
 	int i;
 	
 	for(i=0; i<pModules.GetCount(); i++){
-		deLoadableModule &module = *((deLoadableModule*)pModules.GetAt(i));
+		deLoadableModule &module = pModules.GetAt(i).DynamicCast<deLoadableModule>();
 		if(module.GetType() == type && module.IsLoaded() && module.GetEnabled()){
 			count++;
 		}
@@ -255,15 +255,15 @@ deLoadableModule *deModuleSystem::GetModuleNamed(const char *name) const{
 	int i;
 	
 	for(i=0; i<count; i++){
-		deLoadableModule * const module = (deLoadableModule*)pModules.GetAt(i);
-		if(module->GetName() != name || !module->GetEnabled()){
+		deLoadableModule &module = pModules.GetAt(i).DynamicCast<deLoadableModule>();
+		if(module.GetName() != name || !module.GetEnabled()){
 			continue;
 		}
-		if(latestModule && CompareVersion(module->GetVersion(), latestModule->GetVersion()) <= 0){
+		if(latestModule && CompareVersion(module.GetVersion(), latestModule->GetVersion()) <= 0){
 			continue;
 		}
 		
-		latestModule = module;
+		latestModule = &module;
 	}
 	
 	return latestModule;
@@ -278,9 +278,9 @@ deLoadableModule *deModuleSystem::GetModuleNamed(const char *name, const char *v
 	int i;
 	
 	for(i=0; i<count; i++){
-		deLoadableModule * const module = (deLoadableModule*)pModules.GetAt(i);
-		if(module->GetName() == name && module->GetVersion() == version){
-			return module;
+		deLoadableModule &module = pModules.GetAt(i).DynamicCast<deLoadableModule>();
+		if(module.GetName() == name && module.GetVersion() == version){
+			return &module;
 		}
 	}
 	
@@ -297,16 +297,16 @@ deLoadableModule *deModuleSystem::GetModuleNamedAtLeast(const char *name, const 
 	int i;
 	
 	for(i=0; i<count; i++){
-		deLoadableModule * const module = (deLoadableModule*)pModules.GetAt(i);
-		if(module->GetName() != name || !module->GetEnabled()
-		|| CompareVersion(module->GetVersion(), version) < 0){
+		deLoadableModule &module = pModules.GetAt(i).DynamicCast<deLoadableModule>();
+		if(module.GetName() != name || !module.GetEnabled()
+		|| CompareVersion(module.GetVersion(), version) < 0){
 			continue;
 		}
-		if(latestModule && CompareVersion(module->GetVersion(), latestModule->GetVersion()) <= 0){
+		if(latestModule && CompareVersion(module.GetVersion(), latestModule->GetVersion()) <= 0){
 			continue;
 		}
 		
-		latestModule = module;
+		latestModule = &module;
 	}
 	
 	return latestModule;
@@ -317,10 +317,10 @@ deLoadableModule *deModuleSystem::GetFirstLoadedModuleFor(eModuleTypes type) con
 	int i;
 	
 	for(i=0; i<pModules.GetCount(); i++){
-		deLoadableModule * const module = (deLoadableModule*)pModules.GetAt(i);
-		if(module->GetType() == type && module->IsLoaded() && module->GetEnabled()){
-			useModule = module;
-			if(!module->GetIsFallback()){
+		deLoadableModule &module = pModules.GetAt(i).DynamicCast<deLoadableModule>();
+		if(module.GetType() == type && module.IsLoaded() && module.GetEnabled()){
+			useModule = &module;
+			if(!module.GetIsFallback()){
 				break;
 			}
 		}
@@ -350,16 +350,16 @@ deLoadableModule *deModuleSystem::FindMatching(eModuleTypes type, const char *fi
 	int i, j;
 	
 	for(i=0; i<pModules.GetCount(); i++){
-		deLoadableModule * const module = (deLoadableModule*)pModules.GetAt(i);
-		if(module->GetType() != type){
+		deLoadableModule &module = pModules.GetAt(i);
+		if(module.GetType() != type){
 			continue;
 		}
 		
-		const decStringList &patternList = module->GetPatternList();
+		const decStringList &patternList = module.GetPatternList();
 		const int patternCount = patternList.GetCount();
 		
 		for(j=0; j<patternCount; j++){
-			if(!module->GetEnabled()){
+			if(!module.GetEnabled()){
 				continue;
 			}
 			if(!MatchesPattern(filename, patternList.GetAt(j))){
@@ -368,22 +368,22 @@ deLoadableModule *deModuleSystem::FindMatching(eModuleTypes type, const char *fi
 			
 			// no latest module found. use this module
 			if(!latestModule){
-				latestModule = module;
+				latestModule = &module;
 				
 			// latest module has been found and this module is fallback. skip module
-			}else if(module->GetIsFallback()){
+			}else if(module.GetIsFallback()){
 				
 			// latest module has same name as this module
-			}else if(module->GetName() == latestModule->GetName()){
+			}else if(module.GetName() == latestModule->GetName()){
 				// use this module if it has higher version than the latest module
-				if(CompareVersion(module->GetVersion(), latestModule->GetVersion()) > 0){
-					latestModule = module;
+				if(CompareVersion(module.GetVersion(), latestModule->GetVersion()) > 0){
+					latestModule = &module;
 				}
 				
 			// latest module has different name than this module. use this module if
 			// it has higher priority than the latest module or latest module is fallback
-			}else if(module->GetPriority() > latestModule->GetPriority() || latestModule->GetIsFallback()){
-				latestModule = module;
+			}else if(module.GetPriority() > latestModule->GetPriority() || latestModule->GetIsFallback()){
+				latestModule = &module;
 			}
 		}
 	}
@@ -416,7 +416,7 @@ void deModuleSystem::ServicesAddVFSContainers(deVirtualFileSystem &vfs, const ch
 	int i;
 	
 	for(i=0; i<pModules.GetCount(); i++){
-		const deLoadableModule &module = *((deLoadableModule*)pModules.GetAt(i));
+		const deLoadableModule &module = pModules.GetAt(i).DynamicCast<deLoadableModule>();
 		if(module.GetType() == deModuleSystem::eModuleTypes::emtService && !names.Has(module.GetName())){
 			names.Add(module.GetName());
 		}

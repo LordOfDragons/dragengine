@@ -49,7 +49,6 @@ pGamma(1.0f),
 pColorize(1.0f, 1.0f, 1.0f),
 
 pTransparency(1.0f),
-pMask(nullptr),
 pCombineMode(ecmBlend)
 {
 	int i;
@@ -59,9 +58,6 @@ pCombineMode(ecmBlend)
 }
 
 deSkinPropertyNode::~deSkinPropertyNode(){
-	if(pMask){
-		delete pMask;
-	}
 }
 
 
@@ -109,15 +105,8 @@ void deSkinPropertyNode::SetTransparency(float transparency){
 	pTransparency = transparency;
 }
 
-void deSkinPropertyNode::SetMask(deSkinPropertyNode *mask){
-	if(mask == pMask){
-		return;
-	}
-	
-	if(pMask){
-		delete pMask;
-	}
-	pMask = mask;
+void deSkinPropertyNode::SetMask(deSkinPropertyNode::Ref &&mask){
+	pMask = std::move(mask);
 }
 
 void deSkinPropertyNode::SetCombineMode(eCombineModes mode){

@@ -479,7 +479,7 @@ void aeWPAPanelRuleMirror::UpdateRigBoneList(){
 			const int count = rig->GetBoneCount();
 			int i;
 			for(i=0; i<count; i++){
-				pCBMirrorBone->AddItem(rig->GetBoneAt(i).GetName());
+				pCBMirrorBone->AddItem(rig->GetBoneAt(i)->GetName());
 			}
 		}
 		pCBMirrorBone->SortItems();

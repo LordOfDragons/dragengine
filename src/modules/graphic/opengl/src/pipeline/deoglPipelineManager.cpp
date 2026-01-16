@@ -54,7 +54,7 @@ deoglPipelineManager::~deoglPipelineManager(){
 
 const deoglPipeline *deoglPipelineManager::GetWithRTSIndex(int index){
 	const deMutexGuard guard(pMutex);
-	return (const deoglPipeline*)pRTSPipelines.GetAt(index);
+	return pRTSPipelines.GetAt(index);
 }
 
 const deoglPipeline *deoglPipelineManager::GetWith(
@@ -64,7 +64,7 @@ const deoglPipelineConfiguration &configuration, bool assignRTSIndex){
 	int i;
 	
 	for(i=0; i<count; i++){
-		deoglPipeline * const pipeline = (deoglPipeline*)pPipelines.GetAt(i);
+		deoglPipeline * const pipeline = pPipelines.GetAt(i);
 		if(pipeline->GetConfiguration() == configuration){
 			return pipeline;
 		}

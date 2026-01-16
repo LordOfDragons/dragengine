@@ -182,7 +182,7 @@ igdeGDCategory *&category) const{
 	int i, j;
 	
 	for(i=0; i<count; i++){
-		igdeGDCategory * const checkCategory = (igdeGDCategory*)pCategories.GetAt(i);
+		igdeGDCategory * const checkCategory = pCategories.GetAt(i);
 		const decStringSet &patternList = checkCategory->GetAutoCategorizePattern();
 		const int patternCount = patternList.GetCount();
 		

@@ -25,10 +25,11 @@
 #ifndef _DESKINTEXTURE_H_
 #define _DESKINTEXTURE_H_
 
+#include "property/deSkinProperty.h"
 #include "../../common/math/decMath.h"
 #include "../../common/string/decString.h"
+#include "../../common/collection/decTUniqueList.h"
 
-class deSkinProperty;
 class deSkinVisitor;
 
 
@@ -40,12 +41,17 @@ class deSkinVisitor;
  * properties are stored as well as physics properties.
  */
 class DE_DLL_EXPORT deSkinTexture{
+public:
+	/** \brief Reference type. */
+	using Ref = deTUniqueReference<deSkinTexture>;
+	
+	/** \brief List type. */
+	using List = decTUniqueList<deSkinTexture>;
+	
 private:
 	const decString pName;
 	
-	deSkinProperty **pProperties;
-	int pPropertyCount;
-	int pPropertySize;
+	deSkinProperty::List pProperties;
 	
 	
 	
@@ -71,11 +77,14 @@ public:
 	
 	/** \name Properties */
 	/*@{*/
+	/** \brief Properties. */
+	inline const deSkinProperty::List &GetProperties() const{ return pProperties; }
+	
 	/** \brief Count of properties. */
-	inline int GetPropertyCount() const{ return pPropertyCount; }
+	inline int GetPropertyCount() const{ return pProperties.GetCount(); }
 	
 	/** \brief Property at the given index. */
-	deSkinProperty *GetPropertyAt(int index) const;
+	const deSkinProperty::Ref &GetPropertyAt(int index) const{ return pProperties.GetAt(index); }
 	
 	/** \brief Property with the given type or NULL if not found. */
 	deSkinProperty *GetPropertyWithType(const char *type) const;
@@ -90,7 +99,7 @@ public:
 	bool HasPropertyWithType(const char *type) const;
 	
 	/** \brief Adds a property. */
-	void AddProperty(deSkinProperty *property);
+	void AddProperty(deSkinProperty::Ref &&property);
 	/*@}*/
 };
 

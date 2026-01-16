@@ -68,13 +68,9 @@ igdeUndo::Ref gdeMAOCNavBlockerPaste::OnActionSubObject(gdeGameDefinition&, gdeO
 		return {};
 	}
 	
-	const gdeClipboardDataOCNavBlocker &clipOCNavigationBlocker =
-		(const gdeClipboardDataOCNavBlocker &)(igdeClipboardData&)clip;
+	const igdeUndo::Ref undo = gdeUOCAddNavBlocker::Ref::New(&objectClass, 
+		gdeOCNavigationBlocker::Ref::New(*clip.DynamicCast<gdeClipboardDataOCNavBlocker>()->GetNavBlocker()));
 	
-	const gdeOCNavigationBlocker::Ref navBlocker(gdeOCNavigationBlocker::Ref::New(*clipOCNavigationBlocker.GetNavBlocker()));
-	
-	const igdeUndo::Ref undo = gdeUOCAddNavBlocker::Ref::New(&objectClass,
-		navBlocker);
 	undo->SetShortInfo("Paste object class navigation blocker");
 	return undo;
 }

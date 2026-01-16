@@ -262,17 +262,17 @@ deErrorTracePoint *deBaseModule::SetErrorTrace(const deException &exception){
 	int i;
 	
 	text.Format("%i trace points", btcount);
-	deErrorTraceValue * const tpbacktrace = tracepoint->AddValue("Backtrace", text);
+	deErrorTraceValue &tpbacktrace = tracepoint->AddValue("Backtrace", text);
 	
 	for(i=0; i<btcount; i++){
 		text.Format("Trace point %i", i + 1);
-		tpbacktrace->AddSubValue(text, backtrace.GetAt(i));
+		tpbacktrace.AddSubValue(text, backtrace.GetAt(i));
 	}
 	
 	return tracepoint;
 }
 
-deErrorTracePoint *deBaseModule::AddErrorTracePoint(const char *sourceFunc, int sourceLine){
+const deErrorTracePoint::Ref &deBaseModule::AddErrorTracePoint(const char *sourceFunc, int sourceLine){
 	return GetGameEngine()->GetErrorTrace()->AddPoint(&pLoadableModule, sourceFunc, sourceLine);
 }
 

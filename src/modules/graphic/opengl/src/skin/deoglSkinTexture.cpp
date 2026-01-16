@@ -901,7 +901,7 @@ void deoglSkinTexture::pPrepareChannels(deoglRSkin &skin, const deSkinTexture &t
 	const int propertyCount = texture.GetPropertyCount();
 	int i;
 	for(i=0; i<propertyCount; i++){
-		pProcessProperty(skin, *texture.GetPropertyAt(i));
+		pProcessProperty(skin, texture.GetPropertyAt(i));
 	}
 	
 	// determine if the skin uses renderables at all

@@ -217,7 +217,7 @@ void dedaiWorld::Update(float elapsed){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((dedaiLayer*)pLayers.GetAt(i))->Update(elapsed);
+		pLayers.GetAt(i)->Update(elapsed);
 	}
 }
 

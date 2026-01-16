@@ -135,7 +135,7 @@ void deoglSharedVBO::Prepare(){
 			vboData = new unsigned char[stride * pUsedSize];
 			
 			for(i=0; i<blockCount; i++){
-				const deoglSharedVBOBlock &block = *((deoglSharedVBOBlock*)pBlocks.GetAt(i));
+				const deoglSharedVBOBlock &block = pBlocks.GetAt(i);
 				if(!block.GetEmpty()){
 					memcpy(vboData + stride * block.GetOffset(), block.GetData(), stride * block.GetSize());
 				}
@@ -169,7 +169,7 @@ void deoglSharedVBO::Prepare(){
 				vboData = new unsigned char[indexSize * pIndexUsedSize];
 				
 				for(i=0; i<blockCount; i++){
-					const deoglSharedVBOBlock &block = *((deoglSharedVBOBlock*)pBlocks.GetAt(i));
+					const deoglSharedVBOBlock &block = pBlocks.GetAt(i);
 					if(block.GetEmpty() || block.GetIndexCount() == 0){
 						continue;
 					}
@@ -223,7 +223,7 @@ void deoglSharedVBO::UpdateUsedSizes(){
 	pUsedSize = 0;
 	
 	for(i=count-1; i>=0; i--){
-		const deoglSharedVBOBlock &block = *((deoglSharedVBOBlock*)pBlocks.GetAt(i));
+		const deoglSharedVBOBlock &block = pBlocks.GetAt(i);
 		if(!block.GetEmpty()){
 			pUsedSize = block.GetOffset() + block.GetSize();
 			break;
@@ -234,7 +234,7 @@ void deoglSharedVBO::UpdateUsedSizes(){
 	pIndexUsedSize = 0;
 	
 	for(i=count-1; i>=0; i--){
-		deoglSharedVBOBlock &block = *((deoglSharedVBOBlock*)pBlocks.GetAt(i));
+		deoglSharedVBOBlock &block = pBlocks.GetAt(i);
 		if(!block.GetEmpty()){
 			pIndexUsedSize = block.GetIndexOffset() + block.GetIndexCount();
 			break;
@@ -256,7 +256,7 @@ int deoglSharedVBO::GetBlockCount() const{
 }
 
 deoglSharedVBOBlock *deoglSharedVBO::GetBlockAt(int index) const{
-	return (deoglSharedVBOBlock*)pBlocks.GetAt(index);
+	return pBlocks.GetAt(index);
 }
 
 deoglSharedVBOBlock::Ref deoglSharedVBO::AddBlock(int size, int indexCount){
@@ -268,7 +268,7 @@ deoglSharedVBOBlock::Ref deoglSharedVBO::AddBlock(int size, int indexCount){
 	deoglSharedVBOBlock::Ref block;
 	
 	if(index != -1){
-		block = (deoglSharedVBOBlock*)pBlocks.GetAt(index);
+		block = pBlocks.GetAt(index);
 		
 		// if empty block is larger than requested size add empty block with remaining empty
 		// space right after this block
@@ -301,7 +301,7 @@ void deoglSharedVBO::RemoveBlock(deoglSharedVBOBlock *block){
 	
 	// if the previous block is empty merge this block with the previous block
 	if(index > 0){
-		deoglSharedVBOBlock * const mergeBlock = (deoglSharedVBOBlock*)pBlocks.GetAt(index - 1);
+		deoglSharedVBOBlock * const mergeBlock = pBlocks.GetAt(index - 1);
 		if(mergeBlock->GetEmpty()){
 			mergeBlock->SetSize(mergeBlock->GetSize() + block->GetSize());
 			mergeBlock->SetIndexCount(mergeBlock->GetIndexCount() + block->GetIndexCount());
@@ -316,7 +316,7 @@ void deoglSharedVBO::RemoveBlock(deoglSharedVBOBlock *block){
 	
 	// if the next block is empty merge the next block with this block
 	if(index < pBlocks.GetCount() - 1){
-		deoglSharedVBOBlock * const mergeBlock = (deoglSharedVBOBlock*)pBlocks.GetAt(index + 1);
+		deoglSharedVBOBlock * const mergeBlock = pBlocks.GetAt(index + 1);
 		if(mergeBlock->GetEmpty()){
 			block->SetSize(block->GetSize() + mergeBlock->GetSize());
 			block->SetIndexCount(block->GetIndexCount() + mergeBlock->GetIndexCount());
@@ -335,7 +335,7 @@ int deoglSharedVBO::IndexOfEmptyBlockWithMinSize(int size, int indexCount){
 	int i;
 	
 	for(i=0; i<count; i++){
-		deoglSharedVBOBlock * const block = (deoglSharedVBOBlock*)pBlocks.GetAt(i);
+		deoglSharedVBOBlock * const block = pBlocks.GetAt(i);
 		if(block->GetEmpty() && block->GetSize() >= size && block->GetIndexCount() >= indexCount){
 			return i;
 		}
@@ -353,7 +353,7 @@ void deoglSharedVBO::pCleanUp(){
 	const int count = pBlocks.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		((deoglSharedVBOBlock*)pBlocks.GetAt(i))->DropVBO();
+		pBlocks.GetAt(i)->DropVBO();
 	}
 	pBlocks.RemoveAll();
 	

@@ -150,7 +150,7 @@ public:
 			return;
 		}
 		
-		((meUHTVRuleMove&)(igdeUndo&)pUndo).SetNewPosition(
+		pUndo.DynamicCast<meUHTVRuleMove>()->SetNewPosition(
 			decVector2(node->GetPosition()) * pNode.GetWindowVegetation().GetPixelToUnits());
 		pUndo->Redo();
 	}

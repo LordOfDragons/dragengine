@@ -232,26 +232,20 @@ void deClassRigBuilder::nfAddBone::RunFunction(dsRunTime *rt, dsValue *myself){
 	const bool ikLockedZ = rt->GetValue(12)->GetBool();
 	const decShape::List &shapes = ds.GetClassShapeList()->GetShapeList(rt->GetValue(13)->GetRealObject());
 	
-	deRigBone * const bone = new deRigBone(name);
-	try{
-		bone->SetParent(parent);
-		bone->SetPosition(position);
-		bone->SetRotation(rotation * DEG2RAD);
-		bone->SetCentralMassPoint(centralMassPoint);
-		bone->SetDynamic(dynamic);
-		bone->SetMass(mass);
-		bone->SetIKLimits(ikLimitsLower * DEG2RAD, ikLimitsUpper * DEG2RAD);
-		bone->SetIKResistance(ikResistance);
-		bone->SetIKLockedX(ikLockedX);
-		bone->SetIKLockedY(ikLockedY);
-		bone->SetIKLockedZ(ikLockedZ);
-		bone->SetShapes(shapes);
-		builder->GetRig()->AddBone(bone);
-		
-	}catch(...){
-		delete bone;
-		throw;
-	}
+	auto bone = deRigBone::Ref::New(name);
+	bone->SetParent(parent);
+	bone->SetPosition(position);
+	bone->SetRotation(rotation * DEG2RAD);
+	bone->SetCentralMassPoint(centralMassPoint);
+	bone->SetDynamic(dynamic);
+	bone->SetMass(mass);
+	bone->SetIKLimits(ikLimitsLower * DEG2RAD, ikLimitsUpper * DEG2RAD);
+	bone->SetIKResistance(ikResistance);
+	bone->SetIKLockedX(ikLockedX);
+	bone->SetIKLockedY(ikLockedY);
+	bone->SetIKLockedZ(ikLockedZ);
+	bone->SetShapes(shapes);
+	builder->GetRig()->AddBone(std::move(bone));
 }
 
 // protected func void setBoneShapeProperties( int index, Array properties )
@@ -325,23 +319,17 @@ void deClassRigBuilder::nfAddBoneConstraint::RunFunction(dsRunTime *rt, dsValue 
 	const float breakingThreshold = rt->GetValue(8)->GetFloat();
 	const int parentBone = rt->GetValue(9)->GetInt();
 	
-	deRigConstraint * const constraint = new deRigConstraint;
-	try{
-		constraint->SetReferencePosition(referencePosition);
-		constraint->SetReferenceOrientation(referenceOrientation);
-		constraint->SetBoneOffset(boneOffset);
-		constraint->SetLinearDamping(linearDamping);
-		constraint->SetAngularDamping(angularDamping);
-		constraint->SetSpringDamping(springDamping);
-		constraint->SetIsRope(isRope);
-		constraint->SetBreakingThreshold(breakingThreshold);
-		constraint->SetParentBone(parentBone);
-		bone.AddConstraint(constraint);
-		
-	}catch(...){
-		delete constraint;
-		throw;
-	}
+	auto constraint = deRigConstraint::Ref::New();
+	constraint->SetReferencePosition(referencePosition);
+	constraint->SetReferenceOrientation(referenceOrientation);
+	constraint->SetBoneOffset(boneOffset);
+	constraint->SetLinearDamping(linearDamping);
+	constraint->SetAngularDamping(angularDamping);
+	constraint->SetSpringDamping(springDamping);
+	constraint->SetIsRope(isRope);
+	constraint->SetBreakingThreshold(breakingThreshold);
+	constraint->SetParentBone(parentBone);
+	bone.AddConstraint(std::move(constraint));
 }
 
 // protected func void setBoneConstraintDof( int bone, int constraint, ColliderConstraintDof dof,

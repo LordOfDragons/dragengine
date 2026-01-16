@@ -79,22 +79,21 @@ igdeUndo::Ref gdeMAObjectClassSubclass::OnAction(gdeGameDefinition &gameDefiniti
 			continue;
 		}
 		
-		const gdeObjectClass::Ref subclass(gdeObjectClass::Ref::New(name));
-		gdeObjectClass &soc = (gdeObjectClass&)(deObject&)subclass;
+		auto subclass(gdeObjectClass::Ref::New(name));
 		
-		soc.SetCategory(objectClass->GetCategory());
-		soc.SetHideTags(objectClass->GetHideTags());
-		soc.SetIsGhost(objectClass->GetIsGhost());
-		soc.SetIsAttachableBehavior(objectClass->GetIsAttachableBehavior());
-		soc.SetCanInstantiate(objectClass->GetCanInstantiate());
-		soc.SetPartialHideTags(objectClass->GetPartialHideTags());
-		soc.SetScaleMode(objectClass->GetScaleMode());
+		subclass->SetCategory(objectClass->GetCategory());
+		subclass->SetHideTags(objectClass->GetHideTags());
+		subclass->SetIsGhost(objectClass->GetIsGhost());
+		subclass->SetIsAttachableBehavior(objectClass->GetIsAttachableBehavior());
+		subclass->SetCanInstantiate(objectClass->GetCanInstantiate());
+		subclass->SetPartialHideTags(objectClass->GetPartialHideTags());
+		subclass->SetScaleMode(objectClass->GetScaleMode());
 		
 		const gdeOCInherit::Ref inherit(gdeOCInherit::Ref::New(objectClass->GetName()));
 		inherit->SetPropertyPrefix(objectClass->GetDefaultInheritPropertyPrefix());
-		soc.GetInherits().Add(inherit);
+		subclass->GetInherits().Add(inherit);
 		
-		return gdeUAddObjectClass::Ref::New(&gameDefinition, &soc);
+		return gdeUAddObjectClass::Ref::New(&gameDefinition, subclass);
 	}
 	return {};
 }

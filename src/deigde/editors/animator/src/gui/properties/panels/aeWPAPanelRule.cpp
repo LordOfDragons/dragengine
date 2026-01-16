@@ -1007,7 +1007,7 @@ void aeWPAPanelRule::UpdateRigBoneList(){
 			int i;
 			
 			for(i=0; i<count; i++){
-				pCBBones->AddItem(rig->GetBoneAt(i).GetName());
+				pCBBones->AddItem(rig->GetBoneAt(i)->GetName());
 			}
 		}
 		pCBBones->SortItems();

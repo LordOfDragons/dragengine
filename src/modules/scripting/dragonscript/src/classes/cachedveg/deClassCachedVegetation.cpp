@@ -147,7 +147,6 @@ public:
 		
 		int t, typeCount = pEngPF->GetTypeCount();
 		dePropFieldInstance *pfinstances;
-		dePropFieldType *engPFType;
 		decVector ipos, irot;
 		float iscale;
 		int i;
@@ -166,12 +165,12 @@ public:
 			//if( upficount < 0 ) upficount = 0;
 			//if( upficount > pficount ) upficount = pficount;
 			
-			engPFType = pEngPF->GetTypeAt(t);
-			engPFType->SetInstanceCount(upficount);
+			dePropFieldType &engPFType = pEngPF->GetTypeAt(t);
+			engPFType.SetInstanceCount(upficount);
 			
 			// add vegetation instances with matching this type
 			if(upficount > 0){
-				pfinstances = engPFType->GetInstances();
+				pfinstances = engPFType.GetInstances();
 				
 				int pfi;
 				for(pfi=0, i=0; i<pInstanceCount; i++){
@@ -313,7 +312,6 @@ public:
 	void LoadCacheFile(const deEngine *engine, decBaseFileReader &reader){
 		deModelManager *mdlmgr = engine->GetModelManager();
 		deSkinManager *skinmgr = engine->GetSkinManager();
-		dePropFieldType *engPFType = nullptr;
 		decDVector sectorPosition;
 		decVector scalePosition;
 		int i, t, typeCount;
@@ -354,22 +352,15 @@ public:
 			const float rotPerForce = reader.ReadFloat() * DEG2RAD; // rotation per force {float}
 			const float restitution = reader.ReadFloat(); // restitution {float}
 			
-			try{
-				for(p=0; p<pPFCount; p++){
-					engPFType = new dePropFieldType;
-					engPFType->SetModel(model);
-					engPFType->SetSkin(skin);
-					engPFType->SetRotationPerForce(rotPerForce);
-					engPFType->SetRestitution(restitution);
-					engPFType->SetCollisionFilter(pCollisionFilter);
-					
-					pPFs[p].GetEnginePF()->AddType(engPFType);
-					engPFType = nullptr;
-				}
+			for(p=0; p<pPFCount; p++){
+				auto engPFType = dePropFieldType::Ref::New();
+				engPFType->SetModel(model);
+				engPFType->SetSkin(skin);
+				engPFType->SetRotationPerForce(rotPerForce);
+				engPFType->SetRestitution(restitution);
+				engPFType->SetCollisionFilter(pCollisionFilter);
 				
-			}catch(...){
-				if(engPFType) delete engPFType;
-				throw;
+				pPFs[p].GetEnginePF()->AddType(std::move(engPFType));
 			}
 		}
 		

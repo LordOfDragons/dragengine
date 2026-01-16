@@ -305,7 +305,7 @@ void deRigModule::pParseRig(decXmlElementTag *root, deRig &rig){
 		const int boneCount = rig.GetBoneCount();
 		int b;
 		for(b=0; b<boneCount; b++){
-			if(rig.GetBoneAt(b).GetParent() == -1){
+			if(rig.GetBoneAt(b)->GetParent() == -1){
 				rig.SetRootBone(b);
 				break;
 			}
@@ -320,7 +320,6 @@ void deRigModule::pParseBone(decXmlElementTag *root, deRig &rig, dermName::List 
 	bool ikLocked[3] = {false, false, false};
 	decXmlCharacterData *cdata;
 	const char *name = nullptr;
-	deRigBone *bone = nullptr;
 	decXmlElementTag *tag;
 	decVector vector;
 	int i;
@@ -352,7 +351,7 @@ void deRigModule::pParseBone(decXmlElementTag *root, deRig &rig, dermName::List 
 	}
 	
 	try{
-		bone = new deRigBone(name);
+		auto bone = deTUniqueReference<deRigBone>::New(name);
 		
 		for(i=0; i<root->GetElementCount(); i++){
 			tag = pGetTagAt(root, i);
@@ -451,15 +450,14 @@ void deRigModule::pParseBone(decXmlElementTag *root, deRig &rig, dermName::List 
 		bone->SetIKLockedY(ikLocked[1]);
 		bone->SetIKLockedZ(ikLocked[2]);
 		
-		rig.AddBone(bone);
+		bone->SetShapes(shapes);
+		bone->SetShapeProperties(shapeProperties);
+		
+		rig.AddBone(std::move(bone));
 		
 	}catch(const deException &){
-		if(bone) delete bone;
 		throw;
 	}
-	
-	bone->SetShapes(shapes);
-	bone->SetShapeProperties(shapeProperties);
 }
 
 void deRigModule::pParseBoneIK(decXmlElementTag *root, float &lower, float &upper, float &resistance, bool &locked){
@@ -870,14 +868,13 @@ void deRigModule::pParseHull(decXmlElementTag *root, decShape::List &shapes, dec
 }
 
 void deRigModule::pParseConstraint(decXmlElementTag *root, deRig &rig, deRigBone *bone, dermName::List &boneNameList){
-	deRigConstraint *constraint = nullptr;
 	decXmlCharacterData *cdata;
 	decXmlElementTag *tag;
 	decVector vector;
 	int i;
 	
 	try{
-		constraint = new deRigConstraint;
+		auto constraint = deTUniqueReference<deRigConstraint>::New();
 		
 		for(i=0; i<root->GetElementCount(); i++){
 			tag = pGetTagAt(root, i);
@@ -961,21 +958,18 @@ void deRigModule::pParseConstraint(decXmlElementTag *root, deRig &rig, deRigBone
 				}else if(strcmp(tag->GetName(), "angularY") == 0){
 					pParseConstraintDof(*tag, constraint->GetDofAngularY(), false);
 					
-				}else if(strcmp(tag->GetName(), "angularZ") == 0){
-					pParseConstraintDof(*tag, constraint->GetDofAngularZ(), false);
-				}
+			}else if(strcmp(tag->GetName(), "angularZ") == 0){
+				pParseConstraintDof(*tag, constraint->GetDofAngularZ(), false);
 			}
 		}
-		
-		bone->AddConstraint(constraint);
-		
+	}
+	
+	bone->AddConstraint(std::move(constraint));
+	
 	}catch(const deException &){
-		if(constraint) delete constraint;
 		throw;
 	}
-}
-
-void deRigModule::pParseConstraintDof(const decXmlElementTag &root,
+}void deRigModule::pParseConstraintDof(const decXmlElementTag &root,
 deColliderConstraintDof &dof, bool linearConstraint){
 	const int count = root.GetElementCount();
 	float value;
@@ -1201,7 +1195,7 @@ void deRigModule::pWriteRig(decXmlWriter &writer, const deRig &rig){
 	int i;
 	
 	if(rig.GetRootBone() != -1){
-		writer.WriteDataTagString("rootBone", rig.GetBoneAt(rig.GetRootBone()).GetName());
+		writer.WriteDataTagString("rootBone", rig.GetBoneAt(rig.GetRootBone())->GetName());
 	}
 	
 	if(rig.GetModelCollision()){
@@ -1243,7 +1237,7 @@ void deRigModule::pWriteBone(decXmlWriter &writer, const deRig &rig, const deRig
 	writer.WriteOpeningTagEnd();
 	
 	if(parent != -1){
-		writer.WriteDataTagString("parent", rig.GetBoneAt(parent).GetName());
+		writer.WriteDataTagString("parent", rig.GetBoneAt(parent)->GetName());
 	}
 	
 	const decVector &position = bone.GetPosition();
@@ -1368,7 +1362,7 @@ void deRigModule::pWriteConstraint(decXmlWriter &writer, const deRig &rig, const
 	writer.WriteOpeningTag("constraint");
 	
 	if(parentBone != -1){
-		writer.WriteDataTagString("bone", rig.GetBoneAt(parentBone).GetName());
+		writer.WriteDataTagString("bone", rig.GetBoneAt(parentBone)->GetName());
 	}
 	
 	const decVector &referencePosition = constraint.GetReferencePosition();

@@ -60,9 +60,9 @@ syneUControllerSetMaximumValue::~syneUControllerSetMaximumValue(){
 ///////////////
 
 void syneUControllerSetMaximumValue::Undo(){
-	((syneController&)(deObject&)pController).SetMaximumValue(pOldValue);
+	pController->SetMaximumValue(pOldValue);
 }
 
 void syneUControllerSetMaximumValue::Redo(){
-	((syneController&)(deObject&)pController).SetMaximumValue(pNewValue);
+	pController->SetMaximumValue(pNewValue);
 }

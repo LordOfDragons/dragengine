@@ -76,7 +76,7 @@ deoglRFontSize *deoglRFont::GetFontSizeFor(deFont &font, int lineHeight){
 	const int count = pSizes.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		deoglRFontSize * const rsize = (deoglRFontSize*)pSizes.GetAt(i);
+		deoglRFontSize * const rsize = pSizes.GetAt(i);
 		if(rsize->GetGlyphs().GetLineHeight() == lineHeight){
 			return rsize;
 		}

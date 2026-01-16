@@ -43,18 +43,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-dePropField::dePropField(dePropFieldManager *manager) : deResource(manager){
-	pTypes = nullptr;
-	pTypeCount = 0;
-	pTypeSize = 0;
-	
-	pPeerGraphic = nullptr;
-	pPeerPhysics = nullptr;
-	pPeerScripting = nullptr;
-	
-	pParentWorld = nullptr;
-	pLLWorldNext = nullptr;
-	pLLWorldPrev = nullptr;
+dePropField::dePropField(dePropFieldManager *manager) : deResource(manager),
+pPeerGraphic(nullptr),
+pPeerPhysics(nullptr),
+pPeerScripting(nullptr),
+pParentWorld(nullptr),
+pLLWorldPrev(nullptr),
+pLLWorldNext(nullptr){
 }
 
 dePropField::~dePropField(){
@@ -72,7 +67,6 @@ dePropField::~dePropField(){
 	}
 	
 	RemoveAllTypes();
-	if(pTypes) delete [] pTypes;
 }
 
 
@@ -91,97 +85,64 @@ void dePropField::SetPosition(const decDVector &position){
 
 
 
-dePropFieldType *dePropField::GetTypeAt(int index) const{
-	if(index < 0 || index >= pTypeCount) DETHROW(deeOutOfBoundary);
-	
-	return pTypes[index];
-}
-
 int dePropField::IndexOfType(dePropFieldType *type) const{
 	if(!type) DETHROW(deeInvalidParam);
-	int i;
-	
-	for(i=0; i<pTypeCount; i++){
-		if(type == pTypes[i]){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pTypes.IndexOf(type);
 }
 
-void dePropField::AddType(dePropFieldType *type){
+void dePropField::AddType(dePropFieldType::Ref &&type){
 	if(!type) DETHROW(deeInvalidParam);
 	
-	if(pTypeCount == pTypeSize){
-		int newSize = pTypeSize * 3 / 2 + 1;
-		dePropFieldType **newArray = new dePropFieldType*[newSize];
-		if(pTypes){
-			memcpy(newArray, pTypes, sizeof(dePropFieldType*) * pTypeSize);
-			delete [] pTypes;
-		}
-		pTypes = newArray;
-		pTypeSize = newSize;
-	}
 	
-	pTypes[pTypeCount] = type;
-	pTypeCount++;
+	pTypes.Add(std::move(type));
 	
-	if(pPeerGraphic) pPeerGraphic->TypeAdded(pTypeCount - 1, type);
-	if(pPeerPhysics) pPeerPhysics->TypeAdded(pTypeCount - 1, type);
+	if(pPeerGraphic) pPeerGraphic->TypeAdded(pTypes.GetCount() - 1, pTypes.Last());
+	if(pPeerPhysics) pPeerPhysics->TypeAdded(pTypes.GetCount() - 1, pTypes.Last());
 }
 
 void dePropField::RemoveType(dePropFieldType *type){
-	int i, index = IndexOfType(type);
+	const int index = IndexOfType(type);
 	if(index == -1) DETHROW(deeInvalidParam);
-	
-	for(i=index+1; i<pTypeCount; i++){
-		pTypes[i - 1] = pTypes[i];
-	}
-	pTypeCount--;
 	
 	if(pPeerGraphic) pPeerGraphic->TypeRemoved(index, type);
 	if(pPeerPhysics) pPeerPhysics->TypeRemoved(index, type);
 	
-	delete type;
+	pTypes.RemoveFrom(index);
 }
 
 void dePropField::RemoveAllTypes(){
 	if(pPeerGraphic) pPeerGraphic->AllTypesRemoved();
 	if(pPeerPhysics) pPeerPhysics->AllTypesRemoved();
 	
-	while(pTypeCount > 0){
-		pTypeCount--;
-		delete pTypes[pTypeCount];
-	}
+	pTypes.RemoveAll();
 }
 
 
 
 void dePropField::NotifyTypeChanged(int index){
-	if(index < 0 || index >= pTypeCount) DETHROW(deeOutOfBoundary);
+	if(index < 0 || index >= pTypes.GetCount()) DETHROW(deeOutOfBoundary);
 	
-	if(pPeerGraphic) pPeerGraphic->TypeChanged(index, pTypes[index]);
-	if(pPeerPhysics) pPeerPhysics->TypeChanged(index, pTypes[index]);
+	if(pPeerGraphic) pPeerGraphic->TypeChanged(index, pTypes.GetAt(index));
+	if(pPeerPhysics) pPeerPhysics->TypeChanged(index, pTypes.GetAt(index));
 }
 
 void dePropField::NotifyInstancesChanged(int type){
-	if(type < 0 || type >= pTypeCount) DETHROW(deeOutOfBoundary);
+	if(type < 0 || type >= pTypes.GetCount()) DETHROW(deeOutOfBoundary);
 	
-	if(pPeerGraphic) pPeerGraphic->InstancesChanged(type, pTypes[type]);
-	if(pPeerPhysics) pPeerPhysics->InstancesChanged(type, pTypes[type]);
+	if(pPeerGraphic) pPeerGraphic->InstancesChanged(type, pTypes.GetAt(type));
+	if(pPeerPhysics) pPeerPhysics->InstancesChanged(type, pTypes.GetAt(type));
 }
 
 void dePropField::NotifyAssignmentsChanged(int type){
-	if(type < 0 || type >= pTypeCount) DETHROW(deeOutOfBoundary);
+	if(type < 0 || type >= pTypes.GetCount()) DETHROW(deeOutOfBoundary);
 	
-	if(pPeerGraphic) pPeerGraphic->AssignmentsChanged(type, pTypes[type]);
+	if(pPeerGraphic) pPeerGraphic->AssignmentsChanged(type, pTypes.GetAt(type));
 }
 
 void dePropField::NotifyBendStatesChanged(int type){
-	if(type < 0 || type >= pTypeCount) DETHROW(deeOutOfBoundary);
+	if(type < 0 || type >= pTypes.GetCount()) DETHROW(deeOutOfBoundary);
 	
-	if(pPeerGraphic) pPeerGraphic->BendStatesChanged(type, pTypes[type]);
+	if(pPeerGraphic) pPeerGraphic->BendStatesChanged(type, pTypes.GetAt(type));
 }
 
 void dePropField::NotifyGroundChanged(){
@@ -198,11 +159,9 @@ void dePropField::NotifyCreateInstances(float density){
 		// of a missing peer we simply remove all instances from all types without touching the
 		// types at all. this way no performance hit is taken as the worst that can happen is
 		// that no props are rendered at all which is not as bad as cringing to a crawl
-		int t;
-		
-		for(t=0; t<pTypeCount; t++){
-			pTypes[t]->SetInstanceCount(0);
-		}
+		pTypes.Visit([](dePropFieldType &type){
+			type.SetInstanceCount(0);
+		});
 	}
 }
 

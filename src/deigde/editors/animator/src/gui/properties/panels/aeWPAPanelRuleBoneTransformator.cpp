@@ -524,7 +524,7 @@ void aeWPAPanelRuleBoneTransformator::UpdateRigBoneList(){
 			const int count = rig->GetBoneCount();
 			int i;
 			for(i=0; i<count; i++){
-				const decString &name = rig->GetBoneAt(i).GetName();
+				const decString &name = rig->GetBoneAt(i)->GetName();
 				pCBTargetBone->AddItem(name);
 				pCBInputBone->AddItem(name);
 			}

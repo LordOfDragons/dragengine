@@ -477,7 +477,7 @@ void dedaiConvexFaceList::pSplitFaceByEdge(int faceIndex, const decVector &cutEd
 		cutEdgeFrom.y, cutEdgeFrom.z, cutEdgeTo.x, cutEdgeTo.y, cutEdgeTo.z));
 	
 	// cut edges and determine at the same time if cut edge points are inside
-	dedaiConvexFace &face = *((dedaiConvexFace*)pFaces.GetAt(faceIndex));
+	dedaiConvexFace &face = pFaces.GetAt(faceIndex);
 	const decVector cutEdgeDir(cutEdgeTo - cutEdgeFrom);
 	const decVector &faceNormal = face.GetNormal();
 	bool insideEdgeFrom = true;

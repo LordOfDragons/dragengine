@@ -98,7 +98,7 @@ void deColliderComponent::CopyStatesFromComponent(){
 		deColliderBone &bone = GetBoneAt(i);
 		
 		if(rig){
-			bone.SetPosition(boneMatrix * rig->GetBoneAt(i).GetCentralMassPoint());
+			bone.SetPosition(boneMatrix * rig->GetBoneAt(i)->GetCentralMassPoint());
 			
 		}else{
 			bone.SetPosition(boneMatrix.GetPosition());
@@ -129,7 +129,7 @@ void deColliderComponent::CopyStateFromComponent(int bone){
 	deColliderBone &colBone = GetBoneAt(bone);
 	
 	if(rig){
-		colBone.SetPosition(boneMatrix * rig->GetBoneAt(bone).GetCentralMassPoint());
+		colBone.SetPosition(boneMatrix * rig->GetBoneAt(bone)->GetCentralMassPoint());
 		
 	}else{
 		colBone.SetPosition(boneMatrix.GetPosition());
@@ -157,16 +157,16 @@ void deColliderComponent::CopyStatesToComponent() const{
 	for(i=0; i<boneCount; i++){
 		deComponentBone &bone = pComponent->GetBoneAt(i);
 		if(rig){
-			if(!rig->GetBoneAt(i).GetDynamic()){
+			if(!rig->GetBoneAt(i)->GetDynamic()){
 				pComponent->UpdateBoneAt(i);
 				continue; // state is not defined
 			}
 		}
 		
-		decMatrix matrix(GetBoneAt(i).GetMatrix().QuickMultiply(invCompMatrix));
+		decMatrix matrix(GetBoneAt(i)->GetMatrix().QuickMultiply(invCompMatrix));
 		
 		if(rig){
-			const decVector cmpPosition(matrix * -rig->GetBoneAt(i).GetCentralMassPoint());
+			const decVector cmpPosition(matrix * -rig->GetBoneAt(i)->GetCentralMassPoint());
 			matrix.a14 = cmpPosition.x;
 			matrix.a24 = cmpPosition.y;
 			matrix.a34 = cmpPosition.z;
@@ -198,9 +198,9 @@ void deColliderComponent::CopyStateToComponent(int bone) const{
 	const decDMatrix &inverseComponentMatrix = pComponent->GetInverseMatrix();
 	const deRig * const rig = pComponent->GetRig();
 	
-	decMatrix matrix(GetBoneAt(bone).GetMatrix().QuickMultiply(inverseComponentMatrix));
+	decMatrix matrix(GetBoneAt(bone)->GetMatrix().QuickMultiply(inverseComponentMatrix));
 	if(rig){
-		const decVector cmpPosition(matrix * -rig->GetBoneAt(bone).GetCentralMassPoint());
+		const decVector cmpPosition(matrix * -rig->GetBoneAt(bone)->GetCentralMassPoint());
 		matrix.a14 = cmpPosition.x;
 		matrix.a24 = cmpPosition.y;
 		matrix.a34 = cmpPosition.z;

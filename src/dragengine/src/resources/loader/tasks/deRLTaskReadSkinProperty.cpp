@@ -121,5 +121,5 @@ void deRLTaskReadSkinProperty::VisitVideo(deSkinPropertyVideo &property){
 }
 
 void deRLTaskReadSkinProperty::VisitConstructed(deSkinPropertyConstructed &property){
-	property.GetContent().Visit(pLoadNode);
+	property.GetContent()->Visit(pLoadNode);
 }

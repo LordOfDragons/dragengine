@@ -165,7 +165,7 @@ deoglPFClusterGenerator *deoglPFClusterGenerator::GetNodeContaining(const decVec
 		return pNode1->GetNodeContaining(position);
 		
 	}else{
-		return (deoglPFClusterGenerator*)this;
+		return const_cast<deoglPFClusterGenerator*>(this);
 	}
 }
 

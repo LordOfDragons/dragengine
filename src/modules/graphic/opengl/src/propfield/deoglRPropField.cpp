@@ -85,7 +85,7 @@ void deoglRPropField::SetParentWorld(deoglRWorld *world){
 	
 	if(pParentWorld){
 		for(i=0; i<count; i++){
-			((deoglRPropFieldType*)pTypes.GetAt(i))->RemoveFromWorldCompute();
+			pTypes.GetAt(i)->RemoveFromWorldCompute();
 		}
 	}
 	
@@ -94,7 +94,7 @@ void deoglRPropField::SetParentWorld(deoglRWorld *world){
 	if(world){
 		deoglWorldCompute &worldCompute = world->GetCompute();
 		for(i=0; i<count; i++){
-			((deoglRPropFieldType*)pTypes.GetAt(i))->AddToWorldCompute(worldCompute);
+			pTypes.GetAt(i)->AddToWorldCompute(worldCompute);
 		}
 	}
 }
@@ -114,7 +114,7 @@ void deoglRPropField::UpdateExtends(const dePropField &propField){
 	int t, i;
 	
 	for(t=0; t<typeCount; t++){
-		const dePropFieldType &engType = *propField.GetTypeAt(t);
+		const dePropFieldType &engType = propField.GetTypeAt(t);
 		const deoglRPropFieldType &type = GetTypeAt(t);
 		
 		if(!type.GetModel() || !engType.GetSkin()){
@@ -159,7 +159,7 @@ void deoglRPropField::UpdateExtends(const dePropField &propField){
 	
 	if(pParentWorld){
 		for(i=0; i<typeCount; i++){
-			((deoglRPropFieldType*)pTypes.GetAt(i))->UpdateWorldCompute();
+			pTypes.GetAt(i)->UpdateWorldCompute();
 		}
 	}
 	
@@ -178,7 +178,7 @@ void deoglRPropField::PrepareForRender(){
 		int i;
 		
 		for(i=0; i<count; i++){
-			((deoglRPropFieldType*)pTypes.GetAt(i))->PrepareForRender();
+			pTypes.GetAt(i)->PrepareForRender();
 		}
 	}
 }
@@ -218,7 +218,7 @@ int deoglRPropField::GetTypeCount() const{
 }
 
 deoglRPropFieldType &deoglRPropField::GetTypeAt(int index) const{
-	return *((deoglRPropFieldType*)pTypes.GetAt(index));
+	return pTypes.GetAt(index);
 }
 
 void deoglRPropField::RemoveAllTypes(){
@@ -245,7 +245,7 @@ void deoglRPropField::WorldReferencePointChanged(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoglRPropFieldType*)pTypes.GetAt(i))->WorldReferencePointChanged();
+		pTypes.GetAt(i)->WorldReferencePointChanged();
 	}
 }
 

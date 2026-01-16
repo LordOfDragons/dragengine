@@ -41,6 +41,10 @@
  * Graphic Module is free to choose a fitting size itself.
  */
 class DE_DLL_EXPORT deDSRenderableCanvas : public deDSRenderable{
+public:
+	/** \brief Reference type. */
+	using Ref = deTUniqueReference<deDSRenderableCanvas>;
+	
 private:
 	int pComponentCount;
 	int pBitCount;

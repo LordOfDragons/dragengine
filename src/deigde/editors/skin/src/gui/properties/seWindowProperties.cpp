@@ -82,15 +82,15 @@ seWindowProperties::~seWindowProperties(){
 ///////////////
 
 void seWindowProperties::SetSkin(seSkin *skin){
-	((seWPMapped&)(igdeWidget&)pPanelMapped).SetSkin(skin);
-	((seWPTexture&)(igdeWidget&)pPanelTexture).SetSkin(skin);
-	((seWPNode&)(igdeWidget&)pPanelNode).SetSkin(skin);
-	((seWPDynamicSkin&)(igdeWidget&)pPanelDynamicSkin).SetSkin(skin);
-	((seWPView&)(igdeWidget&)pPanelView).SetSkin(skin);
-	((seWPUndoHistory&)(igdeWidget&)pPanelUndoHistory).SetSkin(skin);
+	pPanelMapped.DynamicCast<seWPMapped>()->SetSkin(skin);
+	pPanelTexture.DynamicCast<seWPTexture>()->SetSkin(skin);
+	pPanelNode.DynamicCast<seWPNode>()->SetSkin(skin);
+	pPanelDynamicSkin.DynamicCast<seWPDynamicSkin>()->SetSkin(skin);
+	pPanelView.DynamicCast<seWPView>()->SetSkin(skin);
+	pPanelUndoHistory.DynamicCast<seWPUndoHistory>()->SetSkin(skin);
 }
 
 void seWindowProperties::OnSkinPathChanged(){
-	((seWPTexture&)(igdeWidget&)pPanelTexture).OnSkinPathChanged();
-	((seWPNode&)(igdeWidget&)pPanelNode).OnSkinPathChanged();
+	pPanelTexture.DynamicCast<seWPTexture>()->OnSkinPathChanged();
+	pPanelNode.DynamicCast<seWPNode>()->OnSkinPathChanged();
 }

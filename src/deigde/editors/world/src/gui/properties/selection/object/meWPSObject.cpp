@@ -1637,8 +1637,8 @@ void meWPSObject::SetWorld(meWorld *world){
 		return;
 	}
 	
-	meWPPropertyList &editProperties = (meWPPropertyList&)(igdeWidget&)pEditProperties;
-	meWPPropertyList &editTextureProperties = (meWPPropertyList&)(igdeWidget&)pEditTexProperties;
+	meWPPropertyList &editProperties = pEditProperties.DynamicCast<meWPPropertyList>();
+	meWPPropertyList &editTextureProperties = pEditTexProperties.DynamicCast<meWPPropertyList>();
 	
 	if(pWorld){
 		editProperties.SetClipboard(nullptr);
@@ -1908,16 +1908,16 @@ void meWPSObject::UpdateLight(){
 
 void meWPSObject::SelectActiveProperty(){
 	if(!GetActiveProperty().IsEmpty()){
-		((meWPPropertyList&)(igdeWidget&)pEditProperties).SelectProperty(GetActiveProperty());
+		pEditProperties.DynamicCast<meWPPropertyList>()->SelectProperty(GetActiveProperty());
 	}
 }
 
 void meWPSObject::UpdatePropertyKeys(){
-	((meWPPropertyList&)(igdeWidget&)pEditProperties).UpdateKeys();
+	pEditProperties.DynamicCast<meWPPropertyList>()->UpdateKeys();
 }
 
 void meWPSObject::UpdateProperties(){
-	((meWPPropertyList&)(igdeWidget&)pEditProperties).SetProperties(
+	pEditProperties.DynamicCast<meWPPropertyList>()->SetProperties(
 		GetActiveObject() ? GetActiveObject()->GetProperties() : decStringDictionary());
 	SelectActiveProperty();
 }
@@ -2026,16 +2026,16 @@ void meWPSObject::UpdateTexture(){
 
 void meWPSObject::SelectTexActiveProperty(){
 	if(!GetActiveTexProperty().IsEmpty()){
-		((meWPPropertyList&)(igdeWidget&)pEditTexProperties).SelectProperty(GetActiveTexProperty());
+		pEditTexProperties.DynamicCast<meWPPropertyList>()->SelectProperty(GetActiveTexProperty());
 	}
 }
 
 void meWPSObject::UpdateTexPropertyKeys(){
-	((meWPPropertyList&)(igdeWidget&)pEditTexProperties).UpdateKeys();
+	pEditTexProperties.DynamicCast<meWPPropertyList>()->UpdateKeys();
 }
 
 void meWPSObject::UpdateTexProperties(){
-	((meWPPropertyList&)(igdeWidget&)pEditTexProperties).SetProperties(
+	pEditTexProperties.DynamicCast<meWPPropertyList>()->SetProperties(
 		GetActiveTexture() ? GetActiveTexture()->GetProperties() : decStringDictionary());
 	SelectTexActiveProperty();
 }

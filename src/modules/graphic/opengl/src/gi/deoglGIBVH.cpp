@@ -327,7 +327,7 @@ void deoglGIBVH::BuildBVH(){
 		
 		pBlockBVH = shared.GetSharedTBONode()->AddBlock(pBVHTBOIndex, pBVHTBONodeBox);
 		
-		pIndexRootNode = ((deoglDynamicTBOBlock*)(deObject*)pBlockBVH)->GetOffset();
+		pIndexRootNode = pBlockBVH.DynamicCast<deoglDynamicTBOBlock>()->GetOffset();
 	}
 	
 	// update TBOs
@@ -423,7 +423,7 @@ void deoglGIBVH::pCleanUp(){
 
 void deoglGIBVH::pDropBlockBVH(){
 	if(pBlockBVH){
-		((deoglDynamicTBOBlock*)(deObject*)pBlockBVH)->Drop();
+		pBlockBVH.DynamicCast<deoglDynamicTBOBlock>()->Drop();
 		pBlockBVH = nullptr;
 	}
 }

@@ -34,6 +34,10 @@
  * \brief Skin property image node for constructed texture property.
  */
 class DE_DLL_EXPORT deSkinPropertyNodeImage : public deSkinPropertyNode{
+public:
+	/** \brief Reference. */
+	using Ref = deTUniqueReference<deSkinPropertyNodeImage>;
+	
 private:
 	decString pPath;
 	deImage::Ref pImage;

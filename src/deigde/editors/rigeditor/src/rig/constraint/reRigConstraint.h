@@ -31,12 +31,12 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/resources/collider/deColliderConstraint.h>
-#include <dragengine/resources/debug/deDebugDrawer.h>
 #include <dragengine/resources/collider/deColliderVolume.h>
+#include <dragengine/resources/rig/deRigConstraint.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
 
 class reRig;
 class reRigBone;
-class deRigConstraint;
 class reRigConstraintDof;
 class deCollider;
 class igdeWCoordSysArrows;
@@ -125,7 +125,7 @@ public:
 	void SetEngineConstraint(deColliderConstraint *constraint);
 	
 	/** \brief Builds an engine rig constraint from the actual state. */
-	deRigConstraint *BuildEngineRigConstraint();
+	deRigConstraint::Ref BuildEngineRigConstraint();
 	/** \brief Builds an engine collider constraint from the actual state. */
 	deColliderConstraint::Ref BuildEngineColliderConstraint();
 	

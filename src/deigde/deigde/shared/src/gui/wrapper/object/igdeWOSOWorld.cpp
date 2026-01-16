@@ -256,9 +256,9 @@ ChildObject &object, ChildObjectTexture &texture){
 			texture.dynamicSkin = pOwner.GetEnvironment().GetEngineController()->
 				GetEngine()->GetDynamicSkinManager()->CreateDynamicSkin();
 			
-			deDSRenderableColor * const renderable = new deDSRenderableColor("tint");
+			auto renderable = deDSRenderableColor::Ref::New("tint");
 			renderable->SetColor(color);
-			texture.dynamicSkin->AddRenderable(renderable);
+			texture.dynamicSkin->AddRenderable(std::move(renderable));
 		}
 	}
 }

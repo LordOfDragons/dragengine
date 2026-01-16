@@ -66,7 +66,7 @@ deoalEnvProbeList::~deoalEnvProbeList(){
 	const int count = pProbes.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		delete (deoalEnvProbe*)pProbes.GetAt(i);
+		delete pProbes.GetAt(i);
 	}
 }
 
@@ -122,7 +122,7 @@ deoalEnvProbe *deoalEnvProbeList::GetProbeEstimateRoom(const decDVector &positio
 	
 	int i;
 	for(i=0; i<count; i++){
-		deoalEnvProbe &probe = *((deoalEnvProbe*)pProbes.GetAt(i));
+		deoalEnvProbe &probe = *pProbes.GetAt(i);
 		if(!probe.GetOctreeNode()){
 			continue; // invalidated
 		}
@@ -147,7 +147,7 @@ deoalEnvProbe *deoalEnvProbeList::GetProbeEstimateRoom(const decDVector &positio
 	
 	// reuse first invalid probe if present
 	for(i=0; i<count; i++){
-		deoalEnvProbe * const probe = (deoalEnvProbe*)pProbes.GetAt(i);
+		deoalEnvProbe * const probe = pProbes.GetAt(i);
 		if(probe->GetOctreeNode()){
 			continue;
 		}
@@ -161,11 +161,11 @@ deoalEnvProbe *deoalEnvProbeList::GetProbeEstimateRoom(const decDVector &positio
 	
 	// if maximum number of probes is in use invalidate and use the oldest probe
 	if(count == pMaxProbeCount){
-		deoalEnvProbe *oldestProbe = (deoalEnvProbe*)pProbes.GetAt(0);
+		deoalEnvProbe *oldestProbe = pProbes.GetAt(0);
 		unsigned int oldestAge = pLastUsedCounter - oldestProbe->GetLastUsed();
 		
 		for(i=1; i<count; i++){
-			deoalEnvProbe * const probe = (deoalEnvProbe*)pProbes.GetAt(i);
+			deoalEnvProbe * const probe = pProbes.GetAt(i);
 			unsigned int age = pLastUsedCounter - probe->GetLastUsed();
 			if(age > oldestAge){
 				oldestProbe = probe;
@@ -224,7 +224,7 @@ deoalEnvProbe *deoalEnvProbeList::GetProbeTraceSoundRays(const decDVector &posit
 	
 	int i;
 	for(i=0; i<count; i++){
-		deoalEnvProbe &probe = *((deoalEnvProbe*)pProbes.GetAt(i));
+		deoalEnvProbe &probe = *pProbes.GetAt(i);
 		if(!probe.GetOctreeNode()){
 			continue; // invalidated
 		}
@@ -264,7 +264,7 @@ deoalEnvProbe *deoalEnvProbeList::GetProbeTraceSoundRays(const decDVector &posit
 	
 	// reuse first invalid probe if present
 	for(i=0; i<count; i++){
-		deoalEnvProbe * const probe = (deoalEnvProbe*)pProbes.GetAt(i);
+		deoalEnvProbe * const probe = pProbes.GetAt(i);
 		if(probe->GetOctreeNode()){
 			continue;
 		}
@@ -278,11 +278,11 @@ deoalEnvProbe *deoalEnvProbeList::GetProbeTraceSoundRays(const decDVector &posit
 	
 	// if maximum number of probes is in use invalidate and use the oldest probe
 	if(count == pMaxProbeCount){
-		deoalEnvProbe *oldestProbe = (deoalEnvProbe*)pProbes.GetAt(0);
+		deoalEnvProbe *oldestProbe = pProbes.GetAt(0);
 		unsigned int oldestAge = pLastUsedCounter - oldestProbe->GetLastUsed();
 		
 		for(i=1; i<count; i++){
-			deoalEnvProbe * const probe = (deoalEnvProbe*)pProbes.GetAt(i);
+			deoalEnvProbe * const probe = pProbes.GetAt(i);
 			unsigned int age = pLastUsedCounter - probe->GetLastUsed();
 			if(age > oldestAge){
 				oldestProbe = probe;
@@ -343,7 +343,7 @@ void deoalEnvProbeList::InvalidateAllProbes(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		deoalEnvProbe * const envProbe = (deoalEnvProbe*)pProbes.GetAt(i);
+		deoalEnvProbe * const envProbe = pProbes.GetAt(i);
 		if(envProbe->GetOctreeNode()){
 			envProbe->GetOctreeNode()->RemoveEnvProbe(envProbe);
 			envProbe->Invalidate();
@@ -356,7 +356,7 @@ void deoalEnvProbeList::PrepareQuickDispose(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoalEnvProbe*)pProbes.GetAt(i))->SetOctreeNode(nullptr);
+		pProbes.GetAt(i)->SetOctreeNode(nullptr);
 	}
 }
 
@@ -371,7 +371,7 @@ int deoalEnvProbeList::GetValidProbeCount() const{
 	int i, validCount = 0;
 	
 	for(i=0; i<count; i++){
-		if(((deoalEnvProbe*)pProbes.GetAt(i))->GetOctreeNode()){
+		if(pProbes.GetAt(i)->GetOctreeNode()){
 			validCount++;
 		}
 	}

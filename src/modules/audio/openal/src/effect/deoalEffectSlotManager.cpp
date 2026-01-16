@@ -123,7 +123,7 @@ void deoalEffectSlotManager::Update(float elapsed){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoalEffectSlot*)pSlots.GetAt(i))->Update(elapsed);
+		pSlots.GetAt(i)->Update(elapsed);
 	}
 }
 
@@ -137,7 +137,7 @@ deoalEffectSlot *deoalEffectSlotManager::pBestUnbound() const{
 	int i;
 	
 	for(i=0; i<count; i++){
-		deoalEffectSlot * const slot = (deoalEffectSlot*)pSlots.GetAt(i);
+		deoalEffectSlot * const slot = pSlots.GetAt(i);
 		if(slot->IsUnbound() && !slot->IsKeptAlive()){
 			return slot;
 		}
@@ -152,7 +152,7 @@ deoalEffectSlot *deoalEffectSlotManager::pBestKeptAlive() const{
 	int i;
 	
 	for(i=0; i<count; i++){
-		deoalEffectSlot * const slot = (deoalEffectSlot*)pSlots.GetAt(i);
+		deoalEffectSlot * const slot = pSlots.GetAt(i);
 		if(slot->IsUnbound() && slot->IsKeptAlive() && (!bestSlot
 		|| slot->GetElapsedKeepAliveTime() > bestSlot->GetElapsedKeepAliveTime())){
 			bestSlot = slot;
@@ -167,7 +167,7 @@ deoalEffectSlot *deoalEffectSlotManager::pBestRebindable() const{
 	int i;
 	
 	for(i=0; i<count; i++){
-		deoalEffectSlot * const slot = (deoalEffectSlot*)pSlots.GetAt(i);
+		deoalEffectSlot * const slot = pSlots.GetAt(i);
 		if(slot->IsBound() && (!bestSlot || slot->GetImportance() < bestSlot->GetImportance())){
 			bestSlot = slot;
 		}

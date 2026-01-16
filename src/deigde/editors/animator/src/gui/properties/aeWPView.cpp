@@ -799,7 +799,7 @@ void aeWPView::UpdateBoneList(){
 			int i;
 			
 			for(i=0; i<count; i++){
-				const decString &name = engRig->GetBoneAt(i).GetName();
+				const decString &name = engRig->GetBoneAt(i)->GetName();
 				pCBCamBone->AddItem(name);
 				pCBAttBoneName->AddItem(name);
 			}

@@ -68,13 +68,9 @@ igdeUndo::Ref gdeMAOCNavSpacePaste::OnActionSubObject(gdeGameDefinition&, gdeObj
 		return {};
 	}
 	
-	const gdeClipboardDataOCNavSpace &clipOCNavigationSpace =
-		(const gdeClipboardDataOCNavSpace &)(igdeClipboardData&)clip;
+	const igdeUndo::Ref undo = gdeUOCAddNavSpace::Ref::New(&objectClass, 
+		gdeOCNavigationSpace::Ref::New(*clip.DynamicCast<gdeClipboardDataOCNavSpace>()->GetNavSpace()));
 	
-	const gdeOCNavigationSpace::Ref navSpace(gdeOCNavigationSpace::Ref::New(*clipOCNavigationSpace.GetNavSpace()));
-	
-	const igdeUndo::Ref undo = gdeUOCAddNavSpace::Ref::New(&objectClass,
-		navSpace);
 	undo->SetShortInfo("Paste object class navigation space");
 	return undo;
 }

@@ -184,7 +184,7 @@ void gdeVAOBillboard::pCreateCollider(){
 	pCollider->SetEnabled(true);
 	pCollider->SetResponseType(deCollider::ertKinematic);
 	pCollider->SetUseLocalGravity(true);
-	((deColliderVolume&)(deCollider&)pCollider).SetShapes(shapeList);
+	pCollider.DynamicCast<deColliderVolume>()->SetShapes(shapeList);
 	
 	decLayerMask collisionMask;
 	collisionMask.SetBit(0);
@@ -198,20 +198,9 @@ void gdeVAOBillboard::pAttachBillboard(){
 		return;
 	}
 	
-	deColliderAttachment *attachment = nullptr;
-	
-	try{
-		attachment = new deColliderAttachment(pCollider);
-		attachment->SetAttachType(deColliderAttachment::eatStatic);
-		pCollider->AddAttachment(attachment);
-		attachment = nullptr;
-		
-	}catch(const deException &){
-		if(attachment){
-			delete attachment;
-		}
-		throw;
-	}
+	auto attachment = deColliderAttachment::Ref::New(pCollider);
+	attachment->SetAttachType(deColliderAttachment::eatStatic);
+	pCollider->AddAttachment(std::move(attachment));
 }
 
 void gdeVAOBillboard::pReleaseResources(){

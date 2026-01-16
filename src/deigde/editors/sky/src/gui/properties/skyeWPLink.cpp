@@ -308,7 +308,7 @@ public:
 	
 	void OnCurveChanged(igdeViewCurveBezier *viewCurveBezier) override{
 		if(pUndo){
-			((skyeULinkSetCurve&)(igdeUndo&)pUndo).SetNewCurve(viewCurveBezier->GetCurve());
+			pUndo.DynamicCast<skyeULinkSetCurve>()->SetNewCurve(viewCurveBezier->GetCurve());
 			
 		}else if(!pPanel.GetLink() || pPanel.GetLink()->GetCurve() == viewCurveBezier->GetCurve()){
 			return;
@@ -323,7 +323,7 @@ public:
 	
 	void OnCurveChanging(igdeViewCurveBezier *viewCurveBezier) override{
 		if(pUndo){
-			((skyeULinkSetCurve&)(igdeUndo&)pUndo).SetNewCurve(viewCurveBezier->GetCurve());
+			pUndo.DynamicCast<skyeULinkSetCurve>()->SetNewCurve(viewCurveBezier->GetCurve());
 			pUndo->Redo();
 			
 		}else if(pPanel.GetLink() && pPanel.GetLink()->GetCurve() != viewCurveBezier->GetCurve()){

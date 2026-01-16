@@ -613,7 +613,7 @@ int deClassVRSystem::GetCachedDeviceCount(){
 
 dedsInputDevice *deClassVRSystem::GetCachedDeviceAt(int index){
 	pUpdateCachedDevices();
-	return (dedsInputDevice*)pCachedDevices.GetAt(index);
+	return pCachedDevices.GetAt(index);
 }
 
 void deClassVRSystem::InvalidCachedDevices(){

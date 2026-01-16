@@ -887,7 +887,7 @@ void debpParticleEmitterInstanceType::ParticleCastMatrix(decDMatrix &matrix){
 		case deParticleEmitterType::ecfVertex:{
 			const decVector * const normals = model->GetNormals();
 			const deModel &engModel = model->GetModel();
-			const deModelLOD &engModelLOD = *engModel.GetLODAt(0);
+			const deModelLOD &engModelLOD = engModel.GetLODAt(0);
 			const int vertexCount = engModelLOD.GetVertexCount();
 			
 			int vertex = (int)(((float)random() / (float)RAND_MAX) * (float)vertexCount);
@@ -940,7 +940,7 @@ void debpParticleEmitterInstanceType::ParticleCastMatrix(decDMatrix &matrix){
 			// since both parts have the same distribution
 			const decVector * const normals = model->GetNormals();
 			const deModel &engModel = model->GetModel();
-			const deModelLOD &engModelLOD = *engModel.GetLODAt(0);
+			const deModelLOD &engModelLOD = engModel.GetLODAt(0);
 			
 			const int face = model->IndexOfFaceWithProbability((float)random() / (float)RAND_MAX);
 			

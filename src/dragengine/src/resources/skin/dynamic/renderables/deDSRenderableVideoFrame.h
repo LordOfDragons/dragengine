@@ -35,6 +35,10 @@
  * The texture is defined by a frame of a video.
  */
 class DE_DLL_EXPORT deDSRenderableVideoFrame : public deDSRenderable{
+public:
+	/** \brief Reference type. */
+	using Ref = deTUniqueReference<deDSRenderableVideoFrame>;
+	
 private:
 	deVideoPlayer::Ref pVideoPlayer;
 	

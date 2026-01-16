@@ -25,9 +25,10 @@
 #ifndef _DEDYNAMICSKIN_H_
 #define _DEDYNAMICSKIN_H_
 
+#include "renderables/deDSRenderable.h"
 #include "../../deResource.h"
+#include "../../../common/collection/decTUniqueList.h"
 
-class deDSRenderable;
 class deDynamicSkinManager;
 class deBaseGraphicDynamicSkin;
 
@@ -44,9 +45,7 @@ public:
 	
 	
 private:
-	deDSRenderable **pRenderables;
-	int pRenderableCount;
-	int pRenderableSize;
+	deDSRenderable::List pRenderables;
 	
 	deBaseGraphicDynamicSkin *pPeerGraphic;
 	
@@ -73,11 +72,14 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
+	/** \brief Renderables. */
+	inline const deDSRenderable::List &GetRenderables() const{ return pRenderables; }
+	
 	/** \brief Number of renderables. */
-	inline int GetRenderableCount() const{ return pRenderableCount; }
+	inline int GetRenderableCount() const{ return pRenderables.GetCount(); }
 	
 	/** \brief Renderable at the given index. */
-	deDSRenderable *GetRenderableAt(int index) const;
+	const deDSRenderable::Ref &GetRenderableAt(int index) const{ return pRenderables.GetAt(index); }
 	
 	/** \brief Renderable with the given name or NULL if not found. */
 	deDSRenderable *GetRenderableNamed(const char *name) const;
@@ -95,7 +97,7 @@ public:
 	int IndexOfRenderableNamed(const char *name) const;
 	
 	/** \brief Adds a renderable. */
-	void AddRenderable(deDSRenderable *renderable);
+	void AddRenderable(deDSRenderable::Ref &&renderable);
 	
 	/** \brief Removes a renderable. */
 	void RemoveRenderable(deDSRenderable *renderable);

@@ -64,7 +64,7 @@ deoalSourceManager::~deoalSourceManager(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		delete (deoalSource*)pSources.GetAt(i);
+		delete pSources.GetAt(i);
 	}
 	pSources.RemoveAll();
 }
@@ -79,7 +79,7 @@ int deoalSourceManager::GetSourceCount() const{
 }
 
 deoalSource *deoalSourceManager::GetSourceAt(int index) const{
-	return (deoalSource*)pSources.GetAt(index);
+	return pSources.GetAt(index);
 }
 
 
@@ -166,7 +166,7 @@ deoalSource *deoalSourceManager::pNextUnboundSource() const{
 	int i;
 	
 	for(i=0; i<count; i++){
-		source = (deoalSource*)pSources.GetAt(i);
+		source = pSources.GetAt(i);
 		if(!source->GetOwner()){
 			return source;
 		}
@@ -182,7 +182,7 @@ deoalSource *deoalSourceManager::pBestRebindableSource() const{
 	int i;
 	
 	for(i=0; i<count; i++){
-		source = (deoalSource*)pSources.GetAt(i);
+		source = pSources.GetAt(i);
 		if(!source->GetOwner()){
 			continue;
 		}

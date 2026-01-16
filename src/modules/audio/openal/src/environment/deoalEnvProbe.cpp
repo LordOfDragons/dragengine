@@ -308,7 +308,7 @@ void deoalEnvProbe::pRemoveAllLevels(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		delete (deoalEnvProbeLevel*)pLevels.GetAt(i);
+		delete pLevels.GetAt(i);
 	}
 	pLevels.RemoveAll();
 }
@@ -318,7 +318,7 @@ void deoalEnvProbe::pRemoveAllListeners(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		delete (deoalEnvProbeListenerCached*)pListeners.GetAt(i);
+		delete pListeners.GetAt(i);
 	}
 	pListeners.RemoveAll();
 }
@@ -391,8 +391,7 @@ const decDVector &position, deoalAMicrophone *microphone, deoalASoundLevelMeter 
 		float closestDistance = 0.0f;
 		int closestIndex = -1;
 		for(i=0; i<count; i++){
-			deoalEnvProbeListenerCached &cached = *((deoalEnvProbeListenerCached*)
-				pListeners.GetAt(i));
+			deoalEnvProbeListenerCached &cached = *pListeners.GetAt(i);
 			const float distance = (cached.GetPosition() - localPosition).Length();
 			if(closestIndex == -1 || distance < closestDistance){
 				closestIndex = i;
@@ -400,8 +399,7 @@ const decDVector &position, deoalAMicrophone *microphone, deoalASoundLevelMeter 
 			}
 		}
 		if(closestIndex != -1){
-			deoalEnvProbeListenerCached &cached = *((deoalEnvProbeListenerCached*)
-				pListeners.GetAt(closestIndex));
+			deoalEnvProbeListenerCached &cached = *pListeners.GetAt(closestIndex);
 			listener.GetImpulseResponse() = cached.GetImpulseResponse();
 		}
 	}
@@ -420,7 +418,7 @@ const decDVector &position, deoalAMicrophone *microphone, deoalASoundLevelMeter 
 		deoalEnvProbeListenerCached *replaceCached = nullptr;
 		
 		if(count == 100){
-			replaceCached = (deoalEnvProbeListenerCached*)pListeners.GetAt(0);
+			replaceCached = pListeners.GetAt(0);
 			int replaceCachedAge = pListenerTracking - replaceCached->GetLastUsed();
 			
 			for(i=1; i<count; i++){

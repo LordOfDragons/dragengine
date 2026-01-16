@@ -87,7 +87,7 @@ void deoglGIMaterials::AddTUC(deoglTexUnitsConfig *tuc){
 	
 	int index = pFirstUnusedMaterial();
 	if(index != -1){
-		deoglTexUnitsConfig &unusedTuc = *((deoglTexUnitsConfig*)pTUCs.GetAt(index));
+		deoglTexUnitsConfig &unusedTuc = *pTUCs.GetAt(index);
 		unusedTuc.SetMaterialIndex(-1);
 		unusedTuc.RemoveUsage(); // potentially deleted now
 		
@@ -121,7 +121,7 @@ deoglTexUnitsConfig *deoglGIMaterials::GetTUC(int materialIndex) const{
 	if(materialIndex < 1 || materialIndex >= pTUCs.GetCount()){
 		return nullptr;
 	}
-	return (deoglTexUnitsConfig*)pTUCs.GetAt(materialIndex);
+	return pTUCs.GetAt(materialIndex);
 }
 
 
@@ -133,7 +133,7 @@ void deoglGIMaterials::pCleanUp(){
 	const int count = pTUCs.GetCount();
 	int i;
 	for(i=1; i<count; i++){
-		deoglTexUnitsConfig &tuc = *((deoglTexUnitsConfig*)pTUCs.GetAt(i));
+		deoglTexUnitsConfig &tuc = *pTUCs.GetAt(i);
 		tuc.SetMaterialIndex(-1);
 		tuc.RemoveUsage(); // potentially deleted now
 	}
@@ -252,7 +252,7 @@ int deoglGIMaterials::pFirstUnusedMaterial() const{
 	int i;
 	
 	for(i=1; i<count; i++){
-		if(((deoglTexUnitsConfig*)pTUCs.GetAt(i))->GetUsageCount() == 1){
+		if(pTUCs.GetAt(i)->GetUsageCount() == 1){
 			return i;
 		}
 	}
@@ -264,7 +264,7 @@ int deoglGIMaterials::pFirstUnusedMaterial() const{
 	// be re-added quickly. this favors filling up slots first before reusing such TUCs
 	if(pTUCs.GetCount() < pMaxMaterialCount){
 		for(i=1; i<count; i++){
-			if(((deoglTexUnitsConfig*)pTUCs.GetAt(i))->GetMaterialUsageCount() == 0){
+			if(pTUCs.GetAt(i)->GetMaterialUsageCount() == 0){
 				return i;
 			}
 		}

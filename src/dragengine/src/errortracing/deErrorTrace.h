@@ -22,12 +22,14 @@
  * SOFTWARE.
  */
 
-#ifndef _DEAERRORTRACE_H_
-#define _DEAERRORTRACE_H_
+#ifndef _DEERRORTRACE_H_
+#define _DEERRORTRACE_H_
 
+#include "deErrorTracePoint.h"
+#include "../dragengine_export.h"
 #include "../common/string/decString.h"
+#include "../common/collection/decTUniqueList.h"
 
-class deErrorTracePoint;
 class deLoadableModule;
 class deLogger;
 
@@ -41,9 +43,7 @@ class deLogger;
 class DE_DLL_EXPORT deErrorTrace{
 private:
 	decString pError;
-	deErrorTracePoint **pPoints;
-	int pPointCount;
-	int pPointSize;
+	deErrorTracePoint::List pPoints;
 	
 	
 	
@@ -75,20 +75,23 @@ public:
 	
 	/** \name Trace Point Management */
 	/*@{*/
+	/** \brief Points. */
+	inline const deErrorTracePoint::List &GetPoints() const{ return pPoints; }
+	
 	/** \brief Determines if there exist trace points. */
-	inline bool HasPoints() const{ return pPointCount > 0; }
+	inline bool HasPoints() const{ return pPoints.IsNotEmpty(); }
 	
 	/** \brief Trace is empty. */
-	inline bool IsEmpty() const{ return pPointCount == 0; }
+	inline bool IsEmpty() const{ return pPoints.IsEmpty(); }
 	
-	/** \brief Count of trace points. */
-	inline int GetPointCount() const{ return pPointCount; }
+		/** \brief Number of points in the trace. */
+	inline int GetPointCount() const{ return pPoints.GetCount(); }
 	
 	/** \brief Indexed trace point. */
-	deErrorTracePoint *GetPoint(int index) const;
+	const deErrorTracePoint::Ref &GetPoint(int index) const;
 	
 	/** \brief Adds a new trace point. */
-	void AddPoint(deErrorTracePoint *point);
+	void AddPoint(deErrorTracePoint::Ref &&point);
 	
 	/** \brief Removes all trace points. */
 	void RemoveAllPoints();
@@ -107,7 +110,7 @@ public:
 		const char *sourceFunc, int sourceLine);
 	
 	/** \brief Add new trace point with the given information. */
-	deErrorTracePoint *AddPoint(deLoadableModule *sourceModule, const char *sourceFunc, int sourceLine);
+	const deErrorTracePoint::Ref &AddPoint(deLoadableModule *sourceModule, const char *sourceFunc, int sourceLine);
 	
 	/**
 	 * \brief Print error trace out to the given logger.

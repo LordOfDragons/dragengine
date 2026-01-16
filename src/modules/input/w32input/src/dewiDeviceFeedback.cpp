@@ -91,13 +91,11 @@ void dewiDeviceFeedback::SetDisplayImages(const char *name){
 	pDisplayImage = imageManager.LoadImage(vfs, filename, "/");
 	
 	const int sizes[4] = {128, 64, 32, 16};
-	deImage::Ref icon;
 	int i;
 	
 	for(i=0; i<4; i++){
 		filename.Format("%s/%s/icon%d.png", basePath, name, sizes[i]);
-		icon = imageManager.LoadImage(vfs, filename, "/");
-		pDisplayIcons.Add((deImage*)icon);
+		pDisplayIcons.Add(imageManager.LoadImage(vfs, filename, "/"));
 	}
 }
 
@@ -128,7 +126,7 @@ void dewiDeviceFeedback::GetInfo(deInputDeviceFeedback &info) const{
 	
 	info.SetDisplayImage(pDisplayImage);
 	for(i=0; i<pDisplayIcons.GetCount(); i++){
-		info.AddDisplayIcon((deImage*)pDisplayIcons.GetAt(i));
+		info.AddDisplayIcon(pDisplayIcons.GetAt(i));
 	}
 	info.SetDisplayText(pDisplayText);
 }

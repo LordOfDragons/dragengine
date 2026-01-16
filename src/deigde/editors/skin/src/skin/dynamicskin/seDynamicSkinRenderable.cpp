@@ -190,51 +190,21 @@ void seDynamicSkinRenderable::Update(float elapsed){
 
 
 void seDynamicSkinRenderable::CreateRenderableValue(){
-	deDSRenderableValue *engRenderable = nullptr;
-	
-	try{
-		engRenderable = new deDSRenderableValue(pName);
-		engRenderable->SetValue(pValue);
-		pDynamicSkin->GetEngineDynamicSkin()->AddRenderable(engRenderable);
-		
-	}catch(const deException &){
-		if(engRenderable){
-			delete engRenderable;
-		}
-		throw;
-	}
+	auto engRenderable = deDSRenderableValue::Ref::New(pName);
+	engRenderable->SetValue(pValue);
+	pDynamicSkin->GetEngineDynamicSkin()->AddRenderable(std::move(engRenderable));
 }
 
 void seDynamicSkinRenderable::CreateRenderableColor(){
-	deDSRenderableColor *engRenderable = nullptr;
-	
-	try{
-		engRenderable = new deDSRenderableColor(pName);
-		engRenderable->SetColor(pColor);
-		pDynamicSkin->GetEngineDynamicSkin()->AddRenderable(engRenderable);
-		
-	}catch(const deException &){
-		if(engRenderable){
-			delete engRenderable;
-		}
-		throw;
-	}
+	auto engRenderable = deDSRenderableColor::Ref::New(pName);
+	engRenderable->SetColor(pColor);
+	pDynamicSkin->GetEngineDynamicSkin()->AddRenderable(std::move(engRenderable));
 }
 
 void seDynamicSkinRenderable::CreateRenderableImage(){
-	deDSRenderableImage *engRenderable = nullptr;
-	
-	try{
-		engRenderable = new deDSRenderableImage(pName);
-		engRenderable->SetImage(pEngImage);
-		pDynamicSkin->GetEngineDynamicSkin()->AddRenderable(engRenderable);
-		
-	}catch(const deException &){
-		if(engRenderable){
-			delete engRenderable;
-		}
-		throw;
-	}
+	auto engRenderable = deDSRenderableImage::Ref::New(pName);
+	engRenderable->SetImage(pEngImage);
+	pDynamicSkin->GetEngineDynamicSkin()->AddRenderable(std::move(engRenderable));
 }
 
 void seDynamicSkinRenderable::CreateRenderableCanvas(){
@@ -242,19 +212,9 @@ void seDynamicSkinRenderable::CreateRenderableCanvas(){
 }
 
 void seDynamicSkinRenderable::CreateRenderableVideoFrame(){
-	deDSRenderableVideoFrame *engRenderable = nullptr;
-	
-	try{
-		engRenderable = new deDSRenderableVideoFrame(pName);
-		engRenderable->SetVideoPlayer(pEngVideoPlayer);
-		pDynamicSkin->GetEngineDynamicSkin()->AddRenderable(engRenderable);
-		
-	}catch(const deException &){
-		if(engRenderable){
-			delete engRenderable;
-		}
-		throw;
-	}
+	auto engRenderable = deDSRenderableVideoFrame::Ref::New(pName);
+	engRenderable->SetVideoPlayer(pEngVideoPlayer);
+	pDynamicSkin->GetEngineDynamicSkin()->AddRenderable(std::move(engRenderable));
 }
 
 void seDynamicSkinRenderable::CreateRenderableCamera(){

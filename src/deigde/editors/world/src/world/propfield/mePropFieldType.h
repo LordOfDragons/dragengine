@@ -31,11 +31,11 @@
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/model/deModel.h>
+#include <dragengine/resources/propfield/dePropFieldType.h>
 
 class mePropField;
 
 class deEngine;
-class dePropFieldType;
 class dePropFieldInstance;
 
 
@@ -92,7 +92,7 @@ public:
 	void SetEnginePFType(dePropFieldType *engPFType);
 	
 	/** Creates an engine prop field type. */
-	dePropFieldType *CreateEnginePFType();
+	dePropFieldType::Ref CreateEnginePFType();
 	/** Updates the engine prop field type. */
 	void UpdateEnginePFType();
 	

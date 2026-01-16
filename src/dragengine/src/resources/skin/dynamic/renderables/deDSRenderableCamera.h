@@ -37,6 +37,10 @@
  * screen space which is not given here.
  */
 class DE_DLL_EXPORT deDSRenderableCamera : public deDSRenderable{
+public:
+	/** \brief Reference type. */
+	using Ref = deTUniqueReference<deDSRenderableCamera>;
+	
 private:
 	deCamera::Ref pCamera;
 	

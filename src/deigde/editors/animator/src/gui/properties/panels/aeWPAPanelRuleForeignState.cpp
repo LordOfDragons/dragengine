@@ -422,7 +422,7 @@ void aeWPAPanelRuleForeignState::UpdateRigBoneList(){
 			const int count = rig->GetBoneCount();
 			int i;
 			for(i=0; i<count; i++){
-				pCBBone->AddItem(rig->GetBoneAt(i).GetName());
+				pCBBone->AddItem(rig->GetBoneAt(i)->GetName());
 			}
 		}
 		pCBBone->SortItems();

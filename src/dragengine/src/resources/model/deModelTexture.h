@@ -25,6 +25,7 @@
 #ifndef _DEMODELTEXTURE_H_
 #define _DEMODELTEXTURE_H_
 
+#include "../../common/collection/decTUniqueList.h"
 #include "../../common/string/decString.h"
 
 
@@ -46,6 +47,13 @@
  * 
  */
 class DE_DLL_EXPORT deModelTexture{
+public:
+	/** \brief Reference type. */
+	using Ref = deTUniqueReference<deModelTexture>;
+	
+	/** \brief List type. */
+	using List = decTUniqueList<deModelTexture>;
+	
 private:
 	decString pName;
 	int pWidth;

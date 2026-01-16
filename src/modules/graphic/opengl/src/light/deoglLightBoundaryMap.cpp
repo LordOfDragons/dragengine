@@ -91,7 +91,7 @@ int deoglLightBoundaryMap::GetBaseLevel(int baseSize){
 
 
 deoglFramebuffer *deoglLightBoundaryMap::GetFBOAt(int level){
-	return (deoglFramebuffer*)pFBOs.GetAt(level);
+	return pFBOs.GetAt(level);
 }
 
 

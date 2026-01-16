@@ -45,10 +45,6 @@ deSkin::deSkin(deSkinManager *manager, deVirtualFileSystem *vfs, const char *fil
 	TIME_SYSTEM modificationTime) :
 deFileResource(manager, vfs, filename, modificationTime),
 
-pTextures(nullptr),
-pTextureCount(0),
-pTextureSize(0),
-
 pPeerGraphic(nullptr),
 pPeerAudio(nullptr),
 pPeerPhysics(nullptr){
@@ -63,40 +59,20 @@ deSkin::~deSkin(){
 // Textures
 /////////////
 
-void deSkin::AddTexture(deSkinTexture *tex){
+void deSkin::AddTexture(deSkinTexture::Ref &&tex){
 	DEASSERT_NOTNULL(tex)
-	
-	if(pTextureCount == pTextureSize){
-		int newSize = pTextureSize * 3 / 2 + 1;
-		deSkinTexture **newArray = new deSkinTexture*[newSize];
-		if(pTextures){
-			memcpy(newArray, pTextures, sizeof(deSkinTexture*) * pTextureSize);
-			delete [] pTextures;
-		}
-		pTextures = newArray;
-		pTextureSize = newSize;
-	}
-	
-	pTextures[pTextureCount] = tex;
-	pTextureCount++;
+	pTextures.Add(std::move(tex));
 }
 
-deSkinTexture *deSkin::GetTextureAt(int index) const{
-	DEASSERT_TRUE(index >= 0)
-	DEASSERT_TRUE(index < pTextureCount)
-	
-	return pTextures[index];
+const deSkinTexture::Ref &deSkin::GetTextureAt(int index) const{
+	return pTextures.GetAt(index);
 }
 
 int deSkin::IndexOfTextureNamed(const char *name) const{
 	DEASSERT_NOTNULL(name)
-	int i;
-	
-	for(i=0; i<pTextureCount; i++){
-		if(strcmp(pTextures[i]->GetName(), name) == 0) return i;
-	}
-	
-	return -1;
+	return pTextures.IndexOfMatching([&](const deSkinTexture &tex){
+		return tex.GetName() == name;
+	});
 }
 
 
@@ -149,14 +125,5 @@ void deSkin::pCleanUp(){
 	}
 	if(pPeerGraphic){
 		delete pPeerGraphic;
-	}
-	
-	if(pTextures){
-		while(pTextureCount > 0){
-			pTextureCount--;
-			delete pTextures[pTextureCount];
-		}
-		
-		delete [] pTextures;
 	}
 }

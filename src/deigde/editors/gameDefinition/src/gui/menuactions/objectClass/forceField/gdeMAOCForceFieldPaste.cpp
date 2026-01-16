@@ -68,13 +68,9 @@ igdeUndo::Ref gdeMAOCForceFieldPaste::OnActionSubObject(gdeGameDefinition&, gdeO
 		return {};
 	}
 	
-	const gdeClipboardDataOCForceField &clipOCForceField =
-		(const gdeClipboardDataOCForceField &)(igdeClipboardData&)clip;
+	const igdeUndo::Ref undo = gdeUOCAddForceField::Ref::New(&objectClass, 
+		gdeOCForceField::Ref::New(*clip.DynamicCast<gdeClipboardDataOCForceField>()->GetForceField()));
 	
-	const gdeOCForceField::Ref forceField(gdeOCForceField::Ref::New(*clipOCForceField.GetForceField()));
-	
-	const igdeUndo::Ref undo = gdeUOCAddForceField::Ref::New(&objectClass,
-		forceField);
 	undo->SetShortInfo("Paste object class particle emitter");
 	return undo;
 }

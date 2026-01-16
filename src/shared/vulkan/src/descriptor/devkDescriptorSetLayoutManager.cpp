@@ -54,7 +54,7 @@ int devkDescriptorSetLayoutManager::GetCount() const{
 }
 
 devkDescriptorSetLayout *devkDescriptorSetLayoutManager::GetAt(int index) const{
-	return (devkDescriptorSetLayout*)pLayouts.GetAt(index);
+	return pLayouts.GetAt(index);
 }
 
 devkDescriptorSetLayout *devkDescriptorSetLayoutManager::GetWith(
@@ -62,7 +62,7 @@ const devkDescriptorSetLayoutConfiguration &configuration){
 	const int count = pLayouts.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		devkDescriptorSetLayout * const layout = (devkDescriptorSetLayout*)pLayouts.GetAt(i);
+		devkDescriptorSetLayout * const layout = pLayouts.GetAt(i);
 		if(layout->GetConfiguration() == configuration){
 			return layout;
 		}
@@ -77,7 +77,7 @@ bool devkDescriptorSetLayoutManager::HasWith(const devkDescriptorSetLayoutConfig
 	const int count = pLayouts.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		if(((devkDescriptorSetLayout*)pLayouts.GetAt(i))->GetConfiguration() == configuration){
+		if(pLayouts.GetAt(i)->GetConfiguration() == configuration){
 			return true;
 		}
 	}

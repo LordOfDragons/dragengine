@@ -68,13 +68,8 @@ igdeUndo::Ref gdeMAOCCameraPaste::OnActionSubObject(gdeGameDefinition&, gdeObjec
 		return {};
 	}
 	
-	const gdeClipboardDataOCCamera &clipOCCamera =
-		(const gdeClipboardDataOCCamera &)(igdeClipboardData&)clip;
-	
-	const gdeOCCamera::Ref camera(gdeOCCamera::Ref::New(*clipOCCamera.GetCamera()));
-	
 	const igdeUndo::Ref undo = gdeUOCAddCamera::Ref::New(&objectClass,
-		camera);
+		gdeOCCamera::Ref::New(*clip.DynamicCast<gdeClipboardDataOCCamera>()->GetCamera()));
 	undo->SetShortInfo("Paste object class camera");
 	return undo;
 }

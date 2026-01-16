@@ -94,7 +94,7 @@ void debpModel::PrepareOctree(){
 	
 	// NOTE if model data has been released RetainModelData() is required to be called first
 	
-	const deModelLOD &lod = *pModel.GetLODAt(0);
+	const deModelLOD &lod = pModel.GetLODAt(0);
 	const decVector offset(0.01f, 0.01f, 0.01f);
 	const decVector minExtend(pExtends.minimum - offset);
 	const decVector maxExtend(pExtends.maximum + offset);
@@ -128,7 +128,7 @@ void debpModel::PrepareNormals(){
 	
 	// NOTE if model data has been released RetainModelData() is required to be called first
 	
-	const deModelLOD &lod = *pModel.GetLODAt(0);
+	const deModelLOD &lod = pModel.GetLODAt(0);
 	const int normalCount = lod.GetVertexCount();
 	if(normalCount == 0){
 		return;
@@ -191,7 +191,7 @@ void debpModel::PrepareFaceProbabilities(){
 	
 	// NOTE if model data has been released RetainModelData() is required to be called first
 	
-	const deModelLOD &lod = *pModel.GetLODAt(0);
+	const deModelLOD &lod = pModel.GetLODAt(0);
 	const int faceCount = lod.GetFaceCount();
 	if(faceCount == 0){
 		return;
@@ -238,7 +238,7 @@ void debpModel::PrepareShape(){
 	
 	// NOTE if model data has been released RetainModelData() is required to be called first
 	
-	const deModelLOD &lod = *pModel.GetLODAt(0);
+	const deModelLOD &lod = pModel.GetLODAt(0);
 	int i, j;
 	
 	// create vertex and face array suitable for the triangle mesh
@@ -319,7 +319,7 @@ void debpModel::pCheckCanDeform(){
 
 void debpModel::pCalculateExtends(){
 	// extends of all vertices
-	const deModelLOD &lod = *pModel.GetLODAt(0);
+	const deModelLOD &lod = pModel.GetLODAt(0);
 	const deModelVertex * const vertices = lod.GetVertices();
 	const int vertexCount = lod.GetVertexCount();
 	int i;

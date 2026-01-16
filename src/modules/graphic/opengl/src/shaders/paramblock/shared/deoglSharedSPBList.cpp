@@ -68,7 +68,7 @@ int deoglSharedSPBList::GetCount() const{
 }
 
 deoglSharedSPB *deoglSharedSPBList::GetAt(int index) const{
-	return (deoglSharedSPB*)pSPBs.GetAt(index);
+	return pSPBs.GetAt(index);
 }
 
 deoglSharedSPBElement::Ref deoglSharedSPBList::AddElement(){
@@ -76,7 +76,7 @@ deoglSharedSPBElement::Ref deoglSharedSPBList::AddElement(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		const deoglSharedSPBElement::Ref element(((deoglSharedSPB*)pSPBs.GetAt(i))->AddElement());
+		const deoglSharedSPBElement::Ref element(pSPBs.GetAt(i)->AddElement());
 		if(element){
 			return element;
 		}

@@ -63,7 +63,9 @@ public:
 	 * \brief Create a new list with an initial capacity.
 	 * \throws deeInvalidParam \em capacity is less than 0.
 	 */
-	explicit decTList(int capacity) : pElements(nullptr), pCount(0), pSize(0){
+	template<typename U>
+	requires (std::same_as<U, int>)
+	explicit decTList(U capacity) : pElements(nullptr), pCount(0), pSize(0){
 		DEASSERT_TRUE(capacity >= 0)
 		
 		if(capacity > 0){
@@ -76,7 +78,9 @@ public:
 	 * \brief Create a new list with an initial count of elements all set to element.
 	 * \throws deeInvalidParam \em count is less than 0.
 	 */
-	decTList(int count, const T &element) : pElements(nullptr), pCount(0), pSize(0){
+	template<typename U>
+	requires (std::same_as<U, int>)
+	decTList(U count, const T &element) : pElements(nullptr), pCount(0), pSize(0){
 		DEASSERT_TRUE(count >= 0)
 		
 		if(count > 0){

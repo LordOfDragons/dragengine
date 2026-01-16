@@ -1173,7 +1173,7 @@ void meObject::UpdateComponentTextures(){
 		const decString &textureName = engModel->GetTextureAt(i)->GetName();
 		meObjectTexture * const texture = pTextures.FindNamed(textureName);
 		
-		const cWOTexture &wotexture = *((cWOTexture*)pWOTextures.GetAt(i));
+		const cWOTexture &wotexture = pWOTextures.GetAt(i);
 		deSkin *useSkin = wotexture.skin;
 		int useTexture = wotexture.texture;
 		deDynamicSkin *useDynamicSkin = wotexture.dynamicSkin;

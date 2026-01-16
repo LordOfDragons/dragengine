@@ -25,12 +25,13 @@
 #ifndef _DEARCREATERULEVISITOR_H_
 #define _DEARCREATERULEVISITOR_H_
 
+#include "dearRule.h"
+
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleVisitor.h>
 
 class dearAnimator;
 class dearAnimatorInstance;
-class dearRule;
 class deAnimator;
 
 
@@ -45,7 +46,7 @@ private:
 	const decTList<int> &pControllerMapping;
 	const int pFirstLink;
 	
-	dearRule *pCreatedRule;
+	dearRule::Ref pCreatedRule;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -66,13 +67,13 @@ public:
 	void Reset();
 	
 	/** Created rule. */
-	inline dearRule *GetCreatedRule() const{ return pCreatedRule; }
+	inline dearRule::Ref &GetCreatedRule(){ return pCreatedRule; }
 	
 	/** Rule has been created. */
 	bool HasCreatedRule() const;
 	
 	/** Create rule. */
-	dearRule *CreateRuleFrom(deAnimatorRule &engRule);
+	dearRule::Ref &CreateRuleFrom(deAnimatorRule &engRule);
 	/*@}*/
 	
 	

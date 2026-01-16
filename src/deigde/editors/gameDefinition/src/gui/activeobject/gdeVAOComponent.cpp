@@ -169,7 +169,7 @@ void gdeVAOComponent::GetExtends(decVector &minExtend, decVector &maxExtend) con
 		return;
 	}
 	
-	const deModelLOD &lod = *pComponent->GetModel()->GetLODAt(0);
+	const deModelLOD &lod = pComponent->GetModel()->GetLODAt(0);
 	const int vertexCount = lod.GetVertexCount();
 	if(vertexCount > 0){
 		const deModelVertex * const vertices = lod.GetVertices();
@@ -354,9 +354,9 @@ deComponentTexture &engTexture, int engTextureIndex){
 		if(gdctRequiresDynamicSkin){
 			gdctDynamicSkin = engine.GetDynamicSkinManager()->CreateDynamicSkin();
 			if(gdctHasTint){
-				deDSRenderableColor * const renderable = new deDSRenderableColor("tint");
+				auto renderable = deDSRenderableColor::Ref::New("tint");
 				renderable->SetColor(gdctColorTint);
-				gdctDynamicSkin->AddRenderable(renderable);
+				gdctDynamicSkin->AddRenderable(std::move(renderable));
 			}
 		}
 		
@@ -393,7 +393,7 @@ void gdeVAOComponent::pCreateCollider(){
 		pCollider->SetResponseType(pOCComponent->GetColliderResponseType());
 		pCollider->SetUseLocalGravity(pOCComponent->GetColliderResponseType() != deCollider::ertDynamic);
 		pCollider->SetMass(5.0f);
-		((deColliderComponent&)(deCollider&)pCollider).SetComponent(pComponent);
+		pCollider.DynamicCast<deColliderComponent>()->SetComponent(pComponent);
 		
 	}else{
 		decShape::List shapeList;
@@ -404,7 +404,7 @@ void gdeVAOComponent::pCreateCollider(){
 		pCollider->SetResponseType(deCollider::ertStatic);
 		pCollider->SetUseLocalGravity(true);
 		pCollider->SetMass(5.0f);
-		((deColliderVolume&)(deCollider&)pCollider).SetShapes(shapeList);
+		pCollider.DynamicCast<deColliderVolume>()->SetShapes(shapeList);
 	}
 	
 	decLayerMask collisionMask;
@@ -521,21 +521,11 @@ void gdeVAOComponent::pAttachComponent(){
 		return;
 	}
 	
-	deColliderAttachment *attachment = nullptr;
-	try{
-		attachment = new deColliderAttachment(pCollider);
-		attachment->SetAttachType(deColliderAttachment::eatStatic);
-		//attachment->SetPosition( pOCComponent->GetPosition() );
-		//attachment->SetOrientation( pOCComponent->GetOrientation() );
-		pCollider->AddAttachment(attachment);
-		attachment = nullptr;
-		
-	}catch(const deException &){
-		if(attachment){
-			delete attachment;
-		}
-		throw;
-	}
+	auto attachment = deColliderAttachment::Ref::New(pCollider);
+	attachment->SetAttachType(deColliderAttachment::eatStatic);
+	//attachment->SetPosition( pOCComponent->GetPosition() );
+	//attachment->SetOrientation( pOCComponent->GetOrientation() );
+	pCollider->AddAttachment(std::move(attachment));
 }
 
 

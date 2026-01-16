@@ -157,7 +157,7 @@ void deoxrDPHtcViveTracker::CheckAttached(){
 			
 			// remove devices of no more connected trackers or trackers having changed role
 			for(t=0; t<pTrackers.GetCount(); t++){
-				Tracker &tracker = *((Tracker*)pTrackers.GetAt(t));
+				Tracker &tracker = pTrackers.GetAt(t);
 				if(!tracker.device){
 					continue;
 				}
@@ -301,7 +301,7 @@ void deoxrDPHtcViveTracker::CreateActions(deoxrActionSet &actionSet){
 	int i;
 	
 	for(i=0; i<count; i++){
-		Tracker &tracker = *((Tracker*)pTrackers.GetAt(i));
+		Tracker &tracker = pTrackers.GetAt(i);
 		
 		name.Format("pose_tracker_%s", pSerialFromPath(tracker.path).GetString());
 		
@@ -393,7 +393,7 @@ void deoxrDPHtcViveTracker::SuggestBindings(){
 	
 	int i;
 	for(i=0; i<pTrackers.GetCount(); i++){
-		const Tracker &tracker = *((Tracker*)pTrackers.GetAt(i));
+		const Tracker &tracker = pTrackers.GetAt(i);
 		if(!tracker.action){
 			continue;
 		}
@@ -457,7 +457,7 @@ void deoxrDPHtcViveTracker::ClearActions(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((Tracker*)pTrackers.GetAt(i))->action = nullptr;
+		pTrackers.GetAt(i)->action = nullptr;
 	}
 	
 	pRoleActions.RemoveAll();
@@ -503,7 +503,7 @@ deoxrDPHtcViveTracker::Tracker *deoxrDPHtcViveTracker::pGetTrackerWith(deoxrDevi
 	int i;
 	
 	for(i=0; i<count; i++){
-		Tracker * const tracker = (Tracker*)pTrackers.GetAt(i);
+		Tracker * const tracker = pTrackers.GetAt(i);
 		if(tracker->device == device){
 			return tracker;
 		}
@@ -517,7 +517,7 @@ deoxrDPHtcViveTracker::Tracker *deoxrDPHtcViveTracker::pGetTrackerWith(XrPath pa
 	int i;
 	
 	for(i=0; i<count; i++){
-		Tracker * const tracker = (Tracker*)pTrackers.GetAt(i);
+		Tracker * const tracker = pTrackers.GetAt(i);
 		if(tracker->path == path){
 			return tracker;
 		}
@@ -531,7 +531,7 @@ deoxrDPHtcViveTracker::Tracker * deoxrDPHtcViveTracker::pGetTrackerWithRole(XrPa
 	int i;
 	
 	for(i=0; i<count; i++){
-		Tracker * const tracker = (Tracker*)pTrackers.GetAt(i);
+		Tracker * const tracker = pTrackers.GetAt(i);
 		if(tracker->pathRole == path){
 			return tracker;
 		}
@@ -630,7 +630,7 @@ void deoxrDPHtcViveTracker::pRemoveAllDevices(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		Tracker &tracker = *((Tracker*)pTrackers.GetAt(i));
+		Tracker &tracker = pTrackers.GetAt(i);
 		if(tracker.device){
 			devices.Remove(tracker.device);
 			tracker.device = nullptr;
@@ -735,7 +735,7 @@ void deoxrDPHtcViveTracker::pSaveTrackerDatabase(){
 		const int count = pTrackers.GetCount();
 		int i;
 		for(i=0; i<count; i++){
-			const Tracker &tracker = *((Tracker*)pTrackers.GetAt(i));
+			const Tracker &tracker = pTrackers.GetAt(i);
 			writer.WriteOpeningTag("viveTracker");
 			writer.WriteDataTagString("path", tracker.path.GetName());
 			writer.WriteDataTagString("patRole", tracker.pathRole.GetName());

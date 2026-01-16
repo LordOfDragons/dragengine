@@ -124,32 +124,19 @@ void gdeVAOParticleEmitter::AttachResources(){
 	const decQuaternion orientation(PropertyQuaternion(pOCParticleEmitter->GetPropertyName(
 		gdeOCParticleEmitter::epAttachRotation), pOCParticleEmitter->GetRotation()));
 	
-	deColliderAttachment *attachment = nullptr;
-	try{
-		// attach particleEmitter
-		attachment = new deColliderAttachment(pInstance);
-		attachment->SetPosition(position);
-		attachment->SetOrientation(orientation);
-		attachment->SetAttachType(deColliderAttachment::eatStatic);
-		
-		attachCollider->AddAttachment(attachment);
-		attachment = nullptr;
-		
-		// attach debug drawer
-		attachment = new deColliderAttachment(pDebugDrawer);
-		attachment->SetPosition(position);
-		attachment->SetOrientation(orientation);
-		attachment->SetAttachType(deColliderAttachment::eatStatic);
-		
-		attachCollider->AddAttachment(attachment);
-		attachment = nullptr;
-		
-	}catch(const deException &){
-		if(attachment){
-			delete attachment;
-		}
-		throw;
-	}
+	// attach particleEmitter
+	auto attachment = deColliderAttachment::Ref::New(pInstance);
+	attachment->SetPosition(position);
+	attachment->SetOrientation(orientation);
+	attachment->SetAttachType(deColliderAttachment::eatStatic);
+	attachCollider->AddAttachment(std::move(attachment));
+	
+	// attach debug drawer
+	attachment = deColliderAttachment::Ref::New(pDebugDrawer);
+	attachment->SetPosition(position);
+	attachment->SetOrientation(orientation);
+	attachment->SetAttachType(deColliderAttachment::eatStatic);
+	attachCollider->AddAttachment(std::move(attachment));
 }
 
 void gdeVAOParticleEmitter::DetachResources(){

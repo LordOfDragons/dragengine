@@ -265,9 +265,6 @@ void deRLTaskReadSkinInternal::pPrepare(){
 }
 
 void deRLTaskReadSkinInternal::pLoadInternal(){
-	const int textureCount = pSkin->GetTextureCount();
-	int i, j;
-	
 	decPath basePath;
 	basePath.SetFromUnix(GetPath());
 	basePath.RemoveLastComponent();
@@ -276,14 +273,11 @@ void deRLTaskReadSkinInternal::pLoadInternal(){
 	const decString strBasePath(basePath.GetPathUnix());
 	deRLTaskReadSkinProperty visitor(GetResourceLoader(), *this, GetEngine(), GetVFS(), strBasePath);
 	
-	for(i=0; i<textureCount; i++){
-		const deSkinTexture &texture = *pSkin->GetTextureAt(i);
-		const int propertyCount = texture.GetPropertyCount();
-		
-		for(j=0; j<propertyCount; j++){
-			texture.GetPropertyAt(j)->Visit(visitor);
-		}
-	}
+	pSkin->GetTextures().Visit([&](deSkinTexture &texture){
+		texture.GetProperties().Visit([&](deSkinProperty &property){
+			property.Visit(visitor);
+		});
+	});
 }
 
 bool deRLTaskReadSkinInternal::pApplyInternal(){

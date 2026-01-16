@@ -144,7 +144,7 @@ void delLoggerHistory::Clear(){
 	const int count = pListeners.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		((delLoggerHistoryListener*)pListeners.GetAt(i))->HistoryCleared(*this);
+		pListeners.GetAt(i)->HistoryCleared(*this);
 	}
 }
 
@@ -190,7 +190,7 @@ void delLoggerHistory::NotifyMessageAdded(const delLoggerHistoryEntry &entry){
 	const int count = pListeners.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		((delLoggerHistoryListener*)pListeners.GetAt(i))->MessageAdded(*this, entry);
+		pListeners.GetAt(i)->MessageAdded(*this, entry);
 	}
 }
 

@@ -2413,38 +2413,18 @@ void deClassCollider::AttachStatic(deCollider &collider, deResource *resource) c
 
 void deClassCollider::AttachStatic(deCollider &collider, deResource *resource,
 const decVector &position, const decQuaternion &orientation, const decVector &scale) const{
-	deColliderAttachment *attachment = nullptr;
-	
-	try{
-		attachment = new deColliderAttachment(resource);
-		attachment->SetPosition(position);
-		attachment->SetOrientation(orientation);
-		attachment->SetScaling(scale);
-		attachment->SetAttachType(deColliderAttachment::eatStatic);
-		collider.AddAttachment(attachment);
-		
-	}catch(...){
-		if(attachment){
-			delete attachment;
-		}
-		throw;
-	}
+	auto attachment = deColliderAttachment::Ref::New(resource);
+	attachment->SetPosition(position);
+	attachment->SetOrientation(orientation);
+	attachment->SetScaling(scale);
+	attachment->SetAttachType(deColliderAttachment::eatStatic);
+	collider.AddAttachment(std::move(attachment));
 }
 
 void deClassCollider::AttachRig(deCollider &collider, deResource *resource) const{
-	deColliderAttachment *attachment = nullptr;
-	
-	try{
-		attachment = new deColliderAttachment(resource);
-		attachment->SetAttachType(deColliderAttachment::eatRig);
-		collider.AddAttachment(attachment);
-		
-	}catch(...){
-		if(attachment){
-			delete attachment;
-		}
-		throw;
-	}
+	auto attachment = deColliderAttachment::Ref::New(resource);
+	attachment->SetAttachType(deColliderAttachment::eatRig);
+	collider.AddAttachment(std::move(attachment));
 }
 
 void deClassCollider::AttachBone(deCollider &collider, deResource *resource, const char *targetBone) const{
@@ -2481,23 +2461,13 @@ void deClassCollider::AttachBone(deCollider &collider, deResource *resource, con
 
 void deClassCollider::AttachBone(deCollider &collider, deResource *resource, const char *targetBone,
 const decVector &position, const decQuaternion &orientation, const decVector &scale) const{
-	deColliderAttachment *attachment = nullptr;
-	
-	try{
-		attachment = new deColliderAttachment(resource);
-		attachment->SetPosition(position);
-		attachment->SetOrientation(orientation);
-		attachment->SetScaling(scale);
-		attachment->SetTrackBone(targetBone);
-		attachment->SetAttachType(deColliderAttachment::eatBone);
-		collider.AddAttachment(attachment);
-		
-	}catch(...){
-		if(attachment){
-			delete attachment;
-		}
-		throw;
-	}
+	auto attachment = deColliderAttachment::Ref::New(resource);
+	attachment->SetPosition(position);
+	attachment->SetOrientation(orientation);
+	attachment->SetScaling(scale);
+	attachment->SetTrackBone(targetBone);
+	attachment->SetAttachType(deColliderAttachment::eatBone);
+	collider.AddAttachment(std::move(attachment));
 }
 
 void deClassCollider::AttachWeight(deCollider &collider, deResource *resource, const deCollisionInfo &colInfo) const{
@@ -2510,7 +2480,6 @@ void deClassCollider::AttachWeight(deCollider &collider, deResource *resource, c
 	
 	deCollider * const attachCollider = static_cast<deCollider*>(resource);
 	
-	deColliderAttachment *attachment = nullptr;
 	deColliderVisitorIdentify identify;
 	
 	collider.Visit(identify);
@@ -2543,7 +2512,7 @@ void deClassCollider::AttachWeight(deCollider &collider, deResource *resource, c
 					.QuickMultiply(decDMatrix(component->GetBoneAt(bone).GetMatrix())
 						.QuickMultiply(decDMatrix::CreateWorld(collider.GetPosition(),
 							collider.GetOrientation())).QuickInvert()));
-				AttachBone(collider, resource, rig->GetBoneAt(bone).GetName(),
+				AttachBone(collider, resource, rig->GetBoneAt(bone)->GetName(),
 					matrix.GetPosition(), matrix.Normalized().ToQuaternion(), matrix.GetScale());
 				
 			}else{
@@ -2560,7 +2529,7 @@ void deClassCollider::AttachWeight(deCollider &collider, deResource *resource, c
 				return;
 			}
 			
-			const deModelLOD &lod = *model->GetLODAt(0);
+			const deModelLOD &lod = model->GetLODAt(0);
 			if(face >= lod.GetFaceCount()){
 				pDS.LogWarnFormat("Collider.AttachWeight: face(%i) outside range(%i). "
 					"Fall back to static.", face, lod.GetFaceCount());
@@ -2572,21 +2541,13 @@ void deClassCollider::AttachWeight(deCollider &collider, deResource *resource, c
 				.QuickMultiply(decDMatrix::CreateWorld(collider.GetPosition(),
 					collider.GetOrientation(), collider.GetScale())).QuickInvert());
 			
-			try{
-				attachment = new deColliderAttachment(resource);
-				attachment->SetAttachType(deColliderAttachment::eatStatic);
-				attachment->SetPosition(matrix.GetPosition().ToVector());
-				attachment->SetOrientation(matrix.Normalized().ToQuaternion());
-				attachment->SetScaling(matrix.GetScale());
-				colliderComponent.InitWeightAttachment(*attachment, face);
-				collider.AddAttachment(attachment);
-				
-			}catch(...){
-				if(attachment){
-					delete attachment;
-				}
-				throw;
-			}
+			auto attachment = deColliderAttachment::Ref::New(resource);
+			attachment->SetAttachType(deColliderAttachment::eatStatic);
+			attachment->SetPosition(matrix.GetPosition().ToVector());
+			attachment->SetOrientation(matrix.Normalized().ToQuaternion());
+			attachment->SetScaling(matrix.GetScale());
+			colliderComponent.InitWeightAttachment(*attachment, face);
+			collider.AddAttachment(std::move(attachment));
 			
 		}else{
 			pDS.LogWarnFormat("Collider.AttachWeight: bone(%i) and fase(%i) invalid. "
@@ -2601,19 +2562,9 @@ void deClassCollider::AttachWeight(deCollider &collider, deResource *resource, c
 }
 
 void deClassCollider::AttachRelativeMovement(deCollider &collider, deResource *resource) const{
-	deColliderAttachment *attachment = nullptr;
-	
-	try{
-		attachment = new deColliderAttachment(resource);
-		attachment->SetAttachType(deColliderAttachment::eatRelativeMovement);
-		collider.AddAttachment(attachment);
-		
-	}catch(...){
-		if(attachment){
-			delete attachment;
-		}
-		throw;
-	}
+	auto attachment = deColliderAttachment::Ref::New(resource);
+	attachment->SetAttachType(deColliderAttachment::eatRelativeMovement);
+	collider.AddAttachment(std::move(attachment));
 }
 
 deColliderConstraint *deClassCollider::FindConstraint(const deCollider &collider,

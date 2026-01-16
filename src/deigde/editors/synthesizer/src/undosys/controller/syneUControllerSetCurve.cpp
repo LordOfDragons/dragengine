@@ -64,9 +64,9 @@ void syneUControllerSetCurve::SetNewValue(const decCurveBezier &value){
 }
 
 void syneUControllerSetCurve::Undo(){
-	((syneController&)(deObject&)pController).SetCurve(pOldValue);
+	pController->SetCurve(pOldValue);
 }
 
 void syneUControllerSetCurve::Redo(){
-	((syneController&)(deObject&)pController).SetCurve(pNewValue);
+	pController->SetCurve(pNewValue);
 }

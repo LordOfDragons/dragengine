@@ -507,7 +507,7 @@ public:
 		}
 		
 		if(pUndo){
-			((seUPropertyNodeSetTransparency&)(igdeUndo&)pUndo).SetNewValue(sliderText->GetValue());
+			pUndo.DynamicCast<seUPropertyNodeSetTransparency>()->SetNewValue(sliderText->GetValue());
 			pUndo->Redo();
 			
 		}else{
@@ -527,7 +527,7 @@ public:
 		}
 		
 		if(pUndo){
-			((seUPropertyNodeSetTransparency&)(igdeUndo&)pUndo).SetNewValue(sliderText->GetValue());
+			pUndo.DynamicCast<seUPropertyNodeSetTransparency>()->SetNewValue(sliderText->GetValue());
 			pUndo->Redo();
 			
 		}else{
@@ -700,7 +700,7 @@ public:
 		}
 		
 		if(pUndo){
-			((seUPropertyNodeTextSetText&)(igdeUndo&)pUndo).SetNewValue(text);
+			pUndo.DynamicCast<seUPropertyNodeTextSetText>()->SetNewValue(text);
 			pUndo->Redo();
 			
 		}else{

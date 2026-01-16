@@ -229,7 +229,7 @@ void deoglRComponent::SetParentWorld(deoglRWorld *parentWorld){
 	if(pParentWorld){
 		int i;
 		for(i=0; i<decalCount; i++){
-			((deoglRDecal*)pDecals.GetAt(i))->RemoveFromWorldCompute();
+			pDecals.GetAt(i)->RemoveFromWorldCompute();
 		}
 		pWorldComputeElement->RemoveFromCompute();
 		
@@ -295,14 +295,14 @@ void deoglRComponent::UpdateOctreeNode(){
 		if(pWorldComputeElement->GetWorldCompute()){
 			pWorldComputeElement->ComputeUpdateElement();
 			for(i=0; i<decalCount; i++){
-				((deoglRDecal*)pDecals.GetAt(i))->UpdateWorldCompute();
+				pDecals.GetAt(i)->UpdateWorldCompute();
 			}
 			
 		}else{
 			deoglWorldCompute &worldCompute = pParentWorld->GetCompute();
 			worldCompute.AddElement(pWorldComputeElement);
 			for(i=0; i<decalCount; i++){
-				((deoglRDecal*)pDecals.GetAt(i))->AddToWorldCompute(worldCompute);
+				pDecals.GetAt(i)->AddToWorldCompute(worldCompute);
 			}
 		}
 		
@@ -315,7 +315,7 @@ void deoglRComponent::UpdateOctreeNode(){
 		
 	}else{
 		for(i=0; i<decalCount; i++){
-			((deoglRDecal*)pDecals.GetAt(i))->RemoveFromWorldCompute();
+			pDecals.GetAt(i)->RemoveFromWorldCompute();
 		}
 		pWorldComputeElement->RemoveFromCompute();
 		
@@ -462,7 +462,7 @@ void deoglRComponent::SetDynamicSkin(deoglComponent &component, deoglRDynamicSki
 	const int textureCount = pTextures.GetCount();
 	int i;
 	for(i=0; i<textureCount; i++){
-		deoglRComponentTexture &texture = *((deoglRComponentTexture*)pTextures.GetAt(i));
+		deoglRComponentTexture &texture = pTextures.GetAt(i);
 		texture.DropSkinState(); // required since UpdateSkinState can not figure out dynamic skin changed
 		texture.UpdateSkinState(component);
 	}
@@ -471,7 +471,7 @@ void deoglRComponent::SetDynamicSkin(deoglComponent &component, deoglRDynamicSki
 	// force an update to make sure everything matches up again
 	const int decalCount = pDecals.GetCount();
 	for(i=0; i<decalCount; i++){
-		deoglRDecal &decal = *((deoglRDecal*)pDecals.GetAt(i));
+		deoglRDecal &decal = pDecals.GetAt(i);
 		decal.DropSkinState(); // required since UpdateSkinState can not figure out dynamic skin changed
 		decal.UpdateSkinState();
 	}
@@ -555,7 +555,7 @@ void deoglRComponent::InitSkinStateStates(const deComponent &component){
 	const int textureCount = pTextures.GetCount();
 	int i;
 	for(i=0; i<textureCount; i++){
-		deoglRComponentTexture &texture = *((deoglRComponentTexture*)pTextures.GetAt(i));
+		deoglRComponentTexture &texture = pTextures.GetAt(i);
 		if(texture.GetSkinState()){
 			texture.GetSkinState()->InitAll();
 			texture.GetSkinState()->MapBonesAll(component);
@@ -571,7 +571,7 @@ void deoglRComponent::UpdateSkinStateBones(const deComponent &component){
 	const int textureCount = pTextures.GetCount();
 	int i;
 	for(i=0; i<textureCount; i++){
-		deoglRComponentTexture &texture = *((deoglRComponentTexture*)pTextures.GetAt(i));
+		deoglRComponentTexture &texture = pTextures.GetAt(i);
 		if(texture.GetSkinState()){
 			texture.GetSkinState()->UpdateBonesAll(component);
 		}
@@ -586,7 +586,7 @@ void deoglRComponent::UpdateSkinStateStates(){
 	const int textureCount = pTextures.GetCount();
 	int i;
 	for(i=0; i<textureCount; i++){
-		deoglRComponentTexture &texture = *((deoglRComponentTexture*)pTextures.GetAt(i));
+		deoglRComponentTexture &texture = pTextures.GetAt(i);
 		if(texture.GetSkinState()){
 			texture.GetSkinState()->UpdateAll();
 		}
@@ -651,7 +651,7 @@ void deoglRComponent::UpdateBoneMatrices(const deComponent &component){
 			boneMatrix.a34 = 0.0f;
 			
 		}else{
-			const decMatrix matrix(rig->GetBoneAt(bone).GetInverseMatrix()
+			const decMatrix matrix(rig->GetBoneAt(bone)->GetInverseMatrix()
 				.QuickMultiply(component.GetBoneAt(bone).GetMatrix()));
 			
 			boneMatrix.a11 = matrix.a11;
@@ -745,7 +745,7 @@ void deoglRComponent::InvalidateVAO(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoglRComponentLOD*)pLODs.GetAt(i))->InvalidateVAO();
+		pLODs.GetAt(i)->InvalidateVAO();
 	}
 	
 	pWorldComputeElement->ComputeUpdateElementAndGeometries();
@@ -796,7 +796,7 @@ void deoglRComponent::UpdateSkin(float elapsed){
 	// update skin state in all attached decals
 	const int decalCount = pDecals.GetCount();
 	for(i=0; i<decalCount; i++){
-		((deoglRDecal*)pDecals.GetAt(i))->UpdateSkin(elapsed);
+		pDecals.GetAt(i)->UpdateSkin(elapsed);
 	}
 }
 
@@ -850,7 +850,7 @@ void deoglRComponent::AddSkinStateRenderPlans(deoglRenderPlan &plan){
 	
 	int i;
 	for(i=0; i<pTextures.GetCount(); i++){
-		deoglRComponentTexture &texture = *((deoglRComponentTexture*)pTextures.GetAt(i));
+		deoglRComponentTexture &texture = pTextures.GetAt(i);
 		if(texture.GetSkinState()){
 			texture.GetSkinState()->AddRenderPlans(plan);
 		}
@@ -1241,7 +1241,7 @@ void deoglRComponent::PrepareQuickDispose(){
 	const int count = pDecals.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		((deoglRDecal*)pDecals.GetAt(i))->PrepareQuickDispose();
+		pDecals.GetAt(i)->PrepareQuickDispose();
 	}
 }
 
@@ -1255,7 +1255,7 @@ int deoglRComponent::GetLODCount() const{
 }
 
 deoglRComponentLOD &deoglRComponent::GetLODAt(int index) const{
-	return *((deoglRComponentLOD*)pLODs.GetAt(index < 0 ? pLODs.GetCount() + index : index));
+	return pLODs.GetAt(index < 0 ? pLODs.GetCount() + index : index);
 }
 
 void deoglRComponent::RemoveAllLODs(){
@@ -1284,7 +1284,7 @@ void deoglRComponent::UpdateRTSInstances(){
 	const int count = pTextures.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		((deoglRComponentTexture*)pTextures.GetAt(i))->UpdateRTSInstances();
+		pTextures.GetAt(i)->UpdateRTSInstances();
 	}
 }
 
@@ -1298,7 +1298,7 @@ int deoglRComponent::GetTextureCount() const{
 }
 
 deoglRComponentTexture &deoglRComponent::GetTextureAt(int index) const{
-	return *((deoglRComponentTexture*)pTextures.GetAt(index));
+	return pTextures.GetAt(index);
 }
 
 void deoglRComponent::RemoveAllTextures(){
@@ -1315,7 +1315,7 @@ void deoglRComponent::InvalidateAllTexturesParamBlocks(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoglRComponentTexture*)pTextures.GetAt(i))->InvalidateParamBlocks();
+		pTextures.GetAt(i)->InvalidateParamBlocks();
 	}
 }
 
@@ -1324,7 +1324,7 @@ void deoglRComponent::MarkAllTexturesParamBlocksDirty(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoglRComponentTexture*)pTextures.GetAt(i))->MarkParamBlocksDirty();
+		pTextures.GetAt(i)->MarkParamBlocksDirty();
 	}
 }
 
@@ -1333,7 +1333,7 @@ void deoglRComponent::MarkAllTexturesTUCsDirty(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoglRComponentTexture*)pTextures.GetAt(i))->MarkTUCsDirty();
+		pTextures.GetAt(i)->MarkTUCsDirty();
 	}
 }
 
@@ -1342,7 +1342,7 @@ void deoglRComponent::MarkAllTexturesTUCsDirtyEnvMapUse(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoglRComponentTexture*)pTextures.GetAt(i))->MarkTUCsDirtyEnvMapUse();
+		pTextures.GetAt(i)->MarkTUCsDirtyEnvMapUse();
 	}
 }
 
@@ -1357,7 +1357,7 @@ void deoglRComponent::UpdateStaticTextures(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		deoglRComponentTexture &texture = *((deoglRComponentTexture*)pTextures.GetAt(i));
+		deoglRComponentTexture &texture = pTextures.GetAt(i);
 		deoglSkinState * const skinState = texture.GetUseSkinState();
 		if(!skinState){
 			continue;
@@ -1385,7 +1385,7 @@ void deoglRComponent::DynamicSkinRenderablesChanged(){
 	int i;
 	
 	for(i=0; i<textureCount; i++){
-		deoglRComponentTexture &texture = *((deoglRComponentTexture*)pTextures.GetAt(i));
+		deoglRComponentTexture &texture = pTextures.GetAt(i);
 		if(texture.GetSkin() || !pSkin){
 			continue;
 		}
@@ -1438,7 +1438,7 @@ void deoglRComponent::UpdateTexturesUseSkin(){
 	pOutlineTextureCount = 0;
 	
 	for(i=0; i<count; i++){
-		deoglRComponentTexture &texture = *(deoglRComponentTexture*)pTextures.GetAt(i);
+		deoglRComponentTexture &texture = pTextures.GetAt(i);
 		texture.UpdateUseSkin();
 		if(texture.GetUseSkinTexture() && texture.GetUseSkinTexture()->GetHasOutline()){
 			pOutlineTextureCount++;
@@ -1478,7 +1478,7 @@ int deoglRComponent::GetDecalCount() const{
 }
 
 deoglRDecal *deoglRComponent::GetDecalAt(int index) const{
-	return (deoglRDecal*)pDecals.GetAt(index);
+	return pDecals.GetAt(index);
 }
 
 void deoglRComponent::SyncDecalReferences(const deComponent &engComponent){
@@ -1488,7 +1488,7 @@ void deoglRComponent::SyncDecalReferences(const deComponent &engComponent){
 	int i;
 	
 	for(i=0; i<count; i++){
-		deoglRDecal &decal = *((deoglRDecal*)pDecals.GetAt(i));
+		deoglRDecal &decal = pDecals.GetAt(i);
 		if(decal.GetComponentMarkedRemove()){
 			decal.SetParentComponent(nullptr);
 		}
@@ -1517,7 +1517,7 @@ void deoglRComponent::MarkAllDecalTexturesParamBlocksDirty(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoglRDecal*)pDecals.GetAt(i))->MarkParamBlocksDirty();
+		pDecals.GetAt(i)->MarkParamBlocksDirty();
 	}
 }
 
@@ -1758,7 +1758,7 @@ void deoglRComponent::pInvalidateLODVBOs(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoglRComponentLOD*)pLODs.GetAt(i))->InvalidateVBO();
+		pLODs.GetAt(i)->InvalidateVBO();
 	}
 }
 
@@ -1965,7 +1965,7 @@ void deoglRComponent::pPrepareSolidity(){
 	if(pSkin){
 		// if a skin is assigned check each texture using the components for transparency
 		for(i=0; i<textureCount; i++){
-			deoglRComponentTexture &texture = *((deoglRComponentTexture*)pTextures.GetAt(i));
+			deoglRComponentTexture &texture = pTextures.GetAt(i);
 			deoglRSkin *skin = texture.GetSkin();
 			int textureNumber = 0;
 			
@@ -1995,7 +1995,7 @@ void deoglRComponent::pPrepareSolidity(){
 		// if no skin is assigned the component can only be transparent
 		// if one or more assigned texture skins are transparent
 		for(i =0; i <textureCount; i++){
-			deoglRComponentTexture &texture = *((deoglRComponentTexture*)pTextures.GetAt(i));
+			deoglRComponentTexture &texture = pTextures.GetAt(i);
 			const deoglRSkin *skin = texture.GetSkin();
 			if(!skin || skin->GetTextureCount() == 0){
 				continue;
@@ -2053,12 +2053,12 @@ void deoglRComponent::pPrepareLODVBOs(){
 	
 	if(pRenderMode == ermDynamic){
 		for(i=0; i<count; i++){
-			((deoglRComponentLOD*)pLODs.GetAt(i))->UpdateVBO();
+			pLODs.GetAt(i)->UpdateVBO();
 		}
 		
 	}else{
 		for(i=0; i<count; i++){
-			((deoglRComponentLOD*)pLODs.GetAt(i))->FreeVBO();
+			pLODs.GetAt(i)->FreeVBO();
 		}
 	}
 }
@@ -2072,7 +2072,7 @@ void deoglRComponent::pPrepareLODRenderTaskConfigs(){
 	const int count = pLODs.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		((deoglRComponentLOD*)pLODs.GetAt(i))->UpdateRenderTaskConfigurations();
+		pLODs.GetAt(i)->UpdateRenderTaskConfigurations();
 	}
 }
 
@@ -2140,7 +2140,7 @@ void deoglRComponent::pPrepareSkinStateRenderables(const deoglRenderPlanMasked *
 	const int textureCount = pTextures.GetCount();
 	int i;
 	for(i=0; i<textureCount; i++){
-		((deoglRComponentTexture*)pTextures.GetAt(i))->PrepareSkinStateRenderables(plan);
+		pTextures.GetAt(i)->PrepareSkinStateRenderables(plan);
 	}
 }
 
@@ -2157,7 +2157,7 @@ void deoglRComponent::pRenderSkinStateRenderables(const deoglRenderPlanMasked *p
 	const int textureCount = pTextures.GetCount();
 	int i;
 	for(i=0; i<textureCount; i++){
-		((deoglRComponentTexture*)pTextures.GetAt(i))->RenderSkinStateRenderables(plan);
+		pTextures.GetAt(i)->RenderSkinStateRenderables(plan);
 	}
 }
 
@@ -2169,7 +2169,7 @@ void deoglRComponent::pPrepareSkinStateConstructed(){
 	const int textureCount = pTextures.GetCount();
 	int i;
 	for(i=0; i<textureCount; i++){
-		((deoglRComponentTexture*)pTextures.GetAt(i))->PrepareSkinStateConstructed();
+		pTextures.GetAt(i)->PrepareSkinStateConstructed();
 	}
 }
 
@@ -2183,7 +2183,7 @@ void deoglRComponent::pPrepareTextureTUCs(){
 	const int count = pTextures.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		((deoglRComponentTexture*)pTextures.GetAt(i))->PrepareTUCs();
+		pTextures.GetAt(i)->PrepareTUCs();
 	}
 }
 
@@ -2254,7 +2254,7 @@ void deoglRComponent::pPrepareTextureParamBlocks(){
 	const int count = pTextures.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		((deoglRComponentTexture*)pTextures.GetAt(i))->PrepareParamBlocks();
+		pTextures.GetAt(i)->PrepareParamBlocks();
 	}
 }
 
@@ -2268,7 +2268,7 @@ void deoglRComponent::pPrepareDecals(deoglRenderPlan &plan, const deoglRenderPla
 	const int count = pDecals.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		((deoglRDecal*)pDecals.GetAt(i))->PrepareForRender(plan, mask);
+		pDecals.GetAt(i)->PrepareForRender(plan, mask);
 	}
 }
 
@@ -2281,7 +2281,7 @@ void deoglRComponent::pPrepareDecalsRenderRenderables(deoglRenderPlan &plan, con
 	const int count = pDecals.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		((deoglRDecal*)pDecals.GetAt(i))->PrepareForRenderRender(plan, mask);
+		pDecals.GetAt(i)->PrepareForRenderRender(plan, mask);
 	}
 }
 

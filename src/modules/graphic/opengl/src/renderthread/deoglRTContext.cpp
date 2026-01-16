@@ -726,7 +726,7 @@ LRESULT deoglRTContext::ProcessWindowMessage(HWND hwnd, UINT message, WPARAM wPa
 		const int width = rect.bottom - rect.top;
 		int i;
 		for(i=0; i<count; i++){
-			deoglRRenderWindow &window = *((deoglRRenderWindow*)windows.GetAt(i));
+			deoglRRenderWindow &window = *windows.GetAt(i);
 			if(window.GetWindow() == hwnd){
 				window.OnResize(width, height);
 				break;
@@ -793,7 +793,7 @@ void deoglRTContext::ProcessEventLoop(){
 			const int count = windows.GetCount();
 			int i;
 			for(i=0; i<count; i++){
-				deoglRRenderWindow &window = *((deoglRRenderWindow*)windows.GetAt(i));
+				deoglRRenderWindow &window = windows.GetAt(i);
 				if(window.GetWindow() == event.xconfigure.window){
 					window.OnResize(event.xconfigure.width, event.xconfigure.height);
 					break;

@@ -60,9 +60,9 @@ syneUControllerSetMinimumValue::~syneUControllerSetMinimumValue(){
 ///////////////
 
 void syneUControllerSetMinimumValue::Undo(){
-	((syneController&)(deObject&)pController).SetMinimumValue(pOldValue);
+	pController->SetMinimumValue(pOldValue);
 }
 
 void syneUControllerSetMinimumValue::Redo(){
-	((syneController&)(deObject&)pController).SetMinimumValue(pNewValue);
+	pController->SetMinimumValue(pNewValue);
 }

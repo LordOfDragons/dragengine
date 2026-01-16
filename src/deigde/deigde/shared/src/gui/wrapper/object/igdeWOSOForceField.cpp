@@ -267,39 +267,31 @@ void igdeWOSOForceField::AttachToCollider(){
 	
 	deColliderComponent * const colliderComponent = GetAttachableColliderComponent();
 	deColliderVolume * const colliderFallback = GetWrapper().GetColliderFallback();
-	deColliderAttachment *attachment = nullptr;
 	
-	try{
-		attachment = new deColliderAttachment(pForceField);
-		attachment->SetAttachType(deColliderAttachment::eatStatic);
-		attachment->SetPosition(GetVectorProperty(
-			pGDForceField.GetPropertyName(igdeGDCForceField::epAttachPosition),
-			pGDForceField.GetPosition()));
-		attachment->SetOrientation(GetRotationProperty(
-			pGDForceField.GetPropertyName(igdeGDCForceField::epAttachRotation),
-			pGDForceField.GetOrientation()));
-		
-		if(colliderComponent){
-			if(!pGDForceField.GetBoneName().IsEmpty()){
-				attachment->SetAttachType(deColliderAttachment::eatBone);
-				attachment->SetTrackBone(pGDForceField.GetBoneName());
-			}
-			colliderComponent->AddAttachment(attachment);
-			pAttachedToCollider = colliderComponent;
-			
-		}else{
-			colliderFallback->AddAttachment(attachment);
-			pAttachedToCollider = colliderFallback;
+	auto attachment = deColliderAttachment::Ref::New(pForceField);
+	attachment->SetAttachType(deColliderAttachment::eatStatic);
+	attachment->SetPosition(GetVectorProperty(
+		pGDForceField.GetPropertyName(igdeGDCForceField::epAttachPosition),
+		pGDForceField.GetPosition()));
+	attachment->SetOrientation(GetRotationProperty(
+		pGDForceField.GetPropertyName(igdeGDCForceField::epAttachRotation),
+		pGDForceField.GetOrientation()));
+	auto attachmentPtr = attachment.Pointer();
+	
+	if(colliderComponent){
+		if(!pGDForceField.GetBoneName().IsEmpty()){
+			attachment->SetAttachType(deColliderAttachment::eatBone);
+			attachment->SetTrackBone(pGDForceField.GetBoneName());
 		}
+		colliderComponent->AddAttachment(std::move(attachment));
+		pAttachedToCollider = colliderComponent;
 		
-		pAttachment = attachment;
-		
-	}catch(const deException &){
-		if(attachment){
-			delete attachment;
-		}
-		throw;
+	}else{
+		colliderFallback->AddAttachment(std::move(attachment));
+		pAttachedToCollider = colliderFallback;
 	}
+	
+	pAttachment = attachmentPtr;
 }
 
 void igdeWOSOForceField::DetachFromCollider(){

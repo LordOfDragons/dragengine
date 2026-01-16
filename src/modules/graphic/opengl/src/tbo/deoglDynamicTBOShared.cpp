@@ -59,7 +59,7 @@ deoglDynamicTBOShared::~deoglDynamicTBOShared(){
 	const int count = pBlocks.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		((deoglDynamicTBOBlock*)pBlocks.GetAt(i))->DropSharedTBO();
+		pBlocks.GetAt(i)->DropSharedTBO();
 	}
 	pBlocks.RemoveAll();
 }
@@ -130,7 +130,7 @@ void deoglDynamicTBOShared::UpdateUsedSizes(){
 	pUsedSize = 0;
 	
 	for(i=count-1; i>=0; i--){
-		const deoglDynamicTBOBlock &block = *((deoglDynamicTBOBlock*)pBlocks.GetAt(i));
+		const deoglDynamicTBOBlock &block = pBlocks.GetAt(i);
 		if(block.GetEmpty()){
 			continue;
 		}
@@ -151,7 +151,7 @@ int deoglDynamicTBOShared::GetBlockCount() const{
 }
 
 deoglDynamicTBOBlock *deoglDynamicTBOShared::GetBlockAt(int index) const{
-	return (deoglDynamicTBOBlock*)pBlocks.GetAt(index);
+	return pBlocks.GetAt(index);
 }
 
 deoglDynamicTBOBlock::Ref deoglDynamicTBOShared::AddBlock(deoglDynamicTBO *tbo, deoglDynamicTBO *tbo2){
@@ -168,7 +168,7 @@ deoglDynamicTBOBlock::Ref deoglDynamicTBOShared::AddBlock(deoglDynamicTBO *tbo, 
 	deoglDynamicTBOBlock::Ref block;
 	
 	if(index != -1){
-		block = (deoglDynamicTBOBlock*)pBlocks.GetAt(index);
+		block = pBlocks.GetAt(index);
 		
 		// if the empty block is larger than the requested size add a new empty block with the
 		// remaining empty space right after this block
@@ -214,7 +214,7 @@ void deoglDynamicTBOShared::RemoveBlock(deoglDynamicTBOBlock *block){
 	deoglDynamicTBOBlock *mergeBlock = nullptr;
 	
 	if(index > 0){
-		mergeBlock = (deoglDynamicTBOBlock*)pBlocks.GetAt(index - 1);
+		mergeBlock = pBlocks.GetAt(index - 1);
 		
 		if(mergeBlock->GetEmpty()){
 			mergeBlock->SetSize(mergeBlock->GetSize() + block->GetSize());
@@ -229,7 +229,7 @@ void deoglDynamicTBOShared::RemoveBlock(deoglDynamicTBOBlock *block){
 	
 	// if the next block is empty merge the next block with this block
 	if(index < pBlocks.GetCount() - 1){
-		mergeBlock = (deoglDynamicTBOBlock*)pBlocks.GetAt(index + 1);
+		mergeBlock = pBlocks.GetAt(index + 1);
 		
 		if(mergeBlock->GetEmpty()){
 			block->SetSize(block->GetSize() + mergeBlock->GetSize());
@@ -249,7 +249,7 @@ int deoglDynamicTBOShared::FirstMatchingBlock(deoglDynamicTBO *tbo){
 	int i;
 	
 	for(i=0; i<count; i++){
-		const deoglDynamicTBOBlock &block = *((deoglDynamicTBOBlock*)pBlocks.GetAt(i));
+		const deoglDynamicTBOBlock &block = pBlocks.GetAt(i);
 		if(block.GetEmpty() && (i == last || block.GetSize() >= tboSize)){
 			return i;
 		}
@@ -262,11 +262,11 @@ int deoglDynamicTBOShared::FirstMatchingBlock(deoglDynamicTBO *tbo){
 
 void deoglDynamicTBOShared::DebugPrint(deoglRTLogger &logger) const{
 	logger.LogInfoFormat("DynamicTBOShared: tbo=%p tbo2=%p stride=%d stride2=%d usedSize=%d",
-		(deObject*)pTBO, (deObject*)pTBO2, pStride, pStride2, pUsedSize);
+		pTBO.Pointer(), pTBO2.Pointer(), pStride, pStride2, pUsedSize);
 	const int count = pBlocks.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		const deoglDynamicTBOBlock &block = *((deoglDynamicTBOBlock*)pBlocks.GetAt(i));
+		const deoglDynamicTBOBlock &block = pBlocks.GetAt(i);
 		logger.LogInfoFormat("- Block %d: offset=%d size=%d empty=%d",
 			i, block.GetOffset(), block.GetSize(), block.GetEmpty());
 	}
@@ -282,7 +282,7 @@ deoglDynamicTBOBlock::Ref deoglDynamicTBOShared::pAddEmptyBlock(){
 	int offset = 0;
 	
 	if(count > 0){
-		const deoglDynamicTBOBlock &block = *((deoglDynamicTBOBlock*)pBlocks.GetAt(count - 1));
+		const deoglDynamicTBOBlock &block = pBlocks.GetAt(count - 1);
 		offset = block.GetOffset() + block.GetSize();
 	}
 	

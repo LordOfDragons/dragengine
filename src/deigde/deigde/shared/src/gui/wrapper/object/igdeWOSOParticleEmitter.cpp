@@ -124,7 +124,7 @@ pAttachment(nullptr)
 
 igdeWOSOParticleEmitter::~igdeWOSOParticleEmitter(){
 	if(pResLoad){
-		((igdeWOSOParticleEmitterResLoadComponent&)(igdeResourceLoaderListener&)pResLoad).Drop();
+		pResLoad.DynamicCast<igdeWOSOParticleEmitterResLoadComponent>()->Drop();
 		pResLoad = nullptr;
 	}
 	pDestroyParticleEmitter();
@@ -197,7 +197,7 @@ void igdeWOSOParticleEmitter::AsyncLoadFinished(bool success){
 		return;
 	}
 	
-	((igdeWOSOParticleEmitterResLoadComponent&)(igdeResourceLoaderListener&)pResLoad).Drop();
+	pResLoad.DynamicCast<igdeWOSOParticleEmitterResLoadComponent>()->Drop();
 	
 	GetWrapper().SubObjectFinishedLoading(*this, success);
 }
@@ -209,20 +209,18 @@ void igdeWOSOParticleEmitter::AsyncLoadFinished(bool success){
 
 void igdeWOSOParticleEmitter::pLoadResources(){
 	if(pResLoad){
-		((igdeWOSOParticleEmitterResLoadComponent&)(igdeResourceLoaderListener&)pResLoad).Drop();
+		pResLoad.DynamicCast<igdeWOSOParticleEmitterResLoadComponent>()->Drop();
 		pResLoad = nullptr;
 	}
 	
 	pResLoad = igdeWOSOParticleEmitterResLoadComponent::Ref::New(*this);
-	igdeWOSOParticleEmitterResLoadComponent &rl =
-		(igdeWOSOParticleEmitterResLoadComponent&)(igdeResourceLoaderListener&)pResLoad;
+	igdeWOSOParticleEmitterResLoadComponent &rl = pResLoad.DynamicCast<igdeWOSOParticleEmitterResLoadComponent>();
 	
 	rl.CheckFinished();
 }
 
 void igdeWOSOParticleEmitter::pUpdateParticleEmitter(){
-	const igdeWOSOParticleEmitterResLoadComponent &rl =
-		(igdeWOSOParticleEmitterResLoadComponent&)(igdeResourceLoaderListener&)pResLoad;
+	const igdeWOSOParticleEmitterResLoadComponent &rl = pResLoad.DynamicCast<igdeWOSOParticleEmitterResLoadComponent>();
 	(void)rl;
 	
 	if(!pParticleEmitter){
@@ -300,39 +298,31 @@ void igdeWOSOParticleEmitter::AttachToCollider(){
 	
 	deColliderComponent * const colliderComponent = GetAttachableColliderComponent();
 	deColliderVolume * const colliderFallback = GetWrapper().GetColliderFallback();
-	deColliderAttachment *attachment = nullptr;
 	
-	try{
-		attachment = new deColliderAttachment(pParticleEmitter);
-		attachment->SetAttachType(deColliderAttachment::eatStatic);
-		attachment->SetPosition(GetVectorProperty(
-			pGDParticleEmitter.GetPropertyName(igdeGDCParticleEmitter::epAttachPosition),
-			pGDParticleEmitter.GetPosition()));
-		attachment->SetOrientation(GetRotationProperty(
-			pGDParticleEmitter.GetPropertyName(igdeGDCParticleEmitter::epAttachRotation),
-			pGDParticleEmitter.GetOrientation()));
-		
-		if(colliderComponent){
-			if(!pGDParticleEmitter.GetBoneName().IsEmpty()){
-				attachment->SetAttachType(deColliderAttachment::eatBone);
-				attachment->SetTrackBone(pGDParticleEmitter.GetBoneName());
-			}
-			colliderComponent->AddAttachment(attachment);
-			pAttachedToCollider = colliderComponent;
-			
-		}else{
-			colliderFallback->AddAttachment(attachment);
-			pAttachedToCollider = colliderFallback;
+	auto attachment = deColliderAttachment::Ref::New(pParticleEmitter);
+	attachment->SetAttachType(deColliderAttachment::eatStatic);
+	attachment->SetPosition(GetVectorProperty(
+		pGDParticleEmitter.GetPropertyName(igdeGDCParticleEmitter::epAttachPosition),
+		pGDParticleEmitter.GetPosition()));
+	attachment->SetOrientation(GetRotationProperty(
+		pGDParticleEmitter.GetPropertyName(igdeGDCParticleEmitter::epAttachRotation),
+		pGDParticleEmitter.GetOrientation()));
+	auto attachmentPtr = attachment.Pointer();
+	
+	if(colliderComponent){
+		if(!pGDParticleEmitter.GetBoneName().IsEmpty()){
+			attachment->SetAttachType(deColliderAttachment::eatBone);
+			attachment->SetTrackBone(pGDParticleEmitter.GetBoneName());
 		}
+		colliderComponent->AddAttachment(std::move(attachment));
+		pAttachedToCollider = colliderComponent;
 		
-		pAttachment = attachment;
-		
-	}catch(const deException &){
-		if(attachment){
-			delete attachment;
-		}
-		throw;
+	}else{
+		colliderFallback->AddAttachment(std::move(attachment));
+		pAttachedToCollider = colliderFallback;
 	}
+	
+	pAttachment = attachmentPtr;
 }
 
 void igdeWOSOParticleEmitter::DetachFromCollider(){

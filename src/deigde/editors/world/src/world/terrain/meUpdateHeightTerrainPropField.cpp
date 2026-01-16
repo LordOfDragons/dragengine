@@ -117,7 +117,7 @@ void meUpdateHeightTerrainPropField::CreateInstances(float density){
 	
 	htsector->GetHeightTerrain()->GetVLayers().VisitIndexed([&](int l, const meHTVegetationLayer &vlayer){
 		vlayer.GetVariations().VisitIndexed([&](int v, const meHTVVariation &){
-			dePropFieldType * const engPFType = engPF->GetTypeAt(typeIndex++);
+			dePropFieldType &engPFType = engPF->GetTypeAt(typeIndex++);
 			
 			// determine how many instances match this layer and variation
 			int pficount = 0;
@@ -139,8 +139,8 @@ void meUpdateHeightTerrainPropField::CreateInstances(float density){
 				return;
 			}
 			
-			engPFType->SetInstanceCount(upficount);
-			dePropFieldInstance * const pfinstances = engPFType->GetInstances();
+			engPFType.SetInstanceCount(upficount);
+			dePropFieldInstance * const pfinstances = engPFType.GetInstances();
 			
 			// add vegetation instances matching this layer
 			int pfi = 0;

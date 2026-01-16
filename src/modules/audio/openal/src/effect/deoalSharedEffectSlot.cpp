@@ -78,7 +78,7 @@ int deoalSharedEffectSlot::GetSpeakerCount() const{
 }
 
 deoalASpeaker *deoalSharedEffectSlot::GetSpeakerAt(int index) const{
-	return (deoalASpeaker*)pSpeakers.GetAt(index);
+	return pSpeakers.GetAt(index);
 }
 
 void deoalSharedEffectSlot::AddSpeaker(deoalASpeaker *speaker){
@@ -104,7 +104,7 @@ void deoalSharedEffectSlot::RemoveSpeaker(deoalASpeaker *speaker){
 		pRefSpeaker = nullptr;
 		
 		if(pSpeakers.GetCount() > 0){
-			pRefSpeaker = (deoalASpeaker*)pSpeakers.GetAt(0);
+			pRefSpeaker = pSpeakers.GetAt(0);
 		}
 		
 		UpdateEffectSlot();
@@ -115,7 +115,7 @@ void deoalSharedEffectSlot::RemoveAllSpeakers(){
 	const int count = pSpeakers.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		deoalASpeaker &speaker = *((deoalASpeaker*)pSpeakers.GetAt(i));
+		deoalASpeaker &speaker = pSpeakers.GetAt(i);
 		if(speaker.GetSource()){
 			OAL_CHECK(pAudioThread, alSource3i(speaker.GetSource()->GetSource(),
 				AL_AUXILIARY_SEND_FILTER, AL_EFFECTSLOT_NULL, 0, AL_FILTER_NULL));

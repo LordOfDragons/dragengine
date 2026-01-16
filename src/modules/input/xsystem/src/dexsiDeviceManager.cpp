@@ -441,7 +441,7 @@ void dexsiDeviceManager::pFindPrimaryDevices(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		dexsiDevice * const device = (dexsiDevice*)pDevices.GetAt(i);
+		dexsiDevice * const device = pDevices.GetAt(i);
 		
 		switch(device->GetType()){
 		case deInputDevice::edtMouse:
@@ -635,6 +635,6 @@ void dexsiDeviceManager::pUpdateDeviceIndices(){
 	const int count = pDevices.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		((dexsiDevice*)pDevices.GetAt(i))->SetIndex(i);
+		pDevices.GetAt(i)->SetIndex(i);
 	}
 }

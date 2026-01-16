@@ -731,7 +731,7 @@ void aeWPAnimator::UpdateRigBoneList(){
 			const int count = rig->GetBoneCount();
 			int i;
 			for(i=0; i<count; i++){
-				pCBBones->AddItem(rig->GetBoneAt(i).GetName());
+				pCBBones->AddItem(rig->GetBoneAt(i)->GetName());
 			}
 		}
 		

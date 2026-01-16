@@ -1313,10 +1313,10 @@ void ceConversationActor::pUpdatePlayEyesLookAt(cePlayback &playback, float elap
 				boneHead = &pEngComponent->GetBoneAt(indexHead);
 			}
 			if(indexEyeLeft != -1){
-				boneEyeLeft = &pEngComponent->GetRig()->GetBoneAt(indexEyeLeft);
+				boneEyeLeft = pEngComponent->GetRig()->GetBoneAt(indexEyeLeft);
 			}
 			if(indexEyeRight != -1){
-				boneEyeRight = &pEngComponent->GetRig()->GetBoneAt(indexEyeRight);
+				boneEyeRight = pEngComponent->GetRig()->GetBoneAt(indexEyeRight);
 			}
 		}
 	}

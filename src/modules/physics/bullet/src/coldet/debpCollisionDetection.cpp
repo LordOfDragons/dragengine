@@ -1268,7 +1268,7 @@ bool debpCollisionDetection::ShapeHitsModelFace(debpShape &shape, debpComponent 
 	}
 	
 	const deModel &engModel = *component.GetComponent()->GetModel();
-	const deModelLOD &engModelLOD = *engModel.GetLODAt(0);
+	const deModelLOD &engModelLOD = engModel.GetLODAt(0);
 	const deModelFace &engFace = engModelLOD.GetFaceAt(face);
 	debpDCollisionTriangle collisionTriangle;
 	
@@ -1302,7 +1302,7 @@ const debpComponent &component, int face, debpCollisionResult &result){
 	}
 	
 	const deModel &engModel = *component.GetComponent()->GetModel();
-	const deModelLOD &engModelLOD = *engModel.GetLODAt(0);
+	const deModelLOD &engModelLOD = engModel.GetLODAt(0);
 	const deModelFace &engFace = engModelLOD.GetFaceAt(face);
 	
 	const deModelVertex &v1 = engModelLOD.GetVertexAt(engFace.GetVertex1());
@@ -1431,7 +1431,7 @@ const debpComponent &component, int face, debpCollisionResult &result){
 	}
 	
 	const deModel &engModel = *component.GetComponent()->GetModel();
-	const deModelLOD &engModelLOD = *engModel.GetLODAt(0);
+	const deModelLOD &engModelLOD = engModel.GetLODAt(0);
 	const deModelFace &engFace = engModelLOD.GetFaceAt(face);
 	
 	const deModelVertex &v1 = engModelLOD.GetVertexAt(engFace.GetVertex1());
@@ -2116,7 +2116,7 @@ debpColliderComponent &collider2, debpCollisionResult &result){
 				? collider2.GetColliderComponent()->GetComponent()->GetModel()->GetFilename() : "-"));
 		const decMatrix &matrix = component.GetComponent()->GetMatrix();
 		const deModel &engModel = component.GetModel()->GetModel();
-		const deModelLOD &engModelLOD = *engModel.GetLODAt(0);
+		const deModelLOD &engModelLOD = engModel.GetLODAt(0);
 		int f, faceCount = engModelLOD.GetFaceCount();
 		debpDCollisionTriangle coltri;
 		debpDCollisionBox colbox;
@@ -2409,7 +2409,7 @@ const decDVector &displacement, debpColliderComponent &collider2, debpCollisionR
 			collider1.GetParentWorld(), &collider1, collider2.GetColliderComponent()->GetComponent()->GetModel()
 				? collider2.GetColliderComponent()->GetComponent()->GetModel()->GetFilename() : "-"));
 		const deModel &engModel = *engComponent.GetModel();
-		const deModelLOD &engModelLOD = *engModel.GetLODAt(0);
+		const deModelLOD &engModelLOD = engModel.GetLODAt(0);
 		const decMatrix &matrix = engComponent.GetMatrix();
 		int f, faceCount = engModelLOD.GetFaceCount();
 		decDVector fp1, fp2, fp3, triNormal;
@@ -2695,7 +2695,7 @@ debpColliderComponent &collider2, debpCollisionResult &result){
 				collider2.GetColliderComponent()->GetComponent()->GetModel()
 					? collider2.GetColliderComponent()->GetComponent()->GetModel()->GetFilename() : "-"));
 			const deModel &engModel = *engComponent.GetModel();
-			const deModelLOD &engModelLOD = *engModel.GetLODAt(0);
+			const deModelLOD &engModelLOD = engModel.GetLODAt(0);
 			const decMatrix &matrix = engComponent.GetMatrix();
 			int f, faceCount = engModelLOD.GetFaceCount();
 			decDVector fp1, fp2, fp3, triNormal;

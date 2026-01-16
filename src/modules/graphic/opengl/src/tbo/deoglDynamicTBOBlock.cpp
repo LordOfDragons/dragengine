@@ -129,7 +129,7 @@ void deoglDynamicTBOBlock::WriteToTBO(){
 		//const int offset = pOffset * componentCount;
 		//pTBO->SetTBO( offset, *pData );
 		//pTBO->Update( offset, pSize );
-		const uint8_t * const sourceData = ((deoglDynamicTBO*)(deObject*)pData)->GetData();
+		const uint8_t * const sourceData = pData.DynamicCast<deoglDynamicTBO>()->GetData();
 		if(sourceData){
 			memcpy(tboData + pOffset * stride, sourceData, pSize * stride);
 		}
@@ -142,7 +142,7 @@ void deoglDynamicTBOBlock::WriteToTBO(){
 			const int stride2 = tbo2->GetComponentCount() * tbo2->GetDataTypeSize() * pSharedTBO->GetStride2();
 			uint8_t * const tboData2 = tbo2->GetData();
 			
-			const uint8_t * const sourceData = ((deoglDynamicTBO*)(deObject*)pData2)->GetData();
+			const uint8_t * const sourceData = pData2.DynamicCast<deoglDynamicTBO>()->GetData();
 			if(sourceData){
 				memcpy(tboData2 + pOffset * stride2, sourceData, pSize * stride2);
 			}

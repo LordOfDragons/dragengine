@@ -25,12 +25,12 @@
 #ifndef _DERIGBONE_H_
 #define _DERIGBONE_H_
 
+#include "deRigConstraint.h"
 #include "../../common/math/decMath.h"
 #include "../../common/string/decString.h"
 #include "../../common/string/decStringList.h"
 #include "../../common/shape/decShape.h"
-
-class deRigConstraint;
+#include "../../common/collection/decTUniqueList.h"
 
 
 /**
@@ -49,6 +49,13 @@ class deRigConstraint;
  *
  */
 class DE_DLL_EXPORT deRigBone{
+public:
+	/** \brief Reference. */
+	using Ref = deTUniqueReference<deRigBone>;
+	
+	/** \brief List. */
+	using List = decTUniqueList<deRigBone>;
+	
 private:
 	decString pName;
 	int pParent; // -1=no-parent, otherwise id=parent
@@ -67,9 +74,7 @@ private:
 	decVector pIKResistance;
 	bool pIKLocked[3];
 	
-	deRigConstraint **pConstraints;
-	int pConstraintCount;
-	int pConstraintSize;
+	deRigConstraint::List pConstraints;
 	
 	
 	
@@ -80,7 +85,7 @@ public:
 	 * \brief Create named rig bone.
 	 * \throws deeInvalidParam \em name is empty string.
 	 */
-	deRigBone(const char *name);
+	explicit deRigBone(const char *name);
 	
 	/** \brief Clean up rig bone. */
 	~deRigBone();
@@ -103,13 +108,13 @@ public:
 	void SetParent(int bone);
 	
 	/** \brief Position relative to parent bone or rig. */
-	inline decVector GetPosition() const{ return pPos; }
+	inline const decVector &GetPosition() const{ return pPos; }
 	
 	/** \brief Set position relative to parent bone or rig. */
 	void SetPosition(const decVector &position);
 	
 	/** \brief Rotation relative to parent bone or rig. */
-	inline decVector GetRotation() const{ return pRot; }
+	inline const decVector &GetRotation() const{ return pRot; }
 	
 	/** \brief Set rotation relative to parent bone or rig. */
 	void SetRotation(const decVector &rotation);
@@ -121,10 +126,10 @@ public:
 	void SetCentralMassPoint(const decVector &cmp);
 	
 	/** \brief Matrix transforming from local bone space to model space in reference pose. */
-	inline decMatrix GetMatrix() const{ return pMatrix; }
+	inline const decMatrix &GetMatrix() const{ return pMatrix; }
 	
 	/** \brief Matrix transforming from model space to local bone space in reference pose. */
-	inline decMatrix GetInverseMatrix() const{ return pInvMatrix; }
+	inline const decMatrix &GetInverseMatrix() const{ return pInvMatrix; }
 	
 	/** \brief Set matrix transforming from local bone space to model space in reference pose. */
 	void SetMatrices(const decMatrix &matrix);
@@ -208,17 +213,20 @@ public:
 	
 	/** \name Constraints */
 	/*@{*/
+	/** \brief Constraints. */
+	inline const deRigConstraint::List &GetConstraints() const{ return pConstraints; }
+	
 	/** \brief Number of constraints. */
-	inline int GetConstraintCount() const{ return pConstraintCount; }
+	inline int GetConstraintCount() const{ return pConstraints.GetCount(); }
 	
 	/**
 	 * \brief Constraint at index.
 	 * \throws deeOutOfBoundary \em index is less than 0 or greater than or equal to GetConstraintCount().
 	 */
-	deRigConstraint &GetConstraintAt(int index) const;
+	const deRigConstraint::Ref &GetConstraintAt(int index) const{ return pConstraints.GetAt(index); }
 	
 	/** \brief Add constraint. */
-	void AddConstraint(deRigConstraint *constraint);
+	void AddConstraint(deRigConstraint::Ref &&constraint);
 	/*@}*/
 	
 	

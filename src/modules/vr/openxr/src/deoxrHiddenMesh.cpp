@@ -78,11 +78,10 @@ public:
 	deoxrHiddenMesh_BuildModel(const XrVisibilityMaskKHR &mask) : pMask(mask){}
 	
 	void BuildModel(deModel *model) override{
-		deModelLOD * const lod = new deModelLOD;
-		model->AddLOD(lod);
+		auto lod = deModelLOD::Ref::New();
 		
-		model->AddTexture(new deModelTexture("material", 256, 256));
-		model->GetTextureAt(0)->SetDoubleSided(true);
+		model->AddTexture(deModelTexture::Ref::New("material", 256, 256));
+		model->GetTextures().Last()->SetDoubleSided(true);
 		
 		// add vertices
 		int i;
@@ -135,6 +134,8 @@ public:
 		
 		tcset.GetTextureCoordinates().RemoveAll();
 		tcset.GetTextureCoordinates().Add({});
+		
+		model->AddLOD(std::move(lod));
 	}
 };
 

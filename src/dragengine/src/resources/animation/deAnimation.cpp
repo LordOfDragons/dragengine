@@ -48,12 +48,6 @@
 deAnimation::deAnimation(deAnimationManager *manager, deVirtualFileSystem *vfs,
 	const char *filename, TIME_SYSTEM modificationTime) :
 deFileResource(manager, vfs, filename, modificationTime),
-pBones(nullptr),
-pBoneCount(0),
-pBoneSize(0),
-pMoves(nullptr),
-pMoveCount(0),
-pMoveSize(0),
 pPeerAnimator(nullptr){
 }
 
@@ -69,21 +63,12 @@ deAnimation::~deAnimation(){
 bool deAnimation::MatchesModel(deModel *model) const{
 	DEASSERT_NOTNULL(model)
 	
-	int i;
-	for(i=0; i<pBoneCount; i++){
-		if(!model->HasBoneNamed(pBones[i]->GetName())){
-			return false;
-		}
-	}
-	
-	const int vpsCount = pVertexPositionSets.GetCount();
-	for(i=0; i<vpsCount; i++){
-		if(!model->HasVertexPositionSetNamed(pVertexPositionSets.GetAt(i))){
-			return false;
-		}
-	}
-	
-	return true;
+	return pBones.AllMatching([&](const deAnimationBone &bone){
+		return model->HasBoneNamed(bone.GetName());
+	})
+	&& pVertexPositionSets.AllMatching([&](const decString &vpsName){
+		return model->HasVertexPositionSetNamed(vpsName);
+	});
 }
 
 
@@ -91,42 +76,22 @@ bool deAnimation::MatchesModel(deModel *model) const{
 // Bones
 //////////
 
-deAnimationBone *deAnimation::GetBone(int index) const{
-	if(index < 0 || index >= pBoneCount){
-		DETHROW(deeOutOfBoundary);
-	}
-	return pBones[index];
+const deAnimationBone::Ref &deAnimation::GetBone(int index) const{
+	return pBones.GetAt(index);
 }
 
 int deAnimation::FindBone(const char *name) const{
-	int i;
-	
-	for(i=0; i<pBoneCount; i++){
-		if(strcmp(pBones[i]->GetName(), name) == 0){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pBones.IndexOfMatching([&](const deAnimationBone &bone){
+		return bone.GetName() == name;
+	});
 }
 
-void deAnimation::AddBone(deAnimationBone *bone){
+void deAnimation::AddBone(deTUniqueReference<deAnimationBone> &&bone){
 	if(!bone || FindBone(bone->GetName()) != -1){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(pBoneCount == pBoneSize){
-		int i, newSize = pBoneCount * 3 / 2 + 1;
-		deAnimationBone **newArray = new deAnimationBone*[newSize];
-		if(pBones){
-			for(i=0; i<pBoneCount; i++) newArray[i] = pBones[i];
-			delete [] pBones;
-		}
-		pBones = newArray;
-		pBoneSize = newSize;
-	}
-	pBones[pBoneCount] = bone;
-	pBoneCount++;
+	pBones.Add(std::move(bone));
 }
 
 
@@ -134,11 +99,8 @@ void deAnimation::AddBone(deAnimationBone *bone){
 // Moves
 //////////
 
-deAnimationMove *deAnimation::GetMove(int index) const{
-	if(index < 0 || index >= pMoveCount){
-		DETHROW(deeOutOfBoundary);
-	}
-	return pMoves[index];
+const deAnimationMove::Ref &deAnimation::GetMove(int index) const{
+	return pMoves.GetAt(index);
 }
 
 int deAnimation::FindMove(const char *name) const{
@@ -146,34 +108,17 @@ int deAnimation::FindMove(const char *name) const{
 		DETHROW(deeInvalidParam);
 	}
 	
-	int i;
-	
-	for(i=0; i<pMoveCount; i++){
-		if(strcmp(pMoves[i]->GetName(), name) == 0){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pMoves.IndexOfMatching([&](const deAnimationMove &move){
+		return move.GetName() == name;
+	});
 }
 
-void deAnimation::AddMove(deAnimationMove *move){
+void deAnimation::AddMove(deTUniqueReference<deAnimationMove> &&move){
 	if(!move || FindMove(move->GetName()) != -1){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(pMoveCount == pMoveSize){
-		int i, newSize = pMoveCount * 3 / 2 + 1;
-		deAnimationMove **newArray = new deAnimationMove*[newSize];
-		if(pMoves){
-			for(i=0; i<pMoveCount; i++) newArray[i] = pMoves[i];
-			delete [] pMoves;
-		}
-		pMoves = newArray;
-		pMoveSize = newSize;
-	}
-	pMoves[pMoveCount] = move;
-	pMoveCount++;
+	pMoves.Add(std::move(move));
 }
 
 
@@ -198,28 +143,8 @@ void deAnimation::SetPeerAnimator(deBaseAnimatorAnimation *peer){
 //////////////////////
 
 void deAnimation::pCleanUp(){
-	int i;
-	
 	if(pPeerAnimator){
 		delete pPeerAnimator;
 		pPeerAnimator = nullptr;
-	}
-	
-	if(pMoves){
-		for(i=0; i<pMoveCount; i++){
-			if(pMoves[i]){
-				delete pMoves[i];
-			}
-		}
-		delete [] pMoves;
-	}
-	
-	if(pBones){
-		for(i=0; i<pBoneCount; i++){
-			if(pBones[i]){
-				delete pBones[i];
-			}
-		}
-		delete [] pBones;
 	}
 }

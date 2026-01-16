@@ -145,7 +145,7 @@ void deClassRig::nfBoneGetName::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deRig &rig = dedsGetNativeData<sRigNatDat>(p_GetNativeData(myself)).rig;
 	const int bone = rt->GetValue(0)->GetInt();
 	
-	rt->PushString(rig.GetBoneAt(bone).GetName());
+	rt->PushString(rig.GetBoneAt(bone)->GetName());
 }
 
 // public func Vector boneGetPosition( int bone )
@@ -158,7 +158,7 @@ void deClassRig::nfBoneGetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deScriptingDragonScript &ds = *((static_cast<deClassRig*>(GetOwnerClass()))->GetDS());
 	const int bone = rt->GetValue(0)->GetInt();
 	
-	ds.GetClassVector()->PushVector(rt, rig.GetBoneAt(bone).GetPosition());
+	ds.GetClassVector()->PushVector(rt, rig.GetBoneAt(bone)->GetPosition());
 }
 
 // public func Quaternion boneGetOrientation( int bone )
@@ -171,7 +171,7 @@ void deClassRig::nfBoneGetOrientation::RunFunction(dsRunTime *rt, dsValue *mysel
 	const deScriptingDragonScript &ds = *((static_cast<deClassRig*>(GetOwnerClass()))->GetDS());
 	const int bone = rt->GetValue(0)->GetInt();
 	
-	ds.GetClassQuaternion()->PushQuaternion(rt, decQuaternion::CreateFromEuler(rig.GetBoneAt(bone).GetRotation()));
+	ds.GetClassQuaternion()->PushQuaternion(rt, decQuaternion::CreateFromEuler(rig.GetBoneAt(bone)->GetRotation()));
 }
 
 // public func Vector boneGetRotation(int bone)
@@ -184,7 +184,7 @@ void deClassRig::nfBoneGetRotation::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deScriptingDragonScript &ds = *((static_cast<deClassRig*>(GetOwnerClass()))->GetDS());
 	const int bone = rt->GetValue(0)->GetInt();
 	
-	ds.GetClassVector()->PushVector(rt, rig.GetBoneAt(bone).GetRotation() * RAD2DEG);
+	ds.GetClassVector()->PushVector(rt, rig.GetBoneAt(bone)->GetRotation() * RAD2DEG);
 }
 
 // public func Matrix getBoneMatrix( int bone )
@@ -197,7 +197,7 @@ void deClassRig::nfBoneGetMatrix::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deScriptingDragonScript &ds = *((static_cast<deClassRig*>(GetOwnerClass()))->GetDS());
 	const int bone = rt->GetValue(0)->GetInt();
 	
-	ds.GetClassMatrix()->PushMatrix(rt, rig.GetBoneAt(bone).GetMatrix());
+	ds.GetClassMatrix()->PushMatrix(rt, rig.GetBoneAt(bone)->GetMatrix());
 }
 
 // public func Matrix getBoneInverseMatrix( int bone )
@@ -210,7 +210,7 @@ void deClassRig::nfBoneGetInverseMatrix::RunFunction(dsRunTime *rt, dsValue *mys
 	const deScriptingDragonScript &ds = *((static_cast<deClassRig*>(GetOwnerClass()))->GetDS());
 	const int bone = rt->GetValue(0)->GetInt();
 	
-	ds.GetClassMatrix()->PushMatrix(rt, rig.GetBoneAt(bone).GetInverseMatrix());
+	ds.GetClassMatrix()->PushMatrix(rt, rig.GetBoneAt(bone)->GetInverseMatrix());
 }
 
 // public func Vector boneGetCentralMassPoint( int bone )
@@ -223,7 +223,7 @@ void deClassRig::nfBoneGetCentralMassPoint::RunFunction(dsRunTime *rt, dsValue *
 	const deScriptingDragonScript &ds = *((static_cast<deClassRig*>(GetOwnerClass()))->GetDS());
 	const int bone = rt->GetValue(0)->GetInt();
 	
-	ds.GetClassVector()->PushVector(rt, rig.GetBoneAt(bone).GetCentralMassPoint());
+	ds.GetClassVector()->PushVector(rt, rig.GetBoneAt(bone)->GetCentralMassPoint());
 }
 
 // public func float boneGetMass( int bone )
@@ -235,7 +235,7 @@ void deClassRig::nfBoneGetMass::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deRig &rig = dedsGetNativeData<sRigNatDat>(p_GetNativeData(myself)).rig;
 	const int bone = rt->GetValue(0)->GetInt();
 	
-	rt->PushFloat(rig.GetBoneAt(bone).GetMass());
+	rt->PushFloat(rig.GetBoneAt(bone)->GetMass());
 }
 
 // public func bool boneGetDynamic( int bone )
@@ -247,7 +247,7 @@ void deClassRig::nfBoneGetDynamic::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deRig &rig = dedsGetNativeData<sRigNatDat>(p_GetNativeData(myself)).rig;
 	const int bone = rt->GetValue(0)->GetInt();
 	
-	rt->PushBool(rig.GetBoneAt(bone).GetDynamic());
+	rt->PushBool(rig.GetBoneAt(bone)->GetDynamic());
 }
 
 // public func Vector boneGetIKLimitsLower( int bone )
@@ -260,7 +260,7 @@ void deClassRig::nfBoneGetIKLimitsLower::RunFunction(dsRunTime *rt, dsValue *mys
 	const deScriptingDragonScript &ds = *((static_cast<deClassRig*>(GetOwnerClass()))->GetDS());
 	const int bone = rt->GetValue(0)->GetInt();
 	
-	ds.GetClassVector()->PushVector(rt, rig.GetBoneAt(bone).GetIKLimitsLower() * RAD2DEG);
+	ds.GetClassVector()->PushVector(rt, rig.GetBoneAt(bone)->GetIKLimitsLower() * RAD2DEG);
 }
 
 // public func Vector boneGetIKLimitsUpper( int bone )
@@ -273,7 +273,7 @@ void deClassRig::nfBoneGetIKLimitsUpper::RunFunction(dsRunTime *rt, dsValue *mys
 	const deScriptingDragonScript &ds = *((static_cast<deClassRig*>(GetOwnerClass()))->GetDS());
 	const int bone = rt->GetValue(0)->GetInt();
 	
-	ds.GetClassVector()->PushVector(rt, rig.GetBoneAt(bone).GetIKLimitsUpper() * RAD2DEG);
+	ds.GetClassVector()->PushVector(rt, rig.GetBoneAt(bone)->GetIKLimitsUpper() * RAD2DEG);
 }
 
 // public func Vector boneGetIKResistance( int bone )
@@ -286,7 +286,7 @@ void deClassRig::nfBoneGetIKResistance::RunFunction(dsRunTime *rt, dsValue *myse
 	const deScriptingDragonScript &ds = *((static_cast<deClassRig*>(GetOwnerClass()))->GetDS());
 	const int bone = rt->GetValue(0)->GetInt();
 	
-	ds.GetClassVector()->PushVector(rt, rig.GetBoneAt(bone).GetIKResistance());
+	ds.GetClassVector()->PushVector(rt, rig.GetBoneAt(bone)->GetIKResistance());
 }
 
 // public func bool boneGetIKLocked( int bone, int axis )
@@ -301,13 +301,13 @@ void deClassRig::nfBoneGetIKLocked::RunFunction(dsRunTime *rt, dsValue *myself){
 	const int axis = rt->GetValue(1)->GetInt();
 	
 	if(axis == 0){
-		rt->PushBool(rig.GetBoneAt(bone).GetIKLockedX());
+		rt->PushBool(rig.GetBoneAt(bone)->GetIKLockedX());
 		
 	}else if(axis == 1){
-		rt->PushBool(rig.GetBoneAt(bone).GetIKLockedY());
+		rt->PushBool(rig.GetBoneAt(bone)->GetIKLockedY());
 		
 	}else if(axis == 2){
-		rt->PushBool(rig.GetBoneAt(bone).GetIKLockedZ());
+		rt->PushBool(rig.GetBoneAt(bone)->GetIKLockedZ());
 		
 	}else{
 		DSTHROW(dueInvalidParam);
@@ -323,7 +323,7 @@ void deClassRig::nfBoneGetConstraintCount::RunFunction(dsRunTime *rt, dsValue *m
 	const deRig &rig = dedsGetNativeData<sRigNatDat>(p_GetNativeData(myself)).rig;
 	const int bone = rt->GetValue(0)->GetInt();
 	
-	rt->PushInt(rig.GetBoneAt(bone).GetConstraintCount());
+	rt->PushInt(rig.GetBoneAt(bone)->GetConstraintCount());
 }
 
 // public func ColliderConstraint boneGetConstraintAt( int bone, int constraint )
@@ -384,7 +384,7 @@ void deClassRig::nfBoneConstraintGetReferencePosition::RunFunction(dsRunTime *rt
 	const int bone = rt->GetValue(0)->GetInt();
 	const int constraint = rt->GetValue(1)->GetInt();
 	
-	ds.GetClassVector()->PushVector(rt, rig.GetBoneAt(bone).GetConstraintAt(constraint).GetReferencePosition());
+	ds.GetClassVector()->PushVector(rt, rig.GetBoneAt(bone)->GetConstraintAt(constraint)->GetReferencePosition());
 }
 
 // public func Quaternion boneConstraintGetReferenceOrientation(int bone, int constraint)
@@ -399,7 +399,7 @@ void deClassRig::nfBoneConstraintGetReferenceOrientation::RunFunction(dsRunTime 
 	const int bone = rt->GetValue(0)->GetInt();
 	const int constraint = rt->GetValue(1)->GetInt();
 	
-	ds.GetClassQuaternion()->PushQuaternion(rt, rig.GetBoneAt(bone).GetConstraintAt(constraint).GetReferenceOrientation());
+	ds.GetClassQuaternion()->PushQuaternion(rt, rig.GetBoneAt(bone)->GetConstraintAt(constraint)->GetReferenceOrientation());
 }
 
 // public func Vector boneConstraintGetBoneOffset(int bone, int constraint)
@@ -414,7 +414,7 @@ void deClassRig::nfBoneConstraintGetBoneOffset::RunFunction(dsRunTime *rt, dsVal
 	const int bone = rt->GetValue(0)->GetInt();
 	const int constraint = rt->GetValue(1)->GetInt();
 	
-	ds.GetClassVector()->PushVector(rt, rig.GetBoneAt(bone).GetConstraintAt(constraint).GetBoneOffset());
+	ds.GetClassVector()->PushVector(rt, rig.GetBoneAt(bone)->GetConstraintAt(constraint)->GetBoneOffset());
 }
 
 // public func ShapeList boneGetShapes( int bone )
@@ -427,7 +427,7 @@ void deClassRig::nfBoneGetShapes::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deRig &rig = dedsGetNativeData<sRigNatDat>(p_GetNativeData(myself)).rig;
 	const int bone = rt->GetValue(0)->GetInt();
 	
-	ds.GetClassShapeList()->PushShapeList(rt, rig.GetBoneAt(bone).GetShapes());
+	ds.GetClassShapeList()->PushShapeList(rt, rig.GetBoneAt(bone)->GetShapes());
 }
 
 // public func String boneShapeGetProperty( int bone, int shape )
@@ -441,7 +441,7 @@ void deClassRig::nfBoneShapeGetProperty::RunFunction(dsRunTime *rt, dsValue *mys
 	const int shape = rt->GetValue(1)->GetInt();
 	const int bone = rt->GetValue(0)->GetInt();
 	
-	rt->PushString(rig.GetBoneAt(bone).GetShapeProperties().GetAt(shape));
+	rt->PushString(rig.GetBoneAt(bone)->GetShapeProperties().GetAt(shape));
 }
 
 // public func int boneGetParent( int bone )
@@ -453,7 +453,7 @@ void deClassRig::nfBoneGetParent::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deRig &rig = dedsGetNativeData<sRigNatDat>(p_GetNativeData(myself)).rig;
 	const int bone = rt->GetValue(0)->GetInt();
 	
-	rt->PushInt(rig.GetBoneAt(bone).GetParent());
+	rt->PushInt(rig.GetBoneAt(bone)->GetParent());
 }
 
 // public func int getRootBone()

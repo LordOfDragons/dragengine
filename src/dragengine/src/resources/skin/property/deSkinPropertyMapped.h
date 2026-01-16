@@ -55,6 +55,9 @@
  * clamping to avoid values wrapping around.
  */
 class DE_DLL_EXPORT deSkinPropertyMapped : public deSkinProperty{
+public:
+	using Ref = deTUniqueReference<deSkinPropertyMapped>;
+	
 private:
 	int pComponents[4];
 	

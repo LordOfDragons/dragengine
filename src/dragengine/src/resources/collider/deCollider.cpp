@@ -58,10 +58,6 @@ pForceFieldSurface(0.0f),
 pForceFieldMass(0.0f),
 pForceFieldSpeed(0.0f),
 
-pAttachments(nullptr),
-pAttachmentCount(0),
-pAttachmentSize(0),
-
 pPeerPhysics(nullptr),
 pPeerScripting(nullptr),
 
@@ -296,86 +292,54 @@ void deCollider::SetCollisionFilter(const decCollisionFilter &filter){
 
 
 // Attachments
-////////////////
-
-deColliderAttachment *deCollider::GetAttachmentAt(int index) const{
-	if(index < 0 || index >= pAttachmentCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return pAttachments[index];
-}
+///////////////
 
 bool deCollider::HasAttachmentWith(deResource *resource) const{
 	if(!resource){
 		DETHROW(deeInvalidParam);
 	}
-	int i;
 	
-	for(i=0; i<pAttachmentCount; i++){
-		if(pAttachments[i]->GetResource() == resource){
-			return true;
-		}
-	}
-	
-	return false;
+	return pAttachments.HasMatching([&](const deColliderAttachment &attachment){
+		return attachment.GetResource() == resource;
+	});
 }
 
 deColliderAttachment *deCollider::GetAttachmentWith(deResource *resource) const{
 	if(!resource){
 		DETHROW(deeInvalidParam);
 	}
-	int i;
 	
-	for(i=0; i<pAttachmentCount; i++){
-		if(pAttachments[i]->GetResource() == resource){ 
-			return pAttachments[i];
+	for(auto &attachment : pAttachments){
+		if(attachment->GetResource() == resource){ 
+			return attachment;
 		}
 	}
 	return nullptr;
 }
 
-void deCollider::AddAttachment(deColliderAttachment *attachment){
+void deCollider::AddAttachment(deColliderAttachment::Ref &&attachment){
 	if(!attachment || HasAttachmentWith(attachment->GetResource())){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(pAttachmentCount == pAttachmentSize){
-		int i, newSize = pAttachmentSize * 3 / 2 + 1;
-		deColliderAttachment **newArray = new deColliderAttachment*[newSize];
-		
-		if(pAttachments){
-			for(i=0; i<pAttachmentSize; i++) newArray[i] = pAttachments[i];
-			delete [] pAttachments;
-		}
-		pAttachments = newArray;
-		pAttachmentSize = newSize;
-	}
-	
-	pAttachments[pAttachmentCount] = attachment;
-	pAttachmentCount++;
+	pAttachments.Add(std::move(attachment));
 	
 	if(pPeerPhysics){
-		pPeerPhysics->AttachmentAdded(pAttachmentCount - 1, attachment);
+		pPeerPhysics->AttachmentAdded(pAttachments.GetCount() - 1, pAttachments.Last());
 	}
 }
 
 void deCollider::RemoveAttachment(deColliderAttachment *attachment){
-	int i, index = pFindAttachment(attachment);
+	const int index = pFindAttachment(attachment);
 	if(index == -1){
 		DETHROW(deeInvalidParam);
 	}
-	
-	for(i=index+1; i<pAttachmentCount; i++){
-		pAttachments[i - 1] = pAttachments[i];
-	}
-	pAttachmentCount--;
 	
 	if(pPeerPhysics){
 		pPeerPhysics->AttachmentRemoved(index, attachment);
 	}
 	
-	delete attachment;
+	pAttachments.RemoveFrom(index);
 }
 
 void deCollider::RemoveAllAttachments(){
@@ -383,19 +347,16 @@ void deCollider::RemoveAllAttachments(){
 		pPeerPhysics->AllAttachmentsRemoved();
 	}
 	
-	while(pAttachmentCount > 0){
-		delete pAttachments[pAttachmentCount - 1];
-		pAttachmentCount--;
-	}
+	pAttachments.RemoveAll();
 }
 
 void deCollider::NotifyAttachmentChanged(int index){
-	if(index < 0 || index >= pAttachmentCount){
+	if(index < 0 || index >= pAttachments.GetCount()){
 		DETHROW(deeInvalidParam);
 	}
 	
 	if(pPeerPhysics){
-		pPeerPhysics->AttachmentChanged(index, pAttachments[index]);
+		pPeerPhysics->AttachmentChanged(index, pAttachments.GetAt(index));
 	}
 }
 
@@ -695,21 +656,10 @@ void deCollider::pCleanUp(){
 	RemoveAllConstraints();
 	
 	RemoveAllAttachments();
-	if(pAttachments){
-		while(pAttachmentCount > 0){
-			delete pAttachments[pAttachmentCount - 1];
-			pAttachmentCount--;
-		}
-		delete [] pAttachments;
-	}
 }
 
 int deCollider::pFindAttachment(deColliderAttachment *attachment){
-	int i;
-	for(i=0; i<pAttachmentCount; i++){
-		if(pAttachments[i] == attachment) return i;
-	}
-	return -1;
+	return pAttachments.IndexOf(attachment);
 }
 
 

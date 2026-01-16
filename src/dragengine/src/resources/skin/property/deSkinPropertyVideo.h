@@ -41,6 +41,9 @@
  * is possible to use unique playback time for each instance.
  */
 class DE_DLL_EXPORT deSkinPropertyVideo : public deSkinProperty{
+public:
+	using Ref = deTUniqueReference<deSkinPropertyVideo>;
+	
 private:
 	decString pPath;
 	deVideo::Ref pVideo;

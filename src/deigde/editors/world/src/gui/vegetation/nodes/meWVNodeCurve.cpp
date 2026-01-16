@@ -68,7 +68,7 @@ public:
 	
 	void OnCurveChanging(igdeViewCurveBezier *viewCurveBezier) override{
 		if(pUndo){
-			((meUHTVRuleCurveSetCurve&)(igdeUndo&)pUndo).SetNewCurve(viewCurveBezier->GetCurve());
+			pUndo.DynamicCast<meUHTVRuleCurveSetCurve>()->SetNewCurve(viewCurveBezier->GetCurve());
 			pUndo->Redo();
 			
 		}else{

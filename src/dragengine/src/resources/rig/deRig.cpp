@@ -44,9 +44,6 @@
 deRig::deRig(deRigManager *manager, deVirtualFileSystem *vfs, const char *filename,
 	TIME_SYSTEM modificationTime) :
 deFileResource(manager, vfs, filename, modificationTime),
-pBones(nullptr),
-pBoneCount(0),
-pBoneSize(0),
 pRootBone(-1),
 pModelCollision(false),
 pPeerPhysics(nullptr){
@@ -56,11 +53,6 @@ deRig::~deRig(){
 	if(pPeerPhysics){
 		delete pPeerPhysics;
 		pPeerPhysics = nullptr;
-	}
-	
-	RemoveAllBones();
-	if(pBones){
-		delete [] pBones;
 	}
 }
 
@@ -75,21 +67,22 @@ bool deRig::Verify() const{
 	bool success = true;
 	
 	// check bones
-	if(pBoneCount > 0){
+	const int boneCount = pBones.GetCount();
+	if(boneCount > 0){
 		try{
-			boneVisited = new bool[pBoneCount];
+			boneVisited = new bool[boneCount];
 			
 			// check bone parents are valid
-			for(i=0; i<pBoneCount; i++){
-				for(j=0; j<pBoneCount; j++) boneVisited[j] = false;
-				parent = pBones[i]->GetParent();
+			for(i=0; i<boneCount; i++){
+				for(j=0; j<boneCount; j++) boneVisited[j] = false;
+				parent = pBones.GetAt(i)->GetParent();
 				while(parent != -1){
-					if(parent < -1 || parent >= pBoneCount || boneVisited[parent]){
+					if(parent < -1 || parent >= boneCount || boneVisited[parent]){
 						success = false;
 						break;
 					}
 					boneVisited[parent] = true;
-					parent = pBones[parent]->GetParent();
+					parent = pBones.GetAt(parent)->GetParent();
 				}
 				if(!success) break;
 			}
@@ -112,7 +105,8 @@ void deRig::Prepare(){
 	deRigBone *bone;
 	
 	// nothing to do if there are no bones
-	if(pBoneCount == 0){
+	const int boneCount = pBones.GetCount();
+	if(boneCount == 0){
 		return;
 	}
 	
@@ -122,21 +116,21 @@ void deRig::Prepare(){
 	decMatrix boneMat;
 	try{
 		// create a temporary array to hold the calculated status
-		calculated = new bool[pBoneCount];
-		for(i=0; i<pBoneCount; i++) calculated[i] = false;
+		calculated = new bool[boneCount];
+		for(i=0; i<boneCount; i++) calculated[i] = false;
 		
 		// keeps track of the count of bones in need of calculation
-		remaining = pBoneCount;
+		remaining = boneCount;
 		
 		// loop until there are no more remaining bones
 		while(remaining > 0){
 			// loop over all bones and calculate those not done so yet
-			for(i=0; i<pBoneCount; i++){
+			for(i=0; i<boneCount; i++){
 				// if calculated skip the bone
 				if(calculated[i]){
 					continue;
 				}
-				bone = pBones[i];
+				bone = pBones.GetAt(i);
 				
 				// check if the parent if present is calculated
 				parent = bone->GetParent();
@@ -146,7 +140,7 @@ void deRig::Prepare(){
 				
 				// calculate the matrix
 				boneMat = decMatrix::CreateRT(bone->GetRotation(), bone->GetPosition());
-				if(parent != -1) boneMat *= pBones[parent]->GetMatrix();
+				if(parent != -1) boneMat *= pBones.GetAt(parent)->GetMatrix();
 				bone->SetMatrices(boneMat);
 				
 				// mark as calculate and decrease count of remaining bones by one
@@ -196,68 +190,30 @@ void deRig::SetModelCollision(bool modelCollision){
 //////////
 
 int deRig::IndexOfBoneNamed(const char *name) const{
-	int i;
-	
-	for(i=0; i<pBoneCount; i++){
-		if(pBones[i]->GetName() == name){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pBones.IndexOfMatching([&](const deRigBone &bone){
+		return bone.GetName() == name;
+	});
 }
 
 bool deRig::HasBoneNamed(const char *name) const{
-	int i;
-	
-	for(i=0; i<pBoneCount; i++){
-		if(pBones[i]->GetName() == name){
-			return true;
-		}
-	}
-	
-	return false;
+	return pBones.HasMatching([&](const deRigBone &bone){
+		return bone.GetName() == name;
+	});
 }
 
-deRigBone &deRig::GetBoneAt(int index) const{
-	if(index < 0 || index >= pBoneCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return *pBones[index];
-}
-
-void deRig::AddBone(deRigBone *bone){
+void deRig::AddBone(deTUniqueReference<deRigBone> &&bone){
 	if(!bone || HasBoneNamed(bone->GetName())){
 		DETHROW(deeInvalidParam);
 	}
-	
-	if(pBoneCount == pBoneSize){
-		const int newSize = pBoneSize * 3 / 2 + 1;
-		deRigBone ** const newArray = new deRigBone*[newSize];
-		if(pBones){
-			memcpy(newArray, pBones, sizeof(deRigBone*) * pBoneSize);
-			delete [] pBones;
-		}
-		pBones = newArray;
-		pBoneSize = newSize;
-	}
-	
-	pBones[pBoneCount] = bone;
-	pBoneCount++;
+	pBones.Add(std::move(bone));
 }
 
 void deRig::RemoveAllBones(){
-	if(pBoneCount > 0){
-		while(pBoneCount > 0){
-			delete pBones[pBoneCount - 1];
-			pBoneCount--;
-		}
-	}
+	pBones.RemoveAll();
 }
 
 void deRig::SetRootBone(int rootBone){
-	if(rootBone < -1 || rootBone >= pBoneCount){
+	if(rootBone < -1 || rootBone >= pBones.GetCount()){
 		DETHROW(deeInvalidParam);
 	}
 	pRootBone = rootBone;

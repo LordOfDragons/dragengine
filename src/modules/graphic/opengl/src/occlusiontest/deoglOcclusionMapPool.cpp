@@ -42,7 +42,7 @@ pRenderThread(renderThread){
 deoglOcclusionMapPool::~deoglOcclusionMapPool(){
 	int count = pOcclusionMaps.GetCount();
 	while(count > 0){
-		delete (deoglOcclusionMap*)pOcclusionMaps.GetAt(--count);
+		delete pOcclusionMaps.GetAt(--count);
 	}
 }
 
@@ -60,7 +60,7 @@ deoglOcclusionMap *deoglOcclusionMapPool::Get(int width, int height, int layerCo
 	int i;
 	
 	for(i=count-1; i>=0; i--){
-		deoglOcclusionMap * const occlusionMap = (deoglOcclusionMap*)pOcclusionMaps.GetAt(i);
+		deoglOcclusionMap * const occlusionMap = pOcclusionMaps.GetAt(i);
 		if(occlusionMap->GetWidth() == width
 		&& occlusionMap->GetHeight() == height
 		&& occlusionMap->GetLayerCount() == layerCount){

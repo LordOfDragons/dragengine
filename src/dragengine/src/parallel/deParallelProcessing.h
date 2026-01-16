@@ -27,6 +27,8 @@
 
 #include "deParallelTask.h"
 #include "../common/string/decStringList.h"
+#include "../dragengine_export.h"
+#include "../common/collection/decTUniqueList.h"
 #include "../threading/deMutex.h"
 #include "../threading/deMutexGuard.h"
 #include "../threading/deSemaphore.h"
@@ -44,8 +46,7 @@ private:
 	deEngine &pEngine;
 	int pCoreCount;
 	
-	deParallelThread **pThreads;
-	int pThreadCount;
+	decTUniqueList<deParallelThread> pThreads;
 	bool pPaused;
 	
 	deParallelTask::TaskList pTasks;
@@ -79,8 +80,8 @@ public:
 	/** \brief Count of detected CPU cores. */
 	inline int GetCoreCount() const{ return pCoreCount; }
 	
-	/** \brief Count of threads. */
-	inline int GetThreadCount() const{ return pThreadCount; }
+		/** \brief Number of threads. */
+	inline int GetThreadCount() const{ return pThreads.GetCount(); }
 	
 	/**
 	 * \brief Update task processing.

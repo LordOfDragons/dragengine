@@ -114,7 +114,7 @@ private:
 	
 	decTList<deoalEnvProbeLevel*> pLevels;
 	
-	decTList<deoalEnvProbeListener*> pListeners;
+	decTList<deoalEnvProbeListenerCached*> pListeners;
 	float pListenerRange;
 	unsigned short pListenerTracking;
 	

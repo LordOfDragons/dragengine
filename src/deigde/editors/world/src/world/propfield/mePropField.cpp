@@ -120,21 +120,11 @@ void mePropField::AddType(mePropFieldType *type){
 	SetWorldChanged();
 	
 	// engine object
-	dePropFieldType *engPFType = nullptr;
-	
-	try{
-		engPFType = type->CreateEnginePFType();
-		if(engPFType){
-			pEngPF->AddType(engPFType);
-		}
-		type->SetEnginePFType(engPFType);
-		
-	}catch(const deException &){
-		if(engPFType){
-			delete engPFType;
-		}
-		throw;
+	auto engPFType = type->CreateEnginePFType();
+	if(engPFType){
+		pEngPF->AddType(std::move(engPFType));
 	}
+	type->SetEnginePFType(engPFType);
 }
 
 void mePropField::RemoveType(mePropFieldType *type){

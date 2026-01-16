@@ -924,8 +924,8 @@ public:
 			return {};
 		}
 		
-		const aeLink::Ref newLink(aeLink::Ref::New(*link));
-		((aeLink&)(deObject&)newLink).SetName(name);
+		auto newLink = aeLink::Ref::New(*link);
+		newLink->SetName(name);
 		return aeULinkAdd::Ref::New(animator, newLink);
 	}
 };

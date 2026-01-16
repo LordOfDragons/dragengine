@@ -25,15 +25,17 @@
 #ifndef _DEANIMATION_H_
 #define _DEANIMATION_H_
 
+#include "deAnimationBone.h"
+#include "deAnimationMove.h"
+
 #include "../deFileResource.h"
 #include "../../common/string/decStringList.h"
+#include "../../common/collection/decTUniqueList.h"
 
 class deBaseAnimatorAnimation;
 class deEngine;
 class deAnimationManager;
-class deAnimationBone;
 class deAnimationVertexPositionSet;
-class deAnimationMove;
 class deModel;
 class deBaseAnimatorAnimation;
 
@@ -58,15 +60,11 @@ public:
 	
 	
 private:
-	deAnimationBone **pBones;
-	int pBoneCount;
-	int pBoneSize;
+	deAnimationBone::List pBones;
 	
 	decStringList pVertexPositionSets;
 	
-	deAnimationMove **pMoves;
-	int pMoveCount;
-	int pMoveSize;
+	deAnimationMove::List pMoves;
 	
 	deBaseAnimatorAnimation *pPeerAnimator;
 	
@@ -103,17 +101,20 @@ public:
 	
 	/** \name Bone Management */
 	/*@{*/
+	/** \brief Bones. */
+	inline const deAnimationBone::List &GetBones() const{ return pBones; }
+	
 	/** \brief Count of bones. */
-	inline int GetBoneCount() const{ return pBoneCount; }
+	inline int GetBoneCount() const{ return pBones.GetCount(); }
 	
 	/** \brief Bone at the given index. */
-	deAnimationBone *GetBone(int index) const;
+	const deAnimationBone::Ref &GetBone(int index) const;
 	
 	/** \brief Index for the bone with the given name or -1 if not found. */
 	int FindBone(const char *name) const;
 	
 	/** \brief Adds a new bone */
-	void AddBone(deAnimationBone *bone);
+	void AddBone(deAnimationBone::Ref &&bone);
 	/*@}*/
 	
 	
@@ -130,17 +131,20 @@ public:
 	
 	/** \name Move Management */
 	/*@{*/
+	/** \brief Moves. */
+	inline const deAnimationMove::List &GetMoves() const{ return pMoves; }
+	
 	/** \brief Count of moves. */
-	inline int GetMoveCount() const{ return pMoveCount; }
+	inline int GetMoveCount() const{ return pMoves.GetCount(); }
 	
 	/** \brief Move at the given index. */
-	deAnimationMove *GetMove(int index) const;
+	const deAnimationMove::Ref &GetMove(int index) const;
 	
 	/** \brief Index of the move with the given name or -1 if not found. */
 	int FindMove(const char *name) const;
 	
 	/** \brief Adds the given move */
-	void AddMove(deAnimationMove *move);
+	void AddMove(deAnimationMove::Ref &&move);
 	/*@}*/
 	
 	

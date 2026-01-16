@@ -33,6 +33,9 @@
  */
 class DE_DLL_EXPORT deSkinPropertyNodeShape : public deSkinPropertyNode{
 public:
+	/** \brief Reference. */
+	using Ref = deTUniqueReference<deSkinPropertyNodeShape>;
+	
 	/** \brief Shape types. */
 	enum eShapeTypes{
 		/** \brief Rectangle/box. */

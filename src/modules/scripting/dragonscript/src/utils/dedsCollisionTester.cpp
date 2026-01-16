@@ -305,7 +305,7 @@ bool dedsCollisionTester::CanHitCollider(deCollider *owner, deCollider *collider
 			int i;
 			
 			for(i=0; i<count; i++){
-				if((deCollider*)pListIgnoreColliders.GetAt(i) == collider){
+				if(pListIgnoreColliders.GetAt(i) == collider){
 					return false;
 				}
 			}

@@ -802,7 +802,7 @@ void aeWPAPanelRuleLimit::UpdateRigBoneList(){
 			const int count = rig->GetBoneCount();
 			int i;
 			for(i=0; i<count; i++){
-				pCBTargetBone->AddItem(rig->GetBoneAt(i).GetName());
+				pCBTargetBone->AddItem(rig->GetBoneAt(i)->GetName());
 			}
 		}
 		pCBTargetBone->SortItems();

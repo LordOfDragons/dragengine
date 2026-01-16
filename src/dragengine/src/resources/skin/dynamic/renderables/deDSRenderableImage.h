@@ -35,6 +35,10 @@
  * The texture is defined by an image.
  */
 class DE_DLL_EXPORT deDSRenderableImage : public deDSRenderable{
+public:
+	/** \brief Reference type. */
+	using Ref = deTUniqueReference<deDSRenderableImage>;
+	
 private:
 	deImage::Ref pImage;
 	

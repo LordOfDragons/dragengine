@@ -1798,6 +1798,7 @@ decString & decString::operator=(decString &&string){
 		return *this;
 	}
 	
+	delete [] pString;
 	pString = string.pString;
 	string.pString = new char[1]{0};
 	return *this;

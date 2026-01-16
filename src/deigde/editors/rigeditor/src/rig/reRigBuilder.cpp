@@ -113,15 +113,11 @@ void reRigBuilder::BuildRig(deRig *engRig){
 void reRigBuilder::BuildRigBone(deRig *engRig, reRigBone *rigBone){
 	if(!engRig || !rigBone) DETHROW(deeInvalidParam);
 	
-	deRigConstraint *engConstraint = nullptr;
-	deRigBone *engBone = nullptr;
+	auto engBone = deRigBone::Ref::New(rigBone->GetName());
 	decStringList shapeProperties;
 	decShape::List shapes;
 	
 	try{
-		// create engine bone
-		engBone = new deRigBone(rigBone->GetName());
-		
 		// set options
 		if(rigBone->GetParentBone()){
 			engBone->SetParent(rigBone->GetParentBone()->GetOrder());
@@ -147,25 +143,22 @@ void reRigBuilder::BuildRigBone(deRig *engRig, reRigBone *rigBone){
 		// add shapes
 		rigBone->GetShapes().Visit([&](reRigShape &rigShape){
 			shapes.Add(rigShape.CreateShape());
-			
 			shapeProperties.Add(rigShape.GetProperty());
 		});
 		
 		// add constraints
 		rigBone->GetConstraints().Visit([&](reRigConstraint &rigConstraint){
-			engConstraint = rigConstraint.BuildEngineRigConstraint();
-			engBone->AddConstraint(engConstraint);
-			engConstraint = nullptr;
+			engBone->AddConstraint(rigConstraint.BuildEngineRigConstraint());
 		});
 		
-		// add to the rig
-		engRig->AddBone(engBone);
-		
 	}catch(const deException &){
-		if(engConstraint) delete engConstraint;
-		if(engBone) delete engBone;
+		engBone.Clear();
 	}
 	
 	engBone->SetShapes(shapes);
 	engBone->SetShapeProperties(shapeProperties);
+	
+	if(engBone){
+		engRig->AddBone(std::move(engBone));
+	}
 }

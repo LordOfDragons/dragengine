@@ -88,7 +88,7 @@ void deoglHeightTerrain::SyncToRender(){
 		pRHeightTerrain->RemoveAllSectors();
 		
 		for(i=0; i<count; i++){
-			deoglHTSector * const htsector = (deoglHTSector*)pSectors.GetAt(i);
+			deoglHTSector * const htsector = pSectors.GetAt(i);
 			htsector->SyncToRender();
 			pRHeightTerrain->AddSector(htsector->GetRSector());
 		}
@@ -97,7 +97,7 @@ void deoglHeightTerrain::SyncToRender(){
 		
 	}else{
 		for(i=0; i<count; i++){
-			((deoglHTSector*)pSectors.GetAt(i))->SyncToRender();
+			pSectors.GetAt(i)->SyncToRender();
 		}
 	}
 }
@@ -112,7 +112,7 @@ void deoglHeightTerrain::ParametersChanged(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		((deoglHTSector*)pSectors.GetAt(i))->SectorChanged();
+		pSectors.GetAt(i)->SectorChanged();
 	}
 	
 	pDirtySectors = true;
@@ -124,7 +124,7 @@ const decPoint &fromCoordinates, const decPoint &toSector, const decPoint &toCoo
 	decPoint localFrom, localTo;
 	
 	pHeightTerrain.GetSectors().VisitIndexed([&](int i, deHeightTerrainSector *htsector){
-		deoglHTSector &sector = *((deoglHTSector*)pSectors.GetAt(i));
+		deoglHTSector &sector = pSectors.GetAt(i);
 		const decPoint &scoord = htsector->GetSector();
 		
 		if(scoord.x + 1 >= fromSector.x && scoord.x - 1 <= toSector.x && scoord.y + 1 >= fromSector.y && scoord.y - 1 <= toSector.y){
@@ -204,7 +204,7 @@ void deoglHeightTerrain::AllSectorsRemoved(){
 }
 
 void deoglHeightTerrain::SectorChanged(int index){
-	((deoglHTSector*)pSectors.GetAt(index))->SectorChanged();
+	pSectors.GetAt(index)->SectorChanged();
 	pDirtySectors = true;
 }
 

@@ -35,6 +35,9 @@
  * Defines a color property of a skin texture.
  */
 class DE_DLL_EXPORT deSkinPropertyColor : public deSkinProperty{
+public:
+	using Ref = deTUniqueReference<deSkinPropertyColor>;
+	
 private:
 	decColor pColor;
 	

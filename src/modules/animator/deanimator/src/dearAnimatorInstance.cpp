@@ -83,8 +83,6 @@ pAnimatorUpdateTracker(0),
 pAnimation(nullptr),
 pComponent(nullptr),
 
-pRules(nullptr),
-pRuleCount(0),
 pDirtyRules(true),
 
 pCaptureComponentState(false),
@@ -135,7 +133,7 @@ int dearAnimatorInstance::GetLinkCount() const{
 }
 
 dearLink *dearAnimatorInstance::GetLinkAt(int index) const{
-	return (dearLink*)pLinks.GetAt(index);
+	return pLinks.GetAt(index);
 }
 
 void dearAnimatorInstance::AddLink(dearLink *link){
@@ -151,9 +149,10 @@ void dearAnimatorInstance::SetCaptureComponentState(){
 }
 
 void dearAnimatorInstance::ApplyRules(){
+	const int count = pRules.GetCount();
 	int i;
-	for(i=0; i<pRuleCount; i++){
-		pRules[i]->Apply(pBoneStateList, pVPSStateList);
+	for(i=0; i<count; i++){
+		pRules.GetAt(i)->Apply(pBoneStateList, pVPSStateList);
 	}
 }
 
@@ -331,8 +330,9 @@ void dearAnimatorInstance::CaptureStateInto(int identifier){
 	
 	// now the state can be captured
 	int i;
-	for(i=0; i<pRuleCount; i++){
-		pRules[i]->CaptureStateInto(identifier);
+	const int ruleCount = pRules.GetCount();
+	for(i=0; i<ruleCount; i++){
+		pRules.GetAt(i)->CaptureStateInto(identifier);
 	}
 }
 
@@ -354,8 +354,9 @@ void dearAnimatorInstance::StoreFrameInto(int identifier, const char *moveName, 
 	
 	// now the frame can be stored
 	int i;
-	for(i=0; i<pRuleCount; i++){
-		pRules[i]->StoreFrameInto(identifier, moveName, moveTime);
+	const int ruleCount = pRules.GetCount();
+	for(i=0; i<ruleCount; i++){
+		pRules.GetAt(i)->StoreFrameInto(identifier, moveName, moveTime);
 	}
 }
 
@@ -471,7 +472,8 @@ void dearAnimatorInstance::pCheckRequireRebuild(){
 		return;
 	}
 	
-	if(pRuleCount == 0){
+	const int ruleCount = pRules.GetCount();
+	if(ruleCount == 0){
 		return;
 	}
 	if(pDirtyRules){
@@ -480,8 +482,8 @@ void dearAnimatorInstance::pCheckRequireRebuild(){
 	}
 	
 	int i;
-	for(i=0; i<pRuleCount; i++){
-		if(pRules[i]->RebuildInstance()){
+	for(i=0; i<ruleCount; i++){
+		if(pRules.GetAt(i)->RebuildInstance()){
 			pDirtyRules = true;
 			pDirtyAnimator = true;
 		}
@@ -646,7 +648,7 @@ void dearAnimatorInstance::pRemoveAllLinks(){
 	int i;
 	
 	for(i=0; i<linkCount; i++){
-		delete (dearLink*)pLinks.GetAt(i);
+		delete pLinks.GetAt(i);
 	}
 	
 	pLinks.RemoveAll();
@@ -687,15 +689,7 @@ void dearAnimatorInstance::pAddAnimatorLinks(){
 }
 
 void dearAnimatorInstance::pDropRules(){
-	if(pRules){
-		while(pRuleCount > 0){
-			delete pRules[pRuleCount - 1];
-			pRuleCount--;
-		}
-		
-		delete [] pRules;
-		pRules = nullptr;
-	}
+	pRules.RemoveAll();
 	
 	pRemoveAllLinks();
 	
@@ -724,18 +718,15 @@ void dearAnimatorInstance::pUpdateRules(){
 			
 			dearCreateRuleVisitor visitor(*this, *pAnimator, controllerMapping, 0);
 			
-			pRules = new dearRule*[animator.GetRules().GetCount()];
-			
-			animator.GetRules().Visit([&](deAnimatorRule &r){
-				pRules[pRuleCount] = visitor.CreateRuleFrom(r);
-				if(pRules[pRuleCount]){
-					pRuleCount++;
-				}
-			});
-		}
+		
+		animator.GetRules().Visit([&](deAnimatorRule &r){
+			auto &rule = visitor.CreateRuleFrom(r);
+			if(rule){
+				pRules.Add(std::move(rule));
+			}
+		});
 	}
-	
-	pDirtyRules = false;
+}	pDirtyRules = false;
 	pDirtyRuleParams = false; // we just build them
 }
 
@@ -744,9 +735,10 @@ void dearAnimatorInstance::pUpdateRuleParams(){
 		return;
 	}
 	
+	const int count = pRules.GetCount();
 	int i;
-	for(i=0; i<pRuleCount; i++){
-		pRules[i]->RuleChanged();
+	for(i=0; i<count; i++){
+		pRules.GetAt(i)->RuleChanged();
 	}
 }
 

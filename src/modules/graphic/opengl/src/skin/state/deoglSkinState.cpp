@@ -199,7 +199,7 @@ void deoglSkinState::SetVideoPlayerCount(int count){
 }
 
 deoglRVideoPlayer *deoglSkinState::GetVideoPlayerAt(int index) const{
-	return (deoglRVideoPlayer*)pVideoPlayers.GetAt(index);
+	return pVideoPlayers.GetAt(index);
 }
 
 void deoglSkinState::SetVideoPlayerAt(int index, deoglRVideoPlayer *videoPlayer){
@@ -213,7 +213,7 @@ const deoglRenderPlanMasked *renderPlanMask){
 	const int videoPlayerCount = pVideoPlayers.GetCount();
 	int i;
 	for(i=0; i< videoPlayerCount; i++){
-		deoglRVideoPlayer * const videoPlayer = (deoglRVideoPlayer*)pVideoPlayers.GetAt(i);
+		deoglRVideoPlayer * const videoPlayer = pVideoPlayers.GetAt(i);
 		if(videoPlayer){
 			videoPlayer->UpdateTexture();
 		}

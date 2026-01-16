@@ -34,6 +34,7 @@
 #include "../animator/deAnimator.h"
 #include "../decal/deDecal.h"
 #include "../../parallel/deParallelTask.h"
+#include "../../common/collection/decTOrderedSet.h"
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decLayerMask.h"
 #include "../../common/string/decString.h"
@@ -61,6 +62,9 @@ class DE_DLL_EXPORT deComponent : public deResource{
 public:
 	/** \brief Type holding strong reference. */
 	using Ref = deTObjectReference<deComponent>;
+	
+	/** \brief List type. */
+	using List = decTObjectOrderedSet<deComponent>;
 	
 	
 public:

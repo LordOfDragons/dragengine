@@ -104,7 +104,7 @@ void deoglSkinStateController::SetVideoPlayerCount(int count){
 }
 
 deVideoPlayer *deoglSkinStateController::GetVideoPlayerAt(int index) const{
-	return (deVideoPlayer*)pVideoPlayers.GetAt(index);
+	return pVideoPlayers.GetAt(index);
 }
 
 deoglSharedVideoPlayer *deoglSkinStateController::GetSharedVideoPlayerAt(int index) const{
@@ -216,7 +216,7 @@ void deoglSkinStateController::ResetTime(){
 	int i;
 	
 	for(i=0; i< count; i++){
-		deVideoPlayer * const videoPlayer = (deVideoPlayer*)pVideoPlayers.GetAt(i);
+		deVideoPlayer * const videoPlayer = pVideoPlayers.GetAt(i);
 		if(videoPlayer){
 			videoPlayer->SetPlayPosition(0.0f);
 		}
@@ -228,7 +228,7 @@ void deoglSkinStateController::AdvanceTime(float timeStep){
 	int i;
 	
 	for(i=0; i< count; i++){
-		deVideoPlayer * const videoPlayer = (deVideoPlayer*)pVideoPlayers.GetAt(i);
+		deVideoPlayer * const videoPlayer = pVideoPlayers.GetAt(i);
 		if(videoPlayer){
 			videoPlayer->Update(timeStep);
 		}
@@ -240,7 +240,7 @@ void deoglSkinStateController::SyncToRender(){
 	int i;
 	
 	for(i=0; i< count; i++){
-		deVideoPlayer * const videoPlayer = (deVideoPlayer*)pVideoPlayers.GetAt(i);
+		deVideoPlayer * const videoPlayer = pVideoPlayers.GetAt(i);
 		if(videoPlayer){
 			((deoglVideoPlayer*)videoPlayer->GetPeerGraphic())->SyncToRender();
 		}
@@ -282,7 +282,7 @@ deoglSkinTexture &texture, deoglWorld &world){
 				}
 				
 			}else{
-				videoPlayer = (deVideoPlayer*)pVideoPlayers.GetAt(vpindex);
+				videoPlayer = pVideoPlayers.GetAt(vpindex);
 				if(videoPlayer){
 					oldVideo = videoPlayer->GetVideo();
 				}

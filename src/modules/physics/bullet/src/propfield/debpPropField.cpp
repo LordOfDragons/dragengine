@@ -191,7 +191,6 @@ void debpPropField::pProjectInstancesDown(const dePropFieldGround &ground){
 	decVector instancePosition;
 	debpCollisionResult result;
 	int pfti, pftInstanceCount;
-	dePropFieldType *pfType;
 	int pft, pfTypeCount;
 	
 	decVector bestNormal;
@@ -224,9 +223,9 @@ void debpPropField::pProjectInstancesDown(const dePropFieldGround &ground){
 	if(bpHTerrain) bpHTerrain->Update();
 	
 	for(pft=0; pft<pfTypeCount; pft++){
-		pfType = pPropField->GetTypeAt(pft);
-		pftInstanceCount = pfType->GetInstanceCount();
-		pftInstances = pfType->GetInstances();
+		dePropFieldType &pfType = pPropField->GetTypeAt(pft);
+		pftInstanceCount = pfType.GetInstanceCount();
+		pftInstances = pfType.GetInstances();
 		
 		for(pfti=0; pfti<pftInstanceCount; pfti++){
 			instancePosition = pftInstances[pfti].GetPosition();

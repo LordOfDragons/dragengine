@@ -194,7 +194,7 @@ int targetRed, int targetGreen, int targetBlue, int targetAlpha){
 	target.targetAlpha = targetAlpha;
 	target.tileX = property.GetTileX();
 	target.tileY = property.GetTileY();
-	target.textureSize = property.GetContent().GetSize();
+	target.textureSize = property.GetContent()->GetSize();
 	if(target.textureSize.z > target.pixBufDepth){
 		target.textureSize.z = target.pixBufDepth;
 	}
@@ -211,7 +211,7 @@ int targetRed, int targetGreen, int targetBlue, int targetAlpha){
 	}
 	
 	pContext = &context;
-	property.GetContent().Visit(*this);
+	property.GetContent()->Visit(*this);
 	pContext = nullptr;
 	pTarget = nullptr;
 	
@@ -244,7 +244,7 @@ void deoglSCBuildConstructed::VisitGroup(deSkinPropertyNodeGroup &node){
 	int i;
 	
 	for(i=0; i<count; i++){
-		deSkinPropertyNode &childNode = *node.GetNodeAt(i);
+		deSkinPropertyNode &childNode = node.GetNodeAt(i);
 		
 		sContext childContext(childNode, context);
 		if(childContext.clamp.x == 0 || childContext.clamp.y == 0){

@@ -1005,7 +1005,7 @@ void debpColliderRig::BonePositionChanged(int index){
 	}
 	
 	if(!pPreventUpdate){
-		cbone->GetPhysicsBody()->SetPosition(pColliderRig.GetBoneAt(index).GetPosition());
+		cbone->GetPhysicsBody()->SetPosition(pColliderRig.GetBoneAt(index)->GetPosition());
 	}
 	
 	if(pColliderRig.GetAttachmentCount() > 0){
@@ -1027,7 +1027,7 @@ void debpColliderRig::BoneOrientationChanged(int index){
 	}
 	
 	if(!pPreventUpdate){
-		cbone->GetPhysicsBody()->SetOrientation(pColliderRig.GetBoneAt(index).GetOrientation());
+		cbone->GetPhysicsBody()->SetOrientation(pColliderRig.GetBoneAt(index)->GetOrientation());
 	}
 	
 	if(pColliderRig.GetAttachmentCount() > 0){
@@ -1051,7 +1051,7 @@ void debpColliderRig::BoneLinearVelocityChanged(int index){
 		return;
 	}
 	
-	cbone->GetPhysicsBody()->SetLinearVelocity(pColliderRig.GetBoneAt(index).GetLinearVelocity());
+	cbone->GetPhysicsBody()->SetLinearVelocity(pColliderRig.GetBoneAt(index)->GetLinearVelocity());
 }
 
 void debpColliderRig::BoneAngularVelocityChanged(int index){
@@ -1067,7 +1067,7 @@ void debpColliderRig::BoneAngularVelocityChanged(int index){
 		return;
 	}
 	
-	cbone->GetPhysicsBody()->SetAngularVelocity(pColliderRig.GetBoneAt(index).GetAngularVelocity());
+	cbone->GetPhysicsBody()->SetAngularVelocity(pColliderRig.GetBoneAt(index)->GetAngularVelocity());
 }
 
 void debpColliderRig::BonePropertiesChanged(int index){
@@ -1077,7 +1077,7 @@ void debpColliderRig::BonePropertiesChanged(int index){
 	
 	debpColliderBone * const cbone = pBones->GetBoneAt(index);
 	if(cbone){
-		cbone->GetPhysicsBody()->SetMass(pColliderRig.GetBoneAt(index).GetMass());
+		cbone->GetPhysicsBody()->SetMass(pColliderRig.GetBoneAt(index)->GetMass());
 	}
 }
 

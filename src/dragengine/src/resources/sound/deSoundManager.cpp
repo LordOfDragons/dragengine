@@ -224,10 +224,10 @@ deSoundDecoder::Ref deSoundManager::CreateDecoder(deSound *sound){
 		deErrorTrace &errorTrace = *GetEngine()->GetErrorTrace();
 		errorTrace.AddAndSetIfEmpty(e.GetName(), nullptr, e.GetFile(), e.GetLine());
 		
-		deErrorTracePoint &etp = *errorTrace.AddPoint(
+		deErrorTracePoint &etp = errorTrace.AddPoint(
 			nullptr, "deSoundManager::CreateDecoder", __LINE__);
 		
-		deErrorTraceValue &etv = *etp.AddValue("sound", "<deSound>");
+		deErrorTraceValue &etv = etp.AddValue("sound", "<deSound>");
 		etv.AddSubValue("filename", sound->GetFilename());
 		etv.AddSubValueInt("bytesPerSample", sound->GetBytesPerSample());
 		etv.AddSubValueInt("sampleRate", sound->GetSampleRate());

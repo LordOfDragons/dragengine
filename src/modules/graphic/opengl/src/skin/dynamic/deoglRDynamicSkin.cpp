@@ -60,7 +60,7 @@ int deoglRDynamicSkin::GetRenderableCount() const{
 }
 
 deoglRDSRenderable *deoglRDynamicSkin::GetRenderableAt(int index) const{
-	return (deoglRDSRenderable*)pRenderables.GetAt(index);
+	return pRenderables.GetAt(index);
 }
 
 deoglRDSRenderable *deoglRDynamicSkin::GetRenderableNamed(const char *name) const{
@@ -68,7 +68,7 @@ deoglRDSRenderable *deoglRDynamicSkin::GetRenderableNamed(const char *name) cons
 	int i;
 	
 	for(i=0; i<count; i++){
-		deoglRDSRenderable * const renderable = (deoglRDSRenderable*)pRenderables.GetAt(i);
+		deoglRDSRenderable * const renderable = pRenderables.GetAt(i);
 		if(renderable->GetName() == name){
 			return renderable;
 		}
@@ -82,7 +82,7 @@ int deoglRDynamicSkin::IndexOfRenderableNamed(const char *name) const{
 	int i;
 	
 	for(i=0; i<count; i++){
-		if(((deoglRDSRenderable*)pRenderables.GetAt(i))->GetName() == name){
+		if(pRenderables.GetAt(i)->GetName() == name){
 			return i;
 		}
 	}

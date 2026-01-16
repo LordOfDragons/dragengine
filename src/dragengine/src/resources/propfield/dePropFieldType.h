@@ -27,6 +27,7 @@
 
 #include "../model/deModel.h"
 #include "../skin/deSkin.h"
+#include "../../common/collection/decTUniqueList.h"
 #include "../../common/utils/decCollisionFilter.h"
 
 class dePropFieldInstance;
@@ -47,6 +48,13 @@ class dePropFieldBendState;
  * the list of types so this restriction is not a road blocking one.
  */
 class DE_DLL_EXPORT dePropFieldType{
+public:
+	/** \brief Reference. */
+	using Ref = deTUniqueReference<dePropFieldType>;
+	
+	/** \brief List type. */
+	using List = decTUniqueList<dePropFieldType>;
+	
 private:
 	deModel::Ref pModel;
 	deSkin::Ref pSkin;

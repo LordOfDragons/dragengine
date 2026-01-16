@@ -75,7 +75,7 @@ void debpRig::pCalculateMass(){
 	pInvMass = 0.0f;
 	
 	for(i=0; i<boneCount; i++){
-		pMass += pRig.GetBoneAt(i).GetMass();
+		pMass += pRig.GetBoneAt(i)->GetMass();
 	}
 	
 	if(pMass > FLOAT_SAFE_EPSILON){

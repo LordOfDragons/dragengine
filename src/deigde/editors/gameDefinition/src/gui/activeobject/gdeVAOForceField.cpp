@@ -119,32 +119,19 @@ void gdeVAOForceField::AttachResources(){
 	const decQuaternion orientation(decQuaternion::CreateFromEuler(
 		pOCForceField->GetRotation() * DEG2RAD));
 	
-	deColliderAttachment *attachment = nullptr;
-	try{
-		// attach particleEmitter
-		attachment = new deColliderAttachment(pForceField);
-		attachment->SetPosition(position);
-		attachment->SetOrientation(orientation);
-		attachment->SetAttachType(deColliderAttachment::eatStatic);
-		
-		attachCollider->AddAttachment(attachment);
-		attachment = nullptr;
-		
-		// attach debug drawer
-		attachment = new deColliderAttachment(pDebugDrawer);
-		attachment->SetPosition(position);
-		attachment->SetOrientation(orientation);
-		attachment->SetAttachType(deColliderAttachment::eatStatic);
-		
-		attachCollider->AddAttachment(attachment);
-		attachment = nullptr;
-		
-	}catch(const deException &){
-		if(attachment){
-			delete attachment;
-		}
-		throw;
-	}
+	// attach particleEmitter
+	auto attachment = deColliderAttachment::Ref::New(pForceField);
+	attachment->SetPosition(position);
+	attachment->SetOrientation(orientation);
+	attachment->SetAttachType(deColliderAttachment::eatStatic);
+	attachCollider->AddAttachment(std::move(attachment));
+	
+	// attach debug drawer
+	attachment = deColliderAttachment::Ref::New(pDebugDrawer);
+	attachment->SetPosition(position);
+	attachment->SetOrientation(orientation);
+	attachment->SetAttachType(deColliderAttachment::eatStatic);
+	attachCollider->AddAttachment(std::move(attachment));
 }
 
 void gdeVAOForceField::DetachResources(){

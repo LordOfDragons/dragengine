@@ -314,7 +314,7 @@ const deSkinTexture &engTexture, const deoglVSDetermineChannelFormat &channelFor
 	const int propertyCount = engTexture.GetPropertyCount();
 	int i;
 	for(i=0; i<propertyCount; i++){
-		pPrepareProperty(skin, texture, *engTexture.GetPropertyAt(i));
+		pPrepareProperty(skin, texture, engTexture.GetPropertyAt(i));
 	}
 	
 	pBuildCacheID();
@@ -331,7 +331,7 @@ void deoglSkinChannel::BuildChannel(const deSkinTexture &engTexture){
 	const int propertyCount = engTexture.GetPropertyCount();
 	int i;
 	for(i=0; i<propertyCount; i++){
-		pBuildProperty(*engTexture.GetPropertyAt(i));
+		pBuildProperty(engTexture.GetPropertyAt(i));
 	}
 	
 	//printf( "type=%i mask=%i,%i,%i,%i color=%g,%g,%g,%g\n", pType, pUniformColorMask[0],
@@ -1351,7 +1351,7 @@ deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyConstructed &pr
 	// caching
 	deoglSCConstructedDefinition visitor(*pRenderThread.GetOgl().GetGameEngine(),
 		memoryFileDef, memoryFileVerify, property);
-	property.GetContent().Visit(visitor);
+	property.GetContent()->Visit(visitor);
 	if(!visitor.GetCacheValid()){
 		pCanBeCached = false;
 		return;

@@ -109,7 +109,7 @@ deoglWorldCompute::~deoglWorldCompute(){
 	const int count = pElements.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		deoglWorldComputeElement &element = *(deoglWorldComputeElement*)pElements.GetAt(i);
+		deoglWorldComputeElement &element = pElements.GetAt(i);
 		element.SetIndex(-1);
 		element.SetWorldCompute(nullptr);
 		element.GetSPBGeometries() = nullptr;
@@ -166,7 +166,7 @@ int deoglWorldCompute::GetElementCount() const{
 }
 
 deoglWorldComputeElement &deoglWorldCompute::GetElementAt(int index) const{
-	return *(deoglWorldComputeElement*)pElements.GetAt(index);
+	return pElements.GetAt(index);
 }
 
 void deoglWorldCompute::AddElement(deoglWorldComputeElement *element){
@@ -289,7 +289,7 @@ void deoglWorldCompute::RemoveElement(deoglWorldComputeElement *element){
 	}
 	
 	if(index < last){
-		deoglWorldComputeElement * const swap = (deoglWorldComputeElement*)pElements.GetAt(last);
+		deoglWorldComputeElement * const swap = pElements.GetAt(last);
 		pElements.SetAt(index, swap);
 		swap->SetIndex(index);
 		
@@ -394,7 +394,7 @@ void deoglWorldCompute::pUpdateSSBOElements(){
 	memset(data, 0, ssbo.GetElementStride() * count);
 	
 	for(i=0; i<count; i++){
-		deoglWorldComputeElement &element = *((deoglWorldComputeElement*)pUpdateElements.GetAt(i));
+		deoglWorldComputeElement &element = pUpdateElements.GetAt(i);
 		pUpdateSSBOElement(element, data[i]);
 		data[i].updateIndex = (uint32_t)element.GetIndex();
 	}
@@ -434,7 +434,7 @@ void deoglWorldCompute::pFullUpdateSSBOElements(){
 	
 	int i;
 	for(i=0; i<count; i++){
-		pUpdateSSBOElement(*(deoglWorldComputeElement*)pElements.GetAt(i), data[i]);
+		pUpdateSSBOElement(pElements.GetAt(i), data[i]);
 	}
 	
 #if defined ENABLE_DEBUG_1 || defined ENABLE_DEBUG_2
@@ -541,7 +541,7 @@ void deoglWorldCompute::pUpdateSSBOElementGeometries(){
 	pUpdateElementGeometryCount = 0;
 	
 	for(i=0; i<elementCount; i++){
-		const deoglWorldComputeElement &element = *((deoglWorldComputeElement*)pUpdateElementGeometries.GetAt(i));
+		const deoglWorldComputeElement &element = pUpdateElementGeometries.GetAt(i);
 		if(element.GetSPBGeometries()){
 			pUpdateElementGeometryCount += element.GetSPBGeometries()->GetCount();
 		}
@@ -551,7 +551,7 @@ void deoglWorldCompute::pUpdateSSBOElementGeometries(){
 		for(i=0; i<elementCount; i++){
 			// has to be always done since it is possible a previous GetSSBOUpdateElements() called
 			// pCheckElementGeometryCount() which in turn could drop the SPB
-			((deoglWorldComputeElement*)pUpdateElementGeometries.GetAt(i))->SetUpdateGeometriesRequired(false);
+			pUpdateElementGeometries.GetAt(i)->SetUpdateGeometriesRequired(false);
 		}
 		
 		pUpdateElementGeometries.RemoveAll();
@@ -583,7 +583,7 @@ void deoglWorldCompute::pUpdateSSBOElementGeometries(){
 	int j, nextIndex = 0;
 	
 	for(i=0; i<elementCount; i++){
-		deoglWorldComputeElement &element = *((deoglWorldComputeElement*)pUpdateElementGeometries.GetAt(i));
+		deoglWorldComputeElement &element = pUpdateElementGeometries.GetAt(i);
 		// has to be always done since it is possible a previous GetSSBOUpdateElements() called
 		// pCheckElementGeometryCount() which in turn could drop the SPB
 		element.SetUpdateGeometriesRequired(false);
@@ -644,7 +644,7 @@ void deoglWorldCompute::pFullUpdateSSBOElementGeometries(){
 	
 	int i;
 	for(i=0; i<elementCount; i++){
-		deoglWorldComputeElement &element = *((deoglWorldComputeElement*)pElements.GetAt(i));
+		deoglWorldComputeElement &element = pElements.GetAt(i);
 		if(element.GetSPBGeometries()){
 			element.UpdateDataGeometries(data + element.GetSPBGeometries()->GetIndex());
 		}
@@ -749,7 +749,7 @@ void deoglWorldCompute::pDebugPrintElements(){
 	
 	list.Add("{El}");
 	for(i=0; i<count; i++){
-		const deoglWorldComputeElement &element = *(deoglWorldComputeElement*)pElements.GetAt(i);
+		const deoglWorldComputeElement &element = pElements.GetAt(i);
 			if(element.GetType() == deoglWorldComputeElement::eetHeightTerrainSectorCluster) continue;
 		string.Format("[%d:%d(%p),%d,%d]", i, element.GetType(), element.GetOwner(),
 			element.GetSPBGeometries() ? element.GetSPBGeometries()->GetIndex() : -1,
@@ -768,7 +768,7 @@ void deoglWorldCompute::pDebugPrintUpdateElements(){
 	
 	list.Add("{UpEl}");
 	for(i=0; i<count; i++){
-		deoglWorldComputeElement &element = *((deoglWorldComputeElement*)pUpdateElements.GetAt(i));
+		deoglWorldComputeElement &element = pUpdateElements.GetAt(i);
 		string.Format("[%d:%d(%p),%d,%d]", i, element.GetType(), element.GetOwner(),
 			element.GetSPBGeometries() ? element.GetSPBGeometries()->GetIndex() : -1,
 			element.GetSPBGeometries() ? element.GetSPBGeometries()->GetCount() : -1);
@@ -786,7 +786,7 @@ void deoglWorldCompute::pDebugPrintUpdateGeometries(){
 	
 	list.Add("{UpGeo}");
 	for(i=0; i<count; i++){
-		const deoglWorldComputeElement &element = *((deoglWorldComputeElement*)pUpdateElementGeometries.GetAt(i));
+		const deoglWorldComputeElement &element = pUpdateElementGeometries.GetAt(i);
 		string.Format("[%d:%d(%p),%d,%d]", i, element.GetType(), element.GetOwner(),
 			element.GetSPBGeometries() ? element.GetSPBGeometries()->GetIndex() : -1,
 			element.GetSPBGeometries() ? element.GetSPBGeometries()->GetCount() : -1);

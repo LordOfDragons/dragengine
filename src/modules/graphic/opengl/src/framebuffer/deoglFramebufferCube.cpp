@@ -58,7 +58,7 @@ pRenderThread(renderThread)
 ///////////////
 
 deoglFramebuffer *deoglFramebufferCube::GetFaceFBO(int face) const{
-	return (deoglFramebuffer*)pFaceFBOs.GetAt(face);
+	return pFaceFBOs.GetAt(face);
 }
 
 deoglFramebuffer *deoglFramebufferCube::GetBaseFBO() const{

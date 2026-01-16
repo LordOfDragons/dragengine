@@ -102,5 +102,5 @@ void deSkinPropertyVisitorLoad::VisitVideo(deSkinPropertyVideo &property){
 }
 
 void deSkinPropertyVisitorLoad::VisitConstructed(deSkinPropertyConstructed &property){
-	property.GetContent().Visit(pLoadNode);
+	property.GetContent()->Visit(pLoadNode);
 }

@@ -97,7 +97,7 @@ void deoalASkin::pCreateTextures(const deSkin &skin){
 	
 	pTextures = new deoalSkinTexture[count];
 	for(pTextureCount=0; pTextureCount<count; pTextureCount++){
-		pTextures[pTextureCount].ProcessProperties(*skin.GetTextureAt(pTextureCount));
+		pTextures[pTextureCount].ProcessProperties(skin.GetTextureAt(pTextureCount));
 		pAffectsSound |= pTextures[pTextureCount].GetAffectsSound();
 	}
 }

@@ -137,7 +137,7 @@ pMemUse(renderThread.GetMemoryManager().GetConsumption().skin)
 		pTextures = new deoglSkinTexture*[textureCount];
 		for(pTextureCount=0; pTextureCount<textureCount; pTextureCount++){
 			pTextures[pTextureCount] = new deoglSkinTexture(renderThread,
-				*this, *skin.GetTextureAt( pTextureCount ) );
+				*this, skin.GetTextureAt( pTextureCount ) );
 		}
 		
 		pHasRenderables = (pRenderables.GetCount() > 0);
@@ -186,7 +186,7 @@ pMemUse(renderThread.GetMemoryManager().GetConsumption().skin)
 			// build channel textures not loaded from caches and not provided by already
 			// loaded shared images. these are delayed until a time where we can safely
 			// create opengl objects.
-			pTextures[i]->BuildChannels(*this, *skin.GetTextureAt(i));
+			pTextures[i]->BuildChannels(*this, skin.GetTextureAt(i));
 			
 			// determine optimization parameters for the entire skin
 			
@@ -372,7 +372,7 @@ int deoglRSkin::GetRenderableCount() const{
 }
 
 deoglSkinRenderable &deoglRSkin::GetRenderableAt(int index){
-	return *((deoglSkinRenderable*)pRenderables.GetAt(index));
+	return pRenderables.GetAt(index);
 }
 
 int deoglRSkin::AddRenderable(const char *name){
@@ -395,7 +395,7 @@ int deoglRSkin::IndexOfRenderableNamed(const char *name) const{
 	int i;
 	
 	for(i=0; i<count; i++){
-		if(((deoglSkinRenderable*)pRenderables.GetAt(i))->GetName().Equals(name)){
+		if(pRenderables.GetAt(i)->GetName().Equals(name)){
 			return i;
 		}
 	}
@@ -422,7 +422,7 @@ int deoglRSkin::GetCalculatedPropertyCount() const{
 }
 
 deoglSkinCalculatedProperty *deoglRSkin::GetCalculatedPropertyAt(int index) const{
-	return (deoglSkinCalculatedProperty*)pCalculatedProperties.GetAt(index);
+	return pCalculatedProperties.GetAt(index);
 }
 
 int deoglRSkin::AddCalculatedProperty(deoglSkinCalculatedProperty *calculated){
@@ -444,7 +444,7 @@ int deoglRSkin::GetMappedCount() const{
 }
 
 deoglSkinMapped *deoglRSkin::GetMappedAt(int index) const{
-	return (deoglSkinMapped*)pMapped.GetAt(index);
+	return pMapped.GetAt(index);
 }
 
 
@@ -457,7 +457,7 @@ int deoglRSkin::GetConstructedPropertyCount() const{
 }
 
 deoglSkinConstructedProperty *deoglRSkin::GetConstructedPropertyAt(int index) const{
-	return (deoglSkinConstructedProperty*)pConstructedProperties.GetAt(index);
+	return pConstructedProperties.GetAt(index);
 }
 
 int deoglRSkin::AddConstructedProperty(deoglSkinConstructedProperty *constructed){
@@ -477,7 +477,7 @@ int deoglRSkin::GetBoneCount() const{
 }
 
 deoglSkinBone *deoglRSkin::GetBoneAt(int index) const{
-	return (deoglSkinBone*)pBones.GetAt(index);
+	return pBones.GetAt(index);
 }
 
 int deoglRSkin::AddBone(const char *name){
@@ -537,11 +537,11 @@ void deoglRSkin::pRetainImageData(const deSkin &skin){
 	int i, j;
 	
 	for(i=0; i<pTextureCount; i++){
-		const deSkinTexture &texture = *skin.GetTextureAt(i);
+		const deSkinTexture &texture = skin.GetTextureAt(i);
 		const int propertyCount = texture.GetPropertyCount();
 		
 		for(j=0; j<propertyCount; j++){
-			deSkinProperty &property = *texture.GetPropertyAt(j);
+			deSkinProperty &property = texture.GetPropertyAt(j);
 			const deoglSkinPropertyMap::ePropertyTypes propertyType =
 				deoglSkinPropertyMap::GetTypeFor(property.GetType());
 			

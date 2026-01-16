@@ -168,15 +168,9 @@ void deClassAnimationBuilder::nfAddBone::RunFunction(dsRunTime *rt, dsValue *mys
 	
 	const char * const name = rt->GetValue(0)->GetString();
 	
-	deAnimationBone * const bone = new deAnimationBone;
-	try{
-		bone->SetName(name);
-		builder->GetAnimation()->AddBone(bone);
-		
-	}catch(...){
-		delete bone;
-		throw;
-	}
+	deTUniqueReference<deAnimationBone> bone(deTUniqueReference<deAnimationBone>::New());
+	bone->SetName(name);
+	builder->GetAnimation()->AddBone(std::move(bone));
 }
 
 // protected func void addVertexPositionSet(String name)
@@ -217,16 +211,10 @@ void deClassAnimationBuilder::nfAddMove::RunFunction(dsRunTime *rt, dsValue *mys
 	const char * const name = rt->GetValue(0)->GetString();
 	const float playTime = rt->GetValue(1)->GetFloat();
 	
-	deAnimationMove * const move = new deAnimationMove;
-	try{
-		move->SetName(name);
-		move->SetPlaytime(playTime);
-		builder->GetAnimation()->AddMove(move);
-		
-	}catch(...){
-		delete move;
-		throw;
-	}
+	deTUniqueReference<deAnimationMove> move(deTUniqueReference<deAnimationMove>::New());
+	move->SetName(name);
+	move->SetPlaytime(playTime);
+	builder->GetAnimation()->AddMove(std::move(move));
 }
 
 // protected func void addMove( String name, float playTime, float fps )
@@ -248,17 +236,11 @@ void deClassAnimationBuilder::nfAddMove2::RunFunction(dsRunTime *rt, dsValue *my
 	const float playTime = rt->GetValue(1)->GetFloat();
 	const float fps = rt->GetValue(2)->GetFloat();
 	
-	deAnimationMove * const move = new deAnimationMove;
-	try{
-		move->SetName(name);
-		move->SetPlaytime(playTime);
-		move->SetFPS(fps);
-		builder->GetAnimation()->AddMove(move);
-		
-	}catch(...){
-		delete move;
-		throw;
-	}
+	deTUniqueReference<deAnimationMove> move(deTUniqueReference<deAnimationMove>::New());
+	move->SetName(name);
+	move->SetPlaytime(playTime);
+	move->SetFPS(fps);
+	builder->GetAnimation()->AddMove(std::move(move));
 }
 
 // protected func void setKeyframeListCount( int move, int count )
@@ -275,20 +257,11 @@ void deClassAnimationBuilder::nfSetKeyframeListCount::RunFunction(dsRunTime *rt,
 		DSTHROW(dueInvalidAction);
 	}
 	
-	deAnimationMove &move = *builder->GetAnimation()->GetMove(rt->GetValue(0)->GetInt());
+	deAnimationMove &move = builder->GetAnimation()->GetMove(rt->GetValue(0)->GetInt());
 	const int count = rt->GetValue(1)->GetInt();
 	
-	deAnimationKeyframe::List *kflist = nullptr;
-	try{
-		while(move.GetKeyframeListCount() < count){
-			kflist = new deAnimationKeyframe::List;
-			move.AddKeyframeList(kflist);
-			kflist = nullptr;
-		}
-		
-	}catch(...){
-		delete kflist;
-		throw;
+	while(move.GetKeyframeListCount() < count){
+		move.AddKeyframeList(deAnimationMove::KeyframeListRef::New());
 	}
 }
 
@@ -310,9 +283,9 @@ void deClassAnimationBuilder::nfAddKeyframe::RunFunction(dsRunTime *rt, dsValue 
 	}
 	
 	const deScriptingDragonScript &ds = static_cast<deClassAnimationBuilder*>(GetOwnerClass())->GetDS();
-	deAnimationMove &move = *builder->GetAnimation()->GetMove(rt->GetValue(0)->GetInt());
+	deAnimationMove &move = builder->GetAnimation()->GetMove(rt->GetValue(0)->GetInt());
 	
-	deAnimationKeyframe::List &kflist = *move.GetKeyframeList(rt->GetValue(1)->GetInt());
+	deAnimationKeyframe::List &kflist = move.GetKeyframeList(rt->GetValue(1)->GetInt());
 	deAnimationKeyframe keyframe;
 	keyframe.SetTime(rt->GetValue(2)->GetFloat());
 	keyframe.SetPosition(ds.GetClassVector()->GetVector(rt->GetValue(3)->GetRealObject()));
@@ -335,19 +308,10 @@ void deClassAnimationBuilder::nfSetVertexPositionSetKeyframeListCount::RunFuncti
 	}
 	
 	const int count = rt->GetValue(1)->GetInt();
+	deAnimationMove &move = builder->GetAnimation()->GetMove(rt->GetValue(0)->GetInt());
 	
-	deAnimationKeyframeVertexPositionSet::List *kflist = nullptr;
-	try{
-		deAnimationMove &move = *builder->GetAnimation()->GetMove(rt->GetValue(0)->GetInt());
-		while(move.GetVertexPositionSetKeyframeListCount() < count){
-			kflist = new deAnimationKeyframeVertexPositionSet::List;
-			move.AddVertexPositionSetKeyframeList(kflist);
-			kflist = nullptr;
-		}
-		
-	}catch(...){
-		delete kflist;
-		throw;
+	while(move.GetVertexPositionSetKeyframeListCount() < count){
+		move.AddVertexPositionSetKeyframeList(deAnimationMove::VertexPositionSetKeyframeListRef::New());
 	}
 }
 
@@ -366,10 +330,10 @@ void deClassAnimationBuilder::nfAddVertexPositionSetKeyframe::RunFunction(dsRunT
 		DSTHROW(dueInvalidAction);
 	}
 	
-	deAnimationMove &move = *builder->GetAnimation()->GetMove(rt->GetValue(0)->GetInt());
+	deAnimationMove &move = builder->GetAnimation()->GetMove(rt->GetValue(0)->GetInt());
 	
 	deAnimationKeyframeVertexPositionSet::List &kflist =
-		*move.GetVertexPositionSetKeyframeList( rt->GetValue( 1 )->GetInt() );
+		move.GetVertexPositionSetKeyframeList( rt->GetValue( 1 )->GetInt() );
 	
 	deAnimationKeyframeVertexPositionSet keyframe;
 	keyframe.SetTime(rt->GetValue(2)->GetFloat());

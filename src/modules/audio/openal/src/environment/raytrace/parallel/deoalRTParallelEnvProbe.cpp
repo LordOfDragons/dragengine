@@ -238,8 +238,7 @@ const deoalATRayTracing::sConfigSoundTracing &config){
 		const int count = wovTimingTasks.GetCount();
 		int i;
 		for(i=0; i<count; i++){
-			const deoalWOVRayHitsElement &wovrhe =
-				((deoalRTPTTraceSoundRays*)wovTimingTasks.GetAt(i))->wovRayHitsElement();
+			const deoalWOVRayHitsElement &wovrhe = wovTimingTasks.GetAt(i)->wovRayHitsElement();
 			pAudioThread.GetLogger().LogInfoFormat(
 				"WOVRHE(%03d): all=%.3f comp=%.3f(%d) compBVH=%.3f(%d) face=%.3f(%d) rayAdd=%d rayFound=%d", i,
 				wovrhe.timingAll*1000, wovrhe.timingComponent*1000, wovrhe.timingComponentCount,
@@ -253,8 +252,7 @@ const deoalATRayTracing::sConfigSoundTracing &config){
 		const int count = wovTimingTasks.GetCount();
 		int i;
 		for(i=0; i<count; i++){
-			const deoalRTWOVRayHitsElement &rtwovrhe =
-				((deoalRTPTTraceSoundRays*)wovTimingTasks.GetAt(i))->rtwovRayHitsElement();
+			const deoalRTWOVRayHitsElement &rtwovrhe = wovTimingTasks.GetAt(i)->rtwovRayHitsElement();
 			pAudioThread.GetLogger().LogInfoFormat(
 				"RTWOVRHE(%03d): all=%.3f(%d) comp=%.3f(%d) compBVH=%.3f(%d) face=%.3f(%d)", i,
 				rtwovrhe.timingAll*1e3f, rtwovrhe.timingAllCount, rtwovrhe.timingComponent*1e3f,
@@ -268,8 +266,7 @@ const deoalATRayTracing::sConfigSoundTracing &config){
 		const int count = wovTimingTasks.GetCount();
 		int i;
 		for(i=0; i<count; i++){
-			const deoalRTWOVRayHitsClosest &rtwovrhc =
-				((deoalRTPTTraceSoundRays*)wovTimingTasks.GetAt(i))->rtwovRayHitsClosest();
+			const deoalRTWOVRayHitsClosest &rtwovrhc = wovTimingTasks.GetAt(i)->rtwovRayHitsClosest();
 			pAudioThread.GetLogger().LogInfoFormat(
 				"RTWOVRHC(%03d): all=%.3f(%d) comp=%.3f(%d) compBVH=%.3f(%d) face=%.3f(%d)", i,
 				rtwovrhc.timingAll*1e3f, rtwovrhc.timingAllCount, rtwovrhc.timingComponent*1e3f,
@@ -283,8 +280,7 @@ const deoalATRayTracing::sConfigSoundTracing &config){
 		const int count = wovTimingTasks.GetCount();
 		int i;
 		for(i=0; i<count; i++){
-			const deoalRTWOVRayBlocked &rtwovrb =
-				((deoalRTPTTraceSoundRays*)wovTimingTasks.GetAt(i))->rtwovRayBlocked();
+			const deoalRTWOVRayBlocked &rtwovrb = wovTimingTasks.GetAt(i)->rtwovRayBlocked();
 			pAudioThread.GetLogger().LogInfoFormat(
 				"RTWOVRB(%03d): all=%.3f(%d) comp=%.3f(%d) compBVH=%.3f(%d) face=%.3f(%d)", i,
 				rtwovrb.timingAll*1e3f, rtwovrb.timingAllCount, rtwovrb.timingComponent*1e3f,

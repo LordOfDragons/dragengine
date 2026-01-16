@@ -261,43 +261,33 @@ void reRigConstraint::SetEngineConstraint(deColliderConstraint *constraint){
 	NotifyEngineConstraintChanged();
 }
 
-deRigConstraint *reRigConstraint::BuildEngineRigConstraint(){
-	deRigConstraint *engConstraint = nullptr;
+deRigConstraint::Ref reRigConstraint::BuildEngineRigConstraint(){
+	auto engConstraint = deRigConstraint::Ref::New();
 	
-	try{
-		engConstraint = new deRigConstraint;
+	engConstraint->SetReferencePosition(pPosition);
+	engConstraint->SetReferenceOrientation(decMatrix::CreateRotation(pOrientation * DEG2RAD).ToQuaternion());
+	engConstraint->SetBoneOffset(pOffset);
+	
+	pDof[deColliderConstraint::edofLinearX]->UpdateEngineDof(engConstraint->GetDofLinearX());
+	pDof[deColliderConstraint::edofLinearY]->UpdateEngineDof(engConstraint->GetDofLinearY());
+	pDof[deColliderConstraint::edofLinearZ]->UpdateEngineDof(engConstraint->GetDofLinearZ());
+	pDof[deColliderConstraint::edofAngularX]->UpdateEngineDof(engConstraint->GetDofAngularX());
+	pDof[deColliderConstraint::edofAngularY]->UpdateEngineDof(engConstraint->GetDofAngularY());
+	pDof[deColliderConstraint::edofAngularZ]->UpdateEngineDof(engConstraint->GetDofAngularZ());
+	
+	engConstraint->SetLinearDamping(pDampingLinear);
+	engConstraint->SetAngularDamping(pDampingAngular);
+	engConstraint->SetSpringDamping(pDampingSpring);
+	
+	engConstraint->SetIsRope(pIsRope);
+	
+	engConstraint->SetBreakingThreshold(pBreakingThreshold);
+	
+	if(pRig && pRigBone && pConstraintBone){
+		engConstraint->SetParentBone(pConstraintBone->GetOrder());
 		
-		engConstraint->SetReferencePosition(pPosition);
-		engConstraint->SetReferenceOrientation(decMatrix::CreateRotation(pOrientation * DEG2RAD).ToQuaternion());
-		engConstraint->SetBoneOffset(pOffset);
-		
-		pDof[deColliderConstraint::edofLinearX]->UpdateEngineDof(engConstraint->GetDofLinearX());
-		pDof[deColliderConstraint::edofLinearY]->UpdateEngineDof(engConstraint->GetDofLinearY());
-		pDof[deColliderConstraint::edofLinearZ]->UpdateEngineDof(engConstraint->GetDofLinearZ());
-		pDof[deColliderConstraint::edofAngularX]->UpdateEngineDof(engConstraint->GetDofAngularX());
-		pDof[deColliderConstraint::edofAngularY]->UpdateEngineDof(engConstraint->GetDofAngularY());
-		pDof[deColliderConstraint::edofAngularZ]->UpdateEngineDof(engConstraint->GetDofAngularZ());
-		
-		engConstraint->SetLinearDamping(pDampingLinear);
-		engConstraint->SetAngularDamping(pDampingAngular);
-		engConstraint->SetSpringDamping(pDampingSpring);
-		
-		engConstraint->SetIsRope(pIsRope);
-		
-		engConstraint->SetBreakingThreshold(pBreakingThreshold);
-		
-		if(pRig && pRigBone && pConstraintBone){
-			engConstraint->SetParentBone(pConstraintBone->GetOrder());
-			
-		}else{
-			engConstraint->SetParentBone(-1);
-		}
-		
-	}catch(const deException &){
-		if(engConstraint){
-			delete engConstraint;
-		}
-		throw;
+	}else{
+		engConstraint->SetParentBone(-1);
 	}
 	
 	return engConstraint;

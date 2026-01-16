@@ -27,6 +27,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/string/decString.h>
 
 class deAnimationMove;
@@ -41,11 +42,9 @@ private:
 	decString pName;
 	float pPlaytime;
 	
-	dearAnimationKeyframeList **pKeyframeLists;
-	int pKeyframeListCount;
+	decTUniqueList<dearAnimationKeyframeList> pKeyframeLists;
 	
-	dearAnimationKeyframeVPSList **pKeyframeVPSLists;
-	int pKeyframeVPSListCount;
+	decTUniqueList<dearAnimationKeyframeVPSList> pKeyframeVPSLists;
 	
 	
 	
@@ -76,13 +75,13 @@ public:
 	inline float GetPlaytime() const{ return pPlaytime; }
 	
 	/** Count of keyframe lists. */
-	inline int GetKeyframeListCount() const{ return pKeyframeListCount; }
+	inline int GetKeyframeListCount() const{ return pKeyframeLists.GetCount(); }
 	
 	/** Keyframe list at index. */
 	dearAnimationKeyframeList *GetKeyframeListAt(int index) const;
 	
 	/** Count of keyframe lists. */
-	inline int GetKeyframeVPSListCount() const{ return pKeyframeVPSListCount; }
+	inline int GetKeyframeVPSListCount() const{ return pKeyframeVPSLists.GetCount(); }
 	
 	/** Keyframe list at index. */
 	dearAnimationKeyframeVPSList *GetKeyframeVPSListAt(int index) const;

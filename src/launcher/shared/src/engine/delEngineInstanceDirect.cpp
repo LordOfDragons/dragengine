@@ -731,7 +731,7 @@ const char *gameObject, delGPModule::List *collectChangedParams){
 	int i, j;
 	
 	for(i=0; i<pModuleParamStates.GetCount(); i++){
-		cModuleParamState &mps = *((cModuleParamState*)pModuleParamStates.GetAt(i));
+		cModuleParamState &mps = pModuleParamStates.GetAt(i);
 		deBaseModule * const module = mps.module->GetModule();
 		if(module){
 			const int count = module->GetParameterCount();
@@ -773,7 +773,7 @@ const char *gameObject, delGPModule::List *collectChangedParams){
 	// compare module parameters against stored ones
 	if(collectChangedParams){
 		for(i=0; i<pModuleParamStates.GetCount(); i++){
-			cModuleParamState &mps = *((cModuleParamState*)pModuleParamStates.GetAt(i));
+			cModuleParamState &mps = pModuleParamStates.GetAt(i);
 			deBaseModule * const module = mps.module->GetModule();
 			if(!module){
 				continue;
@@ -1140,7 +1140,7 @@ void delEngineInstanceDirect::RunSingleFrameUpdate(){
 			
 			int i, j;
 			for(i=0; i<pModuleParamStates.GetCount(); i++){
-				cModuleParamState &mps = *((cModuleParamState*)pModuleParamStates.GetAt(i));
+				cModuleParamState &mps = pModuleParamStates.GetAt(i);
 				deBaseModule * const module = mps.module->GetModule();
 				if(!module){
 					continue;

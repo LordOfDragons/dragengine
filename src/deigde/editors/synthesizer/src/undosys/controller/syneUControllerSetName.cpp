@@ -60,9 +60,9 @@ syneUControllerSetName::~syneUControllerSetName(){
 ///////////////
 
 void syneUControllerSetName::Undo(){
-	((syneController&)(deObject&)pController).SetName(pOldValue);
+	pController->SetName(pOldValue);
 }
 
 void syneUControllerSetName::Redo(){
-	((syneController&)(deObject&)pController).SetName(pNewValue);
+	pController->SetName(pNewValue);
 }

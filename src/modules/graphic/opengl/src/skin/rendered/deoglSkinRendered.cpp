@@ -104,7 +104,7 @@ int deoglSkinRendered::GetTexturedCount() const{
 }
 
 deoglSkinRenderedTexture *deoglSkinRendered::GetTextureAt(int index) const{
-	return (deoglSkinRenderedTexture*)pTextures.GetAt(index);
+	return pTextures.GetAt(index);
 }
 
 deoglSkinRenderedTexture *deoglSkinRendered::AddTexture(deoglRSkin &skin, int texture, int modelTexture){
@@ -117,7 +117,7 @@ void deoglSkinRendered::RemoveAllTextures(){
 	const int count = pTextures.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		delete (deoglSkinRenderedTexture*)pTextures.GetAt(i);
+		delete pTextures.GetAt(i);
 	}
 	pTextures.RemoveAll();
 }
@@ -185,7 +185,7 @@ void deoglSkinRendered::AddRenderPlans(deoglRenderPlan &plan){
 	
 	int i;
 	for(i=0; i<count; i++){
-		((deoglSkinRenderedTexture*)pTextures.GetAt(i))->AddRenderPlans(plan);
+		pTextures.GetAt(i)->AddRenderPlans(plan);
 	}
 }
 
@@ -195,7 +195,7 @@ void deoglSkinRendered::DropDelayedDeletionObjects(){
 	const int count = pTextures.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		((deoglSkinRenderedTexture*)pTextures.GetAt(i))->DropDelayedDeletionObjects();
+		pTextures.GetAt(i)->DropDelayedDeletionObjects();
 	}
 }
 

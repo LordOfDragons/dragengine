@@ -538,7 +538,7 @@ void deoglModelLOD::pCalcErrorMetrics(const deModel &engModel){
 		return;
 	}
 	
-	const deModelLOD &engLod = *engModel.GetLODAt(pLODIndex);
+	const deModelLOD &engLod = engModel.GetLODAt(pLODIndex);
 	if(engLod.GetHasLodError()){
 		pAvgError = pMaxError = engLod.GetLodError();
 		return;
@@ -1179,7 +1179,7 @@ struct sGroupVertex{
 };
 
 void deoglModelLOD::pBuildArrays(const deModel &engModel){
-	const deModelLOD &engLod = *engModel.GetLODAt(pLODIndex);
+	const deModelLOD &engLod = engModel.GetLODAt(pLODIndex);
 	const int modelTexCoordSetCount = engLod.GetTextureCoordinatesSetCount();
 	const int modelVertPosSetCount = engLod.GetVertexPositionSetCount();
 	const int modelTexCoordCount = engLod.GetTextureCoordinatesCount();
@@ -1269,7 +1269,7 @@ void deoglModelLOD::pBuildArrays(const deModel &engModel){
 	pTextures = new deoglModelTexture*[textureCount];
 	
 	for(pTextureCount=0; pTextureCount<textureCount; pTextureCount++){
-		const deModelTexture &engTexture = *engModel.GetTextureAt(pTextureCount);
+		const deModelTexture &engTexture = engModel.GetTextureAt(pTextureCount);
 		
 		deoglModelTexture * const texture = new deoglModelTexture(pModel.GetRenderThread());
 		texture->SetDoubleSided(engTexture.GetDoubleSided());

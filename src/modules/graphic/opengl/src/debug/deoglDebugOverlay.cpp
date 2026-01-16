@@ -129,7 +129,7 @@ void deoglDebugOverlay::pSortViews(deCanvasView &canvasView){
 		int bestIndex = -1;
 		
 		for(i=0; i<count; i++){
-			const float order = ((deCanvas*)pList1.GetAt(i))->GetOrder();
+			const float order = pList1.GetAt(i)->GetOrder();
 			if(bestIndex == -1 || order < bestOrder){
 				bestOrder = order;
 				bestIndex = i;
@@ -150,7 +150,7 @@ void deoglDebugOverlay::pAlignViews(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		deCanvas &canvas = *((deCanvas*)pList2.GetAt(i));
+		deCanvas &canvas = *pList2.GetAt(i);
 		canvas.SetPosition(position);
 		position.x += canvas.GetSize().x + 5;
 	}

@@ -27,6 +27,7 @@
 
 #include "../dearControllerTarget.h"
 
+#include <dragengine/deTUniqueReference.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/animator/rule/deAnimatorRule.h>
 
@@ -43,6 +44,9 @@ class deDEAnimator;
  * Base animator rule class.
  */
 class dearRule{
+public:
+	using Ref = deTUniqueReference<dearRule>;
+	
 private:
 	dearAnimatorInstance &pInstance;
 	const dearAnimator &pAnimator;
