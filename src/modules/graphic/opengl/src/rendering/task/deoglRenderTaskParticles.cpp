@@ -47,26 +47,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderTaskParticles::deoglRenderTaskParticles(){
-	pRenderParamBlock = nullptr;
-	pRenderVSStereo = false;
-	
-	pSteps = nullptr;
-	pStepCount = 0;
-	pStepSize = 0;
+deoglRenderTaskParticles::deoglRenderTaskParticles() :
+pRenderParamBlock(nullptr),
+pStepCount(0),
+pRenderVSStereo(false){
 }
-
-deoglRenderTaskParticles::~deoglRenderTaskParticles(){
-	if(pSteps){
-		while(pStepSize > 0){
-			pStepSize--;
-			if(pSteps[pStepSize]) delete pSteps[pStepSize];
-		}
-		
-		delete [] pSteps;
-	}
-}
-
 
 
 // Management
@@ -89,33 +74,17 @@ void deoglRenderTaskParticles::SetRenderVSStereo(bool renderVSStereo){
 
 
 deoglRenderTaskParticlesStep *deoglRenderTaskParticles::GetStepAt(int index) const{
-	if(index < 0 || index >= pStepCount) DETHROW(deeInvalidParam);
-	
-	return pSteps[index];
+	return pSteps.GetAt(index);
 }
 
 deoglRenderTaskParticlesStep *deoglRenderTaskParticles::AddStep(){
-	if(pStepCount == pStepSize){
-		int newSize = pStepSize + 10;
-		deoglRenderTaskParticlesStep **newArray = new deoglRenderTaskParticlesStep*[newSize];
-		if(pSteps){
-			memcpy(newArray, pSteps, sizeof(deoglRenderTaskParticlesStep*) * pStepSize);
-			delete [] pSteps;
-		}
-		memset(newArray + pStepSize, '\0', sizeof(deoglRenderTaskParticlesStep*) * (newSize - pStepSize));
-		pSteps = newArray;
-		pStepSize = newSize;
+	if(pStepCount == pSteps.GetCount()){
+		pSteps.Add(deTUniqueReference<deoglRenderTaskParticlesStep>::New());
 	}
 	
-	if(!pSteps[pStepCount]){
-		pSteps[pStepCount] = new deoglRenderTaskParticlesStep;
-		
-	}else{
-		pSteps[pStepCount]->Reset();
-	}
-	
-	pStepCount++;
-	return pSteps[pStepCount - 1];
+	auto &s = pSteps.GetAt(pStepCount++);
+	s->Reset();
+	return s;
 }
 
 void deoglRenderTaskParticles::RemoveAllSteps(){
@@ -131,7 +100,7 @@ void deoglRenderTaskParticles::DebugPrint(deoglRTLogger &rtlogger){
 	const deoglPipeline *pipeline = nullptr;
 	
 	for(i=0; i<pStepCount; i++){
-		const deoglRenderTaskParticlesStep &step = *pSteps[i];
+		const deoglRenderTaskParticlesStep &step = pSteps[i];
 		if(step.GetPipeline() == pipeline){
 			continue;
 		}

@@ -25,12 +25,13 @@
 #ifndef _DEOGLHTVIEW_H_
 #define _DEOGLHTVIEW_H_
 
+#include "deoglHTViewSector.h"
 #include "deoglHeightTerrainListener.h"
 #include "deoglRHeightTerrain.h"
 
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/math/decMath.h>
 
-class deoglHTViewSector;
 class deoglCollisionVolume;
 
 
@@ -59,9 +60,7 @@ private:
 	const deoglRHeightTerrain::Ref pHeightTerrain;
 	HTListener::Ref pHTListener;
 	
-	deoglHTViewSector **pSectors;
-	int pSectorCount;
-	int pSectorSize;
+	decTUniqueList<deoglHTViewSector> pSectors;
 	
 	bool pDirtySectors;
 	
@@ -87,13 +86,10 @@ public:
 	inline deoglRHeightTerrain &GetHeightTerrain() const{ return pHeightTerrain; }
 	
 	/** Count of sectors. */
-	inline int GetSectorCount() const{ return pSectorCount; }
+	inline int GetSectorCount() const{ return pSectors.GetCount(); }
 	
 	/** Sector at index. */
 	deoglHTViewSector *GetSectorAt(int index) const;
-	
-	/** Add sector. */
-	void AddSector(deoglHTViewSector *sector);
 	
 	/** Remove all sectors. */
 	void RemoveAllSectors();

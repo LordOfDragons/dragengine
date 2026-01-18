@@ -42,6 +42,7 @@
 #include "../../utils/collision/deoglDCollisionBox.h"
 #include "../../world/deoglRWorld.h"
 
+#include <dragengine/deTUniqueReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/image/deImage.h>
 #include <dragengine/resources/skin/deSkin.h>
@@ -65,8 +66,6 @@ pCoordinates(sector.GetSector()),
 pBaseHeight(sector.GetParentHeightTerrain()->GetBaseHeight()),
 pScaling(sector.GetParentHeightTerrain()->GetHeightScaling()),
 
-pTextures(nullptr),
-pTextureCount(0),
 pValidTextures(false),
 pDirtyMaskTextures(true),
 pTexturesRequirePrepareForRender(true),
@@ -182,20 +181,16 @@ void deoglRHTSector::PrepareForRender(){
 	if(pTexturesRequirePrepareForRender){
 		pTexturesRequirePrepareForRender = false;
 		
-		int i;
-		for(i=0; i<pTextureCount; i++){
-			pTextures[i]->PrepareForRender();
-		}
+		pTextures.Visit([&](deoglHTSTexture &t){
+			t.PrepareForRender();
+		});
 	}
 }
 
 
 
 deoglHTSTexture &deoglRHTSector::GetTextureAt(int index) const{
-	if(index < 0 || index >= pTextureCount){
-		DETHROW(deeInvalidParam);
-	}
-	return *pTextures[index];
+	return pTextures.GetAt(index);
 }
 
 void deoglRHTSector::TextureRequirePrepareForRender(){
@@ -268,12 +263,7 @@ void deoglRHTSector::pCleanUp(){
 	if(pClusters){
 		delete [] pClusters;
 	}
-	if(pTextures){
-		for(i=0; i<pTextureCount; i++){
-			delete pTextures[i];
-		}
-		delete [] pTextures;
-	}
+	pTextures.RemoveAll();
 	for(i=0; i<OGLHTS_MAX_MASK_TEXTURES; i++){
 		if(pMasks[i]){
 			delete pMasks[i];
@@ -377,26 +367,15 @@ void deoglRHTSector::pCreateHeightMap(const deHeightTerrainSector &sector){
 }
 
 void deoglRHTSector::pSetTextureCount(int count){
-	if(count == pTextureCount){
+	if(count == pTextures.GetCount()){
 		return;
 	}
 	
-	if(pTextures){
-		int i;
-		for(i=0; i<pTextureCount; i++){
-			delete pTextures[i];
-		}
-		delete [] pTextures;
-		pTextures = nullptr;
-		pTextureCount = 0;
-	}
+	pTextures.RemoveAll();
 	
-	if(count > 0){
-		pTextures = new deoglHTSTexture*[count];
-		
-		for(pTextureCount=0; pTextureCount<count; pTextureCount++){
-			pTextures[pTextureCount] = new deoglHTSTexture(*this, pTextureCount);
-		}
+	int i;
+	for(i=0; i<count; i++){
+		pTextures.Add(deTUniqueReference<deoglHTSTexture>::New(*this, i));
 	}
 }
 
@@ -487,7 +466,7 @@ void deoglRHTSector::pSyncTextures(const deHeightTerrainSector &sector){
 }
 
 void deoglRHTSector::pSyncMaskTextures(const deHeightTerrainSector &sector){
-	const int textureCount = decMath::min(pTextureCount, 16);
+	const int textureCount = decMath::min(pTextures.GetCount(), 16);
 	const int maskCount = ((textureCount - 1) >> 2) + 1;
 	int m, t;
 	
@@ -659,7 +638,7 @@ void deoglRHTSector::pUpdateMaskTextures(){
 	}
 	pDirtyMaskTextures = false;
 	
-	const int textureCount = decMath::min(pTextureCount, 16);
+	const int textureCount = decMath::min(pTextures.GetCount(), 16);
 	int i;
 	
 	for(i=0; i<4; i++){

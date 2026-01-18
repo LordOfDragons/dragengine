@@ -27,6 +27,8 @@
 
 #include "../texture/deoglRImage.h"
 
+#include <dragengine/common/collection/decTList.h>
+
 class deoglImage;
 class deoglRenderThread;
 class deoglRFont;
@@ -51,8 +53,8 @@ private:
 	deoglRenderThread &pRenderThread;
 	
 	sGlyph pUndefinedGlyph, *pGlyphs;
-	const sGlyph **pGlyphMap;
-	int pGlyphCount, pGlyphMapCount;
+	decTList<const sGlyph*> pGlyphMap;
+	int pGlyphCount;
 	
 	int pLineHeight;
 	

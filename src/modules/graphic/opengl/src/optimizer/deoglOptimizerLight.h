@@ -50,6 +50,9 @@ class decConvexVolume;
  * shadow casting faces.
  */
 class deoglOptimizerLight : public deoglOptimizer{
+public:
+	using Ref = deTObjectReference<deoglOptimizerLight>;
+	
 private:
 	deoglRLight *pLight;
 	deoglWorld *pWorld;
@@ -82,10 +85,13 @@ public:
 	/*@{*/
 	/** Creates a new optimizer. */
 	deoglOptimizerLight(deoglRLight *light, deoglWorld *world);
+	
+protected:
 	/** Cleans up the optimizer. */
 	~deoglOptimizerLight() override;
 	/*@}*/
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the light to optimize. */

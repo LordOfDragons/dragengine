@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-
 #include "deoglArrayTexture.h"
 #include "deoglRenderableColorArrayTexture.h"
 #include "../../deoglBasics.h"

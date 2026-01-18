@@ -25,6 +25,8 @@
 #ifndef _DEBPWORLD_H_
 #define _DEBPWORLD_H_
 
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/utils/decTimer.h>
 #include <dragengine/common/utils/decLayerMask.h>
 #include <dragengine/resources/collider/deCollisionInfo.h>
@@ -81,22 +83,18 @@ private:
 	deCollider *pDetNextCollider;
 	deTouchSensor *pDetNextTouchSensor;
 	
-	debpCollider **pColDetPrepareColliders;
+	decTList<debpCollider*> pColDetPrepareColliders;
 	int pColDetPrepareColliderCount;
-	int pColDetPrepareColliderSize;
 	int pColDetPrepareColliderProcessCount;
 	
-	debpCollider **pColDetFinishColliders;
+	decTList<debpCollider*> pColDetFinishColliders;
 	int pColDetFinishColliderCount;
-	int pColDetFinishColliderSize;
 	
-	debpCollider **pPPCTColliders;
+	decTList<debpCollider*> pPPCTColliders;
 	int pPPCTColliderCount;
-	int pPPCTColliderSize;
 	
-	debpCollider **pUpdateOctreeColliders;
+	decTList<debpCollider*> pUpdateOctreeColliders;
 	int pUpdateOctreeColliderCount;
-	int pUpdateOctreeColliderSize;
 	
 	int pSimMaxSubStep;
 	float pSimTimeStep;
@@ -225,6 +223,7 @@ public:
 	 * \param elapsed Seconds elapsed since last update
 	 */
 	void Update(float elapsed) override;
+	
 	/**
 	 * Process physics simulation using the physics module.
 	 * \details Apply collision detection on moving kinematic collider, physical simulation

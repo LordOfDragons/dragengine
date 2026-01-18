@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "desynSynthesizerSourceGroup.h"
 #include "../desynCreateSynthesizerSource.h"
 #include "../desynSynthesizerInstance.h"
@@ -46,8 +42,6 @@
 desynSynthesizerSourceGroup::desynSynthesizerSourceGroup(desynSynthesizer &synthesizer,
 int firstLink, const deSynthesizerSourceGroup &source) :
 desynSynthesizerSource(synthesizer, firstLink, source),
-pSources(nullptr),
-pSourceCount(0),
 pApplicationType(source.GetApplicationType()),
 pSelectRange(0.0f),
 pTargetSelect(synthesizer, firstLink, source.GetTargetSelect())
@@ -57,18 +51,8 @@ pTargetSelect(synthesizer, firstLink, source.GetTargetSelect())
 		return;
 	}
 	
-	try{
-		pCreateSources(synthesizer, firstLink, source);
-		pSelectRange = (float)(pSourceCount - 1);
-		
-	}catch(const deException &){
-		pClearSources();
-		throw;
-	}
-}
-
-desynSynthesizerSourceGroup::~desynSynthesizerSourceGroup(){
-	pClearSources();
+	pCreateSources(synthesizer, firstLink, source);
+	pSelectRange = (float)(pSources.GetCount() - 1);
 }
 
 
@@ -84,32 +68,29 @@ float desynSynthesizerSourceGroup::GetSelect(const desynSynthesizerInstance &ins
 
 int desynSynthesizerSourceGroup::StateDataSizeSource(int offset){
 	int count = 0;
-	
 	if(pApplicationType != deSynthesizerSourceGroup::eatAll){
-		count += pSourceCount * sizeof(desynSharedBuffer*);
+		count += pSources.GetCount() * sizeof(desynSharedBuffer*);
 	}
 	
-	int i;
-	for(i=0; i<pSourceCount; i++){
-		count += pSources[i]->StateDataSize(offset + count);
-	}
+	pSources.Visit([&](desynSynthesizerSource &s){
+		count += s.StateDataSize(offset + count);
+	});
 	
 	return count;
 }
 
 void desynSynthesizerSourceGroup::InitStateDataSource(char *stateData){
-	int i;
-	
 	if(pApplicationType != deSynthesizerSourceGroup::eatAll){
 		desynSharedBuffer ** const sdata = (desynSharedBuffer**)(stateData + GetStateDataOffset());
-		for(i=0; i<pSourceCount; i++){
+		int i;
+		for(i=0; i<pSources.GetCount(); i++){
 			sdata[i] = nullptr;
 		}
 	}
 	
-	for(i=0; i<pSourceCount; i++){
-		pSources[i]->InitStateData(stateData);
-	}
+	pSources.Visit([&](desynSynthesizerSource &s){
+		s.InitStateData(stateData);
+	});
 }
 
 void desynSynthesizerSourceGroup::GenerateSourceSound(const desynSynthesizerInstance &instance,
@@ -131,12 +112,10 @@ char *stateData, float *buffer, int samples, float curveOffset, float curveFacto
 
 void desynSynthesizerSourceGroup::GenerateSoundAll(const desynSynthesizerInstance &instance,
 char *stateData, float *buffer, int samples, float curveOffset, float curveFactor){
-	int i;
-	
 	GenerateSilence(instance, buffer, samples);
-	for(i=0; i<pSourceCount; i++){
-		pSources[i]->GenerateSound(instance, stateData, buffer, samples, curveOffset, curveFactor);
-	}
+	pSources.Visit([&](desynSynthesizerSource &s){
+		s.GenerateSound(instance, stateData, buffer, samples, curveOffset, curveFactor);
+	});
 }
 
 void desynSynthesizerSourceGroup::GenerateSoundSelect(const desynSynthesizerInstance &instance,
@@ -144,14 +123,14 @@ char *stateData, float *buffer, int samples, float curveOffset, float curveFacto
 	desynSharedBuffer ** const sdata = (desynSharedBuffer**)(stateData + GetStateDataOffset());
 	desynSharedBufferList &sharedBufferList = GetModule().GetSharedBufferList();
 	const int channelCount = instance.GetChannelCount();
-	const int lastSource = pSourceCount - 1;
+	const int lastSource = pSources.GetCount() - 1;
 	float intpart;
-	int i;
 	
 	try{
 		if(channelCount == 1){
 			sGenerateBufferMono * const dbuf = (sGenerateBufferMono*)buffer;
 			
+			int i;
 			for(i=0; i<samples; i++){
 				const int curveEvalPos = NearestCurveEvalPosition(i, curveOffset, curveFactor);
 				const float selectBlend = modff(GetSelect(instance, curveEvalPos), &intpart);
@@ -161,7 +140,7 @@ char *stateData, float *buffer, int samples, float curveOffset, float curveFacto
 				if(!sdata[selectFirst]){
 					sdata[selectFirst] = sharedBufferList.ClaimBuffer(samples);
 					memset(sdata[selectFirst]->GetBuffer(), 0, sizeof(float) * samples);
-					pSources[selectFirst]->GenerateSound(instance, stateData,
+					pSources.GetAt(selectFirst)->GenerateSound(instance, stateData,
 						sdata[selectFirst]->GetBuffer(), samples, curveOffset, curveFactor);
 				}
 				const sGenerateBufferMono &buffer1 = *((const sGenerateBufferMono *)sdata[selectFirst]->GetBuffer() + i);
@@ -169,7 +148,7 @@ char *stateData, float *buffer, int samples, float curveOffset, float curveFacto
 				if(!sdata[selectSecond]){
 					sdata[selectSecond] = sharedBufferList.ClaimBuffer(samples);
 					memset(sdata[selectSecond]->GetBuffer(), 0, sizeof(float) * samples);
-					pSources[selectSecond]->GenerateSound(instance, stateData,
+					pSources.GetAt(selectSecond)->GenerateSound(instance, stateData,
 						sdata[selectSecond]->GetBuffer(), samples, curveOffset, curveFactor);
 				}
 				const sGenerateBufferMono &buffer2 = *((const sGenerateBufferMono *)sdata[selectSecond]->GetBuffer() + i);
@@ -180,6 +159,7 @@ char *stateData, float *buffer, int samples, float curveOffset, float curveFacto
 		}else if(channelCount == 2){
 			sGenerateBufferStereo * const dbuf = (sGenerateBufferStereo*)buffer;
 			
+			int i;
 			for(i=0; i<samples; i++){
 				const int curveEvalPos = NearestCurveEvalPosition(i, curveOffset, curveFactor);
 				const float selectBlend = modff(GetSelect(instance, curveEvalPos), &intpart);
@@ -189,7 +169,7 @@ char *stateData, float *buffer, int samples, float curveOffset, float curveFacto
 				if(!sdata[selectFirst]){
 					sdata[selectFirst] = sharedBufferList.ClaimBuffer(samples * 2);
 					memset(sdata[selectFirst]->GetBuffer(), 0, sizeof(float) * samples * 2);
-					pSources[selectFirst]->GenerateSound(instance, stateData,
+					pSources.GetAt(selectFirst)->GenerateSound(instance, stateData,
 						sdata[selectFirst]->GetBuffer(), samples, curveOffset, curveFactor);
 				}
 				const sGenerateBufferStereo &buffer1 = *((const sGenerateBufferStereo*)sdata[selectFirst]->GetBuffer() + i);
@@ -197,7 +177,7 @@ char *stateData, float *buffer, int samples, float curveOffset, float curveFacto
 				if(!sdata[selectSecond]){
 					sdata[selectSecond] = sharedBufferList.ClaimBuffer(samples * 2);
 					memset(sdata[selectSecond]->GetBuffer(), 0, sizeof(float) * samples * 2);
-					pSources[selectSecond]->GenerateSound(instance, stateData,
+					pSources.GetAt(selectSecond)->GenerateSound(instance, stateData,
 						sdata[selectSecond]->GetBuffer(), samples, curveOffset, curveFactor);
 				}
 				const sGenerateBufferStereo &buffer2 = *((const sGenerateBufferStereo*)sdata[selectSecond]->GetBuffer() + i);
@@ -207,18 +187,19 @@ char *stateData, float *buffer, int samples, float curveOffset, float curveFacto
 			}
 		}
 		
-		for(i=0; i<pSourceCount; i++){
+		pSources.VisitIndexed([&](int i, desynSynthesizerSource &s){
 			if(sdata[i]){
 				sharedBufferList.ReleaseBuffer(sdata[i]);
 				sdata[i] = nullptr;
 				
 			}else{
-				pSources[i]->SkipSound(instance, stateData, samples, curveOffset, curveFactor);
+				s.SkipSound(instance, stateData, samples, curveOffset, curveFactor);
 			}
-		}
+		});
 		
 	}catch(const deException &){
-		for(i=0; i<pSourceCount; i++){
+		int i;
+		for(i=0; i<pSources.GetCount(); i++){
 			if(sdata[i]){
 				sharedBufferList.ReleaseBuffer(sdata[i]);
 				sdata[i] = nullptr;
@@ -233,14 +214,14 @@ char *stateData, float *buffer, int samples, float curveOffset, float curveFacto
 	desynSharedBuffer ** const sdata = (desynSharedBuffer**)(stateData + GetStateDataOffset());
 	desynSharedBufferList &sharedBufferList = GetModule().GetSharedBufferList();
 	const int channelCount = instance.GetChannelCount();
-	const int lastSource = pSourceCount - 1;
+	const int lastSource = pSources.GetCount() - 1;
 	float intpart;
-	int i;
 	
 	try{
 		if(channelCount == 1){
 			sGenerateBufferMono * const dbuf = (sGenerateBufferMono*)buffer;
 			
+			int i;
 			for(i=0; i<samples; i++){
 				const int curveEvalPos = NearestCurveEvalPosition(i, curveOffset, curveFactor);
 				const float selectBlend = modff(GetSelect(instance, curveEvalPos), &intpart);
@@ -249,7 +230,7 @@ char *stateData, float *buffer, int samples, float curveOffset, float curveFacto
 				if(!sdata[selectSolo]){
 					sdata[selectSolo] = sharedBufferList.ClaimBuffer(samples);
 					memset(sdata[selectSolo]->GetBuffer(), 0, sizeof(float) * samples);
-					pSources[selectSolo]->GenerateSound(instance, stateData,
+					pSources.GetAt(selectSolo)->GenerateSound(instance, stateData,
 						sdata[selectSolo]->GetBuffer(), samples, curveOffset, curveFactor);
 				}
 				const sGenerateBufferMono &bufferSolo = *((const sGenerateBufferMono *)sdata[selectSolo]->GetBuffer() + i);
@@ -260,6 +241,7 @@ char *stateData, float *buffer, int samples, float curveOffset, float curveFacto
 		}else if(channelCount == 2){
 			sGenerateBufferStereo * const dbuf = (sGenerateBufferStereo*)buffer;
 			
+			int i;
 			for(i=0; i<samples; i++){
 				const int curveEvalPos = NearestCurveEvalPosition(i, curveOffset, curveFactor);
 				const float selectBlend = modff(GetSelect(instance, curveEvalPos), &intpart);
@@ -268,7 +250,7 @@ char *stateData, float *buffer, int samples, float curveOffset, float curveFacto
 				if(!sdata[selectSolo]){
 					sdata[selectSolo] = sharedBufferList.ClaimBuffer(samples * 2);
 					memset(sdata[selectSolo]->GetBuffer(), 0, sizeof(float) * samples * 2);
-					pSources[selectSolo]->GenerateSound(instance, stateData,
+					pSources.GetAt(selectSolo)->GenerateSound(instance, stateData,
 						sdata[selectSolo]->GetBuffer(), samples, curveOffset, curveFactor);
 				}
 				const sGenerateBufferStereo &bufferSolo = *((const sGenerateBufferStereo*)sdata[selectSolo]->GetBuffer() + i);
@@ -278,18 +260,19 @@ char *stateData, float *buffer, int samples, float curveOffset, float curveFacto
 			}
 		}
 		
-		for(i=0; i<pSourceCount; i++){
+		pSources.VisitIndexed([&](int i, desynSynthesizerSource &s){
 			if(sdata[i]){
 				sharedBufferList.ReleaseBuffer(sdata[i]);
 				sdata[i] = nullptr;
 				
 			}else{
-				pSources[i]->SkipSound(instance, stateData, samples, curveOffset, curveFactor);
+				s.SkipSound(instance, stateData, samples, curveOffset, curveFactor);
 			}
-		}
+		});
 		
 	}catch(const deException &){
-		for(i=0; i<pSourceCount; i++){
+		int i;
+		for(i=0; i<pSources.GetCount(); i++){
 			if(sdata[i]){
 				sharedBufferList.ReleaseBuffer(sdata[i]);
 				sdata[i] = nullptr;
@@ -301,10 +284,9 @@ char *stateData, float *buffer, int samples, float curveOffset, float curveFacto
 
 void desynSynthesizerSourceGroup::SkipSourceSound(const desynSynthesizerInstance &instance,
 char *stateData, int samples, float curveOffset, float curveFactor){
-	int i;
-	for(i=0; i<pSourceCount; i++){
-		pSources[i]->SkipSound(instance, stateData, samples, curveOffset, curveFactor);
-	}
+	pSources.Visit([&](desynSynthesizerSource &s){
+		s.SkipSound(instance, stateData, samples, curveOffset, curveFactor);
+	});
 }
 
 
@@ -314,45 +296,16 @@ char *stateData, int samples, float curveOffset, float curveFactor){
 
 void desynSynthesizerSourceGroup::pCreateSources(desynSynthesizer &synthesizer,
 int firstLink, const deSynthesizerSourceGroup &source){
-	pClearSources();
-	
-	const int count = source.GetSources().GetCount();
-	if(count == 0){
+	if(source.GetSources().IsEmpty()){
 		SetSilent(true);
 		return;
 	}
 	
 	desynCreateSynthesizerSource createSource(synthesizer, firstLink);
-	
-	pSources = new desynSynthesizerSource*[count];
-	
-	for(pSourceCount=0; pSourceCount<count; pSourceCount++){
+	source.GetSources().Visit([&](deSynthesizerSource &s){
 		createSource.Reset();
 		
-		try{
-			source.GetSources().GetAt(pSourceCount)->Visit(createSource);
-			pSources[pSourceCount] = createSource.GetSource();
-			
-		}catch(const deException &){
-			if(createSource.GetSource()){
-				delete createSource.GetSource();
-			}
-			throw;
-		}
-	}
-}
-
-void desynSynthesizerSourceGroup::pClearSources(){
-	if(!pSources){
-		return;
-	}
-	
-	int i;
-	for(i=0; i<pSourceCount; i++){
-		delete pSources[i];
-	}
-	delete [] pSources;
-	
-	pSources = nullptr;
-	pSourceCount = 0;
+		s.Visit(createSource);
+		pSources.Add(std::move(createSource.GetSource()));
+	});
 }

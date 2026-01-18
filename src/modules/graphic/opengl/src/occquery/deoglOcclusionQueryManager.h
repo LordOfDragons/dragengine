@@ -22,13 +22,14 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _DEOGLOCCLUSIONQUERYMANAGER_H_
 #define _DEOGLOCCLUSIONQUERYMANAGER_H_
 
-// predefinitions
+#include "deoglOcclusionQuery.h"
+
+#include <dragengine/common/collection/decTUniqueList.h>
+
 class deoglRenderThread;
-class deoglOcclusionQuery;
 
 
 
@@ -47,10 +48,7 @@ class deoglOcclusionQueryManager{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	deoglOcclusionQuery **pQueries;
-	int pQueryCount;
-	int pQuerySize;
-	
+	decTUniqueList<deoglOcclusionQuery> pQueries;
 	int pFreeQueryCount;
 	
 	deoglOcclusionQuery *pActiveQuery;
@@ -60,8 +58,6 @@ public:
 	/*@{*/
 	/** Creates a new occlusion queries. */
 	deoglOcclusionQueryManager(deoglRenderThread &renderThread);
-	/** Cleans up the occlusion queries. */
-	~deoglOcclusionQueryManager();
 	/*@}*/
 	
 	/** \name Management */

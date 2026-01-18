@@ -44,7 +44,6 @@ const desynSynthesizer &synthesizer, int firstLink, desynSynthesizerSource &sour
 pSynthesizer(synthesizer),
 pSource(source),
 pFirstLink(firstLink),
-pEffect(nullptr),
 pPreviousEffect(nullptr){
 }
 
@@ -57,7 +56,7 @@ desynCreateSynthesizerEffect::~desynCreateSynthesizerEffect(){
 ///////////////
 
 void desynCreateSynthesizerEffect::Reset(){
-	pEffect = nullptr;
+	pEffect.Clear();
 	pPreviousEffect = nullptr;
 }
 
@@ -68,11 +67,11 @@ void desynCreateSynthesizerEffect::Reset(){
 /////////////
 
 void desynCreateSynthesizerEffect::VisitEffect(deSynthesizerEffect &effect){
-	pEffect = nullptr;
+	pEffect.Clear();
 }
 
 void desynCreateSynthesizerEffect::VisitStretch(deSynthesizerEffectStretch &effect){
-	pEffect = new desynSynthesizerEffectStretch(pSynthesizer, pFirstLink, pSource, effect);
+	pEffect = deTUniqueReference<desynSynthesizerEffectStretch>::New(pSynthesizer, pFirstLink, pSource, effect);
 	pEffect->SetPreviousEffect(pPreviousEffect);
 	pPreviousEffect = pEffect;
 }

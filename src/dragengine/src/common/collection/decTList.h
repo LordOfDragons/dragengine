@@ -261,6 +261,17 @@ public:
 		pElements[index] = std::move(element);
 	}
 	
+	/**
+	 * \brief Set range of elements starting at index.
+	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-count.
+	 */
+	void SetRangeAt(int index, int count, const TP &element){
+		DEASSERT_TRUE(index >= 0)
+		DEASSERT_TRUE(index + count <= pCount)
+		
+		std::fill_n(pElements + index, count, element);
+	}
+	
 	/** \brief Index of the first occurance of an element or -1 if not found. */
 	int IndexOf(const TP &element) const{
 		return IndexOf(element, 0);
@@ -554,6 +565,18 @@ public:
 		pCount++;
 	}
 	
+	/** \brief Add range of element. */
+	void AddRange(int count, const TP &element){
+		DEASSERT_TRUE(count >= 0)
+		if(count == 0){
+			return;
+		}
+		
+		EnlargeCapacity(pCount + count);
+		std::fill_n(pElements + pCount, count, element);
+		pCount += count;
+	}
+	
 	/**
 	 * \brief Move element.
 	 * \throws deeInvalidParam \em from is less than 0 or larger than GetCount()-1.
@@ -590,6 +613,29 @@ public:
 			}
 			pElements[to - 1] = std::move(tempElement);
 		}
+	}
+	
+	/**
+	 * \brief Swap two elements by index.
+	 * \throws deeInvalidParam \em index1 or \em index2 is out of range.
+	 */
+	void SwapItems(int index1, int index2){
+		if(index1 < 0){
+			index1 = pCount + index1;
+		}
+		if(index2 < 0){
+			index2 = pCount + index2;
+		}
+		DEASSERT_TRUE(index1 >= 0)
+		DEASSERT_TRUE(index1 < pCount)
+		DEASSERT_TRUE(index2 >= 0)
+		DEASSERT_TRUE(index2 < pCount)
+		
+		if(index1 == index2){
+			return;
+		}
+		
+		std::swap(pElements[index1], pElements[index2]);
 	}
 	
 	/**
@@ -1528,9 +1574,7 @@ public:
 	void Reverse(){
 		int i;
 		for(i=0; i<pCount / 2; i++){
-			T temp = std::move(pElements[i]);
-			pElements[i] = std::move(pElements[pCount - 1 - i]);
-			pElements[pCount - 1 - i] = std::move(temp);
+			std::swap(pElements[i], pElements[pCount - 1 - i]);
 		}
 	}
 	

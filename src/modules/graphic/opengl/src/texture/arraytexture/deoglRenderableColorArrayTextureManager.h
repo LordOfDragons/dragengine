@@ -25,6 +25,8 @@
 #ifndef _DEOGLRENDERABLECOLORARRAYTEXTUREMANAGER_H_
 #define _DEOGLRENDERABLECOLORARRAYTEXTUREMANAGER_H_
 
+#include <dragengine/common/collection/decTUniqueList.h>
+
 class deoglRenderThread;
 class deoglRenderableColorArrayTexture;
 
@@ -41,9 +43,7 @@ class deoglRenderableColorArrayTextureManager{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	deoglRenderableColorArrayTexture **pArrayTextures;
-	int pArrayTextureCount;
-	int pArrayTextureSize;
+	decTUniqueList<deoglRenderableColorArrayTexture> pArrayTextures;
 	
 	
 	
@@ -62,7 +62,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Count of renderable textures. */
-	inline int GetCount() const{ return pArrayTextureCount; }
+	inline int GetCount() const{ return pArrayTextures.GetCount(); }
 	
 	/** Renderable texture at index for reading purpose only. */
 	const deoglRenderableColorArrayTexture *GetAt(int index) const;

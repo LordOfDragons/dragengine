@@ -27,6 +27,7 @@
 
 #include "desynSynthesizerCurve.h"
 
+#include <dragengine/deTUniqueReference.h>
 #include <dragengine/common/collection/decTList.h>
 
 class desynSynthesizerInstance;
@@ -38,6 +39,9 @@ class deSynthesizerLink;
  * \brief Synthesizer link.
  */
 class desynSynthesizerLink{
+public:
+	using Ref = deTUniqueReference<desynSynthesizerLink>;
+	
 private:
 	int pController;
 	int pRepeat;

@@ -33,7 +33,6 @@
 
 class deoglPersistentRenderTaskPool;
 class deoglPersistentRenderTaskTexture;
-class deoglQuickSorter;
 class deoglPersistentRenderTaskInstance;
 class deoglSharedSPB;
 class deoglSharedSPBRTIGroup;

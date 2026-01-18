@@ -27,6 +27,7 @@
 
 #include "pipeline/deoglLightPipelines.h"
 #include "../canvas/render/deoglRCanvasView.h"
+#include "../optimizer/deoglOptimizerLight.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../skin/deoglRSkin.h"
 #include "../skin/dynamic/deoglRDynamicSkin.h"
@@ -46,7 +47,6 @@ class deoglCollideList;
 class deoglLightShaderConfig;
 class deoglLightVolume;
 class deoglOcclusionTest;
-class deoglOptimizerLight;
 class deoglRComponent;
 class deoglRenderPlan;
 class deoglRenderPlanMasked;
@@ -134,7 +134,7 @@ private:
 	float pDampThreshold;
 	
 	decConvexVolumeList *pConvexVolumeList;
-	deoglOptimizerLight *pOptimizer;
+	deoglOptimizerLight::Ref pOptimizer;
 	
 	deoglShadowCaster *pShadowCaster;
 	bool pDirtyStaticShadows;

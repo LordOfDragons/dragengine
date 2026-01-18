@@ -399,148 +399,90 @@ public:
 	
 private:
 	deEngine *pEngine;
-	dedsCachedVegetationSector **pSectors;
-	int pSectorCount;
-	int pSectorSize;
+	decTUniqueList<dedsCachedVegetationSector> pSectors;
 	float pSectorDim;
 	int pPFCellCount;
 	deWorld::Ref pWorld;
 	decCollisionFilter pCollisionFilter;
 	
-public:
+	public:
 	dedsCachedVegetation(deEngine *engine, float sectorDim, int pfCellCount){
 		if(!engine || sectorDim < 10.0f || pfCellCount < 1) DSTHROW(dueInvalidParam);
 		
 		pEngine = engine;
-		pSectors = nullptr;
-		pSectorCount = 0;
-		pSectorSize = 0;
 		pSectorDim = sectorDim;
 		pPFCellCount = pfCellCount;
-	}
-	
-protected:
+	}	protected:
 	~dedsCachedVegetation() override{
 		RemoveAllSectors();
-		if(pSectors) delete [] pSectors;
-	}
-	
-public:
+	}public:
 	void SetWorld(deWorld *world){
 		if(world == pWorld){
 			return;
 		}
 		
-		int i;
 		if(pWorld){
-			for(i=0; i<pSectorCount; i++){
-				pSectors[i]->SetWorld(nullptr);
-			}
+			pSectors.Visit([&](dedsCachedVegetationSector &s){
+				s.SetWorld(nullptr);
+			});
 		}
 		
 		pWorld = world;
 		
 		if(world){
-			for(i=0; i<pSectorCount; i++){
-				pSectors[i]->SetWorld(world);
-			}
+			pSectors.Visit([&](dedsCachedVegetationSector &s){
+				s.SetWorld(world);
+			});
 		}
 	}
 	
-	inline int GetSectorCount() const{ return pSectorCount; }
+	inline int GetSectorCount() const{ return pSectors.GetCount(); }
 	
 	dedsCachedVegetationSector *GetSectorAt(int index) const{
-		if(index < 0 || index >= pSectorCount) DSTHROW(dueInvalidParam);
-		
-		return pSectors[index];
+		return pSectors.GetAt(index);
 	}
 	
 	dedsCachedVegetationSector *GetSectorWith(const decPoint &coordinates) const{
-		int s;
-		
-		for(s=0; s<pSectorCount; s++){
-			if(pSectors[s]->GetCoordinates() == coordinates){
-				return pSectors[s];
-			}
-		}
-		
-		return nullptr;
+		return pSectors.FindOrNull([&](const dedsCachedVegetationSector &s){
+			return s.GetCoordinates() == coordinates;
+		});
 	}
 	
 	void AddSectorWith(const decPoint &coordinates, const char *cacheFile){
-		const deVirtualFileSystem::Ref &vfs = pEngine->GetVirtualFileSystem();
-		dedsCachedVegetationSector *sector = nullptr;
-		decPath path;
-		
 		if(GetSectorWith(coordinates)) DSTHROW(dueInvalidParam);
 		
-		if(pSectorCount == pSectorSize){
-			int newSize = pSectorSize * 3 / 2 + 1;
-			dedsCachedVegetationSector **newArray = new dedsCachedVegetationSector*[newSize];
-			if(!newArray) DSTHROW(dueOutOfMemory);
-			if(pSectors){
-				memcpy(newArray, pSectors, sizeof(dedsCachedVegetationSector*) * pSectorSize);
-				delete [] pSectors;
-			}
-			pSectors = newArray;
-			pSectorSize = newSize;
-		}
-		
-		pSectors[pSectorCount] = new dedsCachedVegetationSector(pEngine, pSectorDim, pPFCellCount, coordinates);
-		sector = pSectors[pSectorCount];
-		pSectorCount++;
-		
+		auto sector = deTUniqueReference<dedsCachedVegetationSector>::New(
+			pEngine, pSectorDim, pPFCellCount, coordinates);
 		sector->SetCollisionFilter(pCollisionFilter);
 		sector->SetWorld(pWorld);
-		
-		try{
-			path.SetFromUnix(cacheFile);
-			
-			sector->LoadCacheFile(pEngine, vfs->OpenFileForReading(path));
-			
-		}catch(...){
-			sector->Clear();
-			throw;
-		}
+		sector->LoadCacheFile(pEngine, pEngine->GetVirtualFileSystem()->OpenFileForReading(
+			decPath::CreatePathUnix(cacheFile)));
+		pSectors.Add(std::move(sector));
 	}
 	
 	void RemoveSectorWith(const decPoint &coordinates){
-		int s, index = -1;
-		
-		for(s=0; s<pSectorCount; s++){
-			if(pSectors[s]->GetCoordinates() == coordinates){
-				index = s;
-				break;
-			}
-		}
+		const int index = pSectors.IndexOfMatching([&](const dedsCachedVegetationSector &s){
+			return s.GetCoordinates() == coordinates;
+		});
 		
 		if(index != -1){
-			pSectors[index]->SetWorld(nullptr);
-			delete pSectors[index];
-			
-			for(s=index+1; s<pSectorCount; s++){
-				pSectors[s - 1] = pSectors[s];
-			}
-			pSectorCount--;
+			pSectors.GetAt(index)->SetWorld(nullptr);
+			pSectors.RemoveFrom(index);
 		}
 	}
 	
 	void RemoveAllSectors(){
-		while(pSectorCount > 0){
-			pSectorCount--;
-			pSectors[pSectorCount]->SetWorld(nullptr);
-			delete pSectors[pSectorCount];
-		}
+		pSectors.Visit([&](dedsCachedVegetationSector &s){
+			s.SetWorld(nullptr);
+		});
+		pSectors.RemoveAll();
 	}
 	
 	void SetCollisionFilter(const decCollisionFilter &filter){
-		int s;
-		
 		pCollisionFilter = filter;
-		
-		for(s=0; s<pSectorCount; s++){
-			pSectors[s]->SetCollisionFilter(filter);
-		}
+		pSectors.Visit([&](dedsCachedVegetationSector &s){
+			s.SetCollisionFilter(filter);
+		});
 	}
 };
 

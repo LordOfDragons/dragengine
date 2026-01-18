@@ -52,8 +52,7 @@ private:
 	int pLineFirstPoint;
 	int pLinePointCount;
 	
-	decVector *pHullPoints;
-	int pHullPointCount;
+	decTList<decVector> pHullPoints;
 	decTList<int> pHullIndices;
 	bool pDirtyHulls;
 	

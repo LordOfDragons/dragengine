@@ -53,7 +53,7 @@
 debpPhysicsBody::debpPhysicsBody() :
 pDynWorld(NULL),
 pRigidBody(NULL),
-pMotionState(NULL),
+pMotionState(new debpMotionState),
 pShapeSurface(0.0f),
 
 pMass(0.0f),
@@ -67,13 +67,7 @@ pPreventUpdate(false),
 pStateChanged(false),
 
 pCcdThreshold(0.001f),
-pCcdRadius(0.001f),
-
-pConstraints(NULL),
-pConstraintCount(0),
-pConstraintSize(0)
-{
-	pMotionState = new debpMotionState;
+pCcdRadius(0.001f){
 }
 
 debpPhysicsBody::~debpPhysicsBody(){
@@ -469,73 +463,26 @@ void debpPhysicsBody::ApplyTorque(const decVector &torque){
 ///////////////////////
 
 debpColliderConstraint *debpPhysicsBody::GetConstraintAt(int index) const{
-	if(index < 0 || index >= pConstraintCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return pConstraints[index];
+	return pConstraints.GetAt(index);
 }
 
 int debpPhysicsBody::IndexOfConstraint(debpColliderConstraint *constraint) const{
-	if(!constraint){
-		DETHROW(deeInvalidParam);
-	}
-	int i;
-	
-	for(i=0; i<pConstraintCount; i++){
-		if(constraint == pConstraints[i]){
-			return i;
-		}
-	}
-	
-	return -1;
+	DEASSERT_NOTNULL(constraint)
+	return pConstraints.IndexOf(constraint);
 }
 
 bool debpPhysicsBody::HasConstraint(debpColliderConstraint *constraint) const{
-	if(!constraint){
-		DETHROW(deeInvalidParam);
-	}
-	int i;
-	
-	for(i=0; i<pConstraintCount; i++){
-		if(constraint == pConstraints[i]){
-			return true;
-		}
-	}
-	
-	return false;
+	DEASSERT_NOTNULL(constraint)
+	return pConstraints.Has(constraint);
 }
 
 void debpPhysicsBody::AddConstraint(debpColliderConstraint *constraint){
-	if(HasConstraint(constraint)){
-		DETHROW(deeInvalidParam);
-	}
-	
-	if(pConstraintCount == pConstraintSize){
-		int newSize = pConstraintSize * 3 / 2 + 1;
-		debpColliderConstraint **newArray = new debpColliderConstraint*[newSize];
-		if(pConstraints){
-			memcpy(newArray, pConstraints, sizeof(debpColliderConstraint*) * pConstraintSize);
-			delete [] pConstraints;
-		}
-		pConstraints = newArray;
-		pConstraintSize = newSize;
-	}
-	
-	pConstraints[pConstraintCount] = constraint;
-	pConstraintCount++;
+	DEASSERT_FALSE(HasConstraint(constraint))
+	pConstraints.Add(constraint);
 }
 
 void debpPhysicsBody::RemoveConstraint(debpColliderConstraint *constraint){
-	int i, index = IndexOfConstraint(constraint);
-	if(index == -1){
-		DETHROW(deeInvalidParam);
-	}
-	
-	for(i=index+1; i<pConstraintCount; i++){
-		pConstraints[i - 1] = pConstraints[i];
-	}
-	pConstraintCount--;
+	pConstraints.RemoveOrThrow(constraint);
 }
 
 
@@ -545,25 +492,16 @@ void debpPhysicsBody::RemoveConstraint(debpColliderConstraint *constraint){
 
 void debpPhysicsBody::pCleanUp(){
 	pFreeRigidBody();
-	// constraints should not be linked any more at this time. if though this is for
-	// some strange reason still the case notify them that we are no more valid. we
-	// take some measures to avoid problems in the case some constraint decides to
-	// unregister itself during this process
-	int currentIndex;
 	
-	while(pConstraintCount > 0){
-		currentIndex = pConstraintCount - 1;
-		
-		pConstraints[currentIndex]->PhysicsBodyDestroy(this);
-		
-		if(currentIndex < pConstraintCount){
-			pConstraintCount--;
+	// constraints should not be linked any more at this time. if though this is for some strange
+	// reason still the case notify them that we are no more valid. we take some measures to
+	// avoid problems in the case some constraint decides to unregister itself during this process
+	while(pConstraints.IsNotEmpty()){
+		const int index = pConstraints.GetCount() - 1;
+		pConstraints.Last()->PhysicsBodyDestroy(this);
+		if(index < pConstraints.GetCount()){
+			pConstraints.RemoveFrom(index);
 		}
-	}
-	
-	// now we can free the list
-	if(pConstraints){
-		delete [] pConstraints;
 	}
 	
 	// free the motion state
@@ -683,10 +621,9 @@ void debpPhysicsBody::pCreateRigidBody(){
 	}
 	
 	// notify all constraints that the rigid body has been created
-	int i;
-	for(i=0; i<pConstraintCount; i++){
-		pConstraints[i]->RigidBodyCreated(this);
-	}
+	pConstraints.Visit([&](debpColliderConstraint *c){
+		c->RigidBodyCreated(this);
+	});
 }
 
 void debpPhysicsBody::pFreeRigidBody(){
@@ -694,12 +631,10 @@ void debpPhysicsBody::pFreeRigidBody(){
 		return;
 	}
 	
-	int c;
-	
 	// notify all constraints that the rigid body is about to be destroyed
-	for(c=0; c<pConstraintCount; c++){
-		pConstraints[c]->RigidBodyDestroy(this);
-	}
+	pConstraints.Visit([&](debpColliderConstraint *c){
+		c->RigidBodyDestroy(this);
+	});
 	
 	// destroy the rigid body or add it to the delayed operation if the world is locked
 	if(pDynWorld->GetDelayedOperation().IsLocked()){

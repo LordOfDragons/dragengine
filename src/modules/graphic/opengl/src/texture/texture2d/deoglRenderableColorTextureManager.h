@@ -25,6 +25,8 @@
 #ifndef _DEOGLRENDERABLECOLORTEXTUREMANAGER_H_
 #define _DEOGLRENDERABLECOLORTEXTUREMANAGER_H_
 
+#include <dragengine/common/collection/decTUniqueList.h>
+
 class deoglRenderThread;
 class deoglRenderableColorTexture;
 
@@ -42,9 +44,7 @@ class deoglRenderableColorTextureManager{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	deoglRenderableColorTexture **pTextures;
-	int pTextureCount;
-	int pTextureSize;
+	decTUniqueList<deoglRenderableColorTexture> pTextures;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -58,7 +58,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of renderable textures. */
-	inline int GetTextureCount() const{ return pTextureCount; }
+	inline int GetTextureCount() const{ return pTextures.GetCount(); }
 	/** Retrieves the renderable texture for reading only at the given location. */
 	const deoglRenderableColorTexture *GetTextureAt(int index) const;
 	

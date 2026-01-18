@@ -42,8 +42,7 @@ class deVideoPlayer;
  */
 class deoglSkinStateController{
 private:
-	deoglSharedVideoPlayer **pSharedVideoPlayers;
-	int pSharedVideoPlayerCount;
+	decTList<deoglSharedVideoPlayer*> pSharedVideoPlayers;
 	
 	decTObjectList<deVideoPlayer> pVideoPlayers;
 	
@@ -67,7 +66,7 @@ public:
 	/** \name Management. */
 	/*@{*/
 	/** Number of shared video players. */
-	inline int GetVideoPlayerCount() const{ return pSharedVideoPlayerCount; }
+	inline int GetVideoPlayerCount() const{ return pSharedVideoPlayers.GetCount(); }
 	
 	/** Set number of video players. */
 	void SetVideoPlayerCount(int count);

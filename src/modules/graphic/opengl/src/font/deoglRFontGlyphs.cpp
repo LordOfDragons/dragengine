@@ -44,9 +44,7 @@
 deoglRFontGlyphs::deoglRFontGlyphs(deoglRenderThread &renderThread, const deFont &font) :
 pRenderThread(renderThread),
 pGlyphs(nullptr),
-pGlyphMap(nullptr),
 pGlyphCount(0),
-pGlyphMapCount(0),
 pLineHeight(font.GetLineHeight()),
 pDelayedImage(nullptr)
 {
@@ -62,9 +60,7 @@ pDelayedImage(nullptr)
 deoglRFontGlyphs::deoglRFontGlyphs(deoglRenderThread &renderThread, const deFontSize &size) :
 pRenderThread(renderThread),
 pGlyphs(nullptr),
-pGlyphMap(nullptr),
 pGlyphCount(0),
-pGlyphMapCount(0),
 pLineHeight(size.GetLineHeight()),
 pDelayedImage(nullptr)
 {
@@ -100,7 +96,7 @@ void deoglRFontGlyphs::FinalizeAsyncResLoading(){
 }
 
 const deoglRFontGlyphs::sGlyph &deoglRFontGlyphs::GetGlyphFor(int unicode) const{
-	return unicode >= 0 && unicode < pGlyphMapCount ? *pGlyphMap[unicode] : pUndefinedGlyph;
+	return unicode >= 0 && unicode < pGlyphMap.GetCount() ? *pGlyphMap.GetAt(unicode) : pUndefinedGlyph;
 }
 
 void deoglRFontGlyphs::pBuildGlyphs(const deFont &font){
@@ -125,14 +121,10 @@ void deoglRFontGlyphs::pBuildGlyphs(const deFont &font){
 	pGlyphCount = glyphCount;
 	
 	if(maxUnicode > 0){
-		pGlyphMap = new const sGlyph*[maxUnicode + 1];
-		for(i=0; i<=maxUnicode; i++){
-			pGlyphMap[i] = &pUndefinedGlyph;
-		}
+		pGlyphMap = decTList<const sGlyph*>(maxUnicode + 1, &pUndefinedGlyph);
 		for(i=0; i<glyphCount; i++){
-			pGlyphMap[font.GetGlyphAt(i).GetUnicode()] = pGlyphs + i;
+			pGlyphMap.SetAt(font.GetGlyphAt(i).GetUnicode(), pGlyphs + i);
 		}
-		pGlyphMapCount = maxUnicode + 1;
 	}
 }
 
@@ -158,14 +150,10 @@ void deoglRFontGlyphs::pBuildGlyphs(const deFontSize &size){
 	pGlyphCount = glyphCount;
 	
 	if(maxUnicode > 0){
-		pGlyphMap = new const sGlyph*[maxUnicode + 1];
-		for(i=0; i<=maxUnicode; i++){
-			pGlyphMap[i] = &pUndefinedGlyph;
-		}
+		pGlyphMap = decTList<const sGlyph*>(maxUnicode + 1, &pUndefinedGlyph);
 		for(i=0; i<glyphCount; i++){
-			pGlyphMap[size.GetGlyphAt(i).GetUnicode()] = pGlyphs + i;
+			pGlyphMap.SetAt(size.GetGlyphAt(i).GetUnicode(), pGlyphs + i);
 		}
-		pGlyphMapCount = maxUnicode + 1;
 	}
 }
 
@@ -199,9 +187,6 @@ void deoglRFontGlyphs::DebugPrint() const{
 
 void deoglRFontGlyphs::pCleanUp(){
 	SetImage(nullptr);
-	if(pGlyphMap){
-		delete [] pGlyphMap;
-	}
 	if(pGlyphs){
 		delete [] pGlyphs;
 	}

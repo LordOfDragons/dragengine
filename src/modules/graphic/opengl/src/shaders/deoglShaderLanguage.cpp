@@ -113,8 +113,6 @@ pHasLoadingShader(false),
 pCompilingShaderCount(0),
 pHasCompilingShader(false),
 pCompiler(nullptr),
-pCompilerThreads(nullptr),
-pCompilerThreadCount(0),
 pCompilingTaskCount(0)
 {
 	const deoglExtensions &ext = renderThread.GetExtensions();
@@ -264,7 +262,7 @@ deoglShaderCompileListener *listener){
 		program->GetUnitFragment()};
 	int i;
 	
-	if(pCompilerThreadCount > 0 /*|| pglMaxShaderCompilerThreads*/){
+	if(pCompilerThreads.IsNotEmpty() /*|| pglMaxShaderCompilerThreads*/){
 		{
 		const deMutexGuard guard(pMutexTasks);
 		pLoadTasksPending.Add(deoglShaderLoadTask::Ref::New(program, listener));
@@ -695,23 +693,19 @@ void deoglShaderLanguage::Update(){
 //////////////////////
 
 void deoglShaderLanguage::pCleanUp(){
-	if(pCompilerThreads){
-		int i;
-		for(i=0; i<pCompilerThreadCount; i++){
-			pCompilerThreads[i]->RequestExit();
-		}
+	if(pCompilerThreads.IsNotEmpty()){
+		pCompilerThreads.Visit([](deoglShaderCompilerThread &t){
+			t.RequestExit();
+		});
 		
 		pSemaphoreNewTasks.SignalAll();
 		pSemaphoreTasksFinished.SignalAll();
 		
-		for(i=0; i<pCompilerThreadCount; i++){
+		pCompilerThreads.VisitIndexed([&](int i, deoglShaderCompilerThread &t){
 			pRenderThread.GetLogger().LogInfoFormat("Wait exit shader compile thread %d", i);
-			pCompilerThreads[i]->WaitForExit();
+			t.WaitForExit();
 			pRenderThread.GetLogger().LogInfoFormat("Shader compile thread %d exited", i);
-			delete pCompilerThreads[i];
-		}
-		
-		delete [] pCompilerThreads;
+		});
 	}
 	
 	if(pCompiler){
@@ -733,28 +727,26 @@ void deoglShaderLanguage::pCreateCompileThreads(){
 	// count = 1;
 #endif
 	
-	pCompilerThreads = new deoglShaderCompilerThread*[count];
-	
 	int i;
 	if(pglMaxShaderCompilerThreads){
-		pCompilerThreads[0] = new deoglShaderCompilerThread(
+		auto t = deTUniqueReference<deoglShaderCompilerThread>::New(
 			*this, 0, deoglShaderCompilerThread::Type::glparallel);
-		pCompilerThreadCount = 1;
-		pCompilerThreads[0]->Start();
+		t->Start();
+		pCompilerThreads.Add(std::move(t));
 		pRenderThread.GetContext().DropCompileContexts(1);
 		
 	}else{
 		for(i=0; i<count; i++){
-			pCompilerThreads[i] = new deoglShaderCompilerThread(
+			auto t = deTUniqueReference<deoglShaderCompilerThread>::New(
 				*this, i, deoglShaderCompilerThread::Type::single);
-			pCompilerThreadCount = i + 1;
-			pCompilerThreads[i]->Start();
+			t->Start();
+			pCompilerThreads.Add(std::move(t));
 		}
 	}
 	
-	for(i=0; i<count; i++){
+	pCompilerThreads.Visit([](deoglShaderCompilerThread &t){
 		while(true){
-			const deoglShaderCompilerThread::State state = pCompilerThreads[i]->GetState();
+			const auto state = t.GetState();
 			DEASSERT_FALSE(state == deoglShaderCompilerThread::State::failed)
 			if(state == deoglShaderCompilerThread::State::ready){
 				break;
@@ -763,7 +755,7 @@ void deoglShaderLanguage::pCreateCompileThreads(){
 			decTimer timer;
 			while(timer.PeekElapsedTime() < 0.001f);
 		}
-	}
+	});
 }
 
 void deoglShaderLanguage::pLogTotalsLocked(){

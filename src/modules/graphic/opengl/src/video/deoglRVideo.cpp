@@ -33,6 +33,7 @@
 #include "../texture/texture2d/deoglTexture.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 
+#include <dragengine/deTUniqueReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/video/deVideo.h>
 
@@ -52,31 +53,20 @@ pWidth(width),
 pHeight(height),
 pComponentCount(componentCount),
 
-pFrames(nullptr),
-pFrameCount(0),
 pFrameCountToCache(-1),
 
 pUpdateFrame(-1)
 {
 	if(frameCount > 0){
-		pFrames = new deoglTexture*[frameCount];
-		for(pFrameCount=0; pFrameCount<frameCount; pFrameCount++){
-			pFrames[pFrameCount] = nullptr;
+		int i;
+		for(i=0; i<frameCount; i++){
+			pFrames.Add({});
 		}
-		pFrameCountToCache = pFrameCount;
+		pFrameCountToCache = frameCount;
 	}
 }
 
 deoglRVideo::~deoglRVideo(){
-	if(pFrames){
-		int i;
-		for(i=0; i<pFrameCount; i++){
-			if(pFrames[i]){
-				delete pFrames[i];
-			}
-		}
-		delete [] pFrames;
-	}
 }
 
 
@@ -85,7 +75,7 @@ deoglRVideo::~deoglRVideo(){
 ///////////////
 
 deoglTexture *deoglRVideo::GetTexture(int frame) const{
-	if(frame < 0 || frame >= pFrameCount){
+	if(frame < 0 || frame >= pFrames.GetCount()){
 		try{
 			DETHROW(deeInvalidParam);
 		}catch(const deException &e){
@@ -93,12 +83,12 @@ deoglTexture *deoglRVideo::GetTexture(int frame) const{
 		}
 		DETHROW(deeInvalidParam);
 	}
-	return pFrames[frame];
+	return pFrames.GetAt(frame);
 }
 
 deoglPixelBuffer::Ref deoglRVideo::SetPixelBuffer(int frame, deoglPixelBuffer *pixelBuffer){
 	DEASSERT_TRUE(frame >= 0)
-	DEASSERT_TRUE(frame < pFrameCount)
+	DEASSERT_TRUE(frame < pFrames.GetCount())
 	DEASSERT_TRUE(pUpdateFrame == -1)
 	
 	const deoglPixelBuffer::Ref prevPixelBuffer(pPixelBuffer);
@@ -114,16 +104,17 @@ void deoglRVideo::UpdateTexture(){
 		return;
 	}
 	
-	if(!pFrames[pUpdateFrame]){
-		pFrames[pUpdateFrame] = new deoglTexture(pRenderThread);
-		pFrames[pUpdateFrame]->SetSize(pWidth, pHeight);
-		pFrames[pUpdateFrame]->SetMapingFormat(pComponentCount, false, false);
-		pFrames[pUpdateFrame]->SetMipMapped(false); // true would be nicer but doing it every frame is a waste
-		pFrames[pUpdateFrame]->CreateTexture();
+	if(!pFrames.GetAt(pUpdateFrame)){
+		auto texture = deTUniqueReference<deoglTexture>::New(pRenderThread);
+		texture->SetSize(pWidth, pHeight);
+		texture->SetMapingFormat(pComponentCount, false, false);
+		texture->SetMipMapped(false); // true would be nicer but doing it every frame is a waste
+		texture->CreateTexture();
+		pFrames.SetAt(pUpdateFrame, std::move(texture));
 	}
 	
 	if(pPixelBuffer){
-		pFrames[pUpdateFrame]->SetPixels(pPixelBuffer);
+		pFrames.GetAt(pUpdateFrame)->SetPixels(pPixelBuffer);
 	}
 	
 	//pRenderThread.GetLogger().LogInfoFormat( "Video: update texture frame=%i remaining=%i", pUpdateFrame, pFrameCountToCache );

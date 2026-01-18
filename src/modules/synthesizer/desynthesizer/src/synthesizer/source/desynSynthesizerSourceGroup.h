@@ -26,6 +26,7 @@
 #define _DESYNSYNTHESIZERSOURCEGROUP_H_
 
 #include "desynSynthesizerSource.h"
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/resources/synthesizer/source/deSynthesizerSourceGroup.h>
 
 class deSynthesizerSourceGroup;
@@ -38,8 +39,7 @@ class desynSynthesizerSource;
  */
 class desynSynthesizerSourceGroup : public desynSynthesizerSource{
 private:
-	desynSynthesizerSource **pSources;
-	int pSourceCount;
+	decTUniqueList<desynSynthesizerSource> pSources;
 	
 	deSynthesizerSourceGroup::eApplicationTypes pApplicationType;
 	float pSelectRange;
@@ -54,9 +54,6 @@ public:
 	/** \brief Create synthesizer source. */
 	desynSynthesizerSourceGroup(desynSynthesizer &synthesizer, int firstLink,
 		const deSynthesizerSourceGroup &source);
-	
-	/** \brief Clean up synthesizer source. */
-	~desynSynthesizerSourceGroup() override;
 	/*@}*/
 	
 	
@@ -122,7 +119,6 @@ public:
 	
 private:
 	void pCreateSources(desynSynthesizer &synthesizer, int firstLink, const deSynthesizerSourceGroup &source);
-	void pClearSources();
 };
 
 #endif

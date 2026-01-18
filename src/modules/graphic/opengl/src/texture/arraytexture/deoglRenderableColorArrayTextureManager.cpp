@@ -30,6 +30,7 @@
 #include "deoglRenderableColorArrayTextureManager.h"
 #include "../../deoglBasics.h"
 
+#include <dragengine/deTUniqueReference.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -42,20 +43,10 @@
 
 deoglRenderableColorArrayTextureManager::deoglRenderableColorArrayTextureManager(
 	deoglRenderThread &renderThread) :
-pRenderThread(renderThread),
-pArrayTextures(nullptr),
-pArrayTextureCount(0),
-pArrayTextureSize(0){
+pRenderThread(renderThread){
 }
 
 deoglRenderableColorArrayTextureManager::~deoglRenderableColorArrayTextureManager(){
-	if(pArrayTextures){
-		while(pArrayTextureCount > 0){
-			pArrayTextureCount--;
-			delete pArrayTextures[pArrayTextureCount];
-		}
-		delete [] pArrayTextures;
-	}
 }
 
 
@@ -64,50 +55,24 @@ deoglRenderableColorArrayTextureManager::~deoglRenderableColorArrayTextureManage
 ///////////////
 
 const deoglRenderableColorArrayTexture *deoglRenderableColorArrayTextureManager::GetAt(int index) const{
-	if(index < 0 || index >= pArrayTextureCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return pArrayTextures[index];
+	return pArrayTextures.GetAt(index);
 }
 
 deoglRenderableColorArrayTexture *deoglRenderableColorArrayTextureManager::GetWith(
 int width, int height, int layerCount, int componentCount, bool isFloat){
-	deoglRenderableColorArrayTexture *texture = nullptr;
-	int i;
-	
 	// find the texture with the matching format
-	for(i=0; i<pArrayTextureCount; i++){
-		if(!pArrayTextures[i]->GetInUse() && pArrayTextures[i]->Matches(
-		width, height, layerCount, componentCount, isFloat)){
-			texture = pArrayTextures[i];
-			break;
-		}
+	auto found = pArrayTextures.FindOrNull([&](const deoglRenderableColorArrayTexture &t){
+		return !t.GetInUse() && t.Matches(width, height, layerCount, componentCount, isFloat);
+	});
+	if(found){
+		found->SetInUse(true);
+		return found;
 	}
 	
 	// if not found create a new one
-	if(!texture){
-		if(pArrayTextureCount == pArrayTextureSize){
-			int newSize = pArrayTextureSize * 3 / 2 + 1;
-			deoglRenderableColorArrayTexture **newArray = new deoglRenderableColorArrayTexture*[newSize];
-			
-			if(pArrayTextures){
-				memcpy(newArray, pArrayTextures, sizeof(deoglRenderableColorArrayTexture*) * pArrayTextureSize);
-				delete [] pArrayTextures;
-			}
-			
-			pArrayTextures = newArray;
-			pArrayTextureSize = newSize;
-		}
-		
-		texture = new deoglRenderableColorArrayTexture(pRenderThread,
-			width, height, layerCount, componentCount, isFloat);
-		
-		pArrayTextures[pArrayTextureCount] = texture;
-		pArrayTextureCount++;
-	}
-	
-	// mark the texture in use and return it
+	auto texture = deTUniqueReference<deoglRenderableColorArrayTexture>::New(
+		pRenderThread, width, height, layerCount, componentCount, isFloat);
 	texture->SetInUse(true);
-	return texture;
+	pArrayTextures.Add(std::move(texture));
+	return pArrayTextures.Last();
 }

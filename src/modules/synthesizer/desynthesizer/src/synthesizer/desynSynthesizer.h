@@ -25,8 +25,10 @@
 #ifndef _DESYNSYNTHESIZER_H_
 #define _DESYNSYNTHESIZER_H_
 
+#include "desynSynthesizerLink.h"
 #include "../desynBasics.h"
 
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/systems/modules/synthesizer/deBaseSynthesizerSynthesizer.h>
@@ -36,7 +38,6 @@ class desynSynthesizerInstance;
 class deDESynthesizer;
 class deSynthesizer;
 class desynSynthesizerSource;
-class desynSynthesizerLink;
 
 
 
@@ -48,10 +49,8 @@ private:
 	deDESynthesizer &pModule;
 	deSynthesizer &pSynthesizer;
 	
-	decTList<desynSynthesizerLink*> pLinks;
-	
-	desynSynthesizerSource **pSources;
-	int pSourceCount;
+	decTUniqueList<desynSynthesizerLink> pLinks;
+	decTUniqueList<desynSynthesizerSource> pSources;
 	
 	bool pSilent;
 	int pStateDataSize;
@@ -127,12 +126,12 @@ public:
 	const desynSynthesizerLink &GetLinkAt(int index) const;
 	
 	/** \brief Add link. */
-	void AddLink(desynSynthesizerLink *link);
+	void AddLink(desynSynthesizerLink::Ref &&link);
 	
 	
 	
 	/** \brief Number of sources. */
-	inline int GetSourceCount() const{ return pSourceCount; }
+	inline int GetSourceCount() const{ return pSources.GetCount(); }
 	
 	/** \brief Source at index. */
 	const desynSynthesizerSource &GetSourceAt(int index) const;
@@ -178,12 +177,8 @@ public:
 	
 	
 private:
-	void pCleanUp();
-	
-	void pClearLinks();
 	void pCreateLinks();
 	void pCreateSources();
-	void pClearSources();
 };
 
 #endif

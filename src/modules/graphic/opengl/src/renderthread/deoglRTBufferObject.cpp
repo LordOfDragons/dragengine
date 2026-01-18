@@ -711,36 +711,14 @@ void deoglRTBufferObject::pCreateSharedVBOLists(){
 }
 
 void deoglRTBufferObject::pCreateShapes(){
-	deoglShape *shape = nullptr;
-	int i;
-	
 	pShapeManager = new deoglShapeManager;
 	
-	try{
-		shape = new deoglShapeSphere(pRenderThread);
-		pShapeManager->AddShape(shape);
-		shape = nullptr;
-		
-		shape = new deoglShapeBox(pRenderThread);
-		pShapeManager->AddShape(shape);
-		shape = nullptr;
-		
-		shape = new deoglShapeCylinder(pRenderThread);
-		pShapeManager->AddShape(shape);
-		shape = nullptr;
-		
-		shape = new deoglShapeCapsule(pRenderThread);
-		pShapeManager->AddShape(shape);
-		shape = nullptr;
-		
-	}catch(const deException &){
-		if(shape){
-			delete shape;
-		}
-		throw;
-	}
+	pShapeManager->AddShape(deTUniqueReference<deoglShapeSphere>::New(pRenderThread));
+	pShapeManager->AddShape(deTUniqueReference<deoglShapeBox>::New(pRenderThread));
+	pShapeManager->AddShape(deTUniqueReference<deoglShapeCylinder>::New(pRenderThread));
+	pShapeManager->AddShape(deTUniqueReference<deoglShapeCapsule>::New(pRenderThread));
 	
-	for(i=esSphere; i<=esCapsule; i++){
-		pShapeManager->GetShapeAt(i)->GetVBOBlock();
-	}
+	pShapeManager->GetShapes().Visit([](deoglShape &s){
+		s.GetVBOBlock();
+	});
 }

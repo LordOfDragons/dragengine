@@ -44,8 +44,6 @@
 #include "../occlusiontest/deoglOcclusionTest.h"
 #include "../occlusiontest/mesh/deoglOcclusionMesh.h"
 #include "../occquery/deoglOcclusionQuery.h"
-#include "../optimizer/deoglOptimizerLight.h"
-#include "../optimizer/deoglOptimizerManager.h"
 #include "../rendering/plan/deoglRenderPlan.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTShader.h"

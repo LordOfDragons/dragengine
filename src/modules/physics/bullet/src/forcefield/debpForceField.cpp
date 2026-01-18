@@ -49,28 +49,10 @@
 debpForceField::debpForceField(dePhysicsBullet &bullet, const deForceField &forceField) :
 pBullet(bullet),
 pForceField(forceField),
-pVortices(nullptr),
-pVortexCount(0),
-pVortexSize(0),
-pTimeUntilNextVortex(0.5f),
-pDirtyGeometry(true)
-{
-	/*
-	try{
-		pVortices = new debpFFVortex*[20];
-		
-		for(pVortexSize=0; pVortexSize<20; pVortexSize++){
-			pVortices[pVortexSize] = new debpFFVortex;
-		}
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}*/
-}
 
-debpForceField::~debpForceField(){
-	pCleanUp();
+pVortexCount(0),
+pTimeUntilNextVortex(0.5f),
+pDirtyGeometry(true){
 }
 
 
@@ -79,8 +61,6 @@ debpForceField::~debpForceField(){
 ///////////////
 
 void debpForceField::Update(float elapsed){
-	int v, v2;
-	
 	pUpdateGeometry();
 	
 	// update next vortex timer and add one if elapsed
@@ -88,62 +68,61 @@ void debpForceField::Update(float elapsed){
 	if(pTimeUntilNextVortex <= 0.0f){
 		pTimeUntilNextVortex = 0.5f;
 		
-		if(pVortexCount < pVortexSize){
-			float fieldRadius = pForceField.GetRadius();
-			float rfactor = 1.0f / (float)RAND_MAX;
-			decVector position, view;
-			float size, velocity, timeToLive;
-			float arc1, arc2, dist;
-			
-			size = 0.1f + (float)random() * rfactor * 9.9f; // 0.1 -> 10m
-			
-			arc1 = (float)random() * rfactor * (PI * 2.0f);
-			dist = (float)random() * rfactor * (fieldRadius - size);
-			
-			position.x = sinf(arc1) * dist;
-			position.y = 0.0f;
-			position.z = cosf(arc1) * dist;
-			
-			arc1 = (float)random() * rfactor * (PI * 2.0f);
-			arc2 = (float)random() * rfactor * PI;
-			
-			view.x = sinf(arc1) * cosf(arc2);
-			view.y = sinf(arc2);
-			view.z = cosf(arc1) * cosf(arc2);
-			
-			velocity = (float)random() * rfactor * pForceField.GetForce();
-			timeToLive = 0.5f + (float)random() * rfactor * 9.5f; // 0.5 -> 10s
-			
-			pVortices[pVortexCount]->SetPosition(position);
-			pVortices[pVortexCount]->SetView(view);
-			pVortices[pVortexCount]->SetSize(size);
-			pVortices[pVortexCount]->SetFullVelocity(velocity);
-			pVortices[pVortexCount]->SetTimeToLive(timeToLive);
-			pVortices[pVortexCount]->Update();
-			pVortexCount++;
-			
-			//pBullet->LogInfoFormat( "Added Vortex: p=(%g,%g,%g) v=(%g,%g,%g) s=%g ve=%g ttl=%g", position.x, position.y, position.z,
-			//	view.x, view.y, view.z, size, velocity, timeToLive );
+		if(pVortexCount == pVortices.GetCount()){
+			pVortices.Add(deTUniqueReference<debpFFVortex>::New());
 		}
+		
+		float fieldRadius = pForceField.GetRadius();
+		float rfactor = 1.0f / (float)RAND_MAX;
+		decVector position, view;
+		float size, velocity, timeToLive;
+		float arc1, arc2, dist;
+		
+		size = 0.1f + (float)random() * rfactor * 9.9f; // 0.1 -> 10m
+		
+		arc1 = (float)random() * rfactor * (PI * 2.0f);
+		dist = (float)random() * rfactor * (fieldRadius - size);
+		
+		position.x = sinf(arc1) * dist;
+		position.y = 0.0f;
+		position.z = cosf(arc1) * dist;
+		
+		arc1 = (float)random() * rfactor * (PI * 2.0f);
+		arc2 = (float)random() * rfactor * PI;
+		
+		view.x = sinf(arc1) * cosf(arc2);
+		view.y = sinf(arc2);
+		view.z = cosf(arc1) * cosf(arc2);
+		
+		velocity = (float)random() * rfactor * pForceField.GetForce();
+		timeToLive = 0.5f + (float)random() * rfactor * 9.5f; // 0.5 -> 10s
+		
+		debpFFVortex &v = pVortices.GetAt(pVortexCount);
+		v.SetPosition(position);
+		v.SetView(view);
+		v.SetSize(size);
+		v.SetFullVelocity(velocity);
+		v.SetTimeToLive(timeToLive);
+		v.Update();
+		pVortexCount++;
+		
+		//pBullet->LogInfoFormat( "Added Vortex: p=(%g,%g,%g) v=(%g,%g,%g) s=%g ve=%g ttl=%g", position.x, position.y, position.z,
+		//	view.x, view.y, view.z, size, velocity, timeToLive );
 	}
 	
 	// update vortices
-	for(v=0; v<pVortexCount; v++){
-		pVortices[v]->IncreaseLivedTime(elapsed);
-		if(pVortices[v]->HasDied()){
-			debpFFVortex *vortex = pVortices[v];
-			//pBullet->LogInfoFormat( "Vortex Died: p=(%g,%g,%g) v=(%g,%g,%g) s=%g ve=%g", vortex->GetPosition().x, vortex->GetPosition().y, vortex->GetPosition().z,
-			//	vortex->GetView().x, vortex->GetView().y, vortex->GetView().z, vortex->GetSize(), vortex->GetFullVelocity() );
-			
-			for(v2=v+1; v2<pVortexCount; v2++){
-				pVortices[v2 - 1] = pVortices[v2];
-			}
-			
-			pVortices[pVortexCount - 1] = vortex;
+	int i;
+	for(i=0; i<pVortexCount; i++){
+		debpFFVortex &vortex = pVortices.GetAt(i);
+		vortex.IncreaseLivedTime(elapsed);
+		if(vortex.HasDied()){
+			//pBullet->LogInfoFormat("Vortex Died: p=(%g,%g,%g) v=(%g,%g,%g) s=%g ve=%g", vortex->GetPosition().x, vortex->GetPosition().y, vortex->GetPosition().z,
+			//	vortex->GetView().x, vortex->GetView().y, vortex->GetView().z, vortex->GetSize(), vortex->GetFullVelocity());
+			pVortices.Move(i, pVortexCount);
 			pVortexCount--;
 			
 		}else{
-			pVortices[v]->Update();
+			vortex.Update();
 		}
 	}
 }
@@ -254,18 +233,6 @@ void debpForceField::EnabledChanged(){
 
 // Private functions
 //////////////////////
-
-void debpForceField::pCleanUp(){
-	if(pVortices){
-		while(pVortexSize > 0){
-			pVortexSize--;
-			if(pVortices[pVortexSize]){
-				delete pVortices[pVortexSize];
-			}
-		}
-		delete [] pVortices;
-	}
-}
 
 void debpForceField::pUpdateGeometry(){
 	if(!pDirtyGeometry){

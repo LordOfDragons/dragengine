@@ -22,13 +22,10 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-
 #include "deoglShape.h"
 #include "deoglShapeManager.h"
 
+#include <dragengine/deTUniqueReference.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -36,66 +33,17 @@
 // Class deoglShapeManager
 ////////////////////////////
 
-// Constructor, destructor
-////////////////////////////
-
-deoglShapeManager::deoglShapeManager(){
-	pShapes = nullptr;
-	pShapeCount = 0;
-	pShapeSize = 0;
-}
-
-deoglShapeManager::~deoglShapeManager(){
-	pCleanUp();
-}
-
-
-
 // Management
 ///////////////
 
 deoglShape *deoglShapeManager::GetShapeAt(int index) const{
-	if(index < 0 || index >= pShapeCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return pShapes[index];
+	return pShapes.GetAt(index);
 }
 
-void deoglShapeManager::AddShape(deoglShape *shape){
-	if(!shape){
-		DETHROW(deeInvalidParam);
-	}
-	
-	if(pShapeCount == pShapeSize){
-		int i, newSize = pShapeSize * 3 / 2 + 1;
-		deoglShape **newArray = new deoglShape*[newSize];
-		if(pShapes){
-			for(i=0; i<pShapeSize; i++) newArray[i] = pShapes[i];
-			delete [] pShapes;
-		}
-		pShapes = newArray;
-		pShapeSize = newSize;
-	}
-	pShapes[pShapeCount] = shape;
-	pShapeCount++;
+void deoglShapeManager::AddShape(deTUniqueReference<deoglShape> &&shape){
+	pShapes.Add(std::move(shape));
 }
 
 void deoglShapeManager::RemoveAllShapes(){
-	while(pShapeCount > 0){
-		delete pShapes[pShapeCount - 1];
-		pShapeCount--;
-	}
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void deoglShapeManager::pCleanUp(){
-	RemoveAllShapes();
-	if(pShapes){
-		delete [] pShapes;
-	}
+	pShapes.RemoveAll();
 }

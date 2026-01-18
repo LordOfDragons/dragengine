@@ -173,13 +173,8 @@ pGIState(nullptr)
 	
 	pDirectEnvMapFader.SetFadePerTime(1.0f);
 	
-	pLights = nullptr;
 	pLightCount = 0;
-	pLightSize = 0;
-	
-	pMaskedPlans = nullptr;
 	pMaskedPlanCount = 0;
-	pMaskedPlanSize = 0;
 	
 	pEmptyPass = false;
 	pClearStencilPassBits = false;
@@ -200,36 +195,10 @@ deoglRenderPlan::~deoglRenderPlan(){
 	CleanUp();
 	SetWorld(nullptr);
 	
-	int i, count;
-	
-	if(pMaskedPlans){
-		while(pMaskedPlanSize > 0){
-			pMaskedPlanSize--;
-			if(pMaskedPlans[pMaskedPlanSize]){
-				delete pMaskedPlans[pMaskedPlanSize];
-			}
-		}
-		
-		delete [] pMaskedPlans;
-	}
-	
-	count = pSkyLights.GetCount();
-	for(i=0; i<count; i++){
-		delete pSkyLights.GetAt(i);
-	}
+	pMaskedPlans.RemoveAll();
 	pSkyLights.RemoveAll();
-	
-	//RemoveAllLights();
-	if(pLights){
-		while(pLightSize > 0){
-			pLightSize--;
-			if(pLights[pLightSize]){
-				delete pLights[pLightSize];
-			}
-		}
-		
-		delete [] pLights;
-	}
+	pSkyInstances.RemoveAll();
+	pLights.RemoveAll();
 	
 	pHTView = nullptr;
 	
@@ -240,6 +209,7 @@ deoglRenderPlan::~deoglRenderPlan(){
 	pDirectEnvMapFader.DropAll();
 	
 	if(pEnvMaps){
+		int i;
 		for(i=0; i<pEnvMapCount; i++){
 			if(pEnvMaps[i].GetEnvMap()){
 				pEnvMaps[i].GetEnvMap()->RemovePlanUsage();
@@ -457,9 +427,9 @@ void deoglRenderPlan::pBarePrepareRender(const deoglRenderPlanMasked *mask){
 	SPECIAL_TIMER_PRINT("PrepareRenderPlan")
 	
 	// finish preparations
-	for(i=0; i<pSkyLightCount; i++){
-		pSkyLights.GetAt(i)->FinishPrepare();
-	}
+	pSkyLights.Visit([](deoglRenderPlanSkyLight &sl){
+		sl.FinishPrepare();
+	}, 0, pSkyLightCount);
 	renderCanvas.SampleDebugInfoPlanPrepareFinish(*this);
 	SPECIAL_TIMER_PRINT("Finish")
 	
@@ -610,7 +580,7 @@ void deoglRenderPlan::pPlanSky(){
 	const int count = pWorld->GetSkyCount();
 	int i;
 	
-	pSkyInstances.RemoveAll();
+	RemoveAllSkyInstances();
 	pSkyBgColor.Set(0.0f, 0.0f, 0.0f, 0.0f);
 	
 	for(i=0; i<count; i++){
@@ -632,50 +602,31 @@ void deoglRenderPlan::pPlanSky(){
 }
 
 void deoglRenderPlan::pPlanSkyLight(){
-	const int skyCount = GetSkyInstanceCount();
-	int i, j, k;
+	RemoveAllSkyLights();
 	
-	for(i=0; i<pSkyLightCount; i++){
-		pSkyLights.GetAt(i)->ClearPlanned();
-	}
-	
-	for(i=0; i<skyCount; i++){
-		deoglRSkyInstance &instance = *GetSkyInstanceAt(i);
-		
-		const int layerCount = instance.GetLayerCount();
-		for(j=0; j<layerCount; j++){
-			deoglRSkyInstanceLayer &skyLayer = instance.GetLayerAt(j);
-			if(!skyLayer.GetHasLightDirect() && !skyLayer.GetHasLightAmbient()){
-				continue;
+	pSkyInstances.Visit([&](deoglRSkyInstance *si){
+		si->GetLayers().Visit([&](const deoglRSkyInstanceLayer::Ref &sl){
+			if(!sl->GetHasLightDirect() && !sl->GetHasLightAmbient()){
+				return;
 			}
 			
-			deoglRenderPlanSkyLight *planSkyLight = nullptr;
-			
-			for(k=0; k<pSkyLightCount; k++){
-				deoglRenderPlanSkyLight * const check = pSkyLights.GetAt(k);
-				if(check->GetLayer() == &skyLayer){
-					planSkyLight = check;
-					break;
-				}
-			}
-			
-			if(!planSkyLight){
-				if(pSkyLightCount < pSkyLights.GetCount()){
-					planSkyLight = pSkyLights.GetAt(pSkyLightCount);
-					
-				}else{
-					planSkyLight = new deoglRenderPlanSkyLight(*this);
-					pSkyLights.Add(planSkyLight);
-				}
+			deoglRenderPlanSkyLight *planSkyLight;
+			if(pSkyLightCount < pSkyLights.GetCount()){
+				planSkyLight = pSkyLights.GetAt(pSkyLightCount);
 				
-				planSkyLight->SetLayer(&instance, &skyLayer);
-				pSkyLightCount++;
+			}else{
+				pSkyLights.Add(deTUniqueReference<deoglRenderPlanSkyLight>::New(*this));
+				planSkyLight = pSkyLights.Last();
 			}
+			
+			planSkyLight->SetLayer(si, sl);
+			pSkyLightCount++;
 			
 			planSkyLight->Plan();
-		}
-	}
+		});
+	});
 	
+	int i;
 	for(i=0; i<pSkyLightCount; i++){
 		deoglRenderPlanSkyLight * const planSkyLight = pSkyLights.GetAt(i);
 		if(planSkyLight->GetPlanned()){
@@ -810,10 +761,9 @@ void deoglRenderPlan::pStartFindContent(const deoglRenderPlanMasked *mask){
 	}
 	
 	// sky lights
-	int i;
-	for(i=0; i<pSkyLightCount; i++){
-		pSkyLights.GetAt(i)->StartFindContent();
-	}
+	pSkyLights.Visit([](deoglRenderPlanSkyLight &sl){
+		sl.StartFindContent();
+	}, 0, pSkyLightCount);
 }
 
 void deoglRenderPlan::pWaitFinishedFindContent(const deoglRenderPlanMasked *mask){
@@ -1257,15 +1207,14 @@ void deoglRenderPlan::pRenderOcclusionTests(const deoglRenderPlanMasked *mask){
 		pRenderThread.GetRenderers().GetOcclusion().RenderTestsCamera(*this, mask);
 		SPECIAL_TIMER_PRINT("> RenderTestsCamera")
 		
-		int i;
-		for(i=0; i<pSkyLightCount; i++){
-			pSkyLights.GetAt(i)->RenderOcclusionTests();
-		}
+		pSkyLights.Visit([](deoglRenderPlanSkyLight &sl){
+			sl.RenderOcclusionTests();
+		}, 0, pSkyLightCount);
 		SPECIAL_TIMER_PRINT("> SkyLightsRenderTests")
 		
-		for(i=0; i<pSkyLightCount; i++){
-			pSkyLights.GetAt(i)->BuildComputeRenderTasks();
-		}
+		pSkyLights.Visit([](deoglRenderPlanSkyLight &sl){
+			sl.BuildComputeRenderTasks();
+		}, 0, pSkyLightCount);
 		SPECIAL_TIMER_PRINT("> SkyLightsBuildComputeRenderTasks")
 		
 		pCompute->ReadVisibleElements();
@@ -1491,10 +1440,7 @@ void deoglRenderPlan::Render(){
 }
 
 void deoglRenderPlan::CleanUp(){
-	int i;
-	for(i=0; i<pSkyLightCount; i++){
-		pSkyLights.GetAt(i)->CleanUp();
-	}
+	RemoveAllSkyLights();
 	
 	if(pTasks){
 		pTasks->CleanUp();
@@ -1938,45 +1884,32 @@ void deoglRenderPlan::RemoveEnvMap(deoglEnvironmentMap *envmap){
 ///////////
 
 deoglRenderPlanLight *deoglRenderPlan::GetLightAt(int index) const{
-	if(index < 0 || index >= pLightCount) DETHROW(deeInvalidParam);
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < pLightCount)
 	
-	return pLights[index];
+	return pLights.GetAt(index);
 }
 
 deoglRenderPlanLight *deoglRenderPlan::GetLightFor(deoglCollideListLight &light){
-	int index = pIndexOfLightWith(light);
-	if(index == -1){
-		if(pLightCount == pLightSize){
-			const int newSize = pLightSize * 3 / 2 + 1;
-			deoglRenderPlanLight ** const newArray = new deoglRenderPlanLight*[newSize];
-			
-			memset(newArray, 0, sizeof(deoglRenderPlanLight*) * newSize);
-			if(pLights){
-				memcpy(newArray, pLights, sizeof(deoglRenderPlanLight*) * pLightSize);
-				delete [] pLights;
-			}
-			
-			pLights = newArray;
-			pLightSize = newSize;
-		}
-		
-		if(!pLights[pLightCount]){
-			pLights[pLightCount] = new deoglRenderPlanLight(*this);
-		}
-		
-		index = pLightCount;
-		pLights[pLightCount]->SetLight(&light);
-		pLightCount++;
+	const int index = pIndexOfLightWith(light);
+	if(index != -1){
+		return pLights.GetAt(index);;
 	}
 	
-	return pLights[index];
+	if(pLightCount == pLights.GetCount()){
+		pLights.Add(deTUniqueReference<deoglRenderPlanLight>::New(*this));
+	}
+	
+	auto &l = pLights.GetAt(pLightCount++);
+	l->SetLight(&light);
+	return l;
 }
 
 void deoglRenderPlan::RemoveAllLights(){
-	while(pLightCount > 0){
-		pLightCount--;
-		pLights[pLightCount]->SetLight(nullptr);
-	}
+	pLights.Visit([](deoglRenderPlanLight &l){
+		l.SetLight(nullptr);
+	}, 0, pLightCount);
+	pLightCount = 0;
 }
 
 
@@ -1989,16 +1922,16 @@ deoglRenderPlanSkyLight *deoglRenderPlan::GetSkyLightAt(int index) const{
 }
 
 void deoglRenderPlan::RemoveAllSkyLights(){
-	while(pSkyLightCount > 0){
-		pSkyLights.GetAt(--pSkyLightCount)->Clear();
-	}
+	pSkyLights.Visit([](deoglRenderPlanSkyLight &sl){
+		sl.Clear();
+	}, 0, pSkyLightCount);
+	pSkyLightCount = 0;
 }
 
 void deoglRenderPlan::SkyLightsStartBuildRT(){
-	int i;
-	for(i=0; i<pSkyLightCount; i++){
-		pSkyLights.GetAt(i)->StartBuildRT();
-	}
+	pSkyLights.Visit([](deoglRenderPlanSkyLight &sl){
+		sl.StartBuildRT();
+	}, 0, pSkyLightCount);
 }
 
 
@@ -2011,7 +1944,7 @@ int deoglRenderPlan::GetSkyInstanceCount() const{
 }
 
 deoglRSkyInstance *deoglRenderPlan::GetSkyInstanceAt(int index) const{
-	return (deoglRSkyInstance*)pSkyInstances.GetAt(index);
+	return pSkyInstances.GetAt(index);
 }
 
 void deoglRenderPlan::RemoveAllSkyInstances(){
@@ -2028,47 +1961,32 @@ void deoglRenderPlan::SetSkyBgColor(const decColor& color){
 //////////////
 
 deoglRenderPlanMasked *deoglRenderPlan::GetMaskedPlanAt(int index) const{
-	if(index < 0 || index >= pMaskedPlanCount) DETHROW(deeInvalidParam);
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < pMaskedPlanCount)
 	
-	return pMaskedPlans[index];
+	return pMaskedPlans.GetAt(index);
 }
 
 deoglRenderPlanMasked *deoglRenderPlan::AddMaskedPlanFor(deoglRenderPlan *plan){
-	if(!plan) DETHROW(deeInvalidParam);
+	DEASSERT_NOTNULL(plan)
 	
-	if(pMaskedPlanCount == pMaskedPlanSize){
-		int newSize = pMaskedPlanSize * 3 / 2 + 1;
-		deoglRenderPlanMasked **newArray = new deoglRenderPlanMasked*[newSize];
-		
-		memset(newArray, '\0', sizeof(deoglRenderPlanMasked*) * newSize);
-		if(pMaskedPlans){
-			memcpy(newArray, pMaskedPlans, sizeof(deoglRenderPlanMasked*) * pMaskedPlanSize);
-			delete [] pMaskedPlans;
-		}
-		
-		pMaskedPlans = newArray;
-		pMaskedPlanSize = newSize;
+	if(pMaskedPlanCount >= pMaskedPlans.GetCount()){
+		pMaskedPlans.Add(deTUniqueReference<deoglRenderPlanMasked>::New());
 	}
 	
-	if(!pMaskedPlans[pMaskedPlanCount]){
-		pMaskedPlans[pMaskedPlanCount] = new deoglRenderPlanMasked;
-	}
-	
-	pMaskedPlans[pMaskedPlanCount]->SetPlan(plan);
-	pMaskedPlans[pMaskedPlanCount]->SetComponent(nullptr, 0);
-	pMaskedPlanCount++;
-	
+	auto &p = pMaskedPlans.GetAt(pMaskedPlanCount++);
+	p->SetPlan(plan);
+	p->SetComponent(nullptr, 0);
 	plan->SetLevel(pLevel + 1); // it is deeper one level than us
-	
-	return pMaskedPlans[pMaskedPlanCount - 1];
+	return p;
 }
 
 void deoglRenderPlan::RemoveAllMaskedPlans(){
-	while(pMaskedPlanCount > 0){
-		pMaskedPlanCount--;
-		pMaskedPlans[pMaskedPlanCount]->SetPlan(nullptr);
-		pMaskedPlans[pMaskedPlanCount]->SetComponent(nullptr, 0);
-	}
+	pMaskedPlans.Visit([](deoglRenderPlanMasked &p){
+		p.SetPlan(nullptr);
+		p.SetComponent(nullptr, 0);
+	}, 0, pMaskedPlanCount);
+	pMaskedPlanCount = 0;
 }
 
 
@@ -2077,15 +1995,9 @@ void deoglRenderPlan::RemoveAllMaskedPlans(){
 //////////////////////
 
 int deoglRenderPlan::pIndexOfLightWith(deoglCollideListLight &light) const{
-	int i;
-	
-	for(i=0; i<pLightCount; i++){
-		if(&light == pLights[i]->GetLight()){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pLights.IndexOfMatching([&](const deoglRenderPlanLight &l){
+		return l.GetLight() == &light;
+	});
 }
 
 

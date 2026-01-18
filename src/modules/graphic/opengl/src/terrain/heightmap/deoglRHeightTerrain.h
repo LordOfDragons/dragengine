@@ -101,6 +101,9 @@ public:
 	
 	
 	
+	/** Sectors. */
+	inline const decTObjectList<deoglRHTSector> &GetSectors() const{ return pSectors; }
+	
 	/** Number of sectors. */
 	int GetSectorCount() const;
 	

@@ -26,6 +26,8 @@
 #ifndef _DEOGLRENDERABLEDEPTHTEXTUREMANAGER_H_
 #define _DEOGLRENDERABLEDEPTHTEXTUREMANAGER_H_
 
+#include <dragengine/common/collection/decTUniqueList.h>
+
 // predefinitions
 class deoglRenderThread;
 class deoglRenderableDepthTexture;
@@ -45,9 +47,7 @@ class deoglRenderableDepthTextureManager{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	deoglRenderableDepthTexture **pTextures;
-	int pTextureCount;
-	int pTextureSize;
+	decTUniqueList<deoglRenderableDepthTexture> pTextures;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -61,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of renderable textures. */
-	inline int GetTextureCount() const{ return pTextureCount; }
+	inline int GetTextureCount() const{ return pTextures.GetCount(); }
 	/** Retrieves the renderable texture for reading only at the given location. */
 	const deoglRenderableDepthTexture *GetTextureAt(int index) const;
 	

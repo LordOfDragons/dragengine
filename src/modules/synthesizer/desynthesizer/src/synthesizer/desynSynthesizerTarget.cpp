@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "desynSynthesizerTarget.h"
 #include "desynSynthesizer.h"
 #include "desynSynthesizerInstance.h"
@@ -43,26 +40,14 @@
 ////////////////////////////
 
 desynSynthesizerTarget::desynSynthesizerTarget(const desynSynthesizer &synthesizer,
-int firstLink, const deSynthesizerControllerTarget &target) :
-pLinks(nullptr),
-pLinkCount(0)
+int firstLink, const deSynthesizerControllerTarget &target)
 {
-	const decTList<int> &links = target.GetLinks();
-	if(links.IsEmpty()){
-		return;
-	}
-	
-	pLinks = new const desynSynthesizerLink*[links.GetCount()];
-	
-	links.Visit([&](int link){
-		pLinks[pLinkCount++] = &synthesizer.GetLinkAt(firstLink + link);
+	target.GetLinks().Visit([&](int link){
+		pLinks.Add(&synthesizer.GetLinkAt(firstLink + link));
 	});
 }
 
 desynSynthesizerTarget::~desynSynthesizerTarget(){
-	if(pLinks){
-		delete [] pLinks;
-	}
 }
 
 
@@ -71,37 +56,32 @@ desynSynthesizerTarget::~desynSynthesizerTarget(){
 ///////////////
 
 const desynSynthesizerLink &desynSynthesizerTarget::GetLinkAt(int index) const{
-	if(index < 0 || index >= pLinkCount){
-		DETHROW(deeInvalidParam);
-	}
-	return *pLinks[index];
+	return *pLinks.GetAt(index);
 }
 
 
 
 float desynSynthesizerTarget::GetValue(const desynSynthesizerInstance &instance, int sample, float defaultValue) const{
-	if(pLinkCount == 0){
+	if(pLinks.IsEmpty()){
 		return defaultValue;
 	}
 	
 	float value = defaultValue;
 	bool firstValue = true;
-	int i;
 	
-	for(i=0; i<pLinkCount; i++){
-		const desynSynthesizerLink &link = *pLinks[i];
-		if(!link.HasController()){
-			continue;
+	pLinks.Visit([&](const desynSynthesizerLink *link){
+		if(!link->HasController()){
+			return;
 		}
 		
 		if(firstValue){
-			value = link.GetValue(instance, sample, 1.0f);
+			value = link->GetValue(instance, sample, 1.0f);
 			firstValue = false;
 			
 		}else{
-			value *= link.GetValue(instance, sample, 1.0f);
+			value *= link->GetValue(instance, sample, 1.0f);
 		}
-	}
+	});
 	
 	return decMath::clamp(value, 0.0f, 1.0f);
 }

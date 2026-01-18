@@ -60,9 +60,6 @@ void deoglHTView::HTListener::SectorsChanged(deoglRHeightTerrain &heightTerrain)
 deoglHTView::deoglHTView(deoglRHeightTerrain *heightTerrain) :
 pHeightTerrain(heightTerrain),
 pHTListener(HTListener::Ref::New(*this)),
-pSectors(nullptr),
-pSectorCount(0),
-pSectorSize(0),
 pDirtySectors(true)
 {
 	DEASSERT_NOTNULL(heightTerrain)
@@ -70,11 +67,6 @@ pDirtySectors(true)
 }
 
 deoglHTView::~deoglHTView(){
-	RemoveAllSectors();
-	if(pSectors){
-		delete [] pSectors;
-	}
-	
 	pHeightTerrain->RemoveListener(pHTListener);
 }
 
@@ -84,51 +76,24 @@ deoglHTView::~deoglHTView(){
 ///////////////
 
 deoglHTViewSector *deoglHTView::GetSectorAt(int index) const{
-	if(index < 0 || index >= pSectorCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return pSectors[index];
-}
-
-void deoglHTView::AddSector(deoglHTViewSector *sector){
-	DEASSERT_NOTNULL(sector)
-	
-	if(pSectorCount == pSectorSize){
-		const int newSize = pSectorSize * 3 / 2 + 1;
-		deoglHTViewSector ** const newArray = new deoglHTViewSector*[newSize];
-		if(pSectors){
-			memcpy(newArray, pSectors, sizeof(deoglHTViewSector*) * pSectorSize);
-			delete [] pSectors;
-		}
-		pSectors = newArray;
-		pSectorSize = newSize;
-	}
-	
-	pSectors[pSectorCount++] = sector;
+	return pSectors.GetAt(index);
 }
 
 void deoglHTView::RemoveAllSectors(){
-	while(pSectorCount > 0){
-		pSectorCount--;
-		delete pSectors[pSectorCount];
-	}
+	pSectors.RemoveAll();
 }
-
 
 
 void deoglHTView::ResetClusters(){
-	int i;
-	for(i=0; i<pSectorCount; i++){
-		pSectors[i]->ResetClusters();
-	}
+	pSectors.Visit([](deoglHTViewSector &sector){
+		sector.ResetClusters();
+	});
 }
 
 void deoglHTView::UpdateLODLevels(const decVector &camera){
-	int i;
-	for(i=0; i<pSectorCount; i++){
-		pSectors[i]->UpdateLODLevels(camera);
-	}
+	pSectors.Visit([&](deoglHTViewSector &sector){
+		sector.UpdateLODLevels(camera);
+	});
 }
 
 
@@ -142,12 +107,10 @@ void deoglHTView::Prepare(){
 
 void deoglHTView::PrepareForRendering(){
 }
-
 void deoglHTView::UpdateAllRTSInstances(){
-	int i;
-	for(i=0; i<pSectorCount; i++){
-		pSectors[i]->UpdateAllRTSInstances();
-	}
+	pSectors.Visit([](deoglHTViewSector &sector){
+		sector.UpdateAllRTSInstances();
+	});
 }
 
 
@@ -156,29 +119,14 @@ void deoglHTView::UpdateAllRTSInstances(){
 //////////////////////
 
 void deoglHTView::pRebuildSectors(){
-	const int count = pHeightTerrain->GetSectorCount();
-	deoglHTViewSector *sector = nullptr;
-	int i;
-	
-	try{
-		RemoveAllSectors();
-		
-		for(i=0; i<count; i++){
-			sector = new deoglHTViewSector(*this, pHeightTerrain->GetSectorAt(i));
-			AddSector(sector);
-			sector = nullptr;
-		}
-		
-	}catch(const deException &){
-		if(sector){
-			delete sector;
-		}
-		throw;
-	}
+	RemoveAllSectors();
+	pHeightTerrain->GetSectors().Visit([&](deoglRHTSector &sector){
+		pSectors.Add(deTUniqueReference<deoglHTViewSector>::New(*this, sector));
+	});
 }
 
 
 
-void deoglHTView::SectorsChanged (deoglRHeightTerrain &heightTerrain){
+void deoglHTView::SectorsChanged(deoglRHeightTerrain &heightTerrain){
 	pDirtySectors = true;
 }

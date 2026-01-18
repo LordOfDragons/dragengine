@@ -168,16 +168,14 @@ private:
 	
 	deoglEnvMapFader pDirectEnvMapFader;
 	
-	deoglRenderPlanLight **pLights;
+	decTUniqueList<deoglRenderPlanLight> pLights;
 	int pLightCount;
-	int pLightSize;
 	
-	decTList<deoglRenderPlanSkyLight*> pSkyLights;
+	decTUniqueList<deoglRenderPlanSkyLight> pSkyLights;
 	int pSkyLightCount;
 	
-	deoglRenderPlanMasked **pMaskedPlans;
+	decTUniqueList<deoglRenderPlanMasked> pMaskedPlans;
 	int pMaskedPlanCount;
-	int pMaskedPlanSize;
 	
 	decTList<deoglRSkyInstance*> pSkyInstances;
 	decColor pSkyBgColor;

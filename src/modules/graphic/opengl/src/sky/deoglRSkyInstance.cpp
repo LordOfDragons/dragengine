@@ -188,8 +188,6 @@ void deoglRSkyInstance::RebuildLayers(){
 }
 
 void deoglRSkyInstance::UpdateLayers(){
-	int i;
-	
 	pTotalSkyLightIntensity = 0.0f;
 	pTotalSkyAmbientIntensity = 0.0f;
 	pTotalSkyLightColor.SetZero();

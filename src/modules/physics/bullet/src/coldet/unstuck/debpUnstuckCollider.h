@@ -25,6 +25,8 @@
 #ifndef _DEBPUNSTUCKCOLLIDER_H_
 #define _DEBPUNSTUCKCOLLIDER_H_
 
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 
 class debpCollider;
@@ -48,21 +50,14 @@ private:
 	debpCollider *pStuckCollider;
 	decDVector pDisplacement;
 	
-	debpCollider **pNearbyColliders;
-	int pNearbyColliderCount;
-	int pNearbyColliderSize;
-	
-	decDVector *pBlockerNormals;
-	int pBlockerNormalCount;
-	int pBlockerNormalSize;
+	decTOrderedSet<debpCollider*> pNearbyColliders;
+	decTList<decDVector> pBlockerNormals;
 	
 public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new unstuck collider object. */
 	debpUnstuckCollider(debpWorld &world);
-	/** Cleans up the unstuck collider object. */
-	~debpUnstuckCollider();
 	/*@}*/
 	
 	/** @name Management */
@@ -89,7 +84,7 @@ public:
 	bool UnstuckCollider();
 	
 	/** Retrieves the number of nearby colliders. */
-	inline int GetNearbyColliderCount() const{ return pNearbyColliderCount; }
+	inline int GetNearbyColliderCount() const{ return pNearbyColliders.GetCount(); }
 	/** Retrieves a nearby collider. */
 	debpCollider *GetNearbyColliderAt(int index) const;
 	/** Adds a nearby collider. */
@@ -98,7 +93,7 @@ public:
 	void RemoveAllNearbyColliders();
 	
 	/** Retrieves the number of blocker normals. */
-	inline int GetBlockerNormalCount() const{ return pBlockerNormalCount; }
+	inline int GetBlockerNormalCount() const{ return pBlockerNormals.GetCount(); }
 	/** Retrieves a blocker normal. */
 	const decDVector &GetBlockerNormalAt(int index) const;
 	/** Adds a blocker normal. */

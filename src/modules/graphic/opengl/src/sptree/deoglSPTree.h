@@ -22,16 +22,13 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _DEOGLSPTREE_H_
 #define _DEOGLSPTREE_H_
 
-// includes
+#include "deoglSPTreeNode.h"
+
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/math/decMath.h>
-
-// predefintions
-class deoglSPTreeNode;
-
 
 
 /**
@@ -53,8 +50,7 @@ private:
 	decVector pMaxExtend;
 	decVector pNodeSize;
 	decPoint3 pNodeCount;
-	deoglSPTreeNode **pNodes;
-	int pTotalNodeCount;
+	decTUniqueList<deoglSPTreeNode> pNodes;
 	int pStride;
 	
 public:
@@ -62,8 +58,6 @@ public:
 	/*@{*/
 	/** Creates a new space partition tree. */
 	deoglSPTree(const decVector &minExtend, const decVector &maxExtend, const decPoint3 &nodeCount);
-	/** Cleans up the space partition tree. */
-	~deoglSPTree();
 	/*@}*/
 	
 	/** \name Management */
@@ -85,14 +79,12 @@ public:
 	 */
 	void IndexOfNodeAt(decPoint3 &index, const decVector &position) const;
 	/** Retrieves the node at the given index or NULL if empty. */
-	deoglSPTreeNode *GetNodeAt(const decPoint3 &index) const;
+	const deoglSPTreeNode::Ref &GetNodeAt(const decPoint3 &index) const;
 	/** Sets the node at the given index or NULL to set it empty. */
-	void SetNodeAt(const decPoint3 &index, deoglSPTreeNode *node);
+	void SetNodeAt(const decPoint3 &index, deoglSPTreeNode::Ref &&node);
 	/** Clears all nodes. */
 	void ClearAllNodes();
 	/*@}*/
-	
-private:
 };
 
 // end of include only once

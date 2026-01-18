@@ -25,6 +25,7 @@
 #ifndef _DEMDLTEXCOORDSORTER_H_
 #define _DEMDLTEXCOORDSORTER_H_
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 
@@ -42,20 +43,22 @@
 class demdlTexCoordSorter{
 private:
 	struct sBucketEntry{
-		const decVector2 *texCoords;
-		int index;
-		sBucketEntry *next;
+		int texCoords = 0;
+		int index = 0;
+		sBucketEntry *next = nullptr;
+		
+		inline sBucketEntry() = default;
+		inline sBucketEntry(int atexCoords, int aindex) : texCoords(atexCoords), index(aindex){}
 	};
 	
 	int pFaceCount;
 	int pTexCoordSetCount;
-	int *pFaceCorners;
-	decVector2 *pFaceTexCoords;
+	decTList<int> pFaceCorners;
+	decTList<decVector2> pFaceTexCoords;
 	
-	sBucketEntry **pTCBuckets;
-	sBucketEntry *pTCBucketEntries;
-	const decVector2 **pTexCoords;
-	int pTexCoordCount;
+	decTList<sBucketEntry> pTCBucketEntries;
+	decTList<sBucketEntry*> pTCBuckets;
+	decTList<int> pTexCoords;
 	
 	
 	
@@ -64,9 +67,6 @@ public:
 	/*@{*/
 	/** \brief Create texture coordinates sorter. */
 	demdlTexCoordSorter();
-	
-	/** \brief Clean up texture coordinates sorter. */
-	~demdlTexCoordSorter();
 	/*@}*/
 	
 	
@@ -104,7 +104,7 @@ public:
 	void SetFaceTexCoordAt(int face, int corner, int texCoordSet, const decVector2 &texCoord);
 	
 	/** \brief Number of texture coordinates. */
-	inline int GetTexCoordCount() const{ return pTexCoordCount; }
+	inline int GetTexCoordCount() const{ return pTexCoords.GetCount(); }
 	
 	/** \brief Texture coordinate. */
 	const decVector2 &GetTexCoordAt(int index, int texCoordSet) const;
@@ -113,8 +113,8 @@ public:
 	
 	
 private:
-	int HashTexCoords(const decVector2 *texCoords) const;
-	bool TexCoordsAreEqual(const decVector2 *texCoords1, const decVector2 *texCoords2) const;
+	int HashTexCoords(int baseIndex) const;
+	bool TexCoordsAreEqual(int texCoords1, int texCoords2) const;
 };
 
 #endif

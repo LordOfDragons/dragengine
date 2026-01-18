@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "debpPropField.h"
 #include "debpPropFieldType.h"
 
@@ -56,32 +52,19 @@
 ////////////////////////////
 
 debpPropField::debpPropField(dePhysicsBullet *bullet, dePropField *propField){
-	if(!bullet || !propField) DETHROW(deeInvalidParam);
-	
-	int t, typeCount = propField->GetTypeCount();
+	DEASSERT_NOTNULL(bullet);
+	DEASSERT_NOTNULL(propField);
 	
 	pBullet = bullet;
 	pPropField = propField;
-	
-	pTypes = NULL;
-	pTypeCount = 0;
-	pTypeSize = 0;
-	
 	pDirty = false;
 	
-	try{
-		for(t=0; t<typeCount; t++){
-			TypeAdded(t, propField->GetTypeAt(t));
-		}
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
+	propField->GetTypes().VisitIndexed([&](int i, dePropFieldType *type){
+		TypeAdded(i, type);
+	});
 }
 
 debpPropField::~debpPropField(){
-	pCleanUp();
 }
 
 
@@ -90,22 +73,17 @@ debpPropField::~debpPropField(){
 ///////////////
 
 debpPropFieldType *debpPropField::GetTypeAt(int index) const{
-	if(index < 0 || index >= pTypeCount) DETHROW(deeInvalidParam);
-	
-	return pTypes[index];
+	return pTypes.GetAt(index);
 }
 
 
 
 void debpPropField::Update(float elapsed){
-//	if( pDirty ){
-		int t;
-		
-		for(t=0; t<pTypeCount; t++){
-			pTypes[t]->Update(elapsed);
-		}
-		
+//	if(pDirty){
 //		pDirty = false;
+		pTypes.Visit([&](debpPropFieldType &t){
+			t.Update(elapsed);
+		});
 //	}
 }
 
@@ -115,59 +93,33 @@ void debpPropField::PositionChanged(){
 }
 
 void debpPropField::TypeAdded(int index, dePropFieldType *type){
-	if(pTypeCount == pTypeSize){
-		int newSize = pTypeSize * 3 / 2 + 1;
-		debpPropFieldType **newArray = new debpPropFieldType*[newSize];
-		if(pTypes){
-			memcpy(newArray, pTypes, sizeof(debpPropFieldType*) * pTypeSize);
-			delete [] pTypes;
-		}
-		pTypes = newArray;
-		pTypeSize = newSize;
-	}
-	
-	pTypes[pTypeCount] = new debpPropFieldType(this, type);
-	pTypeCount++;
-	
+	pTypes.Add(deTUniqueReference<debpPropFieldType>::New(this, type));
 	pDirty = true;
 }
 
 void debpPropField::TypeRemoved(int index, dePropFieldType *type){
-	int t;
-	
-	delete pTypes[index];
-	
-	for(t=index+1; t<pTypeCount; t++){
-		pTypes[t - 1] = pTypes[t];
-	}
-	pTypeCount--;
+	pTypes.RemoveFrom(index);
 }
 
 void debpPropField::AllTypesRemoved(){
-	while(pTypeCount > 0){
-		pTypeCount--;
-		delete pTypes[pTypeCount];
-	}
+	pTypes.RemoveAll();
 }
 
 void debpPropField::TypeChanged(int index, dePropFieldType *type){
-	pTypes[index]->MarkDirty();
+	pTypes.GetAt(index)->MarkDirty();
 	pDirty = true;
 }
 
 void debpPropField::InstancesChanged(int index, dePropFieldType *type){
-	pTypes[index]->MarkDirty();
+	pTypes.GetAt(index)->MarkDirty();
 	pDirty = true;
 }
 
 void debpPropField::ProjectInstances(const dePropFieldGround &ground, const decVector &direction){
 	pProjectInstancesDown(ground);
-	
-	int i;
-	for(i=0; i<pTypeCount; i++){
-		pTypes[i]->MarkDirty();
-	}
-	
+	pTypes.Visit([&](debpPropFieldType &t){
+		t.MarkDirty();
+	});
 	pDirty = true;
 }
 
@@ -175,11 +127,6 @@ void debpPropField::ProjectInstances(const dePropFieldGround &ground, const decV
 
 // Private functions
 //////////////////////
-
-void debpPropField::pCleanUp(){
-	AllTypesRemoved();
-	if(pTypes) delete [] pTypes;
-}
 
 void debpPropField::pProjectInstancesDown(const dePropFieldGround &ground){
 	// this is an optimized version for the case that the projection direction

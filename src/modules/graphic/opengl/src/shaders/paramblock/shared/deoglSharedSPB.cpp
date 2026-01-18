@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglSharedSPB.h"
 #include "deoglSharedSPBElement.h"
 #include "../deoglShaderParameterBlock.h"
@@ -43,20 +39,12 @@
 
 deoglSharedSPB::deoglSharedSPB(const deoglShaderParameterBlock::Ref &parameterBlock) :
 pParameterBlock(parameterBlock),
-pElements(nullptr),
-pSize(parameterBlock->GetElementCount()),
 pCount(0)
 {
-	DEASSERT_TRUE(parameterBlock->GetElementCount() >= 1)
+	const int size = parameterBlock->GetElementCount();
+	DEASSERT_TRUE(size >= 1)
 	
-	pElements = new deoglSharedSPBElement*[pSize];
-	memset(pElements, '\0', sizeof(deoglSharedSPB*) * pSize);
-}
-
-deoglSharedSPB::~deoglSharedSPB(){
-	if(pElements){
-		delete [] pElements;
-	}
+	pElements = decTList<deoglSharedSPBElement*>(size, nullptr);
 }
 
 
@@ -65,22 +53,23 @@ deoglSharedSPB::~deoglSharedSPB(){
 ///////////////
 
 deoglSharedSPBElement *deoglSharedSPB::GetElementAt(int index) const{
-	return pElements[index];
+	return pElements.GetAt(index);
 }
 
 deoglSharedSPBElement::Ref deoglSharedSPB::AddElement(){
-	if(pCount == pSize){
+	const int size = pElements.GetCount();
+	if(pCount == size){
 		return {};
 	}
 	
 	int i;
-	for(i=0; i<pSize; i++){
-		if(pElements[i]){
+	for(i=0; i<size; i++){
+		if(pElements.GetAt(i)){
 			continue;
 		}
 		
-		const deoglSharedSPBElement::Ref element(deoglSharedSPBElement::Ref::New(*this, i));
-		pElements[i] = element;
+		const auto element = deoglSharedSPBElement::Ref::New(*this, i);
+		pElements.SetAt(i, element);
 		pCount++;
 		return element;
 	}
@@ -89,10 +78,8 @@ deoglSharedSPBElement::Ref deoglSharedSPB::AddElement(){
 }
 
 void deoglSharedSPB::RemoveElement(int index){
-	if(index < 0 || index >= pSize || !pElements[index]){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(pElements.GetAt(index))
 	
-	pElements[index] = nullptr;
+	pElements.SetAt(index, nullptr);
 	pCount--;
 }

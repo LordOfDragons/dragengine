@@ -424,6 +424,29 @@ public:
 	}
 	
 	/**
+	 * \brief Swap elements at two indices.
+	 * \throws deeInvalidParam \em from or \em to is less than 0 or larger than GetCount()-1.
+	 */
+	void Swap(int from, int to){
+		if(from < 0){
+			from = pCount + from;
+		}
+		if(to < 0){
+			to = pCount + to;
+		}
+		DEASSERT_TRUE(from >= 0)
+		DEASSERT_TRUE(from < pCount)
+		DEASSERT_TRUE(to >= 0)
+		DEASSERT_TRUE(to < pCount)
+		
+		if(from == to){
+			return;
+		}
+		
+		pElements[from].Swap(pElements[to]);
+	}
+	
+	/**
 	 * \brief Remove element.
 	 * \throws deeInvalidParam \em element not found.
 	 */
@@ -451,6 +474,24 @@ public:
 		while(pCount > 0){
 			pElements[--pCount].Clear();
 		}
+	}
+	
+	
+	/**
+	 * \brief Extract element from index and return it (moved).
+	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
+	 */
+	Ref ExtractFrom(int index){
+		DEASSERT_TRUE(index >= 0)
+		DEASSERT_TRUE(index < pCount)
+		
+		Ref result = std::move(pElements[index]);
+		int i;
+		for(i = index + 1; i < pCount; i++){
+			pElements[i - 1] = std::move(pElements[i]);
+		}
+		pElements[--pCount].Clear();
+		return result;
 	}
 	
 	
@@ -925,9 +966,7 @@ public:
 	void Reverse(){
 		int i;
 		for(i = 0; i < pCount / 2; i++){
-			Ref temp = std::move(pElements[i]);
-			pElements[i] = std::move(pElements[pCount - 1 - i]);
-			pElements[pCount - 1 - i] = std::move(temp);
+			pElements[i].Swap(pElements[pCount - 1 - i]);
 		}
 	}
 	

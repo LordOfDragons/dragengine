@@ -28,6 +28,7 @@
 #include "debpBulletShape.h"
 #include "debpCollisionObject.h"
 
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 
 class debpMotionState;
@@ -87,9 +88,7 @@ private:
 	float pCcdThreshold;
 	float pCcdRadius;
 	
-	debpColliderConstraint **pConstraints;
-	int pConstraintCount;
-	int pConstraintSize;
+	decTOrderedSet<debpColliderConstraint*> pConstraints;
 	
 	
 	
@@ -249,7 +248,7 @@ public:
 	/** \name Linked Constraints */
 	/*@{*/
 	/** \brief Number of linked constraints. */
-	inline int GetConstraintCount() const{ return pConstraintCount; }
+	inline int GetConstraintCount() const{ return pConstraints.GetCount(); }
 	
 	/** \brief Linked constraint at index. */
 	debpColliderConstraint *GetConstraintAt(int index) const;

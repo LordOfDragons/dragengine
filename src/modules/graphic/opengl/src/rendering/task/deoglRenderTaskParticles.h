@@ -25,7 +25,10 @@
 #ifndef _DEOGLRENDERTASKPARTICLES_H_
 #define _DEOGLRENDERTASKPARTICLES_H_
 
-class deoglRenderTaskParticlesStep;
+#include "deoglRenderTaskParticlesStep.h"
+
+#include <dragengine/common/collection/decTUniqueList.h>
+
 class deoglSPBlockUBO;
 class deoglRTLogger;
 
@@ -37,9 +40,8 @@ class deoglRenderTaskParticles{
 private:
 	deoglSPBlockUBO *pRenderParamBlock;
 	
-	deoglRenderTaskParticlesStep **pSteps;
+	decTUniqueList<deoglRenderTaskParticlesStep> pSteps;
 	int pStepCount;
-	int pStepSize;
 	bool pRenderVSStereo;
 	
 public:
@@ -47,8 +49,6 @@ public:
 	/*@{*/
 	/** Creates a new render task. */
 	deoglRenderTaskParticles();
-	/** Cleans up the render task. */
-	~deoglRenderTaskParticles();
 	/*@}*/
 	
 	/** \name Management */

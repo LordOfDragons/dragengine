@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "desynSynthesizerSourceSynthesizer.h"
 #include "../desynSynthesizer.h"
 #include "../desynCreateSynthesizerSource.h"
@@ -50,26 +46,14 @@
 desynSynthesizerSourceSynthesizer::desynSynthesizerSourceSynthesizer(desynSynthesizer &synthesizer,
 int firstLink, const deSynthesizerSourceSynthesizer &source) :
 desynSynthesizerSource(synthesizer, firstLink, source),
-pChildSynthesizer(nullptr),
-pSources(nullptr),
-pSourceCount(0)
+pChildSynthesizer(nullptr)
 {
 	SetSilent(!source.GetEnabled());
 	if(GetSilent()){
 		return;
 	}
 	
-	try{
-		pCreateSources(synthesizer, firstLink, source);
-		
-	}catch(const deException &){
-		pClearSources();
-		throw;
-	}
-}
-
-desynSynthesizerSourceSynthesizer::~desynSynthesizerSourceSynthesizer(){
-	pClearSources();
+	pCreateSources(synthesizer, firstLink, source);
 }
 
 
@@ -78,39 +62,32 @@ desynSynthesizerSourceSynthesizer::~desynSynthesizerSourceSynthesizer(){
 ///////////////
 
 int desynSynthesizerSourceSynthesizer::StateDataSizeSource(int offset){
-	int i, count = 0;
-	for(i=0; i<pSourceCount; i++){
-		count += pSources[i]->StateDataSize(offset + count);
-	}
-	
-	return count;
+	return pSources.Inject(0, [&](int count, desynSynthesizerSource &s){
+		return count + s.StateDataSize(offset + count);
+	});
 }
 
 void desynSynthesizerSourceSynthesizer::InitStateDataSource(char *stateData){
-	int i;
-	for(i=0; i<pSourceCount; i++){
-		pSources[i]->InitStateData(stateData);
-	}
+	pSources.Visit([&](desynSynthesizerSource &s){
+		s.InitStateData(stateData);
+	});
 }
 
 
 
 void desynSynthesizerSourceSynthesizer::GenerateSourceSound(const desynSynthesizerInstance &instance,
 char *stateData, float *buffer, int samples, float curveOffset, float curveFactor){
-	int i;
-	
 	GenerateSilence(instance, buffer, samples);
-	for(i=0; i<pSourceCount; i++){
-		pSources[i]->GenerateSound(instance, stateData, buffer, samples, curveOffset, curveFactor);
-	}
+	pSources.Visit([&](desynSynthesizerSource &s){
+		s.GenerateSound(instance, stateData, buffer, samples, curveOffset, curveFactor);
+	});
 }
 
 void desynSynthesizerSourceSynthesizer::SkipSourceSound(const desynSynthesizerInstance &instance,
 char *stateData, int samples, float curveOffset, float curveFactor){
-	int i;
-	for(i=0; i<pSourceCount; i++){
-		pSources[i]->SkipSound(instance, stateData, samples, curveOffset, curveFactor);
-	}
+	pSources.Visit([&](desynSynthesizerSource &s){
+		s.SkipSound(instance, stateData, samples, curveOffset, curveFactor);
+	});
 }
 
 
@@ -120,7 +97,7 @@ char *stateData, int samples, float curveOffset, float curveFactor){
 
 void desynSynthesizerSourceSynthesizer::pCreateSources(desynSynthesizer &synthesizer,
 int firstLink, const deSynthesizerSourceSynthesizer &source){
-	pClearSources();
+	pSources.RemoveAll();
 	
 	const deSynthesizer * const childSynthesizer = source.GetSynthesizer();
 	if(!childSynthesizer){
@@ -128,8 +105,7 @@ int firstLink, const deSynthesizerSourceSynthesizer &source){
 		return;
 	}
 	
-	const int count = childSynthesizer->GetSources().GetCount();
-	if(count == 0){
+	if(childSynthesizer->GetSources().IsEmpty()){
 		SetSilent(true);
 		return;
 	}
@@ -156,59 +132,17 @@ int firstLink, const deSynthesizerSourceSynthesizer &source){
 	}
 	
 	// add sub links
-	const int linkCount = childSynthesizer->GetLinks().GetCount();
 	const int childFirstLink = synthesizer.GetLinkCount();
 	
-	if(linkCount > 0){
-		desynSynthesizerLink *link = nullptr;
-		
-		try{
-			for(i=0; i<linkCount; i++){
-				link = new desynSynthesizerLink(*childSynthesizer->GetLinks().GetAt(i), controllerMapping);
-				synthesizer.AddLink(link);
-				link = nullptr;
-			}
-			
-		}catch(const deException &){
-			if(link){
-				delete link;
-			}
-			throw;
-		}
-	}
+	childSynthesizer->GetLinks().Visit([&](const deSynthesizerLink &l){
+		synthesizer.AddLink(desynSynthesizerLink::Ref::New(l, controllerMapping));
+	});
 	
 	// create rules
 	desynCreateSynthesizerSource createSource(synthesizer, childFirstLink);
-	
-	pSources = new desynSynthesizerSource*[count];
-	
-	for(pSourceCount=0; pSourceCount<count; pSourceCount++){
+	childSynthesizer->GetSources().Visit([&](deSynthesizerSource &s){
 		createSource.Reset();
-		
-		try{
-			childSynthesizer->GetSources().GetAt(pSourceCount)->Visit(createSource);
-			pSources[pSourceCount] = createSource.GetSource();
-			
-		}catch(const deException &){
-			if(createSource.GetSource()){
-				delete createSource.GetSource();
-			}
-			throw;
-		}
-	}
-}
-
-void desynSynthesizerSourceSynthesizer::pClearSources(){
-	if(!pSources){
-		return;
-	}
-	
-	int i;
-	for(i=0; i<pSourceCount; i++){
-		delete pSources[i];
-	}
-	delete [] pSources;
-	
-	pSources = nullptr;
-	pSourceCount = 0;
+		s.Visit(createSource);
+		pSources.Add(std::move(createSource.GetSource()));
+	});
 }

@@ -50,8 +50,6 @@
 ////////////////////////////
 
 deoglSkinStateController::deoglSkinStateController() :
-pSharedVideoPlayers(nullptr),
-pSharedVideoPlayerCount(0),
 pHasCalculatedProperties(false),
 pHasConstructedProperties(false){
 }
@@ -70,7 +68,7 @@ void deoglSkinStateController::SetVideoPlayerCount(int count){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(count == pSharedVideoPlayerCount){
+	if(count == pSharedVideoPlayers.GetCount()){
 		return;
 	}
 	
@@ -81,25 +79,16 @@ void deoglSkinStateController::SetVideoPlayerCount(int count){
 	}
 	
 	// shared video players
-	if(pSharedVideoPlayers){
-		while(pSharedVideoPlayerCount > 0){
-			pSharedVideoPlayerCount--;
-			if(pSharedVideoPlayers[pSharedVideoPlayerCount]){
-				pSharedVideoPlayers[pSharedVideoPlayerCount]->FreeUsage();
-				pSharedVideoPlayers[pSharedVideoPlayerCount] = nullptr;
-			}
+	pSharedVideoPlayers.Visit([](deoglSharedVideoPlayer *p){
+		if(p){
+			p->FreeUsage();
 		}
-		
-		delete [] pSharedVideoPlayers;
-		pSharedVideoPlayers = nullptr;
-	}
+	});
+	pSharedVideoPlayers.RemoveAll();
 	
-	if(count > 0){
-		pSharedVideoPlayers = new deoglSharedVideoPlayer*[count];
-		
-		for(pSharedVideoPlayerCount=0; pSharedVideoPlayerCount<count; pSharedVideoPlayerCount++){
-			pSharedVideoPlayers[pSharedVideoPlayerCount] = nullptr;
-		}
+	int i;
+	for(i=0; i<count; i++){
+		pSharedVideoPlayers.Add(nullptr);
 	}
 }
 
@@ -108,10 +97,7 @@ deVideoPlayer *deoglSkinStateController::GetVideoPlayerAt(int index) const{
 }
 
 deoglSharedVideoPlayer *deoglSkinStateController::GetSharedVideoPlayerAt(int index) const{
-	if(index < 0 || index >= pSharedVideoPlayerCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pSharedVideoPlayers[index];
+	return pSharedVideoPlayers.GetAt(index);
 }
 
 void deoglSkinStateController::SetVideoPlayerAt(int index, deVideoPlayer *videoPlayer){
@@ -119,19 +105,15 @@ void deoglSkinStateController::SetVideoPlayerAt(int index, deVideoPlayer *videoP
 }
 
 void deoglSkinStateController::SetSharedVideoPlayerAt(int index, deoglSharedVideoPlayer *videoPlayer){
-	if(index < 0 || index >= pSharedVideoPlayerCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	if(videoPlayer == pSharedVideoPlayers[index]){
+	if(pSharedVideoPlayers.GetAt(index) == videoPlayer){
 		return;
 	}
 	
-	if(pSharedVideoPlayers[index]){
-		pSharedVideoPlayers[index]->FreeUsage();
+	if(pSharedVideoPlayers.GetAt(index)){
+		pSharedVideoPlayers.GetAt(index)->FreeUsage();
 	}
 	
-	pSharedVideoPlayers[index] = videoPlayer;
+	pSharedVideoPlayers.SetAt(index, videoPlayer);
 }
 
 

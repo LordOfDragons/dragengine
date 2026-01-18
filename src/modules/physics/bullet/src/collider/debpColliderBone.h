@@ -25,15 +25,15 @@
 #ifndef _DEBPCOLLIDERBONE_H_
 #define _DEBPCOLLIDERBONE_H_
 
+#include "debpColliderConstraint.h"
 #include "../shape/debpShape.h"
 #include "../debpCollisionObject.h"
 #include "../debpBulletShape.h"
 
-#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/debug/deDebugDrawer.h>
 
-class debpColliderConstraint;
 class debpPhysicsBody;
 
 class btGhostObject;
@@ -80,7 +80,7 @@ private:
 	int pIndex;
 	int pParent;
 	
-	decTOrderedSet<debpColliderConstraint*> pConstraints;
+	decTUniqueList<debpColliderConstraint> pConstraints;
 	
 	debpShape::List pShapes;
 	
@@ -162,7 +162,7 @@ public:
 	
 	
 	/** Constraints. */
-	inline const decTOrderedSet<debpColliderConstraint*> &GetConstraints() const{ return pConstraints; }
+	inline const decTUniqueList<debpColliderConstraint> &GetConstraints() const{ return pConstraints; }
 	
 	/** Number of constraints. */
 	int GetConstraintCount() const;
@@ -177,7 +177,7 @@ public:
 	bool HasConstraint(debpColliderConstraint *constraint) const;
 	
 	/** Add constraint. */
-	void AddConstraint(debpColliderConstraint *constraint);
+	void AddConstraint(deTUniqueReference<debpColliderConstraint> &&constraint);
 	
 	/** Remove constraint. */
 	void RemoveConstraint(debpColliderConstraint *constraint);

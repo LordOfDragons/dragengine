@@ -28,6 +28,7 @@
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/resources/video/deVideo.h>
 
 class deVideo;
@@ -59,8 +60,7 @@ private:
 	const int pHeight;
 	const int pComponentCount;
 	
-	deoglTexture **pFrames;
-	int pFrameCount;
+	decTUniqueList<deoglTexture> pFrames;
 	int pFrameCountToCache;
 	
 	deoglPixelBuffer::Ref pPixelBuffer;
@@ -91,7 +91,7 @@ public:
 	deoglTexture *GetTexture(int frame) const;
 	
 	/** Number of frames. */
-	inline int GetFrameCount() const{ return pFrameCount; }
+	inline int GetFrameCount() const{ return pFrames.GetCount(); }
 	
 	/** Remaining number of frames to cache or -1 if no caching is used. */
 	inline int GetFrameCountToCache() const{ return pFrameCountToCache; }

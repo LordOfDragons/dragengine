@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _DEBPPROPFIELD_H_
 #define _DEBPPROPFIELD_H_
 
 // includes
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/physics/deBasePhysicsPropField.h>
 
@@ -48,11 +48,7 @@ class debpPropField : public deBasePhysicsPropField{
 private:
 	dePhysicsBullet *pBullet;
 	dePropField *pPropField;
-	
-	debpPropFieldType **pTypes;
-	int pTypeCount;
-	int pTypeSize;
-	
+	decTUniqueList<debpPropFieldType> pTypes;
 	bool pDirty;
 	
 public:
@@ -72,7 +68,7 @@ public:
 	inline dePropField *GetPropField() const{ return pPropField; }
 	
 	/** Retrieves the number of types. */
-	inline int GetTypeCount() const{ return pTypeCount; }
+	inline int GetTypeCount() const{ return pTypes.GetCount(); }
 	/** Retrieves the type at the given index. */
 	debpPropFieldType *GetTypeAt(int index) const;
 	
@@ -102,7 +98,6 @@ public:
 	/*@}*/
 	
 private:
-	void pCleanUp();
 	void pProjectInstancesDown(const dePropFieldGround &ground);
 };
 

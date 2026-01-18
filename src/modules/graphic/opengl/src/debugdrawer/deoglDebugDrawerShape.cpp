@@ -50,15 +50,11 @@ pFillFirstPoint(0),
 pFillPointCount(0),
 pLineFirstPoint(0),
 pLinePointCount(0),
-pHullPoints(nullptr),
-pHullPointCount(0),
+
 pDirtyHulls(false){
 }
 
 deoglDebugDrawerShape::~deoglDebugDrawerShape(){
-	if(pHullPoints){
-		delete [] pHullPoints;
-	}
 }
 
 
@@ -253,51 +249,39 @@ void deoglDebugDrawerShape::WriteVBOData(const deDebugDrawerShape &ddshape, oglV
 //////////////////////
 
 class deoglDebugDrawerShape_ProcessHull : public decShapeVisitor{
-	decVector **pHullPoints;
-	int *pHullPointCount;
+	decTList<decVector> &pHullPoints;
 	decTList<int> &pHullIndices;
 	
 public:
-	deoglDebugDrawerShape_ProcessHull(decVector **hullPoints, int *hullPointCount, decTList<int> &hullIndices) :
-	pHullPoints(hullPoints), pHullPointCount(hullPointCount), pHullIndices(hullIndices){
+	deoglDebugDrawerShape_ProcessHull(decTList<decVector> &hullPoints, decTList<int> &hullIndices) :
+	pHullPoints(hullPoints), pHullIndices(hullIndices){
 	}
 	
 	void VisitShapeHull(decShapeHull &hull) override{
-		const decShapeHull::PointList &points = hull.GetPoints();
-		const int count = points.GetCount();
-		if(count < 3){
+		if(hull.GetPoints().GetCount() < 3){
 			return;
 		}
 		
 		deoglConvexHull3D calculator;
-		int i;
-		for(i=0; i<count; i++){
-			calculator.AddPoint(points.GetAt(i));
-		}
+		hull.GetPoints().Visit([&](const decVector &p){
+			calculator.AddPoint(p);
+		});
 		calculator.CalculateHull();
 		
-		const decTList<int> &indices = calculator.GetHullIndices();
-		if(indices.GetCount() < 3){
+		if(calculator.GetHullIndices().GetCount() < 3){
 			return;
 		}
 		
-		const int offset = *pHullPointCount;
-		decVector * const newArray = new decVector[offset + count];
-		if(*pHullPoints){
-			memcpy(newArray, *pHullPoints, sizeof(decVector) * *pHullPointCount);
-			delete [] *pHullPoints;
-		}
+		const int offset = pHullPoints.GetCount();
+		pHullPoints.EnlargeCapacity(offset + hull.GetPoints().GetCount());
+		hull.GetPoints().Visit([&](const decVector &p){
+			pHullPoints.Add(p);
+		});
 		
-		*pHullPoints = newArray;
-		*pHullPointCount += count;
-		
-		for(i=0; i<count; i++){
-			newArray[offset + i] = points.GetAt(i);
-		}
-		
-		for(i=0; i<indices.GetCount(); i++){
-			pHullIndices.Add(offset + indices.GetAt(i));
-		}
+		pHullIndices.EnlargeCapacity(pHullIndices.GetCount() + calculator.GetHullIndices().GetCount());
+		calculator.GetHullIndices().Visit([&](int index){
+			pHullIndices.Add(offset + index);
+		});
 	}
 };
 
@@ -307,18 +291,12 @@ void deoglDebugDrawerShape::pPrepareHulls(){
 	}
 	
 	pHullIndices.RemoveAll();
-	if(pHullPoints){
-		delete [] pHullPoints;
-		pHullPoints = nullptr;
-		pHullPointCount = 0;
-	}
+	pHullPoints.RemoveAll();
 	
-	deoglDebugDrawerShape_ProcessHull visitor(&pHullPoints, &pHullPointCount, pHullIndices);
-	const int count = pShapeList.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		pShapeList.GetAt(i)->Visit(visitor);
-	}
+	deoglDebugDrawerShape_ProcessHull visitor(pHullPoints, pHullIndices);
+	pShapeList.Visit([&](decShape &s){
+		s.Visit(visitor);
+	});
 	
 	pDirtyHulls = false;
 }

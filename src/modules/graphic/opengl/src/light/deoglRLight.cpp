@@ -47,7 +47,6 @@
 #include "../occlusiontest/deoglOcclusionTest.h"
 #include "../occlusiontest/mesh/deoglROcclusionMesh.h"
 #include "../occquery/deoglOcclusionQuery.h"
-#include "../optimizer/deoglOptimizerLight.h"
 #include "../optimizer/deoglOptimizerManager.h"
 #include "../rendering/plan/deoglRenderPlan.h"
 #include "../renderthread/deoglRenderThread.h"
@@ -1376,7 +1375,7 @@ void deoglRLight::pUpdateLightVolume(){
 #if 0
 	if(!pOptimizer){
 		try{
-			pOptimizer = new deoglOptimizerLight(this, oglWorld);
+			pOptimizer = deoglOptimizerLight::Ref::New(this, oglWorld);
 			
 			if(lightType == deLight::eltPoint){
 				pOptimizer->SetOptimizeShadowCaster(false);

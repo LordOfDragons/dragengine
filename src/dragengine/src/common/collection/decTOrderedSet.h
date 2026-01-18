@@ -643,6 +643,43 @@ public:
 	}
 	
 	/**
+	 * \brief Swap element with element at index.
+	 * \throws deeInvalidParam \em to is less than 0 or larger than GetCount()-1.
+	 */
+	inline void Swap(const TP &element, int to){
+		SwapIndex(IndexOf(element), to);
+	}
+	
+	template<typename U = T>
+	typename std::enable_if<!std::is_same<U, TP>::value, void>::type
+	Swap(const T &element, int to){
+		SwapIndex(IndexOf(element), to);
+	}
+	
+	/**
+	 * \brief Swap element at index from with element at index to.
+	 * \throws deeInvalidParam \em from is less than 0 or larger than GetCount()-1.
+	 * \throws deeInvalidParam \em to is less than 0 or larger than GetCount()-1.
+	 */
+	void SwapIndex(int from, int to){
+		DEASSERT_TRUE(from != -1)
+		
+		if(to < 0){
+			to = pCount + to;
+		}
+		DEASSERT_TRUE(to >= 0)
+		DEASSERT_TRUE(to < pCount)
+		DEASSERT_TRUE(from >= 0)
+		DEASSERT_TRUE(from < pCount)
+		
+		if(from == to){
+			return;
+		}
+		
+		std::swap(pElements[from], pElements[to]);
+	}
+	
+	/**
 	 * \brief Remove element if present in the set.
 	 * \returns true if removed or false if absent.
 	 */

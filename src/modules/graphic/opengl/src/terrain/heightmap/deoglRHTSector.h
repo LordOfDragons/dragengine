@@ -28,6 +28,7 @@
 #include "../../deoglBasics.h"
 #include "../../texture/pixelbuffer/deoglPixelBuffer.h"
 
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/deObject.h>
 
@@ -61,8 +62,7 @@ private:
 	float pBaseHeight;
 	float pScaling;
 	
-	deoglHTSTexture **pTextures;
-	int pTextureCount;
+	decTUniqueList<deoglHTSTexture> pTextures;
 	bool pValidTextures;
 	bool pDirtyMaskTextures;
 	bool pTexturesRequirePrepareForRender;
@@ -147,7 +147,7 @@ public:
 	
 	
 	/** Number of textures. */
-	inline int GetTextureCount() const{ return pTextureCount; }
+	inline int GetTextureCount() const{ return pTextures.GetCount(); }
 	
 	/** Texture at index. */
 	deoglHTSTexture &GetTextureAt(int index) const;

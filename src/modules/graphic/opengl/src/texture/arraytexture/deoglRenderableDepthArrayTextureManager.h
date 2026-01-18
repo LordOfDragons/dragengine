@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _DEOGLRENDERABLEDEPTHARRAYTEXTUREMANAGER_H_
 #define _DEOGLRENDERABLEDEPTHARRAYTEXTUREMANAGER_H_
 
-// predefinitions
+#include <dragengine/common/collection/decTUniqueList.h>
+
 class deoglRenderThread;
 class deoglRenderableDepthArrayTexture;
 
@@ -43,9 +43,7 @@ class deoglRenderableDepthArrayTextureManager{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	deoglRenderableDepthArrayTexture **pArrayTextures;
-	int pArrayTextureCount;
-	int pArrayTextureSize;
+	decTUniqueList<deoglRenderableDepthArrayTexture> pArrayTextures;
 	
 	
 	
@@ -64,7 +62,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Count of renderable textures. */
-	inline int GetCount() const{ return pArrayTextureCount; }
+	inline int GetCount() const{ return pArrayTextures.GetCount(); }
 	
 	/** Renderable texture at index for reading purpose only. */
 	const deoglRenderableDepthArrayTexture *GetAt(int index) const;

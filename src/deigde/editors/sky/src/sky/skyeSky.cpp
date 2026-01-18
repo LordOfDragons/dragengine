@@ -187,7 +187,7 @@ void skyeSky::RebuildEngineSky(){
 		pEngSky->SetControllerCount(controllerCount);
 		
 		for(i=0; i<controllerCount; i++){
-			const skyeController &sourceController = *pControllers.GetAt(i);
+			const skyeController &sourceController = pControllers.GetAt(i);
 			deSkyController &destController = pEngSky->GetControllers().GetAt(i);
 			
 			destController.SetValueRange(sourceController.GetMinimumValue(),

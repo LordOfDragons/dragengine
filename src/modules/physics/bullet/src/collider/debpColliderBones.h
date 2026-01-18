@@ -25,13 +25,14 @@
 #ifndef _DEBPCOLLIDERBONES_H_
 #define _DEBPCOLLIDERBONES_H_
 
+#include "debpColliderBone.h"
 #include "../debpCollisionObject.h"
 
-#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/resources/collider/deCollider.h>
 #include <dragengine/resources/collider/deColliderConstraint.h>
 
-class debpColliderBone;
 class debpCollider;
 class debpForceField;
 
@@ -59,11 +60,8 @@ private:
 	deColliderRig *pEngColliderRig;
 	deColliderComponent *pEngColliderComponent;
 	
-	debpColliderBone **pBones;
-	int pBoneCount;
-	
-	debpColliderBone **pBonesPhysics;
-	int pBonePhysicsCount;
+	decTUniqueList<debpColliderBone> pBones;
+	decTList<debpColliderBone*> pBonePhysics;
 	
 	int pRootBone;
 	float pRigMass;
@@ -91,7 +89,7 @@ public:
 	/** \name Bones */
 	/*@{*/
 	/** Number of bones. */
-	inline int GetBoneCount() const{ return pBoneCount; }
+	inline int GetBoneCount() const{ return pBones.GetCount(); }
 	
 	/** Bone at index which can be NULL. */
 	debpColliderBone *GetBoneAt(int index) const;
@@ -106,7 +104,7 @@ public:
 	debpColliderBone *GetRootBone() const;
 	
 	/** Number of physics bones. */
-	inline int GetBonePhysicsCount() const{ return pBonePhysicsCount; }
+	inline int GetBonePhysicsCount() const{ return pBonePhysics.GetCount(); }
 	
 	/** hysics Physics bone at index. */
 	debpColliderBone &GetBonePhysicsAt(int index) const;

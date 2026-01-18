@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _DEBPHEIGHTTERRAIN_H_
 #define _DEBPHEIGHTTERRAIN_H_
 
 // includes
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/physics/deBasePhysicsHeightTerrain.h>
 
@@ -51,9 +51,7 @@ private:
 	
 	debpWorld *pParentWorld;
 	
-	debpHTSector **pSectors;
-	int pSectorCount;
-	int pSectorSize;
+	decTUniqueList<debpHTSector> pSectors;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -77,7 +75,7 @@ public:
 	void SetParentWorld(debpWorld *parentWorld);
 	
 	/** Retrieves the number of sectors. */
-	inline int GetSectorCount() const{ return pSectorCount; }
+	inline int GetSectorCount() const{ return pSectors.GetCount(); }
 	/** Retrieves the sector at the given index. */
 	debpHTSector *GetSectorAt(int index) const;
 	/** Retrieves the sector with the given coordinates or NULL if not found. */
@@ -128,9 +126,6 @@ public:
 	 */
 	void FindDecalsTouching(const decShape &shape, deDecal::List &list) override;
 	/*@}*/
-	
-private:
-	void pCleanUp();
 };
 
 // end of include only once

@@ -594,8 +594,7 @@ deoglEnvironmentMap &envmap){
 		pSkyInstances.Add(instance);
 	}
 	
-	const int skyCount = pSkyInstances.GetCount();
-	if(skyCount == 0){
+	if(pSkyInstances.IsEmpty()){
 		RenderEmptySkyIntoEnvMap(world, envmap);
 		return;
 	}
@@ -609,7 +608,6 @@ deoglEnvironmentMap &envmap){
 	deoglRenderPlan plan(renderThread);
 	int size = envmap.GetSize();
 	decDMatrix matrixCamera;
-	int cmf, l, s;
 	
 	const int cubeFaces[] = {
 		deoglCubeMap::efPositiveX, deoglCubeMap::efNegativeX,
@@ -653,6 +651,7 @@ deoglEnvironmentMap &envmap){
 		
 		const GLfloat clearColor[4] = {engSkyColor.r, engSkyColor.g, engSkyColor.b, 1.0f};
 		
+		int cmf;
 		for(cmf=0; cmf<6; cmf++){
 			const deoglDebugTraceGroup debugTrace2(renderThread, "Sky.RenderSkyIntoEnvMap.Face");
 			fbo->AttachColorCubeMapFace(0, cubemap, cubeFaces[cmf]);
@@ -696,35 +695,30 @@ deoglEnvironmentMap &envmap){
 			
 			PreparepRenderSkyIntoEnvMapParamBlock(plan);
 			
-			for(s=0; s<skyCount; s++){
-				deoglRSkyInstance &instance = *pSkyInstances.GetAt(s);
-				deoglRSky &sky = *instance.GetRSky();
-				const int layerCount = sky.GetLayerCount();
-				
-				for(l=0; l<layerCount; l++){
-					const deoglRSkyLayer &layer = sky.GetLayerAt(l);
-					if(!instance.GetLayerAt(l).GetVisible()){
-						continue;
+			pSkyInstances.Visit([&](deoglRSkyInstance *si){
+				si->GetRSky()->GetLayers().VisitIndexed([&](int sli, const deoglRSkyLayer &sl){
+					if(!si->GetLayerAt(sli).GetVisible()){
+						return;
 					}
 					
-					switch(layer.GetLayerType()){
+					switch(sl.GetLayerType()){
 					case deoglRSkyLayer::eltSkyBox:
-						RenderSkyBox(plan, instance, l, false, true);
+						RenderSkyBox(plan, *si, sli, false, true);
 						break;
 						
 					case deoglRSkyLayer::eltSkySphere:
-						RenderSkySphere(plan, instance, l, false, true);
+						RenderSkySphere(plan, *si, sli, false, true);
 						break;
 						
 					default:
 						break;
 					}
 					
-					if(layer.GetBodyCount() > 0){
-						RenderSkyLayerBodies(plan, instance, l, true);
+					if(sl.GetBodyCount() > 0){
+						RenderSkyLayerBodies(plan, *si, sli, true);
 					}
-				}
-			}
+				});
+			});
 		}
 		
 		OGL_CHECK(renderThread, pglBindVertexArray(0));

@@ -25,6 +25,8 @@
 #ifndef _DESYNSYNTHESIZERTARGET_H_
 #define _DESYNSYNTHESIZERTARGET_H_
 
+#include <dragengine/common/collection/decTList.h>
+
 class desynSynthesizerInstance;
 class desynSynthesizerLink;
 class desynSynthesizer;
@@ -39,8 +41,7 @@ class deSynthesizerLink;
  */
 class desynSynthesizerTarget{
 private:
-	const desynSynthesizerLink **pLinks;
-	int pLinkCount;
+	decTList<const desynSynthesizerLink*> pLinks;
 	
 	
 	
@@ -60,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of links. */
-	inline int GetLinkCount() const{ return pLinkCount; }
+	inline int GetLinkCount() const{ return pLinks.GetCount(); }
 	
 	/** \brief Link at index. */
 	const desynSynthesizerLink &GetLinkAt(int index) const;

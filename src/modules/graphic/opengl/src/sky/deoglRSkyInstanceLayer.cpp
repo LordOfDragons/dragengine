@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglRSky.h"
 #include "deoglRSkyLayer.h"
 #include "deoglRSkyInstance.h"
@@ -83,8 +79,6 @@ deoglRSkyInstanceLayer::~deoglRSkyInstanceLayer(){
 		delete pShadowCaster;
 	}
 }
-
-
 
 // Management
 ///////////////
@@ -164,11 +158,9 @@ const deoglSPBlockUBO::Ref &deoglRSkyInstanceLayer::GetInstanceParameterBlock(){
 }
 
 void deoglRSkyInstanceLayer::NotifyUpdateStaticComponent(deoglRComponent *component){
-	const int count = pGICascades.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		pGICascades.GetAt(i)->NotifyUpdateStaticComponent(component);
-	}
+	pGICascades.Visit([&](deoglSkyLayerGICascade &c){
+		c.NotifyUpdateStaticComponent(component);
+	});
 }
 
 
@@ -178,41 +170,27 @@ int deoglRSkyInstanceLayer::GetGICascadeCount() const{
 }
 
 deoglSkyLayerGICascade *deoglRSkyInstanceLayer::GetGICascade(const deoglGICascade &cascade) const{
-	const int count = pGICascades.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		deoglSkyLayerGICascade * const slgc = pGICascades.GetAt(i);
-		if(&slgc->GetGICascade() == &cascade){
-			return slgc;
-		}
-	}
-	
-	return nullptr;
+	return pGICascades.FindOrNull([&](const deoglSkyLayerGICascade &c){
+		return &c.GetGICascade() == &cascade;
+	});
 }
 
 deoglSkyLayerGICascade *deoglRSkyInstanceLayer::AddGICascade(const deoglGICascade &cascade){
-	deoglSkyLayerGICascade *slgc = GetGICascade(cascade);
-	if(slgc){
-		return slgc;
+	deoglSkyLayerGICascade * const found = GetGICascade(cascade);
+	if(found){
+		return found;
 	}
 	
-	slgc = new deoglSkyLayerGICascade(*this, cascade);
-	pGICascades.Add(slgc);
-	return slgc;
+	pGICascades.Add(deTUniqueReference<deoglSkyLayerGICascade>::New(*this, cascade));
+	return pGICascades.Last();
 }
 
 void deoglRSkyInstanceLayer::RemoveGICascade(const deoglGICascade &cascade){
-	const int count = pGICascades.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		deoglSkyLayerGICascade * const slgc = pGICascades.GetAt(i);
-		if(&slgc->GetGICascade() == &cascade){
-			delete slgc;
-			pGICascades.RemoveFrom(i);
-			return;
-		}
+	const int index = pGICascades.IndexOfMatching([&](const deoglSkyLayerGICascade &c){
+		return &c.GetGICascade() == &cascade;
+	});
+	if(index != -1){
+		pGICascades.RemoveFrom(index);
 	}
 }
 
@@ -225,10 +203,7 @@ void deoglRSkyInstanceLayer::RemoveAllGICascades(const deoglGIState &state){
 }
 
 void deoglRSkyInstanceLayer::RemoveAllGICascades(){
-	int count = pGICascades.GetCount();
-	while(count > 0){
-		delete pGICascades.GetAt(--count);
-	}
+	pGICascades.RemoveAll();
 }
 
 
@@ -256,15 +231,15 @@ void deoglRSkyInstanceLayer::pUpdateParameters(){
 	pOrientation = layer.GetOrientation();
 	if(targets[deSkyLayer::etOrientationX]){
 		pOrientation.x = PI * 2.0f
-			* targets[ deSkyLayer::etOrientationX ]->GetValue( pInstance, 0.0f );
+			* targets[ deSkyLayer::etOrientationX ]->GetValue(pInstance, 0.0f);
 	}
 	if(targets[deSkyLayer::etOrientationY]){
 		pOrientation.y = PI * 2.0f
-			* targets[ deSkyLayer::etOrientationY ]->GetValue( pInstance, 0.0f );
+			* targets[ deSkyLayer::etOrientationY ]->GetValue(pInstance, 0.0f);
 	}
 	if(targets[deSkyLayer::etOrientationZ]){
 		pOrientation.z = PI * 2.0f
-			* targets[ deSkyLayer::etOrientationZ ]->GetValue( pInstance, 0.0f );
+			* targets[ deSkyLayer::etOrientationZ ]->GetValue(pInstance, 0.0f);
 	}
 	
 	// rotation
@@ -320,7 +295,7 @@ void deoglRSkyInstanceLayer::pUpdateParameters(){
 	pTransparency = layer.GetTransparency();
 	if(targets[deSkyLayer::etTransparency]){
 		pTransparency = decMath::clamp(pTransparency
-			* targets[ deSkyLayer::etTransparency ]->GetValue( pInstance, 1.0f ),
+			* targets[ deSkyLayer::etTransparency ]->GetValue(pInstance, 1.0f),
 				0.0f, 1.0f);
 	}
 	

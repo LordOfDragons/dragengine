@@ -25,12 +25,10 @@
 #ifndef _DEOGLRSKYINSTANCELAYER_H_
 #define _DEOGLRSKYINSTANCELAYER_H_
 
-#include <dragengine/deTUniqueReference.h>
-
 #include "../light/pipeline/deoglLightPipelinesSky.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
 
-#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/sky/deSkyLayer.h>
 
@@ -52,6 +50,8 @@ class deoglRComponent;
 class deoglRSkyInstanceLayer{
 public:
 	using Ref = deTUniqueReference<deoglRSkyInstanceLayer>;
+	using List = decTUniqueList<deoglRSkyInstanceLayer>;
+	
 	
 private:
 	deoglRSkyInstance &pInstance;
@@ -80,7 +80,7 @@ private:
 	
 	deoglShadowCaster *pShadowCaster;
 	
-	decTList<deoglSkyLayerGICascade*> pGICascades;
+	decTUniqueList<deoglSkyLayerGICascade> pGICascades;
 	
 	
 	
@@ -94,7 +94,6 @@ public:
 	/** Clean up sky instance layer. */
 	~deoglRSkyInstanceLayer();
 	/*@}*/
-	
 	
 	
 	/** \name Management */

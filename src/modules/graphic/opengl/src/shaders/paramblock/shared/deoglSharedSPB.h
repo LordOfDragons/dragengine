@@ -28,6 +28,8 @@
 #include "deoglSharedSPBElement.h"
 #include "../deoglShaderParameterBlock.h"
 
+#include <dragengine/common/collection/decTList.h>
+
 
 /**
  * OpenGL Shared Shader Parameter Block.
@@ -50,8 +52,7 @@ public:
 	
 private:
 	const deoglShaderParameterBlock::Ref pParameterBlock;
-	deoglSharedSPBElement **pElements;
-	int pSize;
+	decTList<deoglSharedSPBElement*> pElements;
 	int pCount;
 	
 	
@@ -68,7 +69,7 @@ public:
 	
 protected:
 	/** Clean up shared shader parameter block. */
-	~deoglSharedSPB() override;
+	~deoglSharedSPB() override = default;
 	/*@}*/
 	
 	
@@ -80,7 +81,7 @@ public:
 	inline const deoglShaderParameterBlock::Ref &GetParameterBlock() const{ return pParameterBlock; }
 	
 	/** Maximum number of elements. */
-	inline int GetSize() const{ return pSize; }
+	inline int GetSize() const{ return pElements.GetCount(); }
 	
 	/** Number of stored elements. */
 	inline int GetElementCount() const{ return pCount; }

@@ -22,14 +22,11 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-
 #include "deoglRenderableDepthTexture.h"
 #include "deoglRenderableDepthTextureManager.h"
 #include "../../deoglBasics.h"
 
+#include <dragengine/deTUniqueReference.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -41,20 +38,10 @@
 ////////////////////////////
 
 deoglRenderableDepthTextureManager::deoglRenderableDepthTextureManager(deoglRenderThread &renderThread) :
-pRenderThread(renderThread),
-pTextures(nullptr),
-pTextureCount(0),
-pTextureSize(0){
+pRenderThread(renderThread){
 }
 
 deoglRenderableDepthTextureManager::~deoglRenderableDepthTextureManager(){
-	if(pTextures){
-		while(pTextureCount > 0){
-			pTextureCount--;
-			delete pTextures[pTextureCount];
-		}
-		delete [] pTextures;
-	}
 }
 
 
@@ -63,43 +50,24 @@ deoglRenderableDepthTextureManager::~deoglRenderableDepthTextureManager(){
 ///////////////
 
 const deoglRenderableDepthTexture *deoglRenderableDepthTextureManager::GetTextureAt(int index) const{
-	if(index < 0 || index >= pTextureCount) DETHROW(deeInvalidParam);
-	
-	return pTextures[index];
+	return pTextures.GetAt(index);
 }
 
 deoglRenderableDepthTexture *deoglRenderableDepthTextureManager::GetTextureWith(
 int width, int height, bool withStencil, bool useFloat){
-	deoglRenderableDepthTexture *texture = nullptr;
-	int i;
-	
 	// find the texture with the matching format
-	for(i=0; i<pTextureCount; i++){
-		if(!pTextures[i]->GetInUse() && pTextures[i]->Matches(width, height, withStencil, useFloat)){
-			texture = pTextures[i];
-			break;
-		}
+	auto found = pTextures.FindOrNull([&](const deoglRenderableDepthTexture &t){
+		return !t.GetInUse() && t.Matches(width, height, withStencil, useFloat);
+	});
+	if(found){
+		found->SetInUse(true);
+		return found;
 	}
 	
 	// if not found create a new one
-	if(!texture){
-		if(pTextureCount == pTextureSize){
-			int newSize = pTextureSize * 3 / 2 + 1;
-			deoglRenderableDepthTexture **newArray = new deoglRenderableDepthTexture*[newSize];
-			if(pTextures){
-				memcpy(newArray, pTextures, sizeof(deoglRenderableDepthTexture*) * pTextureSize);
-				delete [] pTextures;
-			}
-			pTextures = newArray;
-			pTextureSize = newSize;
-		}
-		
-		texture = new deoglRenderableDepthTexture(pRenderThread, width, height, withStencil, useFloat);
-		pTextures[pTextureCount] = texture;
-		pTextureCount++;
-	}
-	
-	// mark the texture in use and return it
+	auto texture = deTUniqueReference<deoglRenderableDepthTexture>::New(
+		pRenderThread, width, height, withStencil, useFloat);
 	texture->SetInUse(true);
-	return texture;
+	pTextures.Add(std::move(texture));
+	return pTextures.Last();
 }

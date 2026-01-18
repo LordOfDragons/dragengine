@@ -25,6 +25,7 @@
 #ifndef _DEBPFORCEFIELD_H_
 #define _DEBPFORCEFIELD_H_
 
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/physics/deBasePhysicsForceField.h>
 
@@ -44,9 +45,8 @@ private:
 	dePhysicsBullet &pBullet;
 	const deForceField &pForceField;
 	
-	debpFFVortex **pVortices;
+	decTUniqueList<debpFFVortex> pVortices;
 	int pVortexCount;
-	int pVortexSize;
 	float pTimeUntilNextVortex;
 	
 	decVector pDirection;
@@ -60,9 +60,6 @@ public:
 	/*@{*/
 	/** \brief Create peer. */
 	debpForceField(dePhysicsBullet &bullet, const deForceField &forceField);
-	
-	/** \brief Clean up peer. */
-	~debpForceField() override;
 	/*@}*/
 	
 	
@@ -148,7 +145,6 @@ public:
 	
 	
 private:
-	void pCleanUp();
 	void pUpdateGeometry();
 };
 

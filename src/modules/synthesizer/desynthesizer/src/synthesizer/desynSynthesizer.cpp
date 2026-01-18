@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "desynSynthesizer.h"
 #include "desynCreateSynthesizerSource.h"
 #include "source/desynSynthesizerSource.h"
@@ -50,9 +46,6 @@ desynSynthesizer::desynSynthesizer(deDESynthesizer &module, deSynthesizer &synth
 pModule(module),
 pSynthesizer(synthesizer),
 
-pSources(nullptr),
-pSourceCount(0),
-
 pSilent(true),
 pStateDataSize(0),
 
@@ -67,7 +60,9 @@ pUpdateTracker(0){
 }
 
 desynSynthesizer::~desynSynthesizer(){
-	pCleanUp();
+	deMutexGuard guard(pMutex);
+	pSources.RemoveAll();
+	pLinks.RemoveAll();
 }
 
 
@@ -93,17 +88,14 @@ const desynSynthesizerLink &desynSynthesizer::GetLinkAt(int index) const{
 	return *pLinks.GetAt(index);
 }
 
-void desynSynthesizer::AddLink(desynSynthesizerLink *link){
-	pLinks.Add(link);
+void desynSynthesizer::AddLink(deTUniqueReference<desynSynthesizerLink> &&link){
+	pLinks.Add(std::move(link));
 }
 
 
 
 const desynSynthesizerSource &desynSynthesizer::GetSourceAt(int index) const{
-	if(index < 0 || index >= pSourceCount){
-		DETHROW(deeInvalidParam);
-	}
-	return *pSources[index];
+	return pSources.GetAt(index);
 }
 
 
@@ -114,8 +106,11 @@ void desynSynthesizer::Prepare(){
 	}
 	
 	deMutexGuard guard(pMutex);
-	pClearSources();
-	pClearLinks();
+	pSources.RemoveAll();
+	pLinks.RemoveAll();
+	
+	pSilent = true;
+	pStateDataSize = 0;
 	
 	pCreateLinks();
 	pCreateSources();
@@ -126,17 +121,15 @@ void desynSynthesizer::Prepare(){
 
 
 void desynSynthesizer::InitStateData(char *stateData){
-	int i;
-	for(i=0; i<pSourceCount; i++){
-		pSources[i]->InitStateData(stateData);
-	}
+	pSources.Visit([&](desynSynthesizerSource &s){
+		s.InitStateData(stateData);
+	});
 }
 
 void desynSynthesizer::CleanUpStateData(char *stateData){
-	int i;
-	for(i=0; i<pSourceCount; i++){
-		pSources[i]->CleanUpStateData(stateData);
-	}
+	pSources.Visit([&](desynSynthesizerSource &s){
+		s.CleanUpStateData(stateData);
+	});
 }
 
 void desynSynthesizer::GenerateSound(const desynSynthesizerInstance &instance,
@@ -146,10 +139,9 @@ char *stateData, float *buffer, int samples){
 	}
 	
 	deMutexGuard guard(pMutex);
-	int i;
-	for(i=0; i<pSourceCount; i++){
-		pSources[i]->GenerateSound(instance, stateData, buffer, samples, 0.0f, 1.0f);
-	}
+	pSources.Visit([&](desynSynthesizerSource &s){
+		s.GenerateSound(instance, stateData, buffer, samples, 0.0f, 1.0f);
+	});
 }
 
 
@@ -196,86 +188,28 @@ void desynSynthesizer::SourcesChanged(){
 // Private Functions
 //////////////////////
 
-void desynSynthesizer::pCleanUp(){
-	deMutexGuard guard(pMutex);
-	pClearSources();
-	pClearLinks();
-}
-
-
-
-void desynSynthesizer::pClearLinks(){
-	const int count = pLinks.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		delete pLinks.GetAt(i);
-	}
-	
-	pLinks.RemoveAll();
-}
-
 void desynSynthesizer::pCreateLinks(){
-	pClearLinks();
-	
-	const int count = pSynthesizer.GetLinks().GetCount();
-	if(count == 0){
-		return;
-	}
-	
-	int i;
-	for(i=0; i<count; i++){
-		pLinks.Add(new desynSynthesizerLink(*pSynthesizer.GetLinks().GetAt(i)));
-	}
+	pSynthesizer.GetLinks().Visit([&](const deSynthesizerLink &l){
+		pLinks.Add(desynSynthesizerLink::Ref::New(l));
+	});
 }
 
 void desynSynthesizer::pCreateSources(){
-	pSilent = true;
-	pStateDataSize = 0;
-	
-	const int count = pSynthesizer.GetSources().GetCount();
-	if(count == 0){
+	if(pSynthesizer.GetSources().IsEmpty()){
 		return;
 	}
 	
 	desynCreateSynthesizerSource createSource(*this, 0);
-	pSources = new desynSynthesizerSource*[count];
 	
-	for(pSourceCount=0; pSourceCount<count; pSourceCount++){
+	pSynthesizer.GetSources().Visit([&](deSynthesizerSource &s){
 		createSource.Reset();
 		
-		try{
-			pSynthesizer.GetSources().GetAt(pSourceCount)->Visit(createSource);
-			pSources[pSourceCount] = createSource.GetSource();
-			
-			if(!pSources[pSourceCount]->GetSilent()){
-				pSilent = false;
-			}
-			
-			pStateDataSize += pSources[pSourceCount]->StateDataSize(pStateDataSize);
-			
-		}catch(const deException &){
-			if(createSource.GetSource()){
-				delete createSource.GetSource();
-			}
-			throw;
-		}
-	}
-}
-
-void desynSynthesizer::pClearSources(){
-	if(!pSources){
-		return;
-	}
+		s.Visit(createSource);
+		pSources.Add(std::move(createSource.GetSource()));
+		pStateDataSize += pSources.Last()->StateDataSize(pStateDataSize);
+	});
 	
-	int i;
-	for(i=0; i<pSourceCount; i++){
-		delete pSources[i];
-	}
-	delete [] pSources;
-	
-	pSources = nullptr;
-	pSourceCount = 0;
-	
-	pStateDataSize = 0;
+	pSilent = pSources.AllMatching([](const desynSynthesizerSource &s){
+		return s.GetSilent();
+	});
 }

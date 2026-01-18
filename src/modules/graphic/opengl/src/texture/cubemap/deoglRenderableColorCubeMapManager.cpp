@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-
 #include "deoglRenderableColorCubeMap.h"
 #include "deoglRenderableColorCubeMapManager.h"
 #include "../../deoglBasics.h"
@@ -41,20 +37,10 @@
 ////////////////////////////
 
 deoglRenderableColorCubeMapManager::deoglRenderableColorCubeMapManager(deoglRenderThread &renderThread) :
-pRenderThread(renderThread),
-pCubeMaps(nullptr),
-pCubeMapCount(0),
-pCubeMapSize(0){
+pRenderThread(renderThread){
 }
 
 deoglRenderableColorCubeMapManager::~deoglRenderableColorCubeMapManager(){
-	if(pCubeMaps){
-		while(pCubeMapCount > 0){
-			pCubeMapCount--;
-			delete pCubeMaps[pCubeMapCount];
-		}
-		delete [] pCubeMaps;
-	}
 }
 
 
@@ -63,43 +49,22 @@ deoglRenderableColorCubeMapManager::~deoglRenderableColorCubeMapManager(){
 ///////////////
 
 const deoglRenderableColorCubeMap *deoglRenderableColorCubeMapManager::GetCubeMapAt(int index) const{
-	if(index < 0 || index >= pCubeMapCount) DETHROW(deeInvalidParam);
-	
-	return pCubeMaps[index];
+	return pCubeMaps.GetAt(index);
 }
 
 deoglRenderableColorCubeMap *deoglRenderableColorCubeMapManager::GetCubeMapWith(int size, int componentCount, bool isFloat){
-	deoglRenderableColorCubeMap *cubemap = nullptr;
-	int i;
-	
 	// find the cubemap with the matching format
-	for(i=0; i<pCubeMapCount; i++){
-		if(!pCubeMaps[i]->GetInUse() && pCubeMaps[i]->Matches(size, componentCount, isFloat)){
-			cubemap = pCubeMaps[i];
-			break;
-		}
+	deoglRenderableColorCubeMap *found = pCubeMaps.FindOrNull([&](const deoglRenderableColorCubeMap &c){
+		return !c.GetInUse() && c.Matches(size, componentCount, isFloat);
+	});
+	if(found){
+		found->SetInUse(true);
+		return found;
 	}
 	
 	// if not found create a new one
-	if(!cubemap){
-		if(pCubeMapCount == pCubeMapSize){
-			int newSize = pCubeMapSize * 3 / 2 + 1;
-			deoglRenderableColorCubeMap **newArray = new deoglRenderableColorCubeMap*[newSize];
-			if(pCubeMaps){
-				memcpy(newArray, pCubeMaps, sizeof(deoglRenderableColorCubeMap*) * pCubeMapSize);
-				delete [] pCubeMaps;
-			}
-			pCubeMaps = newArray;
-			pCubeMapSize = newSize;
-		}
-		
-		cubemap = new deoglRenderableColorCubeMap(pRenderThread, size, componentCount, isFloat);
-		
-		pCubeMaps[pCubeMapCount] = cubemap;
-		pCubeMapCount++;
-	}
-	
-	// mark the cubemap in use and return it
+	auto cubemap = deTUniqueReference<deoglRenderableColorCubeMap>::New(pRenderThread, size, componentCount, isFloat);
 	cubemap->SetInUse(true);
-	return cubemap;
+	pCubeMaps.Add(std::move(cubemap));
+	return pCubeMaps.Last();
 }

@@ -26,15 +26,15 @@
 #define _DEOGLRSKYINSTANCE_H_
 
 #include "deoglRSky.h"
+#include "deoglRSkyInstanceLayer.h"
 
-#include <dragengine/common/collection/decTUniqueList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decLayerMask.h>
 
 class deoglRWorld;
 class deoglRenderThread;
-class deoglRSkyInstanceLayer;
 class deoglGIState;
 class deoglRComponent;
 
@@ -59,7 +59,7 @@ private:
 	float *pControllerStates;
 	int pControllerStateCount;
 	
-	decTUniqueList<deoglRSkyInstanceLayer> pLayers;
+	deoglRSkyInstanceLayer::List pLayers;
 	
 	float pTotalSkyLightIntensity;
 	float pTotalSkyAmbientIntensity;
@@ -121,7 +121,7 @@ public:
 	void SetOrder(int order);
 	
 	/** Layer mask. */
-	inline  const decLayerMask &GetLayerMask() const{ return pLayerMask; }
+	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
 	/** Set layer mask. */
 	void SetLayerMask(const decLayerMask &layerMask);
@@ -149,7 +149,7 @@ public:
 	
 	
 	/** Layers. */
-	inline const decTUniqueList<deoglRSkyInstanceLayer> &GetLayers() const{ return pLayers; }
+	inline const deoglRSkyInstanceLayer::List &GetLayers() const{ return pLayers; }
 	
 	/** Number of layers. */
 	inline int GetLayerCount() const{ return pLayers.GetCount(); }

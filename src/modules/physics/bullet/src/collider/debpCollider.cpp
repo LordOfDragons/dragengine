@@ -73,15 +73,6 @@ pCollider(collider)
 	
 	pParentWorld = NULL;
 	pIndex = -1;
-	
-	pAttachments = NULL;
-	pAttachmentCount = 0;
-	pAttachmentSize = 0;
-	
-	pConstraints = NULL;
-	pConstraintCount = 0;
-	pConstraintSize = 0;
-	
 	pIsMoving = false;
 	pDirtyMatrix = true;
 	pDirtyOctree = true;
@@ -382,10 +373,9 @@ void debpCollider::SetShapeExtends(const decDVector &minExtend, const decDVector
 
 
 void debpCollider::PrepareConstraintsForStep(){
-	int i;
-	for(i=0; i<pConstraintCount; i++){
-		pConstraints[i]->PrepareForStep();
-	}
+	pConstraints.Visit([&](debpColliderConstraint &c){
+		c.PrepareForStep();
+	});
 }
 
 void debpCollider::CheckColliderConstraintsBroke(){
@@ -397,13 +387,11 @@ void debpCollider::CheckColliderConstraintsBroke(){
 	//      constraints exist only if added by the user. so we use the rule that
 	//      FinishDetection is required if there are any constraints. furthermore we can
 	//      rule out any constraint which can not break.
-	int i;
-	for(i=0; i<pConstraintCount; i++){
-		if(pConstraints[i]->CheckHasBroken()){
-			pCollider.GetPeerScripting()->ColliderConstraintBroke(
-				&pCollider, i, &pConstraints[i]->GetConstraint());
+	pConstraints.VisitIndexed([&](int i, debpColliderConstraint &c){
+		if(c.CheckHasBroken()){
+			pCollider.GetPeerScripting()->ColliderConstraintBroke(&pCollider, i, &c.GetConstraint());
 		}
-	}
+	});
 }
 
 
@@ -451,14 +439,9 @@ bool debpCollider::CalcAutoColDetPrepare(){
 	}
 	
 	// see CheckColliderConstraintsBroke()
-	int i;
-	for(i=0; i<pConstraintCount; i++){
-		if(pConstraints[i]->IsBreakable()){
-			return true;
-		}
-	}
-	
-	return false;
+	return pConstraints.HasMatching([](const debpColliderConstraint &c){
+		return c.IsBreakable();
+	});
 }
 
 
@@ -506,14 +489,9 @@ bool debpCollider::CalcAutoColDetFinish(){
 	}
 	
 	// see CheckColliderConstraintsBroke()
-	int i;
-	for(i=0; i<pConstraintCount; i++){
-		if(pConstraints[i]->IsBreakable()){
-			return true;
-		}
-	}
-	
-	return false;
+	return pConstraints.HasMatching([](const debpColliderConstraint &c){
+		return c.IsBreakable();
+	});
 }
 
 
@@ -562,11 +540,7 @@ void debpCollider::SetUpdateOctreeIndex(int index){
 ////////////////
 
 debpColliderAttachment *debpCollider::GetAttachmentAt(int index) const{
-	if(index < 0 || index >= pAttachmentCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return pAttachments[index];
+	return pAttachments.GetAt(index);
 }
 
 
@@ -575,9 +549,7 @@ debpColliderAttachment *debpCollider::GetAttachmentAt(int index) const{
 ////////////////
 
 debpColliderConstraint *debpCollider::GetConstraintAt(int index) const{
-	if(index < 0 || index >= pConstraintCount) DETHROW(deeInvalidParam);
-	
-	return pConstraints[index];
+	return pConstraints.GetAt(index);
 }
 
 
@@ -727,19 +699,7 @@ void debpCollider::ForceFieldChanged(){
 }
 
 void debpCollider::AttachmentAdded(int index, deColliderAttachment *attachment){
-	if(pAttachmentCount == pAttachmentSize){
-		int newSize = pAttachmentSize * 3 / 2 + 1;
-		debpColliderAttachment **newArray = new debpColliderAttachment*[newSize];
-		if(pAttachments){
-			memcpy(newArray, pAttachments, sizeof(debpColliderAttachment*) * pAttachmentSize);
-			delete [] pAttachments;
-		}
-		pAttachments = newArray;
-		pAttachmentSize = newSize;
-	}
-	
-	pAttachments[pAttachmentCount] = new debpColliderAttachment(attachment);
-	pAttachmentCount++;
+	pAttachments.Add(deTUniqueReference<debpColliderAttachment>::New(attachment));
 	
 	deResource * const resource = attachment->GetResource();
 	if(resource->GetResourceManager()->GetResourceType() == deResourceManager::ertCollider){
@@ -748,12 +708,10 @@ void debpCollider::AttachmentAdded(int index, deColliderAttachment *attachment){
 }
 
 void debpCollider::AttachmentChanged(int index, deColliderAttachment *attachment){
-	pAttachments[index]->AttachmentChanged();
+	pAttachments.GetAt(index)->AttachmentChanged();
 }
 
 void debpCollider::AttachmentRemoved(int index, deColliderAttachment *attachment){
-	int i;
-	
 	deResource * const resource = attachment->GetResource();
 	if(resource->GetResourceManager()->GetResourceType() == deResourceManager::ertCollider){
 		debpCollider * const collider = dynamic_cast<debpCollider*>(dynamic_cast<deCollider*>(resource)->GetPeerPhysics());
@@ -762,47 +720,27 @@ void debpCollider::AttachmentRemoved(int index, deColliderAttachment *attachment
 		}
 	}
 	
-	delete pAttachments[index];
-	
-	for(i=index+1; i<pAttachmentCount; i++){
-		pAttachments[i - 1] = pAttachments[i];
-	}
-	
-	pAttachmentCount--;
+	pAttachments.RemoveFrom(index);
 }
 
 void debpCollider::AllAttachmentsRemoved(){
-	while(pAttachmentCount > 0){
-		pAttachmentCount--;
-		
-		deResource * const resource = pAttachments[pAttachmentCount]->GetAttachment()->GetResource();
+	pAttachments.Visit([&](const debpColliderAttachment &a){
+		deResource * const resource = a.GetAttachment()->GetResource();
 		if(resource->GetResourceManager()->GetResourceType() == deResourceManager::ertCollider){
-			debpCollider * const collider = dynamic_cast<debpCollider*>(dynamic_cast<deCollider*>(resource)->GetPeerPhysics());
+			debpCollider * const collider = dynamic_cast<debpCollider*>(
+				dynamic_cast<deCollider*>(resource)->GetPeerPhysics());
 			if(collider){
 				collider->GetAttachedToList().Remove(this);
 			}
 		}
-		
-		delete pAttachments[pAttachmentCount];
-	}
+	});
+	pAttachments.RemoveAll();
 }
 
 
 
 void debpCollider::ConstraintAdded(int index, deColliderConstraint *constraint){
-	if(pConstraintCount == pConstraintSize){
-		int newSize = pConstraintSize * 3 / 2 + 1;
-		debpColliderConstraint **newArray = new debpColliderConstraint*[newSize];
-		if(pConstraints){
-			memcpy(newArray, pConstraints, sizeof(debpColliderConstraint*) * pConstraintSize);
-			delete [] pConstraints;
-		}
-		pConstraints = newArray;
-		pConstraintSize = newSize;
-	}
-	
-	pConstraints[pConstraintCount] = new debpColliderConstraint(*pBullet, *constraint);
-	pConstraintCount++;
+	pConstraints.Add(deTUniqueReference<debpColliderConstraint>::New(*pBullet, *constraint));
 	
 	// see CheckColliderConstraintsBroke() for the reason to register
 	SetAutoColDetPrepare(CalcAutoColDetPrepare());
@@ -810,24 +748,15 @@ void debpCollider::ConstraintAdded(int index, deColliderConstraint *constraint){
 }
 
 void debpCollider::ConstraintChanged(int index, deColliderConstraint *constraint){
-	//pConstraints[ index ]->ConstraintChanged();
+	//pConstraints.GetAt(index)->ConstraintChanged();
 }
 
 void debpCollider::ConstraintRemoved(int index, deColliderConstraint *constraint){
-	int i;
-	
-	delete pConstraints[index];
-	for(i=index+1; i<pConstraintCount; i++){
-		pConstraints[i - 1] = pConstraints[i];
-	}
-	pConstraintCount--;
+	pConstraints.RemoveFrom(index);
 }
 
 void debpCollider::AllConstraintsRemoved(){
-	while(pConstraintCount > 0){
-		pConstraintCount--;
-		delete pConstraints[pConstraintCount];
-	}
+	pConstraints.RemoveAll();
 }
 
 
@@ -873,16 +802,8 @@ void debpCollider::pCleanUp(){
 	pRemoveFromAllTrackingTouchSensors();
 	
 	AllCollisionTestsRemoved();
-	
-	if(pConstraints){
-		AllConstraintsRemoved();
-		delete [] pConstraints;
-	}
-	
-	if(pAttachments){
-		AllAttachmentsRemoved();
-		delete [] pAttachments;
-	}
+	AllConstraintsRemoved();
+	AllAttachmentsRemoved();
 }
 void debpCollider::pRemoveFromAllTrackingTouchSensors(){
 	pTrackingTouchSensors.Visit([&](debpTouchSensor *touchSensor){

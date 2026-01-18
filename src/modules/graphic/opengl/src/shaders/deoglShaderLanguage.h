@@ -31,6 +31,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/threading/deMutex.h>
@@ -80,8 +81,7 @@ private:
 	
 	deoglShaderCompiler *pCompiler;
 	
-	deoglShaderCompilerThread **pCompilerThreads;
-	int pCompilerThreadCount;
+	decTUniqueList<deoglShaderCompilerThread> pCompilerThreads;
 	
 	decTObjectList<deoglShaderCompileTask> pTasksPending;
 	decTObjectList<deoglShaderCompileUnitTask> pUnitTasksPending;
@@ -112,7 +112,7 @@ public:
 	inline const decStringList &GetGLSLExtensions() const{ return pGLSLExtensions; }
 	inline int GetGLSLVersionNumber() const{ return pGLSLVersionNumber; }
 	
-	inline bool HasCompileThreads() const{ return pCompilerThreadCount > 0; }
+	inline bool HasCompileThreads() const{ return pCompilerThreads.IsNotEmpty(); }
 	
 	/** Compile shader. */
 	void CompileShader(deoglShaderProgram &program);

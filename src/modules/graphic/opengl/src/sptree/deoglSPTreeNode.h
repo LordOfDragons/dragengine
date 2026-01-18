@@ -22,11 +22,10 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _DEOGLSPTREENODE_H_
 #define _DEOGLSPTREENODE_H_
 
-// includes
+#include <dragengine/deTUniqueReference.h>
 #include <dragengine/common/math/decMath.h>
 
 
@@ -41,6 +40,8 @@
  */
 class deoglSPTreeNode{
 public:
+	using Ref = deTUniqueReference<deoglSPTreeNode>;
+	
 	/** Determines along which axis a split happened if any. */
 	enum eSplitState{
 		/** No splitting present. */

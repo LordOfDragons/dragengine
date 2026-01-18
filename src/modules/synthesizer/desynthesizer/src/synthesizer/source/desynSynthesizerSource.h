@@ -26,13 +26,14 @@
 #define _DESYNSYNTHESIZERSOURCE_H_
 
 #include "../desynSynthesizerTarget.h"
+#include "../effect/desynSynthesizerEffect.h"
 
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/resources/synthesizer/source/deSynthesizerSource.h>
 
 class deDESynthesizer;
 class desynSynthesizer;
 class desynSynthesizerInstance;
-class desynSynthesizerEffect;
 
 
 
@@ -41,6 +42,8 @@ class desynSynthesizerEffect;
  */
 class desynSynthesizerSource{
 public:
+	using Ref = deTUniqueReference<desynSynthesizerSource>;
+	
 	/** \brief Generate buffer mono. */
 	struct sGenerateBufferMono{
 		float value;
@@ -74,8 +77,7 @@ private:
 	desynSynthesizerTarget pTargetVolume;
 	desynSynthesizerTarget pTargetPanning;
 	
-	desynSynthesizerEffect **pEffects;
-	int pEffectCount;
+	decTUniqueList<desynSynthesizerEffect> pEffects;
 	desynSynthesizerEffect *pApplyEffect;
 	
 	
@@ -88,7 +90,7 @@ public:
 		const deSynthesizerSource &source);
 	
 	/** \brief Clean up synthesizer source. */
-	virtual ~desynSynthesizerSource();
+	virtual ~desynSynthesizerSource() = default;
 	/*@}*/
 	
 	
@@ -254,7 +256,6 @@ public:
 	
 private:
 	void pCreateEffects(desynSynthesizer &synthesizer, int firstLink, const deSynthesizerSource &source);
-	void pFreeEffects();
 };
 
 #endif

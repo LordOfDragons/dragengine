@@ -25,6 +25,7 @@
 #ifndef _DEOGLHTVIEWSECTOR_H_
 #define _DEOGLHTVIEWSECTOR_H_
 
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglHTView;
@@ -42,8 +43,7 @@ private:
 	deoglHTView &pView;
 	deoglRHTSector &pSector;
 	
-	deoglHTViewSectorCluster **pClusters;
-	int pClusterCount;
+	decTUniqueList<deoglHTViewSectorCluster> pClusters;
 	
 	
 	
@@ -68,7 +68,7 @@ public:
 	inline deoglRHTSector &GetSector() const{ return pSector; }
 	
 	/** Count of clusters. */
-	const int GetClusterCount() const{ return pClusterCount; }
+	const int GetClusterCount() const{ return pClusters.GetCount(); }
 	
 	/** Cluster at index. */
 	deoglHTViewSectorCluster &GetClusterAt(int index) const;

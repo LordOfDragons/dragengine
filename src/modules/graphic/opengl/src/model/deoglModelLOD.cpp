@@ -58,6 +58,7 @@
 #include "../utils/collision/deoglCollisionDetection.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/utils/decTimer.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
@@ -1150,8 +1151,8 @@ void deoglModelLOD::pCalcTangents(){
 }
 
 struct sGroupVertex{
-	int vertex;
-	sGroupVertex *next;
+	int vertex = 0;
+	sGroupVertex *next = nullptr;
 };
 
 void deoglModelLOD::pBuildArrays(const deModel &engModel){
@@ -1285,106 +1286,86 @@ void deoglModelLOD::pBuildArrays(const deModel &engModel){
 	// vertex / has been involved with. each additional involvement is added to a forward
 	// linked list.
 	if(modelFaceCount > 0){
-		sGroupVertex **sortVertices = nullptr;
-		sGroupVertex *sortedVertices = nullptr;
+		int sortedVertexCount = 0;
+		int f = 0;
 		
-		try{
-			int sortedVertexCount = 0;
-			int k, f = 0;
+		auto sortedVertices = decTList<sGroupVertex>(modelFaceCount * 3, sGroupVertex{});
+		auto sortVertices = decTList<sGroupVertex*>(modelVertexCount, nullptr);
+		
+		pFaces = new deoglModelFace[modelFaceCount];
+		pFaceCount = modelFaceCount;
+		
+		pTextures.VisitIndexed([&](int ti, deoglModelTexture &texture){
+			int texFaceCount = 0;
 			
-			sortVertices = new sGroupVertex*[modelVertexCount];
-			sortedVertices = new sGroupVertex[modelFaceCount * 3];
+			texture.SetFirstFace(f);
 			
-			memset(sortVertices, 0, sizeof(sGroupVertex*) * modelVertexCount);
-			
-			pFaces = new deoglModelFace[modelFaceCount];
-			pFaceCount = modelFaceCount;
-			
-			pTextures.Visit([&](deoglModelTexture &texture){
-				int texFaceCount = 0;
-				
-				texture.SetFirstFace(f);
-				
-				for(j=0; j<pFaceCount; j++){
-					const deModelFace &modelFace = modelFaces[j];
-					if(modelFace.GetTexture() != i){
-						continue;
-					}
-					
-					/*if( f >= pFaceCount ){
-						DETHROW(deeInvalidParam);
-					}*/
-					
-					deoglModelFace &face = pFaces[f];
-					face.SetIndex(f);
-					face.SetTexture(i);
-					
-					for(k=0; k<3; k++){
-						const int position = modelFace.GetVertexAt(k);
-						const int texCoord = modelFace.GetTextureCoordinatesAt(k);
-						const int normal = modelFace.GetNormalAt(k);
-						const int tangent = modelFace.GetTangentAt(k);
-						
-						sGroupVertex *findVertex = sortVertices[position];
-						sGroupVertex *lastVertex = nullptr;
-						while(findVertex){
-							const oglModelVertex &vertex = pVertices[findVertex->vertex];
-							if(texCoord == vertex.texcoord && normal == vertex.normal
-							&& tangent == vertex.tangent){
-								break;
-							}
-							lastVertex = findVertex;
-							findVertex = findVertex->next;
-						}
-						
-						if(findVertex){
-							face.SetVertexAt(k, findVertex->vertex);
-							
-						}else{
-							oglModelVertex &vertex = pVertices[pVertexCount];
-							vertex.position = position;
-							vertex.texcoord = texCoord;
-							vertex.normal = normal;
-							vertex.tangent = tangent;
-							
-							sGroupVertex * const nextVertex = sortedVertices + sortedVertexCount++;
-							nextVertex->vertex = pVertexCount;
-							nextVertex->next = nullptr;
-							
-							if(lastVertex){
-								lastVertex->next = nextVertex;
-								
-							}else{
-								sortVertices[position] = nextVertex;
-							}
-							
-							face.SetVertexAt(k, pVertexCount++);
-						}
-					}
-					
-					f++;
-					texFaceCount++;
+			for(j=0; j<pFaceCount; j++){
+				const deModelFace &modelFace = modelFaces[j];
+				if(modelFace.GetTexture() != ti){
+					continue;
 				}
 				
-				texture.SetFaceCount(texFaceCount);
-			});
-			
-			if(f != pFaceCount){
-				DETHROW(deeInvalidParam);
+				/*if( f >= pFaceCount ){
+					DETHROW(deeInvalidParam);
+				}*/
+				
+				deoglModelFace &face = pFaces[f];
+				face.SetIndex(f);
+				face.SetTexture(ti);
+				
+				int k;
+				for(k=0; k<3; k++){
+					const int position = modelFace.GetVertexAt(k);
+					const int texCoord = modelFace.GetTextureCoordinatesAt(k);
+					const int normal = modelFace.GetNormalAt(k);
+					const int tangent = modelFace.GetTangentAt(k);
+					
+					sGroupVertex *findVertex = sortVertices.GetAt(position);
+					sGroupVertex *lastVertex = nullptr;
+					while(findVertex){
+						const oglModelVertex &vertex = pVertices[findVertex->vertex];
+						if(texCoord == vertex.texcoord && normal == vertex.normal
+						&& tangent == vertex.tangent){
+							break;
+						}
+						lastVertex = findVertex;
+						findVertex = findVertex->next;
+					}
+					
+					if(findVertex){
+						face.SetVertexAt(k, findVertex->vertex);
+						
+					}else{
+						oglModelVertex &vertex = pVertices[pVertexCount];
+						vertex.position = position;
+						vertex.texcoord = texCoord;
+						vertex.normal = normal;
+						vertex.tangent = tangent;
+						
+						sGroupVertex &nextVertex = sortedVertices.GetAt(sortedVertexCount++);
+						nextVertex.vertex = pVertexCount;
+						nextVertex.next = nullptr;
+						
+						if(lastVertex){
+							lastVertex->next = &nextVertex;
+							
+						}else{
+							sortVertices.SetAt(position, &nextVertex);
+						}
+						
+						face.SetVertexAt(k, pVertexCount++);
+					}
+				}
+				
+				f++;
+				texFaceCount++;
 			}
 			
-			delete [] sortVertices;
-			delete [] sortedVertices;
-			
-		}catch(const deException &){
-			if(sortVertices){
-				delete [] sortVertices;
-			}
-			if(sortedVertices){
-				delete [] sortedVertices;
-			}
-			throw;
-		}
+			texture.SetFaceCount(texFaceCount);
+		});
+		
+		DEASSERT_TRUE(f == pFaceCount)
 	}
 	
 	// optimize the memory consumption of the vertices array. required only if the difference

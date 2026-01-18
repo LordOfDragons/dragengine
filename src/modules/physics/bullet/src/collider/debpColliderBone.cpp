@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "debpColliderBone.h"
 #include "debpColliderConstraint.h"
 #include "debpCollider.h"
@@ -125,28 +121,23 @@ bool debpColliderBone::HasConstraint(debpColliderConstraint *constraint) const{
 	return pConstraints.Has(constraint);
 }
 
-void debpColliderBone::AddConstraint(debpColliderConstraint *constraint){
-	DEASSERT_NOTNULL(constraint)
-	pConstraints.AddOrThrow(constraint);
+void debpColliderBone::AddConstraint(deTUniqueReference<debpColliderConstraint> &&constraint){
+	pConstraints.Add(std::move(constraint));
 }
 
 void debpColliderBone::RemoveConstraint(debpColliderConstraint *constraint){
-	pConstraints.RemoveOrThrow(constraint);
-	delete constraint;
+	pConstraints.Remove(constraint);
 }
 
 void debpColliderBone::RemoveAllConstraints(){
-	pConstraints.Visit([](debpColliderConstraint *each){
-		delete each;
-	});
 	pConstraints.RemoveAll();
 }
 
 
 
 bool debpColliderBone::RequiresAutoDirty() const{
-	return pConstraints.HasMatching([&](const debpColliderConstraint *each){
-		return each->RequiresAutoDirty();
+	return pConstraints.HasMatching([&](const debpColliderConstraint &c){
+		return c.RequiresAutoDirty();
 	});
 }
 

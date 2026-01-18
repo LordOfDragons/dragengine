@@ -27,6 +27,7 @@
 
 #include "../desynSynthesizerTarget.h"
 
+#include <dragengine/deTUniqueReference.h>
 #include <dragengine/resources/synthesizer/effect/deSynthesizerEffect.h>
 
 class deDESynthesizer;
@@ -40,6 +41,10 @@ class desynSynthesizerSource;
  * \brief Synthesizer effect.
  */
 class desynSynthesizerEffect{
+public:
+	using Ref = deTUniqueReference<desynSynthesizerEffect>;
+	
+	
 private:
 	const desynSynthesizer &pSynthesizer;
 	desynSynthesizerSource &pSource;

@@ -25,11 +25,12 @@
 #ifndef _DESYNCREATESYNTHESIZERSOURCE_H_
 #define _DESYNCREATESYNTHESIZERSOURCE_H_
 
+#include "source/desynSynthesizerSource.h"
+
 #include <dragengine/resources/synthesizer/source/deSynthesizerSourceVisitor.h>
 
 class deDESynthesizer;
 class desynSynthesizer;
-class desynSynthesizerSource;
 
 
 
@@ -41,7 +42,7 @@ private:
 	desynSynthesizer &pSynthesizer;
 	const int pFirstLink;
 	
-	desynSynthesizerSource *pSource;
+	desynSynthesizerSource::Ref pSource;
 	
 	
 	
@@ -60,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Created source or \em NULL if not present. */
-	inline desynSynthesizerSource *GetSource() const{ return pSource; }
+	inline desynSynthesizerSource::Ref &GetSource(){ return pSource; }
 	
 	/** \brief Reset. */
 	void Reset();

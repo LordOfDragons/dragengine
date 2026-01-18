@@ -25,8 +25,9 @@
 #ifndef _DEOGLSHAPEMANAGER_H_
 #define _DEOGLSHAPEMANAGER_H_
 
-class deoglShape;
+#include <dragengine/common/collection/decTUniqueList.h>
 
+class deoglShape;
 
 
 /**
@@ -34,33 +35,29 @@ class deoglShape;
  */
 class deoglShapeManager{
 private:
-	deoglShape **pShapes;
-	int pShapeCount;
-	int pShapeSize;
+	decTUniqueList<deoglShape> pShapes;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new shape. */
-	deoglShapeManager();
-	/** Cleans up the shape. */
-	~deoglShapeManager();
+	deoglShapeManager() = default;
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
+	/** Shapes. */
+	inline const decTUniqueList<deoglShape> &GetShapes() const{ return pShapes; }
+	
 	/** Retrieves the number of shapes. */
-	inline int GetShapeCount() const{ return pShapeCount; }
+	inline int GetShapeCount() const{ return pShapes.GetCount(); }
 	/** Retrieves a shape by index. */
 	deoglShape *GetShapeAt(int index) const;
 	/** Adds a shape. */
-	void AddShape(deoglShape *shape);
+	void AddShape(deTUniqueReference<deoglShape> &&shape);
 	/** Removes all shapes. */
 	void RemoveAllShapes();
 	/*@}*/
-	
-private:
-	void pCleanUp();
 };
 
 #endif

@@ -65,21 +65,9 @@ pTargetBlendFactor(synthesizer, firstLink, source.GetTargetBlendFactor()),
 pTargetVolume(synthesizer, firstLink, source.GetTargetVolume()),
 pTargetPanning(synthesizer, firstLink, source.GetTargetPanning()),
 
-pEffects(nullptr),
-pEffectCount(0),
 pApplyEffect(nullptr)
 {
-	try{
-		pCreateEffects(synthesizer, firstLink, source);
-		
-	}catch(const deException &){
-		pFreeEffects();
-		throw;
-	}
-}
-
-desynSynthesizerSource::~desynSynthesizerSource(){
-	pFreeEffects();
+	pCreateEffects(synthesizer, firstLink, source);
 }
 
 
@@ -119,10 +107,9 @@ int desynSynthesizerSource::StateDataSize(int offset){
 	pStateDataOffset = offset;
 	
 	int size = StateDataSizeSource(offset);
-	int i;
-	for(i=0; i<pEffectCount; i++){
-		size += pEffects[i]->StateDataSize(offset + size);
-	}
+	pEffects.Visit([&](desynSynthesizerEffect &e){
+		size += e.StateDataSize(offset + size);
+	});
 	
 	return size;
 }
@@ -134,20 +121,18 @@ int desynSynthesizerSource::StateDataSizeSource(int offset){
 void desynSynthesizerSource::InitStateData(char *stateData){
 	InitStateDataSource(stateData);
 	
-	int i;
-	for(i=0; i<pEffectCount; i++){
-		pEffects[i]->InitStateData(stateData);
-	}
+	pEffects.Visit([&](desynSynthesizerEffect &e){
+		e.InitStateData(stateData);
+	});
 }
 
 void desynSynthesizerSource::InitStateDataSource(char *stateData){
 }
 
 void desynSynthesizerSource::CleanUpStateData(char *stateData){
-	int i;
-	for(i=0; i<pEffectCount; i++){
-		pEffects[i]->CleanUpStateData(stateData);
-	}
+	pEffects.Visit([&](desynSynthesizerEffect &e){
+		e.CleanUpStateData(stateData);
+	});
 	
 	CleanUpStateDataSource(stateData);
 }
@@ -379,34 +364,15 @@ int firstLink, const deSynthesizerSource &source){
 	}
 	
 	desynCreateSynthesizerEffect createEffect(synthesizer, 0, *this);
-	pEffects = new desynSynthesizerEffect*[count];
 	
-	for(pEffectCount=0; pEffectCount<count; pEffectCount++){
+	source.GetEffects().Visit([&](deSynthesizerEffect &e){
 		createEffect.Reset();
 		
-		try{
-			source.GetEffects().GetAt(pEffectCount)->Visit(createEffect);
-			pEffects[pEffectCount] = createEffect.GetEffect();
-			
-			if(!pEffects[pEffectCount]->GetDisabled()){
-				pApplyEffect = pEffects[pEffectCount];
-			}
-			
-		}catch(const deException &){
-			if(createEffect.GetEffect()){
-				delete createEffect.GetEffect();
-			}
-			throw;
+		e.Visit(createEffect);
+		pEffects.Add(std::move(createEffect.GetEffect()));
+		
+		if(!pEffects.Last()->GetDisabled()){
+			pApplyEffect = pEffects.Last();
 		}
-	}
-}
-
-void desynSynthesizerSource::pFreeEffects(){
-	if(pEffects){
-		int i;
-		for(i=0; i<pEffectCount; i++){
-			delete pEffects[i];
-		}
-		delete [] pEffects;
-	}
+	});
 }

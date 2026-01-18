@@ -25,6 +25,7 @@
 #ifndef _DEBPCOLLIDER_H_
 #define _DEBPCOLLIDER_H_
 
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
@@ -74,13 +75,8 @@ private:
 	decDVector pShapeMinExtend, pShapeMaxExtend;
 	decDMatrix pMatrix, pInvMatrix, pMatrixNormal;
 	
-	debpColliderAttachment **pAttachments;
-	int pAttachmentCount;
-	int pAttachmentSize;
-	
-	debpColliderConstraint **pConstraints;
-	int pConstraintCount;
-	int pConstraintSize;
+	decTUniqueList<debpColliderAttachment> pAttachments;
+	decTUniqueList<debpColliderConstraint> pConstraints;
 	
 	decTList<debpColliderCollisionTest*> pCollisionTests;
 	
@@ -319,7 +315,7 @@ public:
 	/** @name Attachments */
 	/*@{*/
 	/** Retrieves the number of attachments. */
-	inline int GetAttachmentCount() const{ return pAttachmentCount; }
+	inline int GetAttachmentCount() const{ return pAttachments.GetCount(); }
 	/** Retrieves an attachment. */
 	debpColliderAttachment *GetAttachmentAt(int index) const;
 
@@ -337,7 +333,7 @@ public:
 	/** \name Constraints */
 	/*@{*/
 	/** Retrieves the number of constraints. */
-	inline int GetConstraintCount() const{ return pConstraintCount; }
+	inline int GetConstraintCount() const{ return pConstraints.GetCount(); }
 	/** Retrieves the constraint at the given index. */
 	debpColliderConstraint *GetConstraintAt(int index) const;
 	/*@}*/

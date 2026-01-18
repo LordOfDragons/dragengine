@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-
 #include "deoglRenderableDepthCubeMap.h"
 #include "deoglRenderableDepthCubeMapManager.h"
 #include "../../deoglBasics.h"
@@ -41,20 +37,10 @@
 ////////////////////////////
 
 deoglRenderableDepthCubeMapManager::deoglRenderableDepthCubeMapManager(deoglRenderThread &renderThread) :
-pRenderThread(renderThread),
-pCubeMaps(nullptr),
-pCubeMapCount(0),
-pCubeMapSize(0){
+pRenderThread(renderThread){
 }
 
 deoglRenderableDepthCubeMapManager::~deoglRenderableDepthCubeMapManager(){
-	if(pCubeMaps){
-		while(pCubeMapCount > 0){
-			pCubeMapCount--;
-			delete pCubeMaps[pCubeMapCount];
-		}
-		delete [] pCubeMaps;
-	}
 }
 
 
@@ -63,43 +49,22 @@ deoglRenderableDepthCubeMapManager::~deoglRenderableDepthCubeMapManager(){
 ///////////////
 
 const deoglRenderableDepthCubeMap *deoglRenderableDepthCubeMapManager::GetCubeMapAt(int index) const{
-	if(index < 0 || index >= pCubeMapCount) DETHROW(deeInvalidParam);
-	
-	return pCubeMaps[index];
+	return pCubeMaps.GetAt(index);
 }
 
 deoglRenderableDepthCubeMap *deoglRenderableDepthCubeMapManager::GetCubeMapWith(int size, bool useFloat){
-	deoglRenderableDepthCubeMap *cubemap = nullptr;
-	int i;
-	
 	// find the cubemap with the matching format
-	for(i=0; i<pCubeMapCount; i++){
-		if(!pCubeMaps[i]->GetInUse() && pCubeMaps[i]->Matches(size, useFloat)){
-			cubemap = pCubeMaps[i];
-			break;
-		}
+	auto found = pCubeMaps.FindOrNull([&](const deoglRenderableDepthCubeMap &c){
+		return !c.GetInUse() && c.Matches(size, useFloat);
+	});
+	if(found){
+		found->SetInUse(true);
+		return found;
 	}
 	
 	// if not found create a new one
-	if(!cubemap){
-		if(pCubeMapCount == pCubeMapSize){
-			int newSize = pCubeMapSize * 3 / 2 + 1;
-			deoglRenderableDepthCubeMap **newArray = new deoglRenderableDepthCubeMap*[newSize];
-			if(pCubeMaps){
-				memcpy(newArray, pCubeMaps, sizeof(deoglRenderableDepthCubeMap*) * pCubeMapSize);
-				delete [] pCubeMaps;
-			}
-			pCubeMaps = newArray;
-			pCubeMapSize = newSize;
-		}
-		
-		cubemap = new deoglRenderableDepthCubeMap(pRenderThread, size, useFloat);
-		
-		pCubeMaps[pCubeMapCount] = cubemap;
-		pCubeMapCount++;
-	}
-	
-	// mark the cubemap in use and return it
+	auto cubemap = deTUniqueReference<deoglRenderableDepthCubeMap>::New(pRenderThread, size, useFloat);
 	cubemap->SetInUse(true);
-	return cubemap;
+	pCubeMaps.Add(std::move(cubemap));
+	return pCubeMaps.Last();
 }

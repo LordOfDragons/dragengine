@@ -209,6 +209,7 @@ void deoglRenderPlanSkyLight::Clear(){
 	pCollideList.Clear();
 	pUseLight = false;
 	pUseShadow = false;
+	pPlanned = false;
 	
 	pSky = nullptr;
 	pLayer = nullptr;

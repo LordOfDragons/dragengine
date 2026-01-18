@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _DEOGLRENDERABLEDEPTHCUBEMAPMANAGER_H_
 #define _DEOGLRENDERABLEDEPTHCUBEMAPMANAGER_H_
 
-// predefinitions
+#include <dragengine/common/collection/decTUniqueList.h>
+
 class deoglRenderThread;
 class deoglRenderableDepthCubeMap;
 
@@ -45,9 +45,7 @@ class deoglRenderableDepthCubeMapManager{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	deoglRenderableDepthCubeMap **pCubeMaps;
-	int pCubeMapCount;
-	int pCubeMapSize;
+	decTUniqueList<deoglRenderableDepthCubeMap> pCubeMaps;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -61,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of renderable cubemaps. */
-	inline int GetCubeMapCount() const{ return pCubeMapCount; }
+	inline int GetCubeMapCount() const{ return pCubeMaps.GetCount(); }
 	/** Retrieves the renderable cubemap for reading only at the given location. */
 	const deoglRenderableDepthCubeMap *GetCubeMapAt(int index) const;
 	

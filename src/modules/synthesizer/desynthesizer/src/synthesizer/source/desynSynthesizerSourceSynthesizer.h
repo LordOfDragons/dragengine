@@ -22,12 +22,12 @@
  * SOFTWARE.
  */
 
-#ifndef _DESYNSYNTHESIZERSOURCEGSYNTHESIZER_H_
-#define _DESYNSYNTHESIZERSOURCEGSYNTHESIZER_H_
+#ifndef _DESYNSYNTHESIZERSOURCESYNTHESIZER_H_
+#define _DESYNSYNTHESIZERSOURCESYNTHESIZER_H_
 
 #include "desynSynthesizerSource.h"
-
-class deSynthesizerSourceSynthesizer;
+#include <dragengine/common/collection/decTUniqueList.h>
+#include <dragengine/resources/synthesizer/source/deSynthesizerSourceSynthesizer.h>
 
 
 
@@ -38,8 +38,7 @@ class desynSynthesizerSourceSynthesizer : public desynSynthesizerSource{
 private:
 	desynSynthesizer *pChildSynthesizer;
 	
-	desynSynthesizerSource **pSources;
-	int pSourceCount;
+	decTUniqueList<desynSynthesizerSource> pSources;
 	
 	
 	
@@ -49,9 +48,6 @@ public:
 	/** \brief Create synthesizer source. */
 	desynSynthesizerSourceSynthesizer(desynSynthesizer &synthesizer, int firstLink,
 		const deSynthesizerSourceSynthesizer &source);
-	
-	/** \brief Clean up synthesizer source. */
-	~desynSynthesizerSourceSynthesizer() override;
 	/*@}*/
 	
 	
@@ -100,7 +96,6 @@ public:
 private:
 	void pCreateSources(desynSynthesizer &synthesizer, int firstLink,
 		const deSynthesizerSourceSynthesizer &source);
-	void pClearSources();
 };
 
 #endif
