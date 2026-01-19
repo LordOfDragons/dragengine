@@ -40,7 +40,9 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deDebugDrawer::deDebugDrawer(deDebugDrawerManager *manager) : deResource(manager){
+deDebugDrawer::deDebugDrawer(deDebugDrawerManager *manager) : deResource(manager),
+pLLWorld(this)
+{
 	pScale.Set(1.0f, 1.0f, 1.0f);
 	
 	pVisible = true;
@@ -49,8 +51,6 @@ deDebugDrawer::deDebugDrawer(deDebugDrawerManager *manager) : deResource(manager
 	pPeerGraphic = nullptr;
 	
 	pParentWorld = nullptr;
-	pLLWorldPrev = nullptr;
-	pLLWorldNext = nullptr;
 }
 
 deDebugDrawer::~deDebugDrawer(){
@@ -210,14 +210,6 @@ void deDebugDrawer::SetPeerGraphic(deBaseGraphicDebugDrawer *peer){
 
 void deDebugDrawer::SetParentWorld(deWorld *world){
 	pParentWorld = world;
-}
-
-void deDebugDrawer::SetLLWorldPrev(deDebugDrawer *debugDrawer){
-	pLLWorldPrev = debugDrawer;
-}
-
-void deDebugDrawer::SetLLWorldNext(deDebugDrawer *debugDrawer){
-	pLLWorldNext = debugDrawer;
 }
 
 

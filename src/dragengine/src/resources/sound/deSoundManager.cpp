@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deSound.h"
 #include "deSoundDecoder.h"
 #include "deSoundManager.h"
@@ -38,6 +34,7 @@
 #include "../../errortracing/deErrorTracePoint.h"
 #include "../../errortracing/deErrorTraceValue.h"
 #include "../../filesystem/deVirtualFileSystem.h"
+#include "../../threading/deMutexGuard.h"
 #include "../../systems/deAudioSystem.h"
 #include "../../systems/deModuleSystem.h"
 #include "../../systems/deSynthesizerSystem.h"
@@ -57,11 +54,7 @@
 ////////////////////////////
 
 deSoundManager::deSoundManager(deEngine *engine) :
-deFileResourceManager(engine, ertSound),
-
-pDecoderRoot(nullptr),
-pDecoderTail(nullptr),
-pDecoderCount(0)
+deFileResourceManager(engine, ertSound)
 {
 	SetLoggingName("sound");
 }
@@ -243,21 +236,8 @@ deSoundDecoder::Ref deSoundManager::CreateDecoder(deSound *sound){
 	}
 	
 	// track sound decoder and return it
-	pMutexDecoder.Lock();
-	
-	if(pDecoderTail){
-		pDecoderTail->SetLLManagerNext(soundDecoder);
-		soundDecoder->SetLLManagerPrev(pDecoderTail);
-		pDecoderTail = soundDecoder;
-		
-	}else{ // it can never happen that root is non-NULL if tail is NULL
-		pDecoderRoot = soundDecoder;
-		pDecoderTail = soundDecoder;
-	}
-	
-	pDecoderCount++;
-	
-	pMutexDecoder.Unlock();
+	const deMutexGuard lock(pMutexDecoder);
+	pDecoders.Add(&soundDecoder->GetLLManager());
 	
 	return soundDecoder;
 }
@@ -266,43 +246,38 @@ deSoundDecoder::Ref deSoundManager::CreateDecoder(deSound *sound){
 
 void deSoundManager::ReleaseLeakingResources(){
 	// decoders
-	pMutexDecoder.Lock();
-	
-	if(pDecoderCount > 0){
+	{
+	const deMutexGuard lock(pMutexDecoder);
+	if(pDecoders.GetCount() > 0){
 		try{
-			LogWarnFormat("%i leaking sound decoders", pDecoderCount);
+			LogWarnFormat("%i leaking sound decoders", pDecoders.GetCount());
 			
-			while(pDecoderRoot){
-				LogWarnFormat("- %s", pDecoderRoot->GetSound()->GetFilename().IsEmpty()
-					? "<temporary>" : pDecoderRoot->GetSound()->GetFilename().GetString());
-				pDecoderRoot->MarkLeaking();
-				pDecoderRoot= pDecoderRoot->GetLLManagerNext();
-			}
-			
-			pDecoderTail = nullptr;
-			pDecoderCount = 0;
+			pDecoders.Visit([&](deSoundDecoder *decoder){
+				LogWarnFormat("- %s", decoder->GetSound()->GetFilename().IsEmpty()
+					? "<temporary>" : decoder->GetSound()->GetFilename().GetString());
+				decoder->MarkLeaking();
+			});
+			pDecoders.RemoveAll();
 			
 		}catch(const deException &){
 			pMutexDecoder.Unlock();
 			throw;
 		}
 	}
-	
-	pMutexDecoder.Unlock();
+	}
 	
 	// sounds
 	const int count = GetSoundCount();
 	
 	if(count > 0){
-		const deSound *sound = (const deSound *)pSounds.GetRoot();
-		
 		LogWarnFormat("%i leaking sounds", count);
 		
-		while(sound){
+		// visit all resources and log them (use void returning lambda and C++ pointer casts)
+		pSounds.GetResources().Visit([&](deResource *res){
+			const deSound *sound = static_cast<const deSound*>(res);
 			LogWarnFormat("- %s", sound->GetFilename().IsEmpty()
 				? "<temporary>" : sound->GetFilename().GetString());
-			sound = (const deSound *)sound->GetLLManagerNext();
-		}
+		});
 		
 		pSounds.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 	}
@@ -314,49 +289,40 @@ void deSoundManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deSoundManager::SystemAudioLoad(){
-	deSound *sound = (deSound*)pSounds.GetRoot();
 	deAudioSystem &audSys = *GetAudioSystem();
 	
-	while(sound){
+	// visit all sounds and ensure audio peer is loaded
+	pSounds.GetResources().Visit([&](deResource *res){
+		deSound *sound = static_cast<deSound*>(res);
 		if(!sound->GetPeerAudio()){
 			audSys.LoadSound(sound);
 		}
-		
-		sound = (deSound*)sound->GetLLManagerNext();
-	}
+	});
 }
 
 void deSoundManager::SystemAudioUnload(){
-	deSound *sound = (deSound*)pSounds.GetRoot();
-	
-	while(sound){
-		sound->SetPeerAudio(nullptr);
-		sound = (deSound*)sound->GetLLManagerNext();
-	}
+	pSounds.GetResources().Visit([](deResource *res){
+		static_cast<deSound*>(res)->SetPeerAudio(nullptr);
+	});
 }
 
 
 
 void deSoundManager::SystemSynthesizerLoad(){
-	deSound *sound = (deSound*)pSounds.GetRoot();
 	deSynthesizerSystem &synthSys = *GetSynthesizerSystem();
 	
-	while(sound){
+	pSounds.GetResources().Visit([&](deResource *res){
+		deSound *sound = static_cast<deSound*>(res);
 		if(!sound->GetPeerSynthesizer()){
 			synthSys.LoadSound(sound);
 		}
-		
-		sound = (deSound*)sound->GetLLManagerNext();
-	}
+	});
 }
 
 void deSoundManager::SystemSynthesizerUnload(){
-	deSound *sound = (deSound*)pSounds.GetRoot();
-	
-	while(sound){
-		sound->SetPeerSynthesizer(nullptr);
-		sound = (deSound*)sound->GetLLManagerNext();
-	}
+	pSounds.GetResources().Visit([](deResource *res){
+		static_cast<deSound*>(res)->SetPeerSynthesizer(nullptr);
+	});
 }
 
 
@@ -370,64 +336,7 @@ void deSoundManager::RemoveDecoder(deSoundDecoder *decoder){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pMutexDecoder.Lock();
-	
-	try{
-		if(decoder != pDecoderRoot && !decoder->GetLLManagerNext()
-		&& !decoder->GetLLManagerPrev()){
-			return;
-		}
-		
-		if(pDecoderCount == 0){
-			DETHROW(deeInvalidParam);
-		}
-		
-		if(decoder == pDecoderTail){
-			if(decoder->GetLLManagerNext()){
-				DETHROW(deeInvalidParam);
-			}
-			
-			pDecoderTail = pDecoderTail->GetLLManagerPrev();
-			if(pDecoderTail){
-				pDecoderTail->SetLLManagerNext(nullptr);
-			}
-			
-		}else{
-			if(!decoder->GetLLManagerNext()){
-				DETHROW(deeInvalidParam);
-			}
-			
-			decoder->GetLLManagerNext()->SetLLManagerPrev(decoder->GetLLManagerPrev());
-		}
-		
-		if(decoder == pDecoderRoot){
-			if(decoder->GetLLManagerPrev()){
-				DETHROW(deeInvalidParam);
-			}
-			
-			pDecoderRoot = pDecoderRoot->GetLLManagerNext();
-			if(pDecoderRoot){
-				pDecoderRoot->SetLLManagerPrev(nullptr);
-			}
-			
-		}else{
-			if(!decoder->GetLLManagerPrev()){
-				DETHROW(deeInvalidParam);
-			}
-			
-			decoder->GetLLManagerPrev()->SetLLManagerNext(decoder->GetLLManagerNext());
-		}
-		
-		decoder->SetLLManagerNext(nullptr);
-		decoder->SetLLManagerPrev(nullptr);
-		pDecoderCount--;
-		
-		decoder->MarkLeaking();
-		
-	}catch(const deException &){
-		pMutexDecoder.Unlock();
-		throw;
-	}
-	
-	pMutexDecoder.Unlock();
+	const deMutexGuard lock(pMutexDecoder);
+	pDecoders.Remove(&decoder->GetLLManager());
+	decoder->MarkLeaking();
 }

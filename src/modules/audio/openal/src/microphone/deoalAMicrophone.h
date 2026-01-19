@@ -32,6 +32,7 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decLayerMask.h>
 
@@ -87,8 +88,7 @@ private:
 	deoalRTWorldBVH pRTWorldBVH;
 	
 	bool pWorldMarkedRemove;
-	deoalAMicrophone *pLLWorldPrev;
-	deoalAMicrophone *pLLWorldNext;
+	decTObjectLinkedList<deoalAMicrophone>::Element pLLWorld;
 	
 	
 	
@@ -290,17 +290,9 @@ public:
 	 */
 	void SetWorldMarkedRemove(bool marked);
 		
-	/** Linked list world previous. */
-	inline deoalAMicrophone *GetLLWorldPrev() const{ return pLLWorldPrev; }
-	
-	/** Set linked list world previous. */
-	void SetLLWorldPrev(deoalAMicrophone *microphone);
-	
-	/** Linked list world next. */
-	inline deoalAMicrophone *GetLLWorldNext() const{ return pLLWorldNext; }
-	
-	/** Set linked list world next. */
-	void SetLLWorldNext(deoalAMicrophone *microphone);
+	/** Linked list world element. */
+	inline decTObjectLinkedList<deoalAMicrophone>::Element &GetLLWorld(){ return pLLWorld; }
+	inline const decTObjectLinkedList<deoalAMicrophone>::Element &GetLLWorld() const{ return pLLWorld; }
 	/*@}*/
 	
 	

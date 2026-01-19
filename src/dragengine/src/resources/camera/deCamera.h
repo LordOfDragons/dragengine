@@ -141,8 +141,7 @@ private:
 	deBaseGraphicCamera *pPeerGraphic;
 	
 	deWorld *pParentWorld;
-	deCamera *pLLWorldPrev;
-	deCamera *pLLWorldNext;
+	decTObjectLinkedList<deCamera>::Element pLLWorld;
 	
 	
 	
@@ -377,17 +376,8 @@ public:
 	/** \brief Set parent world or NULL. */
 	void SetParentWorld(deWorld *world);
 	
-	/** \brief Previous camera in the parent world linked list. */
-	inline deCamera *GetLLWorldPrev() const{ return pLLWorldPrev; }
-	
-	/** \brief Set next camera in the parent world linked list. */
-	void SetLLWorldPrev(deCamera *camera);
-	
-	/** \brief Next camera in the parent world linked list. */
-	inline deCamera *GetLLWorldNext() const{ return pLLWorldNext; }
-	
-	/** \brief Set next camera in the parent world linked list. */
-	void SetLLWorldNext(deCamera *camera);
+	/** \brief World linked list element. */
+	inline decTObjectLinkedList<deCamera>::Element &GetLLWorld(){ return pLLWorld; }
 	/*@}*/
 	
 	

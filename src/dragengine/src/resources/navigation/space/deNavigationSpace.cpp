@@ -70,8 +70,7 @@ pBlockingPriority(0),
 pPeerAI(nullptr),
 
 pParentWorld(nullptr),
-pLLWorldPrev(nullptr),
-pLLWorldNext(nullptr){
+pLLWorld(this){
 }
 
 deNavigationSpace::~deNavigationSpace(){
@@ -415,12 +414,4 @@ void deNavigationSpace::SetPeerAI(deBaseAINavigationSpace *peer){
 
 void deNavigationSpace::SetParentWorld(deWorld *world){
 	pParentWorld = world;
-}
-
-void deNavigationSpace::SetLLWorldPrev(deNavigationSpace *navspace){
-	pLLWorldPrev = navspace;
-}
-
-void deNavigationSpace::SetLLWorldNext(deNavigationSpace *navspace){
-	pLLWorldNext = navspace;
 }

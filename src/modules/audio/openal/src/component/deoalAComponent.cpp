@@ -75,8 +75,7 @@ pFaceCount(0),
 pBVH(nullptr),
 
 pWorldMarkedRemove(false),
-pLLWorldPrev(nullptr),
-pLLWorldNext(nullptr)
+pLLWorld(this)
 {
 	LEAK_CHECK_CREATE(audioThread, Component);
 }
@@ -386,16 +385,6 @@ const deoalModelFace &deoalAComponent::GetFaceAt(int index) const{
 void deoalAComponent::SetWorldMarkedRemove(bool marked){
 	pWorldMarkedRemove = marked;
 }
-
-void deoalAComponent::SetLLWorldPrev(deoalAComponent *component){
-	pLLWorldPrev = component;
-}
-
-void deoalAComponent::SetLLWorldNext(deoalAComponent *component){
-	pLLWorldNext = component;
-}
-
-
 
 // Private Functions
 //////////////////////

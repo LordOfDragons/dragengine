@@ -56,6 +56,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Language packs. */
+	inline const deFileResourceList &GetLanguagePacks() const{ return pLangPacks; }
+	
 	/** \brief Count of language packs. */
 	int GetLanguagePackCount() const;
 	

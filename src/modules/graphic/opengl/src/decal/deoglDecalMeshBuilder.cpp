@@ -217,7 +217,7 @@ void deoglDecalMeshBuilder::BuildMeshForComponent (const deoglRComponentLOD& lod
 		const int volumeFaceCount = volume.GetFaceCount();
 		
 		for(j=0; j<volumeFaceCount; j++){
-			deoglDMBConvexVolumeFace &volumeFace = dynamic_cast<deoglDMBConvexVolumeFace&>(*volume.GetFaceAt(j));
+			deoglDMBConvexVolumeFace &volumeFace = static_cast<deoglDMBConvexVolumeFace&>(*volume.GetFaceAt(j));
 			
 			if(!volumeFace.GetDecalFace() || volumeFace.GetVertexCount() < 3){
 				continue;
@@ -490,7 +490,7 @@ void deoglDecalMeshBuilder::Debug(){
 		
 		volume.GetFaces().VisitIndexed([&](int f, const decConvexVolumeFace &face){
 			logger.LogInfoFormat("    face %d: decalFace(%d)", f + 1,
-				dynamic_cast<const deoglDMBConvexVolumeFace&>(face).GetDecalFace());
+				static_cast<const deoglDMBConvexVolumeFace&>(face).GetDecalFace());
 			
 			face.GetVertices().VisitIndexed([&](int x, int vi){
 				const decVector &vertex = volume.GetVertexAt(vi);

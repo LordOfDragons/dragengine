@@ -27,6 +27,9 @@
 
 #include "../../deoglBasics.h"
 
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTLinkedList.h>
+
 class deoglCubeMap;
 class deoglRenderPlan;
 class deoglRenderTaskSharedTexture;
@@ -45,6 +48,9 @@ class deoglTexUnitConfig;
  */
 class deoglTexUnitsConfig{
 public:
+	using Ref = deTUniqueReference<deoglTexUnitsConfig>;
+	
+private:
 	deoglRenderThread &pRenderThread;
 	
 	deoglTexUnitConfig *pUnits;
@@ -60,8 +66,7 @@ public:
 	
 	deoglRenderTaskSharedTexture *pRTSTexture;
 	
-	deoglTexUnitsConfig *pLLPrev;
-	deoglTexUnitsConfig *pLLNext;
+	decTUniqueLinkedList<deoglTexUnitsConfig>::Element pLLConfigs;
 	
 	
 	
@@ -69,7 +74,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create texture units configuration. */
-	deoglTexUnitsConfig(deoglRenderThread &renderThread);
+	explicit deoglTexUnitsConfig(deoglRenderThread &renderThread);
 	
 	/** Clean up texture units configuration. */
 	~deoglTexUnitsConfig();
@@ -172,17 +177,9 @@ public:
 	
 	
 	
-	/** Previous entry in the linked list. */
-	inline deoglTexUnitsConfig *GetLLPrev() const{ return pLLPrev; }
-	
-	/** Set previous entry in the linked list. */
-	void SetLLPrev(deoglTexUnitsConfig *entry);
-	
-	/** Next entry in the linked list. */
-	inline deoglTexUnitsConfig *GetLLNext() const{ return pLLNext; }
-	
-	/** Set next entry in the linked list. */
-	void SetLLNext(deoglTexUnitsConfig *entry);
+	/** Linked list element. */
+	inline decTUniqueLinkedList<deoglTexUnitsConfig>::Element &GetLLConfigs(){ return pLLConfigs; }
+	inline const decTUniqueLinkedList<deoglTexUnitsConfig>::Element &GetLLConfigs() const{ return pLLConfigs; }
 	/*@}*/
 };
 

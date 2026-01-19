@@ -44,10 +44,7 @@
 deoalATDelayed::deoalATDelayed(deoalAudioThread &audioThread) :
 pAudioThread(audioThread),
 
-pHasFreeOperations(false),
-pRootDeletion(nullptr),
-pTailDeletion(nullptr),
-pDeletionCount(0){
+pHasFreeOperations(false){
 }
 
 deoalATDelayed::~deoalATDelayed(){
@@ -64,45 +61,16 @@ void deoalATDelayed::ProcessFreeOperations(bool deleteAll){
 	
 	if(pHasFreeOperations){
 		int countThreshold = 1000;
+		pDeletions.RemoveIf([&](deoalDelayedDeletion *deletion){
+			return deleteAll || countThreshold-- > 0;
+		});
 		
-		while(pRootDeletion && (deleteAll || countThreshold-- > 0)){
-			deoalDelayedDeletion * const deletion = pRootDeletion;
-			pRootDeletion = pRootDeletion->GetLLNext();
-			if(pRootDeletion){
-				pRootDeletion->SetLLPrev(nullptr);
-			}
-			pDeletionCount--;
-			
-			deletion->DeleteObjects(pAudioThread);
-			delete deletion;
-		}
-		
-		if(pDeletionCount == 0){
-			pTailDeletion = nullptr;
-		}
-		
-		pHasFreeOperations = pDeletionCount > 0;
+		pHasFreeOperations = pDeletions.IsNotEmpty();
 	}
 }
 
-void deoalATDelayed::AddDeletion(deoalDelayedDeletion *deletion){
-	if(!deletion){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoalATDelayed::AddDeletion(deoalDelayedDeletion::Ref &&deletion){
 	deMutexGuard lock(pMutexFree);
-	
-	if(pTailDeletion){
-		pTailDeletion->SetLLNext(deletion);
-		deletion->SetLLPrev(pTailDeletion);
-		pTailDeletion = deletion;
-		
-	}else{
-		pRootDeletion = deletion;
-		pTailDeletion = deletion;
-	}
-	
-	pDeletionCount++;
-	
+	pDeletions.Add(&deletion->GetLLDeletions(), std::move(deletion));
 	pHasFreeOperations = true;
 }

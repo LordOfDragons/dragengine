@@ -562,7 +562,7 @@ bool dexsiDeviceManager::pEvdevDisappeared(const decString &path){
 			continue;
 		}
 		
-		const dexsiDeviceLibEvent &evd = *dynamic_cast<dexsiDeviceLibEvent*>(device);
+		const dexsiDeviceLibEvent &evd = *static_cast<dexsiDeviceLibEvent*>(device);
 		if(evd.GetEvdevPath() != path){
 			continue;
 		}

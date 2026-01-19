@@ -90,8 +90,7 @@ pPeerAudio(nullptr),
 pPeerScripting(nullptr),
 
 pParentWorld(nullptr),
-pLLWorldPrev(nullptr),
-pLLWorldNext(nullptr){
+pLLWorld(this){
 }
 
 deSoundLevelMeter::~deSoundLevelMeter(){
@@ -265,12 +264,4 @@ void deSoundLevelMeter::SetPeerScripting(deBaseScriptingSoundLevelMeter *peer){
 
 void deSoundLevelMeter::SetParentWorld(deWorld *world){
 	pParentWorld = world;
-}
-
-void deSoundLevelMeter::SetLLWorldPrev(deSoundLevelMeter *touchSensor){
-	pLLWorldPrev = touchSensor;
-}
-
-void deSoundLevelMeter::SetLLWorldNext(deSoundLevelMeter *touchSensor){
-	pLLWorldNext = touchSensor;
 }

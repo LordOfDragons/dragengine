@@ -128,26 +128,20 @@ void deCanvasManager::ReleaseLeakingResources(){
 
 // Systems Support
 ////////////////////
-
 void deCanvasManager::SystemGraphicLoad(){
-	deCanvas *canvas = (deCanvas*)pCanvas.GetRoot();
-	
-	while(canvas){
+	deGraphicSystem &graSys = *GetGraphicSystem();
+	pCanvas.GetResources().Visit([&](deResource *res){
+		deCanvas *canvas = static_cast<deCanvas*>(res);
 		if(!canvas->GetPeerGraphic()){
-			GetGraphicSystem()->LoadCanvas(canvas);
+			graSys.LoadCanvas(canvas);
 		}
-		
-		canvas = (deCanvas*)canvas->GetLLManagerNext();
-	}
+	});
 }
 
 void deCanvasManager::SystemGraphicUnload(){
-	deCanvas *canvas = (deCanvas*)pCanvas.GetRoot();
-	
-	while(canvas){
-		canvas->SetPeerGraphic(nullptr);
-		canvas = (deCanvas*)canvas->GetLLManagerNext();
-	}
+	pCanvas.GetResources().Visit([](deResource *res){
+		static_cast<deCanvas*>(res)->SetPeerGraphic(nullptr);
+	});
 }
 
 void deCanvasManager::RemoveResource(deResource *resource){

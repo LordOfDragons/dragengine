@@ -88,47 +88,36 @@ void deSoundLevelMeterManager::ReleaseLeakingResources(){
 
 // Systems support
 ////////////////////
-
 void deSoundLevelMeterManager::SystemAudioLoad(){
-	deSoundLevelMeter *soundLevelMeter = (deSoundLevelMeter*)pSoundLevelMeters.GetRoot();
-	deAudioSystem &audioSystem = *GetAudioSystem();
-	
-	while(soundLevelMeter){
+	deAudioSystem &audSys = *GetAudioSystem();
+	pSoundLevelMeters.GetResources().Visit([&](deResource *res){
+		auto *soundLevelMeter = static_cast<deSoundLevelMeter*>(res);
 		if(!soundLevelMeter->GetPeerAudio()){
-			audioSystem.LoadSoundLevelMeter(soundLevelMeter);
+			audSys.LoadSoundLevelMeter(soundLevelMeter);
 		}
-		soundLevelMeter = (deSoundLevelMeter*)soundLevelMeter->GetLLManagerNext();
-	}
+	});
 }
 
 void deSoundLevelMeterManager::SystemAudioUnload(){
-	deSoundLevelMeter *soundLevelMeter = (deSoundLevelMeter*)pSoundLevelMeters.GetRoot();
-	
-	while(soundLevelMeter){
-		soundLevelMeter->SetPeerAudio(nullptr);
-		soundLevelMeter = (deSoundLevelMeter*)soundLevelMeter->GetLLManagerNext();
-	}
+	pSoundLevelMeters.GetResources().Visit([](deResource *res){
+		static_cast<deSoundLevelMeter*>(res)->SetPeerAudio(nullptr);
+	});
 }
 
 void deSoundLevelMeterManager::SystemScriptingLoad(){
-	deSoundLevelMeter *soundLevelMeter = (deSoundLevelMeter*)pSoundLevelMeters.GetRoot();
-	deScriptingSystem &scriptingSystem = *GetScriptingSystem();
-	
-	while(soundLevelMeter){
+	deScriptingSystem &scrSys = *GetScriptingSystem();
+	pSoundLevelMeters.GetResources().Visit([&](deResource *res){
+		auto *soundLevelMeter = static_cast<deSoundLevelMeter*>(res);
 		if(!soundLevelMeter->GetPeerScripting()){
-			scriptingSystem.LoadSoundLevelMeter(soundLevelMeter);
+			scrSys.LoadSoundLevelMeter(soundLevelMeter);
 		}
-		soundLevelMeter = (deSoundLevelMeter*)soundLevelMeter->GetLLManagerNext();
-	}
+	});
 }
 
 void deSoundLevelMeterManager::SystemScriptingUnload(){
-	deSoundLevelMeter *soundLevelMeter = (deSoundLevelMeter*)pSoundLevelMeters.GetRoot();
-	
-	while(soundLevelMeter){
-		soundLevelMeter->SetPeerScripting(nullptr);
-		soundLevelMeter = (deSoundLevelMeter*)soundLevelMeter->GetLLManagerNext();
-	}
+	pSoundLevelMeters.GetResources().Visit([](deResource *res){
+		static_cast<deSoundLevelMeter*>(res)->SetPeerScripting(nullptr);
+	});
 }
 
 

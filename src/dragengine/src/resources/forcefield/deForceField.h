@@ -150,8 +150,7 @@ private:
 	deBasePhysicsForceField *pPeerPhysics;
 	
 	deWorld *pParentWorld;
-	deForceField *pLLWorldPrev;
-	deForceField *pLLWorldNext;
+	decTObjectLinkedList<deForceField>::Element pLLWorld;
 	
 	
 	
@@ -286,19 +285,10 @@ public:
 	inline deWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
-	void SetParentWorld(deWorld *world);
+	void SetParentWorld( deWorld *world );
 	
-	/** \brief Previous force field in the parent world linked list. */
-	inline deForceField *GetLLWorldPrev() const{ return pLLWorldPrev; }
-	
-	/** \brief Set next force field in the parent world linked list. */
-	void SetLLWorldPrev(deForceField *forceField);
-	
-	/** \brief Next force field in the parent world linked list. */
-	inline deForceField *GetLLWorldNext() const{ return pLLWorldNext; }
-	
-	/** \brief Set next force field in the parent world linked list. */
-	void SetLLWorldNext(deForceField *forceField);
+	/** \brief World linked list element. */
+	inline decTObjectLinkedList<deForceField>::Element &GetLLWorld(){ return pLLWorld; }
 	/*@}*/
 };
 

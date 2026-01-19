@@ -106,65 +106,43 @@ pSyncing(false)
 		
 		HeightTerrainChanged();
 		
-		deSkyInstance *sky = world.GetRootSky();
-		while(sky){
+		world.GetSkies().Visit([&](deSkyInstance *sky){
 			SkyAdded(sky);
-			sky = sky->GetLLWorldNext();
-		}
+		});
 		
-		deCamera *camera = world.GetRootCamera();
-		while(camera){
+		world.GetCameras().Visit([&](deCamera *camera){
 			CameraAdded(camera);
-			camera = camera->GetLLWorldNext();
-		}
+		});
 		
-		deComponent *component = world.GetRootComponent();
-		while(component){
+		world.GetComponents().Visit([&](deComponent *component){
 			ComponentAdded(component);
-			component = component->GetLLWorldNext();
-		}
-		
-		deLight *light = world.GetRootLight();
-		while(light){
+		});
+		world.GetLights().Visit([&](deLight *light){
 			LightAdded(light);
-			light = light->GetLLWorldNext();
-		}
-		
-		deLumimeter *lumimeter = world.GetRootLumimeter();
-		while(lumimeter){
+		});
+		world.GetLumimeters().Visit([&](deLumimeter *lumimeter){
 			LumimeterAdded(lumimeter);
-			lumimeter = lumimeter->GetLLWorldNext();
-		}
+		});
 		
-		dePropField *propField = world.GetRootPropField();
-		while(propField){
+		world.GetPropFields().Visit([&](dePropField *propField){
 			PropFieldAdded(propField);
-			propField = propField->GetLLWorldNext();
-		}
+		});
 		
-		deParticleEmitterInstance *particleEmitter = world.GetRootParticleEmitter();
-		while(particleEmitter){
+		world.GetParticleEmitters().Visit([&](deParticleEmitterInstance *particleEmitter){
 			ParticleEmitterAdded(particleEmitter);
-			particleEmitter = particleEmitter->GetLLWorldNext();
-		}
+		});
 		
-		deEnvMapProbe *envMapProbe = world.GetRootEnvMapProbe();
-		while(envMapProbe){
+		world.GetEnvMapProbes().Visit([&](deEnvMapProbe *envMapProbe){
 			EnvMapProbeAdded(envMapProbe);
-			envMapProbe = envMapProbe->GetLLWorldNext();
-		}
+		});
 		
-		deDebugDrawer *debugDrawer = world.GetRootDebugDrawer();
-		while(debugDrawer){
+		world.GetDebugDrawers().Visit([&](deDebugDrawer *debugDrawer){
 			DebugDrawerAdded(debugDrawer);
-			debugDrawer = debugDrawer->GetLLWorldNext();
-		}
+		});
 		
-		deBillboard *billboard = world.GetRootBillboard();
-		while(billboard){
+		world.GetBillboards().Visit([&](deBillboard *billboard){
 			BillboardAdded(billboard);
-			billboard = billboard->GetLLWorldNext();
-		}
+		});
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -216,11 +194,9 @@ void deoglWorld::Update(float elapsed){
 	
 DEBUG_RESET_TIMERS;
 	
-	deSkyInstance *sky = pWorld.GetRootSky();
-	while(sky){
+	pWorld.GetSkies().Visit([&](deSkyInstance *sky){
 		((deoglSkyInstance*)sky->GetPeerGraphic())->Update(elapsed);
-		sky = sky->GetLLWorldNext();
-	}
+	});
 DEBUG_PRINT_TIMER("Sky");
 	
 	if(pHeightTerrain){
@@ -228,25 +204,19 @@ DEBUG_PRINT_TIMER("Sky");
 	}
 DEBUG_PRINT_TIMER("Height Terrain");
 	
-	deComponent *component = pWorld.GetRootComponent();
-	while(component){
+	pWorld.GetComponents().Visit([&](deComponent *component){
 		((deoglComponent*)component->GetPeerGraphic())->Update(elapsed);
-		component = component->GetLLWorldNext();
-	}
+	});
 DEBUG_PRINT_TIMER("Component");
 	
-	deBillboard *billboard = pWorld.GetRootBillboard();
-	while(billboard){
+	pWorld.GetBillboards().Visit([&](deBillboard *billboard){
 		((deoglBillboard*)billboard->GetPeerGraphic())->Update(elapsed);
-		billboard = billboard->GetLLWorldNext();
-	}
+	});
 DEBUG_PRINT_TIMER("Billboard");
 	
-	deCamera *camera = pWorld.GetRootCamera();
-	while(camera){
+	pWorld.GetCameras().Visit([&](deCamera *camera){
 		((deoglCamera*)camera->GetPeerGraphic())->Update(elapsed);
-		camera = camera->GetLLWorldNext();
-	}
+	});
 DEBUG_PRINT_TIMER("Camera");
 	
 	// determine the number of environment maps that can be updated during the next PrepareForRender.
@@ -392,12 +362,10 @@ void deoglWorld::CameraRemoved(deCamera *camera){
 }
 
 void deoglWorld::AllCamerasRemoved(){
-	deCamera *camera = pWorld.GetRootCamera();
-	while(camera){
+	pWorld.GetCameras().Visit([](deCamera *camera){
 		deoglCamera * const oglCamera = (deoglCamera*)camera->GetPeerGraphic();
 		oglCamera->SetParentWorld(nullptr);
-		camera = camera->GetLLWorldNext();
-	}
+	});
 }
 
 
@@ -418,14 +386,12 @@ void deoglWorld::ComponentRemoved(deComponent *component){
 }
 
 void deoglWorld::AllComponentsRemoved(){
-	deComponent *component = pWorld.GetRootComponent();
-	while(component){
+	pWorld.GetComponents().Visit([&](deComponent *component){
 		deoglComponent * const oglComponent = (deoglComponent*)component->GetPeerGraphic();
 		RemoveSyncComponent(oglComponent);
 		oglComponent->GetRComponent()->SetWorldMarkedRemove(true);
 		oglComponent->SetParentWorld(nullptr);
-		component = component->GetLLWorldNext();
-	}
+	});
 	
 	pDirtyComponents = true;
 }
@@ -445,12 +411,10 @@ void deoglWorld::EnvMapProbeRemoved(deEnvMapProbe *envMapProbe){
 }
 
 void deoglWorld::AllEnvMapProbesRemoved(){
-	deEnvMapProbe *envMapProbe = pWorld.GetRootEnvMapProbe();
-	while(envMapProbe){
+	pWorld.GetEnvMapProbes().Visit([](deEnvMapProbe *envMapProbe){
 		deoglEnvMapProbe * const oglEnvMapProbe = (deoglEnvMapProbe*)envMapProbe->GetPeerGraphic();
 		oglEnvMapProbe->GetREnvMapProbe()->SetWorldMarkedRemove(true);
-		envMapProbe = envMapProbe->GetLLWorldNext();
-	}
+	});
 	
 	pDirtyEnvMapProbes = true;
 }
@@ -471,13 +435,11 @@ void deoglWorld::LightRemoved(deLight *light){
 }
 
 void deoglWorld::AllLightsRemoved(){
-	deLight *light = pWorld.GetRootLight();
-	while(light){
+	pWorld.GetLights().Visit([](deLight *light){
 		deoglLight * const oglLight = (deoglLight*)light->GetPeerGraphic();
 		oglLight->GetRLight()->SetWorldMarkedRemove(true);
 		oglLight->SetParentWorld(nullptr);
-		light = light->GetLLWorldNext();
-	}
+	});
 	
 	pDirtyLights = true;
 }
@@ -497,12 +459,10 @@ void deoglWorld::LumimeterRemoved(deLumimeter *lumimeter){
 }
 
 void deoglWorld::AllLumimetersRemoved(){
-	deLumimeter *lumimeter = pWorld.GetRootLumimeter();
-	while(lumimeter){
+	pWorld.GetLumimeters().Visit([](deLumimeter *lumimeter){
 		deoglLumimeter * const oglLumimeter = (deoglLumimeter*)lumimeter->GetPeerGraphic();
 		oglLumimeter->GetRLumimeter()->SetWorldMarkedRemove(true);
-		lumimeter = lumimeter->GetLLWorldNext();
-	}
+	});
 	
 	pDirtyLumimeters = true;
 }
@@ -522,12 +482,10 @@ void deoglWorld::PropFieldRemoved(dePropField *propField){
 }
 
 void deoglWorld::AllPropFieldsRemoved(){
-	dePropField *propField = pWorld.GetRootPropField();
-	while(propField){
+	pWorld.GetPropFields().Visit([](dePropField *propField){
 		deoglPropField * const oglPropField = (deoglPropField*)propField->GetPeerGraphic();
 		oglPropField->GetRPropField()->SetWorldMarkedRemove(true);
-		propField = propField->GetLLWorldNext();
-	}
+	});
 	
 	pDirtyPropFields = true;
 }
@@ -547,12 +505,10 @@ void deoglWorld::SkyRemoved(deSkyInstance *sky){
 }
 
 void deoglWorld::AllSkiesRemoved(){
-	deSkyInstance *sky = pWorld.GetRootSky();
-	while(sky){
+	pWorld.GetSkies().Visit([](deSkyInstance *sky){
 		deoglSkyInstance * const oglSky = (deoglSkyInstance*)sky->GetPeerGraphic();
 		oglSky->GetRInstance()->SetWorldMarkedRemove(true);
-		sky = sky->GetLLWorldNext();
-	}
+	});
 	
 	pDirtySkies = true;
 }
@@ -575,14 +531,12 @@ void deoglWorld::BillboardRemoved(deBillboard *billboard){
 }
 
 void deoglWorld::AllBillboardsRemoved(){
-	deBillboard *billboard = pWorld.GetRootBillboard();
-	while(billboard){
+	pWorld.GetBillboards().Visit([&](deBillboard *billboard){
 		deoglBillboard * const oglBillboard = (deoglBillboard*)billboard->GetPeerGraphic();
 		RemoveSyncBillboard(oglBillboard);
 		oglBillboard->GetRBillboard()->SetWorldMarkedRemove(true);
 		oglBillboard->SetParentWorld(nullptr);
-		billboard = billboard->GetLLWorldNext();
-	}
+	});
 	
 	pDirtyBillboards = true;
 }
@@ -602,12 +556,10 @@ void deoglWorld::ParticleEmitterRemoved(deParticleEmitterInstance *emitter){
 }
 
 void deoglWorld::AllParticleEmittersRemoved(){
-	deParticleEmitterInstance *emitter = pWorld.GetRootParticleEmitter();
-	while(emitter){
+	pWorld.GetParticleEmitters().Visit([](deParticleEmitterInstance *emitter){
 		deoglParticleEmitterInstance * const oglEmitter = (deoglParticleEmitterInstance*)emitter->GetPeerGraphic();
 		oglEmitter->GetRInstance()->SetWorldMarkedRemove(true);
-		emitter = emitter->GetLLWorldNext();
-	}
+	});
 	
 	pDirtyParticleEmitterInstances = true;
 }
@@ -627,12 +579,10 @@ void deoglWorld::DebugDrawerRemoved(deDebugDrawer *debugDrawer){
 }
 
 void deoglWorld::AllDebugDrawersRemoved(){
-	deDebugDrawer *debugDrawer = pWorld.GetRootDebugDrawer();
-	while(debugDrawer){
+	pWorld.GetDebugDrawers().Visit([](deDebugDrawer *debugDrawer){
 		deoglDebugDrawer * const oglDebugDrawer = (deoglDebugDrawer*)debugDrawer->GetPeerGraphic();
 		oglDebugDrawer->GetRDebugDrawer()->SetWorldMarkedRemove(true);
-		debugDrawer = debugDrawer->GetLLWorldNext();
-	}
+	});
 	
 	pDirtyDebugDrawers = true;
 }
@@ -690,52 +640,42 @@ void deoglWorld::pSyncPropFields(){
 	if(pDirtyPropFields){
 		pRWorld->RemoveRemovalMarkedPropFields();
 		
-		dePropField *propField = pWorld.GetRootPropField();
-		while(propField){
+		pWorld.GetPropFields().Visit([&](dePropField *propField){
 			deoglRPropField * const oglPropField = ((deoglPropField*)propField->GetPeerGraphic())->GetRPropField();
 			if(oglPropField->GetParentWorld() != pRWorld){
 				oglPropField->SetWorldMarkedRemove(false);
 				pRWorld->AddPropField(oglPropField);
 			}
-			propField = propField->GetLLWorldNext();
-		}
+		});
 		
 		pDirtyPropFields = false;
 	}
 	
-	dePropField *propField = pWorld.GetRootPropField();
-	while(propField){
+	pWorld.GetPropFields().Visit([&](dePropField *propField){
 		((deoglPropField*)propField->GetPeerGraphic())->SyncToRender();
-		propField = propField->GetLLWorldNext();
-	}
+	});
 }
 
 void deoglWorld::pSyncParticleEmitterInstances(){
-	deParticleEmitterInstance *peinstance;
-	
 	if(pDirtyParticleEmitterInstances){
 		pRWorld->RemoveRemovalMarkedParticleEmitterInstances();
 		
-		peinstance = pWorld.GetRootParticleEmitter();
-		while(peinstance){
-			deoglRParticleEmitterInstance * const rpeinstance = ((deoglParticleEmitterInstance*)peinstance->GetPeerGraphic())->GetRInstance();
+		pWorld.GetParticleEmitters().Visit([&](deParticleEmitterInstance *peinstance){
+			deoglRParticleEmitterInstance * const rpeinstance =
+				((deoglParticleEmitterInstance*)peinstance->GetPeerGraphic())->GetRInstance();
 			
 			if(rpeinstance->GetParentWorld() != pRWorld){
 				rpeinstance->SetWorldMarkedRemove(false);
 				pRWorld->AddParticleEmitterInstance(rpeinstance);
 			}
-			
-			peinstance = peinstance->GetLLWorldNext();
-		}
+		});
 		
 		pDirtyParticleEmitterInstances = false;
 	}
 	
-	peinstance = pWorld.GetRootParticleEmitter();
-	while(peinstance){
+	pWorld.GetParticleEmitters().Visit([&](deParticleEmitterInstance *peinstance){
 		((deoglParticleEmitterInstance*)peinstance->GetPeerGraphic())->SyncToRender();
-		peinstance = peinstance->GetLLWorldNext();
-	}
+	});
 }
 
 // #define HACK_TEST_CS 1
@@ -786,8 +726,7 @@ void deoglWorld::pSyncComponents(){
 	if(pDirtyComponents){
 		pRWorld->RemoveRemovalMarkedComponents();
 		
-		deComponent *component = pWorld.GetRootComponent();
-		while(component){
+		pWorld.GetComponents().Visit([&](deComponent *component){
 			deoglComponent * const oglComponent = (deoglComponent*)component->GetPeerGraphic();
 			deoglRComponent * const oglRComponent = oglComponent->GetRComponent();
 			if(oglRComponent->GetParentWorld() != pRWorld){
@@ -796,19 +735,16 @@ void deoglWorld::pSyncComponents(){
 				oglRComponent->HasEnteredWorld(); // prevents superfluous events to be send
 				pRWorld->GIStatesNotifyComponentEnteredWorld(oglRComponent);
 			}
-			component = component->GetLLWorldNext();
-		}
+		});
 		
 		pDirtyComponents = false;
 		DEBUG_PRINT_TIMER("DirtyComponents");
 	}
 	
 	/*
-	deComponent *component = pWorld.GetRootComponent();
-	while(component){
+	pWorld.GetComponents().Visit([&](deComponent *component){
 		((deoglComponent*)component->GetPeerGraphic())->SyncToRender();
-		component = component->GetLLWorldNext();
-	}
+	});
 	*/
 	#ifdef HACK_TEST_CS
 	int syncComponentCount = 0;
@@ -847,52 +783,41 @@ void deoglWorld::pSyncLights(){
 	if(pDirtyLights){
 		pRWorld->RemoveRemovalMarkedLights();
 		
-		deLight *light = pWorld.GetRootLight();
-		while(light){
+		pWorld.GetLights().Visit([&](deLight *light){
 			deoglRLight * const oglLight = ((deoglLight*)light->GetPeerGraphic())->GetRLight();
 			if(oglLight->GetParentWorld() != pRWorld){
 				oglLight->SetWorldMarkedRemove(false);
 				pRWorld->AddLight(oglLight);
 			}
-			light = light->GetLLWorldNext();
-		}
+		});
 		
 		pDirtyLights = false;
 	}
 	
-	deLight *light = pWorld.GetRootLight();
-	while(light){
+	pWorld.GetLights().Visit([&](deLight *light){
 		((deoglLight*)light->GetPeerGraphic())->SyncToRender();
-		light = light->GetLLWorldNext();
-	}
+	});
 }
 
 void deoglWorld::pSyncEnvironmentMaps(){
-	deEnvMapProbe *envMapProbe;
-	
 	if(pDirtyEnvMapProbes){
 		//pRWorld->RemoveRemovalMarkedEnvMapProbes(); // can delete opengl objects down the line
 		
-		envMapProbe = pWorld.GetRootEnvMapProbe();
-		while(envMapProbe){
+		pWorld.GetEnvMapProbes().Visit([&](deEnvMapProbe *envMapProbe){
 			deoglREnvMapProbe * const renvMapProbe = ((deoglEnvMapProbe*)envMapProbe->GetPeerGraphic())->GetREnvMapProbe();
 			
 			if(renvMapProbe->GetParentWorld() != pRWorld){
 				renvMapProbe->SetWorldMarkedRemove(false);
 				pRWorld->AddEnvMapProbe(renvMapProbe);
 			}
-			
-			envMapProbe = envMapProbe->GetLLWorldNext();
-		}
+		});
 		
 		pDirtyEnvMapProbes = false;
 	}
 	
-	envMapProbe = pWorld.GetRootEnvMapProbe();
-	while(envMapProbe){
+	pWorld.GetEnvMapProbes().Visit([&](deEnvMapProbe *envMapProbe){
 		((deoglEnvMapProbe*)envMapProbe->GetPeerGraphic())->SyncToRender();
-		envMapProbe = envMapProbe->GetLLWorldNext();
-	}
+	});
 	
 	if(pDirtyEnvMapUpdateCount){
 		pRWorld->ResetEnvMapUpdateCount();
@@ -904,66 +829,53 @@ void deoglWorld::pSyncLumimeters(){
 	if(pDirtyLumimeters){
 		pRWorld->RemoveRemovalMarkedLumimeters();
 		
-		deLumimeter *lumimeter = pWorld.GetRootLumimeter();
-		while(lumimeter){
+		pWorld.GetLumimeters().Visit([&](deLumimeter *lumimeter){
 			deoglRLumimeter * const oglLumimeter = ((deoglLumimeter*)lumimeter->GetPeerGraphic())->GetRLumimeter();
 			if(oglLumimeter->GetParentWorld() != pRWorld){
 				oglLumimeter->SetWorldMarkedRemove(false);
 				pRWorld->AddLumimeter(oglLumimeter);
 			}
-			lumimeter = lumimeter->GetLLWorldNext();
-		}
+		});
 		
 		pDirtyLumimeters = false;
 	}
 	
-	deLumimeter *lumimeter = pWorld.GetRootLumimeter();
-	while(lumimeter){
+	pWorld.GetLumimeters().Visit([&](deLumimeter *lumimeter){
 		((deoglLumimeter*)lumimeter->GetPeerGraphic())->SyncToRender();
-		lumimeter = lumimeter->GetLLWorldNext();
-	}
+	});
 }
 
 void deoglWorld::pSyncDebugDrawers(){
-	deDebugDrawer *debugDrawer;
-	
 	if(pDirtyDebugDrawers){
 		pRWorld->RemoveRemovalMarkedDebugDrawers();
 		
-		debugDrawer = pWorld.GetRootDebugDrawer();
-		while(debugDrawer){
+		pWorld.GetDebugDrawers().Visit([&](deDebugDrawer *debugDrawer){
 			deoglRDebugDrawer * const rdebugDrawer = ((deoglDebugDrawer*)debugDrawer->GetPeerGraphic())->GetRDebugDrawer();
 			
 			if(rdebugDrawer->GetParentWorld() != pRWorld){
 				rdebugDrawer->SetWorldMarkedRemove(false);
 				pRWorld->AddDebugDrawer(rdebugDrawer);
 			}
-			
-			debugDrawer = debugDrawer->GetLLWorldNext();
-		}
+		});
 		
 		pDirtyDebugDrawers = false;
 	}
 	
-	debugDrawer = pWorld.GetRootDebugDrawer();
-	while(debugDrawer){
+	pWorld.GetDebugDrawers().Visit([&](deDebugDrawer *debugDrawer){
 		((deoglDebugDrawer*)debugDrawer->GetPeerGraphic())->SyncToRender();
-		debugDrawer = debugDrawer->GetLLWorldNext();
-	}
+	});
 }
 
 void deoglWorld::pSyncBillboards(){
 	if(pDirtyBillboards){
 		pRWorld->RemoveRemovalMarkedBillboards();
 		
-		deBillboard *billboard = pWorld.GetRootBillboard();
-		while(billboard){
+		pWorld.GetBillboards().Visit([&](deBillboard *billboard){
 			deoglRBillboard * const oglRBillboard = ((deoglBillboard*)billboard->GetPeerGraphic())->GetRBillboard();
 			if(oglRBillboard->GetParentWorld() != pRWorld){
 				pRWorld->AddBillboard(oglRBillboard);
 			}
-			billboard = billboard->GetLLWorldNext();
-		}
+		});
 		
 		pDirtyBillboards = false;
 		DEBUG_PRINT_TIMER("DirtyBillboards");
@@ -984,29 +896,22 @@ void deoglWorld::pSyncBillboards(){
 }
 
 void deoglWorld::pSyncSkies(){
-	deSkyInstance *sky;
-	
 	if(pDirtySkies){
 		pRWorld->RemoveRemovalMarkedSkies();
 		
-		sky = pWorld.GetRootSky();
-		while(sky){
+		pWorld.GetSkies().Visit([&](deSkyInstance *sky){
 			deoglRSkyInstance * const rsky = ((deoglSkyInstance*)sky->GetPeerGraphic())->GetRInstance();
 			
 			if(rsky->GetParentWorld() != pRWorld){
 				rsky->SetWorldMarkedRemove(false);
 				pRWorld->AddSky(rsky);
 			}
-			
-			sky = sky->GetLLWorldNext();
-		}
+		});
 		
 		pDirtySkies = false;
 	}
 	
-	sky = pWorld.GetRootSky();
-	while(sky){
+	pWorld.GetSkies().Visit([&](deSkyInstance *sky){
 		((deoglSkyInstance*)sky->GetPeerGraphic())->SyncToRender();
-		sky = sky->GetLLWorldNext();
-	}
+	});
 }

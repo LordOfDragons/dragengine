@@ -1171,20 +1171,15 @@ void deClassComponent::nfForEachDecal::RunFunction(dsRunTime *rt, dsValue *mysel
 	}
 	
 	const deComponent &component = *(dedsGetNativeData<sCompNatDat>(p_GetNativeData(myself)).component);
-	deDecal *decal = component.GetRootDecal();
-	if(!decal){
-		return;
-	}
 	
 	const int funcIndexRun = static_cast<dsClassBlock*>(rt->GetEngine()->GetClassBlock())->GetFuncIndexRun1();
 	deScriptingDragonScript &ds = *static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule();
 	deClassDecal &clsDecal = *ds.GetClassDecal();
 	
-	while(decal){
+	component.GetDecals().Visit([&](deDecal *decal){
 		clsDecal.PushDecal(rt, decal);
 		rt->RunFunctionFast(valueBlock, funcIndexRun); // Object run(Decal)
-		decal = decal->GetLLComponentNext();
-	}
+	});
 }
 
 

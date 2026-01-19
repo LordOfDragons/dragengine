@@ -83,27 +83,20 @@ void deLumimeterManager::ReleaseLeakingResources(){
 
 // Systems support
 ////////////////////
-
 void deLumimeterManager::SystemGraphicLoad(){
-	deLumimeter *lumimeter = (deLumimeter*)pLumimeters.GetRoot();
 	deGraphicSystem &graSys = *GetGraphicSystem();
-	
-	while(lumimeter){
+	pLumimeters.GetResources().Visit([&](deResource *res){
+		deLumimeter *lumimeter = static_cast<deLumimeter*>(res);
 		if(!lumimeter->GetPeerGraphic()){
 			graSys.LoadLumimeter(lumimeter);
 		}
-		
-		lumimeter = (deLumimeter*)lumimeter->GetLLManagerNext();
-	}
+	});
 }
 
 void deLumimeterManager::SystemGraphicUnload(){
-	deLumimeter *lumimeter = (deLumimeter*)pLumimeters.GetRoot();
-	
-	while(lumimeter){
-		lumimeter->SetPeerGraphic(nullptr);
-		lumimeter = (deLumimeter*)lumimeter->GetLLManagerNext();
-	}
+	pLumimeters.GetResources().Visit([](deResource *res){
+		static_cast<deLumimeter*>(res)->SetPeerGraphic(nullptr);
+	});
 }
 
 

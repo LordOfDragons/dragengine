@@ -61,8 +61,7 @@ private:
 	deBaseGraphicSkyInstance *pPeerGraphic;
 	
 	deWorld *pParentWorld;
-	deSkyInstance *pLLWorldPrev, *pLLWorldNext;
-	
+	decTObjectLinkedList<deSkyInstance>::Element pLLWorld;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -143,17 +142,8 @@ public:
 	/** \brief Set parent world or nullptr. */
 	void SetParentWorld(deWorld *world);
 	
-	/** \brief Previous sky in the parent world linked list. */
-	inline deSkyInstance *GetLLWorldPrev() const{ return pLLWorldPrev; }
-	
-	/** \brief Set next sky in the parent world linked list. */
-	void SetLLWorldPrev(deSkyInstance *sky);
-	
-	/** \brief Next sky in the parent world linked list. */
-	inline deSkyInstance *GetLLWorldNext() const{ return pLLWorldNext; }
-	
-	/** \brief Set next sky in the parent world linked list. */
-	void SetLLWorldNext(deSkyInstance *sky);
+	/** \brief Linked list element for parent world. */
+	inline decTObjectLinkedList<deSkyInstance>::Element &GetLLWorld(){ return pLLWorld; }
 	/*@}*/
 };
 

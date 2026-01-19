@@ -72,11 +72,9 @@ pDirtyLayerMask(true),
 pLLSyncWorld(this)
 {
 	try{
-		deSpeaker *speaker = microphone.GetRootSpeaker();
-		while(speaker){
+		microphone.GetSpeakers().Visit([&](deSpeaker *speaker){
 			SpeakerAdded(speaker);
-			speaker = speaker->GetLLMicrophoneNext();
-		}
+		});
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -272,14 +270,12 @@ void deoalMicrophone::SpeakerRemoved(deSpeaker *speaker){
 }
 
 void deoalMicrophone::AllSpeakersRemoved(){
-	deSpeaker *speaker = pMicrophone.GetRootSpeaker();
-	while(speaker){
+	pMicrophone.GetSpeakers().Visit([&](deSpeaker *speaker){
 		deoalSpeaker * const oalSpeaker = (deoalSpeaker*)speaker->GetPeerAudio();
 		RemoveSyncSpeaker(oalSpeaker);
 		oalSpeaker->GetASpeaker()->SetMicrophoneMarkedRemove(true);
 		oalSpeaker->SetParentMicrophone(nullptr);
-		speaker = speaker->GetLLMicrophoneNext();
-	}
+	});
 	
 	pDirtySpeakers = true;
 	
@@ -310,15 +306,12 @@ void deoalMicrophone::pSyncSpeakers(){
 	if(pDirtySpeakers){
 		pAMicrophone->RemoveRemovalMarkedSpeakers();
 		
-		deSpeaker *engSpeaker = pMicrophone.GetRootSpeaker();
-		while(engSpeaker){
-			deoalASpeaker * const speaker =
-				((deoalSpeaker*)engSpeaker->GetPeerAudio())->GetASpeaker();
+		pMicrophone.GetSpeakers().Visit([&](deSpeaker *engSpeaker){
+			auto speaker = ((deoalSpeaker*)engSpeaker->GetPeerAudio())->GetASpeaker();
 			if(speaker->GetParentMicrophone() != pAMicrophone){
 				pAMicrophone->AddSpeaker(speaker);
 			}
-			engSpeaker = engSpeaker->GetLLMicrophoneNext();
-		}
+		});
 		
 		pDirtySpeakers = false;
 	}

@@ -528,28 +528,23 @@ void dedaiSpace::AddBlockerSplitters(decConvexVolumeList &list){
 	const decDVector &maxExtend = GetMaximumExtends();
 	int i, j, k;
 	
-	deNavigationBlocker *engNavBlocker = pParentWorld->GetWorld().GetRootNavigationBlocker();
-	while(engNavBlocker){
+	pParentWorld->GetWorld().GetNavigationBlockers().Visit([&](deNavigationBlocker *engNavBlocker){
 		if(!engNavBlocker->GetEnabled()){
-			engNavBlocker = engNavBlocker->GetLLWorldNext();
-			continue;
+			return;
 		}
 		
 		if(engNavBlocker->GetSpaceType() != pType){
-			engNavBlocker = engNavBlocker->GetLLWorldNext();
-			continue;
+			return;
 		}
 		
 		// only blocked by blockers on the same layer
 		if(engNavBlocker->GetLayer() != pLayer->GetLayer()){
-			engNavBlocker = engNavBlocker->GetLLWorldNext();
-			continue;
+			return;
 		}
 		
 		// only blocked by blockers of equal or larger priority
 		if(engNavBlocker->GetBlockingPriority() < pBlockingPriority){
-			engNavBlocker = engNavBlocker->GetLLWorldNext();
-			continue;
+			return;
 		}
 		
 		// only blocked by overlapping blockers. this is a performance optimization
@@ -559,8 +554,7 @@ void dedaiSpace::AddBlockerSplitters(decConvexVolumeList &list){
 		const decDVector &blockerMaxExtend = blocker.GetMaximumExtends();
 		
 		if(blockerMaxExtend < minExtend || blockerMinExtend > maxExtend){
-			engNavBlocker = engNavBlocker->GetLLWorldNext();
-			continue;
+			return;
 		}
 		
 		// add blocker to splitter list
@@ -607,9 +601,7 @@ void dedaiSpace::AddBlockerSplitters(decConvexVolumeList &list){
 				list.AddVolume(std::move(volume));
 			}
 		}
-		
-		engNavBlocker = engNavBlocker->GetLLWorldNext();
-	}
+	});
 }
 
 void dedaiSpace::AddSpaceBlockerSplitters(decConvexVolumeList &list){
@@ -617,26 +609,22 @@ void dedaiSpace::AddSpaceBlockerSplitters(decConvexVolumeList &list){
 	const decDVector &maxExtend = GetMaximumExtends();
 	int i, j, k;
 	
-	deNavigationSpace *engNavSpace = pParentWorld->GetWorld().GetRootNavigationSpace();
-	while(engNavSpace){
+	pParentWorld->GetWorld().GetNavigationSpaces().Visit([&](deNavigationSpace *engNavSpace){
 		dedaiNavSpace * const navspace = (dedaiNavSpace*)engNavSpace->GetPeerAI();
 		
 		// only blocked by a different navigation space than our owner
 		if(navspace == pOwnerNavSpace){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+			return;
 		}
 		
 		// only blocked by navigation space blockers on the same layer
 		if(engNavSpace->GetLayer() != pLayer->GetLayer()){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+			return;
 		}
 		
 		// only blocked by navigation space blockers of equal or larger priority
 		if(engNavSpace->GetBlockingPriority() < pBlockingPriority){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+			return;
 		}
 		
 		// only blocked by overlapping navigation space blockers. this is a performance optimization
@@ -645,8 +633,7 @@ void dedaiSpace::AddSpaceBlockerSplitters(decConvexVolumeList &list){
 		const decDVector &blockerMaxExtend = space.GetMaximumExtends();
 		
 		if(blockerMaxExtend < minExtend || blockerMinExtend > maxExtend){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+			return;
 		}
 		
 		const decConvexVolumeList &bcvlist = space.GetBlockerConvexVolumeList();
@@ -692,9 +679,7 @@ void dedaiSpace::AddSpaceBlockerSplitters(decConvexVolumeList &list){
 				list.AddVolume(std::move(volume));
 			}
 		}
-		
-		engNavSpace = engNavSpace->GetLLWorldNext();
-	}
+	});
 }
 
 

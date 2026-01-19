@@ -380,9 +380,7 @@ void dedaiSpaceGrid::LinkToOtherGrids(){
 		}
 		
 		// navigation spaces
-		deNavigationSpace *engNavSpace = engWorld.GetRootNavigationSpace();
-		
-		while(engNavSpace){
+		engWorld.GetNavigationSpaces().Visit([&](deNavigationSpace *engNavSpace){
 			dedaiNavSpace * const navspace = (dedaiNavSpace*)engNavSpace->GetPeerAI();
 			
 			if(navspace && navspace != pSpace.GetOwnerNavSpace()){
@@ -420,9 +418,7 @@ void dedaiSpaceGrid::LinkToOtherGrids(){
 					}
 				}
 			}
-			
-			engNavSpace = engNavSpace->GetLLWorldNext();
-		}
+		});
 		
 		for(i=0; i<pVertexCount; i++){
 			pVertices[i].SetFirstLink(pLinks.GetCount());

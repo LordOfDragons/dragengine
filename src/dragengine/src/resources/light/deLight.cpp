@@ -72,8 +72,7 @@ pHintParameter(ephStatic),
 pPeerGraphic(nullptr),
 
 pParentWorld(nullptr),
-pLLWorldPrev(nullptr),
-pLLWorldNext(nullptr){
+pLLWorld(this){
 }
 
 deLight::~deLight(){
@@ -492,10 +491,3 @@ void deLight::SetParentWorld(deWorld *world){
 	pParentWorld = world;
 }
 
-void deLight::SetLLWorldPrev(deLight *light){
-	pLLWorldPrev = light;
-}
-
-void deLight::SetLLWorldNext(deLight *light){
-	pLLWorldNext = light;
-}

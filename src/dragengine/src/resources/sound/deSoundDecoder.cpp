@@ -43,8 +43,7 @@ deSoundDecoder::deSoundDecoder(deSoundManager &manager, deSound *sound) :
 pSoundManager(manager),
 pSound(sound),
 pPeerSound(nullptr),
-pLLManagerPrev(nullptr),
-pLLManagerNext(nullptr)
+pLLManager(this)
 {
 	if(!sound){
 		DETHROW(deeInvalidParam);
@@ -102,15 +101,5 @@ void deSoundDecoder::SetPeerSound(deBaseSoundDecoder *peer){
 	pPeerSound = peer;
 }
 
-void deSoundDecoder::SetLLManagerNext(deSoundDecoder *resource){
-	pLLManagerNext = resource;
-}
-
-void deSoundDecoder::SetLLManagerPrev(deSoundDecoder *resource){
-	pLLManagerPrev = resource;
-}
-
 void deSoundDecoder::MarkLeaking(){
-	pLLManagerNext = nullptr;
-	pLLManagerPrev = nullptr;
 }

@@ -212,32 +212,28 @@ void deModelManager::AddLoadedModel(deModel *model){
 }
 
 
-
 void deModelManager::ReleaseLeakingResources(){
 	const int count = GetModelCount();
 	
 	if(count > 0){
-		deModel *model = (deModel*)pModels.GetRoot();
 		int unnamedModelCount = 0;
 		
 		LogWarnFormat("%i leaking models", count);
 		
-		while(model){
+		pModels.GetResources().Visit([&](deResource *res){
+			deModel *model = static_cast<deModel*>(res);
 			if(model->GetFilename().IsEmpty()){
 				unnamedModelCount++;
-				
 			}else{
 				LogWarnFormat("- %s", model->GetFilename().GetString());
 			}
-			
-			model = (deModel*)model->GetLLManagerNext();
-		}
+		});
 		
 		if(unnamedModelCount > 0){
 			LogWarnFormat("%i unnamed models", unnamedModelCount);
 		}
 		
-		pModels.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
+		pModels.RemoveAll(); // we do not delete them to avoid crashes. better leak than crash
 	}
 }
 
@@ -247,70 +243,56 @@ void deModelManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deModelManager::SystemGraphicLoad(){
-	deModel *model = (deModel*)pModels.GetRoot();
 	deGraphicSystem &graSys = *GetGraphicSystem();
 	
-	while(model){
+	pModels.GetResources().Visit([&](deResource *res){
+		deModel *model = static_cast<deModel*>(res);
 		if(!model->GetPeerGraphic()){
 			graSys.LoadModel(model);
 		}
-		
-		model = (deModel*)model->GetLLManagerNext();
-	}
+	});
 }
 
 void deModelManager::SystemGraphicUnload(){
-	deModel *model = (deModel*)pModels.GetRoot();
-	
-	while(model){
-		model->SetPeerGraphic(nullptr);
-		model = (deModel*)model->GetLLManagerNext();
-	}
+	pModels.GetResources().Visit([&](deResource *res){
+		static_cast<deModel*>(res)->SetPeerGraphic(nullptr);
+	});
 }
 
 void deModelManager::SystemPhysicsLoad(){
-	deModel *model = (deModel*)pModels.GetRoot();
 	dePhysicsSystem &phySys = *GetPhysicsSystem();
 	
-	while(model){
+	pModels.GetResources().Visit([&](deResource *res){
+		deModel *model = static_cast<deModel*>(res);
 		if(!model->GetPeerPhysics()){
 			phySys.LoadModel(model);
 		}
-		
-		model = (deModel*)model->GetLLManagerNext();
-	}
+	});
 }
 
 void deModelManager::SystemPhysicsUnload(){
-	deModel *model = (deModel*)pModels.GetRoot();
-	
-	while(model){
-		model->SetPeerPhysics(nullptr);
-		model = (deModel*)model->GetLLManagerNext();
-	}
+	pModels.GetResources().Visit([&](deResource *res){
+		static_cast<deModel*>(res)->SetPeerPhysics(nullptr);
+	});
 }
 
 void deModelManager::SystemAudioLoad(){
-	deModel *model = (deModel*)pModels.GetRoot();
 	deAudioSystem &audSys = *GetAudioSystem();
 	
-	while(model){
+	pModels.GetResources().Visit([&](deResource *res){
+		deModel *model = static_cast<deModel*>(res);
 		if(!model->GetPeerAudio()){
 			audSys.LoadModel(model);
 		}
-		
-		model = (deModel*)model->GetLLManagerNext();
-	}
+	});
 }
 
 void deModelManager::SystemAudioUnload(){
-	deModel *model = (deModel*)pModels.GetRoot();
-	
-	while(model){
-		model->SetPeerAudio (nullptr);
-		model = (deModel*)model->GetLLManagerNext();
-	}
+	pModels.GetResources().Visit([&](deResource *res){
+		static_cast<deModel*>(res)->SetPeerAudio(nullptr);
+	});
 }
+
 
 void deModelManager::RemoveResource(deResource *resource){
 	pModels.RemoveIfPresent(resource);

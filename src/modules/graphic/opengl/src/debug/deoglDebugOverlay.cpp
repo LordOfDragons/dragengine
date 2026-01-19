@@ -63,7 +63,7 @@ deoglDebugOverlay::~deoglDebugOverlay(){
 void deoglDebugOverlay::PrepareOverlay(deCanvasView &canvasView){
 	deoglRenderThread &renderThread = pOgl.GetRenderThread();
 	
-	if(!canvasView.GetRootCanvas()){
+	if(canvasView.GetCanvas().IsEmpty()){
 		renderThread.SetCanvasDebugOverlay(nullptr);
 		return;
 	}
@@ -114,11 +114,9 @@ void deoglDebugOverlay::pSortViews(deCanvasView &canvasView){
 	
 	pList1.RemoveAll();
 	
-	deCanvas *childCanvas = canvasView.GetRootCanvas();
-	while(childCanvas){
+	canvasView.GetCanvas().Visit([&](deCanvas *childCanvas){
 		pList1.Add(childCanvas);
-		childCanvas = childCanvas->GetLLViewNext();
-	}
+	});
 	
 	pList2.RemoveAll();
 	float bestOrder;

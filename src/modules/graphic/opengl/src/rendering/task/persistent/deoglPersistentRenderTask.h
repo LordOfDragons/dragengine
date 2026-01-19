@@ -105,6 +105,9 @@ public:
 	
 	
 	
+	/** Owners. */
+	inline const decTLinkedList<deoglPersistentRenderTaskOwner> &GetOwners() const{ return pOwners; }
+	
 	/** Number of owners. */
 	int GetOwnerCount() const;
 	
@@ -124,6 +127,9 @@ public:
 	void RemoveAllOwners();
 	
 	
+	
+	/** Pipelines. */
+	inline const decTLinkedList<deoglPersistentRenderTaskPipeline> &GetPipelines() const{ return pPipelines; }
 	
 	/** Number of pipelines. */
 	int GetPipelineCount() const;

@@ -451,7 +451,6 @@ deFont::Ref deFontManager::LoadDebugFont(){
 }
 
 
-
 void deFontManager::ReleaseLeakingResources(){
 	const int count = GetFontCount();
 	if(count == 0){
@@ -460,15 +459,13 @@ void deFontManager::ReleaseLeakingResources(){
 	
 	LogWarnFormat("%i leaking fonts", count);
 	
-	deFont *font = (deFont*)pFonts.GetRoot();
-	while(font){
+	pFonts.GetResources().Visit([&](deResource *res){
+		deFont *font = static_cast<deFont*>(res);
 		LogWarnFormat("- %s", font->GetFilename().GetString());
-		font = (deFont*)font->GetLLManagerNext();
-	}
+	});
 	
-	pFonts.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
+	pFonts.RemoveAll(); // do not delete them to avoid crashes. better leak than crash
 }
-
 void deFontManager::AddLoadedFont(deFont *font){
 	DEASSERT_NOTNULL(font)
 	
@@ -521,25 +518,20 @@ void deFontManager::RemoveResource(deResource *resource){
 
 // Systems Support
 ////////////////////
-
 void deFontManager::SystemGraphicLoad(){
 	deGraphicSystem &graSys = *GetGraphicSystem();
-	deFont *font = (deFont*)pFonts.GetRoot();
-	
-	while(font){
+	pFonts.GetResources().Visit([&](deResource *res){
+		deFont *font = static_cast<deFont*>(res);
 		if(!font->GetPeerGraphic()){
 			graSys.LoadFont(font);
 		}
-		font = (deFont*)font->GetLLManagerNext();
-	}
+	});
 }
 
 void deFontManager::SystemGraphicUnload(){
-	deFont *font = (deFont*)pFonts.GetRoot();
-	while(font){
-		font->SetPeerGraphic(nullptr);
-		font = (deFont*)font->GetLLManagerNext();
-	}
+	pFonts.GetResources().Visit([](deResource *res){
+		static_cast<deFont*>(res)->SetPeerGraphic(nullptr);
+	});
 }
 
 

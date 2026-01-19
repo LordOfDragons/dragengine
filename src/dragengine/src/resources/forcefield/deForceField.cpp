@@ -54,8 +54,7 @@ pEnabled(true),
 pPeerPhysics (nullptr),
 
 pParentWorld(nullptr),
-pLLWorldPrev(nullptr),
-pLLWorldNext(nullptr){
+pLLWorld(this){
 }
 
 deForceField::~deForceField(){
@@ -256,12 +255,4 @@ void deForceField::SetPeerPhysics(deBasePhysicsForceField *peer){
 
 void deForceField::SetParentWorld(deWorld *world){
 	pParentWorld = world;
-}
-
-void deForceField::SetLLWorldPrev(deForceField *forceField){
-	pLLWorldPrev = forceField;
-}
-
-void deForceField::SetLLWorldNext(deForceField *forceField){
-	pLLWorldNext = forceField;
 }

@@ -73,25 +73,20 @@ void deSkyManager::ReleaseLeakingResources(){
 
 // Systems Support
 ////////////////////
-
 void deSkyManager::SystemGraphicLoad(){
-	deSky *sky = (deSky*)pSkies.GetRoot();
-	
-	while(sky){
+	deGraphicSystem &graSys = *GetGraphicSystem();
+	pSkies.GetResources().Visit([&](deResource *res){
+		deSky *sky = static_cast<deSky*>(res);
 		if(!sky->GetPeerGraphic()){
-			GetGraphicSystem()->LoadSky(sky);
+			graSys.LoadSky(sky);
 		}
-		sky = (deSky*)sky->GetLLManagerNext();
-	}
+	});
 }
 
 void deSkyManager::SystemGraphicUnload(){
-	deSky *sky = (deSky*)pSkies.GetRoot();
-	
-	while(sky){
-		sky->SetPeerGraphic(nullptr);
-		sky = (deSky*)sky->GetLLManagerNext();
-	}
+	pSkies.GetResources().Visit([](deResource *res){
+		static_cast<deSky*>(res)->SetPeerGraphic(nullptr);
+	});
 }
 
 void deSkyManager::RemoveResource(deResource *resource){

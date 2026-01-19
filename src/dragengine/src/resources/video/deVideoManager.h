@@ -40,14 +40,8 @@ class DE_DLL_EXPORT deVideoManager : public deFileResourceManager{
 private:
 	deFileResourceList pVideos;
 	
-	deVideoDecoder *pDecoderRoot;
-	deVideoDecoder *pDecoderTail;
-	int pDecoderCount;
-	
-	deVideoAudioDecoder *pAudioDecoderRoot;
-	deVideoAudioDecoder *pAudioDecoderTail;
-	int pAudioDecoderCount;
-	
+	decTLinkedList<deVideoDecoder> pDecoders;
+	decTLinkedList<deVideoAudioDecoder> pAudioDecoders;
 	deMutex pMutexDecoder;
 	
 	
@@ -66,6 +60,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Videos. */
+	inline const deFileResourceList &GetVideos() const{ return pVideos; }
+	
 	/** \brief Number of videos. */
 	int GetVideoCount() const;
 	

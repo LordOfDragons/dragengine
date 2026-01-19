@@ -54,8 +54,7 @@ pPeerPhysics(nullptr),
 pPeerScripting(nullptr),
 
 pParentWorld(nullptr),
-pLLWorldPrev(nullptr),
-pLLWorldNext(nullptr){
+pLLWorld(this){
 }
 
 deTouchSensor::~deTouchSensor(){
@@ -314,12 +313,4 @@ void deTouchSensor::SetPeerScripting(deBaseScriptingTouchSensor *scrTS){
 
 void deTouchSensor::SetParentWorld(deWorld *world){
 	pParentWorld = world;
-}
-
-void deTouchSensor::SetLLWorldPrev(deTouchSensor *touchSensor){
-	pLLWorldPrev = touchSensor;
-}
-
-void deTouchSensor::SetLLWorldNext(deTouchSensor *touchSensor){
-	pLLWorldNext = touchSensor;
 }

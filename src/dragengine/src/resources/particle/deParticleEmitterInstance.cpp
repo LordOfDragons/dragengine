@@ -49,7 +49,8 @@
 ////////////////////////////
 
 deParticleEmitterInstance::deParticleEmitterInstance(deParticleEmitterInstanceManager *manager) :
-deResource(manager)
+deResource(manager),
+pLLWorld(this)
 {
 	pEnableCasting = false;
 	pRemoveAfterLastParticleDied = false;
@@ -63,8 +64,6 @@ deResource(manager)
 	pPeerScripting = nullptr;
 	
 	pParentWorld = nullptr;
-	pLLWorldPrev = nullptr;
-	pLLWorldNext = nullptr;
 }
 
 deParticleEmitterInstance::~deParticleEmitterInstance(){
@@ -375,14 +374,6 @@ void deParticleEmitterInstance::SetPeerScripting(deBaseScriptingParticleEmitterI
 
 void deParticleEmitterInstance::SetParentWorld(deWorld *world){
 	pParentWorld = world;
-}
-
-void deParticleEmitterInstance::SetLLWorldPrev(deParticleEmitterInstance *instance){
-	pLLWorldPrev = instance;
-}
-
-void deParticleEmitterInstance::SetLLWorldNext(deParticleEmitterInstance *instance){
-	pLLWorldNext = instance;
 }
 
 

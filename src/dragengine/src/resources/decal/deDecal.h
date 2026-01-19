@@ -30,6 +30,7 @@
 #include "../skin/dynamic/deDynamicSkin.h"
 #include "../../common/math/decMath.h"
 #include "../../common/collection/decTOrderedSet.h"
+#include "../../common/collection/decTLinkedList.h"
 
 class deDecalManager;
 class deComponent;
@@ -78,12 +79,10 @@ private:
 	int pBoneStateCount;
 	
 	deComponent *pParentComponent;
-	deDecal *pLLComponentPrev;
-	deDecal *pLLComponentNext;
+	decTObjectLinkedList<deDecal>::Element pLLComponent;
 	
 	deHeightTerrainSector *pParentHeightTerrainSector;
-	deDecal *pLLHeightTerrainSectorPrev;
-	deDecal *pLLHeightTerrainSectorNext;
+	decTObjectLinkedList<deDecal>::Element pLLHeightTerrainSector;
 	
 	deBaseGraphicDecal *pPeerGraphic;
 	deBasePhysicsDecal *pPeerPhysics;
@@ -188,23 +187,9 @@ public:
 	/** \brief Set parent component or NULL. */
 	void SetParentComponent(deComponent *component);
 	
-	/** \brief Previous decal in component linked list. */
-	inline deDecal *GetLLComponentPrev() const{ return pLLComponentPrev; }
-	
-	/**
-	 * \brief Set next decal in the component linked list.
-	 * \warning For use by deComponent only.
-	 */
-	void SetLLComponentPrev(deDecal *decal);
-	
-	/** \brief Next decal in the component linked list. */
-	inline deDecal *GetLLComponentNext() const{ return pLLComponentNext; }
-	
-	/**
-	 * \brief Set next decal in the component linked list.
-	 * \warning For use by deComponent only.
-	 */
-	void SetLLComponentNext(deDecal *decal);
+	/** \brief Component linked list. */
+	inline decTObjectLinkedList<deDecal>::Element &GetLLComponent(){ return pLLComponent; }
+	inline const decTObjectLinkedList<deDecal>::Element &GetLLComponent() const{ return pLLComponent; }
 	/*@}*/
 	
 	
@@ -217,23 +202,9 @@ public:
 	/** \brief Set parent height terrain sector or NULL. */
 	void SetParentHeightTerrainSector(deHeightTerrainSector *sector);
 	
-	/** \brief Previous decal in height terrain sector linked list. */
-	inline deDecal *GetLLHeightTerrainSectorPrev() const{ return pLLHeightTerrainSectorPrev; }
-	
-	/**
-	 * \brief Set next decal in the height terrain sector linked list.
-	 * \warning For use by deHeightTerrainSector only.
-	 */
-	void SetLLHeightTerrainSectorPrev(deDecal *decal);
-	
-	/** \brief Next decal in the height terrain sector linked list. */
-	inline deDecal *GetLLHeightTerrainSectorNext() const{ return pLLHeightTerrainSectorNext; }
-	
-	/**
-	 * \brief Set next decal in the height terrain sector linked list.
-	 * \warning For use by deHeightTerrainSector only.
-	 */
-	void SetLLHeightTerrainSectorNext(deDecal *decal);
+	/** \brief Height terrain sector linked list. */
+	inline decTObjectLinkedList<deDecal>::Element &GetLLHeightTerrainSector(){ return pLLHeightTerrainSector; }
+	inline const decTObjectLinkedList<deDecal>::Element &GetLLHeightTerrainSector() const{ return pLLHeightTerrainSector; }
 	/*@}*/
 	
 	

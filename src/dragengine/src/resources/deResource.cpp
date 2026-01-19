@@ -40,8 +40,7 @@
 
 deResource::deResource(deResourceManager *resourceManager) :
 pResourceManager(resourceManager),
-pLLManagerPrev(nullptr),
-pLLManagerNext(nullptr)
+pLLManager(this)
 {
 	if(!resourceManager){
 		DETHROW(deeInvalidParam);
@@ -72,16 +71,6 @@ deEngine *deResource::GetEngine() const{
 // Resource manager linked list
 /////////////////////////////////
 
-void deResource::SetLLManagerNext(deResource *resource){
-	pLLManagerNext = resource;
-}
-
-void deResource::SetLLManagerPrev(deResource *resource){
-	pLLManagerPrev = resource;
-}
-
 void deResource::MarkLeaking(){
 	pResourceManager = nullptr;
-	pLLManagerNext = nullptr;
-	pLLManagerPrev = nullptr;
 }

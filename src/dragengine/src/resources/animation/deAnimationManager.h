@@ -57,6 +57,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Animations. */
+	inline const deFileResourceList &GetAnimations() const{ return pAnimations; }
+	
 	/** \brief Count of animation resource. */
 	int GetAnimationCount() const;
 	

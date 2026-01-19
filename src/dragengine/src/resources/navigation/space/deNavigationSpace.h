@@ -27,10 +27,13 @@
 
 #include "../../deResource.h"
 #include "../../../common/math/decMath.h"
+#include "../../../common/utils/decLayerMask.h"
+#include "../../../common/collection/decTLinkedList.h"
 #include "../../../common/shape/decShape.h"
 
-class deNavigationSpaceEdge;
+class deNavigationSpaceManager;
 class deNavigationSpaceCorner;
+class deNavigationSpaceEdge;
 class deNavigationSpaceFace;
 class deNavigationSpaceWall;
 class deNavigationSpaceRoom;
@@ -153,8 +156,7 @@ private:
 	deBaseAINavigationSpace *pPeerAI;
 	
 	deWorld *pParentWorld;
-	deNavigationSpace *pLLWorldPrev;
-	deNavigationSpace *pLLWorldNext;
+	decTObjectLinkedList<deNavigationSpace>::Element pLLWorld;
 	
 	
 	
@@ -389,19 +391,10 @@ public:
 	inline deWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
-	void SetParentWorld(deWorld *world);
+	void SetParentWorld( deWorld *world );
 	
-	/** \brief Previous navigation space in the parent world linked list. */
-	inline deNavigationSpace *GetLLWorldPrev() const{ return pLLWorldPrev; }
-	
-	/** \brief Set next navigation space in the parent world linked list. */
-	void SetLLWorldPrev(deNavigationSpace *navspace);
-	
-	/** \brief Next navigation space in the parent world linked list. */
-	inline deNavigationSpace *GetLLWorldNext() const{ return pLLWorldNext; }
-	
-	/** \brief Set next navigation space in the parent world linked list. */
-	void SetLLWorldNext(deNavigationSpace *navspace);
+	/** \brief World linked list element. */
+	inline decTObjectLinkedList<deNavigationSpace>::Element &GetLLWorld(){ return pLLWorld; }
 	/*@}*/
 };
 

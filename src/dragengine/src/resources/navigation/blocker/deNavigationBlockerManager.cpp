@@ -89,24 +89,19 @@ void deNavigationBlockerManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deNavigationBlockerManager::SystemAILoad(){
-	deNavigationBlocker *blocker = (deNavigationBlocker*)pBlockers.GetRoot();
 	deAISystem &aisys = *GetAISystem();
-	
-	while(blocker){
+	pBlockers.GetResources().Visit([&](deResource *res){
+		deNavigationBlocker *blocker = static_cast<deNavigationBlocker*>(res);
 		if(!blocker->GetPeerAI()){
 			aisys.LoadNavigationBlocker(blocker);
 		}
-		blocker = (deNavigationBlocker*)blocker->GetLLManagerNext();
-	}
+	});
 }
 
 void deNavigationBlockerManager::SystemAIUnload(){
-	deNavigationBlocker *blocker = (deNavigationBlocker*)pBlockers.GetRoot();
-	
-	while(blocker){
-		blocker->SetPeerAI(nullptr);
-		blocker = (deNavigationBlocker*)blocker->GetLLManagerNext();
-	}
+	pBlockers.GetResources().Visit([&](deResource *res){
+		static_cast<deNavigationBlocker*>(res)->SetPeerAI(nullptr);
+	});
 }
 
 void deNavigationBlockerManager::RemoveResource(deResource *resource){

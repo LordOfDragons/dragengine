@@ -55,8 +55,7 @@ pVisible(true),
 pPeerGraphic(nullptr),
 
 pParentWorld(nullptr),
-pLLWorldPrev(nullptr),
-pLLWorldNext(nullptr){
+pLLWorld(this){
 }
 
 deBillboard::~deBillboard(){
@@ -224,12 +223,4 @@ void deBillboard::SetPeerGraphic(deBaseGraphicBillboard *peer){
 
 void deBillboard::SetParentWorld(deWorld *world){
 	pParentWorld = world;
-}
-
-void deBillboard::SetLLWorldPrev(deBillboard *billboard){
-	pLLWorldPrev = billboard;
-}
-
-void deBillboard::SetLLWorldNext(deBillboard *billboard){
-	pLLWorldNext = billboard;
 }

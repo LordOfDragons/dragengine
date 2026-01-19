@@ -68,8 +68,7 @@ private:
 	deBaseAINavigationBlocker *pPeerAI;
 	
 	deWorld *pParentWorld;
-	deNavigationBlocker *pLLWorldPrev;
-	deNavigationBlocker *pLLWorldNext;
+	decTObjectLinkedList<deNavigationBlocker>::Element pLLWorld;
 	
 	
 	
@@ -171,19 +170,10 @@ public:
 	inline deWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
-	void SetParentWorld(deWorld *world);
+	void SetParentWorld( deWorld *world );
 	
-	/** \brief Previous blocker in the parent world linked list. */
-	inline deNavigationBlocker *GetLLWorldPrev() const{ return pLLWorldPrev; }
-	
-	/** \brief Set next blocker in the parent world linked list. */
-	void SetLLWorldPrev(deNavigationBlocker *blocker);
-	
-	/** \brief Next blocker in the parent world linked list. */
-	inline deNavigationBlocker *GetLLWorldNext() const{ return pLLWorldNext; }
-	
-	/** \brief Set next blocker in the parent world linked list. */
-	void SetLLWorldNext(deNavigationBlocker *blocker);
+	/** \brief World linked list element. */
+	inline decTObjectLinkedList<deNavigationBlocker>::Element &GetLLWorld(){ return pLLWorld; }
 	/*@}*/
 };
 

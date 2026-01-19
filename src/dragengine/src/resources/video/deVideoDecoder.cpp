@@ -43,8 +43,7 @@ deVideoDecoder::deVideoDecoder(deVideoManager &manager, deVideo *video) :
 pVideoManager(manager),
 pVideo(video),
 pPeerVideo(nullptr),
-pLLManagerPrev(nullptr),
-pLLManagerNext(nullptr)
+pLLManager(this)
 {
 	if(!video){
 		DETHROW(deeInvalidParam);
@@ -93,15 +92,5 @@ void deVideoDecoder::SetPeerVideo(deBaseVideoDecoder *peer){
 	pPeerVideo = peer;
 }
 
-void deVideoDecoder::SetLLManagerNext(deVideoDecoder *resource){
-	pLLManagerNext = resource;
-}
-
-void deVideoDecoder::SetLLManagerPrev(deVideoDecoder *resource){
-	pLLManagerPrev = resource;
-}
-
 void deVideoDecoder::MarkLeaking(){
-	pLLManagerNext = nullptr;
-	pLLManagerPrev = nullptr;
 }

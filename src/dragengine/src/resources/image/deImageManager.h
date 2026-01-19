@@ -61,6 +61,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Images. */
+	inline const deFileResourceList &GetImages() const{ return pImages; }
+	
 	/** \brief Count of images. */
 	int GetImageCount() const;
 	

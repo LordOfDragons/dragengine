@@ -49,8 +49,7 @@ pColor(color),
 pTexture(nullptr),
 pUsageCount(1),
 pHashCode(0),
-pLLPrev(nullptr),
-pLLNext(nullptr)
+pLLTextures(this)
 {
 	int i;
 	for(i=0; i<4; i++){
@@ -152,12 +151,4 @@ void deoglCombinedTexture::RemoveUsage(){
 		//         until a later time. this makes this call main thread safe
 		//pRenderThread.GetTexture().GetCombinedTexture().Remove( this );
 	}
-}
-
-void deoglCombinedTexture::SetLLPrev(deoglCombinedTexture *entry){
-	pLLPrev = entry;
-}
-
-void deoglCombinedTexture::SetLLNext(deoglCombinedTexture *entry){
-	pLLNext = entry;
 }

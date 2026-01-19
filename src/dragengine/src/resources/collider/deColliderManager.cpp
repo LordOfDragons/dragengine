@@ -101,47 +101,36 @@ void deColliderManager::ReleaseLeakingResources(){
 
 // systems support
 ////////////////////
-
 void deColliderManager::SystemPhysicsLoad(){
-	deCollider *collider = (deCollider*)pColliders.GetRoot();
-	
-	while(collider){
+	dePhysicsSystem &phySys = *GetPhysicsSystem();
+	pColliders.GetResources().Visit([&](deResource *res){
+		deCollider *collider = static_cast<deCollider*>(res);
 		if(!collider->GetPeerPhysics()){
-			GetPhysicsSystem()->LoadCollider(collider);
+			phySys.LoadCollider(collider);
 		}
-		
-		collider = (deCollider*)collider->GetLLManagerNext();
-	}
+	});
 }
 
 void deColliderManager::SystemPhysicsUnload(){
-	deCollider *collider = (deCollider*)pColliders.GetRoot();
-	
-	while(collider){
-		collider->SetPeerPhysics(nullptr);
-		collider = (deCollider*)collider->GetLLManagerNext();
-	}
+	pColliders.GetResources().Visit([](deResource *res){
+		static_cast<deCollider*>(res)->SetPeerPhysics(nullptr);
+	});
 }
 
 void deColliderManager::SystemScriptingLoad(){
-	deCollider *collider = (deCollider*)pColliders.GetRoot();
-	
-	while(collider){
+	deScriptingSystem &scrSys = *GetScriptingSystem();
+	pColliders.GetResources().Visit([&](deResource *res){
+		deCollider *collider = static_cast<deCollider*>(res);
 		if(!collider->GetPeerScripting()){
-			GetScriptingSystem()->LoadCollider(collider);
+			scrSys.LoadCollider(collider);
 		}
-		
-		collider = (deCollider*)collider->GetLLManagerNext();
-	}
+	});
 }
 
 void deColliderManager::SystemScriptingUnload(){
-	deCollider *collider = (deCollider*)pColliders.GetRoot();
-	
-	while(collider){
-		collider->SetPeerScripting(nullptr);
-		collider = (deCollider*)collider->GetLLManagerNext();
-	}
+	pColliders.GetResources().Visit([](deResource *res){
+		static_cast<deCollider*>(res)->SetPeerScripting(nullptr);
+	});
 }
 
 void deColliderManager::RemoveResource(deResource *resource){

@@ -535,9 +535,7 @@ void dedaiSpaceMesh::LinkToOtherMeshes(){
 	}
 	
 	// navigation spaces
-	deNavigationSpace *engNavSpace = engWorld.GetRootNavigationSpace();
-	
-	while(engNavSpace){
+	engWorld.GetNavigationSpaces().Visit([&](deNavigationSpace *engNavSpace){
 		dedaiNavSpace * const navspace = (dedaiNavSpace*)engNavSpace->GetPeerAI();
 		
 		if(navspace && navspace != pSpace.GetOwnerNavSpace()){
@@ -552,9 +550,7 @@ void dedaiSpaceMesh::LinkToOtherMeshes(){
 				}
 			}
 		}
-		
-		engNavSpace = engNavSpace->GetLLWorldNext();
-	}
+	});
 }
 
 void dedaiSpaceMesh::UpdateBlocking(){

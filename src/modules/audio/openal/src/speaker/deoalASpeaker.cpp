@@ -138,8 +138,7 @@ pDelayedDropSharedEffectSlot(false),
 
 pMicrophoneMarkedRemove(false),
 pWorldMarkedRemove(false),
-pLLWorldPrev(nullptr),
-pLLWorldNext(nullptr)
+pLLWorld(this)
 {
 	LEAK_CHECK_CREATE(audioThread, Speaker);
 }
@@ -746,16 +745,6 @@ void deoalASpeaker::SetWorldMarkedRemove(bool marked){
 	pWorldMarkedRemove = marked;
 }
 
-void deoalASpeaker::SetLLWorldPrev(deoalASpeaker *speaker){
-	pLLWorldPrev = speaker;
-}
-
-void deoalASpeaker::SetLLWorldNext(deoalASpeaker *speaker){
-	pLLWorldNext = speaker;
-}
-
-
-
 // Private Functions
 //////////////////////
 
@@ -799,22 +788,16 @@ void deoalASpeaker::pCleanUp(){
 	// delayed deletion
 	pCheckStillSourceOwner();
 	if(pSource){
-		deoalASpeakerDeletion *delayedDeletion = nullptr;
-		
 		try{
-			delayedDeletion = new deoalASpeakerDeletion;
+			auto delayedDeletion = deTUniqueReference<deoalASpeakerDeletion>::New();
 			delayedDeletion->source = pSource;
-			pAudioThread.GetDelayed().AddDeletion(delayedDeletion);
+			pSource->SetOwner(delayedDeletion);
+			pAudioThread.GetDelayed().AddDeletion(std::move(delayedDeletion));
 			
 		}catch(const deException &e){
-			if(delayedDeletion){
-				delete delayedDeletion;
-			}
 			pAudioThread.GetLogger().LogException(e);
 			throw;
 		}
-		
-		pSource->SetOwner(delayedDeletion);
 	}
 }
 

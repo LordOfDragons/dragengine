@@ -115,8 +115,7 @@ private:
 	deBaseScriptingSoundLevelMeter *pPeerScripting;
 	
 	deWorld *pParentWorld;
-	deSoundLevelMeter *pLLWorldPrev;
-	deSoundLevelMeter *pLLWorldNext;
+	decTObjectLinkedList<deSoundLevelMeter>::Element pLLWorld;
 	
 	
 	
@@ -229,20 +228,11 @@ public:
 	/** \brief Parent world or NULL. */
 	inline deWorld *GetParentWorld() const{ return pParentWorld; }
 	
-	/** \brief Set parent world or NULL. */
-	void SetParentWorld(deWorld *world);
+		/** \brief Set parent world or NULL. */
+	void SetParentWorld( deWorld *world );
 	
-	/** \brief Previous lumimeter in the parent world linked list. */
-	inline deSoundLevelMeter *GetLLWorldPrev() const{ return pLLWorldPrev; }
-	
-	/** \brief Set next lumimeter in the parent world linked list. */
-	void SetLLWorldPrev(deSoundLevelMeter *lumimeter);
-	
-	/** \brief Next lumimeter in the parent world linked list. */
-	inline deSoundLevelMeter *GetLLWorldNext() const{ return pLLWorldNext; }
-	
-	/** \brief Set next lumimeter in the parent world linked list. */
-	void SetLLWorldNext(deSoundLevelMeter *lumimeter);
+	/** \brief World linked list element. */
+	inline decTObjectLinkedList<deSoundLevelMeter>::Element &GetLLWorld(){ return pLLWorld; }
 	/*@}*/
 };
 

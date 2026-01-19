@@ -30,6 +30,7 @@
 
 #include "../exceptions_reduced.h"
 #include "../../deTObjectReference.h"
+#include "../../deTUniqueReference.h"
 #include "../../threading/deTThreadSafeObjectReference.h"
 
 
@@ -71,9 +72,9 @@ public:
 	class Element{
 	private:
 		T *pOwner;
-		TR pReference;
-		Element *pPrev, *pNext;
-		decTLinkedList<T,TR> *pList;
+		TR pReference = {};
+		Element *pPrev = nullptr, *pNext = nullptr;
+		decTLinkedList<T,TR> *pList = nullptr;
 		
 		
 	public:
@@ -83,7 +84,7 @@ public:
 		 * \brief Create list entry.
 		 * \warning Use only on stack! Never use it with new allocator!
 		 */
-		explicit Element(T *owner) : pOwner(owner), pPrev(nullptr), pNext(nullptr), pList(nullptr){
+		explicit Element(T *owner) : pOwner(owner){
 			DEASSERT_NOTNULL(owner)
 		}
 		
@@ -108,8 +109,14 @@ public:
 		/** \brief Previous linked list entry or nullptr. */
 		inline Element *GetPrevious() const{ return pPrev; }
 		
+		/** \brief Previous linked list entry owner or nullptr. */
+		inline T *GetPreviousOwner() const{ return pPrev ? pPrev->GetOwner() : nullptr; }
+		
 		/** \brief Next linked list entry or nullptr. */
 		inline Element *GetNext() const{ return pNext; }
+		
+		/** \brief Next linked list entry owner or nullptr. */
+		inline T *GetNextOwner() const{ return pNext ? pNext->GetOwner() : nullptr; }
 		
 		/** \brief Linked list or nullptr if not in a list. */
 		inline decTLinkedList<T,TR> *GetList() const{ return pList; }
@@ -359,8 +366,14 @@ public:
 	/** \brief Root entry at start of list or nullptr if list is empty. */
 	inline Element *GetRoot() const{ return pRoot; }
 	
+	/** \brief Root entry owner at start of list or nullptr if list is empty. */
+	inline T *GetRootOwner() const{ return pRoot ? pRoot->GetOwner() : nullptr; }
+	
 	/** \brief Tail entry at end of list or nullptr if list is empty. */
 	inline Element *GetTail() const{ return pTail; }
+	
+	/** \brief Tail entry owner at end of list or nullptr if list is empty. */
+	inline T *GetTailOwner() const{ return pTail ? pTail->GetOwner() : nullptr; }
 	
 	/**
 	 * \brief Element at index.
@@ -423,10 +436,11 @@ public:
 	bool AllMatching(Evaluator &evaluator) const{
 		const Element *iter = pRoot;
 		while(iter){
+			const Element * const next = iter->pNext;
 			if(!evaluator(iter->pOwner)){
 				return false;
 			}
-			iter = iter->pNext;
+			iter = next;
 		}
 		return true;
 	}
@@ -446,10 +460,11 @@ public:
 	bool NoneMatching(Evaluator &evaluator) const{
 		const Element *iter = pRoot;
 		while(iter){
+			const Element * const next = iter->pNext;
 			if(evaluator(iter->pOwner)){
 				return false;
 			}
-			iter = iter->pNext;
+			iter = next;
 		}
 		return true;
 	}
@@ -465,6 +480,26 @@ public:
 		DEASSERT_NULL(entry->GetList())
 		
 		entry->pReference = entry->pOwner;
+		entry->pPrev = pTail;
+		entry->pNext = nullptr;
+		
+		if(pTail){
+			pTail->pNext = entry;
+			
+		}else{
+			pRoot = entry;
+		}
+		
+		pTail = entry;
+		entry->pList = this;
+		pCount++;
+	}
+	
+	void Add(Element *entry, TR &&reference){
+		DEASSERT_NOTNULL(entry)
+		DEASSERT_NULL(entry->GetList())
+		
+		entry->pReference = std::move(reference);
 		entry->pPrev = pTail;
 		entry->pNext = nullptr;
 		
@@ -506,6 +541,28 @@ public:
 		pCount++;
 	}
 	
+	void InsertBefore(Element *entry, TR &&reference, Element *before){
+		DEASSERT_NOTNULL(entry)
+		DEASSERT_NULL(entry->GetList())
+		DEASSERT_NOTNULL(before)
+		DEASSERT_TRUE(before->GetList() == this)
+		
+		entry->pReference = std::move(reference);
+		entry->pPrev = before->pPrev;
+		entry->pNext = before;
+		
+		if(before->pPrev){
+			before->pPrev->pNext = entry;
+			
+		}else{
+			pRoot = entry;
+		}
+		
+		before->pPrev = entry;
+		entry->pList = this;
+		pCount++;
+	}
+	
 	/**
 	 * \brief Insert element after entry.
 	 * \throws deeInvalidParam \em afterEntry is invalid.
@@ -517,6 +574,28 @@ public:
 		DEASSERT_TRUE(after->GetList() == this)
 		
 		entry->pReference = entry->pOwner;
+		entry->pPrev = after;
+		entry->pNext = after->pNext;
+		
+		if(after->pNext){
+			after->pNext->pPrev = entry;
+			
+		}else{
+			pTail = entry;
+		}
+		
+		after->pNext = entry;
+		entry->pList = this;
+		pCount++;
+	}
+	
+	void InsertAfter(Element *entry, TR &&reference, Element *after){
+		DEASSERT_NOTNULL(entry)
+		DEASSERT_NULL(entry->GetList())
+		DEASSERT_NOTNULL(after)
+		DEASSERT_TRUE(after->GetList() == this)
+		
+		entry->pReference = std::move(reference);
 		entry->pPrev = after;
 		entry->pNext = after->pNext;
 		
@@ -563,7 +642,7 @@ public:
 		// which causes an exception thrown and ultimately a segfault. by guarding the reference
 		// before clearing the Element is in a proper cleared state before the reference goes
 		// out of scope
-		const TR guard(entry->pReference);
+		TR guard = std::move(entry->pReference);
 		(void)guard; // suppress unused variable warning
 		entry->pReference = TR();
 		
@@ -586,8 +665,9 @@ public:
 	void Visit(Visitor &visitor) const {
 		Element *entry = pRoot;
 		while(entry){
+			Element * const next = entry->pNext;
 			visitor(entry->pOwner);
-			entry = entry->pNext;
+			entry = next;
 		}
 	}
 	
@@ -618,11 +698,12 @@ public:
 	bool Find(Evaluator &evaluator, T* &found) const{
 		Element *entry = pRoot;
 		while(entry){
+			Element * const next = entry->pNext;
 			if(evaluator(entry->pOwner)){
 				found = entry->pOwner;
 				return true;
 			}
-			entry = entry->pNext;
+			entry = next;
 		}
 		found = nullptr;
 		return false;
@@ -691,8 +772,9 @@ public:
 		R acc = value;
 		Element *entry = pRoot;
 		while(entry){
+			Element * const next = entry->pNext;
 			acc = combiner(acc, entry->pOwner);
-			entry = entry->pNext;
+			entry = next;
 		}
 		return acc;
 	}
@@ -711,11 +793,11 @@ public:
 	void RemoveIf(Evaluator &evaluator){
 		Element *entry = pRoot;
 		while(entry){
-			Element *nextEntry = entry->pNext;
+			Element * const next = entry->pNext;
 			if(evaluator(entry->pOwner)){
 				Remove(entry);
 			}
-			entry = nextEntry;
+			entry = next;
 		}
 	}
 	
@@ -854,5 +936,13 @@ using decTObjectLinkedList = decTLinkedList<T, deTObjectReference<T>>;
  */
 template<typename T>
 using decTThreadSafeObjectLinkedList = decTLinkedList<T, deTThreadSafeObjectReference<T>>;
+
+/**
+ * \brief Unique linked list template class.
+ * 
+ * This template uses deTUniqueReference.
+ */
+template<typename T>
+using decTUniqueLinkedList = decTLinkedList<T, deTUniqueReference<T>>;
 
 #endif

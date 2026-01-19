@@ -42,7 +42,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deEnvMapProbe::deEnvMapProbe(deEnvMapProbeManager *manager) : deResource(manager){
+deEnvMapProbe::deEnvMapProbe(deEnvMapProbeManager *manager) : deResource(manager),
+pLLWorld(this)
+{
 	pScaling.Set(1.0f, 1.0f, 1.0f);
 	pInfluenceBorderSize = 0.1f;
 	pInfluencePriority = 0;
@@ -52,8 +54,6 @@ deEnvMapProbe::deEnvMapProbe(deEnvMapProbeManager *manager) : deResource(manager
 	pPeerGraphic = nullptr;
 	
 	pParentWorld = nullptr;
-	pLLWorldPrev = nullptr;
-	pLLWorldNext = nullptr;
 }
 
 deEnvMapProbe::~deEnvMapProbe(){
@@ -203,12 +203,4 @@ void deEnvMapProbe::SetPeerGraphic(deBaseGraphicEnvMapProbe *peer){
 
 void deEnvMapProbe::SetParentWorld(deWorld *world){
 	pParentWorld = world;
-}
-
-void deEnvMapProbe::SetLLWorldPrev(deEnvMapProbe *instance){
-	pLLWorldPrev = instance;
-}
-
-void deEnvMapProbe::SetLLWorldNext(deEnvMapProbe *instance){
-	pLLWorldNext = instance;
 }

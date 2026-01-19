@@ -63,8 +63,7 @@ pEnvProbe(nullptr),
 pDirtyEnvProbe(true),
 
 pWorldMarkedRemove(false),
-pLLWorldPrev(nullptr),
-pLLWorldNext(nullptr)
+pLLWorld(this)
 {
 	pWOVPrepareRayTrace.SetRadius(pAudibleDistance);
 	LEAK_CHECK_CREATE(audioThread, SoundLevelMeter);
@@ -306,16 +305,6 @@ void deoalASoundLevelMeter::MeterSpeakers(){
 void deoalASoundLevelMeter::SetWorldMarkedRemove(bool marked){
 	pWorldMarkedRemove = marked;
 }
-
-void deoalASoundLevelMeter::SetLLWorldPrev(deoalASoundLevelMeter *soundLevelMeter){
-	pLLWorldPrev = soundLevelMeter;
-}
-
-void deoalASoundLevelMeter::SetLLWorldNext(deoalASoundLevelMeter *soundLevelMeter){
-	pLLWorldNext = soundLevelMeter;
-}
-
-
 
 // Private Functions
 //////////////////////

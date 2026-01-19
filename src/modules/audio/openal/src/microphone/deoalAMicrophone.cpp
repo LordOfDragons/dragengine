@@ -77,8 +77,7 @@ pDirtyGeometry(true),
 pDirtyGain(true),
 
 pWorldMarkedRemove(false),
-pLLWorldPrev(nullptr),
-pLLWorldNext(nullptr)
+pLLWorld(this)
 {
 	pWOVPrepareRayTrace.SetRTWorldBVH(&pRTWorldBVH);
 	
@@ -622,16 +621,6 @@ void deoalAMicrophone::DebugCaptureRays(deDebugDrawer &debugDrawer, bool xray, b
 void deoalAMicrophone::SetWorldMarkedRemove(bool marked){
 	pWorldMarkedRemove = marked;
 }
-
-void deoalAMicrophone::SetLLWorldPrev(deoalAMicrophone *microphone){
-	pLLWorldPrev = microphone;
-}
-
-void deoalAMicrophone::SetLLWorldNext(deoalAMicrophone *microphone){
-	pLLWorldNext = microphone;
-}
-
-
 
 // Private Functions
 //////////////////////

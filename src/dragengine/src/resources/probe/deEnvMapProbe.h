@@ -78,8 +78,7 @@ private:
 	deImage::Ref pImage;
 	
 	deWorld *pParentWorld;
-	deEnvMapProbe *pLLWorldPrev;
-	deEnvMapProbe *pLLWorldNext;
+	decTObjectLinkedList<deEnvMapProbe>::Element pLLWorld;
 	
 	deBaseGraphicEnvMapProbe *pPeerGraphic;
 	
@@ -188,19 +187,10 @@ public:
 	inline deWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
-	void SetParentWorld(deWorld *world);
+	void SetParentWorld( deWorld *world );
 	
-	/** \brief Previous environment map probe in the parent world linked list. */
-	inline deEnvMapProbe *GetLLWorldPrev() const{ return pLLWorldPrev; }
-	
-	/** \brief Set next environment map probe in the parent world linked list. */
-	void SetLLWorldPrev(deEnvMapProbe *instance);
-	
-	/** \brief Next environment map probe in the parent world linked list. */
-	inline deEnvMapProbe *GetLLWorldNext() const{ return pLLWorldNext; }
-	
-	/** \brief Set next environment map probe in the parent world linked list. */
-	void SetLLWorldNext(deEnvMapProbe *instance);
+	/** \brief World linked list element. */
+	inline decTObjectLinkedList<deEnvMapProbe>::Element &GetLLWorld(){ return pLLWorld; }
 	/*@}*/
 };
 

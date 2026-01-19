@@ -91,49 +91,36 @@ void deVideoPlayerManager::ReleaseLeakingResources(){
 
 // Systems Support
 ////////////////////
-
 void deVideoPlayerManager::SystemAudioLoad(){
-	deVideoPlayer *videoPlayer = (deVideoPlayer*)pVideoPlayers.GetRoot();
-	deAudioSystem &system = *GetAudioSystem();
-	
-	while(videoPlayer){
+	deAudioSystem &audSys = *GetAudioSystem();
+	pVideoPlayers.GetResources().Visit([&](deResource *res){
+		deVideoPlayer *videoPlayer = static_cast<deVideoPlayer*>(res);
 		if(!videoPlayer->GetPeerAudio()){
-			system.LoadVideoPlayer(videoPlayer);
+			audSys.LoadVideoPlayer(videoPlayer);
 		}
-		
-		videoPlayer = (deVideoPlayer*)videoPlayer->GetLLManagerNext();
-	}
+	});
 }
 
 void deVideoPlayerManager::SystemAudioUnload(){
-	deVideoPlayer *videoPlayer = (deVideoPlayer*)pVideoPlayers.GetRoot();
-	
-	while(videoPlayer){
-		videoPlayer->SetPeerAudio(nullptr);
-		videoPlayer = (deVideoPlayer*)videoPlayer->GetLLManagerNext();
-	}
+	pVideoPlayers.GetResources().Visit([](deResource *res){
+		static_cast<deVideoPlayer*>(res)->SetPeerAudio(nullptr);
+	});
 }
 
 void deVideoPlayerManager::SystemGraphicLoad(){
-	deVideoPlayer *videoPlayer = (deVideoPlayer*)pVideoPlayers.GetRoot();
-	deGraphicSystem &grasys = *GetGraphicSystem();
-	
-	while(videoPlayer){
+	deGraphicSystem &graSys = *GetGraphicSystem();
+	pVideoPlayers.GetResources().Visit([&](deResource *res){
+		deVideoPlayer *videoPlayer = static_cast<deVideoPlayer*>(res);
 		if(!videoPlayer->GetPeerGraphic()){
-			grasys.LoadVideoPlayer(videoPlayer);
+			graSys.LoadVideoPlayer(videoPlayer);
 		}
-		
-		videoPlayer = (deVideoPlayer*)videoPlayer->GetLLManagerNext();
-	}
+	});
 }
 
 void deVideoPlayerManager::SystemGraphicUnload(){
-	deVideoPlayer *videoPlayer = (deVideoPlayer*)pVideoPlayers.GetRoot();
-	
-	while(videoPlayer){
-		videoPlayer->SetPeerGraphic(nullptr);
-		videoPlayer = (deVideoPlayer*)videoPlayer->GetLLManagerNext();
-	}
+	pVideoPlayers.GetResources().Visit([](deResource *res){
+		static_cast<deVideoPlayer*>(res)->SetPeerGraphic(nullptr);
+	});
 }
 
 void deVideoPlayerManager::RemoveResource(deResource *resource){

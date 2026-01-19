@@ -77,15 +77,12 @@ private:
 	
 	bool pEnableAuralization;
 	
-	deSpeaker *pSpeakerRoot;
-	deSpeaker *pSpeakerTail;
-	int pSpeakerCount;
+	decTObjectLinkedList<deSpeaker> pSpeakers;
 	
 	deBaseAudioMicrophone *pPeerAudio;
 	
 	deWorld *pParentWorld;
-	deMicrophone *pLLWorldPrev;
-	deMicrophone *pLLWorldNext;
+	decTObjectLinkedList<deMicrophone>::Element pLLWorld;
 	
 	
 	
@@ -181,11 +178,14 @@ public:
 	
 	/** \name Speakers */
 	/*@{*/
-	/** \brief Number of speakers. */
-	inline int GetSpeakerCount() const{ return pSpeakerCount; }
+	/** \brief Speakers. */
+	inline const decTObjectLinkedList<deSpeaker> &GetSpeakers() const{ return pSpeakers; }
 	
-	/** \brief Root speaker or NULL if there are none. */
-	inline deSpeaker *GetRootSpeaker() const{ return pSpeakerRoot; }
+	/** \brief Number of speakers. */
+	inline int GetSpeakerCount() const{ return pSpeakers.GetCount(); }
+	
+	/** \brief Root speaker or NULL if empty. */
+	inline deSpeaker *GetRootSpeaker() const{ return pSpeakers.GetRootOwner(); }
 	
 	/**
 	 * \brief Add speaker.
@@ -226,17 +226,8 @@ public:
 	/** \brief Set parent world or NULL. */
 	void SetParentWorld(deWorld *world);
 	
-	/** \brief Previous microphone in the parent world linked list. */
-	inline deMicrophone *GetLLWorldPrev() const{ return pLLWorldPrev; }
-	
-	/** \brief Set next microphone in the parent world linked list. */
-	void SetLLWorldPrev(deMicrophone *microphone);
-	
-	/** \brief Next microphone in the parent world linked list. */
-	inline deMicrophone *GetLLWorldNext() const{ return pLLWorldNext; }
-	
-	/** \brief Set next microphone in the parent world linked list. */
-	void SetLLWorldNext(deMicrophone *microphone);
+	/** \brief World linked list element. */
+	inline decTObjectLinkedList<deMicrophone>::Element &GetLLWorld(){ return pLLWorld; }
 	/*@}*/
 	
 	

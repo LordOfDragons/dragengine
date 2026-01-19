@@ -83,8 +83,7 @@ private:
 	deBaseScriptingParticleEmitterInstance *pPeerScripting;
 	
 	deWorld *pParentWorld;
-	deParticleEmitterInstance *pLLWorldPrev;
-	deParticleEmitterInstance *pLLWorldNext;
+	decTObjectLinkedList<deParticleEmitterInstance>::Element pLLWorld;
 	
 	
 	
@@ -286,19 +285,10 @@ public:
 	inline deWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
-	void SetParentWorld(deWorld *world);
+	void SetParentWorld( deWorld *world );
 	
-	/** \brief Previous particle emitter in the parent world linked list. */
-	inline deParticleEmitterInstance *GetLLWorldPrev() const{ return pLLWorldPrev; }
-	
-	/** \brief Set next particle emitter in the parent world linked list. */
-	void SetLLWorldPrev(deParticleEmitterInstance *instance);
-	
-	/** \brief Next particle emitter in the parent world linked list. */
-	inline deParticleEmitterInstance *GetLLWorldNext() const{ return pLLWorldNext; }
-	
-	/** \brief Set next particle emitter in the parent world linked list. */
-	void SetLLWorldNext(deParticleEmitterInstance *instance);
+	/** \brief World linked list element. */
+	inline decTObjectLinkedList<deParticleEmitterInstance>::Element &GetLLWorld(){ return pLLWorld; }
 	/*@}*/
 	
 	

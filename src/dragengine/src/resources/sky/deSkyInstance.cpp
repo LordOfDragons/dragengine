@@ -51,8 +51,7 @@ pPassthroughTransparency(0.0f),
 pPeerGraphic(nullptr),
 
 pParentWorld(nullptr),
-pLLWorldPrev(nullptr),
-pLLWorldNext(nullptr){
+pLLWorld(this){
 }
 
 deSkyInstance::~deSkyInstance(){
@@ -171,12 +170,4 @@ void deSkyInstance::SetPeerGraphic(deBaseGraphicSkyInstance *peer){
 
 void deSkyInstance::SetParentWorld(deWorld *world){
 	pParentWorld = world;
-}
-
-void deSkyInstance::SetLLWorldPrev(deSkyInstance *sky){
-	pLLWorldPrev = sky;
-}
-
-void deSkyInstance::SetLLWorldNext(deSkyInstance *sky){
-	pLLWorldNext = sky;
 }

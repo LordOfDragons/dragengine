@@ -77,13 +77,8 @@ private:
 	
 	deoglRHeightTerrain::Ref pHeightTerrain;
 	
-	deoglRComponent *pRootComponent;
-	deoglRComponent *pTailComponent;
-	int pComponentCount;
-	
-	deoglRBillboard *pRootBillboard;
-	deoglRBillboard *pTailBillboard;
-	int pBillboardCount;
+	decTObjectLinkedList<deoglRComponent> pComponents;
+	decTObjectLinkedList<deoglRBillboard> pBillboards;
 	
 	decTObjectList<deoglRSkyInstance> pSkies;
 	decTObjectList<deoglRDebugDrawer> pDebugDrawers;
@@ -308,11 +303,14 @@ public:
 	
 	/** \name Components. */
 	/*@{*/
+	/** Components. */
+	inline const decTObjectLinkedList<deoglRComponent> &GetComponents() const{ return pComponents; }
+	
 	/** Number of components. */
-	inline int GetComponentCount() const{ return pComponentCount; }
+	inline int GetComponentCount() const{ return pComponents.GetCount(); }
 	
 	/** Root component. */
-	inline deoglRComponent *GetRootComponent() const{ return pRootComponent; }
+	inline deoglRComponent *GetRootComponent() const{ return pComponents.GetRootOwner(); }
 	
 	/** Add component. */
 	void AddComponent(deoglRComponent *component);
@@ -444,11 +442,14 @@ public:
 	
 	/** \name Billboards. */
 	/*@{*/
+	/** Billboards. */
+	inline const decTObjectLinkedList<deoglRBillboard> &GetBillboards() const{ return pBillboards; }
+	
 	/** Number of billboards. */
-	inline int GetBillboardCount() const{ return pBillboardCount; }
+	inline int GetBillboardCount() const{ return pBillboards.GetCount(); }
 	
 	/** Root billboard. */
-	inline deoglRBillboard *GetRootBillboard() const{ return pRootBillboard; }
+	inline deoglRBillboard *GetRootBillboard() const{ return pBillboards.GetRootOwner(); }
 	
 	/** Add billboard. */
 	void AddBillboard(deoglRBillboard *billboard);

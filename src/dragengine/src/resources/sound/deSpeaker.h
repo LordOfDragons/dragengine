@@ -120,12 +120,10 @@ private:
 	deBaseScriptingSpeaker *pPeerScripting;
 	
 	deWorld *pParentWorld;
-	deSpeaker *pLLWorldPrev;
-	deSpeaker *pLLWorldNext;
+	decTObjectLinkedList<deSpeaker>::Element pLLWorld;
 	
 	deMicrophone *pParentMicrophone;
-	deSpeaker *pLLMicrophonePrev;
-	deSpeaker *pLLMicrophoneNext;
+	decTObjectLinkedList<deSpeaker>::Element pLLMicrophone;
 	
 	
 	
@@ -337,17 +335,8 @@ public:
 	/** \brief Set parent world or NULL. */
 	void SetParentWorld(deWorld *world);
 	
-	/** \brief Previous speaker in the parent world linked list. */
-	inline deSpeaker *GetLLWorldPrev() const{ return pLLWorldPrev; }
-	
-	/** \brief Set next speaker in the parent world linked list. */
-	void SetLLWorldPrev(deSpeaker *speaker);
-	
-	/** \brief Next speaker in the parent world linked list. */
-	inline deSpeaker *GetLLWorldNext() const{ return pLLWorldNext; }
-	
-	/** \brief Set next speaker in the parent world linked list. */
-	void SetLLWorldNext(deSpeaker *speaker);
+	/** \brief World linked list element. */
+	inline decTObjectLinkedList<deSpeaker>::Element &GetLLWorld(){ return pLLWorld; }
 	/*@}*/
 	
 	
@@ -360,17 +349,8 @@ public:
 	/** \brief Set parent microphone or NULL. */
 	void SetParentMicrophone(deMicrophone *microphone);
 	
-	/** \brief Previous speaker in the parent microphone linked list. */
-	inline deSpeaker *GetLLMicrophonePrev() const{ return pLLMicrophonePrev; }
-	
-	/** \brief Set next speaker in the parent microphone linked list. */
-	void SetLLMicrophonePrev(deSpeaker *speaker);
-	
-	/** \brief Next speaker in the parent microphone linked list. */
-	inline deSpeaker *GetLLMicrophoneNext() const{ return pLLMicrophoneNext; }
-	
-	/** \brief Set next speaker in the parent microphone linked list. */
-	void SetLLMicrophoneNext(deSpeaker *speaker);
+	/** \brief Microphone linked list element. */
+	inline decTObjectLinkedList<deSpeaker>::Element &GetLLMicrophone(){ return pLLMicrophone; }
 	/*@}*/
 	
 	

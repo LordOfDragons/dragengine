@@ -108,45 +108,39 @@ void deEffectManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deEffectManager::SystemGraphicLoad(){
-	deEffect *effect = (deEffect*)pEffects.GetRoot();
-	
-	while(effect){
+	deGraphicSystem &graSys = *GetGraphicSystem();
+	pEffects.GetResources().Visit([&](deResource *res){
+		deEffect *effect = static_cast<deEffect*>(res);
 		if(!effect->GetPeerGraphic()){
-			GetGraphicSystem()->LoadEffect(effect);
+			graSys.LoadEffect(effect);
 		}
-		
-		effect = (deEffect*)effect->GetLLManagerNext();
-	}
+	});
 }
 
 void deEffectManager::SystemGraphicUnload(){
-	deEffect *effect = (deEffect*)pEffects.GetRoot();
-	
-	while(effect){
-		effect->SetPeerGraphic(nullptr);
-		effect = (deEffect*)effect->GetLLManagerNext();
-	}
+	pEffects.GetResources().Visit([&](deResource *res){
+		static_cast<deEffect*>(res)->SetPeerGraphic(nullptr);
+	});
 }
+
 /*
 void deEffectManager::SystemPhysicsLoad(){
-	deEffect *effect;
-	int i;
-	for(i=0; i<pEffects.GetResourceCount(); i++){
-		effect = (deEffect*)pEffects.GetResourceAt(i);
-		if(effect->GetPhysicsEffect()) continue;
-		GetPhysicsSystem()->LoadEffect(effect);
-	}
+	dePhysicsSystem &phySys = *GetPhysicsSystem();
+	pEffects.GetResources().Visit([&](deResource *res){
+		deEffect *effect = static_cast<deEffect*>(res);
+		if(!effect->GetPhysicsEffect()){
+			phySys.LoadEffect(effect);
+		}
+	});
 }
 
 void deEffectManager::SystemPhysicsUnload(){
-	deEffect *effect;
-	int i;
-	for(i=0; i<pEffects.GetResourceCount(); i++){
-		effect = (deEffect*)pEffects.GetResourceAt(i);
-		effect->SetPhysicsEffect(NULL);
-	}
+	pEffects.GetResources().Visit([&](deResource *res){
+		static_cast<deEffect*>(res)->SetPhysicsEffect(nullptr);
+	});
 }
 */
+
 void deEffectManager::RemoveResource(deResource *resource){
 	pEffects.RemoveIfPresent(resource);
 }

@@ -68,8 +68,7 @@ pUsageCount(1),
 pUnitsHashCode(0),
 pUniqueKey(renderThread.GetUniqueKey().Get()),
 pRTSTexture(nullptr),
-pLLPrev(nullptr),
-pLLNext(nullptr){
+pLLConfigs(this){
 }
 
 deoglTexUnitsConfig::~deoglTexUnitsConfig(){
@@ -284,14 +283,4 @@ void deoglTexUnitsConfig::EnsureRTSTexture(){
 	
 	pRTSTexture = pRenderThread.GetRenderTaskSharedPool().GetTexture();
 	pRTSTexture->SetTUC(this);
-}
-
-
-
-void deoglTexUnitsConfig::SetLLPrev(deoglTexUnitsConfig *entry){
-	pLLPrev = entry;
-}
-
-void deoglTexUnitsConfig::SetLLNext(deoglTexUnitsConfig *entry){
-	pLLNext = entry;
 }

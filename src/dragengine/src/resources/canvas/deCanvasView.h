@@ -38,9 +38,7 @@ public:
 	
 	
 private:
-	deCanvas *pCanvasRoot;
-	deCanvas *pCanvasTail;
-	int pCanvasCount;
+	decTObjectLinkedList<deCanvas> pCanvas;
 	
 	
 	
@@ -65,11 +63,14 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
+	/** \brief Children canvas. */
+	inline const decTObjectLinkedList<deCanvas> &GetCanvas() const{ return pCanvas; }
+	
 	/** \brief Number of child canvas. */
-	inline int GetCanvasCount() const{ return pCanvasCount; }
+	inline int GetCanvasCount() const{ return pCanvas.GetCount(); }
 	
 	/** \brief Root canvas or NULL if there is none. */
-	inline deCanvas *GetRootCanvas() const{ return pCanvasRoot; }
+	inline deCanvas *GetRootCanvas() const{ return pCanvas.GetRootOwner(); }
 	
 	/**
 	 * \brief Add child canvas.

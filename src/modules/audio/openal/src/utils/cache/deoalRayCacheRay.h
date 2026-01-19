@@ -28,7 +28,7 @@
 #include "../../environment/raytrace/deoalRayTraceHitElement.h"
 
 #include <dragengine/common/math/decMath.h>
-
+#include <dragengine/common/collection/decTLinkedList.h>
 
 class deoalRayCacheOctree;
 class deoalRayCacheRayHit;
@@ -39,6 +39,10 @@ class deoalRayTraceResult;
  * \brief Model ray cache ray.
  */
 class deoalRayCacheRay{
+public:
+	using Ref = deTUniqueReference<deoalRayCacheRay>;
+	
+private:
 	decVector pOrigin;
 	decVector pDirection;
 	float pLength;
@@ -48,9 +52,7 @@ class deoalRayCacheRay{
 	
 	deoalRayCacheOctree *pOctreeNode;
 	
-	deoalRayCacheRay *pLLPrev;
-	deoalRayCacheRay *pLLNext;
-	
+	decTUniqueLinkedList<deoalRayCacheRay>::Element pLLRays;
 	
 	
 public:
@@ -102,17 +104,9 @@ public:
 	/** \brief Set octree node. */
 	void SetOctreeNode(deoalRayCacheOctree *node);
 	
-	/** \brief Previous ray in cache. */
-	inline deoalRayCacheRay *GetLLPrev() const{ return pLLPrev; }
-	
-	/** \brief Set previous ray in cache. */
-	void SetLLPrev(deoalRayCacheRay *ray);
-	
-	/** \brief Next ray in cache. */
-	inline deoalRayCacheRay *GetLLNext() const{ return pLLNext; }
-	
-	/** \brief Set next ray in cache. */
-	void SetLLNext(deoalRayCacheRay *ray);
+	/** \brief Linked list element. */
+	inline decTUniqueLinkedList<deoalRayCacheRay>::Element &GetLLRays(){ return pLLRays; }
+	inline const decTUniqueLinkedList<deoalRayCacheRay>::Element &GetLLRays() const{ return pLLRays; }
 	/*@}*/
 };
 

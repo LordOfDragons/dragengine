@@ -45,8 +45,8 @@ deArchiveContainer::deArchiveContainer(const decPath &rootPath, deArchive *archi
 const decPath &archivePath) :
 deVFSContainer(rootPath),
 pArchivePath(archivePath),
-pLLManagerPrev(nullptr),
-pLLManagerNext(nullptr)
+pArchive(archive),
+pLLManager(this)
 {
 	if(!archive){
 		DETHROW(deeInvalidParam);
@@ -230,15 +230,5 @@ TIME_SYSTEM deArchiveContainer::GetFileModificationTime(const decPath &path){
 // Resource manager linked list
 /////////////////////////////////
 
-void deArchiveContainer::SetLLManagerNext(deArchiveContainer *resource){
-	pLLManagerNext = resource;
-}
-
-void deArchiveContainer::SetLLManagerPrev(deArchiveContainer *resource){
-	pLLManagerPrev = resource;
-}
-
 void deArchiveContainer::MarkLeaking(){
-	pLLManagerNext = nullptr;
-	pLLManagerPrev = nullptr;
 }

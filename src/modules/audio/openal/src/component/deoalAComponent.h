@@ -30,6 +30,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/utils/decLayerMask.h>
@@ -104,8 +105,7 @@ private:
 	decVector pDynamicMaxExtend;
 	
 	bool pWorldMarkedRemove;
-	deoalAComponent *pLLWorldPrev;
-	deoalAComponent *pLLWorldNext;
+	decTObjectLinkedList<deoalAComponent>::Element pLLWorld;
 	
 	
 	
@@ -303,17 +303,9 @@ public:
 	 */
 	void SetWorldMarkedRemove(bool marked);
 		
-	/** \brief Linked list world previous. */
-	inline deoalAComponent *GetLLWorldPrev() const{ return pLLWorldPrev; }
-	
-	/** \brief Set linked list world previous. */
-	void SetLLWorldPrev(deoalAComponent *component);
-	
-	/** \brief Linked list world next. */
-	inline deoalAComponent *GetLLWorldNext() const{ return pLLWorldNext; }
-	
-	/** \brief Set linked list world next. */
-	void SetLLWorldNext(deoalAComponent *component);
+	/** \brief Linked list world element. */
+	inline decTObjectLinkedList<deoalAComponent>::Element &GetLLWorld(){ return pLLWorld; }
+	inline const decTObjectLinkedList<deoalAComponent>::Element &GetLLWorld() const{ return pLLWorld; }
 	/*@}*/
 	
 	

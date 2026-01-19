@@ -90,115 +90,84 @@ void deWorldManager::ReleaseLeakingResources(){
 
 // Systems support
 ////////////////////
-
 void deWorldManager::SystemGraphicLoad(){
-	deWorld *world = (deWorld*)pWorlds.GetRoot();
-	deGraphicSystem &grasys = *GetGraphicSystem();
-	
-	while(world){
+	deGraphicSystem &graSys = *GetGraphicSystem();
+	pWorlds.GetResources().Visit([&](deResource *res){
+		deWorld *world = static_cast<deWorld*>(res);
 		if(!world->GetPeerGraphic()){
-			grasys.LoadWorld(world);
+			graSys.LoadWorld(world);
 		}
-		
-		world = (deWorld*)world->GetLLManagerNext();
-	}
+	});
 }
 
 void deWorldManager::SystemGraphicUnload(){
-	deWorld *world = (deWorld*)pWorlds.GetRoot();
-	
-	while(world){
-		world->SetPeerGraphic(nullptr);
-		world = (deWorld*)world->GetLLManagerNext();
-	}
+	pWorlds.GetResources().Visit([](deResource *res){
+		static_cast<deWorld*>(res)->SetPeerGraphic(nullptr);
+	});
 }
 
 void deWorldManager::SystemPhysicsLoad(){
-	deWorld *world = (deWorld*)pWorlds.GetRoot();
-	dePhysicsSystem &physys = *GetPhysicsSystem();
-	
-	while(world){
+	dePhysicsSystem &phySys = *GetPhysicsSystem();
+	pWorlds.GetResources().Visit([&](deResource *res){
+		deWorld *world = static_cast<deWorld*>(res);
 		if(!world->GetPeerPhysics()){
-			physys.LoadWorld(world);
+			phySys.LoadWorld(world);
 		}
-		
-		world = (deWorld*)world->GetLLManagerNext();
-	}
+	});
 }
 
 void deWorldManager::SystemPhysicsUnload(){
-	deWorld *world = (deWorld*)pWorlds.GetRoot();
-	
-	while(world){
-		world->SetPeerPhysics(nullptr);
-		world = (deWorld*)world->GetLLManagerNext();
-	}
+	pWorlds.GetResources().Visit([](deResource *res){
+		static_cast<deWorld*>(res)->SetPeerPhysics(nullptr);
+	});
 }
 
 void deWorldManager::SystemAudioLoad(){
-	deWorld *world = (deWorld*)pWorlds.GetRoot();
-	deAudioSystem &audsys = *GetAudioSystem();
-	
-	while(world){
+	deAudioSystem &audSys = *GetAudioSystem();
+	pWorlds.GetResources().Visit([&](deResource *res){
+		deWorld *world = static_cast<deWorld*>(res);
 		if(!world->GetPeerAudio()){
-			audsys.LoadWorld(world);
+			audSys.LoadWorld(world);
 		}
-		
-		world = (deWorld*)world->GetLLManagerNext();
-	}
+	});
 }
 
 void deWorldManager::SystemAudioUnload(){
-	deWorld *world = (deWorld*)pWorlds.GetRoot();
-	
-	while(world){
-		world->SetPeerAudio(nullptr);
-		world = (deWorld*)world->GetLLManagerNext();
-	}
+	pWorlds.GetResources().Visit([](deResource *res){
+		static_cast<deWorld*>(res)->SetPeerAudio(nullptr);
+	});
 }
 
 void deWorldManager::SystemNetworkLoad(){
-	deWorld *world = (deWorld*)pWorlds.GetRoot();
-	deNetworkSystem &netsys = *GetNetworkSystem();
-	
-	while(world){
+	deNetworkSystem &netSys = *GetNetworkSystem();
+	pWorlds.GetResources().Visit([&](deResource *res){
+		deWorld *world = static_cast<deWorld*>(res);
 		if(!world->GetPeerNetwork()){
-			netsys.LoadWorld(world);
+			netSys.LoadWorld(world);
 		}
-		
-		world = (deWorld*)world->GetLLManagerNext();
-	}
+	});
 }
 
 void deWorldManager::SystemNetworkUnload(){
-	deWorld *world = (deWorld*)pWorlds.GetRoot();
-	
-	while(world){
-		world->SetPeerNetwork(nullptr);
-		world = (deWorld*)world->GetLLManagerNext();
-	}
+	pWorlds.GetResources().Visit([](deResource *res){
+		static_cast<deWorld*>(res)->SetPeerNetwork(nullptr);
+	});
 }
 
 void deWorldManager::SystemAILoad(){
-	deWorld *world = (deWorld*)pWorlds.GetRoot();
-	deAISystem &aisys = *GetAISystem();
-	
-	while(world){
+	deAISystem &aiSys = *GetAISystem();
+	pWorlds.GetResources().Visit([&](deResource *res){
+		deWorld *world = static_cast<deWorld*>(res);
 		if(!world->GetPeerAI()){
-			aisys.LoadWorld(world);
+			aiSys.LoadWorld(world);
 		}
-		
-		world = (deWorld*)world->GetLLManagerNext();
-	}
+	});
 }
 
 void deWorldManager::SystemAIUnload(){
-	deWorld *world = (deWorld*)pWorlds.GetRoot();
-	
-	while(world){
-		world->SetPeerAI(nullptr);
-		world = (deWorld*)world->GetLLManagerNext();
-	}
+	pWorlds.GetResources().Visit([](deResource *res){
+		static_cast<deWorld*>(res)->SetPeerAI(nullptr);
+	});
 }
 
 

@@ -57,6 +57,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Rigs. */
+	inline const deFileResourceList &GetRigs() const{ return pRigs; }
+	
 	/** \brief Count of rigs. */
 	int GetRigCount() const;
 	

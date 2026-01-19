@@ -40,7 +40,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deLumimeter::deLumimeter(deLumimeterManager *manager) : deResource(manager){
+deLumimeter::deLumimeter(deLumimeterManager *manager) : 
+deResource(manager),
+pLLWorld(this)
+{
 	pDirection.Set(0.0f, 0.0f, 1.0f);
 	pConeInnerAngle = PI;
 	pConeOuterAngle = PI;
@@ -49,8 +52,6 @@ deLumimeter::deLumimeter(deLumimeterManager *manager) : deResource(manager){
 	pPeerGraphic = nullptr;
 	
 	pParentWorld = nullptr;
-	pLLWorldNext = nullptr;
-	pLLWorldPrev = nullptr;
 }
 
 deLumimeter::~deLumimeter(){
@@ -140,14 +141,6 @@ decColor deLumimeter::MeasureColor(){
 
 void deLumimeter::SetParentWorld(deWorld *world){
 	pParentWorld = world;
-}
-
-void deLumimeter::SetLLWorldPrev(deLumimeter *lumimeter){
-	pLLWorldPrev = lumimeter;
-}
-
-void deLumimeter::SetLLWorldNext(deLumimeter *lumimeter){
-	pLLWorldNext = lumimeter;
 }
 
 

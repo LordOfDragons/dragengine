@@ -703,7 +703,7 @@ void debpCollider::AttachmentAdded(int index, deColliderAttachment *attachment){
 	
 	deResource * const resource = attachment->GetResource();
 	if(resource->GetResourceManager()->GetResourceType() == deResourceManager::ertCollider){
-		dynamic_cast<debpCollider*>(dynamic_cast<deCollider*>(resource)->GetPeerPhysics())->GetAttachedToList().Add(this);
+		static_cast<debpCollider*>(static_cast<deCollider*>(resource)->GetPeerPhysics())->GetAttachedToList().Add(this);
 	}
 }
 
@@ -714,7 +714,7 @@ void debpCollider::AttachmentChanged(int index, deColliderAttachment *attachment
 void debpCollider::AttachmentRemoved(int index, deColliderAttachment *attachment){
 	deResource * const resource = attachment->GetResource();
 	if(resource->GetResourceManager()->GetResourceType() == deResourceManager::ertCollider){
-		debpCollider * const collider = dynamic_cast<debpCollider*>(dynamic_cast<deCollider*>(resource)->GetPeerPhysics());
+		debpCollider * const collider = static_cast<debpCollider*>(static_cast<deCollider*>(resource)->GetPeerPhysics());
 		if(collider){
 			collider->GetAttachedToList().Remove(this);
 		}
@@ -727,8 +727,8 @@ void debpCollider::AllAttachmentsRemoved(){
 	pAttachments.Visit([&](const debpColliderAttachment &a){
 		deResource * const resource = a.GetAttachment()->GetResource();
 		if(resource->GetResourceManager()->GetResourceType() == deResourceManager::ertCollider){
-			debpCollider * const collider = dynamic_cast<debpCollider*>(
-				dynamic_cast<deCollider*>(resource)->GetPeerPhysics());
+			debpCollider * const collider = static_cast<debpCollider*>(
+				static_cast<deCollider*>(resource)->GetPeerPhysics());
 			if(collider){
 				collider->GetAttachedToList().Remove(this);
 			}

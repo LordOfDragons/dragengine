@@ -73,8 +73,7 @@ private:
 	deBaseGraphicDebugDrawer *pPeerGraphic;
 	
 	deWorld *pParentWorld;
-	deDebugDrawer *pLLWorldPrev;
-	deDebugDrawer *pLLWorldNext;
+	decTObjectLinkedList<deDebugDrawer>::Element pLLWorld;
 	
 	
 	
@@ -209,19 +208,10 @@ public:
 	inline deWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
-	void SetParentWorld(deWorld *world);
+	void SetParentWorld( deWorld *world );
 	
-	/** \brief Previous debug drawer in the parent world linked list. */
-	inline deDebugDrawer *GetLLWorldPrev() const{ return pLLWorldPrev; }
-	
-	/** \brief Set next debug drawer in the parent world linked list. */
-	void SetLLWorldPrev(deDebugDrawer *debugDrawer);
-	
-	/** \brief Next debug drawer in the parent world linked list. */
-	inline deDebugDrawer *GetLLWorldNext() const{ return pLLWorldNext; }
-	
-	/** \brief Set next debug drawer in the parent world linked list. */
-	void SetLLWorldNext(deDebugDrawer *debugDrawer);
+	/** \brief World linked list element. */
+	inline decTObjectLinkedList<deDebugDrawer>::Element &GetLLWorld(){ return pLLWorld; }
 	/*@}*/
 	
 	

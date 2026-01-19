@@ -52,10 +52,7 @@
 ////////////////////////////
 
 deArchiveManager::deArchiveManager(deEngine *engine) :
-deFileResourceManager(engine, ertArchive),
-pContainerRoot(nullptr),
-pContainerTail(nullptr),
-pContainerCount(0)
+deFileResourceManager(engine, ertArchive)
 {
 	SetLoggingName("archive");
 }
@@ -139,56 +136,40 @@ deArchive *archive, const decPath &archivePath){
 		DETHROW(deeInvalidParam);
 	}
 	
-	const deArchiveContainer::Ref container(
-		deArchiveContainer::Ref::New(rootPath, archive, archivePath));
+	auto container = deArchiveContainer::Ref::New(rootPath, archive, archivePath);
 	
-	if(pContainerTail){
-		pContainerTail->SetLLManagerNext(container);
-		container->SetLLManagerPrev(pContainerTail);
-		pContainerTail = container;
-		
-	}else{ // it can never happen that root is non-NULL if tail is NULL
-		pContainerRoot = container;
-		pContainerTail = container;
-	}
-	
-	pContainerCount++;
+	pContainers.Add(&container->GetLLManager());
 	
 	return container;
 }
 
 
-
 void deArchiveManager::ReleaseLeakingResources(){
 	// containers
-	if(pContainerCount > 0){
-		LogWarnFormat("%i leaking archive containers", pContainerCount);
+	const int containerCount = pContainers.GetCount();
+	if(containerCount > 0){
+		LogWarnFormat("%i leaking archive containers", containerCount);
 		
-		while(pContainerRoot){
-			LogWarnFormat("- %s", pContainerRoot->GetArchive()->GetFilename().IsEmpty()
-				? "<temporary>" : pContainerRoot->GetArchive()->GetFilename().GetString());
-			pContainerRoot->MarkLeaking();
-			pContainerRoot= pContainerRoot->GetLLManagerNext();
-		}
+		pContainers.Visit([&](deArchiveContainer *container){
+			LogWarnFormat("- %s", container->GetArchive()->GetFilename().IsEmpty()
+				? "<temporary>" : container->GetArchive()->GetFilename().GetString());
+			container->MarkLeaking();
+		});
 		
-		pContainerTail = nullptr;
-		pContainerCount = 0;
+		pContainers.RemoveAll();
 	}
 	
 	// archives
 	const int count = GetArchiveCount();
-	
 	if(count > 0){
-		deArchive *archive = (deArchive*)pArchives.GetRoot();
-		
 		LogWarnFormat("%i leaking archives", count);
 		
-		while(archive){
+		pArchives.GetResources().Visit([&](deResource *r){
+			deArchive *archive = static_cast<deArchive*>(r);
 			LogWarnFormat("- %s", archive->GetFilename().IsEmpty()
 				? "<temporary>" : archive->GetFilename().GetString());
 			archive->SetPeerContainer(nullptr);  // prevent crash
-			archive = (deArchive*)archive->GetLLManagerNext();
-		}
+		});
 		
 		pArchives.RemoveAll(); // we do not delete them to avoid crashes. better leak than crash
 	}
@@ -208,54 +189,10 @@ void deArchiveManager::RemoveContainer(deArchiveContainer *container){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(container != pContainerRoot && !container->GetLLManagerNext()
-	&& !container->GetLLManagerPrev()){
+	if(container->GetLLManager().GetList() != &pContainers){
 		return;
 	}
 	
-	if(pContainerCount == 0){
-		DETHROW(deeInvalidParam);
-	}
-	
-	if(container == pContainerTail){
-		if(container->GetLLManagerNext()){
-			DETHROW(deeInvalidParam);
-		}
-		
-		pContainerTail = pContainerTail->GetLLManagerPrev();
-		if(pContainerTail){
-			pContainerTail->SetLLManagerNext(nullptr);
-		}
-		
-	}else{
-		if(!container->GetLLManagerNext()){
-			DETHROW(deeInvalidParam);
-		}
-		
-		container->GetLLManagerNext()->SetLLManagerPrev(container->GetLLManagerPrev());
-	}
-	
-	if(container == pContainerRoot){
-		if(container->GetLLManagerPrev()){
-			DETHROW(deeInvalidParam);
-		}
-		
-		pContainerRoot = pContainerRoot->GetLLManagerNext();
-		if(pContainerRoot){
-			pContainerRoot->SetLLManagerPrev(nullptr);
-		}
-		
-	}else{
-		if(!container->GetLLManagerPrev()){
-			DETHROW(deeInvalidParam);
-		}
-		
-		container->GetLLManagerPrev()->SetLLManagerNext(container->GetLLManagerNext());
-	}
-	
-	container->SetLLManagerNext(nullptr);
-	container->SetLLManagerPrev(nullptr);
-	pContainerCount--;
-	
+	pContainers.Remove(&container->GetLLManager());
 	container->MarkLeaking();
 }

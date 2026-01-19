@@ -68,11 +68,11 @@ deParticleEmitter *deParticleEmitterManager::GetRootParticleEmitter() const{
 }
 
 deParticleEmitter::Ref deParticleEmitterManager::CreateParticleEmitter(){
-	const deParticleEmitter::Ref psys(deParticleEmitter::Ref::New(this));
-	GetGraphicSystem()->LoadParticleEmitter(psys);
-	GetPhysicsSystem()->LoadParticleEmitter(psys);
-	pParticleEmitters.Add(psys);
-	return psys;
+	const deParticleEmitter::Ref pem(deParticleEmitter::Ref::New(this));
+	GetGraphicSystem()->LoadParticleEmitter(pem);
+	GetPhysicsSystem()->LoadParticleEmitter(pem);
+	pParticleEmitters.Add(pem);
+	return pem;
 }
 
 
@@ -88,49 +88,37 @@ void deParticleEmitterManager::ReleaseLeakingResources(){
 
 // Systems Support
 ////////////////////
-
 void deParticleEmitterManager::SystemGraphicLoad(){
-	deParticleEmitter *psys = (deParticleEmitter*)pParticleEmitters.GetRoot();
-	
-	while(psys){
-		if(!psys->GetPeerGraphic()){
-			GetGraphicSystem()->LoadParticleEmitter(psys);
+	deGraphicSystem &graSys = *GetGraphicSystem();
+	pParticleEmitters.GetResources().Visit([&](deResource *r){
+		deParticleEmitter *pem = static_cast<deParticleEmitter*>(r);
+		if(!pem->GetPeerGraphic()){
+			graSys.LoadParticleEmitter(pem);
 		}
-		
-		psys = (deParticleEmitter*)psys->GetLLManagerNext();
-	}
+	});
 }
 
 void deParticleEmitterManager::SystemGraphicUnload(){
-	deParticleEmitter *psys = (deParticleEmitter*)pParticleEmitters.GetRoot();
-	
-	while(psys){
-		psys->SetPeerGraphic(nullptr);
-		psys = (deParticleEmitter*)psys->GetLLManagerNext();
-	}
+	pParticleEmitters.GetResources().Visit([](deResource *r){
+		static_cast<deParticleEmitter*>(r)->SetPeerGraphic(nullptr);
+	});
 }
 
 void deParticleEmitterManager::SystemPhysicsLoad(){
-	deParticleEmitter *psys = (deParticleEmitter*)pParticleEmitters.GetRoot();
-	
-	while(psys){
-		if(!psys->GetPeerPhysics()){
-			GetPhysicsSystem()->LoadParticleEmitter(psys);
+	dePhysicsSystem &phySys = *GetPhysicsSystem();
+	pParticleEmitters.GetResources().Visit([&](deResource *r){
+		deParticleEmitter *pem = static_cast<deParticleEmitter*>(r);
+		if(!pem->GetPeerPhysics()){
+			phySys.LoadParticleEmitter(pem);
 		}
-		
-		psys = (deParticleEmitter*)psys->GetLLManagerNext();
-	}
+	});
 }
 
 void deParticleEmitterManager::SystemPhysicsUnload(){
-	deParticleEmitter *psys = (deParticleEmitter*)pParticleEmitters.GetRoot();
-	
-	while(psys){
-		psys->SetPeerPhysics(nullptr);
-		psys = (deParticleEmitter*)psys->GetLLManagerNext();
-	}
+	pParticleEmitters.GetResources().Visit([](deResource *r){
+		static_cast<deParticleEmitter*>(r)->SetPeerPhysics(nullptr);
+	});
 }
-
 
 
 void deParticleEmitterManager::RemoveResource(deResource *resource){

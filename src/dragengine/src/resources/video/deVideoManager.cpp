@@ -57,15 +57,7 @@
 ////////////////////////////
 
 deVideoManager::deVideoManager(deEngine *engine) :
-deFileResourceManager(engine, ertVideo),
-
-pDecoderRoot(nullptr),
-pDecoderTail(nullptr),
-pDecoderCount(0),
-
-pAudioDecoderRoot(nullptr),
-pAudioDecoderTail(nullptr),
-pAudioDecoderCount(0)
+deFileResourceManager(engine, ertVideo)
 {
 	SetLoggingName("video");
 }
@@ -232,19 +224,7 @@ deVideoDecoder::Ref deVideoManager::CreateDecoder(deVideo *video){
 	
 	// track video decoder and return it
 	deMutexGuard guard(pMutexDecoder);
-	
-	if(pDecoderTail){
-		pDecoderTail->SetLLManagerNext(videoDecoder);
-		videoDecoder->SetLLManagerPrev(pDecoderTail);
-		pDecoderTail = videoDecoder;
-		
-	}else{ // it can never happen that root is non-NULL if tail is NULL
-		pDecoderRoot = videoDecoder;
-		pDecoderTail = videoDecoder;
-	}
-	
-	pDecoderCount++;
-	
+	pDecoders.Add(&videoDecoder->GetLLManager());
 	return videoDecoder;
 }
 
@@ -295,19 +275,7 @@ deVideoAudioDecoder::Ref deVideoManager::CreateAudioDecoder(deVideo *video){
 	
 	// track video decoder and return it
 	deMutexGuard guard(pMutexDecoder);
-	
-	if(pAudioDecoderTail){
-		pAudioDecoderTail->SetLLManagerNext(audioDecoder);
-		audioDecoder->SetLLManagerPrev(pAudioDecoderTail);
-		pAudioDecoderTail = audioDecoder;
-		
-	}else{ // it can never happen that root is non-NULL if tail is NULL
-		pAudioDecoderRoot = audioDecoder;
-		pAudioDecoderTail = audioDecoder;
-	}
-	
-	pAudioDecoderCount++;
-	
+	pAudioDecoders.Add(&audioDecoder->GetLLManager());
 	return audioDecoder;
 }
 
@@ -315,51 +283,43 @@ deVideoAudioDecoder::Ref deVideoManager::CreateAudioDecoder(deVideo *video){
 
 void deVideoManager::ReleaseLeakingResources(){
 	// decoders
-	deMutexGuard guard(pMutexDecoder);
+	{
+	const deMutexGuard guard(pMutexDecoder);
 	
-	if(pDecoderCount > 0){
-		LogWarnFormat("%i leaking video decoders", pDecoderCount);
+	if(pDecoders.GetCount() > 0){
+		LogWarnFormat("%i leaking video decoders", pDecoders.GetCount());
 		
-		while(pDecoderRoot){
-			LogWarnFormat("- %s", pDecoderRoot->GetVideo()->GetFilename().IsEmpty()
-				? "<temporary>" : pDecoderRoot->GetVideo()->GetFilename().GetString());
-			pDecoderRoot->MarkLeaking();
-			pDecoderRoot= pDecoderRoot->GetLLManagerNext();
-		}
-		
-		pDecoderTail = nullptr;
-		pDecoderCount = 0;
+		pDecoders.Visit([&](deVideoDecoder *decoder){
+			LogWarnFormat("- %s", decoder->GetVideo()->GetFilename().IsEmpty()
+				? "<temporary>" : decoder->GetVideo()->GetFilename().GetString());
+			decoder->MarkLeaking();
+		});
+		pDecoders.RemoveAll();
 	}
 	
-	if(pAudioDecoderCount > 0){
-		LogWarnFormat("%i leaking video audio decoders", pAudioDecoderCount);
+	if(pAudioDecoders.GetCount() > 0){
+		LogWarnFormat("%i leaking video audio decoders", pAudioDecoders.GetCount());
 		
-		while(pAudioDecoderRoot){
-			LogWarnFormat("- %s", pAudioDecoderRoot->GetVideo()->GetFilename().IsEmpty()
-				? "<temporary>" : pAudioDecoderRoot->GetVideo()->GetFilename().GetString());
-			pAudioDecoderRoot->MarkLeaking();
-			pAudioDecoderRoot= pAudioDecoderRoot->GetLLManagerNext();
-		}
-		
-		pAudioDecoderTail = nullptr;
-		pAudioDecoderCount = 0;
+		pAudioDecoders.Visit([&](deVideoAudioDecoder *decoder){
+			LogWarnFormat("- %s", decoder->GetVideo()->GetFilename().IsEmpty()
+				? "<temporary>" : decoder->GetVideo()->GetFilename().GetString());
+			decoder->MarkLeaking();
+		});
+		pAudioDecoders.RemoveAll();
 	}
-	
-	guard.Unlock();
+	}
 	
 	// videos
 	const int count = GetVideoCount();
 	
 	if(count > 0){
-		const deVideo *video = (const deVideo *)pVideos.GetRoot();
-		
 		LogWarnFormat("%i leaking videos", count);
 		
-		while(video){
+		pVideos.GetResources().Visit([&](deResource *res){
+			const deVideo *video = static_cast<const deVideo*>(res);
 			LogWarnFormat("- %s", video->GetFilename().IsEmpty() ? "<temporary>"
 				: video->GetFilename().GetString());
-			video = (const deVideo *)video->GetLLManagerNext();
-		}
+		});
 		
 		pVideos.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 	}
@@ -371,27 +331,21 @@ void deVideoManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deVideoManager::SystemGraphicLoad(){
-	deVideo *video = (deVideo*)pVideos.GetRoot();
-	deGraphicSystem &grasys = *GetGraphicSystem();
+	deGraphicSystem &graSys = *GetGraphicSystem();
 	
-	while(video){
+	pVideos.GetResources().Visit([&](deResource *res){
+		deVideo *video = static_cast<deVideo*>(res);
 		if(!video->GetPeerGraphic()){
-			grasys.LoadVideo(video);
+			graSys.LoadVideo(video);
 		}
-		
-		video = (deVideo*)video->GetLLManagerNext();
-	}
+	});
 }
 
 void deVideoManager::SystemGraphicUnload(){
-	deVideo *video = (deVideo*)pVideos.GetRoot();
-	
-	while(video){
-		video->SetPeerGraphic(nullptr);
-		video = (deVideo*)video->GetLLManagerNext();
-	}
+	pVideos.GetResources().Visit([](deResource *res){
+		static_cast<deVideo*>(res)->SetPeerGraphic(nullptr);
+	});
 }
-
 
 
 void deVideoManager::RemoveResource(deResource *resource){
@@ -404,56 +358,7 @@ void deVideoManager::RemoveDecoder(deVideoDecoder *decoder){
 	}
 	
 	deMutexGuard guard(pMutexDecoder);
-	
-	if(decoder != pDecoderRoot && !decoder->GetLLManagerNext()
-	&& !decoder->GetLLManagerPrev()){
-		return;
-	}
-	
-	if(pDecoderCount == 0){
-		DETHROW(deeInvalidParam);
-	}
-	
-	if(decoder == pDecoderTail){
-		if(decoder->GetLLManagerNext()){
-			DETHROW(deeInvalidParam);
-		}
-		
-		pDecoderTail = pDecoderTail->GetLLManagerPrev();
-		if(pDecoderTail){
-			pDecoderTail->SetLLManagerNext(nullptr);
-		}
-		
-	}else{
-		if(!decoder->GetLLManagerNext()){
-			DETHROW(deeInvalidParam);
-		}
-		
-		decoder->GetLLManagerNext()->SetLLManagerPrev(decoder->GetLLManagerPrev());
-	}
-	
-	if(decoder == pDecoderRoot){
-		if(decoder->GetLLManagerPrev()){
-			DETHROW(deeInvalidParam);
-		}
-		
-		pDecoderRoot = pDecoderRoot->GetLLManagerNext();
-		if(pDecoderRoot){
-			pDecoderRoot->SetLLManagerPrev(nullptr);
-		}
-		
-	}else{
-		if(!decoder->GetLLManagerPrev()){
-			DETHROW(deeInvalidParam);
-		}
-		
-		decoder->GetLLManagerPrev()->SetLLManagerNext(decoder->GetLLManagerNext());
-	}
-	
-	decoder->SetLLManagerNext(nullptr);
-	decoder->SetLLManagerPrev(nullptr);
-	pDecoderCount--;
-	
+	pDecoders.Remove(&decoder->GetLLManager());
 	decoder->MarkLeaking();
 }
 
@@ -463,55 +368,6 @@ void deVideoManager::RemoveAudioDecoder(deVideoAudioDecoder *decoder){
 	}
 	
 	deMutexGuard guard(pMutexDecoder);
-	
-	if(decoder != pAudioDecoderRoot && !decoder->GetLLManagerNext()
-	&& !decoder->GetLLManagerPrev()){
-		return;
-	}
-	
-	if(pAudioDecoderCount == 0){
-		DETHROW(deeInvalidParam);
-	}
-	
-	if(decoder == pAudioDecoderTail){
-		if(decoder->GetLLManagerNext()){
-			DETHROW(deeInvalidParam);
-		}
-		
-		pAudioDecoderTail = pAudioDecoderTail->GetLLManagerPrev();
-		if(pAudioDecoderTail){
-			pAudioDecoderTail->SetLLManagerNext(nullptr);
-		}
-		
-	}else{
-		if(!decoder->GetLLManagerNext()){
-			DETHROW(deeInvalidParam);
-		}
-		
-		decoder->GetLLManagerNext()->SetLLManagerPrev(decoder->GetLLManagerPrev());
-	}
-	
-	if(decoder == pAudioDecoderRoot){
-		if(decoder->GetLLManagerPrev()){
-			DETHROW(deeInvalidParam);
-		}
-		
-		pAudioDecoderRoot = pAudioDecoderRoot->GetLLManagerNext();
-		if(pAudioDecoderRoot){
-			pAudioDecoderRoot->SetLLManagerPrev(nullptr);
-		}
-		
-	}else{
-		if(!decoder->GetLLManagerPrev()){
-			DETHROW(deeInvalidParam);
-		}
-		
-		decoder->GetLLManagerPrev()->SetLLManagerNext(decoder->GetLLManagerNext());
-	}
-	
-	decoder->SetLLManagerNext(nullptr);
-	decoder->SetLLManagerPrev(nullptr);
-	pAudioDecoderCount--;
-	
+	pAudioDecoders.Remove(&decoder->GetLLManager());
 	decoder->MarkLeaking();
 }

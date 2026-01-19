@@ -205,17 +205,12 @@ void deoalASound::pCleanUp(){
 	
 	// delayed deletion
 	if(pBuffer){
-		deoalASoundDeletion *delayedDeletion = nullptr;
-		
 		try{
-			delayedDeletion = new deoalASoundDeletion;
+			auto delayedDeletion = deTUniqueReference<deoalASoundDeletion>::New();
 			delayedDeletion->buffer = pBuffer;
-			pAudioThread.GetDelayed().AddDeletion(delayedDeletion);
+			pAudioThread.GetDelayed().AddDeletion(std::move(delayedDeletion));
 			
 		}catch(const deException &e){
-			if(delayedDeletion){
-				delete delayedDeletion;
-			}
 			pAudioThread.GetLogger().LogException(e);
 			throw;
 		}

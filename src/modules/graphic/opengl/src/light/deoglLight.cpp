@@ -203,7 +203,7 @@ void deoglLight::SyncToRender(){
 		pRLight->RemoveAllShadowIgnoreComponents();
 		pLight.GetShadowIgnoreComponents().Visit([&](deComponent *component){
 			pRLight->AddShadowIgnoreComponent(
-				dynamic_cast<deoglComponent*>(component->GetPeerGraphic())->GetRComponent());
+				static_cast<deoglComponent*>(component->GetPeerGraphic())->GetRComponent());
 		});
 		
 		pDirtyShadowParameters = false;

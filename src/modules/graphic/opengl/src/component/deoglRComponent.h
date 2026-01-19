@@ -200,8 +200,7 @@ private:
 	
 	bool pWorldMarkedRemove;
 	
-	deoglRComponent *pLLWorldPrev;
-	deoglRComponent *pLLWorldNext;
+	decTObjectLinkedList<deoglRComponent>::Element pLLWorld;
 	
 	decTLinkedList<deoglRComponent>::Element pLLPrepareForRenderWorld;
 	
@@ -741,17 +740,9 @@ public:
 	
 	
 	
-	/** Linked list world previous. */
-	inline deoglRComponent *GetLLWorldPrev() const{ return pLLWorldPrev; }
-	
-	/** Set linked list world previous. */
-	void SetLLWorldPrev(deoglRComponent *component);
-	
-	/** Linked list world next. */
-	inline deoglRComponent *GetLLWorldNext() const{ return pLLWorldNext; }
-	
-	/** Set linked list world next. */
-	void SetLLWorldNext(deoglRComponent *component);
+	/** World linked list. */
+	inline decTObjectLinkedList<deoglRComponent>::Element &GetLLWorld(){ return pLLWorld; }
+	inline const decTObjectLinkedList<deoglRComponent>::Element &GetLLWorld() const{ return pLLWorld; }
 	
 	/** World prepare for render linked list. */
 	inline decTLinkedList<deoglRComponent>::Element &GetLLPrepareForRenderWorld(){ return pLLPrepareForRenderWorld; }

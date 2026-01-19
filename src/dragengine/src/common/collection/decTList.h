@@ -1781,6 +1781,19 @@ public:
 		list.pCount = tempCount;
 		list.pSize = tempSize;
 	}
+	
+	
+	/**
+	 * \brief Direct access to array pointer.
+	 * \warning Use only if necessary.
+	 */
+	inline T* GetArrayPointer(){
+		return pElements;
+	}
+	
+	inline const T* GetArrayPointer() const{
+		return pElements;
+	}
 	/*@}*/
 	
 	

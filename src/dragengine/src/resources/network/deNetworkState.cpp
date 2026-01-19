@@ -54,8 +54,7 @@ pPeerNetwork(nullptr),
 pPeerScripting(nullptr),
 
 pParentWorld(nullptr),
-pLLWorldPrev(nullptr),
-pLLWorldNext(nullptr){
+pLLWorld(this){
 }
 
 deNetworkState::~deNetworkState(){
@@ -145,12 +144,4 @@ void deNetworkState::SetPeerScripting(deBaseScriptingNetworkState *peer){
 
 void deNetworkState::SetParentWorld(deWorld *world){
 	pParentWorld = world;
-}
-
-void deNetworkState::SetLLWorldPrev(deNetworkState *networkState){
-	pLLWorldPrev = networkState;
-}
-
-void deNetworkState::SetLLWorldNext(deNetworkState *networkState){
-	pLLWorldNext = networkState;
 }

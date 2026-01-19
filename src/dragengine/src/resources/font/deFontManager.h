@@ -57,6 +57,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Fonts. */
+	inline const deFileResourceList &GetFonts() const{ return pFonts; }
+	
 	/** \brief Number of fonts. */
 	int GetFontCount() const;
 	

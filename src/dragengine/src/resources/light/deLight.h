@@ -227,8 +227,7 @@ private:
 	deBaseGraphicLight *pPeerGraphic;
 	
 	deWorld *pParentWorld;
-	deLight *pLLWorldPrev;
-	deLight *pLLWorldNext;
+	decTObjectLinkedList<deLight>::Element pLLWorld;
 	
 	
 	
@@ -463,17 +462,8 @@ public:
 	/** \brief Set parent world or NULL. */
 	void SetParentWorld(deWorld *world);
 	
-	/** \brief Previous light in the parent world linked list. */
-	inline deLight *GetLLWorldPrev() const{ return pLLWorldPrev; }
-	
-	/** \brief Set next light in the parent world linked list. */
-	void SetLLWorldPrev(deLight *light);
-	
-	/** \brief Next light in the parent world linked list. */
-	inline deLight *GetLLWorldNext() const{ return pLLWorldNext; }
-	
-	/** \brief Set next light in the parent world linked list. */
-	void SetLLWorldNext(deLight *light);
+	/** \brief World linked list element. */
+	inline decTObjectLinkedList<deLight>::Element &GetLLWorld(){ return pLLWorld; }
 	/*@}*/
 };
 

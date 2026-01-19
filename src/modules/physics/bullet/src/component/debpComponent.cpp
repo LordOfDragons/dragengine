@@ -221,16 +221,12 @@ void debpComponent::MeshDirty(){
 
 void debpComponent::FindDecalsAt(const decVector &point, deDecal::List &list){
 	const decVector localPoint(pComponent->GetInverseMatrix() * point);
-	deDecal *engDecal = pComponent->GetRootDecal();
-	
-	while(engDecal){
+	pComponent->GetDecals().Visit([&](deDecal *engDecal){
 		const debpDecal &decal = *((debpDecal*)engDecal->GetPeerPhysics());
 		if(decal.TouchesPoint(localPoint)){
 			list.Add(engDecal);
 		}
-		
-		engDecal = engDecal->GetLLComponentNext();
-	}
+	});
 }
 
 void debpComponent::FindDecalsTouching(decShape *shape, deDecal::List &list){
@@ -238,16 +234,12 @@ void debpComponent::FindDecalsTouching(decShape *shape, deDecal::List &list){
 	shapeToVolume.SetMatrix(pComponent->GetInverseMatrix());
 	debpDCollisionVolume * const volume = shapeToVolume.GetVolumeFor(shape);
 	
-	deDecal *engDecal = pComponent->GetRootDecal();
-	
-	while(engDecal){
+	pComponent->GetDecals().Visit([&](deDecal *engDecal){
 		const debpDecal &decal = *((debpDecal*)engDecal->GetPeerPhysics());
 		if(decal.TouchesVolume(volume)){
 			list.Add(engDecal);
 		}
-		
-		engDecal = engDecal->GetLLComponentNext();
-	}
+	});
 }
 
 

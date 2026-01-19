@@ -303,28 +303,16 @@ void deoglPersistentRenderTask::pCalcSPBInstancesMaxEntries(deoglRenderThread &r
 }
 
 void deoglPersistentRenderTask::pAssignSPBInstances(deoglRenderThread &renderThread){
-	decTLinkedList<deoglPersistentRenderTaskPipeline>::Element *iterPipeline = pPipelines.GetRoot();
 	const int componentsPerIndex = pUseSPBInstanceFlags ? 2 : 1;
 	deoglShaderParameterBlock *paramBlock = nullptr;
 	int paramBlockCount = 0;
 	int firstIndex = 0;
 	
-	while(iterPipeline){
-		const deoglPersistentRenderTaskPipeline &pipeline = *iterPipeline->GetOwner();
-		decTLinkedList<deoglPersistentRenderTaskTexture>::Element *iterTexture = pipeline.GetRootTexture();
-		
-		while(iterTexture){
-			deoglPersistentRenderTaskTexture &texture = *iterTexture->GetOwner();
-			decTLinkedList<deoglPersistentRenderTaskVAO>::Element *iterVAO = texture.GetRootVAO();
-			
-			while(iterVAO){
-				deoglPersistentRenderTaskVAO &vao = *iterVAO->GetOwner();
-				decTLinkedList<deoglPersistentRenderTaskInstance>::Element *iterInstance = vao.GetRootInstance();
-				
-				while(iterInstance){
-					deoglPersistentRenderTaskInstance &instance = *iterInstance->GetOwner();
-					
-					if(!paramBlock || firstIndex + instance.GetSubInstanceCount() > pSPBInstanceMaxEntries){
+	pPipelines.Visit([&](const deoglPersistentRenderTaskPipeline *pipeline){
+		pipeline->GetTextures().Visit([&](deoglPersistentRenderTaskTexture *texture){
+			texture->GetVAOs().Visit([&](deoglPersistentRenderTaskVAO *vao){
+				vao->GetInstances().Visit([&](deoglPersistentRenderTaskInstance *instance){
+					if(!paramBlock || firstIndex + instance->GetSubInstanceCount() > pSPBInstanceMaxEntries){
 						if(paramBlock){
 							const int ecount = componentsPerIndex * decMath::max(((firstIndex - 1) / 4) + 1, 1);
 							if(ecount > paramBlock->GetElementCount()){
@@ -339,17 +327,12 @@ void deoglPersistentRenderTask::pAssignSPBInstances(deoglRenderThread &renderThr
 						firstIndex = 0;
 					}
 					
-					instance.SetSIIndexInstanceParam(paramBlock, firstIndex);
-					firstIndex += instance.GetSubInstanceCount();
-					
-					iterInstance = iterInstance->GetNext();
-				}
-				iterVAO = iterVAO->GetNext();
-			}
-			iterTexture = iterTexture->GetNext();
-		}
-		iterPipeline = iterPipeline->GetNext();
-	}
+					instance->SetSIIndexInstanceParam(paramBlock, firstIndex);
+					firstIndex += instance->GetSubInstanceCount();
+				});
+			});
+		});
+	});
 	
 	if(paramBlock){
 		const int ecount = componentsPerIndex * decMath::max(((firstIndex - 1) / 4) + 1, 1);
@@ -363,43 +346,25 @@ void deoglPersistentRenderTask::pUpdateSPBInstances(){
 	deoglShaderParameterBlock *paramBlock = nullptr;
 	
 	try{
-		decTLinkedList<deoglPersistentRenderTaskPipeline>::Element *iterPipeline = pPipelines.GetRoot();
-		
-		while(iterPipeline){
-			const deoglPersistentRenderTaskPipeline &pipeline = *iterPipeline->GetOwner();
-			decTLinkedList<deoglPersistentRenderTaskTexture>::Element *iterTexture = pipeline.GetRootTexture();
-			
-			while(iterTexture){
-				deoglPersistentRenderTaskTexture &texture = *iterTexture->GetOwner();
-				decTLinkedList<deoglPersistentRenderTaskVAO>::Element *iterVAO = texture.GetRootVAO();
-				
-				while(iterVAO){
-					deoglPersistentRenderTaskVAO &vao = *iterVAO->GetOwner();
-					decTLinkedList<deoglPersistentRenderTaskInstance>::Element *iterInstance = vao.GetRootInstance();
-					
-					while(iterInstance){
-						deoglPersistentRenderTaskInstance &instance = *iterInstance->GetOwner();
-						
-						if(instance.GetSIIndexInstanceSPB() != paramBlock){
+		pPipelines.Visit([&](const deoglPersistentRenderTaskPipeline *pipeline){
+			pipeline->GetTextures().Visit([&](deoglPersistentRenderTaskTexture *texture){
+				texture->GetVAOs().Visit([&](deoglPersistentRenderTaskVAO *vao){
+					vao->GetInstances().Visit([&](deoglPersistentRenderTaskInstance *instance){
+						if(instance->GetSIIndexInstanceSPB() != paramBlock){
 							if(paramBlock){
 								paramBlock->UnmapBuffer();
 								paramBlock = nullptr;
 							}
 							
-							instance.GetSIIndexInstanceSPB()->MapBuffer();
-							paramBlock = instance.GetSIIndexInstanceSPB();
+							instance->GetSIIndexInstanceSPB()->MapBuffer();
+							paramBlock = instance->GetSIIndexInstanceSPB();
 						}
 						
-						instance.WriteSIIndexInstanceInt(pUseSPBInstanceFlags);
-						
-						iterInstance = iterInstance->GetNext();
-					}
-					iterVAO = iterVAO->GetNext();
-				}
-				iterTexture = iterTexture->GetNext();
-			}
-			iterPipeline = iterPipeline->GetNext();
-		}
+						instance->WriteSIIndexInstanceInt(pUseSPBInstanceFlags);
+					});
+				});
+			});
+		});
 		
 		if(paramBlock){
 			paramBlock->UnmapBuffer();

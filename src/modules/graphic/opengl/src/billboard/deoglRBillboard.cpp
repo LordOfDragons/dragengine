@@ -160,8 +160,8 @@ pMarked(false),
 pCSOctreeIndex(0),
 
 pWorldMarkedRemove(false),
-pLLWorldPrev(nullptr),
-pLLWorldNext(nullptr),
+
+pLLWorld(this),
 
 pLLPrepareForRenderWorld(this)
 {
@@ -849,14 +849,6 @@ void deoglRBillboard::InvalidateRenderEnvMapIf(deoglEnvironmentMap *envmap){
 	if(pRenderEnvMap == envmap || pRenderEnvMapFade == envmap){
 		InvalidateRenderEnvMap();
 	}
-}
-
-void deoglRBillboard::SetLLWorldPrev(deoglRBillboard *billboard){
-	pLLWorldPrev = billboard;
-}
-
-void deoglRBillboard::SetLLWorldNext(deoglRBillboard *billboard){
-	pLLWorldNext = billboard;
 }
 
 

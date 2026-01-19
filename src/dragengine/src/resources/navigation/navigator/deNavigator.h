@@ -65,8 +65,7 @@ private:
 	deBaseAINavigator *pPeerAI;
 	
 	deWorld *pParentWorld;
-	deNavigator *pLLWorldPrev;
-	deNavigator *pLLWorldNext;
+	decTObjectLinkedList<deNavigator>::Element pLLWorld;
 	
 	
 	
@@ -312,19 +311,10 @@ public:
 	inline deWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
-	void SetParentWorld(deWorld *world);
+	void SetParentWorld( deWorld *world );
 	
-	/** \brief Previous navigator in the parent world linked list. */
-	inline deNavigator *GetLLWorldPrev() const{ return pLLWorldPrev; }
-	
-	/** \brief Set next navigator in the parent world linked list. */
-	void SetLLWorldPrev(deNavigator *navigator);
-	
-	/** \brief Next navigator in the parent world linked list. */
-	inline deNavigator *GetLLWorldNext() const{ return pLLWorldNext; }
-	
-	/** \brief Set next navigator in the parent world linked list. */
-	void SetLLWorldNext(deNavigator *navigator);
+	/** \brief World linked list element. */
+	inline decTObjectLinkedList<deNavigator>::Element &GetLLWorld(){ return pLLWorld; }
 	/*@}*/
 };
 

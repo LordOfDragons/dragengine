@@ -66,8 +66,7 @@ private:
 	deBaseGraphicLumimeter *pPeerGraphic;
 	
 	deWorld *pParentWorld;
-	deLumimeter *pLLWorldPrev;
-	deLumimeter *pLLWorldNext;
+	decTObjectLinkedList<deLumimeter>::Element pLLWorld;
 	
 	
 	
@@ -153,19 +152,10 @@ public:
 	inline deWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
-	void SetParentWorld(deWorld *world);
+	void SetParentWorld( deWorld *world );
 	
-	/** \brief Previous lumimeter in the parent world linked list. */
-	inline deLumimeter *GetLLWorldPrev() const{ return pLLWorldPrev; }
-	
-	/** \brief Set next lumimeter in the parent world linked list. */
-	void SetLLWorldPrev(deLumimeter *lumimeter);
-	
-	/** \brief Next lumimeter in the parent world linked list. */
-	inline deLumimeter *GetLLWorldNext() const{ return pLLWorldNext; }
-	
-	/** \brief Set next lumimeter in the parent world linked list. */
-	void SetLLWorldNext(deLumimeter *lumimeter);
+	/** \brief World linked list element. */
+	inline decTObjectLinkedList<deLumimeter>::Element &GetLLWorld(){ return pLLWorld; }
 	/*@}*/
 };
 

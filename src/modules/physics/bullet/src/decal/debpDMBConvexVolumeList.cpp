@@ -53,5 +53,5 @@ debpDMBConvexVolumeList::~debpDMBConvexVolumeList(){
 
 decConvexVolumeFace::Ref debpDMBConvexVolumeList::CreateVolumeFace(const decConvexVolumeFace *face){
 	return debpDMBConvexVolumeFace::Ref::New(face
-		? dynamic_cast<const debpDMBConvexVolumeFace*>(face)->GetDecalFace() : false);
+		? static_cast<const debpDMBConvexVolumeFace*>(face)->GetDecalFace() : false);
 }

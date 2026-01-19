@@ -86,30 +86,21 @@ void deAnimatorInstanceManager::ReleaseLeakingResources(){
 
 // Systems Support
 ////////////////////
-
 void deAnimatorInstanceManager::SystemAnimatorLoad(){
-	deAnimatorInstance *instance = (deAnimatorInstance*)pInstances.GetRoot();
 	deAnimatorSystem &aniSys = *GetAnimatorSystem();
-	
-	while(instance){
+	pInstances.GetResources().Visit([&](deResource *res){
+		auto *instance = static_cast<deAnimatorInstance*>(res);
 		if(!instance->GetPeerAnimator()){
 			aniSys.LoadAnimatorInstance(instance);
 		}
-		
-		instance = (deAnimatorInstance*)instance->GetLLManagerNext();
-	}
+	});
 }
 
 void deAnimatorInstanceManager::SystemAnimatorUnload(){
-	deAnimatorInstance *instance = (deAnimatorInstance*)pInstances.GetRoot();
-	
-	while(instance){
-		instance->SetPeerAnimator(nullptr);
-		instance = (deAnimatorInstance*)instance->GetLLManagerNext();
-	}
+	pInstances.GetResources().Visit([](deResource *res){
+		static_cast<deAnimatorInstance*>(res)->SetPeerAnimator(nullptr);
+	});
 }
-
-
 
 void deAnimatorInstanceManager::RemoveResource(deResource *resource){
 	pInstances.RemoveIfPresent(resource);

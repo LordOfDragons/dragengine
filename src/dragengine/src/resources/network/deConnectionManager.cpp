@@ -91,47 +91,35 @@ void deConnectionManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deConnectionManager::SystemNetworkLoad(){
-	deConnection *connection = (deConnection*)pConnections.GetRoot();
 	deNetworkSystem &netSys = *GetNetworkSystem();
-	
-	while(connection){
+	pConnections.GetResources().Visit([&](deResource *res){
+		deConnection *connection = static_cast<deConnection*>(res);
 		if(!connection->GetPeerNetwork()){
 			netSys.LoadConnection(connection);
 		}
-		
-		connection = (deConnection*)connection->GetLLManagerNext();
-	}
+	});
 }
 
 void deConnectionManager::SystemNetworkUnload(){
-	deConnection *connection = (deConnection*)pConnections.GetRoot();
-	
-	while(connection){
-		connection->SetPeerNetwork(nullptr);
-		connection = (deConnection*)connection->GetLLManagerNext();
-	}
+	pConnections.GetResources().Visit([&](deResource *res){
+		static_cast<deConnection*>(res)->SetPeerNetwork(nullptr);
+	});
 }
 
 void deConnectionManager::SystemScriptingLoad(){
-	deConnection *connection = (deConnection*)pConnections.GetRoot();
 	deScriptingSystem &scrSys = *GetScriptingSystem();
-	
-	while(connection){
+	pConnections.GetResources().Visit([&](deResource *res){
+		deConnection *connection = static_cast<deConnection*>(res);
 		if(!connection->GetPeerScripting()){
 			scrSys.LoadConnection(connection);
 		}
-		
-		connection = (deConnection*)connection->GetLLManagerNext();
-	}
+	});
 }
 
 void deConnectionManager::SystemScriptingUnload(){
-	deConnection *connection = (deConnection*)pConnections.GetRoot();
-	
-	while(connection){
-		connection->SetPeerScripting(nullptr);
-		connection = (deConnection*)connection->GetLLManagerNext();
-	}
+	pConnections.GetResources().Visit([&](deResource *res){
+		static_cast<deConnection*>(res)->SetPeerScripting(nullptr);
+	});
 }
 
 void deConnectionManager::RemoveResource(deResource *resource){

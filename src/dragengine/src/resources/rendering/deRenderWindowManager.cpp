@@ -112,26 +112,20 @@ void deRenderWindowManager::ReleaseLeakingResources(){
 
 // systems support
 ////////////////////
-
 void deRenderWindowManager::SystemGraphicLoad(){
-	deRenderWindow *renderWindow = (deRenderWindow*)pRenderWindows.GetRoot();
-	
-	while(renderWindow){
+	deGraphicSystem &graSys = *GetGraphicSystem();
+	pRenderWindows.GetResources().Visit([&](deResource *res){
+		deRenderWindow *renderWindow = static_cast<deRenderWindow*>(res);
 		if(!renderWindow->GetPeerGraphic()){
-			GetGraphicSystem()->LoadRenderWindow(renderWindow);
+			graSys.LoadRenderWindow(renderWindow);
 		}
-		
-		renderWindow = (deRenderWindow*)renderWindow->GetLLManagerNext();
-	}
+	});
 }
 
 void deRenderWindowManager::SystemGraphicUnload(){
-	deRenderWindow *renderWindow = (deRenderWindow*)pRenderWindows.GetRoot();
-	
-	while(renderWindow){
-		renderWindow->SetPeerGraphic(nullptr);
-		renderWindow = (deRenderWindow*)renderWindow->GetLLManagerNext();
-	}
+	pRenderWindows.GetResources().Visit([](deResource *res){
+		static_cast<deRenderWindow*>(res)->SetPeerGraphic(nullptr);
+	});
 }
 
 void deRenderWindowManager::RemoveResource(deResource *resource){

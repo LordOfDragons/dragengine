@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-
 #include "deVFSRedirect.h"
 #include "deContainerFileSearch.h"
 #include "deFileSearchVisitor.h"
@@ -44,8 +41,7 @@ deVFSContainer *container) :
 deVFSContainer(rootPath),
 pRedirectPath(redirectPath),
 pContainer(container),
-pVFS(nullptr),
-pHoldVFSReference(false)
+pVFS(nullptr)
 {
 	DEASSERT_NOTNULL(container)
 }
@@ -54,22 +50,16 @@ deVFSRedirect::deVFSRedirect(const decPath &rootPath, const decPath &redirectPat
 deVirtualFileSystem *vfs, bool holdVFSReference) :
 deVFSContainer(rootPath),
 pRedirectPath(redirectPath),
-pVFS(vfs),
-pHoldVFSReference(false)
+pVFS(vfs)
 {
 	DEASSERT_NOTNULL(vfs)
 	
 	if(holdVFSReference){
-		pHoldVFSReference = true;
-		vfs->AddReference();
+		pHoldVFS = vfs;
 	}
 }
 
-deVFSRedirect::~deVFSRedirect(){
-	if(pVFS && pHoldVFSReference){
-		pVFS->FreeReference();
-	}
-}
+deVFSRedirect::~deVFSRedirect() = default;
 
 
 

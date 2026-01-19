@@ -216,21 +216,21 @@ void debpParticleEmitterInstance::ApplyForceFields(float elapsed){
 	}
 	
 	const deWorld &world = pParentWorld->GetWorld();
-	deForceField *forceField = world.GetRootForceField();
-	int i;
 	
-	while(forceField){
-		if(forceField->GetCollisionFilter().Collides(pInstance->GetCollisionFilter())){
-			const debpForceField &bpForceField = *((debpForceField*)forceField->GetPeerPhysics());
-			
-			// TODO check if the force field overlaps the component
-			
-			for(i=0; i<pTypeCount; i++){
-				pTypes[i].ApplyForceField(bpForceField, elapsed);
-			}
+	world.GetForceFields().Visit([&](deForceField *forceField){
+		if(!forceField->GetCollisionFilter().Collides(pInstance->GetCollisionFilter())){
+			return;
 		}
-		forceField = forceField->GetLLWorldNext();
-	}
+		
+		const debpForceField &bpForceField = *((debpForceField*)forceField->GetPeerPhysics());
+		
+		// TODO check if the force field overlaps the component
+		
+		int i;
+		for(i=0; i<pTypeCount; i++){
+			pTypes[i].ApplyForceField(bpForceField, elapsed);
+		}
+	});
 }
 
 void debpParticleEmitterInstance::StepParticles(float elapsed){

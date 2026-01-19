@@ -88,27 +88,20 @@ void deMicrophoneManager::ReleaseLeakingResources(){
 
 // Systems Support
 ////////////////////
-
 void deMicrophoneManager::SystemAudioLoad(){
-	deMicrophone *microphone = (deMicrophone*)pMicrophones.GetRoot();
 	deAudioSystem &audSys = *GetAudioSystem();
-	
-	while(microphone){
+	pMicrophones.GetResources().Visit([&](deResource *res){
+		deMicrophone *microphone = static_cast<deMicrophone*>(res);
 		if(!microphone->GetPeerAudio()){
 			audSys.LoadMicrophone(microphone);
 		}
-		
-		microphone = (deMicrophone*)microphone->GetLLManagerNext();
-	}
+	});
 }
 
 void deMicrophoneManager::SystemAudioUnload(){
-	deMicrophone *microphone = (deMicrophone*)pMicrophones.GetRoot();
-	
-	while(microphone){
-		microphone->SetPeerAudio(nullptr);
-		microphone = (deMicrophone*)microphone->GetLLManagerNext();
-	}
+	pMicrophones.GetResources().Visit([&](deResource *res){
+		static_cast<deMicrophone*>(res)->SetPeerAudio(nullptr);
+	});
 }
 
 void deMicrophoneManager::RemoveResource(deResource *resource){

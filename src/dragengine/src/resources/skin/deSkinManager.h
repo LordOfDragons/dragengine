@@ -60,6 +60,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Skins. */
+	inline const deFileResourceList &GetSkins() const{ return pSkins; }
+	
 	/** \brief Count of skins. */
 	int GetSkinCount() const;
 	

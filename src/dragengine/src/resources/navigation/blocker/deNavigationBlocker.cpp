@@ -42,7 +42,8 @@
 
 deNavigationBlocker::deNavigationBlocker(deNavigationBlockerManager *manager) :
 deResource(manager),
-pBlockingPriority(0)
+pBlockingPriority(0),
+pLLWorld(this)
 {
 	pScaling.Set(1.0f, 1.0f, 1.0f);
 	
@@ -53,8 +54,6 @@ pBlockingPriority(0)
 	pPeerAI = nullptr;
 	
 	pParentWorld = nullptr;
-	pLLWorldPrev = nullptr;
-	pLLWorldNext = nullptr;
 }
 
 deNavigationBlocker::~deNavigationBlocker(){
@@ -171,12 +170,4 @@ void deNavigationBlocker::SetPeerAI(deBaseAINavigationBlocker *peer){
 
 void deNavigationBlocker::SetParentWorld(deWorld *world){
 	pParentWorld = world;
-}
-
-void deNavigationBlocker::SetLLWorldPrev(deNavigationBlocker *blocker){
-	pLLWorldPrev = blocker;
-}
-
-void deNavigationBlocker::SetLLWorldNext(deNavigationBlocker *blocker){
-	pLLWorldNext = blocker;
 }

@@ -108,13 +108,7 @@ void deClassCanvasView::nfGetCanvasAt::RunFunction(dsRunTime *rt, dsValue *mysel
 	const deScriptingDragonScript &ds = (static_cast<deClassCanvasView*>(GetOwnerClass()))->GetDS();
 	
 	int index = rt->GetValue(0)->GetInt();
-	deCanvas *canvas = nd.canvas->GetRootCanvas();
-	while(index-- > 0){
-		if(!canvas){
-			DSTHROW(dueInvalidParam);
-		}
-		canvas = canvas->GetLLViewNext();
-	}
+	deCanvas *canvas = nd.canvas->GetCanvas().GetAt(index)->GetOwner();
 	
 	ds.GetClassCanvas()->PushCanvas(rt, canvas);
 }

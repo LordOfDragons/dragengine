@@ -90,27 +90,20 @@ void deSynthesizerManager::ReleaseLeakingResources(){
 
 // systems support
 ////////////////////
-
 void deSynthesizerManager::SystemSynthesizerLoad(){
-	deSynthesizer *synthesizer = (deSynthesizer*)pSynthesizers.GetRoot();
-	deSynthesizerSystem &synthSys = *GetSynthesizerSystem();
-	
-	while(synthesizer){
+	deSynthesizerSystem &synSys = *GetSynthesizerSystem();
+	pSynthesizers.GetResources().Visit([&](deResource *res){
+		deSynthesizer *synthesizer = static_cast<deSynthesizer*>(res);
 		if(!synthesizer->GetPeerSynthesizer()){
-			synthSys.LoadSynthesizer(synthesizer);
+			synSys.LoadSynthesizer(synthesizer);
 		}
-		
-		synthesizer = (deSynthesizer*)synthesizer->GetLLManagerNext();
-	}
+	});
 }
 
 void deSynthesizerManager::SystemSynthesizerUnload(){
-	deSynthesizer *synthesizer = (deSynthesizer*)pSynthesizers.GetRoot();
-	
-	while(synthesizer){
-		synthesizer->SetPeerSynthesizer(nullptr);
-		synthesizer = (deSynthesizer*)synthesizer->GetLLManagerNext();
-	}
+	pSynthesizers.GetResources().Visit([](deResource *res){
+		static_cast<deSynthesizer*>(res)->SetPeerSynthesizer(nullptr);
+	});
 }
 
 

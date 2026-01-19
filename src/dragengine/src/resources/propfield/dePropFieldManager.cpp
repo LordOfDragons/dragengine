@@ -93,66 +93,51 @@ void dePropFieldManager::ReleaseLeakingResources(){
 ////////////////////
 
 void dePropFieldManager::SystemGraphicLoad(){
-	dePropField *field = (dePropField*)pFields.GetRoot();
-	
-	while(field){
+	deGraphicSystem &graSys = *GetGraphicSystem();
+	pFields.GetResources().Visit([&](deResource *res){
+		dePropField *field = static_cast<dePropField*>(res);
 		if(!field->GetPeerGraphic()){
-			GetGraphicSystem()->LoadPropField(field);
+			graSys.LoadPropField(field);
 		}
-		
-		field = (dePropField*)field->GetLLManagerNext();
-	}
+	});
 }
 
 void dePropFieldManager::SystemGraphicUnload(){
-	dePropField *field = (dePropField*)pFields.GetRoot();
-	
-	while(field){
-		field->SetPeerGraphic(nullptr);
-		field = (dePropField*)field->GetLLManagerNext();
-	}
+	pFields.GetResources().Visit([&](deResource *res){
+		static_cast<dePropField*>(res)->SetPeerGraphic(nullptr);
+	});
 }
 
 void dePropFieldManager::SystemPhysicsLoad(){
-	dePropField *field = (dePropField*)pFields.GetRoot();
-	
-	while(field){
+	dePhysicsSystem &phySys = *GetPhysicsSystem();
+	pFields.GetResources().Visit([&](deResource *res){
+		dePropField *field = static_cast<dePropField*>(res);
 		if(!field->GetPeerPhysics()){
-			GetPhysicsSystem()->LoadPropField(field);
+			phySys.LoadPropField(field);
 		}
-		
-		field = (dePropField*)field->GetLLManagerNext();
-	}
+	});
 }
 
 void dePropFieldManager::SystemPhysicsUnload(){
-	dePropField *field = (dePropField*)pFields.GetRoot();
-	
-	while(field){
-		field->SetPeerPhysics(nullptr);
-		field = (dePropField*)field->GetLLManagerNext();
-	}
+	pFields.GetResources().Visit([&](deResource *res){
+		static_cast<dePropField*>(res)->SetPeerPhysics(nullptr);
+	});
 }
 
 void dePropFieldManager::SystemScriptingLoad(){
-	dePropField *field = (dePropField*)pFields.GetRoot();
-	
-	while(field){
+	deScriptingSystem &scrSys = *GetScriptingSystem();
+	pFields.GetResources().Visit([&](deResource *res){
+		dePropField *field = static_cast<dePropField*>(res);
 		if(!field->GetPeerPhysics()){
-			GetScriptingSystem()->LoadPropField(field);
+			scrSys.LoadPropField(field);
 		}
-		
-		field = (dePropField*)field->GetLLManagerNext();
-	}
+	});
 }
 
 void dePropFieldManager::SystemScriptingUnload(){
-	dePropField *field = (dePropField*)pFields.GetRoot();
-	
-	while(field){
-		field->SetPeerScripting(nullptr);
-		field = (dePropField*)field->GetLLManagerNext();
-	}
+	pFields.GetResources().Visit([&](deResource *res){
+		static_cast<dePropField*>(res)->SetPeerScripting(nullptr);
+	});
 }
 
 

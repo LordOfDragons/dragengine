@@ -182,21 +182,18 @@ void deLanguagePackManager::AddLoadedLanguagePack(deLanguagePack *languagePack){
 	}
 	pLangPacks.Add(languagePack);
 }
-
 void deLanguagePackManager::ReleaseLeakingResources(){
 	const int count = GetLanguagePackCount();
 	
 	if(count > 0){
-		deLanguagePack::Ref langPack((deLanguagePack*)pLangPacks.GetRoot());
-		
 		LogWarnFormat("%i leaking language packs", count);
 		
-		while(langPack){
+		pLangPacks.GetResources().Visit([&](deResource *resource){
+			deLanguagePack *langPack = static_cast<deLanguagePack*>(resource);
 			LogWarnFormat("- %s", langPack->GetFilename().GetString());
-			langPack = (deLanguagePack*)langPack->GetLLManagerNext();
-		}
+		});
 		
-		pLangPacks.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
+		pLangPacks.RemoveAll(); // we do not delete them to avoid crashes. better leak than crash
 	}
 }
 

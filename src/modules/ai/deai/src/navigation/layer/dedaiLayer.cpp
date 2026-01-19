@@ -134,24 +134,20 @@ dedaiSpaceGridVertex *dedaiLayer::GetGridVertexClosestTo(const decDVector &posit
 	}
 	
 	// navigation spaces
-	deNavigationSpace *engNavSpace = pWorld.GetWorld().GetRootNavigationSpace();
-	while(engNavSpace){
+	pWorld.GetWorld().GetNavigationSpaces().Visit([&](deNavigationSpace *engNavSpace){
 		dedaiNavSpace * const navspace = (dedaiNavSpace*)engNavSpace->GetPeerAI();
 		if(!navspace){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+			return;
 		}
 		
 		dedaiSpace &space = *navspace->GetSpace();
 		if(space.GetLayer() != this){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+			return;
 		}
 		
 		dedaiSpaceGrid * const grid = space.GetGrid();
 		if(!grid){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+			return;
 		}
 		
 		const decVector testPosition(space.GetInverseMatrix() * position);
@@ -160,9 +156,7 @@ dedaiSpaceGridVertex *dedaiLayer::GetGridVertexClosestTo(const decDVector &posit
 			bestVertex = testVertex;
 			bestDistance = testDistance;
 		}
-		
-		engNavSpace = engNavSpace->GetLLWorldNext();
-	}
+	});
 	
 	if(bestVertex){
 		distance = bestDistance;
@@ -208,29 +202,24 @@ dedaiSpaceMeshFace *dedaiLayer::GetMeshFaceClosestTo(const decDVector &position,
 	}
 	
 	// navigation spaces
-	deNavigationSpace *engNavSpace = pWorld.GetWorld().GetRootNavigationSpace();
-	while(engNavSpace){
+	pWorld.GetWorld().GetNavigationSpaces().Visit([&](deNavigationSpace *engNavSpace){
 		dedaiNavSpace * const navspace = (dedaiNavSpace*)engNavSpace->GetPeerAI();
 		if(!navspace){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+			return;
 		}
 		
 		dedaiSpace &space = *navspace->GetSpace();
 		if(space.GetLayer() != this){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+			return;
 		}
 		
 		dedaiSpaceMesh * const navmesh = space.GetMesh();
 		if(!navmesh){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+			return;
 		}
 		
 // 		if( ! ( navspace->GetMaximumExtends() >= testMinExtend && navspace->GetMinimumExtends() <= testMaxExtend ) ){
-// 			engNavSpace = engNavSpace->GetLLWorldNext();
-// 			continue;
+// 			return;
 // 		}
 		
 		const decVector testPosition(space.GetInverseMatrix() * position);
@@ -240,9 +229,7 @@ dedaiSpaceMeshFace *dedaiLayer::GetMeshFaceClosestTo(const decDVector &position,
 			bestFace = testFace;
 			bestDistance = testDistance;
 		}
-		
-		engNavSpace = engNavSpace->GetLLWorldNext();
-	}
+	});
 	
 	if(bestFace){
 		distance = bestDistance;
@@ -293,41 +280,34 @@ float radius, decDVector &nearestPoint, float &nearestLambda){
 	}
 	
 	// navigation spaces
-	deNavigationSpace *engNavSpace = pWorld.GetWorld().GetRootNavigationSpace();
-	while(engNavSpace){
+	pWorld.GetWorld().GetNavigationSpaces().Visit([&](deNavigationSpace *engNavSpace){
 		dedaiNavSpace * const navspace = (dedaiNavSpace*)engNavSpace->GetPeerAI();
 		if(!navspace){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+			return;
 		}
 		
 		dedaiSpace &space = *navspace->GetSpace();
 		if(space.GetLayer() != this){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+			return;
 		}
 		
 		dedaiSpaceGrid * const grid = space.GetGrid();
 		if(!grid){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+			return;
 		}
 		
 		const decVector testPosition(space.GetInverseMatrix() * point);
 		dedaiSpaceGridEdge * const testEdge = grid->NearestPoint(testPosition, radius,
 			testNearestPosition, testNearestDistance, testLambda);
 		if(!testEdge || testNearestDistance > bestDistanceSquared){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+			return;
 		}
 		
 		bestEdge = testEdge;
 		bestDistanceSquared = testNearestDistance;
 		nearestPoint = space.GetMatrix() * decDVector(testNearestPosition);
 		nearestLambda = testLambda;
-		
-		engNavSpace = engNavSpace->GetLLWorldNext();
-	}
+	});
 	
 	return bestEdge;
 }
@@ -377,30 +357,24 @@ dedaiSpaceMeshFace *dedaiLayer::GetNavMeshNearestPoint(const decDVector &point, 
 	}
 	
 	// navigation spaces
-	deNavigationSpace *engNavSpace = pWorld.GetWorld().GetRootNavigationSpace();
-	
-	while(engNavSpace){
+	pWorld.GetWorld().GetNavigationSpaces().Visit([&](deNavigationSpace *engNavSpace){
 		dedaiNavSpace * const navspace = (dedaiNavSpace*)engNavSpace->GetPeerAI();
 		if(!navspace){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+			return;
 		}
 		
 		dedaiSpace &space = *navspace->GetSpace();
 		if(space.GetLayer() != this){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+			return;
 		}
 		
 		dedaiSpaceMesh * const navmesh = space.GetMesh();
 		if(!navmesh){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+			return;
 		}
 		
 		if(!(space.GetMaximumExtends() >= testMinExtend && space.GetMinimumExtends() <= testMaxExtend)){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+			return;
 		}
 		
 		const decVector testPoint((space.GetInverseMatrix() * point));
@@ -411,9 +385,7 @@ dedaiSpaceMeshFace *dedaiLayer::GetNavMeshNearestPoint(const decDVector &point, 
 			nearest = space.GetMatrix() * decDVector(testNearestPosition);
 			bestDistanceSquared = testNearestDistance;
 		}
-		
-		engNavSpace = engNavSpace->GetLLWorldNext();
-	}
+	});
 	
 	return bestFace;
 }
@@ -543,21 +515,17 @@ void dedaiLayer::InvalidateBlocking(){
 	}
 	
 	// navigation spaces
-	deNavigationSpace *engNavSpace = pWorld.GetWorld().GetRootNavigationSpace();
-	while(engNavSpace){
+	pWorld.GetWorld().GetNavigationSpaces().Visit([&](deNavigationSpace *engNavSpace){
 		dedaiNavSpace * const navspace = (dedaiNavSpace*)engNavSpace->GetPeerAI();
 		if(!navspace){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+			return;
 		}
 		
 		dedaiSpace &space = *navspace->GetSpace();
 		if(space.GetLayer() == this){
 			space.InvalidateBlocking();
 		}
-		
-		engNavSpace = engNavSpace->GetLLWorldNext();
-	}
+	});
 	
 	// NOTE tell also navigators?
 	
@@ -587,21 +555,17 @@ void dedaiLayer::InvalidateBlocking(deNavigationSpace::eSpaceTypes type){
 	}
 	
 	// navigation spaces
-	deNavigationSpace *engNavSpace = pWorld.GetWorld().GetRootNavigationSpace();
-	while(engNavSpace){
+	pWorld.GetWorld().GetNavigationSpaces().Visit([&](deNavigationSpace *engNavSpace){
 		dedaiNavSpace * const navspace = (dedaiNavSpace*)engNavSpace->GetPeerAI();
 		if(!navspace){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+			return;
 		}
 		
 		dedaiSpace &space = *navspace->GetSpace();
 		if(space.GetLayer() == this && space.GetType() == type){
 			space.InvalidateBlocking();
 		}
-		
-		engNavSpace = engNavSpace->GetLLWorldNext();
-	}
+	});
 	
 	// NOTE tell also navigators?
 	
@@ -638,18 +602,15 @@ const decDVector &boxMin, const decDVector &boxMax){
 	}
 	
 	// navigation spaces
-	deNavigationSpace *engNavSpace = pWorld.GetWorld().GetRootNavigationSpace();
-	while(engNavSpace){
+	pWorld.GetWorld().GetNavigationSpaces().Visit([&](deNavigationSpace *engNavSpace){
 		dedaiNavSpace * const navspace = (dedaiNavSpace*)engNavSpace->GetPeerAI();
 		if(!navspace){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+			return;
 		}
 		
 		dedaiSpace &space = *navspace->GetSpace();
 		if(space.GetLayer() != this || space.GetType() != type){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+			return;
 		}
 		
 		const decDVector &targetMinExtend = space.GetMinimumExtends();
@@ -657,9 +618,7 @@ const decDVector &boxMin, const decDVector &boxMax){
 		if(targetMaxExtend >= boxMin && targetMinExtend <= boxMax){
 			space.InvalidateBlocking();
 		}
-		
-		engNavSpace = engNavSpace->GetLLWorldNext();
-	}
+	});
 	
 	// NOTE tell also navigators?
 	
@@ -691,21 +650,17 @@ void dedaiLayer::InvalidateLinks(){
 	}
 	
 	// navigation spaces
-	deNavigationSpace *engNavSpace = pWorld.GetWorld().GetRootNavigationSpace();
-	while(engNavSpace){
+	pWorld.GetWorld().GetNavigationSpaces().Visit([&](deNavigationSpace *engNavSpace){
 		dedaiNavSpace * const navspace = (dedaiNavSpace*)engNavSpace->GetPeerAI();
 		if(!navspace){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+			return;
 		}
 		
 		dedaiSpace &space = *navspace->GetSpace();
 		if(space.GetLayer() == this){
 			space.ClearLinks();
 		}
-		
-		engNavSpace = engNavSpace->GetLLWorldNext();
-	}
+	});
 	
 	// NOTE tell also navigators?
 	
@@ -735,21 +690,17 @@ void dedaiLayer::InvalidateLinks(deNavigationSpace::eSpaceTypes type){
 	}
 	
 	// navigation spaces
-	deNavigationSpace *engNavSpace = pWorld.GetWorld().GetRootNavigationSpace();
-	while(engNavSpace){
+	pWorld.GetWorld().GetNavigationSpaces().Visit([&](deNavigationSpace *engNavSpace){
 		dedaiNavSpace * const navspace = (dedaiNavSpace*)engNavSpace->GetPeerAI();
 		if(!navspace){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+			return;
 		}
 		
 		dedaiSpace &space = *navspace->GetSpace();
 		if(space.GetLayer() == this && space.GetType() == type){
 			space.ClearLinks();
 		}
-		
-		engNavSpace = engNavSpace->GetLLWorldNext();
-	}
+	});
 	
 	// NOTE tell also navigators?
 	
@@ -786,18 +737,15 @@ const decDVector &boxMin, const decDVector &boxMax){
 	}
 	
 	// navigation spaces
-	deNavigationSpace *engNavSpace = pWorld.GetWorld().GetRootNavigationSpace();
-	while(engNavSpace){
+	pWorld.GetWorld().GetNavigationSpaces().Visit([&](deNavigationSpace *engNavSpace){
 		dedaiNavSpace * const navspace = (dedaiNavSpace*)engNavSpace->GetPeerAI();
 		if(!navspace){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+			return;
 		}
 		
 		dedaiSpace &space = *navspace->GetSpace();
 		if(space.GetLayer() != this || space.GetType() != type){
-			engNavSpace = engNavSpace->GetLLWorldNext();
-			continue;
+			return;
 		}
 		
 		const decDVector &targetMinExtend = space.GetMinimumExtends();
@@ -805,9 +753,7 @@ const decDVector &boxMin, const decDVector &boxMax){
 		if(targetMaxExtend >= boxMin && targetMinExtend <= boxMax){
 			space.ClearLinks();
 		}
-		
-		engNavSpace = engNavSpace->GetLLWorldNext();
-	}
+	});
 	
 	// NOTE tell also navigators?
 	
@@ -825,16 +771,14 @@ void dedaiLayer::pUpdateCostTable(){
 		return;
 	}
 	
-	deNavigator *navigator = pWorld.GetWorld().GetRootNavigator();
-	while(navigator){
+	pWorld.GetWorld().GetNavigators().Visit([&](deNavigator *navigator){
 		if(navigator->GetLayer() == pLayer){
 			dedaiNavigator * const peer = (dedaiNavigator*)navigator->GetPeerAI();
 			if(peer){
 				peer->CostTableDefinitionChanged();
 			}
 		}
-		navigator = navigator->GetLLWorldNext();
-	}
+	});
 	
 	pCostTable.ClearChanged();
 }
@@ -857,27 +801,23 @@ void dedaiLayer::pNavSpacesPrepare(){
 		}
 	}
 	
-	deNavigationBlocker *blocker = pWorld.GetWorld().GetRootNavigationBlocker();
-	while(blocker){
+	pWorld.GetWorld().GetNavigationBlockers().Visit([&](deNavigationBlocker *blocker){
 		if(blocker->GetLayer() == pLayer){
 			dedaiNavBlocker * const peer = (dedaiNavBlocker*)blocker->GetPeerAI();
 			if(peer){
 				peer->Prepare();
 			}
 		}
-		blocker = blocker->GetLLWorldNext();
-	}
+	});
 	
-	deNavigationSpace *navspace = pWorld.GetWorld().GetRootNavigationSpace();
-	while(navspace){
+	pWorld.GetWorld().GetNavigationSpaces().Visit([&](deNavigationSpace *navspace){
 		if(navspace->GetLayer() == pLayer){
 			dedaiNavSpace * const peer = (dedaiNavSpace*)navspace->GetPeerAI();
 			if(peer){
 				peer->GetSpace()->Prepare();
 			}
 		}
-		navspace = navspace->GetLLWorldNext();
-	}
+	});
 }
 
 void dedaiLayer::pNavSpacesPrepareLinks(){
@@ -898,27 +838,23 @@ void dedaiLayer::pNavSpacesPrepareLinks(){
 		}
 	}
 	
-	deNavigationSpace *navspace = pWorld.GetWorld().GetRootNavigationSpace();
-	while(navspace){
+	pWorld.GetWorld().GetNavigationSpaces().Visit([&](deNavigationSpace *navspace){
 		if(navspace->GetLayer() == pLayer){
 			dedaiNavSpace * const peer = (dedaiNavSpace*)navspace->GetPeerAI();
 			if(peer){
 				peer->GetSpace()->PrepareLinks();
 			}
 		}
-		navspace = navspace->GetLLWorldNext();
-	}
+	});
 }
 
 void dedaiLayer::pNavigatorsPrepare(){
-	deNavigator *navigator = pWorld.GetWorld().GetRootNavigator();
-	while(navigator){
+	pWorld.GetWorld().GetNavigators().Visit([&](deNavigator *navigator){
 		if(navigator->GetLayer() == pLayer){
 			dedaiNavigator * const peer = (dedaiNavigator*)navigator->GetPeerAI();
 			if(peer){
 				peer->Prepare();
 			}
 		}
-		navigator = navigator->GetLLWorldNext();
-	}
+	});
 }

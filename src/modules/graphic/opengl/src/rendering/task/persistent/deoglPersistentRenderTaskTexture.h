@@ -93,6 +93,9 @@ public:
 	
 	
 	
+	/** VAOs. */
+	inline const decTLinkedList<deoglPersistentRenderTaskVAO> &GetVAOs() const{ return pVAOs; }
+	
 	/** Number of VAOs. */
 	int GetVAOCount() const;
 	

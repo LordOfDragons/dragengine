@@ -195,20 +195,17 @@ deVirtualFileSystem &vfs, const char *filename){
 
 
 void deAnimationManager::ReleaseLeakingResources(){
-	const int count = GetAnimationCount();
-	
-	if(count > 0){
-		deAnimation *animation = (deAnimation*)pAnimations.GetRoot();
-		
-		LogWarnFormat("%i leaking animations", count);
-		
-		while(animation){
-			LogWarnFormat("- %s", animation->GetFilename().GetString());
-			animation = (deAnimation*)animation->GetLLManagerNext();
-		}
-		
-		pAnimations.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
+	if(pAnimations.GetResources().IsEmpty()){
+		return;
 	}
+	
+	LogWarnFormat("%i leaking animations", pAnimations.GetResources().GetCount());
+	pAnimations.GetResources().Visit([&](const deResource *r){
+		const deAnimation &animation = static_cast<const deAnimation&>(*r);
+		LogWarnFormat("- %s", animation.GetFilename().GetString());
+	});
+	
+	pAnimations.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 }
 
 
@@ -235,26 +232,20 @@ void deAnimationManager::SystemGraphicUnload(){
 	}
 	*/
 }
-
 void deAnimationManager::SystemAnimatorLoad(){
-	deAnimation *animation = (deAnimation*)pAnimations.GetRoot();
 	deAnimatorSystem &aniSys = *GetAnimatorSystem();
-	
-	while(animation){
+	pAnimations.GetResources().Visit([&](deResource *r){
+		deAnimation *animation = static_cast<deAnimation*>(r);
 		if(!animation->GetPeerAnimator()){
 			aniSys.LoadAnimation(animation);
 		}
-		animation = (deAnimation*)animation->GetLLManagerNext();
-	}
+	});
 }
 
 void deAnimationManager::SystemAnimatorUnload(){
-	deAnimation *animation = (deAnimation*)pAnimations.GetRoot();
-	
-	while(animation){
-		animation->SetPeerAnimator(nullptr);
-		animation = (deAnimation*)animation->GetLLManagerNext();
-	}
+	pAnimations.GetResources().Visit([&](deResource *r){
+		static_cast<deAnimation*>(r)->SetPeerAnimator(nullptr);
+	});
 }
 
 

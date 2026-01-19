@@ -51,5 +51,5 @@ deoglDMBConvexVolumeList::~deoglDMBConvexVolumeList(){
 
 decConvexVolumeFace::Ref deoglDMBConvexVolumeList::CreateVolumeFace(const decConvexVolumeFace *face){
 	return deoglDMBConvexVolumeFace::Ref::New(face
-		? dynamic_cast<const deoglDMBConvexVolumeFace*>(face)->GetDecalFace() : false);
+		? static_cast<const deoglDMBConvexVolumeFace*>(face)->GetDecalFace() : false);
 }

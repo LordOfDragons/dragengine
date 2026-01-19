@@ -48,8 +48,7 @@ pPeerGraphic(nullptr),
 pPeerPhysics(nullptr),
 pPeerScripting(nullptr),
 pParentWorld(nullptr),
-pLLWorldPrev(nullptr),
-pLLWorldNext(nullptr){
+pLLWorld(this){
 }
 
 dePropField::~dePropField(){
@@ -196,12 +195,4 @@ void dePropField::SetPeerScripting(deBaseScriptingPropField *peer){
 
 void dePropField::SetParentWorld(deWorld *world){
 	pParentWorld = world;
-}
-
-void dePropField::SetLLWorldPrev(dePropField *propField){
-	pLLWorldPrev = propField;
-}
-
-void dePropField::SetLLWorldNext(dePropField *propField){
-	pLLWorldNext = propField;
 }

@@ -60,8 +60,7 @@ pTypeSize(0),
 pPeerAI(nullptr),
 
 pParentWorld(nullptr),
-pLLWorldPrev(nullptr),
-pLLWorldNext(nullptr){
+pLLWorld(this){
 }
 
 deNavigator::~deNavigator(){
@@ -381,12 +380,4 @@ void deNavigator::SetPeerAI(deBaseAINavigator *peer){
 
 void deNavigator::SetParentWorld(deWorld *world){
 	pParentWorld = world;
-}
-
-void deNavigator::SetLLWorldPrev(deNavigator *navigator){
-	pLLWorldPrev = navigator;
-}
-
-void deNavigator::SetLLWorldNext(deNavigator *navigator){
-	pLLWorldNext = navigator;
 }

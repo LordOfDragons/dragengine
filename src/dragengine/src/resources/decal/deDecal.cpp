@@ -60,12 +60,10 @@ pBoneStates(nullptr),
 pBoneStateCount(0),
 
 pParentComponent(nullptr),
-pLLComponentPrev(nullptr),
-pLLComponentNext(nullptr),
+pLLComponent(this),
 
 pParentHeightTerrainSector(nullptr),
-pLLHeightTerrainSectorPrev(nullptr),
-pLLHeightTerrainSectorNext(nullptr),
+pLLHeightTerrainSector(this),
 
 pPeerGraphic(nullptr),
 pPeerPhysics(nullptr),
@@ -299,26 +297,10 @@ void deDecal::SetParentComponent(deComponent *component){
 	pParentComponent = component;
 }
 
-void deDecal::SetLLComponentNext(deDecal *decal){
-	pLLComponentNext = decal;
-}
-
-void deDecal::SetLLComponentPrev(deDecal *decal){
-	pLLComponentPrev = decal;
-}
-
 
 
 void deDecal::SetParentHeightTerrainSector(deHeightTerrainSector *sector){
 	pParentHeightTerrainSector = sector;
-}
-
-void deDecal::SetLLHeightTerrainSectorNext(deDecal *decal){
-	pLLHeightTerrainSectorNext = decal;
-}
-
-void deDecal::SetLLHeightTerrainSectorPrev(deDecal *decal){
-	pLLHeightTerrainSectorPrev = decal;
 }
 
 

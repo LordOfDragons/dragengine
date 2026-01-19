@@ -62,6 +62,6 @@ void deoglParticleSorter::Sort(){
 	});
 	
 	pSortedParticles.Sort([](const sParticle *a, const sParticle *b){
-		return a->distance > b->distance;
+		return DECompare(b->distance, a->distance);
 	});
 }

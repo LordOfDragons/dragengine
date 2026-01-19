@@ -114,11 +114,9 @@ pLLSyncWorld(this)
 		pCreateLODs();
 		pCreateTextures();
 		
-		deDecal *decal = component.GetRootDecal();
-		while(decal){
+		component.GetDecals().Visit([&](deDecal *decal){
 			DecalAdded(decal);
-			decal = decal->GetLLComponentNext();
-		}
+		});
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -753,14 +751,11 @@ void deoglComponent::DecalRemoved(deDecal *decal){
 }
 
 void deoglComponent::AllDecalsRemoved(){
-	deDecal *decal = pComponent.GetRootDecal();
-	while(decal){
+	pComponent.GetDecals().Visit([&](deDecal *decal){
 		deoglDecal &oglDecal = *((deoglDecal*)decal->GetPeerGraphic());
 		oglDecal.SetParentComponent(nullptr);
 		oglDecal.GetRDecal()->SetComponentMarkedRemove(true);
-		
-		decal = decal->GetLLComponentNext();
-	}
+	});
 	
 	pDirtyDecals = true;
 	
@@ -1085,11 +1080,9 @@ void deoglComponent::pSyncDecals(){
 	if(pDecalRequiresSync){
 		pDecalRequiresSync = false;
 		
-		deDecal *decal = pComponent.GetRootDecal();
-		while(decal){
+		pComponent.GetDecals().Visit([&](deDecal *decal){
 			((deoglDecal*)decal->GetPeerGraphic())->SyncToRender();
-			decal = decal->GetLLComponentNext();
-		}
+		});
 	}
 }
 

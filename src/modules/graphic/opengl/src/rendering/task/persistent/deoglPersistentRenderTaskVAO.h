@@ -90,6 +90,9 @@ public:
 	
 	
 	
+	/** Instances. */
+	inline const decTLinkedList<deoglPersistentRenderTaskInstance> &GetInstances() const{ return pInstances; }
+	
 	/** Number of instances. */
 	int GetInstanceCount() const;
 	

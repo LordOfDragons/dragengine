@@ -171,12 +171,12 @@ void deoglDeveloperModeStats::Stats(const decUnicodeArgumentList &command, decUn
 void deoglDeveloperModeStats::Skins(const decUnicodeArgumentList &command, decUnicodeString &answer){
 	//deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
 	deSkinManager *skinMgr = pRenderThread.GetOgl().GetGameEngine()->GetSkinManager();
-	deSkin *skin = skinMgr->GetRootSkin();
 	int c, t, textureCount;
 	deoglRSkin *oglSkin;
 	decString text;
 	
-	while(skin){
+	skinMgr->GetSkins().GetResources().Visit([&](deResource *res){
+		deSkin *skin = (deSkin*)res;
 		oglSkin = ((deoglSkin*)skin->GetPeerGraphic())->GetRSkin();
 		
 		text.Format("- Skin '%s' (renderables=%d dynamic=%d solid=%d hasHoles=%d):\n",
@@ -217,16 +217,13 @@ void deoglDeveloperModeStats::Skins(const decUnicodeArgumentList &command, decUn
 				}
 			}
 		}
-		
-		skin = (deSkin*)skin->GetLLManagerNext();
-	}
+	});
 }
 
 void deoglDeveloperModeStats::CombinedTextures(const decUnicodeArgumentList &command, decUnicodeString &answer){
-	deoglCombinedTexture *combinedTexture = pRenderThread.GetTexture().GetCombinedTexture().GetRoot();
 	decString text;
 	
-	while(combinedTexture){
+	pRenderThread.GetTexture().GetCombinedTexture().GetTextures().Visit([&](deoglCombinedTexture *combinedTexture){
 		const decColor &color = combinedTexture->GetColor();
 		
 		text.Format("- color=(%d,%d,%d,%d) images=(%p,%p,%p,%p) usage=%d\n",
@@ -236,9 +233,7 @@ void deoglDeveloperModeStats::CombinedTextures(const decUnicodeArgumentList &com
 			combinedTexture->GetImageAt(2).Pointer(), combinedTexture->GetImageAt(3).Pointer(),
 			combinedTexture->GetUsageCount());
 		answer.AppendFromUTF8(text.GetString());
-		
-		combinedTexture = combinedTexture->GetLLNext();
-	}
+	});
 }
 
 void deoglDeveloperModeStats::ShaderSources(const decUnicodeArgumentList &command, decUnicodeString &answer){
@@ -676,7 +671,7 @@ void deoglDeveloperModeStats::TextureUnitsConfigurations(const decUnicodeArgumen
 			answer.AppendFromUTF8(text.GetString());
 		}
 		
-		tuc = tuc->GetLLNext();
+		tuc = tuc->GetLLConfigs().GetNext() ? tuc->GetLLConfigs().GetNext()->GetOwner() : nullptr;
 		i++;
 	}
 }

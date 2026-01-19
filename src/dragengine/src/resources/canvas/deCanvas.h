@@ -28,6 +28,7 @@
 #include "deCanvas.h"
 #include "../deResource.h"
 #include "../../common/math/decMath.h"
+#include "../../common/collection/decTLinkedList.h"
 
 class deBaseGraphicCanvas;
 class deCanvasManager;
@@ -94,8 +95,7 @@ private:
 	
 	deCanvas *pParentMask;
 	deCanvasView *pParentView;
-	deCanvas *pLLViewPrev;
-	deCanvas *pLLViewNext;
+	decTObjectLinkedList<deCanvas>::Element pLLView;
 	
 	
 	
@@ -219,17 +219,9 @@ public:
 	/** \brief Set parent view or NULL if not set. */
 	void SetParentView(deCanvasView *view);
 	
-	/** \brief Previous canvas in the parent view linked list or NULL if not set. */
-	inline deCanvas *GetLLViewPrev() const{ return pLLViewPrev; }
-	
-	/** \brief Set next canvas in the parent view linked list or NULL if not set. */
-	void SetLLViewPrev(deCanvas *canvas);
-	
-	/** \brief Next canvas in the parent view linked list or NULL if not set. */
-	inline deCanvas *GetLLViewNext() const{ return pLLViewNext; }
-	
-	/** \brief Set next canvas in the parent view linked list NULL if not set. */
-	void SetLLViewNext(deCanvas *canvas);
+	/** \brief Parent view linked list. */
+	inline decTObjectLinkedList<deCanvas>::Element &GetLLView(){ return pLLView; }
+	inline const decTObjectLinkedList<deCanvas>::Element &GetLLView() const{ return pLLView; }
 	/*@}*/
 };
 

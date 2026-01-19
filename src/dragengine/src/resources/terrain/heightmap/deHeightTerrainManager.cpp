@@ -100,90 +100,68 @@ void deHeightTerrainManager::ReleaseLeakingResources(){
 
 // Systems Support
 ////////////////////
-
 void deHeightTerrainManager::SystemGraphicLoad(){
-	deHeightTerrain *heightTerrain = (deHeightTerrain*)pTerrains.GetRoot();
-	deGraphicSystem &grasys = *GetGraphicSystem();
-	
-	while(heightTerrain){
+	deGraphicSystem &graSys = *GetGraphicSystem();
+	pTerrains.GetResources().Visit([&](deResource *res){
+		deHeightTerrain *heightTerrain = static_cast<deHeightTerrain*>(res);
 		if(!heightTerrain->GetPeerGraphic()){
-			grasys.LoadHeightTerrain(heightTerrain);
+			graSys.LoadHeightTerrain(heightTerrain);
 		}
-		
-		heightTerrain = (deHeightTerrain*)heightTerrain->GetLLManagerNext();
-	}
+	});
 }
 
 void deHeightTerrainManager::SystemGraphicUnload(){
-	deHeightTerrain *heightTerrain = (deHeightTerrain*)pTerrains.GetRoot();
-	
-	while(heightTerrain){
-		heightTerrain->SetPeerGraphic(nullptr);
-		heightTerrain = (deHeightTerrain*)heightTerrain->GetLLManagerNext();
-	}
+	pTerrains.GetResources().Visit([](deResource *res){
+		static_cast<deHeightTerrain*>(res)->SetPeerGraphic(nullptr);
+	});
 }
 
 void deHeightTerrainManager::SystemPhysicsLoad(){
-	deHeightTerrain *heightTerrain = (deHeightTerrain*)pTerrains.GetRoot();
-	dePhysicsSystem &physys = *GetPhysicsSystem();
-	
-	while(heightTerrain){
+	dePhysicsSystem &phySys = *GetPhysicsSystem();
+	pTerrains.GetResources().Visit([&phySys](deResource *res){
+		deHeightTerrain *heightTerrain = static_cast<deHeightTerrain*>(res);
 		if(!heightTerrain->GetPeerPhysics()){
-			physys.LoadHeightTerrain(heightTerrain);
+			phySys.LoadHeightTerrain(heightTerrain);
 		}
-		heightTerrain = (deHeightTerrain*)heightTerrain->GetLLManagerNext();
-	}
+	});
 }
 
 void deHeightTerrainManager::SystemPhysicsUnload(){
-	deHeightTerrain *heightTerrain = (deHeightTerrain*)pTerrains.GetRoot();
-	
-	while(heightTerrain){
-		heightTerrain->SetPeerPhysics(nullptr);
-		heightTerrain = (deHeightTerrain*)heightTerrain->GetLLManagerNext();
-	}
+	pTerrains.GetResources().Visit([](deResource *res){
+		static_cast<deHeightTerrain*>(res)->SetPeerPhysics(nullptr);
+	});
 }
 
 void deHeightTerrainManager::SystemAILoad(){
-	deHeightTerrain *heightTerrain = (deHeightTerrain*)pTerrains.GetRoot();
-	deAISystem &aisys = *GetAISystem();
-	
-	while(heightTerrain){
+	deAISystem &aiSys = *GetAISystem();
+	pTerrains.GetResources().Visit([&aiSys](deResource *res){
+		deHeightTerrain *heightTerrain = static_cast<deHeightTerrain*>(res);
 		if(!heightTerrain->GetPeerAI()){
-			aisys.LoadHeightTerrain(*heightTerrain);
+			aiSys.LoadHeightTerrain(*heightTerrain);
 		}
-		heightTerrain = (deHeightTerrain*)heightTerrain->GetLLManagerNext();
-	}
+	});
 }
 
 void deHeightTerrainManager::SystemAIUnload(){
-	deHeightTerrain *heightTerrain = (deHeightTerrain*)pTerrains.GetRoot();
-	
-	while(heightTerrain){
-		heightTerrain->SetPeerAI(nullptr);
-		heightTerrain = (deHeightTerrain*)heightTerrain->GetLLManagerNext();
-	}
+	pTerrains.GetResources().Visit([](deResource *res){
+		static_cast<deHeightTerrain*>(res)->SetPeerAI(nullptr);
+	});
 }
 
 void deHeightTerrainManager::SystemAudioLoad(){
-	deHeightTerrain *heightTerrain = (deHeightTerrain*)pTerrains.GetRoot();
-	deAudioSystem &audioSystem = *GetAudioSystem();
-	
-	while(heightTerrain){
+	deAudioSystem &audSys = *GetAudioSystem();
+	pTerrains.GetResources().Visit([&](deResource *res){
+		deHeightTerrain *heightTerrain = static_cast<deHeightTerrain*>(res);
 		if(!heightTerrain->GetPeerAudio()){
-			audioSystem.LoadHeightTerrain(*heightTerrain);
+			audSys.LoadHeightTerrain(*heightTerrain);
 		}
-		heightTerrain = (deHeightTerrain*)heightTerrain->GetLLManagerNext();
-	}
+	});
 }
 
 void deHeightTerrainManager::SystemAudioUnload(){
-	deHeightTerrain *heightTerrain = (deHeightTerrain*)pTerrains.GetRoot();
-	
-	while(heightTerrain){
-		heightTerrain->SetPeerAudio(nullptr);
-		heightTerrain = (deHeightTerrain*)heightTerrain->GetLLManagerNext();
-	}
+	pTerrains.GetResources().Visit([](deResource *res){
+		static_cast<deHeightTerrain*>(res)->SetPeerAudio(nullptr);
+	});
 }
 
 

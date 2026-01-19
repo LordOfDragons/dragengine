@@ -42,23 +42,13 @@
 
 deoglTexUnitsConfigList::deoglTexUnitsConfigList(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
-pRootTUC(nullptr),
-pTailTUC(nullptr),
-pTUCCount(0),
 pTUCEmpty(nullptr)
 {
 	pTUCEmpty = GetWith(nullptr, 0, nullptr);
 	pTUCEmpty->EnsureRTSTexture();
 }
 
-deoglTexUnitsConfigList::~deoglTexUnitsConfigList(){
-	while(pRootTUC){
-		pTailTUC = pRootTUC;
-		pRootTUC = pRootTUC->GetLLNext();
-		delete pTailTUC;
-	}
-	pTailTUC = nullptr;
-}
+deoglTexUnitsConfigList::~deoglTexUnitsConfigList() = default;
 
 
 
@@ -67,42 +57,26 @@ deoglTexUnitsConfigList::~deoglTexUnitsConfigList(){
 
 deoglTexUnitsConfig *deoglTexUnitsConfigList::GetWith(const deoglTexUnitConfig *units,
 int unitCount, deoglShaderParameterBlock *paramBlock){
-	deoglTexUnitsConfig *tuc = pRootTUC;
-	
 	// if there exists already a texture units configuration with these properties add a usage and return it
-	while(tuc){
-		if(tuc->Equals(units, unitCount, paramBlock)){
-			tuc->AddUsage();
-			return tuc;
-		}
-		tuc = tuc->GetLLNext();
+	auto found = pConfigs.FindOrNull([&](deoglTexUnitsConfig *tuc){
+		return tuc->Equals(units, unitCount, paramBlock);
+	});
+	
+	if(found){
+		found->AddUsage();
+		return found;
 	}
 	
 	// otherwise create a new texture units configuration with these parameters and return it
-	tuc = new deoglTexUnitsConfig(pRenderThread);
+	auto tuc = deoglTexUnitsConfig::Ref::New(pRenderThread);
+	deoglTexUnitsConfig *tucPtr = tuc;
 	
-	try{
-		tuc->SetUnits(units, unitCount);
-		tuc->SetParameterBlock(paramBlock);
-		tuc->CalcUnitsHashCode();
-		
-		if(pTailTUC){
-			pTailTUC->SetLLNext(tuc);
-			tuc->SetLLPrev(pTailTUC);
-			pTailTUC = tuc;
-			
-		}else{
-			pRootTUC = tuc;
-			pTailTUC = tuc;
-		}
-		pTUCCount++;
-		
-	}catch(const deException &){
-		delete tuc;
-		throw;
-	}
+	tuc->SetUnits(units, unitCount);
+	tuc->SetParameterBlock(paramBlock);
+	tuc->CalcUnitsHashCode();
+	pConfigs.Add(&tuc->GetLLConfigs(), std::move(tuc));
 	
-	return tuc;
+	return tucPtr;
 }
 
 deoglTexUnitsConfig *deoglTexUnitsConfigList::GetEmpty(){
@@ -121,19 +95,5 @@ void deoglTexUnitsConfigList::Remove(deoglTexUnitsConfig *config){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(config->GetLLPrev()){
-		config->GetLLPrev()->SetLLNext(config->GetLLNext());
-	}
-	if(config->GetLLNext()){
-		config->GetLLNext()->SetLLPrev(config->GetLLPrev());
-	}
-	if(pRootTUC == config){
-		pRootTUC = config->GetLLNext();
-	}
-	if(pTailTUC == config){
-		pTailTUC = config->GetLLPrev();
-	}
-	pTUCCount--;
-	
-	delete config;
+	pConfigs.Remove(&config->GetLLConfigs());
 }

@@ -25,6 +25,7 @@
 #ifndef _DEHEIGHTTERRAINSECTOR_H_
 #define _DEHEIGHTTERRAINSECTOR_H_
 
+#include "../../../common/collection/decTLinkedList.h"
 #include "../../../common/collection/decTOrderedSet.h"
 #include "../../../common/math/decMath.h"
 #include "../../../resources/image/deImage.h"
@@ -61,9 +62,7 @@ private:
 	decTOrderedSet<deHeightTerrainTexture*> pTextures;
 	decTOrderedSet<deHeightTerrainNavSpace*> pNavSpaces;
 	
-	deDecal *pDecalRoot;
-	deDecal *pDecalTail;
-	int pDecalCount;
+	decTObjectLinkedList<deDecal> pDecals;
 	
 	
 	
@@ -148,10 +147,10 @@ public:
 	/** \name Decals Management */
 	/*@{*/
 	/** \brief Number of decals. */
-	inline int GetDecalCount() const{ return pDecalCount; }
+	inline int GetDecalCount() const{ return pDecals.GetCount(); }
 	
 	/** \brief Root decal or NULL if there are none. */
-	inline deDecal *GetRootDecal() const{ return pDecalRoot; }
+	inline deDecal *GetRootDecal() const{ return pDecals.GetRootOwner(); }
 	
 	/**
 	 * \brief Add decal.

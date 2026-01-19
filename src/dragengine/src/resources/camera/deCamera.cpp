@@ -69,8 +69,7 @@ pBloomSize(0.25f),
 pPeerGraphic(nullptr),
 
 pParentWorld(nullptr),
-pLLWorldPrev(nullptr),
-pLLWorldNext(nullptr)
+pLLWorld(this)
 {
 	pLayerMask.SetBit(0);
 }
@@ -411,14 +410,6 @@ void deCamera::SetPeerGraphic(deBaseGraphicCamera *peer){
 
 void deCamera::SetParentWorld(deWorld *world){
 	pParentWorld = world;
-}
-
-void deCamera::SetLLWorldPrev(deCamera *camera){
-	pLLWorldPrev = camera;
-}
-
-void deCamera::SetLLWorldNext(deCamera *camera){
-	pLLWorldNext = camera;
 }
 
 

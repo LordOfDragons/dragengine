@@ -1290,6 +1290,6 @@ void seViewConstructedView::pUpdateContentCanvasParams(const sePropertyNodeGroup
 			break;
 		}
 		
-		canvas = canvas->GetLLViewNext();
+		canvas = canvas->GetLLView().GetNextOwner();
 	});
 }

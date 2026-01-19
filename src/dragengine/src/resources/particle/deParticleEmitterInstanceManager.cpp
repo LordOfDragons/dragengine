@@ -93,69 +93,51 @@ void deParticleEmitterInstanceManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deParticleEmitterInstanceManager::SystemGraphicLoad(){
-	deParticleEmitterInstance *instance = (deParticleEmitterInstance*)pInstances.GetRoot();
 	deGraphicSystem &grasys = *GetGraphicSystem();
-	
-	while(instance){
+	pInstances.GetResources().Visit([&](deResource *res){
+		deParticleEmitterInstance *instance = static_cast<deParticleEmitterInstance*>(res);
 		if(!instance->GetPeerGraphic()){
 			grasys.LoadParticleEmitterInstance(instance);
 		}
-		
-		instance = (deParticleEmitterInstance*)instance->GetLLManagerNext();
-	}
+	});
 }
 
 void deParticleEmitterInstanceManager::SystemGraphicUnload(){
-	deParticleEmitterInstance *instance = (deParticleEmitterInstance*)pInstances.GetRoot();
-	
-	while(instance){
-		instance->SetPeerGraphic(nullptr);
-		instance = (deParticleEmitterInstance*)instance->GetLLManagerNext();
-	}
+	pInstances.GetResources().Visit([&](deResource *res){
+		static_cast<deParticleEmitterInstance*>(res)->SetPeerGraphic(nullptr);
+	});
 }
 
 void deParticleEmitterInstanceManager::SystemPhysicsLoad(){
-	deParticleEmitterInstance *instance = (deParticleEmitterInstance*)pInstances.GetRoot();
 	dePhysicsSystem &physys = *GetPhysicsSystem();
-	
-	while(instance){
+	pInstances.GetResources().Visit([&](deResource *res){
+		deParticleEmitterInstance *instance = static_cast<deParticleEmitterInstance*>(res);
 		if(!instance->GetPeerPhysics()){
 			physys.LoadParticleEmitterInstance(instance);
 		}
-		
-		instance = (deParticleEmitterInstance*)instance->GetLLManagerNext();
-	}
+	});
 }
 
 void deParticleEmitterInstanceManager::SystemPhysicsUnload(){
-	deParticleEmitterInstance *instance = (deParticleEmitterInstance*)pInstances.GetRoot();
-	
-	while(instance){
-		instance->SetPeerPhysics(nullptr);
-		instance = (deParticleEmitterInstance*)instance->GetLLManagerNext();
-	}
+	pInstances.GetResources().Visit([&](deResource *res){
+		static_cast<deParticleEmitterInstance*>(res)->SetPeerPhysics(nullptr);
+	});
 }
 
 void deParticleEmitterInstanceManager::SystemScriptingLoad(){
-	deParticleEmitterInstance *instance = (deParticleEmitterInstance*)pInstances.GetRoot();
 	deScriptingSystem &scrsys = *GetScriptingSystem();
-	
-	while(instance){
+	pInstances.GetResources().Visit([&](deResource *res){
+		deParticleEmitterInstance *instance = static_cast<deParticleEmitterInstance*>(res);
 		if(!instance->GetPeerScripting()){
 			scrsys.LoadParticleEmitterInstance(instance);
 		}
-		
-		instance = (deParticleEmitterInstance*)instance->GetLLManagerNext();
-	}
+	});
 }
 
 void deParticleEmitterInstanceManager::SystemScriptingUnload(){
-	deParticleEmitterInstance *instance = (deParticleEmitterInstance*)pInstances.GetRoot();
-	
-	while(instance){
-		instance->SetPeerScripting(nullptr);
-		instance = (deParticleEmitterInstance*)instance->GetLLManagerNext();
-	}
+	pInstances.GetResources().Visit([&](deResource *res){
+		static_cast<deParticleEmitterInstance*>(res)->SetPeerScripting(nullptr);
+	});
 }
 
 

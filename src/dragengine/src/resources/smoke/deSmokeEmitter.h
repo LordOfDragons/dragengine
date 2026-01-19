@@ -100,8 +100,7 @@ private:
 	deBasePhysicsSmokeEmitter *pPeerPhysics;
 	
 	deWorld *pParentWorld;
-	deSmokeEmitter *pLLWorldPrev;
-	deSmokeEmitter *pLLWorldNext;
+	decTObjectLinkedList<deSmokeEmitter>::Element pLLWorld;
 	
 	
 	
@@ -260,19 +259,10 @@ public:
 	inline deWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
-	void SetParentWorld(deWorld *world);
+	void SetParentWorld( deWorld *world );
 	
-	/** \brief Previous smoke emitter in the parent world linked list. */
-	inline deSmokeEmitter *GetLLWorldPrev() const{ return pLLWorldPrev; }
-	
-	/** \brief Set next smoke emitter in the parent world linked list. */
-	void SetLLWorldPrev(deSmokeEmitter *smokeEmitter);
-	
-	/** \brief Next smoke emitter in the parent world linked list. */
-	inline deSmokeEmitter *GetLLWorldNext() const{ return pLLWorldNext; }
-	
-	/** \brief Set next smoke emitter in the parent world linked list. */
-	void SetLLWorldNext(deSmokeEmitter *smokeEmitter);
+	/** \brief World linked list element. */
+	inline decTObjectLinkedList<deSmokeEmitter>::Element &GetLLWorld(){ return pLLWorld; }
 	/*@}*/
 };
 

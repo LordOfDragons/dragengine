@@ -30,6 +30,7 @@
 #include "../skin/dynamic/deDynamicSkin.h"
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decLayerMask.h"
+#include "../../common/collection/decTLinkedList.h"
 
 class deBillboardManager;
 class deBaseGraphicBillboard;
@@ -78,8 +79,7 @@ private:
 	deBaseGraphicBillboard *pPeerGraphic;
 	
 	deWorld *pParentWorld;
-	deBillboard *pLLWorldPrev;
-	deBillboard *pLLWorldNext;
+	decTObjectLinkedList<deBillboard>::Element pLLWorld;
 	
 	
 	
@@ -192,17 +192,8 @@ public:
 	/** \brief Set parent world or NULL. */
 	void SetParentWorld(deWorld *world);
 	
-	/** \brief Previous billboard in the parent world linked list. */
-	inline deBillboard *GetLLWorldPrev() const{ return pLLWorldPrev; }
-	
-	/** \brief Set next billboard in the parent world linked list. */
-	void SetLLWorldPrev(deBillboard *billboard);
-	
-	/** \brief Next billboard in the parent world linked list. */
-	inline deBillboard *GetLLWorldNext() const{ return pLLWorldNext; }
-	
-	/** \brief Set next billboard in the parent world linked list. */
-	void SetLLWorldNext(deBillboard *billboard);
+	/** \brief World linked list element. */
+	inline decTObjectLinkedList<deBillboard>::Element &GetLLWorld(){ return pLLWorld; }
 	/*@}*/
 };
 

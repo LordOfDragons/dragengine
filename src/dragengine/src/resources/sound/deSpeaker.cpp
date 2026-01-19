@@ -69,12 +69,10 @@ pPeerAudio(nullptr),
 pPeerScripting(nullptr),
 
 pParentWorld(nullptr),
-pLLWorldPrev(nullptr),
-pLLWorldNext(nullptr),
+pLLWorld(this),
 
 pParentMicrophone(nullptr),
-pLLMicrophonePrev(nullptr),
-pLLMicrophoneNext(nullptr)
+pLLMicrophone(this)
 {
 	pLayerMask.SetBit(0);
 }
@@ -400,14 +398,6 @@ void deSpeaker::SetParentWorld(deWorld *world){
 	pParentWorld = world;
 }
 
-void deSpeaker::SetLLWorldPrev(deSpeaker *speaker){
-	pLLWorldPrev = speaker;
-}
-
-void deSpeaker::SetLLWorldNext(deSpeaker *speaker){
-	pLLWorldNext = speaker;
-}
-
 
 
 // Linked list microphone
@@ -417,13 +407,7 @@ void deSpeaker::SetParentMicrophone(deMicrophone *microphone){
 	pParentMicrophone = microphone;
 }
 
-void deSpeaker::SetLLMicrophonePrev(deSpeaker *speaker){
-	pLLMicrophonePrev = speaker;
-}
 
-void deSpeaker::SetLLMicrophoneNext(deSpeaker *speaker){
-	pLLMicrophoneNext = speaker;
-}
 
 
 

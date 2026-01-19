@@ -27,6 +27,7 @@
 
 #include "../deResource.h"
 #include "../terrain/heightmap/deHeightTerrain.h"
+#include "../../common/collection/decTLinkedList.h"
 #include "../../common/math/decMath.h"
 
 class decCollisionFilter;
@@ -87,89 +88,27 @@ private:
 	
 	float pSpeakerGain;
 	
-	deSkyInstance *pSkyRoot;
-	deSkyInstance *pSkyTail;
-	int pSkyCount;
-	
-	deBillboard *pBillboardRoot;
-	deBillboard *pBillboardTail;
-	int pBillboardCount;
-	
-	deCamera *pCameraRoot;
-	deCamera *pCameraTail;
-	int pCameraCount;
-	
-	deCollider *pColliderRoot;
-	deCollider *pColliderTail;
-	int pColliderCount;
-	
-	deComponent *pComponentRoot;
-	deComponent *pComponentTail;
-	int pComponentCount;
-	
-	deDebugDrawer *pDebugDrawerRoot;
-	deDebugDrawer *pDebugDrawerTail;
-	int pDebugDrawerCount;
-	
-	deEnvMapProbe *pEnvMapProbeRoot;
-	deEnvMapProbe *pEnvMapProbeTail;
-	int pEnvMapProbeCount;
-	
-	deForceField *pForceFieldRoot;
-	deForceField *pForceFieldTail;
-	int pForceFieldCount;
-	
-	deLight *pLightRoot;
-	deLight *pLightTail;
-	int pLightCount;
-	
-	deLumimeter *pLumimeterRoot;
-	deLumimeter *pLumimeterTail;
-	int pLumimeterCount;
-	
-	deMicrophone *pMicrophoneRoot;
-	deMicrophone *pMicrophoneTail;
-	int pMicrophoneCount;
-	
-	deNavigationSpace *pNavSpaceRoot;
-	deNavigationSpace *pNavSpaceTail;
-	int pNavSpaceCount;
-	
-	deNavigationBlocker *pNavBlockerRoot;
-	deNavigationBlocker *pNavBlockerTail;
-	int pNavBlockerCount;
-	
-	deNavigator *pNavigatorRoot;
-	deNavigator *pNavigatorTail;
-	int pNavigatorCount;
-	
-	deNetworkState *pNetworkStateRoot;
-	deNetworkState *pNetworkStateTail;
-	int pNetworkStateCount;
-	
-	deParticleEmitterInstance *pParticleEmitterRoot;
-	deParticleEmitterInstance *pParticleEmitterTail;
-	int pParticleEmitterCount;
-	
-	dePropField *pPropFieldRoot;
-	dePropField *pPropFieldTail;
-	int pPropFieldCount;
-	
-	deSmokeEmitter *pSmokeEmitterRoot;
-	deSmokeEmitter *pSmokeEmitterTail;
-	int pSmokeEmitterCount;
-	
-	deSpeaker *pSpeakerRoot;
-	deSpeaker *pSpeakerTail;
-	int pSpeakerCount;
-	
-	deTouchSensor *pTouchSensorRoot;
-	deTouchSensor *pTouchSensorTail;
-	int pTouchSensorCount;
-	
-	deSoundLevelMeter *pSoundLevelMeterRoot;
-	deSoundLevelMeter *pSoundLevelMeterTail;
-	int pSoundLevelMeterCount;
+	decTObjectLinkedList<deSkyInstance> pSkyInstances;
+	decTObjectLinkedList<deBillboard> pBillboards;
+	decTObjectLinkedList<deCamera> pCameras;
+	decTObjectLinkedList<deCollider> pColliders;
+	decTObjectLinkedList<deComponent> pComponents;
+	decTObjectLinkedList<deDebugDrawer> pDebugDrawers;
+	decTObjectLinkedList<deEnvMapProbe> pEnvMapProbes;
+	decTObjectLinkedList<deForceField> pForceFields;
+	decTObjectLinkedList<deLight> pLights;
+	decTObjectLinkedList<deLumimeter> pLumimeters;
+	decTObjectLinkedList<deMicrophone> pMicrophones;
+	decTObjectLinkedList<deNavigationSpace> pNavigationSpaces;
+	decTObjectLinkedList<deNavigationBlocker> pNavigationBlockers;
+	decTObjectLinkedList<deNavigator> pNavigators;
+	decTObjectLinkedList<deNetworkState> pNetworkStates;
+	decTObjectLinkedList<deParticleEmitterInstance> pParticleEmitters;
+	decTObjectLinkedList<dePropField> pPropFields;
+	decTObjectLinkedList<deSmokeEmitter> pSmokeEmitters;
+	decTObjectLinkedList<deSpeaker> pSpeakers;
+	decTObjectLinkedList<deTouchSensor> pTouchSensors;
+	decTObjectLinkedList<deSoundLevelMeter> pSoundLevelMeters;
 	
 	// peers
 	deBaseGraphicWorld *pPeerGraphic;
@@ -278,11 +217,14 @@ public:
 	
 	/** \name Skies */
 	/*@{*/
+	/** \brief Skies. */
+	inline const decTObjectLinkedList<deSkyInstance> &GetSkies() const{ return pSkyInstances; }
+	
 	/** \brief Count of skies. */
-	inline int GetSkyCount() const{ return pSkyCount; }
+	inline int GetSkyCount() const{ return pSkyInstances.GetCount(); }
 	
 	/** \brief Root sky or NULL if there are none. */
-	inline deSkyInstance *GetRootSky() const{ return pSkyRoot; }
+	inline deSkyInstance *GetRootSky() const{ return pSkyInstances.GetRootOwner(); }
 	
 	/**
 	 * \brief Add sky.
@@ -306,11 +248,14 @@ public:
 	
 	/** \name Billboards */
 	/*@{*/
+	/** \brief Billboards. */
+	inline const decTObjectLinkedList<deBillboard> &GetBillboards() const{ return pBillboards; }
+	
 	/** \brief Count of billboards. */
-	inline int GetBillboardCount() const{ return pBillboardCount; }
+	inline int GetBillboardCount() const{ return pBillboards.GetCount(); }
 	
 	/** \brief Root billboard or NULL if there are none. */
-	inline deBillboard *GetRootBillboard() const{ return pBillboardRoot; }
+	inline deBillboard *GetRootBillboard() const{ return pBillboards.GetRootOwner(); }
 	
 	/**
 	 * \brief Add billboard.
@@ -334,11 +279,14 @@ public:
 	
 	/** \name Cameras */
 	/*@{*/
+	/** \brief Cameras. */
+	inline const decTObjectLinkedList<deCamera> &GetCameras() const{ return pCameras; }
+	
 	/** \brief Count of cameras. */
-	inline int GetCameraCount() const{ return pCameraCount; }
+	inline int GetCameraCount() const{ return pCameras.GetCount(); }
 	
 	/** \brief Root camera or NULL if there are none. */
-	inline deCamera *GetRootCamera() const{ return pCameraRoot; }
+	inline deCamera *GetRootCamera() const{ return pCameras.GetRootOwner(); }
 	
 	/**
 	 * \brief Add camera.
@@ -362,11 +310,14 @@ public:
 	
 	/** \name Colliders */
 	/*@{*/
+	/** \brief Colliders. */
+	inline const decTObjectLinkedList<deCollider> &GetColliders() const{ return pColliders; }
+	
 	/** \brief Count of colliders. */
-	inline int GetColliderCount() const{ return pColliderCount; }
+	inline int GetColliderCount() const{ return pColliders.GetCount(); }
 	
 	/** \brief Root collider or NULL if there are none. */
-	inline deCollider *GetRootCollider() const{ return pColliderRoot; }
+	inline deCollider *GetRootCollider() const{ return pColliders.GetRootOwner(); }
 	
 	/**
 	 * \brief Add collider.
@@ -390,11 +341,14 @@ public:
 	
 	/** \name Components */
 	/*@{*/
+	/** \brief Components. */
+	inline const decTObjectLinkedList<deComponent> &GetComponents() const{ return pComponents; }
+	
 	/** \brief Count of components. */
-	inline int GetComponentCount() const{ return pComponentCount; }
+	inline int GetComponentCount() const{ return pComponents.GetCount(); }
 	
 	/** \brief Root component or NULL if there are none. */
-	inline deComponent *GetRootComponent() const{ return pComponentRoot; }
+	inline deComponent *GetRootComponent() const{ return pComponents.GetRootOwner(); }
 	
 	/**
 	 * \brief Add component.
@@ -418,11 +372,14 @@ public:
 	
 	/** \name Debug drawers */
 	/*@{*/
+	/** \brief Debug drawers. */
+	inline const decTObjectLinkedList<deDebugDrawer> &GetDebugDrawers() const{ return pDebugDrawers; }
+	
 	/** \brief Count of debug drawers. */
-	inline int GetDebugDrawerCount() const{ return pDebugDrawerCount; }
+	inline int GetDebugDrawerCount() const{ return pDebugDrawers.GetCount(); }
 	
 	/** \brief Root debug drawer or NULL if there are none. */
-	inline deDebugDrawer *GetRootDebugDrawer() const{ return pDebugDrawerRoot; }
+	inline deDebugDrawer *GetRootDebugDrawer() const{ return pDebugDrawers.GetRootOwner(); }
 	
 	/**
 	 * \brief Add debugDrawer.
@@ -446,11 +403,14 @@ public:
 	
 	/** \name Environment map probes. */
 	/*@{*/
+	/** \brief Environment map probes. */
+	inline const decTObjectLinkedList<deEnvMapProbe> &GetEnvMapProbes() const{ return pEnvMapProbes; }
+	
 	/** \brief Count of environment map probes. */
-	inline int GetEnvMapProbeCount() const{ return pEnvMapProbeCount; }
+	inline int GetEnvMapProbeCount() const{ return pEnvMapProbes.GetCount(); }
 	
 	/** \brief Root environment map probe or NULL if there are none. */
-	inline deEnvMapProbe *GetRootEnvMapProbe() const{ return pEnvMapProbeRoot; }
+	inline deEnvMapProbe *GetRootEnvMapProbe() const{ return pEnvMapProbes.GetRootOwner(); }
 	
 	/**
 	 * \brief Add environment map probe.
@@ -474,11 +434,14 @@ public:
 	
 	/** \name Force fields */
 	/*@{*/
+	/** \brief Force fields. */
+	inline const decTObjectLinkedList<deForceField> &GetForceFields() const{ return pForceFields; }
+	
 	/** \brief Count of force fields. */
-	inline int GetForceFieldCount() const{ return pForceFieldCount; }
+	inline int GetForceFieldCount() const{ return pForceFields.GetCount(); }
 	
 	/** \brief Root force field or NULL if there are none. */
-	inline deForceField *GetRootForceField() const{ return pForceFieldRoot; }
+	inline deForceField *GetRootForceField() const{ return pForceFields.GetRootOwner(); }
 	
 	/**
 	 * \brief Add force field.
@@ -502,11 +465,14 @@ public:
 	
 	/** \name Lights */
 	/*@{*/
+	/** \brief Lights. */
+	inline const decTObjectLinkedList<deLight> &GetLights() const{ return pLights; }
+	
 	/** \brief Count of lights. */
-	inline int GetLightCount() const{ return pLightCount; }
+	inline int GetLightCount() const{ return pLights.GetCount(); }
 	
 	/** \brief Root light or NULL if there are none. */
-	inline deLight *GetRootLight() const{ return pLightRoot; }
+	inline deLight *GetRootLight() const{ return pLights.GetRootOwner(); }
 	
 	/**
 	 * \brief Add light.
@@ -530,11 +496,14 @@ public:
 	
 	/** \name Lumimeters */
 	/*@{*/
+	/** \brief Lumimeters. */
+	inline const decTObjectLinkedList<deLumimeter> &GetLumimeters() const{ return pLumimeters; }
+	
 	/** \brief Count of lumimeters. */
-	inline int GetLumimeterCount() const{ return pLumimeterCount; }
+	inline int GetLumimeterCount() const{ return pLumimeters.GetCount(); }
 	
 	/** \brief Root lumimeter or NULL if there are none. */
-	inline deLumimeter *GetRootLumimeter() const{ return pLumimeterRoot; }
+	inline deLumimeter *GetRootLumimeter() const{ return pLumimeters.GetRootOwner(); }
 	
 	/**
 	 * \brief Add lumimeter.
@@ -558,11 +527,14 @@ public:
 	
 	/** \name Microphones */
 	/*@{*/
+	/** \brief Microphone. */
+	inline const decTObjectLinkedList<deMicrophone> &GetMicrophones() const{ return pMicrophones; }
+	
 	/** \brief Count of microphones. */
-	inline int GetMicrophoneCount() const{ return pMicrophoneCount; }
+	inline int GetMicrophoneCount() const{ return pMicrophones.GetCount(); }
 	
 	/** \brief Root microphone or NULL if there are none. */
-	inline deMicrophone *GetRootMicrophone() const{ return pMicrophoneRoot; }
+	inline deMicrophone *GetRootMicrophone() const{ return pMicrophones.GetRootOwner(); }
 	
 	/**
 	 * \brief Add microphone.
@@ -586,11 +558,14 @@ public:
 	
 	/** \name Navigation spaces */
 	/*@{*/
+	/** \brief Navigation spaces. */
+	inline const decTObjectLinkedList<deNavigationSpace> &GetNavigationSpaces() const{ return pNavigationSpaces; }
+	
 	/** \brief Count of navigation spaces. */
-	inline int GetNavigationSpaceCount() const{ return pNavSpaceCount; }
+	inline int GetNavigationSpaceCount() const{ return pNavigationSpaces.GetCount(); }
 	
 	/** \brief Root navigation space or NULL if there are none. */
-	inline deNavigationSpace *GetRootNavigationSpace() const{ return pNavSpaceRoot; }
+	inline deNavigationSpace *GetRootNavigationSpace() const{ return pNavigationSpaces.GetRootOwner(); }
 	
 	/**
 	 * \brief Add navigation space.
@@ -614,11 +589,14 @@ public:
 	
 	/** \name Navigation blockers */
 	/*@{*/
+	/** \brief Navigation blockers. */
+	inline const decTObjectLinkedList<deNavigationBlocker> &GetNavigationBlockers() const{ return pNavigationBlockers; }
+	
 	/** \brief Count of navigation blockers. */
-	inline int GetNavigationBlockerCount() const{ return pNavBlockerCount; }
+	inline int GetNavigationBlockerCount() const{ return pNavigationBlockers.GetCount(); }
 	
 	/** \brief Root navigation blocker or NULL if there are none. */
-	inline deNavigationBlocker *GetRootNavigationBlocker() const{ return pNavBlockerRoot; }
+	inline deNavigationBlocker *GetRootNavigationBlocker() const{ return pNavigationBlockers.GetRootOwner(); }
 	
 	/**
 	 * \brief Add navigation blocker.
@@ -642,11 +620,14 @@ public:
 	
 	/** \name Navigators */
 	/*@{*/
+	/** \brief Navigators. */
+	inline const decTObjectLinkedList<deNavigator> &GetNavigators() const{ return pNavigators; }
+	
 	/** \brief Count of navigators. */
-	inline int GetNavigatorCount() const{ return pNavigatorCount; }
+	inline int GetNavigatorCount() const{ return pNavigators.GetCount(); }
 	
 	/** \brief Root navigator or NULL if there are none. */
-	inline deNavigator *GetRootNavigator() const{ return pNavigatorRoot; }
+	inline deNavigator *GetRootNavigator() const{ return pNavigators.GetRootOwner(); }
 	
 	/**
 	 * \brief Add navigator.
@@ -670,11 +651,14 @@ public:
 	
 	/** \name Network states */
 	/*@{*/
+	/** \brief Network states. */
+	inline const decTObjectLinkedList<deNetworkState> &GetNetworkStates() const{ return pNetworkStates; }
+	
 	/** \brief Count of network states. */
-	inline int GetNetworkStateCount() const{ return pNetworkStateCount; }
+	inline int GetNetworkStateCount() const{ return pNetworkStates.GetCount(); }
 	
 	/** \brief Root network state or NULL if there are none. */
-	inline deNetworkState *GetRootNetworkState() const{ return pNetworkStateRoot; }
+	inline deNetworkState *GetRootNetworkState() const{ return pNetworkStates.GetRootOwner(); }
 	
 	/**
 	 * \brief Add network state.
@@ -698,11 +682,14 @@ public:
 	
 	/** \name Particle emitters */
 	/*@{*/
+	/** \brief Particle emitters. */
+	inline const decTObjectLinkedList<deParticleEmitterInstance> &GetParticleEmitters() const{ return pParticleEmitters; }
+	
 	/** \brief Count of particle emitters. */
-	inline int GetParticleEmitterCount() const{ return pParticleEmitterCount; }
+	inline int GetParticleEmitterCount() const{ return pParticleEmitters.GetCount(); }
 	
 	/** \brief Root particle emitter or NULL if there are none. */
-	inline deParticleEmitterInstance *GetRootParticleEmitter() const{ return pParticleEmitterRoot; }
+	inline deParticleEmitterInstance *GetRootParticleEmitter() const{ return pParticleEmitters.GetRootOwner(); }
 	
 	/**
 	 * \brief Add particle emitter.
@@ -726,11 +713,14 @@ public:
 	
 	/** \name Prop fields */
 	/*@{*/
+	/** \brief Prop fields. */
+	inline const decTObjectLinkedList<dePropField> &GetPropFields() const{ return pPropFields; }
+	
 	/** \brief Count of prop fields. */
-	inline int GetPropFieldCount() const{ return pPropFieldCount; }
+	inline int GetPropFieldCount() const{ return pPropFields.GetCount(); }
 	
 	/** \brief Root prop field or NULL if there are none. */
-	inline dePropField *GetRootPropField() const{ return pPropFieldRoot; }
+	inline dePropField *GetRootPropField() const{ return pPropFields.GetRootOwner(); }
 	
 	/**
 	 * \brief Add prop field.
@@ -754,11 +744,14 @@ public:
 	
 	/** \name Speakers */
 	/*@{*/
-	/** \brief Count of speakers. */
-	inline int GetSpeakerCount() const{ return pSpeakerCount; }
+	/** \brief Speakers. */
+	inline const decTObjectLinkedList<deSpeaker> &GetSpeakers() const{ return pSpeakers; }
 	
-	/** \brief Root speaker or NULL if there are none. */
-	inline deSpeaker *GetRootSpeaker() const{ return pSpeakerRoot; }
+	/** \brief Number of speakers. */
+	inline int GetSpeakerCount() const{ return pSpeakers.GetCount(); }
+	
+	/** \brief Root speaker or \em NULL if there are none. */
+	inline deSpeaker *GetRootSpeaker() const{ return pSpeakers.GetRootOwner(); }
 	
 	/**
 	 * \brief Add speaker.
@@ -782,11 +775,14 @@ public:
 	
 	/** \name Sound level meters */
 	/*@{*/
+	/** \brief Sound level meters. */
+	inline const decTObjectLinkedList<deSoundLevelMeter> &GetSoundLevelMeters() const{ return pSoundLevelMeters; }
+	
 	/** \brief Count of sound level meters. */
-	inline int GetSoundLevelMeterCount() const{ return pSoundLevelMeterCount; }
+	inline int GetSoundLevelMeterCount() const{ return pSoundLevelMeters.GetCount(); }
 	
 	/** \brief Root sound level meter or NULL if there are none. */
-	inline deSoundLevelMeter *GetRootSoundLevelMeter() const{ return pSoundLevelMeterRoot; }
+	inline deSoundLevelMeter *GetRootSoundLevelMeter() const{ return pSoundLevelMeters.GetRootOwner(); }
 	
 	/**
 	 * \brief Add sound level meter.
@@ -810,11 +806,14 @@ public:
 	
 	/** \name Touch sensors */
 	/*@{*/
+	/** \brief Touch sensors. */
+	inline const decTObjectLinkedList<deTouchSensor> &GetTouchSensors() const{ return pTouchSensors; }
+	
 	/** \brief Count of touch sensors. */
-	inline int GetTouchSensorCount() const{ return pTouchSensorCount; }
+	inline int GetTouchSensorCount() const{ return pTouchSensors.GetCount(); }
 	
 	/** \brief Root touch sensor or NULL if there are none. */
-	inline deTouchSensor *GetRootTouchSensor() const{ return pTouchSensorRoot; }
+	inline deTouchSensor *GetRootTouchSensor() const{ return pTouchSensors.GetRootOwner(); }
 	
 	/**
 	 * \brief Add touch sensor.
@@ -838,11 +837,14 @@ public:
 	
 	/** \name Smoke emitters */
 	/*@{*/
+	/** \brief Smoke emitters. */
+	inline const decTObjectLinkedList<deSmokeEmitter> &GetSmokeEmitters() const{ return pSmokeEmitters; }
+	
 	/** \brief Count of smoke emitters. */
-	inline int GetSmokeEmitterCount() const{ return pSmokeEmitterCount; }
+	inline int GetSmokeEmitterCount() const{ return pSmokeEmitters.GetCount(); }
 	
 	/** \brief Root smoke emitter or NULL if there are none. */
-	inline deSmokeEmitter *GetRootSmokeEmitter() const{ return pSmokeEmitterRoot; }
+	inline deSmokeEmitter *GetRootSmokeEmitter() const{ return pSmokeEmitters.GetRootOwner(); }
 	
 	/**
 	 * \brief Add smoke emitter.

@@ -266,21 +266,18 @@ void deSkinManager::LoadPropertyResources(deSkin &skin){
 }
 
 
-
 void deSkinManager::ReleaseLeakingResources(){
 	const int count = GetSkinCount();
 	
 	if(count > 0){
-		deSkin *skin = (deSkin*)pSkins.GetRoot();
-		
 		LogWarnFormat("%i leaking skins", count);
 		
-		while(skin){
+		pSkins.GetResources().Visit([&](deResource *res){
+			deSkin *skin = static_cast<deSkin*>(res);
 			LogWarnFormat("- %s", skin->GetFilename().GetString());
-			skin = (deSkin*)skin->GetLLManagerNext();
-		}
+		});
 		
-		pSkins.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
+		pSkins.RemoveAll(); // we do not delete them to avoid crashes. better leak than crash
 	}
 }
 
@@ -290,69 +287,54 @@ void deSkinManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deSkinManager::SystemGraphicLoad(){
-	deSkin *skin = (deSkin*)pSkins.GetRoot();
-	deGraphicSystem &grasys = *GetGraphicSystem();
+	deGraphicSystem &graSys = *GetGraphicSystem();
 	
-	while(skin){
+	pSkins.GetResources().Visit([&](deResource *res){
+		deSkin *skin = static_cast<deSkin*>(res);
 		if(!skin->GetPeerGraphic()){
-			grasys.LoadSkin(skin);
+			graSys.LoadSkin(skin);
 		}
-		
-		skin = (deSkin*)skin->GetLLManagerNext();
-	}
+	});
 }
 
 void deSkinManager::SystemGraphicUnload(){
-	deSkin *skin = (deSkin*)pSkins.GetRoot();
-	
-	while(skin){
-		skin->SetPeerGraphic(nullptr);
-		skin = (deSkin*)skin->GetLLManagerNext();
-	}
+	pSkins.GetResources().Visit([](deResource *res){
+		static_cast<deSkin*>(res)->SetPeerGraphic(nullptr);
+	});
 }
 
 void deSkinManager::SystemAudioLoad(){
-	deSkin *skin = (deSkin*)pSkins.GetRoot();
-	deAudioSystem &audsys = *GetAudioSystem();
+	deAudioSystem &audSys = *GetAudioSystem();
 	
-	while(skin){
+	pSkins.GetResources().Visit([&](deResource *res){
+		deSkin *skin = static_cast<deSkin*>(res);
 		if(!skin->GetPeerAudio()){
-			audsys.LoadSkin(skin);
+			audSys.LoadSkin(skin);
 		}
-		
-		skin = (deSkin*)skin->GetLLManagerNext();
-	}
+	});
 }
 
 void deSkinManager::SystemAudioUnload(){
-	deSkin *skin = (deSkin*)pSkins.GetRoot();
-	
-	while(skin){
-		skin->SetPeerAudio(nullptr);
-		skin = (deSkin*)skin->GetLLManagerNext();
-	}
+	pSkins.GetResources().Visit([](deResource *res){
+		static_cast<deSkin*>(res)->SetPeerAudio(nullptr);
+	});
 }
 
 void deSkinManager::SystemPhysicsLoad(){
-	deSkin *skin = (deSkin*)pSkins.GetRoot();
-	dePhysicsSystem &physys = *GetPhysicsSystem();
+	dePhysicsSystem &phySys = *GetPhysicsSystem();
 	
-	while(skin){
+	pSkins.GetResources().Visit([&](deResource *res){
+		deSkin *skin = static_cast<deSkin*>(res);
 		if(!skin->GetPeerPhysics()){
-			physys.LoadSkin(skin);
+			phySys.LoadSkin(skin);
 		}
-		
-		skin = (deSkin*)skin->GetLLManagerNext();
-	}
+	});
 }
 
 void deSkinManager::SystemPhysicsUnload(){
-	deSkin *skin = (deSkin*)pSkins.GetRoot();
-	
-	while(skin){
-		skin->SetPeerPhysics(nullptr);
-		skin = (deSkin*)skin->GetLLManagerNext();
-	}
+	pSkins.GetResources().Visit([&](deResource *res){
+		static_cast<deSkin*>(res)->SetPeerPhysics(nullptr);
+	});
 }
 
 void deSkinManager::RemoveResource(deResource *resource){

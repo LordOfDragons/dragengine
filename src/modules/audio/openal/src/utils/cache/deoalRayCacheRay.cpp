@@ -52,8 +52,7 @@ pLength(length),
 pHits(nullptr),
 pHitCount(0),
 pOctreeNode(nullptr),
-pLLPrev(nullptr),
-pLLNext(nullptr)
+pLLRays(this)
 {
 	const int elementCount = elements.GetCount();
 	if(elementCount == 0){
@@ -82,8 +81,7 @@ pLength(length),
 pHits(nullptr),
 pHitCount(0),
 pOctreeNode(nullptr),
-pLLPrev(nullptr),
-pLLNext(nullptr)
+pLLRays(this)
 {
 	const int count = result.GetElementCount();
 	if(count == 0){
@@ -112,8 +110,7 @@ pLength(length),
 pHits(nullptr),
 pHitCount(0),
 pOctreeNode(nullptr),
-pLLPrev(nullptr),
-pLLNext(nullptr)
+pLLRays(this)
 {
 	if(elementCount == 0){
 		return;
@@ -155,12 +152,4 @@ const deoalRayCacheRayHit &deoalRayCacheRay::GetHitAt(int index) const{
 
 void deoalRayCacheRay::SetOctreeNode(deoalRayCacheOctree *node){
 	pOctreeNode = node;
-}
-
-void deoalRayCacheRay::SetLLPrev(deoalRayCacheRay *ray){
-	pLLPrev = ray;
-}
-
-void deoalRayCacheRay::SetLLNext(deoalRayCacheRay *ray) {
-	pLLNext = ray;
 }

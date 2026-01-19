@@ -89,49 +89,36 @@ void deServerManager::ReleaseLeakingResources(){
 
 // Systems Support
 ////////////////////
-
 void deServerManager::SystemNetworkLoad(){
-	deServer *server = (deServer*)pServers.GetRoot();
 	deNetworkSystem &netSys = *GetNetworkSystem();
-	
-	while(server){
+	pServers.GetResources().Visit([&](deResource *res){
+		deServer *server = static_cast<deServer*>(res);
 		if(!server->GetPeerNetwork()){
 			netSys.LoadServer(server);
 		}
-		
-		server = (deServer*)server->GetLLManagerNext();
-	}
+	});
 }
 
 void deServerManager::SystemNetworkUnload(){
-	deServer *server = (deServer*)pServers.GetRoot();
-	
-	while(server){
-		server->SetPeerNetwork(nullptr);
-		server = (deServer*)server->GetLLManagerNext();
-	}
+	pServers.GetResources().Visit([](deResource *res){
+		static_cast<deServer*>(res)->SetPeerNetwork(nullptr);
+	});
 }
 
 void deServerManager::SystemScriptingLoad(){
-	deServer *server = (deServer*)pServers.GetRoot();
 	deScriptingSystem &scrSys = *GetScriptingSystem();
-	
-	while(server){
+	pServers.GetResources().Visit([&](deResource *res){
+		deServer *server = static_cast<deServer*>(res);
 		if(!server->GetPeerScripting()){
 			scrSys.LoadServer(server);
 		}
-		
-		server = (deServer*)server->GetLLManagerNext();
-	}
+	});
 }
 
 void deServerManager::SystemScriptingUnload(){
-	deServer *server = (deServer*)pServers.GetRoot();
-	
-	while(server){
-		server->SetPeerScripting(nullptr);
-		server = (deServer*)server->GetLLManagerNext();
-	}
+	pServers.GetResources().Visit([](deResource *res){
+		static_cast<deServer*>(res)->SetPeerScripting(nullptr);
+	});
 }
 
 void deServerManager::RemoveResource(deResource *resource){

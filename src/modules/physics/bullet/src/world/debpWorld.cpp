@@ -179,23 +179,17 @@ pProcessingPhysics(false)
 		HeightTerrainChanged();
 		PhysicsChanged();
 		
-		deCollider *collider = world.GetRootCollider();
-		while(collider){
+		world.GetColliders().Visit([&](deCollider *collider){
 			ColliderAdded(collider);
-			collider = collider->GetLLWorldNext();
-		}
+		});
 		
-		deTouchSensor *touchSensor = world.GetRootTouchSensor();
-		while(touchSensor){
+		world.GetTouchSensors().Visit([&](deTouchSensor *touchSensor){
 			TouchSensorAdded(touchSensor);
-			touchSensor = touchSensor->GetLLWorldNext();
-		}
+		});
 		
-		deParticleEmitterInstance *emitter = world.GetRootParticleEmitter();
-		while(emitter){
+		world.GetParticleEmitters().Visit([&](deParticleEmitterInstance *emitter){
 			ParticleEmitterAdded(emitter);
-			emitter = emitter->GetLLWorldNext();
-		}
+		});
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -669,11 +663,9 @@ DEBUG_PRINT_TIMER_TOTAL();
 	if(pBullet.GetDeveloperMode().GetEnabled()
 	&& pBullet.GetDeveloperMode().GetShowCategory().MatchesNot(pLastDebugShowCategory)){
 		pLastDebugShowCategory = pBullet.GetDeveloperMode().GetShowCategory();
-		deCollider *collider = pWorld.GetRootCollider();
-		while(collider){
+		pWorld.GetColliders().Visit([](deCollider *collider){
 			((debpCollider*)collider->GetPeerPhysics())->UpdateDebugDrawer();
-			collider = collider->GetLLWorldNext();
-		}
+		});
 	}
 }
 
@@ -692,11 +684,9 @@ void debpWorld::PhysicsChanged(){
 		pGravity = gravity;
 		
 		// notify colliders the gravity potentially changed
-		deCollider *collider = pWorld.GetRootCollider();
-		while(collider){
+		pWorld.GetColliders().Visit([](deCollider *collider){
 			((debpCollider*)collider->GetPeerPhysics())->GravityChanged();
-			collider = collider->GetLLWorldNext();
-		}
+		});
 		
 		// update the gravity in all particle systems
 		/*
@@ -749,19 +739,17 @@ void debpWorld::ColliderRemoved(deCollider *collider){
 	((debpCollider*)collider->GetPeerPhysics())->SetParentWorld(NULL);
 	
 	if(pDetNextCollider == collider){
-		pDetNextCollider = pDetNextCollider->GetLLWorldNext();
+		pDetNextCollider = static_cast<deCollider*>(pDetNextCollider->GetLLWorld().GetNext() ? pDetNextCollider->GetLLWorld().GetNext()->GetOwner() : nullptr);
 	}
 }
 
 void debpWorld::AllCollidersRemoved(){
-	deCollider *collider = pWorld.GetRootCollider();
-	while(collider){
+	pWorld.GetColliders().Visit([](deCollider *collider){
 		debpCollider * const bpCollider = (debpCollider*)collider->GetPeerPhysics();
 		if(bpCollider){
 			bpCollider->SetParentWorld(NULL);
 		}
-		collider = collider->GetLLWorldNext();
-	}
+	});
 	
 	pDetNextCollider = NULL;
 }
@@ -772,7 +760,7 @@ void debpWorld::TouchSensorAdded(deTouchSensor *touchSensor){
 
 void debpWorld::TouchSensorRemoved(deTouchSensor *touchSensor){
 	if(pDetNextTouchSensor == touchSensor){
-		pDetNextTouchSensor = pDetNextTouchSensor->GetLLWorldNext();
+		pDetNextTouchSensor = static_cast<deTouchSensor*>(pDetNextTouchSensor->GetLLWorld().GetNext() ? pDetNextTouchSensor->GetLLWorld().GetNext()->GetOwner() : nullptr);
 	}
 	
 	((debpTouchSensor*)touchSensor->GetPeerPhysics())->SetParentWorld(NULL);
@@ -781,14 +769,12 @@ void debpWorld::TouchSensorRemoved(deTouchSensor *touchSensor){
 void debpWorld::AllTouchSensorsRemoved(){
 	pDetNextTouchSensor = NULL;
 	
-	deTouchSensor *touchSensor = pWorld.GetRootTouchSensor();
-	while(touchSensor){
+	pWorld.GetTouchSensors().Visit([](deTouchSensor *touchSensor){
 		debpTouchSensor * const bpTouchSensor = (debpTouchSensor*)touchSensor->GetPeerPhysics();
 		if(bpTouchSensor){
 			bpTouchSensor->SetParentWorld(NULL);
 		}
-		touchSensor = touchSensor->GetLLWorldNext();
-	}
+	});
 }
 
 
@@ -821,28 +807,21 @@ void debpWorld::AllForceFieldsRemoved(){
 
 void debpWorld::ParticleEmitterAdded(deParticleEmitterInstance *emitter){
 	debpParticleEmitterInstance *peer = (debpParticleEmitterInstance*)emitter->GetPeerPhysics();
-	
 	peer->SetParentWorld(this);
 }
 
 void debpWorld::ParticleEmitterRemoved(deParticleEmitterInstance *emitter){
 	debpParticleEmitterInstance *peer = (debpParticleEmitterInstance*)emitter->GetPeerPhysics();
-	
-	peer->SetParentWorld(NULL);
+	peer->SetParentWorld(nullptr);
 }
 
 void debpWorld::AllParticleEmittersRemoved(){
-	deParticleEmitterInstance *emitter = pWorld.GetRootParticleEmitter();
-	debpParticleEmitterInstance *peer;
-	
-	while(emitter){
-		peer = (debpParticleEmitterInstance*)emitter->GetPeerPhysics();
-		emitter = emitter->GetLLWorldNext();
-		
+	pWorld.GetParticleEmitters().Visit([](deParticleEmitterInstance *emitter){
+		auto peer = (debpParticleEmitterInstance*)emitter->GetPeerPhysics();
 		if(peer){
-			peer->SetParentWorld(NULL);
+			peer->SetParentWorld(nullptr);
 		}
-	}
+	});
 }
 
 
@@ -1124,11 +1103,9 @@ void debpWorld::pPrepareDetection(float elapsed){
 	//         would be to call RegisterColDetPrepare() inside force field Updaet() call for
 	
 	// prepare force fields for collision detection
-	deForceField *forceField = pWorld.GetRootForceField();
-	while(forceField){
+	pWorld.GetForceFields().Visit([&](deForceField *forceField){
 		((debpForceField*)forceField->GetPeerPhysics())->Update(elapsed);
-		forceField = forceField->GetLLWorldNext();
-	}
+	});
 	
 	// prepare colliders for collision detection
 	debpDebugInformation *debugInfo = NULL;
@@ -1256,19 +1233,16 @@ void debpWorld::pStepForceFields(float elapsed){
 	//float elapsedDamped = 0.5f * elapsed; // 5%
 	
 	// update prop fields if required
-	dePropField *propField = pWorld.GetRootPropField();
-	while(propField){
+	pWorld.GetPropFields().Visit([&](dePropField *propField){
 		((debpPropField*)propField->GetPeerPhysics())->Update(elapsed);
-		propField = propField->GetLLWorldNext();
-	}
+	});
 	
 	const float flucAngle = DEG2RAD * 180.0f;
 	float flucDirSin, flucDirCos, flucStr;
 	float forceFactor;
 	
 	// apply force field influences
-	deForceField *forceField = pWorld.GetRootForceField();
-	while(forceField){
+	pWorld.GetForceFields().Visit([&](deForceField *forceField){
 		debpForceField &btForceField = *((debpForceField*)forceField->GetPeerPhysics());
 		
 		//const decMatrix &ffMatVortex = forceField->GetVortexMatrix();
@@ -1283,12 +1257,10 @@ void debpWorld::pStepForceFields(float elapsed){
 		const deForceField::eApplicationTypes ffApplyType = forceField->GetApplicationType();
 		
 		if(ffApplyType == deForceField::eatSpeed){
-			forceField = forceField->GetLLWorldNext();
-			continue; // props do not move so this force field has no effect
+			return; // props do not move so this force field has no effect
 		}
 		
-		propField = pWorld.GetRootPropField();
-		while(propField){
+		pWorld.GetPropFields().Visit([&](dePropField *propField){
 			const decDVector &pfpos = propField->GetPosition();
 			
 			debpPropField &btPropField = *((debpPropField*)propField->GetPeerPhysics());
@@ -1372,12 +1344,8 @@ void debpWorld::pStepForceFields(float elapsed){
 					}
 				}
 			}
-			
-			propField = propField->GetLLWorldNext();
-		}
-		
-		forceField = forceField->GetLLWorldNext();
-	}
+		});
+	});
 	
 	// apply restoration force and update position
 	float damping = powf(1.0f - 0.5f, elapsed); //1.0f - 0.2f * elapsed; // 5%
@@ -1387,8 +1355,7 @@ void debpWorld::pStepForceFields(float elapsed){
 	float maxBendZ = DEG2RAD * 90.0f;
 	float restitution;
 	
-	propField = pWorld.GetRootPropField();
-	while(propField){
+	pWorld.GetPropFields().Visit([&](dePropField *propField){
 		//debpPropField &bpPropField = *( ( debpPropField* )propField->GetPeerPhysics() );
 		pfTypeCount = propField->GetTypeCount();
 		
@@ -1419,12 +1386,8 @@ void debpWorld::pStepForceFields(float elapsed){
 			
 			propField->NotifyBendStatesChanged(pt);
 		}
-		
-		propField = propField->GetLLWorldNext();
-	}
+	});
 }
-
-
 
 void debpWorld::pPrepareParticleEmitters(float elapsed){
 	// not used right now
@@ -1433,12 +1396,10 @@ void debpWorld::pPrepareParticleEmitters(float elapsed){
 void debpWorld::pStepParticleEmitters(float elapsed){
 // decTimer timer2;
 	// prepare particles. this applies also force fields if present
-	deParticleEmitterInstance *engEmitterInstance = pWorld.GetRootParticleEmitter();
-	while(engEmitterInstance){
+	pWorld.GetParticleEmitters().Visit([&](deParticleEmitterInstance *engEmitterInstance){
 		debpParticleEmitterInstance &emitterInstance = *((debpParticleEmitterInstance*)engEmitterInstance->GetPeerPhysics());
-		engEmitterInstance = engEmitterInstance->GetLLWorldNext();
 		emitterInstance.PrepareParticles(elapsed);
-	}
+	});
 	
 	// stpe particles
 	const float maxStepSize = 1.0f / 30.0f;
@@ -1446,24 +1407,20 @@ void debpWorld::pStepParticleEmitters(float elapsed){
 		const float stepElapsed = decMath::min(elapsed, maxStepSize);
 		
 		//int debugCount = 0;
-		engEmitterInstance = pWorld.GetRootParticleEmitter();
-		while(engEmitterInstance){
+		pWorld.GetParticleEmitters().Visit([&](deParticleEmitterInstance *engEmitterInstance){
 			debpParticleEmitterInstance &emitterInstance = *((debpParticleEmitterInstance*)engEmitterInstance->GetPeerPhysics());
-			engEmitterInstance = engEmitterInstance->GetLLWorldNext();
 			emitterInstance.StepParticles(stepElapsed);
 			//debugCount++;
-		}
+		});
 		//pBullet.LogInfoFormat( "pParticleEmittersStep: processed instances %i\n", debugCount );
 		
 		elapsed -= stepElapsed;
 	}
 	
-	engEmitterInstance = pWorld.GetRootParticleEmitter();
-	while(engEmitterInstance){
+	pWorld.GetParticleEmitters().Visit([&](deParticleEmitterInstance *engEmitterInstance){
 		debpParticleEmitterInstance &emitterInstance = *((debpParticleEmitterInstance*)engEmitterInstance->GetPeerPhysics());
-		engEmitterInstance = engEmitterInstance->GetLLWorldNext();
 		emitterInstance.FinishStepping();
-	}
+	});
 	
 //pBullet.LogInfoFormat( "pParticleEmittersStep = %iys", ( int )( timer2.GetElapsedTime() * 1000000.0f ) );
 //printf( "pParticleEmittersStep = %iys\n", ( int )( timer2.GetElapsedTime() * 1000000.0f ) );
@@ -1647,15 +1604,13 @@ void debpWorld::pApplyTouchSensorChanges(){
 		pPerfTimer.Reset();
 	}
 	
-	pDetNextTouchSensor = pWorld.GetRootTouchSensor();
-	while(pDetNextTouchSensor){
-		deTouchSensor * const touchSensor = pDetNextTouchSensor;
-		pDetNextTouchSensor = pDetNextTouchSensor->GetLLWorldNext();
+	pDetNextTouchSensor = nullptr;
+	pWorld.GetTouchSensors().Visit([&](deTouchSensor *touchSensor){
 		((debpTouchSensor*)touchSensor->GetPeerPhysics())->ApplyChanges();
 		
 		if(debugInfo){
 			debugInfo->IncrementElapsedTime(pPerfTimer.GetElapsedTime());
 			debugInfo->IncrementCounter(1);
 		}
-	}
+	});
 }

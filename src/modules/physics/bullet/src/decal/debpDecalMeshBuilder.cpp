@@ -329,7 +329,7 @@ void debpDecalMeshBuilder::Debug(dePhysicsBullet &module){
 		volume = pCVolList->GetVolumeAt(v);
 		module.LogInfoFormat("  volume %i: vertices(%i)", v + 1, volume->GetVertexCount());
 		volume->GetFaces().VisitIndexed([&](int f, const decConvexVolumeFace &face){
-			const debpDMBConvexVolumeFace &volumeFace = dynamic_cast<const debpDMBConvexVolumeFace&>(face);
+			const debpDMBConvexVolumeFace &volumeFace = static_cast<const debpDMBConvexVolumeFace&>(face);
 			vertexCount = volumeFace.GetVertexCount();
 			module.LogInfoFormat("    face %i: decal(%i)", f + 1, volumeFace.GetDecalFace() ? 1 : 0);
 			for(x=0; x<vertexCount; x++){

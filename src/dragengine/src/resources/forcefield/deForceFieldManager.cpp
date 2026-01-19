@@ -84,26 +84,20 @@ void deForceFieldManager::ReleaseLeakingResources(){
 
 // Systems Support
 ////////////////////
-
 void deForceFieldManager::SystemPhysicsLoad(){
-	deForceField *field = (deForceField*)pFields.GetRoot();
-	
-	while(field){
+	dePhysicsSystem &phySys = *GetPhysicsSystem();
+	pFields.GetResources().Visit([&](deResource *res){
+		deForceField *field = static_cast<deForceField*>(res);
 		if(!field->GetPeerPhysics()){
-			GetPhysicsSystem()->LoadForceField(field);
+			phySys.LoadForceField(field);
 		}
-		
-		field = (deForceField*)field->GetLLManagerNext();
-	}
+	});
 }
 
 void deForceFieldManager::SystemPhysicsUnload(){
-	deForceField *field = (deForceField*)pFields.GetRoot();
-	
-	while(field){
-		field->SetPeerPhysics(nullptr);
-		field = (deForceField*)field->GetLLManagerNext();
-	}
+	pFields.GetResources().Visit([&](deResource *res){
+		static_cast<deForceField*>(res)->SetPeerPhysics(nullptr);
+	});
 }
 
 

@@ -356,15 +356,11 @@ void deoalEnvironmentDebug::SoundRays(deDebugDrawer &debugDrawer, const deoalEnv
 //////////////////////
 
 void deoalEnvironmentDebug::pShowImpulseResponse(deDebugBlockInfo &debugInfo){
-	deCanvas *canvas = debugInfo.GetView()->GetRootCanvas();
 	deCanvasVisitorIdentify identify;
-	while(canvas){
-		canvas->Visit(identify);
-		if(canvas->GetSize() == pHistogramSize && identify.IsImage()){
-			break;
-		}
-		canvas = canvas->GetLLViewNext();
-	}
+	deCanvas *canvas = debugInfo.GetView()->GetCanvas().FindOrNull([&](deCanvas *c){
+		c->Visit(identify);
+		return c->GetSize() == pHistogramSize && identify.IsImage();
+	});
 	if(!canvas){
 		return;
 	}
@@ -449,15 +445,11 @@ void deoalEnvironmentDebug::pShowImpulseResponse(deDebugBlockInfo &debugInfo){
 }
 
 void deoalEnvironmentDebug::pShowEnergyHistogram(deDebugBlockInfo &debugInfo){
-	deCanvas *canvas = debugInfo.GetView()->GetRootCanvas();
 	deCanvasVisitorIdentify identify;
-	while(canvas){
-		canvas->Visit(identify);
-		if(canvas->GetSize() == pHistogramSize && identify.IsImage()){
-			break;
-		}
-		canvas = canvas->GetLLViewNext();
-	}
+	deCanvas *canvas = debugInfo.GetView()->GetCanvas().FindOrNull([&](deCanvas *c){
+		c->Visit(identify);
+		return c->GetSize() == pHistogramSize && identify.IsImage();
+	});
 	if(!canvas){
 		return;
 	}

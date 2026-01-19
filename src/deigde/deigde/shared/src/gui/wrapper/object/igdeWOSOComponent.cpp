@@ -193,31 +193,31 @@ public:
 // 			filename.GetString(), type, pCounter, pSuccess );
 		
 		if(type == deResourceLoader::ertModel && pPathAudioModel == filename){
-			pAudioModel = dynamic_cast<deModel*>(resource);
+			pAudioModel = static_cast<deModel*>(resource);
 			pCounter--;
 		}
 		if(type == deResourceLoader::ertOcclusionMesh && pPathOcclusionModel == filename){
-			pOcclusionMesh = dynamic_cast<deOcclusionMesh*>(resource);
+			pOcclusionMesh = static_cast<deOcclusionMesh*>(resource);
 			pCounter--;
 		}
 		if(type == deResourceLoader::ertAnimation && pPathAnimation == filename){
-			pAnimation = dynamic_cast<deAnimation*>(resource);
+			pAnimation = static_cast<deAnimation*>(resource);
 			pCounter--;
 		}
 		if(type == deResourceLoader::ertModel && pPathModel == filename){
-			pModel = dynamic_cast<deModel*>(resource);
+			pModel = static_cast<deModel*>(resource);
 			pCounter--;
 		}
 		if(type == deResourceLoader::ertSkin && pPathSkin == filename){
-			pSkin = dynamic_cast<deSkin*>(resource);
+			pSkin = static_cast<deSkin*>(resource);
 			pCounter--;
 		}
 		if(type == deResourceLoader::ertRig && pPathRig == filename){
-			pRig = dynamic_cast<deRig*>(resource);
+			pRig = static_cast<deRig*>(resource);
 			pCounter--;
 		}
 		if(pTextureSkins.Has(filename)){
-			pTextureSkins.SetAt(filename, dynamic_cast<deSkin*>(resource));
+			pTextureSkins.SetAt(filename, static_cast<deSkin*>(resource));
 			pCounter--;
 		}
 		

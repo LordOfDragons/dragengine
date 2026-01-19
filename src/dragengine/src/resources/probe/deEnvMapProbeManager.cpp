@@ -85,25 +85,19 @@ void deEnvMapProbeManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deEnvMapProbeManager::SystemGraphicLoad(){
-	deEnvMapProbe *envMapProbe = (deEnvMapProbe*)pEnvMapProbes.GetRoot();
 	deGraphicSystem &grasys = *GetGraphicSystem();
-	
-	while(envMapProbe){
+	pEnvMapProbes.GetResources().Visit([&](deResource *res){
+		deEnvMapProbe *envMapProbe = static_cast<deEnvMapProbe*>(res);
 		if(!envMapProbe->GetPeerGraphic()){
 			grasys.LoadEnvMapProbe(envMapProbe);
 		}
-		
-		envMapProbe = (deEnvMapProbe*)envMapProbe->GetLLManagerNext();
-	}
+	});
 }
 
 void deEnvMapProbeManager::SystemGraphicUnload(){
-	deEnvMapProbe *envMapProbe = (deEnvMapProbe*)pEnvMapProbes.GetRoot();
-	
-	while(envMapProbe){
-		envMapProbe->SetPeerGraphic(nullptr);
-		envMapProbe = (deEnvMapProbe*)envMapProbe->GetLLManagerNext();
-	}
+	pEnvMapProbes.GetResources().Visit([&](deResource *res){
+		static_cast<deEnvMapProbe*>(res)->SetPeerGraphic(nullptr);
+	});
 }
 
 

@@ -194,27 +194,22 @@ void deServiceManager::FrameUpdate(){
 }
 
 
-
 void deServiceManager::SystemScriptingLoad(){
-	deService *service = (deService*)pServices.GetRoot();
-	
-	while(service){
+	deScriptingSystem &scrSys = *GetScriptingSystem();
+	pServices.GetResources().Visit([&](deResource *res){
+		deService *service = static_cast<deService*>(res);
 		if(!service->GetPeerScripting()){
-			GetScriptingSystem()->CreateService(service);
+			scrSys.CreateService(service);
 		}
-		
-		service = (deService*) service->GetLLManagerNext();
-	}
+	});
 }
 
 void deServiceManager::SystemScriptingUnload(){
-	deService *service = (deService*)pServices.GetRoot();
-	
-	while(service){
-		service->SetPeerScripting(nullptr);
-		service = (deService*) service->GetLLManagerNext();
-	}
+	pServices.GetResources().Visit([](deResource *res){
+		static_cast<deService*>(res)->SetPeerScripting(nullptr);
+	});
 }
+
 void deServiceManager::RemoveResource(deResource *resource){
 	pServices.RemoveIfPresent(resource);
 	pDirtyModules = true;
@@ -233,11 +228,9 @@ void deServiceManager::pUpdateModuleList(){
 	pDirtyModules = false;
 	pModules.RemoveAll();
 	
-	const deService *service = (const deService*)pServices.GetRoot();
-	while(service){
-		pModules.Add(service->GetServiceModule());
-		service = (const deService*)service->GetLLManagerNext();
-	}
+	pServices.GetResources().Visit([&](deResource *res){
+		pModules.Add(static_cast<deService*>(res)->GetServiceModule());
+	});
 }
 
 void deServiceManager::pUpdateModules(){

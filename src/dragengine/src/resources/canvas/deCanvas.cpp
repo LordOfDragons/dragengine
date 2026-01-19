@@ -53,8 +53,7 @@ pPeerGraphic(nullptr),
 
 pParentMask(nullptr),
 pParentView(nullptr),
-pLLViewPrev(nullptr),
-pLLViewNext(nullptr){
+pLLView(this){
 }
 
 deCanvas::~deCanvas(){
@@ -227,12 +226,4 @@ void deCanvas::SetParentMask(deCanvas *canvas){
 
 void deCanvas::SetParentView(deCanvasView *view){
 	pParentView = view;
-}
-
-void deCanvas::SetLLViewPrev(deCanvas *canvas){
-	pLLViewPrev = canvas;
-}
-
-void deCanvas::SetLLViewNext(deCanvas *canvas){
-	pLLViewNext = canvas;
 }

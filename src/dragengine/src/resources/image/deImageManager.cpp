@@ -231,21 +231,18 @@ void deImageManager::AddLoadedImage(deImage *image){
 }
 
 
-
 void deImageManager::ReleaseLeakingResources(){
 	const int count = GetImageCount();
 	
 	if(count > 0){
-		deImage *image = (deImage*)pImages.GetRoot();
-		
 		LogWarnFormat("%i leaking images", count);
 		
-		while(image){
+		pImages.GetResources().Visit([&](deResource *res){
+			deImage *image = static_cast<deImage*>(res);
 			LogWarnFormat("- %s", image->GetFilename().IsEmpty() ? "<temporary>" : image->GetFilename().GetString());
-			image = (deImage*)image->GetLLManagerNext();
-		}
+		});
 		
-		pImages.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
+		pImages.RemoveAll(); // we do not delete them to avoid crashes. better leak than crash
 	}
 }
 
@@ -255,10 +252,10 @@ void deImageManager::ReleaseLeakingResources(){
 ///////////////////////////
 
 void deImageManager::SystemGraphicLoad(){
-	deImage *image = (deImage*)pImages.GetRoot();
 	deGraphicSystem &graSys = *GetGraphicSystem();
 	
-	while(image){
+	pImages.GetResources().Visit([&](deResource *res){
+		deImage *image = static_cast<deImage*>(res);
 		if(!image->GetPeerGraphic()){
 			image->RetainImageData();
 			try{
@@ -270,17 +267,13 @@ void deImageManager::SystemGraphicLoad(){
 			}
 			image->ReleaseImageData();
 		}
-		image = (deImage*)image->GetLLManagerNext();
-	}
+	});
 }
 
 void deImageManager::SystemGraphicUnload(){
-	deImage *image = (deImage*)pImages.GetRoot();
-	
-	while(image){
-		image->SetPeerGraphic(nullptr);
-		image = (deImage*)image->GetLLManagerNext();
-	}
+	pImages.GetResources().Visit([](deResource *res)->void{
+		static_cast<deImage*>(res)->SetPeerGraphic(nullptr);
+	});
 }
 
 

@@ -80,26 +80,20 @@ void deDebugDrawerManager::ReleaseLeakingResources(){
 
 // systems support
 ////////////////////
-
 void deDebugDrawerManager::SystemGraphicLoad(){
-	deDebugDrawer *debugDrawer = (deDebugDrawer*)pDebugDrawers.GetRoot();
-	
-	while(debugDrawer){
+	deGraphicSystem &graSys = *GetGraphicSystem();
+	pDebugDrawers.GetResources().Visit([&](deResource *res){
+		deDebugDrawer *debugDrawer = static_cast<deDebugDrawer*>(res);
 		if(!debugDrawer->GetPeerGraphic()){
-			GetGraphicSystem()->LoadDebugDrawer(debugDrawer);
+			graSys.LoadDebugDrawer(debugDrawer);
 		}
-		
-		debugDrawer = (deDebugDrawer*)debugDrawer->GetLLManagerNext();
-	}
+	});
 }
 
 void deDebugDrawerManager::SystemGraphicUnload(){
-	deDebugDrawer *debugDrawer = (deDebugDrawer*)pDebugDrawers.GetRoot();
-	
-	while(debugDrawer){
-		debugDrawer->SetPeerGraphic(nullptr);
-		debugDrawer = (deDebugDrawer*)debugDrawer->GetLLManagerNext();
-	}
+	pDebugDrawers.GetResources().Visit([&](deResource *res){
+		static_cast<deDebugDrawer*>(res)->SetPeerGraphic(nullptr);
+	});
 }
 
 void deDebugDrawerManager::RemoveResource(deResource *resource){

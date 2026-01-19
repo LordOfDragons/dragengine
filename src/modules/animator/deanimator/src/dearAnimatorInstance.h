@@ -28,9 +28,9 @@
 #include <dragengine/systems/modules/animator/deBaseAnimatorAnimatorInstance.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decTList.h>
-#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/collection/decTUniqueList.h>
+#include <dragengine/resources/component/deComponent.h>
 
 #include "dearBoneStateList.h"
 #include "dearVPSStateList.h"
@@ -74,6 +74,7 @@ private:
 	
 	dearAnimation *pAnimation;
 	dearComponent *pComponent;
+	deComponent::Ref pEngComponent;
 	
 	dearBoneStateList pBoneStateList;
 	decTList<int> pMappingRigToState;

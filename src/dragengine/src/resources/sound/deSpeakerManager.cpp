@@ -91,48 +91,36 @@ void deSpeakerManager::ReleaseLeakingResources(){
 
 // Systems Support
 ////////////////////
-
 void deSpeakerManager::SystemAudioLoad(){
-	deSpeaker *speaker = (deSpeaker*)pSpeakers.GetRoot();
 	deAudioSystem &audSys = *GetAudioSystem();
-	
-	while(speaker){
+	pSpeakers.GetResources().Visit([&](deResource *res){
+		deSpeaker *speaker = static_cast<deSpeaker*>(res);
 		if(!speaker->GetPeerAudio()){
 			audSys.LoadSpeaker(speaker);
 		}
-		
-		speaker = (deSpeaker*)speaker->GetLLManagerNext();
-	}
+	});
 }
 
 void deSpeakerManager::SystemAudioUnload(){
-	deSpeaker *speaker = (deSpeaker*)pSpeakers.GetRoot();
-	
-	while(speaker){
-		speaker->SetPeerAudio(nullptr);
-		speaker = (deSpeaker*)speaker->GetLLManagerNext();
-	}
+	pSpeakers.GetResources().Visit([](deResource *res){
+		static_cast<deSpeaker*>(res)->SetPeerAudio(nullptr);
+	});
 }
 
 void deSpeakerManager::SystemScriptingLoad(){
-	deSpeaker *speaker = (deSpeaker*)pSpeakers.GetRoot();
 	deScriptingSystem &scriptingSystem = *GetScriptingSystem();
-	
-	while(speaker){
+	pSpeakers.GetResources().Visit([&](deResource *res){
+		deSpeaker *speaker = static_cast<deSpeaker*>(res);
 		if(!speaker->GetPeerScripting()){
 			scriptingSystem.LoadSpeaker(speaker);
 		}
-		speaker = (deSpeaker*)speaker->GetLLManagerNext();
-	}
+	});
 }
 
 void deSpeakerManager::SystemScriptingUnload(){
-	deSpeaker *speaker = (deSpeaker*)pSpeakers.GetRoot();
-	
-	while(speaker){
-		speaker->SetPeerScripting(nullptr);
-		speaker = (deSpeaker*)speaker->GetLLManagerNext();
-	}
+	pSpeakers.GetResources().Visit([](deResource *res){
+		static_cast<deSpeaker*>(res)->SetPeerScripting(nullptr);
+	});
 }
 
 

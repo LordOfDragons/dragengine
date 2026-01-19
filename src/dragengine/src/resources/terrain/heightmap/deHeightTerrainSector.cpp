@@ -66,10 +66,7 @@ pSector(sector),
 pParentHeightTerrain(nullptr),
 pIndex(-1),
 pVisibleFaces(nullptr),
-pVFByteCount(0),
-pDecalRoot(nullptr),
-pDecalTail(nullptr),
-pDecalCount(0){
+pVFByteCount(0){
 }
 
 deHeightTerrainSector::~deHeightTerrainSector(){
@@ -290,21 +287,8 @@ void deHeightTerrainSector::AddDecal(deDecal *decal){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(pDecalTail){
-		pDecalTail->SetLLHeightTerrainSectorNext(decal);
-		decal->SetLLHeightTerrainSectorPrev(pDecalTail);
-		decal->SetLLHeightTerrainSectorNext(nullptr); // not required by definition, just to make sure...
-		
-	}else{
-		decal->SetLLHeightTerrainSectorPrev(nullptr); // not required by definition, just to make sure...
-		decal->SetLLHeightTerrainSectorNext(nullptr); // not required by definition, just to make sure...
-		pDecalRoot = decal;
-	}
-	
-	pDecalTail = decal;
-	pDecalCount++;
+	pDecals.Add(&decal->GetLLHeightTerrainSector());
 	decal->SetParentHeightTerrainSector(this);
-	decal->AddReference();
 	
 	if(pParentHeightTerrain){
 		if(pParentHeightTerrain->GetPeerGraphic()){
@@ -321,23 +305,8 @@ void deHeightTerrainSector::RemoveDecal(deDecal *decal){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(decal->GetLLHeightTerrainSectorPrev()){
-		decal->GetLLHeightTerrainSectorPrev()->SetLLHeightTerrainSectorNext(decal->GetLLHeightTerrainSectorNext());
-	}
-	if(decal->GetLLHeightTerrainSectorNext()){
-		decal->GetLLHeightTerrainSectorNext()->SetLLHeightTerrainSectorPrev(decal->GetLLHeightTerrainSectorPrev());
-	}
-	if(decal == pDecalRoot){
-		pDecalRoot = decal->GetLLHeightTerrainSectorNext();
-	}
-	if(decal == pDecalTail){
-		pDecalTail = decal->GetLLHeightTerrainSectorPrev();
-	}
-	pDecalCount--;
-	
 	decal->SetParentHeightTerrainSector(nullptr);
-	decal->SetLLHeightTerrainSectorPrev(nullptr);
-	decal->SetLLHeightTerrainSectorNext(nullptr);
+	pDecals.Remove(&decal->GetLLHeightTerrainSector());
 	
 	if(pParentHeightTerrain){
 		if(pParentHeightTerrain->GetPeerGraphic()){
@@ -347,21 +316,13 @@ void deHeightTerrainSector::RemoveDecal(deDecal *decal){
 			pParentHeightTerrain->GetPeerPhysics()->DecalRemoved(pIndex, decal);
 		}
 	}
-	
-	decal->FreeReference();
 }
 
 void deHeightTerrainSector::RemoveAllDecals(){
-	while(pDecalTail){
-		deDecal * const next = pDecalTail->GetLLComponentPrev();
-		pDecalTail->SetParentHeightTerrainSector(nullptr);
-		pDecalTail->SetLLHeightTerrainSectorPrev(nullptr);
-		pDecalTail->SetLLHeightTerrainSectorNext(nullptr);
-		pDecalTail->FreeReference();
-		pDecalTail = next;
-		pDecalCount--;
-	}
-	pDecalRoot = nullptr;
+	pDecals.Visit([](deDecal *decal){
+		decal->SetParentHeightTerrainSector(nullptr);
+	});
+	pDecals.RemoveAll();
 	
 	if(pParentHeightTerrain){
 		if(pParentHeightTerrain->GetPeerGraphic()){

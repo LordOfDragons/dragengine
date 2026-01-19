@@ -26,6 +26,7 @@
 #define _DEARCHIVECONTAINER_H_
 
 #include "../../filesystem/deVFSContainer.h"
+#include "../../common/collection/decTLinkedList.h"
 #include "deArchive.h"
 
 
@@ -46,8 +47,7 @@ private:
 	const decPath pArchivePath;
 	deArchive::Ref pArchive;
 	
-	deArchiveContainer *pLLManagerPrev;
-	deArchiveContainer *pLLManagerNext;
+	decTLinkedList<deArchiveContainer>::Element pLLManager;
 	
 	
 	
@@ -188,23 +188,9 @@ public:
 	 * \warning For internal use only. Never call on your own!
 	 */
 	/*@{*/
-	/** \brief Previous resource in the resource manager linked list. */
-	inline deArchiveContainer *GetLLManagerPrev() const{ return pLLManagerPrev; }
-	
-	/**
-	 * \brief Set next resource in the resource manager linked list.
-	 * \warning For internal use only. Never call on your own!
-	 */
-	void SetLLManagerPrev(deArchiveContainer *resource);
-	
-	/** \brief Next resource in the resource manager linked list. */
-	inline deArchiveContainer *GetLLManagerNext() const{ return pLLManagerNext; }
-	
-	/**
-	 * \brief Set next resource in the resource manager linked list.
-	 * \warning For internal use only. Never call on your own!
-	 */
-	void SetLLManagerNext(deArchiveContainer *resource);
+	/** \brief Resource manager linked list. */
+	inline decTLinkedList<deArchiveContainer>::Element &GetLLManager(){ return pLLManager; }
+	inline const decTLinkedList<deArchiveContainer>::Element &GetLLManager() const{ return pLLManager; }
 	
 	/**
 	 * \brief Marks the resource leaking.

@@ -147,8 +147,8 @@ pVertexPositionSetCount(0),
 pCSOctreeIndex(0),
 
 pWorldMarkedRemove(false),
-pLLWorldPrev(nullptr),
-pLLWorldNext(nullptr),
+
+pLLWorld(this),
 
 pLLPrepareForRenderWorld(this)
 {
@@ -1498,14 +1498,12 @@ void deoglRComponent::SyncDecalReferences(const deComponent &engComponent){
 	// this will trigger a rebuild of the decal only if the parent component changed
 	pDecals.RemoveAll();
 	
-	deDecal *engDecal = engComponent.GetRootDecal();
-	while(engDecal){
+	engComponent.GetDecals().Visit([&](deDecal *engDecal){
 		deoglRDecal * const decal = ((deoglDecal*)engDecal->GetPeerGraphic())->GetRDecal();
 		pDecals.Add(decal);
 		decal->SetComponentMarkedRemove(false);
 		decal->SetParentComponent(this);
-		engDecal = engDecal->GetLLComponentNext();
-	}
+	});
 	
 	if(pDecals.GetCount() > 0){
 		DecalRequiresPrepareForRender();
@@ -1705,14 +1703,6 @@ void deoglRComponent::NotifyModelChanged(){
 
 void deoglRComponent::SetWorldMarkedRemove(bool marked){
 	pWorldMarkedRemove = marked;
-}
-
-void deoglRComponent::SetLLWorldPrev(deoglRComponent *component){
-	pLLWorldPrev = component;
-}
-
-void deoglRComponent::SetLLWorldNext(deoglRComponent *component){
-	pLLWorldNext = component;
 }
 
 

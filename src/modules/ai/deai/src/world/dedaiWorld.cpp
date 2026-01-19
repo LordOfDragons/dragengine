@@ -62,23 +62,17 @@ pDevModeUpdateTracker(0)
 	try{
 		HeightTerrainChanged();
 		
-		deNavigationSpace *navspace = world.GetRootNavigationSpace();
-		while(navspace){
+		world.GetNavigationSpaces().Visit([&](deNavigationSpace *navspace){
 			NavigationSpaceAdded(navspace);
-			navspace = navspace->GetLLWorldNext();
-		}
+		});
 		
-		deNavigationBlocker *blocker = world.GetRootNavigationBlocker();
-		while(blocker){
+		world.GetNavigationBlockers().Visit([&](deNavigationBlocker *blocker){
 			NavigationBlockerAdded(blocker);
-			blocker = blocker->GetLLWorldNext();
-		}
+		});
 		
-		deNavigator *navigator = world.GetRootNavigator();
-		while(navigator){
+		world.GetNavigators().Visit([&](deNavigator *navigator){
 			NavigatorAdded(navigator);
-			navigator = navigator->GetLLWorldNext();
-		}
+		});
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -147,60 +141,48 @@ void dedaiWorld::CheckDeveloperMode(){
 	// navigation spaces debug drawing
 	if(devmode.GetShowSpaces()){
 		if(trackerChanged){
-			deNavigationSpace *engNavSpace = pWorld.GetRootNavigationSpace();
-			while(engNavSpace){
+			pWorld.GetNavigationSpaces().Visit([&](deNavigationSpace *engNavSpace){
 				((dedaiNavSpace*)engNavSpace->GetPeerAI())->GetSpace()->UpdateDDSSpace();
-				engNavSpace = engNavSpace->GetLLWorldNext();
-			}
+			});
 		}
 		
 	}else{
 		if(trackerChanged){
-			deNavigationSpace *engNavSpace = pWorld.GetRootNavigationSpace();
-			while(engNavSpace){
+			pWorld.GetNavigationSpaces().Visit([&](deNavigationSpace *engNavSpace){
 				((dedaiNavSpace*)engNavSpace->GetPeerAI())->GetSpace()->UpdateDDSSpace();
-				engNavSpace = engNavSpace->GetLLWorldNext();
-			}
+			});
 		}
 	}
 	
 	// navigation blockers debug drawing
 	if(devmode.GetShowBlockers()){
 		if(trackerChanged){
-			deNavigationBlocker *engBlocker = pWorld.GetRootNavigationBlocker();
-			while(engBlocker){
+			pWorld.GetNavigationBlockers().Visit([&](deNavigationBlocker *engBlocker){
 				((dedaiNavBlocker*)engBlocker->GetPeerAI())->UpdateDDSBlocker();
-				engBlocker = engBlocker->GetLLWorldNext();
-			}
+			});
 		}
 		
 	}else{
 		if(trackerChanged){
-			deNavigationBlocker *engBlocker = pWorld.GetRootNavigationBlocker();
-			while(engBlocker){
+			pWorld.GetNavigationBlockers().Visit([&](deNavigationBlocker *engBlocker){
 				((dedaiNavBlocker*)engBlocker->GetPeerAI())->UpdateDDSBlocker();
-				engBlocker = engBlocker->GetLLWorldNext();
-			}
+			});
 		}
 	}
 	
 	// navigator path debug drawing
 	if(devmode.GetShowPath() || devmode.GetShowPathFaces()){
 		if(trackerChanged){
-			deNavigator *engNav = pWorld.GetRootNavigator();
-			while(engNav){
+			pWorld.GetNavigators().Visit([&](deNavigator *engNav){
 				((dedaiNavigator*)engNav->GetPeerAI())->UpdateDDSPath();
-				engNav = engNav->GetLLWorldNext();
-			}
+			});
 		}
 		
 	}else{
 		if(trackerChanged){
-			deNavigator *engNav = pWorld.GetRootNavigator();
-			while(engNav){
+			pWorld.GetNavigators().Visit([&](deNavigator *engNav){
 				((dedaiNavigator*)engNav->GetPeerAI())->UpdateDDSPath();
-				engNav = engNav->GetLLWorldNext();
-			}
+			});
 		}
 	}
 }
@@ -238,15 +220,12 @@ void dedaiWorld::NavigationSpaceRemoved(deNavigationSpace *navspace){
 }
 
 void dedaiWorld::AllNavigationSpacesRemoved(){
-	deNavigationSpace *navspace = pWorld.GetRootNavigationSpace();
-	
-	while(navspace){
+	pWorld.GetNavigationSpaces().Visit([&](deNavigationSpace *navspace){
 		dedaiNavSpace * const peer = (dedaiNavSpace*)navspace->GetPeerAI();
-		navspace = navspace->GetLLWorldNext();
 		if(peer){
 			peer->SetParentWorld(nullptr);
 		}
-	}
+	});
 }
 
 
@@ -264,17 +243,12 @@ void dedaiWorld::NavigationBlockerRemoved(deNavigationBlocker *blocker){
 }
 
 void dedaiWorld::AllNavigationBlockersRemoved(){
-	deNavigationBlocker *blocker = pWorld.GetRootNavigationBlocker();
-	dedaiNavBlocker *peer;
-	
-	while(blocker){
-		peer = (dedaiNavBlocker*)blocker->GetPeerAI();
-		blocker = blocker->GetLLWorldNext();
-		
+	pWorld.GetNavigationBlockers().Visit([&](deNavigationBlocker *blocker){
+		dedaiNavBlocker * const peer = (dedaiNavBlocker*)blocker->GetPeerAI();
 		if(peer){
 			peer->SetParentWorld(nullptr);
 		}
-	}
+	});
 }
 
 
@@ -292,17 +266,12 @@ void dedaiWorld::NavigatorRemoved(deNavigator *navigator){
 }
 
 void dedaiWorld::AllNavigatorsRemoved(){
-	deNavigator *navigator = pWorld.GetRootNavigator();
-	dedaiNavigator *peer;
-	
-	while(navigator){
-		peer = (dedaiNavigator*)navigator->GetPeerAI();
-		navigator = navigator->GetLLWorldNext();
-		
+	pWorld.GetNavigators().Visit([&](deNavigator *navigator){
+		dedaiNavigator * const peer = (dedaiNavigator*)navigator->GetPeerAI();
 		if(peer){
 			peer->SetParentWorld(nullptr);
 		}
-	}
+	});
 }
 
 

@@ -104,15 +104,11 @@ void deAudioNull::ProcessAudio(){
 	}
 	
 	if(world){
-		deSpeaker *speaker = world->GetRootSpeaker();
-		while(speaker){
-			deSpeaker * const safeSpeaker = speaker;
-			speaker = speaker->GetLLWorldNext();
-			
-			if(safeSpeaker->GetPlaying()){
-				safeSpeaker->Stop();
+		world->GetSpeakers().Visit([&](deSpeaker *speaker){
+			if(speaker->GetPlaying()){
+				speaker->Stop();
 			}
-		}
+		});
 	}
 }
 

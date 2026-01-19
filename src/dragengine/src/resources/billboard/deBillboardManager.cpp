@@ -81,26 +81,20 @@ void deBillboardManager::ReleaseLeakingResources(){
 
 // Systems Support
 ////////////////////
-
 void deBillboardManager::SystemGraphicLoad(){
-	deBillboard *billboard = (deBillboard*)pBillboards.GetRoot();
-	
-	while(billboard){
+	deGraphicSystem &graSys = *GetGraphicSystem();
+	pBillboards.GetResources().Visit([&](deResource *res){
+		deBillboard *billboard = static_cast<deBillboard*>(res);
 		if(!billboard->GetPeerGraphic()){
-			GetGraphicSystem()->LoadBillboard(billboard);
+			graSys.LoadBillboard(billboard);
 		}
-		
-		billboard = (deBillboard*)billboard->GetLLManagerNext();
-	}
+	});
 }
 
 void deBillboardManager::SystemGraphicUnload(){
-	deBillboard *billboard = (deBillboard*)pBillboards.GetRoot();
-	
-	while(billboard){
-		billboard->SetPeerGraphic(nullptr);
-		billboard = (deBillboard*)billboard->GetLLManagerNext();
-	}
+	pBillboards.GetResources().Visit([&](deResource *res){
+		static_cast<deBillboard*>(res)->SetPeerGraphic(nullptr);
+	});
 }
 
 void deBillboardManager::RemoveResource(deResource *resource){

@@ -112,6 +112,9 @@ public:
 	
 	
 	
+	/** Textures. */
+	inline const decTLinkedList<deoglPersistentRenderTaskTexture> &GetTextures() const{ return pTextures; }
+	
 	/** Number of textures. */
 	int GetTextureCount() const;
 	

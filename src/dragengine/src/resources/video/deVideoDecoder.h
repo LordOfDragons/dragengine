@@ -27,6 +27,7 @@
 
 #include "deVideo.h"
 #include "../../deObject.h"
+#include "../../common/collection/decTLinkedList.h"
 
 class deVideoManager;
 class deBaseVideoDecoder;
@@ -52,8 +53,7 @@ private:
 	
 	deBaseVideoDecoder *pPeerVideo;
 	
-	deVideoDecoder *pLLManagerPrev;
-	deVideoDecoder *pLLManagerNext;
+	decTLinkedList<deVideoDecoder>::Element pLLManager;
 	
 	
 	
@@ -121,23 +121,8 @@ public:
 	 * \warning For internal use only. Never call on your own!
 	 */
 	/*@{*/
-	/** \brief Previous resource in the resource manager linked list. */
-	inline deVideoDecoder *GetLLManagerPrev() const{ return pLLManagerPrev; }
-	
-	/**
-	 * \brief Set next resource in the resource manager linked list.
-	 * \warning For internal use only. Never call on your own!
-	 */
-	void SetLLManagerPrev(deVideoDecoder *resource);
-	
-	/** \brief Next resource in the resource manager linked list. */
-	inline deVideoDecoder *GetLLManagerNext() const{ return pLLManagerNext; }
-	
-	/**
-	 * \brief Set next resource in the resource manager linked list.
-	 * \warning For internal use only. Never call on your own!
-	 */
-	void SetLLManagerNext(deVideoDecoder *resource);
+	/** \brief Manager linked list element. */
+	inline decTLinkedList<deVideoDecoder>::Element &GetLLManager(){ return pLLManager; }
 	
 	/**
 	 * \brief Marks the resource leaking.

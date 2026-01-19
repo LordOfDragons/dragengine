@@ -88,12 +88,9 @@ void deoglCanvasView::SetDirtyPaint(){
 void deoglCanvasView::SyncToRender(){
 	// prepare children first since deoglCanvas::PrepareForRender() calls
 	// PrepareContentForRender() which would result in NULL RCanvas to be added
-	deCanvas *child = pCanvasView.GetRootCanvas();
-	
-	while(child){
+	pCanvasView.GetCanvas().Visit([&](deCanvas *child){
 		((deoglCanvas*)child->GetPeerGraphic())->SyncToRender();
-		child = child->GetLLViewNext();
-	}
+	});
 	
 	// if paint dirty update the paint tracker in the render counterpart
 	if(pDirtyPaint){
@@ -119,14 +116,11 @@ void deoglCanvasView::SyncToRender(){
 }
 
 void deoglCanvasView::SyncContentToRender(){
-	deCanvas *child = pCanvasView.GetRootCanvas();
-	
 	pRCanvasView->RemoveAllChildren();
 	
-	while(child){
+	pCanvasView.GetCanvas().Visit([&](deCanvas *child){
 		pRCanvasView->AddChild(((deoglCanvas*)child->GetPeerGraphic())->GetRCanvas());
-		child = child->GetLLViewNext();
-	}
+	});
 }
 
 

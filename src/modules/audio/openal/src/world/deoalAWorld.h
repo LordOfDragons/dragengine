@@ -26,6 +26,7 @@
 #define _DEOALAWORLD_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decLayerMask.h>
 
@@ -45,21 +46,10 @@ class deoalAWorld : public deObject{
 private:
 	deoalAudioThread &pAudioThread;
 	
-	deoalAComponent *pRootComponent;
-	deoalAComponent *pTailComponent;
-	int pComponentCount;
-	
-	deoalASpeaker *pRootSpeaker;
-	deoalASpeaker *pTailSpeaker;
-	int pSpeakerCount;
-	
-	deoalAMicrophone *pRootMicrophone;
-	deoalAMicrophone *pTailMicrophone;
-	int pMicrophoneCount;
-	
-	deoalASoundLevelMeter *pRootSoundLevelMeter;
-	deoalASoundLevelMeter *pTailSoundLevelMeter;
-	int pSoundLevelMeterCount;
+	decTObjectLinkedList<deoalAComponent> pComponents;
+	decTObjectLinkedList<deoalASpeaker> pSpeakers;
+	decTObjectLinkedList<deoalAMicrophone> pMicrophones;
+	decTObjectLinkedList<deoalASoundLevelMeter> pSoundLevelMeters;
 	
 	deoalWorldOctree *pOctree;
 	decLayerMask pAllMicLayerMask;
@@ -149,10 +139,10 @@ public:
 	/** \name Components. */
 	/*@{*/
 	/** Number of components. */
-	inline int GetComponentCount() const{ return pComponentCount; }
+	inline int GetComponentCount() const{ return pComponents.GetCount(); }
 	
 	/** Root component. */
-	inline deoalAComponent *GetRootComponent() const{ return pRootComponent; }
+	inline deoalAComponent *GetRootComponent() const{ return pComponents.GetRootOwner(); }
 	
 	/** Add component. */
 	void AddComponent(deoalAComponent *component);
@@ -172,10 +162,10 @@ public:
 	/** \name Speakers. */
 	/*@{*/
 	/** Number of speakers. */
-	inline int GetSpeakerCount() const{ return pSpeakerCount; }
+	inline int GetSpeakerCount() const{ return pSpeakers.GetCount(); }
 	
 	/** Root speaker. */
-	inline deoalASpeaker *GetRootSpeaker() const{ return pRootSpeaker; }
+	inline deoalASpeaker *GetRootSpeaker() const{ return pSpeakers.GetRootOwner(); }
 	
 	/**
 	 * Add speaker.
@@ -207,10 +197,10 @@ public:
 	/** \name Microphones. */
 	/*@{*/
 	/** Number of microphones. */
-	inline int GetMicrophoneCount() const{ return pMicrophoneCount; }
+	inline int GetMicrophoneCount() const{ return pMicrophones.GetCount(); }
 	
 	/** Root microphone. */
-	inline deoalAMicrophone *GetRootMicrophone() const{ return pRootMicrophone; }
+	inline deoalAMicrophone *GetRootMicrophone() const{ return pMicrophones.GetRootOwner(); }
 	
 	/** Add microphone. */
 	void AddMicrophone(deoalAMicrophone *microphone);
@@ -227,13 +217,13 @@ public:
 	
 	
 	
-	/** \name Sound level meters. */
+	/** \name Sound Level Meters. */
 	/*@{*/
 	/** Number of sound level meters. */
-	inline int GetSoundLevelMeterCount() const{ return pSoundLevelMeterCount; }
+	inline int GetSoundLevelMeterCount() const{ return pSoundLevelMeters.GetCount(); }
 	
 	/** Root sound level meter. */
-	inline deoalASoundLevelMeter *GetRootSoundLevelMeter() const{ return pRootSoundLevelMeter; }
+	inline deoalASoundLevelMeter *GetRootSoundLevelMeter() const{ return pSoundLevelMeters.GetRootOwner(); }
 	
 	/**
 	 * Add sound level meter.

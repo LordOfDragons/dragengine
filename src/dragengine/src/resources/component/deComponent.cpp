@@ -91,18 +91,13 @@ pMatrixDirty(false),
 pTextures(nullptr),
 pTextureCount(0),
 
-pDecalRoot(nullptr),
-pDecalTail(nullptr),
-pDecalCount(0),
-
 pPeerGraphic(nullptr),
 pPeerPhysics(nullptr),
 pPeerAudio(nullptr),
 pPeerAnimator(nullptr),
 
 pParentWorld(nullptr),
-pLLWorldPrev(nullptr),
-pLLWorldNext(nullptr)
+pLLWorld(this)
 {
 	pLayerMask.SetBit(0);
 	
@@ -644,21 +639,8 @@ void deComponent::AddDecal(deDecal *decal){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(pDecalTail){
-		pDecalTail->SetLLComponentNext(decal);
-		decal->SetLLComponentPrev(pDecalTail);
-		decal->SetLLComponentNext(nullptr); // not required by definition, just to make sure...
-		
-	}else{
-		decal->SetLLComponentPrev(nullptr); // not required by definition, just to make sure...
-		decal->SetLLComponentNext(nullptr); // not required by definition, just to make sure...
-		pDecalRoot = decal;
-	}
-	
-	pDecalTail = decal;
-	pDecalCount++;
+	pDecals.Add(&decal->GetLLComponent());
 	decal->SetParentComponent(this);
-	decal->AddReference();
 	
 	if(pPeerGraphic){
 		pPeerGraphic->DecalAdded(decal);
@@ -676,23 +658,8 @@ void deComponent::RemoveDecal(deDecal *decal){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(decal->GetLLComponentPrev()){
-		decal->GetLLComponentPrev()->SetLLComponentNext(decal->GetLLComponentNext());
-	}
-	if(decal->GetLLComponentNext()){
-		decal->GetLLComponentNext()->SetLLComponentPrev(decal->GetLLComponentPrev());
-	}
-	if(decal == pDecalRoot){
-		pDecalRoot = decal->GetLLComponentNext();
-	}
-	if(decal == pDecalTail){
-		pDecalTail = decal->GetLLComponentPrev();
-	}
-	pDecalCount--;
-	
 	decal->SetParentComponent(nullptr);
-	decal->SetLLComponentPrev(nullptr);
-	decal->SetLLComponentNext(nullptr);
+	pDecals.Remove(&decal->GetLLComponent());
 	
 	if(pPeerGraphic){
 		pPeerGraphic->DecalRemoved(decal);
@@ -703,21 +670,13 @@ void deComponent::RemoveDecal(deDecal *decal){
 	if(pPeerAudio){
 		pPeerAudio->DecalRemoved(decal);
 	}
-	
-	decal->FreeReference();
 }
 
 void deComponent::RemoveAllDecals(){
-	while(pDecalTail){
-		deDecal * const next = pDecalTail->GetLLComponentPrev();
-		pDecalTail->SetParentComponent(nullptr);
-		pDecalTail->SetLLComponentPrev(nullptr);
-		pDecalTail->SetLLComponentNext(nullptr);
-		pDecalTail->FreeReference();
-		pDecalTail = next;
-		pDecalCount--;
-	}
-	pDecalRoot = nullptr;
+	pDecals.Visit([](deDecal *decal){
+		decal->SetParentComponent(nullptr);
+	});
+	pDecals.RemoveAll();
 	
 	if(pPeerGraphic){
 		pPeerGraphic->AllDecalsRemoved();
@@ -864,14 +823,6 @@ void deComponent::SetPeerAnimator(deBaseAnimatorComponent *peer){
 
 void deComponent::SetParentWorld(deWorld *world){
 	pParentWorld = world;
-}
-
-void deComponent::SetLLWorldPrev(deComponent *component){
-	pLLWorldPrev = component;
-}
-
-void deComponent::SetLLWorldNext(deComponent *component){
-	pLLWorldNext = component;
 }
 
 

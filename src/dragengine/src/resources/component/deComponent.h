@@ -35,6 +35,7 @@
 #include "../decal/deDecal.h"
 #include "../../parallel/deParallelTask.h"
 #include "../../common/collection/decTOrderedSet.h"
+#include "../../common/collection/decTLinkedList.h"
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decLayerMask.h"
 #include "../../common/string/decString.h"
@@ -117,9 +118,7 @@ private:
 	
 	deDynamicSkin::Ref pDynamicSkin;
 	
-	deDecal *pDecalRoot;
-	deDecal *pDecalTail;
-	int pDecalCount;
+	decTObjectLinkedList<deDecal> pDecals;
 	
 	deParallelTask::Ref pAnimatorTask;
 	
@@ -129,8 +128,7 @@ private:
 	deBaseAnimatorComponent *pPeerAnimator;
 	
 	deWorld *pParentWorld;
-	deComponent *pLLWorldPrev;
-	deComponent *pLLWorldNext;
+	decTObjectLinkedList<deComponent>::Element pLLWorld;
 	
 	
 	
@@ -392,11 +390,14 @@ public:
 	
 	/** \name Decals Management */
 	/*@{*/
+	/** \brief Decals. */
+	inline const decTObjectLinkedList<deDecal> &GetDecals() const{ return pDecals; }
+	
 	/** \brief Number of decals. */
-	inline int GetDecalCount() const{ return pDecalCount; }
+	inline int GetDecalCount() const{ return pDecals.GetCount(); }
 	
 	/** \brief Root decal or NULL if there are none. */
-	inline deDecal *GetRootDecal() const{ return pDecalRoot; }
+	inline deDecal *GetRootDecal() const{ return pDecals.GetRootOwner(); }
 	
 	/**
 	 * \brief Add decal.
@@ -481,17 +482,9 @@ public:
 	/** \brief Set parent world or NULL. */
 	void SetParentWorld(deWorld *world);
 	
-	/** \brief Previous component in the parent world linked list. */
-	inline deComponent *GetLLWorldPrev() const{ return pLLWorldPrev; }
-	
-	/** \brief Set next component in the parent world linked list. */
-	void SetLLWorldPrev(deComponent *component);
-	
-	/** \brief Next component in the parent world linked list. */
-	inline deComponent *GetLLWorldNext() const{ return pLLWorldNext; }
-	
-	/** \brief Set next component in the parent world linked list. */
-	void SetLLWorldNext(deComponent *component);
+	/** \brief World linked list. */
+	inline decTObjectLinkedList<deComponent>::Element &GetLLWorld(){ return pLLWorld; }
+	inline const decTObjectLinkedList<deComponent>::Element &GetLLWorld() const{ return pLLWorld; }
 	/*@}*/
 	
 	

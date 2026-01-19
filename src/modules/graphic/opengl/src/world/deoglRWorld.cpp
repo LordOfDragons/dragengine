@@ -69,14 +69,6 @@ pDirtyPrepareForRender(true),
 pDirtyNotifySkyChanged(false),
 pDirtySkyOrder(false),
 
-pRootComponent(nullptr),
-pTailComponent(nullptr),
-pComponentCount(0),
-
-pRootBillboard(nullptr),
-pTailBillboard(nullptr),
-pBillboardCount(0),
-
 pDisableLights(false),
 
 pValidReferenceDistance(1e4), // 10km
@@ -140,17 +132,13 @@ void deoglRWorld::SetSize(const decDVector &size){
 	
 	pOctree = new deoglWorldOctree(decDVector(), octreeSize * 0.5, insertDepth);
 	
-	deoglRBillboard *billboard = pRootBillboard;
-	while(billboard){
+	pBillboards.Visit([](deoglRBillboard *billboard){
 		billboard->UpdateOctreeNode();
-		billboard = billboard->GetLLWorldNext();
-	}
+	});
 	
-	deoglRComponent *component = pRootComponent;
-	while(component){
+	pComponents.Visit([](deoglRComponent *component){
 		component->UpdateOctreeNode();
-		component = component->GetLLWorldNext();
-	}
+	});
 	
 	decTObjectList<deoglREnvMapProbe>(pEnvMapProbes).Visit([&](const deoglREnvMapProbe &p){
 		if(p.GetEnvironmentMap()){
@@ -403,11 +391,9 @@ void deoglRWorld::PrepareForRenderRender(deoglRenderPlan &plan, const deoglRende
 	if(pDirtyEnvMapLayout){
 		pDirtyEnvMapLayout = false;
 		
-		deoglRBillboard *billboard = pRootBillboard;
-		while(billboard){
+		pBillboards.Visit([](deoglRBillboard *billboard){
 			billboard->UpdateRenderEnvMap();
-			billboard = billboard->GetLLWorldNext();
-		}
+		});
 		
 		count = pParticleEmitterInstances.GetCount();
 		for(i=0; i<count; i++){
@@ -553,17 +539,13 @@ void deoglRWorld::RemovePrepareForRenderPropField(deoglRPropField *propField){
 void deoglRWorld::NotifyAllReferencePositionChanged(){
 	int i, count;
 	
-	deoglRComponent *component = pRootComponent;
-	while(component){
+	pComponents.Visit([](deoglRComponent *component){
 		component->WorldReferencePointChanged();
-		component = component->GetLLWorldNext();
-	}
+	});
 	
-	deoglRBillboard *billboard = pRootBillboard;
-	while(billboard){
+	pBillboards.Visit([](deoglRBillboard *billboard){
 		billboard->WorldReferencePointChanged();
-		billboard = billboard->GetLLWorldNext();
-	}
+	});
 	
 	count = pPropFields.GetCount();
 	for(i=0; i<count; i++){
@@ -733,21 +715,7 @@ void deoglRWorld::AddComponent(deoglRComponent *component){
 	
 	component->SetWorldMarkedRemove(false); // tricky problem. ensure it is always false
 	
-	if(pTailComponent){
-		pTailComponent->SetLLWorldNext(component);
-		component->SetLLWorldPrev(pTailComponent);
-		component->SetLLWorldNext(nullptr);
-		pTailComponent = component;
-		
-	}else{
-		pTailComponent = component;
-		pRootComponent = component;
-		component->SetLLWorldPrev(nullptr);
-		component->SetLLWorldNext(nullptr);
-	}
-	
-	component->AddReference();
-	pComponentCount++;
+	pComponents.Add(&component->GetLLWorld());
 	
 	component->SetParentWorld(this);
 	AddPrepareForRenderComponent(component);
@@ -760,52 +728,28 @@ void deoglRWorld::RemoveComponent(deoglRComponent *component){
 	component->SetParentWorld(nullptr);
 	component->SetWorldMarkedRemove(false);
 	
-	if(component->GetLLWorldPrev()){
-		component->GetLLWorldPrev()->SetLLWorldNext(component->GetLLWorldNext());
-		
-	}else{
-		pRootComponent = component->GetLLWorldNext();
-	}
-	
-	if(component->GetLLWorldNext()){
-		component->GetLLWorldNext()->SetLLWorldPrev(component->GetLLWorldPrev());
-		
-	}else{
-		pTailComponent = component->GetLLWorldPrev();
-	}
-	
-	pComponentCount--;
-	component->FreeReference();
+	pComponents.Remove(&component->GetLLWorld());
 }
 
 void deoglRWorld::RemoveAllComponents(){
-	while(pRootComponent){
-		deoglRComponent * const next = pRootComponent->GetLLWorldNext();
-		pRootComponent->SetLLWorldPrev(nullptr); // ensure root has no prev
-		
-		RemovePrepareForRenderComponent(pRootComponent);
-		pRootComponent->SetParentWorld(nullptr);
-		pRootComponent->SetWorldMarkedRemove(false);
-		pComponentCount--;
-		pRootComponent->FreeReference();
-		
-		pRootComponent = next;
-	}
-	
-	pTailComponent = nullptr;
+	pComponents.Visit([&](deoglRComponent *component){
+		RemovePrepareForRenderComponent(component);
+		component->SetParentWorld(nullptr);
+		component->SetWorldMarkedRemove(false);
+	});
+	pComponents.RemoveAll();
 }
 
 void deoglRWorld::RemoveRemovalMarkedComponents(){
-	deoglRComponent *component = pRootComponent;
-	while(component){
-		deoglRComponent * const next = component->GetLLWorldNext();
-		
+	pComponents.RemoveIf([&](deoglRComponent *component){
 		if(component->GetWorldMarkedRemove()){
-			RemoveComponent(component);
+			RemovePrepareForRenderComponent(component);
+			component->SetParentWorld(nullptr);
+			component->SetWorldMarkedRemove(false);
+			return true;
 		}
-		
-		component = next;
-	}
+		return false;
+	});
 }
 
 
@@ -965,11 +909,9 @@ void deoglRWorld::RemoveEnvMap(deoglEnvironmentMap *envmap){
 		DETHROW(deeInvalidParam);
 	}
 	
-	deoglRComponent *component = pRootComponent;
-	while(component){
+	pComponents.Visit([envmap](deoglRComponent *component){
 		component->InvalidateRenderEnvMapIf(envmap);
-		component = component->GetLLWorldNext();
-	}
+	});
 	
 	const int peiCount = pParticleEmitterInstances.GetCount();
 	int i;
@@ -984,11 +926,9 @@ void deoglRWorld::RemoveEnvMap(deoglEnvironmentMap *envmap){
 }
 
 void deoglRWorld::RemoveAllEnvMaps(){
-	deoglRComponent *component = pRootComponent;
-	while(component){
+	pComponents.Visit([](deoglRComponent *component){
 		component->InvalidateRenderEnvMap();
-		component = component->GetLLWorldNext();
-	}
+	});
 	
 	const int peiCount = pParticleEmitterInstances.GetCount();
 	int i;
@@ -1111,21 +1051,7 @@ void deoglRWorld::AddBillboard(deoglRBillboard *billboard){
 		}
 	}
 	
-	if(pTailBillboard){
-		pTailBillboard->SetLLWorldNext(billboard);
-		billboard->SetLLWorldPrev(pTailBillboard);
-		billboard->SetLLWorldNext(nullptr);
-		pTailBillboard = billboard;
-		
-	}else{
-		pTailBillboard = billboard;
-		pRootBillboard = billboard;
-		billboard->SetLLWorldPrev(nullptr);
-		billboard->SetLLWorldNext(nullptr);
-	}
-	
-	billboard->AddReference();
-	pBillboardCount++;
+	pBillboards.Add(&billboard->GetLLWorld());
 	
 	billboard->SetParentWorld(this);
 	AddPrepareForRenderBillboard(billboard);
@@ -1140,52 +1066,28 @@ void deoglRWorld::RemoveBillboard(deoglRBillboard *billboard){
 	billboard->SetParentWorld(nullptr);
 	billboard->SetWorldMarkedRemove(false);
 	
-	if(billboard->GetLLWorldPrev()){
-		billboard->GetLLWorldPrev()->SetLLWorldNext(billboard->GetLLWorldNext());
-		
-	}else{
-		pRootBillboard = billboard->GetLLWorldNext();
-	}
-	
-	if(billboard->GetLLWorldNext()){
-		billboard->GetLLWorldNext()->SetLLWorldPrev(billboard->GetLLWorldPrev());
-		
-	}else{
-		pTailBillboard = billboard->GetLLWorldPrev();
-	}
-	
-	pBillboardCount--;
-	billboard->FreeReference();
+	pBillboards.Remove(&billboard->GetLLWorld());
 }
 
 void deoglRWorld::RemoveAllBillboards(){
-	while(pRootBillboard){
-		deoglRBillboard * const next = pRootBillboard->GetLLWorldNext();
-		pRootBillboard->SetLLWorldPrev(nullptr); // ensure root has no prev
-		
-		RemovePrepareForRenderBillboard(pRootBillboard);
-		pRootBillboard->SetParentWorld(nullptr);
-		pRootBillboard->SetWorldMarkedRemove(false);
-		pBillboardCount--;
-		pRootBillboard->FreeReference();
-		
-		pRootBillboard = next;
-	}
-	
-	pTailBillboard = nullptr;
+	pBillboards.Visit([&](deoglRBillboard *billboard){
+		RemovePrepareForRenderBillboard(billboard);
+		billboard->SetParentWorld(nullptr);
+		billboard->SetWorldMarkedRemove(false);
+	});
+	pBillboards.RemoveAll();
 }
 
 void deoglRWorld::RemoveRemovalMarkedBillboards(){
-	deoglRBillboard *billboard = pRootBillboard;
-	while(billboard){
-		deoglRBillboard * const next = billboard->GetLLWorldNext();
-		
+	pBillboards.RemoveIf([&](deoglRBillboard *billboard){
 		if(billboard->GetWorldMarkedRemove()){
-			RemoveBillboard(billboard);
+			RemovePrepareForRenderBillboard(billboard);
+			billboard->SetParentWorld(nullptr);
+			billboard->SetWorldMarkedRemove(false);
+			return true;
 		}
-		
-		billboard = next;
-	}
+		return false;
+	});
 }
 
 
@@ -1456,20 +1358,16 @@ void deoglRWorld::pCleanUp(){
 	pLights.RemoveAll();
 	
 	pListPrepareForRenderBillboards.RemoveAll();
-	while(pRootBillboard){
-		deoglRBillboard * const next = pRootBillboard->GetLLWorldNext();
-		pRootBillboard->PrepareQuickDispose();
-		pRootBillboard->FreeReference();
-		pRootBillboard = next;
-	}
+	pBillboards.Visit([](deoglRBillboard *billboard){
+		billboard->PrepareQuickDispose();
+	});
+	pBillboards.RemoveAll();
 	
 	pListPrepareForRenderComponents.RemoveAll();
-	while(pRootComponent){
-		deoglRComponent * const next = pRootComponent->GetLLWorldNext();
-		pRootComponent->PrepareQuickDispose();
-		pRootComponent->FreeReference();
-		pRootComponent = next;
-	}
+	pComponents.Visit([](deoglRComponent *component){
+		component->PrepareQuickDispose();
+	});
+	pComponents.RemoveAll();
 	
 	count = pLumimeters.GetCount();
 	for(i=0; i<count; i++){

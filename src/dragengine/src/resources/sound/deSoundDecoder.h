@@ -27,6 +27,7 @@
 
 #include "../../deObject.h"
 #include "deSound.h"
+#include "../../common/collection/decTLinkedList.h"
 
 class deSoundManager;
 class deBaseSoundDecoder;
@@ -52,8 +53,7 @@ private:
 	
 	deBaseSoundDecoder *pPeerSound;
 	
-	deSoundDecoder *pLLManagerPrev;
-	deSoundDecoder *pLLManagerNext;
+	decTLinkedList<deSoundDecoder>::Element pLLManager;
 	
 	
 	
@@ -119,23 +119,8 @@ public:
 	 * \warning For internal use only. Never call on your own!
 	 */
 	/*@{*/
-	/** \brief Previous resource in the resource manager linked list. */
-	inline deSoundDecoder *GetLLManagerPrev() const{ return pLLManagerPrev; }
-	
-	/**
-	 * \brief Set next resource in the resource manager linked list.
-	 * \warning For internal use only. Never call on your own!
-	 */
-	void SetLLManagerPrev(deSoundDecoder *resource);
-	
-	/** \brief Next resource in the resource manager linked list. */
-	inline deSoundDecoder *GetLLManagerNext() const{ return pLLManagerNext; }
-	
-	/**
-	 * \brief Set next resource in the resource manager linked list.
-	 * \warning For internal use only. Never call on your own!
-	 */
-	void SetLLManagerNext(deSoundDecoder *resource);
+	/** \brief Manager linked list element. */
+	inline decTLinkedList<deSoundDecoder>::Element &GetLLManager(){ return pLLManager; }
 	
 	/**
 	 * \brief Marks the resource leaking.

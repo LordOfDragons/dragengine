@@ -85,8 +85,7 @@ private:
 	deBaseScriptingTouchSensor *pPeerScripting;
 	
 	deWorld *pParentWorld;
-	deTouchSensor *pLLWorldPrev;
-	deTouchSensor *pLLWorldNext;
+	decTObjectLinkedList<deTouchSensor>::Element pLLWorld;
 	
 	
 	
@@ -290,19 +289,10 @@ public:
 	inline deWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
-	void SetParentWorld(deWorld *world);
+	void SetParentWorld( deWorld *world );
 	
-	/** \brief Previous touch sensor in the parent world linked list. */
-	inline deTouchSensor *GetLLWorldPrev() const{ return pLLWorldPrev; }
-	
-	/** \brief Set next touch sensor in the parent world linked list. */
-	void SetLLWorldPrev(deTouchSensor *touchSensor);
-	
-	/** \brief Next touch sensor in the parent world linked list. */
-	inline deTouchSensor *GetLLWorldNext() const{ return pLLWorldNext; }
-	
-	/** \brief Set next touch sensor in the parent world linked list. */
-	void SetLLWorldNext(deTouchSensor *touchSensor);
+	/** \brief World linked list element. */
+	inline decTObjectLinkedList<deTouchSensor>::Element &GetLLWorld(){ return pLLWorld; }
 	/*@}*/
 };
 

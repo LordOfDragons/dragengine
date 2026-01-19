@@ -25,6 +25,7 @@
 #ifndef _DEOGLCOMBINEDTEXTURELIST_H_
 #define _DEOGLCOMBINEDTEXTURELIST_H_
 
+#include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglCombinedTexture;
@@ -40,9 +41,7 @@ class deoglCombinedTextureList{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	deoglCombinedTexture *pRoot;
-	deoglCombinedTexture *pTail;
-	int pCount;
+	decTUniqueLinkedList<deoglCombinedTexture> pTextures;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -63,11 +62,14 @@ public:
 	
 	
 	
+	/** Combined textures. */
+	inline const decTUniqueLinkedList<deoglCombinedTexture> &GetTextures() const{ return pTextures; }
+	
 	/** Number of combined textures in the list. */
-	inline int GetCount() const{ return pCount; }
+	inline int GetCount() const{ return pTextures.GetCount(); }
 	
 	/** Root combined texture. */
-	inline deoglCombinedTexture *GetRoot() const{ return pRoot; }
+	inline deoglCombinedTexture *GetRoot() const{ return pTextures.GetRootOwner(); }
 	
 	/**
 	 * Combined texture with parameters.

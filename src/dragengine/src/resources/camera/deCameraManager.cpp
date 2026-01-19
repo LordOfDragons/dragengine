@@ -80,26 +80,20 @@ void deCameraManager::ReleaseLeakingResources(){
 
 // Systems support
 ////////////////////
-
 void deCameraManager::SystemGraphicLoad(){
-	deCamera *camera = (deCamera*)pCameras.GetRoot();
-	
-	while(camera){
+	deGraphicSystem &graSys = *GetGraphicSystem();
+	pCameras.GetResources().Visit([&](deResource *res){
+		deCamera *camera = static_cast<deCamera*>(res);
 		if(!camera->GetPeerGraphic()){
-			GetGraphicSystem()->LoadCamera(camera);
+			graSys.LoadCamera(camera);
 		}
-		
-		camera = (deCamera*)camera->GetLLManagerNext();
-	}
+	});
 }
 
 void deCameraManager::SystemGraphicUnload(){
-	deCamera *camera = (deCamera*)pCameras.GetRoot();
-	
-	while(camera){
-		camera->SetPeerGraphic(nullptr);
-		camera = (deCamera*)camera->GetLLManagerNext();
-	}
+	pCameras.GetResources().Visit([](deResource *res){
+		static_cast<deCamera*>(res)->SetPeerGraphic(nullptr);
+	});
 }
 
 void deCameraManager::RemoveResource(deResource *resource){

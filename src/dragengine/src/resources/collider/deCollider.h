@@ -129,8 +129,7 @@ private:
 	deBaseScriptingCollider *pPeerScripting;
 	
 	deWorld *pParentWorld;
-	deCollider *pLLWorldPrev;
-	deCollider *pLLWorldNext;
+	decTObjectLinkedList<deCollider>::Element pLLWorld;
 	
 	
 	
@@ -568,19 +567,10 @@ public:
 	inline deWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
-	void SetParentWorld(deWorld *world);
+	void SetParentWorld( deWorld *world );
 	
-	/** \brief Previous collider in the parent world linked list. */
-	inline deCollider *GetLLWorldPrev() const{ return pLLWorldPrev; }
-	
-	/** \brief Set next collider in the parent world linked list. */
-	void SetLLWorldPrev(deCollider *collider);
-	
-	/** \brief Next collider in the parent world linked list. */
-	inline deCollider *GetLLWorldNext() const{ return pLLWorldNext; }
-	
-	/** \brief Set next collider in the parent world linked list. */
-	void SetLLWorldNext(deCollider *collider);
+	/** \brief World linked list element. */
+	inline decTObjectLinkedList<deCollider>::Element &GetLLWorld(){ return pLLWorld; }
 	/*@}*/
 	
 	

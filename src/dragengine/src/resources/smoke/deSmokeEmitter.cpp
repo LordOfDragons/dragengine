@@ -45,7 +45,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deSmokeEmitter::deSmokeEmitter(deSmokeEmitterManager *manager) : deResource(manager){
+deSmokeEmitter::deSmokeEmitter(deSmokeEmitterManager *manager) : deResource(manager),
+pLLWorld(this)
+{
 	pCastVelocityMin = 1.0f;
 	pCastVelocityMax = 1.0f;
 	pCastDensityMin = 0.1f;
@@ -63,8 +65,6 @@ deSmokeEmitter::deSmokeEmitter(deSmokeEmitterManager *manager) : deResource(mana
 	pPeerPhysics = nullptr;
 	
 	pParentWorld = nullptr;
-	pLLWorldNext = nullptr;
-	pLLWorldPrev = nullptr;
 }
 
 deSmokeEmitter::~deSmokeEmitter(){
@@ -254,12 +254,4 @@ void deSmokeEmitter::SetPeerPhysics(deBasePhysicsSmokeEmitter *peer){
 
 void deSmokeEmitter::SetParentWorld(deWorld *world){
 	pParentWorld = world;
-}
-
-void deSmokeEmitter::SetLLWorldPrev(deSmokeEmitter *smokeEmitter){
-	pLLWorldPrev = smokeEmitter;
-}
-
-void deSmokeEmitter::SetLLWorldNext(deSmokeEmitter *smokeEmitter){
-	pLLWorldNext = smokeEmitter;
 }

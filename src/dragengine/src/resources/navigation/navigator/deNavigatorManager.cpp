@@ -89,25 +89,19 @@ void deNavigatorManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deNavigatorManager::SystemAILoad(){
-	deNavigator *navigator = (deNavigator*)pNavigators.GetRoot();
 	deAISystem &aisys = *GetAISystem();
-	
-	while(navigator){
+	pNavigators.GetResources().Visit([&](deResource *res){
+		deNavigator *navigator = static_cast<deNavigator*>(res);
 		if(!navigator->GetPeerAI()){
 			aisys.LoadNavigator(navigator);
 		}
-		
-		navigator = (deNavigator*)navigator->GetLLManagerNext();
-	}
+	});
 }
 
 void deNavigatorManager::SystemAIUnload(){
-	deNavigator *navigator = (deNavigator*)pNavigators.GetRoot();
-	
-	while(navigator){
-		navigator->SetPeerAI(nullptr);
-		navigator = (deNavigator*)navigator->GetLLManagerNext();
-	}
+	pNavigators.GetResources().Visit([&](deResource *res){
+		static_cast<deNavigator*>(res)->SetPeerAI(nullptr);
+	});
 }
 
 void deNavigatorManager::RemoveResource(deResource *resource){

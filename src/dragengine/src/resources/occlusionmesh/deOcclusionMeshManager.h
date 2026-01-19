@@ -55,6 +55,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Occlusion meshes. */
+	inline const deFileResourceList &GetOcclusionMeshes() const{ return pMeshes; }
+	
 	/** \brief Number of occlusion meshes. */
 	int GetOcclusionMeshCount() const;
 	

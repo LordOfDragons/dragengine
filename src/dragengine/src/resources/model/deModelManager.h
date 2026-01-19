@@ -56,6 +56,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Models. */
+	inline const deFileResourceList &GetModels() const{ return pModels; }
+	
 	/** \brief Count of models. */
 	int GetModelCount() const;
 	

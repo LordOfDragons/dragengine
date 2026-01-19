@@ -89,25 +89,19 @@ void deNavigationSpaceManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deNavigationSpaceManager::SystemAILoad(){
-	deNavigationSpace *navspace = (deNavigationSpace*)pNavSpaces.GetRoot();
 	deAISystem &aisys = *GetAISystem();
-	
-	while(navspace){
+	pNavSpaces.GetResources().Visit([&](deResource *res){
+		deNavigationSpace *navspace = static_cast<deNavigationSpace*>(res);
 		if(!navspace->GetPeerAI()){
 			aisys.LoadNavigationSpace(navspace);
 		}
-		
-		navspace = (deNavigationSpace*)navspace->GetLLManagerNext();
-	}
+	});
 }
 
 void deNavigationSpaceManager::SystemAIUnload(){
-	deNavigationSpace *navspace = (deNavigationSpace*)pNavSpaces.GetRoot();
-	
-	while(navspace){
-		navspace->SetPeerAI(nullptr);
-		navspace = (deNavigationSpace*)navspace->GetLLManagerNext();
-	}
+	pNavSpaces.GetResources().Visit([&](deResource *res){
+		static_cast<deNavigationSpace*>(res)->SetPeerAI(nullptr);
+	});
 }
 
 void deNavigationSpaceManager::RemoveResource(deResource *resource){

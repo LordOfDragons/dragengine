@@ -29,7 +29,8 @@
 #include "../world/octree/deoalWOVPrepareRayTrace.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decLayerMask.h>
 #include <dragengine/resources/sensor/deSoundLevelMeter.h>
@@ -70,8 +71,7 @@ private:
 	deoalWOVPrepareRayTrace pWOVPrepareRayTrace;
 	
 	bool pWorldMarkedRemove;
-	deoalASoundLevelMeter *pLLWorldPrev;
-	deoalASoundLevelMeter *pLLWorldNext;
+	decTObjectLinkedList<deoalASoundLevelMeter>::Element pLLWorld;
 	
 	
 	
@@ -214,17 +214,9 @@ public:
 	 */
 	void SetWorldMarkedRemove(bool marked);
 		
-	/** \brief Linked list world previous. */
-	inline deoalASoundLevelMeter *GetLLWorldPrev() const{ return pLLWorldPrev; }
-	
-	/** \brief Set linked list world previous. */
-	void SetLLWorldPrev(deoalASoundLevelMeter *soundLevelMeter);
-	
-	/** \brief Linked list world next. */
-	inline deoalASoundLevelMeter *GetLLWorldNext() const{ return pLLWorldNext; }
-	
-	/** \brief Set linked list world next. */
-	void SetLLWorldNext(deoalASoundLevelMeter *soundLevelMeter);
+	/** \brief Linked list world element. */
+	inline decTObjectLinkedList<deoalASoundLevelMeter>::Element &GetLLWorld(){ return pLLWorld; }
+	inline const decTObjectLinkedList<deoalASoundLevelMeter>::Element &GetLLWorld() const{ return pLLWorld; }
 	/*@}*/
 	
 	

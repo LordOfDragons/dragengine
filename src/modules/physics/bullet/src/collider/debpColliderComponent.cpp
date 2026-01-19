@@ -700,24 +700,17 @@ void debpColliderComponent::ApplyForceFields(float elapsed){
 	// speed loss we check first if there are any force fields affecting the component at all.
 	// this is not the best solution and requires an active tracking of force fields entering
 	// and leaving colliders for optimal performance. for this time being this is though enough
-	bool hasForceFields = false;
-	deForceField *forceField = world.GetRootForceField();
-	while(forceField){
+	if(!world.GetForceFields().HasMatching([&](deForceField *forceField){
 		if(forceField->GetCollisionFilter().CollidesNot(pColliderComponent.GetCollisionFilter())){
-			forceField = forceField->GetLLWorldNext();
-			continue;
+			return false;
 		}
 		
 		//const debpForceField &bpForceField = *( ( debpForceField* )forceField->GetPeerPhysics() );
 		
 		// TODO check if the force field overlaps the component
 		
-		hasForceFields = true;
-		break;
-		//forceField = forceField->GetLLWorldNext();
-	}
-	
-	if(!hasForceFields){
+		return true;
+	})){
 		return;
 	}
 	
@@ -743,11 +736,9 @@ void debpColliderComponent::ApplyForceFields(float elapsed){
 	}
 	*/
 	
-	forceField = world.GetRootForceField();
-	while(forceField){
+	world.GetForceFields().Visit([&](deForceField *forceField){
 		if(forceField->GetCollisionFilter().CollidesNot(pColliderComponent.GetCollisionFilter())){
-			forceField = forceField->GetLLWorldNext();
-			continue;
+			return;
 		}
 		
 		const debpForceField &bpForceField = *((debpForceField*)forceField->GetPeerPhysics());
@@ -792,8 +783,7 @@ void debpColliderComponent::ApplyForceFields(float elapsed){
 			decVector direction(pSimplePhyBody->GetPosition() - ffpos);
 			const float distanceSquared = direction.LengthSquared();
 			if(distanceSquared >= ffRadiusSquared){
-				forceField = forceField->GetLLWorldNext();
-				continue;
+				return;
 			}
 			
 			if(ffFieldType == deForceField::eftLinear){
@@ -802,8 +792,7 @@ void debpColliderComponent::ApplyForceFields(float elapsed){
 				
 			}else{
 				if(distanceSquared < FLOAT_SAFE_EPSILON){
-					forceField = forceField->GetLLWorldNext();
-					continue;
+					return;
 				}
 				distance = sqrtf(distanceSquared);
 				direction *= 1.0f - distance / ffRadius;
@@ -820,9 +809,7 @@ void debpColliderComponent::ApplyForceFields(float elapsed){
 		}else if(pBones){
 			pBones->ApplyForceField(bpForceField, fluctStrength, fluctDirection);
 		}
-		
-		forceField = forceField->GetLLWorldNext();
-	}
+	});
 }
 
 void debpColliderComponent::PredictDisplacement(float elapsed){

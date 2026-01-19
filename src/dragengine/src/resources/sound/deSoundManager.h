@@ -39,9 +39,7 @@ class DE_DLL_EXPORT deSoundManager : public deFileResourceManager{
 private:
 	deFileResourceList pSounds;
 	
-	deSoundDecoder *pDecoderRoot;
-	deSoundDecoder *pDecoderTail;
-	int pDecoderCount;
+	decTLinkedList<deSoundDecoder> pDecoders;
 	deMutex pMutexDecoder;
 	
 	
@@ -60,6 +58,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Sounds. */
+	inline const deFileResourceList &GetSounds() const{ return pSounds; }
+	
 	/** \brief Number of sounds. */
 	int GetSoundCount() const;
 	

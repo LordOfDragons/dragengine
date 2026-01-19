@@ -65,7 +65,7 @@ private:
 	deBaseScriptingPropField *pPeerScripting;
 	
 	deWorld *pParentWorld;
-	dePropField *pLLWorldPrev, *pLLWorldNext;
+	decTObjectLinkedList<dePropField>::Element pLLWorld;
 	
 	
 	
@@ -170,19 +170,10 @@ public:
 	inline deWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
-	void SetParentWorld(deWorld *world);
+	void SetParentWorld( deWorld *world );
 	
-	/** \brief Previous prop field in the parent world linked list. */
-	inline dePropField *GetLLWorldPrev() const{ return pLLWorldPrev; }
-	
-	/** \brief Set next prop field in the parent world linked list. */
-	void SetLLWorldPrev(dePropField *propField);
-	
-	/** \brief Next prop field in the parent world linked list. */
-	inline dePropField *GetLLWorldNext() const{ return pLLWorldNext; }
-	
-	/** \brief Set next prop field in the parent world linked list. */
-	void SetLLWorldNext(dePropField *propField);
+	/** \brief World linked list element. */
+	inline decTObjectLinkedList<dePropField>::Element &GetLLWorld(){ return pLLWorld; }
 	/*@}*/
 };
 

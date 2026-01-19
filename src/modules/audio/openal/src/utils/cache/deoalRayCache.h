@@ -25,13 +25,14 @@
 #ifndef _DEOALRAYCACHE_H_
 #define _DEOALRAYCACHE_H_
 
+#include "deoalRayCacheRay.h"
 #include "../../environment/raytrace/deoalRayTraceHitElement.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/threading/deMutex.h>
+#include <dragengine/common/collection/decTLinkedList.h>
 
 
-class deoalRayCacheRay;
 class deoalRayTraceResult;
 class deoalRayCacheOctree;
 class deoalAudioThread;
@@ -52,9 +53,7 @@ private:
 	float pSpreadDot;
 	int pOctreeDepth;
 	
-	deoalRayCacheRay *pRootRay;
-	deoalRayCacheRay *pTailRay;
-	int pRayCount;
+	decTUniqueLinkedList<deoalRayCacheRay> pRays;
 	
 	deoalRayCacheOctree *pOctree;
 	
@@ -101,7 +100,7 @@ private:
 	void pLockRead();
 	void pUnlockRead();
 	deoalRayCacheRay *pFindRay(const decVector &origin, const decVector &direction) const;
-	void pCacheRay(deoalRayCacheRay *ray);
+	void pCacheRay(deoalRayCacheRay::Ref &&ray);
 };
 
 #endif

@@ -54,15 +54,10 @@ deResource *deFileResourceList::GetWithFilename(deVirtualFileSystem *vfs, const 
 		DETHROW(deeInvalidParam);
 	}
 	
-	deFileResource *resource = (deFileResource*)GetRoot();
-	while(resource){
-		if(!resource->GetOutdated()
-		&& resource->GetVirtualFileSystem() == vfs
-		&& resource->GetFilename() == filename){
-			return resource;
-		}
-		resource = (deFileResource*)resource->GetLLManagerNext();
-	}
-	
-	return nullptr;
+	return GetResources().FindOrNull([&](const deResource *r){
+		const deFileResource &res = static_cast<const deFileResource&>(*r);
+		return !res.GetOutdated()
+			&& res.GetVirtualFileSystem() == vfs
+			&& res.GetFilename() == filename;
+	});
 }

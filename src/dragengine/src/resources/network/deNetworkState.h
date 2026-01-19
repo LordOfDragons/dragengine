@@ -58,8 +58,7 @@ private:
 	deBaseScriptingNetworkState *pPeerScripting;
 	
 	deWorld *pParentWorld;
-	deNetworkState *pLLWorldPrev;
-	deNetworkState *pLLWorldNext;
+	decTObjectLinkedList<deNetworkState>::Element pLLWorld;
 	
 	
 	
@@ -139,19 +138,10 @@ public:
 	inline deWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
-	void SetParentWorld(deWorld *world);
+	void SetParentWorld( deWorld *world );
 	
-	/** \brief Previous networkState in the parent world linked list. */
-	inline deNetworkState *GetLLWorldPrev() const{ return pLLWorldPrev; }
-	
-	/** \brief Set next networkState in the parent world linked list. */
-	void SetLLWorldPrev(deNetworkState *networkState);
-	
-	/** \brief Next networkState in the parent world linked list. */
-	inline deNetworkState *GetLLWorldNext() const{ return pLLWorldNext; }
-	
-	/** \brief Set next networkState in the parent world linked list. */
-	void SetLLWorldNext(deNetworkState *networkState);
+	/** \brief World linked list element. */
+	inline decTObjectLinkedList<deNetworkState>::Element &GetLLWorld(){ return pLLWorld; }
 	/*@}*/
 };
 

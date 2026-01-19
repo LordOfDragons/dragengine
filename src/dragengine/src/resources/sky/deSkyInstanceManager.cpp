@@ -87,24 +87,19 @@ void deSkyInstanceManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deSkyInstanceManager::SystemGraphicLoad(){
-	deSkyInstance *instance = (deSkyInstance*)pInstances.GetRoot();
 	deGraphicSystem &graSys = *GetGraphicSystem();
-	
-	while(instance){
+	pInstances.GetResources().Visit([&](deResource *res){
+		deSkyInstance *instance = static_cast<deSkyInstance*>(res);
 		if(!instance->GetPeerGraphic()){
 			graSys.LoadSkyInstance(instance);
 		}
-		instance = (deSkyInstance*)instance->GetLLManagerNext();
-	}
+	});
 }
 
 void deSkyInstanceManager::SystemGraphicUnload(){
-	deSkyInstance *instance = (deSkyInstance*)pInstances.GetRoot();
-	
-	while(instance){
-		instance->SetPeerGraphic(nullptr);
-		instance = (deSkyInstance*)instance->GetLLManagerNext();
-	}
+	pInstances.GetResources().Visit([&](deResource *res){
+		static_cast<deSkyInstance*>(res)->SetPeerGraphic(nullptr);
+	});
 }
 
 

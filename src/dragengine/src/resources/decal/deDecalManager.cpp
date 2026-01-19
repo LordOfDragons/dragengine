@@ -88,71 +88,52 @@ void deDecalManager::ReleaseLeakingResources(){
 
 // Systems support
 ////////////////////
-
 void deDecalManager::SystemGraphicLoad(){
-	deDecal *decal = (deDecal*)pDecals.GetRoot();
 	deGraphicSystem &graSys = *GetGraphicSystem();
-	
-	while(decal){
+	pDecals.GetResources().Visit([&](deResource *res){
+		deDecal *decal = static_cast<deDecal*>(res);
 		if(!decal->GetPeerGraphic()){
 			graSys.LoadDecal(decal);
 		}
-		
-		decal = (deDecal*)decal->GetLLManagerNext();
-	}
+	});
 }
 
 void deDecalManager::SystemGraphicUnload(){
-	deDecal *decal = (deDecal*)pDecals.GetRoot();
-	
-	while(decal){
-		decal->SetPeerGraphic(nullptr);
-		decal = (deDecal*)decal->GetLLManagerNext();
-	}
+	pDecals.GetResources().Visit([&](deResource *res){
+		static_cast<deDecal*>(res)->SetPeerGraphic(nullptr);
+	});
 }
 
 void deDecalManager::SystemPhysicsLoad(){
-	deDecal *decal = (deDecal*)pDecals.GetRoot();
 	dePhysicsSystem &phySys = *GetPhysicsSystem();
-	
-	while(decal){
+	pDecals.GetResources().Visit([&](deResource *res){
+		deDecal *decal = static_cast<deDecal*>(res);
 		if(!decal->GetPeerPhysics()){
 			phySys.LoadDecal(decal);
 		}
-		
-		decal = (deDecal*)decal->GetLLManagerNext();
-	}
+	});
 }
 
 void deDecalManager::SystemPhysicsUnload(){
-	deDecal *decal = (deDecal*)pDecals.GetRoot();
-	
-	while(decal){
-		decal->SetPeerPhysics(nullptr);
-		decal = (deDecal*)decal->GetLLManagerNext();
-	}
+	pDecals.GetResources().Visit([&](deResource *res){
+		static_cast<deDecal*>(res)->SetPeerPhysics(nullptr);
+	});
 }
 
 void deDecalManager::SystemAudioLoad(){
-	deDecal *decal = (deDecal*)pDecals.GetRoot();
 	deAudioSystem &audSys = *GetAudioSystem();
-	
-	while(decal){
+	pDecals.GetResources().Visit([&](deResource *res){
+		deDecal *decal = static_cast<deDecal*>(res);
 		if(!decal->GetPeerAudio()){
 			audSys.LoadDecal(decal);
 		}
-		
-		decal = (deDecal*)decal->GetLLManagerNext();
-	}
+	});
 }
 
 void deDecalManager::SystemAudioUnload(){
-	deDecal *decal = (deDecal*)pDecals.GetRoot();
-	
-	while(decal){
-		decal->SetPeerAudio(nullptr);
-		decal = (deDecal*)decal->GetLLManagerNext();
-	}
+	pDecals.GetResources().Visit([&](deResource *res){
+		static_cast<deDecal*>(res)->SetPeerAudio(nullptr);
+	});
 }
 
 

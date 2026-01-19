@@ -53,15 +53,10 @@ pVolume(1.0f),
 pSpeakerGain(1.0f),
 pEnableAuralization(true),
 
-pSpeakerRoot(nullptr),
-pSpeakerTail(nullptr),
-pSpeakerCount(0),
-
 pPeerAudio(nullptr),
 
 pParentWorld(nullptr),
-pLLWorldPrev(nullptr),
-pLLWorldNext(nullptr)
+pLLWorld(this)
 {
 	pLayerMask.SetBit(0);
 }
@@ -210,21 +205,8 @@ void deMicrophone::AddSpeaker(deSpeaker *speaker){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(pSpeakerTail){
-		pSpeakerTail->SetLLMicrophoneNext(speaker);
-		speaker->SetLLMicrophonePrev(pSpeakerTail);
-		speaker->SetLLMicrophoneNext(nullptr); // not required by definition, just to make sure...
-		
-	}else{
-		speaker->SetLLMicrophonePrev(nullptr); // not required by definition, just to make sure...
-		speaker->SetLLMicrophoneNext(nullptr); // not required by definition, just to make sure...
-		pSpeakerRoot = speaker;
-	}
-	
-	pSpeakerTail = speaker;
-	pSpeakerCount++;
+	pSpeakers.Add(&speaker->GetLLMicrophone());
 	speaker->SetParentMicrophone(this);
-	speaker->AddReference();
 	
 	if(pPeerAudio){
 		pPeerAudio->SpeakerAdded(speaker);
@@ -236,41 +218,22 @@ void deMicrophone::RemoveSpeaker(deSpeaker *speaker){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(speaker->GetLLMicrophonePrev()){
-		speaker->GetLLMicrophonePrev()->SetLLMicrophoneNext(speaker->GetLLMicrophoneNext());
-	}
-	if(speaker->GetLLMicrophoneNext()){
-		speaker->GetLLMicrophoneNext()->SetLLMicrophonePrev(speaker->GetLLMicrophonePrev());
-	}
-	if(speaker == pSpeakerRoot){
-		pSpeakerRoot = speaker->GetLLMicrophoneNext();
-	}
-	if(speaker == pSpeakerTail){
-		pSpeakerTail = speaker->GetLLMicrophonePrev();
-	}
-	pSpeakerCount--;
-	
 	speaker->SetParentMicrophone(nullptr);
-	speaker->SetLLMicrophonePrev(nullptr);
-	speaker->SetLLMicrophoneNext(nullptr);
+	pSpeakers.Remove(&speaker->GetLLMicrophone());
 	if(pPeerAudio){
 		pPeerAudio->SpeakerRemoved(speaker);
 	}
-	speaker->FreeReference();
 }
-
 void deMicrophone::RemoveAllSpeakers(){
 	if(pPeerAudio){
 		pPeerAudio->AllSpeakersRemoved();
 	}
 	
-	while(pSpeakerTail){
-		deSpeaker * const next = pSpeakerTail->GetLLMicrophonePrev();
-		pSpeakerTail->FreeReference();
-		pSpeakerTail = next;
-		pSpeakerCount--;
-	}
-	pSpeakerRoot = nullptr;
+	pSpeakers.Visit([&](deResource *res){
+		static_cast<deSpeaker*>(res)->SetParentMicrophone(nullptr);
+	});
+	
+	pSpeakers.RemoveAll();
 }
 
 
@@ -297,14 +260,6 @@ void deMicrophone::SetPeerAudio(deBaseAudioMicrophone *audMicrophone){
 
 void deMicrophone::SetParentWorld(deWorld *world){
 	pParentWorld = world;
-}
-
-void deMicrophone::SetLLWorldPrev(deMicrophone *microphone){
-	pLLWorldPrev = microphone;
-}
-
-void deMicrophone::SetLLWorldNext(deMicrophone *microphone){
-	pLLWorldNext = microphone;
 }
 
 

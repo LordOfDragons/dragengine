@@ -90,49 +90,36 @@ void deNetworkStateManager::ReleaseLeakingResources(){
 
 // Systems Support
 ////////////////////
-
 void deNetworkStateManager::SystemNetworkLoad(){
-	deNetworkState *state = (deNetworkState*)pStates.GetRoot();
 	deNetworkSystem &netSys = *GetNetworkSystem();
-	
-	while(state){
+	pStates.GetResources().Visit([&](deResource *resource){
+		deNetworkState *state = static_cast<deNetworkState*>(resource);
 		if(!state->GetPeerNetwork()){
 			netSys.LoadState(state);
 		}
-		
-		state = (deNetworkState*)state->GetLLManagerNext();
-	}
+	});
 }
 
 void deNetworkStateManager::SystemNetworkUnload(){
-	deNetworkState *state = (deNetworkState*)pStates.GetRoot();
-	
-	while(state){
-		state->SetPeerNetwork (nullptr);
-		state = (deNetworkState*)state->GetLLManagerNext();
-	}
+	pStates.GetResources().Visit([](deResource *resource){
+		static_cast<deNetworkState*>(resource)->SetPeerNetwork(nullptr);
+	});
 }
 
 void deNetworkStateManager::SystemScriptingLoad(){
-	deNetworkState *state = (deNetworkState*)pStates.GetRoot();
 	deScriptingSystem &scrSys = *GetScriptingSystem();
-	
-	while(state){
+	pStates.GetResources().Visit([&](deResource *resource){
+		deNetworkState *state = static_cast<deNetworkState*>(resource);
 		if(!state->GetPeerScripting()){
 			scrSys.LoadNetworkState(state);
 		}
-		
-		state = (deNetworkState*)state->GetLLManagerNext();
-	}
+	});
 }
 
 void deNetworkStateManager::SystemScriptingUnload(){
-	deNetworkState *state = (deNetworkState*)pStates.GetRoot();
-	
-	while(state){
-		state->SetPeerScripting(nullptr);
-		state = (deNetworkState*)state->GetLLManagerNext();
-	}
+	pStates.GetResources().Visit([](deResource *resource){
+		static_cast<deNetworkState*>(resource)->SetPeerScripting(nullptr);
+	});
 }
 
 void deNetworkStateManager::RemoveResource(deResource *resource){

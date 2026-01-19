@@ -79,26 +79,20 @@ void deCaptureCanvasManager::ReleaseLeakingResources(){
 
 // Systems Support
 ////////////////////
-
 void deCaptureCanvasManager::SystemGraphicLoad(){
-	deCaptureCanvas *captureCanvas = (deCaptureCanvas*)pCaptureCanvas.GetRoot();
-	
-	while(captureCanvas){
+	deGraphicSystem &graSys = *GetGraphicSystem();
+	pCaptureCanvas.GetResources().Visit([&](deResource *r){
+		auto captureCanvas = static_cast<deCaptureCanvas*>(r);
 		if(!captureCanvas->GetPeerGraphic()){
-			GetGraphicSystem()->LoadCaptureCanvas(captureCanvas);
+			graSys.LoadCaptureCanvas(captureCanvas);
 		}
-		
-		captureCanvas = (deCaptureCanvas*)captureCanvas->GetLLManagerNext();
-	}
+	});
 }
 
 void deCaptureCanvasManager::SystemGraphicUnload(){
-	deCaptureCanvas *captureCanvas = (deCaptureCanvas*)pCaptureCanvas.GetRoot();
-	
-	while(captureCanvas){
-		captureCanvas->SetPeerGraphic(nullptr);
-		captureCanvas = (deCaptureCanvas*)captureCanvas->GetLLManagerNext();
-	}
+	pCaptureCanvas.GetResources().Visit([&](deResource *r){
+		static_cast<deCaptureCanvas*>(r)->SetPeerGraphic(nullptr);
+	});
 }
 
 void deCaptureCanvasManager::RemoveResource(deResource *resource){

@@ -87,27 +87,20 @@ void deDynamicSkinManager::ReleaseLeakingResources(){
 
 // Systems Support
 ////////////////////
-
 void deDynamicSkinManager::SystemGraphicLoad(){
-	deDynamicSkin *dynamicSkin = (deDynamicSkin*)pSkins.GetRoot();
-	deGraphicSystem &grasys = *GetGraphicSystem();
-	
-	while(dynamicSkin){
+	deGraphicSystem &graSys = *GetGraphicSystem();
+	pSkins.GetResources().Visit([&](deResource *res){
+		deDynamicSkin *dynamicSkin = static_cast<deDynamicSkin*>(res);
 		if(!dynamicSkin->GetPeerGraphic()){
-			grasys.LoadDynamicSkin(dynamicSkin);
+			graSys.LoadDynamicSkin(dynamicSkin);
 		}
-		
-		dynamicSkin = (deDynamicSkin*)dynamicSkin->GetLLManagerNext();
-	}
+	});
 }
 
 void deDynamicSkinManager::SystemGraphicUnload(){
-	deDynamicSkin *dynamicSkin = (deDynamicSkin*)pSkins.GetRoot();
-	
-	while(dynamicSkin){
-		dynamicSkin->SetPeerGraphic(nullptr);
-		dynamicSkin = (deDynamicSkin*)dynamicSkin->GetLLManagerNext();
-	}
+	pSkins.GetResources().Visit([](deResource *res){
+		static_cast<deDynamicSkin*>(res)->SetPeerGraphic(nullptr);
+	});
 }
 
 void deDynamicSkinManager::RemoveResource(deResource *resource){

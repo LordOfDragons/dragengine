@@ -91,46 +91,35 @@ void deSynthesizerInstanceManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deSynthesizerInstanceManager::SystemSynthesizerLoad(){
-	deSynthesizerInstance *instance = (deSynthesizerInstance*)pInstances.GetRoot();
-	deSynthesizerSystem &synthSys = *GetSynthesizerSystem();
-	
-	while(instance){
+	deSynthesizerSystem &synSys = *GetSynthesizerSystem();
+	pInstances.GetResources().Visit([&](deResource *res){
+		deSynthesizerInstance *instance = static_cast<deSynthesizerInstance*>(res);
 		if(!instance->GetPeerSynthesizer()){
-			synthSys.LoadSynthesizerInstance(instance);
+			synSys.LoadSynthesizerInstance(instance);
 		}
-		
-		instance = (deSynthesizerInstance*)instance->GetLLManagerNext();
-	}
+	});
 }
 
 void deSynthesizerInstanceManager::SystemSynthesizerUnload(){
-	deSynthesizerInstance *instance = (deSynthesizerInstance*)pInstances.GetRoot();
-	
-	while(instance){
-		instance->SetPeerSynthesizer(nullptr);
-		instance = (deSynthesizerInstance*)instance->GetLLManagerNext();
-	}
+	pInstances.GetResources().Visit([](deResource *res){
+		static_cast<deSynthesizerInstance*>(res)->SetPeerSynthesizer(nullptr);
+	});
 }
 
 void deSynthesizerInstanceManager::SystemAudioLoad(){
-	deSynthesizerInstance *instance = (deSynthesizerInstance*)pInstances.GetRoot();
-	deAudioSystem &system = *GetAudioSystem();
-	
-	while(instance){
+	deAudioSystem &audSys = *GetAudioSystem();
+	pInstances.GetResources().Visit([&](deResource *res){
+		deSynthesizerInstance *instance = static_cast<deSynthesizerInstance*>(res);
 		if(!instance->GetPeerAudio()){
-			system.LoadSynthesizerInstance(instance);
+			audSys.LoadSynthesizerInstance(instance);
 		}
-		instance = (deSynthesizerInstance*)instance->GetLLManagerNext();
-	}
+	});
 }
 
 void deSynthesizerInstanceManager::SystemAudioUnload(){
-	deSynthesizerInstance *instance = (deSynthesizerInstance*)pInstances.GetRoot();
-	
-	while(instance){
-		instance->SetPeerAudio(nullptr);
-		instance = (deSynthesizerInstance*)instance->GetLLManagerNext();
-	}
+	pInstances.GetResources().Visit([](deResource *res){
+		static_cast<deSynthesizerInstance*>(res)->SetPeerAudio(nullptr);
+	});
 }
 
 

@@ -87,47 +87,35 @@ void deTouchSensorManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deTouchSensorManager::SystemPhysicsLoad(){
-	deTouchSensor *touchSensor = (deTouchSensor*)pTouchSensors.GetRoot();
 	dePhysicsSystem &phySys = *GetPhysicsSystem();
-	
-	while(touchSensor){
+	pTouchSensors.GetResources().Visit([&](deResource *res){
+		deTouchSensor *touchSensor = static_cast<deTouchSensor*>(res);
 		if(!touchSensor->GetPeerPhysics()){
 			phySys.LoadTouchSensor(touchSensor);
 		}
-		
-		touchSensor = (deTouchSensor*)touchSensor->GetLLManagerNext();
-	}
+	});
 }
 
 void deTouchSensorManager::SystemPhysicsUnload(){
-	deTouchSensor *touchSensor = (deTouchSensor*)pTouchSensors.GetRoot();
-	
-	while(touchSensor){
-		touchSensor->SetPeerPhysics(nullptr);
-		touchSensor = (deTouchSensor*)touchSensor->GetLLManagerNext();
-	}
+	pTouchSensors.GetResources().Visit([&](deResource *res){
+		static_cast<deTouchSensor*>(res)->SetPeerPhysics(nullptr);
+	});
 }
 
 void deTouchSensorManager::SystemScriptingLoad(){
-	deTouchSensor *touchSensor = (deTouchSensor*)pTouchSensors.GetRoot();
 	deScriptingSystem &scrSys = *GetScriptingSystem();
-	
-	while(touchSensor){
+	pTouchSensors.GetResources().Visit([&](deResource *res){
+		deTouchSensor *touchSensor = static_cast<deTouchSensor*>(res);
 		if(!touchSensor->GetPeerScripting()){
 			scrSys.LoadTouchSensor(touchSensor);
 		}
-		
-		touchSensor = (deTouchSensor*)touchSensor->GetLLManagerNext();
-	}
+	});
 }
 
 void deTouchSensorManager::SystemScriptingUnload(){
-	deTouchSensor *touchSensor = (deTouchSensor*)pTouchSensors.GetRoot();
-	
-	while(touchSensor){
-		touchSensor->SetPeerScripting(nullptr);
-		touchSensor = (deTouchSensor*)touchSensor->GetLLManagerNext();
-	}
+	pTouchSensors.GetResources().Visit([&](deResource *res){
+		static_cast<deTouchSensor*>(res)->SetPeerScripting(nullptr);
+	});
 }
 
 

@@ -193,16 +193,15 @@ void deRigManager::ReleaseLeakingResources(){
 	const int count = GetRigCount();
 	
 	if(count > 0){
-		deRig *rig = (deRig*)pRigs.GetRoot();
-		
 		LogWarnFormat("%i leaking rigs", count);
 		
-		while(rig){
+		// visit all resources and log filenames
+		pRigs.GetResources().Visit([&](deResource *res){
+			deRig *rig = static_cast<deRig*>(res);
 			LogWarnFormat("- %s", rig->GetFilename().GetString());
-			rig = (deRig*)rig->GetLLManagerNext();
-		}
+		});
 		
-		pRigs.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
+		pRigs.RemoveAll(); // we do not delete them to avoid crashes. better leak than crash
 	}
 }
 
@@ -212,26 +211,22 @@ void deRigManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deRigManager::SystemPhysicsLoad(){
-	deRig *rig = (deRig*)pRigs.GetRoot();
 	dePhysicsSystem &phySys = *GetPhysicsSystem();
 	
-	while(rig){
+	pRigs.GetResources().Visit([&](deResource *res){
+		deRig *rig = static_cast<deRig*>(res);
 		if(!rig->GetPeerPhysics()){
 			phySys.LoadRig(rig);
 		}
-		
-		rig = (deRig*)rig->GetLLManagerNext();
-	}
+	});
 }
 
 void deRigManager::SystemPhysicsUnload(){
-	deRig *rig = (deRig*)pRigs.GetRoot();
-	
-	while(rig){
-		rig->SetPeerPhysics(nullptr);
-		rig = (deRig*)rig->GetLLManagerNext();
-	}
+	pRigs.GetResources().Visit([](deResource *res){
+		static_cast<deRig*>(res)->SetPeerPhysics(nullptr);
+	});
 }
+
 
 void deRigManager::RemoveResource(deResource *resource){
 	pRigs.RemoveIfPresent(resource);

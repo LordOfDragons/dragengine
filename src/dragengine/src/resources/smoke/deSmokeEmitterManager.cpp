@@ -88,51 +88,40 @@ void deSmokeEmitterManager::ReleaseLeakingResources(){
 
 // Systems Support
 ////////////////////
-
 void deSmokeEmitterManager::SystemGraphicLoad(){
-	deSmokeEmitter *smokeEmitter = (deSmokeEmitter*)pSmokeEmitters.GetRoot();
-	
-	while(smokeEmitter){
+	deGraphicSystem &graSys = *GetGraphicSystem();
+	pSmokeEmitters.GetResources().Visit([&](deResource *res){
+		deSmokeEmitter *smokeEmitter = static_cast<deSmokeEmitter*>(res);
 		if(!smokeEmitter->GetPeerGraphic()){
-			GetGraphicSystem()->LoadSmokeEmitter(smokeEmitter);
+			graSys.LoadSmokeEmitter(smokeEmitter);
 		}
-		
-		smokeEmitter = (deSmokeEmitter*)smokeEmitter->GetLLManagerNext();
-	}
+	});
 }
 
 void deSmokeEmitterManager::SystemGraphicUnload(){
-	deSmokeEmitter *smokeEmitter = (deSmokeEmitter*)pSmokeEmitters.GetRoot();
-	
-	while(smokeEmitter){
-		smokeEmitter->SetPeerGraphic(nullptr);
-		smokeEmitter = (deSmokeEmitter*)smokeEmitter->GetLLManagerNext();
-	}
+	pSmokeEmitters.GetResources().Visit([](deResource *res){
+		static_cast<deSmokeEmitter*>(res)->SetPeerGraphic(nullptr);
+	});
 }
 
 void deSmokeEmitterManager::SystemPhysicsLoad(){
-	deSmokeEmitter *smokeEmitter = (deSmokeEmitter*)pSmokeEmitters.GetRoot();
-	
-	while(smokeEmitter){
+	dePhysicsSystem &phySys = *GetPhysicsSystem();
+	pSmokeEmitters.GetResources().Visit([&](deResource *res){
+		deSmokeEmitter *smokeEmitter = static_cast<deSmokeEmitter*>(res);
 		if(!smokeEmitter->GetPeerPhysics()){
-			GetPhysicsSystem()->LoadSmokeEmitter(smokeEmitter);
+			phySys.LoadSmokeEmitter(smokeEmitter);
 		}
-		
-		smokeEmitter = (deSmokeEmitter*)smokeEmitter->GetLLManagerNext();
-	}
+	});
 }
 
 void deSmokeEmitterManager::SystemPhysicsUnload(){
-	deSmokeEmitter *smokeEmitter = (deSmokeEmitter*)pSmokeEmitters.GetRoot();
-	
-	while(smokeEmitter){
-		smokeEmitter->SetPeerPhysics(nullptr);
-		smokeEmitter = (deSmokeEmitter*)smokeEmitter->GetLLManagerNext();
-	}
+	pSmokeEmitters.GetResources().Visit([](deResource *res){
+		static_cast<deSmokeEmitter*>(res)->SetPeerPhysics(nullptr);
+	});
 }
 
 
 
-void deSmokeEmitterManager::RemoveResource(deResource *resource){
-	pSmokeEmitters.RemoveIfPresent(resource);
+void deSmokeEmitterManager::RemoveResource(deResource *res){
+	pSmokeEmitters.RemoveIfPresent(res);
 }

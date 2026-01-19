@@ -157,13 +157,13 @@ void dearAnimatorInstance::ApplyRules(){
 }
 
 void dearAnimatorInstance::ApplyStateToArComponent() const{
-	if(!pAnimator || !pComponent){
+	if(!pAnimator || !pEngComponent){
 		return;
 	}
 	
 	const deAnimatorRule::eBlendModes blendMode = pAnimatorInstance.GetBlendMode();
 	const deRig * const sourceRig = pAnimator->GetAnimator().GetRig();
-	const deRig * const destRig = pComponent->GetComponent().GetRig();
+	const deRig * const destRig = pEngComponent->GetRig();
 	
 	if(sourceRig == destRig){
 		if(pUseBlending){
@@ -184,7 +184,7 @@ DEBUG_PRINT_TIMER("ApplyStateToArComponent directly");
 }
 
 void dearAnimatorInstance::pStartTaskApplyRules(){
-	if(!pComponent){
+	if(!pEngComponent){
 		return;
 	}
 	
@@ -195,10 +195,9 @@ void dearAnimatorInstance::pStartTaskApplyRules(){
 		// component animator task. also make the task to depend on the previous set task.
 		// this allows to properly do chained animator instances.
 		deParallelProcessing &parallelProcessing = pModule.GetGameEngine()->GetParallelProcessing();
-		deComponent &component = pComponent->GetComponent();
-		if(component.GetAnimatorTask()){
+		if(pEngComponent->GetAnimatorTask()){
 			parallelProcessing.RunWithTaskDependencyMutex([&](){
-				task->AddDependsOn(component.GetAnimatorTask());
+				task->AddDependsOn(pEngComponent->GetAnimatorTask());
 			});
 			
 		}else{
@@ -219,7 +218,7 @@ void dearAnimatorInstance::pStartTaskApplyRules(){
 		// indirectly in a prepare bones which in turn tries to wait on the set task which though is not
 		// yet known by the parallel processing system and thus the wait never finishes. there should be
 		// no problem by using this run order
-		component.SetAnimatorTask(task);
+		pEngComponent->SetAnimatorTask(task);
 		
 	}else{
 		pComponent->UpdateFromComponent(); // does also UpdateMatrixFromComponent()
@@ -240,11 +239,8 @@ void dearAnimatorInstance::StopTaskApplyRules(){
 		return;
 	}
 	
-	if(pComponent){
-		deComponent &component = pComponent->GetComponent();
-		if(component.GetAnimatorTask() == pActiveTaskApplyRule){
-			component.SetAnimatorTask(nullptr);
-		}
+	if(pEngComponent && pEngComponent->GetAnimatorTask() == pActiveTaskApplyRule){
+		pEngComponent->SetAnimatorTask(nullptr);
 	}
 	
 	if(pModule.GetGameEngine()->GetParallelProcessing().GetOutputDebugMessages()){
@@ -257,7 +253,7 @@ void dearAnimatorInstance::StopTaskApplyRules(){
 
 
 void dearAnimatorInstance::Apply(bool direct){
-	if(pSkipApply || !pComponent || !pAnimator){
+	if(pSkipApply || !pEngComponent || !pAnimator){
 		return;
 	}
 	
@@ -291,7 +287,7 @@ void dearAnimatorInstance::Apply(bool direct){
 	DEBUG_PRINT_TIMER("pUpdateFakeRootBones");
 	
 	const deRig * const sourceRig = pAnimator->GetAnimator().GetRig();
-	const deRig * const destRig = pComponent->GetComponent().GetRig();
+	const deRig * const destRig = pEngComponent->GetRig();
 	
 	if(sourceRig == destRig){
 		// this is a temporary hack. if the animator and component have two different rigs assigned the
@@ -379,19 +375,8 @@ void dearAnimatorInstance::ComponentChanged(){
 	// parallel task rules can access the component. we have to wait to not segfault
 	pWaitTaskApplyRules();
 	
-	deComponent * const component = pAnimatorInstance.GetComponent();
-	dearComponent * const arcomponent = component
-		? (dearComponent*)component->GetPeerAnimator() : nullptr;
-	
-	if(arcomponent != pComponent){
-		if(pComponent){
-			pComponent->GetComponent().FreeReference();
-		}
-		pComponent = arcomponent;
-		if(component){
-			component->AddReference();
-		}
-	}
+	pEngComponent = pAnimatorInstance.GetComponent();
+	pComponent = pEngComponent ? (dearComponent*)pEngComponent->GetPeerAnimator() : nullptr;
 	
 	pDirtyMappings = true;
 	pDirtyRuleParams = true;
@@ -461,9 +446,7 @@ void dearAnimatorInstance::pCleanUp(){
 	
 	pDropRules();
 	
-	if(pComponent){
-		pComponent->GetComponent().FreeReference();
-	}
+	pEngComponent = nullptr;
 }
 
 void dearAnimatorInstance::pCheckRequireRebuild(){
@@ -606,7 +589,6 @@ void dearAnimatorInstance::pUpdateFakeRootBones(){
 		return;
 	}
 	
-	const deComponent &component = pComponent->GetComponent();
 	const int boneCount = pBoneStateList.GetStateCount();
 	int i;
 	
@@ -624,7 +606,7 @@ void dearAnimatorInstance::pUpdateFakeRootBones(){
 		decMatrix matrix(decMatrix::CreateRT(state.GetRigBone()->GetRotation(),
 			state.GetRigBone()->GetPosition()));
 		while(rigParent != -1){
-			const deComponentBone &compBone = component.GetBoneAt(rigParent);
+			const deComponentBone &compBone = pEngComponent->GetBoneAt(rigParent);
 			const deRigBone &rigBone = rig->GetBoneAt(rigParent);
 			
 			matrix = matrix
@@ -765,14 +747,13 @@ void dearAnimatorInstance::pUpdateControllerStates(){
 }
 
 void dearAnimatorInstance::pApplyStateToComponent() const{
-	if(!pAnimator || !pComponent){
+	if(!pAnimator || !pEngComponent){
 		return;
 	}
 	
-	deComponent &component = pComponent->GetComponent();
 	const deAnimatorRule::eBlendModes blendMode = pAnimatorInstance.GetBlendMode();
 	const deRig * const sourceRig = pAnimator->GetAnimator().GetRig();
-	const deRig * const destRig = component.GetRig();
+	const deRig * const destRig = pEngComponent->GetRig();
 	float blendFactor = 1.0f;
 	
 	if(pUseBlending){
@@ -781,13 +762,13 @@ void dearAnimatorInstance::pApplyStateToComponent() const{
 	
 	if(sourceRig == destRig){
 		if(pUseBlending){
-			pBoneStateList.ApplyToComponent(&component, blendMode, blendFactor);
-			pVPSStateList.ApplyToComponent(component, blendMode, blendFactor);
+			pBoneStateList.ApplyToComponent(pEngComponent, blendMode, blendFactor);
+			pVPSStateList.ApplyToComponent(pEngComponent, blendMode, blendFactor);
 DEBUG_PRINT_TIMER("ApplyStateToComponent with blending");
 			
 		}else{
-			pBoneStateList.ApplyToComponent(&component);
-			pVPSStateList.ApplyToComponent(component);
+			pBoneStateList.ApplyToComponent(pEngComponent);
+			pVPSStateList.ApplyToComponent(pEngComponent);
 DEBUG_PRINT_TIMER("ApplyStateToComponent directly");
 		}
 		
@@ -849,8 +830,8 @@ void dearAnimatorInstance::pWaitTaskApplyRules(){
 }
 
 void dearAnimatorInstance::pWaitAnimTaskFinished(){
-	if(pComponent){
-		deParallelTask * const task = pComponent->GetComponent().GetAnimatorTask();
+	if(pEngComponent){
+		deParallelTask * const task = pEngComponent->GetAnimatorTask();
 		if(task){
 			pModule.GetGameEngine()->GetParallelProcessing().WaitForTask(task);
 		}

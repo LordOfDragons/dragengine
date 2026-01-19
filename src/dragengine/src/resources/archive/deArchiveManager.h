@@ -29,6 +29,7 @@
 #include "deArchiveContainer.h"
 #include "../deFileResourceManager.h"
 #include "../deFileResourceList.h"
+#include "../../common/collection/decTLinkedList.h"
 
 
 /**
@@ -38,9 +39,7 @@ class DE_DLL_EXPORT deArchiveManager : public deFileResourceManager{
 private:
 	deFileResourceList pArchives;
 	
-	deArchiveContainer *pContainerRoot;
-	deArchiveContainer *pContainerTail;
-	int pContainerCount;
+	decTLinkedList<deArchiveContainer> pContainers;
 	
 	
 	
@@ -58,6 +57,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Archives. */
+	inline const deFileResourceList &GetArchives() const{ return pArchives; }
+	
 	/** \brief Number of archives. */
 	int GetArchiveCount() const;
 	

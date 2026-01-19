@@ -174,14 +174,12 @@ void deoglCamera::SyncToRender(){
 	if(pDirtyPropFields){
 		if(pParentWorld){
 			const decDVector &position = pCamera.GetPosition();
-			dePropField *propField = pParentWorld->GetWorld().GetRootPropField();
-			while(propField){
+			pParentWorld->GetWorld().GetPropFields().Visit([&](dePropField *propField){
 				deoglPropField * const oglPropField = (deoglPropField*)propField->GetPeerGraphic();
 				if(oglPropField){
 					oglPropField->TestLODLevel(position);
 				}
-				propField = propField->GetLLWorldNext();
-			}
+			});
 		}
 		
 		pDirtyPropFields = false;

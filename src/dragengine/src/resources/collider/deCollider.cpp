@@ -62,8 +62,7 @@ pPeerPhysics(nullptr),
 pPeerScripting(nullptr),
 
 pParentWorld(nullptr),
-pLLWorldPrev(nullptr),
-pLLWorldNext(nullptr){
+pLLWorld(this){
 }
 
 deCollider::~deCollider(){
@@ -627,14 +626,6 @@ void deCollider::Visit(deColliderVisitor &visitor){
 
 void deCollider::SetParentWorld(deWorld *world){
 	pParentWorld = world;
-}
-
-void deCollider::SetLLWorldPrev(deCollider *collider){
-	pLLWorldPrev = collider;
-}
-
-void deCollider::SetLLWorldNext(deCollider *collider){
-	pLLWorldNext = collider;
 }
 
 

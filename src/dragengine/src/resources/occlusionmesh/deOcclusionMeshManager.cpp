@@ -215,27 +215,25 @@ void deOcclusionMeshManager::ReleaseLeakingResources(){
 	const int count = GetOcclusionMeshCount();
 	
 	if(count > 0){
-		deOcclusionMesh *occlusionMesh = (deOcclusionMesh*)pMeshes.GetRoot();
 		int unnamedCount = 0;
 		
 		LogWarnFormat("%i leaking occlusion meshes", count);
 		
-		while(occlusionMesh){
+		pMeshes.GetResources().Visit([&](deResource *res){
+			deOcclusionMesh *occlusionMesh = static_cast<deOcclusionMesh*>(res);
+			
 			if(occlusionMesh->GetFilename().IsEmpty()){
 				unnamedCount++;
-				
 			}else{
 				LogWarnFormat("- %s", occlusionMesh->GetFilename().GetString());
 			}
-			
-			occlusionMesh = (deOcclusionMesh*)occlusionMesh->GetLLManagerNext();
-		}
+		});
 		
 		if(unnamedCount > 0){
 			LogWarnFormat("%i unnamed occlusion meshes", unnamedCount);
 		}
 		
-		pMeshes.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
+		pMeshes.RemoveAll(); // we do not delete them to avoid crashes. better leak than crash
 	}
 }
 
@@ -245,25 +243,20 @@ void deOcclusionMeshManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deOcclusionMeshManager::SystemGraphicLoad(){
-	deOcclusionMesh *occmesh = (deOcclusionMesh*)pMeshes.GetRoot();
 	deGraphicSystem &grasys = *GetGraphicSystem();
 	
-	while(occmesh){
+	pMeshes.GetResources().Visit([&](deResource *res){
+		deOcclusionMesh *occmesh = static_cast<deOcclusionMesh*>(res);
 		if(!occmesh->GetPeerGraphic()){
 			grasys.LoadOcclusionMesh(occmesh);
 		}
-		
-		occmesh = (deOcclusionMesh*)occmesh->GetLLManagerNext();
-	}
+	});
 }
 
 void deOcclusionMeshManager::SystemGraphicUnload(){
-	deOcclusionMesh *occmesh = (deOcclusionMesh*)pMeshes.GetRoot();
-	
-	while(occmesh){
-		occmesh->SetPeerGraphic(nullptr);
-		occmesh = (deOcclusionMesh*)occmesh->GetLLManagerNext();
-	}
+	pMeshes.GetResources().Visit([](deResource *res){
+		static_cast<deOcclusionMesh*>(res)->SetPeerGraphic(nullptr);
+	});
 }
 
 

@@ -27,6 +27,8 @@
 
 #include "../../texture/deoglRImage.h"
 
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglPixelBuffer;
@@ -41,6 +43,9 @@ class deoglTexture;
  * Stores a texture composed of 2 or more static colors or images.
  */
 class deoglCombinedTexture{
+public:
+	using Ref = deTUniqueReference<deoglCombinedTexture>;
+	
 private:
 	deoglRenderThread &pRenderThread;
 	
@@ -51,8 +56,7 @@ private:
 	
 	int pUsageCount;
 	unsigned int pHashCode;
-	deoglCombinedTexture *pLLPrev;
-	deoglCombinedTexture *pLLNext;
+	decTUniqueLinkedList<deoglCombinedTexture>::Element pLLTextures;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -123,17 +127,9 @@ public:
 	
 	
 	
-	/** Previous entry in the linked list. */
-	inline deoglCombinedTexture *GetLLPrev() const{ return pLLPrev; }
-	
-	/** Set previous entry in the linked list. */
-	void SetLLPrev(deoglCombinedTexture *entry);
-	
-	/** Next entry in the linked list. */
-	inline deoglCombinedTexture *GetLLNext() const{ return pLLNext; }
-	
-	/** Set next entry in the linked list. */
-	void SetLLNext(deoglCombinedTexture *entry);
+	/** Linked list element. */
+	inline decTUniqueLinkedList<deoglCombinedTexture>::Element &GetLLTextures(){ return pLLTextures; }
+	inline const decTUniqueLinkedList<deoglCombinedTexture>::Element &GetLLTextures() const{ return pLLTextures; }
 	/*@}*/
 };
 
