@@ -73,14 +73,14 @@ pInHorizontalMode(false)
 		deainpOverlayCirclePad::Ref circlePad;
 		
 		circlePad = deainpOverlayCirclePad::Ref::New(androidInput);
-		circlePad->SetKeyCodeLeft(deainpInputBinding(keyboard.GetID(), keyboard.GetButtonAt(
-			keyboard.IndexOfButtonWithKeyCode(deInputEvent::ekcY)).GetID()));
-		circlePad->SetKeyCodeUp(deainpInputBinding(keyboard.GetID(), keyboard.GetButtonAt(
-			keyboard.IndexOfButtonWithKeyCode(deInputEvent::ekcD)).GetID()));
-		circlePad->SetKeyCodeRight(deainpInputBinding(keyboard.GetID(), keyboard.GetButtonAt(
-			keyboard.IndexOfButtonWithKeyCode(deInputEvent::ekcV)).GetID()));
-		circlePad->SetKeyCodeDown(deainpInputBinding(keyboard.GetID(), keyboard.GetButtonAt(
-			keyboard.IndexOfButtonWithKeyCode(deInputEvent::ekcC)).GetID()));
+		circlePad->SetKeyCodeLeft(deainpInputBinding(keyboard.GetID(), keyboard.GetButtons()[
+			keyboard.IndexOfButtonWithKeyCode(deInputEvent::ekcY)].GetID()));
+		circlePad->SetKeyCodeUp(deainpInputBinding(keyboard.GetID(), keyboard.GetButtons()[
+			keyboard.IndexOfButtonWithKeyCode(deInputEvent::ekcD)].GetID()));
+		circlePad->SetKeyCodeRight(deainpInputBinding(keyboard.GetID(), keyboard.GetButtons()[
+			keyboard.IndexOfButtonWithKeyCode(deInputEvent::ekcV)].GetID()));
+		circlePad->SetKeyCodeDown(deainpInputBinding(keyboard.GetID(), keyboard.GetButtons()[
+			keyboard.IndexOfButtonWithKeyCode(deInputEvent::ekcC)].GetID()));
 		circlePad->SetLayoutHorizontal(deainpLayout(decPoint(20,
 				screenSize.x - 20 - circlePad->GetLayoutHorizontal().GetSize().y),
 			circlePad->GetLayoutHorizontal().GetSize()));
@@ -92,9 +92,9 @@ pInHorizontalMode(false)
 		
 		circlePad = deainpOverlayCirclePad::Ref::New(androidInput);
 		circlePad->SetAxisLeftRight(deainpInputBinding(mouse.GetID(),
-			mouse.GetAxisAt(0).GetID(), false)); // mouse left-right
+			mouse.GetAxes()[0].GetID(), false)); // mouse left-right
 		circlePad->SetAxisUpDown(deainpInputBinding(mouse.GetID(),
-			mouse.GetAxisAt(1).GetID(), true)); // mouse up-down
+			mouse.GetAxes()[1].GetID(), true)); // mouse up-down
 		circlePad->SetLayoutHorizontal(deainpLayout(decPoint(
 				screenSize.y - 20 - circlePad->GetLayoutHorizontal().GetSize().x,
 				screenSize.x - 20 - circlePad->GetLayoutHorizontal().GetSize().y),
@@ -108,7 +108,7 @@ pInHorizontalMode(false)
 		
 		actionButton = deainpOverlayActionButton::Ref::New(androidInput);
 		actionButton->SetBinding(deainpInputBinding(mouse.GetID(),
-			mouse.GetButtonAt(0).GetID())); // left mouse button
+			mouse.GetButtons()[0].GetID())); // left mouse button
 		actionButton->SetText("LMB");
 		actionButton->SetColor(decColor(1.0f, 0.0f, 0.0f));
 		actionButton->SetLayoutHorizontal(deainpLayout(decPoint(
@@ -122,7 +122,7 @@ pInHorizontalMode(false)
 		
 		actionButton = deainpOverlayActionButton::Ref::New(androidInput);
 		actionButton->SetBinding(deainpInputBinding(mouse.GetID(),
-			mouse.GetButtonAt(1).GetID())); // right mouse button
+			mouse.GetButtons()[1].GetID())); // right mouse button
 		actionButton->SetText("RMB");
 		actionButton->SetColor(decColor(1.0f, 0.0f, 0.0f));
 		actionButton->SetLayoutHorizontal(deainpLayout(decPoint(
@@ -136,7 +136,7 @@ pInHorizontalMode(false)
 		
 		actionButton = deainpOverlayActionButton::Ref::New(androidInput);
 		actionButton->SetBinding(deainpInputBinding(mouse.GetID(),
-			mouse.GetButtonAt(2).GetID())); // middle mouse button
+			mouse.GetButtons()[2].GetID())); // middle mouse button
 		actionButton->SetText("MMB");
 		actionButton->SetColor(decColor(1.0f, 0.0f, 0.0f));
 		actionButton->SetLayoutHorizontal(deainpLayout(decPoint(
@@ -149,8 +149,8 @@ pInHorizontalMode(false)
 		pOverlays.Add(actionButton);
 		
 		actionButton = deainpOverlayActionButton::Ref::New(androidInput);
-		actionButton->SetBinding(deainpInputBinding(keyboard.GetID(), keyboard.GetButtonAt(
-			keyboard.IndexOfButtonWithKeyCode(deInputEvent::ekcQ)).GetID()));
+		actionButton->SetBinding(deainpInputBinding(keyboard.GetID(), keyboard.GetButtons()[
+			keyboard.IndexOfButtonWithKeyCode(deInputEvent::ekcQ)].GetID()));
 		actionButton->SetText("Quit");
 		actionButton->SetColor(decColor(0.0f, 0.5f, 1.0f));
 		actionButton->SetLayoutHorizontal(deainpLayout(decPoint(
@@ -163,8 +163,8 @@ pInHorizontalMode(false)
 		pOverlays.Add(actionButton);
 		
 		actionButton = deainpOverlayActionButton::Ref::New(androidInput);
-		actionButton->SetBinding(deainpInputBinding(keyboard.GetID(), keyboard.GetButtonAt(
-			keyboard.IndexOfButtonWithKeyCode(deInputEvent::ekcR)).GetID()));
+		actionButton->SetBinding(deainpInputBinding(keyboard.GetID(), keyboard.GetButtons()[
+			keyboard.IndexOfButtonWithKeyCode(deInputEvent::ekcR)].GetID()));
 		actionButton->SetText("Debug");
 		actionButton->SetColor(decColor(0.0f, 0.5f, 1.0f));
 		actionButton->SetLayoutHorizontal(deainpLayout(decPoint(

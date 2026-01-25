@@ -63,26 +63,26 @@ deainpDevice(module, esAndroid)
 	
 	GetAxes().AddRange(4, {});
 	
-	deainpDeviceAxis &axisX = GetAxisAt(0);
+	deainpDeviceAxis &axisX = GetAxes()[0];
 	axisX.SetAbsolute(false);
 	axisX.SetID("x");
 	axisX.SetName("X");
 	axisX.SetType(deInputDeviceAxis::eatMouse);
 	
-	deainpDeviceAxis &axisY = GetAxisAt(1);
+	deainpDeviceAxis &axisY = GetAxes()[1];
 	axisY.SetAbsolute(false);
 	axisY.SetID("y");
 	axisY.SetName("Y");
 	axisY.SetType(deInputDeviceAxis::eatMouse);
 	
-	deainpDeviceAxis &scrollY = GetAxisAt(2);
+	deainpDeviceAxis &scrollY = GetAxes()[2];
 	scrollY.SetAbsolute(false);
 	scrollY.SetWheelOtherAxis(false);
 	scrollY.SetID("scrollY");
 	scrollY.SetName("Scroll Y");
 	scrollY.SetType(deInputDeviceAxis::eatMouseWheel);
 	
-	deainpDeviceAxis &scrollX = GetAxisAt(3);
+	deainpDeviceAxis &scrollX = GetAxes()[3];
 	scrollX.SetAbsolute(false);
 	scrollX.SetWheelOtherAxis(true);
 	scrollX.SetID("scrollX");
@@ -91,27 +91,27 @@ deainpDevice(module, esAndroid)
 	
 	GetButtons().AddRange(5, {});
 	
-	deainpDeviceButton &buttonLeft = GetButtonAt(deInputEvent::embcLeft);
+	deainpDeviceButton &buttonLeft = GetButtons()[deInputEvent::embcLeft];
 	buttonLeft.SetID("left");
 	buttonLeft.SetName("Left");
 	buttonLeft.SetAICode(AMOTION_EVENT_BUTTON_PRIMARY);
 	
-	deainpDeviceButton &buttonRight = GetButtonAt(deInputEvent::embcRight);
+	deainpDeviceButton &buttonRight = GetButtons()[deInputEvent::embcRight];
 	buttonRight.SetID("right");
 	buttonRight.SetName("Right");
 	buttonRight.SetAICode(AMOTION_EVENT_BUTTON_SECONDARY);
 	
-	deainpDeviceButton &buttonMiddle = GetButtonAt(deInputEvent::embcMiddle);
+	deainpDeviceButton &buttonMiddle = GetButtons()[deInputEvent::embcMiddle];
 	buttonMiddle.SetID("middle");
 	buttonMiddle.SetName("Middle");
 	buttonMiddle.SetAICode(AMOTION_EVENT_BUTTON_TERTIARY);
 	
-	deainpDeviceButton &buttonBackward = GetButtonAt(3);
+	deainpDeviceButton &buttonBackward = GetButtons()[3];
 	buttonBackward.SetID("backward");
 	buttonBackward.SetName("Backward");
 	buttonBackward.SetAICode(AMOTION_EVENT_BUTTON_BACK);
 	
-	deainpDeviceButton &buttonForward = GetButtonAt(4);
+	deainpDeviceButton &buttonForward = GetButtons()[4];
 	buttonForward.SetID("forward");
 	buttonForward.SetName("Forward");
 	buttonForward.SetAICode(AMOTION_EVENT_BUTTON_FORWARD);

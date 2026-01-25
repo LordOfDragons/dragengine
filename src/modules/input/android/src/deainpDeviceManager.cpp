@@ -118,22 +118,22 @@ void deainpDeviceManager::LogDevices(){
 		pModule.LogInfoFormat("- '%s' (%s) [%d]", device.GetName().GetString(),
 			device.GetID().GetString(), device.GetType());
 		
-		const int axisCount = device.GetAxisCount();
+		const int axisCount = device.GetAxes().GetCount();
 		if(axisCount > 0){
 			pModule.LogInfo("  Axes:");
 			for(j=0; j<axisCount; j++){
-				const deainpDeviceAxis &axis = device.GetAxisAt(j);
+				const deainpDeviceAxis &axis = device.GetAxes()[j];
 				pModule.LogInfoFormat("    - '%s' (%s) %d .. %d [%d %d]",
 					axis.GetName().GetString(), axis.GetID().GetString(), axis.GetMinimum(),
 					axis.GetMaximum(), axis.GetFuzz(), axis.GetFlat());
 			}
 		}
 		
-		const int buttonCount = device.GetButtonCount();
+		const int buttonCount = device.GetButtons().GetCount();
 		if(buttonCount > 0){
 			pModule.LogInfo("  Buttons:");
 			for(j=0; j<buttonCount; j++){
-				const deainpDeviceButton &button = device.GetButtonAt(j);
+				const deainpDeviceButton &button = device.GetButtons()[j];
 				pModule.LogInfoFormat("    - '%s' (%s) %d => %d",
 					button.GetName().GetString(), button.GetID().GetString(),
 					button.GetAICode(), j);

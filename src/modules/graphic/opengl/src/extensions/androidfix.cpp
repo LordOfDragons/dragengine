@@ -123,7 +123,8 @@ public:
 	~cTempBuffer(){}
 	
 	inline int GetSize() const{ return pSize; }
-	inline uint8_t *GetData() const{ return pData.GetArrayPointer(); }
+	inline uint8_t *GetData(){ return pData.GetArrayPointer(); }
+	inline const uint8_t *GetData() const{ return pData.GetArrayPointer(); }
 	
 	void SetSize(int size){
 		DEASSERT_TRUE(size >= 1)

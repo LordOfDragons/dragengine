@@ -344,11 +344,11 @@ deainpDeviceKeyboard::~deainpDeviceKeyboard(){
 
 int deainpDeviceKeyboard::ButtonMatchingKeyChar(int keyChar) const{
 	// this task is just a guess so missing a solution is fine
-	const int count = GetButtonCount();
+	const int count = GetButtons().GetCount();
 	int i;
 	
 	for(i=0; i<count; i++){
-		if(GetButtonAt(i).GetAIChar() == keyChar){
+		if(GetButtons()[i].GetAIChar() == keyChar){
 			return i;
 		}
 	}
@@ -363,7 +363,7 @@ int deainpDeviceKeyboard::ButtonMatchingKeyChar(int keyChar) const{
 
 void deainpDeviceKeyboard::pSetButtonAt(int index, const char *id, const char *name,
 int aiCode, deInputEvent::eKeyCodes keyCode, int aiChar, int matchPriority){
-	deainpDeviceButton &button = GetButtonAt(index);
+	deainpDeviceButton &button = GetButtons()[index];
 	
 	button.SetID(id);
 	button.SetName(name);

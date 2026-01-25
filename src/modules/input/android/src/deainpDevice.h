@@ -129,10 +129,10 @@ public:
 	inline const decTList<deainpDeviceButton> &GetButtons() const{ return pButtons; }
 	
 	/** \brief Button with identifier or \em NULL if absent. */
-	deainpDeviceButton *GetButtonWithID(const char *id) const;
+	deainpDeviceButton *GetButtonWithID(const char *id);
 	
 	/** \brief Button with android code or \em NULL if absent. */
-	deainpDeviceButton *GetButtonWithAICode(int code) const;
+	deainpDeviceButton *GetButtonWithAICode(int code);
 	
 	/** \brief Index of button with identifier or -1 if absent. */
 	int IndexOfButtonWithID(const char *id) const;
@@ -150,10 +150,10 @@ public:
 	inline const decTList<deainpDeviceAxis> &GetAxes() const{ return pAxes; }
 	
 	/** \brief Axis with identifier or \em NULL if absent. */
-	deainpDeviceAxis *GetAxisWithID(const char *id) const;
+	deainpDeviceAxis *GetAxisWithID(const char *id);
 	
 	/** \brief Axis with android code or \em NULL if absent. */
-	deainpDeviceAxis *GetAxisWithAICode(int code) const;
+	deainpDeviceAxis *GetAxisWithAICode(int code);
 	
 	/** \brief Index of axis with identifier or -1 if absent. */
 	int IndexOfAxisWithID(const char *id) const;
@@ -168,7 +168,7 @@ public:
 	inline const decTList<deainpDeviceFeedback> &GetFeedbacks() const{ return pFeedbacks; }
 	
 	/** \brief Feedback with identifier or \em NULL if absent. */
-	deainpDeviceFeedback *GetFeedbackWithID(const char *id) const;
+	deainpDeviceFeedback *GetFeedbackWithID(const char *id);
 	
 	/** \brief Index of feedback with identifier or -1 if absent. */
 	int IndexOfFeedbackWithID(const char *id) const;

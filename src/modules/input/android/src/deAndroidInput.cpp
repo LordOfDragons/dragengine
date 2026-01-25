@@ -210,11 +210,11 @@ int deAndroidInput::IndexOfFeedbackWithID(int device, const char *id){
 }
 
 bool deAndroidInput::GetButtonPressed(int device, int button){
-	return pDevices->GetDevices().GetAt(device)->GetButtonAt(button).GetPressed();
+	return pDevices->GetDevices().GetAt(device)->GetButtons()[button].GetPressed();
 }
 
 float deAndroidInput::GetAxisValue(int device, int axis){
-	return pDevices->GetDevices().GetAt(device)->GetAxisAt(axis).GetValue();
+	return pDevices->GetDevices().GetAt(device)->GetAxes()[axis].GetValue();
 }
 
 float deAndroidInput::GetFeedbackValue(int device, int feedback){
@@ -231,13 +231,13 @@ int deAndroidInput::ButtonMatchingKeyCode(int device, deInputEvent::eKeyCodes ke
 		return -1;
 	}
 	
-	const int count = rdevice.GetButtonCount();
+	const int count = rdevice.GetButtons().GetCount();
 	int bestPriority = 10;
 	int bestButton = -1;
 	int i;
 	
 	for(i=0; i<count; i++){
-		const deainpDeviceButton &button = rdevice.GetButtonAt(i);
+		const deainpDeviceButton &button = rdevice.GetButtons()[i];
 		
 		if(button.GetKeyCode() == keyCode && button.GetMatchPriority() < bestPriority){
 			bestButton = i;
@@ -472,7 +472,7 @@ void deAndroidInput::pProcessKeyEvent(const GameActivityKeyEvent &event){
 			break;
 		}
 		
-		deainpDeviceButton &ab = pDevices->GetKeyboard()->GetButtonAt(button);
+		deainpDeviceButton &ab = pDevices->GetKeyboard()->GetButtons()[button];
 		ab.SetPressed(true);
 		
 		AddKeyPress(pDevices->GetKeyboard()->GetIndex(), button,
@@ -493,7 +493,7 @@ void deAndroidInput::pProcessKeyEvent(const GameActivityKeyEvent &event){
 			break;
 		}
 		
-		deainpDeviceButton &ab = pDevices->GetKeyboard()->GetButtonAt(button);
+		deainpDeviceButton &ab = pDevices->GetKeyboard()->GetButtons()[button];
 		ab.SetPressed(false);
 		
 		AddKeyRelease(pDevices->GetKeyboard()->GetIndex(), button,
@@ -551,7 +551,7 @@ void deAndroidInput::pProcessMotionEventTouchScreen(const GameActivityMotionEven
 		//const int buttonstate = AMotionEvent_getButtonState( &event );
 		//const int button = pDevices->GetMouse()->IndexOfButtonWithAICode( buttonstate );
 		const int button = 0; // always simulate left button
-		deainpDeviceButton &ab = pDevices->GetMouse()->GetButtonAt(button);
+		deainpDeviceButton &ab = pDevices->GetMouse()->GetButtons()[button];
 		ab.SetPressed(true);
 		
 		AddMousePress(pDevices->GetMouse()->GetIndex(), button, modifiers, eventTime);
@@ -581,7 +581,7 @@ void deAndroidInput::pProcessMotionEventTouchScreen(const GameActivityMotionEven
 		//const int buttonstate = AMotionEvent_getButtonState( &event );
 		//const int button = pDevices->GetMouse()->IndexOfButtonWithAICode( buttonstate );
 		const int button = 0; // always simulate left button
-		deainpDeviceButton &ab = pDevices->GetMouse()->GetButtonAt(button);
+		deainpDeviceButton &ab = pDevices->GetMouse()->GetButtons()[button];
 		ab.SetPressed(false);
 		
 		AddMouseRelease(pDevices->GetMouse()->GetIndex(), button, modifiers, eventTime);
@@ -697,7 +697,7 @@ void deAndroidInput::pProcessMotionEventTouchScreen(const GameActivityMotionEven
 		//const int buttonstate = AMotionEvent_getButtonState( &event );
 		//const int button = pDevices->GetMouse()->IndexOfButtonWithAICode( buttonstate );
 		const int button = 0; // always simulate left button
-		deainpDeviceButton &ab = pDevices->GetMouse()->GetButtonAt(button);
+		deainpDeviceButton &ab = pDevices->GetMouse()->GetButtons()[button];
 		ab.SetPressed(false);
 		
 		AddMouseRelease(pDevices->GetMouse()->GetIndex(), button, modifiers, eventTime);
