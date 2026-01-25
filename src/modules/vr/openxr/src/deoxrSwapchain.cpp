@@ -234,11 +234,9 @@ void deoxrSwapchain::pGetImages(){
 		#ifdef OS_ANDROID
 			decTList<XrSwapchainImageOpenGLESKHR> images((int)count,
 				XrSwapchainImageOpenGLESKHR{XR_TYPE_SWAPCHAIN_IMAGE_OPENGL_ES_KHR});
-			memset(images.GetArrayPointer(), 0, sizeof(XrSwapchainImageOpenGLESKHR) * count);
 		#else
 			decTList<XrSwapchainImageOpenGLKHR> images((int)count,
 				XrSwapchainImageOpenGLKHR{XR_TYPE_SWAPCHAIN_IMAGE_OPENGL_KHR});
-			memset(images.GetArrayPointer(), 0, sizeof(XrSwapchainImageOpenGLKHR) * count);
 		#endif
 		
 		OXR_CHECK(instance.xrEnumerateSwapchainImages(pSwapchain, count, &count,
