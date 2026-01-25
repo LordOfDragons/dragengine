@@ -25,9 +25,11 @@
 #ifndef _DECTSET_H_
 #define _DECTSET_H_
 
+#include <algorithm>
 #include <iterator>
 #include <cstddef>
 #include <utility>
+#include <type_traits>
 
 #include "decCollectionInterfaces.h"
 #include "../exceptions_reduced.h"
@@ -77,9 +79,8 @@ public:
 		pElements = new T[set.pCount];
 		pSize = set.pCount;
 		
-		for(pCount=0; pCount<set.pCount; pCount++){
-			pElements[pCount] = set.pElements[pCount];
-		}
+		std::copy_n(set.pElements, set.pCount, pElements);
+		pCount = set.pCount;
 	}
 	
 	/** \briev Move set. */
@@ -94,7 +95,7 @@ public:
 	 * 
 	 * Duplicate elements are ignored.
 	 */
-	template<typename InputIt>
+	template <std::input_iterator InputIt>
 	decTSet(InputIt first, InputIt last) : pElements(nullptr), pCount(0), pSize(0){
 		for(; first != last; ++first){
 			Add(*first);
@@ -121,15 +122,12 @@ public:
 	
 	/** \brief Create set with content from variable count of arguments. */
 	template<typename... A>
-	requires ((std::is_same<std::decay_t<A>, T>::value) && ...)
-	explicit decTSet(A&&... args) : pElements(nullptr), pCount(0), pSize(0){
+	explicit decTSet(de_variadic_constructor_tag_t, A&&... args) : pElements(nullptr), pCount(0), pSize(0){
 		(Add(std::forward<A>(args)), ...);
 	}
 	
 	/** \brief Clean up the set. */
 	~decTSet(){
-		RemoveAll();
-		
 		if(pElements){
 			delete [] pElements;
 		}
@@ -199,7 +197,7 @@ public:
 	template<typename Evaluator>
 	bool HasMatching(Evaluator &evaluator) const{
 		const T *f;
-		return Find<Evaluator>(evaluator, f);
+		return Find<Evaluator>(f, evaluator);
 	}
 	
 	template<typename Evaluator>
@@ -293,10 +291,7 @@ public:
 			int newSize = pSize * 3 / 2 + 1;
 			T * const newArray = new T[newSize];
 			if(pElements){
-				int i;
-				for(i=0; i<pSize; i++){
-					newArray[i] = std::move(pElements[i]);
-				}
+				std::move(pElements, pElements + pSize, newArray);
 				delete [] pElements;
 			}
 			pElements = newArray;
@@ -318,10 +313,7 @@ public:
 			int newSize = pSize * 3 / 2 + 1;
 			T * const newArray = new T[newSize];
 			if(pElements){
-				int i;
-				for(i=0; i<pSize; i++){
-					newArray[i] = std::move(pElements[i]);
-				}
+				std::move(pElements, pElements + pSize, newArray);
 				delete [] pElements;
 			}
 			pElements = newArray;
@@ -347,7 +339,7 @@ public:
 	}
 	
 	/** \brief Add all elements from another collection not present in set. */
-	template<typename InputIt>
+	template <std::input_iterator InputIt>
 	void AddAll(InputIt first, InputIt last){
 		for(; first != last; ++first){
 			Add(*first);
@@ -355,7 +347,7 @@ public:
 	}
 	
 	/** \brief Add all elements from another collection or throw if any element is present. */
-	template<typename InputIt>
+	template <std::input_iterator InputIt>
 	void AddAllOrThrow(InputIt first, InputIt last){
 		for(; first != last; ++first){
 			AddOrThrow(*first);
@@ -462,12 +454,90 @@ public:
 	
 	
 	/**
+	 * \brief Visit elements with index.
+	 * \param[in] visitor Visitor callable invoked as visitor(int, T).
+	 */
+	template<typename Visitor>
+	void VisitIndexed(Visitor &visitor) const{
+		int i;
+		for(i=0; i<pCount; i++){
+			visitor(i, pElements[i]);
+		}
+	}
+	
+	template<typename Visitor>
+	inline void VisitIndexed(Visitor &&visitor) const{
+		VisitIndexed<Visitor>(visitor);
+	}
+	
+	
+	/**
+	 * \brief Visit elements while evaluator returns true.
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(T).
+	 */
+	template<typename Evaluator>
+	void VisitWhile(Evaluator &evaluator) const{
+		int i;
+		for(i=0; i<pCount; i++){
+			if(!evaluator(pElements[i])){
+				return;
+			}
+		}
+	}
+	
+	template<typename Evaluator>
+	inline void VisitWhile(Evaluator &&evaluator) const{
+		VisitWhile<Evaluator>(evaluator);
+	}
+	
+	
+	/**
+	 * \brief Visit elements with index while evaluator returns true.
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(int, T).
+	 */
+	template<typename Evaluator>
+	void VisitWhileIndexed(Evaluator &evaluator) const{
+		int i;
+		for(i=0; i<pCount; i++){
+			if(!evaluator(pElements[i])){
+				return;
+			}
+		}
+	}
+	
+	template<typename Evaluator>
+	inline void VisitWhileIndexed(Evaluator &&evaluator) const{
+		VisitWhileIndexed<Evaluator>(evaluator);
+	}
+	
+	
+	/**
+	 * \brief Visit elements with index in reverse order while evaluator returns true.
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(T).
+	 */
+	template<typename Evaluator>
+	void VisitWhileReverseIndexed(Evaluator &evaluator) const{
+		int i;
+		for(i=pCount-1; i>=0; i--){
+			if(!evaluator(i, pElements[i])){
+				return;
+			}
+		}
+	}
+	
+	template<typename Evaluator>
+	inline void VisitWhileReverseIndexed(Evaluator &&evaluator) const{
+		VisitWhileReverseIndexed<Evaluator>(evaluator);
+	}
+	
+	
+	/**
 	 * \brief Find element.
 	 * \param[in] evaluator Evaluator callable invoked as evaluator(T).
 	 * \param[out] found Found element if true is returned.
 	 */
 	template<typename Evaluator>
-	inline bool Find(Evaluator &evaluator, const T* &found) const{
+	inline bool Find(const T* &found, Evaluator &evaluator) const{
 		int i;
 		for(i=0; i<pCount; i++){
 			if(evaluator(pElements[i])){
@@ -479,8 +549,8 @@ public:
 	}
 	
 	template<typename Evaluator>
-	inline bool Find(Evaluator &&evaluator, const T* &found) const{
-		return Find<Evaluator>(evaluator, found);
+	inline bool Find(const T* &found, Evaluator &&evaluator) const{
+		return Find<Evaluator>(found, evaluator);
 	}
 	
 	/**
@@ -489,14 +559,25 @@ public:
 	 * \return Found element or default value if not found.
 	 */
 	template<typename Evaluator>
-	inline T FindOrDefault(Evaluator &evaluator, const T &defaultValue = T()) const{
+	inline T FindOrDefault(const T &defaultValue, Evaluator &evaluator) const{
 		const T *found = nullptr;
-		return Find<Evaluator>(evaluator, found) ? *found : defaultValue;
+		return Find<Evaluator>(found, evaluator) ? *found : defaultValue;
 	}
 	
 	template<typename Evaluator>
-	inline T FindOrDefault(Evaluator &&evaluator, const T &defaultValue = T()) const{
-		return FindOrDefault<Evaluator>(evaluator, defaultValue);
+	inline T FindOrDefault(const T &defaultValue, Evaluator &&evaluator) const{
+		return FindOrDefault<Evaluator>(defaultValue, evaluator);
+	}
+	
+	template<typename Evaluator>
+	inline T FindOrDefault(Evaluator &evaluator) const{
+		const T *found = nullptr;
+		return Find<Evaluator>(found, evaluator) ? *found : T();
+	}
+	
+	template<typename Evaluator>
+	inline T FindOrDefault(Evaluator &&evaluator) const{
+		return FindOrDefault<Evaluator>(evaluator);
 	}
 	
 	
@@ -607,13 +688,10 @@ public:
 	/** \brief New set containing all elements of this set followed by all elements of another set. */
 	decTSet<T,TP> operator+(const decTSet<T,TP> &set) const{
 		decTSet<T,TP> nset(pCount + set.pCount);
-		int i;
-		
-		for(i=0; i<pCount; i++){
-			nset.pElements[i] = pElements[i];
-		}
+		std::copy_n(pElements, pCount, nset.pElements);
 		nset.pCount = pCount;
 		
+		int i;
 		for(i=0; i<set.pCount; i++){
 			nset.Add(set.pElements[i]);
 		}
@@ -646,9 +724,8 @@ public:
 			pSize = set.pCount;
 		}
 		
-		for(pCount=0; pCount<set.pCount; pCount++){
-			pElements[pCount] = set.pElements[pCount];
-		}
+		std::copy_n(set.pElements, set.pCount, pElements);
+		pCount = set.pCount;
 		
 		return *this;
 	}
@@ -684,10 +761,7 @@ public:
 			if(count > pSize){
 				T * const newArray = new T[count];
 				if(pElements){
-					int i;
-					for(i=0; i<pSize; i++){
-						newArray[i] = pElements[i];
-					}
+					std::move(pElements, pElements + pSize, newArray);
 					delete [] pElements;
 				}
 				pElements = newArray;

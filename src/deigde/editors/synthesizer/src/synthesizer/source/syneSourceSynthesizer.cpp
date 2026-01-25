@@ -270,7 +270,7 @@ void syneSourceSynthesizer::SynthesizerDirectoryChanged(){
 //////////////////////
 
 void syneSourceSynthesizer::pUpdateConnections(deSynthesizerSourceSynthesizer &source) const{
-	const int connectionCount = source.GetConnectionCount();
+	const int connectionCount = source.GetConnections().GetCount();
 	int i;
 	
 	for(i=0; i<connectionCount; i++){

@@ -63,21 +63,21 @@ void deoglRenderTaskTexture::Reset(){
 
 
 int deoglRenderTaskTexture::GetTotalPointCount() const{
-	return pVAOs.Inject(0, [](int sum, const deoglRenderTaskVAO &vao){
+	return pVAOs.Inject(0, 0, pVAOCount, [](int sum, const deoglRenderTaskVAO &vao){
 		return sum + vao.GetTotalPointCount();
-	}, 0, pVAOCount);
+	});
 }
 
 int deoglRenderTaskTexture::GetTotalInstanceCount() const{
-	return pVAOs.Inject(0, [](int sum, const deoglRenderTaskVAO &vao){
+	return pVAOs.Inject(0, 0, pVAOCount, [](int sum, const deoglRenderTaskVAO &vao){
 		return sum + vao.GetInstanceCount();
-	}, 0, pVAOCount);
+	});
 }
 
 int deoglRenderTaskTexture::GetTotalSubInstanceCount() const{
-	return pVAOs.Inject(0, [](int sum, const deoglRenderTaskVAO &vao){
+	return pVAOs.Inject(0, 0, pVAOCount, [](int sum, const deoglRenderTaskVAO &vao){
 		return sum + vao.GetTotalSubInstanceCount();
-	}, 0, pVAOCount);
+	});
 }
 
 

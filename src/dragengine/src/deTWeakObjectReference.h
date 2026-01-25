@@ -153,6 +153,11 @@ public:
 		return pReference != nullptr && pReference->Object() != nullptr;
 	}
 	
+	/** \brief Clear weak object reference. */
+	void Clear(){
+		*this = nullptr;
+	}
+	
 	/** \brief Bool test. */
 	inline bool operator!() const{
 		return IsNull();

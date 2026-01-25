@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "debpBulletShapeModel.h"
 
 #include "BulletCollision/CollisionShapes/btTriangleIndexVertexArray.h"
@@ -42,30 +38,19 @@
 ////////////////////////////
 
 debpBulletShapeModel::debpBulletShapeModel(btTriangleMeshShape *meshShape,
-btTriangleIndexVertexArray *indexVertexArray, btScalar *vertices,
-int *faces, int vertexCount, int faceCount) :
+btTriangleIndexVertexArray *indexVertexArray, decTList<btScalar> &&vertices, decTList<int> &&faces) :
 debpBulletShape(meshShape),
 pMeshShape(meshShape),
 pIndexVertexArray(indexVertexArray),
-pVertices(vertices),
-pFaces(faces),
-pVertexCount(vertexCount),
-pFaceCount(faceCount)
+pVertices(std::move(vertices)),
+pFaces(std::move(faces))
 {
-	if(!indexVertexArray || vertexCount < 0 || faceCount < 0){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(indexVertexArray)
 }
 
 debpBulletShapeModel::~debpBulletShapeModel(){
 	if(pIndexVertexArray){
 		delete pIndexVertexArray;
-	}
-	if(pFaces){
-		delete [] pFaces;
-	}
-	if(pVertices){
-		delete [] pVertices;
 	}
 }
 

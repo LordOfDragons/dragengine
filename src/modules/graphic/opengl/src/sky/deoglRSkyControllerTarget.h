@@ -25,6 +25,7 @@
 #define _DEOGLRSKYCONTROLLERTARGET_H_
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deSkyControllerTarget;
 class deoglRSkyInstance;
@@ -35,16 +36,14 @@ class deoglRSkyInstance;
  */
 class deoglRSkyControllerTarget{
 private:
-	int *pLinks;
-	int pLinkCount;
-	
+	decTList<int> pLinks;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create sky controller target. */
-	deoglRSkyControllerTarget(const deSkyControllerTarget &target);
+	explicit deoglRSkyControllerTarget(const deSkyControllerTarget &target);
 	
 	/** Clean up sky controller target. */
 	~deoglRSkyControllerTarget();
@@ -54,11 +53,8 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Number of links. */
-	inline int GetLinkCount() const{ return pLinkCount; }
-	
-	/** Link at index. */
-	int GetLinkAt(int index) const;
+	/** Links. */
+	inline const decTList<int> &GetLinks() const{ return pLinks; }
 	
 	/** Value of target. */
 	float GetValue(const deoglRSkyInstance &instance, float defaultValue) const;

@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglWorldOctree.h"
 #include "deoglWorldCSOctree.h"
 #include "../capabilities/deoglCapabilities.h"
@@ -72,9 +68,7 @@ pPtrElement(nullptr),
 pNodeCount(0),
 pElementCount(0),
 pNextNode(0),
-pNextElement(0),
-pElementLinks(nullptr),
-pElementLinkSize(0)
+pNextElement(0)
 {
 	(void)pRenderThread;
 	const bool rowMajor = renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working();
@@ -104,10 +98,6 @@ pElementLinkSize(0)
 
 deoglWorldCSOctree::~deoglWorldCSOctree(){
 	EndWriting();
-	
-	if(pElementLinks){
-		delete [] pElementLinks;
-	}
 }
 
 
@@ -156,16 +146,7 @@ void deoglWorldCSOctree::BeginWriting(int nodeCount, int elementCount){
 	pPtrNode = (sCSNode*)pSSBONodes->GetMappedBuffer();
 	pPtrElement = (sCSElement*)pSSBOElements->GetMappedBuffer();
 	
-	if(elementCount > pElementLinkSize){
-		if(pElementLinks){
-			delete pElementLinks;
-			pElementLinks = nullptr;
-			pElementLinkSize = 0;
-		}
-		
-		pElementLinks = new sElementLink[elementCount];
-		pElementLinkSize = elementCount;
-	}
+	pElementLinks.EnlargeCapacity(elementCount);
 }
 
 void deoglWorldCSOctree::EndWriting(){
@@ -214,7 +195,6 @@ deoglWorldCSOctree::sCSElement &deoglWorldCSOctree::GetElementAt(int index) cons
 }
 
 int deoglWorldCSOctree::NextElement(eCSElementTypes type, const void *link){
-	DEASSERT_TRUE(pNextElement < pElementCount)
 	DEASSERT_NOTNULL(link);
 	
 	pElementLinks[pNextElement].type = type;
@@ -227,7 +207,5 @@ deoglWorldCSOctree::sCSElement &deoglWorldCSOctree::NextElementRef(eCSElementTyp
 }
 
 const deoglWorldCSOctree::sElementLink &deoglWorldCSOctree::GetLinkAt(int index) const{
-	DEASSERT_TRUE(index >= 0)
-	DEASSERT_TRUE(index < pElementCount)
 	return pElementLinks[index];
 }

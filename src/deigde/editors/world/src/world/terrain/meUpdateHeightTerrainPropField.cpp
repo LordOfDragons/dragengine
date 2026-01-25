@@ -79,35 +79,29 @@ void meUpdateHeightTerrainPropField::CreateInstances(float density){
 	
 	if(!engPF || !htsector || !htsector->GetHeightTerrain()){
 		// this should never fail but to avoid troubles we do nothing if so
-		const int count = engPF->GetTypeCount();
-		int i;
-		for(i=0; i<count; i++){
-			engPF->GetTypeAt(i)->SetInstanceCount(0);
+		engPF->GetTypes().VisitIndexed([&](int i, dePropFieldType &type){
+			type.GetInstances().SetCountDiscard(0);
 			engPF->NotifyInstancesChanged(i);
-		}
+		});
 		return;
 	}
 	
-	if(engPF->GetTypeCount() == 0){
+	if(engPF->GetTypes().IsEmpty()){
 		// not updated properly. do nothing
-		const int count = engPF->GetTypeCount();
-		int i;
-		for(i=0; i<count; i++){
-			engPF->GetTypeAt(i)->SetInstanceCount(0);
+		engPF->GetTypes().VisitIndexed([&](int i, dePropFieldType &type){
+			type.GetInstances().SetCountDiscard(0);
 			engPF->NotifyInstancesChanged(i);
-		}
+		});
 		return;
 	}
 	
 	pPropField->UpdateVInstances();
-	int i;
 	
 	if(pPropField->GetKeepClean()){
-		const int count = engPF->GetTypeCount();
-		for(i=0; i<count; i++){
-			engPF->GetTypeAt(i)->SetInstanceCount(0);
+		engPF->GetTypes().VisitIndexed([&](int i, dePropFieldType &type){
+			type.GetInstances().SetCountDiscard(0);
 			engPF->NotifyInstancesChanged(i);
-		}
+		});
 		return;
 	}
 	
@@ -139,8 +133,8 @@ void meUpdateHeightTerrainPropField::CreateInstances(float density){
 				return;
 			}
 			
-			engPFType.SetInstanceCount(upficount);
-			dePropFieldInstance * const pfinstances = engPFType.GetInstances();
+			engPFType.GetInstances().SetAll(upficount, {});
+			dePropFieldInstance * const pfinstances = engPFType.GetInstances().GetArrayPointer();
 			
 			// add vegetation instances matching this layer
 			int pfi = 0;
@@ -158,10 +152,9 @@ void meUpdateHeightTerrainPropField::CreateInstances(float density){
 		});
 	});
 	
-	const int engTypeCount = engPF->GetTypeCount();
-	for(i=0; i<engTypeCount; i++){
+	engPF->GetTypes().VisitIndexed([&](int i, dePropFieldType &){
 		engPF->NotifyInstancesChanged(i);
-	}
+	});
 }
 
 

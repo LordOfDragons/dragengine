@@ -26,6 +26,7 @@
 #define _DEOALPANNINGCOLLECTOR_H_
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoalAudioThread;
 
@@ -51,8 +52,7 @@ class deoalAudioThread;
 class deoalPanningCollector{
 private:
 	int pResolution;
-	float *pPixels;
-	int pPixelCount;
+	decTList<float> pPixels;
 	int pPixelsPerFace;
 	float *pPixelsXPos;
 	float *pPixelsXNeg;

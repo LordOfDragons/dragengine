@@ -26,6 +26,7 @@
 #define _DEOGLMODELLODVERTPOSSET_H_
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
@@ -39,9 +40,7 @@ public:
 	};
 	
 	int pVBOOffset;
-	
-	sPosition *pPositions;
-	int pPositionCount;
+	decTList<sPosition> pPositions;
 	
 	
 	
@@ -66,19 +65,9 @@ public:
 	void SetVBOOffset(int offset);
 	
 	/** Positions. */
-	inline sPosition *GetPositions() const{ return pPositions; }
-	
-	/** Count of positions. */
-	inline int GetPositionCount() const{ return pPositionCount; }
-	
-	/** Set count of positions. */
-	void SetPositionCount(int count);
+	inline decTList<sPosition> &GetPositions(){ return pPositions; }
+	inline const decTList<sPosition> &GetPositions() const{ return pPositions; }
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

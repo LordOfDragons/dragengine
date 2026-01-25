@@ -25,6 +25,7 @@
 #ifndef _DEOGLVCSIMULATOR_H_
 #define _DEOGLVCSIMULATOR_H_
 
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
@@ -33,8 +34,7 @@
  */
 class deoglVCSimulator{
 private:
-	int *pCache;
-	int pCacheSize;
+	decTList<int> pCache;
 	int pCacheHitCount;
 	int pCacheMissCount;
 	int pFaceCount;
@@ -51,7 +51,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the cache size. */
-	inline int GetCacheSize() const{ return pCacheSize; }
+	inline int GetCacheSize() const{ return pCache.GetCount(); }
 	/** Sets the cache size to simulate. */
 	void SetCacheSize(int cacheSize);
 	

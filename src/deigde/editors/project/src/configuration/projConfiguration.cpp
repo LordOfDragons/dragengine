@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "projConfiguration.h"
 #include "projConfigurationXml.h"
 #include "../gui/projWindowMain.h"

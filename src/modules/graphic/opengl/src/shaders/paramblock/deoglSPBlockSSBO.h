@@ -25,10 +25,10 @@
 #ifndef _DEOGLSPBLOCKSSBO_H_
 #define _DEOGLSPBLOCKSSBO_H_
 
-#include <stdint.h>
-
 #include "deoglShaderParameterBlock.h"
 #include "../../utils/deoglFence.h"
+
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
@@ -78,8 +78,7 @@ private:
 	bool pCompact;
 	bool pAllocateBuffer;
 	
-	char *pWriteBuffer;
-	int pWriteBufferCapacity;
+	decTList<char> pWriteBuffer;
 	
 	char *pPersistentMapped;
 	deoglFence::Ref pFenceTransfer;

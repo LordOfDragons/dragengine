@@ -58,6 +58,7 @@ pStage(0)
 	decBaseFileReader::Ref reader(vfs.OpenFileForReading(path));
 	decXmlParser(ogl.GetGameEngine()->GetLogger()).ParseXml(reader, xmlDoc);
 	const uint64_t modTime = (uint64_t)reader->GetModificationTime();
+	uint64_t sourceModTime = 0;
 	
 	xmlDoc->StripComments();
 	xmlDoc->CleanCharData();
@@ -91,6 +92,7 @@ pStage(0)
 			const int length = reader->GetLength();
 			pSourceCode.Set(' ', length);
 			reader->Read(pSourceCode.GetMutableString(), length);
+			sourceModTime = (uint64_t)reader->GetModificationTime();
 			
 		}else if(tagName == "define"){
 			const decXmlCharacterData * const cdata = tag->GetFirstData();
@@ -144,7 +146,7 @@ pStage(0)
 	DEASSERT_FALSE(pSourceCode.IsEmpty())
 	DEASSERT_FALSE(pStage == 0)
 	
-	pValidationString.Format("%s: %" PRIu64, pName.GetString(), modTime);
+	pValidationString.Format("%s: %" PRIu64 " %" PRIu64, pName.GetString(), modTime, sourceModTime);
 }
 
 const char *deoglShaderUnitSourceCode::GetLogStageName() const{

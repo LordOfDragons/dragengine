@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <string.h>
-
 #include "feUFontImportImage.h"
 #include "../../font/feFont.h"
 #include "../../font/image/feFontImage.h"
@@ -47,15 +44,11 @@ feUFontImportImage::feUFontImportImage(feFontImage *fontImage, deImage *newImage
 	
 	deImage &oldImage = *fontImage->GetEngineImage();
 	
-	pImage = nullptr;
-	
 	pOldWidth = oldImage.GetWidth();
 	pOldHeight = oldImage.GetHeight();
-	pOldColor = nullptr;
 	
 	pNewWidth = newImage->GetWidth();
 	pNewHeight = newImage->GetHeight();
-	pNewColor = nullptr;
 	
 	pOldPath = fontImage->GetFilename();
 	pNewPath = newPath;
@@ -64,28 +57,24 @@ feUFontImportImage::feUFontImportImage(feFontImage *fontImage, deImage *newImage
 	SetMemoryConsumption(sizeof(feUFontImportImage) + sizeof(decColor) * (pOldWidth * pOldHeight + pNewWidth * pNewHeight));
 	
 	newImage->RetainImageData();
-	
 	try{
-		pOldColor = new decColor[pOldWidth * pOldHeight];
-		if(!pOldColor) DETHROW(deeOutOfMemory);
-		pStoreColors(oldImage, pOldColor);
+		pOldColor.AddRange(pOldWidth * pOldHeight, {});
+		pStoreColors(oldImage, pOldColor.GetArrayPointer());
 		
-		pNewColor = new decColor[pNewWidth * pNewHeight];
-		if(!pNewColor) DETHROW(deeOutOfMemory);
-		pStoreColors(*newImage, pNewColor);
+		pNewColor.AddRange(pNewWidth * pNewHeight, {});
+		pStoreColors(*newImage, pNewColor.GetArrayPointer());
+		
+		newImage->ReleaseImageData();
 		
 	}catch(const deException &){
 		newImage->ReleaseImageData();
-		pCleanUp();
 		throw;
 	}
 	
 	pImage = fontImage;
 }
 
-feUFontImportImage::~feUFontImportImage(){
-	pCleanUp();
-}
+feUFontImportImage::~feUFontImportImage() = default;
 
 
 
@@ -95,24 +84,19 @@ feUFontImportImage::~feUFontImportImage(){
 void feUFontImportImage::Undo(){
 	pImage->SetSize(pOldWidth, pOldHeight);
 	pImage->SetFilename(pOldPath.GetString(), false);
-	pRestoreColors(*pImage->GetEngineImage(), pOldColor);
+	pRestoreColors(*pImage->GetEngineImage(), pOldColor.GetArrayPointer());
 }
 
 void feUFontImportImage::Redo(){
 	pImage->SetSize(pNewWidth, pNewHeight);
 	pImage->SetFilename(pNewPath.GetString(), false);
-	pRestoreColors(*pImage->GetEngineImage(), pNewColor);
+	pRestoreColors(*pImage->GetEngineImage(), pNewColor.GetArrayPointer());
 }
 
 
 
 // Private
 ////////////
-
-void feUFontImportImage::pCleanUp(){
-	if(pNewColor) delete [] pNewColor;
-	if(pOldColor) delete [] pOldColor;
-}
 
 void feUFontImportImage::pStoreColors(deImage &image, decColor *colors){
 	int p, pixelCount = image.GetWidth() * image.GetHeight();
@@ -146,7 +130,7 @@ void feUFontImportImage::pStoreColors(deImage &image, decColor *colors){
 		}
 		
 	}else{ // bitCount == 32
-		memcpy(pNewColor, image.GetDataRGBA32(), sizeof(decColor) * pixelCount);
+		memcpy(pNewColor.GetArrayPointer(), image.GetDataRGBA32(), sizeof(decColor) * pixelCount);
 	}
 }
 
@@ -182,7 +166,7 @@ void feUFontImportImage::pRestoreColors(deImage &image, decColor *colors){
 		}
 		
 	}else{ // bitCount == 32
-		memcpy(image.GetDataRGBA32(), pNewColor, sizeof(decColor) * pixelCount);
+		memcpy(image.GetDataRGBA32(), pNewColor.GetArrayPointer(), sizeof(decColor) * pixelCount);
 	}
 	
 	image.NotifyImageDataChanged();

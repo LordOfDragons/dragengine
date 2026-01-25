@@ -25,7 +25,8 @@
 #ifndef _DEMODULEPARAMETER_H_
 #define _DEMODULEPARAMETER_H_
 
-#include "../../common/string/decStringSet.h"
+#include "../../common/string/decString.h"
+#include "../../common/collection/decTList.h"
 #include "../../common/string/decString.h"
 
 
@@ -108,8 +109,7 @@ private:
 	float pMinValue;
 	float pMaxValue;
 	float pValueStepSize;
-	SelectionEntry *pSelectionEntries;
-	int pSelectionEntryCount;
+	decTList<SelectionEntry> pSelectionEntries;
 	eCategory pCategory;
 	decString pDisplayName;
 	decString pDefaultValue;
@@ -169,23 +169,15 @@ public:
 	/** \brief Set value step size. */
 	void SetValueStepSize(float valueStepSize);
 	
-	/** \brief Count of selection entries. */
-	inline int GetSelectionEntryCount() const{ return pSelectionEntryCount; }
-	
-	/** \brief Selection entry at index. */
-	const SelectionEntry &GetSelectionEntryAt(int index) const;
+	/** \brief Selection entries. */
+	inline decTList<SelectionEntry> &GetSelectionEntries(){ return pSelectionEntries; }
+	inline const decTList<SelectionEntry> &GetSelectionEntries() const{ return pSelectionEntries; }
 	
 	/** \brief Index of selection entry with value or -1 if absent. */
 	int IndexOfSelectionEntryWithValue(const char *value) const;
 	
 	/** \brief Add selection entry. */
 	void AddSelectionEntry(const SelectionEntry &entry);
-	
-	/** \brief Add selection entries. */
-	void AddSelectionEntries(const SelectionEntry *entries, int entryCount);
-	
-	/** \brief Remove all selection entries. */
-	void RemoveAllSelectionEntries();
 	
 	/** \brief Category. */
 	inline eCategory GetCategory() const{ return pCategory; }

@@ -28,6 +28,7 @@
 #include "dedsLControllerMapping.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/math/smooth/decSmoothVector.h>
 #include <dragengine/common/math/smooth/decSmoothFloat.h>
@@ -137,9 +138,7 @@ private:
 	
 	float pTiltOffset;
 	
-	dedsLControllerMapping *pControllerMappings;
-	int pControllerMappingCount;
-	int pControllerMappingSize;
+	decTList<dedsLControllerMapping> pControllerMappings;
 	
 	deCollider::Ref pAICollider;
 	bool pUpdateAIColliderAngularVelocity;
@@ -482,7 +481,7 @@ public:
 	
 	
 	/** \brief Number of controller mappings. */
-	inline int GetControllerMappingCount() const{ return pControllerMappingCount; }
+	inline int GetControllerMappingCount() const{ return pControllerMappings.GetCount(); }
 	
 	/** \brief Controller mapping by index. */
 	const dedsLControllerMapping &GetControllerMappingAt(int index) const;

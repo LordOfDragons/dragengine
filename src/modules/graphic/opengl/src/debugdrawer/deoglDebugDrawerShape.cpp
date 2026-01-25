@@ -106,47 +106,41 @@ int deoglDebugDrawerShape::CalcRequiredPoints(const deDebugDrawerShape &ddshape,
 	
 	pPrepareHulls();
 	
-	const int faceCount = ddshape.GetFaceCount();
-	int i;
-	
 	pFillFirstPoint = firstPoint;
-	for(i=0; i<faceCount; i++){
-		const int vertexCount = ddshape.GetFaceAt(i)->GetVertexCount();
+	ddshape.GetFaces().Visit([&](const deDebugDrawerShapeFace &face){
+		const int vertexCount = face.GetVertexCount();
 		if(vertexCount > 2){
 			pFillPointCount += (vertexCount - 2) * 3;
 		}
-	}
+	});
 	pFillPointCount += pHullIndices.GetCount();
 	
 	pLineFirstPoint = firstPoint + pFillPointCount;
-	for(i=0; i<faceCount; i++){
-		const int vertexCount = ddshape.GetFaceAt(i)->GetVertexCount();
+	ddshape.GetFaces().Visit([&](const deDebugDrawerShapeFace &face){
+		const int vertexCount = face.GetVertexCount();
 		if(vertexCount > 2){
 			pLinePointCount += vertexCount * 2;
 		}
-	}
+	});
 	pLinePointCount += pHullIndices.GetCount() * 2;
 	
 	return pFillPointCount + pLinePointCount;
 }
 
 void deoglDebugDrawerShape::WriteVBOData(const deDebugDrawerShape &ddshape, oglVector3 *vboData){
-	const int hullIndexCount = pHullIndices.GetCount();
-	const int faceCount = ddshape.GetFaceCount();
-	int i, j, vi;
+	int j, vi;
 	
 	// fill faces
 	vi = pFillFirstPoint;
-	for(i=0; i<faceCount; i++){
-		const deDebugDrawerShapeFace &ddsface = *ddshape.GetFaceAt(i);
-		const int vertexCount = ddsface.GetVertexCount();
+	ddshape.GetFaces().Visit([&](const deDebugDrawerShapeFace &face){
+		const int vertexCount = face.GetVertexCount();
 		
 		if(vertexCount > 2){
-			const decVector &v1 = ddsface.GetVertexAt(0);
+			const decVector &v1 = face.GetVertices()[0];
 			
 			for(j=2; j<vertexCount; j++){
-				const decVector &v2 = ddsface.GetVertexAt(j - 1);
-				const decVector &v3 = ddsface.GetVertexAt(j);
+				const decVector &v2 = face.GetVertices()[j - 1];
+				const decVector &v3 = face.GetVertices()[j];
 				
 				vboData[vi].x = v1.x;
 				vboData[vi].y = v1.y;
@@ -164,15 +158,15 @@ void deoglDebugDrawerShape::WriteVBOData(const deDebugDrawerShape &ddshape, oglV
 				vi++;
 			}
 		}
-	}
+	});
 	
-	for(i=0; i<hullIndexCount; i++){
-		const decVector &point = pHullPoints[pHullIndices.GetAt(i)];
+	pHullIndices.Visit([&](int index){
+		const decVector &point = pHullPoints[index];
 		vboData[vi].x = point.x;
 		vboData[vi].y = point.y;
 		vboData[vi].z = point.z;
 		vi++;
-	}
+	});
 	
 	if(vi != pFillFirstPoint + pFillPointCount){
 		DETHROW(deeInvalidParam);
@@ -180,14 +174,13 @@ void deoglDebugDrawerShape::WriteVBOData(const deDebugDrawerShape &ddshape, oglV
 	
 	// lines
 	vi = pLineFirstPoint;
-	for(i=0; i<faceCount; i++){
-		const deDebugDrawerShapeFace &ddsface = *ddshape.GetFaceAt(i);
-		const int vertexCount = ddsface.GetVertexCount();
+	ddshape.GetFaces().Visit([&](const deDebugDrawerShapeFace &face){
+		const int vertexCount = face.GetVertexCount();
 		
 		if(vertexCount > 2){
 			for(j=0; j<vertexCount; j++){
-				const decVector &v1 = ddsface.GetVertexAt(j);
-				const decVector &v2 = ddsface.GetVertexAt((j + 1) % vertexCount);
+				const decVector &v1 = face.GetVertices()[j];
+				const decVector &v2 = face.GetVertices()[(j + 1) % vertexCount];
 				
 				vboData[vi].x = v1.x;
 				vboData[vi].y = v1.y;
@@ -200,12 +193,13 @@ void deoglDebugDrawerShape::WriteVBOData(const deDebugDrawerShape &ddshape, oglV
 				vi++;
 			}
 		}
-	}
+	});
 	
-	for(i=0; i<hullIndexCount; i+=3){
-		const decVector &point1 = pHullPoints[pHullIndices.GetAt(i)];
-		const decVector &point2 = pHullPoints[pHullIndices.GetAt(i + 1)];
-		const decVector &point3 = pHullPoints[pHullIndices.GetAt(i + 2)];
+	int i;
+	for(i=0; i<pHullIndices.GetCount(); i+=3){
+		const decVector &point1 = pHullPoints[pHullIndices[i]];
+		const decVector &point2 = pHullPoints[pHullIndices[i + 1]];
+		const decVector &point3 = pHullPoints[pHullIndices[i + 2]];
 		
 		vboData[vi].x = point1.x;
 		vboData[vi].y = point1.y;

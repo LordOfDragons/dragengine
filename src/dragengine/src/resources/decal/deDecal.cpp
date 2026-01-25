@@ -38,6 +38,7 @@
 #include "../../systems/modules/physics/deBasePhysicsDecal.h"
 #include "../../systems/modules/audio/deBaseAudioDecal.h"
 #include "../../common/exceptions.h"
+#include "../../common/collection/decTList.h"
 
 
 
@@ -55,9 +56,6 @@ pSize(0.5f, 0.5f, 1.0f),
 pTexture(0),
 
 pVisible(true),
-
-pBoneStates(nullptr),
-pBoneStateCount(0),
 
 pParentComponent(nullptr),
 pLLComponent(this),
@@ -237,10 +235,6 @@ void deDecal::SetVisible(bool visible){
 ////////////////
 
 deDecalBoneState &deDecal::GetBoneStateAt(int index){
-	if(index < 0 || index >= pBoneStateCount){
-		DETHROW(deeInvalidParam);
-	}
-	
 	// if caching is used this has to be checked first
 	//if( ! pBoneStates ){
 	//	pRestoreBoneStates();
@@ -253,21 +247,11 @@ void deDecal::SetBoneStateCount(int count){
 	if(count < 0){
 		DETHROW(deeInvalidParam);
 	}
-	if(count == pBoneStateCount){
+	if(count == pBoneStates.GetCount()){
 		return;
 	}
 	
-	deDecalBoneState *boneStates = nullptr;
-	if(count > 0){
-		boneStates = new deDecalBoneState[count];
-	}
-	
-	if(pBoneStates){
-		delete [] pBoneStates;
-	}
-	pBoneStates = boneStates;
-	
-	pBoneStateCount = count;
+	pBoneStates.SetAll(count, {});
 }
 
 void deDecal::SnapshotBoneStatesFrom(deComponent *component){
@@ -275,17 +259,13 @@ void deDecal::SnapshotBoneStatesFrom(deComponent *component){
 		DETHROW(deeInvalidParam);
 	}
 	
-	const int boneCount = component->GetBoneCount();
-	int i;
+	SetBoneStateCount(component->GetBones().GetCount());
 	
-	SetBoneStateCount(boneCount);
-	
-	for(i=0; i<boneCount; i++){
-		const deComponentBone &bone = component->GetBoneAt(i);
+	component->GetBones().VisitIndexed([&](int i, const deComponentBone &bone){
 		pBoneStates[i].SetPosition(bone.GetPosition());
 		pBoneStates[i].SetRotation(bone.GetRotation());
 		pBoneStates[i].SetSize(bone.GetScale());
-	}
+	});
 }
 
 
@@ -358,10 +338,6 @@ void deDecal::pCleanUp(){
 	if(pPeerAudio){
 		delete pPeerAudio;
 		pPeerAudio = nullptr;
-	}
-	
-	if(pBoneStates){
-		delete [] pBoneStates;
 	}
 }
 

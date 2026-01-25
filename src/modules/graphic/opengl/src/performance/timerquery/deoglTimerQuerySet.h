@@ -27,6 +27,8 @@
 
 #include "../../deoglBasics.h"
 
+#include <dragengine/common/collection/decTList.h>
+
 class deoglRenderThread;
 
 
@@ -41,8 +43,7 @@ class deoglRenderThread;
 class deoglTimerQuerySet{
 private:
 	deoglRenderThread &pRenderThread;
-	GLuint *pQueries;
-	int pQueryCount;
+	decTList<GLuint> pQueries;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -61,8 +62,8 @@ public:
 	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** Number of queries in the set. */
-	inline int GetQueryCount() const{ return pQueryCount; }
+	/** Queries in the set. */
+	inline const decTList<GLuint> &GetQueries() const{ return pQueries; }
 	
 	/** Set number of queries in the set. */
 	void SetQueryCount(int count);

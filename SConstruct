@@ -781,6 +781,10 @@ parent_env.Append(CXXFLAGS = ['-std=c++20'])
 # when dealing with foreign libraries
 parent_env.Append(CXXFLAGS = ['-Wno-deprecated-enum-enum-conversion'])
 
+# this warning causes too many false positives requiring dummy range checks to be inserted
+# in various locations. warning is disabled unless proven to be actually helping
+parent_env.Append(CXXFLAGS = ['-Wno-alloc-size-larger-than'])
+
 # no default targets
 Default(None)
 

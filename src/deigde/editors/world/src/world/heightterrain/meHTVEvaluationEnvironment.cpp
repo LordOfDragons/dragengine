@@ -176,7 +176,6 @@ void meHTVEvaluationEnvironment::PopulateWithObjects(){
 		float maxObjectSearchRadius = 0.0f;
 		double oa1x, oa1z, oa2x, oa2z;
 		int sa1x, sa1z, sa2x, sa2z;
-		decDVector objpos;
 		decPoint3 s;
 		
 		// determine the maximum search radius used in the rules
@@ -228,10 +227,10 @@ void meHTVEvaluationEnvironment::PopulateWithObjects(){
 		// test all objects. we do not care if the objects are affected by the rules or not as
 		// the rules itself are going to check this already. this could be improved later on.
 		pWorld->GetObjects().Visit([&](meObject *object){
-			objpos = object->GetPosition();
+			const decDVector &objpos = object->GetPosition();
 			
 			if(objpos.x >= oa1x && objpos.z >= oa1z && objpos.x <= oa2x && objpos.z <= oa2z){
-				AddObject(object);
+				pObjects.Add(object);
 			}
 		});
 	}

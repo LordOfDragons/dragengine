@@ -29,6 +29,7 @@
 #include "../../deoglBasics.h"
 
 #include <dragengine/deTObjectReference.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/threading/deMutex.h>
 #include <dragengine/parallel/deParallelTask.h>
 
@@ -91,7 +92,7 @@ private:
 	
 	deoglShaderLanguage &pLanguage;
 	int pContextIndex;
-	char *pErrorLog;
+	decTList<char> pErrorLog;
 	deoglShaderPreprocessor pPreprocessor;
 	deMutex pMutexCompile;
 	
@@ -138,8 +139,6 @@ public:
 	
 	
 private:
-	void pCleanUp();
-	
 	void pCompileShaderUnit(deoglShaderProgramUnit &unit);
 	void pFinishCompileShaderUnit(deoglShaderProgramUnit &unit);
 	void pCompileShader(deoglShaderProgram &program);

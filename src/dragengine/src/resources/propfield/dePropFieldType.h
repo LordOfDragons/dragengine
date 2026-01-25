@@ -63,11 +63,8 @@ private:
 	
 	decCollisionFilter pCollisionFilter;
 	
-	dePropFieldInstance *pInstances;
-	int pInstanceCount;
-	
-	dePropFieldBendState *pBendStates;
-	int pBendStateCount;
+	decTList<dePropFieldInstance> pInstances;
+	decTList<dePropFieldBendState> pBendStates;
 	
 	
 	
@@ -117,46 +114,13 @@ public:
 	/** \brief Set collision filter. */
 	void SetCollisionFilter(const decCollisionFilter &collisionFilter);
 	
-	/** \brief Number of instances. */
-	inline int GetInstanceCount() const{ return pInstanceCount; }
+	/** \brief Instances. */
+	inline decTList<dePropFieldInstance> &GetInstances(){ return pInstances; }
+	inline const decTList<dePropFieldInstance> &GetInstances() const{ return pInstances; }
 	
-	/** \brief Set number of instances. */
-	void SetInstanceCount(int count);
-	
-	/** \brief Instance at the given index. */
-	dePropFieldInstance &GetInstanceAt(int index) const;
-	
-	/**
-	 * Retrieves the list of instances. Be careful with this method call as it is
-	 * one intended only for performance usage. Make sure you to not read or write
-	 * more than GetInstanceCount elements. You can be sure that the returned array
-	 * is the same for the entire lifetime of this object and contains the instances
-	 * in a continuous list. If possible use the GetInstanceAt method call to obtain
-	 * the individual instances as there boundary checks are conducted.
-	 */
-	inline dePropFieldInstance *GetInstances() const{ return pInstances; }
-	
-	/** \brief Number of bend states. */
-	inline int GetBendStateCount() const{ return pBendStateCount; }
-	
-	/** \brief Set number of bend states. */
-	void SetBendStateCount(int count);
-	
-	/** \brief Bend state at the given index. */
-	dePropFieldBendState &GetBendStateAt(int index) const;
-	
-	/**
-	 * \brief List of bend states.
-	 * 
-	 * Be careful with this method call as it is one intended only for performance usage.
-	 * Make sure you to not read or write more than GetBendStateCount elements. This array
-	 * is not guaranteed to be the same for the entire lifetime of this object but is a
-	 * continuous list. If possible use the GetBendStateAt method call to obtain the
-	 * individual bend states as there boundary checks are conducted. If you need direct
-	 * access due to performance reasons only keep to this pointer for the short time you
-	 * do some work.
-	 */
-	inline dePropFieldBendState *GetBendStates() const{ return pBendStates; }
+	/** \brief Bend states. */
+	inline decTList<dePropFieldBendState> &GetBendStates(){ return pBendStates; }
+	inline const decTList<dePropFieldBendState> &GetBendStates() const{ return pBendStates; }
 	/*@}*/
 };
 

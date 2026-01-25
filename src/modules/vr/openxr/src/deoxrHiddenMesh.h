@@ -28,6 +28,7 @@
 #include "deoxrBasics.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/resources/model/deModel.h>
 
 class deoxrSession;
@@ -51,7 +52,6 @@ private:
 	XrFovf pFov;
 	
 	deModel::Ref pModel;
-	
 	
 	
 public:
@@ -95,7 +95,7 @@ public:
 	
 	
 private:
-	void pFetchData(XrVisibilityMaskKHR &mask) const;
+	void pFetchData(XrVisibilityMaskKHR &mask, decTList<XrVector2f> &vertices, decTList<uint32_t> &indices) const;
 	void pProjectVertices(XrVisibilityMaskKHR &mask) const;
 	void pMapVerticesToWindow(XrVisibilityMaskKHR &mask) const;
 	void pFitVertices(XrVisibilityMaskKHR &mask) const;

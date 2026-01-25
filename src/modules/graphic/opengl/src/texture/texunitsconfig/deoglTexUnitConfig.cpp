@@ -68,6 +68,22 @@ pSpecial(estNone),
 pSampler(nullptr){
 }
 
+deoglTexUnitConfig::deoglTexUnitConfig(const deoglTexUnitConfig &tuc){
+	*this = tuc;
+}
+
+deoglTexUnitConfig &deoglTexUnitConfig::operator=(const deoglTexUnitConfig &tuc){
+	if(this != &tuc){
+		pTexture = tuc.pTexture;
+		pCubeMap = tuc.pCubeMap;
+		pArrayTexture = tuc.pArrayTexture;
+		pTBO = tuc.pTBO;
+		pSpecial = tuc.pSpecial;
+		pSampler = tuc.pSampler;
+	}
+	return *this;
+}
+
 deoglTexUnitConfig::~deoglTexUnitConfig(){
 }
 
@@ -236,7 +252,7 @@ const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglText
 		
 		if(dynamicSkin && skinState){
 			if(skinRenderable != -1 && skinRenderable < skinState->GetRenderableCount()){
-				const deoglSkinStateRenderable &skinStateRenderable = *skinState->GetRenderableAt(skinRenderable);
+				const deoglSkinStateRenderable &skinStateRenderable = skinState->GetRenderables()[skinRenderable];
 				const int hostIndex = skinStateRenderable.GetHostRenderable();
 				
 				if(hostIndex != -1 && dynamicSkin){
@@ -255,8 +271,8 @@ const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglText
 			const int skinVideoPlayer = schan->GetVideoPlayer();
 			deoglRVideoPlayer *videoPlayer = nullptr;
 			
-			if(skinVideoPlayer != -1 && skinState && skinVideoPlayer < skinState->GetVideoPlayerCount()){
-				videoPlayer = skinState->GetVideoPlayerAt(skinVideoPlayer);
+			if(skinVideoPlayer != -1 && skinState && skinVideoPlayer < skinState->GetVideoPlayers().GetCount()){
+				videoPlayer = skinState->GetVideoPlayers()[skinVideoPlayer];
 			}
 			
 			if(videoPlayer){
@@ -270,9 +286,9 @@ const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglText
 			const int dynamicConstructed = schan->GetDynamicConstructed();
 			
 			if(dynamicConstructed != -1 && skinState
-			&& dynamicConstructed < skinState->GetConstructedPropertyCount()){
+			&& dynamicConstructed < skinState->GetConstructedProperties().GetCount()){
 				const deoglRenderTarget::Ref &renderTarget =
-					skinState->GetConstructedPropertyAt(dynamicConstructed).GetRenderTarget();
+					skinState->GetConstructedProperties()[dynamicConstructed].GetRenderTarget();
 				if(renderTarget){
 					useTexture = renderTarget->GetTexture();
 				}
@@ -358,7 +374,7 @@ const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglCube
 		
 		if(dynamicSkin && skinState){
 			if(skinRenderable != -1 && skinRenderable < skinState->GetRenderableCount()){
-				const deoglSkinStateRenderable &skinStateRenderable = *skinState->GetRenderableAt(skinRenderable);
+				const deoglSkinStateRenderable &skinStateRenderable = skinState->GetRenderables()[skinRenderable];
 				const int hostIndex = skinStateRenderable.GetHostRenderable();
 				
 				if(hostIndex != -1 && dynamicSkin){
@@ -480,6 +496,10 @@ void deoglTexUnitConfig::EnableSpecial(int special, deoglTexSamplerConfig *sampl
 
 
 bool deoglTexUnitConfig::Equals(const deoglTexUnitConfig &tuc) const{
+	return *this == tuc;
+}
+
+bool deoglTexUnitConfig::operator==(const deoglTexUnitConfig &tuc) const{
 	return pTexture == tuc.pTexture
 		&& pCubeMap == tuc.pCubeMap
 		&& pArrayTexture == tuc.pArrayTexture
@@ -489,10 +509,5 @@ bool deoglTexUnitConfig::Equals(const deoglTexUnitConfig &tuc) const{
 }
 
 void deoglTexUnitConfig::SetFrom(const deoglTexUnitConfig &tuc){
-	pTexture = tuc.pTexture;
-	pCubeMap = tuc.pCubeMap;
-	pArrayTexture = tuc.pArrayTexture;
-	pTBO = tuc.pTBO;
-	pSpecial = tuc.pSpecial;
-	pSampler = tuc.pSampler;
+	*this = tuc;
 }

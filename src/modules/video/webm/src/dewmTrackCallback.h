@@ -27,6 +27,7 @@
 
 #include <stdint.h>
 #include <webm/callback.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deVideoWebm;
 
@@ -39,8 +40,7 @@ private:
 	deVideoWebm &pModule;
 	bool pTrackOpen;
 	std::uint64_t pTrackNumber;
-	std::uint8_t *pBuffer;
-	std::uint64_t pBufferSize;
+	decTList<std::uint8_t> pBuffer;
 	bool pStopParsing;
 	bool pNeedMoreFrames;
 	
@@ -96,7 +96,7 @@ protected:
 	virtual void pProcessFrame(webm::Reader &reader, std::uint64_t &bytes_remaining);
 	virtual void pProcessAdditional(const std::vector<unsigned char> &data);
 	
-	inline const std::uint8_t *pGetBuffer() const{ return pBuffer; }
+	inline const decTList<std::uint8_t> &pGetBuffer() const{ return pBuffer; }
 	
 	void pReadFrameData(webm::Reader &reader, std::uint64_t &bytes_remaining);
 	

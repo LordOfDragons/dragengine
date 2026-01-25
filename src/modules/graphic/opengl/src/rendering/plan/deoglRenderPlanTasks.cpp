@@ -492,7 +492,9 @@ const deoglRenderPlanMasked*, bool xray){
 	// pass 4: model decals, decals but only if not on potentially non-solid geometry
 	renderTask.SetOutline(false);
 	renderTask.SetDecal(true);
-	// renderTask.SetFilterSolid(false);
+	renderTask.SetFilterSolid(false);
+	renderTask.SetFilterDecalSolidParent(true);
+	renderTask.SetDecalSolidParent(true);
 	
 	renderTask.SetSkinPipelineLists(0);
 	renderTask.EnableSkinPipelineList(deoglSkinTexturePipelinesList::eptComponent);

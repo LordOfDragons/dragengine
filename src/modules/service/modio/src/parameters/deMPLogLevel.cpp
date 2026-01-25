@@ -44,13 +44,11 @@ deModioParameter(module)
 	SetCategory(ecAdvanced);
 	SetDisplayName("Log Level");
 	
-	const deModuleParameter::SelectionEntry entries[4] = {
-		{"error", "Error", "Log only errors."},
-		{"warning", "Warning", "Log errors and warnings."},
-		{"info", "Info", "Log errors, warnings and information."},
-		{"debug", "Debug", "Log everything"}
-	};
-	AddSelectionEntries(entries, 4);
+	AddSelectionEntry({"error", "Error", "Log only errors."});
+	AddSelectionEntry({"warning", "Warning", "Log errors and warnings."});
+	AddSelectionEntry({"info", "Info", "Log errors, warnings and information."});
+	AddSelectionEntry({"debug", "Debug", "Log everything"});
+	
 	SetDefaultValue("warning");
 }
 

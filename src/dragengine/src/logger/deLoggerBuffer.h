@@ -27,6 +27,7 @@
 
 #include "deLogger.h"
 #include "../common/string/decString.h"
+#include "../common/collection/decTList.h"
 #include "../threading/deMutex.h"
 
 
@@ -76,6 +77,9 @@ public:
 		/** \brief Copy constructor. */
 		sEntry(const sEntry &entry);
 		
+		/** \brief Create entry. */
+		sEntry(eMessageTypes type, const decString &source, const decString &message);
+		
 		/** \brief Assign entry. */
 		sEntry &operator=(const sEntry &entry);
 	};
@@ -83,9 +87,7 @@ public:
 	
 	
 private:
-	sEntry *pEntries;
-	int pEntrySize;
-	int pEntryCount;
+	decTList<sEntry> pEntries;
 	deMutex pMutex;
 	
 	
@@ -142,12 +144,6 @@ public:
 	
 protected:
 	inline deMutex &GetMutex(){ return pMutex; }
-	
-	
-	
-private:
-	void pClear();
-	void pAddEntry(eMessageTypes type, const decString &source, const decString &message);
 };
 
 #endif

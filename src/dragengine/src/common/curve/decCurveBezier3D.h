@@ -25,6 +25,7 @@
 #ifndef _DECCURVEBEZIER3D_H_
 #define _DECCURVEBEZIER3D_H_
 
+#include "../collection/decTList.h"
 #include "../math/decMath.h"
 
 class decCurveBezier3DPoint;
@@ -50,8 +51,7 @@ public:
 	
 	
 private:
-	decCurveBezier3DPoint *pPoints;
-	int pPointCount;
+	decTList<decCurveBezier3DPoint> pPoints;
 	eInterpolationModes pInterpolationMode;
 	
 	
@@ -73,8 +73,11 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Points. */
+	inline const decTList<decCurveBezier3DPoint> &GetPoints() const{ return pPoints; }
+	
 	/** \brief Number of points. */
-	inline int GetPointCount() const{ return pPointCount; }
+	inline int GetPointCount() const{ return pPoints.GetCount(); }
 	
 	/**
 	 * \brief Point at position.

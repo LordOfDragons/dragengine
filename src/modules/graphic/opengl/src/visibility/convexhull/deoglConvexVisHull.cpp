@@ -22,11 +22,6 @@
  * SOFTWARE.
  */
 
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglConvexVisHull.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../vbo/deoglVBOLayout.h"
@@ -50,8 +45,6 @@
 deoglConvexVisHull::deoglConvexVisHull(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
 pVAO(0),
-pPoints(nullptr),
-pPointCount(0),
 pVBO(0),
 pVBOPointCount(0){
 }
@@ -60,10 +53,6 @@ deoglConvexVisHull::~deoglConvexVisHull(){
 	deoglDelayedOperations &dops = pRenderThread.GetDelayedOperations();
 	dops.DeleteOpenGLBuffer(pVBO);
 	dops.DeleteOpenGLVertexArray(pVAO);
-	
-	if(pPoints){
-		delete [] pPoints;
-	}
 }
 
 
@@ -77,105 +66,67 @@ void deoglConvexVisHull::SetExtends(const decVector &minExtend, const decVector 
 }
 
 void deoglConvexVisHull::CalcBoundingBox(decDVector &boxMinExtend, decDVector &boxMaxExtend, const decDMatrix &matrix) const{
-	if(pPointCount == 0){
+	if(pPoints.IsEmpty()){
 		boxMinExtend = matrix.GetPosition();
 		boxMaxExtend = boxMinExtend;
 		
 	}else{
-		decDVector point;
-		int i;
-		
-		for(i=0; i<pPointCount; i++){
-			point = matrix.Transform((double)pPoints[i].x, (double)pPoints[i].y, (double)pPoints[i].z);
+		pPoints.VisitIndexed([&](int i, const oglVector3 &pt){
+			const decDVector point(matrix.Transform((double)pt.x, (double)pt.y, (double)pt.z));
 			
 			if(i == 0){
 				boxMinExtend = point;
 				boxMaxExtend = point;
 				
 			}else{
-				if(point.x < boxMinExtend.x){
-					boxMinExtend.x = point.x;
-					
-				}else if(point.x > boxMaxExtend.x){
-					boxMaxExtend.x = point.x;
-				}
-				
-				if(point.y < boxMinExtend.y){
-					boxMinExtend.y = point.y;
-					
-				}else if(point.y > boxMaxExtend.y){
-					boxMaxExtend.y = point.y;
-				}
-				
-				if(point.z < boxMinExtend.z){
-					boxMinExtend.z = point.z;
-					
-				}else if(point.z > boxMaxExtend.z){
-					boxMaxExtend.z = point.z;
-				}
+				boxMinExtend.SetSmallest(point);
+				boxMaxExtend.SetLargest(point);
 			}
-		}
+		});
 	}
 }
-
-void deoglConvexVisHull::SetPointCount(int count){
-	if(count < 0){
-		DETHROW(deeInvalidParam);
-	}
-	
-	if(count != pPointCount){
-		if(pPoints){
-			delete [] pPoints;
-			pPoints = nullptr;
-		}
-		
-		if(count > 0){
-			pPoints = new oglVector3[count];
-		}
-		
-		pPointCount = count;
-	}
-}
-
 
 
 void deoglConvexVisHull::UpdateVBO(){
-	if(pPointCount > 0){
-		// update vbo
-		if(!pVBO){
-			OGL_CHECK(pRenderThread, pglGenBuffers(1, &pVBO));
-		}
+	if(pPoints.IsEmpty()){
+		return;
+	}
+	
+	// update vbo
+	if(!pVBO){
+		OGL_CHECK(pRenderThread, pglGenBuffers(1, &pVBO));
+	}
+	
+	OGL_CHECK(pRenderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBO));
+	OGL_CHECK(pRenderThread, pglBufferData(GL_ARRAY_BUFFER,
+		sizeof(oglVector3) * pPoints.GetCount(), pPoints.GetArrayPointer(), GL_STATIC_DRAW));
+	pVBOPointCount = pPoints.GetCount();
+	
+	OGL_CHECK(pRenderThread, pglBindBuffer(GL_ARRAY_BUFFER, 0));
+	
+	// update vao
+	if(!pVAO){
+		deoglVBOLayout layout;
+		
+		layout.GetAttributes().SetCount(1, {});
+		layout.SetStride(12);
+		layout.SetIndexType(deoglVBOLayout::eitNone); // use indices later on
+		
+		layout.GetAttributes()[0].SetComponentCount(3);
+		layout.GetAttributes()[0].SetDataType(deoglVBOAttribute::edtFloat);
+		layout.GetAttributes()[0].SetOffset(0);
+		
+		OGL_CHECK(pRenderThread, pglGenVertexArrays(1, &pVAO));
+		
+		OGL_CHECK(pRenderThread, pglBindVertexArray(pVAO));
 		
 		OGL_CHECK(pRenderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBO));
-		OGL_CHECK(pRenderThread, pglBufferData(GL_ARRAY_BUFFER, sizeof(oglVector3) * pPointCount, pPoints, GL_STATIC_DRAW));
-		pVBOPointCount = pPointCount;
+		layout.SetVAOAttributeAt(pRenderThread, 0, 0); // position(0) => vao(0)
 		
 		OGL_CHECK(pRenderThread, pglBindBuffer(GL_ARRAY_BUFFER, 0));
-		
-		// update vao
-		if(!pVAO){
-			deoglVBOLayout layout;
-			
-			layout.SetAttributeCount(1);
-			layout.SetStride(12);
-			layout.SetIndexType(deoglVBOLayout::eitNone); // use indices later on
-			
-			layout.GetAttributeAt(0).SetComponentCount(3);
-			layout.GetAttributeAt(0).SetDataType(deoglVBOAttribute::edtFloat);
-			layout.GetAttributeAt(0).SetOffset(0);
-			
-			OGL_CHECK(pRenderThread, pglGenVertexArrays(1, &pVAO));
-			
-			OGL_CHECK(pRenderThread, pglBindVertexArray(pVAO));
-			
-			OGL_CHECK(pRenderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBO));
-			layout.SetVAOAttributeAt(pRenderThread, 0, 0); // position(0) => vao(0)
-			
-			OGL_CHECK(pRenderThread, pglBindBuffer(GL_ARRAY_BUFFER, 0));
-			OGL_CHECK(pRenderThread, pglBindVertexArray(0));
-		}
-		//pRenderThread.GetLogger().LogInfoFormat( "convex visibility hull %p: points=%i size=%i vbo=%u", this, pPointCount, pPointCount*sizeof(oglVector3), pVBO );
+		OGL_CHECK(pRenderThread, pglBindVertexArray(0));
 	}
+	//pRenderThread.GetLogger().LogInfoFormat( "convex visibility hull %p: points=%i size=%i vbo=%u", this, pPointCount, pPointCount*sizeof(oglVector3), pVBO );
 }
 
 
@@ -243,10 +194,10 @@ void deoglConvexVisHull::CreateFrom(const decConvexVolumeList &list){
 	}
 	
 	// build the vbo
-	SetPointCount(vboFaceCount * 3);
+	pPoints.SetCountDiscard(vboFaceCount * 3);
 	
 	if(vboFaceCount > 0){
-		oglVector3 *vboDataPointer = pPoints;
+		oglVector3 *vboDataPointer = pPoints.GetArrayPointer();
 		
 		for(i=0; i<volumeCount; i++){
 			const decConvexVolume &volume = *list.GetVolumeAt(i);

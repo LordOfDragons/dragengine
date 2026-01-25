@@ -41,29 +41,18 @@
 ////////////////////////////
 
 delLoggerHistory::delLoggerHistory(int size) :
-pHistorySize(0),
-pEntries(nullptr),
 pEntryCount(0),
 pEntryOffset(0),
 pLogInfo(true),
 pLogWarn(true),
 pLogError(true)
 {
-	if(size < 0){
-		DETHROW_INFO(deeInvalidParam, "size < 0");
-	}
+	DEASSERT_TRUE(size >= 0)
 	
-	if(size > 0){
-		pEntries = new delLoggerHistoryEntry[size];
-		pHistorySize = size;
-	}
+	pEntries.AddRange(size, {});
 }
 
-delLoggerHistory::~delLoggerHistory(){
-	if(pEntries){
-		delete [] pEntries;
-	}
-}
+delLoggerHistory::~delLoggerHistory() = default;
 
 
 
@@ -71,61 +60,39 @@ delLoggerHistory::~delLoggerHistory(){
 ///////////////
 
 void delLoggerHistory::SetHistorySize(int size){
-	if(size < 0){
-		DETHROW_INFO(deeInvalidParam, "size < 0");
-	}
+	DEASSERT_TRUE(size >= 0)
 	
 	Clear();
 	
 	const deMutexGuard guard(pMutex);
 	
-	if(pEntries){
-		delete [] pEntries;
-		pEntries = nullptr;
-		pHistorySize = 0;
-	}
+	pEntries.SetCountDiscard(size);
+	
 	pEntryCount = 0;
 	pEntryOffset = 0;
-	
-	if(size == 0){
-		return;
-	}
-	
-	pEntries = new delLoggerHistoryEntry[size];
-	pHistorySize = size;
 }
 
 delLoggerHistoryEntry &delLoggerHistory::GetEntryAt(int index){
-	if(index < 0){
-		DETHROW_INFO(deeInvalidParam, "index < 0");
-	}
-	if(index >= pEntryCount){
-		DETHROW_INFO(deeInvalidParam, "index >= entryCount");
-	}
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < pEntryCount)
 	
-	return pEntries[(pEntryOffset + index) % pHistorySize];
+	return pEntries[(pEntryOffset + index) % pEntries.GetCount()];
 }
 
 const delLoggerHistoryEntry &delLoggerHistory::GetEntryAt(int index) const{
-	if(index < 0){
-		DETHROW_INFO(deeInvalidParam, "index < 0");
-	}
-	if(index >= pEntryCount){
-		DETHROW_INFO(deeInvalidParam, "index >= entryCount");
-	}
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < pEntryCount)
 	
-	return pEntries[(pEntryOffset + index) % pHistorySize];
+	return pEntries[(pEntryOffset + index) % pEntries.GetCount()];
 }
 
 delLoggerHistoryEntry &delLoggerHistory::AddEntry(){
-	if(pHistorySize == 0){
-		DETHROW_INFO(deeInvalidParam, "history size is 0");
-	}
+	DEASSERT_TRUE(pEntries.IsNotEmpty())
 	
-	const int position = (pEntryOffset + pEntryCount) % pHistorySize;
+	const int position = (pEntryOffset + pEntryCount) % pEntries.GetCount();
 	
-	if(pEntryCount == pHistorySize){
-		pEntryOffset = (pEntryOffset + 1) % pHistorySize;
+	if(pEntryCount == pEntries.GetCount()){
+		pEntryOffset = (pEntryOffset + 1) % pEntries.GetCount();
 		
 	}else{
 		pEntryCount++;
@@ -141,17 +108,15 @@ void delLoggerHistory::Clear(){
 	pEntryOffset = 0;
 	pEntryCount = 0;
 	
-	const int count = pListeners.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		pListeners.GetAt(i)->HistoryCleared(*this);
-	}
+	pListeners.Visit([&](delLoggerHistoryListener &l){
+		l.HistoryCleared(*this);
+	});
 }
 
 
 
 bool delLoggerHistory::CanAddMessage(int type, const char *source){
-	if(pHistorySize == 0){
+	if(pEntries.IsEmpty()){
 		return false;
 	}
 	if(type == delLoggerHistoryEntry::emtInfo && !pLogInfo){
@@ -169,40 +134,30 @@ bool delLoggerHistory::CanAddMessage(int type, const char *source){
 
 
 void delLoggerHistory::AddListener(delLoggerHistoryListener *listener){
-	if(!listener){
-		DETHROW_INFO(deeNullPointer, "listener");
-	}
+	DEASSERT_NOTNULL(listener)
 	
 	const deMutexGuard guard(pMutex);
 	pListeners.Add(listener);
 }
 
 void delLoggerHistory::RemoveListener(delLoggerHistoryListener *listener){
-	if(!listener){
-		DETHROW_INFO(deeNullPointer, "listener");
-	}
+	DEASSERT_NOTNULL(listener)
 	
 	const deMutexGuard guard(pMutex);
 	pListeners.Remove(listener);
 }
 
 void delLoggerHistory::NotifyMessageAdded(const delLoggerHistoryEntry &entry){
-	const int count = pListeners.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		pListeners.GetAt(i)->MessageAdded(*this, entry);
-	}
+	pListeners.Visit([&](delLoggerHistoryListener &l){
+		l.MessageAdded(*this, entry);
+	});
 }
 
 
 
 void delLoggerHistory::LogInfo(const char *source, const char *message){
-	if(!source){
-		DETHROW_INFO(deeNullPointer, "source");
-	}
-	if(!message){
-		DETHROW_INFO(deeNullPointer, "message");
-	}
+	DEASSERT_NOTNULL(source)
+	DEASSERT_NOTNULL(message)
 	
 	const deMutexGuard guard(pMutex);
 	
@@ -220,12 +175,8 @@ void delLoggerHistory::LogInfo(const char *source, const char *message){
 }
 
 void delLoggerHistory::LogWarn(const char *source, const char *message){
-	if(!source){
-		DETHROW_INFO(deeNullPointer, "source");
-	}
-	if(!message){
-		DETHROW_INFO(deeNullPointer, "message");
-	}
+	DEASSERT_NOTNULL(source)
+	DEASSERT_NOTNULL(message)
 	
 	const deMutexGuard guard(pMutex);
 	
@@ -243,12 +194,8 @@ void delLoggerHistory::LogWarn(const char *source, const char *message){
 }
 
 void delLoggerHistory::LogError(const char *source, const char *message){
-	if(!source){
-		DETHROW_INFO(deeNullPointer, "source");
-	}
-	if(!message){
-		DETHROW_INFO(deeNullPointer, "message");
-	}
+	DEASSERT_NOTNULL(source)
+	DEASSERT_NOTNULL(message)
 	
 	const deMutexGuard guard(pMutex);
 	

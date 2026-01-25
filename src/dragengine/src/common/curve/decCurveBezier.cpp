@@ -39,23 +39,16 @@
 ////////////////////////////
 
 decCurveBezier::decCurveBezier() :
-pPoints(nullptr),
-pPointCount(0),
 pInterpolationMode(eimBezier){
 }
 
 decCurveBezier::decCurveBezier(const decCurveBezier &curve) :
-pPoints(nullptr),
-pPointCount(0),
 pInterpolationMode(eimBezier)
 {
 	*this = curve;
 }
 
 decCurveBezier::~decCurveBezier(){
-	if(pPoints){
-		delete [] pPoints;
-	}
 }
 
 
@@ -64,63 +57,34 @@ decCurveBezier::~decCurveBezier(){
 ///////////////
 
 const decCurveBezierPoint &decCurveBezier::GetPointAt(int position) const{
-	if(position < 0 || position >= pPointCount){
-		DETHROW(deeInvalidParam);
-	}
-	
 	return pPoints[position];
 }
 
 int decCurveBezier::FindPointPriorTo(float coordinate) const{
 	int p;
 	
-	for(p=0; p<pPointCount; p++){
+	for(p=0; p<pPoints.GetCount(); p++){
 		if(coordinate < pPoints[p].GetPoint().x){
 			return p - 1;
 		}
 	}
 	
-	return pPointCount - 1;
+	return pPoints.GetCount() - 1;
 }
 
 int decCurveBezier::AddPoint(const decCurveBezierPoint &point){
 	const int position = FindPointPriorTo(point.GetPoint().x);
-	int p;
 	
-	decCurveBezierPoint * const newArray = new decCurveBezierPoint[pPointCount + 1];
-	
-	for(p=0; p<=position; p++){
-		newArray[p] = pPoints[p];
-	}
-	
-	newArray[position + 1] = point;
-	
-	for(p=position+1; p<pPointCount; p++){
-		newArray[p + 1] = pPoints[p];
-	}
-	
-	if(pPoints) delete [] pPoints;
-	pPoints = newArray;
-	pPointCount++;
-	
+	pPoints.Insert(point, position + 1);
 	return position + 1;
 }
 
 void decCurveBezier::RemovePointFrom(int position){
-	if(position < 0 || position >= pPointCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	int p;
-	
-	for(p=position+1; p<pPointCount; p++){
-		pPoints[p - 1] = pPoints[p];
-	}
-	pPointCount--;
+	pPoints.RemoveFrom(position);
 }
 
 void decCurveBezier::RemoveAllPoints(){
-	pPointCount = 0;
+	pPoints.RemoveAll();
 }
 
 
@@ -163,12 +127,12 @@ bool decCurveBezier::operator==(const decCurveBezier &curve) const{
 		return false;
 	}
 	
-	if(curve.pPointCount != pPointCount){
+	if(curve.pPoints.GetCount() != pPoints.GetCount()){
 		return false;
 	}
 	
 	int i;
-	for(i=0; i<pPointCount; i++){
+	for(i=0; i<pPoints.GetCount(); i++){
 		const decCurveBezierPoint &point = curve.GetPointAt(i);
 		
 		if(!pPoints[i].GetPoint().IsEqualTo(point.GetPoint())){
@@ -190,22 +154,7 @@ bool decCurveBezier::operator!=(const decCurveBezier &curve) const{
 }
 
 decCurveBezier &decCurveBezier::operator=(const decCurveBezier &curve){
-	int p, pointCount = curve.GetPointCount();
-	decCurveBezierPoint *newArray = nullptr;
-	
-	if(pointCount > 0){
-		newArray = new decCurveBezierPoint[pointCount];
-		
-		for(p=0; p<pointCount; p++){
-			newArray[p] = curve.pPoints[p];
-		}
-	}
-	
-	if(pPoints) delete [] pPoints;
-	pPoints = newArray;
-	pPointCount = pointCount;
-	
+	pPoints = curve.pPoints;
 	pInterpolationMode = curve.pInterpolationMode;
-	
 	return *this;
 }

@@ -27,6 +27,8 @@
 
 #include "dearRule.h"
 
+#include <dragengine/common/collection/decTList.h>
+
 class dearAnimationState;
 class dearAnimationVPSState;
 class deAnimatorRuleStateSnapshot;
@@ -40,11 +42,8 @@ class dearRuleStateSnapshot : public dearRule{
 private:
 	//const deAnimatorRuleStateSnapshot &pStateSnapshot;
 	
-	dearAnimationState *pAnimStates;
-	int pAnimStateCount;
-	
-	dearAnimationVPSState *pAnimVPSStates;
-	int pAnimVPSStateCount;
+	decTList<dearAnimationState> pAnimStates;
+	decTList<dearAnimationVPSState> pAnimVPSStates;
 	
 	const bool pEnablePosition;
 	const bool pEnableOrientation;

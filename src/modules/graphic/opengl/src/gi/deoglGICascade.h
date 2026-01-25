@@ -26,6 +26,7 @@
 #define _DEOGLGICASCADE_H_
 
 #include <dragengine/deTUniqueReference.h>
+#include <dragengine/common/collection/decTList.h>
 
 #include <stdint.h>
 #include <dragengine/common/math/decMath.h>
@@ -62,9 +63,9 @@ public:
 		decVector offset;
 		decVector minExtend;
 		decVector maxExtend;
-		uint16_t index; //!< Grid index
-		uint8_t flags;
-		uint8_t countOffsetMoved;
+		uint16_t index = 0; //!< Grid index
+		uint8_t flags = 0;
+		uint8_t countOffsetMoved = 0;
 	};
 	
 	
@@ -93,20 +94,16 @@ private:
 	decDVector pLastRefPosition;
 	decPoint3 pGridCoordShift;
 	
-	sProbe *pProbes;
-	uint16_t *pAgedProbes;
+	decTList<sProbe> pProbes;
+	decTList<uint16_t> pAgedProbes;
 	bool pHasInvalidProbesInsideView;
 	bool pRequiresFullUpdateInsideView;
 	
-	uint32_t *pClearProbes;
-	int pClearProbeCount;
+	decTList<uint32_t> pClearProbes;
 	bool pHasClearProbes;
 	
-	uint16_t *pUpdateProbes;
-	int pUpdateProbeCount;
-	
-	uint16_t *pRayCacheProbes;
-	int pRayCacheProbeCount;
+	decTList<uint16_t> pUpdateProbes;
+	decTList<uint16_t> pRayCacheProbes;
 	
 	
 	
@@ -231,13 +228,13 @@ public:
 	
 	
 	/** Count of probes to update. */
-	inline int GetUpdateProbeCount() const{ return pUpdateProbeCount; }
+	inline int GetUpdateProbeCount() const{ return pUpdateProbes.GetCount(); }
 	
 	/** Index of probe if in list of update probes otherwise -1. */
 	int IndexOfUpdateProbe(int probeIndex) const;
 	
 	/** Count of probes to ray cache update. */
-	inline int GetRayCacheProbeCount() const{ return pRayCacheProbeCount; }
+	inline int GetRayCacheProbeCount() const{ return pRayCacheProbes.GetCount(); }
 	
 	
 	
@@ -295,14 +292,13 @@ public:
 	
 	
 private:
-	void pCleanUp();
 	void pInitProbes();
 	void pFindProbesToUpdateFullUpdateInsideView();
 	void pFindProbesToUpdateRegular();
 	void pAddUpdateProbes(uint8_t mask, uint8_t flags, int &lastIndex,
 		int &remainingMatchCount, int maxUpdateCount);
-	void pUpdateUBOProbePosition(deoglSPBlockUBO &ubo, const uint16_t *indices, int count) const;
-	void pUpdateUBOProbeIndices(deoglSPBlockUBO &ubo, const uint16_t *indices, int count) const;
+	void pUpdateUBOProbePosition(deoglSPBlockUBO &ubo, const decTList<uint16_t> &indices, int count) const;
+	void pUpdateUBOProbeIndices(deoglSPBlockUBO &ubo, const decTList<uint16_t> &indices, int count) const;
 	void pUpdateHasProbeFlags();
 };
 

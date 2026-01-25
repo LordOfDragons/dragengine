@@ -157,17 +157,12 @@ public:
 ceWDSVAPreview::ceWDSVAPreview(ceWindowDopeSheet &dopeSheet) :
 pWindow(dopeSheet),
 pCurTime(0.0f),
-pDirtyPreview(true),
-pPreviewSamples(nullptr)
+pDirtyPreview(true)
 {
 	pMouseKeyListener = cMouseListener::Ref::New(*this);
 }
 
-ceWDSVAPreview::~ceWDSVAPreview(){
-	if(pPreviewSamples){
-		delete [] pPreviewSamples;
-	}
-}
+ceWDSVAPreview::~ceWDSVAPreview() = default;
 
 
 
@@ -229,10 +224,7 @@ void ceWDSVAPreview::OnActionChanged(){
 }
 
 void ceWDSVAPreview::InvalidatePreview(){
-	if(pPreviewSamples){
-		delete [] pPreviewSamples;
-		pPreviewSamples = nullptr;
-	}
+	pPreviewSamples.RemoveAll();
 	pDirtyPreview = true;
 }
 
@@ -308,14 +300,14 @@ void ceWDSVAPreview::UpdateVAPreviewImage(){
 		const int sampleRate = sound->GetSampleRate();
 		
 		// TODO we should do this asynchronous
-		if(!pPreviewSamples){
+		if(pPreviewSamples.IsEmpty()){
 			const int bufferSize = sampleCount * bytesPerSample * sound->GetChannelCount();
-			pPreviewSamples = new char[bufferSize];
+			pPreviewSamples.AddRange(bufferSize, 0);
 			deSoundDecoder::Ref decoder;
 			
 			try{
 				decoder = pWindow.GetEngine()->GetSoundManager()->CreateDecoder(sound);
-				decoder->ReadSamples(pPreviewSamples, bufferSize);
+				decoder->ReadSamples(pPreviewSamples.GetArrayPointer(), bufferSize);
 				
 			}catch(const deException &){
 				// nothing we can do. leave the values in chaos
@@ -326,7 +318,7 @@ void ceWDSVAPreview::UpdateVAPreviewImage(){
 		int x;
 		
 		if(bytesPerSample == 1){
-			const char * const samples = (const char *)pPreviewSamples;
+			const char * const samples = reinterpret_cast<const char*>(pPreviewSamples.GetArrayPointer());
 			const float factor = (float)height / 255.0f;
 			
 			for(x=0; i<width; i++){
@@ -356,7 +348,7 @@ void ceWDSVAPreview::UpdateVAPreviewImage(){
 			}
 			
 		}else if(bytesPerSample == 2){
-			const short * const samples = (const short *)pPreviewSamples;
+			const short * const samples = reinterpret_cast<const short*>(pPreviewSamples.GetArrayPointer());
 			const float factor = (float)height / 65536.0f;
 			
 			for(x=0; i<width; i++){

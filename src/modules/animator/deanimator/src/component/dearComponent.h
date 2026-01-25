@@ -26,6 +26,7 @@
 #define _DEARCOMPONENT_H_
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/systems/modules/animator/deBaseAnimatorComponent.h>
 
 class dearComponentBoneState;
@@ -43,12 +44,8 @@ private:
 	deDEAnimator &pModule;
 	deComponent &pComponent;
 	
-	dearComponentBoneState *pBoneStates;
-	int pBoneStateCount;
-	
-	dearComponentVPSState *pVPSStates;
-	int pVPSStateCount;
-	
+	decTList<dearComponentBoneState> pBoneStates;
+	decTList<dearComponentVPSState> pVPSStates;
 	decDMatrix pMatrix;
 	
 	
@@ -77,26 +74,12 @@ public:
 	
 	
 	/** Bone states. */
-	inline dearComponentBoneState *GetBoneStates() const{ return pBoneStates; }
-	
-	/** Number of bone states. */
-	inline int GetBoneStateCount() const{ return pBoneStateCount; }
-	
-	/** Bone state at index. */
-	dearComponentBoneState &GetBoneStateAt(int index) const;
-	
-	
+	inline decTList<dearComponentBoneState> &GetBoneStates(){ return pBoneStates; }
+	inline const decTList<dearComponentBoneState> &GetBoneStates() const{ return pBoneStates; }
 	
 	/** Vertex position set states. */
-	inline dearComponentVPSState *GetVPSStates() const{ return pVPSStates; }
-	
-	/** Count of vertex position set states. */
-	inline int GetVPSStateCount() const{ return pVPSStateCount; }
-	
-	/** Vertex position set state at index. */
-	dearComponentVPSState &GetVPSStateAt(int index) const;
-	
-	
+	inline decTList<dearComponentVPSState> &GetVPSStates(){ return pVPSStates; }
+	inline const decTList<dearComponentVPSState> &GetVPSStates() const{ return pVPSStates; }
 	
 	/** Component matrix. */
 	inline const decDMatrix &GetMatrix() const{ return pMatrix; }

@@ -28,8 +28,8 @@
 
 #include "modules/delEngineModuleList.h"
 #include "../game/delGame.h"
-#include "../game/patch/delPatch.h"
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/systems/deModuleSystem.h>
@@ -64,8 +64,7 @@ private:
 	decString pLogFile;
 	
 	decPoint pCurrentResolution;
-	int pResolutionCount;
-	decPoint *pResolutions;
+	decTList<decPoint> pResolutions;
 	int pScaleFactor;
 	
 	
@@ -156,11 +155,8 @@ public:
 	/** \brief Current display resolution. */
 	inline const decPoint &GetCurrentResolution() const{ return pCurrentResolution; }
 	
-	/** \brief Number of resolutions. */
-	inline int GetResolutionCount() const{ return pResolutionCount; }
-	
-	/** \brief Resolution by index. */
-	const decPoint &GetResolutionAt(int index) const;
+	/** \brief Resolutions. */
+	inline const decTList<decPoint> &GetResolutions() const{ return pResolutions; }
 	
 	/** \brief Index of resolution closest but not larger than size or -1 if there are no resolutions. */
 	int IndexOfClosestResolutionTo(int width, int height) const;

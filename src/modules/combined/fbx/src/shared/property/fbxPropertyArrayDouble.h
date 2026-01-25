@@ -28,6 +28,8 @@
 
 #include "../fbxProperty.h"
 
+#include <dragengine/common/collection/decTList.h>
+
 
 /**
  * \brief FBX property array integer.
@@ -38,8 +40,7 @@ public:
 	
 	
 private:
-	double *pValues;
-	int pCount;
+	decTList<double> pValues;
 	
 	
 	
@@ -62,14 +63,8 @@ protected:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Value count. */
-	inline int GetCount() const{ return pCount; }
-	
-	/** \brief Value at index. */
-	double GetValueAt(int index) const;
-	
-	/** \brief Add value. */
-	void AddValue(double value);
+	/** \brief Values. */
+	inline const decTList<double> &Values() const{ return pValues; }
 	
 	/** \brief Casting throwing exception if wrong type. */
 	fbxPropertyArrayDouble &CastArrayDouble() override;

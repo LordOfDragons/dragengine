@@ -31,10 +31,10 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/debug/deDebugDrawerShapeFace.h>
 
 class deNavigationSpace;
 class deDebugDrawerShape;
-class deDebugDrawerShapeFace;
 class deOcclusionMesh;
 
 
@@ -76,7 +76,7 @@ private:
 	
 	decShape::List pShapes;
 	
-	decTList<deDebugDrawerShapeFace*> pFaces;
+	deDebugDrawerShapeFace::List pFaces;
 	
 	
 	
@@ -194,7 +194,7 @@ public:
 	/** \name Faces */
 	/*@{*/
 	/** \brief Adds a face. */
-	void AddFace(deDebugDrawerShapeFace *face);
+	void AddFace(deDebugDrawerShapeFace::Ref &&face);
 	
 	/** \brief Adds faces from an occlusion mesh. */
 	void AddOcclusionMeshFaces(const deOcclusionMesh &occlusionMesh);

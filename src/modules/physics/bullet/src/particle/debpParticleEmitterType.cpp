@@ -62,23 +62,9 @@ pParamFactorAngVelo(1.0f)
 	pSkin = nullptr;
 	pModel = nullptr;
 	pModelSkin = nullptr;
-	
-	pParameterValueSamples = nullptr;
-	pParameterSpreadSamples = nullptr;
-	pParameterProgressSamples = nullptr;
 }
 
-debpParticleEmitterType::~debpParticleEmitterType(){
-	if(pParameterProgressSamples){
-		delete [] pParameterProgressSamples;
-	}
-	if(pParameterSpreadSamples){
-		delete [] pParameterSpreadSamples;
-	}
-	if(pParameterValueSamples){
-		delete [] pParameterValueSamples;
-	}
-}
+debpParticleEmitterType::~debpParticleEmitterType() = default;
 
 
 
@@ -106,20 +92,17 @@ void debpParticleEmitterType::SetParamFactorAngVelo(float factor){
 void debpParticleEmitterType::UpdateType(){
 	const deParticleEmitterType &type = pEmitter->GetTypes().GetAt(pType);
 	
-	deModel *model;
-	deSkin *skin;
-	
-	skin = type.GetSkin();
+	deSkin *skin = type.GetSkin();
 	if(skin){
-		pSkin = (debpSkin*)skin->GetPeerPhysics();
+		pSkin = static_cast<debpSkin*>(skin->GetPeerPhysics());
 		
 	}else{
 		pSkin = nullptr;
 	}
 	
-	model = type.GetModel();
+	deModel *model = type.GetModel();
 	if(model){
-		pModel = (debpModel*)model->GetPeerPhysics();
+		pModel = static_cast<debpModel*>(model->GetPeerPhysics());
 		
 	}else{
 		pModel = nullptr;
@@ -127,7 +110,7 @@ void debpParticleEmitterType::UpdateType(){
 	
 	skin = type.GetModelSkin();
 	if(skin){
-		pModelSkin = (debpSkin*)skin->GetPeerPhysics();
+		pModelSkin = static_cast<debpSkin*>(skin->GetPeerPhysics());
 		
 	}else{
 		pModelSkin = nullptr;
@@ -137,20 +120,20 @@ void debpParticleEmitterType::UpdateType(){
 
 
 void debpParticleEmitterType::UpdateParameters(){
-	const deParticleEmitterType &type = pEmitter->GetTypes().GetAt(pType);
+	const deParticleEmitterType &type = pEmitter->GetTypes()[pType];
 	
 	// create array if not existing yet. the array contain the sample values for
 	// 11 parameter curves sampled at 256 positions. this is enough since the
 	// particles do not life for long so precise sampling does not yield much
 	// more accuracy than this pre-sampling does
-	if(!pParameterValueSamples){
-		pParameterValueSamples = new float[ESC_COUNT_CAST * 256]; // 21 curves: 5376 entries = 21504 bytes
+	if(pParameterValueSamples.IsEmpty()){
+		pParameterValueSamples.AddRange(ESC_COUNT_CAST * 256, 0.0f); // 21 curves: 5376 entries = 21504 bytes
 	}
-	if(!pParameterSpreadSamples){
-		pParameterSpreadSamples = new float[ESC_COUNT_CAST * 256]; // 21 curves: 5376 entries = 21504 bytes
+	if(pParameterSpreadSamples.IsEmpty()){
+		pParameterSpreadSamples.AddRange(ESC_COUNT_CAST * 256, 0.0f); // 21 curves: 5376 entries = 21504 bytes
 	}
-	if(!pParameterProgressSamples){
-		pParameterProgressSamples = new float[ESC_COUNT_PROGRESS * 256]; // 13 curves: 3328 entries = 13312 bytes
+	if(pParameterProgressSamples.IsEmpty()){
+		pParameterProgressSamples.AddRange(ESC_COUNT_PROGRESS * 256, 0.0f); // 13 curves: 3328 entries = 13312 bytes
 	}
 	
 	// sample the parameter curves into the array
@@ -282,8 +265,8 @@ int curve, deParticleEmitterType::eParameters parameter) const{
 //////////////////////
 
 void debpParticleEmitterType::pSampleParameters(int curve, const deParticleEmitterParameter &parameter){
-	float *spreadSamples = pParameterSpreadSamples + curve * 256;
-	float *valueSamples = pParameterValueSamples + curve * 256;
+	float *spreadSamples = pParameterSpreadSamples.GetArrayPointer() + curve * 256;
+	float *valueSamples = pParameterValueSamples.GetArrayPointer() + curve * 256;
 	const float factor = 1.0f / 255.0f;
 	int i;
 	
@@ -319,7 +302,7 @@ void debpParticleEmitterType::pSampleParameters(int curve, const deParticleEmitt
 	
 	// sample progress curve if required
 	if(curve < ESC_COUNT_PROGRESS){
-		float *progressSamples = pParameterProgressSamples + curve * 256;
+		float *progressSamples = pParameterProgressSamples.GetArrayPointer() + curve * 256;
 		
 		if(parameter.GetCurveProgress().GetPointCount() == 0){
 			for(i=0; i<256; i++){

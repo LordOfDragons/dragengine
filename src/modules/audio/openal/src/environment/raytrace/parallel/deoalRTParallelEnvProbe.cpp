@@ -1009,9 +1009,9 @@ decTOrderedSet<T*> &tasks, int count, decTOrderedSet<T*> &running){
 		
 	}catch(const deException &){
 		GetAudioThread().GetOal().GetGameEngine()->GetParallelProcessing().RunWithTaskDependencyMutex([&]{
-			running.Visit([](T * const task){
+			running.Visit(firstRunning, [](T * const task){
 				task->UnprotectedCancel();
-			}, firstRunning);
+			});
 		});
 		throw;
 	}

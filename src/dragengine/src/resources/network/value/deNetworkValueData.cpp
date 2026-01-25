@@ -38,17 +38,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-deNetworkValueData::deNetworkValueData(int length) :
-pData(nullptr),
-pLength(0)
+deNetworkValueData::deNetworkValueData(int length)
 {
 	SetLength(length);
 }
 
 deNetworkValueData::~deNetworkValueData(){
-	if(pData){
-		delete [] pData;
-	}
 }
 
 
@@ -61,20 +56,7 @@ void deNetworkValueData::SetLength(int length){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(length == pLength){
-		return;
-	}
-	
-	if(pData){
-		delete [] pData;
-		pData = nullptr;
-		pLength = 0;
-	}
-	
-	if(length > 0){
-		pData = new uint8_t[length];
-		pLength = length;
-	}
+	pData.SetAll(length, 0);
 }
 
 

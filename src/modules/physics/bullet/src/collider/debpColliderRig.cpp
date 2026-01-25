@@ -1353,7 +1353,7 @@ void debpColliderRig::pUpdateAttachments(bool force){
 			
 		}else if(attachType == deColliderAttachment::eatWeight){
 			if(engRig){
-				const deColliderAttachment::sWeight * const weights = attachment.GetWeights();
+				const deColliderAttachment::sWeight * const weights = attachment.GetWeights().GetArrayPointer();
 				const int weightCount = attachment.GetWeightCount();
 				
 				if(bpAttachment.GetDirtyMappings()){

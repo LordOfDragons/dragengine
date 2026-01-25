@@ -28,6 +28,7 @@
 #include <dragengine/common/string/decString.h>
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/model/deModel.h>
@@ -59,8 +60,7 @@ private:
 	float pRotPerForceX;
 	float pRotPerForceZ;
 	
-	dePropFieldInstance *pInstances;
-	int pInstanceCount;
+	decTList<dePropFieldInstance> pInstances;
 	
 public:
 	using Ref = deTObjectReference<mePropFieldType>;

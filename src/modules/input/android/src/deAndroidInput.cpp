@@ -93,7 +93,6 @@ pOSAndroid(NULL),
 
 pMouseButtons(0),
 pIsListening(false),
-pKeyStates(NULL),
 pPointerMouse(-1),
 
 pOverlaySystem(NULL),
@@ -119,7 +118,7 @@ bool deAndroidInput::Init(){
 			&GetVFS(), "/share/fonts/nimbus_sans_30.defont", "/");
 		//	"/share/fonts/nimbus_sans_30_bold.defont", "/" );
 		
-		pKeyStates = new bool[256];
+		pKeyStates.AddRange(256, false);
 		
 		pDevices = new deainpDeviceManager(*this);
 		pDevices->UpdateDeviceList();
@@ -157,11 +156,6 @@ void deAndroidInput::CleanUp(){
 	if(pDevices){
 		delete pDevices;
 		pDevices = NULL;
-	}
-	
-	if(pKeyStates){
-		delete [] pKeyStates;
-		pKeyStates = NULL;
 	}
 	
 	pOSAndroid = NULL;

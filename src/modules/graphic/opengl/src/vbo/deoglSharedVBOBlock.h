@@ -26,6 +26,7 @@
 #define _DEOGLSHAREDVBOBLOCK_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoglSharedVBO;
 
@@ -52,10 +53,10 @@ public:
 	deoglSharedVBO *pVBO;
 	int pOffset;
 	int pSize;
-	unsigned char *pData;
+	decTList<unsigned char> pData;
 	int pIndexOffset;
 	int pIndexCount;
-	unsigned char *pIndexData;
+	decTList<unsigned char> pIndexData;
 	bool pValid;
 	bool pEmpty;
 	
@@ -97,7 +98,8 @@ public:
 	void SetSize(int size);
 	
 	/** Data pointer or NULL if block is empty. */
-	inline unsigned char *GetData() const{ return pData; }
+	inline unsigned char *GetData(){ return pData.GetArrayPointer(); }
+	inline const unsigned char *GetData() const{ return pData.GetArrayPointer(); }
 	
 	
 	
@@ -111,7 +113,8 @@ public:
 	void SetIndexCount(int count);
 	
 	/** Index data pointer or NULL if block is empty. */
-	inline unsigned char *GetIndexData() const{ return pIndexData; }
+	inline unsigned char *GetIndexData(){ return pIndexData.GetArrayPointer(); }
+	inline const unsigned char *GetIndexData() const{ return pIndexData.GetArrayPointer(); }
 	
 	
 	

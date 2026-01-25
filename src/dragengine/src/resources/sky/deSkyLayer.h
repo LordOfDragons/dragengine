@@ -152,8 +152,7 @@ private:
 	float pLightIntensity;
 	float pAmbientIntensity;
 	
-	deSkyLayerBody *pBodies;
-	int pBodyCount;
+	decTList<deSkyLayerBody> pBodies;
 	
 	bool pMulBySkyLight;
 	bool pMulBySkyColor;
@@ -245,26 +244,14 @@ public:
 	void SetAmbientIntensity(float intensity);
 	
 	
-	
-	/** \brief Number of bodies. */
-	inline int GetBodyCount() const{ return pBodyCount; }
-	
-	/**
-	 * \brief Set number of bodies.
-	 * 
-	 * Sets all bodies to default vaules.
-	 */
-	void SetBodyCount(int count);
-	
-	/** \brief Body at index. */
-	deSkyLayerBody &GetBodyAt(int index) const;
-	
+	/** \brief Bodies. */
+	inline decTList<deSkyLayerBody> &GetBodies(){ return pBodies; }
+	inline const decTList<deSkyLayerBody> &GetBodies() const{ return pBodies; }
 	
 	
 	/** \brief Controller target. */
 	const deSkyControllerTarget &GetTarget(eTargets target) const;
 	deSkyControllerTarget &GetTarget(eTargets target);
-	
 	
 	
 	/** \brief Layer intensity is multiplied by total sky light intensity. */

@@ -54,8 +54,7 @@ private:
 	
 	
 	const deAnimatorRuleInverseKinematic &pInverseKinematic;
-	dearIKWorkState *pChain;
-	int pChainCount;
+	decTList<dearIKWorkState> pChain;
 	float pChainLength;
 	
 	dearControllerTarget pTargetGoalPosition;

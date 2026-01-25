@@ -151,6 +151,9 @@ void delPatchManager::Clear(){
 	pPatches.RemoveAll();
 }
 
+void delPatchManager::ClearCachedSearchResults(){
+	pCachedSearchResults.RemoveAll();
+}
 
 
 // Protected Functions
@@ -171,28 +174,32 @@ const decPath &baseDir, const decPath &directory, delPatch::List &list){
 
 void delPatchManager::pProcessFoundFiles(delEngineInstance &instance,
 const decPath &path, delPatch::List &list){
+	const decString nativePath(path.GetPathNative());
+	
+	const delPatch::List *foundCached = nullptr;
+	if(pCachedSearchResults.GetAt(nativePath, foundCached)){
+		foundCached->Visit([&](delPatch *patch){
+			if(!list.HasWithId(patch->GetIdentifier())){
+				list.Add(patch);
+			}
+		});
+		return;
+	}
+	
 	delPatch::List subList;
 	try{
-		LoadPatchFromDisk(instance, path.GetPathNative(), subList);
+		LoadPatchFromDisk(instance, nativePath, subList);
 		
 	}catch(const deException &e){
 		pLauncher.GetLogger()->LogException(pLauncher.GetLogSource(), e);
 		return;
 	}
 	
-	const int count = subList.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		delPatch * const patch = subList.GetAt(i);
-		bool hasPatch = false;
-		for(int j=0; j<list.GetCount(); j++){
-			if(list.GetAt(j)->GetIdentifier() == patch->GetIdentifier()){
-				hasPatch = true;
-				break;
-			}
-		}
-		if(!hasPatch){
+	pCachedSearchResults.SetAt(nativePath, subList);
+	
+	subList.Visit([&](delPatch *patch){
+		if(!list.HasWithId(patch->GetIdentifier())){
 			list.Add(patch);
 		}
-	}
+	});
 }

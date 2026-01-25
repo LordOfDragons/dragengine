@@ -117,8 +117,8 @@ void deoglMOVDecalCollect::CollectFaces(const decMatrix &matrix, const decVector
 
 void deoglMOVDecalCollect::VisitNode(deoglOctree *node, int intersection){
 	const deoglModelOctree &psonode = *((deoglModelOctree*)node);
-	const oglModelPosition * const positions = pModelLOD.GetPositions();
-	const oglModelVertex * const vertices = pModelLOD.GetVertices();
+	const oglModelPosition * const positions = pModelLOD.GetPositions().GetArrayPointer();
+	const oglModelVertex * const vertices = pModelLOD.GetVertices().GetArrayPointer();
 	const deoglModelFace::List &list = psonode.GetFaceList();
 	const int faceCount = list.GetCount();
 	int i, j;

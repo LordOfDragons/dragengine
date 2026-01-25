@@ -200,11 +200,11 @@ void deoalRTPTEnvProbeFull::pTraceRay(const sTraceRay &ray, const sTraceGain &ga
 	// ignored because due to snapping the probe position can end up inside a component.
 	// without skipping backwards facing faces this can result in incorrect probe data
 	const deoalRayTraceHitElement *hitElement = nullptr;
-	const int hitCount = pRTResult.GetElementCount();
+	const int hitCount = pRTResult.GetElements().GetCount();
 	int hitIndex;
 	
 	for(hitIndex=0; hitIndex<hitCount; hitIndex++){
-		const deoalRayTraceHitElement &he = pRTResult.GetElementAt(hitIndex);
+		const deoalRayTraceHitElement &he = pRTResult.GetElements()[hitIndex];
 		if(he.GetForwardFacing()){
 			hitElement = &he;
 			break;
@@ -283,7 +283,7 @@ void deoalRTPTEnvProbeFull::pTraceRay(const sTraceRay &ray, const sTraceGain &ga
 	// find thickness for transmission calculation
 	const deoalRayTraceHitElement *hitElementBack = nullptr;
 	for(hitIndex++; hitIndex<hitCount; hitIndex++){
-		const deoalRayTraceHitElement &he = pRTResult.GetElementAt(hitIndex);
+		const deoalRayTraceHitElement &he = pRTResult.GetElements()[hitIndex];
 		if(!he.GetForwardFacing()){
 			hitElementBack = &he;
 			break;

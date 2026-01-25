@@ -134,7 +134,7 @@ void dewmVPXTrackCallback::pProcessFrame(webm::Reader &reader, std::uint64_t &by
 	// after this call bytes_remaining is set to 0
 	const uint64_t frameSize = bytes_remaining;
 	pReadFrameData(reader, bytes_remaining);
-	DEASSERT_TRUE(vpx_codec_decode(pContext, pGetBuffer(),
+	DEASSERT_TRUE(vpx_codec_decode(pContext, pGetBuffer().GetArrayPointer(),
 		(unsigned int)frameSize, nullptr, 0) == VPX_CODEC_OK)
 	pIterator = nullptr;
 	

@@ -341,10 +341,8 @@ void deoalEnvironment::DebugUpdateDirect(deDebugDrawer &debugDrawer, const deoal
 		microphone.GetPosition().y, microphone.GetPosition().z);
 	rtresult.DebugPrint(pAudioThread, "RT: ");
 	
-	const int count = rtresult.GetElementCount();
+	const int count = rtresult.GetElements().GetCount();
 	decDVector lastPosition(pPosition);
-	deDebugDrawerShape *ddshape = nullptr;
-	deDebugDrawerShapeFace *ddsface = nullptr;
 	const float sphereRadius = 0.01f; //0.0025f;
 	
 	debugDrawer.SetPosition(pPosition);
@@ -356,69 +354,56 @@ void deoalEnvironment::DebugUpdateDirect(deDebugDrawer &debugDrawer, const deoal
 	
 	int i, frontBackCounter = 0;
 	
-	try{
-		for(i=0; i<count; i++){
-			const deoalRayTraceHitElement &hitElement = rtresult.GetElementAt(i);
-			const int lastFrontBackCounter = frontBackCounter;
+	for(i=0; i<count; i++){
+		const deoalRayTraceHitElement &hitElement = rtresult.GetElements()[i];
+		const int lastFrontBackCounter = frontBackCounter;
+		
+		if(hitElement.GetForwardFacing()){
+			frontBackCounter++;
 			
-			if(hitElement.GetForwardFacing()){
-				frontBackCounter++;
-				
-			}else if(frontBackCounter > 0){
-				frontBackCounter--;
-			}
-			
-			ddshape = new deDebugDrawerShape;
-			if(lastFrontBackCounter == 0){
-				ddshape->SetFillColor(decColor(0.0f, 1.0f, 0.0f));
-				ddshape->SetEdgeColor(decColor(0.0f, 1.0f, 0.0f));
-			}else{
-				ddshape->SetFillColor(decColor(1.0f, 0.0f, 0.0f));
-				ddshape->SetEdgeColor(decColor(1.0f, 0.0f, 0.0f));
-			}
-			ddsface = new deDebugDrawerShapeFace;
-			ddsface->AddVertex(lastPosition - pPosition);
-			ddsface->AddVertex(hitElement.GetPoint() - pPosition);
-			ddsface->AddVertex(lastPosition - pPosition);
-			ddsface->SetNormal(decVector(0.0f, 0.0f, 1.0f));
-			ddshape->AddFace(ddsface);
-			ddsface = nullptr;
-			
-			ddshape->GetShapeList().Add(decShapeSphere::Ref::New(sphereRadius, lastPosition - pPosition));
-			debugDrawer.AddShape(ddshape);
-			ddshape = nullptr;
-			lastPosition = hitElement.GetPoint();
+		}else if(frontBackCounter > 0){
+			frontBackCounter--;
 		}
 		
-		ddshape = new deDebugDrawerShape;
-		if(frontBackCounter == 0){
+		auto ddshape = deDebugDrawerShape::Ref::New();
+		if(lastFrontBackCounter == 0){
 			ddshape->SetFillColor(decColor(0.0f, 1.0f, 0.0f));
 			ddshape->SetEdgeColor(decColor(0.0f, 1.0f, 0.0f));
 		}else{
 			ddshape->SetFillColor(decColor(1.0f, 0.0f, 0.0f));
 			ddshape->SetEdgeColor(decColor(1.0f, 0.0f, 0.0f));
 		}
-		
-		ddsface = new deDebugDrawerShapeFace;
+		auto ddsface = deDebugDrawerShapeFace::Ref::New();
 		ddsface->AddVertex(lastPosition - pPosition);
-		ddsface->AddVertex(microphone.GetPosition() - pPosition);
+		ddsface->AddVertex(hitElement.GetPoint() - pPosition);
 		ddsface->AddVertex(lastPosition - pPosition);
 		ddsface->SetNormal(decVector(0.0f, 0.0f, 1.0f));
-		ddshape->AddFace(ddsface);
-		ddsface = nullptr;
-		ddshape->GetShapeList().Add(decShapeSphere::Ref::New(sphereRadius, lastPosition - pPosition));
-		ddshape->GetShapeList().Add(decShapeSphere::Ref::New(sphereRadius, microphone.GetPosition() - pPosition));
-		debugDrawer.AddShape(ddshape);
+		ddshape->AddFace(std::move(ddsface));
 		
-	}catch(const deException &){
-		if(ddsface){
-			delete ddsface;
-		}
-		if(ddshape){
-			delete ddshape;
-		}
-		throw;
+		ddshape->GetShapeList().Add(decShapeSphere::Ref::New(sphereRadius, lastPosition - pPosition));
+		debugDrawer.AddShape(std::move(ddshape));
+		lastPosition = hitElement.GetPoint();
 	}
+	
+	auto ddshape = deDebugDrawerShape::Ref::New();
+	if(frontBackCounter == 0){
+		ddshape->SetFillColor(decColor(0.0f, 1.0f, 0.0f));
+		ddshape->SetEdgeColor(decColor(0.0f, 1.0f, 0.0f));
+	}else{
+		ddshape->SetFillColor(decColor(1.0f, 0.0f, 0.0f));
+		ddshape->SetEdgeColor(decColor(1.0f, 0.0f, 0.0f));
+	}
+	
+	auto ddsface = deDebugDrawerShapeFace::Ref::New();
+	ddsface->AddVertex(lastPosition - pPosition);
+	ddsface->AddVertex(microphone.GetPosition() - pPosition);
+	ddsface->AddVertex(lastPosition - pPosition);
+	ddsface->SetNormal(decVector(0.0f, 0.0f, 1.0f));
+	ddshape->AddFace(std::move(ddsface));
+	
+	ddshape->GetShapeList().Add(decShapeSphere::Ref::New(sphereRadius, lastPosition - pPosition));
+	ddshape->GetShapeList().Add(decShapeSphere::Ref::New(sphereRadius, microphone.GetPosition() - pPosition));
+	debugDrawer.AddShape(std::move(ddshape));
 }
 
 void deoalEnvironment::DebugSoundRays(deDebugDrawer &/*debugDrawer*/){
@@ -465,12 +450,12 @@ void deoalEnvironment::pDirectPath(const deoalAMicrophone &microphone, const dec
 	// face is hit the counter in incremented. if the counter is larger than 1 apply the
 	// transmission as if a back face is hit and switch to the new transmission parameters.
 	const deoalRayTraceHitElement *curTransElement = nullptr;
-	const int count = rtresult.GetElementCount();
+	const int count = rtresult.GetElements().GetCount();
 	int frontBackCounter = 0;
 	int i;
 	
 	for(i=0; i<count; i++){
-		const deoalRayTraceHitElement &hitElement = rtresult.GetElementAt(i);
+		const deoalRayTraceHitElement &hitElement = rtresult.GetElements()[i];
 		const deoalRayTraceHitElement * const transmitFront = curTransElement;
 		
 		if(hitElement.GetForwardFacing()){

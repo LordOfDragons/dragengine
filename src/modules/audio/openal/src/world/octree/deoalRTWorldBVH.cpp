@@ -22,17 +22,11 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoalRTWorldBVH.h"
 
 #include "../../component/deoalAComponent.h"
 
 #include <dragengine/common/exceptions.h>
-
-
 
 
 // Class deoalRTWorldBVH
@@ -42,36 +36,11 @@
 /////////////////////////////////
 
 deoalRTWorldBVH::deoalRTWorldBVH() :
-pPosition(),
-// pMaxDepth( 64 ), // 8
-pBuildNodes(nullptr),
-pBuildNodeCount(0),
-pBuildNodeSize(0),
-pBuildComponents(nullptr),
-pBuildComponentCount(0),
-pBuildComponentSize(0),
-pVisitNodes(nullptr),
-pVisitNodeCount(0),
-pVisitNodeSize(0),
-pVisitComponents(nullptr),
-pVisitComponentCount(0),
-pVisitComponentSize(0){
+pPosition(){
+	// pMaxDepth( 64 ), // 8
 }
 
-deoalRTWorldBVH::~deoalRTWorldBVH(){
-	if(pVisitComponents){
-		delete [] pVisitComponents;
-	}
-	if(pVisitNodes){
-		delete [] pVisitNodes;
-	}
-	if(pBuildComponents){
-		delete [] pBuildComponents;
-	}
-	if(pBuildNodes){
-		delete [] pBuildNodes;
-	}
-}
+deoalRTWorldBVH::~deoalRTWorldBVH() = default;
 
 
 
@@ -79,10 +48,10 @@ deoalRTWorldBVH::~deoalRTWorldBVH(){
 /////////////
 
 void deoalRTWorldBVH::Build(const decDVector &position){
-	pVisitComponentCount = 0;
-	pVisitNodeCount = 0;
-	pBuildComponentCount = 0;
-	pBuildNodeCount = 0;
+	pVisitComponents.RemoveAll();
+	pVisitNodes.RemoveAll();
+	pBuildComponents.RemoveAll();
+	pBuildNodes.RemoveAll();
 	
 	pPosition = position;
 }
@@ -103,9 +72,9 @@ void deoalRTWorldBVH::AddComponent(deoalAComponent *component){
 
 void deoalRTWorldBVH::Finish(){
 	// if tree is empty exit early
-	if(pBuildComponentCount == 0){
-		pVisitComponentCount = 0;
-		pVisitNodeCount = 0;
+	if(pBuildComponents.IsEmpty()){
+		pVisitComponents.RemoveAll();
+		pVisitNodes.RemoveAll();
 		return;
 	}
 	
@@ -113,12 +82,12 @@ void deoalRTWorldBVH::Finish(){
 	pAddBuildNode();
 	sBuildNode &rootNode = pBuildNodes[0];
 	
-	rootNode.componentCount = pBuildComponentCount;
+	rootNode.componentCount = pBuildComponents.GetCount();
 	rootNode.firstComponent = 0;
-	rootNode.lastComponent = pBuildComponentCount - 1;
+	rootNode.lastComponent = pBuildComponents.GetCount() - 1;
 	
 	int i;
-	for(i=0; i<pBuildComponentCount-1; i++){
+	for(i=0; i<pBuildComponents.GetCount()-1; i++){
 		pBuildComponents[i].next = i + 1;
 	}
 	pUpdateNodeExtends(rootNode);
@@ -128,26 +97,8 @@ void deoalRTWorldBVH::Finish(){
 	pSplitNode(0);
 	
 	// build visit arrays
-	if(pBuildNodeCount > pVisitNodeSize){
-		sVisitNode * const nodes = new sVisitNode[pBuildNodeCount];
-		if(pVisitNodes){
-			delete [] pVisitNodes;
-		}
-		pVisitNodes = nodes;
-		pVisitNodeSize = pBuildNodeCount;
-	}
-	
-	if(pBuildComponentCount > pVisitComponentSize){
-		sVisitComponent * const components = new sVisitComponent[pBuildComponentCount];
-		if(pVisitComponents){
-			delete [] pVisitComponents;
-		}
-		pVisitComponents = components;
-		pVisitComponentSize = pBuildComponentCount;
-	}
-	
-	pVisitComponentCount = pBuildComponentCount;
-	pVisitNodeCount = pBuildNodeCount;
+	pVisitNodes.AddRange(pBuildNodes.GetCount(), {});
+	pVisitComponents.AddRange(pBuildComponents.GetCount(), {});
 	
 	pIndexNode = 0;
 	pIndexComponent = 0;
@@ -161,44 +112,20 @@ void deoalRTWorldBVH::Finish(){
 //////////////////////
 
 int deoalRTWorldBVH::pAddBuildNode(){
-	if(pBuildNodeCount == pBuildNodeSize){
-		const int size = pBuildNodeSize + 100;
-		sBuildNode * const nodes = new sBuildNode[size];
-		if(pBuildNodes){
-			memcpy(nodes, pBuildNodes, sizeof(sBuildNode) * pBuildNodeSize);
-			delete [] pBuildNodes;
-		}
-		pBuildNodes = nodes;
-		pBuildNodeSize = size;
-	}
-	
-	const int index = pBuildNodeCount++;
-	sBuildNode &node = pBuildNodes[index];
+	pBuildNodes.Add({});
+	sBuildNode &node = pBuildNodes.Last();
 	node.child1 = -1;
 	node.child2 = -1;
 	node.firstComponent = -1;
 	node.lastComponent = -1;
 	node.componentCount = 0;
-	
-	return index;
+	return pBuildNodes.GetCount() - 1;
 }
 
 int deoalRTWorldBVH::pAddBuildComponent(){
-	if(pBuildComponentCount == pBuildComponentSize){
-		const int size = pBuildComponentSize + 1000;
-		sBuildComponent * const components = new sBuildComponent[size];
-		if(pBuildComponents){
-			memcpy(components, pBuildComponents, sizeof(sBuildComponent) * pBuildComponentSize);
-			delete [] pBuildComponents;
-		}
-		pBuildComponents = components;
-		pBuildComponentSize = size;
-	}
-	
-	const int index = pBuildComponentCount++;
-	pBuildComponents[index].next = -1;
-	
-	return index;
+	pBuildComponents.Add({});
+	pBuildComponents.Last().next = -1;
+	return pBuildComponents.GetCount() - 1;
 }
 
 void deoalRTWorldBVH::pUpdateNodeExtends(sBuildNode &node) const{

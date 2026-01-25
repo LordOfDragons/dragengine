@@ -149,7 +149,6 @@ decrbPanelParameters::~decrbPanelParameters(){
 void decrbPanelParameters::UpdateParameter(){
 	int selection = pCBModule->getCurrentItem();
 	deBaseModule *module = nullptr;
-	int i, count;
 	FXString text;
 	
 	if(selection != -1){
@@ -195,12 +194,10 @@ void decrbPanelParameters::UpdateParameter(){
 		case deModuleParameter::eptSelection:{
 			pEditType->setText("Selection");
 			text = "A value from this list:\n";
-			count = pParameterInfo->GetSelectionEntryCount();
-			for(i=0; i<count; i++){
-				const deModuleParameter::SelectionEntry &entry = pParameterInfo->GetSelectionEntryAt(i);
+			pParameterInfo->GetSelectionEntries().Visit([&](const deModuleParameter::SelectionEntry &entry){
 				text.append(entry.value);
-				if(i < count - 1) text.append(", ");
-			}
+				if(&pParameterInfo->GetSelectionEntries().Last() != &entry) text.append(", ");
+			});
 			pEditAllowedValues->setText(text);
 			}break;
 			

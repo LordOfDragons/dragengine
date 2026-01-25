@@ -63,8 +63,7 @@ private:
 	sExtends pExtends;
 	sExtends pWeightlessExtends;
 	bool pHasWeightlessExtends;
-	sExtends *pBoneExtends;
-	int pBoneCount;
+	decTList<sExtends> pBoneExtends;
 	
 	decStringList pBoneNames;
 	decStringList pTextureNames;
@@ -112,10 +111,10 @@ public:
 	inline bool GetHasWeightlessExtends() const{ return pHasWeightlessExtends; }
 	
 	/** Bone extends. */
-	inline const sExtends *GetBoneExtends() const{ return pBoneExtends; }
+	inline const decTList<sExtends> &GetBoneExtends() const{ return pBoneExtends; }
 	
 	/** Number of bones. */
-	inline int GetBoneCount() const{ return pBoneCount; }
+	inline int GetBoneCount() const{ return pBoneExtends.GetCount(); }
 	
 	/** List of bone names. */
 	inline const decStringList &GetBoneNames() const{ return pBoneNames; }

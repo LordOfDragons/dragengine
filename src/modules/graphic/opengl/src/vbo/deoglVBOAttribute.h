@@ -91,6 +91,9 @@ public:
 	/** Create vbo attribute. */
 	deoglVBOAttribute();
 	
+	/** Copy vbo attributes. */
+	deoglVBOAttribute(const deoglVBOAttribute &attribute);
+	
 	/** Clean up vbo attribute. */
 	~deoglVBOAttribute();
 	/*@}*/

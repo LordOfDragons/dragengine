@@ -31,6 +31,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoglWorldOctree;
 class decLayerMask;
@@ -131,8 +132,7 @@ private:
 	int pNextNode;
 	int pNextElement;
 	
-	sElementLink *pElementLinks;
-	int pElementLinkSize;
+	decTList<sElementLink> pElementLinks;
 	
 	
 	

@@ -65,7 +65,7 @@ private:
 	int pOldAccelDenom;
 	int pOldThreshold;
 	
-	BYTE *pKeyStates;
+	decTList<BYTE> pKeyStates;
 	bool pSystemAutoRepeatEnabled;
 	bool pAutoRepeatEnabled;
 	

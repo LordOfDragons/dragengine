@@ -46,20 +46,18 @@ deoalPAuralizationMode::deoalPAuralizationMode(deAudioOpenAL &oal) : deoalParame
 	SetDescription("Auralization mode influences how sound is calculate for the listener.");
 	SetType(deModuleParameter::eptSelection);
 	
-	const deModuleParameter::SelectionEntry entries[3] = {
-		{"disabled", "Disabled", 
-			"Auralization disabled. Direct sound without any material based effects. "
-			"This mode is enforced if APU has no EFX support or EFX support has been disabled." },
-		{"directSound", "Direct Sound",
-			"Direct sound auralization only. Direct sound effect based on materials are used. "
-			"This includes muffling of sound over different frquency bands. Uses single collision "
-			"test along sound direction from source to listener to calculate the result."},
-		{"full", "Full auralization",
-			"Full auralization. Enables all auralization effects. Uses ray-tracing to calculate "
-			"various parameters. This is expensive depending on the hardware used."}
-	};
+	AddSelectionEntry({"disabled", "Disabled",
+		"Auralization disabled. Direct sound without any material based effects. "
+		"This mode is enforced if APU has no EFX support or EFX support has been disabled."});
 	
-	AddSelectionEntries(entries, 3);
+	AddSelectionEntry({"directSound", "Direct Sound",
+		"Direct sound auralization only. Direct sound effect based on materials are used. "
+		"This includes muffling of sound over different frquency bands. Uses single collision "
+		"test along sound direction from source to listener to calculate the result."});
+	
+	AddSelectionEntry({"full", "Full auralization",
+		"Full auralization. Enables all auralization effects. Uses ray-tracing to calculate "
+		"various parameters. This is expensive depending on the hardware used."});
 	
 	SetCategory(ecBasic);
 	SetDisplayName("Auralization Mode");

@@ -29,6 +29,7 @@
 #include "../forcefield/debpForceFieldFluctuation.h"
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/resources/particle/deParticleEmitterInstance.h>
 #include <dragengine/systems/modules/physics/deBasePhysicsParticleEmitterInstance.h>
 
@@ -49,8 +50,7 @@ private:
 	deParticleEmitterInstance *pInstance;
 	debpWorld *pParentWorld;
 	
-	debpParticleEmitterInstanceType *pTypes;
-	int pTypeCount;
+	decTList<debpParticleEmitterInstanceType> pTypes;
 	
 	decDMatrix pEmitterMatrix;
 	
@@ -97,11 +97,9 @@ public:
 	/** Retrieves the last position. */
 	inline const decDVector &GetLastPosition() const{ return pLastPosition; }
 	
-	/** Retrieves the number of types. */
-	inline int GetTypeCount() const{ return pTypeCount; }
-	/** Retrieves a type by index. */
-	debpParticleEmitterInstanceType &GetTypeAt(int index);
-	const debpParticleEmitterInstanceType &GetTypeAt(int index) const;
+	/** Types. */
+	inline decTList<debpParticleEmitterInstanceType> &GetTypes(){ return pTypes; }
+	inline const decTList<debpParticleEmitterInstanceType> &GetTypes() const{ return pTypes; }
 	
 	/** Retrieves the emitter matrix. */
 	const decDMatrix &GetEmitterMatrix();

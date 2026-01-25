@@ -66,13 +66,15 @@ const deErrorTraceValue::Ref &deErrorTraceValue::GetSubValue(int index) const{
 deErrorTraceValue *deErrorTraceValue::FindSubValue(const char *name) const{
 	if(!name) DETHROW(deeInvalidParam);
 	const Ref *found = nullptr;
-	return pSubValues.Find([&](const deErrorTraceValue &value){
+	return pSubValues.Find(found, [&](const deErrorTraceValue &value){
 		return value.GetName() == name;
-	}, found) ? found->Pointer() : nullptr;
+	}) ? found->Pointer() : nullptr;
 }
 
 void deErrorTraceValue::AddSubValue(deTUniqueReference<deErrorTraceValue> &&value){
-	if(!value || FindSubValue(value->GetName())) DETHROW(deeInvalidParam);
+	DEASSERT_NOTNULL(value)
+	DEASSERT_FALSE(FindSubValue(value->GetName()))
+	
 	pSubValues.Add(std::move(value));
 }
 

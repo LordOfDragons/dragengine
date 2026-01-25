@@ -52,6 +52,11 @@ public:
 	/*@{*/
 	/** Create bvh node. */
 	deoglBVHNode();
+	deoglBVHNode(int firstIndex, int primitiveCount);
+	
+	/** Copy bhv node. */
+	deoglBVHNode(const deoglBVHNode &node);
+	deoglBVHNode &operator=(const deoglBVHNode &node);
 	
 	/** Clean up generic octree object. */
 	~deoglBVHNode();

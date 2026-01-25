@@ -26,6 +26,7 @@
 #define _DEXSIDEVICELIBEVENT_H_
 
 #include "dexsiDevice.h"
+#include <dragengine/common/collection/decTList.h>
 
 
 
@@ -42,9 +43,9 @@ private:
 	decString pEvdevPath;
 	int pEvdevFile;
 	libevdev *pEvdevDevice;
-	short *pEvdevMapRelAxis;
-	short *pEvdevMapAbsAxis;
-	short *pEvdevMapKeys;
+	decTList<short> pEvdevMapRelAxis;
+	decTList<short> pEvdevMapAbsAxis;
+	decTList<short> pEvdevMapKeys;
 	
 	
 	

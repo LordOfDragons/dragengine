@@ -166,61 +166,43 @@ void deoalComponentDebug::pUpdateDDFaces(){
 			continue;
 		}
 		
-		deDebugDrawerShape *shape = nullptr;
-		deDebugDrawerShapeFace *shapeFace = nullptr;
-		try{
-			shape = new deDebugDrawerShape();
-			shape->SetFillColor(colorFill);
-			shape->SetEdgeColor(colorEdge);
-			
-			if(acomponent.GetFaceCount() == 0){
-				for(j=0; j<faceCount; j++){
-					const deoalModelFace &face = model.GetFaceAt(j);
-					if(face.GetTexture() != i){
-						continue;
-					}
-					
-					shapeFace = new deDebugDrawerShapeFace;
-					shapeFace->AddVertex(face.GetVertex1());
-					shapeFace->AddVertex(face.GetVertex2());
-					shapeFace->AddVertex(face.GetVertex3());
-					shapeFace->SetNormal(face.GetNormal());
-					shape->AddFace(shapeFace);
-					shapeFace = nullptr;
+		auto shape = deDebugDrawerShape::Ref::New();
+		shape->SetFillColor(colorFill);
+		shape->SetEdgeColor(colorEdge);
+		
+		if(acomponent.GetFaces().IsEmpty()){
+			for(j=0; j<faceCount; j++){
+				const deoalModelFace &face = model.GetFaceAt(j);
+				if(face.GetTexture() != i){
+					continue;
 				}
 				
-			}else{
-				for(j=0; j<faceCount; j++){
-					const deoalModelFace &face = acomponent.GetFaceAt(j);
-					if(face.GetTexture() != i){
-						continue;
-					}
-					
-					shapeFace = new deDebugDrawerShapeFace;
-					shapeFace->AddVertex(face.GetVertex1());
-					shapeFace->AddVertex(face.GetVertex2());
-					shapeFace->AddVertex(face.GetVertex3());
-					shapeFace->SetNormal(face.GetNormal());
-					shape->AddFace(shapeFace);
-					shapeFace = nullptr;
+				auto shapeFace = deDebugDrawerShapeFace::Ref::New();
+				shapeFace->AddVertex(face.GetVertex1());
+				shapeFace->AddVertex(face.GetVertex2());
+				shapeFace->AddVertex(face.GetVertex3());
+				shapeFace->SetNormal(face.GetNormal());
+				shape->AddFace(std::move(shapeFace));
+			}
+			
+		}else{
+			for(j=0; j<faceCount; j++){
+				const deoalModelFace &face = acomponent.GetFaces()[j];
+				if(face.GetTexture() != i){
+					continue;
 				}
-			}
-			
-			if(shape->GetFaceCount() > 0){
-				pDDFaces->AddShape(shape);
 				
-			}else{
-				delete shape;
+				auto shapeFace = deDebugDrawerShapeFace::Ref::New();
+				shapeFace->AddVertex(face.GetVertex1());
+				shapeFace->AddVertex(face.GetVertex2());
+				shapeFace->AddVertex(face.GetVertex3());
+				shapeFace->SetNormal(face.GetNormal());
+				shape->AddFace(std::move(shapeFace));
 			}
-			
-		}catch(const deException &){
-			if(shapeFace){
-				delete shapeFace;
-			}
-			if(shape){
-				delete shape;
-			}
-			throw;
+		}
+		
+		if(shape->GetFaces().IsNotEmpty()){
+			pDDFaces->AddShape(std::move(shape));
 		}
 	}
 }

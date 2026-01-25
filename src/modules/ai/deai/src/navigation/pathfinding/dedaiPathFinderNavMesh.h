@@ -52,9 +52,7 @@ private:
 	decTList<dedaiSpaceMeshFace*> pListOpen;
 	decTList<dedaiSpaceMeshFace*> pPathFaces;
 	
-	decDVector *pPathPoints;
-	int pPathPointCount;
-	int pPathPointSize;
+	decTList<decDVector> pPathPoints;
 	
 	deDebugDrawerShape *pDDSListOpen;
 	deDebugDrawerShape *pDDSListClosed;
@@ -100,14 +98,9 @@ public:
 	inline decTList<dedaiSpaceMeshFace*> &GetPathFaces(){ return pPathFaces; }
 	inline const decTList<dedaiSpaceMeshFace*> &GetPathFaces() const{ return pPathFaces; }
 	
-	/** Retrieves the number of path points. */
-	inline int GetPathPointCount() const{ return pPathPointCount; }
-	/** Retrieves the path points. */
-	const decDVector *GetPathPoints() const{ return pPathPoints; }
-	/** Adds a path point. */
-	void AddPathPoint(const decDVector &point);
-	/** Removes all path points. */
-	void RemoveAllPathPoints();
+	/** Path points. */
+	decTList<decDVector> &GetPathPoints(){ return pPathPoints; }
+	const decTList<decDVector> &GetPathPoints() const{ return pPathPoints; }
 	
 	/** \brief Update a debug drawer with highlighting the faces along the path. */
 	void UpdateDDSShapeFaces(deDebugDrawerShape &dds);

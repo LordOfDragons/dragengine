@@ -165,55 +165,44 @@ void deMTSetStatsAndAchievements::pSetStats()
 	decStringList values;
 	decString value;
 
-	XblTitleManagedStatistic * const xblstats = new XblTitleManagedStatistic[count];
-	try
+	decTList<XblTitleManagedStatistic> xblstats(count, XblTitleManagedStatistic{});
+	int i;
+	for(i=0; i<count; i++)
 	{
-		int i;
-		for(i=0; i<count; i++)
+		const decString &name = names.GetAt(i);
+		const deServiceObject::Ref &soChild = so->GetChildAt(name);
+
+		xblstats[i].statisticName = name;
+
+		switch(soChild->GetValueType())
 		{
-			const decString &name = names.GetAt(i);
-			const deServiceObject::Ref &soChild = so->GetChildAt(name);
+		case deServiceObject::evtInteger:
+			value.Format("%d", soChild->GetInteger());
+			values.Add(value);
+			xblstats[i].stringValue = values.GetAt(values.GetCount() - 1);
+			xblstats[i].statisticType = XblTitleManagedStatType::String;
+			break;
 
-			xblstats[i] = {};
-			xblstats[i].statisticName = name;
+		case deServiceObject::evtFloat:
+			xblstats[i].numberValue = (double)soChild->GetFloat();
+			xblstats[i].statisticType = XblTitleManagedStatType::Number;
+			break;
 
-			switch(soChild->GetValueType())
-			{
-			case deServiceObject::evtInteger:
-				value.Format("%d", soChild->GetInteger());
-				values.Add(value);
-				xblstats[i].stringValue = values.GetAt(values.GetCount() - 1);
-				xblstats[i].statisticType = XblTitleManagedStatType::String;
-				break;
+		case deServiceObject::evtString:
+			xblstats[i].stringValue = soChild->GetString();
+			xblstats[i].statisticType = XblTitleManagedStatType::String;
+			break;
 
-			case deServiceObject::evtFloat:
-				xblstats[i].numberValue = (double)soChild->GetFloat();
-				xblstats[i].statisticType = XblTitleManagedStatType::Number;
-				break;
-
-			case deServiceObject::evtString:
-				xblstats[i].stringValue = soChild->GetString();
-				xblstats[i].statisticType = XblTitleManagedStatType::String;
-				break;
-
-			default:
-				value.Format("Invalid value for stat '%s': type %d",
-					name.GetString(), soChild->GetValueType());
-				DETHROW_INFO(deeInvalidParam, value);
-			}
+		default:
+			value.Format("Invalid value for stat '%s': type %d",
+				name.GetString(), soChild->GetValueType());
+			DETHROW_INFO(deeInvalidParam, value);
 		}
-
-		pService.AssertResult(XblTitleManagedStatsUpdateStatsAsync(
-			pService.GetXblContext(), xblstats, count, GetAsyncBlockPtr()),
-			"deMTSetStatsAndAchievements.pSetStats.XblTitleManagedStatsUpdateStatsAsync");
-
-		delete [] xblstats;
 	}
-	catch(const deException &)
-	{
-		delete [] xblstats;
-		throw;
-	}
+
+	pService.AssertResult(XblTitleManagedStatsUpdateStatsAsync(
+		pService.GetXblContext(), xblstats, count, GetAsyncBlockPtr()),
+		"deMTSetStatsAndAchievements.pSetStats.XblTitleManagedStatsUpdateStatsAsync");
 }
 
 void deMTSetStatsAndAchievements::OnFinished()

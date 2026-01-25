@@ -149,9 +149,9 @@ void deTgaModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 	int componentCount = image.GetComponentCount();
 	if(componentCount != 1 && componentCount != 3 && componentCount != 4) DETHROW(deeInvalidParam);
 	
-	sRGBA8 *dataRGBA;
-	sRGB8 *dataRGB;
-	sGrayscale8 *dataAlpha;
+	const sRGBA8 *dataRGBA;
+	const sRGB8 *dataRGB;
+	const sGrayscale8 *dataAlpha;
 	tgaHdr header;
 	int p, size;
 	int width = image.GetWidth();

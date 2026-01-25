@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-
 #include "aeCamera.h"
 #include "aeAnimator.h"
 #include "aeAnimatorNotifier.h"
@@ -124,8 +120,6 @@ pWindowMain(windowMain)
 	pTimeStep = 0.05f;
 	
 	pDDBones = nullptr;
-	pDDSBones = nullptr;
-	pDDSBoneCount = 0;
 	pDDSBoneSize = 1.0f;
 	
 	pSky = nullptr;
@@ -286,30 +280,27 @@ void aeAnimator::SetDDBoneSize(float size){
 void aeAnimator::UpdateWorld(float elapsed){
 	const float controllerElapsed = elapsed * pPlaySpeed;
 	const float realTimeElapsed = elapsed * pPlaySpeed;
-	int i;
 	
 	// update the locomotion testing
 	pLocomotion->Update(realTimeElapsed);
 	
 	// update the controllers which are linked to the elapsed time
 	if(!pPaused){
-		const int count = pControllers.GetCount();
-		for(i=0; i<count; i++){
-			pControllers.GetAt(i)->UpdateValue(controllerElapsed);
-		}
+		pControllers.Visit([&](aeController &controller){
+			controller.UpdateValue(controllerElapsed);
+		});
 	}
 	
 	// reset the animation states if required
 	if(pEngComponent && pResetState){
-		const int boneCount = pEngComponent->GetBoneCount();
-		for(i=0; i<boneCount; i++){
-			deComponentBone &bone = pEngComponent->GetBoneAt(i);
+		pEngComponent->GetBones().Visit([](deComponentBone &bone){
 			bone.SetPosition(decVector());
 			bone.SetRotation(decQuaternion());
 			bone.SetScale(decVector(1.0f, 1.0f, 1.0f));
-		}
+		});
 		
-		const int vertexPositionSetCount = pEngComponent->GetVertexPositionSetCount();
+		const int vertexPositionSetCount = pEngComponent->GetVertexPositionSetWeights().GetCount();
+		int i;
 		for(i=0; i<vertexPositionSetCount; i++){
 			pEngComponent->SetVertexPositionSetWeightAt(i, 0.0f);
 		}
@@ -1136,9 +1127,7 @@ void aeAnimator::NotifyCameraViewChanged(){
 //////////////////////
 
 void aeAnimator::pCleanUp(){
-	if(pDDSBones){
-		delete [] pDDSBones;
-	}
+	pDDSBones.RemoveAll();
 	
 	RemoveAllNotifiers();
 	
@@ -1429,43 +1418,33 @@ void aeAnimator::pUpdateEngineControllers(){
 void aeAnimator::pUpdateDDSBones(){
 	decDMatrix matrix;
 	int boneCount = 0;
-	int i;
 	
 	if(pEngComponent){
-		boneCount = pEngComponent->GetBoneCount();
+		boneCount = pEngComponent->GetBones().GetCount();
 		pEngComponent->PrepareBones();
 		matrix = decDMatrix(pEngComponent->GetMatrix()).Normalized();
 	}
 	
-	if(boneCount != pDDSBoneCount){
-		if(pDDSBones){
-			delete [] pDDSBones;
-			pDDSBones = nullptr;
-			pDDSBoneCount = 0;
-		}
-		
-		if(boneCount > 0){
-			pDDSBones = new igdeWCoordSysArrows[boneCount];
-			
-			for(pDDSBoneCount=0; pDDSBoneCount<boneCount; pDDSBoneCount++){
-				pDDSBones[pDDSBoneCount].SetParentDebugDrawer(pDDBones);
-			}
-		}
+	if(boneCount != pDDSBones.GetCount()){
+		pDDSBones.SetAll(boneCount, {});
+		pDDSBones.Visit([&](igdeWCoordSysArrows &d){
+			d.SetParentDebugDrawer(pDDBones);
+		});
 	}
 	
 	pDDBones->SetPosition(matrix.GetPosition());
 	pDDBones->SetOrientation(matrix.ToQuaternion());
 	
-	for(i=0; i<pDDSBoneCount; i++){
+	pDDSBones.VisitIndexed([&](int i, igdeWCoordSysArrows &d){
 		if(i < boneCount && pEngComponent){
 			const decMatrix boneMatrix = pEngComponent->GetBoneAt(i).GetMatrix().Normalized();
-			pDDSBones[i].SetPosition(boneMatrix.GetPosition());
-			pDDSBones[i].SetOrientation(boneMatrix.ToQuaternion());
-			pDDSBones[i].SetScale(decVector(pDDSBoneSize, pDDSBoneSize, pDDSBoneSize));
-			pDDSBones[i].SetVisible(true);
+			d.SetPosition(boneMatrix.GetPosition());
+			d.SetOrientation(boneMatrix.ToQuaternion());
+			d.SetScale(decVector(pDDSBoneSize, pDDSBoneSize, pDDSBoneSize));
+			d.SetVisible(true);
 			
 		}else{
-			pDDSBones[i].SetVisible(false);
+			d.SetVisible(false);
 		}
-	}
+	});
 }

@@ -26,6 +26,7 @@
 #define _DEOGLMODELLODTEXCOORDSET_H_
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
 
 struct oglModelVertex;
 
@@ -36,12 +37,9 @@ struct oglModelVertex;
  */
 class deoglModelLODTexCoordSet{
 public:
-	decVector2 *pTexCoords;
-	int pTexCoordCount;
-	
-	decVector *pTangents;
-	bool *pNegateTangents;
-	int pTangentCount;
+	decTList<decVector2> pTexCoords;
+	decTList<decVector> pTangents;
+	decTList<bool> pNegateTangents;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -54,25 +52,18 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Retrieves the texture coordinates. */
-	inline decVector2 *GetTextureCoordinates() const{ return pTexCoords; }
-	/** Retrieves the number of texture coordinates. */
-	inline int GetTextureCoordinateCount() const{ return pTexCoordCount; }
-	/** Sets the number of texture coordinates. */
-	void SetTextureCoordinateCount(int count, bool copyContent);
+	/** Texture coordinates. */
+	inline decTList<decVector2> &GetTextureCoordinates(){ return pTexCoords; }
+	inline const decTList<decVector2> &GetTextureCoordinates() const{ return pTexCoords; }
 	
-	/** Retrieves the tangents. */
-	inline decVector *GetTangents() const{ return pTangents; }
-	/** Retrieves the negate tangents. */
-	inline bool *GetNegateTangents() const{ return pNegateTangents; }
-	/** Retrieves the tangent count. */
-	inline int GetTangentCount() const{ return pTangentCount; }
-	/** Sets the tangent count. */
-	void SetTangentCount(int count);
+	/** Tangents. */
+	inline decTList<decVector> &GetTangents(){ return pTangents; }
+	inline const decTList<decVector> &GetTangents() const{ return pTangents; }
+	
+	/** Negate tangents. */
+	inline decTList<bool> &GetNegateTangents(){ return pNegateTangents; }
+	inline const decTList<bool> &GetNegateTangents() const{ return pNegateTangents; }
 	/*@}*/
-	
-private:
-	void pCleanUp();
 };
 
 #endif

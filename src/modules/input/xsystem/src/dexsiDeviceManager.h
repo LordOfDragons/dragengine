@@ -31,6 +31,7 @@
 #include "dexsiDeviceCoreKeyboard.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/utils/decTimer.h>
@@ -60,8 +61,7 @@ private:
 	
 	int pInotifyFd;
 	int pInotifyWatchEvdev;
-	const ssize_t pInotifyBufferLen;
-	uint8_t *pInotifyBuffer;
+	decTList<uint8_t> pInotifyBuffer;
 	
 	decStringList pDelayProbeDevices;
 	float pTimeoutDelayProbeDevices;

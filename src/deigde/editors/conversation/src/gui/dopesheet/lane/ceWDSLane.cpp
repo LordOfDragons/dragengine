@@ -598,9 +598,9 @@ float ceWDSLane::GetStripStartFor(int index) const{
 		index = list.GetCount() - 1;
 	}
 	
-	return list.Inject(0.0f, [](float t, const ceStrip &s){
+	return list.Inject(0.0f, 0, index, [](float t, const ceStrip &s){
 		return t + s.GetPause() + s.GetDuration();
-	}, 0, index);
+	});
 }
 
 float ceWDSLane::GetStripPauseFor(int index) const{
@@ -609,9 +609,9 @@ float ceWDSLane::GetStripPauseFor(int index) const{
 		index = list.GetCount() - 1;
 	}
 	
-	return GetStripList().Inject(0.0f, [](float t, const ceStrip &s){
+	return GetStripList().Inject(0.0f, 0, index, [](float t, const ceStrip &s){
 		return t + s.GetPause() + s.GetDuration();
-	}, 0, index) + list.GetAt(index)->GetPause();
+	}) + list.GetAt(index)->GetPause();
 }
 
 float ceWDSLane::GetMaximumLineTime() const{

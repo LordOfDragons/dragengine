@@ -27,6 +27,7 @@
 
 #include "deoglShaderParameterBlock.h"
 
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
@@ -46,8 +47,7 @@ private:
 	bool pCompact;
 	bool pAllocateBuffer;
 	
-	char *pWriteBuffer;
-	int pWriteBufferCapacity;
+	decTList<char> pWriteBuffer;
 	bool pWriteBufferUsed;
 	
 	
@@ -120,8 +120,8 @@ public:
 	/** Unmap buffer uploading data to GPU. */
 	void UnmapBuffer() override;
 	
-	/** Direct access to write buffer. Use with care. Can be nullptr. */
-	inline char *GetWriteBuffer() const{ return pWriteBuffer; }
+	/** Write buffer. Can be nullptr. */
+	inline char *GetWriteBuffer(){ return pWriteBuffer.GetArrayPointer(); }
 	
 	/** Get platform alignment requirements. */
 	int GetAlignmentRequirements() const override;

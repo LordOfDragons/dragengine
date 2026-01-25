@@ -263,9 +263,9 @@ void deoglCapsFmtSupport::pDetectTex2DFormats(){
 	for(p=0; p<TEST_PROGRAM_COUNT; p++){
 		if(!pUseTex2DFormats[vTestProgram[p].target]){
 			const GLint searchFormat = vTestTextureFormats[vTestProgram[p].testFormat].format;
-			pFoundTex2DFormats.Find([&](const deoglCapsTextureFormat &fmt){
+			pFoundTex2DFormats.Find(pUseTex2DFormats[vTestProgram[p].target], [&](const deoglCapsTextureFormat &fmt){
 				return fmt.GetFormat() == searchFormat;
-			}, pUseTex2DFormats[vTestProgram[p].target]);
+			});
 		}
 	}
 	
@@ -312,9 +312,9 @@ void deoglCapsFmtSupport::pDetectTexCubeFormats(){
 	for(p=0; p<TEST_PROGRAM_COUNT; p++){
 		if(!pUseTexCubeFormats[vTestProgram[p].target]){
 			const GLint searchFormat = vTestTextureFormats[vTestProgram[p].testFormat].format;
-			pFoundTexCubeFormats.Find([&](const deoglCapsTextureFormat &fmt){
+			pFoundTexCubeFormats.Find(pUseTexCubeFormats[vTestProgram[p].target], [&](const deoglCapsTextureFormat &fmt){
 				return fmt.GetFormat() == searchFormat;
-			}, pUseTexCubeFormats[vTestProgram[p].target]);
+			});
 		}
 	}
 	
@@ -361,9 +361,9 @@ void deoglCapsFmtSupport::pDetectArrayTexFormats(){
 	for(p=0; p<TEST_PROGRAM_COUNT; p++){
 		if(!pUseArrTexFormats[vTestProgram[p].target]){
 			const GLint searchFormat = vTestTextureFormats[vTestProgram[p].testFormat].format;
-			pFoundArrTexFormats.Find([&](const deoglCapsTextureFormat &fmt){
+			pFoundArrTexFormats.Find(pUseArrTexFormats[vTestProgram[p].target], [&](const deoglCapsTextureFormat &fmt){
 				return fmt.GetFormat() == searchFormat;
-			}, pUseArrTexFormats[vTestProgram[p].target]);
+			});
 		}
 	}
 	
@@ -412,9 +412,9 @@ void deoglCapsFmtSupport::pDetectFBOTex2DFormats(GLuint fbo){
 	for(p=0; p<TEST_PROGRAM_COUNT; p++){
 		if(!pUseFBOTex2DFormats[vTestProgram[p].target]){
 			const GLint searchFormat = vTestTextureFormats[vTestProgram[p].testFormat].format;
-			pFoundFBOTex2DFormats.Find([&](const deoglCapsTextureFormat &fmt){
+			pFoundFBOTex2DFormats.Find(pUseFBOTex2DFormats[vTestProgram[p].target], [&](const deoglCapsTextureFormat &fmt){
 				return fmt.GetFormat() == searchFormat;
-			}, pUseFBOTex2DFormats[vTestProgram[p].target]);
+			});
 		}
 	}	for(p=0; p<TEST_FALLBACK_COUNT; p++){
 		if(!pUseFBOTex2DFormats[vTestFallback[p].target]){
@@ -460,9 +460,9 @@ void deoglCapsFmtSupport::pDetectFBOTexCubeFormats(GLuint fbo){
 	for(p=0; p<TEST_PROGRAM_COUNT; p++){
 		if(!pUseFBOTexCubeFormats[vTestProgram[p].target]){
 			const GLint searchFormat = vTestTextureFormats[vTestProgram[p].testFormat].format;
-			pFoundFBOTexCubeFormats.Find([&](const deoglCapsTextureFormat &fmt){
+			pFoundFBOTexCubeFormats.Find(pUseFBOTexCubeFormats[vTestProgram[p].target], [&](const deoglCapsTextureFormat &fmt){
 				return fmt.GetFormat() == searchFormat;
-			}, pUseFBOTexCubeFormats[vTestProgram[p].target]);
+			});
 		}
 	}
 	
@@ -510,9 +510,9 @@ void deoglCapsFmtSupport::pDetectFBOArrayTexFormats(GLuint fbo){
 	for(p=0; p<TEST_PROGRAM_COUNT; p++){
 		if(!pUseFBOArrTexFormats[vTestProgram[p].target]){
 			const GLint searchFormat = vTestTextureFormats[vTestProgram[p].testFormat].format;
-			pFoundFBOArrTexFormats.Find([&](const deoglCapsTextureFormat &fmt){
+			pFoundFBOArrTexFormats.Find(pUseFBOArrTexFormats[vTestProgram[p].target], [&](const deoglCapsTextureFormat &fmt){
 				return fmt.GetFormat() == searchFormat;
-			}, pUseFBOArrTexFormats[vTestProgram[p].target]);
+			});
 		}
 	}
 	

@@ -80,9 +80,9 @@ void deoalAComponentTexture::UpdateUseTexture(){
 	
 	if(pSkin){
 		const int textureIndex = 0; // can be set by user in deComponentTexture but not used yet
-		if(textureIndex >= 0 && textureIndex < pSkin->GetTextureCount()){
+		if(textureIndex >= 0 && textureIndex < pSkin->GetTextures().GetCount()){
 			pUseSkin = pSkin;
-			pUseTexture = &pSkin->GetTextureAt(textureIndex);
+			pUseTexture = &pSkin->GetTextures()[textureIndex];
 			pAffectsSound = pUseTexture->GetAffectsSound();
 		}
 		return;
@@ -93,7 +93,7 @@ void deoalAComponentTexture::UpdateUseTexture(){
 		const int mappedTexture = pComponent.GetTextureSkinMappings().GetAt(pIndex);
 		if(mappedTexture != -1){
 			pUseSkin = skin;
-			pUseTexture = &skin->GetTextureAt(mappedTexture);
+			pUseTexture = &skin->GetTextures()[mappedTexture];
 			pAffectsSound = pUseTexture->GetAffectsSound();
 		}
 	}

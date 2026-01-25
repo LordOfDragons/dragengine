@@ -182,7 +182,7 @@ void deoalASoundLevelMeterSpeaker::pListenDirect(){
 	
 	world.GetOctree()->VisitNodesColliding(&visitor, visitor.GetRayBoxMin(), visitor.GetRayBoxMax());
 	
-	const int count = rtresult.GetElementCount();
+	const int count = rtresult.GetElements().GetCount();
 	int index = 0;
 	
 	float gainLow = gain;
@@ -262,9 +262,9 @@ void deoalASoundLevelMeterSpeaker::pListenReflected(){
 
 const deoalRayTraceHitElement *deoalASoundLevelMeterSpeaker::pNextHitElement(
 const deoalRayTraceResult &rtresult, int& index, bool forwardFacing) const{
-	const int count = rtresult.GetElementCount();
+	const int count = rtresult.GetElements().GetCount();
 	while(index < count){
-		const deoalRayTraceHitElement &hitElement = rtresult.GetElementAt(index++);
+		const deoalRayTraceHitElement &hitElement = rtresult.GetElements()[index++];
 		if(hitElement.GetForwardFacing() == forwardFacing){
 			return &hitElement;
 		}

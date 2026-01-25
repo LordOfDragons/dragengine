@@ -96,11 +96,8 @@ public:
 	
 	
 	
-	/** Number of points. */
-	inline int GetPointCount() const{ return pPoints.GetCount(); }
-	
-	/** Point at index. */
-	const decVector &GetPointAt(int index) const;
+	/** Points. */
+	inline const decTList<decVector> &GetPoints() const{ return pPoints; }
 	
 	/**
 	 * Add point and return index.

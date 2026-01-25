@@ -51,8 +51,6 @@ pRenderThread(renderThread),
 pParentWorld(nullptr),
 pOrder(0),
 pPassthroughTransparency(0.0f),
-pControllerStates(nullptr),
-pControllerStateCount(0),
 pTotalSkyLightIntensity(0.0f),
 pTotalSkyAmbientIntensity(0.0f),
 pEnvMapTimer(0.0f),
@@ -66,10 +64,6 @@ deoglRSkyInstance::~deoglRSkyInstance(){
 	LEAK_CHECK_FREE(pRenderThread, SkyInstance);
 	
 	pLayers.RemoveAll();
-	
-	if(pControllerStates){
-		delete [] pControllerStates;
-	}
 }
 
 
@@ -123,32 +117,12 @@ void deoglRSkyInstance::SetPassthroughTransparency(float transparency){
 }
 
 
-float deoglRSkyInstance::GetControllerStateAt(int index) const{
-	if(index < 0 || index >= pControllerStateCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pControllerStates[index];
-}
-
 void deoglRSkyInstance::UpdateControllerStates(const deSkyInstance &instance){
 	const int count = instance.GetControllers().GetCount();
 	
-	if(count != pControllerStateCount){
-		if(pControllerStates){
-			delete [] pControllerStates;
-			pControllerStates = nullptr;
-			pControllerStateCount = 0;
-		}
-		
-		if(count > 0){
-			pControllerStates = new float[count];
-			pControllerStateCount = count;
-		}
-	}
+	pControllerStates.SetCountDiscard(count);
 	
-	int i;
-	for(i=0; i<count; i++){
-		const deSkyController &controller = instance.GetControllers().GetAt(i);
+	instance.GetControllers().VisitIndexed([&](int i, const deSkyController &controller){
 		const float minimum = controller.GetMinimumValue();
 		const float range = controller.GetMaximumValue() - minimum;
 		
@@ -158,7 +132,7 @@ void deoglRSkyInstance::UpdateControllerStates(const deSkyInstance &instance){
 		}else{
 			pControllerStates[i] = minimum;
 		}
-	}
+	});
 }
 
 

@@ -81,8 +81,7 @@ public:
 		bool fullScreen;
 		decString windowTitle;
 		
-		int parameterCount;
-		sModuleParameter *parameters;
+		decTList<sModuleParameter> parameters;
 		
 		decString runArguments;
 		

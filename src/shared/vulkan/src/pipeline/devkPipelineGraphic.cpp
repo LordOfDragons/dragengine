@@ -57,8 +57,8 @@ devkPipeline(device, configuration)
 	if(specialization){
 		specializationInfo.pData = specialization->GetData();
 		specializationInfo.dataSize = specialization->GetDataSize();
-		specializationInfo.mapEntryCount = specialization->GetEntryCount();
-		specializationInfo.pMapEntries = specialization->GetEntries();
+		specializationInfo.mapEntryCount = specialization->GetEntries().GetCount();
+		specializationInfo.pMapEntries = specialization->GetEntries().GetArrayPointer();
 	}
 	
 	VkSpecializationInfo * const useSpecialization = specialization ? &specializationInfo : nullptr;
@@ -101,10 +101,10 @@ devkPipeline(device, configuration)
 	// vertex input data
 	VkPipelineVertexInputStateCreateInfo vertexInputInfo{
 		VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO};
-	vertexInputInfo.vertexBindingDescriptionCount = configuration.GetBindingCount();
-	vertexInputInfo.pVertexBindingDescriptions = configuration.GetBindings();
-	vertexInputInfo.vertexAttributeDescriptionCount = configuration.GetAttributeCount();
-	vertexInputInfo.pVertexAttributeDescriptions = configuration.GetAttributes();
+	vertexInputInfo.vertexBindingDescriptionCount = configuration.GetBindings().GetCount();
+	vertexInputInfo.pVertexBindingDescriptions = configuration.GetBindings().GetArrayPointer();
+	vertexInputInfo.vertexAttributeDescriptionCount = configuration.GetAttributes().GetCount();
+	vertexInputInfo.pVertexAttributeDescriptions = configuration.GetAttributes().GetArrayPointer();
 	
 	pipelineInfo.pVertexInputState = &vertexInputInfo;
 	

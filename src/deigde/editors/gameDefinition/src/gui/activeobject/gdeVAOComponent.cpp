@@ -169,17 +169,14 @@ void gdeVAOComponent::GetExtends(decVector &minExtend, decVector &maxExtend) con
 		return;
 	}
 	
-	const deModelLOD &lod = pComponent->GetModel()->GetLODAt(0);
-	const int vertexCount = lod.GetVertexCount();
-	if(vertexCount > 0){
-		const deModelVertex * const vertices = lod.GetVertices();
-		int i;
-		minExtend = maxExtend = vertices[0].GetPosition();
-		for(i=1; i<vertexCount; i++){
-			const decVector &position = vertices[i].GetPosition();
+	const deModelLOD &lod = pComponent->GetModel()->GetLODs().First();
+	if(lod.GetVertices().IsNotEmpty()){
+		minExtend = maxExtend = lod.GetVertices().First().GetPosition();
+		lod.GetVertices().Visit(1, [&](const deModelVertex &vertex){
+			const decVector &position = vertex.GetPosition();
 			minExtend.SetSmallest(position);
 			maxExtend.SetLargest(position);
-		}
+		});
 	}
 }
 

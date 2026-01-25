@@ -144,7 +144,6 @@ void igdeWAngleRange::SetVisible(bool visible){
 //////////////////////
 
 void igdeWAngleRange::pRebuildShape(){
-	deDebugDrawerShapeFace *ddFace = nullptr;
 	float meterPerPoint = 0.1f;
 	float angle, angleDiff;
 	float circumfence;
@@ -167,32 +166,23 @@ void igdeWAngleRange::pRebuildShape(){
 		return;
 	}
 	
-	try{
-		ddFace = new deDebugDrawerShapeFace;
-		
-		ddFace->SetNormal(decVector(0.0f, 0.0f, 1.0f));
-		
-		if(useDisk){
-			ddFace->AddVertex(decVector());
-		}
-		
-		for(p=0; p<=pointCount; p++){
-			angle = (pLower + angleDiff * ((float)p / (float)pointCount)) * DEG2RAD;
-			
-			ddFace->AddVertex(decVector(sinf(angle) * pRadius, cosf(angle) * pRadius, 0.0f));
-		}
-		
-		if(useDisk){
-			ddFace->AddVertex(decVector());
-		}
-		
-		pDDSDisk->AddFace(ddFace);
-		ddFace = nullptr;
-		
-	}catch(const deException &){
-		if(ddFace){
-			delete ddFace;
-		}
-		throw;
+	auto ddFace = deDebugDrawerShapeFace::Ref::New();
+	
+	ddFace->SetNormal(decVector(0.0f, 0.0f, 1.0f));
+	
+	if(useDisk){
+		ddFace->AddVertex(decVector());
 	}
+	
+	for(p=0; p<=pointCount; p++){
+		angle = (pLower + angleDiff * ((float)p / (float)pointCount)) * DEG2RAD;
+		
+		ddFace->AddVertex(decVector(sinf(angle) * pRadius, cosf(angle) * pRadius, 0.0f));
+	}
+	
+	if(useDisk){
+		ddFace->AddVertex(decVector());
+	}
+	
+	pDDSDisk->AddFace(std::move(ddFace));
 }

@@ -27,6 +27,7 @@
 
 #include <deigde/gui/event/igdeMouseKeyListener.h>
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/resources/canvas/deCanvasImage.h>
@@ -58,7 +59,7 @@ private:
 	deSpeaker::Ref pSpeaker;
 	deImage::Ref pImagePreview;
 	bool pDirtyPreview;
-	char *pPreviewSamples;
+	decTList<char> pPreviewSamples;
 	
 	
 	

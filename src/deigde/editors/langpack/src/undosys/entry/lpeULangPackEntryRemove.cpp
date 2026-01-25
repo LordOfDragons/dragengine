@@ -53,9 +53,9 @@ pList(list)
 		const lpeLangPackEntry::List &refEntries = refLangpack->GetEntries();
 		list.Visit([&](const lpeLangPackEntry &e){
 			const lpeLangPackEntry::Ref *refEntry = nullptr;
-			if(refEntries.Find([&](const lpeLangPackEntry &e2){
+			if(refEntries.Find(refEntry, [&](const lpeLangPackEntry &e2){
 				return e2.GetName() == e.GetName();
-			}, refEntry)){
+			})){
 				pListRef.Add(*refEntry);
 			}
 		});

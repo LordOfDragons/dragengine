@@ -29,6 +29,8 @@
 
 #include "../skin/deoglRSkin.h"
 
+#include <dragengine/deTUniqueReference.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/sky/deSkyLayer.h>
 
@@ -97,10 +99,9 @@ private:
 	int pTextures[6];
 	deoglRSkin::Ref pSkin;
 	
-	sBody *pBodies;
-	int pBodyCount;
+	decTList<sBody> pBodies;
 	
-	deoglRSkyControllerTarget *pTargets[deSkyLayer::etAmbientIntensity + 1];
+	deTUniqueReference<deoglRSkyControllerTarget> pTargets[deSkyLayer::etAmbientIntensity + 1];
 	
 	const decVector pOffset;
 	const decVector pOrientation;
@@ -144,10 +145,7 @@ public:
 	
 	
 	/** Bodies. */
-	inline const sBody *GetBodies() const{ return pBodies; }
-	
-	/** Number of bodies. */
-	inline int GetBodyCount() const{ return pBodyCount; }
+	inline const decTList<sBody> &GetBodies() const{ return pBodies; }
 	
 	
 	

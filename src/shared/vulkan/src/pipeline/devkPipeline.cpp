@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-
 #include "devkPipeline.h"
 #include "../devkDevice.h"
 #include "../devkInstance.h"
@@ -32,6 +29,7 @@
 #include "../descriptor/devkDescriptorSetLayout.h"
 #include "../shader/devkShaderModule.h"
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
@@ -83,6 +81,7 @@ pSaveCache(false)
 			device.GetDevice(), &layoutInfo, VK_NULL_HANDLE, &pLayout));
 		
 		VkPipelineCacheCreateInfo cacheInfo{VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO};
+		decTList<char> cacheData;
 		
 		// load cache if present
 		deBaseModule &baseModule = vulkan.GetModule();
@@ -95,19 +94,18 @@ pSaveCache(false)
 				
 				decBaseFileReader::Ref reader(vfs.OpenFileForReading(path));
 				
-				cacheInfo.initialDataSize = reader->GetLength();
-				if(cacheInfo.initialDataSize > 0){
-					cacheInfo.pInitialData = new char[cacheInfo.initialDataSize];
-					reader->Read(reinterpret_cast<char*>(const_cast<void*>(cacheInfo.pInitialData)),
-						(int)cacheInfo.initialDataSize);
+				const int size = reader->GetLength();
+				if(size > 0){
+					cacheData.SetCountDiscard(size);
+					reader->Read(cacheData.GetArrayPointer(), size);
+					
+					cacheInfo.initialDataSize = (size_t)size;
+					cacheInfo.pInitialData = cacheData.GetArrayPointer();
 				}
 			}
 			
 		}catch(const deException &e){
 			baseModule.LogException(e);
-			if(cacheInfo.pInitialData){
-				delete [] reinterpret_cast<char*>(const_cast<void*>(cacheInfo.pInitialData));
-			}
 			pDropCache();
 		}
 		
@@ -182,7 +180,6 @@ void devkPipeline::pCleanUp(){
 			deBaseModule &baseModule = vulkan.GetModule();
 			deVirtualFileSystem &vfs = baseModule.GetVFS();
 			const decPath path(pCachePath());
-			char *data = nullptr;
 			
 			baseModule.LogInfoFormat("Vulkan Pipeline: Save Cache for device %x", pDevice.GetProperties().deviceID);
 			
@@ -191,17 +188,16 @@ void devkPipeline::pCleanUp(){
 				VK_CHECK(vulkan, pDevice.vkGetPipelineCacheData(device, pCache, &sizeData, VK_NULL_HANDLE));
 				
 				if(sizeData > 0){
-					data = new char[sizeData];
-					VK_CHECK(vulkan, pDevice.vkGetPipelineCacheData(device, pCache, &sizeData, data));
+					decTList<char> cacheData;
+					cacheData.SetCountDiscard((int)sizeData);
+					VK_CHECK(vulkan, pDevice.vkGetPipelineCacheData(
+						device, pCache, &sizeData, cacheData.GetArrayPointer()));
 					
-					vfs.OpenFileForWriting(path)->Write(data, (int)sizeData);
+					vfs.OpenFileForWriting(path)->Write(cacheData.GetArrayPointer(), (int)sizeData);
 				}
 				
 			}catch(const deException &e){
 				baseModule.LogException(e);
-				if(data){
-					delete [] data;
-				}
 				pDropCache();
 			}
 		}

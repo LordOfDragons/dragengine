@@ -117,8 +117,6 @@ pRenderThread(renderThread)
 	pInfluencePriority = 0;
 	pHasInfluenceBox = false,
 	pHasReflectionBox = false;
-	pReflectionMaskBoxMatrices = nullptr;
-	pReflectionMaskBoxMatrixCount = 0;
 	
 	pDirty = true;
 	pDirtyInit = true;
@@ -297,33 +295,17 @@ void deoglEnvironmentMap::SetHasReflectionBox(bool hasReflectionBox){
 
 
 
-const decDMatrix& deoglEnvironmentMap::GetReflectionMaskBoxMatrixAt(int index) const{
-	if(index < 0 || index >= pReflectionMaskBoxMatrixCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pReflectionMaskBoxMatrices[index];
-}
-
 void deoglEnvironmentMap::RemoveAllReflectionMaskBoxMatrices(){
-	if(pReflectionMaskBoxMatrices){
-		delete [] pReflectionMaskBoxMatrices;
-		pReflectionMaskBoxMatrices = nullptr;
-		pReflectionMaskBoxMatrixCount = 0;
-		
-		SetDirty(true);
+	if(pReflectionMaskBoxMatrices.IsEmpty()){
+		return;
 	}
+	
+	pReflectionMaskBoxMatrices.SetCountDiscard(0);
+	SetDirty(true);
 }
 
 void deoglEnvironmentMap::AddReflectionMaskBoxMatrix(const decDMatrix &matrix){
-	decDMatrix *newArray = new decDMatrix[pReflectionMaskBoxMatrixCount + 1];
-	
-	if(pReflectionMaskBoxMatrices){
-		memcpy(newArray, pReflectionMaskBoxMatrices, sizeof(decDMatrix) * pReflectionMaskBoxMatrixCount);
-		delete [] pReflectionMaskBoxMatrices;
-	}
-	pReflectionMaskBoxMatrices = newArray;
-	
-	pReflectionMaskBoxMatrices[pReflectionMaskBoxMatrixCount++] = matrix;
+	pReflectionMaskBoxMatrices.Add(matrix);
 	
 	SetDirty(true);
 }
@@ -919,9 +901,6 @@ void deoglEnvironmentMap::PrepareQuickDispose(){
 //////////////////////
 
 void deoglEnvironmentMap::pCleanUp(){
-	if(pReflectionMaskBoxMatrices){
-		delete [] pReflectionMaskBoxMatrices;
-	}
 	if(pLightVolume){
 		delete pLightVolume;
 	}

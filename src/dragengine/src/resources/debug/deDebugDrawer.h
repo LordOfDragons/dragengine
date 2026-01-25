@@ -25,11 +25,11 @@
 #ifndef _DEDEBUGDRAWER_H_
 #define _DEDEBUGDRAWER_H_
 
+#include "deDebugDrawerShape.h"
 #include "../../common/math/decMath.h"
 #include "../../common/collection/decTList.h"
 #include "../deResource.h"
 
-class deDebugDrawerShape;
 class deDebugDrawerManager;
 class deBaseGraphicDebugDrawer;
 class deWorld;
@@ -68,7 +68,7 @@ private:
 	bool pVisible;
 	bool pXRay;
 	
-	decTList<deDebugDrawerShape*> pShapes;
+	deDebugDrawerShape::List pShapes;
 	
 	deBaseGraphicDebugDrawer *pPeerGraphic;
 	
@@ -134,26 +134,14 @@ public:
 	/** \name Shape Management */
 	/*@{*/
 	/** \brief Shapes. */
-	inline const decTList<deDebugDrawerShape*> &GetShapes() const{ return pShapes; }
-	
-	/** \brief Count of shapes. */
-	int GetShapeCount() const;
-	
-	/** \brief Shape at the given index. */
-	deDebugDrawerShape *GetShapeAt(int index) const;
-	
-	/** \brief Retrieve index of the given shape. */
-	int IndexOfShape(deDebugDrawerShape *shape) const;
-	
-	/** \brief Shape exists. */
-	bool HasShape(deDebugDrawerShape *shape) const;
+	inline const deDebugDrawerShape::List &GetShapes() const{ return pShapes; }
 	
 	/**
 	 * \brief Adds a collision shape.
 	 * 
 	 * calls NotifyShapeLayoutChanged.
 	 */
-	void AddShape(deDebugDrawerShape *shape);
+	void AddShape(deDebugDrawerShape::Ref &&shape);
 	
 	/**
 	 * \brief Removes the collision shape.

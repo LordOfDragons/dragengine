@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-
 #include "deoglRenderTaskConfigTexture.h"
 #include "../shared/deoglRenderTaskSharedInstance.h"
 #include "../shared/deoglRenderTaskSharedTexture.h"
@@ -39,6 +37,26 @@
 
 deoglRenderTaskConfigTexture::deoglRenderTaskConfigTexture(){
 	Clear();
+}
+
+deoglRenderTaskConfigTexture::deoglRenderTaskConfigTexture(const deoglRenderTaskConfigTexture &other){
+	*this = other;
+}
+
+deoglRenderTaskConfigTexture &deoglRenderTaskConfigTexture::operator=(const deoglRenderTaskConfigTexture &other){
+	if(this != &other){
+		pRenderTaskFilter = other.pRenderTaskFilter;
+		pPipeline = other.pPipeline;
+		pTexture = other.pTexture;
+		pVAO = other.pVAO;
+		pInstance = other.pInstance;
+		pPipelineIndex = other.pPipelineIndex;
+		pTextureIndex = other.pTextureIndex;
+		pVAOIndex = other.pVAOIndex;
+		pInstanceIndex = other.pInstanceIndex;
+		pGroupIndex = other.pGroupIndex;
+	}
+	return *this;
 }
 
 deoglRenderTaskConfigTexture::~deoglRenderTaskConfigTexture(){

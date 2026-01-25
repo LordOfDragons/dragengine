@@ -25,9 +25,10 @@
 #ifndef _DECZFILEWRITER_H_
 #define _DECZFILEWRITER_H_
 
-#include <stdio.h>
+#include <zlib.h>
 
 #include "decBaseFileWriter.h"
+#include "../collection/decTList.h"
 
 
 /**
@@ -54,11 +55,11 @@ private:
 	
 	void *pZStream;
 	
-	void *pBufferIn;
+	decTList<Bytef> pBufferIn;
 	int pBufferInSize;
 	int pBufferInPosition;
 	
-	void *pBufferOut;
+	decTList<Bytef> pBufferOut;
 	int pBufferOutSize;
 	
 	

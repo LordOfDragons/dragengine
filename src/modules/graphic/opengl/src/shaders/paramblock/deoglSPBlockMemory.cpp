@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglSPBParameter.h"
 #include "deoglSPBlockMemory.h"
 #include "../deoglShaderCompiled.h"
@@ -44,23 +40,17 @@
 ////////////////////////////
 
 deoglSPBlockMemory::deoglSPBlockMemory(deoglRenderThread &renderThread) :
-deoglShaderParameterBlock(renderThread),
-pBuffer(nullptr),
-pBufferCapacity(0){
+deoglShaderParameterBlock(renderThread){
 }
 
 deoglSPBlockMemory::deoglSPBlockMemory(const deoglSPBlockMemory &paramBlock) :
 deoglShaderParameterBlock(paramBlock),
-pBuffer(nullptr),
-pBufferCapacity(0){
+pBuffer(paramBlock.pBuffer){
 }
 
 deoglSPBlockMemory::~deoglSPBlockMemory(){
 	if(IsBufferMapped()){
 		pClearMapped();
-	}
-	if(pBuffer){
-		delete [] pBuffer;
 	}
 }
 
@@ -91,7 +81,7 @@ void deoglSPBlockMemory::MapBuffer(){
 	}
 	
 	pGrowBuffer();
-	pSetMapped(pBuffer);
+	pSetMapped(pBuffer.GetArrayPointer());
 }
 
 void deoglSPBlockMemory::MapBuffer(int element){
@@ -105,7 +95,7 @@ void deoglSPBlockMemory::MapBuffer (int element, int count){
 	}
 	
 	pGrowBuffer();
-	pSetMapped(pBuffer, element, count);
+	pSetMapped(pBuffer.GetArrayPointer(), element, count);
 }
 
 void deoglSPBlockMemory::UnmapBuffer(){
@@ -127,19 +117,7 @@ deoglShaderParameterBlock::Ref deoglSPBlockMemory::Copy() const{
 
 void deoglSPBlockMemory::pGrowBuffer(){
 	const int bufferSize = GetBufferSize();
-	
-	if(pBuffer && bufferSize > pBufferCapacity){
-		char * const newBuffer = new char[bufferSize];
-		if(pBufferCapacity > 0){
-			memcpy(newBuffer, pBuffer, pBufferCapacity);
-		}
-		delete [] pBuffer;
-		pBuffer = newBuffer;
-		pBufferCapacity = bufferSize;
-	}
-	
-	if(!pBuffer){
-		pBuffer = new char[bufferSize];
-		pBufferCapacity = bufferSize;
+	if(bufferSize > pBuffer.GetCount()){
+		pBuffer.SetCount(bufferSize, 0);
 	}
 }

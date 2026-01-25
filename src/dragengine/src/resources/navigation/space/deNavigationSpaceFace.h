@@ -45,6 +45,7 @@ public:
 	/*@{*/
 	/** \brief Create new navigation space face. */
 	deNavigationSpaceFace();
+	deNavigationSpaceFace(int cornerCount, unsigned short type);
 	
 	/** \brief Clean up navigation space face. */
 	~deNavigationSpaceFace();

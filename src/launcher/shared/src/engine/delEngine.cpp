@@ -72,16 +72,10 @@
 delEngine::delEngine(delLauncher &launcher, const char *logFileTitle) :
 pLauncher(launcher),
 pLogFile(decString(logFileTitle) + ".log"),
-pResolutionCount(0),
-pResolutions(nullptr),
 pScaleFactor(100){
 }
 
-delEngine::~delEngine(){
-	if(pResolutions){
-		delete [] pResolutions;
-	}
-}
+delEngine::~delEngine() = default;
 
 
 
@@ -411,11 +405,7 @@ const char *delEngine::GetModuleTypeText(deModuleSystem::eModuleTypes moduleType
 
 
 void delEngine::UpdateResolutions(delEngineInstance &instance){
-	if(pResolutions){
-		delete [] pResolutions;
-		pResolutions = nullptr;
-		pResolutionCount = 0;
-	}
+	pResolutions.RemoveAll();
 	
 	const int display = 0;
 	
@@ -424,48 +414,23 @@ void delEngine::UpdateResolutions(delEngineInstance &instance){
 		
 		const int requiredCount = instance.GetDisplayResolutions(display, nullptr, 0);
 		if(requiredCount > 0){
-			pResolutions = new decPoint[requiredCount];
-			pResolutionCount = instance.GetDisplayResolutions(display, pResolutions, requiredCount);
+			pResolutions.AddRange(requiredCount, {});
+			
+			const int count = instance.GetDisplayResolutions(
+				display, pResolutions.GetArrayPointer(), requiredCount);
+			
+			while(pResolutions.GetCount() > count){
+				pResolutions.RemoveFrom(pResolutions.GetCount() - 1);
+			}
 		}
 		
 	}catch(const deException &e){
-		pLauncher.GetLogger()->LogError(pLauncher.GetLogSource(),
-			"Engine.UpdateResolutions failed with exception");
-		pLauncher.GetLogger()->LogException(pLauncher.GetLogSource(), e);
-		
-		if(pResolutions){
-			delete [] pResolutions;
-			pResolutions = nullptr;
-		}
-		pResolutionCount = 0;
 	}
-
+	
 	// sort resolutions by decreasing pixel count
-	int i;
-	for(i=1; i<pResolutionCount; i++){
-		const int pixelCountCur = pResolutions[i].x * pResolutions[i].y;
-		const int pixelCountPrev = pResolutions[i - 1].x * pResolutions[i - 1].y;
-		if(pixelCountPrev >= pixelCountCur){
-			continue;
-		}
-		
-		const decPoint swap(pResolutions[i - 1]);
-		pResolutions[i - 1] = pResolutions[i];
-		pResolutions[i] = swap;
-		if(i > 1){
-			i--;
-		}
-	}
-}
-
-const decPoint &delEngine::GetResolutionAt(int index) const{
-	if(index < 0){
-		DETHROW_INFO(deeInvalidParam, "index < 0");
-	}
-	if(index >= pResolutionCount){
-		DETHROW_INFO(deeInvalidParam, "index >= resolutionCount");
-	}
-	return pResolutions[index];
+	pResolutions.Sort([](const decPoint &a, const decPoint &b){
+		return DECompare(b.x * b.y, a.x * a.y);
+	});
 }
 
 int delEngine::IndexOfClosestResolutionTo(int width, int height) const{
@@ -473,16 +438,13 @@ int delEngine::IndexOfClosestResolutionTo(int width, int height) const{
 	// we can look for the first resolution less than or equal to the desired
 	// size without having to check the entire list
 	const int pixelCount = width * height;
-	int i;
-	
-	for(i=0; i<pResolutionCount; i++){
-		const int resolutionPixelCount = pResolutions[i].x * pResolutions[i].y;
-		if(resolutionPixelCount <= pixelCount){
-			return i;
-		}
+	int index = pResolutions.IndexOfMatching([&](const decPoint &res){
+		return res.x * res.y <= pixelCount;
+	});
+	if(index == -1){
+		index = pResolutions.GetCount() - 1; // -1 if empty is correct
 	}
-	
-	return pResolutionCount - 1; // -1 if empty is correct
+	return index;
 }
 
 void delEngine::UpdateScaleFactor(delEngineInstance& instance){

@@ -111,7 +111,8 @@ void declActionDelgaHelper::Install(){
 	
 	const int totalSize = reader->GetLength();
 	const double percentageFactor = 100.0 / (double)totalSize;
-	char * const buffer = new char[8192];
+	decString buffer;
+	buffer.Set(0, 8192);
 	int progressPercentage = 0;
 	int bytesCopied = 0;
 	
@@ -130,14 +131,13 @@ void declActionDelgaHelper::Install(){
 			}
 			
 			const int copyBytesCount = decMath::min(8192, totalSize - bytesCopied);
-			reader->Read(buffer, copyBytesCount);
-			writer->Write(buffer, copyBytesCount);
+			reader->Read(buffer.GetMutableString(), copyBytesCount);
+			writer->Write(buffer.GetMutableString(), copyBytesCount);
 			
 			bytesCopied += copyBytesCount;
 		}
 		
 	}catch(const deException &e){
-		delete [] buffer;
 		pLauncher.GetLogger()->LogException(LOGSOURCE, e);
 		try{
 			if(container->ExistsFile(target)){

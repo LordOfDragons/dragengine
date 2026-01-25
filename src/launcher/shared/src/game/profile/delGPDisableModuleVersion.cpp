@@ -37,9 +37,9 @@
 const delGPDisableModuleVersion *delGPDisableModuleVersion::List::GetWith(
 const char *name, const char *version) const{
 	const delGPDisableModuleVersion *found;
-	return Find([&](const delGPDisableModuleVersion &m){
+	return Find(found, [&](const delGPDisableModuleVersion &m){
 		return m.GetName() == name && m.GetVersion() == version;
-	}, found) ? found : nullptr;
+	}) ? found : nullptr;
 }
 
 bool delGPDisableModuleVersion::List::HasWith(const char *name, const char *version) const{

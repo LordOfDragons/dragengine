@@ -27,6 +27,7 @@
 
 #include "../desynBasics.h"
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/synthesizer/deBaseSynthesizerSynthesizerInstance.h>
 #include <dragengine/threading/deMutex.h>
@@ -51,8 +52,7 @@ private:
 	desynSynthesizer *pSynthesizer;
 	unsigned int pSynthesizerUpdateTracker;
 	
-	desynSynthesizerController *pControllers;
-	int pControllerCount;
+	decTList<desynSynthesizerController> pControllers;
 	
 	int pChannelCount;
 	int pSampleRate;
@@ -69,8 +69,7 @@ private:
 	bool pDirtyControllers;
 	bool pDirtyFormat;
 	
-	char *pStateData;
-	int pStateDataSize;
+	decTList<char> pStateData;
 	deMutex pMutex;
 	
 	
@@ -101,7 +100,7 @@ public:
 	
 	
 	/** \brief Controller at index. */
-	desynSynthesizerController &GetControllerAt(int index) const;
+	const desynSynthesizerController &GetControllerAt(int index) const;
 	
 	
 	
@@ -175,12 +174,9 @@ public:
 	
 	
 private:
-	void pCleanUp();
-	
 	void pPrepare();
 	void pUpdateFormat();
 	
-	void pClearControllers();
 	void pCreateControllers();
 	
 	void pGenerateSilence(void *buffer, int samples);

@@ -29,6 +29,7 @@
 #include "graphicapi/deoxrGraphicApiOpenGL.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/vr/deBaseVRModule.h>
 
@@ -67,8 +68,7 @@ private:
 	XrSwapchain pSwapchain;
 	int64_t pImageFormat;
 	
-	sImage *pImages;
-	int pImageCount;
+	decTList<sImage> pImages;
 	
 	uint32_t pAcquiredImage;
 	
@@ -106,11 +106,8 @@ public:
 	/** Image format. */
 	inline int64_t GetImageFormat() const{ return pImageFormat; }
 	
-	/** Count of images. */
-	inline int GetImageCount() const{ return pImageCount; }
-	
-	/** Image at index. */
-	const sImage &GetImageAt(int index) const;
+	/** Images. */
+	inline const decTList<sImage> &GetImages() const{ return pImages; }
 	
 	/** Acquire image. */
 	void AcquireImage();

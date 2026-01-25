@@ -46,20 +46,18 @@ deoglPVSyncMode::deoglPVSyncMode(deGraphicOpenGl &ogl) : deoglParameter(ogl){
 	SetCategory(ecAdvanced);
 	SetDisplayName("V-Sync Mode");
 	
-	const deModuleParameter::SelectionEntry entries[3] = {
-		{"adaptive", "Adaptive",
-			"Enables V-Sync if frame rate is higher than monitor frame rate. "
-			"Disables V-Sync if frame rate is lower than monitor frame rate. "
-			"This can prevent stuttering due to frame rate dips. "
-			"If system does not support V-Sync control behaves the same as 'On'."},
-		
-		{"on", "On", "Enables V-Sync."},
-		
-		{"off", "Off",
-			"Disables V-Sync. "
-			"If system does not support V-Sync control behaves the same as 'On'."}
-	};
-	AddSelectionEntries(entries, 3);
+	AddSelectionEntry({"adaptive", "Adaptive",
+		"Enables V-Sync if frame rate is higher than monitor frame rate. "
+		"Disables V-Sync if frame rate is lower than monitor frame rate. "
+		"This can prevent stuttering due to frame rate dips. "
+		"If system does not support V-Sync control behaves the same as 'On'."});
+	
+	AddSelectionEntry({"on", "On", "Enables V-Sync."});
+	
+	AddSelectionEntry({"off", "Off",
+		"Disables V-Sync. "
+		"If system does not support V-Sync control behaves the same as 'On'."});
+	
 	SetDefaultValue("adaptive");
 }
 

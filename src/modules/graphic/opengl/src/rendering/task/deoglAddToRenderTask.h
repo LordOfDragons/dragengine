@@ -30,6 +30,7 @@
 #include "../../component/deoglRComponent.h"
 #include "../../particle/deoglRParticleEmitterInstance.h"
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglCollideList;

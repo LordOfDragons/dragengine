@@ -38,16 +38,10 @@
 ////////////////////////////
 
 deoalSharedBuffer::deoalSharedBuffer() :
-pBuffer(nullptr),
-pSize(0),
 pInUse(false){
 }
 
-deoalSharedBuffer::~deoalSharedBuffer(){
-	if(pBuffer){
-		delete [] pBuffer;
-	}
-}
+deoalSharedBuffer::~deoalSharedBuffer() = default;
 
 
 
@@ -55,20 +49,12 @@ deoalSharedBuffer::~deoalSharedBuffer(){
 ///////////////
 
 void deoalSharedBuffer::SetSize(int size){
-	if(size < 0){
-		DETHROW(deeInvalidParam);
+	DEASSERT_TRUE(size >= 0)
+	if(size == pBuffer.GetCount()){
+		return;
 	}
 	
-	if(pBuffer){
-		delete [] pBuffer;
-		pBuffer = nullptr;
-		pSize = 0;
-	}
-	
-	if(size > 0){
-		pBuffer = new float[size];
-		pSize = size;
-	}
+	pBuffer.SetCountDiscard(size);
 }
 
 void deoalSharedBuffer::SetInUse(bool inUse){

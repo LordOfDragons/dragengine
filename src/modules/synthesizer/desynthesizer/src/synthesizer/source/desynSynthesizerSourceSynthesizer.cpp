@@ -112,7 +112,7 @@ int firstLink, const deSynthesizerSourceSynthesizer &source){
 	
 	// create controller mapping
 	const int controllerCount = childSynthesizer->GetControllers().GetCount();
-	const int connectionCount = source.GetConnectionCount();
+	const int connectionCount = source.GetConnections().GetCount();
 	decTList<int> controllerMapping;
 	int i;
 	
@@ -122,7 +122,7 @@ int firstLink, const deSynthesizerSourceSynthesizer &source){
 			continue;
 		}
 		
-		const int localController = source.GetConnectionAt(i);
+		const int localController = source.GetConnections()[i];
 		if(localController == -1){
 			controllerMapping.Add(-1);
 			continue;

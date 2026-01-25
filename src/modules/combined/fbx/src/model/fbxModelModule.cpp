@@ -160,7 +160,7 @@ void fbxModelModule::pLoadModel(deModel &model, fbxScene &scene){
 	
 	// load textures
 	pLoadModelTextures(model, loadModel);
-	model.GetTextureCoordinatesSetList().Add("default");
+	model.GetTextureCoordinatesSets().Add("default");
 	
 	// load bones
 	if(loadRig){
@@ -253,28 +253,22 @@ const fbxModel &loadModel, const fbxRig *loadRig){
 	const decTList<int> &wsFirstWeight = loadModel.GetWeightSetsFirstWeight();
 	const decTList<int> &wgSetCount = loadModel.GetWeightGroupsSetCount();
 	const int wgCount = wgSetCount.GetCount();
-	int wsNextWeight = 0;
 	int wsSetIndex = 0;
 	int i, j, k;
 	
-	lod.SetWeightCount(wsWeights.GetCount());
-	deModelWeight * const weights = lod.GetWeights();
-	
-	lod.SetWeightGroupCount(wgCount);
+	lod.GetWeights().EnlargeCapacity(wsWeights.GetCount());
+	lod.GetWeightGroups().EnlargeCapacity(wgCount);
 	
 	for(i=0; i<wgCount; i++){
 		const int setCount = wgSetCount.GetAt(i);
 		const int wgWeightCount = i + 1;
 		
-		lod.SetWeightGroupAt(i, setCount);
+		lod.GetWeightGroups().Add(setCount);
 		
 		for(j=0; j<setCount; j++){
 			const int firstWeight = wsFirstWeight.GetAt(wsSetIndex++);
 			for(k=0; k<wgWeightCount; k++){
-				const deModelWeight &inWeight = loadModel.GetWeightAt(wsWeights.GetAt(firstWeight + k));
-				deModelWeight &outWeight = weights[wsNextWeight++];
-				outWeight.SetBone(inWeight.GetBone());
-				outWeight.SetWeight(inWeight.GetWeight());
+				lod.GetWeights().Add(loadModel.GetWeightAt(wsWeights.GetAt(firstWeight + k)));
 			}
 		}
 	}
@@ -282,15 +276,12 @@ const fbxModel &loadModel, const fbxRig *loadRig){
 	// vertices
 	const int count = loadModel.GetVertexCount();
 	
-	lod.SetVertexCount(count);
+	lod.GetVertices().EnlargeCapacity(count);
 	lod.SetNormalCount(count);
 	lod.SetTangentCount(count);
 	
-	deModelVertex * const vertices = lod.GetVertices(); // only valid after SetVertexCount()
-	
 	for(i=0; i<count; i++){
-		vertices[i].SetWeightSet(loadModel.GetVertexWeightSetAt(i));
-		vertices[i].SetPosition(loadModel.GetVertexPositionAt(i));
+		lod.GetVertices().Add({loadModel.GetVertexPositionAt(i), loadModel.GetVertexWeightSetAt(i)});
 	}
 }
 
@@ -367,8 +358,8 @@ const fbxModel &loadModel, const fbxRig *loadRig){
 	}
 	
 	// set up texture coordinates
-	lod.SetTextureCoordinatesSetCount(1);
-	deModelTextureCoordinatesSet &tcs = lod.GetTextureCoordinatesSetAt(0);
+	lod.GetTextureCoordinatesSets().Add({});
+	deModelTextureCoordinatesSet &tcs = lod.GetTextureCoordinatesSets().First();
 	
 	if(propUV && (propUVIndex || uvMit == fbxScene::emitByVertex)){
 		const int count = propUV->GetValueCount() / 2;
@@ -407,7 +398,7 @@ const fbxModel &loadModel, const fbxRig *loadRig){
 		faceUVLast = fbxScene::ConvUVFbxToDe(propUV->GetValueAtAsVector2(1));
 	}
 	
-	lod.SetFaceCount(faceCount);
+	lod.GetFaces().EnlargeCapacity(faceCount);
 	
 	for(i=2; i<polyVertIndexCount; i++){
 		int texture = allSameMaterial ? 0 : propMaterials->GetValueAtAsInt(polygonIndex);
@@ -443,7 +434,8 @@ const fbxModel &loadModel, const fbxRig *loadRig){
 		
 		// continue polygon. each new vertex forms a new face with base and last vertex.
 		// right handed so flip direction
-		deModelFace &face = lod.GetFaceAt(indexFace++);
+		lod.GetFaces().Add({});
+		deModelFace &face = lod.GetFaces().Last();
 		
 		face.SetVertex1(index);
 		face.SetVertex2(faceIndexLast);

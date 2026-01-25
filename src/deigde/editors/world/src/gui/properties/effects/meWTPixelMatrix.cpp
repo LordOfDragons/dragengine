@@ -24,13 +24,9 @@
 
 #if 0
 
-// includes
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "meWTPixelMatrix.h"
-#include <dragengine/common/exceptions.h>
 
+#include <dragengine/common/exceptions.h>
 
 
 // Class meWTPixelMatrix
@@ -40,8 +36,7 @@
 ////////////////////////////
 
 meWTPixelMatrix::meWTPixelMatrix(const char *name, const decTexMatrix &matrix){
-	pName = new char[strlen(name) + 1];	strcpy(pName, name);
-	
+	pName = name;
 	pPixelMatrix = matrix;
 }
 

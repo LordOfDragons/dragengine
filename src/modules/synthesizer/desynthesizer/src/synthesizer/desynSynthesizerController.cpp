@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "desynSynthesizerController.h"
 
 #include <dragengine/common/exceptions.h>
@@ -42,16 +39,10 @@ desynSynthesizerController::desynSynthesizerController() :
 pMinValue(0.0f),
 pMaxValue(1.0f),
 pClamp(true),
-pDirty(false),
-pValues(nullptr),
-pValueSize(0){
+pDirty(false){
 }
 
-desynSynthesizerController::~desynSynthesizerController(){
-	if(pValues){
-		delete [] pValues;
-	}
-}
+desynSynthesizerController::~desynSynthesizerController() = default;
 
 
 
@@ -59,9 +50,6 @@ desynSynthesizerController::~desynSynthesizerController(){
 ///////////////
 
 float desynSynthesizerController::GetValue(int sample) const{
-	if(sample < 0 || sample >= pValueSize){
-		DETHROW(deeInvalidParam);
-	}
 	return pValues[sample];
 }
 
@@ -70,22 +58,10 @@ void desynSynthesizerController::UpdateValues(int samples, float time, float ran
 		return;
 	}
 	
-	if(samples > pValueSize){
-		if(pValues){
-			delete [] pValues;
-			pValues = nullptr;
-		}
-		pValueSize = 0;
-		
-		pValues = new float[samples];
-		pValueSize = samples;
-	}
-	
-	int i;
-	
-	for(i=0; i<samples; i++){
-		pValues[i] = pCurve.Evaluate(time + range * (float)i);
-	}
+	pValues.SetCountDiscard(samples);
+	pValues.VisitIndexed([&](int i, float &value){
+		value = pCurve.Evaluate(time + range * (float)i);
+	});
 }
 
 void desynSynthesizerController::SetDirty(bool dirty){

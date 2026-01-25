@@ -48,14 +48,11 @@ deoglPSSRStepCount::deoglPSSRStepCount(deGraphicOpenGl &ogl) : deoglParameter(og
 	SetDisplayName("SSR Step Count");
 	SetCategory(ecBasic);
 	
-	const deModuleParameter::SelectionEntry entries[5] = {
-		{"veryLow", "Very Low", "Very low step count."},
-		{"low", "Low", "Low step count."},
-		{"medium", "Medium", "Medium step count."},
-		{"high", "High", "High step count."},
-		{"veryHigh", "Very High", "Very high step count."}
-	};
-	AddSelectionEntries(entries, 5);
+	AddSelectionEntry({"veryLow", "Very Low", "Very low step count."});
+	AddSelectionEntry({"low", "Low", "Low step count."});
+	AddSelectionEntry({"medium", "Medium", "Medium step count."});
+	AddSelectionEntry({"high", "High", "High step count."});
+	AddSelectionEntry({"veryHigh", "Very High", "Very high step count."});
 	
 	SetDefaultValue("low");
 }

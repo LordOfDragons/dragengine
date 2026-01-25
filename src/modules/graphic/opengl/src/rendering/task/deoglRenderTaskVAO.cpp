@@ -71,16 +71,16 @@ void deoglRenderTaskVAO::SetVAO(const deoglRenderTaskSharedVAO *vao){
 
 
 int deoglRenderTaskVAO::GetTotalPointCount() const{
-	return pInstances.Inject(0, [](int sum, const deoglRenderTaskInstance &inst) {
+	return pInstances.Inject(0, 0, pInstanceCount, [](int sum, const deoglRenderTaskInstance &inst) {
 		const deoglRenderTaskSharedInstance &si = *inst.GetInstance();
 		return sum + (si.GetIndexCount() + si.GetPointCount()) * decMath::max(si.GetSubInstanceCount(), 1);
-	}, 0, pInstanceCount);
+	});
 }
 
 int deoglRenderTaskVAO::GetTotalSubInstanceCount() const{
-	return pInstances.Inject(0, [](int sum, const deoglRenderTaskInstance &inst) {
-		return sum + inst.GetSubInstanceCount();
-	}, 0, pInstanceCount);
+	return pInstances.Inject(0, 0, pInstanceCount, [](int sum, const deoglRenderTaskInstance &inst) {
+		return sum + inst.GetSubInstances().GetCount();
+	});
 }
 
 

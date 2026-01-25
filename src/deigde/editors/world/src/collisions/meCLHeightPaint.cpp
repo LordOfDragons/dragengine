@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "meCLHeightPaint.h"
 #include "../world/meWorld.h"
 #include "../world/meWorldGuiParameters.h"
@@ -63,7 +59,6 @@ meCLHeightPaint::meCLHeightPaint(meWorld *world){
 	
 	pWorld = world;
 	
-	pOldHeights = nullptr;
 	pModifyWidth = 0;
 	pModifyHeight = 0;
 	
@@ -79,9 +74,7 @@ meCLHeightPaint::meCLHeightPaint(meWorld *world){
 	pGaussKernel3x3[2][2] = factor;
 }
 
-meCLHeightPaint::~meCLHeightPaint(){
-	if(pOldHeights) delete [] pOldHeights;
-}
+meCLHeightPaint::~meCLHeightPaint() = default;
 
 
 
@@ -94,10 +87,7 @@ void meCLHeightPaint::SetRay(const decDVector &origin, const decVector &directio
 }
 
 void meCLHeightPaint::BeginSession(){
-	if(pOldHeights){
-		delete [] pOldHeights;
-		pOldHeights = nullptr;
-	}
+	pOldHeights.RemoveAll();
 	pModifyWidth = 0;
 	pModifyHeight = 0;
 	
@@ -159,7 +149,7 @@ void meCLHeightPaint::Paint(float elapsed){
 		if(pPaintGrid.y < 0.0f) pPaintGrid.y += sectorDim;
 		
 		// update the old heights
-		if(!pOldHeights){
+		if(pOldHeights.IsEmpty()){
 			pSessionSector = pPaintSector;
 			
 			pSessionGrid.x = (int)pPaintGrid.x;
@@ -197,17 +187,14 @@ void meCLHeightPaint::Paint(float elapsed){
 
 void meCLHeightPaint::EndSession(){
 	// check if we have any changes at all
-	if(pOldHeights){
+	if(pOldHeights.IsNotEmpty()){
 		pWorld->GetUndoSystem()->Add(meUHTPaintHeight::Ref::New(pDrawMode, pWorld,
 			decPoint(pAreaSector.x1, pAreaSector.y1), decPoint(pAreaGrid.x1, pAreaGrid.y1),
-			decPoint(pModifyWidth, pModifyHeight), pOldHeights), false);
+			decPoint(pModifyWidth, pModifyHeight), std::move(pOldHeights)), false);
 	}
 	
 	// clean up
-	if(pOldHeights){
-		delete [] pOldHeights;
-		pOldHeights = nullptr;
-	}
+	pOldHeights.RemoveAll();
 	pModifyWidth = 0;
 	pModifyHeight = 0;
 }
@@ -712,7 +699,7 @@ void meCLHeightPaint::pUpdateOldHeights(const decPoint &sector, const decVector2
 	
 	// determine the grow parameters
 //pWorld->GetLogger()->LogInfoFormat( LOGSOURCE, "[meCLHeightPaint::pGrowHeights] as=(%i,%i,%i,%i) ag=(%i,%i,%i,%i)\n", pAreaModifySector.x1, pAreaModifySector.y1, pAreaModifySector.x2, pAreaModifySector.y2, pAreaModifyGrid.x1, pAreaModifyGrid.y1, pAreaModifyGrid.x2, pAreaModifyGrid.y2 );
-	if(pOldHeights){
+	if(pOldHeights.IsNotEmpty()){
 		if(pAreaModifySector.x1 < pAreaSector.x1 || (pAreaModifySector.x1 == pAreaSector.x1 && pAreaModifyGrid.x1 < pAreaGrid.x1)){
 			growMargins.x1 = (pAreaSector.x1 - pAreaModifySector.x1) * imageDim + (pAreaGrid.x1 - pAreaModifyGrid.x1);
 			
@@ -761,7 +748,6 @@ void meCLHeightPaint::pUpdateOldHeights(const decPoint &sector, const decVector2
 		int x, newWidth = pModifyWidth + growBy.x;
 		meHeightTerrainSector *htsector;
 		sGrayscale32 *htsHeights;
-		float *oldHeights = nullptr;
 		decBoundary retain;
 		decPoint scoord;
 		int sgx, sgy;
@@ -771,44 +757,37 @@ void meCLHeightPaint::pUpdateOldHeights(const decPoint &sector, const decVector2
 		retain.x2 = growMargins.x1 + pModifyWidth;
 		retain.y2 = growMargins.y1 + pModifyHeight;
 		
-		try{
-			oldHeights = new float[newWidth * newHeight];
-			
-			for(y=0; y<newHeight; y++){
-				for(x=0; x<newWidth; x++){
-					if(x>=retain.x1 && y>=retain.y1 && x<retain.x2 && y<retain.y2){
-						oldHeights[y * newWidth + x] = pOldHeights[(y - retain.y1) * pModifyWidth + (x - retain.x1)];
-						
-					}else{
-						sgx = pAreaGrid.x1 + x;
-						adjust = sgx / imageDim;
-						scoord.x = pAreaSector.x1 + adjust;
-						sgx -= adjust * imageDim;
-						
-						sgy = pAreaGrid.y1 + y;
-						adjust = sgy / imageDim;
-						scoord.y = pAreaSector.y1 + adjust;
-						sgy -= adjust * imageDim;
-						
-						htsector = hterrain->GetSectorWith(scoord);
-						if(htsector){
-							htsHeights = htsector->GetHeightImage()->GetDataGrayscale32();
-							oldHeights[y * newWidth + x] = htsHeights[sgy * imageDim + sgx].value;
-							
-						}else{
-							oldHeights[y * newWidth + x] = 0.0f;
-						}
+		const float * const oldHeightsData = pOldHeights.GetArrayPointer();
+		
+		decTList<float> newHeights(newWidth * newHeight, 0.0f);
+		float * const newHeightsData = newHeights.GetArrayPointer();
+		
+		for(y=0; y<newHeight; y++){
+			for(x=0; x<newWidth; x++){
+				if(x>=retain.x1 && y>=retain.y1 && x<retain.x2 && y<retain.y2){
+					newHeightsData[y * newWidth + x] = oldHeightsData[(y - retain.y1) * pModifyWidth + (x - retain.x1)];
+					
+				}else{
+					sgx = pAreaGrid.x1 + x;
+					adjust = sgx / imageDim;
+					scoord.x = pAreaSector.x1 + adjust;
+					sgx -= adjust * imageDim;
+					
+					sgy = pAreaGrid.y1 + y;
+					adjust = sgy / imageDim;
+					scoord.y = pAreaSector.y1 + adjust;
+					sgy -= adjust * imageDim;
+					
+					htsector = hterrain->GetSectorWith(scoord);
+					if(htsector){
+						htsHeights = htsector->GetHeightImage()->GetDataGrayscale32();
+						newHeightsData[y * newWidth + x] = htsHeights[sgy * imageDim + sgx].value;
 					}
 				}
 			}
-			
-		}catch(const deException &){
-			if(oldHeights) delete [] oldHeights;
-			throw;
 		}
 		
-		if(pOldHeights) delete [] pOldHeights;
-		pOldHeights = oldHeights;
+		pOldHeights = std::move(newHeights);
 		
 		pModifyWidth = newWidth;
 		pModifyHeight = newHeight;

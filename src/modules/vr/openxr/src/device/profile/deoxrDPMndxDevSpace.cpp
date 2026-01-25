@@ -98,7 +98,6 @@ void deoxrDPMndxDevSpace::CheckAttached(){
 	}
 	
 	XrXDevListMNDX list = XR_NULL_HANDLE;
-	XrXDevIdMNDX *xdevs = nullptr;
 	
 	try{
 		XrCreateXDevListInfoMNDX createInfo = {XR_TYPE_CREATE_XDEV_LIST_INFO_MNDX};
@@ -118,8 +117,8 @@ void deoxrDPMndxDevSpace::CheckAttached(){
 		uint32_t i, count = 0;
 		OXR_CHECK(instance.xrEnumerateXDevsMNDX(list, 0, &count, nullptr));
 		
-		xdevs = new XrXDevIdMNDX[count];
-		OXR_CHECK(instance.xrEnumerateXDevsMNDX(list, count, &count, xdevs));
+		decTList<XrXDevIdMNDX> xdevs((int)count, XrXDevIdMNDX{});
+		OXR_CHECK(instance.xrEnumerateXDevsMNDX(list, count, &count, xdevs.GetArrayPointer()));
 		
 		const decTObjectOrderedSet<Device> oldDevices(pDevices);
 		pDevices.RemoveAll();
@@ -145,7 +144,7 @@ void deoxrDPMndxDevSpace::CheckAttached(){
 				continue;
 			}
 			
-			const Device::Ref device(Device::Ref::New(*this, props, xdevs[i]));
+			auto device = Device::Ref::New(*this, props, xdevs[i]);
 			const decString serialLower(device->serial.GetLower());
 			const decString nameLower(device->name.GetLower());
 			
@@ -157,9 +156,6 @@ void deoxrDPMndxDevSpace::CheckAttached(){
 		instance.xrDestroyXDevListMNDX(list);
 		
 	}catch(const deException &e){
-		if(xdevs){
-			delete[] xdevs;
-		}
 		if(list != XR_NULL_HANDLE){
 			instance.xrDestroyXDevListMNDX(list);
 		}

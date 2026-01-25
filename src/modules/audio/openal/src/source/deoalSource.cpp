@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoalSource.h"
 #include "../audiothread/deoalAudioThread.h"
 #include "../effect/deoalEffectSlot.h"
@@ -47,8 +43,6 @@ pAudioThread(audioThread),
 
 pState(epsStopped),
 pSource(0),
-pBuffers(nullptr),
-pBufferCount(0),
 
 pOwner(nullptr),
 pImportance(1000.0f),
@@ -95,33 +89,22 @@ void deoalSource::SetBufferCount(int count){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(count == pBufferCount){
+	if(count == pBuffers.GetCount()){
 		return;
 	}
 	
 	Stop(); // ensure no buffers are held in any way
 	
-	if(pBuffers){
-		OAL_CHECK(pAudioThread, alDeleteBuffers(pBufferCount, pBuffers));
-		delete [] pBuffers;
-		pBuffers = nullptr;
-		pBufferCount = 0;
+	if(pBuffers.IsNotEmpty()){
+		OAL_CHECK(pAudioThread, alDeleteBuffers(pBuffers.GetCount(), pBuffers.GetArrayPointer()));
+		pBuffers.RemoveAll();
 	}
 	
 	if(count > 0){
-		pBuffers = new ALuint[count];
-		OAL_CHECK(pAudioThread, alGenBuffers(count, pBuffers));
-		pBufferCount = count;
+		pBuffers.AddRange(count, 0);
+		OAL_CHECK(pAudioThread, alGenBuffers(count, pBuffers.GetArrayPointer()));
 	}
 }
-
-ALuint deoalSource::GetBufferAt(int position) const{
-	if(position < 0 || position >= pBufferCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pBuffers[position];
-}
-
 
 
 void deoalSource::SetOwner(void *owner){
@@ -264,6 +247,8 @@ void deoalSource::Reset(){
 	if(pSource){
 		OAL_CHECK(pAudioThread, alSource3i(pSource, AL_AUXILIARY_SEND_FILTER,
 			AL_EFFECTSLOT_NULL, 0, AL_FILTER_NULL));
+		
+		pUnqueueAllBuffers();
 	}
 }
 
@@ -273,6 +258,9 @@ void deoalSource::Reset(){
 //////////////////////
 
 void deoalSource::pCleanUp(){
+	Stop();
+	pUnqueueAllBuffers();
+	
 	DropEffectSlot();
 	
 	ClearFilter();
@@ -285,12 +273,29 @@ void deoalSource::pCleanUp(){
 		pEffectSlotFilter = 0;
 	}
 	
-	if(pBuffers){
-		alDeleteBuffers(pBufferCount, pBuffers);
-		delete [] pBuffers;
+	if(pBuffers.IsNotEmpty()){
+		alDeleteBuffers(pBuffers.GetCount(), pBuffers.GetArrayPointer());
 	}
 	
 	if(pSource){
 		alDeleteSources(1, &pSource);
+	}
+}
+
+void deoalSource::pUnqueueAllBuffers(){
+	if(!pSource){
+		return;
+	}
+	
+	// unqueue all buffers. the Stop() call above ensures the source is not playing.
+	// according to openal documentation this is required since only then all buffers
+	// are considered processed
+	ALint queuedCount = 0;
+	OAL_CHECK(pAudioThread, alGetSourcei(pSource, AL_BUFFERS_QUEUED, &queuedCount));
+	while(queuedCount > 0){
+		ALuint buffers[10]{};
+		const int toUnqueue = decMath::min(queuedCount, 10);
+		OAL_CHECK(pAudioThread, alSourceUnqueueBuffers(pSource, toUnqueue, buffers));
+		queuedCount -= toUnqueue;
 	}
 }

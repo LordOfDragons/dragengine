@@ -171,8 +171,8 @@ void debpPropField::pProjectInstancesDown(const dePropFieldGround &ground){
 	
 	for(pft=0; pft<pfTypeCount; pft++){
 		dePropFieldType &pfType = pPropField->GetTypeAt(pft);
-		pftInstanceCount = pfType.GetInstanceCount();
-		pftInstances = pfType.GetInstances();
+		pftInstanceCount = pfType.GetInstances().GetCount();
+		pftInstances = pfType.GetInstances().GetArrayPointer();
 		
 		for(pfti=0; pfti<pftInstanceCount; pfti++){
 			instancePosition = pftInstances[pfti].GetPosition();
@@ -192,7 +192,7 @@ void debpPropField::pProjectInstancesDown(const dePropFieldGround &ground){
 				bpHTSector = bpHTerrain->GetSectorWith(sx, sz);
 				
 				if(bpHTSector){
-					decVector *points = bpHTSector->GetPoints();
+					decVector *points = bpHTSector->GetPoints().GetArrayPointer();
 					
 					lpx = (float)(gpx - (double)sx) * (float)imageDim;
 					lpz = (1.0f - (float)(gpz - (double)sz)) * (float)imageDim;

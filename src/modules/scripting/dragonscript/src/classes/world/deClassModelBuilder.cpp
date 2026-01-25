@@ -231,7 +231,7 @@ void deClassModelBuilder::nfAddTextureCoordinatesSet::RunFunction(dsRunTime *rt,
 		DSTHROW(dueInvalidAction);
 	}
 	
-	builder->GetModel()->GetTextureCoordinatesSetList().Add(rt->GetValue(0)->GetString());
+	builder->GetModel()->GetTextureCoordinatesSets().Add(rt->GetValue(0)->GetString());
 }
 
 // protected func void addLOD()
@@ -283,7 +283,7 @@ void deClassModelBuilder::nfSetWeightCount::RunFunction(dsRunTime *rt, dsValue *
 	}
 	
 	deModelLOD &lod = builder->GetModel()->GetLODAt(rt->GetValue(0)->GetInt());
-	lod.SetWeightCount(rt->GetValue(1)->GetInt());
+	lod.GetWeights().SetAll(rt->GetValue(1)->GetInt(), {});
 }
 
 // protected func void setWeightAt( int lod, int index, int bone, float weight )
@@ -303,7 +303,7 @@ void deClassModelBuilder::nfSetWeightAt::RunFunction(dsRunTime *rt, dsValue *mys
 	}
 	
 	deModelLOD &lod = builder->GetModel()->GetLODAt(rt->GetValue(0)->GetInt());
-	deModelWeight &weight = lod.GetWeightAt(rt->GetValue(1)->GetInt());
+	deModelWeight &weight = lod.GetWeights()[rt->GetValue(1)->GetInt()];
 	weight.SetBone(rt->GetValue(2)->GetInt());
 	weight.SetWeight(rt->GetValue(3)->GetFloat());
 }
@@ -323,7 +323,7 @@ void deClassModelBuilder::nfSetWeightGroupCount::RunFunction(dsRunTime *rt, dsVa
 	}
 	
 	deModelLOD &lod = builder->GetModel()->GetLODAt(rt->GetValue(0)->GetInt());
-	lod.SetWeightGroupCount(rt->GetValue(1)->GetInt());
+	lod.GetWeightGroups().SetAll(rt->GetValue(1)->GetInt(), {});
 }
 
 // protected func void setWeightGroupAt( int lod, int index, int count )
@@ -341,8 +341,8 @@ void deClassModelBuilder::nfSetWeightGroupAt::RunFunction(dsRunTime *rt, dsValue
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deModelLOD &lod = builder->GetModel()->GetLODAt(rt->GetValue(0)->GetInt());
-	lod.SetWeightGroupAt(rt->GetValue(1)->GetInt(), rt->GetValue(2)->GetInt());
+	deModelLOD &lod = builder->GetModel()->GetLODAt(rt->GetValue(0)->GetInt());
+	lod.GetWeightGroups()[rt->GetValue(1)->GetInt()] = rt->GetValue(2)->GetInt();
 }
 
 // protected func void setVertexCount( int lod, int count )
@@ -360,7 +360,7 @@ void deClassModelBuilder::nfSetVertexCount::RunFunction(dsRunTime *rt, dsValue *
 	}
 	
 	deModelLOD &lod = builder->GetModel()->GetLODAt(rt->GetValue(0)->GetInt());
-	lod.SetVertexCount(rt->GetValue(1)->GetInt());
+	lod.GetVertices().SetAll(rt->GetValue(1)->GetInt(), {});
 }
 
 // protected func void setVertexAt( int lod, int index, Vector position, int weightSet )
@@ -381,7 +381,7 @@ void deClassModelBuilder::nfSetVertexAt::RunFunction(dsRunTime *rt, dsValue *mys
 	
 	const deScriptingDragonScript &ds = (static_cast<deClassModelBuilder*>(GetOwnerClass()))->GetDS();
 	deModelLOD &lod = builder->GetModel()->GetLODAt(rt->GetValue(0)->GetInt());
-	deModelVertex &vertex = lod.GetVertexAt(rt->GetValue(1)->GetInt());
+	deModelVertex &vertex = lod.GetVertices()[rt->GetValue(1)->GetInt()];
 	vertex.SetPosition(ds.GetClassVector()->GetVector(rt->GetValue(2)->GetRealObject()));
 	vertex.SetWeightSet(rt->GetValue(3)->GetInt());
 }
@@ -437,7 +437,7 @@ void deClassModelBuilder::nfSetFaceCount::RunFunction(dsRunTime *rt, dsValue *my
 	}
 	
 	deModelLOD &lod = builder->GetModel()->GetLODAt(rt->GetValue(0)->GetInt());
-	lod.SetFaceCount(rt->GetValue(1)->GetInt());
+	lod.GetFaces().SetAll(rt->GetValue(1)->GetInt(), {});
 }
 
 // protected func void setFaceAt( int lod, int index, int texture, int vertex1, int vertex2,
@@ -474,7 +474,7 @@ void deClassModelBuilder::nfSetFaceAt::RunFunction(dsRunTime *rt, dsValue *mysel
 	
 	const deScriptingDragonScript &ds = (static_cast<deClassModelBuilder*>(GetOwnerClass()))->GetDS();
 	deModelLOD &lod = builder->GetModel()->GetLODAt(rt->GetValue(0)->GetInt());
-	deModelFace &face = lod.GetFaceAt(rt->GetValue(1)->GetInt());
+	deModelFace &face = lod.GetFaces()[rt->GetValue(1)->GetInt()];
 	face.SetTexture(rt->GetValue(2)->GetInt());
 	face.SetVertex1(rt->GetValue(3)->GetInt());
 	face.SetVertex2(rt->GetValue(4)->GetInt());
@@ -526,7 +526,7 @@ void deClassModelBuilder::nfSetTextureCoordinateSetAtSetCount::RunFunction(dsRun
 	}
 	
 	deModelLOD &lod = builder->GetModel()->GetLODAt(rt->GetValue(0)->GetInt());
-	deModelTextureCoordinatesSet &tcs = lod.GetTextureCoordinatesSetAt(rt->GetValue(1)->GetInt());
+	deModelTextureCoordinatesSet &tcs = lod.GetTextureCoordinatesSets()[rt->GetValue(1)->GetInt()];
 	tcs.GetTextureCoordinates().RemoveAll();
 	const int count = rt->GetValue(2)->GetInt();
 	for(int i=0; i<count; i++){
@@ -552,7 +552,7 @@ void deClassModelBuilder::nfSetTextureCoordinateSetAtSetAt::RunFunction(dsRunTim
 	
 	const deScriptingDragonScript &ds = (static_cast<deClassModelBuilder*>(GetOwnerClass()))->GetDS();
 	deModelLOD &lod = builder->GetModel()->GetLODAt(rt->GetValue(0)->GetInt());
-	deModelTextureCoordinatesSet &tcs = lod.GetTextureCoordinatesSetAt(rt->GetValue(1)->GetInt());
+	deModelTextureCoordinatesSet &tcs = lod.GetTextureCoordinatesSets()[rt->GetValue(1)->GetInt()];
 	tcs.GetTextureCoordinates().GetAt(rt->GetValue(2)->GetInt()) =
 		ds.GetClassVector2()->GetVector2(rt->GetValue(3)->GetRealObject());
 }

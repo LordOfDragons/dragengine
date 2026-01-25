@@ -51,9 +51,7 @@ private:
 	decTList<dedaiSpaceGridVertex*> pListOpen;
 	decTList<dedaiSpaceGridVertex*> pPathVertices;
 	
-	decDVector *pPathPoints;
-	int pPathPointCount;
-	int pPathPointSize;
+	decTList<decDVector> pPathPoints;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -96,14 +94,9 @@ public:
 	inline decTList<dedaiSpaceGridVertex*> &GetPathVertices(){ return pPathVertices; }
 	inline const decTList<dedaiSpaceGridVertex*> &GetPathVertices() const{ return pPathVertices; }
 	
-	/** Retrieves the number of path points. */
-	inline int GetPathPointCount() const{ return pPathPointCount; }
-	/** Retrieves the path points. */
-	const decDVector *GetPathPoints() const{ return pPathPoints; }
-	/** Adds a path point. */
-	void AddPathPoint(const decDVector &point);
-	/** Removes all path points. */
-	void RemoveAllPathPoints();
+	/** Path points. */
+	decTList<decDVector> &GetPathPoints(){ return pPathPoints; }
+	const decTList<decDVector> &GetPathPoints() const{ return pPathPoints; }
 	/*@}*/
 	
 private:

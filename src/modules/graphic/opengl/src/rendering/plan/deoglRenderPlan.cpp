@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <string.h>
-
 #include "deoglRenderPlan.h"
 #include "deoglRenderPlanDebug.h"
 #include "deoglRenderPlanLight.h"
@@ -168,7 +165,7 @@ pGIState(nullptr)
 	pShadowCubeSize = 128;
 	pShadowSkySize = 128;
 	
-	pEnvMaps = new deoglRenderPlanEnvMap[16];
+	pEnvMaps.SetAll(16, {});
 	pEnvMapCount = 8; //4;
 	
 	pDirectEnvMapFader.SetFadePerTime(1.0f);
@@ -208,17 +205,13 @@ deoglRenderPlan::~deoglRenderPlan(){
 	
 	pDirectEnvMapFader.DropAll();
 	
-	if(pEnvMaps){
-		int i;
-		for(i=0; i<pEnvMapCount; i++){
-			if(pEnvMaps[i].GetEnvMap()){
-				pEnvMaps[i].GetEnvMap()->RemovePlanUsage();
-				pEnvMaps[i].GetEnvMap()->GetRenderPlanList().Remove(this);
-			}
-			pEnvMaps[i].SetEnvMap(nullptr);
+	pEnvMaps.Visit(0, pEnvMapCount, [&](deoglRenderPlanEnvMap &envmap){
+		if(envmap.GetEnvMap()){
+			envmap.GetEnvMap()->RemovePlanUsage();
+			envmap.GetEnvMap()->GetRenderPlanList().Remove(this);
 		}
-		delete [] pEnvMaps;
-	}
+		envmap.SetEnvMap(nullptr);
+	});
 	
 	if(pGIState){
 		delete pGIState;
@@ -427,9 +420,9 @@ void deoglRenderPlan::pBarePrepareRender(const deoglRenderPlanMasked *mask){
 	SPECIAL_TIMER_PRINT("PrepareRenderPlan")
 	
 	// finish preparations
-	pSkyLights.Visit([](deoglRenderPlanSkyLight &sl){
+	pSkyLights.Visit(0, pSkyLightCount, [](deoglRenderPlanSkyLight &sl){
 		sl.FinishPrepare();
-	}, 0, pSkyLightCount);
+	});
 	renderCanvas.SampleDebugInfoPlanPrepareFinish(*this);
 	SPECIAL_TIMER_PRINT("Finish")
 	
@@ -761,9 +754,9 @@ void deoglRenderPlan::pStartFindContent(const deoglRenderPlanMasked *mask){
 	}
 	
 	// sky lights
-	pSkyLights.Visit([](deoglRenderPlanSkyLight &sl){
+	pSkyLights.Visit(0, pSkyLightCount, [](deoglRenderPlanSkyLight &sl){
 		sl.StartFindContent();
-	}, 0, pSkyLightCount);
+	});
 }
 
 void deoglRenderPlan::pWaitFinishedFindContent(const deoglRenderPlanMasked *mask){
@@ -1207,14 +1200,14 @@ void deoglRenderPlan::pRenderOcclusionTests(const deoglRenderPlanMasked *mask){
 		pRenderThread.GetRenderers().GetOcclusion().RenderTestsCamera(*this, mask);
 		SPECIAL_TIMER_PRINT("> RenderTestsCamera")
 		
-		pSkyLights.Visit([](deoglRenderPlanSkyLight &sl){
+		pSkyLights.Visit(0, pSkyLightCount, [](deoglRenderPlanSkyLight &sl){
 			sl.RenderOcclusionTests();
-		}, 0, pSkyLightCount);
+		});
 		SPECIAL_TIMER_PRINT("> SkyLightsRenderTests")
 		
-		pSkyLights.Visit([](deoglRenderPlanSkyLight &sl){
+		pSkyLights.Visit(0, pSkyLightCount, [](deoglRenderPlanSkyLight &sl){
 			sl.BuildComputeRenderTasks();
-		}, 0, pSkyLightCount);
+		});
 		SPECIAL_TIMER_PRINT("> SkyLightsBuildComputeRenderTasks")
 		
 		pCompute->ReadVisibleElements();
@@ -1320,7 +1313,7 @@ void deoglRenderPlan::pDebugVisibleNoCull(){
 			
 			if(component.GetModel()){
 				const deoglModelLOD &modelLOD = component.GetModel()->GetLODAt(clistComponent.GetLODLevel());
-				pDebug->IncrementViewTriangles(modelLOD.GetFaceCount());
+				pDebug->IncrementViewTriangles(modelLOD.GetFaces().GetCount());
 			}
 			/*
 			if(component.GetRenderEnvMap()){
@@ -1371,7 +1364,7 @@ void deoglRenderPlan::pDebugVisibleCulled(){
 			}
 			
 			const deoglModelLOD &modelLOD = component.GetModel()->GetLODAt(clistComponent.GetLODLevel());
-			pDebug->IncrementCullPSTriangles(modelLOD.GetFaceCount());
+			pDebug->IncrementCullPSTriangles(modelLOD.GetFaces().GetCount());
 		}
 	}
 }
@@ -1854,10 +1847,9 @@ void deoglRenderPlan::SetDebugTiming(bool debugTiming){
 // Environment Maps
 /////////////////////
 
-deoglRenderPlanEnvMap &deoglRenderPlan::GetEnvMapAt(int index) const{
-	if(index < 0 || index >= pEnvMapCount){
-		DETHROW(deeInvalidParam);
-	}
+deoglRenderPlanEnvMap &deoglRenderPlan::GetEnvMapAt(int index){
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < pEnvMapCount)
 	
 	return pEnvMaps[index];
 }
@@ -1906,9 +1898,9 @@ deoglRenderPlanLight *deoglRenderPlan::GetLightFor(deoglCollideListLight &light)
 }
 
 void deoglRenderPlan::RemoveAllLights(){
-	pLights.Visit([](deoglRenderPlanLight &l){
+	pLights.Visit(0, pLightCount, [](deoglRenderPlanLight &l){
 		l.SetLight(nullptr);
-	}, 0, pLightCount);
+	});
 	pLightCount = 0;
 }
 
@@ -1922,16 +1914,16 @@ deoglRenderPlanSkyLight *deoglRenderPlan::GetSkyLightAt(int index) const{
 }
 
 void deoglRenderPlan::RemoveAllSkyLights(){
-	pSkyLights.Visit([](deoglRenderPlanSkyLight &sl){
+	pSkyLights.Visit(0, pSkyLightCount, [](deoglRenderPlanSkyLight &sl){
 		sl.Clear();
-	}, 0, pSkyLightCount);
+	});
 	pSkyLightCount = 0;
 }
 
 void deoglRenderPlan::SkyLightsStartBuildRT(){
-	pSkyLights.Visit([](deoglRenderPlanSkyLight &sl){
+	pSkyLights.Visit(0, pSkyLightCount, [](deoglRenderPlanSkyLight &sl){
 		sl.StartBuildRT();
-	}, 0, pSkyLightCount);
+	});
 }
 
 
@@ -1982,10 +1974,10 @@ deoglRenderPlanMasked *deoglRenderPlan::AddMaskedPlanFor(deoglRenderPlan *plan){
 }
 
 void deoglRenderPlan::RemoveAllMaskedPlans(){
-	pMaskedPlans.Visit([](deoglRenderPlanMasked &p){
+	pMaskedPlans.Visit(0, pMaskedPlanCount, [](deoglRenderPlanMasked &p){
 		p.SetPlan(nullptr);
 		p.SetComponent(nullptr, 0);
-	}, 0, pMaskedPlanCount);
+	});
 	pMaskedPlanCount = 0;
 }
 
@@ -2047,7 +2039,7 @@ void deoglRenderPlan::pCheckTransparency(){
 		
 		for(i=0; i< peinstCount; i++){
 			const deoglRParticleEmitterInstance &instance = *peinstList.GetAt(i);
-			if(instance.GetParticleCount() == 0){
+			if(instance.GetParticles().IsEmpty()){
 				continue;
 			}
 			
@@ -2081,7 +2073,7 @@ void deoglRenderPlan::pCheckTransparency(){
 		
 		for(i=0; i< peinstCount; i++){
 			const deoglRParticleEmitterInstance &instance = *peinstList.GetAt(i);
-			if(instance.GetParticleCount() == 0){
+			if(instance.GetParticles().IsEmpty()){
 				continue;
 			}
 			

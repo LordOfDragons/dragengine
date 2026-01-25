@@ -22,42 +22,45 @@
  * SOFTWARE.
  */
 
-// includes
-#include <stdio.h>
-#include <string.h>
-
-#include "deoglCollideListManager.h"
 #include "deoglCollideList.h"
+#include "deoglCollideListManager.h"
 
 #include <dragengine/common/exceptions.h>
 
 
+// Class deoglCollideListManager::sList
+/////////////////////////////////////////
+
+deoglCollideListManager::sList::sList(sList &&other) noexcept :
+list(std::move(other.list)), inUse(other.inUse)
+{
+	other.inUse = false;
+}
+
+deoglCollideListManager::sList &deoglCollideListManager::sList::operator=(sList &&other) noexcept{
+	if(this != &other){
+		list = std::move(other.list);
+		inUse = other.inUse;
+		other.inUse = false;
+	}
+	return *this;
+}
+
 
 // class deoglCollideListManager
-///////////////////////////////////
+//////////////////////////////////
 
 // constructor, destructor
 ////////////////////////////
 
-deoglCollideListManager::deoglCollideListManager(){
-	pLists = nullptr;
-	pListCount = 0;
-	pListSize = 0;
-}
+deoglCollideListManager::deoglCollideListManager() = default;
 
 deoglCollideListManager::~deoglCollideListManager(){
-	int i, inUseCount = 0;
-	for(i=0; i<pListCount; i++){
-		if(pLists[i].inUse) inUseCount++;
-	}
+	const int inUseCount = pLists.Inject(0, [&](int accum, const sList &item){
+		return accum + (item.inUse ? 1 : 0);
+	});
 	if(inUseCount > 0){
 		printf("[OPENGL] WARNING!%i collide lists have not been released!\n", inUseCount);
-	}
-	if(pLists){
-		for(i=0; i<pListCount; i++){
-			if(pLists[i].list) delete pLists[i].list;
-		}
-		delete [] pLists;
 	}
 }
 
@@ -67,54 +70,27 @@ deoglCollideListManager::~deoglCollideListManager(){
 ////////////////////
 
 deoglCollideList *deoglCollideListManager::GetList(){
-	int index = pFindNextList();
+	int index = pLists.IndexOfMatching([](const sList &item){
+		return !item.inUse;
+	});
+	
 	if(index == -1){
-		if(pListCount == pListSize){
-			int i, newSize = pListSize * 3 / 2 + 1;
-			sList *newArray = new sList[newSize];
-			for(i=pListSize; i<newSize; i++){
-				newArray[i].list = nullptr;
-				newArray[i].inUse = false;
-			}
-			if(pLists){
-				for(i=0; i<pListSize; i++){
-					newArray[i].list = pLists[i].list;
-					newArray[i].inUse = pLists[i].inUse;
-				}
-				delete [] pLists;
-			}
-			pLists = newArray;
-			pListSize = newSize;
-		}
-		pLists[pListCount].list = new deoglCollideList;
-		index = pListCount;
-		pListCount++;
+		pLists.Add(deTUniqueReference<sList>::New());
+		index = pLists.GetCount() - 1;
 	}
-	pLists[index].inUse = true;
-	return pLists[index].list;
+	pLists[index]->inUse = true;
+	return pLists[index]->list;
 }
 
 void deoglCollideListManager::ReleaseList(deoglCollideList *list){
-	if(!list) DETHROW(deeInvalidParam);
-	int i;
-	for(i=0; i<pListCount; i++){
-		if(pLists[i].list == list){
-			if(!pLists[i].inUse) DETHROW(deeInvalidParam);
-			pLists[i].inUse = false;
-			break;
-		}
+	DEASSERT_NOTNULL(list)
+	
+	const int index = pLists.IndexOfMatching([list](const sList &item){
+		return item.list == list;
+	});
+	
+	if(index != -1){
+		DEASSERT_TRUE(pLists[index]->inUse)
+		pLists[index]->inUse = false;
 	}
-}
-
-
-
-// private functions
-//////////////////////
-
-int deoglCollideListManager::pFindNextList() const{
-	int i;
-	for(i=0; i<pListCount; i++){
-		if(!pLists[i].inUse) return i;
-	}
-	return -1;
 }

@@ -28,6 +28,7 @@
 #include "../../environment/raytrace/deoalRayTraceHitElement.h"
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/collection/decTLinkedList.h>
 
 class deoalRayCacheOctree;
@@ -47,8 +48,7 @@ private:
 	decVector pDirection;
 	float pLength;
 	
-	deoalRayCacheRayHit *pHits;
-	int pHitCount;
+	decTList<deoalRayCacheRayHit> pHits;
 	
 	deoalRayCacheOctree *pOctreeNode;
 	
@@ -88,7 +88,7 @@ public:
 	inline float GetLength() const{ return pLength; }
 	
 	/** \brief Number of hits. */
-	inline int GetHitCount() const{ return pHitCount; }
+	inline int GetHitCount() const{ return pHits.GetCount(); }
 	
 	/** \brief Hit at index. */
 	const deoalRayCacheRayHit &GetHitAt(int index) const;

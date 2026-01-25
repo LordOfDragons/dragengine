@@ -31,6 +31,7 @@
 #include "dewmVorbisStream.h"
 
 #include <dragengine/deEngine.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/parallel/deParallelProcessing.h>
 
@@ -286,8 +287,6 @@ void dewmWebmCallbackInfos::pProcessBlock(const webm::Block &block){
 webm::Status dewmWebmCallbackInfos::pProcessFirstFrameVideo(webm::Reader &reader,
 std::uint64_t &bytes_remaining){
 	vpx_codec_ctx_t *context = nullptr;
-	uint8_t *data = nullptr;
-	
 	vpx_codec_iter_t iter = nullptr;
 	vpx_codec_dec_cfg_t config;
 	vpx_codec_iface_t *iface;
@@ -318,12 +317,13 @@ std::uint64_t &bytes_remaining){
 		
 		DEASSERT_TRUE(vpx_codec_dec_init(context, iface, &config, 0) == VPX_CODEC_OK)
 		
-		data = new uint8_t[bytes_remaining];
+		decTList<uint8_t> data;
+		data.AddRange(bytes_remaining, 0);
 		std::uint64_t readCount;
-		DEASSERT_TRUE(reader.Read(bytes_remaining, data, &readCount).completed_ok());
+		DEASSERT_TRUE(reader.Read(bytes_remaining, data.GetArrayPointer(), &readCount).completed_ok());
 		bytes_remaining -= readCount;
 		
-		DEASSERT_TRUE(vpx_codec_decode(context, data,
+		DEASSERT_TRUE(vpx_codec_decode(context, data.GetArrayPointer(),
 			(unsigned int)readCount, nullptr, 0) == VPX_CODEC_OK)
 		
 		image = vpx_codec_get_frame(context, &iter);
@@ -348,15 +348,11 @@ std::uint64_t &bytes_remaining){
 		
 		pInfos.SetColorConversionMatrix(pCreateColorConversionMatrix());
 		
-		delete [] data;
 		vpx_codec_destroy(context);
 		delete context;
 		
 	}catch(const deException &e){
 		pModule.LogException(e);
-		if(data){
-			delete [] data;
-		}
 		if(context){
 			vpx_codec_destroy(context);
 		}

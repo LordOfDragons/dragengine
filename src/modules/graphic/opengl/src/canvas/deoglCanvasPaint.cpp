@@ -70,16 +70,10 @@ void deoglCanvasPaint::SyncContentToRender(){
 	pRCanvasPaint->SetStartAngle(pCanvasPaint.GetStartAngle());
 	pRCanvasPaint->SetEndAngle(pCanvasPaint.GetEndAngle());
 	
-	const int pointCount = pCanvasPaint.GetPointCount();
-	pRCanvasPaint->SetPointCount(pointCount);
-	if(pointCount > 0){
-		decVector2 * const points = pRCanvasPaint->GetPoints();
-		int i;
-		
-		for(i=0; i<pointCount; i++){
-			points[i] = pCanvasPaint.GetPointAt(i);
-		}
-	}
+	pRCanvasPaint->SetPointCount(pCanvasPaint.GetPointCount());
+	pCanvasPaint.GetPoints().VisitIndexed([&](int i, const decPoint &point){
+		pRCanvasPaint->GetPoints()[i] = point;
+	});
 }
 
 

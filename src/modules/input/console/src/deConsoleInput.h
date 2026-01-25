@@ -31,6 +31,7 @@
 #include <stdio.h>
 #include <termios.h>
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/input/deInputEvent.h>
 #include <dragengine/systems/modules/input/deBaseInputModule.h>
 
@@ -44,7 +45,7 @@ class deConsoleInput : public deBaseInputModule{
 private:
 	termios pOldTermSettings;
 	
-	deInputEvent::eKeyCodes *pKeyCodeMap;
+	decTList<deInputEvent::eKeyCodes> pKeyCodeMap;
 	
 public:
 	/** @name Constructors and Destructors */

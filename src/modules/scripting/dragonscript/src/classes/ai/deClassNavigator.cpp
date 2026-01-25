@@ -242,7 +242,7 @@ void deClassNavigator::nfGetTypeFixCost::RunFunction(dsRunTime *rt, dsValue *mys
 		rt->PushFloat(navigator.GetDefaultFixCost());
 		
 	}else{
-		rt->PushFloat(navigator.GetTypeAt(index)->GetFixCost());
+		rt->PushFloat(navigator.GetTypes()[index].GetFixCost());
 	}
 }
 
@@ -263,7 +263,7 @@ void deClassNavigator::nfSetTypeFixCost::RunFunction(dsRunTime *rt, dsValue *mys
 		navigator.AddType(type);
 	}
 	
-	navigator.GetTypeAt(index)->SetFixCost(fixCost);
+	navigator.GetTypeAt(index).SetFixCost(fixCost);
 	navigator.NotifyTypesChanged();
 }
 
@@ -281,7 +281,7 @@ void deClassNavigator::nfGetTypeCostPerMeter::RunFunction(dsRunTime *rt, dsValue
 		rt->PushFloat(navigator.GetDefaultCostPerMeter());
 		
 	}else{
-		rt->PushFloat(navigator.GetTypeAt(index)->GetCostPerMeter());
+		rt->PushFloat(navigator.GetTypes()[index].GetCostPerMeter());
 	}
 }
 
@@ -302,7 +302,7 @@ void deClassNavigator::nfSetTypeCostPerMeter::RunFunction(dsRunTime *rt, dsValue
 		navigator.AddType(type);
 	}
 	
-	navigator.GetTypeAt(index)->SetCostPerMeter(costPerMeter);
+	navigator.GetTypeAt(index).SetCostPerMeter(costPerMeter);
 	navigator.NotifyTypesChanged();
 }
 

@@ -92,7 +92,7 @@ void dearVPSState::SetFrom(const dearVPSState &state){
 }
 
 void dearVPSState::SetFrom(const deComponent &component){
-	pWeight = component.GetVertexPositionSetWeightAt(pModelIndex);
+	pWeight = component.GetVertexPositionSetWeights()[pModelIndex];
 	SetDirty(true);
 }
 
@@ -118,7 +118,7 @@ deAnimatorRule::eBlendModes blendMode, float blendFactor, bool enableWeight){
 
 void dearVPSState::BlendWith(const deComponent &component,
 deAnimatorRule::eBlendModes blendMode, float blendFactor, bool enableWeight){
-	BlendWith(component.GetVertexPositionSetWeightAt(pModelIndex),
+	BlendWith(component.GetVertexPositionSetWeights()[pModelIndex],
 		blendMode, blendFactor, enableWeight);
 }
 

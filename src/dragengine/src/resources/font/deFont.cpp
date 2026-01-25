@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-#include <memory.h>
-
 #include "deFont.h"
 #include "deFontManager.h"
 #include "../image/deImage.h"
@@ -33,6 +31,7 @@
 #include "../../common/exceptions.h"
 #include "../../common/string/decString.h"
 #include "../../common/string/unicode/decUnicodeString.h"
+#include "../../common/collection/decTList.h"
 #include "../../logger/deLogger.h"
 #include "../../parallel/deParallelTask.h"
 #include "../../parallel/deParallelProcessing.h"
@@ -78,12 +77,6 @@ public:
 deFont::deFont(deFontManager *manager, deVirtualFileSystem *vfs, const char *filename,
 	TIME_SYSTEM modificationTime) :
 deFileResource(manager, vfs, filename, modificationTime),
-pGlyphs(nullptr),
-pGlyphCount(0),
-pGlyphGroups(nullptr),
-pGlyphGroupCount(0),
-pGlyphMap(nullptr),
-pGlyphMapCount(0),
 pFontWidth(0),
 pLineHeight(1),
 pBaseLine(1),
@@ -95,16 +88,6 @@ pPeerGraphic(nullptr){
 deFont::~deFont(){
 	if(pPeerGraphic){
 		delete pPeerGraphic;
-	}
-	
-	pSizes.RemoveAll();
-	
-	pFreeGlyphMap();
-	
-	if(pGlyphs){
-		delete [] pGlyphs;
-		pGlyphs = nullptr;
-		pGlyphCount = 0;
 	}
 }
 
@@ -137,15 +120,16 @@ void deFont::UpdateGlyphs(){
 	// update font width
 	pFontWidth = 0;
 	
-	int i;
-	for(i=0; i<pGlyphCount; i++){
-		if(pGlyphs[i].GetWidth() > pFontWidth){
-			pFontWidth = pGlyphs[i].GetWidth();
+	pGlyphs.Visit([&](const deFontGlyph &glyph){
+		if(glyph.GetWidth() > pFontWidth){
+			pFontWidth = glyph.GetWidth();
 		}
-	}
+	});
 	
 	// create glyph map
-	pFreeGlyphMap();
+	pGlyphMap.RemoveAll();
+	pGlyphGroups.RemoveAll();
+	
 	pCreateGlyphMap();
 }
 
@@ -182,18 +166,10 @@ void deFont::SetGlyphCount(int count){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pFreeGlyphMap();
+	pGlyphMap.RemoveAll();
+	pGlyphGroups.RemoveAll();
 	
-	if(pGlyphs){
-		delete [] pGlyphs;
-		pGlyphs = nullptr;
-		pGlyphCount = 0;
-	}
-	
-	if(count > 0){
-		pGlyphs = new deFontGlyph[count];
-		pGlyphCount = count;
-	}
+	pGlyphs.SetAll(count, {});
 }
 
 bool deFont::HasGlyph(int unicode) const{
@@ -202,7 +178,7 @@ bool deFont::HasGlyph(int unicode) const{
 	}
 	
 	const int group = unicode >> 8;
-	if(group >= pGlyphMapCount){
+	if(group >= pGlyphMap.GetCount()){
 		return false;
 	}
 	
@@ -221,16 +197,10 @@ bool deFont::HasGlyph(int unicode) const{
 }
 
 deFontGlyph &deFont::GetGlyphAt(int index){
-	if(index < 0 || index >= pGlyphCount){
-		DETHROW(deeInvalidParam);
-	}
 	return pGlyphs[index];
 }
 
 const deFontGlyph &deFont::GetGlyphAt(int index) const{
-	if(index < 0 || index >= pGlyphCount){
-		DETHROW(deeInvalidParam);
-	}
 	return pGlyphs[index];
 }
 
@@ -242,7 +212,7 @@ const deFontGlyph &deFont::GetGlyph(int unicode) const{
 const deFontGlyph &deFont::GetGlyph(int unicode, const deFontSize *size) const{
 	if(size){
 		const int index = GetGlyphIndex(unicode);
-		return index != -1 ? size->GetGlyphAt(index) : size->GetUndefinedGlyph();
+		return index != -1 ? size->GetGlyphs()[index] : size->GetUndefinedGlyph();
 		
 	}else{
 		return GetGlyph(unicode);
@@ -263,7 +233,7 @@ int deFont::GetGlyphIndex(int unicode) const{
 	*/
 	
 	const int group = unicode >> 8;
-	if(group >= pGlyphMapCount){
+	if(group >= pGlyphMap.GetCount()){
 		return -1;
 	}
 	
@@ -414,25 +384,9 @@ void deFont::SetPeerGraphic(deBaseGraphicFont *peer){
 // Private Function
 /////////////////////
 
-void deFont::pFreeGlyphMap(){
-	if(pGlyphMap){
-		delete [] pGlyphMap;
-		pGlyphMap = nullptr;
-		pGlyphMapCount = 0;
-	}
-	
-	if(pGlyphGroups){
-		delete [] pGlyphGroups;
-		pGlyphGroups = nullptr;
-		pGlyphGroupCount = 0;
-	}
-}
-
 void deFont::pCreateGlyphMap(){
-	int i;
-	
-	for(i=0; i<pGlyphCount; i++){
-		const int unicode = pGlyphs[i].GetUnicode();
+	pGlyphs.VisitIndexed([&](int i, const deFontGlyph &glyph){
+		const int unicode = glyph.GetUnicode();
 		if(unicode < 0){
 			DETHROW(deeInvalidParam);
 		}
@@ -440,38 +394,17 @@ void deFont::pCreateGlyphMap(){
 		const int group = unicode >> 8;
 		const int entry = unicode & 0xff;
 		
-		if(group >= pGlyphMapCount){
-			const int newCount = group + 1;
-			unsigned short * const map = new unsigned short[newCount];
-			if(pGlyphMap){
-				memcpy(map, pGlyphMap, sizeof(unsigned short) * pGlyphMapCount);
-				delete [] pGlyphMap;
-			}
-			memset(map + pGlyphMapCount, 0, sizeof(unsigned short)
-				* ( newCount - pGlyphMapCount ) );
-			pGlyphMap = map;
-			pGlyphMapCount = newCount;
+		if(group >= pGlyphMap.GetCount()){
+			pGlyphMap.SetCount(group + 1, 0);
 		}
 		
 		if(pGlyphMap[group] == 0){
-			const unsigned short mapIndex = (unsigned short)(1 + pGlyphGroupCount);
-			
-			const int newCount = pGlyphGroupCount + 1;
-			unsigned short * const groups = new unsigned short[newCount * 256];
-			if(pGlyphGroups){
-				memcpy(groups, pGlyphGroups, sizeof(unsigned short) * pGlyphGroupCount * 256);
-				delete [] pGlyphGroups;
-			}
-			memset(groups + pGlyphGroupCount * 256, 0,
-				sizeof(unsigned short) * (newCount - pGlyphGroupCount) * 256);
-			pGlyphGroups = groups;
-			pGlyphGroupCount = newCount;
-			
-			pGlyphMap[group] = mapIndex;
+			pGlyphMap[group] = (unsigned short)(1 + pGlyphGroups.GetCount());
+			pGlyphGroups.AddRange(256, 0);
 		}
 		
 		pGlyphGroups[(pGlyphMap[group] - 1) * 256 + entry] = (unsigned short)(i + 1);
-	}
+	});
 }
 
 deFontSize *deFont::pGetSizeWith(int lineHeight){

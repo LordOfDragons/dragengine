@@ -45,6 +45,11 @@
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/resources/navigation/space/deNavigationSpace.h>
 #include <dragengine/resources/navigation/space/deNavigationSpaceManager.h>
+#include <dragengine/resources/navigation/space/deNavigationSpaceCorner.h>
+#include <dragengine/resources/navigation/space/deNavigationSpaceEdge.h>
+#include <dragengine/resources/navigation/space/deNavigationSpaceFace.h>
+#include <dragengine/resources/navigation/space/deNavigationSpaceRoom.h>
+#include <dragengine/resources/navigation/space/deNavigationSpaceWall.h>
 #include <dragengine/resources/collider/deCollider.h>
 #include <dragengine/resources/collider/deColliderComponent.h>
 #include <dragengine/resources/collider/deColliderVolume.h>
@@ -106,12 +111,12 @@ void igdeWOSONavigationSpace::pUpdateNavigationSpace(){
 		pGDNavigationSpace.GetPath()));
 		
 	if(pathNavSpace != pPathNavigationSpace){
-		pNavigationSpace->SetRoomCount(0);
-		pNavigationSpace->SetWallCount(0);
-		pNavigationSpace->SetFaceCount(0);
-		pNavigationSpace->SetCornerCount(0);
-		pNavigationSpace->SetEdgeCount(0);
-		pNavigationSpace->SetVertexCount(0);
+		pNavigationSpace->GetRooms().RemoveAll();
+		pNavigationSpace->GetWalls().RemoveAll();
+		pNavigationSpace->GetFaces().RemoveAll();
+		pNavigationSpace->GetCorners().RemoveAll();
+		pNavigationSpace->GetEdges().RemoveAll();
+		pNavigationSpace->GetVertices().RemoveAll();
 		pNavigationSpace->SetType(pGDNavigationSpace.GetType());
 		
 		if(!pathNavSpace.IsEmpty()){
@@ -125,12 +130,12 @@ void igdeWOSONavigationSpace::pUpdateNavigationSpace(){
 						engine.GetVirtualFileSystem()->OpenFileForReading(vfsPath));
 					
 				}catch(const deException &e){
-					pNavigationSpace->SetRoomCount(0);
-					pNavigationSpace->SetWallCount(0);
-					pNavigationSpace->SetFaceCount(0);
-					pNavigationSpace->SetCornerCount(0);
-					pNavigationSpace->SetEdgeCount(0);
-					pNavigationSpace->SetVertexCount(0);
+					pNavigationSpace->GetRooms().RemoveAll();
+					pNavigationSpace->GetWalls().RemoveAll();
+					pNavigationSpace->GetFaces().RemoveAll();
+					pNavigationSpace->GetCorners().RemoveAll();
+					pNavigationSpace->GetEdges().RemoveAll();
+					pNavigationSpace->GetVertices().RemoveAll();
 					pNavigationSpace->SetType(pGDNavigationSpace.GetType());
 					GetLogger().LogException("DEIGDE", e);
 				}

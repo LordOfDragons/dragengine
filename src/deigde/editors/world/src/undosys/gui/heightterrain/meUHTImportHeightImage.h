@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _MEUHTIMPORTHEIGHTIMAGE_H_
 #define _MEUHTIMPORTHEIGHTIMAGE_H_
 
@@ -31,9 +30,10 @@
 
 #include <deigde/undo/igdeUndo.h>
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decString.h>
-class deImage;
 
+class deImage;
 
 
 /**
@@ -51,20 +51,18 @@ public:
 private:
 	meWorld *pWorld;
 	meHeightTerrainSector::Ref pSector;
-	
-	float *pOldHeights;
-	float *pNewHeights;
+	decTList<float> pOldHeights, pNewHeights;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
 	meUHTImportHeightImage(meWorld *world, meHeightTerrainSector *sector, deImage *image);
-	/** \brief Clean up object. */
-
+	
 protected:
+	/** \brief Clean up object. */
 	~meUHTImportHeightImage() override;
-
+	
 public:
 	/*@}*/
 	
@@ -77,9 +75,7 @@ public:
 	/*@}*/
 	
 private:
-	void pCleanUp();
-	void pDoIt(float *heights);
+	void pDoIt(const float *heights);
 };
 
-// end of include only once
 #endif

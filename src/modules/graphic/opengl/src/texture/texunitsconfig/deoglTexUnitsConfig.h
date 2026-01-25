@@ -28,6 +28,7 @@
 #include "../../deoglBasics.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/collection/decTLinkedList.h>
 
 class deoglCubeMap;
@@ -53,8 +54,7 @@ public:
 private:
 	deoglRenderThread &pRenderThread;
 	
-	deoglTexUnitConfig *pUnits;
-	int pUnitCount;
+	decTList<deoglTexUnitConfig> pUnits;
 	deoglShaderParameterBlock *pParamBlock;
 	
 	int pMaterialIndex;
@@ -88,16 +88,16 @@ public:
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Count of units. */
-	inline int GetUnitCount() const{ return pUnitCount; }
+	inline int GetUnitCount() const{ return pUnits.GetCount(); }
 	
 	/** Set count of units. Disabled all units. */
 	void SetUnitCount(int count);
 	
 	/** Texture units pointer for fast access without index checking. */
-	inline deoglTexUnitConfig *GetUnits() const{ return pUnits; }
+	inline const decTList<deoglTexUnitConfig> &GetUnits() const{ return pUnits; }
 	
 	/** Texture unit. */
-	deoglTexUnitConfig &GetUnitAt(int index) const;
+	deoglTexUnitConfig &GetUnitAt(int index);
 	
 	/** Set units. */
 	void SetUnits(const deoglTexUnitConfig *units, int unitCount);
@@ -160,7 +160,7 @@ public:
 	void CalcUnitsHashCode();
 	
 	/** Calculate hash code for set of unit configurations. */
-	static unsigned int CalcUnitsHashCodeForUnits(const deoglTexUnitConfig *units, int unitCount);
+	static unsigned int CalcUnitsHashCodeForUnits(const decTList<deoglTexUnitConfig> &units);
 	
 	
 	

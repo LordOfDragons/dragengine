@@ -362,7 +362,7 @@ void deoglRenderDebug::AddRenderText(const decPoint &viewport, const char *text,
 		DETHROW(deeInvalidParam);
 	}
 	
-	const deoglDebugFont::sGlyph * const glyphs = pDebugFont->GetGlyphs();
+	const deoglDebugFont::sGlyph * const glyphs = pDebugFont->GetGlyphs().GetArrayPointer();
 	const float fontScale = 1.0f;
 	
 	const float scalePosition1X = 1.0f / (float)viewport.x;

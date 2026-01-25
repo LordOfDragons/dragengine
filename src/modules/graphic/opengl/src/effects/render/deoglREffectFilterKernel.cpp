@@ -75,7 +75,6 @@ enum eSPEffectDownsample{
 
 deoglREffectFilterKernel::deoglREffectFilterKernel(deoglRenderThread &renderThread) :
 deoglREffect(renderThread),
-pKernel(nullptr),
 pKernelRows(0),
 pKernelCols(0),
 pScale(1.0f)
@@ -85,9 +84,6 @@ pScale(1.0f)
 
 deoglREffectFilterKernel::~deoglREffectFilterKernel(){
 	LEAK_CHECK_FREE(GetRenderThread(), EffectFilterKernel);
-	if(pKernel){
-		delete [] pKernel;
-	}
 }
 
 
@@ -103,10 +99,7 @@ void deoglREffectFilterKernel::SetKernelSize(int rows, int cols){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(pKernel){
-		delete [] pKernel;
-	}
-	pKernel = new float[rows * cols];
+	pKernel.SetAll(rows * cols, 0.0f);
 	pKernelRows = rows;
 	pKernelCols = cols;
 }

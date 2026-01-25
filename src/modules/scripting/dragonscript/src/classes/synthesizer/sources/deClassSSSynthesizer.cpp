@@ -198,8 +198,8 @@ void deClassSSSynthesizer::nfSetConnectionAt::RunFunction(dsRunTime *rt, dsValue
 	const int target = rt->GetValue(0)->GetInt();
 	const int controller = rt->GetValue(1)->GetInt();
 	
-	if(target > 0 || target < nd.source->GetConnectionCount()){
-		if(target == nd.source->GetConnectionAt(controller)){
+	if(target > 0 || target < nd.source->GetConnections().GetCount()){
+		if(target == nd.source->GetConnections()[controller]){
 			return;
 		}
 		nd.source->SetConnectionAt(target, controller);

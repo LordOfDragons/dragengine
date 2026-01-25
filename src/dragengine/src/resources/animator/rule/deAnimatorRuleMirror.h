@@ -27,6 +27,7 @@
 
 #include "deAnimatorRule.h"
 #include "../../../common/string/decString.h"
+#include "../../../common/collection/decTList.h"
 
 
 /**
@@ -87,8 +88,7 @@ public:
 private:
 	eMirrorAxis pMirrorAxis;
 	decString pMirrorBone;
-	sMatchName *pMatchNames;
-	int pMatchNameCount;
+	decTList<sMatchName> pMatchNames;
 	bool pEnablePosition;
 	bool pEnableOrientation;
 	bool pEnableSize;
@@ -129,8 +129,11 @@ public:
 	/** \brief Set name of mirror bone or empty string to use component. */
 	void SetMirrorBone(const char *boneName);
 	
+	/** \brief Match names. */
+	inline const decTList<sMatchName> &GetMatchNames() const{ return pMatchNames; }
+	
 	/** \brief Count of match names. */
-	inline int GetMatchNameCount() const{ return pMatchNameCount; }
+	inline int GetMatchNameCount() const{ return pMatchNames.GetCount(); }
 	
 	/** \brief Match name at index. */
 	const sMatchName &GetMatchNameAt(int index) const;

@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include <libdscript/libdscript.h>
 
 #include "dedsInputDevice.h"
@@ -48,17 +45,15 @@ pDS(ds),
 pDeviceSource(deInputEvent::esInput),
 pDeviceIndex(deviceIndex),
 pDevice(module.GetDeviceAt(deviceIndex)),
-pBonePoses(nullptr),
 pBonePoseCount(0),
-pFaceExpressions(nullptr),
 pFaceExpressionCount(0)
 {
 	if(pDevice->GetBoneConfiguration() == deInputDevice::ebcHand){
-		pBonePoses = new deInputDevicePose[deInputDevice::HandBoneCount * 2];
+		pBonePoses.AddRange(deInputDevice::HandBoneCount * 2, {});
 		pBonePoseCount = deInputDevice::HandBoneCount;
 	}
 	if(pDevice->GetSupportsFaceEyeExpressions() || pDevice->GetSupportsFaceMouthExpressions()){
-		pFaceExpressions = new float[deInputDevice::FaceExpressionCount];
+		pFaceExpressions.AddRange(deInputDevice::FaceExpressionCount, {});
 		pFaceExpressionCount = deInputDevice::FaceExpressionCount;
 	}
 }
@@ -68,29 +63,20 @@ pDS(ds),
 pDeviceSource(deInputEvent::esVR),
 pDeviceIndex(deviceIndex),
 pDevice(module.GetDeviceAt(deviceIndex)),
-pBonePoses(nullptr),
 pBonePoseCount(0),
-pFaceExpressions(nullptr),
 pFaceExpressionCount(0)
 {
 	if(pDevice->GetBoneConfiguration() == deInputDevice::ebcHand){
-		pBonePoses = new deInputDevicePose[deInputDevice::HandBoneCount * 2];
+		pBonePoses.AddRange(deInputDevice::HandBoneCount * 2, {});
 		pBonePoseCount = deInputDevice::HandBoneCount;
 	}
 	if(pDevice->GetSupportsFaceEyeExpressions() || pDevice->GetSupportsFaceMouthExpressions()){
-		pFaceExpressions = new float[deInputDevice::FaceExpressionCount];
+		pFaceExpressions.AddRange(deInputDevice::FaceExpressionCount, {});
 		pFaceExpressionCount = deInputDevice::FaceExpressionCount;
 	}
 }
 
-dedsInputDevice::~dedsInputDevice(){
-	if(pFaceExpressions){
-		delete [] pFaceExpressions;
-	}
-	if(pBonePoses){
-		delete [] pBonePoses;
-	}
-}
+dedsInputDevice::~dedsInputDevice() = default;
 
 
 
@@ -103,12 +89,7 @@ const deInputDevicePose &dedsInputDevice::GetBonePoseAt(int index, bool withCont
 		return defaultPose;
 	}
 	
-	if(withController){
-		return pBonePoses[pBonePoseCount + index];
-		
-	}else{
-		return pBonePoses[index];
-	}
+	return pBonePoses[withController ? pBonePoseCount + index : index];
 }
 
 float dedsInputDevice::GetFaceExpressionAt(int index) const{
@@ -171,28 +152,12 @@ void dedsInputDevice::Update(const dedsInputDevice &device){
 	pDevice = device.pDevice;
 	
 	if(pBonePoseCount != device.pBonePoseCount){
-		if(pBonePoses){
-			delete [] pBonePoses;
-			pBonePoses = nullptr;
-			pBonePoseCount = 0;
-		}
-		
-		if(device.pBonePoses){
-			pBonePoses = new deInputDevicePose[device.pBonePoseCount * 2];
-			pBonePoseCount = device.pBonePoseCount;
-		}
+		pBonePoses = device.pBonePoses;
+		pBonePoseCount = device.pBonePoseCount;
 	}
 	
 	if(pFaceExpressionCount != device.pFaceExpressionCount){
-		if(pFaceExpressions){
-			delete [] pFaceExpressions;
-			pFaceExpressions = nullptr;
-			pFaceExpressionCount = 0;
-		}
-		
-		if(device.pFaceExpressions){
-			pFaceExpressions = new float[device.pFaceExpressionCount];
-			pFaceExpressionCount = device.pFaceExpressionCount;
-		}
+		pFaceExpressions = device.pFaceExpressions;
+		pFaceExpressionCount = device.pFaceExpressionCount;
 	}
 }

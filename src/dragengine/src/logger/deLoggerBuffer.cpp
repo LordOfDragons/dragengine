@@ -22,11 +22,10 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-
 #include "deLoggerBuffer.h"
 #include "../common/exceptions.h"
+#include "../common/collection/decTList.h"
+#include "../threading/deMutexGuard.h"
 
 
 
@@ -40,6 +39,12 @@ deLoggerBuffer::sEntry::sEntry(const deLoggerBuffer::sEntry &entry) :
 type(entry.type),
 source(entry.source),
 message(entry.message){
+}
+
+deLoggerBuffer::sEntry::sEntry(eMessageTypes atype, const decString &asource, const decString &amessage) :
+type(atype),
+source(asource),
+message(amessage){
 }
 
 deLoggerBuffer::sEntry &deLoggerBuffer::sEntry::operator=(const deLoggerBuffer::sEntry &entry){
@@ -57,16 +62,10 @@ deLoggerBuffer::sEntry &deLoggerBuffer::sEntry::operator=(const deLoggerBuffer::
 // Constructor, destructor
 ////////////////////////////
 
-deLoggerBuffer::deLoggerBuffer() :
-pEntries(nullptr),
-pEntrySize(0),
-pEntryCount(0){
+deLoggerBuffer::deLoggerBuffer(){
 }
 
 deLoggerBuffer::~deLoggerBuffer(){
-	if(pEntries){
-		delete [] pEntries;
-	}
 }
 
 
@@ -75,153 +74,69 @@ deLoggerBuffer::~deLoggerBuffer(){
 ///////////////
 
 int deLoggerBuffer::GetEntryCount(){
-	pMutex.Lock();
-	const int count = pEntryCount;
-	pMutex.Unlock();
-	return count;
+	const deMutexGuard guard(pMutex);
+	return pEntries.GetCount();
 }
 
 deLoggerBuffer::sEntry deLoggerBuffer::GetEntryAt(int index){
-	pMutex.Lock();
-	
-	if(index < 0 || index >= pEntryCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	const sEntry entry(pEntries[index]);
-	pMutex.Unlock();
-	return entry;
+	const deMutexGuard guard(pMutex);
+	return pEntries[index];
 }
 
 void deLoggerBuffer::AddEntry(eMessageTypes type, const decString &source, const decString &message){
-	pMutex.Lock();
-	
-	try{
-		pAddEntry(type, source, message);
-		pMutex.Unlock();
-		
-	}catch(const deException &){
-		pMutex.Unlock();
-		throw;
-	}
+	const deMutexGuard guard(pMutex);
+	pEntries.Add({type, source, message});
 }
 
 void deLoggerBuffer::Clear(){
-	pMutex.Lock();
-	pClear();
-	pMutex.Unlock();
+	const deMutexGuard guard(pMutex);
+	pEntries.RemoveAll();
 }
 
 
 
 void deLoggerBuffer::SendToLogger(deLogger &logger){
-	pMutex.Lock();
-	
-	try{
-		int i;
-		for(i=0; i<pEntryCount; i++){
-			switch(pEntries[i].type){
-			case emtInfo:
-				logger.LogInfo(pEntries[i].source, pEntries[i].message);
-				break;
-				
-			case emtWarn:
-				logger.LogWarn(pEntries[i].source, pEntries[i].message);
-				break;
-				
-			case emtError:
-				logger.LogError(pEntries[i].source, pEntries[i].message);
-				break;
-			}
+	const deMutexGuard guard(pMutex);
+	pEntries.Visit([&](const sEntry &entry){
+		switch(entry.type){
+		case emtInfo:
+			logger.LogInfo(entry.source, entry.message);
+			break;
+			
+		case emtWarn:
+			logger.LogWarn(entry.source, entry.message);
+			break;
+			
+		case emtError:
+			logger.LogError(entry.source, entry.message);
+			break;
 		}
-		
-		pClear();
-		pMutex.Unlock();
-		
-	}catch(const deException &){
-		pMutex.Unlock();
-		throw;
-	}
+	});
+	pEntries.RemoveAll();
 }
 
 
 
 void deLoggerBuffer::LogInfo(const char *source, const char *message){
-	if(!source || !message){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(source)
+	DEASSERT_NOTNULL(message)
 	
-	pMutex.Lock();
-	
-	try{
-		pAddEntry(emtInfo, source, message);
-		pMutex.Unlock();
-		
-	}catch(const deException &){
-		pMutex.Unlock();
-		throw;
-	}
+	const deMutexGuard guard(pMutex);
+	pEntries.Add({emtInfo, source, message});
 }
 
 void deLoggerBuffer::LogWarn(const char *source, const char *message){
-	if(!source || !message){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(source)
+	DEASSERT_NOTNULL(message)
 	
-	pMutex.Lock();
-	
-	try{
-		pAddEntry(emtWarn, source, message);
-		pMutex.Unlock();
-		
-	}catch(const deException &){
-		pMutex.Unlock();
-		throw;
-	}
+	const deMutexGuard guard(pMutex);
+	pEntries.Add({emtWarn, source, message});
 }
 
 void deLoggerBuffer::LogError(const char *source, const char *message){
-	if(!source || !message){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(source)
+	DEASSERT_NOTNULL(message)
 	
-	pMutex.Lock();
-	
-	try{
-		pAddEntry(emtError, source, message);
-		pMutex.Unlock();
-		
-	}catch(const deException &){
-		pMutex.Unlock();
-		throw;
-	}
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void deLoggerBuffer::pClear(){
-	pEntryCount = 0;
-}
-
-void deLoggerBuffer::pAddEntry(eMessageTypes type, const decString &source, const decString &message){
-	if(pEntryCount == pEntrySize){
-		const int newSize = pEntrySize + 10;
-		sEntry * const newArray = new sEntry[newSize];
-		if(pEntries){
-			int i;
-			for(i=0; i<pEntrySize; i++){
-				newArray[i] = pEntries[i];
-			}
-			delete [] pEntries;
-		}
-		pEntries = newArray;
-	}
-	
-	sEntry &entry = pEntries[pEntryCount++];
-	entry.type = type;
-	entry.source = source;
-	entry.message = message;
+	const deMutexGuard guard(pMutex);
+	pEntries.Add({emtError, source, message});
 }

@@ -604,8 +604,8 @@ bool debpCollisionDetection::ColliderHitsHeightTerrain(debpCollider *collider, d
 	double soffsetz = (double)sectorDim * scoord.y;
 	
 	clusterCount = sector->GetClusterCount() * sector->GetClusterCount();
-	clusters = sector->GetClusters();
-	points = sector->GetPoints();
+	clusters = sector->GetClusters().GetArrayPointer();
+	points = sector->GetPoints().GetArrayPointer();
 	
 	// test all cluster bounding boxes for a hit
 	for(c=0; c<clusterCount; c++){
@@ -1269,12 +1269,12 @@ bool debpCollisionDetection::ShapeHitsModelFace(debpShape &shape, debpComponent 
 	
 	const deModel &engModel = *component.GetComponent()->GetModel();
 	const deModelLOD &engModelLOD = engModel.GetLODAt(0);
-	const deModelFace &engFace = engModelLOD.GetFaceAt(face);
+	const deModelFace &engFace = engModelLOD.GetFaces()[face];
 	debpDCollisionTriangle collisionTriangle;
 	
-	const deModelVertex &v1 = engModelLOD.GetVertexAt(engFace.GetVertex1());
-	const deModelVertex &v2 = engModelLOD.GetVertexAt(engFace.GetVertex2());
-	const deModelVertex &v3 = engModelLOD.GetVertexAt(engFace.GetVertex3());
+	const deModelVertex &v1 = engModelLOD.GetVertices()[engFace.GetVertex1()];
+	const deModelVertex &v2 = engModelLOD.GetVertices()[engFace.GetVertex2()];
+	const deModelVertex &v3 = engModelLOD.GetVertices()[engFace.GetVertex3()];
 	
 	const decDVector p1(v1.GetPosition());
 	const decDVector p2(v2.GetPosition());
@@ -1303,11 +1303,11 @@ const debpComponent &component, int face, debpCollisionResult &result){
 	
 	const deModel &engModel = *component.GetComponent()->GetModel();
 	const deModelLOD &engModelLOD = engModel.GetLODAt(0);
-	const deModelFace &engFace = engModelLOD.GetFaceAt(face);
+	const deModelFace &engFace = engModelLOD.GetFaces()[face];
 	
-	const deModelVertex &v1 = engModelLOD.GetVertexAt(engFace.GetVertex1());
-	const deModelVertex &v2 = engModelLOD.GetVertexAt(engFace.GetVertex2());
-	const deModelVertex &v3 = engModelLOD.GetVertexAt(engFace.GetVertex3());
+	const deModelVertex &v1 = engModelLOD.GetVertices()[engFace.GetVertex1()];
+	const deModelVertex &v2 = engModelLOD.GetVertices()[engFace.GetVertex2()];
+	const deModelVertex &v3 = engModelLOD.GetVertices()[engFace.GetVertex3()];
 	
 	const decDVector p1(v1.GetPosition());
 	const decDVector p2(v2.GetPosition());
@@ -1432,11 +1432,11 @@ const debpComponent &component, int face, debpCollisionResult &result){
 	
 	const deModel &engModel = *component.GetComponent()->GetModel();
 	const deModelLOD &engModelLOD = engModel.GetLODAt(0);
-	const deModelFace &engFace = engModelLOD.GetFaceAt(face);
+	const deModelFace &engFace = engModelLOD.GetFaces()[face];
 	
-	const deModelVertex &v1 = engModelLOD.GetVertexAt(engFace.GetVertex1());
-	const deModelVertex &v2 = engModelLOD.GetVertexAt(engFace.GetVertex2());
-	const deModelVertex &v3 = engModelLOD.GetVertexAt(engFace.GetVertex3());
+	const deModelVertex &v1 = engModelLOD.GetVertices()[engFace.GetVertex1()];
+	const deModelVertex &v2 = engModelLOD.GetVertices()[engFace.GetVertex2()];
+	const deModelVertex &v3 = engModelLOD.GetVertices()[engFace.GetVertex3()];
 	
 	const decDVector p1(v1.GetPosition());
 	const decDVector p2(v2.GetPosition());
@@ -2116,8 +2116,8 @@ debpColliderComponent &collider2, debpCollisionResult &result){
 				? collider2.GetColliderComponent()->GetComponent()->GetModel()->GetFilename() : "-"));
 		const decMatrix &matrix = component.GetComponent()->GetMatrix();
 		const deModel &engModel = component.GetModel()->GetModel();
-		const deModelLOD &engModelLOD = engModel.GetLODAt(0);
-		int f, faceCount = engModelLOD.GetFaceCount();
+		const deModelLOD &engModelLOD = engModel.GetLODs()[0];
+		int f, faceCount = engModelLOD.GetFaces().GetCount();
 		debpDCollisionTriangle coltri;
 		debpDCollisionBox colbox;
 		
@@ -2135,7 +2135,7 @@ debpColliderComponent &collider2, debpCollisionResult &result){
 			
 			if(colvol1.BoxHitsVolume(&colbox)){
 				for(f=0; f<faceCount; f++){
-					const deModelFace &face = engModelLOD.GetFaceAt(f);
+					const deModelFace &face = engModelLOD.GetFaces()[f];
 					const decDVector fp1(matrix * component.GetVertex(face.GetVertex1()));
 					const decDVector fp2(matrix * component.GetVertex(face.GetVertex2()));
 					const decDVector fp3(matrix * component.GetVertex(face.GetVertex3()));

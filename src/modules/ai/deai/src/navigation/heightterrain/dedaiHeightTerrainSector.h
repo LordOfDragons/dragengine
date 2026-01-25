@@ -27,6 +27,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
 
 class dedaiHeightTerrain;
@@ -50,7 +51,7 @@ private:
 	const deHeightTerrainSector &pSector;
 	
 	decDVector pPosition;
-	float *pHeights;
+	decTList<float> pHeights;
 	
 	decTObjectOrderedSet<dedaiHeightTerrainNavSpace> pNavSpaces;
 	
@@ -84,7 +85,7 @@ public:
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Heights. */
-	inline const float *GetHeights() const{ return pHeights; }
+	inline const decTList<float> &GetHeights() const{ return pHeights; }
 	/*@}*/
 	
 	

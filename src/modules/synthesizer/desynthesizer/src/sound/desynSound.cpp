@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "desynSound.h"
 #include "desynDecodeBuffer.h"
 #include "../deDESynthesizer.h"
@@ -82,14 +79,10 @@ struct sCacheHeader{
 desynSound::desynSound(deDESynthesizer &module, deSound &sound) :
 pModule(module),
 pSound(sound),
-
 pValid(false),
 pIsUsed(false),
 pIsCached(false),
-
-pStreamData(nullptr),
-pStreamDataSize(0),
-	pStreaming(true)
+pStreaming(true)
 {
 	pDetermineValid();
 	if(!pValid){
@@ -114,9 +107,7 @@ pStreamDataSize(0),
 	pWriteToCache();
 }
 
-desynSound::~desynSound(){
-	pCleanUp();
-}
+desynSound::~desynSound() = default;
 
 
 
@@ -124,36 +115,32 @@ desynSound::~desynSound(){
 ///////////////
 
 void desynSound::LoadEntireSound(){
-	if(pStreamData){
+	if(pStreamData.IsNotEmpty()){
 		return;
 	}
 	
 	// for the time being all sounds are fully loaded into memory since the synthesizer
 	// sources do not yet support streaming properly
-	/*if( ! pRequireStreaming ){
+	/*if(!pRequireStreaming){
 		return;
 	}*/
 	
-	const int bufferSize = pSound.GetSampleCount()
-		* pSound.GetBytesPerSample() * pSound.GetChannelCount();
+	const int bufferSize = pSound.GetSampleCount() * pSound.GetBytesPerSample() * pSound.GetChannelCount();
 	if(bufferSize == 0){
-		pStreamData = new char[1]; // just so we know there is nothing
+		pStreamData.Add(0); // just so we know there is nothing
 		return;
 	}
 	
-	pStreamData = new char[bufferSize];
-	pStreamDataSize = bufferSize;
+	pStreamData.AddRange(bufferSize, 0);
 	
 	pModule.GetGameEngine()->GetSoundManager()->CreateDecoder(&pSound)->
-		ReadSamples(pStreamData, bufferSize);
+		ReadSamples(pStreamData.GetArrayPointer(), bufferSize);
 }
 
 void desynSound::Prepare(){
 	// for the time being streaming is not supported. this has to be fixed
 	if(pStreaming){
-		if(!pStreamData){
-			LoadEntireSound();
-		}
+		LoadEntireSound();
 		return;
 	}
 	// end
@@ -171,9 +158,7 @@ void desynSound::Prepare(){
 				pSound.GetFilename().GetString());
 		}
 		
-		if(!pStreamData){
-			LoadEntireSound();
-		}
+		LoadEntireSound();
 		
 		pIsUsed = true;
 		pWriteToCache();
@@ -184,14 +169,6 @@ void desynSound::Prepare(){
 
 // Private Functions
 //////////////////////
-
-void desynSound::pCleanUp(){
-	if(pStreamData){
-		delete [] pStreamData;
-	}
-}
-
-
 
 void desynSound::pLoadFromCache(){
 	const bool enableCacheLogging = ENABLE_CACHE_LOGGING;
@@ -277,9 +254,8 @@ void desynSound::pLoadFromCache(){
 		}
 		
 		if(header.bufferSize > 0){
-			pStreamData = new char[header.bufferSize];
-			pStreamDataSize = header.bufferSize;
-			reader->Read(pStreamData, pStreamDataSize);
+			pStreamData.AddRange(header.bufferSize, 0);
+			reader->Read(pStreamData.GetArrayPointer(), header.bufferSize);
 		}
 		
 		// done
@@ -335,7 +311,7 @@ void desynSound::pWriteToCache(){
 	header.channelCount = (uint8_t)pSound.GetChannelCount();
 	header.sampleCount = (uint32_t)pSound.GetSampleCount();
 	header.sampleRate = (uint32_t)pSound.GetSampleRate();
-	header.bufferSize = (uint32_t)pStreamDataSize;
+	header.bufferSize = (uint32_t)pStreamData.GetCount();
 	
 	// write cache
 	caches.Lock();
@@ -343,8 +319,8 @@ void desynSound::pWriteToCache(){
 	try{
 		writer = cacheSound.Write(filename);
 		writer->Write(&header, sizeof(header));
-		if(pStreamDataSize > 0){
-			writer->Write(pStreamData, pStreamDataSize);
+		if(pStreamData.IsNotEmpty()){
+			writer->Write(pStreamData.GetArrayPointer(), pStreamData.GetCount());
 		}
 		writer = nullptr;
 		

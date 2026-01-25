@@ -133,7 +133,7 @@ public:
 		}
 		
 		// add texture coordinates
-		model->GetTextureCoordinatesSetList().Add("default");
+		model->GetTextureCoordinatesSets().Add("default");
 		
 		lod.SetTextureCoordinatesCount(vertexCount);
 		

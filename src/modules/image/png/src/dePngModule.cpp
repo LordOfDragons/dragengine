@@ -31,6 +31,7 @@
 #include "dePngImageInfos.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/resources/image/deImage.h>
@@ -237,7 +238,6 @@ void dePngModule::LoadImage(decBaseFileReader &file, deImage &image, deBaseImage
 	int height = pngInfos.height;
 	int width = pngInfos.width;
 	int r, rowLength;
-	png_bytep *rows = nullptr;
 	
 	// determine the length of a row in bytes
 	if(bitCount == 8){
@@ -251,40 +251,29 @@ void dePngModule::LoadImage(decBaseFileReader &file, deImage &image, deBaseImage
 	}
 	
 	// read the image
-	try{
-		// build rows array
-		rows = new png_bytep[height];
-		
-		for(r=0; r<height; r++){
-			rows[r] = (png_bytep)(imageData + rowLength * r);
-		}
-		
-		// read the image
-		png_read_image(pngInfos.readStruct, rows);
-		
-		// finish file
-		png_read_end(pngInfos.readStruct, nullptr);
-		
-		// free rows array
-		delete [] rows;
-		
-	}catch(const deException &){
-		if(rows) delete [] rows;
-		throw;
+	// build rows array
+	decTList<png_bytep> rows(height);
+	for(r=0; r<height; r++){
+		rows.Add((png_bytep)(imageData + rowLength * r));
 	}
+	
+	// read the image
+	png_read_image(pngInfos.readStruct, rows.GetArrayPointer());
+	
+	// finish file
+	png_read_end(pngInfos.readStruct, nullptr);
 }
 
 void dePngModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 	png_structp writeStruct = nullptr;
 	png_infop infoStruct = nullptr;
-	char *imageData = reinterpret_cast<char*>(image.GetData());
+	const char *imageData = reinterpret_cast<const char*>(image.GetData());
 	int componentCount = image.GetComponentCount();
 	int bitCount = image.GetBitCount();
 	dePngImageInfo::sFeedback feedback;
 	int height = image.GetHeight();
 	int width = image.GetWidth();
 	int r, rowLength;
-	png_bytep *rows = nullptr;
 	int pngBitCount;
 	int pngColorType;
 	
@@ -373,14 +362,13 @@ void dePngModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 		//png_set_tIME( writeStruct, infoStruct, PNG_VALID_tIME );
 		
 		// build rows array
-		rows = new png_bytep[height];
-		
+		decTList<png_bytep> rows(height);
 		for(r=0; r<height; r++){
-			rows[r] = (png_bytep)(imageData + rowLength * r);
+			rows.Add((png_bytep)(imageData + rowLength * r));
 		}
 		
 		// make image data available to the library
-		png_set_rows(writeStruct, infoStruct, rows);
+		png_set_rows(writeStruct, infoStruct, rows.GetArrayPointer());
 		
 		// write the image to the file
 		/*
@@ -396,10 +384,6 @@ void dePngModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 		PNG_TRANSFORM_STRIP_FILLER  Strip out filler bytes.
 		*/
 		png_write_png(writeStruct, infoStruct, PNG_TRANSFORM_SWAP_ENDIAN, nullptr);
-		
-		// free rows array
-		delete [] rows;
-		rows = nullptr;
 		
 		// clean up
 		png_destroy_write_struct(&writeStruct, &infoStruct);

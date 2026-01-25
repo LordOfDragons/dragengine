@@ -34,9 +34,7 @@
 
 deFontSize::deFontSize(int lineHeight, int glyphCount) :
 pUndefinedGlyph{},
-pGlyphs(nullptr),
 pLineHeight(lineHeight),
-pGlyphCount(0),
 pFontWidth(0),
 pBaseLine(lineHeight * 3 / 4)
 {
@@ -44,19 +42,10 @@ pBaseLine(lineHeight * 3 / 4)
 	DEASSERT_TRUE(glyphCount >= 0)
 	DEASSERT_TRUE(glyphCount < 0xffff)
 	
-	if(glyphCount > 0){
-		pGlyphs = new deFontGlyph[glyphCount];
-		pGlyphCount = glyphCount;
-	}
+	pGlyphs.AddRange(glyphCount, {});
 }
 
-deFontSize::~deFontSize(){
-	if(pGlyphs){
-		delete [] pGlyphs;
-		pGlyphs = nullptr;
-		pGlyphCount = 0;
-	}
-}
+deFontSize::~deFontSize() = default;
 
 
 // Management
@@ -71,25 +60,14 @@ void deFontSize::SetBaseLine(int baseLine){
 void deFontSize::UpdateGlyphs(){
 	pFontWidth = 0;
 	
-	int i;
-	for(i=0; i<pGlyphCount; i++){
-		if(pGlyphs[i].GetWidth() > pFontWidth){
-			pFontWidth = pGlyphs[i].GetWidth();
+	pGlyphs.Visit([&](const deFontGlyph &glyph){
+		if(glyph.GetWidth() > pFontWidth){
+			pFontWidth = glyph.GetWidth();
 		}
-	}
+	});
 }
 
 deFontGlyph &deFontSize::GetGlyphAt(int index){
-	DEASSERT_TRUE(index >= 0)
-	DEASSERT_TRUE(index < pGlyphCount)
-	
-	return pGlyphs[index];
-}
-
-const deFontGlyph &deFontSize::GetGlyphAt(int index) const{
-	DEASSERT_TRUE(index >= 0)
-	DEASSERT_TRUE(index < pGlyphCount)
-	
 	return pGlyphs[index];
 }
 

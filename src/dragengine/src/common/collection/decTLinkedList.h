@@ -418,7 +418,7 @@ public:
 	template<typename Evaluator>
 	bool HasMatching(Evaluator &evaluator) const{
 		T *f;
-		return Find<Evaluator>(evaluator, f);
+		return Find<Evaluator>(f, evaluator);
 	}
 	
 	template<typename Evaluator>
@@ -676,6 +676,11 @@ public:
 		Visit<Visitor>(visitor);
 	}
 	
+	
+	/**
+	 * \brief Visit elements in reverse order.
+	 * \param[in] visitor Visitor callable invoked as visitor(T*).
+	 */
 	template<typename Visitor>
 	void VisitReverse(Visitor &visitor) const{
 		Element *entry = pTail;
@@ -686,7 +691,143 @@ public:
 	}
 	
 	template<typename Visitor>
-	inline void VisitReverse(Visitor &&visitor) const{ VisitReverse<Visitor>(visitor); }
+	inline void VisitReverse(Visitor &&visitor) const{
+		VisitReverse<Visitor>(visitor);
+	}
+	
+	
+	/**
+	 * \brief Visit elements with index.
+	 * \param[in] visitor Visitor callable invoked as visitor(int, T*).
+	 */
+	template<typename Visitor>
+	void VisitIndexed(Visitor &visitor) const {
+		int index = 0;
+		Element *entry = pRoot;
+		while(entry){
+			Element * const next = entry->pNext;
+			visitor(index++, entry->pOwner);
+			entry = next;
+		}
+	}
+	
+	template<typename Visitor>
+	void VisitIndexed(Visitor &&visitor) const{
+		VisitIndexed<Visitor>(visitor);
+	}
+	
+	
+	/**
+	 * \brief Visit elements with index in reverse order.
+	 * \param[in] visitor Visitor callable invoked as visitor(T*).
+	 */
+	template<typename Visitor>
+	void VisitReverseIndexed(Visitor &visitor) const{
+		int index = 0;
+		Element *entry = pTail;
+		while(entry){
+			visitor(index++, entry->pOwner);
+			entry = entry->pPrev;
+		}
+	}
+	
+	template<typename Visitor>
+	inline void VisitReverseIndexed(Visitor &&visitor) const{
+		VisitReverseIndexed<Visitor>(visitor);
+	}
+	
+	
+	/**
+	 * \brief Visit elements while evaluator returns true.
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(T).
+	 */
+	template<typename Evaluator>
+	void VisitWhile(Evaluator &evaluator) const{
+		Element *entry = pRoot;
+		while(entry){
+			Element * const next = entry->pNext;
+			if(!evaluator(entry->pOwner)){
+				return;
+			}
+			entry = next;
+		}
+	}
+	
+	template<typename Evaluator>
+	inline void VisitWhile(Evaluator &&evaluator) const{
+		VisitWhile<Evaluator>(evaluator);
+	}
+	
+	
+	/**
+	 * \brief Visit elements in reverse order while evaluator returns true.
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(T).
+	 */
+	template<typename Evaluator>
+	void VisitWhileReverse(Evaluator &evaluator) const{
+		Element *entry = pTail;
+		while(entry){
+			Element * const prev = entry->pPrev;
+			if(!evaluator(entry->pOwner)){
+				return;
+			}
+			entry = prev;
+		}
+	}
+	
+	template<typename Evaluator>
+	inline void VisitWhileReverse(Evaluator &&evaluator) const{
+		VisitWhileReverse<Evaluator>(evaluator);
+	}
+	
+	
+	/**
+	 * \brief Visit elements with index while evaluator returns true.
+	 * \param[in] from First index to visit. Negative counts from end of list.
+	 * \param[in] to One past last index to visit. Negative counts from end of list.
+	 * \param[in] step Step size. Can be negative but not 0.
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(int, T).
+	 */
+	template<typename Evaluator>
+	void VisitWhileIndexed(Evaluator &evaluator) const{
+		int index = 0;
+		Element *entry = pRoot;
+		while(entry){
+			Element * const next = entry->pNext;
+			if(!evaluator(index++, entry->pOwner)){
+				return;
+			}
+			entry = next;
+		}
+	}
+	
+	template<typename Evaluator>
+	inline void VisitWhileIndexed(Evaluator &&evaluator) const{
+		VisitWhileIndexed<Evaluator>(evaluator);
+	}
+	
+	
+	/**
+	 * \brief Visit elements with index in reverse order while evaluator returns true.
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(T).
+	 */
+	template<typename Evaluator>
+	void VisitWhileReverseIndexed(Evaluator &evaluator) const{
+		int index = 0;
+		Element *entry = pTail;
+		while(entry){
+			Element * const prev = entry->pPrev;
+			if(!evaluator(index++, entry->pOwner)){
+				return;
+			}
+			entry = prev;
+		}
+	}
+	
+	template<typename Evaluator>
+	inline void VisitWhileReverseIndexed(Evaluator &&evaluator) const{
+		VisitWhileReverseIndexed<Evaluator>(evaluator);
+	}
 	
 	
 	/**
@@ -695,7 +836,7 @@ public:
 	 * \param[out] found Found element if true is returned.
 	 */
 	template<typename Evaluator>
-	bool Find(Evaluator &evaluator, T* &found) const{
+	bool Find(T* &found, Evaluator &evaluator) const{
 		Element *entry = pRoot;
 		while(entry){
 			Element * const next = entry->pNext;
@@ -710,12 +851,12 @@ public:
 	}
 	
 	template<typename Evaluator>
-	bool Find(Evaluator &&evaluator, T* &found) const{
-		return Find<Evaluator>(evaluator, found);
+	bool Find(T* &found, Evaluator &&evaluator) const{
+		return Find<Evaluator>(found, evaluator);
 	}
 	
 	template<typename Evaluator>
-	inline bool FindReverse(Evaluator &evaluator, T* &found) const{
+	inline bool FindReverse(T* &found, Evaluator &evaluator) const{
 		Element *entry = pTail;
 		while(entry){
 			if(evaluator(entry->pOwner)){
@@ -729,8 +870,8 @@ public:
 	}
 	
 	template<typename Evaluator>
-	inline bool FindReverse(Evaluator &&evaluator, T* &found) const{
-		return FindReverse<Evaluator>(evaluator, found);
+	inline bool FindReverse(T* &found, Evaluator &&evaluator) const{
+		return FindReverse<Evaluator>(found, evaluator);
 	}
 	
 	
@@ -740,25 +881,25 @@ public:
 	 * \param[in] defaultValue Default value returned if not found.
 	 */
 	template<typename Evaluator>
-	T *FindOrNull(Evaluator &evaluator, T *defaultValue = nullptr) const{
+	T *FindOrNull(Evaluator &evaluator) const{
 		T *found = nullptr;
-		return Find<Evaluator>(evaluator, found) ? found : defaultValue;
+		return Find<Evaluator>(found, evaluator) ? found : nullptr;
 	}
 	
 	template<typename Evaluator>
-	T *FindOrNull(Evaluator &&evaluator, T *defaultValue = nullptr) const{
-		return FindOrNull<Evaluator>(evaluator, defaultValue);
+	T *FindOrNull(Evaluator &&evaluator) const{
+		return FindOrNull<Evaluator>(evaluator);
 	}
 	
 	template<typename Evaluator>
-	inline T *FindReverseOrNull(Evaluator &evaluator, T *defaultValue = nullptr) const{
+	inline T *FindReverseOrNull(Evaluator &evaluator) const{
 		T *found = nullptr;
-		return FindReverse<Evaluator>(evaluator, found) ? found : defaultValue;
+		return FindReverse<Evaluator>(found, evaluator) ? found : nullptr;
 	}
 	
 	template<typename Evaluator>
-	inline T *FindReverseOrNull(Evaluator &&evaluator, T *defaultValue = nullptr) const{
-		return FindReverseOrNull<Evaluator>(evaluator, defaultValue);
+	inline T *FindReverseOrNull(Evaluator &&evaluator) const{
+		return FindReverseOrNull<Evaluator>(evaluator);
 	}
 	
 	

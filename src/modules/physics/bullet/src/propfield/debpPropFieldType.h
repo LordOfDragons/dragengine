@@ -27,6 +27,7 @@
 #define _DEBPPROPFIELDTYPE_H_
 
 // includes
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 // predefinitions
@@ -61,9 +62,7 @@ private:
 	debpPropField *pPropField;
 	dePropFieldType *pType;
 	
-	debpPropFieldBendState *pBendStates;
-	int pBendStateCount;
-	int pBendStateSize;
+	decTList<debpPropFieldBendState> pBendStates;
 	
 	float pFlucTimer;
 	bool pDirty;
@@ -79,12 +78,9 @@ public:
 	
 	/** @name Management */
 	/*@{*/
-	/** Retrieves the number of bend states. */
-	inline int GetBendStateCount() const{ return pBendStateCount; }
-	/** Sets the size of states keeping the state values intact where possible. */
-	void SetBendStateSize(int count);
-	/** Retrieves the instances. */
-	inline debpPropFieldBendState *GetBendStates() const{ return pBendStates; }
+	/** Bend states. */
+	inline decTList<debpPropFieldBendState> &GetBendStates(){ return pBendStates; }
+	inline const decTList<debpPropFieldBendState> &GetBendStates() const{ return pBendStates; }
 	
 	/** Marks the type dirty. */
 	void MarkDirty();

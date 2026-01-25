@@ -56,8 +56,8 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Data entries. */
-	inline float *GetDataFloat(){ return (float*)pData; }
-	inline const float *GetDataFloat() const{ return (float*)pData; }
+	inline float *GetDataFloat(){ return (float*)pData.GetArrayPointer(); }
+	inline const float *GetDataFloat() const{ return (float*)pData.GetArrayPointer(); }
 	
 	/**
 	 * Add boolean value.

@@ -27,6 +27,7 @@
 
 #include "deoglShaderParameterBlock.h"
 
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
@@ -42,8 +43,7 @@ public:
 	
 	
 private:
-	char *pBuffer;
-	int pBufferCapacity;
+	decTList<char> pBuffer;
 	
 	
 	
@@ -67,7 +67,8 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Memory buffer. */
-	inline char *GetBuffer() const{ return pBuffer; }
+	inline char *GetBuffer(){ return pBuffer.GetArrayPointer(); }
+	inline const char *GetBuffer() const{ return pBuffer.GetArrayPointer(); }
 	
 	/** Always throws an exception. */
 	void Activate() const override;

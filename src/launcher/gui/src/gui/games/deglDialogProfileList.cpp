@@ -405,14 +405,14 @@ deglDialogProfileList::~deglDialogProfileList(){
 
 void deglDialogProfileList::UpdateFullScreenResolutions(){
 	const delEngine &engine = pWindowMain->GetLauncher()->GetEngine();
-	const int count = engine.GetResolutionCount();
+	const int count = engine.GetResolutions().GetCount();
 	FXString text;
 	int i;
 	
 	pCBFullScreenResolutions->clearItems();
 	pCBFullScreenResolutions->appendItem("Window");
 	for(i=0; i<count; i++){
-		const decPoint &resolution = engine.GetResolutionAt(i);
+		const decPoint &resolution = engine.GetResolutions()[i];
 		text.format("%d x %d", resolution.x, resolution.y);
 		pCBFullScreenResolutions->appendItem(text);
 	}
@@ -1723,7 +1723,7 @@ long deglDialogProfileList::onCBFullScreenResolutionsChanged(FXObject*, FXSelect
 		pGetSelectedProfile()->GetEdit()->SetFullScreen(false);
 		
 	}else{
-		const decPoint &resolution = pWindowMain->GetLauncher()->GetEngine().GetResolutionAt(selection - 1);
+		const decPoint &resolution = pWindowMain->GetLauncher()->GetEngine().GetResolutions()[selection - 1];
 		pGetSelectedProfile()->GetEdit()->SetWidth(resolution.x);
 		pGetSelectedProfile()->GetEdit()->SetHeight(resolution.y);
 		pGetSelectedProfile()->GetEdit()->SetFullScreen(true);

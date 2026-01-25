@@ -29,6 +29,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deSound;
 class deoalAudioThread;
@@ -53,8 +54,7 @@ private:
 	ALenum pFormat;
 	bool pValid;
 	
-	char *pStreamData;
-	int pStreamDataSize;
+	decTList<char> pStreamData;
 	bool pStreaming;
 	
 	bool pIsUsed;
@@ -116,10 +116,11 @@ public:
 	
 	
 	/** \brief Stream data or \em NULL if not loaded. */
-	inline char *GetStreamData() const{ return pStreamData; }
+	inline const char *GetStreamData() const{ return pStreamData.GetArrayPointer(); }
+	inline char *GetStreamData(){ return pStreamData.GetArrayPointer(); }
 	
 	/** \brief Stream data size in bytes or 0 if not loaded. */
-	inline int GetStreamDataSize() const{ return pStreamDataSize; }
+	inline int GetStreamDataSize() const{ return pStreamData.GetCount(); }
 	
 	/** \brief Sound is too large requiring streaming. */
 	inline bool GetStreaming() const{ return pStreaming; }

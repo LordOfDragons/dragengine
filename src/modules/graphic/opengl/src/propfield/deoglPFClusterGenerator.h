@@ -25,6 +25,7 @@
 #ifndef _DEOGLPFCLUSTERGENERATOR_H_
 #define _DEOGLPFCLUSTERGENERATOR_H_
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 
@@ -44,9 +45,7 @@ private:
 	decVector2 pMinExtend;
 	decVector2 pMaxExtend;
 	
-	sEntry *pEntries;
-	int pEntryCount;
-	int pEntrySize;
+	decTList<sEntry> pEntries;
 	int pMaxEntryCount;
 	
 	deoglPFClusterGenerator *pNode1;
@@ -70,14 +69,15 @@ public:
 	/** Retrieves the maximum entry count. */
 	inline int GetMaxEntryCount() const{ return pMaxEntryCount; }
 	
-	/** Retrieves the list of entries. */
-	inline const sEntry *GetEntries() const{ return pEntries; }
-	/** Retrieves the number of entries. */
-	inline int GetEntryCount() const{ return pEntryCount; }
+	/** Entries. */
+	inline const decTList<sEntry> &GetEntries() const{ return pEntries; }
+	
 	/** Adds an entry to the list of entries. */
 	void AddEntry(int index, const decVector2 &position);
+	
 	/** Remove all entries in this node. */
 	void RemoveAllEntries();
+	
 	/** Retrieves the extends of all the entries. */
 	void GetEntryExtends(decVector2 &minExtend, decVector2 &maxExtend);
 	

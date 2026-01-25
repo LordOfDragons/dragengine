@@ -22,8 +22,7 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <new>
 
 #include "desynSynthesizerEffectStretch.h"
 #include "../desynSynthesizer.h"
@@ -34,6 +33,7 @@
 #include <soundtouch/SoundTouch.h>
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/resources/synthesizer/deSynthesizer.h>
 #include <dragengine/resources/synthesizer/effect/deSynthesizerEffectStretch.h>
 
@@ -43,9 +43,9 @@
 //////////////////////
 
 struct sStateData{
-	soundtouch::SoundTouch *stouch;
-	int blockSamples;
-	float *inputBuffer;
+	soundtouch::SoundTouch *stouch = nullptr;
+	int blockSamples = 0;
+	decTList<float> inputBuffer;
 };
 
 
@@ -101,15 +101,13 @@ int desynSynthesizerEffectStretch::StateDataSize(int offset){
 }
 
 void desynSynthesizerEffectStretch::InitStateData(char *stateData){
-	sStateData& sdata = *((sStateData*)(stateData + GetStateDataOffset()));
-	sdata.stouch = nullptr;
-	sdata.inputBuffer = nullptr;
+	sStateData& sdata = *new (stateData + GetStateDataOffset()) sStateData{};
 	
 	const int sampleRate = GetSynthesizer().GetSynthesizer().GetSampleRate();
 	const int channelCount = GetSynthesizer().GetSynthesizer().GetChannelCount();
 	
 	sdata.blockSamples = sampleRate / 100; // 10ms block size
-	sdata.inputBuffer = new float[sdata.blockSamples * channelCount];
+	sdata.inputBuffer.AddRange(sdata.blockSamples * channelCount, 0.0f);
 	
 	sdata.stouch = new soundtouch::SoundTouch;
 	sdata.stouch->setRate(1.0);
@@ -133,10 +131,7 @@ void desynSynthesizerEffectStretch::CleanUpStateData(char *stateData){
 		sdata.stouch = nullptr;
 	}
 	
-	if(sdata.inputBuffer){
-		delete [] sdata.inputBuffer;
-		sdata.inputBuffer = nullptr;
-	}
+	sdata.~sStateData();
 }
 
 
@@ -183,15 +178,17 @@ char *stateData, float *buffer, int samples, float curveOffset, float curveFacto
 				const float blockCurveFactor = decMath::min(defBlockCurveFactor, defBlockCurveLast - blockCurveOffset);
 				
 				if(previousEffect){
-					previousEffect->GenerateSound(instance, stateData, sdata.inputBuffer,
-						sdata.blockSamples, blockCurveOffset, blockCurveFactor);
+					previousEffect->GenerateSound(instance, stateData,
+						sdata.inputBuffer.GetArrayPointer(), sdata.blockSamples,
+						blockCurveOffset, blockCurveFactor);
 					
 				}else{
-					source.GenerateSourceSound(instance, stateData, sdata.inputBuffer,
-						sdata.blockSamples, blockCurveOffset, blockCurveFactor);
+					source.GenerateSourceSound(instance, stateData,
+						sdata.inputBuffer.GetArrayPointer(), sdata.blockSamples,
+						blockCurveOffset, blockCurveFactor);
 				}
 				
-				sdata.stouch->putSamples(sdata.inputBuffer, sdata.blockSamples);
+				sdata.stouch->putSamples(sdata.inputBuffer.GetArrayPointer(), sdata.blockSamples);
 			}
 		}
 	}

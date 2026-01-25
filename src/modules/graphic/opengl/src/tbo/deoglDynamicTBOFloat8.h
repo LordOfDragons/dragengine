@@ -57,8 +57,8 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Data entries. */
-	inline uint8_t *GetDataFloat(){ return (uint8_t*)pData; }
-	inline const uint8_t *GetDataFloat() const{ return (const uint8_t*)pData; }
+	inline uint8_t *GetDataFloat(){ return (uint8_t*)pData.GetArrayPointer(); }
+	inline const uint8_t *GetDataFloat() const{ return (const uint8_t*)pData.GetArrayPointer(); }
 	
 	/** Add boolean value. True adds 1 and False 0. */
 	void AddBool(bool value);

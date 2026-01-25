@@ -106,8 +106,6 @@ pSource(nullptr),
 pBufferSampleCount(1),
 pBufferSize(1),
 pBufferSampleSize(1),
-pBufferData(nullptr),
-pBufferDataCapacity(0),
 pQueueSampleOffset(0),
 
 pSampleRate(44100),
@@ -773,10 +771,6 @@ void deoalASpeaker::pCleanUp(){
 	}
 	
 	pSoundDecoder = nullptr;
-	if(pBufferData){
-		delete [] pBufferData;
-		pBufferData = nullptr;
-	}
 	if(pEnvironment){
 		delete pEnvironment;
 		pEnvironment = nullptr;
@@ -817,7 +811,7 @@ void deoalASpeaker::pDecodeInitial(){
 	
 	pSoundDecoder->SetPosition(pQueueSampleOffset);
 	
-	for(i=0; i<pSource->GetBufferCount(); i++){
+	for(i=0; i<pSource->GetBuffers().GetCount(); i++){
 		if(pLooping){
 			buffer.DecodeLooping(pSoundDecoder, pBufferSize);
 			
@@ -827,7 +821,7 @@ void deoalASpeaker::pDecodeInitial(){
 			}
 		}
 		
-		const ALuint albuffer = pSource->GetBufferAt(i);
+		const ALuint albuffer = pSource->GetBuffers()[i];
 		OAL_CHECK(pAudioThread, alBufferData(albuffer, format,
 			(const ALvoid *)buffer.GetBuffer(), pBufferSize, sampleRate));
 		OAL_CHECK(pAudioThread, alSourceQueueBuffers(pSource->GetSource(), 1, &albuffer));
@@ -863,7 +857,7 @@ void deoalASpeaker::pDecodeNext(bool underrun){
 	
 	pQueueSampleOffset += pBufferSampleCount * numFinished;
 	
-	if(numFinished == pSource->GetBufferCount() && pLooping){
+	if(numFinished == pSource->GetBuffers().GetCount() && pLooping){
 		restartPlaying = true;
 	}
 	
@@ -906,32 +900,26 @@ void deoalASpeaker::pSynthInit(){
 	
 	pQueueSampleOffset = pPlayPosition = pPlayFrom;
 	
-	int bufferCount = pSource->GetBufferCount();
+	int bufferCount = pSource->GetBuffers().GetCount();
 	int samplesFrom = pQueueSampleOffset;
 	
 	pSynthesizer->Reset();
 	
-	if(pBufferSize > pBufferDataCapacity){
-		if(pBufferData){
-			delete [] pBufferData;
-			pBufferData = nullptr;
-		}
-		
-		pBufferData = new char[pBufferSize];
-		pBufferDataCapacity = pBufferSize;
-	}
+	pBufferData.SetCountDiscard(pBufferSize);
 	
 	for(i=0; i<bufferCount; i++){
 		const int remainingSampleCount = pPlayTo - samplesFrom;
 		int bufferSize = pBufferSize;
 		
 		if(pBufferSampleCount > remainingSampleCount){
-			pSynthesizer->GenerateSound(pBufferData, pBufferSampleSize * remainingSampleCount,
+			pSynthesizer->GenerateSound(pBufferData.GetArrayPointer(),
+				pBufferSampleSize * remainingSampleCount,
 				samplesFrom, remainingSampleCount);
 			
 			if(pLooping){
 				samplesFrom = pBufferSampleCount - remainingSampleCount;
-				pSynthesizer->GenerateSound(pBufferData + pBufferSampleSize * remainingSampleCount,
+				pSynthesizer->GenerateSound(
+					pBufferData.GetArrayPointer() + pBufferSampleSize * remainingSampleCount,
 					pBufferSampleSize * samplesFrom, 0, samplesFrom);
 				
 			}else{
@@ -940,13 +928,14 @@ void deoalASpeaker::pSynthInit(){
 			}
 			
 		}else{
-			pSynthesizer->GenerateSound(pBufferData, pBufferSampleSize * pBufferSampleCount,
-				samplesFrom, pBufferSampleCount);
+			pSynthesizer->GenerateSound(pBufferData.GetArrayPointer(),
+				pBufferSampleSize * pBufferSampleCount, samplesFrom, pBufferSampleCount);
 			samplesFrom += pBufferSampleCount;
 		}
 		
-		albuffer = pSource->GetBufferAt(i);
-		OAL_CHECK(pAudioThread, alBufferData(albuffer, pBufferFormat, (const ALvoid *)pBufferData, bufferSize, pSampleRate));
+		albuffer = pSource->GetBuffers()[i];
+		OAL_CHECK(pAudioThread, alBufferData(albuffer, pBufferFormat,
+			(const ALvoid *)pBufferData.GetArrayPointer(), bufferSize, pSampleRate));
 		//pAudioThread.LoIgnfoFormat( "pSynthInit: queue buffer (source=%u buffer=%u format=%x sampleRate=%i size=%i)",
 		//	pSource->GetSource(), albuffer, pBufferFormat, pSampleRate, bufferSize );
 		OAL_CHECK(pAudioThread, alSourceQueueBuffers(pSource->GetSource(), 1, &albuffer));
@@ -976,7 +965,7 @@ void deoalASpeaker::pSynthNext(bool underrun){
 	ALuint buffers[10];
 	int i;
 	
-	if(numFinished == pSource->GetBufferCount() && pLooping){
+	if(numFinished == pSource->GetBuffers().GetCount() && pLooping){
 		restartPlaying = true;
 	}
 	
@@ -988,11 +977,11 @@ void deoalASpeaker::pSynthNext(bool underrun){
 	
 	if(pLooping){
 		samplesFrom = decMath::normalize(pQueueSampleOffset
-			+ (pSource->GetBufferCount() - numFinished) * pBufferSampleCount, pPlayFrom, pPlayTo);
+			+ (pSource->GetBuffers().GetCount() - numFinished) * pBufferSampleCount, pPlayFrom, pPlayTo);
 		
 	}else{
 		samplesFrom = decMath::min(pQueueSampleOffset
-			+ (pSource->GetBufferCount() - numFinished) * pBufferSampleCount, pPlayTo);
+			+ (pSource->GetBuffers().GetCount() - numFinished) * pBufferSampleCount, pPlayTo);
 	}
 	
 	for(i=0; i<numFinished; i++){
@@ -1005,12 +994,13 @@ void deoalASpeaker::pSynthNext(bool underrun){
 		int bufferSize = pBufferSize;
 		
 		if(pBufferSampleCount > remainingSampleCount){
-			pSynthesizer->GenerateSound(pBufferData, pBufferSampleSize * remainingSampleCount,
-				samplesFrom, remainingSampleCount);
+			pSynthesizer->GenerateSound(pBufferData.GetArrayPointer(),
+				pBufferSampleSize * remainingSampleCount, samplesFrom, remainingSampleCount);
 			
 			if(pLooping){
 				samplesFrom = pBufferSampleCount - remainingSampleCount;
-				pSynthesizer->GenerateSound(pBufferData + pBufferSampleSize * remainingSampleCount,
+				pSynthesizer->GenerateSound(
+					pBufferData.GetArrayPointer() + pBufferSampleSize * remainingSampleCount,
 					pBufferSampleSize * samplesFrom, 0, samplesFrom);
 				
 			}else{
@@ -1019,15 +1009,15 @@ void deoalASpeaker::pSynthNext(bool underrun){
 			}
 			
 		}else{
-			pSynthesizer->GenerateSound(pBufferData, pBufferSampleSize * pBufferSampleCount,
-				samplesFrom, pBufferSampleCount);
+			pSynthesizer->GenerateSound(pBufferData.GetArrayPointer(),
+				pBufferSampleSize * pBufferSampleCount, samplesFrom, pBufferSampleCount);
 			samplesFrom += pBufferSampleCount;
 		}
 		
 		//pAudioThread.GetLogger().LogInfoFormat( "SynthNext: queue buffer (source=%u buffer=%u format=%x sampleRate=%i)",
 		//	pSource->GetSource(), buffers[ i ], pBufferFormat, pSampleRate );
 		OAL_CHECK(pAudioThread, alBufferData(buffers[i], pBufferFormat,
-			(const ALvoid *)pBufferData, bufferSize, pSampleRate));
+			(const ALvoid *)pBufferData.GetArrayPointer(), bufferSize, pSampleRate));
 	}
 	
 	//pAudioThread.GetLogger().LogInfoFormat( "SynthNext: queue %i buffers (format=%x sampleRate=%i)", numFinished, pBufferFormat, pSampleRate );
@@ -1057,18 +1047,10 @@ void deoalASpeaker::pVideoPlayerInit(){
 	pQueueSampleOffset = pPlayPosition =
 		(int)(pVideoPlayer->GetPlayPosition() * pVideoPlayer->GetSampleRate());
 	
-	int bufferCount = pSource->GetBufferCount();
+	int bufferCount = pSource->GetBuffers().GetCount();
 	int samplesFrom = pQueueSampleOffset;
 	
-	if(pBufferSize > pBufferDataCapacity){
-		if(pBufferData){
-			delete [] pBufferData;
-			pBufferData = nullptr;
-		}
-		
-		pBufferData = new char[pBufferSize];
-		pBufferDataCapacity = pBufferSize;
-	}
+	pBufferData.SetCountDiscard(pBufferSize);
 	
 	for(i=0; i<bufferCount; i++){
 		const int remainingSampleCount = pPlayTo - samplesFrom;
@@ -1079,12 +1061,13 @@ void deoalASpeaker::pVideoPlayerInit(){
 		int bufferSize = pBufferSize;
 		
 		if(remainingSampleCount < pBufferSampleCount){
-			pVideoPlayer->ReadSamples(pBufferData, pBufferSampleSize * remainingSampleCount,
-				samplesFrom, remainingSampleCount);
+			pVideoPlayer->ReadSamples(pBufferData.GetArrayPointer(),
+				pBufferSampleSize * remainingSampleCount, samplesFrom, remainingSampleCount);
 			
 			if(pLooping){
 				samplesFrom = pBufferSampleCount - remainingSampleCount;
-				pVideoPlayer->ReadSamples(pBufferData + pBufferSampleSize * remainingSampleCount,
+				pVideoPlayer->ReadSamples(
+					pBufferData.GetArrayPointer() + pBufferSampleSize * remainingSampleCount,
 					pBufferSampleSize * samplesFrom, 0, samplesFrom);
 				
 			}else{
@@ -1093,13 +1076,14 @@ void deoalASpeaker::pVideoPlayerInit(){
 			}
 			
 		}else{
-			pVideoPlayer->ReadSamples(pBufferData, pBufferSampleSize * pBufferSampleCount,
-				samplesFrom, pBufferSampleCount);
+			pVideoPlayer->ReadSamples(pBufferData.GetArrayPointer(),
+				pBufferSampleSize * pBufferSampleCount, samplesFrom, pBufferSampleCount);
 			samplesFrom += pBufferSampleCount;
 		}
 		
-		albuffer = pSource->GetBufferAt(i);
-		OAL_CHECK(pAudioThread, alBufferData(albuffer, pBufferFormat, (const ALvoid *)pBufferData, bufferSize, pSampleRate));
+		albuffer = pSource->GetBuffers()[i];
+		OAL_CHECK(pAudioThread, alBufferData(albuffer, pBufferFormat,
+			(const ALvoid *)pBufferData.GetArrayPointer(), bufferSize, pSampleRate));
 		//pAudioThread.LoIgnfoFormat( "pSynthInit: queue buffer (source=%u buffer=%u format=%x sampleRate=%i size=%i)",
 		//	pSource->GetSource(), albuffer, pBufferFormat, pSampleRate, bufferSize );
 		OAL_CHECK(pAudioThread, alSourceQueueBuffers(pSource->GetSource(), 1, &albuffer));
@@ -1128,7 +1112,7 @@ void deoalASpeaker::pVideoPlayerNext(bool underrun){
 	ALuint buffers[10];
 	int i;
 	
-	if(numFinished == pSource->GetBufferCount()){
+	if(numFinished == pSource->GetBuffers().GetCount()){
 		restartPlaying = true;
 	}
 	
@@ -1140,11 +1124,11 @@ void deoalASpeaker::pVideoPlayerNext(bool underrun){
 	
 	if(pLooping){
 		samplesFrom = decMath::normalize(pQueueSampleOffset
-			+ (pSource->GetBufferCount() - numFinished) * pBufferSampleCount, pPlayFrom, pPlayTo);
+			+ (pSource->GetBuffers().GetCount() - numFinished) * pBufferSampleCount, pPlayFrom, pPlayTo);
 		
 	}else{
 		samplesFrom = decMath::min(pQueueSampleOffset
-			+ (pSource->GetBufferCount() - numFinished) * pBufferSampleCount, pPlayTo);
+			+ (pSource->GetBuffers().GetCount() - numFinished) * pBufferSampleCount, pPlayTo);
 	}
 	
 	for(i=0; i<numFinished; i++){
@@ -1157,12 +1141,13 @@ void deoalASpeaker::pVideoPlayerNext(bool underrun){
 		int bufferSize = pBufferSize;
 		
 		if(pBufferSampleCount > remainingSampleCount){
-			pVideoPlayer->ReadSamples(pBufferData, pBufferSampleSize * remainingSampleCount,
-				samplesFrom, remainingSampleCount);
+			pVideoPlayer->ReadSamples(pBufferData.GetArrayPointer(),
+				pBufferSampleSize * remainingSampleCount, samplesFrom, remainingSampleCount);
 			
 			if(pLooping){
 				samplesFrom = pBufferSampleCount - remainingSampleCount;
-				pVideoPlayer->ReadSamples(pBufferData + pBufferSampleSize * remainingSampleCount,
+				pVideoPlayer->ReadSamples(
+					pBufferData.GetArrayPointer() + pBufferSampleSize * remainingSampleCount,
 					pBufferSampleSize * samplesFrom, 0, samplesFrom);
 				
 			}else{
@@ -1171,15 +1156,15 @@ void deoalASpeaker::pVideoPlayerNext(bool underrun){
 			}
 			
 		}else{
-			pVideoPlayer->ReadSamples(pBufferData, pBufferSampleSize * pBufferSampleCount,
-				samplesFrom, pBufferSampleCount);
+			pVideoPlayer->ReadSamples(pBufferData.GetArrayPointer(),
+				pBufferSampleSize * pBufferSampleCount, samplesFrom, pBufferSampleCount);
 			samplesFrom += pBufferSampleCount;
 		}
 		
 // 		pAudioThread.GetLogger().LogInfoFormat( "pVideoPlayerNext: queue buffer (source=%u buffer=%u format=%x sampleRate=%i)",
 // 			pSource->GetSource(), buffers[ i ], pBufferFormat, pSampleRate );
 		OAL_CHECK(pAudioThread, alBufferData(buffers[i], pBufferFormat,
-			(const ALvoid *)pBufferData, bufferSize, pSampleRate));
+			(const ALvoid *)pBufferData.GetArrayPointer(), bufferSize, pSampleRate));
 	}
 	
 	//pAudioThread.GetLogger().LogInfoFormat( "SynthNext: queue %i buffers (format=%x sampleRate=%i)", numFinished, pBufferFormat, pSampleRate );

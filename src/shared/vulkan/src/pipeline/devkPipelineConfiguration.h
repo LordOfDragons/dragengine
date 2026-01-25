@@ -29,6 +29,8 @@
 #include "../devkBasics.h"
 #include "../renderpass/devkRenderPass.h"
 
+#include <dragengine/common/collection/decTList.h>
+
 class devkDescriptorSetLayout;
 class devkShaderModule;
 
@@ -111,11 +113,8 @@ private:
 	bool pDepthTest;
 	bool pStencilTest;
 	
-	int pBindingCount;
-	VkVertexInputBindingDescription *pBindings;
-	
-	int pAttributeCount;
-	VkVertexInputAttributeDescription *pAttributes;
+	decTList<VkVertexInputBindingDescription> pBindings;
+	decTList<VkVertexInputAttributeDescription> pAttributes;
 	
 	bool pDynamicDepthBias;
 	bool pDynamicStencil;
@@ -325,14 +324,11 @@ public:
 	
 	
 	
-	/** Binding count. */
-	inline int GetBindingCount() const{ return pBindingCount; }
+	/** Bindings. */
+	inline const decTList<VkVertexInputBindingDescription> &GetBindings() const{ return pBindings; }
 	
 	/** Set binding count. */
 	void SetBindingCount(int count);
-	
-	/** Binding at index. */
-	const VkVertexInputBindingDescription &GetBindingAt(int index) const;
 	
 	/** Set binding at index. */
 	void SetBindingAt(int index, const VkVertexInputBindingDescription &binding);
@@ -341,28 +337,19 @@ public:
 	void SetBindingAt(int index, int binding, int stride,
 		VkVertexInputRate inputRate = VK_VERTEX_INPUT_RATE_VERTEX);
 	
-	/** Internal use only. */
-	inline const VkVertexInputBindingDescription *GetBindings() const{ return pBindings; }
 	
 	
-	
-	/** Attribute count. */
-	inline int GetAttributeCount() const{ return pAttributeCount; }
+	/** Attributes. */
+	inline const decTList<VkVertexInputAttributeDescription> &GetAttributes() const{ return pAttributes; }
 	
 	/** Set attribute count. */
 	void SetAttributeCount(int count);
-	
-	/** Attribute at index. */
-	const VkVertexInputAttributeDescription &GetAttributeAt(int index) const;
 	
 	/** Set attribute at index. */
 	void SetAttributeAt(int index, const VkVertexInputAttributeDescription &attribute);
 	
 	/** Set attribute at index. */
 	void SetAttributeAt(int index, int location, int binding, eAttributeFormat format, int offset);
-	
-	/** Internal use only. */
-	inline const VkVertexInputAttributeDescription *GetAttributes() const{ return pAttributes; }
 	
 	
 	

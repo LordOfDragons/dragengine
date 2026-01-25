@@ -532,10 +532,10 @@ const sTraceAbsorptionSum &absorptionSum){
 			// find result. use the first forward facing element. backward facing elements are
 			// ignored because the probe can be inside geometry. without skipping backwards facing
 			// faces this can result in incorrect probe data
-			hitCount = pRTResult.GetElementCount();
+			hitCount = pRTResult.GetElements().GetCount();
 			
 			for(hitIndex=0; hitIndex<hitCount; hitIndex++){
-				const deoalRayTraceHitElement &he = pRTResult.GetElementAt(hitIndex);
+				const deoalRayTraceHitElement &he = pRTResult.GetElements()[hitIndex];
 				if(he.GetForwardFacing()){
 					hitElement = &he;
 					break;
@@ -714,11 +714,11 @@ const sTraceAbsorptionSum &absorptionSum){
 			}
 		}
 		
-		const int count = pRTResult.GetElementCount();
+		const int count = pRTResult.GetElements().GetCount();
 		int findBackCounter = 1;
 		
 		for(hitIndex++; hitIndex<count; hitIndex++){
-			const deoalRayTraceHitElement &he = pRTResult.GetElementAt(hitIndex);
+			const deoalRayTraceHitElement &he = pRTResult.GetElements()[hitIndex];
 			
 			if(he.GetComponent() == hitElement->GetComponent()
 			&& he.GetComponentFace() == hitElement->GetComponentFace()){
@@ -740,7 +740,7 @@ const sTraceAbsorptionSum &absorptionSum){
 	// 		const float thresholdDistance = he.GetDistance() + pBackStepDistance;
 			const deoalRayTraceHitElement *heLast = &he;
 			for(hitIndex++; hitIndex<count; hitIndex++){
-				const deoalRayTraceHitElement &he2 = pRTResult.GetElementAt(hitIndex);
+				const deoalRayTraceHitElement &he2 = pRTResult.GetElements()[hitIndex];
 	// 			if( he2.GetDistance() > thresholdDistance ){
 				if(he2.GetDistance() > heLast->GetDistance() + pBackStepDistance){
 					hitIndex--;

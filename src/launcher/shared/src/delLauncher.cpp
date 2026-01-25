@@ -179,6 +179,8 @@ void delLauncher::Prepare(){
 	
 	pGameManager.LoadGameConfigs();
 	pGameManager.Verify();
+	
+	pPatchManager.ClearCachedSearchResults();
 }
 
 

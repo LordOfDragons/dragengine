@@ -31,6 +31,7 @@
 #include "../renderthread/deoglRTFrameCounterTracker.h"
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoglCollideList;
 class deoglRenderThread;
@@ -61,7 +62,7 @@ public:
 	
 	/** Shadow layers. */
 	struct sShadowLayer{
-		float layerBorder;
+		float layerBorder = 0.0f;
 		decVector scale;
 		decMatrix matrix;
 	};
@@ -86,8 +87,7 @@ private:
 	float pDynamicScale;
 	float pDynamicOffset;
 	
-	sShadowLayer *pShadowLayers;
-	int pShadowLayerCount;
+	decTList<sShadowLayer> pShadowLayers;
 	
 	
 	
@@ -95,7 +95,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shadow caster. */
-	deoglShadowCaster(deoglRenderThread &renderThread);
+	explicit deoglShadowCaster(deoglRenderThread &renderThread);
 	
 	/** Clean up shadow caster. */
 	~deoglShadowCaster();
@@ -178,7 +178,7 @@ public:
 	
 	
 	/** Shadow layer count. */
-	inline int GetShadowLayerCount() const{ return pShadowLayerCount; }
+	inline int GetShadowLayerCount() const{ return pShadowLayers.GetCount(); }
 	
 	/** Set shadow layer count. Clears shadow layer parameters if count changed. */
 	void SetShadowLayerCount(int count);

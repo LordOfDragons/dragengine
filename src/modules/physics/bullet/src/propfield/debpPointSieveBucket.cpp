@@ -22,14 +22,9 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "debpPointSieveBucket.h"
 
 #include <dragengine/common/exceptions.h>
-
 
 
 // Class debpPointSieveBucket
@@ -38,42 +33,5 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpPointSieveBucket::debpPointSieveBucket(){
-	pIndices = nullptr;
-	pIndexCount = 0;
-	pIndexSize = 0;
-}
-
-debpPointSieveBucket::~debpPointSieveBucket(){
-	if(pIndices) delete [] pIndices;
-}
-
-
-
-// Management
-///////////////
-
-int debpPointSieveBucket::GetIndexAt(int position) const{
-	if(position < 0 || position >= pIndexCount) DETHROW(deeInvalidParam);
-	
-	return pIndices[position];
-}
-
-void debpPointSieveBucket::AddIndex(int index){
-	if(pIndexCount == pIndexSize){
-		int newSize = pIndexSize * 3 / 2 + 1;
-		int *newArray = new int[newSize];
-		if(pIndices){
-			memcpy(newArray, pIndices, sizeof(int) * pIndexSize);
-			delete [] pIndices;
-		}
-		pIndices = newArray;
-		pIndexSize = newSize;
-	}
-	
-	pIndices[pIndexCount++] = index;
-}
-
-void debpPointSieveBucket::RemoveAllIndices(){
-	pIndexCount = 0;
-}
+debpPointSieveBucket::debpPointSieveBucket() = default;
+debpPointSieveBucket::~debpPointSieveBucket() = default;

@@ -89,6 +89,7 @@ const deoglSPTreeNode::Ref &deoglSPTree::GetNodeAt(const decPoint3 &index) const
 }
 
 void deoglSPTree::SetNodeAt(const decPoint3 &index, deoglSPTreeNode::Ref &&node){
+	DEASSERT_NOTNULL(node)
 	DEASSERT_TRUE(IsIndexValid(index))
 	
 	pNodes.SetAt(pStride * index.z + pNodeCount.x * index.y + index.x, std::move(node));

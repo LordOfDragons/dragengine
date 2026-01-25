@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deComponentTexture.h"
 #include "../skin/deSkin.h"
 #include "../skin/dynamic/deDynamicSkin.h"
@@ -40,8 +36,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-deComponentTexture::deComponentTexture(){
-	pTexture = 0;
+deComponentTexture::deComponentTexture() :
+pTexture(0){
+}
+
+deComponentTexture::deComponentTexture(const deComponentTexture &copy){
+	*this = copy;
+}
+
+deComponentTexture &deComponentTexture::operator=(const deComponentTexture &copy){
+	if(this != &copy){
+		pSkin = copy.pSkin;
+		pTexture = copy.pTexture;
+		pTransform = copy.pTransform;
+		pDynamicSkin = copy.pDynamicSkin;
+	}
+	return *this;
 }
 
 deComponentTexture::~deComponentTexture(){

@@ -390,11 +390,11 @@ void igdeTreeList::SortItems(igdeTreeItem *item){
 		pFirstChild = prevItem;
 	}
 	
-	items.Visit([&](igdeTreeItem *nextItem){
+	items.Visit(1, [&](igdeTreeItem *nextItem){
 		prevItem->SetNext(nextItem);
 		nextItem->SetPrevious(prevItem);
 		prevItem = nextItem;
-	}, 1);
+	});
 	
 	prevItem->SetNext(nullptr);
 	

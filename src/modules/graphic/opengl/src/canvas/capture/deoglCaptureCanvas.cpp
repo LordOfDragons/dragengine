@@ -101,7 +101,7 @@ void deoglCaptureCanvas::SyncToRender(){
 	if(pCapturePending){
 		if(!pRCaptureCanvas->GetCapturePending()){
 			if(image->GetData()){ // in case the user forgot to retain the image data
-				const deoglPixelBuffer &pixelBuffer = *pRCaptureCanvas->GetPixelBuffer();
+				deoglPixelBuffer &pixelBuffer = *pRCaptureCanvas->GetPixelBuffer();
 				memcpy(image->GetData(), pixelBuffer.GetPointer(), pixelBuffer.GetImageSize());
 				image->NotifyImageDataChanged();
 			}

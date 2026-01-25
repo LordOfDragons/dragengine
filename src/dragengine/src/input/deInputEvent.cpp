@@ -133,18 +133,7 @@ void deInputEvent::SetKeyLocation(eKeyLocation location){
 
 
 void deInputEvent::SetFrom(const deInputEvent &event){
-	pType = event.pType;
-	pDevice = event.pDevice;
-	pCode = event.pCode;
-	pState = event.pState;
-	pKeyCode = event.pKeyCode;
-	pKeyChar = event.pKeyChar;
-	pX = event.pX;
-	pY = event.pY;
-	pValue = event.pValue;
-	memcpy(&pTime, &event.pTime, sizeof(timeval));
-	pSource = event.pSource;
-	pKeyLocation = event.pKeyLocation;
+	*this = event;
 }
 
 

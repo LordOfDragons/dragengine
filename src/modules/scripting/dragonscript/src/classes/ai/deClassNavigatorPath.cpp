@@ -404,7 +404,7 @@ void deClassNavigatorPath::nfUpdateDebugDrawer::RunFunction(dsRunTime *rt, dsVal
 		DSTHROW(dueNullPointer);
 	}
 	
-	decShape::List &shapes = debugDrawer->GetShapeAt(rt->GetValue(1)->GetInt())->GetShapeList();
+	decShape::List &shapes = debugDrawer->GetShapes()[rt->GetValue(1)->GetInt()]->GetShapeList();
 	const float scale = rt->GetValue(2)->GetFloat();
 	const decDMatrix matrix(decDMatrix::CreateWorld(
 		debugDrawer->GetPosition(), debugDrawer->GetOrientation()).QuickInvert());

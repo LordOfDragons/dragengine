@@ -42,24 +42,20 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dearControllerTarget::dearControllerTarget(const deAnimatorControllerTarget &target, int firstLink) :
-pLinks(nullptr),
-pLinkCount(0){
+dearControllerTarget::dearControllerTarget(const deAnimatorControllerTarget &target, int firstLink){
 	const int linkCount = target.GetLinkCount();
 	
 	if(linkCount > 0){
-		pLinks = new int[linkCount];
+		pLinks.EnlargeCapacity(linkCount);
 		
-		for(pLinkCount=0; pLinkCount<linkCount; pLinkCount++){
-			pLinks[pLinkCount] = firstLink + target.GetLinkAt(pLinkCount);
+		int i;
+		for(i=0; i<linkCount; i++){
+			pLinks.Add(firstLink + target.GetLinkAt(i));
 		}
 	}
 }
 
 dearControllerTarget::~dearControllerTarget(){
-	if(pLinks){
-		delete [] pLinks;
-	}
 }
 
 
@@ -67,28 +63,18 @@ dearControllerTarget::~dearControllerTarget(){
 // Management
 ///////////////
 
-int dearControllerTarget::GetLinkAt(int index) const{
-	if(index < 0 || index >= pLinkCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pLinks[index];
-}
-
-
-
 float dearControllerTarget::GetValue(const dearAnimatorInstance &instance, float defaultValue) const{
 	float value = defaultValue;
 	bool firstValue = true;
-	int i;
 	
-	for(i=0; i<pLinkCount; i++){
-		if(pLinks[i] == -1){
-			continue;
+	pLinks.Visit([&](int linkIndex){
+		if(linkIndex == -1){
+			return;
 		}
 		
-		const dearLink &link = *instance.GetLinkAt(pLinks[i]);
+		const dearLink &link = *instance.GetLinkAt(linkIndex);
 		if(!link.HasController() && !link.HasBone()){
-			continue;
+			return;
 		}
 		
 		if(firstValue){
@@ -98,20 +84,18 @@ float dearControllerTarget::GetValue(const dearAnimatorInstance &instance, float
 		}else{
 			value *= link.GetValue(1.0f);
 		}
-	}
+	});
 	
 	return value;
 }
 
 void dearControllerTarget::GetVector(const dearAnimatorInstance &instance, decVector &vector) const{
-	int i;
-	
-	for(i=0; i<pLinkCount; i++){
-		if(pLinks[i] == -1){
+	for(auto linkIndex : pLinks){
+		if(linkIndex == -1){
 			continue;
 		}
 		
-		const dearLink &link = *instance.GetLinkAt(pLinks[i]);
+		const dearLink &link = *instance.GetLinkAt(linkIndex);
 		if(!link.HasController()){
 			continue;
 		}
@@ -122,14 +106,12 @@ void dearControllerTarget::GetVector(const dearAnimatorInstance &instance, decVe
 }
 
 void dearControllerTarget::GetQuaternion(const dearAnimatorInstance &instance, decQuaternion &quaternion) const{
-	int i;
-	
-	for(i=0; i<pLinkCount; i++){
-		if(pLinks[i] == -1){
+	for(auto linkIndex : pLinks){
+		if(linkIndex == -1){
 			continue;
 		}
 		
-		const dearLink &link = *instance.GetLinkAt(pLinks[i]);
+		const dearLink &link = *instance.GetLinkAt(linkIndex);
 		if(!link.HasController()){
 			continue;
 		}

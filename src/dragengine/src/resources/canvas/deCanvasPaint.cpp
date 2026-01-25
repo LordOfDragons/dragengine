@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deCanvasPaint.h"
 #include "deCanvasVisitor.h"
 #include "../../common/exceptions.h"
@@ -47,17 +43,11 @@ pThickness(1.0f),
 pRoundCornerX(0.0f),
 pRoundCornerY(0.0f),
 pStartAngle(0.0f),
-pEndAngle(TWO_PI),
-
-pPoints(nullptr),
-pPointCount(0){
+pEndAngle(TWO_PI){
 }
 
 deCanvasPaint::~deCanvasPaint(){
 	SetPeerGraphic(nullptr);
-	if(pPoints){
-		delete [] pPoints;
-	}
 }
 
 
@@ -159,48 +149,19 @@ void deCanvasPaint::SetEndAngle(float endAngle){
 ///////////
 
 const decPoint &deCanvasPaint::GetPointAt(int position) const{
-	if(position < 0 || position >= pPointCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pPoints[position];
+	return pPoints.GetAt(position);
 }
 
 void deCanvasPaint::AddPoint(const decPoint &point){
-	decPoint * const newArray = new decPoint[pPointCount + 1];
-	int i;
-	
-	for(i=0; i<pPointCount; i++){
-		newArray[i] = pPoints[i];
-	}
-	
-	newArray[pPointCount] = point;
-	
-	if(pPoints){
-		delete [] pPoints;
-	}
-	pPoints = newArray;
-	pPointCount++;
+	pPoints.Add(point);
 }
 
 void deCanvasPaint::RemovePointFrom(int position){
-	if(position < 0 || position >= pPointCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	int i;
-	
-	for(i=position+1; i<pPointCount; i++){
-		pPoints[i - 1] = pPoints[i];
-	}
-	pPointCount--;
+	pPoints.RemoveFrom(position);
 }
 
 void deCanvasPaint::RemoveAllPoints(){
-	if(pPoints){
-		delete [] pPoints;
-		pPoints = nullptr;
-	}
-	pPointCount = 0;
+	pPoints.RemoveAll();
 }
 
 

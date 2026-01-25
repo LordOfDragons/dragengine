@@ -22,11 +22,6 @@
  * SOFTWARE.
  */
 
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglComponent.h"
 #include "deoglComponentListener.h"
 #include "deoglComponentTestForTouch.h"
@@ -141,9 +136,6 @@ pOutlineTextureCount(0),
 pDirtyDecals(true),
 pDirtyDecalsRenderRenderables(true),
 
-pVertexPositionSetWeights(nullptr),
-pVertexPositionSetCount(0),
-
 pCSOctreeIndex(0),
 
 pWorldMarkedRemove(false),
@@ -163,9 +155,6 @@ pLLPrepareForRenderWorld(this)
 	pFirstRender = true;
 	pRenderStatic = true;
 	pStaticSince = 0.0f;
-	
-	pBoneMatrices = nullptr;
-	pBoneMatrixCount = 0;
 	
 	pRenderMode = ermStatic;
 	
@@ -224,13 +213,10 @@ void deoglRComponent::SetParentWorld(deoglRWorld *parentWorld){
 		pEnvMap->SetWorld(parentWorld);
 	}*/
 	
-	const int decalCount = pDecals.GetCount();
-	
 	if(pParentWorld){
-		int i;
-		for(i=0; i<decalCount; i++){
-			pDecals.GetAt(i)->RemoveFromWorldCompute();
-		}
+		pDecals.Visit([&](deoglRDecal &decal){
+			decal.RemoveFromWorldCompute();
+		});
 		pWorldComputeElement->RemoveFromCompute();
 		
 		// make sure we are unregistered from the old world. this is required since the
@@ -286,24 +272,21 @@ void deoglRComponent::UpdateOctreeNode(){
 	}
 	
 	// insert into parent world octree
-	const int decalCount = pDecals.GetCount();
-	int i;
-	
 	if(pVisible && pModel){
 		pParentWorld->GetOctree().InsertComponentIntoTree(this);
 		
 		if(pWorldComputeElement->GetWorldCompute()){
 			pWorldComputeElement->ComputeUpdateElement();
-			for(i=0; i<decalCount; i++){
-				pDecals.GetAt(i)->UpdateWorldCompute();
-			}
+			pDecals.Visit([&](deoglRDecal &decal){
+				decal.UpdateWorldCompute();
+			});
 			
 		}else{
 			deoglWorldCompute &worldCompute = pParentWorld->GetCompute();
 			worldCompute.AddElement(pWorldComputeElement);
-			for(i=0; i<decalCount; i++){
-				pDecals.GetAt(i)->AddToWorldCompute(worldCompute);
-			}
+			pDecals.Visit([&](deoglRDecal &decal){
+				decal.AddToWorldCompute(worldCompute);
+			});
 		}
 		
 		// visit the world for touching lights
@@ -314,9 +297,9 @@ void deoglRComponent::UpdateOctreeNode(){
 // 			hackCSSpecialTime += timer.GetElapsedTime();
 		
 	}else{
-		for(i=0; i<decalCount; i++){
-			pDecals.GetAt(i)->RemoveFromWorldCompute();
-		}
+		pDecals.Visit([&](deoglRDecal &decal){
+			decal.RemoveFromWorldCompute();
+		});
 		pWorldComputeElement->RemoveFromCompute();
 		
 		if(pOctreeNode){
@@ -459,22 +442,17 @@ void deoglRComponent::SetDynamicSkin(deoglComponent &component, deoglRDynamicSki
 	pDynamicSkin = dynamicSkin;
 	// texture can use the dynamic skin we had so far for their skin state.
 	// force an update to make sure everything matches up again
-	const int textureCount = pTextures.GetCount();
-	int i;
-	for(i=0; i<textureCount; i++){
-		deoglRComponentTexture &texture = pTextures.GetAt(i);
+	pTextures.Visit([&](deoglRComponentTexture &texture){
 		texture.DropSkinState(); // required since UpdateSkinState can not figure out dynamic skin changed
 		texture.UpdateSkinState(component);
-	}
+	});
 	
 	// child decals can use the dynamic skin we had so far for their skin state.
 	// force an update to make sure everything matches up again
-	const int decalCount = pDecals.GetCount();
-	for(i=0; i<decalCount; i++){
-		deoglRDecal &decal = pDecals.GetAt(i);
+	pDecals.Visit([&](deoglRDecal &decal){
 		decal.DropSkinState(); // required since UpdateSkinState can not figure out dynamic skin changed
 		decal.UpdateSkinState();
-	}
+	});
 	
 	pSkinRendered.SetDirty();
 }
@@ -495,7 +473,7 @@ void deoglRComponent::SetOcclusionMesh(deoglROcclusionMesh *occlusionMesh){
 	}
 	pOcclusionMesh = occlusionMesh;
 	if(occlusionMesh){
-		if(occlusionMesh->GetWeightsCount() > 0){
+		if(occlusionMesh->GetWeightsCounts().IsNotEmpty()){
 			pDynamicOcclusionMesh = new deoglDynamicOcclusionMesh(pRenderThread, pOcclusionMesh, this);
 			
 			// update all touching lights since their light volume potentially changes. this works even with
@@ -552,15 +530,12 @@ void deoglRComponent::InitSkinStateStates(const deComponent &component){
 		pSkinState->MapBonesAll(component);
 	}
 	
-	const int textureCount = pTextures.GetCount();
-	int i;
-	for(i=0; i<textureCount; i++){
-		deoglRComponentTexture &texture = pTextures.GetAt(i);
+	pTextures.Visit([&](deoglRComponentTexture &texture){
 		if(texture.GetSkinState()){
 			texture.GetSkinState()->InitAll();
 			texture.GetSkinState()->MapBonesAll(component);
 		}
-	}
+	});
 }
 
 void deoglRComponent::UpdateSkinStateBones(const deComponent &component){
@@ -568,14 +543,11 @@ void deoglRComponent::UpdateSkinStateBones(const deComponent &component){
 		pSkinState->UpdateBonesAll(component);
 	}
 	
-	const int textureCount = pTextures.GetCount();
-	int i;
-	for(i=0; i<textureCount; i++){
-		deoglRComponentTexture &texture = pTextures.GetAt(i);
+	pTextures.Visit([&](deoglRComponentTexture &texture){
 		if(texture.GetSkinState()){
 			texture.GetSkinState()->UpdateBonesAll(component);
 		}
-	}
+	});
 }
 
 void deoglRComponent::UpdateSkinStateStates(){
@@ -583,14 +555,11 @@ void deoglRComponent::UpdateSkinStateStates(){
 		pSkinState->UpdateAll();
 	}
 	
-	const int textureCount = pTextures.GetCount();
-	int i;
-	for(i=0; i<textureCount; i++){
-		deoglRComponentTexture &texture = pTextures.GetAt(i);
+	pTextures.Visit([&](deoglRComponentTexture &texture){
 		if(texture.GetSkinState()){
 			texture.GetSkinState()->UpdateAll();
 		}
-	}
+	});
 }
 
 
@@ -628,12 +597,10 @@ int element){
 
 void deoglRComponent::UpdateBoneMatrices(const deComponent &component){
 	const deRig * const rig = component.GetRig();
-	int i;
 	
 	pUpdateModelRigMappings(component);
 	
-	for(i=0; i<pBoneMatrixCount; i++){
-		oglMatrix3x4 &boneMatrix = pBoneMatrices[i];
+	pBoneMatrices.VisitIndexed([&](int i, oglMatrix3x4 &boneMatrix){
 		const int bone = pModelRigMappings[i];
 		
 		if(bone == -1){
@@ -652,7 +619,7 @@ void deoglRComponent::UpdateBoneMatrices(const deComponent &component){
 			
 		}else{
 			const decMatrix matrix(rig->GetBoneAt(bone)->GetInverseMatrix()
-				.QuickMultiply(component.GetBoneAt(bone).GetMatrix()));
+				.QuickMultiply(component.GetBones()[bone].GetMatrix()));
 			
 			boneMatrix.a11 = matrix.a11;
 			boneMatrix.a12 = matrix.a12;
@@ -667,28 +634,16 @@ void deoglRComponent::UpdateBoneMatrices(const deComponent &component){
 			boneMatrix.a33 = matrix.a33;
 			boneMatrix.a34 = matrix.a34;
 		}
-	}
+	});
 }
 
 void deoglRComponent::UpdateVertexPositionSets(const deComponent &component){
-	const int count = component.GetVertexPositionSetCount();
+	const int count = component.GetVertexPositionSetWeights().GetCount();
 	int i;
 	
-	if(count != pVertexPositionSetCount){
-		if(pVertexPositionSetWeights){
-			delete [] pVertexPositionSetWeights;
-			pVertexPositionSetWeights = nullptr;
-			pVertexPositionSetCount = 0;
-		}
-		
-		if(count > 0){
-			pVertexPositionSetWeights = new float[count];
-			pVertexPositionSetCount = count;
-		}
-	}
-	
+	pVertexPositionSetWeights.SetCountDiscard(count);
 	for(i=0; i<count; i++){
-		pVertexPositionSetWeights[i] = component.GetVertexPositionSetWeightAt(i);
+		pVertexPositionSetWeights[i] = component.GetVertexPositionSetWeights()[i];
 	}
 }
 
@@ -756,16 +711,10 @@ void deoglRComponent::InvalidateVAO(){
 void deoglRComponent::UpdateSkin(float elapsed){
 	// WARNING called from main thread during synchronization time
 	
-	const int count = pTextures.GetCount();
-	int i;
-	
 	// advance time and mark tucs/parameters dirty if dynamic channels are present
 	pSkinState->AdvanceTime(elapsed);
 	
-	for(i=0; i<count; i++){
-		//deoglRComponentTexture &texture = *( ( deoglRComponentTexture* )pTextures.GetAt( i ) );
-		deoglRComponentTexture &texture = GetTextureAt(i);
-		
+	pTextures.Visit([&](deoglRComponentTexture &texture){
 		if(texture.GetSkinState()){
 			texture.GetSkinState()->AdvanceTime(elapsed);
 		}
@@ -781,7 +730,7 @@ void deoglRComponent::UpdateSkin(float elapsed){
 				texture.MarkParamBlocksDirty();
 			}
 		}
-	}
+	});
 	
 	// update environment map fading
 	if(pRenderEnvMapFade){
@@ -794,10 +743,9 @@ void deoglRComponent::UpdateSkin(float elapsed){
 	}
 	
 	// update skin state in all attached decals
-	const int decalCount = pDecals.GetCount();
-	for(i=0; i<decalCount; i++){
-		pDecals.GetAt(i)->UpdateSkin(elapsed);
-	}
+	pDecals.Visit([&](deoglRDecal &decal){
+		decal.UpdateSkin(elapsed);
+	});
 }
 
 
@@ -848,13 +796,11 @@ void deoglRComponent::Update(float elapsed){
 void deoglRComponent::AddSkinStateRenderPlans(deoglRenderPlan &plan){
 	pSkinState->AddRenderPlans(plan);
 	
-	int i;
-	for(i=0; i<pTextures.GetCount(); i++){
-		deoglRComponentTexture &texture = pTextures.GetAt(i);
+	pTextures.Visit([&](deoglRComponentTexture &texture){
 		if(texture.GetSkinState()){
 			texture.GetSkinState()->AddRenderPlans(plan);
 		}
-	}
+	});
 	
 	pSkinRendered.AddRenderPlans(plan);
 }
@@ -878,7 +824,7 @@ void deoglRComponent::SetMatrix(const decDMatrix &matrix){
 
 void deoglRComponent::UpdateExtends(deComponent &component){
 	if(pModel){
-		const int boneCount = component.GetBoneCount();
+		const int boneCount = component.GetBones().GetCount();
 		const deoglRModel &model = pModel;
 		decDVector corners[8];
 		
@@ -1238,11 +1184,9 @@ void deoglRComponent::PrepareQuickDispose(){
 	
 	pLightList.RemoveAll();
 	
-	const int count = pDecals.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		pDecals.GetAt(i)->PrepareQuickDispose();
-	}
+	pDecals.Visit([&](deoglRDecal &decal){
+		decal.PrepareQuickDispose();
+	});
 }
 
 
@@ -1281,11 +1225,9 @@ void deoglRComponent::DirtyLODRenderTaskConfigs(){
 }
 
 void deoglRComponent::UpdateRTSInstances(){
-	const int count = pTextures.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		pTextures.GetAt(i)->UpdateRTSInstances();
-	}
+	pTextures.Visit([&](deoglRComponentTexture &texture){
+		texture.UpdateRTSInstances();
+	});
 }
 
 
@@ -1298,7 +1240,7 @@ int deoglRComponent::GetTextureCount() const{
 }
 
 deoglRComponentTexture &deoglRComponent::GetTextureAt(int index) const{
-	return pTextures.GetAt(index);
+	return pTextures[index];
 }
 
 void deoglRComponent::RemoveAllTextures(){
@@ -1311,39 +1253,27 @@ void deoglRComponent::AddTexture(deoglRComponentTexture *texture){
 }
 
 void deoglRComponent::InvalidateAllTexturesParamBlocks(){
-	const int count = pTextures.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		pTextures.GetAt(i)->InvalidateParamBlocks();
-	}
+	pTextures.Visit([&](deoglRComponentTexture &texture){
+		texture.InvalidateParamBlocks();
+	});
 }
 
 void deoglRComponent::MarkAllTexturesParamBlocksDirty(){
-	const int count = pTextures.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		pTextures.GetAt(i)->MarkParamBlocksDirty();
-	}
+	pTextures.Visit([&](deoglRComponentTexture &texture){
+		texture.MarkParamBlocksDirty();
+	});
 }
 
 void deoglRComponent::MarkAllTexturesTUCsDirty(){
-	const int count = pTextures.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		pTextures.GetAt(i)->MarkTUCsDirty();
-	}
+	pTextures.Visit([&](deoglRComponentTexture &texture){
+		texture.MarkTUCsDirty();
+	});
 }
 
 void deoglRComponent::MarkAllTexturesTUCsDirtyEnvMapUse(){
-	const int count = pTextures.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		pTextures.GetAt(i)->MarkTUCsDirtyEnvMapUse();
-	}
+	pTextures.Visit([&](deoglRComponentTexture &texture){
+		texture.MarkTUCsDirtyEnvMapUse();
+	});
 }
 
 void deoglRComponent::UpdateStaticTextures(){
@@ -1363,9 +1293,9 @@ void deoglRComponent::UpdateStaticTextures(){
 			continue;
 		}
 		
-		if(skinState->GetVideoPlayerCount() > 0
-		|| skinState->GetCalculatedPropertyCount() > 0
-		|| skinState->GetConstructedPropertyCount() > 0){
+		if(skinState->GetVideoPlayers().IsNotEmpty()
+		|| skinState->GetCalculatedProperties().IsNotEmpty()
+		|| skinState->GetConstructedProperties().IsNotEmpty()){
 			pStaticTextures = false;
 			break;
 		}
@@ -1381,28 +1311,24 @@ void deoglRComponent::DynamicSkinRenderablesChanged(){
 	// custom texture assigned or if the corresponding skin texture (if existing) is not marked as dynamic.
 	// later on this will be made better by usin notifications so this check is automatic since only
 	// textures listening for dynamic changes are affected.
-	const int textureCount = pTextures.GetCount();
-	int i;
-	
-	for(i=0; i<textureCount; i++){
-		deoglRComponentTexture &texture = pTextures.GetAt(i);
+	pTextures.VisitIndexed([&](int i, deoglRComponentTexture &texture){
 		if(texture.GetSkin() || !pSkin){
-			continue;
+			return;
 		}
 		
-		const int mapping = pModelSkinMappings.GetAt(i);
+		const int mapping = pModelSkinMappings[i];
 		if(mapping == -1){
-			continue;
+			return;
 		}
 		
 		const deoglSkinTexture &skinTexture = pSkin->GetTextureAt(mapping);
 		if(!skinTexture.GetDynamicChannels()){
-			continue;
+			return;
 		}
 		
 		texture.MarkParamBlocksDirty();
 		texture.MarkTUCsDirty();
-	}
+	});
 }
 
 void deoglRComponent::TextureDynamicSkinRenderablesChanged(deoglRComponentTexture &texture){
@@ -1432,18 +1358,14 @@ void deoglRComponent::UpdateRenderableMapping(){
 }
 
 void deoglRComponent::UpdateTexturesUseSkin(){
-	const int count = pTextures.GetCount();
-	int i;
-	
 	pOutlineTextureCount = 0;
 	
-	for(i=0; i<count; i++){
-		deoglRComponentTexture &texture = pTextures.GetAt(i);
+	pTextures.Visit([&](deoglRComponentTexture &texture){
 		texture.UpdateUseSkin();
 		if(texture.GetUseSkinTexture() && texture.GetUseSkinTexture()->GetHasOutline()){
 			pOutlineTextureCount++;
 		}
-	}
+	});
 	
 	pWorldComputeElement->ComputeUpdateElementAndGeometries();
 }
@@ -1473,26 +1395,14 @@ void deoglRComponent::DirtyTextureParamBlocks(){
 // Decals
 ///////////
 
-int deoglRComponent::GetDecalCount() const{
-	return pDecals.GetCount();
-}
-
-deoglRDecal *deoglRComponent::GetDecalAt(int index) const{
-	return pDecals.GetAt(index);
-}
-
 void deoglRComponent::SyncDecalReferences(const deComponent &engComponent){
 	// clear parent component on all decals marked removed. this invalidates decals and
 	// forces rebuilding the decal should they be added somewhere else
-	const int count = pDecals.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		deoglRDecal &decal = pDecals.GetAt(i);
+	pDecals.Visit([&](deoglRDecal &decal){
 		if(decal.GetComponentMarkedRemove()){
 			decal.SetParentComponent(nullptr);
 		}
-	}
+	});
 	
 	// clear the list and add decals from component. sets the parent component on all decals.
 	// this will trigger a rebuild of the decal only if the parent component changed
@@ -1505,18 +1415,15 @@ void deoglRComponent::SyncDecalReferences(const deComponent &engComponent){
 		decal->SetParentComponent(this);
 	});
 	
-	if(pDecals.GetCount() > 0){
+	if(pDecals.IsNotEmpty()){
 		DecalRequiresPrepareForRender();
 	}
 }
 
 void deoglRComponent::MarkAllDecalTexturesParamBlocksDirty(){
-	const int count = pDecals.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		pDecals.GetAt(i)->MarkParamBlocksDirty();
-	}
+	pDecals.Visit([&](deoglRDecal &decal){
+		decal.MarkParamBlocksDirty();
+	});
 }
 
 void deoglRComponent::DecalRequiresPrepareForRender(){
@@ -1726,16 +1633,9 @@ void deoglRComponent::pCleanUp(){
 		delete pDynamicOcclusionMesh;
 	}
 	
-	if(pBoneMatrices){
-		delete [] pBoneMatrices;
-	}
-	
 	pOccMeshSharedSPBElement = nullptr; // has to be done before pOcclusionMesh mesh is released
 	if(pSkinState){
 		pSkinState->DropOwner();
-	}
-	if(pVertexPositionSetWeights){
-		delete [] pVertexPositionSetWeights;
 	}
 	
 	pRenderThread.GetUniqueKey().Return(pUniqueKey);
@@ -1909,8 +1809,8 @@ void deoglRComponent::pUpdateRenderMode(){
 	if(pModel->GetVPSNames().GetCount() > 0){
 		SetRenderMode(ermDynamic);
 		
-	}else if(modelLOD.GetWeightsEntryCount() > 0 && pModel->GetBoneCount() > 0){
-		if(pBoneMatrixCount == 0){
+	}else if(modelLOD.GetWeightsEntries().IsNotEmpty() && pModel->GetBoneCount() > 0){
+		if(pBoneMatrices.IsEmpty()){
 			SetRenderMode(ermStatic);
 			
 		}else{
@@ -1949,13 +1849,9 @@ void deoglRComponent::pPrepareSolidity(){
 		return;
 	}
 	
-	const int textureCount = pTextures.GetCount();
-	int i;
-	
 	if(pSkin){
 		// if a skin is assigned check each texture using the components for transparency
-		for(i=0; i<textureCount; i++){
-			deoglRComponentTexture &texture = pTextures.GetAt(i);
+		pTextures.VisitIndexed([&](int i, deoglRComponentTexture &texture){
 			deoglRSkin *skin = texture.GetSkin();
 			int textureNumber = 0;
 			
@@ -1964,7 +1860,7 @@ void deoglRComponent::pPrepareSolidity(){
 			}
 			
 			if(!skin){
-				const int mapping = pModelSkinMappings.GetAt(i);
+				const int mapping = pModelSkinMappings[i];
 				if(mapping != -1){
 					textureNumber = mapping;
 					skin = pSkin;
@@ -1972,30 +1868,29 @@ void deoglRComponent::pPrepareSolidity(){
 			}
 			
 			if(!skin){
-				continue;
+				return;
 			}
 			
 			const deoglSkinTexture &skinTexture = skin->GetTextureAt(textureNumber);
 			pSolid &= skinTexture.GetSolid();
 			pOutlineSolid &= skinTexture.GetIsOutlineSolid();
 			pXRaySolid &= !skinTexture.GetXRay() || skinTexture.GetSolid();
-		}
+		});
 		
 	}else{
 		// if no skin is assigned the component can only be transparent
 		// if one or more assigned texture skins are transparent
-		for(i =0; i <textureCount; i++){
-			deoglRComponentTexture &texture = pTextures.GetAt(i);
+		pTextures.Visit([&](deoglRComponentTexture &texture){
 			const deoglRSkin *skin = texture.GetSkin();
 			if(!skin || skin->GetTextureCount() == 0){
-				continue;
+				return;
 			}
 			
 			const deoglSkinTexture &skinTexture = skin->GetTextureAt(0);
 			pSolid &= skinTexture.GetSolid();
 			pOutlineSolid &= skinTexture.GetIsOutlineSolid();
 			pXRaySolid &= !skinTexture.GetXRay() || skinTexture.GetSolid();
-		}
+		});
 	}
 }
 
@@ -2127,11 +2022,9 @@ void deoglRComponent::pPrepareSkinStateRenderables(const deoglRenderPlanMasked *
 		pSkinState->PrepareRenderables(pSkin, pDynamicSkin, plan);
 	}
 	
-	const int textureCount = pTextures.GetCount();
-	int i;
-	for(i=0; i<textureCount; i++){
-		pTextures.GetAt(i)->PrepareSkinStateRenderables(plan);
-	}
+	pTextures.Visit([&](deoglRComponentTexture &texture){
+		texture.PrepareSkinStateRenderables(plan);
+	});
 }
 
 void deoglRComponent::pRenderSkinStateRenderables(const deoglRenderPlanMasked *plan){
@@ -2144,11 +2037,9 @@ void deoglRComponent::pRenderSkinStateRenderables(const deoglRenderPlanMasked *p
 		pSkinState->RenderRenderables(pSkin, pDynamicSkin, plan);
 	}
 	
-	const int textureCount = pTextures.GetCount();
-	int i;
-	for(i=0; i<textureCount; i++){
-		pTextures.GetAt(i)->RenderSkinStateRenderables(plan);
-	}
+	pTextures.Visit([&](deoglRComponentTexture &texture){
+		texture.RenderSkinStateRenderables(plan);
+	});
 }
 
 void deoglRComponent::pPrepareSkinStateConstructed(){
@@ -2156,11 +2047,9 @@ void deoglRComponent::pPrepareSkinStateConstructed(){
 		pSkinState->PrepareConstructedProperties();
 	}
 	
-	const int textureCount = pTextures.GetCount();
-	int i;
-	for(i=0; i<textureCount; i++){
-		pTextures.GetAt(i)->PrepareSkinStateConstructed();
-	}
+	pTextures.Visit([&](deoglRComponentTexture &texture){
+		texture.PrepareSkinStateConstructed();
+	});
 }
 
 void deoglRComponent::pPrepareTextureTUCs(){
@@ -2170,11 +2059,9 @@ void deoglRComponent::pPrepareTextureTUCs(){
 	
 	pDirtyTextureTUCs = false;
 	
-	const int count = pTextures.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		pTextures.GetAt(i)->PrepareTUCs();
-	}
+	pTextures.Visit([&](deoglRComponentTexture &texture){
+		texture.PrepareTUCs();
+	});
 }
 
 void deoglRComponent::pPrepareParamBlocks(){
@@ -2241,11 +2128,9 @@ void deoglRComponent::pPrepareTextureParamBlocks(){
 	
 	pDirtyTextureParamBlocks = false;
 	
-	const int count = pTextures.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		pTextures.GetAt(i)->PrepareParamBlocks();
-	}
+	pTextures.Visit([&](deoglRComponentTexture &texture){
+		texture.PrepareParamBlocks();
+	});
 }
 
 void deoglRComponent::pPrepareDecals(deoglRenderPlan &plan, const deoglRenderPlanMasked *mask){
@@ -2255,11 +2140,9 @@ void deoglRComponent::pPrepareDecals(deoglRenderPlan &plan, const deoglRenderPla
 	pDirtyDecals = false;
 	pDirtyDecalsRenderRenderables = true;
 	
-	const int count = pDecals.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		pDecals.GetAt(i)->PrepareForRender(plan, mask);
-	}
+	pDecals.Visit([&](deoglRDecal &decal){
+		decal.PrepareForRender(plan, mask);
+	});
 }
 
 void deoglRComponent::pPrepareDecalsRenderRenderables(deoglRenderPlan &plan, const deoglRenderPlanMasked *mask){
@@ -2268,11 +2151,9 @@ void deoglRComponent::pPrepareDecalsRenderRenderables(deoglRenderPlan &plan, con
 	}
 	pDirtyDecalsRenderRenderables = false;
 	
-	const int count = pDecals.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		pDecals.GetAt(i)->PrepareForRenderRender(plan, mask);
-	}
+	pDecals.Visit([&](deoglRDecal &decal){
+		decal.PrepareForRenderRender(plan, mask);
+	});
 }
 
 void deoglRComponent::pPrepareOccMeshVBO(){
@@ -2321,18 +2202,7 @@ void deoglRComponent::pPrepareDynOccMesh(){
 
 
 void deoglRComponent::pResizeBoneMatrices(){
-	const int boneCount = pModel ? pModel->GetBoneCount() : 0;
-	oglMatrix3x4 *matrices = nullptr;
-	
-	if(boneCount > 0){
-		matrices = new oglMatrix3x4[boneCount];
-	}
-	
-	if(pBoneMatrices){
-		delete [] pBoneMatrices;
-	}
-	pBoneMatrices = matrices;
-	pBoneMatrixCount = boneCount;
+	pBoneMatrices.SetAll(pModel ? pModel->GetBoneCount() : 0, {});
 	
 	if(pDynamicOcclusionMesh){
 		pDynamicOcclusionMesh->ComponentStateChanged();

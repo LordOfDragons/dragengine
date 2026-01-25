@@ -266,11 +266,6 @@ pCurWindow(0),
 pEventMask(0),
 pHostingMainWindow(0),
 pHostingRenderWindow(0),
-
-pDisplayInformation(nullptr),
-pDisplayCount(0),
-pDisplayResolutions(nullptr),
-pDisplayResolutionCount(0),
 pScaleFactor(100)
 {
 	try{
@@ -381,42 +376,31 @@ decString deOSUnix::GetPathUserCapture(){
 ////////////////////////
 
 int deOSUnix::GetDisplayCount(){
-	return pDisplayCount;
+	return pDisplayInformation.GetCount();
 }
 
 decPoint deOSUnix::GetDisplayCurrentResolution(int display){
-	DEASSERT_TRUE(display >= 0)
-	DEASSERT_TRUE(display < pDisplayCount)
-	
-	return pDisplayInformation[display].currentResolution;
+	return pDisplayInformation.GetAt(display).currentResolution;
 }
 
 int deOSUnix::GetDisplayCurrentRefreshRate(int display){
-	DEASSERT_TRUE(display >= 0)
-	DEASSERT_TRUE(display < pDisplayCount)
-	
-	return pDisplayInformation[display].currentRefreshRate;
+	return pDisplayInformation.GetAt(display).currentRefreshRate;
 }
 
 int deOSUnix::GetDisplayResolutionCount(int display){
-	DEASSERT_TRUE(display >= 0)
-	DEASSERT_TRUE(display < pDisplayCount)
-	
-	return pDisplayInformation[display].resolutionCount;
+	return pDisplayInformation.GetAt(display).resolutionCount;
 }
 
 decPoint deOSUnix::GetDisplayResolution(int display, int resolution){
-	DEASSERT_TRUE(display >= 0)
-	DEASSERT_TRUE(display < pDisplayCount)
 	DEASSERT_TRUE(resolution >= 0)
-	DEASSERT_TRUE(resolution < pDisplayInformation[display].resolutionCount)
+	DEASSERT_TRUE(resolution < pDisplayInformation.GetAt(display).resolutionCount)
 	
-	return pDisplayInformation[display].resolutions[resolution];
+	return pDisplayInformation.GetAt(display).resolutions[resolution];
 }
 
 int deOSUnix::GetDisplayCurrentScaleFactor(int display){
 	DEASSERT_TRUE(display >= 0)
-	DEASSERT_TRUE(display < pDisplayCount)
+	DEASSERT_TRUE(display < pDisplayInformation.GetCount())
 	
 	return pScaleFactor;
 }
@@ -588,18 +572,6 @@ void deOSUnix::pCleanUp(){
 		pDisplay = nullptr;
 	}
 	
-	if(pDisplayInformation){
-		delete [] pDisplayInformation;
-		pDisplayInformation = nullptr;
-		pDisplayCount = 0;
-	}
-	
-	if(pDisplayResolutions){
-		delete [] pDisplayResolutions;
-		pDisplayResolutions = nullptr;
-		pDisplayResolutionCount = 0;
-	}
-	
 	// reset error handler
 	if(tempGlobalOS == this){
 		XSetErrorHandler(nullptr);
@@ -658,16 +630,16 @@ void deOSUnix::pGetDisplayInformation(){
 	}
 	
 	// create arrays and fill in the actual values
-	pDisplayResolutions = new decPoint[totalResolutionCount];
-	pDisplayInformation = new sDisplayInformation[screenCount];
+	pDisplayResolutions = decTList<decPoint>(totalResolutionCount);
+	pDisplayInformation = decTList<sDisplayInformation>(screenCount);
 	
 	for(i=0; i<screenCount; i++){
-		sDisplayInformation &di = pDisplayInformation[i];
-		di.resolutions = pDisplayResolutions + pDisplayResolutionCount;
+		sDisplayInformation di;
+		di.resolutions = pDisplayResolutions.GetArrayPointer() + pDisplayResolutions.GetCount();
 		
 		const XRRScreenSize * const resolutions = XRRSizes(pDisplay, i, &resolutionCount);
 		for(j=0; j<resolutionCount; j++){
-			di.resolutions[j].Set(resolutions[j].width, resolutions[j].height);
+			pDisplayResolutions.Add(decPoint(resolutions[j].width, resolutions[j].height));
 		}
 		
 		// the calls XWidthOfScreen and XHeightOfScreen do not work well if used on screens
@@ -708,10 +680,8 @@ void deOSUnix::pGetDisplayInformation(){
 		}
 		
 		di.resolutionCount = resolutionCount;
-		pDisplayResolutionCount += resolutionCount;
+		pDisplayInformation.Add(di);
 	}
-	
-	pDisplayCount = screenCount;
 }
 
 int deOSUnix::pGetGlobalScaling() const{

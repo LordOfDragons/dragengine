@@ -65,7 +65,7 @@ deoglRComponentWCElement::~deoglRComponentWCElement(){
 ///////////////
 
 void deoglRComponentWCElement::UpdateData(sDataElement &data) const{
-	const int shadowCombineMask = ertfRender | ertfSolid | ertfShadowNone | ertfHoles | ertfDecal | ertfDoubleSided;
+	const int shadowCombineMask = ertfRender | ertfSolid | ertfShadowNone | ertfHoles | ertfDecal | ertfDecalSolidParent | ertfDoubleSided;
 	const int lodCount = decMath::min(pComponent.GetLODCount(), 15);
 	
 	const decDVector &refpos = GetReferencePosition();
@@ -94,7 +94,7 @@ void deoglRComponentWCElement::UpdateData(sDataElement &data) const{
 		
 		for(i=0; i<lodCount; i++){
 			const deoglModelLOD &modelLod = model.GetLODAt(i);
-			if(modelLod.GetFaceCount() == 0){
+			if(modelLod.GetFaces().IsEmpty()){
 				continue;
 			}
 			
@@ -171,7 +171,7 @@ void deoglRComponentWCElement::UpdateData(sDataElement &data) const{
 				
 				if(init){
 					shadowCombineFilter = texture.GetRenderTaskFilters() & shadowCombineMask;
-					if((shadowCombineFilter & (ertfRender | ertfShadowNone | ertfDecal | ertfSolid | ertfHoles)) == (ertfRender | ertfSolid)){
+					if((shadowCombineFilter & (ertfRender | ertfShadowNone | ertfDecal | ertfDecalSolidParent | ertfSolid | ertfHoles)) == (ertfRender | ertfSolid)){
 						shadowCombineCount = 1;
 					}
 				}
@@ -228,7 +228,7 @@ void deoglRComponentWCElement::UpdateDataGeometries(sDataElementGeometry *data) 
 	for(i=0; i<lodCount; i++){
 		const deoglRComponentLOD &lod = pComponent.GetLODAt(i);
 		const deoglModelLOD &modelLod = lod.GetModelLODRef();
-		if(modelLod.GetFaceCount() == 0){
+		if(modelLod.GetFaces().IsEmpty()){
 			continue;
 		}
 		

@@ -77,9 +77,8 @@ void delGameManager::LoadGames(delEngineInstance &instance){
 	pGames.RemoveAll();
 	
 	// load from known game profiles
-	deVirtualFileSystem &vfs = *pLauncher.GetVFS();
 	deCollectDirectorySearchVisitor collect;
-	vfs.SearchFiles(decPath::CreatePathUnix("/config/user/games"), collect);
+	pLauncher.GetVFS()->SearchFiles(decPath::CreatePathUnix("/config/user/games"), collect);
 	
 	const decPath::List &directories = collect.GetDirectories();
 	const int count = directories.GetCount();
@@ -230,21 +229,13 @@ void delGameManager::LoadGameFromDisk(delEngineInstance &instance, const decStri
 	delPatch::List patches;
 	pLauncher.GetPatchManager().LoadPatchesFromDisk(instance, baseDir.GetPathNative(), patches);
 	
-	const int gameCount = list.GetCount();
-	const int patchCount = patches.GetCount();
-	int i, j;
-	
-	for(i=0; i<gameCount; i++){
-		delGame &game = *list.GetAt(i);
-		
-		for(j=0; j<patchCount; j++){
-			delPatch * const patch = patches.GetAt(j);
-			
+	list.Visit([&](delGame &game){
+		patches.Visit([&](delPatch *patch){
 			if(patch->GetGameID() == game.GetIdentifier()){
 				game.GetLocalPatches().Add(patch);
 			}
-		}
-	}
+		});
+	});
 }
 
 void delGameManager::CreateDefaultProfile(){
@@ -405,16 +396,13 @@ void delGameManager::pProcessFoundFiles(delEngineInstance &instance, const decPa
 		return;
 	}
 	
-	const int count = list.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		delGame * const game = list.GetAt(i);
+	list.Visit([&](delGame *game){
 		if(pGames.HasWithId(game->GetIdentifier())){
 // 			pLauncher.GetLogger()->LogWarnFormat( pLauncher.GetLogSource(), "Ignore duplicate game '%s'",
 // 				game->GetIdentifier().ToHexString( false ).GetString() );
-			continue;
+			return;
 		}
 		
 		pGames.Add(game);
-	}
+	});
 }

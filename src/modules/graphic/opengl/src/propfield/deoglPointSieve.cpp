@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglPointSieve.h"
 #include "deoglPointSieveBucket.h"
 
@@ -49,36 +45,33 @@ deoglPointSieve::deoglPointSieve(int bucketCountX, int bucketCountZ, float sieve
 	pSieveDivX = (float)bucketCountX / sieveSizeX;
 	pSieveDivZ = (float)bucketCountZ / sieveSizeZ;
 	
-	pBuckets = nullptr;
 	pBucketCountX = bucketCountX;
 	pBucketCountZ = bucketCountZ;
-	pBucketCount = bucketCountX * bucketCountZ;
+	pBuckets.SetCountDiscard(bucketCountX * bucketCountZ);
 	
-	pBuckets = new deoglPointSieveBucket[pBucketCount];
 }
 
-deoglPointSieve::~deoglPointSieve(){
-	if(pBuckets) delete [] pBuckets;
-}
+deoglPointSieve::~deoglPointSieve() = default;
 
 
 
 // Management
 ///////////////
 
-deoglPointSieveBucket &deoglPointSieve::GetBucketAt(int index) const{
-	if(index < 0 || index >= pBucketCount) DETHROW(deeInvalidParam);
-	
+deoglPointSieveBucket &deoglPointSieve::GetBucketAt(int index){
 	return pBuckets[index];
 }
 
-deoglPointSieveBucket &deoglPointSieve::GetBucketWith(int x, int z) const{
-	if(x < 0 || x >= pBucketCountX || z < 0 || z >= pBucketCountZ) DETHROW(deeInvalidParam);
+deoglPointSieveBucket &deoglPointSieve::GetBucketWith(int x, int z){
+	DEASSERT_TRUE(x >= 0)
+	DEASSERT_TRUE(x < pBucketCountX)
+	DEASSERT_TRUE(z >= 0)
+	DEASSERT_TRUE(z < pBucketCountZ)
 	
 	return pBuckets[pBucketCountX * z + x];
 }
 
-deoglPointSieveBucket &deoglPointSieve::GetBucketContaining(float x, float z) const{
+deoglPointSieveBucket &deoglPointSieve::GetBucketContaining(float x, float z){
 	int bx = (int)((x - pSieveLeft) * pSieveDivX);
 	int bz = (int)((pSieveTop - z) * pSieveDivZ);
 	
@@ -108,9 +101,7 @@ void deoglPointSieve::DropPoint(float x, float z, int index){
 
 
 void deoglPointSieve::Clear(){
-	int b;
-	
-	for(b=0; b<pBucketCount; b++){
-		pBuckets[b].RemoveAllIndices();
-	}
+	pBuckets.Visit([&](deoglPointSieveBucket &bucket){
+		bucket.RemoveAllIndices();
+	});
 }

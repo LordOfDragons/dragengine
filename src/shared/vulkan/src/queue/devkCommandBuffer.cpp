@@ -192,8 +192,8 @@ const decPoint &position, const decPoint &size){
 	beginInfo.renderArea.offset.y = (int32_t)position.y;
 	beginInfo.renderArea.extent.width = (uint32_t)size.x;
 	beginInfo.renderArea.extent.height = (uint32_t)size.y;
-	beginInfo.clearValueCount = renderPass.GetConfiguration().GetAttachmentCount();
-	beginInfo.pClearValues = renderPass.GetConfiguration().GetClearValues();
+	beginInfo.clearValueCount = renderPass.GetConfiguration().GetClearValues().GetCount();
+	beginInfo.pClearValues = renderPass.GetConfiguration().GetClearValues().GetArrayPointer();
 	
 	pPool.GetQueue()->GetDevice().vkCmdBeginRenderPass(pBuffer, &beginInfo, VK_SUBPASS_CONTENTS_INLINE);
 	pActiveRenderPass = &renderPass;

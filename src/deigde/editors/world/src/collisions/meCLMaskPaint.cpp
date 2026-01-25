@@ -68,14 +68,11 @@ meCLMaskPaint::meCLMaskPaint(meWorld *world){
 	pSector = nullptr;
 	pTexture = nullptr;
 	
-	pOldValues = nullptr;
 	pModifyWidth = 0;
 	pModifyHeight = 0;
 }
 
-meCLMaskPaint::~meCLMaskPaint(){
-	if(pOldValues) delete [] pOldValues;
-}
+meCLMaskPaint::~meCLMaskPaint() = default;
 
 
 
@@ -97,10 +94,7 @@ bool meCLMaskPaint::CanPaint() const{
 }
 
 void meCLMaskPaint::BeginSession(){
-	if(pOldValues){
-		delete [] pOldValues;
-		pOldValues = nullptr;
-	}
+	pOldValues.SetCountDiscard(0);
 	pModifyWidth = 0;
 	pModifyHeight = 0;
 	
@@ -147,7 +141,7 @@ void meCLMaskPaint::Paint(){
 		if(pPaintGrid.y < 0.0f) pPaintGrid.y += sectorDim;
 		
 		// update the old heights
-		if(!pOldValues){
+		if(pOldValues.IsEmpty()){
 			pSessionGrid.x = (int)pPaintGrid.x;
 			if(pSessionGrid.x < 0) pSessionGrid.x = 0;
 			if(pSessionGrid.x >= imageDim) pSessionGrid.x = imageDim - 1;
@@ -175,17 +169,14 @@ void meCLMaskPaint::Paint(){
 
 void meCLMaskPaint::EndSession(){
 	// check if we have any changes at all
-	if(pOldValues){
+	if(pOldValues.IsNotEmpty()){
 		pWorld->GetUndoSystem()->Add(meUHTPaintMask::Ref::New(pDrawMode, pWorld,
 			pSector, pTexture, decPoint(pAreaGrid.x1, pAreaGrid.y1),
-			decPoint(pModifyWidth, pModifyHeight), pOldValues), false);
+			decPoint(pModifyWidth, pModifyHeight), std::move(pOldValues)), false);
 	}
 	
 	// clean up
-	if(pOldValues){
-		delete [] pOldValues;
-		pOldValues = nullptr;
-	}
+	pOldValues.SetCountDiscard(0);
 	pModifyWidth = 0;
 	pModifyHeight = 0;
 	
@@ -338,7 +329,7 @@ void meCLMaskPaint::pUpdateOldValues(const decVector2 &grid, const decVector2 &s
 	
 	// determine the grow parameters
 //pWorld->GetLogger()->LogInfoFormat( LOGSOURCE, "[meCLMaskPaint::pGrowHeights] as=(%i,%i,%i,%i) ag=(%i,%i,%i,%i)\n", pAreaModifySector.x1, pAreaModifySector.y1, pAreaModifySector.x2, pAreaModifySector.y2, pAreaModifyGrid.x1, pAreaModifyGrid.y1, pAreaModifyGrid.x2, pAreaModifyGrid.y2 );
-	if(pOldValues){
+	if(pOldValues.IsNotEmpty()){
 		if(pAreaModifyGrid.x1 < pAreaGrid.x1){
 			growMargins.x1 = pAreaGrid.x1 - pAreaModifyGrid.x1;
 			pAreaGrid.x1 = pAreaModifyGrid.x1;
@@ -376,7 +367,6 @@ void meCLMaskPaint::pUpdateOldValues(const decVector2 &grid, const decVector2 &s
 	if(growBy.x > 0 || growBy.y > 0){
 		int y, newHeight = pModifyHeight + growBy.y;
 		int x, newWidth = pModifyWidth + growBy.x;
-		unsigned char *oldValues = nullptr;
 		decBoundary retain;
 		int sgx, sgy;
 		
@@ -385,30 +375,24 @@ void meCLMaskPaint::pUpdateOldValues(const decVector2 &grid, const decVector2 &s
 		retain.x2 = growMargins.x1 + pModifyWidth;
 		retain.y2 = growMargins.y1 + pModifyHeight;
 		
-		try{
-			oldValues = new unsigned char[newWidth * newHeight];
-			
-			for(y=0; y<newHeight; y++){
-				for(x=0; x<newWidth; x++){
-					if(x>=retain.x1 && y>=retain.y1 && x<retain.x2 && y<retain.y2){
-						oldValues[y * newWidth + x] = pOldValues[(y - retain.y1) * pModifyWidth + (x - retain.x1)];
-						
-					}else{
-						sgx = pAreaGrid.x1 + x;
-						sgy = pAreaGrid.y1 + y;
-						
-						oldValues[y * newWidth + x] = tmi.GetMaskValueAt(sgy * imageDim + sgx);
-					}
+		decTList <unsigned char> oldValues;
+		oldValues.SetCountDiscard(newWidth * newHeight);
+		
+		for(y=0; y<newHeight; y++){
+			for(x=0; x<newWidth; x++){
+				if(x>=retain.x1 && y>=retain.y1 && x<retain.x2 && y<retain.y2){
+					oldValues[y * newWidth + x] = pOldValues[(y - retain.y1) * pModifyWidth + (x - retain.x1)];
+					
+				}else{
+					sgx = pAreaGrid.x1 + x;
+					sgy = pAreaGrid.y1 + y;
+					
+					oldValues[y * newWidth + x] = tmi.GetMaskValueAt(sgy * imageDim + sgx);
 				}
 			}
-			
-		}catch(const deException &){
-			if(oldValues) delete [] oldValues;
-			throw;
 		}
 		
-		if(pOldValues) delete [] pOldValues;
-		pOldValues = oldValues;
+		pOldValues = std::move(oldValues);
 		
 		pModifyWidth = newWidth;
 		pModifyHeight = newHeight;

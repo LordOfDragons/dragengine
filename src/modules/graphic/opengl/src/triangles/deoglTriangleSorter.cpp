@@ -81,7 +81,7 @@ void deoglTriangleSorter::SortLinear(const decVector &position, const decVector 
 	
 	// sort by distance
 	pSortedTriangles.Sort([](const sTriangle *a, const sTriangle *b){
-		return a->distance < b->distance;
+		return DECompare(a->distance, b->distance);
 	});
 }
 
@@ -103,7 +103,7 @@ void deoglTriangleSorter::SortRadial(const decVector &position){
 	
 	// sort by distance
 	pSortedTriangles.Sort([](const sTriangle *a, const sTriangle *b){
-		return a->distance < b->distance;
+		return DECompare(a->distance, b->distance);
 	});
 	
 	// debug

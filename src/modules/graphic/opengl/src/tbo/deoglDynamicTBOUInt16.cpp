@@ -62,50 +62,50 @@ void deoglDynamicTBOUInt16::AddBool(bool value){
 }
 
 void deoglDynamicTBOUInt16::AddInt(uint16_t value){
-	pEnlarge(1);
+	pEnlargeDataCount(1);
 	
-	uint16_t * const dataUInt = (uint16_t*)pData;
+	uint16_t * const dataUInt = (uint16_t*)pData.GetArrayPointer();
 	dataUInt[pDataCount++] = value;
 }
 
 void deoglDynamicTBOUInt16::AddVec2(uint16_t value1, uint16_t value2){
-	pEnlarge(2);
+	pEnlargeDataCount(2);
 	
-	uint16_t * const dataUInt = (uint16_t*)pData;
+	uint16_t * const dataUInt = (uint16_t*)pData.GetArrayPointer();
 	dataUInt[pDataCount++] = value1;
 	dataUInt[pDataCount++] = value2;
 }
 
 void deoglDynamicTBOUInt16::AddVec2(const decPoint &value){
-	pEnlarge(2);
+	pEnlargeDataCount(2);
 	
-	uint16_t * const dataUInt = (uint16_t*)pData;
+	uint16_t * const dataUInt = (uint16_t*)pData.GetArrayPointer();
 	dataUInt[pDataCount++] = (uint16_t)value.x;
 	dataUInt[pDataCount++] = (uint16_t)value.y;
 }
 
 void deoglDynamicTBOUInt16::AddVec3(uint16_t value1, uint16_t value2, uint16_t value3){
-	pEnlarge(3);
+	pEnlargeDataCount(3);
 	
-	uint16_t * const dataUInt = (uint16_t*)pData;
+	uint16_t * const dataUInt = (uint16_t*)pData.GetArrayPointer();
 	dataUInt[pDataCount++] = value1;
 	dataUInt[pDataCount++] = value2;
 	dataUInt[pDataCount++] = value3;
 }
 
 void deoglDynamicTBOUInt16::AddVec3(const decPoint3 &value){
-	pEnlarge(3);
+	pEnlargeDataCount(3);
 	
-	uint16_t * const dataUInt = (uint16_t*)pData;
+	uint16_t * const dataUInt = (uint16_t*)pData.GetArrayPointer();
 	dataUInt[pDataCount++] = (uint16_t)value.x;
 	dataUInt[pDataCount++] = (uint16_t)value.y;
 	dataUInt[pDataCount++] = (uint16_t)value.z;
 }
 
 void deoglDynamicTBOUInt16::AddVec4(uint16_t value1, uint16_t value2, uint16_t value3, uint16_t value4){
-	pEnlarge(4);
+	pEnlargeDataCount(4);
 	
-	uint16_t * const dataUInt = (uint16_t*)pData;
+	uint16_t * const dataUInt = (uint16_t*)pData.GetArrayPointer();
 	dataUInt[pDataCount++] = value1;
 	dataUInt[pDataCount++] = value2;
 	dataUInt[pDataCount++] = value3;
@@ -121,7 +121,7 @@ void deoglDynamicTBOUInt16::SetIntAt(int offset, uint16_t value){
 		DETHROW(deeInvalidParam);
 	}
 	
-	uint16_t * const dataUInt = (uint16_t*)pData;
+	uint16_t * const dataUInt = (uint16_t*)pData.GetArrayPointer();
 	dataUInt[offset] = value;
 }
 
@@ -130,7 +130,7 @@ void deoglDynamicTBOUInt16::SetVec2At(int offset, uint16_t value1, uint16_t valu
 		DETHROW(deeInvalidParam);
 	}
 	
-	uint16_t * const dataUInt = (uint16_t*)pData;
+	uint16_t * const dataUInt = (uint16_t*)pData.GetArrayPointer();
 	dataUInt[offset] = value1;
 	dataUInt[offset + 1] = value2;
 }
@@ -140,7 +140,7 @@ void deoglDynamicTBOUInt16::SetVec2At(int offset, const decPoint &value){
 		DETHROW(deeInvalidParam);
 	}
 	
-	uint16_t * const dataUInt = (uint16_t*)pData;
+	uint16_t * const dataUInt = (uint16_t*)pData.GetArrayPointer();
 	dataUInt[offset] = (uint16_t)value.x;
 	dataUInt[offset + 1] = (uint16_t)value.y;
 }
@@ -150,7 +150,7 @@ void deoglDynamicTBOUInt16::SetVec3At(int offset, uint16_t value1, uint16_t valu
 		DETHROW(deeInvalidParam);
 	}
 	
-	uint16_t * const dataUInt = (uint16_t*)pData;
+	uint16_t * const dataUInt = (uint16_t*)pData.GetArrayPointer();
 	dataUInt[offset] = value1;
 	dataUInt[offset + 1] = value2;
 	dataUInt[offset + 2] = value3;
@@ -161,7 +161,7 @@ void deoglDynamicTBOUInt16::SetVec3At(int offset, const decPoint3 &value){
 		DETHROW(deeInvalidParam);
 	}
 	
-	uint16_t * const dataUInt = (uint16_t*)pData;
+	uint16_t * const dataUInt = (uint16_t*)pData.GetArrayPointer();
 	dataUInt[offset] = (uint16_t)value.x;
 	dataUInt[offset + 1] = (uint16_t)value.y;
 	dataUInt[offset + 2] = (uint16_t)value.z;
@@ -173,7 +173,7 @@ uint16_t value3, uint16_t value4){
 		DETHROW(deeInvalidParam);
 	}
 	
-	uint16_t * const dataUInt = (uint16_t*)pData;
+	uint16_t * const dataUInt = (uint16_t*)pData.GetArrayPointer();
 	dataUInt[offset] = value1;
 	dataUInt[offset + 1] = value2;
 	dataUInt[offset + 2] = value3;
@@ -183,7 +183,7 @@ uint16_t value3, uint16_t value4){
 void deoglDynamicTBOUInt16::DebugPrint(){
 	deoglRTLogger &logger = pRenderThread.GetLogger();
 	logger.LogInfoFormat("TBO %d-UInt16:", pComponentCount);
-	uint16_t *data = (uint16_t*)pData;
+	uint16_t *data = (uint16_t*)pData.GetArrayPointer();
 	int i, pixel = 0;
 	
 	pEnsurePadding();

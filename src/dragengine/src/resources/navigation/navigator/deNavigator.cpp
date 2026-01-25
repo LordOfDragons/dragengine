@@ -53,10 +53,6 @@ pDefFixCost(0.0f),
 pDefCostPerMeter(1.0f),
 pBlockingCost(1000.0f),
 
-pTypes(nullptr),
-pTypeCount(0),
-pTypeSize(0),
-
 pPeerAI(nullptr),
 
 pParentWorld(nullptr),
@@ -67,10 +63,6 @@ deNavigator::~deNavigator(){
 	if(pPeerAI){
 		delete pPeerAI;
 		pPeerAI = nullptr;
-	}
-	
-	if(pTypes){
-		delete [] pTypes;
 	}
 }
 
@@ -161,128 +153,61 @@ void deNavigator::SetBlockingCost(float cost){
 
 
 
-deNavigatorType *deNavigator::GetTypeAt(int index) const{
-	if(index < 0 || index >= pTypeCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pTypes + index;
+deNavigatorType &deNavigator::GetTypeAt(int index){
+	return pTypes[index];
 }
 
-deNavigatorType *deNavigator::GetTypeWith(int typeValue) const{
-	int i;
-	
-	for(i=0; i<pTypeCount; i++){
-		if(pTypes[i].GetType() == typeValue){
-			return pTypes + i;
-		}
-	}
-	
-	return nullptr;
+const deNavigatorType &deNavigator::GetTypeAt(int index) const{
+	return pTypes[index];
 }
 
-int deNavigator::IndexOfType(deNavigatorType *type) const{
-	int i;
-	
-	for(i=0; i<pTypeCount; i++){
-		if(pTypes + i == type){
-			return i;
-		}
-	}
-	
-	return -1;
+deNavigatorType *deNavigator::GetTypeWith(int typeValue){
+	deNavigatorType *found = nullptr;
+	return pTypes.Find(found, [&](const deNavigatorType &type){
+		return type.GetType() == typeValue;
+	}) ? found : nullptr;
+}
+
+const deNavigatorType *deNavigator::GetTypeWith(int typeValue) const{
+	const deNavigatorType *found = nullptr;
+	return pTypes.Find(found, [&](const deNavigatorType &type){
+		return type.GetType() == typeValue;
+	}) ? found : nullptr;
 }
 
 int deNavigator::IndexOfTypeWith(int typeValue) const{
-	int i;
-	
-	for(i=0; i<pTypeCount; i++){
-		if(pTypes[i].GetType() == typeValue){
-			return i;
-		}
-	}
-	
-	return -1;
-}
-
-bool deNavigator::HasType(deNavigatorType *type) const{
-	int i;
-	
-	for(i=0; i<pTypeCount; i++){
-		if(pTypes + i == type){
-			return true;
-		}
-	}
-	
-	return false;
+	return pTypes.IndexOfMatching([&](const deNavigatorType &type){
+		return type.GetType() == typeValue;
+	});
 }
 
 bool deNavigator::HasTypeWith(int typeValue) const{
-	int i;
-	
-	for(i=0; i<pTypeCount; i++){
-		if(pTypes[i].GetType() == typeValue){
-			return true;
-		}
-	}
-	
-	return false;
+	return pTypes.HasMatching([&](const deNavigatorType &type){
+		return type.GetType() == typeValue;
+	});
 }
 
-deNavigatorType *deNavigator::AddType(int type){
+deNavigatorType &deNavigator::AddType(int type){
 	deNavigatorType *rtype = GetTypeWith(type);
-	
-	if(!rtype){
-		if(pTypeCount == pTypeSize){
-			int newSize = pTypeCount + 1;
-			deNavigatorType *newArray = new deNavigatorType[newSize];
-			if(pTypes){
-				memcpy(newArray, pTypes, sizeof(deNavigatorType) * pTypeCount);
-				delete [] pTypes;
-			}
-			pTypes = newArray;
-			pTypeSize = newSize;
-		}
-		
-		pTypes[pTypeCount].SetType(type);
-		pTypes[pTypeCount].SetFixCost(0.0f);
-		pTypes[pTypeCount].SetCostPerMeter(1.0f);
-		rtype = pTypes + pTypeCount;
-		pTypeCount++;
+	if(rtype){
+		return *rtype;
 	}
 	
-	return rtype;
-}
-
-void deNavigator::RemoveType(deNavigatorType *type){
-	const int index = IndexOfType(type);
-	int i;
-	
-	if(index == -1){
-		DETHROW(deeInvalidParam);
-	}
-	
-	for(i=index+1; i<pTypeCount; i++){
-		pTypes[i - 1] = pTypes[i];
-	}
-	pTypeCount--;
+	pTypes.Add({});
+	pTypes.Last().SetType(type);
+	pTypes.Last().SetFixCost(0.0f);
+	pTypes.Last().SetCostPerMeter(1.0f);
+	return pTypes.Last();
 }
 
 void deNavigator::RemoveTypeWith(int typeValue){
 	const int index = IndexOfTypeWith(typeValue);
-	int i;
-	
-	if(index == -1){
-		DETHROW(deeInvalidParam);
-	}
-	
-	for(i=index+1; i<pTypeCount; i++){
-		pTypes[i - 1] = pTypes[i];
-	}
-	pTypeCount--;
+	DEASSERT_TRUE(index != -1)
+	pTypes.RemoveFrom(index);
 }
 
 void deNavigator::RemoveAllTypes(){
-	pTypeCount = 0;
+	pTypes.RemoveAll();
 }
 
 void deNavigator::NotifyTypesChanged(){

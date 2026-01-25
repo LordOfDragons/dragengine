@@ -87,16 +87,13 @@ public:
 	
 	/** \brief Create list with content from variable count of arguments. */
 	template<typename... A>
-	requires(sizeof...(A) > 0 &&(std::convertible_to<A, Ref> && ...))
-	explicit decTUniqueList(A&&... args) : pElements(nullptr), pCount(0), pSize(0){
+	explicit decTUniqueList(de_variadic_constructor_tag_t, A&&... args) : pElements(nullptr), pCount(0), pSize(0){
 		EnlargeCapacity(static_cast<int>(sizeof...(args)));
 		(Add(std::forward<A>(args)), ...);
 	}
 	
 	/** \brief Clean up the list. */
 	~decTUniqueList() noexcept{
-		RemoveAll();
-		
 		if(pElements){
 			delete[] pElements;
 		}
@@ -138,10 +135,7 @@ public:
 		
 		Ref* const newArray = new Ref[capacity];
 		if(pElements){
-			int i;
-			for(i = 0; i < pSize; i++){
-				newArray[i] = std::move(pElements[i]);
-			}
+			std::move(pElements, pElements + pSize, newArray);
 			delete[] pElements;
 		}
 		pElements = newArray;
@@ -232,7 +226,7 @@ public:
 	 */
 	template<typename Evaluator>
 	int IndexOfMatching(Evaluator& evaluator) const{
-		return IndexOfMatching<Evaluator>(evaluator, 0);
+		return IndexOfMatching<Evaluator>(0, evaluator);
 	}
 	
 	template<typename Evaluator>
@@ -246,7 +240,7 @@ public:
 	 * \throws deeInvalidParam \em start is less than 0 or larger than GetCount().
 	 */
 	template<typename Evaluator>
-	int IndexOfMatching(Evaluator& evaluator, int start) const{
+	int IndexOfMatching(int start, Evaluator &evaluator) const{
 		DEASSERT_TRUE(start >= 0)
 		DEASSERT_TRUE(start <= pCount)
 
@@ -260,8 +254,8 @@ public:
 	}
 	
 	template<typename Evaluator>
-	inline int IndexOfMatching(Evaluator&& evaluator, int start) const{
-		return IndexOfMatching<Evaluator>(evaluator, start);
+	inline int IndexOfMatching(int start, Evaluator &&evaluator) const{
+		return IndexOfMatching<Evaluator>(start, evaluator);
 	}
 	
 	/** \brief Determine if element exists in the list. */
@@ -284,7 +278,7 @@ public:
 	template<typename Evaluator>
 	bool HasMatching(Evaluator& evaluator) const{
 		const Ref* cfound = nullptr;
-		return Find<Evaluator>(evaluator, cfound);
+		return Find<Evaluator>(cfound, evaluator);
 	}
 	
 	template<typename Evaluator>
@@ -342,10 +336,7 @@ public:
 			int newSize = pSize * 3 / 2 + 1;
 			Ref* const newArray = new Ref[newSize];
 			if(pElements){
-				int i;
-				for(i = 0; i < pSize; i++){
-					newArray[i] = std::move(pElements[i]);
-				}
+				std::move(pElements, pElements + pSize, newArray);
 				delete[] pElements;
 			}
 			pElements = newArray;
@@ -367,20 +358,14 @@ public:
 			int newSize = pSize * 3 / 2 + 1;
 			Ref* const newArray = new Ref[newSize];
 			if(pElements){
-				int i;
-				for(i = 0; i < pSize; i++){
-					newArray[i] = std::move(pElements[i]);
-				}
+				std::move(pElements, pElements + pSize, newArray);
 				delete[] pElements;
 			}
 			pElements = newArray;
 			pSize = newSize;
 		}
 		
-		int i;
-		for(i = pCount; i > index; i--){
-			pElements[i] = std::move(pElements[i - 1]);
-		}
+		std::move_backward(pElements + index, pElements + pCount, pElements + pCount + 1);
 		pElements[index] = std::move(element);
 		pCount++;
 	}
@@ -407,18 +392,13 @@ public:
 		}
 		
 		Ref tempElement = std::move(pElements[from]);
-		int i;
 		
 		if(to < from){
-			for(i = from; i > to; i--){
-				pElements[i] = std::move(pElements[i - 1]);
-			}
+			std::move_backward(pElements + to, pElements + from, pElements + from + 1);
 			pElements[to] = std::move(tempElement);
 			
 		}else{
-			for(i = from; i < to - 1; i++){
-				pElements[i] = std::move(pElements[i + 1]);
-			}
+			std::move(pElements + from + 1, pElements + to, pElements + from);
 			pElements[to - 1] = std::move(tempElement);
 		}
 	}
@@ -462,11 +442,18 @@ public:
 		DEASSERT_TRUE(index >= 0)
 		DEASSERT_TRUE(index < pCount)
 		
-		int i;
-		for(i = index + 1; i < pCount; i++){
-			pElements[i - 1] = std::move(pElements[i]);
-		}
+		std::move(pElements + index + 1, pElements + pCount, pElements + index);
 		pElements[--pCount].Clear();
+	}
+	
+	/** \brief Remove first element. */
+	inline void RemoveFirst(){
+		RemoveFrom(0);
+	}
+	
+	/** \brief Remove last element. */
+	inline void RemoveLast(){
+		RemoveFrom(pCount - 1);
 	}
 	
 	/** \brief Remove all elements. */
@@ -476,6 +463,25 @@ public:
 		}
 	}
 	
+	/** \brief Remove elements from begin of list. */
+	void RemoveHead(int count){
+		DEASSERT_TRUE(count >= 0)
+		DEASSERT_TRUE(count <= pCount)
+		
+		std::move(pElements + count, pElements + pCount, pElements);
+		pCount -= count;
+	}
+	
+	/** \brief Remove elements from end of list. */
+	void RemoveTail(int count){
+		DEASSERT_TRUE(count >= 0)
+		DEASSERT_TRUE(count <= pCount)
+		
+		while(count > 0){
+			pElements[--pCount].Clear();
+			count--;
+		}
+	}
 	
 	/**
 	 * \brief Extract element from index and return it (moved).
@@ -486,10 +492,7 @@ public:
 		DEASSERT_TRUE(index < pCount)
 		
 		Ref result = std::move(pElements[index]);
-		int i;
-		for(i = index + 1; i < pCount; i++){
-			pElements[i - 1] = std::move(pElements[i]);
-		}
+		std::move(pElements + index + 1, pElements + pCount, pElements + index);
 		pElements[--pCount].Clear();
 		return result;
 	}
@@ -503,7 +506,7 @@ public:
 	 * \param[in] step Step size. Can be negative but not 0.
 	 */
 	template<typename Visitor>
-	void Visit(Visitor& visitor, int from, int to, int step = 1) const{
+	void Visit(int from, int to, int step, Visitor &visitor) const{
 		DEASSERT_TRUE(step != 0)
 		
 		if(from < 0){
@@ -536,27 +539,28 @@ public:
 	}
 	
 	template<typename Visitor>
-	inline void Visit(Visitor&& visitor, int from, int to, int step = 1) const{
-		Visit<Visitor>(visitor, from, to, step);
+	inline void Visit(int from, int to, int step, Visitor &&visitor) const{
+		Visit<Visitor>(from, to, step, visitor);
 	}
 	
 	template<typename Visitor>
-	void Visit(Visitor& visitor, int from) const{
-		if(from < 0){
-			from = pCount + from;
-		}
-		DEASSERT_TRUE(from >= 0)
-		DEASSERT_TRUE(from <= pCount)
-		
-		int i;
-		for(i = from; i < pCount; i++){
-			visitor(pElements[i]);
-		}
+	void Visit(int from, int to, Visitor &visitor) const{
+		Visit<Visitor>(from, to, 1, visitor);
 	}
 	
 	template<typename Visitor>
-	inline void Visit(Visitor&& visitor, int from) const{
-		Visit<Visitor>(visitor, from);
+	inline void Visit(int from, int to, Visitor &&visitor) const{
+		Visit<Visitor>(from, to, visitor);
+	}
+	
+	template<typename Visitor>
+	void Visit(int from, Visitor &visitor) const{
+		Visit<Visitor>(from, pCount, visitor);
+	}
+	
+	template<typename Visitor>
+	inline void Visit(int from, Visitor &&visitor) const{
+		Visit<Visitor>(from, visitor);
 	}
 	
 	template<typename Visitor>
@@ -594,7 +598,7 @@ public:
 	 * \param[in] step Step size. Can be negative but not 0.
 	 */
 	template<typename Visitor>
-	void VisitIndexed(Visitor& visitor, int from, int to, int step = 1) const{
+	void VisitIndexed(int from, int to, int step, Visitor &visitor) const{
 		DEASSERT_TRUE(step != 0)
 		
 		if(from < 0){
@@ -627,27 +631,28 @@ public:
 	}
 	
 	template<typename Visitor>
-	inline void VisitIndexed(Visitor&& visitor, int from, int to, int step = 1) const{
-		VisitIndexed<Visitor>(visitor, from, to, step);
+	inline void VisitIndexed(int from, int to, int step, Visitor &&visitor) const{
+		VisitIndexed<Visitor>(from, to, step, visitor);
 	}
 	
 	template<typename Visitor>
-	void VisitIndexed(Visitor& visitor, int from) const{
-		if(from < 0){
-			from = pCount + from;
-		}
-		DEASSERT_TRUE(from >= 0)
-		DEASSERT_TRUE(from <= pCount)
-		
-		int i;
-		for(i = from; i < pCount; i++){
-			visitor(i, pElements[i]);
-		}
+	void VisitIndexed(int from, int to, Visitor &visitor) const{
+		VisitIndexed<Visitor>(from, to, 1, visitor);
 	}
 	
 	template<typename Visitor>
-	inline void VisitIndexed(Visitor&& visitor, int from) const{
-		VisitIndexed<Visitor>(visitor, from);
+	inline void VisitIndexed(int from, int to, Visitor &&visitor) const{
+		VisitIndexed<Visitor>(from, to, visitor);
+	}
+	
+	template<typename Visitor>
+	void VisitIndexed(int from, Visitor &visitor) const{
+		VisitIndexed<Visitor>(from, pCount, visitor);
+	}
+	
+	template<typename Visitor>
+	inline void VisitIndexed(int from, Visitor &&visitor) const{
+		VisitIndexed<Visitor>(from, visitor);
 	}
 	
 	template<typename Visitor>
@@ -678,6 +683,216 @@ public:
 	
 	
 	/**
+	 * \brief Visit elements while evaluator returns true.
+	 * \param[in] from First index to visit. Negative counts from end of list.
+	 * \param[in] to One past last index to visit. Negative counts from end of list.
+	 * \param[in] step Step size. Can be negative but not 0.
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(T).
+	 */
+	template<typename Evaluator>
+	void VisitWhile(int from, int to, int step, Evaluator &evaluator) const{
+		DEASSERT_TRUE(step != 0)
+		
+		if(from < 0){
+			from = pCount + from;
+		}
+		DEASSERT_TRUE(from >= 0)
+		
+		if(to < 0){
+			to = pCount + to;
+		}
+		DEASSERT_TRUE(to >= 0)
+		
+		int i;
+		if(step > 0){
+			DEASSERT_TRUE(to <= pCount)
+			DEASSERT_TRUE(from <= pCount)
+			
+			for(i=from; i<to; i+=step){
+				if(!evaluator(pElements[i])){
+					return;
+				}
+			}
+			
+		}else{
+			DEASSERT_TRUE(to < pCount)
+			DEASSERT_TRUE(from < pCount)
+			
+			for(i=from; i>=to; i+=step){
+				if(!evaluator(pElements[i])){
+					return;
+				}
+			}
+		}
+	}
+	
+	template<typename Evaluator>
+	inline void VisitWhile(int from, int to, int step, Evaluator &&evaluator) const{
+		VisitWhile<Evaluator>(from, to, step, evaluator);
+	}
+	
+	template<typename Evaluator>
+	inline void VisitWhile(int from, int to, Evaluator &evaluator) const{
+		VisitWhile<Evaluator>(from, to, 1, evaluator);
+	}
+	
+	template<typename Evaluator>
+	inline void VisitWhile(int from, int to, Evaluator &&evaluator) const{
+		VisitWhile<Evaluator>(from, to, evaluator);
+	}
+	
+	template<typename Evaluator>
+	inline void VisitWhile(int from, Evaluator &evaluator) const {
+		VisitWhile<Evaluator>(from, pCount, evaluator);
+	}
+	
+	template<typename Evaluator>
+	inline void VisitWhile(int from, Evaluator &&evaluator) const{
+		VisitWhile<Evaluator>(from, evaluator);
+	}
+	
+	template<typename Evaluator>
+	void VisitWhile(Evaluator &evaluator) const{
+		int i;
+		for(i=0; i<pCount; i++){
+			if(!evaluator(pElements[i])){
+				return;
+			}
+		}
+	}
+	
+	template<typename Evaluator>
+	inline void VisitWhile(Evaluator &&evaluator) const{
+		VisitWhile<Evaluator>(evaluator);
+	}
+	
+	
+	/**
+	 * \brief Visit elements in reverse order while evaluator returns true.
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(T).
+	 */
+	template<typename Evaluator>
+	void VisitWhileReverse(Evaluator &evaluator) const{
+		int i;
+		for(i=pCount-1; i>=0; i--){
+			if(!evaluator(pElements[i])){
+				return;
+			}
+		}
+	}
+	
+	template<typename Evaluator>
+	inline void VisitWhileReverse(Evaluator &&evaluator) const{
+		VisitWhileReverse<Evaluator>(evaluator);
+	}
+	
+	
+	/**
+	 * \brief Visit elements with index while evaluator returns true.
+	 * \param[in] from First index to visit. Negative counts from end of list.
+	 * \param[in] to One past last index to visit. Negative counts from end of list.
+	 * \param[in] step Step size. Can be negative but not 0.
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(int, T).
+	 */
+	template<typename Evaluator>
+	void VisitWhileIndexed(int from, int to, int step, Evaluator &evaluator) const{
+		DEASSERT_TRUE(step != 0)
+		
+		if(from < 0){
+			from = pCount + from;
+		}
+		DEASSERT_TRUE(from >= 0)
+		
+		if(to < 0){
+			to = pCount + to;
+		}
+		DEASSERT_TRUE(to >= 0)
+		
+		int i;
+		if(step > 0){
+			DEASSERT_TRUE(to <= pCount)
+			DEASSERT_TRUE(from <= pCount)
+			
+			for(i=from; i<to; i+=step){
+				if(!evaluator(pElements[i])){
+					return;
+				}
+			}
+			
+		}else{
+			DEASSERT_TRUE(to < pCount)
+			DEASSERT_TRUE(from < pCount)
+			
+			for(i=from; i>=to; i+=step){
+				if(!evaluator(pElements[i])){
+					return;
+				}
+			}
+		}
+	}
+	
+	template<typename Evaluator>
+	inline void VisitWhileIndexed(int from, int to, int step, Evaluator &&evaluator) const{
+		VisitWhileIndexed<Evaluator>(from, to, step, evaluator);
+	}
+	
+	template<typename Evaluator>
+	inline void VisitWhileIndexed(int from, int to, Evaluator &evaluator) const{
+		VisitWhileIndexed<Evaluator>(from, to, 1, evaluator);
+	}
+	
+	template<typename Evaluator>
+	inline void VisitWhileIndexed(int from, int to, Evaluator &&evaluator) const{
+		VisitWhileIndexed<Evaluator>(from, to, evaluator);
+	}
+	
+	template<typename Evaluator>
+	inline void VisitWhileIndexed(int from, Evaluator &evaluator) const {
+		VisitWhileIndexed<Evaluator>(from, pCount, evaluator);
+	}
+	
+	template<typename Evaluator>
+	inline void VisitWhileIndexed(int from, Evaluator &&evaluator) const{
+		VisitWhileIndexed<Evaluator>(from, evaluator);
+	}
+	
+	template<typename Evaluator>
+	void VisitWhileIndexed(Evaluator &evaluator) const{
+		int i;
+		for(i=0; i<pCount; i++){
+			if(!evaluator(pElements[i])){
+				return;
+			}
+		}
+	}
+	
+	template<typename Evaluator>
+	inline void VisitWhileIndexed(Evaluator &&evaluator) const{
+		VisitWhileIndexed<Evaluator>(evaluator);
+	}
+	
+	
+	/**
+	 * \brief Visit elements with index in reverse order while evaluator returns true.
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(T).
+	 */
+	template<typename Evaluator>
+	void VisitWhileReverseIndexed(Evaluator &evaluator) const{
+		int i;
+		for(i=pCount-1; i>=0; i--){
+			if(!evaluator(i, pElements[i])){
+				return;
+			}
+		}
+	}
+	
+	template<typename Evaluator>
+	inline void VisitWhileReverseIndexed(Evaluator &&evaluator) const{
+		VisitWhileReverseIndexed<Evaluator>(evaluator);
+	}
+	
+	
+	/**
 	 * \brief Find element.
 	 * \param[in] evaluator Evaluator callable invoked as evaluator(T).
 	 * \param[out] found Found element if true is returned.
@@ -686,7 +901,7 @@ public:
 	 * \param[in] step Step size. Can be negative but not 0.
 	 */
 	template<typename Evaluator>
-	bool Find(Evaluator& evaluator, const Ref*& found, int from, int to, int step = 1) const{
+	bool Find(const Ref*& found, int from, int to, int step, Evaluator &evaluator) const{
 		DEASSERT_TRUE(step != 0)
 		
 		if(from < 0){
@@ -726,61 +941,65 @@ public:
 	}
 	
 	template<typename Evaluator>
-	bool Find(Evaluator& evaluator, Ref*& found, int from, int to, int step = 1){
+	bool Find(Ref*& found, int from, int to, int step, Evaluator &evaluator){
 		const Ref* cfound = nullptr;
-		const bool result = Find<Evaluator>(evaluator, cfound, from, to, step);
+		const bool result = Find<Evaluator>(cfound, from, to, step, evaluator);
 		found = const_cast<Ref*>(cfound);
 		return result;
 	}
 	
 	template<typename Evaluator>
-	inline bool Find(Evaluator&& evaluator, const Ref*& found, int from, int to, int step = 1) const{
-		return Find<Evaluator>(evaluator, found, from, to, step);
+	inline bool Find(const Ref*& found, int from, int to, int step, Evaluator &&evaluator) const{
+		return Find<Evaluator>(found, from, to, step, evaluator);
 	}
 	
 	template<typename Evaluator>
-	inline bool Find(Evaluator&& evaluator, Ref*& found, int from, int to, int step = 1){
-		return Find<Evaluator>(evaluator, found, from, to, step);
+	inline bool Find(Ref*& found, int from, int to, int step, Evaluator &&evaluator){
+		return Find<Evaluator>(found, from, to, step, evaluator);
 	}
 	
 	template<typename Evaluator>
-	bool Find(Evaluator& evaluator, const Ref*& found, int from) const{
-		if(from < 0){
-			from = pCount + from;
-		}
-		DEASSERT_TRUE(from >= 0)
-		DEASSERT_TRUE(from <= pCount)
-		
-		int i;
-		for(i = from; i < pCount; i++){
-			if(evaluator(pElements[i])){
-				found = &pElements[i];
-				return true;
-			}
-		}
-		return false;
+	inline bool Find(const Ref*& found, int from, int to, Evaluator &evaluator) const{
+		return Find<Evaluator>(found, from, to, 1, evaluator);
 	}
 	
 	template<typename Evaluator>
-	bool Find(Evaluator& evaluator, Ref*& found, int from){
-		const Ref* cfound = nullptr;
-		const bool result = Find<Evaluator>(evaluator, cfound, from);
-		found = const_cast<Ref*>(cfound);
-		return result;
+	inline bool Find(Ref*& found, int from, int to, Evaluator &evaluator){
+		return Find<Evaluator>(found, from, to, 1, evaluator);
 	}
 	
 	template<typename Evaluator>
-	inline bool Find(Evaluator&& evaluator, const Ref*& found, int from) const{
-		return Find<Evaluator>(evaluator, found, from);
+	inline bool Find(const Ref*& found, int from, int to, Evaluator &&evaluator) const{
+		return Find<Evaluator>(found, from, to, evaluator);
 	}
 	
 	template<typename Evaluator>
-	inline bool Find(Evaluator&& evaluator, Ref*& found, int from){
-		return Find<Evaluator>(evaluator, found, from);
+	inline bool Find(Ref*& found, int from, int to, Evaluator &&evaluator){
+		return Find<Evaluator>(found, from, to, evaluator);
 	}
 	
 	template<typename Evaluator>
-	inline bool Find(Evaluator& evaluator, const Ref*& found) const{
+	inline bool Find(const Ref*& found, int from, Evaluator &evaluator) const{
+		return Find<Evaluator>(found, from, pCount, evaluator);
+	}
+	
+	template<typename Evaluator>
+	inline bool Find(Ref*& found, int from, Evaluator &evaluator){
+		return Find<Evaluator>(found, from, pCount, evaluator);
+	}
+	
+	template<typename Evaluator>
+	inline bool Find(const Ref*& found, int from, Evaluator &&evaluator) const{
+		return Find<Evaluator>(found, from, evaluator);
+	}
+	
+	template<typename Evaluator>
+	inline bool Find(Ref*& found, int from, Evaluator &&evaluator){
+		return Find<Evaluator>(found, from, evaluator);
+	}
+	
+	template<typename Evaluator>
+	inline bool Find(const Ref*& found, Evaluator &evaluator) const{
 		int i;
 		for(i = 0; i < pCount; i++){
 			if(evaluator(pElements[i])){
@@ -792,25 +1011,31 @@ public:
 	}
 	
 	template<typename Evaluator>
-	inline bool Find(Evaluator& evaluator, Ref*& found){
+	inline bool Find(Ref*& found, Evaluator &evaluator){
 		const Ref* cfound = nullptr;
-		const bool result = Find<Evaluator>(evaluator, cfound);
+		const bool result = Find<Evaluator>(cfound, evaluator);
 		found = const_cast<Ref*>(cfound);
 		return result;
 	}
 	
 	template<typename Evaluator>
-	inline bool Find(Evaluator&& evaluator, const Ref*& found) const{
-		return Find<Evaluator>(evaluator, found);
+	inline bool Find(const Ref*& found, Evaluator &&evaluator) const{
+		return Find<Evaluator>(found, evaluator);
 	}
 	
 	template<typename Evaluator>
-	inline bool Find(Evaluator&& evaluator, Ref*& found){
-		return Find<Evaluator>(evaluator, found);
+	inline bool Find(Ref*& found, Evaluator &&evaluator){
+		return Find<Evaluator>(found, evaluator);
 	}
 	
+	
+	/**
+	 * \brief Find element in reverse order.
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(T).
+	 * \param[out] found Found element if true is returned.
+	 */
 	template<typename Evaluator>
-	inline bool FindReverse(Evaluator& evaluator, const Ref*& found) const{
+	inline bool FindReverse(const Ref*& found, Evaluator &evaluator) const{
 		int i;
 		for(i = pCount - 1; i >= 0; i--){
 			if(evaluator(pElements[i])){
@@ -822,22 +1047,23 @@ public:
 	}
 	
 	template<typename Evaluator>
-	inline bool FindReverse(Evaluator& evaluator, Ref*& found){
+	inline bool FindReverse(Ref*& found, Evaluator &evaluator){
 		const Ref* cfound = nullptr;
-		const bool result = FindReverse<Evaluator>(evaluator, cfound);
+		const bool result = FindReverse<Evaluator>(cfound, evaluator);
 		found = const_cast<Ref*>(cfound);
 		return result;
 	}
 	
 	template<typename Evaluator>
-	inline bool FindReverse(Evaluator&& evaluator, const Ref*& found) const{
-		return FindReverse<Evaluator>(evaluator, found);
+	inline bool FindReverse(const Ref*& found, Evaluator &&evaluator) const{
+		return FindReverse<Evaluator>(found, evaluator);
 	}
 	
 	template<typename Evaluator>
-	inline bool FindReverse(Evaluator&& evaluator, Ref*& found){
-		return FindReverse<Evaluator>(evaluator, found);
+	inline bool FindReverse(Ref*& found, Evaluator &&evaluator){
+		return FindReverse<Evaluator>(found, evaluator);
 	}
+	
 	
 	/**
 	 * \brief Find element or nullptr if not found.
@@ -847,31 +1073,42 @@ public:
 	 * \param[in] step Step size. Can be negative but not 0.
 	 */
 	template<typename Evaluator>
-	Ptr FindOrNull(Evaluator& evaluator, int from, int to, int step = 1) const{
+	inline Ptr FindOrNull(int from, int to, int step, Evaluator &evaluator) const{
 		const Ref* found = nullptr;
-		return Find<Evaluator>(evaluator, found, from, to, step) ? found->Pointer() : nullptr;
+		return Find<Evaluator>(found, from, to, step, evaluator) ? found->Pointer() : nullptr;
 	}
 	
 	template<typename Evaluator>
-	inline Ptr FindOrNull(Evaluator&& evaluator, int from, int to, int step = 1) const{
-		return FindOrNull<Evaluator>(evaluator, from, to, step);
+	inline Ptr FindOrNull(int from, int to, int step, Evaluator &&evaluator) const{
+		return FindOrNull<Evaluator>(from, to, step, evaluator);
 	}
 	
 	template<typename Evaluator>
-	Ptr FindOrNull(Evaluator& evaluator, int from) const{
+	inline Ptr FindOrNull(int from, int to, Evaluator &evaluator) const{
 		const Ref* found = nullptr;
-		return Find<Evaluator>(evaluator, found, from) ? found->Pointer() : nullptr;
+		return Find<Evaluator>(found, from, to, evaluator) ? found->Pointer() : nullptr;
 	}
 	
 	template<typename Evaluator>
-	inline Ptr FindOrNull(Evaluator&& evaluator, int from) const{
-		return FindOrNull<Evaluator>(evaluator, from);
+	inline Ptr FindOrNull(int from, int to, Evaluator &&evaluator) const{
+		return FindOrNull<Evaluator>(from, to, evaluator);
+	}
+	
+	template<typename Evaluator>
+	inline Ptr FindOrNull(int from, Evaluator &evaluator) const{
+		const Ref* found = nullptr;
+		return Find<Evaluator>(found, from, evaluator) ? found->Pointer() : nullptr;
+	}
+	
+	template<typename Evaluator>
+	inline Ptr FindOrNull(int from, Evaluator &&evaluator) const{
+		return FindOrNull<Evaluator>(from, evaluator);
 	}
 	
 	template<typename Evaluator>
 	Ptr FindOrNull(Evaluator& evaluator) const{
 		const Ref* found = nullptr;
-		return Find<Evaluator>(evaluator, found) ? found->Pointer() : nullptr;
+		return Find<Evaluator>(found, evaluator) ? found->Pointer() : nullptr;
 	}
 	
 	template<typename Evaluator>
@@ -882,7 +1119,7 @@ public:
 	template<typename Evaluator>
 	Ptr FindReverseOrNull(Evaluator& evaluator) const{
 		const Ref* found = nullptr;
-		return FindReverse<Evaluator>(evaluator, found) ? found->Pointer() : nullptr;
+		return FindReverse<Evaluator>(found, evaluator) ? found->Pointer() : nullptr;
 	}
 	
 	template<typename Evaluator>
@@ -897,7 +1134,7 @@ public:
 	 * \param[in] combiner Combiner callable invoked as combiner(accumulator, element) -> accumulator.
 	 */
 	template<typename R, typename Combiner>
-	R Inject(const R& value, Combiner& combiner, int from, int to, int step = 1) const{
+	R Inject(const R& value, int from, int to, int step, Combiner &combiner) const{
 		DEASSERT_TRUE(step != 0)
 		
 		if(from < 0){
@@ -930,18 +1167,28 @@ public:
 	}
 	
 	template<typename R, typename Combiner>
-	inline R Inject(const R& value, Combiner&& combiner, int from, int to, int step = 1) const{
-		return Inject<R, Combiner>(value, combiner, from, to, step);
+	inline R Inject(const R& value, int from, int to, int step, Combiner &&combiner) const{
+		return Inject<R, Combiner>(value, from, to, step, combiner);
 	}
 	
 	template<typename R, typename Combiner>
-	R Inject(const R& value, Combiner& combiner, int from) const{
-		return Inject<R, Combiner>(value, combiner, from, pCount);
+	R Inject(const R& value, int from, int to, Combiner &combiner) const{
+		return Inject<R, Combiner>(value, from, to, 1, combiner);
 	}
 	
 	template<typename R, typename Combiner>
-	inline R Inject(const R& value, Combiner&& combiner, int from) const{
-		return Inject<R, Combiner>(value, combiner, from);
+	inline R Inject(const R& value, int from, int to, Combiner &&combiner) const{
+		return Inject<R, Combiner>(value, from, to, combiner);
+	}
+	
+	template<typename R, typename Combiner>
+	R Inject(const R& value, int from, Combiner &combiner) const{
+		return Inject<R, Combiner>(value, from, pCount, combiner);
+	}
+	
+	template<typename R, typename Combiner>
+	inline R Inject(const R& value, int from, Combiner &&combiner) const{
+		return Inject<R, Combiner>(value, from, combiner);
 	}
 	
 	template<typename R, typename Combiner>
@@ -979,7 +1226,7 @@ public:
 	 * \param[in] step Step size. Can be negative but not 0.
 	 */
 	template<typename Evaluator>
-	void RemoveIf(Evaluator& evaluator, int from, int to, int step = 1){
+	void RemoveIf(int from, int to, int step, Evaluator &evaluator){
 		DEASSERT_TRUE(step != 0)
 		
 		if(from < 0){
@@ -1020,30 +1267,28 @@ public:
 	}
 	
 	template<typename Evaluator>
-	inline void RemoveIf(Evaluator&& evaluator, int from, int to, int step = 1){
-		RemoveIf<Evaluator>(evaluator, from, to, step);
+	inline void RemoveIf(int from, int to, int step, Evaluator &&evaluator){
+		RemoveIf<Evaluator>(from, to, step, evaluator);
 	}
 	
 	template<typename Evaluator>
-	void RemoveIf(Evaluator& evaluator, int from){
-		if(from < 0){
-			from = pCount + from;
-		}
-		DEASSERT_TRUE(from >= 0)
-		DEASSERT_TRUE(from <= pCount)
-		
-		int i;
-		for(i = from; i < pCount; i++){
-			if(evaluator(pElements[i])){
-				RemoveFrom(i);
-				i--;
-			}
-		}
+	void RemoveIf(int from, int to, Evaluator &evaluator){
+		RemoveIf<Evaluator>(from, to, 1, evaluator);
 	}
 	
 	template<typename Evaluator>
-	inline void RemoveIf(Evaluator&& evaluator, int from){
-		RemoveIf<Evaluator>(evaluator, from);
+	inline void RemoveIf(int from, int to, Evaluator &&evaluator){
+		RemoveIf<Evaluator>(from, to, evaluator);
+	}
+	
+	template<typename Evaluator>
+	void RemoveIf(int from, Evaluator &evaluator){
+		RemoveIf<Evaluator>(from, pCount, evaluator);
+	}
+	
+	template<typename Evaluator>
+	inline void RemoveIf(int from, Evaluator &&evaluator){
+		RemoveIf<Evaluator>(from, evaluator);
 	}
 	
 	template<typename Evaluator>
@@ -1085,7 +1330,7 @@ public:
 	
 	/** \brief Sort using decAscendingComparator. */
 	void SortAscending(){
-		if constexpr(requires(const T & a, const T & b){{ DECompare(a, b) } -> std::convertible_to<int>; }){
+		if constexpr(requires(const T& a, const T& b){{ DECompare(a, b) } -> std::convertible_to<int>; }){
 			Sort<decAscendingComparator<T>>(decAscendingComparator<T>());
 			
 		}else{
@@ -1095,7 +1340,7 @@ public:
 	
 	/** \brief Sort using decDescendingComparator. */
 	void SortDescending(){
-		if constexpr(requires(const T & a, const T & b){{ DECompare(a, b) } -> std::convertible_to<int>; }){
+		if constexpr(requires(const T &a, const T& b){{ DECompare(a, b) } -> std::convertible_to<int>; }){
 			Sort<decDesendingComparator<T>>(decDesendingComparator<T>());
 			
 		}else{

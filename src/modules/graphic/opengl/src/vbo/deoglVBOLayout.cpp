@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglVBOLayout.h"
 #include "deoglVBOAttribute.h"
 #include "../renderthread/deoglRenderThread.h"
@@ -44,8 +40,6 @@
 deoglVBOLayout::deoglVBOLayout() :
 pSize(0),
 pStride(0),
-pAttributes(nullptr),
-pAttributeCount(0),
 pIndexType(eitNone),
 pIndexSize(0),
 pIndexGLType(GL_NONE){
@@ -54,25 +48,13 @@ pIndexGLType(GL_NONE){
 deoglVBOLayout::deoglVBOLayout(const deoglVBOLayout &layout) :
 pSize(layout.pSize),
 pStride(layout.pStride),
-pAttributes(nullptr),
-pAttributeCount(0),
+pAttributes(layout.pAttributes),
 pIndexType(layout.pIndexType),
 pIndexSize(layout.pIndexSize),
-pIndexGLType(layout.pIndexGLType)
-{
-	SetAttributeCount(layout.pAttributeCount);
-	
-	int i;
-	for(i=0; i<layout.pAttributeCount; i++){
-		pAttributes[i] = layout.pAttributes[i];
-	}
+pIndexGLType(layout.pIndexGLType){
 }
 
-deoglVBOLayout::~deoglVBOLayout(){
-	if(pAttributes){
-		delete [] pAttributes;
-	}
-}
+deoglVBOLayout::~deoglVBOLayout() = default;
 
 
 
@@ -123,44 +105,12 @@ void deoglVBOLayout::SetIndexType(eIndexTypes indexType){
 // Attributes
 ///////////////
 
-void deoglVBOLayout::SetAttributeCount(int count){
-	DEASSERT_TRUE(count >= 0)
-	
-	if(count == pAttributeCount){
-		return;
-	}
-	
-	deoglVBOAttribute * const newArray = count > 0 ? new deoglVBOAttribute[count] : nullptr;
-	
-	if(pAttributes){
-		const int copyCount = decMath::min(pAttributeCount, count);
-		int i;
-		for(i=0; i<copyCount; i++){
-			newArray[i] = pAttributes[i];
-		}
-		
-		delete [] pAttributes;
-		pAttributes = nullptr;
-		pAttributeCount = 0;
-	}
-	
-	pAttributes = newArray;
-	pAttributeCount = count;
+void deoglVBOLayout::SetVAOAttributeAt(deoglRenderThread &renderThread, int attribute, int target){
+	pAttributes[attribute].SetVAOAttributeAt(renderThread, target, pStride);
 }
 
-deoglVBOAttribute& deoglVBOLayout::GetAttributeAt(int index) const{
-	DEASSERT_TRUE(index >= 0)
-	DEASSERT_TRUE(index < pAttributeCount)
-	
-	return pAttributes[index];
-}
-
-void deoglVBOLayout::SetVAOAttributeAt(deoglRenderThread &renderThread, int attribute, int target) const{
-	GetAttributeAt(attribute).SetVAOAttributeAt(renderThread, target, pStride);
-}
-
-void deoglVBOLayout::SetVAOAttributeAt(deoglRenderThread &renderThread, int attribute, int target, int offset) const{
-	GetAttributeAt(attribute).SetVAOAttributeAt(renderThread, target, pStride, offset);
+void deoglVBOLayout::SetVAOAttributeAt(deoglRenderThread &renderThread, int attribute, int target, int offset){
+	pAttributes[attribute].SetVAOAttributeAt(renderThread, target, pStride, offset);
 }
 
 
@@ -174,46 +124,14 @@ deoglVBOLayout &deoglVBOLayout::operator=(const deoglVBOLayout &layout){
 	pIndexType = layout.pIndexType;
 	pIndexSize = layout.pIndexSize;
 	pIndexGLType = layout.pIndexGLType;
-	
-	SetAttributeCount(layout.pAttributeCount);
-	int i;
-	for(i=0; i<layout.pAttributeCount; i++){
-		pAttributes[i] = layout.pAttributes[i];
-	}
+	pAttributes = layout.pAttributes;
 	
 	return *this;
 }
 
 bool deoglVBOLayout::operator==(const deoglVBOLayout &layout) const{
-	if(layout.GetStride() != pStride || layout.GetAttributeCount() != pAttributeCount){
-		return false;
-	}
-	
-	int i;
-	for(i=0; i<pAttributeCount; i++){
-		if(layout.GetAttributeAt(i) != pAttributes[i]){
-			return false;
-		}
-	}
-	
-	return true;
+	return layout.pStride == pStride && layout.pAttributes == pAttributes;
 }
-
-bool deoglVBOLayout::operator!=(const deoglVBOLayout &layout) const{
-	if(layout.GetStride() != pStride || layout.GetAttributeCount() != pAttributeCount){
-		return true;
-	}
-	
-	int i;
-	for(i=0; i<pAttributeCount; i++){
-		if(layout.GetAttributeAt(i) != pAttributes[i]){
-			return true;
-		}
-	}
-	
-	return false;
-}
-
 
 
 // Debugging
@@ -224,13 +142,13 @@ void deoglVBOLayout::PrintToConsole(deoglRenderThread &renderThread, const char*
 		"float", "byte", "ubyte", "short", "ushort", "int", "uint",
 		"ibyte", "iubyte", "ishort", "iushort", "iint", "iuint"};
 	const char * const indexTypeNames[] = {"none", "uint", "ushort", "ubyte"};
-	int a;
 	
 	renderThread.GetLogger().LogInfoFormat("%s VBO Layout: size=%i stride=%i", name, pSize, pStride);
 	
-	for(a=0; a<pAttributeCount; a++){
-		renderThread.GetLogger().LogInfoFormat("- attribute %i: components=%i type=%s offset=%i indexType=%s indexSize=%i",
-			a, pAttributes[a].GetComponentCount(), typeNames[pAttributes[a].GetDataType()],
-			pAttributes[a].GetOffset(), indexTypeNames[pIndexType], pIndexSize);
-	}
+	pAttributes.VisitIndexed([&](int i, const deoglVBOAttribute &a){
+		renderThread.GetLogger().LogInfoFormat(
+			"- attribute %i: components=%i type=%s offset=%i indexType=%s indexSize=%i",
+			i, a.GetComponentCount(), typeNames[a.GetDataType()], a.GetOffset(),
+			indexTypeNames[pIndexType], pIndexSize);
+	});
 }

@@ -25,6 +25,7 @@
 #ifndef _DEEOSSDKFLOWGETSTATSANDACHIEVEMENTS_H_
 #define _DEEOSSDKFLOWGETSTATSANDACHIEVEMENTS_H_
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decStringList.h>
 
 #include <eos_achievements.h>
@@ -67,7 +68,7 @@ public:
 	
 private:
 	decStringList pStats, pAchievements;
-	const char **pStatNames, **pAchievementNames;
+	decTList<const char*> pStatNames, pAchievementNames;
 	bool pStatsReceived, pAchievementsReceived;
 	const deServiceObject::Ref pResultData;
 };

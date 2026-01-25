@@ -47,16 +47,22 @@ deoglPShadowQuality::deoglPShadowQuality(deGraphicOpenGl &ogl) : deoglParameter(
 	SetCategory(ecBasic);
 	SetDisplayName("Shadow Quality");
 	
-	const deModuleParameter::SelectionEntry entries[6] = {
-		{"off", "Off", "Disable shadow mapping. This can break games so use this option "
-			"only if nothing else helps." },
-		{"veryLow", "Very Low", "Very low quality. For weak GPU delivering best performance."},
-		{"low", "Low", "Low quality. Prefer performance over quality."},
-		{"medium", "Medium", "Medium quality. Balance between quality and performance. Recommended choice."},
-		{"high", "High", "High quality. Prefer quality over performance."},
-		{"veryHigh", "Very High", "Very high quality. For high-end GPU delivering best quality."}
-	};
-	AddSelectionEntries(entries, 6);
+	AddSelectionEntry({"off", "Off",
+		"Disable shadow mapping. This can break games so use this option only if nothing else helps."});
+	
+	AddSelectionEntry({"veryLow", "Very Low",
+		"Very low quality. For weak GPU delivering best performance."});
+	
+	AddSelectionEntry({"low", "Low", "Low quality. Prefer performance over quality."});
+	
+	AddSelectionEntry({"medium", "Medium",
+		"Medium quality. Balance between quality and performance. Recommended choice."});
+	
+	AddSelectionEntry({"high", "High", "High quality. Prefer quality over performance."});
+	
+	AddSelectionEntry({"veryHigh", "Very High",
+		"Very high quality. For high-end GPU delivering best quality."});
+	
 	SetDefaultValue("high");
 }
 

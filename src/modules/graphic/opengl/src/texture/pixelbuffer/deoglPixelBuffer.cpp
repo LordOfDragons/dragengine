@@ -48,7 +48,6 @@ deoglPixelBuffer::deoglPixelBuffer(ePixelFormats format, int width, int height, 
 	pWidth = width;
 	pHeight = height;
 	pDepth = depth;
-	pPixels = nullptr;
 	
 	if(format == epfByte1){
 		pUnitSize = 1;
@@ -186,7 +185,7 @@ deoglPixelBuffer::deoglPixelBuffer(ePixelFormats format, int width, int height, 
 		DETHROW(deeInvalidParam);
 	}
 	
-	pPixels = new GLubyte[pImageSize];
+	pPixels.SetCountDiscard(pImageSize);
 }
 
 deoglPixelBuffer::deoglPixelBuffer(const deoglPixelBuffer &pixelBuffer) :
@@ -201,132 +200,156 @@ pImageSize(pixelBuffer.pImageSize),
 pCompressed(pixelBuffer.pCompressed),
 pGLPixelFormat(pixelBuffer.pGLPixelFormat),
 pGLPixelType(pixelBuffer.pGLPixelType),
-pPixels(nullptr)
-{
-	pPixels = new GLubyte[pImageSize];
-	memcpy(pPixels, pixelBuffer.pPixels, pImageSize);
+pPixels(pixelBuffer.pPixels){
 }
 
-deoglPixelBuffer::~deoglPixelBuffer(){
-	if(pPixels){
-		delete [] (GLubyte*)pPixels;
-	}
-}
+deoglPixelBuffer::~deoglPixelBuffer() = default;
 
 
 
 // Management
 ///////////////
 
-deoglPixelBuffer::sByte1 *deoglPixelBuffer::GetPointerByte1() const{
-	if(pFormat != epfByte1){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return (sByte1*)pPixels;
+deoglPixelBuffer::sByte1 *deoglPixelBuffer::GetPointerByte1(){
+	DEASSERT_TRUE(pFormat == epfByte1)
+	return (sByte1*)pPixels.GetArrayPointer();
 }
 
-deoglPixelBuffer::sByte2 *deoglPixelBuffer::GetPointerByte2() const{
-	if(pFormat != epfByte2){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return (sByte2*)pPixels;
+deoglPixelBuffer::sByte2 *deoglPixelBuffer::GetPointerByte2(){
+	DEASSERT_TRUE(pFormat == epfByte2)
+	return (sByte2*)pPixels.GetArrayPointer();
 }
 
-deoglPixelBuffer::sByte3 *deoglPixelBuffer::GetPointerByte3() const{
-	if(pFormat != epfByte3){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return (sByte3*)pPixels;
+deoglPixelBuffer::sByte3 *deoglPixelBuffer::GetPointerByte3(){
+	DEASSERT_TRUE(pFormat == epfByte3)
+	return (sByte3*)pPixels.GetArrayPointer();
 }
 
-deoglPixelBuffer::sByte4 *deoglPixelBuffer::GetPointerByte4() const{
-	if(pFormat != epfByte4){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return (sByte4*)pPixels;
+deoglPixelBuffer::sByte4 *deoglPixelBuffer::GetPointerByte4(){
+	DEASSERT_TRUE(pFormat == epfByte4)
+	return (sByte4*)pPixels.GetArrayPointer();
 }
 
-deoglPixelBuffer::sFloat1 *deoglPixelBuffer::GetPointerFloat1() const{
-	if(pFormat != epfFloat1){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return (sFloat1*)pPixels;
+deoglPixelBuffer::sFloat1 *deoglPixelBuffer::GetPointerFloat1(){
+	DEASSERT_TRUE(pFormat == epfFloat1)
+	return (sFloat1*)pPixels.GetArrayPointer();
 }
 
-deoglPixelBuffer::sFloat2 *deoglPixelBuffer::GetPointerFloat2() const{
-	if(pFormat != epfFloat2){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return (sFloat2*)pPixels;
+deoglPixelBuffer::sFloat2 *deoglPixelBuffer::GetPointerFloat2(){
+	DEASSERT_TRUE(pFormat == epfFloat2)
+	return (sFloat2*)pPixels.GetArrayPointer();
 }
 
-deoglPixelBuffer::sFloat3 *deoglPixelBuffer::GetPointerFloat3() const{
-	if(pFormat != epfFloat3){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return (sFloat3*)pPixels;
+deoglPixelBuffer::sFloat3 *deoglPixelBuffer::GetPointerFloat3(){
+	DEASSERT_TRUE(pFormat == epfFloat3)
+	return (sFloat3*)pPixels.GetArrayPointer();
 }
 
-deoglPixelBuffer::sFloat4 *deoglPixelBuffer::GetPointerFloat4() const{
-	if(pFormat != epfFloat4){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return (sFloat4*)pPixels;
+deoglPixelBuffer::sFloat4 *deoglPixelBuffer::GetPointerFloat4(){
+	DEASSERT_TRUE(pFormat == epfFloat4)
+	return (sFloat4*)pPixels.GetArrayPointer();
 }
 
-deoglPixelBuffer::sInt1 *deoglPixelBuffer::GetPointerInt1() const{
+deoglPixelBuffer::sInt1 *deoglPixelBuffer::GetPointerInt1(){
 	DEASSERT_TRUE(pFormat == epfInt1)
-	return (sInt1*)pPixels;
+	return (sInt1*)pPixels.GetArrayPointer();
 }
 
-deoglPixelBuffer::sDepth *deoglPixelBuffer::GetPointerDepth() const{
-	if(pFormat != epfDepth){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return (sDepth*)pPixels;
+deoglPixelBuffer::sDepth *deoglPixelBuffer::GetPointerDepth(){
+	DEASSERT_TRUE(pFormat == epfDepth)
+	return (sDepth*)pPixels.GetArrayPointer();
 }
 
-deoglPixelBuffer::sStencil *deoglPixelBuffer::GetPointerStencil() const{
-	if(pFormat != epfStencil){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return (sStencil*)pPixels;
+deoglPixelBuffer::sStencil *deoglPixelBuffer::GetPointerStencil(){
+	DEASSERT_TRUE(pFormat == epfStencil)
+	return (sStencil*)pPixels.GetArrayPointer();
 }
 
-deoglPixelBuffer::sDepthStencil *deoglPixelBuffer::GetPointerDepthStencil() const{
-	if(pFormat != epfDepthStencil){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return (sDepthStencil*)pPixels;
+deoglPixelBuffer::sDepthStencil *deoglPixelBuffer::GetPointerDepthStencil(){
+	DEASSERT_TRUE(pFormat == epfDepthStencil)
+	return (sDepthStencil*)pPixels.GetArrayPointer();
 }
 
-deoglPixelBuffer::sDXT1 *deoglPixelBuffer::GetPointerDXT1() const{
-	if(pFormat != epfDXT1){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return (sDXT1*)pPixels;
+deoglPixelBuffer::sDXT1 *deoglPixelBuffer::GetPointerDXT1(){
+	DEASSERT_TRUE(pFormat == epfDXT1)
+	return (sDXT1*)pPixels.GetArrayPointer();
 }
 
-deoglPixelBuffer::sDXT3 *deoglPixelBuffer::GetPointerDXT3() const{
-	if(pFormat != epfDXT3){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return (sDXT3*)pPixels;
+deoglPixelBuffer::sDXT3 *deoglPixelBuffer::GetPointerDXT3(){
+	DEASSERT_TRUE(pFormat == epfDXT3)
+	return (sDXT3*)pPixels.GetArrayPointer();
 }
 
+
+const deoglPixelBuffer::sByte1 *deoglPixelBuffer::GetPointerByte1() const{
+	DEASSERT_TRUE(pFormat == epfByte1)
+	return (sByte1*)pPixels.GetArrayPointer();
+}
+
+const deoglPixelBuffer::sByte2 *deoglPixelBuffer::GetPointerByte2() const{
+	DEASSERT_TRUE(pFormat == epfByte2)
+	return (sByte2*)pPixels.GetArrayPointer();
+}
+
+const deoglPixelBuffer::sByte3 *deoglPixelBuffer::GetPointerByte3() const{
+	DEASSERT_TRUE(pFormat == epfByte3)
+	return (sByte3*)pPixels.GetArrayPointer();
+}
+
+const deoglPixelBuffer::sByte4 *deoglPixelBuffer::GetPointerByte4() const{
+	DEASSERT_TRUE(pFormat == epfByte4)
+	return (sByte4*)pPixels.GetArrayPointer();
+}
+
+const deoglPixelBuffer::sFloat1 *deoglPixelBuffer::GetPointerFloat1() const{
+	DEASSERT_TRUE(pFormat == epfFloat1)
+	return (sFloat1*)pPixels.GetArrayPointer();
+}
+
+const deoglPixelBuffer::sFloat2 *deoglPixelBuffer::GetPointerFloat2() const{
+	DEASSERT_TRUE(pFormat == epfFloat2)
+	return (sFloat2*)pPixels.GetArrayPointer();
+}
+
+const deoglPixelBuffer::sFloat3 *deoglPixelBuffer::GetPointerFloat3() const{
+	DEASSERT_TRUE(pFormat == epfFloat3)
+	return (sFloat3*)pPixels.GetArrayPointer();
+}
+
+const deoglPixelBuffer::sFloat4 *deoglPixelBuffer::GetPointerFloat4() const{
+	DEASSERT_TRUE(pFormat == epfFloat4)
+	return (sFloat4*)pPixels.GetArrayPointer();
+}
+
+const deoglPixelBuffer::sInt1 *deoglPixelBuffer::GetPointerInt1() const{
+	DEASSERT_TRUE(pFormat == epfInt1)
+	return (sInt1*)pPixels.GetArrayPointer();
+}
+
+const deoglPixelBuffer::sDepth *deoglPixelBuffer::GetPointerDepth() const{
+	DEASSERT_TRUE(pFormat == epfDepth)
+	return (sDepth*)pPixels.GetArrayPointer();
+}
+
+const deoglPixelBuffer::sStencil *deoglPixelBuffer::GetPointerStencil() const{
+	DEASSERT_TRUE(pFormat == epfStencil)
+	return (sStencil*)pPixels.GetArrayPointer();
+}
+
+const deoglPixelBuffer::sDepthStencil *deoglPixelBuffer::GetPointerDepthStencil() const{
+	DEASSERT_TRUE(pFormat == epfDepthStencil)
+	return (sDepthStencil*)pPixels.GetArrayPointer();
+}
+
+const deoglPixelBuffer::sDXT1 *deoglPixelBuffer::GetPointerDXT1() const{
+	DEASSERT_TRUE(pFormat == epfDXT1)
+	return (sDXT1*)pPixels.GetArrayPointer();
+}
+
+const deoglPixelBuffer::sDXT3 *deoglPixelBuffer::GetPointerDXT3() const{
+	DEASSERT_TRUE(pFormat == epfDXT3)
+	return (sDXT3*)pPixels.GetArrayPointer();
+}
 
 
 void deoglPixelBuffer::SetToIntColor(int red, int green, int blue, int alpha){
@@ -335,7 +358,7 @@ void deoglPixelBuffer::SetToIntColor(int red, int green, int blue, int alpha){
 	
 	switch(pFormat){
 	case epfByte1:{
-		sByte1 * const pixels = (sByte1*)pPixels;
+		sByte1 * const pixels = (sByte1*)pPixels.GetArrayPointer();
 		const GLubyte gred = (GLubyte)red;
 		
 		for(i=0; i<pixelcount; i++){
@@ -344,7 +367,7 @@ void deoglPixelBuffer::SetToIntColor(int red, int green, int blue, int alpha){
 		}break;
 		
 	case epfByte2:{
-		sByte2 * const pixels = (sByte2*)pPixels;
+		sByte2 * const pixels = (sByte2*)pPixels.GetArrayPointer();
 		const GLubyte gred = (GLubyte)red;
 		const GLubyte ggreen = (GLubyte)green;
 		
@@ -355,7 +378,7 @@ void deoglPixelBuffer::SetToIntColor(int red, int green, int blue, int alpha){
 		}break;
 		
 	case epfByte3:{
-		sByte3 * const pixels = (sByte3*)pPixels;
+		sByte3 * const pixels = (sByte3*)pPixels.GetArrayPointer();
 		const GLubyte gred = (GLubyte)red;
 		const GLubyte ggreen = (GLubyte)green;
 		const GLubyte gblue = (GLubyte)blue;
@@ -368,7 +391,7 @@ void deoglPixelBuffer::SetToIntColor(int red, int green, int blue, int alpha){
 		}break;
 		
 	case epfByte4:{
-		sByte4 * const pixels = (sByte4*)pPixels;
+		sByte4 * const pixels = (sByte4*)pPixels.GetArrayPointer();
 		const GLubyte gred = (GLubyte)red;
 		const GLubyte ggreen = (GLubyte)green;
 		const GLubyte gblue = (GLubyte)blue;
@@ -383,7 +406,7 @@ void deoglPixelBuffer::SetToIntColor(int red, int green, int blue, int alpha){
 		}break;
 		
 	case epfFloat1:{
-		sFloat1 * const pixels = (sFloat1*)pPixels;
+		sFloat1 * const pixels = (sFloat1*)pPixels.GetArrayPointer();
 		const GLfloat gred = (GLfloat)red / (GLfloat)255.0;
 		
 		for(i=0; i<pixelcount; i++){
@@ -392,7 +415,7 @@ void deoglPixelBuffer::SetToIntColor(int red, int green, int blue, int alpha){
 		}break;
 		
 	case epfFloat2:{
-		sFloat2 * const pixels = (sFloat2*)pPixels;
+		sFloat2 * const pixels = (sFloat2*)pPixels.GetArrayPointer();
 		const GLfloat gred = (GLfloat)red / (GLfloat)255.0;
 		const GLfloat ggreen = (GLfloat)green / (GLfloat)255.0;
 		
@@ -403,7 +426,7 @@ void deoglPixelBuffer::SetToIntColor(int red, int green, int blue, int alpha){
 		}break;
 		
 	case epfFloat3:{
-		sFloat3 * const pixels = (sFloat3*)pPixels;
+		sFloat3 * const pixels = (sFloat3*)pPixels.GetArrayPointer();
 		const GLfloat gred = (GLfloat)red / (GLfloat)255.0;
 		const GLfloat ggreen = (GLfloat)green / (GLfloat)255.0;
 		const GLfloat gblue = (GLfloat)blue / (GLfloat)255.0;
@@ -416,7 +439,7 @@ void deoglPixelBuffer::SetToIntColor(int red, int green, int blue, int alpha){
 		}break;
 		
 	case epfFloat4:{
-		sFloat4 * const pixels = (sFloat4*)pPixels;
+		sFloat4 * const pixels = (sFloat4*)pPixels.GetArrayPointer();
 		const GLfloat gred = (GLfloat)red / (GLfloat)255.0;
 		const GLfloat ggreen = (GLfloat)green / (GLfloat)255.0;
 		const GLfloat gblue = (GLfloat)blue / (GLfloat)255.0;
@@ -431,7 +454,7 @@ void deoglPixelBuffer::SetToIntColor(int red, int green, int blue, int alpha){
 		}break;
 		
 	case epfInt1:{
-		sInt1 * const pixels = (sInt1*)pPixels;
+		sInt1 * const pixels = (sInt1*)pPixels.GetArrayPointer();
 		const GLuint gred = (GLuint)red;
 		for(i=0; i<pixelcount; i++){
 			pixels[i].r = gred;
@@ -451,7 +474,7 @@ void deoglPixelBuffer::SetToUIntColor(unsigned int red, unsigned int green, unsi
 	
 	switch(pFormat){
 	case epfByte1:{
-		sByte1 * const pixels = (sByte1*)pPixels;
+		sByte1 * const pixels = (sByte1*)pPixels.GetArrayPointer();
 		const GLubyte gred = (GLubyte)red;
 		
 		for(i=0; i<pixelcount; i++){
@@ -460,7 +483,7 @@ void deoglPixelBuffer::SetToUIntColor(unsigned int red, unsigned int green, unsi
 		}break;
 		
 	case epfByte2:{
-		sByte2 * const pixels = (sByte2*)pPixels;
+		sByte2 * const pixels = (sByte2*)pPixels.GetArrayPointer();
 		const GLubyte gred = (GLubyte)red;
 		const GLubyte ggreen = (GLubyte)green;
 		
@@ -471,7 +494,7 @@ void deoglPixelBuffer::SetToUIntColor(unsigned int red, unsigned int green, unsi
 		}break;
 		
 	case epfByte3:{
-		sByte3 * const pixels = (sByte3*)pPixels;
+		sByte3 * const pixels = (sByte3*)pPixels.GetArrayPointer();
 		const GLubyte gred = (GLubyte)red;
 		const GLubyte ggreen = (GLubyte)green;
 		const GLubyte gblue = (GLubyte)blue;
@@ -484,7 +507,7 @@ void deoglPixelBuffer::SetToUIntColor(unsigned int red, unsigned int green, unsi
 		}break;
 		
 	case epfByte4:{
-		sByte4 * const pixels = (sByte4*)pPixels;
+		sByte4 * const pixels = (sByte4*)pPixels.GetArrayPointer();
 		const GLubyte gred = (GLubyte)red;
 		const GLubyte ggreen = (GLubyte)green;
 		const GLubyte gblue = (GLubyte)blue;
@@ -499,7 +522,7 @@ void deoglPixelBuffer::SetToUIntColor(unsigned int red, unsigned int green, unsi
 		}break;
 		
 	case epfFloat1:{
-		sFloat1 * const pixels = (sFloat1*)pPixels;
+		sFloat1 * const pixels = (sFloat1*)pPixels.GetArrayPointer();
 		const GLfloat gred = (GLfloat)red / (GLfloat)255.0;
 		
 		for(i=0; i<pixelcount; i++){
@@ -508,7 +531,7 @@ void deoglPixelBuffer::SetToUIntColor(unsigned int red, unsigned int green, unsi
 		}break;
 		
 	case epfFloat2:{
-		sFloat2 * const pixels = (sFloat2*)pPixels;
+		sFloat2 * const pixels = (sFloat2*)pPixels.GetArrayPointer();
 		const GLfloat gred = (GLfloat)red / (GLfloat)255.0;
 		const GLfloat ggreen = (GLfloat)green / (GLfloat)255.0;
 		
@@ -519,7 +542,7 @@ void deoglPixelBuffer::SetToUIntColor(unsigned int red, unsigned int green, unsi
 		}break;
 		
 	case epfFloat3:{
-		sFloat3 * const pixels = (sFloat3*)pPixels;
+		sFloat3 * const pixels = (sFloat3*)pPixels.GetArrayPointer();
 		const GLfloat gred = (GLfloat)red / (GLfloat)255.0;
 		const GLfloat ggreen = (GLfloat)green / (GLfloat)255.0;
 		const GLfloat gblue = (GLfloat)blue / (GLfloat)255.0;
@@ -532,7 +555,7 @@ void deoglPixelBuffer::SetToUIntColor(unsigned int red, unsigned int green, unsi
 		}break;
 		
 	case epfFloat4:{
-		sFloat4 * const pixels = (sFloat4*)pPixels;
+		sFloat4 * const pixels = (sFloat4*)pPixels.GetArrayPointer();
 		const GLfloat gred = (GLfloat)red / (GLfloat)255.0;
 		const GLfloat ggreen = (GLfloat)green / (GLfloat)255.0;
 		const GLfloat gblue = (GLfloat)blue / (GLfloat)255.0;
@@ -547,7 +570,7 @@ void deoglPixelBuffer::SetToUIntColor(unsigned int red, unsigned int green, unsi
 		}break;
 		
 	case epfInt1:{
-		sInt1 * const pixels = (sInt1*)pPixels;
+		sInt1 * const pixels = (sInt1*)pPixels.GetArrayPointer();
 		const GLuint gred = (GLuint)red;
 		for(i=0; i<pixelcount; i++){
 			pixels[i].r = gred;
@@ -565,7 +588,7 @@ void deoglPixelBuffer::SetToFloatColor(float red, float green, float blue, float
 	
 	switch(pFormat){
 	case epfByte1:{
-		sByte1 * const pixels = (sByte1*)pPixels;
+		sByte1 * const pixels = (sByte1*)pPixels.GetArrayPointer();
 		const GLubyte gred = (GLubyte)(red * 255.0f);
 		
 		for(i=0; i<pixelcount; i++){
@@ -574,7 +597,7 @@ void deoglPixelBuffer::SetToFloatColor(float red, float green, float blue, float
 		}break;
 		
 	case epfByte2:{
-		sByte2 * const pixels = (sByte2*)pPixels;
+		sByte2 * const pixels = (sByte2*)pPixels.GetArrayPointer();
 		const GLubyte gred = (GLubyte)(red * 255.0f);
 		const GLubyte ggreen = (GLubyte)(green * 255.0f);
 		
@@ -585,7 +608,7 @@ void deoglPixelBuffer::SetToFloatColor(float red, float green, float blue, float
 		}break;
 		
 	case epfByte3:{
-		sByte3 * const pixels = (sByte3*)pPixels;
+		sByte3 * const pixels = (sByte3*)pPixels.GetArrayPointer();
 		const GLubyte gred = (GLubyte)(red * 255.0f);
 		const GLubyte ggreen = (GLubyte)(green * 255.0f);
 		const GLubyte gblue = (GLubyte)(blue * 255.0f);
@@ -598,7 +621,7 @@ void deoglPixelBuffer::SetToFloatColor(float red, float green, float blue, float
 		}break;
 		
 	case epfByte4:{
-		sByte4 * const pixels = (sByte4*)pPixels;
+		sByte4 * const pixels = (sByte4*)pPixels.GetArrayPointer();
 		const GLubyte gred = (GLubyte)(red * 255.0f);
 		const GLubyte ggreen = (GLubyte)(green * 255.0f);
 		const GLubyte gblue = (GLubyte)(blue * 255.0f);
@@ -614,7 +637,7 @@ void deoglPixelBuffer::SetToFloatColor(float red, float green, float blue, float
 		
 	case epfFloat1:
 	case epfDepth:{
-		sFloat1 * const pixels = (sFloat1*)pPixels;
+		sFloat1 * const pixels = (sFloat1*)pPixels.GetArrayPointer();
 		const GLfloat gred = (GLfloat)red;
 		
 		for(i=0; i<pixelcount; i++){
@@ -623,7 +646,7 @@ void deoglPixelBuffer::SetToFloatColor(float red, float green, float blue, float
 		}break;
 		
 	case epfFloat2:{
-		sFloat2 * const pixels = (sFloat2*)pPixels;
+		sFloat2 * const pixels = (sFloat2*)pPixels.GetArrayPointer();
 		const GLfloat gred = (GLfloat)red;
 		const GLfloat ggreen = (GLfloat)green;
 		
@@ -634,7 +657,7 @@ void deoglPixelBuffer::SetToFloatColor(float red, float green, float blue, float
 		}break;
 		
 	case epfFloat3:{
-		sFloat3 * const pixels = (sFloat3*)pPixels;
+		sFloat3 * const pixels = (sFloat3*)pPixels.GetArrayPointer();
 		const GLfloat gred = (GLfloat)red;
 		const GLfloat ggreen = (GLfloat)green;
 		const GLfloat gblue = (GLfloat)blue;
@@ -647,7 +670,7 @@ void deoglPixelBuffer::SetToFloatColor(float red, float green, float blue, float
 		}break;
 		
 	case epfFloat4:{
-		sFloat4 * const pixels = (sFloat4*)pPixels;
+		sFloat4 * const pixels = (sFloat4*)pPixels.GetArrayPointer();
 		const GLfloat gred = (GLfloat)red;
 		const GLfloat ggreen = (GLfloat)green;
 		const GLfloat gblue = (GLfloat)blue;
@@ -662,7 +685,7 @@ void deoglPixelBuffer::SetToFloatColor(float red, float green, float blue, float
 		}break;
 		
 	case epfInt1:{
-		sInt1 * const pixels = (sInt1*)pPixels;
+		sInt1 * const pixels = (sInt1*)pPixels.GetArrayPointer();
 		const GLuint gred = (GLuint)(red * 4294967295.0f);
 		for(i=0; i<pixelcount; i++){
 			pixels[i].r = gred;
@@ -684,7 +707,7 @@ void deoglPixelBuffer::SetToDepthStencil(float depth, int stencil){
 			(((GLuint)decMath::clamp(depthInt, 0, 16777215)) << 8)
 			| (GLuint)(stencil & 0xff);
 		
-		sDepthStencil * const pixels = (sDepthStencil*)pPixels;
+		sDepthStencil * const pixels = (sDepthStencil*)pPixels.GetArrayPointer();
 		for(i=0; i<pixelcount; i++){
 			pixels[i].depthStencil = depthStencil;
 		}

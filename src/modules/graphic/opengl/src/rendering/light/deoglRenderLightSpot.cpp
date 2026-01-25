@@ -792,11 +792,14 @@ const deoglRenderPlanMasked *mask){
 		pglBindVertexArray(light.GetLightVolume()->GetVAO());
 		if(plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer()){
 			const GLint first[2] = {0, 0};
-			const GLsizei count[2] = {light.GetLightVolume()->GetPointCount(), light.GetLightVolume()->GetPointCount()};
+			const GLsizei count[2] = {
+				light.GetLightVolume()->GetPoints().GetCount(),
+				light.GetLightVolume()->GetPoints().GetCount()};
 			OGL_CHECK(renderThread, pglMultiDrawArrays(GL_TRIANGLES, first, count, 2));
 			
 		}else{
-			OGL_CHECK(renderThread, glDrawArrays(GL_TRIANGLES, 0, light.GetLightVolume()->GetPointCount()));
+			OGL_CHECK(renderThread, glDrawArrays(GL_TRIANGLES, 0,
+				light.GetLightVolume()->GetPoints().GetCount()));
 		}
 		pglBindVertexArray(0);
 		

@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "deOcclusionMesh.h"
 #include "deOcclusionMeshManager.h"
 #include "deOcclusionMeshBone.h"
@@ -44,22 +41,7 @@
 deOcclusionMesh::deOcclusionMesh(deOcclusionMeshManager *manager, deVirtualFileSystem *vfs,
 	const char *filename, TIME_SYSTEM modificationTime) :
 deFileResource(manager, vfs, filename, modificationTime),
-
-pBones(nullptr),
-pWeights(nullptr),
-pWeightGroups(nullptr),
-pVertices(nullptr),
-pCorners(nullptr),
-pFaces(nullptr),
-
-pBoneCount(0),
-pWeightCount(0),
-pWeightGroupCount(0),
-pVertexCount(0),
-pCornerCount(0),
-pFaceCount(0),
 pDoubleSidedFaceCount(0),
-
 pPeerGraphic (nullptr){
 }
 
@@ -68,71 +50,39 @@ deOcclusionMesh::~deOcclusionMesh(){
 		delete pPeerGraphic;
 		pPeerGraphic = nullptr;
 	}
-	
-	if(pFaces){
-		delete [] pFaces;
-	}
-	if(pCorners){
-		delete [] pCorners;
-	}
-	if(pVertices){
-		delete [] pVertices;
-	}
-	if(pWeightGroups){
-		delete [] pWeightGroups;
-	}
-	if(pWeights){
-		delete [] pWeights;
-	}
-	if(pBones){
-		delete [] pBones;
-	}
 }
-
 
 
 // Management
 ///////////////
 
 bool deOcclusionMesh::Verify() const{
-	bool *visited = nullptr;
-	int i, j, parent;
 	bool success = true;
 	
 	// verify that all bones are free of cyclic parentship
-	if(pBoneCount > 0){
-		try{
-			visited = new bool[pBoneCount];
+	if(pBones.GetCount() > 0){
+		decTList<bool> visited(pBones.GetCount(), false);
+		
+		// check bone parents are valid
+		int i, j;
+		for(i=0; i<pBones.GetCount(); i++){
+			for(j=0; j<pBones.GetCount(); j++){
+				visited[j] = false;
+			}
 			
-			// check bone parents are valid
-			for(i=0; i<pBoneCount; i++){
-				for(j=0; j<pBoneCount; j++){
-					visited[j] = false;
-				}
-				
-				parent = pBones[i].GetParent();
-				while(parent != -1){
-					if(parent < -1 || parent >= pBoneCount || visited[parent]){
-						success = false;
-						break;
-					}
-					visited[parent] = true;
-					parent = pBones[parent].GetParent();
-				}
-				
-				if(!success){
+			int parent = pBones[i].GetParent();
+			while(parent != -1){
+				if(parent < -1 || parent >= pBones.GetCount() || visited[parent]){
+					success = false;
 					break;
 				}
+				visited[parent] = true;
+				parent = pBones[parent].GetParent();
 			}
 			
-			// clean up
-			delete [] visited;
-			
-		}catch(const deException &){
-			if(visited){
-				delete [] visited;
+			if(!success){
+				break;
 			}
-			throw;
 		}
 	}
 	
@@ -148,194 +98,16 @@ void deOcclusionMesh::Prepare(){
 // Bones
 //////////
 
-void deOcclusionMesh::SetBoneCount(int count){
-	if(count < 0){
-		DETHROW(deeInvalidParam);
-	}
-	
-	if(count != pBoneCount){
-		if(pBones){
-			delete [] pBones;
-		}
-		pBones = nullptr;
-		pBoneCount = 0;
-		
-		if(count > 0){
-			pBones = new deOcclusionMeshBone[count];
-			pBoneCount = count;
-		}
-	}
-}
-
-deOcclusionMeshBone &deOcclusionMesh::GetBoneAt(int index) const{
-	if(index < 0 || index >= pBoneCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return pBones[index];
-}
-
 int deOcclusionMesh::IndexOfBoneNamed(const char *name) const{
-	int i;
-	
-	for(i=0; i<pBoneCount; i++){
-		if(pBones[i].GetName().Equals(name)){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pBones.IndexOfMatching([&](const deOcclusionMeshBone &bone) {
+		return bone.GetName() == name;
+	});
 }
 
 bool deOcclusionMesh::HasBoneNamed(const char *name) const{
-	int i;
-	
-	for(i=0; i<pBoneCount; i++){
-		if(pBones[i].GetName().Equals(name)){
-			return true;
-		}
-	}
-	
-	return false;
-}
-
-
-
-// Weight Sets
-////////////////
-
-void deOcclusionMesh::SetWeightCount(int count){
-	if(count < 0){
-		DETHROW(deeInvalidParam);
-	}
-	
-	if(count != pWeightCount){
-		if(pWeights){
-			delete [] pWeights;
-		}
-		pWeights = nullptr;
-		pWeightCount = 0;
-		
-		if(count > 0){
-			pWeights = new deOcclusionMeshWeight[count];
-			pWeightCount = count;
-		}
-	}
-}
-
-deOcclusionMeshWeight &deOcclusionMesh::GetWeightAt(int index) const{
-	if(index < 0 || index >= pWeightCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return pWeights[index];
-}
-
-void deOcclusionMesh::SetWeightGroupCount(int count){
-	if(count < 0){
-		DETHROW(deeInvalidParam);
-	}
-	
-	if(count != pWeightGroupCount){
-		if(pWeightGroups){
-			delete [] pWeightGroups;
-		}
-		pWeightGroups = nullptr;
-		pWeightGroupCount = 0;
-		
-		if(count > 0){
-			pWeightGroups = new int[count];
-			pWeightGroupCount = count;
-		}
-	}
-}
-
-int deOcclusionMesh::GetWeightGroupAt(int index) const{
-	if(index < 0 || index >= pWeightGroupCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return pWeightGroups[index];
-}
-
-void deOcclusionMesh::SetWeightGroupAt(int index, int weightSetCount) const{
-	if(index < 0 || index >= pWeightGroupCount || weightSetCount < 0){
-		DETHROW(deeInvalidParam);
-	}
-	
-	pWeightGroups[index] = weightSetCount;
-}
-
-
-
-// Vertices
-/////////////
-
-void deOcclusionMesh::SetVertexCount(int count){
-	if(count < 0){
-		DETHROW(deeInvalidParam);
-	}
-	
-	if(count != pVertexCount){
-		if(pVertices){
-			delete [] pVertices;
-		}
-		pVertices = nullptr;
-		pVertexCount = 0;
-		
-		if(count > 0){
-			pVertices = new deOcclusionMeshVertex[count];
-			pVertexCount = count;
-		}
-	}
-}
-
-deOcclusionMeshVertex &deOcclusionMesh::GetVertexAt(int index) const{
-	if(index < 0 || index >= pVertexCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return pVertices[index];
-}
-
-
-
-// Corners
-////////////
-
-void deOcclusionMesh::SetCornerCount(int count){
-	if(count < 0){
-		DETHROW(deeInvalidParam);
-	}
-	
-	if(count != pCornerCount){
-		if(pCorners){
-			delete [] pCorners;
-		}
-		pCorners = nullptr;
-		pCornerCount = 0;
-		
-		if(count > 0){
-			pCorners = new unsigned short[count];
-			pCornerCount = count;
-		}
-	}
-}
-
-unsigned short deOcclusionMesh::GetCornerAt(int index) const{
-	if(index < 0 || index >= pCornerCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return pCorners[index];
-}
-
-void deOcclusionMesh::SetCornerAt(int index, unsigned short vertexIndex){
-	if(index < 0 || index >= pCornerCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	pCorners[index] = vertexIndex;
+	return pBones.HasMatching([&](const deOcclusionMeshBone &bone) {
+		return bone.GetName() == name;
+	});
 }
 
 
@@ -343,45 +115,8 @@ void deOcclusionMesh::SetCornerAt(int index, unsigned short vertexIndex){
 // Faces
 //////////
 
-void deOcclusionMesh::SetFaceCount(int count){
-	if(count < 0){
-		DETHROW(deeInvalidParam);
-	}
-	
-	if(count != pFaceCount){
-		if(pFaces){
-			delete [] pFaces;
-		}
-		pFaces = nullptr;
-		pFaceCount = 0;
-		
-		if(count > 0){
-			pFaces = new unsigned short[count];
-			pFaceCount = count;
-		}
-	}
-}
-
-unsigned short deOcclusionMesh::GetFaceAt(int index) const{
-	if(index < 0 || index >= pFaceCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return pFaces[index];
-}
-
-void deOcclusionMesh::SetFaceAt(int index, unsigned short cornerCount){
-	if(index < 0 || index >= pFaceCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	pFaces[index] = cornerCount;
-}
-
 void deOcclusionMesh::SetDoubleSidedFaceCount(int count){
-	if(count < 0){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_TRUE(count >= 0)
 	
 	pDoubleSidedFaceCount = count;
 }

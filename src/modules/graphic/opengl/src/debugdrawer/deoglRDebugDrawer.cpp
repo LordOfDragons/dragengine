@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglRDebugDrawer.h"
 #include "deoglDebugDrawerShape.h"
 #include "../renderthread/deoglRenderThread.h"
@@ -59,11 +55,6 @@ pXRay(false),
 pHasShapes(false),
 pHasFaces(false),
 
-pShapes(nullptr),
-pShapeCount(0),
-
-pVBOData(nullptr),
-pVBOPointCount(0),
 pVBO(0),
 pVAO(nullptr),
 pDirtyVBO(true),
@@ -74,12 +65,6 @@ pWorldMarkedRemove(false){
 
 deoglRDebugDrawer::~deoglRDebugDrawer(){
 	LEAK_CHECK_FREE(pRenderThread, DebugDrawer);
-	if(pShapes){
-		delete [] pShapes;
-	}
-	if(pVBOData){
-		delete [] pVBOData;
-	}
 	if(pVAO){
 		delete pVAO;
 	}
@@ -122,30 +107,14 @@ void deoglRDebugDrawer::SetXRay(bool xray){
 
 
 void deoglRDebugDrawer::UpdateShapes(const deDebugDrawer &debugDrawer){
-	const int shapeCount = debugDrawer.GetShapeCount();
-	int i;
+	pShapes.SetCount(debugDrawer.GetShapes().GetCount(), {});
 	
-	if(shapeCount != pShapeCount){
-		if(pShapes){
-			delete [] pShapes;
-			pShapes = nullptr;
-			pShapeCount = 0;
-		}
-		
-		if(shapeCount > 0){
-			pShapes = new deoglDebugDrawerShape[shapeCount];
-			pShapeCount = shapeCount;
-		}
-	}
-	
-	for(i=0; i<shapeCount; i++){
-		const deDebugDrawerShape &ddshape = *debugDrawer.GetShapeAt(i);
-		
-		pShapes[i].SetMatrix(decMatrix::CreateWorld(ddshape.GetPosition(), ddshape.GetOrientation(), ddshape.GetScale()));
-		pShapes[i].SetEdgeColor(ddshape.GetEdgeColor());
-		pShapes[i].SetFillColor(ddshape.GetFillColor());
-		pShapes[i].SetShapeList(ddshape.GetShapeList());
-	}
+	debugDrawer.GetShapes().VisitIndexed([&](int i, const deDebugDrawerShape &s){
+		pShapes[i].SetMatrix(decMatrix::CreateWorld(s.GetPosition(), s.GetOrientation(), s.GetScale()));
+		pShapes[i].SetEdgeColor(s.GetEdgeColor());
+		pShapes[i].SetFillColor(s.GetFillColor());
+		pShapes[i].SetShapeList(s.GetShapeList());
+	});
 	
 	pWriteVBOData(debugDrawer);
 	pUpdateHasFlags(debugDrawer);
@@ -155,10 +124,7 @@ void deoglRDebugDrawer::UpdateShapes(const deDebugDrawer &debugDrawer){
 
 
 
-deoglDebugDrawerShape &deoglRDebugDrawer::GetShapeAt(int index) const{
-	if(index < 0 || index >= pShapeCount){
-		DETHROW(deeInvalidParam);
-	}
+deoglDebugDrawerShape &deoglRDebugDrawer::GetShapeAt(int index){
 	return pShapes[index];
 }
 
@@ -169,7 +135,7 @@ void deoglRDebugDrawer::UpdateVBO(){
 		return;
 	}
 	
-	if(pVBOPointCount == 0){
+	if(pVBOData.IsEmpty()){
 		pDirtyVBO = false;
 		return;
 	}
@@ -181,18 +147,20 @@ void deoglRDebugDrawer::UpdateVBO(){
 	
 	// write vbo data to vbo
 	OGL_CHECK(pRenderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBO));
-	OGL_CHECK(pRenderThread, pglBufferData(GL_ARRAY_BUFFER, sizeof(oglVector3) * pVBOPointCount, nullptr, GL_STATIC_DRAW));
-	OGL_CHECK(pRenderThread, pglBufferData(GL_ARRAY_BUFFER, sizeof(oglVector3) * pVBOPointCount, pVBOData, GL_STATIC_DRAW));
+	OGL_CHECK(pRenderThread, pglBufferData(GL_ARRAY_BUFFER,
+		sizeof(oglVector3) * pVBOData.GetCount(), nullptr, GL_STATIC_DRAW));
+	OGL_CHECK(pRenderThread, pglBufferData(GL_ARRAY_BUFFER,
+		sizeof(oglVector3) * pVBOData.GetCount(), pVBOData.GetArrayPointer(), GL_STATIC_DRAW));
 	
 	// create vao if not existing
 	if(!pVAO){
 		deoglVBOLayout vboLayout;
-		vboLayout.SetAttributeCount(1);
+		vboLayout.GetAttributes().SetAll(1, {});
 		vboLayout.SetStride(12);
-		vboLayout.SetSize(12 * pVBOPointCount);
+		vboLayout.SetSize(12 * pVBOData.GetCount());
 		vboLayout.SetIndexType(deoglVBOLayout::eitNone);
 		
-		deoglVBOAttribute &attrPos = vboLayout.GetAttributeAt(0);
+		deoglVBOAttribute &attrPos = vboLayout.GetAttributes()[0];
 		attrPos.SetComponentCount(3);
 		attrPos.SetDataType(deoglVBOAttribute::edtFloat);
 		attrPos.SetOffset(0);
@@ -233,50 +201,33 @@ void deoglRDebugDrawer::SetWorldMarkedRemove(bool marked){
 //////////////////////
 
 void deoglRDebugDrawer::pUpdateHasFlags(const deDebugDrawer &debugDrawer){
-	const int shapeCount = debugDrawer.GetShapeCount();
-	int i;
-	
 	pHasShapes = false;
 	//pHasFaces = false;
 	
-	for(i=0; i<shapeCount; i++){
-		const deDebugDrawerShape &ddshape = *debugDrawer.GetShapeAt(i);
-		
-		if(ddshape.GetShapeList().GetCount() > 0){
+	debugDrawer.GetShapes().Visit([&](const deDebugDrawerShape &ddshape){
+		if(ddshape.GetShapeList().IsNotEmpty()){
 			pHasShapes = true;
 		}
-		//if( ddshape.GetFaceCount() > 0 ){
+		//if(ddshape.GetFaceCount() > 0){
 		//	pHasFaces = true;
 		//}
-	}
+	});
 	
-	pHasFaces = pVBOPointCount > 0; // this covers also convex hull shapes
+	pHasFaces = pVBOData.IsNotEmpty(); // this covers also convex hull shapes
 }
 
 void deoglRDebugDrawer::pWriteVBOData(const deDebugDrawer &debugDrawer){
 	int pointCount = 0;
-	int i;
 	
-	for(i=0; i<pShapeCount; i++){
-		pointCount += pShapes[i].CalcRequiredPoints(*debugDrawer.GetShapeAt(i), pointCount);
-	}
+	pShapes.VisitIndexed([&](int i, deoglDebugDrawerShape &shape){
+		pointCount += shape.CalcRequiredPoints(*debugDrawer.GetShapes()[i], pointCount);
+	});
 	
-	if(pointCount != pVBOPointCount){
-		if(pVBOData){
-			delete [] pVBOData;
-			pVBOData = nullptr;
-			pVBOPointCount = 0;
-		}
-		
-		if(pointCount > 0){
-			pVBOData = new oglVector3[pointCount];
-			pVBOPointCount = pointCount;
-		}
-	}
+	pVBOData.SetCountDiscard(pointCount);
 	
-	if(pVBOData){
-		for(i=0; i<pShapeCount; i++){
-			pShapes[i].WriteVBOData(*debugDrawer.GetShapeAt(i), pVBOData);
-		}
+	if(pVBOData.IsNotEmpty()){
+		pShapes.VisitIndexed([&](int i, deoglDebugDrawerShape &shape){
+			shape.WriteVBOData(debugDrawer.GetShapes()[i], pVBOData.GetArrayPointer());
+		});
 	}
 }

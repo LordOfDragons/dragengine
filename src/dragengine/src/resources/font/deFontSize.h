@@ -42,9 +42,10 @@ public:
 	
 	
 private:
-	deFontGlyph pUndefinedGlyph, *pGlyphs;
+	deFontGlyph pUndefinedGlyph;
+	decTList<deFontGlyph> pGlyphs;
 	const int pLineHeight;
-	int pGlyphCount, pFontWidth, pBaseLine;
+	int pFontWidth, pBaseLine;
 	decString pImagePath;
 	deImage::Ref pImage;
 	deParallelTask::Ref pTaskLoad;
@@ -84,12 +85,11 @@ public:
 	inline deFontGlyph &GetUndefinedGlyph(){ return pUndefinedGlyph; }
 	inline const deFontGlyph &GetUndefinedGlyph() const{ return pUndefinedGlyph; }
 	
-	/** \brief Number of glyphs. */
-	inline int GetGlyphCount() const{ return pGlyphCount; }
+	/** \brief Glyphs. */
+	inline const decTList<deFontGlyph> &GetGlyphs() const{ return pGlyphs; }
 	
 	/** \brief Glyph at index. */
 	deFontGlyph &GetGlyphAt(int index);
-	const deFontGlyph &GetGlyphAt(int index) const;
 	
 	/** \brief Update glyphs. */
 	void UpdateGlyphs();

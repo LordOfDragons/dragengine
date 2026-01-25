@@ -28,6 +28,7 @@
 #include "../devkBasics.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decString.h>
 
 class devkDevice;
@@ -46,8 +47,7 @@ public:
 private:
 	devkDevice &pDevice;
 	const decString pPath;
-	char *pSource;
-	int pSourceLength;
+	decTList<char> pSource;
 	
 	VkShaderModule pModule;
 	
@@ -75,10 +75,10 @@ public:
 	inline const decString &GetPath() const{ return pPath; }
 	
 	/** Shader source. */
-	inline const char *GetSource() const{ return pSource; }
+	inline const char *GetSource() const{ return pSource.GetArrayPointer(); }
 	
 	/** Shader source length. */
-	inline int GetSourceLength() const{ return pSourceLength; }
+	inline int GetSourceLength() const{ return pSource.GetCount(); }
 	
 	/** Shader module. */
 	inline VkShaderModule GetModule() const{ return pModule; }

@@ -160,7 +160,7 @@ void deClassPropField::nfAddType::RunFunction(dsRunTime *rt, dsValue *myself){
 	type->SetRotationPerForce(rotPerForce * DEG2RAD);
 	type->SetRestitution(restitution);
 	type->SetCollisionFilter(collisionFilter);
-	type->SetInstanceCount(instanceCount);
+	type->GetInstances().SetAll(instanceCount, {});
 	
 	propfield.AddType(std::move(type));
 	
@@ -199,7 +199,7 @@ void deClassPropField::nfSetInstanceAt::RunFunction(dsRunTime *rt, dsValue *myse
 	
 	if(!objPos || !objRot) DSTHROW(dueNullPointer);
 	
-	dePropFieldInstance &instance = propfield->GetTypeAt(typeIndex)->GetInstanceAt(instanceIndex);
+	dePropFieldInstance &instance = propfield->GetTypeAt(typeIndex)->GetInstances()[instanceIndex];
 	
 	instance.SetPosition(clsVec->GetVector(objPos));
 	instance.SetRotation(clsVec->GetVector(objRot) * DEG2RAD);

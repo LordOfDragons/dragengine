@@ -62,38 +62,34 @@ deRig::~deRig(){
 ///////////////
 
 bool deRig::Verify() const{
-	bool *boneVisited = nullptr;
-	int i, j, parent;
 	bool success = true;
 	
 	// check bones
 	const int boneCount = pBones.GetCount();
 	if(boneCount > 0){
-		try{
-			boneVisited = new bool[boneCount];
-			
-			// check bone parents are valid
-			for(i=0; i<boneCount; i++){
-				for(j=0; j<boneCount; j++) boneVisited[j] = false;
-				parent = pBones.GetAt(i)->GetParent();
-				while(parent != -1){
-					if(parent < -1 || parent >= boneCount || boneVisited[parent]){
-						success = false;
-						break;
-					}
-					boneVisited[parent] = true;
-					parent = pBones.GetAt(parent)->GetParent();
-				}
-				if(!success) break;
+		decTList<bool> boneVisited(boneCount, false);
+		
+		// check bone parents are valid
+		int i;
+		for(i=0; i<boneCount; i++){
+			int j;
+			for(j=0; j<boneCount; j++){
+				boneVisited[j] = false;
 			}
 			
-			// clean up
-			delete [] boneVisited;
-			boneVisited = nullptr;
+			int parent = pBones[i]->GetParent();
+			while(parent != -1){
+				if(parent < -1 || parent >= boneCount || boneVisited[parent]){
+					success = false;
+					break;
+				}
+				boneVisited[parent] = true;
+				parent = pBones[parent]->GetParent();
+			}
 			
-		}catch(const deException &){
-			if(boneVisited) delete [] boneVisited;
-			throw;
+			if(!success){
+				break;
+			}
 		}
 	}
 	
@@ -111,50 +107,40 @@ void deRig::Prepare(){
 	}
 	
 	// calculate the matrices of each bone
-	bool *calculated = nullptr;
-	int i, remaining, parent;
-	decMatrix boneMat;
-	try{
-		// create a temporary array to hold the calculated status
-		calculated = new bool[boneCount];
-		for(i=0; i<boneCount; i++) calculated[i] = false;
-		
-		// keeps track of the count of bones in need of calculation
-		remaining = boneCount;
-		
-		// loop until there are no more remaining bones
-		while(remaining > 0){
-			// loop over all bones and calculate those not done so yet
-			for(i=0; i<boneCount; i++){
-				// if calculated skip the bone
-				if(calculated[i]){
-					continue;
-				}
-				bone = pBones.GetAt(i);
-				
-				// check if the parent if present is calculated
-				parent = bone->GetParent();
-				if(parent != -1 && !calculated[parent]){
-					continue;
-				}
-				
-				// calculate the matrix
-				boneMat = decMatrix::CreateRT(bone->GetRotation(), bone->GetPosition());
-				if(parent != -1) boneMat *= pBones.GetAt(parent)->GetMatrix();
-				bone->SetMatrices(boneMat);
-				
-				// mark as calculate and decrease count of remaining bones by one
-				calculated[i] = true;
-				remaining--;
+	// create a temporary array to hold the calculated status
+	decTList<bool> calculated(boneCount, false);
+	
+	// keeps track of the count of bones in need of calculation
+	int remaining = boneCount;
+	
+	// loop until there are no more remaining bones
+	while(remaining > 0){
+		// loop over all bones and calculate those not done so yet
+		int i;
+		for(i=0; i<boneCount; i++){
+			// if calculated skip the bone
+			if(calculated[i]){
+				continue;
 			}
+			bone = pBones.GetAt(i);
+			
+			// check if the parent if present is calculated
+			const int parent = bone->GetParent();
+			if(parent != -1 && !calculated[parent]){
+				continue;
+			}
+			
+			// calculate the matrix
+			auto boneMat = decMatrix::CreateRT(bone->GetRotation(), bone->GetPosition());
+			if(parent != -1){
+				boneMat *= pBones.GetAt(parent)->GetMatrix();
+			}
+			bone->SetMatrices(boneMat);
+			
+			// mark as calculate and decrease count of remaining bones by one
+			calculated[i] = true;
+			remaining--;
 		}
-		
-		// free temporary array
-		delete [] calculated;
-		
-	}catch(const deException &){
-		if(calculated) delete [] calculated;
-		throw;
 	}
 	
 	/*

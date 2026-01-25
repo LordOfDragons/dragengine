@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoalRayCacheRay.h"
 #include "deoalRayCacheRayHit.h"
 #include "../../environment/raytrace/deoalRayTraceResult.h"
@@ -49,8 +45,6 @@ deoalRayCacheRay::deoalRayCacheRay(const decVector &origin, const decVector &dir
 pOrigin(origin),
 pDirection(direction),
 pLength(length),
-pHits(nullptr),
-pHitCount(0),
 pOctreeNode(nullptr),
 pLLRays(this)
 {
@@ -59,18 +53,16 @@ pLLRays(this)
 		return;
 	}
 	
-	pHits = new deoalRayCacheRayHit[elementCount];
+	pHits.AddRange(elementCount, {});
 	
-	for(pHitCount=0; pHitCount<elementCount; pHitCount++){
-		const deoalRayTraceHitElement &element = elements.GetAt(pHitCount);
-		deoalRayCacheRayHit &hit = pHits[pHitCount];
-		
+	pHits.VisitIndexed([&](int i, deoalRayCacheRayHit &hit){
+		const deoalRayTraceHitElement &element = elements.GetAt(i);
 		hit.SetDistance(element.GetDistance());
 		hit.SetFaceIndex(element.GetComponentFace());
 		hit.SetForwardFacing(element.GetForwardFacing());
 		hit.SetPoint(element.GetPoint());
 		hit.SetNormal(element.GetNormal());
-	}
+	});
 }
 
 deoalRayCacheRay::deoalRayCacheRay(const decVector &origin, const decVector &direction,
@@ -78,28 +70,23 @@ float length, const deoalRayTraceResult &result) :
 pOrigin(origin),
 pDirection(direction),
 pLength(length),
-pHits(nullptr),
-pHitCount(0),
 pOctreeNode(nullptr),
 pLLRays(this)
 {
-	const int count = result.GetElementCount();
+	const int count = result.GetElements().GetCount();
 	if(count == 0){
 		return;
 	}
 	
-	pHits = new deoalRayCacheRayHit[count];
-	
-	for(pHitCount=0; pHitCount<count; pHitCount++){
-		const deoalRayTraceHitElement &element = result.GetElementAt(pHitCount);
-		deoalRayCacheRayHit &hit = pHits[pHitCount];
-		
+	pHits.AddRange(count, {});
+	pHits.VisitIndexed([&](int i, deoalRayCacheRayHit &hit){
+		const deoalRayTraceHitElement &element = result.GetElements()[i];
 		hit.SetDistance(element.GetDistance());
 		hit.SetFaceIndex(element.GetComponentFace());
 		hit.SetForwardFacing(element.GetForwardFacing());
 		hit.SetPoint(element.GetPoint());
 		hit.SetNormal(element.GetNormal());
-	}
+	});
 }
 
 deoalRayCacheRay::deoalRayCacheRay(const decVector &origin, const decVector &direction,
@@ -107,8 +94,6 @@ deoalRayCacheRay::deoalRayCacheRay(const decVector &origin, const decVector &dir
 pOrigin(origin),
 pDirection(direction),
 pLength(length),
-pHits(nullptr),
-pHitCount(0),
 pOctreeNode(nullptr),
 pLLRays(this)
 {
@@ -116,25 +101,18 @@ pLLRays(this)
 		return;
 	}
 	
-	pHits = new deoalRayCacheRayHit[elementCount];
-	
-	for(pHitCount=0; pHitCount<elementCount; pHitCount++){
-		const deoalRayTraceHitElement &element = result.GetElementAt(pHitCount);
-		deoalRayCacheRayHit &hit = pHits[pHitCount];
-		
+	pHits.AddRange(elementCount, {});
+	pHits.VisitIndexed([&](int i, deoalRayCacheRayHit &hit){
+		const deoalRayTraceHitElement &element = result.GetElements()[i];
 		hit.SetDistance(element.GetDistance());
 		hit.SetFaceIndex(element.GetComponentFace());
 		hit.SetForwardFacing(element.GetForwardFacing());
 		hit.SetPoint(element.GetPoint());
 		hit.SetNormal(element.GetNormal());
-	}
+	});
 }
 
-deoalRayCacheRay::~deoalRayCacheRay(){
-	if(pHits){
-		delete [] pHits;
-	}
-}
+deoalRayCacheRay::~deoalRayCacheRay() = default;
 
 
 
@@ -142,9 +120,6 @@ deoalRayCacheRay::~deoalRayCacheRay(){
 ///////////////
 
 const deoalRayCacheRayHit &deoalRayCacheRay::GetHitAt(int index) const{
-	if(index < 0 || index >= pHitCount){
-		DETHROW(deeInvalidParam);
-	}
 	return pHits[index];
 }
 

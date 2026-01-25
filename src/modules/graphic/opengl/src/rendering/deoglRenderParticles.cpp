@@ -119,7 +119,7 @@ void deoglRenderParticles::RenderTaskParticles(const deoglRenderTaskParticles &r
 	for(i=0; i<stepCount; i++){
 		const deoglRenderTaskParticlesStep &renderTaskStep = *renderTask.GetStepAt(i);
 		
-		const int instanceCount = renderTaskStep.GetInstanceCount();
+		const int instanceCount = renderTaskStep.GetInstances().GetCount();
 		if(instanceCount == 0){
 			continue;
 		}

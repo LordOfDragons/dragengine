@@ -373,27 +373,16 @@ void deClassFileWriter::nfWriteData::RunFunction(dsRunTime *rt, dsValue *myself)
 		return;
 	}
 	
-	const int bufferSize = 1024;
-	char *buffer = nullptr;
+	decBaseFileWriter &fileWriter = dedsGetNativeData<sFileWriterNatDat>(p_GetNativeData(myself)).fileWriter;
 	
-	try{
-		decBaseFileWriter &fileWriter = dedsGetNativeData<sFileWriterNatDat>(p_GetNativeData(myself)).fileWriter;
-		buffer = new char[bufferSize];
-		
-		while(size > 0){
-			const int readBytes = decMath::min(bufferSize, size);
-			fileReader->Read(buffer, readBytes);
-			fileWriter.Write(buffer, readBytes);
-			size -= readBytes;
-		}
-		
-		delete [] buffer;
-		
-	}catch(...){
-		if(buffer){
-			delete [] buffer;
-		}
-		throw;
+	decTList<char> buffer;
+	buffer.AddRange(1024, 0);
+	
+	while(size > 0){
+		const int readBytes = decMath::min(buffer.GetCount(), size);
+		fileReader->Read(buffer.GetArrayPointer(), readBytes);
+		fileWriter.Write(buffer.GetArrayPointer(), readBytes);
+		size -= readBytes;
 	}
 }
 
@@ -419,27 +408,16 @@ void deClassFileWriter::nfWriteData2::RunFunction(dsRunTime *rt, dsValue *myself
 		DSTHROW(dueNullPointer);
 	}
 	
-	const int bufferSize = 1024;
-	char *buffer = nullptr;
+	decBaseFileWriter &fileWriter = dedsGetNativeData<sFileWriterNatDat>(p_GetNativeData(myself)).fileWriter;
 	
-	try{
-		decBaseFileWriter &fileWriter = dedsGetNativeData<sFileWriterNatDat>(p_GetNativeData(myself)).fileWriter;
-		buffer = new char[bufferSize];
-		
-		while(size > 0){
-			const int readBytes = decMath::min(bufferSize, size);
-			fileReader->Read(buffer, readBytes);
-			fileWriter.Write(buffer, readBytes);
-			size -= readBytes;
-		}
-		
-		delete [] buffer;
-		
-	}catch(...){
-		if(buffer){
-			delete [] buffer;
-		}
-		throw;
+	decTList<char> buffer;
+	buffer.AddRange(1024, 0);
+	
+	while(size > 0){
+		const int readBytes = decMath::min(buffer.GetCount(), size);
+		fileReader->Read(buffer.GetArrayPointer(), readBytes);
+		fileWriter.Write(buffer.GetArrayPointer(), readBytes);
+		size -= readBytes;
 	}
 }
 

@@ -174,11 +174,11 @@ void meHeightTerrainNavSpaceType::UpdateHeights(){
 	int i, j;
 	
 	for(i=0; i<count; i++){
-		deDebugDrawerShapeFace &ddface = *pDDShape->GetFaceAt(i);
-		const int vertexCount = ddface.GetVertexCount();
+		deDebugDrawerShapeFace &ddface = *pDDShape->GetFaces()[i];
+		const int vertexCount = ddface.GetVertices().GetCount();
 		
 		for(j=0; j<vertexCount; j++){
-			decVector position(ddface.GetVertexAt(j));
+			decVector position(ddface.GetVertices()[j]);
 			const int x = (int)((position.x + 0.5f) * scaleFactor + 0.5f);
 			const int z = (int)((0.5f - position.z) * scaleFactor + 0.5f);
 			position.y = heights[imageDim * z + x].value;
@@ -287,31 +287,21 @@ void meHeightTerrainNavSpaceType::pUpdateDDFaces(){
 	const sGrayscale32 * const heights = sector.GetHeightImage()->GetDataGrayscale32();
 	const int imageDim = sector.GetHeightTerrain()->GetSectorResolution();
 	const float scaleFactor = 1.0f / (float)(imageDim - 1);
-	deDebugDrawerShapeFace *ddface = nullptr;
 	
-	try{
-		pFaces.Visit([&](const meHeightTerrainNavSpaceFace &typeFace){
-			ddface = new deDebugDrawerShapeFace;
-			typeFace.GetNavPoints().Visit([&](int navpoint){
-				ddface->AddVertex(decVector(
-					(float)(navpoint % imageDim) * scaleFactor - 0.5f,
-					heights[navpoint].value,
-					0.5f - (float)(navpoint / imageDim) * scaleFactor));
-			});
-			
-			ddface->AddVertex(decVector(ddface->GetVertexAt(0))); // copy required otherwise memory error
-			//ddface->CalculateNormal();
-			
-			pDDShape->AddFace(ddface);
-			ddface = nullptr;
+	pFaces.Visit([&](const meHeightTerrainNavSpaceFace &typeFace){
+		auto ddface = deDebugDrawerShapeFace::Ref::New();
+		typeFace.GetNavPoints().Visit([&](int navpoint){
+			ddface->AddVertex(decVector(
+				(float)(navpoint % imageDim) * scaleFactor - 0.5f,
+				heights[navpoint].value,
+				0.5f - (float)(navpoint / imageDim) * scaleFactor));
 		});
 		
-	}catch(const deException &){
-		if(ddface){
-			delete ddface;
-		}
-		throw;
-	}
+		ddface->AddVertex(ddface->GetVertices().First());
+		//ddface->CalculateNormal();
+		
+		pDDShape->AddFace(std::move(ddface));
+	});
 	
 	pNavSpace->GetDDTypeFaces()->NotifyShapeContentChanged();
 }

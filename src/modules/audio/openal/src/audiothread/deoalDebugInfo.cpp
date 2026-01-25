@@ -442,7 +442,7 @@ void deoalDebugInfo::CaptureActiveMicRays(){
 			pDDActiveMicRays->GetParentWorld()->RemoveDebugDrawer(pDDActiveMicRays);
 		}
 		
-		if(pDDActiveMicRays->GetShapeCount() > 0){
+		if(pDDActiveMicRays->GetShapes().IsNotEmpty()){
 			pDDActiveMicRays->RemoveAllShapes();
 			pDDActiveMicRays->NotifyShapeGeometryChanged();
 		}
@@ -760,9 +760,9 @@ void deoalDebugInfo::UpdateVisAudSpeakers(){
 					GetDebugDrawerManager()->CreateDebugDrawer());
 				dd->SetXRay(true);
 				
-				deDebugDrawerShape * const shape = new deDebugDrawerShape;
+				auto shape = deDebugDrawerShape::Ref::New();
 				shape->GetShapeList().Add(decShapeSphere::Ref::New(0.05f));
-				dd->AddShape(shape);
+				dd->AddShape(std::move(shape));
 				
 				world.AddDebugDrawer(dd);
 				pDDVisAudSpeakers.Add(dd);
@@ -828,7 +828,7 @@ void deoalDebugInfo::UpdateVisAudSpeakers(){
 				factor = 1.0f;
 			}
 			
-			dd.GetShapeAt(0)->SetEdgeColor(soundLow * (1.0f - factor) + soundHigh * factor);
+			dd.GetShapes().First()->SetEdgeColor(soundLow * (1.0f - factor) + soundHigh * factor);
 			dd.NotifyShapeColorChanged();
 			dd.SetPosition(speaker.GetPosition());
 		}

@@ -42,9 +42,6 @@
 /////////////////////////////////
 
 dearAnimationKeyframeList::dearAnimationKeyframeList(const deAnimationKeyframe::List &list){
-	pKeyframes = nullptr;
-	pKeyframeCount = 0;
-	
 	try{
 		pCreateKeyframes(list);
 		
@@ -63,30 +60,23 @@ dearAnimationKeyframeList::~dearAnimationKeyframeList(){
 // Management
 ///////////////
 
-dearAnimationKeyframe &dearAnimationKeyframeList::GetAt(int index) const{
-	if(index < 0 || index >= pKeyframeCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pKeyframes[index];
-}
-
-dearAnimationKeyframe *dearAnimationKeyframeList::GetWithTime(float time) const{
-	if(pKeyframeCount == 0){
+const dearAnimationKeyframe *dearAnimationKeyframeList::GetWithTime(float time) const{
+	if(pKeyframes.IsEmpty()){
 		return nullptr;
 	}
 	
-	if(time <= pKeyframes[0].GetTime()){
-		return pKeyframes;
+	if(time <= pKeyframes.First().GetTime()){
+		return &pKeyframes.First();
 	}
 	
 	int i;
-	for(i=1; i<pKeyframeCount; i++){
+	for(i=1; i<pKeyframes.GetCount(); i++){
 		if(time < pKeyframes[i].GetTime()){
-			return pKeyframes + (i - 1);
+			return &pKeyframes[i - 1];
 		}
 	}
 	
-	return pKeyframes + (pKeyframeCount - 1);
+	return &pKeyframes.Last();
 }
 
 
@@ -95,9 +85,6 @@ dearAnimationKeyframe *dearAnimationKeyframeList::GetWithTime(float time) const{
 //////////////////////
 
 void dearAnimationKeyframeList::pCleanUp(){
-	if(pKeyframes){
-		delete [] pKeyframes;
-	}
 }
 
 
@@ -108,17 +95,16 @@ void dearAnimationKeyframeList::pCreateKeyframes(const deAnimationKeyframe::List
 		return;
 	}
 	
-	pKeyframes = new dearAnimationKeyframe[count];
+	pKeyframes.AddRange(count, {});
 	bool negate = false;
 	
-	while(pKeyframeCount < count){
-		if(pKeyframeCount < count - 1){
-			pKeyframes[pKeyframeCount].Set(list.GetAt(pKeyframeCount), list.GetAt(pKeyframeCount + 1), negate);
+	int i;
+	for(i=0; i<count; i++){
+		if(i < count - 1){
+			pKeyframes[i].Set(list[i], list[i + 1], negate);
 			
 		}else{
-			pKeyframes[pKeyframeCount].Set(list.GetAt(pKeyframeCount), negate);
+			pKeyframes[i].Set(list[i], negate);
 		}
-		
-		pKeyframeCount++;
 	}
 }

@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglRModel.h"
 #include "deoglModelLOD.h"
 #include "face/deoglModelFace.h"
@@ -77,8 +73,6 @@ deoglRModel::deoglRModel(deoglRenderThread &renderThread, const deModel &model) 
 pRenderThread(renderThread),
 pFilename(model.GetFilename()),
 pHasWeightlessExtends(false),
-pBoneExtends(nullptr),
-pBoneCount(0),
 pDoubleSided(false),
 pIsCached(false),
 pImposterBillboard(nullptr),
@@ -185,15 +179,15 @@ void deoglRModel::DebugVCOptimize(){
 	decTimer timer;
 	
 	const deoglModelLOD &lod = pLODs.First();
-	const deoglModelFace * const lodFaces = lod.GetFaces();
+	const deoglModelFace * const lodFaces = lod.GetFaces().GetArrayPointer();
 	deoglVCOptimizer optimizer;
 	int i, count;
 	
 	// optimize
 	timer.Reset();
 	
-	optimizer.SetVertexCount(lod.GetVertexCount());
-	count = lod.GetFaceCount();
+	optimizer.SetVertexCount(lod.GetVertices().GetCount());
+	count = lod.GetFaces().GetCount();
 	optimizer.SetFaceCount(count);
 	for(i=0; i<count; i++){
 		optimizer.SetFaceAt(i , lodFaces[i].GetVertex1(), lodFaces[i].GetVertex2(), lodFaces[i].GetVertex3());
@@ -210,7 +204,7 @@ void deoglRModel::DebugVCOptimize(){
 	const float elapsedOptimize = timer.GetElapsedTime();
 	
 	// simulate
-	const int * const reorderedFaces = optimizer.GetReorderedFaces();
+	const int * const reorderedFaces = optimizer.GetReorderedFaces().GetArrayPointer();
 	int orgCacheMissCount, newCacheMissCount;
 	int orgCacheHitCount, newCacheHitCount;
 	deoglVCSimulator simulator;
@@ -220,7 +214,7 @@ void deoglRModel::DebugVCOptimize(){
 	simulator.SetCacheSize(32);
 	
 	logger.LogInfoFormat("simulate model %s", pFilename.GetString());
-	count = lod.GetFaceCount();
+	count = lod.GetFaces().GetCount();
 	
 	for(i=0; i<lod.GetTextureCount(); i++){
 		// simulate original face order
@@ -278,10 +272,6 @@ void deoglRModel::DebugVCOptimize(){
 //////////////////////
 
 void deoglRModel::pCleanUp(){
-	if(pBoneExtends){
-		delete [] pBoneExtends;
-		pBoneExtends = nullptr;
-	}
 	if(pSharedSPBListUBO){
 		delete pSharedSPBListUBO;
 	}
@@ -293,27 +283,21 @@ void deoglRModel::pCleanUp(){
 
 
 void deoglRModel::pInitBoneNames(const deModel &engModel){
-	const int count = engModel.GetBoneCount();
-	int i;
-	for(i=0; i<count; i++){
-		pBoneNames.Add(engModel.GetBoneAt(i)->GetName());
-	}
+	engModel.GetBones().Visit([&](const deModelBone &bone){
+		pBoneNames.Add(bone.GetName());
+	});
 }
 
 void deoglRModel::pInitTextureNames(const deModel &engModel){
-	const int count = engModel.GetTextureCount();
-	int i;
-	for(i=0; i<count; i++){
-		pTextureNames.Add(engModel.GetTextureAt(i)->GetName());
-	}
+	engModel.GetTextures().Visit([&](const deModelTexture &texture){
+		pTextureNames.Add(texture.GetName());
+	});
 }
 
 void deoglRModel::pInitVPSNames(const deModel &engModel){
-	const int count = engModel.GetVertexPositionSetCount();
-	int i;
-	for(i=0; i<count; i++){
-		pVPSNames.Add(engModel.GetVertexPositionSetAt(i)->GetName());
-	}
+	engModel.GetVertexPositionSets().Visit([&](const deModelVertexPositionSet &vps){
+		pVPSNames.Add(vps.GetName());
+	});
 }
 
 void deoglRModel::pInitLODs(const deModel &engModel){
@@ -345,8 +329,8 @@ void deoglRModel::pInitLODs(const deModel &engModel){
 
 void deoglRModel::pInitExtends(const deModel &engModel, const deoglModelLOD &baseLod){
 	// extends of all points
-	const oglModelPosition * const positions = baseLod.GetPositions();
-	const int positionCount = baseLod.GetPositionCount();
+	const oglModelPosition * const positions = baseLod.GetPositions().GetArrayPointer();
+	const int positionCount = baseLod.GetPositions().GetCount();
 	int i;
 	
 	if(positionCount > 0){
@@ -374,23 +358,16 @@ void deoglRModel::pInitExtends(const deModel &engModel, const deoglModelLOD &bas
 	pWeightlessExtends.minimum.SetZero();
 	pWeightlessExtends.maximum.SetZero();
 	
-	pBoneExtends = new sExtends[boneCount];
-	pBoneCount = boneCount;
+	pBoneExtends.SetCountDiscard(boneCount);
 	
-	const int weightsCount = baseLod.GetWeightsCount();
+	const int weightsCount = baseLod.GetWeightsCounts().GetCount();
 	if(weightsCount > 0){
-		const int * const weightsCounts = baseLod.GetWeightsCounts();
-		const oglModelWeight *weightEntries = baseLod.GetWeightsEntries();
-		int * const dominatingBones = new int[weightsCount];
-		bool * const boneHasExtends = new bool[boneCount];
-		
-		for(i=0; i<boneCount; i++){
-			boneHasExtends[i] = false;
-		}
+		const int * const weightsCounts = baseLod.GetWeightsCounts().GetArrayPointer();
+		const oglModelWeight *weightEntries = baseLod.GetWeightsEntries().GetArrayPointer();
+		decTList<int> dominatingBones(weightsCount, -1);
+		decTList<bool> boneHasExtends(boneCount, false);
 		
 		for(i=0; i<weightsCount; i++){
-			dominatingBones[i] = -1;
-			
 			const int weightEntryCount = weightsCounts[i];
 			if(weightEntryCount == 0){
 				continue;
@@ -434,9 +411,6 @@ void deoglRModel::pInitExtends(const deModel &engModel, const deoglModelLOD &bas
 				}
 			}
 		}
-		
-		delete [] boneHasExtends;
-		delete [] dominatingBones;
 	}
 }
 
@@ -506,11 +480,11 @@ void deoglRModel::pLoadCached(int lodCount, int boneCount){
 			pWeightlessExtends.maximum = reader->ReadVector();
 			pHasWeightlessExtends = reader->ReadByte() != 0;
 			if(boneCount > 0){
-				pBoneExtends = new sExtends[boneCount];
-				for(pBoneCount=0; pBoneCount<boneCount; pBoneCount++){
-					pBoneExtends[pBoneCount].minimum = reader->ReadVector();
-					pBoneExtends[pBoneCount].maximum = reader->ReadVector();
-				}
+				pBoneExtends.SetCountDiscard(boneCount);
+				pBoneExtends.Visit([&](sExtends &b){
+					b.minimum = reader->ReadVector();
+					b.maximum = reader->ReadVector();
+				});
 			}
 			
 			// done
@@ -548,7 +522,6 @@ void deoglRModel::pSaveCached(){
 	deoglCaches &caches = ogl.GetCaches();
 	deCacheHelper &cacheModels = caches.GetModels();
 	decPath path;
-	int i;
 	
 	path.SetFromUnix(pFilename);
 	if(!vfs.CanReadFile(path)){
@@ -578,18 +551,18 @@ void deoglRModel::pSaveCached(){
 	writer->WriteVector(pWeightlessExtends.minimum);
 	writer->WriteVector(pWeightlessExtends.maximum);
 	writer->WriteByte(pHasWeightlessExtends ? 1 : 0);
-	for(i=0; i<pBoneCount; i++){
-		writer->WriteVector(pBoneExtends[i].minimum);
-		writer->WriteVector(pBoneExtends[i].maximum);
-	}
+	pBoneExtends.Visit([&](const sExtends &b){
+		writer->WriteVector(b.minimum);
+		writer->WriteVector(b.maximum);
+	});
 	
 	// pRenderThread.GetOgl().LogInfoFormat("Model: '%s' written to cache", pFilename.GetString());
 }
 
 void deoglRModel::pCreateImposterBillboard(){
 	// calculate the extends from the first lod mesh
-	const oglModelPosition * const positions = pLODs.First()->GetPositions();
-	const int positionCount = pLODs.First()->GetPositionCount();
+	const oglModelPosition * const positions = pLODs.First()->GetPositions().GetArrayPointer();
+	const int positionCount = pLODs.First()->GetPositions().GetCount();
 	decVector axisView, axisUp, position;
 	decVector2 minExtend, maxExtend;
 	decMatrix matrix;

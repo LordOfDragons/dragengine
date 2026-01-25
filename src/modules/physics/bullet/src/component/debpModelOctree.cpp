@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "debpModelOctree.h"
 
 #include <dragengine/common/exceptions.h>
@@ -38,23 +34,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpModelOctree::debpModelOctree(const decDVector &center, const decDVector &halfSize) : debpDOctree(center, halfSize){
-	pFaces = nullptr;
-	pFaceCount = 0;
-	pFaceSize = 0;
+debpModelOctree::debpModelOctree(const decDVector &center, const decDVector &halfSize) :
+debpDOctree(center, halfSize){
 }
 
 debpModelOctree::debpModelOctree(const decVector &center, const decVector &halfSize) :
 debpDOctree(decDVector(center), decDVector(halfSize)){
-	pFaces = nullptr;
-	pFaceCount = 0;
-	pFaceSize = 0;
 }
 
-debpModelOctree::~debpModelOctree(){
-	RemoveAllFaces();
-	if(pFaces) delete [] pFaces;
-}
+debpModelOctree::~debpModelOctree() = default;
 
 
 
@@ -120,53 +108,26 @@ void debpModelOctree::ClearFaces(){
 
 
 int debpModelOctree::GetFaceAt(int index) const{
-	if(index < 0 || index >= pFaceCount) DETHROW(deeInvalidParam);
-	
 	return pFaces[index];
 }
 
 int debpModelOctree::IndexOfFace(int face) const{
-	int f;
-	
-	for(f=0; f<pFaceCount; f++){
-		if(pFaces[f] == face){
-			return f;
-		}
-	}
-	
-	return -1;
+	return pFaces.IndexOf(face);
 }
 
 void debpModelOctree::AddFace(int face){
-	if(face < 0) DETHROW(deeInvalidParam);
-	
-	if(pFaceCount == pFaceSize){
-		int newSize = pFaceSize * 3 / 2 + 1;
-		int *newArray = new int[newSize];
-		if(pFaces){
-			memcpy(newArray, pFaces, sizeof(int) * pFaceSize);
-			delete [] pFaces;
-		}
-		pFaces = newArray;
-		pFaceSize = newSize;
-	}
-	
-	pFaces[pFaceCount] = face;
-	pFaceCount++;
+	DEASSERT_TRUE(face >= 0)
+	pFaces.Add(face);
 }
 
 void debpModelOctree::RemoveFace(int face){
-	int f, index = IndexOfFace(face);
-	if(index == -1) DETHROW(deeInvalidParam);
-	
-	for(f=index+1; f<pFaceCount; f++){
-		pFaces[f - 1] = pFaces[f];
-	}
-	pFaceCount--;
+	const int index = pFaces.IndexOf(face);
+	DEASSERT_TRUE(index != -1)
+	pFaces.RemoveFrom(index);
 }
 
 void debpModelOctree::RemoveAllFaces(){
-	pFaceCount = 0;
+	pFaces.RemoveAll();
 }
 
 
@@ -183,7 +144,9 @@ debpModelOctree *debpModelOctree::pGetNodeFor(const decVector &center, const dec
 	
 	for(d=0; d<maxDepth; d++){
 		nextNode = curNode->GetNodeAtBox(dcenter, dhalfSize);
-		if(!nextNode) break;
+		if(!nextNode){
+			break;
+		}
 		
 		curNode = nextNode;
 	}

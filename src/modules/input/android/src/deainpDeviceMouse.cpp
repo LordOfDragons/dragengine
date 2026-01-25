@@ -61,7 +61,7 @@ deainpDevice(module, esAndroid)
 	SetName("Mouse");
 	SetType(deInputDevice::edtMouse);
 	
-	SetAxisCount(4);
+	GetAxes().AddRange(4, {});
 	
 	deainpDeviceAxis &axisX = GetAxisAt(0);
 	axisX.SetAbsolute(false);
@@ -89,7 +89,7 @@ deainpDevice(module, esAndroid)
 	scrollX.SetName("Scroll X");
 	scrollX.SetType(deInputDeviceAxis::eatMouseWheel);
 	
-	SetButtonCount(5);
+	GetButtons().AddRange(5, {});
 	
 	deainpDeviceButton &buttonLeft = GetButtonAt(deInputEvent::embcLeft);
 	buttonLeft.SetID("left");

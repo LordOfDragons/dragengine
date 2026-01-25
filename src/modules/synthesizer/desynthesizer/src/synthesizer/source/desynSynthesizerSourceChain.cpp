@@ -22,8 +22,7 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <new>
 
 #include "desynSynthesizerSourceChain.h"
 #include "../desynSynthesizerInstance.h"
@@ -44,10 +43,10 @@
 #define PLAY_THRESHOLD_PAUSE	(1.0f / 6.0f)
 
 struct sStateData{
-	int sound; // index of sound
-	int position; // in samples
-	float blend; // blend between this sample and next sample
-	bool defunct;
+	int sound = -1; // index of sound
+	int position = 0; // in samples
+	float blend = 0.0f; // blend between this sample and next sample
+	bool defunct = false;
 };
 
 
@@ -88,8 +87,6 @@ void desynSynthesizerSourceChain::sSound::Clear(){
 desynSynthesizerSourceChain::desynSynthesizerSourceChain(desynSynthesizer &synthesizer,
 int firstLink, const deSynthesizerSourceChain &source) :
 desynSynthesizerSource(synthesizer, firstLink, source),
-pSounds(nullptr),
-pSoundCount(0),
 
 pMinSpeed(source.GetMinSpeed()),
 pMaxSpeed(source.GetMaxSpeed()),
@@ -113,15 +110,13 @@ pTargetPlay(synthesizer, firstLink, source.GetTargetPlay())
 	
 	bool hasValidSound = false;
 	
-	pSounds = new sSound[count];
+	pSounds.AddRange(count, {});
 	
-	for(pSoundCount=0; pSoundCount<count; pSoundCount++){
-		const deSound * const engSound = source.GetSounds().GetAt(pSoundCount);
+	pSounds.VisitIndexed([&](int i, sSound &sound){
+		const deSound * const engSound = source.GetSounds().GetAt(i);
 		if(!engSound){
-			continue;
+			return;
 		}
-		
-		sSound &sound = pSounds[pSoundCount];
 		
 		sound.sound = (desynSound*)engSound->GetPeerSynthesizer();
 		sound.sound->Prepare();
@@ -130,7 +125,7 @@ pTargetPlay(synthesizer, firstLink, source.GetTargetPlay())
 		sound.sampleCount = engSound->GetSampleCount();
 		if(sound.sampleCount == 0){
 			sound.Clear();
-			continue;
+			return;
 		}
 		
 		sound.lastSample = sound.sampleCount - 1;
@@ -151,7 +146,7 @@ pTargetPlay(synthesizer, firstLink, source.GetTargetPlay())
 				
 			}else{
 				sound.Clear();
-				continue;
+				return;
 			}
 			
 		}else if(engSound->GetChannelCount() == 2){
@@ -169,14 +164,14 @@ pTargetPlay(synthesizer, firstLink, source.GetTargetPlay())
 				
 			}else{
 				sound.Clear();
-				continue;
+				return;
 			}
 			
 		}else{
 			sound.Clear();
-			continue;
+			return;
 		}
-	}
+	});
 	
 	if(!hasValidSound){
 		SetSilent(true);
@@ -186,11 +181,7 @@ pTargetPlay(synthesizer, firstLink, source.GetTargetPlay())
 	pSelectRange = (float)count;
 }
 
-desynSynthesizerSourceChain::~desynSynthesizerSourceChain(){
-	if(pSounds){
-		delete [] pSounds;
-	}
-}
+desynSynthesizerSourceChain::~desynSynthesizerSourceChain() = default;
 
 
 
@@ -202,7 +193,7 @@ float desynSynthesizerSourceChain::GetPlay(const desynSynthesizerInstance &insta
 }
 
 int desynSynthesizerSourceChain::GetSelect(const desynSynthesizerInstance &instance, int sample) const{
-	return decMath::min((int)(pTargetSelect.GetValue(instance, sample, 0.0f) * pSelectRange), pSoundCount - 1);
+	return decMath::min((int)(pTargetSelect.GetValue(instance, sample, 0.0f) * pSelectRange), pSounds.GetCount() - 1);
 }
 
 float desynSynthesizerSourceChain::GetSpeed(const desynSynthesizerInstance &instance, int sample) const{
@@ -216,11 +207,11 @@ int desynSynthesizerSourceChain::StateDataSizeSource(int offset) {
 }
 
 void desynSynthesizerSourceChain::InitStateDataSource(char *stateData) {
-	sStateData& sdata = *((sStateData*)(stateData + GetStateDataOffset()));
-	sdata.sound = -1;
-	sdata.position = 0;
-	sdata.blend = 0.0f;
-	sdata.defunct = false;
+	new (stateData + GetStateDataOffset()) sStateData{};
+}
+
+void desynSynthesizerSourceChain::CleanUpStateDataSource(char *stateData) {
+	((sStateData*)(stateData + GetStateDataOffset()))->~sStateData();
 }
 
 void desynSynthesizerSourceChain::GenerateSourceSound(const desynSynthesizerInstance &instance,

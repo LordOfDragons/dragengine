@@ -679,7 +679,7 @@ void deoglRenderCanvas::DrawCanvasText(const deoglRenderCanvasContext &context, 
 		
 		const decTexMatrix2 tcTransform(decTexMatrix2::CreateST(
 			(oglGlyph.x2 - oglGlyph.x1) * factorU, (oglGlyph.y2 - oglGlyph.y1) * factorV,
-			                                 oglGlyph.x1 * factorU + offsetU, oglGlyph.y1 * factorV + offsetV));
+			oglGlyph.x1 * factorU + offsetU, oglGlyph.y1 * factorV + offsetV));
 		shader.SetParameterTexMatrix3x2(spcTCTransform, tcTransform);
 		
 		shader.SetParameterInt(spcTCLayer, oglGlyph.z);

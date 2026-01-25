@@ -570,7 +570,7 @@ void deoglRenderReflection::ConvertCubeMap2EquiMap(deoglCubeMap &cubemap, deoglT
 }
 
 void deoglRenderReflection::RenderEnvMapMask(deoglRenderPlan &plan, deoglEnvironmentMap &envmap, int cubeMapFace){
-	const int maskShapeCount = envmap.GetReflectionMaskBoxMatrixCount();
+	const int maskShapeCount = envmap.GetReflectionMaskBoxMatrices().GetCount();
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace(renderThread, "Reflection.RenderEnvMapMask");
 	
@@ -605,7 +605,7 @@ void deoglRenderReflection::RenderEnvMapMask(deoglRenderPlan &plan, deoglEnviron
 		renderShape.ActivateVAO();
 		
 		for(i=0; i<maskShapeCount; i++){
-			matrixMaskBox = envmap.GetReflectionMaskBoxMatrixAt(i) * matrixCamera;
+			matrixMaskBox = envmap.GetReflectionMaskBoxMatrices()[i] * matrixCamera;
 			shader->SetParameterDMatrix4x3(speemMatrixMV, matrixMaskBox);
 			shader->SetParameterDMatrix4x3(speemMatrixMaskBox, matrixMaskBox.Invert());
 			

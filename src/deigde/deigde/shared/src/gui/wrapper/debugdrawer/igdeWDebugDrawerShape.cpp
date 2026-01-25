@@ -226,9 +226,7 @@ void igdeWDebugDrawerShape::SetVisible(bool visible){
 ///////////
 
 void igdeWDebugDrawerShape::AddShape(decShape::Ref &&shape){
-	if(!shape){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(shape)
 	
 	pShapes.Add(std::move(shape));
 	pRebuildShapes();
@@ -308,57 +306,47 @@ void igdeWDebugDrawerShape::RemoveAllShapes(){
 // Faces
 //////////
 
-void igdeWDebugDrawerShape::AddFace(deDebugDrawerShapeFace *face){
-	// no pFaces.Has(face) check. with larger number of faces this becomes very slow
+void igdeWDebugDrawerShape::AddFace(deDebugDrawerShapeFace::Ref &&face){
 	DEASSERT_NOTNULL(face)
-	pFaces.Add(face);
+	
+	pFaces.Add(std::move(face));
 	pRebuildFaces();
 }
 
 void igdeWDebugDrawerShape::AddOcclusionMeshFaces(const deOcclusionMesh &occlusionMesh){
-	const deOcclusionMeshVertex * const vertices = occlusionMesh.GetVertices();
-	const unsigned short * const corners = occlusionMesh.GetCorners();
-	const unsigned short * const faces = occlusionMesh.GetFaces();
-	const int faceCount = occlusionMesh.GetFaceCount();
-	deDebugDrawerShapeFace *shapeFace = nullptr;
+	const deOcclusionMeshVertex * const vertices = occlusionMesh.GetVertices().GetArrayPointer();
+	const unsigned short * const corners = occlusionMesh.GetCorners().GetArrayPointer();
+	const unsigned short * const faces = occlusionMesh.GetFaces().GetArrayPointer();
+	const int faceCount = occlusionMesh.GetFaces().GetCount();
 	int f, c, cornerIndex = 0;
 	decVector normal;
 	float normalLen;
 	
-	try{
-		for(f=0; f<faceCount; f++){
-			const int cornerCount = (int)faces[f];
+	for(f=0; f<faceCount; f++){
+		const int cornerCount = (int)faces[f];
+		
+		if(cornerCount > 2){
+			auto shapeFace = deDebugDrawerShapeFace::Ref::New();
 			
-			if(cornerCount > 2){
-				shapeFace = new deDebugDrawerShapeFace;
-				
-				for(c=0; c<cornerCount; c++){
-					shapeFace->AddVertex(vertices[corners[cornerIndex++]].GetPosition());
-				}
-				
-				normal = (shapeFace->GetVertexAt(1) - shapeFace->GetVertexAt(0))
-					% (shapeFace->GetVertexAt(2) - (shapeFace->GetVertexAt(1)));
-				normalLen = normal.Length();
-				if(normalLen > FLOAT_SAFE_EPSILON){
-					shapeFace->SetNormal(normal / normalLen);
-					
-				}else{
-					shapeFace->SetNormal(decVector(0.0f, 0.0f, 1.0f));
-				}
-				
-				pFaces.Add(shapeFace);
-				shapeFace = nullptr;
+			for(c=0; c<cornerCount; c++){
+				shapeFace->AddVertex(vertices[corners[cornerIndex++]].GetPosition());
+			}
+			
+			normal = (shapeFace->GetVertexAt(1) - shapeFace->GetVertexAt(0))
+				% (shapeFace->GetVertexAt(2) - (shapeFace->GetVertexAt(1)));
+			normalLen = normal.Length();
+			if(normalLen > FLOAT_SAFE_EPSILON){
+				shapeFace->SetNormal(normal / normalLen);
 				
 			}else{
-				cornerIndex += cornerCount;
+				shapeFace->SetNormal(decVector(0.0f, 0.0f, 1.0f));
 			}
+			
+			pFaces.Add(std::move(shapeFace));
+			
+		}else{
+			cornerIndex += cornerCount;
 		}
-		
-	}catch(const deException &){
-		if(shapeFace){
-			delete shapeFace;
-		}
-		throw;
 	}
 	
 	pRebuildFaces();
@@ -387,11 +375,7 @@ void igdeWDebugDrawerShape::AddNavSpaceFaces(const deNavigationSpace &navSpace, 
 }
 
 void igdeWDebugDrawerShape::RemoveAllFaces(){
-	pFaces.Visit([](deDebugDrawerShapeFace *f){
-		delete f;
-	});
 	pFaces.RemoveAll();
-	
 	pRebuildFaces();
 }
 
@@ -405,27 +389,18 @@ void igdeWDebugDrawerShape::pUpdateDDShape(){
 	if(pVisible && pEngDebugDrawer){
 		// if not existing create the debug drawer shape and populate it with the stored parameters
 		if(!pEngDDShape){
-			try{
-				pEngDDShape = new deDebugDrawerShape;
-				
-				pEngDDShape->SetPosition(pPosition);
-				pEngDDShape->SetOrientation(pOrientation);
-				pEngDDShape->SetScale(pScale);
-				pEngDDShape->SetEdgeColor(pColorEdge);
-				pEngDDShape->SetFillColor(pColorFill);
-				
-				pBareRebuildShapes();
-				pBareRebuildFaces();
-				
-				pEngDebugDrawer->AddShape(pEngDDShape);
-				
-			}catch(const deException &){
-				if(pEngDDShape){
-					delete pEngDDShape;
-					pEngDDShape = nullptr;
-				}
-				throw;
-			}
+			auto shape = deDebugDrawerShape::Ref::New();
+			shape->SetPosition(pPosition);
+			shape->SetOrientation(pOrientation);
+			shape->SetScale(pScale);
+			shape->SetEdgeColor(pColorEdge);
+			shape->SetFillColor(pColorFill);
+			
+			pBareRebuildShapes();
+			pBareRebuildFaces();
+			
+			pEngDDShape = shape;
+			pEngDebugDrawer->AddShape(std::move(shape));
 		}
 		
 	// otherwise remove the debug drawer shape if existing
@@ -477,31 +452,16 @@ void igdeWDebugDrawerShape::pRebuildFaces(){
 
 void igdeWDebugDrawerShape::pBareRebuildFaces(){
 	if(pEngDDShape){
-		deDebugDrawerShapeFace *newFace = nullptr;
-		
 		pEngDDShape->RemoveAllFaces();
 		
-		try{
-			pFaces.Visit([&](const deDebugDrawerShapeFace *face){
-				const int vertexCount = face->GetVertexCount();
-				
-				newFace = new deDebugDrawerShapeFace;
-				newFace->SetNormal(face->GetNormal());
-				int i;
-				for(i=0; i<vertexCount; i++){
-					newFace->AddVertex(face->GetVertexAt(i));
-				}
-				
-				pEngDDShape->AddFace(newFace);
-				newFace = nullptr;
+		pFaces.Visit([&](const deDebugDrawerShapeFace &face){
+			auto ddsFace = deDebugDrawerShapeFace::Ref::New();
+			ddsFace->SetNormal(face.GetNormal());
+			face.GetVertices().Visit([&](const decVector &vertex){
+				ddsFace->AddVertex(vertex);
 			});
-			
-		}catch(const deException &){
-			if(newFace){
-				delete newFace;
-			}
-			throw;
-		}
+			pEngDDShape->AddFace(std::move(ddsFace));
+		});
 	}
 	
 	if(pEngDebugDrawer){
@@ -512,113 +472,81 @@ void igdeWDebugDrawerShape::pBareRebuildFaces(){
 
 
 void igdeWDebugDrawerShape::pAddNavGrid(const deNavigationSpace &navSpace, bool filterType, int type){
-	const deNavigationSpaceEdge * const edges = navSpace.GetEdges();
-	const decVector * const vertices = navSpace.GetVertices();
-	const int edgeCount = navSpace.GetEdgeCount();
-	deDebugDrawerShapeFace *shapeFace = nullptr;
-	int i;
+	const decVector * const vertices = navSpace.GetVertices().GetArrayPointer();
 	
-	try{
-		for(i=0; i<edgeCount; i++){
-			const deNavigationSpaceEdge &edge = edges[i];
-			
-			if(filterType){
-				if(edge.GetType1() != type && edge.GetType2() != type){
-					continue;
-				}
-			}
-			
-			const decVector &vertex1 = vertices[edge.GetVertex1()];
-			const decVector &vertex2 = vertices[edge.GetVertex2()];
-			
-			shapeFace = new deDebugDrawerShapeFace;
-			
-			shapeFace->AddVertex(vertex1);
-			shapeFace->AddVertex(vertex2);
-			shapeFace->AddVertex(vertex2);
-			
-			shapeFace->SetNormal(decVector(0.0f, 1.0f, 0.0f));
-			
-			pFaces.Add(shapeFace);
-			shapeFace = nullptr;
+	navSpace.GetEdges().Visit([&](const deNavigationSpaceEdge &edge){
+		if(filterType && edge.GetType1() != type && edge.GetType2() != type){
+			return;
 		}
 		
-	}catch(const deException &){
-		if(shapeFace){
-			delete shapeFace;
-		}
-		throw;
-	}
+		const decVector &vertex1 = vertices[edge.GetVertex1()];
+		const decVector &vertex2 = vertices[edge.GetVertex2()];
+		
+		auto ddsFace = deDebugDrawerShapeFace::Ref::New();
+		ddsFace->AddVertex(vertex1);
+		ddsFace->AddVertex(vertex2);
+		ddsFace->AddVertex(vertex2);
+		ddsFace->SetNormal(decVector(0.0f, 1.0f, 0.0f));
+		pFaces.Add(std::move(ddsFace));
+	});
 	
 	pRebuildFaces();
 }
 
 void igdeWDebugDrawerShape::pAddNavMesh(const deNavigationSpace &navSpace, bool filterType, int type){
-	const deNavigationSpaceCorner * const corners = navSpace.GetCorners();
-	const deNavigationSpaceFace * const faces = navSpace.GetFaces();
-	const decVector * const vertices = navSpace.GetVertices();
-	const int faceCount = navSpace.GetFaceCount();
-	deDebugDrawerShapeFace *shapeFace = nullptr;
-	int i, j, firstCorner;
+	const deNavigationSpaceCorner * const corners = navSpace.GetCorners().GetArrayPointer();
+	const decVector * const vertices = navSpace.GetVertices().GetArrayPointer();
 	decVector normal;
 	float normalLen;
 	
-	try{
-		firstCorner = 0;
+	int firstCorner = 0;
+	
+	navSpace.GetFaces().Visit([&](const deNavigationSpaceFace &face){
+		const unsigned short cornerCount = face.GetCornerCount();
 		
-		for(i=0; i<faceCount; i++){
-			const deNavigationSpaceFace &face = faces[i];
-			const unsigned short cornerCount = face.GetCornerCount();
-			
-			if(cornerCount > 2){
-				if(filterType){
-					bool ignore = true;
-					
-					if(face.GetType() == type){
-						ignore = false;
-						
-					}else{
-						for(j=0; j<cornerCount; j++){
-							if(corners[firstCorner + j].GetType() == type){
-								ignore = false;
-								break;
-							}
-						}
-					}
-					
-					if(ignore){
-						continue;
-					}
-				}
+		if(cornerCount > 2){
+			if(filterType){
+				bool ignore = true;
 				
-				shapeFace = new deDebugDrawerShapeFace;
-				
-				for(j=0; j<cornerCount; j++){
-					shapeFace->AddVertex(vertices[corners[firstCorner + j].GetVertex()]);
-				}
-				
-				normal = (shapeFace->GetVertexAt(1) - shapeFace->GetVertexAt(0)) % (shapeFace->GetVertexAt(2) - (shapeFace->GetVertexAt(1)));
-				normalLen = normal.Length();
-				if(normalLen > FLOAT_SAFE_EPSILON){
-					shapeFace->SetNormal(normal / normalLen);
+				if(face.GetType() == type){
+					ignore = false;
 					
 				}else{
-					shapeFace->SetNormal(decVector(0.0f, 0.0f, 1.0f));
+					int i;
+					for(i=0; i<cornerCount; i++){
+						if(corners[firstCorner + i].GetType() == type){
+							ignore = false;
+							break;
+						}
+					}
 				}
 				
-				pFaces.Add(shapeFace);
-				shapeFace = nullptr;
+				if(ignore){
+					return;
+				}
 			}
 			
-			firstCorner += cornerCount;
+			auto ddsFace = deDebugDrawerShapeFace::Ref::New();
+			int i;
+			for(i=0; i<cornerCount; i++){
+				ddsFace->AddVertex(vertices[corners[firstCorner + i].GetVertex()]);
+			}
+			
+			normal = (ddsFace->GetVertexAt(1) - ddsFace->GetVertexAt(0))
+				% (ddsFace->GetVertexAt(2) - (ddsFace->GetVertexAt(1)));
+			normalLen = normal.Length();
+			if(normalLen > FLOAT_SAFE_EPSILON){
+				ddsFace->SetNormal(normal / normalLen);
+				
+			}else{
+				ddsFace->SetNormal(decVector(0.0f, 0.0f, 1.0f));
+			}
+			
+			pFaces.Add(std::move(ddsFace));
 		}
 		
-	}catch(const deException &){
-		if(shapeFace){
-			delete shapeFace;
-		}
-		throw;
-	}
+		firstCorner += cornerCount;
+	});
 	
 	pRebuildFaces();
 }

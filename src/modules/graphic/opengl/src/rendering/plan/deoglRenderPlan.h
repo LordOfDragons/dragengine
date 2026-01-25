@@ -163,7 +163,7 @@ private:
 	int pShadowSkySize;
 	float pDominance;
 	
-	deoglRenderPlanEnvMap *pEnvMaps;
+	decTList<deoglRenderPlanEnvMap> pEnvMaps;
 	int pEnvMapCount;
 	
 	deoglEnvMapFader pDirectEnvMapFader;
@@ -710,7 +710,7 @@ public:
 	inline int GetEnvMapCount() const{ return pEnvMapCount; }
 	
 	/** Plan environment map at the given index. */
-	deoglRenderPlanEnvMap &GetEnvMapAt(int index) const;
+	deoglRenderPlanEnvMap &GetEnvMapAt(int index);
 	
 	/** Remove environment map from the entire render plan without calling any methods on it. */
 	void RemoveEnvMap(deoglEnvironmentMap *envmap);

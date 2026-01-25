@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deHeightTerrainNavSpace.h"
 #include "deHeightTerrainNavSpaceEdge.h"
 #include "../../navigation/space/deNavigationSpaceFace.h"
@@ -43,26 +39,10 @@ deHeightTerrainNavSpace::deHeightTerrainNavSpace() :
 pType(deNavigationSpace::estMesh),
 pLayer(0),
 pSnapDistance(0.001f),
-pSnapAngle(DEG2RAD * 180.0f),
-pCorners(nullptr),
-pCornerCount(0),
-pEdges(nullptr),
-pEdgeCount(0),
-pFaces(nullptr),
-pFaceCount(0){
+pSnapAngle(DEG2RAD * 180.0f){
 }
 
-deHeightTerrainNavSpace::~deHeightTerrainNavSpace(){
-	if(pFaces){
-		delete [] pFaces;
-	}
-	if(pEdges){
-		delete [] pEdges;
-	}
-	if(pCorners){
-		delete [] pCorners;
-	}
-}
+deHeightTerrainNavSpace::~deHeightTerrainNavSpace() = default;
 
 
 
@@ -88,110 +68,4 @@ void deHeightTerrainNavSpace::SetSnapDistance(float distance){
 
 void deHeightTerrainNavSpace::SetSnapAngle(float angle){
 	pSnapAngle = decMath::max(angle, 0.0f);
-}
-
-
-
-// Corners
-////////////
-
-void deHeightTerrainNavSpace::SetCornerCount(int count){
-	if(count < 0){
-		DETHROW(deeInvalidParam);
-	}
-	
-	if(count == pCornerCount){
-		return;
-	}
-	
-	if(pCorners){
-		delete [] pCorners;
-	}
-	pCorners = nullptr;
-	pCornerCount = 0;
-	
-	if(count > 0){
-		pCorners = new unsigned int[count];
-		pCornerCount = count;
-	}
-}
-
-unsigned int deHeightTerrainNavSpace::GetCornerAt(int index) const{
-	if(index < 0 || index >= pCornerCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pCorners[index];
-}
-
-void deHeightTerrainNavSpace::SetCornerAt(int index, unsigned int corner){
-	if(index < 0 || index >= pCornerCount){
-		DETHROW(deeInvalidParam);
-	}
-	pCorners[index] = corner;
-}
-
-
-
-// Edges
-//////////
-
-void deHeightTerrainNavSpace::SetEdgeCount(int count){
-	if(count < 0){
-		DETHROW(deeInvalidParam);
-	}
-	
-	if(count == pEdgeCount){
-		return;
-	}
-	
-	if(pEdges){
-		delete [] pEdges;
-	}
-	pEdges = nullptr;
-	pEdgeCount = 0;
-	
-	if(count > 0){
-		pEdges = new deHeightTerrainNavSpaceEdge[count];
-		pEdgeCount = count;
-	}
-}
-
-deHeightTerrainNavSpaceEdge &deHeightTerrainNavSpace::GetEdgeAt(int index) const{
-	if(index < 0 || index >= pEdgeCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pEdges[index];
-}
-
-
-
-// Faces
-//////////
-
-void deHeightTerrainNavSpace::SetFaceCount(int count){
-	if(count < 0){
-		DETHROW(deeInvalidParam);
-	}
-	
-	if(count == pFaceCount){
-		return;
-	}
-	
-	if(pFaces){
-		delete [] pFaces;
-	}
-	pFaces = nullptr;
-	pFaceCount = 0;
-	
-	if(count > 0){
-		pFaces = new deNavigationSpaceFace[count];
-		pFaceCount = count;
-	}
-}
-
-deNavigationSpaceFace &deHeightTerrainNavSpace::GetFaceAt(int index) const{
-	if(index < 0 || index >= pFaceCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pFaces[index];
 }

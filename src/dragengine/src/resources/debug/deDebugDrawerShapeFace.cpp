@@ -28,6 +28,7 @@
 
 #include "deDebugDrawerShapeFace.h"
 #include "../../common/exceptions.h"
+#include "../../common/collection/decTList.h"
 
 
 
@@ -38,15 +39,10 @@
 /////////////////////////////////
 
 deDebugDrawerShapeFace::deDebugDrawerShapeFace() :
-pVertices(nullptr),
-pVertexCount(0),
 pNormal(0.0f, 0.0f, 1.0f){
 }
 
 deDebugDrawerShapeFace::~deDebugDrawerShapeFace(){
-	if(pVertices){
-		delete [] pVertices;
-	}
 }
 
 
@@ -60,45 +56,29 @@ void deDebugDrawerShapeFace::SetNormal(const decVector &normal){
 }
 
 void deDebugDrawerShapeFace::CalculateNormal(){
-	if(pVertexCount < 3){
+	if(pVertices.GetCount() < 3){
 		return;
 	}
 	pNormal = ((pVertices[1] - pVertices[0]) % (pVertices[2] - pVertices[1])).Normalized();
 }
 
 const decVector &deDebugDrawerShapeFace::GetVertexAt(int index) const{
-	if(index < 0 || index >= pVertexCount){
-		DETHROW(deeInvalidParam);
-	}
 	return pVertices[index];
 }
 
 void deDebugDrawerShapeFace::SetVertexAt(int index, const decVector &vertex){
-	if(index < 0 || index >= pVertexCount){
+	if(index < 0 || index >= pVertices.GetCount()){
 		DETHROW(deeInvalidParam);
 	}
 	pVertices[index] = vertex;
 }
 
 void deDebugDrawerShapeFace::AddVertex(const decVector &vertex){
-	decVector * const newArray = new decVector[pVertexCount + 1];
-	
-	if(pVertices){
-		memcpy(newArray, pVertices, sizeof(decVector) * pVertexCount);
-		delete [] pVertices;
-	}
-	
-	pVertices = newArray;
-	pVertices[pVertexCount] = vertex;
-	pVertexCount++;
+	pVertices.Add(vertex);
 }
 
 void deDebugDrawerShapeFace::RemoveAllVertices(){
-	if(pVertices){
-		delete [] pVertices;
-		pVertices = nullptr;
-	}
-	pVertexCount = 0;
+	pVertices.RemoveAll();
 }
 
 
@@ -107,8 +87,7 @@ void deDebugDrawerShapeFace::RemoveAllVertices(){
 /////////////////////
 
 void deDebugDrawerShapeFace::MakeCoplanarTo(const decVector &position){
-	int i;
-	for(i=0; i<pVertexCount; i++){
-		pVertices[i] += pNormal * (pNormal * (position - pVertices[i]));
-	}
+	pVertices.Visit([&](decVector &vertex){
+		vertex += pNormal * (pNormal * (position - vertex));
+	});
 }

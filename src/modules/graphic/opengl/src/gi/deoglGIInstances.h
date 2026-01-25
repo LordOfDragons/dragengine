@@ -28,6 +28,8 @@
 #include "../deoglBasics.h"
 
 #include <dragengine/common/collection/decTList.h>
+
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/collection/decTDictionary.h>
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decTList.h>
@@ -50,8 +52,7 @@ class deoglRenderThread;
 class deoglGIInstances{
 public:
 	struct sBox{
-		decVector minExtend;
-		decVector maxExtend;
+		decVector minExtend, maxExtend;
 	};
 	
 	
@@ -63,12 +64,8 @@ private:
 	decTList<deoglGIInstance*> pEmptyInstances;
 	decTDictionary<unsigned int,deoglGIInstance*> pElementInstanceMap;
 	
-	sBox *pDynamicBoxes;
-	int pDynamicBoxCount;
-	int pDynamicBoxSize;
-	
+	decTList<sBox> pDynamicBoxes;
 	decTList<deoglGIInstance*> pChangedInstances;
-	
 	
 	
 public:
@@ -122,12 +119,10 @@ public:
 	
 	
 	
-	/** Dynamic boxes list. */
-	inline const sBox * const GetDynamicBoxes() const{ return pDynamicBoxes; }
 	
-	/** Count of dynamic boxes. */
-	inline int GetDynamicBoxCount() const{ return pDynamicBoxCount; }
-	
+	/** Dynamic boxes. */
+	inline const decTList<sBox> &GetDynamicBoxes() const{ return pDynamicBoxes; }
+
 	/** Update dynamic boxes list from dynamic instances while enlarging boxes. */
 	void UpdateDynamicBoxes(const decDVector &offset, const decVector &enlarge);
 	
@@ -189,7 +184,6 @@ public:
 	
 	
 private:
-	void pCleanUp();
 	void pInvalidateAddInstance(const deoglGIInstance &instance);
 };
 

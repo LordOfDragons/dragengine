@@ -1687,20 +1687,20 @@ void debpColliderComponent::InitWeightAttachment(deColliderAttachment &attachmen
 	
 	const deModel &model = *pColliderComponent.GetComponent()->GetModel();
 	const deModelLOD &lod = model.GetLODAt(0);
-	if(face < 0 || face >= lod.GetFaceCount()){
+	if(face < 0 || face >= lod.GetFaces().GetCount()){
 		attachment.SetAttachType(deColliderAttachment::eatStatic);
 		return;
 	}
 	
-	const deModelFace &modelFace = lod.GetFaceAt(face);
+	const deModelFace &modelFace = lod.GetFaces()[face];
 	int i, j, k, entryCount = 0;
 	float weightFactors[10];
 	int weightBones[10];
 	
 	const deModelVertex * const vertices[3] = {
-		lod.GetVertices() + modelFace.GetVertex1(),
-		lod.GetVertices() + modelFace.GetVertex2(),
-		lod.GetVertices() + modelFace.GetVertex3()};
+		lod.GetVertices().GetArrayPointer() + modelFace.GetVertex1(),
+		lod.GetVertices().GetArrayPointer() + modelFace.GetVertex2(),
+		lod.GetVertices().GetArrayPointer() + modelFace.GetVertex3()};
 	
 	pLinkedComponent->PrepareWeights();
 	
@@ -1759,7 +1759,7 @@ void debpColliderComponent::InitWeightAttachment(deColliderAttachment &attachmen
 	attachment.SetAttachType(deColliderAttachment::eatWeight);
 	attachment.SetWeightCount(entryCount);
 	
-	deColliderAttachment::sWeight * const attWeights = attachment.GetWeights();
+	deColliderAttachment::sWeight * const attWeights = attachment.GetWeights().GetArrayPointer();
 	const deRig &rig = *pColliderComponent.GetComponent()->GetRig();
 	
 	for(i=0; i<entryCount; i++){
@@ -2648,8 +2648,8 @@ void debpColliderComponent::pUpdateAttachments(bool force){
 						break;
 					}
 					
-					const int boneCount = attachedComponent->GetBoneCount();
-					const int vpsCount = attachedComponent->GetVertexPositionSetCount();
+					const int boneCount = attachedComponent->GetBones().GetCount();
+					const int vpsCount = attachedComponent->GetVertexPositionSetWeights().GetCount();
 					if(boneCount == 0){
 						bpAttachment.Reposition(posMatrix, pLinVelo, !pPreventAttNotify); // fall back to static
 						break;
@@ -2709,7 +2709,7 @@ void debpColliderComponent::pUpdateAttachments(bool force){
 						const int vpsIndex = bpAttachment.GetVpsMappingAt(j);
 						if(vpsIndex != -1){
 							attachedComponent->SetVertexPositionSetWeightAt(j,
-								component->GetVertexPositionSetWeightAt(vpsIndex));
+								component->GetVertexPositionSetWeights()[vpsIndex]);
 						}
 					}
 					
@@ -2776,7 +2776,7 @@ void debpColliderComponent::pUpdateAttachments(bool force){
 				}
 				
 				//debpComponent &bpComponent = *( ( debpComponent* )component->GetPeerPhysics() );
-				const deColliderAttachment::sWeight * const weights = attachment.GetWeights();
+				const deColliderAttachment::sWeight * const weights = attachment.GetWeights().GetArrayPointer();
 				const int weightCount = attachment.GetWeightCount();
 				
 				pLinkedComponent->PrepareBoneWeights(); // TODO optimize this. requires new code

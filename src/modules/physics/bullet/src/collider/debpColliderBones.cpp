@@ -696,9 +696,9 @@ void debpColliderBones::CreateDebugDrawers(){
 			return;
 		}
 		
-		deDebugDrawerShape *boneDDSShape = new deDebugDrawerShape;
-		b->GetDebugDrawer()->AddShape(boneDDSShape);
+		auto boneDDSShape = deDebugDrawerShape::Ref::New();
 		b->SetDDSShape(boneDDSShape);
+		b->GetDebugDrawer()->AddShape(std::move(boneDDSShape));
 		requiresUpdateShapes = true;
 	});
 	

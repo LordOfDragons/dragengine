@@ -457,7 +457,6 @@
     <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\pathfinding\dedaiPathFinderFunnel.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\pathfinding\dedaiPathFinderNavGrid.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\pathfinding\dedaiPathFinderNavMesh.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\pathfinding\dedaiPathFinderPointList.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\dedaiSpace.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\grid\dedaiSpaceGrid.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\grid\dedaiSpaceGridEdge.cpp" />
@@ -491,7 +490,6 @@
     <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\pathfinding\dedaiPathFinderFunnel.h" />
     <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\pathfinding\dedaiPathFinderNavGrid.h" />
     <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\pathfinding\dedaiPathFinderNavMesh.h" />
-    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\pathfinding\dedaiPathFinderPointList.h" />
     <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\dedaiSpace.h" />
     <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\grid\dedaiSpaceGrid.h" />
     <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\grid\dedaiSpaceGridEdge.h" />

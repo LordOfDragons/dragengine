@@ -26,6 +26,7 @@
 #define _DEANIMATORCONTROLLERTARGET_H_
 
 #include "../../../dragengine_export.h"
+#include "../../../common/collection/decTList.h"
 
 /**
  * \brief Animator Controller Target.
@@ -34,8 +35,7 @@
  */
 class DE_DLL_EXPORT deAnimatorControllerTarget{
 private:
-	int *pLinks;
-	int pLinkCount;
+	decTList<int> pLinks;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -51,8 +51,11 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Links. */
+	inline const decTList<int> &GetLinks() const{ return pLinks; }
+	
 	/** \brief Number of links. */
-	inline int GetLinkCount() const{ return pLinkCount; }
+	inline int GetLinkCount() const{ return pLinks.GetCount(); }
 	
 	/** \brief Link at the given index. */
 	int GetLinkAt(int index) const;

@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoalImpulseResponse.h"
 
 #include <dragengine/common/exceptions.h>
@@ -39,179 +35,121 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deoalImpulseResponse::deoalImpulseResponse() :
-pImpulses(nullptr),
-pCount(0),
-pSize(0){
-}
+deoalImpulseResponse::deoalImpulseResponse() = default;
 
 deoalImpulseResponse::deoalImpulseResponse(const deoalImpulseResponse &response) :
-pImpulses(nullptr),
-pCount(0),
-pSize(0)
-{
-	Add(response);
+pImpulses(response.pImpulses){
 }
 
-deoalImpulseResponse::~deoalImpulseResponse(){
-	if(pImpulses){
-		delete [] pImpulses;
-	}
-}
+deoalImpulseResponse::~deoalImpulseResponse() = default;
 
 
 
 // Manegement
 ///////////////
 
-const deoalImpulseResponse::sImpulse &deoalImpulseResponse::GetAt(int index) const{
-	if(index < 0 || index >= pCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pImpulses[index];
-}
-
 void deoalImpulseResponse::Add(float time, float low, float medium, float high){
-	if(pCount == pSize){
-		pResize(pCount + 1);
-	}
-	
-	sImpulse &impulse = pImpulses[pCount++];
-	impulse.time = time;
-	impulse.low = low;
-	impulse.medium = medium;
-	impulse.high = high;
+	pImpulses.Add({time, low, medium, high});
 }
 
 void deoalImpulseResponse::Add(const deoalImpulseResponse &response){
-	if(response.pCount == 0){
-		return;
-	}
-	
-	if(pCount + response.pCount > pSize){
-		pResize(pCount + response.pCount);
-	}
-	
-	int i;
-	for(i=0; i<response.pCount; i++){
-		pImpulses[pCount + i] = response.pImpulses[i];
-	}
-	pCount += response.pCount;
+	pImpulses += response.pImpulses;
 }
 
 void deoalImpulseResponse::Insert(float time, float low, float medium, float high){
-	if(pCount == pSize){
-		pResize(pCount + 1);
-	}
 	pInsert(time, low, medium, high);
 }
 
 void deoalImpulseResponse::Insert(const deoalImpulseResponse &response){
-	if(response.pCount == 0){
+	if(response.pImpulses.IsEmpty()){
 		return;
 	}
 	
-	if(pCount + response.pCount > pSize){
-		pResize(pCount + response.pCount);
-	}
+	pImpulses.EnlargeCapacity(pImpulses.GetCount() + response.pImpulses.GetCount());
 	
-	int i;
-	for(i=0; i<response.pCount; i++){
-		const sImpulse &src = response.pImpulses[i];
+	response.pImpulses.Visit([&](const sImpulse &src){
 		pInsert(src.time, src.low, src.medium, src.high);
-	}
+	});
 }
 
 void deoalImpulseResponse::InsertScaled(const deoalImpulseResponse &response, float scale){
-	if(response.pCount == 0){
+	if(response.pImpulses.IsEmpty()){
 		return;
 	}
 	
-	if(pCount + response.pCount > pSize){
-		pResize(pCount + response.pCount);
-	}
+	pImpulses.EnlargeCapacity(pImpulses.GetCount() + response.pImpulses.GetCount());
 	
-	int i;
-	for(i=0; i<response.pCount; i++){
-		const sImpulse &src = response.pImpulses[i];
+	response.pImpulses.Visit([&](const sImpulse &src){
 		pInsert(src.time, src.low * scale, src.medium * scale, src.high * scale);
-	}
+	});
 }
 
 void deoalImpulseResponse::Clear(){
-	pCount = 0;
+	pImpulses.RemoveAll();
 }
 
 void deoalImpulseResponse::ReserveSize(int size){
-	if(size < 0){
-		DETHROW(deeInvalidParam);
-	}
-	if(size > pSize){
-		pResize(size);
-	}
+	pImpulses.EnlargeCapacity(size);
 }
 
 
 
 void deoalImpulseResponse::Square(){
-	int i;
-	for(i=0; i<pCount; i++){
-		pImpulses[i].low *= pImpulses[i].low;
-		pImpulses[i].medium *= pImpulses[i].medium;
-		pImpulses[i].high *= pImpulses[i].high;
-	}
+	pImpulses.Visit([](sImpulse &impulse){
+		impulse.low *= impulse.low;
+		impulse.medium *= impulse.medium;
+		impulse.high *= impulse.high;
+	});
 }
 
 void deoalImpulseResponse::PressureToSPL(){
-	int i;
-	for(i=0; i<pCount; i++){
-		if(pImpulses[i].low > 1e-10f){
-			pImpulses[i].low = 20.0f * log10f(pImpulses[i].low);
+	pImpulses.Visit([](sImpulse &impulse){
+		if(impulse.low > 1e-10f){
+			impulse.low = 20.0f * log10f(impulse.low);
 			
 		}else{
-			pImpulses[i].low = -200.0f;
+			impulse.low = -200.0f;
 		}
 		
-		if(pImpulses[i].medium > 1e-10f){
-			pImpulses[i].medium = 20.0f * log10f(pImpulses[i].medium);
+		if(impulse.medium > 1e-10f){
+			impulse.medium = 20.0f * log10f(impulse.medium);
 			
 		}else{
-			pImpulses[i].medium = -200.0f;
+			impulse.medium = -200.0f;
 		}
 		
-		if(pImpulses[i].high > 1e-10f){
-			pImpulses[i].high = 20.0f * log10f(pImpulses[i].high);
+		if(impulse.high > 1e-10f){
+			impulse.high = 20.0f * log10f(impulse.high);
 			
 		}else{
-			pImpulses[i].high = -200.0f;
+			impulse.high = -200.0f;
 		}
-	}
+	});
 }
 
 void deoalImpulseResponse::IntensityToSIL(){
-	int i;
-	for(i=0; i<pCount; i++){
-		if(pImpulses[i].low > 1e-10f){
-			pImpulses[i].low = 10.0f * log10f(pImpulses[i].low);
+	pImpulses.Visit([](sImpulse &impulse){
+		if(impulse.low > 1e-10f){
+			impulse.low = 10.0f * log10f(impulse.low);
 			
 		}else{
-			pImpulses[i].low = -100.0f;
+			impulse.low = -100.0f;
 		}
 		
-		if(pImpulses[i].medium > 1e-10f){
-			pImpulses[i].medium = 10.0f * log10f(pImpulses[i].medium);
+		if(impulse.medium > 1e-10f){
+			impulse.medium = 10.0f * log10f(impulse.medium);
 			
 		}else{
-			pImpulses[i].medium = -100.0f;
+			impulse.medium = -100.0f;
 		}
 		
-		if(pImpulses[i].high > 1e-10f){
-			pImpulses[i].high = 10.0f * log10f(pImpulses[i].high);
+		if(impulse.high > 1e-10f){
+			impulse.high = 10.0f * log10f(impulse.high);
 			
 		}else{
-			pImpulses[i].high = -100.0f;
+			impulse.high = -100.0f;
 		}
-	}
+	});
 }
 
 void deoalImpulseResponse::IntensityToPressure(){
@@ -224,12 +162,11 @@ void deoalImpulseResponse::IntensityToPressure(){
 	// 
 	// this is actually the same as going directly from intensity to pressure like this:
 	//   pressure = sqrt(intensity)
-	int i;
-	for(i=0; i<pCount; i++){
-		pImpulses[i].low = sqrtf(pImpulses[i].low);
-		pImpulses[i].medium = sqrtf(pImpulses[i].medium);
-		pImpulses[i].high = sqrtf(pImpulses[i].high);
-	}
+	pImpulses.Visit([](sImpulse &impulse){
+		impulse.low = sqrtf(impulse.low);
+		impulse.medium = sqrtf(impulse.medium);
+		impulse.high = sqrtf(impulse.high);
+	});
 }
 
 void deoalImpulseResponse::PressureToIntensity(){
@@ -242,7 +179,7 @@ void deoalImpulseResponse::PressureToIntensity(){
 }
 
 void deoalImpulseResponse::BackwardIntegrate(){
-	if(pCount == 0){
+	if(pImpulses.IsEmpty()){
 		return;
 	}
 	
@@ -257,7 +194,7 @@ void deoalImpulseResponse::BackwardIntegrate(){
 	// 
 	// eventually all results are converted to dB (sound intensity level) using 10*log10(value)
 	int i;
-	for(i=pCount-2; i>=0; i--){
+	for(i=pImpulses.GetCount()-2; i>=0; i--){
 		const sImpulse &prev = pImpulses[i + 1];
 		sImpulse &impulse = pImpulses[i];
 		impulse.low += prev.low;
@@ -269,18 +206,13 @@ void deoalImpulseResponse::BackwardIntegrate(){
 }
 
 deoalImpulseResponse::sImpulse deoalImpulseResponse::Slopes() const{
-	sImpulse result;
-	result.time = 0.0f;
-	result.low = 0.0f;
-	result.medium = 0.0f;
-	result.high = 0.0f;
-	
-	if(pCount < 2){
+	sImpulse result{};
+	if(pImpulses.GetCount() < 2){
 		return result;
 	}
 	
-	const sImpulse &impulseFirst = pImpulses[0];
-	const sImpulse &impulseLast = pImpulses[pCount - 1];
+	const sImpulse &impulseFirst = pImpulses.First();
+	const sImpulse &impulseLast = pImpulses.Last();
 	
 	result.time = impulseLast.time - impulseFirst.time;
 	if(result.time < FLOAT_SAFE_EPSILON){
@@ -296,12 +228,8 @@ deoalImpulseResponse::sImpulse deoalImpulseResponse::Slopes() const{
 }
 
 deoalImpulseResponse::sImpulse deoalImpulseResponse::ReverberationTime(float dropDb) const{
-	sImpulse result;
-	result.time = 0.0f;
-	result.low = 0.0f;
-	result.medium = 0.0f;
-	result.high = 0.0f;
-	if(pCount < 2 || dropDb < FLOAT_SAFE_EPSILON){
+	sImpulse result{};
+	if(pImpulses.GetCount() < 2 || dropDb < FLOAT_SAFE_EPSILON){
 		return result;
 	}
 	
@@ -335,13 +263,11 @@ deoalImpulseResponse &deoalImpulseResponse::operator=(const deoalImpulseResponse
 }
 
 deoalImpulseResponse &deoalImpulseResponse::operator*=(float factor){
-	int i;
-	for(i=0; i<pCount; i++){
-		sImpulse &impulse = pImpulses[i];
+	pImpulses.Visit([&](sImpulse &impulse){
 		impulse.low *= factor;
 		impulse.medium *= factor;
 		impulse.high *= factor;
-	}
+	});
 	return *this;
 }
 
@@ -350,45 +276,28 @@ deoalImpulseResponse &deoalImpulseResponse::operator*=(float factor){
 // Private Functions
 //////////////////////
 
-void deoalImpulseResponse::pResize(int size){
-	sImpulse * const newArray = new sImpulse[size];
-	if(pImpulses){
-		memcpy(newArray, pImpulses, sizeof(sImpulse) * pSize);
-		delete [] pImpulses;
-	}
-	pImpulses = newArray;
-	pSize = size;
-}
-
 void deoalImpulseResponse::pInsert(float time, float low, float medium, float high){
+	if(pImpulses.IsEmpty()){
+		pImpulses.Add({time, low, medium, high});
+		return;
+	}
+	
+	int last = pImpulses.GetCount() - 1;
 	int first = 0;
 	
-	if(pCount > 0){
-		int last = pCount - 1;
-		
-		while(first != last){
-			const int center = (first + last) / 2;
-			if(time < pImpulses[center].time){
-				last = center;
-				
-			}else{
-				first = center + 1;
-			}
-		}
-		
-		if(time > pImpulses[first].time){
-			first++;
-		}
-		
-		for(last=pCount; last>first; last--){
-			pImpulses[last] = pImpulses[last - 1];
+	while(first != last){
+		const int center = (first + last) / 2;
+		if(time < pImpulses[center].time){
+			last = center;
+			
+		}else{
+			first = center + 1;
 		}
 	}
 	
-	sImpulse &impulse = pImpulses[first];
-	impulse.time = time;
-	impulse.low = low;
-	impulse.medium = medium;
-	impulse.high = high;
-	pCount++;
+	if(time > pImpulses[first].time){
+		first++;
+	}
+	
+	pImpulses.Insert({time, low, medium, high}, first);
 }

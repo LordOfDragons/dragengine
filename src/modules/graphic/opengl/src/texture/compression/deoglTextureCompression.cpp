@@ -139,7 +139,7 @@ void deoglTextureCompression::CompressMipMap(){
 		DETHROW(deeInvalidParam);
 	}
 	
-	const deoglPixelBuffer &pixelBuffer = *pCompressedDataMipMap->GetPixelBuffer(0);
+	const deoglPixelBuffer &pixelBuffer = *pCompressedDataMipMap->GetPixelBuffers()[0];
 	
 	if(pixelBuffer.GetFormat() == deoglPixelBuffer::epfDXT1){
 		CompressMipMapDXT1();
@@ -156,12 +156,12 @@ void deoglTextureCompression::CompressMipMapDXT1(){
 	if(!pDecompressedDataMipMap || !pCompressedDataMipMap){
 		DETHROW(deeInvalidParam);
 	}
-	if(pDecompressedDataMipMap->GetPixelBufferCount() != pCompressedDataMipMap->GetPixelBufferCount()){
+	if(pDecompressedDataMipMap->GetPixelBuffers().GetCount() != pCompressedDataMipMap->GetPixelBuffers().GetCount()){
 		DETHROW(deeInvalidParam);
 	}
 	
-	const deoglPixelBuffer &pixelBufferDecompressed = *pDecompressedDataMipMap->GetPixelBuffer(0);
-	const deoglPixelBuffer &pixelBufferCompressed = *pCompressedDataMipMap->GetPixelBuffer(0);
+	const deoglPixelBuffer &pixelBufferDecompressed = *pDecompressedDataMipMap->GetPixelBuffers()[0];
+	const deoglPixelBuffer &pixelBufferCompressed = *pCompressedDataMipMap->GetPixelBuffers()[0];
 	
 	if(pixelBufferDecompressed.GetWidth() != pixelBufferCompressed.GetWidth()
 	 || pixelBufferDecompressed.GetHeight() != pixelBufferCompressed.GetHeight()
@@ -172,13 +172,13 @@ void deoglTextureCompression::CompressMipMapDXT1(){
 		DETHROW(deeInvalidParam);
 	}
 	
-	const int count = pDecompressedDataMipMap->GetPixelBufferCount();
+	const int count = pDecompressedDataMipMap->GetPixelBuffers().GetCount();
 	const int flags = pGetQualitySquishFlags() | squish::kDxt1;
 	int i;
 	
 	for(i=0; i<count; i++){
-		pCompressSquish(*pDecompressedDataMipMap->GetPixelBuffer(i),
-			*pCompressedDataMipMap->GetPixelBuffer( i ), flags );
+		pCompressSquish(*pDecompressedDataMipMap->GetPixelBuffers()[i],
+			*pCompressedDataMipMap->GetPixelBuffers()[i], flags );
 	}
 }
 
@@ -186,12 +186,12 @@ void deoglTextureCompression::CompressMipMapDXT3(){
 	if(!pDecompressedDataMipMap || !pCompressedDataMipMap){
 		DETHROW(deeInvalidParam);
 	}
-	if(pDecompressedDataMipMap->GetPixelBufferCount() != pCompressedDataMipMap->GetPixelBufferCount()){
+	if(pDecompressedDataMipMap->GetPixelBuffers().GetCount() != pCompressedDataMipMap->GetPixelBuffers().GetCount()){
 		DETHROW(deeInvalidParam);
 	}
 	
-	const deoglPixelBuffer &pixelBufferDecompressed = *pDecompressedDataMipMap->GetPixelBuffer(0);
-	const deoglPixelBuffer &pixelBufferCompressed = *pCompressedDataMipMap->GetPixelBuffer(0);
+	const deoglPixelBuffer &pixelBufferDecompressed = *pDecompressedDataMipMap->GetPixelBuffers()[0];
+	const deoglPixelBuffer &pixelBufferCompressed = *pCompressedDataMipMap->GetPixelBuffers()[0];
 	
 	if(pixelBufferDecompressed.GetWidth() != pixelBufferCompressed.GetWidth()
 	 || pixelBufferDecompressed.GetHeight() != pixelBufferCompressed.GetHeight()
@@ -202,13 +202,13 @@ void deoglTextureCompression::CompressMipMapDXT3(){
 		DETHROW(deeInvalidParam);
 	}
 	
-	const int count = pDecompressedDataMipMap->GetPixelBufferCount();
+	const int count = pDecompressedDataMipMap->GetPixelBuffers().GetCount();
 	const int flags = pGetQualitySquishFlags() | squish::kDxt3;
 	int i;
 	
 	for(i=0; i<count; i++){
-		pCompressSquish(*pDecompressedDataMipMap->GetPixelBuffer(i),
-			*pCompressedDataMipMap->GetPixelBuffer( i ), flags );
+		pCompressSquish(*pDecompressedDataMipMap->GetPixelBuffers()[i],
+			*pCompressedDataMipMap->GetPixelBuffers()[i], flags );
 	}
 }
 

@@ -75,13 +75,15 @@ const deErrorTraceValue::Ref &deErrorTracePoint::GetValue(int index) const{
 deErrorTraceValue *deErrorTracePoint::FindValue(const char *name) const{
 	if(!name) DETHROW(deeInvalidParam);
 	const deErrorTraceValue::Ref *found = nullptr;
-	return pValues.Find([&](const deErrorTraceValue &value){
+	return pValues.Find(found, [&](const deErrorTraceValue &value){
 		return value.GetName() == name;
-	}, found) ? found->Pointer() : nullptr;
+	}) ? found->Pointer() : nullptr;
 }
 
 void deErrorTracePoint::AddValue(deTUniqueReference<deErrorTraceValue> &&value){
-	if(!value || FindValue(value->GetName())) DETHROW(deeInvalidParam);
+	DEASSERT_NOTNULL(value)
+	DEASSERT_FALSE(FindValue(value->GetName()))
+	
 	pValues.Add(std::move(value));
 }
 

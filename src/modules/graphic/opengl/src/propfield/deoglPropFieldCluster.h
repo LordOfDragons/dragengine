@@ -25,11 +25,12 @@
 #ifndef _DEOGLPROPFIELDCLUSTER_H_
 #define _DEOGLPROPFIELDCLUSTER_H_
 
-#include <dragengine/common/math/decMath.h>
-
 #include "../deoglBasics.h"
 #include "../skin/deoglSkinTexture.h"
 #include "../world/deoglWorldComputeElement.h"
+
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/math/decMath.h>
 
 class deoglRPropFieldType;
 class deoglTexUnitsConfig;
@@ -76,11 +77,8 @@ private:
 	decVector pMinExtend;
 	decVector pMaxExtend;
 	
-	sInstance *pInstances;
-	int pInstanceCount;
-	
-	char *pBendStateData;
-	int pBendStateDataSize;
+	decTList<sInstance> pInstances;
+	decTList<char> pBendStateData;
 	
 	deoglTexUnitsConfig *pTUCDepth;
 	deoglTexUnitsConfig *pTUCGeometry;
@@ -108,6 +106,11 @@ public:
 	
 	/** Clean up prop field cluster. */
 	~deoglPropFieldCluster();
+	
+	deoglPropFieldCluster(const deoglPropFieldCluster&) = delete;
+	deoglPropFieldCluster(deoglPropFieldCluster&&) = delete;
+	deoglPropFieldCluster& operator=(const deoglPropFieldCluster&) = delete;
+	deoglPropFieldCluster& operator=(deoglPropFieldCluster&&) = delete;
 	/*@}*/
 	
 	
@@ -130,14 +133,11 @@ public:
 	
 	
 	
-	/** Count of instances. */
-	inline int GetInstanceCount() const{ return pInstanceCount; }
+	/** Instances. */
+	inline decTList<sInstance> &GetInstances(){ return pInstances; }
 	
 	/** Set number of instances. */
 	void SetInstanceCount(int count);
-	
-	/** Instances. */
-	inline sInstance *GetInstances() const{ return pInstances; }
 	
 	/** Instances TBO. */
 	inline GLuint GetTBOInstances() const{ return pTBOInstances; }

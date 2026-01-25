@@ -339,7 +339,7 @@ void deoglCollideList::LogComponents() const{
 			const deoglModelLOD &modelLOD = model->GetLODAt(c.GetLODLevel());
 			renderThread.GetLogger().LogInfoFormat("%i: comp=%p pos=(%.3f,%.3f,%.3f) model=%s tex=%i faces=%i",
 				i, component, pos.x, pos.y, pos.z, model->GetFilename().GetString(),
-				modelLOD.GetTextureCount(), modelLOD.GetFaceCount());
+				modelLOD.GetTextureCount(), modelLOD.GetFaces().GetCount());
 			
 		}else{
 			renderThread.GetLogger().LogInfoFormat("%i: comp=%p pos=(%.3f,%.3f,%.3f) model=-",

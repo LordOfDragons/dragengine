@@ -92,7 +92,7 @@ public:
 	void AdvanceResPosition(int bytes);
 	
 	/** Frame buffer. */
-	inline const std::uint8_t *GetFrameBuffer() const{ return pGetBuffer(); }
+	inline const decTList<std::uint8_t> &GetFrameBuffer() const{ return pGetBuffer(); }
 	/*@}*/
 	
 	

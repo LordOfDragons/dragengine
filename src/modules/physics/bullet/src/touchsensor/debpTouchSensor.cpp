@@ -1006,10 +1006,10 @@ void debpTouchSensor::UpdateDebugDrawer(){
 		
 		// show shapes if layer mask matches
 		if(!pDDSShape){
-			pDDSShape = new deDebugDrawerShape;
+			auto pDDSShape = deDebugDrawerShape::Ref::New();
 			pDDSShape->SetFillColor(debpDebugDrawerColors::touchSensorFill);
 			pDDSShape->SetEdgeColor(debpDebugDrawerColors::touchSensorEdge);
-			pDebugDrawer->AddShape(pDDSShape);
+			pDebugDrawer->AddShape(std::move(pDDSShape));
 			UpdateDDSShape();
 		}
 		

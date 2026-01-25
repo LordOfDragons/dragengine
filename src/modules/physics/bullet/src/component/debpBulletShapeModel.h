@@ -28,6 +28,8 @@
 #include "../debpBulletShape.h"
 #include "LinearMath/btScalar.h"
 
+#include <dragengine/common/collection/decTList.h>
+
 class btTriangleIndexVertexArray;
 class btTriangleMeshShape;
 
@@ -50,10 +52,8 @@ public:
 private:
 	btTriangleMeshShape *pMeshShape;
 	btTriangleIndexVertexArray *pIndexVertexArray;
-	btScalar *pVertices;
-	int *pFaces;
-	int pVertexCount;
-	int pFaceCount;
+	decTList<btScalar> pVertices;
+	decTList<int> pFaces;
 	
 	
 	
@@ -61,8 +61,9 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create bullet shape wrapper taking ownership of bullet shape. */
-	debpBulletShapeModel(btTriangleMeshShape *meshShape, btTriangleIndexVertexArray *indexVertexArray,
-	btScalar *vertices, int *faces, int vertexCount, int faceCount);
+	debpBulletShapeModel(btTriangleMeshShape *meshShape,
+		btTriangleIndexVertexArray *indexVertexArray,
+		decTList<btScalar> &&vertices, decTList<int> &&faces);
 	
 	/** \brief Clean up bullet shape wrapper deleting wrapped bullet shape. */
 	~debpBulletShapeModel() override;
@@ -79,16 +80,16 @@ public:
 	inline btTriangleIndexVertexArray *GetIndexVertexArray() const{ return pIndexVertexArray; }
 	
 	/** \brief Vertices. */
-	inline btScalar *GetVertices() const{ return pVertices; }
+	inline const btScalar *GetVertices() const{ return pVertices.GetArrayPointer(); }
 	
 	/** \brief Faces. */
-	inline int *GetFaces() const{ return pFaces; }
+	inline const int *GetFaces() const{ return pFaces.GetArrayPointer(); }
 	
 	/** \brief Vertex count. */
-	inline int GetVertexCount() const{ return pVertexCount; }
+	inline int GetVertexCount() const{ return pVertices.GetCount(); }
 	
 	/** \brief Face count. */
-	inline int GetFaceCount() const{ return pFaceCount; }
+	inline int GetFaceCount() const{ return pFaces.GetCount(); }
 	/*@}*/
 };
 

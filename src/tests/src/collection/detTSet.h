@@ -24,6 +24,9 @@ private:
 	void TestIntMoveSemantics();
 	void TestIntIteratorConstructor();
 	void TestIntCollect();
+	void TestIntVisit();
+	void TestIntRemoveIf();
+	void TestIntFind();
 
 	// Test methods for T=decString
 	void TestStringBasic();
@@ -34,6 +37,8 @@ private:
 	void TestStringFindOrDefault();
 	void TestStringFold();
 	void TestStringInject();
+	void TestStringVisit();
+	void TestStringRemoveIf();
 
 public:
 	detTSet();

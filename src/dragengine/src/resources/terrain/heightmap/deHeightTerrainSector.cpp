@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deHeightTerrain.h"
 #include "deHeightTerrainSector.h"
 #include "deHeightTerrainTexture.h"
@@ -64,9 +60,7 @@
 deHeightTerrainSector::deHeightTerrainSector(const decPoint &sector) :
 pSector(sector),
 pParentHeightTerrain(nullptr),
-pIndex(-1),
-pVisibleFaces(nullptr),
-pVFByteCount(0){
+pIndex(-1){
 }
 
 deHeightTerrainSector::~deHeightTerrainSector(){
@@ -74,9 +68,6 @@ deHeightTerrainSector::~deHeightTerrainSector(){
 	RemoveAllNavSpaces();
 	RemoveAllDecals();
 	RemoveAllTextures();
-	if(pVisibleFaces){
-		delete [] pVisibleFaces;
-	}
 }
 
 
@@ -201,7 +192,7 @@ bool deHeightTerrainSector::GetFaceVisibleAt(int x, int y) const{
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(!pVisibleFaces){
+	if(pVisibleFaces.IsEmpty()){
 		return true;
 	}
 	
@@ -232,14 +223,11 @@ void deHeightTerrainSector::SetFaceVisibleAt(int x, int y, bool visible){
 
 void deHeightTerrainSector::SetAllFacesVisible(bool visible){
 	if(visible){
-		if(pVisibleFaces){
-			delete [] pVisibleFaces;
-			pVisibleFaces = nullptr;
-		}
+		pVisibleFaces.SetCountDiscard(0);
 		
 	}else{
 		pCreateVisibleFaces();
-		memset(pVisibleFaces, 0, pVFByteCount);
+		pVisibleFaces.SetRangeAt(0, pVisibleFaces.GetCount(), 0);
 	}
 }
 
@@ -406,18 +394,14 @@ void deHeightTerrainSector::NotifyNavSpaceLayoutChanged(int index){
 //////////////////////
 
 void deHeightTerrainSector::pCreateVisibleFaces(){
-	if(pVisibleFaces){
+	if(pVisibleFaces.IsNotEmpty()){
 		return;
 	}
 	
-	if(!pParentHeightTerrain){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(pParentHeightTerrain)
+	
 	const int pointCount = pParentHeightTerrain->GetSectorResolution();
 	const int byteCount = ((pointCount * pointCount - 1) >> 3) + 1;
 	
-	pVisibleFaces = new unsigned char[byteCount];
-	memset(pVisibleFaces, 255, byteCount);
-	
-	pVFByteCount = byteCount;
+	pVisibleFaces.SetAll(byteCount, 255);
 }

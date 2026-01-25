@@ -27,6 +27,7 @@
 
 #include "deIesImageInfo.h"
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class decBaseFileReader;
@@ -73,8 +74,7 @@ protected:
 	
 	decString pTilt;
 	
-	int pAngleFactorCount;
-	sAngleFactor *pAngleFactors;
+	decTList<sAngleFactor> pAngleFactors;
 	
 	int pLampCount;
 	float pLumensPerLamp;
@@ -95,16 +95,16 @@ protected:
 	
 	float pFinalLumMultiplier;
 	
-	float *pVerticalAngles;
-	float *pHorizontalAngles;
-	float *pCandelaValues;
+	decTList<float> pVerticalAngles;
+	decTList<float> pHorizontalAngles;
+	decTList<float> pCandelaValues;
 	
 	float pSmallestVerticalStep;
 	float pSmallestHorizontalStep;
 	int pVerticalResolution;
 	int pHorizontalResolution;
-	sSamplePoint *pVerticalSamplePoints;
-	sSamplePoint *pHorizontalSamplePoints;
+	decTList<sSamplePoint> pVerticalSamplePoints;
+	decTList<sSamplePoint> pHorizontalSamplePoints;
 	
 	
 	

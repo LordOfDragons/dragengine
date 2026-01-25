@@ -821,20 +821,20 @@ void deoalAMicrophone::pDebugCaptureRays(deDebugDrawer &debugDrawer, bool xray, 
 			}
 		}
 		
-		deDebugDrawerShape * const shape = new deDebugDrawerShape;
+		auto shape = deDebugDrawerShape::Ref::New();
 		shape->SetFillColor(decColor(0.0f, 0.0f, 0.0f, 0.0f));
 		shape->SetEdgeColor(color);
 		
 		pDebugCaptureRays(*shape, srlist, ray, volume);
 		
-		debugDrawer.AddShape(shape);
+		debugDrawer.AddShape(std::move(shape));
 	}
 	
-	deDebugDrawerShape * const shapeOrigin = new deDebugDrawerShape;
+	auto shapeOrigin = deDebugDrawerShape::Ref::New();
 	shapeOrigin->SetFillColor(decColor(1.0f, 1.0f, 1.0f, colorA * 0.25f));
 	shapeOrigin->SetEdgeColor(decColor(1.0f, 1.0f, 1.0f, colorA));
 	shapeOrigin->GetShapeList().Add(decShapeSphere::Ref::New(0.05f));
-	debugDrawer.AddShape(shapeOrigin);
+	debugDrawer.AddShape(std::move(shapeOrigin));
 	
 	for(i=0; i<rayCount; i++){
 		const deoalSoundRay &ray = srlist.GetRayAt(i);
@@ -842,18 +842,18 @@ void deoalAMicrophone::pDebugCaptureRays(deDebugDrawer &debugDrawer, bool xray, 
 			continue;
 		}
 		
-		deDebugDrawerShape * const shape = new deDebugDrawerShape;
+		auto shape = deDebugDrawerShape::Ref::New();
 		shape->SetFillColor(decColor(0.0f, 0.0f, 0.0f, 0.0f));
 		shape->SetEdgeColor(decColor(1.0f, 1.0f, 1.0f, colorA));
 		
-		deDebugDrawerShapeFace * const face = new deDebugDrawerShapeFace;
+		auto face = deDebugDrawerShapeFace::Ref::New();
 		face->AddVertex(decVector());
 		face->AddVertex(srlist.GetSegmentAt(ray.GetFirstSegment()).GetPosition());
 		face->AddVertex(decVector());
 		face->SetNormal(decVector(0.0f, 0.0f, 1.0f));
-		shape->AddFace(face);
+		shape->AddFace(std::move(face));
 		
-		debugDrawer.AddShape(shape);
+		debugDrawer.AddShape(std::move(shape));
 	}
 	
 	debugDrawer.NotifyShapeGeometryChanged();
@@ -868,12 +868,12 @@ const deoalSoundRayList &rayList, const deoalSoundRay &ray, bool volume){
 	for(i=0; i<segmentCount; i++){
 		const deoalSoundRaySegment &segment = rayList.GetSegmentAt(firstSegment + i);
 		
-		deDebugDrawerShapeFace * const face = new deDebugDrawerShapeFace;
+		auto face = deDebugDrawerShapeFace::Ref::New();
 		face->AddVertex(segment.GetPosition());
 		face->AddVertex(segment.GetPosition() + segment.GetDirection() * segment.GetLength());
 		face->AddVertex(segment.GetPosition());
 		face->SetNormal(decVector(0.0f, 0.0f, 1.0f));
-		shape.AddFace(face);
+		shape.AddFace(std::move(face));
 	}
 	
 	const int transmittedRayCount = ray.GetTransmittedRayCount();

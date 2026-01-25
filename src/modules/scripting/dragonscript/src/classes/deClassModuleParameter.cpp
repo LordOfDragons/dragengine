@@ -132,7 +132,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassModuleParameter::nfGetSelectionEntryCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deModuleParameter &param = dedsGetNativeData<sMPNatDat>(p_GetNativeData(myself)).param;
-	rt->PushInt(param.GetSelectionEntryCount());
+	rt->PushInt(param.GetSelectionEntries().GetCount());
 }
 
 // public func String getSelectionEntryValueAt( int index )
@@ -144,7 +144,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 void deClassModuleParameter::nfGetSelectionEntryValueAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deModuleParameter &param = dedsGetNativeData<sMPNatDat>(p_GetNativeData(myself)).param;
 	int index = rt->GetValue(0)->GetInt();
-	rt->PushString(param.GetSelectionEntryAt(index).value);
+	rt->PushString(param.GetSelectionEntries()[index].value);
 }
 
 // public func String getSelectionEntryDisplayNameAt( int index )
@@ -156,7 +156,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 void deClassModuleParameter::nfGetSelectionEntryDisplayNameAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deModuleParameter &param = dedsGetNativeData<sMPNatDat>(p_GetNativeData(myself)).param;
 	int index = rt->GetValue(0)->GetInt();
-	rt->PushString(param.GetSelectionEntryAt(index).displayName);
+	rt->PushString(param.GetSelectionEntries()[index].displayName);
 }
 
 // public func String getSelectionEntryDescriptionAt( int index )
@@ -168,7 +168,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 void deClassModuleParameter::nfGetSelectionEntryDescriptionAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deModuleParameter &param = dedsGetNativeData<sMPNatDat>(p_GetNativeData(myself)).param;
 	int index = rt->GetValue(0)->GetInt();
-	rt->PushString(param.GetSelectionEntryAt(index).description);
+	rt->PushString(param.GetSelectionEntries()[index].description);
 }
 
 // public func ModuleParameterCategory getCategory()

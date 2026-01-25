@@ -28,6 +28,7 @@
 #include "igdeLoggerHistoryListener.h"
 
 #include <dragengine/logger/deLogger.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/threading/deMutex.h>
@@ -52,8 +53,7 @@ public:
 	
 	
 private:
-	int pHistorySize;
-	igdeLoggerHistoryEntry *pEntries;
+	decTList<igdeLoggerHistoryEntry> pEntries;
 	int pEntryPointer;
 	int pEntryCount;
 	
@@ -89,7 +89,7 @@ public:
 	inline deMutex &GetMutex(){ return pMutex; }
 	
 	/** \brief Size of the history. */
-	int GetHistorySize() const{ return pHistorySize; }
+	int GetHistorySize() const{ return pEntries.GetCount(); }
 	
 	/**
 	 * \brief Set size of the history. This clears the history.

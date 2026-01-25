@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglRTBufferObject.h"
 #include "deoglRTLogger.h"
 #include "deoglRTChoices.h"
@@ -64,10 +60,7 @@ pInstanceArraySizeUBO(0),
 pInstanceArraySizeSSBO(0),
 
 pBillboardSPBListUBO(nullptr),
-pBillboardRTIGroups(deoglSharedSPBRTIGroupList::Ref::New(renderThread)),
-
-pTemporaryVBOData(nullptr),
-pTemporaryVBODataSize(0)
+pBillboardRTIGroups(deoglSharedSPBRTIGroupList::Ref::New(renderThread))
 {
 	memset(pSharedVBOListByType, '\0', sizeof(pSharedVBOListByType));
 	memset(pSharedSPBList, '\0', sizeof(pSharedSPBList));
@@ -113,18 +106,8 @@ char *deoglRTBufferObject::GetTemporaryVBOData(int size){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(size > pTemporaryVBODataSize){
-		if(pTemporaryVBOData){
-			delete [] pTemporaryVBOData;
-			pTemporaryVBOData = nullptr;
-			pTemporaryVBODataSize = 0;
-		}
-		
-		pTemporaryVBOData = new char[size];
-		pTemporaryVBODataSize = size;
-	}
-	
-	return pTemporaryVBOData;
+	pTemporaryVBOData.SetCountDiscard(size);
+	return pTemporaryVBOData.GetArrayPointer();
 }
 
 
@@ -155,10 +138,6 @@ void deoglRTBufferObject::pCleanUp(){
 	
 	if(pSharedVBOListList){
 		delete pSharedVBOListList;
-	}
-	
-	if(pTemporaryVBOData){
-		delete [] pTemporaryVBOData;
 	}
 }
 
@@ -381,29 +360,29 @@ void deoglRTBufferObject::pCreateSharedVBOLists(){
 	// tangent     |     48 | float  | x, y, z, w
 	// tex-coord   |     64 | float  | u, v
 	deoglVBOLayout layoutStaticModel;
-	layoutStaticModel.SetAttributeCount(5);
+	layoutStaticModel.GetAttributes().SetAll(5, {});
 	layoutStaticModel.SetStride(80);
 	layoutStaticModel.SetIndexType(deoglVBOLayout::eitUnsignedInt);
 	
-	layoutStaticModel.GetAttributeAt(0).SetComponentCount(3);
-	layoutStaticModel.GetAttributeAt(0).SetDataType(deoglVBOAttribute::edtFloat);
-	layoutStaticModel.GetAttributeAt(0).SetOffset(0);
+	layoutStaticModel.GetAttributes()[0].SetComponentCount(3);
+	layoutStaticModel.GetAttributes()[0].SetDataType(deoglVBOAttribute::edtFloat);
+	layoutStaticModel.GetAttributes()[0].SetOffset(0);
 	
-	layoutStaticModel.GetAttributeAt(1).SetComponentCount(3);
-	layoutStaticModel.GetAttributeAt(1).SetDataType(deoglVBOAttribute::edtFloat);
-	layoutStaticModel.GetAttributeAt(1).SetOffset(16);
+	layoutStaticModel.GetAttributes()[1].SetComponentCount(3);
+	layoutStaticModel.GetAttributes()[1].SetDataType(deoglVBOAttribute::edtFloat);
+	layoutStaticModel.GetAttributes()[1].SetOffset(16);
 	
-	layoutStaticModel.GetAttributeAt(2).SetComponentCount(3);
-	layoutStaticModel.GetAttributeAt(2).SetDataType(deoglVBOAttribute::edtFloat);
-	layoutStaticModel.GetAttributeAt(2).SetOffset(32);
+	layoutStaticModel.GetAttributes()[2].SetComponentCount(3);
+	layoutStaticModel.GetAttributes()[2].SetDataType(deoglVBOAttribute::edtFloat);
+	layoutStaticModel.GetAttributes()[2].SetOffset(32);
 	
-	layoutStaticModel.GetAttributeAt(3).SetComponentCount(4);
-	layoutStaticModel.GetAttributeAt(3).SetDataType(deoglVBOAttribute::edtFloat);
-	layoutStaticModel.GetAttributeAt(3).SetOffset(48);
+	layoutStaticModel.GetAttributes()[3].SetComponentCount(4);
+	layoutStaticModel.GetAttributes()[3].SetDataType(deoglVBOAttribute::edtFloat);
+	layoutStaticModel.GetAttributes()[3].SetOffset(48);
 	
-	layoutStaticModel.GetAttributeAt(4).SetComponentCount(2);
-	layoutStaticModel.GetAttributeAt(4).SetDataType(deoglVBOAttribute::edtFloat);
-	layoutStaticModel.GetAttributeAt(4).SetOffset(64);
+	layoutStaticModel.GetAttributes()[4].SetComponentCount(2);
+	layoutStaticModel.GetAttributes()[4].SetDataType(deoglVBOAttribute::edtFloat);
+	layoutStaticModel.GetAttributes()[4].SetOffset(64);
 	
 	pSharedVBOListByType[esvbolStaticModel] =
 		pSharedVBOListList->GetWith(layoutStaticModel, GL_STATIC_DRAW);
@@ -420,11 +399,11 @@ void deoglRTBufferObject::pCreateSharedVBOLists(){
 	// tex-coord   |     64 | float  | u, v
 	// weight      |     72 | iint   | weight
 	deoglVBOLayout layoutStaticModelWeight(layoutStaticModel);
-	layoutStaticModelWeight.SetAttributeCount(6);
+	layoutStaticModelWeight.GetAttributes().SetAll(6, {});
 	
-	layoutStaticModelWeight.GetAttributeAt(5).SetComponentCount(1);
-	layoutStaticModelWeight.GetAttributeAt(5).SetDataType(deoglVBOAttribute::edtIInt);
-	layoutStaticModelWeight.GetAttributeAt(5).SetOffset(72);
+	layoutStaticModelWeight.GetAttributes()[5].SetComponentCount(1);
+	layoutStaticModelWeight.GetAttributes()[5].SetDataType(deoglVBOAttribute::edtIInt);
+	layoutStaticModelWeight.GetAttributes()[5].SetOffset(72);
 	
 	pSharedVBOListByType[esvbolStaticModelWeight] =
 		pSharedVBOListList->GetWith(layoutStaticModelWeight, GL_STATIC_DRAW);
@@ -442,16 +421,16 @@ void deoglRTBufferObject::pCreateSharedVBOLists(){
 	// tangent2    |     80 | short  | x, y, z, w
 	// tex-coord2  |     96 | float  | u, v
 	deoglVBOLayout layoutStaticModelTCS1(layoutStaticModel);
-	layoutStaticModelTCS1.SetAttributeCount(7);
+	layoutStaticModelTCS1.GetAttributes().SetAll(7, {});
 	layoutStaticModelTCS1.SetStride(112);
 	
-	layoutStaticModelTCS1.GetAttributeAt(5).SetComponentCount(4);
-	layoutStaticModelTCS1.GetAttributeAt(5).SetDataType(deoglVBOAttribute::edtFloat);
-	layoutStaticModelTCS1.GetAttributeAt(5).SetOffset(80);
+	layoutStaticModelTCS1.GetAttributes()[5].SetComponentCount(4);
+	layoutStaticModelTCS1.GetAttributes()[5].SetDataType(deoglVBOAttribute::edtFloat);
+	layoutStaticModelTCS1.GetAttributes()[5].SetOffset(80);
 	
-	layoutStaticModelTCS1.GetAttributeAt(6).SetComponentCount(2);
-	layoutStaticModelTCS1.GetAttributeAt(6).SetDataType(deoglVBOAttribute::edtFloat);
-	layoutStaticModelTCS1.GetAttributeAt(6).SetOffset(96);
+	layoutStaticModelTCS1.GetAttributes()[6].SetComponentCount(2);
+	layoutStaticModelTCS1.GetAttributes()[6].SetDataType(deoglVBOAttribute::edtFloat);
+	layoutStaticModelTCS1.GetAttributes()[6].SetOffset(96);
 	
 	pSharedVBOListByType[esvbolStaticModelTCS1] =
 		pSharedVBOListList->GetWith(layoutStaticModelTCS1, GL_STATIC_DRAW);
@@ -471,16 +450,16 @@ void deoglRTBufferObject::pCreateSharedVBOLists(){
 	// tangent3    |    112 | short  | x, y, z, w
 	// tex-coord3  |    128 | float  | u, v
 	deoglVBOLayout layoutStaticModelTCS2(layoutStaticModelTCS1);
-	layoutStaticModelTCS2.SetAttributeCount(9);
+	layoutStaticModelTCS2.GetAttributes().SetAll(9, {});
 	layoutStaticModelTCS2.SetStride(144);
 	
-	layoutStaticModelTCS2.GetAttributeAt(7).SetComponentCount(4);
-	layoutStaticModelTCS2.GetAttributeAt(7).SetDataType(deoglVBOAttribute::edtFloat);
-	layoutStaticModelTCS2.GetAttributeAt(7).SetOffset(112);
+	layoutStaticModelTCS2.GetAttributes()[7].SetComponentCount(4);
+	layoutStaticModelTCS2.GetAttributes()[7].SetDataType(deoglVBOAttribute::edtFloat);
+	layoutStaticModelTCS2.GetAttributes()[7].SetOffset(112);
 	
-	layoutStaticModelTCS2.GetAttributeAt(8).SetComponentCount(2);
-	layoutStaticModelTCS2.GetAttributeAt(8).SetDataType(deoglVBOAttribute::edtFloat);
-	layoutStaticModelTCS2.GetAttributeAt(8).SetOffset(128);
+	layoutStaticModelTCS2.GetAttributes()[8].SetComponentCount(2);
+	layoutStaticModelTCS2.GetAttributes()[8].SetDataType(deoglVBOAttribute::edtFloat);
+	layoutStaticModelTCS2.GetAttributes()[8].SetOffset(128);
 	
 	pSharedVBOListByType[esvbolStaticModelTCS2] =
 		pSharedVBOListList->GetWith(layoutStaticModelTCS2, GL_STATIC_DRAW);
@@ -494,17 +473,17 @@ void deoglRTBufferObject::pCreateSharedVBOLists(){
 	// -----------+--------+--------+-----------
 	// tangent    |      0 | short  | x, y, z, w
 	// tex-coord  |      8 | float  | u, v
-	layout.SetAttributeCount(2);
+	layout.GetAttributes().SetAll(2, {});
 	layout.SetStride(16); // 32 is said to be best alignment
 	layout.SetIndexType(deoglVBOLayout::eitUnsignedInt);
 	
-	layout.GetAttributeAt(0).SetComponentCount(4);
-	layout.GetAttributeAt(0).SetDataType(deoglVBOAttribute::edtShort);
-	layout.GetAttributeAt(0).SetOffset(0);
+	layout.GetAttributes()[0].SetComponentCount(4);
+	layout.GetAttributes()[0].SetDataType(deoglVBOAttribute::edtShort);
+	layout.GetAttributes()[0].SetOffset(0);
 	
-	layout.GetAttributeAt(1).SetComponentCount(2);
-	layout.GetAttributeAt(1).SetDataType(deoglVBOAttribute::edtFloat);
-	layout.GetAttributeAt(1).SetOffset(8);
+	layout.GetAttributes()[1].SetComponentCount(2);
+	layout.GetAttributes()[1].SetDataType(deoglVBOAttribute::edtFloat);
+	layout.GetAttributes()[1].SetOffset(8);
 	
 	pSharedVBOListByType[esvbolStaticModelTCSet] = pSharedVBOListList->GetWith(layout, GL_STATIC_DRAW);
 #endif
@@ -524,16 +503,16 @@ void deoglRTBufferObject::pCreateSharedVBOLists(){
 	// bones       |     80 | iint   | b1, b2, b3, b4
 	// weights     |     96 | float  | w1, w2, w3, w4
 	deoglVBOLayout layoutSimpleModel(layoutStaticModel);
-	layoutSimpleModel.SetAttributeCount(7);
+	layoutSimpleModel.GetAttributes().SetAll(7, {});
 	layoutSimpleModel.SetStride(112);
 	
-	layoutSimpleModel.GetAttributeAt(5).SetComponentCount(4);
-	layoutSimpleModel.GetAttributeAt(5).SetDataType(deoglVBOAttribute::edtIInt);
-	layoutSimpleModel.GetAttributeAt(5).SetOffset(80);
+	layoutSimpleModel.GetAttributes()[5].SetComponentCount(4);
+	layoutSimpleModel.GetAttributes()[5].SetDataType(deoglVBOAttribute::edtIInt);
+	layoutSimpleModel.GetAttributes()[5].SetOffset(80);
 	
-	layoutSimpleModel.GetAttributeAt(6).SetComponentCount(4);
-	layoutSimpleModel.GetAttributeAt(6).SetDataType(deoglVBOAttribute::edtFloat);
-	layoutSimpleModel.GetAttributeAt(6).SetOffset(96);
+	layoutSimpleModel.GetAttributes()[6].SetComponentCount(4);
+	layoutSimpleModel.GetAttributes()[6].SetDataType(deoglVBOAttribute::edtFloat);
+	layoutSimpleModel.GetAttributes()[6].SetOffset(96);
 	
 	pSharedVBOListByType[esvbolSimpleModel] =
 		pSharedVBOListList->GetWith(layoutSimpleModel, GL_STATIC_DRAW);
@@ -546,17 +525,17 @@ void deoglRTBufferObject::pCreateSharedVBOLists(){
 	// position   |      0 | float  | x, y, z
 	// weight     |     12 | iint   | weight
 	deoglVBOLayout layoutModelPositionWeightIndices;
-	layoutModelPositionWeightIndices.SetAttributeCount(2);
+	layoutModelPositionWeightIndices.GetAttributes().SetAll(2, {});
 	layoutModelPositionWeightIndices.SetStride(16);
 	layoutModelPositionWeightIndices.SetIndexType(deoglVBOLayout::eitNone);
 	
-	layoutModelPositionWeightIndices.GetAttributeAt(0).SetComponentCount(3);
-	layoutModelPositionWeightIndices.GetAttributeAt(0).SetDataType(deoglVBOAttribute::edtFloat);
-	layoutModelPositionWeightIndices.GetAttributeAt(0).SetOffset(0);
+	layoutModelPositionWeightIndices.GetAttributes()[0].SetComponentCount(3);
+	layoutModelPositionWeightIndices.GetAttributes()[0].SetDataType(deoglVBOAttribute::edtFloat);
+	layoutModelPositionWeightIndices.GetAttributes()[0].SetOffset(0);
 	
-	layoutModelPositionWeightIndices.GetAttributeAt(1).SetComponentCount(1);
-	layoutModelPositionWeightIndices.GetAttributeAt(1).SetDataType(deoglVBOAttribute::edtIInt);
-	layoutModelPositionWeightIndices.GetAttributeAt(1).SetOffset(12);
+	layoutModelPositionWeightIndices.GetAttributes()[1].SetComponentCount(1);
+	layoutModelPositionWeightIndices.GetAttributes()[1].SetDataType(deoglVBOAttribute::edtIInt);
+	layoutModelPositionWeightIndices.GetAttributes()[1].SetOffset(12);
 	
 	pSharedVBOListByType[esvbolModelPositionWeightIndices] =
 		pSharedVBOListList->GetWith(layoutModelPositionWeightIndices, GL_STATIC_DRAW);
@@ -573,25 +552,25 @@ void deoglRTBufferObject::pCreateSharedVBOLists(){
 	// 
 	// NOTE realNormalIndex = positionIndex
 	deoglVBOLayout layoutModelCalcNormalTangent;
-	layoutModelCalcNormalTangent.SetAttributeCount(4);
+	layoutModelCalcNormalTangent.GetAttributes().SetAll(4, {});
 	layoutModelCalcNormalTangent.SetStride(44);
 	layoutModelCalcNormalTangent.SetIndexType(deoglVBOLayout::eitNone);
 	
-	layoutModelCalcNormalTangent.GetAttributeAt(0).SetComponentCount(3);
-	layoutModelCalcNormalTangent.GetAttributeAt(0).SetDataType(deoglVBOAttribute::edtIInt);
-	layoutModelCalcNormalTangent.GetAttributeAt(0).SetOffset(0);
+	layoutModelCalcNormalTangent.GetAttributes()[0].SetComponentCount(3);
+	layoutModelCalcNormalTangent.GetAttributes()[0].SetDataType(deoglVBOAttribute::edtIInt);
+	layoutModelCalcNormalTangent.GetAttributes()[0].SetOffset(0);
 	
-	layoutModelCalcNormalTangent.GetAttributeAt(1).SetComponentCount(3);
-	layoutModelCalcNormalTangent.GetAttributeAt(1).SetDataType(deoglVBOAttribute::edtIInt);
-	layoutModelCalcNormalTangent.GetAttributeAt(1).SetOffset(12);
+	layoutModelCalcNormalTangent.GetAttributes()[1].SetComponentCount(3);
+	layoutModelCalcNormalTangent.GetAttributes()[1].SetDataType(deoglVBOAttribute::edtIInt);
+	layoutModelCalcNormalTangent.GetAttributes()[1].SetOffset(12);
 	
-	layoutModelCalcNormalTangent.GetAttributeAt(2).SetComponentCount(3);
-	layoutModelCalcNormalTangent.GetAttributeAt(2).SetDataType(deoglVBOAttribute::edtIInt);
-	layoutModelCalcNormalTangent.GetAttributeAt(2).SetOffset(24);
+	layoutModelCalcNormalTangent.GetAttributes()[2].SetComponentCount(3);
+	layoutModelCalcNormalTangent.GetAttributes()[2].SetDataType(deoglVBOAttribute::edtIInt);
+	layoutModelCalcNormalTangent.GetAttributes()[2].SetOffset(24);
 	
-	layoutModelCalcNormalTangent.GetAttributeAt(3).SetComponentCount(2);
-	layoutModelCalcNormalTangent.GetAttributeAt(3).SetDataType(deoglVBOAttribute::edtFloat);
-	layoutModelCalcNormalTangent.GetAttributeAt(3).SetOffset(36);
+	layoutModelCalcNormalTangent.GetAttributes()[3].SetComponentCount(2);
+	layoutModelCalcNormalTangent.GetAttributes()[3].SetDataType(deoglVBOAttribute::edtFloat);
+	layoutModelCalcNormalTangent.GetAttributes()[3].SetOffset(36);
 	
 	pSharedVBOListByType[esvbolModelCalcNormalTangent] =
 		pSharedVBOListList->GetWith(layoutModelCalcNormalTangent, GL_STATIC_DRAW);
@@ -607,25 +586,25 @@ void deoglRTBufferObject::pCreateSharedVBOLists(){
 	// 
 	// NOTE realNormalIndex = positionIndex
 	deoglVBOLayout layoutModelWriteSkinnedVBO;
-	layoutModelWriteSkinnedVBO.SetAttributeCount(4);
+	layoutModelWriteSkinnedVBO.GetAttributes().SetAll(4, {});
 	layoutModelWriteSkinnedVBO.SetStride(16);
 	layoutModelWriteSkinnedVBO.SetIndexType(deoglVBOLayout::eitNone);
 	
-	layoutModelWriteSkinnedVBO.GetAttributeAt(0).SetComponentCount(1);
-	layoutModelWriteSkinnedVBO.GetAttributeAt(0).SetDataType(deoglVBOAttribute::edtIInt);
-	layoutModelWriteSkinnedVBO.GetAttributeAt(0).SetOffset(0);
+	layoutModelWriteSkinnedVBO.GetAttributes()[0].SetComponentCount(1);
+	layoutModelWriteSkinnedVBO.GetAttributes()[0].SetDataType(deoglVBOAttribute::edtIInt);
+	layoutModelWriteSkinnedVBO.GetAttributes()[0].SetOffset(0);
 	
-	layoutModelWriteSkinnedVBO.GetAttributeAt(1).SetComponentCount(1);
-	layoutModelWriteSkinnedVBO.GetAttributeAt(1).SetDataType(deoglVBOAttribute::edtIInt);
-	layoutModelWriteSkinnedVBO.GetAttributeAt(1).SetOffset(4);
+	layoutModelWriteSkinnedVBO.GetAttributes()[1].SetComponentCount(1);
+	layoutModelWriteSkinnedVBO.GetAttributes()[1].SetDataType(deoglVBOAttribute::edtIInt);
+	layoutModelWriteSkinnedVBO.GetAttributes()[1].SetOffset(4);
 	
-	layoutModelWriteSkinnedVBO.GetAttributeAt(2).SetComponentCount(1);
-	layoutModelWriteSkinnedVBO.GetAttributeAt(2).SetDataType(deoglVBOAttribute::edtIInt);
-	layoutModelWriteSkinnedVBO.GetAttributeAt(2).SetOffset(8);
+	layoutModelWriteSkinnedVBO.GetAttributes()[2].SetComponentCount(1);
+	layoutModelWriteSkinnedVBO.GetAttributes()[2].SetDataType(deoglVBOAttribute::edtIInt);
+	layoutModelWriteSkinnedVBO.GetAttributes()[2].SetOffset(8);
 	
-	layoutModelWriteSkinnedVBO.GetAttributeAt(3).SetComponentCount(1);
-	layoutModelWriteSkinnedVBO.GetAttributeAt(3).SetDataType(deoglVBOAttribute::edtFloat);
-	layoutModelWriteSkinnedVBO.GetAttributeAt(3).SetOffset(12);
+	layoutModelWriteSkinnedVBO.GetAttributes()[3].SetComponentCount(1);
+	layoutModelWriteSkinnedVBO.GetAttributes()[3].SetDataType(deoglVBOAttribute::edtFloat);
+	layoutModelWriteSkinnedVBO.GetAttributes()[3].SetOffset(12);
 	
 	pSharedVBOListByType[esvbolModelWriteSkinnedVBO] =
 		pSharedVBOListList->GetWith(layoutModelWriteSkinnedVBO, GL_STATIC_DRAW);
@@ -637,17 +616,17 @@ void deoglRTBufferObject::pCreateSharedVBOLists(){
 	// position      |      0 | float  | position
 	// index         |     12 | uint   | index
 	deoglVBOLayout layoutModelVertexPositionSetVBO;
-	layoutModelVertexPositionSetVBO.SetAttributeCount(2);
+	layoutModelVertexPositionSetVBO.GetAttributes().SetAll(2, {});
 	layoutModelVertexPositionSetVBO.SetStride(16);
 	layoutModelVertexPositionSetVBO.SetIndexType(deoglVBOLayout::eitNone);
 	
-	layoutModelVertexPositionSetVBO.GetAttributeAt(0).SetComponentCount(3);
-	layoutModelVertexPositionSetVBO.GetAttributeAt(0).SetDataType(deoglVBOAttribute::edtFloat);
-	layoutModelVertexPositionSetVBO.GetAttributeAt(0).SetOffset(0);
+	layoutModelVertexPositionSetVBO.GetAttributes()[0].SetComponentCount(3);
+	layoutModelVertexPositionSetVBO.GetAttributes()[0].SetDataType(deoglVBOAttribute::edtFloat);
+	layoutModelVertexPositionSetVBO.GetAttributes()[0].SetOffset(0);
 	
-	layoutModelVertexPositionSetVBO.GetAttributeAt(1).SetComponentCount(1);
-	layoutModelVertexPositionSetVBO.GetAttributeAt(1).SetDataType(deoglVBOAttribute::edtUInt);
-	layoutModelVertexPositionSetVBO.GetAttributeAt(1).SetOffset(12);
+	layoutModelVertexPositionSetVBO.GetAttributes()[1].SetComponentCount(1);
+	layoutModelVertexPositionSetVBO.GetAttributes()[1].SetDataType(deoglVBOAttribute::edtUInt);
+	layoutModelVertexPositionSetVBO.GetAttributes()[1].SetOffset(12);
 	
 	pSharedVBOListByType[esvbolModelVertexPositionSets] =
 		pSharedVBOListList->GetWith(layoutModelVertexPositionSetVBO, GL_STATIC_DRAW);
@@ -658,14 +637,14 @@ void deoglRTBufferObject::pCreateSharedVBOLists(){
 	// -----------+--------+--------+------------
 	// position   |      0 | float  | x, y, z
 	deoglVBOLayout layoutStaticOcclusionMesh;
-	layoutStaticOcclusionMesh.SetAttributeCount(1);
+	layoutStaticOcclusionMesh.GetAttributes().SetAll(1, {});
 	layoutStaticOcclusionMesh.SetStride(12); // best performance with multiple of 32/64? (16 would yield 2 vertices in one cache run)
 	layoutStaticOcclusionMesh.SetIndexType(pRenderThread.GetChoices().GetSharedVBOUseBaseVertex()
 		? deoglVBOLayout::eitUnsignedShort : deoglVBOLayout::eitUnsignedInt);
 	
-	layoutStaticOcclusionMesh.GetAttributeAt(0).SetComponentCount(3);
-	layoutStaticOcclusionMesh.GetAttributeAt(0).SetDataType(deoglVBOAttribute::edtFloat);
-	layoutStaticOcclusionMesh.GetAttributeAt(0).SetOffset(0);
+	layoutStaticOcclusionMesh.GetAttributes()[0].SetComponentCount(3);
+	layoutStaticOcclusionMesh.GetAttributes()[0].SetDataType(deoglVBOAttribute::edtFloat);
+	layoutStaticOcclusionMesh.GetAttributes()[0].SetOffset(0);
 	
 	pSharedVBOListByType[esvbolStaticOcclusionMesh] =
 		pSharedVBOListList->GetWith(layoutStaticOcclusionMesh, GL_STATIC_DRAW);
@@ -677,17 +656,17 @@ void deoglRTBufferObject::pCreateSharedVBOLists(){
 	// position   |      0 | float  | x, y, z
 	// selector   |     12 | float  | selector
 	deoglVBOLayout layoutMathShapes;
-	layoutMathShapes.SetAttributeCount(2);
+	layoutMathShapes.GetAttributes().SetAll(2, {});
 	layoutMathShapes.SetStride(16);
 	layoutMathShapes.SetIndexType(deoglVBOLayout::eitNone); // use indices later on
 	
-	layoutMathShapes.GetAttributeAt(0).SetComponentCount(3);
-	layoutMathShapes.GetAttributeAt(0).SetDataType(deoglVBOAttribute::edtFloat);
-	layoutMathShapes.GetAttributeAt(0).SetOffset(0);
+	layoutMathShapes.GetAttributes()[0].SetComponentCount(3);
+	layoutMathShapes.GetAttributes()[0].SetDataType(deoglVBOAttribute::edtFloat);
+	layoutMathShapes.GetAttributes()[0].SetOffset(0);
 	
-	layoutMathShapes.GetAttributeAt(1).SetComponentCount(1);
-	layoutMathShapes.GetAttributeAt(1).SetDataType(deoglVBOAttribute::edtFloat);
-	layoutMathShapes.GetAttributeAt(1).SetOffset(12);
+	layoutMathShapes.GetAttributes()[1].SetComponentCount(1);
+	layoutMathShapes.GetAttributes()[1].SetDataType(deoglVBOAttribute::edtFloat);
+	layoutMathShapes.GetAttributes()[1].SetOffset(12);
 	
 	pSharedVBOListByType[esvbolMathShapes] =
 		pSharedVBOListList->GetWith(layoutMathShapes, GL_STATIC_DRAW);
@@ -698,13 +677,13 @@ void deoglRTBufferObject::pCreateSharedVBOLists(){
 	// -----------+--------+--------+------------
 	// position   |      0 | float  | x, y
 	deoglVBOLayout layoutCanvasPaint;
-	layoutCanvasPaint.SetAttributeCount(1);
+	layoutCanvasPaint.GetAttributes().SetAll(1, {});
 	layoutCanvasPaint.SetStride(8);
 	layoutCanvasPaint.SetIndexType(deoglVBOLayout::eitNone);
 	
-	layoutCanvasPaint.GetAttributeAt(0).SetComponentCount(2);
-	layoutCanvasPaint.GetAttributeAt(0).SetDataType(deoglVBOAttribute::edtFloat);
-	layoutCanvasPaint.GetAttributeAt(0).SetOffset(0);
+	layoutCanvasPaint.GetAttributes()[0].SetComponentCount(2);
+	layoutCanvasPaint.GetAttributes()[0].SetDataType(deoglVBOAttribute::edtFloat);
+	layoutCanvasPaint.GetAttributes()[0].SetOffset(0);
 	
 	pSharedVBOListByType[esvbolCanvasPaint] =
 		pSharedVBOListList->GetWith(layoutCanvasPaint, GL_STATIC_DRAW);

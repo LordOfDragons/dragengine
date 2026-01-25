@@ -642,7 +642,7 @@ void deoglRenderDevMode::RenderLightInfos(deoglRenderPlan &plan){
 			}else{
 				shader->SetParameterColor4(spsColor, decColor(1.0f, 0.5f, 0.0f, 0.01f));
 			}
-			OGL_CHECK(renderThread, glDrawArrays(GL_TRIANGLES, 0, lightVolume.GetPointCount()));
+			OGL_CHECK(renderThread, glDrawArrays(GL_TRIANGLES, 0, lightVolume.GetPoints().GetCount()));
 		}
 		
 		// line
@@ -665,7 +665,7 @@ void deoglRenderDevMode::RenderLightInfos(deoglRenderPlan &plan){
 			}else{
 				shader->SetParameterColor4(spsColor, decColor(1.0f, 0.5f, 0.0f, 1.0f));
 			}
-			OGL_CHECK(renderThread, glDrawArrays(GL_TRIANGLES, 0, lightVolume.GetPointCount()));
+			OGL_CHECK(renderThread, glDrawArrays(GL_TRIANGLES, 0, lightVolume.GetPoints().GetCount()));
 		}
 	}
 	
@@ -853,10 +853,10 @@ void deoglRenderDevMode::RenderEnvMapInfo(deoglRenderPlan &plan){
 			}
 			
 			// mask shapes
-			const int maskCount = envmap.GetReflectionMaskBoxMatrixCount();
+			const int maskCount = envmap.GetReflectionMaskBoxMatrices().GetCount();
 			int j;
 			for(j=0; j<maskCount; j++){
-				shader->SetParameterDMatrix4x4(spsc3dMatrixMVP, envmap.GetReflectionMaskBoxMatrixAt(j) * matrixVP);
+				shader->SetParameterDMatrix4x4(spsc3dMatrixMVP, envmap.GetReflectionMaskBoxMatrices()[j] * matrixVP);
 				
 				shader->SetParameterFloat(spsc3dColor, colorMask.r, colorMask.g, colorMask.b, alphaSolid);
 				shapeBox.RenderFaces();
@@ -906,7 +906,7 @@ void deoglRenderDevMode::RenderEnvMapInfo(deoglRenderPlan &plan){
 			}else{
 				shader->SetParameterColor4(spsColor, decColor(1.0f, 0.5f, 0.0f, 0.05f));
 			}
-			OGL_CHECK(renderThread, glDrawArrays(GL_TRIANGLES, 0, lightVolume.GetPointCount()));
+			OGL_CHECK(renderThread, glDrawArrays(GL_TRIANGLES, 0, lightVolume.GetPoints().GetCount()));
 		}
 		
 		// line
@@ -929,7 +929,7 @@ void deoglRenderDevMode::RenderEnvMapInfo(deoglRenderPlan &plan){
 			}else{
 				shader->SetParameterColor4(spsColor, decColor(1.0f, 0.5f, 0.0f, 1.0f));
 			}
-			OGL_CHECK(renderThread, glDrawArrays(GL_TRIANGLES, 0, lightVolume.GetPointCount()));
+			OGL_CHECK(renderThread, glDrawArrays(GL_TRIANGLES, 0, lightVolume.GetPoints().GetCount()));
 		}
 	}
 	

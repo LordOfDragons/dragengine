@@ -130,8 +130,7 @@ private:
 	bool pDirtyLODRenderTaskConfigs;
 	
 	// dynamic model data
-	oglMatrix3x4 *pBoneMatrices;
-	int pBoneMatrixCount;
+	decTList<oglMatrix3x4> pBoneMatrices;
 	
 	// for world
 	bool pLit;
@@ -180,8 +179,7 @@ private:
 	
 	LightList pLightList;
 	
-	float *pVertexPositionSetWeights;
-	int pVertexPositionSetCount;
+	decTList<float> pVertexPositionSetWeights;
 	
 	unsigned int pUniqueKey;
 	
@@ -401,10 +399,7 @@ public:
 	
 	
 	/** Bone matrices. */
-	inline oglMatrix3x4 *GetBoneMatrices() const{ return pBoneMatrices; }
-	
-	/** Number of bone matrices. */
-	inline int GetBoneMatrixCount() const{ return pBoneMatrixCount; }
+	inline const decTList<oglMatrix3x4> &GetBoneMatrices() const{ return pBoneMatrices; }
 	
 	/** Update the bone matrices if required. */
 	void UpdateBoneMatrices(const deComponent &component);
@@ -412,10 +407,7 @@ public:
 	
 	
 	/** Vertex position sets. */
-	inline float *GetVertexPositionSets() const{ return pVertexPositionSetWeights; }
-	
-	/** Vertex position set count. */
-	inline int GetVertexPositionSetCount() const{ return pVertexPositionSetCount; }
+	inline const decTList<float> &GetVertexPositionSets() const{ return pVertexPositionSetWeights; }
 	
 	/** Update vertex position sets. */
 	void UpdateVertexPositionSets(const deComponent &component);
@@ -632,11 +624,8 @@ public:
 	
 	/** \name Decals */
 	/*@{*/
-	/** Number of decals. */
-	int GetDecalCount() const;
-	
-	/** Decal at index. */
-	deoglRDecal *GetDecalAt(int index) const;
+	/** Decals. */
+	inline const decTObjectList<deoglRDecal> &GetDecals() const{ return pDecals; }
 	
 	/**
 	 * Synchronize decal references.

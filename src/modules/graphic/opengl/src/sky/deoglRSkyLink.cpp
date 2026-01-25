@@ -22,11 +22,6 @@
  * SOFTWARE.
  */
 
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglRSky.h"
 #include "deoglRSkyLink.h"
 #include "deoglRSkyInstance.h"
@@ -47,19 +42,13 @@
 deoglRSkyLink::deoglRSkyLink(const deSkyLink &link) :
 pController(link.GetController()),
 pRepeat(link.GetRepeat()),
-pSamples(nullptr),
-pSampleCount(0),
 pUpperLimit(0.0f),
 pDisabled(false)
 {
 	pUpdateSamples(link);
 }
 
-deoglRSkyLink::~deoglRSkyLink(){
-	if(pSamples){
-		delete [] pSamples;
-	}
-}
+deoglRSkyLink::~deoglRSkyLink() = default;
 
 
 
@@ -71,7 +60,7 @@ float deoglRSkyLink::GetValue(const deoglRSkyInstance &instance) const{
 		return 1.0f; // default
 	}
 	
-	float value = instance.GetControllerStateAt(pController);
+	float value = instance.GetControllerStates()[pController];
 	
 	if(pRepeat > 1){
 		value *= (float)pRepeat;
@@ -84,7 +73,7 @@ float deoglRSkyLink::GetValue(const deoglRSkyInstance &instance) const{
 		return pSamples[0];
 		
 	}else if(value >= pUpperLimit){
-		return pSamples[pSampleCount - 1];
+		return pSamples.Last();
 		
 	}else{
 		float integral;
@@ -115,25 +104,21 @@ void deoglRSkyLink::pUpdateSamples(const deSkyLink &link){
 	}
 	
 	// determine number of samples to use. right now we use 256 samples
-	pSampleCount = 256;
-	pSamples = new float[pSampleCount];
-	pUpperLimit = (float)(pSampleCount - 1);
+	const int sampleCount = 256;
+	pSamples.EnlargeCapacity(sampleCount);
+	pUpperLimit = (float)(sampleCount - 1);
 	
 	// sample curve
-	int i;
-	
 	if(pointCount == 1){
-		const float value = link.GetCurve().GetPointAt(0).GetPoint().y;
-		for(i=0; i<pSampleCount; i++){
-			pSamples[i] = value;
-		}
+		pSamples.AddRange(sampleCount, link.GetCurve().GetPointAt(0).GetPoint().y);
 		
 	}else{
 		decCurveBezierEvaluator evaluator(link.GetCurve());
 		const float factor = 1.0f / pUpperLimit;
 		
-		for(i=0; i<pSampleCount; i++){
-			pSamples[i] = evaluator.EvaluateAt((float)i * factor);
+		int i;
+		for(i=0; i<sampleCount; i++){
+			pSamples.Add(evaluator.EvaluateAt((float)i * factor));
 		}
 	}
 }

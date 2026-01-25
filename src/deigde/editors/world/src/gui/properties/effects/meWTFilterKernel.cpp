@@ -43,7 +43,6 @@
 meWTFilterKernel::meWTFilterKernel(const char *name, int rows, int cols, float scale){
 	if(!name || !name[0] || rows < 1 || cols < 1) DETHROW(deeInvalidParam);
 	if((rows % 2) == 0 || (cols % 2) == 0) DETHROW(deeInvalidParam);
-	int i, size;
 	
 	pName = nullptr;
 	pKernel = nullptr;
@@ -51,24 +50,13 @@ meWTFilterKernel::meWTFilterKernel(const char *name, int rows, int cols, float s
 	pKernelCols = cols;
 	pScale = decMath::max(scale, 0.0f);
 	
-	try{
-		pName = new char[strlen(name) + 1];		strcpy(pName, name);
-		
-		pKernel = new float[rows * cols]		size = rows * cols;
-		for(i=0; i<size; i++) pKernel[i] = 0.0f;
-		pKernel[((rows - 1) / 2) * cols + (cols - 1) / 2] = 1.0f;
-		
-	}catch(const deException &){
-		if(pKernel) delete [] pKernel;
-		if(pName) delete [] pName;
-		throw;
-	}
+	pName = name;
+	
+	pKernel.SetAll(rows * cols, 0.0f);
+	pKernel[((rows - 1) / 2) * cols + (cols - 1) / 2] = 1.0f;
 }
 
-meWTFilterKernel::~meWTFilterKernel(){
-	if(pKernel) delete [] pKernel;
-	if(pName) delete [] pName;
-}
+meWTFilterKernel::~meWTFilterKernel() = default;
 
 
 

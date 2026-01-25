@@ -37,8 +37,7 @@ class dearAnimationKeyframeVPS;
  */
 class dearAnimationKeyframeVPSList{
 private:
-	dearAnimationKeyframeVPS *pKeyframes;
-	int pKeyframeCount;
+	decTList<dearAnimationKeyframeVPS> pKeyframes;
 	
 	
 	
@@ -56,14 +55,12 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Count of keyframes. */
-	inline int GetCount() const{ return pKeyframeCount; }
-	
-	/** Keyframe at index. */
-	dearAnimationKeyframeVPS &GetAt(int index) const;
+	/** Keyframes. */
+	inline decTList<dearAnimationKeyframeVPS> &GetKeyframes(){ return pKeyframes; }
+	inline const decTList<dearAnimationKeyframeVPS> &GetKeyframes() const{ return pKeyframes; }
 	
 	/** Keyframe with range containing time in seconds or nullptr if absent. */
-	dearAnimationKeyframeVPS *GetWithTime(float time) const;
+	const dearAnimationKeyframeVPS *GetWithTime(float time) const;
 	/*@}*/
 	
 	

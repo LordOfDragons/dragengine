@@ -22,13 +22,11 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _DEOGLCONVEXFACECLIPPER_H_
 #define _DEOGLCONVEXFACECLIPPER_H_
 
-// includes
 #include <dragengine/common/math/decMath.h>
-
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
@@ -38,8 +36,7 @@
  */
 class deoglConvexFaceClipper{
 private:
-	decDVector *pVertices;
-	int pVertexCount;
+	decTList<decDVector> pVertices, pOldVertices;
 	decDVector pNormal;
 	
 public:
@@ -58,18 +55,9 @@ public:
 	/** Sets the face normal. */
 	void SetNormal(const decDVector &normal);
 	
-	/** Retrieves the number of vertices. */
-	inline int GetVertexCount() const{ return pVertexCount; }
-	/** Retrieves the the vertex at the given position. */
-	const decDVector &GetVertexAt(int position) const;
-	/** Determines if the given vertex exists. */
-	bool HasVertex(const decDVector &vertex) const;
-	/** Retrieves the index of the given vertex or -1 if not found. */
-	int IndexOfVertex(const decDVector &vertex) const;
-	/** Adds a vertex. */
-	void AddVertex(const decDVector &vertex);
-	/** Removes all vertices. */
-	void RemoveAllVertices();
+	/** Vertices. */
+	inline decTList<decDVector> &GetVertices(){ return pVertices; }
+	inline const decTList<decDVector> &GetVertices() const{ return pVertices; }
 	
 	/** Clips the face by the given plane. */
 	void ClipByPlane(const decDVector &planeNormal, const decDVector &planePosition);
@@ -78,5 +66,4 @@ public:
 	/*@}*/
 };
 
-// end of include only once
 #endif

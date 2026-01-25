@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <string.h>
-
 #include "deoglShaderDefines.h"
 
 #include <dragengine/common/exceptions.h>
@@ -38,73 +35,27 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglShaderDefines::deoglShaderDefines() :
-pDefines(nullptr),
-pDefineCount(0),
-pDefineSize(0){
-}
+deoglShaderDefines::deoglShaderDefines() = default;
 
 deoglShaderDefines::deoglShaderDefines(const deoglShaderDefines &defines) :
-pDefines(nullptr),
-pDefineCount(0),
-pDefineSize(0)
-{
-	*this = defines;
+pDefines(defines.pDefines){
 }
 
-deoglShaderDefines::~deoglShaderDefines(){
-	pCleanUp();
-}
+deoglShaderDefines::~deoglShaderDefines() = default;
 
 
 
 // Management
 ///////////////
 
-const decString &deoglShaderDefines::GetDefineNameAt(int index) const{
-	DEASSERT_TRUE(index >= 0)
-	DEASSERT_TRUE(index < pDefineCount)
-	
-	return pDefines[index].name;
-}
-
-const decString &deoglShaderDefines::GetDefineValueAt(int index) const{
-	DEASSERT_TRUE(index >= 0)
-	DEASSERT_TRUE(index < pDefineCount)
-	
-	return pDefines[index].value;
-}
-
-bool deoglShaderDefines::HasDefineNamed(const char *name) const{
-	int i;
-	for(i=0; i<pDefineCount; i++){
-		if(pDefines[i].name == name){
-			return true;
-		}
-	}
-	
-	return false;
-}
-
 const decString &deoglShaderDefines::GetDefineValueFor(const char *name, const decString &defaultValue) const{
-	int i;
-	for(i=0; i<pDefineCount; i++){
-		if(pDefines[i].name == name){
-			return pDefines[i].value;
-		}
-	}
-	
-	return defaultValue;
+	const decString *found = nullptr;
+	return pDefines.GetAt(name, found) ? *found : defaultValue;
 }
 
 const char *deoglShaderDefines::GetDefineValueFor(const char *name, const char *defaultValue) const{
-	int i;
-	for(i=0; i<pDefineCount; i++){
-		if(pDefines[i].name == name){
-			return pDefines[i].value;
-		}
-	}
-	return defaultValue;
+	const decString *found = nullptr;
+	return pDefines.GetAt(name, found) ? found->GetString() : defaultValue;
 }
 
 void deoglShaderDefines::SetDefine(const char *name, const char *value){
@@ -112,36 +63,7 @@ void deoglShaderDefines::SetDefine(const char *name, const char *value){
 	DEASSERT_NOTNULL(name[0])
 	DEASSERT_NOTNULL(value)
 	
-	sDefine *define = nullptr;
-	
-	int i;
-	for(i=0; i<pDefineCount; i++){
-		if(pDefines[i].name == name){
-			define = pDefines + i;
-			break;
-		}
-	}
-	
-	if(!define){
-		if(pDefineCount == pDefineSize){
-			const int newSize = pDefineSize * 3 / 2 + 1;
-			sDefine * const newArray = new sDefine[newSize];
-			if(pDefines){
-				for(i=0; i<pDefineSize; i++){
-					newArray[i] = pDefines[i];
-				}
-				delete [] pDefines;
-			}
-			pDefines = newArray;
-			pDefineSize = newSize;
-		}
-		
-		define = pDefines + pDefineCount;
-		define->name = name;
-		pDefineCount++;
-	}
-	
-	define->value = value;
+	pDefines.SetAt(name, value);
 }
 
 void deoglShaderDefines::SetDefine(const char *name, int value){
@@ -177,16 +99,7 @@ void deoglShaderDefines::SetDefines(const char *name1, const char *name2, const 
 }
 
 void deoglShaderDefines::RemoveDefine(const char *name){
-	int i;
-	for(i=0; i<pDefineCount; i++){
-		if(pDefines[i].name == name){
-			if(i < pDefineCount - 1){
-				pDefines[i] = pDefines[pDefineCount - 1];
-			}
-			pDefineCount--;
-			return;
-		}
-	}
+	pDefines.RemoveIfPresent(name);
 }
 
 void deoglShaderDefines::RemoveDefines(const char *name1){
@@ -212,7 +125,7 @@ void deoglShaderDefines::RemoveDefines(const char *name1, const char *name2, con
 }
 
 void deoglShaderDefines::RemoveAllDefines(){
-	pDefineCount = 0;
+	pDefines.RemoveAll();
 }
 
 bool deoglShaderDefines::Equals(const deoglShaderDefines &defines) const{
@@ -220,58 +133,24 @@ bool deoglShaderDefines::Equals(const deoglShaderDefines &defines) const{
 }
 
 bool deoglShaderDefines::Equals(const deoglShaderDefines &defines, const decStringSet &filter) const{
-	const int filterCount = filter.GetCount();
-	if(filterCount == 0){
-		return true;
-	}
-	
-	int i, j;
-	for(i=0; i<filterCount; i++){
-		const decString &name = filter.GetAt(i);
-		
+	return filter.AllMatching([&](const decString &name){
 		const decString *value1 = nullptr;
-		for(j=0; j<pDefineCount; j++){
-			if(name == pDefines[j].name){
-				value1 = &pDefines[j].value;
-				break;
-			}
-		}
+		pDefines.GetAt(name, value1);
 		
 		const decString *value2 = nullptr;
-		for(j=0; j<defines.pDefineCount; j++){
-			if(name == defines.pDefines[j].name){
-				value2 = &defines.pDefines[j].value;
-				break;
-			}
-		}
+		defines.pDefines.GetAt(name, value2);
 		
 		// matches if either both nullptr or both same value
-		if(!(
-			(!value1 && !value2)
-			|| (value1 && value2 && *value1 == *value2)
-)){
-			return false;
-		}
-	}
-	
-	return true;
+		return (!value1 && !value2) || (value1 && value2 && *value1 == *value2);
+	});
 }
 
 decString deoglShaderDefines::CalcCacheId() const{
-	decStringList defineNames;
-	int i;
-	for(i=0; i<pDefineCount; i++){
-		defineNames.Add(pDefines[i].name);
-	}
-	defineNames.SortAscending();
-	
 	decStringList parts;
-	for(i=0; i<pDefineCount; i++){
-		const decString &name = defineNames.GetAt(i);
+	pDefines.GetKeys().GetSortedAscending().Visit([&](const decString &name){
 		parts.Add(name);
 		parts.Add(GetDefineValueFor(name, ""));
-	}
-	
+	});
 	return DEJoin(parts, ",");
 }
 
@@ -281,58 +160,16 @@ decString deoglShaderDefines::CalcCacheId() const{
 //////////////
 
 bool deoglShaderDefines::operator==(const deoglShaderDefines &defines) const{
-	if(defines.pDefineCount != pDefineCount){
-		return false;
-	}
-	
-	int i, j;
-	
-	for(i=0; i<pDefineCount; i++){
-		for(j=0; j<pDefineCount; j++){
-			if(pDefines[i].name == defines.pDefines[j].name){
-				if(pDefines[i].value != defines.pDefines[j].value){
-					return false;
-				}
-				break;
-			}
-		}
-		if(j == pDefineCount){
-			return false;
-		}
-	}
-	
-	return true;
+	return pDefines == defines.pDefines;
 }
 
 deoglShaderDefines &deoglShaderDefines::operator=(const deoglShaderDefines &defines){
-	pDefineCount = 0;
-	
-	int i;
-	for(i=0; i<defines.pDefineCount; i++){
-		SetDefine(defines.pDefines[i].name, defines.pDefines[i].value);
-	}
-	
+	pDefines = defines.pDefines;
 	return *this;
 }
 
 deoglShaderDefines deoglShaderDefines::operator+(const deoglShaderDefines &defines) const{
 	deoglShaderDefines combined(*this);
-	
-	int i;
-	for(i=0; i<defines.pDefineCount; i++){
-		combined.SetDefine(defines.pDefines[i].name, defines.pDefines[i].value);
-	}
-	
+	combined.pDefines += defines.pDefines;
 	return combined;
-}
-
-
-
-// Private functions
-//////////////////////
-
-void deoglShaderDefines::pCleanUp(){
-	if(pDefines){
-		delete [] pDefines;
-	}
 }

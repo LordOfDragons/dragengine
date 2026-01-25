@@ -22,11 +22,6 @@
  * SOFTWARE.
  */
 
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "meBitArray.h"
 
 #include <dragengine/deEngine.h>
@@ -46,15 +41,10 @@ meBitArray::meBitArray(int colons, int rows){
 	pColons = colons;
 	pRows = rows;
 	
-	pByteCount = ((colons * rows - 1) >> 3) + 1;
-	
-	pBytes = new unsigned char[pByteCount];
-	memset(pBytes, 255, pByteCount);
+	pBytes.SetAll(((colons * rows - 1) >> 3) + 1, 255);
 }
 
-meBitArray::~meBitArray(){
-	if(pBytes) delete [] pBytes;
-}
+meBitArray::~meBitArray() = default;
 
 
 
@@ -84,15 +74,9 @@ void meBitArray::SetValueAt(int x, int y, bool value){
 
 void meBitArray::CopyTo(meBitArray &bitArray) const{
 	if(bitArray.pColons != pColons || bitArray.pRows != pRows) DETHROW(deeInvalidParam);
-	
-	memcpy(bitArray.pBytes, pBytes, pByteCount);
+	bitArray.pBytes = pBytes;
 }
 
 void meBitArray::ClearTo(bool value){
-	if(value){
-		memset(pBytes, 255, pByteCount);
-		
-	}else{
-		memset(pBytes, 0, pByteCount);
-	}
+	pBytes.SetRangeAt(0, pBytes.GetCount(), value ? 255 : 0);
 }

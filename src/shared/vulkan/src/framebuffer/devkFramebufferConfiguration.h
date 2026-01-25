@@ -28,6 +28,7 @@
 #include "../devkBasics.h"
 #include "../image/devkImageView.h"
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 
@@ -36,8 +37,7 @@
  */
 class devkFramebufferConfiguration{
 private:
-	int pAttachmentCount;
-	devkImageView::Ref *pAttachments;
+	decTList<devkImageView::Ref> pAttachments;
 	decPoint pSize;
 	int pLayerCount;
 	
@@ -60,14 +60,11 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Attachment count. */
-	inline int GetAttachmentCount() const{ return pAttachmentCount; }
+	/** Attachments. */
+	inline const decTList<devkImageView::Ref> &GetAttachments() const{ return pAttachments; }
 	
 	/** Set attachment count. */
 	void SetAttachmentCount(int count);
-	
-	/** Attachment at index. */
-	devkImageView *GetAttachmentAt(int index) const;
 	
 	/** Set attachment at index. */
 	void SetAttachmentAt(int index, devkImageView *attachment);

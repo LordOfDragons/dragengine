@@ -27,6 +27,7 @@
 
 #include "LinearMath/btVector3.h"
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/resources/particle/deParticleEmitterInstance.h>
 #include <dragengine/resources/particle/deParticleEmitterInstanceType.h>
 
@@ -47,7 +48,7 @@ public:
 		btVector3 force = btVector3(BT_ZERO, BT_ZERO, BT_ZERO);
 		float rotation = 0.0f;
 		float angularVelocity = 0.0f;
-		btVector3 gravity = btVector3();
+		btVector3 gravity = btVector3(BT_ZERO, BT_ZERO, BT_ZERO);
 		float forceFieldDirect = 0.0f;
 		float forceFieldSurface = 0.0f;
 		float forceFieldMass = 0.0f;
@@ -97,9 +98,8 @@ private:
 	
 	debpComponent *pComponent;
 	
-	sParticle *pParticles;
+	decTList<sParticle> pParticles;
 	int pParticleCount;
-	int pParticleSize;
 	
 	float pCastIntervalMin;
 	float pCastIntervalGap;
@@ -108,8 +108,7 @@ private:
 	float pBurstTimer;
 	int pBurstLastCurvePoint;
 	
-	deParticleEmitterInstanceType::sParticle *pGraParticles;
-	int pGraParticleSize;
+	decTList<deParticleEmitterInstanceType::sParticle> pGraParticles;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -131,9 +130,11 @@ public:
 	/** Sets the type number. */
 	void SetType(int type);
 	
-	/** Retrieves the particles. */
-	inline sParticle *GetParticles() const{ return pParticles; }
-	/** Retrieves the number of particles. */
+	/** Particles. */
+	inline decTList<sParticle> &GetParticles(){ return pParticles; }
+	inline const decTList<sParticle> &GetParticles() const{ return pParticles; }
+	
+	/** Particle count. */
 	inline int GetParticlesCount() const{ return pParticleCount; }
 	
 	/** Prepare stepping. */

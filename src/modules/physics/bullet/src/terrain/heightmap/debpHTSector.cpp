@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "debpHTSector.h"
 #include "debpHeightTerrain.h"
 #include "../../debpPhysicsBody.h"
@@ -64,14 +60,12 @@ debpHTSector::debpHTSector(debpHeightTerrain *heightTerrain, deHeightTerrainSect
 	
 	pMarked = false;
 	
-	pPoints = NULL;
 	pDirtyPoints = false;
 	
 	pPhyBody = NULL;
 	pShape = NULL;
 	pBulletShape = NULL;
 	
-	pClusters = NULL;
 	pClusterCount = 0;
 	
 	// init
@@ -110,7 +104,7 @@ debpHTSector::debpHTSector(debpHeightTerrain *heightTerrain, deHeightTerrainSect
 		pMaxExtend.x = pMinExtend.x + (double)sectorDim;
 		pMaxExtend.z = pMinExtend.z + (double)sectorDim;
 		
-		pClusters = new debpHTSCluster[clusterCount * clusterCount];
+		pClusters.AddRange(clusterCount * clusterCount, {});
 		
 		pClusterCount = clusterCount;
 		
@@ -169,7 +163,7 @@ debpHTSector::~debpHTSector(){
 // Management
 ///////////////
 
-debpHTSCluster &debpHTSector::GetClusterAt(int x, int z) const{
+debpHTSCluster &debpHTSector::GetClusterAt(int x, int z){
 	if(x < 0 || x >= pClusterCount || z < 0 || z >= pClusterCount) DETHROW(deeInvalidParam);
 	
 	return pClusters[pClusterCount * z + x];
@@ -222,8 +216,6 @@ void debpHTSector::SectorChanged(){
 
 void debpHTSector::pCleanUp(){
 	if(pPhyBody) delete pPhyBody;
-	if(pPoints) delete [] pPoints;
-	if(pClusters) delete [] pClusters;
 }
 
 
@@ -235,9 +227,7 @@ void debpHTSector::pCreatePoints(){
 	float sizeOffset = sectorDim * 0.5f;
 	
 	// create arrays
-	if(count > 0){
-		pPoints = new decVector[count];
-	}
+	pPoints.AddRange(count, {});
 	
 	// store the coordinates remaining the same
 	i = 0;

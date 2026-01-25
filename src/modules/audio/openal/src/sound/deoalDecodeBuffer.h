@@ -25,6 +25,7 @@
 #ifndef _DEOALDECODEBUFFER_H_
 #define _DEOALDECODEBUFFER_H_
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deSoundDecoder;
@@ -36,8 +37,7 @@ class deSoundDecoder;
  */
 class deoalDecodeBuffer{
 private:
-	char *pBuffer;
-	int pSize;
+	decTList<char> pBuffer;
 	
 	
 	
@@ -56,10 +56,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Buffer. */
-	inline char *GetBuffer() const{ return pBuffer; }
+	inline char *GetBuffer(){ return pBuffer.GetArrayPointer(); }
 	
 	/** \brief Size of buffer. */
-	inline int GetSize() const{ return pSize; }
+	inline int GetSize() const{ return pBuffer.GetCount(); }
 	
 	/** \brief Set size of buffer. */
 	void SetSize(int size);

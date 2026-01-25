@@ -131,8 +131,7 @@ private:
 	FXTextField *pEditSizeConfigDir;
 	FXTextField *pEditSizeCaches;
 	FXIconList *pListCaches;
-	sCache *pCaches;
-	int pCacheCount;
+	decTList<sCache> pCaches;
 	
 	deglCalculateDirectorySize *pCalcSizeDataDir;
 	deglCalculateDirectorySize *pCalcSizeCaptureDir;

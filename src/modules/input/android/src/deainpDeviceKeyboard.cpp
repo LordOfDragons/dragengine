@@ -62,7 +62,7 @@ deainpDevice(module, esAndroid)
 	SetType(deInputDevice::edtKeyboard);
 	
 	// static mapping so far
-	SetButtonCount(112);
+	GetButtons().AddRange(112, {});
 	
 	pSetButtonAt(0, "softLeft", "Soft Left", AKEYCODE_SOFT_LEFT,
 		deInputEvent::ekcArrowLeft, 0, 0);

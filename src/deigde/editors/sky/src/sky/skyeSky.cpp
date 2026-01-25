@@ -233,10 +233,10 @@ void skyeSky::RebuildEngineSky(){
 			
 			const skyeBody::List &bodies = sourceLayer.GetBodies();
 			const int bodyCount = bodies.GetCount();
-			destLayer.SetBodyCount(bodyCount);
+			destLayer.GetBodies().SetAll(bodyCount, {});
 			for(j=0; j<bodyCount; j++){
 				const skyeBody &sourceBody = *bodies.GetAt(j);
-				deSkyLayerBody &destBody = destLayer.GetBodyAt(j);
+				deSkyLayerBody &destBody = destLayer.GetBodies()[j];
 				
 				destBody.SetOrientation(decQuaternion::CreateFromEuler(
 					sourceBody.GetOrientation() * DEG2RAD));
@@ -837,7 +837,6 @@ void skyeSky::pCleanUp(){
 }
 
 void skyeSky::pBuildShapeHorizon(){
-	deDebugDrawerShapeFace *face = nullptr;
 	int s, stepCount, subStepCount;
 	decVector vertex[4], normal;
 	float bandHeight = 0.005f;
@@ -858,99 +857,90 @@ void skyeSky::pBuildShapeHorizon(){
 	// just to make sure clear the shape
 	pDDSHorizon->RemoveAllFaces();
 	
-	try{
-		stepCount = 72; // 5 degree steps
-		subStepCount = 9; // stepCount div-by 8 (45 degree large marks)
-		factor = PI * 2.0f / (float)stepCount;
+	stepCount = 72; // 5 degree steps
+	subStepCount = 9; // stepCount div-by 8 (45 degree large marks)
+	factor = PI * 2.0f / (float)stepCount;
+	
+	// add the all around band
+	vertex[0].y = radius * bandHeight;
+	vertex[1].y = radius * bandHeight;
+	vertex[2].y = -vertex[0].y;
+	vertex[3].y = -vertex[1].y;
+	
+	angle1 = 0.0f;
+	
+	for(s=0; s<stepCount; s++){
+		angle2 = factor * (float)((s + 1) % stepCount);
 		
-		// add the all around band
-		vertex[0].y = radius * bandHeight;
-		vertex[1].y = radius * bandHeight;
-		vertex[2].y = -vertex[0].y;
-		vertex[3].y = -vertex[1].y;
+		vertex[0].x = radius * sinf(angle1);
+		vertex[1].x = radius * sinf(angle2);
+		vertex[2].x = vertex[1].x;
+		vertex[3].x = vertex[0].x;
 		
-		angle1 = 0.0f;
+		vertex[0].z = radius * cosf(angle1);
+		vertex[1].z = radius * cosf(angle2);
+		vertex[2].z = vertex[1].z;
+		vertex[3].z = vertex[0].z;
 		
-		for(s=0; s<stepCount; s++){
-			angle2 = factor * (float)((s + 1) % stepCount);
-			
-			vertex[0].x = radius * sinf(angle1);
-			vertex[1].x = radius * sinf(angle2);
-			vertex[2].x = vertex[1].x;
-			vertex[3].x = vertex[0].x;
-			
-			vertex[0].z = radius * cosf(angle1);
-			vertex[1].z = radius * cosf(angle2);
-			vertex[2].z = vertex[1].z;
-			vertex[3].z = vertex[0].z;
-			
-			face = new deDebugDrawerShapeFace;
-			face->AddVertex(vertex[0]);
-			face->AddVertex(vertex[1]);
-			face->AddVertex(vertex[2]);
-			face->AddVertex(vertex[3]);
-			normal = (vertex[1] - vertex[0]) % (vertex[2] - vertex[1]);
-			normal.Normalize();
-			face->SetNormal(normal);
-			
-			pDDSHorizon->AddFace(face);
-			face = nullptr;
-			
-			angle1 = angle2;
-		}
+		auto face = deDebugDrawerShapeFace::Ref::New();
+		face->AddVertex(vertex[0]);
+		face->AddVertex(vertex[1]);
+		face->AddVertex(vertex[2]);
+		face->AddVertex(vertex[3]);
+		normal = (vertex[1] - vertex[0]) % (vertex[2] - vertex[1]);
+		normal.Normalize();
+		face->SetNormal(normal);
 		
-		// add marks
-		vertex[2].y = radius * bandHeight;
-		vertex[3].y = vertex[2].y;
+		pDDSHorizon->AddFace(std::move(face));
 		
-		for(s=0; s<stepCount; s++){
-			angle1 = factor * (float)(s % stepCount);
+		angle1 = angle2;
+	}
+	
+	// add marks
+	vertex[2].y = radius * bandHeight;
+	vertex[3].y = vertex[2].y;
+	
+	for(s=0; s<stepCount; s++){
+		angle1 = factor * (float)(s % stepCount);
+		
+		if(s == 0){
+			angle2 = angle1 + markWidthPrime;
+			angle1 -= markWidthPrime;
 			
-			if(s == 0){
-				angle2 = angle1 + markWidthPrime;
-				angle1 -= markWidthPrime;
-				
-				vertex[0].y = radius * markHeightPrime;
+			vertex[0].y = radius * markHeightPrime;
+			
+		}else{
+			angle2 = angle1 + markWidth;
+			angle1 -= markWidth;
+			
+			if(s % subStepCount == 0){
+				vertex[0].y = radius * markHeightLarge;
 				
 			}else{
-				angle2 = angle1 + markWidth;
-				angle1 -= markWidth;
-				
-				if(s % subStepCount == 0){
-					vertex[0].y = radius * markHeightLarge;
-					
-				}else{
-					vertex[0].y = radius * markHeightSmall;
-				}
+				vertex[0].y = radius * markHeightSmall;
 			}
-			vertex[1].y = vertex[0].y;
-			
-			vertex[0].x = radius * sinf(angle1);
-			vertex[1].x = radius * sinf(angle2);
-			vertex[2].x = vertex[1].x;
-			vertex[3].x = vertex[0].x;
-			
-			vertex[0].z = radius * cosf(angle1);
-			vertex[1].z = radius * cosf(angle2);
-			vertex[2].z = vertex[1].z;
-			vertex[3].z = vertex[0].z;
-			
-			face = new deDebugDrawerShapeFace;
-			face->AddVertex(vertex[0]);
-			face->AddVertex(vertex[1]);
-			face->AddVertex(vertex[2]);
-			face->AddVertex(vertex[3]);
-			normal = (vertex[1] - vertex[0]) % (vertex[2] - vertex[1]);
-			normal.Normalize();
-			face->SetNormal(normal);
-			
-			pDDSHorizon->AddFace(face);
-			face = nullptr;
 		}
+		vertex[1].y = vertex[0].y;
 		
+		vertex[0].x = radius * sinf(angle1);
+		vertex[1].x = radius * sinf(angle2);
+		vertex[2].x = vertex[1].x;
+		vertex[3].x = vertex[0].x;
 		
-	}catch(const deException &){
-		if(face) delete face;
-		throw;
+		vertex[0].z = radius * cosf(angle1);
+		vertex[1].z = radius * cosf(angle2);
+		vertex[2].z = vertex[1].z;
+		vertex[3].z = vertex[0].z;
+		
+		auto face = deDebugDrawerShapeFace::Ref::New();
+		face->AddVertex(vertex[0]);
+		face->AddVertex(vertex[1]);
+		face->AddVertex(vertex[2]);
+		face->AddVertex(vertex[3]);
+		normal = (vertex[1] - vertex[0]) % (vertex[2] - vertex[1]);
+		normal.Normalize();
+		face->SetNormal(normal);
+		
+		pDDSHorizon->AddFace(std::move(face));
 	}
 }

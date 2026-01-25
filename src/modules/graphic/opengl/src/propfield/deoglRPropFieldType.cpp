@@ -140,8 +140,8 @@ void deoglRPropFieldType::RebuildInstances(const dePropFieldType &type){
 		return;
 	}
 	
-	const dePropFieldInstance * const engInstances = type.GetInstances();
-	const int instanceCount = type.GetInstanceCount();
+	const dePropFieldInstance * const engInstances = type.GetInstances().GetArrayPointer();
+	const int instanceCount = type.GetInstances().GetCount();
 	int i;
 	
 	// determine the extend of the instances in this type
@@ -175,8 +175,8 @@ void deoglRPropFieldType::RebuildInstances(const dePropFieldType &type){
 
 void deoglRPropFieldType::AddClustersWithSieve(const dePropFieldType &type){
 	const float propRadius = pModel->GetExtends().maximum.Length();
-	const dePropFieldInstance * const engInstances = type.GetInstances();
-	const int instanceCount = type.GetInstanceCount();
+	const dePropFieldInstance * const engInstances = type.GetInstances().GetArrayPointer();
+	const int instanceCount = type.GetInstances().GetCount();
 	int i;
 	
 	// squeeze instances through a point sieve
@@ -207,7 +207,7 @@ void deoglRPropFieldType::AddClustersWithSieve(const dePropFieldType &type){
 		for(c=0; c<clusterCount; c++){
 			const deoglPointSieveBucket &bucket = sieve.GetBucketAt(c);
 			
-			const int indexCount = bucket.GetIndexCount();
+			const int indexCount = bucket.GetIndices().GetCount();
 			if(indexCount == 0){
 				continue;
 			}
@@ -215,10 +215,10 @@ void deoglRPropFieldType::AddClustersWithSieve(const dePropFieldType &type){
 			cluster = new deoglPropFieldCluster(*this);
 			
 			cluster->SetInstanceCount(indexCount);
-			deoglPropFieldCluster::sInstance * const pfInstances = cluster->GetInstances();
+			deoglPropFieldCluster::sInstance * const pfInstances = cluster->GetInstances().GetArrayPointer();
 			
 			for(i=0; i< indexCount; i++){
-				const int index = bucket.GetIndexAt(i);
+				const int index = bucket.GetIndices()[i];
 				
 				const decVector &ipos = engInstances[index].GetPosition();
 				
@@ -276,8 +276,8 @@ void deoglRPropFieldType::AddClustersWithGenerator(const dePropFieldType &type){
 	const decVector2 fieldMinExtend = decVector2(pMinExtend.x, pMinExtend.z) - errorMargin;
 	const decVector2 fieldMaxExtend = decVector2(pMaxExtend.x, pMaxExtend.z) + errorMargin;
 	deoglPFClusterGenerator generator(fieldMinExtend, fieldMaxExtend, 250);
-	const dePropFieldInstance * const engInstances = type.GetInstances();
-	const int instanceCount = type.GetInstanceCount();
+	const dePropFieldInstance * const engInstances = type.GetInstances().GetArrayPointer();
+	const int instanceCount = type.GetInstances().GetCount();
 	int i;
 	
 	for(i=0; i<instanceCount; i++){
@@ -293,12 +293,12 @@ void deoglRPropFieldType::AddClustersWithGenerator(const dePropFieldType &type){
 void deoglRPropFieldType::AddClustersFromGenerator(const dePropFieldType &type, const deoglPFClusterGenerator &generator){
 	const deoglPFClusterGenerator * const node1 = generator.GetNode1();
 	const deoglPFClusterGenerator * const node2 = generator.GetNode2();
-	const int entryCount = generator.GetEntryCount();
+	const int entryCount = generator.GetEntries().GetCount();
 	
 	if(entryCount > 0){
-		const deoglPFClusterGenerator::sEntry * const entries = generator.GetEntries();
+		const deoglPFClusterGenerator::sEntry * const entries = generator.GetEntries().GetArrayPointer();
 		const float propRadius = pModel->GetExtends().maximum.Length();
-		const dePropFieldInstance * const engInstances = type.GetInstances();
+		const dePropFieldInstance * const engInstances = type.GetInstances().GetArrayPointer();
 		decVector clusterMinExtend, clusterMaxExtend;
 		deoglPropFieldCluster *cluster = nullptr;
 		int i;
@@ -306,7 +306,7 @@ void deoglRPropFieldType::AddClustersFromGenerator(const dePropFieldType &type, 
 		try{
 			cluster = new deoglPropFieldCluster(*this);
 			cluster->SetInstanceCount(entryCount);
-			deoglPropFieldCluster::sInstance * const instances = cluster->GetInstances();
+			deoglPropFieldCluster::sInstance * const instances = cluster->GetInstances().GetArrayPointer();
 			
 			for(i=0; i<entryCount; i++){
 				const int index = entries[i].index;

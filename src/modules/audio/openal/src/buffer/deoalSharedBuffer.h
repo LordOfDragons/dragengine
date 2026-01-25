@@ -26,6 +26,7 @@
 #define _DEOALSHAREDBUFFER_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
@@ -33,8 +34,7 @@
  */
 class deoalSharedBuffer : public deObject{
 private:
-	float *pBuffer;
-	int pSize;
+	decTList<float> pBuffer;
 	bool pInUse;
 	
 	
@@ -55,10 +55,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Buffer. */
-	inline float *GetBuffer() const{ return pBuffer; }
+	inline float *GetBuffer(){ return pBuffer.IsNotEmpty() ? pBuffer.GetArrayPointer() : nullptr; }
 	
 	/** \brief Number of floats in the buffer. */
-	inline int GetSize() const{ return pSize; }
+	inline int GetSize() const{ return pBuffer.GetCount(); }
 	
 	/**
 	 * \brief Set buffer size.

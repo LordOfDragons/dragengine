@@ -243,7 +243,7 @@ deoglRSkyInstanceLayer &skyLayer, float backtrack){
 	
 	frustumHull.CalculateHull();
 	
-	pEdgeCount = frustumHull.GetHullPointCount();
+	pEdgeCount = frustumHull.GetHullPoints().GetCount();
 	
 	for(i=0; i<pEdgeCount; i++){
 		const decVector2 edgeStart = frustumHull.GetHullPointVectorAt(i);

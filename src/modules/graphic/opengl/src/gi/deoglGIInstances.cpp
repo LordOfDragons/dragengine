@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglGIState.h"
 #include "deoglGIInstance.h"
 #include "deoglGIInstances.h"
@@ -49,15 +45,10 @@
 ////////////////////////////
 
 deoglGIInstances::deoglGIInstances(deoglGIState &giState) :
-pGIState(giState),
-pDynamicBoxes(nullptr),
-pDynamicBoxCount(0),
-pDynamicBoxSize(0){
+pGIState(giState){
 }
 
-deoglGIInstances::~deoglGIInstances(){
-	pCleanUp();
-}
+deoglGIInstances::~deoglGIInstances() = default;
 
 
 
@@ -70,7 +61,7 @@ bool deoglGIInstances::IsComponentStatic(const deoglRComponent &component){
 	return component.GetRenderStatic()
 		&& component.GetStaticTextures()
 		&& component.GetMovementHint() == deComponent::emhStationary
-		&& component.GetLODAt(-1).GetModelLODRef().GetWeightsCount() == 0;
+		&& component.GetLODAt(-1).GetModelLODRef().GetWeightsCounts().IsEmpty();
 }
 
 bool deoglGIInstances::IsDecalStatic(const deoglRDecal &decal){
@@ -83,7 +74,7 @@ bool deoglGIInstances::IsDecalStatic(const deoglRDecal &decal){
 }
 
 deoglGIInstance &deoglGIInstances::GetInstanceAt(int slot) const{
-	return pInstances.GetAt(slot);
+	return pInstances[slot];
 }
 
 deoglGIInstance *deoglGIInstances::GetInstanceWithComponent(deoglRComponent *component) const{
@@ -113,19 +104,18 @@ deoglGIInstance *deoglGIInstances::GetInstanceWithDecal(deoglRDecal *decal) cons
 }
 
 deoglGIInstance &deoglGIInstances::AddInstance(){
-	const deoglGIInstance::Ref instance(deoglGIInstance::Ref::New(*this));
+	auto instance = deoglGIInstance::Ref::New(*this);
 	pInstances.Add(instance);
 	return instance;
 }
 
 deoglGIInstance &deoglGIInstances::NextFreeSlot(){
-	if(pEmptyInstances.GetCount() == 0){
+	if(pEmptyInstances.IsEmpty()){
 		return AddInstance();
 	}
 	
-	const int index = pEmptyInstances.GetCount() - 1;
-	deoglGIInstance * const instance = pEmptyInstances.GetAt(index);
-	pEmptyInstances.RemoveFrom(index);
+	deoglGIInstance * const instance = pEmptyInstances.Last();
+	pEmptyInstances.RemoveLast();
 	return *instance;
 }
 
@@ -156,82 +146,53 @@ void deoglGIInstances::UnregisterElement(unsigned int uniqueKey){
 
 
 void deoglGIInstances::UpdateDynamicBoxes(const decDVector &offset, const decVector &enlarge){
-	pDynamicBoxCount = 0;
+	pDynamicBoxes.SetCountDiscard(0);
 	
 	const decVector halfEnlarge(enlarge * 0.5f);
-	const int count = pInstances.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const deoglGIInstance &instance = pInstances.GetAt(i);
+	pInstances.Visit([&](const deoglGIInstance &instance){
 		if(!instance.GetDynamic()){
-			continue;
+			return;
 		}
 		
-		if(pDynamicBoxCount == pDynamicBoxSize){
-			const int newSize = pDynamicBoxCount * 3 / 2 + 1;
-			         sBox * const newArray = new sBox[newSize];
-			if(pDynamicBoxes){
-				memcpy(newArray, pDynamicBoxes, sizeof(sBox) * pDynamicBoxCount);
-				delete [] pDynamicBoxes;
-			}
-			pDynamicBoxes = newArray;
-			pDynamicBoxSize = newSize;
-		}
-		
-		      sBox &box = pDynamicBoxes[pDynamicBoxCount++];
-		box.minExtend = (instance.GetMinimumExtend() + offset).ToVector() - halfEnlarge;
-		box.maxExtend = (instance.GetMaximumExtend() + offset).ToVector() + halfEnlarge;
-	}
+		pDynamicBoxes.Add({
+			(instance.GetMinimumExtend() + offset).ToVector() - halfEnlarge,
+			(instance.GetMaximumExtend() + offset).ToVector() + halfEnlarge});
+	});
 }
 
 bool deoglGIInstances::DynamicBoxesContain(const decVector &point) const{
-	int i;
-	for(i=0; i<pDynamicBoxCount; i++){
-		if(point >= pDynamicBoxes[i].minExtend && point <= pDynamicBoxes[i].maxExtend){
-			return true;
-		}
-	}
-	return false;
+	return pDynamicBoxes.HasMatching([&](const sBox &box){
+		return point >= box.minExtend && point <= box.maxExtend;
+	});
 }
 
 int deoglGIInstances::CountDynamicBoxesContaining(const decVector &point) const{
-	int i, count = 0;
-	for(i=0; i<pDynamicBoxCount; i++){
-		if(point >= pDynamicBoxes[i].minExtend && point <= pDynamicBoxes[i].maxExtend){
-			count++;
-		}
-	}
-	return count;
+	return pDynamicBoxes.Inject(0, [&](int acc, const sBox &box){
+		return acc + (point >= box.minExtend && point <= box.maxExtend ? 1 : 0);
+	});
 }
 
 
 
 void deoglGIInstances::Clear(){
-	pEmptyInstances.RemoveAll();
+	pEmptyInstances.SetCountDiscard(0);
 	
-	const int count = pInstances.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		deoglGIInstance * const instance = pInstances.GetAt(i);
+	pInstances.Visit([&](deoglGIInstance *instance){
 		instance->Clear();
 		pEmptyInstances.Add(instance);
-	}
+	});
 	
-	pChangedInstances.RemoveAll();
+	pChangedInstances.SetCountDiscard(0);
 	pElementInstanceMap.RemoveAll();
 }
 
 void deoglGIInstances::ApplyChanges(){
-	const int count = pChangedInstances.GetCount();
-	if(count == 0){
+	if(pChangedInstances.IsEmpty()){
 		return;
 	}
 	
-	int i;
-	for(i=0; i<count; i++){
-		deoglGIInstance &instance = *pChangedInstances.GetAt(i);
-		
+	pChangedInstances.Visit([&](deoglGIInstance *inst){
+		deoglGIInstance &instance = *inst;
 		bool invalidate = !instance.GetDynamic();
 		
 		if(instance.GetRecheckDynamic()){
@@ -314,7 +275,7 @@ void deoglGIInstances::ApplyChanges(){
 		}
 		
 		instance.ClearChanged();
-	}
+	});
 	
 	pChangedInstances.RemoveAll();
 }
@@ -349,11 +310,9 @@ void deoglGIInstances::AddComponent(deoglRComponent *component, bool invalidate)
 }
 
 void deoglGIInstances::AddComponents(const deoglCollideList &list, bool invalidate){
-	const int count = list.GetComponentCount();
-	int i;
-	for(i=0; i<count; i++){
-		AddComponent(list.GetComponentAt(i).GetComponent(), invalidate);
-	}
+	list.GetComponents().Visit([&](const deoglCollideListComponent &clc){
+		AddComponent(clc.GetComponent(), invalidate);
+	});
 }
 
 void deoglGIInstances::AddDecal(deoglRDecal *decal, bool invalidate){
@@ -365,11 +324,9 @@ void deoglGIInstances::AddDecal(deoglRDecal *decal, bool invalidate){
 }
 
 void deoglGIInstances::AddDecals(const deoglRComponent &component, bool invalidate){
-	const int count = component.GetDecalCount();
-	int i;
-	for(i=0; i<count; i++){
-		AddDecal(component.GetDecalAt(i), invalidate);
-	}
+	component.GetDecals().Visit([&](deoglRDecal *decal){
+		AddDecal(decal, invalidate);
+	});
 }
 
 void deoglGIInstances::RemoveComponent(deoglRComponent *component){
@@ -380,12 +337,10 @@ void deoglGIInstances::RemoveComponent(deoglRComponent *component){
 }
 
 void deoglGIInstances::RemoveComponents(const deoglCollideList &list){
-	const int count = list.GetComponentCount();
-	int i;
-	for(i=0; i<count; i++){
-		deoglGIInstance * const instance = GetInstanceWithComponent(list.GetComponentAt(i).GetComponent());
+	list.GetComponents().Visit([&](const deoglCollideListComponent &clc){
+		deoglGIInstance * const instance = GetInstanceWithComponent(clc.GetComponent());
 		if(!instance){
-			continue;
+			return;
 		}
 		
 		#ifdef DO_LOG_ADD_REMOVE
@@ -402,7 +357,7 @@ void deoglGIInstances::RemoveComponents(const deoglCollideList &list){
 		
 		instance->Clear();
 		pEmptyInstances.Add(instance);
-	}
+	});
 	
 #if 0
 	if(list.GetComponentCount() == 0){
@@ -453,23 +408,17 @@ void deoglGIInstances::RemoveDecal(deoglRDecal *decal){
 }
 
 void deoglGIInstances::RemoveDecals(const deoglRComponent &component){
-	const int count = component.GetDecalCount();
-	int i;
-	for(i=0; i<count; i++){
-		RemoveDecal(component.GetDecalAt(i));
-	}
+	component.GetDecals().Visit([&](deoglRDecal *decal){
+		RemoveDecal(decal);
+	});
 }
 
 void deoglGIInstances::MarkComponents(bool marked){
-	const int count = pInstances.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		deoglGIInstance &instance = pInstances.GetAt(i);
+	pInstances.Visit([&](deoglGIInstance &instance){
 		if(instance.GetComponent()){
 			instance.GetComponent()->SetMarked(marked);
 		}
-	}
+	});
 }
 
 
@@ -497,10 +446,7 @@ void deoglGIInstances::InstanceChanged(deoglGIInstance &instance){
 
 void deoglGIInstances::DebugPrint(){
 	deoglRTLogger &logger = pGIState.GetRenderThread().GetLogger();
-	const int count = pInstances.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		const deoglGIInstance &instance = pInstances.GetAt(i);
+	pInstances.VisitIndexed([&](int i, const deoglGIInstance &instance){
 		if(instance.GetComponent()){
 			const decDVector p(instance.GetComponent()->GetMatrix().GetPosition());
 				logger.LogInfoFormat("%d: component (%g,%g,%g) %s",
@@ -510,35 +456,21 @@ void deoglGIInstances::DebugPrint(){
 		}else if(instance.GetDecal()){
 			if(instance.GetDecal()->GetParentComponent()){
 				const deoglRComponent &c = *instance.GetDecal()->GetParentComponent();
-				int index;
-				for(index=0; index<c.GetDecalCount(); index++){
-					if(c.GetDecalAt(index) == instance.GetDecal()){
-						break;
-					}
-				}
-				if(index == c.GetDecalCount()){
-					index = -1;
-				}
 				const decDVector p(c.GetMatrix().GetPosition());
-					logger.LogInfoFormat("%d: decal (%g,%g,%g)|%d %s", i, p.x, p.y, p.z, index,
+					logger.LogInfoFormat("%d: decal (%g,%g,%g)|%d %s", i, p.x, p.y, p.z,
+						c.GetDecals().IndexOf(instance.GetDecal()),
 						c.GetModel() ? c.GetModel()->GetFilename().GetString() : "-");
 			}else{
 				logger.LogInfoFormat("%d: decal (no parent)", i);
 			}
 		}
-	}
+	});
 }
 
 
 
 // Private Functions
 //////////////////////
-
-void deoglGIInstances::pCleanUp(){
-	if(pDynamicBoxes){
-		delete [] pDynamicBoxes;
-	}
-}
 
 void deoglGIInstances::pInvalidateAddInstance(const deoglGIInstance &instance){
 	if(instance.GetDynamic()){

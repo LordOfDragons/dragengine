@@ -22,15 +22,10 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 
 #include "deJpegImageInfos.h"
-
 
 
 // Class deJpegImageInfo
@@ -46,7 +41,6 @@ pFilename(filename),
 pFileSize(0),
 pFilePosition(0),
 
-pDataBuffer(nullptr),
 pDataBufferPosition(0),
 pReader(nullptr)
 {
@@ -61,16 +55,7 @@ pReader(nullptr)
 	pDecompress.err = &pErrorMgr;
 }
 
-deJpegImageInfo::~deJpegImageInfo(){
-	if(pDataBuffer){
-		delete [] pDataBuffer;
-	}
-}
-
-
-
-// Management
-///////////////
+deJpegImageInfo::~deJpegImageInfo() = default;
 
 
 
@@ -87,8 +72,8 @@ void deJpegImageInfo::InitRead(decBaseFileReader *reader){
 	pFileSize = reader->GetLength();
 	pFilePosition = 0;
 	
-	if(!pDataBuffer){
-		pDataBuffer = new JOCTET[1024];
+	if(pDataBuffer.IsEmpty()){
+		pDataBuffer.AddRange(1024, {});
 	}
 	pDataBufferPosition = 0;
 	
@@ -97,25 +82,25 @@ void deJpegImageInfo::InitRead(decBaseFileReader *reader){
 }
 
 void deJpegImageInfo::ReadNext(){
-	if(!pReader || !pDataBuffer){
+	if(!pReader || pDataBuffer.IsEmpty()){
 		DETHROW(deeInvalidParam);
 	}
 	
 	const int bytes = decMath::min(pFileSize - pFilePosition, 1024);
 	
 	if(bytes > 0){
-		pReader->Read(pDataBuffer, bytes);
+		pReader->Read(pDataBuffer.GetArrayPointer(), bytes);
 		pFilePosition += bytes;
 	}
 	
 	pDataBufferPosition = 0;
 	
-	pSourceMgr.next_input_byte = pDataBuffer;
+	pSourceMgr.next_input_byte = pDataBuffer.GetArrayPointer();
 	pSourceMgr.bytes_in_buffer = (size_t)bytes;
 }
 
 void deJpegImageInfo::SkipNext(int bytes){
-	if(!pReader || !pDataBuffer){
+	if(!pReader || pDataBuffer.IsEmpty()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -146,10 +131,6 @@ void deJpegImageInfo::SkipNext(int bytes){
 }
 
 void deJpegImageInfo::CloseReader(){
-	if(pDataBuffer){
-		delete [] pDataBuffer;
-		pDataBuffer = nullptr;
-	}
 	pReader = nullptr;
 }
 

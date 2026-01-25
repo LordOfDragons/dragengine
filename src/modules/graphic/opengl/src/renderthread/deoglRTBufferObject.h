@@ -30,6 +30,8 @@
 #include "../shaders/paramblock/deoglSPBlockSSBO.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBRTIGroupList.h"
 
+#include <dragengine/common/collection/decTList.h>
+
 class deoglRenderThread;
 class deoglSharedVBOList;
 class deoglSharedVBOListList;
@@ -138,8 +140,7 @@ private:
 	deoglSharedSPBListUBO *pBillboardSPBListUBO;
 	deoglSharedSPBRTIGroupList::Ref pBillboardRTIGroups;
 	
-	char *pTemporaryVBOData;
-	int pTemporaryVBODataSize;
+	decTList<char> pTemporaryVBOData;
 	
 	
 	

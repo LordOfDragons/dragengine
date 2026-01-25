@@ -664,7 +664,7 @@ void delEngineProcess::CommandGetModuleParamList(){
 		}
 		
 		const int count = baseModule->GetParameterCount();
-		int i, j;
+		int i;
 		
 		WriteUCharToPipe(ercSuccess);
 		WriteUShortToPipe(count);
@@ -682,14 +682,12 @@ void delEngineProcess::CommandGetModuleParamList(){
 			WriteString16ToPipe(parameter.GetDisplayName());
 			WriteString16ToPipe(parameter.GetDefaultValue());
 			
-			const int entryCount = parameter.GetSelectionEntryCount();
-			WriteUShortToPipe(entryCount);
-			for(j=0; j<entryCount; j++){
-				const deModuleParameter::SelectionEntry &entry = parameter.GetSelectionEntryAt(j);
+			WriteUShortToPipe(parameter.GetSelectionEntries().GetCount());
+			parameter.GetSelectionEntries().Visit([&](const deModuleParameter::SelectionEntry &entry){
 				WriteString16ToPipe(entry.value);
 				WriteString16ToPipe(entry.displayName);
 				WriteString16ToPipe(entry.description);
-			}
+			});
 			
 			WriteString16ToPipe(baseModule->GetParameterValue(parameter.GetName()));
 		}
@@ -1380,7 +1378,6 @@ void delEngineProcess::CommandGetDisplayResolutions(){
 		return;
 	}
 	
-	decPoint *resolutions = nullptr;
 	int display = 0;
 	int count = 0;
 	
@@ -1398,22 +1395,17 @@ void delEngineProcess::CommandGetDisplayResolutions(){
 		
 		DEASSERT_TRUE(count <= resolutionCount)
 		
-		resolutions = new decPoint[resolutionCount];
+		decTList<decPoint> resolutions(resolutionCount);
 		int i;
 		for(i=0; i<resolutionCount; i++){
-			resolutions[i] = pEngine->GetOS()->GetDisplayResolution(display, i);
+			resolutions.Add(pEngine->GetOS()->GetDisplayResolution(display, i));
 		}
 		
 		WriteUCharToPipe(ercSuccess);
 		WriteUCharToPipe(resolutionCount);
-		WriteToPipe(resolutions, sizeof(decPoint) * resolutionCount);
-		
-		delete [] resolutions;
+		WriteToPipe(resolutions.GetArrayPointer(), sizeof(decPoint) * resolutionCount);
 		
 	}catch(const deException &e){
-		if(resolutions){
-			delete [] resolutions;
-		}
 		pLogger->LogErrorFormat(pLogSource, "EngineProcess.CommandGetDisplayResolutions "
 			" failed with exception (display=%d, count=%d):", display, count);
 		pLogger->LogException(pLogSource, e);

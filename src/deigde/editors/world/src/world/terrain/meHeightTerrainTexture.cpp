@@ -312,7 +312,8 @@ void meHeightTerrainTexture::LoadMaskImage(){
 			loadedImage->GetHeight(), loadedImage->GetDepth(), loadedImage->GetComponentCount(),
 			loadedImage->GetBitCount());
 		memcpy(pMaskImage->GetData(), loadedImage->GetData(), loadedImage->GetWidth()
-			* loadedImage->GetHeight() * ( loadedImage->GetBitCount() / 8 ) );
+			* loadedImage->GetHeight() * loadedImage->GetDepth()
+			* loadedImage->GetComponentCount() * (loadedImage->GetBitCount() / 8));
 		
 		loadedImage->ReleaseImageData();
 		

@@ -81,9 +81,9 @@ void meModelBuilderNavSpace::BuildNavGrid(deModel* model){
 	const int boxVertexIndices[24] = {0,4,5,1, 1,5,6,2, 2,6,7,3, 3,7,4,0, 0,1,2,3, 4,5,6,7};
 	const decVector axisX = decVector(1.0f, 0.0f, 0.0f);
 	const decVector axisY = decVector(0.0f, 1.0f, 0.0f);
-	const deNavigationSpaceEdge * const edges = pNavSpace->GetEdges();
-	const decVector * const vertices = pNavSpace->GetVertices();
-	const int edgeCount = pNavSpace->GetEdgeCount();
+	const deNavigationSpaceEdge * const edges = pNavSpace->GetEdges().GetArrayPointer();
+	const decVector * const vertices = pNavSpace->GetVertices().GetArrayPointer();
+	const int edgeCount = pNavSpace->GetEdges().GetCount();
 	const float halfExtend = 0.05f;
 	int indexNormal, indexVertex;
 	decVector boxVertices[8];
@@ -100,21 +100,17 @@ void meModelBuilderNavSpace::BuildNavGrid(deModel* model){
 	model->AddTexture(deModelTexture::Ref::New("skin", 1, 1));
 	
 	// add edges. we add them as a box. this is not perfect but for collision testing this is enough
-	model->GetTextureCoordinatesSetList().Add("default");
+	model->GetTextureCoordinatesSets().Add("default");
 	
-	modelLOD.SetVertexCount(edgeCount * 8);
-	modelLOD.SetFaceCount(edgeCount * 12);
+	modelLOD.GetVertices().SetAll(edgeCount * 8, {});
+	modelLOD.GetFaces().SetAll(edgeCount * 12, {});
 	modelLOD.SetNormalCount(edgeCount * 6);
 	modelLOD.SetTangentCount(edgeCount * 6);
-	modelLOD.SetTextureCoordinatesCount(modelLOD.GetVertexCount());
-	modelLOD.SetTextureCoordinatesSetCount(1);
+	modelLOD.SetTextureCoordinatesCount(modelLOD.GetVertices().GetCount());
+	modelLOD.GetTextureCoordinatesSets().SetAll(1, {});
 	
-	deModelTextureCoordinatesSet &tcset = modelLOD.GetTextureCoordinatesSetAt(0);
-	tcset.GetTextureCoordinates().RemoveAll();
-	tcset.GetTextureCoordinates().EnlargeCapacity(modelLOD.GetVertexCount());
-	for(v=0; v<modelLOD.GetVertexCount(); v++){
-		tcset.GetTextureCoordinates().Add({});
-	}
+	deModelTextureCoordinatesSet &tcset = modelLOD.GetTextureCoordinatesSets().First();
+	tcset.GetTextureCoordinates().SetAll(modelLOD.GetVertices().GetCount(), {});
 	
 	for(e=0; e<edgeCount; e++){
 		const decVector &bp1 = vertices[edges[e].GetVertex1()];
@@ -153,7 +149,7 @@ void meModelBuilderNavSpace::BuildNavGrid(deModel* model){
 		
 		indexVertex = e * 8;
 		for(v=0; v<8; v++){
-			modelLOD.GetVertexAt(indexVertex + v).SetPosition(boxVertices[v]);
+			modelLOD.GetVertices()[indexVertex + v].SetPosition(boxVertices[v]);
 			tcset.GetTextureCoordinates().SetAt(indexVertex + v, {boxVertices[v].x, boxVertices[v].z});
 		}
 		
@@ -170,7 +166,7 @@ void meModelBuilderNavSpace::BuildNavGrid(deModel* model){
 			
 			indexNormal = e * 6 + v;
 			
-			deModelFace &modelFace1 = modelLOD.GetFaceAt(e * 12 + v * 2);
+			deModelFace &modelFace1 = modelLOD.GetFaces()[e * 12 + v * 2];
 			modelFace1.SetVertex1(fp1);
 			modelFace1.SetVertex2(fp2);
 			modelFace1.SetVertex3(fp3);
@@ -186,7 +182,7 @@ void meModelBuilderNavSpace::BuildNavGrid(deModel* model){
 			modelFace1.SetFaceNormal(fnor);
 			modelFace1.SetFaceTangent(axisX);
 			
-			deModelFace &modelFace2 = modelLOD.GetFaceAt(e * 12 + v * 2 + 1);
+			deModelFace &modelFace2 = modelLOD.GetFaces()[e * 12 + v * 2 + 1];
 			modelFace2.SetVertex1(fp1);
 			modelFace2.SetVertex2(fp3);
 			modelFace2.SetVertex3(fp4);
@@ -206,11 +202,11 @@ void meModelBuilderNavSpace::BuildNavGrid(deModel* model){
 }
 
 void meModelBuilderNavSpace::BuildNavMesh(deModel* model){
-	const deNavigationSpaceFace * const faces = pNavSpace->GetFaces();
-	const decVector * const vertices = pNavSpace->GetVertices();
+	const deNavigationSpaceFace * const faces = pNavSpace->GetFaces().GetArrayPointer();
+	const decVector * const vertices = pNavSpace->GetVertices().GetArrayPointer();
 	const decVector tangent = decVector(1.0f, 0.0f, 0.0f);
-	const int vertexCount = pNavSpace->GetVertexCount();
-	const int faceCount = pNavSpace->GetFaceCount();
+	const int vertexCount = pNavSpace->GetVertices().GetCount();
+	const int faceCount = pNavSpace->GetFaces().GetCount();
 	deNavigationSpaceCorner *corners;
 	int totalFaceCount = 0;
 	int normalCount = 0;
@@ -239,23 +235,22 @@ void meModelBuilderNavSpace::BuildNavMesh(deModel* model){
 		}
 	}
 	
-	model->GetTextureCoordinatesSetList().Add("default");
+	model->GetTextureCoordinatesSets().Add("default");
 	
-	modelLOD.SetVertexCount(vertexCount);
-	modelLOD.SetFaceCount(totalFaceCount);
+	modelLOD.GetVertices().SetAll(vertexCount, {});
+	modelLOD.GetFaces().SetAll(totalFaceCount, {});
 	modelLOD.SetTextureCoordinatesCount(vertexCount);
-	modelLOD.SetTextureCoordinatesSetCount(1);
+	modelLOD.GetTextureCoordinatesSets().SetAll(1, {});
 	
-	deModelTextureCoordinatesSet &tcset = modelLOD.GetTextureCoordinatesSetAt(0);
-	tcset.GetTextureCoordinates().RemoveAll();
-	tcset.GetTextureCoordinates().EnlargeCapacity(vertexCount);
+	deModelTextureCoordinatesSet &tcset = modelLOD.GetTextureCoordinatesSets().First();
+	tcset.GetTextureCoordinates().SetAll(vertexCount, {});
 	
 	for(v=0; v<vertexCount; v++){
-		modelLOD.GetVertexAt(v).SetPosition(vertices[v]);
-		tcset.GetTextureCoordinates().Add({vertices[v].x, vertices[v].z});
+		modelLOD.GetVertices()[v].SetPosition(vertices[v]);
+		tcset.GetTextureCoordinates()[v] = {vertices[v].x, vertices[v].z};
 	}
 	
-	corners = pNavSpace->GetCorners();
+	corners = pNavSpace->GetCorners().GetArrayPointer();
 	totalFaceCount = 0;
 	
 	for(f=0; f<faceCount; f++){
@@ -281,7 +276,7 @@ void meModelBuilderNavSpace::BuildNavMesh(deModel* model){
 				//const decVector &fp2 = vertices[ corners[ c - 1 ].GetVertex() ];
 				//const decVector &fp3 = vertices[ corners[ c ].GetVertex() ];
 				
-				deModelFace &modelFace = modelLOD.GetFaceAt(totalFaceCount++);
+				deModelFace &modelFace = modelLOD.GetFaces()[totalFaceCount++];
 				modelFace.SetVertex1(corners[0].GetVertex());
 				modelFace.SetVertex2(corners[c - 1].GetVertex());
 				modelFace.SetVertex3(corners[c].GetVertex());

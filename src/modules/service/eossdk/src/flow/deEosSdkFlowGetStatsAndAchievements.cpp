@@ -52,8 +52,6 @@ const EOS_Achievements_OnQueryPlayerAchievementsCompleteCallbackInfo *data){
 deEosSdkFlowGetStatsAndAchievements::deEosSdkFlowGetStatsAndAchievements(deEosSdkServiceEos &service,
 	const decUniqueID &id, const deServiceObject &request) :
 deEosSdkFlow(service, id),
-pStatNames(nullptr),
-pAchievementNames(nullptr),
 pStatsReceived(false),
 pAchievementsReceived(false),
 pResultData(deServiceObject::Ref::New())
@@ -93,14 +91,7 @@ pResultData(deServiceObject::Ref::New())
 	CheckFinished();
 }
 
-deEosSdkFlowGetStatsAndAchievements::~deEosSdkFlowGetStatsAndAchievements(){
-	if(pAchievementNames){
-		delete [] pAchievementNames;
-	}
-	if(pStatNames){
-		delete [] pStatNames;
-	}
-}
+deEosSdkFlowGetStatsAndAchievements::~deEosSdkFlowGetStatsAndAchievements() = default;
 
 
 
@@ -116,7 +107,7 @@ void deEosSdkFlowGetStatsAndAchievements::QueryStats(){
 	}
 	
 	int i;
-	pStatNames = new const char*[count];
+	pStatNames.SetCountDiscard(count);
 	for(i=0; i<count; i++){
 		pStatNames[i] = pStats.GetAt(i).GetString();
 	}
@@ -127,7 +118,7 @@ void deEosSdkFlowGetStatsAndAchievements::QueryStats(){
 	options.StartTime = EOS_STATS_TIME_UNDEFINED;
 	options.EndTime = EOS_STATS_TIME_UNDEFINED;
 	options.TargetUserId = pService.productUserId;
-	options.StatNames = pStatNames;
+	options.StatNames = pStatNames.GetArrayPointer();
 	options.StatNamesCount = count;
 	
 	GetModule().LogInfo("deEosSdkFlowGetStatsAndAchievements.QueryStats");
@@ -143,7 +134,7 @@ void deEosSdkFlowGetStatsAndAchievements::QueryPlayerAchievements(){
 	}
 	
 	int i;
-	pAchievementNames = new const char*[count];
+	pAchievementNames.SetCountDiscard(count);
 	for(i=0; i<count; i++){
 		pAchievementNames[i] = pAchievements.GetAt(i).GetString();
 	}

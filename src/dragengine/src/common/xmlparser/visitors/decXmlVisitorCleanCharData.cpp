@@ -23,14 +23,13 @@
  */
 
 #include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include "decXmlVisitorCleanCharData.h"
 #include "../decXmlContainer.h"
 #include "../decXmlCharacterData.h"
 #include "../../exceptions.h"
+#include "../../collection/decTList.h"
+#include "../../string/decString.h"
 
 
 
@@ -73,46 +72,38 @@ void decXmlVisitorCleanCharData::VisitCharacterData(decXmlCharacterData &data){
 	const int orgLen = orgData.GetLength();
 	
 	// create new buffer to hold data. it will be at most orgLen but mostly shorter.
-	char * const newData = new char[orgLen + 1];
+	decTList<char> newData;
+	newData.SetCountDiscard(orgLen + 1);
 	bool hasSpace = false;
 	int curPos = 0;
 	int orgPos;
 	
 	// copy over data and replace consecutive spaces with one single space. spaces before and
 	// after text are ignored if the character data is the first and/or last element
-	try{
-		for(orgPos=0; orgPos<orgLen; orgPos++){
-			if(IsSpace(orgData[orgPos])){
-				hasSpace = true;
-				
-			}else{
-				if(hasSpace){
-					hasSpace = false;
-					if(!pIsFirstElement || curPos > 0){
-						newData[curPos++] = ' ';
-					}
+	for(orgPos=0; orgPos<orgLen; orgPos++){
+		if(IsSpace(orgData[orgPos])){
+			hasSpace = true;
+			
+		}else{
+			if(hasSpace){
+				hasSpace = false;
+				if(!pIsFirstElement || curPos > 0){
+					newData[curPos++] = ' ';
 				}
-				
-				newData[curPos++] = orgData[orgPos];
 			}
+			
+			newData[curPos++] = orgData[orgPos];
 		}
-		
-		if(hasSpace && !pIsLastElement){
-			newData[curPos++] = ' ';
-		}
-		
-		newData[curPos] = '\0';
-		
-		// store the new data and free the buffer
-		data.SetData(newData);
-		delete [] newData;
-		
-	}catch(const deException &){
-		if(newData){
-			delete [] newData;
-		}
-		throw;
 	}
+	
+	if(hasSpace && !pIsLastElement){
+		newData[curPos++] = ' ';
+	}
+	
+	newData[curPos++] = '\0';
+	
+	// store the new data and free the buffer
+	data.SetData(newData.GetArrayPointer());
 }
 
 

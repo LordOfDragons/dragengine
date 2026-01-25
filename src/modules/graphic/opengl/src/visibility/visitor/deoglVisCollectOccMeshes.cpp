@@ -98,9 +98,9 @@ void deoglVisCollectOccMeshes::AddOcclusionMesh(deoglRComponent &component){
 	const deoglROcclusionMesh &occlusionMesh = *component.GetOcclusionMesh();
 	const int singleSidedFaceCount = occlusionMesh.GetSingleSidedFaceCount();
 	const int doubleSidedFaceCount = occlusionMesh.GetDoubleSidedFaceCount();
-	const deoglROcclusionMesh::sVertex * const vertices = occlusionMesh.GetVertices();
+	const deoglROcclusionMesh::sVertex * const vertices = occlusionMesh.GetVertices().GetArrayPointer();
 	const int faceCount = singleSidedFaceCount + doubleSidedFaceCount;
-	unsigned short * const corners = occlusionMesh.GetCorners();
+	const unsigned short * const corners = occlusionMesh.GetCorners().GetArrayPointer();
 	decVector tv1, tv2, tv3;
 	const decVector origin;
 	int i, pointIndex = 0;

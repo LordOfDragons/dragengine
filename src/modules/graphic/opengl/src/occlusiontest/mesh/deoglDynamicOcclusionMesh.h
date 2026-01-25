@@ -51,16 +51,13 @@ public:
 	
 	decTList<int> pBoneMappings;
 	
-	oglMatrix3x4 *pWeights;
-	int pWeightCount;
+	decTList<oglMatrix3x4> pWeights;
 	
-	decVector *pVertices;
+	decTList<decVector> pVertices;
 	
 	GLuint pVBO;
 	deoglVAO *pVAO;
-	deoglVBOp *pVBOData;
-	int pVBOVertexCount;
-	int pVBOVertexSize;
+	decTList<deoglVBOp> pVBOData;
 	
 	bool pDirtyOccMesh;
 	bool pDirtyVBO;
@@ -105,8 +102,8 @@ public:
 	/** Prepare for rendering. */
 	void PrepareForRender();
 	
-	/** Direct access to vertices. */
-	inline const decVector *GetVertices() const{ return pVertices; }
+	/** Vertices. */
+	inline const decTList<decVector> &GetVertices() const{ return pVertices; }
 	
 	
 	

@@ -29,6 +29,7 @@
 #include "../queue/devkCommandBuffer.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class devkDevice;
 class devkCommandPool;
@@ -43,6 +44,9 @@ class devkBuffer : public deObject{
 public:
 	/** Reference. */
 	using Ref = deTObjectReference<devkBuffer>;
+	
+	/** List. */
+	using List = decTObjectOrderedSet<devkBuffer>;
 	
 	
 private:

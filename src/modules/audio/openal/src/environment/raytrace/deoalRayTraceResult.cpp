@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoalRayTraceResult.h"
 #include "deoalRayTraceHitElement.h"
 #include "../../audiothread/deoalAudioThread.h"
@@ -45,32 +41,19 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deoalRayTraceResult::deoalRayTraceResult() :
-pElements(nullptr),
-pElementCount(0),
-pElementSize(0)
-{
-	const int limit = 20;
-	pElements = new deoalRayTraceHitElement[limit];
-	pElementSize = limit;
+deoalRayTraceResult::deoalRayTraceResult(){
+	pElements.EnlargeCapacity(20);
 }
 
-deoalRayTraceResult::~deoalRayTraceResult(){
-	if(pElements){
-		delete [] pElements;
-	}
-}
+deoalRayTraceResult::~deoalRayTraceResult() = default;
 
 
 
 // Manegement
 ///////////////
 
-const deoalRayTraceHitElement &deoalRayTraceResult::GetElementAt(int index) const{
-	if(index < 0 || index >= pElementCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pElements[index];
+void deoalRayTraceResult::Clear(){
+	pElements.RemoveAll();
 }
 
 void deoalRayTraceResult::AddElement(float distance, const decDVector &point,
@@ -90,29 +73,20 @@ void deoalRayTraceResult::AddElement(const deoalRayTraceHitElement &element){
 	}
 }
 
-void deoalRayTraceResult::RemoveAllElements(){
-	pElementCount = 0;
-}
-
-void deoalRayTraceResult::Clear(){
-	pElementCount = 0;
-}
-
 void deoalRayTraceResult::DebugPrint(deoalAudioThread &audioThread, const char *prefix){
 	deoalATLogger &logger = audioThread.GetLogger();
 	
-	logger.LogInfoFormat("%s) Ray-Trace Result (%d elements):", prefix, pElementCount);
-	int i;
-	for(i=0; i<pElementCount; i++){
-		const decDVector &point = pElements[i].GetPoint();
-		const float distance = pElements[i].GetDistance();
+	logger.LogInfoFormat("%s) Ray-Trace Result (%d elements):", prefix, pElements.GetCount());
+	pElements.Visit([&](const deoalRayTraceHitElement &element){
+		const decDVector &point = element.GetPoint();
+		const float distance = element.GetDistance();
 		
-		if(pElements[i].GetComponent()){
-			const deoalAComponent &component = *pElements[i].GetComponent();
+		if(element.GetComponent()){
+			const deoalAComponent &component = *element.GetComponent();
 			const decDVector &compPos = component.GetPosition();
 			const char * const model = component.GetModel() ? component.GetModel()->GetFilename().GetString() : "-";
-			const int face = pElements[i].GetComponentFace();
-			const bool frontFacing = pElements[i].GetForwardFacing();
+			const int face = element.GetComponentFace();
+			const bool frontFacing = element.GetForwardFacing();
 			
 			logger.LogInfoFormat("%s) - distance=%.3f point=(%.3f,%.3f,%.3f) "
 				"component=(%.3f,%.3f,%.3f) model=%s face=%d frontFacing=%d",
@@ -123,7 +97,7 @@ void deoalRayTraceResult::DebugPrint(deoalAudioThread &audioThread, const char *
 			logger.LogInfoFormat("%s) - distance=%.3f point=(%.3f,%.3f,%.3f) ??",
 				prefix, distance, point.x, point.y, point.z);
 		}
-	}
+	});
 }
 
 
@@ -132,11 +106,12 @@ void deoalRayTraceResult::DebugPrint(deoalAudioThread &audioThread, const char *
 ////////////////////////
 
 deoalRayTraceHitElement *deoalRayTraceResult::pInsert(float distance){
-	if(pElementCount == 0){
-		return pElements + pElementCount++;
+	if(pElements.IsEmpty()){
+		pElements.Add({});
+		return &pElements.Last();
 	}
 	
-	int end = pElementCount - 1;
+	int end = pElements.GetCount() - 1;
 	int begin = 0;
 	
 	while(begin < end){
@@ -153,20 +128,14 @@ deoalRayTraceHitElement *deoalRayTraceResult::pInsert(float distance){
 	if(distance >= pElements[begin].GetDistance()){
 		begin++;
 	}
-	
-	if(pElementCount < pElementSize){
-		end = pElementCount++;
-		
-	}else{
-		if(begin == pElementCount){
-			return nullptr; // element to insert drops out
-		}
-		end = pElementCount - 1;
+	if(begin == pElements.GetCount()){
+		return nullptr; // element to insert drops out
 	}
 	
-	for(; end>begin; end--){
-		pElements[end] = pElements[end - 1];
+	if(pElements.GetCount() == pElements.GetCapacity()){
+		pElements.RemoveFrom(pElements.GetCount() - 1);
 	}
 	
-	return pElements + begin;
+	pElements.Insert({}, begin);
+	return &pElements[begin];
 }

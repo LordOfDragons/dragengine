@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglHTSCluster.h"
 #include "deoglHTSTexture.h"
 #include "deoglHTViewSectorCluster.h"
@@ -155,31 +151,14 @@ pWorldComputeElement(WorldComputeElement::Ref::New(*this))
 	
 	pOffsetVBODataFaces = 0;
 	pVBODataFaces = 0;
+	pDataPointCount = 0;
 	
 	pVAO = nullptr;
-	
-	pFacePoints = nullptr;
-	pFacePointCount = 0;
-	pFacePointSize = 0;
-	
-	pDataPoints1 = nullptr;
-	pDataPoints2 = nullptr;
-	pDataPointCount = 0;
 }
 
 deoglHTSCluster::~deoglHTSCluster(){
 	if(pVAO){
 		delete pVAO;
-	}
-	
-	if(pDataPoints2){
-		delete [] pDataPoints2;
-	}
-	if(pDataPoints1){
-		delete [] pDataPoints1;
-	}
-	if(pFacePoints){
-		delete [] pFacePoints;
 	}
 }
 
@@ -254,7 +233,7 @@ void deoglHTSCluster::InitFromHeightImage(const deHeightTerrainSector &sector){
 	float sizeStep = sectorDim / (float)(imageDim - 1);
 	float sizeOffset = sectorDim * 0.5f;
 	
-	pDataPoints1 = new deoglVBOHeightTerrain1[pDataPointCount];
+	pDataPoints1.SetCountDiscard(pDataPointCount);
 	
 	for(i=0, z=0; z<pPointCountZ; z++){
 		for(x=0; x<pPointCountX; x++, i++){
@@ -263,7 +242,7 @@ void deoglHTSCluster::InitFromHeightImage(const deHeightTerrainSector &sector){
 		}
 	}
 	
-	pDataPoints2 = new deoglVBOHeightTerrain2[pDataPointCount];
+	pDataPoints2.SetCountDiscard(pDataPointCount);
 }
 
 
@@ -326,7 +305,7 @@ void deoglHTSCluster::UpdateVBOData1(){
 	OGL_CHECK(renderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBODataPoints1));
 	OGL_CHECK(renderThread, pglBufferSubData(GL_ARRAY_BUFFER,
 		sizeof(deoglVBOHeightTerrain1) * pOffsetVBODataPoints,
-		sizeof(deoglVBOHeightTerrain1) * pDataPointCount, pDataPoints1));
+		sizeof(deoglVBOHeightTerrain1) * pDataPointCount, pDataPoints1.GetArrayPointer()));
 }
 
 void deoglHTSCluster::SetVBODataPoints2(GLuint vbo){
@@ -408,7 +387,7 @@ void deoglHTSCluster::UpdateVBOData2(){
 	OGL_CHECK(renderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBODataPoints2));
 	OGL_CHECK(renderThread, pglBufferSubData(GL_ARRAY_BUFFER,
 		sizeof(deoglVBOHeightTerrain2) * pOffsetVBODataPoints,
-		sizeof(deoglVBOHeightTerrain2) * pDataPointCount, pDataPoints2));
+		sizeof(deoglVBOHeightTerrain2) * pDataPointCount, pDataPoints2.GetArrayPointer()));
 }
 
 void deoglHTSCluster::SetOffsetVBODataFaces(int offset){
@@ -428,7 +407,7 @@ void deoglHTSCluster::UpdateVBODataFaces(){
 	
 	OGL_CHECK(renderThread, pglBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pVBODataFaces));
 	OGL_CHECK(renderThread, pglBufferSubData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLushort) * pOffsetVBODataFaces,
-		sizeof(GLushort) * pFacePointCount, pFacePoints));
+		sizeof(GLushort) * pFacePoints.GetCount(), pFacePoints.GetArrayPointer()));
 }
 
 void deoglHTSCluster::UpdateVAO(){
@@ -501,28 +480,17 @@ void deoglHTSCluster::RemoveFromWorldCompute(){
 ////////////////
 
 void deoglHTSCluster::AddFacePoints(int p1, int p2, int p3){
-	if(pFacePointCount + 3 >= pFacePointSize){
-		int newSize = pFacePointSize * 3 / 2 + 3;
-		GLushort * const newArray = new GLushort[newSize];
-		if(pFacePoints){
-			memcpy(newArray, pFacePoints, sizeof(GLushort) * pFacePointSize);
-			delete [] pFacePoints;
-		}
-		pFacePoints = newArray;
-		pFacePointSize = newSize;
-	}
-	
-	pFacePoints[pFacePointCount++] = (GLushort)p3;
-	pFacePoints[pFacePointCount++] = (GLushort)p2;
-	pFacePoints[pFacePointCount++] = (GLushort)p1;
+	pFacePoints.Add((GLushort)p3);
+	pFacePoints.Add((GLushort)p2);
+	pFacePoints.Add((GLushort)p1);
 }
 
 void deoglHTSCluster::SetFacePointCount(int count){
-	if(count < 0 || count > pFacePointCount || count % 3 > 0){
+	if(count < 0 || count > pFacePoints.GetCount() || count % 3 > 0){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pFacePointCount = count;
+	pFacePoints.SetCountDiscard(count);
 }
 
 
@@ -537,7 +505,7 @@ void deoglHTSCluster::pCreateBaseLOD(const deHeightTerrainSector &sector, int wi
 	
 	pNoLOD = false;
 	
-	pLOD[0].firstBasePoint = pFacePointCount;
+	pLOD[0].firstBasePoint = pFacePoints.GetCount();
 	
 	for(z=0; z<lastZ; z++){
 		base = pPointCountX * z;
@@ -555,7 +523,7 @@ void deoglHTSCluster::pCreateBaseLOD(const deHeightTerrainSector &sector, int wi
 		}
 	}
 	
-	pLOD[0].basePointCount = pFacePointCount - pLOD[0].firstBasePoint;
+	pLOD[0].basePointCount = pFacePoints.GetCount() - pLOD[0].firstBasePoint;
 }
 
 void deoglHTSCluster::pCreateCheapLOD(int lodLevel){
@@ -582,7 +550,7 @@ void deoglHTSCluster::pCreateCheapLOD(int lodLevel){
 	newPointCountZ = ((pPointCountZ - 2) / reduction) + 2;
 	
 	// create lod mesh base area. this includes all faces not touching the border points
-	pLOD[lodLevel].firstBasePoint = pFacePointCount;
+	pLOD[lodLevel].firstBasePoint = pFacePoints.GetCount();
 	
 	for(z=1; z<newPointCountZ-2; z++){
 		offset = imageDim * (z * reduction);
@@ -598,10 +566,10 @@ void deoglHTSCluster::pCreateCheapLOD(int lodLevel){
 		}
 	}
 	
-	pLOD[lodLevel].basePointCount = pFacePointCount - pLOD[lodLevel].firstBasePoint;
+	pLOD[lodLevel].basePointCount = pFacePoints.GetCount() - pLOD[lodLevel].firstBasePoint;
 	
 	// create left border for the same lod level of neighbor
-	pLOD[lodLevel].firstBorderPoint[deoglHTViewSectorCluster::ebtLeft] = pFacePointCount;
+	pLOD[lodLevel].firstBorderPoint[deoglHTViewSectorCluster::ebtLeft] = pFacePoints.GetCount();
 	
 	for(z=0; z<newPointCountZ-1; z++){
 		p1 = imageDim * (z * reduction);
@@ -623,10 +591,11 @@ void deoglHTSCluster::pCreateCheapLOD(int lodLevel){
 		}
 	}
 	
-	pLOD[lodLevel].borderPointCount[deoglHTViewSectorCluster::ebtLeft] = pFacePointCount - pLOD[lodLevel].firstBorderPoint[deoglHTViewSectorCluster::ebtLeft];
+	pLOD[lodLevel].borderPointCount[deoglHTViewSectorCluster::ebtLeft] =
+		pFacePoints.GetCount() - pLOD[lodLevel].firstBorderPoint[deoglHTViewSectorCluster::ebtLeft];
 	
 	// create top border for the same lod level of neighbor
-	pLOD[lodLevel].firstBorderPoint[deoglHTViewSectorCluster::ebtTop] = pFacePointCount;
+	pLOD[lodLevel].firstBorderPoint[deoglHTViewSectorCluster::ebtTop] = pFacePoints.GetCount();
 	
 	offset = 0;
 	for(x=0; x<newPointCountX-1; x++){
@@ -649,10 +618,11 @@ void deoglHTSCluster::pCreateCheapLOD(int lodLevel){
 		}
 	}
 	
-	pLOD[lodLevel].borderPointCount[deoglHTViewSectorCluster::ebtTop] = pFacePointCount - pLOD[lodLevel].firstBorderPoint[deoglHTViewSectorCluster::ebtTop];
+	pLOD[lodLevel].borderPointCount[deoglHTViewSectorCluster::ebtTop] =
+		pFacePoints.GetCount() - pLOD[lodLevel].firstBorderPoint[deoglHTViewSectorCluster::ebtTop];
 	
 	// create right border for the same lod level of neighbor
-	pLOD[lodLevel].firstBorderPoint[deoglHTViewSectorCluster::ebtRight] = pFacePointCount;
+	pLOD[lodLevel].firstBorderPoint[deoglHTViewSectorCluster::ebtRight] = pFacePoints.GetCount();
 	
 	for(z=0; z<newPointCountZ-1; z++){
 		offset = imageDim * (z * reduction);
@@ -679,10 +649,10 @@ void deoglHTSCluster::pCreateCheapLOD(int lodLevel){
 	}
 	
 	pLOD[lodLevel].borderPointCount[deoglHTViewSectorCluster::ebtRight] =
-		pFacePointCount - pLOD[lodLevel].firstBorderPoint[deoglHTViewSectorCluster::ebtRight];
+		pFacePoints.GetCount() - pLOD[lodLevel].firstBorderPoint[deoglHTViewSectorCluster::ebtRight];
 	
 	// create bottom border for the same lod level of neighbor
-	pLOD[lodLevel].firstBorderPoint[deoglHTViewSectorCluster::ebtBottom] = pFacePointCount;
+	pLOD[lodLevel].firstBorderPoint[deoglHTViewSectorCluster::ebtBottom] = pFacePoints.GetCount();
 	
 	offset = imageDim * ((newPointCountZ - 2) * reduction);
 	offset2 = imageDim * lastPointZ;
@@ -710,10 +680,11 @@ void deoglHTSCluster::pCreateCheapLOD(int lodLevel){
 		}
 	}
 	
-	pLOD[lodLevel].borderPointCount[deoglHTViewSectorCluster::ebtBottom] = pFacePointCount - pLOD[lodLevel].firstBorderPoint[deoglHTViewSectorCluster::ebtBottom];
+	pLOD[lodLevel].borderPointCount[deoglHTViewSectorCluster::ebtBottom] =
+		pFacePoints.GetCount() - pLOD[lodLevel].firstBorderPoint[deoglHTViewSectorCluster::ebtBottom];
 	
 	// create left border for the lower lod level of neighbor
-	pLOD[lodLevel].firstBorderPoint[deoglHTViewSectorCluster::ebtFixLeft] = pFacePointCount;
+	pLOD[lodLevel].firstBorderPoint[deoglHTViewSectorCluster::ebtFixLeft] = pFacePoints.GetCount();
 	
 	for(z=0; z<newPointCountZ-1; z++){
 		p1 = imageDim * (z * reduction);
@@ -743,10 +714,11 @@ void deoglHTSCluster::pCreateCheapLOD(int lodLevel){
 		}
 	}
 	
-	pLOD[lodLevel].borderPointCount[deoglHTViewSectorCluster::ebtFixLeft] = pFacePointCount - pLOD[lodLevel].firstBorderPoint[deoglHTViewSectorCluster::ebtFixLeft];
+	pLOD[lodLevel].borderPointCount[deoglHTViewSectorCluster::ebtFixLeft] =
+		pFacePoints.GetCount() - pLOD[lodLevel].firstBorderPoint[deoglHTViewSectorCluster::ebtFixLeft];
 	
 	// create top border for the lower lod level of neighbor
-	pLOD[lodLevel].firstBorderPoint[deoglHTViewSectorCluster::ebtFixTop] = pFacePointCount;
+	pLOD[lodLevel].firstBorderPoint[deoglHTViewSectorCluster::ebtFixTop] = pFacePoints.GetCount();
 	
 	offset = 0;
 	for(x=0; x<newPointCountX-1; x++){
@@ -777,10 +749,11 @@ void deoglHTSCluster::pCreateCheapLOD(int lodLevel){
 		}
 	}
 	
-	pLOD[lodLevel].borderPointCount[deoglHTViewSectorCluster::ebtFixTop] = pFacePointCount - pLOD[lodLevel].firstBorderPoint[deoglHTViewSectorCluster::ebtFixTop];
+	pLOD[lodLevel].borderPointCount[deoglHTViewSectorCluster::ebtFixTop] =
+		pFacePoints.GetCount() - pLOD[lodLevel].firstBorderPoint[deoglHTViewSectorCluster::ebtFixTop];
 	
 	// create right border for the lower lod level of neighbor
-	pLOD[lodLevel].firstBorderPoint[deoglHTViewSectorCluster::ebtFixRight] = pFacePointCount;
+	pLOD[lodLevel].firstBorderPoint[deoglHTViewSectorCluster::ebtFixRight] = pFacePoints.GetCount();
 	
 	for(z=0; z<newPointCountZ-1; z++){
 		offset = imageDim * (z * reduction);
@@ -815,10 +788,11 @@ void deoglHTSCluster::pCreateCheapLOD(int lodLevel){
 		}
 	}
 	
-	pLOD[lodLevel].borderPointCount[deoglHTViewSectorCluster::ebtFixRight] = pFacePointCount - pLOD[lodLevel].firstBorderPoint[deoglHTViewSectorCluster::ebtFixRight];
+	pLOD[lodLevel].borderPointCount[deoglHTViewSectorCluster::ebtFixRight] =
+		pFacePoints.GetCount() - pLOD[lodLevel].firstBorderPoint[deoglHTViewSectorCluster::ebtFixRight];
 	
 	// create bottom border for the lower lod level of neighbor
-	pLOD[lodLevel].firstBorderPoint[deoglHTViewSectorCluster::ebtFixBottom] = pFacePointCount;
+	pLOD[lodLevel].firstBorderPoint[deoglHTViewSectorCluster::ebtFixBottom] = pFacePoints.GetCount();
 	
 	offset = imageDim * ((newPointCountZ - 2) * reduction);
 	offset2 = imageDim * lastPointZ;
@@ -855,5 +829,6 @@ void deoglHTSCluster::pCreateCheapLOD(int lodLevel){
 		}
 	}
 	
-	pLOD[lodLevel].borderPointCount[deoglHTViewSectorCluster::ebtFixBottom] = pFacePointCount - pLOD[lodLevel].firstBorderPoint[deoglHTViewSectorCluster::ebtFixBottom];
+	pLOD[lodLevel].borderPointCount[deoglHTViewSectorCluster::ebtFixBottom] =
+		pFacePoints.GetCount() - pLOD[lodLevel].firstBorderPoint[deoglHTViewSectorCluster::ebtFixBottom];
 }

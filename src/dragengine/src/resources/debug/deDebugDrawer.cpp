@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deDebugDrawer.h"
 #include "deDebugDrawerShape.h"
 #include "deDebugDrawerManager.h"
@@ -114,54 +110,29 @@ void deDebugDrawer::SetXRay(bool xray){
 // Shape Management
 //////////////////////
 
-int deDebugDrawer::GetShapeCount() const{
-	return pShapes.GetCount();
-}
-
-deDebugDrawerShape *deDebugDrawer::GetShapeAt(int index) const{
-	return (deDebugDrawerShape*)pShapes.GetAt(index);
-}
-
-int deDebugDrawer::IndexOfShape(deDebugDrawerShape *shape) const{
-	return pShapes.IndexOf(shape);
-}
-
-bool deDebugDrawer::HasShape(deDebugDrawerShape *shape) const{
-	return pShapes.Has(shape);
-}
-
-void deDebugDrawer::AddShape(deDebugDrawerShape *shape){
-	if(!shape || HasShape(shape)){
-		DETHROW(deeInvalidParam);
-	}
-	pShapes.Add(shape);
+void deDebugDrawer::AddShape(deDebugDrawerShape::Ref &&shape){
+	DEASSERT_NOTNULL(shape)
+	
+	pShapes.Add(std::move(shape));
 	NotifyShapeLayoutChanged();
 }
 
 void deDebugDrawer::RemoveShape(deDebugDrawerShape *shape){
-	RemoveShapeFrom(IndexOfShape(shape));
+	pShapes.Remove(shape);
+	NotifyShapeLayoutChanged();
 }
 
 void deDebugDrawer::RemoveShapeFrom(int index){
-	deDebugDrawerShape * const shape = GetShapeAt(index);
 	pShapes.RemoveFrom(index);
-	delete shape;
 	NotifyShapeLayoutChanged();
 }
 
 void deDebugDrawer::RemoveAllShapes(){
-	if(pShapes.GetCount() == 0){
+	if(pShapes.IsEmpty()){
 		return;
 	}
 	
-	const int count = pShapes.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		delete (deDebugDrawerShape*)pShapes.GetAt(i);
-	}
 	pShapes.RemoveAll();
-	
 	NotifyShapeLayoutChanged();
 }
 
@@ -222,6 +193,4 @@ void deDebugDrawer::pCleanUp(){
 		delete pPeerGraphic;
 		pPeerGraphic = nullptr;
 	}
-	
-	RemoveAllShapes();
 }

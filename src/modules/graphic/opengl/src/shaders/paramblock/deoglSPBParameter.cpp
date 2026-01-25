@@ -51,6 +51,26 @@ pArrayStride(0),
 pDataSize(0){
 }
 
+deoglSPBParameter::deoglSPBParameter(const deoglSPBParameter &parameter){
+	*this = parameter;
+}
+
+deoglSPBParameter &deoglSPBParameter::operator=(const deoglSPBParameter &parameter){
+	if(this != &parameter){
+		pValueType = parameter.pValueType;
+		pComponentCount = parameter.pComponentCount;
+		pVectorCount = parameter.pVectorCount;
+		pArrayCount = parameter.pArrayCount;
+		
+		pOffset = parameter.pOffset;
+		pStride = parameter.pStride;
+		pArrayStride = parameter.pArrayStride;
+		pDataSize = parameter.pDataSize;
+	}
+	
+	return *this;
+}
+
 deoglSPBParameter::~deoglSPBParameter(){
 }
 

@@ -63,15 +63,12 @@ private:
 	bool pDirtyWeights;
 	bool pEnabled;
 	
-	sBone *pBones;
-	int pBoneCount;
+	decTList<sBone> pBones;
 	debpModel *pModel;
 	
 	decTList<int> pModelRigMappings;
-	decVector *pVertices;
-	decMatrix *pWeights;
-	int pVertexCount;
-	int pWeightsCount;
+	decTList<decVector> pVertices;
+	decTList<decMatrix> pWeights;
 	
 	debpColliderComponent *pLinkedCollider;
 	
@@ -142,7 +139,8 @@ public:
 	
 	
 	/** \brief Bone. */
-	sBone &GetBoneAt(int index) const;
+	sBone &GetBoneAt(int index);
+	const sBone &GetBoneAt(int index) const;
 	
 	/** \brief Prepare bone. */
 	void PrepareBone(int index);

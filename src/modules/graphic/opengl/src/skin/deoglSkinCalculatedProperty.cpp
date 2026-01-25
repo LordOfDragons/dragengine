@@ -75,25 +75,25 @@ decColor deoglSkinCalculatedProperty::Calculate(const deoglSkinState &skinState)
 	decColor color;
 	
 	if(pMappedComponent[0] != -1){
-		color.r = skinState.GetMappedAt(pMappedComponent[0]).GetValue();
+		color.r = skinState.GetMapped()[pMappedComponent[0]].GetValue();
 	}
 	
 	if(pMappedComponent[1] != -1){
-		color.g = skinState.GetMappedAt(pMappedComponent[1]).GetValue();
+		color.g = skinState.GetMapped()[pMappedComponent[1]].GetValue();
 		
 	}else{
 		color.g = color.r;
 	}
 	
 	if (pMappedComponent[2] != -1){
-		color.b = skinState.GetMappedAt(pMappedComponent[2]).GetValue();
+		color.b = skinState.GetMapped()[pMappedComponent[2]].GetValue();
 		
 	}else{
 		color.b = color.r;
 	}
 	
 	if(pMappedComponent[3] != -1){
-		color.a = skinState.GetMappedAt(pMappedComponent[3]).GetValue();
+		color.a = skinState.GetMapped()[pMappedComponent[3]].GetValue();
 		
 	}else{
 		color.a = color.r;

@@ -56,15 +56,7 @@ pNodeDeformer(nullptr),
 pGeometryID(nodeGeometry.GetID()),
 pModelID(0),
 pDeformerID(0),
-pVertexWeights(nullptr),
-pVertexWeightCount(0),
-pVertexWeightSize(0),
-pWeights(nullptr),
-pWeightCount(0),
-pWeightSize(0),
 pWeightMatchThreshold(0.001f),
-pVertices(nullptr),
-pVertexCount(0),
 pCulling(true)
 {
 	decTList<fbxConnection*> consGeometry;
@@ -131,7 +123,7 @@ pCulling(true)
 	const int count = propVertices.GetValueCount() / 3;
 	
 	if(count > 0){
-		pVertices = new sVertex[count];
+		pVertices.AddRange(count, {});
 		
 		int i;
 		for(i=0; i<count; i++){
@@ -142,7 +134,6 @@ pCulling(true)
 				propVertices.GetValueAtAsFloat(base + 1),
 				propVertices.GetValueAtAsFloat(base + 2));
 		}
-		pVertexCount = count;
 	}
 	
 	// properties
@@ -153,15 +144,6 @@ pCulling(true)
 }
 
 fbxModel::~fbxModel(){
-	if(pVertices){
-		delete [] pVertices;
-	}
-	if(pWeights){
-		delete [] pWeights;
-	}
-	if(pVertexWeights){
-		delete [] pVertexWeights;
-	}
 }
 
 
@@ -236,51 +218,48 @@ void fbxModel::BuildWeights(){
 		}
 	}
 	
-	for(i=0; i<pVertexCount; i++){
-		decTList<int> &weights = pVertices[i].weights;
+	pVertices.Visit([&](sVertex &vertex){
+		decTList<int> &weights = vertex.weights;
 		const int weightCount = weights.GetCount();
 		float weightSum = 0.0f;
 		
 		for(j=0; j<weightCount; j++){
-			weightSum += pVertexWeights[weights.GetAt(j)].GetWeight();
+			weightSum += pVertexWeights[weights[j]].GetWeight();
 		}
 		
 		if(weightSum < 0.001f){
-			pVertices[i].weightSet = -1;
-			continue;
+			vertex.weightSet = -1;
+			return;
 		}
 		
 		const float factor = 1.0f / weightSum;
 		for(j=0; j<weightCount; j++){
-			const deModelWeight &weight = pVertexWeights[weights.GetAt(j)];
+			const deModelWeight &weight = pVertexWeights[weights[j]];
 			pVertices[i].weights.SetAt(j, pAddWeight(weight.GetBone(), weight.GetWeight() * factor));
 		}
-	}
+	});
 	
 	int maxWGWeightCount = 0;
-	for(i=0; i<pVertexCount; i++){
-		maxWGWeightCount = decMath::max(maxWGWeightCount, pVertices[i].weights.GetCount());
-	}
+	pVertices.Visit([&](const sVertex &vertex){
+		maxWGWeightCount = decMath::max(maxWGWeightCount, vertex.weights.GetCount());
+	});
 	
 	for(i=0; i<maxWGWeightCount; i++){
 		const int firstWeightSet = pWeightSetsFirstWeight.GetCount();
 		const int wgWeightCount = i + 1;
 		
-		for(j=0; j<pVertexCount; j++){
-			if(wgWeightCount == pVertices[j].weights.GetCount()){
-				pVertices[j].weightSet = pAddWeightSet(pVertices[j].weights);
+		pVertices.Visit([&](sVertex &vertex){
+			if(wgWeightCount == vertex.weights.GetCount()){
+				vertex.weightSet = pAddWeightSet(vertex.weights);
 			}
-		}
+		});
 		
 		pWeightGroupsSetCount.Add(pWeightSetsFirstWeight.GetCount() - firstWeightSet);
 	}
 }
 
 const deModelWeight &fbxModel::GetWeightAt(int index) const{
-	if(index < 0 || index >= pWeightCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pWeights[index];
+	return pWeights.GetAt(index);
 }
 
 
@@ -300,18 +279,8 @@ void fbxModel::DebugPrintStructure(deBaseModule &module, const decString &prefix
 //////////////////////
 
 int fbxModel::pAddVertexWeight(int bone, float weight){
-	if(pVertexWeightCount == pVertexWeightSize){
-		const int newSize = pVertexWeightSize * 3 / 2 + 1;
-		deModelWeight * const newArray = new deModelWeight[newSize];
-		if(pVertexWeights){
-			memcpy(newArray, pVertexWeights, sizeof(deModelWeight) * pVertexWeightSize);
-			delete [] pVertexWeights;
-		}
-		pVertexWeights = newArray;
-		pVertexWeightSize = newSize;
-	}
-	
-	const int index = pVertexWeightCount++;
+	const int index = pVertexWeights.GetCount();
+	pVertexWeights.Add({});
 	pVertexWeights[index].SetBone(bone);
 	pVertexWeights[index].SetWeight(weight);
 	return index;
@@ -319,27 +288,16 @@ int fbxModel::pAddVertexWeight(int bone, float weight){
 
 int fbxModel::pAddWeight(int bone, float weight){
 	// find matching weight
-	int i;
-	for(i=0; i<pWeightCount; i++){
-		if(pWeights[i].GetBone() == bone
-		&& fabsf(pWeights[i].GetWeight() - weight) <= pWeightMatchThreshold){
-			return i;
-		}
+	int index = pWeights.IndexOfMatching([&](const deModelWeight &w){
+		return w.GetBone() == bone && fabsf(w.GetWeight() - weight) <= pWeightMatchThreshold;
+	});
+	if(index != -1){
+		return index;
 	}
 	
 	// add weight
-	if(pWeightCount == pWeightSize){
-		const int newSize = pWeightSize * 3 / 2 + 1;
-		deModelWeight * const newArray = new deModelWeight[newSize];
-		if(pWeights){
-			memcpy(newArray, pWeights, sizeof(deModelWeight) * pWeightSize);
-			delete [] pWeights;
-		}
-		pWeights = newArray;
-		pWeightSize = newSize;
-	}
-	
-	const int index = pWeightCount++;
+	index = pWeights.GetCount();
+	pWeights.Add({});
 	pWeights[index].SetBone(bone);
 	pWeights[index].SetWeight(weight);
 	return index;

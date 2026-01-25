@@ -177,7 +177,7 @@ const btVector3 &raySource, const btVector3 &rayTarget){
 		const decVector displacement((float)btDisplacement.x(), (float)btDisplacement.y(), (float)btDisplacement.z());
 		const decVector rayFrom((float)raySource.x(), (float)raySource.y(), (float)raySource.z());
 		
-		debpHTSCluster * const clusters = pSector->GetClusters();
+		debpHTSCluster * const clusters = pSector->GetClusters().GetArrayPointer();
 		int x, z;
 		
 		for(z=clusterFromZ; z<=clusterToZ; z++){
@@ -249,7 +249,7 @@ DEBUG_RESET_TIMERS;
 		const btVector3 btDisplacement = boxTarget - boxSource;
 		const decVector displacement((float)btDisplacement.x(), (float)btDisplacement.y(), (float)btDisplacement.z());
 		
-		debpHTSCluster * const clusters = pSector->GetClusters();
+		debpHTSCluster * const clusters = pSector->GetClusters().GetArrayPointer();
 		int x, z;
 		
 #ifdef DO_TIMING
@@ -336,7 +336,7 @@ DEBUG_PRINT_TIMER("processAllTriangles");
 void debpHeightTerrainShape::ProcessAllTrianglesIn(btTriangleCallback &callback, int fromX, int toX, int fromZ, int toZ) const{
 	// NOTE one triangle in bullet costs around 1.55ys
 	deHeightTerrainSector &engSector = *pSector->GetSector();
-	const decVector * const points = pSector->GetPoints();
+	const decVector * const points = pSector->GetPoints().GetArrayPointer();
 	btVector3 vertices[3];
 	int x, z;
 	

@@ -42,7 +42,7 @@ dedaiSpaceMeshCorner::dedaiSpaceMeshCorner() :
 pVertex(0),
 pEdge(0),
 pTypeNumber(0),
-pLink(-1),
+pLink(CORNER_NO_LINK),
 pEnabled(true){
 }
 

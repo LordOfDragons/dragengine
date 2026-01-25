@@ -265,7 +265,7 @@ void deWebp3DTarball::Save3DImage(decBaseFileWriter &file, const deImage &image)
 	DEASSERT_TRUE(image.GetBitCount() == 8)
 	DEASSERT_TRUE(image.GetComponentCount() >= 3)
 	
-	const char * const imageData = reinterpret_cast<char*>(image.GetData());
+	const char * const imageData = reinterpret_cast<const char*>(image.GetData());
 	const int strideLine = image.GetWidth() * image.GetComponentCount();
 	const int strideImage = strideLine * image.GetHeight();
 	const bool hasAlpha = image.GetComponentCount() == 4;
@@ -447,74 +447,58 @@ decBaseFileReader &file, int size, void *imagedata){
 	file.Read(data->GetPointer(), size);
 	
 	uint8_t *readTarget = nullptr;
-	sRGBA8 *bufferRGBA = nullptr;
-	sRGB8 *bufferRGB = nullptr;
+	decTList<sRGBA8> bufferRGBA;
+	decTList<sRGB8> bufferRGB;
 	uint8_t *result = nullptr;
-	int i;
 	
-	try{
-		const int pixelCount = info3D.width * info3D.height;
-		
-		if(info3D.hasAlpha){
-			if(info3D.isGrayscale){
-				bufferRGBA = new sRGBA8[pixelCount];
-				readTarget = (uint8_t*)bufferRGBA;
-				
-			}else{
-				readTarget = (uint8_t*)imagedata;
-			}
-			
-			result = WebPDecodeRGBAInto((const uint8_t*)data->GetPointer(), size,
-				readTarget, pixelCount * 4, info3D.width * 4);
+	const int pixelCount = info3D.width * info3D.height;
+	
+	if(info3D.hasAlpha){
+		if(info3D.isGrayscale){
+			bufferRGBA.AddRange(pixelCount, {});
+			readTarget = (uint8_t*)bufferRGBA.GetArrayPointer();
 			
 		}else{
-			if(info3D.isGrayscale){
-				bufferRGB = new sRGB8[pixelCount];
-				readTarget = (uint8_t*)bufferRGB;
-				
-			}else{
-				readTarget = (uint8_t*)imagedata;
-			}
-			
-			result = WebPDecodeRGBInto((const uint8_t*)data->GetPointer(), size,
-				readTarget, pixelCount * 3, info3D.width * 3);
+			readTarget = (uint8_t*)imagedata;
 		}
 		
-		if(!result){
-			DETHROW(deeInvalidFileFormat);
+		result = WebPDecodeRGBAInto((const uint8_t*)data->GetPointer(), size,
+			readTarget, pixelCount * 4, info3D.width * 4);
+		
+	}else{
+		if(info3D.isGrayscale){
+			bufferRGB.AddRange(pixelCount, {});
+			readTarget = (uint8_t*)bufferRGB.GetArrayPointer();
+			
+		}else{
+			readTarget = (uint8_t*)imagedata;
 		}
 		
-		if(bufferRGBA){
-			sGrayscaleAlpha8 *dest = (sGrayscaleAlpha8*)imagedata;
-			
-			for(i=0; i<pixelCount; i++){
-				dest[i].value = bufferRGBA[i].red;
-				dest[i].alpha = bufferRGBA[i].alpha;
-			}
-			
-			delete [] bufferRGBA;
-			bufferRGBA = nullptr;
-		}
+		result = WebPDecodeRGBInto((const uint8_t*)data->GetPointer(), size,
+			readTarget, pixelCount * 3, info3D.width * 3);
+	}
+	
+	if(!result){
+		DETHROW(deeInvalidFileFormat);
+	}
+	
+	if(bufferRGBA.IsNotEmpty()){
+		sGrayscaleAlpha8 *dest = (sGrayscaleAlpha8*)imagedata;
 		
-		if(bufferRGB){
-			sGrayscale8 *dest = (sGrayscale8*)imagedata;
-			
-			for(i=0; i<pixelCount; i++){
-				dest[i].value = bufferRGB[i].red;
-			}
-			
-			delete [] bufferRGB;
-			bufferRGB = nullptr;
+		int i;
+		for(i=0; i<pixelCount; i++){
+			dest[i].value = bufferRGBA[i].red;
+			dest[i].alpha = bufferRGBA[i].alpha;
 		}
+	}
+	
+	if(bufferRGB.IsNotEmpty()){
+		sGrayscale8 *dest = (sGrayscale8*)imagedata;
 		
-	}catch(const deException &){
-		if(bufferRGBA){
-			delete [] bufferRGBA;
+		int i;
+		for(i=0; i<pixelCount; i++){
+			dest[i].value = bufferRGB[i].red;
 		}
-		if(bufferRGB){
-			delete [] bufferRGB;
-		}
-		throw;
 	}
 }
 

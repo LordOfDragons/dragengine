@@ -22,15 +22,10 @@
  * SOFTWARE.
  */
 
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "deoglPixelBufferMipMap.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/math/decMath.h>
-
 
 
 // Class deoglPixelBufferMipMap
@@ -49,64 +44,39 @@ int width, int height, int depth, int maxLevel){
 	int levelWidth = width;
 	int count;
 	
-	pPixelBuffers = nullptr;
-	pPixelBufferCount = 0;
-	
 	count = (int)(floorf(log2f((float)((height > width) ? height : width))));
 	if(count > maxLevel){
 		count = maxLevel;
 	}
 	count++; // pixel buffer count is max mip map level + 1
 	
-	try{
-		pPixelBuffers = new deoglPixelBuffer::Ref[count];
+	pPixelBuffers.EnlargeCapacity(count);
+	
+	int i;
+	for(i=0; i<count; i++){
+		pPixelBuffers.Add(deoglPixelBuffer::Ref::New(format, levelWidth, levelHeight, depth));
 		
-		for(pPixelBufferCount=0; pPixelBufferCount<count; pPixelBufferCount++){
-			pPixelBuffers[pPixelBufferCount] = deoglPixelBuffer::Ref::New(format, levelWidth, levelHeight, depth);
-			
-			levelWidth >>= 1;
-			if(levelWidth < 1){
-				levelWidth = 1;
-			}
-			
-			levelHeight >>= 1;
-			if(levelHeight < 1){
-				levelHeight = 1;
-			}
+		levelWidth >>= 1;
+		if(levelWidth < 1){
+			levelWidth = 1;
 		}
 		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
+		levelHeight >>= 1;
+		if(levelHeight < 1){
+			levelHeight = 1;
+		}
 	}
 }
 
-deoglPixelBufferMipMap::~deoglPixelBufferMipMap(){
-	pCleanUp();
-}
+deoglPixelBufferMipMap::~deoglPixelBufferMipMap() = default;
 
 
 
 // Management
 ///////////////
 
-const deoglPixelBuffer::Ref &deoglPixelBufferMipMap::GetPixelBuffer(int level) const{
-	if(level < 0 || level >= pPixelBufferCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return pPixelBuffers[level];
-}
-
 void deoglPixelBufferMipMap::ReducePixelBufferCount(int reduceByCount){
-	if(reduceByCount < 0){
-		DETHROW(deeInvalidParam);
-	}
-	
-	const int targetCount = decMath::max(pPixelBufferCount - reduceByCount, 0);
-	while(pPixelBufferCount > targetCount){
-		pPixelBuffers[--pPixelBufferCount] = nullptr;
-	}
+	pPixelBuffers.RemoveTail(reduceByCount);
 }
 
 
@@ -116,7 +86,7 @@ void deoglPixelBufferMipMap::CreateMipMaps(){
 }
 
 void deoglPixelBufferMipMap::CreateMipMaps(bool maskRed, bool maskGreen, bool maskBlue, bool maskAlpha){
-	if(pPixelBufferCount < 2){
+	if(pPixelBuffers.GetCount() < 2){
 		return;
 	}
 	
@@ -126,7 +96,7 @@ void deoglPixelBufferMipMap::CreateMipMaps(bool maskRed, bool maskGreen, bool ma
 	int sourceOffset2;
 	int sourceOffset3;
 	bool floatData;
-	int i, x, y, z;
+	int x, y, z;
 	
 	pGetTypeParams(basePixelBuffer.GetFormat(), componentCount, floatData);
 	
@@ -143,9 +113,8 @@ void deoglPixelBufferMipMap::CreateMipMaps(bool maskRed, bool maskGreen, bool ma
 		maskAlpha = false;
 	}
 	
-	for(i=1; i<pPixelBufferCount; i++){
-		const deoglPixelBuffer &sourcePixelBuffer = pPixelBuffers[i - 1];
-		deoglPixelBuffer &destinationPixelBuffer = pPixelBuffers[i];
+	pPixelBuffers.VisitIndexed(1, [&](int i, deoglPixelBuffer &destinationPixelBuffer){
+		deoglPixelBuffer &sourcePixelBuffer = pPixelBuffers[i - 1];
 		const int destinationStride = destinationPixelBuffer.GetWidth() * componentCount;
 		const int sourceStride = 2 * sourcePixelBuffer.GetWidth() * componentCount;
 		const int sourceScale = 2 * componentCount;
@@ -236,7 +205,7 @@ void deoglPixelBufferMipMap::CreateMipMaps(bool maskRed, bool maskGreen, bool ma
 				}
 			}
 		}
-	}
+	});
 }
 
 void deoglPixelBufferMipMap::CreateMipMapsMax(){
@@ -244,7 +213,7 @@ void deoglPixelBufferMipMap::CreateMipMapsMax(){
 }
 
 void deoglPixelBufferMipMap::CreateMipMapsMax(bool maskRed, bool maskGreen, bool maskBlue, bool maskAlpha){
-	if(pPixelBufferCount < 2){
+	if(pPixelBuffers.GetCount() < 2){
 		return;
 	}
 	
@@ -254,7 +223,7 @@ void deoglPixelBufferMipMap::CreateMipMapsMax(bool maskRed, bool maskGreen, bool
 	int sourceOffset2;
 	int sourceOffset3;
 	bool floatData;
-	int i, x, y, z;
+	int x, y, z;
 	
 	pGetTypeParams(basePixelBuffer.GetFormat(), componentCount, floatData);
 	
@@ -271,9 +240,8 @@ void deoglPixelBufferMipMap::CreateMipMapsMax(bool maskRed, bool maskGreen, bool
 		maskAlpha = false;
 	}
 	
-	for(i=1; i<pPixelBufferCount; i++){
-		const deoglPixelBuffer &sourcePixelBuffer = pPixelBuffers[i - 1];
-		deoglPixelBuffer &destinationPixelBuffer = pPixelBuffers[i];
+	pPixelBuffers.VisitIndexed(1, [&](int i, deoglPixelBuffer &destinationPixelBuffer){
+		deoglPixelBuffer &sourcePixelBuffer = pPixelBuffers[i - 1];
 		const int destinationStride = destinationPixelBuffer.GetWidth() * componentCount;
 		const int sourceStride = 2 * sourcePixelBuffer.GetWidth() * componentCount;
 		const int sourceScale = 2 * componentCount;
@@ -436,7 +404,7 @@ void deoglPixelBufferMipMap::CreateMipMapsMax(bool maskRed, bool maskGreen, bool
 				}
 			}
 		}
-	}
+	});
 }
 
 void deoglPixelBufferMipMap::CreateMipMapsMin(){
@@ -444,7 +412,7 @@ void deoglPixelBufferMipMap::CreateMipMapsMin(){
 }
 
 void deoglPixelBufferMipMap::CreateMipMapsMin(bool maskRed, bool maskGreen, bool maskBlue, bool maskAlpha){
-	if(pPixelBufferCount < 2){
+	if(pPixelBuffers.GetCount() < 2){
 		return;
 	}
 	
@@ -454,7 +422,7 @@ void deoglPixelBufferMipMap::CreateMipMapsMin(bool maskRed, bool maskGreen, bool
 	int sourceOffset2;
 	int sourceOffset3;
 	bool floatData;
-	int i, x, y, z;
+	int x, y, z;
 	
 	pGetTypeParams(basePixelBuffer.GetFormat(), componentCount, floatData);
 	
@@ -471,9 +439,8 @@ void deoglPixelBufferMipMap::CreateMipMapsMin(bool maskRed, bool maskGreen, bool
 		maskAlpha = false;
 	}
 	
-	for(i=1; i<pPixelBufferCount; i++){
-		const deoglPixelBuffer &sourcePixelBuffer = pPixelBuffers[i - 1];
-		deoglPixelBuffer &destinationPixelBuffer = pPixelBuffers[i];
+	pPixelBuffers.VisitIndexed(1, [&](int i, deoglPixelBuffer &destinationPixelBuffer){
+		deoglPixelBuffer &sourcePixelBuffer = pPixelBuffers[i - 1];
 		const int destinationStride = destinationPixelBuffer.GetWidth() * componentCount;
 		const int sourceStride = 2 * sourcePixelBuffer.GetWidth() * componentCount;
 		const int sourceScale = 2 * componentCount;
@@ -636,18 +603,18 @@ void deoglPixelBufferMipMap::CreateMipMapsMin(bool maskRed, bool maskGreen, bool
 				}
 			}
 		}
-	}
+	});
 }
 
 void deoglPixelBufferMipMap::CreateNormalMipMaps(){
-	if(pPixelBufferCount < 2){
+	if(pPixelBuffers.GetCount() < 2){
 		return;
 	}
 	
 	const deoglPixelBuffer &basePixelBuffer = pPixelBuffers[0];
 	int componentCount;
 	bool floatData;
-	int i, x, y, z;
+	int x, y, z;
 	
 	pGetTypeParams(basePixelBuffer.GetFormat(), componentCount, floatData);
 	
@@ -673,9 +640,8 @@ void deoglPixelBufferMipMap::CreateNormalMipMaps(){
 	float dotMin;
 	//float dot;
 	
-	for(i=1; i<pPixelBufferCount; i++){
-		const deoglPixelBuffer &sourcePixelBuffer = pPixelBuffers[i - 1];
-		deoglPixelBuffer &destinationPixelBuffer = pPixelBuffers[i];
+	pPixelBuffers.VisitIndexed(1, [&](int i, deoglPixelBuffer &destinationPixelBuffer){
+		deoglPixelBuffer &sourcePixelBuffer = pPixelBuffers[i - 1];
 		const int destinationStride = destinationPixelBuffer.GetWidth() * componentCount;
 		const int sourceStride = 2 * sourcePixelBuffer.GetWidth() * componentCount;
 		const int sourceScale = 2 * componentCount;
@@ -959,21 +925,21 @@ void deoglPixelBufferMipMap::CreateNormalMipMaps(){
 				}
 			}
 		}
-	}
+	});
 }
 
 void deoglPixelBufferMipMap::CreateRoughnessMipMaps(deoglPixelBufferMipMap &normalPixeBufferMipMap){
-	if(pPixelBufferCount < 2){
+	if(pPixelBuffers.GetCount() < 2){
 		return;
 	}
 	
-	const deoglPixelBuffer &baseNormalPixelBuffer = *normalPixeBufferMipMap.GetPixelBuffer(0);
-	const deoglPixelBuffer &basePixelBuffer = pPixelBuffers[0];
+	const deoglPixelBuffer &baseNormalPixelBuffer = normalPixeBufferMipMap.pPixelBuffers.First();
+	const deoglPixelBuffer &basePixelBuffer = pPixelBuffers.First();
 	int normalComponentCount;
 	int componentCount;
 	bool normalFloatData;
 	bool floatData;
-	int i, x, y, z;
+	int x, y, z;
 	
 	pGetTypeParams(basePixelBuffer.GetFormat(), componentCount, floatData);
 	pGetTypeParams(baseNormalPixelBuffer.GetFormat(), normalComponentCount, normalFloatData);
@@ -996,8 +962,8 @@ void deoglPixelBufferMipMap::CreateRoughnessMipMaps(deoglPixelBufferMipMap &norm
 	const int baseNormalHeight = baseNormalPixelBuffer.GetHeight();
 	const int baseNormalWidth = baseNormalPixelBuffer.GetWidth();
 	const int baseNormalMipMapSize = (baseNormalWidth > baseNormalHeight) ? baseNormalWidth : baseNormalHeight;
-	const int baseNormalLevel =  pPixelBufferCount - 1 - (int)floorf(log2f((float)baseNormalMipMapSize) + 0.5f);
-	const int normalMaxLevel = normalPixeBufferMipMap.GetPixelBufferCount() - 1;
+	const int baseNormalLevel =  pPixelBuffers.GetCount() - 1 - (int)floorf(log2f((float)baseNormalMipMapSize) + 0.5f);
+	const int normalMaxLevel = normalPixeBufferMipMap.pPixelBuffers.GetCount() - 1;
 	const float byteFactor = 1.0f / 255.0f;
 	const GLfloat *normalPointerOrgFloat = nullptr;
 	const GLubyte *normalPointerOrgByte = nullptr;
@@ -1028,10 +994,9 @@ void deoglPixelBufferMipMap::CreateRoughnessMipMaps(deoglPixelBufferMipMap &norm
 	float dot;
 	
 	// process the roughness mip map levels
-	for(i=1; i<pPixelBufferCount; i++){
+	pPixelBuffers.VisitIndexed(1, [&](int i, deoglPixelBuffer &destinationPixelBuffer){
 		//const deoglPixelBuffer &sourceNormalPixelBuffer = *normalPixeBufferMipMap.GetPixelBuffer( i - 1 );
-		const deoglPixelBuffer &sourcePixelBuffer = pPixelBuffers[i - 1];
-		deoglPixelBuffer &destinationPixelBuffer = pPixelBuffers[i];
+		deoglPixelBuffer &sourcePixelBuffer = pPixelBuffers[i - 1];
 		const int destinationStride = destinationPixelBuffer.GetWidth() * componentCount;
 		const int sourceStride = 2 * sourcePixelBuffer.GetWidth() * componentCount;
 		const int sourceScale = 2 * componentCount;
@@ -1106,7 +1071,7 @@ void deoglPixelBufferMipMap::CreateRoughnessMipMaps(deoglPixelBufferMipMap &norm
 		normalLevel = baseNormalLevel + i;
 		
 		if(normalLevel > 0 && normalLevel <= normalMaxLevel){ // perhaps < normalMaxLevel
-			const deoglPixelBuffer &normalPixelBuffer1 = *normalPixeBufferMipMap.GetPixelBuffer(normalLevel - 1);
+			deoglPixelBuffer &normalPixelBuffer1 = *normalPixeBufferMipMap.pPixelBuffers[normalLevel - 1];
 			
 			// this is a shortcut to avoid complicated calculations. if the source normal mip map level has any
 			// dimension less than 2 (hence less than 2x2) the texture coordinate transformation factor has to
@@ -1119,7 +1084,7 @@ void deoglPixelBufferMipMap::CreateRoughnessMipMaps(deoglPixelBufferMipMap &norm
 				// for the offsets we use the same 2x2 pattern even if the normal mip map level and roughness
 				// mip map level dimensions do not match. this is a rare case and leads anyways to debatable
 				// results hence using the simple and fast 2x2 version is well enough
-				const deoglPixelBuffer &normalPixelBuffer2 = *normalPixeBufferMipMap.GetPixelBuffer(normalLevel);
+				const deoglPixelBuffer &normalPixelBuffer2 = *normalPixeBufferMipMap.pPixelBuffers[normalLevel];
 				normalXTransform = (float)((normalPixelBuffer2.GetWidth() - 1) * 2) / (float)(width - 1);
 				normalYTransform = (float)((normalPixelBuffer2.GetHeight() - 1) * 2) / (float)(height - 1);
 				normalStride = normalPixelBuffer1.GetWidth() * normalComponentCount;
@@ -1287,19 +1252,13 @@ void deoglPixelBufferMipMap::CreateRoughnessMipMaps(deoglPixelBufferMipMap &norm
 				}
 			}
 		}
-	}
+	});
 }
 
 
 
 // Private Functions
 //////////////////////
-
-void deoglPixelBufferMipMap::pCleanUp(){
-	if(pPixelBuffers){
-		delete [] pPixelBuffers;
-	}
-}
 
 void deoglPixelBufferMipMap::pGetTypeParams(int pixelBufferType, int &componentCount, bool &floatData) const{
 	if(pixelBufferType == deoglPixelBuffer::epfByte1){

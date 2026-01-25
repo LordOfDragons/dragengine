@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglSPBlockSSBO.h"
 #include "../deoglShaderCompiled.h"
 #include "../../capabilities/deoglCapabilities.h"
@@ -61,8 +57,6 @@ pBindingPointUBO(0),
 pBindingPointAtomic(0),
 pCompact(true),
 pAllocateBuffer(true),
-pWriteBuffer(nullptr),
-pWriteBufferCapacity(0),
 pPersistentMapped(nullptr),
 pMemoryGPUSSBO(0)
 {
@@ -82,8 +76,7 @@ pBindingPointUBO(paramBlock.pBindingPointUBO),
 pBindingPointAtomic(paramBlock.pBindingPointAtomic),
 pCompact(paramBlock.pCompact),
 pAllocateBuffer(true),
-pWriteBuffer(nullptr),
-pWriteBufferCapacity(0),
+pWriteBuffer(paramBlock.pWriteBuffer),
 pPersistentMapped(nullptr),
 pMemoryGPUSSBO(paramBlock.pMemoryGPUSSBO)
 {
@@ -103,8 +96,7 @@ pBindingPointUBO(paramBlock.pBindingPointUBO),
 pBindingPointAtomic(paramBlock.pBindingPointAtomic),
 pCompact(paramBlock.pCompact),
 pAllocateBuffer(true),
-pWriteBuffer(nullptr),
-pWriteBufferCapacity(0),
+pWriteBuffer(paramBlock.pWriteBuffer),
 pPersistentMapped(nullptr),
 pMemoryGPUSSBO(paramBlock.pMemoryGPUSSBO)
 {
@@ -116,9 +108,6 @@ pMemoryGPUSSBO(paramBlock.pMemoryGPUSSBO)
 deoglSPBlockSSBO::~deoglSPBlockSSBO(){
 	if(IsBufferMapped()){
 		pClearMapped();
-	}
-	if(pWriteBuffer){
-		delete [] pWriteBuffer;
 	}
 	
 	deoglDelayedOperations &dops = GetRenderThread().GetDelayedOperations();
@@ -250,7 +239,7 @@ void deoglSPBlockSSBO::MapBuffer(int element, int count){
 	EnsureBuffer();
 	
 	pGrowWriteBuffer(GetElementStride() * count);
-	pSetMapped(pWriteBuffer, element, count);
+	pSetMapped(pWriteBuffer.GetArrayPointer(), element, count);
 }
 
 void deoglSPBlockSSBO::UnmapBuffer(){
@@ -270,15 +259,18 @@ void deoglSPBlockSSBO::UnmapBuffer(){
 		if(pType == etStatic){
 			// EnsureBuffer does not create a buffer since we need to upload the data
 			// while creating the buffer. writing it afterwards is an error
-			OGL_CHECK(renderThread, pglNamedBufferStorage(pSSBO, GetBufferSize(), pWriteBuffer, 0));
+			OGL_CHECK(renderThread, pglNamedBufferStorage(
+				pSSBO, GetBufferSize(), pWriteBuffer.GetArrayPointer(), 0));
 			
 		}else{
-			OGL_CHECK(renderThread, pglNamedBufferSubData(pSSBO, offset, size, pWriteBuffer));
+			OGL_CHECK(renderThread, pglNamedBufferSubData(
+				pSSBO, offset, size, pWriteBuffer.GetArrayPointer()));
 		}
 		
 	}else{
 		OGL_CHECK(renderThread, pglBindBufferRange(GL_SHADER_STORAGE_BUFFER, 0, pSSBO, offset, size));
-		OGL_CHECK(renderThread, pglBufferSubData(GL_SHADER_STORAGE_BUFFER, offset, size, pWriteBuffer));
+		OGL_CHECK(renderThread, pglBufferSubData(GL_SHADER_STORAGE_BUFFER,
+			offset, size, pWriteBuffer.GetArrayPointer()));
 		OGL_CHECK(GetRenderThread(), pglBindBuffer(GL_SHADER_STORAGE_BUFFER, 0));
 	}
 	
@@ -609,7 +601,7 @@ deoglShaderParameterBlock::Ref deoglSPBlockSSBO::Copy() const{
 void deoglSPBlockSSBO::MapToStd430(){
 	DEASSERT_FALSE(GetMappedBuffer())
 	
-	const int parameterCount = GetParameterCount();
+	const int parameterCount = GetParameters().GetCount();
 	const bool rowMajor = GetRowMajor();
 	
 	int i, alignment, stride, adjust, chunkOffset = 0;
@@ -674,12 +666,12 @@ void deoglSPBlockSSBO::DebugPrintConfig(const char *name){
 	
 	GetRenderThread().GetLogger().LogInfoFormat("Shader Parameter Block '%s' (%p):"
 		" parameters=%d ssbo=%u binding=%u elementCount=%d elementStride=%d"
-		" offsetPadding=%d size=%d %s", name, this, GetParameterCount(), pSSBO, pBindingPoint,
+		" offsetPadding=%d size=%d %s", name, this, GetParameters().GetCount(), pSSBO, pBindingPoint,
 		GetElementCount(), GetElementStride(), GetOffsetPadding(), GetBufferSize(),
 		GetRowMajor() ? "rowMajor" : "colMajor");
 	
-	for(i=0; i<GetParameterCount(); i++){
-		const deoglSPBParameter &parameter = GetParameterAt(i);
+	for(i=0; i<GetParameters().GetCount(); i++){
+		const deoglSPBParameter &parameter = GetParameters()[i];
 		GetRenderThread().GetLogger().LogInfoFormat("- Parameter %i: %s%ix%i[%i]"
 			" offset=%u stride=%u arraystride=%i size=%u", i,
 				valueTypeNames[parameter.GetValueType()],
@@ -706,18 +698,9 @@ void deoglSPBlockSSBO::pUpdateBufferSize(){
 //////////////////////
 
 void deoglSPBlockSSBO::pGrowWriteBuffer(int size){
-	if(size <= pWriteBufferCapacity){
-		return;
+	if(size > pWriteBuffer.GetCount()){
+		pWriteBuffer.SetCount(size, 0);
 	}
-	
-	if(pWriteBuffer){
-		delete [] pWriteBuffer;
-		pWriteBuffer = nullptr;
-		pWriteBufferCapacity = 0;
-	}
-	
-	pWriteBuffer = new char[size];
-	pWriteBufferCapacity = size;
 }
 
 void deoglSPBlockSSBO::pEnsureSSBO(){

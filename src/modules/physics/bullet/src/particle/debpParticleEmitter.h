@@ -28,6 +28,7 @@
 #include "LinearMath/btVector3.h"
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/resources/particle/deParticleEmitter.h>
 #include <dragengine/systems/modules/physics/deBasePhysicsParticleEmitter.h>
 
@@ -44,8 +45,7 @@ private:
 	dePhysicsBullet *pBullet;
 	deParticleEmitter *pEmitter;
 	
-	debpParticleEmitterType *pTypes;
-	int pTypeCount;
+	decTList<debpParticleEmitterType> pTypes;
 	
 	bool pDirtyParameters;
 	bool pDirtyGraRequests;
@@ -66,11 +66,9 @@ public:
 	/** Retrieves the force field. */
 	inline deParticleEmitter *GetEmitter() const{ return pEmitter; }
 	
-	/** Retrieves the number of types. */
-	inline int GetTypeCount() const{ return pTypeCount; }
-	/** Retrieves the type at the given position. */
-	debpParticleEmitterType &GetTypeAt(int index);
-	const debpParticleEmitterType &GetTypeAt(int index) const;
+	/** Types. */
+	inline decTList<debpParticleEmitterType> &GetTypes(){ return pTypes; }
+	inline const decTList<debpParticleEmitterType> &GetTypes() const{ return pTypes; }
 	
 	/** Update parameters. */
 	void UpdateParameters();
@@ -87,7 +85,6 @@ public:
 	/*@}*/
 	
 private:
-	void pCleanUp();
 	void pUpdateTypes();
 };
 

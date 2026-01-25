@@ -220,10 +220,7 @@ dexsiDevice(module, esLibevdev),
 
 pEvdevPath(pathDevice),
 pEvdevFile(-1),
-pEvdevDevice(nullptr),
-pEvdevMapRelAxis(nullptr),
-pEvdevMapAbsAxis(nullptr),
-pEvdevMapKeys(nullptr)
+pEvdevDevice(nullptr)
 {
 	// libevdev version
 	// https://www.freedesktop.org/software/libevdev/doc/latest/index.html
@@ -344,16 +341,10 @@ pEvdevMapKeys(nullptr)
 	}
 	
 	if(hasRelativeAxes){
-		pEvdevMapRelAxis = new short[REL_MAX];
-		for(i=0; i<REL_MAX; i++){
-			pEvdevMapRelAxis[i] = -1;
-		}
+		pEvdevMapRelAxis.AddRange(REL_MAX, -1);
 	}
 	if(hasAbsoluteAxes){
-		pEvdevMapAbsAxis = new short[ABS_MAX];
-		for(i=0; i<ABS_MAX; i++){
-			pEvdevMapAbsAxis[i] = -1;
-		}
+		pEvdevMapAbsAxis.AddRange(ABS_MAX, -1);
 	}
 	
 	int indexAxis = 0;
@@ -393,15 +384,13 @@ pEvdevMapKeys(nullptr)
 				string.Format("ra%d", i);
 				axis->SetID(string);
 				
-				string.Format("%d", indexAxis + 1);
-				axis->SetDisplayText(string);
-			}
-			
-			pEvdevMapRelAxis[i] = indexAxis++;
+			string.Format("%d", indexAxis + 1);
+			axis->SetDisplayText(string);
 		}
+		
+		pEvdevMapRelAxis.SetAt(i, indexAxis++);
 	}
-	
-	if(hasAbsoluteAxes){
+}	if(hasAbsoluteAxes){
 		int nextGeneric = 0;
 		
 		for(i=0; i<ABS_MAX; i++){
@@ -468,16 +457,14 @@ pEvdevMapKeys(nullptr)
 			
 			if(axis->GetType() == deInputDeviceAxis::eatStick){
 				// libevdev likes to lie about the deadzone of input devices. ensure the deadzone
-				// is not smaller than a specific percentage of the total range. typical deadzone
-				// ranges are 0.2 - 0.25 of half-range
-				axis->LimitFlat(0.1f);
-			}
-			
-			pEvdevMapAbsAxis[i] = indexAxis++;
+			// is not smaller than a specific percentage of the total range. typical deadzone
+			// ranges are 0.2 - 0.25 of half-range
+			axis->LimitFlat(0.1f);
 		}
+		
+		pEvdevMapAbsAxis.SetAt(i, indexAxis++);
 	}
-	
-	// keys and buttons
+}	// keys and buttons
 	if(hasKeys){
 		int countButtons = 0;
 		
@@ -487,10 +474,7 @@ pEvdevMapKeys(nullptr)
 			}
 		}
 		
-		pEvdevMapKeys = new short[KEY_MAX - BTN_MISC];
-		for(i=BTN_MISC; i<KEY_MAX; i++){
-			pEvdevMapKeys[i - BTN_MISC] = -1;
-		}
+		pEvdevMapKeys.AddRange(KEY_MAX - BTN_MISC, -1);
 		
 		int indexButton = 0;
 		int nextGeneric = 0;
@@ -528,15 +512,13 @@ pEvdevMapKeys(nullptr)
 				string.Format("bg%d", nextGeneric++);
 				button->SetID(string);
 				
-				string.Format("%d", nextGeneric);
-				button->SetDisplayText(string);
-			}
-			
-			pEvdevMapKeys[i - BTN_MISC] = indexButton++;
+			string.Format("%d", nextGeneric);
+			button->SetDisplayText(string);
 		}
+		
+		pEvdevMapKeys.SetAt(i - BTN_MISC, indexButton++);
 	}
-	
-	/*
+}	/*
 	if(libevdev_has_event_type(evdev, EV_SW)){
 		pModule.LogInfo("  switches:");
 		for(j=0; j<SW_MAX; j++){
@@ -566,15 +548,6 @@ pEvdevMapKeys(nullptr)
 }
 
 dexsiDeviceLibEvent::~dexsiDeviceLibEvent(){
-	if(pEvdevMapKeys){
-		delete [] pEvdevMapKeys;
-	}
-	if(pEvdevMapAbsAxis){
-		delete [] pEvdevMapAbsAxis;
-	}
-	if(pEvdevMapRelAxis){
-		delete [] pEvdevMapRelAxis;
-	}
 	if(pEvdevDevice){
 		libevdev_free(pEvdevDevice);
 	}
@@ -605,27 +578,23 @@ void dexsiDeviceLibEvent::Update(){
 			continue;
 			
 		}else{
-			switch(ev.type){
-			case EV_REL:
-				if(pEvdevMapRelAxis && ev.code >= 0 && ev.code < REL_MAX
-				&& pEvdevMapRelAxis[ev.code] != -1){
-					GetAxes().GetAt(pEvdevMapRelAxis[ev.code])->EvdevProcessEvent(*this, ev);
-				}
-				break;
+		switch(ev.type){
+		case EV_REL:
+			if(pEvdevMapRelAxis.IsNotEmpty() && ev.code >= 0 && ev.code < REL_MAX
+			&& pEvdevMapRelAxis[ev.code] != -1){
+				GetAxes().GetAt(pEvdevMapRelAxis[ev.code])->EvdevProcessEvent(*this, ev);
+			}
+			break;		case EV_ABS:
+			if(pEvdevMapAbsAxis.IsNotEmpty() && ev.code >= 0 && ev.code < ABS_MAX
+			&& pEvdevMapAbsAxis[ev.code] != -1){
+				GetAxes().GetAt(pEvdevMapAbsAxis[ev.code])->EvdevProcessEvent(*this, ev);
+			}
+			break;		case EV_KEY:
+			if(pEvdevMapKeys.IsNotEmpty() && ev.code >= BTN_MISC && ev.code < KEY_MAX
+			&& pEvdevMapKeys[ev.code - BTN_MISC] != -1){
+				const int code = pEvdevMapKeys[ev.code - BTN_MISC];
 				
-			case EV_ABS:
-				if(pEvdevMapAbsAxis && ev.code >= 0 && ev.code < ABS_MAX
-				&& pEvdevMapAbsAxis[ev.code] != -1){
-					GetAxes().GetAt(pEvdevMapAbsAxis[ev.code])->EvdevProcessEvent(*this, ev);
-				}
-				break;
-				
-			case EV_KEY:
-				if(pEvdevMapKeys && ev.code >= BTN_MISC && ev.code < KEY_MAX
-				&& pEvdevMapKeys[ev.code - BTN_MISC] != -1){
-					const int code = pEvdevMapKeys[ev.code - BTN_MISC];
-					
-					switch(ev.value){
+				switch(ev.value){
 					case 0: // release
 						GetButtons().GetAt(code)->SetPressed(false);
 						module.AddButtonReleased(deviceIndex, code, ev.time);

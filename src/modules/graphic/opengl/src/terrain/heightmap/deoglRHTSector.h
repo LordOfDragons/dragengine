@@ -28,6 +28,7 @@
 #include "../../deoglBasics.h"
 #include "../../texture/pixelbuffer/deoglPixelBuffer.h"
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/deObject.h>
@@ -70,20 +71,17 @@ private:
 	deoglTexture *pMasks[OGLHTS_MAX_MASK_TEXTURES];
 	deoglPixelBuffer::Ref pPixBufMasks[OGLHTS_MAX_MASK_TEXTURES];
 	
-	float *pHeights;
+	decTList<float> pHeights;
 	float pMinHeight;
 	float pMaxHeight;
 	
-	GLuint *pVBODataPoints1;
-	int pVBODataPoints1Count;
-	GLuint *pVBODataPoints2;
-	int pVBODataPoints2Count;
-	GLuint *pVBODataFaces;
-	int pVBODataFacesCount;
+	decTList<GLuint> pVBODataPoints1;
+	decTList<GLuint> pVBODataPoints2;
+	decTList<GLuint> pVBODataFaces;
 	
 	bool pDirtyPoints;
 	
-	deoglHTSCluster *pClusters;
+	decTList<deoglHTSCluster> pClusters;
 	int pClusterCount;
 	
 	bool pValid;
@@ -167,7 +165,8 @@ public:
 	
 	
 	/** Heights. */
-	inline float *GetHeights() const{ return pHeights; }
+	inline float *GetHeights(){ return pHeights.GetArrayPointer(); }
+	inline const float *GetHeights() const{ return pHeights.GetArrayPointer(); }
 	
 	/** Minimum height. */
 	inline float GetMinHeight() const{ return pMinHeight; }
@@ -187,11 +186,15 @@ public:
 	inline int GetClusterCount() const{ return pClusterCount; }
 	
 	/** Cluster at location. */
-	deoglHTSCluster &GetClusterAt(int x, int z) const;
-	deoglHTSCluster &GetClusterAt(const decPoint &coordinate) const;
+	deoglHTSCluster &GetClusterAt(int x, int z);
+	const deoglHTSCluster &GetClusterAt(int x, int z) const;
+	
+	deoglHTSCluster &GetClusterAt(const decPoint &coordinate);
+	const deoglHTSCluster &GetClusterAt(const decPoint &coordinate) const;
 	
 	/** List of clusters. */
-	inline deoglHTSCluster *GetClusters() const{ return pClusters; }
+	inline deoglHTSCluster *GetClusters(){ return pClusters.GetArrayPointer(); }
+	inline const deoglHTSCluster *GetClusters() const{ return pClusters.GetArrayPointer(); }
 	
 	/** Clusters update world compute element textures. */
 	void ClustersUpdateWorldComputeElementTextures();

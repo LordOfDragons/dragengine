@@ -27,6 +27,7 @@
 
 #include "deoglPixelBuffer.h"
 
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
@@ -40,8 +41,7 @@ public:
 	
 	
 private:
-	deoglPixelBuffer::Ref *pPixelBuffers;
-	int pPixelBufferCount;
+	decTList<deoglPixelBuffer::Ref> pPixelBuffers;
 	
 	
 	
@@ -61,10 +61,8 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** Retrieves the number of pixel buffers which is the mip map level count. */
-	inline int GetPixelBufferCount() const{ return pPixelBufferCount; }
-	/** Retrieves the pixel buffer for a mip map level. */
-	const deoglPixelBuffer::Ref &GetPixelBuffer(int level) const;
+	/** Pixel buffers. */
+	inline const decTList<deoglPixelBuffer::Ref> &GetPixelBuffers() const{ return pPixelBuffers; }
 	
 	/** Reduce maximum mip map level count. */
 	void ReducePixelBufferCount(int reduceByCount);
@@ -113,7 +111,6 @@ public:
 	
 	
 private:
-	void pCleanUp();
 	void pGetTypeParams(int pixelBufferType, int &componentCount, bool &floatData) const;
 };
 

@@ -51,8 +51,7 @@ private:
 	float pStartAngle;
 	float pEndAngle;
 	
-	decVector2 *pPoints;
-	int pPointCount;
+	decTList<decVector2> pPoints;
 	
 	deoglSharedVBOBlock::Ref pVBOBlock;
 	bool pDirtyVBOBlock;
@@ -182,17 +181,14 @@ public:
 	
 	/** \name Points */
 	/*@{*/
-	/** Number of points. */
-	inline int GetPointCount() const{ return pPointCount; }
+	/** Points. */
+	inline decTList<decVector2> &GetPoints(){ return pPoints; }
+	inline const decTList<decVector2> &GetPoints() const{ return pPoints; }
 	
 	/**
 	 * Set number of points.
-	 * \throws deeInvalidParam \em count is less than 0.
 	 */
 	void SetPointCount(int count);
-	
-	/** Points. */
-	inline decVector2 *GetPoints() const{ return pPoints; }
 	
 	
 	

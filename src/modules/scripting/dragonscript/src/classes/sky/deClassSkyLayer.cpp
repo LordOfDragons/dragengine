@@ -24,11 +24,6 @@
 
 #include <new>
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
-
 #include "deClassSky.h"
 #include "deClassSkyBody.h"
 #include "deClassSkyLayer.h"
@@ -45,6 +40,7 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/resources/sky/deSky.h>
 #include <dragengine/resources/sky/deSkyLayer.h>
+#include <dragengine/resources/sky/deSkyLayerBody.h>
 
 #include <libdscript/exceptions.h>
 #include <libdscript/packages/default/dsClassEnumeration.h>
@@ -393,7 +389,7 @@ void deClassSkyLayer::nfGetBodyCount::RunFunction(dsRunTime *rt, dsValue *myself
 	const sSkyLayerNatDat &nd = dedsGetNativeData<sSkyLayerNatDat>(p_GetNativeData(myself));
 	const deSkyLayer &layer = nd.sky->GetLayers().GetAt(nd.index);
 	
-	rt->PushInt(layer.GetBodyCount());
+	rt->PushInt(layer.GetBodies().GetCount());
 }
 
 // public func void setBodyCount( int count )
@@ -406,7 +402,7 @@ void deClassSkyLayer::nfSetBodyCount::RunFunction(dsRunTime *rt, dsValue *myself
 	const sSkyLayerNatDat &nd = dedsGetNativeData<sSkyLayerNatDat>(p_GetNativeData(myself));
 	deSkyLayer &layer = nd.sky->GetLayers().GetAt(nd.index);
 	
-	layer.SetBodyCount(rt->GetValue(0)->GetInt());
+	layer.GetBodies().SetAll(rt->GetValue(0)->GetInt(), {});
 }
 
 // public func SkyBody getBodyAt( int body )

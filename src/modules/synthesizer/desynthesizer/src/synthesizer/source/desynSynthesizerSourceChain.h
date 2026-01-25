@@ -25,9 +25,10 @@
 #ifndef _DESYNSYNTHESIZERSOURCECHAIN_H_
 #define _DESYNSYNTHESIZERSOURCECHAIN_H_
 
-
 #include "desynSynthesizerSource.h"
 #include "../../desynBasics.h"
+
+#include <dragengine/common/collection/decTList.h>
 
 class desynSound;
 
@@ -52,8 +53,7 @@ private:
 		void Clear();
 	};
 	
-	sSound *pSounds;
-	int pSoundCount;
+	decTList<sSound> pSounds;
 	
 	float pMinSpeed;
 	float pMaxSpeed;
@@ -115,6 +115,9 @@ public:
 	
 	/** \brief Init state data of source itself. */
 	void InitStateDataSource(char *stateData) override;
+	
+	/** Clean up state data of source itself. */
+	void CleanUpStateDataSource(char *stateData) override;
 	
 	/**
 	 * \brief Generate sound using source.

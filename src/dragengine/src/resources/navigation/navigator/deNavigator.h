@@ -27,6 +27,7 @@
 
 #include "../space/deNavigationSpace.h"
 #include "../../deResource.h"
+#include "../../../common/collection/decTList.h"
 #include "../../../common/math/decMath.h"
 
 class deCollider;
@@ -58,9 +59,7 @@ private:
 	float pDefFixCost;
 	float pDefCostPerMeter;
 	float pBlockingCost;
-	deNavigatorType *pTypes;
-	int pTypeCount;
-	int pTypeSize;
+	decTList<deNavigatorType> pTypes;
 	
 	deBaseAINavigator *pPeerAI;
 	
@@ -139,32 +138,28 @@ public:
 	
 	
 	
-	/** \brief Number of types. */
-	inline int GetTypeCount() const{ return pTypeCount; }
+	/** \brief Types. */
+	inline const decTList<deNavigatorType> &GetTypes() const{ return pTypes; }
+	
+	/** \brief Count of types. */
+	inline int GetTypeCount() const{ return pTypes.GetCount(); }
 	
 	/** \brief Type by index. */
-	deNavigatorType *GetTypeAt(int index) const;
+	deNavigatorType &GetTypeAt(int index);
+	const deNavigatorType &GetTypeAt(int index) const;
 	
 	/** \brief Matching type or NULL if not found. */
-	deNavigatorType *GetTypeWith(int typeValue) const;
-	
-	/** \brief Index of a type or -1 if not found. */
-	int IndexOfType(deNavigatorType *type) const;
+	deNavigatorType *GetTypeWith(int typeValue);
+	const deNavigatorType *GetTypeWith(int typeValue) const;
 	
 	/** \brief Index of the type with the given type value or -1 if not found. */
 	int IndexOfTypeWith(int typeValue) const;
-	
-	/** \brief Type exists. */
-	bool HasType(deNavigatorType *type) const;
 	
 	/** \brief Type with the given type value exists. */
 	bool HasTypeWith(int typeValue) const;
 	
 	/** \brief Add type if not existing returning the type. */
-	deNavigatorType *AddType(int type);
-	
-	/** \brief Remove type. */
-	void RemoveType(deNavigatorType *type);
+	deNavigatorType &AddType(int type);
 	
 	/** \brief Remove type if existing. */
 	void RemoveTypeWith(int typeValue);

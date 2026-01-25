@@ -71,13 +71,9 @@ private:
 	decTObjectOrderedSet<fbxModelCluster> pClusters;
 	decMatrix pMatrix;
 	
-	deModelWeight *pVertexWeights;
-	int pVertexWeightCount;
-	int pVertexWeightSize;
+	decTList<deModelWeight> pVertexWeights;
 	
-	deModelWeight *pWeights;
-	int pWeightCount;
-	int pWeightSize;
+	decTList<deModelWeight> pWeights;
 	
 	decTList<int> pWeightSetWeights;
 	decTList<int> pWeightSetsFirstWeight;
@@ -86,8 +82,7 @@ private:
 	
 	float pWeightMatchThreshold;
 	
-	sVertex *pVertices;
-	int pVertexCount;
+	decTList<sVertex> pVertices;
 	
 	bool pCulling;
 	
@@ -144,8 +139,8 @@ public:
 	/** Build weights. */
 	void BuildWeights();
 	
-	/** Count of vertices. */
-	inline int GetVertexCount() const{ return pVertexCount; }
+	/** Vertices. */
+	inline int GetVertexCount() const{ return pVertices.GetCount(); }
 	
 	/** Vertex position. */
 	inline const decVector &GetVertexPositionAt(int index) const{ return pVertices[index].position; }

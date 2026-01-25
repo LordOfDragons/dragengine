@@ -52,14 +52,12 @@ deoglParameter(ogl)
 	SetCategory(ecBasic);
 	SetDisplayName("VR Force Frame Rate");
 	
-	const deModuleParameter::SelectionEntry entries[5] = {
-		{"0", "Automatic", "Graphic module selects frame rate dynamically."},
-		{"90", "90", "Force frame rate of 90. This is the native VR frame rate."},
-		{"45", "45", "Force frame rate of 45. Uses reprojection to fill in the missed frames."},
-		{"30", "30", "Force frame rate of 30. Uses more reprojection to fill in the missed frames."},
-		{"15", "15", "Force frame rate of 15. Uses lots of reprojection to fill in the missed frames."}
-	};
-	AddSelectionEntries(entries, 5);
+	AddSelectionEntry({"0", "Automatic", "Graphic module selects frame rate dynamically."});
+	AddSelectionEntry({"90", "90", "Force frame rate of 90. This is the native VR frame rate."});
+	AddSelectionEntry({"45", "45", "Force frame rate of 45. Uses reprojection to fill in the missed frames."});
+	AddSelectionEntry({"30", "30", "Force frame rate of 30. Uses more reprojection to fill in the missed frames."});
+	AddSelectionEntry({"15", "15", "Force frame rate of 15. Uses lots of reprojection to fill in the missed frames."});
+	
 	SetDefaultValue("0");
 }
 

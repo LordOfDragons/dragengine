@@ -56,8 +56,8 @@ devkPipeline(device, configuration)
 	if(specialization){
 		specializationInfo.pData = specialization->GetData();
 		specializationInfo.dataSize = specialization->GetDataSize();
-		specializationInfo.mapEntryCount = specialization->GetEntryCount();
-		specializationInfo.pMapEntries = specialization->GetEntries();
+		specializationInfo.mapEntryCount = specialization->GetEntries().GetCount();
+		specializationInfo.pMapEntries = specialization->GetEntries().GetArrayPointer();
 	}
 	
 	VkSpecializationInfo * const useSpecialization = specialization ? &specializationInfo : nullptr;

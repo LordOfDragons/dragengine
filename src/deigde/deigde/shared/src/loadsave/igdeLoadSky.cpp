@@ -247,7 +247,7 @@ deSkyLayer &layer, const char *basePath){
 		}
 	}
 	
-	layer.SetBodyCount(bodyCount);
+	layer.GetBodies().SetAll(bodyCount, {});
 	
 	int bodyIndex = 0;
 	
@@ -317,7 +317,7 @@ deSkyLayer &layer, const char *basePath){
 			layer.SetAmbientIntensity(GetCDataFloat(*tag));
 			
 		}else if(tagName == "body"){
-			pReadBody(*tag, sky, layer.GetBodyAt(bodyIndex++), basePath);
+			pReadBody(*tag, sky, layer.GetBodies()[bodyIndex++], basePath);
 			
 		}else if(tagName == "target"){
 			pReadTarget(*tag, layer);

@@ -37,31 +37,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-deNavigatorPath::deNavigatorPath() :
-pPoints(nullptr),
-pCount(0),
-pSize(0){
+deNavigatorPath::deNavigatorPath()
+{
 }
 
 deNavigatorPath::deNavigatorPath(const deNavigatorPath &path) :
-pPoints(nullptr),
-pCount(0),
-pSize(0)
+pPoints(path.pPoints)
 {
-	if(path.pCount == 0){
-		return;
-	}
-	
-	pPoints = new decDVector[path.pCount];
-	memcpy(pPoints, path.pPoints, sizeof(decDVector) * path.pCount);
-	pCount = path.pCount;
-	pSize = path.pCount;
 }
 
 deNavigatorPath::~deNavigatorPath(){
-	if(pPoints){
-		delete [] pPoints;
-	}
 }
 
 
@@ -70,56 +55,27 @@ deNavigatorPath::~deNavigatorPath(){
 ///////////////
 
 const decDVector &deNavigatorPath::GetAt(int index) const{
-	if(index < 0 || index >= pCount){
-		DETHROW(deeInvalidParam);
-	}
 	return pPoints[index];
 }
 
 void deNavigatorPath::SetAt(int index, const decDVector &position){
-	if(index < 0 || index >= pCount){
-		DETHROW(deeInvalidParam);
-	}
 	pPoints[index] = position;
 }
 
 void deNavigatorPath::Add(const decDVector &point){
-	if(pCount == pSize){
-		const int newSize = pCount + 10;
-		decDVector * const newArray = new decDVector[newSize];
-		if(pPoints){
-			memcpy(newArray, pPoints, sizeof(decDVector) * pCount);
-			delete [] pPoints;
-		}
-		pPoints = newArray;
-		pSize = newSize;
-	}
-	
-	pPoints[pCount++] = point;
+	pPoints.Add(point);
 }
 
 void deNavigatorPath::AddPath(const deNavigatorPath &path){
-	int i;
-	for(i=0; i<path.pCount; i++){
-		Add(path.pPoints[i]);
-	}
+	pPoints += path.pPoints;
 }
 
 void deNavigatorPath::RemoveFrom(int index){
-	if(index < 0 || index >= pCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	int i;
-	for(i=index+1; i<pCount; i++){
-		pPoints[i - 1] = pPoints[i];
-	}
-	
-	pCount--;
+	pPoints.RemoveFrom(index);
 }
 
 void deNavigatorPath::RemoveAll(){
-	pCount = 0;
+	pPoints.RemoveAll();
 }
 
 
@@ -128,7 +84,6 @@ void deNavigatorPath::RemoveAll(){
 //////////////
 
 deNavigatorPath &deNavigatorPath::operator=(const deNavigatorPath &path){
-	RemoveAll();
-	AddPath(path);
+	pPoints = path.pPoints;
 	return *this;
 }

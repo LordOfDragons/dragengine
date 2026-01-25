@@ -31,6 +31,7 @@
 #include "../../../../gui/igdeApplication.h"
 
 #include <dragengine/deEngine.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 #include <dragengine/logger/deLogger.h>
@@ -66,8 +67,7 @@ private:
 	int pEnlargeGlyph;
 	
 	int pLineHeight;
-	sGlyph *pGlyphs;
-	int pGlyphCount;
+	decTList<sGlyph> pGlyphs;
 	int pImageWidth;
 	int pImageHeight;
 	deImage::Ref pImage;
@@ -84,17 +84,11 @@ public:
 	pBorderSize(0),
 	pEnlargeGlyph(1),
 	pLineHeight(0),
-	pGlyphs(nullptr),
-	pGlyphCount(0),
 	pImageWidth(0),
 	pImageHeight(0){
 	}
 	
-	~igdeFont_FontBuilder() override{
-		if(pGlyphs){
-			delete [] pGlyphs;
-		}
-	}
+	~igdeFont_FontBuilder() override = default;
 	
 	
 	
@@ -128,12 +122,10 @@ public:
 		engFont->SetIsColorFont(false);
 		engFont->SetLineHeight(pLineHeight);
 		engFont->SetImage(pImage);
-		engFont->SetGlyphCount(pGlyphCount);
+		engFont->SetGlyphCount(pGlyphs.GetCount());
 		
-		int i;
-		for(i=0; i<pGlyphCount; i++){
+		pGlyphs.VisitIndexed([&](int i, const sGlyph &glyph){
 			deFontGlyph &engGlyph = engFont->GetGlyphAt(i);
-			const sGlyph &glyph = pGlyphs[i];
 			
 			engGlyph.SetUnicode(glyph.code);
 			engGlyph.SetX(glyph.x);
@@ -143,32 +135,27 @@ public:
 			engGlyph.SetHeight(pLineHeight);
 			engGlyph.SetBearing(glyph.bearing);
 			engGlyph.SetAdvance(glyph.advance);
-		}
+		});
 	}
 	
 	
 	
 private:
 	void pAddGlyphs(){
-		if(pGlyphs){
-			DETHROW(deeInvalidParam);
-		}
+		DEASSERT_TRUE(pGlyphs.IsEmpty())
 		
 		FXFont * const nativeFont = (FXFont*)pFont.GetNativeFont();
 		const FXColor colorBg = FXRGB(0, 0, 0);
 		const FXColor colorFg = FXRGB(255, 255, 255);
 		const int ascent = nativeFont->getFontAscent();
 		decUnicodeString character;
-		FXColor *foxImageData = nullptr;
 		FXImage *foxImage = nullptr;
 		FXDCWindow *dc = nullptr;
 		int leftBearing;
 		int rightBearing;
-		int c, y;
 		
 		try{
-			pGlyphs = new sGlyph[256];
-			pGlyphCount = 0;
+			pGlyphs.EnlargeCapacity(256);
 			
 			// this hack here is required since the character measuring in fox is incomplete
 			// or downright broken, to fix this problem a reverse approach is used. each
@@ -180,20 +167,20 @@ private:
 			const int imageHeight = pLineHeight;
 			const int drawPoint = imageHeight;
 			const int imageWidth = drawPoint * 3; // one line-height in each direction should be enough
-			const int pixelCount = imageWidth * imageHeight;
 			
-			foxImageData = new FXColor[imageWidth * imageHeight];
-			memset(foxImageData, 0, sizeof(FXColor) * pixelCount);
+			decTList<FXColor> foxImageData(imageWidth * imageHeight, FXRGBA(255, 255, 255, 0));
 			
 			// create a fox image in memory with memory-only parameters since we do not intend
 			// to use this image for rendering later on
-			foxImage = new FXImage(FXApp::instance(), foxImageData, IMAGE_KEEP | IMAGE_NEAREST, imageWidth, imageHeight);
+			foxImage = new FXImage(FXApp::instance(), foxImageData.GetArrayPointer(),
+				IMAGE_KEEP | IMAGE_NEAREST, imageWidth, imageHeight);
 			foxImage->create();
 			
 			dc = new FXDCWindow(foxImage);
 			dc->setFont(nativeFont);
 			
 			// process characters
+			int c;
 			for(c=pFirstCode; c<=pLastCode; c++){
 				if(!nativeFont->hasChar(c)){
 					continue;
@@ -217,8 +204,9 @@ private:
 				
 				// analyze where the glyph ends at the left and right side to find the bearings
 				for(leftBearing=0; leftBearing<drawPoint; leftBearing++){
+					int y;
 					for(y=0; y<imageHeight; y++){
-						if(foxImageData[imageWidth*y + leftBearing] != colorBg){
+						if(foxImageData.GetArrayPointer()[imageWidth*y + leftBearing] != colorBg){
 							break; // we found the left edge
 						}
 					}
@@ -228,8 +216,9 @@ private:
 				}
 				
 				for(rightBearing=imageWidth-1; rightBearing>drawPoint+minWidth; rightBearing--){
+					int y;
 					for(y=0; y<imageHeight; y++){
-						if(foxImageData[imageWidth*y + rightBearing] != colorBg){
+						if(foxImageData.GetArrayPointer()[imageWidth*y + rightBearing] != colorBg){
 							break; // we found the right edge
 						}
 					}
@@ -240,7 +229,8 @@ private:
 				//pEnvironment->GetLogger()->LogInfoFormat(LOGSOURCE, "Glyph %i(%c): dp=%i mw=%i lb=%i rb=%i", c, c, drawPoint, minWidth, leftBearing, rightBearing);
 				
 				// store the found values
-				sGlyph &glyph = pGlyphs[pGlyphCount++];
+				pGlyphs.Add({});
+				sGlyph &glyph = pGlyphs.Last();
 				glyph.code = c;
 				glyph.x = 0;
 				glyph.y = 0;
@@ -256,8 +246,6 @@ private:
 			delete foxImage;
 			foxImage = nullptr;
 			
-			delete [] foxImageData;
-			
 		}catch(const deException &){
 			if(dc){
 				delete dc;
@@ -265,28 +253,21 @@ private:
 			if(foxImage){
 				delete foxImage;
 			}
-			if(foxImageData){
-				delete [] foxImageData;
-			}
 			throw;
 		}
 	}
 	
 	void pCalcLayout(){
 		deLogger &logger = *pFont.GetEnvironment().GetLogger();
-		int maxGlyphWidth;
-		int g, u, v, width;
-		int fullWidth;
 		
 		// determine the width of all the glyphs placed on one line
-		fullWidth = pBorderSize;
-		maxGlyphWidth = 0;
+		int fullWidth = pBorderSize;
+		int maxGlyphWidth = 0;
 		
-		for(g=0; g<pGlyphCount; g++){
-			const sGlyph &glyph = pGlyphs[g];
+		pGlyphs.Visit([&](const sGlyph &glyph){
 			maxGlyphWidth = decMath::max(maxGlyphWidth, glyph.width);
 			fullWidth += glyph.width + pBorderSize;
-		}
+		});
 		
 		logger.LogInfoFormat("DEIGDE", "Calculate layout: fullWidth=%i maxGlyphWidth=%i", fullWidth, maxGlyphWidth);
 		maxGlyphWidth = (int)((float)maxGlyphWidth * 0.75f);
@@ -303,13 +284,11 @@ private:
 		logger.LogInfoFormat("DEIGDE", "Using image size %ix%i", pImageWidth, pImageHeight);
 		
 		// layout the glyphs using the found image width
-		u = pBorderSize;
-		v = pBorderSize;
+		int u = pBorderSize;
+		int v = pBorderSize;
 		
-		for(g=0; g<pGlyphCount; g++){
-			sGlyph &glyph = pGlyphs[g];
-			
-			width = glyph.width;
+		pGlyphs.Visit([&](sGlyph &glyph){
+			const int width = glyph.width;
 			
 			if(u + width > pImageWidth){
 				u = pBorderSize;
@@ -320,7 +299,7 @@ private:
 			glyph.y = v;
 			
 			u += width + pBorderSize;
-		}
+		});
 		
 		// determine a matching image height for the generated layout
 		pImageHeight = v + pLineHeight + pBorderSize;
@@ -329,12 +308,11 @@ private:
 	
 	void pRenderImage(){
 		FXFont * const nativeFont = (FXFont*)pFont.GetNativeFont();
-		FXColor *foxImageData = nullptr;
 		decUnicodeString character;
 		FXImage *foxImage = nullptr;
 		FXDCWindow *dc = nullptr;
 		FXColor foxColor;
-		int p, g, x, y;
+		int x, y;
 		
 		const int pixelCount = pImageWidth * pImageHeight;
 		const int ascent = nativeFont->getFontAscent();
@@ -347,14 +325,12 @@ private:
 			// to transparent since fox does not properly support images with
 			// transparency. instead we render a grayscale image and are using
 			// the grayscale value also as alpha value.
-			foxImageData = new FXColor[pImageWidth * pImageHeight];
-			for(p=0; p<pixelCount; p++){
-				foxImageData[p] = FXRGB(0, 0, 0);
-			}
+			decTList<FXColor> foxImageData(pImageWidth * pImageHeight, FXRGB(0, 0, 0));
 			
 			// create a fox image in memory with memory-only parameters since
 			// we do not intend to use this image for rendering later on
-			foxImage = new FXImage(FXApp::instance(), foxImageData, IMAGE_KEEP | IMAGE_NEAREST, pImageWidth, pImageHeight);
+			foxImage = new FXImage(FXApp::instance(), foxImageData.GetArrayPointer(),
+				IMAGE_KEEP | IMAGE_NEAREST, pImageWidth, pImageHeight);
 			foxImage->create();
 			
 			dc = new FXDCWindow(foxImage);
@@ -363,9 +339,7 @@ private:
 			dc->setForeground(FXRGB(255, 255, 255));
 			dc->setFont(nativeFont);
 			
-			for(g=0; g<pGlyphCount; g++){
-				const sGlyph &glyph = pGlyphs[g];
-				
+			pGlyphs.Visit([&](const sGlyph &glyph){
 				x = glyph.x + glyph.bearing + pEnlargeGlyph;
 				y = glyph.y + ascent + pEnlargeGlyph;
 				
@@ -373,7 +347,7 @@ private:
 				character.AppendCharacter(glyph.code);
 				const decString utf8 = character.ToUTF8();
 				dc->drawText(x, y, utf8.GetString(), utf8.GetLength());
-			}
+			});
 			
 			foxImage->restore();
 			
@@ -381,9 +355,10 @@ private:
 			if(pImage->GetBitCount() == 8){
 				sRGBA8 *data = pImage->GetDataRGBA8();
 				
+				int p;
 				for(p=0; p<pixelCount; p++){
 					sRGBA8 &pixel = data[p];
-					foxColor = foxImageData[p];
+					foxColor = foxImageData.GetArrayPointer()[p];
 					
 					pixel.red = 255;
 					pixel.green = 255;
@@ -394,9 +369,10 @@ private:
 			}else if(pImage->GetBitCount() == 16){
 				sRGBA16 *data = pImage->GetDataRGBA16();
 				
+				int p;
 				for(p=0; p<pixelCount; p++){
 					sRGBA16 &pixel = data[p];
-					foxColor = foxImageData[p];
+					foxColor = foxImageData.GetArrayPointer()[p];
 					
 					pixel.red = 65535;
 					pixel.green = 65535;
@@ -408,9 +384,10 @@ private:
 				sRGBA32 *data = pImage->GetDataRGBA32();
 				float factor = 1.0f / 255.0f;
 				
+				int p;
 				for(p=0; p<pixelCount; p++){
 					sRGBA32 &pixel = data[p];
-					foxColor = foxImageData[p];
+					foxColor = foxImageData.GetArrayPointer()[p];
 					
 					pixel.red = 1.0f;
 					pixel.green = 1.0f;
@@ -429,12 +406,9 @@ private:
 			delete foxImage;
 			foxImage = nullptr;
 			
-			delete [] foxImageData;
-			
 		}catch(const deException &){
 			if(dc) delete dc;
 			if(foxImage) delete foxImage;
-			if(foxImageData) delete [] foxImageData;
 			throw;
 		}
 	}

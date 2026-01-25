@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "meUHTImportHeightImage.h"
 #include "../../../world/meWorld.h"
 #include "../../../world/terrain/meHeightTerrain.h"
@@ -57,50 +53,37 @@ meUHTImportHeightImage::meUHTImportHeightImage(meWorld *world, meHeightTerrainSe
 	pWorld = nullptr;
 	pSector = sector;
 	
-	pOldHeights = nullptr;
-	pNewHeights = nullptr;
-	
 	SetShortInfo("Import Height Image");
 	SetMemoryConsumption(sizeof(meUHTImportHeightImage) + 2 * sizeof(float) * pixelCount);
 	
-	try{
-		// create arrays
-		pOldHeights = new float[pixelCount];
-		pNewHeights = new float[pixelCount];
-		
-		// snapshot old heights
-		memcpy(pOldHeights, sector->GetHeightImage()->GetDataGrayscale32(), sizeof(float) * pixelCount);
-		
-		// store new heights
-		if(image->GetBitCount() == 8){
-			sGrayscale8 *data = image->GetDataGrayscale8();
-			
-			for(p=0; p<pixelCount; p++){
-				pNewHeights[p] = (float)(data[p].value - HT_8BIT_BASE) * HT_8BIT_PTOH;
-			}
-			
-		}else if(image->GetBitCount() == 16){
-			sGrayscale16 *data = image->GetDataGrayscale16();
-			
-			for(p=0; p<pixelCount; p++){
-				pNewHeights[p] = (float)(data[p].value - HT_16BIT_BASE) * HT_16BIT_PTOH;
-			}
-			
-		}else{ // image->GetBitCount() == 32
-			memcpy(pNewHeights, image->GetDataGrayscale32(), sizeof(float) * pixelCount);
+	// store old heights
+	pOldHeights.SetCountDiscard(pixelCount);
+	memcpy(pOldHeights.GetArrayPointer(), sector->GetHeightImage()->GetDataGrayscale32(), sizeof(float) * pixelCount);
+	
+	// store new heights
+	pNewHeights.SetCountDiscard(pixelCount);
+	float * const newHeightsData = pNewHeights.GetArrayPointer();
+	
+	if(image->GetBitCount() == 8){
+		sGrayscale8 *data = image->GetDataGrayscale8();
+		for(p=0; p<pixelCount; p++){
+			newHeightsData[p] = (float)(data[p].value - HT_8BIT_BASE) * HT_8BIT_PTOH;
 		}
 		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
+	}else if(image->GetBitCount() == 16){
+		sGrayscale16 *data = image->GetDataGrayscale16();
+		for(p=0; p<pixelCount; p++){
+			newHeightsData[p] = (float)(data[p].value - HT_16BIT_BASE) * HT_16BIT_PTOH;
+		}
+		
+	}else{ // image->GetBitCount() == 32
+		memcpy(newHeightsData, image->GetDataGrayscale32(), sizeof(float) * pixelCount);
 	}
 	
 	pWorld = world;
 }
 
-meUHTImportHeightImage::~meUHTImportHeightImage(){
-	pCleanUp();
-}
+meUHTImportHeightImage::~meUHTImportHeightImage() = default;
 
 
 
@@ -108,11 +91,11 @@ meUHTImportHeightImage::~meUHTImportHeightImage(){
 ///////////////
 
 void meUHTImportHeightImage::Undo(){
-	pDoIt(pOldHeights);
+	pDoIt(pOldHeights.GetArrayPointer());
 }
 
 void meUHTImportHeightImage::Redo(){
-	pDoIt(pNewHeights);
+	pDoIt(pNewHeights.GetArrayPointer());
 }
 
 
@@ -120,12 +103,7 @@ void meUHTImportHeightImage::Redo(){
 // Private Functions
 //////////////////////
 
-void meUHTImportHeightImage::pCleanUp(){
-	if(pNewHeights) delete [] pNewHeights;
-	if(pOldHeights) delete [] pOldHeights;
-}
-
-void meUHTImportHeightImage::pDoIt(float *heights){
+void meUHTImportHeightImage::pDoIt(const float *heights){
 	const decPoint &scoord = pSector->GetCoordinates();
 	int resolution = pSector->GetHeightTerrain()->GetSectorResolution();
 	int pixelCount = resolution * resolution;

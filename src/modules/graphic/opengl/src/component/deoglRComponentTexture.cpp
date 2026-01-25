@@ -377,7 +377,7 @@ void deoglRComponentTexture::PrepareParamBlocks(){
 				pSharedSPBRTIGroup.Add(group);
 			}
 			
-			if((pRenderTaskFilters & (ertfRender | ertfShadowNone | ertfDecal | ertfSolid | ertfHoles)) == (ertfRender | ertfSolid)){
+			if((pRenderTaskFilters & (ertfRender | ertfShadowNone | ertfDecal | ertfDecalSolidParent | ertfSolid | ertfHoles)) == (ertfRender | ertfSolid)){
 				// combine shadow textures if possible
 				for(i=0; i<count; i++){
 					deoglModelLOD &modelLod = model.GetLODAt(i);
@@ -984,7 +984,7 @@ void deoglRComponentTexture::pUpdateRenderTaskFilters(){
 		pRenderTaskFilters |= ertfRendered;
 	}
 	if(pUseDecal){
-		pRenderTaskFilters |= ertfDecal;
+		pRenderTaskFilters |= ertfDecal | ertfDecalSolidParent;
 	}
 	if(pUseDoubleSided){
 		pRenderTaskFilters |= ertfDoubleSided;
@@ -1017,7 +1017,7 @@ int deoglRComponentTexture::pShadowCombineCount(int lodLevel) const{
 	}
 	
 	const deoglModelLOD &modelLod = pComponent.GetModel()->GetLODAt(lodLevel);
-	const int mask = ertfRender | ertfSolid | ertfShadowNone | ertfHoles | ertfDecal | ertfDoubleSided;
+	const int mask = ertfRender | ertfSolid | ertfShadowNone | ertfHoles | ertfDecal | ertfDecalSolidParent | ertfDoubleSided;
 	const int filter = pRenderTaskFilters & mask;
 	const int count = pComponent.GetTextureCount();
 	int emptyCount = 0;

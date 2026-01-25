@@ -30,6 +30,7 @@
 #include "../../../world/terrain/meHeightTerrainTexture.h"
 
 #include <deigde/undo/igdeUndo.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class meWorld;
@@ -54,15 +55,14 @@ private:
 	decBoundary pGrid;
 	decPoint pSize;
 	
-	unsigned char *pOldValues;
-	unsigned char *pNewValues;
+	decTList<unsigned char> pOldValues, pNewValues;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
 	meUHTPaintMask(int drawMode, meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture,
-		const decPoint &grid, const decPoint &size, unsigned char *oldValues);
+		const decPoint &grid, const decPoint &size, decTList<unsigned char> &&oldValues);
 	/** \brief Clean up object. */
 
 protected:
@@ -80,9 +80,8 @@ public:
 	/*@}*/
 	
 private:
-	void pCleanUp();
 	void pSaveValues();
-	void pRestoreValues(unsigned char *values);
+	void pRestoreValues(const decTList<unsigned char> &values);
 };
 
 // end of include only once

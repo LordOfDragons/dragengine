@@ -38,10 +38,7 @@
 /////////////////////////////////
 
 dearAnimationKeyframeVPSList::dearAnimationKeyframeVPSList(
-	const deAnimationKeyframeVertexPositionSet::List &list) :
-pKeyframes(nullptr),
-pKeyframeCount(0)
-{
+const deAnimationKeyframeVertexPositionSet::List &list){
 	try{
 		pCreateKeyframes(list);
 		
@@ -60,30 +57,23 @@ dearAnimationKeyframeVPSList::~dearAnimationKeyframeVPSList(){
 // Management
 ///////////////
 
-dearAnimationKeyframeVPS &dearAnimationKeyframeVPSList::GetAt(int index) const{
-	DEASSERT_TRUE(index >= 0)
-	DEASSERT_TRUE(index < pKeyframeCount)
-	
-	return pKeyframes[index];
-}
-
-dearAnimationKeyframeVPS *dearAnimationKeyframeVPSList::GetWithTime(float time) const{
-	if(pKeyframeCount == 0){
+const dearAnimationKeyframeVPS *dearAnimationKeyframeVPSList::GetWithTime(float time) const{
+	if(pKeyframes.IsEmpty()){
 		return nullptr;
 	}
 	
-	if(time <= pKeyframes[0].GetTime()){
-		return pKeyframes;
+	if(time <= pKeyframes.First().GetTime()){
+		return &pKeyframes.First();
 	}
 	
 	int i;
-	for(i=1; i<pKeyframeCount; i++){
+	for(i=1; i<pKeyframes.GetCount(); i++){
 		if(time < pKeyframes[i].GetTime()){
-			return pKeyframes + (i - 1);
+			return &pKeyframes[i - 1];
 		}
 	}
 	
-	return pKeyframes + (pKeyframeCount - 1);
+	return &pKeyframes.Last();
 }
 
 
@@ -92,9 +82,6 @@ dearAnimationKeyframeVPS *dearAnimationKeyframeVPSList::GetWithTime(float time) 
 //////////////////////
 
 void dearAnimationKeyframeVPSList::pCleanUp(){
-	if(pKeyframes){
-		delete [] pKeyframes;
-	}
 }
 
 void dearAnimationKeyframeVPSList::pCreateKeyframes(
@@ -104,16 +91,15 @@ const deAnimationKeyframeVertexPositionSet::List &list){
 		return;
 	}
 	
-	pKeyframes = new dearAnimationKeyframeVPS[count];
+	pKeyframes.AddRange(count, {});
 	
-	while(pKeyframeCount < count){
-		if(pKeyframeCount < count - 1){
-			pKeyframes[pKeyframeCount].Set(list.GetAt(pKeyframeCount), list.GetAt(pKeyframeCount + 1));
+	int i;
+	for(i=0; i<count; i++){
+		if(i < count - 1){
+			pKeyframes[i].Set(list[i], list[i + 1]);
 			
 		}else{
-			pKeyframes[pKeyframeCount].Set(list.GetAt(pKeyframeCount));
+			pKeyframes[i].Set(list[i]);
 		}
-		
-		pKeyframeCount++;
 	}
 }

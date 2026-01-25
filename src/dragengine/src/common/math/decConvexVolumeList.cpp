@@ -68,7 +68,6 @@ int decConvexVolumeList::IndexOfVolume(decConvexVolume *volume) const{
 
 void decConvexVolumeList::AddVolume(decConvexVolume::Ref &&volume){
 	DEASSERT_NOTNULL(volume)
-	DEASSERT_FALSE(HasVolume(volume))
 	
 	pVolumes.Add(std::move(volume));
 }

@@ -78,9 +78,6 @@
     <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\pathfinding\dedaiPathFinderNavMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\pathfinding\dedaiPathFinderPointList.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\dedaiSpace.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -174,9 +171,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\pathfinding\dedaiPathFinderNavMesh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\pathfinding\dedaiPathFinderPointList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\dedaiSpace.h">

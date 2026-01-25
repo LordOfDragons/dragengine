@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deModuleParameter.h"
 #include "../../common/exceptions.h"
 
@@ -42,8 +38,6 @@ pType(eptBoolean),
 pMinValue(0.0f),
 pMaxValue(1.0f),
 pValueStepSize(0.1f),
-pSelectionEntries(nullptr),
-pSelectionEntryCount(0),
 pCategory(ecBasic){
 }
 
@@ -54,24 +48,13 @@ pDescription(parameter.pDescription),
 pMinValue(parameter.pMinValue),
 pMaxValue(parameter.pMaxValue),
 pValueStepSize(parameter.pValueStepSize),
-pSelectionEntries(nullptr),
-pSelectionEntryCount(0),
+pSelectionEntries(parameter.pSelectionEntries),
 pCategory(parameter.pCategory),
 pDisplayName(parameter.pDisplayName),
-pDefaultValue(parameter.pDefaultValue)
-{
-	if(parameter.pSelectionEntryCount > 0){
-		pSelectionEntries = new SelectionEntry[parameter.pSelectionEntryCount];
-		for(pSelectionEntryCount=0; pSelectionEntryCount<parameter.pSelectionEntryCount; pSelectionEntryCount++){
-			pSelectionEntries[pSelectionEntryCount] = parameter.pSelectionEntries[pSelectionEntryCount];
-		}
-	}
+pDefaultValue(parameter.pDefaultValue){
 }
 
 deModuleParameter::~deModuleParameter(){
-	if(pSelectionEntries){
-		delete [] pSelectionEntries;
-	}
 }
 
 
@@ -103,82 +86,16 @@ void deModuleParameter::SetValueStepSize(float valueStepSize){
 	pValueStepSize = valueStepSize;
 }
 
-const deModuleParameter::SelectionEntry &deModuleParameter::GetSelectionEntryAt(int index) const{
-	if(index < 0 || index >= pSelectionEntryCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pSelectionEntries[index];
-}
-
 int deModuleParameter::IndexOfSelectionEntryWithValue(const char *value) const{
-	int i;
-	for(i=0; i<pSelectionEntryCount; i++){
-		if(pSelectionEntries[i].value == value){
-			return i;
-		}
-	}
-	return -1;
+	return pSelectionEntries.IndexOfMatching([&](const SelectionEntry &entry){
+		return entry.value == value;
+	});
 }
 
 void deModuleParameter::AddSelectionEntry(const deModuleParameter::SelectionEntry &entry){
-	if(IndexOfSelectionEntryWithValue(entry.value) != -1){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_TRUE(IndexOfSelectionEntryWithValue(entry.value) == -1)
 	
-	SelectionEntry * const newArray = new SelectionEntry[pSelectionEntryCount + 1];
-	if(pSelectionEntries){
-		int i;
-		for(i=0; i<pSelectionEntryCount; i++){
-			newArray[i] = pSelectionEntries[i];
-		}
-		delete [] pSelectionEntries;
-	}
-	pSelectionEntries = newArray;
-	pSelectionEntries[pSelectionEntryCount++] = entry;
-}
-
-void deModuleParameter::AddSelectionEntries(const deModuleParameter::SelectionEntry *entries, int entryCount){
-	if(entryCount == 0){
-		return;
-	}
-	if(!entries){
-		DETHROW_INFO(deeNullPointer, "entries");
-	}
-	if(entryCount < 1){
-		DETHROW_INFO(deeInvalidParam, "entryCount < 0");
-	}
-	
-	int i, j;
-	for(i=0; i<entryCount; i++){
-		if(IndexOfSelectionEntryWithValue(entries[i].value) != -1){
-			DETHROW_INFO(deeInvalidParam, "an entries value is present");
-		}
-		for(j=i+1; j<entryCount; j++){
-			if(entries[i].value == entries[j].value){
-				DETHROW_INFO(deeInvalidParam, "two entries values are equal");
-			}
-		}
-	}
-	
-	SelectionEntry * const newArray = new SelectionEntry[pSelectionEntryCount + entryCount];
-	if(pSelectionEntries){
-		for(i=0; i<pSelectionEntryCount; i++){
-			newArray[i] = pSelectionEntries[i];
-		}
-		delete [] pSelectionEntries;
-	}
-	pSelectionEntries = newArray;
-	for(i=0; i<entryCount; i++){
-		pSelectionEntries[pSelectionEntryCount++] = entries[i];
-	}
-}
-
-void deModuleParameter::RemoveAllSelectionEntries(){
-	if(pSelectionEntries){
-		delete [] pSelectionEntries;
-	}
-	pSelectionEntries = nullptr;
-	pSelectionEntryCount = 0;
+	pSelectionEntries.Add(entry);
 }
 
 void deModuleParameter::SetCategory(eCategory category){
@@ -200,7 +117,7 @@ void deModuleParameter::Reset(){
 	pMinValue = 0.0f;
 	pMaxValue = 1.0f;
 	pValueStepSize = 0.1f;
-	RemoveAllSelectionEntries();
+	pSelectionEntries.RemoveAll();
 	pCategory = ecBasic;
 	pDisplayName.Empty();
 	pDefaultValue.Empty();
@@ -221,14 +138,7 @@ deModuleParameter &deModuleParameter::operator=(const deModuleParameter &paramet
 	pCategory = parameter.pCategory;
 	pDisplayName = parameter.pDisplayName;
 	pDefaultValue = parameter.pDefaultValue;
-	
-	RemoveAllSelectionEntries();
-	if(parameter.pSelectionEntryCount > 0){
-		pSelectionEntries = new SelectionEntry[parameter.pSelectionEntryCount];
-		for(pSelectionEntryCount=0; pSelectionEntryCount<parameter.pSelectionEntryCount; pSelectionEntryCount++){
-			pSelectionEntries[pSelectionEntryCount] = parameter.pSelectionEntries[pSelectionEntryCount];
-		}
-	}
+	pSelectionEntries = parameter.pSelectionEntries;
 	
 	return *this;
 }

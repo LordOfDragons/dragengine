@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglAddToRenderTaskParticles.h"
 #include "deoglRenderTaskParticles.h"
 #include "deoglRenderTaskParticlesStep.h"
@@ -102,13 +98,9 @@ void deoglAddToRenderTaskParticles::SetSkinPipelineModifier(int modifier){
 
 void deoglAddToRenderTaskParticles::AddParticles(const deoglRParticleEmitterInstance::List &list){
 	list.Visit([&](deoglRParticleEmitterInstance *instance){
-		const deoglRParticleEmitterInstance::sParticle * const particles = instance->GetParticles();
-		const int particleCount = instance->GetParticleCount();
-		int p;
-		
-		for(p=0; p<particleCount; p++){
-			AddParticle(*instance, particles + p);
-		}
+		instance->GetParticles().Visit([&](const deoglRParticleEmitterInstance::sParticle &particle){
+			AddParticle(*instance, &particle);
+		});
 	});
 }
 
@@ -168,7 +160,7 @@ const deoglRParticleEmitterInstance::sParticle *particle){
 		rtps->SetSkin(skin);
 		rtps->SetDynamicSkin(dynamicSkin);
 		
-		rtps->SetFirstIndex(emitterInstance.GetIBOUsedIndexCount());
+		rtps->SetFirstIndex(emitterInstance.GetIBOIndexCount());
 		
 		if(simulationRibbon || simulationBeam){
 			rtps->SetPrimitiveType(GL_LINES_ADJACENCY);
@@ -182,7 +174,7 @@ const deoglRParticleEmitterInstance::sParticle *particle){
 	}
 	
 	// add an instance
-	rtps->AddInstance().particle = particle;
+	rtps->GetInstances().Add({particle});
 	
 	// update IBO
 	if(simulationRibbon || simulationBeam){

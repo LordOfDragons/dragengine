@@ -45,6 +45,7 @@
 
 #include <dragengine/app/deOS.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decTList.h>
 
 
 
@@ -93,9 +94,10 @@ static void logStackTraceVS(const _EXCEPTION_POINTERS &ei, HANDLE process, deCRB
 	CONTEXT &context = *ei.ContextRecord;
 	
 	const int symbolBufferLen = sizeof(IMAGEHLP_SYMBOL64) + MAX_SYM_NAME;
-	char * const symbolBuffer = new char[symbolBufferLen + 1];
-	memset(symbolBuffer, 0, symbolBufferLen + 1);
-	PIMAGEHLP_SYMBOL64 const symbol = (PIMAGEHLP_SYMBOL64)symbolBuffer;
+	decTList<char> symbolBuffer;
+	symbolBuffer.SetSize(symbolBufferLen + 1);
+	memset(symbolBuffer.GetData(), 0, symbolBufferLen + 1);
+	PIMAGEHLP_SYMBOL64 const symbol = (PIMAGEHLP_SYMBOL64)symbolBuffer.GetData();
 	symbol->SizeOfStruct = sizeof(IMAGEHLP_SYMBOL64);
 	symbol->MaxNameLength = MAX_SYM_NAME;
 
@@ -189,8 +191,6 @@ static void logStackTraceVS(const _EXCEPTION_POINTERS &ei, HANDLE process, deCRB
 			printf("%p: %s ; %s:%d\n", address, name, sourceFile, sourceLine);
 		}
 	}
-	
-	delete [] symbolBuffer;
 }
 
 static void logStackTrace(HANDLE process, deCRBasic *module){

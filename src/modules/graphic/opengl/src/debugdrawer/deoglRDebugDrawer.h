@@ -28,6 +28,7 @@
 #include "../deoglBasics.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglRWorld;
@@ -57,11 +58,9 @@ private:
 	bool pHasShapes;
 	bool pHasFaces;
 	
-	deoglDebugDrawerShape *pShapes;
-	int pShapeCount;
+	decTList<deoglDebugDrawerShape> pShapes;
 	
-	oglVector3 *pVBOData;
-	int pVBOPointCount;
+	decTList<oglVector3> pVBOData;
 	
 	GLuint pVBO;
 	deoglVAO *pVAO;
@@ -131,11 +130,11 @@ public:
 	/** Determines if the debug drawer has faces. */
 	inline bool GetHasFaces() const{ return pHasFaces; }
 	
-	/** Number of shapes. */
-	inline int GetShapeCount() const{ return pShapeCount; }
+	/** Shapes. */
+	inline const decTList<deoglDebugDrawerShape> &GetShapes() const{ return pShapes; }
 	
 	/** Retrieves a shape. */
-	deoglDebugDrawerShape &GetShapeAt(int index) const;
+	deoglDebugDrawerShape &GetShapeAt(int index);
 	
 	
 	

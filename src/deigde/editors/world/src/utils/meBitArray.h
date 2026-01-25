@@ -27,6 +27,7 @@
 #define _MEBITARRAY_H_
 
 // includes
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 
@@ -40,8 +41,7 @@ class meBitArray{
 private:
 	int pColons;
 	int pRows;
-	unsigned char *pBytes;
-	int pByteCount;
+	decTList<unsigned char> pBytes;
 	
 public:
 	/** \name Constructors and Destructors */

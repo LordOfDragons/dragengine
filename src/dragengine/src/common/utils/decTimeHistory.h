@@ -25,6 +25,7 @@
 #ifndef _DECTIMEHISTORY_H_
 #define _DECTIMEHISTORY_H_
 
+#include "../collection/decTList.h"
 #include "../string/decString.h"
 
 
@@ -37,8 +38,8 @@
  */
 class DE_DLL_EXPORT decTimeHistory{
 private:
-	float *pEntries;
-	float *pSorted;
+	decTList<float> pEntries;
+	decTList<float> pSorted;
 	int pSize;
 	
 	int pHead;

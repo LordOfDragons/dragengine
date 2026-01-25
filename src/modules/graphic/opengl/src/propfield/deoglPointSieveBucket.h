@@ -22,14 +22,10 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _DEOGLPOINTSIEVEBUCKET_H_
 #define _DEOGLPOINTSIEVEBUCKET_H_
 
-// includes
-
-// predefinitions
-
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
@@ -39,9 +35,7 @@
  */
 class deoglPointSieveBucket{
 private:
-	int *pIndices;
-	int pIndexCount;
-	int pIndexSize;
+	decTList<int> pIndices;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -54,16 +48,15 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Retrieves the number of indices. */
-	inline int GetIndexCount() const{ return pIndexCount; }
-	/** Retrieves the index at the given position. */
-	int GetIndexAt(int position) const;
+	/** Indices. */
+	inline const decTList<int> &GetIndices() const{ return pIndices; }
+	
 	/** Adds an index. */
 	void AddIndex(int index);
+	
 	/** Removes all the indices. */
 	void RemoveAllIndices();
 	/*@}*/
 };
 
-// end of include only once
 #endif

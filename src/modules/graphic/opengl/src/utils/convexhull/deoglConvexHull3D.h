@@ -34,12 +34,8 @@
  */
 class deoglConvexHull3D{
 private:
-	decVector *pPoints;
-	int pPointCount;
-	int pPointSize;
-	
+	decTList<decVector> pPoints;
 	decTList<int> pHullIndices;
-	
 	
 	
 public:
@@ -56,11 +52,8 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Count of points. */
-	inline int GetPointCount() const{ return pPointCount; }
-	
-	/** Point by index. */
-	const decVector &GetPointAt(int index) const;
+	/** Points. */
+	inline const decTList<decVector> &GetPoints() const{ return pPoints; }
 	
 	/** Add point. */
 	void AddPoint(const decVector &point);

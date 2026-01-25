@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-#include <string.h>
-
 #include "deoalIcoSphere.h"
 #include "../../audiothread/deoalAudioThread.h"
 #include "../../audiothread/deoalATLogger.h"
@@ -58,44 +56,22 @@ void deoalIcoSphere::sEdge::Set(int vertex1, int vertex2){
 /////////////////////////////////
 
 deoalIcoSphere::deoalIcoSphere() :
-pVertices(nullptr),
-pVertexCount(0),
-pEdges(nullptr),
-pEdgeCount(0),
-pFaces(nullptr),
-pFaceCount(0),
 pOpeningAngle(0.0f){
 }
 
 deoalIcoSphere::deoalIcoSphere(const deoalIcoSphere &ico) :
-pVertices(nullptr),
-pVertexCount(0),
-pEdges(nullptr),
-pEdgeCount(0),
-pFaces(nullptr),
-pFaceCount(0),
-pOpeningAngle(ico.pOpeningAngle)
-{
-	*this = ico;
+pVertices(ico.pVertices),
+pEdges(ico.pEdges),
+pFaces(ico.pFaces),
+pOpeningAngle(ico.pOpeningAngle){
 }
 
-deoalIcoSphere::~deoalIcoSphere(){
-	if(pFaces){
-		delete [] pFaces;
-	}
-	if(pEdges){
-		delete [] pEdges;
-	}
-	if(pVertices){
-		delete [] pVertices;
-	}
-}
+deoalIcoSphere::~deoalIcoSphere() = default;
 
 deoalIcoSphere deoalIcoSphere::BaseLevel(){
 	deoalIcoSphere ico;
 	
-	ico.pVertexCount = 12;
-	ico.pVertices = new decVector[12];
+	ico.pVertices.AddRange(12, {});
 	ico.pVertices[0].Set(-0.000000f, -1.000000f, -0.000000f);
 	ico.pVertices[1].Set(-0.723600f, -0.447215f, 0.525720f);
 	ico.pVertices[2].Set(0.276385f, -0.447215f, 0.850640f);
@@ -109,8 +85,7 @@ deoalIcoSphere deoalIcoSphere::BaseLevel(){
 	ico.pVertices[10].Set(-0.894425f, 0.447215f, -0.000000f);
 	ico.pVertices[11].Set(-0.000000f, 1.000000f, -0.000000f);
 
-	ico.pEdgeCount = 30;
-	ico.pEdges = new sEdge[30];
+	ico.pEdges.AddRange(30, {});
 	ico.pEdges[0].Set(2, 0);
 	ico.pEdges[1].Set(0, 1);
 	ico.pEdges[2].Set(1, 2);
@@ -142,8 +117,7 @@ deoalIcoSphere deoalIcoSphere::BaseLevel(){
 	ico.pEdges[28].Set(11, 8);
 	ico.pEdges[29].Set(11, 9);
 
-	ico.pFaceCount = 20;
-	ico.pFaces = new sFace[20];
+	ico.pFaces.AddRange(20, {});
 	ico.pFaces[0].Set(0, 2, 1, 0, 2, 1);
 	ico.pFaces[1].Set(1, 5, 0, 3, 4, 1);
 	ico.pFaces[2].Set(0, 3, 2, 5, 6, 0);
@@ -185,27 +159,27 @@ deoalIcoSphere deoalIcoSphere::Subdivide() const{
 	// second and third batch each face contributes one vertex which avoids clustering.
 	deoalIcoSphere ico;
 	
-	ico.pFaceCount = pFaceCount * 4;
-	ico.pFaces = new sFace[ico.pFaceCount];
+	const int faceCount = pFaces.GetCount() * 4;
+	ico.pFaces.AddRange(faceCount, {});
 	
-	ico.pEdgeCount = pEdgeCount * 2 + pFaceCount * 3;
-	ico.pEdges = new sEdge[ico.pEdgeCount];
+	const int edgeCount = pEdges.GetCount() * 2 + pFaces.GetCount() * 3;
+	ico.pEdges.AddRange(edgeCount, {});
 	
-	ico.pVertexCount = pVertexCount + pEdgeCount;
-	ico.pVertices = new decVector[ico.pVertexCount];
+	const int vertexCount = pVertices.GetCount() + pEdges.GetCount();
+	ico.pVertices.AddRange(vertexCount, {});
 	
 	// copy vertices
-	memcpy(ico.pVertices, pVertices, sizeof(decVector) * pVertexCount);
+	memcpy(ico.pVertices.GetArrayPointer(), pVertices.GetArrayPointer(), sizeof(decVector) * pVertices.GetCount());
 	
 	// split
-	const int oe = pEdgeCount;
-	const int oef1 = oe + pEdgeCount;
-	const int oef2 = oef1 + pFaceCount;
-	const int oef3 = oef2 + pFaceCount;
-	const int ov = pVertexCount;
+	const int oe = pEdges.GetCount();
+	const int oef1 = oe + pEdges.GetCount();
+	const int oef2 = oef1 + pFaces.GetCount();
+	const int oef3 = oef2 + pFaces.GetCount();
+	const int ov = pVertices.GetCount();
 	
 	int i;
-	for(i=0; i<pEdgeCount; i++){
+	for(i=0; i<pEdges.GetCount(); i++){
 		const int v1 = pEdges[i].vertices[0];
 		const int v2 = pEdges[i].vertices[1];
 		const int vn = ov + i;
@@ -216,11 +190,11 @@ deoalIcoSphere deoalIcoSphere::Subdivide() const{
 		ico.pEdges[oe + i].Set(vn, v2);
 	}
 	
-	const int of1 = pFaceCount;
-	const int of2 = of1 + pFaceCount;
-	const int of3 = of2 + pFaceCount;
+	const int of1 = pFaces.GetCount();
+	const int of2 = of1 + pFaces.GetCount();
+	const int of3 = of2 + pFaces.GetCount();
 	
-	for(i=0; i<pFaceCount; i++){
+	for(i=0; i<pFaces.GetCount(); i++){
 		const sFace &face = pFaces[i];
 		const int e1 = face.edges[0];
 		const int e2 = face.edges[1];
@@ -270,26 +244,24 @@ void deoalIcoSphere::DebugPrintBlender(deoalAudioThread &audioThread) const{
 	text.Append("mesh = bpy.data.meshes.new('import')\n");
 	text.Append("obj = object_utils.object_data_add(bpy.context, mesh).object\n");
 	text.Append("obj.location = Vector((0,0,0))\n");
-	text.AppendFormat("mesh.vertices.add(%d)\n", pVertexCount);
-	text.AppendFormat("mesh.loops.add(%d)\n", pFaceCount * 3);
-	text.AppendFormat("mesh.polygons.add(%d)\n", pFaceCount);
+	text.AppendFormat("mesh.vertices.add(%d)\n", pVertices.GetCount());
+	text.AppendFormat("mesh.loops.add(%d)\n", pFaces.GetCount() * 3);
+	text.AppendFormat("mesh.polygons.add(%d)\n", pFaces.GetCount());
 // 	text.AppendFormat( "mesh.edges.add(%d)\n", pEdgeCount );
-	int i;
-	for(i=0; i<pVertexCount; i++){
-		text.AppendFormat("mesh.vertices[%d].co = Vector((%f,%f,%f))\n", i,
-			-pVertices[i].x, -pVertices[i].z, pVertices[i].y);
-	}
-	for(i=0; i<pFaceCount; i++){
-		text.AppendFormat("mesh.loops[%d].vertex_index = %d\n", i*3, pFaces[i].vertices[2]);
-		text.AppendFormat("mesh.loops[%d].vertex_index = %d\n", i*3+1, pFaces[i].vertices[1]);
-		text.AppendFormat("mesh.loops[%d].vertex_index = %d\n", i*3+2, pFaces[i].vertices[0]);
+	pVertices.VisitIndexed([&](int i, const decVector &v){
+		text.AppendFormat("mesh.vertices[%d].co = Vector((%f,%f,%f))\n", i, -v.x, -v.z, v.y);
+	});
+	pFaces.VisitIndexed([&](int i, const sFace &f){
+		text.AppendFormat("mesh.loops[%d].vertex_index = %d\n", i*3, f.vertices[2]);
+		text.AppendFormat("mesh.loops[%d].vertex_index = %d\n", i*3+1, f.vertices[1]);
+		text.AppendFormat("mesh.loops[%d].vertex_index = %d\n", i*3+2, f.vertices[0]);
 		text.AppendFormat("mesh.polygons[%d].loop_start = %d\n", i, i*3);
 		text.AppendFormat("mesh.polygons[%d].loop_total = 3\n", i);
-	}
-	// 	for( i=0; i<pEdgeCount; i++ ){
-// 		text.AppendFormat( "mesh.edges[%d].vertices[0] = %d\n", i, pEdges[ i ].vertices[ 0 ] );
-// 		text.AppendFormat( "mesh.edges[%d].vertices[1] = %d\n", i, pEdges[ i ].vertices[ 1 ] );
-// 	}
+	});
+	//pEdges.VisitIndexed([&](int i, const sEdge &e){
+// 		text.AppendFormat("mesh.edges[%d].vertices[0] = %d\n", i, e.vertices[0]);
+// 		text.AppendFormat("mesh.edges[%d].vertices[1] = %d\n", i, e.vertices[1]);
+// 	});
 	text.AppendFormat("mesh.update()\n");
 	audioThread.GetLogger().LogInfo(text);
 }
@@ -300,57 +272,10 @@ void deoalIcoSphere::DebugPrintBlender(deoalAudioThread &audioThread) const{
 //////////////
 
 deoalIcoSphere &deoalIcoSphere::operator=(const deoalIcoSphere &ico){
-	decVector *vertices = nullptr;
-	sEdge *edges = nullptr;
-	sFace *faces = nullptr;
-	
-	try{
-		if(ico.pVertexCount > 0){
-			vertices = new decVector[ico.pVertexCount];
-			memcpy(vertices, ico.pVertices, sizeof(decVector) * ico.pVertexCount);
-		}
-		if(ico.pEdgeCount > 0){
-			edges = new sEdge[ico.pEdgeCount];
-			memcpy(edges, ico.pEdges, sizeof(sEdge) * ico.pEdgeCount);
-		}
-		if(ico.pFaceCount > 0){
-			faces = new sFace[ico.pFaceCount];
-			memcpy(faces, ico.pFaces, sizeof(sFace) * ico.pFaceCount);
-		}
-		
-	}catch(const deException &){
-		if(faces){
-			delete [] faces;
-		}
-		if(edges){
-			delete [] edges;
-		}
-		if(vertices){
-			delete [] vertices;
-		}
-		throw;
-	}
-	
-	if(pVertices){
-		delete [] pVertices;
-	}
-	pVertices = vertices;
-	pVertexCount = ico.pVertexCount;
-	
-	if(pEdges){
-		delete [] pEdges;
-	}
-	pEdges = edges;
-	pEdgeCount = ico.pEdgeCount;
-	
-	if(pFaces){
-		delete [] pFaces;
-	}
-	pFaces = faces;
-	pFaceCount = ico.pFaceCount;
-	
+	pVertices = ico.pVertices;
+	pEdges = ico.pEdges;
+	pFaces = ico.pFaces;
 	pOpeningAngle = ico.pOpeningAngle;
-	
 	return *this;
 }
 

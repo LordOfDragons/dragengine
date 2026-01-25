@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglSharedVBO.h"
 #include "deoglSharedVBOList.h"
 #include "deoglSharedVBOBlock.h"
@@ -47,10 +43,8 @@ int indexOffset, int indexCount) :
 pVBO(vbo),
 pOffset(offset),
 pSize(size),
-pData(nullptr),
 pIndexOffset(indexOffset),
 pIndexCount(indexCount),
-pIndexData(nullptr),
 pValid(false),
 pEmpty(true)
 {
@@ -59,14 +53,7 @@ pEmpty(true)
 	}
 }
 
-deoglSharedVBOBlock::~deoglSharedVBOBlock(){
-	if(pIndexData){
-		delete [] pIndexData;
-	}
-	if(pData){
-		delete [] pData;
-	}
-}
+deoglSharedVBOBlock::~deoglSharedVBOBlock() = default;
 
 
 
@@ -152,25 +139,15 @@ void deoglSharedVBOBlock::pReallocData(){
 	}
 	
 	if(pEmpty){
-		if(pIndexData){
-			delete [] pIndexData;
-			pIndexData = nullptr;
-		}
-		if(pData){
-			delete [] pData;
-			pData = nullptr;
-		}
+		pIndexData.SetCountDiscard(0);
+		pData.SetCountDiscard(0);
 		
 	}else{
-		if(pSize > 0 && !pData){
-			pData = new unsigned char[pVBO->GetParentList()->GetLayout().GetStride() * pSize];
+		if(pSize > 0 && pData.IsEmpty()){
+			pData.SetCountDiscard(pVBO->GetParentList()->GetLayout().GetStride() * pSize);
 		}
-		if(pIndexCount > 0 && !pIndexData){
-			const int indexSize = pVBO->GetParentList()->GetLayout().GetIndexSize();
-			
-			if(indexSize > 0){
-				pIndexData = new unsigned char[indexSize * pIndexCount];
-			}
+		if(pIndexCount > 0 && pIndexData.IsEmpty()){
+			pIndexData.SetCountDiscard(pVBO->GetParentList()->GetLayout().GetIndexSize() * pIndexCount);
 		}
 	}
 	

@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglROcclusionMesh.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../gi/deoglRayTraceField.h"
@@ -67,15 +63,6 @@ pRayTraceField(nullptr)
 {
 	pVBOBlock = nullptr;
 	
-	pWeightsEntries = nullptr;
-	pWeightsCounts = nullptr;
-	pWeightsCount = 0;
-	
-	pVertices = nullptr;
-	pVertexCount = 0;
-	
-	pCorners = nullptr;
-	pCornerCount = 0;
 	pSingleSidedFaceCount = 0;
 	pDoubleSidedFaceCount = 0;
 	
@@ -100,20 +87,20 @@ deoglROcclusionMesh::~deoglROcclusionMesh(){
 ///////////////
 
 void deoglROcclusionMesh::PrepareVBOBlock(){
-	if(pVBOBlock || pVertexCount == 0){
+	if(pVBOBlock || pVertices.IsEmpty()){
 		return;
 	}
 	
 	deoglSharedVBOList &svbolist = pRenderThread.GetBufferObject().
 		GetSharedVBOListForType(deoglRTBufferObject::esvbolStaticOcclusionMesh);
 	
-	if(pVertexCount > svbolist.GetMaxPointCount()){
+	if(pVertices.GetCount() > svbolist.GetMaxPointCount()){
 		pRenderThread.GetLogger().LogInfoFormat("OcclusionMesh(%s): Too many points (%i) "
 			"to fit into shared VBOs. Using over-sized VBO (performance not optimal).",
-			pFilename.GetString(), pVertexCount);
+			pFilename.GetString(), pVertices.GetCount());
 	}
 	
-	pVBOBlock = svbolist.AddData(pVertexCount, pCornerCount);
+	pVBOBlock = svbolist.AddData(pVertices.GetCount(), pCorners.GetCount());
 	pVBOBlock->GetVBO()->GetVAO()->EnsureRTSVAO();
 	
 	pWriteVBOData();
@@ -134,16 +121,14 @@ void deoglROcclusionMesh::PrepareBVH(){
 		return;
 	}
 	
-	deoglBVH::sBuildPrimitive *primitives = nullptr;
+	decTList<deoglBVH::sBuildPrimitive> primitives;
 	const int faceCount = pSingleSidedFaceCount + pDoubleSidedFaceCount;
 	
 	if(faceCount > 0){
-		primitives = new deoglBVH::sBuildPrimitive[faceCount];
-		unsigned short *corners = pCorners;
-		int i;
+		primitives.SetCountDiscard(faceCount);
+		unsigned short *corners = pCorners.GetArrayPointer();
 		
-		for(i=0; i<faceCount; i++){
-			deoglBVH::sBuildPrimitive &primitive = primitives[i];
+		primitives.Visit([&](deoglBVH::sBuildPrimitive &primitive){
 			const sVertex &v1 = pVertices[*(corners++)];
 			const sVertex &v2 = pVertices[*(corners++)];
 			const sVertex &v3 = pVertices[*(corners++)];
@@ -151,7 +136,7 @@ void deoglROcclusionMesh::PrepareBVH(){
 			primitive.minExtend = v1.position.Smallest(v2.position).Smallest(v3.position);
 			primitive.maxExtend = v1.position.Largest(v2.position).Largest(v3.position);
 			primitive.center = (primitive.minExtend + primitive.maxExtend) * 0.5f;
-		}
+		});
 	}
 	
 	try{
@@ -167,14 +152,7 @@ void deoglROcclusionMesh::PrepareBVH(){
 			delete pBVH;
 			pBVH = nullptr;
 		}
-		if(primitives){
-			delete [] primitives;
-		}
 		throw;
-	}
-	
-	if(primitives){
-		delete [] primitives;
 	}
 	
 #if 0
@@ -239,18 +217,6 @@ void deoglROcclusionMesh::pCleanUp(){
 	if(pBVH){
 		delete pBVH;
 	}
-	if(pCorners){
-		delete [] pCorners;
-	}
-	if(pVertices){
-		delete [] pVertices;
-	}
-	if(pWeightsCounts){
-		delete [] pWeightsCounts;
-	}
-	if(pWeightsEntries){
-		delete [] pWeightsEntries;
-	}
 	if(pSharedSPBListUBO){
 		delete pSharedSPBListUBO;
 	}
@@ -262,27 +228,27 @@ void deoglROcclusionMesh::pCleanUp(){
 
 
 void deoglROcclusionMesh::pBuildArrays(const deOcclusionMesh &occlusionMesh){
-	const int meshWeightGroupCount = occlusionMesh.GetWeightGroupCount();
-	const int meshWeightCount = occlusionMesh.GetWeightCount();
-	const int meshVertexCount = occlusionMesh.GetVertexCount();
-	const int meshFaceCount = occlusionMesh.GetFaceCount();
+	const int meshWeightGroupCount = occlusionMesh.GetWeightGroups().GetCount();
+	const int meshWeightCount = occlusionMesh.GetWeights().GetCount();
+	const int meshVertexCount = occlusionMesh.GetVertices().GetCount();
+	const int meshFaceCount = occlusionMesh.GetFaces().GetCount();
 	const int meshSingleFaceCount = meshFaceCount - occlusionMesh.GetDoubleSidedFaceCount();
-	const deOcclusionMeshWeight * const meshWeights = occlusionMesh.GetWeights();
-	const deOcclusionMeshVertex * const meshVertices = occlusionMesh.GetVertices();
-	const unsigned short * const meshCorners = occlusionMesh.GetCorners();
-	const int * const meshWeightGroups = occlusionMesh.GetWeightGroups();
-	const unsigned short * const meshFaces = occlusionMesh.GetFaces();
+	const deOcclusionMeshWeight * const meshWeights = occlusionMesh.GetWeights().GetArrayPointer();
+	const deOcclusionMeshVertex * const meshVertices = occlusionMesh.GetVertices().GetArrayPointer();
+	const unsigned short * const meshCorners = occlusionMesh.GetCorners().GetArrayPointer();
+	const int * const meshWeightGroups = occlusionMesh.GetWeightGroups().GetArrayPointer();
+	const unsigned short * const meshFaces = occlusionMesh.GetFaces().GetArrayPointer();
 	int wg, ws, i, j, cornerIndex, meshCornerIndex;
 	
 	// calculate the number of weight sets
-	pWeightsCount = 0;
+	int weightsCount = 0;
 	for(wg=0; wg<meshWeightGroupCount; wg++){
-		pWeightsCount += meshWeightGroups[wg];
+		weightsCount += meshWeightGroups[wg];
 	}
 	
 	// create weights counts array
-	if(pWeightsCount > 0){
-		pWeightsCounts = new int[pWeightsCount];
+	if(weightsCount > 0){
+		pWeightsCounts.SetCountDiscard(weightsCount);
 		ws = 0;
 		
 		for(wg=0; wg<meshWeightGroupCount; wg++){
@@ -293,10 +259,8 @@ void deoglROcclusionMesh::pBuildArrays(const deOcclusionMesh &occlusionMesh){
 	}
 	
 	// create weights entries array and fill in the weights counts
-	pWeightsEntryCount = meshWeightCount;
-	
 	if(meshWeightCount > 0){
-		pWeightsEntries = new sWeight[meshWeightCount];
+		pWeightsEntries.SetCountDiscard(meshWeightCount);
 		
 		for(ws=0; ws<meshWeightCount; ws++){
 			pWeightsEntries[ws].bone = meshWeights[ws].GetBone();
@@ -306,8 +270,7 @@ void deoglROcclusionMesh::pBuildArrays(const deOcclusionMesh &occlusionMesh){
 	
 	// create vertices array
 	if(meshVertexCount > 0){
-		pVertices = new sVertex[meshVertexCount];
-		pVertexCount = meshVertexCount;
+		pVertices.SetCountDiscard(meshVertexCount);
 		
 		for(i=0; i<meshVertexCount; i++){
 			pVertices[i].position = meshVertices[i].GetPosition();
@@ -316,18 +279,18 @@ void deoglROcclusionMesh::pBuildArrays(const deOcclusionMesh &occlusionMesh){
 	}
 	
 	// determine the total number of corners required
-	pCornerCount = 0;
+	int cornerCount = 0;
 	
 	for(i=0; i<meshFaceCount; i++){
 		const int faceCornerCount = (int)meshFaces[i];
 		
 		if(faceCornerCount > 2){
-			pCornerCount += (faceCornerCount - 2) * 3;
+			cornerCount += (faceCornerCount - 2) * 3;
 		}
 	}
 	
-	if(pCornerCount > 0){
-		pCorners = new unsigned short[pCornerCount];
+	if(cornerCount > 0){
+		pCorners.SetCountDiscard(cornerCount);
 	}
 	
 	// add faces
@@ -376,37 +339,36 @@ void deoglROcclusionMesh::pWriteVBOData(){
 	const int stride = layout.GetStride();
 	unsigned char *ptrData;
 	GLfloat *ptrFloat;
-	int i;
 	
 	// write positions
-	const deoglVBOAttribute &attrPos = layout.GetAttributeAt(0);
+	const deoglVBOAttribute &attrPos = layout.GetAttributes()[0];
 	ptrData = data + attrPos.GetOffset();
 	
-	for(i=0; i<pVertexCount; i++){
-		const decVector &position = pVertices[i].position;
+	pVertices.Visit([&](const sVertex &vertex){
+		const decVector &position = vertex.position;
 		
 		ptrFloat = (GLfloat*)ptrData;
 		ptrFloat[0] = (GLfloat)position.x;
 		ptrFloat[1] = (GLfloat)position.y;
 		ptrFloat[2] = (GLfloat)position.z;
 		ptrData += stride;
-	}
+	});
 	
 	// write indices
 	if(pVBOBlock->GetIndexCount() > 0){
 		switch(layout.GetIndexType()){
 		case deoglVBOLayout::eitUnsignedInt:{
 			GLuint * const indexData = (GLuint*)pVBOBlock->GetIndexData();
-			for(i=0; i<pCornerCount; i++){
-				indexData[i] = (GLuint)pCorners[i];
-			}
+			pCorners.VisitIndexed([&](int i, unsigned short corner){
+				indexData[i] = (GLuint)corner;
+			});
 			}break;
 			
 		case deoglVBOLayout::eitUnsignedShort:{
 			GLushort * const indexData = (GLushort*)pVBOBlock->GetIndexData();
-			for(i=0; i<pCornerCount; i++){
-				indexData[i] = (GLushort)pCorners[i];
-			}
+			pCorners.VisitIndexed([&](int i, unsigned short corner){
+				indexData[i] = (GLushort)corner;
+			});
 			}break;
 			
 		default:

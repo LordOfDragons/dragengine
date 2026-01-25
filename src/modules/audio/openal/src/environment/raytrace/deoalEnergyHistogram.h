@@ -26,6 +26,7 @@
 #define _DEOALENERGYHISTOGRAM_H_
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoalImpulseResponse;
 
@@ -43,8 +44,7 @@ private:
 	int pBandCount;
 	float pTime;
 	float pSlotTime;
-	float *pEntries;
-	int pEntryCount;
+	decTList<float> pEntries;
 	float pInvSlotTime;
 	float pHalfSlotSize;
 	
@@ -144,7 +144,7 @@ public:
 	 * 
 	 * Linear array of values layed out by bands starting with band 0 without padding.
 	 */
-	inline const float *GetEntries() const{ return pEntries; }
+	inline const decTList<float> &GetEntries() const{ return pEntries; }
 	
 	/**
 	 * \brief Integrate band energies.

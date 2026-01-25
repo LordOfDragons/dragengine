@@ -25,6 +25,7 @@
 #ifndef _DEOALICOSPHERE_H_
 #define _DEOALICOSPHERE_H_
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoalAudioThread;
@@ -53,15 +54,9 @@ public:
 	
 	
 private:
-	decVector *pVertices;
-	int pVertexCount;
-	
-	sEdge *pEdges;
-	int pEdgeCount;
-	
-	sFace *pFaces;
-	int pFaceCount;
-	
+	decTList<decVector> pVertices;
+	decTList<sEdge> pEdges;
+	decTList<sFace> pFaces;
 	float pOpeningAngle;
 	
 	
@@ -88,16 +83,16 @@ public:
 	/** \name Manegement */
 	/*@{*/
 	/** \brief Vertices. */
-	inline const decVector *GetVertices() const{ return pVertices; }
+	inline const decVector *GetVertices() const{ return pVertices.GetArrayPointer(); }
 	
 	/** \brief Number of vertices. */
-	inline int GetVertexCount() const{ return pVertexCount; }
+	inline int GetVertexCount() const{ return pVertices.GetCount(); }
 	
 	/** \brief Edges. */
-	inline const sEdge *GetEdges() const{ return pEdges; }
+	inline const sEdge *GetEdges() const{ return pEdges.GetArrayPointer(); }
 	
 	/** \brief Edge count. */
-	inline int GetEdgeCount() const{ return pEdgeCount; }
+	inline int GetEdgeCount() const{ return pEdges.GetCount(); }
 	
 	/** \brief Opening angle. */
 	inline float GetOpeningAngle() const{ return pOpeningAngle; }

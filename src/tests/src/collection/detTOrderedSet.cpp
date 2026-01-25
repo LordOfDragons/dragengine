@@ -88,6 +88,8 @@ void detTOrderedSet::Run(){
 	TestIntReverse();
 	TestIntGetReversed();
 	TestIntFindReverseOrDefault();
+	TestIntRemoveHead();
+	TestIntRemoveTail();
 	
 	// Test string type
 	TestStringConstructors();
@@ -135,6 +137,8 @@ void detTOrderedSet::Run(){
 	TestStringReverse();
 	TestStringGetReversed();
 	TestStringFindReverseOrDefault();
+	TestStringRemoveHead();
+	TestStringRemoveTail();
 	
 	// Test object reference type
 	TestObjectRefConstructors();
@@ -579,16 +583,16 @@ void detTOrderedSet::TestIntFind(){
 	
 	const int *found = nullptr;
 	auto evaluator = [](int value){ return value > 15; };
-	ASSERT_TRUE(set.Find(evaluator, found));
+	ASSERT_TRUE(set.Find(found, evaluator));
 	ASSERT_NOT_NULL(found);
 	ASSERT_EQUAL(*found, 20);
 	
-	ASSERT_EQUAL(set.FindOrDefault(evaluator, -1), 20);
+	ASSERT_EQUAL(set.FindOrDefault(-1, evaluator), 20);
 	
 	auto evaluator2 = [](int value){ return value > 100; };
-	ASSERT_FALSE(set.Find(evaluator2, found));
+	ASSERT_FALSE(set.Find(found, evaluator2));
 	
-	ASSERT_EQUAL(set.FindOrDefault(evaluator2, -1), -1);
+	ASSERT_EQUAL(set.FindOrDefault(-1, evaluator2), -1);
 }
 
 void detTOrderedSet::TestIntCollect(){
@@ -1000,16 +1004,16 @@ void detTOrderedSet::TestStringFind(){
 	
 	const decString *found = nullptr;
 	auto evaluator = [](const decString &value){ return value.GetLength() > 5; };
-	ASSERT_TRUE(set.Find(evaluator, found));
+	ASSERT_TRUE(set.Find(found, evaluator));
 	ASSERT_NOT_NULL(found);
 	ASSERT_EQUAL(*found, "banana");
 	
-	ASSERT_EQUAL(set.FindOrDefault(evaluator, ""), "banana");
+	ASSERT_EQUAL(set.FindOrDefault("", evaluator), "banana");
 	
 	auto evaluator2 = [](const decString &value){ return value.GetLength() > 10; };
-	ASSERT_FALSE(set.Find(evaluator2, found));
+	ASSERT_FALSE(set.Find(found, evaluator2));
 	
-	ASSERT_EQUAL(set.FindOrDefault(evaluator2, ""), "");
+	ASSERT_EQUAL(set.FindOrDefault("", evaluator2), "");
 }
 
 void detTOrderedSet::TestStringCollect(){
@@ -1465,16 +1469,16 @@ void detTOrderedSet::TestObjectRefFind(){
 	
 	const decXmlElementTag::Ref* found;
 	auto evaluator = [obj2](const decXmlElementTag *val){ return val == obj2; };
-	ASSERT_TRUE(set.Find(evaluator, found));
+	ASSERT_TRUE(set.Find(found, evaluator));
 	ASSERT_NOT_NULL(found);
 	ASSERT_EQUAL(*found, obj2);
 	
-	ASSERT_EQUAL(set.FindOrDefault(evaluator, {}), obj2);
+	ASSERT_EQUAL(set.FindOrDefault({}, evaluator), obj2);
 	
 	auto evaluator2 = [](const decXmlElementTag *val){ return val->GetName() == "nonexistent"; };
-	ASSERT_FALSE(set.Find(evaluator2, found));
+	ASSERT_FALSE(set.Find(found, evaluator2));
 	
-	ASSERT_NULL(set.FindOrDefault(evaluator2, {}));
+	ASSERT_NULL(set.FindOrDefault({}, evaluator2));
 }
 
 void detTOrderedSet::TestObjectRefCollect(){
@@ -1663,12 +1667,12 @@ void detTOrderedSet::TestIntVisitOverloads(){
 	// Test Visit with from parameter only
 	int count = 0;
 	auto visitor1 = [&count](int val){ count++; };
-	set1.Visit(visitor1, 2);
+	set1.Visit(2, visitor1);
 	ASSERT_EQUAL(count, 2);  // Visits index 2 and 3
 	
 	// Test Visit with from, to, step parameters
 	count = 0;
-	set1.Visit(visitor1, 0, 4, 2);
+	set1.Visit(0, 4, 2, visitor1);
 	ASSERT_EQUAL(count, 2);  // Visits indices 0 and 2
 }
 
@@ -1684,13 +1688,13 @@ void detTOrderedSet::TestIntFindOverloads(){
 	// Test Find with from parameter only
 	const int *found = nullptr;
 	auto evaluator = [](int val){ return val == 30; };
-	ASSERT_TRUE(set1.Find(evaluator, found, 2));
+	ASSERT_TRUE(set1.Find(found, 2, evaluator));
 	ASSERT_EQUAL(*found, 30);
 	
 	// Test Find with from, to, step parameters
 	found = nullptr;
 	auto evaluator2 = [](int val){ return val == 30; };
-	ASSERT_TRUE(set1.Find(evaluator2, found, 0, 4, 2));
+	ASSERT_TRUE(set1.Find(found, 0, 4, 2, evaluator2));
 	ASSERT_EQUAL(*found, 30);
 }
 
@@ -1704,15 +1708,15 @@ void detTOrderedSet::TestIntFindOrDefault(){
 	
 	// Test FindOrDefault - found case
 	auto evaluator1 = [](int val){ return val == 20; };
-	ASSERT_EQUAL(set1.FindOrDefault(evaluator1, 99), 20);
+	ASSERT_EQUAL(set1.FindOrDefault(99, evaluator1), 20);
 	
 	// Test FindOrDefault - not found case
 	auto evaluator2 = [](int val){ return val == 50; };
-	ASSERT_EQUAL(set1.FindOrDefault(evaluator2, 99), 99);
+	ASSERT_EQUAL(set1.FindOrDefault(99, evaluator2), 99);
 	
 	// Test FindOrDefault with from parameter
 	auto evaluator3 = [](int val){ return val == 10; };
-	ASSERT_EQUAL(set1.FindOrDefault(evaluator3, 99, 1), 99);  // Start from index 1. 10 is at index 0, not found from index 1
+	ASSERT_EQUAL(set1.FindOrDefault(99, 1, evaluator3), 99);  // Start from index 1. 10 is at index 0, not found from index 1
 }
 
 void detTOrderedSet::TestIntCollectOverloads(){
@@ -1726,14 +1730,14 @@ void detTOrderedSet::TestIntCollectOverloads(){
 	
 	// Test Collect with from parameter only
 	auto evaluator1 = [](int val){ return val >= 30; };
-	decTOrderedSetInt collected1 = set1.Collect(evaluator1, 2);
+	decTOrderedSetInt collected1 = set1.Collect(2, evaluator1);
 	ASSERT_EQUAL(collected1.GetCount(), 2);  // 30 and 40
 	ASSERT_TRUE(collected1.Has(30));
 	ASSERT_TRUE(collected1.Has(40));
 	
 	// Test Collect with from, to, step parameters
 	auto evaluator2 = [](int val){ return val == 10 || val == 30; };
-	decTOrderedSetInt collected2 = set1.Collect(evaluator2, 0, 4, 2);
+	decTOrderedSetInt collected2 = set1.Collect(0, 4, 2, evaluator2);
 	ASSERT_EQUAL(collected2.GetCount(), 2);  // 10 and 30 (even indices)
 	ASSERT_TRUE(collected2.Has(10));
 	ASSERT_TRUE(collected2.Has(30));
@@ -1750,7 +1754,7 @@ void detTOrderedSet::TestIntRemoveIfOverloads(){
 	set1.Add(40);
 	
 	auto evaluator1 = [](int val){ return val >= 30; };
-	set1.RemoveIf(evaluator1, 2);
+	set1.RemoveIf(2, evaluator1);
 	ASSERT_EQUAL(set1.GetCount(), 2);
 	ASSERT_FALSE(set1.Has(30));
 	ASSERT_FALSE(set1.Has(40));
@@ -1763,7 +1767,7 @@ void detTOrderedSet::TestIntRemoveIfOverloads(){
 	set2.Add(40);
 	
 	auto evaluator2 = [](int val){ return val == 10 || val == 30; };
-	set2.RemoveIf(evaluator2, 0, 4, 2);
+	set2.RemoveIf(0, 4, 2, evaluator2);
 	ASSERT_EQUAL(set2.GetCount(), 2);
 	ASSERT_FALSE(set2.Has(10));
 	ASSERT_FALSE(set2.Has(30));
@@ -1890,11 +1894,11 @@ void detTOrderedSet::TestStringVisitOverloads(){
 	
 	int count = 0;
 	auto visitor = [&count](decString val){ count++; };
-	set1.Visit(visitor, 2);
+	set1.Visit(2, visitor);
 	ASSERT_EQUAL(count, 2);
 	
 	count = 0;
-	set1.Visit(visitor, 0, 4, 2);
+	set1.Visit(0, 4, 2, visitor);
 	ASSERT_EQUAL(count, 2);
 }
 
@@ -1909,12 +1913,12 @@ void detTOrderedSet::TestStringFindOverloads(){
 	
 	const decString *found = nullptr;
 	auto evaluator = [](decString val){ return val == "cherry"; };
-	ASSERT_TRUE(set1.Find(evaluator, found, 2));
+	ASSERT_TRUE(set1.Find(found, 2, evaluator));
 	ASSERT_EQUAL(*found, "cherry");
 	
 	found = nullptr;
 	auto evaluator2 = [](decString val){ return val == "cherry"; };
-	ASSERT_TRUE(set1.Find(evaluator2, found, 0, 4, 2));
+	ASSERT_TRUE(set1.Find(found, 0, 4, 2, evaluator2));
 	ASSERT_EQUAL(*found, "cherry");
 }
 
@@ -1927,13 +1931,13 @@ void detTOrderedSet::TestStringFindOrDefault(){
 	set1.Add("cherry");
 	
 	auto evaluator1 = [](decString val){ return val == "banana"; };
-	ASSERT_EQUAL(set1.FindOrDefault(evaluator1, "unknown"), "banana");
+	ASSERT_EQUAL(set1.FindOrDefault("unknown", evaluator1), "banana");
 	
 	auto evaluator2 = [](decString val){ return val == "grape"; };
-	ASSERT_EQUAL(set1.FindOrDefault(evaluator2, "unknown"), "unknown");
+	ASSERT_EQUAL(set1.FindOrDefault("unknown", evaluator2), "unknown");
 	
 	auto evaluator3 = [](decString val){ return val == "apple"; };
-	ASSERT_EQUAL(set1.FindOrDefault(evaluator3, "unknown", 1), "unknown");  // apple is at index 0
+	ASSERT_EQUAL(set1.FindOrDefault("unknown", 1, 3, 1, evaluator3), "unknown");  // apple is at index 0
 }
 
 void detTOrderedSet::TestStringCollectOverloads(){
@@ -1946,11 +1950,11 @@ void detTOrderedSet::TestStringCollectOverloads(){
 	set1.Add("date");
 	
 	auto evaluator1 = [](decString val){ return val.Find("a") >= 0; };
-	decTOrderedSetString collected1 = set1.Collect(evaluator1, 2);
+	decTOrderedSetString collected1 = set1.Collect(2, evaluator1);
 	ASSERT_EQUAL(collected1.GetCount(), 1);  // "cherry" starts at index 2
 	
 	auto evaluator2 = [](decString val){ return val.GetLength() >= 5; };
-	decTOrderedSetString collected2 = set1.Collect(evaluator2, 0, 4, 2);
+	decTOrderedSetString collected2 = set1.Collect(0, 4, 2, evaluator2);
 	ASSERT_EQUAL(collected2.GetCount(), 2);  // "apple" and "cherry" have length 5 and 6
 }
 
@@ -1964,7 +1968,7 @@ void detTOrderedSet::TestStringRemoveIfOverloads(){
 	set1.Add("date");
 	
 	auto evaluator1 = [](decString val){ return val.GetLength() > 4; };
-	set1.RemoveIf(evaluator1, 2);
+	set1.RemoveIf(2, evaluator1);
 	ASSERT_FALSE(set1.Has("cherry"));
 	
 	decTOrderedSetString set2;
@@ -1974,7 +1978,7 @@ void detTOrderedSet::TestStringRemoveIfOverloads(){
 	set2.Add("date");
 	
 	auto evaluator2 = [](decString val){ return val == "apple" || val == "cherry"; };
-	set2.RemoveIf(evaluator2, 0, 4, 2);
+	set2.RemoveIf(0, 4, 2, evaluator2);
 	ASSERT_FALSE(set2.Has("apple"));
 	ASSERT_FALSE(set2.Has("cherry"));
 }
@@ -2128,11 +2132,11 @@ void detTOrderedSet::TestObjectRefVisitOverloads(){
 	
 	int count = 0;
 	auto visitor = [&count](decXmlElementTag::Ref val){ count++; };
-	set1.Visit(visitor, 2);
+	set1.Visit(2, visitor);
 	ASSERT_EQUAL(count, 2);
 	
 	count = 0;
-	set1.Visit(visitor, 0, 4, 2);
+	set1.Visit(0, 4, 2, visitor);
 	ASSERT_EQUAL(count, 2);
 }
 
@@ -2152,12 +2156,12 @@ void detTOrderedSet::TestObjectRefFindOverloads(){
 	
 	const decXmlElementTag::Ref *found = nullptr;
 	auto evaluator = [obj3](decXmlElementTag::Ref val){ return val == obj3; };
-	ASSERT_TRUE(set1.Find(evaluator, found, 2));
+	ASSERT_TRUE(set1.Find(found, 2, evaluator));
 	ASSERT_EQUAL(*found, obj3);
 	
 	found = nullptr;
 	auto evaluator2 = [obj3](decXmlElementTag::Ref val){ return val == obj3; };
-	ASSERT_TRUE(set1.Find(evaluator2, found, 0, 4, 2));
+	ASSERT_TRUE(set1.Find(found, 0, 4, 2, evaluator2));
 	ASSERT_EQUAL(*found, obj3);
 }
 
@@ -2175,13 +2179,13 @@ void detTOrderedSet::TestObjectRefFindOrDefault(){
 	set1.Add(obj3);
 	
 	auto evaluator1 = [obj2](decXmlElementTag::Ref val){ return val == obj2; };
-	ASSERT_EQUAL(set1.FindOrDefault(evaluator1, defaultObj), obj2);
+	ASSERT_EQUAL(set1.FindOrDefault(defaultObj, evaluator1), obj2);
 	
 	auto evaluator2 = [](decXmlElementTag::Ref val){ return false; };
-	ASSERT_EQUAL(set1.FindOrDefault(evaluator2, defaultObj), defaultObj);
+	ASSERT_EQUAL(set1.FindOrDefault(defaultObj, evaluator2), defaultObj);
 	
 	auto evaluator3 = [obj1](decXmlElementTag::Ref val){ return val == obj1; };
-	ASSERT_EQUAL(set1.FindOrDefault(evaluator3, defaultObj, 1), defaultObj);  // obj1 is at index 0
+	ASSERT_EQUAL(set1.FindOrDefault(defaultObj, 1, 3, 1, evaluator3), defaultObj);  // obj1 is at index 0
 }
 
 void detTOrderedSet::TestObjectRefCollectOverloads(){
@@ -2199,13 +2203,13 @@ void detTOrderedSet::TestObjectRefCollectOverloads(){
 	set1.Add(obj4);
 	
 	auto evaluator1 = [obj3, obj4](decXmlElementTag::Ref val){ return val == obj3 || val == obj4; };
-	decTOrderedSetXmlElementTag collected1 = set1.Collect(evaluator1, 2);
+	decTOrderedSetXmlElementTag collected1 = set1.Collect(2, evaluator1);
 	ASSERT_EQUAL(collected1.GetCount(), 2);
 	ASSERT_TRUE(collected1.Has(obj3));
 	ASSERT_TRUE(collected1.Has(obj4));
 	
 	auto evaluator2 = [obj1, obj3](decXmlElementTag::Ref val){ return val == obj1 || val == obj3; };
-	decTOrderedSetXmlElementTag collected2 = set1.Collect(evaluator2, 0, 4, 2);
+	decTOrderedSetXmlElementTag collected2 = set1.Collect(0, 4, 2, evaluator2);
 	ASSERT_EQUAL(collected2.GetCount(), 2);
 	ASSERT_TRUE(collected2.Has(obj1));
 	ASSERT_TRUE(collected2.Has(obj3));
@@ -2226,7 +2230,7 @@ void detTOrderedSet::TestObjectRefRemoveIfOverloads(){
 	set1.Add(obj4);
 	
 	auto evaluator1 = [obj3, obj4](decXmlElementTag::Ref val){ return val == obj3 || val == obj4; };
-	set1.RemoveIf(evaluator1, 2);
+	set1.RemoveIf(2, evaluator1);
 	ASSERT_EQUAL(set1.GetCount(), 2);
 	ASSERT_FALSE(set1.Has(obj3));
 	ASSERT_FALSE(set1.Has(obj4));
@@ -2243,7 +2247,7 @@ void detTOrderedSet::TestObjectRefRemoveIfOverloads(){
 	set2.Add(obj8);
 	
 	auto evaluator2 = [obj5, obj7](decXmlElementTag::Ref val){ return val == obj5 || val == obj7; };
-	set2.RemoveIf(evaluator2, 0, 4, 2);
+	set2.RemoveIf(0, 4, 2, evaluator2);
 	ASSERT_EQUAL(set2.GetCount(), 2);
 	ASSERT_FALSE(set2.Has(obj5));
 	ASSERT_FALSE(set2.Has(obj7));
@@ -2425,8 +2429,8 @@ void detTOrderedSet::TestIntIndexOfMatching(){
 	ASSERT_EQUAL(set.IndexOfMatching(evaluator2), -1);
 	
 	auto evaluator3 = [](int val){ return val >= 30; };
-	ASSERT_EQUAL(set.IndexOfMatching(evaluator3, 3), 3);
-	ASSERT_EQUAL(set.IndexOfMatching(evaluator3, 2), 2);
+	ASSERT_EQUAL(set.IndexOfMatching(3, evaluator3), 3);
+	ASSERT_EQUAL(set.IndexOfMatching(2, evaluator3), 2);
 }
 
 void detTOrderedSet::TestIntHasMatching(){
@@ -2597,14 +2601,92 @@ void detTOrderedSet::TestIntFindReverseOrDefault(){
 	set.Add(40);
 	
 	auto evaluator1 = [](int val){ return val == 30; };
-	ASSERT_EQUAL(set.FindReverseOrDefault(evaluator1, 99), 30);
+	ASSERT_EQUAL(set.FindReverseOrDefault(evaluator1), 30);
 	
 	auto evaluator2 = [](int val){ return val > 50; };
-	ASSERT_EQUAL(set.FindReverseOrDefault(evaluator2, 99), 99);
+	ASSERT_EQUAL(set.FindReverseOrDefault(evaluator2), 0);  // Returns default constructed int (0)
 	
 	// FindReverse should find last matching element
 	auto evaluator3 = [](int val){ return val >= 20; };
-	ASSERT_EQUAL(set.FindReverseOrDefault(evaluator3, 99), 40);
+	ASSERT_EQUAL(set.FindReverseOrDefault(evaluator3), 40);
+}
+
+
+// Additional INT Tests - RemoveHead
+// ============================================================================
+
+void detTOrderedSet::TestIntRemoveHead(){
+	SetSubTestNum(141);
+
+	decTOrderedSetInt set;
+	set.Add(10);
+	set.Add(20);
+	set.Add(30);
+	set.Add(40);
+	set.Add(50);
+
+	// Remove first 2 elements
+	set.RemoveHead(2);
+	ASSERT_EQUAL(set.GetCount(), 3);
+	ASSERT_EQUAL(set.GetAt(0), 30);
+	ASSERT_EQUAL(set.GetAt(1), 40);
+	ASSERT_EQUAL(set.GetAt(2), 50);
+
+	// Remove one more
+	set.RemoveHead(1);
+	ASSERT_EQUAL(set.GetCount(), 2);
+	ASSERT_EQUAL(set.GetAt(0), 40);
+	ASSERT_EQUAL(set.GetAt(1), 50);
+
+	// Remove all remaining elements
+	set.RemoveHead(2);
+	ASSERT_TRUE(set.IsEmpty());
+
+	// Remove 0 elements
+	decTOrderedSetInt set2;
+	set2.Add(1);
+	set2.Add(2);
+	set2.RemoveHead(0);
+	ASSERT_EQUAL(set2.GetCount(), 2);
+}
+
+
+// Additional INT Tests - RemoveTail
+// ============================================================================
+
+void detTOrderedSet::TestIntRemoveTail(){
+	SetSubTestNum(142);
+
+	decTOrderedSetInt set;
+	set.Add(10);
+	set.Add(20);
+	set.Add(30);
+	set.Add(40);
+	set.Add(50);
+
+	// Remove last 2 elements
+	set.RemoveTail(2);
+	ASSERT_EQUAL(set.GetCount(), 3);
+	ASSERT_EQUAL(set.GetAt(0), 10);
+	ASSERT_EQUAL(set.GetAt(1), 20);
+	ASSERT_EQUAL(set.GetAt(2), 30);
+
+	// Remove one more
+	set.RemoveTail(1);
+	ASSERT_EQUAL(set.GetCount(), 2);
+	ASSERT_EQUAL(set.GetAt(0), 10);
+	ASSERT_EQUAL(set.GetAt(1), 20);
+
+	// Remove all remaining elements
+	set.RemoveTail(2);
+	ASSERT_TRUE(set.IsEmpty());
+
+	// Remove 0 elements
+	decTOrderedSetInt set2;
+	set2.Add(1);
+	set2.Add(2);
+	set2.RemoveTail(0);
+	ASSERT_EQUAL(set2.GetCount(), 2);
 }
 
 
@@ -2628,7 +2710,7 @@ void detTOrderedSet::TestStringIndexOfMatching(){
 	ASSERT_EQUAL(set.IndexOfMatching(evaluator2), -1);
 	
 	auto evaluator3 = [](const decString &val){ return val.GetLength() == 4; };
-	ASSERT_EQUAL(set.IndexOfMatching(evaluator3, 3), 3);
+	ASSERT_EQUAL(set.IndexOfMatching(3, evaluator3), 3);
 }
 
 void detTOrderedSet::TestStringHasMatching(){
@@ -2790,14 +2872,92 @@ void detTOrderedSet::TestStringFindReverseOrDefault(){
 	set.Add("date");
 	
 	auto evaluator1 = [](const decString &val){ return val == "cherry"; };
-	ASSERT_EQUAL(set.FindReverseOrDefault(evaluator1, decString("default")), decString("cherry"));
+	ASSERT_EQUAL(set.FindReverseOrDefault(evaluator1), decString("cherry"));
 	
 	auto evaluator2 = [](const decString &val){ return val == "fig"; };
-	ASSERT_EQUAL(set.FindReverseOrDefault(evaluator2, decString("default")), decString("default"));
+	ASSERT_EQUAL(set.FindReverseOrDefault(evaluator2), decString());  // Returns default constructed string
 	
 	// FindReverse should find last matching element
 	auto evaluator3 = [](const decString &val){ return val.GetLength() >= 5; };
-	ASSERT_EQUAL(set.FindReverseOrDefault(evaluator3, decString("default")), decString("cherry"));
+	ASSERT_EQUAL(set.FindReverseOrDefault(evaluator3), decString("cherry"));
+}
+
+
+// Additional STRING Tests - RemoveHead
+// ============================================================================
+
+void detTOrderedSet::TestStringRemoveHead(){
+	SetSubTestNum(143);
+
+	decTOrderedSetString set;
+	set.Add("first");
+	set.Add("second");
+	set.Add("third");
+	set.Add("fourth");
+	set.Add("fifth");
+
+	// Remove first 2 elements
+	set.RemoveHead(2);
+	ASSERT_EQUAL(set.GetCount(), 3);
+	ASSERT_EQUAL(set.GetAt(0), decString("third"));
+	ASSERT_EQUAL(set.GetAt(1), decString("fourth"));
+	ASSERT_EQUAL(set.GetAt(2), decString("fifth"));
+
+	// Remove one more
+	set.RemoveHead(1);
+	ASSERT_EQUAL(set.GetCount(), 2);
+	ASSERT_EQUAL(set.GetAt(0), decString("fourth"));
+	ASSERT_EQUAL(set.GetAt(1), decString("fifth"));
+
+	// Remove all remaining elements
+	set.RemoveHead(2);
+	ASSERT_TRUE(set.IsEmpty());
+
+	// Remove 0 elements
+	decTOrderedSetString set2;
+	set2.Add("a");
+	set2.Add("b");
+	set2.RemoveHead(0);
+	ASSERT_EQUAL(set2.GetCount(), 2);
+}
+
+
+// Additional STRING Tests - RemoveTail
+// ============================================================================
+
+void detTOrderedSet::TestStringRemoveTail(){
+	SetSubTestNum(144);
+
+	decTOrderedSetString set;
+	set.Add("first");
+	set.Add("second");
+	set.Add("third");
+	set.Add("fourth");
+	set.Add("fifth");
+
+	// Remove last 2 elements
+	set.RemoveTail(2);
+	ASSERT_EQUAL(set.GetCount(), 3);
+	ASSERT_EQUAL(set.GetAt(0), decString("first"));
+	ASSERT_EQUAL(set.GetAt(1), decString("second"));
+	ASSERT_EQUAL(set.GetAt(2), decString("third"));
+
+	// Remove one more
+	set.RemoveTail(1);
+	ASSERT_EQUAL(set.GetCount(), 2);
+	ASSERT_EQUAL(set.GetAt(0), decString("first"));
+	ASSERT_EQUAL(set.GetAt(1), decString("second"));
+
+	// Remove all remaining elements
+	set.RemoveTail(2);
+	ASSERT_TRUE(set.IsEmpty());
+
+	// Remove 0 elements
+	decTOrderedSetString set2;
+	set2.Add("a");
+	set2.Add("b");
+	set2.RemoveTail(0);
+	ASSERT_EQUAL(set2.GetCount(), 2);
 }
 
 
@@ -2826,7 +2986,7 @@ void detTOrderedSet::TestObjectRefIndexOfMatching(){
 	ASSERT_EQUAL(set.IndexOfMatching(evaluator2), -1);
 	
 	auto evaluator3 = [](decXmlElementTag::Ref val){ return val->GetName().GetLength() == 4; };
-	ASSERT_EQUAL(set.IndexOfMatching(evaluator3, 2), 2);
+	ASSERT_EQUAL(set.IndexOfMatching(2, evaluator3), 2);
 }
 
 void detTOrderedSet::TestObjectRefHasMatching(){
@@ -3033,12 +3193,12 @@ void detTOrderedSet::TestObjectRefFindReverseOrDefault(){
 	set.Add(obj4);
 	
 	auto evaluator1 = [obj3](decXmlElementTag::Ref val){ return val == obj3; };
-	ASSERT_EQUAL(set.FindReverseOrDefault(evaluator1, defaultObj), obj3);
+	ASSERT_EQUAL(set.FindReverseOrDefault(evaluator1), obj3);
 	
 	auto evaluator2 = [](decXmlElementTag::Ref val){ return val->GetName() == "tag5"; };
-	ASSERT_EQUAL(set.FindReverseOrDefault(evaluator2, defaultObj), defaultObj);
+	ASSERT_TRUE(set.FindReverseOrDefault(evaluator2).IsNull());  // Returns default constructed (null) Ref
 	
 	// FindReverse should find last matching element
 	auto evaluator3 = [](decXmlElementTag::Ref val){ return val->GetName().GetLength() == 4; };
-	ASSERT_EQUAL(set.FindReverseOrDefault(evaluator3, defaultObj), obj4);
+	ASSERT_EQUAL(set.FindReverseOrDefault(evaluator3), obj4);
 }

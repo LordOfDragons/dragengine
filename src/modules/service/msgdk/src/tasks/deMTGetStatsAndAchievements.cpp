@@ -20,7 +20,6 @@ deMTGetStatsAndAchievements::deMTGetStatsAndAchievements(deMsgdkServiceMsgdk &se
 deMsgdkAsyncTask(service.GetInvalidator()),
 pService(service),
 pRequestId(id),
-pStatNames(nullptr),
 pResultData(deServiceObject::Ref::New()),
 pWaitAchievementsSynced(false)
 {
@@ -162,7 +161,7 @@ void deMTGetStatsAndAchievements::pGetStats()
 	}
 	
 	int i;
-	pStatNames = new const char*[count];
+	pStatNames.SetCountDiscard(count);
 	for(i=0; i<count; i++){
 		pStatNames[i] = pStats.GetAt(i).GetString();
 	}
@@ -170,7 +169,7 @@ void deMTGetStatsAndAchievements::pGetStats()
 	pService.AssertResult(XblUserStatisticsGetSingleUserStatisticsAsync(
 		pService.GetXblContext(), pService.GetUserId(),
 		pService.GetModule().GetGameConfig().scid,
-		pStatNames, (size_t)count, GetAsyncBlockPtr()),
+		pStatNames.GetArrayPointer(), (size_t)count, GetAsyncBlockPtr()),
 		"deMTGetStatsAndAchievements.pGetStarts.XblUserStatisticsGetSingleUserStatisticsAsync");
 }
 
@@ -191,19 +190,17 @@ void deMTGetStatsAndAchievements::OnFinished()
 	}
 
 	const int statCount = pStats.GetCount();
-	bool *found = nullptr;
-	uint8_t *buffer = new uint8_t[bufferSize];
 
 	try
 	{
+		decTList<uint8_t> buffer(bufferSize, 0);
+		
 		XblUserStatisticsResult *usr;
 		size_t bufferUsed;
 		HRESULT result = XblUserStatisticsGetSingleUserStatisticsResult(GetAsyncBlockPtr(),
-			bufferSize, buffer, &usr, &bufferUsed);
+			bufferSize, buffer.GetArrayPointer(), &usr, &bufferUsed);
 		if(FAILED(result))
 		{
-			delete [] buffer;
-			buffer = nullptr;
 			pService.FailRequest(pr, result);
 			return;
 		}
@@ -212,11 +209,7 @@ void deMTGetStatsAndAchievements::OnFinished()
 		const decString &scid = pService.GetModule().GetGameConfig().scid;
 		uint32_t i, j;
 
-		found = new bool[statCount];
-		for(i=0; i<(uint32_t)statCount; i++)
-		{
-			found[i] = false;
-		}
+		decTList<bool> found(statCount, false);
 
 		for(i=0; i<usr->serviceConfigStatisticsCount; i++)
 		{
@@ -263,9 +256,6 @@ void deMTGetStatsAndAchievements::OnFinished()
 			}
 		}
 
-		delete [] buffer;
-		buffer = nullptr;
-
 		for(i=0; i<(uint32_t)statCount; i++)
 		{
 			if(!found[i])
@@ -273,9 +263,6 @@ void deMTGetStatsAndAchievements::OnFinished()
 				so->SetChildAt(pStats.GetAt(i), {});
 			}
 		}
-
-		delete [] found;
-		found = nullptr;
 
 		pResultData->SetChildAt("stats", so);
 
@@ -286,14 +273,6 @@ void deMTGetStatsAndAchievements::OnFinished()
 	}
 	catch(const deException &e)
 	{
-		if(found)
-		{
-			delete [] found;
-		}
-		if(buffer)
-		{
-			delete [] buffer;
-		}
 		pService.FailRequest(pr, e);
 		return;
 	}

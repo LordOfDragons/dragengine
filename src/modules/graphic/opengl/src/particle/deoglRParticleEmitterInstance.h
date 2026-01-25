@@ -102,17 +102,12 @@ private:
 	
 	decTObjectList<deoglRParticleEmitterInstanceType> pTypes;
 	
-	sParticle *pParticles;
-	int pParticleCount;
-	int pParticleSize;
+	decTList<sParticle> pParticles;
 	
-	sLocalVBOData *pLocalVBOData;
-	char *pSharedVBOData;
+	decTList<sLocalVBOData> pLocalVBOData;
+	decTList<char> pSharedVBOData;
 	
-	GLushort *pIndices;
-	int pIndexCount;
-	int pIndexSize;
-	int pIndexUsedCount;
+	decTList<GLushort> pIndices;
 	bool pDirtyIBO;
 	
 	decDVector pMinExtend;
@@ -266,10 +261,7 @@ public:
 	/** \name Particles. */
 	/*@{*/
 	/** Particles. */
-	inline const sParticle *GetParticles() const{ return pParticles; }
-	
-	/** Number of particles. */
-	inline int GetParticleCount() const{ return pParticleCount; }
+	inline const decTList<sParticle> &GetParticles() const{ return pParticles; }
 	
 	/** Update particles. */
 	void UpdateParticles(const deParticleEmitterInstance &instance);
@@ -317,8 +309,8 @@ public:
 	
 	/** \name Index Buffer */
 	/*@{*/
-	/** Number of indices used in the index buffer. */
-	inline int GetIBOUsedIndexCount() const{ return pIndexUsedCount; }
+	/** Number of indices in the index buffer. */
+	inline int GetIBOIndexCount() const{ return pIndices.GetCount(); }
 	
 	/** Remove all entries from the index buffer. */
 	void ClearIBO();

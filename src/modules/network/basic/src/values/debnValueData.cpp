@@ -45,23 +45,18 @@
 
 debnValueData::debnValueData(deNetworkValueData &valueData) :
 pValueData(valueData),
-pLastValue(nullptr),
 pLastValueLen(0)
 {
 	SetDataType(evtData);
 	
 	if(valueData.GetLength() > 0){
-		pLastValue = new uint8_t[valueData.GetLength()];
-		memcpy(pLastValue, valueData.GetData(), valueData.GetLength());
+		pLastValue.AddRange(valueData.GetLength(), {});
+		memcpy(pLastValue.GetArrayPointer(), valueData.GetData(), valueData.GetLength());
 		pLastValueLen = valueData.GetLength();
 	}
 }
 
-debnValueData::~debnValueData(){
-	if(pLastValue){
-		delete [] pLastValue;
-	}
-}
+debnValueData::~debnValueData() = default;
 
 
 
@@ -73,8 +68,9 @@ bool debnValueData::LastValueEqualsNetworkValue() const{
 		return false;
 	}
 	
-	if(pLastValue){
-		return pValueData.GetData() && memcmp(pLastValue, pValueData.GetData(), pLastValueLen) == 0;
+	if(pLastValueLen > 0){
+		return pValueData.GetData()
+			&& memcmp(pLastValue.GetArrayPointer(), pValueData.GetData(), pLastValueLen) == 0;
 		
 	}else{
 		return !pValueData.GetData();
@@ -82,17 +78,9 @@ bool debnValueData::LastValueEqualsNetworkValue() const{
 }
 
 void debnValueData::SetLastValueFromNetworkValue(){
-	if(pValueData.GetLength() > pLastValueLen){
-		if(pLastValue){
-			delete [] pLastValue;
-			pLastValue = nullptr;
-			pLastValueLen = 0;
-		}
-		pLastValue = new uint8_t[pValueData.GetLength()];
-	}
-	
+	pLastValue.SetCountDiscard(pValueData.GetLength());
 	pLastValueLen = pValueData.GetLength();
-	memcpy(pLastValue, pValueData.GetData(), pLastValueLen);
+	memcpy(pLastValue.GetArrayPointer(), pValueData.GetData(), pLastValueLen);
 }
 
 bool debnValueData::UpdateValue(bool force){

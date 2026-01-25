@@ -34,6 +34,7 @@
 #include "../skin/pipeline/deoglSkinTexturePipelines.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglModelLOD;
@@ -69,13 +70,12 @@ public:
 	deoglVBOLayout *pVBOLayout;
 	const deoglSharedVBOBlock *pVBOBlock;
 	
-	oglMatrix3x4 *pWeights;
-	
-	oglVector3 *pPositions;
-	oglVector3 *pRealNormals;
-	oglVector3 *pNormals;
-	oglVector3 *pTangents;
-	oglVector3 *pFaceNormals;
+	decTList<oglMatrix3x4> pWeights;
+	decTList<oglVector3> pPositions;
+	decTList<oglVector3> pRealNormals;
+	decTList<oglVector3> pNormals;
+	decTList<oglVector3> pTangents;
+	decTList<oglVector3> pFaceNormals;
 	
 	bool pDirtyModelWeights;
 	bool pDirtyModelPositions;
@@ -131,37 +131,37 @@ public:
 	
 	
 	/** Weights for debuging purpose. */
-	inline oglMatrix3x4 *GetWeights() const{ return pWeights; }
+	inline const decTList<oglMatrix3x4> &GetWeights() const{ return pWeights; }
 	
 	/**
 	 * Retrieves the face normals.
 	 * \details Valid only after calling PrepareNormalsTangents and faces exist.
 	 */
-	inline oglVector3 *GetFaceNormals() const{ return pFaceNormals; }
+	inline const decTList<oglVector3> &GetFaceNormals() const{ return pFaceNormals; }
 	
 	/**
 	 * Retrieves the positions.
 	 * \details Valid only after calling PreparePositions and positions exist.
 	 */
-	inline oglVector3 *GetPositions() const{ return pPositions; }
+	inline const decTList<oglVector3> &GetPositions() const{ return pPositions; }
 	
 	/**
 	 * Retrieves the real normals.
 	 * \details Valid only after calling PrepareNormalsTangents and normals exist.
 	 */
-	inline oglVector3 *GetRealNormals() const{ return pRealNormals; }
+	inline const decTList<oglVector3> &GetRealNormals() const{ return pRealNormals; }
 	
 	/**
 	 * Retrieves the normals.
 	 * \details Valid only after calling PrepareNormalsTangents and normals exist.
 	 */
-	inline oglVector3 *GetNormals() const{ return pNormals; }
+	inline const decTList<oglVector3> &GetNormals() const{ return pNormals; }
 	
 	/**
 	 * Retrieves the tangents.
 	 * \details Valid only after calling PrepareNormalsTangents and tangents exist.
 	 */
-	inline oglVector3 *GetTangents() const{ return pTangents; }
+	inline const decTList<oglVector3> &GetTangents() const{ return pTangents; }
 	
 	
 	

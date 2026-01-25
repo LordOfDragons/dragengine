@@ -22,11 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdint.h>
-
 #include "aeWPPlayground.h"
 #include "aeWPPlaygroundListener.h"
 #include "aeWindowProperties.h"
@@ -485,7 +480,7 @@ public:
 	}
 	
 	void OnChanged(float value, aeAnimator&){
-		pPanel.GetControllerAt(pIndex).controller->SetCurrentValue(value);
+		pPanel.GetControllers()[pIndex].controller->SetCurrentValue(value);
 	}
 };
 
@@ -501,9 +496,7 @@ public:
 
 aeWPPlayground::aeWPPlayground(aeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pControllers(nullptr),
-pControllerCount(0)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
@@ -597,8 +590,6 @@ pControllerCount(0)
 }
 
 aeWPPlayground::~aeWPPlayground(){
-	if(pControllers) delete [] pControllers;
-	
 	if(pAnimator){
 		pAnimator->RemoveNotifier(pListener);
 		pAnimator = nullptr;
@@ -648,40 +639,22 @@ aeAnimatorLocomotionLeg *aeWPPlayground::GetLeg() const{
 	return pAnimator->GetLocomotion().GetLegs().GetAt(legnum);
 }
 
-aeWPPlayground::sController &aeWPPlayground::GetControllerAt(int index) const{
-	if(index < 0 || index >= pControllerCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pControllers[index];
-}
-
 
 void aeWPPlayground::RebuildControllers(){
 	// remove all widgets from controller container
 	pFraContent->RemoveAllChildren();
 	
 	// create array holding controller widgets ( even if not all are used in the end )
-	if(pControllers){
-		delete [] pControllers;
-		pControllers = nullptr;
-	}
-	pControllerCount = 0;
+	pControllers.RemoveAll();
 	
-	int controllerCount = 0;
 	if(pAnimator){
-		controllerCount = pAnimator->GetControllers().GetCount();
-		if(controllerCount > 0){
-			pControllers = new sController[controllerCount];
-		}
+		pControllers.AddRange(pAnimator->GetControllers().GetCount(), {});
 	}
 	
 	// create widgets
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
-	int i;
 	
-	for(i=0; i<controllerCount; i++){
-		sController &controller = pControllers[pControllerCount];
-		
+	pControllers.VisitIndexed([&](int i, aeWPPlayground::sController &controller){
 		aeController * const animatorController = pAnimator->GetControllers().GetAt(i);
 		
 		controller.controller = animatorController;
@@ -693,40 +666,36 @@ void aeWPPlayground::RebuildControllers(){
 		
 		igdeEditSliderText::Ref slider;
 		helper.EditSliderText(pFraContent, text, description, 0.0f, 1.0f, 6, 3, 0.1f,
-			slider, cSliderController::Ref::New(*this, pControllerCount));
+			slider, cSliderController::Ref::New(*this, i));
 		controller.slider = slider;
-		
-		pControllerCount++;
 		
 		UpdateController(animatorController);
 		UpdateControllerValue(animatorController);
-	}
+	});
 }
 
 void aeWPPlayground::UpdateController(aeController *controller){
-	int i;
-	for(i=0; i<pControllerCount; i++){
-		if(pControllers[i].controller != controller){
-			continue;
-		}
-		
+	sController *found = nullptr;
+	pControllers.Find(found, [&](const sController &c){
+		return c.controller == controller;
+	});
+	
+	if(found){
 		const float minimum = controller->GetMinimumValue();
 		const float maximum = controller->GetMaximumValue();
-		pControllers[i].slider->SetRange(minimum, maximum);
-		pControllers[i].slider->SetTickSpacing((maximum - minimum) * 0.1f);
-		return;
+		found->slider->SetRange(minimum, maximum);
+		found->slider->SetTickSpacing((maximum - minimum) * 0.1f);
 	}
 }
 
 void aeWPPlayground::UpdateControllerValue(aeController *controller){
-	int i;
-	for(i=0; i<pControllerCount; i++){
-		if(pControllers[i].controller != controller){
-			continue;
-		}
-		
-		pControllers[i].slider->SetValue(controller->GetCurrentValue());
-		break;
+	sController *found = nullptr;
+	pControllers.Find(found, [&](const sController &c){
+		return c.controller == controller;
+	});
+	
+	if(found){
+		found->slider->SetValue(controller->GetCurrentValue());
 	}
 }
 

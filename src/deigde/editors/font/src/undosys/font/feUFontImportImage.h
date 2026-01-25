@@ -27,11 +27,12 @@
 
 #include <deigde/undo/igdeUndo.h>
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 #include "../../font/image/feFontImage.h"
-class deImage;
 
+class deImage;
 
 
 /**
@@ -45,14 +46,12 @@ public:
 private:
 	feFontImage::Ref pImage;
 	
-	int pOldWidth;
-	int pOldHeight;
-	decColor *pOldColor;
+	int pOldWidth, pOldHeight;
+	decTList<decColor> pOldColor;
 	decString pOldPath;
 	
-	int pNewWidth;
-	int pNewHeight;
-	decColor *pNewColor;
+	int pNewWidth, pNewHeight;
+	decTList<decColor> pNewColor;
 	decString pNewPath;
 	
 	
@@ -81,9 +80,7 @@ public:
 	/*@}*/
 	
 	
-	
 private:
-	void pCleanUp();
 	void pStoreColors(deImage &image, decColor *colors);
 	void pRestoreColors(deImage &image, decColor *colors);
 };

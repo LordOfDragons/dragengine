@@ -963,7 +963,6 @@ void deoglSkinTexture::pLoadCached(deoglRSkin &skin){
 	// try to load caches using the calculated cache ids
 	deoglCaches &caches = pRenderThread.GetOgl().GetCaches();
 	deCacheHelper &cacheTextures = caches.GetSkinTextures();
-	char *verifyData = nullptr;
 	int i;
 	
 	const bool enableCacheLogging = ENABLE_CACHE_LOGGING;
@@ -1023,13 +1022,10 @@ void deoglSkinTexture::pLoadCached(deoglRSkin &skin){
 					verified = true;
 					
 				}else{
-					verifyData = new char[verifyLen];
-					reader->Read(verifyData, verifyLen);
-					
-					verified = memcmp(verifyData, expectedVerify->GetPointer(), verifyLen) == 0;
-					
-					delete [] verifyData;
-					verifyData = nullptr;
+					decTList<char> verifyData;
+					verifyData.SetCountDiscard(verifyLen);
+					reader->Read(verifyData.GetArrayPointer(), verifyLen);
+					verified = memcmp(verifyData.GetArrayPointer(), expectedVerify->GetPointer(), verifyLen) == 0;
 				}
 			}
 			
@@ -1115,7 +1111,7 @@ void deoglSkinTexture::pLoadCached(deoglRSkin &skin){
 			const deoglPixelBufferMipMap::Ref pixelBufferMipMap(deoglPixelBufferMipMap::Ref::New(pbformat, width, height, depth, maxMipMapLevel));
 			
 			for(j=0; j<pixBufCount; j++){
-				deoglPixelBuffer &pixelBuffer = pixelBufferMipMap->GetPixelBuffer(j);
+				deoglPixelBuffer &pixelBuffer = pixelBufferMipMap->GetPixelBuffers()[j];
 				reader->Read(pixelBuffer.GetPointer(), pixelBuffer.GetImageSize());
 			}
 			
@@ -1137,11 +1133,6 @@ void deoglSkinTexture::pLoadCached(deoglRSkin &skin){
 			pChannels[i]->SetIsCached(true);
 			
 		}catch(const deException &){
-			if(verifyData){
-				delete [] verifyData;
-				verifyData = nullptr;
-			}
-			
 			{
 			const deMutexGuard guard(caches.GetMutex());
 			cacheTextures.Delete(pChannels[i]->GetCacheID());
@@ -1333,10 +1324,10 @@ void deoglSkinTexture::pCompressTextures(deoglRSkin &skin, const deSkinTexture &
 			DETHROW(deeInvalidParam);
 		}
 		
-		const deoglPixelBuffer &basePixelBuffer = pbMipMapSource->GetPixelBuffer(0);
+		const deoglPixelBuffer &basePixelBuffer = pbMipMapSource->GetPixelBuffers()[0];
 		const deoglPixelBufferMipMap::Ref pbMipMapCompressed(deoglPixelBufferMipMap::Ref::New(pbformat,
 				basePixelBuffer.GetWidth(), basePixelBuffer.GetHeight(),
-				basePixelBuffer.GetDepth(), pbMipMapSource->GetPixelBufferCount() - 1));
+				basePixelBuffer.GetDepth(), pbMipMapSource->GetPixelBuffers().GetCount() - 1));
 		
 		textureCompression.SetDecompressedDataMipMap(pbMipMapSource);
 		textureCompression.SetCompressedDataMipMap(pbMipMapCompressed);
@@ -1433,10 +1424,10 @@ void deoglSkinTexture::pWriteCached(deoglRSkin &skin){
 				pChannels[i]->GetPixelBufferMipMap();
 			
 			if(pixelBufferMipMap){
-				const int pixBufCount = pixelBufferMipMap->GetPixelBufferCount();
+				const int pixBufCount = pixelBufferMipMap->GetPixelBuffers().GetCount();
 				int j;
 				
-				const deoglPixelBuffer &pixelBufferBase = pixelBufferMipMap->GetPixelBuffer(0);
+				const deoglPixelBuffer &pixelBufferBase = pixelBufferMipMap->GetPixelBuffers()[0];
 				writer->WriteByte((unsigned char)pixBufCount);
 				writer->WriteShort((short)pixelBufferBase.GetWidth());
 				writer->WriteShort((short)pixelBufferBase.GetHeight());
@@ -1444,7 +1435,7 @@ void deoglSkinTexture::pWriteCached(deoglRSkin &skin){
 				writer->WriteByte((unsigned char)pixelBufferBase.GetFormat());
 				
 				for(j=0; j<pixBufCount; j++){
-					const deoglPixelBuffer &pixelBuffer = pixelBufferMipMap->GetPixelBuffer(j);
+					const deoglPixelBuffer &pixelBuffer = pixelBufferMipMap->GetPixelBuffers()[j];
 					writer->Write(pixelBuffer.GetPointer(), pixelBuffer.GetImageSize());
 				}
 				

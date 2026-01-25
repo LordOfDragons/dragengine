@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-
 #include "devkShaderModule.h"
 #include "../devkDevice.h"
 #include "../devkInstance.h"
@@ -40,26 +37,22 @@
 devkShaderModule::devkShaderModule(devkDevice &device, const char *path, decBaseFileReader &reader) :
 pDevice(device),
 pPath(path),
-pSource(nullptr),
-pSourceLength(0),
 pModule(VK_NULL_HANDLE)
 {
 	try{
 		VK_IF_CHECK(deSharedVulkan &vulkan = device.GetInstance().GetVulkan());
 		
 		// load source
-		pSourceLength = reader.GetLength();
-		if(pSourceLength == 0){
-			DETHROW_INFO(deeInvalidParam, "empty sources");
-		}
+		const int size = reader.GetLength();
+		DEASSERT_TRUE(size > 0)
 		
-		pSource = new char[pSourceLength];
-		reader.Read(pSource, pSourceLength);
+		pSource.SetCountDiscard(size);
+		reader.Read(pSource.GetArrayPointer(), size);
 		
 		// create shader module
 		VkShaderModuleCreateInfo info{VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO};
-		info.codeSize = pSourceLength;
-		info.pCode = (const uint32_t *)pSource;
+		info.codeSize = size;
+		info.pCode = (const uint32_t *)pSource.GetArrayPointer();
 		
 		VK_CHECK(vulkan, device.vkCreateShaderModule(device.GetDevice(), &info, nullptr, &pModule));
 		
@@ -86,8 +79,5 @@ devkShaderModule::~devkShaderModule(){
 void devkShaderModule::pCleanUp(){
 	if(pModule){
 		pDevice.vkDestroyShaderModule(pDevice.GetDevice(), pModule, VK_NULL_HANDLE);
-	}
-	if(pSource){
-		delete [] pSource;
 	}
 }

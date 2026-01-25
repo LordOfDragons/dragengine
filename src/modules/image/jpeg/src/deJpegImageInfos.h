@@ -25,6 +25,7 @@
 #ifndef _DEJPEGIMAGEINFO_H_
 #define _DEJPEGIMAGEINFO_H_
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/systems/modules/image/deBaseImageInfo.h>
@@ -54,7 +55,7 @@ private:
 	jpeg_error_mgr pErrorMgr;
 	jpeg_source_mgr pSourceMgr;
 	
-	JOCTET *pDataBuffer;
+	decTList<JOCTET> pDataBuffer;
 	int pDataBufferPosition;
 	decBaseFileReader *pReader;
 	
@@ -91,7 +92,7 @@ public:
 	/** @name Data Buffer */
 	/*@{*/
 	/** Retrieves the data buffer. */
-	inline JOCTET *GetDataBuffer() const{ return pDataBuffer; }
+	inline const decTList<JOCTET> &GetDataBuffer() const{ return pDataBuffer; }
 	/** Retrieves the file size. */
 	inline int GetFileSize() const{ return pFileSize; }
 	/** Retrieves the file position. */

@@ -55,8 +55,8 @@ pMemUseIBO(parentList->GetRenderThread().GetMemoryManager().GetConsumption().buf
 		DETHROW(deeInvalidParam);
 	}
 	
-	const deoglVBOLayout &layout = parentList->GetLayout();
-	const int attributeCount = layout.GetAttributeCount();
+	deoglVBOLayout &layout = parentList->GetLayout();
+	const int attributeCount = layout.GetAttributes().GetCount();
 	deoglRenderThread &renderThread = parentList->GetRenderThread();
 	int i;
 	
@@ -120,7 +120,6 @@ void deoglSharedVBO::Prepare(){
 	const int stride = pParentList->GetLayout().GetStride();
 	const GLenum drawType = pParentList->GetDrawType();
 	const int blockCount = pBlocks.GetCount();
-	unsigned char *vboData = nullptr;
 	int i;
 	
 	// update vertex buffer
@@ -131,25 +130,18 @@ void deoglSharedVBO::Prepare(){
 		// another way which does not require a memory copy is to write the data blocks in ascending
 		// order using glBufferSubData. according to the Internet this should not be slower than
 		// glBufferData for a newly created buffer.
-		try{
-			vboData = new unsigned char[stride * pUsedSize];
-			
-			for(i=0; i<blockCount; i++){
-				const deoglSharedVBOBlock &block = pBlocks.GetAt(i);
-				if(!block.GetEmpty()){
-					memcpy(vboData + stride * block.GetOffset(), block.GetData(), stride * block.GetSize());
-				}
+		decTList<unsigned char> vboData;
+		vboData.SetCountDiscard(stride * pUsedSize);
+		
+		for(i=0; i<blockCount; i++){
+			const deoglSharedVBOBlock &block = pBlocks.GetAt(i);
+			if(!block.GetEmpty()){
+				memcpy(vboData.GetArrayPointer() + stride * block.GetOffset(), block.GetData(), stride * block.GetSize());
 			}
-			
-			OGL_CHECK(renderThread, pglBufferData(GL_SHADER_STORAGE_BUFFER, stride * pUsedSize, vboData, drawType));
-			delete [] vboData;
-			
-		}catch(const deException &){
-			if(vboData){
-				delete [] vboData;
-			}
-			throw;
 		}
+		
+		OGL_CHECK(renderThread, pglBufferData(GL_SHADER_STORAGE_BUFFER,
+			stride * pUsedSize, vboData.GetArrayPointer(), drawType));
 	}
 	
 	// update index buffer. works differently depending on the presence of base-vertex support
@@ -163,47 +155,38 @@ void deoglSharedVBO::Prepare(){
 			// another way which does not require a memory copy is to write the data blocks in ascending
 			// order using glBufferSubData. according to the Internet this should not be slower than
 			// glBufferData for a newly created buffer.
-			vboData = nullptr;
+			decTList<unsigned char> vboData;
+			vboData.SetCountDiscard(indexSize * pIndexUsedSize);
 			
-			try{
-				vboData = new unsigned char[indexSize * pIndexUsedSize];
+			for(i=0; i<blockCount; i++){
+				const deoglSharedVBOBlock &block = pBlocks.GetAt(i);
+				if(block.GetEmpty() || block.GetIndexCount() == 0){
+					continue;
+				}
 				
-				for(i=0; i<blockCount; i++){
-					const deoglSharedVBOBlock &block = pBlocks.GetAt(i);
-					if(block.GetEmpty() || block.GetIndexCount() == 0){
-						continue;
+				if(useBaseVertex){
+					memcpy(vboData.GetArrayPointer() + indexSize * block.GetIndexOffset(),
+						block.GetIndexData(), indexSize * block.GetIndexCount());
+					
+				}else{
+					if(pParentList->GetLayout().GetIndexType() != deoglVBOLayout::eitUnsignedInt){
+						DETHROW(deeInvalidParam);
 					}
 					
-					if(useBaseVertex){
-						memcpy(vboData + indexSize * block.GetIndexOffset(),
-							block.GetIndexData(), indexSize * block.GetIndexCount());
-						
-					}else{
-						if(pParentList->GetLayout().GetIndexType() != deoglVBOLayout::eitUnsignedInt){
-							DETHROW(deeInvalidParam);
-						}
-						
-						const int indexCount = block.GetIndexCount();
-						const int firstPoint = block.GetOffset();
-						int j;
-						
-						unsigned int *dest = (unsigned int *)(vboData + indexSize * block.GetIndexOffset());
-						unsigned int *source = (unsigned int *)block.GetIndexData();
-						for(j=0; j<indexCount; j++){
-							dest[j] = (unsigned int)(source[j] + firstPoint);
-						}
+					const int indexCount = block.GetIndexCount();
+					const int firstPoint = block.GetOffset();
+					int j;
+					
+					unsigned int *dest = (unsigned int *)(vboData.GetArrayPointer() + indexSize * block.GetIndexOffset());
+					unsigned int *source = (unsigned int *)block.GetIndexData();
+					for(j=0; j<indexCount; j++){
+						dest[j] = (unsigned int)(source[j] + firstPoint);
 					}
 				}
-				
-				OGL_CHECK(renderThread, pglBufferData(GL_SHADER_STORAGE_BUFFER, indexSize * pIndexUsedSize, vboData, drawType));
-				delete [] vboData;
-				
-			}catch(const deException &){
-				if(vboData){
-					delete [] vboData;
-				}
-				throw;
 			}
+			
+			OGL_CHECK(renderThread, pglBufferData(GL_SHADER_STORAGE_BUFFER,
+				indexSize * pIndexUsedSize, vboData.GetArrayPointer(), drawType));
 		}
 	}
 	

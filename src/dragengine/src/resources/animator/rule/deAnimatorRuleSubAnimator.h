@@ -27,6 +27,7 @@
 
 #include "deAnimatorRule.h"
 #include "../deAnimator.h"
+#include "../../../common/collection/decTList.h"
 
 
 /**
@@ -58,8 +59,7 @@ private:
 	bool pEnableSize;
 	bool pEnableVertexPositionSet;
 	
-	int *pConnections;
-	int pConnectionCount;
+	decTList<int> pConnections;
 	
 	
 	
@@ -122,11 +122,14 @@ public:
 	 */
 	void UpdateConnectionCount();
 	
+	/** \brief Connections. */
+	inline const decTList<int> &GetConnections() const{ return pConnections; }
+	
 	/**
 	 * \brief Count of connections which is the number of controllers in the sub animator
 	 *        if existing or 0 if there is no sub animator assigned.
 	 */
-	inline int GetConnectionCount() const{ return pConnectionCount; }
+	inline int GetConnectionCount() const{ return pConnections.GetCount(); }
 	
 	/** \brief Index of the local controller for the given controller in the sub animator. */
 	int GetConnectionAt(int targetController) const;

@@ -27,6 +27,7 @@
 
 #include "../devkBasics.h"
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 
@@ -55,16 +56,16 @@ public:
 	struct sSubPass{
 		int colorAttachments[8];
 		int depthStencilAttachment;
+		
+		bool operator==(const sSubPass &other) const;
 	};
 	
 	
 	
 private:
-	int pAttachmentCount;
-	VkAttachmentDescription *pAttachments;
-	VkClearValue *pClearValues;
-	int pSubPassCount;
-	sSubPass *pSubPasses;
+	decTList<VkAttachmentDescription> pAttachments;
+	decTList<VkClearValue> pClearValues;
+	decTList<sSubPass> pSubPasses;
 	
 	
 	
@@ -85,14 +86,11 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Attachment count. */
-	inline int GetAttachmentCount() const{ return pAttachmentCount; }
+	/** Attachments. */
+	inline const decTList<VkAttachmentDescription> &GetAttachments() const{ return pAttachments; }
 	
 	/** Set attachment count. */
 	void SetAttachmentCount(int count);
-	
-	/** Attachment at index. */
-	const VkAttachmentDescription &GetAttachmentAt(int index) const;
 	
 	/** Set attachment at index. */
 	void SetAttachmentAt(int index, const VkAttachmentDescription &attachment);
@@ -100,8 +98,9 @@ public:
 	/** Set color attachment at index. */
 	void SetColorAttachmentAt(int index, VkFormat format, pInType in, eOutType out);
 	
-	/** Clear value at index. */
-	const VkClearValue &GetClearValueAt(int index) const;
+	
+	/** Clear values. */
+	inline const decTList<VkClearValue> &GetClearValues() const{ return pClearValues; }
 	
 	/** Set clear value at index. */
 	void SetClearValueAt(int index, const VkClearValue &clearValue);
@@ -114,20 +113,12 @@ public:
 	/** Set depth/stencil clear value at index. */
 	void SetClearValueDepthAt(int index, float depth, int stencil);
 	
-	/** Internal use only. */
-	inline const VkAttachmentDescription *GetAttachments() const{ return pAttachments; }
-	inline const VkClearValue *GetClearValues() const{ return pClearValues; }
 	
-	
-	
-	/** Sub pass count. */
-	inline int GetSubPassCount() const{ return pSubPassCount; }
+	/** Sub passses. */
+	inline const decTList<sSubPass> &GetSubPasses() const{ return pSubPasses; }
 	
 	/** Set sub pass count. */
 	void SetSubPassCount(int count);
-	
-	/** Sub pass at index. */
-	const sSubPass &GetSubPassAt(int index) const;
 	
 	/** Set sub pass at index. */
 	void SetSubPassAt(int index, const sSubPass &subpass);

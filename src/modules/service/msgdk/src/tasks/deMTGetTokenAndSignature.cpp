@@ -64,16 +64,16 @@ void deMTGetTokenAndSignature::OnFinished()
 		return;
 	}
 
-	uint8_t *buffer = new uint8_t[bufferLen];
 	try
 	{
+		decTList<uint8_t> buffer(bufferLen, 0);
+		
 		XUserGetTokenAndSignatureData *tsd;
 		size_t bufferUsed;
 		HRESULT result = XUserGetTokenAndSignatureResult(GetAsyncBlockPtr(),
-			bufferLen, buffer, &tsd, &bufferUsed);
+			bufferLen, buffer.GetArrayPointer(), &tsd, &bufferUsed);
 		if(FAILED(result))
 		{
-			delete [] buffer;
 			pService.FailRequest(pr, result);
 			return;
 		}
@@ -87,7 +87,6 @@ void deMTGetTokenAndSignature::OnFinished()
 	}
 	catch(const deException &e)
 	{
-		delete [] buffer;
 		pService.FailRequest(pr, e);
 		return;
 	}

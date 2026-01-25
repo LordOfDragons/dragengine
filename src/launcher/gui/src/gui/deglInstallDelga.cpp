@@ -82,8 +82,6 @@ public:
 	};
 	
 	FXint run() override{
-		char *buffer = nullptr;
-		
 		try{
 			const deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::New(
 				decPath::CreatePathNative(pLauncher.GetPathGames())));
@@ -97,7 +95,8 @@ public:
 			
 			const int totalSize = reader->GetLength();
 			const double percentageFactor = 100.0 / (double)totalSize;
-			buffer = new char[8192];
+			decString buffer;
+			buffer.Set(0, 8192);
 			FXuint progressPercentage = 0;
 			int bytesCopied = 0;
 			
@@ -111,8 +110,8 @@ public:
 				}
 				
 				const int copyBytesCount = decMath::min(8192, totalSize - bytesCopied);
-				reader->Read(buffer, copyBytesCount);
-				writer->Write(buffer, copyBytesCount);
+				reader->Read(buffer.GetMutableString(), copyBytesCount);
+				writer->Write(buffer.GetMutableString(), copyBytesCount);
 				
 				bytesCopied += copyBytesCount;
 			}
@@ -120,9 +119,6 @@ public:
 		}catch(const deException &e){
 			pLauncher.GetLogger()->LogException("InstallDelga", e);
 			
-			if(buffer){
-				delete [] buffer;
-			}
 			pDeleteTarget();
 			
 			pMessageChannel.message(pDialogProgress, FXSEL(SEL_COMMAND, FXProgressDialog::ID_CANCEL), nullptr);

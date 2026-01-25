@@ -223,7 +223,7 @@ deClassDebugDrawer::nfGetShapeCount::nfGetShapeCount(const sInitData &init) : ds
 }
 void deClassDebugDrawer::nfGetShapeCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deDebugDrawer &ddrawer = dedsGetNativeData<sDDNatDat>(p_GetNativeData(myself)).ddrawer;
-	rt->PushInt(ddrawer.GetShapeCount());
+	rt->PushInt(ddrawer.GetShapes().GetCount());
 }
 
 // public func void setShapeCount( int count )
@@ -233,8 +233,7 @@ deClassDebugDrawer::nfSetShapeCount::nfSetShapeCount(const sInitData &init) : ds
 }
 void deClassDebugDrawer::nfSetShapeCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	deDebugDrawer &ddrawer = dedsGetNativeData<sDDNatDat>(p_GetNativeData(myself)).ddrawer;
-	deDebugDrawerShape *ddshape = nullptr;
-	int count = rt->GetValue(0)->GetInt();
+	const int count = rt->GetValue(0)->GetInt();
 	
 	if(count < 0){
 		DSTHROW(dueInvalidParam);
@@ -242,18 +241,9 @@ void deClassDebugDrawer::nfSetShapeCount::RunFunction(dsRunTime *rt, dsValue *my
 	
 	ddrawer.RemoveAllShapes();
 	
-	try{
-		for(; count>0; count--){
-			ddshape = new deDebugDrawerShape;
-			ddrawer.AddShape(ddshape);
-			ddshape = nullptr;
-		}
-		
-	}catch(...){
-		if(ddshape){
-			delete ddshape;
-		}
-		throw;
+	int i;
+	for(i=0; i<count; i++){
+		ddrawer.AddShape(deDebugDrawerShape::Ref::New());
 	}
 }
 
@@ -269,7 +259,7 @@ void deClassDebugDrawer::nfShapeSetPosition::RunFunction(dsRunTime *rt, dsValue 
 	deDebugDrawer &ddrawer = dedsGetNativeData<sDDNatDat>(p_GetNativeData(myself)).ddrawer;
 	const deScriptingDragonScript &ds = *((static_cast<deClassDebugDrawer*>(GetOwnerClass()))->GetDS());
 	
-	deDebugDrawerShape &ddshape = *ddrawer.GetShapeAt(rt->GetValue(0)->GetInt());
+	deDebugDrawerShape &ddshape = *ddrawer.GetShapes()[rt->GetValue(0)->GetInt()];
 	const decVector &position = ds.GetClassVector()->GetVector(rt->GetValue(1)->GetRealObject());
 	
 	ddshape.SetPosition(position);
@@ -286,7 +276,7 @@ void deClassDebugDrawer::nfShapeSetOrientation::RunFunction(dsRunTime *rt, dsVal
 	deDebugDrawer &ddrawer = dedsGetNativeData<sDDNatDat>(p_GetNativeData(myself)).ddrawer;
 	const deScriptingDragonScript &ds = *((static_cast<deClassDebugDrawer*>(GetOwnerClass()))->GetDS());
 	
-	deDebugDrawerShape &ddshape = *ddrawer.GetShapeAt(rt->GetValue(0)->GetInt());
+	deDebugDrawerShape &ddshape = *ddrawer.GetShapes()[rt->GetValue(0)->GetInt()];
 	const decQuaternion &orientation = ds.GetClassQuaternion()->GetQuaternion(rt->GetValue(1)->GetRealObject());
 	
 	ddshape.SetOrientation(orientation);
@@ -303,7 +293,7 @@ void deClassDebugDrawer::nfShapeSetScale::RunFunction(dsRunTime *rt, dsValue *my
 	deDebugDrawer &ddrawer = dedsGetNativeData<sDDNatDat>(p_GetNativeData(myself)).ddrawer;
 	const deScriptingDragonScript &ds = *((static_cast<deClassDebugDrawer*>(GetOwnerClass()))->GetDS());
 	
-	deDebugDrawerShape &ddshape = *ddrawer.GetShapeAt(rt->GetValue(0)->GetInt());
+	deDebugDrawerShape &ddshape = *ddrawer.GetShapes()[rt->GetValue(0)->GetInt()];
 	const decVector &scale = ds.GetClassVector()->GetVector(rt->GetValue(1)->GetRealObject());
 	
 	ddshape.SetScale(scale);
@@ -322,7 +312,7 @@ void deClassDebugDrawer::nfShapeSetShapes::RunFunction(dsRunTime *rt, dsValue *m
 	deDebugDrawer &ddrawer = dedsGetNativeData<sDDNatDat>(p_GetNativeData(myself)).ddrawer;
 	const deScriptingDragonScript &ds = *((static_cast<deClassDebugDrawer*>(GetOwnerClass()))->GetDS());
 	
-	deDebugDrawerShape &ddshape = *ddrawer.GetShapeAt(rt->GetValue(0)->GetInt());
+	deDebugDrawerShape &ddshape = *ddrawer.GetShapes()[rt->GetValue(0)->GetInt()];
 	ddshape.GetShapeList() = ds.GetClassShapeList()->GetShapeList(rt->GetValue(1)->GetRealObject());
 	
 	ddrawer.NotifyShapeContentChanged();
@@ -335,7 +325,7 @@ deClassDebugDrawer::nfShapeRemoveAllShapes::nfShapeRemoveAllShapes(const sInitDa
 }
 void deClassDebugDrawer::nfShapeRemoveAllShapes::RunFunction(dsRunTime *rt, dsValue *myself){
 	deDebugDrawer &ddrawer = dedsGetNativeData<sDDNatDat>(p_GetNativeData(myself)).ddrawer;
-	deDebugDrawerShape &ddshape = *ddrawer.GetShapeAt(rt->GetValue(0)->GetInt());
+	deDebugDrawerShape &ddshape = *ddrawer.GetShapes()[rt->GetValue(0)->GetInt()];
 	
 	ddshape.GetShapeList().RemoveAll();
 	ddrawer.NotifyShapeContentChanged();
@@ -353,7 +343,7 @@ void deClassDebugDrawer::nfShapeSetEdgeColor::RunFunction(dsRunTime *rt, dsValue
 	deDebugDrawer &ddrawer = dedsGetNativeData<sDDNatDat>(p_GetNativeData(myself)).ddrawer;
 	const deScriptingDragonScript &ds = *((static_cast<deClassDebugDrawer*>(GetOwnerClass()))->GetDS());
 	
-	deDebugDrawerShape &ddshape = *ddrawer.GetShapeAt(rt->GetValue(0)->GetInt());
+	deDebugDrawerShape &ddshape = *ddrawer.GetShapes()[rt->GetValue(0)->GetInt()];
 	const decColor &color = ds.GetClassColor()->GetColor(rt->GetValue(1)->GetRealObject());
 	
 	ddshape.SetEdgeColor(color);
@@ -370,7 +360,7 @@ void deClassDebugDrawer::nfShapeSetFillColor::RunFunction(dsRunTime *rt, dsValue
 	deDebugDrawer &ddrawer = dedsGetNativeData<sDDNatDat>(p_GetNativeData(myself)).ddrawer;
 	const deScriptingDragonScript &ds = *((static_cast<deClassDebugDrawer*>(GetOwnerClass()))->GetDS());
 	
-	deDebugDrawerShape &ddshape = *ddrawer.GetShapeAt(rt->GetValue(0)->GetInt());
+	deDebugDrawerShape &ddshape = *ddrawer.GetShapes()[rt->GetValue(0)->GetInt()];
 	const decColor &color = ds.GetClassColor()->GetColor(rt->GetValue(1)->GetRealObject());
 	
 	ddshape.SetFillColor(color);
@@ -384,8 +374,8 @@ dsFunction(init.clsDD, "shapeAddFace", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE,
 }
 void deClassDebugDrawer::nfShapeAddFace::RunFunction(dsRunTime *rt, dsValue *myself){
 	deDebugDrawer &ddrawer = dedsGetNativeData<sDDNatDat>(p_GetNativeData(myself)).ddrawer;
-	deDebugDrawerShape &ddshape = *ddrawer.GetShapeAt(rt->GetValue(0)->GetInt());
-	ddshape.AddFace(new deDebugDrawerShapeFace);
+	deDebugDrawerShape &ddshape = *ddrawer.GetShapes()[rt->GetValue(0)->GetInt()];
+	ddshape.AddFace(deDebugDrawerShapeFace::Ref::New());
 }
 
 // public func void shapeFaceAddVertex(int shape, int face, Vector vertex)
@@ -399,8 +389,8 @@ void deClassDebugDrawer::nfShapeFaceAddVertex::RunFunction(dsRunTime *rt, dsValu
 	deDebugDrawer &ddrawer = dedsGetNativeData<sDDNatDat>(p_GetNativeData(myself)).ddrawer;
 	const deScriptingDragonScript &ds = *((static_cast<deClassDebugDrawer*>(GetOwnerClass()))->GetDS());
 	
-	deDebugDrawerShape &ddshape = *ddrawer.GetShapeAt(rt->GetValue(0)->GetInt());
-	deDebugDrawerShapeFace &ddsface = *ddshape.GetFaceAt(rt->GetValue(1)->GetInt());
+	deDebugDrawerShape &ddshape = *ddrawer.GetShapes()[rt->GetValue(0)->GetInt()];
+	deDebugDrawerShapeFace &ddsface = *ddshape.GetFaces()[rt->GetValue(1)->GetInt()];
 	ddsface.AddVertex(ds.GetClassVector()->GetVector(rt->GetValue(2)->GetRealObject()));
 }
 
@@ -412,8 +402,8 @@ dsFunction(init.clsDD, "shapeFaceCalculateNormal", DSFT_FUNCTION, DSTM_PUBLIC | 
 }
 void deClassDebugDrawer::nfShapeFaceCalculateNormal::RunFunction(dsRunTime *rt, dsValue *myself){
 	deDebugDrawer &ddrawer = dedsGetNativeData<sDDNatDat>(p_GetNativeData(myself)).ddrawer;
-	deDebugDrawerShape &ddshape = *ddrawer.GetShapeAt(rt->GetValue(0)->GetInt());
-	ddshape.GetFaceAt(rt->GetValue(1)->GetInt())->CalculateNormal();
+	deDebugDrawerShape &ddshape = *ddrawer.GetShapes()[rt->GetValue(0)->GetInt()];
+	ddshape.GetFaces()[rt->GetValue(1)->GetInt()]->CalculateNormal();
 }
 
 // public func void shapeRemoveAllFaces(int shape)
@@ -423,7 +413,7 @@ dsFunction(init.clsDD, "shapeRemoveAllFaces", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_
 }
 void deClassDebugDrawer::nfShapeRemoveAllFaces::RunFunction(dsRunTime *rt, dsValue *myself){
 	deDebugDrawer &ddrawer = dedsGetNativeData<sDDNatDat>(p_GetNativeData(myself)).ddrawer;
-	ddrawer.GetShapeAt(rt->GetValue(0)->GetInt())->RemoveAllFaces();
+	ddrawer.GetShapes()[rt->GetValue(0)->GetInt()]->RemoveAllFaces();
 	ddrawer.NotifyShapeContentChanged();
 }
 
@@ -448,7 +438,7 @@ void deClassDebugDrawer::nfShapeSetFacesFromModel::RunFunction(dsRunTime *rt, ds
 	deDebugDrawer &ddrawer = dedsGetNativeData<sDDNatDat>(p_GetNativeData(myself)).ddrawer;
 	const deScriptingDragonScript &ds = *((static_cast<deClassDebugDrawer*>(GetOwnerClass()))->GetDS());
 	
-	deDebugDrawerShape &ddshape = *ddrawer.GetShapeAt(rt->GetValue(0)->GetInt());
+	deDebugDrawerShape &ddshape = *ddrawer.GetShapes()[rt->GetValue(0)->GetInt()];
 	const deModel * const model = ds.GetClassModel()->GetModel(rt->GetValue(1)->GetRealObject());
 	if(!model){
 		DSTHROW_INFO(dueNullPointer, "model");
@@ -457,32 +447,18 @@ void deClassDebugDrawer::nfShapeSetFacesFromModel::RunFunction(dsRunTime *rt, ds
 	const decMatrix &matrix = ds.GetClassMatrix()->GetMatrix(rt->GetValue(2)->GetRealObject());
 	
 	const deModelLOD &lod = model->GetLODAt(0);
-	const deModelVertex * const vertices = lod.GetVertices();
-	const deModelFace * const faces = lod.GetFaces();
-	deDebugDrawerShapeFace *ddsface = nullptr;
-	const int faceCount = lod.GetFaceCount();
-	int i;
+	const decTList<deModelVertex> &vertices = lod.GetVertices();
 	
 	ddshape.RemoveAllFaces();
 	
-	try{
-		for(i=0; i<faceCount; i++){
-			const deModelFace &face = faces[i];
-			ddsface = new deDebugDrawerShapeFace;
-			ddsface->AddVertex(matrix * vertices[face.GetVertex1()].GetPosition());
-			ddsface->AddVertex(matrix * vertices[face.GetVertex2()].GetPosition());
-			ddsface->AddVertex(matrix * vertices[face.GetVertex3()].GetPosition());
-			ddsface->CalculateNormal();
-			ddshape.AddFace(ddsface);
-			ddsface = nullptr;
-		}
-		
-	}catch(...){
-		if(ddsface){
-			delete ddsface;
-		}
-		throw;
-	}
+	lod.GetFaces().Visit([&](const deModelFace &face){
+		auto ddsface = deDebugDrawerShapeFace::Ref::New();
+		ddsface->AddVertex(matrix * vertices[face.GetVertex1()].GetPosition());
+		ddsface->AddVertex(matrix * vertices[face.GetVertex2()].GetPosition());
+		ddsface->AddVertex(matrix * vertices[face.GetVertex3()].GetPosition());
+		ddsface->CalculateNormal();
+		ddshape.AddFace(std::move(ddsface));
+	});
 	
 	ddrawer.NotifyShapeContentChanged();
 }
@@ -499,7 +475,7 @@ void deClassDebugDrawer::nfShapeSetFacesFromModel2::RunFunction(dsRunTime *rt, d
 	deDebugDrawer &ddrawer = dedsGetNativeData<sDDNatDat>(p_GetNativeData(myself)).ddrawer;
 	const deScriptingDragonScript &ds = *((static_cast<deClassDebugDrawer*>(GetOwnerClass()))->GetDS());
 	
-	deDebugDrawerShape &ddshape = *ddrawer.GetShapeAt(rt->GetValue(0)->GetInt());
+	deDebugDrawerShape &ddshape = *ddrawer.GetShapes()[rt->GetValue(0)->GetInt()];
 	const deModel * const model = ds.GetClassModel()->GetModel(rt->GetValue(1)->GetRealObject());
 	if(!model){
 		DSTHROW_INFO(dueNullPointer, "model");
@@ -515,34 +491,20 @@ void deClassDebugDrawer::nfShapeSetFacesFromModel2::RunFunction(dsRunTime *rt, d
 	const decMatrix &matrix = ds.GetClassMatrix()->GetMatrix(rt->GetValue(3)->GetRealObject());
 	
 	const deModelLOD &lod = model->GetLODAt(0);
-	const deModelVertex * const vertices = lod.GetVertices();
-	const deModelFace * const faces = lod.GetFaces();
-	deDebugDrawerShapeFace *ddsface = nullptr;
-	const int faceCount = lod.GetFaceCount();
-	int i;
+	const decTList<deModelVertex> &vertices = lod.GetVertices();
 	
-	try{
-		for(i=0; i<faceCount; i++){
-			const deModelFace &face = faces[i];
-			if(face.GetTexture() != texture){
-				continue;
-			}
-			
-			ddsface = new deDebugDrawerShapeFace;
-			ddsface->AddVertex(matrix * vertices[face.GetVertex1()].GetPosition());
-			ddsface->AddVertex(matrix * vertices[face.GetVertex2()].GetPosition());
-			ddsface->AddVertex(matrix * vertices[face.GetVertex3()].GetPosition());
-			ddsface->CalculateNormal();
-			ddshape.AddFace(ddsface);
-			ddsface = nullptr;
+	lod.GetFaces().Visit([&](const deModelFace &face){
+		if(face.GetTexture() != texture){
+			return;
 		}
 		
-	}catch(...){
-		if(ddsface){
-			delete ddsface;
-		}
-		throw;
-	}
+		auto ddsface = deDebugDrawerShapeFace::Ref::New();
+		ddsface->AddVertex(matrix * vertices[face.GetVertex1()].GetPosition());
+		ddsface->AddVertex(matrix * vertices[face.GetVertex2()].GetPosition());
+		ddsface->AddVertex(matrix * vertices[face.GetVertex3()].GetPosition());
+		ddsface->CalculateNormal();
+		ddshape.AddFace(std::move(ddsface));
+	});
 	
 	ddrawer.NotifyShapeContentChanged();
 }

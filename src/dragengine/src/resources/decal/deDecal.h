@@ -31,6 +31,7 @@
 #include "../../common/math/decMath.h"
 #include "../../common/collection/decTOrderedSet.h"
 #include "../../common/collection/decTLinkedList.h"
+#include "../../common/collection/decTList.h"
 
 class deDecalManager;
 class deComponent;
@@ -75,8 +76,7 @@ private:
 	
 	bool pVisible;
 	
-	deDecalBoneState *pBoneStates;
-	int pBoneStateCount;
+	decTList<deDecalBoneState> pBoneStates;
 	
 	deComponent *pParentComponent;
 	decTObjectLinkedList<deDecal>::Element pLLComponent;
@@ -164,8 +164,11 @@ public:
 	
 	/** \name Bone States */
 	/*@{*/
+	/** \brief Bone states. */
+	inline const decTList<deDecalBoneState> &GetBoneStates() const{ return pBoneStates; }
+	
 	/** \brief Number of bone states. */
-	inline int GetBoneStateCount() const{ return pBoneStateCount; }
+	inline int GetBoneStateCount() const{ return pBoneStates.GetCount(); }
 	
 	/** \brief Set number of bone states. */
 	void SetBoneStateCount(int count);

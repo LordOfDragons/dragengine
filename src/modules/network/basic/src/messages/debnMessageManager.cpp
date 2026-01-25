@@ -68,6 +68,8 @@ bool debnMessageManager::HasMessage(debnMessage *message) const{
 }
 
 void debnMessageManager::AddMessage(debnMessage::Ref &&message){
+	DEASSERT_NOTNULL(message)
+	
 	pMessages.Add(std::move(message));
 }
 

@@ -325,8 +325,8 @@ void dearBoneStateList::ApplyToComponent(deComponent *component, deAnimatorRule:
 }
 
 void dearBoneStateList::ApplyToComponent(dearComponent &component) const{
-	dearComponentBoneState *boneStates = component.GetBoneStates();
-	const int boneStateCount = component.GetBoneStateCount();
+	decTList<dearComponentBoneState> &boneStates = component.GetBoneStates();
+	const int boneStateCount = boneStates.GetCount();
 	
 	/*
 	this check is wrong. if a bone list is used on the animator the number of states
@@ -371,8 +371,8 @@ void dearBoneStateList::ApplyToComponent(dearComponent &component) const{
 
 void dearBoneStateList::ApplyToComponent(dearComponent &component,
 deAnimatorRule::eBlendModes blendMode, float blendFactor) const{
-	dearComponentBoneState *boneStates = component.GetBoneStates();
-	const int boneStateCount = component.GetBoneStateCount();
+	decTList<dearComponentBoneState> &boneStates = component.GetBoneStates();
+	const int boneStateCount = boneStates.GetCount();
 	
 	/*
 	this check is wrong. if a bone list is used on the animator the number of states

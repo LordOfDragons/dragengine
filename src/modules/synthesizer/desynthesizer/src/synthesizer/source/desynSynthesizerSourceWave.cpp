@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
+#include <new>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -42,7 +43,7 @@
 #define PI2 (PI * 2.0f)
 
 struct sStateData{
-	float phase;
+	float phase = 0.0f;
 };
 
 
@@ -87,10 +88,12 @@ int desynSynthesizerSourceWave::StateDataSizeSource(int offset){
 }
 
 void desynSynthesizerSourceWave::InitStateDataSource(char *stateData){
-	sStateData& sdata = *((sStateData*)(stateData + GetStateDataOffset()));
-	sdata.phase = 0.0f;
+	new (static_cast<void*>(stateData + GetStateDataOffset())) sStateData{};
 }
 
+void desynSynthesizerSourceWave::CleanUpStateDataSource(char *stateData) {
+	((sStateData*)(stateData + GetStateDataOffset()))->~sStateData();
+}
 
 
 void desynSynthesizerSourceWave::GenerateSourceSound(const desynSynthesizerInstance &instance,

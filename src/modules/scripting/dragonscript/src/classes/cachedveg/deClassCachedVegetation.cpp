@@ -74,19 +74,15 @@ class dedsCachedVegetationPropField : public deBaseScriptingPropField{
 private:
 	float pHeight;
 	dePropField::Ref pEngPF;
-	dedsCachedVegetationInstance *pInstances;
-	int pInstanceCount;
+	decTList<dedsCachedVegetationInstance> pInstances;
 	decVector pScalePosition;
 	
 public:
 	dedsCachedVegetationPropField(){
 		pHeight = 0.0f;
-		pInstances = nullptr;
-		pInstanceCount = 0;
 	}
 	
 	~dedsCachedVegetationPropField() override{
-		if(pInstances) delete [] pInstances;
 		if(pEngPF){
 			dedsPropField * const peer = static_cast<dedsPropField*>(pEngPF->GetPeerScripting());
 			if(peer){
@@ -110,23 +106,13 @@ public:
 		pHeight = height;
 	}
 	
-	inline int GetInstanceCount() const{ return pInstanceCount; }
-	inline dedsCachedVegetationInstance *GetInstances() const{ return pInstances; }
+	inline int GetInstanceCount() const{ return pInstances.GetCount(); }
+	inline decTList<dedsCachedVegetationInstance> &GetInstances(){ return pInstances; }
+	inline const decTList<dedsCachedVegetationInstance> &GetInstances() const{ return pInstances; }
 	
 	void SetInstanceCount(int count){
 		if(count < 0) DSTHROW(dueInvalidParam);
-		
-		if(pInstances){
-			delete [] pInstances;
-			pInstances = nullptr;
-			pInstanceCount = 0;
-		}
-		
-		if(count > 0){
-			pInstances = new dedsCachedVegetationInstance[count];
-			if(!pInstances) DSTHROW(dueOutOfMemory);
-			pInstanceCount = count;
-		}
+		pInstances.SetAll(count, {});
 	}
 	
 	void SetCollisionFilter(const decCollisionFilter &filter){
@@ -149,14 +135,13 @@ public:
 		dePropFieldInstance *pfinstances;
 		decVector ipos, irot;
 		float iscale;
-		int i;
 		
 		for(t=0; t<typeCount; t++){
 			// determine how many instances match this type
 			int pficount = 0;
-			for(i=0; i<pInstanceCount; i++){
-				if(t == pInstances[i].type) pficount++;
-			}
+			pInstances.Visit([&](const dedsCachedVegetationInstance &instance){
+				if(t == instance.type) pficount++;
+			});
 			
 			// pick only density times many instances from the pool. currently the instances
 			// are random so we can simply take only density times instances but in upcoming
@@ -166,14 +151,14 @@ public:
 			//if( upficount > pficount ) upficount = pficount;
 			
 			dePropFieldType &engPFType = pEngPF->GetTypeAt(t);
-			engPFType.SetInstanceCount(upficount);
+			engPFType.GetInstances().SetAll(upficount, {});
 			
 			// add vegetation instances with matching this type
 			if(upficount > 0){
-				pfinstances = engPFType.GetInstances();
+				pfinstances = engPFType.GetInstances().GetArrayPointer();
 				
-				int pfi;
-				for(pfi=0, i=0; i<pInstanceCount; i++){
+				int pfi, i;
+				for(pfi=0, i=0; i<pInstances.GetCount(); i++){
 					if(t == pInstances[i].type){
 						if(pfi == upficount) break;
 						
@@ -206,8 +191,7 @@ public:
 
 class dedsCachedVegetationSector{
 private:
-	dedsCachedVegetationPropField *pPFs;
-	int pPFCount;
+	decTList<dedsCachedVegetationPropField> pPFs;
 	int pPFCellCount;
 	float pSectorDim;
 	deWorld::Ref pWorld;
@@ -219,27 +203,21 @@ public:
 	const decPoint &coordinates){
 		if(!engine || sectorDim < 10.0f || pfCellCount < 1) DSTHROW(dueInvalidParam);
 		
-		int p, pfCount = pfCellCount * pfCellCount;
+		int pfCount = pfCellCount * pfCellCount;
 		
-		pPFs = nullptr;
-		pPFCount = 0;
 		pPFCellCount = pfCellCount;
 		pSectorDim = sectorDim;
 		pCoordinates = coordinates;
 		
-		pPFs = new dedsCachedVegetationPropField[pfCount];
-		pPFCount = pfCount;
-		
-		for(p=0; p<pfCount; p++){
-			pPFs[p].CreatePF(engine);
-		}
+		pPFs.AddRange(pfCount, {});
+		pPFs.Visit([&](dedsCachedVegetationPropField &pf){
+			pf.CreatePF(engine);
+		});
 		UpdatePFPositions();
 	}
 	
 	~dedsCachedVegetationSector(){
 		SetWorld(nullptr);
-		
-		if(pPFs) delete [] pPFs;
 	}
 	
 	void SetWorld(deWorld *world){
@@ -247,43 +225,38 @@ public:
 			return;
 		}
 		
-		int i;
 		if(pWorld){
-			for(i=0; i<pPFCount; i++){
-				pWorld->RemovePropField(pPFs[i].GetEnginePF());
-			}
+			pPFs.Visit([&](dedsCachedVegetationPropField &pf){
+				pWorld->RemovePropField(pf.GetEnginePF());
+			});
 		}
 		
 		pWorld = world;
 		
 		if(world){
-			for(i=0; i<pPFCount; i++){
-				world->AddPropField(pPFs[i].GetEnginePF());
-			}
+			pPFs.Visit([&](dedsCachedVegetationPropField &pf){
+				world->AddPropField(pf.GetEnginePF());
+			});
 		}
 	}
 	
 	inline const decPoint &GetCoordinates() const{ return pCoordinates; }
 	
-	inline int GetPFCount() const{ return pPFCount; }
-	inline dedsCachedVegetationPropField *GetPFs() const{ return pPFs; }
+	inline int GetPFCount() const{ return pPFs.GetCount(); }
+	inline dedsCachedVegetationPropField *GetPFs(){ return pPFs.GetArrayPointer(); }
 	
 	void SetCollisionFilter(const decCollisionFilter &filter){
-		int p;
-		
 		pCollisionFilter = filter;
 		
-		for(p=0; p<pPFCount; p++){
-			pPFs[p].SetCollisionFilter(filter);
-		}
+		pPFs.Visit([&](dedsCachedVegetationPropField &pf){
+			pf.SetCollisionFilter(filter);
+		});
 	}
 	
 	void Clear(){
-		int p;
-		
-		for(p=0; p<pPFCount; p++){
-			pPFs[p].GetEnginePF()->RemoveAllTypes();
-		}
+		pPFs.Visit([&](dedsCachedVegetationPropField &pf){
+			pf.GetEnginePF()->RemoveAllTypes();
+		});
 	}
 	
 	void UpdatePFPositions(){
@@ -314,8 +287,7 @@ public:
 		deSkinManager *skinmgr = engine->GetSkinManager();
 		decDVector sectorPosition;
 		decVector scalePosition;
-		int i, t, typeCount;
-		int p;
+		int t, typeCount;
 		
 		Clear();
 		
@@ -335,9 +307,9 @@ public:
 		scalePosition.x = reader.ReadFloat(); // scalePositionX {float}
 		scalePosition.y = reader.ReadFloat(); // scalePositionY {float}
 		scalePosition.z = reader.ReadFloat(); // scalePositionZ {float}
-		for(p=0; p<pPFCount; p++){
-			pPFs[p].SetScalePosition(scalePosition);
-		}
+		pPFs.Visit([&](dedsCachedVegetationPropField &pf){
+			pf.SetScalePosition(scalePosition);
+		});
 		
 		// read the list of types and add them to each prop field
 		typeCount = reader.ReadShort(); // number of types {short}
@@ -352,7 +324,7 @@ public:
 			const float rotPerForce = reader.ReadFloat() * DEG2RAD; // rotation per force {float}
 			const float restitution = reader.ReadFloat(); // restitution {float}
 			
-			for(p=0; p<pPFCount; p++){
+			pPFs.Visit([&](dedsCachedVegetationPropField &pf){
 				auto engPFType = dePropFieldType::Ref::New();
 				engPFType->SetModel(model);
 				engPFType->SetSkin(skin);
@@ -360,36 +332,34 @@ public:
 				engPFType->SetRestitution(restitution);
 				engPFType->SetCollisionFilter(pCollisionFilter);
 				
-				pPFs[p].GetEnginePF()->AddType(std::move(engPFType));
-			}
+				pf.GetEnginePF()->AddType(std::move(engPFType));
+			});
 		}
 		
 		// read the prop fields
 		int propfieldCount = reader.ReadShort(); // prop field count {short}
-		if(propfieldCount != pPFCount) DSTHROW(dueInvalidAction);
+		if(propfieldCount != pPFs.GetCount()) DSTHROW(dueInvalidAction);
 		
-		for(p=0; p<pPFCount; p++){
+		pPFs.Visit([&](dedsCachedVegetationPropField &pf){
 			reader.ReadFloat(); // prop field position X {float}
 			reader.ReadFloat(); // prop field position Y {float}
 			reader.ReadFloat(); // prop field position Z {float}
 			const int instanceCount = reader.ReadInt(); // instance count {int}
 			
-			pPFs[p].SetInstanceCount(instanceCount);
-			dedsCachedVegetationInstance * const instances = pPFs[p].GetInstances();
+			pf.SetInstanceCount(instanceCount);
+			pf.GetInstances().Visit([&](dedsCachedVegetationInstance &instance){
+				instance.type = reader.ReadShort(); // instance type {short}
+				instance.positionX = reader.ReadShort(); // instance position X {short, encoded}
+				instance.positionY = reader.ReadFloat(); // instance position Y {float}
+				instance.positionZ = reader.ReadShort(); // instance position Z {short, encoded}
+				instance.rotationX = reader.ReadByte(); // instance rotation X {byte, encoded}
+				instance.rotationY = reader.ReadByte(); // instance rotation Y {byte, encoded}
+				instance.rotationZ = reader.ReadByte(); // instance rotation Z {byte, encoded}
+				instance.scaling = reader.ReadByte(); // instance scaling {byte, encoded}
+			});
 			
-			for(i=0; i<instanceCount; i++){
-				instances[i].type = reader.ReadShort(); // instance type {short}
-				instances[i].positionX = reader.ReadShort(); // instance position X {short, encoded}
-				instances[i].positionY = reader.ReadFloat(); // instance position Y {float}
-				instances[i].positionZ = reader.ReadShort(); // instance position Z {short, encoded}
-				instances[i].rotationX = reader.ReadByte(); // instance rotation X {byte, encoded}
-				instances[i].rotationY = reader.ReadByte(); // instance rotation Y {byte, encoded}
-				instances[i].rotationZ = reader.ReadByte(); // instance rotation Z {byte, encoded}
-				instances[i].scaling = reader.ReadByte(); // instance scaling {byte, encoded}
-			}
-			
-			pPFs[p].GetEnginePF()->NotifyGroundChanged();
-		}
+			pf.GetEnginePF()->NotifyGroundChanged();
+		});
 	}
 };
 

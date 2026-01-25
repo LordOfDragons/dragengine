@@ -33,6 +33,7 @@
 #include "action/deoxrActionSet.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoxrSystem;
@@ -99,8 +100,7 @@ private:
 	deoxrSpace::Ref pSpaceStage, pSpaceStageOrigin, pSpaceView, pSpaceLocal, pSpaceLocalOrigin,
 		pMainSpace, pMainSpaceOrigin;
 	
-	int64_t *pSwapchainFormats;
-	int pSwapchainFormatCount;
+	decTList<int64_t> pSwapchainFormats;
 	
 	deoxrSwapchain::Ref pSwapchainLeftEye;
 	deoxrSwapchain::Ref pSwapchainRightEye;
@@ -279,14 +279,8 @@ public:
 	/** Restore OpenGL current. */
 	void RestoreOpenGLCurrent();
 	
-	/** Count of swap chain formats. */
-	inline int GetSwapchainFormatCount() const{ return pSwapchainFormatCount; }
-	
-	/** Swap chain formats in the the order of runtime preference. */
-	inline const int64_t *GetSwapchainFormats() const{ return pSwapchainFormats; }
-	
-	/** Swapchain format is supported. */
-	bool HasSwapchainFormat(eSwapchainFormats format) const;
+	/** Swap chain formats. */
+	inline const decTList<int64_t> &GetSwapchainFormats() const{ return pSwapchainFormats; }
 	
 	/** Swapchain format name or 'notFound'. */
 	const char *GetSwapchainFormatNameOpenGL(int64_t format, const char *notFound = nullptr) const;

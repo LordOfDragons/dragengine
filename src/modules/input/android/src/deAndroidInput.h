@@ -25,6 +25,7 @@
 #ifndef _DEANDROIDINPUT_H_
 #define _DEANDROIDINPUT_H_
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decTimer.h>
 #include <dragengine/input/deInputEvent.h>
@@ -59,7 +60,7 @@ private:
 	bool pIsListening;
 	int pOldThreshold;
 	decPoint pLastMouse;
-	bool *pKeyStates;
+	decTList<bool> pKeyStates;
 	int pPointerMouse;
 	
 	deainpOverlaySystem *pOverlaySystem;

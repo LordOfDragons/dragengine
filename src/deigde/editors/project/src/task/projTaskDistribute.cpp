@@ -136,19 +136,13 @@ pZipFile(nullptr),
 pDelgaSize(0),
 pDelgaPosition(0),
 pDelgaDirectoryCount(0),
-pDelgaFileCount(0),
-
-pReadBuffer(nullptr),
-pReadBufferSize(1024 * 8) // 8k
+pDelgaFileCount(0)
 {
-	pReadBuffer = new char[pReadBufferSize];
+	pReadBuffer.AddRange(1024 * 8, 0); // 8k
 }
 
 projTaskDistribute::~projTaskDistribute(){
 	pCloseDelgaWriter();
-	if(pReadBuffer){
-		delete [] pReadBuffer;
-	}
 }
 
 
@@ -537,10 +531,10 @@ void projTaskDistribute::pCopyFile(const decPath &path){
 	}
 	
 	int position;
-	for(position=0; position<size; position+=pReadBufferSize){
-		const int copySize = decMath::min(size - position, pReadBufferSize);
-		reader->Read(pReadBuffer, copySize);
-		pZipWriteFile(pReadBuffer, copySize);
+	for(position=0; position<size; position+=pReadBuffer.GetCount()){
+		const int copySize = decMath::min(size - position, pReadBuffer.GetCount());
+		reader->Read(pReadBuffer.GetArrayPointer(), copySize);
+		pZipWriteFile(pReadBuffer.GetArrayPointer(), copySize);
 	}
 }
 

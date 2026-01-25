@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoxrSwapchain.h"
 #include "deoxrSession.h"
 #include "deVROpenXR.h"
@@ -41,8 +38,6 @@ pSession(session),
 pType(type),
 pSize(size),
 pSwapchain(XR_NULL_HANDLE),
-pImages(nullptr),
-pImageCount(0),
 pVRRenderFormat(deBaseVRModule::evrrfRGB8)
 {
 	deoxrInstance &instance = session.GetSystem().GetInstance();
@@ -59,8 +54,8 @@ pVRRenderFormat(deBaseVRModule::evrrfRGB8)
 		createInfo.arraySize = 1;
 		createInfo.mipCount = 1;
 		
-		const int64_t * const formats = session.GetSwapchainFormats();
-		const int formatCount = session.GetSwapchainFormatCount();
+		const int64_t * const formats = session.GetSwapchainFormats().GetArrayPointer();
+		const int formatCount = session.GetSwapchainFormats().GetCount();
 		int i;
 		
 		switch(session.GetGraphicApi()){
@@ -169,13 +164,6 @@ deoxrSwapchain::~deoxrSwapchain(){
 // Management
 ///////////////
 
-const deoxrSwapchain::sImage &deoxrSwapchain::GetImageAt(int index) const{
-	if(index < 0 || index >= pImageCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pImages[index];
-}
-
 void deoxrSwapchain::AcquireImage(){
 	deoxrInstance &instance = pSession.GetSystem().GetInstance();
 	
@@ -223,10 +211,6 @@ void deoxrSwapchain::ReleaseImage(){
 //////////////////////
 
 void deoxrSwapchain::pCleanUp(){
-	if(pImages){
-		delete [] pImages;
-	}
-	
 	if(pSwapchain){
 		pSession.GetSystem().GetInstance().xrDestroySwapchain(pSwapchain);
 		pSwapchain = XR_NULL_HANDLE;
@@ -239,48 +223,37 @@ void deoxrSwapchain::pGetImages(){
 	uint32_t count, i;
 	OXR_CHECK(instance.xrEnumerateSwapchainImages(pSwapchain, 0, &count, nullptr));
 	
+	pImages.SetAll(count, {});
+	
 	if(count == 0){
 		return;
 	}
 	
-	pImages = new sImage[count];
-	
 	switch(pSession.GetGraphicApi()){
 	case deoxrSession::egaOpenGL:{
 		#ifdef OS_ANDROID
-			XrSwapchainImageOpenGLESKHR *images = new XrSwapchainImageOpenGLESKHR[count];
-			memset(images, 0, sizeof(XrSwapchainImageOpenGLESKHR) * count);
+			decTList<XrSwapchainImageOpenGLESKHR> images((int)count,
+				XrSwapchainImageOpenGLESKHR{XR_TYPE_SWAPCHAIN_IMAGE_OPENGL_ES_KHR});
+			memset(images.GetArrayPointer(), 0, sizeof(XrSwapchainImageOpenGLESKHR) * count);
 		#else
-			XrSwapchainImageOpenGLKHR *images = new XrSwapchainImageOpenGLKHR[count];
-			memset(images, 0, sizeof(XrSwapchainImageOpenGLKHR) * count);
+			decTList<XrSwapchainImageOpenGLKHR> images((int)count,
+				XrSwapchainImageOpenGLKHR{XR_TYPE_SWAPCHAIN_IMAGE_OPENGL_KHR});
+			memset(images.GetArrayPointer(), 0, sizeof(XrSwapchainImageOpenGLKHR) * count);
 		#endif
 		
-		try{
-			for(i=0; i<count; i++){
-				#ifdef OS_ANDROID
-				images[i].type = XR_TYPE_SWAPCHAIN_IMAGE_OPENGL_ES_KHR;
-				#else
-				images[i].type = XR_TYPE_SWAPCHAIN_IMAGE_OPENGL_KHR;
-				#endif
-			}
-			
-			OXR_CHECK(instance.xrEnumerateSwapchainImages(pSwapchain,
-				count, &count, (XrSwapchainImageBaseHeader*)images));
-			
-			for(i=0; i<count; i++){
-				pImages[i].openglImage = images[i].image;
-// 				pImages[ i ].openglFbo = new deoxrGraphicApiOpenGL::Framebuffer(
-// 					oxr.GetGraphicApiOpenGL(), images[ i ].image );
-			}
-			pImageCount = (int)count;
-			delete [] images;
-			
-		}catch(const deException &){
-			delete [] images;
+		OXR_CHECK(instance.xrEnumerateSwapchainImages(pSwapchain, count, &count,
+			reinterpret_cast<XrSwapchainImageBaseHeader*>(images.GetArrayPointer())));
+		pImages.SetCount(count);
+		
+		for(i=0; i<count; i++){
+			pImages[i].openglImage = images[i].image;
+// 				pImages[i].openglFbo = new deoxrGraphicApiOpenGL::Framebuffer(
+// 					oxr.GetGraphicApiOpenGL(), images[i].image);
 		}
 		}break;
 		
 	default:
+		pImages.RemoveAll();
 		DETHROW_INFO(deeInvalidParam, "invalid graphic api");
 	}
 }

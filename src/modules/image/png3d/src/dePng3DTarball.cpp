@@ -241,7 +241,6 @@ void dePng3DTarball::Get3DImageInfos(dePng3DImageInfo &infos, decBaseFileReader 
 
 void dePng3DTarball::Load3DImage(dePng3DImageInfo &infos, decBaseFileReader &file, deImage &image){
 	char *imageData = reinterpret_cast<char*>(image.GetData());
-	png_bytep *rows = nullptr;
 	sTarballHeader header;
 	char *sliceImageData;
 	unsigned short z;
@@ -256,92 +255,83 @@ void dePng3DTarball::Load3DImage(dePng3DImageInfo &infos, decBaseFileReader &fil
 	strideLine = image.GetWidth() * image.GetComponentCount() * (image.GetBitCount() >> 3);
 	strideImage = strideLine * image.GetHeight();
 	
-	try{
-		// create the rows array
-		rows = new png_bytep[image.GetHeight()];
+	// create the rows array
+	decTList<png_bytep> rows;
+	rows.AddRange(image.GetHeight(), {});
+	
+	// read the archive with all files filling the images one by one
+	while(true){
+		file.Read(&header, 512);
 		
-		// read the archive with all files filling the images one by one
-		while(true){
-			file.Read(&header, 512);
-			
-			// we detect the 0-blocks just by checking the file names are 0 length.
-			// since 0 length file names do not exist this should be accurate enough
-			if(!header.name[0] && !header.linkname[0]) break;
-			
-			// save the position so we can quickly skip to the end of the file
-			position = file.GetPosition();
-			
-			// determine the file size. spaces are skipped in front of the number.
-			// after that the number is read as octal value. in the end would be
-			// another space but we know this so we can skip it.
-			skip = true;
-			filesize = 0;
-			
-			for(i=0; i<11; i++){
-				if(skip){
-					if(header.size[i] != ' '){
-						skip = false;
-						filesize = (int)(header.size[i] - '0');
-					}
-					
-				}else{
-					if(header.size[i] == ' '){
-						break;
-					}
-					
-					filesize = filesize * 8 + (int)(header.size[i] - '0');
+		// we detect the 0-blocks just by checking the file names are 0 length.
+		// since 0 length file names do not exist this should be accurate enough
+		if(!header.name[0] && !header.linkname[0]) break;
+		
+		// save the position so we can quickly skip to the end of the file
+		position = file.GetPosition();
+		
+		// determine the file size. spaces are skipped in front of the number.
+		// after that the number is read as octal value. in the end would be
+		// another space but we know this so we can skip it.
+		skip = true;
+		filesize = 0;
+		
+		for(i=0; i<11; i++){
+			if(skip){
+				if(header.size[i] != ' '){
+					skip = false;
+					filesize = (int)(header.size[i] - '0');
 				}
-			}
-			
-			// tar requires files to be aligned in chunks so determine the amount
-			// of padding 0 bytes required
-			padding = 512 - (filesize % 512);
-			if(padding == 512){
-				padding = 0;
-			}
-			
-// 			pModule->LogInfoFormat( "%s: header name='%s' filesize=%i padding=%i",
-// 				infos.filename.GetString(), header.name, filesize, padding );
-			
-			// only files are accepted
-			if(header.typeflag == REGTYPE || header.typeflag == AREGTYPE){
-				// retrieve the z-coordinate
-				z = decString(header.name).GetMiddle(1, -4).ToInt();
-
-				// populate the rows array
-				sliceImageData = imageData + (strideImage * (int)z);
-					
-				for(r=0; r<image.GetHeight(); r++){
-					rows[r] = (png_bytep)(sliceImageData + strideLine * r);
+				
+			}else{
+				if(header.size[i] == ' '){
+					break;
 				}
-					
-				// now we can load the image using these information
-				Load2DImage(infos, file, rows);
+				
+				filesize = filesize * 8 + (int)(header.size[i] - '0');
 			}
-			
-			// skip to the end of the file
-			file.SetPosition(position + filesize + padding);
 		}
 		
-		// free rows array
-		delete [] rows;
+		// tar requires files to be aligned in chunks so determine the amount
+		// of padding 0 bytes required
+		padding = 512 - (filesize % 512);
+		if(padding == 512){
+			padding = 0;
+		}
 		
-	}catch(const deException &){
-		if(rows) delete [] rows;
-		throw;
+// 			pModule->LogInfoFormat( "%s: header name='%s' filesize=%i padding=%i",
+// 				infos.filename.GetString(), header.name, filesize, padding );
+		
+		// only files are accepted
+		if(header.typeflag == REGTYPE || header.typeflag == AREGTYPE){
+			// retrieve the z-coordinate
+			z = decString(header.name).GetMiddle(1, -4).ToInt();
+
+			// populate the rows array
+			sliceImageData = imageData + (strideImage * (int)z);
+				
+			for(r=0; r<image.GetHeight(); r++){
+				rows[r] = (png_bytep)(sliceImageData + strideLine * r);
+			}
+				
+			// now we can load the image using these information
+			Load2DImage(infos, file, rows.GetArrayPointer());
+		}
+		
+		// skip to the end of the file
+		file.SetPosition(position + filesize + padding);
 	}
 }
 
 void dePng3DTarball::Save3DImage(decBaseFileWriter &file, const deImage &image){
-	char *imageData = reinterpret_cast<char*>(image.GetData());
+	const char *imageData = reinterpret_cast<const char*>(image.GetData());
 	decMemoryFile::Ref memoryFile;
 	unsigned char *headerBytes;
 	char paddingBytes[512];
 	struct timeval curtime;
-	png_bytep *rows = nullptr;
 	sTarballHeader header;
 	unsigned int checksum;
-	char *sliceImageData;
+	const char *sliceImageData;
 	int pngColorType;
 	int pngBitCount;
 	int strideImage;
@@ -436,89 +426,83 @@ void dePng3DTarball::Save3DImage(decBaseFileWriter &file, const deImage &image){
 	// save the file
 	decMemoryFileWriter::Ref memoryFileWriter;
 	
-	try{
-		memoryFile = decMemoryFile::Ref::New("");
+	memoryFile = decMemoryFile::Ref::New("");
+	
+	// create the rows array
+	decTList<png_bytep> rows;
+	rows.AddRange(image.GetHeight(), {});
+	
+	// write file by creating an archive with an image for each z coordinate
+	for(z=0; z<image.GetDepth(); z++){
+//		pModule->LogInfoFormat( "%s: writing %i", file.GetFilename(), z );
+		// create memory file containing the file content
+		memoryFileWriter = decMemoryFileWriter::Ref::New(memoryFile, false);
 		
-		// create the rows array
-		rows = new png_bytep[image.GetHeight()];
+		sliceImageData = imageData + (strideImage * z);
 		
-		// write file by creating an archive with an image for each z coordinate
-		for(z=0; z<image.GetDepth(); z++){
-// 			pModule->LogInfoFormat( "%s: writing %i", file.GetFilename(), z );
-			// create memory file containing the file content
-			memoryFileWriter = decMemoryFileWriter::Ref::New(memoryFile, false);
-			
-			sliceImageData = imageData + (strideImage * z);
-			
-			for(r=0; r<image.GetHeight(); r++){
-				rows[r] = (png_bytep)(sliceImageData + strideLine * r);
-			}
-			
-			Save2DImage(image.GetWidth(), image.GetHeight(), *memoryFileWriter, rows, pngColorType, pngBitCount);
-			memoryFileWriter = nullptr;
-			
-			// determine the file size and padding. tar requires files to be
-			// aligned in chunks so determine the amount of padding 0 bytes
-			// required to fill up to the next chunk boundary
-			filesize = memoryFile->GetLength();
-			padding = 512 - (filesize % 512);
-			if(padding == 512){
-				padding = 0;
-			}
-			
-			// update header
-			#ifdef OS_W32
-				sprintf_s(&header.name[0], sizeof(header.name), "z%hu.png", (unsigned short)z);
-			#else
-				sprintf(&header.name[0], "z%hu.png", (unsigned short)z);
-			#endif
-
-			header.size[11] = ' ';
-			for(r=10; r>=0; r--){
-				if(filesize){
-					header.size[r] = (char)('0' + (char)(filesize & 0x7));
-					
-				}else{ // no leading 0s please
-					header.size[r] = ' ';
-				}
-				filesize >>= 3;
-			}
-			
-			memset(&header.chksum[0], ' ', 8);
-			checksum = 0;
-			for(r=0; r<512; r++){
-				checksum += headerBytes[r];
-			}
-			header.chksum[7] = '\0';
-			header.chksum[6] = ' ';
-			for(r=5; r>=0; r--){
-				if(checksum){
-					header.chksum[r] = (char)('0' + (char)(checksum & 0x7));
-					
-				}else{ // no leading 0s please
-					header.chksum[r] = ' ';
-				}
-				checksum >>= 3;
-			}
-			
-			// write the header, file data and padding 0 bytes
-			file.Write(&header, 512);
-			file.Write(memoryFile->GetPointer(), memoryFile->GetLength());
-			if(padding > 0){
-				file.Write(&paddingBytes, padding);
-			}
+		for(r=0; r<image.GetHeight(); r++){
+			rows[r] = (png_bytep)(sliceImageData + strideLine * r);
 		}
 		
-		// write two padding blocks at the end
-		file.Write(&paddingBytes, 512);
-		file.Write(&paddingBytes, 512);
+		Save2DImage(image.GetWidth(), image.GetHeight(), *memoryFileWriter,
+			rows.GetArrayPointer(), pngColorType, pngBitCount);
+		memoryFileWriter = nullptr;
 		
-		// free rows array
-		delete [] rows;
-	}catch(const deException &){
-		if(rows) delete [] rows;
-		throw;
+		// determine the file size and padding. tar requires files to be
+		// aligned in chunks so determine the amount of padding 0 bytes
+		// required to fill up to the next chunk boundary
+		filesize = memoryFile->GetLength();
+		padding = 512 - (filesize % 512);
+		if(padding == 512){
+			padding = 0;
+		}
+		
+		// update header
+		#ifdef OS_W32
+			sprintf_s(&header.name[0], sizeof(header.name), "z%hu.png", (unsigned short)z);
+		#else
+			sprintf(&header.name[0], "z%hu.png", (unsigned short)z);
+		#endif
+
+		header.size[11] = ' ';
+		for(r=10; r>=0; r--){
+			if(filesize){
+				header.size[r] = (char)('0' + (char)(filesize & 0x7));
+				
+			}else{ // no leading 0s please
+				header.size[r] = ' ';
+			}
+			filesize >>= 3;
+		}
+		
+		memset(&header.chksum[0], ' ', 8);
+		checksum = 0;
+		for(r=0; r<512; r++){
+			checksum += headerBytes[r];
+		}
+		header.chksum[7] = '\0';
+		header.chksum[6] = ' ';
+		for(r=5; r>=0; r--){
+			if(checksum){
+				header.chksum[r] = (char)('0' + (char)(checksum & 0x7));
+				
+			}else{ // no leading 0s please
+				header.chksum[r] = ' ';
+			}
+			checksum >>= 3;
+		}
+		
+		// write the header, file data and padding 0 bytes
+		file.Write(&header, 512);
+		file.Write(memoryFile->GetPointer(), memoryFile->GetLength());
+		if(padding > 0){
+			file.Write(&paddingBytes, padding);
+		}
 	}
+	
+	// write two padding blocks at the end
+	file.Write(&paddingBytes, 512);
+	file.Write(&paddingBytes, 512);
 }
 
 

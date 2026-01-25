@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglRWorld.h"
 #include "deoglWorldCompute.h"
 #include "../capabilities/deoglCapabilities.h"
@@ -59,9 +55,6 @@ pFullUpdateGeometryLimit(0),
 pFullUpdateGeometryFactor(0.25f),
 pUpdateElementGeometryCount(0),
 pForceFullUpdateGeometry(false),
-pClearGeometries(nullptr),
-pClearGeometriesCount(0),
-pClearGeometriesSize(0),
 pClearGeometryCount(0)
 {
 	// WARNING potentially called from main thread. calling EnsureBuffer() is not allowed here
@@ -115,10 +108,6 @@ deoglWorldCompute::~deoglWorldCompute(){
 		element.GetSPBGeometries() = nullptr;
 	}
 	pElements.RemoveAll();
-	
-	if(pClearGeometries){
-		delete [] pClearGeometries;
-	}
 }
 
 
@@ -140,7 +129,7 @@ void deoglWorldCompute::Prepare(){
 }
 
 void deoglWorldCompute::PrepareGeometries(){
-	if(pClearGeometriesCount < pFullUpdateGeometryLimit){
+	if(pClearGeometries.GetCount() < pFullUpdateGeometryLimit){
 		pUpdateSSBOClearGeometries();
 		
 	}else{
@@ -250,7 +239,7 @@ void deoglWorldCompute::RemoveElement(deoglWorldComputeElement *element){
 		element->GetSPBGeometries() ? element->GetSPBGeometries()->GetIndex() : -1,
 		element->GetSPBGeometries() ? element->GetSPBGeometries()->GetCount() : -1,
 		index, pElements.GetCount(), pUpdateElementCount, pFullUpdateLimit, pForceFullUpdate,
-		pClearGeometriesCount, pUpdateElementGeometryCount, pFullUpdateGeometryLimit,
+		pClearGeometries.GetCount(), pUpdateElementGeometryCount, pFullUpdateGeometryLimit,
 		pForceFullUpdateGeometry);
 #endif
 	
@@ -258,10 +247,10 @@ void deoglWorldCompute::RemoveElement(deoglWorldComputeElement *element){
 	
 	if(element->GetSPBGeometries()){
 		// clear geometries
-		if(pClearGeometriesCount < pFullUpdateGeometryLimit){
-			sClearGeometries &entry = pClearGeometries[pClearGeometriesCount++];
-			entry.first = element->GetSPBGeometries()->GetIndex();
-			entry.count = element->GetSPBGeometries()->GetCount();
+		if(pClearGeometries.GetCount() < pFullUpdateGeometryLimit){
+			pClearGeometries.Add({
+				element->GetSPBGeometries()->GetIndex(),
+				element->GetSPBGeometries()->GetCount()});
 			
 		}else{
 			pForceFullUpdateGeometry = true;
@@ -326,7 +315,7 @@ void deoglWorldCompute::RemoveElement(deoglWorldComputeElement *element){
 #if defined ENABLE_DEBUG_1 || defined ENABLE_DEBUG_2
 	pWorld.GetRenderThread().GetLogger().LogInfoFormat(
 		"- ue=%d(%d %d) cgc=%d ueg=%d(%d %d)", pUpdateElements.GetCount(), pFullUpdateLimit,
-		pForceFullUpdate, pClearGeometriesCount, pUpdateElementGeometries.GetCount(),
+		pForceFullUpdate, pClearGeometries.GetCount(), pUpdateElementGeometries.GetCount(),
 		pFullUpdateGeometryLimit, pForceFullUpdateGeometry);
 	pDebugPrintElements();
 	pSharedSPBGeometries->DebugPrint(pWorld.GetRenderThread().GetLogger());
@@ -477,10 +466,8 @@ deoglWorldComputeElement::sDataElement &data){
 	if(geometryCount == 0){
 		if(oldGeometryCount > 0){
 			// clear old geometries
-			if(pClearGeometriesCount < pFullUpdateGeometryLimit){
-				sClearGeometries &entry = pClearGeometries[pClearGeometriesCount++];
-				entry.first = oldFirstIndex;
-				entry.count = oldGeometryCount;
+			if(pClearGeometries.GetCount() < pFullUpdateGeometryLimit){
+				pClearGeometries.Add({oldFirstIndex, oldGeometryCount});
 				
 			}else{
 				pForceFullUpdateGeometry = true;
@@ -511,10 +498,8 @@ deoglWorldComputeElement::sDataElement &data){
 	if(element.GetSPBGeometries()){
 		if(oldGeometryCount > 0){
 			// clear old geometries
-			if(pClearGeometriesCount < pFullUpdateGeometryLimit){
-				sClearGeometries &entry = pClearGeometries[pClearGeometriesCount++];
-				entry.first = oldFirstIndex;
-				entry.count = oldGeometryCount;
+			if(pClearGeometries.GetCount() < pFullUpdateGeometryLimit){
+				pClearGeometries.Add({oldFirstIndex, oldGeometryCount});
 				
 			}else{
 				pForceFullUpdateGeometry = true;
@@ -674,15 +659,12 @@ void deoglWorldCompute::pFullUpdateSSBOElementGeometries(){
 
 
 void deoglWorldCompute::pUpdateSSBOClearGeometries(){
-	pClearGeometryCount = 0;
-	
-	int i;
-	for(i=0; i<pClearGeometriesCount; i++){
-		pClearGeometryCount += pClearGeometries[i].count;
-	}
+	pClearGeometryCount = pClearGeometries.Inject(0, [&](int acc, const sClearGeometries &entry){
+		return acc + entry.count;
+	});
 	
 	if(pClearGeometryCount == 0){
-		pClearGeometriesCount = 0;
+		pClearGeometries.SetCountDiscard(0);
 		return;
 	}
 	
@@ -697,13 +679,12 @@ void deoglWorldCompute::pUpdateSSBOClearGeometries(){
 	uint32_t * const data = (uint32_t*)ssbo.GetMappedBuffer();
 	int j, nextIndex = 0;
 	
-	for(i=0; i<pClearGeometriesCount; i++){
-		const sClearGeometries &entry = pClearGeometries[i];
+	pClearGeometries.Visit([&](const sClearGeometries &entry){
 		for(j=0; j<entry.count; j++){
 			data[nextIndex++] = (uint32_t)(entry.first + j);
 		}
-	}
-	pClearGeometriesCount = 0;
+	});
+	pClearGeometries.SetCountDiscard(0);
 	
 #if defined ENABLE_DEBUG_1 || defined ENABLE_DEBUG_2
 	pWorld.GetRenderThread().GetLogger().LogInfoFormat("WorldCompute.pClearGeometries %d", nextIndex);
@@ -728,16 +709,7 @@ void deoglWorldCompute::pUpdateFullUpdateGeometryLimits(){
 		(int)(pFullUpdateGeometryFactor * (float)pElements.GetCount()));
 	
 	// ensure clear geometries array is large enough
-	if(pClearGeometriesSize < pFullUpdateGeometryLimit){
-		if(pClearGeometries){
-			delete [] pClearGeometries;
-			pClearGeometries = nullptr;
-		}
-		
-		pClearGeometries = new sClearGeometries[pFullUpdateGeometryLimit];
-		pClearGeometriesSize = pFullUpdateGeometryLimit;
-		pClearGeometriesCount = 0; // should be 0 already
-	}
+	pClearGeometries.EnlargeCapacity(pFullUpdateGeometryLimit);
 }
 
 void deoglWorldCompute::pDebugPrintElements(){
@@ -797,15 +769,13 @@ void deoglWorldCompute::pDebugPrintUpdateGeometries(){
 
 void deoglWorldCompute::pDebugPrintClearGeometries(){
 	deoglRTLogger &logger = pWorld.GetRenderThread().GetLogger();
-	const int count = pClearGeometriesCount;
 	decStringList list;
 	decString string;
-	int i;
 	
 	list.Add("{ClrGeo}");
-	for(i=0; i<count; i++){
-		string.Format("[%d:%d,%d]", i, pClearGeometries[i].first, pClearGeometries[i].count);
+	pClearGeometries.VisitIndexed([&](int i, const sClearGeometries &entry){
+		string.Format("[%d:%d,%d]", i, entry.first, entry.count);
 		list.Add(string);
-	}
+	});
 	logger.LogInfo(DEJoin(list, " "));
 }

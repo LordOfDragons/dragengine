@@ -26,6 +26,8 @@
 #define _DEDEBUGDRAWERSHAPEFACE_H_
 
 #include "../../common/math/decMath.h"
+#include "../../common/collection/decTList.h"
+#include "../../common/collection/decTUniqueList.h"
 
 
 /**
@@ -46,9 +48,16 @@
  * vertices are specified the face not drawn.
  */
 class DE_DLL_EXPORT deDebugDrawerShapeFace{
+public:
+	/** \brief Reference. */
+	using Ref = deTUniqueReference<deDebugDrawerShapeFace>;
+	
+	/** \brief List of faces. */
+	using List = decTUniqueList<deDebugDrawerShapeFace>;
+	
+	
 private:
-	decVector *pVertices;
-	int pVertexCount;
+	decTList<decVector> pVertices;
 	decVector pNormal;
 	
 	
@@ -80,8 +89,11 @@ public:
 	 */
 	void CalculateNormal();
 	
+	/** \brief Vertices. */
+	inline const decTList<decVector> &GetVertices() const{ return pVertices; }
+	
 	/** \brief Number of vertices. */
-	inline int GetVertexCount() const{ return pVertexCount; }
+	inline int GetVertexCount() const{ return pVertices.GetCount(); }
 	
 	/** \brief Vertex at index. */
 	const decVector &GetVertexAt(int index) const;

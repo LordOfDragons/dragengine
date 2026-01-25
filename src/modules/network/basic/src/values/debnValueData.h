@@ -28,6 +28,7 @@
 #include <stdint.h>
 
 #include "debnValue.h"
+#include <dragengine/common/collection/decTList.h>
 
 class deNetworkValueData;
 
@@ -38,7 +39,7 @@ class deNetworkValueData;
 class debnValueData : public debnValue{
 private:
 	deNetworkValueData &pValueData;
-	uint8_t *pLastValue;
+	decTList<uint8_t> pLastValue;
 	int pLastValueLen;
 	
 	

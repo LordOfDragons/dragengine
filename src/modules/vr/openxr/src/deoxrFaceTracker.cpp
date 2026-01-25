@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-
 #include "deVROpenXR.h"
 #include "deoxrFaceTracker.h"
 #include "deoxrSession.h"
@@ -41,46 +38,34 @@ deoxrFaceTracker::deoxrFaceTracker(deoxrSession &session) :
 pSession(session),
 pEyeTracker(XR_NULL_HANDLE),
 pLipTracker(XR_NULL_HANDLE),
-pEyeWeights(nullptr),
-pLipWeights(nullptr),
-pFaceExpressions(nullptr),
-pFaceExpressionCount(0),
-pMapEyeXrToDe(nullptr),
-pMapEyeXrToDeCount(0),
-pMapLipXrToDe(nullptr),
-pMapLipXrToDeCount(0)
+pEyeExpressionInfo{},
+pLipExpressionInfo{}
 {
-	memset(&pEyeExpressionInfo, 0, sizeof(pEyeExpressionInfo));
-	memset(&pLipExpressionInfo, 0, sizeof(pLipExpressionInfo));
-
 	deoxrInstance &instance = session.GetSystem().GetInstance();
 	
 	try{
 		// create input arrays to store data to be send to user
-		pFaceExpressions = new float[deInputDevice::FaceExpressionCount];
-		pFaceExpressionCount = deInputDevice::FaceExpressionCount;
+		pFaceExpressions.SetAll(deInputDevice::FaceExpressionCount, 0.0f);
 		
 		// create eye tracker
 		if(session.GetSystem().GetSupportsFaceEyeTracking()){
 			instance.GetOxr().LogInfo("FaceTracker: Create Eye Tracker");
-			XrFacialTrackerCreateInfoHTC createInfo;
-			memset(&createInfo, 0, sizeof(createInfo));
+			XrFacialTrackerCreateInfoHTC createInfo{};
 			createInfo.type = XR_TYPE_FACIAL_TRACKER_CREATE_INFO_HTC;
 			createInfo.facialTrackingType = XR_FACIAL_TRACKING_TYPE_EYE_DEFAULT_HTC;
 			
 			OXR_CHECK(instance.xrCreateFacialTrackerHTC(session.GetSession(), &createInfo, &pEyeTracker));
 			
 			// create arrays to store weights
-			pEyeWeights = new float[XR_FACIAL_EXPRESSION_EYE_COUNT_HTC];
-			memset(pEyeWeights, 0, sizeof(float) * XR_FACIAL_EXPRESSION_EYE_COUNT_HTC);
+			pEyeWeights.SetAll(XR_FACIAL_EXPRESSION_EYE_COUNT_HTC, 0.0f);
 			
 			// initialize structures used to fetch weights
 			pEyeExpressionInfo.type = XR_TYPE_FACIAL_EXPRESSIONS_HTC;
-			pEyeExpressionInfo.expressionWeightings = pEyeWeights;
+			pEyeExpressionInfo.expressionWeightings = pEyeWeights.GetArrayPointer();
 			pEyeExpressionInfo.expressionCount = XR_FACIAL_EXPRESSION_EYE_COUNT_HTC;
 			
 			// create mapping table.
-			pMapEyeXrToDe = new sMapping[14];
+			pMapEyeXrToDe.SetAll(14, {});
 			
 			pSetEyeMapping(0, deInputDevice::efeEyeLeftBlink, XR_EYE_EXPRESSION_LEFT_BLINK_HTC);
 			pSetEyeMapping(1, deInputDevice::efeEyeLeftWide, XR_EYE_EXPRESSION_LEFT_WIDE_HTC);
@@ -98,31 +83,28 @@ pMapLipXrToDeCount(0)
 			pSetEyeMapping(12, deInputDevice::efeEyeRightIn, XR_EYE_EXPRESSION_RIGHT_IN_HTC);
 			pSetEyeMapping(13, deInputDevice::efeEyeRightOut, XR_EYE_EXPRESSION_RIGHT_OUT_HTC);
 			
-			pMapEyeXrToDeCount = 14;
 			instance.GetOxr().LogInfo("FaceTracker: Eye Tracker Created");
 		}
 		
 		// create lip tracker
 		if(session.GetSystem().GetSupportsFaceLipTracking()){
 			instance.GetOxr().LogInfo("FaceTracker: Create Lip Tracker");
-			XrFacialTrackerCreateInfoHTC createInfo;
-			memset(&createInfo, 0, sizeof(createInfo));
+			XrFacialTrackerCreateInfoHTC createInfo{};
 			createInfo.type = XR_TYPE_FACIAL_TRACKER_CREATE_INFO_HTC;
 			createInfo.facialTrackingType = XR_FACIAL_TRACKING_TYPE_LIP_DEFAULT_HTC;
 			
 			OXR_CHECK(instance.xrCreateFacialTrackerHTC(session.GetSession(), &createInfo, &pLipTracker));
 			
 			// create arrays to store weights
-			pLipWeights = new float[XR_FACIAL_EXPRESSION_LIP_COUNT_HTC];
-			memset(pLipWeights, 0, sizeof(float) * XR_FACIAL_EXPRESSION_LIP_COUNT_HTC);
+			pLipWeights.SetAll(XR_FACIAL_EXPRESSION_LIP_COUNT_HTC, 0.0f);
 			
 			// initialize structures used to fetch weights
 			pLipExpressionInfo.type = XR_TYPE_FACIAL_EXPRESSIONS_HTC;
-			pLipExpressionInfo.expressionWeightings = pLipWeights;
+			pLipExpressionInfo.expressionWeightings = pLipWeights.GetArrayPointer();
 			pLipExpressionInfo.expressionCount = XR_FACIAL_EXPRESSION_LIP_COUNT_HTC;
 			
 			// create mapping table.
-			pMapLipXrToDe = new sMapping[37];
+			pMapLipXrToDe.SetAll(37, {});
 			
 			pSetLipMapping(0, deInputDevice::efeJawRight, XR_LIP_EXPRESSION_JAW_RIGHT_HTC);
 			pSetLipMapping(1, deInputDevice::efeJawLeft, XR_LIP_EXPRESSION_JAW_LEFT_HTC);
@@ -165,7 +147,6 @@ pMapLipXrToDeCount(0)
 			pSetLipMapping(35, deInputDevice::efeTongueMorphDownRight, XR_LIP_EXPRESSION_TONGUE_DOWNRIGHT_MORPH_HTC);
 			pSetLipMapping(36, deInputDevice::efeTongueMorphDownLeft, XR_LIP_EXPRESSION_TONGUE_DOWNLEFT_MORPH_HTC);
 			
-			pMapLipXrToDeCount = 37;
 			instance.GetOxr().LogInfo("FaceTracker: Lip Tracker Created");
 		}
 		
@@ -193,11 +174,9 @@ void deoxrFaceTracker::Update() {
 		
 		if(XR_SUCCEEDED(instance.xrGetFacialExpressionsHTC(pEyeTracker, &pEyeExpressionInfo))
 		&& pEyeExpressionInfo.isActive){
-			int i;
-			for(i=0; i<pMapEyeXrToDeCount; i++){
-				const sMapping &mapping = pMapEyeXrToDe[i];
+			pMapEyeXrToDe.Visit([](const sMapping &mapping){
 				*mapping.faceExpression = *mapping.weight;
-			}
+			});
 		}
 	}
 	
@@ -206,20 +185,11 @@ void deoxrFaceTracker::Update() {
 		
 		if(XR_SUCCEEDED(instance.xrGetFacialExpressionsHTC(pLipTracker, &pLipExpressionInfo))
 		&& pLipExpressionInfo.isActive){
-			int i;
-			for(i=0; i<pMapLipXrToDeCount; i++){
-				const sMapping &mapping = pMapLipXrToDe[i];
+			pMapLipXrToDe.Visit([](const sMapping &mapping){
 				*mapping.faceExpression = *mapping.weight;
-			}
+			});
 		}
 	}
-}
-
-float deoxrFaceTracker::GetFaceExpressionAt(int index){
-	if(index < 0 || index >= pFaceExpressionCount){
-		return 0.0f;
-	}
-	return pFaceExpressions[index];
 }
 
 
@@ -234,31 +204,14 @@ void deoxrFaceTracker::pCleanUp(){
 	if(pLipTracker){
 		pSession.GetSystem().GetInstance().xrDestroyFacialTrackerHTC(pLipTracker);
 	}
-	
-	if(pMapEyeXrToDe){
-		delete [] pMapEyeXrToDe;
-	}
-	if(pMapLipXrToDe){
-		delete [] pMapLipXrToDe;
-	}
-	
-	if(pFaceExpressions){
-		delete [] pFaceExpressions;
-	}
-	if(pEyeWeights){
-		delete [] pEyeWeights;
-	}
-	if(pLipWeights){
-		delete [] pLipWeights;
-	}
 }
 
 void deoxrFaceTracker::pSetEyeMapping(int index, deInputDevice::eFaceExpressions to, XrEyeExpressionHTC from){
-	pMapEyeXrToDe[index].weight = pEyeWeights + from;
-	pMapEyeXrToDe[index].faceExpression = pFaceExpressions + to;
+	pMapEyeXrToDe[index].weight = &pEyeWeights[from];
+	pMapEyeXrToDe[index].faceExpression = &pFaceExpressions[to];
 }
 
 void deoxrFaceTracker::pSetLipMapping(int index, deInputDevice::eFaceExpressions to, XrLipExpressionHTC from){
-	pMapLipXrToDe[index].weight = pLipWeights + from;
-	pMapLipXrToDe[index].faceExpression = pFaceExpressions + to;
+	pMapLipXrToDe[index].weight = &pLipWeights[from];
+	pMapLipXrToDe[index].faceExpression = &pFaceExpressions[to];
 }

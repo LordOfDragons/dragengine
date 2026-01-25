@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-
 #include "deVROpenXR.h"
 #include "deoxrBasics.h"
 #include "deoxrInstance.h"
@@ -148,8 +145,6 @@ pPredictedDisplayPeriod(0),
 pShouldRender(false),
 pFrameRunning(false),
 pRequestCenterSpaceOrigin(false),
-pSwapchainFormats(nullptr),
-pSwapchainFormatCount(0),
 pLeftEyePose(deoxrUtils::IdentityPose()),
 pRightEyePose(deoxrUtils::IdentityPose()),
 pIsGACOpenGL(false),
@@ -750,16 +745,6 @@ void deoxrSession::RestoreOpenGLCurrent(){
 	#endif
 }
 
-bool deoxrSession::HasSwapchainFormat(deoxrSession::eSwapchainFormats format) const{
-	int i;
-	for(i=0; i<pSwapchainFormatCount; i++){
-		if(pSwapchainFormats[i] == format){
-			return true;
-		}
-	}
-	return false;
-}
-
 const char *deoxrSession::GetSwapchainFormatNameOpenGL(int64_t format, const char *notFound) const{
 	const sSwapchainFormatName *next = vSwapchainFormatNamesOpenGL;
 	while(next->format){
@@ -831,11 +816,6 @@ void deoxrSession::pCleanUp(){
 		pSystem.GetInstance().xrDestroySession(pSession);
 		pSession = XR_NULL_HANDLE;
 	}
-	
-	if(pSwapchainFormats){
-		delete [] pSwapchainFormats;
-		pSwapchainFormats = nullptr;
-	}
 }
 
 void deoxrSession::pEnumSwapchainFormats(){
@@ -848,9 +828,10 @@ void deoxrSession::pEnumSwapchainFormats(){
 		return;
 	}
 	
-	pSwapchainFormats = new int64_t[count];
-	OXR_CHECK(instance.xrEnumerateSwapchainFormats(pSession, count, &count, pSwapchainFormats));
-	pSwapchainFormatCount = count;
+	pSwapchainFormats.SetAll(count, {});
+	OXR_CHECK(instance.xrEnumerateSwapchainFormats(
+		pSession, count, &count, pSwapchainFormats.GetArrayPointer()));
+	pSwapchainFormats.SetCount(count);
 	
 	uint32_t i;
 	for(i=0; i<count; i++){

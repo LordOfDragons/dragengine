@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "desynSynthesizerCurve.h"
 
 #include <dragengine/common/exceptions.h>
@@ -42,22 +39,13 @@
 
 desynSynthesizerCurve::desynSynthesizerCurve() :
 pType(eetConstant),
-pPoints(nullptr),
-pSamples(nullptr),
-pFactors(nullptr),
-pCount(0),
 pFirst(0.0f),
 pLast(0.0f),
-pStep(0.0f)
-{
+pStep(0.0f){
 }
 
 desynSynthesizerCurve::desynSynthesizerCurve(const decCurveBezier &curve) :
 pType(eetConstant),
-pPoints(nullptr),
-pSamples(nullptr),
-pFactors(nullptr),
-pCount(0),
 pFirst(0.0f),
 pLast(0.0f),
 pStep(0.0f)
@@ -67,10 +55,6 @@ pStep(0.0f)
 
 desynSynthesizerCurve::desynSynthesizerCurve(const decCurveBezier &curve, float ymin, float ymax) :
 pType(eetConstant),
-pPoints(nullptr),
-pSamples(nullptr),
-pFactors(nullptr),
-pCount(0),
 pFirst(0.0f),
 pLast(0.0f),
 pStep(0.0f)
@@ -78,9 +62,7 @@ pStep(0.0f)
 	SetCurve(curve, ymin, ymax);
 }
 
-desynSynthesizerCurve::~desynSynthesizerCurve(){
-	pClear();
-}
+desynSynthesizerCurve::~desynSynthesizerCurve() = default;
 
 
 
@@ -153,23 +135,9 @@ float desynSynthesizerCurve::Evaluate(float position) const{
 //////////////////
 
 void desynSynthesizerCurve::pClear(){
-	if(pSamples){
-		delete [] pSamples;
-		pSamples = nullptr;
-	}
-	
-	if(pPoints){
-		delete [] pPoints;
-		pPoints = nullptr;
-	}
-	
-	if(pFactors){
-		delete [] pFactors;
-		pFactors = nullptr;
-	}
-	
-	pCount = 0;
-	
+	pSamples.RemoveAll();
+	pPoints.RemoveAll();
+	pFactors.RemoveAll();
 	pFirst = 0.0f;
 	pLast = 0.0f;
 	pStep = 0.0f;
@@ -178,41 +146,42 @@ void desynSynthesizerCurve::pClear(){
 
 
 void desynSynthesizerCurve::pSetCurveConstant(const decCurveBezier &curve, float yoffset, float yscale){
+	pClear();
 	pType = eetConstant;
 	
-	pCount = curve.GetPointCount();
-	if(pCount == 0){
+	const int count = curve.GetPointCount();
+	if(count == 0){
 		return;
 	}
 	
-	pPoints = new decVector2[pCount];
+	pPoints.AddRange(count, {});
 	
 	int i;
-	for(i=0; i<pCount; i++){
+	for(i=0; i<count; i++){
 		pPoints[i] = curve.GetPointAt(i).GetPoint();
 		pPoints[i].y = pPoints[i].y * yscale + yoffset;
 	}
 }
 
 void desynSynthesizerCurve::pSetCurveLinear(const decCurveBezier &curve, float yoffset, float yscale){
+	pClear();
 	pType = eetLinear;
 	
-	pCount = curve.GetPointCount();
-	if(pCount == 0){
+	const int count = curve.GetPointCount();
+	if(count == 0){
 		return;
 	}
 	
-	pPoints = new decVector2[pCount];
-	pFactors = new float[pCount];
-	pFactors[pCount - 1] = 0.0f;
+	pPoints.AddRange(count, {});
+	pFactors.AddRange(count, 0.0f);
 	
 	int i;
-	for(i=0; i<pCount; i++){
+	for(i=0; i<count; i++){
 		pPoints[i] = curve.GetPointAt(i).GetPoint();
 		pPoints[i].y = pPoints[i].y * yscale + yoffset;
 	}
 	
-	for(i=1; i<pCount; i++){
+	for(i=1; i<count; i++){
 		const int i0 = i - 1;
 		const float diff = pPoints[i].x - pPoints[i0].x;
 		
@@ -224,15 +193,15 @@ void desynSynthesizerCurve::pSetCurveLinear(const decCurveBezier &curve, float y
 		}
 	}
 	
-	pFirst = pPoints[0].x;
-	pLast = pPoints[pCount - 1].x;
+	pFirst = pPoints.First().x;
+	pLast = pPoints.Last().x;
 }
 
 void desynSynthesizerCurve::pSetCurveSampled(const decCurveBezier &curve, float yoffset, float yscale){
+	pClear();
 	pType = eetSampled;
 	
 	if(curve.GetPointCount() == 0){
-		pCount = 0;
 		return;
 	}
 	
@@ -243,31 +212,26 @@ void desynSynthesizerCurve::pSetCurveSampled(const decCurveBezier &curve, float 
 	const float step = (pLast - pFirst) / (float)sampleCount;
 	
 	if(step < FLOAT_SAFE_EPSILON){
-		pCount = 1;
 		pStep = 0.0f;
 		
-		pSamples = new float[1];
-		pFactors = new float[1];
-		
-		pSamples[0] = curve.GetPointAt(0).GetPoint().y * yscale + yoffset;
-		pFactors[0] = 0.0f;
+		pSamples.Add(curve.GetPointAt(0).GetPoint().y * yscale + yoffset);
+		pFactors.Add(0.0f);
 		
 	}else{
 		decCurveBezierEvaluator evaluator(curve);
 		int i;
 		
-		pCount = sampleCount + 1;
+		const int count = sampleCount + 1;
 		pStep = (float)sampleCount / (pLast - pFirst);
 		
-		pSamples = new float[pCount];
-		pFactors = new float[pCount];
-		pFactors[pCount - 1] = 0.0f;
+		pSamples.AddRange(count, 0.0f);
+		pFactors.AddRange(count, 0.0f);
 		
-		for(i=0; i<pCount; i++){
+		for(i=0; i<count; i++){
 			pSamples[i] = evaluator.EvaluateAt(pFirst + step * (float)i) * yscale + yoffset;
 		}
 		
-		for(i=1; i<pCount; i++){
+		for(i=1; i<count; i++){
 			pFactors[i - 1] = pSamples[i] - pSamples[i - 1];
 		}
 	}
@@ -276,12 +240,12 @@ void desynSynthesizerCurve::pSetCurveSampled(const decCurveBezier &curve, float 
 
 
 float desynSynthesizerCurve::pEvaluateConstant(float position) const{
-	if(pCount == 0){
+	if(pPoints.IsEmpty()){
 		return 0.0f;
 	}
 	
 	int i;
-	for(i=1; i<pCount; i++){
+	for(i=1; i<pPoints.GetCount(); i++){
 		if(position < pPoints[i].x){
 			break;
 		}
@@ -291,18 +255,18 @@ float desynSynthesizerCurve::pEvaluateConstant(float position) const{
 }
 
 float desynSynthesizerCurve::pEvaluateLinear(float position) const{
-	if(pCount == 0){
+	if(pPoints.IsEmpty()){
 		return 0.0f;
 		
-	}else if(pCount ==  1 || position <= pFirst){
+	}else if(pPoints.GetCount() ==  1 || position <= pFirst){
 		return pPoints[0].y;
 		
 	}else if(position >= pLast){
-		return pPoints[pCount - 1].y;
+		return pPoints.Last().y;
 		
 	}else{
 		int i;
-		for(i=1; i<pCount; i++){
+		for(i=1; i<pPoints.GetCount(); i++){
 			if(position < pPoints[i].x){
 				break;
 			}
@@ -314,10 +278,10 @@ float desynSynthesizerCurve::pEvaluateLinear(float position) const{
 }
 
 float desynSynthesizerCurve::pEvaluateSampled(float position) const{
-	if(pCount == 0){
+	if(pSamples.IsEmpty()){
 		return 0.0f;
 		
-	}else if(pCount ==  1){
+	}else if(pSamples.GetCount() ==  1){
 		return pSamples[0];
 		
 	}else{
@@ -328,8 +292,8 @@ float desynSynthesizerCurve::pEvaluateSampled(float position) const{
 		if(segment < 0){
 			return pSamples[0];
 			
-		}else if(segment >= pCount - 1){
-			return pSamples[pCount - 1];
+		}else if(segment >= pSamples.GetCount() - 1){
+			return pSamples[pSamples.GetCount() - 1];
 			
 		}else{
 			return pSamples[segment] + pFactors[segment] * blend;

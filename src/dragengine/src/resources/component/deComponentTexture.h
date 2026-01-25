@@ -58,6 +58,10 @@ public:
 	/** \brief Create new texture. */
 	deComponentTexture();
 	
+	/** \brief Copy texture. */
+	deComponentTexture(const deComponentTexture &copy);
+	deComponentTexture &operator=(const deComponentTexture &copy);
+	
 	/** \brief Clean up texture. */
 	~deComponentTexture();
 	/*@}*/

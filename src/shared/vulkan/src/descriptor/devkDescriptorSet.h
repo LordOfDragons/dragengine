@@ -31,6 +31,7 @@
 #include "../buffer/devkBuffer.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 
 class devkDescriptorPool;
 
@@ -54,9 +55,9 @@ private:
 	VkDescriptorSetLayout pLayout;
 	VkDescriptorSet pSet;
 	
-	VkDescriptorBufferInfo *pBindings;
-	VkWriteDescriptorSet *pWriteSets;
-	devkBuffer::Ref *pBuffers;
+	decTList<VkDescriptorBufferInfo> pBindings;
+	decTList<VkWriteDescriptorSet> pWriteSets;
+	decTList<devkBuffer::Ref> pBuffers;
 	int pBindingCount;
 	
 	
@@ -99,11 +100,6 @@ public:
 	/** Write bindings to descriptor set. */
 	void Update();
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

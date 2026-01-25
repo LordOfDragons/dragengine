@@ -178,15 +178,12 @@ void deoglPropField::TestLODLevel(const decDVector &camera){
 }
 
 void deoglPropField::UpdateInstanceCounts(){
-	const int count = pTypes.GetCount();
-	int i;
-	
 	// if the lod level is 0 clear the prop field of all instances but keep the
 	// types intact
 	if(pLODLevel == 0){
-		for(i=0; i<count; i++){
-			pPropField.GetTypeAt(i)->SetInstanceCount(0);
-		}
+		pPropField.GetTypes().Visit([&](dePropFieldType &type){
+			type.GetInstances().SetCountDiscard(0);
+		});
 		
 	// otherwise ask the game scripts to update the instances. we do not touch
 	// types nor instances. it is up to the game scripts to set the instance
@@ -204,9 +201,9 @@ void deoglPropField::UpdateInstanceCounts(){
 	}
 	
 	// instance counts most probably changed. force an update
-	for(i=0; i<count; i++){
-		pTypes.GetAt(i)->InstanceCountChanged();
-	}
+	pTypes.Visit([&](deoglPropFieldType *type){
+		type->InstanceCountChanged();
+	});
 	
 	// extends need to be updated now
 	pDirtyExtends = true;

@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoalModelRTOctree.h"
 #include "deoalModelOctree.h"
 #include "deoalModelOctreeVisitor.h"
@@ -133,12 +129,7 @@ public:
 // Constructors and Destructors
 /////////////////////////////////
 
-deoalModelRTOctree::deoalModelRTOctree(deoalModelOctree &octree) :
-pFaces(nullptr),
-pFaceCount(0),
-pNodes(nullptr),
-pNodeCount(0)
-{
+deoalModelRTOctree::deoalModelRTOctree(deoalModelOctree &octree){
 	try{
 		deoalModelRTOctreeCalcCounts visitorCounts;
 		octree.VisitNodes(&visitorCounts);
@@ -146,40 +137,14 @@ pNodeCount(0)
 			return;
 		}
 		
-		pFaceCount = visitorCounts.GetFaceCount();
-		pFaces = new sFace[pFaceCount];
-		
-		pNodeCount = visitorCounts.GetNodeCount();
-		pNodes = new sNode[pNodeCount];
-		
-		deoalModelRTOctreeBuild(pFaces, pNodes).VisitNode(octree);
+		pFaces.AddRange(visitorCounts.GetFaceCount(), {});
+		pNodes.AddRange(visitorCounts.GetNodeCount(), {});
+		deoalModelRTOctreeBuild(pFaces.GetArrayPointer(), pNodes.GetArrayPointer()).VisitNode(octree);
 		
 	}catch(const deException &e){
 		e.PrintError();
-		pCleanUp();
 		throw;
 	}
 }
 
-deoalModelRTOctree::~deoalModelRTOctree(){
-	pCleanUp();
-}
-
-
-
-// Management
-///////////////
-
-
-
-// Private Functions
-//////////////////////
-
-void deoalModelRTOctree::pCleanUp(){
-	if(pNodes){
-		delete [] pNodes;
-	}
-	if(pFaces){
-		delete [] pFaces;
-	}
-}
+deoalModelRTOctree::~deoalModelRTOctree() = default;

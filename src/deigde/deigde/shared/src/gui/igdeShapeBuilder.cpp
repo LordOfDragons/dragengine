@@ -301,7 +301,6 @@ void igdeShapeBuilder::CreateArrowHead(decConvexVolumeList &list, const decVecto
 
 
 void igdeShapeBuilder::Convert(decConvexVolumeList &cvList, deDebugDrawerShape &ddVolume) const{
-	deDebugDrawerShapeFace *ddFace = nullptr;
 	decConvexVolumeFace *cvVolumeFace;
 	decConvexVolume *cvVolume;
 	int v, volumeCount;
@@ -311,37 +310,29 @@ void igdeShapeBuilder::Convert(decConvexVolumeList &cvList, deDebugDrawerShape &
 	volumeCount = cvList.GetVolumeCount();
 	ddVolume.RemoveAllFaces();
 	
-	try{
-		for(v=0; v<volumeCount; v++){
-			cvVolume = cvList.GetVolumeAt(v);
-			
-			faceCount = cvVolume->GetFaceCount();
-			for(f=0; f<faceCount; f++){
-				cvVolumeFace = cvVolume->GetFaceAt(f);
-				vertexCount = cvVolumeFace->GetVertexCount();
-				if(vertexCount < 3) continue;
-				
-				ddFace = new deDebugDrawerShapeFace;
-				
-				ddFace->SetNormal(cvVolumeFace->GetNormal());
-				
-				for(x=0; x<vertexCount; x++){
-					ddFace->AddVertex(cvVolume->GetVertexAt(cvVolumeFace->GetVertexAt(x)));
-				}
-				
-				ddVolume.AddFace(ddFace);
-				ddFace = nullptr;
-			}
-		}
+	for(v=0; v<volumeCount; v++){
+		cvVolume = cvList.GetVolumeAt(v);
 		
-	}catch(const deException &){
-		if(ddFace) delete ddFace;
-		throw;
+		faceCount = cvVolume->GetFaceCount();
+		for(f=0; f<faceCount; f++){
+			cvVolumeFace = cvVolume->GetFaceAt(f);
+			vertexCount = cvVolumeFace->GetVertexCount();
+			if(vertexCount < 3) continue;
+			
+			auto ddFace = deDebugDrawerShapeFace::Ref::New();
+			
+			ddFace->SetNormal(cvVolumeFace->GetNormal());
+			
+			for(x=0; x<vertexCount; x++){
+				ddFace->AddVertex(cvVolume->GetVertexAt(cvVolumeFace->GetVertexAt(x)));
+			}
+			
+			ddVolume.AddFace(std::move(ddFace));
+		}
 	}
 }
 
 void igdeShapeBuilder::Convert(decConvexVolumeList &cvList, igdeWDebugDrawerShape &ddShape) const{
-	deDebugDrawerShapeFace *ddFace = nullptr;
 	decConvexVolumeFace *cvVolumeFace;
 	decConvexVolume *cvVolume;
 	int v, volumeCount;
@@ -351,32 +342,25 @@ void igdeShapeBuilder::Convert(decConvexVolumeList &cvList, igdeWDebugDrawerShap
 	volumeCount = cvList.GetVolumeCount();
 	ddShape.RemoveAllFaces();
 	
-	try{
-		for(v=0; v<volumeCount; v++){
-			cvVolume = cvList.GetVolumeAt(v);
-			
-			faceCount = cvVolume->GetFaceCount();
-			for(f=0; f<faceCount; f++){
-				cvVolumeFace = cvVolume->GetFaceAt(f);
-				vertexCount = cvVolumeFace->GetVertexCount();
-				if(vertexCount < 3) continue;
-				
-				ddFace = new deDebugDrawerShapeFace;
-				
-				ddFace->SetNormal(cvVolumeFace->GetNormal());
-				
-				for(x=0; x<vertexCount; x++){
-					ddFace->AddVertex(cvVolume->GetVertexAt(cvVolumeFace->GetVertexAt(x)));
-				}
-				
-				ddShape.AddFace(ddFace);
-				ddFace = nullptr;
-			}
-		}
+	for(v=0; v<volumeCount; v++){
+		cvVolume = cvList.GetVolumeAt(v);
 		
-	}catch(const deException &){
-		if(ddFace) delete ddFace;
-		throw;
+		faceCount = cvVolume->GetFaceCount();
+		for(f=0; f<faceCount; f++){
+			cvVolumeFace = cvVolume->GetFaceAt(f);
+			vertexCount = cvVolumeFace->GetVertexCount();
+			if(vertexCount < 3) continue;
+			
+			auto ddFace = deDebugDrawerShapeFace::Ref::New();
+			
+			ddFace->SetNormal(cvVolumeFace->GetNormal());
+			
+			for(x=0; x<vertexCount; x++){
+				ddFace->AddVertex(cvVolume->GetVertexAt(cvVolumeFace->GetVertexAt(x)));
+			}
+			
+			ddShape.AddFace(std::move(ddFace));
+		}
 	}
 	
 	if(ddShape.GetParentDebugDrawer()){
@@ -484,24 +468,15 @@ const decVector &p2, const decVector &p3) const{
 
 void igdeShapeBuilder::AddTriToShape(igdeWDebugDrawerShape &ddShape, const decVector &p1,
 const decVector &p2, const decVector &p3, const decVector &normal) const{
-	deDebugDrawerShapeFace *ddFace = nullptr;
+	auto ddFace = deDebugDrawerShapeFace::Ref::New();
 	
-	try{
-		ddFace = new deDebugDrawerShapeFace;
-		
-		ddFace->SetNormal(normal);
-		
-		ddFace->AddVertex(p1);
-		ddFace->AddVertex(p2);
-		ddFace->AddVertex(p3);
-		
-		ddShape.AddFace(ddFace);
-		ddFace = nullptr;
-		
-	}catch(const deException &){
-		if(ddFace) delete ddFace;
-		throw;
-	}
+	ddFace->SetNormal(normal);
+	
+	ddFace->AddVertex(p1);
+	ddFace->AddVertex(p2);
+	ddFace->AddVertex(p3);
+	
+	ddShape.AddFace(std::move(ddFace));
 }
 
 void igdeShapeBuilder::AddQuadToShape(igdeWDebugDrawerShape &ddShape, const decVector &p1,
@@ -515,25 +490,16 @@ const decVector &p2, const decVector &p3, const decVector &p4) const{
 
 void igdeShapeBuilder::AddQuadToShape(igdeWDebugDrawerShape &ddShape, const decVector &p1,
 const decVector &p2, const decVector &p3, const decVector &p4, const decVector &normal) const{
-	deDebugDrawerShapeFace *ddFace = nullptr;
+	auto ddFace = deDebugDrawerShapeFace::Ref::New();
 	
-	try{
-		ddFace = new deDebugDrawerShapeFace;
-		
-		ddFace->SetNormal(normal);
-		
-		ddFace->AddVertex(p1);
-		ddFace->AddVertex(p2);
-		ddFace->AddVertex(p3);
-		ddFace->AddVertex(p4);
-		
-		ddShape.AddFace(ddFace);
-		ddFace = nullptr;
-		
-	}catch(const deException &){
-		if(ddFace) delete ddFace;
-		throw;
-	}
+	ddFace->SetNormal(normal);
+	
+	ddFace->AddVertex(p1);
+	ddFace->AddVertex(p2);
+	ddFace->AddVertex(p3);
+	ddFace->AddVertex(p4);
+	
+	ddShape.AddFace(std::move(ddFace));
 }
 
 

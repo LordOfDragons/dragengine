@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "debpDecal.h"
 #include "debpDecalFace.h"
 #include "debpDecalMeshBuilder.h"
@@ -50,20 +46,14 @@
 ////////////////////////////
 
 debpDecal::debpDecal(deDecal *decal){
-	if(!decal) DETHROW(deeInvalidParam);
+	DEASSERT_NOTNULL(decal)
 	
 	pDecal = decal;
-	
-	pFaces = nullptr;
-	pFaceCount = 0;
 	pDirtyGeometry = false;
-	
 	pParentComponent = nullptr;
 }
 
-debpDecal::~debpDecal(){
-	pCleanUp();
-}
+debpDecal::~debpDecal() = default;
 
 
 
@@ -71,12 +61,7 @@ debpDecal::~debpDecal(){
 ///////////////
 
 void debpDecal::MarkDirty(){
-	if(pFaces){
-		delete [] pFaces;
-		pFaces = nullptr;
-		pFaceCount = 0;
-	}
-	
+	pFaces.RemoveAll();
 	pDirtyGeometry = true;
 }
 
@@ -93,7 +78,9 @@ void debpDecal::Update(){
 
 
 void debpDecal::SetParentComponent(debpComponent *component){
-	if(component) DETHROW(deeInvalidParam);
+	if(pParentComponent == component){
+		return;
+	}
 	
 	pParentComponent = component;
 	MarkDirty();
@@ -104,31 +91,20 @@ void debpDecal::SetParentComponent(debpComponent *component){
 bool debpDecal::TouchesVolume(debpDCollisionVolume *volume) const{
 	DEASSERT_NOTNULL(volume)
 	debpDCollisionTriangle triangle;
-	int i;
 	
 	// TODO: early exit check with a bounding box or sphere
 	
-	// test each face for a hit
-	for(i=0; i<pFaceCount; i++){
-		triangle.SetCorners(pFaces[i].GetPoint1(), pFaces[i].GetPoint2(), pFaces[i].GetPoint3());
-		if(volume->TriangleHitsVolume(&triangle)) return true;
-	}
-	
-	// no collision
-	return false;
+	return pFaces.HasMatching([&](const debpDecalFace &face){
+		triangle.SetCorners(face.GetPoint1(), face.GetPoint2(), face.GetPoint3());
+		return volume->TriangleHitsVolume(&triangle);
+	});
 }
 
 bool debpDecal::TouchesPoint(const decVector &point) const{
-	int i;
-	
-	for(i=0; i<pFaceCount; i++){
-		if(debpDCollisionDetection::PointInTriangle(pFaces[i].GetPoint1(),
-		pFaces[i].GetPoint2(), pFaces[i].GetPoint3(), point)){
-			return true;
-		}
-	}
-	
-	return false;
+	return pFaces.HasMatching([&](const debpDecalFace &face){
+		return debpDCollisionDetection::PointInTriangle(
+			face.GetPoint1(), face.GetPoint2(), face.GetPoint3(), point);
+	});
 }
 
 
@@ -150,10 +126,6 @@ void debpDecal::VisibleChanged(){
 
 // Private Functions
 //////////////////////
-
-void debpDecal::pCleanUp(){
-	if(pFaces) delete [] pFaces;
-}
 
 void debpDecal::pCreateMeshComponent(){
 	/*
@@ -191,7 +163,7 @@ void debpDecal::pCreateMeshComponent(){
 	projAxis = decalMatrix.TransformView();
 	
 	// create points array
-	pPoints = new debpVBOPoint[6];
+	pPoints.AddRange(6, {});
 	pPointCount = 6;
 	
 	// calculate vertices

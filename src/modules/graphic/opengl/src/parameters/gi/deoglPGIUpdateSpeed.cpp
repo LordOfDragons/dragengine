@@ -49,15 +49,21 @@ deoglPGIUpdateSpeed::deoglPGIUpdateSpeed(deGraphicOpenGl &ogl) : deoglParameter(
 	SetCategory(ecBasic);
 	SetDisplayName("GI Update Speed");
 	
-	const deModuleParameter::SelectionEntry entries[6] = {
-		{"veryLow", "Very Low", "Very low update speed. For weak GPU delivering best performance."},
-		{"low", "Low", "Low update speed. Prefer performance over faster convergence."},
-		{"medium", "Medium", "Medium update speed. Balance between convergence speed "
-			"and performance. Recommended choice."},
-		{"high", "High", "High update speed. Prefer faster convergence over performance."},
-		{"veryHigh", "Very High", "Very high update speed. For high-end GPU delivering fastest convergence."}
-	};
-	AddSelectionEntries(entries, 6);
+	AddSelectionEntry({"veryLow", "Very Low",
+		"Very low update speed. For weak GPU delivering best performance."});
+	
+	AddSelectionEntry({"low", "Low",
+		"Low update speed. Prefer performance over faster convergence."});
+	
+	AddSelectionEntry({"medium", "Medium",
+		"Medium update speed. Balance between convergence speed and performance. Recommended choice."});
+	
+	AddSelectionEntry({"high", "High",
+		"High update speed. Prefer faster convergence over performance."});
+	
+	AddSelectionEntry({"veryHigh", "Very High",
+		"Very high update speed. For high-end GPU delivering fastest convergence."});
+	
 	SetDefaultValue("medium");
 }
 

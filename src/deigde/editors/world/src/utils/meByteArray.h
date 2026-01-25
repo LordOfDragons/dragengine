@@ -25,6 +25,7 @@
 #ifndef _MEBYTEARRAY_H_
 #define _MEBYTEARRAY_H_
 
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
@@ -34,7 +35,7 @@ class meByteArray{
 private:
 	int pColons;
 	int pRows;
-	unsigned char *pValues;
+	decTList<unsigned char> pValues;
 	
 	
 	

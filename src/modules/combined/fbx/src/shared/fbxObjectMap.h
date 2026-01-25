@@ -43,8 +43,7 @@ private:
 		decTList<fbxNode*> objects;
 	};
 	
-	sBucket *pBuckets;
-	int pBucketCount;
+	decTList<sBucket> pBuckets;
 	
 	
 	

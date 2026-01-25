@@ -65,6 +65,10 @@ public:
 	/** Create shader parameter. */
 	deoglSPBParameter();
 	
+	/** Copy shader parameter. */
+	deoglSPBParameter(const deoglSPBParameter &parameter);
+	deoglSPBParameter &operator=(const deoglSPBParameter &parameter);
+	
 	/** Clean up shader parameter. */
 	~deoglSPBParameter();
 	/*@}*/

@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
 
@@ -41,14 +37,9 @@
 ////////////////////////////
 
 deJpegEncoder::deJpegEncoder(deJpegModule *module){
-	if(!module){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(module)
 	
 	pModule = module;
-	
-	pDataBuffer = nullptr;
-	pWriter = nullptr;
 	
 	memset(&pErrorMgr, '\0', sizeof(pErrorMgr));
 	memset(&pDestMgr, '\0', sizeof(pDestMgr));
@@ -57,12 +48,7 @@ deJpegEncoder::deJpegEncoder(deJpegModule *module){
 	pEncode.err = &pErrorMgr;
 }
 
-deJpegEncoder::~deJpegEncoder(){
-	if(pDataBuffer){
-		delete [] pDataBuffer;
-	}
-}
-
+deJpegEncoder::~deJpegEncoder() = default;
 
 
 // Data Buffer
@@ -75,20 +61,20 @@ void deJpegEncoder::InitWrite(decBaseFileWriter *writer){
 	
 	pWriter = writer;
 	
-	if(!pDataBuffer){
-		pDataBuffer = new JOCTET[1024];
+	if(pDataBuffer.IsEmpty()){
+		pDataBuffer.AddRange(1024, {});
 	}
 	
 	pEncode.dest = &pDestMgr;
 }
 
 void deJpegEncoder::ResetBuffer(){
-	pDestMgr.next_output_byte = pDataBuffer;
+	pDestMgr.next_output_byte = pDataBuffer.GetArrayPointer();
 	pDestMgr.free_in_buffer = 1024;
 }
 
 void deJpegEncoder::WriteEntireBuffer(){
-	pWriter->Write(pDataBuffer, 1024);
+	pWriter->Write(pDataBuffer.GetArrayPointer(), 1024);
 	ResetBuffer();
 }
 
@@ -96,7 +82,7 @@ void deJpegEncoder::WriteRemaining(){
 	const int bytes = 1024 - (int)pDestMgr.free_in_buffer;
 	
 	if(bytes > 0){
-		pWriter->Write(pDataBuffer, bytes);
+		pWriter->Write(pDataBuffer.GetArrayPointer(), bytes);
 	}
 	
 	pDestMgr.next_output_byte = nullptr;
@@ -104,9 +90,5 @@ void deJpegEncoder::WriteRemaining(){
 }
 
 void deJpegEncoder::CloseReader(){
-	if(pDataBuffer){
-		delete [] pDataBuffer;
-		pDataBuffer = nullptr;
-	}
 	pWriter = nullptr;
 }

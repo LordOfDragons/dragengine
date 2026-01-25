@@ -26,6 +26,7 @@
 #define _DEIMAGE_H_
 
 #include "../deFileResource.h"
+#include "../../common/collection/decTList.h"
 #include "../../threading/deMutex.h"
 
 class decXpmImage;
@@ -153,7 +154,7 @@ private:
 	int pDepth;
 	int pComponentCount;
 	int pBitCount;
-	unsigned char *pData;
+	decTList<unsigned char> pData;
 	int pRetainImageData;
 	deMutex pMutex;
 	
@@ -232,84 +233,96 @@ public:
 	 * \see GetData().
 	 * \throws deeInvalidParam Image format mismatch.
 	 */
-	sGrayscale8 *GetDataGrayscale8() const;
+	sGrayscale8 *GetDataGrayscale8();
+	const sGrayscale8 *GetDataGrayscale8() const;
 	
 	/**
 	 * \brief 16-bit Grayscale image data.
 	 * \see GetData().
 	 * \throws deeInvalidParam Image format mismatch.
 	 */
-	sGrayscale16 *GetDataGrayscale16() const;
+	sGrayscale16 *GetDataGrayscale16();
+	const sGrayscale16 *GetDataGrayscale16() const;
 	
 	/**
 	 * \brief 32-bit Grayscale image data.
 	 * \see GetData().
 	 * \throws deeInvalidParam Image format mismatch.
 	 */
-	sGrayscale32 *GetDataGrayscale32() const;
+	sGrayscale32 *GetDataGrayscale32();
+	const sGrayscale32 *GetDataGrayscale32() const;
 	
 	/**
 	 * \brief 8-bit Grayscale-Alpha image data.
 	 * \see GetData().
 	 * \throws deeInvalidParam Image format mismatch.
 	 */
-	sGrayscaleAlpha8 *GetDataGrayscaleAlpha8() const;
+	sGrayscaleAlpha8 *GetDataGrayscaleAlpha8();
+	const sGrayscaleAlpha8 *GetDataGrayscaleAlpha8() const;
 	
 	/**
 	 * \brief 16-bit Grayscale-Alpha image data.
 	 * \see GetData().
 	 * \throws deeInvalidParam Image format mismatch.
 	 */
-	sGrayscaleAlpha16 *GetDataGrayscaleAlpha16() const;
+	sGrayscaleAlpha16 *GetDataGrayscaleAlpha16();
+	const sGrayscaleAlpha16 *GetDataGrayscaleAlpha16() const;
 	
 	/**
 	 * \brief 32-bit Grayscale-Alpha image data.
 	 * \see GetData().
 	 * \throws deeInvalidParam Image format mismatch.
 	 */
-	sGrayscaleAlpha32 *GetDataGrayscaleAlpha32() const;
+	sGrayscaleAlpha32 *GetDataGrayscaleAlpha32();
+	const sGrayscaleAlpha32 *GetDataGrayscaleAlpha32() const;
 	
 	/**
 	 * \brief 8-bit RGB image data.
 	 * \see GetData().
 	 * \throws deeInvalidParam Image format mismatch.
 	 */
-	sRGB8 *GetDataRGB8() const;
+	sRGB8 *GetDataRGB8();
+	const sRGB8 *GetDataRGB8() const;
 	
 	/**
 	 * \brief 16-bit RGB image data.
 	 * \see GetData().
 	 * \throws deeInvalidParam Image format mismatch.
 	 */
-	sRGB16 *GetDataRGB16() const;
+	sRGB16 *GetDataRGB16();
+	const sRGB16 *GetDataRGB16() const;
 	
 	/**
 	 * \brief 32-bit RGB image data.
 	 * \see GetData().
 	 * \throws deeInvalidParam Image format mismatch.
 	 */
-	sRGB32 *GetDataRGB32() const;
+	sRGB32 *GetDataRGB32();
+	const sRGB32 *GetDataRGB32() const;
 	
 	/**
 	 * \brief 8-bit RGBA image data.
 	 * \see GetData().
 	 * \throws deeInvalidParam Image format mismatch.
 	 */
-	sRGBA8 *GetDataRGBA8() const;
+	sRGBA8 *GetDataRGBA8();
+	const sRGBA8 *GetDataRGBA8() const;
 	
 	/**
 	 * \brief 16-bit RGBA image data.
 	 * \see GetData().
 	 * \throws deeInvalidParam Image format mismatch.
 	 */
-	sRGBA16 *GetDataRGBA16() const;
+	sRGBA16 *GetDataRGBA16();
+	const sRGBA16 *GetDataRGBA16() const;
 	
 	/**
 	 * \brief 32-bit RGBA image data.
 	 * \see GetData().
 	 * \throws deeInvalidParam Image format mismatch.
 	 */
-	sRGBA32 *GetDataRGBA32() const;
+	sRGBA32 *GetDataRGBA32();
+	const sRGBA32 *GetDataRGBA32() const;
 	
 	/**
 	 * \brief Direct image data pointer.
@@ -321,7 +334,8 @@ public:
 	 * 
 	 * \warning This is a dangerous function. Use it only if you know what you are doing.
 	 */
-	inline void *GetData() const{ return pData; }
+	inline void *GetData(){ return pData.GetArrayPointer(); }
+	inline const void *GetData() const{ return pData.GetArrayPointer(); }
 	
 	/** \brief Notify peers image data changed. */
 	void NotifyImageDataChanged();

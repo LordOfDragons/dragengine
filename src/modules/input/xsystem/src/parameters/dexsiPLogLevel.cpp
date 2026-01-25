@@ -41,12 +41,11 @@ dexsiPLogLevel::dexsiPLogLevel(deXSystemInput &xsi) : dexsiParameter(xsi){
 	pParameter.SetCategory(deModuleParameter::ecAdvanced);
 	pParameter.SetDisplayName("Log Level");
 	
-	const deModuleParameter::SelectionEntry entries[4] = {
-		{"error", "Error", "Log only errors."},
-		{"warning", "Warning", "Log errors and warnings."},
-		{"info", "Info", "Log errors, warnings and information."},
-		{"debug", "Debug", "Log everything"}};
-	pParameter.AddSelectionEntries(entries, 4);
+	pParameter.AddSelectionEntry({"error", "Error", "Log only errors."});
+	pParameter.AddSelectionEntry({"warning", "Warning", "Log errors and warnings."});
+	pParameter.AddSelectionEntry({"info", "Info", "Log errors, warnings and information."});
+	pParameter.AddSelectionEntry({"debug", "Debug", "Log everything"});
+	
 	pParameter.SetDefaultValue("info");
 }
 

@@ -45,7 +45,6 @@
 
 deoglDebugFont::deoglDebugFont(deoglRenderThread &renderThread) :
 pRenderThread(renderThread){
-	pGlyphs = nullptr;
 	pTexture = nullptr;
 	pFontHeight = 1;
 	
@@ -72,10 +71,6 @@ void deoglDebugFont::pCleanUp(){
 	if(pTexture){
 		delete pTexture;
 	}
-	
-	if(pGlyphs){
-		delete [] pGlyphs;
-	}
 }
 
 struct sTempGlyph{
@@ -85,7 +80,6 @@ struct sTempGlyph{
 void deoglDebugFont::pBuildGlyphs(){
 	const deoglConfiguration &config = pRenderThread.GetConfiguration();
 	float factorU, factorV, offsetU, offsetV;
-	int i;
 	
 	// reg-exp replace .defont :
 	// search: <glyph code='([0-9]+)' u='([0-9]+)' v='([0-9]+)' width='([0-9]+)' bearing='([0-9]+)' advance='([0-9]+)'/>
@@ -778,7 +772,7 @@ void deoglDebugFont::pBuildGlyphs(){
 	const int glyphOffset = -1;
 	const int glyphEnlarge = 1;
 	
-	pGlyphs = new sGlyph[256];
+	pGlyphs.SetCountDiscard(256);
 	
 	factorU = 1.0f / (float)gimp_debugfont.width;
 	factorV = 1.0f / (float)gimp_debugfont.height;
@@ -788,15 +782,15 @@ void deoglDebugFont::pBuildGlyphs(){
 	//pFontHeight = 15;
 	pFontHeight = 10;
 	
-	for(i=0; i<256; i++){
-		pGlyphs[i].x1 = factorU * (float)(tempGlyphs[i].u + glyphOffset) + offsetU;
-		pGlyphs[i].y1 = factorV * (float)(tempGlyphs[i].v) + offsetV;
-		pGlyphs[i].x2 = factorU * (float)(tempGlyphs[i].u + glyphOffset + tempGlyphs[i].width + glyphEnlarge) + offsetU;
-		pGlyphs[i].y2 = factorV * (float)(tempGlyphs[i].v + pFontHeight) + offsetV;
-		pGlyphs[i].width = tempGlyphs[i].width + glyphEnlarge;
-		pGlyphs[i].height = pFontHeight;
-		pGlyphs[i].advance = tempGlyphs[i].width + glyphEnlarge;
-	}
+	pGlyphs.VisitIndexed([&](int i, sGlyph &glyph){
+		glyph.x1 = factorU * (float)(tempGlyphs[i].u + glyphOffset) + offsetU;
+		glyph.y1 = factorV * (float)(tempGlyphs[i].v) + offsetV;
+		glyph.x2 = factorU * (float)(tempGlyphs[i].u + glyphOffset + tempGlyphs[i].width + glyphEnlarge) + offsetU;
+		glyph.y2 = factorV * (float)(tempGlyphs[i].v + pFontHeight) + offsetV;
+		glyph.width = tempGlyphs[i].width + glyphEnlarge;
+		glyph.height = pFontHeight;
+		glyph.advance = tempGlyphs[i].width + glyphEnlarge;
+	});
 }
 
 

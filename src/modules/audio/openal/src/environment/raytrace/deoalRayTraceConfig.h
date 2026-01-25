@@ -25,6 +25,7 @@
 #ifndef _DEOALENVPROBECONFIG_H_
 #define _DEOALENVPROBECONFIG_H_
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoalIcoSphere;
@@ -37,8 +38,7 @@ class deoalIcoSphere;
  */
 class deoalRayTraceConfig{
 private:
-	int pRayCount;
-	decVector *pRayDirections;
+	decTList<decVector> pRayDirections;
 	
 	float pRayUnitVolume;
 	float pRayUnitSurface;
@@ -64,10 +64,10 @@ public:
 	/** \name Manegement */
 	/*@{*/
 	/** \brief Number of rays. */
-	inline int GetRayCount() const{ return pRayCount; }
+	inline int GetRayCount() const{ return pRayDirections.GetCount(); }
 	
 	/** \brief Ray directions. */
-	inline const decVector *GetRayDirections() const{ return pRayDirections; }
+	inline const decVector *GetRayDirections() const{ return pRayDirections.GetArrayPointer(); }
 	
 	/**
 	 * \brief Ray unit volume.

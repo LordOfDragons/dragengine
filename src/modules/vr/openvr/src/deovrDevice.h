@@ -32,6 +32,7 @@
 #include <openvr/openvr.h>
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/input/deInputDevice.h>
@@ -92,12 +93,11 @@ private:
 	vr::VRControllerState_t pState;
 	vr::InputPoseActionData_t pDevicePoseData;
 	vr::VRSkeletalSummaryData_t pSkeletalSummeryData;
-	vr::VRBoneTransform_t *pBoneTransformData;
+	decTList<vr::VRBoneTransform_t> pBoneTransformData;
 	int pBoneCount;
 	
 	deInputDevicePose pPoseDevice;
-	deInputDevicePose *pPoseBones;
-	int pPoseBoneCount;
+	decTList<deInputDevicePose> pPoseBones;
 	
 	
 	

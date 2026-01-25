@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <string.h>
-
 #include "dedaiHeightTerrain.h"
 #include "dedaiHeightTerrainSector.h"
 #include "dedaiHeightTerrainNavSpace.h"
@@ -49,8 +46,7 @@
 dedaiHeightTerrainSector::dedaiHeightTerrainSector(dedaiHeightTerrain &heightTerrain,
 	const deHeightTerrainSector &sector) :
 pHeightTerrain(heightTerrain),
-pSector(sector),
-pHeights(nullptr)
+pSector(sector)
 {
 	try{
 		pPosition.x = heightTerrain.GetHeightTerrain().GetSectorSize() * sector.GetSector().x;
@@ -94,10 +90,7 @@ void dedaiHeightTerrainSector::ParentWorldChanged(){
 }
 
 void dedaiHeightTerrainSector::SectorChanged(){
-	if(pHeights){
-		delete [] pHeights;
-		pHeights = nullptr;
-	}
+	pHeights.SetCountDiscard(0);
 	
 	pUpdateHeights();
 	
@@ -153,10 +146,6 @@ void dedaiHeightTerrainSector::NavSpaceLayoutChanged(int index){
 
 void dedaiHeightTerrainSector::pCleanUp(){
 	AllNavSpacesRemoved();
-	
-	if(pHeights){
-		delete [] pHeights;
-	}
 }
 
 
@@ -173,8 +162,8 @@ void dedaiHeightTerrainSector::pUpdateHeights(const decPoint &from, const decPoi
 	const int pixelCount = imageDim * imageDim;
 	
 	// create height values if not existing already
-	if(!pHeights){
-		pHeights = new float[pixelCount];
+	if(pHeights.IsEmpty()){
+		pHeights.AddRange(pixelCount, 0.0f);
 	}
 	
 	// update height values unless image is not set
@@ -182,7 +171,7 @@ void dedaiHeightTerrainSector::pUpdateHeights(const decPoint &from, const decPoi
 	
 	if(!heightImage){
 		for(y=from.y; y<=to.y; y++){
-			float * const heightsRow = pHeights + imageDim * y;
+			float * const heightsRow = pHeights.GetArrayPointer() + imageDim * y;
 			for(x=from.x; x<=to.x; x++){
 				heightsRow[x] = 0.0f;
 			}
@@ -196,7 +185,7 @@ void dedaiHeightTerrainSector::pUpdateHeights(const decPoint &from, const decPoi
 		
 		for(y=from.y; y<=to.y; y++){
 			const sGrayscale8 * const imageDataRow = imageData + imageDim * y;
-			float * const heightsRow = pHeights + imageDim * y;
+			float * const heightsRow = pHeights.GetArrayPointer() + imageDim * y;
 			
 			for(x=from.x; x<=to.x; x++){
 				heightsRow[x] = baseHeight + (float)(imageDataRow[x].value - HT_8BIT_BASE) * scaling;
@@ -209,7 +198,7 @@ void dedaiHeightTerrainSector::pUpdateHeights(const decPoint &from, const decPoi
 		
 		for(y=from.y; y<=to.y; y++){
 			const sGrayscale16 * const imageDataRow = imageData + imageDim * y;
-			float * const heightsRow = pHeights + imageDim * y;
+			float * const heightsRow = pHeights.GetArrayPointer() + imageDim * y;
 			
 			for(x=from.x; x<=to.x; x++){
 				heightsRow[x] = baseHeight + (float)(imageDataRow[x].value - HT_16BIT_BASE) * scaling;
@@ -222,7 +211,7 @@ void dedaiHeightTerrainSector::pUpdateHeights(const decPoint &from, const decPoi
 		
 		for(y=from.y; y<=to.y; y++){
 			const sGrayscale32 * const imageDataRow = imageData + imageDim * y;
-			float * const heightsRow = pHeights + imageDim * y;
+			float * const heightsRow = pHeights.GetArrayPointer() + imageDim * y;
 			
 			for(x=from.x; x<=to.x; x++){
 				heightsRow[x] = baseHeight + imageDataRow[x].value * scaling;

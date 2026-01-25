@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglAddToRenderTask.h"
 #include "deoglRenderTask.h"
 #include "deoglRenderTaskInstance.h"
@@ -404,7 +400,7 @@ const deoglModelLOD &modelLod, int texture, const deoglRenderTaskSharedVAO *rtva
 		pGetTaskVAO(pipelinesType, pSkinPipelineType, pipelineModifier,
 			componentTexture.GetUseSkinTexture(), tuc, rtvao->GetVAO())->
 				AddInstance(componentTexture.GetSharedSPBRTIGroup(lod.GetLODIndex()).GetRTSInstance())->
-				AddSubInstance(componentTexture.GetSharedSPBElement()->GetIndex(), specialFlags);
+				GetSubInstances().Add({componentTexture.GetSharedSPBElement()->GetIndex(), specialFlags});
 		
 	// }catch( const deException &e ){
 		// TODO temporary hack. ignore this problem for the time being. it happens if
@@ -428,7 +424,7 @@ const deoglModelLOD &modelLod, int texture, const deoglRenderTaskSharedVAO *rtva
 		#ifdef ATRT_TIMING
 		atrtElapsed1 += atrtTimer.GetElapsedTime();
 		#endif
-	pRenderTask.AddShader(rts)->AddTexture(rtt)->AddVAO(rtvao)->AddInstance(rtsi)->AddSubInstance(index, specialFlags);
+	pRenderTask.AddShader(rts)->AddTexture(rtt)->AddVAO(rtvao)->AddInstance(rtsi)->GetSubInstances().Add({index, specialFlags});
 		#ifdef ATRT_TIMING
 		atrtElapsed2 += atrtTimer.GetElapsedTime();
 		#endif
@@ -481,7 +477,7 @@ void deoglAddToRenderTask::AddBillboard(const deoglRBillboard &billboard){
 		const int skinRenderable = skinChannel->GetRenderable();
 		
 		if(skinRenderable >= 0 && skinRenderable < skinState->GetRenderableCount() && dynamicSkin){
-			const deoglSkinStateRenderable &skinStateRenderable = *skinState->GetRenderableAt(skinRenderable);
+			const deoglSkinStateRenderable &skinStateRenderable = *skinState->GetRenderables()[skinRenderable];
 			
 			if(skinStateRenderable.GetHostRenderable() != -1){
 				if(dynamicSkin->GetRenderableAt(skinStateRenderable.GetHostRenderable())->GetRenderPlan()){
@@ -498,7 +494,7 @@ void deoglAddToRenderTask::AddBillboard(const deoglRBillboard &billboard){
 		&texture, billboard.GetTUCForPipelineType(pSkinPipelineType),
 		pRenderThread.GetDeferredRendering().GetVAOBillboard())->
 			AddInstance(billboard.GetSharedSPBRTIGroup().GetRTSInstance())->
-			AddSubInstance(billboard.GetSharedSPBElement()->GetIndex(), billboard.GetSpecialFlags());
+			GetSubInstances().Add({billboard.GetSharedSPBElement()->GetIndex(), billboard.GetSpecialFlags()});
 }
 
 
@@ -531,16 +527,13 @@ void deoglAddToRenderTask::AddDecal(const deoglRDecal &decal, int lodLevel){
 	pGetTaskVAO(deoglSkinTexturePipelinesList::eptDecal, pSkinPipelineType, pipelineModifier, skinTexture,
 		decal.GetTUCForPipelineType(pSkinPipelineType), vboBlock->GetVBO()->GetVAO())->
 			AddInstance(decal.GetRTSInstance())->
-			AddSubInstance(decal.GetSharedSPBElement()->GetIndex(), 0);
+			GetSubInstances().Add({decal.GetSharedSPBElement()->GetIndex(), 0});
 }
 
 void deoglAddToRenderTask::AddDecals(const deoglRComponent &component, int lodLevel){
-	const int count = component.GetDecalCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		AddDecal(*component.GetDecalAt(i), lodLevel);
-	}
+	component.GetDecals().Visit([&](const deoglRDecal &decal){
+		AddDecal(decal, lodLevel);
+	});
 }
 
 void deoglAddToRenderTask::AddDecals(const deoglCollideList &clist){
@@ -965,7 +958,7 @@ bool doubleSided, deoglRenderTaskTexture *taskTexture, int specialFlags){
 	
 	taskTexture->AddVAO(vao->GetRTSVAO())->
 		AddInstance(component.GetOccMeshSharedSPBRTIGroup(doubleSided).GetRTSInstance())->
-		AddSubInstance(component.GetOccMeshSharedSPBElement()->GetIndex(), specialFlags);
+		GetSubInstances().Add({component.GetOccMeshSharedSPBElement()->GetIndex(), specialFlags});
 }
 
 
@@ -1047,8 +1040,9 @@ deoglRParticleEmitterInstanceType &type){
 	
 	// update index buffer
 	const int firstParticle = type.GetFirstParticle();
-	const deoglRParticleEmitterInstance::sParticle * const particles = emitter.GetParticles() + firstParticle;
-	const int firstIndex = emitter.GetIBOUsedIndexCount();
+	const deoglRParticleEmitterInstance::sParticle * const particles =
+		emitter.GetParticles().GetArrayPointer() + firstParticle;
+	const int firstIndex = emitter.GetIBOIndexCount();
 	int i, indexCount = 0;
 	GLenum primitiveType;
 	
@@ -1101,13 +1095,9 @@ deoglRParticleEmitterInstanceType &type){
 
 
 void deoglAddToRenderTask::AddRenderTaskConfig(const deoglRenderTaskConfig &config, int specialFlags){
-	const int count = config.GetTextureCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const deoglRenderTaskConfigTexture &texture = config.GetTextureAt(i);
+	config.GetTextures().Visit([&](const deoglRenderTaskConfigTexture &texture){
 		if((texture.GetRenderTaskFilter() & pFilterMask) != pFiltersMasked){
-			continue;
+			return;
 		}
 		
 		#ifdef ATRT_TIMING
@@ -1116,11 +1106,11 @@ void deoglAddToRenderTask::AddRenderTaskConfig(const deoglRenderTaskConfig &conf
 		
 		pRenderTask.AddPipeline(texture.GetPipeline())->AddTexture(texture.GetTexture())->
 			AddVAO(texture.GetVAO())->AddInstance(texture.GetInstance())->
-			AddSubInstance(texture.GetGroupIndex(), specialFlags);
+			GetSubInstances().Add({texture.GetGroupIndex(), specialFlags});
 		#ifdef ATRT_TIMING
 		atrtElapsed2 += atrtTimer.GetElapsedTime();
 		#endif
-	}
+	});
 }
 
 

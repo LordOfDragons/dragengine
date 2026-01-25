@@ -121,9 +121,7 @@ private:
 	int pUpdateElementGeometryCount;
 	bool pForceFullUpdateGeometry;
 	
-	sClearGeometries *pClearGeometries;
-	int pClearGeometriesCount;
-	int pClearGeometriesSize;
+	decTList<sClearGeometries> pClearGeometries;
 	int pClearGeometryCount;
 	
 	deoglSPBlockSSBO::Ref pSSBOElementGeometries;

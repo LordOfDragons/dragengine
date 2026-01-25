@@ -74,8 +74,6 @@ pIsInitialized(false),
 pRequiresEventHandlingCount(0),
 pInvalidator(cInvalidator::Ref::New()),
 pVFS(deVirtualFileSystem::Ref::New()),
-pBaseDirPath(nullptr),
-pBaseDirPathCount(0),
 pPauseModManagement(false),
 pModManagementEnabled(false),
 pElapsedUpdateProgress(0.0f),
@@ -154,10 +152,6 @@ deModioService::~deModioService(){
 	
 	if(pRequiresEventHandlingCount > 0){
 		pModule.RemoveRequiresEventHandlingCount();
-	}
-	
-	if(pBaseDirPath){
-		delete [] pBaseDirPath;
 	}
 }
 
@@ -852,27 +846,23 @@ void deModioService::SetModDisabled(const deServiceObject &action){
 class cHasModMatchingFilesSearch : public deFileSearchVisitor{
 private:
 	const bool pRecursive;
-	decPath *pPatterns;
+	decTList<decPath> pPatterns;
 	const int pPatternCount;
 	bool pMatched;
 	
 public:
 	cHasModMatchingFilesSearch(bool recursive, const deServiceObject &soPatterns) :
 	pRecursive(recursive),
-	pPatterns(nullptr),
 	pPatternCount(soPatterns.GetChildren().GetCount()),
 	pMatched(false)
 	{
-		pPatterns = new decPath[pPatternCount];
+		pPatterns.EnlargeCapacity(pPatternCount);
 		soPatterns.GetChildren().VisitIndexed([&](int i, const deServiceObject &c){
-			pPatterns[i].SetFromUnix(c.GetString());
+			pPatterns.Add(decPath::CreatePathUnix(c.GetString()));
 		});
 	}
 	
 	~cHasModMatchingFilesSearch() override{
-		if(pPatterns){
-			delete [] pPatterns;
-		}
 	}
 	
 	inline bool GetMatched() const{ return pMatched; }
@@ -1309,10 +1299,8 @@ Modio::Optional<std::string> filename){
 		}
 		
 		decPath path(decPath::CreatePathNative(filename->c_str()));
-		int i;
 		
-		for(i=0; i<pBaseDirPathCount; i++){
-			const decPath &bdpath = pBaseDirPath[i];
+		for(const auto &bdpath : pBaseDirPath){
 			if(bdpath.IsParentOf(path)){
 				path = path.RelativePath(bdpath, false);
 				/*pModule.LogInfoFormat( "-> Relative to '%s': %s",
@@ -1548,14 +1536,13 @@ void deModioService::pPrintBaseInfos(){
 		return;
 	}
 	
-	pBaseDirPath = new decPath[directories.size()];
+	pBaseDirPath.EnlargeCapacity(directories.size());
 	
 	std::vector<std::string>::const_iterator iter;
 	for(iter = directories.cbegin(); iter != directories.cend(); iter++){
 		pModule.LogInfoFormat("- %s", iter->c_str());
 		
-		decPath &path = pBaseDirPath[pBaseDirPathCount++];
-		path.SetFromNative(iter->c_str());
+		auto path = decPath::CreatePathNative(iter->c_str());
 		
 		// path returned is of the form: <homedir>/mod.io/common/<game-id>/mods/
 		// cache files are of the form: <homedir>/mod.io/common/<game-id>/cache/mods/<mod-id>/<path>
@@ -1563,6 +1550,7 @@ void deModioService::pPrintBaseInfos(){
 		// should work unless the directory structure changes
 		path.RemoveLastComponent();
 		
+		pBaseDirPath.Add(path);
 		pBaseDirPathStr.Add(path.GetPathNative());
 	}
 }
@@ -1570,14 +1558,12 @@ void deModioService::pPrintBaseInfos(){
 void deModioService::pInitVFS(){
 	pModule.LogInfo("deModioService: InitVFS");
 	const decPath rootPath(decPath::CreatePathUnix("/"));
-	int i;
 	
-	for(i=0; i<pBaseDirPathCount; i++){
-		const decPath &diskPath = pBaseDirPath[i];
+	pBaseDirPath.VisitIndexed([&](int i, const decPath &diskPath){
 		pModule.LogInfoFormat("- Add '%s' => '%s' (ro)",
 			pBaseDirPathStr[i].GetString(), rootPath.GetPathUnix().GetString());
 		pVFS->AddContainer(deVFSDiskDirectory::Ref::New(rootPath, diskPath, true));
-	}
+	});
 }
 
 void deModioService::pUpdateModManagementEnabled(){

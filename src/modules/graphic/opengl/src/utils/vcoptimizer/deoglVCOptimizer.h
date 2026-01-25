@@ -25,6 +25,8 @@
 #ifndef _DEOGLVCOPTIMIZER_H_
 #define _DEOGLVCOPTIMIZER_H_
 
+#include <dragengine/common/collection/decTList.h>
+
 class deoglVCOFace;
 class deoglVCOVertex;
 class deoglRenderThread;
@@ -64,21 +66,17 @@ private:
 	float pUsageBoostScale;
 	float pUsageBoostPower;
 	
-	int *pCache;
 	int pCacheSize;
+	
+	decTList<int> pCache;
 	float pInvCacheFactor;
 	
-	sGroup *pGroups;
-	sFace *pFaces;
-	sVertex *pVertices;
-	int *pVertexFaces;
-	int *pReorderedVertices;
-	int *pReorderedFaces;
-	int pGroupCount;
-	int pFaceCount;
-	int pVertexCount;
-	int pReorderedVertexCount;
-	int pReorderedFaceCount;
+	decTList<sGroup> pGroups;
+	decTList<sFace> pFaces;
+	decTList<sVertex> pVertices;
+	decTList<int> pVertexFaces;
+	decTList<int> pReorderedVertices;
+	decTList<int> pReorderedFaces;
 	int pNextFaceCheck;
 	
 public:
@@ -92,36 +90,39 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Retrieves the number of vertices. */
-	inline int GetVertexCount() const{ return pVertexCount; }
-	/** Retrieves the vertices. */
-	inline const sVertex *GetVertices() const{ return pVertices; }
-	/** Retrieves the indices of the reordered vertices. */
-	inline const int *GetReorderedVertices() const{ return pReorderedVertices; }
+	/** Vertices. */
+	inline const decTList<sVertex> &GetVertices() const{ return pVertices; }
+	
+	/** Indices of reordered vertices. */
+	inline const decTList<int> &GetReorderedVertices() const{ return pReorderedVertices; }
+	
 	/** Sets the number of vertices. This resets the vertices array. */
 	void SetVertexCount(int vertexCount);
 	
-	/** Retrieves the number of faces. */
-	inline int GetFaceCount() const{ return pFaceCount; }
-	/** Retrieves the indices of the reordered faces. */
-	inline const int *GetReorderedFaces() const{ return pReorderedFaces; }
-	/** Retrieves the faces. */
-	inline const sFace *GetFaces() const{ return pFaces; }
+	/** Faces. */
+	inline const decTList<sFace> &GetFaces() const{ return pFaces; }
+	
+	/** Indices of the reordered faces. */
+	inline const decTList<int> &GetReorderedFaces() const{ return pReorderedFaces; }
+	
 	/**
 	 * Sets the number of faces. After this call the faces in the array are undefined. No initialization
 	 * is done for speed reason. Make sure you set all faces using SetFaceAt.
 	 */
 	void SetFaceCount(int faceCount);
+	
 	/** Sets a face. */
 	void SetFaceAt(int face, int vertex1, int vertex2, int vertex3);
 	
-	/** Retrieves the number of groups. */
-	inline int GetGroupCount() const{ return pGroupCount; }
+	/** Groups. */
+	inline const decTList<sGroup> &GetGroups() const{ return pGroups; }
+	
 	/**
 	 * Sets the group count. After this call the groups in the array are undefined. No initialization
 	 * is done for speed reason. Make sure you set all groups using SetGroupAt.
 	 */
 	void SetGroupCount(int groupCount);
+	
 	/** Sets a group. */
 	void SetGroupAt(int group, int firstFace, int faceCount);
 	
@@ -134,9 +135,9 @@ public:
 	void OptimizeVertexOrder();
 	
 	/** Calculate vertex score. */
-	void CalculateVertexScore(int vertex);
+	void CalculateVertexScore(sVertex &vertex);
 	/** Calculate face score. */
-	void CalculateFaceScore(int face);
+	void CalculateFaceScore(sFace &face);
 	/** Add vertex to the top of the cache. If the vertex is in the cache already it is moved. */
 	void AddVertexToCache(int vertex);
 	/** Update scores for all vertices in the cache as well as all faces using vertices in the cache. */

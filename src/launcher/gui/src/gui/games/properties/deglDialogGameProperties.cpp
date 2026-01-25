@@ -105,8 +105,6 @@ FXDialogBox(powner, "Game Properties", DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE
 0, 0, 600, 400, 10, 10, 10, 5),
 pWindowMain(windowMain),
 pGame(game),
-pCaches(nullptr),
-pCacheCount(0),
 pCalcSizeDataDir(nullptr),
 pCalcSizeCaptureDir(nullptr),
 pCalcSizeConfigDir(nullptr),
@@ -766,22 +764,22 @@ void deglDialogGameProperties::UpdateCacheList(){
 		return;
 	}
 	
-	pCaches = new sCache[count];
+	pCaches.SetAll(count, {});
 	
-	for(pCacheCount=0; pCacheCount<count; pCacheCount++){
-		const delEngineModule &module = *moduleList.GetAt(pCacheCount);
+	for(int i=0; i<count; i++){
+		const delEngineModule &module = moduleList[i];
 		
-		pCaches[pCacheCount].calcSize = nullptr;
-		pCaches[pCacheCount].name = module.GetName().GetString();
-		pCaches[pCacheCount].used = 0;
-		pCaches[pCacheCount].limit = 1000000000;
-		pCaches[pCacheCount].fillLevel = 0.0f;
+		pCaches[i].calcSize = nullptr;
+		pCaches[i].name = module.GetName().GetString();
+		pCaches[i].used = 0;
+		pCaches[i].limit = 1000000000;
+		pCaches[i].fillLevel = 0.0f;
 		
 		iicon = nullptr;
 		text = module.GetName().GetString();
 		text.append("\tCalculating...\t-\t-");
 		
-		pListCaches->appendItem(text, iicon, iicon, pCaches + pCacheCount);
+		pListCaches->appendItem(text, iicon, iicon, &pCaches[i]);
 		
 		try{
 			path.SetFromNative(engine.GetPathCache());
@@ -790,8 +788,8 @@ void deglDialogGameProperties::UpdateCacheList(){
 			path.AddUnixPath("modules");
 			path.AddUnixPath(deModuleSystem::GetTypeDirectory(module.GetType()));
 			path.AddUnixPath(module.GetDirectoryName());
-			pCaches[pCacheCount].calcSize = new deglCalculateDirectorySize(path.GetPathNative());
-			pCaches[pCacheCount].calcSize->Start();
+			pCaches[i].calcSize = new deglCalculateDirectorySize(path.GetPathNative());
+			pCaches[i].calcSize->Start();
 			
 		}catch(const deException &e){
 			pWindowMain->GetLauncher()->GetLogger()->LogException("DELauncherGUI", e);
@@ -1109,7 +1107,7 @@ long deglDialogGameProperties::onTimerUpdateCalcSize(FXObject*, FXSelector, void
 	int cachesPending = 0;
 	int i;
 	
-	for(i=0; i<pCacheCount; i++){
+	for(i=0; i<pCaches.GetCount(); i++){
 		if(!pCaches[i].calcSize){
 			continue;
 		}
@@ -1132,7 +1130,7 @@ long deglDialogGameProperties::onTimerUpdateCalcSize(FXObject*, FXSelector, void
 			
 			pCaches[i].fillLevel = (float)pCaches[i].used / (float)pCaches[i].limit;
 			
-			const int itemIndex = pListCaches->findItemByData(pCaches + i);
+			const int itemIndex = pListCaches->findItemByData(&pCaches[i]);
 			if(itemIndex == -1){
 				continue;
 			}
@@ -1165,7 +1163,7 @@ long deglDialogGameProperties::onTimerUpdateCalcSize(FXObject*, FXSelector, void
 		
 		if(cachesPending == 0){
 			uint64_t size = 0;
-			for(i=0; i<pCacheCount; i++){
+			for(i=0; i<pCaches.GetCount(); i++){
 				size += pCaches[i].used;
 			}
 			
@@ -1186,18 +1184,14 @@ long deglDialogGameProperties::onTimerUpdateCalcSize(FXObject*, FXSelector, void
 //////////////////////
 
 void deglDialogGameProperties::pDeleteCaches(){
-	if(!pCaches){
-		return;
-	}
-	
 	int i;
-	for(i=0; i<pCacheCount; i++){
+	for(i=0; i<pCaches.GetCount(); i++){
 		if(pCaches[i].calcSize){
 			pCaches[i].calcSize->Abort();
 		}
 	}
 	
-	for(i=0; i<pCacheCount; i++){
+	for(i=0; i<pCaches.GetCount(); i++){
 		if(!pCaches[i].calcSize){
 			continue;
 		}
@@ -1207,9 +1201,7 @@ void deglDialogGameProperties::pDeleteCaches(){
 		pCaches[i].calcSize = nullptr;
 	}
 	
-	delete [] pCaches;
-	pCaches = nullptr;
-	pCacheCount = 0;
+	pCaches.RemoveAll();
 }
 
 FXString deglDialogGameProperties::FormatSize1024(uint64_t size) const{

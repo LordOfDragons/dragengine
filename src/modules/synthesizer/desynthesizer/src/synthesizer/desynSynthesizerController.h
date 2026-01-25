@@ -27,6 +27,8 @@
 
 #include "desynSynthesizerCurve.h"
 
+#include <dragengine/common/collection/decTList.h>
+
 class deSynthesizerController;
 
 
@@ -42,8 +44,7 @@ private:
 	desynSynthesizerCurve pCurve;
 	bool pDirty;
 	
-	float *pValues;
-	int pValueSize;
+	decTList<float> pValues;
 	
 	
 	

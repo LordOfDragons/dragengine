@@ -86,15 +86,15 @@ const deoglRDynamicSkin *dynamicSkin, float defaultValue) const{
 	}
 	
 	if(dynamicSkin && pRenderable >= 0 && pRenderable < skinState->GetRenderableCount()){
-		const deoglSkinStateRenderable &stateRenderable = *skinState->GetRenderableAt(pRenderable);
+		const deoglSkinStateRenderable &stateRenderable = *skinState->GetRenderables()[pRenderable];
 		if(stateRenderable.GetHostRenderable() != -1){
 			return dynamicSkin->GetRenderableAt(stateRenderable.GetHostRenderable())
 				->GetRenderValue(defaultValue);
 		}
 	}
 	
-	if(pCalculatedProperty >= 0 && pCalculatedProperty < skinState->GetCalculatedPropertyCount()){
-		return skinState->GetCalculatedPropertyAt(pCalculatedProperty).GetColor().r;
+	if(pCalculatedProperty >= 0 && pCalculatedProperty < skinState->GetCalculatedProperties().GetCount()){
+		return skinState->GetCalculatedProperties()[pCalculatedProperty].GetColor().r;
 	}
 	
 	return defaultValue;
@@ -107,15 +107,15 @@ const deoglRDynamicSkin *dynamicSkin, bool defaultValue) const{
 	}
 	
 	if(dynamicSkin && pRenderable >= 0 && pRenderable < skinState->GetRenderableCount()){
-		const deoglSkinStateRenderable &stateRenderable = *skinState->GetRenderableAt(pRenderable);
+		const deoglSkinStateRenderable &stateRenderable = *skinState->GetRenderables()[pRenderable];
 		if(stateRenderable.GetHostRenderable() != -1){
 			return dynamicSkin->GetRenderableAt(stateRenderable.GetHostRenderable())
 				->GetRenderValue(defaultValue ? 1.0f : 0.0f) > 0.5f;
 		}
 	}
 	
-	if(pCalculatedProperty >= 0 && pCalculatedProperty < skinState->GetCalculatedPropertyCount()){
-		return skinState->GetCalculatedPropertyAt(pCalculatedProperty).GetColor().r > 0.5f ? 1.0f : 0.0f;
+	if(pCalculatedProperty >= 0 && pCalculatedProperty < skinState->GetCalculatedProperties().GetCount()){
+		return skinState->GetCalculatedProperties()[pCalculatedProperty].GetColor().r > 0.5f ? 1.0f : 0.0f;
 	}
 	
 	return defaultValue;
@@ -128,15 +128,15 @@ const deoglRDynamicSkin *dynamicSkin, const decColor &defaultValue) const{
 	}
 	
 	if(dynamicSkin && pRenderable >= 0 && pRenderable < skinState->GetRenderableCount()){
-		const deoglSkinStateRenderable &stateRenderable = *skinState->GetRenderableAt(pRenderable);
+		const deoglSkinStateRenderable &stateRenderable = *skinState->GetRenderables()[pRenderable];
 		if(stateRenderable.GetHostRenderable() != -1){
 			return dynamicSkin->GetRenderableAt(stateRenderable.GetHostRenderable())
 				->GetRenderColor(defaultValue);
 		}
 	}
 	
-	if(pCalculatedProperty >= 0 && pCalculatedProperty < skinState->GetCalculatedPropertyCount()){
-		return skinState->GetCalculatedPropertyAt(pCalculatedProperty).GetColor();
+	if(pCalculatedProperty >= 0 && pCalculatedProperty < skinState->GetCalculatedProperties().GetCount()){
+		return skinState->GetCalculatedProperties()[pCalculatedProperty].GetColor();
 	}
 	
 	return defaultValue;
@@ -149,7 +149,7 @@ const deoglRDynamicSkin *dynamicSkin, const decVector2 &defaultValue) const{
 	}
 	
 	if(dynamicSkin && pRenderable >= 0 && pRenderable < skinState->GetRenderableCount()){
-		const deoglSkinStateRenderable &stateRenderable = *skinState->GetRenderableAt(pRenderable);
+		const deoglSkinStateRenderable &stateRenderable = *skinState->GetRenderables()[pRenderable];
 		if(stateRenderable.GetHostRenderable() != -1){
 			const decColor color(dynamicSkin->GetRenderableAt(stateRenderable.GetHostRenderable())
 				->GetRenderColor(decColor(defaultValue.x, defaultValue.y, 0.0f)));
@@ -157,8 +157,8 @@ const deoglRDynamicSkin *dynamicSkin, const decVector2 &defaultValue) const{
 		}
 	}
 	
-	if(pCalculatedProperty >= 0 && pCalculatedProperty < skinState->GetCalculatedPropertyCount()){
-		const decColor &color = skinState->GetCalculatedPropertyAt(pCalculatedProperty).GetColor();
+	if(pCalculatedProperty >= 0 && pCalculatedProperty < skinState->GetCalculatedProperties().GetCount()){
+		const decColor &color = skinState->GetCalculatedProperties()[pCalculatedProperty].GetColor();
 		return decVector2(color.r, color.g);
 	}
 	
@@ -172,7 +172,7 @@ const deoglRDynamicSkin *dynamicSkin, const decVector &defaultValue) const{
 	}
 	
 	if(dynamicSkin && pRenderable >= 0 && pRenderable < skinState->GetRenderableCount()){
-		const deoglSkinStateRenderable &stateRenderable = *skinState->GetRenderableAt(pRenderable);
+		const deoglSkinStateRenderable &stateRenderable = *skinState->GetRenderables()[pRenderable];
 		if(stateRenderable.GetHostRenderable() != -1){
 			const decColor color(dynamicSkin->GetRenderableAt(stateRenderable.GetHostRenderable())
 				->GetRenderColor(decColor(defaultValue.x, defaultValue.y, defaultValue.z)));
@@ -180,8 +180,8 @@ const deoglRDynamicSkin *dynamicSkin, const decVector &defaultValue) const{
 		}
 	}
 	
-	if(pCalculatedProperty >= 0 && pCalculatedProperty < skinState->GetCalculatedPropertyCount()){
-		const decColor &color = skinState->GetCalculatedPropertyAt(pCalculatedProperty).GetColor();
+	if(pCalculatedProperty >= 0 && pCalculatedProperty < skinState->GetCalculatedProperties().GetCount()){
+		const decColor &color = skinState->GetCalculatedProperties()[pCalculatedProperty].GetColor();
 		return decVector(color.r, color.g, color.b);
 	}
 	
@@ -190,8 +190,8 @@ const deoglRDynamicSkin *dynamicSkin, const decVector &defaultValue) const{
 
 decMatrix deoglSkinTextureProperty::ResolveMatrix(const deoglSkinState *skinState,
 const decMatrix &defaultValue) const{
-	if(skinState && pBone >= 0 && pBone < skinState->GetBoneCount()){
-		return skinState->GetBoneAt(pBone).GetBoneMatrix();
+	if(skinState && pBone >= 0 && pBone < skinState->GetBones().GetCount()){
+		return skinState->GetBones()[pBone].GetBoneMatrix();
 	}
 	return defaultValue;
 }

@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "mePropField.h"
 #include "mePropFieldType.h"
 #include "../meWorld.h"
@@ -60,14 +56,9 @@ mePropFieldType::mePropFieldType(deEngine *engine){
 	
 	pRotPerForceX = 5.0f;
 	pRotPerForceZ = 5.0f;
-	
-	pInstances = nullptr;
-	pInstanceCount = 0;
 }
 
-mePropFieldType::~mePropFieldType(){
-	if(pInstances) delete [] pInstances;
-}
+mePropFieldType::~mePropFieldType() = default;
 
 
 
@@ -90,7 +81,7 @@ void mePropFieldType::SetEnginePFType(dePropFieldType *engPFType){
 dePropFieldType::Ref mePropFieldType::CreateEnginePFType(){
 	if(!pPropField) DETHROW(deeInvalidParam);
 	
-	if(pInstanceCount == 0){
+	if(pInstances.IsEmpty()){
 		return {};
 	}
 	
@@ -111,16 +102,7 @@ dePropFieldType::Ref mePropFieldType::CreateEnginePFType(){
 	
 	engPFType->SetRotationPerForce(pRotPerForceX * DEG2RAD);
 	
-	engPFType->SetInstanceCount(pInstanceCount);
-	dePropFieldInstance * const engPFTInstances = engPFType->GetInstances();
-	int i;
-	
-	for(i=0; i<pInstanceCount; i++){
-		engPFTInstances[i].SetPosition(pInstances[i].GetPosition());
-		engPFTInstances[i].SetRotation(pInstances[i].GetRotation());
-		engPFTInstances[i].SetScaling(pInstances[i].GetScaling());
-		// others
-	}
+	engPFType->GetInstances() = pInstances;
 	
 	return engPFType;
 }
@@ -134,20 +116,12 @@ void mePropFieldType::UpdateEnginePFType(){
 	}
 	
 	if(pEngPFType){
-		engPFTInstanceCount = pEngPFType->GetInstanceCount();
+		engPFTInstanceCount = pEngPFType->GetInstances().GetCount();
 	}
 	
-	if(engPFTInstanceCount == pInstanceCount){
+	if(engPFTInstanceCount == pInstances.GetCount()){
 		if(pEngPFType){
-			dePropFieldInstance *engPFTInstances = pEngPFType->GetInstances();
-			int i;
-			
-			for(i=0; i<pInstanceCount; i++){
-				engPFTInstances[i].SetPosition(pInstances[i].GetPosition());
-				engPFTInstances[i].SetRotation(pInstances[i].GetRotation());
-				engPFTInstances[i].SetScaling(pInstances[i].GetScaling());
-				// and others
-			}
+			pEngPFType->GetInstances() = pInstances;
 		}
 		
 	}else{

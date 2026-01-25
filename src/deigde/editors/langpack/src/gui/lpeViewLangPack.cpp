@@ -353,9 +353,9 @@ void lpeViewLangPack::UpdateEntries(){
 					
 					const lpeLangPackEntry::Ref *refEntry = nullptr;
 					if(pRefLangPack){
-						pRefLangPack->GetEntries().Find([&](lpeLangPackEntry *e2){
+						pRefLangPack->GetEntries().Find(refEntry, [&](lpeLangPackEntry *e2){
 							return e2->GetName() == e->GetName();
-						}, refEntry);
+						});
 					}
 					
 					details.Add(refEntry ? (*refEntry)->GetText().ToUTF8().GetString() : "");
@@ -517,9 +517,9 @@ void lpeViewLangPack::UpdateEntry(lpeLangPackEntry *entry){
 		
 		const lpeLangPackEntry::Ref *refEntry = nullptr;
 		if(pRefLangPack){
-			pRefLangPack->GetEntries().Find([&](const lpeLangPackEntry &e2){
+			pRefLangPack->GetEntries().Find(refEntry, [&](const lpeLangPackEntry &e2){
 				return e2.GetName() == entry->GetName();
-			}, refEntry);
+			});
 		}
 		
 		details.SetAt(1, refEntry ? (*refEntry)->GetText().ToUTF8().GetString() : "");

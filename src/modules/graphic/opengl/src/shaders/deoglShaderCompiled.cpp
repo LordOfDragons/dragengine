@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglShaderCompiled.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../renderthread/deoglRenderThread.h"
@@ -52,16 +48,9 @@ pRenderThread(renderThread)
 	
 	pHandleShader = pglCreateProgram();
 	DEASSERT_NOTNULL(pHandleShader)
-	
-	pParameters = nullptr;
-	pParameterCount = 0;
 }
 
 deoglShaderCompiled::~deoglShaderCompiled(){
-	if(pParameters){
-		delete [] pParameters;
-	}
-	
 	deoglDelayedOperations &dops = pRenderThread.GetDelayedOperations();
 	dops.DeleteOpenGLProgram(pHandleShader);
 	dops.DeleteOpenGLShader(pHandleFP);
@@ -151,74 +140,38 @@ void deoglShaderCompiled::SetParameterCount(int count){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(pParameters){
-		delete [] pParameters;
-		pParameters = nullptr;
-		pParameterCount = 0;
-	}
-	
-	if(count > 0){
-		pParameters = new int[count];
-		
-		for(pParameterCount=0; pParameterCount<count; pParameterCount++){
-			pParameters[pParameterCount] = -1;
-		}
-	}
+	pParameters.SetAll(count, -1);
 }
 
 int deoglShaderCompiled::GetParameterAt(int parameter) const{
-	if(parameter < 0 || parameter >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
 	return pParameters[parameter];
 }
 
-void deoglShaderCompiled::SetParameterAt(int parameter, int location) const{
-	if(parameter < 0 || parameter >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoglShaderCompiled::SetParameterAt(int parameter, int location){
 	pParameters[parameter] = location;
 }
 
 
 
-void deoglShaderCompiled::SetParameterFloat(int index, float p1) const{
-	if(index < 0 || index >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoglShaderCompiled::SetParameterFloat(int index, float p1){
 	if(pParameters[index] != -1){
 		OGL_CHECK(pRenderThread, pglUniform1f(pParameters[index], p1));
 	}
 }
 
-void deoglShaderCompiled::SetParameterFloat(int index, float p1, float p2) const{
-	if(index < 0 || index >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoglShaderCompiled::SetParameterFloat(int index, float p1, float p2){
 	if(pParameters[index] != -1){
 		OGL_CHECK(pRenderThread, pglUniform2f(pParameters[index], p1, p2));
 	}
 }
 
-void deoglShaderCompiled::SetParameterFloat(int index, float p1, float p2, float p3) const{
-	if(index < 0 || index >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoglShaderCompiled::SetParameterFloat(int index, float p1, float p2, float p3){
 	if(pParameters[index] != -1){
 		OGL_CHECK(pRenderThread, pglUniform3f(pParameters[index], p1, p2, p3));
 	}
 }
 
-void deoglShaderCompiled::SetParameterFloat(int index, float p1, float p2, float p3, float p4) const{
-	if(index < 0 || index >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoglShaderCompiled::SetParameterFloat(int index, float p1, float p2, float p3, float p4){
 	if(pParameters[index] != -1){
 		OGL_CHECK(pRenderThread, pglUniform4f(pParameters[index], p1, p2, p3, p4));
 	}
@@ -226,41 +179,25 @@ void deoglShaderCompiled::SetParameterFloat(int index, float p1, float p2, float
 
 
 
-void deoglShaderCompiled::SetParameterInt(int index, int p1) const{
-	if(index < 0 || index >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoglShaderCompiled::SetParameterInt(int index, int p1){
 	if(pParameters[index] != -1){
 		OGL_CHECK(pRenderThread, pglUniform1i(pParameters[index], p1));
 	}
 }
 
-void deoglShaderCompiled::SetParameterInt(int index, int p1, int p2) const{
-	if(index < 0 || index >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoglShaderCompiled::SetParameterInt(int index, int p1, int p2){
 	if(pParameters[index] != -1){
 		OGL_CHECK(pRenderThread, pglUniform2i(pParameters[index], p1, p2));
 	}
 }
 
-void deoglShaderCompiled::SetParameterInt(int index, int p1, int p2, int p3) const{
-	if(index < 0 || index >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoglShaderCompiled::SetParameterInt(int index, int p1, int p2, int p3){
 	if(pParameters[index] != -1){
 		OGL_CHECK(pRenderThread, pglUniform3i(pParameters[index], p1, p2, p3));
 	}
 }
 
-void deoglShaderCompiled::SetParameterInt(int index, int p1, int p2, int p3, int p4) const{
-	if(index < 0 || index >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoglShaderCompiled::SetParameterInt(int index, int p1, int p2, int p3, int p4){
 	if(pParameters[index] != -1){
 		OGL_CHECK(pRenderThread, pglUniform4i(pParameters[index], p1, p2, p3, p4));
 	}
@@ -268,41 +205,26 @@ void deoglShaderCompiled::SetParameterInt(int index, int p1, int p2, int p3, int
 
 
 
-void deoglShaderCompiled::SetParameterUInt(int index, unsigned int p1) const{
-	if(index < 0 || index >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoglShaderCompiled::SetParameterUInt(int index, unsigned int p1){
 	if(pParameters[index] != -1){
 		OGL_CHECK(pRenderThread, pglUniform1ui(pParameters[index], p1));
 	}
 }
 
-void deoglShaderCompiled::SetParameterUInt(int index, unsigned int p1, unsigned int p2) const{
-	if(index < 0 || index >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoglShaderCompiled::SetParameterUInt(int index, unsigned int p1, unsigned int p2){
 	if(pParameters[index] != -1){
 		OGL_CHECK(pRenderThread, pglUniform2ui(pParameters[index], p1, p2));
 	}
 }
 
-void deoglShaderCompiled::SetParameterUInt(int index, unsigned int p1, unsigned int p2, unsigned int p3) const{
-	if(index < 0 || index >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
+void deoglShaderCompiled::SetParameterUInt(int index, unsigned int p1, unsigned int p2, unsigned int p3){
 	
 	if(pParameters[index] != -1){
 		OGL_CHECK(pRenderThread, pglUniform3ui(pParameters[index], p1, p2, p3));
 	}
 }
 
-void deoglShaderCompiled::SetParameterUInt(int index, unsigned int p1, unsigned int p2, unsigned int p3, unsigned int p4) const{
-	if(index < 0 || index >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoglShaderCompiled::SetParameterUInt(int index, unsigned int p1, unsigned int p2, unsigned int p3, unsigned int p4){
 	if(pParameters[index] != -1){
 		OGL_CHECK(pRenderThread, pglUniform4ui(pParameters[index], p1, p2, p3, p4));
 	}
@@ -310,21 +232,13 @@ void deoglShaderCompiled::SetParameterUInt(int index, unsigned int p1, unsigned 
 
 
 
-void deoglShaderCompiled::SetParameterPoint2(int index, const decPoint &point) const{
-	if(index < 0 || index >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoglShaderCompiled::SetParameterPoint2(int index, const decPoint &point){
 	if(pParameters[index] != -1){
 		OGL_CHECK(pRenderThread, pglUniform2i(pParameters[index], point.x, point.y));
 	}
 }
 
-void deoglShaderCompiled::SetParameterPoint3(int index, const decPoint3 &point) const{
-	if(index < 0 || index >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoglShaderCompiled::SetParameterPoint3(int index, const decPoint3 &point){
 	if(pParameters[index] != -1){
 		OGL_CHECK(pRenderThread, pglUniform3i(pParameters[index], point.x, point.y, point.z));
 	}
@@ -332,31 +246,19 @@ void deoglShaderCompiled::SetParameterPoint3(int index, const decPoint3 &point) 
 
 
 
-void deoglShaderCompiled::SetParameterColor3(int index, const decColor &color) const{
-	if(index < 0 || index >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoglShaderCompiled::SetParameterColor3(int index, const decColor &color){
 	if(pParameters[index] != -1){
 		OGL_CHECK(pRenderThread, pglUniform3f(pParameters[index], color.r, color.g, color.b));
 	}
 }
 
-void deoglShaderCompiled::SetParameterColor4(int index, const decColor &color) const{
-	if(index < 0 || index >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoglShaderCompiled::SetParameterColor4(int index, const decColor &color){
 	if(pParameters[index] != -1){
 		OGL_CHECK(pRenderThread, pglUniform4f(pParameters[index], color.r, color.g, color.b, color.a));
 	}
 }
 
-void deoglShaderCompiled::SetParameterColor4(int index, const decColor &color, float alpha) const{
-	if(index < 0 || index >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoglShaderCompiled::SetParameterColor4(int index, const decColor &color, float alpha){
 	if(pParameters[index] != -1){
 		OGL_CHECK(pRenderThread, pglUniform4f(pParameters[index], color.r, color.g, color.b, alpha));
 	}
@@ -364,11 +266,7 @@ void deoglShaderCompiled::SetParameterColor4(int index, const decColor &color, f
 
 
 
-void deoglShaderCompiled::SetParameterVector2(int index, const decVector2 &vector) const{
-	if(index < 0 || index >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoglShaderCompiled::SetParameterVector2(int index, const decVector2 &vector){
 	if(pParameters[index] != -1){
 		OGL_CHECK(pRenderThread, pglUniform2f(pParameters[index], vector.x, vector.y));
 	}
@@ -376,21 +274,13 @@ void deoglShaderCompiled::SetParameterVector2(int index, const decVector2 &vecto
 
 
 
-void deoglShaderCompiled::SetParameterVector3(int index, const decVector &vector) const{
-	if(index < 0 || index >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoglShaderCompiled::SetParameterVector3(int index, const decVector &vector){
 	if(pParameters[index] != -1){
 		OGL_CHECK(pRenderThread, pglUniform3f(pParameters[index], vector.x, vector.y, vector.z));
 	}
 }
 
-void deoglShaderCompiled::SetParameterDVector3(int index, const decDVector &vector) const{
-	if(index < 0 || index >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoglShaderCompiled::SetParameterDVector3(int index, const decDVector &vector){
 	if(pParameters[index] != -1){
 		OGL_CHECK(pRenderThread, pglUniform3f(pParameters[index], (GLfloat)vector.x, (GLfloat)vector.y, (GLfloat)vector.z));
 	}
@@ -398,21 +288,13 @@ void deoglShaderCompiled::SetParameterDVector3(int index, const decDVector &vect
 
 
 
-void deoglShaderCompiled::SetParameterVector4(int index, const decVector4 &vector) const{
-	if(index < 0 || index >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoglShaderCompiled::SetParameterVector4(int index, const decVector4 &vector){
 	if(pParameters[index] != -1){
 		OGL_CHECK(pRenderThread, pglUniform4f(pParameters[index], vector.x, vector.y, vector.z, vector.w));
 	}
 }
 
-void deoglShaderCompiled::SetParameterDVector4(int index, const decDVector4 &vector) const{
-	if(index < 0 || index >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoglShaderCompiled::SetParameterDVector4(int index, const decDVector4 &vector){
 	if(pParameters[index] != -1){
 		OGL_CHECK(pRenderThread, pglUniform4f(pParameters[index], (GLfloat)vector.x,
 			(GLfloat)vector.y, (GLfloat)vector.z, (GLfloat)vector.w));
@@ -421,31 +303,19 @@ void deoglShaderCompiled::SetParameterDVector4(int index, const decDVector4 &vec
 
 
 
-void deoglShaderCompiled::SetParameterMatrix4x4(int index, const decMatrix &matrix) const{
-	if(index < 0 || index >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoglShaderCompiled::SetParameterMatrix4x4(int index, const decMatrix &matrix){
 	if(pParameters[index] != -1){
 		OGL_CHECK(pRenderThread, pglUniformMatrix4fv(pParameters[index], 1, GL_TRUE, (const GLfloat *)&matrix));
 	}
 }
 
-void deoglShaderCompiled::SetParameterMatrix4x3(int index, const decMatrix &matrix) const{
-	if(index < 0 || index >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoglShaderCompiled::SetParameterMatrix4x3(int index, const decMatrix &matrix){
 	if(pParameters[index] != -1){
 		OGL_CHECK(pRenderThread, pglUniformMatrix4x3fv(pParameters[index], 1, GL_TRUE, (const GLfloat *)&matrix));
 	}
 }
 
-void deoglShaderCompiled::SetParameterMatrix3x3(int index, const decMatrix &matrix) const{
-	if(index < 0 || index >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoglShaderCompiled::SetParameterMatrix3x3(int index, const decMatrix &matrix){
 	if(pParameters[index] != -1){
 		const GLfloat oglm[9] = {
 			matrix.a11, matrix.a12, matrix.a13,
@@ -456,11 +326,7 @@ void deoglShaderCompiled::SetParameterMatrix3x3(int index, const decMatrix &matr
 	}
 }
 
-void deoglShaderCompiled::SetParameterMatrix3x2(int index, const decMatrix &matrix) const{
-	if(index < 0 || index >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoglShaderCompiled::SetParameterMatrix3x2(int index, const decMatrix &matrix){
 	if(pParameters[index] != -1){
 		const GLfloat oglm[6] = {
 			matrix.a11, matrix.a12, matrix.a13,
@@ -470,11 +336,7 @@ void deoglShaderCompiled::SetParameterMatrix3x2(int index, const decMatrix &matr
 	}
 }
 
-void deoglShaderCompiled::SetParameterDMatrix4x4(int index, const decDMatrix &matrix) const{
-	if(index < 0 || index >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoglShaderCompiled::SetParameterDMatrix4x4(int index, const decDMatrix &matrix){
 	if(pParameters[index] != -1){
 		const GLfloat oglm[16] = {
 			(GLfloat)matrix.a11, (GLfloat)matrix.a12, (GLfloat)matrix.a13, (GLfloat)matrix.a14,
@@ -486,11 +348,7 @@ void deoglShaderCompiled::SetParameterDMatrix4x4(int index, const decDMatrix &ma
 	}
 }
 
-void deoglShaderCompiled::SetParameterDMatrix4x3(int index, const decDMatrix &matrix) const{
-	if(index < 0 || index >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoglShaderCompiled::SetParameterDMatrix4x3(int index, const decDMatrix &matrix){
 	if(pParameters[index] != -1){
 		const GLfloat oglm[12] = {
 			(GLfloat)matrix.a11, (GLfloat)matrix.a12, (GLfloat)matrix.a13, (GLfloat)matrix.a14,
@@ -501,11 +359,7 @@ void deoglShaderCompiled::SetParameterDMatrix4x3(int index, const decDMatrix &ma
 	}
 }
 
-void deoglShaderCompiled::SetParameterDMatrix3x3(int index, const decDMatrix &matrix) const{
-	if(index < 0 || index >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoglShaderCompiled::SetParameterDMatrix3x3(int index, const decDMatrix &matrix){
 	if(pParameters[index] != -1){
 		const GLfloat oglm[9] = {
 			(GLfloat)matrix.a11, (GLfloat)matrix.a12, (GLfloat)matrix.a13,
@@ -516,11 +370,7 @@ void deoglShaderCompiled::SetParameterDMatrix3x3(int index, const decDMatrix &ma
 	}
 }
 
-void deoglShaderCompiled::SetParameterDMatrix3x2(int index, const decDMatrix &matrix) const{
-	if(index < 0 || index >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoglShaderCompiled::SetParameterDMatrix3x2(int index, const decDMatrix &matrix){
 	if(pParameters[index] != -1){
 		const GLfloat oglm[6] = {
 			(GLfloat)matrix.a11, (GLfloat)matrix.a12, (GLfloat)matrix.a13,
@@ -530,81 +380,49 @@ void deoglShaderCompiled::SetParameterDMatrix3x2(int index, const decDMatrix &ma
 	}
 }
 
-void deoglShaderCompiled::SetParameterMatrix4x4(int index, const float *values) const{
-	if(index < 0 || index >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoglShaderCompiled::SetParameterMatrix4x4(int index, const float *values){
 	if(pParameters[index] != -1){
 		OGL_CHECK(pRenderThread, pglUniformMatrix4fv(pParameters[index], 1, GL_TRUE, (const GLfloat *)values));
 	}
 }
 
-void deoglShaderCompiled::SetParameterMatrix4x3(int index, const float *values) const{
-	if(index < 0 || index >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoglShaderCompiled::SetParameterMatrix4x3(int index, const float *values){
 	if(pParameters[index] != -1){
 		OGL_CHECK(pRenderThread, pglUniformMatrix4x3fv(pParameters[index], 1, GL_TRUE, (const GLfloat *)values));
 	}
 }
 
-void deoglShaderCompiled::SetParameterMatrix3x3(int index, const float *values) const{
-	if(index < 0 || index >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoglShaderCompiled::SetParameterMatrix3x3(int index, const float *values){
 	if(pParameters[index] != -1){
 		OGL_CHECK(pRenderThread, pglUniformMatrix3fv(pParameters[index], 1, GL_TRUE, (const GLfloat *)values));
 	}
 }
 
-void deoglShaderCompiled::SetParameterMatrix3x2(int index, const float *values) const{
-	if(index < 0 || index >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoglShaderCompiled::SetParameterMatrix3x2(int index, const float *values){
 	if(pParameters[index] != -1){
 		OGL_CHECK(pRenderThread, pglUniformMatrix3x2fv(pParameters[index], 1, GL_TRUE, (const GLfloat *)values));
 	}
 }
 
-void deoglShaderCompiled::SetParameterTexMatrix3x3(int index, const decTexMatrix &matrix) const{
-	if(index < 0 || index >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoglShaderCompiled::SetParameterTexMatrix3x3(int index, const decTexMatrix &matrix){
 	if(pParameters[index] != -1){
 		OGL_CHECK(pRenderThread, pglUniformMatrix3fv(pParameters[index], 1, GL_TRUE, (const GLfloat *)&matrix));
 	}
 }
 
-void deoglShaderCompiled::SetParameterTexMatrix3x2(int index, const decTexMatrix &matrix) const{
-	if(index < 0 || index >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoglShaderCompiled::SetParameterTexMatrix3x2(int index, const decTexMatrix &matrix){
 	if(pParameters[index] != -1){
 		OGL_CHECK(pRenderThread, pglUniformMatrix3x2fv(pParameters[index], 1, GL_TRUE, (const GLfloat *)&matrix));
 	}
 }
 
-void deoglShaderCompiled::SetParameterTexMatrix3x2(int index, const decTexMatrix2 &matrix) const{
-	if(index < 0 || index >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoglShaderCompiled::SetParameterTexMatrix3x2(int index, const decTexMatrix2 &matrix){
 	if(pParameters[index] != -1){
 		OGL_CHECK(pRenderThread, pglUniformMatrix3x2fv(pParameters[index], 1, GL_TRUE, (const GLfloat *)&matrix));
 	}
 }
 
-void deoglShaderCompiled::SetParameterColorMatrix5x4(int index1, int index2, const decColorMatrix &matrix) const{
-	if(index1 < 0 || index1 >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
-	
+void deoglShaderCompiled::SetParameterColorMatrix5x4(int index1, int index2, const decColorMatrix &matrix){
 	if(pParameters[index1] != -1){
 		const GLfloat oglm[16] = {
 			(GLfloat)matrix.a11, (GLfloat)matrix.a12, (GLfloat)matrix.a13, (GLfloat)matrix.a14,

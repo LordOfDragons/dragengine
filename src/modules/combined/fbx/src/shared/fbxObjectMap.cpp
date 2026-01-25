@@ -39,23 +39,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-fbxObjectMap::fbxObjectMap(int expectedCount) :
-pBuckets(nullptr),
-pBucketCount(0)
+fbxObjectMap::fbxObjectMap(int expectedCount)
 {
 	if(expectedCount < 1){
 		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = decMath::max((int)((float)expectedCount * 0.75f), 1);
-	pBuckets = new sBucket[count];
-	pBucketCount = count;
+	pBuckets.AddRange(count, {});
 }
 
 fbxObjectMap::~fbxObjectMap(){
-	if(pBuckets){
-		delete [] pBuckets;
-	}
 }
 
 
@@ -68,11 +62,11 @@ void fbxObjectMap::Add(fbxNode *node){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pBuckets[node->GetID() % pBucketCount].objects.Add(node);
+	pBuckets[node->GetID() % pBuckets.GetCount()].objects.Add(node);
 }
 
 fbxNode *fbxObjectMap::GetAt(int64_t id) const{
-	return pBuckets[id % pBucketCount].objects.FindOrDefault([&](const fbxNode *node){
+	return pBuckets[id % pBuckets.GetCount()].objects.FindOrDefault([&](const fbxNode *node){
 		return node->GetID() == id;
 	});
 }

@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglRenderTaskParticlesStep.h"
 
 #include <dragengine/common/exceptions.h>
@@ -38,19 +34,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderTaskParticlesStep::deoglRenderTaskParticlesStep() :
-pInstances(nullptr),
-pInstanceCount(0),
-pInstanceSize(0)
-{
+deoglRenderTaskParticlesStep::deoglRenderTaskParticlesStep(){
 	Reset();
 }
 
-deoglRenderTaskParticlesStep::~deoglRenderTaskParticlesStep(){
-	if(pInstances){
-		delete [] pInstances;
-	}
-}
+deoglRenderTaskParticlesStep::~deoglRenderTaskParticlesStep() = default;
 
 
 
@@ -71,7 +59,7 @@ void deoglRenderTaskParticlesStep::Reset(){
 	pIndexCount = 0;
 	pPrimitiveType = GL_POINTS;
 	
-	RemoveAllInstances();
+	pInstances.SetCountDiscard(0);
 }
 
 
@@ -126,35 +114,4 @@ void deoglRenderTaskParticlesStep::IncrementIndexCount(int amount){
 
 void deoglRenderTaskParticlesStep::SetPrimitiveType(GLenum primitiveType){
 	pPrimitiveType = primitiveType;
-}
-
-
-
-// Instances
-//////////////
-
-deoglRenderTaskParticlesStep::sInstance &deoglRenderTaskParticlesStep::GetInstanceAt(int index) const{
-	if(index < 0 || index >= pInstanceCount) DETHROW(deeInvalidParam);
-	
-	return pInstances[index];
-}
-
-deoglRenderTaskParticlesStep::sInstance &deoglRenderTaskParticlesStep::AddInstance(){
-	if(pInstanceCount == pInstanceSize){
-		int newSize = pInstanceSize + 10;
-		sInstance *newArray = new sInstance[newSize];
-		if(pInstances){
-			memcpy(newArray, pInstances, sizeof(sInstance) * pInstanceSize);
-			delete [] pInstances;
-		}
-		pInstances = newArray;
-		pInstanceSize = newSize;
-	}
-	
-	pInstanceCount++;
-	return pInstances[pInstanceCount - 1];
-}
-
-void deoglRenderTaskParticlesStep::RemoveAllInstances(){
-	pInstanceCount = 0;
 }

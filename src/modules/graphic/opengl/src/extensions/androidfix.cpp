@@ -30,6 +30,7 @@
 #include <string.h>
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decTList.h>
 
 #include "../deoglGL.h"
 #include "androidfix.h"
@@ -52,10 +53,7 @@ void glGetTexImage(GLenum target, GLint level, GLenum format, GLenum type, GLvoi
 	DETHROW(deeInvalidAction);
 	
 	/*
-	char *tempData = NULL;
-	
-	try{
-		tempData = new char[
+	decTList<char> tempData(..., 0);
 	(pPixelBuffer->GetFormat(), width, height, 1);
 	
 	OGL_CHECK(pRenderThread, glReadPixels(0, 0, width, height, pPixelBuffer->GetGLPixelFormat(),
@@ -116,41 +114,32 @@ static void eglTexBuffer(GLenum target, GLenum internalformat, GLuint buffer){
  */
 static class cTempBuffer{
 private:
-	uint8_t *pData, *pDataEnd;
+	decTList<uint8_t> pData;
 	int pSize, pMaxSize;
 	
 public:
-	cTempBuffer() : pData(nullptr), pDataEnd(nullptr), pSize(0), pMaxSize(0){}
+	cTempBuffer() : pSize(0), pMaxSize(0){}
 	
-	~cTempBuffer(){
-		if(pData){
-			delete [] pData;
-		}
-	}
+	~cTempBuffer(){}
 	
 	inline int GetSize() const{ return pSize; }
-	inline uint8_t *GetData() const{ return pData; }
+	inline uint8_t *GetData() const{ return pData.GetArrayPointer(); }
 	
 	void SetSize(int size){
 		DEASSERT_TRUE(size >= 1)
-		if(pData && size <= pMaxSize){
+		if(!pData.IsEmpty() && size <= pMaxSize){
 			pSize = size;
-			pDataEnd = pData + size;
 			return;
 		}
 		
-		if(pData){
-			delete [] pData;
-		}
-		pData = new uint8_t[size];
+		pData.SetCountDiscard(size);
 		pMaxSize = pSize = size;
-		pDataEnd = pData + size;
 	}
 	
 	void Fill(const uint8_t *data, int size){
 		DEASSERT_TRUE(pSize % size == 0)
-		uint8_t *d = pData;
-		while(d < pDataEnd){
+		uint8_t *d = pData.GetArrayPointer();
+		while(d < pData.GetArrayPointer() + pSize){
 			memcpy(d, data, size);
 			d += size;
 		}

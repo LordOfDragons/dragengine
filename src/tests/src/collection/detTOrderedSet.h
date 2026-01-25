@@ -59,6 +59,8 @@ private:
 	void TestIntReverse();
 	void TestIntGetReversed();
 	void TestIntFindReverseOrDefault();
+	void TestIntRemoveHead();
+	void TestIntRemoveTail();
 
 	// Test methods for T=decString
 	void TestStringConstructors();
@@ -108,6 +110,8 @@ private:
 	void TestStringReverse();
 	void TestStringGetReversed();
 	void TestStringFindReverseOrDefault();
+	void TestStringRemoveHead();
+	void TestStringRemoveTail();
 
 	// Test methods for T=deObject::Ref, TP=deObject*
 	void TestObjectRefConstructors();

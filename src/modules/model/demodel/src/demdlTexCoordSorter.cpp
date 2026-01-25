@@ -226,9 +226,10 @@ const decVector2 &demdlTexCoordSorter::GetTexCoordAt(int index, int texCoordSet)
 //////////////////////
 
 int demdlTexCoordSorter::HashTexCoords(int baseIndex) const{
-	const float accum = pFaceTexCoords.Inject(0.0f, [&](float acc, const decVector2 &tc){
-		return acc + tc.x + tc.y;
-	}, baseIndex, baseIndex + pTexCoordSetCount);
+	const float accum = pFaceTexCoords.Inject(0.0f, baseIndex, baseIndex + pTexCoordSetCount,
+		[&](float acc, const decVector2 &tc){
+			return acc + tc.x + tc.y;
+		});
 	return ((int)((accum - (int)accum) * TCBUCKET_COUNT) + TCBUCKET_COUNT) % TCBUCKET_COUNT;
 }
 

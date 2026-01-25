@@ -85,7 +85,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create opengl texture. */
-	deoglTexture(deoglRenderThread &renderThread);
+	explicit deoglTexture(deoglRenderThread &renderThread);
 	
 	/** Clean up opengl texture. */
 	~deoglTexture();

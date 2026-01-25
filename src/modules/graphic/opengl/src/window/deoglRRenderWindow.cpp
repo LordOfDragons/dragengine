@@ -1229,7 +1229,7 @@ void deoglRRenderWindow::pSetIcon(){
 	
 	// image data has to be in ARGB format and using long as mentioned here:
 	// https://stackoverflow.com/a/15595582
-	unsigned long *iconBuffer = nullptr;
+	decTList<unsigned long> iconBuffer;
 	int iconBufferLen = 0;
 	
 	if(pIcon){
@@ -1237,12 +1237,12 @@ void deoglRRenderWindow::pSetIcon(){
 		const int height = pIcon->GetHeight();
 		const int pixelCount = width * height;
 		
-		iconBuffer = new unsigned long[2 + pixelCount];
+		iconBuffer.SetCountDiscard(2 + pixelCount);
 		iconBuffer[0] = width;
 		iconBuffer[1] = height;
 		iconBufferLen = 2 + pixelCount;
 		
-		unsigned long *dest = iconBuffer + 2;
+		unsigned long *dest = iconBuffer.GetArrayPointer() + 2;
 		int i;
 		
 		switch(pIcon->GetFormat()){
@@ -1313,7 +1313,7 @@ void deoglRRenderWindow::pSetIcon(){
 			}break;
 			
 		default:
-			memset(iconBuffer, 0, sizeof(unsigned long) * pixelCount);
+			iconBuffer.SetRangeAt(2, pixelCount, 0);
 			break;
 		}
 	}
@@ -1323,11 +1323,7 @@ void deoglRRenderWindow::pSetIcon(){
 	Atom atomCardinal = XInternAtom(display, "CARDINAL", False);
 	
 	XChangeProperty(display, pWindow, atomNetWmIcon, atomCardinal, 32,
-		PropModeReplace, (const unsigned char*)iconBuffer, iconBufferLen);
-	
-	if(iconBuffer){
-		delete [] iconBuffer;
-	}
+		PropModeReplace, (const unsigned char*)iconBuffer.GetArrayPointer(), iconBufferLen);
 #endif
 }
 

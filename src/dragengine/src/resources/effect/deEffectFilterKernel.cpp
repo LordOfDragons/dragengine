@@ -29,6 +29,7 @@
 #include "deEffectVisitor.h"
 #include "../../deEngine.h"
 #include "../../common/exceptions.h"
+#include "../../common/collection/decTList.h"
 #include "../../systems/modules/graphic/deBaseGraphicEffect.h"
 
 
@@ -41,7 +42,6 @@
 
 deEffectFilterKernel::deEffectFilterKernel(deEffectManager *manager) :
 deEffect(manager),
-pKernel(nullptr),
 pKernelRows(0),
 pKernelCols(0),
 pScale(1.0f)
@@ -50,9 +50,6 @@ pScale(1.0f)
 }
 
 deEffectFilterKernel::~deEffectFilterKernel(){
-	if(pKernel){
-		delete [] pKernel;
-	}
 }
 
 
@@ -72,15 +69,9 @@ void deEffectFilterKernel::SetKernelSize(int rows, int cols){
 		return;
 	}
 	
-	int i, count = rows * cols;
-	float *newKernel = new float[count];
-	if(pKernel) delete [] pKernel;
-	pKernel = newKernel;
+	pKernel.SetAll(rows * cols, 0.0f);
 	pKernelRows = rows;
 	pKernelCols = cols;
-	for(i=0; i<count; i++){
-		pKernel[i] = 0.0f;
-	}
 	pKernel[((rows - 1) / 2) * cols + (cols - 1) / 2] = 1.0f;
 	
 	deBaseGraphicEffect * const graEffect = GetPeerGraphic();

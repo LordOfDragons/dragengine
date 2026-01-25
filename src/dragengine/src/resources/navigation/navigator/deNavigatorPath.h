@@ -26,6 +26,7 @@
 #define _DENAVIGATORPATH_H_
 
 #include "../../../deObject.h"
+#include "../../../common/collection/decTList.h"
 #include "../../../common/math/decMath.h"
 
 
@@ -43,9 +44,7 @@ public:
 	
 	
 private:
-	decDVector *pPoints;
-	int pCount;
-	int pSize;
+	decTList<decDVector> pPoints;
 	
 	
 	
@@ -68,8 +67,11 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of points. */
-	inline int GetCount() const{ return pCount; }
+	/** \brief Points. */
+	inline const decTList<decDVector> &GetPoints() const{ return pPoints; }
+	
+	/** \brief Count of points. */
+	inline int GetCount() const{ return pPoints.GetCount(); }
 	
 	/**
 	 * \brief Path point at index.

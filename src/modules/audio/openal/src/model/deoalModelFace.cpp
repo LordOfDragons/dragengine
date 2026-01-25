@@ -124,9 +124,9 @@ void deoalModelFace::Init(const deModelLOD &lod, int index, const deModelFace &f
 	pIndex = index;
 	pTexture = face.GetTexture();
 	
-	const deModelVertex &vertex1 = lod.GetVertexAt(face.GetVertex1());
-	const deModelVertex &vertex2 = lod.GetVertexAt(face.GetVertex2());
-	const deModelVertex &vertex3 = lod.GetVertexAt(face.GetVertex3());
+	const deModelVertex &vertex1 = lod.GetVertices()[face.GetVertex1()];
+	const deModelVertex &vertex2 = lod.GetVertices()[face.GetVertex2()];
+	const deModelVertex &vertex3 = lod.GetVertices()[face.GetVertex3()];
 	
 	pVertices[0] = vertex1.GetPosition();
 	pVertices[1] = vertex2.GetPosition();

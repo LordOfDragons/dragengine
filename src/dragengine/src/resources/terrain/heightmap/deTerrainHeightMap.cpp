@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "deTerrainHeightMap.h"
 #include "../../image/deImage.h"
 #include "../../../deEngine.h"
@@ -57,14 +54,9 @@ deTerrainHeightMap::deTerrainHeightMap(){
 	pPointCount.Set(2, 2);
 	pSize.Set(1.0f, 1.0f);
 	pScaling = 1.0f;
-	
-	pVisibleFaces = nullptr;
-	pVFByteCount = 0;
 }
 
-deTerrainHeightMap::~deTerrainHeightMap(){
-	if(pVisibleFaces) delete [] pVisibleFaces;
-}
+deTerrainHeightMap::~deTerrainHeightMap() = default;
 
 
 
@@ -75,14 +67,8 @@ void deTerrainHeightMap::SetPointCount(const decPoint &pointCount){
 	if(pointCount.x < 2 || pointCount.y < 2) DETHROW(deeInvalidParam);
 	
 	if(pointCount != pPointCount){
-		if(pVisibleFaces){
-			delete [] pVisibleFaces;
-			pVisibleFaces = nullptr;
-			pVFByteCount = 0;
-		}
-		
+		pVisibleFaces.SetCountDiscard(0);
 		SetHeightImage(nullptr);
-		
 		pPointCount = pointCount;
 	}
 }
@@ -213,9 +199,8 @@ void deTerrainHeightMap::SetPathVisibilityImage(const char *path){
 bool deTerrainHeightMap::GetFaceVisibleAt(int x, int y){
 	if(x < 0 || x >= pPointCount.x - 1 || y < 0 || y >= pPointCount.y - 1) DETHROW(deeInvalidParam);
 	
-	if(pVisibleFaces){
+	if(pVisibleFaces.IsNotEmpty()){
 		int bitOffset = (pPointCount.x - 1) * y + x;
-		
 		return (pVisibleFaces[bitOffset >> 3] & (1 << (bitOffset & 0x7))) != 0;
 		
 	}else{
@@ -240,15 +225,11 @@ void deTerrainHeightMap::SetFaceVisibleAt(int x, int y, bool visible){
 
 void deTerrainHeightMap::SetAllFacesVisible(bool visible){
 	if(visible){
-		if(pVisibleFaces){
-			delete [] pVisibleFaces;
-			pVisibleFaces = nullptr;
-		}
+		pVisibleFaces.SetCountDiscard(0);
 		
 	}else{
 		pCreateVisibleFaces();
-		
-		memset(pVisibleFaces, 0, pVFByteCount);
+		pVisibleFaces.SetRangeAt(0, pVisibleFaces.GetCount(), 0);
 	}
 }
 
@@ -258,13 +239,8 @@ void deTerrainHeightMap::SetAllFacesVisible(bool visible){
 //////////////////////
 
 void deTerrainHeightMap::pCreateVisibleFaces(){
-	if(!pVisibleFaces){
-		int byteCount = (((pPointCount.x - 1) * (pPointCount.y - 1) - 1) >> 3) + 1;
-		
-		pVisibleFaces = new unsigned char[byteCount];
-		
-		memset(pVisibleFaces, 255, byteCount);
-		
-		pVFByteCount = byteCount;
+	if(pVisibleFaces.IsEmpty()){
+		const int byteCount = (((pPointCount.x - 1) * (pPointCount.y - 1) - 1) >> 3) + 1;
+		pVisibleFaces.SetAll(byteCount, 255);
 	}
 }

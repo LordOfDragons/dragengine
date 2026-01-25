@@ -25,7 +25,7 @@
 #ifndef _DECZFILEREADER_H_
 #define _DECZFILEREADER_H_
 
-#include <stdio.h>
+#include <zlib.h>
 
 #include "decBaseFileReader.h"
 
@@ -58,7 +58,7 @@ private:
 	
 	void *pZStream;
 	
-	void *pBufferIn;
+	decTList<Bytef> pBufferIn;
 	int pBufferInSize;
 	int pBufferInPosition;
 	

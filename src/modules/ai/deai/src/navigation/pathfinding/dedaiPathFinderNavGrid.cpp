@@ -53,16 +53,9 @@
 dedaiPathFinderNavGrid::dedaiPathFinderNavGrid(){
 	pWorld = nullptr;
 	pNavigator = nullptr;
-	pPathPoints = nullptr;
-	pPathPointCount = 0;
-	pPathPointSize = 0;
 }
 
-dedaiPathFinderNavGrid::~dedaiPathFinderNavGrid(){
-	if(pPathPoints){
-		delete [] pPathPoints;
-	}
-}
+dedaiPathFinderNavGrid::~dedaiPathFinderNavGrid() = default;
 
 
 
@@ -104,27 +97,6 @@ void dedaiPathFinderNavGrid::FindPath(){
 
 
 
-void dedaiPathFinderNavGrid::AddPathPoint(const decDVector &point){
-	if(pPathPointCount == pPathPointSize){
-		int newSize = pPathPointCount + 10;
-		decDVector *newArray = new decDVector[newSize];
-		if(pPathPoints){
-			memcpy(newArray, pPathPoints, sizeof(decDVector) * pPathPointCount);
-			delete [] pPathPoints;
-		}
-		pPathPoints = newArray;
-		pPathPointSize = newSize;
-	}
-	
-	pPathPoints[pPathPointCount++] = point;
-}
-
-void dedaiPathFinderNavGrid::RemoveAllPathPoints(){
-	pPathPointCount = 0;
-}
-
-
-
 // Private Functions
 //////////////////////
 
@@ -155,8 +127,8 @@ void dedaiPathFinderNavGrid::pFindVertexPath(){
 	int e, endEdge;
 	int typeNumber;
 	
-	pPathVertices.RemoveAll();
-	RemoveAllPathPoints();
+	pPathVertices.SetCountDiscard(0);
+	pPathPoints.SetCountDiscard(0);
 	
 	pStartVertex = pNavigator->GetLayer()->GetGridVertexClosestTo(pStartPoint, distance);
 	pEndVertex = pNavigator->GetLayer()->GetGridVertexClosestTo(pEndPoint, distance);
@@ -183,10 +155,10 @@ void dedaiPathFinderNavGrid::pFindVertexPath(){
 #ifdef DEBUG
 			pWorld->GetDEAI().LogInfoFormat("   Testing Vertex: ng=%p v=%i", testVertex->GetGrid(), testVertex->GetIndex());
 #endif
-		const dedaiSpaceGrid &navgrid = *testVertex->GetGrid();
-		const unsigned short * const vertexEdges = navgrid.GetVertexEdges();
-		dedaiSpaceGridVertex * const vertices = navgrid.GetVertices();
-		const dedaiSpaceGridEdge * const edges = navgrid.GetEdges();
+		dedaiSpaceGrid &navgrid = *testVertex->GetGrid();
+		const unsigned short * const vertexEdges = navgrid.GetVertexEdges().GetArrayPointer();
+		dedaiSpaceGridVertex * const vertices = navgrid.GetVertices().GetArrayPointer();
+		const dedaiSpaceGridEdge * const edges = navgrid.GetEdges().GetArrayPointer();
 		
 		// add linked vertices to the open list if free. the idea is rather simple here. since the linked
 		// vertices are at the exact same location in space as the test vertex is we can add them to the
@@ -195,7 +167,7 @@ void dedaiPathFinderNavGrid::pFindVertexPath(){
 		linkCount = testVertex->GetLinkCount();
 		
 		for(l=0; l<linkCount; l++){
-			nextVertex = navgrid.GetLinks().GetAt(testVertex->GetFirstLink() + l);
+			nextVertex = navgrid.GetLinks()[testVertex->GetFirstLink() + l];
 				if(!nextVertex->GetEnabled()){
 					continue;
 				}
@@ -392,10 +364,10 @@ void dedaiPathFinderNavGrid::pFindVertexPath(){
 	
 	for(v=0; v<count; v++){
 		testVertex = pPathVertices.GetAt(v);
-		AddPathPoint(testVertex->GetGrid()->GetSpace().GetMatrix() * testVertex->GetPosition());
+		pPathPoints.Add(testVertex->GetGrid()->GetSpace().GetMatrix() * testVertex->GetPosition());
 	}
 	
 	if(!pPathPoints[count - 1].IsEqualTo(pEndPoint)){
-		AddPathPoint(pEndPoint);
+		pPathPoints.Add(pEndPoint);
 	}
 }

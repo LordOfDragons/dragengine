@@ -120,16 +120,16 @@ void deoglDeveloperModeTests::TestConvexHull2D(decUnicodeString &answer){
 	// test empty
 	convexHull.RemoveAllPoints();
 	convexHull.CalculateHull();
-	ASSERT_EQUAL(convexHull.GetPointCount(), 0);
-	ASSERT_EQUAL(convexHull.GetHullPointCount(), 0);
+	ASSERT_EQUAL(convexHull.GetPoints().GetCount(), 0);
+	ASSERT_EQUAL(convexHull.GetHullPoints().GetCount(), 0);
 	
 	// test less than 3 points
 	convexHull.RemoveAllPoints();
 	convexHull.AddPoint(points[0]);
 	convexHull.AddPoint(points[1]);
 	convexHull.CalculateHull();
-	ASSERT_EQUAL(convexHull.GetPointCount(), 2);
-	ASSERT_EQUAL(convexHull.GetHullPointCount(), 0);
+	ASSERT_EQUAL(convexHull.GetPoints().GetCount(), 2);
+	ASSERT_EQUAL(convexHull.GetHullPoints().GetCount(), 0);
 	
 	// test exactly 3
 	convexHull.RemoveAllPoints();
@@ -137,10 +137,10 @@ void deoglDeveloperModeTests::TestConvexHull2D(decUnicodeString &answer){
 		convexHull.AddPoint(points[i]);
 	}
 	convexHull.CalculateHull();
-	ASSERT_EQUAL(convexHull.GetPointCount(), 3);
-	ASSERT_EQUAL(convexHull.GetHullPointCount(), 3);
+	ASSERT_EQUAL(convexHull.GetPoints().GetCount(), 3);
+	ASSERT_EQUAL(convexHull.GetHullPoints().GetCount(), 3);
 	for(i=0; i<3; i++){
-		ASSERT_EQUAL(convexHull.GetHullPointAt(i), hull2[i]);
+		ASSERT_EQUAL(convexHull.GetHullPoints()[i], hull2[i]);
 		ASSERT_TRUE(convexHull.GetHullPointVectorAt(i).IsEqualTo(points[hull2[i]]));
 	}
 	
@@ -150,10 +150,10 @@ void deoglDeveloperModeTests::TestConvexHull2D(decUnicodeString &answer){
 		convexHull.AddPoint(points[i]);
 	}
 	convexHull.CalculateHull();
-	ASSERT_EQUAL(convexHull.GetPointCount(), 10);
-	ASSERT_EQUAL(convexHull.GetHullPointCount(), 7);
+	ASSERT_EQUAL(convexHull.GetPoints().GetCount(), 10);
+	ASSERT_EQUAL(convexHull.GetHullPoints().GetCount(), 7);
 	for(i=0; i<7; i++){
-		ASSERT_EQUAL(convexHull.GetHullPointAt(i), hull[i]);
+		ASSERT_EQUAL(convexHull.GetHullPoints()[i], hull[i]);
 		ASSERT_TRUE(convexHull.GetHullPointVectorAt(i).IsEqualTo(points[hull[i]]));
 	}
 	
@@ -163,10 +163,10 @@ void deoglDeveloperModeTests::TestConvexHull2D(decUnicodeString &answer){
 		convexHull.AddPoint(points[i]);
 	}
 	convexHull.CalculateHull();
-	ASSERT_EQUAL(convexHull.GetPointCount(), 10);
-	ASSERT_EQUAL(convexHull.GetHullPointCount(), 7);
+	ASSERT_EQUAL(convexHull.GetPoints().GetCount(), 10);
+	ASSERT_EQUAL(convexHull.GetHullPoints().GetCount(), 7);
 	for(i=0; i<7; i++){
-		ASSERT_EQUAL(convexHull.GetHullPointAt(i), 9 - hull[i]);
+		ASSERT_EQUAL(convexHull.GetHullPoints()[i], 9 - hull[i]);
 		ASSERT_TRUE(convexHull.GetHullPointVectorAt(i).IsEqualTo(points[hull[i]]));
 	}
 	
@@ -176,10 +176,10 @@ void deoglDeveloperModeTests::TestConvexHull2D(decUnicodeString &answer){
 		convexHull.AddPoint(points[order1[i]]);
 	}
 	convexHull.CalculateHull();
-	ASSERT_EQUAL(convexHull.GetPointCount(), 10);
-	ASSERT_EQUAL(convexHull.GetHullPointCount(), 7);
+	ASSERT_EQUAL(convexHull.GetPoints().GetCount(), 10);
+	ASSERT_EQUAL(convexHull.GetHullPoints().GetCount(), 7);
 	for(i=0; i<7; i++){
-		ASSERT_EQUAL(convexHull.GetHullPointAt(i), i);
+		ASSERT_EQUAL(convexHull.GetHullPoints()[i], i);
 		ASSERT_TRUE(convexHull.GetHullPointVectorAt(i).IsEqualTo(points[order1[i]]));
 	}
 	
@@ -189,10 +189,10 @@ void deoglDeveloperModeTests::TestConvexHull2D(decUnicodeString &answer){
 		convexHull.AddPoint(points[order1[i]]);
 	}
 	convexHull.CalculateHull();
-	ASSERT_EQUAL(convexHull.GetPointCount(), 10);
-	ASSERT_EQUAL(convexHull.GetHullPointCount(), 7);
+	ASSERT_EQUAL(convexHull.GetPoints().GetCount(), 10);
+	ASSERT_EQUAL(convexHull.GetHullPoints().GetCount(), 7);
 	for(i=0; i<7; i++){
-		ASSERT_EQUAL(convexHull.GetHullPointAt(i), 9 - i);
+		ASSERT_EQUAL(convexHull.GetHullPoints()[i], 9 - i);
 		ASSERT_TRUE(convexHull.GetHullPointVectorAt(i).IsEqualTo(points[order1[i]]));
 	}
 }

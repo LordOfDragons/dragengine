@@ -25,6 +25,9 @@
 #ifndef _AEWPPLAYGROUND_H_
 #define _AEWPPLAYGROUND_H_
 
+#include "aeWPPlaygroundListener.h"
+#include "../../animator/aeAnimator.h"
+
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBox.h>
@@ -36,13 +39,11 @@
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
+#include <dragengine/common/collection/decTList.h>
 
-#include "../../animator/aeAnimator.h"
 class aeController;
 class aeWindowProperties;
 class aeAnimatorLocomotionLeg;
-#include "aeWPPlaygroundListener.h"
-
 
 
 /**
@@ -67,8 +68,7 @@ private:
 	aeAnimator::Ref pAnimator;
 	
 	igdeContainer::Ref pFraContent;
-	sController *pControllers;
-	int pControllerCount;
+	decTList<sController> pControllers;
 	
 	igdeComboBox::Ref pCBLocomotionType;
 	
@@ -124,11 +124,8 @@ public:
 	/** Leg. */
 	aeAnimatorLocomotionLeg *GetLeg() const;
 	
-	/** Number of controllers. */
-	inline int GetControllerCount() const{ return pControllerCount; }
-	
-	/** Controller at index. */
-	sController &GetControllerAt(int index) const;
+	/** Controllers. */
+	inline const decTList<sController> &GetControllers() const{ return pControllers; }
 	
 	/** Rebuild controllers list. */
 	void RebuildControllers();

@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "deoglRenderGeometry.h"
 #include "defren/deoglDeferredRendering.h"
 #include "plan/deoglRenderPlan.h"
@@ -102,39 +99,29 @@
 ////////////////////////////
 
 deoglRenderGeometry::deoglRenderGeometry(deoglRenderThread &renderThread) :
-deoglRenderBase(renderThread),
-pVertexPositionSetParams(nullptr),
-pVertexPositionSetParamSize(0)
+deoglRenderBase(renderThread)
 {
 	deoglPipelineConfiguration pipconf;
 	deoglShaderDefines defines;
 	
-	try{
-		pipconf.Reset();
-		pipconf.SetType(deoglPipelineConfiguration::etCompute);
-		
-		// copy vertices, normals and tangents
-		pAsyncGetPipeline(pPipelineCopyVNT, pipconf, "DefRen Copy VNT", defines);
-		
-		// transform vertices using vertex position set
-		pAsyncGetPipeline(pPipelineVPSTransformVNT, pipconf, "DefRen VPS Transform VNT", defines);
-		
-		// approximate transform vertices, normals and tangents
-		pAsyncGetPipeline(pPipelineApproxTransformVNT, pipconf, "DefRen Approx Transform VNT", defines);
-		
-		defines.SetDefines("TRANSFORM_INPLACE");
-		pAsyncGetPipeline(pPipelineApproxTransformVNTInplace, pipconf, "DefRen Approx Transform VNT", defines);
-		defines.RemoveDefines("TRANSFORM_INPLACE");
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
+	pipconf.Reset();
+	pipconf.SetType(deoglPipelineConfiguration::etCompute);
+	
+	// copy vertices, normals and tangents
+	pAsyncGetPipeline(pPipelineCopyVNT, pipconf, "DefRen Copy VNT", defines);
+	
+	// transform vertices using vertex position set
+	pAsyncGetPipeline(pPipelineVPSTransformVNT, pipconf, "DefRen VPS Transform VNT", defines);
+	
+	// approximate transform vertices, normals and tangents
+	pAsyncGetPipeline(pPipelineApproxTransformVNT, pipconf, "DefRen Approx Transform VNT", defines);
+	
+	defines.SetDefines("TRANSFORM_INPLACE");
+	pAsyncGetPipeline(pPipelineApproxTransformVNTInplace, pipconf, "DefRen Approx Transform VNT", defines);
+	defines.RemoveDefines("TRANSFORM_INPLACE");
 }
 
-deoglRenderGeometry::~deoglRenderGeometry(){
-	pCleanUp();
-}
+deoglRenderGeometry::~deoglRenderGeometry() = default;
 
 
 
@@ -269,7 +256,7 @@ void deoglRenderGeometry::RenderTask(const deoglRenderTask &renderTask){
 							}
 							#endif
 							
-							const int subInstanceCount = rtinstance.GetSubInstanceCount() + instance.GetSubInstanceCount();
+							const int subInstanceCount = rtinstance.GetSubInstances().GetCount() + instance.GetSubInstanceCount();
 							
 							if(subInstanceCount == 0){
 								if(instance.GetIndexCount() == 0){
@@ -324,7 +311,7 @@ void deoglRenderGeometry::RenderTask(const deoglRenderTask &renderTask){
 							}
 							
 						}else{
-							const int subInstanceCount = rtinstance.GetSubInstanceCount() + instance.GetSubInstanceCount();
+							const int subInstanceCount = rtinstance.GetSubInstances().GetCount() + instance.GetSubInstanceCount();
 							
 							if(subInstanceCount == 0){
 								if(instance.GetIndexCount() == 0){
@@ -385,14 +372,9 @@ void deoglRenderGeometry::RenderTask(const deoglRenderTask &renderTask){
 }
 
 void deoglRenderGeometry::RenderTask(const deoglComputeRenderTask &renderTask){
-	const int stepCount = renderTask.GetStepCount();
-	if(stepCount == 0){
-		return;
-	}
-	
 	deoglRenderThread &renderThread = GetRenderThread();
-	const deoglComputeRenderTask::sStep * const steps = renderTask.GetSteps();
-	if(!steps){
+	const decTList<deoglComputeRenderTask::sStep> &steps = renderTask.GetSteps();
+	if(steps.IsEmpty()){
 		return;
 	}
 	
@@ -433,7 +415,7 @@ void deoglRenderGeometry::RenderTask(const deoglComputeRenderTask &renderTask){
 	}
 	
 	try{
-		for(i=0; i<stepCount; i++){
+		for(i=0; i<steps.GetCount(); i++){
 			const deoglComputeRenderTask::sStep &step = steps[i];
 			
 			// pipeline
@@ -802,16 +784,8 @@ int firstPoint, int pointCount){
 }
 
 deoglRenderGeometry::sVertexPositionSetParams *deoglRenderGeometry::GetVertexPositionSetParams(int count){
-	DEASSERT_TRUE(count > 0)
-	
-	if(count > pVertexPositionSetParamSize){
-		sVertexPositionSetParams * const newArray = new sVertexPositionSetParams[count];
-		delete [] pVertexPositionSetParams;
-		pVertexPositionSetParams = newArray;
-		pVertexPositionSetParamSize = count;
-	}
-	
-	return pVertexPositionSetParams;
+	pVertexPositionSetParams.SetCountDiscard(count);
+	return pVertexPositionSetParams.GetArrayPointer();
 }
 
 void deoglRenderGeometry::VPSTransformVNT(GLuint vaoModelData, GLuint vboVertexPositionSetData,
@@ -874,15 +848,4 @@ int firstPoint, int pointCount, bool inplace){
 	OGL_CHECK(renderThread, pglBindVertexArray(vao));
 	OGL_CHECK(renderThread, pglMemoryBarrier(GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT));
 	OGL_CHECK(renderThread, pglBindVertexArray(0));
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void deoglRenderGeometry::pCleanUp(){
-	if(pVertexPositionSetParams){
-		delete [] pVertexPositionSetParams;
-	}
 }

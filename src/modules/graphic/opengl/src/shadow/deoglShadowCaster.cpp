@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglShadowCaster.h"
 
 #include <dragengine/common/exceptions.h>
@@ -59,17 +55,10 @@ pStaticOffset(2.887585e-4f),
 pDynamicNear(0.01f),
 pDynamicFar(10.0f),
 pDynamicScale(2.887585e-2f),
-pDynamicOffset(2.887585e-4f),
-
-pShadowLayers(nullptr),
-pShadowLayerCount(0){
+pDynamicOffset(2.887585e-4f){
 }
 
-deoglShadowCaster::~deoglShadowCaster(){
-	if(pShadowLayers){
-		delete [] pShadowLayers;
-	}
-}
+deoglShadowCaster::~deoglShadowCaster() = default;
 
 
 
@@ -134,32 +123,17 @@ void deoglShadowCaster::SetShadowLayerCount(int count){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(count == pShadowLayerCount){
+	if(count == pShadowLayers.GetCount()){
 		return;
 	}
 	
-	if(pShadowLayers){
-		delete [] pShadowLayers;
-		pShadowLayers = nullptr;
-		pShadowLayerCount = 0;
-	}
-	
-	if(count > 0){
-		pShadowLayers = new sShadowLayer[count];
-		pShadowLayerCount = count;
-	}
+	pShadowLayers.SetAll(count, {});
 }
 
 const deoglShadowCaster::sShadowLayer &deoglShadowCaster::GetShadowLayerAt(int index) const{
-	if(index < 0 || index >= pShadowLayerCount){
-		DETHROW(deeInvalidParam);
-	}
 	return pShadowLayers[index];
 }
 
 deoglShadowCaster::sShadowLayer &deoglShadowCaster::GetShadowLayerAt(int index){
-	if(index < 0 || index >= pShadowLayerCount){
-		DETHROW(deeInvalidParam);
-	}
 	return pShadowLayers[index];
 }

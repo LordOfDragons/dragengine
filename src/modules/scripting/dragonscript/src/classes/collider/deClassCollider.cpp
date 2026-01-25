@@ -2506,7 +2506,7 @@ void deClassCollider::AttachWeight(deCollider &collider, deResource *resource, c
 		const int face = colInfo.GetFace();
 		
 		if(bone != -1){
-			if(bone >= 0 && bone < component->GetBoneCount()){
+			if(bone >= 0 && bone < component->GetBones().GetCount()){
 				component->PrepareBones();
 				const decDMatrix matrix(GetResourceMatrix(*resource)
 					.QuickMultiply(decDMatrix(component->GetBoneAt(bone).GetMatrix())
@@ -2517,7 +2517,7 @@ void deClassCollider::AttachWeight(deCollider &collider, deResource *resource, c
 				
 			}else{
 				pDS.LogWarnFormat("Collider.AttachWeight: bone(%i) outside range(%i). "
-					"Fall back to static.", bone, component->GetBoneCount());
+					"Fall back to static.", bone, component->GetBones().GetCount());
 				AttachStatic(collider, attachCollider);
 			}
 			
@@ -2530,9 +2530,9 @@ void deClassCollider::AttachWeight(deCollider &collider, deResource *resource, c
 			}
 			
 			const deModelLOD &lod = model->GetLODAt(0);
-			if(face >= lod.GetFaceCount()){
+			if(face >= lod.GetFaces().GetCount()){
 				pDS.LogWarnFormat("Collider.AttachWeight: face(%i) outside range(%i). "
-					"Fall back to static.", face, lod.GetFaceCount());
+					"Fall back to static.", face, lod.GetFaces().GetCount());
 				AttachStatic(collider, attachCollider);
 				return;
 			}

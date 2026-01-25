@@ -28,7 +28,7 @@
 #include "dexsiXInclude.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/input/deInputDevice.h>
 #include <dragengine/resources/image/deImage.h>
@@ -113,7 +113,7 @@ private:
 	
 	int pX11FirstKeyCode;
 	int pX11KeyCodeCount;
-	int *pX11KeyCodeMap;
+	decTList<int> pX11KeyCodeMap;
 	
 	bool pDirtyAxesValues;
 	

@@ -247,9 +247,6 @@ public:
 	/*@{*/
 	/** Dynamic states are equal. */
 	bool operator==(const devkDynamicState &state) const;
-	
-	/** Copy dynamic state. */
-	devkDynamicState &operator=(const devkDynamicState &state);
 	/*@}*/
 	
 	

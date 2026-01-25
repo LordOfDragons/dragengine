@@ -30,6 +30,7 @@
 #include "../target/deoglRenderTarget.h"
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/resources/model/deModel.h>
 #include <dragengine/systems/modules/vr/deBaseVRModule.h>
 
@@ -49,6 +50,8 @@ public:
 		
 	public:
 		cViewImage() = default;
+		cViewImage(const cViewImage &other);
+		cViewImage &operator=(const cViewImage &other);
 	};
 	
 	
@@ -69,11 +72,9 @@ private:
 	deoglRenderTarget::Ref pRenderTarget;
 	decVector2 pCanvasTCFrom, pCanvasTCTo;
 	
-	GLuint *pVRGetViewsBuffer;
-	int pVRGetViewsBufferSize;
+	decTList<GLuint> pVRGetViewsBuffer;
 	
-	cViewImage *pVRViewImages;
-	int pVRViewImageCount;
+	decTList<cViewImage> pVRViewImages;
 	decVector2 pVRViewTCFrom, pVRViewTCTo;
 	
 	bool pUseGammaCorrection;
@@ -150,7 +151,6 @@ private:
 	void pGetParameters(deBaseVRModule &vrmodule);
 	void pLogParameters(deoglRenderThread &renderThread);
 	void pUpdateEyeViews(deBaseVRModule &vrmodule);
-	void pDestroyEyeViews();
 	void pRender(deoglRenderThread &renderThread);
 	const char *LogPrefix() const;
 };

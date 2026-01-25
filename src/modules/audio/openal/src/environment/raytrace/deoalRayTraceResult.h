@@ -25,6 +25,7 @@
 #ifndef _DEOALRAYTRACERESULT_H_
 #define _DEOALRAYTRACERESULT_H_
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoalAudioThread;
@@ -34,25 +35,23 @@ class deoalAComponent;
 
 
 /**
- * \brief Ray tracing result.
+ * Ray tracing result.
  * 
  * Stores list of hit faces sorted by distance.
  */
 class deoalRayTraceResult{
 private:
-	deoalRayTraceHitElement *pElements;
-	int pElementCount;
-	int pElementSize;
+	decTList<deoalRayTraceHitElement> pElements;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create ray trace result. */
+	/** Create ray trace result. */
 	deoalRayTraceResult();
 	
-	/** \brief Clean up ray trace result. */
+	/** Clean up ray trace result. */
 	~deoalRayTraceResult();
 	/*@}*/
 	
@@ -60,26 +59,20 @@ public:
 	
 	/** \name Manegement */
 	/*@{*/
-	/** \brief Number of elements. */
-	inline int GetElementCount() const{ return pElementCount; }
+	/** Elements. */
+	inline const decTList<deoalRayTraceHitElement> &GetElements() const{ return pElements; }
 	
-	/** \brief Element at index. */
-	const deoalRayTraceHitElement &GetElementAt(int index) const;
+	/** Clear. */
+	void Clear();
 	
-	/** \brief Add element sorted by distance. */
+	/** Add element sorted by distance. */
 	void AddElement(float distance, const decDVector &point, const decDVector &normal,
 		deoalAComponent *component, int face, bool frontFacing);
 	
-	/** \brief Add element sorted by distance. */
+	/** Add element sorted by distance. */
 	void AddElement(const deoalRayTraceHitElement &element);
 	
-	/** \brief Remove all elements. */
-	void RemoveAllElements();
-	
-	/** \brier Clear. */
-	void Clear();
-	
-	/** \brief Debug print. */
+	/** Debug print. */
 	void DebugPrint(deoalAudioThread &audioThread, const char *prefix);
 	/*@}*/
 	

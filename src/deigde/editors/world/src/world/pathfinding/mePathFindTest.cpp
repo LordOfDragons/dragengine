@@ -315,7 +315,6 @@ void mePathFindTest::pUpdateDDPath(){
 	const float circleStep = DEG2RAD * (360.0f / (float)circlePointCount);
 	const decVector up(0.0f, 1.0f, 0.0f);
 	
-	deDebugDrawerShapeFace *ddsFace = nullptr;
 	decVector lastPoints[circlePointCount], points[circlePointCount];
 	decVector prevPos, pos, nextPos;
 	decMatrix matrix;
@@ -323,38 +322,22 @@ void mePathFindTest::pUpdateDDPath(){
 	float len;
 	int i, j;
 	
-	try{
-		for(i=0; i<count; i++){
-			pos = (pPath->GetAt(i) - pStartPosition).ToVector();
+	for(i=0; i<count; i++){
+		pos = (pPath->GetAt(i) - pStartPosition).ToVector();
+		
+		if(i > 0){
+			prevPos = (pPath->GetAt(i - 1) - pStartPosition).ToVector();
+		}
+		
+		if(i < count - 1){
+			nextPos = (pPath->GetAt(i + 1) - pStartPosition).ToVector();
 			
-			if(i > 0){
-				prevPos = (pPath->GetAt(i - 1) - pStartPosition).ToVector();
-			}
-			
-			if(i < count - 1){
-				nextPos = (pPath->GetAt(i + 1) - pStartPosition).ToVector();
-				
-			}else{
-				nextPos = pos;
-			}
-			
-			if(i == 0){
-				view = pos - prevPos;
-				len = view.Length();
-				if(len < 0.001f){
-					view.Set(0.0f, 0.0f, 1.0f);
-					
-				}else{
-					view /= len;
-				}
-				
-				matrix.SetWorld(decVector(), view, up);
-				for(j=0; j<circlePointCount; j++){
-					lastPoints[j] = matrix.Transform(radius * sinf(circleStep * (float)j), radius * cosf(circleStep * (float)j), 0.0f);
-				}
-			}
-			
-			view = nextPos - prevPos;
+		}else{
+			nextPos = pos;
+		}
+		
+		if(i == 0){
+			view = pos - prevPos;
 			len = view.Length();
 			if(len < 0.001f){
 				view.Set(0.0f, 0.0f, 1.0f);
@@ -363,31 +346,38 @@ void mePathFindTest::pUpdateDDPath(){
 				view /= len;
 			}
 			
-			matrix.SetWorld(pos, view, up);
+			matrix.SetWorld(decVector(), view, up);
 			for(j=0; j<circlePointCount; j++){
-				points[j] = matrix.Transform(radius * sinf(circleStep * (float)j), radius * cosf(circleStep * (float)j), 0.0f);
-			}
-			
-			for(j=0; j<circlePointCount; j++){
-				ddsFace = new deDebugDrawerShapeFace;
-				ddsFace->AddVertex(lastPoints[j]);
-				ddsFace->AddVertex(points[j]);
-				ddsFace->AddVertex(points[(j + 1) % circlePointCount]);
-				ddsFace->AddVertex(lastPoints[(j + 1) % circlePointCount]);
-				pDDSPath->AddFace(ddsFace);
-				ddsFace = nullptr;
-			}
-			
-			for(j=0; j<circlePointCount; j++){
-				lastPoints[j] = points[j];
+				lastPoints[j] = matrix.Transform(radius * sinf(circleStep * (float)j), radius * cosf(circleStep * (float)j), 0.0f);
 			}
 		}
 		
-	}catch(const deException &){
-		if(ddsFace){
-			delete ddsFace;
+		view = nextPos - prevPos;
+		len = view.Length();
+		if(len < 0.001f){
+			view.Set(0.0f, 0.0f, 1.0f);
+			
+		}else{
+			view /= len;
 		}
-		throw;
+		
+		matrix.SetWorld(pos, view, up);
+		for(j=0; j<circlePointCount; j++){
+			points[j] = matrix.Transform(radius * sinf(circleStep * (float)j), radius * cosf(circleStep * (float)j), 0.0f);
+		}
+		
+		for(j=0; j<circlePointCount; j++){
+			auto ddsFace = deDebugDrawerShapeFace::Ref::New();
+			ddsFace->AddVertex(lastPoints[j]);
+			ddsFace->AddVertex(points[j]);
+			ddsFace->AddVertex(points[(j + 1) % circlePointCount]);
+			ddsFace->AddVertex(lastPoints[(j + 1) % circlePointCount]);
+			pDDSPath->AddFace(std::move(ddsFace));
+		}
+		
+		for(j=0; j<circlePointCount; j++){
+			lastPoints[j] = points[j];
+		}
 	}
 }
 
@@ -395,7 +385,7 @@ void mePathFindTest::pUpdateTypes(){
 	pEngNavigator->RemoveAllTypes();
 	
 	pTypeList.Visit([&](const mePathFindTestType &type){
-		deNavigatorType &engType = *pEngNavigator->AddType(type.GetTypeNumber());
+		deNavigatorType &engType = pEngNavigator->AddType(type.GetTypeNumber());
 		engType.SetFixCost(type.GetFixCost());
 		engType.SetCostPerMeter(type.GetCostPerMeter());
 	});

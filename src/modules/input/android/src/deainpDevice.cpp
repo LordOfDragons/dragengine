@@ -61,27 +61,10 @@ pIndex(-1),
 pSource(source),
 pType(deInputDevice::edtMouse),
 
-pButtonCount(0),
-pButtons(NULL),
-pAxisCount(0),
-pAxes(NULL),
-pFeedbackCount(0),
-pFeedbacks(NULL),
-
 pDirtyAxesValues(false){
 }
 
-deainpDevice::~deainpDevice(){
-	if(pFeedbacks){
-		delete [] pFeedbacks;
-	}
-	if(pAxes){
-		delete [] pAxes;
-	}
-	if(pButtons){
-		delete [] pButtons;
-	}
-}
+deainpDevice::~deainpDevice() = default;
 
 
 
@@ -105,26 +88,6 @@ void deainpDevice::SetName(const char *name){
 }
 
 
-
-void deainpDevice::SetButtonCount(int count){
-	if(pButtons){
-		delete [] pButtons;
-		pButtons = NULL;
-		pButtonCount = 0;
-	}
-	
-	if(count > 0){
-		pButtons = new deainpDeviceButton[count];
-		pButtonCount = count;
-	}
-}
-
-deainpDeviceButton &deainpDevice::GetButtonAt(int index) const{
-	if(index < 0 || index >= pButtonCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pButtons[index];
-}
 
 deainpDeviceButton *deainpDevice::GetButtonWithID(const char *id) const{
 	int i;
@@ -183,26 +146,6 @@ int deainpDevice::IndexOfButtonWithAICode(int code) const{
 
 
 
-void deainpDevice::SetAxisCount(int count){
-	if(pAxes){
-		delete [] pAxes;
-		pAxes = NULL;
-		pAxisCount = 0;
-	}
-	
-	if(count > 0){
-		pAxes = new deainpDeviceAxis[count];
-		pAxisCount = count;
-	}
-}
-
-deainpDeviceAxis &deainpDevice::GetAxisAt(int index) const{
-	if(index < 0 || index >= pAxisCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pAxes[index];
-}
-
 deainpDeviceAxis *deainpDevice::GetAxisWithID(const char *id) const{
 	int i;
 	
@@ -249,26 +192,6 @@ int deainpDevice::IndexOfAxisWithAICode(int code) const{
 }
 
 
-
-void deainpDevice::SetFeedbackCount(int count){
-	if(pFeedbacks){
-		delete [] pFeedbacks;
-		pFeedbacks = NULL;
-		pFeedbackCount = 0;
-	}
-	
-	if(count > 0){
-		pFeedbacks = new deainpDeviceFeedback[count];
-		pFeedbackCount = count;
-	}
-}
-
-deainpDeviceFeedback &deainpDevice::GetFeedbackAt(int index) const{
-	if(index < 0 || index >= pFeedbackCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pFeedbacks[index];
-}
 
 deainpDeviceFeedback *deainpDevice::GetFeedbackWithID(const char *id) const{
 	int i;

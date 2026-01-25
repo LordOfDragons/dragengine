@@ -26,6 +26,7 @@
 #define _DELLOGGERHISTORY_H_
 
 #include <dragengine/logger/deLogger.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/threading/deMutex.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
@@ -44,8 +45,7 @@ public:
 	
 	
 private:
-	int pHistorySize;
-	delLoggerHistoryEntry *pEntries;
+	decTList<delLoggerHistoryEntry> pEntries;
 	int pEntryCount;
 	int pEntryOffset;
 	
@@ -64,7 +64,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create logger history. */
-	delLoggerHistory(int size = 250);
+	explicit delLoggerHistory(int size = 250);
 	
 	delLoggerHistory(const delLoggerHistory&) = delete;
 	delLoggerHistory& operator=(const delLoggerHistory&) = delete;
@@ -83,7 +83,7 @@ public:
 	inline deMutex &GetMutex(){ return pMutex; }
 	
 	/** \brief Size of history. */
-	int GetHistorySize() const{ return pHistorySize; }
+	int GetHistorySize() const{ return pEntries.GetCount(); }
 	
 	/**
 	 * \brief Set size of history.

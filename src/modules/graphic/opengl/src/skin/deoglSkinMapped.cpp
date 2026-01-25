@@ -95,7 +95,7 @@ const deoglSkinStateMapped &mapped) const{
 			break;
 		}
 		
-		const deoglSkinStateRenderable * const renderable = skinState.GetRenderableAt(pRenderable);
+		const deoglSkinStateRenderable * const renderable = skinState.GetRenderables()[pRenderable];
 		if(!renderable){
 			break;
 		}

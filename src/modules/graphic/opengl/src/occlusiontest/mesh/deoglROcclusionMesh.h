@@ -30,6 +30,7 @@
 #include "../../vbo/deoglSharedVBOBlock.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
@@ -68,16 +69,10 @@ public:
 	
 	deoglSharedVBOBlock::Ref pVBOBlock;
 	
-	sWeight *pWeightsEntries;
-	int pWeightsEntryCount;
-	int *pWeightsCounts;
-	int pWeightsCount;
-	
-	sVertex *pVertices;
-	int pVertexCount;
-	
-	unsigned short *pCorners;
-	int pCornerCount;
+	decTList<sWeight> pWeightsEntries;
+	decTList<int> pWeightsCounts;
+	decTList<sVertex> pVertices;
+	decTList<unsigned short> pCorners;
 	int pSingleSidedFaceCount;
 	int pDoubleSidedFaceCount;
 	
@@ -120,34 +115,16 @@ public:
 	
 	
 	/** Weights entries. */
-	inline sWeight *GetWeightsEntries() const{ return pWeightsEntries; }
-	
-	/** Number of weights entries. */
-	inline int GetWeightsEntryCount() const{ return pWeightsEntryCount; }
+	inline const decTList<sWeight> &GetWeightsEntries() const{ return pWeightsEntries; }
 	
 	/** Weights entries count list. */
-	inline int *GetWeightsCounts() const{ return pWeightsCounts; }
-	
-	/** Number of weights. */
-	inline int GetWeightsCount() const{ return pWeightsCount; }
-	
-	
+	inline const decTList<int> &GetWeightsCounts() const{ return pWeightsCounts; }
 	
 	/** Vertices. */
-	inline sVertex *GetVertices() const{ return pVertices; }
-	
-	/** Vertex count. */
-	inline int GetVertexCount() const{ return pVertexCount; }
-	
-	
+	inline const decTList<sVertex> &GetVertices() const{ return pVertices; }
 	
 	/** Corners. */
-	inline unsigned short *GetCorners() const{ return pCorners; }
-	
-	/** Number of corners. */
-	inline int GetCornerCount() const{ return pCornerCount; }
-	
-	
+	inline const decTList<unsigned short> &GetCorners() const{ return pCorners; }
 	
 	/**
 	 * Single sided face count.

@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "debpBulletShapeModel.h"
 #include "debpModel.h"
 #include "debpModelOctree.h"
@@ -54,32 +51,20 @@
 debpModel::debpModel(dePhysicsBullet &bullet, deModel &model) :
 pBullet(bullet),
 pModel(model),
-
 pOctree(NULL),
 pCanDeform(false),
-
-pWeightSets(NULL),
-pWeightSetCount(0),
-pHasWeightlessExtends(false),
-pBoneExtends(NULL),
-pBoneCount(0),
-pNormals(NULL),
-pFaceProbabilities(NULL)
+pHasWeightlessExtends(false)
 {
 	(void)pBullet;
 	
-	try{
-		pCheckCanDeform();
-		pCalculateExtends();
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
+	pCheckCanDeform();
+	pCalculateExtends();
 }
 
 debpModel::~debpModel(){
-	pCleanUp();
+	if(pOctree){
+		delete pOctree;
+	}
 }
 
 
@@ -94,21 +79,21 @@ void debpModel::PrepareOctree(){
 	
 	// NOTE if model data has been released RetainModelData() is required to be called first
 	
-	const deModelLOD &lod = pModel.GetLODAt(0);
+	const deModelLOD &lod = pModel.GetLODs().First();
 	const decVector offset(0.01f, 0.01f, 0.01f);
 	const decVector minExtend(pExtends.minimum - offset);
 	const decVector maxExtend(pExtends.maximum + offset);
-	const int faceCount = lod.GetFaceCount();
+	const int faceCount = lod.GetFaces().GetCount();
 	int i;
 	
 	pOctree = new debpModelOctree((minExtend + maxExtend) * 0.5f, (maxExtend - minExtend) * 0.5f);
 	
 	for(i=0; i<faceCount; i++){
-		const deModelFace &face = lod.GetFaceAt(i);
+		const deModelFace &face = lod.GetFaces()[i];
 		
-		const deModelVertex &v1 = lod.GetVertexAt(face.GetVertex1());
-		const deModelVertex &v2 = lod.GetVertexAt(face.GetVertex2());
-		const deModelVertex &v3 = lod.GetVertexAt(face.GetVertex3());
+		const deModelVertex &v1 = lod.GetVertices()[face.GetVertex1()];
+		const deModelVertex &v2 = lod.GetVertices()[face.GetVertex2()];
+		const deModelVertex &v3 = lod.GetVertices()[face.GetVertex3()];
 		
 		const decVector &posV1 = v1.GetPosition();
 		const decVector &posV2 = v2.GetPosition();
@@ -122,25 +107,25 @@ void debpModel::PrepareOctree(){
 }
 
 void debpModel::PrepareNormals(){
-	if(pNormals){
+	if(pNormals.IsNotEmpty()){
 		return;
 	}
 	
 	// NOTE if model data has been released RetainModelData() is required to be called first
 	
-	const deModelLOD &lod = pModel.GetLODAt(0);
-	const int normalCount = lod.GetVertexCount();
+	const deModelLOD &lod = pModel.GetLODs().First();
+	const int normalCount = lod.GetVertices().GetCount();
 	if(normalCount == 0){
 		return;
 	}
 	
-	const int faceCount = lod.GetFaceCount();
+	const int faceCount = lod.GetFaces().GetCount();
 	int i;
 	
-	pNormals = new decVector[normalCount];
+	pNormals.AddRange(normalCount, {});
 	
 	for(i=0; i<faceCount; i++){
-		const deModelFace &face = lod.GetFaceAt(i);
+		const deModelFace &face = lod.GetFaces()[i];
 		const decVector &faceNormal = face.GetFaceNormal();
 		
 		pNormals[face.GetVertex1()] += faceNormal;
@@ -148,26 +133,26 @@ void debpModel::PrepareNormals(){
 		pNormals[face.GetVertex3()] += faceNormal;
 	}
 	
-	for(i=0; i<normalCount; i++){
-		const float len = pNormals[i].Length();
+	pNormals.Visit([](decVector &normal){
+		const float len = normal.Length();
 		
 		if(len < FLOAT_SAFE_EPSILON){
-			pNormals[i].Set(0.0f, 1.0f, 0.0f);
+			normal.Set(0.0f, 1.0f, 0.0f);
 			
 		}else{
-			pNormals[i] /= len;
+			normal /= len;
 		}
-	}
+	});
 }
 
 int debpModel::IndexOfFaceWithProbability(float probability) const{
-	if(!pFaceProbabilities){
+	if(pFaceProbabilities.IsEmpty()){
 		DETHROW(deeInvalidParam); // somebody forgot to retain the data first
 	}
 	
 	// to get it working a hack version first. later on this will be replaced by a binary
 	// search which is a lot faster
-	const int count = pModel.GetLODAt(0)->GetFaceCount();
+	const int count = pModel.GetLODs().First()->GetFaces().GetCount();
 	int i;
 	
 	for(i=0; i<count; i++){
@@ -185,14 +170,14 @@ int debpModel::IndexOfFaceWithProbability(float probability) const{
 }
 
 void debpModel::PrepareFaceProbabilities(){
-	if(pFaceProbabilities){
+	if(pFaceProbabilities.IsNotEmpty()){
 		return;
 	}
 	
 	// NOTE if model data has been released RetainModelData() is required to be called first
 	
-	const deModelLOD &lod = pModel.GetLODAt(0);
-	const int faceCount = lod.GetFaceCount();
+	const deModelLOD &lod = pModel.GetLODs().First();
+	const int faceCount = lod.GetFaces().GetCount();
 	if(faceCount == 0){
 		return;
 	}
@@ -200,17 +185,18 @@ void debpModel::PrepareFaceProbabilities(){
 	float sumArea = 0.0f;
 	int i;
 	
-	pFaceProbabilities = new float[faceCount];
+	pFaceProbabilities.EnlargeCapacity(faceCount);
 	
 	// calculate the area of the face as well as the sum of all face areas
 	for(i=0; i<faceCount; i++){
-		const deModelFace &face = lod.GetFaceAt(i);
-		const decVector &v1 = lod.GetVertexAt(face.GetVertex1()).GetPosition();
-		const decVector &v2 = lod.GetVertexAt(face.GetVertex2()).GetPosition();
-		const decVector &v3 = lod.GetVertexAt(face.GetVertex3()).GetPosition();
+		const deModelFace &face = lod.GetFaces()[i];
+		const decVector &v1 = lod.GetVertices()[face.GetVertex1()].GetPosition();
+		const decVector &v2 = lod.GetVertices()[face.GetVertex2()].GetPosition();
+		const decVector &v3 = lod.GetVertices()[face.GetVertex3()].GetPosition();
 		
-		pFaceProbabilities[i] = ((v2 - v1) % (v3 - v1)).Length() * 0.5f;
-		sumArea += pFaceProbabilities[i];
+		const float probability = ((v2 - v1) % (v3 - v1)).Length() * 0.5f;
+		pFaceProbabilities.Add(probability);
+		sumArea += probability;
 	}
 	
 	// the probability for a face is now the sum of all areas up to and including the face itself
@@ -219,15 +205,13 @@ void debpModel::PrepareFaceProbabilities(){
 		const float factor = 1.0f / sumArea;
 		
 		sumArea = 0.0f;
-		for(i=0; i<faceCount; i++){
-			sumArea += pFaceProbabilities[i];
-			pFaceProbabilities[i] = sumArea * factor;
-		}
+		pFaceProbabilities.Visit([&](float &faceProbability){
+			sumArea += faceProbability;
+			faceProbability = sumArea * factor;
+		});
 		
 	}else{
-		for(i=0; i<faceCount; i++){
-			pFaceProbabilities[i] = 1.0f;
-		}
+		pFaceProbabilities.SetRangeAt(0, faceCount, 1.0f);
 	}
 }
 
@@ -238,45 +222,46 @@ void debpModel::PrepareShape(){
 	
 	// NOTE if model data has been released RetainModelData() is required to be called first
 	
-	const deModelLOD &lod = pModel.GetLODAt(0);
-	int i, j;
+	const deModelLOD &lod = pModel.GetLODs().First();
+	int i;
 	
 	// create vertex and face array suitable for the triangle mesh
-	const int vertexCount = lod.GetVertexCount();
-	btScalar *vertices = NULL;
+	const int vertexCount = lod.GetVertices().GetCount();
+	decTList<btScalar> vertices;
 	
 	if(vertexCount > 0){
-		vertices = new btScalar[vertexCount * 3];
-		for(j=0, i=0; i<vertexCount; i++){
-			const decVector &position = lod.GetVertexAt(i).GetPosition();
-			vertices[j++] = position.x;
-			vertices[j++] = position.y;
-			vertices[j++] = position.z;
+		vertices.EnlargeCapacity(vertexCount * 3);
+		for(i=0; i<vertexCount; i++){
+			const decVector &position = lod.GetVertices()[i].GetPosition();
+			vertices.Add(position.x);
+			vertices.Add(position.y);
+			vertices.Add(position.z);
 		}
 	}
 	
-	const int faceCount = lod.GetFaceCount();
-	int *faces = NULL;
+	const int faceCount = lod.GetFaces().GetCount();
+	decTList<int> faces;
 	
 	if(faceCount > 0){
-		faces = new int[faceCount * 3];
-		for(j=0, i=0; i<faceCount; i++){
-			const deModelFace &face = lod.GetFaceAt(i);
-			faces[j++] = face.GetVertex1();
-			faces[j++] = face.GetVertex2();
-			faces[j++] = face.GetVertex3();
+		faces.EnlargeCapacity(faceCount * 3);
+		for(i=0; i<faceCount; i++){
+			const deModelFace &face = lod.GetFaces()[i];
+			faces.Add(face.GetVertex1());
+			faces.Add(face.GetVertex2());
+			faces.Add(face.GetVertex3());
 		}
 	}
 	
 	// create triangle mesh
 	btTriangleIndexVertexArray * const ivarray = new btTriangleIndexVertexArray(
-		faceCount, faces, sizeof(int) * 3, vertexCount, vertices, sizeof(btScalar) * 3);
+		faceCount, faces.GetArrayPointer(), sizeof(int) * 3, vertexCount,
+		vertices.GetArrayPointer(), sizeof(btScalar) * 3);
 	
 	btBvhTriangleMeshShape * const meshShape = new btBvhTriangleMeshShape(ivarray, true, true);
 	meshShape->setUserPointer(0); // means -1 => no shape index set
 	
 	pBulletShape = debpBulletShapeModel::Ref::New(
-		meshShape, ivarray, vertices, faces, vertexCount, faceCount);
+		meshShape, ivarray, std::move(vertices), std::move(faces));
 }
 
 
@@ -284,27 +269,8 @@ void debpModel::PrepareShape(){
 // private functions
 //////////////////////
 
-void debpModel::pCleanUp(){
-	if(pFaceProbabilities){
-		delete [] pFaceProbabilities;
-	}
-	if(pBoneExtends){
-		delete [] pBoneExtends;
-		pBoneExtends = NULL;
-	}
-	if(pNormals){
-		delete [] pNormals;
-	}
-	if(pWeightSets){
-		delete [] pWeightSets;
-	}
-	if(pOctree){
-		delete pOctree;
-	}
-}
-
 void debpModel::pCheckCanDeform(){
-	int weightCount = pModel.GetLODAt(0)->GetWeightCount();
+	int weightCount = pModel.GetLODs().First()->GetWeights().GetCount();
 	
 	// sanity check
 	if(weightCount > 0 && pModel.GetBoneCount() == 0){
@@ -319,9 +285,9 @@ void debpModel::pCheckCanDeform(){
 
 void debpModel::pCalculateExtends(){
 	// extends of all vertices
-	const deModelLOD &lod = pModel.GetLODAt(0);
-	const deModelVertex * const vertices = lod.GetVertices();
-	const int vertexCount = lod.GetVertexCount();
+	const deModelLOD &lod = pModel.GetLODs().First();
+	const deModelVertex * const vertices = lod.GetVertices().GetArrayPointer();
+	const int vertexCount = lod.GetVertices().GetCount();
 	int i;
 	
 	if(vertexCount > 0){
@@ -346,15 +312,14 @@ void debpModel::pCalculateExtends(){
 		return;
 	}
 	
-	pBoneExtends = new sExtends[boneCount];
-	pBoneCount = boneCount;
+	pBoneExtends.AddRange(boneCount, {});
 	
-	const int weightGroupCount = lod.GetWeightGroupCount();
+	const int weightGroupCount = lod.GetWeightGroups().GetCount();
 	if(weightGroupCount == 0){
 		return;
 	}
 	
-	const int * const weightGroups = lod.GetWeightGroups();
+	const int * const weightGroups = lod.GetWeightGroups().GetArrayPointer();
 	
 	int weightSetCount = 0;
 	for(i=0; i<weightGroupCount; i++){
@@ -365,13 +330,12 @@ void debpModel::pCalculateExtends(){
 		return;
 	}
 	
-	pWeightSets = new sWeightSet[weightSetCount];
-	pWeightSetCount = weightSetCount;
+	pWeightSets.AddRange(weightSetCount, {});
 	
-	const deModelWeight *weightEntries = lod.GetWeights();
+	const deModelWeight *weightEntries = lod.GetWeights().GetArrayPointer();
 	int j;
 	
-	sWeightSet *weightPointer = pWeightSets;
+	sWeightSet *weightPointer = pWeightSets.GetArrayPointer();
 	int weightGroupSize = 1;
 	for(i=0; i<weightGroupCount; i++){
 		const int count = weightGroups[i];
@@ -384,18 +348,17 @@ void debpModel::pCalculateExtends(){
 		weightGroupSize++;
 	}
 	
-	int * const dominatingBones = new int[pWeightSetCount];
-	bool * const boneHasExtends = new bool[boneCount];
-	for(i=0; i<boneCount; i++){
-		boneHasExtends[i] = false;
-	}
+	decTList<int> dominatingBones;
+	dominatingBones.AddRange(pWeightSets.GetCount(), -1);
 	
-	for(i=0; i<pWeightSetCount; i++){
-		dominatingBones[i] = -1;
-		if(pWeightSets[i].first->GetWeight() > 0.001f){ // 0.499f){
-			dominatingBones[i] = pWeightSets[i].first->GetBone();
+	decTList<bool> boneHasExtends;
+	boneHasExtends.AddRange(boneCount, false);
+	
+	pWeightSets.VisitIndexed([&](int i, const sWeightSet &ws){
+		if(ws.first->GetWeight() > 0.001f){ // 0.499f){
+			dominatingBones[i] = ws.first->GetBone();
 		}
-	}
+	});
 	
 	for(i=0; i<vertexCount; i++){
 		const decVector &position = vertices[i].GetPosition();
@@ -429,7 +392,4 @@ void debpModel::pCalculateExtends(){
 			}
 		}
 	}
-	
-	delete [] boneHasExtends;
-	delete [] dominatingBones;
 }

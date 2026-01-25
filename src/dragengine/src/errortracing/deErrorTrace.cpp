@@ -76,7 +76,8 @@ const deErrorTracePoint::Ref &deErrorTrace::GetPoint(int index) const{
 }
 
 void deErrorTrace::AddPoint(deErrorTracePoint::Ref &&point){
-	if(!point) DETHROW(deeInvalidParam);
+	DEASSERT_NOTNULL(point)
+	
 	pPoints.Add(std::move(point));
 }
 

@@ -22,11 +22,6 @@
  * SOFTWARE.
  */
 
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglRComponent.h"
 #include "deoglRComponentLOD.h"
 #include "deoglRComponentTexture.h"
@@ -99,14 +94,6 @@ pLODIndex(lodIndex),
 pVAO(nullptr),
 pVBOLayout(nullptr),
 pVBOBlock(nullptr),
-
-pWeights(nullptr),
-
-pPositions(nullptr),
-pRealNormals(nullptr),
-pNormals(nullptr),
-pTangents(nullptr),
-pFaceNormals(nullptr),
 
 pDirtyModelWeights(true),
 pDirtyModelPositions(true),
@@ -277,7 +264,7 @@ void deoglRComponentLOD::UpdateVBOOnCPU(){
 
 void deoglRComponentLOD::WriteWeightMatricesSSBO(){
 	deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt(pLODIndex);
-	const int weightsCount = modelLOD.GetWeightsCount();
+	const int weightsCount = modelLOD.GetWeightsCounts().GetCount();
 	if(weightsCount == 0){
 		return;
 	}
@@ -320,7 +307,7 @@ void deoglRComponentLOD::UpdateVBOOnGPUApproximate(){
 
 void deoglRComponentLOD::GPUApproxTransformVNT(){
 	deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt(pLODIndex);
-	const int pointCount = modelLOD.GetVertexCount();
+	const int pointCount = modelLOD.GetVertices().GetCount();
 	
 	if(pointCount == 0 || !modelLOD.GetVBOBlockWithWeight()){
 		return;
@@ -333,8 +320,8 @@ void deoglRComponentLOD::GPUApproxTransformVNT(){
 	pEnsureVBO();
 	
 	deoglRenderGeometry &renderGeometry = renderThread.GetRenderers().GetGeometry();
-	const float * const vpsWeights = pComponent.GetVertexPositionSets();
-	const int vpsCount = pComponent.GetVertexPositionSetCount();
+	const float * const vpsWeights = pComponent.GetVertexPositionSets().GetArrayPointer();
+	const int vpsCount = pComponent.GetVertexPositionSets().GetCount();
 	const GLuint vaoModelData = vboBlock.GetVBO()->GetVAO()->GetVAO();
 	const GLuint vboModelData = vboBlock.GetVBO()->GetVBO();
 	deoglRenderGeometry::sVertexPositionSetParams *params = nullptr;
@@ -350,14 +337,14 @@ void deoglRComponentLOD::GPUApproxTransformVNT(){
 				continue;
 			}
 			
-			const deoglModelLODVertPosSet &vps = modelLOD.GetVertexPositionSetAt(i);
-			if(vps.GetPositionCount() == 0){
+			const deoglModelLODVertPosSet &vps = modelLOD.GetVertexPositionSets()[i];
+			if(vps.GetPositions().IsEmpty()){
 				continue;
 			}
 			
 			deoglRenderGeometry::sVertexPositionSetParams &param = params[useVpsCount++];
 			param.firstPoint = vps.GetVBOOffset();
-			param.pointCount = vps.GetPositionCount();
+			param.pointCount = vps.GetPositions().GetCount();
 			param.weight = vpsWeights[i];
 		}
 	}
@@ -395,7 +382,8 @@ void deoglRComponentLOD::PrepareGIDynamicBVH(){
 	if(pDirtyGIBVHPositions){
 		PreparePositions();
 		if(pGIBVHDynamic->GetTBOVertex()->GetDataCount() > 0){
-			pGIBVHDynamic->UpdateVertices(pPositions, GetModelLODRef().GetPositionCount());
+			pGIBVHDynamic->UpdateVertices(pPositions.GetArrayPointer(),
+				GetModelLODRef().GetPositions().GetCount());
 			pGIBVHDynamic->UpdateBVHExtends();
 		}
 		pDirtyGIBVHPositions = false;
@@ -447,7 +435,7 @@ void deoglRComponentLOD::UpdateRenderTaskConfigurations(){
 	int i;
 	
 	for(i=0; i<6; i++){
-		pRenderTaskConfigs[i].RemoveAllTextures();
+		pRenderTaskConfigs[i].GetTextures().RemoveAll();
 	}
 	
 	if(!pComponent.GetModel()){
@@ -462,7 +450,7 @@ void deoglRComponentLOD::UpdateRenderTaskConfigurations(){
 	const deoglRenderTaskSharedVAO * const rtvao = vao->GetRTSVAO();
 	const deoglModelLOD &modelLod = GetModelLODRef();
 	const int count = pComponent.GetTextureCount();
-	const int rtfmShadow = ertfRender | ertfDecal | ertfShadowNone;
+	const int rtfmShadow = ertfRender | ertfDecal | ertfDecalSolidParent | ertfShadowNone;
 	const int rtfShadow = ertfRender;
 	
 	for(i=0; i<count; i++){
@@ -537,28 +525,19 @@ deoglModelLOD &deoglRComponentLOD::GetModelLODRef() const{
 
 void deoglRComponentLOD::PrepareWeights(){
 	if(pDirtyModelWeights){
-		oglMatrix3x4 *weights = nullptr;
+		pWeights.RemoveAll();
 		
 		if(pComponent.GetModel() && pLODIndex >= 0 && pLODIndex < pComponent.GetModel()->GetLODCount()){
-			deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt(pLODIndex);
-			const int weightsCount = modelLOD.GetWeightsCount();
-			if(weightsCount > 0){
-				weights = new oglMatrix3x4[weightsCount];
-			}
+			pWeights.AddRange(pComponent.GetModel()->GetLODAt(pLODIndex).GetWeightsCounts().GetCount(), {});
 			// NOTE weights count can be 0 if a higher level LOD has all weightless vertices.
 			//      this case can be optimized to using static rendering
 		}
-		
-		if(pWeights){
-			delete [] pWeights;
-		}
-		pWeights = weights;
 		
 		pDirtyModelWeights = false;
 	}
 	
 	if(pDirtyDataWeights){
-		if(pWeights && pComponent.GetModel() && pLODIndex >= 0 && pLODIndex < pComponent.GetModel()->GetLODCount()){
+		if(pWeights.IsNotEmpty() && pComponent.GetModel() && pLODIndex >= 0 && pLODIndex < pComponent.GetModel()->GetLODCount()){
 			deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt(pLODIndex);
 			
 			#ifdef SPECIAL_DEBUG_ON
@@ -581,20 +560,11 @@ void deoglRComponentLOD::PreparePositions(){
 	PrepareWeights();
 	
 	if(pDirtyModelPositions){
-		oglVector3 *positions = nullptr;
+		pPositions.RemoveAll();
 		
 		if(pComponent.GetModel() && pLODIndex >= 0 && pLODIndex < pComponent.GetModel()->GetLODCount()){
-			deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt(pLODIndex);
-			const int positionCount = modelLOD.GetPositionCount();
-			if(positionCount > 0){
-				positions = new oglVector3[positionCount];
-			}
+			pPositions.AddRange(pComponent.GetModel()->GetLODAt(pLODIndex).GetPositions().GetCount(), {});
 		}
-		
-		if(pPositions){
-			delete [] pPositions;
-		}
-		pPositions = positions;
 		
 		pDirtyModelPositions = false;
 	}
@@ -603,7 +573,7 @@ void deoglRComponentLOD::PreparePositions(){
 		// pWeights can not be checked to be non-NULL since higher level LODs can contain
 		// all weightless vertices although lower level LODs have weighted vertices. in this
 		// situation all vertices are copied non-transformed
-		if(pPositions && pComponent.GetModel() && pLODIndex >= 0 && pLODIndex < pComponent.GetModel()->GetLODCount()){
+		if(pPositions.IsNotEmpty() && pComponent.GetModel() && pLODIndex >= 0 && pLODIndex < pComponent.GetModel()->GetLODCount()){
 			deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt(pLODIndex);
 			
 			#ifdef SPECIAL_DEBUG_ON
@@ -626,76 +596,28 @@ void deoglRComponentLOD::PrepareNormalsTangents(){
 	PreparePositions();
 	
 	if(pDirtyModelNorTan){
-		oglVector3 *realNormals = nullptr;
-		oglVector3 *normals = nullptr;
-		oglVector3 *tangents = nullptr;
-		oglVector3 *faceNormals = nullptr;
+		pRealNormals.RemoveAll();
+		pNormals.RemoveAll();
+		pTangents.RemoveAll();
+		pFaceNormals.RemoveAll();
 		
 		if(pComponent.GetModel() && pLODIndex >= 0 && pLODIndex < pComponent.GetModel()->GetLODCount()){
 			deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt(pLODIndex);
 			
-			const int positionCount = modelLOD.GetPositionCount();
-			const int normalCount = modelLOD.GetNormalCount();
-			const int tangentCount = modelLOD.GetTangentCount();
-			const int faceCount = modelLOD.GetFaceCount();
-			
-			try{
-				if(positionCount > 0){
-					realNormals = new oglVector3[positionCount];
-				}
-				if(normalCount > 0){
-					normals = new oglVector3[normalCount];
-				}
-				if(tangentCount > 0){
-					tangents = new oglVector3[tangentCount];
-				}
-				if(faceCount > 0){
-					faceNormals = new oglVector3[faceCount];
-				}
-				
-			}catch(const deException &){
-				if(faceNormals){
-					delete [] faceNormals;
-				}
-				if(tangents){
-					delete [] tangents;
-				}
-				if(realNormals){
-					delete [] realNormals;
-				}
-				if(normals){
-					delete [] normals;
-				}
-				throw;
-			}
+			pRealNormals.AddRange(modelLOD.GetPositions().GetCount(), {});
+			pNormals.AddRange(modelLOD.GetNormals().GetCount(), {});
+			pTangents.AddRange(modelLOD.GetTangents().GetCount(), {});
+			pFaceNormals.AddRange(modelLOD.GetFaces().GetCount(), {});
 		}
-		
-		if(pRealNormals){
-			delete [] pRealNormals;
-		}
-		pRealNormals = realNormals;
-		
-		if(pNormals){
-			delete [] pNormals;
-		}
-		pNormals = normals;
-		
-		if(pTangents){
-			delete [] pTangents;
-		}
-		pTangents = tangents;
-		
-		if(pFaceNormals){
-			delete [] pFaceNormals;
-		}
-		pFaceNormals = faceNormals;
 		
 		pDirtyModelNorTan = false;
 	}
 	
 	if(pDirtyDataNorTan){
-		if(pWeights && pPositions && pRealNormals && pNormals && pTangents && pFaceNormals
-		&& pComponent.GetModel() && pLODIndex >= 0 && pLODIndex < pComponent.GetModel()->GetLODCount()){
+		if(pWeights.IsNotEmpty() && pPositions.IsNotEmpty() && pRealNormals.IsNotEmpty()
+		&& pNormals.IsNotEmpty() && pTangents.IsNotEmpty() && pFaceNormals.IsNotEmpty()
+		&& pComponent.GetModel() && pLODIndex >= 0
+		&& pLODIndex < pComponent.GetModel()->GetLODCount()){
 			const deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt(pLODIndex);
 			
 			#ifdef SPECIAL_DEBUG_ON
@@ -726,25 +648,6 @@ void deoglRComponentLOD::pCleanUp(){
 		delete pVBOLayout;
 	}
 	
-	if(pFaceNormals){
-		delete [] pFaceNormals;
-	}
-	if(pTangents){
-		delete [] pTangents;
-	}
-	if(pNormals){
-		delete [] pNormals;
-	}
-	if(pRealNormals){
-		delete [] pRealNormals;
-	}
-	if(pPositions){
-		delete [] pPositions;
-	}
-	if(pWeights){
-		delete [] pWeights;
-	}
-	
 	pMemUse = 0;
 	
 	if(pTexTransformNormTan){
@@ -768,7 +671,7 @@ void deoglRComponentLOD::pEnsureVBO(){
 	}
 	
 	deoglRenderThread &renderThread = pComponent.GetRenderThread();
-	const int pointCount = pComponent.GetModel()->GetLODAt(pLODIndex).GetVertexCount();
+	const int pointCount = pComponent.GetModel()->GetLODAt(pLODIndex).GetVertices().GetCount();
 	
 	pVBO = deoglSPBlockSSBO::Ref::New(renderThread, deoglSPBlockSSBO::etGpu);
 	
@@ -790,26 +693,23 @@ void deoglRComponentLOD::pEnsureVBO(){
 void deoglRComponentLOD::pBuildVBO(const deoglModelLOD &modelLOD){
 	pEnsureVBO();
 	
-	if(pPositions && pRealNormals && pNormals && pTangents){
+	if(pPositions.IsNotEmpty() && pRealNormals.IsNotEmpty()
+	&& pNormals.IsNotEmpty() && pTangents.IsNotEmpty()){
 		pWriteVBOData(modelLOD);
 	}
 }
 
 void deoglRComponentLOD::pWriteVBOData(const deoglModelLOD &modelLOD){
-	const bool * const negateTangents = modelLOD.GetNegateTangents();
-	const oglModelVertex * const points = modelLOD.GetVertices();
-	const int pointCount = modelLOD.GetVertexCount();
+	const bool * const negateTangents = modelLOD.GetNegateTangents().GetArrayPointer();
 	const deoglSPBMapBuffer mapped(pVBO);
-	int i;
 	
-	for(i=0; i<pointCount; i++){
-		const oglModelVertex &point = points[i];
+	modelLOD.GetVertices().VisitIndexed([&](int i, const oglModelVertex &point){
 		pVBO->SetParameterDataVec3(0, i, pPositions[point.position]);
 		pVBO->SetParameterDataVec3(1, i, pRealNormals[point.position]);
 		pVBO->SetParameterDataVec3(2, i, pNormals[point.normal]);
 		pVBO->SetParameterDataVec4(3, i, pTangents[point.tangent],
 			negateTangents[point.tangent] ? -1.0f : 1.0f);
-	}
+	});
 }
 
 void deoglRComponentLOD::pUpdateVAO(deoglModelLOD &modelLOD){
@@ -820,7 +720,7 @@ void deoglRComponentLOD::pUpdateVAO(deoglModelLOD &modelLOD){
 	deoglRenderThread &renderThread = pComponent.GetRenderThread();
 	pVBOBlock = modelLOD.GetVBOBlock();
 	const GLuint vboModel = pVBOBlock->GetVBO()->GetVBO();
-	const deoglVBOLayout &vboLayout = pVBOBlock->GetVBO()->GetParentList()->GetLayout();
+	deoglVBOLayout &vboLayout = pVBOBlock->GetVBO()->GetParentList()->GetLayout();
 	
 	pVAO = new deoglVAO(renderThread);
 	OGL_CHECK(renderThread, pglBindVertexArray(pVAO->GetVAO()));
@@ -859,15 +759,15 @@ void deoglRComponentLOD::pUpdateVAO(deoglModelLOD &modelLOD){
 
 
 void deoglRComponentLOD::pCalculateWeights(const deoglModelLOD &modelLOD){
-	const oglModelWeight * weightsEntries = modelLOD.GetWeightsEntries();
-	const int * const weightsCounts = modelLOD.GetWeightsCounts();
-	const int weightsCount = modelLOD.GetWeightsCount();
+	const oglModelWeight * weightsEntries = modelLOD.GetWeightsEntries().GetArrayPointer();
+	const int * const weightsCounts = modelLOD.GetWeightsCounts().GetArrayPointer();
+	const int weightsCount = modelLOD.GetWeightsCounts().GetCount();
 	int w, e, entryCount;
 	float factor;
 	
 	//pComponent.UpdateBoneMatrices(); // done already by deoglComponent during synching
 	
-	const oglMatrix3x4 * const boneMatrices = pComponent.GetBoneMatrices();
+	const oglMatrix3x4 * const boneMatrices = pComponent.GetBoneMatrices().GetArrayPointer();
 	
 	for(w=0; w<weightsCount; w++){
 		oglMatrix3x4 &weightsMatrix = pWeights[w];
@@ -971,11 +871,11 @@ void deoglRComponentLOD::pCalculateWeights(const deoglModelLOD &modelLOD){
 }
 
 void deoglRComponentLOD::pTransformVertices(const deoglModelLOD &modelLOD){
-	const oglModelPosition * const positions = modelLOD.GetPositions();
-	const int positionCount = modelLOD.GetPositionCount();
+	const oglModelPosition * const positions = modelLOD.GetPositions().GetArrayPointer();
+	const int positionCount = modelLOD.GetPositions().GetCount();
 	int i;
 	
-	if(!pWeights){
+	if(pWeights.IsEmpty()){
 		// happens if higher LOD has only weightless vertices while lower LOD has weighted
 		// vertices. this extra check avoids potential bugs if pWeights is incorrectly NULL
 		for(i=0; i<positionCount; i++){
@@ -1009,13 +909,13 @@ void deoglRComponentLOD::pTransformVertices(const deoglModelLOD &modelLOD){
 }
 
 void deoglRComponentLOD::pCalculateNormalsAndTangents(const deoglModelLOD &modelLOD){
-	const decVector2 * const texcoords = modelLOD.GetTextureCoordinates();
-	const oglModelVertex * const points = modelLOD.GetVertices();
-	const deoglModelFace * const faces = modelLOD.GetFaces();
-	const int positionCount = modelLOD.GetPositionCount();
-	const int tangentCount = modelLOD.GetTangentCount();
-	const int normalCount = modelLOD.GetNormalCount();
-	const int faceCount = modelLOD.GetFaceCount();
+	const decVector2 * const texcoords = modelLOD.GetTextureCoordinates().GetArrayPointer();
+	const oglModelVertex * const points = modelLOD.GetVertices().GetArrayPointer();
+	const deoglModelFace * const faces = modelLOD.GetFaces().GetArrayPointer();
+	const int positionCount = modelLOD.GetPositions().GetCount();
+	const int tangentCount = modelLOD.GetTangents().GetCount();
+	const int normalCount = modelLOD.GetNormals().GetCount();
+	const int faceCount = modelLOD.GetFaces().GetCount();
 	oglVector3 edge1, edge2;
 	oglVector3 tangent;
 	decVector2 d1, d2;
@@ -1195,27 +1095,27 @@ void deoglRComponentLOD::pPrepareVBOLayout(const deoglModelLOD &modelLOD){
 	// real-normal |     16 | float | x, y, z
 	// normal      |     32 | float | x, y, z
 	// tangent     |     48 | float | x, y, z, w
-	pVBOLayout->SetAttributeCount(4);
+	pVBOLayout->GetAttributes().SetAll(4, {});
 	pVBOLayout->SetStride(64);
- 	pVBOLayout->SetSize(pVBOLayout->GetStride() * modelLOD.GetVertexCount());
+ 	pVBOLayout->SetSize(pVBOLayout->GetStride() * modelLOD.GetVertices().GetCount());
 	pVBOLayout->SetIndexType(deoglVBOLayout::eitUnsignedInt);
 	
-	deoglVBOAttribute &attrPos = pVBOLayout->GetAttributeAt(0);
+	deoglVBOAttribute &attrPos = pVBOLayout->GetAttributes()[0];
 	attrPos.SetComponentCount(3);
 	attrPos.SetDataType(deoglVBOAttribute::edtFloat);
 	attrPos.SetOffset(0);
 	
-	deoglVBOAttribute &attrRealNormal = pVBOLayout->GetAttributeAt(1);
+	deoglVBOAttribute &attrRealNormal = pVBOLayout->GetAttributes()[1];
 	attrRealNormal.SetComponentCount(3);
 	attrRealNormal.SetDataType(deoglVBOAttribute::edtFloat);
 	attrRealNormal.SetOffset(16);
 	
-	deoglVBOAttribute &attrNormal = pVBOLayout->GetAttributeAt(2);
+	deoglVBOAttribute &attrNormal = pVBOLayout->GetAttributes()[2];
 	attrNormal.SetComponentCount(3);
 	attrNormal.SetDataType(deoglVBOAttribute::edtFloat);
 	attrNormal.SetOffset(32);
 	
-	deoglVBOAttribute &attrTangent = pVBOLayout->GetAttributeAt(3);
+	deoglVBOAttribute &attrTangent = pVBOLayout->GetAttributes()[3];
 	attrTangent.SetComponentCount(4);
 	attrTangent.SetDataType(deoglVBOAttribute::edtFloat);
 	attrTangent.SetOffset(48);
@@ -1223,7 +1123,7 @@ void deoglRComponentLOD::pPrepareVBOLayout(const deoglModelLOD &modelLOD){
 
 void deoglRComponentLOD::pUpdateRenderTaskConfig(deoglRenderTaskConfig &config,
 deoglSkinTexturePipelines::eTypes type, int renderTaskFlags, int renderTaskFlagMask, bool shadow){
-	config.RemoveAllTextures();
+	config.GetTextures().RemoveAll();
 	
 	if(!pComponent.GetModel()){
 		return;

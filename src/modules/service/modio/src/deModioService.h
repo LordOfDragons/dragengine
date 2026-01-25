@@ -72,8 +72,7 @@ private:
 	cInvalidator::Ref pInvalidator;
 	deVirtualFileSystem::Ref pVFS;
 	decStringList pBaseDirPathStr;
-	decPath *pBaseDirPath;
-	int pBaseDirPathCount;
+	decTList<decPath> pBaseDirPath;
 	bool pPauseModManagement;
 	bool pModManagementEnabled;
 	float pElapsedUpdateProgress;

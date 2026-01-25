@@ -783,7 +783,7 @@ DBG_ENTER_PARAM2("RenderVolumetricPass", "%p", mask, "%d", inbetween)
 		
 		for(e=0; e<particleEmitterCount; e++){
 			deoglRParticleEmitterInstance * const instance = particleEmitterList.GetAt(e);
-			const int particleCount = instance->GetParticleCount();
+			const int particleCount = instance->GetParticles().GetCount();
 			
 			if(particleCount > 0){
 				const decVector emitCamPos(instance->GetPosition() - cameraPosition);

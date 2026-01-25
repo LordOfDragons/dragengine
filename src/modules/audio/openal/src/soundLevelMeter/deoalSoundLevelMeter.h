@@ -29,6 +29,7 @@
 #include "../speaker/deoalSpeakerList.h"
 
 #include <dragengine/common/collection/decTSet.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/sensor/deSoundLevelMeter.h>
@@ -57,10 +58,7 @@ private:
 	bool pDirtyLayerMask;
 	bool pDirtyEnabled;
 	
-	deSoundLevelMeter::cAudibleSpeaker *pSpeakers;
-	int pSpeakerCount;
-	int pSpeakerSize;
-	
+	decTList<deSoundLevelMeter::cAudibleSpeaker> pSpeakers;
 	decTObjectSet<deSpeaker> pOldSpeakers;
 	
 	decTLinkedList<deoalSoundLevelMeter>::Element pLLSyncWorld;
@@ -100,11 +98,8 @@ public:
 	
 	
 	
-	/** \brief Number of speakers. */
-	inline int GetSpeakerCount() const{ return pSpeakerCount; }
-	
-	/** \brief Speaker at index. */
-	const deSoundLevelMeter::cAudibleSpeaker &GetSpeakerAt(int index) const;
+	/** \brief Speakers. */
+	inline const decTList<deSoundLevelMeter::cAudibleSpeaker> &GetSpeakers() const{ return pSpeakers; }
 	
 	/** \brief Add speaker. */
 	void AddSpeaker(deSpeaker *speaker, float volume);

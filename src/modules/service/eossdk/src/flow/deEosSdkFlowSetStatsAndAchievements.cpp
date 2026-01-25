@@ -28,6 +28,7 @@
 #include "../convert/deECCommon.h"
 
 #include <dragengine/deEngine.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/resources/service/deServiceManager.h>
 
 
@@ -102,46 +103,36 @@ void deEosSdkFlowSetStatsAndAchievements::IngestStat(const deServiceObject &requ
 		return;
 	}
 	
-	EOS_Stats_IngestData *ingestData = nullptr;
+	decTList<EOS_Stats_IngestData> ingestData(count, EOS_Stats_IngestData{});
 	int i;
 	
-	try{
-		ingestData = new EOS_Stats_IngestData[count];
+	
+	for(i=0; i<count; i++){
+		const decString &apiName = keys.GetAt(i);
+		const deServiceObject::Ref soValue(soIn->GetChildAt(apiName));
 		
-		for(i=0; i<count; i++){
-			const decString &apiName = keys.GetAt(i);
-			const deServiceObject::Ref soValue(soIn->GetChildAt(apiName));
+		if(soValue->IsInteger()){
+			const int value = soValue->GetInteger();
+			soResp->SetIntChildAt(apiName, value);
 			
-			if(soValue->IsInteger()){
-				const int value = soValue->GetInteger();
-				soResp->SetIntChildAt(apiName, value);
-				
-				ingestData[i] = {};
-				ingestData[i].ApiVersion = EOS_STATS_INGESTDATA_API_LATEST;
-				ingestData[i].StatName = apiName.GetString();
-				ingestData[i].IngestAmount = (int32_t)value;
-				
-			}else{
-				DETHROW_INFO(deeInvalidParam, apiName);
-			}
+			ingestData[i].ApiVersion = EOS_STATS_INGESTDATA_API_LATEST;
+			ingestData[i].StatName = apiName.GetString();
+			ingestData[i].IngestAmount = (int32_t)value;
+			
+		}else{
+			DETHROW_INFO(deeInvalidParam, apiName);
 		}
-		
-		EOS_Stats_IngestStatOptions options = {};
-		options.ApiVersion = EOS_STATS_INGESTSTAT_API_LATEST;
-		options.LocalUserId = pService.productUserId;
-		options.TargetUserId = pService.productUserId;
-		options.Stats = ingestData;
-		options.StatsCount = count;
-		
-		GetModule().LogInfo("deEosSdkFlowSetStatsAndAchievements.IngestStat");
-		EOS_Stats_IngestStat(pService.GetHandleStats(), &options, this, fIngestStatCallback);
-		
-	}catch(const deException &){
-		if(ingestData){
-			delete [] ingestData;
-		}
-		throw;
 	}
+	
+	EOS_Stats_IngestStatOptions options = {};
+	options.ApiVersion = EOS_STATS_INGESTSTAT_API_LATEST;
+	options.LocalUserId = pService.productUserId;
+	options.TargetUserId = pService.productUserId;
+	options.Stats = ingestData.GetArrayPointer();
+	options.StatsCount = count;
+	
+	GetModule().LogInfo("deEosSdkFlowSetStatsAndAchievements.IngestStat");
+	EOS_Stats_IngestStat(pService.GetHandleStats(), &options, this, fIngestStatCallback);
 }
 
 void deEosSdkFlowSetStatsAndAchievements::UnlockAchievements(const deServiceObject &request){
@@ -161,41 +152,32 @@ void deEosSdkFlowSetStatsAndAchievements::UnlockAchievements(const deServiceObje
 		return;
 	}
 	
-	const char **ids = nullptr;
-	int i;
+	decTList<const char*> ids;
+	ids.SetCountDiscard(count);
 	
-	try{
-		ids = new const char*[count];
+	int i;
+	for(i=0; i<count; i++){
+		const decString &name = keys.GetAt(i);
+		const bool achieved = soIn->GetChildAt(name)->GetBoolean();
 		
-		for(i=0; i<count; i++){
-			const decString &name = keys.GetAt(i);
-			const bool achieved = soIn->GetChildAt(name)->GetBoolean();
+		if(achieved){
+			soResp->SetBoolChildAt(name, true);
+			ids[i] = name.GetString();
 			
-			if(achieved){
-				soResp->SetBoolChildAt(name, true);
-				ids[i] = name.GetString();
-				
-			}else{
-				DETHROW_INFO(deeInvalidParam, "Reverting unlocking achievements is not supported");
-			}
+		}else{
+			DETHROW_INFO(deeInvalidParam, "Reverting unlocking achievements is not supported");
 		}
-		
-		EOS_Achievements_UnlockAchievementsOptions options = {};
-		options.ApiVersion = EOS_ACHIEVEMENTS_UNLOCKACHIEVEMENTS_API_LATEST;
-		options.UserId = pService.productUserId;
-		options.AchievementIds = ids;
-		options.AchievementsCount = count;
-		
-		GetModule().LogInfo("deEosSdkFlowSetStatsAndAchievements.UnlockAchievements");
-		EOS_Achievements_UnlockAchievements(pService.GetHandleAchievements(), &options,
-			this, fUnlockAchievementsCallback);
-		
-	}catch(const deException &){
-		if(ids){
-			delete [] ids;
-		}
-		throw;
 	}
+	
+	EOS_Achievements_UnlockAchievementsOptions options = {};
+	options.ApiVersion = EOS_ACHIEVEMENTS_UNLOCKACHIEVEMENTS_API_LATEST;
+	options.UserId = pService.productUserId;
+	options.AchievementIds = ids.GetArrayPointer();
+	options.AchievementsCount = count;
+	
+	GetModule().LogInfo("deEosSdkFlowSetStatsAndAchievements.UnlockAchievements");
+	EOS_Achievements_UnlockAchievements(pService.GetHandleAchievements(), &options,
+		this, fUnlockAchievementsCallback);
 }
 
 

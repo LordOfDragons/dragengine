@@ -92,7 +92,6 @@ pFont(TextAreaFont(powner, guitheme)),
 pTextArea(new FXText(this, this, ID_SELF, TextAreaFlags(powner), 0, 0, 0, 0,
 	TextAreaPadLeft(guitheme), TextAreaPadRight(guitheme),
 	TextAreaPadTop(guitheme), TextAreaPadBottom(guitheme))),
-pStyles(nullptr),
 pResizer(nullptr)
 {
 	if(!pOwner->GetVisible()){
@@ -123,10 +122,6 @@ igdeNativeFoxTextArea::~igdeNativeFoxTextArea(){
 		pTextArea->clearText();
 		pTextArea->setHiliteStyles(nullptr);
 		pTextArea->setStyled(false);
-	}
-	
-	if(pStyles){
-		delete [] pStyles;
 	}
 }
 
@@ -161,18 +156,16 @@ void igdeNativeFoxTextArea::DestroyNativeWidget(){
 ///////////////
 
 void igdeNativeFoxTextArea::UpdateStyles(){
-	if(pStyles){
+	if(pStyles.IsNotEmpty()){
 		pTextArea->setHiliteStyles(nullptr);
 		pTextArea->setStyled(false);
-		
-		delete [] pStyles;
-		pStyles = nullptr;
+		pStyles.RemoveAll();
 	}
 	
 	pBuildStylesArray();
 	
-	if(pStyles){
-		pTextArea->setHiliteStyles(pStyles);
+	if(pStyles.IsNotEmpty()){
+		pTextArea->setHiliteStyles(pStyles.GetArrayPointer());
 		pTextArea->setStyled(true);
 		
 		ApplyStyles();
@@ -180,7 +173,7 @@ void igdeNativeFoxTextArea::UpdateStyles(){
 }
 
 void igdeNativeFoxTextArea::ApplyStyles(){
-	if(!pStyles){
+	if(pStyles.IsEmpty()){
 		return;
 	}
 	
@@ -447,7 +440,7 @@ void igdeNativeFoxTextArea::pBuildStylesArray(){
 		return;
 	}
 	
-	pStyles = new FXHiliteStyle[count + 1];
+	pStyles.SetAll(count + 1, {});
 	
 	// FXHiliteStyle is a struct:
 	// - FXColor normalForeColor
@@ -476,7 +469,7 @@ void igdeNativeFoxTextArea::pBuildStylesArray(){
 	defaultStyle.activeBackColor = aapp.getBackColor();
 	defaultStyle.style = 0;
 	
-	pOwner->GetStyles().VisitIndexed([&](int i, const igdeTextStyle &style){
+	pOwner->GetStyles().VisitIndexed(0, count, [&](int i, const igdeTextStyle &style){
 		FXHiliteStyle &foxStyle = pStyles[i];
 		foxStyle = defaultStyle;
 		
@@ -503,7 +496,7 @@ void igdeNativeFoxTextArea::pBuildStylesArray(){
 		if(style.GetStrikeThrough()){
 			foxStyle.style |= FXText::STYLE_STRIKEOUT;
 		}
-	}, 0, count);
+	});
 }
 
 #endif

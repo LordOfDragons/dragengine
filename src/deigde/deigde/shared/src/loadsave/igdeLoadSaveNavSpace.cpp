@@ -101,12 +101,12 @@ void igdeLoadSaveNavSpace::Load(deNavigationSpace &navspace, decBaseFileReader &
 	int i;
 	
 	// clear the navigation space
-	navspace.SetRoomCount(0);
-	navspace.SetWallCount(0);
-	navspace.SetFaceCount(0);
-	navspace.SetCornerCount(0);
-	navspace.SetEdgeCount(0);
-	navspace.SetVertexCount(0);
+	navspace.GetRooms().RemoveAll();
+	navspace.GetWalls().RemoveAll();
+	navspace.GetFaces().RemoveAll();
+	navspace.GetCorners().RemoveAll();
+	navspace.GetEdges().RemoveAll();
+	navspace.GetVertices().RemoveAll();
 	navspace.SetType(deNavigationSpace::estGrid);
 	
 	// read header
@@ -129,24 +129,24 @@ void igdeLoadSaveNavSpace::Load(deNavigationSpace &navspace, decBaseFileReader &
 		
 		navspace.SetType((deNavigationSpace::eSpaceTypes)reader.ReadUShort());
 		
-		navspace.SetVertexCount(vertexCount);
-		navspace.SetEdgeCount(edgeCount);
-		navspace.SetCornerCount(cornerCount);
-		navspace.SetFaceCount(faceCount);
-		navspace.SetWallCount(wallCount);
-		navspace.SetRoomCount(roomCount);
+		navspace.GetVertices().SetCountDiscard(vertexCount);
+		navspace.GetEdges().SetCountDiscard(edgeCount);
+		navspace.GetCorners().SetCountDiscard(cornerCount);
+		navspace.GetFaces().SetCountDiscard(faceCount);
+		navspace.GetWalls().SetCountDiscard(wallCount);
+		navspace.GetRooms().SetCountDiscard(roomCount);
 		
 		// read vertices
 		for(i=0; i<vertexCount; i++){
 			position.x = reader.ReadFloat();
 			position.y = reader.ReadFloat();
 			position.z = reader.ReadFloat();
-			navspace.SetVertexAt(i, position);
+			navspace.GetVertices()[i] = position;
 		}
 		
 		// read edges
 		for(i=0; i<edgeCount; i++){
-			deNavigationSpaceEdge &edge = navspace.GetEdgeAt(i);
+			deNavigationSpaceEdge &edge = navspace.GetEdges()[i];
 			edge.SetVertex1(reader.ReadUShort());
 			edge.SetVertex2(reader.ReadUShort());
 			edge.SetType1(reader.ReadUShort());
@@ -155,28 +155,28 @@ void igdeLoadSaveNavSpace::Load(deNavigationSpace &navspace, decBaseFileReader &
 		
 		// read corners
 		for(i=0; i<cornerCount; i++){
-			deNavigationSpaceCorner &corner = navspace.GetCornerAt(i);
+			deNavigationSpaceCorner &corner = navspace.GetCorners()[i];
 			corner.SetVertex(reader.ReadUShort());
 			corner.SetType(reader.ReadUShort());
 		}
 		
 		// read faces
 		for(i=0; i<faceCount; i++){
-			deNavigationSpaceFace &face = navspace.GetFaceAt(i);
+			deNavigationSpaceFace &face = navspace.GetFaces()[i];
 			face.SetCornerCount(reader.ReadUShort());
 			face.SetType(reader.ReadUShort());
 		}
 		
 		// read walls
 		for(i=0; i<wallCount; i++){
-			deNavigationSpaceWall &wall = navspace.GetWallAt(i);
+			deNavigationSpaceWall &wall = navspace.GetWalls()[i];
 			wall.SetFace(reader.ReadUShort());
 			wall.SetType(reader.ReadUShort());
 		}
 		
 		// read rooms
 		for(i=0; i<roomCount; i++){
-			deNavigationSpaceRoom &room = navspace.GetRoomAt(i);
+			deNavigationSpaceRoom &room = navspace.GetRooms()[i];
 			room.SetFrontWallCount(reader.ReadUShort());
 			room.SetBackWallCount(reader.ReadUShort());
 			room.SetType(reader.ReadUShort());

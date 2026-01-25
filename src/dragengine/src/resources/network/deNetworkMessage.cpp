@@ -38,16 +38,11 @@
 ////////////////////////////
 
 deNetworkMessage::deNetworkMessage() :
-pBuffer(nullptr),
-pBufferSize(0),
 pDataLength(0),
 pTimeStamp(decDateTime::GetSystemTime()){
 }
 
 deNetworkMessage::~deNetworkMessage(){
-	if(pBuffer){
-		delete [] pBuffer;
-	}
 }
 
 
@@ -64,14 +59,8 @@ void deNetworkMessage::SetDataLength(int dataLength){
 		return;
 	}
 	
-	if(dataLength > pBufferSize){
-		uint8_t * const newBuffer = new uint8_t[dataLength];
-		if(pBuffer){
-			memcpy(newBuffer, pBuffer, pBufferSize);
-			delete [] pBuffer;
-		}
-		pBuffer = newBuffer;
-		pBufferSize = dataLength;
+	if(dataLength > pBuffer.GetCount()){
+		pBuffer.AddRange(dataLength - pBuffer.GetCount(), {});
 	}
 	
 	pDataLength = dataLength;

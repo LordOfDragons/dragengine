@@ -22,12 +22,7 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deDebugDrawerShape.h"
-#include "deDebugDrawerShapeFace.h"
 #include "../../common/shape/decShape.h"
 #include "../../common/exceptions.h"
 
@@ -79,28 +74,12 @@ void deDebugDrawerShape::SetFillColor(const decColor &color){
 // Faces
 //////////
 
-int deDebugDrawerShape::GetFaceCount() const{
-	return pFaces.GetCount();
-}
-
-deDebugDrawerShapeFace *deDebugDrawerShape::GetFaceAt(int index) const{
-	return (deDebugDrawerShapeFace*)pFaces.GetAt(index);
-}
-
-void deDebugDrawerShape::AddFace(deDebugDrawerShapeFace *face){
-	// no pFaces.Has(face) check. for large number of faces this becomes very slow
-	if(!face){
-		DETHROW(deeInvalidParam);
-	}
-	pFaces.Add(face);
+void deDebugDrawerShape::AddFace(deDebugDrawerShapeFace::Ref &&face){
+	DEASSERT_NOTNULL(face)
+	
+	pFaces.Add(std::move(face));
 }
 
 void deDebugDrawerShape::RemoveAllFaces(){
-	const int count = pFaces.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		delete (deDebugDrawerShapeFace*)pFaces.GetAt(i);
-	}
 	pFaces.RemoveAll();
 }

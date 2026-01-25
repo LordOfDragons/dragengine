@@ -25,6 +25,7 @@
 #ifndef _DETERRAINHEIGHTMAP_H_
 #define _DETERRAINHEIGHTMAP_H_
 
+#include "../../../common/collection/decTList.h"
 #include "../../../common/math/decMath.h"
 #include "../../../common/string/decString.h"
 #include "../../image/deImage.h"
@@ -69,8 +70,7 @@ private:
 	deImage::Ref pHeightImage;
 	
 	decString pPathVisImage;
-	unsigned char *pVisibleFaces;
-	int pVFByteCount;
+	decTList<unsigned char> pVisibleFaces;
 	
 	
 	

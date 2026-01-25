@@ -79,16 +79,8 @@
 // Class projTestRunProcess
 /////////////////////////////
 
-projTestRunProcess::sRunParameters::sRunParameters() :
-parameterCount(0),
-parameters(nullptr){
-}
-
-projTestRunProcess::sRunParameters::~sRunParameters(){
-	if(parameters){
-		delete [] parameters;
-	}
-}
+projTestRunProcess::sRunParameters::sRunParameters() = default;
+projTestRunProcess::sRunParameters::~sRunParameters() = default;
 
 // Constructors and Destructors
 /////////////////////////////////
@@ -287,14 +279,15 @@ void projTestRunProcess::pReadRunParameters(){
 	pRunParameters.fullScreen = (ReadUCharFromPipe() != 0);
 	pRunParameters.windowTitle = ReadString16FromPipe();
 	
-	pRunParameters.parameterCount = ReadUShortFromPipe();
-	if(pRunParameters.parameterCount > 0){
-		pRunParameters.parameters = new sModuleParameter[pRunParameters.parameterCount];
-		for(i=0; i<pRunParameters.parameterCount; i++){
-			pRunParameters.parameters[i].module = ReadString16FromPipe();
-			pRunParameters.parameters[i].parameter = ReadString16FromPipe();
-			pRunParameters.parameters[i].value = ReadString16FromPipe();
-		}
+	pRunParameters.parameters.RemoveAll();
+	const int parameterCount = ReadUShortFromPipe();
+	if(parameterCount > 0){
+		pRunParameters.parameters.AddRange(parameterCount, {});
+		pRunParameters.parameters.Visit([&](projTestRunProcess::sModuleParameter &p){
+			p.module = ReadString16FromPipe();
+			p.parameter = ReadString16FromPipe();
+			p.value = ReadString16FromPipe();
+		});
 	}
 	
 	pRunParameters.runArguments = ReadString16FromPipe();
@@ -365,12 +358,10 @@ void projTestRunProcess::pLogConfiguration(){
 		pRunParameters.windowTitle.GetString());
 	
 	pLogger->LogInfo(LOGSOURCE, "- Module Parameters:");
-	for(i=0; i<pRunParameters.parameterCount; i++){
+	pRunParameters.parameters.Visit([&](const projTestRunProcess::sModuleParameter &p){
 		pLogger->LogInfoFormat(LOGSOURCE, "  - %s:%s = %s",
-			pRunParameters.parameters[i].module.GetString(),
-			pRunParameters.parameters[i].parameter.GetString(),
-			pRunParameters.parameters[i].value.GetString());
-	}
+			p.module.GetString(), p.parameter.GetString(), p.value.GetString());
+	});
 	
 	pLogger->LogInfoFormat(LOGSOURCE, "- Run Arguments: %s",
 		pRunParameters.runArguments.GetString());

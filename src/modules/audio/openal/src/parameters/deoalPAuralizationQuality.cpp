@@ -48,15 +48,20 @@ deoalPAuralizationQuality::deoalPAuralizationQuality(deAudioOpenAL &oal) : deoal
 );
 	SetType(deModuleParameter::eptSelection);
 	
-	const deModuleParameter::SelectionEntry entries[5] = {
-		{"veryLow", "Very Low", "Very low quality. For weak CPU delivering best performance."},
-		{"low", "Low", "Low quality. Prefer performance over quality."},
-		{"medium", "Medium", "Medium quality. Balance between quality and performance. Recommended choice."},
-		{"high", "High", "High quality. Prefer quality over performance."},
-		{"veryHigh", "Very High", "Very high quality. For high-end CPU delivering best quality."}
-	};
+	AddSelectionEntry({"veryLow", "Very Low",
+		"Very low quality. For weak CPU delivering best performance."});
 	
-	AddSelectionEntries(entries, 5);
+	AddSelectionEntry({"low", "Low",
+		"Low quality. Prefer performance over quality."});
+	
+	AddSelectionEntry({"medium", "Medium",
+		"Medium quality. Balance between quality and performance. Recommended choice."});
+	
+	AddSelectionEntry({"high", "High",
+		"High quality. Prefer quality over performance."});
+	
+	AddSelectionEntry({"veryHigh", "Very High",
+		"Very high quality. For high-end CPU delivering best quality."});
 	
 	SetCategory(ecBasic);
 	SetDisplayName("Auralization Quality");

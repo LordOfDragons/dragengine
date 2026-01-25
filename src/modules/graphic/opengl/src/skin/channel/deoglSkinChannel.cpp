@@ -396,7 +396,7 @@ void deoglSkinChannel::GenerateConeMap(){
 	decTimer timer;
 	
 	// see http://http.developer.nvidia.com/GPUGems3/gpugems3_ch18.html
-	const deoglPixelBuffer &pixelBufferBase = pPixelBufferMipMap->GetPixelBuffer(0);
+	deoglPixelBuffer &pixelBufferBase = pPixelBufferMipMap->GetPixelBuffers()[0];
 	deoglPixelBuffer::sByte2 * const data = pixelBufferBase.GetPointerByte2();
 	const int height = pixelBufferBase.GetHeight();
 	const int width = pixelBufferBase.GetWidth();
@@ -873,7 +873,7 @@ const deoglVSDetermineChannelFormat &channelFormat){
 }
 
 void deoglSkinChannel::pCreateTextureObject(const deoglSkinTexture &texture){
-	const bool mipMapped = pPixelBufferMipMap->GetPixelBufferCount() > 1;
+	const bool mipMapped = pPixelBufferMipMap->GetPixelBuffers().GetCount() > 1;
 	
 	switch(pType){
 	case ectColorOmnidirCube:
@@ -1589,7 +1589,7 @@ void deoglSkinChannel::pBuildCacheID(){
 	if(AllComponentsStatic() /*HasStaticComponent()*/){
 		return;
 	}
-	if(pPixelBufferMipMap->GetPixelBufferCount() == 0){
+	if(pPixelBufferMipMap->GetPixelBuffers().IsEmpty()){
 		return;
 	}
 	
@@ -1682,7 +1682,7 @@ void deoglSkinChannel::pBuildCacheID(){
 	
 	pCacheID.AppendCharacter(compressed ? 'c' : '-');
 	
-	if(pPixelBufferMipMap->GetPixelBufferCount() == 1){
+	if(pPixelBufferMipMap->GetPixelBuffers().GetCount() == 1){
 		pCacheID.AppendCharacter('-');
 		
 	}else{
@@ -2080,7 +2080,7 @@ int srcLayer, int destLayer, int targetRed, int targetGreen, int targetBlue, int
 	}
 	
 	// copy the pixels to the right place
-	deoglPixelBuffer &pixbuf = pPixelBufferMipMap->GetPixelBuffer(0);
+	deoglPixelBuffer &pixbuf = pPixelBufferMipMap->GetPixelBuffers()[0];
 	
 	if(pFloatFormat){
 		// TODO if srcDataPb32 is not NULL, component count matches and targets[] in range
@@ -2191,7 +2191,7 @@ int srcLayer, int destLayer, int targetRed, int targetGreen, int targetBlue, int
 }
 
 void deoglSkinChannel::pFillWithUniformColor(){
-	deoglPixelBuffer &pixbuf = pPixelBufferMipMap->GetPixelBuffer(0);
+	deoglPixelBuffer &pixbuf = pPixelBufferMipMap->GetPixelBuffers()[0];
 	const int pixelCount = pSize.x * pSize.y * pSize.z;
 	int i;
 	

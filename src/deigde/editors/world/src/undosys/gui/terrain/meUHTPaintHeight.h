@@ -22,15 +22,14 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _MEUHTPAINTHEIGHT_H_
 #define _MEUHTPAINTHEIGHT_H_
 
-// includes
 #include <deigde/undo/igdeUndo.h>
+
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
-// predefinitions
 class meWorld;
 
 
@@ -52,17 +51,17 @@ private:
 	decBoundary pGrid;
 	decPoint pSize;
 	
-	float *pOldHeights;
-	float *pNewHeights;
+	decTList<float> pOldHeights, pNewHeights;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTPaintHeight(int drawMode, meWorld *world, const decPoint &sector, const decPoint &grid, const decPoint &size, float *oldHeights);
-	/** \brief Clean up object. */
-
+	meUHTPaintHeight(int drawMode, meWorld *world, const decPoint &sector,
+		const decPoint &grid, const decPoint &size, decTList<float> &&oldHeights);
+	
 protected:
+	/** \brief Clean up object. */
 	~meUHTPaintHeight() override;
 
 public:
@@ -77,10 +76,8 @@ public:
 	/*@}*/
 	
 private:
-	void pCleanUp();
 	void pSaveHeights();
-	void pRestoreHeights(float *heights);
+	void pRestoreHeights(const float *heights);
 };
 
-// end of include only once
 #endif

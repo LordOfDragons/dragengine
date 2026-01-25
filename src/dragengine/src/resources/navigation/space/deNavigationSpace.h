@@ -26,6 +26,7 @@
 #define _DENAVIGATIONSPACE_H_
 
 #include "../../deResource.h"
+#include "../../../common/collection/decTList.h"
 #include "../../../common/math/decMath.h"
 #include "../../../common/utils/decLayerMask.h"
 #include "../../../common/collection/decTLinkedList.h"
@@ -133,19 +134,14 @@ private:
 	int pLayer;
 	decDVector pPosition;
 	decQuaternion pOrientation;
+	decLayerMask pLayerMask;
 	
-	decVector *pVertices;
-	deNavigationSpaceEdge *pEdges;
-	deNavigationSpaceCorner *pCorners;
-	deNavigationSpaceFace *pFaces;
-	deNavigationSpaceWall *pWalls;
-	deNavigationSpaceRoom *pRooms;
-	int pVertexCount;
-	int pEdgeCount;
-	int pCornerCount;
-	int pFaceCount;
-	int pWallCount;
-	int pRoomCount;
+	decTList<decVector> pVertices;
+	decTList<deNavigationSpaceEdge> pEdges;
+	decTList<deNavigationSpaceCorner> pCorners;
+	decTList<deNavigationSpaceFace> pFaces;
+	decTList<deNavigationSpaceWall> pWalls;
+	decTList<deNavigationSpaceRoom> pRooms;
 	
 	float pSnapDistance;
 	float pSnapAngle;
@@ -265,111 +261,35 @@ public:
 	
 	/** \brief Verify the navigation space. */
 	bool Verify() const;
-	/*@}*/
 	
 	
+	/** \brief Vertices. */
+	inline decTList<decVector> &GetVertices(){ return pVertices; }
+	inline const decTList<decVector> &GetVertices() const{ return pVertices; }
 	
-	/** \name Vertices */
-	/*@{*/
-	/** \brief Number of vertices. */
-	inline int GetVertexCount() const{ return pVertexCount; }
-	
-	/** \brief Set number of vertices. */
-	void SetVertexCount(int count);
-	
-	/** \brief Vertex at the given position. */
-	const decVector &GetVertexAt(int index) const;
-	
-	/** \brief Set vertex at the given position. */
-	void SetVertexAt(int index, const decVector &vertex);
-	
-	/** \brief Pointer to the vertices. */
-	inline decVector *GetVertices() const{ return pVertices; }
-	/*@}*/
+	/** \brief Edges. */
+	inline decTList<deNavigationSpaceEdge> &GetEdges(){ return pEdges; }
+	inline const decTList<deNavigationSpaceEdge> &GetEdges() const{ return pEdges; }
 	
 	
-	
-	/** \name Edges */
-	/*@{*/
-	/** \brief Number of edges. */
-	inline int GetEdgeCount() const{ return pEdgeCount; }
-	
-	/** \brief Set number of edges. */
-	void SetEdgeCount(int count);
-	
-	/** \brief Edge at the given position. */
-	deNavigationSpaceEdge &GetEdgeAt(int index) const;
-	
-	/** \brief Pointer to the edges. */
-	inline deNavigationSpaceEdge *GetEdges() const{ return pEdges; }
-	/*@}*/
+	/** \brief Corners. */
+	inline decTList<deNavigationSpaceCorner> &GetCorners(){ return pCorners; }
+	inline const decTList<deNavigationSpaceCorner> &GetCorners() const{ return pCorners; }
 	
 	
-	
-	/** \name Corners */
-	/*@{*/
-	/** \brief Number of corners. */
-	inline int GetCornerCount() const{ return pCornerCount; }
-	
-	/** \brief Set number of corners. */
-	void SetCornerCount(int count);
-	
-	/** \brief Corner at the given position. */
-	deNavigationSpaceCorner &GetCornerAt(int index) const;
-	
-	/** \brief Pointer to the corners. */
-	inline deNavigationSpaceCorner *GetCorners() const{ return pCorners; }
-	/*@}*/
+	/** \brief Faces. */
+	inline decTList<deNavigationSpaceFace> &GetFaces(){ return pFaces; }
+	inline const decTList<deNavigationSpaceFace> &GetFaces() const{ return pFaces; }
 	
 	
-	
-	/** \name Faces */
-	/*@{*/
-	/** \brief Number of faces. */
-	inline int GetFaceCount() const{ return pFaceCount; }
-	
-	/** \brief Set number of faces. */
-	void SetFaceCount(int count);
-	
-	/** \brief Face at the given position. */
-	deNavigationSpaceFace &GetFaceAt(int index) const;
-	
-	/** \brief Pointer to the faces. */
-	inline deNavigationSpaceFace *GetFaces() const{ return pFaces; }
-	/*@}*/
+	/** \brief Walls. */
+	inline decTList<deNavigationSpaceWall> &GetWalls(){ return pWalls; }
+	inline const decTList<deNavigationSpaceWall> &GetWalls() const{ return pWalls; }
 	
 	
-	
-	/** \name Walls */
-	/*@{*/
-	/** \brief Number of walls. */
-	inline int GetWallCount() const{ return pWallCount; }
-	
-	/** \brief Set number of walls. */
-	void SetWallCount(int count);
-	
-	/** \brief Wall at the given position. */
-	deNavigationSpaceWall &GetWallAt(int index) const;
-	
-	/** \brief Pointer to the walls. */
-	inline deNavigationSpaceWall *GetWalls() const{ return pWalls; }
-	/*@}*/
-	
-	
-	
-	/** \name Rooms */
-	/*@{*/
-	/** \brief Number of rooms. */
-	inline int GetRoomCount() const{ return pRoomCount; }
-	
-	/** \brief Set number of rooms. */
-	void SetRoomCount(int count);
-	
-	/** \brief Room at the given position. */
-	deNavigationSpaceRoom &GetRoomAt(int index) const;
-	
-	/** \brief Pointer to the rooms. */
-	inline deNavigationSpaceRoom *GetRooms() const{ return pRooms; }
+	/** \brief Rooms. */
+	inline decTList<deNavigationSpaceRoom> &GetRooms(){ return pRooms; }
+	inline const decTList<deNavigationSpaceRoom> &GetRooms() const{ return pRooms; }
 	/*@}*/
 	
 	

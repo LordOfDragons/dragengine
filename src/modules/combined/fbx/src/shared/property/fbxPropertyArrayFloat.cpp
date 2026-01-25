@@ -44,15 +44,11 @@
 ////////////////////////////
 
 fbxPropertyArrayFloat::fbxPropertyArrayFloat() :
-fbxProperty(etArrayFloat),
-pValues(nullptr),
-pCount(0){
+fbxProperty(etArrayFloat){
 }
 
 fbxPropertyArrayFloat::fbxPropertyArrayFloat(decBaseFileReader &reader) :
-fbxProperty(etArrayFloat),
-pValues(nullptr),
-pCount(0)
+fbxProperty(etArrayFloat)
 {
 	const int count = reader.ReadUInt();
 	
@@ -63,24 +59,14 @@ pCount(0)
 		return;
 	}
 	
-	try{
-		pValues = new float[count];
-		for(pCount=0; pCount<count; pCount++){
-			pValues[pCount] = valueReader->ReadFloat();
-		}
-		
-	}catch(const deException &){
-		if(pValues){
-			delete [] pValues;
-		}
-		throw;
+	pValues.EnlargeCapacity(count);
+	int i;
+	for(i=0; i<count; i++){
+		pValues.Add(valueReader->ReadFloat());
 	}
 }
 
 fbxPropertyArrayFloat::~fbxPropertyArrayFloat(){
-	if(pValues){
-		delete [] pValues;
-	}
 }
 
 
@@ -88,54 +74,37 @@ fbxPropertyArrayFloat::~fbxPropertyArrayFloat(){
 // Loading and Saving
 ///////////////////////
 
-float fbxPropertyArrayFloat::GetValueAt(int index) const{
-	if(index < 0 || index >= pCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pValues[index];
-}
-
-void fbxPropertyArrayFloat::AddValue(float value){
-	float * const newArray = new float[pCount + 1];
-	if(pValues){
-		memcpy(newArray, pValues, sizeof(float) * pCount);
-		delete [] pValues;
-	}
-	pValues = newArray;
-	pValues[pCount++] = value;
-}
-
 fbxPropertyArrayFloat &fbxPropertyArrayFloat::CastArrayFloat(){
 	return *this;
 }
 
 int fbxPropertyArrayFloat::GetValueCount() const{
-	return GetCount();
+	return pValues.GetCount();
 }
 
 bool fbxPropertyArrayFloat::GetValueAtAsBool(int index) const{
-	return GetValueAt(index);
+	return pValues[index];
 }
 
 int fbxPropertyArrayFloat::GetValueAtAsInt(int index) const{
-	return (int)GetValueAt(index);
+	return (int)pValues[index];
 }
 
 int64_t fbxPropertyArrayFloat::GetValueAtAsLong(int index) const{
-	return (int64_t)GetValueAt(index);
+	return (int64_t)pValues[index];
 }
 
 float fbxPropertyArrayFloat::GetValueAtAsFloat(int index) const{
-	return GetValueAt(index);
+	return pValues[index];
 }
 
 double fbxPropertyArrayFloat::GetValueAtAsDouble(int index) const{
-	return GetValueAt(index);
+	return pValues[index];
 }
 
 decVector2 fbxPropertyArrayFloat::GetValueAtAsVector2(int index) const{
 	const int begin = index * 2;
-	if(begin < 0 || begin + 1 >= pCount){
+	if(begin < 0 || begin + 1 >= pValues.GetCount()){
 		DETHROW(deeInvalidParam);
 	}
 	return decVector2(pValues[begin], pValues[begin + 1]);
@@ -143,7 +112,7 @@ decVector2 fbxPropertyArrayFloat::GetValueAtAsVector2(int index) const{
 
 decVector fbxPropertyArrayFloat::GetValueAtAsVector(int index) const{
 	const int begin = index * 3;
-	if(begin < 0 || begin + 2 >= pCount){
+	if(begin < 0 || begin + 2 >= pValues.GetCount()){
 		DETHROW(deeInvalidParam);
 	}
 	return decVector(pValues[begin], pValues[begin + 1], pValues[begin + 2]);
@@ -151,7 +120,7 @@ decVector fbxPropertyArrayFloat::GetValueAtAsVector(int index) const{
 
 decMatrix fbxPropertyArrayFloat::GetValueAtAsMatrix(int index) const{
 	const int begin = index * 16;
-	if(begin < 0 || begin + 15 >= pCount){
+	if(begin < 0 || begin + 15 >= pValues.GetCount()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -181,5 +150,5 @@ void fbxPropertyArrayFloat::Save(decBaseFileWriter &writer){
 }
 
 void fbxPropertyArrayFloat::DebugPrintStructure(deBaseModule &module, const decString &prefix) const{
-	module.LogInfoFormat("%sProperty Float[%d]", prefix.GetString(), pCount);
+	module.LogInfoFormat("%sProperty Float[%d]", prefix.GetString(), pValues.GetCount());
 }

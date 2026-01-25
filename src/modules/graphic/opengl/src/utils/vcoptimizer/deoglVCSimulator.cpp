@@ -22,15 +22,9 @@
  * SOFTWARE.
  */
 
-#include <math.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-
 #include "deoglVCSimulator.h"
 
 #include <dragengine/common/exceptions.h>
-
 
 
 // Class deoglVCSimulator
@@ -44,44 +38,24 @@ deoglVCSimulator::deoglVCSimulator(){
 	pCacheMissCount = 0;
 	pFaceCount = 0;
 	
-	pCacheSize = 32;
-	pCache = new int[pCacheSize];
+	pCache.SetAll(32, -1);
 }
 
-deoglVCSimulator::~deoglVCSimulator(){
-	if(pCache){
-		delete [] pCache;
-	}
-}
-
+deoglVCSimulator::~deoglVCSimulator() = default;
 
 
 // Management
 ///////////////
 
 void deoglVCSimulator::SetCacheSize(int cacheSize){
-	if(cacheSize < 4){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_TRUE(cacheSize > 3)
 	
-	int *cache = new int[cacheSize];
-	
-	if(pCache){
-		delete [] pCache;
-	}
-	
-	pCache = cache;
-	pCacheSize = cacheSize;
+	pCache.SetAll(cacheSize, -1);
 }
 
 
-
 void deoglVCSimulator::Reset(){
-	int i;
-	
-	for(i=0; i<pCacheSize; i++){
-		pCache[i] = -1;
-	}
+	pCache.SetRangeAt(0, pCache.GetCount(), -1);
 	
 	pCacheHitCount = 0;
 	pCacheMissCount = 0;
@@ -89,9 +63,9 @@ void deoglVCSimulator::Reset(){
 }
 
 void deoglVCSimulator::ProcessFace(int vertex1, int vertex2, int vertex3){
-	if(vertex1 < 0 || vertex2 < 0 || vertex3 < 0){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_TRUE(vertex1 >= 0)
+	DEASSERT_TRUE(vertex2 >= 0)
+	DEASSERT_TRUE(vertex3 >= 0)
 	
 	pFaceCount++;
 	TestVertexAgainstCache(vertex1);
@@ -111,20 +85,20 @@ float deoglVCSimulator::GetAvgCacheMissRatio() const{
 }
 
 
-
 void deoglVCSimulator::TestVertexAgainstCache(int vertex){
-	int i;
+	int * const cache = pCache.GetArrayPointer();
 	
-	for(i=0; i<pCacheSize; i++){
-		if(pCache[i] == vertex){
+	int i;
+	for(i=0; i<pCache.GetCount(); i++){
+		if(cache[i] == vertex){
 			pCacheHitCount++;
 			return;
 		}
 	}
 	
 	pCacheMissCount++;
-	for(i=pCacheSize-1; i>0; i--){
-		pCache[i] = pCache[i - 1];
+	for(i=pCache.GetCount()-1; i>0; i--){
+		cache[i] = cache[i - 1];
 	}
-	pCache[0] = vertex;
+	cache[0] = vertex;
 }

@@ -82,22 +82,13 @@ const btScalar vRandomFactor = 1.0f / (btScalar)RAND_MAX;
 debpParticleEmitterInstanceType::debpParticleEmitterInstanceType() :
 pInstance(NULL),
 pType(0),
-
 pComponent(NULL),
-
-pParticles(NULL),
 pParticleCount(0),
-pParticleSize(0),
-
 pCastIntervalMin(0.0f),
 pCastIntervalGap(1.0f),
 pNextCastTimer(1.0f),
-
 pBurstTimer(0.0f),
-pBurstLastCurvePoint(-1),
-
-pGraParticles(NULL),
-pGraParticleSize(0){
+pBurstLastCurvePoint(-1){
 }
 
 debpParticleEmitterInstanceType::~debpParticleEmitterInstanceType(){
@@ -124,7 +115,7 @@ void debpParticleEmitterInstanceType::PrepareParticles(bool casting, float elaps
 	
 	if(emitter){
 		const deParticleEmitterType &engType = pInstance->GetParticleEmitter()->GetEmitter()->GetTypes().GetAt(pType);
-		const debpParticleEmitterType &type = emitter->GetTypeAt(pType);
+		const debpParticleEmitterType &type = emitter->GetTypes()[pType];
 		//const btScalar btElapsed = ( btScalar )elapsed;
 		//const btScalar btElapsedSquared = btElapsed * btElapsed;
 		int p;
@@ -336,25 +327,26 @@ void debpParticleEmitterInstanceType::ApplyForceField(const debpForceField &forc
 	decVector direction;
 	float forceFactor;
 	decMatrix flucmat;
-	int p;
 	
-	for(p=0; p<pParticleCount; p++){
-		sParticle &particle = pParticles[p];
-		
+	pParticles.Visit(0, pParticleCount, [&](sParticle &particle){
 		direction.x = (float)(particle.position.x() - ffpos.x);
 		direction.y = (float)(particle.position.y() - ffpos.y);
 		direction.z = (float)(particle.position.z() - ffpos.z);
 		
 		distanceSquared = direction * direction;
 		
-		if(distanceSquared >= ffRadiusSquared) continue;
+		if(distanceSquared >= ffRadiusSquared){
+			return;
+		}
 		
 		if(ffFieldType == deForceField::eftLinear){
 			distance = sqrtf(distanceSquared);
 			direction = ffDir;
 			
 		}else{
-			if(distanceSquared < 1e-6f) continue;
+			if(distanceSquared < 1e-6f){
+				return;
+			}
 			
 			distance = sqrtf(distanceSquared);
 			direction *= 1.0f - distance / ffRadius;
@@ -406,7 +398,7 @@ void debpParticleEmitterInstanceType::ApplyForceField(const debpForceField &forc
 		particle.force.setY(particle.force.y() + direction.y);
 		particle.force.setZ(particle.force.z() + direction.z);
 		//particle.angularVelocity += addtorque; // += direction * addtorque;
-	}
+	});
 }
 
 void debpParticleEmitterInstanceType::StepParticles(float elapsed){
@@ -443,18 +435,12 @@ void debpParticleEmitterInstanceType::UpdateGraphicParticles(){
 	const float rotationFactor = 255.0f / TWO_PI;
 	int p;
 	
-	if(pParticleCount > pGraParticleSize){
-		deParticleEmitterInstanceType::sParticle *newArray = new deParticleEmitterInstanceType::sParticle[pParticleCount];
-		
-		if(pGraParticles){
-			delete [] pGraParticles;
-		}
-		pGraParticles = newArray;
-		pGraParticleSize = pParticleCount;
+	if(pParticleCount > pGraParticles.GetCount()){
+		pGraParticles.AddRange(pParticleCount - pGraParticles.GetCount(), {});
 	}
 	
 	if(emitter){
-		const debpParticleEmitterType &type = emitter->GetTypeAt(pType);
+		const debpParticleEmitterType &type = emitter->GetTypes()[pType];
 		const btScalar factorAngVelo = (btScalar)type.GetParamFactorAngVelo();
 		const btScalar factorLinVelo = (btScalar)type.GetParamFactorLinVelo();
 		
@@ -497,10 +483,12 @@ void debpParticleEmitterInstanceType::UpdateGraphicParticles(){
 			destParticle.castTransparency = srcParticle.castTransparency;
 		}
 		
-		pInstance->GetInstance()->GetTypes().GetAt(pType)->SetParticleArray(pGraParticles, pParticleCount);
+		pInstance->GetInstance()->GetTypes().GetAt(pType)->SetParticleArray(
+			pGraParticles.GetArrayPointer(), pParticleCount);
 		
 	}else{
-		pInstance->GetInstance()->GetTypes().GetAt(pType)->SetParticleArray(pGraParticles, 0);
+		pInstance->GetInstance()->GetTypes().GetAt(pType)->SetParticleArray(
+			pGraParticles.GetArrayPointer(), 0);
 	}
 	
 	pInstance->GetInstance()->NotifyTypeParticlesChangedAt(pType);
@@ -510,7 +498,7 @@ void debpParticleEmitterInstanceType::UpdateCastIntervals(){
 	debpParticleEmitter * const emitter = pInstance->GetParticleEmitter();
 	
 	if(emitter){
-		const debpParticleEmitterType &type = emitter->GetTypeAt(pType);
+		const debpParticleEmitterType &type = emitter->GetTypes()[pType];
 		deParticleEmitterInstance &instance = *pInstance->GetInstance();
 		float value, spread;
 		
@@ -559,7 +547,7 @@ void debpParticleEmitterInstanceType::OnTypeChanged(){
 	}
 	
 	const deParticleEmitterType &engType = pInstance->GetParticleEmitter()->GetEmitter()->GetTypes().GetAt(pType);
-	const debpParticleEmitterType &type = pInstance->GetParticleEmitter()->GetTypeAt(pType);
+	const debpParticleEmitterType &type = pInstance->GetParticleEmitter()->GetTypes()[pType];
 	if(!type.GetModel()){
 		return;
 	}
@@ -657,19 +645,8 @@ void debpParticleEmitterInstanceType::KillAllParticles(){
 
 void debpParticleEmitterInstanceType::CastSingleParticle(float distance, float timeOffset){
 	// enlarge the particles array if required 
-	if(pParticleCount == pParticleSize){
-		const int newSize = pParticleSize + 10;
-		sParticle * const newArray = new sParticle[newSize];
-		
-		if(pParticles){
-			int i;
-			for(i=0; i<pParticleSize; i++){
-				newArray[i] = pParticles[i];
-			}
-			delete [] pParticles;
-		}
-		pParticles = newArray;
-		pParticleSize = newSize;
+	if(pParticleCount == pParticles.GetCount()){
+		pParticles.AddRange(10, {});
 	}
 	
 	// set up new particle
@@ -688,7 +665,7 @@ void debpParticleEmitterInstanceType::CastSingleParticle(float distance, float t
 
 void debpParticleEmitterInstanceType::CastBeamParticle(float distance){
 	const debpParticleEmitter * const emitter = pInstance->GetParticleEmitter();
-	const debpParticleEmitterType &type = emitter->GetTypeAt(pType);
+	const debpParticleEmitterType &type = emitter->GetTypes()[pType];
 	const int particleCount = (int)(type.EvaluateCastParameter(*pInstance->GetInstance(),
 		debpParticleEmitterType::escParticleCount, deParticleEmitterType::epParticleCount) + 0.5f);
 	
@@ -701,19 +678,9 @@ void debpParticleEmitterInstanceType::CastBeamParticle(float distance){
 		
 		// enlarge the particles array if required. we enlarge by the maximum particle count even
 		// if we should use less later on
-		if(pParticleCount + particleCount > pParticleSize){
+		if(pParticleCount + particleCount > pParticles.GetCount()){
 			const int newSize = pParticleCount + particleCount + 10;
-			sParticle * const newArray = new sParticle[newSize];
-			
-			if(pParticles){
-				int i;
-				for(i=0; i<pParticleSize; i++){
-					newArray[i] = pParticles[i];
-				}
-				delete [] pParticles;
-			}
-			pParticles = newArray;
-			pParticleSize = newSize;
+			pParticles.AddRange(newSize - pParticles.GetCount(), {});
 		}
 		
 		// set up new particle
@@ -779,7 +746,7 @@ void debpParticleEmitterInstanceType::ParticleSetCastParams(sParticle &particle,
 	
 	// determine cast values
 	const debpParticleEmitter &emitter = *pInstance->GetParticleEmitter();
-	const debpParticleEmitterType &type = emitter.GetTypeAt(pType);
+	const debpParticleEmitterType &type = emitter.GetTypes()[pType];
 	const deParticleEmitterInstance &instance = *pInstance->GetInstance();
 	const deParticleEmitterType &engType = emitter.GetEmitter()->GetTypes().GetAt(pType);
 	decDVector view;
@@ -858,7 +825,7 @@ void debpParticleEmitterInstanceType::ParticleSetCastParams(sParticle &particle,
 void debpParticleEmitterInstanceType::ParticleCastMatrix(decDMatrix &matrix){
 	const debpParticleEmitter &emitter = *pInstance->GetParticleEmitter();
 	const deParticleEmitterType &engType = emitter.GetEmitter()->GetTypes().GetAt(pType);
-	const debpParticleEmitterType &type = emitter.GetTypeAt(pType);
+	const debpParticleEmitterType &type = emitter.GetTypes()[pType];
 	const deParticleEmitterInstance &instance = *pInstance->GetInstance();
 	const debpModel *model = type.GetModel();
 	bool deformedModel = false;
@@ -888,7 +855,7 @@ void debpParticleEmitterInstanceType::ParticleCastMatrix(decDMatrix &matrix){
 			const decVector * const normals = model->GetNormals();
 			const deModel &engModel = model->GetModel();
 			const deModelLOD &engModelLOD = engModel.GetLODAt(0);
-			const int vertexCount = engModelLOD.GetVertexCount();
+			const int vertexCount = engModelLOD.GetVertices().GetCount();
 			
 			int vertex = (int)(((float)random() / (float)RAND_MAX) * (float)vertexCount);
 			if(vertex < 0){
@@ -898,7 +865,7 @@ void debpParticleEmitterInstanceType::ParticleCastMatrix(decDMatrix &matrix){
 				vertex = vertexCount - 1;
 			}
 			
-			const deModelVertex &engVertex = engModelLOD.GetVertexAt(vertex);
+			const deModelVertex &engVertex = engModelLOD.GetVertices()[vertex];
 			decVector normal(normals[vertex]);
 			
 			if(deformedModel && engVertex.GetWeightSet() != -1){
@@ -944,10 +911,10 @@ void debpParticleEmitterInstanceType::ParticleCastMatrix(decDMatrix &matrix){
 			
 			const int face = model->IndexOfFaceWithProbability((float)random() / (float)RAND_MAX);
 			
-			const deModelFace &engFace = engModelLOD.GetFaceAt(face);
-			const deModelVertex &engV1 = engModelLOD.GetVertexAt(engFace.GetVertex1());
-			const deModelVertex &engV2 = engModelLOD.GetVertexAt(engFace.GetVertex2());
-			const deModelVertex &engV3 = engModelLOD.GetVertexAt(engFace.GetVertex3());
+			const deModelFace &engFace = engModelLOD.GetFaces()[face];
+			const deModelVertex &engV1 = engModelLOD.GetVertices()[engFace.GetVertex1()];
+			const deModelVertex &engV2 = engModelLOD.GetVertices()[engFace.GetVertex2()];
+			const deModelVertex &engV3 = engModelLOD.GetVertices()[engFace.GetVertex3()];
 			
 			decVector v1(engV1.GetPosition());
 			decVector v2(engV2.GetPosition());
@@ -1100,7 +1067,7 @@ void debpParticleEmitterInstanceType::ParticleCreateTrailEmitter(sParticle &part
 
 void debpParticleEmitterInstanceType::ParticleSetProgressParams(sParticle &particle){
 	const debpParticleEmitter &emitter = *pInstance->GetParticleEmitter();
-	const debpParticleEmitterType &type = emitter.GetTypeAt(pType);
+	const debpParticleEmitterType &type = emitter.GetTypes()[pType];
 	const debpWorld * const world = pInstance->GetParentWorld();
 	
 	particle.size = particle.castSize *
@@ -1412,7 +1379,7 @@ bool debpParticleEmitterInstanceType::ParticleTestCollision(sParticle &particle,
 			emitInstance->SetReferencePosition(emitInstance->GetPosition());
 			btVector3 emitNormal;
 			
-			const debpParticleEmitterType &type = pInstance->GetParticleEmitter()->GetTypeAt(pType);
+			const debpParticleEmitterType &type = pInstance->GetParticleEmitter()->GetTypes()[pType];
 			const float emitDirection = particle.castEmitDirection * type.EvaluateProgressParameter(
 				debpParticleEmitterType::escEmitDirection, particle.lifetime);
 			
@@ -1571,11 +1538,4 @@ deParticleEmitterInstance &instance, float linearVelocity){
 
 void debpParticleEmitterInstanceType::pCleanUp(){
 	KillAllParticles();
-	
-	if(pGraParticles){
-		delete [] pGraParticles;
-	}
-	if(pParticles){
-		delete [] pParticles;
-	}
 }

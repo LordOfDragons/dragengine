@@ -406,7 +406,7 @@ void deoglRenderSky::RenderSky(deoglRenderPlan &plan, const deoglRenderPlanMaske
 				break;
 			}
 			
-			if(layer.GetBodyCount() > 0){
+			if(layer.GetBodies().IsNotEmpty()){
 				RenderSkyLayerBodies(plan, instance, j, false);
 			}
 		}
@@ -505,8 +505,8 @@ deoglRSkyInstance &instance, int layerIndex, bool renderIntoEnvMap){
 	const deoglRSkyInstanceLayer &instanceLayer = instance.GetLayerAt(layerIndex);
 	const deoglRSkyLayer &layer = instance.GetRSky()->GetLayerAt(layerIndex);
 	
-	const deoglRSkyLayer::sBody * const bodies = layer.GetBodies();
-	int b, bodyCount = layer.GetBodyCount();
+	const deoglRSkyLayer::sBody * const bodies = layer.GetBodies().GetArrayPointer();
+	int b, bodyCount = layer.GetBodies().GetCount();
 	decColor layerColor = instanceLayer.GetColor();
 	const decMatrix &matrixLayer = instanceLayer.GetMatrix();
 	
@@ -714,7 +714,7 @@ deoglEnvironmentMap &envmap){
 						break;
 					}
 					
-					if(sl.GetBodyCount() > 0){
+					if(sl.GetBodies().IsNotEmpty()){
 						RenderSkyLayerBodies(plan, *si, sli, true);
 					}
 				});

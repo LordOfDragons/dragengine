@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoalSpeaker.h"
 #include "deoalASpeaker.h"
 #include "../deAudioOpenAL.h"

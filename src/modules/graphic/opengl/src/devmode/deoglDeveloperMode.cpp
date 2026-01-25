@@ -621,13 +621,13 @@ void deoglDeveloperMode::pCmdOpenGLCaps(const decUnicodeArgumentList &, decUnico
 	OGL_CHECK(pRenderThread, glGetIntegerv(GL_NUM_COMPRESSED_TEXTURE_FORMATS, &formatCount));
 	answer.AppendFromUTF8("- Texture Compression Formats:\n");
 	if(formatCount > 0){
-		try{
-			formats = new GLint[formatCount];
-			
-			OGL_CHECK(pRenderThread, glGetIntegerv(GL_COMPRESSED_TEXTURE_FORMATS, formats));
-			for(f=0; f<formatCount; f++){
-				for(i=0; i<COMPRESSION_FORMAT_COUNT; i++){
-					if(formats[f] == ST_CompressionFormats[i].id){
+		decTList<GLint> formatsList(formatCount);
+		formats = formatsList.GetArrayPointer();
+		
+		OGL_CHECK(pRenderThread, glGetIntegerv(GL_COMPRESSED_TEXTURE_FORMATS, formats));
+		for(f=0; f<formatCount; f++){
+			for(i=0; i<COMPRESSION_FORMAT_COUNT; i++){
+				if(formats[f] == ST_CompressionFormats[i].id){
 						text.Format("   - %s\n", ST_CompressionFormats[i].name);
 						break;
 					}
@@ -637,14 +637,7 @@ void deoglDeveloperMode::pCmdOpenGLCaps(const decUnicodeArgumentList &, decUnico
 					text.Format("   - Unknown (ID %x)\n", formats[f]);
 				}
 				
-				answer.AppendFromUTF8(text.GetString());
-			}
-			
-			delete [] formats;
-			
-		}catch(const deException &){
-			if(formats) delete [] formats;
-			throw;
+			answer.AppendFromUTF8(text.GetString());
 		}
 	}
 	

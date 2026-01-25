@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-
 #include "devkDevice.h"
 #include "devkInstance.h"
 #include "deSharedVulkan.h"
@@ -33,6 +30,7 @@
 #include "devkTestFormatConfig.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/deBaseModule.h>
 
@@ -58,10 +56,7 @@ pConfig(config),
 pFamilyIndexGraphic(0),
 pFamilyIndexCompute(0),
 pFamilyIndexTransfer(0),
-pSupportedFormats(nullptr),
-pSupportedFormatCount(0),
 pDevice(VK_NULL_HANDLE),
-pQueues(nullptr),
 pDescriptorSetLayoutManager(*this),
 pShaderModuleManager(*this),
 pPipelineManager(*this)
@@ -108,12 +103,6 @@ uint32_t devkDevice::ExtensionVersion(eExtension extension) const{
 	return pSupportsExtension[extension].version;
 }
 
-const devkFormat &devkDevice::GetSupportedFormatAt(int index) const{
-	DEASSERT_TRUE(index >= 0)
-	DEASSERT_TRUE(index < pSupportedFormatCount)
-	return pSupportedFormats[index];
-}
-
 const devkFormat *devkDevice::GetUseTexFormat(eFormats format) const{
 	return pUseTexFormats[format];
 }
@@ -145,10 +134,10 @@ int devkDevice::GetGraphicQueueCount() const{
 	return pConfig.graphicQueueCount;
 }
 
-devkQueue &devkDevice::GetGraphicQueueAt(int index) const{
-	if(index < 0 || index >= pConfig.graphicQueueCount){
-		DETHROW(deeInvalidParam);
-	}
+const devkQueue &devkDevice::GetGraphicQueueAt(int index) const{
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < pConfig.graphicQueueCount)
+	
 	return pQueues[index];
 }
 
@@ -156,10 +145,10 @@ int devkDevice::GetComputeQueueCount() const{
 	return pConfig.computeQueueCount;
 }
 
-devkQueue &devkDevice::GetComputeQueueAt(int index) const{
-	if(index < 0 || index >= pConfig.computeQueueCount){
-		DETHROW(deeInvalidParam);
-	}
+const devkQueue &devkDevice::GetComputeQueueAt(int index) const{
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < pConfig.computeQueueCount)
+	
 	return pQueues[pConfig.graphicQueueCount + index];
 }
 
@@ -167,10 +156,10 @@ int devkDevice::GetTransferQueueCount() const{
 	return pConfig.transferQueueCount;
 }
 
-devkQueue &devkDevice::GetTransferQueueAt(int index) const{
-	if(index < 0 || index >= pConfig.transferQueueCount){
-		DETHROW(deeInvalidParam);
-	}
+const devkQueue &devkDevice::GetTransferQueueAt(int index) const{
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < pConfig.transferQueueCount)
+	
 	return pQueues[pConfig.graphicQueueCount + pConfig.computeQueueCount + index];
 }
 
@@ -181,18 +170,14 @@ devkQueue &devkDevice::GetTransferQueueAt(int index) const{
 
 void devkDevice::pCleanUp(){
 	// ensure all queues are idle before releasing them
-	if(pQueues){
-		const int queueCount = pConfig.graphicQueueCount + pConfig.computeQueueCount + pConfig.transferQueueCount;
-		int i;
-		for(i=0; i<queueCount; i++){
-			pQueues[i]->WaitIdle();
+	pQueues.Visit([](const devkQueue::Ref &queue){
+		if(queue){
+			queue->WaitIdle();
 		}
-	}
+	});
 	
 	// now it is save to release queues
-	if(pQueues){
-		delete [] pQueues;
-	}
+	pQueues.RemoveAll();
 	
 	// ensure all resources cleaned up using destructor calls are cleaned up before
 	// the device is destroyed
@@ -204,11 +189,6 @@ void devkDevice::pCleanUp(){
 	if(pDevice){
 		vkDestroyDevice(pDevice, VK_NULL_HANDLE);
 		pDevice = VK_NULL_HANDLE;
-	}
-	
-	// cleaning up
-	if(pSupportedFormats){
-		delete [] pSupportedFormats;
 	}
 }
 
@@ -226,16 +206,13 @@ void devkDevice::pCreateDevice(){
 	uint32_t queueFamilyCount = 0;
 	pInstance.vkGetPhysicalDeviceQueueFamilyProperties(pPhysicalDevice, &queueFamilyCount, VK_NULL_HANDLE);
 	
-	VkQueueFamilyProperties *queueFamilyProperties = nullptr;
-	if(queueFamilyCount == 0){
-		DETHROW_INFO(deeInvalidAction, "no queues found");
-	}
+	DEASSERT_TRUE(queueFamilyCount > 0)
 	
-	queueFamilyProperties = new VkQueueFamilyProperties[queueFamilyCount];
-	memset(queueFamilyProperties, 0, sizeof(VkQueueFamilyProperties) * queueFamilyCount);
+	decTList<VkQueueFamilyProperties> queueFamilyProperties((int)queueFamilyCount, VkQueueFamilyProperties{});
 	
 	uint32_t writtenQueueFamilyCount = queueFamilyCount;
-	pInstance.vkGetPhysicalDeviceQueueFamilyProperties(pPhysicalDevice, &writtenQueueFamilyCount, queueFamilyProperties);
+	pInstance.vkGetPhysicalDeviceQueueFamilyProperties(pPhysicalDevice,
+		&writtenQueueFamilyCount, queueFamilyProperties.GetArrayPointer());
 	DEASSERT_TRUE(writtenQueueFamilyCount <= queueFamilyCount)
 	int i;
 	
@@ -334,10 +311,6 @@ void devkDevice::pCreateDevice(){
 		}
 	}
 	
-	if(queueFamilyProperties){
-		delete [] queueFamilyProperties;
-	}
-	
 	if(queueGraphic != -1
 	&& queueCreateInfo[queueGraphic].queueCount != (uint32_t)allowGraphicQueueCount){
 		DETHROW_INFO(deeInvalidAction, "graphic queue count mismatch");
@@ -362,11 +335,9 @@ void devkDevice::pCreateDevice(){
 	pLoadFunctions();
 	
 	// create queue instances
-	if(pConfig.graphicQueueCount + pConfig.computeQueueCount + pConfig.transferQueueCount > 0){
-		pQueues = new devkQueue::Ref[pConfig.graphicQueueCount
-			+ pConfig.computeQueueCount + pConfig.transferQueueCount];
-		
-		int nextQueue = 0;
+	const int queueCount = pConfig.graphicQueueCount + pConfig.computeQueueCount + pConfig.transferQueueCount;
+	if(queueCount > 0){
+		pQueues.EnlargeCapacity(queueCount);
 		
 		// graphic queues
 		for(i=0; i<pConfig.graphicQueueCount; i++){
@@ -375,12 +346,12 @@ void devkDevice::pCreateDevice(){
 			if(!queue){
 				DETHROW_INFO(deeInvalidAction, "get graphic device queue failed");
 			}
-			pQueues[nextQueue++] = devkQueue::Ref::New(*this, pFamilyIndexGraphic, i, queue);
+			pQueues.Add(devkQueue::Ref::New(*this, pFamilyIndexGraphic, i, queue));
 		}
 		
 		// compute queues
 		for(i=0; i<decMath::min(pConfig.graphicQueueCount, pConfig.computeQueueCount); i++){
-			pQueues[nextQueue++] = pQueues[i]; // shared
+			pQueues.Add(pQueues[i]); // shared
 		}
 		
 		for(i=0; i<allowComputeQueueCount; i++){
@@ -389,12 +360,12 @@ void devkDevice::pCreateDevice(){
 			if(!queue){
 				DETHROW_INFO(deeInvalidAction, "get compute device queue failed");
 			}
-			pQueues[nextQueue++] = devkQueue::Ref::New(*this, pFamilyIndexCompute, i, queue);
+			pQueues.Add(devkQueue::Ref::New(*this, pFamilyIndexCompute, i, queue));
 		}
 		
 		// transfer queues
 		for(i=0; i<decMath::min(pConfig.graphicQueueCount, pConfig.transferQueueCount); i++){
-			pQueues[nextQueue++] = pQueues[i]; // shared
+			pQueues.Add(pQueues[i]); // shared
 		}
 		
 		for(i=0; i<allowTransferQueueCount; i++){
@@ -403,7 +374,7 @@ void devkDevice::pCreateDevice(){
 			if(!queue){
 				DETHROW_INFO(deeInvalidAction, "get transfer device queue failed");
 			}
-			pQueues[nextQueue++] = devkQueue::Ref::New(*this, pFamilyIndexTransfer, i, queue);
+			pQueues.Add(devkQueue::Ref::New(*this, pFamilyIndexTransfer, i, queue));
 		}
 	}
 }
@@ -437,60 +408,51 @@ void devkDevice::pDetectExtensions(){
 		return;
 	}
 	
-	VkExtensionProperties * const extensions = new VkExtensionProperties[count];
-	try{
-		uint32_t writtenCount = count;
-		VK_CHECK(vulkan, pInstance.vkEnumerateDeviceExtensionProperties(
-			pPhysicalDevice, VK_NULL_HANDLE, &writtenCount, extensions));
-		DEASSERT_TRUE(writtenCount <= count);
-		
-		// report all extensions reported for debug purpose
-		deBaseModule &baseModule = vulkan.GetModule();
-		uint32_t i;
-		
-		baseModule.LogInfo("Device Extensions:");
-		for(i=0; i<writtenCount; i++){
-			baseModule.LogInfoFormat("- %s: %d", extensions[i].extensionName, extensions[i].specVersion);
-		}
-		
-		// store supported extensions
-		int j;
-		for(i=0; i<writtenCount; i++){
-			for(j=0; j<ExtensionCount; j++){
-				if(strcmp(pSupportsExtension[j].name, extensions[i].extensionName) == 0){
-					pSupportsExtension[j].version = extensions[i].specVersion;
-					break;
-				}
+	decTList<VkExtensionProperties> extensions((int)count, VkExtensionProperties{});
+	uint32_t writtenCount = count;
+	VK_CHECK(vulkan, pInstance.vkEnumerateDeviceExtensionProperties(
+		pPhysicalDevice, VK_NULL_HANDLE, &writtenCount, extensions.GetArrayPointer()));
+	DEASSERT_TRUE(writtenCount <= count);
+	
+	// report all extensions reported for debug purpose
+	deBaseModule &baseModule = vulkan.GetModule();
+	uint32_t i;
+	
+	baseModule.LogInfo("Device Extensions:");
+	extensions.Visit(0, writtenCount, [&baseModule](const VkExtensionProperties &ext){
+		baseModule.LogInfoFormat("- %s: %d", ext.extensionName, ext.specVersion);
+	});
+	
+	// store supported extensions
+	int j;
+	for(i=0; i<writtenCount; i++){
+		for(j=0; j<ExtensionCount; j++){
+			if(strcmp(pSupportsExtension[j].name, extensions[i].extensionName) == 0){
+				pSupportsExtension[j].version = extensions[i].specVersion;
+				break;
 			}
 		}
-		
-		// report support extensions
-		baseModule.LogInfo("Supported Extensions:");
-		for(i=0; i<ExtensionCount; i++){
-			if(pSupportsExtension[i].version){
-				baseModule.LogInfoFormat("- %s: %d", pSupportsExtension[i].name,
-					pSupportsExtension[i].version);
-			}
+	}
+	
+	// report support extensions
+	baseModule.LogInfo("Supported Extensions:");
+	for(i=0; i<ExtensionCount; i++){
+		if(pSupportsExtension[i].version){
+			baseModule.LogInfoFormat("- %s: %d", pSupportsExtension[i].name,
+				pSupportsExtension[i].version);
 		}
-		
-		baseModule.LogInfo("Not Supported Extensions:");
-		for(i=0; i<ExtensionCount; i++){
-			if(!pSupportsExtension[i].version){
-				baseModule.LogInfoFormat("- %s", pSupportsExtension[i].name);
-			}
+	}
+	
+	baseModule.LogInfo("Not Supported Extensions:");
+	for(i=0; i<ExtensionCount; i++){
+		if(!pSupportsExtension[i].version){
+			baseModule.LogInfoFormat("- %s", pSupportsExtension[i].name);
 		}
-		
-		delete [] extensions;
-		
-	}catch(const deException &){
-		delete [] extensions;
-		throw;
 	}
 }
 
 void devkDevice::pDetectCapabilities(){
-	pSupportedFormats = new devkFormat[TEST_PROGRAM_COUNT];
-	pSupportedFormatCount = 0;
+	pSupportedFormats.EnlargeCapacity(TEST_PROGRAM_COUNT);
 	
 	int i;
 	for(i=0; i<TEST_PROGRAM_COUNT; i++){
@@ -509,7 +471,8 @@ void devkDevice::pDetectCapabilities(){
 			continue;
 		}
 		
-		devkFormat &f = pSupportedFormats[pSupportedFormatCount++];
+		pSupportedFormats.Add({});
+		devkFormat &f = pSupportedFormats.Last();
 		f.SetFormat(ttf.format);
 		f.SetBitsPerPixel(ttf.bitsPerPixel);
 		f.SetIsDepth(HAS_FLAG_DEPTH(ttf.flags));
@@ -551,9 +514,9 @@ void devkDevice::pDetectCapabilities(){
 	
 	deBaseModule &module = pInstance.GetVulkan().GetModule();
 	module.LogInfo("Supported Formats:");
-	for(i=0; i<pSupportedFormatCount; i++){
-		module.LogInfoFormat("- %s", pSupportedFormats[i].GetName().GetString());
-	}
+	pSupportedFormats.Visit([&](const devkFormat &format){
+		module.LogInfoFormat("- %s", format.GetName().GetString());
+	});
 	
 	module.LogInfo("Use Format Texture:");
 	for(i=0; i<FormatCount; i++){

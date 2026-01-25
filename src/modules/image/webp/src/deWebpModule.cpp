@@ -88,74 +88,58 @@ deBaseImageInfo *deWebpModule::InitLoadImage(decBaseFileReader &file){
 void deWebpModule::LoadImage(decBaseFileReader&, deImage &image, deBaseImageInfo &infos){
 	deWebpImageInfo &webpInfo = (deWebpImageInfo&)infos;
 	uint8_t *readTarget = nullptr;
-	sRGBA8 *bufferRGBA = nullptr;
-	sRGB8 *bufferRGB = nullptr;
+	decTList<sRGBA8> bufferRGBA;
+	decTList<sRGB8> bufferRGB;
 	uint8_t *result = nullptr;
-	int i;
 	
-	try{
-		const int pixelCount = image.GetWidth() * image.GetHeight();
-		
-		if(webpInfo.GetHasAlpha()){
-			if(webpInfo.GetIsGrayscale()){
-				bufferRGBA = new sRGBA8[pixelCount];
-				readTarget = (uint8_t*)bufferRGBA;
-				
-			}else{
-				readTarget = (uint8_t*)image.GetDataRGBA8();
-			}
-			
-			result = WebPDecodeRGBAInto((const uint8_t*)webpInfo.GetData().GetPointer(),
-				webpInfo.GetData().GetLength(), readTarget, pixelCount * 4, image.GetWidth() * 4);
+	const int pixelCount = image.GetWidth() * image.GetHeight();
+	
+	if(webpInfo.GetHasAlpha()){
+		if(webpInfo.GetIsGrayscale()){
+			bufferRGBA.AddRange(pixelCount, {});
+			readTarget = (uint8_t*)bufferRGBA.GetArrayPointer();
 			
 		}else{
-			if(webpInfo.GetIsGrayscale()){
-				bufferRGB = new sRGB8[pixelCount];
-				readTarget = (uint8_t*)bufferRGB;
-				
-			}else{
-				readTarget = (uint8_t*)image.GetDataRGB8();
-			}
-			
-			result = WebPDecodeRGBInto((const uint8_t*)webpInfo.GetData().GetPointer(),
-				webpInfo.GetData().GetLength(), readTarget, pixelCount * 3, image.GetWidth() * 3);
+			readTarget = (uint8_t*)image.GetDataRGBA8();
 		}
 		
-		if(!result){
-			DETHROW(deeInvalidFileFormat);
+		result = WebPDecodeRGBAInto((const uint8_t*)webpInfo.GetData().GetPointer(),
+			webpInfo.GetData().GetLength(), readTarget, pixelCount * 4, image.GetWidth() * 4);
+		
+	}else{
+		if(webpInfo.GetIsGrayscale()){
+			bufferRGB.AddRange(pixelCount, {});
+			readTarget = (uint8_t*)bufferRGB.GetArrayPointer();
+			
+		}else{
+			readTarget = (uint8_t*)image.GetDataRGB8();
 		}
 		
-		if(bufferRGBA){
-			sGrayscaleAlpha8 * const dest = image.GetDataGrayscaleAlpha8();
-			
-			for(i=0; i<pixelCount; i++){
-				dest[i].value = bufferRGBA[i].red;
-				dest[i].alpha = bufferRGBA[i].alpha;
-			}
-			
-			delete [] bufferRGBA;
-			bufferRGBA = nullptr;
-		}
+		result = WebPDecodeRGBInto((const uint8_t*)webpInfo.GetData().GetPointer(),
+			webpInfo.GetData().GetLength(), readTarget, pixelCount * 3, image.GetWidth() * 3);
+	}
+	
+	if(!result){
+		DETHROW(deeInvalidFileFormat);
+	}
+	
+	if(bufferRGBA.IsNotEmpty()){
+		sGrayscaleAlpha8 * const dest = image.GetDataGrayscaleAlpha8();
 		
-		if(bufferRGB){
-			sGrayscale8 * const dest = image.GetDataGrayscale8();
-			
-			for(i=0; i<pixelCount; i++){
-				dest[i].value = bufferRGB[i].red;
-			}
-			
-			delete [] bufferRGB;
-			bufferRGB = nullptr;
+		int i;
+		for(i=0; i<pixelCount; i++){
+			dest[i].value = bufferRGBA[i].red;
+			dest[i].alpha = bufferRGBA[i].alpha;
 		}
+	}
+	
+	if(bufferRGB.IsNotEmpty()){
+		sGrayscale8 * const dest = image.GetDataGrayscale8();
 		
-	}catch(const deException &){
-		if(bufferRGBA){
-			delete [] bufferRGBA;
+		int i;
+		for(i=0; i<pixelCount; i++){
+			dest[i].value = bufferRGB[i].red;
 		}
-		if(bufferRGB){
-			delete [] bufferRGB;
-		}
-		throw;
 	}
 }
 

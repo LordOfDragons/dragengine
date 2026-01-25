@@ -31,15 +31,6 @@
 #include "../exceptions.h"
 
 
-// struct
-struct rgba{
-	unsigned char r, g, b, a;
-};
-struct colorEntry{
-	rgba color;
-	char index[4];
-};
-
 // class decXpmImage
 //////////////////////
 // constructor, destructor
@@ -49,72 +40,62 @@ decXpmImage::decXpmImage(const char *xpmData[], bool flip){
 	int color;
 	int x, y, c, line=0;
 	const char *lineData;
-	rgba *destData, *destLine;
-	colorEntry *colorTable = nullptr;
+	rgba *destLine;
 	pWidth = 0;
 	pHeight = 0;
-	pData = nullptr;
-	try{
-		// image information
-		lineData = xpmData[line++];
-		pWidth = pReadInt(&lineData);
-		pHeight = pReadInt(&lineData);
-		colorCount = pReadInt(&lineData);
-		pixelBytes = pReadInt(&lineData);
-		if(pWidth<1 || pHeight<1 || colorCount<1) DETHROW(deeInvalidFileFormat);
-		if(pixelBytes<1 || pixelBytes>4) DETHROW(deeInvalidFileFormat);
-		// read color table
-		colorTable = new colorEntry[colorCount];
-		for(c=0; c<colorCount; c++){
-			lineData = xpmData[line++];
-			memcpy(&colorTable[c].index[0], lineData, pixelBytes);
-			lineData += pixelBytes + 1;
-			if(*lineData != 'c') DETHROW(deeInvalidFileFormat);
-			lineData += 2;
-			if(*lineData == '#'){
-				lineData++;
-				color = pReadColor(&lineData);
-				colorTable[c].color.r = (unsigned char)((color >> 16) & 0xff);
-				colorTable[c].color.g = (unsigned char)((color >> 8) & 0xff);
-				colorTable[c].color.b = (unsigned char)(color & 0xff);
-				colorTable[c].color.a = 255;
-			}else if(strncmp(lineData, "None", 4) == 0){
-				colorTable[c].color.r = 0;
-				colorTable[c].color.g = 0;
-				colorTable[c].color.b = 0;
-				colorTable[c].color.a = 255;
-				lineData += 4;
-			}else{
-				DETHROW(deeInvalidFileFormat);
-			}
-		}
-		// read pixels
-		destData = new rgba[pWidth*pHeight];
-		pData = reinterpret_cast<char*>(destData);
-		for(y=0; y<pHeight; y++){
-			lineData = xpmData[line++];
-			destLine = destData + pWidth * (flip ? pHeight - 1 - y : y);
-			for(x=0; x<pWidth; x++){
-				for(c=0; c<colorCount; c++){
-					if(strncmp(&colorTable[c].index[0], lineData, pixelBytes) == 0) break;
-				}
-				if(c == colorCount) DETHROW(deeInvalidFileFormat);
-				lineData += pixelBytes;
-				*destLine = colorTable[c].color;
-				destLine++;
-			}
-		}
-		// clean up
-		delete [] colorTable;
-	}catch(const deException &){
-		if(pData) delete [] pData;
-		if(colorTable) delete [] colorTable;
-		throw;
-	}
+	pDataRgba.RemoveAll();
 	
+	// image information
+	lineData = xpmData[line++];
+	pWidth = pReadInt(&lineData);
+	pHeight = pReadInt(&lineData);
+	colorCount = pReadInt(&lineData);
+	pixelBytes = pReadInt(&lineData);
+	if(pWidth<1 || pHeight<1 || colorCount<1) DETHROW(deeInvalidFileFormat);
+	if(pixelBytes<1 || pixelBytes>4) DETHROW(deeInvalidFileFormat);
+	// read color table
+	decTList<colorEntry> colorTable;
+	for(c=0; c<colorCount; c++){
+		lineData = xpmData[line++];
+		colorTable.Add({});
+		memcpy(&colorTable[c].index[0], lineData, pixelBytes);
+		lineData += pixelBytes + 1;
+		if(*lineData != 'c') DETHROW(deeInvalidFileFormat);
+		lineData += 2;
+		if(*lineData == '#'){
+			lineData++;
+			color = pReadColor(&lineData);
+			colorTable[c].color.r = (unsigned char)((color >> 16) & 0xff);
+			colorTable[c].color.g = (unsigned char)((color >> 8) & 0xff);
+			colorTable[c].color.b = (unsigned char)(color & 0xff);
+			colorTable[c].color.a = 255;
+		}else if(strncmp(lineData, "None", 4) == 0){
+			colorTable[c].color.r = 0;
+			colorTable[c].color.g = 0;
+			colorTable[c].color.b = 0;
+			colorTable[c].color.a = 255;
+			lineData += 4;
+		}else{
+			DETHROW(deeInvalidFileFormat);
+		}
+	}
+	// read pixels
+	pDataRgba.AddRange(pWidth*pHeight, {});
+	for(y=0; y<pHeight; y++){
+		lineData = xpmData[line++];
+		destLine = pDataRgba.GetArrayPointer() + pWidth * (flip ? pHeight - 1 - y : y);
+		for(x=0; x<pWidth; x++){
+			for(c=0; c<colorCount; c++){
+				if(strncmp(&colorTable[c].index[0], lineData, pixelBytes) == 0) break;
+			}
+			if(c == colorCount) DETHROW(deeInvalidFileFormat);
+			lineData += pixelBytes;
+			*destLine = colorTable[c].color;
+			destLine++;
+		}
+	}
 }
 decXpmImage::~decXpmImage(){
-	if(pData) delete [] pData;
 }
 // private
 int decXpmImage::pReadInt(const char **pdata){

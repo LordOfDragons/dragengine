@@ -28,7 +28,7 @@
 #include "../deoglBasics.h"
 
 #include <dragengine/common/collection/decTOrderedSet.h>
-#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/threading/deMutex.h>
 
 class deoglRCamera;
@@ -109,9 +109,7 @@ private:
 	decTOrderedSet<deoglRModel*> pInitModelList;
 	
 	deMutex pMutexOGLObjects;
-	sOpenGLObject *pOGLObjects;
-	int pOGLObjectCount;
-	int pOGLObjectSize;
+	decTList<sOpenGLObject> pOGLObjects;
 	
 	deMutex pMutexCameras;
 	decTObjectOrderedSet<deoglRCamera> pCleanUpCameraList;

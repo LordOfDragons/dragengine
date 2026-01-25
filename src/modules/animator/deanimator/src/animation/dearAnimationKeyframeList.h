@@ -26,6 +26,7 @@
 #define _DEARANIMATIONKEYFRAMELIST_H_
 
 #include <dragengine/resources/animation/deAnimationKeyframe.h>
+#include <dragengine/common/collection/decTList.h>
 
 class dearAnimationKeyframe;
 
@@ -36,8 +37,7 @@ class dearAnimationKeyframe;
  */
 class dearAnimationKeyframeList{
 private:
-	dearAnimationKeyframe *pKeyframes;
-	int pKeyframeCount;
+	decTList<dearAnimationKeyframe> pKeyframes;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -50,15 +50,15 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Retrieves the number of keyframes. */
-	inline int GetCount() const{ return pKeyframeCount; }
-	/** Retrieves a keyframe by index. */
-	dearAnimationKeyframe &GetAt(int index) const;
+	/** Keyframes. */
+	inline decTList<dearAnimationKeyframe> &GetKeyframes(){ return pKeyframes; }
+	inline const decTList<dearAnimationKeyframe> &GetKeyframes() const{ return pKeyframes; }
+	
 	/**
 	 * Retrieves the keyframe with the range containing the provided
 	 *        time in seconds or NULL if there are no keyframes.
 	 */
-	dearAnimationKeyframe *GetWithTime(float time) const;
+	const dearAnimationKeyframe *GetWithTime(float time) const;
 	/*@}*/
 	
 private:

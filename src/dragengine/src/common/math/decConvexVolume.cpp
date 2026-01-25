@@ -75,7 +75,6 @@ int decConvexVolume::IndexOfFace(decConvexVolumeFace *face) const{
 
 void decConvexVolume::AddFace(decConvexVolumeFace::Ref &&face){
 	DEASSERT_NOTNULL(face)
-	DEASSERT_FALSE(HasFace(face))
 	
 	pFaces.Add(std::move(face));
 }

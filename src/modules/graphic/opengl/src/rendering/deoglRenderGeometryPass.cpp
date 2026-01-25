@@ -235,7 +235,7 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	if(useComputeRenderTask){
 		computeRenderTask = xray ? tasks.GetCRTSolidGeometryXRay() : tasks.GetCRTSolidGeometry();
 		// computeRenderTask->DebugSimple(renderThread.GetLogger(), false);
-		if(computeRenderTask->GetStepCount() > 0){
+		if(computeRenderTask->GetSteps().IsNotEmpty()){
 			computeRenderTask->SetRenderParamBlock(renworld.GetRenderPB());
 			computeRenderTask->Render();
 		}

@@ -62,50 +62,50 @@ void deoglDynamicTBOUInt8::AddBool(bool value){
 }
 
 void deoglDynamicTBOUInt8::AddInt(uint8_t value){
-	pEnlarge(1);
+	pEnlargeDataCount(1);
 	
-	uint8_t * const dataUInt = (uint8_t*)pData;
+	uint8_t * const dataUInt = (uint8_t*)pData.GetArrayPointer();
 	dataUInt[pDataCount++] = value;
 }
 
 void deoglDynamicTBOUInt8::AddVec2(uint8_t value1, uint8_t value2){
-	pEnlarge(2);
+	pEnlargeDataCount(2);
 	
-	uint8_t * const dataUInt = (uint8_t*)pData;
+	uint8_t * const dataUInt = (uint8_t*)pData.GetArrayPointer();
 	dataUInt[pDataCount++] = value1;
 	dataUInt[pDataCount++] = value2;
 }
 
 void deoglDynamicTBOUInt8::AddVec2(const decPoint &value){
-	pEnlarge(2);
+	pEnlargeDataCount(2);
 	
-	uint8_t * const dataUInt = (uint8_t*)pData;
+	uint8_t * const dataUInt = (uint8_t*)pData.GetArrayPointer();
 	dataUInt[pDataCount++] = (uint8_t)value.x;
 	dataUInt[pDataCount++] = (uint8_t)value.y;
 }
 
 void deoglDynamicTBOUInt8::AddVec3(uint8_t value1, uint8_t value2, uint8_t value3){
-	pEnlarge(3);
+	pEnlargeDataCount(3);
 	
-	uint8_t * const dataUInt = (uint8_t*)pData;
+	uint8_t * const dataUInt = (uint8_t*)pData.GetArrayPointer();
 	dataUInt[pDataCount++] = value1;
 	dataUInt[pDataCount++] = value2;
 	dataUInt[pDataCount++] = value3;
 }
 
 void deoglDynamicTBOUInt8::AddVec3(const decPoint3 &value){
-	pEnlarge(3);
+	pEnlargeDataCount(3);
 	
-	uint8_t * const dataUInt = (uint8_t*)pData;
+	uint8_t * const dataUInt = (uint8_t*)pData.GetArrayPointer();
 	dataUInt[pDataCount++] = (uint8_t)value.x;
 	dataUInt[pDataCount++] = (uint8_t)value.y;
 	dataUInt[pDataCount++] = (uint8_t)value.z;
 }
 
 void deoglDynamicTBOUInt8::AddVec4(uint8_t value1, uint8_t value2, uint8_t value3, uint8_t value4){
-	pEnlarge(4);
+	pEnlargeDataCount(4);
 	
-	uint8_t * const dataUInt = (uint8_t*)pData;
+	uint8_t * const dataUInt = (uint8_t*)pData.GetArrayPointer();
 	dataUInt[pDataCount++] = value1;
 	dataUInt[pDataCount++] = value2;
 	dataUInt[pDataCount++] = value3;
@@ -121,7 +121,7 @@ void deoglDynamicTBOUInt8::SetIntAt(int offset, uint8_t value){
 		DETHROW(deeInvalidParam);
 	}
 	
-	uint8_t * const dataUInt = (uint8_t*)pData;
+	uint8_t * const dataUInt = (uint8_t*)pData.GetArrayPointer();
 	dataUInt[offset] = value;
 }
 
@@ -130,7 +130,7 @@ void deoglDynamicTBOUInt8::SetVec2At(int offset, uint8_t value1, uint8_t value2)
 		DETHROW(deeInvalidParam);
 	}
 	
-	uint8_t * const dataUInt = (uint8_t*)pData;
+	uint8_t * const dataUInt = (uint8_t*)pData.GetArrayPointer();
 	dataUInt[offset] = value1;
 	dataUInt[offset + 1] = value2;
 }
@@ -140,7 +140,7 @@ void deoglDynamicTBOUInt8::SetVec2At(int offset, const decPoint &value){
 		DETHROW(deeInvalidParam);
 	}
 	
-	uint8_t * const dataUInt = (uint8_t*)pData;
+	uint8_t * const dataUInt = (uint8_t*)pData.GetArrayPointer();
 	dataUInt[offset] = (uint8_t)value.x;
 	dataUInt[offset + 1] = (uint8_t)value.y;
 }
@@ -150,7 +150,7 @@ void deoglDynamicTBOUInt8::SetVec3At(int offset, uint8_t value1, uint8_t value2,
 		DETHROW(deeInvalidParam);
 	}
 	
-	uint8_t * const dataUInt = (uint8_t*)pData;
+	uint8_t * const dataUInt = (uint8_t*)pData.GetArrayPointer();
 	dataUInt[offset] = value1;
 	dataUInt[offset + 1] = value2;
 	dataUInt[offset + 2] = value3;
@@ -161,7 +161,7 @@ void deoglDynamicTBOUInt8::SetVec3At(int offset, const decPoint3 &value){
 		DETHROW(deeInvalidParam);
 	}
 	
-	uint8_t * const dataUInt = (uint8_t*)pData;
+	uint8_t * const dataUInt = (uint8_t*)pData.GetArrayPointer();
 	dataUInt[offset] = (uint8_t)value.x;
 	dataUInt[offset + 1] = (uint8_t)value.y;
 	dataUInt[offset + 2] = (uint8_t)value.z;
@@ -173,7 +173,7 @@ uint8_t value3, uint8_t value4){
 		DETHROW(deeInvalidParam);
 	}
 	
-	uint8_t * const dataUInt = (uint8_t*)pData;
+	uint8_t * const dataUInt = (uint8_t*)pData.GetArrayPointer();
 	dataUInt[offset] = value1;
 	dataUInt[offset + 1] = value2;
 	dataUInt[offset + 2] = value3;
@@ -183,7 +183,7 @@ uint8_t value3, uint8_t value4){
 void deoglDynamicTBOUInt8::DebugPrint(){
 	deoglRTLogger &logger = pRenderThread.GetLogger();
 	logger.LogInfoFormat("TBO %d-UInt8:", pComponentCount);
-	uint8_t *data = (uint8_t*)pData;
+	uint8_t *data = (uint8_t*)pData.GetArrayPointer();
 	int i, pixel = 0;
 	
 	pEnsurePadding();

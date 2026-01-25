@@ -25,6 +25,7 @@
 #ifndef _DEOGLDBVH_H_
 #define _DEOGLDBVH_H_
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglBVHNode;
@@ -40,21 +41,14 @@ class deoglBVH{
 public:
 	/** Primitive boundary used for building BVH. */
 	struct sBuildPrimitive{
-		decVector minExtend;
-		decVector maxExtend;
-		decVector center;
+		decVector minExtend, maxExtend, center;
 	};
 	
 	
 	
 private:
-	deoglBVHNode *pNodes;
-	int pNodeCount;
-	int pNodeSize;
-	
-	int *pPrimitives;
-	int pPrimitiveCount;
-	int pPrimitiveSize;
+	decTList<deoglBVHNode> pNodes;
+	decTList<int> pPrimitives;
 	
 	
 	
@@ -72,31 +66,20 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Count of nodes. */
-	inline int GetNodeCount() const{ return pNodeCount; }
+	/** Nodes. */
+	inline const decTList<deoglBVHNode> &GetNodes() const{ return pNodes; }
 	
 	/** Node at index. */
-	deoglBVHNode &GetNodeAt(int index) const;
+	deoglBVHNode &GetNodeAt(int index);
 	
-	/** Direct access to nodes array. */
-	inline deoglBVHNode *GetNodes() const{ return pNodes; }
-	
-	
-	
-	/** Count of primitives. */
-	inline int GetPrimitiveCount() const{ return pPrimitiveCount; }
-	
-	/** Primitive at index. */
-	int GetPrimitiveAt(int index) const;
-	
-	/** Direct access to primitives array. */
-	inline int *GetPrimitives() const{ return pPrimitives; }
+	/** Primitives. */
+	inline const decTList<int> &GetPrimitives() const{ return pPrimitives; }
 	
 	
 	
 	
 	/** Get root node or NULL if empty. */
-	deoglBVHNode *GetRootNode() const;
+	deoglBVHNode *GetRootNode();
 	
 	/** Clear tree. */
 	void Clear();
@@ -106,15 +89,14 @@ public:
 	 * for each primitive in the same order the primitives are indexed.
 	 * The array can be deleted after build.
 	 */
-	void Build(const sBuildPrimitive *primitives, int primitiveCount, int maxDepth = 12);
+	void Build(const decTList<sBuildPrimitive> &primitives, int primitiveCount, int maxDepth = 12);
 	/*@}*/
 	
 	
 	
 protected:
-	void pAddNode();
 	void pInitPrimitives(int primitiveCount);
-	void pBuildNode(const sBuildPrimitive *primitives, int primitiveCount, int node, int maxDepth);
+	void pBuildNode(const decTList<sBuildPrimitive> &primitives, int primitiveCount, int node, int maxDepth);
 };
 
 #endif

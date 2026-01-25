@@ -57,6 +57,10 @@ public:
 	/** Create render task texture configuration. */
 	deoglRenderTaskConfigTexture();
 	
+	/** Copy render task texture configuration. */
+	deoglRenderTaskConfigTexture(const deoglRenderTaskConfigTexture &other);
+	deoglRenderTaskConfigTexture &operator=(const deoglRenderTaskConfigTexture &other);
+	
 	/** Clean up render task texture configuration. */
 	~deoglRenderTaskConfigTexture();
 	/*@}*/

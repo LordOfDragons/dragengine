@@ -27,6 +27,7 @@
 
 #include <png.h>
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 
@@ -64,12 +65,12 @@ private:
 	png_uint_32 pLastFrameHeight;
 	unsigned char pLastFrameDop;
 	
-	png_bytep pAccumData;
-	png_bytep *pAccumRows;
-	png_bytep pFrameData;
-	png_bytep *pFrameRows;
-	png_bytep pLastFrameData;
-	png_bytep *pLastFrameRows;
+	decTList<png_byte> pAccumData;
+	decTList<png_bytep> pAccumRows;
+	decTList<png_byte> pFrameData;
+	decTList<png_bytep> pFrameRows;
+	decTList<png_byte> pLastFrameData;
+	decTList<png_bytep> pLastFrameRows;
 	
 	bool pErrorState;
 	

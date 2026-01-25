@@ -336,7 +336,7 @@ const char *path, eResourceType resourceType) const{
 	};
 	
 	const deResourceLoaderTask::Ref *t;
-	return pPendingTasks.Find(visitor, t) || pFinishedTasks.Find(visitor, t);
+	return pPendingTasks.Find(t, visitor) || pFinishedTasks.Find(t, visitor);
 }
 
 deResourceLoaderTask *deResourceLoader::pGetTaskWith(deVirtualFileSystem *vfs,
@@ -346,5 +346,5 @@ const char *path, eResourceType resourceType) const{
 	};
 	
 	const deResourceLoaderTask::Ref *t;
-	return pPendingTasks.Find(visitor, t) || pFinishedTasks.Find(visitor, t) ? (*t).Pointer() : nullptr;
+	return pPendingTasks.Find(t, visitor) || pFinishedTasks.Find(t, visitor) ? (*t).Pointer() : nullptr;
 }

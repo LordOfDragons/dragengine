@@ -26,6 +26,7 @@
 #define _DECXMLPARSER_H_
 
 #include "../../dragengine_export.h"
+#include "../../common/collection/decTList.h"
 
 #define DEXP_EOF 0x100
 
@@ -62,12 +63,12 @@ private:
 	int pLine;
 	int pPos;
 	int pCurChar;
-	char *pToken;
+	decTList<char> pToken;
 	int pTokenLen;
 	int pTokenSize;
 	int pTokenLine;
 	int pTokenPos;
-	char *pCleanString;
+	decTList<char> pCleanString;
 	int pCleanStringSize;
 	int pFilePos;
 	int pFileLen;
@@ -288,7 +289,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Clean string buffer. */
-	inline const char *GetCleanString() const{ return (const char *)pCleanString ; }
+	inline const char *GetCleanString() const{ return pCleanString.GetArrayPointer() ; }
 	
 	/** \brief Copy number of characters from token buffer to clean string buffer 0-terminated. */
 	void SetCleanString(int length);

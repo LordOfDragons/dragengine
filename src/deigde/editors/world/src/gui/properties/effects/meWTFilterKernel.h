@@ -24,12 +24,11 @@
 
 #if 0
 
-// include only once
 #ifndef _MEWTFILTERKERNEL_H_
 #define _MEWTFILTERKERNEL_H_
 
-// includes
-
+#include <dragengine/common/string/decString.h>
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
@@ -38,8 +37,8 @@
  */
 class meWTFilterKernel{
 private:
-	char *pName;
-	float *pKernel;
+	decString pName;
+	decTList<float> pKernel;
 	int pKernelRows;
 	int pKernelCols;
 	float pScale;
@@ -56,7 +55,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the name of the template. */
-	inline const char *GetName() const{ return (const char *)pName; }
+	inline const decString &GetName() const{ return (const char *)pName; }
 	/** Retrieves the rows of the filter kernel. */
 	inline int GetKernelRows() const{ return pKernelRows; }
 	/** Retrieves the cols of the filter kernel. */

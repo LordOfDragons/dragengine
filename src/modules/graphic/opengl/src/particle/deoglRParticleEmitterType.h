@@ -31,6 +31,7 @@
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/particle/deParticleEmitterType.h>
 
@@ -74,7 +75,7 @@ private:
 	
 	float pParamFactorLinVelo;
 	float pParamFactorAngVelo;
-	float *pParameterSamples;
+	decTList<float> pParameterSamples;
 	float pParamFactorMultiply[ESC_COUNT];
 	float pParamFactorAdd[ESC_COUNT];
 	deoglPixelBuffer::Ref pPixelBufferSamples;
@@ -122,7 +123,7 @@ public:
 	inline const float *GetParamFactorAdd() const{ return &pParamFactorAdd[0]; }
 	
 	/** Parameter samples. */
-	inline const float *GetParameterSamples() const{ return pParameterSamples; }
+	inline const decTList<float> &GetParameterSamples() const{ return pParameterSamples; }
 	
 	/** Texture with the samples. */
 	inline deoglTexture *GetTextureSamples() const{ return pTextureSamples; }

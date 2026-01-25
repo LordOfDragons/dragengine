@@ -27,6 +27,8 @@
 
 #include "../devkBasics.h"
 
+#include <dragengine/common/collection/decTList.h>
+
 
 /**
  * Vulkan descriptor layout configuration.
@@ -35,8 +37,7 @@ class devkDescriptorSetLayoutConfiguration{
 private:
 	VkDescriptorType pType;
 	VkShaderStageFlags pShaderStageFlags;
-	VkDescriptorSetLayoutBinding *pLayoutBindings;
-	int pLayoutBindingCount;
+	decTList<VkDescriptorSetLayoutBinding> pLayoutBindings;
 	
 	
 	
@@ -72,14 +73,11 @@ public:
 	
 	
 	
-	/** Layout binding count. */
-	inline int GetLayoutBindingCount() const{ return pLayoutBindingCount; }
+	/** Layout bindings. */
+	inline const decTList<VkDescriptorSetLayoutBinding> &GetLayoutBindings() const{ return pLayoutBindings; }
 	
 	/** Set layout binding count. */
 	void SetLayoutBindingCount(int count);
-	
-	/** Layout binding at index. */
-	const VkDescriptorSetLayoutBinding &GetLayoutBindingAt(int index) const;
 	
 	/** Set layout binding at index. */
 	void SetLayoutBindingAt(int index, const VkDescriptorSetLayoutBinding &binding);

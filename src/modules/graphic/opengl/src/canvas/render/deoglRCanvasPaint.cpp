@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglRCanvasPaint.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../rendering/deoglRenderCanvas.h"
@@ -60,8 +56,6 @@ pRoundCornerY(0.0f),
 pStartAngle(0.0f),
 pEndAngle(0.0f),
 
-pPoints(nullptr),
-pPointCount(0),
 pDirtyVBOBlock(true),
 pVBOBlockPointCount(0)
 {
@@ -121,24 +115,13 @@ void deoglRCanvasPaint::SetEndAngle(float angle){
 
 
 void deoglRCanvasPaint::SetPointCount(int count){
-	if(count < 0){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_TRUE(count >= 0)
 	
-	if(count == pPointCount){
+	if(count == pPoints.GetCount()){
 		return;
 	}
 	
-	if(pPoints){
-		delete [] pPoints;
-		pPoints = nullptr;
-		pPointCount = 0;
-	}
-	
-	if(count > 0){
-		pPoints = new decVector2[count];
-		pPointCount = count;
-	}
+	pPoints.SetAll(count, {});
 	
 	pDirtyVBOBlock = true;
 }
@@ -169,9 +152,6 @@ void deoglRCanvasPaint::Render(const deoglRenderCanvasContext &context){
 //////////////////////
 
 void deoglRCanvasPaint::pCleanUp(){
-	if(pPoints){
-		delete [] pPoints;
-	}
 	if(pVBOBlock){
 		pVBOBlock->DelayedRemove();
 	}
@@ -182,19 +162,19 @@ void deoglRCanvasPaint::pCleanUp(){
 int deoglRCanvasPaint::pRequiredPointCount(){
 	switch(pShapeType){
 	case deCanvasPaint::estPoints:
-		return pIsThick ? pPointCount * 6 : pPointCount;
+		return pIsThick ? pPoints.GetCount() * 6 : pPoints.GetCount();
 		
 	case deCanvasPaint::estLines:
-		if(pPointCount % 2 != 0){
+		if(pPoints.GetCount() % 2 != 0){
 			return 0;
 		}
-		return pIsThick ? pPointCount * 3 : pPointCount;
+		return pIsThick ? pPoints.GetCount() * 3 : pPoints.GetCount();
 		
 	case deCanvasPaint::estPolygon:
-		if(pPointCount < 2){
+		if(pPoints.GetCount() < 2){
 			return 0;
 		}
-		return pIsThick ? pPointCount + (pPointCount - 1) * 4 : pPointCount;
+		return pIsThick ? pPoints.GetCount() + (pPoints.GetCount() - 1) * 4 : pPoints.GetCount();
 		
 	case deCanvasPaint::estRectangle:
 		if(pRoundCornerX > FLOAT_SAFE_EPSILON || pRoundCornerY > FLOAT_SAFE_EPSILON){
@@ -275,27 +255,27 @@ void deoglRCanvasPaint::pWriteVBOData(){
 			int j;
 			
 			pDrawModeLine = GL_TRIANGLES;
-			pDrawCountLine = pPointCount * 6;
+			pDrawCountLine = pPoints.GetCount() * 6;
 			
-			for(i=0; i<pPointCount; i++){
-				const decVector2 point(pPoints[i] + pointCenter);
+			pPoints.Visit([&](const decVector2 &point){
+				const decVector2 pt(point + pointCenter);
 				for(j=0; j<6; j++){
-					writer.WritePoint(point + shift[j]);
+					writer.WritePoint(pt + shift[j]);
 				}
-			}
+			});
 			
 		}else{
 			pDrawModeLine = GL_POINTS;
-			pDrawCountLine = pPointCount;
+			pDrawCountLine = pPoints.GetCount();
 			
-			for(i=0; i<pPointCount; i++){
-				writer.WritePoint(pPoints[i] + pointCenter);
-			}
+			pPoints.Visit([&](const decVector2 &point){
+				writer.WritePoint(point + pointCenter);
+			});
 		}
 		break;
 		
 	case deCanvasPaint::estLines:
-		if(pPointCount % 2 != 0){
+		if(pPoints.GetCount() % 2 != 0){
 			break;
 		}
 		
@@ -303,9 +283,9 @@ void deoglRCanvasPaint::pWriteVBOData(){
 			const float ht = thickness * 0.5f;
 			
 			pDrawModeLine = GL_TRIANGLES;
-			pDrawCountLine = pPointCount * 3;
+			pDrawCountLine = pPoints.GetCount() * 3;
 			
-			for(i=0; i<pPointCount; i+=2){
+			for(i=0; i<pPoints.GetCount(); i+=2){
 				const decVector2 a(pPoints[i] + pointCenter);
 				const decVector2 b(pPoints[i + 1] + pointCenter);
 				decVector2 shift;
@@ -329,28 +309,28 @@ void deoglRCanvasPaint::pWriteVBOData(){
 			
 		}else{
 			pDrawModeLine = GL_LINES;
-			pDrawCountLine = pPointCount;
+			pDrawCountLine = pPoints.GetCount();
 			
-			for(i=0; i<pPointCount; i++){
-				writer.WritePoint(pPoints[i] + pointCenter);
-			}
+			pPoints.Visit([&](const decVector2 &point){
+				writer.WritePoint(point + pointCenter);
+			});
 		}
 		break;
 		
 	case deCanvasPaint::estPolygon:
-		if(pPointCount < 2){
+		if(pPoints.GetCount() < 2){
 			break;
 		}
 		
 		if(pIsThick){
 			const float ht = thickness * 0.5f;
-			decVector2 * const points = new decVector2[pPointCount + (pPointCount - 1) * 2];
-			decVector2 * const inner = points;
-			decVector2 * const outer = points + pPointCount;
+			decTList<decVector2> points(pPoints.GetCount() + (pPoints.GetCount() - 1) * 2, decVector2{});
+			decVector2 * const inner = points.GetArrayPointer();
+			decVector2 * const outer = points.GetArrayPointer() + pPoints.GetCount();
 			
-			for(i=0; i<pPointCount - 1; i++){
-				const decVector2 a(pPoints[i] + pointCenter);
-				const decVector2 b(pPoints[i + 1] + pointCenter);
+				for(i=0; i<pPoints.GetCount() - 1; i++){
+					const decVector2 a(pPoints.GetAt(i) + pointCenter);
+					const decVector2 b(pPoints.GetAt(i + 1) + pointCenter);
 				decVector2 shift;
 				
 				const decVector2 direction(b - a);
@@ -368,44 +348,42 @@ void deoglRCanvasPaint::pWriteVBOData(){
 				outer[i * 2 + 1] = b + shift;
 			}
 			
-			for(i=1; i<pPointCount - 1; i++){
+			for(i=1; i<pPoints.GetCount() - 1; i++){
 				inner[i] *= 0.5f;
 			}
 			
-			if(pPoints[0].IsEqualTo(pPoints[pPointCount - 1], 0.5f)){ // closed
-				inner[0] += inner[pPointCount - 1];
+			if(pPoints.First().IsEqualTo(pPoints.Last(), 0.5f)){ // closed
+				inner[0] += inner[pPoints.GetCount() - 1];
 				inner[0] *= 0.5f;
-				inner[pPointCount - 1] = inner[0];
+				inner[pPoints.GetCount() - 1] = inner[0];
 			}
 			
 			pDrawModeFill = GL_TRIANGLE_FAN;
-			pDrawCountFill = pPointCount;
-			for(i=0; i<pPointCount; i++){
+			pDrawCountFill = pPoints.GetCount();
+			for(i=0; i<pPoints.GetCount(); i++){
 				writer.WritePoint(inner[i]);
 			}
 			
 			pDrawModeLine = GL_TRIANGLE_STRIP;
-			pDrawOffsetLine = pPointCount;
-			pDrawCountLine = (pPointCount - 1) * 4;
-			for(i=0; i<pPointCount - 1; i++){
+			pDrawOffsetLine = pPoints.GetCount();
+			pDrawCountLine = (pPoints.GetCount() - 1) * 4;
+			for(i=0; i<pPoints.GetCount() - 1; i++){
 				writer.WritePoint(inner[i]);
 				writer.WritePoint(outer[i * 2]);
 				writer.WritePoint(inner[i + 1]);
 				writer.WritePoint(outer[i * 2 + 1]);
 			}
 			
-			delete [] points;
-			
 		}else{
 			pDrawModeFill = GL_TRIANGLE_FAN;
-			pDrawCountFill = pPointCount;
+			pDrawCountFill = pPoints.GetCount();
 			
 			pDrawModeLine = GL_LINE_STRIP;
-			pDrawCountLine = pPointCount;
+			pDrawCountLine = pPoints.GetCount();
 			
-			for(i=0; i<pPointCount; i++){
-				writer.WritePoint(pPoints[i] + pointCenter);
-			}
+			pPoints.Visit([&](const decVector2 &point){
+				writer.WritePoint(point + pointCenter);
+			});
 		}
 		break;
 		
@@ -420,9 +398,9 @@ void deoglRCanvasPaint::pWriteVBOData(){
 		
 		// fill
 		const decVector2 cornerSizeInner(decVector2().Largest(cornerCenter - decVector2(thickness, thickness)));
-		decVector2 * const points = new decVector2[cornerPointCount * 4 + (cornerPointCount * 4 + 1) * 2];
-		decVector2 * const inner = points;
-		decVector2 * const outer = points + cornerPointCount * 4;
+		decTList<decVector2> points(cornerPointCount * 4 + (cornerPointCount * 4 + 1) * 2, decVector2{});
+		decVector2 * const inner = points.GetArrayPointer();
+		decVector2 * const outer = points.GetArrayPointer() + cornerPointCount * 4;
 		
 		if(cornerPointCount > 1){
 			pCalcArc(inner, cornerCenter, cornerSizeInner,
@@ -495,8 +473,6 @@ void deoglRCanvasPaint::pWriteVBOData(){
 				}
 			}
 		}
-		
-		delete [] points;
 		}break;
 		
 	case deCanvasPaint::estEllipse:
@@ -510,9 +486,9 @@ void deoglRCanvasPaint::pWriteVBOData(){
 		
 		// fill
 		const decVector2 ellipseSizeInner(decVector2().Largest(ellipseSize - decVector2(thickness, thickness)));
-		decVector2 * const points = new decVector2[pointCount * 3 + 2 + (isPie ? 2 : 0)];
-		decVector2 * const inner = points;
-		decVector2 * const outer = points + (pointCount + (isPie ? 1 : 0));
+		decTList<decVector2> points(pointCount * 3 + 2 + (isPie ? 2 : 0), decVector2{});
+		decVector2 * const inner = points.GetArrayPointer();
+		decVector2 * const outer = points.GetArrayPointer() + (pointCount + (isPie ? 1 : 0));
 		
 		pCalcArc(inner, center, ellipseSizeInner + decVector2(1.0f, 1.0f), startAngle, endAngle, pointCount);
 		
@@ -596,8 +572,6 @@ void deoglRCanvasPaint::pWriteVBOData(){
 				pDrawCountLine = pointCount + (isPie ? 1 : 0);
 			}
 		}
-		
-		delete [] points;
 		}break;
 	}
 }

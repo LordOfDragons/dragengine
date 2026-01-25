@@ -25,8 +25,9 @@
 #ifndef _MECLHEIGHTPAINT_H_
 #define _MECLHEIGHTPAINT_H_
 
-#include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
 
 class meWorld;
 class deCollider;
@@ -71,7 +72,7 @@ private:
 	decBoundary pAreaModifySector;
 	decBoundary pAreaModifyGrid;
 	
-	float *pOldHeights;
+	decTList<float> pOldHeights;
 	int pModifyWidth;
 	int pModifyHeight;
 	

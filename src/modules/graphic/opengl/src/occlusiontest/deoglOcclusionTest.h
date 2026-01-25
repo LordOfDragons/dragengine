@@ -29,6 +29,7 @@
 #include "../deoglBasics.h"
 #include "../shaders/paramblock/deoglSPBlockSSBO.h"
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
 
@@ -45,8 +46,7 @@ class deoglVBOLayout;
 class deoglOcclusionTest{
 private:
 	struct sInputData{
-		oglVector3 minExtend;
-		oglVector3 maxExtend;
+		oglVector3 minExtend, maxExtend;
 	};
 	
 	
@@ -55,9 +55,7 @@ private:
 	deoglSPBlockSSBO::Ref pSSBOResult;
 
 	decTOrderedSet<deoglOcclusionTestListener*> pInputListeners;
-	sInputData *pInputData;
-	int pInputDataCount;
-	int pInputDataSize;
+	decTList<sInputData> pInputData;
 	
 	
 	
@@ -76,7 +74,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Count of input data. */
-	inline int GetInputDataCount() const{ return pInputDataCount; }
+	inline int GetInputDataCount() const{ return pInputData.GetCount(); }
 	
 	/**
 	 * Add input data returning the index to fetch the result later. The test box is
@@ -103,13 +101,6 @@ public:
 	/** Update results from SSBO. */
 	void UpdateResults();
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
-	
-	void pResizeInputData(int size);
 };
 
 #endif

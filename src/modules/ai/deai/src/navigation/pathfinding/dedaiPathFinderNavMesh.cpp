@@ -22,12 +22,8 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <string.h>
-
 #include "dedaiPathFinderNavMesh.h"
 #include "dedaiPathFinderFunnel.h"
-#include "dedaiPathFinderPointList.h"
 #include "../dedaiNavigator.h"
 #include "../costs/dedaiCostTable.h"
 #include "../spaces/dedaiSpace.h"
@@ -79,19 +75,11 @@ pNavigator(nullptr),
 pStartFace(nullptr),
 pEndFace(nullptr),
 
-pPathPoints(nullptr),
-pPathPointCount(0),
-pPathPointSize(0),
-
 pDDSListOpen(nullptr),
 pDDSListClosed(nullptr){
 }
 
-dedaiPathFinderNavMesh::~dedaiPathFinderNavMesh(){
-	if(pPathPoints){
-		delete [] pPathPoints;
-	}
-}
+dedaiPathFinderNavMesh::~dedaiPathFinderNavMesh() = default;
 
 
 
@@ -137,63 +125,32 @@ void dedaiPathFinderNavMesh::FindPath(){
 
 
 
-void dedaiPathFinderNavMesh::AddPathPoint(const decDVector &point){
-	if(pPathPointCount == pPathPointSize){
-		int newSize = pPathPointCount + 10;
-		decDVector *newArray = new decDVector[newSize];
-		if(pPathPoints){
-			memcpy(newArray, pPathPoints, sizeof(decDVector) * pPathPointCount);
-			delete [] pPathPoints;
-		}
-		pPathPoints = newArray;
-		pPathPointSize = newSize;
-	}
-	
-	pPathPoints[pPathPointCount++] = point;
-}
-
-void dedaiPathFinderNavMesh::RemoveAllPathPoints(){
-	pPathPointCount = 0;
-}
-
-
-
 void dedaiPathFinderNavMesh::UpdateDDSShapeFaces(deDebugDrawerShape &dds){
 	dds.RemoveAllFaces();
 	dds.GetShapeList().RemoveAll();
 	
 	if(pPathFaces.GetCount() > 0){
 		const decDMatrix matrix = decDMatrix::CreateTranslation(-pStartPoint);
-		deDebugDrawerShapeFace *ddsFace = nullptr;
 		const int count = pPathFaces.GetCount();
 		int i, j;
 		
-		try{
-			for(i=0; i<count; i++){
-				const dedaiSpaceMeshFace &face = *pPathFaces.GetAt(i);
-				const unsigned short cornerCount = face.GetCornerCount();
-				
-				if(cornerCount > 2){
-					const decMatrix transform = (face.GetMesh()->GetSpace().GetMatrix() * matrix).ToMatrix();
-					const dedaiSpaceMeshCorner * const corners = face.GetMesh()->GetCorners();
-					const decVector * const vertices = face.GetMesh()->GetVertices();
-					const int firstCorner = face.GetFirstCorner();
-					
-					ddsFace = new deDebugDrawerShapeFace;
-					for(j=0; j<cornerCount; j++){
-						ddsFace->AddVertex(transform * vertices[corners[firstCorner + j].GetVertex()]);
-					}
-					ddsFace->SetNormal(face.GetNormal());
-					dds.AddFace(ddsFace);
-					ddsFace = nullptr;
-				}
-			}
+		for(i=0; i<count; i++){
+			const dedaiSpaceMeshFace &face = *pPathFaces.GetAt(i);
+			const unsigned short cornerCount = face.GetCornerCount();
 			
-		}catch(const deException &){
-			if(ddsFace){
-				delete ddsFace;
+			if(cornerCount > 2){
+				const decMatrix transform = (face.GetMesh()->GetSpace().GetMatrix() * matrix).ToMatrix();
+				const dedaiSpaceMeshCorner * const corners = face.GetMesh()->GetCorners().GetArrayPointer();
+				const decVector * const vertices = face.GetMesh()->GetVertices().GetArrayPointer();
+				const int firstCorner = face.GetFirstCorner();
+				
+				auto ddsFace = deDebugDrawerShapeFace::Ref::New();
+				for(j=0; j<cornerCount; j++){
+					ddsFace->AddVertex(transform * vertices[corners[firstCorner + j].GetVertex()]);
+				}
+				ddsFace->SetNormal(face.GetNormal());
+				dds.AddFace(std::move(ddsFace));
 			}
-			throw;
 		}
 	}
 }
@@ -306,10 +263,10 @@ void dedaiPathFinderNavMesh::pFindFacePath(){
 			module.LogInfoFormat("   Testing Face: nm=%p f=%i (%.3f,%.3f,%.3f)", testFace->GetMesh(),
 				testFace->GetIndex(), c2.x, c2.y, c2.z);}
 #endif
-			const dedaiSpaceMeshCorner * const corners = testFace->GetMesh()->GetCorners();
-			const dedaiSpaceMeshEdge * const edges = testFace->GetMesh()->GetEdges();
-			const dedaiSpaceMeshLink * const links = testFace->GetMesh()->GetLinks();
-			dedaiSpaceMeshFace * const faces = testFace->GetMesh()->GetFaces();
+			const dedaiSpaceMeshCorner * const corners = testFace->GetMesh()->GetCorners().GetArrayPointer();
+			const dedaiSpaceMeshEdge * const edges = testFace->GetMesh()->GetEdges().GetArrayPointer();
+			const dedaiSpaceMeshLink * const links = testFace->GetMesh()->GetLinks().GetArrayPointer();
+			dedaiSpaceMeshFace * const faces = testFace->GetMesh()->GetFaces().GetArrayPointer();
 			
 			endCorner = testFace->GetFirstCorner() + testFace->GetCornerCount();
 			
@@ -326,7 +283,7 @@ void dedaiPathFinderNavMesh::pFindFacePath(){
 					if(corner.GetLink() != -1){
 						const dedaiSpaceMeshLink &link = links[corner.GetLink()];
 						
-						nextFace = link.GetMesh()->GetFaces() + link.GetFace();
+						nextFace = &link.GetMesh()->GetFaces()[link.GetFace()];
 // 						linkedCorner = link.GetCorner();
 					}
 					
@@ -597,10 +554,10 @@ void dedaiPathFinderNavMesh::pFindRealPath(){
 	const int faceCount = pPathFaces.GetCount();
 	const float threshold = 0.001f;
 	
-	RemoveAllPathPoints();
+	pPathPoints.SetCountDiscard(0);
 	
 	if(faceCount > 1){
-		dedaiPathFinderPointList pointListLeft, pointListRight;
+		decTList<decVector> pointListLeft, pointListRight;
 		dedaiSpaceMeshCorner *curCorner, *nextCorner;
 		dedaiSpaceMesh *curNavMesh, *nextNavMesh;
 		int i, curFaceEdge, nextFaceEdge = -1;
@@ -628,7 +585,7 @@ void dedaiPathFinderNavMesh::pFindRealPath(){
 		
 		bool withFixing = true;
 		
-		//AddPathPoint( pStartPoint ); //nah, we are there already usually
+		//pPathPoints.Add(pStartPoint); //nah, we are there already usually
 		
 		for(i=0; i<faceCount; i++){
 			if(i < faceCount - 1){
@@ -643,8 +600,8 @@ void dedaiPathFinderNavMesh::pFindRealPath(){
 				}
 				
 				curNavMesh = curFace->GetMesh();
-				curCorner = curNavMesh->GetCorners() + (curFace->GetFirstCorner() + curFaceEdge);
-				curEdge = curNavMesh->GetEdges() + curCorner->GetEdge();
+				curCorner = &curNavMesh->GetCorners()[(curFace->GetFirstCorner() + curFaceEdge)];
+				curEdge = &curNavMesh->GetEdges()[curCorner->GetEdge()];
 				vertexIndex = curCorner->GetVertex();
 				testResult = (vertexIndex == curEdge->GetVertex1());
 				if(inverseOrder){
@@ -670,14 +627,14 @@ void dedaiPathFinderNavMesh::pFindRealPath(){
 				}
 				
 				nextNavMesh = nextFace->GetMesh();
-				nextCorner = nextNavMesh->GetCorners() + (nextFace->GetFirstCorner() + nextFaceEdge);
+				nextCorner = &nextNavMesh->GetCorners()[(nextFace->GetFirstCorner() + nextFaceEdge)];
 				//nextEdge = nextNavMesh->GetEdges() + nextCorner->GetEdge();
 				vertexIndex = nextCorner->GetVertex();
 				if(nextNavMesh == curNavMesh){
 					inverseOrder = (vertexIndex == compareVertexIndex);
 					
 				}else{
-					const decMatrix &matrix = curNavMesh->GetLinkAt(curCorner->GetLink()).GetTransform();
+					const decMatrix &matrix = curNavMesh->GetLinks()[curCorner->GetLink()].GetTransform();
 					inverseOrder = (matrix * vertexLeft).IsEqualTo(nextNavMesh->GetVertices()[vertexIndex], threshold);
 				}
 				
@@ -737,8 +694,12 @@ void dedaiPathFinderNavMesh::pFindRealPath(){
 #endif
 					// how can this be changed to reuse the per-link saved transform matrix?
 					const decMatrix matrix = (funnel.GetMesh()->GetSpace().GetMatrix() * curNavMesh->GetSpace().GetInverseMatrix()).ToMatrix();
-					pointListRight.Transform(matrix);
-					pointListLeft.Transform(matrix);
+					pointListRight.Visit([&](decVector &point){
+						point = matrix * point;
+					});
+					pointListLeft.Visit([&](decVector &point){
+						point = matrix * point;
+					});
 					funnel.Transform(matrix);
 					funnel.SetMesh(curNavMesh);
 				}
@@ -769,8 +730,8 @@ void dedaiPathFinderNavMesh::pFindRealPath(){
 							module.LogInfo("   AddNextCorner: right funnel corner");
 #endif
 							pathPoint = curFace->GetMesh()->GetSpace().GetMatrix() * decDVector(funnel.GetRightCorner());
-							if(pPathPointCount == 0 || !pathPoint.IsEqualTo(pPathPoints[pPathPointCount - 1], threshold)){
-								AddPathPoint(pathPoint);
+							if(pPathPoints.IsEmpty() || !pathPoint.IsEqualTo(pPathPoints.Last(), threshold)){
+								pPathPoints.Add(pathPoint);
 							}
 							
 							funnel.SetOrigin(funnel.GetRightCorner());
@@ -830,8 +791,8 @@ void dedaiPathFinderNavMesh::pFindRealPath(){
 #ifdef DEBUG
 								module.LogInfoFormat("      FixingFunnel(%i): removing %i points (best %i)", pointListRight.GetCount(), bestPointIndex, bestPointIndex);
 #endif
-								pointListRight.RemoveFirst(bestPointIndex);
-								testVertex = pointListRight.GetFirst();
+								pointListRight.RemoveHead(bestPointIndex);
+								testVertex = pointListRight.First();
 								
 								// if the best point is inside the funnel boundaries no further fixing is required.
 								// since we use the right funnel plane already in the above test we only have to
@@ -856,8 +817,8 @@ void dedaiPathFinderNavMesh::pFindRealPath(){
 									module.LogInfo("         AddNextCorner: found point");
 #endif
 									pathPoint = curFace->GetMesh()->GetSpace().GetMatrix() * decDVector(testVertex);
-									if(pPathPointCount == 0 || !pathPoint.IsEqualTo(pPathPoints[pPathPointCount - 1], threshold)){
-										AddPathPoint(pathPoint);
+									if(pPathPoints.IsEmpty() || !pathPoint.IsEqualTo(pPathPoints.Last(), threshold)){
+										pPathPoints.Add(pathPoint);
 									}
 									funnel.SetOrigin(testVertex);
 									funnel.UpdateLeftPlane(curFace->GetNormal());
@@ -912,8 +873,8 @@ void dedaiPathFinderNavMesh::pFindRealPath(){
 							module.LogInfo("   AddNextCorner: left funnel corner");
 #endif
 							pathPoint = curFace->GetMesh()->GetSpace().GetMatrix() * decDVector(funnel.GetLeftCorner());
-							if(pPathPointCount == 0 || !pathPoint.IsEqualTo(pPathPoints[pPathPointCount - 1], threshold)){
-								AddPathPoint(pathPoint);
+							if(pPathPoints.IsEmpty() || !pathPoint.IsEqualTo(pPathPoints.Last(), threshold)){
+								pPathPoints.Add(pathPoint);
 							}
 							
 							funnel.SetOrigin(funnel.GetLeftCorner());
@@ -973,8 +934,8 @@ void dedaiPathFinderNavMesh::pFindRealPath(){
 #ifdef DEBUG
 								module.LogInfoFormat("      FixingFunnel(%i): removing %i points (best %i)", pointListLeft.GetCount(), bestPointIndex, bestPointIndex);
 #endif
-								pointListLeft.RemoveFirst(bestPointIndex);
-								testVertex = pointListLeft.GetFirst();
+								pointListLeft.RemoveHead(bestPointIndex);
+								testVertex = pointListLeft.First();
 								
 								// if the best point is inside the funnel boundaries no further fixing is required.
 								// since we use the left funnel plane already in the above test we only have to
@@ -999,8 +960,8 @@ void dedaiPathFinderNavMesh::pFindRealPath(){
 									pWorld->GetDEAI().LogInfo("         AddNextCorner: found point");
 #endif
 									pathPoint = curFace->GetMesh()->GetSpace().GetMatrix() * decDVector(testVertex);
-									if(pPathPointCount == 0 || !pathPoint.IsEqualTo(pPathPoints[pPathPointCount - 1], threshold)){
-										AddPathPoint(pathPoint);
+									if(pPathPoints.IsEmpty() || !pathPoint.IsEqualTo(pPathPoints.Last(), threshold)){
+										pPathPoints.Add(pathPoint);
 									}
 									funnel.SetOrigin(testVertex);
 									funnel.UpdateRightPlane(curFace->GetNormal());
@@ -1048,20 +1009,20 @@ void dedaiPathFinderNavMesh::pFindRealPath(){
 		}
 	}
 	
-	if(pPathPointCount == 0 || !pEndPoint.IsEqualTo(pPathPoints[pPathPointCount - 1], threshold)){
-		AddPathPoint(pEndPoint);
+	if(pPathPoints.IsEmpty() || !pEndPoint.IsEqualTo(pPathPoints.Last(), threshold)){
+		pPathPoints.Add(pEndPoint);
 	}
 }
 
 int dedaiPathFinderNavMesh::pFindEdgeLeadingToFace(const dedaiSpaceMeshFace &face, const dedaiSpaceMeshFace &targetFace) const{
 	const dedaiSpaceMesh &navmesh = *face.GetMesh();
-	const dedaiSpaceMeshCorner * const corners = navmesh.GetCorners() + face.GetFirstCorner();
+	const dedaiSpaceMeshCorner * const corners = navmesh.GetCorners().GetArrayPointer() + face.GetFirstCorner();
 	const unsigned int cornerCount = face.GetCornerCount();
 	const int targetIndex = targetFace.GetIndex();
 	unsigned int i;
 	
 	if(face.GetMesh() == targetFace.GetMesh()){
-		const dedaiSpaceMeshEdge * const edges = navmesh.GetEdges();
+		const dedaiSpaceMeshEdge * const edges = navmesh.GetEdges().GetArrayPointer();
 		
 		for(i=0; i<cornerCount; i++){
 			const dedaiSpaceMeshEdge &edge = edges[corners[i].GetEdge()];
@@ -1072,7 +1033,7 @@ int dedaiPathFinderNavMesh::pFindEdgeLeadingToFace(const dedaiSpaceMeshFace &fac
 		}
 		
 	}else{
-		const dedaiSpaceMeshLink * const links = navmesh.GetLinks();
+		const dedaiSpaceMeshLink * const links = navmesh.GetLinks().GetArrayPointer();
 		dedaiSpaceMesh * const targetNavMesh = targetFace.GetMesh();
 		
 		for(i=0; i<cornerCount; i++){
@@ -1101,39 +1062,30 @@ void dedaiPathFinderNavMesh::pUpdateDDSListOpen(){
 	if(pListOpen.GetCount() > 0){
 		dedaiSpace &space = pListOpen.GetAt(0)->GetMesh()->GetSpace();
 		const decDMatrix &invMatrix = space.GetInverseMatrix();
-		deDebugDrawerShapeFace *ddsFace = nullptr;
 		const int count = pListOpen.GetCount();
-		int i, j;
+		int i;
 		
 		pDDSListOpen->SetPosition(space.GetMatrix().GetPosition());
 		pDDSListOpen->SetOrientation(space.GetMatrix().ToQuaternion());
 		
-		try{
-			for(i=0; i<count; i++){
-				const dedaiSpaceMeshFace &face = *pListOpen.GetAt(i);
-				const unsigned short cornerCount = face.GetCornerCount();
-				
-				if(cornerCount > 2){
-					const decMatrix transform = (face.GetMesh()->GetSpace().GetMatrix() * invMatrix).ToMatrix();
-					const dedaiSpaceMeshCorner * const corners = face.GetMesh()->GetCorners();
-					const decVector * const vertices = face.GetMesh()->GetVertices();
-					const int firstCorner = face.GetFirstCorner();
-					
-					ddsFace = new deDebugDrawerShapeFace;
-					for(j=0; j<cornerCount; j++){
-						ddsFace->AddVertex(transform * vertices[corners[firstCorner + j].GetVertex()]);
-					}
-					ddsFace->SetNormal(face.GetNormal());
-					pDDSListOpen->AddFace(ddsFace);
-					ddsFace = nullptr;
-				}
-			}
+		for(i=0; i<count; i++){
+			const dedaiSpaceMeshFace &face = *pListOpen.GetAt(i);
+			const unsigned short cornerCount = face.GetCornerCount();
 			
-		}catch(const deException &){
-			if(ddsFace){
-				delete ddsFace;
+			if(cornerCount > 2){
+				const decMatrix transform = (face.GetMesh()->GetSpace().GetMatrix() * invMatrix).ToMatrix();
+				const dedaiSpaceMeshCorner * const corners = face.GetMesh()->GetCorners().GetArrayPointer();
+				const decVector * const vertices = face.GetMesh()->GetVertices().GetArrayPointer();
+				const int firstCorner = face.GetFirstCorner();
+				
+				auto ddsFace = deDebugDrawerShapeFace::Ref::New();
+				int j;
+				for(j=0; j<cornerCount; j++){
+					ddsFace->AddVertex(transform * vertices[corners[firstCorner + j].GetVertex()]);
+				}
+				ddsFace->SetNormal(face.GetNormal());
+				pDDSListOpen->AddFace(std::move(ddsFace));
 			}
-			throw;
 		}
 	}
 }
@@ -1149,39 +1101,30 @@ void dedaiPathFinderNavMesh::pUpdateDDSListClosed(){
 	if(pListClosed.GetCount() > 0){
 		dedaiSpace &navspace = pListClosed.GetAt(0)->GetMesh()->GetSpace();
 		const decDMatrix &invMatrix = navspace.GetInverseMatrix();
-		deDebugDrawerShapeFace *ddsFace = nullptr;
 		const int count = pListClosed.GetCount();
-		int i, j;
+		int i;
 		
 		pDDSListClosed->SetPosition(navspace.GetMatrix().GetPosition());
 		pDDSListClosed->SetOrientation(navspace.GetMatrix().ToQuaternion());
 		
-		try{
-			for(i=0; i<count; i++){
-				const dedaiSpaceMeshFace &face = *pListClosed.GetAt(i);
-				const unsigned short cornerCount = face.GetCornerCount();
-				
-				if(cornerCount > 2){
-					const decMatrix transform = (face.GetMesh()->GetSpace().GetMatrix() * invMatrix).ToMatrix();
-					const dedaiSpaceMeshCorner * const corners = face.GetMesh()->GetCorners();
-					const decVector * const vertices = face.GetMesh()->GetVertices();
-					const int firstCorner = face.GetFirstCorner();
-					
-					ddsFace = new deDebugDrawerShapeFace;
-					for(j=0; j<cornerCount; j++){
-						ddsFace->AddVertex(transform * vertices[corners[firstCorner + j].GetVertex()]);
-					}
-					ddsFace->SetNormal(face.GetNormal());
-					pDDSListClosed->AddFace(ddsFace);
-					ddsFace = nullptr;
-				}
-			}
+		for(i=0; i<count; i++){
+			const dedaiSpaceMeshFace &face = *pListClosed.GetAt(i);
+			const unsigned short cornerCount = face.GetCornerCount();
 			
-		}catch(const deException &){
-			if(ddsFace){
-				delete ddsFace;
+			if(cornerCount > 2){
+				const decMatrix transform = (face.GetMesh()->GetSpace().GetMatrix() * invMatrix).ToMatrix();
+				const dedaiSpaceMeshCorner * const corners = face.GetMesh()->GetCorners().GetArrayPointer();
+				const decVector * const vertices = face.GetMesh()->GetVertices().GetArrayPointer();
+				const int firstCorner = face.GetFirstCorner();
+				
+				auto ddsFace = deDebugDrawerShapeFace::Ref::New();
+				int j;
+				for(j=0; j<cornerCount; j++){
+					ddsFace->AddVertex(transform * vertices[corners[firstCorner + j].GetVertex()]);
+				}
+				ddsFace->SetNormal(face.GetNormal());
+				pDDSListClosed->AddFace(std::move(ddsFace));
 			}
-			throw;
 		}
 	}
 }

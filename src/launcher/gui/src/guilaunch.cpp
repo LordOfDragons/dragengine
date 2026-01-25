@@ -117,9 +117,6 @@ int main(int argc, char **argv){
 #ifdef OS_W32
 	if(foxArgs){
 		int i;
-		for(i=0; i<foxArgCount; i++){
-			delete [] foxArgs[i];
-		}
 		delete [] foxArgs;
 	}
 #endif

@@ -39,18 +39,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-desynDecodeBuffer::desynDecodeBuffer(int size) :
-pBuffer(nullptr),
-pSize(0)
-{
+desynDecodeBuffer::desynDecodeBuffer(int size){
 	SetSize(size);
 }
 
-desynDecodeBuffer::~desynDecodeBuffer(){
-	if(pBuffer){
-		delete [] pBuffer;
-	}
-}
+desynDecodeBuffer::~desynDecodeBuffer() = default;
 
 
 
@@ -58,35 +51,21 @@ desynDecodeBuffer::~desynDecodeBuffer(){
 ///////////////
 
 void desynDecodeBuffer::SetSize(int size){
-	if(size < 1){
-		DETHROW(deeInvalidParam);
-	}
-	
-	if(size == pSize){
-		return;
-	}
-	
-	char *buffer = new char[size];
-	
-	if(pBuffer){
-		delete [] pBuffer;
-	}
-	pBuffer = buffer;
-	pSize = size;
+	pBuffer.SetCountDiscard(size);
 }
 
 int desynDecodeBuffer::Decode(deSoundDecoder &decoder, int size){
 	int bytesRead, remaining;
 	
-	if(size > pSize){
+	if(size > pBuffer.GetCount()){
 		SetSize(size);
 	}
 	
-	bytesRead = decoder.ReadSamples(pBuffer, size);
+	bytesRead = decoder.ReadSamples(pBuffer.GetArrayPointer(), size);
 	
 	remaining = size - bytesRead;
 	if(remaining > 0){
-		memset(pBuffer + bytesRead, '\0', remaining);
+		memset(pBuffer.GetArrayPointer() + bytesRead, '\0', remaining);
 	}
 	
 	return bytesRead;
@@ -98,12 +77,12 @@ int desynDecodeBuffer::DecodeLooping(deSoundDecoder &decoder, int size){
 	int bytesRead = 0;
 	int position = 0;
 	
-	if(size > pSize){
+	if(size > pBuffer.GetCount()){
 		SetSize(size);
 	}
 	
 	while(true){
-		bytesRead = decoder.ReadSamples(pBuffer + position, remaining);
+		bytesRead = decoder.ReadSamples(pBuffer.GetArrayPointer() + position, remaining);
 		if(bytesRead == 0) break; // EOF
 		totalBytesRead += bytesRead;
 		

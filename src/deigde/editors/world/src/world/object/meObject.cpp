@@ -1887,56 +1887,42 @@ void meObject::pUpdateShapeLight(){
 					light.GetPosition(), light.GetOrientation()));
 				const float height = range * tanf(angleY * 0.5f);
 				const float width = range * tanf(angleX * 0.5f);
-				deDebugDrawerShapeFace *face = nullptr;
 				
-				try{
-					face = new deDebugDrawerShapeFace;
-					face->AddVertex(decVector());
-					face->AddVertex(matrix.Transform(-width, height, range));
-					face->AddVertex(matrix.Transform(width, height, range));
-					face->CalculateNormal();
-					shape.AddFace(face);
-					face = nullptr;
-					
-					face = new deDebugDrawerShapeFace;
-					face->AddVertex(decVector());
-					face->AddVertex(matrix.Transform(width, height, range));
-					face->AddVertex(matrix.Transform(width, -height, range));
-					face->CalculateNormal();
-					shape.AddFace(face);
-					face = nullptr;
-					
-					face = new deDebugDrawerShapeFace;
-					face->AddVertex(decVector());
-					face->AddVertex(matrix.Transform(width, -height, range));
-					face->AddVertex(matrix.Transform(-width, -height, range));
-					face->CalculateNormal();
-					shape.AddFace(face);
-					face = nullptr;
-					
-					face = new deDebugDrawerShapeFace;
-					face->AddVertex(decVector());
-					face->AddVertex(matrix.Transform(-width, -height, range));
-					face->AddVertex(matrix.Transform(-width, height, range));
-					face->CalculateNormal();
-					shape.AddFace(face);
-					face = nullptr;
-					
-					face = new deDebugDrawerShapeFace;
-					face->AddVertex(matrix.Transform(width, height, range));
-					face->AddVertex(matrix.Transform(-width, height, range));
-					face->AddVertex(matrix.Transform(-width, -height, range));
-					face->AddVertex(matrix.Transform(width, -height, range));
-					face->CalculateNormal();
-					shape.AddFace(face);
-					
-				}catch(const deException &){
-					if(face){
-						delete face;
-					}
-					throw;
-				}
+				auto face = deDebugDrawerShapeFace::Ref::New();
+				face->AddVertex(decVector());
+				face->AddVertex(matrix.Transform(-width, height, range));
+				face->AddVertex(matrix.Transform(width, height, range));
+				face->CalculateNormal();
+				shape.AddFace(std::move(face));
 				
+				face = deDebugDrawerShapeFace::Ref::New();
+				face->AddVertex(decVector());
+				face->AddVertex(matrix.Transform(width, height, range));
+				face->AddVertex(matrix.Transform(width, -height, range));
+				face->CalculateNormal();
+				shape.AddFace(std::move(face));
+				
+				face = deDebugDrawerShapeFace::Ref::New();
+				face->AddVertex(decVector());
+				face->AddVertex(matrix.Transform(width, -height, range));
+				face->AddVertex(matrix.Transform(-width, -height, range));
+				face->CalculateNormal();
+				shape.AddFace(std::move(face));
+				
+				face = deDebugDrawerShapeFace::Ref::New();
+				face->AddVertex(decVector());
+				face->AddVertex(matrix.Transform(-width, -height, range));
+				face->AddVertex(matrix.Transform(-width, height, range));
+				face->CalculateNormal();
+				shape.AddFace(std::move(face));
+				
+				face = deDebugDrawerShapeFace::Ref::New();
+				face->AddVertex(matrix.Transform(width, height, range));
+				face->AddVertex(matrix.Transform(-width, height, range));
+				face->AddVertex(matrix.Transform(-width, -height, range));
+				face->AddVertex(matrix.Transform(width, -height, range));
+				face->CalculateNormal();
+				shape.AddFace(std::move(face));
 				}break;
 			}
 		}

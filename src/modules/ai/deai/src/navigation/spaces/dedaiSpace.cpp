@@ -435,42 +435,47 @@ void dedaiSpace::UpdateDDSSpace(){
 		bool updateShapes = false;
 		
 		if(!pDDSSpace){
-			pDDSSpace = new deDebugDrawerShape;
-			pDDSSpace->SetFillColor(decColor(0.0f, 0.5f, 1.0f, 0.1f));
-			pDDSSpace->SetEdgeColor(decColor(0.0f, 0.5f, 1.0f, 0.8f));
-			pDebugDrawer->AddShape(pDDSSpace);
+			auto shape = deDebugDrawerShape::Ref::New();
+			shape->SetFillColor(decColor(0.0f, 0.5f, 1.0f, 0.1f));
+			shape->SetEdgeColor(decColor(0.0f, 0.5f, 1.0f, 0.8f));
+			pDDSSpace = shape;
+			pDebugDrawer->AddShape(std::move(shape));
 			updateShapes = true;
 		}
 		
 		if(!pDDSCorners){
-			pDDSCorners = new deDebugDrawerShape;
-			pDDSCorners->SetFillColor(decColor(0.5f, 0.5f, 1.0f, 0.1f));
-			pDDSCorners->SetEdgeColor(decColor(0.5f, 0.5f, 1.0f, 0.8f));
-			pDebugDrawer->AddShape(pDDSCorners);
+			auto shape = deDebugDrawerShape::Ref::New();
+			shape->SetFillColor(decColor(0.5f, 0.5f, 1.0f, 0.1f));
+			shape->SetEdgeColor(decColor(0.5f, 0.5f, 1.0f, 0.8f));
+			pDDSCorners = shape;
+			pDebugDrawer->AddShape(std::move(shape));
 			updateShapes = true;
 		}
 		
 		if(!pDDSNormals){
-			pDDSNormals = new deDebugDrawerShape;
-			pDDSNormals->SetFillColor(decColor(0.0f, 0.5f, 1.0f, 1.0f));
-			pDDSNormals->SetEdgeColor(decColor(0.0f, 0.5f, 1.0f, 1.0f));
-			pDebugDrawer->AddShape(pDDSNormals);
+			auto shape = deDebugDrawerShape::Ref::New();
+			shape->SetFillColor(decColor(0.0f, 0.5f, 1.0f, 1.0f));
+			shape->SetEdgeColor(decColor(0.0f, 0.5f, 1.0f, 1.0f));
+			pDDSNormals = shape;
+			pDebugDrawer->AddShape(std::move(shape));
 			updateShapes = true;
 		}
 		
 		if(!pDDSMismatching){
-			pDDSMismatching = new deDebugDrawerShape;
-			pDDSMismatching->SetFillColor(decColor(1.0f, 0.0f, 0.0f, 0.1f));
-			pDDSMismatching->SetEdgeColor(decColor(1.0f, 0.0f, 0.0f, 0.8f));
-			pDebugDrawer->AddShape(pDDSMismatching);
+			auto shape = deDebugDrawerShape::Ref::New();
+			shape->SetFillColor(decColor(1.0f, 0.0f, 0.0f, 0.1f));
+			shape->SetEdgeColor(decColor(1.0f, 0.0f, 0.0f, 0.8f));
+			pDDSMismatching = shape;
+			pDebugDrawer->AddShape(std::move(shape));
 			updateShapes = true;
 		}
 		
 		if(!pDDSHighlightCostType){
-			pDDSHighlightCostType = new deDebugDrawerShape;
-			pDDSHighlightCostType->SetFillColor(decColor(1.0f, 0.0f, 0.0f, 0.1f));
-			pDDSHighlightCostType->SetEdgeColor(decColor(1.0f, 0.0f, 0.0f, 0.8f));
-			pDebugDrawer->AddShape(pDDSHighlightCostType);
+			auto shape = deDebugDrawerShape::Ref::New();
+			shape->SetFillColor(decColor(1.0f, 0.0f, 0.0f, 0.1f));
+			shape->SetEdgeColor(decColor(1.0f, 0.0f, 0.0f, 0.8f));
+			pDDSHighlightCostType = shape;
+			pDebugDrawer->AddShape(std::move(shape));
 			updateShapes = true;
 		}
 		
@@ -715,13 +720,13 @@ void dedaiSpace::pUpdateExtends(){
 
 void dedaiSpace::pUpdateExtendsNavSpace(){
 	const deNavigationSpace &engNavSpace = pOwnerNavSpace->GetNavigationSpace();
-	const int vertexCount = engNavSpace.GetVertexCount();
+	const int vertexCount = engNavSpace.GetVertices().GetCount();
 	
 	if(vertexCount == 0){
 		pMaxExtends = pMinExtends = pPosition;
 		
 	}else{
-		const decVector * const vertices = engNavSpace.GetVertices();
+		const decVector * const vertices = engNavSpace.GetVertices().GetArrayPointer();
 		const decDMatrix &matrix = GetMatrix();
 		int i;
 		
@@ -762,7 +767,7 @@ void dedaiSpace::pUpdateExtendsNavSpace(){
 
 void dedaiSpace::pUpdateExtendsHTNavSpace(){
 	const deHeightTerrainNavSpace &engNavSpace = pOwnerHTNavSpace->GetNavigationSpace();
-	const int cornerCount = engNavSpace.GetCornerCount();
+	const int cornerCount = engNavSpace.GetCorners().GetCount();
 	
 	if(cornerCount == 0){
 		pMaxExtends = pMinExtends = pPosition;
@@ -771,8 +776,8 @@ void dedaiSpace::pUpdateExtendsHTNavSpace(){
 	
 	const dedaiHeightTerrainSector &sector = pOwnerHTNavSpace->GetSector();
 	const deHeightTerrain &engHT = sector.GetHeightTerrain().GetHeightTerrain();
-	const float * const heights = sector.GetHeights();
-	const unsigned int * const corners = engNavSpace.GetCorners();
+	const float * const heights = sector.GetHeights().GetArrayPointer();
+	const unsigned int * const corners = engNavSpace.GetCorners().GetArrayPointer();
 	const int imageDim = engHT.GetSectorResolution();
 	const float posScale = (float)engHT.GetSectorSize() / (float)(imageDim - 1);
 	const float posOffset = (float)engHT.GetSectorSize() * 0.5f;

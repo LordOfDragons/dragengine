@@ -81,7 +81,7 @@ void deoglGIBVHLocal::Clear(){
 	pTBONodeBox->Clear();
 }
 
-void deoglGIBVHLocal::BuildBVH(const deoglBVH::sBuildPrimitive *primitives,
+void deoglGIBVHLocal::BuildBVH(const decTList<deoglBVH::sBuildPrimitive> &primitives,
 int primitiveCount, int maxDepth){
 	pBVH.Build(primitives, primitiveCount, maxDepth);
 }
@@ -115,43 +115,28 @@ const decVector2 &texCoord1, const decVector2 &texCoord2, const decVector2 &texC
 
 void deoglGIBVHLocal::TBOAddFaces(const deoglModelFace *faces, const oglModelVertex *vertices,
 const decVector2 *texCoords){
-	const int * const primitives = pBVH.GetPrimitives();
-	const int primitiveCount = pBVH.GetPrimitiveCount();
-	int i;
-	
-	for(i=0; i<primitiveCount; i++){
-		const deoglModelFace &face = faces[primitives[i]];
+	pBVH.GetPrimitives().Visit([&](int primitive){
+		const deoglModelFace &face = faces[primitive];
 		const oglModelVertex &v1 = vertices[face.GetVertex1()];
 		const oglModelVertex &v2 = vertices[face.GetVertex2()];
 		const oglModelVertex &v3 = vertices[face.GetVertex3()];
 		
 		TBOAddFace(v1.position, v2.position, v3.position, face.GetTexture(),
 			texCoords[v1.texcoord], texCoords[v2.texcoord], texCoords[v3.texcoord]);
-	}
+	});
 }
 
 void deoglGIBVHLocal::TBOAddBVH(){
-	const deoglBVHNode * const nodes = pBVH.GetNodes();
-	const int nodeCount = pBVH.GetNodeCount();
-	int i;
-	
-	for(i=0; i<nodeCount; i++){
-		const deoglBVHNode &node = nodes[i];
+	pBVH.GetNodes().Visit([&](const deoglBVHNode &node){
 		pTBONodeBox->AddVec4(node.GetMinExtend(), 0.0f);
 		pTBONodeBox->AddVec4(node.GetMaxExtend(), 0.0f);
 		pTBOIndex->AddVec2(node.GetFirstIndex(), node.GetPrimitiveCount());
-	}
+	});
 }
 
 void deoglGIBVHLocal::TBOBVHUpdateNodeExtends(){
-	const deoglBVHNode * const nodes = pBVH.GetNodes();
-	const int nodeCount = pBVH.GetNodeCount();
-	float *nodeBox = pTBONodeBox->GetDataFloat();
-	int i;
-	
-	for(i=0; i<nodeCount; i++, nodeBox+=8){
-		const deoglBVHNode &node = nodes[i];
-		
+	float * const nodeBox = pTBONodeBox->GetDataFloat();
+	pBVH.GetNodes().Visit([&](const deoglBVHNode &node){
 		const decVector &minExtend = node.GetMinExtend();
 		nodeBox[0] = minExtend.x;
 		nodeBox[1] = minExtend.y;
@@ -161,7 +146,7 @@ void deoglGIBVHLocal::TBOBVHUpdateNodeExtends(){
 		nodeBox[4] = maxExtend.x;
 		nodeBox[5] = maxExtend.y;
 		nodeBox[6] = maxExtend.z;
-	}
+	});
 }
 
 

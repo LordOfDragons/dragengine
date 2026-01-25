@@ -58,6 +58,7 @@
 
 #include "deOSWindows.h"
 #include "../deEngine.h"
+#include "../common/collection/decTList.h"
 #include "../common/exceptions.h"
 #include "../common/file/decPath.h"
 #include "../common/string/unicode/decUnicodeString.h"
@@ -76,7 +77,6 @@
 deOSWindows::deOSWindows() :
 pInstApp(nullptr),
 pCurWindow(nullptr),
-pResolutionCount(0),
 pResolutions(nullptr),
 pRefreshRate(60),
 pScaleFactor(100)
@@ -338,15 +338,13 @@ int deOSWindows::GetDisplayCurrentRefreshRate(int display){
 int deOSWindows::GetDisplayResolutionCount(int display){
 	DEASSERT_TRUE(display == 0)
 	
-	return pResolutionCount;
+	return pResolutions.GetCount();
 }
 
 decPoint deOSWindows::GetDisplayResolution(int display, int resolution){
 	DEASSERT_TRUE(display == 0)
-	DEASSERT_TRUE(resolution >= 0)
-	DEASSERT_TRUE(resolution < pResolutionCount)
 	
-	return pResolutions[resolution];
+	return pResolutions.GetAt(resolution);
 }
 
 int deOSWindows::GetDisplayCurrentScaleFactor(int display){
@@ -544,15 +542,13 @@ decString deOSWindows::GetRegistryValue(const char *key, const char *entry, cons
 		return defaultValue;
 	}
 	
-	CHAR * const buffer = new CHAR[bufferSize];
-	if(RegQueryValueExA(hKey, entry, 0, NULL, (LPBYTE)buffer, &bufferSize) != ERROR_SUCCESS){
-		delete [] buffer;
+	decTList<CHAR> buffer(bufferSize);
+	if(RegQueryValueExA(hKey, entry, 0, NULL, (LPBYTE)buffer.GetArrayPointer(), &bufferSize) != ERROR_SUCCESS){
 		RegCloseKey(hKey);
 		return defaultValue;
 	}
 	
-	const decString returnValue(buffer);
-	delete [] buffer;
+	const decString returnValue(buffer.GetArrayPointer());
 	RegCloseKey(hKey);
 	
 	return returnValue;
@@ -570,15 +566,13 @@ decString deOSWindows::GetRegistryValueCurrentUser(const char *key, const char *
 		return defaultValue;
 	}
 	
-	CHAR * const buffer = new CHAR[bufferSize];
-	if(RegQueryValueExA(hKey, entry, 0, NULL, (LPBYTE)buffer, &bufferSize) != ERROR_SUCCESS){
-		delete [] buffer;
+	decTList<CHAR> buffer(bufferSize);
+	if(RegQueryValueExA(hKey, entry, 0, NULL, (LPBYTE)buffer.GetArrayPointer(), &bufferSize) != ERROR_SUCCESS){
 		RegCloseKey(hKey);
 		return defaultValue;
 	}
 	
-	const decString returnValue(buffer);
-	delete [] buffer;
+	const decString returnValue(buffer.GetArrayPointer());
 	RegCloseKey(hKey);
 	
 	return returnValue;
@@ -605,9 +599,6 @@ void deOSWindows::SetRegistryValue(const char *key, const char *entry, const cha
 //////////////////////
 
 void deOSWindows::pCleanUp(){
-	if(pResolutions){
-		delete [] pResolutions;
-	}
 }
 
 decString deOSWindows::pGetUserLanguage() const{
@@ -618,14 +609,12 @@ decString deOSWindows::pGetUserLanguage() const{
 		return "en";
 	}
 	
-	wchar_t * const buffer = new wchar_t[langBufSize];
-	if(!GetUserPreferredUILanguages(MUI_LANGUAGE_NAME, &numLanguages, buffer, &langBufSize)){
-		delete [] buffer;
+	decTList<wchar_t> buffer(langBufSize);
+	if(!GetUserPreferredUILanguages(MUI_LANGUAGE_NAME, &numLanguages, buffer.GetArrayPointer(), &langBufSize)){
 		return "en";
 	}
 	
-	const decString language(WideToUtf8(buffer));
-	delete [] buffer;
+	const decString language(WideToUtf8(buffer.GetArrayPointer()));
 	return language;
 }
 
@@ -640,14 +629,12 @@ void deOSWindows::pFindResolutions(){
 	}
 
 	if(count == 0){
-		pResolutions = new decPoint[1];
-		pResolutions[0].x = pScreenWidth;
-		pResolutions[0].y = pScreenHeight;
-		pResolutionCount = 1;
+		pResolutions.RemoveAll();
+		pResolutions.Add({pScreenWidth, pScreenHeight});
 		return;
 	}
 
-	pResolutions = new decPoint[count];
+	pResolutions.SetCount(count);
 	int i, j;
 
 	for(i=0; i<count; i++){
@@ -655,26 +642,26 @@ void deOSWindows::pFindResolutions(){
 
 		const decPoint resolution((int)mode.dmPelsWidth, (int)mode.dmPelsHeight);
 		
-		for(j=0; j<pResolutionCount; j++){
-			if(pResolutions[j] == resolution){
+		for(j=0; j<pResolutions.GetCount(); j++){
+			if(pResolutions.GetAt(j) == resolution){
 				break;
 			}
 		}
 
-		if(j < pResolutionCount){
+		if(j < pResolutions.GetCount()){
 			continue;
 		}
 
-		pResolutions[pResolutionCount++] = resolution;
+		pResolutions.GetAt(pResolutions.GetCount()++) = resolution;
 	}
 
-	for(i=1; i<pResolutionCount; i++){
-		const decPoint &a = pResolutions[i - 1];
-		const decPoint &b = pResolutions[i];
+	for(i=1; i<pResolutions.GetCount(); i++){
+		const decPoint &a = pResolutions.GetAt(i - 1);
+		const decPoint &b = pResolutions.GetAt(i);
 		if(b.x > a.x || (b.x == a.x && b.y > a.y)){
 			const decPoint t(a);
-			pResolutions[i - 1] = b;
-			pResolutions[i] = t;
+			pResolutions.GetAt(i - 1) = b;
+			pResolutions.GetAt(i) = t;
 			if(i > 1){
 				i -= 2;
 			}

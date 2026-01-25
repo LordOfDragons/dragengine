@@ -100,46 +100,14 @@ void deClassNavigationSpace::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *myse
 		nd.navspace->SetLayer(copy->GetLayer());
 		nd.navspace->SetPosition(copy->GetPosition());
 		nd.navspace->SetOrientation(copy->GetOrientation());
-		
-		nd.navspace->SetVertexCount(copy->GetVertexCount());
-		if(copy->GetVertexCount() > 0){
-			memcpy(nd.navspace->GetVertices(), copy->GetVertices(),
-				sizeof(decVector) * copy->GetVertexCount());
-		}
-		
-		nd.navspace->SetEdgeCount(copy->GetEdgeCount());
-		if(copy->GetEdgeCount() > 0){
-			memcpy(nd.navspace->GetEdges(), copy->GetEdges(),
-				sizeof(deNavigationSpaceEdge) * copy->GetEdgeCount());
-		}
-		
-		nd.navspace->SetCornerCount(copy->GetCornerCount());
-		if(copy->GetCornerCount() > 0){
-			memcpy(nd.navspace->GetCorners(), copy->GetCorners(),
-				sizeof(deNavigationSpaceCorner) * copy->GetCornerCount());
-		}
-		
-		nd.navspace->SetFaceCount(copy->GetFaceCount());
-		if(copy->GetFaceCount() > 0){
-			memcpy(nd.navspace->GetFaces(), copy->GetFaces(),
-				sizeof(deNavigationSpaceFace) * copy->GetFaceCount());
-		}
-		
-		nd.navspace->SetWallCount(copy->GetWallCount());
-		if(copy->GetWallCount() > 0){
-			memcpy(nd.navspace->GetWalls(), copy->GetWalls(),
-				sizeof(deNavigationSpaceWall) * copy->GetWallCount());
-		}
-		
-		nd.navspace->SetRoomCount(copy->GetRoomCount());
-		if(copy->GetRoomCount() > 0){
-			memcpy(nd.navspace->GetRooms(), copy->GetRooms(),
-				sizeof(deNavigationSpaceRoom) * copy->GetRoomCount());
-		}
-		
+		nd.navspace->GetVertices() = copy->GetVertices();
+		nd.navspace->GetEdges() = copy->GetEdges();
+		nd.navspace->GetCorners() = copy->GetCorners();
+		nd.navspace->GetFaces() = copy->GetFaces();
+		nd.navspace->GetWalls() = copy->GetWalls();
+		nd.navspace->GetRooms() = copy->GetRooms();
 		nd.navspace->SetSnapDistance(copy->GetSnapDistance());
 		nd.navspace->SetSnapAngle(copy->GetSnapAngle());
-		
 		nd.navspace->SetBlockingPriority(copy->GetBlockingPriority());
 		nd.navspace->GetBlockerShapeList() = copy->GetBlockerShapeList();
 		nd.navspace->NotifyBlockerShapeListChanged();
@@ -314,7 +282,7 @@ deClassNavigationSpace::nfGetVertexCount::nfGetVertexCount(const sInitData &init
 void deClassNavigationSpace::nfGetVertexCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deNavigationSpace &navspace = dedsGetNativeData<sNavSpaceNatDat>(p_GetNativeData(myself)).navspace;
 	
-	rt->PushInt(navspace.GetVertexCount());
+	rt->PushInt(navspace.GetVertices().GetCount());
 }
 
 // public func void setVertexCount( int count )
@@ -325,7 +293,7 @@ deClassNavigationSpace::nfSetVertexCount::nfSetVertexCount(const sInitData &init
 void deClassNavigationSpace::nfSetVertexCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	deNavigationSpace &navspace = dedsGetNativeData<sNavSpaceNatDat>(p_GetNativeData(myself)).navspace;
 	
-	navspace.SetVertexCount(rt->GetValue(0)->GetInt());
+	navspace.GetVertices().SetAll(rt->GetValue(0)->GetInt(), {});
 }
 
 // public func Vector getVertexAt( int index )
@@ -338,7 +306,7 @@ void deClassNavigationSpace::nfGetVertexAt::RunFunction(dsRunTime *rt, dsValue *
 	const deScriptingDragonScript &ds = *(static_cast<deClassNavigationSpace*>(GetOwnerClass())->GetDS());
 	const int index = rt->GetValue(0)->GetInt();
 	
-	ds.GetClassVector()->PushVector(rt, navspace.GetVertexAt(index));
+	ds.GetClassVector()->PushVector(rt, navspace.GetVertices()[index]);
 }
 
 // public func void setVertexAt( int index, Vector position )
@@ -357,7 +325,7 @@ void deClassNavigationSpace::nfSetVertexAt::RunFunction(dsRunTime *rt, dsValue *
 		DSTHROW(dueNullPointer);
 	}
 	
-	navspace.SetVertexAt(index, ds.GetClassVector()->GetVector(objPosition));
+	navspace.GetVertices()[index] = ds.GetClassVector()->GetVector(objPosition);
 }
 
 
@@ -369,7 +337,7 @@ deClassNavigationSpace::nfGetEdgeCount::nfGetEdgeCount(const sInitData &init) : 
 void deClassNavigationSpace::nfGetEdgeCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deNavigationSpace &navspace = dedsGetNativeData<sNavSpaceNatDat>(p_GetNativeData(myself)).navspace;
 	
-	rt->PushInt(navspace.GetEdgeCount());
+	rt->PushInt(navspace.GetEdges().GetCount());
 }
 
 // public func void setEdgeCount( int count )
@@ -380,7 +348,7 @@ deClassNavigationSpace::nfSetEdgeCount::nfSetEdgeCount(const sInitData &init) : 
 void deClassNavigationSpace::nfSetEdgeCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	deNavigationSpace &navspace = dedsGetNativeData<sNavSpaceNatDat>(p_GetNativeData(myself)).navspace;
 	
-	navspace.SetEdgeCount(rt->GetValue(0)->GetInt());
+	navspace.GetEdges().SetAll(rt->GetValue(0)->GetInt(), {});
 }
 
 // public func int getEdgeVertex1( int edge )
@@ -390,7 +358,7 @@ deClassNavigationSpace::nfGetEdgeVertex1::nfGetEdgeVertex1(const sInitData &init
 }
 void deClassNavigationSpace::nfGetEdgeVertex1::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deNavigationSpace &navspace = dedsGetNativeData<sNavSpaceNatDat>(p_GetNativeData(myself)).navspace;
-	const deNavigationSpaceEdge &edge = navspace.GetEdgeAt(rt->GetValue(0)->GetInt());
+	const deNavigationSpaceEdge &edge = navspace.GetEdges()[rt->GetValue(0)->GetInt()];
 	
 	rt->PushInt((int)edge.GetVertex1());
 }
@@ -402,7 +370,7 @@ deClassNavigationSpace::nfGetEdgeVertex2::nfGetEdgeVertex2(const sInitData &init
 }
 void deClassNavigationSpace::nfGetEdgeVertex2::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deNavigationSpace &navspace = dedsGetNativeData<sNavSpaceNatDat>(p_GetNativeData(myself)).navspace;
-	const deNavigationSpaceEdge &edge = navspace.GetEdgeAt(rt->GetValue(0)->GetInt());
+	const deNavigationSpaceEdge &edge = navspace.GetEdges()[rt->GetValue(0)->GetInt()];
 	
 	rt->PushInt((int)edge.GetVertex2());
 }
@@ -414,7 +382,7 @@ deClassNavigationSpace::nfGetEdgeType1::nfGetEdgeType1(const sInitData &init) : 
 }
 void deClassNavigationSpace::nfGetEdgeType1::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deNavigationSpace &navspace = dedsGetNativeData<sNavSpaceNatDat>(p_GetNativeData(myself)).navspace;
-	const deNavigationSpaceEdge &edge = navspace.GetEdgeAt(rt->GetValue(0)->GetInt());
+	const deNavigationSpaceEdge &edge = navspace.GetEdges()[rt->GetValue(0)->GetInt()];
 	
 	rt->PushInt((int)edge.GetType1());
 }
@@ -426,7 +394,7 @@ deClassNavigationSpace::nfGetEdgeType2::nfGetEdgeType2(const sInitData &init) : 
 }
 void deClassNavigationSpace::nfGetEdgeType2::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deNavigationSpace &navspace = dedsGetNativeData<sNavSpaceNatDat>(p_GetNativeData(myself)).navspace;
-	const deNavigationSpaceEdge &edge = navspace.GetEdgeAt(rt->GetValue(0)->GetInt());
+	const deNavigationSpaceEdge &edge = navspace.GetEdges()[rt->GetValue(0)->GetInt()];
 	
 	rt->PushInt((int)edge.GetType2());
 }
@@ -442,7 +410,7 @@ deClassNavigationSpace::nfSetEdgeAt::nfSetEdgeAt(const sInitData &init) : dsFunc
 }
 void deClassNavigationSpace::nfSetEdgeAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	deNavigationSpace &navspace = dedsGetNativeData<sNavSpaceNatDat>(p_GetNativeData(myself)).navspace;
-	deNavigationSpaceEdge &edge = navspace.GetEdgeAt(rt->GetValue(0)->GetInt());
+	deNavigationSpaceEdge &edge = navspace.GetEdges()[rt->GetValue(0)->GetInt()];
 	
 	edge.SetVertex1((unsigned short)rt->GetValue(1)->GetInt());
 	edge.SetVertex2((unsigned short)rt->GetValue(2)->GetInt());
@@ -459,7 +427,7 @@ deClassNavigationSpace::nfGetCornerCount::nfGetCornerCount(const sInitData &init
 void deClassNavigationSpace::nfGetCornerCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deNavigationSpace &navspace = dedsGetNativeData<sNavSpaceNatDat>(p_GetNativeData(myself)).navspace;
 	
-	rt->PushInt(navspace.GetCornerCount());
+	rt->PushInt(navspace.GetCorners().GetCount());
 }
 
 // public func void setCornerCount( int count )
@@ -470,7 +438,7 @@ deClassNavigationSpace::nfSetCornerCount::nfSetCornerCount(const sInitData &init
 void deClassNavigationSpace::nfSetCornerCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	deNavigationSpace &navspace = dedsGetNativeData<sNavSpaceNatDat>(p_GetNativeData(myself)).navspace;
 	
-	navspace.SetCornerCount(rt->GetValue(0)->GetInt());
+	navspace.GetCorners().SetAll(rt->GetValue(0)->GetInt(), {});
 }
 
 // public func int getCornerVertex( int corner )
@@ -480,7 +448,7 @@ deClassNavigationSpace::nfGetCornerVertex::nfGetCornerVertex(const sInitData &in
 }
 void deClassNavigationSpace::nfGetCornerVertex::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deNavigationSpace &navspace = dedsGetNativeData<sNavSpaceNatDat>(p_GetNativeData(myself)).navspace;
-	const deNavigationSpaceCorner &corner = navspace.GetCornerAt(rt->GetValue(0)->GetInt());
+	const deNavigationSpaceCorner &corner = navspace.GetCorners()[rt->GetValue(0)->GetInt()];
 	
 	rt->PushInt((int)corner.GetVertex());
 }
@@ -492,7 +460,7 @@ deClassNavigationSpace::nfGetCornerType::nfGetCornerType(const sInitData &init) 
 }
 void deClassNavigationSpace::nfGetCornerType::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deNavigationSpace &navspace = dedsGetNativeData<sNavSpaceNatDat>(p_GetNativeData(myself)).navspace;
-	const deNavigationSpaceCorner &corner = navspace.GetCornerAt(rt->GetValue(0)->GetInt());
+	const deNavigationSpaceCorner &corner = navspace.GetCorners()[rt->GetValue(0)->GetInt()];
 	
 	rt->PushInt((int)corner.GetType());
 }
@@ -506,7 +474,7 @@ deClassNavigationSpace::nfSetCornerAt::nfSetCornerAt(const sInitData &init) : ds
 }
 void deClassNavigationSpace::nfSetCornerAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	deNavigationSpace &navspace = dedsGetNativeData<sNavSpaceNatDat>(p_GetNativeData(myself)).navspace;
-	deNavigationSpaceCorner &corner = navspace.GetCornerAt(rt->GetValue(0)->GetInt());
+	deNavigationSpaceCorner &corner = navspace.GetCorners()[rt->GetValue(0)->GetInt()];
 	
 	corner.SetVertex((unsigned short)rt->GetValue(1)->GetInt());
 	corner.SetType((unsigned short)rt->GetValue(2)->GetInt());
@@ -521,7 +489,7 @@ deClassNavigationSpace::nfGetFaceCount::nfGetFaceCount(const sInitData &init) : 
 void deClassNavigationSpace::nfGetFaceCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deNavigationSpace &navspace = dedsGetNativeData<sNavSpaceNatDat>(p_GetNativeData(myself)).navspace;
 	
-	rt->PushInt(navspace.GetFaceCount());
+	rt->PushInt(navspace.GetFaces().GetCount());
 }
 
 // public func void setFaceCount( int count )
@@ -532,7 +500,7 @@ deClassNavigationSpace::nfSetFaceCount::nfSetFaceCount(const sInitData &init) : 
 void deClassNavigationSpace::nfSetFaceCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	deNavigationSpace &navspace = dedsGetNativeData<sNavSpaceNatDat>(p_GetNativeData(myself)).navspace;
 	
-	navspace.SetFaceCount(rt->GetValue(0)->GetInt());
+	navspace.GetFaces().SetAll(rt->GetValue(0)->GetInt(), {});
 }
 
 // public func int getFaceCornerCount( int face )
@@ -542,7 +510,7 @@ deClassNavigationSpace::nfGetFaceCornerCount::nfGetFaceCornerCount(const sInitDa
 }
 void deClassNavigationSpace::nfGetFaceCornerCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deNavigationSpace &navspace = dedsGetNativeData<sNavSpaceNatDat>(p_GetNativeData(myself)).navspace;
-	const deNavigationSpaceFace &face = navspace.GetFaceAt(rt->GetValue(0)->GetInt());
+	const deNavigationSpaceFace &face = navspace.GetFaces()[rt->GetValue(0)->GetInt()];
 	
 	rt->PushInt((int)face.GetCornerCount());
 }
@@ -554,7 +522,7 @@ deClassNavigationSpace::nfGetFaceType::nfGetFaceType(const sInitData &init) : ds
 }
 void deClassNavigationSpace::nfGetFaceType::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deNavigationSpace &navspace = dedsGetNativeData<sNavSpaceNatDat>(p_GetNativeData(myself)).navspace;
-	const deNavigationSpaceFace &face = navspace.GetFaceAt(rt->GetValue(0)->GetInt());
+	const deNavigationSpaceFace &face = navspace.GetFaces()[rt->GetValue(0)->GetInt()];
 	
 	rt->PushInt((int)face.GetType());
 }
@@ -568,7 +536,7 @@ deClassNavigationSpace::nfSetFaceAt::nfSetFaceAt(const sInitData &init) : dsFunc
 }
 void deClassNavigationSpace::nfSetFaceAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	deNavigationSpace &navspace = dedsGetNativeData<sNavSpaceNatDat>(p_GetNativeData(myself)).navspace;
-	deNavigationSpaceFace &face = navspace.GetFaceAt(rt->GetValue(0)->GetInt());
+	deNavigationSpaceFace &face = navspace.GetFaces()[rt->GetValue(0)->GetInt()];
 	
 	face.SetCornerCount((unsigned short)rt->GetValue(1)->GetInt());
 	face.SetType((unsigned short)rt->GetValue(2)->GetInt());
@@ -583,7 +551,7 @@ deClassNavigationSpace::nfGetWallCount::nfGetWallCount(const sInitData &init) : 
 void deClassNavigationSpace::nfGetWallCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deNavigationSpace &navspace = dedsGetNativeData<sNavSpaceNatDat>(p_GetNativeData(myself)).navspace;
 	
-	rt->PushInt(navspace.GetWallCount());
+	rt->PushInt(navspace.GetWalls().GetCount());
 }
 
 // public func void setWallCount( int count )
@@ -594,7 +562,7 @@ deClassNavigationSpace::nfSetWallCount::nfSetWallCount(const sInitData &init) : 
 void deClassNavigationSpace::nfSetWallCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	deNavigationSpace &navspace = dedsGetNativeData<sNavSpaceNatDat>(p_GetNativeData(myself)).navspace;
 	
-	navspace.SetWallCount(rt->GetValue(0)->GetInt());
+	navspace.GetWalls().SetAll(rt->GetValue(0)->GetInt(), {});
 }
 
 // public func int getWallFace( int wall )
@@ -604,7 +572,7 @@ deClassNavigationSpace::nfGetWallFace::nfGetWallFace(const sInitData &init) : ds
 }
 void deClassNavigationSpace::nfGetWallFace::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deNavigationSpace &navspace = dedsGetNativeData<sNavSpaceNatDat>(p_GetNativeData(myself)).navspace;
-	const deNavigationSpaceWall &wall = navspace.GetWallAt(rt->GetValue(0)->GetInt());
+	const deNavigationSpaceWall &wall = navspace.GetWalls()[rt->GetValue(0)->GetInt()];
 	
 	rt->PushInt((int)wall.GetFace());
 }
@@ -616,7 +584,7 @@ deClassNavigationSpace::nfGetWallType::nfGetWallType(const sInitData &init) : ds
 }
 void deClassNavigationSpace::nfGetWallType::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deNavigationSpace &navspace = dedsGetNativeData<sNavSpaceNatDat>(p_GetNativeData(myself)).navspace;
-	const deNavigationSpaceWall &wall = navspace.GetWallAt(rt->GetValue(0)->GetInt());
+	const deNavigationSpaceWall &wall = navspace.GetWalls()[rt->GetValue(0)->GetInt()];
 	
 	rt->PushInt((int)wall.GetType());
 }
@@ -630,7 +598,7 @@ deClassNavigationSpace::nfSetWallAt::nfSetWallAt(const sInitData &init) : dsFunc
 }
 void deClassNavigationSpace::nfSetWallAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	deNavigationSpace &navspace = dedsGetNativeData<sNavSpaceNatDat>(p_GetNativeData(myself)).navspace;
-	deNavigationSpaceWall &wall = navspace.GetWallAt(rt->GetValue(0)->GetInt());
+	deNavigationSpaceWall &wall = navspace.GetWalls()[rt->GetValue(0)->GetInt()];
 	
 	wall.SetFace((unsigned short)rt->GetValue(1)->GetInt());
 	wall.SetType((unsigned short)rt->GetValue(2)->GetInt());
@@ -645,7 +613,7 @@ deClassNavigationSpace::nfGetRoomCount::nfGetRoomCount(const sInitData &init) : 
 void deClassNavigationSpace::nfGetRoomCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deNavigationSpace &navspace = dedsGetNativeData<sNavSpaceNatDat>(p_GetNativeData(myself)).navspace;
 	
-	rt->PushInt(navspace.GetRoomCount());
+	rt->PushInt(navspace.GetRooms().GetCount());
 }
 
 // public func void setRoomCount( int count )
@@ -656,7 +624,7 @@ deClassNavigationSpace::nfSetRoomCount::nfSetRoomCount(const sInitData &init) : 
 void deClassNavigationSpace::nfSetRoomCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	deNavigationSpace &navspace = dedsGetNativeData<sNavSpaceNatDat>(p_GetNativeData(myself)).navspace;
 	
-	navspace.SetRoomCount(rt->GetValue(0)->GetInt());
+	navspace.GetRooms().SetAll(rt->GetValue(0)->GetInt(), {});
 }
 
 // public func int getRoomFrontWallCount( int room )
@@ -666,7 +634,7 @@ deClassNavigationSpace::nfGetRoomFrontWallCount::nfGetRoomFrontWallCount(const s
 }
 void deClassNavigationSpace::nfGetRoomFrontWallCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deNavigationSpace &navspace = dedsGetNativeData<sNavSpaceNatDat>(p_GetNativeData(myself)).navspace;
-	const deNavigationSpaceRoom &room = navspace.GetRoomAt(rt->GetValue(0)->GetInt());
+	const deNavigationSpaceRoom &room = navspace.GetRooms()[rt->GetValue(0)->GetInt()];
 	
 	rt->PushInt((int)room.GetFrontWallCount());
 }
@@ -678,7 +646,7 @@ deClassNavigationSpace::nfGetRoomBackWallCount::nfGetRoomBackWallCount(const sIn
 }
 void deClassNavigationSpace::nfGetRoomBackWallCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deNavigationSpace &navspace = dedsGetNativeData<sNavSpaceNatDat>(p_GetNativeData(myself)).navspace;
-	const deNavigationSpaceRoom &room = navspace.GetRoomAt(rt->GetValue(0)->GetInt());
+	const deNavigationSpaceRoom &room = navspace.GetRooms()[rt->GetValue(0)->GetInt()];
 	
 	rt->PushInt((int)room.GetBackWallCount());
 }
@@ -690,7 +658,7 @@ deClassNavigationSpace::nfGetRoomType::nfGetRoomType(const sInitData &init) : ds
 }
 void deClassNavigationSpace::nfGetRoomType::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deNavigationSpace &navspace = dedsGetNativeData<sNavSpaceNatDat>(p_GetNativeData(myself)).navspace;
-	const deNavigationSpaceRoom &room = navspace.GetRoomAt(rt->GetValue(0)->GetInt());
+	const deNavigationSpaceRoom &room = navspace.GetRooms()[rt->GetValue(0)->GetInt()];
 	
 	rt->PushInt((int)room.GetType());
 }
@@ -705,7 +673,7 @@ deClassNavigationSpace::nfSetRoomAt::nfSetRoomAt(const sInitData &init) : dsFunc
 }
 void deClassNavigationSpace::nfSetRoomAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	deNavigationSpace &navspace = dedsGetNativeData<sNavSpaceNatDat>(p_GetNativeData(myself)).navspace;
-	deNavigationSpaceRoom &room = navspace.GetRoomAt(rt->GetValue(0)->GetInt());
+	deNavigationSpaceRoom &room = navspace.GetRooms()[rt->GetValue(0)->GetInt()];
 	
 	room.SetFrontWallCount((unsigned short)rt->GetValue(1)->GetInt());
 	room.SetBackWallCount((unsigned short)rt->GetValue(2)->GetInt());

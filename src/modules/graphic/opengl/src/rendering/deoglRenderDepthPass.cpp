@@ -400,7 +400,7 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 	}
 	
 	if((renderTask && renderTask->GetPipelineCount() > 0)
-	|| (computeRenderTask && computeRenderTask->GetStepCount() > 0)){
+	|| (computeRenderTask && computeRenderTask->GetSteps().IsNotEmpty())){
 		if(planDebug && plan.GetRenderPassNumber() == 1){
 			const int componentCount = collideList.GetComponentCount();
 			deoglEnvironmentMap::List envMapList;
@@ -412,8 +412,8 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 				const deoglModelLOD &modelLOD = component.GetModel()->GetLODAt(clistComponent.GetLODLevel());
 				
 				planDebug->IncrementRenderedObjects();
-				planDebug->IncrementRenderedTriangles(modelLOD.GetFaceCount());
-				planDebug->IncrementLODTriangles(component.GetModel()->GetLODAt(0).GetFaceCount());
+				planDebug->IncrementRenderedTriangles(modelLOD.GetFaces().GetCount());
+				planDebug->IncrementLODTriangles(component.GetModel()->GetLODAt(0).GetFaces().GetCount());
 				/*
 				if(component.GetRenderEnvMap()){
 					envMapList.AddIfMissing(component.GetRenderEnvMap());

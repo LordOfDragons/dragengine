@@ -218,7 +218,6 @@ void projTestRunEngine::ActivateModule(deModuleSystem::eModuleTypes type,
 const char *name, const char *version){
 	deModuleSystem &moduleSystem = *pEngine->GetModuleSystem();
 	deLoadableModule *module = nullptr;
-	int i;
 	
 	if(name[0]){ // not empty
 		if(version[0]){ // not empty
@@ -327,18 +326,17 @@ const char *name, const char *version){
 	// apply parameters
 	const projTestRunProcess::sRunParameters &runParameters = pProcess.GetRunParameters();
 	
-	for(i=0; i<runParameters.parameterCount; i++){
-		if(runParameters.parameters[i].module != name){
-			continue;
+	runParameters.parameters.Visit([&](const projTestRunProcess::sModuleParameter &p){
+		if(p.module != name){
+			return;
 		}
 		
-		if(module->GetModule()->IndexOfParameterNamed(runParameters.parameters[i].parameter) == -1){
-			continue;
+		if(module->GetModule()->IndexOfParameterNamed(p.parameter) == -1){
+			return;
 		}
 		
-		module->GetModule()->SetParameterValue(runParameters.parameters[i].parameter,
-			runParameters.parameters[i].value);
-	}
+		module->GetModule()->SetParameterValue(p.parameter, p.value);
+	});
 }
 
 void projTestRunEngine::SetDataDirectory(){

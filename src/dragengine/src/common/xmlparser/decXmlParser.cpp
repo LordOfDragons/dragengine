@@ -60,11 +60,9 @@ decXmlParser::decXmlParser(deLogger *logger){
 	pLogger = logger;
 	pLine = 1;
 	pPos = 1;
-	pToken = nullptr;
 	pTokenLen = 0;
 	pTokenLine = 1;
 	pTokenPos = 1;
-	pCleanString = nullptr;
 	pCleanStringSize = 0;
 	pFile = nullptr;
 	pCurChar = DEXP_EOF;
@@ -72,17 +70,14 @@ decXmlParser::decXmlParser(deLogger *logger){
 	
 	try{
 		pTokenSize = 256;
-		pToken = new char[257];
+		pToken.SetAll(pTokenSize + 1, 0);
 		
 	}catch(const deException &){
-		if(pToken) delete [] pToken;
 		throw;
 	}
 }
 
 decXmlParser::~decXmlParser(){
-	if(pCleanString) delete [] pCleanString;
-	if(pToken) delete [] pToken;
 }
 
 
@@ -186,7 +181,7 @@ void decXmlParser::ParseDocTypeDecl(decXmlDocument *doc){
 	if(!ParseToken("<!DOCTYPE")) return;
 	if(ParseSpaces() < 1) RaiseFatalError();
 	ParseName(0, true);
-	doc->SetDocType(pCleanString);
+	doc->SetDocType(pCleanString.GetArrayPointer());
 	if(ParseSpaces() > 0){
 		// ExternalID ::= 'SYSTEM' S SystemLiteral | 'PUBLIC' S PubidLiteral S SystemLiteral
 		if(ParseToken("SYSTEM")){
@@ -229,7 +224,7 @@ void decXmlParser::ParseSystemLiteral(decXmlDocument *doc){
 		count++;
 	}
 	SetCleanString(count);
-	doc->SetSystemLiteral(pCleanString);
+	doc->SetSystemLiteral(pCleanString.GetArrayPointer());
 	RemoveFromToken(count);
 	if(!ParseToken(delimiter)) RaiseFatalError();
 }
@@ -255,7 +250,7 @@ void decXmlParser::ParsePublicLiteral(decXmlDocument *doc){
 		count++;
 	}
 	SetCleanString(count);
-	doc->SetPublicLiteral(pCleanString);
+	doc->SetPublicLiteral(pCleanString.GetArrayPointer());
 	RemoveFromToken(count);
 	if(!ParseToken(delimiter)) RaiseFatalError();
 }
@@ -274,10 +269,10 @@ bool decXmlParser::ParseElementTag(decXmlContainer *container, const char *requi
 		return false;
 	}
 	ParseName(0, true);
-	if(requiredName && requiredName[0] && strcmp(requiredName, pCleanString) != 0){
+	if(requiredName && requiredName[0] && strcmp(requiredName, pCleanString.GetArrayPointer()) != 0){
 		RaiseFatalError();
 	}
-	tag = decXmlElementTag::Ref::New(pCleanString);
+	tag = decXmlElementTag::Ref::New(pCleanString.GetArrayPointer());
 	tag->SetLineNumber(lineNumber);
 	tag->SetPositionNumber(posNumber);
 	
@@ -302,8 +297,8 @@ bool decXmlParser::ParseElementTag(decXmlContainer *container, const char *requi
 					}
 					if(count > 0){
 						SetCleanString(count);
-						pAddCharacterData(tag, pCleanString, lineNumber, posNumber);
-						//charData = decXmlCharacterData::Ref::New( pCleanString );
+						pAddCharacterData(tag, pCleanString.GetArrayPointer(), lineNumber, posNumber);
+						//charData = decXmlCharacterData::Ref::New(pCleanString.GetArrayPointer());
 						//charData->SetLineNumber( lineNumber );
 						//charData->SetPositionNumber( posNumber );
 						//tag->AddElement( charData );
@@ -323,7 +318,7 @@ bool decXmlParser::ParseElementTag(decXmlContainer *container, const char *requi
 				
 				// ETag ::= '</' Name S? '>'
 				ParseName(0, true);
-				if(strcmp(pCleanString, tag->GetName()) != 0){
+				if(strcmp(pCleanString.GetArrayPointer(), tag->GetName()) != 0){
 					RaiseFatalError();
 				}
 				ParseSpaces();
@@ -390,7 +385,7 @@ bool decXmlParser::ParseReference(decXmlContainer *container){
 				if(character){
 					pAddCharacterData(container, (char)character, lineNumber, posNumber);
 				}else{
-//						charRef = decXmlCharReference::Ref::New( pCleanString + 3, decXmlCharReference::erHexadecimal );
+//						charRef = decXmlCharReference::Ref::New(pCleanString.GetArrayPointer() + 3, decXmlCharReference::erHexadecimal);
 				}
 			}else{
 				character = 0;
@@ -410,7 +405,7 @@ bool decXmlParser::ParseReference(decXmlContainer *container){
 				if(character){
 					pAddCharacterData(container, (char)character, lineNumber, posNumber);
 				}else{
-//						charRef = decXmlCharReference::Ref::New( pCleanString + 2, decXmlCharReference::erDecimal );
+//						charRef = decXmlCharReference::Ref::New(pCleanString.GetArrayPointer() + 2, decXmlCharReference::erDecimal);
 				}
 			}
 			if(charRef){
@@ -425,7 +420,7 @@ bool decXmlParser::ParseReference(decXmlContainer *container){
 			if(GetTokenAt(count) != ';') RaiseFatalError();
 			SetCleanString(count);
 			
-			const char * const name = pCleanString + 1;
+			const char * const name = pCleanString.GetArrayPointer() + 1;
 			if(strcmp(name, "lt") == 0){
 				pAddCharacterData(container, '<', lineNumber, posNumber);
 				
@@ -473,7 +468,7 @@ bool decXmlParser::ParseCDSect(decXmlContainer *container){
 		count++;
 	}
 	SetCleanString(count);
-	cdsect = decXmlCDSect::Ref::New(pCleanString);
+	cdsect = decXmlCDSect::Ref::New(pCleanString.GetArrayPointer());
 	cdsect->SetLineNumber(lineNumber);
 	cdsect->SetPositionNumber(posNumber);
 	RemoveFromToken(count);
@@ -490,7 +485,7 @@ void decXmlParser::ParseAttribute(decXmlContainer *container){
 	// Attribute ::= Name Eq AttValue
 	// (ADDITION): if Name begins with 'xmlns:' make a namespace out of it
 	ParseName(0, true);
-	attValue = decXmlAttValue::Ref::New(pCleanString);
+	attValue = decXmlAttValue::Ref::New(pCleanString.GetArrayPointer());
 	attValue->SetLineNumber(lineNumber);
 	attValue->SetPositionNumber(posNumber);
 	ParseEquals();
@@ -576,7 +571,7 @@ void decXmlParser::ParseAttValue(decXmlAttValue *value){
 				count = ParseName(count + 1, false);
 				if(GetTokenAt(count) != ';') RaiseFatalError();
 				
-				const char * const name = pToken + safeguard + 1;
+				const char * const name = pToken.GetArrayPointer() + safeguard + 1;
 				if(strncmp(name, "lt", 2) == 0){
 					pToken[safeguard] = '<';
 					count = pTokenLen = safeguard + 1;
@@ -602,7 +597,7 @@ void decXmlParser::ParseAttValue(decXmlAttValue *value){
 		count++;
 	}
 	SetCleanString(count);
-	value->SetValue(pCleanString);
+	value->SetValue(pCleanString.GetArrayPointer());
 	RemoveFromToken(count + 1);
 }
 
@@ -659,7 +654,7 @@ void decXmlParser::ParseEncName(decXmlDocument *doc){
 		count++;
 	}
 	SetCleanString(count);
-	doc->SetEncoding(pCleanString);
+	doc->SetEncoding(pCleanString.GetArrayPointer());
 	RemoveFromToken(count);
 	if(!ParseToken(delimiter)) RaiseFatalError();
 }
@@ -696,7 +691,7 @@ bool decXmlParser::ParseComment(decXmlContainer *container){
 	}
 	// add comment
 	SetCleanString(count);
-	comment = decXmlComment::Ref::New(pCleanString);
+	comment = decXmlComment::Ref::New(pCleanString.GetArrayPointer());
 	comment->SetLineNumber(lineNumber);
 	comment->SetPositionNumber(posNumber);
 	container->AddElement(comment);
@@ -713,14 +708,14 @@ bool decXmlParser::ParsePI(decXmlContainer *container){
 	decXmlPI::Ref pi;
 	if(!ParseToken("<?")) return false;
 	ParseName(0, true);
-	if(strlen(pCleanString) >= 3){
+	if(strlen(pCleanString.GetArrayPointer()) >= 3){
 		if(pCleanString[0] == 'X' || pCleanString[0] == 'x'
 		|| pCleanString[1] == 'M' || pCleanString[1] == 'm'
 		|| pCleanString[2] == 'L' || pCleanString[2] == 'l'){
 			RaiseFatalError();
 		}
 	}
-	pi = decXmlPI::Ref::New(pCleanString);
+	pi = decXmlPI::Ref::New(pCleanString.GetArrayPointer());
 	pi->SetLineNumber(lineNumber);
 	pi->SetPositionNumber(posNumber);
 	if(ParseSpaces() > 0){
@@ -739,7 +734,7 @@ bool decXmlParser::ParsePI(decXmlContainer *container){
 			count++;
 		}
 		SetCleanString(count);
-		pi->SetCommand(pCleanString);
+		pi->SetCommand(pCleanString.GetArrayPointer());
 		RemoveFromToken(count + 2);
 	}
 	container->AddElement(pi);
@@ -964,7 +959,7 @@ bool decXmlParser::IsEOF(){
 
 void decXmlParser::RaiseFatalError(){
 	if(pTokenLen){
-		UnexpectedToken(pTokenLine, pTokenPos, pToken);
+		UnexpectedToken(pTokenLine, pTokenPos, pToken.GetArrayPointer());
 	}else{
 		UnexpectedEOF(pTokenLine, pTokenPos);
 	}
@@ -975,15 +970,13 @@ void decXmlParser::RaiseFatalError(){
 void decXmlParser::SetCleanString(int length){
 	if(length > pTokenLen) DETHROW(deeInvalidParam);
 	if(length > pCleanStringSize){
-		char *newStr = new char[length + 1];
-		if(pCleanString) delete [] pCleanString;
-		pCleanString = newStr;
+		pCleanString.SetCount(length + 1, 0);
 		pCleanStringSize = length;
 	}
 	#ifdef OS_W32_VS
-		strncpy_s(pCleanString, length + 1, pToken, length);
+		strncpy_s(pCleanString.GetArrayPointer(), length + 1, pToken.GetArrayPointer(), length);
 	#else
-		strncpy(pCleanString, pToken, length);
+		strncpy(pCleanString.GetArrayPointer(), pToken.GetArrayPointer(), length);
 	#endif
 	pCleanString[length] = '\0';
 }
@@ -1024,19 +1017,8 @@ void decXmlParser::pGetNextCharAndAdd(){
 
 void decXmlParser::pGrowToken(){
 	int newSize = pTokenSize * 3 / 2 + 1;
-	char *newToken = new char[newSize + 1];
-	if(pToken){
-		if(pTokenLen > 0){
-			#ifdef OS_W32_VS
-				strncpy_s(newToken, pTokenLen + 1, pToken, pTokenLen);
-			#else
-				strncpy(newToken, pToken, pTokenLen);
-			#endif
-		}
-		newToken[pTokenLen] = '\0';
-		delete [] pToken;
-	}
-	pToken = newToken;
+	pToken.SetCount(newSize + 1, 0);
+	pToken[pTokenLen] = '\0';
 	pTokenSize = newSize;
 }
 

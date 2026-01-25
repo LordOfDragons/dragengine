@@ -183,9 +183,14 @@ public:
 		return pObject != nullptr;
 	}
 	
-	/** Hash. */
+	/** \brief Hash. */
 	inline unsigned int Hash() const{
 		return pObject ? DEHash(pObject) : 0;
+	}
+	
+	/** \brief Clear reference. */
+	void Clear(){
+		*this = nullptr;
 	}
 	
 	/** \brief Object is nullptr. */

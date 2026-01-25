@@ -27,8 +27,9 @@
 #define _MECLMASKPAINT_H_
 
 // includes
-#include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
 
 // predefinitions
 class meWorld;
@@ -69,7 +70,7 @@ private:
 	decBoundary pAreaGrid;
 	decBoundary pAreaModifyGrid;
 	
-	unsigned char *pOldValues;
+	decTList<unsigned char> pOldValues;
 	int pModifyWidth;
 	int pModifyHeight;
 	

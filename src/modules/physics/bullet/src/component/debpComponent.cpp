@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "debpModel.h"
 #include "debpComponent.h"
 #include "../dePhysicsBullet.h"
@@ -68,16 +65,7 @@ pDirtyExtends(true),
 pDirtyBoneWeights(true),
 pDirtyWeights(true),
 pEnabled(false),
-
-pBones(nullptr),
-pBoneCount(0),
 pModel(nullptr),
-
-pVertices(nullptr),
-pWeights(nullptr),
-pVertexCount(0),
-pWeightsCount(0),
-
 pLinkedCollider(nullptr)
 {
 	if(!component){
@@ -110,38 +98,33 @@ void debpComponent::SetLinkedCollider(debpColliderComponent *collider){
 
 
 
-debpComponent::sBone &debpComponent::GetBoneAt(int index) const{
-	if(index < 0 || index >= pBoneCount){
-		DETHROW(deeInvalidParam);
-	}
+debpComponent::sBone &debpComponent::GetBoneAt(int index){
+	return pBones[index];
+}
+
+const debpComponent::sBone &debpComponent::GetBoneAt(int index) const{
 	return pBones[index];
 }
 
 void debpComponent::PrepareBone(int index){
-	if(index < 0 || index >= pBoneCount){
-		DETHROW(deeInvalidParam);
-	}
-	
 	pComponent->WaitAnimatorTaskFinished();
 	pPrepareBone(index);
 }
 
 void debpComponent::SetAllBoneDirty(){
-	int i;
-	for(i=0; i<pBoneCount; i++){
-		pBones[i].dirty = true;
-	}
+	pBones.Visit([&](sBone &bone){
+		bone.dirty = true;
+	});
 }
 
 void debpComponent::ClearAllBoneDirty(){
-	int i;
-	for(i=0; i<pBoneCount; i++){
-		pBones[i].dirty = false;
-	}
+	pBones.Visit([&](sBone &bone){
+		bone.dirty = false;
+	});
 }
 
 int debpComponent::GetModelRigMapping(int bone) const{
-	return pModelRigMappings.GetAt(bone);
+	return pModelRigMappings[bone];
 }
 
 
@@ -256,19 +239,17 @@ void debpComponent::PrepareMesh(){
 	PrepareWeights();
 	
 	const deModelLOD &lod = pComponent->GetModel()->GetLODAt(0);
-	int i;
-	
-	for(i=0; i<pVertexCount; i++){
-		const deModelVertex &vertex = lod.GetVertexAt(i);
-		const int weightSet = vertex.GetWeightSet();
+	pVertices.VisitIndexed([&](int i, decVector &vertex){
+		const deModelVertex &modelVertex = lod.GetVertices()[i];
+		const int weightSet = modelVertex.GetWeightSet();
 		
 		if(weightSet == -1){
-			pVertices[i] = vertex.GetPosition();
+			vertex = modelVertex.GetPosition();
 			
 		}else{
-			pVertices[i] = pWeights[weightSet] * vertex.GetPosition();
+			vertex = pWeights[weightSet] * modelVertex.GetPosition();
 		}
-	}
+	});
 	
 	pDirtyMesh = false;
 }
@@ -289,7 +270,7 @@ void debpComponent::PrepareExtends(){
 	bool extendsSet = false;
 	int i, j;
 	
-	if(pBoneCount > 0){
+	if(pBones.IsNotEmpty()){
 		pComponent->PrepareBones();
 		const decDMatrix &matrix = pComponent->GetMatrix();
 		const decDVector position(matrix.GetPosition());
@@ -451,11 +432,10 @@ void debpComponent::PrepareBoneWeights(){
 	
 	pComponent->PrepareBones();
 	
-	int i;
-	for(i=0; i<pBoneCount; i++){
-		pBones[i].weightMatrix = rig->GetBoneAt(i)->GetInverseMatrix()
+	pBones.VisitIndexed([&](int i, sBone &bone){
+		bone.weightMatrix = rig->GetBoneAt(i)->GetInverseMatrix()
 			.QuickMultiply(pComponent->GetBoneAt(i).GetMatrix());
-	}
+	});
 	
 	pDirtyBoneWeights = false;
 }
@@ -463,16 +443,10 @@ void debpComponent::PrepareBoneWeights(){
 
 
 const decMatrix &debpComponent::GetWeights(int index) const{
-	if(index < 0 || index >= pWeightsCount){
-		DETHROW(deeOutOfBoundary);
-	}
 	return pWeights[index];
 }
 
 const decVector &debpComponent::GetVertex(int index) const{
-	if(index < 0 || index >= pVertexCount){
-		DETHROW(deeOutOfBoundary);
-	}
 	return pVertices[index];
 }
 
@@ -485,48 +459,20 @@ void debpComponent::pCleanUp(){
 	if(pLinkedCollider){
 		pLinkedCollider->SetLinkedComponent(nullptr);
 	}
-	if(pBones){
-		delete [] pBones;
-	}
-	if(pVertices){
-		delete [] pVertices;
-	}
-	if(pWeights){
-		delete [] pWeights;
-	}
 }
 
 void debpComponent::pRebuildBoneArrays(){
-	if(pBones){
-		delete [] pBones;
-		pBones = nullptr;
-		pBoneCount = 0;
-	}
+	pBones.RemoveAll();
 	
-	const int count = pComponent->GetBoneCount();
-	if(count == 0){
-		return;
-	}
-	
-	pBones = new sBone[count];
-	for(pBoneCount=0; pBoneCount<count; pBoneCount++){
-		pBones[pBoneCount].dirty = true;
-	}
+	pBones.AddRange(pComponent->GetBones().GetCount(), {});
+	pBones.Visit([&](sBone &bone){
+		bone.dirty = true;
+	});
 }
 
 void debpComponent::pChangeModel(){
-	if(pVertices){
-		delete [] pVertices;
-		pVertices = nullptr;
-		pVertexCount = 0;
-	}
-	
-	if(pWeights){
-		delete [] pWeights;
-		pWeights = nullptr;
-		pWeightsCount = 0;
-	}
-	
+	pVertices.RemoveAll();
+	pWeights.RemoveAll();
 	pModelRigMappings.RemoveAll();
 	
 	pMinExtend.SetZero();
@@ -537,22 +483,9 @@ void debpComponent::pChangeModel(){
 		return;
 	}
 	
-	int count = model->GetLODAt(0)->GetVertexCount();
-	if(count > 0){
-		pVertices = new decVector[count];
-		pVertexCount = count;
-	}
-	
-	count = pModel->GetWeightSetCount();
-	if(count > 0){
-		pWeights = new decMatrix[count];
-		pWeightsCount = count;
-	}
-	
-	count = model->GetBoneCount();
-	while(pModelRigMappings.GetCount() < count){
-		pModelRigMappings.Add(-1);
-	}
+	pVertices.AddRange(model->GetLODAt(0)->GetVertices().GetCount(), {});
+	pWeights.AddRange(pModel->GetWeightSetCount(), {});
+	pModelRigMappings.AddRange(model->GetBoneCount(), -1);
 	
 	pMinExtend = pModel->GetExtends().minimum;
 	pMaxExtend = pModel->GetExtends().maximum;

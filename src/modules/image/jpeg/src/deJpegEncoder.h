@@ -27,11 +27,10 @@
 
 #include "jpeglib.h"
 
+#include <dragengine/common/collection/decTList.h>
 
-
-class decBaseFileWriter;
 class deJpegModule;
-
+class decBaseFileWriter;
 
 
 /**
@@ -45,14 +44,14 @@ private:
 	jpeg_error_mgr pErrorMgr;
 	jpeg_destination_mgr pDestMgr;
 	
-	JOCTET *pDataBuffer;
+	decTList<JOCTET> pDataBuffer;
 	decBaseFileWriter *pWriter;
 	
 public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new information object. */
-	deJpegEncoder(deJpegModule *module);
+	explicit deJpegEncoder(deJpegModule *module);
 	/** Cleans up the information object. */
 	~deJpegEncoder();
 	/*@}*/
@@ -78,7 +77,7 @@ public:
 	/** @name Data Buffer */
 	/*@{*/
 	/** Retrieves the data buffer. */
-	inline JOCTET *GetDataBuffer() const{ return pDataBuffer; }
+	inline const decTList<JOCTET> &GetDataBuffer() const{ return pDataBuffer; }
 	
 	/** Init writing into data buffer. */
 	void InitWrite(decBaseFileWriter *writer);

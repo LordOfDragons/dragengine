@@ -25,11 +25,11 @@
 #ifndef _DEOGLCOMPUTERENDERTASK_H_
 #define _DEOGLCOMPUTERENDERTASK_H_
 
-#include <stdint.h>
-
 #include "../../shaders/paramblock/deoglSPBlockSSBO.h"
 #include "../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../skin/pipeline/deoglSkinTexturePipelinesList.h"
+
+#include <dragengine/common/collection/decTList.h>
 
 class deoglRenderThread;
 class deoglPipeline;
@@ -151,6 +151,8 @@ private:
 	
 	bool pFilterDecal;
 	bool pDecal;
+	bool pFilterDecalSolidParent;
+	bool pDecalSolidParent;
 	
 	int pFilterCubeFace;
 	
@@ -159,9 +161,7 @@ private:
 	
 	bool pUseSpecialParamBlock;
 	
-	sStep *pSteps;
-	int pStepCount;
-	int pStepSize;
+	decTList<sStep> pSteps;
 	bool pSkipSubInstanceGroups;
 	
 	
@@ -407,6 +407,18 @@ public:
 	/** Set if decal textures are selected if decal filtering is enabled. */
 	void SetDecal(bool decal);
 	
+	/** Filtering for decal on solid parent. */
+	inline bool GetFilterDecalSolidParent() const{ return pFilterDecalSolidParent; }
+	
+	/** Set if filtering for decal on solid parent. */
+	void SetFilterDecalSolidParent(bool filterDecalSolidParent);
+	
+	/** Decal textures on solid parent. */
+	inline bool GetDecalSolidParent() const{ return pDecalSolidParent; }
+	
+	/** Set if decal textures on solid parent. */
+	void SetDecalSolidParent(bool solidParent);
+	
 	
 	
 	/** Filter by cube face test result or -1 if disabled. */
@@ -439,11 +451,8 @@ public:
 	
 	
 	
-	/** Count of steps. */
-	inline int GetStepCount() const{ return pStepCount; }
-	
-	/** Render steps direct access or nullptr if not mapped. */
-	inline const sStep *GetSteps() const{ return pSteps; }
+	/** Steps. */
+	inline const decTList<sStep> &GetSteps() const{ return pSteps; }
 	
 	/** Skip sub instance groups. */
 	inline bool GetSkipSubInstanceGroups() const{ return pSkipSubInstanceGroups; }

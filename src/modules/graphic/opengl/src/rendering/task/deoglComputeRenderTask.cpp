@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglComputeRenderTask.h"
 #include "shared/deoglRenderTaskSharedPool.h"
 #include "shared/deoglRenderTaskSharedTexture.h"
@@ -79,9 +75,6 @@ pUseSPBInstanceFlags(false),
 pRenderVSStereo(false),
 pPipelineDoubleSided(nullptr),
 pPipelineSingleSided(nullptr),
-pSteps(nullptr),
-pStepCount(0),
-pStepSize(0),
 pSkipSubInstanceGroups(false)
 {
 	const bool rowMajor = renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working();
@@ -126,11 +119,7 @@ pSkipSubInstanceGroups(false)
 	Clear();
 }
 
-deoglComputeRenderTask::~deoglComputeRenderTask(){
-	if(pSteps){
-		delete [] pSteps;
-	}
-}
+deoglComputeRenderTask::~deoglComputeRenderTask() = default;
 
 
 
@@ -149,7 +138,7 @@ void deoglComputeRenderTask::BeginPrepare(int passCount){
 	#ifdef DO_STATE_DEBUG
 		pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.BeginPrepare: this=%p state=%d", this, pState);
 	#endif
-	pStepCount = 0;
+	pSteps.SetCountDiscard(0);
 	
 	if(passCount > pUBOConfig->GetElementCount()){
 		pUBOConfig->SetElementCount(passCount);
@@ -191,6 +180,8 @@ void deoglComputeRenderTask::Clear(){
 	
 	pFilterDecal = false;
 	pDecal = false;
+	pFilterDecalSolidParent = false;
+	pDecalSolidParent = true;
 	
 	pFilterCubeFace = -1;
 	
@@ -256,7 +247,7 @@ bool deoglComputeRenderTask::ReadBackSteps(){
 	counterSteps = counters.counter;
 	}
 	
-	pStepCount = 0;
+	pSteps.SetCountDiscard(0);
 	
 	if(counterSteps == 0){
 		pState = esReady;
@@ -293,17 +284,8 @@ bool deoglComputeRenderTask::ReadBackSteps(){
 		counterSteps, (int)(timer.GetElapsedTime()*1e6f));
 #endif
 	
-	if(counterSteps > pStepSize){
-		if(pSteps){
-			delete [] pSteps;
-			pSteps = nullptr;
-		}
-		pSteps = new sStep[counterSteps];
-		pStepSize = counterSteps;
-	}
-	
 	for(i=0; i<counterSteps; i++){
-		pSteps[pStepCount++] = steps[i];
+		pSteps.Add(steps[i]);
 		i += decMath::max(steps[i].subInstanceCount - 1, 0);
 	}
 	
@@ -320,7 +302,7 @@ bool deoglComputeRenderTask::ReadBackSteps(){
 	
 #ifdef DO_READ_BACK_TIMINGS
 	pRenderThread.GetLogger().LogInfoFormat("ComputeRenderTask.ReadBackSteps: copied %d in %dys",
-		pStepCount, (int)(timer.GetElapsedTime()*1e6f));
+		pSteps.GetCount(), (int)(timer.GetElapsedTime()*1e6f));
 #endif
 	return true;
 }
@@ -446,6 +428,14 @@ void deoglComputeRenderTask::SetDecal(bool decal){
 	pDecal = decal;
 }
 
+void deoglComputeRenderTask::SetFilterDecalSolidParent(bool filterDecalSolidParent){
+	pFilterDecalSolidParent = filterDecalSolidParent;
+}
+
+void deoglComputeRenderTask::SetDecalSolidParent(bool solidParent){
+	pDecalSolidParent = solidParent;
+}
+
 void deoglComputeRenderTask::SetFilterCubeFace(int cubeFace){
 	pFilterCubeFace = cubeFace;
 }
@@ -465,53 +455,33 @@ void deoglComputeRenderTask::SetUseSpecialParamBlock(bool use){
 
 
 void deoglComputeRenderTask::DebugSimple(deoglRTLogger &logger, bool sorted){
-	int i, j;
-	sStep *ss = nullptr;
-	if(sorted && pStepCount > 0 && pSteps){
-		ss = new sStep[pStepCount];
-		memcpy(ss, pSteps, sizeof(sStep) * pStepCount);
-		for(i=1; i<pStepCount - 1; i++){
-			const sStep &p = ss[i - 1];
-			for(j=i; j<pStepCount; j++){
-				const sStep &c = ss[j];
-				if(c.pipeline == p.pipeline && c.tuc == p.tuc && c.vao == p.vao && c.instance == p.instance) break;
+	decTList<sStep> ss;
+	if(sorted){
+		ss = pSteps.GetSorted([](const sStep &a, const sStep &b){
+			if(a.pipeline != b.pipeline){
+				return DECompare(a.pipeline, b.pipeline);
 			}
-			if(j == pStepCount){
-				for(j=i; j<pStepCount; j++){
-					const sStep &c = ss[j];
-					if(c.pipeline == p.pipeline && c.tuc == p.tuc && c.vao == p.vao) break;
-				}
+			if(a.tuc != b.tuc){
+				return DECompare(a.tuc, b.tuc);
 			}
-			if(j == pStepCount){
-				for(j=i; j<pStepCount; j++){
-					const sStep &c = ss[j];
-					if(c.pipeline == p.pipeline && c.tuc == p.tuc) break;
-				}
+			if(a.vao != b.vao){
+				return DECompare(a.vao, b.vao);
 			}
-			if(j == pStepCount){
-				for(j=i; j<pStepCount; j++){
-					const sStep &c = ss[j];
-					if(c.pipeline == p.pipeline) break;
-				}
-			}
-			if(j < pStepCount){
-				const sStep t(ss[i]); ss[i] = ss[j]; ss[j] = t;
-			}
-		}
+			return DECompare(a.instance, b.instance);
+		});
 	}
 	
 	logger.LogInfoFormat("ComputeRenderTask %p", this);
 	const deoglRenderTaskSharedPool &rtsPool = pRenderThread.GetRenderTaskSharedPool();
-	for(i=0; i<pStepCount; i++){
-		const sStep &s = ss ? ss[i] : pSteps[i];
+	int i;
+	for(i=0; i<pSteps.GetCount(); i++){
+		const sStep &s = ss.IsNotEmpty() ? ss[i] : pSteps[i];
 		const deoglRenderTaskSharedInstance &rtsi = rtsPool.GetInstanceAt(s.instance);
 		
 		logger.LogInfoFormat("- %d: P=%d p=%d t=%d v=%d i=%d [pc=%d fp=%d ic=%d fi=%d] si[c=%d i=%d f=%x]",
 			i, s.pass, s.pipeline, s.tuc, s.vao, s.instance, rtsi.GetPointCount(), rtsi.GetFirstPoint(),
 			rtsi.GetIndexCount(), rtsi.GetFirstIndex(), s.subInstanceCount, s.spbInstance, s.specialFlags);
 	}
-	
-	if(ss) delete [] ss;
 }
 
 
@@ -581,6 +551,13 @@ void deoglComputeRenderTask::pRenderFilter(int &filter, int &mask) const{
 		mask |= ertfDecal;
 		if(pDecal){
 			filter |= ertfDecal;
+		}
+		
+		if(pFilterDecalSolidParent){
+			mask |= ertfDecalSolidParent;
+			if(pDecalSolidParent){
+				filter |= ertfDecalSolidParent;
+			}
 		}
 	}
 	

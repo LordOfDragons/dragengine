@@ -30,8 +30,9 @@
 #include "../deoglBasics.h"
 #include "../memory/consumption/deoglMemoryConsumptionGPUUse.h"
 
-#include <dragengine/common/math/decMath.h>
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/math/decMath.h>
 
 class deoglRenderThread;
 
@@ -50,8 +51,7 @@ protected:
 	GLuint pVBO;
 	GLuint pTBO;
 	
-	uint8_t *pData;
-	int pDataSize;
+	decTList<uint8_t> pData;
 	int pDataCount;
 	
 	deoglMemoryConsumptionGPUUse pMemUse;
@@ -90,8 +90,8 @@ public:
 	inline GLuint GetTBO() const{ return pTBO; }
 	
 	/** Data. */
-	inline uint8_t *GetData(){ return pData; }
-	inline const uint8_t *GetData() const{ return pData; }
+	inline uint8_t *GetData(){ return pData.GetArrayPointer(); }
+	inline const uint8_t *GetData() const{ return pData.GetArrayPointer(); }
 	
 	/** Count of data entries. */
 	inline int GetDataCount() const{ return pDataCount; }
@@ -142,7 +142,8 @@ public:
 	
 	
 protected:
-	void pEnlarge(int count);
+	void pSetNewDataCount(int count);
+	void pEnlargeDataCount(int amount);
 	void pEnsureVBO();
 	void pEnsureTBO();
 	void pEnsurePadding();

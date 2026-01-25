@@ -104,17 +104,13 @@ private:
 	
 	decLayerMask pLayerMask;
 	
-	deComponentBone *pBones;
-	int pBoneCount;
-	
-	float *pVertexPositionSetWeights;
-	int pVertexPositionSetCount;
+	decTList<deComponentBone> pBones;
+	decTList<float> pVertexPositionSetWeights;
 	
 	bool pBonesDirty;
 	bool pMatrixDirty;
 	
-	deComponentTexture *pTextures;
-	int pTextureCount;
+	decTList<deComponentTexture> pTextures;
 	
 	deDynamicSkin::Ref pDynamicSkin;
 	
@@ -264,11 +260,11 @@ public:
 	/** \brief Inverse component matrix. */
 	const decDMatrix &GetInverseMatrix();
 	
-	/** \brief Count of bones. */
-	inline int GetBoneCount() const{ return pBoneCount; }
+	/** \brief Bones. */
+	inline const decTList<deComponentBone> &GetBones() const{ return pBones; }
 	
 	/** \brief Bone at index. */
-	deComponentBone &GetBoneAt(int index) const;
+	deComponentBone &GetBoneAt(int index);
 	
 	/** \brief Updates the given bone. */
 	void UpdateBoneAt(int index);
@@ -291,11 +287,8 @@ public:
 	 */
 	void ValidateBones();
 	
-	/** \brief Vertex position set count. */
-	inline int GetVertexPositionSetCount() const{ return pVertexPositionSetCount; }
-	
-	/** \brief Vertex position set weight. */
-	float GetVertexPositionSetWeightAt(int index) const;
+	/** \brief Vertex position sets. */
+	inline const decTList<float> &GetVertexPositionSetWeights() const{ return pVertexPositionSetWeights; }
 	
 	/** \brief Set vertex position set weight. */
 	void SetVertexPositionSetWeightAt(int index, float weight);
@@ -373,17 +366,21 @@ public:
 	
 	/** \name Textures */
 	/*@{*/
+	/** \brief Textures. */
+	inline const decTList<deComponentTexture> &GetTextures() const{ return pTextures; }
+	
 	/** \brief Number of textures. */
-	inline int GetTextureCount() const{ return pTextureCount; }
+	inline int GetTextureCount() const{ return pTextures.GetCount(); }
 	
 	/** \brief Texture with the given index. */
-	deComponentTexture &GetTextureAt(int index) const;
+	deComponentTexture &GetTextureAt(int index);
+	const deComponentTexture &GetTextureAt(int index) const;
 	
 	/** \brief Retrieve index of the texture of the face closest to a position or -1 if not found. */
 	int IndexOfTextureClosestTo(const decVector &position, float radius) const;
 	
 	/** \brief Notifies the peers that a texture changed. */
-	void NotifyTextureChanged(int index) const;
+	void NotifyTextureChanged(int index);
 	/*@}*/
 	
 	
@@ -491,7 +488,7 @@ public:
 	
 private:
 	void pCleanUp();
-	void pUpdateBoneAt(int bone);
+	void pUpdateBoneAt(deComponentBone &bone);
 	void pChangeModel(deModel *model);
 	void pChangeRig(deRig *rig);
 };

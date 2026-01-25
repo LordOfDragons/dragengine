@@ -391,7 +391,7 @@ dedaiSpaceMeshFace *dedaiLayer::GetNavMeshNearestPoint(const decDVector &point, 
 }
 
 bool dedaiLayer::NavMeshLineCollide(const decDVector &origin, const decVector &direction, float &distance){
-	dedaiSpaceMeshFace *curFace = GetMeshFaceClosestTo(origin, distance);
+	const dedaiSpaceMeshFace *curFace = GetMeshFaceClosestTo(origin, distance);
 	if(!curFace){
 		return false;
 	}
@@ -426,10 +426,10 @@ bool dedaiLayer::NavMeshLineCollide(const decDVector &origin, const decVector &d
 		const decVector &normal = curFace->GetNormal();
 		
 		for(i=0; i<cornerCount; i++){
-			const dedaiSpaceMeshCorner &c1 = navmesh->GetCornerAt(firstCorner + i);
-			const dedaiSpaceMeshCorner &c2 = navmesh->GetCornerAt(firstCorner + (i + 1) % cornerCount);
-			const decVector &v1 = navmesh->GetVertexAt(c1.GetVertex());
-			const decVector &v2 = navmesh->GetVertexAt(c2.GetVertex());
+			const dedaiSpaceMeshCorner &c1 = navmesh->GetCorners()[firstCorner + i];
+			const dedaiSpaceMeshCorner &c2 = navmesh->GetCorners()[firstCorner + (i + 1) % cornerCount];
+			const decVector &v1 = navmesh->GetVertices()[c1.GetVertex()];
+			const decVector &v2 = navmesh->GetVertices()[c2.GetVertex()];
 			
 			const decVector dotDir(v2 - v1);
 			if(dotDir.IsZero()){
@@ -457,18 +457,18 @@ bool dedaiLayer::NavMeshLineCollide(const decDVector &origin, const decVector &d
 			curOrigin += (target - curOrigin) * lambda;
 			
 			// determine if this edge leads somewhere
-			const dedaiSpaceMeshEdge &edge = navmesh->GetEdgeAt(c1.GetEdge());
-			dedaiSpaceMeshFace *nextFace = nullptr;
+			const dedaiSpaceMeshEdge &edge = navmesh->GetEdges()[c1.GetEdge()];
+			const dedaiSpaceMeshFace *nextFace = nullptr;
 			
 			if(edge.GetFace2() == -1){
 				if(c1.GetLink() != -1){
-					const dedaiSpaceMeshLink &link = navmesh->GetLinkAt(c1.GetLink());
-					nextFace = link.GetMesh()->GetFaces() + link.GetFace();
+					const dedaiSpaceMeshLink &link = navmesh->GetLinks()[c1.GetLink()];
+					nextFace = link.GetMesh()->GetFaces().GetArrayPointer() + link.GetFace();
 					//linkedCorner = link.GetCorner();
 				}
 				
 			}else{
-				nextFace = &navmesh->GetFaceAt(edge.GetFace1() == curFace->GetIndex() ? edge.GetFace2() : edge.GetFace1());
+				nextFace = &navmesh->GetFaces()[edge.GetFace1() == curFace->GetIndex() ? edge.GetFace2() : edge.GetFace1()];
 			}
 			
 			// if the next face exists test it

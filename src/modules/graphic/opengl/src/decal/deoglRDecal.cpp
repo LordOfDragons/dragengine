@@ -123,8 +123,8 @@ void deoglRDecal::WorldComputeElement::UpdateDataGeometries(sDataElementGeometry
 	int filter = skinTexture->GetRenderTaskFilters() & ~RenderFilterOutline;
 	filter |= ertfDecal | ertfShadow;
 	
-	if(!pDecal.IsParentComponentSolid()){
-		filter &= ~ertfSolid;
+	if(pDecal.IsParentComponentSolid()){
+		filter |= ertfDecalSolidParent;
 	}
 	
 	int pipelineModifier = deoglSkinTexturePipelines::emDoubleSided;
@@ -559,7 +559,6 @@ void deoglRDecal::PrepareGILocalBVH(){
 		DETHROW(deeInvalidParam);
 	}
 	
-	deoglBVH::sBuildPrimitive *primitives = nullptr;
 	int primitiveCount = 0;
 	bool disable = false;
 	
@@ -576,15 +575,16 @@ void deoglRDecal::PrepareGILocalBVH(){
 	}
 	
 	if(faceCount > 0 && !disable){
-		primitives = new deoglBVH::sBuildPrimitive[faceCount];
+		const decVector * const points = meshBuilder.GetPoints().GetArrayPointer();
+		decTList<deoglBVH::sBuildPrimitive> primitives(faceCount);
 		primitiveCount = faceCount;
 		int i;
 		
 		for(i=0; i<faceCount; i++){
 			const deoglDecalMeshBuilderFace &face = meshBuilder.GetFaceAt(i);
-			const decVector &v1 = meshBuilder.GetPointAt(face.GetPoint3());
-			const decVector &v2 = meshBuilder.GetPointAt(face.GetPoint2());
-			const decVector &v3 = meshBuilder.GetPointAt(face.GetPoint1());
+			const decVector &v1 = points[face.GetPoint3()];
+			const decVector &v2 = points[face.GetPoint2()];
+			const decVector &v3 = points[face.GetPoint1()];
 			
 			deoglBVH::sBuildPrimitive &primitive = primitives[i];
 			
@@ -592,26 +592,22 @@ void deoglRDecal::PrepareGILocalBVH(){
 			primitive.maxExtend = v1.Largest(v2).Largest(v3);
 			primitive.center = (primitive.minExtend + primitive.maxExtend) * 0.5f;
 		}
-	}
-	
-	pDirtyGIBVHLocal = false;
-	
-	try{
-		if(!pGIBVHLocal){
-			pGIBVHLocal = new deoglGIBVHLocal(pRenderThread);
-			
-		}else{
-			pGIBVHLocal->Clear();
-		}
-		pGIBVHLocal->BuildBVH(primitives, primitiveCount, 12);
+		
+		pDirtyGIBVHLocal = false;
+		
+		try{
+			if(!pGIBVHLocal){
+				pGIBVHLocal = new deoglGIBVHLocal(pRenderThread);
+				
+			}else{
+				pGIBVHLocal->Clear();
+			}
+			pGIBVHLocal->BuildBVH(primitives, primitiveCount, 12);
 		
 		if(pGIBVHLocal->GetBVH().GetRootNode()){
-			const int pointCount = meshBuilder.GetPointCount();
-			int i;
-			
-			for(i=0; i<pointCount; i++){
-				pGIBVHLocal->TBOAddVertex(meshBuilder.GetPointAt(i));
-			}
+			meshBuilder.GetPoints().Visit([&](const decVector &v){
+				pGIBVHLocal->TBOAddVertex(v);
+			});
 			
 			// get decal matrix and projection axis
 			const decMatrix decalMatrix(decMatrix::CreateWorld(pPosition, pOrientation));
@@ -624,9 +620,9 @@ void deoglRDecal::PrepareGILocalBVH(){
 			for(i=0; i<faceCount; i++){
 				const deoglDecalMeshBuilderFace &face = meshBuilder.GetFaceAt(i);
 				
-				const decVector &v1 = meshBuilder.GetPointAt(face.GetPoint3());
-				const decVector &v2 = meshBuilder.GetPointAt(face.GetPoint2());
-				const decVector &v3 = meshBuilder.GetPointAt(face.GetPoint1());
+				const decVector &v1 = points[face.GetPoint3()];
+				const decVector &v2 = points[face.GetPoint2()];
+				const decVector &v3 = points[face.GetPoint1()];
 				
 				const decVector backProject1(inverseDecalMatrix * v1);
 				const decVector2 tc1(0.5f - backProject1.x * invHalfSizeX, 0.5f - backProject1.y * intHalfSizeY);
@@ -648,14 +644,8 @@ void deoglRDecal::PrepareGILocalBVH(){
 			delete pGIBVHLocal;
 			pGIBVHLocal = nullptr;
 		}
-		if(primitives){
-			delete [] primitives;
-		}
 		throw;
 	}
-	
-	if(primitives){
-		delete [] primitives;
 	}
 	
 	// check for suboptimal configurations and warn the developer
@@ -687,9 +677,9 @@ void deoglRDecal::UpdateStaticTexture(){
 		return;
 	}
 	
-	if(pUseSkinState->GetVideoPlayerCount() > 0
-	|| pUseSkinState->GetCalculatedPropertyCount() > 0
-	|| pUseSkinState->GetConstructedPropertyCount() > 0){
+	if(pUseSkinState->GetVideoPlayers().IsNotEmpty()
+	|| pUseSkinState->GetCalculatedProperties().IsNotEmpty()
+	|| pUseSkinState->GetConstructedProperties().IsNotEmpty()){
 		pStaticTexture = false;
 	}
 }
@@ -824,6 +814,7 @@ void deoglRDecal::pCreateMeshComponent(){
 	
 	writerVBO.Reset(pVBOBlock);
 	
+	const decVector * const points = meshBuilder.GetPoints().GetArrayPointer();
 	const float invHalfSizeX = 1.0f / pSize.x;
 	const float intHalfSizeY = 1.0f / pSize.y;
 	int i;
@@ -831,9 +822,9 @@ void deoglRDecal::pCreateMeshComponent(){
 	for(i=0; i<faceCount; i++){
 		const deoglDecalMeshBuilderFace &face = meshBuilder.GetFaceAt(i);
 		const decVector &normal = face.GetFaceNormal();
-		const decVector &vertex1 = meshBuilder.GetPointAt(face.GetPoint3());
-		const decVector &vertex2 = meshBuilder.GetPointAt(face.GetPoint2());
-		const decVector &vertex3 = meshBuilder.GetPointAt(face.GetPoint1());
+		const decVector &vertex1 = points[face.GetPoint3()];
+		const decVector &vertex2 = points[face.GetPoint2()];
+		const decVector &vertex3 = points[face.GetPoint1()];
 		
 		const decVector backProject1(inverseDecalMatrix * vertex1);
 		writerVBO.WritePoint(vertex1, normal, decalTangent, false,

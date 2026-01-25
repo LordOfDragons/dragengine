@@ -25,6 +25,7 @@
 #ifndef _DECCURVE_H_
 #define _DECCURVE_H_
 
+#include "../collection/decTList.h"
 #include "../math/decMath.h"
 
 
@@ -46,8 +47,7 @@
  */
 class DE_DLL_EXPORT decCurve2D{
 private:
-	decVector2 *pPoints;
-	int pPointCount;
+	decTList<decVector2> pPoints;
 	
 	
 	
@@ -68,8 +68,11 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Points. */
+	inline const decTList<decVector2> &GetPoints() const{ return pPoints; }
+	
 	/** \brief Number of points. */
-	inline int GetPointCount() const{ return pPointCount; }
+	inline int GetPointCount() const{ return pPoints.GetCount(); }
 	
 	/**
 	 * \brief Point at position.

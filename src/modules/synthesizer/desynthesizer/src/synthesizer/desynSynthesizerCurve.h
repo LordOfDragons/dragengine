@@ -25,6 +25,7 @@
 #ifndef _DESYNSYNTHESIZERCURVE_H_
 #define _DESYNSYNTHESIZERCURVE_H_
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class decCurveBezier;
@@ -59,10 +60,9 @@ public:
 private:
 	eEvaluationType pType;
 	
-	decVector2 *pPoints;
-	float *pSamples;
-	float *pFactors;
-	int pCount;
+	decTList<decVector2> pPoints;
+	decTList<float> pSamples;
+	decTList<float> pFactors;
 	float pFirst;
 	float pLast;
 	float pStep;

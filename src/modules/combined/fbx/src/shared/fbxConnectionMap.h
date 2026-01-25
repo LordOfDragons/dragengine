@@ -49,9 +49,8 @@ private:
 		decTList<fbxConnection*> connections;
 	};
 	
-	sBucket *pBucketsSource;
-	sBucket *pBucketsTarget;
-	int pBucketCount;
+	decTList<sBucket> pBucketsSource;
+	decTList<sBucket> pBucketsTarget;
 	
 	
 	

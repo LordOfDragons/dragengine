@@ -141,8 +141,7 @@ int getch(){// from: http://www.c-plusplus.de/forum/viewtopic-var-p-is-285478.ht
 ////////////////////////////
 
 deConsoleInput::deConsoleInput(deLoadableModule &loadableModule) :
-deBaseInputModule(loadableModule),
-pKeyCodeMap(nullptr){
+deBaseInputModule(loadableModule){
 }
 
 deConsoleInput::~deConsoleInput(){
@@ -180,11 +179,6 @@ bool deConsoleInput::Init(){
 void deConsoleInput::CleanUp(){
 	//endwin();
 	tcsetattr(0, TCSANOW, &pOldTermSettings);
-	
-	if(pKeyCodeMap){
-		delete [] pKeyCodeMap;
-		pKeyCodeMap = nullptr;
-	}
 }
 
 
@@ -282,10 +276,7 @@ void deConsoleInput::pInitKeyCodeMap(){
 	int i;
 	
 	// table for key codes with high byte 0x00
-	pKeyCodeMap = new deInputEvent::eKeyCodes[256];
-	for(i=0; i<256; i++){
-		pKeyCodeMap[i] = deInputEvent::ekcUndefined;
-	}
+	pKeyCodeMap.AddRange(256, deInputEvent::ekcUndefined);
 	
 	pKeyCodeMap[(int)' '] = deInputEvent::ekcSpace;
 	pKeyCodeMap[(int)'\t'] = deInputEvent::ekcTab;

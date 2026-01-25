@@ -25,13 +25,14 @@
 #ifndef _AEULINKREMOVE_H_
 #define _AEULINKREMOVE_H_
 
-#include <deigde/undo/igdeUndo.h>
-
 #include "../../animator/aeAnimator.h"
 #include "../../animator/controller/aeControllerTarget.h"
 #include "../../animator/link/aeLink.h"
 #include "../../animator/rule/aeRule.h"
 
+#include <deigde/undo/igdeUndo.h>
+
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
@@ -46,13 +47,14 @@ private:
 	struct sTarget{
 		aeRule::Ref rule;
 		aeControllerTarget::Ref target;
+		
+		sTarget() = default;
+		sTarget(aeRule *r, aeControllerTarget *t) : rule(r), target(t){}
 	};
 	
 	aeAnimator *pAnimator;
 	aeLink::Ref pLink;
-	
-	sTarget *pTargets;
-	int pTargetCount;
+	decTList<sTarget> pTargets;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -74,7 +76,6 @@ public:
 	/*@}*/
 	
 private:
-	void pCleanUp();
 	void pAddTargets(int targetCount, aeLink *link, aeRule *rule);
 	void pAddTarget(int targetCount, aeRule *rule, aeControllerTarget *target);
 };

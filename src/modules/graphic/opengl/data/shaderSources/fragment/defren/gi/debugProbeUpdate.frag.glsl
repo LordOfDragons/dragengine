@@ -25,7 +25,7 @@ VARYING_BIND(0) in vec2 vTC;
 // RenderPass == 1
 VARYING_BIND(1) flat in ivec3 vProbeCoord;
 
-layout(location=0) out vec3 outColor;
+layout(location=0) out vec4 outColor;
 
 
 ivec3 giGridShiftToLocal( in ivec3 shifted ){
@@ -39,7 +39,7 @@ int giCoordToIndex( in ivec3 coord ){
 
 
 void main( void ){
-	outColor = vec3( 0.0 );
+	outColor.rgb = vec3(0);
 	
 	ivec3 probeCoord;
 	
@@ -86,16 +86,18 @@ void main( void ){
 	bool nearGeometry = ( flags & gipfNearGeometry ) == gipfNearGeometry;
 	
 	if( disabled ){
-		outColor = mix( vec3( 0.5 ), vec3( 1 ), bvec3( insideView ) );
+		outColor.rgb = mix( vec3( 0.5 ), vec3( 1 ), bvec3( insideView ) );
 		
 	}else if( nearGeometry ){
-		outColor = mix( vec3( 0, 1, 0 ), vec3( 1, 0, 0 ), bvec3( insideView ) );
+		outColor.rgb = mix( vec3( 0, 1, 0 ), vec3( 1, 0, 0 ), bvec3( insideView ) );
 		
 	}else{
-		outColor = mix( vec3( 0.25, 0, 0.25 ), vec3( 0.5, 0, 0.5 ), bvec3( insideView ) );
+		outColor.rgb = mix( vec3( 0.25, 0, 0.25 ), vec3( 0.5, 0, 0.5 ), bvec3( insideView ) );
 	}
 	
 	if(RenderPass == 0){
-		outColor *= 0.1;
+		outColor.rgb *= 0.1;
 	}
+	
+	outColor.a = 1.0;
 }

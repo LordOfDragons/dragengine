@@ -41,24 +41,15 @@
 deoglShadowVolume::deoglShadowVolume(deoglRenderThread &renderThread) :
 pRenderThread(renderThread)
 {
-	pFaces = NULL;
-	pFaceCount = 0;
-	pFaceSize = 0;
-	pEdges = NULL;
-	pEdgeCount = 0;
-	pEdgeSize = 0;
 	pHasTris = false;
 	pHasQuads = false;
 }
-deoglShadowVolume::~deoglShadowVolume(){
-	if(pEdges) delete [] pEdges;
-	if(pFaces) delete [] pFaces;
-}
+deoglShadowVolume::~deoglShadowVolume() = default;
 
 // management
 void deoglShadowVolume::Clear(){
-	pFaceCount = 0;
-	pEdgeCount = 0;
+	pFaces.RemoveAll();
+	pEdges.RemoveAll();
 }
 void deoglShadowVolume::FindOpenFaces(){
 	int f, e;
@@ -169,48 +160,27 @@ const deoglShadowVolume::sEdge &deoglShadowVolume::GetEdge(int index) const{
 
 // private functions
 void deoglShadowVolume::pAddFace(int vertex1, int vertex2, int vertex3, int vertex4){
-	// enlarge array if needed
-	if(pFaceCount == pFaceSize){
-		int newSize = pFaceCount * 3 / 2 + 1;
-		sFace *newArray = new sFace[newSize];
-		if(pFaces){
-			for(int i=0; i<pFaceCount; i++) newArray[i] = pFaces[i];
-			delete [] pFaces;
-		}
-		pFaces = newArray;
-		pFaceSize = newSize;
-	}
-	// add face
-	pFaces[pFaceCount].vertex[0] = vertex1;
-	pFaces[pFaceCount].vertex[1] = vertex2;
-	pFaces[pFaceCount].vertex[2] = vertex3;
-	pFaces[pFaceCount].vertex[3] = vertex4;
-	pFaces[pFaceCount].isOpen = false;
-	pFaces[pFaceCount].isLit = false;
-	pFaceCount++;
+	pFaces.Add({});
+	sFace &face = pFaces.Last();
+	face.vertex[0] = vertex1;
+	face.vertex[1] = vertex2;
+	face.vertex[2] = vertex3;
+	face.vertex[3] = vertex4;
+	face.isOpen = false;
+	face.isLit = false;
 }
 void deoglShadowVolume::pAddEdge(int face, int vertex1, int vertex2){
 	int edge = pFindEdge(vertex2, vertex1);
 	// if the edge does not exist yet add it
 	if(edge == -1){
-		// enlarge array if needed
-		if(pEdgeCount == pEdgeSize){
-			int newSize = pEdgeCount * 3 / 2 + 1;
-			sEdge *newArray = new sEdge[newSize];
-			if(pEdges){
-				for(int i=0; i<pEdgeCount; i++) newArray[i] = pEdges[i];
-				delete [] pEdges;
-			}
-			pEdges = newArray;
-			pEdgeSize = newSize;
-		}
-		// add edge
-		pEdges[pEdgeCount].vertex[0] = vertex1;
-		pEdges[pEdgeCount].vertex[1] = vertex2;
-		pEdges[pEdgeCount].face[0] = face;
-		pEdges[pEdgeCount].face[1] = -1;
-		pEdges[pEdgeCount].isSilhouette = false;
-		pEdgeCount++;
+		pEdges.Last().face[1] = -1;
+		pEdges.Last().isSilhouette = false;
+		
+		pEdges.Add({});
+		sEdge &edge = pEdges.Last();
+		edge.vertex[0] = vertex1;
+		edge.vertex[1] = vertex2;
+		edge.face[0] = face;
 	// otherwise assign the face to it
 	}else{
 		pEdges[edge].face[1] = face;

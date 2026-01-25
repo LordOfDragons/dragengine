@@ -22,46 +22,37 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-
 #include "devkRenderPassConfiguration.h"
 
 #include <dragengine/common/exceptions.h>
 
 
-// class devkRenderPassConfiguration
-//////////////////////////////////////
+// Struct devkRenderPassConfiguration::sSubPass
+/////////////////////////////////////////////////
 
-devkRenderPassConfiguration::devkRenderPassConfiguration() :
-pAttachmentCount(0),
-pAttachments(nullptr),
-pClearValues(nullptr),
-pSubPassCount(0),
-pSubPasses(nullptr){
+bool devkRenderPassConfiguration::sSubPass::operator==(const sSubPass &other) const{
+	return colorAttachments[0] == other.colorAttachments[0]
+		&& colorAttachments[1] == other.colorAttachments[1]
+		&& colorAttachments[2] == other.colorAttachments[2]
+		&& colorAttachments[3] == other.colorAttachments[3]
+		&& colorAttachments[4] == other.colorAttachments[4]
+		&& colorAttachments[5] == other.colorAttachments[5]
+		&& colorAttachments[6] == other.colorAttachments[6]
+		&& colorAttachments[7] == other.colorAttachments[7]
+		&& depthStencilAttachment == other.depthStencilAttachment;
 }
 
-devkRenderPassConfiguration::devkRenderPassConfiguration(const devkRenderPassConfiguration &configuration) :
-pAttachmentCount(0),
-pAttachments(nullptr),
-pClearValues(nullptr),
-pSubPassCount(0),
-pSubPasses(nullptr)
-{
+
+// Class devkRenderPassConfiguration
+//////////////////////////////////////
+
+devkRenderPassConfiguration::devkRenderPassConfiguration() = default;
+
+devkRenderPassConfiguration::devkRenderPassConfiguration(const devkRenderPassConfiguration &configuration){
 	*this = configuration;
 }
 
-devkRenderPassConfiguration::~devkRenderPassConfiguration(){
-	if(pSubPasses){
-		delete [] pSubPasses;
-	}
-	if(pAttachments){
-		delete [] pAttachments;
-	}
-	if(pClearValues){
-		delete [] pClearValues;
-	}
-}
+devkRenderPassConfiguration::~devkRenderPassConfiguration() = default;
 
 
 
@@ -69,49 +60,13 @@ devkRenderPassConfiguration::~devkRenderPassConfiguration(){
 ///////////////
 
 void devkRenderPassConfiguration::SetAttachmentCount(int count){
-	if(count < 0){
-		DETHROW_INFO(deeInvalidParam, "count < 0");
-	}
+	DEASSERT_TRUE(count >= 0)
 	
-	if(pAttachments){
-		delete [] pAttachments;
-		pAttachments = nullptr;
-	}
-	if(pClearValues){
-		delete [] pClearValues;
-		pClearValues = nullptr;
-	}
-	
-	pAttachmentCount = 0;
-	
-	if(count == 0){
-		return;
-	}
-	
-	pAttachments = new VkAttachmentDescription[count]{};
-	pClearValues = new VkClearValue[count]{};
-	pAttachmentCount = count;
-}
-
-const VkAttachmentDescription &devkRenderPassConfiguration::GetAttachmentAt(int index) const{
-	if(index < 0){
-		DETHROW_INFO(deeInvalidParam, "index < 0");
-	}
-	if(index >= pAttachmentCount){
-		DETHROW_INFO(deeInvalidParam, "index >= attachmentCount");
-	}
-	
-	return pAttachments[index];
+	pAttachments.SetAll(count, {});
+	pClearValues.SetAll(count, {});
 }
 
 void devkRenderPassConfiguration::SetAttachmentAt(int index, const VkAttachmentDescription &attachment){
-	if(index < 0){
-		DETHROW_INFO(deeInvalidParam, "index < 0");
-	}
-	if(index >= pAttachmentCount){
-		DETHROW_INFO(deeInvalidParam, "index >= attachmentCount");
-	}
-	
 	pAttachments[index] = attachment;
 }
 
@@ -164,28 +119,10 @@ void devkRenderPassConfiguration::SetColorAttachmentAt(int index, VkFormat forma
 		description.finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL; // ?
 	}
 	
-	SetAttachmentAt(index, description);
-}
-
-const VkClearValue &devkRenderPassConfiguration::GetClearValueAt(int index) const{
-	if(index < 0){
-		DETHROW_INFO(deeInvalidParam, "index < 0");
-	}
-	if(index >= pAttachmentCount){
-		DETHROW_INFO(deeInvalidParam, "index >= attachmentCount");
-	}
-	
-	return pClearValues[index];
+	pAttachments[index] = description;
 }
 
 void devkRenderPassConfiguration::SetClearValueAt(int index, const VkClearValue &clearValue){
-	if(index < 0){
-		DETHROW_INFO(deeInvalidParam, "index < 0");
-	}
-	if(index >= pAttachmentCount){
-		DETHROW_INFO(deeInvalidParam, "index >= attachmentCount");
-	}
-	
 	pClearValues[index] = clearValue;
 }
 
@@ -195,7 +132,8 @@ void devkRenderPassConfiguration::SetClearValueColorFloatAt(int index, float red
 	clear.color.float32[1] = green;
 	clear.color.float32[2] = blue;
 	clear.color.float32[3] = alpha;
-	SetClearValueAt(index, clear);
+	
+	pClearValues[index] = clear;
 }
 
 void devkRenderPassConfiguration::SetClearValueColorIntAt(int index, int red, int green, int blue, int alpha){
@@ -204,7 +142,8 @@ void devkRenderPassConfiguration::SetClearValueColorIntAt(int index, int red, in
 	clear.color.int32[1] = (int32_t)green;
 	clear.color.int32[2] = (int32_t)blue;
 	clear.color.int32[3] = (int32_t)alpha;
-	SetClearValueAt(index, clear);
+	
+	pClearValues[index] = clear;
 }
 
 void devkRenderPassConfiguration::SetClearValueColorUIntAt(int index, int red, int green, int blue, int alpha){
@@ -213,56 +152,27 @@ void devkRenderPassConfiguration::SetClearValueColorUIntAt(int index, int red, i
 	clear.color.uint32[1] = (uint32_t)green;
 	clear.color.uint32[2] = (uint32_t)blue;
 	clear.color.uint32[3] = (uint32_t)alpha;
-	SetClearValueAt(index, clear);
+	
+	pClearValues[index] = clear;
 }
 
 void devkRenderPassConfiguration::SetClearValueDepthAt(int index, float depth, int stencil){
 	VkClearValue clear{};
 	clear.depthStencil.depth = depth;
 	clear.depthStencil.stencil = (uint32_t)stencil;
-	SetClearValueAt(index, clear);
+	
+	pClearValues[index] = clear;
 }
 
 
 
 void devkRenderPassConfiguration::SetSubPassCount(int count){
-	if(count < 0){
-		DETHROW_INFO(deeInvalidParam, "count < 0");
-	}
+	DEASSERT_TRUE(count >= 0)
 	
-	if(pSubPasses){
-		delete [] pSubPasses;
-		pSubPasses = nullptr;
-		pSubPassCount = 0;
-	}
-	
-	if(count == 0){
-		return;
-	}
-	
-	pSubPasses = new sSubPass[count]{};
-	pSubPassCount = count;
-}
-
-const devkRenderPassConfiguration::sSubPass &devkRenderPassConfiguration::GetSubPassAt(int index) const{
-	if(index < 0){
-		DETHROW_INFO(deeInvalidParam, "index < 0");
-	}
-	if(index >= pSubPassCount){
-		DETHROW_INFO(deeInvalidParam, "index >= subPassCount");
-	}
-	
-	return pSubPasses[index];
+	pSubPasses.SetAll(count, {});
 }
 
 void devkRenderPassConfiguration::SetSubPassAt(int index, const sSubPass &subpass){
-	if(index < 0){
-		DETHROW_INFO(deeInvalidParam, "index < 0");
-	}
-	if(index >= pSubPassCount){
-		DETHROW_INFO(deeInvalidParam, "index >= subPassCount");
-	}
-	
 	pSubPasses[index] = subpass;
 }
 
@@ -278,7 +188,8 @@ int color2, int color3, int color4, int color5, int color6, int color7, int colo
 	subPass.colorAttachments[5] = color6;
 	subPass.colorAttachments[6] = color7;
 	subPass.colorAttachments[7] = color8;
-	SetSubPassAt(index, subPass);
+	
+	pSubPasses[index] = subPass;
 }
 
 
@@ -286,39 +197,44 @@ int color2, int color3, int color4, int color5, int color6, int color7, int colo
 // Operators
 //////////////
 
+static bool operator==(const VkAttachmentDescription &a, const VkAttachmentDescription &b){
+	return a.format == b.format
+		&& a.samples == b.samples
+		&& a.loadOp == b.loadOp
+		&& a.storeOp == b.storeOp
+		&& a.stencilLoadOp == b.stencilLoadOp
+		&& a.stencilStoreOp == b.stencilStoreOp
+		&& a.initialLayout == b.initialLayout
+		&& a.finalLayout == b.finalLayout;
+}
+
+static bool operator==(const VkClearColorValue &a, const VkClearColorValue &b){
+	return a.uint32[0] == b.uint32[0]
+		&& a.uint32[1] == b.uint32[1]
+		&& a.uint32[2] == b.uint32[2]
+		&& a.uint32[3] == b.uint32[3];
+}
+
+static bool operator==(const VkClearDepthStencilValue &a, const VkClearDepthStencilValue &b){
+	return a.depth == b.depth
+		&& a.stencil == b.stencil;
+}
+
+static bool operator==(const VkClearValue &a, const VkClearValue &b){
+	return a.color == b.color
+		&& a.depthStencil == b.depthStencil;
+}
+
 bool devkRenderPassConfiguration::operator==(const devkRenderPassConfiguration &configuration) const{
-	if(pAttachmentCount != configuration.pAttachmentCount
-	|| pSubPassCount != configuration.pSubPassCount){
-		return false;
-	}
-	
-	if(pAttachmentCount > 0){
-		if(memcmp(pAttachments, configuration.pAttachments, sizeof(VkAttachmentDescription) * pAttachmentCount)){
-			return false;
-		}
-		if(memcmp(pClearValues, configuration.pClearValues, sizeof(VkClearValue) * pAttachmentCount)){
-			return false;
-		}
-	}
-	
-	if(pSubPassCount > 0 && memcmp(pSubPasses, configuration.pSubPasses, sizeof(sSubPass) * pSubPassCount)){
-		return false;
-	}
-	
-	return true;
+	return pAttachments == configuration.pAttachments
+		&& pClearValues == configuration.pClearValues
+		&& pSubPasses == configuration.pSubPasses;
 }
 
 devkRenderPassConfiguration &devkRenderPassConfiguration::operator=(const devkRenderPassConfiguration &configuration){
-	SetAttachmentCount(configuration.pAttachmentCount);
-	if(pAttachmentCount > 0){
-		memcpy(pAttachments, configuration.pAttachments, sizeof(VkAttachmentDescription) * pAttachmentCount);
-		memcpy(pClearValues, configuration.pClearValues, sizeof(VkClearValue) * pAttachmentCount);
-	}
-	
-	SetSubPassCount(configuration.pSubPassCount);
-	if(pSubPassCount > 0){
-		memcpy(pSubPasses, configuration.pSubPasses, sizeof(sSubPass) * pSubPassCount);
-	}
+	pAttachments = configuration.pAttachments;
+	pClearValues = configuration.pClearValues;
+	pSubPasses = configuration.pSubPasses;
 	
 	return *this;
 }

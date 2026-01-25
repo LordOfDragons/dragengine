@@ -99,8 +99,6 @@ pIsListening(false),
 pSystemAutoRepeatEnabled(false),
 pAutoRepeatEnabled(false),
 
-pKeyStates(nullptr),
-
 pLogLevel(LogLevel::info),
 pEnableRawMouseInput(false),
 pRawMouseInputActive(false),
@@ -130,7 +128,6 @@ void deXSystemInput::SetRawMouseInputSensitivity(double sensitivity){
 
 bool deXSystemInput::Init(){
 	XWindowAttributes xwa;
-	int i;
 	
 	pOSUnix = GetOS()->CastToOSUnix();
 	pMouseButtons = 0;
@@ -159,10 +156,7 @@ bool deXSystemInput::Init(){
 	
 	// scan for devices
 	try{
-		pKeyStates = new bool[256];
-		for(i=0; i<256; i++){
-			pKeyStates[i] = false;
-		}
+		pKeyStates.AddRange(256, false);
 		
 		pDevices = dexsiDeviceManager::Ref::New(*this);
 		pDevices->UpdateDeviceList();
@@ -178,11 +172,6 @@ bool deXSystemInput::Init(){
 
 void deXSystemInput::CleanUp(){
 	pDevices = nullptr;
-	
-	if(pKeyStates){
-		delete [] pKeyStates;
-		pKeyStates = nullptr;
-	}
 	
 	pSetAutoRepeatEnabled(pSystemAutoRepeatEnabled);
 	pOSUnix = nullptr;

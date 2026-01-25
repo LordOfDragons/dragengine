@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <string.h>
-
 #include "dedaiSpaceMesh.h"
 #include "dedaiSpaceMeshCorner.h"
 #include "dedaiSpaceMeshEdge.h"
@@ -87,11 +84,9 @@ void dedaiSpaceMeshFace::SetCornerCount(unsigned short count){
 }
 
 int dedaiSpaceMeshFace::IndexOfCornerWithEdge(unsigned short edge) const{
-	if(!pMesh){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(pMesh)
 	
-	const dedaiSpaceMeshCorner * const corners = pMesh->GetCorners();
+	const dedaiSpaceMeshCorner * const corners = pMesh->GetCorners().GetArrayPointer();
 	int i;
 	
 	for(i=0; i<pCornerCount; i++){
@@ -104,11 +99,9 @@ int dedaiSpaceMeshFace::IndexOfCornerWithEdge(unsigned short edge) const{
 }
 
 int dedaiSpaceMeshFace::IndexOfCornerWithVertex(unsigned short vertex) const{
-	if(!pMesh){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(pMesh)
 	
-	const dedaiSpaceMeshCorner * const corners = pMesh->GetCorners();
+	const dedaiSpaceMeshCorner * const corners = pMesh->GetCorners().GetArrayPointer();
 	int i;
 	
 	for(i=0; i<pCornerCount; i++){

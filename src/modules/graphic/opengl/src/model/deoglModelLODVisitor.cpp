@@ -76,8 +76,8 @@ void deoglModelLODVisitor::SetMinLODDistance(float distance){
 void deoglModelLODVisitor::VisitNode(deoglOctree *node, int intersection){
 	const bool nodeInside = (intersection == deoglCollisionDetection::eirInside);
 	const deoglModelOctree &monode = *((deoglModelOctree*)node);
-	const oglModelPosition * positions = pModelLOD.GetPositions();
-	const oglModelVertex * vertices = pModelLOD.GetVertices();
+	const oglModelPosition * positions = pModelLOD.GetPositions().GetArrayPointer();
+	const oglModelVertex * vertices = pModelLOD.GetVertices().GetArrayPointer();
 	float distance;
 	
 	monode.GetFaceList().Visit([&](const deoglModelFace *face){

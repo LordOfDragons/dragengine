@@ -41,7 +41,7 @@ const deoglParticleSorter::sParticle &deoglParticleSorter::GetParticleAt(int ind
 
 void deoglParticleSorter::AddToRenderTask(deoglAddToRenderTaskParticles &renderTask){
 	pSortedParticles.Visit([&](const sParticle *p){
-		renderTask.AddParticle(*p->instance, p->instance->GetParticles() + p->particle);
+		renderTask.AddParticle(*p->instance, &p->instance->GetParticles()[p->particle]);
 	});
 }
 

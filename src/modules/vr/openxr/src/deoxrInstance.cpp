@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-
 #include "deVROpenXR.h"
 #include "deoxrGlobalFunctions.h"
 #include "deoxrInstance.h"
@@ -33,6 +30,7 @@
 #include "loader/deoxrApiLayer.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/systems/modules/deBaseModule.h>
 
 #ifdef OS_ANDROID
@@ -238,36 +236,26 @@ void deoxrInstance::SuggestBindings(const deoxrPath &profile, const sSuggestBind
 		}
 	}
 	
-	XrActionSuggestedBinding * const xrbindings = new XrActionSuggestedBinding[count];
-	
+	decTList<XrActionSuggestedBinding> xrbindings(count, XrActionSuggestedBinding{});
 	try{
 		for(i=0; i<count; i++){
 			xrbindings[i].action = bindings[i].action->GetAction();
 			xrbindings[i].binding = bindings[i].binding;
 		}
 		
-		XrInteractionProfileSuggestedBinding psb;
-		memset(&psb, 0, sizeof(psb));
-		psb.type = XR_TYPE_INTERACTION_PROFILE_SUGGESTED_BINDING;
+		XrInteractionProfileSuggestedBinding psb{XR_TYPE_INTERACTION_PROFILE_SUGGESTED_BINDING};
 		psb.interactionProfile = profile;
-		psb.suggestedBindings = xrbindings;
+		psb.suggestedBindings = xrbindings.GetArrayPointer();
 		psb.countSuggestedBindings = count;
 		OXR_CHECK(xrSuggestInteractionProfileBindings(pInstance, &psb));
 		
-		delete [] xrbindings;
-		
 	}catch(const deException &){
-		if(xrbindings){
-			delete [] xrbindings;
-		}
-		
 		pOxr.LogErrorFormat("SuggestBindings failed for interaction profile '%s' (action -> binding)",
 			profile.GetName().GetString());
 		for(i=0; i<count; i++){
 			pOxr.LogErrorFormat("- '%s' -> '%s'", bindings[i].action->GetName().GetString(),
 				bindings[i].binding.GetName().GetString());
 		}
-		
 		throw;
 	}
 }
@@ -292,54 +280,43 @@ void deoxrInstance::pDetectExtensions(){
 		return;
 	}
 	
-	XrExtensionProperties * const extensions = new XrExtensionProperties[count];
-	memset(extensions, 0, sizeof(XrExtensionProperties) * count);
+	decTList<XrExtensionProperties> extensions((int)count, XrExtensionProperties{XR_TYPE_EXTENSION_PROPERTIES});
+	
+	OXR_CHECK(xrEnumerateInstanceExtensionProperties(
+		XR_NULL_HANDLE, count, &count, extensions.GetArrayPointer()));
+	
+	// report all extensions for debug purpose
+	pOxr.LogInfo("Extensions:");
 	for(i=0; i<count; i++){
-		extensions[i].type = XR_TYPE_EXTENSION_PROPERTIES;
+		pOxr.LogInfoFormat("- %s: %d", extensions[i].extensionName, extensions[i].extensionVersion);
 	}
 	
-	try{
-		OXR_CHECK(xrEnumerateInstanceExtensionProperties(XR_NULL_HANDLE, count, &count, extensions));
-		
-		// report all extensions for debug purpose
-		pOxr.LogInfo("Extensions:");
-		for(i=0; i<count; i++){
-			pOxr.LogInfoFormat("- %s: %d", extensions[i].extensionName, extensions[i].extensionVersion);
-		}
-		
-		// store supported extensions
-		int j;
-		for(i=0; i<count; i++){
-			for(j=0; j<ExtensionCount; j++){
-				if(strcmp(pSupportsExtension[j].name, extensions[i].extensionName) == 0){
-					pSupportsExtension[j].version = extensions[i].extensionVersion;
-					break;
-				}
+	// store supported extensions
+	int j;
+	for(i=0; i<count; i++){
+		for(j=0; j<ExtensionCount; j++){
+			if(strcmp(pSupportsExtension[j].name, extensions[i].extensionName) == 0){
+				pSupportsExtension[j].version = extensions[i].extensionVersion;
+				break;
 			}
 		}
-		
-		// report support extensions
-		pOxr.LogInfo("Supported Extensions:");
-		for(i=0; i<ExtensionCount; i++){
-			if(pSupportsExtension[i].version && pSupportsExtension[i].enableIfSupported){
-				pOxr.LogInfoFormat("- %s: %d", pSupportsExtension[i].name,
-					pSupportsExtension[i].version);
-			}
+	}
+	
+	// report support extensions
+	pOxr.LogInfo("Supported Extensions:");
+	for(i=0; i<ExtensionCount; i++){
+		if(pSupportsExtension[i].version && pSupportsExtension[i].enableIfSupported){
+			pOxr.LogInfoFormat("- %s: %d", pSupportsExtension[i].name,
+				pSupportsExtension[i].version);
 		}
-		
-		// report support extensions
-		pOxr.LogInfo("Not upported Extensions:");
-		for(i=0; i<ExtensionCount; i++){
-			if(!pSupportsExtension[i].version && pSupportsExtension[i].enableIfSupported){
-				pOxr.LogInfoFormat("- %s", pSupportsExtension[i].name);
-			}
+	}
+	
+	// report support extensions
+	pOxr.LogInfo("Not upported Extensions:");
+	for(i=0; i<ExtensionCount; i++){
+		if(!pSupportsExtension[i].version && pSupportsExtension[i].enableIfSupported){
+			pOxr.LogInfoFormat("- %s", pSupportsExtension[i].name);
 		}
-		
-		delete [] extensions;
-		
-	}catch(const deException &){
-		delete [] extensions;
-		throw;
 	}
 }
 
@@ -368,90 +345,73 @@ void deoxrInstance::pDetectLayers(){
 	#endif
 	
 	uint32_t i, count = runtimeCount;
+	decTList<XrApiLayerProperties> layers;
 	
-	XrApiLayerProperties *layers = nullptr;
-	try{
-		if(runtimeCount + loaderCount > 0){
-			layers = new XrApiLayerProperties[runtimeCount + loaderCount];
-			memset(layers, 0, sizeof(XrApiLayerProperties) * (runtimeCount + loaderCount));
-			for(i=0; i<runtimeCount+loaderCount; i++){
-				layers[i].type = XR_TYPE_API_LAYER_PROPERTIES;
+	if(runtimeCount + loaderCount > 0){
+		layers.SetAll(runtimeCount + loaderCount, {XR_TYPE_API_LAYER_PROPERTIES});
+		OXR_CHECK(xrEnumerateApiLayerProperties(runtimeCount, &runtimeCount, layers.GetArrayPointer()));
+	}
+	
+	#ifdef INTERNAL_XR_LOADER
+	// load api layers the loader found
+	for(i=0; i<loaderCount; i++){
+		deoxrApiLayer &apiLayer = *pOxr.GetLoader()->GetApiLayerAt(i);
+		try{
+			apiLayer.LoadLibrary();
+			if(apiLayer.IsLoaded()){
+				XrApiLayerProperties &next = layers[count++];
+				strncpy(next.layerName, apiLayer.GetName(), sizeof(next.layerName) - 1);
+				strncpy(next.description, apiLayer.GetName(), sizeof(next.layerName) - 1);
+				next.layerVersion = 1;
+				next.specVersion = XR_MAKE_VERSION(1, 0, 0);
 			}
 			
-			OXR_CHECK(xrEnumerateApiLayerProperties(runtimeCount, &runtimeCount, layers));
+		}catch(const deException &e){
+			pOxr.LogException(e);
 		}
-		
-		#ifdef INTERNAL_XR_LOADER
-		// load api layers the loader found
-		for(i=0; i<loaderCount; i++){
-			deoxrApiLayer &apiLayer = *pOxr.GetLoader()->GetApiLayerAt(i);
-			try{
-				apiLayer.LoadLibrary();
-				if(apiLayer.IsLoaded()){
-					XrApiLayerProperties &next = layers[count++];
-					strncpy(next.layerName, apiLayer.GetName(), sizeof(next.layerName) - 1);
-					strncpy(next.description, apiLayer.GetName(), sizeof(next.layerName) - 1);
-					next.layerVersion = 1;
-					next.specVersion = XR_MAKE_VERSION(1, 0, 0);
-				}
-				
-			}catch(const deException &e){
-				pOxr.LogException(e);
+	}
+	#endif // INTERNAL_XR_LOADER
+	
+	// report all layers for debug purpose
+	pOxr.LogInfo("Layers:");
+	for(i=0; i<count; i++){
+		pOxr.LogInfoFormat("- %s: %d (%d.%d.%d) [%s]",
+			layers[i].layerName, layers[i].layerVersion,
+			XR_VERSION_MAJOR(layers[i].specVersion),
+			XR_VERSION_MINOR(layers[i].specVersion),
+			XR_VERSION_PATCH(layers[i].specVersion),
+			layers[i].description);
+	}
+	
+	// store supported layers
+	int j;
+	for(i=0; i<count; i++){
+		for(j=0; j<LayerCount; j++){
+			if(strcmp(pSupportsLayer[j].name, layers[i].layerName) == 0){
+				pSupportsLayer[j].version = (uint32_t)layers[i].specVersion;
+				pSupportsLayer[j].layerVersion = layers[i].layerVersion;
+				break;
 			}
 		}
-		#endif // INTERNAL_XR_LOADER
-		
-		// report all layers for debug purpose
-		pOxr.LogInfo("Layers:");
-		for(i=0; i<count; i++){
-			pOxr.LogInfoFormat("- %s: %d (%d.%d.%d) [%s]",
-				layers[i].layerName, layers[i].layerVersion,
-				XR_VERSION_MAJOR(layers[i].specVersion),
-				XR_VERSION_MINOR(layers[i].specVersion),
-				XR_VERSION_PATCH(layers[i].specVersion),
-				layers[i].description);
+	}
+	
+	// report support layers
+	pOxr.LogInfo("Supported Layers:");
+	for(i=0; i<LayerCount; i++){
+		if(pSupportsLayer[i].layerVersion){
+			pOxr.LogInfoFormat("- %s: %d (%d.%d.%d)",
+				pSupportsLayer[i].name, pSupportsLayer[i].layerVersion,
+				XR_VERSION_MAJOR(pSupportsLayer[i].version),
+				XR_VERSION_MINOR(pSupportsLayer[i].version),
+				XR_VERSION_PATCH(pSupportsLayer[i].version));
 		}
-		
-		// store supported layers
-		int j;
-		for(i=0; i<count; i++){
-			for(j=0; j<LayerCount; j++){
-				if(strcmp(pSupportsLayer[j].name, layers[i].layerName) == 0){
-					pSupportsLayer[j].version = (uint32_t)layers[i].specVersion;
-					pSupportsLayer[j].layerVersion = layers[i].layerVersion;
-					break;
-				}
-			}
+	}
+	
+	pOxr.LogInfo("Not Supported Layers:");
+	for(i=0; i<LayerCount; i++){
+		if(!pSupportsLayer[i].layerVersion){
+			pOxr.LogInfoFormat("- %s", pSupportsLayer[i].name);
 		}
-		
-		// report support layers
-		pOxr.LogInfo("Supported Layers:");
-		for(i=0; i<LayerCount; i++){
-			if(pSupportsLayer[i].layerVersion){
-				pOxr.LogInfoFormat("- %s: %d (%d.%d.%d)",
-					pSupportsLayer[i].name, pSupportsLayer[i].layerVersion,
-					XR_VERSION_MAJOR(pSupportsLayer[i].version),
-					XR_VERSION_MINOR(pSupportsLayer[i].version),
-					XR_VERSION_PATCH(pSupportsLayer[i].version));
-			}
-		}
-		
-		pOxr.LogInfo("Not Supported Layers:");
-		for(i=0; i<LayerCount; i++){
-			if(!pSupportsLayer[i].layerVersion){
-				pOxr.LogInfoFormat("- %s", pSupportsLayer[i].name);
-			}
-		}
-		
-		if(layers){
-			delete [] layers;
-		}
-		
-	}catch(const deException &){
-		if(layers){
-			delete [] layers;
-		}
-		throw;
 	}
 }
 

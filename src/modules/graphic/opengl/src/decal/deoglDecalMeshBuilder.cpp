@@ -242,9 +242,10 @@ void deoglDecalMeshBuilder::BuildMeshForComponent (const deoglRComponentLOD& lod
 				}
 				
 				// clip the face
-				faceClipper.RemoveAllVertices();
+				faceClipper.GetVertices().SetCountDiscard(0);
+				faceClipper.GetVertices().EnlargeCapacity(volumeVertexCount);
 				for(l=volumeVertexCount-1; l>=0; l--){
-					faceClipper.AddVertex(volume.GetVertexAt(volumeFace.GetVertexAt(l)));
+					faceClipper.GetVertices().Add(volume.GetVertexAt(volumeFace.GetVertexAt(l)));
 				}
 				
 				faceClipper.ClipByPlane(volumeFaceNormal % (v2 - v1), v1);
@@ -252,16 +253,15 @@ void deoglDecalMeshBuilder::BuildMeshForComponent (const deoglRComponentLOD& lod
 				faceClipper.ClipByPlane(volumeFaceNormal % (v1 - v3), v3);
 				
 				// if something is left it is a part of the decal mesh
-				const int vertexCount = faceClipper.GetVertexCount();
-				if(vertexCount < 3){
+				if(faceClipper.GetVertices().GetCount() < 3){
 					continue;
 				}
 				
-				const int firstPoint = AddPoint(faceClipper.GetVertexAt(0).ToVector());
-				int lastPoint = AddPoint(faceClipper.GetVertexAt(1).ToVector());
+				const int firstPoint = AddPoint(faceClipper.GetVertices()[0].ToVector());
+				int lastPoint = AddPoint(faceClipper.GetVertices()[1].ToVector());
 				
-				for(l=2; l<vertexCount; l++){
-					const int nextPoint = AddPoint(faceClipper.GetVertexAt(l).ToVector());
+				faceClipper.GetVertices().Visit(2, [&](decDVector &v){
+					const int nextPoint = AddPoint(v.ToVector());
 					
 					deoglDecalMeshBuilderFace &dmbFace = AddFace();
 					dmbFace.SetPoint1(firstPoint);
@@ -270,7 +270,7 @@ void deoglDecalMeshBuilder::BuildMeshForComponent (const deoglRComponentLOD& lod
 					dmbFace.SetFaceNormal(volumeFaceNormal);
 					
 					lastPoint = nextPoint;
-				}
+				});
 			}
 		}
 	}
@@ -511,10 +511,6 @@ void deoglDecalMeshBuilder::Debug(){
 	});
 }
 
-
-const decVector &deoglDecalMeshBuilder::GetPointAt(int index) const{
-	return pPoints.GetAt(index);
-}
 
 int deoglDecalMeshBuilder::AddPoint(const decVector &point){
 	const int index = pPoints.IndexOf(point);

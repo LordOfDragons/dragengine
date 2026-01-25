@@ -42,6 +42,7 @@
 #include "../animation/dearAnimationKeyframeVPSList.h"
 #include "../component/dearComponent.h"
 #include "../component/dearComponentBoneState.h"
+#include "../component/dearComponentVPSState.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -88,12 +89,6 @@ const dearAnimator &animator, int firstLink, const deAnimatorRuleStateSnapshot &
 dearRule(instance, animator, firstLink, rule),
 //pStateSnapshot( rule ),
 
-pAnimStates(nullptr),
-pAnimStateCount(0),
-
-pAnimVPSStates(nullptr),
-pAnimVPSStateCount(0),
-
 pEnablePosition(rule.GetEnablePosition()),
 pEnableOrientation(rule.GetEnableOrientation()),
 pEnableSize(rule.GetEnableSize()),
@@ -106,9 +101,6 @@ pID(rule.GetID())
 }
 
 dearRuleStateSnapshot::~dearRuleStateSnapshot(){
-	if(pAnimStates){
-		delete [] pAnimStates;
-	}
 }
 
 
@@ -149,7 +141,7 @@ DEBUG_RESET_TIMERS;
 				}
 				
 				stalist.GetStateAt(animatorBone).BlendWith(
-					arcomponent->GetBoneStateAt(state.GetRigIndex()), blendMode,
+					arcomponent->GetBoneStates()[state.GetRigIndex()], blendMode,
 					blendFactor, pEnablePosition, pEnableOrientation, pEnableSize);
 			}
 			
@@ -165,7 +157,7 @@ DEBUG_RESET_TIMERS;
 				}
 				
 				vpsstalist.GetStateAt(animatorVps).BlendWith(
-					arcomponent->GetVPSStateAt(state.GetModelIndex()),
+					arcomponent->GetVPSStates()[state.GetModelIndex()],
 					blendMode, blendFactor, pEnableVPS);
 			}
 			
@@ -251,7 +243,7 @@ void dearRuleStateSnapshot::CaptureStateInto(int identifier){
 				continue;
 			}
 			
-			pAnimVPSStates[i].SetWeight(component.GetVertexPositionSetWeightAt(animatorVps));
+			pAnimVPSStates[i].SetWeight(component.GetVertexPositionSetWeights()[animatorVps]);
 		}
 		
 	}else{
@@ -376,36 +368,18 @@ void dearRuleStateSnapshot::RuleChanged(){
 
 void dearRuleStateSnapshot::pUpdateStates(){
 	const int boneCount = GetBoneMappingCount();
-	if(pAnimStateCount == boneCount){
+	if(boneCount == pAnimStates.GetCount()){
 		return;
 	}
 	
-	if(pAnimStates){
-		delete [] pAnimStates;
-		pAnimStates = nullptr;
-		pAnimStateCount = 0;
-	}
-	
-	if(boneCount > 0){
-		pAnimStates = new dearAnimationState[boneCount];
-		pAnimStateCount = boneCount;
-	}
+	pAnimStates.SetAll(boneCount, {});
 }
 
 void dearRuleStateSnapshot::pUpdateVPSStates(){
 	const int vpsCount = GetVPSMappingCount();
-	if(pAnimVPSStateCount == vpsCount){
+	if(vpsCount == pAnimVPSStates.GetCount()){
 		return;
 	}
 	
-	if(pAnimVPSStates){
-		delete [] pAnimVPSStates;
-		pAnimVPSStates = nullptr;
-		pAnimVPSStateCount = 0;
-	}
-	
-	if(vpsCount > 0){
-		pAnimVPSStates = new dearAnimationVPSState[vpsCount];
-		pAnimVPSStateCount = vpsCount;
-	}
+	pAnimVPSStates.SetAll(vpsCount, {});
 }

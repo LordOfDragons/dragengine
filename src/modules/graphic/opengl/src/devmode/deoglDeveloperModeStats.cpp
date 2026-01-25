@@ -262,9 +262,7 @@ void deoglDeveloperModeStats::ShaderSources(const decUnicodeArgumentList &comman
 
 void deoglDeveloperModeStats::ShaderPrograms(const decUnicodeArgumentList &command, decUnicodeString &answer){
 	deoglShaderManager &shaderManager = pRenderThread.GetShader().GetShaderManager();
-	const char *defineName, *defineValue;
 	int p, programCount;
-	int d, defineCount;
 	decString text;
 	
 	programCount = shaderManager.GetProgramCount();
@@ -274,18 +272,16 @@ void deoglDeveloperModeStats::ShaderPrograms(const decUnicodeArgumentList &comma
 		
 		text.Format("- Shader '%s' Defines(", program.GetSources()->GetName().GetString());
 		
-		defineCount = defines.GetDefineCount();
-		for(d=0; d<defineCount; d++){
-			defineName = defines.GetDefineNameAt(d);
-			defineValue = defines.GetDefineValueAt(d);
-			
-			if(strlen(defineValue) > 10){
-				text.AppendFormat("%s %s=%.10s...", d == 0 ? "" : ",", defineName, defineValue);
+		bool first = true;
+		defines.GetDefines().Visit([&](const char *name, const char *value){
+			if(strlen(value) > 10){
+				text.AppendFormat("%s %s=%.10s...", first ? "" : ",", name, value);
 				
 			}else{
-				text.AppendFormat("%s %s=%s", d == 0 ? "" : ",", defineName, defineValue);
+				text.AppendFormat("%s %s=%s", first ? "" : ",", name, value);
 			}
-		}
+			first = false;
+		});
 		text.Append(")\n");
 		answer.AppendFromUTF8(text.GetString());
 	}
@@ -427,7 +423,7 @@ void deoglDeveloperModeStats::SharedVBOs(const decUnicodeArgumentList &command, 
 	for(i=0; i<listCount; i++){
 		const deoglSharedVBOList &list = *listList.GetAt(i);
 		const deoglVBOLayout &layout = list.GetLayout();
-		const int attributeCount = layout.GetAttributeCount();
+		const int attributeCount = layout.GetAttributes().GetCount();
 		const int stride = layout.GetStride();
 		const int vboCount = list.GetCount();
 		
@@ -470,7 +466,7 @@ void deoglDeveloperModeStats::SharedVBOs(const decUnicodeArgumentList &command, 
 		answer.AppendFromUTF8(text.GetString());
 		
 		for(j=0; j<attributeCount; j++){
-			const deoglVBOAttribute &attribute = layout.GetAttributeAt(j);
+			const deoglVBOAttribute &attribute = layout.GetAttributes()[j];
 			
 			text.Format("    - attribute %d (offset=%d componentCount=%d dataType=", j, attribute.GetOffset(), attribute.GetComponentCount());
 				
@@ -575,7 +571,7 @@ void deoglDeveloperModeStats::TextureUnitsConfigurations(const decUnicodeArgumen
 			answer.AppendFromUTF8(text.GetString());
 			
 			for(j=0; j<unitCount; j++){
-				const deoglTexUnitConfig &unit = tuc->GetUnitAt(j);
+				const deoglTexUnitConfig &unit = tuc->GetUnits()[j];
 				
 				if(unit.GetTexture()){
 					text.Format("  - Unit %d Texture: gl=%u filtering=%d wrapping=%u depthCompare=%s\n", j,
@@ -614,7 +610,7 @@ void deoglDeveloperModeStats::TextureUnitsConfigurations(const decUnicodeArgumen
 					break;
 				}
 				
-				const deoglTexUnitConfig &unit = tuc->GetUnitAt(j);
+				const deoglTexUnitConfig &unit = tuc->GetUnits()[j];
 				
 				if(unit.GetTexture()){
 					text.AppendFormat(" T%d", unit.GetTexture()->GetTexture());
@@ -644,7 +640,7 @@ void deoglDeveloperModeStats::TextureUnitsConfigurations(const decUnicodeArgumen
 			text.Format("- Configuration %d: usage=%d units=(", i, tuc->GetUsageCount());
 			
 			for(j=0; j<unitCount; j++){
-				const deoglTexUnitConfig &unit = tuc->GetUnitAt(j);
+				const deoglTexUnitConfig &unit = tuc->GetUnits()[j];
 				
 				if(j > 0){
 					text.AppendCharacter(' ');

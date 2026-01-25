@@ -70,6 +70,8 @@ void deoalATDelayed::ProcessFreeOperations(bool deleteAll){
 }
 
 void deoalATDelayed::AddDeletion(deoalDelayedDeletion::Ref &&deletion){
+	DEASSERT_NOTNULL(deletion)
+	
 	deMutexGuard lock(pMutexFree);
 	pDeletions.Add(&deletion->GetLLDeletions(), std::move(deletion));
 	pHasFreeOperations = true;

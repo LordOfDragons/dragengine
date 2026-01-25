@@ -26,6 +26,7 @@
 #define _DEDSINPUTDEVICE_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/input/deInputDevice.h>
 #include <dragengine/input/deInputDevicePose.h>
@@ -56,10 +57,9 @@ private:
 	
 	deInputDevicePose pDevicePose;
 	
-	deInputDevicePose *pBonePoses;
+	decTList<deInputDevicePose> pBonePoses;
 	int pBonePoseCount;
-	
-	float *pFaceExpressions;
+	decTList<float> pFaceExpressions;
 	int pFaceExpressionCount;
 	
 	

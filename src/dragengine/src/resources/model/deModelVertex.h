@@ -44,6 +44,12 @@ public:
 	/** \brief Create new model vertex. */
 	deModelVertex();
 	
+	deModelVertex(const decVector &position, int weightSet);
+	
+	/** \brief Copy model vertex. */
+	deModelVertex(const deModelVertex &copy);
+	deModelVertex &operator=(const deModelVertex &other);
+	
 	/** \brief Clean up model vertex. */
 	~deModelVertex();
 	/*@}*/

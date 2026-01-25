@@ -44,9 +44,9 @@ int dermName::List::IndexOfName(const char *name) const{
 
 dermName &dermName::List::GetName(const char *name){
 	dermName *found;
-	DEASSERT_TRUE(Find([&](const dermName &n){
+	DEASSERT_TRUE(Find(found, [&](const dermName &n){
 		return n.GetName() == name;
-	}, found));
+	}));
 	return *found;
 }
 

@@ -91,6 +91,10 @@ public:
 	/** Create texture unit configuration. */
 	deoglTexUnitConfig();
 	
+	/** Copy texture unit configuration. */
+	deoglTexUnitConfig(const deoglTexUnitConfig &tuc);
+	deoglTexUnitConfig &operator=(const deoglTexUnitConfig &tuc);
+	
 	/** Clean up texture unit configuration. */
 	~deoglTexUnitConfig();
 	/*@}*/
@@ -164,6 +168,7 @@ public:
 	
 	/** Object equals another one. */
 	bool Equals(const deoglTexUnitConfig &tuc) const;
+	bool operator==(const deoglTexUnitConfig &tuc) const;
 	
 	/** Set parameters from another texture unit configuration. */
 	void SetFrom(const deoglTexUnitConfig &tuc);

@@ -193,48 +193,30 @@ void igdeWSky::OnGameDefinitionChanged(){
 	}
 	
 	decStringList names;
-	int i;
 	if(pEngSkyInstance){
-		const int count = pEngSkyInstance->GetControllers().GetCount();
-		for(i=0; i<count; i++){
-			names.Add(pEngSkyInstance->GetControllers().GetAt(i)->GetName());
-		}
+		pEngSkyInstance->GetControllers().Visit([&](const deSkyController &controller){
+			names.Add(controller.GetName());
+		});
 	}
 	
-	float *values = nullptr;
+	decTList<float> values;
 	if(pEngSkyInstance){
-		const int count = pEngSkyInstance->GetControllers().GetCount();
-		if(count > 0){
-			values = new float[count];
-			for(i=0; i<count; i++){
-				values[i] = pEngSkyInstance->GetControllers().GetAt(i)->GetCurrentValue();
-			}
-		}
+		values.EnlargeCapacity(pEngSkyInstance->GetControllers().GetCount());
+		pEngSkyInstance->GetControllers().Visit([&](const deSkyController &controller){
+			values.Add(controller.GetCurrentValue());
+		});
 	}
 	
-	try{
-		SetPath(pGDSky->GetPath());
-		
-		if(pEngSkyInstance){
-			const int count = names.GetCount();
-			for(i=0; i<count; i++){
-				const int index = names.IndexOf(names.GetAt(i));
-				if(index != -1){
-					pEngSkyInstance->GetControllers().GetAt(index)->SetCurrentValue(values[i]);
-					pEngSkyInstance->NotifyControllerChangedAt(index);
-				}
+	SetPath(pGDSky->GetPath());
+	
+	if(pEngSkyInstance){
+		names.VisitIndexed([&](int i, const decString &name){
+			const int index = names.IndexOf(name);
+			if(index != -1){
+				pEngSkyInstance->GetControllers().GetAt(index)->SetCurrentValue(values[i]);
+				pEngSkyInstance->NotifyControllerChangedAt(index);
 			}
-		}
-		
-		if(values){
-			delete [] values;
-		}
-		
-	}catch(const deException &){
-		if(values){
-			delete [] values;
-		}
-		throw;
+		});
 	}
 }
 

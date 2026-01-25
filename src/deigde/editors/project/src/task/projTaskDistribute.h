@@ -30,6 +30,7 @@
 #include <deigde/gui/igdeStepableTask.h>
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
@@ -96,8 +97,7 @@ private:
 	int pDelgaDirectoryCount;
 	int pDelgaFileCount;
 	
-	char *pReadBuffer;
-	const int pReadBufferSize;
+	decTList<char> pReadBuffer;
 	
 	
 	

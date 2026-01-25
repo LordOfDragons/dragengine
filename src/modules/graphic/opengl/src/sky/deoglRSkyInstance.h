@@ -30,6 +30,7 @@
 
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decLayerMask.h>
 
@@ -56,8 +57,7 @@ private:
 	decLayerMask pLayerMask;
 	float pPassthroughTransparency;
 	
-	float *pControllerStates;
-	int pControllerStateCount;
+	decTList<float> pControllerStates;
 	
 	deoglRSkyInstanceLayer::List pLayers;
 	
@@ -133,11 +133,8 @@ public:
 	void SetPassthroughTransparency(float transparency);
 	
 	
-	/** Number of controller states. */
-	inline int GetControllerStateCount() const{ return pControllerStateCount; }
-	
-	/** Controller state at index. */
-	float GetControllerStateAt(int index) const;
+	/** Controller states. */
+	inline const decTList<float> &GetControllerStates() const{ return pControllerStates; }
 	
 	/**
 	 * Update controller states.
@@ -150,9 +147,6 @@ public:
 	
 	/** Layers. */
 	inline const deoglRSkyInstanceLayer::List &GetLayers() const{ return pLayers; }
-	
-	/** Number of layers. */
-	inline int GetLayerCount() const{ return pLayers.GetCount(); }
 	
 	/** Layer at index. */
 	deoglRSkyInstanceLayer &GetLayerAt(int index) const;

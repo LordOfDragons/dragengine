@@ -897,7 +897,7 @@ void deoglRenderPlanSkyLight::pFrustumHull(deoglSPBlockUBO &ubo, const decDVecto
 	}
 	hull.CalculateHull();
 	
-	const int count = hull.GetHullPointCount();
+	const int count = hull.GetHullPoints().GetCount();
 	
 	for(i=0; i<count; i++){
 		const decVector2 &edgeStart = hull.GetHullPointVectorAt(i);

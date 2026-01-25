@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deSynthesizerSourceSynthesizer.h"
 #include "deSynthesizerSourceVisitor.h"
 #include "../deSynthesizer.h"
@@ -41,17 +37,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deSynthesizerSourceSynthesizer::deSynthesizerSourceSynthesizer() :
-
-pConnections(nullptr),
-pConnectionCount(0){
-}
-
-deSynthesizerSourceSynthesizer::~deSynthesizerSourceSynthesizer(){
-	if(pConnections){
-		delete [] pConnections;
-	}
-}
+deSynthesizerSourceSynthesizer::deSynthesizerSourceSynthesizer() = default;
+deSynthesizerSourceSynthesizer::~deSynthesizerSourceSynthesizer() = default;
 
 
 
@@ -70,42 +57,15 @@ void deSynthesizerSourceSynthesizer::SetSynthesizer(deSynthesizer *synthesizer){
 
 
 void deSynthesizerSourceSynthesizer::UpdateConnectionCount(){
-	if(pConnections){
-		delete [] pConnections;
-		pConnections = nullptr;
-		pConnectionCount = 0;
-	}
+	pConnections.RemoveAll();
 	
-	if(!pSynthesizer){
-		return;
+	if(pSynthesizer){
+		pConnections.AddRange(pSynthesizer->GetControllers().GetCount(), -1);
 	}
-	
-	const int controllerCount = pSynthesizer->GetControllers().GetCount();
-	if(controllerCount == 0){
-		return;
-	}
-	
-	pConnections = new int[controllerCount];
-	for(pConnectionCount=0; pConnectionCount<controllerCount; pConnectionCount++){
-		pConnections[pConnectionCount] = -1;
-	}
-}
-
-int deSynthesizerSourceSynthesizer::GetConnectionAt(int childController) const{
-	if(childController < 0 || childController >= pConnectionCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return pConnections[childController];
 }
 
 void deSynthesizerSourceSynthesizer::SetConnectionAt(int childController, int localController){
-	if(childController < 0 || childController >= pConnectionCount){
-		DETHROW(deeInvalidParam);
-	}
-	if(localController < -1){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_TRUE(localController >= -1)
 	
 	pConnections[childController] = localController;
 }

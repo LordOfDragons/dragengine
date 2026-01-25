@@ -89,6 +89,8 @@ const desynSynthesizerLink &desynSynthesizer::GetLinkAt(int index) const{
 }
 
 void desynSynthesizer::AddLink(deTUniqueReference<desynSynthesizerLink> &&link){
+	DEASSERT_NOTNULL(link)
+	
 	pLinks.Add(std::move(link));
 }
 

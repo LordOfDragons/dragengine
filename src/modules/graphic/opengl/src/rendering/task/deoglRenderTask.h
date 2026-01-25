@@ -92,9 +92,7 @@ private:
 	decTUniqueList<deoglRenderTaskPipeline> pPipelines;
 	int pPipelineCount;
 	
-	sConfigTexture *pConfigTextures;
-	int pConfigTextureCount;
-	int pConfigTextureSize;
+	decTList<sConfigTexture> pConfigTextures;
 	
 	
 	

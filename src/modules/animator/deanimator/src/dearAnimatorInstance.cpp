@@ -786,9 +786,9 @@ dearTaskApplyRules *dearAnimatorInstance::pNewTaskApplyRules(){
 	// 
 	// NOTE the running task is also kept in this list. hence the check for finished is required
 	const dearTaskApplyRules::Ref *findTask;
-	if(pTaskApplyRules.Find([&](dearTaskApplyRules *task){
+	if(pTaskApplyRules.Find(findTask, [&](dearTaskApplyRules *task){
 		return task->GetFinished() && task->GetDependedOnBy().IsEmpty();
-	}, findTask)){
+	})){
 		return *findTask;
 	}
 	

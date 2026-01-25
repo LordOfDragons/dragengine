@@ -218,12 +218,10 @@ void igdeDEParameters::UpdateParameter(){
 	case deModuleParameter::eptSelection:{
 		pEditType->SetText("Selection");
 		text = "A value from this list:\n";
-		const int count = pParameterInfo.GetSelectionEntryCount();
 		decStringList list;
-		int i;
-		for(i=0; i<count; i++){
-			list.Add(pParameterInfo.GetSelectionEntryAt(i).value);
-		}
+		pParameterInfo.GetSelectionEntries().Visit([&](const deModuleParameter::SelectionEntry &entry){
+			list.Add(entry.value);
+		});
 		pEditAllowedValues->SetText(text + DEJoin(list, ", "));
 		}break;
 		

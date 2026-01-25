@@ -43,28 +43,17 @@
 decCurveDistanceMapping::decCurveDistanceMapping() :
 pResolution(0.1f),
 pLength(0.0f),
-pLastSegment(0),
-pMappings(nullptr),
-pMappingCount(0){
+pLastSegment(0){
 }
 
 decCurveDistanceMapping::decCurveDistanceMapping(const decCurveDistanceMapping &mapping) :
 pResolution(mapping.pResolution),
 pLength(mapping.pLength),
 pLastSegment(mapping.pLastSegment),
-pMappings(nullptr),
-pMappingCount(0){
-	if(mapping.pMappingCount > 0){
-		pMappings = new float[mapping.pMappingCount];
-		memcpy(pMappings, mapping.pMappings, sizeof(float) * mapping.pMappingCount);
-		pMappingCount = mapping.pMappingCount;
-	}
+pMappings(mapping.pMappings){
 }
 
 decCurveDistanceMapping::~decCurveDistanceMapping(){
-	if(pMappings){
-		delete [] pMappings;
-	}
 }
 
 
@@ -84,13 +73,13 @@ void decCurveDistanceMapping::Map(float distance, int &segment, float &blend) co
 	}else{
 		float intpart;
 		const float frac = modff(distance / pResolution, &intpart);
-		const int index = decMath::clamp((int)intpart, 0, pMappingCount - 1);
+		const int index = decMath::clamp((int)intpart, 0, pMappings.GetCount() - 1);
 		
 		if(index < 0){
 			segment = 0;
 			blend = 0.0f;
 			
-		}else if(index < pMappingCount - 1){
+		}else if(index < pMappings.GetCount() - 1){
 			blend = modff(decMath::mix(pMappings[index], pMappings[index + 1], frac), &intpart);
 			segment = (int)intpart;
 			
@@ -102,11 +91,7 @@ void decCurveDistanceMapping::Map(float distance, int &segment, float &blend) co
 }
 
 void decCurveDistanceMapping::Clear(){
-	if(pMappings){
-		delete [] pMappings;
-		pMappings = nullptr;
-		pMappingCount = 0;
-	}
+	pMappings.RemoveAll();
 	pResolution = 0.1f;
 	pLastSegment = 0;
 }
@@ -175,14 +160,14 @@ void decCurveDistanceMapping::Init(const decCurveBezier3D &curve, float resoluti
 		return;
 	}
 	
-	pMappings = new float[mappingCount];
-	pMappings[0] = 0.0f; // start of curve is always the same. easier to evaluate if included
+	pMappings.RemoveAll();
+	pMappings.EnlargeCapacity(mappingCount);
+	pMappings.Add(0.0f); // start of curve is always the same. easier to evaluate if included
 	
 	float lastCurveValue = 0.0f;
 	float nextCurveLength = 0.0f;
 	float nextCurveValue;
 	
-	pMappingCount = 1;
 	lastPoint = evaluator.EvaluateAt(0, 0.0f);
 	
 	for(i=0; i<=pLastSegment; i++){
@@ -201,13 +186,13 @@ void decCurveDistanceMapping::Init(const decCurveBezier3D &curve, float resoluti
 			nextCurveLength += (nextPoint - lastPoint).Length();
 			//printf( "mapping segment %i sample %i nextCurveValue=%f\n", i, j, nextCurveLength );
 			while(nextCurveLength >= pResolution){
-				if(pMappingCount > mappingCount - 1){
+				if(pMappings.GetCount() > mappingCount - 1){
 					DETHROW(deeInvalidParam);
 				}
 				
 				// pMappingCount = mappingCount-1 is an edge case but accepted
 				lastCurveValue = decMath::mix(lastCurveValue, nextCurveValue, pResolution / nextCurveLength);
-				pMappings[pMappingCount++] = lastCurveValue;
+				pMappings.Add(lastCurveValue);
 				nextCurveLength -= pResolution;
 				//printf( "add mapping at %i/%i curveValue %f nextCurveLength=%f\n", pMappingCount-1, mappingCount-1, lastCurveValue, nextCurveLength );
 			}
@@ -217,7 +202,7 @@ void decCurveDistanceMapping::Init(const decCurveBezier3D &curve, float resoluti
 		}
 	}
 	
-	if(pMappingCount == mappingCount - 1){
+	if(pMappings.GetCount() == mappingCount - 1){
 		// last mapping entry is a fictional one allowing to properly map the last segment. basically we have
 		// now the remaining curve value (from last mapping point to end of curve) and the remaining curve
 		// length (from last mapping point to end of curve). now the following holds:
@@ -227,16 +212,16 @@ void decCurveDistanceMapping::Init(const decCurveBezier3D &curve, float resoluti
 		//   mappingCurveValue = remainingCurveValue * resolution / nextCurveLength
 		if(nextCurveLength < 0.01f){
 			// too small next curve length. just map it to the end of the curve
-			pMappings[pMappingCount++] = (float)(pLastSegment + 1);
+			pMappings.Add((float)(pLastSegment + 1));
 			
 		}else{
 			const float remainingCurveValue = decMath::max((float)(pLastSegment + 1) - pMappings[mappingCount - 2], 0.0f);
-			pMappings[pMappingCount++] = pMappings[mappingCount - 2] + remainingCurveValue * pResolution / nextCurveLength;
+			pMappings.Add(pMappings[mappingCount - 2] + remainingCurveValue * pResolution / nextCurveLength);
 		}
 		//printf( "last mapping %f\n", pMappings[ mappingCount - 1 ] );
 	}
 	
-	if(pMappingCount != mappingCount){
+	if(pMappings.GetCount() != mappingCount){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -258,12 +243,7 @@ decCurveDistanceMapping &decCurveDistanceMapping::operator=(const decCurveDistan
 	pResolution = mapping.pResolution;
 	pLength = mapping.pLength;
 	pLastSegment = mapping.pLastSegment;
-	
-	if(mapping.pMappingCount > 0){
-		pMappings = new float[mapping.pMappingCount];
-		memcpy(pMappings, mapping.pMappings, sizeof(float) * mapping.pMappingCount);
-		pMappingCount = mapping.pMappingCount;
-	}
+	pMappings = mapping.pMappings;
 	
 	return *this;
 }
@@ -278,12 +258,12 @@ bool decCurveDistanceMapping::operator==(const decCurveDistanceMapping &mapping)
 	if(pLastSegment != mapping.pLastSegment){
 		return false;
 	}
-	if(pMappingCount != mapping.pMappingCount){
+	if(pMappings.GetCount() != mapping.pMappings.GetCount()){
 		return false;
 	}
 	
 	int i;
-	for(i=0; i<pMappingCount; i++){
+	for(i=0; i<pMappings.GetCount(); i++){
 		if(fabsf(pMappings[i] - mapping.pMappings[i]) > FLOAT_SAFE_EPSILON){
 			return false;
 		}

@@ -131,13 +131,11 @@ void deoglCapCheckATLUnbind::pTestBugExample(GLuint fbo){
 	OGL_CHECK(pRenderThread, pglFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0));
 	
 	// retrieve the results and clean up
-	GLubyte *result = NULL;
-	
-	result = new GLubyte[512];
+	decTList<GLubyte> result(512, 0);
 	
 	OGL_CHECK(pRenderThread, glBindTexture(GL_TEXTURE_2D, texture));
 	OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 1));
-	OGL_CHECK(pRenderThread, glGetTexImage(GL_TEXTURE_2D, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, (GLvoid*)result));
+	OGL_CHECK(pRenderThread, glGetTexImage(GL_TEXTURE_2D, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, (GLvoid*)result.GetArrayPointer()));
 	OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 4));
 	OGL_CHECK(pRenderThread, glBindTexture(GL_TEXTURE_2D, 0));
 	OGL_CHECK(pRenderThread, glDeleteTextures(1, &texture));
@@ -155,7 +153,5 @@ void deoglCapCheckATLUnbind::pTestBugExample(GLuint fbo){
 			break;
 		}
 	}
-	
-	delete [] result;
 }
 #endif

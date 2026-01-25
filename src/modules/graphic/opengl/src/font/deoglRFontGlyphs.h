@@ -52,9 +52,9 @@ public:
 private:
 	deoglRenderThread &pRenderThread;
 	
-	sGlyph pUndefinedGlyph, *pGlyphs;
+	sGlyph pUndefinedGlyph;
+	decTList<sGlyph> pGlyphs;
 	decTList<const sGlyph*> pGlyphMap;
-	int pGlyphCount;
 	
 	int pLineHeight;
 	
@@ -88,7 +88,7 @@ public:
 	inline const sGlyph &GetUndefinedGlyph() const{ return pUndefinedGlyph; }
 	
 	/** Glyphs. */
-	inline const sGlyph *GetGlyphs() const{ return pGlyphs; }
+	inline const decTList<sGlyph> &GetGlyphs() const{ return pGlyphs; }
 	
 	/** Glyph for unicode. */
 	const sGlyph &GetGlyphFor(int unicode) const;

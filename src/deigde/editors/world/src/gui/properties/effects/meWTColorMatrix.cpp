@@ -24,13 +24,9 @@
 
 #if 0
 
-// includes
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "meWTColorMatrix.h"
-#include <dragengine/common/exceptions.h>
 
+#include <dragengine/common/exceptions.h>
 
 
 // Class meWTColorMatrix
@@ -40,8 +36,7 @@
 ////////////////////////////
 
 meWTColorMatrix::meWTColorMatrix(const char *name, const decColorMatrix &colorMatrix){
-	pName = new char[strlen(name) + 1];	strcpy(pName, name);
-	
+	pName = name;
 	pColorMatrix = colorMatrix;
 }
 

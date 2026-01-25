@@ -22,15 +22,13 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoxrSystem.h"
 #include "deoxrInstance.h"
 #include "deVROpenXR.h"
 #include "extension/xdev/XR_MNDX_xdev_space.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/systems/modules/deBaseModule.h>
 
 
@@ -190,53 +188,41 @@ pSupportsEnvBlendModeAlphaBlend(false)
 		XrViewConfigurationProperties viewConfProp;
 		bool viewConfFound = false;
 		
-		XrViewConfigurationType *viewConfigs = nullptr;
 		if(viewConfigCount > 0){
-			viewConfigs = new XrViewConfigurationType[viewConfigCount];
-			try{
-				OXR_CHECK(instance.xrEnumerateViewConfigurations(instance.GetInstance(),
-					pSystemId, viewConfigCount, &viewConfigCount, viewConfigs));
+			decTList<XrViewConfigurationType> viewConfigs((int)viewConfigCount, XrViewConfigurationType{});
+			OXR_CHECK(instance.xrEnumerateViewConfigurations(instance.GetInstance(),
+				pSystemId, viewConfigCount, &viewConfigCount, viewConfigs.GetArrayPointer()));
+			
+			for(i=0; i<viewConfigCount; i++){
+				XrViewConfigurationProperties props{XR_TYPE_VIEW_CONFIGURATION_PROPERTIES};
+				OXR_CHECK(instance.xrGetViewConfigurationProperties(
+					instance.GetInstance(), pSystemId, viewConfigs[i], &props));
 				
-				XrViewConfigurationProperties props;
-				memset(&props, 0, sizeof(props));
-				props.type = XR_TYPE_VIEW_CONFIGURATION_PROPERTIES;
-				
-				for(i=0; i<viewConfigCount; i++){
-					OXR_CHECK(instance.xrGetViewConfigurationProperties(
-						instance.GetInstance(), pSystemId, viewConfigs[i], &props));
+				switch(viewConfigs[i]){
+				case XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO:
+					instance.GetOxr().LogInfoFormat("- %d: Primary Stereo", i);
 					
-					switch(viewConfigs[i]){
-					case XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO:
-						instance.GetOxr().LogInfoFormat("- %d: Primary Stereo", i);
-						
-						if(!viewConfFound){
-							memcpy(&viewConfProp, &props, sizeof(viewConfFound));
-							viewConfFound = true;
-						}
-						break;
-						
-					case XR_VIEW_CONFIGURATION_TYPE_PRIMARY_MONO:
-						instance.GetOxr().LogInfoFormat("- %d: Primary Mono", i);
-						break;
-						
-					case XR_VIEW_CONFIGURATION_TYPE_PRIMARY_QUAD_VARJO:
-						instance.GetOxr().LogInfoFormat("- %d: Primary Quad Varjo", i);
-						break;
-						
-					case XR_VIEW_CONFIGURATION_TYPE_SECONDARY_MONO_FIRST_PERSON_OBSERVER_MSFT:
-						instance.GetOxr().LogInfoFormat("- %d: Secondary Mono FP Observer", i);
-						break;
-						
-					default:
-						instance.GetOxr().LogInfoFormat("- %d: Unknown type 0x%x", i, viewConfigs[i]);
+					if(!viewConfFound){
+						memcpy(&viewConfProp, &props, sizeof(viewConfFound));
+						viewConfFound = true;
 					}
+					break;
+					
+				case XR_VIEW_CONFIGURATION_TYPE_PRIMARY_MONO:
+					instance.GetOxr().LogInfoFormat("- %d: Primary Mono", i);
+					break;
+					
+				case XR_VIEW_CONFIGURATION_TYPE_PRIMARY_QUAD_VARJO:
+					instance.GetOxr().LogInfoFormat("- %d: Primary Quad Varjo", i);
+					break;
+					
+				case XR_VIEW_CONFIGURATION_TYPE_SECONDARY_MONO_FIRST_PERSON_OBSERVER_MSFT:
+					instance.GetOxr().LogInfoFormat("- %d: Secondary Mono FP Observer", i);
+					break;
+					
+				default:
+					instance.GetOxr().LogInfoFormat("- %d: Unknown type 0x%x", i, viewConfigs[i]);
 				}
-				
-				delete [] viewConfigs;
-				
-			}catch(const deException &){
-				delete [] viewConfigs;
-				throw;
 			}
 		}
 		

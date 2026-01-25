@@ -96,9 +96,6 @@ deoglDelayedOperations::deoglDelayedOperations(deoglRenderThread &renderThread) 
 pRenderThread(renderThread),
 pHasAsyncResInitOperations(false),
 pHasInitOperations(false),
-pOGLObjects(nullptr),
-pOGLObjectCount(0),
-pOGLObjectSize(0),
 pHasSynchronizeOperations(false)
 {
 	// do not create any kind of resources here which access this object to clean up.
@@ -108,10 +105,6 @@ pHasSynchronizeOperations(false)
 
 deoglDelayedOperations::~deoglDelayedOperations(){
 	pCleanUp();
-	
-	if(pOGLObjects){
-		delete [] pOGLObjects;
-	}
 }
 
 
@@ -368,18 +361,8 @@ void deoglDelayedOperations::DeleteOpenGLObject(eOpenGLObjectType type, GLuint n
 	
 	const deMutexGuard lock(pMutexOGLObjects);
 	
-	if(pOGLObjectCount == pOGLObjectSize){
-		const int newSize = pOGLObjectSize * 3 / 2 + 1;
-		sOpenGLObject * const newArray = new sOpenGLObject[newSize];
-		if(pOGLObjects){
-			memcpy(newArray, pOGLObjects, sizeof(sOpenGLObject) * pOGLObjectSize);
-			delete [] pOGLObjects;
-		}
-		pOGLObjects = newArray;
-		pOGLObjectSize = newSize;
-	}
-	
-	pOGLObjects[pOGLObjectCount++].Set(type, name);
+	pOGLObjects.Add({});
+	pOGLObjects.Last().Set(type, name);
 }
 
 void deoglDelayedOperations::DeleteOpenGLObject(deoglDelayedOperations::eOpenGLObjectType type, GLsync sync){
@@ -389,18 +372,8 @@ void deoglDelayedOperations::DeleteOpenGLObject(deoglDelayedOperations::eOpenGLO
 	
 	const deMutexGuard lock(pMutexOGLObjects);
 	
-	if(pOGLObjectCount == pOGLObjectSize){
-		const int newSize = pOGLObjectSize * 3 / 2 + 1;
-		sOpenGLObject * const newArray = new sOpenGLObject[newSize];
-		if(pOGLObjects){
-			memcpy(newArray, pOGLObjects, sizeof(sOpenGLObject) * pOGLObjectSize);
-			delete [] pOGLObjects;
-		}
-		pOGLObjects = newArray;
-		pOGLObjectSize = newSize;
-	}
-	
-	pOGLObjects[pOGLObjectCount++].Set(type, sync);
+	pOGLObjects.Add({});
+	pOGLObjects.Last().Set(type, sync);
 }
 
 
@@ -529,8 +502,8 @@ void deoglDelayedOperations::pProcessSkin(deoglRSkin &skin){
 				continue;
 			}
 			
-			const deoglPixelBuffer &basePixelBuffer = pixelBufferMipMap->GetPixelBuffer(0);
-			const int pixelBufferCount = pixelBufferMipMap->GetPixelBufferCount();
+			const deoglPixelBuffer &basePixelBuffer = pixelBufferMipMap->GetPixelBuffers().First();
+			const int pixelBufferCount = pixelBufferMipMap->GetPixelBuffers().GetCount();
 			deoglArrayTexture * const arrayTexture = skinChannel->GetArrayTexture();
 			deoglCubeMap * const cubemap = skinChannel->GetCubeMap();
 			deoglTexture * const texture = skinChannel->GetTexture();
@@ -595,13 +568,13 @@ void deoglDelayedOperations::pProcessSkin(deoglRSkin &skin){
 						if(compressedData){
 							//pRenderThread.GetLogger().LogInfoFormat( "DelayedOperations texture combined compressed %s(%i)(%i)\n", skin.GetFilename().GetString(), t, c );
 							for(l=0; l<pixelBufferCount; l++){
-								cttexture->SetPixelsLevel(l, *pixelBufferMipMap->GetPixelBuffer(l));
+								cttexture->SetPixelsLevel(l, *pixelBufferMipMap->GetPixelBuffers()[l]);
 							}
 							
 						}else{
 							//pRenderThread.GetLogger().LogInfoFormat( "DelayedOperations texture combined uncompressed %s(%i)(%i)\n", skin.GetFilename().GetString(), t, c );
 							for(l=0; l<pixelBufferCount; l++){
-								cttexture->SetPixelsLevel(l, *pixelBufferMipMap->GetPixelBuffer(l));
+								cttexture->SetPixelsLevel(l, *pixelBufferMipMap->GetPixelBuffers()[l]);
 							}
 						}
 						
@@ -616,7 +589,7 @@ void deoglDelayedOperations::pProcessSkin(deoglRSkin &skin){
 						//pRenderThread.GetLogger().LogInfoFormat( "DelayedOperations texture compressed %s(%i)(%i)\n", skin.GetFilename().GetString(), t, c );
 						try{
 							for(l=0; l<pixelBufferCount; l++){
-								texture->SetPixelsLevel(l, *pixelBufferMipMap->GetPixelBuffer(l));
+								texture->SetPixelsLevel(l, *pixelBufferMipMap->GetPixelBuffers()[l]);
 							}
 
 						}catch(const deException &e){
@@ -638,7 +611,7 @@ void deoglDelayedOperations::pProcessSkin(deoglRSkin &skin){
 					}else{
 						//pRenderThread.GetLogger().LogInfoFormat( "DelayedOperations texture uncompressed %s(%i)(%i)\n", skin.GetFilename().GetString(), t, c );
 						for(l=0; l<pixelBufferCount; l++){
-							texture->SetPixelsLevel(l, *pixelBufferMipMap->GetPixelBuffer(l));
+							texture->SetPixelsLevel(l, *pixelBufferMipMap->GetPixelBuffers()[l]);
 						}
 					}
 					
@@ -666,13 +639,13 @@ void deoglDelayedOperations::pProcessSkin(deoglRSkin &skin){
 				if(compressedData){
 					//pRenderThread.GetLogger().LogInfoFormat( "DelayedOperations cubemap compressed %s(%i)(%i)\n", skin.GetFilename().GetString(), t, c );
 					for(l=0; l<pixelBufferCount; l++){
-						cubemap->SetPixelsLevel(l, *pixelBufferMipMap->GetPixelBuffer(l));
+						cubemap->SetPixelsLevel(l, *pixelBufferMipMap->GetPixelBuffers()[l]);
 					}
 					
 				}else{
 					//pRenderThread.GetLogger().LogInfoFormat( "DelayedOperations cubemap uncompressed %s(%i)(%i)\n", skin.GetFilename().GetString(), t, c );
 					for(l=0; l<pixelBufferCount; l++){
-						cubemap->SetPixelsLevel(l, *pixelBufferMipMap->GetPixelBuffer(l));
+						cubemap->SetPixelsLevel(l, *pixelBufferMipMap->GetPixelBuffers()[l]);
 					}
 				}
 				
@@ -680,13 +653,13 @@ void deoglDelayedOperations::pProcessSkin(deoglRSkin &skin){
 				if(compressedData){
 					//pRenderThread.GetLogger().LogInfoFormat( "DelayedOperations array compressed %s(%i)(%i)\n", skin.GetFilename().GetString(), t, c );
 					for(l=0; l<pixelBufferCount; l++){
-						arrayTexture->SetPixelsLevel(l, *pixelBufferMipMap->GetPixelBuffer(l));
+						arrayTexture->SetPixelsLevel(l, *pixelBufferMipMap->GetPixelBuffers()[l]);
 					}
 					
 				}else{
 					//pRenderThread.GetLogger().LogInfoFormat( "DelayedOperations array uncompressed %s(%i)(%i)\n", skin.GetFilename().GetString(), t, c );
 					for(l=0; l<pixelBufferCount; l++){
-						arrayTexture->SetPixelsLevel(l, *pixelBufferMipMap->GetPixelBuffer(l));
+						arrayTexture->SetPixelsLevel(l, *pixelBufferMipMap->GetPixelBuffers()[l]);
 					}
 				}
 			}
@@ -938,10 +911,7 @@ void deoglDelayedOperations::pGenerateConeMap(deoglRSkin &skin, const deoglSkinT
 #endif
 
 void deoglDelayedOperations::pDeleteOpenGLObjects(){
-	int i;
-	for(i=0; i<pOGLObjectCount; i++){
-		const sOpenGLObject &entry = pOGLObjects[i];
-		
+	pOGLObjects.Visit([](const sOpenGLObject &entry){
 		switch(entry.type){
 		case eoglotBuffer:
 			pglDeleteBuffers(1, &entry.name);
@@ -984,7 +954,7 @@ void deoglDelayedOperations::pDeleteOpenGLObjects(){
 			pglDeleteSync(entry.sync);
 			break;
 		}
-	}
+	});
 	
-	pOGLObjectCount = 0;
+	pOGLObjects.RemoveAll();
 }

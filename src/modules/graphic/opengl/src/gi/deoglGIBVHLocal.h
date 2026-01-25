@@ -108,7 +108,7 @@ public:
 	 * primitive in the same order the primitives are indexed. The array can be deleted after
 	 * build. BVH has to be present before faces can be added.
 	 */
-	void BuildBVH(const deoglBVH::sBuildPrimitive *primitives, int primitiveCount, int maxDepth = 12);
+	void BuildBVH(const decTList<deoglBVH::sBuildPrimitive> &primitives, int primitiveCount, int maxDepth = 12);
 	
 	/**
 	 * Recalculate BVH node extends. Keeps the BVH structure but adjusts to changing vertex

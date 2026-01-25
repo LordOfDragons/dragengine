@@ -26,6 +26,7 @@
 #define _DEOGLCONVEXVISHULL_H_
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
 
 #include "../../deoglBasics.h"
 
@@ -52,8 +53,7 @@ public:
 	
 	GLuint pVAO;
 	
-	oglVector3 *pPoints;
-	int pPointCount;
+	decTList<oglVector3> pPoints;
 	
 	GLuint pVBO;
 	int pVBOPointCount;
@@ -62,7 +62,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new convex visibility hull. */
-	deoglConvexVisHull(deoglRenderThread &renderThread);
+	explicit deoglConvexVisHull(deoglRenderThread &renderThread);
 	/** Cleans up the convex visibility hull. */
 	~deoglConvexVisHull();
 	/*@}*/
@@ -78,12 +78,9 @@ public:
 	/** Calculate axis aligned bounding box for a specific transformation. */
 	void CalcBoundingBox(decDVector &boxMinExtend, decDVector &boxMaxExtend, const decDMatrix &matrix) const;
 	
-	/** Retrieves the points. */
-	inline oglVector3 *GetPoints() const{ return pPoints; }
-	/** Retrieves the number of points. */
-	inline int GetPointCount() const{ return pPointCount; }
-	/** Sets the number of points. */
-	void SetPointCount(int count);
+	/** Points. */
+	inline decTList<oglVector3> &GetPoints(){ return pPoints; }
+	inline const decTList<oglVector3> &GetPoints() const{ return pPoints; }
 	
 	/** Retrieves the VAO. */
 	inline GLuint GetVAO() const{ return pVAO; }

@@ -22,13 +22,12 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _DEBPMODELOCTREE_H_
 #define _DEBPMODELOCTREE_H_
 
-// includes
 #include "../coldet/octree/debpDOctree.h"
 
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
@@ -37,9 +36,7 @@
  */
 class debpModelOctree : public debpDOctree{
 private:
-	int *pFaces;
-	int pFaceCount;
-	int pFaceSize;
+	decTList<int> pFaces;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -68,7 +65,7 @@ public:
 	void InsertFaceIntoTree(int face, const decVector &center, const decVector &halfSize, int maxDepth = 8);
 	
 	/** Retrieves the number of faces. */
-	inline int GetFaceCount() const{ return pFaceCount; }
+	inline int GetFaceCount() const{ return pFaces.GetCount(); }
 	/** Retrieves the face at the given index. */
 	int GetFaceAt(int index) const;
 	/** Retrieves the index of the given face or -1 if not found. */

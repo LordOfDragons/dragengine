@@ -78,7 +78,7 @@ private:
 	
 	dexsiDeviceManager::Ref pDevices;
 	
-	bool *pKeyStates;
+	decTList<bool> pKeyStates;
 	
 	LogLevel pLogLevel;
 	bool pEnableRawMouseInput, pRawMouseInputActive;

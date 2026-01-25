@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglRModel.h"
 #include "deoglModelLOD.h"
 #include "deoglModelLODTexCoordSet.h"
@@ -97,38 +93,8 @@ pGIBVHLocal(nullptr)
 	pVBOBlockWithWeight = nullptr;
 	pVBOBlockVertPosSet = nullptr;
 	
-	pPositions = nullptr;
-	pPositionCount = 0;
-	
-	pTexCoords = nullptr;
-	pTexCoordCount = 0;
-	
-	pNormals = nullptr;
-	pNormalCount = 0;
-	
-	pTangents = nullptr;
-	pNegateTangents = nullptr;
-	pTangentCount = 0;
-	
 	pDoubleSided = false;
 	pDecal = false;
-	
-	pWeightsEntries = nullptr;
-	pWeightsEntryCount = 0;
-	pWeightsCounts = nullptr;
-	pWeightsCount = 0;
-	
-	pVertices = nullptr;
-	pVertexCount = 0;
-	
-	pFaces = nullptr;
-	pFaceCount = 0;
-	
-	pTexCoordSets = nullptr;
-	pTexCoordSetCount = 0;
-	
-	pVertPosSets = nullptr;
-	pVertPosSetCount = 0;
 	pVertPosSetPosCount = 0;
 	
 	pOctree = nullptr;
@@ -184,38 +150,8 @@ pGIBVHLocal(nullptr)
 	pVBOBlockWithWeight = nullptr;
 	pVBOBlockVertPosSet = nullptr;
 	
-	pPositions = nullptr;
-	pPositionCount = 0;
-	
-	pTexCoords = nullptr;
-	pTexCoordCount = 0;
-	
-	pNormals = nullptr;
-	pNormalCount = 0;
-	
-	pTangents = nullptr;
-	pNegateTangents = nullptr;
-	pTangentCount = 0;
-	
 	pDoubleSided = false;
 	pDecal = false;
-	
-	pWeightsEntries = nullptr;
-	pWeightsEntryCount = 0;
-	pWeightsCounts = nullptr;
-	pWeightsCount = 0;
-	
-	pVertices = nullptr;
-	pVertexCount = 0;
-	
-	pFaces = nullptr;
-	pFaceCount = 0;
-	
-	pTexCoordSets = nullptr;
-	pTexCoordSetCount = 0;
-	
-	pVertPosSets = nullptr;
-	pVertPosSetCount = 0;
 	pVertPosSetPosCount = 0;
 	
 	pOctree = nullptr;
@@ -243,30 +179,30 @@ deoglModelLOD::~deoglModelLOD(){
 
 
 void deoglModelLOD::PrepareVBOBlock(){
-	if(pVBOBlock || pFaceCount == 0){
+	if(pVBOBlock || pFaces.GetCount() == 0){
 		return;
 	}
 	
 	deoglRTBufferObject::eSharedVBOLists listType = deoglRTBufferObject::esvbolStaticModel;
 	
-	if(pTexCoordSetCount == 1){
+	if(pTexCoordSets.GetCount() == 1){
 		listType = deoglRTBufferObject::esvbolStaticModelTCS1;
 		
-	}else if(pTexCoordSetCount >= 2){ // more than 2 not supported yet
+	}else if(pTexCoordSets.GetCount() >= 2){ // more than 2 not supported yet
 		listType = deoglRTBufferObject::esvbolStaticModelTCS2;
 	}
 	
 	deoglRenderThread &renderThread = pModel.GetRenderThread();
 	deoglSharedVBOList &svbolist = renderThread.GetBufferObject().GetSharedVBOListForType(listType);
 	
-	if(pVertexCount > svbolist.GetMaxPointCount()){
+	if(pVertices.GetCount() > svbolist.GetMaxPointCount()){
 		renderThread.GetLogger().LogInfoFormat(
 			"Model(%s,%i): Too many points (%i) to fit into shared VBOs."
 			" Using over-sized VBO (performance not optimal).",
-			pModel.GetFilename().GetString(), pLODIndex, pVertexCount);
+			pModel.GetFilename().GetString(), pLODIndex, pVertices.GetCount());
 	}
 	
-	pVBOBlock = svbolist.AddData(pVertexCount, pFaceCount * 3);
+	pVBOBlock = svbolist.AddData(pVertices.GetCount(), pFaces.GetCount() * 3);
 	pVBOBlock->GetVBO()->GetVAO()->EnsureRTSVAO();
 	
 	pWriteVBOData();
@@ -297,7 +233,7 @@ void deoglModelLOD::PrepareVBOBlockPositionWeight(){
 
 #if 0
 void deoglModelLOD::PrepareVBOBlockCalcNormalTangent(){
-	if(pVBOBlockCalcNormalTangent || pFaceCount == 0){
+	if(pVBOBlockCalcNormalTangent || pFaces.GetCount() == 0){
 		return;
 	}
 	
@@ -305,14 +241,14 @@ void deoglModelLOD::PrepareVBOBlockCalcNormalTangent(){
 	deoglSharedVBOList &svbolist = renderThread.GetBufferObject().GetSharedVBOListForType(
 		deoglRTBufferObject::esvbolModelCalcNormalTangent);
 	
-	if(pFaceCount > svbolist.GetMaxPointCount()){
+	if(pFaces.GetCount() > svbolist.GetMaxPointCount()){
 		renderThread.GetLogger().LogInfoFormat(
 			"Model(%s,%i): Too many points (%i) to fit into shared calc normal tangent VBO."
 			" Using over-sized VBO (performance not optimal).",
-			pModel.GetFilename().GetString(), pLODIndex, pFaceCount);
+			pModel.GetFilename().GetString(), pLODIndex, pFaces.GetCount());
 	}
 	
-	pVBOBlockCalcNormalTangent = svbolist.AddData(pFaceCount);
+	pVBOBlockCalcNormalTangent = svbolist.AddData(pFaces.GetCount());
 	
 	pWriteVBODataCalcNormalTangent();
 }
@@ -320,7 +256,7 @@ void deoglModelLOD::PrepareVBOBlockCalcNormalTangent(){
 
 #if 0
 void deoglModelLOD::PrepareVBOBlockWriteSkinnedVBO(){
-	if(pVBOBlockWriteSkinnedVBO || pVertexCount == 0){
+	if(pVBOBlockWriteSkinnedVBO || pVertices.GetCount() == 0){
 		return;
 	}
 	
@@ -328,21 +264,21 @@ void deoglModelLOD::PrepareVBOBlockWriteSkinnedVBO(){
 	deoglSharedVBOList &svbolist = renderThread.GetBufferObject().GetSharedVBOListForType(
 		deoglRTBufferObject::esvbolModelWriteSkinnedVBO);
 	
-	if(pVertexCount > svbolist.GetMaxPointCount()){
+	if(pVertices.GetCount() > svbolist.GetMaxPointCount()){
 		renderThread.GetLogger().LogInfoFormat(
 			"Model(%s,%i): Too many points (%i) to fit into shared write skinned vbo VBO."
 			" Using over-sized VBO (performance not optimal).",
-			pModel.GetFilename().GetString(), pLODIndex, pVertexCount);
+			pModel.GetFilename().GetString(), pLODIndex, pVertices.GetCount());
 	}
 	
-	pVBOBlockWriteSkinnedVBO = svbolist.AddData(pVertexCount);
+	pVBOBlockWriteSkinnedVBO = svbolist.AddData(pVertices.GetCount());
 	
 	pWriteVBODataWriteSkinnedVBO();
 }
 #endif
 
 void deoglModelLOD::PrepareVBOBlockWithWeight(){
-	if(pVBOBlockWithWeight || pVertexCount == 0){
+	if(pVBOBlockWithWeight || pVertices.GetCount() == 0){
 		return;
 	}
 	
@@ -350,14 +286,14 @@ void deoglModelLOD::PrepareVBOBlockWithWeight(){
 	deoglSharedVBOList &svbolist = renderThread.GetBufferObject().GetSharedVBOListForType(
 		deoglRTBufferObject::esvbolStaticModelWeight);
 	
-	if(pVertexCount > svbolist.GetMaxPointCount()){
+	if(pVertices.GetCount() > svbolist.GetMaxPointCount()){
 		renderThread.GetLogger().LogInfoFormat(
 			"Model(%s,%i): Too many points (%i) to fit into shared model with weight VBO."
 			" Using over-sized VBO (performance not optimal).",
-			pModel.GetFilename().GetString(), pLODIndex, pVertexCount);
+			pModel.GetFilename().GetString(), pLODIndex, pVertices.GetCount());
 	}
 	
-	pVBOBlockWithWeight = svbolist.AddData(pVertexCount);
+	pVBOBlockWithWeight = svbolist.AddData(pVertices.GetCount());
 	
 	pWriteVBODataWithWeight();
 }
@@ -396,7 +332,7 @@ GLuint deoglModelLOD::GetIBO(){
 	try{
 		OGL_CHECK(renderThread, pglGenBuffers(1, &pIBO));
 		
-		const int bufferSize = (pFaceCount * 3) * sizeof(GLuint);
+		const int bufferSize = (pFaces.GetCount() * 3) * sizeof(GLuint);
 		
 		OGL_CHECK(renderThread, pglBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pIBO));
 		OGL_CHECK(renderThread, pglBufferData(GL_ELEMENT_ARRAY_BUFFER,
@@ -409,7 +345,7 @@ GLuint deoglModelLOD::GetIBO(){
 		}
 		
 		int i;
-		for(i=0; i<pFaceCount; i++){
+		for(i=0; i<pFaces.GetCount(); i++){
 			*(data++) = ( GLuint )pFaces[ i ].GetVertex3();
 			*(data++) = ( GLuint )pFaces[ i ].GetVertex2();
 			*(data++) = ( GLuint )pFaces[ i ].GetVertex1();
@@ -444,23 +380,6 @@ deoglSharedSPBRTIGroupList &deoglModelLOD::GetSharedSPBRTIGroupListAt(int textur
 
 
 
-const deoglModelLODTexCoordSet &deoglModelLOD::GetTextureCoordSetAt(int index) const{
-	if(index < 0 || index >= pTexCoordSetCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return pTexCoordSets[index];
-}
-
-const deoglModelLODVertPosSet &deoglModelLOD::GetVertexPositionSetAt(int index) const{
-	DEASSERT_TRUE(index >= 0)
-	DEASSERT_TRUE(index < pVertPosSetCount)
-	
-	return pVertPosSets[index];
-}
-
-
-
 void deoglModelLOD::PrepareOctree(){
 	if(pOctree){
 		return;
@@ -469,15 +388,14 @@ void deoglModelLOD::PrepareOctree(){
 	const deoglRModel::sExtends &extends = pModel.GetExtends();
 	const float threshold = 0.001f;
 	const int maxDepth = 8;
-	int i;
 	
 	pOctree = new deoglModelOctree((extends.minimum + extends.maximum) * 0.5f,
 		(extends.maximum - extends.minimum) * 0.5f);
 	
-	for(i=0; i<pFaceCount; i++){
-		const decVector &mv1 = pPositions[pVertices[pFaces[i].GetVertex1()].position].position;
-		const decVector &mv2 = pPositions[pVertices[pFaces[i].GetVertex2()].position].position;
-		const decVector &mv3 = pPositions[pVertices[pFaces[i].GetVertex3()].position].position;
+	pFaces.Visit([&](deoglModelFace &face){
+		const decVector &mv1 = pPositions[pVertices[face.GetVertex1()].position].position;
+		const decVector &mv2 = pPositions[pVertices[face.GetVertex2()].position].position;
+		const decVector &mv3 = pPositions[pVertices[face.GetVertex3()].position].position;
 		
 		decVector faceMinExtend = mv1.Smallest(mv2).Smallest(mv3);
 		decVector faceMaxExtend = mv1.Largest(mv2).Largest(mv3);
@@ -505,12 +423,12 @@ void deoglModelLOD::PrepareOctree(){
 		}
 		
 		// store extends
-		pFaces[i].SetExtends(faceMinExtend, faceMaxExtend);
-		pFaces[i].SetCenter((faceMinExtend + faceMaxExtend) * 0.5f);
+		face.SetExtends(faceMinExtend, faceMaxExtend);
+		face.SetCenter((faceMinExtend + faceMaxExtend) * 0.5f);
 		
 		// insert into tree
-		pOctree->InsertFaceIntoTree(pFaces + i, maxDepth);
-	}
+		pOctree->InsertFaceIntoTree(&face, maxDepth);
+	});
 }
 
 
@@ -520,7 +438,7 @@ void deoglModelLOD::pCalcErrorMetrics(const deModel &engModel){
 	//      needs a better solution
 	
 	pMaxError = pAvgError = 0.0f;
-	if(pLODIndex == 0 || pFaceCount == 0){
+	if(pLODIndex == 0 || pFaces.GetCount() == 0){
 		return;
 	}
 	
@@ -531,7 +449,7 @@ void deoglModelLOD::pCalcErrorMetrics(const deModel &engModel){
 	}
 	
 	const deoglModelLOD &lod0Mesh = pModel.GetLODAt(0);
-	const int lod0PositionCount = lod0Mesh.GetPositionCount();
+	const int lod0PositionCount = lod0Mesh.GetPositions().GetCount();
 	if(lod0PositionCount >= 5000){
 		// TODO temporary hack. if the number of vertices is high calculation time sky-rockets.
 		// for a large model with over 67k vertices (130k faces) this consumes over 30s.
@@ -548,7 +466,7 @@ void deoglModelLOD::pCalcErrorMetrics(const deModel &engModel){
 	PrepareOctree();
 // 		logger.LogInfoFormat( "  - prepare octree: %f\n", timer.GetElapsedTime() );
 	
-	const oglModelPosition * const lod0Positions = lod0Mesh.GetPositions();
+	const oglModelPosition * const lod0Positions = lod0Mesh.GetPositions().GetArrayPointer();
 	//const decVector boxExtends = decVector( 0.1f, 0.1f, 0.1f );
 	const decVector boxExtends = decVector(0.2f, 0.2f, 0.2f);
 	const float initLODDistance = boxExtends.Length(); //1.0f;
@@ -615,89 +533,81 @@ void deoglModelLOD::LoadFromCache(decBaseFileReader &reader){
 	
 	count = reader.ReadInt();
 	if(count > 0){
-		pPositions = new oglModelPosition[count];
-		pPositionCount = count;
-		reader.Read(pPositions, sizeof(oglModelPosition) * count);
+		pPositions.SetCountDiscard(count);
+		reader.Read(pPositions.GetArrayPointer(), sizeof(oglModelPosition) * count);
 	}
 	
 	count = reader.ReadInt();
 	if(count > 0){
-		pTexCoords = new decVector2[count];
-		pTexCoordCount = count;
-		reader.Read(pTexCoords, sizeof(decVector2) * count);
+		pTexCoords.SetCountDiscard(count);
+		reader.Read(pTexCoords.GetArrayPointer(), sizeof(decVector2) * count);
 	}
 	
 	count = reader.ReadInt();
 	if(count > 0){
-		pNormals = new decVector[count];
-		pNormalCount = count;
-		reader.Read(pNormals, sizeof(decVector) * count);
+		pNormals.SetCountDiscard(count);
+		reader.Read(pNormals.GetArrayPointer(), sizeof(decVector) * count);
 	}
 	
 	count = reader.ReadInt();
 	if(count > 0){
-		pTangents = new decVector[count];
-		pNegateTangents = new bool[count];
-		pTangentCount = count;
-		reader.Read(pTangents, sizeof(decVector) * count);
-		reader.Read(pNegateTangents, sizeof(bool) * count);
+		pTangents.SetCountDiscard(count);
+		pNegateTangents.SetCountDiscard(count);
+		reader.Read(pTangents.GetArrayPointer(), sizeof(decVector) * count);
+		reader.Read(pNegateTangents.GetArrayPointer(), sizeof(bool) * count);
 	}
 	
 	count = reader.ReadInt();
 	if(count > 0){
-		pWeightsEntries = new oglModelWeight[count];
-		pWeightsEntryCount = count;
-		reader.Read(pWeightsEntries, sizeof(oglModelWeight) * count);
+		pWeightsEntries.SetCountDiscard(count);
+		reader.Read(pWeightsEntries.GetArrayPointer(), sizeof(oglModelWeight) * count);
 	}
 	
 	count = reader.ReadInt();
 	if(count > 0){
-		pWeightsCounts = new int[count];
-		pWeightsCount = count;
-		reader.Read(pWeightsCounts, sizeof(int) * count);
+		pWeightsCounts.SetCountDiscard(count);
+		reader.Read(pWeightsCounts.GetArrayPointer(), sizeof(int) * count);
 	}
 	
 	count = reader.ReadInt();
 	if(count > 0){
-		pVertices = new oglModelVertex[count];
-		pVertexCount = count;
-		reader.Read(pVertices, sizeof(oglModelVertex) * count);
+		pVertices.SetCountDiscard(count);
+		reader.Read(pVertices.GetArrayPointer(), sizeof(oglModelVertex) * count);
 	}
 	
 	count = reader.ReadInt();
 	if(count > 0){
-		pFaces = new deoglModelFace[count];
-		pFaceCount = count;
-		reader.Read(pFaces, sizeof(deoglModelFace) * count);
+		pFaces.SetCountDiscard(count);
+		reader.Read(pFaces.GetArrayPointer(), sizeof(deoglModelFace) * count);
 	}
 	
 	count = reader.ReadInt();
 	if(count){
-		pTexCoordSets = new deoglModelLODTexCoordSet[count];
-		pTexCoordSetCount = count;
+		pTexCoordSets.SetCountDiscard(count);
 		
 		for(i=0; i<count; i++){
 			deoglModelLODTexCoordSet &tcs = pTexCoordSets[i];
 			
 			const int textureCoordinateCount = reader.ReadInt();
-			tcs.SetTextureCoordinateCount(textureCoordinateCount, false);
+			tcs.GetTextureCoordinates().SetCountDiscard(textureCoordinateCount);
 			if(textureCoordinateCount > 0){
-				reader.Read(tcs.GetTextureCoordinates(), sizeof(decVector2) * textureCoordinateCount);
+				reader.Read(tcs.GetTextureCoordinates().GetArrayPointer(),
+					sizeof(decVector2) * textureCoordinateCount);
 			}
 			
 			const int tangentCount = reader.ReadInt();
-			tcs.SetTangentCount(tangentCount);
+			tcs.GetTangents().SetCountDiscard(tangentCount);
+			tcs.GetNegateTangents().SetCountDiscard(tangentCount);
 			if(tangentCount > 0){
-				reader.Read(tcs.GetTangents(), sizeof(decVector) * tangentCount);
-				reader.Read(tcs.GetNegateTangents(), sizeof(bool) * tangentCount);
+				reader.Read(tcs.GetTangents().GetArrayPointer(), sizeof(decVector) * tangentCount);
+				reader.Read(tcs.GetNegateTangents().GetArrayPointer(), sizeof(bool) * tangentCount);
 			}
 		}
 	}
 	
 	count = reader.ReadInt();
 	if(count){
-		pVertPosSets = new deoglModelLODVertPosSet[count];
-		pVertPosSetCount = count;
+		pVertPosSets.SetCountDiscard(count);
 		
 		for(i=0; i<count; i++){
 			deoglModelLODVertPosSet &vps = pVertPosSets[i];
@@ -705,16 +615,11 @@ void deoglModelLOD::LoadFromCache(decBaseFileReader &reader){
 			vps.SetVBOOffset(reader.ReadInt());
 			
 			const int positionCount = reader.ReadInt();
-			vps.SetPositionCount(positionCount);
-			if(positionCount > 0){
-				deoglModelLODVertPosSet::sPosition * const positions = vps.GetPositions();
-				int j;
-				
-				for(j=0; j<positionCount; j++){
-					positions[j].index = reader.ReadInt();
-					positions[j].position = reader.ReadVector();
-				}
-			}
+			vps.GetPositions().SetCountDiscard(positionCount);
+			vps.GetPositions().Visit([&](deoglModelLODVertPosSet::sPosition &position){
+				position.index = reader.ReadInt();
+				position.position = reader.ReadVector();
+			});
 		}
 	}
 	pVertPosSetPosCount = reader.ReadInt();
@@ -726,8 +631,6 @@ void deoglModelLOD::LoadFromCache(decBaseFileReader &reader){
 }
 
 void deoglModelLOD::SaveToCache(decBaseFileWriter &writer){
-	int i;
-	
 	writer.WriteInt(pTextures.GetCount());
 	
 	sCacheTexture cacheTextures;
@@ -740,81 +643,74 @@ void deoglModelLOD::SaveToCache(decBaseFileWriter &writer){
 		writer.Write(&cacheTextures, sizeof(sCacheTexture));
 	});
 	
-	writer.WriteInt(pPositionCount);
-	if(pPositionCount > 0){
-		writer.Write(pPositions, sizeof(oglModelPosition) * pPositionCount);
+	writer.WriteInt(pPositions.GetCount());
+	if(pPositions.IsNotEmpty()){
+		writer.Write(pPositions.GetArrayPointer(), sizeof(oglModelPosition) * pPositions.GetCount());
 	}
 	
-	writer.WriteInt(pTexCoordCount);
-	if(pTexCoordCount > 0){
-		writer.Write(pTexCoords, sizeof(decVector2) * pTexCoordCount);
+	writer.WriteInt(pTexCoords.GetCount());
+	if(pTexCoords.IsNotEmpty()){
+		writer.Write(pTexCoords.GetArrayPointer(), sizeof(decVector2) * pTexCoords.GetCount());
 	}
 	
-	writer.WriteInt(pNormalCount);
-	if(pNormalCount > 0){
-		writer.Write(pNormals, sizeof(decVector) * pNormalCount);
+	writer.WriteInt(pNormals.GetCount());
+	if(pNormals.IsNotEmpty()){
+		writer.Write(pNormals.GetArrayPointer(), sizeof(decVector) * pNormals.GetCount());
 	}
 	
-	writer.WriteInt(pTangentCount);
-	if(pTangentCount > 0){
-		writer.Write(pTangents, sizeof(decVector) * pTangentCount);
-		writer.Write(pNegateTangents, sizeof(bool) * pTangentCount);
+	writer.WriteInt(pTangents.GetCount());
+	if(pTangents.IsNotEmpty()){
+		writer.Write(pTangents.GetArrayPointer(), sizeof(decVector) * pTangents.GetCount());
+		writer.Write(pNegateTangents.GetArrayPointer(), sizeof(bool) * pTangents.GetCount());
 	}
 	
-	writer.WriteInt(pWeightsEntryCount);
-	if(pWeightsEntryCount > 0){
-		writer.Write(pWeightsEntries, sizeof(oglModelWeight) * pWeightsEntryCount);
+	writer.WriteInt(pWeightsEntries.GetCount());
+	if(pWeightsEntries.IsNotEmpty()){
+		writer.Write(pWeightsEntries.GetArrayPointer(), sizeof(oglModelWeight) * pWeightsEntries.GetCount());
 	}
 	
-	writer.WriteInt(pWeightsCount);
-	if(pWeightsCount > 0){
-		writer.Write(pWeightsCounts, sizeof(int) * pWeightsCount);
+	writer.WriteInt(pWeightsCounts.GetCount());
+	if(pWeightsCounts.IsNotEmpty()){
+		writer.Write(pWeightsCounts.GetArrayPointer(), sizeof(int) * pWeightsCounts.GetCount());
 	}
 	
-	writer.WriteInt(pVertexCount);
-	if(pVertexCount > 0){
-		writer.Write(pVertices, sizeof(oglModelVertex) * pVertexCount);
+	writer.WriteInt(pVertices.GetCount());
+	if(pVertices.IsNotEmpty()){
+		writer.Write(pVertices.GetArrayPointer(), sizeof(oglModelVertex) * pVertices.GetCount());
 	}
 	
-	writer.WriteInt(pFaceCount);
-	if(pFaceCount > 0){
-		writer.Write(pFaces, sizeof(deoglModelFace) * pFaceCount);
+	writer.WriteInt(pFaces.GetCount());
+	if(pFaces.IsNotEmpty()){
+		writer.Write(pFaces.GetArrayPointer(), sizeof(deoglModelFace) * pFaces.GetCount());
 	}
 	
-	writer.WriteInt(pTexCoordSetCount);
-	for(i=0; i<pTexCoordSetCount; i++){
-		const deoglModelLODTexCoordSet &tcs = pTexCoordSets[i];
-		
-		const int textureCoordinateCount = tcs.GetTextureCoordinateCount();
+	writer.WriteInt(pTexCoordSets.GetCount());
+	pTexCoordSets.Visit([&](const deoglModelLODTexCoordSet &tcs){
+		const int textureCoordinateCount = tcs.GetTextureCoordinates().GetCount();
 		writer.WriteInt(textureCoordinateCount);
 		if(textureCoordinateCount > 0){
-			writer.Write(tcs.GetTextureCoordinates(), sizeof(decVector2) * textureCoordinateCount);
+			writer.Write(tcs.GetTextureCoordinates().GetArrayPointer(),
+				sizeof(decVector2) * textureCoordinateCount);
 		}
 		
-		const int tangentCount = tcs.GetTangentCount();
+		const int tangentCount = tcs.GetTangents().GetCount();
 		writer.WriteInt(tangentCount);
 		if(tangentCount > 0){
-			writer.Write(tcs.GetTangents(), sizeof(decVector) * tangentCount);
-			writer.Write(tcs.GetNegateTangents(), sizeof(bool) * tangentCount);
+			writer.Write(tcs.GetTangents().GetArrayPointer(), sizeof(decVector) * tangentCount);
+			writer.Write(tcs.GetNegateTangents().GetArrayPointer(), sizeof(bool) * tangentCount);
 		}
-	}
+	});
 	
-	writer.WriteInt(pVertPosSetCount);
-	for(i=0; i<pVertPosSetCount; i++){
-		const deoglModelLODVertPosSet &vps = pVertPosSets[i];
-		
+	writer.WriteInt(pVertPosSets.GetCount());
+	pVertPosSets.Visit([&](const deoglModelLODVertPosSet &vps){
 		writer.WriteInt(vps.GetVBOOffset());
 		
-		const deoglModelLODVertPosSet::sPosition * const positions = vps.GetPositions();
-		const int positionCount = vps.GetPositionCount();
-		writer.WriteInt(positionCount);
-		
-		int j;
-		for(j=0; j<positionCount; j++){
-			writer.WriteInt(positions[j].index);
-			writer.WriteVector(positions[j].position);
-		}
-	}
+		writer.WriteInt(vps.GetPositions().GetCount());
+		vps.GetPositions().Visit([&](const deoglModelLODVertPosSet::sPosition &position){
+			writer.WriteInt(position.index);
+			writer.WriteVector(position.position);
+		});
+	});
 	writer.WriteInt(pVertPosSetPosCount);
 	
 	writer.WriteByte(pDoubleSided ? 1 : 0);
@@ -830,23 +726,23 @@ void deoglModelLOD::PrepareGILocalBVH(){
 		return;
 	}
 	
-	deoglBVH::sBuildPrimitive *primitives = nullptr;
+	decTList<deoglBVH::sBuildPrimitive> primitives;
 	int primitiveCount = 0;
 	bool disable = false;
 	
-	if(pFaceCount > 10000){
+	if(pFaces.GetCount() > 10000){
 		pModel.GetRenderThread().GetLogger().LogWarnFormat(
 			"Model(%s,%i): Very high face count (%d). Disable model to not slow down global illumination.",
-			pModel.GetFilename().GetString(), pLODIndex, pFaceCount);
+			pModel.GetFilename().GetString(), pLODIndex, pFaces.GetCount());
 		disable = true;
 	}
 	
-	if(pFaceCount > 0 && !disable){
-		primitives = new deoglBVH::sBuildPrimitive[pFaceCount];
-		primitiveCount = pFaceCount;
+	if(pFaces.GetCount() > 0 && !disable){
+		primitives.SetCountDiscard(pFaces.GetCount());
+		primitiveCount = pFaces.GetCount();
 		int i;
 		
-		for(i=0; i<pFaceCount; i++){
+		for(i=0; i<pFaces.GetCount(); i++){
 			deoglBVH::sBuildPrimitive &primitive = primitives[i];
 			
 			/*
@@ -879,8 +775,9 @@ void deoglModelLOD::PrepareGILocalBVH(){
 		pGIBVHLocal->BuildBVH(primitives, primitiveCount, 12);
 		
 		if(pGIBVHLocal->GetBVH().GetRootNode()){
-			pGIBVHLocal->TBOAddVertices(pPositions, pPositionCount);
-			pGIBVHLocal->TBOAddFaces(pFaces, pVertices, pTexCoords);
+			pGIBVHLocal->TBOAddVertices(pPositions.GetArrayPointer(), pPositions.GetCount());
+			pGIBVHLocal->TBOAddFaces(pFaces.GetArrayPointer(),
+				pVertices.GetArrayPointer(), pTexCoords.GetArrayPointer());
 			pGIBVHLocal->TBOAddBVH();
 		}
 		
@@ -889,22 +786,15 @@ void deoglModelLOD::PrepareGILocalBVH(){
 			delete pGIBVHLocal;
 			pGIBVHLocal = nullptr;
 		}
-		if(primitives){
-			delete [] primitives;
-		}
 		throw;
 	}
 	
-	if(primitives){
-		delete [] primitives;
-	}
-	
 	// check for suboptimal configurations and warn the developer
-	if(pFaceCount > 300){
+	if(pFaces.GetCount() > 300){
 		pModel.GetRenderThread().GetLogger().LogInfoFormat(
 			"Model(%s,%i): High face count slows down global illumination (%d)."
 			" Consider adding highest LOD variation with less than 300 faces.",
-			pModel.GetFilename().GetString(), pLODIndex, pFaceCount);
+			pModel.GetFilename().GetString(), pLODIndex, pFaces.GetCount());
 	}
 }
 
@@ -942,78 +832,34 @@ void deoglModelLOD::pCleanUp(){
 	if(pOctree){
 		delete pOctree;
 	}
-	
-	if(pVertPosSets){
-		delete [] pVertPosSets;
-	}
-	if(pTexCoordSets){
-		delete [] pTexCoordSets;
-	}
-	if(pFaces){
-		delete [] pFaces;
-	}
-	if(pVertices){
-		delete [] pVertices;
-	}
-	if(pWeightsCounts){
-		delete [] pWeightsCounts;
-	}
-	if(pWeightsEntries){
-		delete [] pWeightsEntries;
-	}
-	
-	if(pNegateTangents){
-		delete [] pNegateTangents;
-	}
-	if(pTangents){
-		delete [] pTangents;
-	}
-	if(pNormals){
-		delete [] pNormals;
-	}
-	if(pTexCoords){
-		delete [] pTexCoords;
-	}
-	if(pPositions){
-		delete [] pPositions;
-	}
 }
 
 void deoglModelLOD::pCalcTangents(){
-	decVector faceNormal, tangent, bitangent;
-	bool negateTangent;
-	decVector2 d1, d2;
-	float len;
-	int i, j;
-	
 	// reset tangents
-	for(i=0; i<pPositionCount; i++){
-		pPositions[i].normal.SetZero();
-	}
-	for(i=0; i<pNormalCount; i++){
-		pNormals[i].SetZero();
-	}
-	for(i=0; i<pTangentCount; i++){
-		pTangents[i].SetZero();
-		pNegateTangents[i] = false;
-	}
-	for(i=0; i<pTexCoordSetCount; i++){
-		bool * const tcsNegateTangents = pTexCoordSets[i].GetNegateTangents();
-		decVector * const tcsTangents = pTexCoordSets[i].GetTangents();
-		const int tcsTangentCount = pTexCoordSets[i].GetTangentCount();
+	pPositions.Visit([&](oglModelPosition &pos){
+		pos.normal.SetZero();
+	});
+	pNormals.SetRangeAt(0, pNormals.GetCount(), {});
+	pTangents.SetRangeAt(0, pTangents.GetCount(), {});
+	pNegateTangents.SetRangeAt(0, pNegateTangents.GetCount(), false);
+	pTexCoordSets.Visit([&](deoglModelLODTexCoordSet &tcs){
+		bool * const tcsNegateTangents = tcs.GetNegateTangents().GetArrayPointer();
+		decVector * const tcsTangents = tcs.GetTangents().GetArrayPointer();
+		const int tcsTangentCount = tcs.GetTangents().GetCount();
 		
+		int j;
 		for(j=0; j<tcsTangentCount; j++){
 			tcsTangents[j].SetZero();
 			tcsNegateTangents[j] = false;
 		}
-	}
+	});
 	
 	// calculate normals and tangents
-	for(i=0; i<pFaceCount; i++){
+	pFaces.Visit([&](deoglModelFace &face){
 		// get positions
-		const oglModelVertex &v1 = pVertices[pFaces[i].GetVertex1()];
-		const oglModelVertex &v2 = pVertices[pFaces[i].GetVertex2()];
-		const oglModelVertex &v3 = pVertices[pFaces[i].GetVertex3()];
+		const oglModelVertex &v1 = pVertices[face.GetVertex1()];
+		const oglModelVertex &v2 = pVertices[face.GetVertex2()];
+		const oglModelVertex &v3 = pVertices[face.GetVertex3()];
 		const decVector &p1 = pPositions[v1.position].position;
 		const decVector &p2 = pPositions[v2.position].position;
 		const decVector &p3 = pPositions[v3.position].position;
@@ -1022,8 +868,8 @@ void deoglModelLOD::pCalcTangents(){
 		const decVector2 &tc3 = pTexCoords[v3.texcoord];
 		
 		// calculate face normal
-		faceNormal = (p2 - p1) % (p3 - p1);
-		len = faceNormal.Length();
+		decVector faceNormal((p2 - p1) % (p3 - p1));
+		float len = faceNormal.Length();
 		if(len != 0.0f){
 			faceNormal /= len;
 			
@@ -1032,10 +878,10 @@ void deoglModelLOD::pCalcTangents(){
 		}
 		
 		// calculate face tangent
-		d1 = tc2 - tc1;
-		d2 = tc3 - tc1;
+		decVector2 d1(tc2 - tc1);
+		decVector2 d2(tc3 - tc1);
 		
-		tangent = (p2 - p1) * d2.y - (p3 - p1) * d1.y;
+		decVector tangent((p2 - p1) * d2.y - (p3 - p1) * d1.y);
 		len = tangent.Length();
 		if(len != 0.0f){
 			tangent /= len;
@@ -1044,8 +890,8 @@ void deoglModelLOD::pCalcTangents(){
 			tangent.Set(1.0f, 0.0f, 0.0f);
 		}
 		
-		bitangent = (p3 - p1) * d1.x - (p2 - p1) * d2.x;
-		negateTangent = ((faceNormal % tangent) * bitangent < 0.0f);
+		decVector bitangent((p3 - p1) * d1.x - (p2 - p1) * d2.x);
+		bool negateTangent = (faceNormal % tangent) * bitangent < 0.0f;
 		
 		// add face normal and tanget to vertices
 		pPositions[v1.position].normal += faceNormal;
@@ -1061,13 +907,13 @@ void deoglModelLOD::pCalcTangents(){
 		pNegateTangents[v2.tangent] = negateTangent;
 		pNegateTangents[v3.tangent] = negateTangent;
 		
-		pFaces[i].SetFaceNormal(faceNormal);
+		face.SetFaceNormal(faceNormal);
 		
 		// process texture coordinate sets if existing
-		for(j=0; j<pTexCoordSetCount; j++){
-			const decVector2 * const tcsTexCoords = pTexCoordSets[j].GetTextureCoordinates();
-			bool * const tcsNegateTangents = pTexCoordSets[j].GetNegateTangents();
-			decVector * const tcsTangents = pTexCoordSets[j].GetTangents();
+		pTexCoordSets.Visit([&](deoglModelLODTexCoordSet &tcs){
+			const decVector2 * const tcsTexCoords = tcs.GetTextureCoordinates().GetArrayPointer();
+			bool * const tcsNegateTangents = tcs.GetNegateTangents().GetArrayPointer();
+			decVector * const tcsTangents = tcs.GetTangents().GetArrayPointer();
 			
 			const decVector2 &tcstc1 = tcsTexCoords[v1.texcoord];
 			const decVector2 &tcstc2 = tcsTexCoords[v2.texcoord];
@@ -1096,58 +942,55 @@ void deoglModelLOD::pCalcTangents(){
 			tcsNegateTangents[v1.tangent] = negateTangent;
 			tcsNegateTangents[v2.tangent] = negateTangent;
 			tcsNegateTangents[v3.tangent] = negateTangent;
-		}
-	}
+		});
+	});
 	
 	// normalize normals and tangents
-	for(i=0; i<pPositionCount; i++){
-		len = pPositions[i].normal.Length();
+	pPositions.Visit([&](oglModelPosition &pos){
+		float len = pos.normal.Length();
 		
 		if(len != 0.0f){
-			pPositions[i].normal /= len;
+			pos.normal /= len;
 			
 		}else{
-			pPositions[i].normal.Set(0.0f, 1.0f, 0.0f);
+			pos.normal.Set(0.0f, 1.0f, 0.0f);
 		}
-	}
+	});
 	
-	for(i=0; i<pNormalCount; i++){
-		len = pNormals[i].Length();
+	pNormals.Visit([&](decVector &normal){
+		float len = normal.Length();
 		
 		if(len != 0.0f){
-			pNormals[i] /= len;
+			normal /= len;
 			
 		}else{
-			pNormals[i].Set(0.0f, 1.0f, 0.0f);
+			normal.Set(0.0f, 1.0f, 0.0f);
 		}
-	}
+	});
 	
-	for(i=0; i<pTangentCount; i++){
-		len = pTangents[i].Length();
+	pTangents.Visit([&](decVector &tangent){
+		float len = tangent.Length();
 		
 		if(len != 0.0f){
-			pTangents[i] /= len;
+			tangent /= len;
 			
 		}else{
-			pTangents[i].Set(1.0f, 0.0f, 0.0f);
+			tangent.Set(1.0f, 0.0f, 0.0f);
 		}
-	}
+	});
 	
-	for(i=0; i<pTexCoordSetCount; i++){
-		decVector * const tcsTangents = pTexCoordSets[i].GetTangents();
-		const int tcsTangentCount = pTexCoordSets[i].GetTangentCount();
-		
-		for(j=0; j<tcsTangentCount; j++){
-			len = tcsTangents[j].Length();
+	pTexCoordSets.Visit([&](deoglModelLODTexCoordSet &tcs){
+		tcs.GetTangents().Visit([&](decVector &tangent){
+			float len = tangent.Length();
 			
 			if(len != 0.0f){
-				tcsTangents[j] /= len;
+				tangent /= len;
 				
 			}else{
-				tcsTangents[j].Set(1.0f, 0.0f, 0.0f);
+				tangent.Set(1.0f, 0.0f, 0.0f);
 			}
-		}
-	}
+		});
+	});
 }
 
 struct sGroupVertex{
@@ -1157,27 +1000,27 @@ struct sGroupVertex{
 
 void deoglModelLOD::pBuildArrays(const deModel &engModel){
 	const deModelLOD &engLod = engModel.GetLODAt(pLODIndex);
-	const int modelTexCoordSetCount = engLod.GetTextureCoordinatesSetCount();
-	const int modelVertPosSetCount = engLod.GetVertexPositionSetCount();
+	const int modelTexCoordSetCount = engLod.GetTextureCoordinatesSets().GetCount();
+	const int modelVertPosSetCount = engLod.GetVertexPositionSets().GetCount();
 	const int modelTexCoordCount = engLod.GetTextureCoordinatesCount();
-	const int modelWeightGroupCount = engLod.GetWeightGroupCount();
+	const int modelWeightGroupCount = engLod.GetWeightGroups().GetCount();
 	const int modelTangentCount = engLod.GetTangentCount();
-	const int modelWeightCount = engLod.GetWeightCount();
-	const int modelVertexCount = engLod.GetVertexCount();
+	const int modelWeightCount = engLod.GetWeights().GetCount();
+	const int modelVertexCount = engLod.GetVertices().GetCount();
 	const int modelNormalCount = engLod.GetNormalCount();
-	const int modelFaceCount = engLod.GetFaceCount();
-	const deModelLodVertexPositionSet * const modelVertPosSets = engLod.GetVertexPositionSets();
-	const deModelTextureCoordinatesSet * const modelTexCoordSets = engLod.GetTextureCoordinatesSets();
-	const deModelWeight * const modelWeights = engLod.GetWeights();
-	const deModelVertex * const modelVertices = engLod.GetVertices();
-	const deModelFace * const modelFaces = engLod.GetFaces();
-	const int * const modelWeightGroups = engLod.GetWeightGroups();
+	const int modelFaceCount = engLod.GetFaces().GetCount();
+	const deModelLodVertexPositionSet * const modelVertPosSets = engLod.GetVertexPositionSets().GetArrayPointer();
+	const deModelTextureCoordinatesSet * const modelTexCoordSets = engLod.GetTextureCoordinatesSets().GetArrayPointer();
+	const deModelWeight * const modelWeights = engLod.GetWeights().GetArrayPointer();
+	const deModelVertex * const modelVertices = engLod.GetVertices().GetArrayPointer();
+	const deModelFace * const modelFaces = engLod.GetFaces().GetArrayPointer();
+	const int * const modelWeightGroups = engLod.GetWeightGroups().GetArrayPointer();
 	int i, j;
 	
 	// calculate the number of weight sets
-	pWeightsCount = 0;
+	int weightsCount = 0;
 	for(i=0; i<modelWeightGroupCount; i++){
-		pWeightsCount += modelWeightGroups[i];
+		weightsCount += modelWeightGroups[i];
 	}
 	
 	/*
@@ -1188,10 +1031,9 @@ void deoglModelLOD::pBuildArrays(const deModel &engModel){
 	*/
 	
 	// create weights counts array
-	if(pWeightsCount > 0){
-		pWeightsCounts = new int[pWeightsCount];
-		int *walker = pWeightsCounts;
-		
+	pWeightsCounts.SetCountDiscard(weightsCount);
+	if(weightsCount > 0){
+		int *walker = pWeightsCounts.GetArrayPointer();
 		for(i=0; i<modelWeightGroupCount; i++){
 			const int count = modelWeightGroups[i];
 			const int index = i + 1;
@@ -1203,31 +1045,23 @@ void deoglModelLOD::pBuildArrays(const deModel &engModel){
 	}
 	
 	// create weights entries array and fill in the weights counts
-	pWeightsEntryCount = modelWeightCount;
-	
-	if(modelWeightCount > 0){
-		pWeightsEntries = new oglModelWeight[modelWeightCount];
+	pWeightsEntries.SetCountDiscard(modelWeightCount);
+	for(i=0; i<modelWeightCount; i++){
+		const deModelWeight &in = modelWeights[i];
+		oglModelWeight &out = pWeightsEntries[i];
 		
-		for(i=0; i<modelWeightCount; i++){
-			const deModelWeight &in = modelWeights[i];
-			oglModelWeight &out = pWeightsEntries[i];
-			
-			out.bone = in.GetBone();
-			out.weight = in.GetWeight();
-		}
+		out.bone = in.GetBone();
+		out.weight = in.GetWeight();
 	}
 	
 	// create positions array and fill it with vertex positions matching vertex indices in the faces
-	if(modelVertexCount > 0){
-		pPositions = new oglModelPosition[modelVertexCount];
+	pPositions.SetCountDiscard(modelVertexCount);
+	for(i=0; i<modelVertexCount; i++){
+		const deModelVertex &in = modelVertices[i];
+		oglModelPosition &out = pPositions[i];
 		
-		for(pPositionCount=0; pPositionCount<modelVertexCount; pPositionCount++){
-			const deModelVertex &in = modelVertices[pPositionCount];
-			oglModelPosition &out = pPositions[pPositionCount];
-			
-			out.position = in.GetPosition();
-			out.weights = in.GetWeightSet();
-		}
+		out.position = in.GetPosition();
+		out.weights = in.GetWeightSet();
 	}
 	
 	// create vertices array with the maximal number of possible vertices and set counter to 0.
@@ -1236,10 +1070,8 @@ void deoglModelLOD::pBuildArrays(const deModel &engModel){
 	// normals, tangent and texture coordinates. this grouping will produce a smaller number of
 	// render vertices required. at the end the array will be trimmed down if the memory
 	// difference is memory consumption has to be reduced as much as possible
-	if(modelFaceCount > 0){
-		pVertices = new oglModelVertex[modelFaceCount * 3];
-		pVertexCount = 0;
-	}
+	pVertices.SetCountDiscard(0);
+	pVertices.EnlargeCapacity(modelFaceCount * 3);
 	
 	// add textures
 	engModel.GetTextures().Visit([&](const deModelTexture &engTexture){
@@ -1254,30 +1086,18 @@ void deoglModelLOD::pBuildArrays(const deModel &engModel){
 	});
 	
 	// add texture coordinate sets and set the texture coordinate count
-	if(modelTexCoordCount > 0){
-		pTexCoords = new decVector2[modelTexCoordCount];
-		pTexCoordCount = modelTexCoordCount;
-		
-		if(pTexCoordCount > 0){
-			for(j=0; j<pTexCoordCount; j++){
-				pTexCoords[j] = modelTexCoordSets[0].GetTextureCoordinates().GetAt(j);
-			}
-		}
+	pTexCoords.SetCountDiscard(modelTexCoordCount);
+	for(j=0; j<modelTexCoordCount; j++){
+		pTexCoords[j] = modelTexCoordSets[0].GetTextureCoordinates().GetAt(j);
 	}
 	
-	if(modelTexCoordSetCount > 1){
-		pTexCoordSets = new deoglModelLODTexCoordSet[modelTexCoordSetCount - 1];
-		pTexCoordSetCount = modelTexCoordSetCount - 1;
+	pTexCoordSets.SetCountDiscard(decMath::max(modelTexCoordSetCount - 1, 0));
+	for(i=0; i<pTexCoordSets.GetCount(); i++){
+		deoglModelLODTexCoordSet &tcs = pTexCoordSets[i];
 		
-		for(i=0; i<pTexCoordSetCount; i++){
-			deoglModelLODTexCoordSet &tcs = pTexCoordSets[i];
-			
-			tcs.SetTextureCoordinateCount(pTexCoordCount, false);
-			if(pTexCoordCount > 0){
-				for(j=0; j<pTexCoordCount; j++){
-					tcs.GetTextureCoordinates()[j] = modelTexCoordSets[i + 1].GetTextureCoordinates().GetAt(j);
-				}
-			}
+		tcs.GetTextureCoordinates().SetCountDiscard(pTexCoordSets.GetCount());
+		for(j=0; j<pTexCoordSets.GetCount(); j++){
+			tcs.GetTextureCoordinates()[j] = modelTexCoordSets[i + 1].GetTextureCoordinates()[j];
 		}
 	}
 	
@@ -1285,6 +1105,7 @@ void deoglModelLOD::pBuildArrays(const deModel &engModel){
 	// implementation and large models. sortVertices stores the first point an original model
 	// vertex / has been involved with. each additional involvement is added to a forward
 	// linked list.
+	pFaces.SetCountDiscard(modelFaceCount);
 	if(modelFaceCount > 0){
 		int sortedVertexCount = 0;
 		int f = 0;
@@ -1292,21 +1113,18 @@ void deoglModelLOD::pBuildArrays(const deModel &engModel){
 		auto sortedVertices = decTList<sGroupVertex>(modelFaceCount * 3, sGroupVertex{});
 		auto sortVertices = decTList<sGroupVertex*>(modelVertexCount, nullptr);
 		
-		pFaces = new deoglModelFace[modelFaceCount];
-		pFaceCount = modelFaceCount;
-		
 		pTextures.VisitIndexed([&](int ti, deoglModelTexture &texture){
 			int texFaceCount = 0;
 			
 			texture.SetFirstFace(f);
 			
-			for(j=0; j<pFaceCount; j++){
+			for(j=0; j<pFaces.GetCount(); j++){
 				const deModelFace &modelFace = modelFaces[j];
 				if(modelFace.GetTexture() != ti){
 					continue;
 				}
 				
-				/*if( f >= pFaceCount ){
+				/*if( f >= pFaces.GetCount() ){
 					DETHROW(deeInvalidParam);
 				}*/
 				
@@ -1337,14 +1155,15 @@ void deoglModelLOD::pBuildArrays(const deModel &engModel){
 						face.SetVertexAt(k, findVertex->vertex);
 						
 					}else{
-						oglModelVertex &vertex = pVertices[pVertexCount];
+						pVertices.Add({});
+						oglModelVertex &vertex = pVertices.Last();
 						vertex.position = position;
 						vertex.texcoord = texCoord;
 						vertex.normal = normal;
 						vertex.tangent = tangent;
 						
-						sGroupVertex &nextVertex = sortedVertices.GetAt(sortedVertexCount++);
-						nextVertex.vertex = pVertexCount;
+						sGroupVertex &nextVertex = sortedVertices[sortedVertexCount++];
+						nextVertex.vertex = pVertices.GetCount() - 1;
 						nextVertex.next = nullptr;
 						
 						if(lastVertex){
@@ -1354,7 +1173,7 @@ void deoglModelLOD::pBuildArrays(const deModel &engModel){
 							sortVertices.SetAt(position, &nextVertex);
 						}
 						
-						face.SetVertexAt(k, pVertexCount++);
+						face.SetVertexAt(k, pVertices.GetCount() - 1);
 					}
 				}
 				
@@ -1365,49 +1184,32 @@ void deoglModelLOD::pBuildArrays(const deModel &engModel){
 			texture.SetFaceCount(texFaceCount);
 		});
 		
-		DEASSERT_TRUE(f == pFaceCount)
+		DEASSERT_TRUE(f == pFaces.GetCount())
 	}
 	
 	// optimize the memory consumption of the vertices array. required only if the difference
 	// is large and on systems with low memory like mobile systems.
-	if(pVertices){
-		oglModelVertex *optimized = nullptr;
-		
-		if(pVertexCount > 0){
-			optimized = new oglModelVertex[pVertexCount];
-			memcpy(optimized, pVertices, sizeof(oglModelVertex) * pVertexCount);
-		}
-		
-		delete [] pVertices;
-		pVertices = optimized;
-	}
+	pVertices.CompactCapacity();
 	
 	// create normal array
-	if(modelNormalCount > 0){
-		pNormals = new decVector[modelNormalCount];
-		pNormalCount = modelNormalCount;
-	}
+	pNormals.SetCountDiscard(modelNormalCount);
 	
 	// create tangent array
-	if(modelTangentCount > 0){
-		pTangents = new decVector[modelTangentCount];
-		pNegateTangents = new bool[modelTangentCount];
-		pTangentCount = modelTangentCount;
-		
-		for(i=0; i<pTexCoordSetCount; i++){
-			pTexCoordSets[i].SetTangentCount(modelTangentCount);
-		}
-	}
+	pTangents.SetCountDiscard(modelTangentCount);
+	pNegateTangents.SetCountDiscard(modelTangentCount);
+	
+	pTexCoordSets.Visit([&](deoglModelLODTexCoordSet &tcs){
+		tcs.GetTangents().SetCountDiscard(modelTangentCount);
+		tcs.GetNegateTangents().SetCountDiscard(modelTangentCount);
+	});
 	
 	// add vertex position sets. since vertices stored for rendering are points grouping various
 	// parameters a single vertex position set position typically maps to multiple points
+	pVertPosSets.SetCountDiscard(modelVertPosSetCount);
 	if(modelVertPosSetCount > 0){
-		pVertPosSets = new deoglModelLODVertPosSet[modelVertPosSetCount];
-		pVertPosSetCount = modelVertPosSetCount;
 		pVertPosSetPosCount = 0;
 		
-		int k;
-		for(i=0; i<pVertPosSetCount; i++){
+		for(i=0; i<modelVertPosSetCount; i++){
 			const int baseSetIndex = engModel.GetVertexPositionSetAt(i)->GetBaseSet();
 			const deModelLodVertexPositionSet &modelVps = modelVertPosSets[i];
 			const deModelLodVertexPositionSet::PositionsList &modelVpsPos = modelVps.GetPositions();
@@ -1419,18 +1221,18 @@ void deoglModelLOD::pBuildArrays(const deModel &engModel){
 			for(j=0; j<positionCount; j++){
 				const int vertex = modelVpsPos.GetAt(j).GetVertex();
 				
-				for(k=0; k<pVertexCount; k++){
-					if(pVertices[k].position == vertex){
+				pVertices.Visit([&](const oglModelVertex &v){
+					if(v.position == vertex){
 						pointCount++;
 					}
-				}
+				});
 			}
 			
 			// store positions for all affected points
 			vps.SetVBOOffset(pVertPosSetPosCount);
-			vps.SetPositionCount(pointCount);
+			vps.GetPositions().SetCountDiscard(pointCount);
 			
-			deoglModelLODVertPosSet::sPosition *vpsPosition = vps.GetPositions();
+			deoglModelLODVertPosSet::sPosition *vpsPosition = vps.GetPositions().GetArrayPointer();
 			const deModelLodVertexPositionSet::PositionsList *modelVpsBasePos = nullptr;
 			int basePositionCount = 0;
 			
@@ -1441,13 +1243,14 @@ void deoglModelLOD::pBuildArrays(const deModel &engModel){
 			}
 			
 			for(j=0; j<positionCount; j++){
-				const int vertex = modelVpsPos.GetAt(j).GetVertex();
+				const int vertex = modelVpsPos[j].GetVertex();
 				
 				// calculate position which is either relative to the base position or relative
 				// to another vertex position set position
-				decVector position(modelVpsPos.GetAt(j).GetPosition());
+				decVector position(modelVpsPos[j].GetPosition());
 				
 				if(modelVpsBasePos){
+					int k;
 					for(k=0; k<basePositionCount; k++){
 						const deModelLodVertexPositionSetPosition &basePos = modelVpsBasePos->GetAt(k);
 						if(basePos.GetVertex() == vertex){
@@ -1465,13 +1268,13 @@ void deoglModelLOD::pBuildArrays(const deModel &engModel){
 				}
 				
 				// add position for all affected points
-				for(k=0; k<pVertexCount; k++){
-					if(pVertices[k].position == vertex){
-						vpsPosition->index = k;
+				pVertices.VisitIndexed([&](int vi, const oglModelVertex &v){
+					if(v.position == vertex){
+						vpsPosition->index = vi;
 						vpsPosition->position = position;
 						vpsPosition++;
 					}
-				}
+				});
 			}
 			
 			pVertPosSetPosCount += pointCount;
@@ -1481,29 +1284,27 @@ void deoglModelLOD::pBuildArrays(const deModel &engModel){
 	// debug
 #if 0
 	pModel->GetOgl()->LogInfoFormat("Model(%s,%i): %i faces, %i points (%.1f%% less).", engModel.GetFilename(),
-		pLODIndex, pFaceCount, pVertexCount, 100.0f * (1.0f - (float)pVertexCount / (float)(pFaceCount * 3)));
+		pLODIndex, pFaces.GetCount(), pVertices.GetCount(), 100.0f * (1.0f - (float)pVertices.GetCount() / (float)(pFaces.GetCount() * 3)));
 #endif
 }
 
 void deoglModelLOD::pOptimizeVertexCache(){
 	deoglVCOptimizer optimizer;
-	int i;
 	
 	//decTimer timer;
 	//timer.Reset();
 	
 	// calculate the optimal ordering of faces and vertices
-	optimizer.SetVertexCount(pVertexCount);
+	optimizer.SetVertexCount(pVertices.GetCount());
 	
-	optimizer.SetFaceCount(pFaceCount);
-	for(i=0; i<pFaceCount; i++){
-		optimizer.SetFaceAt(i , pFaces[i].GetVertex1(),
-			pFaces[i].GetVertex2(), pFaces[i].GetVertex3());
-	}
+	optimizer.SetFaceCount(pFaces.GetCount());
+	pFaces.VisitIndexed([&](int i, const deoglModelFace &f){
+		optimizer.SetFaceAt(i, f.GetVertex1(), f.GetVertex2(), f.GetVertex3());
+	});
 	
 	optimizer.SetGroupCount(pTextures.GetCount());
-	pTextures.VisitIndexed([&](int i2, const deoglModelTexture &t){
-		optimizer.SetGroupAt(i2, t.GetFirstFace(), t.GetFaceCount());
+	pTextures.VisitIndexed([&](int i, const deoglModelTexture &t){
+		optimizer.SetGroupAt(i, t.GetFirstFace(), t.GetFaceCount());
 	});
 	
 	optimizer.Optimize();
@@ -1511,101 +1312,70 @@ void deoglModelLOD::pOptimizeVertexCache(){
 	// apply the ordering. for this a new array is created for the vertices and faces and the
 	// entries copied in the correct order. for the face in addition the vertex indices are
 	// remapped to the new vertex order
-	const deoglVCOptimizer::sVertex * const optimizerVertices = optimizer.GetVertices();
-	const int * const reorderedVertices = optimizer.GetReorderedVertices();
-	const int * const reorderedFaces = optimizer.GetReorderedFaces();
-	oglModelVertex *vertices = nullptr;
-	deoglModelFace *faces = nullptr;
+	const deoglVCOptimizer::sVertex * const optimizerVertices = optimizer.GetVertices().GetArrayPointer();
+	const int * const reorderedVertices = optimizer.GetReorderedVertices().GetArrayPointer();
+	const int * const reorderedFaces = optimizer.GetReorderedFaces().GetArrayPointer();
+	decTList<oglModelVertex> vertices;
+	decTList<deoglModelFace> faces;
 	
-	try{
-		if(pVertexCount > 0){
-			vertices = new oglModelVertex[pVertexCount];
-			
-			for(i=0; i<pVertexCount; i++){
-				memcpy(vertices + i, pVertices + reorderedVertices[i], sizeof(oglModelVertex));
-			}
-		}
-		
-		if(pFaceCount > 0){
-			faces = new deoglModelFace[pFaceCount];
-			
-			for(i=0; i<pFaceCount; i++){
-				memcpy(faces + i, pFaces + reorderedFaces[i], sizeof(deoglModelFace));
-				faces[i].SetIndex(i);
-				faces[i].SetVertex1(optimizerVertices[faces[i].GetVertex1()].reorderedIndex);
-				faces[i].SetVertex2(optimizerVertices[faces[i].GetVertex2()].reorderedIndex);
-				faces[i].SetVertex3(optimizerVertices[faces[i].GetVertex3()].reorderedIndex);
-			}
-		}
-		
-		for(i=0; i<pVertPosSetCount; i++){
-			deoglModelLODVertPosSet &vps = pVertPosSets[i];
-			deoglModelLODVertPosSet::sPosition * const positions = vps.GetPositions();
-			const int posCount = vps.GetPositionCount();
-			int j;
-			
-			for(j=0; j<posCount; j++){
-				positions[j].index = optimizerVertices[positions[j].index].reorderedIndex;
-			}
-		}
-		
-		if(pFaces){
-			delete [] pFaces;
-		}
-		pFaces = faces;
-		
-		if(pVertices){
-			delete [] pVertices;
-		}
-		pVertices = vertices;
-		
-	}catch(const deException &){
-		if(faces){
-			delete [] faces;
-		}
-		if(vertices){
-			delete [] vertices;
-		}
-		throw;
+	vertices.SetCountDiscard(pVertices.GetCount());
+	vertices.VisitIndexed([&](int i, oglModelVertex &vertex){
+		vertex = pVertices[reorderedVertices[i]];
+	});
+	
+	if(pFaces.IsNotEmpty()){
+		faces.SetCountDiscard(pFaces.GetCount());
+		faces.VisitIndexed([&](int i, deoglModelFace &face){
+			face = pFaces[reorderedFaces[i]];
+			face.SetIndex(i);
+			face.SetVertex1(optimizerVertices[face.GetVertex1()].reorderedIndex);
+			face.SetVertex2(optimizerVertices[face.GetVertex2()].reorderedIndex);
+			face.SetVertex3(optimizerVertices[face.GetVertex3()].reorderedIndex);
+		});
 	}
 	
-	//pModel->GetOgl()->LogInfoFormat( "model '%s' lod %i optimize in %ims", pModel.GetFilename().GetString(),
-	//	pLODIndex, ( int )( timer.GetElapsedTime() * 1000.0f ) );
+	pVertPosSets.Visit([&](deoglModelLODVertPosSet &vps){
+		vps.GetPositions().Visit([&](deoglModelLODVertPosSet::sPosition &position){
+			position.index = optimizerVertices[position.index].reorderedIndex;
+		});
+	});
+	
+	pFaces = std::move(faces);
+	pVertices = std::move(vertices);
+	
+	//pModel->GetOgl()->LogInfoFormat("model '%s' lod %i optimize in %ims", pModel.GetFilename().GetString(),
+	//	pLODIndex, (int)(timer.GetElapsedTime() * 1000.0f));
 }
 
 void deoglModelLOD::pWriteVBOData(){
 	DEASSERT_NOTNULL(pVBOBlock)
 	
 	deoglVBOWriterModel writerVBO(pModel.GetRenderThread());
-	int i, j, tcsCount;
+	int tcsCount;
 	
-	tcsCount = pTexCoordSetCount;
+	tcsCount = pTexCoordSets.GetCount();
 	if(tcsCount > 2){
 		tcsCount = 2;
 	}
 	
 	writerVBO.Reset(pVBOBlock);
 	
-	for(i=0; i<pVertexCount; i++){
-		const oglModelVertex &vertex = pVertices[i];
-		
+	pVertices.Visit([&](const oglModelVertex &vertex){
 		writerVBO.WritePoint(pPositions[vertex.position].position,
 			pNormals[vertex.normal], pTangents[vertex.tangent],
 			pNegateTangents[vertex.tangent], pTexCoords[vertex.texcoord],
 			pPositions[vertex.position].normal);
 		
-		for(j=0; j<tcsCount; j++){
-			const deoglModelLODTexCoordSet &tcs = pTexCoordSets[j];
-			
+		pTexCoordSets.Visit([&](const deoglModelLODTexCoordSet &tcs){
 			writerVBO.WriteTexCoordSetPoint(tcs.GetTangents()[vertex.tangent],
 				tcs.GetNegateTangents()[vertex.tangent],
 				tcs.GetTextureCoordinates()[vertex.texcoord]);
-		}
-	}
+		});
+	});
 	
-	for(i=0; i<pFaceCount; i++){
-		writerVBO.WriteIndices(pFaces[i].GetVertex3(), pFaces[i].GetVertex2(), pFaces[i].GetVertex1());
-	}
+	pFaces.Visit([&](const deoglModelFace &face){
+		writerVBO.WriteIndices(face.GetVertex3(), face.GetVertex2(), face.GetVertex1());
+	});
 }
 
 #if 0
@@ -1637,18 +1407,17 @@ void deoglModelLOD::pWriteVBODataCalcNormalTangent(){
 	}
 	
 	char * const vboData = reinterpret_cast<char*>(pVBOBlockCalcNormalTangent->GetData());
-	int i;
 	
-	for(i=0; i<pFaceCount; i++){
+	pFaces.VisitIndexed([&](int i, const deoglModelFace &face){
 		const int offset = 44 * i;
 		GLint * const dataPositionIndex = (GLint*)(vboData + offset);
 		GLint * const dataNormalIndex = (GLint*)(vboData + offset + 12);
 		GLint * const dataTangentIndex = (GLint*)(vboData + offset + 24);
 		GLfloat * const dataTangentFactor = (GLfloat*)(vboData + offset + 36);
 		
-		const oglModelVertex &v1 = pVertices[pFaces[i].GetVertex1()];
-		const oglModelVertex &v2 = pVertices[pFaces[i].GetVertex2()];
-		const oglModelVertex &v3 = pVertices[pFaces[i].GetVertex3()];
+		const oglModelVertex &v1 = pVertices[face.GetVertex1()];
+		const oglModelVertex &v2 = pVertices[face.GetVertex2()];
+		const oglModelVertex &v3 = pVertices[face.GetVertex3()];
 		
 		dataPositionIndex[0] = (GLint)v1.position;
 		dataPositionIndex[1] = (GLint)v2.position;
@@ -1668,7 +1437,7 @@ void deoglModelLOD::pWriteVBODataCalcNormalTangent(){
 		
 		dataTangentFactor[0] = tc3.y - tc1.y;
 		dataTangentFactor[1] = tc2.y - tc1.y;
-	}
+	});
 }
 #endif
 
@@ -1679,16 +1448,15 @@ void deoglModelLOD::pWriteVBODataWriteSkinnedVBO(){
 	}
 	
 	char * const vboData = reinterpret_cast<char*>(pVBOBlockWriteSkinnedVBO->GetData());
-	int i;
 	
-	for(i=0; i<pVertexCount; i++){
+	pVertices.VisitIndexed([&](int i, const oglModelVertex &vertex){
 		char * const vboDataVertex = vboData + (i * 16);
 		
-		*( ( GLint* )( vboDataVertex + 0 ) ) = ( GLint )pVertices[ i ].position;
-		*( ( GLint* )( vboDataVertex + 4 ) ) = ( GLint )pVertices[ i ].normal;
-		*( ( GLint* )( vboDataVertex + 8 ) ) = ( GLint )pVertices[ i ].tangent;
-		*( ( GLfloat* )( vboDataVertex + 12 ) ) = ( GLfloat )( pNegateTangents[ pVertices[ i ].tangent ] ? -1.0f : 1.0f );
-	}
+		*( ( GLint* )( vboDataVertex + 0 ) ) = ( GLint )vertex.position;
+		*( ( GLint* )( vboDataVertex + 4 ) ) = ( GLint )vertex.normal;
+		*( ( GLint* )( vboDataVertex + 8 ) ) = ( GLint )vertex.tangent;
+		*( ( GLfloat* )( vboDataVertex + 12 ) ) = ( GLfloat )( pNegateTangents[ vertex.tangent ] ? -1.0f : 1.0f );
+	});
 }
 #endif
 
@@ -1696,18 +1464,15 @@ void deoglModelLOD::pWriteVBODataWithWeight(){
 	DEASSERT_NOTNULL(pVBOBlockWithWeight)
 	
 	deoglVBOWriterModel writerVBO(pModel.GetRenderThread());
-	int i;
 	
 	writerVBO.Reset(pVBOBlockWithWeight);
 	
-	for(i=0; i<pVertexCount; i++){
-		const oglModelVertex &vertex = pVertices[i];
-		
+	pVertices.Visit([&](const oglModelVertex &vertex){
 		writerVBO.WritePoint(pPositions[vertex.position].position, pNormals[vertex.normal],
 			pTangents[vertex.tangent], pNegateTangents[vertex.tangent],
 			pTexCoords[vertex.texcoord], pPositions[vertex.position].normal,
 			pPositions[vertex.position].weights);
-	}
+	});
 	
 // 	int maxCount = 0;
 // 	for( i=0; i<pWeightsCount; i++ ){
@@ -1715,7 +1480,7 @@ void deoglModelLOD::pWriteVBODataWithWeight(){
 // 	}
 // 	pModel->GetOgl()->LogInfoFormat( "model %s bones=%i weights=%i(max %i) vertices=%i normals=%i tangents=%i",
 // 		pModel.GetFilename().GetString(), pModel->GetModel()->GetBoneCount(), pWeightsCount, maxCount,
-// 		pVertexCount, pNormalCount, pTangentCount );
+// 		pVertices.GetCount(), pNormalCount, pTangentCount );
 }
 
 void deoglModelLOD::pWriteVBOBlockVertPosSet(){
@@ -1727,21 +1492,14 @@ void deoglModelLOD::pWriteVBOBlockVertPosSet(){
 	};
 	
 	sPoint * const vboData = (sPoint*)pVBOBlockVertPosSet->GetData();
-	int i, j;
 	
-	for(i=0; i<pVertPosSetCount; i++){
-		const deoglModelLODVertPosSet &vps = pVertPosSets[i];
-		const deoglModelLODVertPosSet::sPosition * const positions = vps.GetPositions();
+	pVertPosSets.Visit([&](const deoglModelLODVertPosSet &vps){
 		sPoint * const points = vboData + vps.GetVBOOffset();
-		const int positionCount = vps.GetPositionCount();
-		
-		for(j=0; j<positionCount; j++){
-			const deoglModelLODVertPosSet::sPosition &position = positions[j];
-			
-			points[j].x = (GLfloat)position.position.x;
-			points[j].y = (GLfloat)position.position.y;
-			points[j].z = (GLfloat)position.position.z;
-			points[j].index = (GLuint)position.index;
-		}
-	}
+		vps.GetPositions().VisitIndexed([&](int i, const deoglModelLODVertPosSet::sPosition &position){
+			points[i].x = (GLfloat)position.position.x;
+			points[i].y = (GLfloat)position.position.y;
+			points[i].z = (GLfloat)position.position.z;
+			points[i].index = (GLuint)position.index;
+		});
+	});
 }

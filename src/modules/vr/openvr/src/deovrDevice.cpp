@@ -60,22 +60,12 @@ pActionPose(vr::k_ulInvalidActionHandle),
 pActionHandPose(vr::k_ulInvalidActionHandle),
 pBoneConfiguration(deInputDevice::ebcNone),
 pNameNumber(-1),
-pBoneTransformData(nullptr),
-pBoneCount(0),
-pPoseBones(nullptr),
-pPoseBoneCount(0)
+pBoneCount(0)
 {
 	UpdateParameters();
 }
 
-deovrDevice::~deovrDevice(){
-	if(pPoseBones){
-		delete [] pPoseBones;
-	}
-	if(pBoneTransformData){
-		delete [] pBoneTransformData;
-	}
-}
+deovrDevice::~deovrDevice() = default;
 
 
 
@@ -266,14 +256,11 @@ void deovrDevice::UpdateParameters(){
 	pRenderModel = nullptr;
 	pTextureMap = nullptr;
 	
-	if(pPoseBones){
-		delete [] pPoseBones;
-		pPoseBones = nullptr;
-		pPoseBoneCount = 0;
+	if(pPoseBones.IsNotEmpty()){
+		pPoseBones.RemoveAll();
 	}
-	if(pBoneTransformData){
-		delete [] pBoneTransformData;
-		pBoneTransformData = nullptr;
+	if(pBoneTransformData.IsNotEmpty()){
+		pBoneTransformData.RemoveAll();
 		pBoneCount = 0;
 	}
 	
@@ -405,7 +392,7 @@ void deovrDevice::TrackStates(){
 			bool validData = true;
 			
 			error = pOvr.GetVRInput().GetSkeletalBoneData(pActionHandPose, vr::VRSkeletalTransformSpace_Parent,
-				vr::VRSkeletalMotionRange_WithoutController, pBoneTransformData, pBoneCount);
+				vr::VRSkeletalMotionRange_WithoutController, pBoneTransformData.GetArrayPointer(), pBoneCount);
 			if(error != vr::VRInputError_None){
 				//pOvr.LogErrorFormat( "GetSkeletalBoneData failed: %d", error );
 				// spams logs if data is lost
@@ -415,7 +402,7 @@ void deovrDevice::TrackStates(){
 			}
 			
 			error = pOvr.GetVRInput().GetSkeletalBoneData(pActionHandPose, vr::VRSkeletalTransformSpace_Parent,
-				vr::VRSkeletalMotionRange_WithController, pBoneTransformData + pBoneCount, pBoneCount);
+				vr::VRSkeletalMotionRange_WithController, pBoneTransformData.GetArrayPointer() + pBoneCount, pBoneCount);
 			if(error != vr::VRInputError_None){
 				//pOvr.LogErrorFormat( "GetSkeletalBoneData failed: %d", error );
 				// spams logs if data is lost
@@ -679,11 +666,10 @@ void deovrDevice::pUpdateParametersHandPose(vr::VRActionHandle_t actionHandle){
 	if(inputError == vr::VRInputError_None && boneCount > 0){
 // 		pBoneConfiguration = deInputDevice::ebcHand;
 		
-		pBoneTransformData = new vr::VRBoneTransform_t[boneCount * 2];
 		pBoneCount = (int)boneCount;
+		pBoneTransformData.AddRange(pBoneCount * 2, {});
 		
-		pPoseBones = new deInputDevicePose[deInputDevice::HandBoneCount];
-		pPoseBoneCount = deInputDevice::HandBoneCount;
+		pPoseBones.AddRange(deInputDevice::HandBoneCount, deInputDevice::ehbWrist);
 	}
 }
 

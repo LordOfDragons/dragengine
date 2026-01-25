@@ -232,10 +232,10 @@ bool deoalRTPTRoomEstimate::pTraceRay(const decVector &direction, sHitResult &hi
 		pWOVRayHitsElement.SetRay(rayOrigin, rayEnd - rayOrigin);
 		pWOVRayHitsElement.VisitNode(*pWorld->GetOctree());
 		
-		const int hitCount = pRTResult.GetElementCount();
+		const int hitCount = pRTResult.GetElements().GetCount();
 		
 		for(i=0; i<hitCount; i++){
-			const deoalRayTraceHitElement &he = pRTResult.GetElementAt(i);
+			const deoalRayTraceHitElement &he = pRTResult.GetElements()[i];
 			if(he.GetForwardFacing()){
 				hitResult.element = &he;
 				hitResult.distance = rayOffset + he.GetDistance();

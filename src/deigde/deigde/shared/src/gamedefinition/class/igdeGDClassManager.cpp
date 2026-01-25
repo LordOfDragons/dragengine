@@ -277,8 +277,9 @@ void igdeGDClassManager::UpdateWithElementClasses(const igdeGDClassManager &clas
 					fFindFirstComponent(inherit.GetClass(), inheritComponentPrefix, inheritClassComponent);
 					
 					const igdeGDCComponent::List &components = gdclass->GetComponentList();
+					const int endIndex = decMath::min(components.GetCount(), inheritClassComponent ? 1 : 0);
 					
-					components.Visit([&](igdeGDCComponent &component){
+					components.Visit(0, endIndex, [&](igdeGDCComponent &component){
 						component.SetDoNotScale(inheritClassComponent->GetDoNotScale());
 						component.SetStatic(inheritClassComponent->GetStatic());
 						component.SetPartialHide(inheritClassComponent->GetPartialHide());
@@ -352,7 +353,7 @@ void igdeGDClassManager::UpdateWithElementClasses(const igdeGDClassManager &clas
 						if(!nameMove.IsEmpty() && gdclass->GetDefaultPropertyValue(nameMove, propertyValue)){
 							component.SetMove(propertyValue);
 						}
-					}, 0, decMath::min(components.GetCount(), inheritClassComponent ? 1 : 0));
+					});
 				});
 			}
 			

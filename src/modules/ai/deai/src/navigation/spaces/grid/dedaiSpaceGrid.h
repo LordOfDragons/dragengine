@@ -37,24 +37,15 @@ class decConvexVolumeList;
 
 
 /**
- * \brief Space frid.
+ * Space frid.
  */
 class dedaiSpaceGrid{
 private:
 	dedaiSpace &pSpace;
 	
-	unsigned short *pVertexEdges;
-	int pVertexEdgeCount;
-	int pVertexEdgeSize;
-	
-	dedaiSpaceGridVertex *pVertices;
-	int pVertexCount;
-	int pVertexSize;
-	
-	dedaiSpaceGridEdge *pEdges;
-	int pEdgeCount;
-	int pEdgeSize;
-	
+	decTList<unsigned short> pVertexEdges;
+	decTList<dedaiSpaceGridVertex> pVertices;
+	decTList<dedaiSpaceGridEdge> pEdges;
 	decTList<dedaiSpaceGridVertex*> pLinks;
 	
 	
@@ -62,10 +53,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create space grid. */
+	/** Create space grid. */
 	dedaiSpaceGrid(dedaiSpace &space);
 	
-	/** \brief Clean up space grid. */
+	/** Clean up space grid. */
 	~dedaiSpaceGrid();
 	/*@}*/
 	
@@ -73,98 +64,65 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Parent space. */
+	/** Parent space. */
 	inline dedaiSpace &GetSpace() const{ return pSpace; }
 	
 	
-	
-	/** \brief Number of vertex edges. */
-	inline int GetVertexEdgeCount() const{ return pVertexEdgeCount; }
-	
-	/** \brief Array of vertex edges. */
-	inline unsigned short *GetVertexEdges() const{ return pVertexEdges; }
-	
-	/** \brief Vertex edge by index. */
-	unsigned short GetVertexEdgeAt(int index) const;
-	
-	/** \brief Add vertex edge. */
-	void AddVertexEdge(unsigned short edge);
+	/** Vertex edges. */
+	inline decTList<unsigned short> &GetVertexEdges(){ return pVertexEdges; }
+	inline const decTList<unsigned short> &GetVertexEdges() const{ return pVertexEdges; }
 	
 	
-	
-	/** \brief Number of vertices. */
-	inline int GetVertexCount() const{ return pVertexCount; }
-	
-	/** \brief Array of vertices. */
-	inline dedaiSpaceGridVertex *GetVertices() const{ return pVertices; }
-	
-	/** \brief Vertex by index. */
-	dedaiSpaceGridVertex &GetVertexAt(int index) const;
+	/** Vertices. */
+	inline decTList<dedaiSpaceGridVertex> &GetVertices(){ return pVertices; }
+	inline const decTList<dedaiSpaceGridVertex> &GetVertices() const{ return pVertices; }
 	
 	/** \brief Add vertex. */
 	void AddVertex(const decVector &position);
 	
-	/** \brief Vertex closest to a position or -1 if not found. */
+	/** Vertex closest to a position or -1 if not found. */
 	dedaiSpaceGridVertex *GetVertexClosestTo(const decVector &position, float &distance) const;
 	
-	
-	
-	/** \brief Number of edges. */
-	inline int GetEdgeCount() const{ return pEdgeCount; }
-	
-	/** \brief Array of edges. */
-	inline dedaiSpaceGridEdge *GetEdges() const{ return pEdges; }
-	
-	/** \brief Edge by index. */
-	dedaiSpaceGridEdge &GetEdgeAt(int index) const;
-	
-	/** \brief Index of the edge matching the given set of vertices or -1 if not found. */
-	int IndexOfEdgeMatching(unsigned short vertex1, unsigned short vertex2) const;
-	
-	/** \brief Add edge returning the edge index. */
-	void AddEdge(unsigned short vertex1, unsigned short vertex2);
-	
-	
-	
-	/** \brief Number of links. */
-	inline int GetLinkCount() const{ return pLinks.GetCount(); }
-	
-	/** \brief Links. */
-	inline const decTList<dedaiSpaceGridVertex*> &GetLinks() const{ return pLinks; }
-	
-	/** \brief Link by index. */
-	dedaiSpaceGridVertex *GetLinkAt(int index) const;
-	
-	/** \brief Add link. */
-	void AddLink(dedaiSpaceGridVertex *vertex);
-	
-	/** \brief Remove all links. */
-	void RemoveAllLinks();
-	
-	
-	
 	/**
-	 * \brief Nearest position inside radius.
+	 * Nearest position inside radius.
 	 * \details Sets nearest position and returns edge if found otherwise returns \em NULL.
 	 */
 	dedaiSpaceGridEdge *NearestPoint(const decVector &point, float radius,
 	decVector &nearestPosition, float &nearestDistSquared, float &nearestLambda) const;
 	
 	
+	/** Edges. */
+	inline decTList<dedaiSpaceGridEdge> &GetEdges(){ return pEdges; }
+	inline const decTList<dedaiSpaceGridEdge> &GetEdges() const{ return pEdges; }
 	
-	/** \brief Init from grid from the parent space. */
+	/** Index of the edge matching the given set of vertices or -1 if not found. */
+	int IndexOfEdgeMatching(unsigned short vertex1, unsigned short vertex2) const;
+	
+	/** Add edge returning the edge index. */
+	void AddEdge(unsigned short vertex1, unsigned short vertex2);
+	
+	
+	/** Links. */
+	inline decTList<dedaiSpaceGridVertex*> &GetLinks(){ return pLinks; }
+	inline const decTList<dedaiSpaceGridVertex*> &GetLinks() const{ return pLinks; }
+	
+	/** \brief Remove all links. */
+	void RemoveAllLinks();
+	
+	
+	/** Init from grid from the parent space. */
 	void InitFromSpace();
 	
-	/** \brief Link to other grids if possible. */
+	/** Link to other grids if possible. */
 	void LinkToOtherGrids();
 	
-	/** \brief Update blocking. */
+	/** Update blocking. */
 	void UpdateBlocking();
 	
-	/** \brief Clear grid. */
+	/** Clear grid. */
 	void Clear();
 	
-	/** \brief Update the shape of the debug drawer space object if existing. */
+	/** Update the shape of the debug drawer space object if existing. */
 	void UpdateDDSSpaceShape();
 	/*@}*/
 	

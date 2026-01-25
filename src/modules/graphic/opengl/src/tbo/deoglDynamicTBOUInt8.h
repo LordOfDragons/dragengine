@@ -52,8 +52,8 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Data entries. */
-	inline uint8_t *GetDataUInt(){ return pData; }
-	inline const uint8_t *GetDataUInt() const{ return pData; }
+	inline uint8_t *GetDataUInt(){ return pData.GetArrayPointer(); }
+	inline const uint8_t *GetDataUInt() const{ return pData.GetArrayPointer(); }
 	
 	/**
 	 * Add boolean value.

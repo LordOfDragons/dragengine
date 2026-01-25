@@ -273,12 +273,12 @@ void meNavigationSpace::LoadFromFile(){
 	int i;
 	
 	// clear the navigation space
-	pEngNavSpace->SetRoomCount(0);
-	pEngNavSpace->SetWallCount(0);
-	pEngNavSpace->SetFaceCount(0);
-	pEngNavSpace->SetCornerCount(0);
-	pEngNavSpace->SetEdgeCount(0);
-	pEngNavSpace->SetVertexCount(0);
+	pEngNavSpace->GetRooms().SetCountDiscard(0);
+	pEngNavSpace->GetWalls().SetCountDiscard(0);
+	pEngNavSpace->GetFaces().SetCountDiscard(0);
+	pEngNavSpace->GetCorners().SetCountDiscard(0);
+	pEngNavSpace->GetEdges().SetCountDiscard(0);
+	pEngNavSpace->GetVertices().SetCountDiscard(0);
 	pEngNavSpace->SetType(deNavigationSpace::estGrid);
 	
 	// load navigation space from file
@@ -312,24 +312,24 @@ void meNavigationSpace::LoadFromFile(){
 					
 					pEngNavSpace->SetType((deNavigationSpace::eSpaceTypes)fileReader->ReadUShort());
 					
-					pEngNavSpace->SetVertexCount(vertexCount);
-					pEngNavSpace->SetEdgeCount(edgeCount);
-					pEngNavSpace->SetCornerCount(cornerCount);
-					pEngNavSpace->SetFaceCount(faceCount);
-					pEngNavSpace->SetWallCount(wallCount);
-					pEngNavSpace->SetRoomCount(roomCount);
+					pEngNavSpace->GetVertices().SetCountDiscard(vertexCount);
+					pEngNavSpace->GetEdges().SetCountDiscard(edgeCount);
+					pEngNavSpace->GetCorners().SetCountDiscard(cornerCount);
+					pEngNavSpace->GetFaces().SetCountDiscard(faceCount);
+					pEngNavSpace->GetWalls().SetCountDiscard(wallCount);
+					pEngNavSpace->GetRooms().SetCountDiscard(roomCount);
 					
 					// read vertices
 					for(i=0; i<vertexCount; i++){
 						position.x = fileReader->ReadFloat();
 						position.y = fileReader->ReadFloat();
 						position.z = fileReader->ReadFloat();
-						pEngNavSpace->SetVertexAt(i, position);
+						pEngNavSpace->GetVertices()[i] = position;
 					}
 					
 					// read edges
 					for(i=0; i<edgeCount; i++){
-						deNavigationSpaceEdge &edge = pEngNavSpace->GetEdgeAt(i);
+						deNavigationSpaceEdge &edge = pEngNavSpace->GetEdges()[i];
 						edge.SetVertex1(fileReader->ReadUShort());
 						edge.SetVertex2(fileReader->ReadUShort());
 						edge.SetType1(fileReader->ReadUShort());
@@ -338,40 +338,40 @@ void meNavigationSpace::LoadFromFile(){
 					
 					// read corners
 					for(i=0; i<cornerCount; i++){
-						deNavigationSpaceCorner &corner = pEngNavSpace->GetCornerAt(i);
+						deNavigationSpaceCorner &corner = pEngNavSpace->GetCorners()[i];
 						corner.SetVertex(fileReader->ReadUShort());
 						corner.SetType(fileReader->ReadUShort());
 					}
 					
 					// read faces
 					for(i=0; i<faceCount; i++){
-						deNavigationSpaceFace &face = pEngNavSpace->GetFaceAt(i);
+						deNavigationSpaceFace &face = pEngNavSpace->GetFaces()[i];
 						face.SetCornerCount(fileReader->ReadUShort());
 						face.SetType(fileReader->ReadUShort());
 					}
 					
 					// read walls
 					for(i=0; i<wallCount; i++){
-						deNavigationSpaceWall &wall = pEngNavSpace->GetWallAt(i);
+						deNavigationSpaceWall &wall = pEngNavSpace->GetWalls()[i];
 						wall.SetFace(fileReader->ReadUShort());
 						wall.SetType(fileReader->ReadUShort());
 					}
 					
 					// read rooms
 					for(i=0; i<roomCount; i++){
-						deNavigationSpaceRoom &room = pEngNavSpace->GetRoomAt(i);
+						deNavigationSpaceRoom &room = pEngNavSpace->GetRooms()[i];
 						room.SetFrontWallCount(fileReader->ReadUShort());
 						room.SetBackWallCount(fileReader->ReadUShort());
 						room.SetType(fileReader->ReadUShort());
 					}
 				}
 			}catch(const deException &e){
-				pEngNavSpace->SetRoomCount(0);
-				pEngNavSpace->SetWallCount(0);
-				pEngNavSpace->SetFaceCount(0);
-				pEngNavSpace->SetCornerCount(0);
-				pEngNavSpace->SetEdgeCount(0);
-				pEngNavSpace->SetVertexCount(0);
+				pEngNavSpace->GetRooms().SetCountDiscard(0);
+				pEngNavSpace->GetWalls().SetCountDiscard(0);
+				pEngNavSpace->GetFaces().SetCountDiscard(0);
+				pEngNavSpace->GetCorners().SetCountDiscard(0);
+				pEngNavSpace->GetEdges().SetCountDiscard(0);
+				pEngNavSpace->GetVertices().SetCountDiscard(0);
 				pEngNavSpace->SetType(deNavigationSpace::estGrid);
 				
 				if(pWorld){
@@ -383,7 +383,9 @@ void meNavigationSpace::LoadFromFile(){
 	
 	// if the loading failed or the navigation space is empty show a placeholder box so the
 	// user can still interact with the navigation space
-	if(pEngNavSpace->GetRoomCount() > 0 || pEngNavSpace->GetFaceCount() > 0 || pEngNavSpace->GetEdgeCount() > 0){
+	if(pEngNavSpace->GetRooms().IsNotEmpty()
+	|| pEngNavSpace->GetFaces().IsNotEmpty()
+	|| pEngNavSpace->GetEdges().IsNotEmpty()){
 		pObjectPlaceholder->SetGDClass(nullptr);
 		
 	}else{
@@ -406,66 +408,52 @@ void meNavigationSpace::SaveToFile(){
 	
 	deVirtualFileSystem &vfs = *GetEngine()->GetVirtualFileSystem();
 	const char signature[] = "Drag[en]gine Navigation Space";
-	int i, count;
-	decPath path;
 	
-	path.SetFromUnix(pFilename.GetString());
-	
-	const decBaseFileWriter::Ref fileWriter(vfs.OpenFileForWriting(path));
+	const decBaseFileWriter::Ref fileWriter(vfs.OpenFileForWriting(
+		decPath::CreatePathUnix(pFilename.GetString())));
 	
 	fileWriter->Write(&signature, 29);
 	fileWriter->WriteUShort(1); // version
 	fileWriter->WriteUShort(0); // flags
-	fileWriter->WriteUShort((unsigned short)pEngNavSpace->GetVertexCount());
-	fileWriter->WriteUShort((unsigned short)pEngNavSpace->GetEdgeCount());
-	fileWriter->WriteUShort((unsigned short)pEngNavSpace->GetCornerCount());
-	fileWriter->WriteUShort((unsigned short)pEngNavSpace->GetFaceCount());
-	fileWriter->WriteUShort((unsigned short)pEngNavSpace->GetWallCount());
-	fileWriter->WriteUShort((unsigned short)pEngNavSpace->GetRoomCount());
+	fileWriter->WriteUShort((unsigned short)pEngNavSpace->GetVertices().GetCount());
+	fileWriter->WriteUShort((unsigned short)pEngNavSpace->GetEdges().GetCount());
+	fileWriter->WriteUShort((unsigned short)pEngNavSpace->GetCorners().GetCount());
+	fileWriter->WriteUShort((unsigned short)pEngNavSpace->GetFaces().GetCount());
+	fileWriter->WriteUShort((unsigned short)pEngNavSpace->GetWalls().GetCount());
+	fileWriter->WriteUShort((unsigned short)pEngNavSpace->GetRooms().GetCount());
 	fileWriter->WriteUShort((unsigned short)pEngNavSpace->GetType());
 	
-	count = pEngNavSpace->GetVertexCount();
-	for(i=0; i<count; i++){
-		fileWriter->WriteVector(pEngNavSpace->GetVertexAt(i));
-	}
+	pEngNavSpace->GetVertices().Visit([&](const decVector &vertex){
+		fileWriter->WriteVector(vertex);
+	});
 	
-	count = pEngNavSpace->GetEdgeCount();
-	for(i=0; i<count; i++){
-		const deNavigationSpaceEdge &edge = pEngNavSpace->GetEdgeAt(i);
+	pEngNavSpace->GetEdges().Visit([&](const deNavigationSpaceEdge &edge){
 		fileWriter->WriteUShort(edge.GetVertex1());
 		fileWriter->WriteUShort(edge.GetVertex2());
 		fileWriter->WriteUShort((unsigned short)edge.GetType1());
 		fileWriter->WriteUShort((unsigned short)edge.GetType2());
-	}
+	});
 	
-	count = pEngNavSpace->GetCornerCount();
-	for(i=0; i<count; i++){
-		const deNavigationSpaceCorner &corner = pEngNavSpace->GetCornerAt(i);
+	pEngNavSpace->GetCorners().Visit([&](const deNavigationSpaceCorner &corner){
 		fileWriter->WriteUShort(corner.GetVertex());
 		fileWriter->WriteUShort(corner.GetType());
-	}
+	});
 	
-	count = pEngNavSpace->GetFaceCount();
-	for(i=0; i<count; i++){
-		const deNavigationSpaceFace &face = pEngNavSpace->GetFaceAt(i);
+	pEngNavSpace->GetFaces().Visit([&](const deNavigationSpaceFace &face){
 		fileWriter->WriteUShort(face.GetCornerCount());
 		fileWriter->WriteUShort((unsigned short)face.GetType());
-	}
+	});
 	
-	count = pEngNavSpace->GetWallCount();
-	for(i=0; i<count; i++){
-		const deNavigationSpaceWall &wall = pEngNavSpace->GetWallAt(i);
+	pEngNavSpace->GetWalls().Visit([&](const deNavigationSpaceWall &wall){
 		fileWriter->WriteUShort(wall.GetFace());
 		fileWriter->WriteUShort(wall.GetType());
-	}
+	});
 	
-	count = pEngNavSpace->GetRoomCount();
-	for(i=0; i<count; i++){
-		const deNavigationSpaceRoom &room = pEngNavSpace->GetRoomAt(i);
+	pEngNavSpace->GetRooms().Visit([&](const deNavigationSpaceRoom &room){
 		fileWriter->WriteUShort(room.GetFrontWallCount());
 		fileWriter->WriteUShort(room.GetBackWallCount());
 		fileWriter->WriteUShort((unsigned short)room.GetType());
-	}
+	});
 }
 
 
@@ -527,12 +515,14 @@ void meNavigationSpace::pUpdateShapes(){
 		deModel::Ref model;
 		deSkin::Ref skin;
 		
-		if(pEngNavSpace->GetRoomCount() > 0 || pEngNavSpace->GetFaceCount() > 0 || pEngNavSpace->GetEdgeCount() > 0){
+		if(pEngNavSpace->GetRooms().IsNotEmpty()
+		|| pEngNavSpace->GetFaces().IsNotEmpty()
+		|| pEngNavSpace->GetEdges().IsNotEmpty()){
 			if(pEngNavSpace->GetType() == deNavigationSpace::estGrid){
-				canBuild = (pEngNavSpace->GetEdgeCount() > 0);
+				canBuild = (pEngNavSpace->GetEdges().IsNotEmpty());
 				
 			}else if(pEngNavSpace->GetType() == deNavigationSpace::estMesh){
-				canBuild = (pEngNavSpace->GetFaceCount() > 0);
+				canBuild = (pEngNavSpace->GetFaces().IsNotEmpty());
 			}
 		}
 		
@@ -560,53 +550,35 @@ void meNavigationSpace::pUpdateDDSSpace(){
 	
 	if(pEngNavSpace){
 		if(pEngNavSpace->GetType() == deNavigationSpace::estGrid){
-			const int edgeCount = pEngNavSpace->GetEdgeCount();
-			deDebugDrawerShapeFace *ddsFace = nullptr;
-			int e;
-			
-			try{
-				for(e=0; e<edgeCount; e++){
-					const deNavigationSpaceEdge &edge = pEngNavSpace->GetEdgeAt(e);
-					const decVector &vertex1 = pEngNavSpace->GetVertexAt(edge.GetVertex1());
-					const decVector &vertex2 = pEngNavSpace->GetVertexAt(edge.GetVertex2());
-					
-					ddsFace = new deDebugDrawerShapeFace;
-					ddsFace->AddVertex(vertex1);
-					ddsFace->AddVertex(vertex2);
-					ddsFace->AddVertex(vertex2);
-					pDDSNavSpace->AddFace(ddsFace);
-				}
+			pEngNavSpace->GetEdges().Visit([&](const deNavigationSpaceEdge &edge){
+				const decVector &vertex1 = pEngNavSpace->GetVertices()[edge.GetVertex1()];
+				const decVector &vertex2 = pEngNavSpace->GetVertices()[edge.GetVertex2()];
 				
-			}catch(const deException &){
-				throw;
-			}
+				auto ddsFace = deDebugDrawerShapeFace::Ref::New();
+				ddsFace->AddVertex(vertex1);
+				ddsFace->AddVertex(vertex2);
+				ddsFace->AddVertex(vertex2);
+				pDDSNavSpace->AddFace(std::move(ddsFace));
+			});
 			
 		}else if(pEngNavSpace->GetType() == deNavigationSpace::estMesh){
-			deNavigationSpaceCorner *corners = pEngNavSpace->GetCorners();
-			const int faceCount = pEngNavSpace->GetFaceCount();
-			deDebugDrawerShapeFace *ddsFace = nullptr;
-			int f, c;
-			
-			try{
-				for(f=0; f<faceCount; f++){
-					const deNavigationSpaceFace &face = pEngNavSpace->GetFaceAt(f);
-					const int cornerCount = face.GetCornerCount();
-					
-					if(cornerCount > 2){
-						ddsFace = new deDebugDrawerShapeFace;
-						for(c=0; c<cornerCount; c++){
-							ddsFace->AddVertex(pEngNavSpace->GetVertexAt(corners[c].GetVertex()));
-						}
-						ddsFace->SetNormal((ddsFace->GetVertexAt(1) - ddsFace->GetVertexAt(0)) % (ddsFace->GetVertexAt(2) - ddsFace->GetVertexAt(1)));
-						pDDSNavSpace->AddFace(ddsFace);
+			deNavigationSpaceCorner *corners = pEngNavSpace->GetCorners().GetArrayPointer();
+			pEngNavSpace->GetFaces().Visit([&](const deNavigationSpaceFace &face){
+				const int cornerCount = face.GetCornerCount();
+				
+				if(cornerCount > 2){
+					auto ddsFace = deDebugDrawerShapeFace::Ref::New();
+					int c;
+					for(c=0; c<cornerCount; c++){
+						ddsFace->AddVertex(pEngNavSpace->GetVertices()[corners[c].GetVertex()]);
 					}
-					
-					corners += cornerCount;
+					ddsFace->SetNormal((ddsFace->GetVertexAt(1) - ddsFace->GetVertexAt(0))
+						% (ddsFace->GetVertexAt(2) - ddsFace->GetVertexAt(1)));
+					pDDSNavSpace->AddFace(std::move(ddsFace));
 				}
 				
-			}catch(const deException &){
-				throw;
-			}
+				corners += cornerCount;
+			});
 		}
 	}
 }
@@ -632,21 +604,17 @@ void meNavigationSpace::pUpdateUsedCostTypes(){
 	pUsedCostTypes.RemoveAll();
 	
 	if(pEngNavSpace){
-		const int faceCount = pEngNavSpace->GetFaceCount();
-		const int edgeCount = pEngNavSpace->GetEdgeCount();
-		int i;
-		
-		for(i=0; i<faceCount; i++){
-			const int navtype = pEngNavSpace->GetFaceAt(i).GetType();
+		pEngNavSpace->GetFaces().Visit([&](const deNavigationSpaceFace &face){
+			const int navtype = face.GetType();
 			
 			if(!pUsedCostTypes.Has(navtype)){
 				pUsedCostTypes.Add(navtype);
 			}
-		}
+		});
 		
-		for(i=0; i<edgeCount; i++){
-			const int navtype1 = pEngNavSpace->GetEdgeAt(i).GetType1();
-			const int navtype2 = pEngNavSpace->GetEdgeAt(i).GetType2();
+		pEngNavSpace->GetEdges().Visit([&](const deNavigationSpaceEdge &edge){
+			const int navtype1 = edge.GetType1();
+			const int navtype2 = edge.GetType2();
 			
 			if(!pUsedCostTypes.Has(navtype1)){
 				pUsedCostTypes.Add(navtype1);
@@ -654,7 +622,7 @@ void meNavigationSpace::pUpdateUsedCostTypes(){
 			if(!pUsedCostTypes.Has(navtype2)){
 				pUsedCostTypes.Add(navtype2);
 			}
-		}
+		});
 	}
 	
 	if(pWorld){

@@ -859,7 +859,7 @@ void deClassHeightTerrain::nfNavSpaceGetCornerCount::RunFunction(dsRunTime *rt, 
 	const deHeightTerrain &hterrain = *(dedsGetNativeData<sHTNatDat>(p_GetNativeData(myself)).hterrain);
 	const deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
 	const deHeightTerrainNavSpace &navspace = *sector.GetNavSpaces().GetAt(rt->GetValue(1)->GetInt());
-	rt->PushInt(navspace.GetCornerCount());
+	rt->PushInt(navspace.GetCorners().GetCount());
 }
 
 // public func void navspaceSetCornerCount( int sector, int navspace, int count )
@@ -874,7 +874,7 @@ void deClassHeightTerrain::nfNavSpaceSetCornerCount::RunFunction(dsRunTime *rt, 
 	const deHeightTerrain &hterrain = *(dedsGetNativeData<sHTNatDat>(p_GetNativeData(myself)).hterrain);
 	deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
 	deHeightTerrainNavSpace &navspace = *sector.GetNavSpaces().GetAt(rt->GetValue(1)->GetInt());
-	navspace.SetCornerCount(rt->GetValue(2)->GetInt());
+	navspace.GetCorners().SetAll(rt->GetValue(2)->GetInt(), {});
 }
 
 // public func int navspaceGetCornerAt( int sector, int navspace, int corner )
@@ -889,7 +889,7 @@ void deClassHeightTerrain::nfNavSpaceGetCornerAt::RunFunction(dsRunTime *rt, dsV
 	const deHeightTerrain &hterrain = *(dedsGetNativeData<sHTNatDat>(p_GetNativeData(myself)).hterrain);
 	const deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
 	const deHeightTerrainNavSpace &navspace = *sector.GetNavSpaces().GetAt(rt->GetValue(1)->GetInt());
-	rt->PushInt(navspace.GetCornerAt(rt->GetValue(2)->GetInt()));
+	rt->PushInt(navspace.GetCorners()[rt->GetValue(2)->GetInt()]);
 }
 
 // public func void navspaceSetCornerAt( int sector, int navspace, int corner, int navpoint )
@@ -909,7 +909,7 @@ void deClassHeightTerrain::nfNavSpaceSetCornerAt::RunFunction(dsRunTime *rt, dsV
 	
 	const int corner = rt->GetValue(2)->GetInt();
 	const unsigned int navpoint = (unsigned int)rt->GetValue(3)->GetInt();
-	navspace.SetCornerAt(corner, navpoint);
+	navspace.GetCorners()[corner] = navpoint;
 }
 
 
@@ -925,7 +925,7 @@ void deClassHeightTerrain::nfNavSpaceGetEdgeCount::RunFunction(dsRunTime *rt, ds
 	const deHeightTerrain &hterrain = *(dedsGetNativeData<sHTNatDat>(p_GetNativeData(myself)).hterrain);
 	const deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
 	const deHeightTerrainNavSpace &navspace = *sector.GetNavSpaces().GetAt(rt->GetValue(1)->GetInt());
-	rt->PushInt(navspace.GetEdgeCount());
+	rt->PushInt(navspace.GetEdges().GetCount());
 }
 
 // public func void navspaceSetEdgeCount( int sector, int navspace, int count )
@@ -939,7 +939,7 @@ void deClassHeightTerrain::nfNavSpaceSetEdgeCount::RunFunction(dsRunTime *rt, ds
 	const deHeightTerrain &hterrain = *(dedsGetNativeData<sHTNatDat>(p_GetNativeData(myself)).hterrain);
 	deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
 	deHeightTerrainNavSpace &navspace = *sector.GetNavSpaces().GetAt(rt->GetValue(1)->GetInt());
-	navspace.SetEdgeCount(rt->GetValue(2)->GetInt());
+	navspace.GetEdges().SetAll(rt->GetValue(2)->GetInt(), {});
 }
 
 // public func int navspaceEdgeGetPoint1( int sector, int navspace, int edge )
@@ -954,7 +954,7 @@ void deClassHeightTerrain::nfNavSpaceEdgeGetPoint1::RunFunction(dsRunTime *rt, d
 	const deHeightTerrain &hterrain = *(dedsGetNativeData<sHTNatDat>(p_GetNativeData(myself)).hterrain);
 	const deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
 	const deHeightTerrainNavSpace &navspace = *sector.GetNavSpaces().GetAt(rt->GetValue(1)->GetInt());
-	rt->PushInt(navspace.GetEdgeAt(rt->GetValue(2)->GetInt()).GetPoint1());
+	rt->PushInt(navspace.GetEdges()[rt->GetValue(2)->GetInt()].GetPoint1());
 }
 
 // public func int navspaceEdgeGetPoint2( int sector, int navspace, int edge )
@@ -968,7 +968,7 @@ void deClassHeightTerrain::nfNavSpaceEdgeGetPoint2::RunFunction(dsRunTime *rt, d
 	const deHeightTerrain &hterrain = *(dedsGetNativeData<sHTNatDat>(p_GetNativeData(myself)).hterrain);
 	const deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
 	const deHeightTerrainNavSpace &navspace = *sector.GetNavSpaces().GetAt(rt->GetValue(1)->GetInt());
-	rt->PushInt(navspace.GetEdgeAt(rt->GetValue(2)->GetInt()).GetPoint2());
+	rt->PushInt(navspace.GetEdges()[rt->GetValue(2)->GetInt()].GetPoint2());
 }
 
 // public func int navspaceEdgeGetType1( int sector, int navspace, int edge )
@@ -983,7 +983,7 @@ void deClassHeightTerrain::nfNavSpaceEdgeGetType1::RunFunction(dsRunTime *rt, ds
 	const deHeightTerrain &hterrain = *(dedsGetNativeData<sHTNatDat>(p_GetNativeData(myself)).hterrain);
 	const deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
 	const deHeightTerrainNavSpace &navspace = *sector.GetNavSpaces().GetAt(rt->GetValue(1)->GetInt());
-	rt->PushInt(navspace.GetEdgeAt(rt->GetValue(2)->GetInt()).GetType1());
+	rt->PushInt(navspace.GetEdges()[rt->GetValue(2)->GetInt()].GetType1());
 }
 
 // public func int navspaceEdgeGetType2( int sector, int navspace, int edge )
@@ -998,7 +998,7 @@ void deClassHeightTerrain::nfNavSpaceEdgeGetType2::RunFunction(dsRunTime *rt, ds
 	const deHeightTerrain &hterrain = *(dedsGetNativeData<sHTNatDat>(p_GetNativeData(myself)).hterrain);
 	const deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
 	const deHeightTerrainNavSpace &navspace = *sector.GetNavSpaces().GetAt(rt->GetValue(1)->GetInt());
-	rt->PushInt(navspace.GetEdgeAt(rt->GetValue(2)->GetInt()).GetType2());
+	rt->PushInt(navspace.GetEdges()[rt->GetValue(2)->GetInt()].GetType2());
 }
 
 // public func void navspaceSetEdgeAt( int sector, int navspace, int edge, int point1, int point2, int type1, int type2 )
@@ -1025,7 +1025,7 @@ void deClassHeightTerrain::nfNavSpaceSetEdgeAt::RunFunction(dsRunTime *rt, dsVal
 	const unsigned short type1 = (unsigned short)rt->GetValue(5)->GetInt();
 	const unsigned short type2 = (unsigned short)rt->GetValue(6)->GetInt();
 	
-	deHeightTerrainNavSpaceEdge &edge = navspace.GetEdgeAt(edgeIndex);
+	deHeightTerrainNavSpaceEdge &edge = navspace.GetEdges()[edgeIndex];
 	edge.SetPoint1(point1);
 	edge.SetPoint2(point2);
 	edge.SetType1(type1);
@@ -1045,7 +1045,7 @@ void deClassHeightTerrain::nfNavSpaceGetFaceCount::RunFunction(dsRunTime *rt, ds
 	const deHeightTerrain &hterrain = *(dedsGetNativeData<sHTNatDat>(p_GetNativeData(myself)).hterrain);
 	const deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
 	const deHeightTerrainNavSpace &navspace = *sector.GetNavSpaces().GetAt(rt->GetValue(1)->GetInt());
-	rt->PushInt(navspace.GetFaceCount());
+	rt->PushInt(navspace.GetFaces().GetCount());
 }
 
 // public func void navspaceSetFaceCount( int sector, int navspace, int count )
@@ -1060,7 +1060,7 @@ void deClassHeightTerrain::nfNavSpaceSetFaceCount::RunFunction(dsRunTime *rt, ds
 	const deHeightTerrain &hterrain = *(dedsGetNativeData<sHTNatDat>(p_GetNativeData(myself)).hterrain);
 	deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
 	deHeightTerrainNavSpace &navspace = *sector.GetNavSpaces().GetAt(rt->GetValue(1)->GetInt());
-	navspace.SetFaceCount(rt->GetValue(2)->GetInt());
+	navspace.GetFaces().SetAll(rt->GetValue(2)->GetInt(), {});
 }
 
 // public func int navspaceFaceGetCornerCount( int sector, int navspace, int face )
@@ -1075,7 +1075,7 @@ void deClassHeightTerrain::nfNavSpaceFaceGetCornerCount::RunFunction(dsRunTime *
 	const deHeightTerrain &hterrain = *(dedsGetNativeData<sHTNatDat>(p_GetNativeData(myself)).hterrain);
 	const deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
 	const deHeightTerrainNavSpace &navspace = *sector.GetNavSpaces().GetAt(rt->GetValue(1)->GetInt());
-	rt->PushInt(navspace.GetFaceAt(rt->GetValue(2)->GetInt()).GetCornerCount());
+	rt->PushInt(navspace.GetFaces()[rt->GetValue(2)->GetInt()].GetCornerCount());
 }
 
 // public func int navspaceFaceGetType( int sector, int navspace, int face )
@@ -1090,7 +1090,7 @@ void deClassHeightTerrain::nfNavSpaceFaceGetType::RunFunction(dsRunTime *rt, dsV
 	const deHeightTerrain &hterrain = *(dedsGetNativeData<sHTNatDat>(p_GetNativeData(myself)).hterrain);
 	const deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
 	const deHeightTerrainNavSpace &navspace = *sector.GetNavSpaces().GetAt(rt->GetValue(1)->GetInt());
-	rt->PushInt(navspace.GetFaceAt(rt->GetValue(2)->GetInt()).GetType());
+	rt->PushInt(navspace.GetFaces()[rt->GetValue(2)->GetInt()].GetType());
 }
 
 // public func void navspaceSetFaceAt( int sector, int navspace, int face, int cornerCount, int type )
@@ -1113,7 +1113,7 @@ void deClassHeightTerrain::nfNavSpaceSetFaceAt::RunFunction(dsRunTime *rt, dsVal
 	const unsigned short cornerCount = (unsigned short)rt->GetValue(3)->GetInt();
 	const unsigned short type = (unsigned short)rt->GetValue(4)->GetInt();
 	
-	deNavigationSpaceFace &face = navspace.GetFaceAt(faceIndex);
+	deNavigationSpaceFace &face = navspace.GetFaces()[faceIndex];
 	face.SetCornerCount(cornerCount);
 	face.SetType(type);
 }

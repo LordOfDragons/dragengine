@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <string.h>
-
 #include "deoglRSky.h"
 #include "deoglRSkyControllerTarget.h"
 #include "deoglRSkyInstance.h"
@@ -42,40 +39,15 @@
 /////////////////////////////////
 
 deoglRSkyControllerTarget::deoglRSkyControllerTarget(const deSkyControllerTarget &target) :
-pLinks(nullptr),
-pLinkCount(0)
-{
-	const decTList<int> &links = target.GetLinks();
-	const int linkCount = links.GetCount();
-	
-	if(links.IsEmpty()){
-		return;
-	}
-	
-	pLinks = new int[linkCount];
-	
-	links.Visit([&](int link){
-		pLinks[pLinkCount++] = link;
-	});
+pLinks(target.GetLinks()){
 }
 
-deoglRSkyControllerTarget::~deoglRSkyControllerTarget(){
-	if(pLinks){
-		delete [] pLinks;
-	}
-}
+deoglRSkyControllerTarget::~deoglRSkyControllerTarget() = default;
 
 
 
 // Management
 ///////////////
-
-int deoglRSkyControllerTarget::GetLinkAt(int index) const{
-	if(index < 0 || index >= pLinkCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pLinks[index];
-}
 
 float deoglRSkyControllerTarget::GetValue(const deoglRSkyInstance &instance, float defaultValue) const{
 	if(!instance.GetRSky()){
@@ -85,16 +57,15 @@ float deoglRSkyControllerTarget::GetValue(const deoglRSkyInstance &instance, flo
 	const deoglRSky &sky = *instance.GetRSky();
 	float value = defaultValue;
 	bool firstValue = true;
-	int i;
 	
-	for(i=0; i<pLinkCount; i++){
-		if(pLinks[i] == -1){
-			continue;
+	pLinks.Visit([&](int linkIndex){
+		if(linkIndex == -1){
+			return;
 		}
 		
-		const deoglRSkyLink &link = sky.GetLinkAt(pLinks[i]);
+		const deoglRSkyLink &link = sky.GetLinkAt(linkIndex);
 		if(link.IsDisabled()){
-			continue;
+			return;
 		}
 		
 		if(firstValue){
@@ -104,7 +75,7 @@ float deoglRSkyControllerTarget::GetValue(const deoglRSkyInstance &instance, flo
 		}else{
 			value *= link.GetValue(instance);
 		}
-	}
+	});
 	
 	return value;
 }

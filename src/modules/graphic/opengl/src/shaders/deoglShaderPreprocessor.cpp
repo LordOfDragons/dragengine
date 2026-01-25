@@ -319,12 +319,9 @@ void deoglShaderPreprocessor::ClearAllSymbols(){
 }
 
 void deoglShaderPreprocessor::SetSymbolsFromDefines(const deoglShaderDefines &defines){
-	const int count = defines.GetDefineCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		SetSymbol(defines.GetDefineNameAt(i), defines.GetDefineValueAt(i));
-	}
+	defines.GetDefines().Visit([this](const char *name, const char *value){
+		SetSymbol(name, value);
+	});
 }
 
 void deoglShaderPreprocessor::SetDebugLogParsing(bool enable){

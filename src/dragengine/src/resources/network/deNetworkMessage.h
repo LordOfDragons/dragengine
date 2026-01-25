@@ -28,6 +28,7 @@
 #include <stdint.h>
 
 #include "../../deObject.h"
+#include "../../common/collection/decTList.h"
 #include "../../common/utils/decDateTime.h"
 
 
@@ -53,8 +54,7 @@ public:
 	
 	
 private:
-	uint8_t *pBuffer;
-	int pBufferSize;
+	decTList<uint8_t> pBuffer;
 	int pDataLength;
 	TIME_SYSTEM pTimeStamp;
 	
@@ -82,7 +82,8 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Buffer data. */
-	inline uint8_t *GetBuffer() const{ return pBuffer; }
+	inline uint8_t *GetBuffer(){ return pBuffer.GetArrayPointer(); }
+	inline const uint8_t *GetBuffer() const{ return pBuffer.GetArrayPointer(); }
 	
 	/** \brief Length of the message data. */
 	inline int GetDataLength() const{ return pDataLength; }

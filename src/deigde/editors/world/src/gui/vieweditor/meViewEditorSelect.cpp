@@ -151,9 +151,9 @@ void meViewEditorSelect::UpdateRectSelection(){
 	pColVol->SetOrientation(decQuaternion());
 	pColVol->SetCollisionFilter(decCollisionFilter(collisionCategory, collisionFilter));
 	
-	pColVol.DynamicCast<deColliderVolume>()->SetShapes(decShape::List(
-		decShapeHull::Ref::New(decVector(), decQuaternion(),
-			decTList<decVector>(decVector(), corner1, corner2, corner3, corner4))));
+	pColVol.DynamicCast<deColliderVolume>()->SetShapes(decShape::List(devctag,
+		decShapeHull::Ref::New(decVector(), decQuaternion(), decTList<decVector>(devctag,
+			decVector(), corner1, corner2, corner3, corner4))));
 	
 	// test with this frustum for selection
 	pCLSelect->Prepare();
@@ -585,7 +585,7 @@ void meViewEditorSelect::pUpdateInfoBubble(int x, int y, bool singleElement){
 			collected.Visit(visitor);
 			
 		}else{
-			collected.Visit(visitor, 0, limit);
+			collected.Visit(0, limit, visitor);
 			
 			decString text;
 			text.Format("... and %d more", collected.GetCount() - limit);

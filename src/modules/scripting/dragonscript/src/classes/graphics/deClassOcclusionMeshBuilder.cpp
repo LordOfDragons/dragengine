@@ -166,7 +166,7 @@ void deClassOcclusionMeshBuilder::nfSetBoneCount::RunFunction(dsRunTime *rt, dsV
 		DSTHROW(dueInvalidAction);
 	}
 	
-	builder->GetOcclusionMesh()->SetBoneCount(rt->GetValue(0)->GetInt());
+	builder->GetOcclusionMesh()->GetBones().SetAll(rt->GetValue(0)->GetInt(), {});
 }
 
 // protected func void setBoneAt( int index, String name, int parent, Vector position, Quaternion orientation )
@@ -186,7 +186,7 @@ void deClassOcclusionMeshBuilder::nfSetBoneAt::RunFunction(dsRunTime *rt, dsValu
 	}
 	
 	const deScriptingDragonScript &ds = (static_cast<deClassOcclusionMeshBuilder*>(GetOwnerClass()))->GetDS();
-	deOcclusionMeshBone &bone = builder->GetOcclusionMesh()->GetBoneAt(rt->GetValue(0)->GetInt());
+	deOcclusionMeshBone &bone = builder->GetOcclusionMesh()->GetBones()[rt->GetValue(0)->GetInt()];
 	bone.SetName(rt->GetValue(1)->GetString());
 	bone.SetParent(rt->GetValue(2)->GetInt());
 	bone.SetPosition(ds.GetClassVector()->GetVector(rt->GetValue(3)->GetRealObject()));
@@ -205,7 +205,7 @@ void deClassOcclusionMeshBuilder::nfSetWeightCount::RunFunction(dsRunTime *rt, d
 		DSTHROW(dueInvalidAction);
 	}
 	
-	builder->GetOcclusionMesh()->SetWeightCount(rt->GetValue(0)->GetInt());
+	builder->GetOcclusionMesh()->GetWeights().SetAll(rt->GetValue(0)->GetInt(), {});
 }
 
 // protected func void setWeightAt( int index, int bone, float weight )
@@ -222,7 +222,7 @@ void deClassOcclusionMeshBuilder::nfSetWeightAt::RunFunction(dsRunTime *rt, dsVa
 		DSTHROW(dueInvalidAction);
 	}
 	
-	deOcclusionMeshWeight &weight = builder->GetOcclusionMesh()->GetWeightAt(rt->GetValue(0)->GetInt());
+	deOcclusionMeshWeight &weight = builder->GetOcclusionMesh()->GetWeights()[rt->GetValue(0)->GetInt()];
 	weight.SetBone(rt->GetValue(1)->GetInt());
 	weight.SetWeight(rt->GetValue(2)->GetFloat());
 }
@@ -239,7 +239,7 @@ void deClassOcclusionMeshBuilder::nfSetWeightGroupCount::RunFunction(dsRunTime *
 		DSTHROW(dueInvalidAction);
 	}
 	
-	builder->GetOcclusionMesh()->SetWeightGroupCount(rt->GetValue(0)->GetInt());
+	builder->GetOcclusionMesh()->GetWeightGroups().SetAll(rt->GetValue(0)->GetInt(), {});
 }
 
 // protected func void setWeightGroupAt( int index, int count )
@@ -255,7 +255,7 @@ void deClassOcclusionMeshBuilder::nfSetWeightGroupAt::RunFunction(dsRunTime *rt,
 		DSTHROW(dueInvalidAction);
 	}
 	
-	builder->GetOcclusionMesh()->SetWeightGroupAt(rt->GetValue(0)->GetInt(), rt->GetValue(1)->GetInt());
+	builder->GetOcclusionMesh()->GetWeightGroups()[rt->GetValue(0)->GetInt()] = rt->GetValue(1)->GetInt();
 }
 
 // protected func void setVertexCount( int count )
@@ -270,7 +270,7 @@ void deClassOcclusionMeshBuilder::nfSetVertexCount::RunFunction(dsRunTime *rt, d
 		DSTHROW(dueInvalidAction);
 	}
 	
-	builder->GetOcclusionMesh()->SetVertexCount(rt->GetValue(0)->GetInt());
+	builder->GetOcclusionMesh()->GetVertices().SetAll(rt->GetValue(0)->GetInt(), {});
 }
 
 // protected func void setVertexAt( int index, Vector position, int weightSet )
@@ -288,7 +288,7 @@ void deClassOcclusionMeshBuilder::nfSetVertexAt::RunFunction(dsRunTime *rt, dsVa
 	}
 	
 	const deScriptingDragonScript &ds = (static_cast<deClassOcclusionMeshBuilder*>(GetOwnerClass()))->GetDS();
-	deOcclusionMeshVertex &vertex = builder->GetOcclusionMesh()->GetVertexAt(rt->GetValue(0)->GetInt());
+	deOcclusionMeshVertex &vertex = builder->GetOcclusionMesh()->GetVertices()[rt->GetValue(0)->GetInt()];
 	vertex.SetPosition(ds.GetClassVector()->GetVector(rt->GetValue(1)->GetRealObject()));
 	vertex.SetWeightSet(rt->GetValue(2)->GetInt());
 }
@@ -305,7 +305,7 @@ void deClassOcclusionMeshBuilder::nfSetCornerCount::RunFunction(dsRunTime *rt, d
 		DSTHROW(dueInvalidAction);
 	}
 	
-	builder->GetOcclusionMesh()->SetCornerCount(rt->GetValue(0)->GetInt());
+	builder->GetOcclusionMesh()->GetCorners().SetAll(rt->GetValue(0)->GetInt(), {});
 }
 
 // protected func void setCornerAt( int index, int vertex )
@@ -321,7 +321,7 @@ void deClassOcclusionMeshBuilder::nfSetCornerAt::RunFunction(dsRunTime *rt, dsVa
 		DSTHROW(dueInvalidAction);
 	}
 	
-	builder->GetOcclusionMesh()->SetCornerAt(rt->GetValue(0)->GetInt(), rt->GetValue(1)->GetInt());
+	builder->GetOcclusionMesh()->GetCorners()[rt->GetValue(0)->GetInt()] = rt->GetValue(1)->GetInt();
 }
 
 // protected func void setFaceCount( int count )
@@ -336,7 +336,7 @@ void deClassOcclusionMeshBuilder::nfSetFaceCount::RunFunction(dsRunTime *rt, dsV
 		DSTHROW(dueInvalidAction);
 	}
 	
-	builder->GetOcclusionMesh()->SetFaceCount(rt->GetValue(0)->GetInt());
+	builder->GetOcclusionMesh()->GetFaces().SetAll(rt->GetValue(0)->GetInt(), {});
 }
 
 // protected func void setFaceAt( int index, int cornerCount )
@@ -352,7 +352,7 @@ void deClassOcclusionMeshBuilder::nfSetFaceAt::RunFunction(dsRunTime *rt, dsValu
 		DSTHROW(dueInvalidAction);
 	}
 	
-	builder->GetOcclusionMesh()->SetFaceAt(rt->GetValue(0)->GetInt(), rt->GetValue(1)->GetInt());
+	builder->GetOcclusionMesh()->GetFaces()[rt->GetValue(0)->GetInt()] = rt->GetValue(1)->GetInt();
 }
 
 // protected func void setDoubleSidedFaceCount( int doubleSidedFaceCount )

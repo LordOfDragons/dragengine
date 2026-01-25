@@ -22,11 +22,6 @@
  * SOFTWARE.
  */
 
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "desynSynthesizerInstance.h"
 #include "desynSynthesizer.h"
 #include "desynSynthesizerController.h"
@@ -55,9 +50,6 @@ pSynthesizerInstance(instance),
 pSynthesizer(nullptr),
 pSynthesizerUpdateTracker(0),
 
-pControllers(nullptr),
-pControllerCount(0),
-
 pChannelCount(1),
 pSampleRate(11025),
 pBytesPerSample(1),
@@ -71,17 +63,14 @@ pBufferCount(0),
 
 pDirtySynthesizer(true),
 pDirtyControllers(false),
-pDirtyFormat(true),
-
-pStateData(nullptr),
-pStateDataSize(0)
+pDirtyFormat(true)
 {
 	SynthesizerChanged();
 }
 
 desynSynthesizerInstance::~desynSynthesizerInstance(){
 	deMutexGuard guard(pMutex);
-	pCleanUp();
+	pControllers.RemoveAll();
 }
 
 
@@ -89,10 +78,7 @@ desynSynthesizerInstance::~desynSynthesizerInstance(){
 // Management
 ///////////////
 
-desynSynthesizerController &desynSynthesizerInstance::GetControllerAt(int index) const{
-	if(index < 0 || index >= pControllerCount){
-		DETHROW(deeInvalidParam);
-	}
+const desynSynthesizerController &desynSynthesizerInstance::GetControllerAt(int index) const{
 	return pControllers[index];
 }
 
@@ -104,7 +90,7 @@ desynSynthesizerController &desynSynthesizerInstance::GetControllerAt(int index)
 void desynSynthesizerInstance::SynthesizerChanged(){
 	deMutexGuard guard(pMutex);
 	pFreeStateData();
-	pClearControllers();
+	pControllers.RemoveAll();
 	
 	if(pSynthesizerInstance.GetSynthesizer()){
 		pSynthesizer = (desynSynthesizer*)pSynthesizerInstance.GetSynthesizer()->GetPeerSynthesizer();
@@ -119,10 +105,11 @@ void desynSynthesizerInstance::SynthesizerChanged(){
 
 void desynSynthesizerInstance::ControllerChanged(int index){
 	deMutexGuard guard(pMutex);
-	if(index < 0 || index >= pControllerCount){
+	if(index < 0 || index >= pControllers.GetCount()){
 		return;
 	}
-	GetControllerAt(index).SetDirty(true);
+	
+	pControllers[index].SetDirty(true);
 	pDirtyControllers = true;
 }
 
@@ -188,12 +175,6 @@ void desynSynthesizerInstance::GenerateSound(void *buffer, int bufferSize, int o
 // Private Functions
 //////////////////////
 
-void desynSynthesizerInstance::pCleanUp(){
-	pClearControllers();
-}
-
-
-
 void desynSynthesizerInstance::pPrepare(){
 	if(pSynthesizer){
 		deMutexGuard guard(pSynthesizer->GetMutex());
@@ -205,7 +186,7 @@ void desynSynthesizerInstance::pPrepare(){
 	}
 	
 	if(pDirtySynthesizer){
-		pClearControllers();
+		pControllers.RemoveAll();
 		
 		pFreeStateData();
 		if(pSynthesizer){
@@ -221,12 +202,11 @@ void desynSynthesizerInstance::pPrepare(){
 	}
 	
 	if(pDirtyControllers){
-		int i;
-		for(i=0; i<pControllerCount; i++){
-			if(pControllers[i].GetDirty()){
-				pControllers[i].Update(*pSynthesizerInstance.GetControllers().GetAt(i));
+		pControllers.VisitIndexed([&](int i, desynSynthesizerController &controller){
+			if(controller.GetDirty()){
+				controller.Update(*pSynthesizerInstance.GetControllers()[i]);
 			}
-		}
+		});
 		pDirtyControllers = false;
 	}
 	
@@ -271,29 +251,18 @@ void desynSynthesizerInstance::pUpdateFormat(){
 
 
 
-void desynSynthesizerInstance::pClearControllers(){
-	if(!pControllers){
-		return;
-	}
-	
-	delete [] pControllers;
-	pControllers = nullptr;
-	pControllerCount = 0;
-}
-
 void desynSynthesizerInstance::pCreateControllers(){
-	pClearControllers();
+	pControllers.RemoveAll();
 	
-	const int count = pSynthesizerInstance.GetControllers().GetCount();
-	if(count == 0){
+	if(pSynthesizerInstance.GetControllers().IsEmpty()){
 		return;
 	}
 	
-	pControllers = new desynSynthesizerController[count];
+	pControllers.AddRange(pSynthesizerInstance.GetControllers().GetCount(), {});
 	
-	for(pControllerCount=0; pControllerCount<count; pControllerCount++){
-		pControllers[pControllerCount].Update(*pSynthesizerInstance.GetControllers().GetAt(pControllerCount));
-	}
+	pControllers.VisitIndexed([&](int i, desynSynthesizerController &controller){
+		controller.Update(pSynthesizerInstance.GetControllers()[i]);
+	});
 	
 	pDirtyControllers = false;
 }
@@ -356,7 +325,7 @@ void desynSynthesizerInstance::pGenerateSound(desynSharedBuffer *sharedBuffer, v
 	memset(sharedBufferData, 0, sizeof(float) * (samples * pChannelCount));
 	
 	// generate sound into generate buffer
-	pSynthesizer->GenerateSound(*this, pStateData, sharedBufferData, samples);
+	pSynthesizer->GenerateSound(*this, pStateData.GetArrayPointer(), sharedBufferData, samples);
 	
 	// down-sample and clamp generate buffer into final buffer
 	if(pBytesPerSample == 1){
@@ -418,45 +387,38 @@ void desynSynthesizerInstance::pGenerateSound(desynSharedBuffer *sharedBuffer, v
 void desynSynthesizerInstance::pUpdateControllerValues(int samples, int offset){
 	const float time = pInverseSampleRate * (float)offset;
 	const float range = pInverseSampleRate * (float)1.0f;
-	int i;
 	
-	for(i=0; i<pControllerCount; i++){
-		pControllers[i].UpdateValues(samples, time, range);
-	}
+	pControllers.Visit([&](desynSynthesizerController &controller){
+		controller.UpdateValues(samples, time, range);
+	});
 }
 
 
 
 void desynSynthesizerInstance::pCreateStateData(){
-	if(pStateData){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_TRUE(pStateData.IsEmpty())
 	
 	if(!pSynthesizer){
 		return;
 	}
 	
 	deMutexGuard guard(pSynthesizer->GetMutex());
-	pStateDataSize = pSynthesizer->GetStateDataSize();
-	if(pStateDataSize == 0){
+	const int size = pSynthesizer->GetStateDataSize();
+	if(size == 0){
 		return;
 	}
 	
-	pStateData = new char[pStateDataSize];
-	pSynthesizer->InitStateData(pStateData);
+	pStateData.SetCountDiscard(size);
+	pSynthesizer->InitStateData(pStateData.GetArrayPointer());
 }
 
 void desynSynthesizerInstance::pFreeStateData(){
-	if(!pStateData){
+	if(pStateData.IsEmpty()){
 		return;
 	}
-	if(!pSynthesizer){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(pSynthesizer)
 	
 	deMutexGuard guard(pSynthesizer->GetMutex());
-	pSynthesizer->CleanUpStateData(pStateData);
-	delete [] pStateData;
-	pStateData = nullptr;
-	pStateDataSize = 0;
+	pSynthesizer->CleanUpStateData(pStateData.GetArrayPointer());
+	pStateData.RemoveAll();
 }

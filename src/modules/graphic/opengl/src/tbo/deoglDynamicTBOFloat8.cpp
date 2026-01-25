@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglDynamicTBOFloat8.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
@@ -61,59 +57,59 @@ void deoglDynamicTBOFloat8::AddBool(bool value){
 }
 
 void deoglDynamicTBOFloat8::AddFloat(float value){
-	pEnlarge(1);
+	pEnlargeDataCount(1);
 	
-	uint8_t * const dataFloat = (uint8_t*)pData;
+	uint8_t * const dataFloat = (uint8_t*)pData.GetArrayPointer();
 	dataFloat[pDataCount++] = deoglDynamicTBOFloat8_convert(value);
 }
 
 void deoglDynamicTBOFloat8::AddVec2(float value1, float value2){
-	pEnlarge(2);
+	pEnlargeDataCount(2);
 	
-	uint8_t * const dataFloat = (uint8_t*)pData;
+	uint8_t * const dataFloat = (uint8_t*)pData.GetArrayPointer();
 	dataFloat[pDataCount++] = deoglDynamicTBOFloat8_convert(value1);
 	dataFloat[pDataCount++] = deoglDynamicTBOFloat8_convert(value2);
 }
 
 void deoglDynamicTBOFloat8::AddVec2(const decVector2 &value){
-	pEnlarge(2);
+	pEnlargeDataCount(2);
 	
-	uint8_t * const dataFloat = (uint8_t*)pData;
+	uint8_t * const dataFloat = (uint8_t*)pData.GetArrayPointer();
 	dataFloat[pDataCount++] = deoglDynamicTBOFloat8_convert(value.x);
 	dataFloat[pDataCount++] = deoglDynamicTBOFloat8_convert(value.y);
 }
 
 void deoglDynamicTBOFloat8::AddVec3(float value1, float value2, float value3){
-	pEnlarge(3);
+	pEnlargeDataCount(3);
 	
-	uint8_t * const dataFloat = (uint8_t*)pData;
+	uint8_t * const dataFloat = (uint8_t*)pData.GetArrayPointer();
 	dataFloat[pDataCount++] = deoglDynamicTBOFloat8_convert(value1);
 	dataFloat[pDataCount++] = deoglDynamicTBOFloat8_convert(value2);
 	dataFloat[pDataCount++] = deoglDynamicTBOFloat8_convert(value3);
 }
 
 void deoglDynamicTBOFloat8::AddVec3(const decVector &value){
-	pEnlarge(3);
+	pEnlargeDataCount(3);
 	
-	uint8_t * const dataFloat = (uint8_t*)pData;
+	uint8_t * const dataFloat = (uint8_t*)pData.GetArrayPointer();
 	dataFloat[pDataCount++] = deoglDynamicTBOFloat8_convert(value.x);
 	dataFloat[pDataCount++] = deoglDynamicTBOFloat8_convert(value.y);
 	dataFloat[pDataCount++] = deoglDynamicTBOFloat8_convert(value.z);
 }
 
 void deoglDynamicTBOFloat8::AddVec3(const decColor &value){
-	pEnlarge(3);
+	pEnlargeDataCount(3);
 	
-	uint8_t * const dataFloat = (uint8_t*)pData;
+	uint8_t * const dataFloat = (uint8_t*)pData.GetArrayPointer();
 	dataFloat[pDataCount++] = deoglDynamicTBOFloat8_convert(value.r);
 	dataFloat[pDataCount++] = deoglDynamicTBOFloat8_convert(value.g);
 	dataFloat[pDataCount++] = deoglDynamicTBOFloat8_convert(value.b);
 }
 
 void deoglDynamicTBOFloat8::AddVec4(float value1, float value2, float value3, float value4){
-	pEnlarge(4);
+	pEnlargeDataCount(4);
 	
-	uint8_t * const dataFloat = (uint8_t*)pData;
+	uint8_t * const dataFloat = (uint8_t*)pData.GetArrayPointer();
 	dataFloat[pDataCount++] = deoglDynamicTBOFloat8_convert(value1);
 	dataFloat[pDataCount++] = deoglDynamicTBOFloat8_convert(value2);
 	dataFloat[pDataCount++] = deoglDynamicTBOFloat8_convert(value3);
@@ -121,9 +117,9 @@ void deoglDynamicTBOFloat8::AddVec4(float value1, float value2, float value3, fl
 }
 
 void deoglDynamicTBOFloat8::AddVec4(const decVector &value, float value4){
-	pEnlarge(4);
+	pEnlargeDataCount(4);
 	
-	uint8_t * const dataFloat = (uint8_t*)pData;
+	uint8_t * const dataFloat = (uint8_t*)pData.GetArrayPointer();
 	dataFloat[pDataCount++] = deoglDynamicTBOFloat8_convert(value.x);
 	dataFloat[pDataCount++] = deoglDynamicTBOFloat8_convert(value.y);
 	dataFloat[pDataCount++] = deoglDynamicTBOFloat8_convert(value.z);
@@ -131,9 +127,9 @@ void deoglDynamicTBOFloat8::AddVec4(const decVector &value, float value4){
 }
 
 void deoglDynamicTBOFloat8::AddVec4(const decVector4 &value){
-	pEnlarge(4);
+	pEnlargeDataCount(4);
 	
-	uint8_t * const dataFloat = (uint8_t*)pData;
+	uint8_t * const dataFloat = (uint8_t*)pData.GetArrayPointer();
 	dataFloat[pDataCount++] = deoglDynamicTBOFloat8_convert(value.x);
 	dataFloat[pDataCount++] = deoglDynamicTBOFloat8_convert(value.y);
 	dataFloat[pDataCount++] = deoglDynamicTBOFloat8_convert(value.z);
@@ -141,9 +137,9 @@ void deoglDynamicTBOFloat8::AddVec4(const decVector4 &value){
 }
 
 void deoglDynamicTBOFloat8::AddVec4(const decColor &value){
-	pEnlarge(4);
+	pEnlargeDataCount(4);
 	
-	uint8_t * const dataFloat = (uint8_t*)pData;
+	uint8_t * const dataFloat = (uint8_t*)pData.GetArrayPointer();
 	dataFloat[pDataCount++] = deoglDynamicTBOFloat8_convert(value.r);
 	dataFloat[pDataCount++] = deoglDynamicTBOFloat8_convert(value.g);
 	dataFloat[pDataCount++] = deoglDynamicTBOFloat8_convert(value.b);
@@ -159,7 +155,7 @@ void deoglDynamicTBOFloat8::SetFloatAt(int offset, float value){
 		DETHROW(deeInvalidParam);
 	}
 	
-	uint8_t * const dataFloat = (uint8_t*)pData;
+	uint8_t * const dataFloat = (uint8_t*)pData.GetArrayPointer();
 	dataFloat[offset] = deoglDynamicTBOFloat8_convert(value);
 }
 
@@ -168,7 +164,7 @@ void deoglDynamicTBOFloat8::SetVec2At(int offset, float value1, float value2){
 		DETHROW(deeInvalidParam);
 	}
 	
-	uint8_t * const dataFloat = (uint8_t*)pData;
+	uint8_t * const dataFloat = (uint8_t*)pData.GetArrayPointer();
 	dataFloat[offset] = deoglDynamicTBOFloat8_convert(value1);
 	dataFloat[offset + 1] = deoglDynamicTBOFloat8_convert(value2);
 }
@@ -178,7 +174,7 @@ void deoglDynamicTBOFloat8::SetVec2At(int offset, const decVector2 &value){
 		DETHROW(deeInvalidParam);
 	}
 	
-	uint8_t * const dataFloat = (uint8_t*)pData;
+	uint8_t * const dataFloat = (uint8_t*)pData.GetArrayPointer();
 	dataFloat[offset] = deoglDynamicTBOFloat8_convert(value.x);
 	dataFloat[offset + 1] = deoglDynamicTBOFloat8_convert(value.y);
 }
@@ -188,7 +184,7 @@ void deoglDynamicTBOFloat8::SetVec3At(int offset, float value1, float value2, fl
 		DETHROW(deeInvalidParam);
 	}
 	
-	uint8_t * const dataFloat = (uint8_t*)pData;
+	uint8_t * const dataFloat = (uint8_t*)pData.GetArrayPointer();
 	dataFloat[offset] = deoglDynamicTBOFloat8_convert(value1);
 	dataFloat[offset + 1] = deoglDynamicTBOFloat8_convert(value2);
 	dataFloat[offset + 2] = deoglDynamicTBOFloat8_convert(value3);
@@ -199,7 +195,7 @@ void deoglDynamicTBOFloat8::SetVec3At(int offset, const decVector &value){
 		DETHROW(deeInvalidParam);
 	}
 	
-	uint8_t * const dataFloat = (uint8_t*)pData;
+	uint8_t * const dataFloat = (uint8_t*)pData.GetArrayPointer();
 	dataFloat[offset] = deoglDynamicTBOFloat8_convert(value.x);
 	dataFloat[offset + 1] = deoglDynamicTBOFloat8_convert(value.y);
 	dataFloat[offset + 2] = deoglDynamicTBOFloat8_convert(value.z);
@@ -210,7 +206,7 @@ void deoglDynamicTBOFloat8::SetVec3At(int offset, const decColor &value){
 		DETHROW(deeInvalidParam);
 	}
 	
-	uint8_t * const dataFloat = (uint8_t*)pData;
+	uint8_t * const dataFloat = (uint8_t*)pData.GetArrayPointer();
 	dataFloat[offset] = deoglDynamicTBOFloat8_convert(value.r);
 	dataFloat[offset + 1] = deoglDynamicTBOFloat8_convert(value.g);
 	dataFloat[offset + 2] = deoglDynamicTBOFloat8_convert(value.b);
@@ -222,7 +218,7 @@ float value3, float value4){
 		DETHROW(deeInvalidParam);
 	}
 	
-	uint8_t * const dataFloat = (uint8_t*)pData;
+	uint8_t * const dataFloat = (uint8_t*)pData.GetArrayPointer();
 	dataFloat[offset] = deoglDynamicTBOFloat8_convert(value1);
 	dataFloat[offset + 1] = deoglDynamicTBOFloat8_convert(value2);
 	dataFloat[offset + 2] = deoglDynamicTBOFloat8_convert(value3);
@@ -234,7 +230,7 @@ void deoglDynamicTBOFloat8::SetVec4At(int offset, const decVector &value, float 
 		DETHROW(deeInvalidParam);
 	}
 	
-	uint8_t * const dataFloat = (uint8_t*)pData;
+	uint8_t * const dataFloat = (uint8_t*)pData.GetArrayPointer();
 	dataFloat[offset] = deoglDynamicTBOFloat8_convert(value.x);
 	dataFloat[offset + 1] = deoglDynamicTBOFloat8_convert(value.y);
 	dataFloat[offset + 2] = deoglDynamicTBOFloat8_convert(value.z);
@@ -246,7 +242,7 @@ void deoglDynamicTBOFloat8::SetVec4At(int offset, const decVector4 &value){
 		DETHROW(deeInvalidParam);
 	}
 	
-	uint8_t * const dataFloat = (uint8_t*)pData;
+	uint8_t * const dataFloat = (uint8_t*)pData.GetArrayPointer();
 	dataFloat[offset] = deoglDynamicTBOFloat8_convert(value.x);
 	dataFloat[offset + 1] = deoglDynamicTBOFloat8_convert(value.y);
 	dataFloat[offset + 2] = deoglDynamicTBOFloat8_convert(value.z);
@@ -258,7 +254,7 @@ void deoglDynamicTBOFloat8::SetVec4At(int offset, const decColor &value){
 		DETHROW(deeInvalidParam);
 	}
 	
-	uint8_t * const dataFloat = (uint8_t*)pData;
+	uint8_t * const dataFloat = (uint8_t*)pData.GetArrayPointer();
 	dataFloat[offset] = deoglDynamicTBOFloat8_convert(value.r);
 	dataFloat[offset + 1] = deoglDynamicTBOFloat8_convert(value.g);
 	dataFloat[offset + 2] = deoglDynamicTBOFloat8_convert(value.b);
@@ -273,7 +269,7 @@ static inline float deoglDynamicTBOFloat8_convert(uint8_t value){
 void deoglDynamicTBOFloat8::DebugPrint(){
 	deoglRTLogger &logger = pRenderThread.GetLogger();
 	logger.LogInfoFormat("TBO %d-Float8:", pComponentCount);
-	uint8_t *data = (uint8_t*)pData;
+	uint8_t *data = (uint8_t*)pData.GetArrayPointer();
 	int i, pixel = 0;
 	
 	pEnsurePadding();

@@ -25,6 +25,7 @@
 #ifndef _DEBPCOLLIDERATTACHMENT_H_
 #define _DEBPCOLLIDERATTACHMENT_H_
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deColliderAttachment;
@@ -37,10 +38,8 @@ class debpColliderAttachment{
 private:
 	deColliderAttachment *pAttachment;
 	int pTrackBone;
-	int *pBoneMappings;
-	int pBoneMappingCount;
-	int *pVpsMappings;
-	int pVpsMappingCount;
+	decTList<int> pBoneMappings;
+	decTList<int> pVpsMappings;
 	bool pDirtyMappings;
 	
 	decDMatrix pLocalMatrix;
@@ -131,7 +130,6 @@ public:
 	/*@}*/
 	
 private:
-	void pCleanUp();
 	void pPrepareLocalMatrix();
 	void pRepositionResource(const decDVector &position, const decQuaternion &orientation,
 		const decDVector &scaling, const decVector &velocity, bool changeNotify);

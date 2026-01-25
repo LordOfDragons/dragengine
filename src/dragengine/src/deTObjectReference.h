@@ -173,6 +173,11 @@ public:
 		return pObject != nullptr;
 	}
 	
+	/** \brief Clear pointer. */
+	void Clear(){
+		*this = nullptr;
+	}
+	
 	/**
 	 * \brief Create instance taking over reference.
 	 */

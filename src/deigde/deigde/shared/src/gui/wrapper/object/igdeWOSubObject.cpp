@@ -351,7 +351,7 @@ decDMatrix igdeWOSubObject::GetBoneMatrix(const decString &name) const{
 		return decDMatrix();
 	}
 	
-	return decDMatrix(component.GetBoneAt(index).GetMatrix());
+	return decDMatrix(component.GetBones()[index].GetMatrix());
 }
 
 decLayerMask igdeWOSubObject::LayerMaskFromInt(int mask) const{

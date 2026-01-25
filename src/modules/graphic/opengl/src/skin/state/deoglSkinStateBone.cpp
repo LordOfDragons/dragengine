@@ -72,10 +72,9 @@ void deoglSkinStateBone::MapBone(const deComponent &component){
 }
 
 void deoglSkinStateBone::UpdateBone(const deComponent &component){
-	const int boneCount = component.GetBoneCount();
-	if(pBoneIndex < 0 || pBoneIndex >= boneCount){
+	if(pBoneIndex < 0 || pBoneIndex >= component.GetBones().GetCount()){
 		return;
 	}
 	
-	pBoneMatrix = component.GetBoneAt(pBoneIndex).GetMatrix();
+	pBoneMatrix = component.GetBones()[pBoneIndex].GetMatrix();
 }

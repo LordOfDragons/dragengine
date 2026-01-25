@@ -25,11 +25,11 @@
 #ifndef _DEDEBUGDRAWERSHAPE_H_
 #define _DEDEBUGDRAWERSHAPE_H_
 
+#include "deDebugDrawerShapeFace.h"
 #include "../../common/math/decMath.h"
 #include "../../common/shape/decShape.h"
 #include "../../common/collection/decTList.h"
-
-class deDebugDrawerShapeFace;
+#include "../../common/collection/decTUniqueList.h"
 
 
 /**
@@ -43,6 +43,14 @@ class deDebugDrawerShapeFace;
  * used at the same time. If none of them are present nothing is drawn.
  */
 class DE_DLL_EXPORT deDebugDrawerShape{
+public:
+	/** \brief Reference. */
+	using Ref = deTUniqueReference<deDebugDrawerShape>;
+	
+	/** \brief List of shapes. */
+	using List = decTUniqueList<deDebugDrawerShape>;
+	
+	
 private:
 	decVector pPosition;
 	decQuaternion pOrientation;
@@ -50,7 +58,7 @@ private:
 	
 	decShape::List pShapeList;
 	
-	decTList<deDebugDrawerShapeFace*> pFaces;
+	deDebugDrawerShapeFace::List pFaces;
 	
 	decColor pEdgeColor;
 	decColor pFillColor;
@@ -113,16 +121,10 @@ public:
 	/** \name Volume Faces */
 	/*@{*/
 	/** \brief Faces. */
-	inline const decTList<deDebugDrawerShapeFace*> &GetFaces() const{ return pFaces; }
-	
-	/** \brief Number of volume faces. */
-	int GetFaceCount() const;
-	
-	/** \brief Face at index. */
-	deDebugDrawerShapeFace *GetFaceAt(int index) const;
+	inline const deDebugDrawerShapeFace::List &GetFaces() const{ return pFaces; }
 	
 	/** \brief Add face. */
-	void AddFace(deDebugDrawerShapeFace *face);
+	void AddFace(deDebugDrawerShapeFace::Ref &&face);
 	
 	/** \brief Remove all faces. */
 	void RemoveAllFaces();

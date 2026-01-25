@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglDynamicTBOFloat16.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
@@ -57,50 +53,50 @@ void deoglDynamicTBOFloat16::AddBool(bool value){
 }
 
 void deoglDynamicTBOFloat16::AddFloat(float value){
-	pEnlarge(1);
+	pEnlargeDataCount(1);
 	
-	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData;
+	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData.GetArrayPointer();
 	dataFloat[pDataCount++] = convertFloatToHalf(value);
 }
 
 void deoglDynamicTBOFloat16::AddVec2(float value1, float value2){
-	pEnlarge(2);
+	pEnlargeDataCount(2);
 	
-	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData;
+	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData.GetArrayPointer();
 	dataFloat[pDataCount++] = convertFloatToHalf(value1);
 	dataFloat[pDataCount++] = convertFloatToHalf(value2);
 }
 
 void deoglDynamicTBOFloat16::AddVec2(const decVector2 &value){
-	pEnlarge(2);
+	pEnlargeDataCount(2);
 	
-	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData;
+	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData.GetArrayPointer();
 	dataFloat[pDataCount++] = convertFloatToHalf(value.x);
 	dataFloat[pDataCount++] = convertFloatToHalf(value.y);
 }
 
 void deoglDynamicTBOFloat16::AddVec3(float value1, float value2, float value3){
-	pEnlarge(3);
+	pEnlargeDataCount(3);
 	
-	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData;
+	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData.GetArrayPointer();
 	dataFloat[pDataCount++] = convertFloatToHalf(value1);
 	dataFloat[pDataCount++] = convertFloatToHalf(value2);
 	dataFloat[pDataCount++] = convertFloatToHalf(value3);
 }
 
 void deoglDynamicTBOFloat16::AddVec3(const decVector &value){
-	pEnlarge(3);
+	pEnlargeDataCount(3);
 	
-	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData;
+	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData.GetArrayPointer();
 	dataFloat[pDataCount++] = convertFloatToHalf(value.x);
 	dataFloat[pDataCount++] = convertFloatToHalf(value.y);
 	dataFloat[pDataCount++] = convertFloatToHalf(value.z);
 }
 
 void deoglDynamicTBOFloat16::AddVec4(float value1, float value2, float value3, float value4){
-	pEnlarge(4);
+	pEnlargeDataCount(4);
 	
-	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData;
+	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData.GetArrayPointer();
 	dataFloat[pDataCount++] = convertFloatToHalf(value1);
 	dataFloat[pDataCount++] = convertFloatToHalf(value2);
 	dataFloat[pDataCount++] = convertFloatToHalf(value3);
@@ -108,9 +104,9 @@ void deoglDynamicTBOFloat16::AddVec4(float value1, float value2, float value3, f
 }
 
 void deoglDynamicTBOFloat16::AddVec4(const decVector &value, float value4){
-	pEnlarge(4);
+	pEnlargeDataCount(4);
 	
-	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData;
+	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData.GetArrayPointer();
 	dataFloat[pDataCount++] = convertFloatToHalf(value.x);
 	dataFloat[pDataCount++] = convertFloatToHalf(value.y);
 	dataFloat[pDataCount++] = convertFloatToHalf(value.z);
@@ -118,9 +114,9 @@ void deoglDynamicTBOFloat16::AddVec4(const decVector &value, float value4){
 }
 
 void deoglDynamicTBOFloat16::AddVec4(const decVector4 &value){
-	pEnlarge(4);
+	pEnlargeDataCount(4);
 	
-	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData;
+	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData.GetArrayPointer();
 	dataFloat[pDataCount++] = convertFloatToHalf(value.x);
 	dataFloat[pDataCount++] = convertFloatToHalf(value.y);
 	dataFloat[pDataCount++] = convertFloatToHalf(value.z);
@@ -128,9 +124,9 @@ void deoglDynamicTBOFloat16::AddVec4(const decVector4 &value){
 }
 
 void deoglDynamicTBOFloat16::AddMat4x3(const decMatrix &value){
-	pEnlarge(12);
+	pEnlargeDataCount(12);
 	
-	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData;
+	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData.GetArrayPointer();
 	dataFloat[pDataCount++] = convertFloatToHalf(value.a11);
 	dataFloat[pDataCount++] = convertFloatToHalf(value.a21);
 	dataFloat[pDataCount++] = convertFloatToHalf(value.a31);
@@ -149,9 +145,9 @@ void deoglDynamicTBOFloat16::AddMat4x3(const decMatrix &value){
 }
 
 void deoglDynamicTBOFloat16::AddMat3x4(const decMatrix &value){
-	pEnlarge(12);
+	pEnlargeDataCount(12);
 	
-	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData;
+	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData.GetArrayPointer();
 	dataFloat[pDataCount++] = convertFloatToHalf(value.a11);
 	dataFloat[pDataCount++] = convertFloatToHalf(value.a12);
 	dataFloat[pDataCount++] = convertFloatToHalf(value.a13);
@@ -169,9 +165,9 @@ void deoglDynamicTBOFloat16::AddMat3x4(const decMatrix &value){
 }
 
 void deoglDynamicTBOFloat16::AddMat3x3(const decMatrix &value){
-	pEnlarge(9);
+	pEnlargeDataCount(9);
 	
-	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData;
+	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData.GetArrayPointer();
 	dataFloat[pDataCount++] = convertFloatToHalf(value.a11);
 	dataFloat[pDataCount++] = convertFloatToHalf(value.a21);
 	dataFloat[pDataCount++] = convertFloatToHalf(value.a31);
@@ -186,9 +182,9 @@ void deoglDynamicTBOFloat16::AddMat3x3(const decMatrix &value){
 }
 
 void deoglDynamicTBOFloat16::AddMat3x2(const decMatrix &value){
-	pEnlarge(6);
+	pEnlargeDataCount(6);
 	
-	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData;
+	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData.GetArrayPointer();
 	dataFloat[pDataCount++] = convertFloatToHalf(value.a11);
 	dataFloat[pDataCount++] = convertFloatToHalf(value.a21);
 	
@@ -208,7 +204,7 @@ void deoglDynamicTBOFloat16::SetFloatAt(int offset, float value){
 		DETHROW(deeInvalidParam);
 	}
 	
-	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData;
+	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData.GetArrayPointer();
 	dataFloat[offset] = convertFloatToHalf(value);
 }
 
@@ -217,7 +213,7 @@ void deoglDynamicTBOFloat16::SetVec2At(int offset, float value1, float value2){
 		DETHROW(deeInvalidParam);
 	}
 	
-	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData;
+	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData.GetArrayPointer();
 	dataFloat[offset] = convertFloatToHalf(value1);
 	dataFloat[offset + 1] = convertFloatToHalf(value2);
 }
@@ -227,7 +223,7 @@ void deoglDynamicTBOFloat16::SetVec2At(int offset, const decVector2 &value){
 		DETHROW(deeInvalidParam);
 	}
 	
-	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData;
+	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData.GetArrayPointer();
 	dataFloat[offset] = convertFloatToHalf(value.x);
 	dataFloat[offset + 1] = convertFloatToHalf(value.y);
 }
@@ -237,7 +233,7 @@ void deoglDynamicTBOFloat16::SetVec3At(int offset, float value1, float value2, f
 		DETHROW(deeInvalidParam);
 	}
 	
-	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData;
+	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData.GetArrayPointer();
 	dataFloat[offset] = convertFloatToHalf(value1);
 	dataFloat[offset + 1] = convertFloatToHalf(value2);
 	dataFloat[offset + 2] = convertFloatToHalf(value3);
@@ -248,7 +244,7 @@ void deoglDynamicTBOFloat16::SetVec3At(int offset, const decVector &value){
 		DETHROW(deeInvalidParam);
 	}
 	
-	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData;
+	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData.GetArrayPointer();
 	dataFloat[offset] = convertFloatToHalf(value.x);
 	dataFloat[offset + 1] = convertFloatToHalf(value.y);
 	dataFloat[offset + 2] = convertFloatToHalf(value.z);
@@ -260,7 +256,7 @@ float value3, float value4){
 		DETHROW(deeInvalidParam);
 	}
 	
-	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData;
+	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData.GetArrayPointer();
 	dataFloat[offset] = convertFloatToHalf(value1);
 	dataFloat[offset + 1] = convertFloatToHalf(value2);
 	dataFloat[offset + 2] = convertFloatToHalf(value3);
@@ -272,7 +268,7 @@ void deoglDynamicTBOFloat16::SetVec4At(int offset, const decVector &value, float
 		DETHROW(deeInvalidParam);
 	}
 	
-	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData;
+	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData.GetArrayPointer();
 	dataFloat[offset] = convertFloatToHalf(value.x);
 	dataFloat[offset + 1] = convertFloatToHalf(value.y);
 	dataFloat[offset + 2] = convertFloatToHalf(value.z);
@@ -284,7 +280,7 @@ void deoglDynamicTBOFloat16::SetVec4At(int offset, const decVector4 &value){
 		DETHROW(deeInvalidParam);
 	}
 	
-	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData;
+	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData.GetArrayPointer();
 	dataFloat[offset] = convertFloatToHalf(value.x);
 	dataFloat[offset + 1] = convertFloatToHalf(value.y);
 	dataFloat[offset + 2] = convertFloatToHalf(value.z);
@@ -296,7 +292,7 @@ void deoglDynamicTBOFloat16::SetMat4x3At(int offset, const decMatrix &value){
 		DETHROW(deeInvalidParam);
 	}
 	
-	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData;
+	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData.GetArrayPointer();
 	dataFloat[offset] = convertFloatToHalf(value.a11);
 	dataFloat[offset + 1] = convertFloatToHalf(value.a21);
 	dataFloat[offset + 2] = convertFloatToHalf(value.a31);
@@ -319,7 +315,7 @@ void deoglDynamicTBOFloat16::SetMat3x4At(int offset, const decMatrix &value){
 		DETHROW(deeInvalidParam);
 	}
 	
-	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData;
+	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData.GetArrayPointer();
 	dataFloat[offset] = convertFloatToHalf(value.a11);
 	dataFloat[offset + 1] = convertFloatToHalf(value.a12);
 	dataFloat[offset + 2] = convertFloatToHalf(value.a13);
@@ -341,7 +337,7 @@ void deoglDynamicTBOFloat16::SetMat3x3At(int offset, const decMatrix &value){
 		DETHROW(deeInvalidParam);
 	}
 	
-	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData;
+	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData.GetArrayPointer();
 	dataFloat[offset] = convertFloatToHalf(value.a11);
 	dataFloat[offset + 1] = convertFloatToHalf(value.a21);
 	dataFloat[offset + 2] = convertFloatToHalf(value.a31);
@@ -360,7 +356,7 @@ void deoglDynamicTBOFloat16::SetMat3x2At(int offset, const decMatrix &value){
 		DETHROW(deeInvalidParam);
 	}
 	
-	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData;
+	HALF_FLOAT * const dataFloat = (HALF_FLOAT*)pData.GetArrayPointer();
 	dataFloat[offset] = convertFloatToHalf(value.a11);
 	dataFloat[offset + 1] = convertFloatToHalf(value.a21);
 	
@@ -374,7 +370,7 @@ void deoglDynamicTBOFloat16::SetMat3x2At(int offset, const decMatrix &value){
 void deoglDynamicTBOFloat16::DebugPrint(){
 	deoglRTLogger &logger = pRenderThread.GetLogger();
 	logger.LogInfoFormat("TBO %d-Float16:", pComponentCount);
-	HALF_FLOAT *data = (HALF_FLOAT*)pData;
+	HALF_FLOAT *data = (HALF_FLOAT*)pData.GetArrayPointer();
 	int i, pixel = 0;
 	
 	pEnsurePadding();

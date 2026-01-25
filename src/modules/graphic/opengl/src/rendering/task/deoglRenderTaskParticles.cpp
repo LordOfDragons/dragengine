@@ -116,25 +116,22 @@ void deoglRenderTaskParticles::DebugPrint(deoglRTLogger &rtlogger){
 			? shader.GetUnitFragment()->GetSources()->GetName().GetString() : "-");
 		
 		text = "    - defines: ";
-		const deoglShaderDefines &defines = shader.GetDefines();
-		const int defineCount = defines.GetDefineCount();
-		for(j=0; j<defineCount; j++){
-			const char *defineName = defines.GetDefineNameAt(j);
-			const char *defineValue = defines.GetDefineValueAt(j);
-			
-			if(strlen(defineValue) > 10){
-				text.AppendFormat("%s %s=%.10s...", j == 0 ? "" : ",", defineName, defineValue);
+		bool first = true;
+		shader.GetDefines().GetDefines().Visit([&](const char *name, const char *value){
+			if(strlen(value) > 10){
+				text.AppendFormat("%s %s=%.10s...", first ? "" : ",", name, value);
 				
 			}else{
-				text.AppendFormat("%s %s=%s", j == 0 ? "" : ",", defineName, defineValue);
+				text.AppendFormat("%s %s=%s", first ? "" : ",", name, value);
 			}
-		}
+			first = false;
+		});
 		rtlogger.LogInfo(text.GetString());
 		
 		const int unitCount = step.GetTUC()->GetUnitCount();
 		text.Format("    units(");
 		for(j=0; j<unitCount; j++){
-			const deoglTexUnitConfig &unit = step.GetTUC()->GetUnitAt(j);
+			const deoglTexUnitConfig &unit = step.GetTUC()->GetUnits()[j];
 			if(unit.GetTexture()){
 				text.AppendFormat(" T%i", unit.GetTexture()->GetTexture());
 				

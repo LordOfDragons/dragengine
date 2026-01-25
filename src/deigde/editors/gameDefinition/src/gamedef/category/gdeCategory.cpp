@@ -41,9 +41,9 @@ gdeCategory *gdeCategory::List::FindWithPath(const char *path) const{
 		return root;
 	}
 	
-	return components.Inject(root, [&](gdeCategory *cat, const decString &comp){
+	return components.Inject(root, 1, [&](gdeCategory *cat, const decString &comp){
 		return cat ? cat->GetCategories().FindNamed(comp) : nullptr;
-	}, 1);
+	});
 
 }
 

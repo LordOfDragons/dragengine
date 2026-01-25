@@ -72,6 +72,7 @@ public:
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Layout. */
+	inline deoglVBOLayout &GetLayout(){ return pLayout; }
 	inline const deoglVBOLayout &GetLayout() const{ return pLayout; }
 	
 	/** Draw type. */

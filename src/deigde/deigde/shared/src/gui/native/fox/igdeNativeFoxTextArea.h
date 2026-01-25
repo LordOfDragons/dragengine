@@ -28,6 +28,7 @@
 #include "foxtoolkit.h"
 #include "../../resources/igdeFont.h"
 
+#include <dragengine/common/collection/decTList.h>
 
 class igdeTextArea;
 class igdeGuiTheme;
@@ -53,7 +54,7 @@ private:
 	igdeTextArea *pOwner;
 	igdeFont::Ref pFont;
 	FXText *pTextArea;
-	FXHiliteStyle *pStyles;
+	decTList<FXHiliteStyle> pStyles;
 	igdeNativeFoxResizer *pResizer;
 	
 	

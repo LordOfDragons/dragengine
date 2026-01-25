@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglVR.h"
 #include "deoglVREye.h"
 #include "../deGraphicOpenGl.h"
@@ -77,6 +74,23 @@ static decTimer dtimerTotal;
 #endif
 
 
+// Class deoglVREye::cViewImage
+/////////////////////////////////
+
+deoglVREye::cViewImage::cViewImage(const cViewImage &other){
+	fbo = other.fbo;
+	texture = other.texture;
+}
+
+deoglVREye::cViewImage &deoglVREye::cViewImage::operator=(const cViewImage &other){
+	if(this != &other){
+		fbo = other.fbo;
+		texture = other.texture;
+	}
+	return *this;
+}
+
+
 // Class deoglVREye
 /////////////////////
 
@@ -91,20 +105,10 @@ pProjectionLeft(-1.0f),
 pProjectionRight(1.0f),
 pProjectionTop(1.0f),
 pProjectionBottom(-1.0f),
-pVRGetViewsBuffer(nullptr),
-pVRGetViewsBufferSize(0),
-pVRViewImages(nullptr),
-pVRViewImageCount(0),
 pUseGammaCorrection(false){
 }
 
-deoglVREye::~deoglVREye(){
-	pDestroyEyeViews();
-	
-	if(pVRGetViewsBuffer){
-		delete [] pVRGetViewsBuffer;
-	}
-}
+deoglVREye::~deoglVREye() = default;
 
 
 
@@ -247,7 +251,7 @@ void deoglVREye::Submit(deBaseVRModule &vrmodule){
 		return;
 	}
 
-	if(pVRViewImageCount > 0){
+	if(pVRViewImages.IsNotEmpty()){
 		const int acquiredImageIndex = vrmodule.AcquireEyeViewImage(pEye);
 		if(acquiredImageIndex == -1){
 			// do not render. perhaps we can honor this earlier but right now it is not
@@ -360,23 +364,14 @@ void deoglVREye::pUpdateEyeViews(deBaseVRModule &vrmodule){
 	const int count = vrmodule.GetEyeViewImages(pEye, 0, nullptr);
 	
 	if(count > 0){
-		if(count > pVRGetViewsBufferSize){
-			if(pVRGetViewsBuffer){
-				delete [] pVRGetViewsBuffer;
-				pVRGetViewsBuffer = nullptr;
-				pVRGetViewsBufferSize = 0;
-			}
-			
-			pVRGetViewsBuffer = new GLuint[count];
-			pVRGetViewsBufferSize = count;
-		}
+		pVRGetViewsBuffer.SetAll(count, 0);
 		
-		if(vrmodule.GetEyeViewImages(pEye, count, pVRGetViewsBuffer) != count){
+		if(vrmodule.GetEyeViewImages(pEye, count, pVRGetViewsBuffer.GetArrayPointer()) != count){
 			DETHROW(deeInvalidAction);
 		}
 	}
 	
-	bool same = count == pVRViewImageCount;
+	bool same = count == pVRViewImages.GetCount();
 	if(same){
 		int i;
 		for(i=0; i<count; i++){
@@ -391,7 +386,7 @@ void deoglVREye::pUpdateEyeViews(deBaseVRModule &vrmodule){
 		return;
 	}
 	
-	pDestroyEyeViews();
+	pVRViewImages.RemoveAll();
 	
 	deoglRenderThread &renderThread = pVR.GetCamera().GetRenderThread();
 	
@@ -403,11 +398,10 @@ void deoglVREye::pUpdateEyeViews(deBaseVRModule &vrmodule){
 	const deoglRestoreFramebuffer restoreFbo(renderThread);
 	const GLenum buffers[1] = {GL_COLOR_ATTACHMENT0};
 	
-	pVRViewImages = new cViewImage[count];
+	pVRViewImages.SetAll(count, {});
 	
-	for(pVRViewImageCount=0; pVRViewImageCount<count; pVRViewImageCount++){
-		cViewImage &vi = pVRViewImages[pVRViewImageCount];
-		vi.texture = pVRGetViewsBuffer[pVRViewImageCount];
+	pVRViewImages.VisitIndexed([&](int i, cViewImage &vi){
+		vi.texture = pVRGetViewsBuffer[i];
 		
 		vi.fbo = deoglFramebuffer::Ref::New(renderThread, false);
 		renderThread.GetFramebuffer().Activate(vi.fbo);
@@ -418,19 +412,9 @@ void deoglVREye::pUpdateEyeViews(deBaseVRModule &vrmodule){
 		OGL_CHECK(renderThread, glReadBuffer(GL_COLOR_ATTACHMENT0));
 		
 		vi.fbo->Verify();
-	}
+	});
 	
-	renderThread.GetLogger().LogInfoFormat("%s: view images %d", LogPrefix(), pVRViewImageCount);
-}
-
-void deoglVREye::pDestroyEyeViews(){
-	if(!pVRViewImages){
-		return;
-	}
-	
-	delete [] pVRViewImages;
-	pVRViewImages = nullptr;
-	pVRViewImageCount = 0;
+	renderThread.GetLogger().LogInfoFormat("%s: view images %d", LogPrefix(), pVRViewImages.GetCount());
 }
 
 void deoglVREye::pRender(deoglRenderThread &renderThread){

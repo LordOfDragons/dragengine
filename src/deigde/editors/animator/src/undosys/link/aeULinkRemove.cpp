@@ -52,9 +52,7 @@
 ////////////////////////////
 
 aeULinkRemove::aeULinkRemove(aeLink *link) :
-pLink(link),
-pTargets(nullptr),
-pTargetCount(0)
+pLink(link)
 {
 	if(!link){
 		DETHROW(deeInvalidParam);
@@ -72,28 +70,16 @@ pTargetCount(0)
 		return;
 	}
 	
-	try{
-		pTargets = new sTarget[targetCount];
-		
-		const int ruleCount = pAnimator->GetRules().GetCount();
-		int i;
-		for(i=0; i<ruleCount; i++){
-			pAddTargets(targetCount, link, pAnimator->GetRules().GetAt(i));
-		}
-		
-		if(pTargetCount != targetCount){
-			DETHROW(deeInvalidParam);
-		}
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
+	pTargets.EnlargeCapacity(targetCount);
+	
+	pAnimator->GetRules().Visit([&](aeRule *rule){
+		pAddTargets(targetCount, link, rule);
+	});
+	
+	DEASSERT_TRUE(pTargets.GetCount() == targetCount)
 }
 
-aeULinkRemove::~aeULinkRemove(){
-	pCleanUp();
-}
+aeULinkRemove::~aeULinkRemove() = default;
 
 
 
@@ -101,23 +87,19 @@ aeULinkRemove::~aeULinkRemove(){
 ///////////////
 
 void aeULinkRemove::Undo(){
-	int t;
-	
 	pAnimator->AddLink(pLink);
 	
-	for(t=0; t<pTargetCount; t++){
-		pTargets[t].target->AddLink(pLink);
-		pTargets[t].rule->NotifyRuleChanged();
-	}
+	pTargets.Visit([&](sTarget &t){
+		t.target->AddLink(pLink);
+		t.rule->NotifyRuleChanged();
+	});
 }
 
 void aeULinkRemove::Redo(){
-	int t;
-	
-	for(t=0; t<pTargetCount; t++){
-		pTargets[t].target->RemoveLink(pLink);
-		pTargets[t].rule->NotifyRuleChanged();
-	}
+	pTargets.Visit([&](sTarget &t){
+		t.target->RemoveLink(pLink);
+		t.rule->NotifyRuleChanged();
+	});
 	
 	pAnimator->RemoveLink(pLink);
 }
@@ -126,12 +108,6 @@ void aeULinkRemove::Redo(){
 
 // Private Functions
 //////////////////////
-
-void aeULinkRemove::pCleanUp(){
-	if(pTargets){
-		delete [] pTargets;
-	}
-}
 
 void aeULinkRemove::pAddTargets(int targetCount, aeLink *link, aeRule *rule){
 	if(rule->GetTargetBlendFactor()->GetLinks().Has(link)){
@@ -260,11 +236,7 @@ void aeULinkRemove::pAddTargets(int targetCount, aeLink *link, aeRule *rule){
 }
 
 void aeULinkRemove::pAddTarget(int targetCount, aeRule *rule, aeControllerTarget *target){
-	if(pTargetCount >= targetCount){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_TRUE(pTargets.GetCount() < targetCount)
 	
-	pTargets[pTargetCount].rule = rule;
-	pTargets[pTargetCount].target = target;
-	pTargetCount++;
+	pTargets.Add({rule, target});
 }

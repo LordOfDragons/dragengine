@@ -22,15 +22,13 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _DEBPSMOKEEMITTER_H_
 #define _DEBPSMOKEEMITTER_H_
 
-// includes
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/physics/deBasePhysicsSmokeEmitter.h>
 
-// predefinitions
 class debpWorld;
 class debpForceField;
 class dePhysicsBullet;
@@ -60,9 +58,7 @@ private:
 	deSmokeEmitter *pSmokeEmitter;
 	debpWorld *pParentWorld;
 	
-	debpSmokeDensityPoint *pPoints;
-	int pPointCount;
-	int pPointSize;
+	decTList<debpSmokeDensityPoint> pPoints;
 	
 	//float pCastDensity;
 	
@@ -97,9 +93,7 @@ public:
 	void SetParentWorld(debpWorld *parentWorld);
 	
 	/** Retrieves the density points. */
-	inline debpSmokeDensityPoint *GetPoints() const{ return pPoints; }
-	/** Retrieves the number of density points. */
-	inline int GetDensityPointCount() const{ return pPointCount; }
+	inline const decTList<debpSmokeDensityPoint> GetPoints() const{ return pPoints; }
 	
 	/** Retrieves the emitter matrix. */
 	const decMatrix &GetEmitterMatrix();
@@ -139,10 +133,6 @@ public:
 	/** Gravity changed. */
 	virtual void GravityChanged();
 	/*@}*/
-	
-private:
-	void pCleanUp();
 };
 
-// end of include only once
 #endif

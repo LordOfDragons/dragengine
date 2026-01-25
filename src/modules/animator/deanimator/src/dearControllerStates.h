@@ -26,6 +26,7 @@
 #define _DEARCONTROLLERSTATES_H_
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
 
 
 
@@ -40,8 +41,7 @@ private:
 	};
 	
 private:
-	sState *pStates;
-	int pStateCount;
+	decTList<sState> pStates;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -54,8 +54,11 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** States. */
+	inline const decTList<sState>& GetStates() const{ return pStates; }
+	
 	/** Retrieves the number of states. */
-	inline int GetStateCount() const{ return pStateCount; }
+	inline int GetStateCount() const{ return pStates.GetCount(); }
 	/** Sets the number of states. */
 	void SetStateCount(int count);
 	

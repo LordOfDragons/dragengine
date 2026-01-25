@@ -459,7 +459,7 @@ deClassComponent::nfGetBoneCount::nfGetBoneCount(const sInitData &init) : dsFunc
 }
 void deClassComponent::nfGetBoneCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deComponent &component = *(dedsGetNativeData<sCompNatDat>(p_GetNativeData(myself)).component);
-	rt->PushInt(component.GetBoneCount());
+	rt->PushInt(component.GetBones().GetCount());
 }
 
 // public func int indexOfBoneNamed( String name )
@@ -823,7 +823,7 @@ dsFunction(init.clsCom, "getVertexPositionSetCount", DSFT_FUNCTION, DSTM_PUBLIC 
 }
 void deClassComponent::nfGetVertexPositionSetCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deComponent &component = *(dedsGetNativeData<sCompNatDat>(p_GetNativeData(myself)).component);
-	rt->PushInt(component.GetVertexPositionSetCount());
+	rt->PushInt(component.GetVertexPositionSetWeights().GetCount());
 }
 
 // public func int indexOfVertexPositionSetNamed(String name)
@@ -863,7 +863,7 @@ dsFunction(init.clsCom, "vertexPositionSetGetWeightAt", DSFT_FUNCTION, DSTM_PUBL
 }
 void deClassComponent::nfVertexPositionSetGetWeightAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deComponent &component = *(dedsGetNativeData<sCompNatDat>(p_GetNativeData(myself)).component);
-	rt->PushFloat(component.GetVertexPositionSetWeightAt(rt->GetValue(0)->GetInt()));
+	rt->PushFloat(component.GetVertexPositionSetWeights()[rt->GetValue(0)->GetInt()]);
 }
 
 // public func float vertexPositionSetGetWeightNamed(String name)
@@ -876,8 +876,8 @@ void deClassComponent::nfVertexPositionSetGetWeightNamed::RunFunction(dsRunTime 
 	if(!component.GetModel()){
 		DSTHROW(dueNullPointer);
 	}
-	rt->PushFloat(component.GetVertexPositionSetWeightAt(
-		component.GetModel()->IndexOfVertexPositionSetNamed(rt->GetValue(0)->GetString())));
+	rt->PushFloat(component.GetVertexPositionSetWeights()[
+		component.GetModel()->IndexOfVertexPositionSetNamed(rt->GetValue(0)->GetString())]);
 }
 
 // public func void vertexPositionSetSetWeightAt(int index, float weight)
@@ -1063,7 +1063,7 @@ deClassComponent::nfSetTextureTransformAt::nfSetTextureTransformAt(const sInitDa
 	p_AddParameter(init.clsTexMat2); // transform
 }
 void deClassComponent::nfSetTextureTransformAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deComponent &component = *(dedsGetNativeData<sCompNatDat>(p_GetNativeData(myself)).component);
+	deComponent &component = *(dedsGetNativeData<sCompNatDat>(p_GetNativeData(myself)).component);
 	const deScriptingDragonScript &ds = *(static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule());
 	
 	const int index = rt->GetValue(0)->GetInt();
@@ -1094,7 +1094,7 @@ deClassComponent::nfSetTextureDynamicSkinAt::nfSetTextureDynamicSkinAt(const sIn
 	p_AddParameter(init.clsDSkin); // dynamicSkin
 }
 void deClassComponent::nfSetTextureDynamicSkinAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deComponent &component = *(dedsGetNativeData<sCompNatDat>(p_GetNativeData(myself)).component);
+	deComponent &component = *(dedsGetNativeData<sCompNatDat>(p_GetNativeData(myself)).component);
 	const deScriptingDragonScript &ds = *(static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule());
 	
 	int index = rt->GetValue(0)->GetInt();

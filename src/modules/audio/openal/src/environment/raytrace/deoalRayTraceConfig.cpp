@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoalRayTraceConfig.h"
 #include "deoalIcoSphere.h"
 
@@ -39,34 +36,19 @@
 /////////////////////////////////
 
 deoalRayTraceConfig::deoalRayTraceConfig() :
-pRayCount(0),
-pRayDirections(nullptr),
 pRayUnitVolume(0.0f),
 pRayUnitSurface(0.0f),
 pOpeningAngle(0.0f){
 }
 
 deoalRayTraceConfig::deoalRayTraceConfig(const deoalRayTraceConfig &config) :
-pRayCount(0),
-pRayDirections(nullptr),
+pRayDirections(config.pRayDirections),
 pRayUnitVolume(config.pRayUnitVolume),
 pRayUnitSurface(config.pRayUnitSurface),
-pOpeningAngle(config.pOpeningAngle)
-{
-	if(config.pRayCount == 0){
-		return;
-	}
-	
-	pRayDirections = new decVector[config.pRayCount];
-	memcpy(pRayDirections, config.pRayDirections, sizeof(decVector) * config.pRayCount);
-	pRayCount = config.pRayCount;
+pOpeningAngle(config.pOpeningAngle){
 }
 
-deoalRayTraceConfig::~deoalRayTraceConfig(){
-	if(pRayDirections){
-		delete [] pRayDirections;
-	}
-}
+deoalRayTraceConfig::~deoalRayTraceConfig() = default;
 
 
 
@@ -78,14 +60,8 @@ void deoalRayTraceConfig::SetFromVertices(const decVector *vertices, int count, 
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(pRayDirections){
-		delete [] pRayDirections;
-		pRayDirections = nullptr;
-	}
-	
-	pRayDirections = new decVector[count];
-	memcpy(pRayDirections, vertices, sizeof(decVector) * count);
-	pRayCount = count;
+	pRayDirections.SetCountDiscard(count);
+	memcpy(pRayDirections.GetArrayPointer(), vertices, sizeof(decVector) * count);
 	
 	// V = 4/3 * PI * r^3
 	// A = 4 * PI * r^2
@@ -99,33 +75,26 @@ void deoalRayTraceConfig::SetFromVertices(const decVector *vertices, int count, 
 
 void deoalRayTraceConfig::Rotate(float rx, float ry, float rz){
 	const decMatrix matrix(decMatrix::CreateRotation(rx * DEG2RAD, ry * DEG2RAD, rz * DEG2RAD));
-	int i;
-	for(i=0; i<pRayCount; i++){
-		pRayDirections[i] = matrix * pRayDirections[i];
-	}
+	pRayDirections.Visit([&](decVector &d){
+		d = matrix * d;
+	});
 }
 
 void deoalRayTraceConfig::SetRaysEquallySpaced(int rayCount){
 	DEASSERT_TRUE(rayCount > 0)
 	
-	if(pRayDirections){
-		delete [] pRayDirections;
-		pRayDirections = nullptr;
-	}
-	
-	pRayCount = 0;
-	pRayDirections = new decVector[rayCount];
+	pRayDirections.RemoveAll();
+	pRayDirections.EnlargeCapacity(rayCount);
 	
 	const float dLongitude = PI * (3.0f - sqrtf(5.0f));
 	const float dZ = 2.0f / (float)rayCount;
 	float longitude = 0.0f;
 	float z = 1.0f - dZ * 0.5f;
+	int i;
 	
-	for(pRayCount=0; pRayCount<rayCount; pRayCount++){
+	for(i=0; i<rayCount; i++){
 		const float radius = sqrtf(1.0f - z * z);
-		pRayDirections[pRayCount].x = cosf(longitude) * radius;
-		pRayDirections[pRayCount].y = sinf(longitude) * radius;
-		pRayDirections[pRayCount].z = (float)z;
+		pRayDirections.Add({cosf(longitude) * radius, sinf(longitude) * radius, (float)z});
 		z -= dZ;
 		longitude += dLongitude;
 	}

@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "debpParticleEmitter.h"
 #include "debpParticleEmitterInstance.h"
 #include "debpParticleEmitterInstanceType.h"
@@ -80,9 +76,6 @@ debpParticleEmitterInstance::debpParticleEmitterInstance(dePhysicsBullet *bullet
 	
 	pParentWorld = NULL;
 	
-	pTypes = NULL;
-	pTypeCount = 0;
-	
 	pBurstTimer = 0.0f;
 	
 	pCanCollide = false;
@@ -134,22 +127,6 @@ decDMatrix debpParticleEmitterInstance::GetEmitterMatrixByDistance(float distanc
 	return decDMatrix::CreateWorld(pLastPosition * (1.0f - distance) + pInstance->GetPosition() * distance, pInstance->GetOrientation());
 }
 
-debpParticleEmitterInstanceType &debpParticleEmitterInstance::GetTypeAt(int index){
-	if(index < 0 || index >= pTypeCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return pTypes[index];
-}
-
-const debpParticleEmitterInstanceType &debpParticleEmitterInstance::GetTypeAt(int index) const{
-	if(index < 0 || index >= pTypeCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return pTypes[index];
-}
-
 
 
 void debpParticleEmitterInstance::PrepareParticles(float elapsed){
@@ -160,8 +137,6 @@ void debpParticleEmitterInstance::PrepareParticles(float elapsed){
 	pEnsureCastOnce = false;
 	
 	if(emitter){
-		int i;
-		
 		emitter->UpdateParameters();
 		
 		pForceFieldSimulation.Update(elapsed);
@@ -169,11 +144,11 @@ void debpParticleEmitterInstance::PrepareParticles(float elapsed){
 		// update the particles
 		pBurstTimer += elapsed;
 		
-		for(i=0; i<pTypeCount; i++){
+		pTypes.Visit([&](debpParticleEmitterInstanceType &type){
 //timer.Reset();
-			pTypes[i].PrepareParticles(casting, elapsed, travelledDistance);
+			type.PrepareParticles(casting, elapsed, travelledDistance);
 //pBullet->LogInfoFormat( "PrepareParticle (%i) = %iys", pTypes[ i ].GetParticlesCount(), ( int )( timer.GetElapsedTime() * 1000000.0f ) );
-		}
+		});
 		
 		if(pInstance->GetEmitter()->GetEmitBurst()){
 			if(pInstance->GetEmitter()->GetBurstLifetime() > FLOAT_SAFE_EPSILON){
@@ -193,8 +168,9 @@ void debpParticleEmitterInstance::PrepareParticles(float elapsed){
 		}
 		
 		/*{
-		int t, T=0;
-		for(t=0; t<pTypeCount; t++) T += pTypes[t].GetParticlesCount();
+		int T = pTypes.Inject(0, [&](int accum, debpParticleEmitterInstanceType &type){
+			return accum += type.GetParticlesCount();
+		});
 		pBullet->LogInfoFormat("PrepareParticles %p: ec=%i eb=%i bt=%f blt=%f cflp=%i pc=%i ralpd=%i", this,
 			pInstance->GetEnableCasting()?1:0, pInstance->GetEmitter()->GetEmitBurst()?1:0,
 			pBurstTimer, pInstance->GetEmitter()->GetBurstLifetime(), pCheckForLastParticle?1:0, T,
@@ -226,33 +202,28 @@ void debpParticleEmitterInstance::ApplyForceFields(float elapsed){
 		
 		// TODO check if the force field overlaps the component
 		
-		int i;
-		for(i=0; i<pTypeCount; i++){
-			pTypes[i].ApplyForceField(bpForceField, elapsed);
-		}
+		pTypes.Visit([&](debpParticleEmitterInstanceType &type){
+			type.ApplyForceField(bpForceField, elapsed);
+		});
 	});
 }
 
 void debpParticleEmitterInstance::StepParticles(float elapsed){
-	int i;
-	
-	for(i=0; i<pTypeCount; i++){
+	pTypes.Visit([&](debpParticleEmitterInstanceType &type){
 //timer.Reset();
-		pTypes[i].StepParticles(elapsed);
-//pBullet->LogInfoFormat( "StepParticle (%i) = %iys", pTypes[ t ].GetParticlesCount(), ( int )( timer.GetElapsedTime() * 1000000.0f ) );
-	}
+		type.StepParticles(elapsed);
+//pBullet->LogInfoFormat( "StepParticle (%i) = %iys", type.GetParticlesCount(), (int)(timer.GetElapsedTime() * 1000000.0f));
+	});
 	
 	CheckForLastParticle(); // StepParticles is called last so the check has to be done here not in PrepareParticles
 }
 
 void debpParticleEmitterInstance::FinishStepping(){
-	int i;
-	
 	pInstance->SetReferencePosition(pInstance->GetPosition()); // particles will be relative to this positon for rendering
 	
-	for(i=0; i<pTypeCount; i++){
-		pTypes[i].FinishStepping();
-	}
+	pTypes.Visit([&](debpParticleEmitterInstanceType &type){
+		type.FinishStepping();
+	});
 }
 
 void debpParticleEmitterInstance::RequestCheckForLastParticle(){
@@ -267,11 +238,10 @@ void debpParticleEmitterInstance::CheckForLastParticle(){
 		return;
 	}
 	
-	int t;
-	for(t=0; t<pTypeCount; t++){
-		if(pTypes[t].GetParticlesCount() > 0){
-			return;
-		}
+	if(pTypes.HasMatching([](const debpParticleEmitterInstanceType &type){
+		return type.GetParticlesCount() > 0;
+	})){
+		return;
 	}
 	
 	pCheckForLastParticle = false;
@@ -325,16 +295,14 @@ void debpParticleEmitterInstance::ControllerChanged(int controller){
 	const deParticleEmitter * const emitter = pInstance->GetEmitter();
 	
 	if(emitter){
-		int t;
-		
-		for(t=0; t<pTypeCount; t++){
+		pTypes.Visit([&](debpParticleEmitterInstanceType &type){
 			const deParticleEmitterParameter &parameter = emitter->GetTypes().
-				GetAt(pTypes[t].GetType())->GetParameter(deParticleEmitterType::epInterval);
+				GetAt(type.GetType())->GetParameter(deParticleEmitterType::epInterval);
 			
 			if(parameter.GetControllerValue() > -1 || parameter.GetControllerSpread() > -1){
-				pTypes[t].UpdateCastIntervals();
+				type.UpdateCastIntervals();
 			}
-		}
+		});
 	}
 }
 
@@ -345,21 +313,16 @@ void debpParticleEmitterInstance::TypeChanged(int type){
 
 
 void debpParticleEmitterInstance::ResetBurst(){
-	int i;
-	
 	pBurstTimer = 0.0f;
-	
-	for(i=0; i<pTypeCount; i++){
-		pTypes[i].ResetBurst();
-	}
+	pTypes.Visit([&](debpParticleEmitterInstanceType &type){
+		type.ResetBurst();
+	});
 }
 
 void debpParticleEmitterInstance::KillAllParticles(){
-	int i;
-	
-	for(i=0; i<pTypeCount; i++){
-		pTypes[i].KillAllParticles();
-	}
+	pTypes.Visit([&](debpParticleEmitterInstanceType &type){
+		type.KillAllParticles();
+	});
 }
 
 
@@ -368,29 +331,23 @@ void debpParticleEmitterInstance::KillAllParticles(){
 //////////////////////
 
 void debpParticleEmitterInstance::pCleanUp(){
-	if(pTypes){
-		delete [] pTypes;
-	}
+	pTypes.RemoveAll();
 }
 
 void debpParticleEmitterInstance::pUpdateTypes(){
-	if(pTypes){
-		delete [] pTypes;
-		pTypes = NULL;
-	}
-	pTypeCount = 0;
+	pTypes.RemoveAll();
 	
 	const int typeCount = pInstance->GetTypes().GetCount();
 	if(typeCount == 0){
 		return;
 	}
 	
-	pTypes = new debpParticleEmitterInstanceType[typeCount];
-	
-	for(pTypeCount=0; pTypeCount<typeCount; pTypeCount++){
-		pTypes[pTypeCount].SetInstance(this);
-		pTypes[pTypeCount].SetType(pTypeCount);
-		pTypes[pTypeCount].OnTypeChanged();
+	pTypes.AddRange(typeCount, {});
+	int i;
+	for(i=0; i<typeCount; i++){
+		pTypes[i].SetInstance(this);
+		pTypes[i].SetType(i);
+		pTypes[i].OnTypeChanged();
 	}
 }
 

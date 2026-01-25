@@ -25,14 +25,14 @@
 #ifndef _DEBPDECAL_H_
 #define _DEBPDECAL_H_
 
-#include <dragengine/systems/modules/physics/deBasePhysicsDecal.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/systems/modules/physics/deBasePhysicsDecal.h>
 
 class deDecal;
 class debpComponent;
 class debpDecalFace;
 class debpDCollisionVolume;
-
 
 
 /**
@@ -45,23 +45,22 @@ private:
 	
 	bool pDirtyGeometry;
 	
-	debpDecalFace *pFaces;
-	int pFaceCount;
+	decTList<debpDecalFace> pFaces;
 	
 	debpComponent *pParentComponent;
 	
 public:
 	// constructor, destructor
-	debpDecal(deDecal *decal);
+	explicit debpDecal(deDecal *decal);
 	~debpDecal() override;
 	
 	// management
 	inline deDecal *GetDecal() const{ return pDecal; }
 	
 	/** Retrieves the number of faces. */
-	inline int GetFaceCount() const{ return pFaceCount; }
+	inline int GetFaceCount() const{ return pFaces.GetCount(); }
 	/** Retrieves the faces array. */
-	inline debpDecalFace *GetFaces() const{ return pFaces; }
+	inline const debpDecalFace *GetFaces() const{ return pFaces.GetArrayPointer(); }
 	
 	/** Marks the decal dirty. */
 	void MarkDirty();
@@ -90,9 +89,7 @@ public:
 	/*@}*/
 	
 private:
-	void pCleanUp();
 	void pCreateMeshComponent();
 };
 
-// end of include only once
 #endif

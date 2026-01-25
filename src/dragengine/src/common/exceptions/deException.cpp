@@ -249,9 +249,9 @@ void deException::pBuildBacktrace(){
 	RtlCaptureContext(&context);
 	
 	const int symbolBufferLen = sizeof(IMAGEHLP_SYMBOL64) + MAX_SYM_NAME;
-	char * const symbolBuffer = new char[symbolBufferLen + 1];
-	memset(symbolBuffer, 0, symbolBufferLen + 1);
-	PIMAGEHLP_SYMBOL64 const symbol = (PIMAGEHLP_SYMBOL64)symbolBuffer;
+	decTList<char> symbolBuffer(symbolBufferLen + 1);
+	memset(symbolBuffer.GetArrayPointer(), 0, symbolBufferLen + 1);
+	PIMAGEHLP_SYMBOL64 const symbol = (PIMAGEHLP_SYMBOL64)symbolBuffer.GetArrayPointer();
 	symbol->SizeOfStruct = sizeof(IMAGEHLP_SYMBOL64);
 	symbol->MaxNameLength = MAX_SYM_NAME;
 

@@ -45,6 +45,9 @@ void detTSet::Run(){
 	TestIntMoveSemantics();
 	TestIntIteratorConstructor();
 	TestIntCollect();
+	TestIntVisit();
+	TestIntRemoveIf();
+	TestIntFind();
 	// string
 	TestStringBasic();
 	TestStringOperators();
@@ -52,6 +55,8 @@ void detTSet::Run(){
 	TestStringFindOrDefault();
 	TestStringFold();
 	TestStringInject();
+	TestStringVisit();
+	TestStringRemoveIf();
 }
 
 void detTSet::CleanUp(){
@@ -230,14 +235,14 @@ void detTSet::TestIntAlgorithms(){
 
 	// Find - returns pointer
 	const int *resultPtr = nullptr;
-	bool found = set.Find([](const int &v){ return v > 7; }, resultPtr);
+	bool found = set.Find(resultPtr, [](const int &v){ return v > 7; });
 	ASSERT_TRUE(found);
 	ASSERT_NOT_NULL(resultPtr);
 	ASSERT_EQUAL(*resultPtr, 8);
 
 	// FindOrDefault - no parameters
-	ASSERT_EQUAL(set.FindOrDefault([](const int &v){ return v > 100; }, 999), 999);
-	ASSERT_EQUAL(set.FindOrDefault([](const int &v){ return v > 7; }, 999), 8);
+	ASSERT_EQUAL(set.FindOrDefault(999, [](const int &v){ return v > 100; }), 999);
+	ASSERT_EQUAL(set.FindOrDefault(999, [](const int &v){ return v > 7; }), 8);
 
 	// Collect - no parameters
 	auto collected = set.Collect([](const int &v){ return v > 5; });
@@ -420,13 +425,13 @@ void detTSet::TestIntFindOrDefault(){
 	set.Add(30);
 	
 	auto evaluator1 = [](int val){ return val == 20; };
-	ASSERT_EQUAL(set.FindOrDefault(evaluator1, 99), 20);
+	ASSERT_EQUAL(set.FindOrDefault(99, evaluator1), 20);
 	
 	auto evaluator2 = [](int val){ return val > 50; };
-	ASSERT_EQUAL(set.FindOrDefault(evaluator2, 99), 99);
+	ASSERT_EQUAL(set.FindOrDefault(99, evaluator2), 99);
 	
 	auto evaluator3 = [](int val){ return val < 15; };
-	ASSERT_EQUAL(set.FindOrDefault(evaluator3, 99), 10);
+	ASSERT_EQUAL(set.FindOrDefault(99, evaluator3), 10);
 	
 	// Test without default value
 	ASSERT_EQUAL(set.FindOrDefault(evaluator2), 0);
@@ -561,16 +566,16 @@ void detTSet::TestStringFindOrDefault(){
 	set.Add("cherry");
 	
 	auto evaluator1 = [](const decString &val){ return val == "banana"; };
-	ASSERT_EQUAL(set.FindOrDefault(evaluator1, decString("default")), decString("banana"));
+	ASSERT_EQUAL(set.FindOrDefault(decString("default"), evaluator1), decString("banana"));
 	
 	auto evaluator2 = [](const decString &val){ return val == "fig"; };
-	ASSERT_EQUAL(set.FindOrDefault(evaluator2, decString("default")), decString("default"));
+	ASSERT_EQUAL(set.FindOrDefault(decString("default"), evaluator2), decString("default"));
 	
 	// Test without explicit default value
 	ASSERT_EQUAL(set.FindOrDefault(evaluator2), decString());
 	
 	auto evaluator3 = [](const decString &val){ return val.GetLength() > 6; };
-	ASSERT_EQUAL(set.FindOrDefault(evaluator3, decString("default")), decString("default"));
+	ASSERT_EQUAL(set.FindOrDefault(decString("default"), evaluator3), decString("default"));
 }
 
 void detTSet::TestStringFold(){
@@ -728,5 +733,238 @@ void detTSet::TestIntCollect(){
 	decTSetInt emptySet;
 	auto empty = emptySet.Collect([](const int &v){ return true; });
 	ASSERT_TRUE(empty.IsEmpty());
+}
+
+
+// Additional INT Tests - Visit
+// ============================================================================
+
+void detTSet::TestIntVisit(){
+	SetSubTestNum(19);
+
+	decTSetInt set;
+	set.Add(10);
+	set.Add(20);
+	set.Add(30);
+
+	// Test Visit with lvalue visitor
+	int sum = 0;
+	auto visitor = [&sum](const int &val){
+		sum += val;
+	};
+	set.Visit(visitor);
+	ASSERT_EQUAL(sum, 60);
+
+	// Test Visit with rvalue visitor
+	int count = 0;
+	set.Visit([&count](const int &val){
+		count++;
+	});
+	ASSERT_EQUAL(count, 3);
+
+	// Test VisitIndexed with lvalue visitor
+	int indexSum = 0;
+	auto indexedVisitor = [&indexSum](int index, const int &val){
+		indexSum += index;
+	};
+	set.VisitIndexed(indexedVisitor);
+	ASSERT_EQUAL(indexSum, 3); // 0 + 1 + 2
+
+	// Test VisitIndexed with rvalue visitor
+	int maxIndex = -1;
+	set.VisitIndexed([&maxIndex](int index, const int &val){
+		if(index > maxIndex){
+			maxIndex = index;
+		}
+	});
+	ASSERT_EQUAL(maxIndex, 2);
+
+	// Test Visit on empty set
+	decTSetInt emptySet;
+	int emptyCount = 0;
+	emptySet.Visit([&emptyCount](const int &val){
+		emptyCount++;
+	});
+	ASSERT_EQUAL(emptyCount, 0);
+}
+
+
+// Additional INT Tests - RemoveIf
+// ============================================================================
+
+void detTSet::TestIntRemoveIf(){
+	SetSubTestNum(20);
+
+	decTSetInt set;
+	set.Add(10);
+	set.Add(20);
+	set.Add(30);
+	set.Add(40);
+	set.Add(50);
+
+	// RemoveIf with lvalue evaluator (remove elements < 30)
+	auto eval1 = [](const int &val){ return val < 30; };
+	set.RemoveIf(eval1);
+	ASSERT_EQUAL(set.GetCount(), 3);
+	ASSERT_TRUE(set.Has(30));
+	ASSERT_TRUE(set.Has(40));
+	ASSERT_TRUE(set.Has(50));
+	ASSERT_FALSE(set.Has(10));
+	ASSERT_FALSE(set.Has(20));
+
+	// RemoveIf with rvalue evaluator (remove specific element)
+	set.RemoveIf([](const int &val){ return val == 40; });
+	ASSERT_EQUAL(set.GetCount(), 2);
+	ASSERT_TRUE(set.Has(30));
+	ASSERT_TRUE(set.Has(50));
+	ASSERT_FALSE(set.Has(40));
+
+	// RemoveIf with no matches
+	set.RemoveIf([](const int &val){ return val > 100; });
+	ASSERT_EQUAL(set.GetCount(), 2);
+
+	// RemoveIf all elements
+	set.RemoveIf([](const int &val){ return true; });
+	ASSERT_TRUE(set.IsEmpty());
+
+	// RemoveIf on empty set (should not crash)
+	set.RemoveIf([](const int &val){ return true; });
+	ASSERT_TRUE(set.IsEmpty());
+
+	// Test removing even numbers
+	decTSetInt set2;
+	set2.Add(1);
+	set2.Add(2);
+	set2.Add(3);
+	set2.Add(4);
+	set2.Add(5);
+	set2.RemoveIf([](const int &val){ return val % 2 == 0; });
+	ASSERT_EQUAL(set2.GetCount(), 3);
+	ASSERT_TRUE(set2.Has(1));
+	ASSERT_TRUE(set2.Has(3));
+	ASSERT_TRUE(set2.Has(5));
+}
+
+
+// Additional INT Tests - Find
+// ============================================================================
+
+void detTSet::TestIntFind(){
+	SetSubTestNum(21);
+
+	decTSetInt set;
+	set.Add(10);
+	set.Add(20);
+	set.Add(30);
+	set.Add(40);
+
+	// Find existing element
+	const int *found1 = nullptr;
+	auto eval1 = [](const int &val){ return val > 25; };
+	ASSERT_TRUE(set.Find(found1, eval1));
+	ASSERT_NOT_NULL(found1);
+	ASSERT_TRUE(*found1 == 30 || *found1 == 40); // Order in set is not guaranteed
+
+	// Find non-existing element
+	const int *found2 = nullptr;
+	auto eval2 = [](const int &val){ return val > 100; };
+	ASSERT_FALSE(set.Find(found2, eval2));
+	ASSERT_NULL(found2);
+
+	// Find with rvalue evaluator
+	const int *found3 = nullptr;
+	ASSERT_TRUE(set.Find(found3, [](const int &val){ return val == 20; }));
+	ASSERT_NOT_NULL(found3);
+	ASSERT_EQUAL(*found3, 20);
+
+	// Find first element matching condition
+	const int *found4 = nullptr;
+	ASSERT_TRUE(set.Find(found4, [](const int &val){ return val >= 10; }));
+	ASSERT_NOT_NULL(found4);
+	ASSERT_TRUE(*found4 >= 10 && *found4 <= 40);
+
+	// Empty set
+	decTSetInt emptySet;
+	const int *found5 = nullptr;
+	ASSERT_FALSE(emptySet.Find(found5, [](const int &val){ return true; }));
+	ASSERT_NULL(found5);
+}
+
+
+// Additional STRING Tests - Visit
+// ============================================================================
+
+void detTSet::TestStringVisit(){
+	SetSubTestNum(22);
+
+	decTSetString set;
+	set.Add("apple");
+	set.Add("banana");
+	set.Add("cherry");
+
+	// Test Visit with lvalue visitor
+	int count = 0;
+	auto visitor = [&count](const decString &str){
+		count++;
+	};
+	set.Visit(visitor);
+	ASSERT_EQUAL(count, 3);
+
+	// Test Visit with rvalue visitor
+	bool hasApple = false;
+	set.Visit([&hasApple](const decString &str){
+		if(str == "apple"){
+			hasApple = true;
+		}
+	});
+	ASSERT_TRUE(hasApple);
+
+	// Test Visit on empty set
+	decTSetString emptySet;
+	int emptyCount = 0;
+	emptySet.Visit([&emptyCount](const decString &str){
+		emptyCount++;
+	});
+	ASSERT_EQUAL(emptyCount, 0);
+}
+
+
+// Additional STRING Tests - RemoveIf
+// ============================================================================
+
+void detTSet::TestStringRemoveIf(){
+	SetSubTestNum(23);
+
+	decTSetString set;
+	set.Add("apple");
+	set.Add("banana");
+	set.Add("cherry");
+	set.Add("date");
+
+	// RemoveIf strings starting with 'b' or 'd'
+	set.RemoveIf([](const decString &str){
+		return str[0] == 'b' || str[0] == 'd';
+	});
+	ASSERT_EQUAL(set.GetCount(), 2);
+	ASSERT_TRUE(set.Has("apple"));
+	ASSERT_TRUE(set.Has("cherry"));
+	ASSERT_FALSE(set.Has("banana"));
+	ASSERT_FALSE(set.Has("date"));
+
+	// RemoveIf short strings
+	set.Add("a");
+	set.Add("ab");
+	set.RemoveIf([](const decString &str){
+		return str.GetLength() < 3;
+	});
+	ASSERT_EQUAL(set.GetCount(), 2);
+	ASSERT_TRUE(set.Has("apple"));
+	ASSERT_TRUE(set.Has("cherry"));
+
+	// RemoveIf all
+	set.RemoveIf([](const decString &str){
+		return true;
+	});
+	ASSERT_TRUE(set.IsEmpty());
 }
 

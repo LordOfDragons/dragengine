@@ -22,11 +22,8 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "dePropField.h"
+#include "dePropFieldInstance.h"
 #include "dePropFieldManager.h"
 #include "dePropFieldType.h"
 #include "../../deEngine.h"
@@ -90,8 +87,7 @@ int dePropField::IndexOfType(dePropFieldType *type) const{
 }
 
 void dePropField::AddType(dePropFieldType::Ref &&type){
-	if(!type) DETHROW(deeInvalidParam);
-	
+	DEASSERT_NOTNULL(type)
 	
 	pTypes.Add(std::move(type));
 	
@@ -159,7 +155,7 @@ void dePropField::NotifyCreateInstances(float density){
 		// types at all. this way no performance hit is taken as the worst that can happen is
 		// that no props are rendered at all which is not as bad as cringing to a crawl
 		pTypes.Visit([](dePropFieldType &type){
-			type.SetInstanceCount(0);
+			type.GetInstances().SetCountDiscard(0);
 		});
 	}
 }

@@ -52,12 +52,10 @@ public:
 	
 	
 private:
-	deFontGlyph pUndefinedGlyph, *pGlyphs;
-	int pGlyphCount;
-	unsigned short *pGlyphGroups;
-	int pGlyphGroupCount;
-	unsigned short *pGlyphMap;
-	int pGlyphMapCount;
+	deFontGlyph pUndefinedGlyph;
+	decTList<deFontGlyph> pGlyphs;
+	decTList<unsigned short> pGlyphGroups;
+	decTList<unsigned short> pGlyphMap;
 	int pFontWidth, pLineHeight, pBaseLine;
 	bool pColorFont, pScalable;
 	
@@ -128,7 +126,7 @@ public:
 	inline const deFontGlyph &GetUndefinedGlyph() const{ return pUndefinedGlyph; }
 	
 	/** \brief Number of glyphs. */
-	inline int GetGlyphCount() const{ return pGlyphCount; }
+	inline int GetGlyphCount() const{ return pGlyphs.GetCount(); }
 	
 	/** \brief Sets number of glyphs resetting all to default values. */
 	void SetGlyphCount(int count);
@@ -274,8 +272,6 @@ public:
 	
 	
 private:
-	void pCleanUp();
-	void pFreeGlyphMap();
 	void pCreateGlyphMap();
 	deFontSize *pGetSizeWith(int lineHeight);
 };

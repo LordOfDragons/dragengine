@@ -25,6 +25,8 @@
 #ifndef _DECTDICTIONARY_H_
 #define _DECTDICTIONARY_H_
 
+#include <algorithm>
+
 #include "decTList.h"
 #include "decGlobalFunctions.h"
 #include "../exceptions_reduced.h"
@@ -88,10 +90,7 @@ public:
 	/** \brief Create a new dictionary. */
 	decTDictionary() : pBuckets(nullptr), pBucketCount(8), pEntryCount(0){
 		pBuckets = new sDictEntry*[pBucketCount];
-		int i;
-		for(i=0; i<pBucketCount; i++){
-			pBuckets[i] = nullptr;
-		}
+		std::fill_n(pBuckets, pBucketCount, nullptr);
 	}
 	
 	/**
@@ -102,20 +101,15 @@ public:
 		DEASSERT_TRUE(bucketCount >= 1)
 		
 		pBuckets = new sDictEntry*[bucketCount];
-		int i;
-		for(i=0; i<bucketCount; i++){
-			pBuckets[i] = nullptr;
-		}
+		std::fill_n(pBuckets, bucketCount, nullptr);
 	}
 	
 	/** \brief Create copy of a dictionary. */
 	decTDictionary(const decTDictionary<K,V,VP,KP> &dict) : pBuckets(nullptr), pBucketCount(dict.pBucketCount), pEntryCount(0){
 		pBuckets = new sDictEntry*[pBucketCount];
-		int i;
-		for(i=0; i<pBucketCount; i++){
-			pBuckets[i] = nullptr;
-		}
+		std::fill_n(pBuckets, pBucketCount, nullptr);
 		
+		int i;
 		for(i=0; i<dict.pBucketCount; i++){
 			sDictEntry *iterEntry = dict.pBuckets[i];
 			while(iterEntry){
@@ -174,7 +168,7 @@ public:
 	template<typename Evaluator>
 	bool HasMatching(Evaluator &evaluator) const{
 		const V *f;
-		return Find<Evaluator>(evaluator, f);
+		return Find<Evaluator>(f, evaluator);
 	}
 	
 	template<typename Evaluator>
@@ -429,12 +423,10 @@ public:
 		
 		const int newBucketCount = pBucketCount + (pBucketCount >> 1); // +50%
 		sDictEntry ** const newBuckets = new sDictEntry*[newBucketCount];
+		
+		std::fill_n(newBuckets, newBucketCount, nullptr);
+		
 		int i;
-		
-		for(i=0; i<newBucketCount; i++){
-			newBuckets[i] = nullptr;
-		}
-		
 		for(i=0; i<pBucketCount; i++){
 			sDictEntry *iterEntry = pBuckets[i];
 			
@@ -477,12 +469,36 @@ public:
 	
 	
 	/**
-	 * \brief Find value.
-	 * \param[in] evaluator Evaluator callable invoked as evaluator(K,V).
-	 * \param[out] found Found value if true is returned.
+	 * \brief Visit elements while evaluator returns true.
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(T).
 	 */
 	template<typename Evaluator>
-	bool Find(Evaluator &evaluator, const V* &found) const{
+	void VisitWhile(Evaluator &evaluator) const{
+		int i;
+		for(i=0; i<pBucketCount; i++){
+			const sDictEntry *iterEntry = pBuckets[i];
+			while(iterEntry){
+				if(!evaluator(iterEntry->key, iterEntry->value)){
+					return;
+				}
+				iterEntry = iterEntry->next;
+			}
+		}
+	}
+	
+	template<typename Evaluator>
+	inline void VisitWhile(Evaluator &&evaluator) const{
+		VisitWhile<Evaluator>(evaluator);
+	}
+	
+	
+	/**
+	 * \brief Find value.
+	 * \param[out] found Found value if true is returned.
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(K,V).
+	 */
+	template<typename Evaluator>
+	bool Find(const V* &found, Evaluator &evaluator) const{
 		int i;
 		for(i=0; i<pBucketCount; i++){
 			const sDictEntry *iterEntry = pBuckets[i];
@@ -500,8 +516,8 @@ public:
 	}
 	
 	template<typename Evaluator>
-	bool Find(Evaluator &&evaluator, const V* &found) const{
-		return Find<Evaluator>(evaluator, found);
+	bool Find(const V* &found, Evaluator &&evaluator) const{
+		return Find<Evaluator>(found, evaluator);
 	}
 	
 	
@@ -511,14 +527,25 @@ public:
 	 * \return Found value or default value if not found.
 	 */
 	template<typename Evaluator>
-	V FindOrDefault(Evaluator &evaluator, const V &defaultValue = V()) const{
+	V FindOrDefault(const V &defaultValue, Evaluator &evaluator) const{
 		const V *found = nullptr;
-		return Find<Evaluator>(evaluator, found) ? *found : defaultValue;
+		return Find<Evaluator>(found, evaluator) ? *found : defaultValue;
 	}
 	
 	template<typename Evaluator>
-	V FindOrDefault(Evaluator &&evaluator, const V &defaultValue = V()) const{
-		return FindOrDefault<Evaluator>(evaluator, defaultValue);
+	V FindOrDefault(const V &defaultValue, Evaluator &&evaluator) const{
+		return FindOrDefault<Evaluator>(defaultValue, evaluator);
+	}
+	
+	template<typename Evaluator>
+	V FindOrDefault(Evaluator &evaluator) const{
+		const V *found = nullptr;
+		return Find<Evaluator>(found, evaluator) ? *found : V();
+	}
+	
+	template<typename Evaluator>
+	V FindOrDefault(Evaluator &&evaluator) const{
+		return FindOrDefault<Evaluator>(evaluator);
 	}
 	
 	

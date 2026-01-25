@@ -91,8 +91,8 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief List of texture coordinates sets names. */
-	inline decStringList &GetTextureCoordinatesSetList(){ return pTextureCoordinatesSetList; }
-	inline const decStringList &GetTextureCoordinatesSetList() const{ return pTextureCoordinatesSetList; }
+	inline decStringList &GetTextureCoordinatesSets(){ return pTextureCoordinatesSetList; }
+	inline const decStringList &GetTextureCoordinatesSets() const{ return pTextureCoordinatesSetList; }
 	/*@}*/
 	
 	

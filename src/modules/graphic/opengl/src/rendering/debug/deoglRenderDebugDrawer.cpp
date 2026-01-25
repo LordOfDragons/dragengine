@@ -252,7 +252,7 @@ void deoglRenderDebugDrawer::pCleanUp(){
 
 void deoglRenderDebugDrawer::pRenderDDSShapes(const deoglRenderPlan &plan,
 const decDMatrix &matrixModel, deoglRDebugDrawer &debugDrawer){
-	const int shapeCount = debugDrawer.GetShapeCount();
+	const int shapeCount = debugDrawer.GetShapes().GetCount();
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglVolumeShape visitor(renderThread);
 	int i, j;
@@ -331,7 +331,7 @@ const decDMatrix &matrixModel, deoglRDebugDrawer &debugDrawer){
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
-	const int shapeCount = debugDrawer.GetShapeCount();
+	const int shapeCount = debugDrawer.GetShapes().GetCount();
 	int i;
 	
 	OGL_CHECK(renderThread, pglBindVertexArray(vao->GetVAO()));

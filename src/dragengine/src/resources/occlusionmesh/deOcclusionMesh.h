@@ -26,6 +26,7 @@
 #define _DEOCCLUSIONMESH_H_
 
 #include "../deFileResource.h"
+#include "../../common/collection/decTList.h"
 #include "../../common/math/decMath.h"
 
 class deOcclusionMeshBone;
@@ -56,19 +57,12 @@ public:
 	
 	
 private:
-	deOcclusionMeshBone *pBones;
-	deOcclusionMeshWeight *pWeights;
-	int *pWeightGroups;
-	deOcclusionMeshVertex *pVertices;
-	unsigned short *pCorners;
-	unsigned short *pFaces;
-	
-	int pBoneCount;
-	int pWeightCount;
-	int pWeightGroupCount;
-	int pVertexCount;
-	int pCornerCount;
-	int pFaceCount;
+	decTList<deOcclusionMeshBone> pBones;
+	decTList<deOcclusionMeshWeight> pWeights;
+	decTList<int> pWeightGroups;
+	decTList<deOcclusionMeshVertex> pVertices;
+	decTList<unsigned short> pCorners;
+	decTList<unsigned short> pFaces;
 	int pDoubleSidedFaceCount;
 	
 	deBaseGraphicOcclusionMesh *pPeerGraphic;
@@ -108,17 +102,9 @@ public:
 	
 	/** \name Bones */
 	/*@{*/
-	/** \brief Number of bones. */
-	inline int GetBoneCount() const{ return pBoneCount; }
-	
-	/** \brief Set number of bones. */
-	void SetBoneCount(int count);
-	
-	/** \brief Retrieves a bone by index. */
-	deOcclusionMeshBone &GetBoneAt(int index) const;
-	
-	/** \brief Pointer to the bones. */
-	inline deOcclusionMeshBone *GetBones() const{ return pBones; }
+	/** \brief Bones. */
+	inline decTList<deOcclusionMeshBone> &GetBones(){ return pBones; }
+	inline const decTList<deOcclusionMeshBone> &GetBones() const{ return pBones; }
 	
 	/** \brief Index of the bone with the given name or -1 if not found. */
 	int IndexOfBoneNamed(const char *name) const;
@@ -131,95 +117,46 @@ public:
 	
 	/** \name Weight Sets */
 	/*@{*/
-	/** \brief Number of weights. */
-	inline int GetWeightCount() const{ return pWeightCount; }
+	/** \brief Weights. */
+	inline decTList<deOcclusionMeshWeight> &GetWeights(){ return pWeights; }
+	inline const decTList<deOcclusionMeshWeight> &GetWeights() const{ return pWeights; }
 	
-	/** \brief Set number of weights. */
-	void SetWeightCount(int count);
-	
-	/** \brief Weight at the given position. */
-	deOcclusionMeshWeight &GetWeightAt(int index) const;
-	
-	/** \brief Pointer to the weights. */
-	inline deOcclusionMeshWeight *GetWeights() const{ return pWeights; }
-	
-	/** \brief Number of weight groups. */
-	inline int GetWeightGroupCount() const{ return pWeightGroupCount; }
-	
-	/** \brief Set number of weight groups. */
-	void SetWeightGroupCount(int count);
-	
-	/** \brief Weight group at the given position. */
-	int GetWeightGroupAt(int index) const;
-	
-	/** \brief Set weight group at the given position. */
-	void SetWeightGroupAt(int index, int weightSetCount) const;
-	
-	/** \brief Pointer to the weight groups. */
-	inline int *GetWeightGroups() const{ return pWeightGroups; }
+	/** \brief Weight groups. */
+	inline decTList<int> &GetWeightGroups(){ return pWeightGroups; }
+	inline const decTList<int> &GetWeightGroups() const{ return pWeightGroups; }
 	/*@}*/
 	
 	
 	
 	/** \name Vertices */
 	/*@{*/
-	/** \brief Number of vertices. */
-	inline int GetVertexCount() const{ return pVertexCount; }
-	
-	/** \brief Set number of vertices. */
-	void SetVertexCount(int count);
-	
-	/** \brief Vertex at the given position. */
-	deOcclusionMeshVertex &GetVertexAt(int index) const;
-	
-	/** \brief Pointer to the vertices. */
-	inline deOcclusionMeshVertex *GetVertices() const{ return pVertices; }
+	/** \brief Vertices. */
+	inline decTList<deOcclusionMeshVertex> &GetVertices(){ return pVertices; }
+	inline const decTList<deOcclusionMeshVertex> &GetVertices() const{ return pVertices; }
 	/*@}*/
 	
 	
 	
 	/** \name Corners */
 	/*@{*/
-	/** \brief Number of corners. */
-	inline int GetCornerCount() const{ return pCornerCount; }
-	
-	/** \brief Set number of corners. */
-	void SetCornerCount(int count);
-	
-	/** \brief Corner at the given position. */
-	unsigned short GetCornerAt(int index) const;
-	
-	/** \brief Set corner at the given position. */
-	void SetCornerAt(int index, unsigned short vertexIndex);
-	
-	/** \brief Pointer to the corners. */
-	inline unsigned short *GetCorners() const{ return pCorners; }
+	/** \brief Corners. */
+	inline decTList<unsigned short> &GetCorners(){ return pCorners; }
+	inline const decTList<unsigned short> &GetCorners() const{ return pCorners; }
 	/*@}*/
 	
 	
 	
 	/** \name Faces */
 	/*@{*/
-	/** \brief Number of faces. */
-	inline int GetFaceCount() const{ return pFaceCount; }
-	
-	/** \brief Set number of faces. */
-	void SetFaceCount(int count);
+	/** \brief Faces. */
+	inline decTList<unsigned short> &GetFaces(){ return pFaces; }
+	inline const decTList<unsigned short> &GetFaces() const{ return pFaces; }
 	
 	/** \brief Number of faces at the end of the face list that are double sided not single sided. */
 	inline int GetDoubleSidedFaceCount() const{ return pDoubleSidedFaceCount; }
 	
 	/** \brief Set number of faces at the end of the face list that are double sided not single sided. */
 	void SetDoubleSidedFaceCount(int count);
-	
-	/** \brief Corner count for the face at the given position. */
-	unsigned short GetFaceAt(int index) const;
-	
-	/** \brief Set corner count for the face at the given position. */
-	void SetFaceAt(int index, unsigned short cornerCount);
-	
-	/** \brief Pointer to the face corner counts. */
-	inline unsigned short *GetFaces() const{ return pFaces; }
 	/*@}*/
 	
 	

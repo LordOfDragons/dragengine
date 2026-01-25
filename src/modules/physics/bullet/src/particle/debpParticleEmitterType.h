@@ -27,6 +27,7 @@
 
 #include "LinearMath/btVector3.h"
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/resources/particle/deParticleEmitterType.h>
 
 class deParticleEmitter;
@@ -95,9 +96,9 @@ private:
 	debpModel *pModel;
 	debpSkin *pModelSkin;
 	
-	float *pParameterValueSamples;
-	float *pParameterSpreadSamples;
-	float *pParameterProgressSamples;
+	decTList<float> pParameterValueSamples;
+	decTList<float> pParameterSpreadSamples;
+	decTList<float> pParameterProgressSamples;
 	
 	float pParamFactorLinVelo;
 	float pParamFactorAngVelo;

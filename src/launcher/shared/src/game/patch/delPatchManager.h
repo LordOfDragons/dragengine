@@ -27,6 +27,7 @@
 
 #include "delPatch.h"
 
+#include <dragengine/common/collection/decTDictionary.h>
 #include <dragengine/common/string/decString.h>
 
 class delLauncher;
@@ -42,6 +43,7 @@ class DE_DLL_EXPORT delPatchManager{
 private:
 	delLauncher &pLauncher;
 	delPatch::List pPatches;
+	decTStringDictionary<delPatch::List> pCachedSearchResults;
 	
 	
 	
@@ -80,6 +82,9 @@ public:
 	
 	/** \brief Clear. */
 	void Clear();
+	
+	/** \brief Clear cached search results. */
+	void ClearCachedSearchResults();
 	/*@}*/
 	
 	

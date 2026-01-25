@@ -57,8 +57,7 @@ dexsiDeviceManager::dexsiDeviceManager(deXSystemInput &module) :
 pModule(module),
 pInotifyFd(-1),
 pInotifyWatchEvdev(-1),
-pInotifyBufferLen(1024 * (sizeof(inotify_event) + 16)),
-pInotifyBuffer(new uint8_t[pInotifyBufferLen]),
+pInotifyBuffer((int)(1024 * (sizeof(inotify_event) + 16)), 0),
 pTimeoutDelayProbeDevices(0.0f)
 {
 	try{
@@ -183,7 +182,6 @@ decString dexsiDeviceManager::NormalizeID(const char *id){
 
 void dexsiDeviceManager::pCleanUp(){
 	pStopWatchEvdev();
-	delete [] pInotifyBuffer;
 }
 
 
@@ -498,7 +496,7 @@ void dexsiDeviceManager::pStopWatchEvdev(){
 }
 
 void dexsiDeviceManager::pUpdateWatchEvdev(){
-	const ssize_t length = read(pInotifyFd, pInotifyBuffer, pInotifyBufferLen);
+	const ssize_t length = read(pInotifyFd, pInotifyBuffer.GetArrayPointer(), pInotifyBuffer.GetCount());
 	if(length <= 0){
 		return;
 	}
@@ -507,7 +505,7 @@ void dexsiDeviceManager::pUpdateWatchEvdev(){
 	ssize_t position = 0;
 	
 	while(position < length){
-		const inotify_event &event = *((inotify_event*)(pInotifyBuffer + position));
+		const inotify_event &event = *reinterpret_cast<inotify_event*>(pInotifyBuffer.GetArrayPointer() + position);
 		
 		if(event.len > 0){
 			if((event.mask & IN_CREATE) == IN_CREATE){

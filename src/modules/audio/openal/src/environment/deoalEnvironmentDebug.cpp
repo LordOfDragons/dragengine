@@ -327,7 +327,7 @@ void deoalEnvironmentDebug::SoundRays(deDebugDrawer &debugDrawer, const deoalEnv
 		default: color.Set(1.0f, 0.0f, hsvX, colorA);
 		}
 		
-		deDebugDrawerShape * const shape = new deDebugDrawerShape;
+		auto shape = deDebugDrawerShape::Ref::New();
 		shape->SetFillColor(decColor(0.0f, 0.0f, 0.0f, 0.0f));
 		shape->SetEdgeColor(color);
 		
@@ -336,15 +336,15 @@ void deoalEnvironmentDebug::SoundRays(deDebugDrawer &debugDrawer, const deoalEnv
 		for(j=0; j<segmentCount; j++){
 			const deoalSoundRaySegment &segment = srlist.GetSegmentAt(firstSegment + j);
 			
-			deDebugDrawerShapeFace * const face = new deDebugDrawerShapeFace;
+			auto face = deDebugDrawerShapeFace::Ref::New();
 			face->AddVertex(segment.GetPosition());
 			face->AddVertex(segment.GetPosition() + segment.GetDirection() * segment.GetLength());
 			face->AddVertex(segment.GetPosition());
 			face->SetNormal(decVector(0.0f, 0.0f, 1.0f));
-			shape->AddFace(face);
+			shape->AddFace(std::move(face));
 		}
 		
-		debugDrawer.AddShape(shape);
+		debugDrawer.AddShape(std::move(shape));
 	}
 	
 	debugDrawer.NotifyShapeGeometryChanged();
@@ -372,7 +372,7 @@ void deoalEnvironmentDebug::pShowImpulseResponse(deDebugBlockInfo &debugInfo){
 		
 		memset(pixels, 0, sizeof(sRGBA8) * (pHistogramSize.x * pHistogramSize.y));
 		
-		const int count = pImpulseResponse.GetCount();
+		const int count = pImpulseResponse.GetImpulses().GetCount();
 		int i, j, k;
 		
 		const int offsetBottom = pHistogramSize.x * (pHistogramSize.y - 1);
@@ -385,7 +385,7 @@ void deoalEnvironmentDebug::pShowImpulseResponse(deDebugBlockInfo &debugInfo){
 			const sRGB8 &bandColor = bandColors[i];
 			
 			for(j=0; j<count; j++){
-				const deoalImpulseResponse::sImpulse &impulse = pImpulseResponse.GetAt(j);
+				const deoalImpulseResponse::sImpulse &impulse = pImpulseResponse.GetImpulses()[j];
 				const int baseOffset = (int)(impulse.time * timeScale + 0.5f);
 				if(baseOffset < 0 || baseOffset > 49 || offsetBand + baseOffset >= pHistogramSize.x){
 					continue;
@@ -457,11 +457,11 @@ void deoalEnvironmentDebug::pShowEnergyHistogram(deDebugBlockInfo &debugInfo){
 	// build energy histogram
 	pEnergyHistogram.Clear();
 	
-	const int impulseCount = pImpulseResponse.GetCount();
+	const int impulseCount = pImpulseResponse.GetImpulses().GetCount();
 	int i;
 	
 	for(i=0; i<impulseCount; i++){
-		const deoalImpulseResponse::sImpulse &impulse = pImpulseResponse.GetAt(i);
+		const deoalImpulseResponse::sImpulse &impulse = pImpulseResponse.GetImpulses()[i];
 		const float entries[3] = {impulse.low, impulse.medium, impulse.high};
 		pEnergyHistogram.AddMax(impulse.time, entries);
 // 		pEnvironment.GetAudioThread().GetLogger().LogInfoFormat( "Impulse: time=%f energy=(%f,%f,%f)",
@@ -490,14 +490,14 @@ void deoalEnvironmentDebug::pShowEnergyHistogram(deDebugBlockInfo &debugInfo){
 		const int bandCount = decMath::min(pEnergyHistogram.GetBandCount(), 3);
 		int j, k;
 		
-		const float * const entries = pEnergyHistogram.GetEntries();
+		const decTList<float> &entries = pEnergyHistogram.GetEntries();
 		const int offsetBottom = pHistogramSize.x * (pHistogramSize.y - 1);
 		const sRGB8 bandColors[3] = {{255, 0, 0}, {0, 255, 0}, {128, 128, 255} };
 		
 		for(i=0; i<bandCount; i++){
 			const int offsetBand = (slotCount + 2) * i;
 			sRGBA8 * const bandPixels = pixels + offsetBand;
-			const float * const bandEntries = entries + slotCount * i;
+			const float * const bandEntries = entries.GetArrayPointer() + slotCount * i;
 			const sRGB8 &bandColor = bandColors[i];
 			
 			for(j=0; j<slotCount; j++){

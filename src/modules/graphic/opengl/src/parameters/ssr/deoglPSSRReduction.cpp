@@ -51,13 +51,10 @@ deoglParameterInt(ogl)
 	SetDisplayName("SSR Reduction");
 	SetCategory(ecAdvanced);
 	
-	const deModuleParameter::SelectionEntry entries[4] = {
-		{"1", "1x", "Render SSR at full resolution. For strong graphic cards."},
-		{"2", "2x", "Render SSR at half resolution then up-scale to full resolution."},
-		{"4", "4x", "Render SSR at quarter resolution then up-scale to full resolution."},
-		{"8", "8x", "Render SSR at 1/8 resolution then up-scale to full resolution."}
-	};
-	AddSelectionEntries(entries, 4);
+	AddSelectionEntry({"1", "1x", "Render SSR at full resolution. For strong graphic cards."});
+	AddSelectionEntry({"2", "2x", "Render SSR at half resolution then up-scale to full resolution."});
+	AddSelectionEntry({"4", "4x", "Render SSR at quarter resolution then up-scale to full resolution."});
+	AddSelectionEntry({"8", "8x", "Render SSR at 1/8 resolution then up-scale to full resolution."});
 	
 	SetDefaultValue("1");
 }

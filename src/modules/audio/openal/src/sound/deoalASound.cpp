@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "deoalASound.h"
 #include "deoalDecodeBuffer.h"
 #include "../deoalCaches.h"
@@ -97,8 +94,6 @@ pBuffer(0),
 pFormat(0),
 pValid(false),
 
-pStreamData(nullptr),
-pStreamDataSize(0),
 pStreaming(true),
 pIsUsed(false),
 pIsCached(false)
@@ -154,7 +149,7 @@ void deoalASound::PreloadSound(deSound &sound){
 				pFilename.GetString());
 		}
 		
-		if(!pStreamData){
+		if(pStreamData.IsEmpty()){
 			pLoadEntireSound(sound);
 		}
 		
@@ -171,7 +166,7 @@ void deoalASound::PrepareBuffers(){
 	if(!pBuffer){
 		OAL_CHECK(pAudioThread, alGenBuffers(1, &pBuffer));
 		OAL_CHECK(pAudioThread, alBufferData(pBuffer, pFormat,
-			(const ALvoid *)pStreamData, pStreamDataSize, pSampleRate));
+			(const ALvoid *)pStreamData.GetArrayPointer(), pStreamData.GetCount(), pSampleRate));
 	}
 }
 
@@ -199,10 +194,6 @@ public:
 };
 
 void deoalASound::pCleanUp(){
-	if(pStreamData){
-		delete [] pStreamData;
-	}
-	
 	// delayed deletion
 	if(pBuffer){
 		try{
@@ -303,9 +294,8 @@ void deoalASound::pLoadFromCache(){
 		}
 		
 		if(header.bufferSize > 0){
-			pStreamData = new char[header.bufferSize];
-			pStreamDataSize = header.bufferSize;
-			reader->Read(pStreamData, pStreamDataSize);
+			pStreamData.SetCountDiscard(header.bufferSize);
+			reader->Read(pStreamData.GetArrayPointer(), pStreamData.GetCount());
 		}
 		
 		// done
@@ -360,7 +350,7 @@ void deoalASound::pWriteToCache(){
 	header.sampleCount = (uint32_t)pSampleCount;
 	header.sampleRate = (uint32_t)pSampleRate;
 	header.format = (uint32_t)pFormat;
-	header.bufferSize = (uint32_t)pStreamDataSize;
+	header.bufferSize = (uint32_t)pStreamData.GetCount();
 	
 	// write cache
 	caches.Lock();
@@ -368,8 +358,8 @@ void deoalASound::pWriteToCache(){
 	try{
 		decBaseFileWriter::Ref writer(cacheSound.Write(pFilename));
 		writer->Write(&header, sizeof(header));
-		if(pStreamDataSize > 0){
-			writer->Write(pStreamData, pStreamDataSize);
+		if(pStreamData.IsNotEmpty()){
+			writer->Write(pStreamData.GetArrayPointer(), pStreamData.GetCount());
 		}
 		writer = nullptr;
 		
@@ -463,19 +453,20 @@ void deoalASound::pDetermineFormat(){
 
 
 void deoalASound::pLoadEntireSound(deSound &sound){
-	if(pStreamData){
+	if(pStreamData.IsNotEmpty()){
 		return;
 	}
 	
 	const int bufferSize = pSampleCount * pBytesPerSample * pChannelCount;
 	if(bufferSize == 0){
-		pStreamData = new char[1]; // just so we know there is nothing
+		// just so we know there is nothing
+		pStreamData.SetCountDiscard(1);
+		pStreamData[0] = 0;
 		return;
 	}
 	
-	pStreamData = new char[bufferSize];
-	pStreamDataSize = bufferSize;
+	pStreamData.SetCountDiscard(bufferSize);
 	
 	pAudioThread.GetOal().GetGameEngine()->GetSoundManager()->CreateDecoder(&sound)->
-		ReadSamples(pStreamData, bufferSize);
+		ReadSamples(pStreamData.GetArrayPointer(), bufferSize);
 }

@@ -1562,10 +1562,7 @@ void deScriptingDragonScript::pLoadGamePackage(const char *directory, const char
 		LogInfo("Load game package");
 		
 		// load package
-//		if( ! ( path = new char[strlen( basePath )+strlen( directory )+2] ) ) DSTHROW( dueOutOfMemory );
-//		sprintf( path, "%s/%s", basePath, directory );
-		LoadPackage(DESM_GAME_PACKAGE, directory /*path*/);
-//		delete [] path;
+		LoadPackage(DESM_GAME_PACKAGE, directory);
 		
 		// examine package to find class to start
 		package = pScriptEngine->GetPackage(DESM_GAME_PACKAGE);

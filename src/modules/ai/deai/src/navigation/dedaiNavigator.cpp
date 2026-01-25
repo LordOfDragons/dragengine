@@ -174,10 +174,11 @@ void dedaiNavigator::UpdateDDSPath(){
 		// ensure the debug drawer shapes exists or not depending on the show states
 		if(devmode.GetShowPath()){
 			if(!pDDSPath){
-				pDDSPath = new deDebugDrawerShape;
-				pDDSPath->SetFillColor(decColor(1.0f, 0.5f, 0.0f, 0.1f));
-				pDDSPath->SetEdgeColor(decColor(1.0f, 0.5f, 0.0f, 0.8f));
-				pDebugDrawer->AddShape(pDDSPath);
+				auto shape = deDebugDrawerShape::Ref::New();
+				shape->SetFillColor(decColor(1.0f, 0.5f, 0.0f, 0.1f));
+				shape->SetEdgeColor(decColor(1.0f, 0.5f, 0.0f, 0.8f));
+				pDDSPath = shape;
+				pDebugDrawer->AddShape(std::move(shape));
 			}
 			
 		}else{
@@ -189,24 +190,27 @@ void dedaiNavigator::UpdateDDSPath(){
 		
 		if(devmode.GetShowPathFaces()){
 			if(!pDDSPathFaces){
-				pDDSPathFaces = new deDebugDrawerShape;
-				pDDSPathFaces->SetFillColor(decColor(0.0f, 1.0f, 1.0f, 0.2f));
-				pDDSPathFaces->SetEdgeColor(decColor(0.0f, 1.0f, 1.0f, 0.8f));
-				pDebugDrawer->AddShape(pDDSPathFaces);
+				auto shape = deDebugDrawerShape::Ref::New();
+				shape->SetFillColor(decColor(0.0f, 1.0f, 1.0f, 0.2f));
+				shape->SetEdgeColor(decColor(0.0f, 1.0f, 1.0f, 0.8f));
+				pDDSPathFaces = shape;
+				pDebugDrawer->AddShape(std::move(shape));
 			}
 			/*
 			if(!pDDSPathFacesOpen){
-				pDDSPathFacesOpen = new deDebugDrawerShape;
-				pDDSPathFacesOpen->SetFillColor(decColor(0.0f, 0.6f, 0.0f, 0.2f));
-				pDDSPathFacesOpen->SetEdgeColor(decColor(0.0f, 0.6f, 0.0f, 0.8f));
-				pDebugDrawer->AddShape(pDDSPathFacesOpen);
+				auto shape = deDebugDrawerShape::Ref::New();
+				shape->SetFillColor(decColor(0.0f, 0.6f, 0.0f, 0.2f));
+				shape->SetEdgeColor(decColor(0.0f, 0.6f, 0.0f, 0.8f));
+				pDDSPathFacesOpen = shape;
+				pDebugDrawer->AddShape(std::move(shape));
 			}
 			
 			if(!pDDSPathFacesClosed){
-				pDDSPathFacesClosed = new deDebugDrawerShape;
-				pDDSPathFacesClosed->SetFillColor(decColor(0.6f, 0.0f, 0.0f, 0.2f));
-				pDDSPathFacesClosed->SetEdgeColor(decColor(0.6f, 0.0f, 0.0f, 0.8f));
-				pDebugDrawer->AddShape(pDDSPathFacesClosed);
+				auto = deDebugDrawerShape::Ref::New();
+				shape->SetFillColor(decColor(0.6f, 0.0f, 0.0f, 0.2f));
+				shape->SetEdgeColor(decColor(0.6f, 0.0f, 0.0f, 0.8f));
+				pDDSPathFacesClosed = shape;
+				pDebugDrawer->AddShape(std::move(shape));
 			}
 			*/
 			
@@ -341,13 +345,9 @@ void dedaiNavigator::FindPath(deNavigatorPath &path, const decDVector &start, co
 		pathfinder.SetEndPoint(goal);
 		pathfinder.FindPath();
 		
-		const decDVector * const pfpath = pathfinder.GetPathPoints();
-		const int count = pathfinder.GetPathPointCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			path.Add(pfpath[i]);
-		}
+		pathfinder.GetPathPoints().Visit([&](const decDVector &point){
+			path.Add(point);
+		});
 		
 		if(pDDSPath){
 			pDebugDrawer->SetPosition(start);
@@ -365,13 +365,9 @@ void dedaiNavigator::FindPath(deNavigatorPath &path, const decDVector &start, co
 		pathfinder.SetDDSListClosed(pDDSPathFacesClosed);
 		pathfinder.FindPath();
 		
-		const decDVector * const pfpath = pathfinder.GetPathPoints();
-		const int count = pathfinder.GetPathPointCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			path.Add(pfpath[i]);
-		}
+		pathfinder.GetPathPoints().Visit([&](const decDVector &point){
+			path.Add(point);
+		});
 		
 		if(pDDSPath || pDDSPathFaces){
 			pDebugDrawer->SetPosition(start);

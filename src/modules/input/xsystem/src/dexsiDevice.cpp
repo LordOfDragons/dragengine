@@ -67,7 +67,6 @@ pXDeviceType(exdtOther),
 
 pX11FirstKeyCode(0),
 pX11KeyCodeCount(0),
-pX11KeyCodeMap(nullptr),
 
 pDirtyAxesValues(false){
 }
@@ -85,7 +84,6 @@ pXDeviceType(exdtOther),
 
 pX11FirstKeyCode(0),
 pX11KeyCodeCount(0),
-pX11KeyCodeMap(nullptr),
 
 pDirtyAxesValues(false)
 {
@@ -136,9 +134,6 @@ pDirtyAxesValues(false)
 // https://www.kernel.org/doc/Documentation/input/joystick-api.txt
 
 dexsiDevice::~dexsiDevice(){
-	if(pX11KeyCodeMap){
-		delete [] pX11KeyCodeMap;
-	}
 }
 
 
@@ -281,21 +276,13 @@ void dexsiDevice::ResetX11KeyCodeMap(int firstKeyCode, int keyCodeCount){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(pX11KeyCodeMap){
-		delete [] pX11KeyCodeMap;
-		pX11KeyCodeMap = nullptr;
-	}
+	pX11KeyCodeMap.RemoveAll();
 	
 	pX11FirstKeyCode = firstKeyCode;
 	pX11KeyCodeCount = keyCodeCount;
 	
 	if(keyCodeCount > 0){
-		pX11KeyCodeMap = new int[keyCodeCount];
-		
-		int i;
-		for(i=0; i<pX11KeyCodeCount; i++){
-			pX11KeyCodeMap[i] = -1;
-		}
+		pX11KeyCodeMap.AddRange(keyCodeCount, -1);
 	}
 }
 

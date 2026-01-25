@@ -40,9 +40,7 @@ public:
 	
 private:
 	deSynthesizer::Ref pSynthesizer;
-	
-	int *pConnections;
-	int pConnectionCount;
+	decTList<int> pConnections;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -81,15 +79,8 @@ public:
 	 */
 	void UpdateConnectionCount();
 	
-	/**
-	 * \brief Number of connections.
-	 * 
-	 * This is the number of controllers in the child synthesizer if present or 0 if absent.
-	 */
-	inline int GetConnectionCount() const{ return pConnectionCount; }
-	
-	/** \brief Index of local controller for child controller. */
-	int GetConnectionAt(int childController) const;
+	/** \brief Connections. */
+	inline const decTList<int> &GetConnections() const{ return pConnections; }
 	
 	/** \brief Set index of local controller for child controller. */
 	void SetConnectionAt(int childController, int localController);

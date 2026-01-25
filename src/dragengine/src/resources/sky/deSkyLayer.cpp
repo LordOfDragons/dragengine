@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deSkyLayer.h"
 #include "deSkyLayerBody.h"
 #include "deSkyControllerTarget.h"
@@ -49,18 +45,11 @@ pLightColor(1.0f, 1.0f, 1.0f),
 pLightIntensity(0.0f),
 pAmbientIntensity(0.0f),
 
-pBodies(nullptr),
-pBodyCount(0),
-
 pMulBySkyLight(false),
 pMulBySkyColor(false){
 }
 
-deSkyLayer::~deSkyLayer(){
-	if(pBodies){
-		delete [] pBodies;
-	}
-}
+deSkyLayer::~deSkyLayer() = default;
 
 
 
@@ -110,29 +99,6 @@ void deSkyLayer::SetAmbientIntensity(float intensity){
 }
 
 
-
-void deSkyLayer::SetBodyCount(int count){
-	if(pBodies){
-		delete [] pBodies;
-		pBodies = nullptr;
-		pBodyCount = 0;
-	}
-	
-	if(count > 0){
-		pBodies = new deSkyLayerBody[count];
-		pBodyCount = count;
-	}
-}
-
-deSkyLayerBody &deSkyLayer::GetBodyAt(int index) const{
-	if(index < 0 || index >= pBodyCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pBodies[index];
-}
-
-
-
 const deSkyControllerTarget &deSkyLayer::GetTarget(eTargets target) const{
 	if(target < etOffsetX || target > etAmbientIntensity){
 		DETHROW(deeInvalidParam);
@@ -146,7 +112,6 @@ deSkyControllerTarget &deSkyLayer::GetTarget(eTargets target){
 	}
 	return pTargets[target];
 }
-
 
 
 void deSkyLayer::SetMultiplyBySkyLight(bool multiply){

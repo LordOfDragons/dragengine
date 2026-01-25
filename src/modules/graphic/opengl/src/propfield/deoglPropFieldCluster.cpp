@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglPropField.h"
 #include "deoglPropFieldCluster.h"
 #include "deoglRPropField.h"
@@ -108,7 +104,7 @@ void deoglPropFieldCluster::WorldComputeElement::UpdateDataGeometries(sDataEleme
 	int filters = skinTexture->GetRenderTaskFilters() & ~RenderFilterOutline;
 	filters |= ertfShadow;
 	if(modelTex.GetDecal()){
-		filters |= ertfDecal;
+		filters |= ertfDecal | ertfDecalSolidParent;
 	}
 	
 	SetDataGeometry(*data, 0, filters, deoglSkinTexturePipelinesList::eptPropField,
@@ -142,12 +138,6 @@ pPropFieldType(propFieldType),
 pRenderThread(propFieldType.GetPropField().GetRenderThread()),
 pWorldComputeElement(WorldComputeElement::Ref::New(*this)),
 
-pInstances(nullptr),
-pInstanceCount(0),
-
-pBendStateData(nullptr),
-pBendStateDataSize(0),
-
 pTUCDepth(nullptr),
 pTUCGeometry(nullptr),
 pTUCShadow(nullptr),
@@ -174,13 +164,6 @@ deoglPropFieldCluster::~deoglPropFieldCluster(){
 	
 	if(pRTSInstance){
 		pRTSInstance->ReturnToPool();
-	}
-	
-	if(pBendStateData){
-		delete [] pBendStateData;
-	}
-	if(pInstances){
-		delete [] pInstances;
 	}
 	
 	if(pTUCDepth){
@@ -224,23 +207,9 @@ void deoglPropFieldCluster::SetExtends(const decVector &minExtend, const decVect
 }
 
 void deoglPropFieldCluster::SetInstanceCount(int count){
-	if(count < 0){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_TRUE(count >= 0)
 	
-	if(count != pInstanceCount){
-		sInstance *instances = nullptr;
-		
-		if(count > 0){
-			instances = new sInstance[count];
-		}
-		
-		if(pInstances){
-			delete [] pInstances;
-		}
-		pInstances = instances;
-		pInstanceCount = count;
-	}
+	pInstances.SetCount(count, {});
 	
 	pDirtyRTSInstance = true;
 }
@@ -256,43 +225,29 @@ void deoglPropFieldCluster::PrepareForRender(){
 void deoglPropFieldCluster::PrepareBendStateData(const dePropFieldType &type){
 	// WARNING Called during synchronization by main thread.
 	
-	const dePropFieldBendState * const engBendStates = type.GetBendStates();
-	const int engBendStateCount = type.GetBendStateCount();
-	const int vboDataSize = pInstanceCount * 4; // sizeof(halfFloat) * 2
+	const dePropFieldBendState * const engBendStates = type.GetBendStates().GetArrayPointer();
+	const int engBendStateCount = type.GetBendStates().GetCount();
+	const int vboDataSize = pInstances.GetCount() * 4; // sizeof(halfFloat) * 2
 	
-	if(vboDataSize > pBendStateDataSize){
-		if(pBendStateData){
-			delete [] pBendStateData;
-			pBendStateData = nullptr;
-			pBendStateDataSize = 0;
-		}
-		
-		if(vboDataSize > 0){
-			pBendStateData = new char[vboDataSize];
-			pBendStateDataSize = vboDataSize;
-		}
-	}
+	pBendStateData.SetCountDiscard(vboDataSize);
 	
-	HALF_FLOAT * const vboData = (HALF_FLOAT*)pBendStateData;
+	HALF_FLOAT * const vboData = (HALF_FLOAT*)pBendStateData.GetArrayPointer();
 	const HALF_FLOAT halfZero = CONVERT_FLOAT_TO_HALF(0.0f);
 	HALF_FLOAT *vboDataPtr = vboData;
-	int i;
 	
-	for(i=0; i<pInstanceCount; i++){
-		const sInstance &instance = pInstances[i];
-		
+	pInstances.Visit([&](const sInstance &instance){
 		// pixel 1: bend.x, bend.z
 		if(instance.bstate >= 0 && instance.bstate < engBendStateCount){
 			const dePropFieldBendState &engBendState = engBendStates[instance.bstate];
 			
-			*( vboDataPtr++ ) = CONVERT_FLOAT_TO_HALF( engBendState.GetBendX() ); // pixel 1 r: bend.x
-			*( vboDataPtr++ ) = CONVERT_FLOAT_TO_HALF( engBendState.GetBendZ() ); // pixel 1 g: bend.z
+			*(vboDataPtr++) = CONVERT_FLOAT_TO_HALF(engBendState.GetBendX()); // pixel 1 r: bend.x
+			*(vboDataPtr++) = CONVERT_FLOAT_TO_HALF(engBendState.GetBendZ()); // pixel 1 g: bend.z
 			
 		}else{
-			*( vboDataPtr++ ) = halfZero; // pixel 1 r: bend.x
-			*( vboDataPtr++ ) = halfZero; // pixel 1 g: bend.z
+			*(vboDataPtr++) = halfZero; // pixel 1 r: bend.x
+			*(vboDataPtr++) = halfZero; // pixel 1 g: bend.z
 		}
-	}
+	});
 	
 	pDirtyBendStates = true;
 	pPropFieldType.ClusterRequiresPrepareForRender();
@@ -485,32 +440,29 @@ void deoglPropFieldCluster::pPrepareTBOs(){
 
 void deoglPropFieldCluster::pUpdateTBOInstances(){
 	deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
-	const int vboDataSize = pInstanceCount * 24; // sizeof(HALF_FLOAT) * 12
+	const int vboDataSize = pInstances.GetCount() * 24; // sizeof(HALF_FLOAT) * 12
 	HALF_FLOAT * const vboData = (HALF_FLOAT*)pRenderThread.GetBufferObject().GetTemporaryVBOData(vboDataSize);
 	HALF_FLOAT *vboDataPtr = vboData;
-	int i;
 	
-	for(i=0; i<pInstanceCount; i++){
-		const sInstance &instance = pInstances[i];
-		
+	pInstances.Visit([&](const sInstance &instance){
 		// pixel 1: pos.x,           pos.y,           pos.z,           rot.a13 * scale
 		// pixel 2: rot.a11 * scale, rot.a21 * scale, rot.a31 * scale, rot.a23 * scale
 		// pixel 3: rot.a12 * scale, rot.a22 * scale, rot.a32 * scale, rot.a33 * scale
-		*( vboDataPtr++ ) = CONVERT_FLOAT_TO_HALF( instance.position[ 0 ] );                    // pixel 1 r: pos.x
-		*( vboDataPtr++ ) = CONVERT_FLOAT_TO_HALF( instance.position[ 1 ] );                    // pixel 1 g: pos.y
-		*( vboDataPtr++ ) = CONVERT_FLOAT_TO_HALF( instance.position[ 2 ] );                    // pixel 1 b: pos.z
-		*( vboDataPtr++ ) = CONVERT_FLOAT_TO_HALF( instance.rotation[ 2 ] * instance.scaling ); // pixel 1 a: rot.a13 * scale
+		*(vboDataPtr++) = CONVERT_FLOAT_TO_HALF(instance.position[0]);                    // pixel 1 r: pos.x
+		*(vboDataPtr++) = CONVERT_FLOAT_TO_HALF(instance.position[1]);                    // pixel 1 g: pos.y
+		*(vboDataPtr++) = CONVERT_FLOAT_TO_HALF(instance.position[2]);                    // pixel 1 b: pos.z
+		*(vboDataPtr++) = CONVERT_FLOAT_TO_HALF(instance.rotation[2] * instance.scaling); // pixel 1 a: rot.a13 * scale
 		
-		*( vboDataPtr++ ) = CONVERT_FLOAT_TO_HALF( instance.rotation[ 0 ] * instance.scaling ); // pixel 2 r: rot.a11 * scale
-		*( vboDataPtr++ ) = CONVERT_FLOAT_TO_HALF( instance.rotation[ 3 ] * instance.scaling ); // pixel 2 g: rot.a21 * scale
-		*( vboDataPtr++ ) = CONVERT_FLOAT_TO_HALF( instance.rotation[ 6 ] * instance.scaling ); // pixel 2 b: rot.a31 * scale
-		*( vboDataPtr++ ) = CONVERT_FLOAT_TO_HALF( instance.rotation[ 5 ] * instance.scaling ); // pixel 2 a: rot.a23 * scale
+		*(vboDataPtr++) = CONVERT_FLOAT_TO_HALF(instance.rotation[0] * instance.scaling); // pixel 2 r: rot.a11 * scale
+		*(vboDataPtr++) = CONVERT_FLOAT_TO_HALF(instance.rotation[3] * instance.scaling); // pixel 2 g: rot.a21 * scale
+		*(vboDataPtr++) = CONVERT_FLOAT_TO_HALF(instance.rotation[6] * instance.scaling); // pixel 2 b: rot.a31 * scale
+		*(vboDataPtr++) = CONVERT_FLOAT_TO_HALF(instance.rotation[5] * instance.scaling); // pixel 2 a: rot.a23 * scale
 		
-		*( vboDataPtr++ ) = CONVERT_FLOAT_TO_HALF( instance.rotation[ 1 ] * instance.scaling ); // pixel 3 r: rot.a12 * scale
-		*( vboDataPtr++ ) = CONVERT_FLOAT_TO_HALF( instance.rotation[ 4 ] * instance.scaling ); // pixel 3 g: rot.a22 * scale
-		*( vboDataPtr++ ) = CONVERT_FLOAT_TO_HALF( instance.rotation[ 7 ] * instance.scaling ); // pixel 3 b: rot.a32 * scale
-		*( vboDataPtr++ ) = CONVERT_FLOAT_TO_HALF( instance.rotation[ 8 ] * instance.scaling ); // pixel 3 a: rot.a33 * scale
-	}
+		*(vboDataPtr++) = CONVERT_FLOAT_TO_HALF(instance.rotation[1] * instance.scaling); // pixel 3 r: rot.a12 * scale
+		*(vboDataPtr++) = CONVERT_FLOAT_TO_HALF(instance.rotation[4] * instance.scaling); // pixel 3 g: rot.a22 * scale
+		*(vboDataPtr++) = CONVERT_FLOAT_TO_HALF(instance.rotation[7] * instance.scaling); // pixel 3 b: rot.a32 * scale
+		*(vboDataPtr++) = CONVERT_FLOAT_TO_HALF(instance.rotation[8] * instance.scaling); // pixel 3 a: rot.a33 * scale
+	});
 	
 	OGL_CHECK(pRenderThread, pglGenBuffers(1, &pVBOInstances));
 	OGL_CHECK(pRenderThread, pglBindBuffer(GL_TEXTURE_BUFFER, pVBOInstances));
@@ -530,7 +482,7 @@ void deoglPropFieldCluster::pUpdateTBOInstances(){
 }
 
 void deoglPropFieldCluster::pUpdateTBOBendStates(){
-	const int vboDataSize = pInstanceCount * 4; // sizeof(halfFloat) * 2
+	const int vboDataSize = pInstances.GetCount() * 4; // sizeof(halfFloat) * 2
 	
 	if(!pVBOBendStates){
 		OGL_CHECK(pRenderThread, pglGenBuffers(1, &pVBOBendStates));
@@ -538,7 +490,8 @@ void deoglPropFieldCluster::pUpdateTBOBendStates(){
 	
 	OGL_CHECK(pRenderThread, pglBindBuffer(GL_TEXTURE_BUFFER, pVBOBendStates));
 	OGL_CHECK(pRenderThread, pglBufferData(GL_TEXTURE_BUFFER, vboDataSize, nullptr, GL_STREAM_DRAW));
-	OGL_CHECK(pRenderThread, pglBufferData(GL_TEXTURE_BUFFER, vboDataSize, pBendStateData, GL_STREAM_DRAW));
+	OGL_CHECK(pRenderThread, pglBufferData(GL_TEXTURE_BUFFER,
+		vboDataSize, pBendStateData.GetArrayPointer(), GL_STREAM_DRAW));
 	
 	if(!pTBOBendStates){
 		deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
@@ -598,7 +551,7 @@ void deoglPropFieldCluster::pUpdateRTSInstances(){
 		const deoglSharedVBOBlock &vboBlock = *modelLod.GetVBOBlock();
 		pRTSInstance->SetFirstPoint(vboBlock.GetOffset());
 		pRTSInstance->SetFirstIndex(vboBlock.GetIndexOffset() + modelTexture.GetFirstFace() * 3);
-		pRTSInstance->SetSubInstanceCount(pInstanceCount);
+		pRTSInstance->SetSubInstanceCount(pInstances.GetCount());
 		
 	}else{
 		pRTSInstance->SetFirstPoint(0);

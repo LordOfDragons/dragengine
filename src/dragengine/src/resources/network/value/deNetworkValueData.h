@@ -27,6 +27,7 @@
 
 #include <stdint.h>
 
+#include "../../../common/collection/decTList.h"
 #include "deNetworkValue.h"
 
 
@@ -45,8 +46,7 @@ public:
 	
 	
 private:
-	uint8_t *pData;
-	int pLength;
+	decTList<uint8_t> pData;
 	
 	
 	
@@ -64,11 +64,12 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Data pointer. */
-	inline uint8_t *GetData() const{ return pData; }
+	/** \brief Pointer to the data. */
+	inline uint8_t *GetData(){ return pData.GetArrayPointer(); }
+	inline const uint8_t *GetData() const{ return pData.GetArrayPointer(); }
 	
 	/** \brief Length of the data. */
-	inline int GetLength() const{ return pLength; }
+	inline int GetLength() const{ return pData.GetCount(); }
 	
 	/**
 	 * \brief Set length of data.

@@ -39,8 +39,6 @@
 ////////////////////////////
 
 decTimeHistory::decTimeHistory(int initialSize, int cutExtremeValues) :
-pEntries(nullptr),
-pSorted(nullptr),
 pSize(0),
 pHead(0),
 pTail(0),
@@ -55,14 +53,7 @@ pAverage(0.0f)
 	SetCutExtremeValues(cutExtremeValues);
 }
 
-decTimeHistory::~decTimeHistory(){
-	if(pSorted){
-		delete [] pSorted;
-	}
-	if(pEntries){
-		delete [] pEntries;
-	}
-}
+decTimeHistory::~decTimeHistory() = default;
 
 
 
@@ -82,18 +73,12 @@ void decTimeHistory::SetSize(int size){
 	pTail = 0;
 	pCount = 0;
 	
-	if(pSorted){
-		delete [] pSorted;
-		pSorted = nullptr;
-	}
-	if(pEntries){
-		delete [] pEntries;
-		pEntries = nullptr;
-	}
+	pEntries.RemoveAll();
+	pSorted.RemoveAll();
 	pSize = 0;
 	
-	pEntries = new float[size];
-	pSorted = new float[size];
+	pEntries.AddRange(size, {});
+	pSorted.AddRange(size, {});
 	pSize = size;
 }
 

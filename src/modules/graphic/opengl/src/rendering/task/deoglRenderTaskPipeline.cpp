@@ -65,27 +65,27 @@ void deoglRenderTaskPipeline::Reset(){
 
 
 int deoglRenderTaskPipeline::GetTotalPointCount() const{
-	return pTextures.Inject(0, [](int sum, const deoglRenderTaskTexture &t){
+	return pTextures.Inject(0, 0, pTextureCount, [](int sum, const deoglRenderTaskTexture &t){
 		return sum + t.GetTotalPointCount();
-	}, 0, pTextureCount);
+	});
 }
 
 int deoglRenderTaskPipeline::GetTotalVAOCount() const{
-	return pTextures.Inject(0, [](int sum, const deoglRenderTaskTexture &t){
+	return pTextures.Inject(0, 0, pTextureCount, [](int sum, const deoglRenderTaskTexture &t){
 		return sum + t.GetVAOCount();
-	}, 0, pTextureCount);
+	});
 }
 
 int deoglRenderTaskPipeline::GetTotalInstanceCount() const{
-	return pTextures.Inject(0, [](int sum, const deoglRenderTaskTexture &t){
+	return pTextures.Inject(0, 0, pTextureCount, [](int sum, const deoglRenderTaskTexture &t){
 		return sum + t.GetTotalInstanceCount();
-	}, 0, pTextureCount);
+	});
 }
 
 int deoglRenderTaskPipeline::GetTotalSubInstanceCount() const{
-	return pTextures.Inject(0, [](int sum, const deoglRenderTaskTexture &t){
+	return pTextures.Inject(0, 0, pTextureCount, [](int sum, const deoglRenderTaskTexture &t){
 		return sum + t.GetTotalSubInstanceCount();
-	}, 0, pTextureCount);
+	});
 }
 
 

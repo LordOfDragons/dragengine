@@ -749,7 +749,7 @@ deoglRenderTask *renderTask, deoglComputeRenderTask *computeRenderTask){
 	
 	// render occlusion map
 	if(computeRenderTask){
-		if(computeRenderTask->GetStepCount() > 0){
+		if(computeRenderTask->GetSteps().IsNotEmpty()){
 			computeRenderTask->SetRenderParamBlock(pRenderParamBlock);
 			computeRenderTask->SetRenderVSStereo(plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer());
 			computeRenderTask->Render();
@@ -880,11 +880,11 @@ const deoglRenderPlanMasked *mask, bool perspective){
 		
 		if(renderVSStereo){
 			const GLint first[2] = {0, 0};
-			const GLsizei count[2] = {lvolume.GetPointCount(), lvolume.GetPointCount()};
+			const GLsizei count[2] = {lvolume.GetPoints().GetCount(), lvolume.GetPoints().GetCount()};
 			OGL_CHECK(renderThread, pglMultiDrawArrays(GL_TRIANGLES, first, count, 2));
 			
 		}else{
-			OGL_CHECK(renderThread, glDrawArrays(GL_TRIANGLES, 0, lvolume.GetPointCount()));
+			OGL_CHECK(renderThread, glDrawArrays(GL_TRIANGLES, 0, lvolume.GetPoints().GetCount()));
 		}
 		
 		query.EndQuery();
@@ -1217,7 +1217,7 @@ void deoglRenderOcclusion::DebugOcclusionMap(deoglRenderPlan &plan){
 		}
 		
 		const deoglModelLOD &modelLOD = component.GetModel()->GetLODAt(clistComponent.GetLODLevel());
-		debug.IncrementOccMapTriangles(modelLOD.GetFaceCount());
+		debug.IncrementOccMapTriangles(modelLOD.GetFaces().GetCount());
 	}
 }
 

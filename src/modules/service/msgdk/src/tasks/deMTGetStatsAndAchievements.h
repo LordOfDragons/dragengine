@@ -28,6 +28,7 @@
 #include "../deMsgdkAsyncTask.h"
 #include <xsapi-c/user_statistics_c.h>
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/utils/decUniqueID.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/resources/service/deServiceObject.h>
@@ -43,7 +44,7 @@ private:
 	deMsgdkServiceMsgdk &pService;
 	const decUniqueID pRequestId;
 	decStringList pStats, pAchievements;
-	const char **pStatNames;
+	decTList<const char*> pStatNames;
 	const deServiceObject::Ref pResultData;
 	bool pWaitAchievementsSynced;
 

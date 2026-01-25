@@ -26,6 +26,7 @@
 #define _DECANVASPAINT_H_
 
 #include "deCanvas.h"
+#include "../../common/collection/decTList.h"
 
 
 /**
@@ -108,8 +109,7 @@ private:
 	float pStartAngle;
 	float pEndAngle;
 	
-	decPoint *pPoints;
-	int pPointCount;
+	decTList<decPoint> pPoints;
 	
 	
 	
@@ -238,8 +238,11 @@ public:
 	
 	/** \name Points */
 	/*@{*/
+	/** \brief Points. */
+	inline const decTList<decPoint> &GetPoints() const{ return pPoints; }
+	
 	/** \brief Number of points. */
-	inline int GetPointCount() const{ return pPointCount; }
+	inline int GetPointCount() const{ return pPoints.GetCount(); }
 	
 	/**
 	 * \brief Point at position.

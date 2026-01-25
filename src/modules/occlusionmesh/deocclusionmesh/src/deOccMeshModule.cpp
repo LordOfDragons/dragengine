@@ -140,10 +140,10 @@ void deOccMeshModule::pLoadMesh(decBaseFileReader &reader, deOcclusionMesh &mesh
 			infos.faceCount = (int)reader.ReadUShort();
 			infos.doubleSidedFaceCount = (int)reader.ReadUShort();
 			
-			mesh.SetBoneCount(infos.boneCount);
-			mesh.SetVertexCount(infos.vertexCount);
-			mesh.SetCornerCount(infos.cornerCount);
-			mesh.SetFaceCount(infos.faceCount);
+			mesh.GetBones().AddRange(infos.boneCount, {});
+			mesh.GetVertices().AddRange(infos.vertexCount, {});
+			mesh.GetCorners().AddRange(infos.cornerCount, {});
+			mesh.GetFaces().AddRange(infos.faceCount, {});
 			mesh.SetDoubleSidedFaceCount(infos.doubleSidedFaceCount);
 			
 			pLoadBones(reader, mesh, infos);
@@ -165,10 +165,10 @@ void deOccMeshModule::pLoadMesh(decBaseFileReader &reader, deOcclusionMesh &mesh
 
 void deOccMeshModule::pLoadBones(decBaseFileReader &reader, deOcclusionMesh &mesh, sMeshInfos &infos){
 	decString name;
-	int b, parent;
+	int b;
 	
 	for(b=0; b<infos.boneCount; b++){
-		deOcclusionMeshBone &bone = mesh.GetBoneAt(b);
+		deOcclusionMeshBone &bone = mesh.GetBones()[b];
 		
 		reader.ReadString8Into(name);
 		if(mesh.HasBoneNamed(name.GetString())){
@@ -179,7 +179,7 @@ void deOccMeshModule::pLoadBones(decBaseFileReader &reader, deOcclusionMesh &mes
 		bone.SetPosition(reader.ReadVector());
 		bone.SetOrientation(reader.ReadQuaternion());
 		
-		parent = (int)(reader.ReadUShort()) - 1;
+		const int parent = (int)(reader.ReadUShort()) - 1;
 		if(parent >= infos.boneCount || parent == b){
 			DETHROW(deeInvalidFormat);
 		}
@@ -188,14 +188,15 @@ void deOccMeshModule::pLoadBones(decBaseFileReader &reader, deOcclusionMesh &mes
 }
 
 void deOccMeshModule::pLoadWeights(decBaseFileReader &reader, deOcclusionMesh &mesh, sMeshInfos &infos){
-	int w, b, boneCount;
+	int w;
 	float factor;
 	int bone;
 	
 	for(w=0; w<infos.weightsCount; w++){
 		deoccmWeightSet::Ref weightSet = deoccmWeightSet::Ref::New();
 		
-		boneCount = (int)reader.ReadByte();
+		const int boneCount = (int)reader.ReadByte();
+		int b;
 		for(b=0; b<boneCount; b++){
 			bone = (int)reader.ReadUShort();
 			if(bone >= infos.boneCount){
@@ -213,20 +214,20 @@ void deOccMeshModule::pLoadWeights(decBaseFileReader &reader, deOcclusionMesh &m
 	
 	// add weights sorted by the number of weights stored inside from the lowest to the highest
 	const int weightGroupCount = infos.weightSetList->Inject(0, [](int largest, const deoccmWeightSet &ws){
-		return decMath::max(largest, ws.GetCount());
+		return decMath::max(largest, ws.GetWeights().GetCount());
 	});
 	const int weightSetCount = infos.weightSetList->GetCount();
 	int i, j, k, weightCount = 0, weightSetIndex = 0;
 	
 	for(i=0; i<weightSetCount; i++){
-		weightCount += infos.weightSetList->GetAt(i)->GetCount();
+		weightCount += infos.weightSetList->GetAt(i)->GetWeights().GetCount();
 	}
 	
-	mesh.SetWeightGroupCount(weightGroupCount);
-	mesh.SetWeightCount(weightCount);
+	mesh.GetWeightGroups().AddRange(weightGroupCount, {});
+	mesh.GetWeights().AddRange(weightCount, {});
 	
-	deOcclusionMeshWeight * const meshWeights = mesh.GetWeights();
-	int * const meshWeightGroups = mesh.GetWeightGroups();
+	deOcclusionMeshWeight * const meshWeights = mesh.GetWeights().GetArrayPointer();
+	int * const meshWeightGroups = mesh.GetWeightGroups().GetArrayPointer();
 	weightCount = 0;
 	weightSetIndex = 0;
 	
@@ -238,10 +239,10 @@ void deOccMeshModule::pLoadWeights(decBaseFileReader &reader, deOcclusionMesh &m
 		for(j=0; j<weightSetCount; j++){
 			deoccmWeightSet &weightSet2 = infos.weightSetList->GetAt(j);
 			
-			if(weightSet2.GetCount() == tempCount){
+			if(weightSet2.GetWeights().GetCount() == tempCount){
 				for(k=0; k<tempCount; k++){
-					meshWeights[weightCount + k].SetBone(weightSet2.GetBoneAt(k));
-					meshWeights[weightCount + k].SetWeight(weightSet2.GetWeightAt(k));
+					meshWeights[weightCount + k].SetBone(weightSet2.GetWeights()[k].bone);
+					meshWeights[weightCount + k].SetWeight(weightSet2.GetWeights()[k].weight);
 				}
 				
 				weightSet2.SetGroupedIndex(weightSetIndex);
@@ -255,13 +256,13 @@ void deOccMeshModule::pLoadWeights(decBaseFileReader &reader, deOcclusionMesh &m
 }
 
 void deOccMeshModule::pLoadVertices(decBaseFileReader &reader, deOcclusionMesh &mesh, sMeshInfos &infos){
-	deOcclusionMeshVertex * const vertices = mesh.GetVertices();
-	int v, weights;
+	deOcclusionMeshVertex * const vertices = mesh.GetVertices().GetArrayPointer();
+	int v;
 	
 	for(v=0; v<infos.vertexCount; v++){
 		deOcclusionMeshVertex &vertex = vertices[v];
 		
-		weights = (int)reader.ReadUShort() - 1;
+		const int weights = (int)reader.ReadUShort() - 1;
 		if(weights >= infos.weightsCount){
 			DETHROW_INFO(deeInvalidFileFormat, reader.GetFilename());
 		}
@@ -278,9 +279,9 @@ void deOccMeshModule::pLoadVertices(decBaseFileReader &reader, deOcclusionMesh &
 }
 
 void deOccMeshModule::pLoadFaces(decBaseFileReader &reader, deOcclusionMesh &mesh, sMeshInfos &infos){
-	unsigned short * const corners = mesh.GetCorners();
-	unsigned short * const faces = mesh.GetFaces();
-	int f, c, cornerCount;
+	unsigned short * const corners = mesh.GetCorners().GetArrayPointer();
+	unsigned short * const faces = mesh.GetFaces().GetArrayPointer();
+	int f;
 	int cindex = 0;
 	
 	// NOTE: possible optimization could be to store corner vertex indices only as byte if the
@@ -288,8 +289,9 @@ void deOccMeshModule::pLoadFaces(decBaseFileReader &reader, deOcclusionMesh &mes
 	// rather small to begin with
 	
 	for(f=0; f<infos.faceCount; f++){
-		cornerCount = (int)reader.ReadByte();
+		const int cornerCount = (int)reader.ReadByte();
 		
+		int c;
 		for(c=0; c<cornerCount; c++){
 			if(cindex == infos.cornerCount){
 				DETHROW_INFO(deeInvalidFileFormat, reader.GetFilename());

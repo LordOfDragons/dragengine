@@ -60,6 +60,10 @@ inline int DECompare(int a, int b){
 	return (a < b) ? -1 : ((a > b) ? 1 : 0);
 }
 
+inline int DECompare(unsigned int a, unsigned int b){
+	return (a < b) ? -1 : ((a > b) ? 1 : 0);
+}
+
 inline int DECompare(float a, float b){
 	return (a < b) ? -1 : ((a > b) ? 1 : 0);
 }

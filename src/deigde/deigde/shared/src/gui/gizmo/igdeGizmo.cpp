@@ -246,23 +246,13 @@ void igdeGizmo::SetShapeFromModel(const deModel &model){
 	pModelTextureNames.RemoveAll();
 	pDebugDrawer->RemoveAllShapes();
 	
-	const deModelLOD &lod = model.GetLODAt(0);
-	const deModelVertex * const vertices = lod.GetVertices();
-	const deModelFace * const faces = lod.GetFaces();
-	const int textureCount = model.GetTextureCount();
-	deDebugDrawerShapeFace *ddsface = nullptr;
-	const int faceCount = lod.GetFaceCount();
-	deDebugDrawerShape *ddshape = nullptr;
-	
 	try{
-		int i;
-		for(i=0; i<textureCount; i++){
-			const decString &name = model.GetTextureAt(i)->GetName();
+		model.GetTextures().VisitIndexed([&](int i, const deModelTexture &texture){
+			const decString &name = texture.GetName();
 			
-			ddshape = new deDebugDrawerShape;
+			auto ddshape = deDebugDrawerShape::Ref::New();
 			ddshape->SetEdgeColor(decColor(0.0f, 0.0f, 0.0f, 0.0f));
-			pDebugDrawer->AddShape(ddshape);
-			ddshape = nullptr;
+			pDebugDrawer->AddShape(std::move(ddshape));
 			
 			cShapeColor * const shapeColor = pNamedShapeColor(name);
 			if(shapeColor){
@@ -270,33 +260,20 @@ void igdeGizmo::SetShapeFromModel(const deModel &model){
 			}
 			
 			pModelTextureNames.Add(name);
-		}
+		});
 		
-	}catch(const deException &){
-		if(ddshape){
-			delete ddshape;
-		}
-		pDebugDrawer->NotifyShapeLayoutChanged();
-		throw;
-	}
-	
-	try{
-		int i;
-		for(i=0; i<faceCount; i++){
-			const deModelFace &face = faces[i];
-			ddsface = new deDebugDrawerShapeFace;
+		const deModelLOD &lod = model.GetLODs().First();
+		const decTList<deModelVertex> &vertices = lod.GetVertices();
+		lod.GetFaces().Visit([&](const deModelFace &face){
+			auto ddsface = deDebugDrawerShapeFace::Ref::New();
 			ddsface->AddVertex(vertices[face.GetVertex1()].GetPosition());
 			ddsface->AddVertex(vertices[face.GetVertex2()].GetPosition());
 			ddsface->AddVertex(vertices[face.GetVertex3()].GetPosition());
 			ddsface->CalculateNormal();
-			pDebugDrawer->GetShapeAt(face.GetTexture())->AddFace(ddsface);
-			ddsface = nullptr;
-		}
+			pDebugDrawer->GetShapes()[face.GetTexture()]->AddFace(std::move(ddsface));
+		});
 		
 	}catch(const deException &){
-		if(ddsface){
-			delete ddsface;
-		}
 		pDebugDrawer->NotifyShapeLayoutChanged();
 		throw;
 	}
@@ -440,7 +417,7 @@ void igdeGizmo::pApplyShapeColors(){
 			color = decColor(shapeColor.color, pTransparency);
 		}
 		
-		deDebugDrawerShape &shape = *pDebugDrawer->GetShapeAt(shapeColor.ddshapeIndex);
+		deDebugDrawerShape &shape = *pDebugDrawer->GetShapes()[shapeColor.ddshapeIndex];
 		shape.SetEdgeColor(decColor(color, 0.0f));
 		shape.SetFillColor(color);
 	});

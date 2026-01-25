@@ -28,6 +28,11 @@
 #include "decGlobalFunctions_safe.h"
 
 
+/** \brief Variadic constructor tag to avoid ambiguity. */
+struct de_variadic_constructor_tag_t { explicit de_variadic_constructor_tag_t() = default; };
+inline constexpr de_variadic_constructor_tag_t devctag{};
+
+
 /** \brief Comparator. */
 template<typename T>
 class decTComparator{
@@ -103,6 +108,22 @@ public:
 };
 
 
+/** \brief Indexed evaluator. */
+template<typename T>
+class decTIndexedEvaluator{
+public:
+	decTIndexedEvaluator() = default;
+	
+	/**
+	 * \brief Evaluate element.
+	 * \param[in] index Index of visited element.
+	 * \param[in] element Element to evaluate.
+	 * \returns true if element matches criterias otherwise false.
+	 */
+	virtual bool operator() (int index, const T &element) = 0;
+};
+
+
 /** \brief Ascending comparator using DECompare() function. */
 template<typename T>
 class decAscendingComparator : public decTComparator<T>{
@@ -141,7 +162,7 @@ public:
 	 * \brief Move collection.
 	 * \note Not explicit on purpose.
 	 */
-	decTCollectionQueryByName(Base &&base) : Base(base){}
+	decTCollectionQueryByName(Base &&base) : Base(std::move(base)){}
 	
 	/** \brief One or more elements match name. */
 	inline bool HasNamed(const char *name) const{
@@ -182,7 +203,7 @@ public:
 	 * \brief Move collection.
 	 * \note Not explicit on purpose.
 	 */
-	decTCollectionQueryByPath(Base &&base) : Base(base){}
+	decTCollectionQueryByPath(Base &&base) : Base(std::move(base)){}
 	
 	/** \brief One or more elements match path. */
 	inline bool HasWithPath(const char *path) const{
@@ -225,7 +246,7 @@ public:
 	 * \brief Move collection.
 	 * \note Not explicit on purpose.
 	 */
-	decTCollectionQueryByPathOrName(BaseType &&base) : BaseType(base){}
+	decTCollectionQueryByPathOrName(BaseType &&base) : BaseType(std::move(base)){}
 	
 	/** \brief One or more elements match path or name. */
 	inline bool HasWithPathOrName(const char *path, const char *name) const{
@@ -266,7 +287,7 @@ public:
 	 * \brief Move collection.
 	 * \note Not explicit on purpose.
 	 */
-	decTCollectionQueryById(Base &&base) : Base(base){}
+	decTCollectionQueryById(Base &&base) : Base(std::move(base)){}
 	
 	/** \brief One or more elements match identifier. */
 	inline bool HasWithId(const char *id) const{

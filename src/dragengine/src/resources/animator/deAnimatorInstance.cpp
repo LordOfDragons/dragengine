@@ -35,6 +35,7 @@
 #include "../component/deComponent.h"
 #include "../../deEngine.h"
 #include "../../common/exceptions.h"
+#include "../../common/collection/decTList.h"
 #include "../../systems/modules/animator/deBaseAnimatorAnimatorInstance.h"
 
 
@@ -81,36 +82,28 @@ void deAnimatorInstance::SetAnimator(deAnimator *animator, bool keepValues){
 			const char *name;
 			float value;
 			decVector vector;
-		} * const transfer = new sControllerValue[oldCount];
+		};
+		decTList<sControllerValue> transfer(oldCount);
 		int i;
 		
-		try{
-			for(i=0; i<oldCount; i++){
-				transfer[i].name = pAnimator->GetControllers().GetAt(i)->GetName();
-				transfer[i].value = pControllers.GetAt(i)->GetCurrentValue();
-				transfer[i].vector = pControllers.GetAt(i)->GetVector();
+		for(i=0; i<oldCount; i++){
+			transfer.Add({
+				pAnimator->GetControllers().GetAt(i)->GetName(),
+				pControllers.GetAt(i)->GetCurrentValue(),
+				pControllers.GetAt(i)->GetVector()});
+		}
+		
+		pAnimator = animator;
+		pUpdateControllers();
+		
+		for(i=0; i<oldCount; i++){
+			const int index = IndexOfControllerNamed(transfer.GetAt(i).name);
+			if(index == -1){
+				continue;
 			}
 			
-			pAnimator = animator;
-			pUpdateControllers();
-			
-			for(i=0; i<oldCount; i++){
-				const int index = IndexOfControllerNamed(transfer[i].name);
-				if(index == -1){
-					continue;
-				}
-				
-				pControllers.GetAt(index)->SetCurrentValue(transfer[i].value);
-				pControllers.GetAt(index)->SetVector(transfer[i].vector);
-			}
-			
-			delete [] transfer;
-			
-		}catch(const deException &){
-			if(transfer){
-				delete [] transfer;
-			}
-			throw;
+			pControllers.GetAt(index)->SetCurrentValue(transfer.GetAt(i).value);
+			pControllers.GetAt(index)->SetVector(transfer.GetAt(i).vector);
 		}
 		
 	}else{

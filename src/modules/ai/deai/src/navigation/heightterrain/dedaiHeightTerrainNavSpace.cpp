@@ -50,21 +50,6 @@ dedaiHeightTerrainNavSpace::dedaiHeightTerrainNavSpace(dedaiHeightTerrainSector 
 	const deHeightTerrainNavSpace &navigationSpace) :
 pSector(sector),
 pNavigationSpace(navigationSpace),
-
-pVertices(nullptr),
-pVertexCount(0),
-pVertexSize(0),
-
-pEdges(nullptr),
-
-pCorners(nullptr),
-pCornerCount(0),
-pCornerSize(0),
-
-pFaces(nullptr),
-pFaceCount(0),
-pFaceSize(0),
-
 pSpace(nullptr)
 {
 	try{
@@ -138,18 +123,7 @@ void dedaiHeightTerrainNavSpace::pCleanUp(){
 	if(pSpace){
 		delete pSpace;
 	}
-	if(pFaces){
-		delete [] pFaces;
-	}
-	if(pCorners){
-		delete [] pCorners;
-	}
-	if(pEdges){
-		delete [] pEdges;
-	}
-	if(pVertices){
-		delete [] pVertices;
-	}
+	// Arrays are now automatic
 }
 
 void dedaiHeightTerrainNavSpace::pUpdateCorners(){
@@ -157,9 +131,9 @@ void dedaiHeightTerrainNavSpace::pUpdateCorners(){
 		return;
 	}
 	
-	pVertexCount = 0;
-	pCornerCount = 0;
-	pFaceCount = 0;
+	pVertices.SetCountDiscard(0);
+	pCorners.SetCountDiscard(0);
+	pFaces.SetCountDiscard(0);
 	
 	
 	
@@ -237,10 +211,7 @@ void dedaiHeightTerrainNavSpace::pUpdateCorners(){
 	pFaceCount = faceCount;
 #endif
 	
-	
-	
-	
-	const int orgFaceCount = pNavigationSpace.GetFaceCount();
+	const int orgFaceCount = pNavigationSpace.GetFaces().GetCount();
 	if(orgFaceCount == 0){
 		return;
 	}
@@ -252,8 +223,8 @@ void dedaiHeightTerrainNavSpace::pUpdateCorners(){
 	// faces are split into 3-corner faces. there might be a few faces being
 	// coplanar but the chance is so low it does not make sense to bother not
 	// splitting those
-	const deNavigationSpaceFace * const faces = pNavigationSpace.GetFaces();
-	const unsigned int * const corners = pNavigationSpace.GetCorners();
+	const deNavigationSpaceFace * const faces = pNavigationSpace.GetFaces().GetArrayPointer();
+	const unsigned int * const corners = pNavigationSpace.GetCorners().GetArrayPointer();
 	int cornerCount = 0;
 	int faceCount = 0;
 	int i, j, k;
@@ -271,38 +242,9 @@ void dedaiHeightTerrainNavSpace::pUpdateCorners(){
 	//      with corner count size avoids re-allocating the array multiple times. after
 	//      the real count is determined the array could be shrunk
 	// NOTE caching this data is possible. this would also provide the shrinking
-	if(cornerCount > pVertexSize){
-		if(pVertices){
-			delete [] pVertices;
-			pVertices = nullptr;
-			pVertexSize = 0;
-		}
-		
-		pVertices = new unsigned int[cornerCount];
-		pVertexSize = cornerCount;
-	}
-	
-	if(cornerCount > pCornerSize){
-		if(pCorners){
-			delete [] pCorners;
-			pCorners = nullptr;
-			pCornerSize = 0;
-		}
-		
-		pCorners = new unsigned short[cornerCount];
-		pCornerSize = cornerCount;
-	}
-	
-	if(faceCount > pFaceSize){
-		if(pFaces){
-			delete [] pFaces;
-			pFaces = nullptr;
-			pFaceSize = 0;
-		}
-		
-		pFaces = new deNavigationSpaceFace[faceCount];
-		pFaceSize = faceCount;
-	}
+	pVertices.EnlargeCapacityDiscard(cornerCount);
+	pCorners.EnlargeCapacityDiscard(cornerCount);
+	pFaces.EnlargeCapacityDiscard(faceCount);
 	
 	// add corners, faces and shared vertices.
 	int firstCorner = 0;
@@ -317,47 +259,35 @@ void dedaiHeightTerrainNavSpace::pUpdateCorners(){
 		}
 		
 		const unsigned int navpointFirst = corners[firstCorner];
-		for(j=0; j<pVertexCount; j++){
-			if(pVertices[j] == navpointFirst){
-				break;
-			}
-		}
-		if(j == pVertexCount){
-			pVertices[pVertexCount++] = navpointFirst;
+		j = pVertices.IndexOf(navpointFirst);
+		if(j == -1){
+			j = (unsigned short)pVertices.GetCount();
+			pVertices.Add(navpointFirst);
 		}
 		const unsigned short vertexFirst = (unsigned short)j;
 		
 		const unsigned int navpointSecond = corners[firstCorner + 1];
-		for(j=0; j<pVertexCount; j++){
-			if(pVertices[j] == navpointSecond){
-				break;
-			}
-		}
-		if(j == pVertexCount){
-			pVertices[pVertexCount++] = navpointSecond;
+		j = pVertices.IndexOf(navpointSecond);
+		if(j == -1){
+			j = (unsigned short)pVertices.GetCount();
+			pVertices.Add(navpointSecond);
 		}
 		unsigned short vertexLast = (unsigned short)j;
 		
 		for(j=2; j<faceCornerCount; j++){
 			const unsigned int navpoint = corners[firstCorner + j];
 			
-			for(k=0; k<pVertexCount; k++){
-				if(pVertices[k] == navpoint){
-					break;
-				}
-			}
-			if(k == pVertexCount){
-				pVertices[pVertexCount++] = navpoint;
+			k = pVertices.IndexOf(navpoint);
+			if(k == -1){
+				k = (unsigned short)pVertices.GetCount();
+				pVertices.Add(navpoint);
 			}
 			
-			pCorners[pCornerCount++] = vertexFirst;
-			pCorners[pCornerCount++] = vertexLast;
-			vertexLast = (unsigned short)k;
-			pCorners[pCornerCount++] = vertexLast;
+			pCorners.Add(vertexFirst);
+			pCorners.Add(vertexLast);
+			pCorners.Add((unsigned short)k);
 			
-			pFaces[pFaceCount].SetType(face.GetType());
-			pFaces[pFaceCount].SetCornerCount(3);
-			pFaceCount++;
+			pFaces.Add({3, face.GetType()});
 		}
 		
 		firstCorner += faceCornerCount;
@@ -369,37 +299,24 @@ void dedaiHeightTerrainNavSpace::pUpdateEdges(){
 		return;
 	}
 	
-	if(pEdges){
-		delete [] pEdges;
-		pEdges = nullptr;
-	}
-	pVertexCount = 0;
+	pEdges.SetCountDiscard(0);
+	pVertices.SetCountDiscard(0);
 	
-	const int edgeCount = pNavigationSpace.GetEdgeCount();
+	const int edgeCount = pNavigationSpace.GetEdges().GetCount();
 	if(edgeCount == 0){
 		return;
 	}
 	
-	const deHeightTerrainNavSpaceEdge * const edges = pNavigationSpace.GetEdges();
-	int i, j;
+	const deHeightTerrainNavSpaceEdge * const edges = pNavigationSpace.GetEdges().GetArrayPointer();
+	int i;
 	
 	// NOTE vertices array is usually less than 2 times edge count but never larger.
 	//      allocating it with 2 times edge count size avoids re-allocating the array
 	//      multiple times. after the real count is determined the array could be shrunk
 	// NOTE caching this data is possible. this would also provide the shrinking
-	pEdges = new sEdge[edgeCount];
+	pEdges.EnlargeCapacityDiscard(edgeCount);
 	
-	const int maxVertexCount = edgeCount * 2;
-	if(maxVertexCount > pVertexSize){
-		if(pVertices){
-			delete [] pVertices;
-			pVertices = nullptr;
-			pVertexSize = 0;
-		}
-		
-		pVertices = new unsigned int[maxVertexCount];
-		pVertexSize = maxVertexCount;
-	}
+	pVertices.EnlargeCapacityDiscard(edgeCount * 2);
 	
 	// add edges and shared vertices
 	for(i=0; i< edgeCount; i++){
@@ -407,27 +324,19 @@ void dedaiHeightTerrainNavSpace::pUpdateEdges(){
 		const unsigned int navpoint2 = edges[i].GetPoint2();
 		
 		// vertex 1
-		for(j=0; j<pVertexCount; j++){
-			if(pVertices[j] == navpoint1){
-				break;
-			}
+		int v1 = pVertices.IndexOf(navpoint1);
+		if(v1 == -1){
+			v1 = (unsigned short)pVertices.GetCount();
+			pVertices.Add(navpoint1);
 		}
-		if(j == pVertexCount){
-			pVertices[j] = navpoint1;
-			pVertexCount++;
-		}
-		pEdges[i].vertex1 = (unsigned short)j;
 		
 		// vertex 2
-		for(j=0; j<pVertexCount; j++){
-			if(pVertices[j] == navpoint2){
-				break;
-			}
+		int v2 = pVertices.IndexOf(navpoint2);
+		if(v2 == -1){
+			v2 = (unsigned short)pVertices.GetCount();
+			pVertices.Add(navpoint2);
 		}
-		if(j == pVertexCount){
-			pVertices[j] = navpoint2;
-			pVertexCount++;
-		}
-		pEdges[i].vertex2 = (unsigned short)j;
+		
+		pEdges.Add({(unsigned short)v1, (unsigned short)v2});
 	}
 }

@@ -27,6 +27,8 @@
 
 #include "../../debpBulletShape.h"
 
+#include <dragengine/common/collection/decTList.h>
+
 #include <dragengine/common/math/decMath.h>
 
 class debpHeightTerrain;
@@ -62,13 +64,13 @@ private:
 	
 	int pImageDim;
 	
-	debpHTSCluster *pClusters;
+	decTList<debpHTSCluster> pClusters;
 	int pClusterCount;
 	
 	decDVector pMinExtend;
 	decDVector pMaxExtend;
 	
-	decVector *pPoints;
+	decTList<decVector> pPoints;
 	bool pDirtyPoints;
 	
 	bool pMarked;
@@ -98,10 +100,13 @@ public:
 	
 	/** Retrieves the number of clusters in the both direction. */
 	inline int GetClusterCount() const{ return pClusterCount; }
+	
+	/** Clusters. */
+	inline decTList<debpHTSCluster> &GetClusters(){ return pClusters; }
+	inline const decTList<debpHTSCluster> &GetClusters() const{ return pClusters; }
+	
 	/** Retrieves the cluster at the given location. */
-	debpHTSCluster &GetClusterAt(int x, int z) const;
-	/** Retrieves the list of clusters. */
-	inline debpHTSCluster *GetClusters() const{ return pClusters; }
+	debpHTSCluster &GetClusterAt(int x, int z);
 	
 	/** Retrieves the minimum extend. */
 	inline const decDVector &GetMinimumExtend() const{ return pMinExtend; }
@@ -113,8 +118,9 @@ public:
 	/** Sets the marked flag. */
 	inline void SetMarked(bool marked){pMarked = marked;}
 	
-	/** Retrieves the points for a height map with or without modifications. */
-	inline decVector *GetPoints() const{ return pPoints; }
+	/** Points. */
+	inline decTList<decVector> &GetPoints(){ return pPoints; }
+	inline const decTList<decVector> &GetPoints() const{ return pPoints; }
 	
 	/** Update heights. */
 	void UpdateHeights(int fromX, int fromY, int toX, int toY);

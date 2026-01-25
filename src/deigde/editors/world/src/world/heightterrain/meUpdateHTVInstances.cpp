@@ -81,7 +81,7 @@ void meUpdateHTVInstances::UpdateInstances(){
 	// add instances by evaluating the individual vegetation layers in order
 	const decDVector sectorPosition(htsector->GetWorldPosition());
 	const decDVector &fieldPosition = engPF->GetPosition();
-	decDVector srfpos = fieldPosition - sectorPosition;
+	const decDVector srfpos(fieldPosition - sectorPosition);
 	meHTVEvaluationEnvironment evalEnv;
 	
 	decVector inormal, sripos;
@@ -124,16 +124,16 @@ void meUpdateHTVInstances::UpdateInstances(){
 	
 //	int oldVInstCount = 0;
 //	decTimer timer;
-	htsector->GetHeightTerrain()->GetVLayers().VisitIndexed([&](int l, meHTVegetationLayer *vlayer){
-		const int variationCount = vlayer->GetVariations().GetCount();
+	htsector->GetHeightTerrain()->GetVLayers().VisitIndexed([&](int l, meHTVegetationLayer &vlayer){
+		const int variationCount = vlayer.GetVariations().GetCount();
 		if(variationCount == 0){
 			return;
 		}
 		
-		evalEnv.SetVLayer(vlayer);
+		evalEnv.SetVLayer(&vlayer);
 		evalEnv.Prepare();
 		
-		const int instanceCount = 50000; //10000; // 10k
+		const int instanceCount = 50000; //10000;
 		int i;
 		
 		for(i=0; i<instanceCount; i++){
@@ -176,7 +176,7 @@ void meUpdateHTVInstances::UpdateInstances(){
 			
 			meHTVInstance &vinstance = pPropField.AddVInstance();
 			const int variationIndex = decMath::clamp(evalEnv.GetVariation(), 0, variationCount - 1);
-			meHTVVariation &variation = *vlayer->GetVariations().GetAt(variationIndex);
+			meHTVVariation &variation = *vlayer.GetVariations().GetAt(variationIndex);
 			
 			const float minrot = variation.GetMinimumRandomRotation() * DEG2RAD;
 			const float maxrot = variation.GetMaximumRandomRotation() * DEG2RAD;

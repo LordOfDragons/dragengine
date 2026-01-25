@@ -26,6 +26,9 @@
 #define _DEOGLENVIONMENTMAP_H_
 
 #include <dragengine/deObject.h>
+#include "../texture/cubemap/deoglCubeMap.h"
+
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include "../utils/collision/deoglDCollisionBox.h"
 #include <dragengine/common/collection/decTOrderedSet.h>
@@ -97,8 +100,7 @@ private:
 	
 	decDMatrix pMatrixReflectionBox;
 	bool pHasReflectionBox;
-	decDMatrix *pReflectionMaskBoxMatrices;
-	int pReflectionMaskBoxMatrixCount;
+	decTList<decDMatrix> pReflectionMaskBoxMatrices;
 	
 	bool pDirty;
 	bool pDirtyInit;
@@ -210,12 +212,12 @@ public:
 	/** Sets if a reflection box exists. */
 	void SetHasReflectionBox(bool hasReflectionBox);
 	
-	/** Retrieves the number of reflection mask box matrices. */
-	inline int GetReflectionMaskBoxMatrixCount() const{ return pReflectionMaskBoxMatrixCount; }
-	/** Retrieves a reflection mask box matrix. */
-	const decDMatrix &GetReflectionMaskBoxMatrixAt(int index) const;
+	/** Reflection mask box matrices. */
+	inline const decTList<decDMatrix> &GetReflectionMaskBoxMatrices() const{ return pReflectionMaskBoxMatrices; }
+	
 	/** Removes all reflection mask boxes matrices. */
 	void RemoveAllReflectionMaskBoxMatrices();
+	
 	/** Adds a reflection mask box matrix. */
 	void AddReflectionMaskBoxMatrix(const decDMatrix &matrix);
 	

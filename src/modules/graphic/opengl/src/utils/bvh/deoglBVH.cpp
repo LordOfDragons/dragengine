@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglBVH.h"
 #include "deoglBVHNode.h"
 
@@ -38,65 +34,29 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglBVH::deoglBVH() :
-pNodes(nullptr),
-pNodeCount(0),
-pNodeSize (0),
-pPrimitives(nullptr),
-pPrimitiveCount(0),
-pPrimitiveSize(0){
-}
-
-deoglBVH::~deoglBVH(){
-	if(pNodes){
-		delete [] pNodes;
-	}
-	if(pPrimitives){
-		delete [] pPrimitives;
-	}
-}
-
+deoglBVH::deoglBVH() = default;
+deoglBVH::~deoglBVH() = default;
 
 
 // Management
 ///////////////
 
-deoglBVHNode &deoglBVH::GetNodeAt(int index) const{
-	if(index < 0 || index >= pNodeCount){
-		DETHROW(deeInvalidParam);
-	}
+deoglBVHNode &deoglBVH::GetNodeAt(int index){
 	return pNodes[index];
 }
 
-int deoglBVH::GetPrimitiveAt(int index) const{
-	if(index < 0 || index >= pPrimitiveCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pPrimitives[index];
-}
-
-deoglBVHNode *deoglBVH::GetRootNode() const{
-	if(pNodeCount == 0){
-		return nullptr;
-	}
-	return pNodes;
+deoglBVHNode *deoglBVH::GetRootNode(){
+	return pNodes.IsNotEmpty() ? &pNodes.First() : nullptr;
 }
 
 void deoglBVH::Clear(){
-	pNodeCount = 0;
-	pPrimitiveCount = 0;
+	pNodes.SetCountDiscard(0);
+	pPrimitives.SetCountDiscard(0);
 }
 
-void deoglBVH::Build(const sBuildPrimitive *primitives, int primitiveCount, int maxDepth){
-	if(primitiveCount < 0){
-		DETHROW_INFO(deeInvalidParam, "primitiveCount < 0");
-	}
-	if(primitiveCount > 0 && !primitives){
-		DETHROW_INFO(deeInvalidParam, "primitiveCount > 0 && primitives is null");
-	}
-	if(maxDepth < 1){
-		DETHROW_INFO(deeInvalidParam, "maxDepth < 1");
-	}
+void deoglBVH::Build(const decTList<sBuildPrimitive> &primitives, int primitiveCount, int maxDepth){
+	DEASSERT_TRUE(primitiveCount >= 0)
+	DEASSERT_TRUE(maxDepth >= 0)
 	
 	Clear();
 	
@@ -106,10 +66,7 @@ void deoglBVH::Build(const sBuildPrimitive *primitives, int primitiveCount, int 
 	
 	pInitPrimitives(primitiveCount);
 	
-	pAddNode();
-	deoglBVHNode &rootNode = pNodes[0];
-	rootNode.SetFirstIndex(0);
-	rootNode.SetPrimitiveCount(primitiveCount);
+	pNodes.Add({0, primitiveCount});
 	
 	pBuildNode(primitives, primitiveCount, 0, maxDepth - 1);
 }
@@ -119,49 +76,28 @@ void deoglBVH::Build(const sBuildPrimitive *primitives, int primitiveCount, int 
 // Protected Functions
 ////////////////////////
 
-void deoglBVH::pAddNode(){
-	if(pNodeCount == pNodeSize){
-		const int newSize = pNodeCount + 20;
-		deoglBVHNode * const newArray = new deoglBVHNode[newSize];
-		if(pNodes){
-			memcpy(newArray, pNodes, sizeof(deoglBVHNode) * pNodeCount);
-			delete [] pNodes;
-		}
-		pNodes = newArray;
-		pNodeSize = newSize;
-	}
-	
-	pNodes[pNodeCount++].Clear();
-}
-
 void deoglBVH::pInitPrimitives(int primitiveCount){
-	if(primitiveCount > pPrimitiveSize){
-		int * const newArray = new int[primitiveCount];
-		if(pPrimitives){
-			delete [] pPrimitives;
-		}
-		pPrimitives = newArray;
-		pPrimitiveSize = primitiveCount;
-	}
+	pPrimitives.SetCountDiscard(0);
+	pPrimitives.EnlargeCapacity(primitiveCount);
 	
-	for(pPrimitiveCount=0; pPrimitiveCount<primitiveCount; pPrimitiveCount++){
-		pPrimitives[pPrimitiveCount] = pPrimitiveCount;
+	int i;
+	for(i=0; i<primitiveCount; i++){
+		pPrimitives.Add(i);
 	}
 }
 
-void deoglBVH::pBuildNode(const sBuildPrimitive *primitives, int primitiveCount, int node, int maxDepth){
+void deoglBVH::pBuildNode(const decTList<sBuildPrimitive> &primitives, int primitiveCount, int node, int maxDepth){
 	const int nodePrimitiveCount = pNodes[node].GetPrimitiveCount();
 	const int nodeFirstIndex = pNodes[node].GetFirstIndex();
-	int i;
 	
 	// calculate boundaries. we need this for both cases
-	const int * const nodePrimitives = pPrimitives + nodeFirstIndex;
-	const sBuildPrimitive &firstPrimitive = primitives[nodePrimitives[0]];
+	const sBuildPrimitive &firstPrimitive = primitives[pPrimitives[nodeFirstIndex]];
 	decVector minExtend(firstPrimitive.minExtend);
 	decVector maxExtend(firstPrimitive.maxExtend);
 	
+	int i;
 	for(i=1; i<nodePrimitiveCount; i++){
-		const sBuildPrimitive &nodePrimitive = primitives[nodePrimitives[i]];
+		const sBuildPrimitive &nodePrimitive = primitives[pPrimitives[nodeFirstIndex + i]];
 		minExtend.SetSmallest(nodePrimitive.minExtend);
 		maxExtend.SetLargest(nodePrimitive.maxExtend);
 	}
@@ -187,9 +123,8 @@ void deoglBVH::pBuildNode(const sBuildPrimitive *primitives, int primitiveCount,
 	}
 	
 	// create two child nodes. pAddNode potentially moves memory
-	const int indexLeftNode = pNodeCount;
-	pAddNode(); // add left node
-	pAddNode(); // add right node
+	const int indexLeftNode = pNodes.GetCount();
+	pNodes.AddRange(2, {}); // add left and right node
 	
 	// distribute primitives across children
 	int walkerLeft = nodeFirstIndex;
@@ -242,6 +177,7 @@ void deoglBVH::pBuildNode(const sBuildPrimitive *primitives, int primitiveCount,
 	}
 	
 	// update primitive indices of child nodes
+	{
 	deoglBVHNode &leftNode = pNodes[indexLeftNode];
 	deoglBVHNode &rightNode = pNodes[indexLeftNode + 1];
 	
@@ -253,15 +189,17 @@ void deoglBVH::pBuildNode(const sBuildPrimitive *primitives, int primitiveCount,
 	// if a node winds up empty we can not separate the primitives. drop the two child
 	// nodes and keep the node a primitives only node
 	if(leftNode.GetPrimitiveCount() == 0 || rightNode.GetPrimitiveCount() == 0){
-		pNodeCount -= 2;
+		pNodes.SetCountDiscard(pNodes.GetCount() - 2);
 		return;
 	}
+	}
 	
-	// otherwise continue building with the child nodes. since pAddNode potentially
-	// moved memory we can not use leftNode and rightNode reference from here on
-	pNodes[node].SetFirstIndex(pNodeCount - 2);
+	pNodes[node].SetFirstIndex(pNodes.GetCount() - 2);
 	pNodes[node].SetPrimitiveCount(0);
 	
+	// otherwise continue building with the child nodes. since building nodes usually adds
+	// nodes the memory potentially moves too. for this reason we can not use leftNode and
+	// rightNode references anymore and have to access the nodes via their indices
 	maxDepth--;
 	pBuildNode(primitives, primitiveCount, indexLeftNode, maxDepth);
 	pBuildNode(primitives, primitiveCount, indexLeftNode + 1, maxDepth);

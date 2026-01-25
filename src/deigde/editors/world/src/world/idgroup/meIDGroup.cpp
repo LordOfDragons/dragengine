@@ -69,11 +69,9 @@ void meIDGroup::Add(const char *id){
 void meIDGroup::Remove(const char *id){
 	DEASSERT_NOTNULL(id)
 	
-	const meIDGroupID::Ref *f;
-	DEASSERT_TRUE(pIDs.GetAt(id, f))
-	
-	(*f)->Decrement();
-	if((*f)->GetUsageCount() == 0){
+	meIDGroupID &f = pIDs.GetAt(id);
+	f.Decrement();
+	if(f.GetUsageCount() == 0){
 		pIDs.Remove(id);
 	}
 }

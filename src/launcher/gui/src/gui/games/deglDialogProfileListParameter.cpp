@@ -70,14 +70,12 @@ pCustomized(false)
 	pDescription = parameter.GetInfo().GetDescription();
 	
 	if(parameter.GetInfo().GetType() == deModuleParameter::eptSelection){
-		const int count = parameter.GetInfo().GetSelectionEntryCount();
-		int i;
-		for(i=0; i<count; i++){
+		parameter.GetInfo().GetSelectionEntries().Visit([&](const deModuleParameter::SelectionEntry &entry){
 			pDescription += "\n\n";
-			pDescription += parameter.GetInfo().GetSelectionEntryAt(i).displayName;
+			pDescription += entry.displayName;
 			pDescription += ": ";
-			pDescription += parameter.GetInfo().GetSelectionEntryAt(i).description;
-		}
+			pDescription += entry.description;
+		});
 	}
 	
 	// add label
@@ -127,13 +125,10 @@ pCustomized(false)
 		pComboBox->setEditable(false);
 		pComboBox->create();
 		
-		const int count = parameter.GetInfo().GetSelectionEntryCount();
-		int i;
-		for(i=0; i<count; i++){
-			const deModuleParameter::SelectionEntry &entry = parameter.GetInfo().GetSelectionEntryAt(i);
+		parameter.GetInfo().GetSelectionEntries().Visit([&](const deModuleParameter::SelectionEntry &entry){
 			pComboBox->appendItem(entry.displayName.GetString(), (FXptr)entry.value.GetString());
-		}
-		pComboBox->setNumVisible(count < 10 ? count : 10);
+		});
+		pComboBox->setNumVisible(decMath::min(10, parameter.GetInfo().GetSelectionEntries().GetCount()));
 		pComboBox->layout();
 		}break;
 	

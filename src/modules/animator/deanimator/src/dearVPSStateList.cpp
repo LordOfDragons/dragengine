@@ -185,7 +185,7 @@ deAnimatorRule::eBlendModes blendMode, float blendFactor) const{
 		}
 		
 		const int index = state.GetModelIndex();
-		const float oldWeight = component.GetVertexPositionSetWeightAt(index);
+		const float oldWeight = component.GetVertexPositionSetWeights()[index];
 		const float newWeight = state.GetWeight();
 		
 		switch(blendMode){
@@ -203,8 +203,8 @@ deAnimatorRule::eBlendModes blendMode, float blendFactor) const{
 }
 
 void dearVPSStateList::ApplyToComponent(dearComponent &component) const{
-	dearComponentVPSState * const vpsStates = component.GetVPSStates();
-	const int vpsStateCount = component.GetVPSStateCount();
+	decTList<dearComponentVPSState> &vpsStates = component.GetVPSStates();
+	const int vpsStateCount = vpsStates.GetCount();
 	
 	/*
 	this check is wrong. if a bone list is used on the animator the number of states
@@ -227,8 +227,8 @@ void dearVPSStateList::ApplyToComponent(dearComponent &component) const{
 
 void dearVPSStateList::ApplyToComponent(dearComponent &component,
 deAnimatorRule::eBlendModes blendMode, float blendFactor) const{
-	dearComponentVPSState * const vpsStates = component.GetVPSStates();
-	const int vpsStateCount = component.GetVPSStateCount();
+	decTList<dearComponentVPSState> &vpsStates = component.GetVPSStates();
+	const int vpsStateCount = vpsStates.GetCount();
 	
 	/*
 	this check is wrong. if a bone list is used on the animator the number of states

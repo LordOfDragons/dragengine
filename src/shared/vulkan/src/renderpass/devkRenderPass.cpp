@@ -22,14 +22,12 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-
 #include "devkRenderPass.h"
 #include "../devkDevice.h"
 #include "../devkInstance.h"
 #include "../deSharedVulkan.h"
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/systems/modules/deBaseModule.h>
 
@@ -42,16 +40,14 @@ pDevice(device),
 pConfiguration(configuration),
 pRenderPass(VK_NULL_HANDLE)
 {
-	const int subPassCount = configuration.GetSubPassCount();
-	if(subPassCount < 1){
-		DETHROW_INFO(deeInvalidParam, "subPassCount < 1");
-	}
+	const int subPassCount = configuration.GetSubPasses().GetCount();
+	DEASSERT_TRUE(subPassCount > 0)
 	
-	const int attachmentCount = configuration.GetAttachmentCount();
+	const int attachmentCount = configuration.GetAttachments().GetCount();
 	int i, j, k;
 	
 	for(i=0; i<subPassCount; i++){
-		const devkRenderPassConfiguration::sSubPass &subPass = configuration.GetSubPassAt(i);
+		const devkRenderPassConfiguration::sSubPass &subPass = configuration.GetSubPasses()[i];
 		
 		int att = subPass.depthStencilAttachment;
 		if(att < -1){
@@ -82,19 +78,19 @@ pRenderPass(VK_NULL_HANDLE)
 		}
 	}
 	
-	VkSubpassDescription *subPassInfo = nullptr;
-	VkAttachmentReference *attRef = nullptr;
-	uint32_t *attPreserve = nullptr;
-	int *attRetain = nullptr;
-	
 	try{
+		decTList<VkSubpassDescription> subPassInfo;
+		decTList<VkAttachmentReference> attRef;
+		decTList<uint32_t> attPreserve;
+		decTList<int> attRetain;
+		
 		VK_IF_CHECK(deSharedVulkan &vulkan = device.GetInstance().GetVulkan();)
 		
 		VkRenderPassCreateInfo renderPassInfo{VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO};
 		
 		// attachments we can use directly
 		renderPassInfo.attachmentCount = attachmentCount;
-		renderPassInfo.pAttachments = configuration.GetAttachments();
+		renderPassInfo.pAttachments = configuration.GetAttachments().GetArrayPointer();
 		
 		// sub passes we have to calculate. this is a bit of a mess since vulkan requires
 		// us to explicitly define what is implicitely defined. this requires building
@@ -103,13 +99,10 @@ pRenderPass(VK_NULL_HANDLE)
 		// sub pass maximum color attachments: 8
 		// sub pass maximum depth/stencil attachments: 1
 		const int maxAttRef = subPassCount * (8 + 1);
-		attRef = new VkAttachmentReference[maxAttRef]{}; // max 8 color + 1 depth/stencil
+		attRef.SetAll(maxAttRef, {}); // max 8 color + 1 depth/stencil
 		
-		if(attachmentCount > 0){
-			attPreserve = new uint32_t[attachmentCount];
-		}
-		
-		subPassInfo = new VkSubpassDescription[subPassCount]{};
+		attPreserve.SetAll(attachmentCount, 0);
+		subPassInfo.SetAll(subPassCount, {});
 		
 		// init sub pass configuration
 		for(i=0; i<subPassCount; i++){
@@ -117,10 +110,10 @@ pRenderPass(VK_NULL_HANDLE)
 		}
 		
 		// set the attachments used by the sub pass
-		VkAttachmentReference *ptrAttRef = attRef;
+		VkAttachmentReference *ptrAttRef = attRef.GetArrayPointer();
 		
 		for(i=0; i<subPassCount; i++){
-			const devkRenderPassConfiguration::sSubPass &subPass = configuration.GetSubPassAt(i);
+			const devkRenderPassConfiguration::sSubPass &subPass = configuration.GetSubPasses()[i];
 			
 			if(subPass.depthStencilAttachment != -1){
 				subPassInfo[i].pDepthStencilAttachment = ptrAttRef;
@@ -148,27 +141,27 @@ pRenderPass(VK_NULL_HANDLE)
 		// calculate the last sub pass requiring each individual attachment. if the attachment
 		// is required to be retained beyond the render pass sub pass count is used
 		if(attachmentCount > 0){
-			attRetain = new int[attachmentCount];
+			attRetain.EnlargeCapacity(attachmentCount);
 			
 			for(i=0; i<attachmentCount; i++){
-				const VkAttachmentDescription &desc = configuration.GetAttachmentAt(i);
+				const VkAttachmentDescription &desc = configuration.GetAttachments()[i];
 				
 				if(desc.storeOp == VK_ATTACHMENT_STORE_OP_STORE){
-					attRetain[i] = subPassCount;
+					attRetain.Add(subPassCount);
 					continue;
 				}
 				
 				for(j=0; j<subPassCount; j++){
-					const devkRenderPassConfiguration::sSubPass &subPass = configuration.GetSubPassAt(j);
+					const devkRenderPassConfiguration::sSubPass &subPass = configuration.GetSubPasses()[j];
 					
 					if(subPass.depthStencilAttachment == i){
-						attRetain[i] = j;
+						attRetain.Add(j);
 						continue;
 					}
 					
 					for(k=0; k<8; k++){
 						if(subPass.colorAttachments[k] == i){
-							attRetain[i] = j;
+							attRetain.Add(j);
 							break;
 						}
 					}
@@ -177,10 +170,10 @@ pRenderPass(VK_NULL_HANDLE)
 		}
 		
 		// set attachment preservation. this is implicitely defined but vulkan needs it explcit
-		uint32_t *ptrAttPreserve = attPreserve;
+		uint32_t *ptrAttPreserve = attPreserve.GetArrayPointer();
 		
 		for(i=0; i<subPassCount; i++){
-			const devkRenderPassConfiguration::sSubPass &subPass = configuration.GetSubPassAt(i);
+			const devkRenderPassConfiguration::sSubPass &subPass = configuration.GetSubPasses()[i];
 			
 			for(j=0; j<attachmentCount; j++){
 				bool isUsed = false;
@@ -210,39 +203,13 @@ pRenderPass(VK_NULL_HANDLE)
 		
 		// finish sub pass
 		renderPassInfo.subpassCount = subPassCount;
-		renderPassInfo.pSubpasses = subPassInfo;
+		renderPassInfo.pSubpasses = subPassInfo.GetArrayPointer();
 		
 		// create render pass
 		VK_CHECK(vulkan, device.vkCreateRenderPass(device.GetDevice(),
 			&renderPassInfo, VK_NULL_HANDLE, &pRenderPass));
 		
-		// clean up temporaries
-		if(subPassInfo){
-			delete [] subPassInfo;
-		}
-		if(attPreserve){
-			delete [] attPreserve;
-		}
-		if(attRef){
-			delete [] attRef;
-		}
-		if(attRetain){
-			delete [] attRetain;
-		}
-		
 	}catch(const deException &){
-		if(subPassInfo){
-			delete [] subPassInfo;
-		}
-		if(attPreserve){
-			delete [] attPreserve;
-		}
-		if(attRef){
-			delete [] attRef;
-		}
-		if(attRetain){
-			delete [] attRetain;
-		}
 		pCleanUp();
 		throw;
 	}

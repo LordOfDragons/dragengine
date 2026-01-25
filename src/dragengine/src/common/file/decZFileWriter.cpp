@@ -49,11 +49,9 @@
 decZFileWriter::decZFileWriter(decBaseFileWriter *writer) :
 pZStream(nullptr),
 
-pBufferIn(nullptr),
 pBufferInSize(0),
 pBufferInPosition(0),
 
-pBufferOut(nullptr),
 pBufferOutSize(0)
 {
 	if(!writer){
@@ -65,11 +63,9 @@ pBufferOutSize(0)
 decZFileWriter::decZFileWriter(decBaseFileWriter *writer, bool pureMode) :
 pZStream(nullptr),
 
-pBufferIn(nullptr),
 pBufferInSize(0),
 pBufferInPosition(0),
 
-pBufferOut(nullptr),
 pBufferOutSize(0)
 {
 	if(!writer){
@@ -82,16 +78,11 @@ decZFileWriter::~decZFileWriter(){
 	EndZWriting();
 	
 	if(pZStream){
+		deflateEnd((z_stream*)pZStream);
 		delete (z_stream*)pZStream;
 	}
 	
 	pWriter = nullptr;
-	if(pBufferOut){
-		delete [] (Bytef*)pBufferOut;
-	}
-	if(pBufferIn){
-		delete [] (Bytef*)pBufferIn;
-	}
 }
 
 
@@ -131,9 +122,9 @@ void decZFileWriter::Write(const void *buffer, int size){
 	while(size > 0){
 		if(pBufferInPosition + size > pBufferInSize){
 			const int writeSize = pBufferInSize - pBufferInPosition;
-			memcpy((Bytef*)pBufferIn + pBufferInPosition, cbuffer, writeSize);
+			memcpy((Bytef*)pBufferIn.GetArrayPointer() + pBufferInPosition, cbuffer, writeSize);
 			
-			zstream->next_in = (Bytef*)pBufferIn;
+			zstream->next_in = (Bytef*)pBufferIn.GetArrayPointer();
 			zstream->avail_in = pBufferInSize;
 			
 			while(zstream->avail_in > 0){
@@ -142,8 +133,8 @@ void decZFileWriter::Write(const void *buffer, int size){
 				}
 				
 				if(zstream->avail_out == 0){
-					pWriter->Write(pBufferOut, pBufferOutSize);
-					zstream->next_out = (Bytef*)pBufferOut;
+					pWriter->Write(pBufferOut.GetArrayPointer(), pBufferOutSize);
+					zstream->next_out = (Bytef*)pBufferOut.GetArrayPointer();
 					zstream->avail_out = pBufferOutSize;
 				}
 			}
@@ -153,7 +144,7 @@ void decZFileWriter::Write(const void *buffer, int size){
 			size -= writeSize;
 			
 		}else{
-			memcpy((Bytef*)pBufferIn + pBufferInPosition, cbuffer, size);
+			memcpy((Bytef*)pBufferIn.GetArrayPointer() + pBufferInPosition, cbuffer, size);
 			pBufferInPosition += size;
 			size = 0;
 		}
@@ -168,15 +159,15 @@ decBaseFileWriter::Ref decZFileWriter::Duplicate(){
 
 void decZFileWriter::EndZWriting(){
 	z_stream * const zstream = (z_stream*)pZStream;
-	zstream->next_in = (Bytef*)pBufferIn;
+	zstream->next_in = (Bytef*)pBufferIn.GetArrayPointer();
 	zstream->avail_in = pBufferInPosition;
 	
 	while(true){
 		const int result = deflate(zstream, Z_FINISH);
 		
 		if(result == Z_OK){
-			pWriter->Write(pBufferOut, pBufferOutSize);
-			zstream->next_out = (Bytef*)pBufferOut;
+			pWriter->Write(pBufferOut.GetArrayPointer(), pBufferOutSize);
+			zstream->next_out = (Bytef*)pBufferOut.GetArrayPointer();
 			zstream->avail_out = pBufferOutSize;
 			
 		}else if(result == Z_STREAM_END){
@@ -191,8 +182,8 @@ void decZFileWriter::EndZWriting(){
 	
 	const int remainingSize = pBufferOutSize - (int)zstream->avail_out;
 	if(remainingSize > 0){
-		pWriter->Write(pBufferOut, remainingSize);
-		zstream->next_out = (Bytef*)pBufferOut;
+		pWriter->Write(pBufferOut.GetArrayPointer(), remainingSize);
+		zstream->next_out = (Bytef*)pBufferOut.GetArrayPointer();
 		zstream->avail_out = pBufferOutSize;
 	}
 	
@@ -211,10 +202,8 @@ void decZFileWriter::pInit(decBaseFileWriter *writer, bool pureMode){
 		writer->WriteByte(0); // options in case we want to expand on functionality internally
 	}
 	
-	pBufferIn = nullptr;
 	pBufferInPosition = 0;
 	pBufferInSize = 0;
-	pBufferOut = nullptr;
 	pBufferOutSize = 0;
 	
 	z_stream * const zstream = new z_stream;
@@ -229,14 +218,14 @@ void decZFileWriter::pInit(decBaseFileWriter *writer, bool pureMode){
 		DETHROW(deeOutOfMemory);
 	}
 	
-	pBufferIn = new Bytef[BUFFER_SIZE];
+	pBufferIn.SetCountDiscard(BUFFER_SIZE);
 	pBufferInSize = BUFFER_SIZE;
-	pBufferOut = new Bytef[BUFFER_SIZE];
+	pBufferOut.SetCountDiscard(BUFFER_SIZE);
 	pBufferOutSize = BUFFER_SIZE;
 	
-	zstream->next_in = (Bytef*)pBufferIn;
+	zstream->next_in = (Bytef*)pBufferIn.GetArrayPointer();
 	zstream->avail_in = 0;
-	zstream->next_out = (Bytef*)pBufferOut;
+	zstream->next_out = (Bytef*)pBufferOut.GetArrayPointer();
 	zstream->avail_out = pBufferOutSize;
 	pZStream = zstream;
 	

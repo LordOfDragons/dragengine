@@ -231,13 +231,13 @@ void deoglSkinRenderedTexture::pPlaneFromTexture(sMirrorMatrix &mirrorMatrix) co
 	deoglRComponent &component = *pSkinRendered.GetOwnerComponent();
 	deoglRComponentLOD &componentLOD = component.GetLODAt(0);
 	componentLOD.PrepareNormalsTangents();
-	const oglVector3 * const compFaceNormals = componentLOD.GetFaceNormals();
-	const oglVector3 * const compPositions = componentLOD.GetPositions();
+	const oglVector3 * const compFaceNormals = componentLOD.GetFaceNormals().GetArrayPointer();
+	const oglVector3 * const compPositions = componentLOD.GetPositions().GetArrayPointer();
 	
-	const deoglModelLOD &modelLOD = component.GetModel()->GetLODAt(0);
-	const oglModelVertex * const modelVertices = modelLOD.GetVertices();
-	deoglModelFace * const faces = modelLOD.GetFaces();
-	const int faceCount = modelLOD.GetFaceCount();
+	const deoglModelLOD &modelLOD = component.GetModel()->GetLODs().First();
+	const oglModelVertex * const modelVertices = modelLOD.GetVertices().GetArrayPointer();
+	const deoglModelFace * const faces = modelLOD.GetFaces().GetArrayPointer();
+	const int faceCount = modelLOD.GetFaces().GetCount();
 	int i;
 	
 	int planePositionCount = 0;
@@ -269,7 +269,7 @@ void deoglSkinRenderedTexture::pPlaneFromTexture(sMirrorMatrix &mirrorMatrix) co
 		
 	}else{
 		for(i=0; i<faceCount; i++){
-			const oglModelPosition * const positions = modelLOD.GetPositions();
+			const oglModelPosition * const positions = modelLOD.GetPositions().GetArrayPointer();
 			const deoglModelFace &face = faces[i];
 			
 			if(face.GetTexture() == pModelTexture){
@@ -309,9 +309,9 @@ double near, double far, const decDMatrix &matrixInvCamera, const decMatrix &mat
 	deoglRComponent &component = *pSkinRendered.GetOwnerComponent();
 	deoglRComponentLOD &componentLOD = component.GetLODAt(0);
 	const deoglModelLOD &modelLOD = component.GetModel()->GetLODAt(0);
-	const oglModelVertex * const modelVertices = modelLOD.GetVertices();
-	deoglModelFace * const faces = modelLOD.GetFaces();
-	int f, faceCount = modelLOD.GetFaceCount();
+	const oglModelVertex * const modelVertices = modelLOD.GetVertices().GetArrayPointer();
+	const deoglModelFace * const faces = modelLOD.GetFaces().GetArrayPointer();
+	int f, faceCount = modelLOD.GetFaces().GetCount();
 	
 	float left = 1.0f;
 	float top = -1.0f;
@@ -322,7 +322,7 @@ double near, double far, const decDMatrix &matrixInvCamera, const decMatrix &mat
 	// hack for the time being
 	if(component.GetRenderMode() == deoglRComponent::ermDynamic){
 		componentLOD.PreparePositions();
-		const oglVector3 * const compVertices = componentLOD.GetPositions();
+		const oglVector3 * const compVertices = componentLOD.GetPositions().GetArrayPointer();
 		
 		for(f=0; f<faceCount; f++){
 			const deoglModelFace &face = faces[f];
@@ -372,7 +372,7 @@ double near, double far, const decDMatrix &matrixInvCamera, const decMatrix &mat
 		
 	}else{
 		for(f=0; f<faceCount; f++){
-			const oglModelPosition * const positions = modelLOD.GetPositions();
+			const oglModelPosition * const positions = modelLOD.GetPositions().GetArrayPointer();
 			const deoglModelFace &face = faces[f];
 			
 			if(face.GetTexture() == pModelTexture){

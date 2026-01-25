@@ -30,6 +30,8 @@
 
 #include "../fbxProperty.h"
 
+#include <dragengine/common/collection/decTList.h>
+
 
 /**
  * \brief FBX property string.
@@ -40,8 +42,7 @@ public:
 	
 	
 private:
-	uint8_t *pValue;
-	int pLength;
+	decTList<uint8_t> pValue;
 	
 	
 	
@@ -64,11 +65,11 @@ protected:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Value. */
-	inline const uint8_t *GetValue() const{ return pValue; }
+	/** \brief Values. */
+	inline const decTList<uint8_t> &GetValue() const{ return pValue; }
 	
 	/** \brief Value length. */
-	inline int GetLength() const{ return pLength; }
+	inline int GetLength() const{ return pValue.GetCount(); }
 	
 	/** \brief Set value. */
 	void SetValue(const uint8_t *value, int length);

@@ -28,9 +28,10 @@
 #include "deoglSPBParameter.h"
 #include "../../deoglBasics.h"
 
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
-#include <dragengine/deObject.h>
 
 class deoglRenderThread;
 class deoglSPBParameter;
@@ -53,8 +54,7 @@ public:
 private:
 	deoglRenderThread &pRenderThread;
 	
-	deoglSPBParameter *pParameters;
-	int pParameterCount;
+	decTList<deoglSPBParameter> pParameters;
 	bool pRowMajor;
 	
 	int pElementCount;
@@ -91,14 +91,15 @@ public:
 	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** Number of parameters. */
-	inline int GetParameterCount() const{ return pParameterCount; }
+	/** Parameters. */
+	inline const decTList<deoglSPBParameter> &GetParameters() const{ return pParameters; }
 	
 	/** Set number of parameters. */
 	void SetParameterCount(int count);
 	
 	/** Parameter at index. */
-	deoglSPBParameter &GetParameterAt(int index) const;
+	deoglSPBParameter &GetParameterAt(int index);
+	const deoglSPBParameter &GetParameterAt(int index) const;
 	
 	/** Matrices are stored in row-major order. */
 	inline bool GetRowMajor() const{ return pRowMajor; }
@@ -514,13 +515,15 @@ private:
 		int vectorCount = 1, int arrayIndex = 0) const;
 	const deoglSPBParameter &pParam(int index, deoglSPBParameter::eValueTypes valueType,
 		int componentCount, int vectorCount, int arrayIndex) const;
+	deoglSPBParameter &pParam(int index, deoglSPBParameter::eValueTypes valueType,
+		int componentCount, int vectorCount, int arrayIndex);
 	
 	GLfloat *pDataFloat(const deoglSPBParameter &parameter, int element,
-		int arrayIndex = 0) const;
+		int arrayIndex = 0);
 	GLint *pDataInt(const deoglSPBParameter &parameter, int element,
-		int arrayIndex = 0) const;
+		int arrayIndex = 0);
 	GLuint *pDataUInt(const deoglSPBParameter &parameter, int element,
-		int arrayIndex = 0) const;
+		int arrayIndex = 0);
 	char *pData(const deoglSPBParameter &parameter, int element, int arrayIndex) const;
 	
 	void pDataMatrix2(const deoglSPBParameter &parameter, int element,

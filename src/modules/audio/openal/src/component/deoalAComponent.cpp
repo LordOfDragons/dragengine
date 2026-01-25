@@ -65,12 +65,6 @@ pDirtyWeightMatrices(true),
 pDirtyExtends(true),
 // pDirtyRTSphere( true ),
 pDirtyTextureUseSkin(true),
-
-pBones(nullptr),
-pBoneCount(0),
-pWeightMatrices(nullptr),
-pFaces(nullptr),
-pFaceCount(0),
 // pOctree( NULL ),
 pBVH(nullptr),
 
@@ -255,23 +249,15 @@ void deoalAComponent::UpdateAffectsSound(){
 
 
 void deoalAComponent::InitBones(const deComponent &component){
-	const int boneCount = component.GetBoneCount();
+	const int boneCount = component.GetBones().GetCount();
 	if(boneCount > 0 && !component.GetRig()){
 		DETHROW(deeInvalidParam); // better safe than sorry
 	}
 	
 	pDropFaces();
 	
-	if(boneCount != pBoneCount){
-		if(pBones){
-			delete [] pBones;
-			pBones = nullptr;
-			pBoneCount = 0;
-		}
-		
-		if(boneCount > 0){
-			pBones = new deoalAComponentBone[boneCount];
-		}
+	if(boneCount != pBones.GetCount()){
+		pBones.SetAll(boneCount, {});
 	}
 	
 	if(boneCount > 0){
@@ -279,16 +265,15 @@ void deoalAComponent::InitBones(const deComponent &component){
 		// dereferencing has no affect since this can only happen if boneCount is 0
 		const deRig &rig = *component.GetRig();
 		
-		for(pBoneCount=0; pBoneCount<boneCount; pBoneCount++){
-			const deComponentBone &engBone = component.GetBoneAt(pBoneCount);
-			const deRigBone &rigBone = rig.GetBoneAt(pBoneCount);
-			deoalAComponentBone &bone = pBones[pBoneCount];
+		pBones.VisitIndexed([&](int i, deoalAComponentBone &bone){
+			const deComponentBone &engBone = component.GetBones()[i];
+			const deRigBone &rigBone = rig.GetBones()[i];
 			
-			bone.SetIndex(pBoneCount);
+			bone.SetIndex(i);
 			bone.SetName(rigBone.GetName());
 			
 			if(engBone.GetParentBone() != -1){
-				bone.SetParent(pBones + engBone.GetParentBone());
+				bone.SetParent(&pBones[engBone.GetParentBone()]);
 				
 			}else{
 				bone.SetParent(nullptr);
@@ -296,7 +281,7 @@ void deoalAComponent::InitBones(const deComponent &component){
 			
 			bone.SetOriginalMatrix(engBone.GetOriginalMatrix());
 			bone.SetRigInverseMatrix(rigBone.GetInverseMatrix());
-		}
+		});
 	}
 	
 	pResizeModelRigMappings();
@@ -311,11 +296,8 @@ void deoalAComponent::UpdateBoneGeometry(const deComponent &component){
 	// TODO figure out which bones potentially affect audible geometry.
 	//      this way changes to unrelated bones do not trigger updates.
 	bool nothingChanged = true;
-	int i;
-	
-	for(i=0; i<pBoneCount; i++){
-		const deComponentBone &engBone = component.GetBoneAt(i);
-		deoalAComponentBone &bone = pBones[i];
+	pBones.Visit([&](deoalAComponentBone &bone){
+		const deComponentBone &engBone = component.GetBones()[bone.GetIndex()];
 		
 		if(nothingChanged){
 			nothingChanged = bone.GetPosition().IsEqualTo(engBone.GetPosition(), 1e-4f)
@@ -324,7 +306,7 @@ void deoalAComponent::UpdateBoneGeometry(const deComponent &component){
 		}
 		
 		bone.SetGeometry(engBone);
-	}
+	});
 	
 	// invalidate matrices and env-probes only if any bone changed. this avoids recalculations
 	// in situations where animators are applied but the result is the same as last frame
@@ -356,7 +338,7 @@ void deoalAComponent::PrepareOctree(){
 	}
 	
 	// prepare octrees
-	if(pBoneCount == 0){
+	if(pBones.IsEmpty()){
 		if(pModel){
 			pModel->PrepareOctree();
 		}
@@ -368,13 +350,6 @@ void deoalAComponent::PrepareOctree(){
 	
 	// prepare ray-trace sphere for accelerated octrees
 // 	pPrepareRTSphere();
-}
-
-const deoalModelFace &deoalAComponent::GetFaceAt(int index) const{
-	if(index < 0 || index >= pFaceCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pFaces[index];
 }
 
 
@@ -396,15 +371,6 @@ void deoalAComponent::pCleanUp(){
 // 	if( pOctree ){
 // 		delete pOctree;
 // 	}
-	if(pFaces){
-		delete [] pFaces;
-	}
-	if(pWeightMatrices){
-		delete [] pWeightMatrices;
-	}
-	if(pBones){
-		delete [] pBones;
-	}
 	
 	pTextures.RemoveAll();
 }
@@ -466,8 +432,8 @@ void deoalAComponent::pUpdateTextureSkinMappings(){
 		}
 		
 		const decString &name = pTextureNames->GetAt(i);
-		for(j=0; j<pSkin->GetTextureCount(); j++){
-			if(pSkin->GetTextureAt(j).GetName() == name){
+		for(j=0; j<pSkin->GetTextures().GetCount(); j++){
+			if(pSkin->GetTextures()[j].GetName() == name){
 				pTextureSkinMappings.SetAt(i, j);
 				break;
 			}
@@ -496,32 +462,19 @@ void deoalAComponent::pResizeTextureSkinMappings(){
 }
 
 void deoalAComponent::pUpdateModelRigMappings(){
-	if(!pModel || pBoneCount == 0){
-		const int count = pModelRigMappings.GetCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			pModelRigMappings.SetAt(i, -1);
-		}
+	if(!pModel || pBones.IsEmpty()){
+		pModelRigMappings.SetRangeAt(0, pModelRigMappings.GetCount(), -1);
 		return;
 	}
 	
 	// determine mappings of bones from model to rig
 	const decStringList &boneNames = pModel->GetBoneNames();
-	const int count = pModelRigMappings.GetCount();
-	int i, j;
-	
-	for(i=0; i<count; i++){
-		pModelRigMappings.SetAt(i, -1);
-		
+	pModelRigMappings.VisitIndexed([&](int i, int &mapping){
 		const decString &name = boneNames.GetAt(i);
-		for(j=0; j<pBoneCount; j++){
-			if(pBones[j].GetName() == name){
-				pModelRigMappings.SetAt(i, j);
-				break;
-			}
-		}
-	}
+		mapping = pBones.IndexOfMatching([&](const deoalAComponentBone &bone){
+			return bone.GetName() == name;
+		});
+	});
 }
 
 void deoalAComponent::pResizeModelRigMappings(){
@@ -574,8 +527,8 @@ void deoalAComponent::pPrepareExtends(){
 	
 	pPrepareMatrices();
 	
-	const decDVector modelMin(pBoneCount == 0 ? pModel->GetMinExtend() : pDynamicMinExtend);
-	const decDVector modelMax(pBoneCount == 0 ? pModel->GetMaxExtend() : pDynamicMaxExtend);
+	const decDVector modelMin(pBones.IsEmpty() ? pModel->GetMinExtend() : pDynamicMinExtend);
+	const decDVector modelMax(pBones.IsEmpty() ? pModel->GetMaxExtend() : pDynamicMaxExtend);
 	const decDVector corners[8] = {
 		pMatrix.Transform(modelMin.x, modelMin.y, modelMin.z),
 		pMatrix.Transform(modelMax.x, modelMin.y, modelMin.z),
@@ -652,14 +605,9 @@ void deoalAComponent::pPrepareRTSphere(){
 
 
 void deoalAComponent::pPrepareBoneMatrices(){
-	if(pBoneCount == 0){
-		return;
-	}
-	
-	int i;
-	for(i=0; i<pBoneCount; i++){
-		pBones[i].UpdateMatrix();
-	}
+	pBones.Visit([&](deoalAComponentBone &bone){
+		bone.UpdateMatrix();
+	});
 }
 
 void deoalAComponent::pPrepareWeightMatrices(){
@@ -675,8 +623,8 @@ void deoalAComponent::pPrepareWeightMatrices(){
 		return;
 	}
 	
-	if(!pWeightMatrices){
-		pWeightMatrices = new decMatrix[weightSetCount];
+	if(pWeightMatrices.IsEmpty()){
+		pWeightMatrices.AddRange(weightSetCount, {});
 	}
 	
 	const deoalAModel::sWeightSet * const weightSets = pModel->GetWeightSets();
@@ -736,18 +684,10 @@ void deoalAComponent::pPrepareWeightMatrices(){
 }
 
 void deoalAComponent::pDropWeightMatrices(){
-	if(pWeightMatrices){
-		delete [] pWeightMatrices;
-		pWeightMatrices = nullptr;
-		
-		pDirtyWeightMatrices = true;
-	}
+	pWeightMatrices.RemoveAll();
+	pDirtyWeightMatrices = true;
 	
-	if(pBones){
-		delete [] pBones;
-		pBones = nullptr;
-		pBoneCount = 0;
-	}
+	pBones.RemoveAll();
 }
 
 void deoalAComponent::pUpdateFaces(){
@@ -757,7 +697,7 @@ void deoalAComponent::pUpdateFaces(){
 	}
 	
 	const int count = pModel->GetFaceCount();
-	if(count != pFaceCount){
+	if(count != pFaces.GetCount()){
 		pDropFaces();
 	}
 	
@@ -767,17 +707,13 @@ void deoalAComponent::pUpdateFaces(){
 	
 	pPrepareWeightMatrices();
 	
-	if(!pFaces){
-		pFaces = new deoalModelFace[count];
-		for(pFaceCount=0; pFaceCount<count; pFaceCount++){
-			pFaces[pFaceCount].InitFromStatic(pModel->GetFaceAt(pFaceCount));
-		}
-	}
+	pFaces.SetAll(count, {});
+	pFaces.VisitIndexed([&](int i, deoalModelFace &face){
+		face.InitFromStatic(pModel->GetFaceAt(i));
+	});
 	
-	int i;
-	for(i=0; i<pFaceCount; i++){
+	pFaces.VisitIndexed([&](int i, deoalModelFace &face){
 		const deoalModelFace &modelFace = pModel->GetFaceAt(i);
-		deoalModelFace &face = pFaces[i];
 		
 		if(face.GetWeightSet1() != -1){
 			face.SetVertex1(pWeightMatrices[face.GetWeightSet1()] * modelFace.GetVertex1());
@@ -790,13 +726,11 @@ void deoalAComponent::pUpdateFaces(){
 		}
 		
 		face.UpdateNormalAndEdges();
-	}
+	});
 	
 	decVector minExtend, maxExtend;
 	
-	for(i=0; i<pFaceCount; i++){
-		const deoalModelFace &face = pFaces[i];
-		
+	pFaces.Visit([&](const deoalModelFace &face){
 		minExtend.SetSmallest(face.GetVertex1());
 		minExtend.SetSmallest(face.GetVertex2());
 		minExtend.SetSmallest(face.GetVertex3());
@@ -804,7 +738,7 @@ void deoalAComponent::pUpdateFaces(){
 		maxExtend.SetLargest(face.GetVertex1());
 		maxExtend.SetLargest(face.GetVertex2());
 		maxExtend.SetLargest(face.GetVertex3());
-	}
+	});
 	
 	if(!(minExtend >= pDynamicMinExtend && maxExtend <= pDynamicMaxExtend)){
 		pDirtyExtends = true;
@@ -818,11 +752,7 @@ void deoalAComponent::pUpdateFaces(){
 
 void deoalAComponent::pDropFaces(){
 	pDropOctree();
-	if(pFaces){
-		delete [] pFaces;
-		pFaces = nullptr;
-	}
-	pFaceCount = 0;
+	pFaces.RemoveAll();
 }
 
 void deoalAComponent::pBuildOctree(){
@@ -846,7 +776,7 @@ void deoalAComponent::pBuildOctree(){
 	if(!pBVH){
 		pBVH = new deoalModelRTBVH;
 	}
-	pBVH->Build(pFaces, pFaceCount);
+	pBVH->Build(pFaces.GetArrayPointer(), pFaces.GetCount());
 }
 
 void deoalAComponent::pDropOctree(){

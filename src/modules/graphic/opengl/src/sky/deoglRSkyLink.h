@@ -28,6 +28,7 @@
 #include <dragengine/deTUniqueReference.h>
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoglRSkyInstance;
 
@@ -46,8 +47,7 @@ private:
 	const int pController;
 	const int pRepeat;
 	
-	float *pSamples;
-	int pSampleCount;
+	decTList<float> pSamples;
 	
 	float pUpperLimit;
 	
@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create sky link. */
-	deoglRSkyLink(const deSkyLink &link);
+	explicit deoglRSkyLink(const deSkyLink &link);
 	
 	/** Clean up sky link. */
 	~deoglRSkyLink();

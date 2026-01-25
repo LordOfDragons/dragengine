@@ -27,6 +27,7 @@
 
 #include "../desynBasics.h"
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/systems/modules/synthesizer/deBaseSynthesizerSound.h>
 
 class deSound;
@@ -46,8 +47,7 @@ private:
 	bool pIsUsed;
 	bool pIsCached;
 	
-	char *pStreamData;
-	int pStreamDataSize;
+	decTList<char> pStreamData;
 	bool pStreaming;
 	
 	
@@ -75,10 +75,10 @@ public:
 	
 	
 	/** \brief Stream data or \em NULL if not loaded. */
-	inline char *GetStreamData() const{ return pStreamData; }
+	inline char *GetStreamData(){ return pStreamData.GetArrayPointer(); }
 	
 	/** \brief Stream data size in bytes or 0 if not loaded. */
-	inline int GetStreamDataSize() const{ return pStreamDataSize; }
+	inline int GetStreamDataSize() const{ return pStreamData.GetCount(); }
 	
 	/** \brief Sound is too large requiring streaming. */
 	inline bool GetStreaming() const{ return pStreaming; }
@@ -102,8 +102,6 @@ public:
 	
 	
 private:
-	void pCleanUp();
-	
 	void pLoadFromCache();
 	void pWriteToCache();
 	

@@ -43,14 +43,9 @@
 ////////////////////////////
 
 dearControllerStates::dearControllerStates(){
-	pStates = nullptr;
-	pStateCount = 0;
 }
 
 dearControllerStates::~dearControllerStates(){
-	if(pStates){
-		delete [] pStates;
-	}
 }
 
 
@@ -59,68 +54,42 @@ dearControllerStates::~dearControllerStates(){
 ///////////////
 
 void dearControllerStates::SetStateCount(int count){
-	if(count != pStateCount){
-		if(pStates){
-			delete [] pStates;
-			pStates = nullptr;
-		}
-		pStateCount = 0;
-		
-		if(count > 0){
-			pStates = new sState[count];
-		}
-		pStateCount = count;
+	if(count == pStates.GetCount()){
+		return;
 	}
+	
+	pStates.SetAll(count, {});
 }
 
 
 
 float dearControllerStates::GetValueAt(int state) const{
-	if(state < 0 || state >= pStateCount) DETHROW(deeInvalidParam);
-	
 	return pStates[state].value;
 }
 
 const decVector &dearControllerStates::GetVectorAt(int state) const{
-	if(state < 0 || state >= pStateCount) DETHROW(deeInvalidParam);
-	
 	return pStates[state].vector;
 }
 
 void dearControllerStates::SetValueAt(int state, float value){
-	if(state < 0 || state >= pStateCount) DETHROW(deeInvalidParam);
-	
 	pStates[state].value = value;
 }
 
 void dearControllerStates::SetVectorAt(int state, const decVector &vector){
-	if(state < 0 || state >= pStateCount) DETHROW(deeInvalidParam);
-	
 	pStates[state].vector = vector;
 }
 
 void dearControllerStates::SetStateAt(int state, float value, const decVector &vector){
-	if(state < 0 || state >= pStateCount) DETHROW(deeInvalidParam);
-	
 	pStates[state].value = value;
 	pStates[state].vector = vector;
 }
 
 void dearControllerStates::ResetStateAt(int state){
-	if(state < 0 || state >= pStateCount) DETHROW(deeInvalidParam);
-	
 	pStates[state].value = 0.0f;
 	pStates[state].vector.SetZero();
 }
 
 void dearControllerStates::SetStateFrom(int destState, const dearControllerStates &sourceStates, int sourceState){
-	if(sourceState < 0 || sourceState >= sourceStates.pStateCount){
-		DETHROW(deeInvalidParam);
-	}
-	if(destState < 0 || destState >= pStateCount){
-		DETHROW(deeInvalidParam);
-	}
-	
 	pStates[destState].value = sourceStates.pStates[sourceState].value;
 	pStates[destState].vector = sourceStates.pStates[sourceState].vector;
 }

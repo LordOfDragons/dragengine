@@ -44,9 +44,7 @@ deColliderAttachment::deColliderAttachment(deResource *resource) :
 pAttachType(eatStatic),
 pResource(resource),
 pScaling(1.0f, 1.0f, 1.0f),
-pNoScaling(false),
-pWeights(nullptr),
-pWeightCount(0)
+pNoScaling(false)
 {
 	if(!resource || !CanAttachResource(*resource)){
 		DETHROW(deeInvalidParam);
@@ -54,9 +52,6 @@ pWeightCount(0)
 }
 
 deColliderAttachment::~deColliderAttachment(){
-	if(pWeights){
-		delete [] pWeights;
-	}
 }
 
 
@@ -91,22 +86,11 @@ void deColliderAttachment::SetTrackBone(const char *bone){
 
 
 void deColliderAttachment::SetWeightCount(int count){
-	if(count == pWeightCount){
+	if(count == pWeights.GetCount()){
 		return;
 	}
 	
-	sWeight *newArray = nullptr;
-	
-	if(count > 0){
-		newArray = new sWeight[count];
-	}
-	
-	if(pWeights){
-		delete [] pWeights;
-	}
-	
-	pWeights = newArray;
-	pWeightCount = count;
+	pWeights.SetAll(count, {});
 }
 
 

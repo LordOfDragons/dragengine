@@ -35,6 +35,7 @@
 #include "../tbo/deoglDynamicTBOUInt16.h"
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoglGIBVHLocal;
 class deoglGIInstance;
@@ -182,15 +183,11 @@ private:
 	
 	deoglRenderThread &pRenderThread;
 	
-	sComponent *pComponents;
-	int pComponentCount;
-	int pComponentSize;
+	decTList<sComponent> pComponents;
 	
 	deoglBVH pBVH;
-	deoglBVH::sBuildPrimitive *pPrimitives;
-	int pPrimitiveSize;
-	deoglBVHNode *pRecalcNodes;
-	int pRecalcNodeSize;
+	decTList<deoglBVH::sBuildPrimitive> pPrimitives;
+	decTList<deoglBVHNode> pRecalcNodes;
 	decDVector pPosition;
 	
 	int pIndexRootNode;
@@ -275,7 +272,6 @@ public:
 	
 	
 private:
-	void pCleanUp();
 	void pDropBlockBVH();
 	sComponent &pAddComponent(const deoglGIInstance &instance, int indexMaterial, const decMatrix &matrix);
 	
@@ -288,7 +284,6 @@ private:
 	
 // 	void pUpdateLocalBVHNodeExtends( const deoglGIBVHLocal &localBVH, const oglVector *positions,
 // 		const deoglBVHNode &node, deoglBVHNode &target );
-	void pEnsureRecalcNodeSize(int size);
 };
 
 #endif

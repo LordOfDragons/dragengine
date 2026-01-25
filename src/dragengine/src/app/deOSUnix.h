@@ -30,6 +30,7 @@
 #ifdef OS_UNIX_X11
 
 #include "deOS.h"
+#include "../common/collection/decTList.h"
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -54,10 +55,8 @@ private:
 	Window pHostingMainWindow;
 	Window pHostingRenderWindow;
 	
-	sDisplayInformation *pDisplayInformation;
-	int pDisplayCount;
-	decPoint *pDisplayResolutions;
-	int pDisplayResolutionCount;
+	decTList<sDisplayInformation> pDisplayInformation;
+	decTList<decPoint> pDisplayResolutions;
 	int pScaleFactor;
 	
 	

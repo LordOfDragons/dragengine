@@ -48,8 +48,7 @@ pChannelCount(1),
 pBufferSampleSize(2),
 pInfoInited(false),
 pContextInited(false),
-pBlockInited(false),
-pFillUpSample(nullptr)
+pBlockInited(false)
 {
 	memset(&pPacket, 0, sizeof(pPacket));
 }
@@ -63,9 +62,6 @@ dewmVorbisStream::~dewmVorbisStream(){
 	}
 	if(pInfoInited){
 		vorbis_info_clear(&pInfo);
-	}
-	if(pFillUpSample){
-		delete [] pFillUpSample;
 	}
 }
 
@@ -222,7 +218,7 @@ void dewmVorbisStream::CopySamples(){
 }
 
 void dewmVorbisStream::LoadFrameData(std::uint64_t frameSize){
-	pPacket.packet = (unsigned char*)pCallback.GetFrameBuffer();
+	pPacket.packet = (unsigned char*)pCallback.GetFrameBuffer().GetArrayPointer();
 	pPacket.bytes = (long)frameSize;
 	
 	if(vorbis_synthesis(&pBlock, &pPacket)){
@@ -238,22 +234,22 @@ void dewmVorbisStream::Rewind(){
 }
 
 void dewmVorbisStream::FillUpBuffer(){
-	if(!pFillUpSample){
-		pFillUpSample = new uint8_t[pBufferSampleSize];
+	if(pFillUpSample.IsEmpty()){
+		pFillUpSample.AddRange(pBufferSampleSize, 0);
 	}
 	
 	uint8_t *ptrBuffer = pCallback.GetResBuffer() + pCallback.GetResPosition() * pBufferSampleSize;
 	
 	if(pCallback.GetResPosition() > 0){
-		memcpy(pFillUpSample, ptrBuffer - pBufferSampleSize, pBufferSampleSize);
+		memcpy(pFillUpSample.GetArrayPointer(), ptrBuffer - pBufferSampleSize, pBufferSampleSize);
 		
 	}else{
-		memset(pFillUpSample, 0, pBufferSampleSize);
+		memset(pFillUpSample.GetArrayPointer(), 0, pBufferSampleSize);
 	}
 	
 	int i;
 	for(i=pCallback.GetResPosition(); i<pCallback.GetResSize(); i++){
-		memcpy(ptrBuffer, pFillUpSample, pBufferSampleSize);
+		memcpy(ptrBuffer, pFillUpSample.GetArrayPointer(), pBufferSampleSize);
 		ptrBuffer += pBufferSampleSize;
 	}
 }

@@ -117,7 +117,7 @@ void deoglRenderLightParticles::RenderLights(deoglRenderPlan &plan){
 	for(i=0; i<instanceCount; i++){
 		deoglRParticleEmitterInstance &instance = *instanceList.GetAt(i);
 		
-		if(instance.GetParticleCount() > 0){
+		if(instance.GetParticles().IsNotEmpty()){
 			RenderParticleEmitterInstance(plan, instance);
 		}
 	}

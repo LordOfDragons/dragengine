@@ -80,12 +80,6 @@ pLastFrameY(0),
 pLastFrameWidth(0),
 pLastFrameHeight(0),
 pLastFrameDop(PNG_DISPOSE_OP_NONE),
-pAccumData(nullptr),
-pAccumRows(nullptr),
-pFrameData(nullptr),
-pFrameRows(nullptr),
-pLastFrameData(nullptr),
-pLastFrameRows(nullptr),
 pErrorState(false)
 {
 	if(!reader){
@@ -113,31 +107,24 @@ pErrorState(false)
 		pReadHeader();
 		
 		// create accum and frame data and rows table
+		pAccumData.AddRange(pImageSize, 0);
+		pFrameData.AddRange(pImageSize, 0);
+		pLastFrameData.AddRange(pImageSize, 0);
+		
+		pAccumRows.EnlargeCapacity(pHeight);
+		pFrameRows.EnlargeCapacity(pHeight);
+		pLastFrameRows.EnlargeCapacity(pHeight);
+		
 		int i;
-		
-		pAccumData = new png_byte[pImageSize];
-		pAccumRows = new png_bytep[pHeight];
 		for(i=0; i<pHeight; i++){
-			pAccumRows[i] = pAccumData + pRowLength * i;
-		}
-		
-		pFrameData = new png_byte[pImageSize];
-		pFrameRows = new png_bytep[pHeight];
-		for(i=0; i<pHeight; i++){
-			pFrameRows[i] = pFrameData + pRowLength * i;
-		}
-		
-		pLastFrameData = new png_byte[pImageSize];
-		pLastFrameRows = new png_bytep[pHeight];
-		for(i=0; i<pHeight; i++){
-			pLastFrameRows[i] = pLastFrameData + pRowLength * i;
+			const int offset = pRowLength * i;
+			pAccumRows.Add(pAccumData.GetArrayPointer() + offset);
+			pFrameRows.Add(pFrameData.GetArrayPointer() + offset);
+			pLastFrameRows.Add(pLastFrameData.GetArrayPointer() + offset);
 		}
 		
 		pLastFrameWidth = pWidth;
 		pLastFrameHeight = pHeight;
-		
-		// clear to transparent black
-		memset(pAccumData, '\0', pImageSize);
 		
 	}catch(const deException &e){
 		pModule.LogErrorFormat("Failed to create reader for file %s", reader->GetFilename());
@@ -190,7 +177,7 @@ void deapngReader::Rewind(){
 	pLastFrameDop = PNG_DISPOSE_OP_NONE;
 	
 	// clear to transparent black
-	memset(pAccumData, '\0', pImageSize);
+	pAccumData.SetRangeAt(0, pImageSize, 0);
 }
 
 void deapngReader::SeekFrame(int frame){
@@ -233,7 +220,7 @@ void deapngReader::CopyAccumImage(void *buffer, int size) const{
 		DETHROW(deeInvalidParam);
 	}
 	
-	memcpy(buffer, pAccumData, pImageSize);
+	memcpy(buffer, pAccumData.GetArrayPointer(), pImageSize);
 }
 
 
@@ -242,24 +229,6 @@ void deapngReader::CopyAccumImage(void *buffer, int size) const{
 //////////////////////
 
 void deapngReader::pCleanUp(){
-	if(pLastFrameRows){
-		delete [] pLastFrameRows;
-	}
-	if(pLastFrameData){
-		delete [] pLastFrameData;
-	}
-	if(pFrameRows){
-		delete [] pFrameRows;
-	}
-	if(pFrameData){
-		delete [] pFrameData;
-	}
-	if(pAccumRows){
-		delete [] pAccumRows;
-	}
-	if(pAccumData){
-		delete [] pAccumData;
-	}
 	if(pReadStruct){
 		png_destroy_read_struct(&pReadStruct, &pInfoStruct, nullptr);
 	}
@@ -417,7 +386,7 @@ void deapngReader::pReadImage(){
 	
 	// printf( "ReadImage frame=%i dop=%i bop=%i (%dx%d)(%dx%d)\n", pCurFrame, dop, bop, x0, y0, w0, h0 );
 	// read image into frame rows so we can process it
-	png_read_image(pReadStruct, pFrameRows);
+	png_read_image(pReadStruct, pFrameRows.GetArrayPointer());
 	
 	// combine the frame rows with the accum rows depending on dispose mode
 	if(bop == PNG_BLEND_OP_SOURCE || pComponentCount < 4){
@@ -485,8 +454,8 @@ void deapngReader::pEnterErrorState(){
 		
 	}else{
 		for(y=0; y<pHeight; y++){
-			memset(pAccumRows[y], '\0', pRowLength);
-			memset(pFrameRows[y], '\0', pRowLength);
+			memset(pAccumRows[y], 0, pRowLength);
+			memset(pFrameRows[y], 0, pRowLength);
 		}
 	}
 }

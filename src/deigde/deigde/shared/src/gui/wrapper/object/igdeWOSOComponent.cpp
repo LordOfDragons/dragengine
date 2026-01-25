@@ -457,14 +457,11 @@ void igdeWOSOComponent::ResetPhysics(){
 // 		pComponent->SetPosition( pCollider->GetPosition() );
 // 		pComponent->SetOrientation( pCollider->GetOrientation() );
 		
-		const int boneCount = pComponent->GetBoneCount();
-		int i;
-		for(i=0; i<boneCount; i++){
-			deComponentBone &bone = pComponent->GetBoneAt(i);
+		pComponent->GetBones().Visit([](deComponentBone &bone){
 			bone.SetPosition(decVector());
 			bone.SetRotation(decQuaternion());
 			bone.SetScale(decVector(1.0f, 1.0f, 1.0f));
-		}
+		});
 		
 		if(pAnimator){
 			if(pPlaybackControllerIndex != -1){
@@ -620,7 +617,7 @@ void igdeWOSOComponent::pUpdateComponent(){
 		model = GetGameDefinition().GetDefaultModel();
 	}
 	
-	if(!model || model->GetLODAt(0)->GetFaceCount() == 0){
+	if(!model || model->GetLODs().First()->GetFaces().IsEmpty()){
 		pResLoad = nullptr;
 		pReleaseOutlineComponent();
 		pDestroyComponent();
@@ -640,7 +637,7 @@ void igdeWOSOComponent::pUpdateComponent(){
 			// if rig shapes are used collision is possible if at least one shape is present
 			if(rig->GetShapes().GetCount() == 0){
 				rig = GetEnvironment().GetSharedModelCollisionRig();
-				pColliderCanInteract = model->GetLODAt(0)->GetFaceCount() > 0;
+				pColliderCanInteract = model->GetLODs().First()->GetFaces().IsNotEmpty();
 			}
 			
 		}else{
@@ -654,13 +651,13 @@ void igdeWOSOComponent::pUpdateComponent(){
 			}
 			if(i == boneCount){
 				rig = GetEnvironment().GetSharedModelCollisionRig();
-				pColliderCanInteract = model->GetLODAt(0)->GetFaceCount() > 0;
+				pColliderCanInteract = model->GetLODs().First()->GetFaces().IsNotEmpty();
 			}
 		}
 		
 	}else{
 		rig = GetEnvironment().GetSharedModelCollisionRig();
-		pColliderCanInteract = model->GetLODAt(0)->GetFaceCount() > 0;
+		pColliderCanInteract = model->GetLODs().First()->GetFaces().IsNotEmpty();
 	}
 	
 	if(pColliderCanInteract && !GetWrapper().GetColliderComponent()){
@@ -765,19 +762,16 @@ void igdeWOSOComponent::pUpdateComponent(){
 			ClearBoxExtends();
 			
 		}else{
-			const deModelLOD &lod = model->GetLODAt(0);
-			const int vertexCount = lod.GetVertexCount();
+			const deModelLOD &lod = model->GetLODs().First();
+			const int vertexCount = lod.GetVertices().GetCount();
 			if(vertexCount > 0){
-				const deModelVertex * const vertices = lod.GetVertices();
-				int i;
-				
-				decVector boxMinExtend(vertices[0].GetPosition());
+				decVector boxMinExtend(lod.GetVertices().First().GetPosition());
 				decVector boxMaxExtend(boxMinExtend);
-				for(i=1; i<vertexCount; i++){
-					const decVector &position = vertices[i].GetPosition();
+				lod.GetVertices().Visit(1, [&](const deModelVertex &vertex){
+					const decVector &position = vertex.GetPosition();
 					boxMinExtend.SetSmallest(position);
 					boxMaxExtend.SetLargest(position);
-				}
+				});
 				SetBoxExtends(boxMinExtend, boxMaxExtend);
 				
 			}else{
@@ -892,15 +886,11 @@ void igdeWOSOComponent::pUpdateComponent(){
 	
 	// reset the component and collider bones
 	if(modelChanged || rigChanged){
-		const int boneCount = pComponent->GetBoneCount();
-		int i;
-		
-		for(i=0; i<boneCount; i++){
-			deComponentBone &bone = pComponent->GetBoneAt(i);
+		pComponent->GetBones().Visit([&](deComponentBone &bone){
 			bone.SetPosition(decVector());
 			bone.SetRotation(decQuaternion());
 			bone.SetScale(decVector(1.0f, 1.0f, 1.0f));
-		}
+		});
 		pComponent->InvalidateBones();
 		pComponent->PrepareBones();
 		

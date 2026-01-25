@@ -98,9 +98,9 @@ void igdeLoadSaveHTNavSpace::Load(deHeightTerrainNavSpace &navspace, decBaseFile
 	int i;
 	
 	// clear the navigation space
-	navspace.SetEdgeCount(0);
-	navspace.SetFaceCount(0);
-	navspace.SetCornerCount(0);
+	navspace.GetEdges().RemoveAll();
+	navspace.GetFaces().RemoveAll();
+	navspace.GetCorners().RemoveAll();
 	navspace.SetType(deNavigationSpace::estMesh);
 	
 	// read header
@@ -121,17 +121,17 @@ void igdeLoadSaveHTNavSpace::Load(deHeightTerrainNavSpace &navspace, decBaseFile
 		
 		navspace.SetType((deNavigationSpace::eSpaceTypes)reader.ReadUShort());
 		
-		navspace.SetCornerCount(cornerCount);
-		navspace.SetFaceCount(faceCount);
+		navspace.GetCorners().SetCountDiscard(cornerCount);
+		navspace.GetFaces().SetCountDiscard(faceCount);
 		
 		// read corners
 		for(i=0; i<cornerCount; i++){
-			navspace.SetCornerAt(i, reader.ReadUInt());
+			navspace.GetCorners()[i] = reader.ReadUInt();
 		}
 		
 		// read edges
 		for(i=0; i<edgeCount; i++){
-			deHeightTerrainNavSpaceEdge &edge = navspace.GetEdgeAt(i);
+			deHeightTerrainNavSpaceEdge &edge = navspace.GetEdges()[i];
 			edge.SetPoint1(reader.ReadUInt());
 			edge.SetPoint2(reader.ReadUInt());
 			edge.SetType1(reader.ReadUShort());
@@ -140,7 +140,7 @@ void igdeLoadSaveHTNavSpace::Load(deHeightTerrainNavSpace &navspace, decBaseFile
 		
 		// read faces
 		for(i=0; i<faceCount; i++){
-			deNavigationSpaceFace &face = navspace.GetFaceAt(i);
+			deNavigationSpaceFace &face = navspace.GetFaces()[i];
 			face.SetCornerCount(reader.ReadUShort());
 			face.SetType(reader.ReadUShort());
 		}
@@ -148,9 +148,9 @@ void igdeLoadSaveHTNavSpace::Load(deHeightTerrainNavSpace &navspace, decBaseFile
 }
 
 void igdeLoadSaveHTNavSpace::Save(const deHeightTerrainNavSpace &navspace, decBaseFileWriter &writer){
-	const int cornerCount = navspace.GetCornerCount();
-	const int faceCount = navspace.GetFaceCount();
-	const int edgeCount = navspace.GetEdgeCount();
+	const int cornerCount = navspace.GetCorners().GetCount();
+	const int faceCount = navspace.GetFaces().GetCount();
+	const int edgeCount = navspace.GetEdges().GetCount();
 	int i;
 	
 	// write header
@@ -168,12 +168,12 @@ void igdeLoadSaveHTNavSpace::Save(const deHeightTerrainNavSpace &navspace, decBa
 	
 	// write corners
 	for(i=0; i<cornerCount; i++){
-		writer.WriteUInt((uint32_t)navspace.GetCornerAt(i));
+		writer.WriteUInt((uint32_t)navspace.GetCorners()[i]);
 	}
 	
 	// write edges
 	for(i=0; i<edgeCount; i++){
-		deHeightTerrainNavSpaceEdge &edge = navspace.GetEdgeAt(i);
+		const deHeightTerrainNavSpaceEdge &edge = navspace.GetEdges()[i];
 		writer.WriteUInt((uint32_t)edge.GetPoint1());
 		writer.WriteUInt((uint32_t)edge.GetPoint2());
 		writer.WriteUShort((uint16_t)edge.GetType1());
@@ -182,7 +182,7 @@ void igdeLoadSaveHTNavSpace::Save(const deHeightTerrainNavSpace &navspace, decBa
 	
 	// write faces
 	for(i=0; i<faceCount; i++){
-		deNavigationSpaceFace &face = navspace.GetFaceAt(i);
+		const deNavigationSpaceFace &face = navspace.GetFaces()[i];
 		writer.WriteUShort((uint16_t)face.GetCornerCount());
 		writer.WriteUShort((uint16_t)face.GetType());
 	}

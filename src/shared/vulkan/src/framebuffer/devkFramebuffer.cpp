@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-
 #include "devkFramebuffer.h"
 #include "../devkDevice.h"
 #include "../devkInstance.h"
@@ -32,6 +29,7 @@
 #include "../renderpass/devkRenderPass.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/systems/modules/deBaseModule.h>
 
 
@@ -47,11 +45,6 @@ pFramebuffer(VK_NULL_HANDLE)
 		DETHROW_INFO(deeNullPointer, "renderPass");
 	}
 	
-	const int attachmentCount = configuration.GetAttachmentCount();
-	int i;
-	
-	VkImageView *attachments = nullptr;
-	
 	try{
 		devkDevice &device = renderPass->GetDevice();
 		VK_IF_CHECK(deSharedVulkan &vulkan = device.GetInstance().GetVulkan();)
@@ -62,27 +55,21 @@ pFramebuffer(VK_NULL_HANDLE)
 		framebufferInfo.height = (uint32_t)configuration.GetSize().y;
 		framebufferInfo.layers = (uint32_t)configuration.GetLayerCount();
 		
-		if(attachmentCount > 0){
-			attachments  = new VkImageView[attachmentCount];
-			for(i=0; i<attachmentCount; i++){
-				attachments[i] = configuration.GetAttachmentAt(i)->GetImageView();
-			}
+		decTList<VkImageView> attachments;
+		if(configuration.GetAttachments().IsNotEmpty()){
+			attachments.EnlargeCapacity(configuration.GetAttachments().GetCount());
+			configuration.GetAttachments().Visit([&](const devkImageView &attachment){
+				attachments.Add(attachment.GetImageView());
+			});
 			
-			framebufferInfo.attachmentCount = attachmentCount;
-			framebufferInfo.pAttachments = attachments;
+			framebufferInfo.attachmentCount = attachments.GetCount();
+			framebufferInfo.pAttachments = attachments.GetArrayPointer();
 		}
 		
 		VK_CHECK(vulkan, device.vkCreateFramebuffer(device.GetDevice(),
 			&framebufferInfo, VK_NULL_HANDLE, &pFramebuffer));
 		
-		if(attachments){
-			delete [] attachments;
-		}
-		
 	}catch(const deException &){
-		if(attachments){
-			delete [] attachments;
-		}
 		pCleanUp();
 		throw;
 	}

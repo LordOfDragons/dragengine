@@ -22,11 +22,6 @@
  * SOFTWARE.
  */
 
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "dedsLocomotion.h"
 
 #include <libdscript/exceptions.h>
@@ -110,9 +105,6 @@ pLimitTiltRight(30.0f),
 
 pTiltOffset(0.0f),
 
-pControllerMappings(nullptr),
-pControllerMappingCount(0),
-pControllerMappingSize(0),
 pUpdateAIColliderAngularVelocity(false)
 {
 	pLookVertical.SetAdjustTime(0.0f);
@@ -383,79 +375,39 @@ void dedsLocomotion::SetTiltOffset(float offset){
 
 
 const dedsLControllerMapping &dedsLocomotion::GetControllerMappingAt(int index) const{
-	if(index < 0 || index >= pControllerMappingCount){
-		DSTHROW(dueInvalidParam);
-	}
-	
 	return pControllerMappings[index];
 }
 
-int dedsLocomotion::IndexOfControllerMappingWith(deAnimatorInstance *animatorInstance,
-int controller) const{
-	int i;
-	
-	for(i=0; i<pControllerMappingCount; i++){
-		if(pControllerMappings[i].GetAnimatorInstance() == animatorInstance
-		&& pControllerMappings[i].GetController() == controller){
-			return i;
-		}
-	}
-	
-	return -1;
+int dedsLocomotion::IndexOfControllerMappingWith(deAnimatorInstance *animatorInstance, int controller) const{
+	return pControllerMappings.IndexOfMatching([&](const dedsLControllerMapping &m){
+		return m.GetAnimatorInstance() == animatorInstance && m.GetController() == controller;
+	});
 }
 
 void dedsLocomotion::AddControllerMapping(deAnimatorInstance *animatorInstance,
 int controller, dedsLControllerMapping::eAttributes attribute){
-	int i;
-	
-	for(i=0; i<pControllerMappingCount; i++){
-		if(pControllerMappings[i].GetAnimatorInstance() == animatorInstance
-		&& pControllerMappings[i].GetController() == controller){
-			pControllerMappings[i].SetAttribute(attribute);
-			return;
-		}
+	const int index = IndexOfControllerMappingWith(animatorInstance, controller);
+	if(index >= 0){
+		pControllerMappings[index].SetAttribute(attribute);;
+		return;
 	}
 	
-	if(pControllerMappingCount == pControllerMappingSize){
-		const int newSize = pControllerMappingSize + 1;
-		dedsLControllerMapping * const newArray = new dedsLControllerMapping[newSize];
-		if(pControllerMappings){
-			for(i=0; i<pControllerMappingSize; i++){
-				newArray[i] = pControllerMappings[i];
-			}
-			delete [] pControllerMappings;
-		}
-		
-		pControllerMappings = newArray;
-		pControllerMappingSize = newSize;
-	}
-	
-	dedsLControllerMapping &mapping = pControllerMappings[pControllerMappingCount++];
+	pControllerMappings.Add({});
+	dedsLControllerMapping &mapping = pControllerMappings.Last();
 	mapping.SetAnimatorInstance(animatorInstance);
 	mapping.SetController(controller);
 	mapping.SetAttribute(attribute);
 }
 
 void dedsLocomotion::RemoveControllerMapping(deAnimatorInstance *animatorInstance, int controller){
-	int i;
-	
-	for(i=0; i<pControllerMappingCount; i++){
-		if(pControllerMappings[i].GetAnimatorInstance() == animatorInstance
-		&& pControllerMappings[i].GetController() != controller){
-			continue;
-		}
-		
-		int j;
-		for(j=i+1; j<pControllerMappingCount; j++){
-			pControllerMappings[j - 1] = pControllerMappings[j];
-		}
-		pControllerMappingCount--;
-		break;
+	const int index = IndexOfControllerMappingWith(animatorInstance, controller);
+	if(index != -1){
+		pControllerMappings.RemoveFrom(index);
 	}
 }
 
 void dedsLocomotion::RemoveAllControllerMappings(){
-	pControllerMappingCount = 0;
+	pControllerMappings.RemoveAll();
 }
 
 
@@ -813,10 +765,9 @@ void dedsLocomotion::UpdateStance(float elapsed){
 void dedsLocomotion::UpdatePostLocomotion(float elapsed){
 	UpdateTilt(elapsed);
 	
-	int i;
-	for(i=0; i<pControllerMappingCount; i++){
-		pControllerMappings[i].ApplyPost(*this, elapsed);
-	}
+	pControllerMappings.Visit([&](dedsLControllerMapping &mapping){
+		mapping.ApplyPost(*this, elapsed);
+	});
 }
 
 void dedsLocomotion::UpdateTilt(float elapsed){
@@ -921,10 +872,9 @@ void dedsLocomotion::UpdateTiltWeightCast(float elapsed){
 }
 
 void dedsLocomotion::UpdateAnimatorInstance(float elapsed){
-	int i;
-	for(i=0; i<pControllerMappingCount; i++){
-		pControllerMappings[i].Apply(*this, elapsed);
-	}
+	pControllerMappings.Visit([&](dedsLControllerMapping &mapping){
+		mapping.Apply(*this, elapsed);
+	});
 	
 	pReverseTimeTurnIP = false;
 	pResetTimeTurnIP = false;
@@ -1186,8 +1136,4 @@ void dedsLocomotion::pCleanUp(){
 	SetCCTTiltFrontRight(nullptr);
 	SetCCTTiltBackLeft(nullptr);
 	SetCCTTiltBackRight(nullptr);
-	
-	if(pControllerMappings){
-		delete [] pControllerMappings;
-	}
 }

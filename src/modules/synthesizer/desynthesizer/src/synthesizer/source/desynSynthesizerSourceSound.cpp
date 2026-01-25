@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
+#include <new>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -43,8 +44,8 @@
 #define PLAY_THRESHOLD_PAUSE	0.25f
 
 struct sStateData{
-	int position; // in samples
-	float blend; // blend between this sample and next sample
+	int position = 0; // in samples
+	float blend = 0.0f; // blend between this sample and next sample
 };
 
 
@@ -160,9 +161,11 @@ int desynSynthesizerSourceSound::StateDataSizeSource(int offset) {
 }
 
 void desynSynthesizerSourceSound::InitStateDataSource(char *stateData) {
-	sStateData& sdata = *((sStateData*)(stateData + GetStateDataOffset()));
-	sdata.position = 0;
-	sdata.blend = 0.0f;
+	new (stateData + GetStateDataOffset()) sStateData{};
+}
+
+void desynSynthesizerSourceSound::CleanUpStateDataSource(char *stateData) {
+	((sStateData*)(stateData + GetStateDataOffset()))->~sStateData();
 }
 
 void desynSynthesizerSourceSound::GenerateSourceSound(const desynSynthesizerInstance &instance,

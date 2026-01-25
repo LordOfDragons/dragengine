@@ -47,24 +47,17 @@
 ////////////////////////////
 
 deoglDelayedSaveImage::deoglDelayedSaveImage(const decPath &path, int width,
-int height, int depth, int componentCount, int bitCount, char *data) :
+int height, int depth, int componentCount, int bitCount, decTList<char> &&data) :
 pPath(path),
 pWidth(width),
 pHeight(height),
 pDepth(depth),
 pComponentCount(componentCount),
 pBitCount(bitCount),
-pData(data){
-	if(!data){
-		DETHROW(deeInvalidParam);
-	}
+pData(std::move(data)){
 }
 
-deoglDelayedSaveImage::~deoglDelayedSaveImage(){
-	if(pData){
-		delete [] pData;
-	}
-}
+deoglDelayedSaveImage::~deoglDelayedSaveImage() = default;
 
 
 
@@ -80,6 +73,6 @@ void deoglDelayedSaveImage::SaveImage(deGraphicOpenGl &ogl, deVirtualFileSystem 
 	
 	const deImage::Ref image(ogl.GetGameEngine()->GetImageManager()->CreateImage(
 		pWidth, pHeight, pDepth, pComponentCount, pBitCount));
-	memcpy(image->GetData(), pData, pWidth * pHeight * pDepth * pComponentCount * (pBitCount >> 3));
+	memcpy(image->GetData(), pData.GetArrayPointer(), pWidth * pHeight * pDepth * pComponentCount * (pBitCount >> 3));
 	module->SaveImage(vfs.OpenFileForWriting(pPath), *image);
 }

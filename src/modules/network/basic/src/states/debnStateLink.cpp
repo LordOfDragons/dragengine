@@ -47,29 +47,12 @@ pIdentifier(-1),
 pLinkState(elsDown),
 pConnection(connection),
 pChanged(false),
-pValueChanged(nullptr),
-pValueCount(0),
+pValueChanged(bnState->GetValueCount(), false),
 pPreviousLink(nullptr),
-pNextLink(nullptr)
-{
-	try{
-		const int valueCount = bnState->GetValueCount();
-		if(valueCount > 0){
-			pValueChanged = new bool[valueCount];
-			for(pValueCount=0; pValueCount<valueCount; pValueCount++){
-				pValueChanged[pValueCount] = false;
-			}
-		}
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
+pNextLink(nullptr){
 }
 
-debnStateLink::~debnStateLink(){
-	pCleanUp();
-}
+debnStateLink::~debnStateLink() = default;
 
 
 
@@ -106,17 +89,10 @@ void debnStateLink::SetChanged(bool changed){
 
 
 bool debnStateLink::GetValueChangedAt(int index) const{
-	if(index < 0 || index >= pValueCount){
-		DETHROW(deeInvalidParam);
-	}
 	return pValueChanged[index];
 }
 
 void debnStateLink::SetValueChangedAt(int index, bool changed){
-	if(index < 0 || index >= pValueCount){
-		DETHROW(deeInvalidParam);
-	}
-	
 	if(changed == pValueChanged[index]){
 		return;
 	}
@@ -129,22 +105,12 @@ void debnStateLink::SetValueChangedAt(int index, bool changed){
 }
 
 bool debnStateLink::HasChangedValues() const{
-	int i;
-	for(i=0; i<pValueCount; i++){
-		if(pValueChanged[i]){
-			return true;
-		}
-	}
-	return false;
+	return pValueChanged.Has(true);
 }
 
 void debnStateLink::ResetChanged(){
 	pChanged = false;
-	
-	int i;
-	for(i=0; i<pValueCount; i++){
-		pValueChanged[i] = false;
-	}
+	pValueChanged.SetRangeAt(0, pValueChanged.GetCount(), false);
 }
 
 
@@ -158,15 +124,4 @@ void debnStateLink::SetPreviousLink(debnStateLink *link){
 
 void debnStateLink::SetNextLink(debnStateLink *link){
 	pNextLink = link;
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void debnStateLink::pCleanUp(){
-	if(pValueChanged){
-		delete [] pValueChanged;
-	}
 }

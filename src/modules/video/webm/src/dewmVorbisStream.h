@@ -25,9 +25,9 @@
 #ifndef _DEWMVORBISSTREAM_H_
 #define _DEWMVORBISSTREAM_H_
 
-#include <stdint.h>
 #include <webm/callback.h>
 #include <vorbis/codec.h>
+#include <dragengine/common/collection/decTList.h>
 
 class dewmAudioTrackCallback;
 
@@ -53,7 +53,7 @@ private:
 	bool pBlockInited;
 	
 	ogg_packet pPacket;
-	uint8_t *pFillUpSample;
+	decTList<uint8_t> pFillUpSample;
 	
 	
 	

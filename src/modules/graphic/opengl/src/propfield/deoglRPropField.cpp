@@ -129,8 +129,8 @@ void deoglRPropField::UpdateExtends(const dePropField &propField){
 			modelRadius = mr2;
 		}
 		
-		const int instanceCount = engType.GetInstanceCount();
-		dePropFieldInstance * const engInstances = engType.GetInstances();
+		const int instanceCount = engType.GetInstances().GetCount();
+		const dePropFieldInstance * const engInstances = engType.GetInstances().GetArrayPointer();
 		
 		for(i=0; i<instanceCount; i++){
 			const decVector &instancePosition = engInstances[i].GetPosition();

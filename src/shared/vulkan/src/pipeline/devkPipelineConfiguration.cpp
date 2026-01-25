@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-
 #include "devkPipelineConfiguration.h"
 #include "../descriptor/devkDescriptorSetLayout.h"
 #include "../descriptor/devkDescriptorSetLayoutConfiguration.h"
@@ -60,10 +57,6 @@ pDepthWriteMask(false),
 pDepthFunction(VK_COMPARE_OP_LESS_OR_EQUAL),
 pDepthTest(false),
 pStencilTest(false),
-pBindingCount(0),
-pBindings(nullptr),
-pAttributeCount(0),
-pAttributes(nullptr),
 pDynamicDepthBias(false),
 pDynamicStencil(false)
 {
@@ -98,10 +91,6 @@ pDepthWriteMask(false),
 pDepthFunction(VK_COMPARE_OP_LESS_OR_EQUAL),
 pDepthTest(false),
 pStencilTest(false),
-pBindingCount(0),
-pBindings(nullptr),
-pAttributeCount(0),
-pAttributes(nullptr),
 pDynamicDepthBias(false),
 pDynamicStencil(false)
 {
@@ -270,100 +259,38 @@ void devkPipelineConfiguration::SetStencilTest(bool enable){
 
 
 void devkPipelineConfiguration::SetBindingCount(int count){
-	if(count < 0){
-		DETHROW_INFO(deeInvalidParam, "count < 0");
-	}
+	DEASSERT_TRUE(count >= 0)
 	
-	if(pBindings){
-		delete [] pBindings;
-		pBindings = nullptr;
-		pBindingCount = 0;
-	}
-	
-	if(count == 0){
-		return;
-	}
-	
-	pBindings = new VkVertexInputBindingDescription[count];
-	pBindingCount = count;
-}
-
-const VkVertexInputBindingDescription &devkPipelineConfiguration::GetBindingAt(int index) const{
-	if(index < 0){
-		DETHROW_INFO(deeInvalidParam, "index < 0");
-	}
-	if(index >= pBindingCount){
-		DETHROW_INFO(deeInvalidParam, "index >= bindingCount");
-	}
-	
-	return pBindings[index];
+	pBindings.SetAll(count, {});
 }
 
 void devkPipelineConfiguration::SetBindingAt(int index, const VkVertexInputBindingDescription &binding){
-	if(index < 0){
-		DETHROW_INFO(deeInvalidParam, "index < 0");
-	}
-	if(index >= pBindingCount){
-		DETHROW_INFO(deeInvalidParam, "index >= bindingCount");
-	}
-	
-	memcpy(pBindings + index, &binding, sizeof(binding));
+	pBindings[index] = binding;
 }
 
 void devkPipelineConfiguration::SetBindingAt(int index, int binding, int stride, VkVertexInputRate inputRate){
-	VkVertexInputBindingDescription description;
+	VkVertexInputBindingDescription description{};
 	description.binding = (uint32_t)binding;
 	description.stride = (uint32_t)stride;
 	description.inputRate = inputRate;
-	SetBindingAt(index, description);
+	pBindings[index] = description;
 }
 
 
 
 void devkPipelineConfiguration::SetAttributeCount(int count){
-	if(count < 0){
-		DETHROW_INFO(deeInvalidParam, "count < 0");
-	}
+	DEASSERT_TRUE(count >= 0)
 	
-	if(pAttributes){
-		delete [] pAttributes;
-		pAttributes = nullptr;
-		pAttributeCount = 0;
-	}
-	
-	if(count == 0){
-		return;
-	}
-	
-	pAttributes = new VkVertexInputAttributeDescription[count];
-	pAttributeCount = count;
-}
-
-const VkVertexInputAttributeDescription &devkPipelineConfiguration::GetAttributeAt(int index) const{
-	if(index < 0){
-		DETHROW_INFO(deeInvalidParam, "index < 0");
-	}
-	if(index >= pAttributeCount){
-		DETHROW_INFO(deeInvalidParam, "index >= attributeCount");
-	}
-	
-	return pAttributes[index];
+	pAttributes.SetAll(count, {});
 }
 
 void devkPipelineConfiguration::SetAttributeAt(int index, const VkVertexInputAttributeDescription &attribute){
-	if(index < 0){
-		DETHROW_INFO(deeInvalidParam, "index < 0");
-	}
-	if(index >= pAttributeCount){
-		DETHROW_INFO(deeInvalidParam, "index >= attributeCount");
-	}
-	
-	memcpy(pAttributes + index, &attribute, sizeof(attribute));
+	pAttributes[index] = attribute;
 }
 
 void devkPipelineConfiguration::SetAttributeAt(int index, int location, int binding,
 eAttributeFormat format, int offset){
-	VkVertexInputAttributeDescription description;
+	VkVertexInputAttributeDescription description{};
 	description.location = (uint32_t)location;
 	description.binding = (uint32_t)binding;
 	description.offset = (uint32_t)offset;
@@ -434,7 +361,7 @@ eAttributeFormat format, int offset){
 		break;
 	}
 	
-	SetAttributeAt(index, description);
+	pAttributes[index] = description;
 }
 
 
@@ -452,23 +379,20 @@ void devkPipelineConfiguration::SetDynamicStencil(bool dynamic){
 // Operators
 //////////////
 
+static bool operator==(const VkVertexInputBindingDescription &a, const VkVertexInputBindingDescription &b){
+	return a.binding == b.binding
+		&& a.stride == b.stride
+		&& a.inputRate == b.inputRate;
+}
+
+static bool operator==(const VkVertexInputAttributeDescription &a, const VkVertexInputAttributeDescription &b){
+	return a.location == b.location
+		&& a.binding == b.binding
+		&& a.format == b.format
+		&& a.offset == b.offset;
+}
+
 bool devkPipelineConfiguration::operator==(const devkPipelineConfiguration &configuration) const{
-	if(pBindingCount != configuration.pBindingCount){
-		return false;
-	}
-	if(pBindingCount > 0 && memcmp(pBindings, configuration.pBindings,
-	sizeof(VkVertexInputBindingDescription) * pBindingCount)){
-		return false;
-	}
-	
-	if(pAttributeCount != configuration.pAttributeCount){
-		return false;
-	}
-	if(pAttributeCount > 0 && memcmp(pAttributes, configuration.pAttributes,
-	sizeof(VkVertexInputAttributeDescription) * pAttributeCount)){
-		return false;
-	}
-	
 	return pType == configuration.pType
 		&& pDescriptorSetLayout == configuration.pDescriptorSetLayout
 		&& pRenderPass == configuration.pRenderPass
@@ -500,7 +424,9 @@ bool devkPipelineConfiguration::operator==(const devkPipelineConfiguration &conf
 		&& pDepthTest == configuration.pDepthTest
 		&& pStencilTest == configuration.pStencilTest
 		&& pDynamicDepthBias == configuration.pDynamicDepthBias
-		&& pDynamicStencil == configuration.pDynamicStencil;
+		&& pDynamicStencil == configuration.pDynamicStencil
+		&& pBindings == configuration.pBindings
+		&& pAttributes == configuration.pAttributes;
 }
 
 devkPipelineConfiguration &devkPipelineConfiguration::operator=(const devkPipelineConfiguration &configuration){
@@ -536,18 +462,8 @@ devkPipelineConfiguration &devkPipelineConfiguration::operator=(const devkPipeli
 	pStencilTest = configuration.pStencilTest;
 	pDynamicDepthBias = configuration.pDynamicDepthBias;
 	pDynamicStencil = configuration.pDynamicStencil;
+	pBindings = configuration.pBindings;
+	pAttributes = configuration.pAttributes;
 	
-	SetBindingCount(configuration.pBindingCount);
-	if(pBindingCount > 0){
-		memcpy(pBindings, configuration.pBindings,
-			sizeof(VkVertexInputBindingDescription) * pBindingCount);
-	}
-	
-	SetAttributeCount(configuration.pAttributeCount);
-	if(pAttributeCount > 0){
-		memcpy(pAttributes, configuration.pAttributes,
-			sizeof(VkVertexInputAttributeDescription) * pAttributeCount);
-	}
-
 	return *this;
 }

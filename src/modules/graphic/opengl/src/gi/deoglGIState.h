@@ -37,6 +37,7 @@
 #include "../shaders/paramblock/deoglSPBlockSSBO.h"
 
 #include <dragengine/common/collection/decTUniqueList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decTimer.h>
 
@@ -88,8 +89,7 @@ private:
 	int pActiveCascade;
 	int pLastFrameCascade;
 	
-	int *pCascaceUpdateCycle;
-	int pCascaceUpdateCycleCount;
+	decTList<int> pCascaceUpdateCycle;
 	int pCascaceUpdateCycleIndex;
 	int pCameraForceToneMapAdaptionCount;
 	
@@ -314,7 +314,6 @@ public:
 	
 	
 private:
-	void pCleanUp();
 	void pInitCascades();
 	void pInitCascadeUpdateCycle();
 	void pInitUBOClearProbes();

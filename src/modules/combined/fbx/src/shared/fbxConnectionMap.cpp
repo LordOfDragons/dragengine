@@ -40,28 +40,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-fbxConnectionMap::fbxConnectionMap(int expectedCount) :
-pBucketsSource(nullptr),
-pBucketsTarget(nullptr),
-pBucketCount(0)
+fbxConnectionMap::fbxConnectionMap(int expectedCount)
 {
 	if(expectedCount < 1){
 		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = decMath::max((int)((float)expectedCount * 0.75f), 1);
-	pBucketsSource = new sBucket[count];
-	pBucketsTarget = new sBucket[count];
-	pBucketCount = count;
+	pBucketsSource.AddRange(count, {});
+	pBucketsTarget.AddRange(count, {});
 }
 
 fbxConnectionMap::~fbxConnectionMap(){
-	if(pBucketsTarget){
-		delete [] pBucketsTarget;
-	}
-	if(pBucketsSource){
-		delete [] pBucketsSource;
-	}
 }
 
 
@@ -75,16 +65,16 @@ void fbxConnectionMap::Add(fbxConnection *connection){
 	}
 	
 	if(connection->GetSource() != 0){
-		pBucketsSource[connection->GetSource() % pBucketCount].connections.Add(connection);
+		pBucketsSource[connection->GetSource() % pBucketsSource.GetCount()].connections.Add(connection);
 	}
 	if(connection->GetTarget() != 0){
-		pBucketsTarget[connection->GetTarget() % pBucketCount].connections.Add(connection);
+		pBucketsTarget[connection->GetTarget() % pBucketsTarget.GetCount()].connections.Add(connection);
 	}
 }
 
 void fbxConnectionMap::Get(int64_t id, decTList<fbxConnection*> &list) const{
-	const decTList<fbxConnection*> &consSource = pBucketsSource[id % pBucketCount].connections;
-	const decTList<fbxConnection*> &consTarget = pBucketsTarget[id % pBucketCount].connections;
+	const decTList<fbxConnection*> &consSource = pBucketsSource[id % pBucketsSource.GetCount()].connections;
+	const decTList<fbxConnection*> &consTarget = pBucketsTarget[id % pBucketsTarget.GetCount()].connections;
 	
 	consSource.Visit([&](fbxConnection *connection){
 		if(connection->GetSource() == id){

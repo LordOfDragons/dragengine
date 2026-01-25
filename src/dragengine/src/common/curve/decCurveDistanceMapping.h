@@ -25,6 +25,7 @@
 #ifndef _DECCURVEBEZIER3DDISTANCEEVALUATOR_H_
 #define _DECCURVEBEZIER3DDISTANCEEVALUATOR_H_
 
+#include "../collection/decTList.h"
 #include "../../dragengine_export.h"
 
 class decCurveBezier3D;
@@ -42,8 +43,7 @@ private:
 	float pResolution;
 	float pLength;
 	int pLastSegment;
-	float *pMappings;
-	int pMappingCount;
+	decTList<float> pMappings;
 	
 	
 	

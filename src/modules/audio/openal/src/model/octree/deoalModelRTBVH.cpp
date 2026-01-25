@@ -22,16 +22,11 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoalModelRTBVH.h"
 #include "../deoalAModel.h"
 #include "../deoalModelFace.h"
 
 #include <dragengine/common/exceptions.h>
-
 
 
 // Class deoalModelRTBVH
@@ -41,29 +36,11 @@
 /////////////////////////////////
 
 deoalModelRTBVH::deoalModelRTBVH() :
-pFaces(nullptr),
-pFaceCount(0),
-pFaceSize(0),
-
-pNodes(nullptr),
-pNodeCount(0),
-pNodeSize(0),
-
-pBuildNodes(nullptr),
-pBuildNodeCount(0),
-pBuildNodeSize(0),
-
-pBuildFaces(nullptr),
-pBuildFaceCount(0),
-pBuildFaceSize(0),
-
 pIndexNode(0),
 pIndexFace(0){
 }
 
-deoalModelRTBVH::~deoalModelRTBVH(){
-	pCleanUp();
-}
+deoalModelRTBVH::~deoalModelRTBVH() = default;
 
 
 
@@ -71,70 +48,41 @@ deoalModelRTBVH::~deoalModelRTBVH(){
 ///////////////
 
 void deoalModelRTBVH::Build(const deoalModelFace *faces, int faceCount){
-	pNodeCount = 0;
-	pFaceCount = 0;
-	pBuildFaceCount = 0;
-	pBuildNodeCount = 0;
+	pNodes.RemoveAll();
+	pFaces.RemoveAll();
+	pBuildFaces.RemoveAll();
+	pBuildNodes.RemoveAll();
 	if(faceCount == 0){
 		return;
 	}
 	
-	if(faceCount > pBuildFaceSize){
-		if(pBuildFaces){
-			delete [] pBuildFaces;
-			pBuildFaces = nullptr;
-			pBuildFaceSize = 0;
-		}
-		pBuildFaces = new sBuildFace[faceCount];
-		pBuildFaceSize = faceCount;
-	}
-	pBuildFaceCount = faceCount;
+	pFaces.AddRange(faceCount, {});
 	
-	int i;
-	for(i=0; i<pBuildFaceCount; i++){
+	pBuildFaces.SetCountDiscard(faceCount);
+	pBuildFaces.VisitIndexed([&](int i, sBuildFace &buildFace){
 		const deoalModelFace &modelFace = faces[i];
-		sBuildFace &buildFace = pBuildFaces[i];
 		buildFace.minExtend = modelFace.GetMinExtend();
 		buildFace.maxExtend = modelFace.GetMaxExtend();
 		buildFace.center = (buildFace.minExtend + buildFace.maxExtend) * 0.5f;
 		buildFace.modelFace = &modelFace;
 		buildFace.next = i + 1;
-	}
-	pBuildFaces[pBuildFaceCount - 1].next = -1;
+	});
+	pBuildFaces.Last().next = -1;
 	
 	// build root node
 	pAddBuildNode();
-	sBuildNode &rootNode = pBuildNodes[0];
-	rootNode.faceCount = pBuildFaceCount;
+	sBuildNode &rootNode = pBuildNodes.First();
+	rootNode.faceCount = pBuildFaces.GetCount();
 	rootNode.firstFace = 0;
-	rootNode.lastFace = pBuildFaceCount - 1;
+	rootNode.lastFace = pBuildFaces.GetCount() - 1;
 	pUpdateNodeExtends(rootNode);
 	
 	// split root node
 	pSplitNode(0);
 	
 	// build visit arrays
-	if(pBuildNodeCount > pNodeSize){
-		if(pNodes){
-			delete [] pNodes;
-			pNodes = nullptr;
-			pNodeSize = 0;
-		}
-		pNodes = new sNode[pBuildNodeCount];
-		pNodeSize = pBuildNodeCount;
-	}
-	pNodeCount = pBuildNodeCount;
-	
-	if(pBuildFaceCount > pFaceSize){
-		if(pFaces){
-			delete [] pFaces;
-			pFaces = nullptr;
-			pFaceSize = 0;
-		}
-		pFaces = new sFace[pBuildFaceCount];
-		pFaceSize = pBuildFaceCount;
-	}
-	pFaceCount = pBuildFaceCount;
+	pNodes.AddRange(pBuildNodes.GetCount(), {});
+	pFaces.AddRange(pBuildFaces.GetCount(), {});
 	
 	pIndexNode = 0;
 	pIndexFace = 0;
@@ -142,18 +90,8 @@ void deoalModelRTBVH::Build(const deoalModelFace *faces, int faceCount){
 }
 
 void deoalModelRTBVH::DropBuildData(){
-	if(pBuildNodes){
-		delete [] pBuildNodes;
-		pBuildNodes = nullptr;
-		pBuildNodeCount = 0;
-		pBuildNodeSize = 0;
-	}
-	if(pBuildFaces){
-		delete [] pBuildFaces;
-		pBuildFaces = nullptr;
-		pBuildFaceCount = 0;
-		pBuildFaceSize = 0;
-	}
+	pBuildNodes.RemoveAll();
+	pBuildFaces.RemoveAll();
 }
 
 
@@ -161,42 +99,15 @@ void deoalModelRTBVH::DropBuildData(){
 // Private Functions
 //////////////////////
 
-void deoalModelRTBVH::pCleanUp(){
-	if(pNodes){
-		delete [] pNodes;
-	}
-	if(pFaces){
-		delete [] pFaces;
-	}
-	if(pBuildNodes){
-		delete [] pBuildNodes;
-	}
-	if(pBuildFaces){
-		delete [] pBuildFaces;
-	}
-}
-
 int deoalModelRTBVH::pAddBuildNode(){
-	if(pBuildNodeCount == pBuildNodeSize){
-		const int size = pBuildNodeSize + 100;
-		sBuildNode * const nodes = new sBuildNode[size];
-		if(pBuildNodes){
-			memcpy(nodes, pBuildNodes, sizeof(sBuildNode) * pBuildNodeSize);
-			delete [] pBuildNodes;
-		}
-		pBuildNodes = nodes;
-		pBuildNodeSize = size;
-	}
-	
-	const int index = pBuildNodeCount++;
-	sBuildNode &node = pBuildNodes[index];
+	pBuildNodes.Add({});
+	sBuildNode &node = pBuildNodes.Last();
 	node.child1 = -1;
 	node.child2 = -1;
 	node.firstFace = -1;
 	node.lastFace = -1;
 	node.faceCount = 0;
-	
-	return index;
+	return pBuildNodes.GetCount() - 1;
 }
 
 void deoalModelRTBVH::pUpdateNodeExtends(sBuildNode &node) const{

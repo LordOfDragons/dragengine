@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglHTSCluster.h"
 #include "deoglHTSTexture.h"
 #include "deoglRHeightTerrain.h"
@@ -70,21 +66,10 @@ pValidTextures(false),
 pDirtyMaskTextures(true),
 pTexturesRequirePrepareForRender(true),
 
-pHeights(nullptr),
 pMinHeight(0.0f),
 pMaxHeight(0.0f),
 
-pVBODataPoints1(nullptr),
-pVBODataPoints1Count(0),
-pVBODataPoints2(nullptr),
-pVBODataPoints2Count(0),
-pVBODataFaces(nullptr),
-pVBODataFacesCount(0),
-
 pDirtyPoints(true),
-
-pClusters(nullptr),
-pClusterCount(0),
 
 pValid(false)
 {
@@ -137,11 +122,9 @@ decDVector deoglRHTSector::CalcWorldPosition(const decDVector &referencePosition
 }
 
 void deoglRHTSector::AddToWorldCompute(deoglWorldCompute &worldCompute){
-	const int count = pClusterCount * pClusterCount;
-	int i;
-	for(i=0; i<count; i++){
-		pClusters[i].AddToWorldCompute(worldCompute);
-	}
+	pClusters.Visit([&](deoglHTSCluster &cluster){
+		cluster.AddToWorldCompute(worldCompute);
+	});
 }
 
 void deoglRHTSector::UpdateWorldCompute(){
@@ -149,11 +132,9 @@ void deoglRHTSector::UpdateWorldCompute(){
 		return;
 	}
 	
-	const int count = pClusterCount * pClusterCount;
-	int i;
-	for(i=0; i<count; i++){
-		pClusters[i].UpdateWorldCompute();
-	}
+	pClusters.Visit([&](deoglHTSCluster &cluster){
+		cluster.UpdateWorldCompute();
+	});
 }
 
 void deoglRHTSector::RemoveFromWorldCompute(){
@@ -161,11 +142,9 @@ void deoglRHTSector::RemoveFromWorldCompute(){
 		return;
 	}
 	
-	const int count = pClusterCount * pClusterCount;
-	int i;
-	for(i=0; i<count; i++){
-		pClusters[i].RemoveFromWorldCompute();
-	}
+	pClusters.Visit([&](deoglHTSCluster &cluster){
+		cluster.RemoveFromWorldCompute();
+	});
 }
 
 void deoglRHTSector::PrepareForRender(){
@@ -221,7 +200,7 @@ void deoglRHTSector::SectorChanged(const deHeightTerrainSector &sector){
 // Clusters
 /////////////
 
-deoglHTSCluster &deoglRHTSector::GetClusterAt(int x, int z) const{
+deoglHTSCluster &deoglRHTSector::GetClusterAt(int x, int z){
 	if(x < 0 || x >= pClusterCount || z < 0 || z >= pClusterCount){
 		DETHROW(deeInvalidParam);
 	}
@@ -229,7 +208,19 @@ deoglHTSCluster &deoglRHTSector::GetClusterAt(int x, int z) const{
 	return pClusters[pClusterCount * z + x];
 }
 
-deoglHTSCluster & deoglRHTSector::GetClusterAt(const decPoint &coordinate) const{
+const deoglHTSCluster &deoglRHTSector::GetClusterAt(int x, int z) const{
+	if(x < 0 || x >= pClusterCount || z < 0 || z >= pClusterCount){
+		DETHROW(deeInvalidParam);
+	}
+	
+	return pClusters[pClusterCount * z + x];
+}
+
+deoglHTSCluster &deoglRHTSector::GetClusterAt(const decPoint &coordinate){
+	return GetClusterAt(coordinate.x, coordinate.y);
+}
+
+const deoglHTSCluster &deoglRHTSector::GetClusterAt(const decPoint &coordinate) const{
 	return GetClusterAt(coordinate.x, coordinate.y);
 }
 
@@ -238,11 +229,9 @@ void deoglRHTSector::ClustersUpdateWorldComputeElementTextures(){
 		return;
 	}
 	
-	const int count = pClusterCount * pClusterCount;
-	int i;
-	for(i=0; i<count; i++){
-		pClusters[i].UpdateWorldComputeTextures();
-	}
+	pClusters.Visit([&](deoglHTSCluster &cluster){
+		cluster.UpdateWorldComputeTextures();
+	});
 }
 
 
@@ -252,42 +241,26 @@ void deoglRHTSector::ClustersUpdateWorldComputeElementTextures(){
 
 void deoglRHTSector::pCleanUp(){
 	deoglDelayedOperations &dops = pHeightTerrain.GetRenderThread().GetDelayedOperations();
-	int i;
-	
-	if(pHeights){
-		delete [] pHeights;
-	}
 	
 	pDropMaskPixelBuffers();
 	
-	if(pClusters){
-		delete [] pClusters;
-	}
 	pTextures.RemoveAll();
+	int i;
 	for(i=0; i<OGLHTS_MAX_MASK_TEXTURES; i++){
 		if(pMasks[i]){
 			delete pMasks[i];
 		}
 	}
 	
-	if(pVBODataFaces){
-		for(i=0; i<pVBODataFacesCount; i++){
-			dops.DeleteOpenGLBuffer(pVBODataFaces[i]);
-		}
-		delete [] pVBODataFaces;
-	}
-	if(pVBODataPoints2){
-		for(i=0; i<pVBODataPoints2Count; i++){
-			dops.DeleteOpenGLBuffer(pVBODataPoints2[i]);
-		}
-		delete [] pVBODataPoints2;
-	}
-	if(pVBODataPoints1){
-		for(i=0; i<pVBODataPoints1Count; i++){
-			dops.DeleteOpenGLBuffer(pVBODataPoints1[i]);
-		}
-		delete [] pVBODataPoints1;
-	}
+	pVBODataFaces.Visit([&](GLuint &vbo){
+		dops.DeleteOpenGLBuffer(vbo);
+	});
+	pVBODataPoints2.Visit([&](GLuint &vbo){
+		dops.DeleteOpenGLBuffer(vbo);
+	});
+	pVBODataPoints1.Visit([&](GLuint &vbo){
+		dops.DeleteOpenGLBuffer(vbo);
+	});
 }
 
 
@@ -309,7 +282,7 @@ void deoglRHTSector::pCreateHeightMap(const deHeightTerrainSector &sector){
 	
 	pClusterCount = ((imageDim - 2) / (maxPointsPerCluster - 1)) + 1;
 	
-	pClusters = new deoglHTSCluster[pClusterCount * pClusterCount];
+	pClusters.SetCountDiscard(pClusterCount * pClusterCount);
 	
 	curz = 0;
 	for(z=0; z<pClusterCount; z++){
@@ -349,19 +322,14 @@ void deoglRHTSector::pCreateHeightMap(const deHeightTerrainSector &sector){
 	// could be pushed into a LOD chain cache instead which reduces not only
 	// memory consumption but also processing time during loading time.
 	
-	for(z=0; z<pClusterCount; z++){
-		const int offset = pClusterCount * z;
-		for(x=0; x<pClusterCount; x++){
-			pClusters[offset + x].InitFromHeightImage(sector);
-		}
-	}
+	pClusters.Visit([&](deoglHTSCluster &cluster){
+		cluster.InitFromHeightImage(sector);
+	});
 	
 	// debug
 	/*
-	for(z=0; z<pClusterCount; z++){
-		for(x=0; x<pClusterCount; x++){
-			pClusters[pClusterCount * z + x].DebugPrint();
-		}
+	pClusters.Visit([&](deoglHTSCluster &cluster){
+		cluster.DebugPrint();
 	}
 	*/
 }
@@ -389,7 +357,7 @@ void deoglRHTSector::pSetTextureCount(int count){
 void deoglRHTSector::pDropMaskPixelBuffers(){
 	int i;
 	for(i=0; i<OGLHTS_MAX_MASK_TEXTURES; i++){
-		pPixBufMasks[i] = nullptr;
+		pPixBufMasks[i].Clear();
 	}
 }
 
@@ -582,9 +550,7 @@ void deoglRHTSector::pSyncHeightMap(const deHeightTerrainSector &sector, const d
 	int x, y;
 	
 	// create height values if not existing already
-	if(!pHeights){
-		pHeights = new float[pixelCount];
-	}
+	pHeights.SetCountDiscard(pixelCount);
 	
 	// update height values
 	if(heightImage->GetBitCount() == 8){
@@ -593,7 +559,7 @@ void deoglRHTSector::pSyncHeightMap(const deHeightTerrainSector &sector, const d
 		
 		for(y=from.y; y<=to.y; y++){
 			const sGrayscale8 * const imageDataRow = imageData + imageDim * y;
-			float * const heightsRow = pHeights + imageDim * y;
+			float * const heightsRow = pHeights.GetArrayPointer() + imageDim * y;
 			
 			for(x=from.x; x<=to.x; x++){
 				heightsRow[x] = baseHeight + (float)(imageDataRow[x].value - HT_8BIT_BASE) * scaling;
@@ -606,7 +572,7 @@ void deoglRHTSector::pSyncHeightMap(const deHeightTerrainSector &sector, const d
 		
 		for(y=from.y; y<=to.y; y++){
 			const sGrayscale16 * const imageDataRow = imageData + imageDim * y;
-			float * const heightsRow = pHeights + imageDim * y;
+			float * const heightsRow = pHeights.GetArrayPointer() + imageDim * y;
 			
 			for(x=from.x; x<=to.x; x++){
 				heightsRow[x] = baseHeight + (float)(imageDataRow[x].value - HT_16BIT_BASE) * scaling;
@@ -619,7 +585,7 @@ void deoglRHTSector::pSyncHeightMap(const deHeightTerrainSector &sector, const d
 		
 		for(y=from.y; y<=to.y; y++){
 			const sGrayscale32 * const imageDataRow = imageData + imageDim * y;
-			float * const heightsRow = pHeights + imageDim * y;
+			float * const heightsRow = pHeights.GetArrayPointer() + imageDim * y;
 			
 			for(x=from.x; x<=to.x; x++){
 				heightsRow[x] = baseHeight + imageDataRow[x].value * scaling;
@@ -678,37 +644,27 @@ void deoglRHTSector::pUpdateMaskTextures(){
 }
 
 void deoglRHTSector::pCreateVBODataPoints1(){
-	if(pVBODataPoints1){
+	if(pVBODataPoints1.IsNotEmpty()){
 		return;
 	}
 	
 	OGL_IF_CHECK(deoglRenderThread &renderThread = pHeightTerrain.GetRenderThread();)
-	const int clusterCount = pClusterCount * pClusterCount;
-	const int vboCount = ((clusterCount - 1) / 32) + 1;
+	const int vboCount = ((pClusters.GetCount() - 1) / 32) + 1;
 	if(vboCount == 0){
 		return;
 	}
 	
 	int assignedClusters = 0;
 	int vboOffset = 0;
-	int v, c;
+	int v = 0;
 	
-	pVBODataPoints1 = new GLuint[vboCount];
+	pVBODataPoints1.SetCountDiscard(vboCount);
+	OGL_CHECK(renderThread, pglGenBuffers(vboCount, pVBODataPoints1.GetArrayPointer()));
 	
-	for(v=0; v<vboCount; v++){
-		pVBODataPoints1[v] = 0;
-	}
-	
-	for(v=0, c=0; c<clusterCount; c++){
-		if(!pVBODataPoints1[v]){
-			OGL_CHECK(renderThread, pglGenBuffers(1, &pVBODataPoints1[v]));
-			
-			pVBODataPoints1Count++;
-		}
-		
-		pClusters[c].SetOffsetVBODataPoints(vboOffset);
-		pClusters[c].SetVBODataPoints1(pVBODataPoints1[v]);
-		vboOffset += pClusters[c].GetCountVBODataPoints();
+	pClusters.Visit([&](deoglHTSCluster &cluster){
+		cluster.SetOffsetVBODataPoints(vboOffset);
+		cluster.SetVBODataPoints1(pVBODataPoints1[v]);
+		vboOffset += cluster.GetCountVBODataPoints();
 		
 		assignedClusters++;
 		if(assignedClusters == 32){
@@ -721,7 +677,7 @@ void deoglRHTSector::pCreateVBODataPoints1(){
 			assignedClusters = 0;
 			vboOffset = 0;
 		}
-	}
+	});
 	
 	if(v < vboCount && vboOffset > 0){
 		OGL_CHECK(renderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBODataPoints1[v]));
@@ -730,43 +686,33 @@ void deoglRHTSector::pCreateVBODataPoints1(){
 //renderThread.GetLogger().LogInfoFormat( "htsector data1: size=%i vbo=%u", sizeof(deoglVBOHeightTerrain1)*vboOffset, pVBODataPoints1[ v ] );
 	}
 	
-	for(c=0; c<clusterCount; c++){
-		pClusters[c].UpdateVBOData1();
-	}
+	pClusters.Visit([&](deoglHTSCluster &cluster){
+		cluster.UpdateVBOData1();
+	});
 }
 
 void deoglRHTSector::pCreateVBODataFaces(){
-	if(pVBODataFaces){
+	if(pVBODataFaces.IsNotEmpty()){
 		return;
 	}
 	
 	OGL_IF_CHECK(deoglRenderThread &renderThread = pHeightTerrain.GetRenderThread();)
-	const int clusterCount = pClusterCount * pClusterCount;
-	const int vboCount = ((clusterCount - 1) / 32) + 1;
+	const int vboCount = ((pClusters.GetCount() - 1) / 32) + 1;
 	if(vboCount == 0){
 		return;
 	}
 	
 	int assignedClusters = 0;
 	int vboOffset = 0;
-	int v, c;
+	int v = 0;
 	
-	pVBODataFaces = new GLuint[vboCount];
+	pVBODataFaces.SetCountDiscard(vboCount);
+	OGL_CHECK(renderThread, pglGenBuffers(vboCount, pVBODataFaces.GetArrayPointer()));
 	
-	for(v=0; v<vboCount; v++){
-		pVBODataFaces[v] = 0;
-	}
-	
-	for(v=0, c=0; c<clusterCount; c++){
-		if(!pVBODataFaces[v]){
-			OGL_CHECK(renderThread, pglGenBuffers(1, &pVBODataFaces[v]));
-			
-			pVBODataFacesCount++;
-		}
-		
-		pClusters[c].SetOffsetVBODataFaces(vboOffset);
-		pClusters[c].SetVBODataFaces(pVBODataFaces[v]);
-		vboOffset += pClusters[c].GetCountVBODataFaces();
+	pClusters.Visit([&](deoglHTSCluster &cluster){
+		cluster.SetOffsetVBODataFaces(vboOffset);
+		cluster.SetVBODataFaces(pVBODataFaces[v]);
+		vboOffset += cluster.GetCountVBODataFaces();
 		
 		assignedClusters++;
 		if(assignedClusters == 32){
@@ -779,7 +725,7 @@ void deoglRHTSector::pCreateVBODataFaces(){
 			assignedClusters = 0;
 			vboOffset = 0;
 		}
-	}
+	});
 	
 	if(v < vboCount && vboOffset > 0){
 		OGL_CHECK(renderThread, pglBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pVBODataFaces[v]));
@@ -788,9 +734,9 @@ void deoglRHTSector::pCreateVBODataFaces(){
 //renderThread.GetLogger().LogInfoFormat( "htsector index: size=%i vbo=%u", sizeof(GLushort)*vboOffset, pVBODataFaces[ v ] );
 	}
 	
-	for(c=0; c<clusterCount; c++){
-		pClusters[c].UpdateVBODataFaces();
-	}
+	pClusters.Visit([&](deoglHTSCluster &cluster){
+		cluster.UpdateVBODataFaces();
+	});
 	
 	OGL_CHECK(renderThread, pglBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 }
@@ -801,12 +747,12 @@ void deoglRHTSector::pUpdateHeightMap(){
 	}
 	pDirtyPoints = false;
 	
-	if(!pValid || !pHeights){
+	if(!pValid || pHeights.IsEmpty()){
 		return;
 	}
 	
 	OGL_IF_CHECK(deoglRenderThread &renderThread = pHeightTerrain.GetRenderThread();)
-	int /*b, l, p,*/ c, clusterCount = pClusterCount * pClusterCount;
+	int /*b, l, p,*/ clusterCount = pClusters.GetCount();
 	const int imageDim = pHeightTerrain.GetSectorResolution();
 //	float invCellSize = ( float )imageDim / engHT->GetSectorSize();
 //	float invCellSize2 = invCellSize * 2.0f;
@@ -818,26 +764,18 @@ void deoglRHTSector::pUpdateHeightMap(){
 	int x, z;
 	
 	// create vbos if not existing already
-	if(!pVBODataPoints2){
+	if(pVBODataPoints2.IsEmpty()){
 		int vboOffset = 0, assignedClusters = 0;
-		int v, vboCount = ((clusterCount - 1) / 32) + 1;
+		int vboCount = ((clusterCount - 1) / 32) + 1;
 		
 		if(vboCount > 0){
-			pVBODataPoints2 = new GLuint[vboCount];
+			pVBODataPoints2.SetCountDiscard(vboCount);
+			OGL_CHECK(renderThread, pglGenBuffers(vboCount, pVBODataPoints2.GetArrayPointer()));
 			
-			for(v=0; v<vboCount; v++){
-				pVBODataPoints2[v] = 0;
-			}
-			
-			for(v=0, c=0; c<clusterCount; c++){
-				if(!pVBODataPoints2[v]){
-					OGL_CHECK(renderThread, pglGenBuffers(1, &pVBODataPoints2[v]));
-					
-					pVBODataPoints2Count++;
-				}
-				
-				pClusters[c].SetVBODataPoints2(pVBODataPoints2[v]);
-				vboOffset += pClusters[c].GetCountVBODataPoints();
+			int v = 0;
+			pClusters.Visit([&](deoglHTSCluster &cluster){
+				cluster.SetVBODataPoints2(pVBODataPoints2[v]);
+				vboOffset += cluster.GetCountVBODataPoints();
 				
 				assignedClusters++;
 				if(assignedClusters == 32){
@@ -850,7 +788,7 @@ void deoglRHTSector::pUpdateHeightMap(){
 					assignedClusters = 0;
 					vboOffset = 0;
 				}
-			}
+			});
 			
 			if(v < vboCount && vboOffset > 0){
 				OGL_CHECK(renderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBODataPoints2[v]));
@@ -862,12 +800,12 @@ void deoglRHTSector::pUpdateHeightMap(){
 	}
 	
 	// update vbos, vaos and rts instances
-	for(c=0; c<clusterCount; c++){
-		pClusters[c].UpdateVBOData2();
-	}
-	for(c=0; c<clusterCount; c++){
-		pClusters[c].UpdateVAO();
-	}
+	pClusters.Visit([&](deoglHTSCluster &cluster){
+		cluster.UpdateVBOData2();
+	});
+	pClusters.Visit([&](deoglHTSCluster &cluster){
+		cluster.UpdateVAO();
+	});
 	
 	// update bounding boxes
 	pMinHeight = 0.0f;
@@ -876,8 +814,7 @@ void deoglRHTSector::pUpdateHeightMap(){
 	float minHeight, maxHeight;
 	int lastZ, firstX, lastX;
 	
-	for(c=0; c<clusterCount; c++){
-		deoglHTSCluster &cluster = pClusters[c];
+	pClusters.VisitIndexed([&](int c, deoglHTSCluster &cluster){
 		firstPointX = cluster.GetFirstPointX();
 		firstPointZ = cluster.GetFirstPointZ();
 		pointCountX = cluster.GetPointCountX();
@@ -910,6 +847,6 @@ void deoglRHTSector::pUpdateHeightMap(){
 			pMinHeight = decMath::min(pMinHeight, minHeight);
 			pMaxHeight = decMath::max(pMaxHeight, maxHeight);
 		}
-	}
+	});
 //DEBUG_PRINT_TIMER( "HTSector: Extends" );
 }

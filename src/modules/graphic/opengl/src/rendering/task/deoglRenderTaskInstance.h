@@ -28,6 +28,7 @@
 #include "../../deoglBasics.h"
 
 #include <dragengine/deTUniqueReference.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoglShaderParameterBlock;
 class deoglRenderTaskSharedInstance;
@@ -52,9 +53,7 @@ public:
 private:
 	const deoglRenderTaskSharedInstance *pInstance;
 	
-	sSubInstance *pSubInstances;
-	int pSubInstanceCount;
-	int pSubInstanceSize;
+	decTList<sSubInstance> pSubInstances;
 	deoglShaderParameterBlock *pSIIndexInstanceSPB;
 	int pSIIndexInstanceFirst;
 	int pDrawIndirectIndex;
@@ -84,14 +83,9 @@ public:
 	
 	
 	
-	/** Count of sub instances to render. */
-	inline int GetSubInstanceCount() const{ return pSubInstanceCount; }
-	
-	/** Sub instance at index. */
-	const sSubInstance &GetSubInstanceAt(int index) const;
-	
-	/** Add sub instance. */
-	void AddSubInstance(int indexInstance, int flags);
+	/** Sub instances to render. */
+	inline decTList<sSubInstance> &GetSubInstances(){ return pSubInstances; }
+	inline const decTList<sSubInstance> &GetSubInstances() const{ return pSubInstances; }
 	
 	/** Sub instance index SPB. */
 	inline deoglShaderParameterBlock *GetSIIndexInstanceSPB() const{ return pSIIndexInstanceSPB; }

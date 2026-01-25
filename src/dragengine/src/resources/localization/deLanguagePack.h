@@ -27,6 +27,7 @@
 
 #include "../deFileResource.h"
 #include "../../common/collection/decTDictionary.h"
+#include "../../common/collection/decTList.h"
 #include "../../common/string/unicode/decUnicodeString.h"
 
 class deLanguagePackEntry;
@@ -50,10 +51,9 @@ private:
 	decUnicodeString pDescription;
 	decUnicodeString pMissingText;
 	
-	deLanguagePackEntry *pEntries;
-	int pEntryCount;
+	decTList<deLanguagePackEntry> pEntries;
 	
-	decTStringDictionary<deLanguagePackEntry*> pLookupTable;
+	decTStringDictionary<const deLanguagePackEntry*> pLookupTable;
 	
 	
 	
@@ -105,8 +105,11 @@ public:
 	
 	
 	
+	/** \brief Entries. */
+	inline const decTList<deLanguagePackEntry> &GetEntries() const{ return pEntries; }
+	
 	/** \brief Number of entries. */
-	inline int GetEntryCount() const{ return pEntryCount; }
+	inline int GetEntryCount() const{ return pEntries.GetCount(); }
 	
 	/**
 	 * \brief Set number of entries.

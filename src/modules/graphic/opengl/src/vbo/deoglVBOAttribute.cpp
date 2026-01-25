@@ -22,11 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdint.h>
-
 #include "deoglVBOAttribute.h"
 #include "../deoglBasics.h"
 
@@ -44,6 +39,12 @@ deoglVBOAttribute::deoglVBOAttribute() :
 pComponentCount(0),
 pDataType(edtFloat),
 pOffset(0){
+}
+
+deoglVBOAttribute::deoglVBOAttribute(const deoglVBOAttribute &attribute) :
+pComponentCount(attribute.pComponentCount),
+pDataType(attribute.pDataType),
+pOffset(attribute.pOffset){
 }
 
 deoglVBOAttribute::~deoglVBOAttribute(){

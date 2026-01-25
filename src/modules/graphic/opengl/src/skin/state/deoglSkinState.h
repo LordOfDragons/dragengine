@@ -75,17 +75,10 @@ private:
 	
 	decTObjectList<deoglRVideoPlayer> pVideoPlayers;
 	
-	deoglSkinStateMapped *pMapped;
-	int pMappedCount;
-	
-	deoglSkinStateCalculated *pCalculatedProperties;
-	int pCalculatedPropertyCount;
-	
-	deoglSkinStateConstructed *pConstructedProperties;
-	int pConstructedPropertyCount;
-	
-	deoglSkinStateBone *pBones;
-	int pBoneCount;
+	decTList<deoglSkinStateMapped> pMapped;
+	decTList<deoglSkinStateCalculated> pCalculatedProperties;
+	decTList<deoglSkinStateConstructed> pConstructedProperties;
+	decTList<deoglSkinStateBone> pBones;
 	
 	decPoint pVariationSeed;
 	
@@ -148,14 +141,11 @@ public:
 	
 	
 	
-	/** Number of video players. */
-	int GetVideoPlayerCount() const;
+	/** Video players. */
+	inline const decTObjectList<deoglRVideoPlayer> &GetVideoPlayers() const{ return pVideoPlayers; }
 	
 	/** Set number of video players. */
 	void SetVideoPlayerCount(int count);
-	
-	/** Video player at index which can be \em NULL if not set. */
-	deoglRVideoPlayer *GetVideoPlayerAt(int index) const;
 	
 	/** Set video player at index which can be \em NULL if not set. */
 	void SetVideoPlayerAt(int index, deoglRVideoPlayer *videoPlayer);
@@ -182,7 +172,7 @@ public:
 	inline int GetRenderableCount() const{ return pRenderables.GetCount(); }
 	
 	/** Renderable at the given index. */
-	deoglSkinStateRenderable *GetRenderableAt(int index) const;
+	deoglSkinStateRenderable *GetRenderableAt(int index);
 	
 	/** Add renderable. */
 	deoglSkinStateRenderable *AddRenderable();
@@ -195,50 +185,50 @@ public:
 	
 	
 	
-	/** Count of mapped. */
-	inline int GetMappedCount() const{ return pMappedCount; }
+	/** Mapped. */
+	inline const decTList<deoglSkinStateMapped> &GetMapped() const{ return pMapped; }
 	
 	/** Set mapped count. */
 	void SetMappedCount(int count);
 	
 	/** Mapped at index. */
-	deoglSkinStateMapped &GetMappedAt(int index) const;
+	deoglSkinStateMapped &GetMappedAt(int index);
 	
 	
 	
-	/** Number of calculated properties. */
-	inline int GetCalculatedPropertyCount() const{ return pCalculatedPropertyCount; }
+	/** Calculated properties. */
+	inline const decTList<deoglSkinStateCalculated> &GetCalculatedProperties() const{ return pCalculatedProperties; }
 	
 	/** Set calculated property count. */
 	void SetCalculatedPropertyCount(int count);
 	
 	/** Calculated property at index. */
-	deoglSkinStateCalculated &GetCalculatedPropertyAt(int index) const;
+	deoglSkinStateCalculated &GetCalculatedPropertyAt(int index);
 	
 	
 	
-	/** Number of constructed properties. */
-	inline int GetConstructedPropertyCount() const{ return pConstructedPropertyCount; }
+	/** Constructed properties. */
+	inline const decTList<deoglSkinStateConstructed> &GetConstructedProperties() const{ return pConstructedProperties; }
 	
 	/** Set constructed property count. */
 	void SetConstructedPropertyCount(int count);
 	
 	/** Constructed property at index. */
-	deoglSkinStateConstructed &GetConstructedPropertyAt(int index) const;
+	deoglSkinStateConstructed &GetConstructedPropertyAt(int index);
 	
 	/** Prepare constructed properties for rendering. */
 	void PrepareConstructedProperties();
 	
 	
 	
-	/** Count of bones. */
-	inline int GetBoneCount() const{ return pBoneCount; }
+	/** Bones. */
+	inline const decTList<deoglSkinStateBone> &GetBones() const{ return pBones; }
 	
 	/** Set bones count. */
 	void SetBoneCount(int count);
 	
 	/** Bones at index. */
-	deoglSkinStateBone &GetBoneAt(int index) const;
+	deoglSkinStateBone &GetBoneAt(int index);
 	
 	
 	

@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglRenderTaskInstance.h"
 #include "deoglComputeRenderTask.h"
 #include "../../shaders/paramblock/deoglSPBlockUBO.h"
@@ -45,22 +41,13 @@
 
 deoglRenderTaskInstance::deoglRenderTaskInstance() :
 pInstance(nullptr),
-
-pSubInstances(nullptr),
-pSubInstanceCount(0),
-pSubInstanceSize(0),
-
 pSIIndexInstanceSPB(nullptr),
 pSIIndexInstanceFirst(0),
 pDrawIndirectIndex(0),
 pDrawIndirectCount(0){
 }
 
-deoglRenderTaskInstance::~deoglRenderTaskInstance(){
-	if(pSubInstances){
-		delete [] pSubInstances;
-	}
-}
+deoglRenderTaskInstance::~deoglRenderTaskInstance() = default;
 
 
 
@@ -72,40 +59,13 @@ void deoglRenderTaskInstance::SetInstance(const deoglRenderTaskSharedInstance *i
 }
 
 
-
-const deoglRenderTaskInstance::sSubInstance & deoglRenderTaskInstance::GetSubInstanceAt(int index) const{
-	if(index < 0 || index >= pSubInstanceCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pSubInstances[index];
-}
-
-void deoglRenderTaskInstance::AddSubInstance(int indexInstance, int flags){
-	if(pSubInstanceCount == pSubInstanceSize){
-		const int newSize = pSubInstanceCount * 3 / 2 + 1;
-		sSubInstance * const newArray = new sSubInstance[newSize];
-		if(pSubInstances){
-			memcpy(newArray, pSubInstances, sizeof(sSubInstance) * pSubInstanceCount);
-			delete [] pSubInstances;
-		}
-		pSubInstances = newArray;
-		pSubInstanceSize = newSize;
-	}
-	
-	sSubInstance &subInstance = pSubInstances[pSubInstanceCount++];
-	subInstance.instance = indexInstance;
-	subInstance.flags = flags;
-}
-
-void deoglRenderTaskInstance::SetSIIndexInstanceParam(deoglShaderParameterBlock *paramBlock,
-int firstIndex){
+void deoglRenderTaskInstance::SetSIIndexInstanceParam(deoglShaderParameterBlock *paramBlock, int firstIndex){
 	pSIIndexInstanceSPB = paramBlock;
 	pSIIndexInstanceFirst = firstIndex;
 }
 
 void deoglRenderTaskInstance::WriteSIIndexInstanceInt(bool useFlags){
 	DEASSERT_NOTNULL(pSIIndexInstanceSPB)
-	int i;
 	
 	if(useFlags){
 		struct sIndexFlags{
@@ -113,20 +73,19 @@ void deoglRenderTaskInstance::WriteSIIndexInstanceInt(bool useFlags){
 			GLuint flags;
 		};
 		sIndexFlags * const data = (sIndexFlags*)pSIIndexInstanceSPB->GetMappedBuffer() + pSIIndexInstanceFirst;
-		for(i=0; i<pSubInstanceCount; i++){
-			const sSubInstance &subInstance = pSubInstances[i];
+		pSubInstances.VisitIndexed([&](int i, const sSubInstance &subInstance){
 			data[i].index = (GLuint)subInstance.instance;
 			data[i].flags = (GLuint)subInstance.flags;
-		}
+		});
 		
 	}else{
 		struct sIndex{
 			GLuint index;
 		};
 		sIndex * const data = (sIndex*)pSIIndexInstanceSPB->GetMappedBuffer() + pSIIndexInstanceFirst;
-		for(i=0; i<pSubInstanceCount; i++){
-			data[i].index = (GLuint)pSubInstances[i].instance;
-		}
+		pSubInstances.VisitIndexed([&](int i, const sSubInstance &subInstance){
+			data[i].index = (GLuint)subInstance.instance;
+		});
 	}
 }
 
@@ -136,12 +95,10 @@ void deoglRenderTaskInstance::WriteSIIndexInstanceCompute(){
 	deoglComputeRenderTask::sStep * const data = (deoglComputeRenderTask::sStep*)
 		pSIIndexInstanceSPB->GetMappedBuffer() + pSIIndexInstanceFirst;
 	
-	int i;
-	for(i=0; i<pSubInstanceCount; i++){
-		const sSubInstance &subInstance = pSubInstances[i];
+	pSubInstances.VisitIndexed([&](int i, const sSubInstance &subInstance){
 		data[i].spbInstance = (uint32_t)(subInstance.instance + 1);
 		data[i].specialFlags = (uint32_t)subInstance.flags;
-	}
+	});
 }
 
 void deoglRenderTaskInstance::SetDrawIndirectIndex(int index){
@@ -156,7 +113,7 @@ void deoglRenderTaskInstance::SetDrawIndirectCount(int count){
 
 void deoglRenderTaskInstance::Reset(){
 	pInstance = nullptr;
-	pSubInstanceCount = 0;
+	pSubInstances.RemoveAll();
 	pSIIndexInstanceSPB = nullptr;
 	pSIIndexInstanceFirst = 0;
 	pDrawIndirectIndex = 0;

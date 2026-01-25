@@ -51,9 +51,9 @@ deSkinTexture::~deSkinTexture(){
 
 deSkinProperty *deSkinTexture::GetPropertyWithType(const char *type) const{
 	const deSkinProperty::Ref *found = nullptr;
-	return pProperties.Find([&](const deSkinProperty &prop) {
+	return pProperties.Find(found, [&](const deSkinProperty &prop) {
 		return prop.GetType().Equals(type);
-	}, found) ? found->Pointer() : nullptr;
+	}) ? found->Pointer() : nullptr;
 }
 
 int deSkinTexture::IndexOfProperty(deSkinProperty *property) const{

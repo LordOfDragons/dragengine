@@ -57,6 +57,7 @@
 #include <dragengine/resources/terrain/heightmap/deHeightTerrain.h>
 #include <dragengine/resources/terrain/heightmap/deHeightTerrainSector.h>
 #include <dragengine/resources/terrain/heightmap/deHeightTerrainNavSpace.h>
+#include <dragengine/resources/terrain/heightmap/deHeightTerrainNavSpaceEdge.h>
 #include <dragengine/resources/world/deWorld.h>
 
 
@@ -149,12 +150,12 @@ deHeightTerrainNavSpace *meHeightTerrainNavSpace::CreateEngineNavSpace() const{
 		navspace->SetLayer(pLayer);
 		navspace->SetSnapDistance(pSnapDistance);
 		navspace->SetSnapAngle(pSnapAngle * DEG2RAD);
-		navspace->SetCornerCount(navCornerCount);
-		navspace->SetEdgeCount(0); // TODO
-		navspace->SetFaceCount(navFaceCount);
+		navspace->GetCorners().SetAll(navCornerCount, {});
+		navspace->GetEdges().SetAll(0, {}); // TODO
+		navspace->GetFaces().SetAll(navFaceCount, {});
 		
-		unsigned int *navCorners = navspace->GetCorners();
-		deNavigationSpaceFace *navFaces = navspace->GetFaces();
+		unsigned int *navCorners = navspace->GetCorners().GetArrayPointer();
+		deNavigationSpaceFace *navFaces = navspace->GetFaces().GetArrayPointer();
 		
 		pTypes.Visit([&](const meHeightTerrainNavSpaceType &type){
 			type.GetFaces().Visit([&](const meHeightTerrainNavSpaceFace &face){
@@ -348,7 +349,7 @@ void meHeightTerrainNavSpace::UpdateDDColors(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		deDebugDrawerShape &shape = *pDDTypeFaces->GetShapeAt(i);
+		deDebugDrawerShape &shape = *pDDTypeFaces->GetShapes()[i];
 		decColor color(0.5f, 0.5f, 0.5f, 1.0f);
 		
 		//if( pHeightTerrain->GetActive() ){
@@ -510,12 +511,12 @@ void meHeightTerrainNavSpace::UpdateNavSpaceFaces(){
 		navFaceCount += type.GetFaces().GetCount();
 	});
 	
-	pEngNavSpace->SetCornerCount(navCornerCount);
-	pEngNavSpace->SetEdgeCount(0); // TODO
-	pEngNavSpace->SetFaceCount(navFaceCount);
+	pEngNavSpace->GetCorners().SetAll(navCornerCount, {});
+	pEngNavSpace->GetEdges().SetAll(0, {}); // TODO
+	pEngNavSpace->GetFaces().SetAll(navFaceCount, {});
 	
-	unsigned int *navCorners = pEngNavSpace->GetCorners();
-	deNavigationSpaceFace *navFaces = pEngNavSpace->GetFaces();
+	unsigned int *navCorners = pEngNavSpace->GetCorners().GetArrayPointer();
+	deNavigationSpaceFace *navFaces = pEngNavSpace->GetFaces().GetArrayPointer();
 	
 	pTypes.Visit([&](const meHeightTerrainNavSpaceType &type){
 		type.GetFaces().Visit([&](const meHeightTerrainNavSpaceFace &face){
@@ -565,9 +566,9 @@ void meHeightTerrainNavSpace::LoadNavSpaceFromFile(){
 					type.RemoveAllFaces();
 				});
 				
-				const int navFaceCount = engNavSpace->GetFaceCount();
-				const deNavigationSpaceFace * const navFaces = engNavSpace->GetFaces();
-				const unsigned int *navCorners = engNavSpace->GetCorners();
+				const int navFaceCount = engNavSpace->GetFaces().GetCount();
+				const deNavigationSpaceFace * const navFaces = engNavSpace->GetFaces().GetArrayPointer();
+				const unsigned int *navCorners = engNavSpace->GetCorners().GetArrayPointer();
 				
 				int i;
 				for(i=0; i<navFaceCount; i++){
@@ -660,25 +661,11 @@ void meHeightTerrainNavSpace::pUpdateDDTypeFaces(){
 	});
 	pDDTypeFaces->RemoveAllShapes();
 	
-	deDebugDrawerShape *shape = nullptr;
-	deDebugDrawerShape *safeShape;
-	
-	try{
-		pTypes.Visit([&](meHeightTerrainNavSpaceType &type){
-			shape = new deDebugDrawerShape;
-			pDDTypeFaces->AddShape(shape);
-			safeShape = shape;
-			shape = nullptr;
-			
-			type.SetDDShape(safeShape);
-		});
-		
-	}catch(const deException &){
-		if(shape){
-			delete shape;
-		}
-		throw;
-	}
+	pTypes.Visit([&](meHeightTerrainNavSpaceType &type){
+		auto shape = deDebugDrawerShape::Ref::New();
+		type.SetDDShape(shape);
+		pDDTypeFaces->AddShape(std::move(shape));
+	});
 	
 	pDDTypeFaces->NotifyShapeLayoutChanged();
 	

@@ -181,11 +181,11 @@ void dedaiNavBlocker::UpdateDDSBlocker(){
 		bool updateShapes = false;
 		
 		if(!pDDSBlocker){
-			pDDSBlocker = new deDebugDrawerShape;
-			pDDSBlocker->SetFillColor(decColor(0.0f, 0.5f, 1.0f, 0.1f));
-			pDDSBlocker->SetEdgeColor(decColor(0.0f, 0.5f, 1.0f, 0.8f));
-			pDebugDrawer->AddShape(pDDSBlocker);
-			updateShapes = true;
+			auto shape = deDebugDrawerShape::Ref::New();
+			shape->SetFillColor(decColor(0.0f, 0.5f, 1.0f, 0.1f));
+			shape->SetEdgeColor(decColor(0.0f, 0.5f, 1.0f, 0.8f));
+			pDDSBlocker = shape;
+			pDebugDrawer->AddShape(std::move(shape));
 		}
 		
 		// update the shapes if required

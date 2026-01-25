@@ -22,15 +22,13 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _DEBPPOINTSIEVE_H_
 #define _DEBPPOINTSIEVE_H_
 
-// includes
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/exceptions.h>
 
-// predefinitions
 class debpPointSieveBucket;
-
 
 
 /**
@@ -47,10 +45,9 @@ private:
 	float pSieveDivX;
 	float pSieveDivZ;
 	
-	debpPointSieveBucket *pBuckets;
+	decTList<debpPointSieveBucket> pBuckets;
 	int pBucketCountX;
 	int pBucketCountZ;
-	int pBucketCount;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -73,13 +70,13 @@ public:
 	/** Retrieves the number of buckets in the z direction. */
 	inline int GetBucketCountZ() const{ return pBucketCountZ; }
 	/** Retrieves the number of buckets. */
-	inline int GetBucketCount() const{ return pBucketCount; }
+	inline int GetBucketCount() const{ return pBuckets.GetCount(); }
 	/** Retrieves the bucket at the given index. */
-	debpPointSieveBucket &GetBucketAt(int index) const;
+	debpPointSieveBucket &GetBucketAt(int index);
 	/** Retrieves the bucket at the given index. */
-	debpPointSieveBucket &GetBucketWith(int x, int z) const;
+	debpPointSieveBucket &GetBucketWith(int x, int z);
 	/** Retrieves the bucket containing the given position. */
-	debpPointSieveBucket &GetBucketContaining(float x, float z) const;
+	debpPointSieveBucket &GetBucketContaining(float x, float z);
 	
 	/** Drops a point into the sieve. */
 	void DropPoint(float x, float z, int index);

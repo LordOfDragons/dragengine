@@ -452,9 +452,9 @@ const deoglROcclusionMesh &occlusionMesh, const decMatrix &matrix,
 const decVector &origin, float distance) const{
 	const int singleSidedFaceCount = occlusionMesh.GetSingleSidedFaceCount();
 	const int doubleSidedFaceCount = occlusionMesh.GetDoubleSidedFaceCount();
-	const deoglROcclusionMesh::sVertex * const vertices = occlusionMesh.GetVertices();
+	const deoglROcclusionMesh::sVertex * const vertices = occlusionMesh.GetVertices().GetArrayPointer();
 	const int faceCount = singleSidedFaceCount + doubleSidedFaceCount;
-	unsigned short * const corners = occlusionMesh.GetCorners();
+	const unsigned short * const corners = occlusionMesh.GetCorners().GetArrayPointer();
 	deoglTriangleSorter triangleList;
 	decVector tv1, tv2, tv3;
 	int i, pointIndex = 0;

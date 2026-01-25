@@ -42,40 +42,22 @@
 
 struct sRuntimeMeterNatDat{
 	struct sCounter{
-		int time;
-		int updates;
+		int time = 0;
+		int updates = 0;
 	};
 	
-	decTimer *meters = nullptr;
-	int meterCount = 0;
+	decTList<decTimer> meters;
+	decTList<sCounter> counters;
 	
-	sCounter *counters = nullptr;
-	int counterCount = 0;
-	
-	~sRuntimeMeterNatDat(){
-		if(meters){
-			delete [] meters;
-			meters = nullptr;
-		}
-		if(counters){
-			delete [] counters;
-			counters = nullptr;
-		}
-	}
+	~sRuntimeMeterNatDat() = default;
 	
 	decTimer &GetMeterAt(int index){
 		if(index < 0){
 			DSTHROW(dueInvalidParam);
 		}
 		
-		if(index >= meterCount){
-			decTimer * const newArray = new decTimer[index + 1];
-			if(meters){
-				memcpy(newArray, meters, sizeof(decTimer) * meterCount);
-				delete [] meters;
-			}
-			meters = newArray;
-			meterCount = index + 1;
+		if(index >= meters.GetCount()){
+			meters.AddRange(index - meters.GetCount() + 1, {});
 		}
 		
 		return meters[index];
@@ -86,14 +68,8 @@ struct sRuntimeMeterNatDat{
 			DSTHROW(dueInvalidParam);
 		}
 		
-		if(index >= counterCount){
-			sCounter * const newArray = new sCounter[index + 1];
-			if(counters){
-				memcpy(newArray, counters, sizeof(sCounter) * counterCount);
-				delete [] counters;
-			}
-			counters = newArray;
-			counterCount = index + 1;
+		if(index >= counters.GetCount()){
+			counters.AddRange(index - counters.GetCount() + 1, {});
 		}
 		
 		return counters[index];

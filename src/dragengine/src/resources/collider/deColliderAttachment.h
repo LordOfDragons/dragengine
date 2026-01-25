@@ -27,6 +27,7 @@
 
 #include "../deResource.h"
 #include "../../common/collection/decTUniqueList.h"
+#include "../../common/collection/decTList.h"
 #include "../../common/math/decMath.h"
 #include "../../common/string/decString.h"
 
@@ -140,8 +141,7 @@ private:
 	decVector pScaling;
 	bool pNoScaling;
 	decString pTrackBone;
-	sWeight *pWeights;
-	int pWeightCount;
+	decTList<sWeight> pWeights;
 	
 	
 	
@@ -216,11 +216,16 @@ public:
 	 */
 	void SetTrackBone(const char *bone);
 	
-	/** \brief Count of bone weights. */
-	inline int GetWeightCount() const{ return pWeightCount; }
+	/** \brief Weights. */
+	inline decTList<sWeight> &GetWeights(){ return pWeights; }
+	inline const decTList<sWeight> &GetWeights() const{ return pWeights; }
 	
-	/** \brief Pointer to array of bone weights. */
-	inline sWeight *GetWeights() const{ return pWeights; }
+	/** \brief Count of bone weights. */
+	inline int GetWeightCount() const{ return pWeights.GetCount(); }
+	
+	/** \brief Weight at index. */
+	inline sWeight &GetWeightAt(int index){ return pWeights.GetAt(index); }
+	inline const sWeight &GetWeightAt(int index) const{ return pWeights.GetAt(index); }
 	
 	/**
 	 * \brief Set number of bone weights.

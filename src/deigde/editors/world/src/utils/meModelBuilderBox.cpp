@@ -67,27 +67,27 @@ void meModelBuilderBox::BuildModel(deModel *model){
 	model->AddTexture(deModelTexture::Ref::New("dummy", 1, 1));
 	
 	// add vertices
-	modelLOD.SetVertexCount(8);
-	modelLOD.GetVertexAt(0).SetPosition(decVector(-halfSize,  halfSize,  halfSize));
-	modelLOD.GetVertexAt(1).SetPosition(decVector(halfSize,  halfSize,  halfSize));
-	modelLOD.GetVertexAt(2).SetPosition(decVector(halfSize, -halfSize,  halfSize));
-	modelLOD.GetVertexAt(3).SetPosition(decVector(-halfSize, -halfSize,  halfSize));
-	modelLOD.GetVertexAt(4).SetPosition(decVector(-halfSize,  halfSize, -halfSize));
-	modelLOD.GetVertexAt(5).SetPosition(decVector(halfSize,  halfSize, -halfSize));
-	modelLOD.GetVertexAt(6).SetPosition(decVector(halfSize, -halfSize, -halfSize));
-	modelLOD.GetVertexAt(7).SetPosition(decVector(-halfSize, -halfSize, -halfSize));
+	modelLOD.GetVertices().SetAll(8, {});
+	modelLOD.GetVertices()[0].SetPosition(decVector(-halfSize,  halfSize,  halfSize));
+	modelLOD.GetVertices()[1].SetPosition(decVector(halfSize,  halfSize,  halfSize));
+	modelLOD.GetVertices()[2].SetPosition(decVector(halfSize, -halfSize,  halfSize));
+	modelLOD.GetVertices()[3].SetPosition(decVector(-halfSize, -halfSize,  halfSize));
+	modelLOD.GetVertices()[4].SetPosition(decVector(-halfSize,  halfSize, -halfSize));
+	modelLOD.GetVertices()[5].SetPosition(decVector(halfSize,  halfSize, -halfSize));
+	modelLOD.GetVertices()[6].SetPosition(decVector(halfSize, -halfSize, -halfSize));
+	modelLOD.GetVertices()[7].SetPosition(decVector(-halfSize, -halfSize, -halfSize));
 	
 	// add normals and tangents
 	modelLOD.SetNormalCount(6);
 	modelLOD.SetTangentCount(6);
 	
 	// add texture coordinates
-	model->GetTextureCoordinatesSetList().Add("default");
+	model->GetTextureCoordinatesSets().Add("default");
 	modelLOD.SetTextureCoordinatesCount(4);
-	modelLOD.SetTextureCoordinatesSetCount(1);
+	modelLOD.GetTextureCoordinatesSets().SetAll(1, {});
 	
-	deModelTextureCoordinatesSet &tcset = modelLOD.GetTextureCoordinatesSetAt(0);
-	tcset.GetTextureCoordinates() = deModelTextureCoordinatesSet::TextureCoordinatesList{
+	deModelTextureCoordinatesSet &tcset = modelLOD.GetTextureCoordinatesSets().First();
+	tcset.GetTextureCoordinates() = deModelTextureCoordinatesSet::TextureCoordinatesList{devctag,
 		decVector2{0.0f, 0.0f}, decVector2{1.0f, 0.0f},
 		decVector2{1.0f, 1.0f}, decVector2{0.0f, 1.0f}};
 	
@@ -97,14 +97,14 @@ void meModelBuilderBox::BuildModel(deModel *model){
 	const int tangents[] = {1, 0, 0,     0, 0, 1,       -1, 0, 0,     0, 0, -1,      1, 0, 0,       -1, 0, 0};
 	int i;
 	
-	modelLOD.SetFaceCount(12);
+	modelLOD.GetFaces().SetAll(12, {});
 	
 	for(i=0; i<12; i++){
 		const int side = i / 2;
 		const int * const corners = &indices[side * 4];
 		const int * const fnormal = &normals[side * 3];
 		const int * const ftangent = &tangents[side * 3];
-		deModelFace &face = modelLOD.GetFaceAt(i);
+		deModelFace &face = modelLOD.GetFaces()[i];
 		
 		face.SetNormal1(side);
 		face.SetNormal2(side);

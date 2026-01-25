@@ -108,7 +108,6 @@ pIsListening(false),
 pOldAccelNom(0),
 pOldAccelDenom(0),
 pOldThreshold(0),
-pKeyStates(NULL),
 
 pSystemAutoRepeatEnabled(false),
 pAutoRepeatEnabled(false),
@@ -116,7 +115,7 @@ pAutoRepeatEnabled(false),
 pKeyModifiers(0)
 {
 	try{
-		pKeyStates = new BYTE[256];
+		pKeyStates.AddRange(256, {});
 		
 	}catch(const deException &){
 		throw;
@@ -124,9 +123,6 @@ pKeyModifiers(0)
 }
 
 deWindowsInput::~deWindowsInput(){
-	if(pKeyStates){
-		delete [] pKeyStates;
-	}
 }
 
 
@@ -150,7 +146,7 @@ bool deWindowsInput::Init(){
 		pWindowHeight = clientRect.bottom - clientRect.top;
 	}
 	
-	memset(pKeyStates, '\0', sizeof(BYTE) * 256);
+	pKeyStates.SetRangeAt(0, pKeyStates.GetCount(), 0);
 	pKeyModifiers = 0;
 
 	pIsListening = true;

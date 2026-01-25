@@ -22,12 +22,6 @@
  * SOFTWARE.
  */
 
-#include <math.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdint.h>
-
 #include "deoglConvexHull3D.h"
 
 #define CONVHULL_3D_ENABLE
@@ -44,76 +38,44 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglConvexHull3D::deoglConvexHull3D(){
-	pPoints = nullptr;
-	pPointCount = 0;
-	pPointSize = 0;
-}
-
-deoglConvexHull3D::~deoglConvexHull3D(){
-	if(pPoints){
-		delete [] pPoints;
-	}
-}
-
+deoglConvexHull3D::deoglConvexHull3D() = default;
+deoglConvexHull3D::~deoglConvexHull3D() = default;
 
 
 // Management
 ///////////////
 
-const decVector &deoglConvexHull3D::GetPointAt(int index) const{
-	if(index < 0 || index >= pPointCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pPoints[index];
-}
-
 void deoglConvexHull3D::AddPoint(const decVector &point){
-	if(pPointCount == pPointSize){
-		const int newSize = pPointSize + 10;
-		decVector * const newArray = new decVector[newSize];
-		
-		if(pPoints){
-			memcpy(newArray, pPoints, sizeof(decVector) * pPointCount);
-			delete [] pPoints;
-		}
-		pPoints = newArray;
-		
-		pPointSize = newSize;
-	}
-	
-	pPoints[pPointCount++] = point;
+	pPoints.Add(point);
 }
 
 void deoglConvexHull3D::RemoveAllPoints(){
-	pPointCount = 0;
+	pPoints.SetCountDiscard(0);
 }
 
 
 
 void deoglConvexHull3D::CalculateHull(){
-	pHullIndices.RemoveAll();
+	pHullIndices.SetCountDiscard(0);
 	
-	if(pPointCount < 3){
+	if(pPoints.GetCount() < 3){
 		return;
 	}
 	
-	ch_vertex * const vertices = new ch_vertex[pPointCount];
+	decTList<ch_vertex> vertices(pPoints.GetCount());
 	int i;
-	for(i=0; i<pPointCount; i++){
-		vertices[i].x = pPoints[i].x;
-		vertices[i].y = pPoints[i].y;
-		vertices[i].z = pPoints[i].z;
+	for(i=0; i<pPoints.GetCount(); i++){
+		vertices.Add({pPoints[i].x, pPoints[i].y, pPoints[i].z});
 	}
 	
 	int *faceIndices = nullptr;
 	int nFaces;
-	convhull_3d_build(vertices, pPointCount, &faceIndices, &nFaces);
+	convhull_3d_build(vertices.GetArrayPointer(), pPoints.GetCount(), &faceIndices, &nFaces);
 	
+	pHullIndices.EnlargeCapacity(nFaces * 3);
 	for(i=0; i<nFaces*3; i++){
 		pHullIndices.Add(faceIndices[i]);
 	}
 	
 	free(faceIndices);
-	delete [] vertices;
 }

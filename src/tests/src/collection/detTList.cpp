@@ -48,6 +48,12 @@ void detTList::Run(){
 	TestIntMoveConstructor();
 	TestIntIteratorConstructor();
 	TestIntCollectionConstructor();
+	TestIntFindOrDefault();
+	TestIntFind();
+	TestIntVisitReverse();
+	TestIntRemoveIf();
+	TestIntRemoveHead();
+	TestIntRemoveTail();
 	// string
 	TestStringBasic();
 	TestStringOperators();
@@ -57,6 +63,8 @@ void detTList::Run(){
 	TestStringNoneMatching();
 	TestStringFold();
 	TestStringInject();
+	TestStringVisit();
+	TestStringRemoveIf();
 	// object ref
 	TestObjectRefBasic();
 	TestObjectRefOperations();
@@ -286,13 +294,13 @@ void detTList::TestIntAlgorithms(){
 
 	// Find
 	const int *result = nullptr;
-	bool found = list.Find([](const int &v){ return v > 7; }, result);
+	bool found = list.Find(result, [](const int &v){ return v > 7; });
 	ASSERT_TRUE(found);
 	ASSERT_NOT_NULL(result);
 	ASSERT_EQUAL(*result, 8);
 
 	// FindOrDefault
-	ASSERT_EQUAL(list.FindOrDefault([](const int &v){ return v > 100; }, 999), 999);
+	ASSERT_EQUAL(list.FindOrDefault(999, [](const int &v){ return v > 100; }), 999);
 
 	// Collect
 	auto collected = list.Collect([](const int &v){ return v > 5; });
@@ -378,61 +386,61 @@ void detTList::TestIntAlgorithms(){
 	// Test parameterized algorithm overloads
 	// Visit with from parameter
 	int sumFrom = 0;
-	list3.Visit([&sumFrom](const int &v){ sumFrom += v; }, 5);
+	list3.Visit(5, [&sumFrom](const int &v){ sumFrom += v; });
 	ASSERT_EQUAL(sumFrom, 40); // 6+7+8+9+10
 
 	// Visit with from/to/step parameters
 	int sumRange = 0;
-	list3.Visit([&sumRange](const int &v){ sumRange += v; }, 2, 5, 1);
+	list3.Visit(2, 5, 1, [&sumRange](const int &v){ sumRange += v; });
 	ASSERT_EQUAL(sumRange, 12); // 3+4+5
 
 	// Visit with negative step
 	int sumReverse = 0;
-	list3.Visit([&sumReverse](const int &v){ sumReverse += v; }, 4, 1, -1);
+	list3.Visit(4, 1, -1, [&sumReverse](const int &v){ sumReverse += v; });
 	ASSERT_EQUAL(sumReverse, 14); // 5+4+3+2
 
 	// Find with from parameter
 	const int *foundFrom = nullptr;
-	ASSERT_TRUE(list3.Find([](const int &v){ return v > 7; }, foundFrom, 5));
+	ASSERT_TRUE(list3.Find(foundFrom, 5, [](const int &v){ return v > 7; }));
 	ASSERT_EQUAL(*foundFrom, 8);
 
 	// Find with from/to/step parameters
 	const int *foundRange = nullptr;
-	ASSERT_TRUE(list3.Find([](const int &v){ return v == 4; }, foundRange, 0, 5, 1));
+	ASSERT_TRUE(list3.Find(foundRange, 0, 5, 1, [](const int &v){ return v == 4; }));
 	ASSERT_EQUAL(*foundRange, 4);
 
 	// Find with negative step
 	const int *foundRev = nullptr;
-	ASSERT_TRUE(list3.Find([](const int &v){ return v < 5; }, foundRev, 5, 0, -1));
+	ASSERT_TRUE(list3.Find(foundRev, 5, 0, -1, [](const int &v){ return v < 5; }));
 	ASSERT_EQUAL(*foundRev, 4);
 
 	// FindOrDefault with from parameter
-	ASSERT_EQUAL(list3.FindOrDefault([](const int &v){ return v > 100; }, 999, 5), 999);
-	ASSERT_EQUAL(list3.FindOrDefault([](const int &v){ return v > 8; }, 999, 8), 9);
+	ASSERT_EQUAL(list3.FindOrDefault(999, 5, [](const int &v){ return v > 100; }), 999);
+	ASSERT_EQUAL(list3.FindOrDefault(999, 8, [](const int &v){ return v > 8; }), 9);
 
 	// FindOrDefault with from/to/step parameters
-	ASSERT_EQUAL(list3.FindOrDefault([](const int &v){ return v == 5; }, 999, 0, 10, 1), 5);
-	ASSERT_EQUAL(list3.FindOrDefault([](const int &v){ return v > 100; }, 999, 0, 10, 1), 999);
+	ASSERT_EQUAL(list3.FindOrDefault(999, 0, 10, 1, [](const int &v){ return v == 5; }), 5);
+	ASSERT_EQUAL(list3.FindOrDefault(999, 0, 10, 1, [](const int &v){ return v > 100; }), 999);
 
 	// Collect with from parameter
-	auto collFrom = list3.Collect([](const int &v){ return v > 7; }, 5);
+	auto collFrom = list3.Collect(5, [](const int &v){ return v > 7; });
 	ASSERT_EQUAL(collFrom.GetCount(), 3); // 8, 9, 10
 
 	// Collect with from/to/step
-	auto collRange = list3.Collect([](const int &v){ return v % 2 == 0; }, 1, 8, 1);
+	auto collRange = list3.Collect(1, 8, 1, [](const int &v){ return v % 2 == 0; });
 	ASSERT_EQUAL(collRange.GetCount(), 4); // 2, 4, 6, 8
 
 	// RemoveIf with from parameter
 	decTListInt list4;
 	for(int i=1; i<=10; i++) list4.Add(i);
-	list4.RemoveIf([](const int &v){ return v > 7; }, 5); // removes 8, 9, 10
+	list4.RemoveIf(5, [](const int &v){ return v > 7; }); // removes 8, 9, 10
 	ASSERT_EQUAL(list4.GetCount(), 7);
 	ASSERT_EQUAL(list4.Last(), 7);
 
 	// RemoveIf with from/to/step
 	decTListInt list5;
 	for(int i=1; i<=10; i++) list5.Add(i);
-	list5.RemoveIf([](const int &v){ return v % 2 == 0; }, 1, 8, 1); // removes 2,4,6,8 from range [1,8)
+	list5.RemoveIf(1, 8, 1, [](const int &v){ return v % 2 == 0; }); // removes 2,4,6,8 from range [1,8)
 	ASSERT_EQUAL(list5.GetCount(), 6);
 	ASSERT_TRUE(list5.Has(1));
 	ASSERT_FALSE(list5.Has(2));
@@ -596,8 +604,8 @@ void detTList::TestIntIndexOfMatching(){
 	ASSERT_EQUAL(list.IndexOfMatching(evaluator2), -1);
 	
 	auto evaluator3 = [](int val){ return val >= 30; };
-	ASSERT_EQUAL(list.IndexOfMatching(evaluator3, 3), 3);
-	ASSERT_EQUAL(list.IndexOfMatching(evaluator3, 2), 2);
+	ASSERT_EQUAL(list.IndexOfMatching(3, evaluator3), 3);
+	ASSERT_EQUAL(list.IndexOfMatching(2, evaluator3), 2);
 }
 
 void detTList::TestIntHasMatching(){
@@ -736,7 +744,7 @@ void detTList::TestStringIndexOfMatching(){
 	ASSERT_EQUAL(list.IndexOfMatching(evaluator2), -1);
 	
 	auto evaluator3 = [](const decString &val){ return val.GetLength() == 4; };
-	ASSERT_EQUAL(list.IndexOfMatching(evaluator3, 3), 3);
+	ASSERT_EQUAL(list.IndexOfMatching(3, evaluator3), 3);
 }
 
 void detTList::TestStringHasMatching(){
@@ -871,7 +879,7 @@ void detTList::TestObjectRefIndexOfMatching(){
 	ASSERT_EQUAL(list.IndexOfMatching(evaluator2), -1);
 	
 	auto evaluator3 = [](decXmlElementTag::Ref val){ return val->GetName().GetLength() == 4; };
-	ASSERT_EQUAL(list.IndexOfMatching(evaluator3, 2), 2);
+	ASSERT_EQUAL(list.IndexOfMatching(2, evaluator3), 2);
 }
 
 void detTList::TestObjectRefHasMatching(){
@@ -1033,16 +1041,16 @@ void detTList::TestIntVisitVariants(){
 
 	// VisitIndexed with range
 	int sumIndexed = 0;
-	list.VisitIndexed([&sumIndexed](int index, const int &v){ 
+	list.VisitIndexed(2, 5, [&sumIndexed](int index, const int &v){
 		sumIndexed += v;
-	}, 2, 5);
+	});
 	ASSERT_EQUAL(sumIndexed, 30 + 40 + 50);
 
 	// VisitIndexed with negative step
 	decTListInt reversedIndexed;
-	list.VisitIndexed([&reversedIndexed](int index, const int &v){ 
+	list.VisitIndexed(5, 2, -1, [&reversedIndexed](int index, const int &v){
 		reversedIndexed.Add(v);
-	}, 5, 2, -1);
+	});
 	ASSERT_EQUAL(reversedIndexed.GetCount(), 4);
 	ASSERT_EQUAL(reversedIndexed.GetAt(0), 60);
 	ASSERT_EQUAL(reversedIndexed.GetAt(3), 30);
@@ -1263,5 +1271,350 @@ void detTList::TestIntCollectionConstructor(){
 	decTListInt emptySource;
 	decTListInt list2(emptySource);
 	ASSERT_TRUE(list2.IsEmpty());
+}
+
+
+// Additional INT Tests - FindOrDefault
+// ============================================================================
+
+void detTList::TestIntFindOrDefault(){
+	SetSubTestNum(30);
+
+	decTListInt list;
+	list.Add(10);
+	list.Add(20);
+	list.Add(30);
+	list.Add(40);
+
+	// Find existing element
+	auto eval1 = [](int val){ return val > 25; };
+	int result1 = list.FindOrDefault(-1, eval1);
+	ASSERT_EQUAL(result1, 30); // First element > 25
+
+	// Find non-existing element (returns default)
+	auto eval2 = [](int val){ return val > 100; };
+	int result2 = list.FindOrDefault(-999, eval2);
+	ASSERT_EQUAL(result2, -999);
+
+	// Find with rvalue evaluator
+	int result3 = list.FindOrDefault(-1, [](int val){ return val == 20; });
+	ASSERT_EQUAL(result3, 20);
+
+	// Find with range parameters
+	int result4 = list.FindOrDefault(-1, 1, eval1); // Start from index 1
+	ASSERT_EQUAL(result4, 30);
+
+	// Empty list returns default
+	decTListInt emptyList;
+	int result5 = emptyList.FindOrDefault(777, [](int val){ return true; });
+	ASSERT_EQUAL(result5, 777);
+}
+
+
+// Additional INT Tests - Find
+// ============================================================================
+
+void detTList::TestIntFind(){
+	SetSubTestNum(31);
+
+	decTListInt list;
+	list.Add(10);
+	list.Add(20);
+	list.Add(30);
+	list.Add(40);
+
+	// Find existing element (const version)
+	const int *found1 = nullptr;
+	auto eval1 = [](int val){ return val > 25; };
+	const decTListInt &constList = list;
+	ASSERT_TRUE(constList.Find(found1, eval1));
+	ASSERT_NOT_NULL(found1);
+	ASSERT_EQUAL(*found1, 30);
+
+	// Find non-existing element
+	const int *found2 = nullptr;
+	auto eval2 = [](int val){ return val > 100; };
+	ASSERT_FALSE(constList.Find(found2, eval2));
+	ASSERT_NULL(found2);
+
+	// Find with non-const version
+	int *found3 = nullptr;
+	ASSERT_TRUE(list.Find(found3, eval1));
+	ASSERT_NOT_NULL(found3);
+	ASSERT_EQUAL(*found3, 30);
+
+	// Find with rvalue evaluator
+	const int *found4 = nullptr;
+	ASSERT_TRUE(constList.Find(found4, [](int val){ return val == 20; }));
+	ASSERT_EQUAL(*found4, 20);
+
+	// Find with range parameters
+	const int *found5 = nullptr;
+	ASSERT_TRUE(constList.Find(found5, 2, eval1)); // Start from index 2
+	ASSERT_EQUAL(*found5, 30);
+
+	// Empty list
+	decTListInt emptyList;
+	const int *found6 = nullptr;
+	ASSERT_FALSE(emptyList.Find(found6, [](int val){ return true; }));
+	ASSERT_NULL(found6);
+}
+
+
+// Additional INT Tests - VisitReverse
+// ============================================================================
+
+void detTList::TestIntVisitReverse(){
+	SetSubTestNum(32);
+
+	decTListInt list;
+	list.Add(10);
+	list.Add(20);
+	list.Add(30);
+	list.Add(40);
+
+	// Test VisitReverse with lvalue visitor
+	decTListInt reversed;
+	auto visitor = [&reversed](int val){
+		reversed.Add(val);
+	};
+	list.VisitReverse(visitor);
+	ASSERT_EQUAL(reversed.GetCount(), 4);
+	ASSERT_EQUAL(reversed.GetAt(0), 40);
+	ASSERT_EQUAL(reversed.GetAt(1), 30);
+	ASSERT_EQUAL(reversed.GetAt(2), 20);
+	ASSERT_EQUAL(reversed.GetAt(3), 10);
+
+	// Test VisitReverse with rvalue visitor
+	int sum = 0;
+	list.VisitReverse([&sum](int val){
+		sum += val;
+	});
+	ASSERT_EQUAL(sum, 100);
+
+	// Test VisitReverse on empty list
+	decTListInt emptyList;
+	int count = 0;
+	emptyList.VisitReverse([&count](int val){
+		count++;
+	});
+	ASSERT_EQUAL(count, 0);
+
+	// Test VisitReverseIndexed
+	decTListInt indexedResult;
+	list.VisitReverseIndexed([&indexedResult](int index, int val){
+		indexedResult.Add(index * 1000 + val);
+	});
+	ASSERT_EQUAL(indexedResult.GetCount(), 4);
+	ASSERT_EQUAL(indexedResult.GetAt(0), 3040); // index 3, value 40
+	ASSERT_EQUAL(indexedResult.GetAt(1), 2030); // index 2, value 30
+	ASSERT_EQUAL(indexedResult.GetAt(2), 1020); // index 1, value 20
+	ASSERT_EQUAL(indexedResult.GetAt(3), 10);   // index 0, value 10
+}
+
+
+// Additional INT Tests - RemoveIf
+// ============================================================================
+
+void detTList::TestIntRemoveIf(){
+	SetSubTestNum(33);
+
+	decTListInt list;
+	list.Add(10);
+	list.Add(20);
+	list.Add(30);
+	list.Add(40);
+	list.Add(50);
+
+	// RemoveIf with lvalue evaluator (remove elements < 30)
+	auto eval1 = [](int val){ return val < 30; };
+	list.RemoveIf(eval1);
+	ASSERT_EQUAL(list.GetCount(), 3);
+	ASSERT_EQUAL(list.GetAt(0), 30);
+	ASSERT_EQUAL(list.GetAt(1), 40);
+	ASSERT_EQUAL(list.GetAt(2), 50);
+
+	// RemoveIf with rvalue evaluator (remove specific element)
+	list.RemoveIf([](int val){ return val == 40; });
+	ASSERT_EQUAL(list.GetCount(), 2);
+	ASSERT_EQUAL(list.GetAt(0), 30);
+	ASSERT_EQUAL(list.GetAt(1), 50);
+
+	// RemoveIf with no matches
+	list.RemoveIf([](int val){ return val > 100; });
+	ASSERT_EQUAL(list.GetCount(), 2);
+
+	// RemoveIf all elements
+	list.RemoveIf([](int val){ return true; });
+	ASSERT_TRUE(list.IsEmpty());
+
+	// RemoveIf on empty list (should not crash)
+	list.RemoveIf([](int val){ return true; });
+	ASSERT_TRUE(list.IsEmpty());
+
+	// Test RemoveIf with range parameters
+	decTListInt list2;
+	list2.Add(1);
+	list2.Add(2);
+	list2.Add(3);
+	list2.Add(4);
+	list2.Add(5);
+	list2.RemoveIf(1, [](int val){ return val % 2 == 0; }); // Start from index 1
+	ASSERT_EQUAL(list2.GetCount(), 3);
+	ASSERT_EQUAL(list2.GetAt(0), 1);
+	ASSERT_EQUAL(list2.GetAt(1), 3);
+	ASSERT_EQUAL(list2.GetAt(2), 5);
+}
+
+
+// Additional STRING Tests - Visit
+// ============================================================================
+
+void detTList::TestStringVisit(){
+	SetSubTestNum(34);
+
+	decTListString list;
+	list.Add("hello");
+	list.Add("world");
+	list.Add("test");
+
+	// Test Visit with lvalue visitor
+	decString combined;
+	auto visitor = [&combined](const decString &str){
+		combined += str;
+	};
+	list.Visit(visitor);
+	ASSERT_EQUAL(combined, decString("helloworldtest"));
+
+	// Test Visit with rvalue visitor
+	int count = 0;
+	list.Visit([&count](const decString &str){
+		count++;
+	});
+	ASSERT_EQUAL(count, 3);
+
+	// Test Visit on empty list
+	decTListString emptyList;
+	int emptyCount = 0;
+	emptyList.Visit([&emptyCount](const decString &str){
+		emptyCount++;
+	});
+	ASSERT_EQUAL(emptyCount, 0);
+}
+
+
+// Additional STRING Tests - RemoveIf
+// ============================================================================
+
+void detTList::TestStringRemoveIf(){
+	SetSubTestNum(35);
+
+	decTListString list;
+	list.Add("apple");
+	list.Add("banana");
+	list.Add("cherry");
+	list.Add("date");
+
+	// RemoveIf strings starting with 'b' or 'd'
+	list.RemoveIf([](const decString &str){
+		return str[0] == 'b' || str[0] == 'd';
+	});
+	ASSERT_EQUAL(list.GetCount(), 2);
+	ASSERT_EQUAL(list.GetAt(0), decString("apple"));
+	ASSERT_EQUAL(list.GetAt(1), decString("cherry"));
+
+	// RemoveIf short strings
+	list.Add("a");
+	list.Add("ab");
+	list.RemoveIf([](const decString &str){
+		return str.GetLength() < 3;
+	});
+	ASSERT_EQUAL(list.GetCount(), 2);
+	ASSERT_EQUAL(list.GetAt(0), decString("apple"));
+	ASSERT_EQUAL(list.GetAt(1), decString("cherry"));
+
+	// RemoveIf all
+	list.RemoveIf([](const decString &str){
+		return true;
+	});
+	ASSERT_TRUE(list.IsEmpty());
+}
+
+
+// Additional INT Tests - RemoveHead
+// ============================================================================
+
+void detTList::TestIntRemoveHead(){
+	SetSubTestNum(36);
+
+	decTListInt list;
+	list.Add(10);
+	list.Add(20);
+	list.Add(30);
+	list.Add(40);
+	list.Add(50);
+
+	// Remove first 2 elements
+	list.RemoveHead(2);
+	ASSERT_EQUAL(list.GetCount(), 3);
+	ASSERT_EQUAL(list.GetAt(0), 30);
+	ASSERT_EQUAL(list.GetAt(1), 40);
+	ASSERT_EQUAL(list.GetAt(2), 50);
+
+	// Remove one more
+	list.RemoveHead(1);
+	ASSERT_EQUAL(list.GetCount(), 2);
+	ASSERT_EQUAL(list.GetAt(0), 40);
+	ASSERT_EQUAL(list.GetAt(1), 50);
+
+	// Remove all remaining elements
+	list.RemoveHead(2);
+	ASSERT_TRUE(list.IsEmpty());
+
+	// Remove 0 elements
+	decTListInt list2;
+	list2.Add(1);
+	list2.Add(2);
+	list2.RemoveHead(0);
+	ASSERT_EQUAL(list2.GetCount(), 2);
+}
+
+
+// Additional INT Tests - RemoveTail
+// ============================================================================
+
+void detTList::TestIntRemoveTail(){
+	SetSubTestNum(37);
+
+	decTListInt list;
+	list.Add(10);
+	list.Add(20);
+	list.Add(30);
+	list.Add(40);
+	list.Add(50);
+
+	// Remove last 2 elements
+	list.RemoveTail(2);
+	ASSERT_EQUAL(list.GetCount(), 3);
+	ASSERT_EQUAL(list.GetAt(0), 10);
+	ASSERT_EQUAL(list.GetAt(1), 20);
+	ASSERT_EQUAL(list.GetAt(2), 30);
+
+	// Remove one more
+	list.RemoveTail(1);
+	ASSERT_EQUAL(list.GetCount(), 2);
+	ASSERT_EQUAL(list.GetAt(0), 10);
+	ASSERT_EQUAL(list.GetAt(1), 20);
+
+	// Remove all remaining elements
+	list.RemoveTail(2);
+	ASSERT_TRUE(list.IsEmpty());
+
+	// Remove 0 elements
+	decTListInt list2;
+	list2.Add(1);
+	list2.Add(2);
+	list2.RemoveTail(0);
+	ASSERT_EQUAL(list2.GetCount(), 2);
 }
 

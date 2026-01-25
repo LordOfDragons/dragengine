@@ -29,6 +29,7 @@
 #include "../../world/deoglWorldComputeElement.h"
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
 
 #define HTSC_MAX_LOD				4
 
@@ -90,9 +91,7 @@ private:
 	deoglHTSClusterLOD pLOD[HTSC_MAX_LOD + 1];
 	bool pNoLOD;
 	
-	GLushort *pFacePoints;
-	int pFacePointCount;
-	int pFacePointSize;
+	decTList<GLushort> pFacePoints;
 	
 	GLuint pVBODataPoints1;
 	GLuint pVBODataPoints2;
@@ -101,8 +100,8 @@ private:
 	int pOffsetVBODataFaces;
 	deoglVAO *pVAO;
 	
-	deoglVBOHeightTerrain1 *pDataPoints1;
-	deoglVBOHeightTerrain2 *pDataPoints2;
+	decTList<deoglVBOHeightTerrain1> pDataPoints1;
+	decTList<deoglVBOHeightTerrain2> pDataPoints2;
 	int pDataPointCount;
 	
 	
@@ -115,6 +114,11 @@ public:
 	
 	/** Clean up cluster. */
 	~deoglHTSCluster();
+	
+	deoglHTSCluster(const deoglHTSCluster&) = delete;
+	deoglHTSCluster(deoglHTSCluster&&) = delete;
+	deoglHTSCluster& operator=(const deoglHTSCluster&) = delete;
+	deoglHTSCluster& operator=(deoglHTSCluster&&) = delete;
 	/*@}*/
 	
 	
@@ -232,7 +236,7 @@ public:
 	void SetOffsetVBODataFaces(int offset);
 	
 	/** Count of data vbo faces. */
-	inline int GetCountVBODataFaces() const{ return pFacePointCount; }
+	inline int GetCountVBODataFaces() const{ return pFacePoints.GetCount(); }
 	
 	/** Faces data vbo. */
 	inline GLuint GetVBODataFaces() const{ return pVBODataFaces; }
@@ -263,10 +267,10 @@ public:
 	/** \name Face Points */
 	/*@{*/
 	/** Face points. */
-	inline GLushort *GetFacePoints() const{ return pFacePoints; }
+	inline const GLushort *GetFacePoints() const{ return pFacePoints.GetArrayPointer(); }
 	
 	/** Count of face points. */
-	inline int GetFacePointCount() const{ return pFacePointCount; }
+	inline int GetFacePointCount() const{ return pFacePoints.GetCount(); }
 	
 	/** Add face point. */
 	void AddFacePoints(int p1, int p2, int p3);

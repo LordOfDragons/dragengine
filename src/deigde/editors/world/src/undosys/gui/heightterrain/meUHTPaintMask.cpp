@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "meUHTPaintMask.h"
 #include "../../../world/meWorld.h"
 #include "../../../world/meWorldGuiParameters.h"
@@ -47,8 +43,9 @@
 ////////////////////////////
 
 meUHTPaintMask::meUHTPaintMask(int drawMode, meWorld *world, meHeightTerrainSector *sector,
-meHeightTerrainTexture *texture, const decPoint &grid, const decPoint &size, unsigned char *oldValues){
-	if(!world || !sector || !texture || !oldValues) DETHROW(deeInvalidParam);
+meHeightTerrainTexture *texture, const decPoint &grid, const decPoint &size,
+decTList<unsigned char> &&oldValues){
+	if(!world || !sector || !texture) DETHROW(deeInvalidParam);
 	
 	int pixelCount = size.x * size.y;
 	
@@ -64,8 +61,6 @@ meHeightTerrainTexture *texture, const decPoint &grid, const decPoint &size, uns
 	pTexture = texture;
 	
 	pSize = size;
-	pOldValues = nullptr;
-	pNewValues = nullptr;
 	
 	pGrid.x1 = grid.x;
 	pGrid.y1 = grid.y;
@@ -75,23 +70,13 @@ meHeightTerrainTexture *texture, const decPoint &grid, const decPoint &size, uns
 	
 	SetMemoryConsumption(sizeof(meUHTPaintMask) + sizeof(unsigned char) * pixelCount * 2);
 	
-	try{
-		pOldValues = new unsigned char[pixelCount];
-		pNewValues = new unsigned char[pixelCount];
-		
-		pSaveValues();
-		
-		memcpy(pOldValues, oldValues, sizeof(unsigned char) * pixelCount);
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
+	pNewValues.SetCountDiscard(pixelCount);
+	pSaveValues();
+	
+	pOldValues = std::move(oldValues);
 }
 
-meUHTPaintMask::~meUHTPaintMask(){
-	pCleanUp();
-}
+meUHTPaintMask::~meUHTPaintMask() = default;
 
 
 
@@ -111,12 +96,8 @@ void meUHTPaintMask::Redo(){
 // Private Functions
 //////////////////////
 
-void meUHTPaintMask::pCleanUp(){
-	if(pNewValues) delete [] pNewValues;
-	if(pOldValues) delete [] pOldValues;
-}
-
 void meUHTPaintMask::pSaveValues(){
+	unsigned char * const values = pNewValues.GetArrayPointer();
 	deImage *mask = pTexture->GetMaskImage();
 	meTerrainMaskImage tmi(mask);
 	int sgx, sgy;
@@ -127,12 +108,12 @@ void meUHTPaintMask::pSaveValues(){
 			sgx = pGrid.x1 + x;
 			sgy = pGrid.y1 + y;
 			
-			pNewValues[y * pSize.x + x] = tmi.GetMaskValueAt(sgx, sgy);
+			values[y * pSize.x + x] = tmi.GetMaskValueAt(sgx, sgy);
 		}
 	}
 }
 
-void meUHTPaintMask::pRestoreValues(unsigned char *values){
+void meUHTPaintMask::pRestoreValues(const decTList<unsigned char> &values){
 	deImage *mask = pTexture->GetMaskImage();
 	meTerrainMaskImage tmi(mask);
 	int sgx, sgy;

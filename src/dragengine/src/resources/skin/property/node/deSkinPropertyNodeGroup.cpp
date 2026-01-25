@@ -54,6 +54,8 @@ const deSkinPropertyNode::Ref &deSkinPropertyNodeGroup::GetNodeAt(int index) con
 }
 
 void deSkinPropertyNodeGroup::AddNode(deSkinPropertyNode::Ref &&node){
+	DEASSERT_NOTNULL(node)
+	
 	pNodes.Add(std::move(node));
 }
 

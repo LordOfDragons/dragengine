@@ -498,7 +498,7 @@ void deVROpenXR::GetDeviceBonePose(int device, int bone, bool withController, de
 float deVROpenXR::GetDeviceFaceExpression(int device, int expression){
 	deoxrFaceTracker * const faceTracker = pDevices.GetDevices().GetAt(device)->GetFaceTracker();
 	if(faceTracker){
-		return faceTracker->GetFaceExpressionAt(expression);
+		return faceTracker->GetFaceExpressions()[expression];
 	}
 	return 0.0f;
 }
@@ -833,7 +833,7 @@ int deVROpenXR::GetEyeViewImages(eEye eye, int count, void *views){
 		return 0;
 	}
 	
-	const int imageCount = swapchain->GetImageCount();
+	const int imageCount = swapchain->GetImages().GetCount();
 	if(count == 0){
 		return imageCount;
 	}
@@ -850,7 +850,7 @@ int deVROpenXR::GetEyeViewImages(eEye eye, int count, void *views){
 		int i;
 		
 		for(i=0; i<imageCount; i++){
-			viewOpenGL[i] = swapchain->GetImageAt(i).openglImage;
+			viewOpenGL[i] = swapchain->GetImages()[i].openglImage;
 		}
 		
 	}else{

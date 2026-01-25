@@ -29,6 +29,7 @@
 #include "../../particle/deoglRParticleEmitterInstance.h"
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoglCubeMap;
 class deoglRDynamicSkin;
@@ -45,7 +46,7 @@ class deoglVAO;
 class deoglRenderTaskParticlesStep{
 public:
 	struct sInstance{
-		const deoglRParticleEmitterInstance::sParticle *particle;
+		const deoglRParticleEmitterInstance::sParticle *particle = nullptr;
 	};
 	
 private:
@@ -59,9 +60,7 @@ private:
 	const deoglRDynamicSkin *pDynamicSkin;
 	int pTexture;
 	
-	sInstance *pInstances;
-	int pInstanceCount;
-	int pInstanceSize;
+	decTList<sInstance> pInstances;
 	
 	int pFirstIndex;
 	int pIndexCount;
@@ -135,16 +134,9 @@ public:
 	
 	/** \name Instances */
 	/*@{*/
-	/** Retrieves the direct pointer to the instances. */
-	inline sInstance *GetInstances() const{ return pInstances; }
-	/** Retrieves the number of instances. */
-	inline int GetInstanceCount() const{ return pInstanceCount; }
-	/** Retrieves the instance at the given position. */
-	sInstance &GetInstanceAt(int index) const;
-	/** Adds an instance. */
-	sInstance &AddInstance();
-	/** Removes all instances. */
-	void RemoveAllInstances();
+	/** Instances. */
+	inline decTList<sInstance> &GetInstances(){ return pInstances; }
+	inline const decTList<sInstance> &GetInstances() const{ return pInstances; }
 	/*@}*/
 };
 

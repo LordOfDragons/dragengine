@@ -26,6 +26,7 @@
 #define _DEAINPDEVICE_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/input/deInputDevice.h>
 #include <dragengine/input/deInputEvent.h>
@@ -65,14 +66,9 @@ private:
 	decString pID;
 	decString pName;
 	
-	int pButtonCount;
-	deainpDeviceButton *pButtons;
-	
-	int pAxisCount;
-	deainpDeviceAxis *pAxes;
-	
-	int pFeedbackCount;
-	deainpDeviceFeedback *pFeedbacks;
+	decTList<deainpDeviceButton> pButtons;
+	decTList<deainpDeviceAxis> pAxes;
+	decTList<deainpDeviceFeedback> pFeedbacks;
 	
 	bool pDirtyAxesValues;
 	
@@ -128,14 +124,9 @@ public:
 	
 	
 	
-	/** \brief Number of buttons. */
-	inline int GetButtonCount() const{ return pButtonCount; }
-	
-	/** \brief Set number of buttons. */
-	void SetButtonCount(int count);
-	
-	/** \brief Button at index. */
-	deainpDeviceButton &GetButtonAt(int index) const;
+	/** Buttons. */
+	inline decTList<deainpDeviceButton> &GetButtons(){ return pButtons; }
+	inline const decTList<deainpDeviceButton> &GetButtons() const{ return pButtons; }
 	
 	/** \brief Button with identifier or \em NULL if absent. */
 	deainpDeviceButton *GetButtonWithID(const char *id) const;
@@ -154,14 +145,9 @@ public:
 	
 	
 	
-	/** \brief Number of axiss. */
-	inline int GetAxisCount() const{ return pAxisCount; }
-	
-	/** \brief Set number of axiss. */
-	void SetAxisCount(int count);
-	
-	/** \brief Axis at index. */
-	deainpDeviceAxis &GetAxisAt(int index) const;
+	/** \brief Axes. */
+	inline decTList<deainpDeviceAxis> &GetAxes(){ return pAxes; }
+	inline const decTList<deainpDeviceAxis> &GetAxes() const{ return pAxes; }
 	
 	/** \brief Axis with identifier or \em NULL if absent. */
 	deainpDeviceAxis *GetAxisWithID(const char *id) const;
@@ -177,14 +163,9 @@ public:
 	
 	
 	
-	/** \brief Number of feedbacks. */
-	inline int GetFeedbackCount() const{ return pFeedbackCount; }
-	
-	/** \brief Set number of feedbacks. */
-	void SetFeedbackCount(int count);
-	
-	/** \brief Feedback at index. */
-	deainpDeviceFeedback &GetFeedbackAt(int index) const;
+	/** \brief Feedbacks. */
+	inline decTList<deainpDeviceFeedback> &GetFeedbacks(){ return pFeedbacks; }
+	inline const decTList<deainpDeviceFeedback> &GetFeedbacks() const{ return pFeedbacks; }
 	
 	/** \brief Feedback with identifier or \em NULL if absent. */
 	deainpDeviceFeedback *GetFeedbackWithID(const char *id) const;

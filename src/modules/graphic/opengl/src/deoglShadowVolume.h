@@ -29,6 +29,7 @@
 #define _DEOGLSHADOWVOLUME_H_
 
 // includes
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 // predefinitions
@@ -51,11 +52,8 @@ public:
 	};
 private:
 	deoglRenderThread &pRenderThread;
-	sFace *pFaces;
-	int pFaceCount, pFaceSize;
-	sEdge *pEdges;
-	int pEdgeCount, pEdgeSize;
-	deoglMeshData *pPointSource;
+	decTList<sFace> pFaces;
+	decTList<sEdge> pEdges;
 	bool pHasTris, pHasQuads;
 public:
 	// constructor, destructor
@@ -68,14 +66,12 @@ public:
 	void FindDirectionalSilhouette(const decVector &lightDir, deoglMeshData *mesh);
 	void RenderShadows(deoglMeshData *mesh, bool renderCaps);
 	// faces
-	inline int GetFaceCount() const{ return pFaceCount; }
-	const sFace &GetFace(int index) const;
+	inline const decTList<sFace> &GetFaces() const{ return pFaces; }
 	void AddFace(int vertex1, int vertex2, int vertex3, int vertex4);
 	int GetOpenFaceCount() const;
 	void CloseVolume();
 	// edges
-	inline int GetEdgeCount() const{ return pEdgeCount; }
-	const sEdge &GetEdge(int index) const;
+	inline const decTList<sEdge> &GetEdges() const{ return pEdges; }
 private:
 	void pAddFace(int vertex1, int vertex2, int vertex3, int vertex4);
 	void pAddEdge(int face, int vertex1, int vertex2);

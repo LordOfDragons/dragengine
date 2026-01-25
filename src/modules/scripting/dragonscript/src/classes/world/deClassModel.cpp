@@ -157,7 +157,7 @@ void deClassModel::nfGetFaceCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deModel &model = *dedsGetNativeData<sMdlNatDat>(p_GetNativeData(myself)).model;
 	const int lod = rt->GetValue(0)->GetInt();
 	
-	rt->PushInt(model.GetLODAt(lod)->GetFaceCount());
+	rt->PushInt(model.GetLODAt(lod)->GetFaces().GetCount());
 }
 
 // public func int getVertexCount( int lod )
@@ -169,7 +169,7 @@ void deClassModel::nfGetVertexCount::RunFunction(dsRunTime *rt, dsValue *myself)
 	const deModel &model = *dedsGetNativeData<sMdlNatDat>(p_GetNativeData(myself)).model;
 	const int lod = rt->GetValue(0)->GetInt();
 	
-	rt->PushInt(model.GetLODAt(lod)->GetVertexCount());
+	rt->PushInt(model.GetLODAt(lod)->GetVertices().GetCount());
 }
 
 // public func Vector getMinimumExtend()
@@ -181,18 +181,12 @@ void deClassModel::nfGetMinimumExtend::RunFunction(dsRunTime *rt, dsValue *mysel
 	const deScriptingDragonScript &ds = *(static_cast<deClassModel*>(GetOwnerClass()))->GetDS();
 	const deModelLOD &lod = model.GetLODAt(0);
 	
-	const int count = lod.GetVertexCount();
 	decVector extend;
-	
-	if(count > 0){
-		const deModelVertex * const vertices = lod.GetVertices();
-		int i;
-		
-		extend = vertices[0].GetPosition();
-		
-		for(i=1; i<count; i++){
-			extend.SetSmallest(vertices[i].GetPosition());
-		}
+	if(lod.GetVertices().IsNotEmpty()){
+		extend = lod.GetVertices().First().GetPosition();
+		lod.GetVertices().Visit(1, lod.GetVertices().GetCount() - 1, [&](const deModelVertex &vertex){
+			extend.SetSmallest(vertex.GetPosition());
+		});
 	}
 	
 	ds.GetClassVector()->PushVector(rt, extend);
@@ -207,18 +201,12 @@ void deClassModel::nfGetMaximumExtend::RunFunction(dsRunTime *rt, dsValue *mysel
 	const deScriptingDragonScript &ds = *(static_cast<deClassModel*>(GetOwnerClass()))->GetDS();
 	const deModelLOD &lod = model.GetLODAt(0);
 	
-	const int count = lod.GetVertexCount();
 	decVector extend;
-	
-	if(count > 0){
-		const deModelVertex * const vertices = lod.GetVertices();
-		int i;
-		
-		extend = vertices[0].GetPosition();
-		
-		for(i=1; i<count; i++){
-			extend.SetLargest(vertices[i].GetPosition());
-		}
+	if(lod.GetVertices().IsNotEmpty()){
+		extend = lod.GetVertices().First().GetPosition();
+		lod.GetVertices().Visit(1, lod.GetVertices().GetCount() - 1, [&](const deModelVertex &vertex){
+			extend.SetLargest(vertex.GetPosition());
+		});
 	}
 	
 	ds.GetClassVector()->PushVector(rt, extend);

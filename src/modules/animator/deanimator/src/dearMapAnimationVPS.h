@@ -26,6 +26,7 @@
 #define _DEMAPANIMATIONVPS_H_
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/resources/animator/rule/deAnimatorRule.h>
 
 class deAnimation;
@@ -38,9 +39,7 @@ class dearVPSStateList;
  */
 class dearMapAnimationVPS{
 private:
-	int *pIndices;
-	int pCount;
-	
+	decTList<int> pIndices;
 	
 	
 public:
@@ -57,8 +56,11 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** Indices. */
+	inline const decTList<int> &GetIndices() const{ return pIndices; }
+	
 	/** Count of entries. */
-	inline int GetCount() const{ return pCount; }
+	inline int GetCount() const{ return pIndices.GetCount(); }
 	
 	/** Clear map. */
 	void Clear();

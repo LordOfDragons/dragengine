@@ -52,12 +52,10 @@ private:
 	const dearAnimator &pAnimator;
 	const deAnimatorRule &pRule;
 	
-	int *pBoneMappings;
-	int pBoneMappingCount;
+	decTList<int> pBoneMappings;
 	bool pUseAllBones;
 	
-	int *pVPSMappings;
-	int pVPSMappingCount;
+	decTList<int> pVPSMappings;
 	bool pUseAllVPS;
 	
 	dearControllerTarget pTargetBlendFactor;

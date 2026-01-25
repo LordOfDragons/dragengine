@@ -22,11 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stddef.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglRParticleEmitter.h"
 #include "deoglRParticleEmitterType.h"
 #include "../configuration/deoglConfiguration.h"
@@ -59,8 +54,6 @@
 deoglRParticleEmitterType::deoglRParticleEmitterType(deoglRParticleEmitter &emitter) :
 pEmitter(emitter),
 
-pParameterSamples(nullptr),
-
 pTextureSamples(nullptr),
 
 pEmitLight(false)
@@ -71,9 +64,6 @@ pEmitLight(false)
 deoglRParticleEmitterType::~deoglRParticleEmitterType(){
 	LEAK_CHECK_FREE(pEmitter.GetRenderThread(), ParticleEmitterType);
 	
-	if(pParameterSamples){
-		delete [] pParameterSamples;
-	}
 	if(pTextureSamples){
 		delete pTextureSamples;
 	}
@@ -98,8 +88,8 @@ void deoglRParticleEmitterType::UpdateParameterSamples(const deParticleEmitterTy
 	// 6 parameter curves sampled at 256 positions. this is enough since the particle
 	// data given to us is contained in byte values so precise sampling does not
 	// yield more data than this pre-sampling can yield
-	if(!pParameterSamples){
-		pParameterSamples = new float[ESC_COUNT * 256]; // 3'072 entries = 12'288 bytes
+	if(pParameterSamples.IsEmpty()){
+		pParameterSamples.SetAll(ESC_COUNT * 256, 0.0f); // 3'072 entries = 12'288 bytes
 	}
 	
 	// sample the parameter curves into the array
@@ -111,19 +101,21 @@ void deoglRParticleEmitterType::UpdateParameterSamples(const deParticleEmitterTy
 	SampleParameters(escEmissivityProgress, escEmissivityBeam, type.GetParameter(deParticleEmitterType::epEmissivity));
 	
 	// create samples texture
-	const float * const samplesSizeProgress = pParameterSamples + escSizeProgress * 256;
-	const float * const samplesRedProgress = pParameterSamples + escRedProgress * 256;
-	const float * const samplesGreenProgress = pParameterSamples + escGreenProgress * 256;
-	const float * const samplesBlueProgress = pParameterSamples + escBlueProgress * 256;
-	const float * const samplesTranspProgress = pParameterSamples + escTransparencyProgress * 256;
-	const float * const samplesEmissiveProgress = pParameterSamples + escEmissivityProgress * 256;
+	const float * const samples = pParameterSamples.GetArrayPointer();
 	
-	const float * const samplesSizeBeam = pParameterSamples + escSizeBeam * 256;
-	const float * const samplesRedBeam = pParameterSamples + escRedBeam * 256;
-	const float * const samplesGreenBeam = pParameterSamples + escGreenBeam * 256;
-	const float * const samplesBlueBeam = pParameterSamples + escBlueBeam * 256;
-	const float * const samplesTranspBeam = pParameterSamples + escTransparencyBeam * 256;
-	const float * const samplesEmissiveBeam = pParameterSamples + escEmissivityBeam * 256;
+	const float * const samplesSizeProgress = samples + escSizeProgress * 256;
+	const float * const samplesRedProgress = samples + escRedProgress * 256;
+	const float * const samplesGreenProgress = samples + escGreenProgress * 256;
+	const float * const samplesBlueProgress = samples + escBlueProgress * 256;
+	const float * const samplesTranspProgress = samples + escTransparencyProgress * 256;
+	const float * const samplesEmissiveProgress = samples + escEmissivityProgress * 256;
+	
+	const float * const samplesSizeBeam = samples + escSizeBeam * 256;
+	const float * const samplesRedBeam = samples + escRedBeam * 256;
+	const float * const samplesGreenBeam = samples + escGreenBeam * 256;
+	const float * const samplesBlueBeam = samples + escBlueBeam * 256;
+	const float * const samplesTranspBeam = samples + escTransparencyBeam * 256;
+	const float * const samplesEmissiveBeam = samples + escEmissivityBeam * 256;
 	
 	pPixelBufferSamples = deoglPixelBuffer::Ref::New(deoglPixelBuffer::epfFloat3, 256, 4, 1);
 	deoglPixelBuffer::sFloat3 *pbdata = pPixelBufferSamples->GetPointerFloat3();
@@ -176,8 +168,8 @@ void deoglRParticleEmitterType::UpdateParameterSamples(const deParticleEmitterTy
 
 void deoglRParticleEmitterType::SampleParameters(eSampleCurves curveProgress,
 eSampleCurves curveBeam, const deParticleEmitterParameter& parameter){
-	float * const samplesProgress = pParameterSamples + curveProgress * 256;
-	float * const samplesBeam = pParameterSamples + curveBeam * 256;
+	float * const samplesProgress = pParameterSamples.GetArrayPointer() + curveProgress * 256;
+	float * const samplesBeam = pParameterSamples.GetArrayPointer() + curveBeam * 256;
 	const float factor = 1.0f / 255.0f;
 	int i;
 	

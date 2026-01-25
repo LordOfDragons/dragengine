@@ -42,17 +42,11 @@ dewmTrackCallback::dewmTrackCallback(deVideoWebm &module) :
 pModule(module),
 pTrackOpen(false),
 pTrackNumber(0),
-pBuffer(nullptr),
-pBufferSize(0),
 pStopParsing(false),
 pNeedMoreFrames(false){
 }
 
-dewmTrackCallback::~dewmTrackCallback(){
-	if(pBuffer){
-		delete [] pBuffer;
-	}
-}
+dewmTrackCallback::~dewmTrackCallback() = default;
 
 
 
@@ -172,18 +166,12 @@ void dewmTrackCallback::pProcessAdditional(const std::vector<unsigned char> &){
 }
 
 void dewmTrackCallback::pReadFrameData(webm::Reader &reader, std::uint64_t &bytes_remaining){
-	if(bytes_remaining > pBufferSize){
-		if(pBuffer){
-			delete [] pBuffer;
-			pBuffer = nullptr;
-		}
-		
-		pBuffer = new uint8_t[bytes_remaining];
-		pBufferSize = bytes_remaining;
+	if((int)bytes_remaining > pBuffer.GetCount()){
+		pBuffer.AddRange((int)bytes_remaining - pBuffer.GetCount(), 0);
 	}
 	
 	std::uint64_t readCount;
-	DEASSERT_TRUE(reader.Read(bytes_remaining, pBuffer, &readCount).completed_ok())
+	DEASSERT_TRUE(reader.Read(bytes_remaining, pBuffer.GetArrayPointer(), &readCount).completed_ok())
 	bytes_remaining = 0;
 }
 

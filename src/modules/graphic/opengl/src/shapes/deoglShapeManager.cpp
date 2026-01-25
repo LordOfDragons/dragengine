@@ -41,6 +41,8 @@ deoglShape *deoglShapeManager::GetShapeAt(int index) const{
 }
 
 void deoglShapeManager::AddShape(deTUniqueReference<deoglShape> &&shape){
+	DEASSERT_NOTNULL(shape)
+	
 	pShapes.Add(std::move(shape));
 }
 

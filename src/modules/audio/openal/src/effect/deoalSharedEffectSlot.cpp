@@ -46,6 +46,10 @@ pRefSpeaker(nullptr){
 }
 
 deoalSharedEffectSlot::~deoalSharedEffectSlot(){
+	pSpeakers.Visit([](deoalASpeaker &speaker){
+		speaker.SetSharedEffectSlot(nullptr);
+	});
+	
 	DropEffectSlot();
 }
 

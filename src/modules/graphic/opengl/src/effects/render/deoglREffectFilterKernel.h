@@ -28,6 +28,8 @@
 #include "deoglREffect.h"
 #include "../../pipeline/deoglPipeline.h"
 
+#include <dragengine/common/collection/decTList.h>
+
 
 /**
  * Render effect filter kernel.
@@ -38,7 +40,7 @@ public:
 	
 	
 private:
-	float *pKernel;
+	decTList<float> pKernel;
 	int pKernelRows;
 	int pKernelCols;
 	float pScale;

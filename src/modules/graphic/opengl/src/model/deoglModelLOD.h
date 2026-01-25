@@ -30,6 +30,7 @@
 #include "../vbo/deoglSharedVBOBlock.h"
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/collection/decTUniqueList.h>
 
 class deoglRModel;
@@ -82,36 +83,17 @@ public:
 	const int pLODIndex;
 	
 	decTUniqueList<deoglModelTexture> pTextures;
-	
-	oglModelPosition *pPositions;
-	int pPositionCount;
-	
-	decVector2 *pTexCoords;
-	int pTexCoordCount;
-	
-	decVector *pNormals;
-	int pNormalCount;
-	
-	decVector *pTangents;
-	bool *pNegateTangents;
-	int pTangentCount;
-	
-	oglModelWeight *pWeightsEntries;
-	int pWeightsEntryCount;
-	int *pWeightsCounts;
-	int pWeightsCount;
-	
-	oglModelVertex *pVertices;
-	int pVertexCount;
-	
-	deoglModelFace *pFaces;
-	int pFaceCount;
-	
-	deoglModelLODTexCoordSet *pTexCoordSets;
-	int pTexCoordSetCount;
-	
-	deoglModelLODVertPosSet *pVertPosSets;
-	int pVertPosSetCount;
+	decTList<oglModelPosition> pPositions;
+	decTList<decVector2> pTexCoords;
+	decTList<decVector> pNormals;
+	decTList<decVector> pTangents;
+	decTList<bool> pNegateTangents;
+	decTList<oglModelWeight> pWeightsEntries;
+	decTList<int> pWeightsCounts;
+	decTList<oglModelVertex> pVertices;
+	decTList<deoglModelFace> pFaces;
+	decTList<deoglModelLODTexCoordSet> pTexCoordSets;
+	decTList<deoglModelLODVertPosSet> pVertPosSets;
 	int pVertPosSetPosCount;
 	
 	deoglSharedVBOBlock::Ref pVBOBlock;
@@ -198,57 +180,38 @@ public:
 	/** Model has decal textures. */
 	inline bool GetDecal() const{ return pDecal; }
 	
-	/** Retrieves the positions. */
-	inline oglModelPosition *GetPositions() const{ return pPositions; }
-	/** Retrieves the number of positions. */
-	inline int GetPositionCount() const{ return pPositionCount; }
+	/** Positions. */
+	inline const decTList<oglModelPosition> &GetPositions() const{ return pPositions; }
 	
-	/** Retrieves the texture coordinates. */
-	inline decVector2 *GetTextureCoordinates() const{ return pTexCoords; }
-	/** Retrieves the number of texture coordinates. */
-	inline int GetTextureCoordinatesCount() const{ return pTexCoordCount; }
+	/** Texture coordinates. */
+	inline const decTList<decVector2> &GetTextureCoordinates() const{ return pTexCoords; }
 	
-	/** Retrieves the normals. */
-	inline decVector *GetNormals() const{ return pNormals; }
-	/** Retrieves the normal count. */
-	inline int GetNormalCount() const{ return pNormalCount; }
+	/** Normals. */
+	inline const decTList<decVector> &GetNormals() const{ return pNormals; }
 	
-	/** Retrieves the tangents. */
-	inline decVector *GetTangents() const{ return pTangents; }
-	/** Retrieves the negate tangents. */
-	inline bool *GetNegateTangents() const{ return pNegateTangents; }
-	/** Retrieves the tangent count. */
-	inline int GetTangentCount() const{ return pTangentCount; }
+	/** Tangents. */
+	inline const decTList<decVector> &GetTangents() const{ return pTangents; }
 	
-	/** Retrieves the weights entries. */
-	inline oglModelWeight *GetWeightsEntries() const{ return pWeightsEntries; }
-	/** Retrieves the number of weights entries. */
-	inline int GetWeightsEntryCount() const{ return pWeightsEntryCount; }
-	/** Retrieves the weights entries count list. */
-	inline int *GetWeightsCounts() const{ return pWeightsCounts; }
-	/** Retrieves the number of weights. */
-	inline int GetWeightsCount() const{ return pWeightsCount; }
+	/** Negate tangents. */
+	inline const decTList<bool> &GetNegateTangents() const{ return pNegateTangents; }
 	
-	/** Retrieves the vertices. */
-	inline oglModelVertex *GetVertices() const{ return pVertices; }
-	/** Retrieves the vertex count. */
-	inline int GetVertexCount() const{ return pVertexCount; }
+	/** Weights entries. */
+	inline const decTList<oglModelWeight> &GetWeightsEntries() const{ return pWeightsEntries; }
 	
-	/** Retrieves the faces. */
-	inline deoglModelFace *GetFaces() const{ return pFaces; }
-	/** Retrieves the number of faces. */
-	inline int GetFaceCount() const{ return pFaceCount; }
+	/** Weights entries count list. */
+	inline const decTList<int> &GetWeightsCounts() const{ return pWeightsCounts; }
 	
-	/** Retrieves the number of texture coordinate sets. */
-	inline int GetTextureCoordinateSetCount() const{ return pTexCoordSetCount; }
-	/** Retrieves the texture coordinate set at the given index. */
-	const deoglModelLODTexCoordSet &GetTextureCoordSetAt(int index) const;
+	/** Vertices. */
+	inline const decTList<oglModelVertex> &GetVertices() const{ return pVertices; }
 	
-	/** Count of vertex position sets. */
-	inline int GetVertexPositionSetCount() const{ return pVertPosSetCount; }
+	/** Faces. */
+	inline const decTList<deoglModelFace> &GetFaces() const{ return pFaces; }
 	
-	/** Vertex position set at index. */
-	const deoglModelLODVertPosSet &GetVertexPositionSetAt(int index) const;
+	/** Texture coordinate sets. */
+	inline const decTList<deoglModelLODTexCoordSet> &GetTextureCoordSets() const{ return pTexCoordSets; }
+	
+	/** Vertex position sets. */
+	inline const decTList<deoglModelLODVertPosSet> &GetVertexPositionSets() const{ return pVertPosSets; }
 	
 	/** Octree or \em NULL if there is none. */
 	inline deoglModelOctree *GetOctree() const{ return pOctree; }

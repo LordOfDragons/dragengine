@@ -282,7 +282,7 @@ timer.Reset();
 		pPerfTimer2.Reset();
 	}
 	const int count = pUpdateOctreeColliderCount;
-	pUpdateOctreeColliders.VisitIndexed([&](int i, debpCollider *collider){
+	pUpdateOctreeColliders.VisitIndexed(0, count, [&](int i, debpCollider *collider){
 		if(!collider){
 			return;
 		}
@@ -296,10 +296,10 @@ timer.Reset();
 			debugInfoCollider->IncrementElapsedTime(pPerfTimer2.GetElapsedTime());
 			debugInfoCollider->IncrementCounter(1);
 		}
-	}, 0, count);
+	});
 	
 	int next = 0;
-	pUpdateOctreeColliders.VisitIndexed([&](int i, debpCollider *collider){
+	pUpdateOctreeColliders.VisitIndexed(count, pUpdateOctreeColliderCount, [&](int i, debpCollider *collider){
 		if(!collider){
 			return;
 		}
@@ -310,7 +310,7 @@ timer.Reset();
 			collider->SetUpdateOctreeIndex(next);
 		}
 		next++;
-	}, count, pUpdateOctreeColliderCount);
+	});
 	pUpdateOctreeColliderCount = next;
 	
 	// debug
@@ -1013,7 +1013,7 @@ DEBUG_PRINT_TIMER("Prepare Detection");
 			pPerfTimer.Reset();
 		}
 		
-		pColDetPrepareColliders.Visit([&](debpCollider *c){
+		pColDetPrepareColliders.Visit(0, pColDetPrepareColliderProcessCount, [&](debpCollider *c){
 			if(!c){
 				return;
 			}
@@ -1023,7 +1023,7 @@ DEBUG_PRINT_TIMER("Prepare Detection");
 				debugInfo->IncrementElapsedTime(pPerfTimer.GetElapsedTime());
 				debugInfo->IncrementCounter(1);
 			}
-		}, 0, pColDetPrepareColliderProcessCount);
+		});
 	}
 DEBUG_PRINT_TIMER("Detection Loop");
 	
@@ -1115,7 +1115,7 @@ void debpWorld::pPrepareDetection(float elapsed){
 	}
 	
 	pColDetPrepareColliderProcessCount = pColDetPrepareColliderCount;
-	pColDetPrepareColliders.Visit([&](debpCollider *c){
+	pColDetPrepareColliders.Visit(0, pColDetPrepareColliderProcessCount, [&](debpCollider *c){
 		if(!c){
 			return;
 		}
@@ -1126,7 +1126,7 @@ void debpWorld::pPrepareDetection(float elapsed){
 			debugInfo->IncrementElapsedTime(pPerfTimer.GetElapsedTime());
 			debugInfo->IncrementCounter(1);
 		}
-	}, 0, pColDetPrepareColliderProcessCount);
+	});
 	
 // 	pBullet.LogInfoFormat( "World.Prepare: count=%d/%d", pColDetPrepareColliderProcessCount, pWorld.GetColliderCount() );
 }
@@ -1136,11 +1136,11 @@ void debpWorld::pPrepareDetection(float elapsed){
 void debpWorld::pPrepareForStep(){
 	UpdateOctrees();
 	
-	pColDetPrepareColliders.Visit([&](debpCollider *c){
+	pColDetPrepareColliders.Visit(0, pColDetPrepareColliderProcessCount, [&](debpCollider *c){
 		if(c){
 			c->PrepareForStep();
 		}
-	}, 0, pColDetPrepareColliderProcessCount);
+	});
 }
 
 #if 0
@@ -1279,8 +1279,8 @@ void debpWorld::pStepForceFields(float elapsed){
 				
 				pfType = btPropField.GetTypeAt(pt);
 				
-				pftBendStateCount = engPFType.GetBendStateCount();
-				engPFBendStates = engPFType.GetBendStates();
+				pftBendStateCount = engPFType.GetBendStates().GetCount();
+				engPFBendStates = engPFType.GetBendStates().GetArrayPointer();
 				
 				switch(ffApplyType){
 				case deForceField::eatDirect:
@@ -1307,7 +1307,7 @@ void debpWorld::pStepForceFields(float elapsed){
 				
 				rotPerForce = ffForce * forceFactor * engPFType.GetRotationPerForce();
 				
-				pfBendStates = pfType->GetBendStates();
+				pfBendStates = pfType->GetBendStates().GetArrayPointer();
 				
 				for(ptb=0; ptb<pftBendStateCount; ptb++){
 					const debpPropFieldBendState &bstate = pfBendStates[ptb];
@@ -1361,8 +1361,8 @@ void debpWorld::pStepForceFields(float elapsed){
 		
 		for(pt=0; pt<pfTypeCount; pt++){
 			dePropFieldType &engPFType = propField->GetTypeAt(pt);
-			pftBendStateCount = engPFType.GetBendStateCount();
-			engPFBendStates = engPFType.GetBendStates();
+			pftBendStateCount = engPFType.GetBendStates().GetCount();
+			engPFBendStates = engPFType.GetBendStates().GetArrayPointer();
 			restitution = engPFType.GetRestitution() * elapsed;
 			
 			for(ptb=0; ptb<pftBendStateCount; ptb++){
@@ -1435,7 +1435,7 @@ void debpWorld::pUpdateFromBody(){
 		pPerfTimer.Reset();
 	}
 	
-	pColDetPrepareColliders.Visit([&](debpCollider *c){
+	pColDetPrepareColliders.Visit(0, pColDetPrepareColliderProcessCount, [&](debpCollider *c){
 		if(!c){
 			return;
 		}
@@ -1446,43 +1446,45 @@ void debpWorld::pUpdateFromBody(){
 			debugInfoUpdateFromBody->IncrementElapsedTime(pPerfTimer.GetElapsedTime());
 			debugInfoUpdateFromBody->IncrementCounter(1);
 		}
-	}, 0, pColDetPrepareColliderProcessCount);
+	});
 }
 
 void debpWorld::pFinishDetection(){
 	// clear registered prepare
 	int next = 0;
-	pColDetPrepareColliders.VisitIndexed([&](int i, debpCollider *collider){
-		if(!collider){
-			return;
-		}
-		
-		if(collider->GetAutoColDetPrepare()){
+	pColDetPrepareColliders.VisitIndexed(0, pColDetPrepareColliderProcessCount,
+		[&](int i, debpCollider *collider){
+			if(!collider){
+				return;
+			}
+			
+			if(collider->GetAutoColDetPrepare()){
+				if(i != next){
+					pColDetPrepareColliders.SetAt(next, collider);
+					pColDetPrepareColliders.SetAt(i, nullptr);
+					collider->SetColDetPrepareIndex(next);
+				}
+				next++;
+				
+			}else{
+				pColDetPrepareColliders.SetAt(i, nullptr);
+				collider->SetColDetPrepareIndex(-1);
+			}
+		});
+	
+	pColDetPrepareColliders.VisitIndexed(pColDetPrepareColliderProcessCount, pColDetPrepareColliderCount,
+		[&](int i, debpCollider *collider){
+			if(!collider){
+				return;
+			}
+			
 			if(i != next){
 				pColDetPrepareColliders.SetAt(next, collider);
 				pColDetPrepareColliders.SetAt(i, nullptr);
 				collider->SetColDetPrepareIndex(next);
 			}
 			next++;
-			
-		}else{
-			pColDetPrepareColliders.SetAt(i, nullptr);
-			collider->SetColDetPrepareIndex(-1);
-		}
-	}, 0, pColDetPrepareColliderProcessCount);
-	
-	pColDetPrepareColliders.VisitIndexed([&](int i, debpCollider *collider){
-		if(!collider){
-			return;
-		}
-		
-		if(i != next){
-			pColDetPrepareColliders.SetAt(next, collider);
-			pColDetPrepareColliders.SetAt(i, nullptr);
-			collider->SetColDetPrepareIndex(next);
-		}
-		next++;
-	}, pColDetPrepareColliderProcessCount, pColDetPrepareColliderCount);
+		});
 	
 // 	pBullet.LogInfoFormat( "World.Finish: XXX in=%d out=%d colliders=%d", pColDetPrepareColliderCount, next, pWorld.GetColliderCount() );
 	pColDetPrepareColliderCount = next;
@@ -1498,7 +1500,7 @@ void debpWorld::pFinishDetection(){
 	
 	const int finishCount = pColDetFinishColliderCount;
 	next = 0;
-	pColDetFinishColliders.VisitIndexed([&](int i, debpCollider *collider){
+	pColDetFinishColliders.VisitIndexed(0, finishCount, [&](int i, debpCollider *collider){
 		if(!collider){
 			return;
 		}
@@ -1532,9 +1534,9 @@ void debpWorld::pFinishDetection(){
 			debugInfo->IncrementElapsedTime(pPerfTimer.GetElapsedTime());
 			debugInfo->IncrementCounter(1);
 		}
-	}, 0, finishCount);
+	});
 	
-	pColDetFinishColliders.VisitIndexed([&](int i, debpCollider *collider){
+	pColDetFinishColliders.VisitIndexed(finishCount, pColDetFinishColliderCount, [&](int i, debpCollider *collider){
 		if(!collider){
 			return;
 		}
@@ -1545,7 +1547,7 @@ void debpWorld::pFinishDetection(){
 			collider->SetColDetFinishIndex(next);
 		}
 		next++;
-	}, finishCount, pColDetFinishColliderCount);
+	});
 	
 	pColDetFinishColliderCount = next;
 //  	pBullet.LogInfoFormat( "World.Finish: in=%d out=%d colliders=%d", finishCount, pColDetFinishColliderCount, pWorld.GetColliderCount() );
@@ -1561,7 +1563,7 @@ void debpWorld::pUpdatePostPhysicsCollisionTests(){
 	
 	const int count = pPPCTColliderCount;
 	int next = 0;
-	pPPCTColliders.VisitIndexed([&](int i, debpCollider *collider){
+	pPPCTColliders.VisitIndexed(0, count, [&](int i, debpCollider *collider){
 		if(!collider){
 			return;
 		}
@@ -1579,9 +1581,9 @@ void debpWorld::pUpdatePostPhysicsCollisionTests(){
 			debugInfo->IncrementElapsedTime(pPerfTimer.GetElapsedTime());
 			debugInfo->IncrementCounter(1);
 		}
-	}, 0, count);
+	});
 	
-	pPPCTColliders.VisitIndexed([&](int i, debpCollider *collider){
+	pPPCTColliders.VisitIndexed(count, pPPCTColliderCount, [&](int i, debpCollider *collider){
 		if(!collider){
 			return;
 		}
@@ -1592,7 +1594,7 @@ void debpWorld::pUpdatePostPhysicsCollisionTests(){
 			collider->SetPPCProcessingIndex(next);
 		}
 		next++;
-	}, count, pPPCTColliderCount);
+	});
 	
 	pPPCTColliderCount = next;
 }

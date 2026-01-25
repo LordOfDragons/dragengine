@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoxrHiddenMesh.h"
 #include "deoxrSystem.h"
 #include "deoxrInstance.h"
@@ -56,8 +53,7 @@ pViewConfig(viewConfig),
 pViewIndex(viewIndex){
 }
 
-deoxrHiddenMesh::~deoxrHiddenMesh(){
-}
+deoxrHiddenMesh::~deoxrHiddenMesh() = default;
 
 
 
@@ -84,99 +80,79 @@ public:
 		model->GetTextures().Last()->SetDoubleSided(true);
 		
 		// add vertices
-		int i;
-		const int vertexCount = (int)pMask.vertexCountOutput;
-		
-		lod->SetVertexCount(vertexCount);
-		deModelVertex * const vertices = lod->GetVertices();
-		
-		for(i=0; i<vertexCount; i++){
+		lod->GetVertices().SetCountDiscard((int)pMask.vertexCountOutput);
+		lod->GetVertices().VisitIndexed([&](int i, deModelVertex &vertex){
 			const XrVector2f &p = pMask.vertices[i];
-			vertices[i].SetPosition(decVector(p.x, p.y, 0.0f));
-		}
+			vertex.SetPosition(decVector(p.x, p.y, 0.0f));
+		});
 		
 		lod->SetNormalCount(1);
 		lod->SetTangentCount(1);
 		
 		// add faces
-		const int faceCount = (int)(pMask.indexCountOutput / 3);
-		
-		lod->SetFaceCount(faceCount);
-		deModelFace * const faces = lod->GetFaces();
-		
-		for(i=0; i<faceCount; i++){
-			faces[i].SetTexture(0);
+		lod->GetFaces().SetCountDiscard((int)(pMask.indexCountOutput / 3));
+		lod->GetFaces().VisitIndexed([&](int i, deModelFace &face){
+			face.SetTexture(0);
 			
-			faces[i].SetVertex1((int)pMask.indices[i * 3]);
-			faces[i].SetVertex2((int)pMask.indices[i * 3 + 1]);
-			faces[i].SetVertex3((int)pMask.indices[i * 3 + 2]);
+			face.SetVertex1((int)pMask.indices[i * 3]);
+			face.SetVertex2((int)pMask.indices[i * 3 + 1]);
+			face.SetVertex3((int)pMask.indices[i * 3 + 2]);
 			
-			faces[i].SetNormal1(0);
-			faces[i].SetNormal2(0);
-			faces[i].SetNormal3(0);
+			face.SetNormal1(0);
+			face.SetNormal2(0);
+			face.SetNormal3(0);
 			
-			faces[i].SetTangent1(0);
-			faces[i].SetTangent2(0);
-			faces[i].SetTangent3(0);
+			face.SetTangent1(0);
+			face.SetTangent2(0);
+			face.SetTangent3(0);
 			
-			faces[i].SetTextureCoordinates1(0);
-			faces[i].SetTextureCoordinates2(0);
-			faces[i].SetTextureCoordinates3(0);
-		}
+			face.SetTextureCoordinates1(0);
+			face.SetTextureCoordinates2(0);
+			face.SetTextureCoordinates3(0);
+		});
 		
 		// add texture coordinates
-		model->GetTextureCoordinatesSetList().Add("default");
+		model->GetTextureCoordinatesSets().Add("default");
 		
 		lod->SetTextureCoordinatesCount(1);
 		
-		lod->SetTextureCoordinatesSetCount(1);
-		deModelTextureCoordinatesSet &tcset = lod->GetTextureCoordinatesSetAt(0);
+		lod->GetTextureCoordinatesSets().Add({});
+		deModelTextureCoordinatesSet &tcset = lod->GetTextureCoordinatesSets().Last();
 		
-		tcset.GetTextureCoordinates().RemoveAll();
-		tcset.GetTextureCoordinates().Add({});
+		tcset.GetTextureCoordinates().SetAll(1, {});
 		
 		model->AddLOD(std::move(lod));
 	}
 };
 
 void deoxrHiddenMesh::UpdateModel(){
-	pModel = nullptr;
+	pModel.Clear();
 	
 	deVROpenXR &oxr = pSession.GetSystem().GetInstance().GetOxr();
 	
 	oxr.LogInfoFormat("Loading hidden mesh for view config %d for view %d", pViewConfig, pViewIndex);
 	
-	XrVisibilityMaskKHR mask;
-	memset(&mask, 0, sizeof(mask));
-	mask.type = XR_TYPE_VISIBILITY_MASK_KHR;
+	XrVisibilityMaskKHR mask{XR_TYPE_VISIBILITY_MASK_KHR};
+	decTList<XrVector2f> vertices;
+	decTList<uint32_t> indices;
 	
-	try{
-		// fetch and process mask
-		pFetchData(mask);
-		
-		if(mask.vertexCountOutput == 0 || mask.indexCountOutput == 0){
-			return;
-		}
-		
-		pProjectVertices(mask);
-		pMapVerticesToWindow(mask);
-		pFitVertices(mask);
-		
-		// create model
-		decString path;
-		path.Format("/openxr/hiddenMesh/config%d_view%d.demodel", pViewConfig, pViewIndex);
-		
-		deoxrHiddenMesh_BuildModel builder(mask);
-		pModel = oxr.GetGameEngine()->GetModelManager()->CreateModel(path, builder);
-		
-		delete [] mask.vertices;
-		delete [] mask.indices;
-		
-	}catch(const deException &){
-		delete [] mask.vertices;
-		delete [] mask.indices;
-		throw;
+	// fetch and process mask
+	pFetchData(mask, vertices, indices);
+	
+	if(mask.vertexCountOutput == 0 || mask.indexCountOutput == 0){
+		return;
 	}
+	
+	pProjectVertices(mask);
+	pMapVerticesToWindow(mask);
+	pFitVertices(mask);
+	
+	// create model
+	decString path;
+	path.Format("/openxr/hiddenMesh/config%d_view%d.demodel", pViewConfig, pViewIndex);
+	
+	deoxrHiddenMesh_BuildModel builder(mask);
+	pModel = oxr.GetGameEngine()->GetModelManager()->CreateModel(path, builder);
 }
 
 
@@ -184,7 +160,8 @@ void deoxrHiddenMesh::UpdateModel(){
 // Private Functions
 //////////////////////
 
-void deoxrHiddenMesh::pFetchData(XrVisibilityMaskKHR &mask) const{
+void deoxrHiddenMesh::pFetchData(XrVisibilityMaskKHR &mask,
+decTList<XrVector2f> &vertices, decTList<uint32_t> &indices) const{
 	deoxrInstance &instance = pSession.GetSystem().GetInstance();
 	
 	// get counts
@@ -196,8 +173,11 @@ void deoxrHiddenMesh::pFetchData(XrVisibilityMaskKHR &mask) const{
 	}
 	
 	// allocate temporary memory and get data
-	mask.vertices = new XrVector2f[mask.vertexCountOutput];
-	mask.indices = new uint32_t[mask.indexCountOutput];
+	vertices.SetCountDiscard(mask.vertexCountOutput);
+	mask.vertices = vertices.GetArrayPointer();
+	
+	indices.SetCountDiscard(mask.indexCountOutput);
+	mask.indices = indices.GetArrayPointer();
 	
 	mask.vertexCapacityInput = mask.vertexCountOutput;
 	mask.indexCapacityInput = mask.indexCountOutput;

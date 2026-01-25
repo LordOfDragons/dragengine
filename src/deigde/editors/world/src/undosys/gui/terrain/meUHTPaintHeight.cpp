@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "meUHTPaintHeight.h"
 #include "../../../world/meWorld.h"
 #include "../../../world/meWorldGuiParameters.h"
@@ -44,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTPaintHeight::meUHTPaintHeight(int drawMode, meWorld *world, const decPoint &sector, const decPoint &grid,
-const decPoint &size, float *oldHeights){
-	if(!world || !oldHeights) DETHROW(deeInvalidParam);
+meUHTPaintHeight::meUHTPaintHeight(int drawMode, meWorld *world, const decPoint &sector,
+const decPoint &grid, const decPoint &size, decTList<float> &&oldHeights){
+	DEASSERT_NOTNULL(world)
 	
 	meHeightTerrain *hterrain = world->GetHeightTerrain();
 	int imageDim = hterrain->GetSectorResolution();
@@ -68,8 +64,6 @@ const decPoint &size, float *oldHeights){
 	
 	pWorld = world;
 	pSize = size;
-	pOldHeights = nullptr;
-	pNewHeights = nullptr;
 	
 	pSector.x1 = sector.x;
 	pSector.y1 = sector.y;
@@ -89,23 +83,13 @@ const decPoint &size, float *oldHeights){
 	
 	SetMemoryConsumption(sizeof(meUHTPaintHeight) + sizeof(float) * pixelCount);
 	
-	try{
-		pOldHeights = new float[pixelCount];
-		pNewHeights = new float[pixelCount];
-		
-		pSaveHeights();
-		
-		memcpy(pOldHeights, oldHeights, sizeof(float) * pixelCount);
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
+	pOldHeights = std::move(oldHeights);
+	
+	pNewHeights.SetCountDiscard(pixelCount);
+	pSaveHeights();
 }
 
-meUHTPaintHeight::~meUHTPaintHeight(){
-	pCleanUp();
-}
+meUHTPaintHeight::~meUHTPaintHeight() = default;
 
 
 
@@ -113,11 +97,11 @@ meUHTPaintHeight::~meUHTPaintHeight(){
 ///////////////
 
 void meUHTPaintHeight::Undo(){
-	pRestoreHeights(pOldHeights);
+	pRestoreHeights(pOldHeights.GetArrayPointer());
 }
 
 void meUHTPaintHeight::Redo(){
-	pRestoreHeights(pNewHeights);
+	pRestoreHeights(pNewHeights.GetArrayPointer());
 }
 
 
@@ -125,12 +109,8 @@ void meUHTPaintHeight::Redo(){
 // Private Functions
 //////////////////////
 
-void meUHTPaintHeight::pCleanUp(){
-	if(pNewHeights) delete [] pNewHeights;
-	if(pOldHeights) delete [] pOldHeights;
-}
-
 void meUHTPaintHeight::pSaveHeights(){
+	float * const newHeightsData = pNewHeights.GetArrayPointer();
 	meHeightTerrain *hterrain = pWorld->GetHeightTerrain();
 	int imageDim = hterrain->GetSectorResolution();
 	meHeightTerrainSector *htsector;
@@ -155,16 +135,16 @@ void meUHTPaintHeight::pSaveHeights(){
 			htsector = hterrain->GetSectorWith(scoord);
 			if(htsector){
 				pixels = htsector->GetHeightImage()->GetDataGrayscale32();
-				pNewHeights[y * pSize.x + x] = pixels[sgy * imageDim + sgx].value;
+				newHeightsData[y * pSize.x + x] = pixels[sgy * imageDim + sgx].value;
 				
 			}else{
-				pNewHeights[y * pSize.x + x] = 0.0f;
+				newHeightsData[y * pSize.x + x] = 0.0f;
 			}
 		}
 	}
 }
 
-void meUHTPaintHeight::pRestoreHeights(float *heights){
+void meUHTPaintHeight::pRestoreHeights(const float *heights){
 	meHeightTerrain *hterrain = pWorld->GetHeightTerrain();
 	int imageDim = hterrain->GetSectorResolution();
 	sGrayscale32 *pixels;

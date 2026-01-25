@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglTimerQuerySet.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../renderthread/deoglRenderThread.h"
@@ -41,22 +37,14 @@
 ////////////////////////////
 
 deoglTimerQuerySet::deoglTimerQuerySet(deoglRenderThread &renderthread) :
-pRenderThread(renderthread),
-pQueries(nullptr),
-pQueryCount(0){
+pRenderThread(renderthread){
 }
 
 deoglTimerQuerySet::~deoglTimerQuerySet(){
-	if(pQueries){
-		deoglDelayedOperations &dops = pRenderThread.GetDelayedOperations();
-		int i;
-		for(i=0; i<pQueryCount; i++){
-			dops.DeleteOpenGLQuery(pQueries[i]);
-		}
-		
-		delete [] pQueries;
-		pQueries = nullptr;
-	}
+	deoglDelayedOperations &dops = pRenderThread.GetDelayedOperations();
+	pQueries.Visit([&](GLuint query){
+		dops.DeleteOpenGLQuery(query);
+	});
 }
 
 
@@ -65,36 +53,24 @@ deoglTimerQuerySet::~deoglTimerQuerySet(){
 ///////////////
 
 void deoglTimerQuerySet::SetQueryCount(int count){
-	if(count < 0){
-		DETHROW(deeInvalidParam);
+	DEASSERT_TRUE(count >= 0)
+	
+	if(count == pQueries.GetCount()){
+		return;
 	}
 	
-	if(count != pQueryCount){
-		if(pQueryCount > 0){
-			pglDeleteQueries(pQueryCount, pQueries);
-			pQueryCount = 0;
-		}
-		if(pQueries){
-			delete [] pQueries;
-			pQueries = nullptr;
-		}
-		
-		if(count > 0){
-			pQueries = new GLuint[count];
-			
-			OGL_CHECK(pRenderThread, pglGenQueries(count, pQueries));
-			
-			for(pQueryCount=0; pQueryCount<count; pQueryCount++){
-			}
-		}
+	if(pQueries.IsNotEmpty()){
+		pglDeleteQueries(pQueries.GetCount(), pQueries.GetArrayPointer());
+		pQueries.RemoveAll();
+	}
+	
+	if(count > 0){
+		pQueries.SetAll(count, 0);
+		OGL_CHECK(pRenderThread, pglGenQueries(count, pQueries.GetArrayPointer()));
 	}
 }
 
 void deoglTimerQuerySet::BeginQuery(int index){
-	if(index < 0 || index >= pQueryCount){
-		DETHROW(deeInvalidParam);
-	}
-	
 	OGL_CHECK(pRenderThread, pglBeginQuery(GL_TIME_ELAPSED, pQueries[index]));
 }
 
@@ -103,24 +79,14 @@ void deoglTimerQuerySet::EndQuery(){
 }
 
 bool deoglTimerQuerySet::HasResult(int index) const{
-	if(index < 0 || index >= pQueryCount){
-		DETHROW(deeInvalidParam);
-	}
-	
 	GLuint result;
-	
 	OGL_CHECK(pRenderThread, pglGetQueryObjectuiv(pQueries[index], GL_QUERY_RESULT_AVAILABLE, &result));
 	
 	return result == GL_TRUE;
 }
 
 unsigned int deoglTimerQuerySet::GetResult(int index) const{
-	if(index < 0 || index >= pQueryCount){
-		DETHROW(deeInvalidParam);
-	}
-	
 	GLuint result;
-	
 	OGL_CHECK(pRenderThread, pglGetQueryObjectuiv(pQueries[index], GL_QUERY_RESULT, &result));
 	
 	return (unsigned int)result;

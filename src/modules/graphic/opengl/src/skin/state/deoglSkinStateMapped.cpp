@@ -80,12 +80,11 @@ void deoglSkinStateMapped::MapBone(const deComponent &component){
 }
 
 void deoglSkinStateMapped::UpdateBone(const deComponent &component){
-	const int boneCount = component.GetBoneCount();
-	if(pBone < 0 || pBone >= boneCount){
+	if(pBone < 0 || pBone >= component.GetBones().GetCount()){
 		return;
 	}
 	
-	const deComponentBone &cbone = component.GetBoneAt(pBone);
+	const deComponentBone &cbone = component.GetBones()[pBone];
 	
 	switch(pMapped->GetMapped().GetInputType()){
 	case deSkinMapped::eitBonePositionX:

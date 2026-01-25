@@ -91,6 +91,9 @@ public:
 	/** \brief Init state data of source itself. */
 	void InitStateDataSource(char *stateData) override;
 	
+	/** Clean up state data of source itself. */
+	void CleanUpStateDataSource(char *stateData) override;
+	
 	/**
 	 * \brief Generate sound using source.
 	 * \details Actual sound generation implementation of the source. Used to split general sound

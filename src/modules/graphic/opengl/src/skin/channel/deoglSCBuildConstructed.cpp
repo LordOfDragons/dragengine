@@ -567,11 +567,11 @@ bool deoglSCBuildConstructed::pInitPixelBuffer(sTarget &target){
 		return false; // if the pixel buffer mip map is missing something went wrong
 	}
 	
-	if(pixelBufferMipMap->GetPixelBufferCount() == 0){
+	if(pixelBufferMipMap->GetPixelBuffers().IsEmpty()){
 		return false;
 	}
 	
-	deoglPixelBuffer &pixelBuffer = pixelBufferMipMap->GetPixelBuffer(0);
+	deoglPixelBuffer &pixelBuffer = pixelBufferMipMap->GetPixelBuffers()[0];
 	
 	switch(pixelBuffer.GetFormat()){
 	case deoglPixelBuffer::epfByte1:

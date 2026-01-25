@@ -56,7 +56,6 @@ pPureLength(0),
 
 pZStream(nullptr),
 
-pBufferIn(nullptr),
 pBufferInSize(0),
 pBufferInPosition(0),
 
@@ -79,7 +78,6 @@ pPureLength(pureLength),
 
 pZStream(nullptr),
 
-pBufferIn(nullptr),
 pBufferInSize(0),
 pBufferInPosition(0),
 
@@ -103,9 +101,6 @@ decZFileReader::~decZFileReader(){
 	pReader = nullptr;
 	if(pContent){
 		free(pContent);
-	}
-	if(pBufferIn){
-		delete [] (Bytef*)pBufferIn;
 	}
 }
 
@@ -186,7 +181,6 @@ void decZFileReader::pInit(decBaseFileReader *reader, bool pureMode, int pureLen
 	const int options = pureMode ? 0 : reader->ReadByte();
 	(void)options;
 	
-	pBufferIn = nullptr;
 	pBufferInPosition = 0;
 	pBufferInSize = 0;
 	pContent = nullptr;
@@ -203,12 +197,12 @@ void decZFileReader::pInit(decBaseFileReader *reader, bool pureMode, int pureLen
 		DETHROW(deeOutOfMemory);
 	}
 	
-	pBufferIn = new Bytef[BUFFER_SIZE];
+	pBufferIn.SetCountDiscard(BUFFER_SIZE);
 	pBufferInSize = BUFFER_SIZE;
 	pContent = malloc(BUFFER_SIZE);
 	pContentCapacity = BUFFER_SIZE;
 	
-	zstream->next_in = (Bytef*)pBufferIn;
+	zstream->next_in = (Bytef*)pBufferIn.GetArrayPointer();
 	zstream->avail_in = 0;
 	zstream->next_out = (Bytef*)pContent;
 	zstream->avail_out = pContentCapacity;
@@ -243,11 +237,11 @@ void decZFileReader::pSetContentPosition(int position){
 			}
 			
 			if(readSize > 0){
-				pReader->Read((Bytef*)pBufferIn, readSize);
+				pReader->Read((Bytef*)pBufferIn.GetArrayPointer(), readSize);
 				pFilePosition += readSize;
 			}
 			
-			zstream->next_in = (Bytef*)pBufferIn;
+			zstream->next_in = (Bytef*)pBufferIn.GetArrayPointer();
 			zstream->avail_in = readSize;
 		}
 		

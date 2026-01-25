@@ -27,6 +27,8 @@
 
 #include "dearRule.h"
 
+#include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleMirror.h>
 
 
@@ -50,11 +52,8 @@ private:
 	int pMirrorBone;
 	decMatrix pMirrorMatrix;
 	
-	sBonePair *pBonePairs;
-	int pBonePairCount;
-	
-	sVPSPair *pVPSPairs;
-	int pVPSPairCount;
+	decTList<sBonePair> pBonePairs;
+	decTList<sVPSPair> pVPSPairs;
 	
 	const deAnimatorRuleMirror::eMirrorAxis pMirrorAxis;
 	const bool pEnablePosition;

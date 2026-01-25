@@ -122,6 +122,8 @@ bool debpColliderBone::HasConstraint(debpColliderConstraint *constraint) const{
 }
 
 void debpColliderBone::AddConstraint(deTUniqueReference<debpColliderConstraint> &&constraint){
+	DEASSERT_NOTNULL(constraint)
+	
 	pConstraints.Add(std::move(constraint));
 }
 

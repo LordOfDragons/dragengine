@@ -25,6 +25,7 @@
 #ifndef _DEHEIGHTTERRAINSECTOR_H_
 #define _DEHEIGHTTERRAINSECTOR_H_
 
+#include "../../../common/collection/decTList.h"
 #include "../../../common/collection/decTLinkedList.h"
 #include "../../../common/collection/decTOrderedSet.h"
 #include "../../../common/math/decMath.h"
@@ -56,8 +57,7 @@ private:
 	
 	deImage::Ref pHeightImage;
 	
-	unsigned char *pVisibleFaces;
-	int pVFByteCount;
+	decTList<unsigned char> pVisibleFaces;
 	
 	decTOrderedSet<deHeightTerrainTexture*> pTextures;
 	decTOrderedSet<deHeightTerrainNavSpace*> pNavSpaces;

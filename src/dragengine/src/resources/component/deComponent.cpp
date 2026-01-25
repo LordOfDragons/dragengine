@@ -51,6 +51,7 @@
 #include "../skin/dynamic/deDynamicSkin.h"
 #include "../../deEngine.h"
 #include "../../common/exceptions.h"
+#include "../../common/collection/decTList.h"
 #include "../../logger/deLogger.h"
 #include "../../parallel/deParallelProcessing.h"
 #include "../../parallel/deParallelTask.h"
@@ -79,17 +80,8 @@ pHintMovement(emhStationary),
 pEnableGI(true),
 pHintGIImportance(4),
 
-pBones(nullptr),
-pBoneCount(0),
-
-pVertexPositionSetWeights(nullptr),
-pVertexPositionSetCount(0),
-
 pBonesDirty(true),
 pMatrixDirty(false),
-
-pTextures(nullptr),
-pTextureCount(0),
 
 pPeerGraphic(nullptr),
 pPeerPhysics(nullptr),
@@ -212,43 +204,21 @@ void deComponent::SetModelKeepTextures(deModel* model){
 		return;
 	}
 	
-	deComponentTexture *textures = nullptr;
-	const int textureCount = pTextureCount;
 	const deModel::Ref oldModel(pModel); // guard reference
-	int i;
 	
-	try{
-		textures = new deComponentTexture[textureCount];
-		for(i=0; i<textureCount; i++){
-			textures[i].SetDynamicSkin(pTextures[i].GetDynamicSkin());
-			textures[i].SetSkin(pTextures[i].GetSkin());
-			textures[i].SetTexture(pTextures[i].GetTexture());
-			textures[i].SetTransform(pTextures[i].GetTransform());
+	decTList<deComponentTexture> textures(pTextures);
+	
+	SetModel(model);
+	
+	model->GetTextures().VisitIndexed([&](int i, const deModelTexture &texture){
+		const int index = oldModel->IndexOfTextureNamed(texture.GetName());
+		if(index == -1){
+			return;
 		}
 		
-		SetModel(model);
-		
-		for(i=0; i<pTextureCount; i++){
-			const int index = oldModel->IndexOfTextureNamed(model->GetTextureAt(i)->GetName());
-			if(index == -1){
-				continue;
-			}
-			
-			pTextures[i].SetDynamicSkin(textures[index].GetDynamicSkin());
-			pTextures[i].SetSkin(textures[index].GetSkin());
-			pTextures[i].SetTexture(textures[index].GetTexture());
-			pTextures[i].SetTransform(textures[index].GetTransform());
-			NotifyTextureChanged(i);
-		}
-		
-		delete [] textures;
-		
-	}catch(const deException &){
-		if(textures){
-			delete [] textures;
-		}
-		throw;
-	}
+		pTextures.SetAt(i, textures.GetAt(index));
+		NotifyTextureChanged(i);
+	});
 }
 
 void deComponent::SetSkin(deSkin *skin){
@@ -489,10 +459,11 @@ void deComponent::SetLayerMask(const decLayerMask &layerMask){
 // Textures
 /////////////
 
-deComponentTexture &deComponent::GetTextureAt(int index) const{
-	if(index < 0 || index >= pTextureCount){
-		DETHROW(deeInvalidParam);
-	}
+deComponentTexture &deComponent::GetTextureAt(int index){
+	return pTextures[index];
+}
+
+const deComponentTexture &deComponent::GetTextureAt(int index) const{
 	return pTextures[index];
 }
 
@@ -503,8 +474,8 @@ int deComponent::IndexOfTextureClosestTo(const decVector &position, float radius
 	return -1;
 }
 
-void deComponent::NotifyTextureChanged(int index) const{
-	if(index < 0 || index >= pTextureCount){
+void deComponent::NotifyTextureChanged(int index){
+	if(index < 0 || index >= pTextures.GetCount()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -517,16 +488,12 @@ void deComponent::NotifyTextureChanged(int index) const{
 }
 
 
-deComponentBone &deComponent::GetBoneAt(int index) const{
-	DEASSERT_TRUE(index >= 0)
-	DEASSERT_TRUE(index < pBoneCount)
+deComponentBone &deComponent::GetBoneAt(int index){
 	return pBones[index];
 }
 
 void deComponent::UpdateBoneAt(int bone){
-	DEASSERT_TRUE(bone >= 0)
-	DEASSERT_TRUE(bone < pBoneCount)
-	pUpdateBoneAt(bone);
+	pUpdateBoneAt(pBones[bone]);
 }
 
 void deComponent::InvalidateBones(){
@@ -540,15 +507,7 @@ void deComponent::ValidateBones(){
 	pBonesDirty = false;
 }
 
-float deComponent::GetVertexPositionSetWeightAt(int index) const{
-	DEASSERT_TRUE(index >= 0)
-	DEASSERT_TRUE(index < pVertexPositionSetCount)
-	return pVertexPositionSetWeights[index];
-}
-
 void deComponent::SetVertexPositionSetWeightAt(int index, float weight){
-	DEASSERT_TRUE(index >= 0)
-	DEASSERT_TRUE(index < pVertexPositionSetCount)
 	pVertexPositionSetWeights[index] = weight;
 }
 
@@ -577,18 +536,17 @@ void deComponent::InvalidateExtends(){
 }
 
 void deComponent::CopyBonesToComponent(deComponent &component){
-	if(pBoneCount == 0 || !pRig || component.pBoneCount == 0 || !component.pRig){
+	if(pBones.IsEmpty() || !pRig || component.pBones.IsEmpty() || !component.pRig){
 		return;
 	}
 	
 	PrepareBones();
 	component.PrepareBones();
 	
-	int i;
-	for(i=0; i<pBoneCount; i++){
-		const int boneIndex = component.pRig->IndexOfBoneNamed(pRig->GetBoneAt(i)->GetName());
+	component.pRig->GetBones().VisitIndexed([&](int i, const deRigBone &rigBone){
+		const int boneIndex = component.pRig->IndexOfBoneNamed(rigBone.GetName());
 		if(boneIndex == -1){
-			continue;
+			return;
 		}
 		
 		deComponentBone &otherBone = component.pBones[boneIndex];
@@ -607,7 +565,7 @@ void deComponent::CopyBonesToComponent(deComponent &component){
 			otherBone.SetRotation(bone.GetRotation());
 			otherBone.SetScale(bone.GetScale());
 		}
-	}
+	});
 	
 	component.InvalidateBones();
 }
@@ -711,10 +669,9 @@ void deComponent::PrepareBones(){
 		return;
 	}
 	
-	int i;
-	for(i=0; i<pBoneCount; i++){
-		pUpdateBoneAt(i);
-	}
+	pBones.Visit([&](deComponentBone &bone){
+		pUpdateBoneAt(bone);
+	});
 	
 	pBonesDirty = false;
 }
@@ -842,73 +799,28 @@ void deComponent::pCleanUp(){
 	SetPeerAnimator(nullptr);
 	
 	RemoveAllDecals();
-	
-	if(pTextures){
-		delete [] pTextures;
-	}
-	if(pVertexPositionSetWeights){
-		delete [] pVertexPositionSetWeights;
-	}
-	if(pBones){
-		delete [] pBones;
-	}
 }
 
-void deComponent::pUpdateBoneAt(int bone){
-	deComponentBone &cbone = pBones[bone];
-	
+void deComponent::pUpdateBoneAt(deComponentBone &bone){
 	decMatrix matrix;
-	matrix.SetWorld(cbone.GetPosition(), cbone.GetRotation(), cbone.GetScale());
-	matrix = matrix.QuickMultiply(cbone.GetOriginalMatrix());
+	matrix.SetWorld(bone.GetPosition(), bone.GetRotation(), bone.GetScale());
+	matrix = matrix.QuickMultiply(bone.GetOriginalMatrix());
 	
-	if(cbone.GetParentBone() != -1){
-		matrix = matrix.QuickMultiply(pBones[cbone.GetParentBone()].GetMatrix());
+	if(bone.GetParentBone() != -1){
+		matrix = matrix.QuickMultiply(pBones[bone.GetParentBone()].GetMatrix());
 	}
 	
-	cbone.SetMatrix(matrix);
+	bone.SetMatrix(matrix);
 }
 
 void deComponent::pChangeModel(deModel *model){
-	float *vertexPositionSetWeights = nullptr;
-	deComponentTexture *textures = nullptr;
-	int vertexPositionSetCount = 0;
-	int textureCount = 0;
+	pTextures.RemoveAll();
+	pVertexPositionSetWeights.RemoveAll();
 	
 	if(model){
-		try{
-			textureCount = model->GetTextureCount();
-			if(textureCount > 0){
-				textures = new deComponentTexture[textureCount];
-			}
-			
-			vertexPositionSetCount = model->GetVertexPositionSetCount();
-			if(vertexPositionSetCount > 0){
-				vertexPositionSetWeights = new float[vertexPositionSetCount];
-				memset(vertexPositionSetWeights, 0, sizeof(float) * vertexPositionSetCount);
-			}
-			
-		}catch(const deException &){
-			if(vertexPositionSetWeights){
-				delete [] vertexPositionSetWeights;
-			}
-			if(textures){
-				delete [] textures;
-			}
-			throw;
-		}
+		pTextures.AddRange(model->GetTextureCount(), {});
+		pVertexPositionSetWeights.AddRange(model->GetVertexPositionSetCount(), 0.0f);
 	}
-	
-	if(pTextures){
-		delete [] pTextures;
-	}
-	pTextures = textures;
-	pTextureCount = textureCount;
-	
-	if(pVertexPositionSetWeights){
-		delete [] pVertexPositionSetWeights;
-	}
-	pVertexPositionSetWeights = vertexPositionSetWeights;
-	pVertexPositionSetCount = vertexPositionSetCount;
 	
 	pModel = model;
 }
@@ -921,34 +833,20 @@ void deComponent::pChangeRig(deRig *rig){
 	}
 	
 	// create new bones array
-	deComponentBone *bones = nullptr;
-	int i, boneCount = 0;
+	pBones.RemoveAll();
 	
 	if(rig){
-		try{
-			boneCount = rig->GetBoneCount();
-			if(boneCount > 0){
-				bones = new deComponentBone[boneCount];
-				for(i=0; i<boneCount; i++){
-					const deRigBone &bone = rig->GetBoneAt(i);
-					bones[i].SetParentBone(bone.GetParent());
-					bones[i].SetOriginalMatrix(bone.GetPosition(), bone.GetRotation());
-				}
+		const int boneCount = rig->GetBoneCount();
+		if(boneCount > 0){
+			pBones.AddRange(boneCount, {});
+			int i;
+			for(i=0; i<boneCount; i++){
+				const deRigBone &bone = rig->GetBoneAt(i);
+				pBones[i].SetParentBone(bone.GetParent());
+				pBones[i].SetOriginalMatrix(bone.GetPosition(), bone.GetRotation());
 			}
-			
-		}catch(const deException &){
-			if(bones){
-				delete [] bones;
-			}
-			throw;
 		}
 	}
-	
-	if(pBones){
-		delete [] pBones;
-	}
-	pBones = bones;
-	pBoneCount = boneCount;
 	
 	pRig = rig;
 }

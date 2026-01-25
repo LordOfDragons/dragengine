@@ -55,8 +55,7 @@ pPipe(pipe)
 {
 }
 
-delLoggerWritePipe::~delLoggerWritePipe(){
-}
+delLoggerWritePipe::~delLoggerWritePipe() = default;
 
 
 
@@ -64,34 +63,22 @@ delLoggerWritePipe::~delLoggerWritePipe(){
 ///////////////
 
 void delLoggerWritePipe::LogInfo(const char *source, const char *message){
-	if(!source){
-		DETHROW_INFO(deeNullPointer, "source");
-	}
-	if(!message){
-		DETHROW_INFO(deeNullPointer, "message");
-	}
+	DEASSERT_NOTNULL(source)
+	DEASSERT_NOTNULL(message)
 	
 	LogToPipe(source, message, delEngineProcess::eltInfo);
 }
 
 void delLoggerWritePipe::LogWarn(const char *source, const char *message){
-	if(!source){
-		DETHROW_INFO(deeNullPointer, "source");
-	}
-	if(!message){
-		DETHROW_INFO(deeNullPointer, "message");
-	}
+	DEASSERT_NOTNULL(source)
+	DEASSERT_NOTNULL(message)
 	
 	LogToPipe(source, message, delEngineProcess::eltWarn);
 }
 
 void delLoggerWritePipe::LogError(const char *source, const char *message){
-	if(!source){
-		DETHROW_INFO(deeNullPointer, "source");
-	}
-	if(!message){
-		DETHROW_INFO(deeNullPointer, "message");
-	}
+	DEASSERT_NOTNULL(source)
+	DEASSERT_NOTNULL(message)
 	
 	LogToPipe(source, message, delEngineProcess::eltError);
 }
@@ -105,9 +92,7 @@ void delLoggerWritePipe::LogToPipe(const char *source, const char *message, int 
 	unsigned short lenMessage = (unsigned short)strlen(message);
 	unsigned short lenSource = (unsigned short)strlen(source);
 	unsigned char wtype = (unsigned char)type;
-	char *data = nullptr;
 	int dataLen = 0;
-	char *dataPtr;
 	
 	// calculate the length of the required data buffer
 	dataLen += sizeof(wtype);
@@ -116,36 +101,28 @@ void delLoggerWritePipe::LogToPipe(const char *source, const char *message, int 
 	dataLen += sizeof(lenMessage);
 	dataLen += lenMessage;
 	
-	try{
-		// create data buffer with the appropriate data
-		data = new char[dataLen];
-		dataPtr = data;
-		
-		memcpy(dataPtr, &wtype, sizeof(wtype));
-		dataPtr += sizeof(wtype);
-		
-		memcpy(dataPtr, &lenSource, sizeof(lenSource));
-		dataPtr += sizeof(lenSource);
-		memcpy(dataPtr, source, lenSource);
-		dataPtr += lenSource;
-		
-		memcpy(dataPtr, &lenMessage, sizeof(lenMessage));
-		dataPtr += sizeof(lenMessage);
-		memcpy(dataPtr, message, lenMessage);
-		dataPtr += lenMessage;
-		
-		// send data to pipe
-		WriteToPipe(data, dataLen);
-		
-		// clean up
-		delete [] data;
-		
-	}catch(const deException &){
-		if(data){
-			delete [] data;
-		}
-		throw;
-	}
+	// create data buffer with the appropriate data. this has to be done here and not with
+	// a shared buffer since LogToPipe() is called asynchronously and multiple threads could
+	// call it at the same time
+	decTList<char> data;
+	data.AddRange(dataLen, 0);
+	char *dataPtr = data.GetArrayPointer();
+	
+	memcpy(dataPtr, &wtype, sizeof(wtype));
+	dataPtr += sizeof(wtype);
+	
+	memcpy(dataPtr, &lenSource, sizeof(lenSource));
+	dataPtr += sizeof(lenSource);
+	memcpy(dataPtr, source, lenSource);
+	dataPtr += lenSource;
+	
+	memcpy(dataPtr, &lenMessage, sizeof(lenMessage));
+	dataPtr += sizeof(lenMessage);
+	memcpy(dataPtr, message, lenMessage);
+	dataPtr += lenMessage;
+	
+	// send data to pipe
+	WriteToPipe(data.GetArrayPointer(), dataLen);
 }
 
 void delLoggerWritePipe::WriteToPipe(const void *data, int length){

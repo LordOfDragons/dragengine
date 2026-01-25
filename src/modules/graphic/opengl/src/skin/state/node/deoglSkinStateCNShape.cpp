@@ -236,9 +236,9 @@ void deoglSkinStateCNShape::pWriteVBOData(deoglSkinState &state){
 		
 		// fill
 		const decVector2 cornerSizeInner(decVector2().Largest(cornerCenter - decVector2(thickness, thickness)));
-		decVector2 * const points = new decVector2[cornerPointCount * 4 + (cornerPointCount * 4 + 1) * 2];
-		decVector2 * const inner = points;
-		decVector2 * const outer = points + cornerPointCount * 4;
+		decTList<decVector2> points(cornerPointCount * 4 + (cornerPointCount * 4 + 1) * 2, {});
+		decVector2 * const inner = points.GetArrayPointer();
+		decVector2 * const outer = points.GetArrayPointer() + cornerPointCount * 4;
 		
 		if(cornerPointCount > 1){
 			pCalcArc(inner, cornerCenter, cornerSizeInner,
@@ -311,8 +311,6 @@ void deoglSkinStateCNShape::pWriteVBOData(deoglSkinState &state){
 				}
 			}
 		}
-		
-		delete [] points;
 		}break;
 		
 	case deSkinPropertyNodeShape::estEllipse:{
@@ -324,9 +322,9 @@ void deoglSkinStateCNShape::pWriteVBOData(deoglSkinState &state){
 		
 		// fill
 		const decVector2 ellipseSizeInner(decVector2().Largest(ellipseSize - decVector2(thickness, thickness)));
-		decVector2 * const points = new decVector2[pointCount * 3 + 2];
-		decVector2 * const inner = points;
-		decVector2 * const outer = points + pointCount;
+		decTList<decVector2> points(pointCount * 3 + 2, {});
+		decVector2 * const inner = points.GetArrayPointer();
+		decVector2 * const outer = points.GetArrayPointer() + pointCount;
 		
 		pCalcArc(inner, center, ellipseSizeInner + decVector2(1.0f, 1.0f), startAngle, endAngle, pointCount);
 		
@@ -372,8 +370,6 @@ void deoglSkinStateCNShape::pWriteVBOData(deoglSkinState &state){
 				pDrawCountLine = pointCount;
 			}
 		}
-		
-		delete [] points;
 		}break;
 	}
 }

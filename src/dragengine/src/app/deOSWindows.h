@@ -33,6 +33,7 @@
 
 #include "include_windows.h"
 #include "deOS.h"
+#include "../common/collection/decTList.h"
 #include "../common/string/decString.h"
 #include "../common/string/unicode/decUnicodeString.h"
 
@@ -46,8 +47,7 @@ private:
 	int pScreenWidth;
 	int pScreenHeight;
 	HWND pCurWindow;
-	int pResolutionCount;
-	decPoint* pResolutions;
+	decTList<decPoint> pResolutions;
 	int pRefreshRate;
 	int pScaleFactor;
 	

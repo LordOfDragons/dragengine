@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglDynamicTBO.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../memory/deoglMemoryManager.h"
@@ -50,8 +46,6 @@ pComponentCount(componentCount),
 pDataTypeSize(dataTypeSize),
 pVBO(0),
 pTBO(0),
-pData(nullptr),
-pDataSize(0),
 pDataCount(0),
 pMemUse(renderThread.GetMemoryManager().GetConsumption().bufferObject.tbo)
 {
@@ -70,24 +64,13 @@ deoglDynamicTBO::~deoglDynamicTBO(){
 ///////////////
 
 void deoglDynamicTBO::IncreaseDataCount(int byAmount){
-	if(byAmount < 0){
-		DETHROW(deeInvalidParam);
-	}
-	if(byAmount == 0){
-		return;
-	}
-	
-	pEnlarge(byAmount);
-	pDataCount += byAmount;
+	SetDataCount(pDataCount + byAmount);
 }
 
 void deoglDynamicTBO::SetDataCount(int count){
-	if(count < 0){
-		DETHROW(deeInvalidParam);
-	}
-	if(count > pDataCount){
-		pEnlarge(count - pDataCount);
-	}
+	DEASSERT_TRUE(count >= 0)
+	
+	pSetNewDataCount(count);
 	pDataCount = count;
 }
 
@@ -115,6 +98,7 @@ int deoglDynamicTBO::GetPixelOffset(int pixel) const{
 }
 
 void deoglDynamicTBO::Clear(){
+	pData.SetCountDiscard(0);
 	pDataCount = 0;
 }
 
@@ -126,8 +110,7 @@ void deoglDynamicTBO::AddTBO(const deoglDynamicTBO &tbo){
 		return;
 	}
 	
-	pEnlarge(tbo.pDataCount);
-	memcpy(pData + pDataCount * pDataTypeSize, tbo.pData, tbo.pDataCount * tbo.pDataTypeSize);
+	pData += tbo.pData;
 	pDataCount += tbo.pDataCount;
 }
 
@@ -142,7 +125,7 @@ void deoglDynamicTBO::SetTBO(int offset, const deoglDynamicTBO &tbo){
 		DETHROW(deeInvalidParam);
 	}
 	
-	memcpy(pData + offset * pDataTypeSize, tbo.pData, tbo.pDataCount * tbo.pDataTypeSize);
+	pData.SetRangeAt(offset * pDataTypeSize, tbo.pData);
 }
 
 void deoglDynamicTBO::Update(){
@@ -155,9 +138,10 @@ void deoglDynamicTBO::Update(){
 	
 	OGL_CHECK(pRenderThread, pglBindBuffer(GL_TEXTURE_BUFFER, pVBO));
 	
-	const int size = pDataCount * pDataTypeSize;
-	OGL_CHECK(pRenderThread, pglBufferData(GL_TEXTURE_BUFFER, size, nullptr, GL_STREAM_DRAW));
-	OGL_CHECK(pRenderThread, pglBufferData(GL_TEXTURE_BUFFER, size, pData, GL_STREAM_DRAW));
+	OGL_CHECK(pRenderThread, pglBufferData(GL_TEXTURE_BUFFER,
+		pData.GetCount(), nullptr, GL_STREAM_DRAW));
+	OGL_CHECK(pRenderThread, pglBufferData(GL_TEXTURE_BUFFER,
+		pData.GetCount(), pData.GetArrayPointer(), GL_STREAM_DRAW));
 	
 	pEnsureTBO();
 	
@@ -181,7 +165,7 @@ void deoglDynamicTBO::Update(int offset, int count){
 	
 	const int byteOffset = offset * pComponentCount * pDataTypeSize;
 	OGL_CHECK(pRenderThread, pglBufferSubData(GL_TEXTURE_BUFFER, byteOffset,
-		count * pComponentCount * pDataTypeSize, pData + byteOffset));
+		count * pComponentCount * pDataTypeSize, pData.GetArrayPointer() + byteOffset));
 	
 	pEnsureTBO();
 	
@@ -199,26 +183,15 @@ void deoglDynamicTBO::pCleanUp(){
 	dops.DeleteOpenGLBuffer(pVBO);
 	
 	pMemUse = 0;
-	if(pData){
-		delete [] pData;
-	}
 }
 
-void deoglDynamicTBO::pEnlarge(int count){
-	if(pDataCount + count <= pDataSize){
-		return;
-	}
-	
-	const int newSize = (pDataCount + count) * 3 / 2 + 1;
-	uint8_t * const newArray = new uint8_t[newSize * pDataTypeSize];
-	
-	if(pData){
-		memcpy(newArray, pData, pDataCount * pDataTypeSize);
-		delete [] pData;
-	}
-	
-	pData = newArray;
-	pDataSize = newSize;
+void deoglDynamicTBO::pSetNewDataCount(int count){
+	pData.SetCount(count * pDataTypeSize, 0);
+}
+
+void deoglDynamicTBO::pEnlargeDataCount(int amount){
+	DEASSERT_TRUE(amount >= 0)
+	pSetNewDataCount(pDataCount + amount);
 }
 
 void deoglDynamicTBO::pEnsureVBO(){
@@ -227,8 +200,7 @@ void deoglDynamicTBO::pEnsureVBO(){
 	}
 	
 	OGL_CHECK(pRenderThread, pglGenBuffers(1, &pVBO));
-	
-	pMemUse = pDataCount * pDataTypeSize;
+	pMemUse = pData.GetCount();
 }
 
 void deoglDynamicTBO::pEnsureTBO(){
@@ -246,7 +218,5 @@ void deoglDynamicTBO::pEnsureTBO(){
 
 void deoglDynamicTBO::pEnsurePadding(){
 	const int remainder = pDataCount % pComponentCount;
-	if(remainder > 0){
-		pEnlarge(pComponentCount - remainder);
-	}
+	pEnlargeDataCount(pComponentCount - remainder);
 }

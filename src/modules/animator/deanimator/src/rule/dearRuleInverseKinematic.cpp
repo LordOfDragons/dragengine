@@ -69,8 +69,6 @@ dearRule(instance, animator, firstLink, rule),
 
 pInverseKinematic(rule),
 
-pChain(nullptr),
-pChainCount(0),
 pChainLength(0.0f),
 
 pTargetGoalPosition(rule.GetTargetGoalPosition(), firstLink),
@@ -99,9 +97,6 @@ pReachCenter(rule.GetReachCenter())
 }
 
 dearRuleInverseKinematic::~dearRuleInverseKinematic(){
-	if(pChain){
-		delete [] pChain;
-	}
 }
 
 
@@ -144,7 +139,7 @@ DEBUG_RESET_TIMERS;
 		params.goalOrientation *= boneState.GetGlobalMatrix().ToQuaternion();
 	}
 	
-	if(pChainCount > 1){
+	if(pChain.GetCount() > 1){
 		params.reachRange = pReachRange * decMath::clamp(
 			pTargetReachRange.GetValue(instance, 1.0f), 0.0f, 1.0f);
 		
@@ -154,10 +149,9 @@ DEBUG_RESET_TIMERS;
 		pLimitReach(stalist, params.goalPosition, params.reachRange, params.reachCenter);
 		
 		params.hasIKLimits = false;
-		int i;
-		for(i=0; i<pChainCount; i++){
-			params.hasIKLimits |= pChain[i].GetHasLimits() || pChain[i].GetHasDampening();
-		}
+		pChain.Visit([&](dearIKWorkState &s){
+			params.hasIKLimits |= s.GetHasLimits() || s.GetHasDampening();
+		});
 		
 		// less and things can explode
 		params.rotationCrossThreshold = 0.001f;
@@ -174,7 +168,7 @@ DEBUG_RESET_TIMERS;
 		
 		pUpdateBonesFromWorkingState(stalist, params);
 		
-	}else if(pChainCount == 1){
+	}else if(pChain.GetCount() == 1){
 		pSolveSingleBone(stalist, params);
 	}
 DEBUG_PRINT_TIMER;
@@ -286,29 +280,17 @@ void dearRuleInverseKinematic::pUpdateChain(){
 }
 
 void dearRuleInverseKinematic::pSetChainCount(int count){
-	if(count == pChainCount){
+	if(count == pChain.GetCount()){
 		return;
 	}
 	
-	dearIKWorkState *newChain = nullptr;
-	if(count > 0){
-		newChain = new dearIKWorkState[count];
-	}
-	
-	if(pChain){
-		delete [] pChain;
-	}
-	
-	pChain = newChain;
-	pChainCount = count;
+	pChain.SetAll(count, {});
 }
 
 void dearRuleInverseKinematic::pInitIKLimits(){
 	const dearBoneStateList &stateList = GetInstance().GetBoneStateList();
-	int i;
-	
-	for(i=0; i<pChainCount; i++){
-		const deRigBone * const rigBone = stateList.GetStateAt(pChain[i].GetBoneStateIndex()).GetRigBone();
+	pChain.Visit([&](dearIKWorkState &s){
+		const deRigBone * const rigBone = stateList.GetStateAt(s.GetBoneStateIndex()).GetRigBone();
 		
 		if(rigBone){
 			const decVector &lowerLimits = rigBone->GetIKLimitsLower();
@@ -318,85 +300,84 @@ void dearRuleInverseKinematic::pInitIKLimits(){
 			bool hasLimits = false;
 			
 			if(rigBone->GetIKLockedX()){
-				pChain[i].SetAxisTypeX(dearIKWorkState::eatLocked);
+				s.SetAxisTypeX(dearIKWorkState::eatLocked);
 				hasLimits = true;
 				
 			}else if(lowerLimits.x < upperLimits.x){
-				pChain[i].SetAxisTypeX(dearIKWorkState::eatLimited);
+				s.SetAxisTypeX(dearIKWorkState::eatLimited);
 				dampening.x = 1.0f - resistance.x;
 				hasLimits = true;
 				
 			}else{
-				pChain[i].SetAxisTypeX(dearIKWorkState::eatFree);
+				s.SetAxisTypeX(dearIKWorkState::eatFree);
 				dampening.x = 1.0f - resistance.x;
 			}
 			
 			if(rigBone->GetIKLockedY()){
-				pChain[i].SetAxisTypeY(dearIKWorkState::eatLocked);
+				s.SetAxisTypeY(dearIKWorkState::eatLocked);
 				hasLimits = true;
 				
 			}else if(lowerLimits.y < upperLimits.y){
-				pChain[i].SetAxisTypeY(dearIKWorkState::eatLimited);
+				s.SetAxisTypeY(dearIKWorkState::eatLimited);
 				dampening.y = 1.0f - resistance.y;
 				hasLimits = true;
 				
 			}else{
-				pChain[i].SetAxisTypeY(dearIKWorkState::eatFree);
+				s.SetAxisTypeY(dearIKWorkState::eatFree);
 				dampening.y = 1.0f - resistance.y;
 			}
 			
 			if(rigBone->GetIKLockedZ()){
-				pChain[i].SetAxisTypeZ(dearIKWorkState::eatLocked);
+				s.SetAxisTypeZ(dearIKWorkState::eatLocked);
 				hasLimits = true;
 				
 			}else if(lowerLimits.z < upperLimits.z){
-				pChain[i].SetAxisTypeZ(dearIKWorkState::eatLimited);
+				s.SetAxisTypeZ(dearIKWorkState::eatLimited);
 				dampening.z = 1.0f - resistance.z;
 				hasLimits = true;
 				
 			}else{
-				pChain[i].SetAxisTypeZ(dearIKWorkState::eatFree);
+				s.SetAxisTypeZ(dearIKWorkState::eatFree);
 				dampening.z = 1.0f - resistance.z;
 			}
 			
 			if(hasLimits){
-				pChain[i].UpdateLimits(*rigBone);
+				s.UpdateLimits(*rigBone);
 			}
 			
-			pChain[i].SetDampening(dampening);
-			pChain[i].SetHasLimits(hasLimits);
+			s.SetDampening(dampening);
+			s.SetHasLimits(hasLimits);
 			
 		}else{
-			pChain[i].SetAxisTypeX(dearIKWorkState::eatFree);
-			pChain[i].SetAxisTypeY(dearIKWorkState::eatFree);
-			pChain[i].SetAxisTypeZ(dearIKWorkState::eatFree);
-			pChain[i].SetHasLimits(false);
-			pChain[i].SetDampening(decVector(1.0f, 1.0f, 1.0f));
+			s.SetAxisTypeX(dearIKWorkState::eatFree);
+			s.SetAxisTypeY(dearIKWorkState::eatFree);
+			s.SetAxisTypeZ(dearIKWorkState::eatFree);
+			s.SetHasLimits(false);
+			s.SetDampening(decVector(1.0f, 1.0f, 1.0f));
 		}
-	}
+	});
 }
 
 void dearRuleInverseKinematic::pUpdateChainWeights(){
 	pChainLength = 0.0f;
 	
-	if(pChainCount == 0){
+	if(pChain.IsEmpty()){
 		return;
 	}
 	
-	if(pChainCount == 1){
+	if(pChain.GetCount() == 1){
 		pChain[0].SetWeight(1.0f);
 		return;
 	}
 	
 	// calculate chain length. this is the sum of all bone segments from the base to the tip
 	decDVector position(pChain[0].GetGlobalMatrix().GetPosition());
-	int i;
 	
-	for(i=1; i<pChainCount; i++){
-		const decDVector nextPosition(pChain[i].GetGlobalMatrix().GetPosition());
+	pChain.Visit(1, [&](const dearIKWorkState &s){
+		const decDVector nextPosition(s.GetGlobalMatrix().GetPosition());
 		pChainLength += (float)(nextPosition - position).Length();
 		position = nextPosition;
-	}
+	});
 	
 	// calculate weights. weight is calculated for the bone distance along the chain length.
 	// distance is the sum of all bone segments up to the bone position
@@ -405,22 +386,22 @@ void dearRuleInverseKinematic::pUpdateChainWeights(){
 	
 	pChain[0].SetWeight(1.0f);
 	
-	for(i=1; i<pChainCount; i++){
-		const decDVector nextPosition(pChain[i].GetGlobalMatrix().GetPosition());
+	pChain.Visit(1, [&](dearIKWorkState &s){
+		const decDVector nextPosition(s.GetGlobalMatrix().GetPosition());
 		accum += (float)(nextPosition - position).Length();
 		position = nextPosition;
 		
 		// weight = decMath::linearStep( ( float )i, 0.0f, ( float )( pChainCount - 1 ), 1.0f, 0.1f );
 		weight = decMath::linearStep(accum, 0.0f, pChainLength, 1.0f, 0.1f);
 		
-		pChain[i].SetWeight(weight);
-	}
+		s.SetWeight(weight);
+	});
 	
 	/*
 	const float scaleWeight = 1.0f;
-	for(i=0; i<pChainCount; i++){
-		pChain[i].SetWeight(pChain[i].GetWeight() * scaleWeight);
-	}
+	pChain.Visit([&](dearIKWorkState &s){
+		s.SetWeight(s.GetWeight() * scaleWeight);
+	});
 	*/
 }
 
@@ -456,56 +437,50 @@ decVector &tipPosition, const decVector &localPosition){
 		return;
 	}
 	
-	const decVector position(pChain[pChainCount - 1].GetGlobalMatrix().GetPosition());
+	const decVector position(pChain.Last().GetGlobalMatrix().GetPosition());
 	
 	goalMatrix.a14 = position.x;
 	goalMatrix.a24 = position.y;
 	goalMatrix.a34 = position.z;
 	
-	pChain[pChainCount - 1].SetGlobalMatrix(goalMatrix);
+	pChain.Last().SetGlobalMatrix(goalMatrix);
 	
-	tipPosition = pChain[pChainCount - 1].GetGlobalMatrix() * localPosition;
+	tipPosition = pChain.Last().GetGlobalMatrix() * localPosition;
 }
 
 void dearRuleInverseKinematic::pInitWorkingStates(dearBoneStateList &stalist, const sParameters &params){
-	int i;
-	
-	for(i=0; i<pChainCount; i++){
-		dearBoneState &boneState = stalist.GetStateAt(pChain[i].GetBoneStateIndex());
+	pChain.Visit([&](dearIKWorkState &s){
+		dearBoneState &boneState = stalist.GetStateAt(s.GetBoneStateIndex());
 		boneState.UpdateMatrices();
-		pChain[i].SetGlobalMatrix(boneState.GetGlobalMatrix());
-		pChain[i].SetInverseGlobalMatrix(boneState.GetInverseGlobalMatrix());
-	}
+		s.SetGlobalMatrix(boneState.GetGlobalMatrix());
+		s.SetInverseGlobalMatrix(boneState.GetInverseGlobalMatrix());
+	});
 	
 	if(params.hasIKLimits){
-		for(i=0; i<pChainCount; i++){
-			dearBoneState &boneState = stalist.GetStateAt(pChain[i].GetBoneStateIndex());
+		pChain.Visit([&](dearIKWorkState &s){
+			dearBoneState &boneState = stalist.GetStateAt(s.GetBoneStateIndex());
 			// boneState.UpdateFromGlobalMatrix();
 			
-			pChain[i].SetRigLocalRotation(boneState.GetRigLocalMatrix().ToQuaternion());
-			pChain[i].SetLockedRotation((boneState.GetOrientation()
-				* pChain[ i ].GetLimitZeroQuat() ).GetEulerAngles() );
-		}
+			s.SetRigLocalRotation(boneState.GetRigLocalMatrix().ToQuaternion());
+			s.SetLockedRotation((boneState.GetOrientation() * s.GetLimitZeroQuat()).GetEulerAngles());
+		});
 	}
 	
-	pChain[pChainCount - 1].SetEndPosition(params.localPosition);
+	pChain.Last().SetEndPosition(params.localPosition);
 }
 
 void dearRuleInverseKinematic::pUpdateInverseGlobal(){
-	int i;
-	for(i=0; i<pChainCount; i++){
-		pChain[i].SetInverseGlobalMatrix(pChain[i].GetGlobalMatrix().QuickInvert());
-	}
+	pChain.Visit([&](dearIKWorkState &s){
+		s.SetInverseGlobalMatrix(s.GetGlobalMatrix().QuickInvert());
+	});
 }
 
 void dearRuleInverseKinematic::pInitLength(const decVector &localPosition){
-	int i;
-	for(i=0; i<pChainCount-1; i++){
-		pChain[i].SetEndPosition(pChain[i].GetInverseGlobalMatrix()
-			* pChain[ i + 1 ].GetGlobalMatrix().GetPosition() );
-	}
+	pChain.VisitIndexed(0, pChain.GetCount() - 1, [&](int i, dearIKWorkState &s){
+		s.SetEndPosition(s.GetInverseGlobalMatrix() * pChain[i + 1].GetGlobalMatrix().GetPosition());
+	});
 	
-	pChain[pChainCount - 1].SetEndPosition(localPosition);
+	pChain.Last().SetEndPosition(localPosition);
 }
 
 void dearRuleInverseKinematic::pSolveSingleBone(dearBoneStateList &stalist, const sParameters &params){
@@ -554,7 +529,6 @@ void dearRuleInverseKinematic::pSolveCCD(dearBoneStateList &stalist, const sPara
 	decQuaternion rotation;
 	decVector rotationAxis;
 	float rotationAngle;
-	int i, j, s;
 	
 	pInitWorkingStates(stalist, params);
 	
@@ -581,7 +555,7 @@ void dearRuleInverseKinematic::pSolveCCD(dearBoneStateList &stalist, const sPara
 		- pChain[0].GetGlobalMatrix().GetPosition()).LengthSquared();
 	
 	// adjust bones until the we get close enough to the target
-	tipPosition = pChain[pChainCount - 1].GetGlobalEnd();
+	tipPosition = pChain.Last().GetGlobalEnd();
 	decVector lastTipPosition(tipPosition);
 	
 	// NOTE according to papers best is to start first with the bone closest to the target
@@ -601,53 +575,54 @@ void dearRuleInverseKinematic::pSolveCCD(dearBoneStateList &stalist, const sPara
 	// -> reducing angle after MAX_ROT claming to 10% is helping
 	// => for( i=0; i<pChainCount; i++ )
 	
+	int s;
 	for(s=0; s<maxStepCount; s++){
 		// adjust all bones in the chain to approach closer to the target
 		// for( i=0; i<pChainCount; i++ ){
-		for(i=pChainCount-1; i>=0; i--){
-			const decVector bonePosition(pChain[i].GetGlobalMatrix().GetPosition());
+		pChain.VisitReverseIndexed([&](int s2i, dearIKWorkState &s2){
+			const decVector bonePosition(s2.GetGlobalMatrix().GetPosition());
 			
-			if(pAdjustOrientation && i == pChainCount - 1){
+			if(pAdjustOrientation && s2i == pChain.GetCount() - 1){
 				pApplyAdjustOrientation(goalMatrix, tipPosition, params.localPosition);
-				continue;
+				return;
 			}
 			
 			if(!pCalcRotation(params, params.goalPosition, tipPosition, bonePosition,
 			rotationAxis, rotationAngle)){
-				continue;
+				return;
 			}
 			
 			rotationAngle = decMath::clamp(rotationAngle, -maxRot, maxRot);
 			rotationAngle *= 0.9f; // damping to improve stability and smooth result
-			rotationAngle *= pChain[i].GetWeight();
+			rotationAngle *= s2.GetWeight();
 			
 			rotation.SetFromAxis(rotationAxis, rotationAngle);
 			
-			if(pChain[i].GetHasDampening() || pChain[i].GetHasLimits()){
-				const decQuaternion globalOrientation(pChain[i].GetGlobalMatrix().ToQuaternion());
+			if(s2.GetHasDampening() || s2.GetHasLimits()){
+				const decQuaternion globalOrientation(s2.GetGlobalMatrix().ToQuaternion());
 				
 				decQuaternion orientation(pGlobalOrientationToBoneOrientation(
-					i, globalOrientation * rotation, baseInverseRot));
-				if(pChain[i].GetHasDampening()){
-					orientation = pApplyIKResistance(i, globalOrientation, baseInverseRot, orientation);
+					s2i, globalOrientation * rotation, baseInverseRot));
+				if(s2.GetHasDampening()){
+					orientation = pApplyIKResistance(s2i, globalOrientation, baseInverseRot, orientation);
 				}
-				if(pChain[i].GetHasLimits()){
-					orientation = pApplyIKLimits(i, orientation);
+				if(s2.GetHasLimits()){
+					orientation = pApplyIKLimits(s2i, orientation);
 				}
-				orientation = pBoneOrientationToGlobalOrientation(i, baseRot, orientation);
+				orientation = pBoneOrientationToGlobalOrientation(s2i, baseRot, orientation);
 				
 				rotation = globalOrientation.Conjugate() * orientation;
 			}
 			
 			// rotate chains from the current link to the tip
 			const decMatrix matrixRotation(pGlobalRotationMatrix(bonePosition, rotation));
-			for(j=i; j<pChainCount; j++){
-				pChain[j].TransformGlobalMatrix(matrixRotation, params.hasIKLimits);
-			}
+			pChain.Visit(s2i, pChain.GetCount() - 1, [&](dearIKWorkState &s3){
+				s3.TransformGlobalMatrix(matrixRotation, params.hasIKLimits);
+			});
 			
 			// calculate the new tip position for the next bone
-			tipPosition = pChain[pChainCount - 1].GetGlobalEnd();
-		}
+			tipPosition = pChain.Last().GetGlobalEnd();
+		});
 		
 		pApplyAdjustOrientation(goalMatrix, tipPosition, params.localPosition);
 		
@@ -711,7 +686,7 @@ void dearRuleInverseKinematic::pSolveFabrik(dearBoneStateList &stalist, const sP
 	
 	const decQuaternion goalOrientation(params.localOrientation * params.goalOrientation);
 	
-	dearIKWorkState &iwsTip = pChain[pChainCount - 1];
+	dearIKWorkState &iwsTip = pChain.Last();
 	
 	const decVector basePosition(pChain[0].GetGlobalMatrix().GetPosition());
 	decVector lastEnd(iwsTip.GetGlobalEnd());
@@ -720,11 +695,11 @@ void dearRuleInverseKinematic::pSolveFabrik(dearBoneStateList &stalist, const sP
 	decMatrix boneMatrix, matrixRotation;
 	/*const*/ float scale = 1.0f;
 	float rotationAngle;
-	int i, j;
 #ifdef FABRIK_MODIFIED_2
 	int k;
 #endif
 	
+	int i;
 	for(i=0; i<maxStepCount; i++){
 		// if( params.hasIKLimits && i > 0 ){
 			// pUpdateInverseGlobal();
@@ -741,13 +716,12 @@ void dearRuleInverseKinematic::pSolveFabrik(dearBoneStateList &stalist, const sP
 		targetPosition = params.goalPosition;
 #endif
 		
-		for(j=pChainCount-1; j>=0; j--){
-			dearIKWorkState &iws = pChain[j];
+		pChain.VisitReverseIndexed([&](int j, dearIKWorkState &iws){
 			
 			
 			
 #ifdef FABRIK_MODIFIED
-			if(pAdjustOrientation && j == pChainCount - 1){
+			if(pAdjustOrientation && j == pChain.GetCount() - 1){
 				boneMatrix.SetFromQuaternion(goalOrientation);
 				if(params.hasIKLimits){
 					iws.SetLastGlobalOrientation(goalOrientation);
@@ -763,7 +737,7 @@ void dearRuleInverseKinematic::pSolveFabrik(dearBoneStateList &stalist, const sP
 					iws.SetLastGlobalOrientation(boneMatrix.ToQuaternion());
 				}
 				
-				if(j < pChainCount - 1){
+				if(j < pChain.GetCount() - 1){
 					if(hasRotation){
 						rotation.SetFromAxis(rotationAxis, rotationAngle * scale);
 						boneMatrix.SetFromQuaternion(boneMatrix.ToQuaternion() * rotation);
@@ -843,7 +817,7 @@ void dearRuleInverseKinematic::pSolveFabrik(dearBoneStateList &stalist, const sP
 			targetPosition = bonePosition;
 			
 #elif defined FABRIK_MODIFIED_2
-			const bool adjustOrientation = pAdjustOrientation && j == pChainCount - 1;
+			const bool adjustOrientation = pAdjustOrientation && j == pChain.GetCount() - 1;
 			
 			if(adjustOrientation){
 				boneMatrix.SetFromQuaternion(goalOrientation);
@@ -879,7 +853,7 @@ void dearRuleInverseKinematic::pSolveFabrik(dearBoneStateList &stalist, const sP
 			
 			if(!adjustOrientation){
 				decQuaternion rotation;
-				if(j < pChainCount - 1){
+				if(j < pChain.GetCount() - 1){
 					dearIKWorkState &iws2 = pChain[j + 1];
 					if(iws2.GetHasDampening() || iws2.GetHasLimits()){
 						// calculate the linked orientation of the child bone
@@ -912,9 +886,9 @@ void dearRuleInverseKinematic::pSolveFabrik(dearBoneStateList &stalist, const sP
 						matrixRotation = pGlobalRotationMatrix(
 							iws2.GetGlobalMatrix().GetPosition(), rotation); 
 						
-						for(k=j+1; k<pChainCount; k++){
-							pChain[k].TransformGlobalMatrix(matrixRotation, false);
-						}
+						pChain.Visit([&](dearIKWorkState &s2){
+							s2.TransformGlobalMatrix(matrixRotation, false);
+						}, j + 1, pChain.GetCount());
 						
 						// this though will cause the chain end position to move away from the
 						// target position it has been pulled towards. to solve this problem the
@@ -931,9 +905,9 @@ void dearRuleInverseKinematic::pSolveFabrik(dearBoneStateList &stalist, const sP
 							matrixRotation = pGlobalRotationMatrix(
 								rotationPivot, rotationAxis, -rotationAngle); 
 							
-							for(k=j; k<pChainCount; k++){
-								pChain[k].TransformGlobalMatrix(matrixRotation, true);
-							}
+							pChain.Visit([&](dearIKWorkState &s2){
+								s2.TransformGlobalMatrix(matrixRotation, true);
+							}, j, pChain.GetCount());
 						}
 						
 						// in short this correction enforces the joint restrictions in a way
@@ -946,7 +920,7 @@ void dearRuleInverseKinematic::pSolveFabrik(dearBoneStateList &stalist, const sP
 			}
 		
 #else
-			if(pAdjustOrientation && j == pChainCount - 1){
+			if(pAdjustOrientation && j == pChain.GetCount() - 1){
 				boneMatrix.SetFromQuaternion(goalOrientation);
 				
 			}else{
@@ -992,7 +966,7 @@ void dearRuleInverseKinematic::pSolveFabrik(dearBoneStateList &stalist, const sP
 			targetPosition = bonePosition;
 			
 #endif
-		}
+		});
 		
 #if defined FABRIK_MODIFIED && defined FABRIK_MODIFIED_FIX
 		// if ik limits are used the forward stage can result in a pose causing the backward
@@ -1001,7 +975,7 @@ void dearRuleInverseKinematic::pSolveFabrik(dearBoneStateList &stalist, const sP
 		// chain from the tip bone position to line up with the base. this way the base has
 		// a better starting position which should not explode
 		if(params.hasIKLimits){
-			const int pivotIndex = pAdjustOrientation ? pChainCount - 2 : pChainCount - 1;
+			const int pivotIndex = pAdjustOrientation ? pChain.GetCount() - 2 : pChain.GetCount() - 1;
 			
 			const decVector pivot(pChain[pivotIndex].GetGlobalMatrix().GetPosition());
 			const decVector tip(pChain[0].GetGlobalMatrix().GetPosition());
@@ -1012,10 +986,10 @@ void dearRuleInverseKinematic::pSolveFabrik(dearBoneStateList &stalist, const sP
 					QuickMultiply(decMatrix::CreateRotationAxis(rotationAxis, -rotationAngle)).
 					QuickMultiply(decMatrix::CreateTranslation(pivot)));
 				
-				for(j=0; j<pivotIndex; j++){
-					pChain[j].SetGlobalMatrix(pChain[j].GetGlobalMatrix().QuickMultiply(rotation));
-					pChain[j].SetInverseGlobalMatrix(pChain[j].GetGlobalMatrix().QuickInvert());
-				}
+				pChain.Visit([&](dearIKWorkState &s2){
+					s2.SetGlobalMatrix(s2.GetGlobalMatrix().QuickMultiply(rotation));
+					s2.SetInverseGlobalMatrix(s2.GetGlobalMatrix().QuickInvert());
+				}, 0, pivotIndex);
 			}
 		}
 #endif
@@ -1023,10 +997,8 @@ void dearRuleInverseKinematic::pSolveFabrik(dearBoneStateList &stalist, const sP
 		// backward stage
 		targetPosition = basePosition;
 		
-		for(j=0; j<pChainCount; j++){
-			dearIKWorkState &iws = pChain[j];
-			
-			if(pAdjustOrientation && j == pChainCount - 1){
+		pChain.VisitIndexed([&](int j, dearIKWorkState &iws){
+			if(pAdjustOrientation && j == pChain.GetCount() - 1){
 				boneMatrix.SetFromQuaternion(goalOrientation);
 				
 			}else{
@@ -1068,10 +1040,10 @@ void dearRuleInverseKinematic::pSolveFabrik(dearBoneStateList &stalist, const sP
 			}
 			
 			targetPosition = iws.GetGlobalEnd();
-		}
+		});
 		
 		// finish step
-		const decVector end(pChain[pChainCount - 1].GetGlobalEnd());
+		const decVector end(pChain.Last().GetGlobalEnd());
 		
 		//if( end.IsEqualTo( params.goalPosition, params.goalReachedThreshold ) ){
 		if((end - params.goalPosition).Length() < params.goalReachedThreshold){
@@ -1094,13 +1066,12 @@ void dearRuleInverseKinematic::pUpdateBonesFromWorkingState(
 dearBoneStateList &stalist, const sParameters &params){
 	const deAnimatorRule::eBlendModes blendMode = GetBlendMode();
 	decMatrix matrix;
-	int i;
 	
-	for(i=0; i<pChainCount; i++){
-		const decMatrix &globalMatrix = pChain[i].GetGlobalMatrix();
+	pChain.VisitIndexed([&](int i, dearIKWorkState &s){
+		const decMatrix &globalMatrix = s.GetGlobalMatrix();
 		
-		dearBoneState &boneState = stalist.GetStateAt(pChain[i].GetBoneStateIndex());
-		pChain[i].SetInverseGlobalMatrix(globalMatrix.QuickInvert());
+		dearBoneState &boneState = stalist.GetStateAt(s.GetBoneStateIndex());
+		s.SetInverseGlobalMatrix(globalMatrix.QuickInvert());
 		
 		if(i == 0){
 			if(boneState.GetParentState()){
@@ -1120,7 +1091,7 @@ dearBoneStateList &stalist, const sParameters &params){
 		
 		boneState.BlendWith(matrix.GetPosition(), matrix.ToQuaternion(),
 			blendMode, params.blendFactor, true, true);
-	}
+	});
 }
 
 bool dearRuleInverseKinematic::pCalcRotation(const sParameters &params,
@@ -1171,7 +1142,7 @@ const decQuaternion &globalOrientation, const decQuaternion &baseInverseRotation
 		
 	}else{
 		return globalOrientation * pChain[index - 1].GetInverseGlobalMatrix().ToQuaternion()
-			* pChain[ index ].GetInverseRigLocalRotation();
+			* pChain[index].GetInverseRigLocalRotation();
 	}
 }
 

@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglSkinState.h"
 #include "deoglSkinStateRenderable.h"
 #include "deoglSkinStateMapped.h"
@@ -95,16 +91,7 @@ pRenderThread(renderThread)
 	pOwnerLight = &light;
 }
 
-deoglSkinState::~deoglSkinState(){
-	SetVideoPlayerCount(0);
-	
-	pRenderables.RemoveAll();
-	
-	SetCalculatedPropertyCount(0);
-	SetConstructedPropertyCount(0);
-	SetMappedCount(0);
-	SetBoneCount(0);
-}
+deoglSkinState::~deoglSkinState() = default;
 
 
 
@@ -178,10 +165,6 @@ void deoglSkinState::AdvanceTime(float timeStep){
 
 
 
-int deoglSkinState::GetVideoPlayerCount() const{
-	return pVideoPlayers.GetCount();
-}
-
 void deoglSkinState::SetVideoPlayerCount(int count){
 	if(count == pVideoPlayers.GetCount()){
 		return;
@@ -193,10 +176,6 @@ void deoglSkinState::SetVideoPlayerCount(int count){
 	for(i=0; i<count; i++){
 		pVideoPlayers.Add(nullptr);
 	}
-}
-
-deoglRVideoPlayer *deoglSkinState::GetVideoPlayerAt(int index) const{
-	return pVideoPlayers.GetAt(index);
 }
 
 void deoglSkinState::SetVideoPlayerAt(int index, deoglRVideoPlayer *videoPlayer){
@@ -258,7 +237,7 @@ void deoglSkinState::AddRenderPlans(deoglRenderPlan &plan){
 // Renderables
 ////////////////
 
-deoglSkinStateRenderable *deoglSkinState::GetRenderableAt(int index) const{
+deoglSkinStateRenderable *deoglSkinState::GetRenderableAt(int index){
 	return pRenderables.GetAt(index);
 }
 
@@ -286,26 +265,12 @@ void deoglSkinState::RemoveAllRenderables(){
 // Mapped
 ///////////
 
-deoglSkinStateMapped &deoglSkinState::GetMappedAt(int index) const{
-	DEASSERT_TRUE(index >= 0)
-	DEASSERT_TRUE(index < pMappedCount)
-	
+deoglSkinStateMapped &deoglSkinState::GetMappedAt(int index){
 	return pMapped[index];
 }
 
 void deoglSkinState::SetMappedCount(int count){
-	DEASSERT_TRUE(count >= 0)
-	
-	if(pMapped){
-		delete [] pMapped;
-		pMapped = nullptr;
-		pMappedCount = 0;
-	}
-	
-	if(count > 0){
-		pMapped = new deoglSkinStateMapped[count];
-		pMappedCount = count;
-	}
+	pMapped.SetAll(count, {});
 }
 
 
@@ -313,28 +278,12 @@ void deoglSkinState::SetMappedCount(int count){
 // Calculated properties
 //////////////////////////
 
-deoglSkinStateCalculated &deoglSkinState::GetCalculatedPropertyAt(int index) const{
-	if(index < 0 || index >= pCalculatedPropertyCount){
-		DETHROW(deeInvalidParam);
-	}
+deoglSkinStateCalculated &deoglSkinState::GetCalculatedPropertyAt(int index){
 	return pCalculatedProperties[index];
 }
 
 void deoglSkinState::SetCalculatedPropertyCount(int count){
-	if(count < 0){
-		DETHROW(deeInvalidParam);
-	}
-	
-	if(pCalculatedProperties){
-		delete [] pCalculatedProperties;
-		pCalculatedProperties = nullptr;
-		pCalculatedPropertyCount = 0;
-	}
-	
-	if(count > 0){
-		pCalculatedProperties = new deoglSkinStateCalculated[count];
-		pCalculatedPropertyCount = count;
-	}
+	pCalculatedProperties.SetAll(count, {});
 }
 
 
@@ -342,32 +291,18 @@ void deoglSkinState::SetCalculatedPropertyCount(int count){
 // Constructed properties
 ///////////////////////////
 
-deoglSkinStateConstructed &deoglSkinState::GetConstructedPropertyAt(int index) const{
-	DEASSERT_TRUE(index >= 0)
-	DEASSERT_TRUE(index < pConstructedPropertyCount)
+deoglSkinStateConstructed &deoglSkinState::GetConstructedPropertyAt(int index){
 	return pConstructedProperties[index];
 }
 
 void deoglSkinState::SetConstructedPropertyCount(int count){
-	DEASSERT_TRUE(count >= 0)
-	
-	if(pConstructedProperties){
-		delete [] pConstructedProperties;
-		pConstructedProperties = nullptr;
-		pConstructedPropertyCount = 0;
-	}
-	
-	if(count > 0){
-		pConstructedProperties = new deoglSkinStateConstructed[count];
-		pConstructedPropertyCount = count;
-	}
+	pConstructedProperties.SetAll(count, {});
 }
 
 void deoglSkinState::PrepareConstructedProperties(){
-	int i;
-	for(i=0; i<pConstructedPropertyCount; i++){
-		pConstructedProperties[i].PrepareForRender(*this);
-	}
+	pConstructedProperties.Visit([&](deoglSkinStateConstructed &prop){
+		prop.PrepareForRender(*this);
+	});
 }
 
 
@@ -375,33 +310,18 @@ void deoglSkinState::PrepareConstructedProperties(){
 // Bones
 ///////////
 
-deoglSkinStateBone &deoglSkinState::GetBoneAt(int index) const{
-	DEASSERT_TRUE(index >= 0)
-	DEASSERT_TRUE(index < pBoneCount)
-	
+deoglSkinStateBone &deoglSkinState::GetBoneAt(int index){
 	return pBones[index];
 }
 
 void deoglSkinState::SetBoneCount(int count){
-	DEASSERT_TRUE(count >= 0)
-	
-	if(pBones){
-		delete [] pBones;
-		pBones = nullptr;
-		pBoneCount = 0;
-	}
-	
-	if(count > 0){
-		pBones = new deoglSkinStateBone[count];
-		pBoneCount = count;
-	}
+	pBones.SetAll(count, {});
 }
 
 
 
 void deoglSkinState::InitAll(){
 	deoglRSkin * const skin = GetOwnerSkin();
-	int i;
 	
 	if(!skin){
 		SetMappedCount(0);
@@ -412,58 +332,55 @@ void deoglSkinState::InitAll(){
 	}
 	
 	SetMappedCount(skin->GetMappedCount());
-	for(i=0; i<pMappedCount; i++){
-		pMapped[i].SetMapped(skin->GetMappedAt(i));
-		pMapped[i].SetComponent(pOwnerComponent);
-	}
+	pMapped.VisitIndexed([&](int i, deoglSkinStateMapped &m){
+		m.SetMapped(skin->GetMappedAt(i));
+		m.SetComponent(pOwnerComponent);
+	});
 	
 	SetBoneCount(skin->GetBoneCount());
-	for(i=0; i<pBoneCount; i++){
-		pBones[i].SetSkinBone(skin->GetBoneAt(i));
-	}
+	pBones.VisitIndexed([&](int i, deoglSkinStateBone &b){
+		b.SetSkinBone(skin->GetBoneAt(i));
+	});
 	
 	SetCalculatedPropertyCount(skin->GetCalculatedPropertyCount());
-	for(i=0; i<pCalculatedPropertyCount; i++){
-		pCalculatedProperties[i].SetProperty(skin->GetCalculatedPropertyAt(i));
-	}
+	pCalculatedProperties.VisitIndexed([&](int i, deoglSkinStateCalculated &p){
+		p.SetProperty(skin->GetCalculatedPropertyAt(i));
+	});
 	
 	SetConstructedPropertyCount(skin->GetConstructedPropertyCount());
-	for(i=0; i<pConstructedPropertyCount; i++){
-		pConstructedProperties[i].SetProperty(skin->GetConstructedPropertyAt(i));
-	}
+	pConstructedProperties.VisitIndexed([&](int i, deoglSkinStateConstructed &p){
+		p.SetProperty(skin->GetConstructedPropertyAt(i));
+	});
 }
 
 void deoglSkinState::UpdateAll(){
-	int i;
-	for(i=0; i<pMappedCount; i++){
-		pMapped[i].Update(*this);
-	}
-	for(i=0; i<pCalculatedPropertyCount; i++){
-		pCalculatedProperties[i].Update(*this);
-	}
-	for(i=0; i<pConstructedPropertyCount; i++){
-		pConstructedProperties[i].Update(*this);
-	}
+	pMapped.Visit([&](deoglSkinStateMapped &m){
+		m.Update(*this);
+	});
+	pCalculatedProperties.Visit([&](deoglSkinStateCalculated &p){
+		p.Update(*this);
+	});
+	pConstructedProperties.Visit([&](deoglSkinStateConstructed &p){
+		p.Update(*this);
+	});
 }
 
 void deoglSkinState::MapBonesAll(const deComponent &component){
-	int i;
-	for(i=0; i<pMappedCount; i++){
-		pMapped[i].MapBone(component);
-	}
-	for(i=0; i<pBoneCount; i++){
-		pBones[i].MapBone(component);
-	}
+	pMapped.Visit([&](deoglSkinStateMapped &m){
+		m.MapBone(component);
+	});
+	pBones.Visit([&](deoglSkinStateBone &b){
+		b.MapBone(component);
+	});
 }
 
 void deoglSkinState::UpdateBonesAll(const deComponent &component){
-	int i;
-	for(i=0; i<pMappedCount; i++){
-		pMapped[i].UpdateBone(component);
-	}
-	for(i=0; i<pBoneCount; i++){
-		pBones[i].UpdateBone(component);
-	}
+	pMapped.Visit([&](deoglSkinStateMapped &m){
+		m.UpdateBone(component);
+	});
+	pBones.Visit([&](deoglSkinStateBone &b){
+		b.UpdateBone(component);
+	});
 }
 
 
@@ -485,18 +402,6 @@ void deoglSkinState::pSharedInit(){
 	pOwnerLight = nullptr;
 	
 	pTime = 0.0f;
-	
-	pMapped = nullptr;
-	pMappedCount = 0;
-	
-	pCalculatedProperties = nullptr;
-	pCalculatedPropertyCount = 0;
-	
-	pConstructedProperties = nullptr;
-	pConstructedPropertyCount = 0;
-	
-	pBones = nullptr;
-	pBoneCount = 0;
 	
 	pVariationSeed.x = (int)(((float)rand() / (float)RAND_MAX) * 100.0f);
 	pVariationSeed.y = (int)(((float)rand() / (float)RAND_MAX) * 100.0f);

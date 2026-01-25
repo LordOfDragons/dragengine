@@ -27,6 +27,12 @@ private:
 	void TestIntMoveConstructor();
 	void TestIntIteratorConstructor();
 	void TestIntCollectionConstructor();
+	void TestIntFindOrDefault();
+	void TestIntFind();
+	void TestIntVisitReverse();
+	void TestIntRemoveIf();
+	void TestIntRemoveHead();
+	void TestIntRemoveTail();
 
 	// Test methods for T=decString
 	void TestStringBasic();
@@ -37,6 +43,8 @@ private:
 	void TestStringNoneMatching();
 	void TestStringFold();
 	void TestStringInject();
+	void TestStringVisit();
+	void TestStringRemoveIf();
 
 	// Test methods for T=decXmlElementTag::Ref, TP=decXmlElementTag*
 	void TestObjectRefBasic();

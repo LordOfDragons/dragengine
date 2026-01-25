@@ -22,11 +22,10 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _DEBPCONVEXFACECLIPPER_H_
 #define _DEBPCONVEXFACECLIPPER_H_
 
-// includes
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 
@@ -38,8 +37,7 @@
  */
 class debpConvexFaceClipper{
 private:
-	decDVector *pVertices;
-	int pVertexCount;
+	decTList<decDVector> pVertices;
 	decDVector pNormal;
 	
 public:
@@ -59,7 +57,7 @@ public:
 	void SetNormal(const decDVector &normal);
 	
 	/** Retrieves the number of vertices. */
-	inline int GetVertexCount() const{ return pVertexCount; }
+	inline int GetVertexCount() const{ return pVertices.GetCount(); }
 	/** Retrieves the the vertex at the given position. */
 	const decDVector &GetVertexAt(int position) const;
 	/** Determines if the given vertex exists. */

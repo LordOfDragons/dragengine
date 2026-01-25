@@ -26,6 +26,7 @@
 #define _DEEFFECTFILTERKERNEL_H_
 
 #include "deEffect.h"
+#include "../../common/collection/decTList.h"
 
 
 // definitions
@@ -47,7 +48,7 @@ public:
 	
 	
 private:
-	float *pKernel;
+	decTList<float> pKernel;
 	int pKernelRows;
 	int pKernelCols;
 	float pScale;
@@ -75,6 +76,9 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
+	/** \brief Kernel. */
+	inline const decTList<float> &GetKernel() const{ return pKernel; }
+	
 	/** \brief Rows of the filter kernel. */
 	inline int GetKernelRows() const{ return pKernelRows; }
 	

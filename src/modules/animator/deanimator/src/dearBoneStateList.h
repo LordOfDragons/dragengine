@@ -59,6 +59,10 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** States. */
+	inline decTList<dearBoneState> &GetStates(){ return pStates; }
+	inline const decTList<dearBoneState> &GetStates() const{ return pStates; }
+	
 	/** Retrieves the number of states. */
 	inline int GetStateCount() const{ return pStates.GetCount(); }
 	/** Sets the number of states. */

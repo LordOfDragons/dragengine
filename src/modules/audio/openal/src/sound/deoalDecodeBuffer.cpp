@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoalDecodeBuffer.h"
 
 #include <dragengine/common/exceptions.h>
@@ -39,18 +35,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalDecodeBuffer::deoalDecodeBuffer(int size) :
-pBuffer(nullptr),
-pSize(0)
-{
+deoalDecodeBuffer::deoalDecodeBuffer(int size){
 	SetSize(size);
 }
 
-deoalDecodeBuffer::~deoalDecodeBuffer(){
-	if(pBuffer){
-		delete [] pBuffer;
-	}
-}
+deoalDecodeBuffer::~deoalDecodeBuffer() = default;
 
 
 
@@ -62,27 +51,22 @@ void deoalDecodeBuffer::SetSize(int size){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(size == pSize){
+	if(size == pBuffer.GetCount()){
 		return;
 	}
 	
-	char * const buffer = new char[size];
-	if(pBuffer){
-		delete [] pBuffer;
-	}
-	pBuffer = buffer;
-	pSize = size;
+	pBuffer.SetCountDiscard(size);
 }
 
 int deoalDecodeBuffer::Decode(deSoundDecoder &decoder, int size){
-	if(size > pSize){
+	if(size > pBuffer.GetCount()){
 		SetSize(size);
 	}
 	
-	const int bytesRead = decoder.ReadSamples(pBuffer, size);
+	const int bytesRead = decoder.ReadSamples(pBuffer.GetArrayPointer(), size);
 	const int remaining = size - bytesRead;
 	if(remaining > 0){
-		memset(pBuffer + bytesRead, '\0', remaining);
+		memset(pBuffer.GetArrayPointer() + bytesRead, 0, remaining);
 	}
 	
 	return bytesRead;
@@ -93,12 +77,12 @@ int deoalDecodeBuffer::DecodeLooping(deSoundDecoder &decoder, int size){
 	int remaining = size;
 	int position = 0;
 	
-	if(size > pSize){
+	if(size > pBuffer.GetCount()){
 		SetSize(size);
 	}
 	
 	while(true){
-		const int bytesRead = decoder.ReadSamples(pBuffer + position, remaining);
+		const int bytesRead = decoder.ReadSamples(pBuffer.GetArrayPointer() + position, remaining);
 		
 		// bytesRead == 0 means EOF.
 		

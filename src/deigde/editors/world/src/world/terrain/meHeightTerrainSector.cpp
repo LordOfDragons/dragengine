@@ -881,53 +881,52 @@ meHeightTerrainTexture *meHeightTerrainSector::GetTextureUnder(float x, float y)
 	const int resolution = pHeightTerrain->GetSectorResolution();
 	
 	int gx = (int)x;
+	int gx2 = gx + 1;
 	int gy = (int)y;
+	int gy2 = gy + 1;
 	float bx = x - (float)gx;
 	float by = y - (float)gy;
 	float s1, s2, s3, s4, s5, s6, s7;
 	
 	if(gx < 0){
 		gx = 0;
+		gx2 = 1;
 		bx = 0.0f;
 		
-	}else if(gx >= resolution){
-		gx = resolution - 1;
+	}else if(gx >= resolution - 1){
+		gx = gx2 = resolution - 1;
 		bx = 0.0f;
 	}
 	
 	if(gy < 0){
 		gy = 0;
+		gy2 = 1;
 		by = 0.0f;
 		
-	}else if(gy >= resolution){
-		gy = resolution - 1;
+	}else if(gy >= resolution - 1){
+		gy = gy2 = resolution - 1;
 		by = 0.0f;
 	}
 	
-	meHeightTerrainTexture * const htt = pTextures.FindReverseOrDefault([&](meHeightTerrainTexture &t){
+	meHeightTerrainTexture * const htt = pTextures.FindReverseOrDefault([&](const meHeightTerrainTexture &t){
 		deImage * const mask = t.GetMaskImage();
-		
-		if(mask){
-			meTerrainMaskImage tmi(mask);
-			
-			s1 = tmi.GetMaskValueAt(gx, gy);
-			s2 = tmi.GetMaskValueAt(gx + 1, gy);
-			s3 = tmi.GetMaskValueAt(gx, gy + 1);
-			s4 = tmi.GetMaskValueAt(gx + 1, gy + 1);
-			
-			s5 = s1 * (1.0f - bx) + s2 * bx;
-			s6 = s3 * (1.0f - bx) + s4 * bx;
-			
-			s7 = s5 * (1.0f - by) + s6 * by;
-			
-			if(s7 > 0.5f){
-				return true;
-			}
-			
-		}else{
+		if(!mask){
 			return true;
 		}
-		return false;
+		
+		meTerrainMaskImage tmi(mask);
+		
+		s1 = tmi.GetMaskValueAt(gx, gy);
+		s2 = tmi.GetMaskValueAt(gx2, gy);
+		s3 = tmi.GetMaskValueAt(gx, gy2);
+		s4 = tmi.GetMaskValueAt(gx2, gy2);
+		
+		s5 = s1 * (1.0f - bx) + s2 * bx;
+		s6 = s3 * (1.0f - bx) + s4 * bx;
+		
+		s7 = s5 * (1.0f - by) + s6 * by;
+		
+		return s7 > 0.5f;
 	});
 	
 	return htt ? htt : (pTextures.IsNotEmpty() ? pTextures.First().Pointer() : nullptr);
@@ -1464,8 +1463,6 @@ void meHeightTerrainSector::pCreateDDEdges(){
 	deDebugDrawerManager &ddmgr = *pEngine->GetDebugDrawerManager();
 	const float stepPoint = 1.0f / (float)(resolution - 1);
 	const decVector normal(0.0f, 1.0f, 0.0f);
-	deDebugDrawerShapeFace *face = nullptr;
-	deDebugDrawerShape *ddshape = nullptr;
 	int pcx, pcz, curx, curz;
 	decVector corners[4];
 	int cx, cz, x, z;
@@ -1475,84 +1472,71 @@ void meHeightTerrainSector::pCreateDDEdges(){
 	
 	pDDClusters.RemoveAll();
 	
-	try{
-		for(curz=0, cz=0; cz<clusterCount; cz++){
-			if(cz < clusterCount - 1){
-				pcz = pDDPointsPerCluster;
-				
-			}else{
-				pcz = resolution - curz;
-			}
+	for(curz=0, cz=0; cz<clusterCount; cz++){
+		if(cz < clusterCount - 1){
+			pcz = pDDPointsPerCluster;
 			
-			for(curx=0, cx=0; cx<clusterCount; cx++){
-				// cluster information
-				if(cx < clusterCount - 1){
-					pcx = pDDPointsPerCluster;
-					
-				}else{
-					pcx = resolution - curx;
-				}
-				
-				const cDDCluster::Ref cluster(cDDCluster::Ref::New());
-				cluster->pointFrom.Set(curx, curz);
-				cluster->pointTo = cluster->pointFrom + decPoint(pcx - 1, pcz - 1);
-				cluster->faceCount.Set(pcx - 1, pcz - 1);
-				pDDClusters.Add(cluster);
-				
-				curx += pDDPointsPerCluster - 1;
-				
-				// debug drawer
-				const deDebugDrawer::Ref debugDrawer(ddmgr.CreateDebugDrawer());
-				debugDrawer->SetXRay(false); //true);
-				
-				ddshape = new deDebugDrawerShape;
-				ddshape->SetFillColor(decColor(0.0f, 0.0f, 0.0f, 0.0f));
-				
-				for(z=cluster->pointFrom.y; z<cluster->pointTo.y; z++){
-					const sGrayscale32 * const heightsRow1 = heights + resolution * z;
-					const sGrayscale32 * const heightsRow2 = heights + resolution * (z + 1);
-					
-					corners[0].z = corners[1].z = 0.5f - stepPoint * (float)z;
-					corners[2].z = corners[3].z = 0.5f - stepPoint * (float)(z + 1);
-					
-					for(x=cluster->pointFrom.x; x<cluster->pointTo.x; x++){
-						corners[0].x = corners[3].x = stepPoint * (float)x - 0.5f;
-						corners[1].x = corners[2].x = stepPoint * (float)(x + 1) - 0.5f;
-						
-						corners[0].y = heightsRow1[x].value;
-						corners[1].y = heightsRow1[x + 1].value;
-						corners[2].y = heightsRow2[x + 1].value;
-						corners[3].y = heightsRow2[x].value;
-						
-						face = new deDebugDrawerShapeFace;
-						face->AddVertex(corners[0]);
-						face->AddVertex(corners[1]);
-						face->AddVertex(corners[2]);
-						face->AddVertex(corners[3]);
-						face->SetNormal(normal); //(corners[1] - corners[0]) % (corners[2] - corners[1]));
-						
-						ddshape->AddFace(face);
-						face = nullptr;
-					}
-				}
-				
-				debugDrawer->AddShape(ddshape);
-				debugDrawer->NotifyShapeLayoutChanged();
-				
-				pDDEdges.Add(debugDrawer);
-			}
-			
-			curz += pDDPointsPerCluster - 1;
+		}else{
+			pcz = resolution - curz;
 		}
 		
-	}catch(const deException &){
-		if(face){
-			delete face;
+		for(curx=0, cx=0; cx<clusterCount; cx++){
+			// cluster information
+			if(cx < clusterCount - 1){
+				pcx = pDDPointsPerCluster;
+				
+			}else{
+				pcx = resolution - curx;
+			}
+			
+			const cDDCluster::Ref cluster(cDDCluster::Ref::New());
+			cluster->pointFrom.Set(curx, curz);
+			cluster->pointTo = cluster->pointFrom + decPoint(pcx - 1, pcz - 1);
+			cluster->faceCount.Set(pcx - 1, pcz - 1);
+			pDDClusters.Add(cluster);
+			
+			curx += pDDPointsPerCluster - 1;
+			
+			// debug drawer
+			const deDebugDrawer::Ref debugDrawer(ddmgr.CreateDebugDrawer());
+			debugDrawer->SetXRay(false); //true);
+			
+			auto ddshape = deDebugDrawerShape::Ref::New();
+			ddshape->SetFillColor(decColor(0.0f, 0.0f, 0.0f, 0.0f));
+			
+			for(z=cluster->pointFrom.y; z<cluster->pointTo.y; z++){
+				const sGrayscale32 * const heightsRow1 = heights + resolution * z;
+				const sGrayscale32 * const heightsRow2 = heights + resolution * (z + 1);
+				
+				corners[0].z = corners[1].z = 0.5f - stepPoint * (float)z;
+				corners[2].z = corners[3].z = 0.5f - stepPoint * (float)(z + 1);
+				
+				for(x=cluster->pointFrom.x; x<cluster->pointTo.x; x++){
+					corners[0].x = corners[3].x = stepPoint * (float)x - 0.5f;
+					corners[1].x = corners[2].x = stepPoint * (float)(x + 1) - 0.5f;
+					
+					corners[0].y = heightsRow1[x].value;
+					corners[1].y = heightsRow1[x + 1].value;
+					corners[2].y = heightsRow2[x + 1].value;
+					corners[3].y = heightsRow2[x].value;
+					
+					auto face = deDebugDrawerShapeFace::Ref::New();
+					face->AddVertex(corners[0]);
+					face->AddVertex(corners[1]);
+					face->AddVertex(corners[2]);
+					face->AddVertex(corners[3]);
+					face->SetNormal(normal); //(corners[1] - corners[0]) % (corners[2] - corners[1]));
+					ddshape->AddFace(std::move(face));
+				}
+			}
+			
+			debugDrawer->AddShape(std::move(ddshape));
+			debugDrawer->NotifyShapeLayoutChanged();
+			
+			pDDEdges.Add(debugDrawer);
 		}
-		if(ddshape){
-			delete ddshape;
-		}
-		throw;
+		
+		curz += pDDPointsPerCluster - 1;
 	}
 	
 	pUpdateDDEdgesColors();
@@ -1601,10 +1585,10 @@ void meHeightTerrainSector::pUpdateDDEdgesColors(){
 	}
 	
 	pDDEdges.Visit([&](deDebugDrawer &dd){
-		dd.GetShapeAt(0)->SetEdgeColor(color);
-// 		dd.GetShapeAt( 0 )->SetEdgeColor( decColor(
-// 			( float )( ((i*12)%256) % pDDEdgesClusterCount ) / ( float )pDDEdgesClusterCount, 0.0f,
-// 			( float )( ((i*12)%256) / pDDEdgesClusterCount ) / ( float )pDDEdgesClusterCount, 1.0f ) );
+		dd.GetShapes()[0]->SetEdgeColor(color);
+// 		dd.GetShapes()[0]->SetEdgeColor(decColor(
+// 			(float)(((i*12)%256) % pDDEdgesClusterCount) / (float)pDDEdgesClusterCount, 0.0f,
+// 			(float)(((i*12)%256) / pDDEdgesClusterCount) / (float)pDDEdgesClusterCount, 1.0f));
 		dd.NotifyShapeColorChanged();
 		dd.SetVisible(visible);
 	});
@@ -1632,7 +1616,7 @@ void meHeightTerrainSector::pUpdateDDEdgesHeights(const decPoint &fromGrid, cons
 			const decPoint faceFrom(cluster.pointFrom.Largest(fromGrid - decPoint(1, 1)));
 			const decPoint faceTo(cluster.pointTo.Smallest(toGrid));
 			deDebugDrawer &debugDrawer = pDDEdges.GetAt(clusterCount * cz + cx);
-			deDebugDrawerShape &shape = *debugDrawer.GetShapeAt(0);
+			deDebugDrawerShape &shape = *debugDrawer.GetShapes()[0];
 			
 			for(z=faceFrom.y; z<faceTo.y; z++){
 				const sGrayscale32 * const heightsRow1 = heights + resolution * z;
@@ -1640,25 +1624,25 @@ void meHeightTerrainSector::pUpdateDDEdgesHeights(const decPoint &fromGrid, cons
 				const int faceRowIndex = cluster.faceCount.x * (z - cluster.pointFrom.y) - cluster.pointFrom.x;
 				
 				for(x=faceFrom.x; x<faceTo.x; x++){
-					deDebugDrawerShapeFace &face = *shape.GetFaceAt(faceRowIndex + x);
+					deDebugDrawerShapeFace &face = *shape.GetFaces()[faceRowIndex + x];
 					
-					decVector corner1 = face.GetVertexAt(0);
+					decVector corner1 = face.GetVertices()[0];
 					corner1.y = heightsRow1[x].value;
 					face.SetVertexAt(0, corner1);
 					
-					decVector corner2 = face.GetVertexAt(1);
+					decVector corner2 = face.GetVertices()[1];
 					corner2.y = heightsRow1[x + 1].value;
 					face.SetVertexAt(1, corner2);
 					
-					decVector corner3 = face.GetVertexAt(2);
+					decVector corner3 = face.GetVertices()[2];
 					corner3.y = heightsRow2[x + 1].value;
 					face.SetVertexAt(2, corner3);
 					
-					decVector corner4 = face.GetVertexAt(3);
+					decVector corner4 = face.GetVertices()[3];
 					corner4.y = heightsRow2[x].value;
 					face.SetVertexAt(3, corner4);
 					
-					//face.SetNormal( ( corner2 - corner1 ) % ( corner3 - corner2 ) );
+					//face.SetNormal((corner2 - corner1) % (corner3 - corner2));
 				}
 			}
 			
@@ -1666,7 +1650,7 @@ void meHeightTerrainSector::pUpdateDDEdgesHeights(const decPoint &fromGrid, cons
 		}
 	}
 	
-// 	printf( "pUpdateDDSEdgeHeights END (%iys)\n", ( int )( timer.GetElapsedTime() * 1e6f ) );
+// 	printf("pUpdateDDSEdgeHeights END (%iys)\n", (int)(timer.GetElapsedTime() * 1e6f));
 }
 
 
@@ -1675,20 +1659,10 @@ void meHeightTerrainSector::pCreateDDSelNavPoints(){
 	pDDSelNavPoints = pEngine->GetDebugDrawerManager()->CreateDebugDrawer();
 	pDDSelNavPoints->SetXRay(false);
 	
-	deDebugDrawerShape *ddshape = nullptr;
-	
-	try{
-		ddshape = new deDebugDrawerShape;
-		ddshape->SetEdgeColor(decColor(1.0f, 0.0f, 0.0f, 1.0f));
-		ddshape->SetFillColor(decColor(1.0f, 0.0f, 0.0f, 0.2f));
-		pDDSelNavPoints->AddShape(ddshape);
-		
-	}catch(const deException &){
-		if(ddshape){
-			delete ddshape;
-		}
-		throw;
-	}
+	auto ddshape = deDebugDrawerShape::Ref::New();
+	ddshape->SetEdgeColor(decColor(1.0f, 0.0f, 0.0f, 1.0f));
+	ddshape->SetFillColor(decColor(1.0f, 0.0f, 0.0f, 0.2f));
+	pDDSelNavPoints->AddShape(std::move(ddshape));
 	
 	if(pHeightTerrain){
 		pHeightTerrain->GetWorld().GetEngineWorld()->AddDebugDrawer(pDDSelNavPoints);
@@ -1713,7 +1687,7 @@ void meHeightTerrainSector::pUpdateDDSelNavPointsColors(){
 }
 
 void meHeightTerrainSector::pUpdateDDSelNavPointsShapes(){
-	deDebugDrawerShape &ddshape = *pDDSelNavPoints->GetShapeAt(0);
+	deDebugDrawerShape &ddshape = *pDDSelNavPoints->GetShapes().First();
 	decShape::List &shapes = ddshape.GetShapeList();
 	
 	shapes.RemoveAll();
@@ -1744,12 +1718,12 @@ void meHeightTerrainSector::pUpdateDDSelNavPointHeights(){
 	}
 	
 	const sGrayscale32 * const heights = pHeightImage->GetDataGrayscale32();
-	deDebugDrawerShape &ddshape = *pDDSelNavPoints->GetShapeAt(0);
+	deDebugDrawerShape &ddshape = *pDDSelNavPoints->GetShapes().First();
 	const float heightScale = pHeightTerrain->GetHeightScaling();
 	decShape::List &shapes = ddshape.GetShapeList();
 	
 	pSelectedNavPoints.VisitIndexed([&](int i, int navpoint){
-		decShape &shape = *shapes.GetAt(i);
+		decShape &shape = shapes.GetAt(i);
 		
 		decVector position(shape.GetPosition());
 		position.y = heightScale * heights[navpoint].value;

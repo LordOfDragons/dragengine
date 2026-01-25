@@ -25,6 +25,7 @@
 #ifndef _DEOALRTWORLDBVH_H_
 #define _DEOALRTWORLDBVH_H_
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoalAComponent;
@@ -80,21 +81,10 @@ public:
 private:
 	decDVector pPosition;
 	
-	sBuildNode *pBuildNodes;
-	int pBuildNodeCount;
-	int pBuildNodeSize;
-	
-	sBuildComponent *pBuildComponents;
-	int pBuildComponentCount;
-	int pBuildComponentSize;
-	
-	sVisitNode *pVisitNodes;
-	int pVisitNodeCount;
-	int pVisitNodeSize;
-	
-	sVisitComponent *pVisitComponents;
-	int pVisitComponentCount;
-	int pVisitComponentSize;
+	decTList<sBuildNode> pBuildNodes;
+	decTList<sBuildComponent> pBuildComponents;
+	decTList<sVisitNode> pVisitNodes;
+	decTList<sVisitComponent> pVisitComponents;
 	
 	int pIndexNode;
 	int pIndexComponent;
@@ -142,16 +132,16 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit nodes array. */
-	inline const sVisitNode *GetVisitNodes() const{ return pVisitNodes; }
+	inline const sVisitNode *GetVisitNodes() const{ return pVisitNodes.GetArrayPointer(); }
 	
 	/** \brief Visit node count. */
-	inline int GetVisitNodeCount() const{ return pVisitNodeCount; }
+	inline int GetVisitNodeCount() const{ return pVisitNodes.GetCount(); }
 	
 	/** \brief Visit components array. */
-	inline const sVisitComponent *GetVisitComponents() const{ return pVisitComponents; }
+	inline const sVisitComponent *GetVisitComponents() const{ return pVisitComponents.GetArrayPointer(); }
 	
 	/** \brief Visit component count. */
-	inline int GetVisitComponentCount() const{ return pVisitComponentCount; }
+	inline int GetVisitComponentCount() const{ return pVisitComponents.GetCount(); }
 	/*@}*/
 	
 	

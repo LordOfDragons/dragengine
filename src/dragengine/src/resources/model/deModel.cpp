@@ -82,7 +82,6 @@ deModel::~deModel(){
 ///////////////
 
 bool deModel::Verify(){
-	bool *visited = nullptr;
 	int i, j, parent;
 	bool success = true;
 	
@@ -94,38 +93,28 @@ bool deModel::Verify(){
 	// verify that all bones are free of cyclic parentship
 	const int boneCount = pBones.GetCount();
 	if(boneCount > 0){
-		try{
-			visited = new bool[boneCount];
+		decTList<bool> visited;
+		visited.AddRange(boneCount, false);
+		
+		// check bone parents are valid
+		for(i=0; i<boneCount; i++){
+			for(j=0; j<boneCount; j++){
+				visited[j] = false;
+			}
 			
-			// check bone parents are valid
-			for(i=0; i<boneCount; i++){
-				for(j=0; j<boneCount; j++){
-					visited[j] = false;
-				}
-				
-				parent = pBones.GetAt(i)->GetParent();
-				while(parent != -1){
-					if(parent < -1 || parent >= boneCount || visited[parent]){
-						success = false;
-						break;
-					}
-					visited[parent] = true;
-					parent = pBones.GetAt(parent)->GetParent();
-				}
-				
-				if(!success){
+			parent = pBones.GetAt(i)->GetParent();
+			while(parent != -1){
+				if(parent < -1 || parent >= boneCount || visited[parent]){
+					success = false;
 					break;
 				}
+				visited[parent] = true;
+				parent = pBones.GetAt(parent)->GetParent();
 			}
 			
-			// clean up
-			delete [] visited;
-			
-		}catch(const deException &){
-			if(visited){
-				delete [] visited;
+			if(!success){
+				break;
 			}
-			throw;
 		}
 	}
 	
@@ -140,13 +129,13 @@ bool deModel::Verify(){
 	for(i=0; i<lodCount; i++){
 		const int texCoordCount = pLODs.GetAt(i)->GetTextureCoordinatesCount();
 		
-		if(pLODs.GetAt(i)->GetTextureCoordinatesSetCount() != texCoordSetCount){
+		if(pLODs.GetAt(i)->GetTextureCoordinatesSets().GetCount() != texCoordSetCount){
 			return false;
 		}
 		
 		
 		for(j=0; j<texCoordSetCount; j++){
-			if(pLODs.GetAt(i)->GetTextureCoordinatesSetAt(j).GetTextureCoordinates().GetCount() != texCoordCount){
+			if(pLODs.GetAt(i)->GetTextureCoordinatesSets()[j].GetTextureCoordinates().GetCount() != texCoordCount){
 				return false;
 			}
 		}
@@ -155,7 +144,7 @@ bool deModel::Verify(){
 	// verify each lod level has the correct count of vertex position sets
 	const int vertexPositionSetCount = pVertexPositionSets.GetCount();
 	for(i=0; i<lodCount; i++){
-		if(pLODs.GetAt(i)->GetVertexPositionSetCount() != vertexPositionSetCount){
+		if(pLODs.GetAt(i)->GetVertexPositionSets().GetCount() != vertexPositionSetCount){
 			return false;
 		}
 	}
@@ -186,9 +175,8 @@ bool deModel::HasBoneNamed(const char *name) const{
 }
 
 void deModel::AddBone(deTUniqueReference<deModelBone> &&bone){
-	if(!bone){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(bone)
+	
 	pBones.Add(std::move(bone));
 }
 
@@ -210,9 +198,8 @@ bool deModel::HasTextureNamed(const char *name) const{
 }
 
 void deModel::AddTexture(deTUniqueReference<deModelTexture> &&texture){
-	if(!texture){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(texture)
+	
 	pTextures.Add(std::move(texture));
 }
 
@@ -222,9 +209,8 @@ void deModel::AddTexture(deTUniqueReference<deModelTexture> &&texture){
 /////////
 
 void deModel::AddLOD(deTUniqueReference<deModelLOD> &&lod){
-	if(!lod){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(lod)
+	
 	pLODs.Add(std::move(lod));
 }
 
@@ -309,55 +295,41 @@ void deModel::pCalcBoneMatrices(){
 		return;
 	}
 	
-	bool *calculated = nullptr;
 	int i;
 	
-	try{
-		// create a temporary array to hold the calculated status
-		calculated = new bool[boneCount];
+	// create a temporary array to hold the calculated status
+	decTList<bool> calculated;
+	calculated.AddRange(boneCount, false);
+	
+	// keeps track of the count of bones in need of calculation
+	int remaining = boneCount;
+	
+	// loop until there are no more remaining bones
+	while(remaining > 0){
+		// loop over all bones and calculate those not done so yet
 		for(i=0; i<boneCount; i++){
-			calculated[i] = false;
-		}
-		
-		// keeps track of the count of bones in need of calculation
-		int remaining = boneCount;
-		
-		// loop until there are no more remaining bones
-		while(remaining > 0){
-			// loop over all bones and calculate those not done so yet
-			for(i=0; i<boneCount; i++){
-				// if calculated skip the bone
-				if(calculated[i]){
-					continue;
-				}
-				deModelBone &bone = *pBones.GetAt(i);
-				
-				// check if the parent if present is calculated
-				const int parent = bone.GetParent();
-				if(parent != -1 && !calculated[parent]){
-					continue;
-				}
-				
-				// calculate the matrix
-				decMatrix matrix(decMatrix::CreateWorld(bone.GetPosition(), bone.GetOrientation()));
-				if(parent != -1){
-					matrix *= pBones.GetAt(parent)->GetMatrix();
-				}
-				bone.SetMatrix(matrix);
-				
-				// mark as calculate and decrease count of remaining bones by one
-				calculated[i] = true;
-				remaining--;
+			// if calculated skip the bone
+			if(calculated[i]){
+				continue;
 			}
+			deModelBone &bone = *pBones.GetAt(i);
+			
+			// check if the parent if present is calculated
+			const int parent = bone.GetParent();
+			if(parent != -1 && !calculated[parent]){
+				continue;
+			}
+			
+			// calculate the matrix
+			decMatrix matrix(decMatrix::CreateWorld(bone.GetPosition(), bone.GetOrientation()));
+			if(parent != -1){
+				matrix *= pBones.GetAt(parent)->GetMatrix();
+			}
+			bone.SetMatrix(matrix);
+			
+			// mark as calculate and decrease count of remaining bones by one
+			calculated[i] = true;
+			remaining--;
 		}
-		
-		// free temporary array
-		delete [] calculated;
-		
-	}catch(const deException &){
-		if(calculated){
-			delete [] calculated;
-		}
-		throw;
 	}
 }

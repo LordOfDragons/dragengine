@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoalSoundLevelMeter.h"
 #include "deoalASoundLevelMeter.h"
 #include "deoalASoundLevelMeterSpeaker.h"
@@ -61,18 +57,10 @@ pDirtyOctreeNode(true),
 pDirtyLayerMask(true),
 pDirtyEnabled(true),
 
-pSpeakers(nullptr),
-pSpeakerCount(0),
-pSpeakerSize(0),
-
 pLLSyncWorld(this){
 }
 
-deoalSoundLevelMeter::~deoalSoundLevelMeter(){
-	if(pSpeakers){
-		delete [] pSpeakers;
-	}
-}
+deoalSoundLevelMeter::~deoalSoundLevelMeter() = default;
 
 
 
@@ -91,38 +79,12 @@ void deoalSoundLevelMeter::SetParentWorld(deoalWorld *world){
 
 
 
-const deSoundLevelMeter::cAudibleSpeaker &deoalSoundLevelMeter::GetSpeakerAt(int index) const{
-	if(index < 0 || index >= pSpeakerCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pSpeakers[index];
-}
-
 void deoalSoundLevelMeter::AddSpeaker(deSpeaker *speaker, float volume){
-	if(pSpeakerCount == pSpeakerSize){
-		const int newSize = pSpeakerSize + 5;
-		deSoundLevelMeter::cAudibleSpeaker * const newArray =
-			new deSoundLevelMeter::cAudibleSpeaker[newSize];
-		
-		if(pSpeakers){
-			int i;
-			for(i=0; i<pSpeakerSize; i++){
-				newArray[i] = pSpeakers[i];
-			}
-			delete [] pSpeakers;
-		}
-		
-		pSpeakers = newArray;
-		pSpeakerSize = newSize;
-	}
-	
-	pSpeakers[pSpeakerCount].SetSpeaker(speaker);
-	pSpeakers[pSpeakerCount].SetVolume(volume);
-	pSpeakerCount++;
+	pSpeakers.Add({speaker, volume});
 }
 
 void deoalSoundLevelMeter::RemoveAllSpeakers(){
-	pSpeakerCount = 0;
+	pSpeakers.RemoveAll();
 }
 
 
@@ -224,13 +186,10 @@ void deoalSoundLevelMeter::EnabledChanged(){
 
 
 int deoalSoundLevelMeter::GetAudibleSpeakerCount(){
-	return pSpeakerCount;
+	return pSpeakers.GetCount();
 }
 
 const deSoundLevelMeter::cAudibleSpeaker &deoalSoundLevelMeter::GetAudibleSpeakerAt(int index){
-	if(index < 0 || index >= pSpeakerCount){
-		DETHROW(deeInvalidParam);
-	}
 	return pSpeakers[index];
 }
 
@@ -250,9 +209,9 @@ void deoalSoundLevelMeter::pUpdateAudibleSpeakers(){
 	int i, count;
 	
 	pOldSpeakers.RemoveAll();
-	for(i=0; i<pSpeakerCount; i++){
-		pOldSpeakers.Add(pSpeakers[i].GetSpeaker());
-	}
+	pSpeakers.Visit([&](deSoundLevelMeter::cAudibleSpeaker &speaker){
+		pOldSpeakers.Add(speaker.GetSpeaker());
+	});
 	
 	// update the audible speaker list. it contains now all audible speakers
 	RemoveAllSpeakers();
@@ -281,19 +240,15 @@ void deoalSoundLevelMeter::pUpdateAudibleSpeakers(){
 	});
 	
 	// notify scripting module about entering speakers
-	for(i=0; i<pSpeakerCount; i++){
-		if(!pOldSpeakers.Has(pSpeakers[i].GetSpeaker())){
-			pSoundLevelMeter.NotifySpeakerAudible(pSpeakers[i]);
+	pSpeakers.Visit([&](deSoundLevelMeter::cAudibleSpeaker &speaker){
+		if(!pOldSpeakers.Has(speaker.GetSpeaker())){
+			pSoundLevelMeter.NotifySpeakerAudible(speaker);
 		}
-	}
+	});
 }
 
 int deoalSoundLevelMeter::pIndexOfSpeaker(deSpeaker *speaker) const{
-	int i;
-	for(i=0; i<pSpeakerCount; i++){
-		if(pSpeakers[i].GetSpeaker() == speaker){
-			return i;
-		}
-	}
-	return -1;
+	return pSpeakers.IndexOfMatching([&](const deSoundLevelMeter::cAudibleSpeaker &s){
+		return s.GetSpeaker() == speaker;
+	});
 }

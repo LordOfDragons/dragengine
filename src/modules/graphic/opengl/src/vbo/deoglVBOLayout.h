@@ -25,6 +25,8 @@
 #ifndef _DEOGLVBOLAYOUT_H_
 #define _DEOGLVBOLAYOUT_H_
 
+#include <dragengine/common/collection/decTList.h>
+
 class deoglVBOAttribute;
 class deoglRenderThread;
 
@@ -55,8 +57,7 @@ public:
 private:
 	int pSize;
 	int pStride;
-	deoglVBOAttribute *pAttributes;
-	int pAttributeCount;
+	decTList<deoglVBOAttribute> pAttributes;
 	eIndexTypes pIndexType;
 	int pIndexSize;
 	int pIndexGLType;
@@ -109,28 +110,23 @@ public:
 	
 	/** \name Attributes */
 	/*@{*/
-	/** Number of attributes. */
-	inline int GetAttributeCount() const{ return pAttributeCount; }
-	
-	/** Set number of attributes. */
-	void SetAttributeCount(int count);
-	
-	/** Attribute by index. */
-	deoglVBOAttribute &GetAttributeAt(int index) const;
+	/** Attributes. */
+	inline decTList<deoglVBOAttribute> &GetAttributes(){ return pAttributes; }
+	inline const decTList<deoglVBOAttribute> &GetAttributes() const{ return pAttributes; }
 	
 	/**
 	 * Set VAO attribute.
 	 * 
 	 * The VBO is supposed to be already selected. The attribute is enabled prior to be set.
 	 */
-	void SetVAOAttributeAt(deoglRenderThread &renderThread, int attribute, int target) const;
+	void SetVAOAttributeAt(deoglRenderThread &renderThread, int attribute, int target);
 	
 	/**
 	 * Set VAO attribute.
 	 * 
 	 * The VBO is supposed to be already selected. The attribute is enabled prior to be set.
 	 */
-	void SetVAOAttributeAt(deoglRenderThread &renderThread, int attribute, int target, int offset) const;
+	void SetVAOAttributeAt(deoglRenderThread &renderThread, int attribute, int target, int offset);
 	/*@}*/
 	
 	
@@ -142,9 +138,6 @@ public:
 	
 	/** Layout matches another one. */
 	bool operator==(const deoglVBOLayout &layout) const;
-	
-	/** Layout does not match another one. */
-	bool operator!=(const deoglVBOLayout &layout) const;
 	/*@}*/
 	
 	

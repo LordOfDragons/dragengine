@@ -468,19 +468,19 @@ void deMsgdkServiceMsgdk::FrameUpdateTasks(float elapsed)
 decString deMsgdkServiceMsgdk::UriEncode(const char *url) const
 {
 	decUnicodeString wurl(decUnicodeString::NewFromUTF8(url));
-	wchar_t * const wwurl = new wchar_t[wurl.GetLength()];
-	deOSWindows::UnicodeToWide(wurl, wwurl, wurl.GetLength() + 1);
+	decTList<wchar_t> wwurl(wurl.GetLength(), 0);
+	deOSWindows::UnicodeToWide(wurl, wwurl.GetArrayPointer(), wurl.GetLength() + 1);
 
 	const DWORD flags = 0;
 	DWORD lenEscaped = 1;
 	wchar_t dummy = 0;
-	UrlEscape(wwurl, &dummy, &lenEscaped, flags);
+	UrlEscape(wwurl.GetArrayPointer(), &dummy, &lenEscaped, flags);
 
-	wchar_t * const escaped = new wchar_t[lenEscaped + 1];
-	memset(escaped, 0, sizeof(wchar_t) * (lenEscaped + 1));
-	AssertResult(UrlEscape(wwurl, escaped, &lenEscaped, flags), "deMsgdkServiceMsgdk.UriEncode.UrlEscape");
+	decTList<wchar_t> escaped(lenEscaped + 1, 0);
+	AssertResult(UrlEscape(wwurl.GetArrayPointer(), escaped.GetArrayPointer(), &lenEscaped, flags),
+		"deMsgdkServiceMsgdk.UriEncode.UrlEscape");
 	
-	return deOSWindows::WideToUtf8(escaped);
+	return deOSWindows::WideToUtf8(escaped.GetArrayPointer());
 }
 
 

@@ -54,8 +54,6 @@ void deIesFormatLm63d1986::sSamplePoint::Set(int index, float blend){
 
 deIesFormatLm63d1986::deIesFormatLm63d1986() :
 pImageType(eitEquirectangular),
-pAngleFactorCount(0),
-pAngleFactors(nullptr),
 pLampCount(0),
 pLumensPerLamp(0.0f),
 pCandelaMultiplier(0.0f),
@@ -69,37 +67,13 @@ pLumLength(0.0f),
 pBallastFactor(1.0f),
 pFutureBallastFactor(1.0f),
 pFinalLumMultiplier(1.0f),
-pVerticalAngles(nullptr),
-pHorizontalAngles(nullptr),
-pCandelaValues(nullptr),
 pSmallestVerticalStep(0.0f),
 pSmallestHorizontalStep(0.0f),
 pVerticalResolution(1),
-pHorizontalResolution(1),
-pVerticalSamplePoints(nullptr),
-pHorizontalSamplePoints(nullptr){
+pHorizontalResolution(1){
 }
 
-deIesFormatLm63d1986::~deIesFormatLm63d1986(){
-	if(pAngleFactors){
-		delete [] pAngleFactors;
-	}
-	if(pVerticalAngles){
-		delete [] pVerticalAngles;
-	}
-	if(pHorizontalAngles){
-		delete [] pHorizontalAngles;
-	}
-	if(pCandelaValues){
-		delete [] pCandelaValues;
-	}
-	if(pVerticalSamplePoints){
-		delete [] pVerticalSamplePoints;
-	}
-	if(pHorizontalSamplePoints){
-		delete [] pHorizontalSamplePoints;
-	}
-}
+deIesFormatLm63d1986::~deIesFormatLm63d1986() = default;
 
 
 // Management
@@ -265,22 +239,20 @@ void deIesFormatLm63d1986::pReadTilt(){
 	pCurLine++; // ignore
 	
 	// <# of pairs of angles and multiplying factors>
-	pAngleFactorCount = pLines.GetAt(pCurLine++).ToInt();
-	if(pAngleFactorCount > 0){
-		pAngleFactors = new sAngleFactor[pAngleFactorCount];
-	}
+	const int angleFactorCount = pLines.GetAt(pCurLine++).ToInt();
+	pAngleFactors.AddRange(angleFactorCount, {});
 	
 	// <angles>
 	decStringList values;
-	pReadValues(values, pAngleFactorCount);
+	pReadValues(values, angleFactorCount);
 	int i;
-	for(i=0; i<pAngleFactorCount; i++){
+	for(i=0; i<angleFactorCount; i++){
 		pAngleFactors[i].angle = values.GetAt(i).GetTrimmed().ToFloat();
 	}
 	
 	// <multiplying factors>
-	pReadValues(values, pAngleFactorCount);
-	for(i=0; i<pAngleFactorCount; i++){
+	pReadValues(values, angleFactorCount);
+	for(i=0; i<angleFactorCount; i++){
 		pAngleFactors[i].factor = values.GetAt(i).GetTrimmed().ToFloat();
 	}
 }
@@ -353,14 +325,14 @@ void deIesFormatLm63d1986::pReadVerticalAngles(){
 		return;
 	}
 	
-	pVerticalAngles = new float[pVerticalAngleCount];
+	pVerticalAngles.EnlargeCapacity(pVerticalAngleCount);
 	decStringList values;
 	pReadValues(values, pVerticalAngleCount);
 	const int count = values.GetCount();
 	int i;
 	
 	for(i=0; i<count; i++){
-		pVerticalAngles[i] = values.GetAt(i).GetTrimmed().ToFloat();
+		pVerticalAngles.Add(values.GetAt(i).GetTrimmed().ToFloat());
 	}
 }
 
@@ -369,14 +341,14 @@ void deIesFormatLm63d1986::pReadHorizontalAngles(){
 		return;
 	}
 	
-	pHorizontalAngles = new float[pHorizontalAngleCount];
+	pHorizontalAngles.EnlargeCapacity(pHorizontalAngleCount);
 	decStringList values;
 	pReadValues(values, pHorizontalAngleCount);
 	const int count = values.GetCount();
 	int i;
 	
 	for(i=0; i<count; i++){
-		pHorizontalAngles[i] = values.GetAt(i).GetTrimmed().ToFloat();
+		pHorizontalAngles.Add(values.GetAt(i).GetTrimmed().ToFloat());
 	}
 }
 
@@ -405,12 +377,12 @@ void deIesFormatLm63d1986::pReadCandelaValues(){
 		return;
 	}
 	
-	pCandelaValues = new float[pVerticalAngleCount * pHorizontalAngleCount];
+	pCandelaValues.AddRange(pVerticalAngleCount * pHorizontalAngleCount, {});
 	decStringList values;
 	int i, j;
 	
 	for(i=0; i<pHorizontalAngleCount; i++){
-		float * const rowCandelaValues = pCandelaValues + pVerticalAngleCount * i;
+		float * const rowCandelaValues = pCandelaValues.GetArrayPointer() + pVerticalAngleCount * i;
 		pReadValues(values, pVerticalAngleCount);
 		
 		for(j=0; j<pVerticalAngleCount; j++){
@@ -482,7 +454,8 @@ void deIesFormatLm63d1986::pCreateSamplePoints(){
 	const int horizontalCount90 = pHorizontalResolution / 4;
 	
 	// horizontal angles
-	pHorizontalSamplePoints = new sSamplePoint[horizontalCount360];
+	pHorizontalSamplePoints.AddRange(horizontalCount360, {});
+	sSamplePoint *points = pHorizontalSamplePoints.GetArrayPointer();
 	
 	if(pPhotometricType == eptTypeC){
 		const float lastAngle = pHorizontalAngles[pHorizontalAngleCount - 1];
@@ -491,40 +464,40 @@ void deIesFormatLm63d1986::pCreateSamplePoints(){
 		if(pIsAngle(firstAngle, 0.0f)){
 			if(pIsAngle(lastAngle, 0.0f)){
 				// 0°: only one horizontal angle. light is fully symmetric
-				pFillSamples(0, pHorizontalSamplePoints, horizontalCount360);
+				pFillSamples(0, points, horizontalCount360);
 				
 			}else if(pIsAngle(lastAngle, 90.0f)){
 				// 90°: symmetric in each quadrant.
-				pSample(pHorizontalAngles, pHorizontalAngleCount,
-					pHorizontalSamplePoints, horizontalCount90);
-				pMirrorSamples(pHorizontalSamplePoints,
-					pHorizontalSamplePoints + horizontalCount90, horizontalCount90);
-				pMirrorSamples(pHorizontalSamplePoints,
-					pHorizontalSamplePoints + horizontalCount180, horizontalCount180);
+				pSample(pHorizontalAngles.GetArrayPointer(), pHorizontalAngleCount,
+					points, horizontalCount90);
+				pMirrorSamples(points,
+					points + horizontalCount90, horizontalCount90);
+				pMirrorSamples(points,
+					points + horizontalCount180, horizontalCount180);
 				
 			}else if(pIsAngle(lastAngle, 180.0f)){
 				// 180°: symmetric about the 0-180 degree plane.
-				pSample(pHorizontalAngles, pHorizontalAngleCount,
-					pHorizontalSamplePoints, horizontalCount180);
-				pMirrorSamples(pHorizontalSamplePoints,
-					pHorizontalSamplePoints + horizontalCount180, horizontalCount180);
+				pSample(pHorizontalAngles.GetArrayPointer(), pHorizontalAngleCount,
+					points, horizontalCount180);
+				pMirrorSamples(points,
+					points + horizontalCount180, horizontalCount180);
 				
 			}else{
 				// >180° && <360°: no symmetry
-				pSample(pHorizontalAngles, pHorizontalAngleCount,
-					pHorizontalSamplePoints, horizontalCount360);
+				pSample(pHorizontalAngles.GetArrayPointer(), pHorizontalAngleCount,
+					points, horizontalCount360);
 			}
 			
 		}else if(pIsAngle(firstAngle, 90.0f)){
 			if(pIsAngle(lastAngle, 270.0f)){
 				// A luminaire that is bilaterally symmetric about the 90-270 degree photometric
 				// plane will have a first value of 90 degrees and a last value of 270 degrees.
-				pSample(pHorizontalAngles, pHorizontalAngleCount,
-					pHorizontalSamplePoints + horizontalCount90, horizontalCount180);
-				pMirrorSamples(pHorizontalSamplePoints + horizontalCount90,
-					pHorizontalSamplePoints, horizontalCount90);
-				pMirrorSamples(pHorizontalSamplePoints + horizontalCount180,
-					pHorizontalSamplePoints + horizontalCount180 + horizontalCount90, horizontalCount90);
+				pSample(pHorizontalAngles.GetArrayPointer(), pHorizontalAngleCount,
+					points + horizontalCount90, horizontalCount180);
+				pMirrorSamples(points + horizontalCount90,
+					points, horizontalCount90);
+				pMirrorSamples(points + horizontalCount180,
+					points + horizontalCount180 + horizontalCount90, horizontalCount90);
 				
 			}else{
 				DETHROW_INFO(deeInvalidFileFormat, "invalid end angle");
@@ -541,24 +514,24 @@ void deIesFormatLm63d1986::pCreateSamplePoints(){
 		if(pIsAngle(lastAngle, 90.0f)){
 			if(pIsAngle(firstAngle, 0.0f)){
 				// range [0°..90°]: laterally symmetric about a vertical reference plane.
-				pSample(pHorizontalAngles, pHorizontalAngleCount,
-					pHorizontalSamplePoints, horizontalCount90);
-				pMirrorSamples(pHorizontalSamplePoints,
-					pHorizontalSamplePoints + horizontalCount180 + horizontalCount90, horizontalCount90);
+				pSample(pHorizontalAngles.GetArrayPointer(), pHorizontalAngleCount,
+					points, horizontalCount90);
+				pMirrorSamples(points,
+					points + horizontalCount180 + horizontalCount90, horizontalCount90);
 				pFillSamples(pHorizontalAngleCount - 1,
-					pHorizontalSamplePoints + horizontalCount90, horizontalCount180);
+					points + horizontalCount90, horizontalCount180);
 				
 			}else if(pIsAngle(firstAngle, -90.0f)){
 				// range [-90°..90°]: no symmetry
-				pSample(pHorizontalAngles, pHorizontalAngleCount,
-					pHorizontalSamplePoints + horizontalCount90, horizontalCount180);
-				pCopySamples(pHorizontalSamplePoints + horizontalCount90,
-					pHorizontalSamplePoints + horizontalCount180 + horizontalCount90, horizontalCount90);
-				pCopySamples(pHorizontalSamplePoints + horizontalCount180,
-					pHorizontalSamplePoints, horizontalCount90);
-				pFillSamples(0, pHorizontalSamplePoints + horizontalCount180, horizontalCount90);
+				pSample(pHorizontalAngles.GetArrayPointer(), pHorizontalAngleCount,
+					points + horizontalCount90, horizontalCount180);
+				pCopySamples(points + horizontalCount90,
+					points + horizontalCount180 + horizontalCount90, horizontalCount90);
+				pCopySamples(points + horizontalCount180,
+					points, horizontalCount90);
+				pFillSamples(0, points + horizontalCount180, horizontalCount90);
 				pFillSamples(pHorizontalAngleCount - 1,
-					pHorizontalSamplePoints + horizontalCount90, horizontalCount90);
+					points + horizontalCount90, horizontalCount90);
 				
 			}else{
 				DETHROW_INFO(deeInvalidFileFormat, "invalid start angle");
@@ -573,7 +546,8 @@ void deIesFormatLm63d1986::pCreateSamplePoints(){
 	const int verticalCount180 = pVerticalResolution;
 	const int verticalCount90 = pVerticalResolution / 2;
 	
-	pVerticalSamplePoints = new sSamplePoint[verticalCount180];
+	pVerticalSamplePoints.AddRange(verticalCount180, {});
+	points = pVerticalSamplePoints.GetArrayPointer();
 	
 	if(pPhotometricType == eptTypeC){
 		const float lastAngle = pVerticalAngles[pVerticalAngleCount - 1];
@@ -581,23 +555,23 @@ void deIesFormatLm63d1986::pCreateSamplePoints(){
 		
 		if(pIsAngle(firstAngle, 0.0f) && pIsAngle(lastAngle, 90.0f)){
 			// range [0°..90°]
-			pSample(pVerticalAngles, pVerticalAngleCount, pVerticalSamplePoints, verticalCount90);
+			pSample(pVerticalAngles.GetArrayPointer(), pVerticalAngleCount, points, verticalCount90);
 			pFillSamples(pVerticalAngleCount - 1,
-				pVerticalSamplePoints + verticalCount90, verticalCount90);
+				points + verticalCount90, verticalCount90);
 			
 		}else if(pIsAngle(firstAngle, 0.0f) && pIsAngle(lastAngle, 180.0f)){
 			// range [0°..180°]
-			pSample(pVerticalAngles, pVerticalAngleCount, pVerticalSamplePoints, verticalCount180);
+			pSample(pVerticalAngles.GetArrayPointer(), pVerticalAngleCount, points, verticalCount180);
 			
 		}else if(pIsAngle(firstAngle, 0.0f) && pIsAngle(lastAngle, 180.0f)){
 			// range [90°..90°]
-			pFillSamples(0, pVerticalSamplePoints, verticalCount180);
+			pFillSamples(0, points, verticalCount180);
 			
 		}else if(pIsAngle(firstAngle, 90.0f) && pIsAngle(lastAngle, 180.0f)){
 			// range [90°..180°]
-			pFillSamples(0, pVerticalSamplePoints, verticalCount90);
-			pSample(pVerticalAngles, pVerticalAngleCount,
-				pVerticalSamplePoints + verticalCount90, verticalCount90);
+			pFillSamples(0, points, verticalCount90);
+			pSample(pVerticalAngles.GetArrayPointer(), pVerticalAngleCount,
+				points + verticalCount90, verticalCount90);
 			
 		}else{
 			DETHROW_INFO(deeInvalidFileFormat, "invalid angle range");
@@ -610,13 +584,13 @@ void deIesFormatLm63d1986::pCreateSamplePoints(){
 		if(pIsAngle(lastAngle, 90.0f)){
 			if(pIsAngle(firstAngle, -90.0f)){
 				// range [-90°..90°]
-				pSample(pVerticalAngles, pVerticalAngleCount, pVerticalSamplePoints, verticalCount180);
+				pSample(pVerticalAngles.GetArrayPointer(), pVerticalAngleCount, points, verticalCount180);
 				
 			}else if(pIsAngle(firstAngle, 0.0f)){
 				// range [0°..90°]
-				pSample(pVerticalAngles, pVerticalAngleCount, pVerticalSamplePoints, verticalCount90);
+				pSample(pVerticalAngles.GetArrayPointer(), pVerticalAngleCount, points, verticalCount90);
 				pFillSamples(pVerticalAngleCount - 1,
-					pVerticalSamplePoints + verticalCount90, verticalCount90);
+					points + verticalCount90, verticalCount90);
 				
 			}else{
 				DETHROW_INFO(deeInvalidFileFormat, "invalid first angle");
@@ -691,8 +665,8 @@ void deIesFormatLm63d1986::pSetPixelsEquirect(unsigned short *pixels){
 	
 	for(y=0; y<pHeight; y++){
 		const sSamplePoint &sampleVertical = pVerticalSamplePoints[pHeight - 1 - y];
-		const float * const baseCandelaValues1 = pCandelaValues + sampleVertical.index1;
-		const float * const baseCandelaValues2 = pCandelaValues + sampleVertical.index2;
+		const float * const baseCandelaValues1 = pCandelaValues.GetArrayPointer() + sampleVertical.index1;
+		const float * const baseCandelaValues2 = pCandelaValues.GetArrayPointer() + sampleVertical.index2;
 		
 		for(x=0; x<pWidth; x++){
 			const sSamplePoint &sampleHorizontal = pHorizontalSamplePoints[x];
@@ -774,8 +748,8 @@ void deIesFormatLm63d1986::pSetPixelsCubemapFace(unsigned short *pixels, const d
 			const float horizontalBlend2 = decMath::linearStep(angleHorizontal, horizontalAngle1, horizontalAngle2);
 			const float horizontalBlend1 = 1.0f - horizontalBlend2;
 			
-			const float * const baseCandelaValues1 = pCandelaValues + sampleVertical.index1;
-			const float * const baseCandelaValues2 = pCandelaValues + sampleVertical.index2;
+			const float * const baseCandelaValues1 = pCandelaValues.GetArrayPointer() + sampleVertical.index1;
+			const float * const baseCandelaValues2 = pCandelaValues.GetArrayPointer() + sampleVertical.index2;
 			const int offset1 = pVerticalAngleCount * sampleHorizontal.index1;
 			const int offset2 = pVerticalAngleCount * sampleHorizontal.index2;
 			const float value1 = baseCandelaValues1[offset1] * /*sampleHorizontal.blend1*/ horizontalBlend1

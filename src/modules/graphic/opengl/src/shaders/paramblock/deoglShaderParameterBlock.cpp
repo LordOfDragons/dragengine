@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglShaderParameterBlock.h"
 #include "../deoglShaderCompiled.h"
 #include "../../capabilities/deoglCapabilities.h"
@@ -125,8 +121,6 @@ static inline void fSet(GLuint *d, unsigned int v1, unsigned int v2, unsigned in
 deoglShaderParameterBlock::deoglShaderParameterBlock(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
 
-pParameters(nullptr),
-pParameterCount(0),
 pRowMajor(true),
 
 pElementCount(1),
@@ -142,8 +136,7 @@ pElementUpper(0){
 deoglShaderParameterBlock::deoglShaderParameterBlock(const deoglShaderParameterBlock &paramBlock) :
 pRenderThread(paramBlock.pRenderThread),
 
-pParameters(nullptr),
-pParameterCount(0),
+pParameters(paramBlock.pParameters),
 pRowMajor(paramBlock.pRowMajor),
 
 pElementCount(paramBlock.pElementCount),
@@ -153,33 +146,10 @@ pOffsetPadding(paramBlock.pOffsetPadding),
 pBufferSize(paramBlock.pBufferSize),
 pMapped(nullptr),
 pElementLower(0),
-pElementUpper(0)
-{
-	if(paramBlock.pParameterCount == 0){
-		return;
-	}
-	
-	pParameters = new deoglSPBParameter[paramBlock.pParameterCount];
-	pParameterCount = paramBlock.pParameterCount;
-	
-	int i;
-	for(i=0; i<pParameterCount; i++){
-		const deoglSPBParameter &s = paramBlock.pParameters[i];
-		deoglSPBParameter &d = pParameters[i];
-		
-		d.SetAll(s.GetValueType(), s.GetComponentCount(), s.GetVectorCount(), s.GetArrayCount());
-		d.SetOffset(s.GetOffset());
-		d.SetStride(s.GetStride());
-		d.SetArrayStride(s.GetArrayStride());
-		d.SetDataSize(s.GetDataSize());
-	}
+pElementUpper(0){
 }
 
-deoglShaderParameterBlock::~deoglShaderParameterBlock(){
-	if(pParameters){
-		delete [] pParameters;
-	}
-}
+deoglShaderParameterBlock::~deoglShaderParameterBlock() = default;
 
 
 
@@ -191,24 +161,15 @@ void deoglShaderParameterBlock::SetParameterCount(int count){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(pParameters){
-		delete [] pParameters;
-		pParameters = nullptr;
-		pParameterCount = 0;
-	}
-	
-	if(count > 0){
-		pParameters = new deoglSPBParameter[count];
-		pParameterCount = count;
-	}
-	
+	pParameters.SetAll(count, {});
 	pUpdateBufferSize();
 }
 
-deoglSPBParameter &deoglShaderParameterBlock::GetParameterAt(int index) const{
-	if(index < 0 || index >= pParameterCount){
-		DETHROW(deeInvalidParam);
-	}
+deoglSPBParameter &deoglShaderParameterBlock::GetParameterAt(int index){
+	return pParameters[index];
+}
+
+const deoglSPBParameter &deoglShaderParameterBlock::GetParameterAt(int index) const{
 	return pParameters[index];
 }
 
@@ -233,12 +194,10 @@ int deoglShaderParameterBlock::GetAlignmentRequirements() const{
 void deoglShaderParameterBlock::MapToStd140(){
 	DEASSERT_FALSE(pMapped)
 	
-	int i, alignment, stride, adjust, chunkOffset = 0;
+	int alignment, stride, adjust, chunkOffset = 0;
 	int componentCount, vectorCount, elementStride = 0;
 	
-	for(i=0; i<pParameterCount; i++){
-		deoglSPBParameter &parameter = pParameters[i];
-		
+	pParameters.Visit([&](deoglSPBParameter &parameter){
 		if(parameter.GetVectorCount() == 1 || pRowMajor){
 			componentCount = parameter.GetComponentCount();
 			vectorCount = parameter.GetVectorCount();
@@ -278,7 +237,7 @@ void deoglShaderParameterBlock::MapToStd140(){
 		
 		chunkOffset += stride;
 		elementStride += parameter.GetDataSize();
-	}
+	});
 	
 	// element stride is aligned like arrays to 16-byte boundary
 	alignment = decMath::max(16, GetAlignmentRequirements());
@@ -1281,19 +1240,34 @@ int vectorCount, int arrayIndex) const{
 	return parameter;
 }
 
+deoglSPBParameter &deoglShaderParameterBlock::pParam(int index,
+deoglSPBParameter::eValueTypes valueType, int componentCount,
+int vectorCount, int arrayIndex){
+	deoglSPBParameter &parameter = GetParameterAt(index);
+	
+	if(parameter.GetValueType() != valueType
+	|| parameter.GetComponentCount() != componentCount
+	|| parameter.GetVectorCount() != vectorCount
+	|| arrayIndex < 0 || arrayIndex >= parameter.GetArrayCount()){
+		DETHROW(deeInvalidParam);
+	}
+	
+	return parameter;
+}
+
 
 GLfloat *deoglShaderParameterBlock::pDataFloat(const deoglSPBParameter &parameter,
-int element, int arrayIndex) const{
+int element, int arrayIndex){
 	return (GLfloat*)pData(parameter, element, arrayIndex);
 }
 
 GLint *deoglShaderParameterBlock::pDataInt(const deoglSPBParameter &parameter,
-int element, int arrayIndex) const{
+int element, int arrayIndex){
 	return (GLint*)pData(parameter, element, arrayIndex);
 }
 
 GLuint *deoglShaderParameterBlock::pDataUInt(const deoglSPBParameter &parameter,
-int element, int arrayIndex) const{
+int element, int arrayIndex){
 	return (GLuint*)pData(parameter, element, arrayIndex);
 }
 

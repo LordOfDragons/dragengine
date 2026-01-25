@@ -34,6 +34,7 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringSet.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/world/deWorld.h>
@@ -117,8 +118,7 @@ private:
 	deRig::Ref pEngRig;
 	
 	deDebugDrawer::Ref pDDBones;
-	igdeWCoordSysArrows *pDDSBones;
-	int pDDSBoneCount;
+	decTList<igdeWCoordSysArrows> pDDSBones;
 	float pDDSBoneSize;
 	
 	decString pDisplayModelPath;

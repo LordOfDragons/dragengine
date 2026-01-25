@@ -25,6 +25,7 @@
 #ifndef _DEBNSTATELINK_H_
 #define _DEBNSTATELINK_H_
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
 
 class debnState;
@@ -58,8 +59,7 @@ private:
 	debnConnection &pConnection;
 	bool pChanged;
 	
-	bool *pValueChanged;
-	int pValueCount;
+	decTList<bool> pValueChanged;
 	
 	debnStateLink *pPreviousLink;
 	debnStateLink *pNextLink;
@@ -129,11 +129,6 @@ public:
 	inline debnStateLink *GetNextLink() const{ return pNextLink; }
 	void SetNextLink(debnStateLink *link);
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

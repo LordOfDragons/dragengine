@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-#include <string.h>
-
 #include "dedsEngineException.h"
 
 #include <dragengine/dragengine_configuration.h>
@@ -41,31 +39,11 @@ pStrDescription(description),
 pStrFile(file){
 }
 
-dedsEngineException::~dedsEngineException(){
-	delete [] pStrDescription;
-	delete [] pStrFile;
-}
+dedsEngineException::~dedsEngineException() = default;
 
 dedsEngineException dedsEngineException::Wrap(const deException &exception){
 	const decString &file = exception.GetFile();
 	const decString &description = exception.GetDescription();
 	// const decString description( exception.GetDescription() + ":\n" + exception.GetBacktrace().Join("\n") );
-	
-	const int lenDescription = description.GetLength();
-	char * const strDescription = new char[lenDescription + 1];
-	#ifdef OS_W32
-	strcpy_s(strDescription, lenDescription + 1, description);
-	#else
-	strcpy(strDescription, description);
-	#endif
-	
-	const int lenFile = file.GetLength();
-	char * const strFile = new char[lenFile + 1];
-	#ifdef OS_W32
-	strcpy_s(strFile, lenFile + 1, file);
-	#else
-	strcpy(strFile, file);
-	#endif
-	
-	return dedsEngineException(strDescription, strFile, exception.GetLine());
+	return dedsEngineException(description, file, exception.GetLine());
 }

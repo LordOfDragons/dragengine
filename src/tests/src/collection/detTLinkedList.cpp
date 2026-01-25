@@ -400,38 +400,38 @@ void detTLinkedList::TestFind(){
 	auto evaluator = [](TestLLObject *obj) -> bool {
 		return obj->id == 20;
 	};
-	ASSERT_TRUE(list.Find(evaluator, found));
+	ASSERT_TRUE(list.Find(found, evaluator));
 	ASSERT_NOT_NULL(found);
 	ASSERT_EQUAL(found->id, 20);
 
 	// Find with rvalue evaluator
 	TestLLObject *found2 = nullptr;
-	ASSERT_TRUE(list.Find([](TestLLObject *obj) -> bool {
+	ASSERT_TRUE(list.Find(found2, [](TestLLObject *obj) -> bool {
 		return obj->id == 30;
-	}, found2));
+	}));
 	ASSERT_NOT_NULL(found2);
 	ASSERT_EQUAL(found2->id, 30);
 
 	// Find non-existent element
 	TestLLObject *notFound = nullptr;
-	ASSERT_FALSE(list.Find([](TestLLObject *obj) -> bool {
+	ASSERT_FALSE(list.Find(notFound, [](TestLLObject *obj) -> bool {
 		return obj->id == 999;
-	}, notFound));
+	}));
 	ASSERT_TRUE(notFound == nullptr);
 
 	// Find first matching element (when multiple could match)
 	TestLLObject *foundFirst = nullptr;
-	ASSERT_TRUE(list.Find([](TestLLObject *obj) -> bool {
+	ASSERT_TRUE(list.Find(foundFirst, [](TestLLObject *obj) -> bool {
 		return obj->id >= 10;
-	}, foundFirst));
+	}));
 	ASSERT_EQUAL(foundFirst->id, 10); // first element matches
 
 	// Find on empty list
 	TestLLList emptyList;
 	TestLLObject *emptyFound = nullptr;
-	ASSERT_FALSE(emptyList.Find([](TestLLObject *obj) -> bool {
+	ASSERT_FALSE(emptyList.Find(emptyFound, [](TestLLObject *obj) -> bool {
 		return true;
-	}, emptyFound));
+	}));
 	ASSERT_TRUE(emptyFound == nullptr);
 }
 
@@ -714,19 +714,19 @@ void detTLinkedList::TestFindReverse(){
 	
 	TestLLObject *found = nullptr;
 	auto evaluator1 = [](const TestLLObject *obj){ return obj->id == 20; };
-	ASSERT_TRUE(list.FindReverse(evaluator1, found));
+	ASSERT_TRUE(list.FindReverse(found, evaluator1));
 	ASSERT_NOT_NULL(found);
 	ASSERT_EQUAL(found->id, 20);
 	
 	found = nullptr;
 	auto evaluator2 = [](const TestLLObject *obj){ return obj->id > 50; };
-	ASSERT_FALSE(list.FindReverse(evaluator2, found));
+	ASSERT_FALSE(list.FindReverse(found, evaluator2));
 	ASSERT_NULL(found);
 	
 	// FindReverse should find last matching element
 	found = nullptr;
 	auto evaluator3 = [](const TestLLObject *obj){ return obj->id >= 10; };
-	ASSERT_TRUE(list.FindReverse(evaluator3, found));
+	ASSERT_TRUE(list.FindReverse(found, evaluator3));
 	ASSERT_EQUAL(found->id, 30);
 }
 
@@ -757,11 +757,8 @@ void detTLinkedList::TestFindReverseOrNull(){
 	ASSERT_NOT_NULL(found3);
 	ASSERT_EQUAL(found3->id, 30);
 	
-	// Test with default value
-	TestLLObject::Ref defaultObj = TestLLObject::Ref::New(999);
-	TestLLObject *found4 = list.FindReverseOrNull(evaluator2, defaultObj);
-	ASSERT_NOT_NULL(found4);
-	ASSERT_EQUAL(found4->id, 999);
+	// Note: FindReverseOrNull does not support default value parameter
+	// Unlike FindOrDefault/FindReverseOrDefault, it only returns null when not found
 }
 
 void detTLinkedList::TestInject(){

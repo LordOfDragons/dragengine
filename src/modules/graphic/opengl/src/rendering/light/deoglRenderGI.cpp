@@ -713,7 +713,7 @@ void deoglRenderGI::RenderMaterials(deoglRenderPlan &plan, const deoglRenderTask
 		const deoglRenderTaskPipeline &rtpipeline = *renderTask.GetPipelineAt(i);
 		rtpipeline.GetPipeline()->Activate();
 		
-		const deoglShaderCompiled &shader = rtpipeline.GetPipeline()->GetShader();
+		deoglShaderCompiled &shader = rtpipeline.GetPipeline()->GetShader();
 		
 		const int textureCount = rtpipeline.GetTextureCount();
 		for(j=0; j<textureCount; j++){

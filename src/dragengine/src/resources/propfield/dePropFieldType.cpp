@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "dePropFieldType.h"
 #include "dePropFieldInstance.h"
 #include "dePropFieldBendState.h"
@@ -43,18 +40,9 @@
 dePropFieldType::dePropFieldType(){
 	pRotationPerForce = 5.0f;
 	pRestitution = 0.5f;
-	
-	pInstances = nullptr;
-	pInstanceCount = 0;
-	
-	pBendStates = nullptr;
-	pBendStateCount = 0;
 }
 
-dePropFieldType::~dePropFieldType(){
-	if(pBendStates) delete [] pBendStates;
-	if(pInstances) delete [] pInstances;
-}
+dePropFieldType::~dePropFieldType() = default;
 
 
 
@@ -83,54 +71,4 @@ void dePropFieldType::SetRestitution(float restitution){
 
 void dePropFieldType::SetCollisionFilter(const decCollisionFilter &collisionFilter){
 	pCollisionFilter = collisionFilter;
-}
-
-void dePropFieldType::SetInstanceCount(int count){
-	if(count < 0) DETHROW(deeInvalidParam);
-	
-	dePropFieldInstance *instances = nullptr;
-	
-	if(count > 0){
-		instances = new dePropFieldInstance[count];
-	}
-	
-	if(pInstances) delete [] pInstances;
-	pInstances = instances;
-	pInstanceCount = count;
-}
-
-dePropFieldInstance &dePropFieldType::GetInstanceAt(int index) const{
-	if(index < 0 || index >= pInstanceCount) DETHROW(deeInvalidParam);
-	
-	return pInstances[index];
-}
-
-
-
-void dePropFieldType::SetBendStateCount(int count){
-	if(count < 0){
-		DETHROW(deeInvalidParam);
-	}
-	
-	if(count == pBendStateCount){
-		return;
-	}
-	
-	dePropFieldBendState *bendStates = nullptr;
-	
-	if(count > 0){
-		bendStates = new dePropFieldBendState[count];
-	}
-	
-	if(pBendStates){
-		delete [] pBendStates;
-	}
-	pBendStates = bendStates;
-	pBendStateCount = count;
-}
-
-dePropFieldBendState &dePropFieldType::GetBendStateAt(int index) const{
-	if(index < 0 || index >= pBendStateCount) DETHROW(deeInvalidParam);
-	
-	return pBendStates[index];
 }

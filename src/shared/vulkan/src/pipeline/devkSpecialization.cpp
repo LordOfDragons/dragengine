@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-
 #include "devkSpecialization.h"
 
 #include <dragengine/common/exceptions.h>
@@ -33,41 +30,18 @@
 // class devkSpecialization
 /////////////////////////////
 
-devkSpecialization::devkSpecialization() :
-pEntries(nullptr),
-pEntryCount(0),
-pData(nullptr),
-pDataSize(0){
+devkSpecialization::devkSpecialization() = default;
+
+devkSpecialization::devkSpecialization(const void* data, int dataSize, int entryCount){
+	SetEntryCount(entryCount);
+	SetData(data, dataSize);
 }
 
-devkSpecialization::devkSpecialization(const void* data, int dataSize, int entryCount) :
-pEntries(nullptr),
-pEntryCount(0),
-pData(nullptr),
-pDataSize(0)
-{
-	try{
-		SetEntryCount(entryCount);
-		SetData(data, dataSize);
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
-}
-
-devkSpecialization::devkSpecialization(const devkSpecialization &configuration) :
-pEntries(nullptr),
-pEntryCount(0),
-pData(nullptr),
-pDataSize(0)
-{
+devkSpecialization::devkSpecialization(const devkSpecialization &configuration){
 	*this = configuration;
 }
 
-devkSpecialization::~devkSpecialization(){
-	pCleanUp();
-}
+devkSpecialization::~devkSpecialization() = default;
 
 
 
@@ -77,30 +51,10 @@ devkSpecialization::~devkSpecialization(){
 void devkSpecialization::SetEntryCount(int count){
 	DEASSERT_TRUE(count >= 0)
 	
-	if(pEntries){
-		delete [] pEntries;
-		pEntries = nullptr;
-		pEntryCount = 0;
-	}
-	
-	if(count == 0){
-		return;
-	}
-	
-	pEntries = new VkSpecializationMapEntry[count]{};
-	pEntryCount = count;
-}
-
-const VkSpecializationMapEntry &devkSpecialization::GetEntryAt(int index) const{
-	DEASSERT_TRUE(index >= 0)
-	DEASSERT_TRUE(index < pEntryCount)
-	
-	return pEntries[index];
+	pEntries.SetAll(count, {});
 }
 
 void devkSpecialization::SetEntryAt(int index, const VkSpecializationMapEntry &entry){
-	DEASSERT_TRUE(index >= 0)
-	DEASSERT_TRUE(index < pEntryCount)
 	DEASSERT_TRUE(entry.constantID >= 0)
 	DEASSERT_TRUE(entry.offset >= 0)
 	DEASSERT_TRUE(entry.size >= 0)
@@ -109,11 +63,12 @@ void devkSpecialization::SetEntryAt(int index, const VkSpecializationMapEntry &e
 }
 
 void devkSpecialization::SetEntryAt(int index, int constantID, int offset, int size){
-	VkSpecializationMapEntry entry;
+	VkSpecializationMapEntry entry{};
 	entry.constantID = constantID;
 	entry.offset = offset;
 	entry.size = size;
-	SetEntryAt(index, entry);
+	
+	pEntries[index] = entry;
 }
 
 void devkSpecialization::SetEntryIntAt(int index, int constantID, int offset){
@@ -133,22 +88,13 @@ void devkSpecialization::SetEntryBoolAt(int index, int constantID, int offset){
 }
 
 void devkSpecialization::SetData(const void *data, int size){
-	DEASSERT_TRUE(size >= 0)
 	DEASSERT_NOTNULL_IF(size > 0, data)
 	
-	if(pData){
-		delete [] pData;
-		pData = nullptr;
-		pDataSize = 0;
-	}
+	pData.SetCountDiscard(size);
 	
-	if(size == 0){
-		return;
+	if(size > 0){
+		memcpy(pData.GetArrayPointer(), data, size);
 	}
-	
-	pData = new char[size];
-	memcpy(pData, data, size);
-	pDataSize = size;
 }
 
 
@@ -156,45 +102,20 @@ void devkSpecialization::SetData(const void *data, int size){
 // Operators
 //////////////
 
+static bool operator==(const VkSpecializationMapEntry &a, const VkSpecializationMapEntry &b){
+	return a.constantID == b.constantID
+		&& a.offset == b.offset
+		&& a.size == b.size;
+}
+
 bool devkSpecialization::operator==(const devkSpecialization &configuration) const{
-	if(pEntryCount != configuration.pEntryCount
-	|| pDataSize != configuration.pDataSize
-	|| (pData && memcmp(pData, configuration.pData, pDataSize) != 0)){
-		return false;
-	}
-	
-	int i;
-	for(i=0; i<pEntryCount; i++){
-		if(pEntries[i].constantID != configuration.pEntries[i].constantID
-		|| pEntries[i].offset != configuration.pEntries[i].offset
-		|| pEntries[i].size != configuration.pEntries[i].size){
-			return false;
-		}
-	}
-	return true;
+	return pEntries == configuration.pEntries
+		&& pData == configuration.pData;
 }
 
 devkSpecialization &devkSpecialization::operator=(
 const devkSpecialization &configuration){
-	SetEntryCount(configuration.pEntryCount);
-	if(configuration.pEntryCount > 0){
-		memcpy(pEntries, configuration.pEntries,
-			sizeof(VkSpecializationMapEntry) * configuration.pEntryCount);
-	}
-	SetData(configuration.GetData(), configuration.GetDataSize());
+	pEntries = configuration.pEntries;
+	pData = configuration.pData;
 	return *this;
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void devkSpecialization::pCleanUp(){
-	if(pData){
-		delete [] pData;
-	}
-	if(pEntries){
-		delete [] pEntries;
-	}
 }

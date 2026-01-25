@@ -30,6 +30,7 @@
 #include "devkDebug.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deSharedVulkan;
 
@@ -91,8 +92,7 @@ private:
 	sExtension pSupportsExtension[ExtensionCount];
 	sLayer pSupportsLayer[LayerCount];
 	
-	VkPhysicalDevice *pPhysicalDevices;
-	int pPhysicalDeviceCount;
+	decTList<VkPhysicalDevice> pPhysicalDevices;
 	
 	
 public:
@@ -138,11 +138,8 @@ public:
 	/** Instance. */
 	inline VkInstance GetInstance() const{ return pInstance; }
 	
-	/** Count of physical devices. */
-	inline int GetPhysicalDeviceCount() const{ return pPhysicalDeviceCount; }
-	
-	/** Physical device at index. */
-	VkPhysicalDevice GetPhysicalDeviceAt(int index) const;
+	/** Physical devices. */
+	inline const decTList<VkPhysicalDevice> &GetPhysicalDevices() const{ return pPhysicalDevices; }
 	
 	/** Create device. */
 	devkDevice::Ref CreateDevice(int index, const devkDevice::DeviceConfig &config);

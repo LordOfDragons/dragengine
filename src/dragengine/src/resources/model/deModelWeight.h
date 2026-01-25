@@ -47,6 +47,11 @@ public:
 	/** \brief Create new weight. */
 	deModelWeight();
 	
+	inline deModelWeight(int bone, float weight) : pBone(bone), pWeight(weight) {}
+	
+	deModelWeight(const deModelWeight &weight) = default;
+	deModelWeight &operator=(const deModelWeight &weight) = default;
+	
 	/** \brief Clean up weight. */
 	~deModelWeight();
 	/*@}*/

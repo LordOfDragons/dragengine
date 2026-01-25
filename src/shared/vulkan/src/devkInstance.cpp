@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-
 #include "devkInstance.h"
 #include "deSharedVulkan.h"
 #include "devkGlobalFunctions.h"
@@ -39,9 +36,7 @@
 devkInstance::devkInstance(deSharedVulkan &vulkan, bool enableDebug) :
 pVulkan(vulkan),
 pDebug(*this),
-pInstance(VK_NULL_HANDLE),
-pPhysicalDevices(nullptr),
-pPhysicalDeviceCount(0)
+pInstance(VK_NULL_HANDLE)
 {
 	#ifndef WITH_DEBUG
 	(void)enableDebug;
@@ -119,15 +114,8 @@ uint32_t devkInstance::LayerVersion(eLayer layer) const{
 	return pSupportsLayer[layer].implementationVersion;
 }
 
-VkPhysicalDevice devkInstance::GetPhysicalDeviceAt(int index) const{
-	if(index < 0 || index >= pPhysicalDeviceCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pPhysicalDevices[index];
-}
-
 devkDevice::Ref devkInstance::CreateDevice(int index, const devkDevice::DeviceConfig &config){
-	return devkDevice::Ref::New(*this, GetPhysicalDeviceAt(index), config);
+	return devkDevice::Ref::New(*this, pPhysicalDevices[index], config);
 }
 
 devkDevice::Ref devkInstance::CreateDeviceHeadlessComputeOnly(int index){
@@ -151,10 +139,6 @@ devkDevice::Ref devkInstance::CreateDeviceHeadlessGraphic(int index){
 //////////////////////
 
 void devkInstance::pCleanUp(){
-	if(pPhysicalDevices){
-		delete [] pPhysicalDevices;
-	}
-	
 	pDebug.SetEnabled(false);
 	
 	if(pInstance){
@@ -169,52 +153,44 @@ void devkInstance::pDetectExtensions(){
 		return;
 	}
 	
-	VkExtensionProperties * const extensions = new VkExtensionProperties[count];
-	try{
-		VK_CHECK(pVulkan, pvkEnumerateInstanceExtensionProperties(VK_NULL_HANDLE, &count, extensions));
-		
-		// report all extensions for debug purpose
-		deBaseModule &baseModule = pVulkan.GetModule();
-		uint32_t i;
-		
-		baseModule.LogInfo("Extensions:");
-		for(i=0; i<count; i++){
-			baseModule.LogInfoFormat("- %s: %d", extensions[i].extensionName, extensions[i].specVersion);
-		}
-		
-		// store supported extensions
-		int j;
-		for(i=0; i<count; i++){
-			for(j=0; j<ExtensionCount; j++){
-				if(strcmp(pSupportsExtension[j].name, extensions[i].extensionName) == 0){
-					pSupportsExtension[j].version = extensions[i].specVersion;
-					break;
-				}
+	decTList<VkExtensionProperties> extensions((int)count, VkExtensionProperties{});
+	VK_CHECK(pVulkan, pvkEnumerateInstanceExtensionProperties(
+		VK_NULL_HANDLE, &count, extensions.GetArrayPointer()));
+	
+	// report all extensions for debug purpose
+	deBaseModule &baseModule = pVulkan.GetModule();
+	
+	baseModule.LogInfo("Extensions:");
+	extensions.Visit([&](const VkExtensionProperties &ext){
+		baseModule.LogInfoFormat("- %s: %d", ext.extensionName, ext.specVersion);
+	});
+	
+	// store supported extensions
+	int i, j;
+	for(i=0; i<(int)count; i++){
+		for(j=0; j<ExtensionCount; j++){
+			if(strcmp(pSupportsExtension[j].name, extensions[i].extensionName) == 0){
+				pSupportsExtension[j].version = extensions[i].specVersion;
+				break;
 			}
 		}
-		
-		// report support extensions
-		baseModule.LogInfo("Supported Extensions:");
-		for(i=0; i<ExtensionCount; i++){
-			if(pSupportsExtension[i].version){
-				baseModule.LogInfoFormat("- %s: %d", pSupportsExtension[i].name,
-					pSupportsExtension[i].version);
-			}
+	}
+	
+	// report support extensions
+	baseModule.LogInfo("Supported Extensions:");
+	for(i=0; i<ExtensionCount; i++){
+		if(pSupportsExtension[i].version){
+			baseModule.LogInfoFormat("- %s: %d", pSupportsExtension[i].name,
+				pSupportsExtension[i].version);
 		}
-		
-		// report support extensions
-		baseModule.LogInfo("Not upported Extensions:");
-		for(i=0; i<ExtensionCount; i++){
-			if(!pSupportsExtension[i].version){
-				baseModule.LogInfoFormat("- %s", pSupportsExtension[i].name);
-			}
+	}
+	
+	// report support extensions
+	baseModule.LogInfo("Not upported Extensions:");
+	for(i=0; i<ExtensionCount; i++){
+		if(!pSupportsExtension[i].version){
+			baseModule.LogInfoFormat("- %s", pSupportsExtension[i].name);
 		}
-		
-		delete [] extensions;
-		
-	}catch(const deException &){
-		delete [] extensions;
-		throw;
 	}
 }
 
@@ -225,62 +201,52 @@ void devkInstance::pDetectLayers(){
 		return;
 	}
 	
-	VkLayerProperties *layers = nullptr;
-	try{
-		layers = new VkLayerProperties[count];
-		VK_CHECK(pVulkan, pvkEnumerateInstanceLayerProperties(&count, layers));
-		
-		// report all layers for debug purpose
-		deBaseModule &baseModule = pVulkan.GetModule();
-		uint32_t i;
-		
-		baseModule.LogInfo("Layers:");
-		for(i=0; i<count; i++){
+	decTList<VkLayerProperties> layers((int)count, VkLayerProperties{});
+	VK_CHECK(pVulkan, pvkEnumerateInstanceLayerProperties(&count, layers.GetArrayPointer()));
+	
+	// report all layers for debug purpose
+	deBaseModule &baseModule = pVulkan.GetModule();
+	
+	baseModule.LogInfo("Layers:");
+	layers.Visit([&](const VkLayerProperties &layer){
+		baseModule.LogInfoFormat("- %s: %d (%d.%d.%d.%d)",
+			layer.layerName, layer.implementationVersion,
+			VK_API_VERSION_MAJOR(layer.specVersion),
+			VK_API_VERSION_MINOR(layer.specVersion),
+			VK_API_VERSION_PATCH(layer.specVersion),
+			VK_API_VERSION_VARIANT(layer.specVersion));
+	});
+	
+	// store supported layers
+	int i, j;
+	for(i=0; i<(int)count; i++){
+		for(j=0; j<LayerCount; j++){
+			if(strcmp(pSupportsLayer[j].name, layers[i].layerName) == 0){
+				pSupportsLayer[j].version = layers[i].specVersion;
+				pSupportsLayer[j].implementationVersion = layers[i].implementationVersion;
+				break;
+			}
+		}
+	}
+	
+	// report support layers
+	baseModule.LogInfo("Supported Layers:");
+	for(i=0; i<LayerCount; i++){
+		if(pSupportsLayer[i].implementationVersion){
 			baseModule.LogInfoFormat("- %s: %d (%d.%d.%d.%d)",
-				layers[i].layerName, layers[i].implementationVersion,
-				VK_API_VERSION_MAJOR(layers[i].specVersion),
-				VK_API_VERSION_MINOR(layers[i].specVersion),
-				VK_API_VERSION_PATCH(layers[i].specVersion),
-				VK_API_VERSION_VARIANT(layers[i].specVersion));
+				pSupportsLayer[i].name, pSupportsLayer[i].implementationVersion,
+				VK_API_VERSION_MAJOR(pSupportsLayer[i].implementationVersion),
+				VK_API_VERSION_MINOR(pSupportsLayer[i].implementationVersion),
+				VK_API_VERSION_PATCH(pSupportsLayer[i].implementationVersion),
+				VK_API_VERSION_VARIANT(pSupportsLayer[i].implementationVersion));
 		}
-		
-		// store supported layers
-		int j;
-		for(i=0; i<count; i++){
-			for(j=0; j<LayerCount; j++){
-				if(strcmp(pSupportsLayer[j].name, layers[i].layerName) == 0){
-					pSupportsLayer[j].version = layers[i].specVersion;
-					pSupportsLayer[j].implementationVersion = layers[i].implementationVersion;
-					break;
-				}
-			}
+	}
+	
+	baseModule.LogInfo("Not Supported Layers:");
+	for(i=0; i<LayerCount; i++){
+		if(!pSupportsLayer[i].implementationVersion){
+			baseModule.LogInfoFormat("- %s", pSupportsLayer[i].name);
 		}
-		
-		// report support layers
-		baseModule.LogInfo("Supported Layers:");
-		for(i=0; i<LayerCount; i++){
-			if(pSupportsLayer[i].implementationVersion){
-				baseModule.LogInfoFormat("- %s: %d (%d.%d.%d.%d)",
-					pSupportsLayer[i].name, pSupportsLayer[i].implementationVersion,
-					VK_API_VERSION_MAJOR(pSupportsLayer[i].implementationVersion),
-					VK_API_VERSION_MINOR(pSupportsLayer[i].implementationVersion),
-					VK_API_VERSION_PATCH(pSupportsLayer[i].implementationVersion),
-					VK_API_VERSION_VARIANT(pSupportsLayer[i].implementationVersion));
-			}
-		}
-		
-		baseModule.LogInfo("Not Supported Layers:");
-		for(i=0; i<LayerCount; i++){
-			if(!pSupportsLayer[i].implementationVersion){
-				baseModule.LogInfoFormat("- %s", pSupportsLayer[i].name);
-			}
-		}
-		
-		delete [] layers;
-		
-	}catch(const deException &){
-		delete [] layers;
-		throw;
 	}
 }
 
@@ -362,19 +328,16 @@ void devkInstance::pFindDevices(){
 	VK_CHECK(pVulkan, vkEnumeratePhysicalDevices(pInstance, &deviceCount, VK_NULL_HANDLE));
 	
 	if(deviceCount > 0){
-		pPhysicalDevices = new VkPhysicalDevice[deviceCount];
-		VK_CHECK(pVulkan, vkEnumeratePhysicalDevices(pInstance, &deviceCount, pPhysicalDevices));
-		pPhysicalDeviceCount = deviceCount;
+		pPhysicalDevices.SetAll(deviceCount, {});
+		VK_CHECK(pVulkan, vkEnumeratePhysicalDevices(pInstance,
+			&deviceCount, pPhysicalDevices.GetArrayPointer()));
 	}
 	
 	pVulkan.GetModule().LogInfo("Vulkan Devices:");
 	
-	VkPhysicalDeviceProperties properties;
-	int i;
-	
-	for(i=0; i<pPhysicalDeviceCount; i++){
-		memset(&properties, 0, sizeof(properties));
-		vkGetPhysicalDeviceProperties(pPhysicalDevices[i], &properties);
+	pPhysicalDevices.Visit([&](VkPhysicalDevice &device){
+		VkPhysicalDeviceProperties properties{};
+		vkGetPhysicalDeviceProperties(device, &properties);
 		pVulkan.GetModule().LogInfoFormat("- %s (id=%d vendor=%d version=%d.%d.%d.%d api=%d.%d.%d.%d)",
 			properties.deviceName, properties.deviceID, properties.vendorID,
 			VK_API_VERSION_MAJOR(properties.driverVersion),
@@ -385,5 +348,5 @@ void devkInstance::pFindDevices(){
 			VK_API_VERSION_MINOR(properties.apiVersion),
 			VK_API_VERSION_PATCH(properties.apiVersion),
 			VK_API_VERSION_VARIANT(properties.apiVersion));
-	}
+	});
 }

@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-
 #include "devkDynamicState.h"
 #include "devkPipeline.h"
 #include "../devkDevice.h"
@@ -84,10 +81,13 @@ void devkDynamicState::Apply(devkCommandBuffer &commandBuffer, const devkPipelin
 //////////////
 
 bool devkDynamicState::operator==(const devkDynamicState &state) const{
-	return memcmp(this, &state, sizeof(devkDynamicState)) == 0;
-}
-
-devkDynamicState &devkDynamicState::operator=(const devkDynamicState &state){
-	memcpy(this, &state, sizeof(devkDynamicState));
-	return *this;
+	return depthBiasConstantFactor == state.depthBiasConstantFactor
+		&& depthBiasClamp == state.depthBiasClamp
+		&& depthBiasSlopeFactor == state.depthBiasSlopeFactor
+		&& stencilFrontCompareMask == state.stencilFrontCompareMask
+		&& stencilBackCompareMask == state.stencilBackCompareMask
+		&& stencilFrontWriteMask == state.stencilFrontWriteMask
+		&& stencilBackWriteMask == state.stencilBackWriteMask
+		&& stencilFrontReference == state.stencilFrontReference
+		&& stencilBackReference == state.stencilBackReference;
 }

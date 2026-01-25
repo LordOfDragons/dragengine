@@ -62,50 +62,50 @@ void deoglDynamicTBOFloat32::AddBool(bool value){
 }
 
 void deoglDynamicTBOFloat32::AddFloat(float value){
-	pEnlarge(1);
+	pEnlargeDataCount(1);
 	
-	float * const dataFloat = (float*)pData;
+	float * const dataFloat = (float*)pData.GetArrayPointer();
 	dataFloat[pDataCount++] = value;
 }
 
 void deoglDynamicTBOFloat32::AddVec2(float value1, float value2){
-	pEnlarge(2);
+	pEnlargeDataCount(2);
 	
-	float * const dataFloat = (float*)pData;
+	float * const dataFloat = (float*)pData.GetArrayPointer();
 	dataFloat[pDataCount++] = value1;
 	dataFloat[pDataCount++] = value2;
 }
 
 void deoglDynamicTBOFloat32::AddVec2(const decVector2 &value){
-	pEnlarge(2);
+	pEnlargeDataCount(2);
 	
-	float * const dataFloat = (float*)pData;
+	float * const dataFloat = (float*)pData.GetArrayPointer();
 	dataFloat[pDataCount++] = value.x;
 	dataFloat[pDataCount++] = value.y;
 }
 
 void deoglDynamicTBOFloat32::AddVec3(float value1, float value2, float value3){
-	pEnlarge(3);
+	pEnlargeDataCount(3);
 	
-	float * const dataFloat = (float*)pData;
+	float * const dataFloat = (float*)pData.GetArrayPointer();
 	dataFloat[pDataCount++] = value1;
 	dataFloat[pDataCount++] = value2;
 	dataFloat[pDataCount++] = value3;
 }
 
 void deoglDynamicTBOFloat32::AddVec3(const decVector &value){
-	pEnlarge(3);
+	pEnlargeDataCount(3);
 	
-	float * const dataFloat = (float*)pData;
+	float * const dataFloat = (float*)pData.GetArrayPointer();
 	dataFloat[pDataCount++] = value.x;
 	dataFloat[pDataCount++] = value.y;
 	dataFloat[pDataCount++] = value.z;
 }
 
 void deoglDynamicTBOFloat32::AddVec4(float value1, float value2, float value3, float value4){
-	pEnlarge(4);
+	pEnlargeDataCount(4);
 	
-	float * const dataFloat = (float*)pData;
+	float * const dataFloat = (float*)pData.GetArrayPointer();
 	dataFloat[pDataCount++] = value1;
 	dataFloat[pDataCount++] = value2;
 	dataFloat[pDataCount++] = value3;
@@ -113,9 +113,9 @@ void deoglDynamicTBOFloat32::AddVec4(float value1, float value2, float value3, f
 }
 
 void deoglDynamicTBOFloat32::AddVec4(const decVector &value, float value4){
-	pEnlarge(4);
+	pEnlargeDataCount(4);
 	
-	float * const dataFloat = (float*)pData;
+	float * const dataFloat = (float*)pData.GetArrayPointer();
 	dataFloat[pDataCount++] = value.x;
 	dataFloat[pDataCount++] = value.y;
 	dataFloat[pDataCount++] = value.z;
@@ -123,9 +123,9 @@ void deoglDynamicTBOFloat32::AddVec4(const decVector &value, float value4){
 }
 
 void deoglDynamicTBOFloat32::AddVec4(const decVector4 &value){
-	pEnlarge(4);
+	pEnlargeDataCount(4);
 	
-	float * const dataFloat = (float*)pData;
+	float * const dataFloat = (float*)pData.GetArrayPointer();
 	dataFloat[pDataCount++] = value.x;
 	dataFloat[pDataCount++] = value.y;
 	dataFloat[pDataCount++] = value.z;
@@ -133,9 +133,9 @@ void deoglDynamicTBOFloat32::AddVec4(const decVector4 &value){
 }
 
 void deoglDynamicTBOFloat32::AddMat4x3(const decMatrix &value){
-	pEnlarge(12);
+	pEnlargeDataCount(12);
 	
-	float * const dataFloat = (float*)pData;
+	float * const dataFloat = (float*)pData.GetArrayPointer();
 	dataFloat[pDataCount++] = value.a11;
 	dataFloat[pDataCount++] = value.a21;
 	dataFloat[pDataCount++] = value.a31;
@@ -154,9 +154,9 @@ void deoglDynamicTBOFloat32::AddMat4x3(const decMatrix &value){
 }
 
 void deoglDynamicTBOFloat32::AddMat3x4(const decMatrix &value){
-	pEnlarge(12);
+	pEnlargeDataCount(12);
 	
-	float * const dataFloat = (float*)pData;
+	float * const dataFloat = (float*)pData.GetArrayPointer();
 	dataFloat[pDataCount++] = value.a11;
 	dataFloat[pDataCount++] = value.a12;
 	dataFloat[pDataCount++] = value.a13;
@@ -174,9 +174,9 @@ void deoglDynamicTBOFloat32::AddMat3x4(const decMatrix &value){
 }
 
 void deoglDynamicTBOFloat32::AddMat3x3(const decMatrix &value){
-	pEnlarge(9);
+	pEnlargeDataCount(9);
 	
-	float * const dataFloat = (float*)pData;
+	float * const dataFloat = (float*)pData.GetArrayPointer();
 	dataFloat[pDataCount++] = value.a11;
 	dataFloat[pDataCount++] = value.a21;
 	dataFloat[pDataCount++] = value.a31;
@@ -191,9 +191,9 @@ void deoglDynamicTBOFloat32::AddMat3x3(const decMatrix &value){
 }
 
 void deoglDynamicTBOFloat32::AddMat3x2(const decMatrix &value){
-	pEnlarge(6);
+	pEnlargeDataCount(6);
 	
-	float * const dataFloat = (float*)pData;
+	float * const dataFloat = (float*)pData.GetArrayPointer();
 	dataFloat[pDataCount++] = value.a11;
 	dataFloat[pDataCount++] = value.a21;
 	
@@ -213,7 +213,7 @@ void deoglDynamicTBOFloat32::SetFloatAt(int offset, float value){
 		DETHROW(deeInvalidParam);
 	}
 	
-	float * const dataFloat = (float*)pData;
+	float * const dataFloat = (float*)pData.GetArrayPointer();
 	dataFloat[offset] = value;
 }
 
@@ -222,7 +222,7 @@ void deoglDynamicTBOFloat32::SetVec2At(int offset, float value1, float value2){
 		DETHROW(deeInvalidParam);
 	}
 	
-	float * const dataFloat = (float*)pData;
+	float * const dataFloat = (float*)pData.GetArrayPointer();
 	dataFloat[offset] = value1;
 	dataFloat[offset + 1] = value2;
 }
@@ -232,7 +232,7 @@ void deoglDynamicTBOFloat32::SetVec2At(int offset, const decVector2 &value){
 		DETHROW(deeInvalidParam);
 	}
 	
-	float * const dataFloat = (float*)pData;
+	float * const dataFloat = (float*)pData.GetArrayPointer();
 	dataFloat[offset] = value.x;
 	dataFloat[offset + 1] = value.y;
 }
@@ -242,7 +242,7 @@ void deoglDynamicTBOFloat32::SetVec3At(int offset, float value1, float value2, f
 		DETHROW(deeInvalidParam);
 	}
 	
-	float * const dataFloat = (float*)pData;
+	float * const dataFloat = (float*)pData.GetArrayPointer();
 	dataFloat[offset] = value1;
 	dataFloat[offset + 1] = value2;
 	dataFloat[offset + 2] = value3;
@@ -253,7 +253,7 @@ void deoglDynamicTBOFloat32::SetVec3At(int offset, const decVector &value){
 		DETHROW(deeInvalidParam);
 	}
 	
-	float * const dataFloat = (float*)pData;
+	float * const dataFloat = (float*)pData.GetArrayPointer();
 	dataFloat[offset] = value.x;
 	dataFloat[offset + 1] = value.y;
 	dataFloat[offset + 2] = value.z;
@@ -265,7 +265,7 @@ float value3, float value4){
 		DETHROW(deeInvalidParam);
 	}
 	
-	float * const dataFloat = (float*)pData;
+	float * const dataFloat = (float*)pData.GetArrayPointer();
 	dataFloat[offset] = value1;
 	dataFloat[offset + 1] = value2;
 	dataFloat[offset + 2] = value3;
@@ -277,7 +277,7 @@ void deoglDynamicTBOFloat32::SetVec4At(int offset, const decVector &value, float
 		DETHROW(deeInvalidParam);
 	}
 	
-	float * const dataFloat = (float*)pData;
+	float * const dataFloat = (float*)pData.GetArrayPointer();
 	dataFloat[offset] = value.x;
 	dataFloat[offset + 1] = value.y;
 	dataFloat[offset + 2] = value.z;
@@ -289,7 +289,7 @@ void deoglDynamicTBOFloat32::SetVec4At(int offset, const decVector4 &value){
 		DETHROW(deeInvalidParam);
 	}
 	
-	float * const dataFloat = (float*)pData;
+	float * const dataFloat = (float*)pData.GetArrayPointer();
 	dataFloat[offset] = value.x;
 	dataFloat[offset + 1] = value.y;
 	dataFloat[offset + 2] = value.z;
@@ -301,7 +301,7 @@ void deoglDynamicTBOFloat32::SetMat4x3At(int offset, const decMatrix &value){
 		DETHROW(deeInvalidParam);
 	}
 	
-	float * const dataFloat = (float*)pData;
+	float * const dataFloat = (float*)pData.GetArrayPointer();
 	dataFloat[offset] = value.a11;
 	dataFloat[offset + 1] = value.a21;
 	dataFloat[offset + 2] = value.a31;
@@ -324,7 +324,7 @@ void deoglDynamicTBOFloat32::SetMat3x4At(int offset, const decMatrix &value){
 		DETHROW(deeInvalidParam);
 	}
 	
-	float * const dataFloat = (float*)pData;
+	float * const dataFloat = (float*)pData.GetArrayPointer();
 	dataFloat[offset] = value.a11;
 	dataFloat[offset + 1] = value.a12;
 	dataFloat[offset + 2] = value.a13;
@@ -346,7 +346,7 @@ void deoglDynamicTBOFloat32::SetMat3x3At(int offset, const decMatrix &value){
 		DETHROW(deeInvalidParam);
 	}
 	
-	float * const dataFloat = (float*)pData;
+	float * const dataFloat = (float*)pData.GetArrayPointer();
 	dataFloat[offset] = value.a11;
 	dataFloat[offset + 1] = value.a21;
 	dataFloat[offset + 2] = value.a31;
@@ -365,7 +365,7 @@ void deoglDynamicTBOFloat32::SetMat3x2At(int offset, const decMatrix &value){
 		DETHROW(deeInvalidParam);
 	}
 	
-	float * const dataFloat = (float*)pData;
+	float * const dataFloat = (float*)pData.GetArrayPointer();
 	dataFloat[offset] = value.a11;
 	dataFloat[offset + 1] = value.a21;
 	
@@ -379,7 +379,7 @@ void deoglDynamicTBOFloat32::SetMat3x2At(int offset, const decMatrix &value){
 void deoglDynamicTBOFloat32::DebugPrint(){
 	deoglRTLogger &logger = pRenderThread.GetLogger();
 	logger.LogInfoFormat("TBO %d-Float32:", pComponentCount);
-	float *data = (float*)pData;
+	float *data = (float*)pData.GetArrayPointer();
 	int i, pixel = 0;
 	
 	pEnsurePadding();

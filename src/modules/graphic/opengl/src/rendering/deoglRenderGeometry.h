@@ -28,6 +28,7 @@
 #include "deoglRenderBase.h"
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoglCollideList;
 class deoglComponentLOD;
@@ -68,8 +69,7 @@ private:
 	const deoglPipeline *pPipelineApproxTransformVNT;
 	const deoglPipeline *pPipelineApproxTransformVNTInplace;
 	
-	sVertexPositionSetParams *pVertexPositionSetParams;
-	int pVertexPositionSetParamSize;
+	decTList<sVertexPositionSetParams> pVertexPositionSetParams;
 	
 	
 	
@@ -108,9 +108,6 @@ public:
 	void ApproxTransformVNT(GLuint vao, GLuint vbo, const deoglSPBlockSSBO *weightMatrices,
 		const deoglSPBlockSSBO &transformed, int firstPoint, int pointCount, bool inplace);
 	/*@}*/
-	
-private:
-	void pCleanUp();
 };
 
 #endif

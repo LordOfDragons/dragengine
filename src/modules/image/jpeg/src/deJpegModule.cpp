@@ -241,7 +241,7 @@ void deJpegModule::LoadImage(decBaseFileReader &file, deImage &image, deBaseImag
 }
 
 void deJpegModule::SaveImage(decBaseFileWriter &file, const deImage &image){
-	char * const imageData = reinterpret_cast<char*>(image.GetData());
+	const char * const imageData = reinterpret_cast<const char*>(image.GetData());
 	const int componentCount = image.GetComponentCount();
 	const int bitCount = image.GetBitCount();
 	const int height = image.GetHeight();

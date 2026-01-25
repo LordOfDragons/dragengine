@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglSPBParameter.h"
 #include "deoglSPBlockUBO.h"
 #include "../deoglShaderCompiled.h"
@@ -51,8 +47,6 @@ pUBO(0),
 pBindingPoint(0),
 pCompact(true),
 pAllocateBuffer(true),
-pWriteBuffer(nullptr),
-pWriteBufferCapacity(0),
 pWriteBufferUsed(false){
 }
 
@@ -62,8 +56,7 @@ pUBO(0),
 pBindingPoint(paramBlock.pBindingPoint),
 pCompact(paramBlock.pCompact),
 pAllocateBuffer(true),
-pWriteBuffer(nullptr),
-pWriteBufferCapacity(0),
+pWriteBuffer(paramBlock.pWriteBuffer),
 pWriteBufferUsed(false){
 }
 
@@ -72,9 +65,6 @@ deoglSPBlockUBO::~deoglSPBlockUBO(){
 		pClearMapped(); // done by delete
 	}
 	GetRenderThread().GetDelayedOperations().DeleteOpenGLBuffer(pUBO);
-	if(pWriteBuffer){
-		delete [] pWriteBuffer;
-	}
 }
 
 
@@ -157,7 +147,7 @@ void deoglSPBlockUBO::MapBuffer(){
 	}else{
 		pGrowWriteBuffer(GetBufferSize());
 		pWriteBufferUsed = true;
-		pSetMapped(pWriteBuffer);
+		pSetMapped(pWriteBuffer.GetArrayPointer());
 	}
 }
 
@@ -206,7 +196,7 @@ void deoglSPBlockUBO::MapBuffer(int element, int count){
 	}else{
 		pGrowWriteBuffer(GetElementStride() * count);
 		pWriteBufferUsed = true;
-		pSetMapped(pWriteBuffer, element, count);
+		pSetMapped(pWriteBuffer.GetArrayPointer(), element, count);
 	}
 }
 
@@ -243,7 +233,8 @@ void deoglSPBlockUBO::UnmapBuffer(){
 			}
 		}
 		
-		OGL_CHECK(renderThread, pglBufferSubData(GL_UNIFORM_BUFFER, offset, size, pWriteBuffer));
+		OGL_CHECK(renderThread, pglBufferSubData(GL_UNIFORM_BUFFER,
+			offset, size, pWriteBuffer.GetArrayPointer()));
 		pWriteBufferUsed = false;
 		
 	}else{
@@ -271,12 +262,12 @@ void deoglSPBlockUBO::DebugPrintConfig(const char *name){
 	
 	GetRenderThread().GetLogger().LogInfoFormat("Shader Parameter Block '%s' (%p):"
 		" parameters=%d ubo=%u binding=%u elementCount=%d elementStride=%d"
-		" offsetPadding=%d size=%d %s", name, this, GetParameterCount(), pUBO, pBindingPoint,
+		" offsetPadding=%d size=%d %s", name, this, GetParameters().GetCount(), pUBO, pBindingPoint,
 		GetElementCount(), GetElementStride(), GetOffsetPadding(), GetBufferSize(),
 		GetRowMajor() ? "rowMajor" : "colMajor");
 	
-	for(i=0; i<GetParameterCount(); i++){
-		const deoglSPBParameter &parameter = GetParameterAt(i);
+	for(i=0; i<GetParameters().GetCount(); i++){
+		const deoglSPBParameter &parameter = GetParameters()[i];
 		GetRenderThread().GetLogger().LogInfoFormat("- Parameter %i: %s%ix%i[%i]"
 			" offset=%u stride=%u arraystride=%i size=%u", i,
 				valueTypeNames[parameter.GetValueType()],
@@ -303,22 +294,7 @@ void deoglSPBlockUBO::pUpdateBufferSize(){
 //////////////////////
 
 void deoglSPBlockUBO::pGrowWriteBuffer(int size){
-	if(size <= pWriteBufferCapacity){
-		return;
+	if(size > pWriteBuffer.GetCount()){
+		pWriteBuffer.SetCount(size, 0);
 	}
-	
-	char * const newBuffer = new char[size];
-	
-	if(pWriteBuffer){
-		if(pWriteBufferCapacity > 0){
-			memcpy(newBuffer, pWriteBuffer, pWriteBufferCapacity);
-		}
-		
-		delete [] pWriteBuffer;
-		pWriteBuffer = nullptr;
-		pWriteBufferCapacity = 0;
-	}
-	
-	pWriteBuffer = newBuffer;
-	pWriteBufferCapacity = size;
 }

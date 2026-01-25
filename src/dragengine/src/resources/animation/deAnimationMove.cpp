@@ -68,6 +68,8 @@ const deAnimationMove::KeyframeListRef &deAnimationMove::GetKeyframeList(int ind
 }
 
 void deAnimationMove::AddKeyframeList(KeyframeListRef &&list){
+	DEASSERT_NOTNULL(list)
+	
 	pLists.Add(std::move(list));
 }
 
@@ -76,6 +78,8 @@ const deAnimationMove::VertexPositionSetKeyframeListRef &deAnimationMove::GetVer
 }
 
 void deAnimationMove::AddVertexPositionSetKeyframeList(VertexPositionSetKeyframeListRef &&list){
+	DEASSERT_NOTNULL(list)
+	
 	pVertexPositionSetLists.Add(std::move(list));
 }
 

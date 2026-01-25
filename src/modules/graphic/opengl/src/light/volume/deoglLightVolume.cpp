@@ -22,11 +22,6 @@
  * SOFTWARE.
  */
 
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglLightVolume.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../renderthread/deoglRenderThread.h"
@@ -50,8 +45,6 @@
 deoglLightVolume::deoglLightVolume(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
 pVAO(0),
-pPoints(nullptr),
-pPointCount(0),
 pVBO(0),
 pVBOPointCount(0),
 pDirtyVBO(true){
@@ -61,10 +54,6 @@ deoglLightVolume::~deoglLightVolume(){
 	deoglDelayedOperations &dops = pRenderThread.GetDelayedOperations();
 	dops.DeleteOpenGLBuffer(pVBO);
 	dops.DeleteOpenGLVertexArray(pVAO);
-	
-	if(pPoints){
-		delete [] pPoints;
-	}
 }
 
 
@@ -78,16 +67,14 @@ void deoglLightVolume::SetExtends(const decVector &minExtend, const decVector &m
 }
 
 void deoglLightVolume::CalcBoundingBox(decDVector &boxMinExtend, decDVector &boxMaxExtend, const decDMatrix &matrix) const{
-	if(pPointCount == 0){
+	if(pPoints.IsEmpty()){
 		boxMinExtend = matrix.GetPosition();
 		boxMaxExtend = boxMinExtend;
 		
 	}else{
 		decDVector point;
-		int i;
-		
-		for(i=0; i<pPointCount; i++){
-			point = matrix.Transform((double)pPoints[i].x, (double)pPoints[i].y, (double)pPoints[i].z);
+		pPoints.VisitIndexed([&](int i, const oglVector3 &pt){
+			point = matrix.Transform((double)pt.x, (double)pt.y, (double)pt.z);
 			
 			if(i == 0){
 				boxMinExtend = point;
@@ -115,26 +102,15 @@ void deoglLightVolume::CalcBoundingBox(decDVector &boxMinExtend, decDVector &box
 					boxMaxExtend.z = point.z;
 				}
 			}
-		}
+		});
 	}
 }
 
 void deoglLightVolume::SetPointCount(int count){
-	if(count < 0){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_TRUE(count >= 0)
 	
-	if(count != pPointCount){
-		if(pPoints){
-			delete [] pPoints;
-			pPoints = nullptr;
-		}
-		
-		if(count > 0){
-			pPoints = new oglVector3[count];
-		}
-		
-		pPointCount = count;
+	if(count != pPoints.GetCount()){
+		pPoints.SetAll(count, {});
 	}
 }
 
@@ -145,15 +121,16 @@ void deoglLightVolume::UpdateVBO(){
 		return;
 	}
 	
-	if(pPointCount > 0){
+	if(pPoints.IsNotEmpty()){
 		// update vbo
 		if(!pVBO){
 			OGL_CHECK(pRenderThread, pglGenBuffers(1, &pVBO));
 		}
 		
 		OGL_CHECK(pRenderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBO));
-		OGL_CHECK(pRenderThread, pglBufferData(GL_ARRAY_BUFFER, sizeof(oglVector3) * pPointCount, pPoints, GL_STATIC_DRAW));
-		pVBOPointCount = pPointCount;
+		OGL_CHECK(pRenderThread, pglBufferData(GL_ARRAY_BUFFER,
+			sizeof(oglVector3) * pPoints.GetCount(), pPoints.GetArrayPointer(), GL_STATIC_DRAW));
+		pVBOPointCount = pPoints.GetCount();
 		
 		OGL_CHECK(pRenderThread, pglBindBuffer(GL_ARRAY_BUFFER, 0));
 		
@@ -161,13 +138,13 @@ void deoglLightVolume::UpdateVBO(){
 		if(!pVAO){
 			deoglVBOLayout layout;
 			
-			layout.SetAttributeCount(1);
+			layout.GetAttributes().SetCount(1, {});
 			layout.SetStride(12);
 			layout.SetIndexType(deoglVBOLayout::eitNone); // use indices later on
 			
-			layout.GetAttributeAt(0).SetComponentCount(3);
-			layout.GetAttributeAt(0).SetDataType(deoglVBOAttribute::edtFloat);
-			layout.GetAttributeAt(0).SetOffset(0);
+			layout.GetAttributes()[0].SetComponentCount(3);
+			layout.GetAttributes()[0].SetDataType(deoglVBOAttribute::edtFloat);
+			layout.GetAttributes()[0].SetOffset(0);
 			
 			OGL_CHECK(pRenderThread, pglGenVertexArrays(1, &pVAO));
 			
@@ -179,7 +156,7 @@ void deoglLightVolume::UpdateVBO(){
 			OGL_CHECK(pRenderThread, pglBindBuffer(GL_ARRAY_BUFFER, 0));
 			OGL_CHECK(pRenderThread, pglBindVertexArray(0));
 		}
-//pOgl->LogInfoFormat( "light volume %p: points=%i size=%i vbo=%u", this, pPointCount, pPointCount*sizeof(oglVector3), pVBO );
+//pOgl->LogInfoFormat("light volume %p: points=%i size=%i vbo=%u", this, pPoints.GetCount(), pPoints.GetCount()*sizeof(oglVector3), pVBO);
 	}
 	
 	pDirtyVBO = false;
@@ -250,10 +227,10 @@ void deoglLightVolume::CreateFrom(const decConvexVolumeList &list){
 	}
 	
 	// prepare vbo data and mark it dirty
-	SetPointCount(vboFaceCount * 3);
+	pPoints.SetCountDiscard(vboFaceCount * 3);
 	
 	if(vboFaceCount > 0){
-		oglVector3 *vboDataPointer = pPoints;
+		oglVector3 *vboDataPointer = pPoints.GetArrayPointer();
 		
 		for(i=0; i<volumeCount; i++){
 			const decConvexVolume &volume = list.GetVolumeAt(i);

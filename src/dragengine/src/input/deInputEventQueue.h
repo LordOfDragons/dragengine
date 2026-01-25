@@ -26,6 +26,7 @@
 #define _DEINPUTEVENTQUEUE_H_
 
 #include "../dragengine_export.h"
+#include "../common/collection/decTList.h"
 
 class deInputEvent;
 
@@ -38,9 +39,8 @@ class deInputEvent;
  */
 class DE_DLL_EXPORT deInputEventQueue{
 private:
-	deInputEvent *pEvents;
+	decTList<deInputEvent> pEvents;
 	int pEventCount;
-	int pEventSize;
 	
 	
 	
@@ -51,7 +51,7 @@ public:
 	 * \brief Create a new event queue.
 	 * \throws deeInvalidParam \em queueSize is less than 1.
 	 */
-	deInputEventQueue(int queueSize);
+	explicit deInputEventQueue(int queueSize);
 	
 	/** \brief Clean up the event queue. */
 	~deInputEventQueue();

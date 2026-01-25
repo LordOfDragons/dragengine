@@ -57,10 +57,6 @@ debpSmokeEmitter::debpSmokeEmitter(dePhysicsBullet *bullet, deSmokeEmitter *smok
 	
 	pParentWorld = NULL;
 	
-	pPoints = NULL;
-	pPointCount = 0;
-	pPointSize = 0;
-	
 	pDirtyEmitterMatrix = true;
 	
 	pFluctTimer = 0.0f;
@@ -70,9 +66,7 @@ debpSmokeEmitter::debpSmokeEmitter(dePhysicsBullet *bullet, deSmokeEmitter *smok
 	GravityChanged();
 }
 
-debpSmokeEmitter::~debpSmokeEmitter(){
-	pCleanUp();
-}
+debpSmokeEmitter::~debpSmokeEmitter() = default;
 
 
 
@@ -148,13 +142,4 @@ void debpSmokeEmitter::GravityChanged(){
 	}else{
 		pGravity.SetZero();
 	}
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void debpSmokeEmitter::pCleanUp(){
-	if(pPoints) delete [] pPoints;
 }

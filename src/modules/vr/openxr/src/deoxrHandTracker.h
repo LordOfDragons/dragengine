@@ -28,6 +28,7 @@
 #include "deoxrBasics.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/input/deInputDevice.h>
 #include <dragengine/input/deInputDevicePose.h>
@@ -87,17 +88,15 @@ private:
 	const XrHandEXT pHand;
 	XrHandTrackerEXT pHandTracker;
 	
-	XrHandJointLocationEXT *pJointLocations;
-	XrHandJointVelocityEXT *pJointVelocities;
-	int pJointCount;
+	decTList<XrHandJointLocationEXT> pJointLocations;
+	decTList<XrHandJointVelocityEXT> pJointVelocities;
 	
 	XrHandJointsLocateInfoEXT pLocateInfo;
 	XrHandJointLocationsEXT pLocations;
 	XrHandJointVelocitiesEXT pVelocities;
 	XrHandJointsMotionRangeInfoEXT pMotionRange;
 	
-	deInputDevicePose *pPoseBones;
-	int pPoseBoneCount;
+	decTList<deInputDevicePose> pPoseBones;
 	
 	static const int FingerBendingCount = 5;
 	sFingerBending pBendFinger[FingerBendingCount];
@@ -110,8 +109,7 @@ private:
 	
 	sFingerInput pFingerInput[4];
 	
-	sBoneMapping *pMapBoneXrToDe;
-	int pMapBoneXrToDeCount;
+	decTList<sBoneMapping> pMapBoneXrToDe;
 	
 	
 	
@@ -144,7 +142,7 @@ public:
 	void Locate();
 	
 	/** Count of pose bones. */
-	inline int GetPoseBoneCount() const{ return pPoseBoneCount; }
+	inline int GetPoseBoneCount() const{ return pPoseBones.GetCount(); }
 	
 	/** Pose bone at index. */
 	deInputDevicePose &GetPoseBoneAt(int index);

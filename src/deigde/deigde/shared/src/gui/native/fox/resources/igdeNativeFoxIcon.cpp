@@ -31,6 +31,7 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/logger/deLogger.h>
@@ -115,7 +116,6 @@ void *igdeNativeFoxIcon::CreateNativeIcon(deImage &image){
 
 void *igdeNativeFoxIcon::CreateNativeIconPNG(decBaseFileReader &reader){
 	FXPNGIcon *nativeIcon = nullptr;
-	char *imageData = nullptr;
 	FXMemoryStream stream;
 	int imageSize = 0;
 	
@@ -125,14 +125,16 @@ void *igdeNativeFoxIcon::CreateNativeIconPNG(decBaseFileReader &reader){
 			DETHROW_INFO(deeInvalidFileFormat, reader.GetFilename());
 		}
 		
-		imageData = new char[imageSize];
-		reader.Read(imageData, imageSize);
+		decTList<char> imageData;
+		imageData.SetCountDiscard(imageSize);
+		reader.Read(imageData.GetArrayPointer(), imageSize);
 		
-		nativeIcon = new FXPNGIcon(FXApp::instance(), nullptr, FXRGB(192,192,192), IMAGE_KEEP | IMAGE_SHMI | IMAGE_SHMP);
+		nativeIcon = new FXPNGIcon(FXApp::instance(), nullptr,
+			FXRGB(192,192,192), IMAGE_KEEP | IMAGE_SHMI | IMAGE_SHMP);
 		#ifdef FOX_OLD_MEMORY_STREAM
-		if(!stream.open(FX::FXStreamLoad, (FXuval)imageSize, (FXuchar*)imageData)){
+		if(!stream.open(FX::FXStreamLoad, (FXuval)imageSize, (FXuchar*)imageData.GetArrayPointer())){
 		#else
-		if(!stream.open(FX::FXStreamLoad, (FXuchar*)imageData, (FXuval)imageSize, false)){
+		if(!stream.open(FX::FXStreamLoad, (FXuchar*)imageData.GetArrayPointer(), (FXuval)imageSize, false)){
 		#endif
 			DETHROW(deeInvalidParam);
 		}
@@ -140,17 +142,11 @@ void *igdeNativeFoxIcon::CreateNativeIconPNG(decBaseFileReader &reader){
 			DETHROW_INFO(deeInvalidFileFormat, reader.GetFilename());
 		}
 		
-		delete [] imageData;
-		imageData = nullptr;
-		
 		nativeIcon->create();
 		
 	}catch(const deException &){
 		if(nativeIcon){
 			delete nativeIcon;
-		}
-		if(imageData){
-			delete [] imageData;
 		}
 		throw;
 	}

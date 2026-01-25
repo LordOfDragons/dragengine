@@ -342,13 +342,10 @@ decString deoglShaderCompiler::cCacheShaderTask::GetDebugDetails() const{
 deoglShaderCompiler::deoglShaderCompiler(deoglShaderLanguage &language, int contextIndex) :
 pLanguage(language),
 pContextIndex(contextIndex),
-pErrorLog(nullptr),
 pPreprocessor(language.GetRenderThread()){
 }
 
-deoglShaderCompiler::~deoglShaderCompiler(){
-	pCleanUp();
-}
+deoglShaderCompiler::~deoglShaderCompiler() = default;
 
 
 
@@ -454,12 +451,6 @@ void deoglShaderCompiler::FinishCompileShader(deoglShaderProgram &program){
 // Private Functions
 //////////////////////
 
-void deoglShaderCompiler::pCleanUp(){
-	if(pErrorLog){
-		delete [] pErrorLog;
-	}
-}
-
 void deoglShaderCompiler::pCompileShaderUnit(deoglShaderProgramUnit &unit){
 	const deMutexGuard guard(pMutexCompile);
 	const deoglShaderUnitSourceCode * const sources = unit.GetSources();
@@ -517,7 +508,7 @@ void deoglShaderCompiler::pFinishCompileShaderUnit(deoglShaderProgramUnit &unit)
 	deoglRTLogger &logger = renderThread.GetLogger();
 	
 	const bool result = pFinishCompileObject(unit.GetHandle());
-	if(result && !pErrorLog){
+	if(result && !pErrorLog.IsEmpty()){
 		#ifdef WITH_DEBUG
 		const deMutexGuard guardLogs(renderThread.GetShader().GetShaderManager().GetMutexLogging());
 		logger.LogInfoFormat("CompileShaderUnit %d: Compiled shader unit for '%s...' in %.2fms",
@@ -531,14 +522,16 @@ void deoglShaderCompiler::pFinishCompileShaderUnit(deoglShaderProgramUnit &unit)
 	if(!result){
 		logger.LogError("Shader unit compilation failed:");
 		
-	}else{
-		logger.LogError("Shader unit compilation succeeded with logs:");
+	}else if(!pErrorLog.IsEmpty()){
+		logger.LogError("Shader unit compilation succeeded:");
 	}
 	
-	logger.LogErrorFormat("  shader unit = %s", unit.GetSources()->GetName().GetString());
+	if(!result || !pErrorLog.IsEmpty()){
+		logger.LogErrorFormat("  shader unit = %s", unit.GetSources()->GetName().GetString());
+	}
 	
-	if(pErrorLog){
-		logger.LogErrorFormat("  compile logs: %s", pErrorLog);
+	if(!pErrorLog.IsEmpty()){
+		logger.LogErrorFormat("  compile logs: %s", pErrorLog.GetArrayPointer());
 	}
 	
 	if(!result){
@@ -655,7 +648,7 @@ void deoglShaderCompiler::pFinishCompileShader(deoglShaderProgram &program){
 	
 	try{
 		const bool result = pFinishLinkShader(handleShader);
-		if(!result || pErrorLog){
+		if(!result || !pErrorLog.IsEmpty()){
 			const deMutexGuard guardLogs(renderThread.GetShader().GetShaderManager().GetMutexLogging());
 			if(!result){
 				logger.LogError("Shader linking failed:");
@@ -673,8 +666,8 @@ void deoglShaderCompiler::pFinishCompileShader(deoglShaderProgram &program){
 						units[i]->GetSources()->GetName().GetString());
 				}
 			}
-			if(pErrorLog){
-				logger.LogErrorFormat("  link logs: %s", pErrorLog);
+			if(!pErrorLog.IsEmpty()){
+				logger.LogErrorFormat("  link logs: %s", pErrorLog.GetArrayPointer());
 			}
 			pLogFailedShader(program);
 			if(!result){
@@ -1160,7 +1153,7 @@ void deoglShaderCompiler::PreparePreprocessor(const deoglShaderProgramUnit &unit
 	// add symbols
 	pPreprocessor.SetSymbolsFromDefines(defines);
 	
-	if(!defines.HasDefineNamed("HIGHP")){
+	if(!defines.GetDefines().Has("HIGHP")){
 		pPreprocessor.SetSymbol("HIGHP", "highp");
 	}
 	
@@ -1251,22 +1244,20 @@ bool deoglShaderCompiler::pFinishCompileObject(GLuint handle){
 	GLint result;
 	SC_OGL_CHECK(renderThread, pglGetShaderiv(handle, GL_COMPILE_STATUS, &result));
 	
-	if(pErrorLog){
-		delete [] pErrorLog;
-		pErrorLog = nullptr;
-	}
+	pErrorLog.SetCountDiscard(0);
 	
 	GLint blen = 0;
 	SC_OGL_CHECK(renderThread, pglGetShaderiv(handle, GL_INFO_LOG_LENGTH , &blen));
 	
 	if(blen > 1){
-		pErrorLog = new char[blen + 1];
-		SC_OGL_CHECK(renderThread, pglGetShaderInfoLog(handle, blen, nullptr, pErrorLog));
+		pErrorLog.SetCountDiscard(blen);
+		SC_OGL_CHECK(renderThread, pglGetShaderInfoLog(
+			handle, blen, nullptr, pErrorLog.GetArrayPointer()));
 		pErrorLog[blen] = 0;
 		
-		if(result == GL_TRUE && strncmp(pErrorLog, "Success", 7) == 0){
-			delete [] pErrorLog;
-			pErrorLog = nullptr;
+		if(result == GL_TRUE && strncmp(pErrorLog.GetArrayPointer(), "Success", 7) == 0){
+			pErrorLog.SetCountDiscard(0);
+			pErrorLog[0] = 0;
 		}
 	}
 	
@@ -1279,22 +1270,20 @@ bool deoglShaderCompiler::pFinishLinkShader(GLuint handle){
 	
 	SC_OGL_CHECK(renderThread, pglGetProgramiv(handle, GL_LINK_STATUS, &result));
 	
-	if(pErrorLog){
-		delete [] pErrorLog;
-		pErrorLog = nullptr;
-	}
+	pErrorLog.SetCountDiscard(0);
 	
 	GLint blen = 0;
 	SC_OGL_CHECK(renderThread, pglGetProgramiv(handle, GL_INFO_LOG_LENGTH, &blen));
 	
 	if(blen > 1){
-		pErrorLog = new char[blen + 1];
-		SC_OGL_CHECK(renderThread, pglGetProgramInfoLog(handle, blen, nullptr, pErrorLog));
+		pErrorLog.SetCountDiscard(blen);
+		SC_OGL_CHECK(renderThread, pglGetProgramInfoLog(
+			handle, blen, nullptr, pErrorLog.GetArrayPointer()));
 		pErrorLog[blen] = 0;
 		
-		if(result == GL_TRUE && strncmp(pErrorLog, "Success", 7) == 0){
-			delete [] pErrorLog;
-			pErrorLog = nullptr;
+		if(result == GL_TRUE && strncmp(pErrorLog.GetArrayPointer(), "Success", 7) == 0){
+			pErrorLog.SetCountDiscard(0);
+			pErrorLog[0] = 0;
 		}
 	}
 	

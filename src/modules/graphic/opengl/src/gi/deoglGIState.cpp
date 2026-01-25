@@ -97,8 +97,6 @@ pDistanceMapScale(1.0f / ((pSizeTexDistance + 2) * pProbeCount.x * pProbeCount.y
 
 pActiveCascade(0),
 
-pCascaceUpdateCycle(nullptr),
-pCascaceUpdateCycleCount(0),
 pCascaceUpdateCycleIndex(0),
 pCameraForceToneMapAdaptionCount(0),
 
@@ -115,54 +113,46 @@ pRayCache(renderThread, 64, pRealProbeCount, 4),
 pBVHStatic(renderThread),
 pBVHDynamic(renderThread)
 {
-	try{
-		pInitCascades();
-		pInitCascadeUpdateCycle();
-		pInitUBOClearProbes();
-		
-		pCameraForceToneMapAdaptionCount = pCascaceUpdateCycleCount;
-		
-		pPrepareProbeVBO();
-		
-		pAreaTracker.SetHalfExtends(pCascades.Last()->GetDetectionBox());
-		
-		// update threshold defines the distance in meters before tracking is updated.
-		// the GI State position is used to update the tracking position. this position
-		// is updated step-wise matching the smallest cascade which is usually around
-		// 1m spacing.
-		// 
-		// there are different possibilities how the threshold can be set.
-		// 
-		// one is to use the largest cascade probe spacing. for a 500m view distance
-		// camera this is a GI State size of 1km. with 32 probes this a threshold of 32m.
-		// with this threshold the cost for updating thet tracking stays in acceptable
-		// boundaries of 1-2ms but the cost for updating the instances tracking can go
-		// up to 10ms.
-		// 
-		// using a threshold of 10m instead keeps the cost for updating the instances
-		// tracking below 1.5ms most of the time.
-		// 
-		// in general costs for finding content using area tracking is around 1-2ms
-		// with most thresholds. hence each update run does cost 1ms for finding the
-		// content. but the cost for updating the instances tracking increases quickly.
-		// for this reason 8m is used to get a middle ground between updating not too
-		// often (with a running player this is around 2s between updates) and keeping
-		// the costs for updating instances tracking reasonable
-		// 
-		// all these measurements have been done for a city scene with roughly 12k
-		// objects inside the tracking area and a camera view distance of 250m
-		// (hence GI tracking area size of 500m)
-		pAreaTracker.SetUpdateThreshold(8.0);
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
+	pInitCascades();
+	pInitCascadeUpdateCycle();
+	pInitUBOClearProbes();
+	
+	pCameraForceToneMapAdaptionCount = pCascaceUpdateCycle.GetCount();
+	
+	pPrepareProbeVBO();
+	
+	pAreaTracker.SetHalfExtends(pCascades.Last()->GetDetectionBox());
+	
+	// update threshold defines the distance in meters before tracking is updated.
+	// the GI State position is used to update the tracking position. this position
+	// is updated step-wise matching the smallest cascade which is usually around
+	// 1m spacing.
+	// 
+	// there are different possibilities how the threshold can be set.
+	// 
+	// one is to use the largest cascade probe spacing. for a 500m view distance
+	// camera this is a GI State size of 1km. with 32 probes this a threshold of 32m.
+	// with this threshold the cost for updating thet tracking stays in acceptable
+	// boundaries of 1-2ms but the cost for updating the instances tracking can go
+	// up to 10ms.
+	// 
+	// using a threshold of 10m instead keeps the cost for updating the instances
+	// tracking below 1.5ms most of the time.
+	// 
+	// in general costs for finding content using area tracking is around 1-2ms
+	// with most thresholds. hence each update run does cost 1ms for finding the
+	// content. but the cost for updating the instances tracking increases quickly.
+	// for this reason 8m is used to get a middle ground between updating not too
+	// often (with a running player this is around 2s between updates) and keeping
+	// the costs for updating instances tracking reasonable
+	// 
+	// all these measurements have been done for a city scene with roughly 12k
+	// objects inside the tracking area and a camera view distance of 250m
+	// (hence GI tracking area size of 500m)
+	pAreaTracker.SetUpdateThreshold(8.0);
 }
 
-deoglGIState::~deoglGIState(){
-	pCleanUp();
-}
+deoglGIState::~deoglGIState() = default;
 
 
 
@@ -260,7 +250,7 @@ void deoglGIState::ActivateNextCascade(){
 	
 	// regular update of cascades using cascade cycle
 	pActiveCascade = pCascaceUpdateCycle[pCascaceUpdateCycleIndex++];
-	if(pCascaceUpdateCycleIndex >= pCascaceUpdateCycleCount){
+	if(pCascaceUpdateCycleIndex >= pCascaceUpdateCycle.GetCount()){
 		pCascaceUpdateCycleIndex = 0;
 	}
 // 	pRenderThread.GetLogger().LogInfoFormat( "GIState: next cascade %d (cycle)", pActiveCascade );
@@ -454,12 +444,6 @@ void deoglGIState::StartReadBack(){
 // Private Functions
 //////////////////////
 
-void deoglGIState::pCleanUp(){
-	if(pCascaceUpdateCycle){
-		delete [] pCascaceUpdateCycle;
-	}
-}
-
 void deoglGIState::pInitCascades(){
 	const float scaleFactor2nd = 2.0f;
 	const float offsetFactor2nd = 0.0f; // 0.25f; <= when using 5th cascade offset by 0.5
@@ -556,21 +540,12 @@ void deoglGIState::pInitCascadeUpdateCycle(){
 	// update on equal speed with the smallest cascade updating faster. this puts emphasis on
 	// the area around the camera while keeping larger cascades at equal pacing
 	
-	pCascaceUpdateCycle = new int[6];
-	pCascaceUpdateCycle[0] = 0;
-	pCascaceUpdateCycle[1] = 1;
-	pCascaceUpdateCycle[2] = 2;
-	pCascaceUpdateCycle[3] = 0;
-	pCascaceUpdateCycle[4] = 1;
-	pCascaceUpdateCycle[5] = 3;
-	pCascaceUpdateCycleCount = 6;
+	pCascaceUpdateCycle = decTList<int>(devctag, 0, 1, 2, 0, 1, 3);
 	
 	// debug
-// 	pCascaceUpdateCycle[ 0 ] = 0;
-// 	pCascaceUpdateCycleCount = 1;
+// 	pCascaceUpdateCycle = decTList<int>(devctag, 0);
 	#ifdef GISTATE_SPECIAL_DEBUG
-	pCascaceUpdateCycle[0] = 3;
-	pCascaceUpdateCycleCount = 1;
+	pCascaceUpdateCycle = decTList<int>(devctag, 3);
 	#endif
 }
 
