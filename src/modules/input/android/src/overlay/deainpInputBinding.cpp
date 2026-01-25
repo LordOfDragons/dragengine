@@ -122,10 +122,10 @@ void deainpInputBinding::ChangeButtonState(deAndroidInput &androidInput, bool pr
 		return;
 	}
 	
-	const deainpDevice &device = androidInput.GetDevices().GetDevices().GetAt(pDeviceIndex);
+	deainpDevice &device = androidInput.GetDevices().GetDevices().GetAt(pDeviceIndex);
 	const timeval timestamp = androidInput.TimeValNow();
 	
-	deainpDeviceButton &button = device.GetButtonAt(pButtonIndex);
+	deainpDeviceButton &button = device.GetButtons()[pButtonIndex];
 	button.SetPressed(pressed);
 	
 	switch(device.GetType()){

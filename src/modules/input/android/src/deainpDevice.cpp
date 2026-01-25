@@ -89,130 +89,79 @@ void deainpDevice::SetName(const char *name){
 
 
 
-deainpDeviceButton *deainpDevice::GetButtonWithID(const char *id) const{
-	int i;
-	for(i=0; i<pButtonCount; i++){
-		if(pButtons[i].GetID() == id){
-			return pButtons + i;
-		}
-	}
-	
-	return NULL;
+deainpDeviceButton *deainpDevice::GetButtonWithID(const char *id){
+	deainpDeviceButton *found = nullptr;
+	return pButtons.Find(found, [&](const deainpDeviceButton &button){
+		return button.GetID() == id;
+	}) ? found : nullptr;
 }
 
-deainpDeviceButton *deainpDevice::GetButtonWithAICode(int code) const{
-	int i;
-	for(i=0; i<pButtonCount; i++){
-		if(pButtons[i].GetAICode() == code){
-			return pButtons + i;
-		}
-	}
-	
-	return NULL;
+deainpDeviceButton *deainpDevice::GetButtonWithAICode(int code){
+	deainpDeviceButton *found = nullptr;
+	return pButtons.Find(found, [&](const deainpDeviceButton &button){
+		return button.GetAICode() == code;
+	}) ? found : nullptr;
 }
 
 int deainpDevice::IndexOfButtonWithID(const char *id) const{
-	int i;
-	for(i=0; i<pButtonCount; i++){
-		if(pButtons[i].GetID() == id){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pButtons.IndexOfMatching([&](const deainpDeviceButton &button){
+		return button.GetID() == id;
+	});
 }
 
 int deainpDevice::IndexOfButtonWithKeyCode(deInputEvent::eKeyCodes code) const{
-	int i;
-	for(i=0; i<pButtonCount; i++){
-		if(pButtons[i].GetKeyCode() == code){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pButtons.IndexOfMatching([&](const deainpDeviceButton &button){
+		return button.GetKeyCode() == code;
+	});
 }
 
 int deainpDevice::IndexOfButtonWithAICode(int code) const{
-	int i;
-	for(i=0; i<pButtonCount; i++){
-		if(pButtons[i].GetAICode() == code){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pButtons.IndexOfMatching([&](const deainpDeviceButton &button){
+		return button.GetAICode() == code;
+	});
 }
 
 
 
-deainpDeviceAxis *deainpDevice::GetAxisWithID(const char *id) const{
-	int i;
-	
-	for(i=0; i<pAxisCount; i++){
-		if(pAxes[i].GetID() == id){
-			return pAxes + i;
-		}
-	}
-	
-	return NULL;
+deainpDeviceAxis *deainpDevice::GetAxisWithID(const char *id){
+	deainpDeviceAxis *found = nullptr;
+	return pAxes.Find(found, [&](const deainpDeviceAxis &axis){
+		return axis.GetID() == id;
+	}) ? found : nullptr;
 }
 
-deainpDeviceAxis *deainpDevice::GetAxisWithAICode(int code) const{
-	int i;
-	for(i=0; i<pAxisCount; i++){
-		if(pAxes[i].GetAICode() == code){
-			return pAxes + i;
-		}
-	}
-	
-	return NULL;
+deainpDeviceAxis *deainpDevice::GetAxisWithAICode(int code){
+	deainpDeviceAxis *found = nullptr;
+	return pAxes.Find(found, [&](const deainpDeviceAxis &axis){
+		return axis.GetAICode() == code;
+	}) ? found : nullptr;
 }
 
 int deainpDevice::IndexOfAxisWithID(const char *id) const{
-	int i;
-	for(i=0; i<pAxisCount; i++){
-		if(pAxes[i].GetID() == id){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pAxes.IndexOfMatching([&](const deainpDeviceAxis &axis){
+		return axis.GetID() == id;
+	});
 }
 
 int deainpDevice::IndexOfAxisWithAICode(int code) const{
-	int i;
-	for(i=0; i<pAxisCount; i++){
-		if(pAxes[i].GetAICode() == code){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pAxes.IndexOfMatching([&](const deainpDeviceAxis &axis){
+		return axis.GetAICode() == code;
+	});
 }
 
 
 
-deainpDeviceFeedback *deainpDevice::GetFeedbackWithID(const char *id) const{
-	int i;
-	for(i=0; i<pFeedbackCount; i++){
-		if(pFeedbacks[i].GetID() == id){
-			return pFeedbacks + i;
-		}
-	}
-	
-	return NULL;
+deainpDeviceFeedback *deainpDevice::GetFeedbackWithID(const char *id){
+	deainpDeviceFeedback *found = nullptr;
+	return pFeedbacks.Find(found, [&](const deainpDeviceFeedback &feedback){
+		return feedback.GetID() == id;
+	}) ? found : nullptr;
 }
 
 int deainpDevice::IndexOfFeedbackWithID(const char *id) const{
-	int i;
-	for(i=0; i<pFeedbackCount; i++){
-		if(pFeedbacks[i].GetID() == id){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pFeedbacks.IndexOfMatching([&](const deainpDeviceFeedback &feedback){
+		return feedback.GetID() == id;
+	});
 }
 
 
@@ -234,18 +183,18 @@ void deainpDevice::GetInfo(deInputDevice &info) const{
 	info.SetDisplayModel(NULL);
 	info.SetDisplaySkin(NULL);
 	
-	info.SetButtonCount(pButtonCount);
-	for(i=0; i<pButtonCount; i++){
+	info.SetButtonCount(pButtons.GetCount());
+	for(i=0; i<pButtons.GetCount(); i++){
 		pButtons[i].GetInfo(info.GetButtons().GetAt(i));
 	}
 	
-	info.SetAxisCount(pAxisCount);
-	for(i=0; i<pAxisCount; i++){
+	info.SetAxisCount(pAxes.GetCount());
+	for(i=0; i<pAxes.GetCount(); i++){
 		pAxes[i].GetInfo(info.GetAxes().GetAt(i));
 	}
 	
-	info.SetFeedbackCount(pFeedbackCount);
-	for(i=0; i<pFeedbackCount; i++){
+	info.SetFeedbackCount(pFeedbacks.GetCount());
+	for(i=0; i<pFeedbacks.GetCount(); i++){
 		pFeedbacks[i].GetInfo(info.GetFeedbacks().GetAt(i));
 	}
 }
@@ -260,10 +209,9 @@ void deainpDevice::SendDirtyAxisEvents(){
 	
 	pDirtyAxesValues = false;
 	
-	int i;
-	for(i=0; i<pAxisCount; i++){
-		pAxes[i].SendEvents(*this);
-	}
+	pAxes.Visit([&](deainpDeviceAxis &axis){
+		axis.SendEvents(*this);
+	});
 }
 
 
