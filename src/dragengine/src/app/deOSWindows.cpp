@@ -633,7 +633,7 @@ void deOSWindows::pFindResolutions(){
 		return;
 	}
 
-	pResolutions.SetCount(count);
+	pResolutions.SetCountDiscard(count);
 	int i, j;
 
 	for(i=0; i<count; i++){
