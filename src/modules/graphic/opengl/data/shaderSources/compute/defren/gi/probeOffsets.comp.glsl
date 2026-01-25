@@ -296,9 +296,12 @@ void main(void){
 	// probe has no effect on it anymore no matter if by direct lighting nor ray lighting.
 	// offset can be at most 0.45 . so if both probes are have maximum offset but in opposite
 	// direction then this yields "1 + 0.45 + 0.45" times the spacing which is "spacing * 1.9"
-	if(all(lessThanEqual(vec3(closestDistance), nearGeometryRange))){
+	//
+	// NOTE: clearing gipfNearGeometry should improve performance but it looks it causes
+	//       too many problems. instead update everything unless it is clear why this happens
+	//if(all(lessThanEqual(vec3(closestDistance), nearGeometryRange))){
 		probeFlags |= gipfNearGeometry;
-	}
+	//}
 	
 	// if frontfaces are hit clamp offset to maximum radius around grid position.
 	// if backfaces are hit do not move if outside maximum radius
