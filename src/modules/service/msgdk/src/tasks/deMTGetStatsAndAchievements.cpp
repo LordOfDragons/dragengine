@@ -193,7 +193,7 @@ void deMTGetStatsAndAchievements::OnFinished()
 
 	try
 	{
-		decTList<uint8_t> buffer(bufferSize, 0);
+		decTList<uint8_t> buffer((int)bufferSize, 0);
 		
 		XblUserStatisticsResult *usr;
 		size_t bufferUsed;

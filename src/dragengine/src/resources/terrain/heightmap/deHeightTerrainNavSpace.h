@@ -25,9 +25,8 @@
 #ifndef _DEHEIGHTTERRAINNAVSPACE_H_
 #define _DEHEIGHTTERRAINNAVSPACE_H_
 
+#include "deHeightTerrainNavSpaceEdge.h"
 #include "../../navigation/space/deNavigationSpace.h"
-
-class deHeightTerrainNavSpaceEdge;
 
 
 /**

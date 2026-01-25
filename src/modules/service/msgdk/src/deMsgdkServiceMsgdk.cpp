@@ -476,7 +476,7 @@ decString deMsgdkServiceMsgdk::UriEncode(const char *url) const
 	wchar_t dummy = 0;
 	UrlEscape(wwurl.GetArrayPointer(), &dummy, &lenEscaped, flags);
 
-	decTList<wchar_t> escaped(lenEscaped + 1, 0);
+	decTList<wchar_t> escaped((int)lenEscaped + 1, 0);
 	AssertResult(UrlEscape(wwurl.GetArrayPointer(), escaped.GetArrayPointer(), &lenEscaped, flags),
 		"deMsgdkServiceMsgdk.UriEncode.UrlEscape");
 	

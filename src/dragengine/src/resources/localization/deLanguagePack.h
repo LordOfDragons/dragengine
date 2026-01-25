@@ -25,12 +25,12 @@
 #ifndef _DELANGUAGEPACK_H_
 #define _DELANGUAGEPACK_H_
 
+#include "deLanguagePackEntry.h"
 #include "../deFileResource.h"
 #include "../../common/collection/decTDictionary.h"
 #include "../../common/collection/decTList.h"
 #include "../../common/string/unicode/decUnicodeString.h"
 
-class deLanguagePackEntry;
 class deLanguagePackManager;
 
 

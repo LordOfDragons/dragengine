@@ -25,6 +25,7 @@
 #ifndef _DEDECAL_H_
 #define _DEDECAL_H_
 
+#include "deDecalBoneState.h"
 #include "../deResource.h"
 #include "../skin/deSkin.h"
 #include "../skin/dynamic/deDynamicSkin.h"
@@ -36,7 +37,6 @@
 class deDecalManager;
 class deComponent;
 class deHeightTerrainSector;
-class deDecalBoneState;
 class deBaseGraphicDecal;
 class deBasePhysicsDecal;
 class deBaseAudioDecal;

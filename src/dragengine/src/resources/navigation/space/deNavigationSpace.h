@@ -25,6 +25,11 @@
 #ifndef _DENAVIGATIONSPACE_H_
 #define _DENAVIGATIONSPACE_H_
 
+#include "deNavigationSpaceCorner.h"
+#include "deNavigationSpaceEdge.h"
+#include "deNavigationSpaceFace.h"
+#include "deNavigationSpaceWall.h"
+#include "deNavigationSpaceRoom.h"
 #include "../../deResource.h"
 #include "../../../common/collection/decTList.h"
 #include "../../../common/math/decMath.h"
@@ -33,11 +38,6 @@
 #include "../../../common/shape/decShape.h"
 
 class deNavigationSpaceManager;
-class deNavigationSpaceCorner;
-class deNavigationSpaceEdge;
-class deNavigationSpaceFace;
-class deNavigationSpaceWall;
-class deNavigationSpaceRoom;
 class deNavigationSpaceManager;
 class deBaseAINavigationSpace;
 class deWorld;

@@ -25,13 +25,13 @@
 #ifndef _DEOCCLUSIONMESH_H_
 #define _DEOCCLUSIONMESH_H_
 
+#include "deOcclusionMeshBone.h"
+#include "deOcclusionMeshWeight.h"
+#include "deOcclusionMeshVertex.h"
 #include "../deFileResource.h"
 #include "../../common/collection/decTList.h"
 #include "../../common/math/decMath.h"
 
-class deOcclusionMeshBone;
-class deOcclusionMeshVertex;
-class deOcclusionMeshWeight;
 class deOcclusionMeshManager;
 class deWorld;
 class deBaseGraphicOcclusionMesh;

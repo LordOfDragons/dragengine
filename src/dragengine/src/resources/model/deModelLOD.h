@@ -25,15 +25,14 @@
 #ifndef _DEMODELLOD_H_
 #define _DEMODELLOD_H_
 
+#include "deModelWeight.h"
+#include "deModelVertex.h"
+#include "deModelFace.h"
+#include "deModelTextureCoordinatesSet.h"
+#include "deModelLodVertexPositionSet.h"
 #include "../../common/collection/decTList.h"
 #include "../../common/collection/decTUniqueList.h"
 #include "../../common/math/decMath.h"
-
-class deModelWeight;
-class deModelVertex;
-class deModelFace;
-class deModelTextureCoordinatesSet;
-class deModelLodVertexPositionSet;
 
 
 /**

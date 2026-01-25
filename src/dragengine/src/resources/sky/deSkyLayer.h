@@ -25,13 +25,13 @@
 #ifndef _DESKYLAYER_H_
 #define _DESKYLAYER_H_
 
-#include "../../deObject.h"
+#include "deSkyLayerBody.h"
 #include "deSkyControllerTarget.h"
 #include "../skin/deSkin.h"
+#include "../../deObject.h"
 #include "../../common/math/decMath.h"
 
 class deSkyLayerVisitor;
-class deSkyLayerBody;
 
 
 /**

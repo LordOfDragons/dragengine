@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -29,6 +29,9 @@
   <ItemGroup>
     <ProjectReference Include="..\..\dragengine\dragengine.vcxproj">
       <Project>{f9098b91-18fa-4754-b089-e3d613b13b71}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\extern\zlib\extern_zlib.vcxproj">
+      <Project>{b71c1152-6563-4322-b6e0-b5c64feec543}</Project>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">

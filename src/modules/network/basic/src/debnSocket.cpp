@@ -226,7 +226,7 @@ void debnSocket::SendDatagram(const deNetworkMessage &stream, const debnAddress 
 		address.SetSocketIPv6(sa);
 		
 		#ifdef OS_W32
-		sendto(pSocket, reinterpret_cast<char*>(stream.GetBuffer()), stream.GetDataLength(), 0, (sockaddr*)&sa, sizeof(sa));
+		sendto(pSocket, reinterpret_cast<const char*>(stream.GetBuffer()), stream.GetDataLength(), 0, (sockaddr*)&sa, sizeof(sa));
 		#else
 		sendto(pSocket, stream.GetBuffer(), stream.GetDataLength(), 0, (sockaddr*)&sa, sizeof(sa));
 		#endif
@@ -237,7 +237,7 @@ void debnSocket::SendDatagram(const deNetworkMessage &stream, const debnAddress 
 		address.SetSocketIPv4(sa);
 		
 		#ifdef OS_W32
-		sendto(pSocket, reinterpret_cast<char*>(stream.GetBuffer()), stream.GetDataLength(), 0, (sockaddr*)&sa, sizeof(sa));
+		sendto(pSocket, reinterpret_cast<const char*>(stream.GetBuffer()), stream.GetDataLength(), 0, (sockaddr*)&sa, sizeof(sa));
 		#else
 		sendto(pSocket, stream.GetBuffer(), stream.GetDataLength(), 0, (sockaddr*)&sa, sizeof(sa));
 		#endif

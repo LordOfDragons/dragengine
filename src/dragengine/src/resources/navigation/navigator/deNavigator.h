@@ -25,6 +25,7 @@
 #ifndef _DENAVIGATOR_H_
 #define _DENAVIGATOR_H_
 
+#include "deNavigatorType.h"
 #include "../space/deNavigationSpace.h"
 #include "../../deResource.h"
 #include "../../../common/collection/decTList.h"
@@ -33,7 +34,6 @@
 class deCollider;
 class deBaseAINavigator;
 class deNavigatorManager;
-class deNavigatorType;
 class deNavigatorPath;
 class deWorld;
 

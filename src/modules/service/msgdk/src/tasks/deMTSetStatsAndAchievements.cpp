@@ -201,7 +201,7 @@ void deMTSetStatsAndAchievements::pSetStats()
 	}
 
 	pService.AssertResult(XblTitleManagedStatsUpdateStatsAsync(
-		pService.GetXblContext(), xblstats, count, GetAsyncBlockPtr()),
+		pService.GetXblContext(), xblstats.GetArrayPointer(), count, GetAsyncBlockPtr()),
 		"deMTSetStatsAndAchievements.pSetStats.XblTitleManagedStatsUpdateStatsAsync");
 }
 

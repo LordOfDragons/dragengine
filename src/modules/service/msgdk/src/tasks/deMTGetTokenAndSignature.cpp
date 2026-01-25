@@ -66,7 +66,7 @@ void deMTGetTokenAndSignature::OnFinished()
 
 	try
 	{
-		decTList<uint8_t> buffer(bufferLen, 0);
+		decTList<uint8_t> buffer((int)bufferLen, 0);
 		
 		XUserGetTokenAndSignatureData *tsd;
 		size_t bufferUsed;

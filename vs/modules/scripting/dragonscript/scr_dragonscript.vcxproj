@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -48,6 +48,9 @@
     </ProjectReference>
     <ProjectReference Include="..\..\..\extern\dragonscript\extern_dragonscript.vcxproj">
       <Project>{043eff15-4b38-4a5b-a20b-9c572699ba59}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\extern\zlib\extern_zlib.vcxproj">
+      <Project>{b71c1152-6563-4322-b6e0-b5c64feec543}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

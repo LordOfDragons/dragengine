@@ -25,13 +25,12 @@
 #ifndef _DEPROPFIELDTYPE_H_
 #define _DEPROPFIELDTYPE_H_
 
+#include "dePropFieldInstance.h"
+#include "dePropFieldBendState.h"
 #include "../model/deModel.h"
 #include "../skin/deSkin.h"
 #include "../../common/collection/decTUniqueList.h"
 #include "../../common/utils/decCollisionFilter.h"
-
-class dePropFieldInstance;
-class dePropFieldBendState;
 
 
 /**

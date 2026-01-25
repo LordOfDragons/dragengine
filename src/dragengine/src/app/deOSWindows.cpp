@@ -77,7 +77,6 @@
 deOSWindows::deOSWindows() :
 pInstApp(nullptr),
 pCurWindow(nullptr),
-pResolutions(nullptr),
 pRefreshRate(60),
 pScaleFactor(100)
 {
@@ -542,7 +541,7 @@ decString deOSWindows::GetRegistryValue(const char *key, const char *entry, cons
 		return defaultValue;
 	}
 	
-	decTList<CHAR> buffer(bufferSize);
+	decTList<CHAR> buffer((int)bufferSize, 0);
 	if(RegQueryValueExA(hKey, entry, 0, NULL, (LPBYTE)buffer.GetArrayPointer(), &bufferSize) != ERROR_SUCCESS){
 		RegCloseKey(hKey);
 		return defaultValue;
@@ -566,7 +565,7 @@ decString deOSWindows::GetRegistryValueCurrentUser(const char *key, const char *
 		return defaultValue;
 	}
 	
-	decTList<CHAR> buffer(bufferSize);
+	decTList<CHAR> buffer((int)bufferSize, 0);
 	if(RegQueryValueExA(hKey, entry, 0, NULL, (LPBYTE)buffer.GetArrayPointer(), &bufferSize) != ERROR_SUCCESS){
 		RegCloseKey(hKey);
 		return defaultValue;
@@ -609,7 +608,7 @@ decString deOSWindows::pGetUserLanguage() const{
 		return "en";
 	}
 	
-	decTList<wchar_t> buffer(langBufSize);
+	decTList<wchar_t> buffer((int)langBufSize, 0);
 	if(!GetUserPreferredUILanguages(MUI_LANGUAGE_NAME, &numLanguages, buffer.GetArrayPointer(), &langBufSize)){
 		return "en";
 	}
@@ -652,7 +651,7 @@ void deOSWindows::pFindResolutions(){
 			continue;
 		}
 
-		pResolutions.GetAt(pResolutions.GetCount()++) = resolution;
+		pResolutions.Add(resolution);
 	}
 
 	for(i=1; i<pResolutions.GetCount(); i++){

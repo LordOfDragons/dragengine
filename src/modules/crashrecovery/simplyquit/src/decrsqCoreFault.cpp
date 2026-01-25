@@ -105,10 +105,9 @@ static void logStackTraceVS(const _EXCEPTION_POINTERS &ei, HANDLE process, deCRS
 	CONTEXT &context = *ei.ContextRecord;
 	
 	const int symbolBufferLen = sizeof(IMAGEHLP_SYMBOL64) + MAX_SYM_NAME;
-	decTList<char> symbolBuffer;
-	symbolBuffer.SetSize(symbolBufferLen + 1);
-	memset(symbolBuffer.GetData(), 0, symbolBufferLen + 1);
-	PIMAGEHLP_SYMBOL64 const symbol = (PIMAGEHLP_SYMBOL64)symbolBuffer.GetData();
+	decTList<char> symbolBuffer(symbolBufferLen + 1, 0);
+	memset(symbolBuffer.GetArrayPointer(), 0, symbolBufferLen + 1);
+	PIMAGEHLP_SYMBOL64 const symbol = (PIMAGEHLP_SYMBOL64)symbolBuffer.GetArrayPointer();
 	symbol->SizeOfStruct = sizeof(IMAGEHLP_SYMBOL64);
 	symbol->MaxNameLength = MAX_SYM_NAME;
 
