@@ -201,6 +201,7 @@ bool debpColliderBones::UpdateFromBody(){
 	
 	// fetch the information from all bones and apply them to
 	// either the collider if the root bone or the bone otherwise.
+	
 	pBonePhysics.Visit([&](const debpColliderBone *b){
 		debpPhysicsBody &phyBody = *b->GetPhysicsBody();
 		if(!phyBody.UpdateFromBody()){
@@ -304,6 +305,7 @@ bool debpColliderBones::UpdateFromBody(){
 				
 				if(component){
 					deComponentBone &compBone = component->GetBoneAt(i);
+					matrix.Normalize();
 					compBone.SetPosition((matrix * -b->GetOffset()).ToVector());
 					compBone.SetRotation(matrix.ToQuaternion());
 				}
@@ -682,6 +684,7 @@ void debpColliderBones::CreateDebugDrawers(){
 		boneDebugDrawer->SetXRay(true);
 		boneDebugDrawer->SetPosition(colbone.GetPosition());
 		boneDebugDrawer->SetOrientation(colbone.GetOrientation());
+		boneDebugDrawer->SetScale(pGetColliderScale());
 		b->SetDebugDrawer(boneDebugDrawer);
 		if(world){
 			world->GetWorld().AddDebugDrawer(boneDebugDrawer);
@@ -749,9 +752,11 @@ void debpColliderBones::UpdateDebugDrawers(){
 		
 		const deColliderBone &colbone = pEngColliderRig->GetBoneAt(b->GetIndex());
 		const decDMatrix matrix(decDMatrix::CreateFromQuaternion(colbone.GetOrientation()));
+		const decVector scale(pGetColliderScale());
 		
-		ddrawer->SetPosition(colbone.GetPosition() - matrix * b->GetOffset());
+		ddrawer->SetPosition(colbone.GetPosition() - (matrix * b->GetOffset()).Multiply(scale));
 		ddrawer->SetOrientation(colbone.GetOrientation());
+		ddrawer->SetScale(scale);
 		
 		const int highlightResponseType = pCollider.GetBullet()->GetDeveloperMode().GetHighlightResponseType();
 		deDebugDrawerShape &ddshape = *b->GetDDSShape();
@@ -1017,7 +1022,6 @@ void debpColliderBones::pCreateBones(){
 	const deCollider::eResponseType responseType = pEngColliderRig->GetResponseType();
 	debpCollisionWorld *dynWorld = pCollider.GetDynamicsWorld();
 	const bool enabled = pEngColliderRig->GetEnabled();
-	deComponent * const component = GetComponent();
 	deRig * const rig = GetRig();
 	int boneCount = 0;
 	
@@ -1035,12 +1039,7 @@ void debpColliderBones::pCreateBones(){
 	}
 	
 	// scaling
-	decVector scale(pEngColliderRig->GetScale());
-	if(component){
-		scale.x *= component->GetScaling().x;
-		scale.y *= component->GetScaling().y;
-		scale.z *= component->GetScaling().z;
-	}
+	decVector scale(pGetColliderScale());
 	
 	// prepare bones
 // 	if( component ){
@@ -1151,7 +1150,7 @@ void debpColliderBones::pCreateBones(){
 	}
 	
 	if(rig){
-		pCreateConstraints(*rig);
+		pCreateConstraints(*rig, scale);
 	}
 	
 	// check if the root bone exists
@@ -1162,7 +1161,7 @@ void debpColliderBones::pCreateBones(){
 	UpdateDebugDrawersShape(); // debug if enabled
 }
 
-void debpColliderBones::pSetBoneShape(int index, deRigBone &bone, decVector &scale){
+void debpColliderBones::pSetBoneShape(int index, deRigBone &bone, const decVector &scale){
 	if(bone.GetShapes().IsEmpty()){
 		return;
 	}
@@ -1171,11 +1170,7 @@ void debpColliderBones::pSetBoneShape(int index, deRigBone &bone, decVector &sca
 	debpCreateBulletShape createBulletShape;
 	debpShapeSurface shapeSurface;
 	
-	decVector cmp(-bone.GetCentralMassPoint());
-	cmp.x *= scale.x;
-	cmp.y *= scale.y;
-	cmp.z *= scale.z;
-	createBulletShape.SetOffset(cmp);
+	createBulletShape.SetOffset(-bone.GetCentralMassPoint().Multiply(scale));
 	createBulletShape.SetScale(scale);
 	
 	bone.GetShapes().VisitIndexed([&](int i, decShape &s){
@@ -1191,7 +1186,7 @@ void debpColliderBones::pSetBoneShape(int index, deRigBone &bone, decVector &sca
 	//phyBody->SetCcdParameters( createBulletShape.GetCcdThreshold(), createBulletShape.GetCcdRadius() );
 }
 
-void debpColliderBones::pCreateConstraints(const deRig &rig){
+void debpColliderBones::pCreateConstraints(const deRig &rig, const decVector &scale){
 	if(pBonePhysics.IsEmpty()){
 		return;
 	}
@@ -1216,17 +1211,32 @@ void debpColliderBones::pCreateConstraints(const deRig &rig){
 			// set the temporary bone constraint from the rig constraint
 			decDMatrix bcRotMatrix(decDMatrix::CreateFromQuaternion(rc.GetReferenceOrientation()));
 			
-			cc->SetPosition1(rc.GetReferencePosition() + bcRotMatrix * rc.GetBoneOffset());
+			cc->SetPosition1((rc.GetReferencePosition() + bcRotMatrix * rc.GetBoneOffset()));
 			cc->SetOrientation1(decQuaternion()/*rigConstraint.GetReferenceOrientation()*/);
 			
-			decDMatrix bcMatrix = b->GetBoneMatrix().QuickMultiply(bp.GetInverseBoneMatrix()).ToMatrix();
+			decDMatrix bcMatrix = b->GetBoneMatrix().QuickMultiply(bp.GetInverseBoneMatrix());
 			
-			cc->SetPosition2(bcMatrix * rc.GetReferencePosition());
+			cc->SetPosition2((bcMatrix * rc.GetReferencePosition()));
 			cc->SetOrientation2(bcRotMatrix.QuickMultiply(bcMatrix).ToQuaternion());
 			
 			cc->GetDofLinearX() = rc.GetDofLinearX();
+			if(cc->GetDofLinearX().GetLowerLimit() <= cc->GetDofLinearX().GetUpperLimit()){
+				cc->GetDofLinearX().SetLowerLimit(cc->GetDofLinearX().GetLowerLimit() * scale.x);
+				cc->GetDofLinearX().SetUpperLimit(cc->GetDofLinearX().GetUpperLimit() * scale.x);
+			}
+			
 			cc->GetDofLinearY() = rc.GetDofLinearY();
+			if(cc->GetDofLinearY().GetLowerLimit() <= cc->GetDofLinearY().GetUpperLimit()){
+				cc->GetDofLinearY().SetLowerLimit(cc->GetDofLinearY().GetLowerLimit() * scale.y);
+				cc->GetDofLinearY().SetUpperLimit(cc->GetDofLinearY().GetUpperLimit() * scale.y);
+			}
+			
 			cc->GetDofLinearZ() = rc.GetDofLinearZ();
+			if(cc->GetDofLinearZ().GetLowerLimit() <= cc->GetDofLinearZ().GetUpperLimit()){
+				cc->GetDofLinearZ().SetLowerLimit(cc->GetDofLinearZ().GetLowerLimit() * scale.z);
+				cc->GetDofLinearZ().SetUpperLimit(cc->GetDofLinearZ().GetUpperLimit() * scale.z);
+			}
+			
 			cc->GetDofAngularX() = rc.GetDofAngularX();
 			cc->GetDofAngularY() = rc.GetDofAngularY();
 			cc->GetDofAngularZ() = rc.GetDofAngularZ();
@@ -1259,6 +1269,7 @@ void debpColliderBones::pCreateConstraints(const deRig &rig){
 			bc->SetFirstOffset(b->GetOffset().ToVector());
 			bc->SetSecondBody(bp.GetPhysicsBody());
 			bc->SetSecondOffset(bp.GetOffset().ToVector());
+			bc->SetScale(scale);
 			
 			b->AddConstraint(std::move(bc));
 		});
@@ -1283,4 +1294,17 @@ void debpColliderBones::pPreparePhyBones(){
 	pBonePhysics.Visit([&](const debpColliderBone *b){
 		component.PrepareBone(b->GetIndex());
 	});
+}
+
+decVector debpColliderBones::pGetColliderScale() const{
+	decVector scale(pEngColliderRig->GetScale());
+	/* collider scale is implcitly applied during physics simulation
+	deComponent * const component = GetComponent();
+	if(component){
+		scale.x *= component->GetScaling().x;
+		scale.y *= component->GetScaling().y;
+		scale.z *= component->GetScaling().z;
+	}
+	*/
+	return scale;
 }

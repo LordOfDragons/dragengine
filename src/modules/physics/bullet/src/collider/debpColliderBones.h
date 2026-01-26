@@ -253,9 +253,10 @@ public:
 private:
 	void pCleanUp();
 	void pCreateBones();
-	void pSetBoneShape(int index, deRigBone &bone, decVector &scale);
-	void pCreateConstraints(const deRig &rig);
+	void pSetBoneShape(int index, deRigBone &bone, const decVector &scale);
+	void pCreateConstraints(const deRig &rig, const decVector &scale);
 	void pPreparePhyBones();
+	decVector pGetColliderScale() const;
 };
 
 #endif

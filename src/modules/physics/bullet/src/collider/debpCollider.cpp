@@ -591,7 +591,10 @@ void debpCollider::UpdateDebugDrawer(){
 		
 		// show shapes if layer mask matches
 		if(!pDDSShape){
-			pDebugDrawer->AddShape(deDebugDrawerShape::Ref::New());
+			auto shape = deDebugDrawerShape::Ref::New();
+			pDDSShape = shape;
+			pDebugDrawer->AddShape(std::move(shape));
+			
 			UpdateDDSShape();
 		}
 		

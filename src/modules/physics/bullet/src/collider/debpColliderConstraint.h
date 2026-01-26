@@ -81,6 +81,7 @@ private:
 	debpPhysicsBody *pPhyBody2;
 	decVector pOffset1;
 	decVector pOffset2;
+	decVector pScale;
 	
 	eConstraintType pConstraintType;
 	bool pEnabled;
@@ -143,6 +144,12 @@ public:
 	
 	/** Set offset for second physics body. */
 	void SetSecondOffset(const decVector &offset);
+	
+	/** Scale. */
+	inline const decVector &GetScale() const{ return pScale; }
+	
+	/** Set scale. */
+	void SetScale(const decVector &scale);
 	
 	/** Type of constraint. */
 	inline eConstraintType GetConstraintType() const{ return pConstraintType; }

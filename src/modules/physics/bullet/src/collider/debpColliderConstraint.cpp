@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "debpColliderConstraint.h"
 #include "bpconstraint/debpBPConstraint6Dof.h"
 #include "bpconstraint/debpBPConstraint6DofSpring.h"
@@ -70,6 +66,7 @@ pDynWorld(nullptr),
 pBpConstraint(nullptr),
 pPhyBody1(nullptr),
 pPhyBody2(nullptr),
+pScale(1.0f, 1.0f, 1.0f),
 
 pConstraintType(ectHinge),
 pEnabled(true),
@@ -141,6 +138,10 @@ void debpColliderConstraint::SetFirstOffset(const decVector &offset){
 
 void debpColliderConstraint::SetSecondOffset(const decVector &offset){
 	pOffset2 = offset;
+}
+
+void debpColliderConstraint::SetScale(const decVector &scale){
+	pScale = scale;
 }
 
 bool debpColliderConstraint::IsBreakable() const{
@@ -531,9 +532,9 @@ void debpColliderConstraint::pCreateStaticConstraint(){
 	
 	const decQuaternion &orientation1 = pConstraint.GetOrientation1();
 	const decQuaternion &orientation2 = pConstraint.GetOrientation2();
-	const decVector position1 = pConstraint.GetPosition1() - pOffset1;
-	const decVector position2 = pConstraint.GetPosition2() - pOffset2;
-	btFixedConstraint *fixed = NULL;
+	const decVector position1 = (pConstraint.GetPosition1() - pOffset1).Multiply(pScale);
+	const decVector position2 = (pConstraint.GetPosition2() - pOffset2).Multiply(pScale);
+	btFixedConstraint *fixed = nullptr;
 	
 	// create a constraint for two bodies if phy body 2 is not NULL
 	if(pPhyBody2){
@@ -568,9 +569,9 @@ void debpColliderConstraint::pCreateStaticConstraint(){
 }
 
 void debpColliderConstraint::pCreateBallSocketConstraint(){
-	decVector position1 = pConstraint.GetPosition1() - pOffset1;
-	decVector position2 = pConstraint.GetPosition2() - pOffset2;
-	btPoint2PointConstraint *p2p = NULL;
+	decVector position1 = (pConstraint.GetPosition1() - pOffset1).Multiply(pScale);
+	decVector position2 = (pConstraint.GetPosition2() - pOffset2).Multiply(pScale);
+	btPoint2PointConstraint *p2p = nullptr;
 	
 	// create a constraint for two bodies if phy body 2 is not NULL
 	if(pPhyBody2){
@@ -603,16 +604,17 @@ void debpColliderConstraint::pCreateHingeConstraint(){
 	const deColliderConstraintDof &dofAngularZ = pConstraint.GetDofAngularZ();
 	decQuaternion orientation1 = pConstraint.GetOrientation1();
 	decQuaternion orientation2 = pConstraint.GetOrientation2();
-	decVector position1 = pConstraint.GetPosition1() - pOffset1;
-	decVector position2 = pConstraint.GetPosition2() - pOffset2;
-	btHingeConstraint *hinge = NULL;
+	decVector position1 = (pConstraint.GetPosition1() - pOffset1).Multiply(pScale);
+	decVector position2 = (pConstraint.GetPosition2() - pOffset2).Multiply(pScale);
+	btHingeConstraint *hinge = nullptr;
 	decQuaternion orientation;
 	decMatrix axisMatrix;
 	float center, swing;
 	float lower, upper;
 	
 	// fetch values
-	const decVector linearOffset(dofLinearX.GetLowerLimit(), dofLinearY.GetLowerLimit(), dofLinearZ.GetLowerLimit());
+	const decVector linearOffset(decVector(dofLinearX.GetLowerLimit(),
+		dofLinearY.GetLowerLimit(), dofLinearZ.GetLowerLimit()).Multiply(pScale));
 	
 	// alter the positions using the locked linear axes
 	position1 += decMatrix::CreateFromQuaternion(orientation1) * linearOffset;
@@ -700,8 +702,8 @@ void debpColliderConstraint::pCreateConeTwistConstraint(){
 	const deColliderConstraintDof &dofAngularZ = pConstraint.GetDofAngularZ();
 	decQuaternion orientation1 = pConstraint.GetOrientation1();
 	decQuaternion orientation2 = pConstraint.GetOrientation2();
-	decVector position1 = pConstraint.GetPosition1() - pOffset1;
-	decVector position2 = pConstraint.GetPosition2() - pOffset2;
+	decVector position1 = (pConstraint.GetPosition1() - pOffset1).Multiply(pScale);
+	decVector position2 = (pConstraint.GetPosition2() - pOffset2).Multiply(pScale);
 	decVector center, swing, aswing, lower, upper;
 	btConeTwistConstraint *coneTwist = NULL;
 	decQuaternion orientation;
@@ -717,7 +719,8 @@ void debpColliderConstraint::pCreateConeTwistConstraint(){
 	// fetch values
 	const decVector lowerLimits(dofAngularX.GetLowerLimit(), dofAngularY.GetLowerLimit(), dofAngularZ.GetLowerLimit());
 	const decVector upperLimits(dofAngularX.GetUpperLimit(), dofAngularY.GetUpperLimit(), dofAngularZ.GetUpperLimit());
-	const decVector linearOffset(dofLinearX.GetLowerLimit(), dofLinearY.GetLowerLimit(), dofLinearZ.GetLowerLimit());
+	const decVector linearOffset(decVector(dofLinearX.GetLowerLimit(),
+		dofLinearY.GetLowerLimit(), dofLinearZ.GetLowerLimit()).Multiply(pScale));
 	
 	// alter the positions using the locked linear axes
 	position1 += decMatrix::CreateFromQuaternion(orientation1) * linearOffset;
@@ -822,14 +825,16 @@ void debpColliderConstraint::pCreateConeTwistConstraint(){
 		coneTwist->setBreakingImpulseThreshold(pConstraint.GetBreakingThreshold());
 	}
 	
-// 	pBullet.LogInfoFormat( "cone-twist %p", pConstraint );
-// 	pBullet.LogInfoFormat( "  swing(%f,%f,%f)", swing.x * RAD2DEG, swing.y * RAD2DEG, swing.z * RAD2DEG );
-// 	pBullet.LogInfoFormat( "  center(%f,%f,%f)", center.x, center.y, center.z );
-// 	pBullet.LogInfoFormat( "  aswing(%f,%f,%f)", aswing.x * RAD2DEG, aswing.y * RAD2DEG, aswing.z * RAD2DEG );
-// 	pBullet.LogInfoFormat( "  axisMatrix:" );
-// 	pBullet.LogInfoFormat( "    [%f,%f,%f]", axisMatrix.a11, axisMatrix.a12, axisMatrix.a13 );
-// 	pBullet.LogInfoFormat( "    [%f,%f,%f]", axisMatrix.a21, axisMatrix.a22, axisMatrix.a23 );
-// 	pBullet.LogInfoFormat( "    [%f,%f,%f]", axisMatrix.a31, axisMatrix.a32, axisMatrix.a33 );
+	/*
+	pBullet.LogInfoFormat( "cone-twist %p", &pConstraint );
+	pBullet.LogInfoFormat( "  swing(%f,%f,%f)", swing.x * RAD2DEG, swing.y * RAD2DEG, swing.z * RAD2DEG );
+	pBullet.LogInfoFormat( "  center(%f,%f,%f)", center.x, center.y, center.z );
+	pBullet.LogInfoFormat( "  aswing(%f,%f,%f)", aswing.x * RAD2DEG, aswing.y * RAD2DEG, aswing.z * RAD2DEG );
+	pBullet.LogInfoFormat( "  axisMatrix:" );
+	pBullet.LogInfoFormat( "    [%f,%f,%f]", axisMatrix.a11, axisMatrix.a12, axisMatrix.a13 );
+	pBullet.LogInfoFormat( "    [%f,%f,%f]", axisMatrix.a21, axisMatrix.a22, axisMatrix.a23 );
+	pBullet.LogInfoFormat( "    [%f,%f,%f]", axisMatrix.a31, axisMatrix.a32, axisMatrix.a33 );
+	*/
 }
 
 void debpColliderConstraint::pCreateSliderConstraint(){
@@ -839,8 +844,8 @@ void debpColliderConstraint::pCreateSliderConstraint(){
 	const deColliderConstraintDof &dofAngularX = pConstraint.GetDofAngularX();
 	const deColliderConstraintDof &dofAngularY = pConstraint.GetDofAngularY();
 	const deColliderConstraintDof &dofAngularZ = pConstraint.GetDofAngularZ();
-	const decVector position1 = pConstraint.GetPosition1() - pOffset1;
-	const decVector position2 = pConstraint.GetPosition2() - pOffset2;
+	const decVector position1 = (pConstraint.GetPosition1() - pOffset1).Multiply(pScale);
+	const decVector position2 = (pConstraint.GetPosition2() - pOffset2).Multiply(pScale);
 	decQuaternion orientation1 = pConstraint.GetOrientation1();
 	decQuaternion orientation2 = pConstraint.GetOrientation2();
 	btSliderConstraint *slider = NULL;
@@ -849,29 +854,33 @@ void debpColliderConstraint::pCreateSliderConstraint(){
 	float angularLower, angularUpper;
 	float linearLower, linearUpper;
 	
-	const decVector linearLowerLimits = decVector(dofLinearX.GetLowerLimit(), dofLinearY.GetLowerLimit(), dofLinearZ.GetLowerLimit());
-	const decVector linearUpperLimits = decVector(dofLinearX.GetUpperLimit(), dofLinearY.GetUpperLimit(), dofLinearZ.GetUpperLimit());
-	const decVector angularLowerLimits = decVector(dofAngularX.GetLowerLimit(), dofAngularY.GetLowerLimit(), dofAngularZ.GetLowerLimit());
-	const decVector angularUpperLimits = decVector(dofAngularX.GetUpperLimit(), dofAngularY.GetUpperLimit(), dofAngularZ.GetUpperLimit());
+	const decVector linearLowerLimits = decVector(dofLinearX.GetLowerLimit(),
+		dofLinearY.GetLowerLimit(), dofLinearZ.GetLowerLimit());
+	const decVector linearUpperLimits = decVector(dofLinearX.GetUpperLimit(),
+		dofLinearY.GetUpperLimit(), dofLinearZ.GetUpperLimit());
+	const decVector angularLowerLimits = decVector(dofAngularX.GetLowerLimit(),
+		dofAngularY.GetLowerLimit(), dofAngularZ.GetLowerLimit());
+	const decVector angularUpperLimits = decVector(dofAngularX.GetUpperLimit(),
+		dofAngularY.GetUpperLimit(), dofAngularZ.GetUpperLimit());
 	
 	// alter the axis matrix if the slide axis is not the x axis and store the limits
 	if(fabs(linearUpperLimits.z - linearLowerLimits.z) >= 1e-5){
 		axisMatrix.SetVU(decVector(1.0f, 0.0f, 0.0f), decVector(0.0f, 1.0f, 0.0f));
-		linearLower = linearLowerLimits.z;
-		linearUpper = linearUpperLimits.z;
+		linearLower = linearLowerLimits.z * pScale.z;
+		linearUpper = linearUpperLimits.z * pScale.z;
 		angularLower = angularLowerLimits.z;
 		angularUpper = angularUpperLimits.z;
 		
 	}else if(fabs(linearUpperLimits.y - linearLowerLimits.y) >= 1e-5){
 		axisMatrix.SetVU(decVector(0.0f, 0.0f, 1.0f), decVector(1.0f, 0.0f, 0.0f));
-		linearLower = linearLowerLimits.y;
-		linearUpper = linearUpperLimits.y;
+		linearLower = linearLowerLimits.y * pScale.y;
+		linearUpper = linearUpperLimits.y * pScale.y;
 		angularLower = angularLowerLimits.y;
 		angularUpper = angularUpperLimits.y;
 		
 	}else{
-		linearLower = linearLowerLimits.x;
-		linearUpper = linearUpperLimits.x;
+		linearLower = linearLowerLimits.x * pScale.x;
+		linearUpper = linearUpperLimits.x * pScale.x;
 		angularLower = angularLowerLimits.x;
 		angularUpper = angularUpperLimits.x;
 	}
@@ -925,9 +934,9 @@ void debpColliderConstraint::pCreateGenericConstraint(){
 	const deColliderConstraintDof &dofAngularZ = pConstraint.GetDofAngularZ();
 	decQuaternion orientation1(pConstraint.GetOrientation1());
 	decQuaternion orientation2(pConstraint.GetOrientation2());
-	decVector position1(pConstraint.GetPosition1() - pOffset1);
-	decVector position2(pConstraint.GetPosition2() - pOffset2);
-	debpBPConstraint6Dof *generic6Dof = NULL;
+	decVector position1((pConstraint.GetPosition1() - pOffset1).Multiply(pScale));
+	decVector position2((pConstraint.GetPosition2() - pOffset2).Multiply(pScale));
+	debpBPConstraint6Dof *generic6Dof = nullptr;
 	
 	const decVector linearLowerLimits(dofLinearX.GetLowerLimit(), dofLinearY.GetLowerLimit(), dofLinearZ.GetLowerLimit());
 	const decVector linearUpperLimits(dofLinearX.GetUpperLimit(), dofLinearY.GetUpperLimit(), dofLinearZ.GetUpperLimit());
@@ -935,8 +944,8 @@ void debpColliderConstraint::pCreateGenericConstraint(){
 	const decVector angularUpperLimits(dofAngularX.GetUpperLimit(), dofAngularY.GetUpperLimit(), dofAngularZ.GetUpperLimit());
 	
 	// juggle the axes around if the setup matches bad behaving cases
-	decVector alinearLowerLimits(linearLowerLimits);
-	decVector alinearUpperLimits(linearUpperLimits);
+	decVector alinearLowerLimits(linearLowerLimits.Multiply(pScale));
+	decVector alinearUpperLimits(linearUpperLimits.Multiply(pScale));
 	decVector aangularLowerLimits(angularLowerLimits);
 	decVector aangularUpperLimits(angularUpperLimits);
 	decMatrix axisMatrix;
@@ -952,8 +961,8 @@ void debpColliderConstraint::pCreateGenericConstraint(){
 			axisMatrix.a11 = 0.0f; axisMatrix.a12 = 0.0f; axisMatrix.a13 = 1.0f;
 			axisMatrix.a21 = 1.0f; axisMatrix.a22 = 0.0f; axisMatrix.a23 = 0.0f;
 			axisMatrix.a31 = 0.0f; axisMatrix.a32 = 1.0f; axisMatrix.a33 = 0.0f;
-			alinearLowerLimits.Set(linearLowerLimits.y, linearLowerLimits.z, linearLowerLimits.x);
-			alinearUpperLimits.Set(linearUpperLimits.y, linearUpperLimits.z, linearUpperLimits.x);
+			alinearLowerLimits = decVector(linearLowerLimits.y, linearLowerLimits.z, linearLowerLimits.x).Multiply(pScale);
+			alinearUpperLimits = decVector(linearUpperLimits.y, linearUpperLimits.z, linearUpperLimits.x).Multiply(pScale);
 			aangularLowerLimits.Set(angularLowerLimits.y, angularLowerLimits.z, angularLowerLimits.x);
 			aangularUpperLimits.Set(angularUpperLimits.y, angularUpperLimits.z, angularUpperLimits.x);
 			indexMotorX = 2;
@@ -978,6 +987,7 @@ void debpColliderConstraint::pCreateGenericConstraint(){
 		pBullet.LogInfoFormat(">> rp1 (%g,%g,%g)\n", pPhyBody1->GetPosition().x, pPhyBody1->GetPosition().y, pPhyBody1->GetPosition().z);
 		pBullet.LogInfoFormat(">> rp2 (%g,%g,%g)\n", pPhyBody2->GetPosition().x, pPhyBody2->GetPosition().y, pPhyBody2->GetPosition().z);
 		*/
+		
 		generic6Dof = new debpBPConstraint6Dof(*this,
 			*pPhyBody1->GetRigidBody(), *pPhyBody2->GetRigidBody(),
 			btTransform(
@@ -1164,21 +1174,21 @@ void debpColliderConstraint::pCreateGenericSpringConstraint(){
 	const deColliderConstraintDof &dofAngularZ = pConstraint.GetDofAngularZ();
 	decQuaternion orientation1(pConstraint.GetOrientation1());
 	decQuaternion orientation2(pConstraint.GetOrientation2());
-	decVector position1(pConstraint.GetPosition1() - pOffset1);
-	decVector position2(pConstraint.GetPosition2() - pOffset2);
-	debpBPConstraint6DofSpring *generic6Dof = NULL;
+	decVector position1((pConstraint.GetPosition1() - pOffset1).Multiply(pScale));
+	decVector position2((pConstraint.GetPosition2() - pOffset2).Multiply(pScale));
+	debpBPConstraint6DofSpring *generic6Dof = nullptr;
 	float springDamping = pSpringDamping();
 	
-	const decVector linearLowerLimits = decVector(dofLinearX.GetLowerLimit(), dofLinearY.GetLowerLimit(), dofLinearZ.GetLowerLimit());
-	const decVector linearUpperLimits = decVector(dofLinearX.GetUpperLimit(), dofLinearY.GetUpperLimit(), dofLinearZ.GetUpperLimit());
-	const decVector angularLowerLimits = decVector(dofAngularX.GetLowerLimit(), dofAngularY.GetLowerLimit(), dofAngularZ.GetLowerLimit());
-	const decVector angularUpperLimits = decVector(dofAngularX.GetUpperLimit(), dofAngularY.GetUpperLimit(), dofAngularZ.GetUpperLimit());
-	const decVector linearSpringStiffness = decVector(dofLinearX.GetSpringStiffness(), dofLinearY.GetSpringStiffness(), dofLinearZ.GetSpringStiffness());
-	const decVector angularSpringStiffness = decVector(dofAngularX.GetSpringStiffness(), dofAngularY.GetSpringStiffness(), dofAngularZ.GetSpringStiffness());
+	const decVector linearLowerLimits(dofLinearX.GetLowerLimit(), dofLinearY.GetLowerLimit(), dofLinearZ.GetLowerLimit());
+	const decVector linearUpperLimits(dofLinearX.GetUpperLimit(), dofLinearY.GetUpperLimit(), dofLinearZ.GetUpperLimit());
+	const decVector angularLowerLimits(dofAngularX.GetLowerLimit(), dofAngularY.GetLowerLimit(), dofAngularZ.GetLowerLimit());
+	const decVector angularUpperLimits(dofAngularX.GetUpperLimit(), dofAngularY.GetUpperLimit(), dofAngularZ.GetUpperLimit());
+	const decVector linearSpringStiffness(dofLinearX.GetSpringStiffness(), dofLinearY.GetSpringStiffness(), dofLinearZ.GetSpringStiffness());
+	const decVector angularSpringStiffness(dofAngularX.GetSpringStiffness(), dofAngularY.GetSpringStiffness(), dofAngularZ.GetSpringStiffness());
 	
 	// juggle the axes around if the setup matches bad behaving cases
-	decVector alinearLowerLimits(linearLowerLimits);
-	decVector alinearUpperLimits(linearUpperLimits);
+	decVector alinearLowerLimits(linearLowerLimits.Multiply(pScale));
+	decVector alinearUpperLimits(linearUpperLimits.Multiply(pScale));
 	decVector aangularLowerLimits(angularLowerLimits);
 	decVector aangularUpperLimits(angularUpperLimits);
 	decVector alinearSpringStiffness(linearSpringStiffness);
@@ -1196,8 +1206,8 @@ void debpColliderConstraint::pCreateGenericSpringConstraint(){
 			axisMatrix.a11 = 0.0f; axisMatrix.a12 = 0.0f; axisMatrix.a13 = 1.0f;
 			axisMatrix.a21 = 1.0f; axisMatrix.a22 = 0.0f; axisMatrix.a23 = 0.0f;
 			axisMatrix.a31 = 0.0f; axisMatrix.a32 = 1.0f; axisMatrix.a33 = 0.0f;
-			alinearLowerLimits.Set(linearLowerLimits.y, linearLowerLimits.z, linearLowerLimits.x);
-			alinearUpperLimits.Set(linearUpperLimits.y, linearUpperLimits.z, linearUpperLimits.x);
+			alinearLowerLimits = decVector(linearLowerLimits.y, linearLowerLimits.z, linearLowerLimits.x).Multiply(pScale);
+			alinearUpperLimits = decVector(linearUpperLimits.y, linearUpperLimits.z, linearUpperLimits.x).Multiply(pScale);
 			aangularLowerLimits.Set(angularLowerLimits.y, angularLowerLimits.z, angularLowerLimits.x);
 			aangularUpperLimits.Set(angularUpperLimits.y, angularUpperLimits.z, angularUpperLimits.x);
 			alinearSpringStiffness.Set(linearSpringStiffness.y, linearSpringStiffness.z, linearSpringStiffness.x);
