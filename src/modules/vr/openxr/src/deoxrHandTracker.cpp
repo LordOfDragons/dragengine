@@ -151,8 +151,7 @@ pFingerInput{}
 	
 	try{
 		// create hand tracker
-		XrHandTrackerCreateInfoEXT createInfo{};
-		createInfo.type = XR_TYPE_HAND_TRACKER_CREATE_INFO_EXT;
+		XrHandTrackerCreateInfoEXT createInfo{XR_TYPE_HAND_TRACKER_CREATE_INFO_EXT};
 		createInfo.hand = hand;
 		createInfo.handJointSet = XR_HAND_JOINT_SET_DEFAULT_EXT;
 		

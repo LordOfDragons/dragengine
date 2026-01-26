@@ -86,8 +86,8 @@ int deoxrDeviceManager::IndexOfWithID(const char *id) const{
 void deoxrDeviceManager::Add(deoxrDevice *device){
 	DEASSERT_NOTNULL(device)
 	
-	pDevices.AddOrThrow(device);
 	device->SetIndex(pDevices.GetCount());
+	pDevices.AddOrThrow(device);
 	
 	pOxr.LogInfoFormat("Input Device Added: id='%s' type=%d axes=%d buttons=%d feedbacks=%d",
 		device->GetID().GetString(), device->GetType(), device->GetAxes().GetCount(),
