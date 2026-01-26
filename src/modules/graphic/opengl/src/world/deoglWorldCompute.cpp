@@ -520,25 +520,19 @@ deoglWorldComputeElement::sDataElement &data){
 
 void deoglWorldCompute::pUpdateSSBOElementGeometries(){
 		// decTimer timer;
-	const int elementCount = pUpdateElementGeometries.GetCount();
-	int i;
-	
 	pUpdateElementGeometryCount = 0;
-	
-	for(i=0; i<elementCount; i++){
-		const deoglWorldComputeElement &element = pUpdateElementGeometries.GetAt(i);
+	pUpdateElementGeometries.Visit([&](const deoglWorldComputeElement &element){
 		if(element.GetSPBGeometries()){
 			pUpdateElementGeometryCount += element.GetSPBGeometries()->GetCount();
 		}
-	}
+	});
 	
 	if(pUpdateElementGeometryCount == 0){
-		for(i=0; i<elementCount; i++){
+		pUpdateElementGeometries.Visit([&](deoglWorldComputeElement &element){
 			// has to be always done since it is possible a previous GetSSBOUpdateElements() called
 			// pCheckElementGeometryCount() which in turn could drop the SPB
-			pUpdateElementGeometries.GetAt(i)->SetUpdateGeometriesRequired(false);
-		}
-		
+			element.SetUpdateGeometriesRequired(false);
+		});
 		pUpdateElementGeometries.RemoveAll();
 		return;
 	}
@@ -565,16 +559,14 @@ void deoglWorldCompute::pUpdateSSBOElementGeometries(){
 	ssboData.Clear();
 	ssboIndex.Clear();
 	
-	int j, nextIndex = 0;
-	
-	for(i=0; i<elementCount; i++){
-		deoglWorldComputeElement &element = pUpdateElementGeometries.GetAt(i);
+	int nextIndex = 0;
+	pUpdateElementGeometries.Visit([&](deoglWorldComputeElement &element){
 		// has to be always done since it is possible a previous GetSSBOUpdateElements() called
 		// pCheckElementGeometryCount() which in turn could drop the SPB
 		element.SetUpdateGeometriesRequired(false);
 		
 		if(!element.GetSPBGeometries()){
-			continue;
+			return;
 		}
 		
 		element.UpdateDataGeometries(dataData + nextIndex);
@@ -583,10 +575,11 @@ void deoglWorldCompute::pUpdateSSBOElementGeometries(){
 		const int firstGeometry = spbel.GetIndex();
 		const int geometryCount = spbel.GetCount();
 		
+		int j;
 		for(j=0; j<geometryCount; j++){
 			dataIndex[nextIndex++] = (uint32_t)(firstGeometry + j);
 		}
-	}
+	});
 		// pWorld.GetRenderThread().GetLogger().LogInfoFormat("pUpdateSSBOElementGeometries: Write %dys (%d)", (int)(timer.GetElapsedTime() * 1e6f), pUpdateElementGeometryCount);
 		// mappedData.Unmap();
 		// mappedIndex.Unmap();
@@ -611,6 +604,8 @@ void deoglWorldCompute::pUpdateSSBOElementGeometries(){
 
 void deoglWorldCompute::pFullUpdateSSBOElementGeometries(){
 	pClearGeometryCount = 0;
+	pClearGeometries.SetCountDiscard(0);
+	
 	pUpdateElementGeometryCount = 0;
 	pUpdateElementGeometries.RemoveAll();
 	
@@ -627,9 +622,7 @@ void deoglWorldCompute::pFullUpdateSSBOElementGeometries(){
 	
 	pSSBOElementGeometries->Clear();
 	
-	int i;
-	for(i=0; i<elementCount; i++){
-		deoglWorldComputeElement &element = pElements.GetAt(i);
+	pElements.Visit([&](deoglWorldComputeElement &element){
 		if(element.GetSPBGeometries()){
 			element.UpdateDataGeometries(data + element.GetSPBGeometries()->GetIndex());
 		}
@@ -637,7 +630,7 @@ void deoglWorldCompute::pFullUpdateSSBOElementGeometries(){
 		// has to be always done since it is possible a previous GetSSBOUpdateElements() called
 		// pCheckElementGeometryCount() which in turn could drop the SPB
 		element.SetUpdateGeometriesRequired(false);
-	}
+	});
 		// pWorld.GetRenderThread().GetLogger().LogInfoFormat( "pFullUpdateSSBOElementGeometries: Write %dys", (int)(timer.GetElapsedTime() * 1e6f) );
 		// mapped.Unmap();
 		// pWorld.GetRenderThread().GetLogger().LogInfoFormat( "pFullUpdateSSBOElementGeometries: Upload %dys", (int)(timer.GetElapsedTime() * 1e6f) );
