@@ -418,12 +418,12 @@ void deVROpenVR::SetCamera(deCamera *camera){
 ////////////
 
 int deVROpenVR::GetDeviceCount(){
-	return pDevices.GetCount();
+	return pDevices.GetDevices().GetCount();
 }
 
 deInputDevice::Ref deVROpenVR::GetDeviceAt(int index){
 	const deInputDevice::Ref device(deInputDevice::Ref::New());
-	pDevices.GetAt(index)->GetInfo(device);
+	pDevices.GetDevices()[index]->GetInfo(device);
 	return device;
 }
 
@@ -433,27 +433,27 @@ int deVROpenVR::IndexOfDeviceWithID(const char *id){
 
 
 int deVROpenVR::IndexOfButtonWithID(int device, const char *id){
-	return pDevices.GetAt(device)->IndexOfButtonWithID(id);
+	return pDevices.GetDevices()[device]->IndexOfButtonWithID(id);
 }
 
 int deVROpenVR::IndexOfAxisWithID(int device, const char *id){
-	return pDevices.GetAt(device)->IndexOfAxisWithID(id);
+	return pDevices.GetDevices()[device]->IndexOfAxisWithID(id);
 }
 
 int deVROpenVR::IndexOfFeedbackWithID(int device, const char *id){
-	return pDevices.GetAt(device)->IndexOfFeedbackWithID(id);
+	return pDevices.GetDevices()[device]->IndexOfFeedbackWithID(id);
 }
 
 int deVROpenVR::IndexOfComponentWithID(int device, const char *id){
-	return pDevices.GetAt(device)->IndexOfComponentWithID(id);
+	return pDevices.GetDevices()[device]->IndexOfComponentWithID(id);
 }
 
 bool deVROpenVR::GetButtonPressed(int device, int button){
-	return pDevices.GetAt(device)->GetButtonAt(button)->GetPressed();
+	return pDevices.GetDevices()[device]->GetButtons()[button]->GetPressed();
 }
 
 bool deVROpenVR::GetButtonTouched(int device, int button){
-	return pDevices.GetAt(device)->GetButtonAt(button)->GetTouched();
+	return pDevices.GetDevices()[device]->GetButtons()[button]->GetTouched();
 }
 
 bool deVROpenVR::GetButtonNear(int device, int button){
@@ -461,24 +461,24 @@ bool deVROpenVR::GetButtonNear(int device, int button){
 }
 
 float deVROpenVR::GetAxisValue(int device, int axis){
-	return pDevices.GetAt(device)->GetAxisAt(axis)->GetValue();
+	return pDevices.GetDevices()[device]->GetAxes()[axis]->GetValue();
 }
 
 float deVROpenVR::GetFeedbackValue(int device, int feedback){
-	return pDevices.GetAt(device)->GetFeedbackAt(feedback)->GetValue();
+	return pDevices.GetDevices()[device]->GetFeedbacks()[feedback]->GetValue();
 }
 
 void deVROpenVR::SetFeedbackValue(int device, int feedback, float value){
-	pDevices.GetAt(device)->GetFeedbackAt(feedback)->SetValue(value);
+	pDevices.GetDevices()[device]->GetFeedbacks()[feedback]->SetValue(value);
 }
 
 void deVROpenVR::GetDevicePose(int device, deInputDevicePose &pose){
-	pDevices.GetAt(device)->GetDevicePose(pose);
+	pDevices.GetDevices()[device]->GetDevicePose(pose);
 }
 
 void deVROpenVR::GetDeviceBonePose(int device, int bone,
 bool withController, deInputDevicePose &pose){
-	pDevices.GetAt(device)->GetBonePose(bone, withController, pose);
+	pDevices.GetDevices()[device]->GetBonePose(bone, withController, pose);
 }
 
 

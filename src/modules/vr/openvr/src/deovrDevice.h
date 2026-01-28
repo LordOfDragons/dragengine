@@ -79,7 +79,7 @@ private:
 	decString pID;
 	decString pName;
 	deImage::Ref pDisplayImage;
-	decTObjectOrderedSet<deInputDeviceDisplayIcon> pDisplayIcons;
+	decTObjectOrderedSet<deImage> pDisplayIcons;
 	decString pDisplayText;
 	
 	deovrRenderModel::Ref pRenderModel;

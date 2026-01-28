@@ -226,17 +226,17 @@ void deovrDevice::GetInfo(deInputDevice &info) const{
 	
 	info.SetButtonCount(pButtons.GetCount());
 	pButtons.VisitIndexed([&](int i, const deovrDeviceButton &button){
-		button.GetInfo(info.GetButtonAt(i));
+		button.GetInfo(info.GetButtons()[i]);
 	});
 	
 	info.SetAxisCount(pAxes.GetCount());
 	pAxes.VisitIndexed([&](int i, const deovrDeviceAxis &axis){
-		axis.GetInfo(info.GetAxisAt(i));
+		axis.GetInfo(info.GetAxes()[i]);
 	});
 	
 	info.SetFeedbackCount(pFeedbacks.GetCount());
 	pFeedbacks.VisitIndexed([&](int i, const deovrDeviceFeedback &feedback){
-		feedback.GetInfo(info.GetFeedbackAt(i));
+		feedback.GetInfo(info.GetFeedbacks()[i]);
 	});
 }
 
@@ -426,12 +426,12 @@ void deovrDevice::TrackStates(){
 	
 	int i, count = pButtons.GetCount();
 	for(i=0; i<count; i++){
-		GetButtonAt(i)->TrackState();
+		GetButtons()[i]->TrackState();
 	}
 	
 	count = pAxes.GetCount();
 	for(i=0; i<count; i++){
-		GetAxisAt(i)->TrackState();
+		GetAxes()[i]->TrackState();
 	}
 }
 
@@ -440,7 +440,7 @@ void deovrDevice::ResetStates(){
 	int i;
 	
 	for(i=0; i<axisCount; i++){
-		GetAxisAt(i)->ResetState();
+		GetAxes()[i]->ResetState();
 	}
 }
 
@@ -555,23 +555,23 @@ void deovrDevice::pUpdateParametersController(){
 	deovrDeviceComponent *compTrigger = nullptr;
 	if(axisTrigger != -1){
 		compTrigger = pAddComponent(deInputDeviceComponent::ectTrigger, "Trigger", "trigger", "Trigger");
-		GetAxisAt(axisTrigger)->SetInputDeviceComponent(compTrigger);
+		GetAxes()[axisTrigger]->SetInputDeviceComponent(compTrigger);
 	}
 	
 	const int axisJoystick = pAddAxesJoystick(deVROpenVR::eiaJoystickAnalog, "Joystick", "js", "Joy");
 	deovrDeviceComponent *compJoystick = nullptr;
 	if(axisJoystick != -1){
 		compJoystick = pAddComponent(deInputDeviceComponent::ectJoystick, "Joystick", "joystick", "Joystick");
-		GetAxisAt(axisJoystick)->SetInputDeviceComponent(compJoystick);
-		GetAxisAt(axisJoystick + 1)->SetInputDeviceComponent(compJoystick);
+		GetAxes()[axisJoystick]->SetInputDeviceComponent(compJoystick);
+		GetAxes()[axisJoystick + 1]->SetInputDeviceComponent(compJoystick);
 	}
 	
 	const int axisTrackpad = pAddAxesTrackpad(deVROpenVR::eiaTrackpadAnalog, "TrackPad", "tp", "Pad");
 	deovrDeviceComponent *compTrackpad = nullptr;
 	if(axisTrackpad != -1){
 		compTrackpad = pAddComponent(deInputDeviceComponent::ectTouchPad, "TrackPad", "trackpad", "TrackPad");
-		GetAxisAt(axisTrackpad)->SetInputDeviceComponent(compTrackpad);
-		GetAxisAt(axisTrackpad + 1)->SetInputDeviceComponent(compTrackpad);
+		GetAxes()[axisTrackpad]->SetInputDeviceComponent(compTrackpad);
+		GetAxes()[axisTrackpad + 1]->SetInputDeviceComponent(compTrackpad);
 	}
 	
 	const int axisGripGrab = pAddAxisTrigger(deInputDeviceAxis::eatGripGrab,
@@ -584,13 +584,13 @@ void deovrDevice::pUpdateParametersController(){
 	if(axisGripGrab != -1 || axisGripSqueeze != -1 || axisGripPinch != -1){
 		compGrip = pAddComponent(deInputDeviceComponent::ectGeneric, "Grip", "grip", "Grip");
 		if(axisGripGrab != -1){
-			GetAxisAt(axisGripGrab)->SetInputDeviceComponent(compGrip);
+			GetAxes()[axisGripGrab]->SetInputDeviceComponent(compGrip);
 		}
 		if(axisGripSqueeze != -1){
-			GetAxisAt(axisGripSqueeze)->SetInputDeviceComponent(compGrip);
+			GetAxes()[axisGripSqueeze]->SetInputDeviceComponent(compGrip);
 		}
 		if(axisGripPinch != -1){
-			GetAxisAt(axisGripPinch)->SetInputDeviceComponent(compGrip);
+			GetAxes()[axisGripPinch]->SetInputDeviceComponent(compGrip);
 		}
 	}
 	
@@ -603,13 +603,13 @@ void deovrDevice::pUpdateParametersController(){
 	const int btnA = pAddButton(deInputDeviceButton::ebtAction, nullptr,
 		deVROpenVR::eiaButtonPrimaryPress, deVROpenVR::eiaButtonPrimaryTouch, "A", "a", "A");
 	if(btnA != -1){
-		GetButtonAt(btnA)->SetInputDeviceComponent(pAddComponent(deInputDeviceComponent::ectButton, "A", "a", "A"));
+		GetButtons()[btnA]->SetInputDeviceComponent(pAddComponent(deInputDeviceComponent::ectButton, "A", "a", "A"));
 	}
 	
 	const int btnB = pAddButton(deInputDeviceButton::ebtAction, nullptr,
 		deVROpenVR::eiaButtonSecondaryPress, deVROpenVR::eiaButtonSecondaryTouch, "B", "b", "B");
 	if(btnB != -1){
-		GetButtonAt(btnB)->SetInputDeviceComponent(pAddComponent(deInputDeviceComponent::ectButton, "B", "b", "B"));
+		GetButtons()[btnB]->SetInputDeviceComponent(pAddComponent(deInputDeviceComponent::ectButton, "B", "b", "B"));
 	}
 	
 	if(compJoystick){
@@ -669,7 +669,7 @@ void deovrDevice::pUpdateParametersHandPose(vr::VRActionHandle_t actionHandle){
 		pBoneCount = (int)boneCount;
 		pBoneTransformData.AddRange(pBoneCount * 2, {});
 		
-		pPoseBones.AddRange(deInputDevice::HandBoneCount, deInputDevice::ehbWrist);
+		pPoseBones.AddRange(deInputDevice::HandBoneCount, {});
 	}
 }
 

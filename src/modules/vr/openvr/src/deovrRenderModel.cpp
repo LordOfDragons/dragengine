@@ -81,14 +81,14 @@ public:
 		model->AddLOD(deModelLOD::Ref::New());
 		deModelLOD &lod = model->GetLODs().Last();
 		
-		model->AddTexture(new deModelTexture("material", 256, 256));
+		model->AddTexture(deModelTexture::Ref::New("material", 256, 256));
 		
 		// add vertices
 		int i;
 		const int vertexCount = (int)pRenderModel.unVertexCount;
 		
-		lod.SetVertexCount(vertexCount);
-		deModelVertex * const vertices = lod.GetVertices();
+		lod.GetVertices().SetAll(vertexCount, {});
+		deModelVertex * const vertices = lod.GetVertices().GetArrayPointer();
 		
 		for(i=0; i<vertexCount; i++){
 			const vr::HmdVector3_t &p = pRenderModel.rVertexData[i].vPosition;
@@ -105,8 +105,8 @@ public:
 		const int faceCount = (int)pRenderModel.unTriangleCount;
 		const uint16_t *corners = pRenderModel.rIndexData;
 		
-		lod.SetFaceCount(faceCount);
-		deModelFace * const faces = lod.GetFaces();
+		lod.GetFaces().SetAll(faceCount, {});
+		deModelFace * const faces = lod.GetFaces().GetArrayPointer();
 		
 		for(i=0; i<faceCount; i++){
 			const int v3 = (int)*(corners++);
@@ -137,14 +137,14 @@ public:
 		
 		lod.SetTextureCoordinatesCount(vertexCount);
 		
-		lod.SetTextureCoordinatesSetCount(1);
-		deModelTextureCoordinatesSet &tcset = lod.GetTextureCoordinatesSetAt(0);
+		lod.GetTextureCoordinatesSets().SetAll(1, {});
+		deModelTextureCoordinatesSet &tcset = lod.GetTextureCoordinatesSets()[0];
 		
 		tcset.GetTextureCoordinates().RemoveAll();
 		tcset.GetTextureCoordinates().EnlargeCapacity(vertexCount);
 		for(i=0; i<vertexCount; i++){
 			const vr::RenderModel_Vertex_t &v = pRenderModel.rVertexData[i];
-			tcset.GetTextureCoordinates().Add(v.rfTextureCoord[0], v.rfTextureCoord[1]);
+			tcset.GetTextureCoordinates().Add({v.rfTextureCoord[0], v.rfTextureCoord[1]});
 		}
 	}
 };

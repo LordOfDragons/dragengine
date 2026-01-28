@@ -52,7 +52,7 @@ private:
 	deInputDeviceComponent::eComponentTypes pType;
 	
 	deImage::Ref pDisplayImage;
-	decTObjectOrderedSet<deInputDeviceDisplayIcon> pDisplayIcons;
+	decTObjectOrderedSet<deImage> pDisplayIcons;
 	decString pDisplayText;
 	
 	

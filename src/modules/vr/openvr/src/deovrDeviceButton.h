@@ -67,7 +67,7 @@ private:
 	bool pTouched;
 	
 	deImage::Ref pDisplayImage;
-	decTObjectOrderedSet<deInputDeviceDisplayIcon> pDisplayIcons;
+	decTObjectOrderedSet<deImage> pDisplayIcons;
 	decString pDisplayText;
 	
 	

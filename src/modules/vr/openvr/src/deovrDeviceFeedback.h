@@ -51,7 +51,7 @@ private:
 	deovrDeviceComponent::Ref pInputDeviceComponent;
 	
 	deImage::Ref pDisplayImage;
-	decTObjectOrderedSet<deInputDeviceDisplayIcon> pDisplayIcons;
+	decTObjectOrderedSet<deImage> pDisplayIcons;
 	decString pDisplayText;
 	
 	int pMaximum;

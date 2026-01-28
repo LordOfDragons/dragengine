@@ -76,17 +76,17 @@ public:
 	
 	virtual void BuildModel(deModel *model){
 		model->AddLOD(deModelLOD::Ref::New());
-		deModelLOD &log = model->GetLODs().Last();
+		deModelLOD &lod = model->GetLODs().Last();
 		
-		model->AddTexture(new deModelTexture("material", 256, 256));
+		model->AddTexture(deModelTexture::Ref::New("material", 256, 256));
 		model->GetTextureAt(0)->SetDoubleSided(true);
 		
 		// add vertices
 		int i;
 		const int vertexCount = (int)pMesh.unTriangleCount * 3;
 		
-		lod.SetVertexCount(vertexCount);
-		deModelVertex * const vertices = lod.GetVertices();
+		lod.GetVertices().SetAll(vertexCount, {});
+		deModelVertex * const vertices = lod.GetVertices().GetArrayPointer();
 		
 		for(i=0; i<vertexCount; i++){
 			const vr::HmdVector2_t &p = pMesh.pVertexData[i];
@@ -99,8 +99,8 @@ public:
 		// add faces
 		const int faceCount = (int)pMesh.unTriangleCount;
 		
-		lod.SetFaceCount(faceCount);
-		deModelFace * const faces = lod.GetFaces();
+		lod.GetFaces().SetAll(faceCount, {});
+		deModelFace * const faces = lod.GetFaces().GetArrayPointer();
 		
 		for(i=0; i<faceCount; i++){
 			faces[i].SetTexture(0);
@@ -127,8 +127,8 @@ public:
 		
 		lod.SetTextureCoordinatesCount(1);
 		
-		lod.SetTextureCoordinatesSetCount(1);
-		deModelTextureCoordinatesSet &tcset = lod.GetTextureCoordinatesSetAt(0);
+		lod.GetTextureCoordinatesSets().SetAll(1, {});
+		deModelTextureCoordinatesSet &tcset = lod.GetTextureCoordinatesSets()[0];
 		
 		tcset.GetTextureCoordinates().RemoveAll();
 		tcset.GetTextureCoordinates().Add({});
