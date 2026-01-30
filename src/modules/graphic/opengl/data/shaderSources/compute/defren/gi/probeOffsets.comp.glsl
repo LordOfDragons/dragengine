@@ -83,6 +83,11 @@ void combineRays(in uvec3 params){
 }
 
 
+float randomValue(float n){
+	return fract(sin(n) * 43758.5453123);
+}
+
+
 void main(void){
 	int index = int(gl_WorkGroupID.x);
 	
@@ -242,6 +247,7 @@ void main(void){
 	
 	bool assumeInGeometry = float(backfaceCount) / float(pGIRaysPerProbe) > 0.25;
 	float closestDistance = 10000.0;
+	float jitterProbe = 0.0;
 	
 	// here we deviate from the paper. the problem happens with closed indoor scenes like
 	// hallway and room driven scenes. in this situation especially for higher cascades
@@ -268,6 +274,17 @@ void main(void){
 		// the surface. if this is not possible do not move and disable the probe
 		probeOffset = vec3(closestBackFace);
 		
+		// probes can end up in thin geometry causing dark samples although slightly moved
+		// they would provide a lit result. apply a random jittering. if the probe is in thick
+		// geometry this jitter will not change the next update
+		//jitterProbe = 0.05;
+		/*
+		if(length(probeOffset) < 0.001){
+			//jitterProbe = 0.05;
+			jitterProbe = length(pGIMoveMinDistToSurface);
+		}
+		*/
+		
 	}else if(countOffsets > 0){
 		closestDistance = closestFrontfaceDistance;
 		
@@ -280,6 +297,26 @@ void main(void){
 		// the probe again in the future
 		//probeOffset *= 1.0 + 0.05 * float(countOffsets - 1);
 		probeOffset *= 1.0 + 0.05 * float(countOffsets);
+		
+		// if the probe offset is 0 the probe would stay at the same position. this can happen
+		// if the probe is exactly on a surface in a way it is not possible to figure out a way
+		// to move the probe away from the surface. in this case apply a small random offset
+		// to ensure the probe moves in the hope the next update finds a better position
+		/*
+		if(closestDistance < 0.001 && length(probeOffset + prevOffset) < 0.001){
+			//jitterProbe = 0.05;
+			jitterProbe = length(pGIMoveMinDistToSurface);
+		}
+		*/
+	}
+	
+	if(jitterProbe > 0.0){
+		// calculate random offset on sphere of radius 5cm using polar coordinates.
+		// it is important the offset is at least 5cm since if smaller the opengl module
+		// can decide to not update the position any further
+		vec2 a = vec2(randomValue((float(probeCoord.x) + 0.5) / float(pGIGridProbeCount.x)) * 2.0 * 3.14159265,
+			randomValue((float(probeCoord.y) + 0.5) / float(pGIGridProbeCount.y)) * 3.14159265);
+		probeOffset += vec3(cos(a.x) * sin(a.y), sin(a.x) * sin(a.y), cos(a.y)) * jitterProbe;
 	}
 	
 	// position used for ray tracing contains the previous update probe offset.

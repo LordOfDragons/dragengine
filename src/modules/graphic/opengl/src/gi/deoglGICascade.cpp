@@ -51,6 +51,7 @@ pIndex(index),
 pOffset(offset),
 pProbeSpacing(probeSpacing),
 pProbeSpacingInv(1.0f / probeSpacing.x, 1.0f / probeSpacing.y, 1.0f / probeSpacing.z),
+pRandomInitialProbeOffset(probeSpacing * 0.001f),
 pFieldSize(probeSpacing.Multiply(decVector(giState.GetGridCoordClamp()))),
 pFieldOrigin(pFieldSize * -0.5f),
 pPositionClamp(pFieldSize),
@@ -453,6 +454,17 @@ void deoglGICascade::FindProbesToUpdate(const deoglDCollisionFrustum &frustum){
 			}
 			
 		}else{
+			// probe positions are lined up on even spacing. this can cause probe positions to
+			// fall round values. if geometry also falls on the same round values calculating
+			// the initial offset can be a problem. to avoid this the initial offset is not set
+			// to zero but a random small offset to ensure the probe position does not fall on
+			// a round value. for probes out in open space this is not a problem if they have
+			// a small offset but probes near geometry has a much smaller chance to end up in
+			// an unfavorite position
+			// probe.offset.x = decMath::random(-pRandomInitialProbeOffset.x, pRandomInitialProbeOffset.x);
+			// probe.offset.y = decMath::random(-pRandomInitialProbeOffset.y, pRandomInitialProbeOffset.y);
+			// probe.offset.z = decMath::random(-pRandomInitialProbeOffset.z, pRandomInitialProbeOffset.z);
+			
 			probe.offset.SetZero();
 			probe.countOffsetMoved = 0;
 			probe.flags &= ~epfSmoothUpdate;
@@ -617,7 +629,7 @@ void deoglGICascade::UpdateProbeOffsetFromShader(const char *data){
 				probe.countOffsetMoved = 5;
 			}
 			
-			if(!offsets[i].offset.IsEqualTo(probe.offset, 0.04f)){
+			if((offsets[i].offset - probe.offset).Length() > 0.04f){
 				// update offset only if it moved far enough to justify an expensive update
 				probe.offset = offsets[i].offset;
 				probe.flags &= ~(epfRayCacheValid | epfDynamicDisable);

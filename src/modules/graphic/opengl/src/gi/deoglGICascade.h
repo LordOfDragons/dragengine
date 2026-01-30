@@ -77,6 +77,7 @@ private:
 	decVector pOffset;
 	decVector pProbeSpacing;
 	decVector pProbeSpacingInv;
+	decVector pRandomInitialProbeOffset;
 	decVector pFieldSize;
 	decVector pFieldOrigin;
 	decVector pPositionClamp;
