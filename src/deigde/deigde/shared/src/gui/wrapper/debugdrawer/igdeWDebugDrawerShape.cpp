@@ -54,35 +54,29 @@
 
 class cDucpliateShapeVisitor : public decShapeVisitor{
 private:
-	deDebugDrawerShape *pDDShape;
+	deDebugDrawerShape &pDDShape;
 	
 public:
-	cDucpliateShapeVisitor(deDebugDrawerShape *ddShape){
-		if(!ddShape){
-			DETHROW(deeInvalidParam);
-		}
-		
-		pDDShape = ddShape;
-	}
+	cDucpliateShapeVisitor(deDebugDrawerShape &ddShape) : pDDShape(ddShape){}
 	
 	void VisitShapeSphere(decShapeSphere &sphere) override{
-		pDDShape->GetShapeList().Add(sphere.Copy());
+		pDDShape.GetShapeList().Add(sphere.Copy());
 	}
 	
 	void VisitShapeBox(decShapeBox &box) override{
-		pDDShape->GetShapeList().Add(box.Copy());
+		pDDShape.GetShapeList().Add(box.Copy());
 	}
 	
 	void VisitShapeCylinder(decShapeCylinder &cylinder) override{
-		pDDShape->GetShapeList().Add(cylinder.Copy());
+		pDDShape.GetShapeList().Add(cylinder.Copy());
 	}
 	
 	void VisitShapeCapsule(decShapeCapsule &capsule) override{
-		pDDShape->GetShapeList().Add(capsule.Copy());
+		pDDShape.GetShapeList().Add(capsule.Copy());
 	}
 	
 	void VisitShapeHull(decShapeHull &hull) override{
-		pDDShape->GetShapeList().Add(hull.Copy());
+		pDDShape.GetShapeList().Add(hull.Copy());
 	}
 };
 
@@ -229,14 +223,14 @@ void igdeWDebugDrawerShape::AddShape(decShape::Ref &&shape){
 	DEASSERT_NOTNULL(shape)
 	
 	pShapes.Add(std::move(shape));
-	pRebuildShapes();
+	pRebuildShapes(pEngDDShape);
 }
 
 void igdeWDebugDrawerShape::AddShapes(const decShape::List &shapes){
 	shapes.Visit([&](decShape &shape){
 		pShapes.Add(shape.Copy());
 	});
-	pRebuildShapes();
+	pRebuildShapes(pEngDDShape);
 }
 
 void igdeWDebugDrawerShape::AddSphereShape(float radius, const decVector &position){
@@ -298,7 +292,7 @@ const decQuaternion &orientation, int pointCount, const decVector *points){
 
 void igdeWDebugDrawerShape::RemoveAllShapes(){
 	pShapes.RemoveAll();
-	pRebuildShapes();
+	pRebuildShapes(pEngDDShape);
 }
 
 
@@ -310,7 +304,7 @@ void igdeWDebugDrawerShape::AddFace(deDebugDrawerShapeFace::Ref &&face){
 	DEASSERT_NOTNULL(face)
 	
 	pFaces.Add(std::move(face));
-	pRebuildFaces();
+	pRebuildFaces(pEngDDShape);
 }
 
 void igdeWDebugDrawerShape::AddOcclusionMeshFaces(const deOcclusionMesh &occlusionMesh){
@@ -349,7 +343,7 @@ void igdeWDebugDrawerShape::AddOcclusionMeshFaces(const deOcclusionMesh &occlusi
 		}
 	}
 	
-	pRebuildFaces();
+	pRebuildFaces(pEngDDShape);
 }
 
 void igdeWDebugDrawerShape::AddNavSpaceFaces(const deNavigationSpace &navSpace){
@@ -376,7 +370,7 @@ void igdeWDebugDrawerShape::AddNavSpaceFaces(const deNavigationSpace &navSpace, 
 
 void igdeWDebugDrawerShape::RemoveAllFaces(){
 	pFaces.RemoveAll();
-	pRebuildFaces();
+	pRebuildFaces(pEngDDShape);
 }
 
 
@@ -396,8 +390,8 @@ void igdeWDebugDrawerShape::pUpdateDDShape(){
 			shape->SetEdgeColor(pColorEdge);
 			shape->SetFillColor(pColorFill);
 			
-			pBareRebuildShapes();
-			pBareRebuildFaces();
+			pBareRebuildShapes(shape);
+			pBareRebuildFaces(shape);
 			
 			pEngDDShape = shape;
 			pEngDebugDrawer->AddShape(std::move(shape));
@@ -410,10 +404,10 @@ void igdeWDebugDrawerShape::pUpdateDDShape(){
 	}
 }
 
-void igdeWDebugDrawerShape::pRebuildShapes(){
+void igdeWDebugDrawerShape::pRebuildShapes(deDebugDrawerShape *ddshape){
 	// if the debug drawer shape exists just re-populate it with shapes
-	if(pEngDDShape){
-		pBareRebuildShapes();
+	if(ddshape){
+		pBareRebuildShapes(ddshape);
 		
 	// otherwise update it which already does the population if required
 	}else{
@@ -421,17 +415,14 @@ void igdeWDebugDrawerShape::pRebuildShapes(){
 	}
 }
 
-void igdeWDebugDrawerShape::pBareRebuildShapes(){
-	if(pEngDDShape){
-		cDucpliateShapeVisitor visitor(pEngDDShape);
-		const int shapeCount = pShapes.GetCount();
-		int i;
+void igdeWDebugDrawerShape::pBareRebuildShapes(deDebugDrawerShape *ddshape){
+	if(ddshape){
+		ddshape->GetShapeList().RemoveAll();
 		
-		pEngDDShape->GetShapeList().RemoveAll();
-		
-		for(i=0; i<shapeCount; i++){
-			pShapes.GetAt(i)->Visit(visitor);
-		}
+		cDucpliateShapeVisitor visitor(*ddshape);
+		pShapes.Visit([&](decShape &shape){
+			shape.Visit(visitor);
+		});
 	}
 	
 	if(pEngDebugDrawer){
@@ -439,10 +430,10 @@ void igdeWDebugDrawerShape::pBareRebuildShapes(){
 	}
 }
 
-void igdeWDebugDrawerShape::pRebuildFaces(){
+void igdeWDebugDrawerShape::pRebuildFaces(deDebugDrawerShape *ddshape){
 	// if the debug drawer shape exists just re-populate it with faces
-	if(pEngDDShape){
-		pBareRebuildFaces();
+	if(ddshape){
+		pBareRebuildFaces(ddshape);
 		
 	// otherwise update it which already does the population if required
 	}else{
@@ -450,9 +441,9 @@ void igdeWDebugDrawerShape::pRebuildFaces(){
 	}
 }
 
-void igdeWDebugDrawerShape::pBareRebuildFaces(){
-	if(pEngDDShape){
-		pEngDDShape->RemoveAllFaces();
+void igdeWDebugDrawerShape::pBareRebuildFaces(deDebugDrawerShape *ddshape){
+	if(ddshape){
+		ddshape->RemoveAllFaces();
 		
 		pFaces.Visit([&](const deDebugDrawerShapeFace &face){
 			auto ddsFace = deDebugDrawerShapeFace::Ref::New();
@@ -460,7 +451,7 @@ void igdeWDebugDrawerShape::pBareRebuildFaces(){
 			face.GetVertices().Visit([&](const decVector &vertex){
 				ddsFace->AddVertex(vertex);
 			});
-			pEngDDShape->AddFace(std::move(ddsFace));
+			ddshape->AddFace(std::move(ddsFace));
 		});
 	}
 	
@@ -490,7 +481,7 @@ void igdeWDebugDrawerShape::pAddNavGrid(const deNavigationSpace &navSpace, bool 
 		pFaces.Add(std::move(ddsFace));
 	});
 	
-	pRebuildFaces();
+	pRebuildFaces(pEngDDShape);
 }
 
 void igdeWDebugDrawerShape::pAddNavMesh(const deNavigationSpace &navSpace, bool filterType, int type){
@@ -548,5 +539,5 @@ void igdeWDebugDrawerShape::pAddNavMesh(const deNavigationSpace &navSpace, bool 
 		firstCorner += cornerCount;
 	});
 	
-	pRebuildFaces();
+	pRebuildFaces(pEngDDShape);
 }

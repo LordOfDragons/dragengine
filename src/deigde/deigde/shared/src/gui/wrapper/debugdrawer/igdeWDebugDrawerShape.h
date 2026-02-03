@@ -213,10 +213,10 @@ public:
 	
 private:
 	void pUpdateDDShape();
-	void pRebuildShapes();
-	void pBareRebuildShapes();
-	void pRebuildFaces();
-	void pBareRebuildFaces();
+	void pRebuildShapes(deDebugDrawerShape *ddshape);
+	void pBareRebuildShapes(deDebugDrawerShape *ddshape);
+	void pRebuildFaces(deDebugDrawerShape *ddshape);
+	void pBareRebuildFaces(deDebugDrawerShape *ddshape);
 	
 	void pAddNavGrid(const deNavigationSpace &navSpace, bool filterType, int type);
 	void pAddNavMesh(const deNavigationSpace &navSpace, bool filterType, int type);
