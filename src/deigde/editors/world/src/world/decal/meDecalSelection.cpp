@@ -77,12 +77,7 @@ void meDecalSelection::Remove(meDecal *object){
 	object->SetSelected(false);
 	
 	if(pActive == object){
-		if(pSelection.IsNotEmpty()){
-			SetActive(pSelection.First());
-			
-		}else{
-			SetActive(nullptr);
-		}
+		ActivateNext();
 	}
 }
 

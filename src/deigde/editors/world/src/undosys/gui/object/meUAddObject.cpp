@@ -91,9 +91,6 @@ void meUAddObject::Undo(){
 	meObjectSelection &selection = pWorld->GetSelectionObject();
 	
 	selection.Remove(pObject);
-	if(pObject->GetActive()){
-		selection.ActivateNext();
-	}
 	
 	pWorld->RemoveObject(pObject);
 	

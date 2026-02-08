@@ -68,9 +68,6 @@ void lpeULangPackEntryAdd::Undo(){
 	if(pRefEntry){
 		lpes.Add(pRefEntry);
 		lpes.SetActive(pRefEntry);
-		
-	}else{
-		lpes.ActivateNext();
 	}
 	
 	pLangPack->RemoveEntry(pEntry);

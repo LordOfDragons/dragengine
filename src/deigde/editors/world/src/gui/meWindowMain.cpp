@@ -1352,8 +1352,7 @@ public:
 		world->GetUndoSystem()->Add(undo);
 		
 		selection.Reset();
-		selection.Add(world->GetObjectShapes().GetAt(world->GetObjectShapes().GetCount() - 1));
-		selection.ActivateNext();
+		selection.Add(world->GetObjectShapes().Last());
 		world->NotifyObjectShapeSelectionChanged();
 		return {};
 	}

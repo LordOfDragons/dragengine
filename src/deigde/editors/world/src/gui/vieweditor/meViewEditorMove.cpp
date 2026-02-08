@@ -127,9 +127,7 @@ void meViewEditorMove::OnLeftMouseButtonPress(int x, int y, bool shift, bool con
 		pUndoMove = meUMoveObject::Ref::New(&world, objects);
 		
 		// create snap point visitor
-		meObject * const refObject = selection.GetActive();
-		
-		pCLSnapPoint = new meCLSnapPoint(world, refObject);
+		pCLSnapPoint = new meCLSnapPoint(world, selection.GetActive());
 		objects.Visit([&](meObject *object){
 			pCLSnapPoint->AddIgnoreObject(object);
 			object->GetAllAttachedObjects().Visit([&](meObject *attached){

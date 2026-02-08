@@ -80,7 +80,6 @@ void meUDeleteDecal::Undo(){
 		pWorld->AddDecal(data.GetDecal());
 		selection.Add(data.GetDecal());
 	});
-	selection.ActivateNext();
 }
 
 void meUDeleteDecal::Redo(){
@@ -88,9 +87,6 @@ void meUDeleteDecal::Redo(){
 	
 	pDecals.Visit([&](const meUndoDataDecal &data){
 		selection.Remove(data.GetDecal());
-		if(data.GetDecal()->GetActive()){
-			selection.ActivateNext();
-		}
 		
 		pWorld->RemoveDecal(data.GetDecal());
 		

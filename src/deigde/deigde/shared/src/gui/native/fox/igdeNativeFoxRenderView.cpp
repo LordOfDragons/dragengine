@@ -369,15 +369,15 @@ void igdeNativeFoxRenderView::DetachRenderWindow(){
 	}
 	
 	if(id() != (FXID)renderWindow->GetWindow()){
-	    pOwner->GetLogger()->LogError(LOGGING_NAME,
+		pOwner->GetLogger()->LogError(LOGGING_NAME,
 			"ViewRenderWindow: Marked attached but id is not render window");
-	    //DETHROW( deeInvalidAction );
+		//DETHROW( deeInvalidAction );
 		return;
 	}
 	if(!renderWindow->GetWindow()){
-	    pOwner->GetLogger()->LogError(LOGGING_NAME,
+		pOwner->GetLogger()->LogError(LOGGING_NAME,
 			"ViewRenderWindow: Detaching window but window does not exist");
-	    //DETHROW( deeInvalidAction );
+		//DETHROW( deeInvalidAction );
 		return;
 	}
 	

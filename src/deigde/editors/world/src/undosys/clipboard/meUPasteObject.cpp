@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-
 #include "meUPasteObject.h"
 #include "../../world/meWorld.h"
 #include "../../world/object/meObject.h"
@@ -82,9 +80,6 @@ void meUPasteObject::Undo(){
 		object->SetAttachedTo(nullptr);
 		
 		selection.Remove(object);
-		if(object->GetActive()){
-			selection.ActivateNext();
-		}
 		
 		pWorld->RemoveObject(object);
 		
@@ -115,8 +110,6 @@ void meUPasteObject::Redo(){
 			object->SetAttachedTo(pWorld->GetObjectWithID(object->GetAttachedToID()));
 		}
 	});
-	
-	selection.ActivateNext();
 	
 	pWorld->NotifyObjectSelectionChanged();
 }

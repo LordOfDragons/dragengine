@@ -73,9 +73,6 @@ void meUDecalDuplicate::Undo(){
 	
 	pDecals.Visit([&](const meUndoDataDecal &data){
 		selection.Remove(data.GetDecal());
-		if(data.GetDecal()->GetActive()){
-			selection.ActivateNext();
-		}
 		
 		pWorld->RemoveDecal(data.GetDecal());
 		
@@ -99,6 +96,5 @@ void meUDecalDuplicate::Redo(){
 	});
 	pWorld->NotifyDecalCountChanged();
 	
-	selection.ActivateNext();
 	pWorld->NotifyDecalSelectionChanged();
 }

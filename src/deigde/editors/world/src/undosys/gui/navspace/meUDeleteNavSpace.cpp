@@ -79,8 +79,6 @@ void meUDeleteNavSpace::Undo(){
 		pWorld->NotifyNavSpaceCountChanged();
 	});
 	
-	selection.ActivateNext();
-	
 	pWorld->NotifyNavSpaceSelectionChanged();
 }
 
@@ -89,9 +87,6 @@ void meUDeleteNavSpace::Redo(){
 	
 	pNavSpaces.Visit([&](const meUndoDataNavSpace &n){
 		selection.Remove(n.GetNavSpace());
-		if(n.GetNavSpace()->GetActive()){
-			selection.ActivateNext();
-		}
 		
 		pWorld->RemoveNavSpace(n.GetNavSpace());
 		

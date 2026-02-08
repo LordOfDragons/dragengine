@@ -82,8 +82,6 @@ void lpeULangPackEntryRemove::Undo(){
 		lpes.Add(e);
 	});
 	
-	lpes.ActivateNext();
-	
 	pLangPack->NotifyEntrySelectionChanged();
 	pLangPack->NotifyActiveEntryChanged();
 }

@@ -66,9 +66,6 @@ void meUAddNavSpace::Undo(){
 	meNavigationSpaceSelection &selection = pWorld->GetSelectionNavigationSpace();
 	
 	selection.Remove(pNavSpace);
-	if(pNavSpace->GetActive()){
-		selection.ActivateNext();
-	}
 	
 	pWorld->RemoveNavSpace(pNavSpace);
 	

@@ -57,7 +57,9 @@ pObject(object),
 pDistance(0.0f),
 pSourceSnapPoint(nullptr),
 pTargetObject(nullptr),
-pTargetSnapPoint(nullptr){
+pTargetSnapPoint(nullptr)
+{
+	DEASSERT_NOTNULL(object);
 }
 
 meCLSnapPoint::~meCLSnapPoint(){
@@ -164,7 +166,7 @@ void meCLSnapPoint::CollisionResponse(deCollider *owner, deCollisionInfo *info){
 	}
 	
 	meObject * const object = snapPoint->GetObject();
-	if(object == pObject){
+	if(pObject == object){
 		return;
 	}
 	if(pIgnoreObjects.Has(object)){

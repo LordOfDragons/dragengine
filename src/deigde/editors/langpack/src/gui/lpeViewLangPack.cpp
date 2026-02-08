@@ -173,8 +173,7 @@ public:
 			return;
 		}
 		
-		const igdeListItem * const selection = listBox->GetSelectedItem();
-		pView.SelectEntry(selection ? (lpeLangPackEntry*)selection->GetData() : nullptr);
+		pView.SelectEntry((lpeLangPackEntry*)listBox->GetSelectedItemData());
 	}
 	
 	// TODO add

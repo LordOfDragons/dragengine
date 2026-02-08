@@ -66,9 +66,6 @@ void meUAddDecal::Undo(){
 	meDecalSelection &selection = pWorld->GetSelectionDecal();
 	
 	selection.Remove(pDecal);
-	if(pDecal->GetActive()){
-		selection.ActivateNext();
-	}
 	
 	pWorld->RemoveDecal(pDecal);
 	

@@ -113,9 +113,6 @@ void meUObjDuplicate::Undo(){
 		object->SetAttachedTo(nullptr);
 		
 		selection.Remove(object);
-		if(object->GetActive()){
-			selection.ActivateNext();
-		}
 		
 		pWorld->RemoveObject(data.GetObject());
 		
@@ -142,8 +139,6 @@ void meUObjDuplicate::Redo(){
 	pObjects.Visit([&](meUndoDataObject &data){
 		data.GetObject()->SetAttachedTo(data.GetAttachedTo());
 	});
-	
-	selection.ActivateNext();
 	
 	pWorld->NotifyObjectSelectionChanged();
 }

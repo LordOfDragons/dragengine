@@ -217,9 +217,6 @@ void meCLSelect::RunAction(int selectIndex){
 					
 				}else{
 					if(object->GetSelected()){
-						if(selection.GetActive() == object){
-							selection.ActivateNext();
-						}
 						selection.Remove(object);
 						
 					}else{
@@ -252,9 +249,6 @@ void meCLSelect::RunAction(int selectIndex){
 					
 				}else{
 					if(objectShape->GetSelected()){
-						if(selection.GetActive() == objectShape){
-							selection.ActivateNext();
-						}
 						selection.Remove(objectShape);
 						
 					}else{
@@ -279,9 +273,6 @@ void meCLSelect::RunAction(int selectIndex){
 				
 			}else{
 				if(decal->GetSelected()){
-					if(selection.GetActive() == decal){
-						selection.SetActive(nullptr);
-					}
 					selection.Remove(decal);
 					
 				}else{
@@ -360,10 +351,6 @@ void meCLSelect::RunAction(int selectIndex){
 				selection.Remove(o);
 			});
 			
-			if(!selection.HasActive() || !selection.GetActive()->GetSelected()){
-				selection.ActivateNext();
-			}
-			
 			pWorld.NotifyObjectSelectionChanged();
 			
 		}else if(pCanSelectObjectShapes){
@@ -373,10 +360,6 @@ void meCLSelect::RunAction(int selectIndex){
 			}).Visit([&](meObjectShape *s){
 				selection.Remove(s);
 			});
-			
-			if(!selection.HasActive() || !selection.GetActive()->GetSelected()){
-				selection.ActivateNext();
-			}
 			
 			pWorld.NotifyObjectShapeSelectionChanged();
 		}

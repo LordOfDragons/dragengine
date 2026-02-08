@@ -98,8 +98,6 @@ void meUDeleteObject::Undo(){
 		data.GetObject()->SetAttachedTo(data.GetAttachedTo());
 	});
 	
-	selection.ActivateNext();
-	
 	pWorld->NotifyObjectSelectionChanged();
 }
 
@@ -117,9 +115,6 @@ void meUDeleteObject::Redo(){
 			// done automatically if removed from world but better be safe
 		
 		selection.Remove(object);
-		if(object->GetActive()){
-			selection.ActivateNext();
-		}
 		
 		pWorld->RemoveObject(object);
 		
