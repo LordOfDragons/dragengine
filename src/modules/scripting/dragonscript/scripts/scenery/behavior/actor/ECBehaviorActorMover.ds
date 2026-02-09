@@ -1092,6 +1092,55 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			return normal * (point - getElement().getPosition())
 		end
 		
+		/**
+		 * \brief Position along path ahead of current position by distance in meters.
+		 * \version 1.30
+		 * 
+		 * Distance is clamped to the current position and the end of the path. If path is
+		 * absent null is returned.
+		 */
+		func DVector getPathAhead(float distance)
+			if pPath == null
+				return null
+			end
+			
+			if distance < 0.001
+				return getElement().getPosition()
+			end
+			
+			var DMatrix matrix
+			if pRidableCollider != null
+				matrix = pRidableCollider.getCollider().getMatrix()
+			end
+			
+			var DVector position = getElement().getPosition()
+			var int i, pointCount = pPath.getCount()
+			var DVector corner, direction
+			var float nextDist
+			
+			for i = pNextPathPoint to pointCount
+				corner = pPath.getAt(i)
+				if matrix != null
+					corner = matrix * corner
+				end
+				
+				direction = corner - position
+				nextDist = direction.getLength()
+				if nextDist < 0.001
+					continue
+				end
+				
+				if distance <= nextDist
+					return position + direction.normalize() * distance
+				end
+				
+				distance -= nextDist
+				position = corner
+			end
+			
+			return pPath.getAt(pointCount - 1)
+		end
+		
 		
 		
 		/** \brief Rideable the actor is standing upon or \em null. */
