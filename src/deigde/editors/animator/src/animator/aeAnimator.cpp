@@ -1426,10 +1426,13 @@ void aeAnimator::pUpdateDDSBones(){
 	}
 	
 	if(boneCount != pDDSBones.GetCount()){
-		pDDSBones.SetAll(boneCount, {});
-		pDDSBones.Visit([&](igdeWCoordSysArrows &d){
-			d.SetParentDebugDrawer(pDDBones);
-		});
+		pDDSBones.RemoveAll();
+		int i;
+		for(i=0; i<boneCount; i++){
+			auto shape = deTUniqueReference<igdeWCoordSysArrows>::New();
+			shape->SetParentDebugDrawer(pDDBones);
+			pDDSBones.Add(std::move(shape));
+		}
 	}
 	
 	pDDBones->SetPosition(matrix.GetPosition());
