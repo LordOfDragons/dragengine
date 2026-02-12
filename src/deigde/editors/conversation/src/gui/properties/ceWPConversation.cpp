@@ -440,11 +440,11 @@ public:
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		decString name("Target");
-		if(!igdeCommonDialogs::GetString(&pPanel, "Add Target", "Name:", name)){
+		if(!igdeCommonDialogs::GetString(pPanel, "Add Target", "Name:", name)){
 			return {};
 		}
 		if(conversation->GetTargets().HasMatching([&](const ceTarget &t){ return t.GetName() == name; })){
-			igdeCommonDialogs::Error(&pPanel, "Add Target", "Duplicate name");
+			igdeCommonDialogs::Error(pPanel, "Add Target", "Duplicate name");
 			return {};
 		}
 		
@@ -485,12 +485,12 @@ public:
 		}
 		
 		decString name(target->GetName());
-		if(!igdeCommonDialogs::GetString(&pPanel, "Rename Target", "Name:", name) 
+		if(!igdeCommonDialogs::GetString(pPanel, "Rename Target", "Name:", name) 
 		|| name == target->GetName()){
 			return {};
 		}
 		if(conversation->GetTargets().HasMatching([&](const ceTarget &t){ return t.GetName() == name; })){
-			igdeCommonDialogs::Error(&pPanel, "Rename Target", "Duplicate name");
+			igdeCommonDialogs::Error(pPanel, "Rename Target", "Duplicate name");
 			return {};
 		}
 		
@@ -599,11 +599,11 @@ public:
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		decString name("Camera Shot");
-		if(!igdeCommonDialogs::GetString(&pPanel, "Add Camera Shot", "Name:", name)){
+		if(!igdeCommonDialogs::GetString(pPanel, "Add Camera Shot", "Name:", name)){
 			return {};
 		}
 		if(conversation->GetCameraShotList().HasMatching([&](const ceCameraShot &c){ return c.GetName() == name; })){
-			igdeCommonDialogs::Error(&pPanel, "Add Camera Shot", "Duplicate name");
+			igdeCommonDialogs::Error(pPanel, "Add Camera Shot", "Duplicate name");
 			return {};
 		}
 		
@@ -643,12 +643,12 @@ public:
 		}
 		
 		decString name(cameraShot->GetName());
-		if(!igdeCommonDialogs::GetString(&pPanel, "Rename Camera Shot", "Name:", name) 
+		if(!igdeCommonDialogs::GetString(pPanel, "Rename Camera Shot", "Name:", name) 
 		|| name == cameraShot->GetName()){
 			return {};
 		}
 		if(conversation->GetCameraShotList().HasMatching([&](const ceCameraShot &c){ return c.GetName() == name; })){
-			igdeCommonDialogs::Error(&pPanel, "Rename Camera Shot", "Duplicate name");
+			igdeCommonDialogs::Error(pPanel, "Rename Camera Shot", "Duplicate name");
 			return {};
 		}
 		
@@ -675,11 +675,11 @@ public:
 		}
 		
 		decString name(cameraShot->GetName());
-		if(!igdeCommonDialogs::GetString(&pPanel, "Duplicate Camera Shot", "Name:", name)){
+		if(!igdeCommonDialogs::GetString(pPanel, "Duplicate Camera Shot", "Name:", name)){
 			return {};
 		}
 		if(conversation->GetCameraShotList().HasMatching([&](const ceCameraShot &c){ return c.GetName() == name; })){
-			igdeCommonDialogs::Error(&pPanel, "Duplicate Camera Shot", "Duplicate name");
+			igdeCommonDialogs::Error(pPanel, "Duplicate Camera Shot", "Duplicate name");
 			return {};
 		}
 		
@@ -1069,11 +1069,11 @@ public:
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		decString name("Gesture");
-		if(!igdeCommonDialogs::GetString(&pPanel, "Add Gesture", "Name:", name)){
+		if(!igdeCommonDialogs::GetString(pPanel, "Add Gesture", "Name:", name)){
 			return {};
 		}
 		if(conversation->GetGestures().HasMatching([&](const ceGesture &g){ return g.GetName() == name; })){
-			igdeCommonDialogs::Error(&pPanel, "Add Gesture", "Duplicate name");
+			igdeCommonDialogs::Error(pPanel, "Add Gesture", "Duplicate name");
 			return {};
 		}
 		
@@ -1114,12 +1114,12 @@ public:
 		}
 		
 		decString name(gesture->GetName());
-		if(!igdeCommonDialogs::GetString(&pPanel, "Rename Gesture", "Name:", name) 
+		if(!igdeCommonDialogs::GetString(pPanel, "Rename Gesture", "Name:", name) 
 		|| name == gesture->GetName()){
 			return {};
 		}
 		if(conversation->GetGestures().HasMatching([&](const ceGesture &g){ return g.GetName() == name; })){
-			igdeCommonDialogs::Error(&pPanel, "Rename Gesture", "Duplicate name");
+			igdeCommonDialogs::Error(pPanel, "Rename Gesture", "Duplicate name");
 			return {};
 		}
 		
@@ -1213,11 +1213,11 @@ public:
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		decString name("FacePose");
-		if(!igdeCommonDialogs::GetString(&pPanel, "Add Face Pose", "Name:", name)){
+		if(!igdeCommonDialogs::GetString(pPanel, "Add Face Pose", "Name:", name)){
 			return {};
 		}
 		if(conversation->GetFacePoseList().HasMatching([&](const ceFacePose &f){ return f.GetName() == name; })){
-			igdeCommonDialogs::Error(&pPanel, "Add Face Pose", "Duplicate name");
+			igdeCommonDialogs::Error(pPanel, "Add Face Pose", "Duplicate name");
 			return {};
 		}
 		
@@ -1258,12 +1258,12 @@ public:
 		}
 		
 		decString name(facePose->GetName());
-		if(!igdeCommonDialogs::GetString(&pPanel, "Rename Face Pose", "Name:", name) 
+		if(!igdeCommonDialogs::GetString(pPanel, "Rename Face Pose", "Name:", name) 
 		|| name == facePose->GetName()){
 			return {};
 		}
 		if(conversation->GetFacePoseList().HasMatching([&](const ceFacePose &f){ return f.GetName() == name; })){
-			igdeCommonDialogs::Error(&pPanel, "Rename Face Pose", "Duplicate name");
+			igdeCommonDialogs::Error(pPanel, "Rename Face Pose", "Duplicate name");
 			return {};
 		}
 		
@@ -1319,12 +1319,12 @@ public:
 		decStringList names(conversation->GetFacePoseControllerNameList());
 		names.SortAscending();
 		decString name;
-		if(!igdeCommonDialogs::GetString(&pPanel, "Add Face Pose Controller", "Controller to add", name, names)){
+		if(!igdeCommonDialogs::GetString(pPanel, "Add Face Pose Controller", "Controller to add", name, names)){
 			return {};
 		}
 		
 		if(facePose->GetControllers().HasMatching([&](const ceControllerValue &c){ return c.GetController() == name; })){
-			igdeCommonDialogs::Error(&pPanel, "Add Face Pose Controller", "Duplicate controller");
+			igdeCommonDialogs::Error(pPanel, "Add Face Pose Controller", "Duplicate controller");
 			return {};
 		}
 		

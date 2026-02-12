@@ -238,6 +238,9 @@ public:
 	
 	/** \brief Notify listeners double clicked on item. */
 	virtual void NotifyDoubleClickItem(igdeTreeItem *item);
+	
+	/** \brief Active language changed. */
+	void OnLanguageChanged() override;
 	/*@}*/
 	
 	

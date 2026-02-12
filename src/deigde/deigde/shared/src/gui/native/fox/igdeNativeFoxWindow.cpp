@@ -63,7 +63,7 @@ FXIMPLEMENT(igdeNativeFoxWindow, FXTopWindow, igdeNativeFoxWindowMap, ARRAYNUMBE
 igdeNativeFoxWindow::igdeNativeFoxWindow(){}
 
 igdeNativeFoxWindow::igdeNativeFoxWindow(igdeWindow &powner, const igdeGuiTheme &guitheme) :
-FXTopWindow(FXApp::instance(), powner.GetTitle().GetString(),
+FXTopWindow(FXApp::instance(), igdeUIFoxHelper::TranslateIf(powner, powner.GetTitle()),
 	powner.GetIcon() ? (FXIcon*)powner.GetIcon()->GetNativeIcon() : nullptr,
 	powner.GetIcon() ? (FXIcon*)powner.GetIcon()->GetNativeIcon() : nullptr,
 	WindowFlags(powner),
@@ -119,7 +119,7 @@ void igdeNativeFoxWindow::UpdateIcon(){
 }
 
 void igdeNativeFoxWindow::UpdateTitle(){
-	setTitle(pOwner->GetTitle().GetString());
+	setTitle(igdeUIFoxHelper::TranslateIf(*pOwner, pOwner->GetTitle()));
 }
 
 void igdeNativeFoxWindow::UpdateSize(){

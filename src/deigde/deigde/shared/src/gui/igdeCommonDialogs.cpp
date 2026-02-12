@@ -62,11 +62,11 @@ igdeCommonDialogs::~igdeCommonDialogs(){
 // Management
 ///////////////
 
-void igdeCommonDialogs::Information(igdeWidget *owner, const char *title, const char *text){
+void igdeCommonDialogs::Information(igdeWidget &owner, const char *title, const char *text){
 	Message(owner, ebsOk, eiInfo, title, text);
 }
 
-void igdeCommonDialogs::InformationFormat(igdeWidget *owner, const char *title,
+void igdeCommonDialogs::InformationFormat(igdeWidget &owner, const char *title,
 const char *textFormat, ...){
 	decString text;
 	
@@ -78,12 +78,12 @@ const char *textFormat, ...){
 	Message(owner, ebsOk, eiInfo, title, text);
 }
 
-igdeCommonDialogs::eButton igdeCommonDialogs::Question(igdeWidget *owner,
+igdeCommonDialogs::eButton igdeCommonDialogs::Question(igdeWidget &owner,
 eButtonSet buttons, const char *title, const char *text){
 	return Message(owner, buttons, eiQuestion, title, text);
 }
 
-igdeCommonDialogs::eButton igdeCommonDialogs::QuestionFormat(igdeWidget *owner,
+igdeCommonDialogs::eButton igdeCommonDialogs::QuestionFormat(igdeWidget &owner,
 eButtonSet buttons, const char *title, const char *textFormat, ...){
 	decString text;
 	
@@ -95,11 +95,11 @@ eButtonSet buttons, const char *title, const char *textFormat, ...){
 	return Message(owner, buttons, eiQuestion, title, text);
 }
 
-void igdeCommonDialogs::Warning(igdeWidget *owner, const char *title, const char *text){
+void igdeCommonDialogs::Warning(igdeWidget &owner, const char *title, const char *text){
 	Message(owner, ebsOk, eiWarning, title, text);
 }
 
-void igdeCommonDialogs::WarningFormat(igdeWidget *owner, const char *title,
+void igdeCommonDialogs::WarningFormat(igdeWidget &owner, const char *title,
 const char *textFormat, ...){
 	decString text;
 	
@@ -111,11 +111,11 @@ const char *textFormat, ...){
 	Message(owner, ebsOk, eiWarning, title, text);
 }
 
-void igdeCommonDialogs::Error(igdeWidget *owner, const char *title, const char *text){
+void igdeCommonDialogs::Error(igdeWidget &owner, const char *title, const char *text){
 	Message(owner, ebsOk, eiError, title, text);
 }
 
-void igdeCommonDialogs::ErrorFormat(igdeWidget *owner, const char *title,
+void igdeCommonDialogs::ErrorFormat(igdeWidget &owner, const char *title,
 const char *textFormat, ...){
 	decString text;
 	
@@ -127,14 +127,25 @@ const char *textFormat, ...){
 	Message(owner, ebsOk, eiError, title, text);
 }
 
+void igdeCommonDialogs::FatalError(const char *title, const char *textFormat, ...){
+	decString text;
+	
+	va_list list;
+	va_start(list, textFormat);
+	text.FormatUsing(textFormat, list);
+	va_end(list);
+	
+	igdeNativeCommonDialogs::FatalError(title, text);
+}
 
 
-igdeCommonDialogs::eButton igdeCommonDialogs::Message(igdeWidget *owner,
+
+igdeCommonDialogs::eButton igdeCommonDialogs::Message(igdeWidget &owner,
 eButtonSet buttons, eIcon icon, const char *title, const char *text){
 	return igdeNativeCommonDialogs::Message(owner, buttons, icon, title, text);
 }
 
-igdeCommonDialogs::eButton igdeCommonDialogs::MessageFormat(igdeWidget *owner,
+igdeCommonDialogs::eButton igdeCommonDialogs::MessageFormat(igdeWidget &owner,
 eButtonSet buttons, eIcon icon, const char *title, const char *textFormat, ...){
 	decString text;
 	
@@ -167,16 +178,15 @@ decString igdeCommonDialogs::FormatException(const deException &exception){
 	return message;
 }
 
-void igdeCommonDialogs::Exception(igdeWidget *owner, const deException &exception){
+void igdeCommonDialogs::Exception(igdeWidget &owner, const deException &exception){
 	Exception(owner, "Application Error", exception);
 }
 
-void igdeCommonDialogs::Exception(igdeWidget *owner, const char *title,
+void igdeCommonDialogs::Exception(igdeWidget &owner, const char *title,
 const deException &exception){
-	DEASSERT_NOTNULL(owner)
 	DEASSERT_NOTNULL(title)
 	
-	owner->GetEnvironment().GetLogger()->LogException("IGDE", exception);
+	owner.GetEnvironment().GetLogger()->LogException("IGDE", exception);
 	
 	// TODO create a dialog to display the exception. this allows to display the exception
 	//      trace in a separate list field keeping the output compact compared to using
@@ -187,32 +197,28 @@ const deException &exception){
 
 
 
-bool igdeCommonDialogs::GetInteger(igdeWidget *owner, const char *title, const char *text,
+bool igdeCommonDialogs::GetInteger(igdeWidget &owner, const char *title, const char *text,
 int &value){
 	return igdeNativeCommonDialogs::GetInteger(owner, title, text, value);
 }
 
-bool igdeCommonDialogs::GetFloat(igdeWidget *owner, const char *title, const char *text,
+bool igdeCommonDialogs::GetFloat(igdeWidget &owner, const char *title, const char *text,
 float &value){
 	return igdeNativeCommonDialogs::GetFloat(owner, title, text, value);
 }
 
-bool igdeCommonDialogs::GetString(igdeWidget *owner, const char *title, const char *text,
+bool igdeCommonDialogs::GetString(igdeWidget &owner, const char *title, const char *text,
 decString &value){
 	return igdeNativeCommonDialogs::GetString(owner, title, text, value);
 }
 
-bool igdeCommonDialogs::GetMultilineString(igdeWidget *owner, const char *title,
+bool igdeCommonDialogs::GetMultilineString(igdeWidget &owner, const char *title,
 const char *text, decString &value){
-	if(!owner){
-		DETHROW(deeInvalidParam);
-	}
-	
 	igdeDialogMultilineValue::Ref dialog;
 	
-	dialog = igdeDialogMultilineValue::Ref::New(owner->GetEnvironment(), title, text);
+	dialog = igdeDialogMultilineValue::Ref::New(owner.GetEnvironment(), title, text);
 	dialog->SetValue(value);
-	if(dialog->Run(owner)){
+	if(dialog->Run(&owner)){
 		value = dialog->GetValue();
 		return true;
 		
@@ -221,11 +227,9 @@ const char *text, decString &value){
 	}
 }
 
-bool igdeCommonDialogs::GetString(igdeWidget *owner, const char *title,
+bool igdeCommonDialogs::GetString(igdeWidget &owner, const char *title,
 const char *text, decString &value, const decStringList &proposals){
-	DEASSERT_NOTNULL(owner)
-	
-	igdeEnvironment &environment = owner->GetEnvironment();
+	igdeEnvironment &environment = owner.GetEnvironment();
 	igdeUIHelper &helper = environment.GetUIHelper();
 	igdeDialog::Ref dialog(igdeDialog::Ref::New(environment, title));
 	dialog->SetSize(igdeApplication::app().DisplayScaled(decPoint(400, 100)));
@@ -245,7 +249,7 @@ const char *text, decString &value, const decStringList &proposals){
 	
 	dialog->AddContent(content, buttonBar);
 	
-	if(dialog->Run(owner)){
+	if(dialog->Run(&owner)){
 		value = comboBox->GetText();
 		return true;
 		
@@ -254,43 +258,43 @@ const char *text, decString &value, const decStringList &proposals){
 	}
 }
 
-bool igdeCommonDialogs::SelectString(igdeWidget *owner, const char *title,
+bool igdeCommonDialogs::SelectString(igdeWidget &owner, const char *title,
 const char *text, const decStringList &list, int &selection){
 	return igdeNativeCommonDialogs::SelectString(owner, title, text, list, selection);
 }
 
 
 
-bool igdeCommonDialogs::GetFileOpen(igdeWidget *owner, const char *title,
+bool igdeCommonDialogs::GetFileOpen(igdeWidget &owner, const char *title,
 const igdeFilePattern::List &filePatterns, decString &filename){
 	return igdeNativeCommonDialogs::GetFileOpen(owner, title, filePatterns, filename);
 }
 
-bool igdeCommonDialogs::GetFileOpen(igdeWidget *owner, const char *title,
+bool igdeCommonDialogs::GetFileOpen(igdeWidget &owner, const char *title,
 deVirtualFileSystem &vfs, const igdeFilePattern::List &filePatterns, decString &filename){
 	return igdeNativeCommonDialogs::GetFileOpen(owner, title, vfs, filePatterns, filename);
 }
 
-bool igdeCommonDialogs::GetFileSave(igdeWidget *owner, const char *title,
+bool igdeCommonDialogs::GetFileSave(igdeWidget &owner, const char *title,
 const igdeFilePattern::List &filePatterns, decString &filename){
 	return igdeNativeCommonDialogs::GetFileSave(owner, title, filePatterns, filename);
 }
 
-bool igdeCommonDialogs::GetFileSave(igdeWidget *owner, const char *title, deVirtualFileSystem &vfs,
+bool igdeCommonDialogs::GetFileSave(igdeWidget &owner, const char *title, deVirtualFileSystem &vfs,
 const igdeFilePattern::List &filePatterns, decString &filename){
 	return igdeNativeCommonDialogs::GetFileSave(owner, title, vfs, filePatterns, filename);
 }
 
-bool igdeCommonDialogs::GetDirectory(igdeWidget *owner, const char *title, decString &dirname){
+bool igdeCommonDialogs::GetDirectory(igdeWidget &owner, const char *title, decString &dirname){
 	return igdeNativeCommonDialogs::GetDirectory(owner, title, dirname);
 }
 
-bool igdeCommonDialogs::GetDirectory(igdeWidget *owner, const char *title,
+bool igdeCommonDialogs::GetDirectory(igdeWidget &owner, const char *title,
 deVirtualFileSystem &vfs, decString &dirname){
 	return igdeNativeCommonDialogs::GetDirectory(owner, title, vfs, dirname);
 }
 
-bool igdeCommonDialogs::SelectSystemFont(igdeWidget *owner, const char *title,
+bool igdeCommonDialogs::SelectSystemFont(igdeWidget &owner, const char *title,
 igdeFont::sConfiguration &config){
 	return igdeNativeCommonDialogs::SelectSystemFont(owner, title, config);
 }

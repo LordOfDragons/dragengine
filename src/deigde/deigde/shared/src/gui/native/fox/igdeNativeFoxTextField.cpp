@@ -139,8 +139,9 @@ void igdeNativeFoxTextField::UpdateEnabled(){
 }
 
 void igdeNativeFoxTextField::UpdateDescription(){
-	setTipText(pOwner->GetDescription().GetString());
-	setHelpText(pOwner->GetDescription().GetString());
+	const FXString description(igdeUIFoxHelper::TranslateIf(*pOwner, pOwner->GetDescription()));
+	setTipText(description);
+	setHelpText(description);
 }
 
 void igdeNativeFoxTextField::UpdateEditable(){
@@ -216,7 +217,7 @@ long igdeNativeFoxTextField::onCommand(FXObject*, FXSelector, void*){
 		
 	}catch(const deException &e){
 		pOwner->GetLogger()->LogException("IGDE", e);
-		igdeCommonDialogs::Exception(pOwner, e);
+		igdeCommonDialogs::Exception(*pOwner, e);
 		return 0;
 	}
 	
@@ -233,7 +234,7 @@ long igdeNativeFoxTextField::onChanged(FXObject*, FXSelector, void*){
 		
 	}catch(const deException &e){
 		pOwner->GetLogger()->LogException("IGDE", e);
-		igdeCommonDialogs::Exception(pOwner, e);
+		igdeCommonDialogs::Exception(*pOwner, e);
 		return 0;
 	}
 	
@@ -263,7 +264,7 @@ long igdeNativeFoxTextField::onKeyPress(FXObject *sender, FXSelector selector, v
 		
 	}catch(const deException &e){
 		pOwner->GetLogger()->LogException("IGDE", e);
-		igdeCommonDialogs::Exception(pOwner, e);
+		igdeCommonDialogs::Exception(*pOwner, e);
 	}
 	
 	return result;

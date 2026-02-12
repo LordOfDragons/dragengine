@@ -64,14 +64,14 @@ igdeUndo::Ref gdeMASkyAdd::OnAction(gdeGameDefinition &gameDefinition){
 	decString filename;
 	//dialog.SetFilename( ... last sky? what directory? );
 	
-	if(!igdeCommonDialogs::GetFileOpen(&pWindowMain,
+	if(!igdeCommonDialogs::GetFileOpen(pWindowMain,
 	"Select sky", *gameDefinition.GetPreviewVFS(),
 	*environment.GetOpenFilePatternList( igdeEnvironment::efpltSky ), filename ) ){
 		return {};
 	}
 	
 	if(gameDefinition.GetSkies().HasWithPath(filename)){
-		igdeCommonDialogs::Information(&pWindowMain, "Add Sky", "Sky with path exists already.");
+		igdeCommonDialogs::Information(pWindowMain, "Add Sky", "Sky with path exists already.");
 		return {};
 	}
 	

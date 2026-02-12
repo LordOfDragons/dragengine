@@ -142,6 +142,15 @@ void igdeMenuCommand::SetAction(igdeAction *action){
 	}
 }
 
+void igdeMenuCommand::OnLanguageChanged(){
+	igdeWidget::OnLanguageChanged();
+	
+	if(GetNativeWidget()){
+		igdeNativeMenuCommand * const native = igdeNativeMenuCommand::CreateNativeWidget(*this);
+		native->UpdateText();
+		native->UpdateDescription();
+	}
+}
 
 void igdeMenuCommand::OnAction(){
 	if(pAction){

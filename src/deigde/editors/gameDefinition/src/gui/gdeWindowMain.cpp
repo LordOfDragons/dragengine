@@ -440,7 +440,7 @@ public:
 	void OnAction() override{
 		const gdeGameDefinition * const gamedef = pWindow.GetActiveGameDefinition();
 		if(gamedef && gamedef->GetChanged()){
-			if(igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo, "New Game Definition",
+			if(igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "New Game Definition",
 			"Creating a new game definition discards changes in the current one. Is that ok?") != igdeCommonDialogs::ebYes){
 				return;
 			}
@@ -459,7 +459,7 @@ public:
 	void OnAction() override{
 		const gdeGameDefinition * const gamedef = pWindow.GetActiveGameDefinition();
 		if(gamedef && gamedef->GetChanged()){
-			if(igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo, "Open Game Definition",
+			if(igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "Open Game Definition",
 			"Loading game definition discards changes in the current one. Is that ok?") != igdeCommonDialogs::ebYes){
 				return;
 			}
@@ -473,7 +473,7 @@ public:
 			filename = path.GetPathNative();
 		}
 		
-		if(!igdeCommonDialogs::GetFileOpen(&pWindow, "Open Game Definition",
+		if(!igdeCommonDialogs::GetFileOpen(pWindow, "Open Game Definition",
 		pWindow.GetLoadSaveSystem().GetGameDefFilePatterns(), filename)){
 			return;
 		}
@@ -501,7 +501,7 @@ public:
 	void OnAction() override{
 		const gdeGameDefinition * const gamedef = pWindow.GetActiveGameDefinition();
 		if(gamedef && gamedef->GetChanged()){
-			if(igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo, "Open Project Game Definition",
+			if(igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "Open Project Game Definition",
 			"Loading project game definition discards changes in the current one. Is that ok?") != igdeCommonDialogs::ebYes){
 				return;
 			}
@@ -537,7 +537,7 @@ public:
 			filename = path.GetPathNative().GetString();
 		}
 		
-		if(!igdeCommonDialogs::GetFileSave(&pWindow, "Save Game Definition",
+		if(!igdeCommonDialogs::GetFileSave(pWindow, "Save Game Definition",
 		pWindow.GetLoadSaveSystem().GetGameDefFilePatterns(), filename)){
 			return;
 		}
@@ -650,7 +650,7 @@ public:
 		}
 		
 		decString text;
-		if(igdeCommonDialogs::GetString(&pWindow, "Find", "Text:", text)){
+		if(igdeCommonDialogs::GetString(pWindow, "Find", "Text:", text)){
 			pWindow.GetWindowProperties().GetPanelSelection().Find(text);
 		}
 	}

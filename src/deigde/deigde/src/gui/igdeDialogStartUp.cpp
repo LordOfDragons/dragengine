@@ -196,7 +196,7 @@ void igdeDialogStartUp::LoadProjectFromFile(){
 	
 	decString filename(path.GetPathNative());
 	
-	if(!igdeCommonDialogs::GetFileOpen(this, "Open Game Project",
+	if(!igdeCommonDialogs::GetFileOpen(*this, "Open Game Project",
 	pWindowMain.GetLoadSaveSystem()->GetOpenFilePatternList(igdeLoadSaveSystem::efplGameProject), filename)){
 		return;
 	}

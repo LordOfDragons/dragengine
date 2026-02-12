@@ -421,7 +421,7 @@ public:
 			}
 			text.Append(bones.GetAt(i));
 		}
-		igdeCommonDialogs::GetMultilineString(pPanel.GetParentWindow(), "Export To Text", "Bones", text);
+		igdeCommonDialogs::GetMultilineString(*pPanel.GetParentWindow(), "Export To Text", "Bones", text);
 		return {};
 	}
 	
@@ -441,7 +441,7 @@ public:
 	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
 		decString text;
 		while(true){
-			if(!igdeCommonDialogs::GetMultilineString(pPanel.GetParentWindow(),
+			if(!igdeCommonDialogs::GetMultilineString(*pPanel.GetParentWindow(),
 			"Import From Text", "Bones. One bone per line.", text)){
 				return {};
 			}
@@ -657,7 +657,7 @@ public:
 			}
 			text.Append(vpslist.GetAt(i));
 		}
-		igdeCommonDialogs::GetMultilineString(pPanel.GetParentWindow(), "Export To Text", "Vertex position sets", text);
+		igdeCommonDialogs::GetMultilineString(*pPanel.GetParentWindow(), "Export To Text", "Vertex position sets", text);
 		return {};
 	}
 	
@@ -677,7 +677,7 @@ public:
 	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
 		decString text;
 		while(true){
-			if(!igdeCommonDialogs::GetMultilineString(pPanel.GetParentWindow(),
+			if(!igdeCommonDialogs::GetMultilineString(*pPanel.GetParentWindow(),
 			"Import From Text", "Vertex position sets. One vertex position set per line.", text)){
 				return {};
 			}

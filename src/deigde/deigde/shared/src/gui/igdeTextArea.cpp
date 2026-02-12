@@ -395,6 +395,11 @@ void igdeTextArea::NotifyTextChanging(){
 	});
 }
 
+void igdeTextArea::OnLanguageChanged(){
+	igdeWidget::OnLanguageChanged();
+	
+	OnDescriptionChanged();
+}
 
 
 void igdeTextArea::CreateNativeWidget(){

@@ -93,6 +93,11 @@ void igdeProgressBar::SetRange(int lower, int upper){
 	OnRangeChanged();
 }
 
+void igdeProgressBar::OnLanguageChanged(){
+	igdeWidget::OnLanguageChanged();
+	
+	OnDescriptionChanged();
+}
 
 
 void igdeProgressBar::CreateNativeWidget(){

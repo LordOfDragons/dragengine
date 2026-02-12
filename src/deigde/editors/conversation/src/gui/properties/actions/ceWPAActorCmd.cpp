@@ -121,7 +121,7 @@ public:
 		
 		decString text(action->GetCommand());
 		if(!igdeCommonDialogs::GetMultilineString(
-			&pPanel.GetParentPanel().GetWindowProperties().GetWindowMain(),
+			pPanel.GetParentPanel().GetWindowProperties().GetWindowMain(),
 			"Edit Command", "Command:", text)
 		|| text == action->GetCommand()){
 			return;

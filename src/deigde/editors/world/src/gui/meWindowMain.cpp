@@ -360,7 +360,7 @@ void meWindowMain::GetChangedDocuments(decStringList &list){
 
 void meWindowMain::LoadDocument(const char *filename){
 	if(pWorld && pWorld->GetAnyChanged()){
-		if(igdeCommonDialogs::Question(this, igdeCommonDialogs::ebsYesNo, "Open World",
+		if(igdeCommonDialogs::Question(*this, igdeCommonDialogs::ebsYesNo, "Open World",
 		"Open world discards changes. Is this ok?") == igdeCommonDialogs::ebNo){
 			return;
 		}
@@ -488,7 +488,7 @@ public:
 	
 	void OnAction() override{
 		if(!pWindow.GetWorld() || !pWindow.GetWorld()->GetAnyChanged()
-		|| igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo, "New World",
+		|| igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "New World",
 		"Creating a new World discarding the current one is that ok?") == igdeCommonDialogs::ebYes){
 			pWindow.CreateNewWorld();
 		}
@@ -506,7 +506,7 @@ public:
 	
 	void OnAction() override{
 		if(pWindow.GetWorld() && pWindow.GetWorld()->GetAnyChanged()){
-			if(igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo, "Open World",
+			if(igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "Open World",
 			"Open world discards changes. Is this ok?") == igdeCommonDialogs::ebNo){
 				return;
 			}
@@ -514,7 +514,7 @@ public:
 		
 		decString filename(pWindow.GetWorld() ? pWindow.GetWorld()->GetFilePath()
 			: pWindow.GetGameProject()->GetPathData());
-		if(igdeCommonDialogs::GetFileOpen(&pWindow, "Open World",
+		if(igdeCommonDialogs::GetFileOpen(pWindow, "Open World",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		pWindow.GetLoadSaveSystem().GetFilePatternList(), filename)){
 			pWindow.LoadWorld(filename);
@@ -1152,7 +1152,7 @@ public:
 		nullptr, "Reassign Object IDs (WARNING! Dangerous Operation!)"){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
-		if(igdeCommonDialogs::QuestionFormat(&pWindow, igdeCommonDialogs::ebsYesNo, "Reassign Object IDs",
+		if(igdeCommonDialogs::QuestionFormat(pWindow, igdeCommonDialogs::ebsYesNo, "Reassign Object IDs",
 		"This action will assign new IDs starting at ID 1 for all objects.\n"
 		"This can be used before shipping to compact IDs into a continuous range.\n"
 		"This should NEVER be done after a production release.\n"
@@ -1688,7 +1688,7 @@ public:
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
 		decString filename(world->GetPathNavTest());
-		if(igdeCommonDialogs::GetFileOpen(&pWindow, "Open Navigation Test",
+		if(igdeCommonDialogs::GetFileOpen(pWindow, "Open Navigation Test",
 		*pWindow.GetLoadSaveSystem().GetNavTestFilePatterns(), filename ) ){
 			world->SetPathNavTest(filename);
 			pWindow.GetEditorModule().LogInfoFormat("Loading Navigation Test %s", filename.GetString());
@@ -1706,7 +1706,7 @@ public:
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
 		decString filename(world->GetPathNavTest());
-		if(igdeCommonDialogs::GetFileSave(&pWindow, "Save Navigation Test",
+		if(igdeCommonDialogs::GetFileSave(pWindow, "Save Navigation Test",
 		*pWindow.GetLoadSaveSystem().GetNavTestFilePatterns(), filename ) ){
 			world->SetPathNavTest(filename);
 			pWindow.GetEditorModule().LogInfoFormat("Saving Navigation Test %s", filename.GetString());

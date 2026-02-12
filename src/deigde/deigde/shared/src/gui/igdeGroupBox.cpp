@@ -169,6 +169,15 @@ void igdeGroupBox::RemoveChild(igdeWidget *child){
 	*/
 }
 
+void igdeGroupBox::OnLanguageChanged(){
+	igdeContainer::OnLanguageChanged();
+	
+	if(GetNativeWidget()){
+		igdeNativeGroupBox * const native = (igdeNativeGroupBox*)GetNativeWidget();
+		native->UpdateTitle();
+		// native->UpdateDescription(); // not supported
+	}
+}
 
 
 void igdeGroupBox::CreateNativeWidget(){

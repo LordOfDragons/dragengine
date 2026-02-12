@@ -296,7 +296,7 @@ public:
 		deInputEvent::esmControl, deInputEvent::ekcN, deInputEvent::ekcN){}
 	
 	void OnAction() override{
-		if(igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo, "New Language Pack",
+		if(igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "New Language Pack",
 		"Creating new language pack discarding current one. Is that ok?") == igdeCommonDialogs::ebYes){
 			pWindow.CreateNewLangPack();
 		}
@@ -313,7 +313,7 @@ public:
 	
 	void OnAction() override{
 		decString filename(pWindow.GetLangPack()->GetFilePath());
-		if(!igdeCommonDialogs::GetFileOpen(&pWindow, "Open Language Pack",
+		if(!igdeCommonDialogs::GetFileOpen(pWindow, "Open Language Pack",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		pWindow.GetLoadSaveSystem().GetLangPackFPList(), filename)){
 			return;
@@ -347,7 +347,7 @@ public:
 		}
 		
 		decString filename(pWindow.GetLangPack()->GetFilePath());
-		if(igdeCommonDialogs::GetFileSave(&pWindow, "Save Language Pack",
+		if(igdeCommonDialogs::GetFileSave(pWindow, "Save Language Pack",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		pWindow.GetLoadSaveSystem().GetLangPackFPList(), filename)){
 			pWindow.SaveLangPack(filename);
@@ -403,7 +403,7 @@ public:
 	
 	void OnAction() override{
 		decString filename(pWindow.GetLangPack()->GetFilePath());
-		if(!igdeCommonDialogs::GetFileOpen(&pWindow, "Open Reference Language Pack",
+		if(!igdeCommonDialogs::GetFileOpen(pWindow, "Open Reference Language Pack",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		pWindow.GetLoadSaveSystem().GetLangPackFPList(), filename)){
 			return;
@@ -486,9 +486,9 @@ public:
 		decString name(langpack->GetEntrySelection().GetActive()
 			? langpack->GetEntrySelection().GetActive()->GetName() : decString("Entry"));
 		
-		while(igdeCommonDialogs::GetString(&pWindow, "Add Entry", "Identifier:", name)){
+		while(igdeCommonDialogs::GetString(pWindow, "Add Entry", "Identifier:", name)){
 			if(langpack->GetEntries().HasNamed(name)){
-				igdeCommonDialogs::Error(&pWindow, "Add Entry",
+				igdeCommonDialogs::Error(pWindow, "Add Entry",
 					"There exists already an entry with this name");
 				continue;
 			}

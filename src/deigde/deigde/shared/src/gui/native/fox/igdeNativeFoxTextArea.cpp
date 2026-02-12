@@ -210,8 +210,9 @@ void igdeNativeFoxTextArea::UpdateEnabled(){
 }
 
 void igdeNativeFoxTextArea::UpdateDescription(){
-	pTextArea->setTipText(pOwner->GetDescription().GetString());
-	pTextArea->setHelpText(pOwner->GetDescription().GetString());
+	const FXString description(igdeUIFoxHelper::TranslateIf(*pOwner, pOwner->GetDescription()));
+	pTextArea->setTipText(description);
+	pTextArea->setHelpText(description);
 }
 
 void igdeNativeFoxTextArea::UpdateEditable(){
@@ -375,7 +376,7 @@ long igdeNativeFoxTextArea::onMouseLeftRelease(FXObject*, FXSelector, void *pdat
 		
 	}catch(const deException &e){
 		pOwner->GetLogger()->LogException("IGDE", e);
-		igdeCommonDialogs::Exception(pOwner, e);
+		igdeCommonDialogs::Exception(*pOwner, e);
 	}
 	
 	return 1;
@@ -392,7 +393,7 @@ long igdeNativeFoxTextArea::onCommand(FXObject*, FXSelector, void*){
 		
 	}catch(const deException &e){
 		pOwner->GetLogger()->LogException("IGDE", e);
-		igdeCommonDialogs::Exception(pOwner, e);
+		igdeCommonDialogs::Exception(*pOwner, e);
 		return 0;
 	}
 	
@@ -410,7 +411,7 @@ long igdeNativeFoxTextArea::onChanged(FXObject*, FXSelector, void*){
 		
 	}catch(const deException &e){
 		pOwner->GetLogger()->LogException("IGDE", e);
-		igdeCommonDialogs::Exception(pOwner, e);
+		igdeCommonDialogs::Exception(*pOwner, e);
 		return 0;
 	}
 	

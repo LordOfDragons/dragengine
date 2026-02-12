@@ -47,6 +47,7 @@ class igdeToolBarDock;
 class igdeUIHelper;
 class igdeResourceLoaderListener;
 class igdeEditorModule;
+class igdeTranslationManager;
 
 class deBaseScriptingCollider;
 class deBaseScriptingPropField;
@@ -344,6 +345,9 @@ public:
 	
 	/** \brief Default GuiTheme. */
 	virtual igdeGuiTheme *GetDefaultGuiTheme() = 0;
+	
+	/** \brief Translation manager. */
+	virtual const igdeTranslationManager &GetTranslationManager() = 0;
 	
 	
 	

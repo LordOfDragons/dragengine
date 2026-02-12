@@ -54,6 +54,8 @@ private:
 	decStringList pRecentProjectList;
 	int pMaxRecentProjectEntries;
 	
+	decString pLanguage;
+	
 	
 public:
 	/** \name Constructors and Destructors */
@@ -121,6 +123,10 @@ public:
 	/** Maximal size of the recenr project list. */
 	inline int GetMaxRecentProjectEntries() const{ return pMaxRecentProjectEntries; }
 	void SetMaxRecentProjectEntries(int entries);
+	
+	/** Language. */
+	inline const decString &GetLanguage() const{ return pLanguage; }
+	void SetLanguage(const char *language);
 	
 	
 	/** Locate path. */

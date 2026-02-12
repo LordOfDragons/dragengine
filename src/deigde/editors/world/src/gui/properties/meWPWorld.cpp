@@ -393,11 +393,11 @@ public:
 			return decMath::max(v, t.GetTypeNumber() + 1);
 		});
 		
-		while(igdeCommonDialogs::GetInteger(&pPanel, "Add Type", "Type Number:", newValue)){
+		while(igdeCommonDialogs::GetInteger(pPanel, "Add Type", "Type Number:", newValue)){
 			if(list.HasMatching([&](const mePathFindTestType &t){
 				return t.GetTypeNumber() == newValue;
 			})){
-				igdeCommonDialogs::Error(&pPanel, "Add Type", "A type with this type number exists already.");
+				igdeCommonDialogs::Error(pPanel, "Add Type", "A type with this type number exists already.");
 				continue;
 			}
 			
@@ -489,7 +489,7 @@ public:
 		if(pPanel.GetWorld()->GetPathFindTest()->GetTypeList().HasMatching([&](const mePathFindTestType &t){
 			return t.GetTypeNumber() == value;
 		})){
-			igdeCommonDialogs::Error(&pPanel, "Change Type Number", "Type number already exists");
+			igdeCommonDialogs::Error(pPanel, "Change Type Number", "Type number already exists");
 			textField->SetInteger(type->GetTypeNumber());
 			
 		}else{

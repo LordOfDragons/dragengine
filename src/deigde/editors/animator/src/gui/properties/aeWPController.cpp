@@ -266,7 +266,7 @@ public:
 			return {};
 		}
 		if(animator->GetControllers().HasNamed(value)){
-			igdeCommonDialogs::Error(&pPanel, "Set Controller Name", "Duplicate Controller Name");
+			igdeCommonDialogs::Error(pPanel, "Set Controller Name", "Duplicate Controller Name");
 			textField->SetText(controller->GetName());
 			return {};
 		}
@@ -321,7 +321,7 @@ public:
 		}
 		
 		names.SortAscending();
-		if(names.GetCount() == 0 || !igdeCommonDialogs::SelectString(&pPanel, "Set range from move playtime",
+		if(names.GetCount() == 0 || !igdeCommonDialogs::SelectString(pPanel, "Set range from move playtime",
 		"Range limits are set to the playtime of the selected move.", names, selection)){
 			return {};
 		}

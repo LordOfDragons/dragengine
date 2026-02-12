@@ -129,8 +129,9 @@ pResizer(nullptr)
 		pListBox->disable();
 	}
 	
-	//setTipText( owner.GetDescription().GetString() ); // nto supported
-	pListBox->setHelpText(powner.GetDescription().GetString());
+	const FXString description(igdeUIFoxHelper::TranslateIf(powner, powner.GetDescription()));
+	//setTipText(description); // not supported
+	pListBox->setHelpText(description);
 	
 	BuildList();
 	pListBox->setCurrentItem(powner.GetSelection());
@@ -290,8 +291,8 @@ void igdeNativeFoxListBox::UpdateRowCount(){
 }
 
 void igdeNativeFoxListBox::UpdateDescription(){
-	const char * const description = pOwner->GetDescription();
-	//pListBox->setTipText( description ); // not supported
+	const FXString description(igdeUIFoxHelper::TranslateIf(*pOwner, pOwner->GetDescription()));
+	//pListBox->setTipText(description); // not supported
 	pListBox->setHelpText(description);
 }
 
@@ -372,7 +373,7 @@ long igdeNativeFoxListBox::onListCommand(FXObject*, FXSelector, void*){
 		
 	}catch(const deException &e){
 		pOwner->GetLogger()->LogException("IGDE", e);
-		igdeCommonDialogs::Exception(pOwner, e);
+		igdeCommonDialogs::Exception(*pOwner, e);
 	}
 	return 1;
 }
@@ -393,7 +394,7 @@ long igdeNativeFoxListBox::onListSelected(FXObject*, FXSelector, void *pdata){
 		
 	}catch(const deException &e){
 		pOwner->GetLogger()->LogException("IGDE", e);
-		igdeCommonDialogs::Exception(pOwner, e);
+		igdeCommonDialogs::Exception(*pOwner, e);
 	}
 	return 1;
 }
@@ -410,7 +411,7 @@ long igdeNativeFoxListBox::onListDeselected(FXObject*, FXSelector, void *pdata){
 		
 	}catch(const deException &e){
 		pOwner->GetLogger()->LogException("IGDE", e);
-		igdeCommonDialogs::Exception(pOwner, e);
+		igdeCommonDialogs::Exception(*pOwner, e);
 	}
 	return 1;
 }
@@ -447,7 +448,7 @@ long igdeNativeFoxListBox::onListDoubleClicked(FXObject*, FXSelector, void *pdat
 		
 	}catch(const deException &e){
 		pOwner->GetLogger()->LogException("IGDE", e);
-		igdeCommonDialogs::Exception(pOwner, e);
+		igdeCommonDialogs::Exception(*pOwner, e);
 	}
 	return 1;
 }

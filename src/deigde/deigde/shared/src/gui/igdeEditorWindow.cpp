@@ -125,7 +125,7 @@ igdeStepableTask::Ref igdeEditorWindow::OnGameDefinitionChanged(){
 
 void igdeEditorWindow::DisplayException(const deException &exception){
 	GetLogger()->LogException(pEditorModule.GetLoggingName(), exception);
-	igdeCommonDialogs::Exception(this, exception);
+	igdeCommonDialogs::Exception(*this, exception);
 }
 
 

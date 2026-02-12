@@ -502,6 +502,11 @@ void igdeTreeList::NotifyDoubleClickItem(igdeTreeItem *item){
 	});
 }
 
+void igdeTreeList::OnLanguageChanged(){
+	igdeWidget::OnLanguageChanged();
+	
+	OnDescriptionChanged();
+}
 
 
 void igdeTreeList::CreateNativeWidget(){

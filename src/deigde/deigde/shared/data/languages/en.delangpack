@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<languagePack>
+	<identifier>en</identifier>
+	<name>English</name>
+	<description>English</description>
+	<translation name='UI.Yes'>Yes</translation>
+	<translation name='UI.No'>No</translation>
+	<translation name='UI.Accept'>Accept</translation>
+	<translation name='UI.Cancel'>Cancel</translation>
+	<translation name='UI.Close'>Close</translation>
+	<translation name='UI.Error'>Error</translation>
+	<translation name='UI.Menu.Cut'>Cut</translation>
+	<translation name='UI.Menu.Copy'>Copy</translation>
+	<translation name='UI.Menu.Paste'>Paste</translation>
+	<translation name='UI.Settings.Title'>Settings</translation>
+	<translation name='UI.Settings.Save'>Save</translation>
+	<translation name='UI.Settings.Reset'>Reset</translation>
+	<translation name='UI.Settings.Cancel'>Cancel</translation>
+</languagePack>

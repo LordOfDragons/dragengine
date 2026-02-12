@@ -85,7 +85,7 @@ public:
 	virtual void UpdateIcon();
 	virtual void UpdateEnabled();
 	
-	static const char *ButtonText(const igdeButton &owner);
+	static FXString ButtonText(const igdeButton &owner);
 	static FXIcon *ButtonIcon(const igdeButton &owner);
 	static int ButtonFlags(const igdeButton &owner);
 	static igdeFont *ButtonFont(const igdeButton &owner, const igdeGuiTheme &guitheme);

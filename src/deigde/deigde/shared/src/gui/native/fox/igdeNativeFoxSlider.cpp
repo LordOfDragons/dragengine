@@ -72,8 +72,9 @@ pOwner(&powner)
 		disable();
 	}
 	
-	setTipText(powner.GetDescription().GetString());
-	setHelpText(powner.GetDescription().GetString());
+	const FXString description(igdeUIFoxHelper::TranslateIf(powner, powner.GetDescription()));
+	setTipText(description);
+	setHelpText(description);
 }
 
 igdeNativeFoxSlider::~igdeNativeFoxSlider(){
@@ -137,7 +138,7 @@ void igdeNativeFoxSlider::UpdateEnabled(){
 }
 
 void igdeNativeFoxSlider::UpdateDescription(){
-	const char * const description = pOwner->GetDescription();
+	const FXString description(igdeUIFoxHelper::TranslateIf(*pOwner, pOwner->GetDescription()));
 	setTipText(description);
 	setHelpText(description);
 }
@@ -185,7 +186,7 @@ long igdeNativeFoxSlider::onCommand(FXObject*, FXSelector, void*){
 		
 	}catch(const deException &e){
 		pOwner->GetLogger()->LogException("IGDE", e);
-		igdeCommonDialogs::Exception(pOwner, e);
+		igdeCommonDialogs::Exception(*pOwner, e);
 		return 0;
 	}
 	
@@ -208,7 +209,7 @@ long igdeNativeFoxSlider::onChanged(FXObject*, FXSelector, void*){
 		
 	}catch(const deException &e){
 		pOwner->GetLogger()->LogException("IGDE", e);
-		igdeCommonDialogs::Exception(pOwner, e);
+		igdeCommonDialogs::Exception(*pOwner, e);
 		return 0;
 	}
 	

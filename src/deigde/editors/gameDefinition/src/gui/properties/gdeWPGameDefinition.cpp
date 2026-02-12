@@ -220,7 +220,7 @@ public:
 	
 	igdeUndo::Ref OnActionGameDefinition(gdeGameDefinition *gameDefinition) override{
 		decString basePath(gameDefinition->GetBasePath());
-		if(igdeCommonDialogs::GetDirectory(pPanel.GetParentWindow(), "Select Project Data Directory", basePath)){
+		if(igdeCommonDialogs::GetDirectory(*pPanel.GetParentWindow(), "Select Project Data Directory", basePath)){
 			pTextField.SetText(basePath);
 			pTextField.NotifyTextChanged();
 		}

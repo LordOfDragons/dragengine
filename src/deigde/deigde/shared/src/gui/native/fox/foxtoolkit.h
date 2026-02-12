@@ -130,6 +130,8 @@ public:
 	static deInputEvent::eKeyCodes KeyCodeFromEvent(const FXEvent &event);
 	static int ModifiersFromEvent(const FXEvent &event);
 	static FXString FilePatternListToFOX(const igdeFilePattern::List &filePatterns);
+	static FXString FilePatternListToFOX(const igdeWidget &widget,
+		const igdeFilePattern::List &filePatterns);
 	
 	static int GetChildLayoutFlags(igdeWidget *widget, int defaultFlags =
 		LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_SIDE_LEFT);
@@ -143,6 +145,9 @@ public:
 	static FX::FXColor BrighterColor(FX::FXColor color, int amount);
 	
 	static int DebugCountWindows(FXWindow *rootWindow);
+	
+	static FXString Translate(const igdeWidget &widget, const char *name);
+	static FXString TranslateIf(const igdeWidget &widget, const char *text);
 };
 
 #define SEL_IGDE_CHILD_LAYOUT_FLAGS (SEL_LAST + 1)

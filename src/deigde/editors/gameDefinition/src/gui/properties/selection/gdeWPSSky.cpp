@@ -92,7 +92,7 @@ public:
 		}
 		
 		if(pPanel.GetGameDefinition()->GetSkies().HasWithPath(editPath->GetPath())){
-			igdeCommonDialogs::Information(pPanel.GetParentWindow(), "Change sky emitter path",
+			igdeCommonDialogs::Information(*pPanel.GetParentWindow(), "Change sky emitter path",
 				"A sky emitter with this path exists already.");
 			editPath->SetPath(sky->GetPath());
 			return;
@@ -158,9 +158,9 @@ public:
 		const gdeSkyController::List &list = sky->GetControllers();
 		decString name("Controller");
 		
-		while(igdeCommonDialogs::GetString(pPanel.GetParentWindow(), "Add Controller", "Name:", name)){
+		while(igdeCommonDialogs::GetString(*pPanel.GetParentWindow(), "Add Controller", "Name:", name)){
 			if(list.HasNamed(name)){
-				igdeCommonDialogs::Information(pPanel.GetParentWindow(), "Add Controller", "Controller exists already.");
+				igdeCommonDialogs::Information(*pPanel.GetParentWindow(), "Add Controller", "Controller exists already.");
 				continue;
 			}
 			
@@ -246,7 +246,7 @@ public:
 		}
 		
 		if(pPanel.GetSky()->GetControllers().HasNamed(textField->GetText())){
-			igdeCommonDialogs::Information(pPanel.GetParentWindow(), "Rename controller",
+			igdeCommonDialogs::Information(*pPanel.GetParentWindow(), "Rename controller",
 				"A controller with this name exists already.");
 			textField->SetText(controller->GetName());
 			return;

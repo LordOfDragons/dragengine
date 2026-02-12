@@ -150,6 +150,9 @@ public:
 	
 	/** \brief Action has been destroyed. */
 	void OnDestroyed(igdeAction *action) override;
+	
+	/** \brief Active language changed. */
+	void OnLanguageChanged() override;
 	/*@}*/
 	
 	

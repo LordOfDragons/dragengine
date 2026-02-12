@@ -249,7 +249,7 @@ public:
 		}
 		
 		if(project->GetProfiles().HasNamed(name)){
-			igdeCommonDialogs::Error(&pPanel, "Rename profile",
+			igdeCommonDialogs::Error(pPanel, "Rename profile",
 				"A profile with this name exists already.");
 			textField->SetText(profile->GetName());
 			return {};
@@ -369,7 +369,7 @@ public:
 		"Generate Identifier", nullptr, "Generate Identifier"){}
 	
 	igdeUndo::Ref OnAction(projProject*, projProfile *profile) override{
-		if(igdeCommonDialogs::Question(&pPanel, igdeCommonDialogs::ebsYesNo, "Generate Identifier",
+		if(igdeCommonDialogs::Question(pPanel, igdeCommonDialogs::ebsYesNo, "Generate Identifier",
 		"Generating new identifier can break the game. Do you really want to generate new identifier?")
 		== igdeCommonDialogs::ebYes){
 			return projUProfileSetIdentifier::Ref::New(profile, decUuid::Random());
@@ -410,7 +410,7 @@ public:
 				? projUProfileSetIdentifier::Ref::New(profile, value) : projUProfileSetIdentifier::Ref();
 			
 		}catch(const deException &){
-			igdeCommonDialogs::Error(&pPanel, "Invalid Input",
+			igdeCommonDialogs::Error(pPanel, "Invalid Input",
 				"Identifier has to be a valid UUID in the format 8-4-4-4-6 groups of hex-encoded values");
 			textField->SetText(profile->GetIdentifier().ToHexString(false));
 			return {};

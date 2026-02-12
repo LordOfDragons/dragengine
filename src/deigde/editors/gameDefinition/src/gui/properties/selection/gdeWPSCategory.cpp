@@ -86,7 +86,7 @@ public:
 		
 		if(category->GetParent()
 		&& category->GetParent()->GetCategories().FindNamed(textField->GetText())){
-			igdeCommonDialogs::Information(pPanel.GetParentWindow(), "Rename category",
+			igdeCommonDialogs::Information(*pPanel.GetParentWindow(), "Rename category",
 				"A category with this name exists already.");
 			textField->SetText(category->GetName());
 			return;

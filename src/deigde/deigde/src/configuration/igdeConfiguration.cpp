@@ -94,7 +94,8 @@
 
 igdeConfiguration::igdeConfiguration(igdeWindowMain &windowMain) :
 pWindowMain(windowMain),
-pMaxRecentProjectEntries(10)
+pMaxRecentProjectEntries(10),
+pLanguage("en")
 {
 #ifdef TEST_SPECIAL
 	// DEBUG
@@ -273,6 +274,10 @@ void igdeConfiguration::SetMaxRecentProjectEntries(int entries){
 	while(pRecentProjectList.GetCount() > pMaxRecentProjectEntries){
 		pRecentProjectList.RemoveFrom(pRecentProjectList.GetCount() - 1);
 	}
+}
+
+void igdeConfiguration::SetLanguage(const char *language){
+	pLanguage = language;
 }
 
 

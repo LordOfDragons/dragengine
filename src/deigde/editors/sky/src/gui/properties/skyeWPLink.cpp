@@ -231,7 +231,7 @@ public:
 		const int usageCount = sky->CountLinkUsage(link);
 		
 		if(usageCount > 0 && igdeCommonDialogs::QuestionFormat(
-			&pPanel, igdeCommonDialogs::ebsYesNo, "Remove Link",
+			pPanel, igdeCommonDialogs::ebsYesNo, "Remove Link",
 			"The link '%s' is used by %i targets.\n"
 			"If the link is removed now it is also removed from\n"
 			"all the targets using it. Do you want to remove the link?",

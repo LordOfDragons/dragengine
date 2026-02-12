@@ -477,6 +477,11 @@ void igdeComboBox::ClearText(){
 	SetText("", false);
 }
 
+void igdeComboBox::OnLanguageChanged(){
+	igdeWidget::OnLanguageChanged();
+	
+	OnDescriptionChanged();
+}
 
 
 void igdeComboBox::AddListener(igdeComboBoxListener *listener){

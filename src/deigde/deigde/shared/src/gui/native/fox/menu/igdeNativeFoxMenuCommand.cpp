@@ -100,11 +100,11 @@ void igdeNativeFoxMenuCommand::DestroyNativeWidget(){
 ///////////////
 
 void igdeNativeFoxMenuCommand::UpdateText(){
-	setText(pOwner->GetText().GetString());
+	setText(igdeUIFoxHelper::TranslateIf(*pOwner, pOwner->GetText().GetString()));
 }
 
 void igdeNativeFoxMenuCommand::UpdateDescription(){
-	const char * const description = pOwner->GetDescription();
+	const FXString description(igdeUIFoxHelper::TranslateIf(*pOwner, pOwner->GetDescription().GetString()));
 	setTipText(description);
 	setHelpText(description);
 }
@@ -138,9 +138,11 @@ void igdeNativeFoxMenuCommand::UpdateEnabled(){
 
 
 FXString igdeNativeFoxMenuCommand::BuildConstrText(igdeMenuCommand &powner){
-	return igdeUIFoxHelper::MnemonizeString(powner.GetText(), powner.GetMnemonic())
-		+ "\t" + igdeUIFoxHelper::AccelString(powner.GetHotKey())
-		+ "\t" + powner.GetDescription().GetString();
+	const FXString text(igdeUIFoxHelper::TranslateIf(powner, powner.GetText().GetString()));
+	
+	return igdeUIFoxHelper::MnemonizeString(text.text(), powner.GetMnemonic())
+			+ "\t" + igdeUIFoxHelper::AccelString(powner.GetHotKey())
+			+ "\t" + igdeUIFoxHelper::TranslateIf(powner, powner.GetDescription().GetString());
 }
 
 
@@ -158,7 +160,7 @@ long igdeNativeFoxMenuCommand::onCommand(FXObject*, FXSelector, void*){
 		
 	}catch(const deException &e){
 		pOwner->GetLogger()->LogException("IGDE", e);
-		igdeCommonDialogs::Exception(pOwner, e);
+		igdeCommonDialogs::Exception(*pOwner, e);
 		return 0;
 	}
 	

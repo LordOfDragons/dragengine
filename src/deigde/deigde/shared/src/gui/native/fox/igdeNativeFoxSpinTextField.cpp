@@ -77,8 +77,10 @@ pFont(SpinTextFieldFont(powner, guitheme))
 	
 	setRange(powner.GetLower(), powner.GetUpper());
 	setValue(powner.GetValue());
-	setTipText(powner.GetDescription().GetString());
-	setHelpText(powner.GetDescription().GetString());
+	
+	const FXString description(igdeUIFoxHelper::TranslateIf(powner, powner.GetDescription()));
+	setTipText(description);
+	setHelpText(description);
 }
 
 igdeNativeFoxSpinTextField::~igdeNativeFoxSpinTextField(){
@@ -136,7 +138,7 @@ void igdeNativeFoxSpinTextField::UpdateValue(){
 }
 
 void igdeNativeFoxSpinTextField::UpdateDescription(){
-	const char * const description = pOwner->GetDescription();
+	const FXString description(igdeUIFoxHelper::TranslateIf(*pOwner, pOwner->GetDescription()));
 	setTipText(description);
 	setHelpText(description);
 }
@@ -204,7 +206,7 @@ long igdeNativeFoxSpinTextField::onCommand(FXObject*, FXSelector, void*){
 		
 	}catch(const deException &e){
 		pOwner->GetLogger()->LogException("IGDE", e);
-		igdeCommonDialogs::Exception(pOwner, e);
+		igdeCommonDialogs::Exception(*pOwner, e);
 		return 0;
 	}
 	

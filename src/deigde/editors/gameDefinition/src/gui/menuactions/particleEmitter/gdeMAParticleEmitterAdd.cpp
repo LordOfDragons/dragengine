@@ -64,14 +64,14 @@ igdeUndo::Ref gdeMAParticleEmitterAdd::OnAction(gdeGameDefinition &gameDefinitio
 	decString filename;
 	//dialog.SetFilename( ... last particleEmitter? what directory? );
 	
-	if(!igdeCommonDialogs::GetFileOpen(&pWindowMain,
+	if(!igdeCommonDialogs::GetFileOpen(pWindowMain,
 	"Select particle emitter", *gameDefinition.GetPreviewVFS(),
 	*environment.GetOpenFilePatternList( igdeEnvironment::efpltParticleEmitter ), filename ) ){
 		return {};
 	}
 	
 	if(gameDefinition.GetParticleEmitters().HasWithPath(filename)){
-		igdeCommonDialogs::Information(&pWindowMain, "Add Particle Emitter",
+		igdeCommonDialogs::Information(pWindowMain, "Add Particle Emitter",
 			"Particle emitter with path exists already.");
 		return {};
 	}

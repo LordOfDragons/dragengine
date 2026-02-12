@@ -291,9 +291,9 @@ public:
 		
 		decString name("Type");
 		
-		while(igdeCommonDialogs::GetString(&pPanel, "Add Type", "Name:", name)){
+		while(igdeCommonDialogs::GetString(pPanel, "Add Type", "Name:", name)){
 			if(emitter->GetTypes().HasNamed(name)){
-				igdeCommonDialogs::Error(&pPanel, "Add Type", "A type with this name exists already.");
+				igdeCommonDialogs::Error(pPanel, "Add Type", "A type with this name exists already.");
 				continue;
 			}
 			
@@ -334,12 +334,12 @@ public:
 	igdeUndo::Ref OnAction(peeEmitter *emitter, peeType *type) override{
 		decString name(type->GetName());
 		
-		while(igdeCommonDialogs::GetString(&pPanel, "Rename Type", "Name:", name)){
+		while(igdeCommonDialogs::GetString(pPanel, "Rename Type", "Name:", name)){
 			if(name == type->GetName()){
 				break;
 				
 			}else if(emitter->GetTypes().HasNamed(name)){
-				igdeCommonDialogs::Error(&pPanel, "Rename Type", "A type with this name exists already.");
+				igdeCommonDialogs::Error(pPanel, "Rename Type", "A type with this name exists already.");
 				
 			}else{
 				return peeUTypeSetName::Ref::New(type, name);

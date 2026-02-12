@@ -442,7 +442,7 @@ void projPanelTestRun::Start(){
 		UpdateLogs(false);
 		pIsRunning = false;
 		
-		igdeCommonDialogs::Exception(&pWindowMain, e);
+		igdeCommonDialogs::Exception(pWindowMain, e);
 	}
 	
 	pEditLogs->ClearText();
@@ -459,7 +459,7 @@ void projPanelTestRun::Quit(){
 		pIsRunning = false;
 		
 	}catch(const deException &e){
-		igdeCommonDialogs::Exception(&pWindowMain, e);
+		igdeCommonDialogs::Exception(pWindowMain, e);
 	}
 	
 	UpdateWidgetEnabled();
@@ -476,7 +476,7 @@ void projPanelTestRun::Kill(){
 		pTestRunner->Kill();
 		
 	}catch(const deException &e){
-		igdeCommonDialogs::Exception(&pWindowMain, e);
+		igdeCommonDialogs::Exception(pWindowMain, e);
 	}
 	
 	UpdateLogs(false);
@@ -670,7 +670,7 @@ void projPanelTestRun::RemoteStartListen(){
 		pProject->GetRemoteServer()->ListenForClientConnections(pEditRemoteAddress->GetText());
 		
 	}catch(const deException &e){
-		igdeCommonDialogs::Exception(this, "Listen", e);
+		igdeCommonDialogs::Exception(*this, "Listen", e);
 	}
 	
 	UpdateWidgetEnabled();
@@ -685,7 +685,7 @@ void projPanelTestRun::RemoteStopListen(){
 		pProject->GetRemoteServer()->StopListenClientConnections();
 		
 	}catch(const deException &e){
-		igdeCommonDialogs::Exception(this, "Stop Listen", e);
+		igdeCommonDialogs::Exception(*this, "Stop Listen", e);
 	}
 	
 	UpdateWidgetEnabled();
@@ -700,7 +700,7 @@ void projPanelTestRun::RemoteSynchronizeAll(){
 		pProject->GetRemoteServer()->RemoteSynchronizeAllClients();
 		
 	}catch(const deException &e){
-		igdeCommonDialogs::Exception(this, "Stop Listen", e);
+		igdeCommonDialogs::Exception(*this, "Stop Listen", e);
 	}
 	
 	UpdateWidgetEnabled();

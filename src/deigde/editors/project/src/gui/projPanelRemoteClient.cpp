@@ -306,7 +306,7 @@ void projPanelRemoteClient::Synchronize(){
 		pClient->Synchronize();
 		
 	}catch(const deException &e){
-		igdeCommonDialogs::Exception(&pPanelTestRun.GetWindowMain(), e);
+		igdeCommonDialogs::Exception(pPanelTestRun.GetWindowMain(), e);
 	}
 	
 	UpdateWidgetEnabled();
@@ -342,7 +342,7 @@ void projPanelRemoteClient::Start(){
 		}catch(const deException &){
 		}
 		
-		igdeCommonDialogs::Exception(&pPanelTestRun.GetWindowMain(), e);
+		igdeCommonDialogs::Exception(pPanelTestRun.GetWindowMain(), e);
 	}
 	
 	pEditLogs->ClearText();
@@ -358,7 +358,7 @@ void projPanelRemoteClient::Stop(){
 		pClient->StopApplication();
 		
 	}catch(const deException &e){
-		igdeCommonDialogs::Exception(&pPanelTestRun.GetWindowMain(), e);
+		igdeCommonDialogs::Exception(pPanelTestRun.GetWindowMain(), e);
 	}
 	
 	UpdateWidgetEnabled();
@@ -373,7 +373,7 @@ void projPanelRemoteClient::Kill(){
 		pClient->KillApplication();
 		
 	}catch(const deException &e){
-		igdeCommonDialogs::Exception(&pPanelTestRun.GetWindowMain(), e);
+		igdeCommonDialogs::Exception(pPanelTestRun.GetWindowMain(), e);
 	}
 	
 	UpdateWidgetEnabled();

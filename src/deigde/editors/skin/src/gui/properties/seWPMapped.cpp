@@ -203,7 +203,7 @@ public:
 		
 		const seUMappedRemove::Ref undo(seUMappedRemove::Ref::New(mapped));
 		
-		if(undo->GetDependencyCount() > 0 && igdeCommonDialogs::QuestionFormat(&pPanel,
+		if(undo->GetDependencyCount() > 0 && igdeCommonDialogs::QuestionFormat(pPanel,
 		igdeCommonDialogs::ebsYesNo, "Cut Mapped", "Mapped is used by %d dependencies. "
 		"Cutting mapped will also unset it from all dependencies.", undo->GetDependencyCount())
 		== igdeCommonDialogs::ebNo){
@@ -290,7 +290,7 @@ public:
 		}
 		
 		if(pPanel.GetSkin()->GetMapped().HasNamed(value)){
-			igdeCommonDialogs::Error(&pPanel, "Set Mapped Name", "Mapped name exists already");
+			igdeCommonDialogs::Error(pPanel, "Set Mapped Name", "Mapped name exists already");
 			textField->SetText(mapped->GetName());
 			return;
 		}

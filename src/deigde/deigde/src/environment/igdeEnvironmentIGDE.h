@@ -153,6 +153,9 @@ public:
 	/** \brief Default GuiTheme. */
 	igdeGuiTheme *GetDefaultGuiTheme() override;
 	
+	/** \brief Translation manager. */
+	igdeTranslationManager &GetTranslationManager() override;
+	
 	
 	
 	/** \brief Sets the visibility of the progress bar in the status bar. */

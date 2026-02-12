@@ -554,17 +554,17 @@ public:
 		proposals.SortAscending();
 		
 		decString name("Name");
-		if(!igdeCommonDialogs::GetString(pPanel.GetParentWindow(), "Add Inherit", "Name:", name, proposals)){
+		if(!igdeCommonDialogs::GetString(*pPanel.GetParentWindow(), "Add Inherit", "Name:", name, proposals)){
 			return {};
 		}
 		const gdeObjectClass * const inheritOC = pPanel.GetGameDefinition()->FindObjectClass(name);
 		if(inheritOC){
 			if(objectClass == inheritOC){
-				igdeCommonDialogs::Error(&pPanel, "Add Inherit", "Can not inherit from yourself");
+				igdeCommonDialogs::Error(pPanel, "Add Inherit", "Can not inherit from yourself");
 				return {};
 			}
 			if(inheritOC->InheritsFrom(objectClass)){
-				igdeCommonDialogs::Error(&pPanel, "Add Inherit", "Inheritance loop");
+				igdeCommonDialogs::Error(pPanel, "Add Inherit", "Inheritance loop");
 				return {};
 			}
 		}
@@ -630,12 +630,12 @@ public:
 		const gdeObjectClass * const inheritOC = pPanel.GetGameDefinition()->FindObjectClass(comboBox.GetText());
 		if(inheritOC){
 			if(objectClass == inheritOC){
-				igdeCommonDialogs::Error(&pPanel, "Set Inherit Name", "Can not inherit from yourself");
+				igdeCommonDialogs::Error(pPanel, "Set Inherit Name", "Can not inherit from yourself");
 				comboBox.SetText(inherit->GetName());
 				return {};
 			}
 			if(inheritOC->InheritsFrom(objectClass)){
-				igdeCommonDialogs::Error(&pPanel, "Set Inherit Name", "Inheritance loop");
+				igdeCommonDialogs::Error(pPanel, "Set Inherit Name", "Inheritance loop");
 				comboBox.SetText(inherit->GetName());
 				return {};
 			}
@@ -777,7 +777,7 @@ public:
 		
 		decString value;
 		objectClass->NamedPropertyDefaultValue(key, value);
-		if(!igdeCommonDialogs::GetMultilineString(pPanel.GetParentWindow(), "Set Property Value", "Value:", value)){
+		if(!igdeCommonDialogs::GetMultilineString(*pPanel.GetParentWindow(), "Set Property Value", "Value:", value)){
 			return {};
 		}
 		
@@ -864,7 +864,7 @@ public:
 		
 		const decString &key = listBox->GetItems().GetAt(index)->GetText();
 		decString value(objectClass->GetPropertyValues().GetAtOrDefault(key));
-		if(!igdeCommonDialogs::GetMultilineString(pPanel.GetParentWindow(), "Edit Property Value", "Value:", value)){
+		if(!igdeCommonDialogs::GetMultilineString(*pPanel.GetParentWindow(), "Edit Property Value", "Value:", value)){
 			return;
 		}
 		
@@ -995,12 +995,12 @@ public:
 			name = "Texture";
 			
 			while(true){
-				if(!igdeCommonDialogs::GetString(pPanel.GetParentWindow(), "Add Texture", "Name:", name)){
+				if(!igdeCommonDialogs::GetString(*pPanel.GetParentWindow(), "Add Texture", "Name:", name)){
 					return {};
 				}
 				
 				if(objectClass->GetTextures().HasNamed(name)){
-					igdeCommonDialogs::Error(pPanel.GetParentWindow(), "Add Texture", "A texture with this name exists already.");
+					igdeCommonDialogs::Error(*pPanel.GetParentWindow(), "Add Texture", "A texture with this name exists already.");
 					
 				}else{
 					break;
@@ -1064,7 +1064,7 @@ public:
 		}
 		
 		if(objectClass->GetTextures().HasNamed(textField.GetText())){
-			igdeCommonDialogs::Information(pPanel.GetParentWindow(), "Rename texture", "A texture with this name exists already.");
+			igdeCommonDialogs::Information(*pPanel.GetParentWindow(), "Rename texture", "A texture with this name exists already.");
 			textField.SetText(texture->GetName());
 			return {};
 		}

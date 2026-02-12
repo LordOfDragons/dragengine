@@ -82,13 +82,13 @@ void igdeActionSelectFile::OnAction(){
 	const decString oldPath(path);
 	
 	if(pUseGameVFS){
-		if(!igdeCommonDialogs::GetFileOpen(&pTextField, GetText(),
+		if(!igdeCommonDialogs::GetFileOpen(pTextField, GetText(),
 		*pEnvironment.GetFileSystemGame(), pFilePatterns, path ) ){
 			return;
 		}
 		
 	}else{
-		if(!igdeCommonDialogs::GetFileOpen(&pTextField, GetText(), pFilePatterns, path)){
+		if(!igdeCommonDialogs::GetFileOpen(pTextField, GetText(), pFilePatterns, path)){
 			return;
 		}
 	}

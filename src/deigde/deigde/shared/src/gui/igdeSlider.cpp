@@ -170,6 +170,11 @@ void igdeSlider::NotifyValueChanging(){
 	});
 }
 
+void igdeSlider::OnLanguageChanged(){
+	igdeWidget::OnLanguageChanged();
+	
+	OnDescriptionChanged();
+}
 
 
 void igdeSlider::CreateNativeWidget(){

@@ -78,6 +78,9 @@ public:
 	
 	/** \brief Clear text. */
 	void ClearText();
+	
+	/** \brief Active language changed. */
+	void OnLanguageChanged() override;
 	/*@}*/
 	
 	

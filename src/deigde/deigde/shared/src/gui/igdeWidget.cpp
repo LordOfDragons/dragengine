@@ -155,6 +155,9 @@ void igdeWidget::OnVisibleChanged(){
 void igdeWidget::OnGuiThemeChanged(){
 }
 
+void igdeWidget::OnLanguageChanged(){
+}
+
 void igdeWidget::SetNativeWidget(void *nativeWidget){
 	pNativeWidget = nativeWidget;
 }

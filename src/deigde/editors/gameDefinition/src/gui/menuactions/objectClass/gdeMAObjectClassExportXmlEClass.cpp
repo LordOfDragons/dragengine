@@ -84,7 +84,7 @@ igdeUndo::Ref gdeMAObjectClassExportXmlEClass::OnAction(gdeGameDefinition &gameD
 	
 	decString filename(path.GetPathNative());
 	
-	if(!igdeCommonDialogs::GetFileSave(&pWindowMain, "Export XML Element Class",
+	if(!igdeCommonDialogs::GetFileSave(pWindowMain, "Export XML Element Class",
 	pWindowMain.GetLoadSaveSystem().GetXmlEClassFilePatterns(), filename)){
 		return {};
 	}

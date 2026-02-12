@@ -117,6 +117,9 @@ public:
 	
 	/** \brief Remove all children. */
 	void RemoveAllChildren() override;
+	
+	/** \brief Active language changed. */
+	void OnLanguageChanged() override;
 	/*@}*/
 	
 	

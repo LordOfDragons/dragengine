@@ -357,7 +357,7 @@ void seWindowMain::GetChangedDocuments(decStringList &list){
 
 void seWindowMain::LoadDocument(const char *filename){
 	if(pSkin && pSkin->GetChanged()){
-		if(igdeCommonDialogs::Question(this, igdeCommonDialogs::ebsYesNo, "Open Skin",
+		if(igdeCommonDialogs::Question(*this, igdeCommonDialogs::ebsYesNo, "Open Skin",
 		"Open skin discards changes. Is this ok?") == igdeCommonDialogs::ebNo){
 			return;
 		}
@@ -458,7 +458,7 @@ public:
 	
 	void OnAction() override{
 		if(!pWindow.GetSkin() || !pWindow.GetSkin()->GetChanged()
-		|| igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo, "New Skin",
+		|| igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "New Skin",
 		"Creating a new skin discarding the current one is that ok?") == igdeCommonDialogs::ebYes){
 			pWindow.CreateNewSkin();
 		}
@@ -479,7 +479,7 @@ public:
 	
 	void OnAction() override{
 		if(!pWindow.GetSkin() || !pWindow.GetSkin()->GetChanged()
-		|| igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo, "New Skin",
+		|| igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "New Skin",
 		"Creating a new skin discarding the current one is that ok?") == igdeCommonDialogs::ebYes){
 			CreateSkinFromModel();
 		}
@@ -492,7 +492,7 @@ public:
 		// query for the model
 		decString filename(pWindow.GetSkin() ? decPath::AbsolutePathUnix(
 			pWindow.GetSkin()->GetModelPath(), pWindow.GetSkin()->GetDirectoryPath()).GetPathUnix() : decString());
-		if(!igdeCommonDialogs::GetFileOpen(&pWindow, "New From Model", *environment.GetFileSystemGame(),
+		if(!igdeCommonDialogs::GetFileOpen(pWindow, "New From Model", *environment.GetFileSystemGame(),
 			*environment.GetOpenFilePatternList( igdeEnvironment::efpltModel ), filename ) ){
 				return;
 		}
@@ -563,7 +563,7 @@ public:
 	
 	void OnAction() override{
 		if(pWindow.GetSkin() && pWindow.GetSkin()->GetChanged()){
-			if(igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo, "Open Skin",
+			if(igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "Open Skin",
 			"Open skin discards changes. Is this ok?") == igdeCommonDialogs::ebNo){
 				return;
 			}
@@ -571,7 +571,7 @@ public:
 		
 		decString filename(pWindow.GetSkin() ? pWindow.GetSkin()->GetFilePath()
 			: pWindow.GetGameProject()->GetPathData());
-		if(igdeCommonDialogs::GetFileOpen(&pWindow, "Open Skin",
+		if(igdeCommonDialogs::GetFileOpen(pWindow, "Open Skin",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetEnvironment().GetOpenFilePatternList( igdeEnvironment::efpltSkin ), filename ) ){
 			pWindow.LoadSkin(filename);
@@ -588,7 +588,7 @@ public:
 	
 	virtual igdeUndo::Ref  OnAction(seSkin *skin){
 		decString filename(skin->GetFilePath());
-		if(igdeCommonDialogs::GetFileSave(&pWindow, "Save Skin",
+		if(igdeCommonDialogs::GetFileSave(pWindow, "Save Skin",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetEnvironment().GetSaveFilePatternList( igdeEnvironment::efpltSkin ), filename ) ){
 			pWindow.SaveSkin(filename);
@@ -702,9 +702,9 @@ public:
 	
 	igdeUndo::Ref OnAction(seSkin *skin) override{
 		decString name("Mapped");
-		while(igdeCommonDialogs::GetString(&pWindow, "Add Mapped", "Name:", name)){
+		while(igdeCommonDialogs::GetString(pWindow, "Add Mapped", "Name:", name)){
 			if(skin->GetMapped().HasNamed(name)){
-				igdeCommonDialogs::Error(&pWindow, "Add Mapped", "A mapped with this name exists already.");
+				igdeCommonDialogs::Error(pWindow, "Add Mapped", "A mapped with this name exists already.");
 				
 			}else{
 				return seUMappedAdd::Ref::New(skin, seMapped::Ref::New(name));
@@ -725,7 +725,7 @@ public:
 	virtual igdeUndo::Ref OnActionMapped(seSkin*, seMapped *mapped){
 		seUMappedRemove::Ref undo(seUMappedRemove::Ref::New(mapped));
 		
-		if(undo->GetDependencyCount() > 0 && igdeCommonDialogs::QuestionFormat(&pWindow,
+		if(undo->GetDependencyCount() > 0 && igdeCommonDialogs::QuestionFormat(pWindow,
 		igdeCommonDialogs::ebsYesNo, "Remove Mapped", "Mapped is used by %d dependencies. "
 		"Removing the mapped will also unset it from all dependencies.", undo->GetDependencyCount())
 		== igdeCommonDialogs::ebNo){
@@ -779,7 +779,7 @@ public:
 		
 		const decString name(dialog->GetTextureName());
 		if(skin->GetTextures().HasNamed(name)){
-			igdeCommonDialogs::Error(&pWindow, "Add Texture", "A texture with this name exists already.");
+			igdeCommonDialogs::Error(pWindow, "Add Texture", "A texture with this name exists already.");
 			return {};
 		}
 		
@@ -817,7 +817,7 @@ public:
 		
 		// if there is no texture fail
 		if(importTextures.IsEmpty()){
-			igdeCommonDialogs::Information(&pWindow, "Import skin texture", "The skin has no textures");
+			igdeCommonDialogs::Information(pWindow, "Import skin texture", "The skin has no textures");
 			return {};
 		}
 		
@@ -835,7 +835,7 @@ public:
 			names.SortAscending();
 			
 			int selection = 0;
-			if(!igdeCommonDialogs::SelectString(&pWindow, "Import skin texture",
+			if(!igdeCommonDialogs::SelectString(pWindow, "Import skin texture",
 			"Select texture to use", names, selection)){
 				return {};
 			}
@@ -935,7 +935,7 @@ public:
 		if(filename.IsEmpty()){
 			filename = pWindow.GetGameDefinition()->GetSkinManager()->GetDefaultSkinPath();
 		}
-		const igdeUndo::Ref undo(igdeCommonDialogs::GetFileOpen(&pWindow, "Import Skin Texture",
+		const igdeUndo::Ref undo(igdeCommonDialogs::GetFileOpen(pWindow, "Import Skin Texture",
 			*env.GetFileSystemGame(), *env.GetOpenFilePatternList( igdeEnvironment::efpltSkin ),
 			filename) ? ImportTexture(skin, texture, filename) : igdeUndo::Ref());
 		if(undo){

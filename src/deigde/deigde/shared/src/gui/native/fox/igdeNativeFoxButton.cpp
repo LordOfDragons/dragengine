@@ -75,8 +75,10 @@ pFont(ButtonFont(powner, guitheme))
 	if(!powner.GetEnabled()){
 		disable();
 	}
-	setTipText(powner.GetDescription().GetString());
-	setHelpText(powner.GetDescription().GetString());
+	
+	const FXString description(igdeUIFoxHelper::TranslateIf(powner, powner.GetDescription()));
+	setTipText(description);
+	setHelpText(description);
 }
 
 igdeNativeFoxButton::~igdeNativeFoxButton(){
@@ -136,7 +138,7 @@ void igdeNativeFoxButton::UpdateText(){
 }
 
 void igdeNativeFoxButton::UpdateDescription(){
-	const char * const description = pOwner->GetDescription();
+	const FXString description(igdeUIFoxHelper::TranslateIf(*pOwner, pOwner->GetDescription()));
 	setTipText(description);
 	setHelpText(description);
 }
@@ -156,12 +158,12 @@ void igdeNativeFoxButton::UpdateEnabled(){
 
 
 
-const char *igdeNativeFoxButton::ButtonText(const igdeButton &powner){
+FXString igdeNativeFoxButton::ButtonText(const igdeButton &powner){
 	if(powner.GetStyle() == igdeButton::ebsToolBar){
 		return "";
 		
 	}else{
-		return powner.GetText();
+		return igdeUIFoxHelper::TranslateIf(powner, powner.GetText());
 	}
 }
 
@@ -247,7 +249,7 @@ long igdeNativeFoxButton::onCommand(FXObject*, FXSelector, void*){
 		
 	}catch(const deException &e){
 		pOwner->GetLogger()->LogException("IGDE", e);
-		igdeCommonDialogs::Exception(pOwner, e);
+		igdeCommonDialogs::Exception(*pOwner, e);
 		return 0;
 	}
 	

@@ -505,7 +505,7 @@ public:
 	void OnAction(aeAnimator *animator) override{
 		aeLoadSaveSystem &lssys = pPanel.GetWindowProperties().GetWindowMain().GetLoadSaveSystem();
 		decString filename(animator->GetPathAttachmentConfig());
-		if(!igdeCommonDialogs::GetFileOpen(&pPanel, "Open Attachment Configuration",
+		if(!igdeCommonDialogs::GetFileOpen(pPanel, "Open Attachment Configuration",
 		*pPanel.GetEnvironment().GetFileSystemGame(), lssys.GetAttConfigFilePatterns(), filename ) ){
 			return;
 		}
@@ -526,7 +526,7 @@ public:
 	void OnAction(aeAnimator *animator) override{
 		aeLoadSaveSystem &lssys = pPanel.GetWindowProperties().GetWindowMain().GetLoadSaveSystem();
 		decString filename(animator->GetPathAttachmentConfig());
-		if(!igdeCommonDialogs::GetFileSave(&pPanel, "Save Attachment Configuration",
+		if(!igdeCommonDialogs::GetFileSave(pPanel, "Save Attachment Configuration",
 		*pPanel.GetEnvironment().GetFileSystemGame(), lssys.GetAttConfigFilePatterns(), filename ) ){
 			return;
 		}

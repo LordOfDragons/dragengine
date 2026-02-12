@@ -391,7 +391,7 @@ public:
 	}
 	
 	void ResetTextField(igdeTextField &textField, const saePhoneme &phoneme, const char *error){
-		igdeCommonDialogs::Error(&pPanel, "Change Phoneme IPA", error);
+		igdeCommonDialogs::Error(pPanel, "Change Phoneme IPA", error);
 		textField.SetText(decUnicodeString(phoneme.GetIPA()).ToUTF8());
 	}
 };
@@ -524,7 +524,7 @@ public:
 	}
 	
 	void ResetTextField(igdeTextField &textField, const saeWord &word, const char *error){
-		igdeCommonDialogs::Error(&pPanel, "Change Word Name", error);
+		igdeCommonDialogs::Error(pPanel, "Change Word Name", error);
 		textField.SetText(word.GetName());
 	}
 };
@@ -548,7 +548,7 @@ public:
 	}
 	
 	void ResetTextField(igdeTextField &textField, const saeWord &word, const char *error){
-		igdeCommonDialogs::Error(&pPanel, "Change Word Phonetics", error);
+		igdeCommonDialogs::Error(pPanel, "Change Word Phonetics", error);
 		textField.SetText(word.GetPhonetics().ToUTF8());
 	}
 };

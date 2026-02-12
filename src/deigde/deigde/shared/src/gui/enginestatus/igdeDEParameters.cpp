@@ -289,7 +289,7 @@ void igdeDEParameters::ParameterSetValue(){
 		loadableModule->GetModule()->SetParameterValue(name, pEditValue->GetText());
 		
 	}catch(const deException &e){
-		igdeCommonDialogs::Exception(this, e);
+		igdeCommonDialogs::Exception(*this, e);
 	}
 	
 	pEditValue->SetText(loadableModule->GetModule()->GetParameterValue(name));

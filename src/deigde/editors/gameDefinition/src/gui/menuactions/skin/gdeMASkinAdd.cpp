@@ -64,14 +64,14 @@ igdeUndo::Ref gdeMASkinAdd::OnAction(gdeGameDefinition &gameDefinition){
 	decString filename;
 	//dialog.SetFilename( ... last skin? what directory? );
 	
-	if(!igdeCommonDialogs::GetFileOpen(&pWindowMain,
+	if(!igdeCommonDialogs::GetFileOpen(pWindowMain,
 	"Select skin material", *gameDefinition.GetPreviewVFS(),
 	*environment.GetOpenFilePatternList( igdeEnvironment::efpltSkin ), filename ) ){
 		return {};
 	}
 	
 	if(gameDefinition.GetSkins().HasWithPath(filename)){
-		igdeCommonDialogs::Information(&pWindowMain, "Add Skin", "Skin with path exists already.");
+		igdeCommonDialogs::Information(pWindowMain, "Add Skin", "Skin with path exists already.");
 		return {};
 	}
 	

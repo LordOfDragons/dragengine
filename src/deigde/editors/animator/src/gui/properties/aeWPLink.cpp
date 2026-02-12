@@ -345,7 +345,7 @@ public:
 		const float x = decMath::linearStep(controller.GetCurrentValue(),
 			controller.GetMinimumValue(), controller.GetMaximumValue());
 		float y = 0.0f;
-		if(!igdeCommonDialogs::GetFloat(&pPanel, "Insert Curve Value", "Y Value:", y)){
+		if(!igdeCommonDialogs::GetFloat(pPanel, "Insert Curve Value", "Y Value:", y)){
 			return {};
 		}
 		

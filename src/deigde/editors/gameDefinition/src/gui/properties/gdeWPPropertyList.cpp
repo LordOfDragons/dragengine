@@ -128,9 +128,9 @@ public:
 		const gdeProperty::List &list = *pPanel.GetPropertyList();
 		decString name("Property");
 		
-		while(igdeCommonDialogs::GetString(pPanel.GetParentWindow(), "Add Property", "Name:", name)){
+		while(igdeCommonDialogs::GetString(*pPanel.GetParentWindow(), "Add Property", "Name:", name)){
 			if(list.HasNamed(name)){
-				igdeCommonDialogs::Error(pPanel.GetParentWindow(), "Add Property", "Name exists already.");
+				igdeCommonDialogs::Error(*pPanel.GetParentWindow(), "Add Property", "Name exists already.");
 				continue;
 			}
 			
@@ -254,8 +254,8 @@ public:
 		decString name(clip->GetProperty()->GetName());
 		
 		while(list.HasNamed(name)){
-			igdeCommonDialogs::Error(pPanel.GetParentWindow(), "Paste Property", "Name exists already.");
-			if(!igdeCommonDialogs::GetString(pPanel.GetParentWindow(), "Paste Property", "Name:", name)){
+			igdeCommonDialogs::Error(*pPanel.GetParentWindow(), "Paste Property", "Name exists already.");
+			if(!igdeCommonDialogs::GetString(*pPanel.GetParentWindow(), "Paste Property", "Name:", name)){
 				return;
 			}
 		}
@@ -388,7 +388,7 @@ public:
 		}
 		
 		if(pPanel.GetPropertyList()->HasNamed(name)){
-			igdeCommonDialogs::Error(pPanel.GetParentWindow(), "Rename property", "Name exists already.");
+			igdeCommonDialogs::Error(*pPanel.GetParentWindow(), "Rename property", "Name exists already.");
 			textField->SetText(property->GetName());
 			return {};
 		}
@@ -526,9 +526,9 @@ public:
 	igdeUndo::Ref OnActionUndo(gdeProperty *property) override{
 		decString option("Option");
 		
-		while(igdeCommonDialogs::GetString(pPanel.GetParentWindow(), "Add Option", "Option:", option)){
+		while(igdeCommonDialogs::GetString(*pPanel.GetParentWindow(), "Add Option", "Option:", option)){
 			if(property->GetOptions().Has(option)){
-				igdeCommonDialogs::Error(pPanel.GetParentWindow(), "Add Option", "Option exists already.");
+				igdeCommonDialogs::Error(*pPanel.GetParentWindow(), "Add Option", "Option exists already.");
 				continue;
 			}
 			
@@ -625,7 +625,7 @@ public:
 		}
 		
 		decString name("File Pattern");
-		if(!igdeCommonDialogs::GetString(pPanel.GetParentWindow(), "Add File Pattern", "Name:", name)){
+		if(!igdeCommonDialogs::GetString(*pPanel.GetParentWindow(), "Add File Pattern", "Name:", name)){
 			return;
 		}
 		

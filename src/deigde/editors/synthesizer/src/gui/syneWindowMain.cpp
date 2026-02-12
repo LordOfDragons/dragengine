@@ -452,7 +452,7 @@ public:
 	
 	void OnAction() override{
 		if(!pWindow.GetSynthesizer() || !pWindow.GetSynthesizer()->GetChanged()
-		|| igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo, "New Synthesizer",
+		|| igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "New Synthesizer",
 		"Creating a new Synthesizer discarding the current one is that ok?") == igdeCommonDialogs::ebYes){
 			pWindow.CreateSynthesizer();
 		}
@@ -469,7 +469,7 @@ public:
 	
 	igdeUndo::Ref OnAction(syneSynthesizer *synthesizer) override{
 		decString filename(synthesizer->GetFilePath());
-		if(igdeCommonDialogs::GetFileOpen(&pWindow, "Open Synthesizer",
+		if(igdeCommonDialogs::GetFileOpen(pWindow, "Open Synthesizer",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		pWindow.GetLoadSaveSystem().GetSynthesizerFilePatterns(), filename)){
 			pWindow.SetSynthesizer(pWindow.GetLoadSaveSystem().LoadSynthesizer(filename));
@@ -488,7 +488,7 @@ public:
 	
 	igdeUndo::Ref OnAction(syneSynthesizer *synthesizer) override{
 		decString filename(synthesizer->GetFilePath());
-		if(igdeCommonDialogs::GetFileSave(&pWindow, "Save Synthesizer",
+		if(igdeCommonDialogs::GetFileSave(pWindow, "Save Synthesizer",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		pWindow.GetLoadSaveSystem().GetSynthesizerFilePatterns(), filename)){
 			pWindow.SaveSynthesizer(filename);
@@ -684,7 +684,7 @@ public:
 	
 	igdeUndo::Ref OnAction(syneSynthesizer*) override{
 		decString name("Source");
-		if(igdeCommonDialogs::GetString(&pWindow, GetText(), "Name:", name)){
+		if(igdeCommonDialogs::GetString(pWindow, GetText(), "Name:", name)){
 			pWindow.CreateSource(name, pType, pInsert, false);
 		}
 		return {};
@@ -700,7 +700,7 @@ public:
 	
 	igdeUndo::Ref OnAction(syneSynthesizer*) override{
 		decString name("Source");
-		if(igdeCommonDialogs::GetString(&pWindow, GetText(), "Name:", name)){
+		if(igdeCommonDialogs::GetString(pWindow, GetText(), "Name:", name)){
 			pWindow.CreateSource(name, pType, pInsert, true);
 		}
 		return {};

@@ -134,7 +134,7 @@ public:
 		
 		decString text(action->GetTextBoxText().ToUTF8());
 		if(!igdeCommonDialogs::GetMultilineString(
-			&pPanel.GetParentPanel().GetWindowProperties().GetWindowMain(),
+			pPanel.GetParentPanel().GetWindowProperties().GetWindowMain(),
 			"Edit Text Box Text", "Text:", text)
 		|| text == action->GetTextBoxText().ToUTF8()){
 			return;
@@ -191,7 +191,7 @@ public:
 		}
 		
 		decString name(conversation->GetLangPackEntryName());
-		if(!igdeCommonDialogs::GetString(pPanel.GetParentWindow(), "Move to translation entry",
+		if(!igdeCommonDialogs::GetString(*pPanel.GetParentWindow(), "Move to translation entry",
 		"Name:", name, langpack->GetEntries().GetKeys().GetSortedAscending())){
 			return;
 		}
@@ -200,7 +200,7 @@ public:
 		
 		const decUnicodeString *foundText = nullptr;
 		if(langpack->GetEntries().GetAt(name, foundText)){
-			if(igdeCommonDialogs::QuestionFormat(pPanel.GetParentWindow(), igdeCommonDialogs::ebsYesNo,
+			if(igdeCommonDialogs::QuestionFormat(*pPanel.GetParentWindow(), igdeCommonDialogs::ebsYesNo,
 			"Move to translation entry", "Translation entry '%s' exists. Replace entry?",
 			name.GetString()) == igdeCommonDialogs::ebNo){
 				return;
@@ -287,7 +287,7 @@ public:
 			return;
 		}
 		
-		igdeCommonDialogs::Information(pPanel.GetParentWindow(), "Translation Entry", foundText->ToUTF8());
+		igdeCommonDialogs::Information(*pPanel.GetParentWindow(), "Translation Entry", foundText->ToUTF8());
 	}
 	
 	void Update() override{

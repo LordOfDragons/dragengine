@@ -313,7 +313,7 @@ igdeDialogProjectSettings::~igdeDialogProjectSettings(){
 
 bool igdeDialogProjectSettings::CheckValidInput(){
 	if(pEditName->GetText().IsEmpty()){
-		igdeCommonDialogs::Error(this, "Game Project Settings", "Name can not be empty");
+		igdeCommonDialogs::Error(*this, "Game Project Settings", "Name can not be empty");
 		return false;
 	}
 	
@@ -354,7 +354,7 @@ bool igdeDialogProjectSettings::Accept(){
 		
 	}catch(const deException &e){
 		pWindowMain.GetLogger()->LogException("IGDE", e);
-		igdeCommonDialogs::Exception(this, e);
+		igdeCommonDialogs::Exception(*this, e);
 	}
 	
 	return igdeDialog::Accept();

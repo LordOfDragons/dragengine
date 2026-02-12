@@ -128,7 +128,7 @@ public:
 		}
 		
 		const igdeCommonDialogs::eButton answer = igdeCommonDialogs::Question(
-			&pWindow, igdeCommonDialogs::ebsYesNoCancel, "Set Font Image",
+			pWindow, igdeCommonDialogs::ebsYesNoCancel, "Set Font Image",
 			"The image to save the font image to exists already. Do you want\n"
 			"to import the font image before setting the path?\n"
 			"[YES] imports the image and changes the path and size.\n"
@@ -146,7 +146,7 @@ public:
 		deImage::Ref image(pWindow.GetEngine()->GetImageManager()->LoadImage(path, "/"));
 		
 		if(image->GetComponentCount() != 4){
-			igdeCommonDialogs::Error(&pWindow, "Import Font Image",
+			igdeCommonDialogs::Error(pWindow, "Import Font Image",
 				"The font image does not have exactly 4 color channel. Only\n"
 				"images with 4 color channel can be used as font images.");
 			return false;

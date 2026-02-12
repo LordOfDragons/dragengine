@@ -307,6 +307,10 @@ igdeGuiTheme *igdeEnvironmentIGDE::GetDefaultGuiTheme(){
 	return pWindowMain->GetDefaultGuiTheme();
 }
 
+igdeTranslationManager &igdeEnvironmentIGDE::GetTranslationManager(){
+	return pWindowMain->GetTranslationManager();
+}
+
 
 
 void igdeEnvironmentIGDE::SetProgressVisible(bool visible){

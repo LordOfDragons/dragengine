@@ -80,8 +80,9 @@ pInvalidBackColor(igdeUIFoxHelper::BlendColor(pOrgBackColor, FXRGB(255, 0, 0), 0
 		disable();
 	}
 	
-	setTipText(powner.GetDescription().GetString());
-	setHelpText(powner.GetDescription().GetString());
+	const FXString description(igdeUIFoxHelper::TranslateIf(powner, powner.GetDescription()));
+	setTipText(description);
+	setHelpText(description);
 	
 	BuildList();
 	setCurrentItem(powner.GetSelection());
@@ -233,7 +234,7 @@ void igdeNativeFoxComboBox::UpdateEditable(){
 }
 
 void igdeNativeFoxComboBox::UpdateDescription(){
-	const char * const description = pOwner->GetDescription();
+	const FXString description(igdeUIFoxHelper::TranslateIf(*pOwner, pOwner->GetDescription()));
 	setTipText(description);
 	setHelpText(description);
 }
@@ -306,7 +307,7 @@ long igdeNativeFoxComboBox::onCommand(FXObject*, FXSelector, void*){
 		
 	}catch(const deException &e){
 		pOwner->GetLogger()->LogException("IGDE", e);
-		igdeCommonDialogs::Exception(pOwner, e);
+		igdeCommonDialogs::Exception(*pOwner, e);
 		return 0;
 	}
 	
@@ -323,7 +324,7 @@ long igdeNativeFoxComboBox::onChanged(FXObject*, FXSelector, void*){
 		
 	}catch(const deException &e){
 		pOwner->GetLogger()->LogException("IGDE", e);
-		igdeCommonDialogs::Exception(pOwner, e);
+		igdeCommonDialogs::Exception(*pOwner, e);
 		return 0;
 	}
 	

@@ -65,7 +65,7 @@ void igdeDialog::AcceptDialog::OnAction(){
 		
 	}catch(const deException &e){
 		pDialog.GetLogger()->LogException("IGDE", e);
-		igdeCommonDialogs::Exception(&pDialog, e);
+		igdeCommonDialogs::Exception(pDialog, e);
 	}
 }
 
@@ -90,7 +90,7 @@ void igdeDialog::CancelDialog::OnAction(){
 		
 	}catch(const deException &e){
 		pDialog.GetLogger()->LogException("IGDE", e);
-		igdeCommonDialogs::Exception(&pDialog, e);
+		igdeCommonDialogs::Exception(pDialog, e);
 	}
 }
 

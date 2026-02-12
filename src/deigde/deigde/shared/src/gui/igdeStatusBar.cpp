@@ -75,6 +75,11 @@ void igdeStatusBar::ClearText(){
 	OnTextChanged();
 }
 
+void igdeStatusBar::OnLanguageChanged(){
+	igdeContainer::OnLanguageChanged();
+	
+	OnTextChanged();
+}
 
 
 void igdeStatusBar::CreateNativeWidget(){

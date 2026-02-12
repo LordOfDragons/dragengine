@@ -543,12 +543,12 @@ public:
 		decString name("Profile");
 		
 		while(true){
-			if(!igdeCommonDialogs::GetString(&pWindow, "Add Profile", "Name:", name)){
+			if(!igdeCommonDialogs::GetString(pWindow, "Add Profile", "Name:", name)){
 				return;
 			}
 			
 			if(list.HasNamed(name)){
-				igdeCommonDialogs::Error(&pWindow, "Add Profile",
+				igdeCommonDialogs::Error(pWindow, "Add Profile",
 					"A profile with this name exists already.");
 				
 			}else{
@@ -640,12 +640,12 @@ public:
 		name.Format("%s Copy", profile->GetName().GetString());
 		
 		while(true){
-			if(!igdeCommonDialogs::GetString(&pWindow, "Duplicate Profile", "Name:", name)){
+			if(!igdeCommonDialogs::GetString(pWindow, "Duplicate Profile", "Name:", name)){
 				return;
 			}
 			
 			if(list.HasNamed(name)){
-				igdeCommonDialogs::Error(&pWindow, "Duplicate Profile",
+				igdeCommonDialogs::Error(pWindow, "Duplicate Profile",
 					"A profile with this name exists already.");
 				
 			}else{

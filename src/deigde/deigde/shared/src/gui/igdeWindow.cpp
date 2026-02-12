@@ -139,6 +139,12 @@ igdeWindow *igdeWindow::GetParentWindow(){
 	return this;
 }
 
+void igdeWindow::OnLanguageChanged(){
+	igdeContainer::OnLanguageChanged();
+	
+	OnTitleChanged();
+}
+
 
 
 // IGDE Internal Use Only

@@ -315,7 +315,7 @@ public:
 		deInputEvent::esmControl, deInputEvent::ekcN, deInputEvent::ekcN){}
 	
 	void OnAction() override{
-		if(igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo, "New Font",
+		if(igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "New Font",
 		"Creating a new font discarding the current one is that ok?") == igdeCommonDialogs::ebYes){
 			pWindow.CreateNewFont();
 		}
@@ -332,7 +332,7 @@ public:
 	
 	void OnAction() override{
 		decString filename(pWindow.GetFont()->GetFilePath());
-		if(!igdeCommonDialogs::GetFileOpen(&pWindow, "Open Font",
+		if(!igdeCommonDialogs::GetFileOpen(pWindow, "Open Font",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetEnvironment().GetOpenFilePatternList( igdeEnvironment::efpltFont ), filename ) ){
 			return;
@@ -363,7 +363,7 @@ public:
 	
 	void OnAction() override{
 		decString filename(pWindow.GetFont()->GetFilePath());
-		if(igdeCommonDialogs::GetFileSave(&pWindow, "Save Font",
+		if(igdeCommonDialogs::GetFileSave(pWindow, "Save Font",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetEnvironment().GetSaveFilePatternList( igdeEnvironment::efpltFont ), filename ) ){
 			pWindow.SaveFont(filename);
@@ -411,14 +411,14 @@ public:
 	
 	void OnAction() override{
 		igdeFont::sConfiguration config(pWindow.GetGenFontConfig());
-		if(!igdeCommonDialogs::SelectSystemFont(&pWindow, "Select Font", config)){
+		if(!igdeCommonDialogs::SelectSystemFont(pWindow, "Select Font", config)){
 			return;
 		}
 		
 		pWindow.SetGenFontConfig(config);
 		
 		int enlargeGlyph = 0;
-		if(!igdeCommonDialogs::GetInteger(&pWindow, "Glyph Enlarge", "Enlarge:", enlargeGlyph)){
+		if(!igdeCommonDialogs::GetInteger(pWindow, "Glyph Enlarge", "Enlarge:", enlargeGlyph)){
 			return;
 		}
 		

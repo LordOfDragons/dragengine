@@ -110,9 +110,11 @@ long igdeNativeFoxMenuCascadeCascade::updateMenuAction(FXObject *sender, FXSelec
 }
 
 FXString igdeNativeFoxMenuCascadeCascade::BuildConstrText(igdeMenuCascade &powner){
-	return igdeUIFoxHelper::MnemonizeString(powner.GetText(), powner.GetMnemonic())
-		+ "\t" + igdeUIFoxHelper::AccelString(powner.GetHotKey())
-		+ "\t" + powner.GetDescription().GetString();
+	const FXString text(igdeUIFoxHelper::TranslateIf(powner, powner.GetText().GetString()));
+	
+	return igdeUIFoxHelper::MnemonizeString(text.text(), powner.GetMnemonic())
+			+ "\t" + igdeUIFoxHelper::AccelString(powner.GetHotKey())
+			+ "\t" + igdeUIFoxHelper::TranslateIf(powner, powner.GetDescription().GetString());
 }
 
 
@@ -346,11 +348,11 @@ void *igdeNativeFoxMenuCascade::GetNativeContainer(const igdeMenuCascade&, void 
 }
 
 void igdeNativeFoxMenuCascade::UpdateTitle(const igdeMenuCascade &powner, void *native){
-	((FXMenuCaption*)native)->setText(powner.GetText().GetString());
+	((FXMenuCaption*)native)->setText(igdeUIFoxHelper::TranslateIf(powner, powner.GetText().GetString()));
 }
 
 void igdeNativeFoxMenuCascade::UpdateDescription(const igdeMenuCascade &powner, void *native){
-	const char * const description = powner.GetDescription();
+	const FXString description(igdeUIFoxHelper::TranslateIf(powner, powner.GetDescription().GetString()));
 	FXMenuCaption &widget = *((FXMenuCaption*)native);
 	widget.setTipText(description);
 	widget.setHelpText(description);

@@ -606,6 +606,11 @@ void igdeIconListBox::NotifyDoubleClickItem(int index){
 	});
 }
 
+void igdeIconListBox::OnLanguageChanged(){
+	igdeWidget::OnLanguageChanged();
+	
+	OnDescriptionChanged();
+}
 
 
 void igdeIconListBox::CreateNativeWidget(){

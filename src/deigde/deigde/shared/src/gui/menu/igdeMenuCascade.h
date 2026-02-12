@@ -140,6 +140,9 @@ public:
 	
 	/** \brief Show menu as pop-up menu at the bottom wdge of widget. */
 	void PopupBottom(igdeWidget &owner);
+	
+	/** \brief Active language changed. */
+	void OnLanguageChanged() override;
 	/*@}*/
 	
 	

@@ -130,7 +130,7 @@ public:
 		
 		decString text(option->GetText().ToUTF8());
 		if(!igdeCommonDialogs::GetMultilineString(
-			&pPanel.GetParentPanel().GetWindowProperties().GetWindowMain(),
+			pPanel.GetParentPanel().GetWindowProperties().GetWindowMain(),
 			"Edit Option Text", "Text:", text)
 		|| text == option->GetText().ToUTF8()){
 			return;

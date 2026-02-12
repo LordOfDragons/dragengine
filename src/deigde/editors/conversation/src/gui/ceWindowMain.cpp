@@ -296,12 +296,12 @@ void ceWindowMain::SaveConversation(const char *filename){
 void ceWindowMain::ShowFoundMissingWordsDialog(decStringSet &missingWords){
 	const int count = missingWords.GetCount();
 	if(count == 0){
-		igdeCommonDialogs::Information(this, "Missing Words", "No missing words found");
+		igdeCommonDialogs::Information(*this, "Missing Words", "No missing words found");
 		return;
 	}
 	
 	decString result(DEJoin(decStringList(missingWords).GetSortedAscending(), "\n"));
-	igdeCommonDialogs::GetMultilineString(this, "Missing Words", "Found missing words", result);
+	igdeCommonDialogs::GetMultilineString(*this, "Missing Words", "Found missing words", result);
 }
 
 void ceWindowMain::LoadCTA(const char *filename){
@@ -332,7 +332,7 @@ void ceWindowMain::AttachLangPack(const char *filename){
 	
 	ceLangPack * const langpack = pConversation->GetLanguagePack();
 	if(langpack && langpack->GetChanged()){
-		switch(igdeCommonDialogs::Question(this, igdeCommonDialogs::ebsYesNoCancel,
+		switch(igdeCommonDialogs::Question(*this, igdeCommonDialogs::ebsYesNoCancel,
 		"Attach Language Pack", "Language pack changed. Save before attaching a new one?")){
 		case igdeCommonDialogs::ebYes:
 			pLoadSaveSystem->SaveLangPack(*langpack);
@@ -411,7 +411,7 @@ void ceWindowMain::GetChangedDocuments(decStringList &list){
 
 void ceWindowMain::LoadDocument(const char *filename){
 	if(pConversation && pConversation->GetChanged()){
-		if(igdeCommonDialogs::Question(this, igdeCommonDialogs::ebsYesNo, "Open Conversation",
+		if(igdeCommonDialogs::Question(*this, igdeCommonDialogs::ebsYesNo, "Open Conversation",
 		"Open conversation discards changes. Is this ok?") == igdeCommonDialogs::ebNo){
 			return;
 		}
@@ -516,7 +516,7 @@ public:
 	
 	void OnAction() override{
 		if(!pWindow.GetConversation() || !pWindow.GetConversation()->GetChanged()
-		|| igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo, "New Conversation",
+		|| igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "New Conversation",
 		"Creating a new conversation discarding the current one is that ok?") == igdeCommonDialogs::ebYes){
 			pWindow.CreateNewConversation();
 		}
@@ -536,7 +536,7 @@ public:
 	
 	void OnAction() override{
 		if(pWindow.GetConversation() && pWindow.GetConversation()->GetChanged()){
-			if(igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo, "Open Conversation",
+			if(igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "Open Conversation",
 			"Open conversation discards changes. Is this ok?") == igdeCommonDialogs::ebNo){
 				return;
 			}
@@ -544,7 +544,7 @@ public:
 		
 		decString filename(pWindow.GetConversation() ? pWindow.GetConversation()->GetFilePath()
 			: pWindow.GetGameProject()->GetPathData());
-		if(!igdeCommonDialogs::GetFileOpen(&pWindow, "Open Conversation",
+		if(!igdeCommonDialogs::GetFileOpen(pWindow, "Open Conversation",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetLoadSaveSystem()->GetConversationFilePatterns(), filename ) ){
 			return;
@@ -564,7 +564,7 @@ public:
 	
 	virtual igdeUndo::Ref OnAction(ceConversation *conversation){
 		decString filename(conversation->GetFilePath());
-		if(igdeCommonDialogs::GetFileSave(&pWindow, "Save Conversation",
+		if(igdeCommonDialogs::GetFileSave(pWindow, "Save Conversation",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetLoadSaveSystem()->GetConversationFilePatterns(), filename ) ){
 			pWindow.SaveConversation(filename);
@@ -652,7 +652,7 @@ public:
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		decString filename(conversation->GetCTSPath());
-		if(igdeCommonDialogs::GetFileOpen(&pWindow, "Open Conversation Test Setup",
+		if(igdeCommonDialogs::GetFileOpen(pWindow, "Open Conversation Test Setup",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetLoadSaveSystem()->GetCTSFilePatterns(), filename ) ){
 			conversation->SetCTSPath(filename);
@@ -674,7 +674,7 @@ public:
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		decString filename(conversation->GetCTSPath());
-		if(igdeCommonDialogs::GetFileSave(&pWindow, "Save Conversation Test Setup",
+		if(igdeCommonDialogs::GetFileSave(pWindow, "Save Conversation Test Setup",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetLoadSaveSystem()->GetCTSFilePatterns(), filename ) ){
 			conversation->SetCTSPath(filename);
@@ -696,7 +696,7 @@ public:
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		decString filename(conversation->GetCTAPath());
-		if(igdeCommonDialogs::GetFileOpen(&pWindow, "Open Conversation Actor Setup",
+		if(igdeCommonDialogs::GetFileOpen(pWindow, "Open Conversation Actor Setup",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetLoadSaveSystem()->GetCTAFilePatterns(), filename ) ){
 			pWindow.LoadCTA(filename);
@@ -721,7 +721,7 @@ public:
 		}
 		
 		decString filename(conversation->GetCTAPath());
-		if(igdeCommonDialogs::GetFileSave(&pWindow, "Save Conversation Actor Setup",
+		if(igdeCommonDialogs::GetFileSave(pWindow, "Save Conversation Actor Setup",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetLoadSaveSystem()->GetCTAFilePatterns(), filename ) ){
 			conversation->SetCTAPath(filename);
@@ -742,7 +742,7 @@ public:
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		decString filename(conversation->GetCTFIPath());
-		if(igdeCommonDialogs::GetFileOpen(&pWindow, "Open Conversation Test Game State",
+		if(igdeCommonDialogs::GetFileOpen(pWindow, "Open Conversation Test Game State",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetLoadSaveSystem()->GetCTGSFilePatterns(), filename ) ){
 			conversation->SetCTFIPath(filename);
@@ -764,7 +764,7 @@ public:
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		decString filename(conversation->GetCTFIPath());
-		if(igdeCommonDialogs::GetFileSave(&pWindow, "Save Conversation Test Game State",
+		if(igdeCommonDialogs::GetFileSave(pWindow, "Save Conversation Test Game State",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetLoadSaveSystem()->GetCTGSFilePatterns(), filename ) ){
 			conversation->SetCTFIPath(filename);
@@ -805,7 +805,7 @@ public:
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		decString filename(conversation->GetLangPackPath());
-		if(igdeCommonDialogs::GetFileOpen(&pWindow, "Open Language Pack",
+		if(igdeCommonDialogs::GetFileOpen(pWindow, "Open Language Pack",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		pWindow.GetLoadSaveSystem()->GetLangPackFPList(), filename)){
 			pWindow.AttachLangPack(filename);
@@ -829,7 +829,7 @@ public:
 		}
 		
 		if(langpack->GetChanged()){
-			switch(igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNoCancel,
+			switch(igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNoCancel,
 			"Detach Language Pack", "Language pack changed. Save before detaching?")){
 			case igdeCommonDialogs::ebYes:
 				pWindow.GetLoadSaveSystem()->SaveLangPack(*langpack);

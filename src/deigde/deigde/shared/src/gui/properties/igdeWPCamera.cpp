@@ -463,7 +463,7 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen)){}
 	
 	void OnActionCamera(igdeCamera &camera) override{
-		if(!igdeCommonDialogs::GetFileOpen(&pPanel, "Open Camera",
+		if(!igdeCommonDialogs::GetFileOpen(pPanel, "Open Camera",
 		*pPanel.GetEnvironment().GetFileSystemGame(), igdeWPCamera::patternCamera,
 		igdeWPCamera::lastCameraFile)){
 			return;
@@ -483,7 +483,7 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave)){}
 	
 	void OnActionCamera(igdeCamera &camera) override{
-		if(!igdeCommonDialogs::GetFileSave(&pPanel, "Save Camera",
+		if(!igdeCommonDialogs::GetFileSave(pPanel, "Save Camera",
 		*pPanel.GetEnvironment().GetFileSystemGame(), igdeWPCamera::patternCamera,
 		igdeWPCamera::lastCameraFile)){
 			return;

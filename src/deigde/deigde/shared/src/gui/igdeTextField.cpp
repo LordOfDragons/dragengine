@@ -248,6 +248,11 @@ void igdeTextField::NotifyEnterKey(){
 	});
 }
 
+void igdeTextField::OnLanguageChanged(){
+	igdeWidget::OnLanguageChanged();
+	
+	OnDescriptionChanged();
+}
 
 
 void igdeTextField::CreateNativeWidget(){

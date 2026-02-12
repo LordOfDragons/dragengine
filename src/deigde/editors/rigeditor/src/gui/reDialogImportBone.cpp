@@ -154,13 +154,13 @@ void reDialogImportBone::SetImportConstraints(bool import){
 
 bool reDialogImportBone::Accept(){
 	if(GetPath().IsEmpty()){
-		igdeCommonDialogs::Error(this, "Invalid value", "No path set.");
+		igdeCommonDialogs::Error(*this, "Invalid value", "No path set.");
 		return false;
 	}
 	
 	const float scale = GetScaling();
 	if(scale <= FLOAT_SAFE_EPSILON){
-		igdeCommonDialogs::Error(this, "Invalid value", "Scaling has to be 0 or higher.");
+		igdeCommonDialogs::Error(*this, "Invalid value", "Scaling has to be 0 or higher.");
 		return false;
 	}
 	

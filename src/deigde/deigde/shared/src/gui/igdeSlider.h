@@ -151,6 +151,9 @@ public:
 	
 	/** \brief Notify listeners value is changing. */
 	void NotifyValueChanging();
+	
+	/** \brief Active language changed. */
+	void OnLanguageChanged() override;
 	/*@}*/
 	
 	

@@ -111,8 +111,9 @@ void igdeNativeFoxStatusBar::DestroyNativeWidget(){
 ///////////////
 
 void igdeNativeFoxStatusBar::UpdateText(){
-	getStatusLine()->setNormalText(pOwner->GetText().GetString());
-	getStatusLine()->setText(pOwner->GetText().GetString());
+	const FXString text(igdeUIFoxHelper::TranslateIf(*pOwner, pOwner->GetText()));
+	getStatusLine()->setNormalText(text);
+	getStatusLine()->setText(text);
 }
 
 

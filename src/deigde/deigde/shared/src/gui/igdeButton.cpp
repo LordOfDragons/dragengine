@@ -187,6 +187,16 @@ void igdeButton::OnDestroyed(igdeAction *action){
 	pAction = nullptr;
 }
 
+void igdeButton::OnLanguageChanged(){
+	igdeWidget::OnLanguageChanged();
+	
+	if(GetNativeWidget()){
+		igdeNativeButton * const native = (igdeNativeButton*)GetNativeWidget();
+		native->UpdateText();
+		native->UpdateDescription();
+	}
+}
+
 
 
 void igdeButton::CreateNativeWidget(){
@@ -207,7 +217,6 @@ void igdeButton::DestroyNativeWidget(){
 	((igdeNativeButton*)GetNativeWidget())->DestroyNativeWidget();
 	DropNativeWidget();
 }
-
 
 
 void igdeButton::OnStyleChanged(){

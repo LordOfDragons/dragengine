@@ -162,7 +162,7 @@ public:
 		}
 		
 		if(pPanel.GetSynthesizer()->GetControllers().HasNamed(text)){
-			igdeCommonDialogs::Error(&pPanel, "Invalid Value", "Duplicate controller name");
+			igdeCommonDialogs::Error(pPanel, "Invalid Value", "Duplicate controller name");
 			textField->SetText(controller->GetName());
 			return {};
 		}

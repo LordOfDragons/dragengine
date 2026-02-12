@@ -226,12 +226,12 @@ public:
 		}
 		
 		decString name(property);
-		if(!igdeCommonDialogs::GetString(&pPanel, "Rename Property", "Name:", name) || name == property){
+		if(!igdeCommonDialogs::GetString(pPanel, "Rename Property", "Name:", name) || name == property){
 			return;
 		}
 		
 		if(pPanel.GetProperties().Has(name)){
-			igdeCommonDialogs::Error(&pPanel, "Rename Property", "Property exists already");
+			igdeCommonDialogs::Error(pPanel, "Rename Property", "Property exists already");
 			return;
 		}
 		
@@ -422,7 +422,7 @@ public:
 			text.AppendFormat("%s=%s", key.GetString(), v.GetString());
 		});
 		
-		igdeCommonDialogs::GetMultilineString(pPanel.GetParentWindow(),
+		igdeCommonDialogs::GetMultilineString(*pPanel.GetParentWindow(),
 			"Export To Text", "Properties", text);
 	}
 	
@@ -450,7 +450,7 @@ public:
 		decString text;
 		
 		while(true){
-			if(!igdeCommonDialogs::GetMultilineString(pPanel.GetParentWindow(),
+			if(!igdeCommonDialogs::GetMultilineString(*pPanel.GetParentWindow(),
 			"Import From Text", "Properties. One property per line in the form 'key=value'.", text)){
 				return;
 			}
@@ -462,7 +462,7 @@ public:
 				lineNumber++;
 				const int delimiter = line.Find('=');
 				if(delimiter < 1){
-					igdeCommonDialogs::ErrorFormat(pPanel.GetParentWindow(), "Import From Text",
+					igdeCommonDialogs::ErrorFormat(*pPanel.GetParentWindow(), "Import From Text",
 						"Invalid property on line %d: '%s'", lineNumber, line.GetString());
 					return false;
 				}
@@ -769,7 +769,7 @@ void meWPPropertyList::EditPropertyValueInDialog(){
 	const decString oldValue(selection->GetDetails().GetAt(0));
 	decString newValue(oldValue);
 	
-	if(!igdeCommonDialogs::GetMultilineString(this, "Edit Raw Property Value",
+	if(!igdeCommonDialogs::GetMultilineString(*this, "Edit Raw Property Value",
 		"Raw property value. Values entered here can violate the\n"
 		"property type so be careful what you enter", newValue)){
 			return;

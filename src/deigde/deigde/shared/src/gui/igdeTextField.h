@@ -175,6 +175,9 @@ public:
 	
 	/** \brief Notify listeners enter key has been pressed. */
 	virtual void NotifyEnterKey();
+	
+	/** \brief Active language changed. */
+	void OnLanguageChanged() override;
 	/*@}*/
 	
 	

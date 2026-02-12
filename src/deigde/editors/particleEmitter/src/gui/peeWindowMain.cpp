@@ -310,7 +310,7 @@ public:
 		deInputEvent::esmControl, deInputEvent::ekcN, deInputEvent::ekcN){}
 	
 	void OnAction() override{
-		if(igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo, "New Emitter",
+		if(igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "New Emitter",
 		"Creating a new emitter discarding the current one is that ok?") == igdeCommonDialogs::ebYes){
 			pWindow.CreateNewEmitter();
 		}
@@ -327,7 +327,7 @@ public:
 	
 	void OnAction() override{
 		decString filename(pWindow.GetEmitter()->GetFilePath());
-		if(!igdeCommonDialogs::GetFileOpen(&pWindow, "Open Emitter",
+		if(!igdeCommonDialogs::GetFileOpen(pWindow, "Open Emitter",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetLoadSaveSystem().GetEmitterFilePatterns(), filename ) ){
 			return;
@@ -356,7 +356,7 @@ public:
 	
 	void OnAction() override{
 		decString filename(pWindow.GetEmitter()->GetFilePath());
-		if(igdeCommonDialogs::GetFileSave(&pWindow, "Save Emitter",
+		if(igdeCommonDialogs::GetFileSave(pWindow, "Save Emitter",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetLoadSaveSystem().GetEmitterFilePatterns(), filename ) ){
 			pWindow.SaveEmitter(filename);

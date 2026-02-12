@@ -317,7 +317,7 @@ long igdeNativeFoxFileDialog::onBtnMkDir(FXObject*, FXSelector, void*){
 			}
 			
 		}catch(const deException &e){
-			igdeCommonDialogs::Exception(pOwner, e);
+			igdeCommonDialogs::Exception(*pOwner, e);
 			return 0;
 		}
 	}
@@ -332,7 +332,7 @@ long igdeNativeFoxFileDialog::onBtnMkDir(FXObject*, FXSelector, void*){
 		pVFS->DeleteFile(path);
 		
 	}catch(const deException &e){
-		igdeCommonDialogs::Exception(pOwner, e);
+		igdeCommonDialogs::Exception(*pOwner, e);
 		return 0;
 	}
 	

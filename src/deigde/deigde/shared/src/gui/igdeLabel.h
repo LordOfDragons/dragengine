@@ -132,6 +132,9 @@ public:
 	
 	/** \brief Set icon or nullptr. */
 	void SetIcon(igdeIcon *icon);
+	
+	/** \brief Active language changed. */
+	void OnLanguageChanged() override;
 	/*@}*/
 	
 	

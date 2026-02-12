@@ -125,7 +125,7 @@ void igdeNativeFoxProgressBar::UpdateEnabled(){
 }
 
 void igdeNativeFoxProgressBar::UpdateDescription(){
-	setHelpTag(pOwner->GetDescription().GetString());
+	setHelpTag(igdeUIFoxHelper::TranslateIf(*pOwner, pOwner->GetDescription()));
 }
 
 

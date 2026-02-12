@@ -88,6 +88,14 @@ void igdeContainer::RemoveAllChildren(){
 	pChildren.RemoveAll();
 }
 
+void igdeContainer::OnLanguageChanged(){
+	igdeWidget::OnLanguageChanged();
+	
+	pChildren.Visit([&](igdeWidget &child){
+		child.OnLanguageChanged();
+	});
+}
+
 
 
 void igdeContainer::DropNativeWidget(){

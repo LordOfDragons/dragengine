@@ -123,7 +123,7 @@ void igdeColorBox::cActionEditValues::OnAction(){
 	
 	codec.EncodeColor4(pColorBox.GetColor(), value);
 	
-	if(!igdeCommonDialogs::GetString(&pColorBox, GetText(), "Color:", value)){
+	if(!igdeCommonDialogs::GetString(pColorBox, GetText(), "Color:", value)){
 		return;
 	}
 	
@@ -155,7 +155,7 @@ void igdeColorBox::cActionEditHex::OnAction(){
 		decMath::clamp((int)(color.b * 255.0f), 0, 255),
 		decMath::clamp((int)(color.a * 255.0f), 0, 255));
 	
-	if(!igdeCommonDialogs::GetString(&pColorBox, GetText(), "Color:", value)){
+	if(!igdeCommonDialogs::GetString(pColorBox, GetText(), "Color:", value)){
 		return;
 	}
 	
@@ -284,6 +284,11 @@ void igdeColorBox::ShowContextMenu(const decPoint &position){
 	menu->Popup(*this, position);
 }
 
+void igdeColorBox::OnLanguageChanged(){
+	igdeWidget::OnLanguageChanged();
+	
+	OnDescriptionChanged();
+}
 
 
 void igdeColorBox::CreateNativeWidget(){

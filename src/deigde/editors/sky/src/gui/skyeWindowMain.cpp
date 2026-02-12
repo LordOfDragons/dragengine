@@ -319,7 +319,7 @@ public:
 		deInputEvent::esmControl, deInputEvent::ekcN, deInputEvent::ekcN){}
 	
 	void OnAction() override{
-		if(igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo, "New Sky",
+		if(igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "New Sky",
 		"Creating a new sky discarding the current one is that ok?") == igdeCommonDialogs::ebYes){
 			pWindow.CreateNewSky();
 		}
@@ -336,7 +336,7 @@ public:
 	
 	void OnAction() override{
 		decString filename(pWindow.GetSky()->GetFilePath());
-		if(!igdeCommonDialogs::GetFileOpen(&pWindow, "Open Sky",
+		if(!igdeCommonDialogs::GetFileOpen(pWindow, "Open Sky",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetLoadSaveSystem().GetSkyFilePatterns(), filename ) ){
 			return;
@@ -367,7 +367,7 @@ public:
 	
 	void OnAction() override{
 		decString filename(pWindow.GetSky()->GetFilePath());
-		if(igdeCommonDialogs::GetFileSave(&pWindow, "Save Sky",
+		if(igdeCommonDialogs::GetFileSave(pWindow, "Save Sky",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetLoadSaveSystem().GetSkyFilePatterns(), filename ) ){
 			pWindow.SaveSky(filename);

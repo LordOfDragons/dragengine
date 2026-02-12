@@ -107,9 +107,7 @@ pResizer(nullptr)
 		pTreeList->disable();
 	}
 	
-	//setTipText( owner.GetDescription().GetString() ); // nto supported
-	pTreeList->setHelpText(powner.GetDescription().GetString());
-	
+	UpdateDescription();
 	BuildTree();
 	
 	pTreeList->setCurrentItem(powner.GetSelection() ?
@@ -404,8 +402,8 @@ void igdeNativeFoxTreeList::UpdateRows(){
 }
 
 void igdeNativeFoxTreeList::UpdateDescription(){
-	const char * const description = pOwner->GetDescription();
-	//pTreeList->setTipText( description ); // not supported
+	const FXString description(igdeUIFoxHelper::TranslateIf(*pOwner, pOwner->GetDescription()));
+	//pTreeList->setTipText(description); // not supported
 	pTreeList->setHelpText(description);
 }
 
@@ -469,7 +467,7 @@ long igdeNativeFoxTreeList::onExpanded(FXObject*, FXSelector, void *pdata){
 		
 	}catch(const deException &e){
 		pOwner->GetLogger()->LogException("IGDE", e);
-		igdeCommonDialogs::Exception(pOwner, e);
+		igdeCommonDialogs::Exception(*pOwner, e);
 		return 0;
 	}
 	
@@ -485,7 +483,7 @@ long igdeNativeFoxTreeList::onCollapsed(FXObject*, FXSelector, void *pdata){
 		
 	}catch(const deException &e){
 		pOwner->GetLogger()->LogException("IGDE", e);
-		igdeCommonDialogs::Exception(pOwner, e);
+		igdeCommonDialogs::Exception(*pOwner, e);
 		return 0;
 	}
 	
@@ -510,7 +508,7 @@ long igdeNativeFoxTreeList::onListChanged(FXObject*, FXSelector, void*){
 		
 	}catch(const deException &e){
 		pOwner->GetLogger()->LogException("IGDE", e);
-		igdeCommonDialogs::Exception(pOwner, e);
+		igdeCommonDialogs::Exception(*pOwner, e);
 		return 0;
 	}
 	
@@ -550,7 +548,7 @@ long igdeNativeFoxTreeList::onListDoubleClicked(FXObject*, FXSelector, void *pda
 		
 	}catch(const deException &e){
 		pOwner->GetLogger()->LogException("IGDE", e);
-		igdeCommonDialogs::Exception(pOwner, e);
+		igdeCommonDialogs::Exception(*pOwner, e);
 	}
 	return 0;
 }

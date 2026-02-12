@@ -86,7 +86,7 @@ public:
 		}
 		
 		if(pPanel.GetGameDefinition()->GetSkins().HasWithPath(editPath->GetPath())){
-			igdeCommonDialogs::Information(pPanel.GetParentWindow(), "Change skin emitter path",
+			igdeCommonDialogs::Information(*pPanel.GetParentWindow(), "Change skin emitter path",
 				"A skin emitter with this path exists already.");
 			editPath->SetPath(skin->GetPath());
 			return;

@@ -339,7 +339,7 @@ public:
 		}
 		
 		if(pPanel.GetEngine()->GetVirtualFileSystem()->ExistsFile(decPath::CreatePathUnix(editPath->GetPath()))){
-			igdeCommonDialogs::eButton answer = igdeCommonDialogs::Question(&pPanel,
+			igdeCommonDialogs::eButton answer = igdeCommonDialogs::Question(pPanel,
 				igdeCommonDialogs::ebsYesNoCancel, "Set Height Image Path",
 				"Image to save the height image to exists already.\n"
 				"Do you want to import image before changing path?\n"
@@ -356,14 +356,14 @@ public:
 				
 				if(image->GetComponentCount() != 1){
 					image = nullptr;
-					igdeCommonDialogs::Error(&pPanel, "Import Height Image",
+					igdeCommonDialogs::Error(pPanel, "Import Height Image",
 						"The height image does not have exactly 1 color channel. Only\n"
 						"images with 1 color channel can be used for height terrains.");
 				}
 				
 				if(image && (image->GetWidth() != resolution || image->GetHeight() != resolution)){
 					image = nullptr;
-					igdeCommonDialogs::Error(&pPanel, "Import Height Image",
+					igdeCommonDialogs::Error(pPanel, "Import Height Image",
 						"The image does not match the height image dimension set in the height terrain.");
 					// NOTE allow the user to scale the height image... maybe.. scaling is tricky
 				}
@@ -391,7 +391,7 @@ public:
 		}
 		
 		if(pPanel.GetEngine()->GetVirtualFileSystem()->ExistsFile(decPath::CreatePathUnix(editPath->GetPath()))){
-			igdeCommonDialogs::eButton answer = igdeCommonDialogs::Question(&pPanel,
+			igdeCommonDialogs::eButton answer = igdeCommonDialogs::Question(pPanel,
 				igdeCommonDialogs::ebsYesNoCancel, "Set Visibility Image Path",
 				"Image to save the visibility image to exists already.\n"
 				"Do you want to import image before changing path?\n"
@@ -410,14 +410,14 @@ public:
 				
 				if(image->GetComponentCount() != 1){
 					image = nullptr;
-					igdeCommonDialogs::Error(&pPanel, "Import Visibility Image",
+					igdeCommonDialogs::Error(pPanel, "Import Visibility Image",
 						"The visibility image does not have exactly 1 color channel. Only\n"
 						"images with 1 color channel can be used for visibility terrains.");
 				}
 				
 				if(image && (image->GetWidth() != resolution || image->GetHeight() != resolution)){
 					image = nullptr;
-					igdeCommonDialogs::Error(&pPanel, "Import Visibility Image",
+					igdeCommonDialogs::Error(pPanel, "Import Visibility Image",
 						"The image does not match the visibility image dimension set in the visibility terrain.");
 					// NOTE allow the user to scale the visibility image... maybe.. scaling is tricky
 				}
@@ -483,9 +483,9 @@ public:
 		}
 		
 		decString name("texture");
-		while(igdeCommonDialogs::GetString(&pPanel, "Add Texture", "Enter the name of the new texture", name)){
+		while(igdeCommonDialogs::GetString(pPanel, "Add Texture", "Enter the name of the new texture", name)){
 			if(sector->GetTextures().HasNamed(name)){
-				igdeCommonDialogs::Error(&pPanel, "Invalid Texture Name", "A texture with this name exists already.");
+				igdeCommonDialogs::Error(pPanel, "Invalid Texture Name", "A texture with this name exists already.");
 				continue;
 			}
 			
@@ -635,10 +635,10 @@ public:
 		meHeightTerrainSector * const sector = pPanel.GetSector();
 		if(sector){
 			decString name("navspace");
-			while(igdeCommonDialogs::GetString(&pPanel, "Add Navigation Space",
+			while(igdeCommonDialogs::GetString(pPanel, "Add Navigation Space",
 			"Enter the name of the new navigation space", name)){
 				if(sector->GetNavSpaces().HasNamed(name)){
-					igdeCommonDialogs::Error(&pPanel, "Invalid Navigation Space Name",
+					igdeCommonDialogs::Error(pPanel, "Invalid Navigation Space Name",
 						"A navigation space with this name exists already.");
 					continue;
 				}
@@ -754,10 +754,10 @@ public:
 	igdeUndo::Ref OnAction(meWorld*) override{
 		meHeightTerrainNavSpace * const navspace = pPanel.GetActiveNavSpace();
 		decString name("type");
-		while(igdeCommonDialogs::GetString(&pPanel, "Add Navigation Space Type",
+		while(igdeCommonDialogs::GetString(pPanel, "Add Navigation Space Type",
 		"Enter the name of the new navigation space type", name)){
 			if(navspace->GetTypes().HasNamed(name)){
-				igdeCommonDialogs::Error(&pPanel, "Invalid Navigation Space Type Name",
+				igdeCommonDialogs::Error(pPanel, "Invalid Navigation Space Type Name",
 					"A navigation space type with this name exists already.");
 				continue;
 			}
@@ -800,7 +800,7 @@ public:
 			return {};
 		}
 		if(pPanel.GetActiveNavSpace()->GetTypes().HasNamed(textField->GetText())){
-			igdeCommonDialogs::Error(&pPanel, "Invalid Name", "A navigation space type with this name exists already.");
+			igdeCommonDialogs::Error(pPanel, "Invalid Name", "A navigation space type with this name exists already.");
 			pPanel.UpdateNavSpaceType();
 			return {};
 		}
@@ -1057,7 +1057,7 @@ public:
 	
 	virtual igdeUndo::Ref OnAction(meWorld *world){
 		decString name("vlayer");
-		if(!igdeCommonDialogs::GetString(&pPanel, "Add Vegetation Layer", "Enter name of new layer", name)){
+		if(!igdeCommonDialogs::GetString(pPanel, "Add Vegetation Layer", "Enter name of new layer", name)){
 			return {};
 		}
 		

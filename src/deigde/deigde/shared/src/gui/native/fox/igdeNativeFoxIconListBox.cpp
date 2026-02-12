@@ -92,7 +92,7 @@ FXString igdeNativeFoxIconListBoxItem::getTipText() const{
 		return pListItem->GetDescription().GetString();
 		
 	}else{
-		return pList->GetDescription().GetString();
+		return igdeUIFoxHelper::TranslateIf(*pList, pList->GetDescription());
 	}
 }
 
@@ -180,8 +180,9 @@ pResizer(nullptr)
 		pListBox->disable();
 	}
 	
-	//setTipText( owner.GetDescription().GetString() ); // not supported
-	pListBox->setHelpText(powner.GetDescription().GetString());
+	const FXString description(igdeUIFoxHelper::TranslateIf(powner, powner.GetDescription()));
+	//setTipText(description); // not supported
+	pListBox->setHelpText(description);
 	
 	UpdateMinimumSize();
 	
@@ -323,8 +324,9 @@ void igdeNativeFoxIconListBox::UpdateStyles(){
 }
 
 void igdeNativeFoxIconListBox::UpdateDescription(){
-	//pListBox->setTipText( pOwner->GetDescription().GetString() ); // not supported
-	pListBox->setHelpText(pOwner->GetDescription().GetString());
+	const FXString description(igdeUIFoxHelper::TranslateIf(*pOwner, pOwner->GetDescription()));
+	//setTipText(description); // not supported
+	pListBox->setHelpText(description);
 }
 
 void igdeNativeFoxIconListBox::UpdateEnabled(){
@@ -476,7 +478,7 @@ long igdeNativeFoxIconListBox::onListChanged(FXObject*, FXSelector, void*){
 		
 	}catch(const deException &e){
 		pOwner->GetLogger()->LogException("IGDE", e);
-		igdeCommonDialogs::Exception(pOwner, e);
+		igdeCommonDialogs::Exception(*pOwner, e);
 	}
 	return 1;
 }
@@ -547,7 +549,7 @@ long igdeNativeFoxIconListBox::onListDoubleClicked(FXObject*, FXSelector, void *
 		
 	}catch(const deException &e){
 		pOwner->GetLogger()->LogException("IGDE", e);
-		igdeCommonDialogs::Exception(pOwner, e);
+		igdeCommonDialogs::Exception(*pOwner, e);
 	}
 	return 1;
 }

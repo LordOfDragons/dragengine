@@ -125,6 +125,11 @@ void igdeSpinTextField::SetRange(int lower, int upper){
 	}
 }
 
+void igdeSpinTextField::OnLanguageChanged(){
+	igdeWidget::OnLanguageChanged();
+	
+	OnDescriptionChanged();
+}
 
 
 void igdeSpinTextField::AddListener(igdeSpinTextFieldListener *listener){
@@ -137,6 +142,7 @@ void igdeSpinTextField::AddListener(igdeSpinTextFieldListener *listener){
 void igdeSpinTextField::RemoveListener(igdeSpinTextFieldListener *listener){
 	pListeners.Remove(listener);
 }
+
 void igdeSpinTextField::NotifyValueChanged(){
 	const auto listeners(pListeners);
 	listeners.Visit([&](igdeSpinTextFieldListener &l){

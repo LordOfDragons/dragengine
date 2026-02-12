@@ -78,6 +78,9 @@ public:
 	
 	/** \brief Remove all children. */
 	virtual void RemoveAllChildren();
+	
+	/** \brief Active language changed. */
+	void OnLanguageChanged() override;
 	/*@}*/
 	
 	

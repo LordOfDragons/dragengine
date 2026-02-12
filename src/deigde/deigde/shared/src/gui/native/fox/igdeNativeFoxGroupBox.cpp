@@ -64,7 +64,7 @@ igdeNativeFoxGroupBox::igdeNativeFoxGroupBox(){}
 
 igdeNativeFoxGroupBox::igdeNativeFoxGroupBox(igdeGroupBox &powner, FXComposite *pparent,
 int layoutFlags,const igdeGuiTheme &guitheme) :
-FXGroupBox(pparent, powner.GetTitle().GetString(), layoutFlags,
+FXGroupBox(pparent, igdeUIFoxHelper::TranslateIf(powner, powner.GetTitle()), layoutFlags,
 	0, 0, 0, 0,
 	GroupBoxPadLeft(guitheme), GroupBoxPadRight(guitheme),
 	GroupBoxPadTop(guitheme), GroupBoxPadBottom(guitheme)),
@@ -79,8 +79,11 @@ pFont(GroupBoxFont(powner, guitheme))
 		setLayoutHints(pCollapsedFlags);
 	}
 	
-// 	setTipText( owner.GetDescription().GetString() ); // not supported
-// 	setHelpText( owner.GetDescription().GetString() );
+	/* not supported by FOX
+	const FXString description = igdeUIFoxHelper::TranslateIf(powner, powner.GetDescription());
+	setTipText(description);
+	setHelpText(description);
+	*/
 }
 
 igdeNativeFoxGroupBox::~igdeNativeFoxGroupBox(){
@@ -140,7 +143,7 @@ void igdeNativeFoxGroupBox::UpdateCollapsed(){
 }
 
 void igdeNativeFoxGroupBox::UpdateTitle(){
-	setText(pOwner->GetTitle().GetString());
+	setText(igdeUIFoxHelper::TranslateIf(*pOwner, pOwner->GetTitle()));
 }
 
 void igdeNativeFoxGroupBox::UpdateTitleAlignment(){

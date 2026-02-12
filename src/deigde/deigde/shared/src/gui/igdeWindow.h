@@ -126,6 +126,9 @@ public:
 	
 	/** \brief Parent window. */
 	igdeWindow *GetParentWindow() override;
+	
+	/** \brief Active language changed. */
+	void OnLanguageChanged() override;
 	/*@}*/
 	
 	

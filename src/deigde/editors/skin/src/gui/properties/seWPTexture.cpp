@@ -293,7 +293,7 @@ public:
 		}
 		
 		if(pPanel.GetSkin()->GetTextures().HasNamed(value)){
-			igdeCommonDialogs::Error(&pPanel, "Set Texture Name", "Texture name exists already");
+			igdeCommonDialogs::Error(pPanel, "Set Texture Name", "Texture name exists already");
 			textField->SetText(texture->GetName());
 			return;
 		}

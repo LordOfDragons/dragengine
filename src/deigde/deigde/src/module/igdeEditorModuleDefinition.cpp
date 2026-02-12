@@ -35,6 +35,7 @@
 #include <deigde/engine/igdeEngineController.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/module/igdeEditorModule.h>
+#include <deigde/localization/igdeTranslationManager.h>
 
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/common/xmlparser/decXmlParser.h>
@@ -132,6 +133,11 @@ bool igdeEditorModuleDefinition::LoadModule(igdeEnvironment *environment){
 		decPath pathEditorLib(basePathEditorLib);
 		pathEditorLib.AddComponent(pDirectoryName);
 		pModule->SetEditorPathLib(pathEditorLib.GetPathNative());
+		
+		decPath path;
+		path.SetFromUnix("/data/modules");
+		path.AddComponent(pDirectoryName);
+		environment->GetTranslationManager().LoadLanguagePacks(path, pModule->GetLanguagePacks());
 		
 		pModule->Start();
 		

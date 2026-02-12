@@ -162,6 +162,13 @@ void igdeTabBook::RemoveAllChildren(){
 	igdeContainer::RemoveAllChildren();
 }
 
+void igdeTabBook::OnLanguageChanged(){
+	igdeContainer::OnLanguageChanged();
+	
+	if(GetNativeWidget()){
+		// TODO this is complicated...
+	}
+}
 
 
 void igdeTabBook::CreateNativeWidget(){

@@ -338,7 +338,7 @@ public:
 	
 	virtual void OnAction(){
 		if(pWindow.GetSAnimation() && pWindow.GetSAnimation()->GetChanged()
-		&& igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo, "New Speech Animation",
+		&& igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "New Speech Animation",
 		"Speech animated changed. Creating new Speech Animation discards the current one. Is that ok?")
 		!= igdeCommonDialogs::ebYes){
 			return;
@@ -357,14 +357,14 @@ public:
 	
 	virtual void OnAction(){
 		if(pWindow.GetSAnimation() && pWindow.GetSAnimation()->GetChanged()
-		&& igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo, "Open Speech Animation",
+		&& igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "Open Speech Animation",
 		"Speech animated changed. Open Speech Animation discards the current one. Is that ok?")
 		!= igdeCommonDialogs::ebYes){
 			return;
 		}
 		
 		decString filename(pWindow.GetSAnimation()->GetFilePath());
-		if(!igdeCommonDialogs::GetFileOpen(&pWindow, "Open Speech Animation",
+		if(!igdeCommonDialogs::GetFileOpen(pWindow, "Open Speech Animation",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		pWindow.GetLoadSaveSystem().GetFilePatternList(), filename ) ){
 			return;
@@ -384,7 +384,7 @@ public:
 	
 	virtual void OnAction(){
 		decString filename(pWindow.GetSAnimation()->GetFilePath());
-		if(igdeCommonDialogs::GetFileSave(&pWindow, "Save Speech Animation",
+		if(igdeCommonDialogs::GetFileSave(pWindow, "Save Speech Animation",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		pWindow.GetLoadSaveSystem().GetFilePatternList(), filename ) ){
 			pWindow.SaveSAnimation(filename);
@@ -487,12 +487,12 @@ public:
 		const saePhoneme::List &phonemes = sanimation->GetPhonemes();
 		decString ipaStringUtf8;
 		
-		while(igdeCommonDialogs::GetString(&pWindow, "Add Phoneme",
+		while(igdeCommonDialogs::GetString(pWindow, "Add Phoneme",
 		"IPA Symbol (Unicode):", ipaStringUtf8)){
 			const decUnicodeString ipaString(decUnicodeString::NewFromUTF8(ipaStringUtf8));
 			
 			if(ipaString.GetLength() != 1){
-				igdeCommonDialogs::Error(&pWindow, "Add Phoneme", "Enter single Unicode IPA");
+				igdeCommonDialogs::Error(pWindow, "Add Phoneme", "Enter single Unicode IPA");
 				continue;
 			}
 			
@@ -501,7 +501,7 @@ public:
 			if(phonemes.HasMatching([ipa](const saePhoneme &p){
 				return p.GetIPA() == ipa;
 			})){
-				igdeCommonDialogs::Error(&pWindow, "Add Phoneme",
+				igdeCommonDialogs::Error(pWindow, "Add Phoneme",
 					"A phoneme with this IPA symbol exists already.");
 				continue;
 			}
@@ -550,14 +550,14 @@ public:
 		const saeWord::List &wordList = sanimation->GetWords();
 		decString name;
 		
-		while(igdeCommonDialogs::GetString(&pWindow, "Add Word", "Name:", name)){
+		while(igdeCommonDialogs::GetString(pWindow, "Add Word", "Name:", name)){
 			if(name.IsEmpty()){
-				igdeCommonDialogs::Error(&pWindow, "Add Word", "Name can not be empty");
+				igdeCommonDialogs::Error(pWindow, "Add Word", "Name can not be empty");
 				continue;
 			}
 			
 			if(wordList.HasNamed(name)){
-				igdeCommonDialogs::Error(&pWindow, "Add Word", "A word with this name exists already.");
+				igdeCommonDialogs::Error(pWindow, "Add Word", "A word with this name exists already.");
 				continue;
 			}
 			
@@ -583,7 +583,7 @@ public:
 		const saeWord::List &wordList = sanimation->GetWords();
 		decString input;
 		
-		while(igdeCommonDialogs::GetMultilineString(&pWindow,
+		while(igdeCommonDialogs::GetMultilineString(pWindow,
 		"Add Words", "Names (lines with 'word phonetics'):", input)){
 			const decStringList lines(input.Split('\n'));
 			const int countLines = lines.GetCount();
@@ -596,13 +596,13 @@ public:
 					continue;
 				}
 				if(parts.GetCount() != 2){
-					igdeCommonDialogs::Error(&pWindow, "Add Words",
+					igdeCommonDialogs::Error(pWindow, "Add Words",
 						"Invalid format. Words have to be a new-line separated list of "
 						"word where each word is of the form 'word phonetics'.");
 				}
 				
 				if(wordList.HasNamed(parts.First())){
-					igdeCommonDialogs::ErrorFormat(&pWindow, "Add Words", "A word with name '%s' "
+					igdeCommonDialogs::ErrorFormat(pWindow, "Add Words", "A word with name '%s' "
 						"exists already.", parts.First().GetString());
 					addWordsList.RemoveAll();
 					break;

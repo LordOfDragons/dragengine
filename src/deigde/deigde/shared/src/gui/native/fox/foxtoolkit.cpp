@@ -32,6 +32,8 @@
 #include "../../igdeWidget.h"
 #include "../../igdeContainer.h"
 #include "../../resources/igdeHotKey.h"
+#include "../../../environment/igdeEnvironment.h"
+#include "../../../localization/igdeTranslationManager.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -334,6 +336,24 @@ FXString igdeUIFoxHelper::FilePatternListToFOX(const igdeFilePattern::List &file
 	return FXString(foxString.GetString());
 }
 
+FXString igdeUIFoxHelper::FilePatternListToFOX(const igdeWidget &widget,
+const igdeFilePattern::List &filePatterns){
+	const igdeTranslationManager &tm = widget.GetEnvironment().GetTranslationManager();
+	decString foxString;
+	
+	filePatterns.Visit([&](const igdeFilePattern &fp){
+		if(!foxString.IsEmpty()){
+			foxString.AppendCharacter('\n');
+		}
+		
+		const decString tname(tm.TranslateIf(decUnicodeString::NewFromUTF8(fp.GetName())).ToUTF8());
+		
+		foxString.AppendFormat("%s (%s)", tname.GetString(), fp.GetPattern().GetString());
+	});
+	
+	//foxString.Append( "\nAll Files (*)" );
+	return FXString(foxString.GetString());
+}
 
 
 int igdeUIFoxHelper::GetChildLayoutFlags(igdeWidget *widget, int defaultFlags){
@@ -465,6 +485,15 @@ int igdeUIFoxHelper::DebugCountWindows(FXWindow *rootWindow){
 		w = w->getNext();
 	}
 	return count;
+}
+
+FXString igdeUIFoxHelper::Translate(const igdeWidget &widget, const char *name){
+	return widget.GetEnvironment().GetTranslationManager().Translate(name).ToUTF8().GetString();
+}
+
+FXString igdeUIFoxHelper::TranslateIf(const igdeWidget &widget, const char *text){
+	return widget.GetEnvironment().GetTranslationManager().
+		TranslateIf(decUnicodeString::NewFromUTF8(text)).ToUTF8().GetString();
 }
 
 #endif

@@ -274,6 +274,9 @@ public:
 	
 	/** \brief Notify listeners double clicked on item. */
 	virtual void NotifyDoubleClickItem(int index);
+	
+	/** \brief Active language changed. */
+	void OnLanguageChanged() override;
 	/*@}*/
 	
 	

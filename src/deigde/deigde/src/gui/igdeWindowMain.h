@@ -30,9 +30,10 @@
 #include "../configuration/igdeConfigurationLocal.h"
 #include "../template/igdeTemplate.h"
 
-#include <deigde/environment/igdeEnvironment.h>
 #include <deigde/engine/textureProperties/igdeTextureProperty.h>
-#include <deigde/logger/igdeLoggerHistory.h>
+#include <deigde/environment/igdeEnvironment.h>
+#include <deigde/gameproject/igdeGameProject.h>
+#include <deigde/gamedefinition/igdeGameDefinition.h>
 #include <deigde/gui/igdeMainWindow.h>
 #include <deigde/gui/igdeSwitcher.h>
 #include <deigde/gui/igdeProgressBar.h>
@@ -48,9 +49,9 @@
 #include <deigde/gui/resources/igdeIcon.h>
 #include <deigde/gui/resources/igdeFont.h>
 #include <deigde/gui/theme/igdeGuiTheme.h>
+#include <deigde/logger/igdeLoggerHistory.h>
 #include <deigde/resourceloader/igdeResourceLoader.h>
-#include <deigde/gameproject/igdeGameProject.h>
-#include <deigde/gamedefinition/igdeGameDefinition.h>
+#include <deigde/localization/igdeTranslationManager.h>
 
 #include <dragengine/common/collection/decTDictionary.h>
 #include <dragengine/common/math/decMath.h>
@@ -100,6 +101,7 @@ private:
 	igdeGameProject::Ref pGameProject;
 	igdeGuiTheme::Ref pDefaultGuiTheme;
 	GuiThemeMap pGuiThemes;
+	deTUniqueReference<igdeTranslationManager> pTranslationManager;
 	igdeSharedFontList *pSharedFontList;
 	deRig::Ref pSharedModelCollisionRig;
 	igdeResourceLoader *pResourceLoader;
@@ -242,6 +244,9 @@ public:
 	/** Default GuiTheme. */
 	inline const igdeGuiTheme::Ref &GetDefaultGuiTheme() const{ return pDefaultGuiTheme; }
 	
+	/** Translation manager. */
+	inline const deTUniqueReference<igdeTranslationManager> &GetTranslationManager() const{ return pTranslationManager; }
+	
 	/** Shared font list. */
 	inline igdeSharedFontList &GetSharedFontList() const{ return *pSharedFontList; }
 	
@@ -361,6 +366,8 @@ public:
 	/** Re-find and add skies. */
 	void ReFindAndAddSkies();
 	
+	/** Change language. */
+	void ChangeLanguage(const decString &language);
 	
 	
 	/** Sets the visibility of the progress bar in the status bar. */

@@ -124,7 +124,7 @@ public:
 		}
 		
 		decString filename(pTextField.GetText().IsEmpty() ? decString("/igde/skies") : pTextField.GetText());
-		if(!igdeCommonDialogs::GetFileOpen(&pPanel, "Select Sky",
+		if(!igdeCommonDialogs::GetFileOpen(pPanel, "Select Sky",
 		*pPanel.GetEnvironment().GetFileSystemGame(),
 		*pPanel.GetEnvironment().GetOpenFilePatternList( igdeEnvironment::efpltSky ), filename ) ){
 			return;

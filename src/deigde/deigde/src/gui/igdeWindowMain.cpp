@@ -182,7 +182,7 @@ public:
 		}
 		
 		decString filename(pWindow.GetGameProject() ? pWindow.GetGameProject()->GetFilePath() : decString());
-		if(igdeCommonDialogs::GetFileOpen(&pWindow, "Open Game Project",
+		if(igdeCommonDialogs::GetFileOpen(pWindow, "Open Game Project",
 		pWindow.GetLoadSaveSystem()->GetOpenFilePatternList(igdeLoadSaveSystem::efplGameProject), filename)){
 			pWindow.LoadGameProject(filename);
 		}
@@ -240,7 +240,7 @@ public:
 		}
 		
 		decString filename(pWindow.GetGameProject()->GetFilePath());
-		if(igdeCommonDialogs::GetFileOpen(&pWindow, "Save Game Project",
+		if(igdeCommonDialogs::GetFileOpen(pWindow, "Save Game Project",
 		pWindow.GetLoadSaveSystem()->GetSaveFilePatternList(igdeLoadSaveSystem::efplGameProject), filename)){
 			pWindow.SaveGameProject(filename);
 		}
@@ -510,6 +510,10 @@ pFirstEngineRun(true)
 		pInitLogger(); // log file depends on VFS to be ready
 		
 		pConfiguration.LogImportantValues();
+		
+		pTranslationManager = deTUniqueReference<igdeTranslationManager>::New(pEnvironmentIGDE);
+		pTranslationManager->LoadIgdeLanguagePacks(decPath::CreatePathUnix("/data/languages"));
+		pConfiguration.SetLanguage(pTranslationManager->GetActiveLanguage());
 		
 		pUIHelper = new igdeUIHelper(pEnvironmentIGDE);
 		pUIHelperProperties = new igdeUIHelper(*pUIHelper);
@@ -802,12 +806,12 @@ bool igdeWindowMain::LoadGameProject(const char *filename){
 		
 	}catch(const deException &e){
 		GetLogger()->LogException(LOGSOURCE, e);
-		igdeCommonDialogs::ErrorFormat(this, "Open Game Project",
+		igdeCommonDialogs::ErrorFormat(*this, "Open Game Project",
 			"Failed loading game project: %s", e.GetDescription().GetString());
 		
 		const int index = pConfiguration.GetRecentProjectList().IndexOf(filename);
 		if(index != -1){
-			if(igdeCommonDialogs::Question(this, igdeCommonDialogs::ebsYesNo, "Open Game Project",
+			if(igdeCommonDialogs::Question(*this, igdeCommonDialogs::ebsYesNo, "Open Game Project",
 			"Remove game project from recent file list?") == igdeCommonDialogs::ebYes){
 				pConfiguration.GetRecentProjectList().RemoveFrom(index);
 				pConfiguration.SaveConfiguration();
@@ -873,7 +877,7 @@ igdeGameDefinition::Ref igdeWindowMain::CreateNewGameDefinition(){
 
 void igdeWindowMain::DisplayException(const deException &exception){
 	GetLogger()->LogException(LOGSOURCE, exception);
-	igdeCommonDialogs::Exception(this, exception);
+	igdeCommonDialogs::Exception(*this, exception);
 }
 
 void igdeWindowMain::ActiveModuleSharedMenusChanged(){
@@ -1043,6 +1047,49 @@ void igdeWindowMain::ReFindAndAddSkies(){
 	}
 }
 
+void igdeWindowMain::ChangeLanguage(const decString &language){
+	// change language in the translation manager. this replaces the active language packs
+	// with all base IGDE language packs matching the selected language
+	pTranslationManager->SetActiveLanguage(language);
+	
+	if(language != "en"){
+		// add english language pack from all active modules as fallback for missing translations
+		pModuleManager->GetModules().Visit([&](igdeEditorModuleDefinition &md){
+			if(md.IsModuleRunning()){
+				md.GetModule()->GetLanguagePacks().Visit([&](const igdeLanguagePack::Ref &lp){
+					if(lp->GetLanguage() == "en"){
+						pTranslationManager->AddActiveLanguagePack(lp);
+					}
+				});
+			}
+		});
+	}
+	
+	// add language packs from all active modules matching the selected language
+	pModuleManager->GetModules().Visit([&](igdeEditorModuleDefinition &md){
+		if(md.IsModuleRunning()){
+			md.GetModule()->GetLanguagePacks().Visit([&](const igdeLanguagePack::Ref &lp){
+				if(lp->GetLanguage() == language){
+					pTranslationManager->AddActiveLanguagePack(lp);
+				}
+			});
+		}
+	});
+	
+	// save the new language in the configuration and save to disk
+	pConfiguration.SetLanguage(language);
+	pConfiguration.SaveConfiguration();
+	
+	// update all UI elements potentially affected by the new language
+	pModuleManager->GetModules().Visit([&](igdeEditorModuleDefinition &md){
+		if(md.IsModuleRunning()){
+			md.GetModule()->OnLanguageChanged();
+		}
+	});
+	
+	RebuildMenu();
+	RebuildToolBars();
+}
 
 
 void igdeWindowMain::SetProgressVisible(bool visible){
@@ -1397,7 +1444,7 @@ bool igdeWindowMain::RequestSaveDocuments(const char *title, const char *message
 		text += DEJoin(changedDocuments, ", ");
 		
 		//MBOX_QUIT_SAVE_CANCEL
-		switch(igdeCommonDialogs::Question(this, igdeCommonDialogs::ebsYesNoCancel, title, text)){
+		switch(igdeCommonDialogs::Question(*this, igdeCommonDialogs::ebsYesNoCancel, title, text)){
 		case igdeCommonDialogs::ebNo:
 			return true; // do not save and continue
 			
@@ -1417,7 +1464,7 @@ bool igdeWindowMain::RequestSaveDocuments(const char *title, const char *message
 		const decStringList parts(document.Split(':'));
 		
 		if(parts.GetCount() != 2){
-			igdeCommonDialogs::Error(this, title, "Internal error");
+			igdeCommonDialogs::Error(*this, title, "Internal error");
 			return false;
 		}
 		
@@ -1427,7 +1474,7 @@ bool igdeWindowMain::RequestSaveDocuments(const char *title, const char *message
 		
 		if(!moduleDefinition || !moduleDefinition->IsModuleRunning()
 		|| !moduleDefinition->GetModule()->SaveDocument(docfile)){
-			igdeCommonDialogs::ErrorFormat(this, title, "Failed to save '%s'", docfile.GetString());
+			igdeCommonDialogs::ErrorFormat(*this, title, "Failed to save '%s'", docfile.GetString());
 			return false;
 		}
 	}

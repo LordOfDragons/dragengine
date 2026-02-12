@@ -354,7 +354,7 @@ void meViewEditorSelect::OnLeftMouseButtonRelease(int x, int y, bool shift, bool
 					hitList.Visit(visitor);
 					
 					int selectionIndex = 0;
-					if(igdeCommonDialogs::SelectString(&GetView(), "Choose Element",
+					if(igdeCommonDialogs::SelectString(GetView(), "Choose Element",
 					"Choose element to select/deselect:", visitor.selectionList, selectionIndex)){
 						pCLSelect->RunAction(selectionIndex);
 					}

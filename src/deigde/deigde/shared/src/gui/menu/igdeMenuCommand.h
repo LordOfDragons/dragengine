@@ -122,6 +122,9 @@ public:
 	/** \brief Set action or nullptr. */
 	void SetAction(igdeAction *action);
 	
+	/** \brief Active language changed. */
+	void OnLanguageChanged() override;
+	
 	
 	
 	/**

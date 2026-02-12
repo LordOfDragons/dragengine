@@ -163,6 +163,9 @@ public:
 	
 	/** \brief Show context menu at position. */
 	virtual void ShowContextMenu(const decPoint &position);
+	
+	/** \brief Active language changed. */
+	void OnLanguageChanged() override;
 	/*@}*/
 	
 	

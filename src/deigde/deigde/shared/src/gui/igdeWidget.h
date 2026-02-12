@@ -185,6 +185,9 @@ public:
 	/** \brief GuiTheme changed. */
 	virtual void OnGuiThemeChanged();
 	
+	/** \brief Active language changed. */
+	virtual void OnLanguageChanged();
+	
 	
 protected:
 	/** \brief Visible changed. */

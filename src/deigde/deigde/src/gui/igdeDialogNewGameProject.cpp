@@ -412,12 +412,12 @@ bool igdeDialogNewGameProject::CheckValidInput(){
 	
 	if(pEditName->GetText().IsEmpty()){
 		pEditName->Focus();
-		igdeCommonDialogs::Error(this, mbtitle, "Name can not be empty");
+		igdeCommonDialogs::Error(*this, mbtitle, "Name can not be empty");
 		return false;
 	}
 	
 	if(!pCBTemplate->GetSelectedItem()->GetData()){
-		if(igdeCommonDialogs::Question(this, igdeCommonDialogs::ebsYesNo, mbtitle,
+		if(igdeCommonDialogs::Question(*this, igdeCommonDialogs::ebsYesNo, mbtitle,
 		"No template selected. Do you really want to create an empty project?")
 		== igdeCommonDialogs::ebNo){
 			pCBTemplate->Focus();
@@ -429,7 +429,7 @@ bool igdeDialogNewGameProject::CheckValidInput(){
 		decPath::CreatePathNative(pEditPathProject->GetDirectory())));
 	if(container->ExistsFile(decPath())){
 		pEditPathProject->Focus();
-		igdeCommonDialogs::Error(this, mbtitle, "Project directory exists. "
+		igdeCommonDialogs::Error(*this, mbtitle, "Project directory exists. "
 			"New project can only be created using a non-existing directory");
 		return false;
 	}
@@ -463,7 +463,7 @@ bool igdeDialogNewGameProject::Accept(){
 		
 	}catch(const deException &e){
 		pWindowMain.GetLogger()->LogException("IGDE", e);
-		igdeCommonDialogs::Exception(this, e);
+		igdeCommonDialogs::Exception(*this, e);
 		return false;
 	}
 	

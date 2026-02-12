@@ -178,7 +178,7 @@ public:
 	
 	igdeUndo::Ref OnAction(syneSourceChain *source) override{
 		decString path;
-		if(!igdeCommonDialogs::GetFileOpen(&pPanel, "Add Sound",
+		if(!igdeCommonDialogs::GetFileOpen(pPanel, "Add Sound",
 			*pPanel.GetEnvironment().GetFileSystemGame(),
 			*pPanel.GetEnvironment().GetOpenFilePatternList( igdeEnvironment::efpltSound ), path ) ){
 				return {};

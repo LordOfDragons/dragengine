@@ -122,6 +122,15 @@ void igdeLabel::SetIcon(igdeIcon *icon){
 	OnIconChanged();
 }
 
+void igdeLabel::OnLanguageChanged(){
+	igdeWidget::OnLanguageChanged();
+	
+	if(GetNativeWidget()){
+		igdeNativeLabel * const native = (igdeNativeLabel*)GetNativeWidget();
+		native->UpdateText();
+		native->UpdateDescription();
+	}
+}
 
 
 void igdeLabel::CreateNativeWidget(){

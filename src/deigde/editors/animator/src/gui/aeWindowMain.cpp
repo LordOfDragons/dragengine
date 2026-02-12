@@ -328,7 +328,7 @@ void aeWindowMain::GetChangedDocuments(decStringList &list){
 
 void aeWindowMain::LoadDocument(const char *filename){
 	if(pAnimator && pAnimator->GetChanged()){
-		if(igdeCommonDialogs::Question(this, igdeCommonDialogs::ebsYesNo, "Open Animator",
+		if(igdeCommonDialogs::Question(*this, igdeCommonDialogs::ebsYesNo, "Open Animator",
 		"Open animator discards changes. Is this ok?") == igdeCommonDialogs::ebNo){
 			return;
 		}
@@ -494,7 +494,7 @@ public:
 	
 	void OnAction() override{
 		if(pWindow.GetAnimator() && pWindow.GetAnimator()->GetChanged()
-		&& igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo, "New Animator",
+		&& igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "New Animator",
 		"Creating a new animator discarding the current one is that ok?") == igdeCommonDialogs::ebNo){
 			return;
 		}
@@ -516,7 +516,7 @@ public:
 	
 	void OnAction() override{
 		if(pWindow.GetAnimator() && pWindow.GetAnimator()->GetChanged()){
-			if(igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo, "Open Animator",
+			if(igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "Open Animator",
 			"Open animator discards changes. Is this ok?") == igdeCommonDialogs::ebNo){
 				return;
 			}
@@ -524,7 +524,7 @@ public:
 		
 		decString filename(pWindow.GetAnimator() ? pWindow.GetAnimator()->GetFilePath()
 			: pWindow.GetGameProject()->GetPathData());
-		if(!igdeCommonDialogs::GetFileOpen(&pWindow, "Open Animator",
+		if(!igdeCommonDialogs::GetFileOpen(pWindow, "Open Animator",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetEnvironment().GetOpenFilePatternList( igdeEnvironment::efpltAnimator ), filename ) ){
 			return;
@@ -544,7 +544,7 @@ public:
 	
 	virtual igdeUndo::Ref OnAction(aeAnimator *animator){
 		decString filename(animator->GetFilePath());
-		if(igdeCommonDialogs::GetFileSave(&pWindow, "Save Animator",
+		if(igdeCommonDialogs::GetFileSave(pWindow, "Save Animator",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetEnvironment().GetSaveFilePatternList( igdeEnvironment::efpltAnimator ), filename ) ){
 			pWindow.SaveAnimator(filename);
@@ -697,7 +697,7 @@ public:
 	
 	igdeUndo::Ref OnAction(aeAnimator *animator) override{
 		float size = animator->GetDDBoneSize();
-		if(igdeCommonDialogs::GetFloat(&pWindow, "Set bone base size", "Size:", size)){
+		if(igdeCommonDialogs::GetFloat(pWindow, "Set bone base size", "Size:", size)){
 			animator->SetDDBoneSize(size);
 		}
 		return {};
@@ -750,11 +750,11 @@ public:
 	
 	igdeUndo::Ref OnAction(aeAnimator *animator) override{
 		decString name("Controller");
-		if(!igdeCommonDialogs::GetString(&pWindow, "Add Controller", "Name:", name)){
+		if(!igdeCommonDialogs::GetString(pWindow, "Add Controller", "Name:", name)){
 			return {};
 		}
 		if(animator->GetControllers().HasNamed(name)){
-			igdeCommonDialogs::Error(&pWindow, "Add Controller", "Name exists already");
+			igdeCommonDialogs::Error(pWindow, "Add Controller", "Name exists already");
 			return {};
 		}
 		
@@ -772,12 +772,12 @@ public:
 	
 	virtual igdeUndo::Ref OnActionController(aeAnimator *animator, aeController *controller){
 		decString name(controller->GetName() + " Copy");
-		if(!igdeCommonDialogs::GetString(&pWindow, "Duplicate Controller", "Name:", name)){
+		if(!igdeCommonDialogs::GetString(pWindow, "Duplicate Controller", "Name:", name)){
 			return {};
 		}
 		
 		if(animator->GetControllers().HasNamed(name)){
-			igdeCommonDialogs::Error(&pWindow, "Add Controller", "Name exists already");
+			igdeCommonDialogs::Error(pWindow, "Add Controller", "Name exists already");
 			return {};
 		}
 		
@@ -810,7 +810,7 @@ public:
 			names.SortAscending();
 			const decString strNames(DEJoin((names.GetCount() <= 5 ? names : names.GetHead(5)), ", "));
 			
-			if(igdeCommonDialogs::QuestionFormat(&pWindow, igdeCommonDialogs::ebsYesNo,
+			if(igdeCommonDialogs::QuestionFormat(pWindow, igdeCommonDialogs::ebsYesNo,
 			"Remove Controller", "%d links are using this controller (%s). Remove controller?",
 			usageCount, strNames.GetString()) != igdeCommonDialogs::ebYes){
 				return {};
@@ -902,7 +902,7 @@ public:
 	
 	igdeUndo::Ref OnAction(aeAnimator *animator) override{
 		decString name("Link");
-		if(!igdeCommonDialogs::GetString(&pWindow, "Add Link", "Name:", name)){
+		if(!igdeCommonDialogs::GetString(pWindow, "Add Link", "Name:", name)){
 			return {};
 		}
 		
@@ -920,7 +920,7 @@ public:
 	
 	virtual igdeUndo::Ref OnActionLink(aeAnimator *animator, aeLink *link){
 		decString name(link->GetName() + " Copy");
-		if(!igdeCommonDialogs::GetString(&pWindow, "Duplicate Link", "Name:", name)){
+		if(!igdeCommonDialogs::GetString(pWindow, "Duplicate Link", "Name:", name)){
 			return {};
 		}
 		
@@ -945,7 +945,7 @@ public:
 				"If the link is removed now it is also removed from\n"
 				"all the targets using it. Do you want to remove the link?",
 				link->GetName().GetString(), usageCount);
-			if(igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo,
+			if(igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo,
 			"Remove Link", text) == igdeCommonDialogs::ebNo){
 				return {};
 			}

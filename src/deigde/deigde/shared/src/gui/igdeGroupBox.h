@@ -142,6 +142,9 @@ public:
 	
 	/** \brief Remove child. */
 	void RemoveChild(igdeWidget *child) override;
+	
+	/** \brief Active language changed. */
+	void OnLanguageChanged() override;
 	/*@}*/
 	
 	

@@ -86,7 +86,7 @@ public:
 		}
 		
 		if(pPanel.GetGameDefinition()->GetParticleEmitters().HasWithPath(editPath->GetPath())){
-			igdeCommonDialogs::Information(pPanel.GetParentWindow(), "Change particle emitter path",
+			igdeCommonDialogs::Information(*pPanel.GetParentWindow(), "Change particle emitter path",
 				"A particle emitter with this path exists already.");
 			editPath->SetPath(particleEmitter->GetPath());
 			return;

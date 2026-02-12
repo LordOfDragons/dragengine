@@ -53,15 +53,16 @@ igdeNativeFoxLabel::igdeNativeFoxLabel(){}
 
 igdeNativeFoxLabel::igdeNativeFoxLabel(igdeLabel &powner, FXComposite *pparent,
 int layoutFlags, const igdeGuiTheme &guitheme) :
-FXLabel(pparent, powner.GetText().GetString(), LabelIcon(powner),
+FXLabel(pparent, igdeUIFoxHelper::TranslateIf(powner, powner.GetText()), LabelIcon(powner),
 	layoutFlags | LabelFlags(powner), 0, 0, 0, 0, 0, 0, 0, 0),
 pOwner(&powner),
 pFont(LabelFont(powner, guitheme))
 {
 	setFont((FXFont*)pFont->GetNativeFont());
 	
-	setTipText(powner.GetDescription().GetString());
-	setHelpText(powner.GetDescription().GetString());
+	const FXString description(igdeUIFoxHelper::TranslateIf(powner, powner.GetDescription()));
+	setTipText(description);
+	setHelpText(description);
 }
 
 igdeNativeFoxLabel::~igdeNativeFoxLabel(){
@@ -98,7 +99,7 @@ void igdeNativeFoxLabel::DestroyNativeWidget(){
 ///////////////
 
 void igdeNativeFoxLabel::UpdateText(){
-	setText(pOwner->GetText().GetString());
+	setText(igdeUIFoxHelper::TranslateIf(*pOwner, pOwner->GetText()));
 }
 
 void igdeNativeFoxLabel::UpdateAlignment(){
@@ -106,7 +107,7 @@ void igdeNativeFoxLabel::UpdateAlignment(){
 }
 
 void igdeNativeFoxLabel::UpdateDescription(){
-	const char * const description = pOwner->GetDescription();
+	const FXString description(igdeUIFoxHelper::TranslateIf(*pOwner, pOwner->GetDescription()));
 	setTipText(description);
 	setHelpText(description);
 }

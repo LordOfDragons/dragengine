@@ -25,6 +25,7 @@
 #ifndef _IGDEEDITORMODULE_H_
 #define _IGDEEDITORMODULE_H_
 
+#include "../localization/igdeLanguagePack.h"
 #include "../gui/igdeEditorWindow.h"
 
 #include <dragengine/common/string/decString.h>
@@ -51,6 +52,7 @@ private:
 	decString pEditorDirectory;
 	decString pEditorPathLib;
 	igdeEditorWindow::Ref pEditorWindow;
+	igdeLanguagePack::List pLanguagePacks;
 	
 	
 	
@@ -104,6 +106,9 @@ public:
 	 */
 	void SetEditorWindow(igdeEditorWindow *editorWindow);
 	
+	/** \brief Language packs. */
+	inline igdeLanguagePack::List &GetLanguagePacks(){ return pLanguagePacks; }
+	inline const igdeLanguagePack::List &GetLanguagePacks() const{ return pLanguagePacks; }
 	
 	
 	/** \brief Start module. */
@@ -201,6 +206,11 @@ public:
 	 * processing command line arguments.
 	 */
 	virtual bool ProcessCommandLine(decUnicodeStringList &arguments);
+	
+	/**
+	 * \brief Active language changed.
+	 */
+	virtual void OnLanguageChanged();
 	/*@}*/
 	
 	

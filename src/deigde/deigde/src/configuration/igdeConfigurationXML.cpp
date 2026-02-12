@@ -103,6 +103,9 @@ void igdeConfigurationXML::pReadConfig(const decXmlElementTag &root, igdeConfigu
 		if(tag->GetName() == "windowMain"){
 			pReadWindowMain(*tag, config.GetWindowMain());
 			
+		}else if(tag->GetName() == "language"){
+			config.SetLanguage(GetCDataString(*tag));
+			
 		}else if(tag->GetName() == "maxRecentProjectEntries"){
 			config.SetMaxRecentProjectEntries(GetCDataInt(*tag));
 			
@@ -166,6 +169,8 @@ void igdeConfigurationXML::pWriteConfig(decXmlWriter &writer, const igdeConfigur
 	writer.WriteOpeningTag("deigde", false, true);
 	
 	pWriteWindowMain(writer, config.GetWindowMain());
+	
+	writer.WriteDataTagString("language", config.GetLanguage());
 	
 	writer.WriteDataTagInt("maxRecentProjectEntries", config.GetMaxRecentProjectEntries());
 	const decStringList &recentProjectList = config.GetRecentProjectList();

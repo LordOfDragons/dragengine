@@ -94,11 +94,11 @@ bool aeDialogMirrorMatchName::Accept(){
 	const decString &second = pEditSecond->GetText();
 	
 	if(first.IsEmpty()){
-		igdeCommonDialogs::Error(this, GetTitle(), "First name string component to match can not be empty");
+		igdeCommonDialogs::Error(*this, GetTitle(), "First name string component to match can not be empty");
 		return false;
 	}
 	if(second.IsEmpty()){
-		igdeCommonDialogs::Error(this, GetTitle(), "Second name string component to match can not be empty");
+		igdeCommonDialogs::Error(*this, GetTitle(), "Second name string component to match can not be empty");
 		return false;
 	}
 	

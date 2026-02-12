@@ -218,7 +218,7 @@ public:
 	sePropertyNode::Ref CreateNode(seSkin &skin, seProperty &) override{
 		igdeEnvironment &env = pView.GetEnvironment();
 		decString path(skin.GetDirectoryPath());
-		if(!igdeCommonDialogs::GetFileOpen(&pView, "Select Image", *env.GetFileSystemGame(),
+		if(!igdeCommonDialogs::GetFileOpen(pView, "Select Image", *env.GetFileSystemGame(),
 		*env.GetOpenFilePatternList(igdeEnvironment::efpltImage), path)){
 			return {};
 		}

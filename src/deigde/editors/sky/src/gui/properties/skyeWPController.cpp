@@ -243,7 +243,7 @@ public:
 		const int usageCount = sky->CountControllerUsage(controller);
 		
 		if(usageCount > 0 && igdeCommonDialogs::QuestionFormat(
-			&pPanel, igdeCommonDialogs::ebsYesNo, "Remove Controller",
+			pPanel, igdeCommonDialogs::ebsYesNo, "Remove Controller",
 			"The controller '%s' is used by %i links.\n"
 			"If the controller is removed now it is also removed from\n"
 			"all the links using it. Do you want to remove the controller?",

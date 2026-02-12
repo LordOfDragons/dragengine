@@ -222,12 +222,12 @@ public:
 		}
 		
 		decString name("Group");
-		if(!igdeCommonDialogs::GetString(&pPanel, "Add Topic Group", "Name:", name)){
+		if(!igdeCommonDialogs::GetString(pPanel, "Add Topic Group", "Name:", name)){
 			return;
 		}
 		
 		if(conversation->GetFiles().HasMatching([&](const ceConversationFile &f){ return f.GetID() == name; })){
-			igdeCommonDialogs::Error(&pPanel, "Add Topic Group", "Topic group exists");
+			igdeCommonDialogs::Error(pPanel, "Add Topic Group", "Topic group exists");
 			return;
 		}
 		
@@ -286,12 +286,12 @@ public:
 		}
 		
 		decString name(file->GetID());
-		if(!igdeCommonDialogs::GetString(&pPanel, "Rename Topic Group", "Name:", name) || name == file->GetID()){
+		if(!igdeCommonDialogs::GetString(pPanel, "Rename Topic Group", "Name:", name) || name == file->GetID()){
 			return;
 		}
 		
 		if(conversation->GetFiles().HasMatching([&](const ceConversationFile &f){ return f.GetID() == name; })){
-			igdeCommonDialogs::Error(&pPanel, "Rename Topic Group", "Topic group exists");
+			igdeCommonDialogs::Error(pPanel, "Rename Topic Group", "Topic group exists");
 			return;
 		}
 		
@@ -381,12 +381,12 @@ public:
 		}
 		
 		decString name(file->GetID());
-		if(!igdeCommonDialogs::GetString(&pPanel, "Duplicate Topic Group", "Name:", name)){
+		if(!igdeCommonDialogs::GetString(pPanel, "Duplicate Topic Group", "Name:", name)){
 			return;
 		}
 		
 		if(conversation->GetFiles().HasMatching([&](const ceConversationFile &f){ return f.GetID() == name; })){
-			igdeCommonDialogs::Error(&pPanel, "Duplicate Topic Group", "Topic group exists");
+			igdeCommonDialogs::Error(pPanel, "Duplicate Topic Group", "Topic group exists");
 			return;
 		}
 		
@@ -495,12 +495,12 @@ public:
 		}
 		
 		decString name("Topic");
-		if(!igdeCommonDialogs::GetString(&pPanel, "Add Topic", "Name:", name)){
+		if(!igdeCommonDialogs::GetString(pPanel, "Add Topic", "Name:", name)){
 			return;
 		}
 		
 		if(file->GetTopics().HasMatching([&](const ceConversationTopic &t){ return t.GetID() == name; })){
-			igdeCommonDialogs::Error(&pPanel, "Add Topic", "Topic exists");
+			igdeCommonDialogs::Error(pPanel, "Add Topic", "Topic exists");
 			return;
 		}
 		
@@ -560,12 +560,12 @@ public:
 		}
 		
 		decString name(topic->GetID());
-		if(!igdeCommonDialogs::GetString(&pPanel, "Rename Topic", "Name:", name) || name == topic->GetID()){
+		if(!igdeCommonDialogs::GetString(pPanel, "Rename Topic", "Name:", name) || name == topic->GetID()){
 			return;
 		}
 		
 		if(file->GetTopics().HasMatching([&](const ceConversationTopic &t){ return t.GetID() == name; })){
-			igdeCommonDialogs::Error(&pPanel, "Rename Topic", "Topic exists");
+			igdeCommonDialogs::Error(pPanel, "Rename Topic", "Topic exists");
 			return;
 		}
 		
@@ -682,12 +682,12 @@ public:
 		}
 		
 		decString name(topic->GetID());
-		if(!igdeCommonDialogs::GetString(&pPanel, "Duplicate Topic", "Name:", name)){
+		if(!igdeCommonDialogs::GetString(pPanel, "Duplicate Topic", "Name:", name)){
 			return;
 		}
 		
 		if(file->GetTopics().HasMatching([&](const ceConversationTopic &t){ return t.GetID() == name; })){
-			igdeCommonDialogs::Error(&pPanel, "Duplicate Topic", "Topic exists");
+			igdeCommonDialogs::Error(pPanel, "Duplicate Topic", "Topic exists");
 			return;
 		}
 		

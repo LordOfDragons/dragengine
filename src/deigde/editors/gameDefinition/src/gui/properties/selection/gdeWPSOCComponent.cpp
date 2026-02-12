@@ -689,12 +689,12 @@ public:
 			name = "Texture";
 			
 			while(true){
-				if(!igdeCommonDialogs::GetString(pPanel.GetParentWindow(), "Add Texture", "Name:", name)){
+				if(!igdeCommonDialogs::GetString(*pPanel.GetParentWindow(), "Add Texture", "Name:", name)){
 					return {};
 				}
 				
 				if(component->GetTextures().HasNamed(name)){
-					igdeCommonDialogs::Error(pPanel.GetParentWindow(), "Add Texture", "A texture with this name exists already.");
+					igdeCommonDialogs::Error(*pPanel.GetParentWindow(), "Add Texture", "A texture with this name exists already.");
 					
 				}else{
 					break;
@@ -775,7 +775,7 @@ public:
 		}
 		
 		if(component->GetTextures().HasNamed(textField.GetText())){
-			igdeCommonDialogs::Information(pPanel.GetParentWindow(), "Rename texture", "A texture with this name exists already.");
+			igdeCommonDialogs::Information(*pPanel.GetParentWindow(), "Rename texture", "A texture with this name exists already.");
 			textField.SetText(texture->GetName());
 			return {};
 		}
@@ -885,7 +885,7 @@ public:
 			value = property->GetDefaultValue();
 		}
 		
-		if(!igdeCommonDialogs::GetString(pPanel.GetParentWindow(), "Set Texture Property Value", "Value:", value)){
+		if(!igdeCommonDialogs::GetString(*pPanel.GetParentWindow(), "Set Texture Property Value", "Value:", value)){
 			return {};
 		}
 		
@@ -963,7 +963,7 @@ public:
 		}
 		
 		decString value(texture->GetProperties().GetAt(key));
-		if(!igdeCommonDialogs::GetString(pPanel.GetParentWindow(), "Edit Texture Property Value", "Value:", value)){
+		if(!igdeCommonDialogs::GetString(*pPanel.GetParentWindow(), "Edit Texture Property Value", "Value:", value)){
 			return;
 		}
 		

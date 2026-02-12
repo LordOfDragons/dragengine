@@ -315,7 +315,7 @@ public:
 			codec.DecodeShapeList(encoded, shapeList);
 			
 		}catch(const deException &){
-			igdeCommonDialogs::Error(pPanel.GetParentWindow(), "Invalid Input",
+			igdeCommonDialogs::Error(*pPanel.GetParentWindow(), "Invalid Input",
 				"Input value does not decode to a proper shape list");
 			textField.Focus();
 			return {};

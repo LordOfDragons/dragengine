@@ -131,9 +131,11 @@ void igdeNativeFoxColorBox::UpdateColor(){
 }
 
 void igdeNativeFoxColorBox::UpdateDescription(){
-	// missing in FXFrame
-// 	setTipText( pOwner->GetDescription().GetString() );
-// 	setHelpText( pOwner->GetDescription().GetString() );
+	/* missing in FXFrame
+	const FXString description(igdeUIFoxHelper::TranslateIf(*pOwner, pOwner->GetDescription()));
+	setTipText(description);
+	setHelpText(description);
+	*/
 }
 
 void igdeNativeFoxColorBox::UpdateEnabled(){
@@ -242,7 +244,7 @@ long igdeNativeFoxColorBox::onClicked(FXObject*, FXSelector, void*){
 		
 	}catch(const deException &e){
 		pOwner->GetLogger()->LogException("IGDE", e);
-		igdeCommonDialogs::Exception(pOwner, e);
+		igdeCommonDialogs::Exception(*pOwner, e);
 		return 0;
 	}
 	

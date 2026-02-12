@@ -54,7 +54,7 @@ public:
 	}
 	
 	void OnAction() override{
-		igdeCommonDialogs::Information(&pWindow, "Clicked", "Clicked.");
+		igdeCommonDialogs::Information(pWindow, "Clicked", "Clicked.");
 	}
 };
 

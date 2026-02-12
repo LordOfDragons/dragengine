@@ -384,7 +384,7 @@ public:
 		}
 		
 		decString value;
-		if(!igdeCommonDialogs::GetString(&pPanel.GetWPSelection(), "Find ID", "ID:", value)){
+		if(!igdeCommonDialogs::GetString(pPanel.GetWPSelection(), "Find ID", "ID:", value)){
 			return;
 		}
 		
@@ -398,7 +398,7 @@ public:
 			id = decUniqueID(value);
 			
 		}catch(const deException &){
-			igdeCommonDialogs::ErrorFormat(&pPanel.GetWPSelection(),
+			igdeCommonDialogs::ErrorFormat(pPanel.GetWPSelection(),
 				"Find ID", "Invalid ID '%s'", value.GetString());
 			return;
 		}
@@ -426,7 +426,7 @@ public:
 			return;
 		}
 		
-		igdeCommonDialogs::ErrorFormat(&pPanel.GetWPSelection(),
+		igdeCommonDialogs::ErrorFormat(pPanel.GetWPSelection(),
 			"Find ID", "ID '%s' not found", value.GetString());
 	}
 	
@@ -836,9 +836,9 @@ public:
 	
 	igdeUndo::Ref OnAction(meObject *object) override{
 		decString name;
-		while(igdeCommonDialogs::GetString(&pPanel, "Add Texture", "Name:", name)){
+		while(igdeCommonDialogs::GetString(pPanel, "Add Texture", "Name:", name)){
 			if(object->GetTextures().HasNamed(name)){
-				igdeCommonDialogs::Error(&pPanel, "Add Texture", "Texture name exists already");
+				igdeCommonDialogs::Error(pPanel, "Add Texture", "Texture name exists already");
 				continue;
 			}
 			
@@ -1174,7 +1174,7 @@ public:
 		}
 		
 		decString name;
-		if(!igdeCommonDialogs::GetString(&pPanel, "Add Attachable Behavior", "Behavior:", name, names)){
+		if(!igdeCommonDialogs::GetString(pPanel, "Add Attachable Behavior", "Behavior:", name, names)){
 			return {};
 		}
 		

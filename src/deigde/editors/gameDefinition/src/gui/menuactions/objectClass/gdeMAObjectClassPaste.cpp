@@ -74,12 +74,12 @@ igdeUndo::Ref gdeMAObjectClassPaste::OnAction(gdeGameDefinition &gameDefinition)
 	
 	if(list.HasNamed(name)){
 		while(true){
-			if(!igdeCommonDialogs::GetString(&pWindowMain, "Paste Object Class", "Name:", name)){
+			if(!igdeCommonDialogs::GetString(pWindowMain, "Paste Object Class", "Name:", name)){
 				return {};
 			}
 			
 			if(list.HasNamed(name)){
-				igdeCommonDialogs::Error(&pWindowMain, "Paste Object Class", "Object Class exists already.");
+				igdeCommonDialogs::Error(pWindowMain, "Paste Object Class", "Object Class exists already.");
 				
 			}else{
 				break;

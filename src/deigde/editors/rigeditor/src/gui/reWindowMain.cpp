@@ -268,7 +268,7 @@ void reWindowMain::GetChangedDocuments(decStringList &list){
 
 void reWindowMain::LoadDocument(const char *filename){
 	if(pRig && pRig->GetChanged()){
-		if(igdeCommonDialogs::Question(this, igdeCommonDialogs::ebsYesNo, "Open Rig",
+		if(igdeCommonDialogs::Question(*this, igdeCommonDialogs::ebsYesNo, "Open Rig",
 		"Open rig discards changes. Is this ok?") == igdeCommonDialogs::ebNo){
 			return;
 		}
@@ -386,7 +386,7 @@ public:
 	
 	void OnAction() override{
 		if(!pWindow.GetRig() || !pWindow.GetRig()->GetChanged()
-		|| igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo, "New Rig",
+		|| igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "New Rig",
 		"Creating a new rig discarding the current one is that ok?") == igdeCommonDialogs::ebYes){
 			pWindow.CreateNewRig();
 		}
@@ -403,7 +403,7 @@ public:
 	
 	void OnAction() override{
 		if(pWindow.GetRig() && pWindow.GetRig()->GetChanged()){
-			if(igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo, "Open Rig",
+			if(igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "Open Rig",
 			"Open rig discards changes. Is this ok?") == igdeCommonDialogs::ebNo){
 				return;
 			}
@@ -411,7 +411,7 @@ public:
 		
 		decString filename(pWindow.GetRig() ? pWindow.GetRig()->GetFilePath()
 			: pWindow.GetGameProject()->GetPathData());
-		if(!igdeCommonDialogs::GetFileOpen(&pWindow, "Open Rig",
+		if(!igdeCommonDialogs::GetFileOpen(pWindow, "Open Rig",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetEnvironment().GetOpenFilePatternList( igdeEnvironment::efpltRig ), filename ) ){
 			return;
@@ -431,7 +431,7 @@ public:
 	
 	igdeUndo::Ref OnAction(reRig *rig) override{
 		decString filename(rig->GetFilePath());
-		if(igdeCommonDialogs::GetFileSave(&pWindow, "Save Rig",
+		if(igdeCommonDialogs::GetFileSave(pWindow, "Save Rig",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetEnvironment().GetSaveFilePatternList( igdeEnvironment::efpltRig ), filename ) ){
 			pWindow.SaveRig(filename);
@@ -1161,12 +1161,12 @@ public:
 		});
 		
 		if(list.IsEmpty()){
-			igdeCommonDialogs::Error(&pWindow, "Scale Mass", "No bones selected with shapes");
+			igdeCommonDialogs::Error(pWindow, "Scale Mass", "No bones selected with shapes");
 			return {};
 		}
 		
 		float newMass = oldMass;
-		if(!igdeCommonDialogs::GetFloat(&pWindow, "Scale Mass", "New total mass:", newMass)){
+		if(!igdeCommonDialogs::GetFloat(pWindow, "Scale Mass", "New total mass:", newMass)){
 			return {};
 		}
 		if(fabs(newMass - oldMass) < FLOAT_SAFE_EPSILON){
@@ -1189,11 +1189,11 @@ public:
 		float density = 1.0f;
 		
 		if(selection.GetBones().IsEmpty()){
-			igdeCommonDialogs::Error(&pWindow, "Mass From Volume", "No bones selected");
+			igdeCommonDialogs::Error(pWindow, "Mass From Volume", "No bones selected");
 			return {};
 		}
 		
-		if(!igdeCommonDialogs::GetFloat(&pWindow, "Mass From Volume", "Density:", density)){
+		if(!igdeCommonDialogs::GetFloat(pWindow, "Mass From Volume", "Density:", density)){
 			return {};
 		}
 		

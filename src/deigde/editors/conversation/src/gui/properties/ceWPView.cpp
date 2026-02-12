@@ -735,12 +735,12 @@ public:
 		}
 		
 		decString name;
-		if(!igdeCommonDialogs::GetString(&pPanel, "Add Pose", "Pose:", name)){
+		if(!igdeCommonDialogs::GetString(pPanel, "Add Pose", "Pose:", name)){
 			return {};
 		}
 		
 		if(actor->GetPoses().HasMatching([&](const ceActorPose::Ref &p){ return p->GetName() == name; })){
-			igdeCommonDialogs::Error(&pPanel, "Add Pose", "A pose with this name exists already.");
+			igdeCommonDialogs::Error(pPanel, "Add Pose", "A pose with this name exists already.");
 			return {};
 		}
 		
@@ -790,12 +790,12 @@ public:
 		}
 		
 		decString name(pose->GetName());
-		if(!igdeCommonDialogs::GetString(&pPanel, "Rename Pose", "Pose:", name) || name == pose->GetName()){
+		if(!igdeCommonDialogs::GetString(pPanel, "Rename Pose", "Pose:", name) || name == pose->GetName()){
 			return {};
 		}
 		
 		if(actor->GetPoses().HasMatching([&](const ceActorPose::Ref &p){ return p->GetName() == name; })){
-			igdeCommonDialogs::Error(&pPanel, "Rename Pose", "A pose with this name exists already.");
+			igdeCommonDialogs::Error(pPanel, "Rename Pose", "A pose with this name exists already.");
 			
 		}else{
 			pose->SetName(name);
@@ -862,12 +862,12 @@ public:
 		}
 		
 		decString name;
-		if(!igdeCommonDialogs::GetString(&pPanel, "Add Controller", "Controller:", name, pose->GetControllerNames())){
+		if(!igdeCommonDialogs::GetString(pPanel, "Add Controller", "Controller:", name, pose->GetControllerNames())){
 			return {};
 		}
 		
 		if(pose->GetControllers().HasMatching([&](const ceActorController::Ref &c){ return c->GetName() == name; })){
-			igdeCommonDialogs::Error(&pPanel, "Add Controller", "A controller with this name exists already.");
+			igdeCommonDialogs::Error(pPanel, "Add Controller", "A controller with this name exists already.");
 			return {};
 		}
 		
@@ -941,13 +941,13 @@ public:
 		}
 		
 		decString name(controller->GetName());
-		if(!igdeCommonDialogs::GetString(&pPanel, "Rename Controller", "Controller:", name)
+		if(!igdeCommonDialogs::GetString(pPanel, "Rename Controller", "Controller:", name)
 		|| name == controller->GetName()){
 			return {};
 		}
 		
 		if(pPanel.GetActorPose()->GetControllers().HasMatching([&](const ceActorController::Ref &c){ return c->GetName() == name; })){
-			igdeCommonDialogs::Error(&pPanel, "Rename Controller", "A controller with this name exists already.");
+			igdeCommonDialogs::Error(pPanel, "Rename Controller", "A controller with this name exists already.");
 			
 		}else{
 			controller->SetName(name);
@@ -1061,12 +1061,12 @@ public:
 		}
 		
 		decString name;
-		if(!igdeCommonDialogs::GetString(&pPanel, "Add Gesture", "Gesture:", name)){
+		if(!igdeCommonDialogs::GetString(pPanel, "Add Gesture", "Gesture:", name)){
 			return {};
 		}
 		
 		if(pose->GetGestures().HasMatching([&name](const ceActorGesture &g){ return g.GetName() == name; })){
-			igdeCommonDialogs::Error(&pPanel, "Add Gesture", "A gesture with this name exists already.");
+			igdeCommonDialogs::Error(pPanel, "Add Gesture", "A gesture with this name exists already.");
 			return {};
 		}
 		
@@ -1118,12 +1118,12 @@ public:
 		}
 		
 		decString name(gesture->GetName());
-		if(!igdeCommonDialogs::GetString(&pPanel, "Rename Gesture", "Gesture:", name) || name == gesture->GetName()){
+		if(!igdeCommonDialogs::GetString(pPanel, "Rename Gesture", "Gesture:", name) || name == gesture->GetName()){
 			return {};
 		}
 		
 		if(pose->GetGestures().HasMatching([&name](const ceActorGesture &g){ return g.GetName() == name; })){
-			igdeCommonDialogs::Error(&pPanel, "Rename Gesture", "A gesture with this name exists already.");
+			igdeCommonDialogs::Error(pPanel, "Rename Gesture", "A gesture with this name exists already.");
 			
 		}else{
 			gesture->SetName(name);
@@ -1180,7 +1180,7 @@ public:
 		}
 		
 		decString command;
-		if(!igdeCommonDialogs::GetMultilineString(&pPanel.GetWindowProperties().GetWindowMain(),
+		if(!igdeCommonDialogs::GetMultilineString(pPanel.GetWindowProperties().GetWindowMain(),
 			"Add Command", "Command:", command)
 		|| actor->GetCommands().HasMatching([&](const cePlaybackCommand::Ref &c){ return c->GetCommand() == command; })){
 			return {};
@@ -1284,12 +1284,12 @@ public:
 		}
 		
 		decString name;
-		if(!igdeCommonDialogs::GetString(&pPanel, "Set Parameter", "Parameter:", name)){
+		if(!igdeCommonDialogs::GetString(pPanel, "Set Parameter", "Parameter:", name)){
 			return {};
 		}
 		
 		int value = actor->GetParameters().GetAtOrDefault(name, 0);
-		if(!igdeCommonDialogs::GetInteger(&pPanel, "Set Parameter", "Value:", value)){
+		if(!igdeCommonDialogs::GetInteger(pPanel, "Set Parameter", "Value:", value)){
 			return {};
 		}
 		
@@ -1361,7 +1361,7 @@ public:
 		
 		const cVariableKey::Ref parameter(listBox->GetSelectedItemRefData().DynamicCast<cVariableKey>());
 		int value = pPanel.GetActor()->GetParameters().GetAtOrDefault(parameter->name, 0);
-		if(igdeCommonDialogs::GetInteger(&pPanel, "Set Parameter Value", "Value:", value)){
+		if(igdeCommonDialogs::GetInteger(pPanel, "Set Parameter Value", "Value:", value)){
 			pPanel.GetActor()->GetParameters().SetAt(parameter->name, value);
 			pPanel.GetConversation()->NotifyActorParametersChanged(pPanel.GetActor());
 		}
@@ -1622,7 +1622,7 @@ public:
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		decString command;
-		if(!igdeCommonDialogs::GetMultilineString(&pPanel.GetWindowProperties().GetWindowMain(),
+		if(!igdeCommonDialogs::GetMultilineString(pPanel.GetWindowProperties().GetWindowMain(),
 			"Add Command", "Command:", command)
 		|| conversation->GetPlayback()->GetCommands().HasMatching([&](const cePlaybackCommand::Ref &c){ return c->GetCommand() == command; })){
 			return {};
@@ -1721,7 +1721,7 @@ public:
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		decString variable;
-		if(!igdeCommonDialogs::GetString(&pPanel, "Add Variable", "Variable:", variable)
+		if(!igdeCommonDialogs::GetString(pPanel, "Add Variable", "Variable:", variable)
 		|| conversation->GetPlayback()->GetVariables().Has(variable)){
 			return {};
 		}
@@ -1753,7 +1753,7 @@ public:
 		cePlayback::VariableMap &variables = conversation->GetPlayback()->GetVariables();
 		const int curValue = variables.GetAtOrDefault(name, 0);
 		int value = curValue;
-		if(igdeCommonDialogs::GetInteger(&pPanel, "Set Variable", "Value:", value) && value != curValue){
+		if(igdeCommonDialogs::GetInteger(pPanel, "Set Variable", "Value:", value) && value != curValue){
 			variables.SetAt(name, value);
 			conversation->NotifyPlaybackVarListChanged();
 		}
@@ -1831,7 +1831,7 @@ public:
 		cePlayback::VariableMap &variables = pPanel.GetConversation()->GetPlayback()->GetVariables();
 		const int curValue = variables.GetAtOrDefault(name, 0);
 		int value = curValue;
-		if(igdeCommonDialogs::GetInteger(&pPanel, "Set Variable", "Value:", value) && value != curValue){
+		if(igdeCommonDialogs::GetInteger(pPanel, "Set Variable", "Value:", value) && value != curValue){
 			variables.SetAt(name, value);
 			pPanel.GetConversation()->NotifyPlaybackVarListChanged();
 		}
@@ -1885,7 +1885,7 @@ public:
 		ordered.SortAscending();
 		
 		decString text(DEJoin(ordered, "\n"));
-		igdeCommonDialogs::GetMultilineString(&pPanel.GetWindowProperties().GetWindowMain(),
+		igdeCommonDialogs::GetMultilineString(pPanel.GetWindowProperties().GetWindowMain(),
 			"Copy To Clipboard", "Text for you to copy to the clipboard", text);
 		return {};
 	}

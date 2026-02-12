@@ -248,6 +248,9 @@ public:
 	
 	/** \brief Notify listeners text is changing. */
 	virtual void NotifyTextChanging();
+	
+	/** \brief Active language changed. */
+	void OnLanguageChanged() override;
 	/*@}*/
 	
 	

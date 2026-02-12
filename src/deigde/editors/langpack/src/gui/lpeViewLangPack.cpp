@@ -99,7 +99,7 @@ public:
 		
 		lpeLangPack &langpack = *pView.GetLangPack();
 		if(langpack.GetEntries().HasNamed(name)){
-			igdeCommonDialogs::ErrorFormat(&pView, "Set Entry Identifier",
+			igdeCommonDialogs::ErrorFormat(pView, "Set Entry Identifier",
 				"There exists already an entry with name '%s'", name.GetString());
 			textField->SetText(entry->GetName());
 			return;
@@ -445,7 +445,7 @@ void lpeViewLangPack::SelectNextMissingEntry(){
 		}
 	}
 	
-	igdeCommonDialogs::Information(&pWindowMain, "Select next missing entry",
+	igdeCommonDialogs::Information(pWindowMain, "Select next missing entry",
 		"No more missing language pack entries");
 }
 

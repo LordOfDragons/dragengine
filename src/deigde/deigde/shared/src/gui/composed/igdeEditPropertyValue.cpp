@@ -234,7 +234,7 @@ public:
 	
 	void OnAction() override{
 		decString value(pWidget.GetValue());
-		if(igdeCommonDialogs::GetMultilineString(&pWidget, "Edit Raw Property Value",
+		if(igdeCommonDialogs::GetMultilineString(pWidget, "Edit Raw Property Value",
 			"Raw property value. Values entered here can violate the\n"
 			"property type so be careful what you enter", value)){
 				pWidget.SetValue(value, pWidget.GetGDProperty());

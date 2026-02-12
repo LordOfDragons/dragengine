@@ -67,9 +67,9 @@ igdeUndo::Ref gdeMAObjectClassDuplicate::OnAction(gdeGameDefinition &gameDefinit
 	const gdeObjectClass::List &list = gameDefinition.GetObjectClasses();
 	decString name(objectClass->GetName());
 	
-	while(igdeCommonDialogs::GetString(&pWindowMain, "Duplicate Object Class", "Name:", name)){
+	while(igdeCommonDialogs::GetString(pWindowMain, "Duplicate Object Class", "Name:", name)){
 		if(list.HasNamed(name)){
-			igdeCommonDialogs::Error(&pWindowMain, "Duplicate Object Class", "Object Class exists already.");
+			igdeCommonDialogs::Error(pWindowMain, "Duplicate Object Class", "Object Class exists already.");
 			continue;
 		}
 		

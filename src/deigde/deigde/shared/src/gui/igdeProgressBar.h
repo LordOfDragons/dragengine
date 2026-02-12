@@ -110,6 +110,9 @@ public:
 	
 	/** \brief Set range. */
 	void SetRange(int lower, int upper);
+	
+	/** \brief Active language changed. */
+	void OnLanguageChanged() override;
 	/*@}*/
 	
 	

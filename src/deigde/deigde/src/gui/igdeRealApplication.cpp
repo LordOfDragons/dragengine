@@ -90,7 +90,7 @@ bool igdeRealApplication::Initialize(const decUnicodeStringList &arguments){
 				e.PrintError();
 			}
 			
-			igdeCommonDialogs::ErrorFormat(nullptr, "Failed starting IGDE",
+			igdeCommonDialogs::FatalError("Failed starting IGDE",
 				"Please see logs for details:\n%s", DEJoin(e.FormatOutput(), "\n").GetString());
 		}
 		return false;

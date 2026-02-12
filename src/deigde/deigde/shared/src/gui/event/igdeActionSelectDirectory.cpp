@@ -72,12 +72,12 @@ void igdeActionSelectDirectory::OnAction(){
 	const decString oldDirectory(directory);
 	
 	if(pUseGameVFS){
-		if(!igdeCommonDialogs::GetDirectory(&pTextField, GetText(), *pEnvironment.GetFileSystemGame(), directory)){
+		if(!igdeCommonDialogs::GetDirectory(pTextField, GetText(), *pEnvironment.GetFileSystemGame(), directory)){
 			return;
 		}
 		
 	}else{
-		if(!igdeCommonDialogs::GetDirectory(&pTextField, GetText(), directory)){
+		if(!igdeCommonDialogs::GetDirectory(pTextField, GetText(), directory)){
 			return;
 		}
 	}
