@@ -265,7 +265,8 @@ public:
 	
 public:
 	cActionEnablePosition(aeWPAPanelRuleStateManipulator &panel) : cBaseAction(panel,
-		"Enable position manipulation", nullptr, "Determines if the position is modified or kept as it is"){ }
+		"@Animator.WPAPanelRuleStateManipulator.EnablePosition.Label", nullptr,
+		"@Animator.WPAPanelRuleStateManipulator.EnablePosition.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleStateManipulator *rule) override{
 		return aeUSetRuleSModEnablePos::Ref::New(rule);
@@ -283,7 +284,8 @@ public:
 	
 public:
 	cActionEnableRotation(aeWPAPanelRuleStateManipulator &panel) : cBaseAction(panel,
-		"Enable rotation manipulation", nullptr, "Determines if the rotation is modified or kept as it is"){ }
+		"@Animator.WPAPanelRuleStateManipulator.EnableRotation.Label", nullptr,
+		"@Animator.WPAPanelRuleStateManipulator.EnableRotation.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleStateManipulator *rule) override{
 		return aeUSetRuleSModEnableRot::Ref::New(rule);
@@ -301,7 +303,8 @@ public:
 	
 public:
 	cActionEnableSize(aeWPAPanelRuleStateManipulator &panel) : cBaseAction(panel,
-		"Enable size manipulation", nullptr, "Determines if the size is modified or kept as it is"){ }
+		"@Animator.WPAPanelRuleStateManipulator.EnableSize.Label", nullptr,
+		"@Animator.WPAPanelRuleStateManipulator.EnableSize.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleStateManipulator *rule) override{
 		return aeUSetRuleSModEnableSize::Ref::New(rule);
@@ -319,8 +322,8 @@ public:
 	
 public:
 	cActionEnableVertexPositionSet(aeWPAPanelRuleStateManipulator &panel) : cBaseAction(panel,
-		"Enable vertex position set manipulation", nullptr,
-		"Determines if vertex position set is modified or kept as it is"){ }
+		"@Animator.WPAPanelRuleStateManipulator.EnableVertexPositionSet.Label", nullptr,
+		"@Animator.WPAPanelRuleStateManipulator.EnableVertexPositionSet.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleStateManipulator *rule) override{
 		return aeUSetRuleSModEnableVertexPositionSet::Ref::New(rule);
@@ -350,26 +353,34 @@ aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertStateManipulator)
 	igdeContainer::Ref groupBox;
 	
 	
-	helper.GroupBox(*this, groupBox, "State Manipulator:");
+	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRuleStateManipulator.StateManipulator.Label");
 	
-	helper.EditVector(groupBox, "Min Position:", "Minimum position",
+	helper.EditVector(groupBox, "@Animator.WPAPanelRuleStateManipulator.MinPosition.Label",
+		"@Animator.WPAPanelRuleStateManipulator.MinPosition.ToolTip",
 		pEditMinPos, cEditPositionMinimum::Ref::New(*this));
-	helper.EditVector(groupBox, "Max Position:", "Maximum position",
+	helper.EditVector(groupBox, "@Animator.WPAPanelRuleStateManipulator.MaxPosition.Label",
+		"@Animator.WPAPanelRuleStateManipulator.MaxPosition.ToolTip",
 		pEditMaxPos, cEditPositionMaximum::Ref::New(*this));
 	
-	helper.EditVector(groupBox, "Min Rotation:", "Minimum rotation",
+	helper.EditVector(groupBox, "@Animator.WPAPanelRuleStateManipulator.MinRotation.Label",
+		"@Animator.WPAPanelRuleStateManipulator.MinRotation.ToolTip",
 		pEditMinRot, cEditRotationMinimum::Ref::New(*this));
-	helper.EditVector(groupBox, "Max Rotation:", "Maximum rotation",
+	helper.EditVector(groupBox, "@Animator.WPAPanelRuleStateManipulator.MaxRotation.Label",
+		"@Animator.WPAPanelRuleStateManipulator.MaxRotation.ToolTip",
 		pEditMaxRot, cEditRotationMaximum::Ref::New(*this));
 	
-	helper.EditVector(groupBox, "Min Scaling:", "Minimum scaling",
+	helper.EditVector(groupBox, "@Animator.WPAPanelRuleStateManipulator.MinScaling.Label",
+		"@Animator.WPAPanelRuleStateManipulator.MinScaling.ToolTip",
 		pEditMinSize, cEditScalingMinimum::Ref::New(*this));
-	helper.EditVector(groupBox, "Max Scaling:", "Maximum scaling",
+	helper.EditVector(groupBox, "@Animator.WPAPanelRuleStateManipulator.MaxScaling.Label",
+		"@Animator.WPAPanelRuleStateManipulator.MaxScaling.ToolTip",
 		pEditMaxSize, cEditScalingMaximum::Ref::New(*this));
 	
-	helper.EditFloat(groupBox, "Min Vertex Position Set:", "Minimum vertex position set",
+	helper.EditFloat(groupBox, "@Animator.WPAPanelRuleStateManipulator.MinVertexPositionSet.Label",
+		"@Animator.WPAPanelRuleStateManipulator.MinVertexPositionSet.ToolTip",
 		pEditMinVertexPositionSet, cEditVertexPositionSetMinimum::Ref::New(*this));
-	helper.EditFloat(groupBox, "Max Vertex Position Set:", "Maximum vertex position set",
+	helper.EditFloat(groupBox, "@Animator.WPAPanelRuleStateManipulator.MaxVertexPositionSet.Label",
+		"@Animator.WPAPanelRuleStateManipulator.MaxVertexPositionSet.ToolTip",
 		pEditMaxVertexPositionSet, cEditVertexPositionSetMaximum::Ref::New(*this));
 	
 	helper.CheckBox(groupBox, pChkEnablePosition, cActionEnablePosition::Ref::New(*this));
@@ -423,9 +434,9 @@ void aeWPAPanelRuleStateManipulator::UpdateTargetList(){
 	
 	aeRuleStateManipulator * const rule = (aeRuleStateManipulator*)GetRule();
 	if(rule){
-		AddTarget("Position", rule->GetTargetPosition());
-		AddTarget("Rotation ", rule->GetTargetRotation());
-		AddTarget("Size", rule->GetTargetSize());
-		AddTarget("Vertex Position Set", rule->GetTargetVertexPositionSet());
+		AddTarget("@Animator.WPAPanelRuleStateManipulator.MinPosition.Label", rule->GetTargetPosition());
+		AddTarget("@Animator.WPAPanelRuleStateManipulator.MinRotation.Label", rule->GetTargetRotation());
+		AddTarget("@Animator.WPAPanelRuleStateManipulator.MinScaling.Label", rule->GetTargetSize());
+		AddTarget("@Animator.WPAPanelRuleStateManipulator.MinVertexPositionSet.Label", rule->GetTargetVertexPositionSet());
 	}
 }

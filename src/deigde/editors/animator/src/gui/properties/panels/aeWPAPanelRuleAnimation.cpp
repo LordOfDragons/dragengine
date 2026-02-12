@@ -155,7 +155,8 @@ public:
 	
 public:
 	cActionEnablePosition(aeWPAPanelRuleAnimation &panel) : cBaseAction(panel,
-		"Enable position manipulation", nullptr, "Determines if the position is modified or kept as it is"){ }
+		"@Animator.WPAPanelRuleAnimation.EnablePosition.Label", nullptr,
+		"@Animator.WPAPanelRuleAnimation.EnablePosition.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleAnimation *rule) override{
 		return aeURuleAnimToggleEnablePosition::Ref::New(rule);
@@ -173,7 +174,8 @@ public:
 	
 public:
 	cActionEnableRotation(aeWPAPanelRuleAnimation &panel) : cBaseAction(panel,
-		"Enable rotation manipulation", nullptr, "Determines if the rotation is modified or kept as it is"){ }
+		"@Animator.WPAPanelRuleAnimation.EnableRotation.Label", nullptr,
+		"@Animator.WPAPanelRuleAnimation.EnableRotation.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleAnimation *rule) override{
 		return aeURuleAnimToggleEnableRotation::Ref::New(rule);
@@ -191,7 +193,8 @@ public:
 	
 public:
 	cActionEnableSize(aeWPAPanelRuleAnimation &panel) : cBaseAction(panel,
-		"Enable size manipulation", nullptr, "Determines if the size is modified or kept as it is"){ }
+		"@Animator.WPAPanelRuleAnimation.EnableSize.Label", nullptr,
+		"@Animator.WPAPanelRuleAnimation.EnableSize.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleAnimation *rule) override{
 		return aeURuleAnimToggleEnableSize::Ref::New(rule);
@@ -209,8 +212,8 @@ public:
 	
 public:
 	cActionEnableVertexPositionSet(aeWPAPanelRuleAnimation &panel) : cBaseAction(panel,
-		"Enable vertex position set manipulation", nullptr,
-		"Determines if vertex position set is modified or kept as it is"){ }
+		"@Animator.WPAPanelRuleAnimation.EnableVertexPositionSet.Label", nullptr,
+		"@Animator.WPAPanelRuleAnimation.EnableVertexPositionSet.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleAnimation *rule) override{
 		return aeURuleAnimToggleEnableVertexPositionSet::Ref::New(rule);
@@ -240,13 +243,15 @@ aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertAnimation)
 	igdeContainer::Ref groupBox;
 	
 	
-	helper.GroupBox(*this, groupBox, "Animation:");
+	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRuleAnimation.Animation.Label");
 	
-	helper.ComboBoxFilter(groupBox, "Move Name:", true, "Name of animation move to use",
+	helper.ComboBoxFilter(groupBox, "@Animator.WPAPanelRuleAnimation.MoveName.Label", true,
+		"@Animator.WPAPanelRuleAnimation.MoveName.ToolTip",
 		pCBMoveName, cComboMoveName::Ref::New(*this));
 	pCBMoveName->SetDefaultSorter();
 	
-	helper.EditFloat(groupBox, "Move Time:", "Time relative to move playtime to retrieve",
+	helper.EditFloat(groupBox, "@Animator.WPAPanelRuleAnimation.MoveTime.Label",
+		"@Animator.WPAPanelRuleAnimation.MoveTime.ToolTip",
 		pEditMoveTime, cTextMoveTime::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkEnablePosition, cActionEnablePosition::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkEnableRotation, cActionEnableRotation::Ref::New(*this));

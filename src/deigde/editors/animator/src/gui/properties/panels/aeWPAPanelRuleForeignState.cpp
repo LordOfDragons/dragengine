@@ -279,7 +279,8 @@ public:
 	
 public:
 	cActionEnablePosition(aeWPAPanelRuleForeignState &panel) : cBaseAction(panel,
-		"Enable position manipulation", nullptr, "Determines if the position is modified or kept as it is"){ }
+		"@Animator.WPAPanelRuleForeignState.EnablePosition.Label", nullptr,
+		"@Animator.WPAPanelRuleForeignState.EnablePosition.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleForeignState *rule) override{
 		return aeUSetRuleFStaEnablePos::Ref::New(rule);
@@ -297,7 +298,8 @@ public:
 	
 public:
 	cActionEnableRotation(aeWPAPanelRuleForeignState &panel) : cBaseAction(panel,
-		"Enable rotation manipulation", nullptr, "Determines if the rotation is modified or kept as it is"){ }
+		"@Animator.WPAPanelRuleForeignState.EnableRotation.Label", nullptr,
+		"@Animator.WPAPanelRuleForeignState.EnableRotation.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleForeignState *rule) override{
 		return aeUSetRuleFStaEnableRot::Ref::New(rule);
@@ -315,7 +317,8 @@ public:
 	
 public:
 	cActionEnableSize(aeWPAPanelRuleForeignState &panel) : cBaseAction(panel,
-		"Enable size manipulation", nullptr, "Determines if the size is modified or kept as it is"){ }
+		"@Animator.WPAPanelRuleForeignState.EnableSize.Label", nullptr,
+		"@Animator.WPAPanelRuleForeignState.EnableSize.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleForeignState *rule) override{
 		return aeUSetRuleFStaEnableSize::Ref::New(rule);
@@ -333,8 +336,8 @@ public:
 	
 public:
 	cActionEnableVertexPositionSet(aeWPAPanelRuleForeignState &panel) : cBaseAction(panel,
-		"Enable vertex position set manipulation", nullptr,
-		"Determines if the vertex position set is modified or kept as it is"){ }
+		"@Animator.WPAPanelRuleForeignState.EnableVertexPositionSet.Label", nullptr,
+		"@Animator.WPAPanelRuleForeignState.EnableVertexPositionSet.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleForeignState *rule) override{
 		return aeUSetRuleFStaEnableVertexPositionSet::Ref::New(rule);
@@ -364,36 +367,48 @@ aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertForeignState)
 	igdeContainer::Ref groupBox;
 	
 	
-	helper.GroupBox(*this, groupBox, "Foreign State:");
+	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRuleForeignState.ForeignState.Label");
 	
-	helper.ComboBoxFilter(groupBox, "Bone:", true, "Sets the bone to retrieve the state from",
+	helper.ComboBoxFilter(groupBox, "@Animator.WPAPanelRuleForeignState.Bone.Label", true,
+		"@Animator.WPAPanelRuleForeignState.Bone.ToolTip",
 		pCBBone, cComboBone::Ref::New(*this));
 	pCBBone->SetDefaultSorter();
 	
-	helper.ComboBoxFilter(groupBox, "Vertex Position Set:", true,
-		"Sets the vertex position set to retrieve the state from",
+	helper.ComboBoxFilter(groupBox, "@Animator.WPAPanelRuleForeignState.VertexPositionSet.Label", true,
+		"@Animator.WPAPanelRuleForeignState.VertexPositionSet.ToolTip",
 		pCBVertexPositionSet, cComboVertexPositionSet::Ref::New(*this));
 	pCBVertexPositionSet->SetDefaultSorter();
 	
-	helper.EditFloat(groupBox, "Scale Position:", "Scaling applied to the foreign position",
+	helper.EditFloat(groupBox, "@Animator.WPAPanelRuleForeignState.ScalePosition.Label",
+		"@Animator.WPAPanelRuleForeignState.ScalePosition.ToolTip",
 		pEditPosition, cTextScalePosition::Ref::New(*this));
-	helper.EditFloat(groupBox, "Scale Rotation:", "Scaling applied to the foreign orientation",
+	helper.EditFloat(groupBox, "@Animator.WPAPanelRuleForeignState.ScaleRotation.Label",
+		"@Animator.WPAPanelRuleForeignState.ScaleRotation.ToolTip",
 		pEditRotation, cTextScaleRotation::Ref::New(*this));
-	helper.EditFloat(groupBox, "Scale Size:", "Scaling applied to the foreign size",
+	helper.EditFloat(groupBox, "@Animator.WPAPanelRuleForeignState.ScaleSize.Label",
+		"@Animator.WPAPanelRuleForeignState.ScaleSize.ToolTip",
 		pEditSize, cTextScaleSize::Ref::New(*this));
-	helper.EditFloat(groupBox, "Scale Vertex Position Set:",
-		"Scaling applied to the foreign vertex position set",
+	helper.EditFloat(groupBox, "@Animator.WPAPanelRuleForeignState.ScaleVertexPositionSet.Label",
+		"@Animator.WPAPanelRuleForeignState.ScaleVertexPositionSet.ToolTip",
 		pEditVertexPositionSet, cTextScaleVertexPositionSet::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "Src. Coord-Frame:", "Sets the source coordinate frame to use",
+	helper.ComboBox(groupBox, "@Animator.WPAPanelRuleForeignState.SrcCoordFrame.Label",
+		"@Animator.WPAPanelRuleForeignState.SrcCoordFrame.ToolTip",
 		pCBSrcCFrame, cComboCoordFrameSource::Ref::New(*this));
-	pCBSrcCFrame->AddItem("Bone Local", nullptr, (void*)(intptr_t)deAnimatorRuleForeignState::ecfBoneLocal);
-	pCBSrcCFrame->AddItem("Component", nullptr, (void*)(intptr_t)deAnimatorRuleForeignState::ecfComponent);
+	pCBSrcCFrame->SetAutoTranslateItems(true);
+	pCBSrcCFrame->AddItem("@Animator.WPAPanelRuleForeignState.CoordFrame.BoneLocal",
+		nullptr, (void*)(intptr_t)deAnimatorRuleForeignState::ecfBoneLocal);
+	pCBSrcCFrame->AddItem("@Animator.WPAPanelRuleForeignState.CoordFrame.Component",
+		nullptr, (void*)(intptr_t)deAnimatorRuleForeignState::ecfComponent);
 	
-	helper.ComboBox(groupBox, "Dest. Coord-Frame:", "Sets the destination coordinate frame to use",
+	helper.ComboBox(groupBox, "@Animator.WPAPanelRuleForeignState.DestCoordFrame.Label",
+		"@Animator.WPAPanelRuleForeignState.DestCoordFrame.ToolTip",
 		pCBDestCFrame, cComboCoordFrameDestination::Ref::New(*this));
-	pCBDestCFrame->AddItem("Bone Local", nullptr, (void*)(intptr_t)deAnimatorRuleForeignState::ecfBoneLocal);
-	pCBDestCFrame->AddItem("Component", nullptr, (void*)(intptr_t)deAnimatorRuleForeignState::ecfComponent);
+	pCBDestCFrame->SetAutoTranslateItems(true);
+	pCBDestCFrame->AddItem("@Animator.WPAPanelRuleForeignState.CoordFrame.BoneLocal",
+		nullptr, (void*)(intptr_t)deAnimatorRuleForeignState::ecfBoneLocal);
+	pCBDestCFrame->AddItem("@Animator.WPAPanelRuleForeignState.CoordFrame.Component",
+		nullptr, (void*)(intptr_t)deAnimatorRuleForeignState::ecfComponent);
 	
 	helper.CheckBox(groupBox, pChkEnablePosition, cActionEnablePosition::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkEnableRotation, cActionEnableRotation::Ref::New(*this));

@@ -225,8 +225,8 @@ public:
 	using Ref = deTObjectReference<cActionResetState>;
 	
 public:
-	cActionResetState(aeWPView &panel) : cBaseAction(panel, "Reset Animation State", nullptr,
-		"Animation state is reset before each frame update for testing relative animators"){ }
+	cActionResetState(aeWPView &panel) : cBaseAction(panel, "@Animator.WPView.ResetState.Label", nullptr,
+		"@Animator.WPView.ResetState.ToolTip"){ }
 	
 	void OnAction(aeAnimator *animator) override{
 		animator->SetResetState(!animator->GetResetState());
@@ -281,8 +281,8 @@ public:
 	using Ref = deTObjectReference<cActionCamAttach>;
 	
 public:
-	cActionCamAttach(aeWPView &panel) : cBaseAction(panel, "Attach camera to a bone", nullptr,
-		"Attaches the camera to a bone instead of roaming around freely"){}
+	cActionCamAttach(aeWPView &panel) : cBaseAction(panel, "@Animator.WPView.CamAttach.Label", nullptr,
+		"@Animator.WPView.CamAttach.ToolTip"){}
 	
 	void OnAction(aeAnimator *animator) override{
 		animator->GetCamera()->SetAttachToBone(!animator->GetCamera()->GetAttachToBone());
@@ -376,7 +376,7 @@ public:
 	using Ref = deTObjectReference<cActionFramePrev>;
 	cActionFramePrev(aeWPView &panel) : cActionFrameStep(panel,
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiLeft),
-		"Step animation backward by the given time step", -1.0f){}
+		"@Animator.WPView.FramePrev.ToolTip", -1.0f){}
 };
 
 class cActionFrameNext : public cActionFrameStep{
@@ -384,7 +384,7 @@ public:
 	using Ref = deTObjectReference<cActionFrameNext>;
 	cActionFrameNext(aeWPView &panel) : cActionFrameStep(panel,
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiRight),
-		"Step animation forward by the given time step", 1.0f){}
+		"@Animator.WPView.FrameNext.ToolTip", 1.0f){}
 };
 
 class cActionPaused : public cBaseAction{
@@ -392,7 +392,7 @@ public:
 	using Ref = deTObjectReference<cActionPaused>;
 	
 public:
-	cActionPaused(aeWPView &panel) : cBaseAction(panel, "Pause", nullptr, "Paus animation playback"){}
+	cActionPaused(aeWPView &panel) : cBaseAction(panel, "@Animator.WPView.Paused.Label", nullptr, "@Animator.WPView.Paused.ToolTip"){}
 	
 	void OnAction(aeAnimator *animator) override{
 		animator->SetPaused(!animator->GetPaused());
@@ -409,7 +409,7 @@ public:
 	using Ref = deTObjectReference<cActionReset>;
 	
 public:
-	cActionReset(aeWPView &panel) : cBaseAction(panel, "Reset", nullptr, "Reset animation"){}
+	cActionReset(aeWPView &panel) : cBaseAction(panel, "@Animator.WPView.Reset.Label", nullptr, "@Animator.WPView.Reset.ToolTip"){}
 	
 	void OnAction(aeAnimator *animator) override{
 		animator->GetControllers().Visit([](aeController &controller){
@@ -435,8 +435,8 @@ public:
 	using Ref = deTObjectReference<cActionAttachmentAdd>;
 	
 public:
-	cActionAttachmentAdd(aeWPView &panel) : cBaseAction(panel, "Add",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add attachment"){}
+	cActionAttachmentAdd(aeWPView &panel) : cBaseAction(panel, "@Animator.WPView.Action.AttachmentAdd",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@Animator.WPView.Action.AttachmentAdd.ToolTip"){}
 	
 	void OnAction(aeAnimator *animator) override{
 		const decString baseName("Attachment");
@@ -457,8 +457,8 @@ public:
 	using Ref = deTObjectReference<cActionAttachmentRemove>;
 	
 public:
-	cActionAttachmentRemove(aeWPView &panel) : cBaseAction(panel, "Remove",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove attachment"){}
+	cActionAttachmentRemove(aeWPView &panel) : cBaseAction(panel, "@Animator.WPView.Action.AttachmentRemove",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@Animator.WPView.Action.AttachmentRemove.ToolTip"){}
 	
 	void OnAction(aeAnimator *animator) override{
 		aeAttachment * const attachment = pPanel.GetAttachment();
@@ -482,8 +482,8 @@ public:
 	using Ref = deTObjectReference<cActionAttachmentClear>;
 	
 public:
-	cActionAttachmentClear(aeWPView &panel) : cBaseAction(panel, "Clear",
-		nullptr, "Remove all attachment"){}
+	cActionAttachmentClear(aeWPView &panel) : cBaseAction(panel, "@Animator.WPView.Action.AttachmentClear",
+		nullptr, "@Animator.WPView.Action.AttachmentClear.ToolTip"){}
 	
 	void OnAction(aeAnimator *animator) override{
 		animator->RemoveAllAttachments();
@@ -499,13 +499,13 @@ public:
 	using Ref = deTObjectReference<cActionAttachmentLoadConfig>;
 	
 public:
-	cActionAttachmentLoadConfig(aeWPView &panel) : cBaseAction(panel, "Load configuration...",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen), "Load configuration"){}
+	cActionAttachmentLoadConfig(aeWPView &panel) : cBaseAction(panel, "@Animator.WPView.Action.AttachmentLoadConfig",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen), "@Animator.WPView.Action.AttachmentLoadConfig.ToolTip"){}
 	
 	void OnAction(aeAnimator *animator) override{
 		aeLoadSaveSystem &lssys = pPanel.GetWindowProperties().GetWindowMain().GetLoadSaveSystem();
 		decString filename(animator->GetPathAttachmentConfig());
-		if(!igdeCommonDialogs::GetFileOpen(pPanel, "Open Attachment Configuration",
+		if(!igdeCommonDialogs::GetFileOpen(pPanel, "@Animator.WPView.Dialog.OpenAttachmentConfig.Title",
 		*pPanel.GetEnvironment().GetFileSystemGame(), lssys.GetAttConfigFilePatterns(), filename ) ){
 			return;
 		}
@@ -520,13 +520,13 @@ public:
 	using Ref = deTObjectReference<cActionAttachmentSaveConfig>;
 	
 public:
-	cActionAttachmentSaveConfig(aeWPView &panel) : cBaseAction(panel, "Save configuration...",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave), "Save configuration"){}
+	cActionAttachmentSaveConfig(aeWPView &panel) : cBaseAction(panel, "@Animator.WPView.Action.AttachmentSaveConfig",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave), "@Animator.WPView.Action.AttachmentSaveConfig.ToolTip"){}
 	
 	void OnAction(aeAnimator *animator) override{
 		aeLoadSaveSystem &lssys = pPanel.GetWindowProperties().GetWindowMain().GetLoadSaveSystem();
 		decString filename(animator->GetPathAttachmentConfig());
-		if(!igdeCommonDialogs::GetFileSave(pPanel, "Save Attachment Configuration",
+		if(!igdeCommonDialogs::GetFileSave(pPanel, "@Animator.WPView.Dialog.SaveAttachmentConfig.Title",
 		*pPanel.GetEnvironment().GetFileSystemGame(), lssys.GetAttConfigFilePatterns(), filename ) ){
 			return;
 		}
@@ -645,21 +645,21 @@ pWindowProperties(windowProperties)
 	
 	
 	// controllers
-	helper.GroupBox(content, groupBox, "Display File Path:");
+	helper.GroupBox(content, groupBox, "@Animator.WPView.DisplayFilePath.Label");
 	
-	helper.EditPath(groupBox, "Model:", "Sets the model to use", igdeEnvironment::efpltModel,
+	helper.EditPath(groupBox, "@Animator.WPView.Model.Label", "@Animator.WPView.Model.ToolTip", igdeEnvironment::efpltModel,
 		pEditDisplayModelPath, cPathDisplayModel::Ref::New(*this));
-	helper.EditPath(groupBox, "Skin:", "Sets the skin to use", igdeEnvironment::efpltSkin,
+	helper.EditPath(groupBox, "@Animator.WPView.Skin.Label", "@Animator.WPView.Skin.ToolTip", igdeEnvironment::efpltSkin,
 		pEditDisplaySkinPath, cPathDisplaySkin::Ref::New(*this));
-	helper.EditPath(groupBox, "Rig:", "Sets the rig to use", igdeEnvironment::efpltRig,
+	helper.EditPath(groupBox, "@Animator.WPView.Rig.Label", "@Animator.WPView.Rig.ToolTip", igdeEnvironment::efpltRig,
 		pEditDisplayRigPath, cPathDisplayRig::Ref::New(*this));
 	
 	
 	// testing animator
-	helper.GroupBox(content, groupBox, "Testing Base Animator:", true);
+	helper.GroupBox(content, groupBox, "@Animator.WPView.TestingBaseAnimator.Label", true);
 	
-	helper.EditPath(groupBox, "Animator:",
-		"Path to a testing animator to use as the base state for the editing animator",
+	helper.EditPath(groupBox, "@Animator.WPView.Animator.Label",
+		"@Animator.WPView.Animator.ToolTip",
 		igdeEnvironment::efpltAnimator, pEditTestingAnimatorPath, cPathTestingAnimator::Ref::New(*this));
 	
 	helper.CheckBox(groupBox, pChkResetState, cActionResetState::Ref::New(*this));
@@ -672,27 +672,27 @@ pWindowProperties(windowProperties)
 	
 	
 	// camera attaching
-	helper.GroupBox(content, groupBox, "Camera Attaching:");
+	helper.GroupBox(content, groupBox, "@Animator.WPView.CameraAttaching.Label");
 	
 	helper.CheckBox(groupBox, pChkCamAttach, cActionCamAttach::Ref::New(*this));
-	helper.ComboBoxFilter(groupBox, "Bone:", true, "Bone the camera is attached to",
+	helper.ComboBoxFilter(groupBox, "@Animator.WPView.CamBone.Label", true, "@Animator.WPView.CamBone.ToolTip",
 		pCBCamBone, cComboCamAttachBone::Ref::New(*this));
 	pCBCamBone->SetDefaultSorter();
 	
-	helper.EditVector(groupBox, "Position:",
-		"Camera position relative to the attachment bone coordinate system",
+	helper.EditVector(groupBox, "@Animator.WPView.CamRelPos.Label",
+		"@Animator.WPView.CamRelPos.ToolTip",
 		pEditCamRelPos, cEditCamRelPos::Ref::New(*this));
-	helper.EditVector(groupBox, "Rotation:",
-		"Camera rotation relative to the attachment bone coordinate system",
+	helper.EditVector(groupBox, "@Animator.WPView.CamRelRot.Label",
+		"@Animator.WPView.CamRelRot.ToolTip",
 		pEditCamRelRot, cEditCamRelRot::Ref::New(*this));
 	
 	
 	// playback
-	helper.GroupBox(content, groupBox, "Playback:");
+	helper.GroupBox(content, groupBox, "@Animator.WPView.Playback.Label");
 	
-	helper.EditFloat(groupBox, "Play Speed:", "Sets the playback speed",
+	helper.EditFloat(groupBox, "@Animator.WPView.PlaySpeed.Label", "@Animator.WPView.PlaySpeed.ToolTip",
 		pEditPlaySpeed, cTextPlaySpeed::Ref::New(*this));
-	helper.EditFloat(groupBox, "Time Step:", "Provides fine grained animation stepping",
+	helper.EditFloat(groupBox, "@Animator.WPView.TimeStep.Label", "@Animator.WPView.TimeStep.ToolTip",
 		pEditTimeStep, cTextTimeStep::Ref::New(*this));
 	
 	helper.FormLine(groupBox, "", "", formLine);
@@ -703,29 +703,30 @@ pWindowProperties(windowProperties)
 	
 	
 	// attachments
-	helper.GroupBox(content, groupBox, "Attachments:", true);
+	helper.GroupBox(content, groupBox, "@Animator.WPView.Attachments.Label", true);
 	
-	helper.FormLineStretchFirst(groupBox, "Attachment:", "Attachment to edit", formLine);
-	helper.ComboBox(formLine, "Attachment to edit", pCBAttachments, cComboAttachment::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@Animator.WPView.Attachment.Label", "@Animator.WPView.Attachment.ToolTip", formLine);
+	helper.ComboBox(formLine, "@Animator.WPView.Attachment.ToolTip", pCBAttachments, cComboAttachment::Ref::New(*this));
 	
 	cActionMenuAttach::Ref actionMenuAttachment(cActionMenuAttach::Ref::New(*this));
 	helper.Button(formLine, pBtnAttMenu, actionMenuAttachment);
 	actionMenuAttachment->SetWidget(pBtnAttMenu);
 	
-	helper.EditString(groupBox, "Name:", "Sets the name of the attachment",
+	helper.EditString(groupBox, "@Animator.WPView.AttachmentName.Label", "@Animator.WPView.AttachmentName.ToolTip",
 		pEditAttName, cTextAttachmentName::Ref::New(*this));
 	
-	helper.ComboBoxFilter(groupBox, "Attach Bone:", true, "Bone to attach to instead of the entire rig",
+	helper.ComboBoxFilter(groupBox, "@Animator.WPView.AttachBone.Label", true, "@Animator.WPView.AttachBone.ToolTip",
 		pCBAttBoneName, cComboAttachmentBone::Ref::New(*this));
 	pCBAttBoneName->SetDefaultSorter();
 	
-	helper.ComboBox(groupBox, "Attach:", "Attach type", pCBAttAttachType, cComboAttachmentType::Ref::New(*this));
-	pCBAttAttachType->AddItem("None", nullptr, (void*)(intptr_t)aeAttachment::eatNone);
-	pCBAttAttachType->AddItem("Bone", nullptr, (void*)(intptr_t)aeAttachment::eatBone);
-	pCBAttAttachType->AddItem("Rig", nullptr, (void*)(intptr_t)aeAttachment::eatRig);
+	helper.ComboBox(groupBox, "@Animator.WPView.Attach.Label", "@Animator.WPView.Attach.ToolTip", pCBAttAttachType, cComboAttachmentType::Ref::New(*this));
+	pCBAttAttachType->AddItem("@Animator.WPView.AttachType.None", nullptr, (void*)(intptr_t)aeAttachment::eatNone);
+	pCBAttAttachType->AddItem("@Animator.WPView.AttachType.Bone", nullptr, (void*)(intptr_t)aeAttachment::eatBone);
+	pCBAttAttachType->AddItem("@Animator.WPView.AttachType.Rig", nullptr, (void*)(intptr_t)aeAttachment::eatRig);
+	pCBAttAttachType->SetAutoTranslateItems(true);
 	
 	helper.WPWObject(content, pWPAttachment, cEditAttachmentObject::Ref::New(*this),
-		"Attachment Object:", false, true);
+		"@Animator.WPView.AttachmentObject.Label", false, true);
 }
 
 aeWPView::~aeWPView(){

@@ -120,6 +120,8 @@ public:
 	
 	/** Update controller list. */
 	void UpdateControllerList();
+	
+	void OnLanguageChanged() override;
 	/*@}*/
 };
 

@@ -176,8 +176,10 @@ public:
 	using Ref = deTObjectReference<cActionMatchNameAdd>;
 	
 public:
-	cActionMatchNameAdd(aeWPAPanelRuleMirror &panel) : cBaseAction(panel, "Add...",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add match name"){}
+	cActionMatchNameAdd(aeWPAPanelRuleMirror &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRuleMirror.ActionMatchNameAdd.Label",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"@Animator.WPAPanelRuleMirror.ActionMatchNameAdd.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleMirror *rule) override{
 		aeDialogMirrorMatchName::Ref dialog(aeDialogMirrorMatchName::Ref::New(
@@ -241,7 +243,8 @@ public:
 	using Ref = deTObjectReference<cActionMatchNameEdit>;
 	
 	cActionMatchNameEdit(aeWPAPanelRuleMirror &panel) :
-	cBaseAction(panel, "Edit...", nullptr, "Edit match name"){}
+	cBaseAction(panel, "@Animator.WPAPanelRuleMirror.ActionMatchNameEdit.Label",
+		nullptr, "@Animator.WPAPanelRuleMirror.ActionMatchNameEdit.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleMirror *rule) override{
 		aeRuleMirror::MatchName * const matchName = pPanel.GetSelectedMatchBone();
@@ -273,8 +276,10 @@ public:
 	using Ref = deTObjectReference<cActionMatchNameRemove>;
 	
 public:
-	cActionMatchNameRemove(aeWPAPanelRuleMirror &panel) : cBaseAction(panel, "Remove...",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove match name"){}
+	cActionMatchNameRemove(aeWPAPanelRuleMirror &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRuleMirror.ActionMatchNameRemove.Label",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@Animator.WPAPanelRuleMirror.ActionMatchNameRemove.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleMirror *rule) override{
 		aeRuleMirror::MatchName * const matchName = pPanel.GetSelectedMatchBone();
@@ -291,8 +296,10 @@ public:
 	using Ref = deTObjectReference<cActionMatchNameRemoveAll>;
 	
 public:
-	cActionMatchNameRemoveAll(aeWPAPanelRuleMirror &panel) : cBaseAction(panel, "Remove All",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove all match names"){}
+	cActionMatchNameRemoveAll(aeWPAPanelRuleMirror &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRuleMirror.ActionMatchNameRemoveAll.Label",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@Animator.WPAPanelRuleMirror.ActionMatchNameRemoveAll.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleMirror *rule) override{
 		return rule->GetMatchNames().IsNotEmpty()
@@ -345,8 +352,8 @@ public:
 	
 public:
 	cActionEnablePosition(aeWPAPanelRuleMirror &panel) : cBaseAction(panel,
-		"Enable position manipulation", nullptr,
-		"Determines if the position is modified or kept as it is"){ }
+		"@Animator.WPAPanelRuleMirror.EnablePosition.Label", nullptr,
+		"@Animator.WPAPanelRuleMirror.EnablePosition.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleMirror *rule) override{
 		return aeURuleMirrorSetEnablePosition::Ref::New(rule);
@@ -364,8 +371,8 @@ public:
 	
 public:
 	cActionEnableRotation(aeWPAPanelRuleMirror &panel) : cBaseAction(panel,
-		"Enable rotation manipulation", nullptr,
-		"Determines if the rotation is modified or kept as it is"){ }
+		"@Animator.WPAPanelRuleMirror.EnableRotation.Label", nullptr,
+		"@Animator.WPAPanelRuleMirror.EnableRotation.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleMirror *rule) override{
 		return aeURuleMirrorSetEnableRotation::Ref::New(rule);
@@ -383,8 +390,8 @@ public:
 	
 public:
 	cActionEnableSize(aeWPAPanelRuleMirror &panel) : cBaseAction(panel,
-		"Enable size manipulation", nullptr,
-		"Determines if the size is modified or kept as it is"){ }
+		"@Animator.WPAPanelRuleMirror.EnableSize.Label", nullptr,
+		"@Animator.WPAPanelRuleMirror.EnableSize.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleMirror *rule) override{
 		return aeURuleMirrorSetEnableSize::Ref::New(rule);
@@ -402,8 +409,8 @@ public:
 	
 public:
 	cActionEnableVertexPositionSet(aeWPAPanelRuleMirror &panel) : cBaseAction(panel,
-		"Enable vertex position set manipulation", nullptr,
-		"Determines if the vertex position set is modified or kept as it is"){ }
+		"@Animator.WPAPanelRuleMirror.EnableVertexPositionSet.Label", nullptr,
+		"@Animator.WPAPanelRuleMirror.EnableVertexPositionSet.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleMirror *rule) override{
 		return aeURuleMirrorSetEnableVertexPositionSet::Ref::New(rule);
@@ -433,14 +440,17 @@ aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertMirror)
 	igdeContainer::Ref groupBox;
 	
 	
-	helper.GroupBox(*this, groupBox, "Mirror:");
+	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRuleMirror.Mirror.Label");
 	
-	helper.ComboBox(groupBox, "Axis:", "Mirror axis", pCBMirrorAxis, cComboMirrorAxis::Ref::New(*this));
-	pCBMirrorAxis->AddItem("X", nullptr, (void*)(intptr_t)deAnimatorRuleMirror::emaX);
-	pCBMirrorAxis->AddItem("Y", nullptr, (void*)(intptr_t)deAnimatorRuleMirror::emaY);
-	pCBMirrorAxis->AddItem("Z", nullptr, (void*)(intptr_t)deAnimatorRuleMirror::emaZ);
+	helper.ComboBox(groupBox, "@Animator.WPAPanelRuleMirror.Axis.Label",
+		"@Animator.WPAPanelRuleMirror.Axis.ToolTip", pCBMirrorAxis, cComboMirrorAxis::Ref::New(*this));
+	pCBMirrorAxis->SetAutoTranslateItems(true);
+	pCBMirrorAxis->AddItem("@Animator.WPAPanelRuleMirror.Axis.X", nullptr, (void*)(intptr_t)deAnimatorRuleMirror::emaX);
+	pCBMirrorAxis->AddItem("@Animator.WPAPanelRuleMirror.Axis.Y", nullptr, (void*)(intptr_t)deAnimatorRuleMirror::emaY);
+	pCBMirrorAxis->AddItem("@Animator.WPAPanelRuleMirror.Axis.Z", nullptr, (void*)(intptr_t)deAnimatorRuleMirror::emaZ);
 	
-	helper.ComboBoxFilter(groupBox, "Bone:", true, "Mirror bone or empty string to use component",
+	helper.ComboBoxFilter(groupBox, "@Animator.WPAPanelRuleMirror.Bone.Label", true,
+		"@Animator.WPAPanelRuleMirror.Bone.ToolTip",
 		pCBMirrorBone, cComboMirrorBone::Ref::New(*this));
 	pCBMirrorBone->SetDefaultSorter();
 	
@@ -449,7 +459,8 @@ aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertMirror)
 	helper.CheckBox(groupBox, pChkEnableSize, cActionEnableSize::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkEnableVertexPositionSet, cActionEnableVertexPositionSet::Ref::New(*this));
 	
-	helper.ListBox(groupBox, "Pairs:", 3, "Match bone pairs by name.",
+	helper.ListBox(groupBox, "@Animator.WPAPanelRuleMirror.Pairs.Label", 3,
+		"@Animator.WPAPanelRuleMirror.Pairs.ToolTip",
 		pListMatchName, cListMatchNames::Ref::New(*this));
 }
 

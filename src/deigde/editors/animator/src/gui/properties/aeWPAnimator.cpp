@@ -171,8 +171,9 @@ public:
 	using Ref = deTObjectReference<cActionRigBoneAdd>;
 	
 public:
-	cActionRigBoneAdd(aeWPAnimator &panel) : cBaseAction(panel, "Add",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add rig bone"){}
+	cActionRigBoneAdd(aeWPAnimator &panel) : cBaseAction(panel, "@Animator.WPAnimator.Action.BoneAdd",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"@Animator.WPAnimator.Action.BoneAdd.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator *animator) override{
 		const decString &name = pPanel.GetCBRigBoneText();
@@ -191,8 +192,9 @@ public:
 	using Ref = deTObjectReference<cActionRigBoneRemove>;
 	
 public:
-	cActionRigBoneRemove(aeWPAnimator &panel) : cBaseAction(panel, "Remove",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove rig bone"){}
+	cActionRigBoneRemove(aeWPAnimator &panel) : cBaseAction(panel, "@Animator.WPAnimator.Action.BoneRemove",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@Animator.WPAnimator.Action.BoneRemove.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator *animator) override{
 		const decString &name = pPanel.GetCBRigBoneText();
@@ -211,8 +213,8 @@ public:
 	using Ref = deTObjectReference<cActionMirrorRigBones>;
 	
 public:
-	cActionMirrorRigBones(aeWPAnimator &panel) : cBaseAction(panel, "Mirror Bones",
-		nullptr, "Mirror rig bones"){}
+	cActionMirrorRigBones(aeWPAnimator &panel) : cBaseAction(panel, "@Animator.WPAnimator.Action.BoneMirror",
+		nullptr, "@Animator.WPAnimator.Action.BoneMirror.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator *animator) override{
 		// TODO add a dialog to allow changing the mirror parameter (or add a new menu command)
@@ -229,8 +231,9 @@ public:
 	using Ref = deTObjectReference<cActionCopyRigBones>;
 	
 public:
-	cActionCopyRigBones(aeWPAnimator &panel) : cBaseAction(panel, "Copy",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy), "Copy bones"){}
+	cActionCopyRigBones(aeWPAnimator &panel) : cBaseAction(panel, "@Animator.WPAnimator.Action.BoneCopy",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		"@Animator.WPAnimator.Action.BoneCopy.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator *animator) override{
 		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(
@@ -244,8 +247,9 @@ public:
 	using Ref = deTObjectReference<cActionPasteRigBones>;
 	
 public:
-	cActionPasteRigBones(aeWPAnimator &panel) : cBaseAction(panel, "Paste",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy), "Copy bones"){}
+	cActionPasteRigBones(aeWPAnimator &panel) : cBaseAction(panel, "@Animator.WPAnimator.Action.BonePaste",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		"@Animator.WPAnimator.Action.BonePaste.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator *animator) override{
 		aeClipboardDataBones * const clip = (aeClipboardDataBones*)pPanel.GetWindowProperties()
@@ -271,8 +275,9 @@ public:
 	using Ref = deTObjectReference<cActionExportRigBones>;
 	
 public:
-	cActionExportRigBones(aeWPAnimator &panel) : cBaseAction(panel, "Export To Text",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave), "Export bones"){}
+	cActionExportRigBones(aeWPAnimator &panel) : cBaseAction(panel, "@Animator.WPAnimator.Action.BoneExport",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave),
+		"@Animator.WPAnimator.Action.BoneExport.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator *animator) override{
 		const decStringSet bones = animator->GetListBones();
@@ -285,7 +290,9 @@ public:
 			}
 			text.Append(bones.GetAt(i));
 		}
-		igdeCommonDialogs::GetMultilineString(*pPanel.GetParentWindow(), "Export To Text", "Bones", text);
+		igdeCommonDialogs::GetMultilineString(*pPanel.GetParentWindow(),
+			"@Animator.WPAnimator.Dialog.BoneExport.Title",
+			"@Animator.WPAnimator.Dialog.BoneExport.Bones", text);
 		return {};
 	}
 	
@@ -299,14 +306,16 @@ public:
 	using Ref = deTObjectReference<cActionImportRigBones>;
 	
 public:
-	cActionImportRigBones(aeWPAnimator &panel) : cBaseAction(panel, "Import From Text",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen), "Import bones"){}
+	cActionImportRigBones(aeWPAnimator &panel) : cBaseAction(panel, "@Animator.WPAnimator.Action.BoneImport",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
+		"@Animator.WPAnimator.Action.BoneImport.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator *animator) override{
 		decString text;
 		while(true){
 			if(!igdeCommonDialogs::GetMultilineString(*pPanel.GetParentWindow(),
-			"Import From Text", "Bones. One bone per line.", text)){
+			"@Animator.WPAnimator.Dialog.BoneImport.Title",
+			"@Animator.WPAnimator.Dialog.BoneImport.Message", text)){
 				return {};
 			}
 			break;
@@ -368,8 +377,9 @@ public:
 	using Ref = deTObjectReference<cActionRigVertexPositionSetAdd>;
 	
 public:
-	cActionRigVertexPositionSetAdd(aeWPAnimator &panel) : cBaseAction(panel, "Add",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add vertex position set"){}
+	cActionRigVertexPositionSetAdd(aeWPAnimator &panel) : cBaseAction(panel, "@Animator.WPAnimator.Action.VPSAdd",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"@Animator.WPAnimator.Action.VPSAdd.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator *animator) override{
 		const decString &name = pPanel.GetCBModelVertexPositionSetText();
@@ -388,8 +398,9 @@ public:
 	using Ref = deTObjectReference<cActionRigVertexPositionSetRemove>;
 	
 public:
-	cActionRigVertexPositionSetRemove(aeWPAnimator &panel) : cBaseAction(panel, "Remove",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove vertex position set"){}
+	cActionRigVertexPositionSetRemove(aeWPAnimator &panel) : cBaseAction(panel, "@Animator.WPAnimator.Action.VPSRemove",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@Animator.WPAnimator.Action.VPSRemove.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator *animator) override{
 		const decString &name = pPanel.GetCBModelVertexPositionSetText();
@@ -409,7 +420,8 @@ public:
 	
 public:
 	cActionMirrorRigVertexPositionSets(aeWPAnimator &panel) : cBaseAction(panel,
-		"Mirror", nullptr, "Mirror vertex position sets"){}
+		"@Animator.WPAnimator.Action.VPSMirror", nullptr,
+		"@Animator.WPAnimator.Action.VPSMirror.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator *animator) override{
 		// TODO add a dialog to allow changing the mirror parameter (or add a new menu command)
@@ -426,8 +438,9 @@ public:
 	using Ref = deTObjectReference<cActionCopyRigVertexPositionSets>;
 	
 public:
-	cActionCopyRigVertexPositionSets(aeWPAnimator &panel) : cBaseAction(panel, "Copy",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy), "Copy vertex position sets"){}
+	cActionCopyRigVertexPositionSets(aeWPAnimator &panel) : cBaseAction(panel, "@Animator.WPAnimator.Action.VPSCopy",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		"@Animator.WPAnimator.Action.VPSCopy.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator *animator) override{
 		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(
@@ -441,8 +454,9 @@ public:
 	using Ref = deTObjectReference<cActionPasteRigVertexPositionSets>;
 	
 public:
-	cActionPasteRigVertexPositionSets(aeWPAnimator &panel) : cBaseAction(panel, "Paste",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy), "Copy vertex position sets"){}
+	cActionPasteRigVertexPositionSets(aeWPAnimator &panel) : cBaseAction(panel, "@Animator.WPAnimator.Action.VPSPaste",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		"@Animator.WPAnimator.Action.VPSPaste.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator *animator) override{
 		aeClipboardDataVertexPositionSets * const clip = (aeClipboardDataVertexPositionSets*)pPanel.GetWindowProperties()
@@ -468,8 +482,9 @@ public:
 	using Ref = deTObjectReference<cActionExportRigVertexPositionSets>;
 	
 public:
-	cActionExportRigVertexPositionSets(aeWPAnimator &panel) : cBaseAction(panel, "Export To Text",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave), "Export vertex position sets"){}
+	cActionExportRigVertexPositionSets(aeWPAnimator &panel) : cBaseAction(panel, "@Animator.WPAnimator.Action.VPSExport",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave),
+		"@Animator.WPAnimator.Action.VPSExport.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator *animator) override{
 		const decStringSet bones = animator->GetListVertexPositionSets();
@@ -482,7 +497,9 @@ public:
 			}
 			text.Append(bones.GetAt(i));
 		}
-		igdeCommonDialogs::GetMultilineString(*pPanel.GetParentWindow(), "Export To Text", "Vertex position sets", text);
+		igdeCommonDialogs::GetMultilineString(*pPanel.GetParentWindow(),
+			"@Animator.WPAnimator.Dialog.VPSExport.Title",
+			"@Animator.WPAnimator.Dialog.VPSExport.Sets", text);
 		return {};
 	}
 	
@@ -496,14 +513,16 @@ public:
 	using Ref = deTObjectReference<cActionImportRigVertexPositionSets>;
 	
 public:
-	cActionImportRigVertexPositionSets(aeWPAnimator &panel) : cBaseAction(panel, "Import From Text",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen), "Import vertex position sets"){}
+	cActionImportRigVertexPositionSets(aeWPAnimator &panel) : cBaseAction(panel, "@Animator.WPAnimator.Action.VPSImport",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
+		"@Animator.WPAnimator.Action.VPSImport.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator *animator) override{
 		decString text;
 		while(true){
 			if(!igdeCommonDialogs::GetMultilineString(*pPanel.GetParentWindow(),
-			"Import From Text", "Vertex position sets. One vertex position set per line.", text)){
+			"@Animator.WPAnimator.Dialog.VPSImport.Title",
+			"@Animator.WPAnimator.Dialog.VPSImport.Message", text)){
 				return {};
 			}
 			break;
@@ -586,36 +605,37 @@ pWindowProperties(windowProperties)
 	
 	
 	// animation
-	helper.GroupBox(content, groupBox, "Animator File Path:");
-	helper.EditPath(groupBox, "Rig:", "Rig resource used by the animator",
-		igdeEnvironment::efpltRig, pEditRigPath, cPathRig::Ref::New(*this));
-	helper.EditPath(groupBox, "Animation:", "Aniamtion resource used by the animator",
-		igdeEnvironment::efpltAnimation, pEditAnimPath, cPathAnimation::Ref::New(*this));
+	helper.GroupBox(content, groupBox, "@Animator.WPAnimator.AnimatorFilePath.Label");
+	helper.EditPath(groupBox, "@Animator.WPAnimator.Rig.Label",
+		"@Animator.WPAnimator.Rig.ToolTip", igdeEnvironment::efpltRig, pEditRigPath, cPathRig::Ref::New(*this));
+	helper.EditPath(groupBox, "@Animator.WPAnimator.Animation.Label",
+		"@Animator.WPAnimator.Animation.ToolTip", igdeEnvironment::efpltAnimation, pEditAnimPath, cPathAnimation::Ref::New(*this));
 	
 	
 	// affected bones
-	helper.GroupBoxFlow(content, groupBox, "Affected bones:");
+	helper.GroupBoxFlow(content, groupBox, "@Animator.WPAnimator.AffectedBones.Label");
 	
 	formLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
 	groupBox->AddChild(formLine);
-	helper.ComboBoxFilter(formLine, true, "Bone name", pCBBones, {});
+	helper.ComboBoxFilter(formLine, true, "@Animator.WPAnimator.BoneName.ToolTip", pCBBones, {});
 	helper.Button(formLine, pBtnBoneAdd, cActionRigBoneAdd::Ref::New(*this));
 	helper.Button(formLine, pBtnBoneDel, cActionRigBoneRemove::Ref::New(*this));
 	
-	helper.ListBox(groupBox, 5, "Affectes bones", pListBones, cListRigBones::Ref::New(*this));
+	helper.ListBox(groupBox, 5, "@Animator.WPAnimator.AffectedBones.ToolTip", pListBones, cListRigBones::Ref::New(*this));
 	pListBones->SetDefaultSorter();
 	
 	
 	// affected vertex position sets
-	helper.GroupBoxFlow(content, groupBox, "Affected vertex position sets:");
+	helper.GroupBoxFlow(content, groupBox, "@Animator.WPAnimator.AffectedVertexPositionSets.Label");
 	
 	formLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
 	groupBox->AddChild(formLine);
-	helper.ComboBoxFilter(formLine, true, "Set name", pCBVertexPositionSets, {});
+	helper.ComboBoxFilter(formLine, true, "@Animator.WPAnimator.SetName.ToolTip", pCBVertexPositionSets, {});
 	helper.Button(formLine, pBtnVertexPositionSetAdd, cActionRigVertexPositionSetAdd::Ref::New(*this));
 	helper.Button(formLine, pBtnVertexPositionSetDel, cActionRigVertexPositionSetRemove::Ref::New(*this));
 	
-	helper.ListBox(groupBox, 5, "Affectes vertex position sets", pListVertexPositionSets, cListRigVertexPositionSets::Ref::New(*this));
+	helper.ListBox(groupBox, 5, "@Animator.WPAnimator.AffectedVertexPositionSets.ToolTip",
+		pListVertexPositionSets, cListRigVertexPositionSets::Ref::New(*this));
 	pListVertexPositionSets->SetDefaultSorter();
 }
 

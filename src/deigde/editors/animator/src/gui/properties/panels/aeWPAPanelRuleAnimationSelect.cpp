@@ -117,8 +117,10 @@ public:
 class cActionMoveAdd: public cBaseAction{
 public:
 	using Ref = deTObjectReference<cActionMoveAdd>;
-	cActionMoveAdd(aeWPAPanelRuleAnimationSelect &panel) : cBaseAction(panel, "Add",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add move to list"){}
+	cActionMoveAdd(aeWPAPanelRuleAnimationSelect &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRuleAnimationSelect.Action.MoveAdd.Label",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"@Animator.WPAPanelRuleAnimationSelect.Action.MoveAdd.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleAnimationSelect *rule) override{
 		const decString &name = pPanel.GetCBMovesText();
@@ -139,8 +141,10 @@ public:
 class cActionMoveRemove: public cBaseAction{
 public:
 	using Ref = deTObjectReference<cActionMoveRemove>;
-	cActionMoveRemove(aeWPAPanelRuleAnimationSelect &panel) : cBaseAction(panel, "Remove",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove move to list"){}
+	cActionMoveRemove(aeWPAPanelRuleAnimationSelect &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRuleAnimationSelect.Action.MoveRemove.Label",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@Animator.WPAPanelRuleAnimationSelect.Action.MoveRemove.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleAnimationSelect *rule) override{
 		const int selection = pPanel.GetListMovesSelection();
@@ -161,8 +165,10 @@ public:
 class cActionMoveUp: public cBaseAction{
 public:
 	using Ref = deTObjectReference<cActionMoveUp>;
-	cActionMoveUp(aeWPAPanelRuleAnimationSelect &panel) : cBaseAction(panel, "Move Up",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp), "Move move up in list"){}
+	cActionMoveUp(aeWPAPanelRuleAnimationSelect &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRuleAnimationSelect.Action.MoveUp.Label",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp),
+		"@Animator.WPAPanelRuleAnimationSelect.Action.MoveUp.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleAnimationSelect *rule) override{
 		const int selection = pPanel.GetListMovesSelection();
@@ -183,8 +189,10 @@ public:
 class cActionMoveDown: public cBaseAction{
 public:
 	using Ref = deTObjectReference<cActionMoveDown>;
-	cActionMoveDown(aeWPAPanelRuleAnimationSelect &panel) : cBaseAction(panel, "Move Down",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown), "Move move down in list"){}
+	cActionMoveDown(aeWPAPanelRuleAnimationSelect &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRuleAnimationSelect.Action.MoveDown.Label",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown),
+		"@Animator.WPAPanelRuleAnimationSelect.Action.MoveDown.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleAnimationSelect *rule) override{
 		const int selection = pPanel.GetListMovesSelection();
@@ -228,7 +236,8 @@ public:
 	
 public:
 	cActionEnablePosition(aeWPAPanelRuleAnimationSelect &panel) : cBaseAction(panel,
-		"Enable position manipulation", nullptr, "Determines if the position is modified or kept as it is"){ }
+		"@Animator.WPAPanelRuleAnimationSelect.EnablePosition.Label", nullptr,
+		"@Animator.WPAPanelRuleAnimationSelect.EnablePosition.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleAnimationSelect *rule) override{
 		return aeURuleAnimSelectToggleEnablePosition::Ref::New(rule);
@@ -246,7 +255,8 @@ public:
 	
 public:
 	cActionEnableRotation(aeWPAPanelRuleAnimationSelect &panel) : cBaseAction(panel,
-		"Enable rotation manipulation", nullptr, "Determines if the rotation is modified or kept as it is"){ }
+		"@Animator.WPAPanelRuleAnimationSelect.EnableRotation.Label", nullptr,
+		"@Animator.WPAPanelRuleAnimationSelect.EnableRotation.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleAnimationSelect *rule) override{
 		return aeURuleAnimSelectToggleEnableRotation::Ref::New(rule);
@@ -264,7 +274,8 @@ public:
 	
 public:
 	cActionEnableSize(aeWPAPanelRuleAnimationSelect &panel) : cBaseAction(panel,
-		"Enable size manipulation", nullptr, "Determines if the size is modified or kept as it is"){ }
+		"@Animator.WPAPanelRuleAnimationSelect.EnableSize.Label", nullptr,
+		"@Animator.WPAPanelRuleAnimationSelect.EnableSize.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleAnimationSelect *rule) override{
 		return aeURuleAnimSelectToggleEnableSize::Ref::New(rule);
@@ -282,8 +293,8 @@ public:
 	
 public:
 	cActionEnableVertexPositionSet(aeWPAPanelRuleAnimationSelect &panel) : cBaseAction(panel,
-		"Enable vertex position set manipulation", nullptr,
-		"Determines if the vertex position set is modified or kept as it is"){ }
+		"@Animator.WPAPanelRuleAnimationSelect.EnableVertexPositionSet.Label", nullptr,
+		"@Animator.WPAPanelRuleAnimationSelect.EnableVertexPositionSet.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleAnimationSelect *rule) override{
 		return aeURuleAnimSelectToggleEnableVertexPositionSet::Ref::New(rule);
@@ -312,15 +323,16 @@ aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertAnimationSelect)
 	igdeContainer::Ref groupBox, formLine;
 	
 	
-	helper.GroupBoxFlow(*this, groupBox, "Animation Select:");
+	helper.GroupBoxFlow(*this, groupBox, "@Animator.WPAPanelRuleAnimationSelect.AnimationSelect.Label");
 	
 	formLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
 	groupBox->AddChild(formLine);
-	helper.ComboBoxFilter(formLine, true, "Moves", pCBMoves, {});
+	helper.ComboBoxFilter(formLine, true, "@Animator.WPAPanelRuleAnimationSelect.Moves.ToolTip", pCBMoves, {});
 	pCBMoves->SetDefaultSorter();
 	helper.Button(formLine, pBtnMoveAdd, cActionMoveAdd::Ref::New(*this));
 	
-	helper.ListBox(groupBox, 4, "Moves to select from", pListMoves, cListMoves::Ref::New(*this));
+	helper.ListBox(groupBox, 4, "@Animator.WPAPanelRuleAnimationSelect.ListMoves.ToolTip",
+		pListMoves, cListMoves::Ref::New(*this));
 	
 	helper.CheckBoxOnly(groupBox, pChkEnablePosition, cActionEnablePosition::Ref::New(*this));
 	helper.CheckBoxOnly(groupBox, pChkEnableRotation, cActionEnableRotation::Ref::New(*this));

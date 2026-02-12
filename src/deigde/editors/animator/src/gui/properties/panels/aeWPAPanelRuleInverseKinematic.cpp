@@ -243,7 +243,8 @@ public:
 	
 public:
 	cActionAdjustRotation(aeWPAPanelRuleInverseKinematic &panel) : cBaseAction(panel,
-		"Adjust Orientation", nullptr, "Determines if the bone orientation is adjusted"){ }
+		"@Animator.WPAPanelRuleInverseKinematic.AdjustOrientation.Label", nullptr,
+		"@Animator.WPAPanelRuleInverseKinematic.AdjustOrientation.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleInverseKinematic *rule) override{
 		return aeURuleIKSetAdjustOrientation::Ref::New(rule);
@@ -272,8 +273,8 @@ public:
 	
 public:
 	cActionUseSolverBone(aeWPAPanelRuleInverseKinematic &panel) : cBaseAction(panel,
-		"Use solver bone", nullptr, "Determines if the solver bone is used as reference "
-		"coordinate system or the component itself"){}
+		"@Animator.WPAPanelRuleInverseKinematic.UseSolverBone.Label", nullptr,
+		"@Animator.WPAPanelRuleInverseKinematic.UseSolverBone.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleInverseKinematic *rule) override{
 		return aeURuleIKSetUseSolverBone::Ref::New(rule);
@@ -337,41 +338,44 @@ aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertInverseKinematic)
 	igdeContainer::Ref groupBox;
 	
 	
-	helper.GroupBox(*this, groupBox, "Inverse Kinematic:");
+	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRuleInverseKinematic.InverseKinematic.Label");
 	
-	helper.EditVector(groupBox, "Goal Position:", "Sets the position to reach",
+	helper.EditVector(groupBox, "@Animator.WPAPanelRuleInverseKinematic.GoalPosition.Label",
+		"@Animator.WPAPanelRuleInverseKinematic.GoalPosition.ToolTip",
 		pEditGoalPos, cEditGoalPosition::Ref::New(*this));
-	helper.EditVector(groupBox, "Goal Orientation:", "Sets the orientation to reach",
+	helper.EditVector(groupBox, "@Animator.WPAPanelRuleInverseKinematic.GoalOrientation.Label",
+		"@Animator.WPAPanelRuleInverseKinematic.GoalOrientation.ToolTip",
 		pEditGoalRot, cEditGoalRotation::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkAdjustRotation, cActionAdjustRotation::Ref::New(*this));
 	
-	helper.EditVector(groupBox, "Local Position:",
-		"Sets the goal position relative to the bone local coordinate system",
+	helper.EditVector(groupBox, "@Animator.WPAPanelRuleInverseKinematic.LocalPosition.Label",
+		"@Animator.WPAPanelRuleInverseKinematic.LocalPosition.ToolTip",
 		pEditLocalPos, cEditLocalPosition::Ref::New(*this));
-	helper.EditVector(groupBox, "Local Orientation:",
-		"Sets the goal orientation relative to the bone local coordinate system",
+	helper.EditVector(groupBox, "@Animator.WPAPanelRuleInverseKinematic.LocalOrientation.Label",
+		"@Animator.WPAPanelRuleInverseKinematic.LocalOrientation.ToolTip",
 		pEditLocalRot, cEditLocalRotation::Ref::New(*this));
 	
-	helper.ComboBoxFilter(groupBox, "Solver Bone:", true,
-		"Sets the solver bone to use as reference coordinate system",
+	helper.ComboBoxFilter(groupBox, "@Animator.WPAPanelRuleInverseKinematic.SolverBone.Label", true,
+		"@Animator.WPAPanelRuleInverseKinematic.SolverBone.ToolTip",
 		pCBSolverBone, cComboSolverBone::Ref::New(*this));
 	pCBSolverBone->SetDefaultSorter();
 	helper.CheckBox(groupBox, pChkUseSolverBone, cActionUseSolverBone::Ref::New(*this));
 	
 	
 	// reach
-	helper.GroupBox(*this, groupBox, "Reach:", true);
+	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRuleInverseKinematic.Reach.Label", true);
 	
-	helper.EditFloat(groupBox, "Range:",
-		"Maximum allowed range for IK target to be located from the reach center",
+	helper.EditFloat(groupBox, "@Animator.WPAPanelRuleInverseKinematic.Range.Label",
+		"@Animator.WPAPanelRuleInverseKinematic.Range.ToolTip",
 		pEditReachRange, cTextReachRange::Ref::New(*this));
 	
-	helper.ComboBoxFilter(groupBox, "Bone:", true,
-		"Bone to use as center for reach calculation or empty string to use constant center",
+	helper.ComboBoxFilter(groupBox, "@Animator.WPAPanelRuleInverseKinematic.ReachBone.Label", true,
+		"@Animator.WPAPanelRuleInverseKinematic.ReachBone.ToolTip",
 		pCBReachBone, cComboReachBone::Ref::New(*this));
 	pCBReachBone->SetDefaultSorter();
 	
-	helper.EditVector(groupBox, "Center:", "Center to use for reach calculation if bone is not set",
+	helper.EditVector(groupBox, "@Animator.WPAPanelRuleInverseKinematic.ReachCenter.Label",
+		"@Animator.WPAPanelRuleInverseKinematic.ReachCenter.ToolTip",
 		pEditReachCenter, cEditReachCenter::Ref::New(*this));
 }
 
@@ -458,11 +462,11 @@ void aeWPAPanelRuleInverseKinematic::UpdateTargetList(){
 	
 	aeRuleInverseKinematic * const rule = (aeRuleInverseKinematic*)GetRule();
 	if(rule){
-		AddTarget("Goal Position", rule->GetTargetGoalPosition());
-		AddTarget("Goal Orientation", rule->GetTargetGoalOrientation());
-		AddTarget("Local Position", rule->GetTargetLocalPosition());
-		AddTarget("Local Orientation", rule->GetTargetLocalOrientation());
-		AddTarget("Reach Range", rule->GetTargetReachRange());
-		AddTarget("Reach Center", rule->GetTargetReachCenter());
+		AddTarget("@Animator.WPAPanelRuleInverseKinematic.GoalPosition.Label", rule->GetTargetGoalPosition());
+		AddTarget("@Animator.WPAPanelRuleInverseKinematic.GoalOrientation.Label", rule->GetTargetGoalOrientation());
+		AddTarget("@Animator.WPAPanelRuleInverseKinematic.LocalPosition.Label", rule->GetTargetLocalPosition());
+		AddTarget("@Animator.WPAPanelRuleInverseKinematic.LocalOrientation.Label", rule->GetTargetLocalOrientation());
+		AddTarget("@Animator.WPAPanelRuleInverseKinematic.Range.Label", rule->GetTargetReachRange());
+		AddTarget("@Animator.WPAPanelRuleInverseKinematic.ReachCenter.Label", rule->GetTargetReachCenter());
 	}
 }

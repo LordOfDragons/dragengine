@@ -138,7 +138,8 @@ public:
 	
 public:
 	cActionEnablePosition(aeWPAPanelRuleGroup &panel) : cBaseAction(panel,
-		"Enable position manipulation", nullptr, "Determines if the position is modified or kept as it is"){ }
+		"@Animator.WPAPanelRuleGroup.EnablePosition.Label", nullptr,
+		"@Animator.WPAPanelRuleGroup.EnablePosition.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleGroup *rule) override{
 		return aeURuleGroupToggleEnablePosition::Ref::New(rule);
@@ -156,7 +157,8 @@ public:
 	
 public:
 	cActionEnableRotation(aeWPAPanelRuleGroup &panel) : cBaseAction(panel,
-		"Enable rotation manipulation", nullptr, "Determines if the rotation is modified or kept as it is"){ }
+		"@Animator.WPAPanelRuleGroup.EnableRotation.Label", nullptr,
+		"@Animator.WPAPanelRuleGroup.EnableRotation.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleGroup *rule) override{
 		return aeURuleGroupToggleEnableRotation::Ref::New(rule);
@@ -174,7 +176,8 @@ public:
 	
 public:
 	cActionEnableSize(aeWPAPanelRuleGroup &panel) : cBaseAction(panel,
-		"Enable size manipulation", nullptr, "Determines if the size is modified or kept as it is"){ }
+		"@Animator.WPAPanelRuleGroup.EnableSize.Label", nullptr,
+		"@Animator.WPAPanelRuleGroup.EnableSize.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleGroup *rule) override{
 		return aeURuleGroupToggleEnableSize::Ref::New(rule);
@@ -192,8 +195,8 @@ public:
 	
 public:
 	cActionEnableVertexPositionSet(aeWPAPanelRuleGroup &panel) : cBaseAction(panel,
-		"Enable vertex position set manipulation", nullptr,
-		"Determines if the vertex position set is modified or kept as it is"){ }
+		"@Animator.WPAPanelRuleGroup.EnableVertexPositionSet.Label", nullptr,
+		"@Animator.WPAPanelRuleGroup.EnableVertexPositionSet.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleGroup *rule) override{
 		return aeURuleGroupToggleEnableVertexPositionSet::Ref::New(rule);
@@ -211,7 +214,8 @@ public:
 	
 public:
 	cActionUseCurrentState(aeWPAPanelRuleGroup &panel) : cBaseAction(panel,
-		"Use current state", nullptr, "Use current animation state instead of empty state"){}
+		"@Animator.WPAPanelRuleGroup.UseCurrentState.Label", nullptr,
+		"@Animator.WPAPanelRuleGroup.UseCurrentState.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleGroup *rule) override{
 		return aeURuleGroupToggleUseCurrentState::Ref::New(rule);
@@ -241,13 +245,16 @@ aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertGroup)
 	igdeContainer::Ref groupBox;
 	
 	
-	helper.GroupBox(*this, groupBox, "Group:");
+	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRuleGroup.Group.Label");
 	
-	helper.ComboBox(groupBox, "Application Type:", "Sets how child rules are process in the the group.\n"
-		"Apply all rules (all) or blend between two selected rules using the select target (select).",
+	helper.ComboBox(groupBox, "@Animator.WPAPanelRuleGroup.ApplicationType.Label",
+		"@Animator.WPAPanelRuleGroup.ApplicationType.ToolTip",
 		pCBApplicationType, cComboApplicationType::Ref::New(*this));
-	pCBApplicationType->AddItem("All", nullptr, (void*)(intptr_t)deAnimatorRuleGroup::eatAll);
-	pCBApplicationType->AddItem("Select", nullptr, (void*)(intptr_t)deAnimatorRuleGroup::eatSelect);
+	pCBApplicationType->SetAutoTranslateItems(true);
+	pCBApplicationType->AddItem("@Animator.WPAPanelRuleGroup.ApplicationType.All",
+		nullptr, (void*)(intptr_t)deAnimatorRuleGroup::eatAll);
+	pCBApplicationType->AddItem("@Animator.WPAPanelRuleGroup.ApplicationType.Select",
+		nullptr, (void*)(intptr_t)deAnimatorRuleGroup::eatSelect);
 	
 	helper.CheckBox(groupBox, pChkUseCurrentState, cActionUseCurrentState::Ref::New(*this));
 	

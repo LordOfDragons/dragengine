@@ -325,7 +325,8 @@ public:
 	
 public:
 	cActionEnablePosition(aeWPAPanelRuleBoneTransformator &panel) : cBaseAction(panel,
-		"Enable position manipulation", nullptr, "Determines if the position is modified or kept as it is"){ }
+		"@Animator.WPAPanelRuleBoneTransformator.EnablePosition.Label", nullptr,
+		"@Animator.WPAPanelRuleBoneTransformator.EnablePosition.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleBoneTransformator *rule) override{
 		return aeURuleBTransSetEnablePos::Ref::New(rule);
@@ -343,7 +344,8 @@ public:
 	
 public:
 	cActionEnableRotation(aeWPAPanelRuleBoneTransformator &panel) : cBaseAction(panel,
-		"Enable rotation manipulation", nullptr, "Determines if the rotation is modified or kept as it is"){ }
+		"@Animator.WPAPanelRuleBoneTransformator.EnableRotation.Label", nullptr,
+		"@Animator.WPAPanelRuleBoneTransformator.EnableRotation.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleBoneTransformator *rule) override{
 		return aeURuleBTransSetEnableOrien::Ref::New(rule);
@@ -361,7 +363,8 @@ public:
 	
 public:
 	cActionEnableSize(aeWPAPanelRuleBoneTransformator &panel) : cBaseAction(panel,
-		"Enable size manipulation", nullptr, "Determines if the size is modified or kept as it is"){ }
+		"@Animator.WPAPanelRuleBoneTransformator.EnableSize.Label", nullptr,
+		"@Animator.WPAPanelRuleBoneTransformator.EnableSize.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleBoneTransformator *rule) override{
 		return aeURuleBTransSetEnableSize::Ref::New(rule);
@@ -379,7 +382,8 @@ public:
 	
 public:
 	cActionUseAxis(aeWPAPanelRuleBoneTransformator &panel) : cBaseAction(panel,
-		"Use rotation axis", nullptr, "Use rotation axis instead of direct rotation"){}
+		"@Animator.WPAPanelRuleBoneTransformator.UseAxis.Label", nullptr,
+		"@Animator.WPAPanelRuleBoneTransformator.UseAxis.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleBoneTransformator *rule) override{
 		return aeURuleBTransSetUseAxis::Ref::New(rule);
@@ -447,53 +451,71 @@ aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertBoneTransformator)
 	igdeContainer::Ref groupBox;
 	
 	
-	helper.GroupBox(*this, groupBox, "Bone Manipulator:");
+	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRuleBoneTransformator.BoneManipulator.Label");
 	
-	helper.EditVector(groupBox, "Min Translation:", "Minimum translation",
+	helper.EditVector(groupBox, "@Animator.WPAPanelRuleBoneTransformator.MinTranslation.Label",
+		"@Animator.WPAPanelRuleBoneTransformator.MinTranslation.ToolTip",
 		pEditMinTrans, cEditTranslationMinimum::Ref::New(*this));
-	helper.EditVector(groupBox, "Max Translation:", "Maximum translation",
+	helper.EditVector(groupBox, "@Animator.WPAPanelRuleBoneTransformator.MaxTranslation.Label",
+		"@Animator.WPAPanelRuleBoneTransformator.MaxTranslation.ToolTip",
 		pEditMaxTrans, cEditTranslationMaximum::Ref::New(*this));
 	
-	helper.EditVector(groupBox, "Min Rotation:", "Minimum rotation",
+	helper.EditVector(groupBox, "@Animator.WPAPanelRuleBoneTransformator.MinRotation.Label",
+		"@Animator.WPAPanelRuleBoneTransformator.MinRotation.ToolTip",
 		pEditMinRot, cEditRotationMinimum::Ref::New(*this));
-	helper.EditVector(groupBox, "Max Rotation:", "Maximum rotation",
+	helper.EditVector(groupBox, "@Animator.WPAPanelRuleBoneTransformator.MaxRotation.Label",
+		"@Animator.WPAPanelRuleBoneTransformator.MaxRotation.ToolTip",
 		pEditMaxRot, cEditRotationMaximum::Ref::New(*this));
 	
-	helper.EditVector(groupBox, "Min Scaling:", "Minimum scaling",
+	helper.EditVector(groupBox, "@Animator.WPAPanelRuleBoneTransformator.MinScaling.Label",
+		"@Animator.WPAPanelRuleBoneTransformator.MinScaling.ToolTip",
 		pEditMinScale, cEditScalingMinimum::Ref::New(*this));
-	helper.EditVector(groupBox, "Max Scaling:", "Maximum scaling",
+	helper.EditVector(groupBox, "@Animator.WPAPanelRuleBoneTransformator.MaxScaling.Label",
+		"@Animator.WPAPanelRuleBoneTransformator.MaxScaling.ToolTip",
 		pEditMaxScale, cEditScalingMaximum::Ref::New(*this));
 	
 	helper.CheckBox(groupBox, pChkUseAxis, cActionUseAxis::Ref::New(*this));
-	helper.EditVector(groupBox, "Axis:", "Rotation axis", pEditAxis, cEditAxis::Ref::New(*this));
-	helper.EditFloat(groupBox, "Min Angle:", "Minimum axis rotation angle",
+	helper.EditVector(groupBox, "@Animator.WPAPanelRuleBoneTransformator.Axis.Label",
+		"@Animator.WPAPanelRuleBoneTransformator.Axis.ToolTip", pEditAxis, cEditAxis::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Animator.WPAPanelRuleBoneTransformator.MinAngle.Label",
+		"@Animator.WPAPanelRuleBoneTransformator.MinAngle.ToolTip",
 		pEditMinAngle, cEditMinimumAngle::Ref::New(*this));
-	helper.EditFloat(groupBox, "Max Angle:", "Maximum axis rotation angle",
+	helper.EditFloat(groupBox, "@Animator.WPAPanelRuleBoneTransformator.MaxAngle.Label",
+		"@Animator.WPAPanelRuleBoneTransformator.MaxAngle.ToolTip",
 		pEditMaxAngle, cEditMaximumAngle::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "Coord-Frame:", "Sets the coordinate frame to use for rotation",
+	helper.ComboBox(groupBox, "@Animator.WPAPanelRuleBoneTransformator.CoordFrame.Label",
+		"@Animator.WPAPanelRuleBoneTransformator.CoordFrame.ToolTip",
 		pCBCoordFrame, cComboCoordFrame::Ref::New(*this));
-	pCBCoordFrame->AddItem("Bone Local", nullptr, (void*)(intptr_t)deAnimatorRuleBoneTransformator::ecfBoneLocal);
-	pCBCoordFrame->AddItem("Component", nullptr, (void*)(intptr_t)deAnimatorRuleBoneTransformator::ecfComponent);
-	pCBCoordFrame->AddItem("Target Bone", nullptr, (void*)(intptr_t)deAnimatorRuleBoneTransformator::ecfTargetBone);
+	pCBCoordFrame->SetAutoTranslateItems(true);
+	pCBCoordFrame->AddItem("@Animator.WPAPanelRuleBoneTransformator.CoordFrame.BoneLocal",
+		nullptr, (void*)(intptr_t)deAnimatorRuleBoneTransformator::ecfBoneLocal);
+	pCBCoordFrame->AddItem("@Animator.WPAPanelRuleBoneTransformator.CoordFrame.Component",
+		nullptr, (void*)(intptr_t)deAnimatorRuleBoneTransformator::ecfComponent);
+	pCBCoordFrame->AddItem("@Animator.WPAPanelRuleBoneTransformator.CoordFrame.TargetBone",
+		nullptr, (void*)(intptr_t)deAnimatorRuleBoneTransformator::ecfTargetBone);
 	
-	helper.ComboBoxFilter(groupBox, "Target Bone:", true, "Set bone to use as coordinate frame",
+	helper.ComboBoxFilter(groupBox, "@Animator.WPAPanelRuleBoneTransformator.TargetBone.Label", true,
+		"@Animator.WPAPanelRuleBoneTransformator.TargetBone.ToolTip",
 		pCBTargetBone, cComboTargetBone::Ref::New(*this));
 	pCBTargetBone->SetDefaultSorter();
 	
-	helper.ComboBoxFilter(groupBox, "Input Bone:", true, "Set bone to use as input",
+	helper.ComboBoxFilter(groupBox, "@Animator.WPAPanelRuleBoneTransformator.InputBone.Label", true,
+		"@Animator.WPAPanelRuleBoneTransformator.InputBone.ToolTip",
 		pCBInputBone, cComboInputBone::Ref::New(*this));
 	pCBInputBone->SetDefaultSorter();
 	
-	helper.ComboBox(groupBox, "Input Source:", "Source to use for input.",
+	helper.ComboBox(groupBox, "@Animator.WPAPanelRuleBoneTransformator.InputSource.Label",
+		"@Animator.WPAPanelRuleBoneTransformator.InputSource.ToolTip",
 		pCBInputSource, cComboInputSource::Ref::New(*this));
-	pCBInputSource->AddItem("Target Blend", nullptr,
+	pCBInputSource->SetAutoTranslateItems(true);
+	pCBInputSource->AddItem("@Animator.WPAPanelRuleBoneTransformator.InputSource.TargetBlend", nullptr,
 		(void*)(intptr_t)deAnimatorRuleBoneTransformator::eisTargetBlend);
-	pCBInputSource->AddItem("Target Direct", nullptr,
+	pCBInputSource->AddItem("@Animator.WPAPanelRuleBoneTransformator.InputSource.TargetDirect", nullptr,
 		(void*)(intptr_t)deAnimatorRuleBoneTransformator::eisTargetDirect);
-	pCBInputSource->AddItem("Bone State", nullptr,
+	pCBInputSource->AddItem("@Animator.WPAPanelRuleBoneTransformator.InputSource.BoneState", nullptr,
 		(void*)(intptr_t)deAnimatorRuleBoneTransformator::eisBoneState);
-	pCBInputSource->AddItem("Bone State Inverse", nullptr,
+	pCBInputSource->AddItem("@Animator.WPAPanelRuleBoneTransformator.InputSource.BoneStateInverse", nullptr,
 		(void*)(intptr_t)deAnimatorRuleBoneTransformator::eisBoneStateInverse);
 	
 	helper.CheckBox(groupBox, pChkEnablePosition, cActionEnablePosition::Ref::New(*this));

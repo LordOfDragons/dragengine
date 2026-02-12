@@ -188,49 +188,58 @@ aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertTrackTo)
 	igdeContainer::Ref groupBox;
 	
 	
-	helper.GroupBox(*this, groupBox, "Track To:");
+	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRuleTrackTo.TrackTo.Label");
 	
-	helper.ComboBoxFilter(groupBox, "Track Bone:", true, "Name of the bone to track to",
+	helper.ComboBoxFilter(groupBox, "@Animator.WPAPanelRuleTrackTo.TrackBone.Label", true,
+		"@Animator.WPAPanelRuleTrackTo.TrackBone.ToolTip",
 		pCBTrackBone, cComboTrackBone::Ref::New(*this));
 	pCBTrackBone->SetDefaultSorter();
 	
-	helper.ComboBox(groupBox, "Track Axis:", "Axis to point at the target",
+	helper.ComboBox(groupBox, "@Animator.WPAPanelRuleTrackTo.TrackAxis.Label",
+		"@Animator.WPAPanelRuleTrackTo.TrackAxis.ToolTip",
 		pCBTrackAxis, cComboTrackAxis::Ref::New(*this));
-	pCBTrackAxis->AddItem("Positive X", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::etaPosX);
-	pCBTrackAxis->AddItem("Positive Y", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::etaPosY);
-	pCBTrackAxis->AddItem("Positive Z", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::etaPosZ);
-	pCBTrackAxis->AddItem("Negative X", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::etaNegX);
-	pCBTrackAxis->AddItem("Negative Y", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::etaNegY);
-	pCBTrackAxis->AddItem("Negative Z", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::etaNegZ);
+	pCBTrackAxis->SetAutoTranslateItems(true);
+	pCBTrackAxis->AddItem("@Animator.WPAPanelRuleTrackTo.TrackAxis.PosX", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::etaPosX);
+	pCBTrackAxis->AddItem("@Animator.WPAPanelRuleTrackTo.TrackAxis.PosY", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::etaPosY);
+	pCBTrackAxis->AddItem("@Animator.WPAPanelRuleTrackTo.TrackAxis.PosZ", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::etaPosZ);
+	pCBTrackAxis->AddItem("@Animator.WPAPanelRuleTrackTo.TrackAxis.NegX", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::etaNegX);
+	pCBTrackAxis->AddItem("@Animator.WPAPanelRuleTrackTo.TrackAxis.NegY", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::etaNegY);
+	pCBTrackAxis->AddItem("@Animator.WPAPanelRuleTrackTo.TrackAxis.NegZ", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::etaNegZ);
 	
-	helper.ComboBox(groupBox, "Up Axis:", "Up axis to align with the target up axis",
+	helper.ComboBox(groupBox, "@Animator.WPAPanelRuleTrackTo.UpAxis.Label",
+		"@Animator.WPAPanelRuleTrackTo.UpAxis.ToolTip",
 		pCBUpAxis, cComboUpAxis::Ref::New(*this));
-	pCBUpAxis->AddItem("Positive X", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::etaPosX);
-	pCBUpAxis->AddItem("Positive Y", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::etaPosY);
-	pCBUpAxis->AddItem("Positive Z", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::etaPosZ);
-	pCBUpAxis->AddItem("Negative X", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::etaNegX);
-	pCBUpAxis->AddItem("Negative Y", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::etaNegY);
-	pCBUpAxis->AddItem("Negative Z", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::etaNegZ);
+	pCBUpAxis->SetAutoTranslateItems(true);
+	pCBUpAxis->AddItem("@Animator.WPAPanelRuleTrackTo.TrackAxis.PosX", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::etaPosX);
+	pCBUpAxis->AddItem("@Animator.WPAPanelRuleTrackTo.TrackAxis.PosY", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::etaPosY);
+	pCBUpAxis->AddItem("@Animator.WPAPanelRuleTrackTo.TrackAxis.PosZ", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::etaPosZ);
+	pCBUpAxis->AddItem("@Animator.WPAPanelRuleTrackTo.TrackAxis.NegX", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::etaNegX);
+	pCBUpAxis->AddItem("@Animator.WPAPanelRuleTrackTo.TrackAxis.NegY", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::etaNegY);
+	pCBUpAxis->AddItem("@Animator.WPAPanelRuleTrackTo.TrackAxis.NegZ", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::etaNegZ);
 	
-	helper.ComboBox(groupBox, "Up Target:", "Target axis to align the up axis with",
+	helper.ComboBox(groupBox, "@Animator.WPAPanelRuleTrackTo.UpTarget.Label",
+		"@Animator.WPAPanelRuleTrackTo.UpTarget.ToolTip",
 		pCBUpTarget, cComboUpTarget::Ref::New(*this));
-	pCBUpTarget->AddItem("World X-Axis", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::eutWorldX);
-	pCBUpTarget->AddItem("World Y-Axis", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::eutWorldY);
-	pCBUpTarget->AddItem("World Z-Axis", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::eutWorldZ);
-	pCBUpTarget->AddItem("Component X-Axis", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::eutComponentX);
-	pCBUpTarget->AddItem("Component Y-Axis", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::eutComponentY);
-	pCBUpTarget->AddItem("Component Z-Axis", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::eutComponentZ);
-	pCBUpTarget->AddItem("Track Bone X-Axis", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::eutTrackBoneX);
-	pCBUpTarget->AddItem("Track Bone Y-Axis", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::eutTrackBoneY);
-	pCBUpTarget->AddItem("Track Bone Z-Axis", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::eutTrackBoneZ);
-	pCBUpTarget->AddItem("Controller", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::eutController);
+	pCBUpTarget->SetAutoTranslateItems(true);
+	pCBUpTarget->AddItem("@Animator.WPAPanelRuleTrackTo.UpTarget.WorldX", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::eutWorldX);
+	pCBUpTarget->AddItem("@Animator.WPAPanelRuleTrackTo.UpTarget.WorldY", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::eutWorldY);
+	pCBUpTarget->AddItem("@Animator.WPAPanelRuleTrackTo.UpTarget.WorldZ", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::eutWorldZ);
+	pCBUpTarget->AddItem("@Animator.WPAPanelRuleTrackTo.UpTarget.ComponentX", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::eutComponentX);
+	pCBUpTarget->AddItem("@Animator.WPAPanelRuleTrackTo.UpTarget.ComponentY", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::eutComponentY);
+	pCBUpTarget->AddItem("@Animator.WPAPanelRuleTrackTo.UpTarget.ComponentZ", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::eutComponentZ);
+	pCBUpTarget->AddItem("@Animator.WPAPanelRuleTrackTo.UpTarget.TrackBoneX", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::eutTrackBoneX);
+	pCBUpTarget->AddItem("@Animator.WPAPanelRuleTrackTo.UpTarget.TrackBoneY", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::eutTrackBoneY);
+	pCBUpTarget->AddItem("@Animator.WPAPanelRuleTrackTo.UpTarget.TrackBoneZ", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::eutTrackBoneZ);
+	pCBUpTarget->AddItem("@Animator.WPAPanelRuleTrackTo.UpTarget.Controller", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::eutController);
 	
-	helper.ComboBox(groupBox, "Lock Axis:", "Axis to lock",
+	helper.ComboBox(groupBox, "@Animator.WPAPanelRuleTrackTo.LockedAxis.Label",
+		"@Animator.WPAPanelRuleTrackTo.LockedAxis.ToolTip",
 		pCBLockedAxis, cComboLockedAxis::Ref::New(*this));
-	pCBLockedAxis->AddItem("None", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::elaNone);
-	pCBLockedAxis->AddItem("X-Axis", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::elaX);
-	pCBLockedAxis->AddItem("Y-Axis", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::elaY);
-	pCBLockedAxis->AddItem("Z-Axis", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::elaZ);
+	pCBLockedAxis->SetAutoTranslateItems(true);
+	pCBLockedAxis->AddItem("@Animator.WPAPanelRuleTrackTo.LockedAxis.None", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::elaNone);
+	pCBLockedAxis->AddItem("@Animator.WPAPanelRuleTrackTo.LockedAxis.X", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::elaX);
+	pCBLockedAxis->AddItem("@Animator.WPAPanelRuleTrackTo.LockedAxis.Y", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::elaY);
+	pCBLockedAxis->AddItem("@Animator.WPAPanelRuleTrackTo.LockedAxis.Z", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::elaZ);
 }
 
 aeWPAPanelRuleTrackTo::~aeWPAPanelRuleTrackTo(){

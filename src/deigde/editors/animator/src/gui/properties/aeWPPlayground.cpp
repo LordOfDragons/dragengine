@@ -426,7 +426,7 @@ public:
 	
 public:
 	cActionLocoShowShapes(aeWPPlayground &panel) : cBaseAction(panel,
-		"Show Shapes", nullptr, "Determines if shapes are shown"){ }
+		"@Animator.WPPlayground.ShowShapes.Label", nullptr, "@Animator.WPPlayground.ShowShapes.ToolTip"){ }
 	
 	void OnAction(aeAnimator &animator) override{
 		animator.GetLocomotion().SetShowShapes(!animator.GetLocomotion().GetShowShapes());
@@ -444,7 +444,7 @@ public:
 	
 public:
 	cActionLocoUseFoGIK(aeWPPlayground &panel) : cBaseAction(panel,
-		"Use Feet-On-Ground IK", nullptr, "Determines the feet-on-ground IK is used"){}
+		"@Animator.WPPlayground.UseFoGIK.Label", nullptr, "@Animator.WPPlayground.UseFoGIK.ToolTip"){}
 	
 	void OnAction(aeAnimator &animator) override{
 		animator.GetLocomotion().SetUseFoGIK(!animator.GetLocomotion().GetUseFoGIK());
@@ -510,80 +510,81 @@ pWindowProperties(windowProperties)
 	
 	
 	// controllers
-	helper.GroupBox(content, pFraContent, "Controllers:");
+	helper.GroupBox(content, pFraContent, "@Animator.WPPlayground.Controllers.Label");
 	
 	
 	// locomotion testing
-	helper.GroupBox(content, groupBox, "Locomotion Testing:", true);
+	helper.GroupBox(content, groupBox, "@Animator.WPPlayground.LocomotionTesting.Label", true);
 	
-	helper.ComboBox(groupBox, "Locomotion Type:", "Locomotion type",
+	helper.ComboBox(groupBox, "@Animator.WPPlayground.LocomotionType.Label", "@Animator.WPPlayground.LocomotionType.ToolTip",
 		pCBLocomotionType, cComboLocomotionType::Ref::New(*this));
-	pCBLocomotionType->AddItem("Natural", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eltNatural);
-	pCBLocomotionType->AddItem("FPS", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eltFPS);
-	pCBLocomotionType->AddItem("Vehicle", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eltVehicle);
+	pCBLocomotionType->AddItem("@Animator.WPPlayground.LocomotionType.Natural", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eltNatural);
+	pCBLocomotionType->AddItem("@Animator.WPPlayground.LocomotionType.FPS", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eltFPS);
+	pCBLocomotionType->AddItem("@Animator.WPPlayground.LocomotionType.Vehicle", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eltVehicle);
+	pCBLocomotionType->SetAutoTranslateItems(true);
 	
-	helper.EditFloat(groupBox, "Look Up Limit:", "Look up limit in euler angles",
+	helper.EditFloat(groupBox, "@Animator.WPPlayground.LookUpLimit.Label", "@Animator.WPPlayground.LookUpLimit.ToolTip",
 		pEditLocoLimitUp, cTextLocoLimitUp::Ref::New(*this));
-	helper.EditFloat(groupBox, "Look Down Limit:", "Look down limit in euler angles",
+	helper.EditFloat(groupBox, "@Animator.WPPlayground.LookDownLimit.Label", "@Animator.WPPlayground.LookDownLimit.ToolTip",
 		pEditLocoLimitDown, cTextLocoLimitDown::Ref::New(*this));
-	helper.EditFloat(groupBox, "Look Left Limit:", "Look left limit in euler angles",
+	helper.EditFloat(groupBox, "@Animator.WPPlayground.LookLeftLimit.Label", "@Animator.WPPlayground.LookLeftLimit.ToolTip",
 		pEditLocoLimitLeft, cTextLocoLimitLeft::Ref::New(*this));
-	helper.EditFloat(groupBox, "Look Right Limit:", "Look right limit in euler angles",
+	helper.EditFloat(groupBox, "@Animator.WPPlayground.LookRightLimit.Label", "@Animator.WPPlayground.LookRightLimit.ToolTip",
 		pEditLocoLimitRight, cTextLocoLimitRight::Ref::New(*this));
 	
 	
 	// movement speeds
-	helper.GroupBox(content, groupBox, "Movement Speeds:", true);
+	helper.GroupBox(content, groupBox, "@Animator.WPPlayground.MovementSpeeds.Label", true);
 	
-	helper.EditFloat(groupBox, "Walk:", "Walk speed in meters per second",
+	helper.EditFloat(groupBox, "@Animator.WPPlayground.Walk.Label", "@Animator.WPPlayground.Walk.ToolTip",
 		pEditLocoSpeedWalk, cTextLocoSpeedWalk::Ref::New(*this));
-	helper.EditFloat(groupBox, "Run:", "Run speed in meters per second",
+	helper.EditFloat(groupBox, "@Animator.WPPlayground.Run.Label", "@Animator.WPPlayground.Run.ToolTip",
 		pEditLocoSpeedRun, cTextLocoSpeedRun::Ref::New(*this));
 	
 	
 	// adjustment times
-	helper.GroupBox(content, groupBox, "Adjustment Times:", true);
+	helper.GroupBox(content, groupBox, "@Animator.WPPlayground.AdjustmentTimes.Label", true);
 	
-	helper.EditFloat(groupBox, "Look Up-Down:", "Adjustment time for looking up and down",
+	helper.EditFloat(groupBox, "@Animator.WPPlayground.LookUpDown.Label", "@Animator.WPPlayground.LookUpDown.ToolTip",
 		pEditLocoAdjTimeUD, cTextLocoAdjTimeUD::Ref::New(*this));
-	helper.EditFloat(groupBox, "Look Left-Right:", "Adjustment time for looking left and right",
+	helper.EditFloat(groupBox, "@Animator.WPPlayground.LookLeftRight.Label", "@Animator.WPPlayground.LookLeftRight.ToolTip",
 		pEditLocoAdjTimeLR, cTextLocoAdjTimeLR::Ref::New(*this));
-	helper.EditFloat(groupBox, "Stance:", "Adjustment time for changing between uprect and crouch stance",
+	helper.EditFloat(groupBox, "@Animator.WPPlayground.Stance.Label", "@Animator.WPPlayground.Stance.ToolTip",
 		pEditLocoAdjTimeStance, cTextLocoAdjTimeStance::Ref::New(*this));
-	helper.EditFloat(groupBox, "Orientation:", "Adjustment time in seconds for actor turning",
+	helper.EditFloat(groupBox, "@Animator.WPPlayground.Orientation.Label", "@Animator.WPPlayground.Orientation.ToolTip",
 		pEditLocoAdjTimeOrientation, cTextLocoAdjTimeOrientation::Ref::New(*this));
-	helper.EditFloat(groupBox, "Velocity:", "Adjustment time in seconds for velocity changing",
+	helper.EditFloat(groupBox, "@Animator.WPPlayground.Velocity.Label", "@Animator.WPPlayground.Velocity.ToolTip",
 		pEditLocoAdjTimeVelocity, cTextLocoAdjTimeVelocity::Ref::New(*this));
-	helper.EditFloat(groupBox, "Turn In-Place:", "Adjustment time in seconds for turning in-place",
+	helper.EditFloat(groupBox, "@Animator.WPPlayground.TurnInPlace.Label", "@Animator.WPPlayground.TurnInPlace.ToolTip",
 		pEditLocoAdjTimeTurnIP, cTextLocoAdjTimeTurnIP::Ref::New(*this));
 	
 	
 	// legs
-	helper.GroupBox(content, groupBox, "Legs:", true);
+	helper.GroupBox(content, groupBox, "@Animator.WPPlayground.Legs.Label", true);
 	
-	helper.EditFloat(groupBox, "Blend Time:", "Time in seconds to blend at lift off and put down time",
+	helper.EditFloat(groupBox, "@Animator.WPPlayground.BlendTime.Label", "@Animator.WPPlayground.BlendTime.ToolTip",
 		pEditLocoLegBlendTime, cTextLocoLegBlendTime::Ref::New(*this));
 	
-	helper.EditSpinInteger(groupBox, "Leg Pairs:", "Number of leg pairs to use", 1, 1,
+	helper.EditSpinInteger(groupBox, "@Animator.WPPlayground.LegPairs.Label", "@Animator.WPPlayground.LegPairs.ToolTip", 1, 1,
 		pSpinLocoUseLegPairs, cSpinLocoUseLegPairs::Ref::New(*this));
-	helper.EditSpinInteger(groupBox, "Leg:", "Leg to set parameters for", 0, 0,
+	helper.EditSpinInteger(groupBox, "@Animator.WPPlayground.Leg.Label", "@Animator.WPPlayground.Leg.ToolTip", 0, 0,
 		pSpinLocoLeg, cSpinLocoLeg::Ref::New(*this));
 	
-	helper.EditFloat(groupBox, "Lift Off Time:", "Time in motion units where the foot starts to lift off the ground",
+	helper.EditFloat(groupBox, "@Animator.WPPlayground.LiftOffTime.Label", "@Animator.WPPlayground.LiftOffTime.ToolTip",
 		pEditLocoLegLiftOffTime, cTextLocoLegLiftOffTime::Ref::New(*this));
-	helper.EditFloat(groupBox, "Put Down Time:", "Time in motion units where the foot stopps putting down on the ground",
+	helper.EditFloat(groupBox, "@Animator.WPPlayground.PutDownTime.Label", "@Animator.WPPlayground.PutDownTime.ToolTip",
 		pEditLocoLegPutDownTime, cTextLocoLegPutDownTime::Ref::New(*this));
 	
-	helper.EditVector(groupBox, "Put Down Stand:", "Sets the stand put down position",
+	helper.EditVector(groupBox, "@Animator.WPPlayground.PutDownStand.Label", "@Animator.WPPlayground.PutDownStand.ToolTip",
 		pEditLocoLegPDPosStand, cEditLocoLegPDPosStand::Ref::New(*this));
-	helper.EditVector(groupBox, "Put Down Walk:", "Sets the walk put down position",
+	helper.EditVector(groupBox, "@Animator.WPPlayground.PutDownWalk.Label", "@Animator.WPPlayground.PutDownWalk.ToolTip",
 		pEditLocoLegPDPosWalk, cEditLocoLegPDPosWalk::Ref::New(*this));
-	helper.EditVector(groupBox, "Put Down Run:", "Sets the run put down position",
+	helper.EditVector(groupBox, "@Animator.WPPlayground.PutDownRun.Label", "@Animator.WPPlayground.PutDownRun.ToolTip",
 		pEditLocoLegPDPosRun, cEditLocoLegPDPosRun::Ref::New(*this));
 	
 	
 	// visualization
-	helper.GroupBox(content, groupBox, "Visualization:", true);
+	helper.GroupBox(content, groupBox, "@Animator.WPPlayground.Visualization.Label", true);
 	
 	helper.CheckBox(groupBox, pChkLocoShowShapes, cActionLocoShowShapes::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkLocoUseFoGIK, cActionLocoUseFoGIK::Ref::New(*this));

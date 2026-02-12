@@ -174,7 +174,8 @@ public:
 	
 public:
 	cActionEnablePosition(aeWPAPanelRuleSubAnimator &panel) : cBaseAction(panel,
-		"Enable position manipulation", nullptr, "Determines if the position is modified or kept as it is"){ }
+		"@Animator.WPAPanelRuleSubAnimator.EnablePosition.Label", nullptr,
+		"@Animator.WPAPanelRuleSubAnimator.EnablePosition.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleSubAnimator *rule) override{
 		return aeURuleSubAnimToggleEnablePosition::Ref::New(rule);
@@ -192,7 +193,8 @@ public:
 	
 public:
 	cActionEnableRotation(aeWPAPanelRuleSubAnimator &panel) : cBaseAction(panel,
-		"Enable rotation manipulation", nullptr, "Determines if the rotation is modified or kept as it is"){ }
+		"@Animator.WPAPanelRuleSubAnimator.EnableRotation.Label", nullptr,
+		"@Animator.WPAPanelRuleSubAnimator.EnableRotation.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleSubAnimator *rule) override{
 		return aeURuleSubAnimToggleEnableRotation::Ref::New(rule);
@@ -210,7 +212,8 @@ public:
 	
 public:
 	cActionEnableSize(aeWPAPanelRuleSubAnimator &panel) : cBaseAction(panel,
-		"Enable size manipulation", nullptr, "Determines if the size is modified or kept as it is"){ }
+		"@Animator.WPAPanelRuleSubAnimator.EnableSize.Label", nullptr,
+		"@Animator.WPAPanelRuleSubAnimator.EnableSize.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleSubAnimator *rule) override{
 		return aeURuleSubAnimToggleEnableSize::Ref::New(rule);
@@ -228,8 +231,8 @@ public:
 	
 public:
 	cActionEnableVertexPositionSet(aeWPAPanelRuleSubAnimator &panel) : cBaseAction(panel,
-		"Enable vertex position set manipulation", nullptr,
-		"Determines if vertex position set is modified or kept as it is"){ }
+		"@Animator.WPAPanelRuleSubAnimator.EnableVertexPositionSet.Label", nullptr,
+		"@Animator.WPAPanelRuleSubAnimator.EnableVertexPositionSet.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleSubAnimator *rule) override{
 		return aeURuleSubAnimToggleEnableVertexPositionSet::Ref::New(rule);
@@ -280,9 +283,10 @@ pPreventUpdate(false)
 	igdeContainer::Ref groupBox, formLine;
 	
 	
-	helper.GroupBox(*this, groupBox, "Sub Animator:");
+	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRuleSubAnimator.SubAnimator.Label");
 	
-	helper.EditPath(groupBox, "Path:", "Sets the animator to use", igdeEnvironment::efpltAnimator,
+	helper.EditPath(groupBox, "@Animator.WPAPanelRuleSubAnimator.Path.Label",
+		"@Animator.WPAPanelRuleSubAnimator.Path.ToolTip", igdeEnvironment::efpltAnimator,
 		pEditPathAnimator, cPathAnimator::Ref::New(*this));
 	
 	helper.CheckBox(groupBox, pChkEnablePosition, cActionEnablePosition::Ref::New(*this));
@@ -291,15 +295,17 @@ pPreventUpdate(false)
 	helper.CheckBox(groupBox, pChkEnableVertexPositionSet, cActionEnableVertexPositionSet::Ref::New(*this));
 	
 	
-	helper.GroupBox(*this, groupBox, "Connections:");
+	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRuleSubAnimator.Connections.Label");
 	
-	helper.Label(groupBox, "");
-	helper.Label(groupBox, "Auto-Connected if empty", "Automatically creates connections by"
-		" matching controller names if no custom connections are defined");
+	helper.Label(groupBox, "@Animator.WPAPanelRuleSubAnimator.ConnectionInfo.Label");
+	helper.Label(groupBox, "@Animator.WPAPanelRuleSubAnimator.ConnectionInfo.ToolTip",
+		"@Animator.WPAPanelRuleSubAnimator.ConnectionInfo.Value");
 	
-	helper.ComboBox(groupBox, "Target:", "Target controller", pCBConnection, cComboConnection::Ref::New(*this));
+	helper.ComboBox(groupBox, "@Animator.WPAPanelRuleSubAnimator.Target.Label",
+		"@Animator.WPAPanelRuleSubAnimator.Target.ToolTip", pCBConnection, cComboConnection::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "Controller:", "Controller to take value from",
+	helper.ComboBox(groupBox, "@Animator.WPAPanelRuleSubAnimator.Controller.Label",
+		"@Animator.WPAPanelRuleSubAnimator.Controller.ToolTip",
 		pCBConnectionController, cComboConnectionController::Ref::New(*this, pPreventUpdate));
 	
 	
@@ -366,7 +372,7 @@ void aeWPAPanelRuleSubAnimator::UpdateControllerList(){
 	void * const selection = GetCBConnectionController();
 	
 	pCBConnectionController->RemoveAllItems();
-	pCBConnectionController->AddItem("< not assigned >", nullptr);
+	pCBConnectionController->AddItem(Translate("Animator.WPAPanelRuleSubAnimator.Controller.NotAssigned").ToUTF8(), nullptr);
 	
 	if(GetAnimator()){
 		decString text;

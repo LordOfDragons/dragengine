@@ -160,9 +160,9 @@ public:
 	using Ref = deTObjectReference<cActionCopy>;
 	
 public:
-	cActionCopy(aeWPController &panel) : cBaseAction(panel, "Copy",
+	cActionCopy(aeWPController &panel) : cBaseAction(panel, "@Animator.WPController.Action.Copy",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-		"Copy controller to clipboard"){}
+		"@Animator.WPController.Action.Copy.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeController *controller) override{
 		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(
@@ -176,9 +176,9 @@ public:
 	using Ref = deTObjectReference<cActionCut>;
 	
 public:
-	cActionCut(aeWPController &panel) : cBaseAction(panel, "Cut",
+	cActionCut(aeWPController &panel) : cBaseAction(panel, "@Animator.WPController.Action.Cut",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
-		"Cut controller into clipboard"){}
+		"@Animator.WPController.Action.Cut.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator *animator, aeController *controller) override{
 		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(
@@ -195,9 +195,9 @@ private:
 	aeWPController &pPanel;
 	
 public:
-	cActionPaste(aeWPController &panel) : igdeAction("Paste",
+	cActionPaste(aeWPController &panel) : igdeAction("@Animator.WPController.Action.Paste",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
-		"Paste controller from clipboard"), pPanel(panel){}
+		"@Animator.WPController.Action.Paste.ToolTip"), pPanel(panel){}
 	
 	void OnAction() override{
 		aeAnimator * const animator = pPanel.GetAnimator();
@@ -266,7 +266,8 @@ public:
 			return {};
 		}
 		if(animator->GetControllers().HasNamed(value)){
-			igdeCommonDialogs::Error(pPanel, "Set Controller Name", "Duplicate Controller Name");
+			igdeCommonDialogs::Error(pPanel, "@Animator.WPController.Dialog.SetControllerName.Title",
+				"@Animator.WPController.Dialog.SetControllerName.DuplicateName");
 			textField->SetText(controller->GetName());
 			return {};
 		}
@@ -303,8 +304,8 @@ public:
 	using Ref = deTObjectReference<cActionSetFromMove>;
 	
 public:
-	cActionSetFromMove(aeWPController &panel) : cBaseAction(panel, "Set From Move",
-		nullptr, "Sets the ranges from the playtime of a move"){}
+	cActionSetFromMove(aeWPController &panel) : cBaseAction(panel, "@Animator.WPController.SetFromMove.Label",
+		nullptr, "@Animator.WPController.SetFromMove.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator *animator, aeController *controller) override{
 		const deAnimation * const animation = animator->GetEngineAnimator()
@@ -321,8 +322,9 @@ public:
 		}
 		
 		names.SortAscending();
-		if(names.GetCount() == 0 || !igdeCommonDialogs::SelectString(pPanel, "Set range from move playtime",
-		"Range limits are set to the playtime of the selected move.", names, selection)){
+		if(names.GetCount() == 0 || !igdeCommonDialogs::SelectString(pPanel,
+		"@Animator.WPController.Dialog.SetRangeFromMove.Title",
+		"@Animator.WPController.Dialog.SetRangeFromMove.Message", names, selection)){
 			return {};
 		}
 		
@@ -336,9 +338,9 @@ public:
 	using Ref = deTObjectReference<cActionResetValue>;
 	
 public:
-	cActionResetValue(aeWPController &panel) : cBaseAction(panel, "Reset",
+	cActionResetValue(aeWPController &panel) : cBaseAction(panel, "@Animator.WPController.Reset.Label",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongLeft),
-		"Reset value to controller minimum"){}
+		"@Animator.WPController.Reset.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeController *controller) override{
 		controller->SetCurrentValue(controller->GetMinimumValue());
@@ -385,8 +387,8 @@ public:
 	using Ref = deTObjectReference<cActionClamp>;
 	
 public:
-	cActionClamp(aeWPController &panel) : cBaseAction(panel, "Clamp value to range",
-		nullptr, "Determines if the value of the controller is clamped to the given range"){ }
+	cActionClamp(aeWPController &panel) : cBaseAction(panel, "@Animator.WPController.Clamp.Label",
+		nullptr, "@Animator.WPController.Clamp.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeController *controller) override{
 		return aeUControllerToggleClamp::Ref::New(controller);
@@ -403,8 +405,8 @@ public:
 	using Ref = deTObjectReference<cActionFrozen>;
 	
 public:
-	cActionFrozen(aeWPController &panel) : cBaseAction(panel, "Freeze Controller value",
-		nullptr, "Prevents the controller from changing the current value"){}
+	cActionFrozen(aeWPController &panel) : cBaseAction(panel, "@Animator.WPController.Frozen.Label",
+		nullptr, "@Animator.WPController.Frozen.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeController *controller) override{
 		return aeUControllerToggleFrozen::Ref::New(controller);
@@ -522,21 +524,23 @@ pWindowProperties(windowProperties)
 	
 	
 	// controllers
-	helper.GroupBoxFlow(content, groupBox, "Controllers:");
-	helper.ListBox(groupBox, 8, "Controllers", pListController, cListControllers::Ref::New(*this));
+	helper.GroupBoxFlow(content, groupBox, "@Animator.WPController.Controllers.Label");
+	helper.ListBox(groupBox, 8, "@Animator.WPController.Controllers.ToolTip",
+		pListController, cListControllers::Ref::New(*this));
 	
 	
 	// controller settings
-	helper.GroupBox(content, groupBox, "Controller Settings:");
-	helper.EditString(groupBox, "Name:", "Name of the controller", pEditName, cTextName::Ref::New(*this));
-	helper.EditFloat(groupBox, "Minimum Value:", "Minimum controller value",
-		pEditMin, cTextMinimumValue::Ref::New(*this));
-	helper.EditFloat(groupBox, "Maximum Value:", "Maximum controller value",
-		pEditMax, cTextMaximumValue::Ref::New(*this));
-	helper.EditSliderText(groupBox, "Value:", "Current controller value",
-		0.0f, 1.0f, 6, 3, 0.1f, pSldValue, cSlideValue::Ref::New(*this));
-	helper.EditVector(groupBox, "Vector:", "Vector value of controller",
-		pEditVector, cEditVector::Ref::New(*this));
+	helper.GroupBox(content, groupBox, "@Animator.WPController.ControllerSettings.Label");
+	helper.EditString(groupBox, "@Animator.WPController.Name.Label",
+		"@Animator.WPController.Name.ToolTip", pEditName, cTextName::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Animator.WPController.MinimumValue.Label",
+		"@Animator.WPController.MinimumValue.ToolTip", pEditMin, cTextMinimumValue::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Animator.WPController.MaximumValue.Label",
+		"@Animator.WPController.MaximumValue.ToolTip", pEditMax, cTextMaximumValue::Ref::New(*this));
+	helper.EditSliderText(groupBox, "@Animator.WPController.Value.Label",
+		"@Animator.WPController.Value.ToolTip", 0.0f, 1.0f, 6, 3, 0.1f, pSldValue, cSlideValue::Ref::New(*this));
+	helper.EditVector(groupBox, "@Animator.WPController.Vector.Label",
+		"@Animator.WPController.Vector.ToolTip", pEditVector, cEditVector::Ref::New(*this));
 	
 	helper.FormLine(groupBox, "", "", formLine);
 	helper.Button(formLine, pBtnSetFromMove, cActionSetFromMove::Ref::New(*this));
@@ -545,46 +549,48 @@ pWindowProperties(windowProperties)
 	helper.CheckBox(groupBox, pChkClamp, cActionClamp::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkFrozen, cActionFrozen::Ref::New(*this));
 	
-	helper.EditFloat(groupBox, "Default Value:", "Default controller value",
-		pEditDefaultValue, cTextDefaultValue::Ref::New(*this));
-	helper.EditVector(groupBox, "Default Vector:", "Default vector value of controller",
-		pEditDefaultVector, cEditDefaultVector::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Animator.WPController.DefaultValue.Label",
+		"@Animator.WPController.DefaultValue.ToolTip", pEditDefaultValue, cTextDefaultValue::Ref::New(*this));
+	helper.EditVector(groupBox, "@Animator.WPController.DefaultVector.Label",
+		"@Animator.WPController.DefaultVector.ToolTip", pEditDefaultVector, cEditDefaultVector::Ref::New(*this));
 	
 	
 	// locomotion testing
-	helper.GroupBox(content, groupBox, "Locomotion Testing:");
+	helper.GroupBox(content, groupBox, "@Animator.WPController.LocomotionTesting.Label");
 	
-	helper.ComboBox(groupBox, "Attribute:", "Selects the locomotion attribute affecting this controller",
-		pCBLocoAttr, cComboLocoAttr::Ref::New(*this));
-	pCBLocoAttr->AddItem("None", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaNone);
-	pCBLocoAttr->AddItem("Elapsed Time", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaElapsedTime);
-	pCBLocoAttr->AddItem("Look Up-Down", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaLookUpDown);
-	pCBLocoAttr->AddItem("Look Left-Right", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaLookLeftRight);
-	pCBLocoAttr->AddItem("Moving Speed", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaMovingSpeed);
-	pCBLocoAttr->AddItem("Moving Direction", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaMovingDirection);
-	pCBLocoAttr->AddItem("Relative Moving Speed", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaRelativeMovingSpeed);
-	pCBLocoAttr->AddItem("Turning Speed", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaTurningSpeed);
-	pCBLocoAttr->AddItem("Stance", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaStance);
-	pCBLocoAttr->AddItem("Displacement", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaDisplacement);
-	pCBLocoAttr->AddItem("Relative Displacement", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaRelativeDisplacement);
-	pCBLocoAttr->AddItem("Body Tilt Offset", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaBodyTiltOffset);
-	pCBLocoAttr->AddItem("Body Tilt Up-Down", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaBodyTiltUpDown);
-	pCBLocoAttr->AddItem("Body Tilt Left-Right", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaBodyTiltRightLeft);
-	pCBLocoAttr->AddItem("Turn In-Place", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaTimeTurnIP);
-	pCBLocoAttr->AddItem("Leg Ground Position", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaLegGroundPosition);
-	pCBLocoAttr->AddItem("Leg Ground Normal", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaLegGroundNormal);
-	pCBLocoAttr->AddItem("Leg Influence", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaLegInfluence);
-	pCBLocoAttr->AddItem("Leg Position", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaLegPosition);
-	pCBLocoAttr->AddItem("Leg Orientation", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaLegOrientation);
+	helper.ComboBox(groupBox, "@Animator.WPController.Attribute.Label",
+		"@Animator.WPController.Attribute.ToolTip", pCBLocoAttr, cComboLocoAttr::Ref::New(*this));
+	pCBLocoAttr->SetAutoTranslateItems(true);
+	pCBLocoAttr->AddItem("@Animator.WPController.Attribute.None", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaNone);
+	pCBLocoAttr->AddItem("@Animator.WPController.Attribute.ElapsedTime", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaElapsedTime);
+	pCBLocoAttr->AddItem("@Animator.WPController.Attribute.LookUpDown", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaLookUpDown);
+	pCBLocoAttr->AddItem("@Animator.WPController.Attribute.LookLeftRight", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaLookLeftRight);
+	pCBLocoAttr->AddItem("@Animator.WPController.Attribute.MovingSpeed", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaMovingSpeed);
+	pCBLocoAttr->AddItem("@Animator.WPController.Attribute.MovingDirection", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaMovingDirection);
+	pCBLocoAttr->AddItem("@Animator.WPController.Attribute.RelativeMovingSpeed", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaRelativeMovingSpeed);
+	pCBLocoAttr->AddItem("@Animator.WPController.Attribute.TurningSpeed", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaTurningSpeed);
+	pCBLocoAttr->AddItem("@Animator.WPController.Attribute.Stance", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaStance);
+	pCBLocoAttr->AddItem("@Animator.WPController.Attribute.Displacement", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaDisplacement);
+	pCBLocoAttr->AddItem("@Animator.WPController.Attribute.RelativeDisplacement", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaRelativeDisplacement);
+	pCBLocoAttr->AddItem("@Animator.WPController.Attribute.BodyTiltOffset", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaBodyTiltOffset);
+	pCBLocoAttr->AddItem("@Animator.WPController.Attribute.BodyTiltUpDown", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaBodyTiltUpDown);
+	pCBLocoAttr->AddItem("@Animator.WPController.Attribute.BodyTiltLeftRight", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaBodyTiltRightLeft);
+	pCBLocoAttr->AddItem("@Animator.WPController.Attribute.TurnInPlace", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaTimeTurnIP);
+	pCBLocoAttr->AddItem("@Animator.WPController.Attribute.LegGroundPosition", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaLegGroundPosition);
+	pCBLocoAttr->AddItem("@Animator.WPController.Attribute.LegGroundNormal", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaLegGroundNormal);
+	pCBLocoAttr->AddItem("@Animator.WPController.Attribute.LegInfluence", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaLegInfluence);
+	pCBLocoAttr->AddItem("@Animator.WPController.Attribute.LegPosition", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaLegPosition);
+	pCBLocoAttr->AddItem("@Animator.WPController.Attribute.LegOrientation", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaLegOrientation);
 	
-	helper.EditInteger(groupBox, "Leg:", "Number of the leg to track starting with 0 (max 3)",
-		pEditLocoLeg, cTextLocoLeg::Ref::New(*this));
+	helper.EditInteger(groupBox, "@Animator.WPController.Leg.Label",
+		"@Animator.WPController.Leg.ToolTip", pEditLocoLeg, cTextLocoLeg::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "Vector Simulation:", "Select how to simulate vector value",
-		pCBVectorSimulation, cComboVectorSimulation::Ref::New(*this));
-	pCBVectorSimulation->AddItem("None", nullptr, (void*)(intptr_t)aeController::evsNone);
-	pCBVectorSimulation->AddItem("Position", nullptr, (void*)(intptr_t)aeController::evsPosition);
-	pCBVectorSimulation->AddItem("Rotation", nullptr, (void*)(intptr_t)aeController::evsRotation);
+	helper.ComboBox(groupBox, "@Animator.WPController.VectorSimulation.Label",
+		"@Animator.WPController.VectorSimulation.ToolTip", pCBVectorSimulation, cComboVectorSimulation::Ref::New(*this));
+	pCBVectorSimulation->SetAutoTranslateItems(true);
+	pCBVectorSimulation->AddItem("@Animator.WPController.VectorSimulation.None", nullptr, (void*)(intptr_t)aeController::evsNone);
+	pCBVectorSimulation->AddItem("@Animator.WPController.VectorSimulation.Position", nullptr, (void*)(intptr_t)aeController::evsPosition);
+	pCBVectorSimulation->AddItem("@Animator.WPController.VectorSimulation.Rotation", nullptr, (void*)(intptr_t)aeController::evsRotation);
 }
 
 aeWPController::~aeWPController(){

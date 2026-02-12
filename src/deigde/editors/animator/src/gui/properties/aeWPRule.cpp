@@ -128,9 +128,9 @@ public:
 	using Ref = deTObjectReference<cActionCopy>;
 	
 public:
-	cActionCopy(aeWPRule &panel) : cBaseAction(panel, "Copy",
+	cActionCopy(aeWPRule &panel) : cBaseAction(panel, "@Animator.WPRule.Action.Copy",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-		"Copy rule to clipboard"){}
+		"@Animator.WPRule.Action.Copy.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
 		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(
@@ -144,9 +144,9 @@ public:
 	using Ref = deTObjectReference<cActionCut>;
 	
 public:
-	cActionCut(aeWPRule &panel) : cBaseAction(panel, "Cut",
+	cActionCut(aeWPRule &panel) : cBaseAction(panel, "@Animator.WPRule.Action.Cut",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
-		"Cut rule into clipboard"){}
+		"@Animator.WPRule.Action.Cut.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator *animator, aeRule *rule) override{
 		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(
@@ -201,25 +201,25 @@ public:
 class cActionPasteAppend : public cActionPaste{
 public:
 	using Ref = deTObjectReference<cActionPasteAppend>;
-	cActionPasteAppend(aeWPRule &panel) : cActionPaste(panel, "Paste Append",
+	cActionPasteAppend(aeWPRule &panel) : cActionPaste(panel, "@Animator.WPRule.Action.PasteAppend",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
-		"Paste and append rule from clipboard", false){}
+		"@Animator.WPRule.Action.PasteAppend.ToolTip", false){}
 };
 
 class cActionPasteInsert : public cActionPaste{
 public:
 	using Ref = deTObjectReference<cActionPasteInsert>;
-	cActionPasteInsert(aeWPRule &panel) : cActionPaste(panel, "Paste Insert",
+	cActionPasteInsert(aeWPRule &panel) : cActionPaste(panel, "@Animator.WPRule.Action.PasteInsert",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
-		"Paste and insert rule from clipboard ", true){}
+		"@Animator.WPRule.Action.PasteInsert.ToolTip", true){}
 };
 
 class cActionPasteIntoGroup : public cActionPaste{
 public:
 	using Ref = deTObjectReference<cActionPasteIntoGroup>;
-	cActionPasteIntoGroup(aeWPRule &panel) : cActionPaste(panel, "Paste Into Group",
+	cActionPasteIntoGroup(aeWPRule &panel) : cActionPaste(panel, "@Animator.WPRule.Action.PasteIntoGroup",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
-		"Paste rules from clipboard into group", false){}
+		"@Animator.WPRule.Action.PasteIntoGroup.ToolTip", false){}
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
 		aeClipboardDataRule * const cdata = (aeClipboardDataRule*)pPanel.GetWindowProperties()
@@ -273,7 +273,7 @@ public:
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		
 		const aeWindowMain &windowMain = pPanel.GetWindowProperties().GetWindowMain();
-		igdeMenuCascade::Ref submenu(igdeMenuCascade::Ref::New(menu.GetEnvironment(), "Add"));
+		igdeMenuCascade::Ref submenu(igdeMenuCascade::Ref::New(menu.GetEnvironment(), "@Animator.WPRule.Menu.Add"));
 		helper.MenuCommand(submenu, windowMain.GetActionRuleAddAnim());
 		helper.MenuCommand(submenu, windowMain.GetActionRuleAddAnimDiff());
 		helper.MenuCommand(submenu, windowMain.GetActionRuleAddAnimSelect());
@@ -289,7 +289,7 @@ public:
 		helper.MenuCommand(submenu, windowMain.GetActionRuleAddMirror());
 		menu.AddChild(submenu);
 		
-		submenu = igdeMenuCascade::Ref::New(menu.GetEnvironment(), "Add Into Group");
+		submenu = igdeMenuCascade::Ref::New(menu.GetEnvironment(), "@Animator.WPRule.Menu.AddIntoGroup");
 		helper.MenuCommand(submenu, windowMain.GetActionRuleAddIntoGroupAnim());
 		helper.MenuCommand(submenu, windowMain.GetActionRuleAddIntoGroupAnimDiff());
 		helper.MenuCommand(submenu, windowMain.GetActionRuleAddIntoGroupAnimSelect());
@@ -305,7 +305,7 @@ public:
 		helper.MenuCommand(submenu, windowMain.GetActionRuleAddIntoGroupMirror());
 		menu.AddChild(submenu);
 		
-		submenu = igdeMenuCascade::Ref::New(menu.GetEnvironment(), "Insert");
+		submenu = igdeMenuCascade::Ref::New(menu.GetEnvironment(), "@Animator.WPRule.Menu.Insert");
 		helper.MenuCommand(submenu, windowMain.GetActionRuleInsertAnim());
 		helper.MenuCommand(submenu, windowMain.GetActionRuleInsertAnimDiff());
 		helper.MenuCommand(submenu, windowMain.GetActionRuleInsertAnimSelect());
@@ -373,8 +373,8 @@ pActivePanel(nullptr)
 	AddChild(content);
 	
 	
-	helper.GroupBoxFlow(content, groupBox, "Rules:");
-	helper.TreeList(groupBox, pTreeRule, 8, "Rules", cTreeRules::Ref::New(*this));
+	helper.GroupBoxFlow(content, groupBox, "@Animator.WPRule.Rules.Label");
+	helper.TreeList(groupBox, pTreeRule, 8, "@Animator.WPRule.Rules.ToolTip", cTreeRules::Ref::New(*this));
 	
 	
 	pSwitcher = igdeSwitcher::Ref::New(env);

@@ -145,8 +145,8 @@ public:
 	
 public:
 	cActionUseLastState(aeWPAPanelRuleStateSnapshot &panel) : cBaseAction(panel,
-		"Use last animation state", nullptr,
-		"Determines if the animation state from the last frame update is used or the stored snapshot"){ }
+		"@Animator.WPAPanelRuleStateSnapshot.UseLastState.Label", nullptr,
+		"@Animator.WPAPanelRuleStateSnapshot.UseLastState.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleStateSnapshot *rule) override{
 		return aeUSetRuleSnapUseLast::Ref::New(rule);
@@ -175,7 +175,8 @@ public:
 	
 public:
 	cActionEnablePosition(aeWPAPanelRuleStateSnapshot &panel) : cBaseAction(panel,
-		"Enable position manipulation", nullptr, "Determines if the position is modified or kept as it is"){ }
+		"@Animator.WPAPanelRuleStateSnapshot.EnablePosition.Label", nullptr,
+		"@Animator.WPAPanelRuleStateSnapshot.EnablePosition.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleStateSnapshot *rule) override{
 		return aeURuleSnapToggleEnablePosition::Ref::New(rule);
@@ -193,7 +194,8 @@ public:
 	
 public:
 	cActionEnableRotation(aeWPAPanelRuleStateSnapshot &panel) : cBaseAction(panel,
-		"Enable rotation manipulation", nullptr, "Determines if the rotation is modified or kept as it is"){ }
+		"@Animator.WPAPanelRuleStateSnapshot.EnableRotation.Label", nullptr,
+		"@Animator.WPAPanelRuleStateSnapshot.EnableRotation.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleStateSnapshot *rule) override{
 		return aeURuleSnapToggleEnableRotation::Ref::New(rule);
@@ -211,7 +213,8 @@ public:
 	
 public:
 	cActionEnableSize(aeWPAPanelRuleStateSnapshot &panel) : cBaseAction(panel,
-		"Enable size manipulation", nullptr, "Determines if the size is modified or kept as it is"){ }
+		"@Animator.WPAPanelRuleStateSnapshot.EnableSize.Label", nullptr,
+		"@Animator.WPAPanelRuleStateSnapshot.EnableSize.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleStateSnapshot *rule) override{
 		return aeURuleSnapToggleEnableSize::Ref::New(rule);
@@ -229,8 +232,8 @@ public:
 	
 public:
 	cActionEnableVertexPositionSet(aeWPAPanelRuleStateSnapshot &panel) : cBaseAction(panel,
-		"Enable vertex position set manipulation", nullptr,
-		"Determines if vertex position set is modified or kept as it is"){ }
+		"@Animator.WPAPanelRuleStateSnapshot.EnableVertexPositionSet.Label", nullptr,
+		"@Animator.WPAPanelRuleStateSnapshot.EnableVertexPositionSet.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleStateSnapshot *rule) override{
 		return aeURuleSnapToggleEnableVertexPositionSet::Ref::New(rule);
@@ -247,8 +250,9 @@ public:
 	using Ref = deTObjectReference<cActionSnapshot>;
 	
 public:
-	cActionSnapshot(aeWPAPanelRuleStateSnapshot &panel) : cBaseAction(panel, "State", nullptr,
-		"Takes a snapshot of the current animation state"){}
+	cActionSnapshot(aeWPAPanelRuleStateSnapshot &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRuleStateSnapshot.ActionSnapshot.Label", nullptr,
+		"@Animator.WPAPanelRuleStateSnapshot.ActionSnapshot.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator *animator, aeRuleStateSnapshot *rule) override{
 		deAnimatorInstance * const engAnimatorInstance = animator->GetEngineAnimatorInstance();
@@ -264,8 +268,9 @@ public:
 	using Ref = deTObjectReference<cActionGetFrame>;
 	
 public:
-	cActionGetFrame(aeWPAPanelRuleStateSnapshot &panel) : cBaseAction(panel, "Animation", nullptr,
-		"Takes a snapshot of the selected animation frame"){}
+	cActionGetFrame(aeWPAPanelRuleStateSnapshot &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRuleStateSnapshot.ActionGetFrame.Label", nullptr,
+		"@Animator.WPAPanelRuleStateSnapshot.ActionGetFrame.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator *animator, aeRuleStateSnapshot *rule) override{
 		deAnimatorInstance * const engAnimatorInstance = animator->GetEngineAnimatorInstance();
@@ -299,17 +304,20 @@ aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertStateSnapshot)
 	igdeContainer::Ref groupBox, formLine;
 	
 	
-	helper.GroupBox(*this, groupBox, "State Snapshot:");
+	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRuleStateSnapshot.StateSnapshot.Label");
 	
 	helper.CheckBox(groupBox, pChkUseLastState, cActionUseLastState::Ref::New(*this));
-	helper.EditInteger(groupBox, "ID:", "Identifier to snap state during runtime",
+	helper.EditInteger(groupBox, "@Animator.WPAPanelRuleStateSnapshot.ID.Label",
+		"@Animator.WPAPanelRuleStateSnapshot.ID.ToolTip",
 		pEditID, cTextID::Ref::New(*this));
 	
-	helper.ComboBoxFilter(groupBox, "Move Name:", true, "Name of animation move to use",
+	helper.ComboBoxFilter(groupBox, "@Animator.WPAPanelRuleStateSnapshot.MoveName.Label", true,
+		"@Animator.WPAPanelRuleStateSnapshot.MoveName.ToolTip",
 		pCBMoveName, {});
 	pCBMoveName->SetDefaultSorter();
 	
-	helper.EditFloat(groupBox, "Move Time:", "Time in seconds of animation frame to retrieve",
+	helper.EditFloat(groupBox, "@Animator.WPAPanelRuleStateSnapshot.MoveTime.Label",
+		"@Animator.WPAPanelRuleStateSnapshot.MoveTime.ToolTip",
 		pEditMoveTime, {});
 	
 	helper.CheckBox(groupBox, pChkEnablePosition, cActionEnablePosition::Ref::New(*this));
@@ -317,7 +325,8 @@ aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertStateSnapshot)
 	helper.CheckBox(groupBox, pChkEnableSize, cActionEnableSize::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkEnableVertexPositionSet, cActionEnableVertexPositionSet::Ref::New(*this));
 	
-	helper.FormLine(groupBox, "Snapshot:", "Store snapshot (runtime simulation)", formLine);
+	helper.FormLine(groupBox, "@Animator.WPAPanelRuleStateSnapshot.Snapshot.Label",
+		"@Animator.WPAPanelRuleStateSnapshot.Snapshot.ToolTip", formLine);
 	helper.Button(formLine, pBtnSnapshot, cActionSnapshot::Ref::New(*this));
 	helper.Button(formLine, pBtnGetFrame, cActionGetFrame::Ref::New(*this));
 }

@@ -140,9 +140,9 @@ public:
 	using Ref = deTObjectReference<cActionCopy>;
 	
 public:
-	cActionCopy(aeWPLink &panel) : cBaseAction(panel, "Copy",
+	cActionCopy(aeWPLink &panel) : cBaseAction(panel, "@Animator.WPLink.Action.Copy",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-		"Copy link to clipboard"){}
+		"@Animator.WPLink.Action.Copy.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeLink *link) override{
 		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(
@@ -156,9 +156,9 @@ public:
 	using Ref = deTObjectReference<cActionCut>;
 	
 public:
-	cActionCut(aeWPLink &panel) : cBaseAction(panel, "Cut",
+	cActionCut(aeWPLink &panel) : cBaseAction(panel, "@Animator.WPLink.Action.Cut",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
-		"Cut link into clipboard"){}
+		"@Animator.WPLink.Action.Cut.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeLink *link) override{
 		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(
@@ -175,9 +175,9 @@ private:
 	aeWPLink &pPanel;
 	
 public:
-	cActionPaste(aeWPLink &panel) : igdeAction("Paste",
+	cActionPaste(aeWPLink &panel) : igdeAction("@Animator.WPLink.Action.Paste",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
-		"Paste link from clipboard"), pPanel(panel){}
+		"@Animator.WPLink.Action.Paste.ToolTip"), pPanel(panel){}
 	
 	void OnAction() override{
 		aeAnimator * const animator = pPanel.GetAnimator();
@@ -332,9 +332,9 @@ public:
 	using Ref = deTObjectReference<cActionCurveInsertAt>;
 	
 public:
-	cActionCurveInsertAt(aeWPLink &panel) : cBaseAction(panel, "Insert Value At Controller",
+	cActionCurveInsertAt(aeWPLink &panel) : cBaseAction(panel, "@Animator.WPLink.Action.CurveInsertAt",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-		"Insert value at X coordinate matching linked controller value"){}
+		"@Animator.WPLink.Action.CurveInsertAt.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeLink *link) override{
 		if(!link->GetController()){
@@ -345,7 +345,8 @@ public:
 		const float x = decMath::linearStep(controller.GetCurrentValue(),
 			controller.GetMinimumValue(), controller.GetMaximumValue());
 		float y = 0.0f;
-		if(!igdeCommonDialogs::GetFloat(pPanel, "Insert Curve Value", "Y Value:", y)){
+		if(!igdeCommonDialogs::GetFloat(pPanel, "@Animator.WPLink.Dialog.InsertCurveValue.Title",
+		"@Animator.WPLink.Dialog.InsertCurveValue.YValue", y)){
 			return {};
 		}
 		
@@ -581,8 +582,8 @@ public:
 	using Ref = deTObjectReference<cCheckWrapY>;
 	
 public:
-	cCheckWrapY(aeWPLink &panel) : cBaseAction(panel, "Wrap Y", nullptr,
-		"Wrap Y value instead of clamping"){}
+	cCheckWrapY(aeWPLink &panel) : cBaseAction(panel, "@Animator.WPLink.WrapY.Label", nullptr,
+		"@Animator.WPLink.WrapY.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeLink *link) override{
 		return aeULinkToggleWrapY::Ref::New(link);
@@ -619,58 +620,58 @@ pPreventUpdate(false)
 	
 	
 	// links
-	helper.GroupBoxFlow(content, groupBox, "Links:");
-	helper.ListBox(groupBox, 8, "Links", pListLink, cListLinks::Ref::New(*this));
+	helper.GroupBoxFlow(content, groupBox, "@Animator.WPLink.Links.Label");
+	helper.ListBox(groupBox, 8, "@Animator.WPLink.Links.ToolTip", pListLink, cListLinks::Ref::New(*this));
 	pListLink->SetDefaultSorter();
 	
 	
 	// link settings
-	helper.GroupBox(content, groupBox, "Link Settings:");
-	helper.EditString(groupBox, "Name:", "Name of the link", pEditName, cTextName::Ref::New(*this));
+	helper.GroupBox(content, groupBox, "@Animator.WPLink.LinkSettings.Label");
+	helper.EditString(groupBox, "@Animator.WPLink.Name.Label",
+		"@Animator.WPLink.Name.ToolTip", pEditName, cTextName::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "Controller:", "Sets the controller to query values from",
-		pCBController, cComboConnectionController::Ref::New(*this, pPreventUpdate));
+	helper.ComboBox(groupBox, "@Animator.WPLink.Controller.Label",
+		"@Animator.WPLink.Controller.ToolTip", pCBController, cComboConnectionController::Ref::New(*this, pPreventUpdate));
 	pCBController->SetDefaultSorter();
 	
-	helper.EditSpinInteger(groupBox, "Repeat:", "Repeat curve along X direction", 1, 99,
-		pSpinRepeat, cSpinRepeat::Ref::New(*this));
+	helper.EditSpinInteger(groupBox, "@Animator.WPLink.Repeat.Label",
+		"@Animator.WPLink.Repeat.ToolTip", 1, 99, pSpinRepeat, cSpinRepeat::Ref::New(*this));
 	
-	helper.ComboBoxFilter(groupBox, "Bone:", true,
-		"Set bone to use parameter of as input or empty string to not use",
-		pCBBone, cComboBone::Ref::New(*this, pPreventUpdate));
+	helper.ComboBoxFilter(groupBox, "@Animator.WPLink.Bone.Label", true,
+		"@Animator.WPLink.Bone.ToolTip", pCBBone, cComboBone::Ref::New(*this, pPreventUpdate));
 	pCBBone->SetDefaultSorter();
 	
-	helper.ComboBox(groupBox, "Bone Parameter:", "Set bone parameter to use as input",
-		pCBBoneParameter, cComboBoneParameter::Ref::New(*this));
-	pCBBoneParameter->AddItem("Position X", nullptr, (void*)(intptr_t)deAnimatorLink::ebpPositionX);
-	pCBBoneParameter->AddItem("Position Y", nullptr, (void*)(intptr_t)deAnimatorLink::ebpPositionY);
-	pCBBoneParameter->AddItem("Position Z", nullptr, (void*)(intptr_t)deAnimatorLink::ebpPositionZ);
-	pCBBoneParameter->AddItem("Rotation X", nullptr, (void*)(intptr_t)deAnimatorLink::ebpRotationX);
-	pCBBoneParameter->AddItem("Rotation Y", nullptr, (void*)(intptr_t)deAnimatorLink::ebpRotationY);
-	pCBBoneParameter->AddItem("Rotation Z", nullptr, (void*)(intptr_t)deAnimatorLink::ebpRotationZ);
-	pCBBoneParameter->AddItem("Scale X", nullptr, (void*)(intptr_t)deAnimatorLink::ebpScaleX);
-	pCBBoneParameter->AddItem("Scale Y", nullptr, (void*)(intptr_t)deAnimatorLink::ebpScaleY);
-	pCBBoneParameter->AddItem("Scale Z", nullptr, (void*)(intptr_t)deAnimatorLink::ebpScaleZ);
+	helper.ComboBox(groupBox, "@Animator.WPLink.BoneParameter.Label",
+		"@Animator.WPLink.BoneParameter.ToolTip", pCBBoneParameter, cComboBoneParameter::Ref::New(*this));
+	pCBBoneParameter->SetAutoTranslateItems(true);
+	pCBBoneParameter->AddItem("@Animator.WPLink.BoneParameter.PositionX", nullptr, (void*)(intptr_t)deAnimatorLink::ebpPositionX);
+	pCBBoneParameter->AddItem("@Animator.WPLink.BoneParameter.PositionY", nullptr, (void*)(intptr_t)deAnimatorLink::ebpPositionY);
+	pCBBoneParameter->AddItem("@Animator.WPLink.BoneParameter.PositionZ", nullptr, (void*)(intptr_t)deAnimatorLink::ebpPositionZ);
+	pCBBoneParameter->AddItem("@Animator.WPLink.BoneParameter.RotationX", nullptr, (void*)(intptr_t)deAnimatorLink::ebpRotationX);
+	pCBBoneParameter->AddItem("@Animator.WPLink.BoneParameter.RotationY", nullptr, (void*)(intptr_t)deAnimatorLink::ebpRotationY);
+	pCBBoneParameter->AddItem("@Animator.WPLink.BoneParameter.RotationZ", nullptr, (void*)(intptr_t)deAnimatorLink::ebpRotationZ);
+	pCBBoneParameter->AddItem("@Animator.WPLink.BoneParameter.ScaleX", nullptr, (void*)(intptr_t)deAnimatorLink::ebpScaleX);
+	pCBBoneParameter->AddItem("@Animator.WPLink.BoneParameter.ScaleY", nullptr, (void*)(intptr_t)deAnimatorLink::ebpScaleY);
+	pCBBoneParameter->AddItem("@Animator.WPLink.BoneParameter.ScaleZ", nullptr, (void*)(intptr_t)deAnimatorLink::ebpScaleZ);
 	
-	helper.EditFloat(groupBox, "Bone Minimum Value:", "Minimum bone value",
-		pEditBoneMinimum, cTextBoneMinimum::Ref::New(*this));
-	helper.EditFloat(groupBox, "Bone Maximum Value:", "Maximum bone value",
-		pEditBoneMaximum, cTextBoneMaximum::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Animator.WPLink.BoneMinimumValue.Label",
+		"@Animator.WPLink.BoneMinimumValue.ToolTip", pEditBoneMinimum, cTextBoneMinimum::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Animator.WPLink.BoneMaximumValue.Label",
+		"@Animator.WPLink.BoneMaximumValue.ToolTip", pEditBoneMaximum, cTextBoneMaximum::Ref::New(*this));
 	
-	helper.ComboBoxFilter(groupBox, "Vertex Position Set:", true,
-		"Set vertex position set to use as input or empty string to not use",
-		pCBVertexPositionSet, cComboVertexPositionSet::Ref::New(*this, pPreventUpdate));
+	helper.ComboBoxFilter(groupBox, "@Animator.WPLink.VertexPositionSet.Label", true,
+		"@Animator.WPLink.VertexPositionSet.ToolTip", pCBVertexPositionSet, cComboVertexPositionSet::Ref::New(*this, pPreventUpdate));
 	pCBVertexPositionSet->SetDefaultSorter();
 	
-	helper.EditFloat(groupBox, "VPS Minimum Value:", "Minimum vertex position set value",
-		pEditVertexPositionSetMinimum, cTextVertexPositionSetMinimum::Ref::New(*this));
-	helper.EditFloat(groupBox, "VPS Maximum Value:", "Maximum vertex position set value",
-		pEditVertexPositionSetMaximum, cTextVertexPositionSetMaximum::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Animator.WPLink.VPSMinimumValue.Label",
+		"@Animator.WPLink.VPSMinimumValue.ToolTip", pEditVertexPositionSetMinimum, cTextVertexPositionSetMinimum::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Animator.WPLink.VPSMaximumValue.Label",
+		"@Animator.WPLink.VPSMaximumValue.ToolTip", pEditVertexPositionSetMaximum, cTextVertexPositionSetMaximum::Ref::New(*this));
 	
 	helper.CheckBox(groupBox, pChkWrapY, cCheckWrapY::Ref::New(*this));
 	
 	
-	helper.GroupBoxFlow(content, groupBox, "Link Curve:");
+	helper.GroupBoxFlow(content, groupBox, "@Animator.WPLink.LinkCurve.Label");
 	
 	helper.ViewCurveBezier(groupBox, pEditCurve, cEditCurve::Ref::New(*this));
 	pEditCurve->SetDefaultSize(decPoint(200, 250));
@@ -843,7 +844,7 @@ void aeWPLink::UpdateControllerList(){
 	void * const selection = pCBController->GetSelectedItemData();
 	
 	pCBController->RemoveAllItems();
-	pCBController->AddItem("< No Controller >", nullptr, nullptr);
+	pCBController->AddItem(Translate("Animator.WPLink.Controller.NoController").ToUTF8(), nullptr, nullptr);
 	
 	if(pAnimator){
 		decString text;
@@ -854,4 +855,8 @@ void aeWPLink::UpdateControllerList(){
 	}
 	
 	pCBController->SetSelectionWithData(selection);
+}
+
+void aeWPLink::OnLanguageChanged(){
+	UpdateControllerList();
 }

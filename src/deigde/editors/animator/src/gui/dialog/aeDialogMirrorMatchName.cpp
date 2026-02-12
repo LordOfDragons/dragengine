@@ -51,17 +51,18 @@ igdeDialog(environment, windowTitle)
 	igdeContainerForm::Ref content(igdeContainerForm::Ref::New(
 		environment, igdeContainerForm::esLast));
 	
-	helper.ComboBox(content, "Type:", "How to match the name.", pCBType, {});
-	pCBType->AddItem("Begin of name", nullptr, (void*)(intptr_t)deAnimatorRuleMirror::emntFirst);
-	pCBType->AddItem("End of name", nullptr, (void*)(intptr_t)deAnimatorRuleMirror::emntLast);
-	pCBType->AddItem("Middle of name", nullptr, (void*)(intptr_t)deAnimatorRuleMirror::emntMiddle);
+	helper.ComboBox(content, "@Animator.DialogMirrorMatchName.Type.Label", "@Animator.DialogMirrorMatchName.Type.ToolTip", pCBType, {});
+	pCBType->SetAutoTranslateItems(true);
+	pCBType->AddItem("@Animator.DialogMirrorMatchName.Type.BeginOfName", nullptr, (void*)(intptr_t)deAnimatorRuleMirror::emntFirst);
+	pCBType->AddItem("@Animator.DialogMirrorMatchName.Type.EndOfName", nullptr, (void*)(intptr_t)deAnimatorRuleMirror::emntLast);
+	pCBType->AddItem("@Animator.DialogMirrorMatchName.Type.MiddleOfName", nullptr, (void*)(intptr_t)deAnimatorRuleMirror::emntMiddle);
 	pCBType->SetSelectionWithData((void*)(intptr_t)deAnimatorRuleMirror::emntLast);
 	
-	helper.EditString(content, "First:", "First name string component to match.", 30, pEditFirst, {});
-	helper.EditString(content, "Second:", "Second name string component to match.", 30, pEditSecond, {});
+	helper.EditString(content, "@Animator.DialogMirrorMatchName.First.Label", "@Animator.DialogMirrorMatchName.First.ToolTip", 30, pEditFirst, {});
+	helper.EditString(content, "@Animator.DialogMirrorMatchName.Second.Label", "@Animator.DialogMirrorMatchName.Second.ToolTip", 30, pEditSecond, {});
 	
 	igdeContainer::Ref buttonBar;
-	CreateButtonBar(buttonBar, "Accept", "Cancel");
+	CreateButtonBar(buttonBar, "@Igde.Accept", "@Igde.Cancel");
 	
 	AddContent(content, buttonBar);
 }
@@ -94,11 +95,11 @@ bool aeDialogMirrorMatchName::Accept(){
 	const decString &second = pEditSecond->GetText();
 	
 	if(first.IsEmpty()){
-		igdeCommonDialogs::Error(*this, GetTitle(), "First name string component to match can not be empty");
+		igdeCommonDialogs::Error(*this, GetTitle(), "@Animator.DialogMirrorMatchName.ErrorFirstEmpty");
 		return false;
 	}
 	if(second.IsEmpty()){
-		igdeCommonDialogs::Error(*this, GetTitle(), "Second name string component to match can not be empty");
+		igdeCommonDialogs::Error(*this, GetTitle(), "@Animator.DialogMirrorMatchName.ErrorSecondEmpty");
 		return false;
 	}
 	
