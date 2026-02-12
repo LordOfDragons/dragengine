@@ -3,17 +3,17 @@
 	<identifier>en</identifier>
 	<name>English</name>
 	<description>English</description>
-	<translation name='UI.Yes'>Yes</translation>
-	<translation name='UI.No'>No</translation>
-	<translation name='UI.Accept'>Accept</translation>
-	<translation name='UI.Cancel'>Cancel</translation>
-	<translation name='UI.Close'>Close</translation>
-	<translation name='UI.Error'>Error</translation>
-	<translation name='UI.Menu.Cut'>Cut</translation>
-	<translation name='UI.Menu.Copy'>Copy</translation>
-	<translation name='UI.Menu.Paste'>Paste</translation>
-	<translation name='UI.Settings.Title'>Settings</translation>
-	<translation name='UI.Settings.Save'>Save</translation>
-	<translation name='UI.Settings.Reset'>Reset</translation>
-	<translation name='UI.Settings.Cancel'>Cancel</translation>
+	<translation name='Igde.Yes'>Yes</translation>
+	<translation name='Igde.No'>No</translation>
+	<translation name='Igde.Accept'>Accept</translation>
+	<translation name='Igde.Cancel'>Cancel</translation>
+	<translation name='Igde.Close'>Close</translation>
+	<translation name='Igde.Error'>Error</translation>
+	<translation name='Igde.Menu.Cut'>Cut</translation>
+	<translation name='Igde.Menu.Copy'>Copy</translation>
+	<translation name='Igde.Menu.Paste'>Paste</translation>
+	<translation name='Igde.Settings.Title'>Settings</translation>
+	<translation name='Igde.Settings.Save'>Save</translation>
+	<translation name='Igde.Settings.Reset'>Reset</translation>
+	<translation name='Igde.Settings.Cancel'>Cancel</translation>
 </languagePack>
