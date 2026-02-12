@@ -204,7 +204,7 @@ public:
 		const seUMappedRemove::Ref undo(seUMappedRemove::Ref::New(mapped));
 		
 		if(undo->GetDependencyCount() > 0 && igdeCommonDialogs::QuestionFormat(pPanel,
-		igdeCommonDialogs::ebsYesNo, "Cut Mapped", "Mapped is used by %d dependencies. "
+		igdeCommonDialogs::ebsYesNo, "Cut Mapped", "Mapped is used by {0} dependencies. "
 		"Cutting mapped will also unset it from all dependencies.", undo->GetDependencyCount())
 		== igdeCommonDialogs::ebNo){
 			return {};

@@ -95,7 +95,7 @@
 igdeConfiguration::igdeConfiguration(igdeWindowMain &windowMain) :
 pWindowMain(windowMain),
 pMaxRecentProjectEntries(10),
-pLanguage("en")
+pLanguage(igdeTranslationManager::FallbackLanguage)
 {
 #ifdef TEST_SPECIAL
 	// DEBUG

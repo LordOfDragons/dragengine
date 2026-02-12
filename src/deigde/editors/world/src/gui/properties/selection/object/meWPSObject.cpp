@@ -399,7 +399,7 @@ public:
 			
 		}catch(const deException &){
 			igdeCommonDialogs::ErrorFormat(pPanel.GetWPSelection(),
-				"Find ID", "Invalid ID '%s'", value.GetString());
+				"Find ID", "Invalid ID '{0}'", value.GetString());
 			return;
 		}
 		
@@ -427,7 +427,7 @@ public:
 		}
 		
 		igdeCommonDialogs::ErrorFormat(pPanel.GetWPSelection(),
-			"Find ID", "ID '%s' not found", value.GetString());
+			"Find ID", "ID '{0}' not found", value.GetString());
 	}
 	
 	void Update() override{

@@ -69,7 +69,7 @@ public:
 			decXmlParser(GetLogger()).ParseXml(&reader, document);
 			
 			document->StripComments();
-			document->CleanCharData();
+			//document->CleanCharData(); // we want multiline text to be easy to write
 			
 			const decXmlElementTag * const root = document->GetRoot();
 			DEASSERT_NOTNULL(root)

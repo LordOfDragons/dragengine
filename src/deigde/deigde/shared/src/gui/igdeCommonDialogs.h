@@ -25,7 +25,9 @@
 #ifndef _IGDECOMMONDIALOGS_H_
 #define _IGDECOMMONDIALOGS_H_
 
+#include <format>
 
+#include "igdeWidget.h"
 #include "resources/igdeFont.h"
 #include "filedialog/igdeFilePattern.h"
 
@@ -34,7 +36,6 @@
 
 
 class igdeEditorModule;
-class igdeWidget;
 
 class decString;
 class deException;
@@ -131,12 +132,17 @@ public:
 	/**
 	 * \brief Shows information dialog with OK button and formatted text.
 	 */
+	template <typename... Args>
 	static void InformationFormat(igdeWidget &owner, const char *title,
-		const char *textFormat, ...)
-		#ifdef __GNUC__
-		__attribute__ ((format (printf, 3, 4)))
-		#endif
-		;
+	const char *textFormat, Args&&... args){
+		const decString ttf(owner.TranslateIf(textFormat).ToUTF8());
+		try{
+			return Information(owner, title, std::vformat(
+				std::string_view(ttf.GetString()), std::make_format_args(args...)).c_str());
+		}catch(const std::exception &){
+			return Information(owner, title, ttf);
+		}
+	}
 	
 	/**
 	 * \brief Shows question dialog.
@@ -147,12 +153,17 @@ public:
 	/**
 	 * \brief Shows question dialog with formatted text.
 	 */
+	template <typename... Args>
 	static eButton QuestionFormat(igdeWidget &owner, eButtonSet buttons,
-		const char *title, const char *textFormat, ...)
-		#ifdef __GNUC__
-		__attribute__ ((format (printf, 4, 5)))
-		#endif
-		;
+	const char *title, const char *textFormat, Args&&... args){
+		const decString ttf(owner.TranslateIf(textFormat).ToUTF8());
+		try{
+			return Question(owner, buttons, title, std::vformat(
+				std::string_view(ttf.GetString()), std::make_format_args(args...)).c_str());
+		}catch(const std::exception &){
+			return Question(owner, buttons, title, ttf);
+		}
+	}
 	
 	/**
 	 * \brief Shows warning dialog with OK button.
@@ -162,11 +173,17 @@ public:
 	/**
 	 * \brief Shows warning dialog with OK button and formatted text.
 	 */
-	static void WarningFormat(igdeWidget &owner, const char *title, const char *textFormat, ...)
-		#ifdef __GNUC__
-		__attribute__ ((format (printf, 3, 4)))
-		#endif
-		;
+	template <typename... Args>
+	static void WarningFormat(igdeWidget &owner, const char *title,
+	const char *textFormat, Args&&... args){
+		const decString ttf(owner.TranslateIf(textFormat).ToUTF8());
+		try{
+			return Warning(owner, title, std::vformat(
+				std::string_view(ttf.GetString()), std::make_format_args(args...)).c_str());
+		}catch(const std::exception &){
+			return Warning(owner, title, ttf);
+		}
+	}
 	
 	/**
 	 * \brief Shows error dialog with OK button.
@@ -176,11 +193,17 @@ public:
 	/**
 	 * \brief Shows error dialog with OK button and formatted text.
 	 */
-	static void ErrorFormat(igdeWidget &owner, const char *title, const char *textFormat, ...)
-		#ifdef __GNUC__
-		__attribute__ ((format (printf, 3, 4)))
-		#endif
-		;
+	template <typename... Args>
+	static void ErrorFormat(igdeWidget &owner, const char *title,
+	const char *textFormat, Args&&... args){
+		const decString ttf(owner.TranslateIf(textFormat).ToUTF8());
+		try{
+			return Error(owner, title, std::vformat(
+				std::string_view(ttf.GetString()), std::make_format_args(args...)).c_str());
+		}catch(const std::exception &){
+			return Error(owner, title, ttf);
+		}
+	}
 	
 	/**
 	 * \brief Shows error dialog with OK button and formatted text.
@@ -202,13 +225,17 @@ public:
 	/**
 	 * \brief Shows message dialog with formatted text.
 	 */
+	template <typename... Args>
 	static eButton MessageFormat(igdeWidget &owner, eButtonSet buttons, eIcon icon,
-		const char *title, const char *textFormat, ...)
-		#ifdef __GNUC__
-		__attribute__ ((format (printf, 5, 6)))
-		#endif
-		;
-	
+	const char *title, const char *textFormat, Args&&... args){
+		const decString ttf(owner.TranslateIf(textFormat).ToUTF8());
+		try{
+			return Message(owner, buttons, icon, title, std::vformat(
+				std::string_view(ttf.GetString()), std::make_format_args(args...)).c_str());
+		}catch(const std::exception &){
+			return Message(owner, buttons, icon, title, ttf);
+		}
+	}
 	
 	
 	/** \brief Format exception for display or logging purpose. */

@@ -77,8 +77,8 @@ pFont(CheckBoxFont(powner, guitheme))
 	}
 	setCheck(powner.GetChecked());
 	setIcon(CheckBoxIcon(powner));
-	setTipText(powner.GetDescription().GetString());
-	setHelpText(powner.GetDescription().GetString());
+	setTipText(igdeUIFoxHelper::TranslateIf(powner, powner.GetDescription()));
+	setHelpText(igdeUIFoxHelper::TranslateIf(powner, powner.GetDescription()));
 }
 
 igdeNativeFoxCheckBox::~igdeNativeFoxCheckBox(){
@@ -160,8 +160,8 @@ void igdeNativeFoxCheckBox::UpdateEnabled(){
 
 
 
-const char *igdeNativeFoxCheckBox::CheckBoxText(const igdeCheckBox &powner){
-	return powner.GetText();
+FXString igdeNativeFoxCheckBox::CheckBoxText(const igdeCheckBox &powner){
+	return igdeUIFoxHelper::TranslateIf(powner, powner.GetText());
 }
 
 FXIcon *igdeNativeFoxCheckBox::CheckBoxIcon(const igdeCheckBox &powner){

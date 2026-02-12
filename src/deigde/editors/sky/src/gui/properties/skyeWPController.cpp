@@ -244,7 +244,7 @@ public:
 		
 		if(usageCount > 0 && igdeCommonDialogs::QuestionFormat(
 			pPanel, igdeCommonDialogs::ebsYesNo, "Remove Controller",
-			"The controller '%s' is used by %i links.\n"
+			"The controller '{0}' is used by {1} links.\n"
 			"If the controller is removed now it is also removed from\n"
 			"all the links using it. Do you want to remove the controller?",
 			controller->GetName().GetString(), usageCount) != igdeCommonDialogs::ebYes){

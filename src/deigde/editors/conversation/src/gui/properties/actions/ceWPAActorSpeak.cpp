@@ -201,7 +201,7 @@ public:
 		const decUnicodeString *foundText = nullptr;
 		if(langpack->GetEntries().GetAt(name, foundText)){
 			if(igdeCommonDialogs::QuestionFormat(*pPanel.GetParentWindow(), igdeCommonDialogs::ebsYesNo,
-			"Move to translation entry", "Translation entry '%s' exists. Replace entry?",
+			"Move to translation entry", "Translation entry '{0}' exists. Replace entry?",
 			name.GetString()) == igdeCommonDialogs::ebNo){
 				return;
 			}

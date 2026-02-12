@@ -245,6 +245,7 @@ public:
 	inline const igdeGuiTheme::Ref &GetDefaultGuiTheme() const{ return pDefaultGuiTheme; }
 	
 	/** Translation manager. */
+	inline deTUniqueReference<igdeTranslationManager> &GetTranslationManager(){ return pTranslationManager; }
 	inline const deTUniqueReference<igdeTranslationManager> &GetTranslationManager() const{ return pTranslationManager; }
 	
 	/** Shared font list. */

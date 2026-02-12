@@ -134,10 +134,24 @@ bool igdeEditorModuleDefinition::LoadModule(igdeEnvironment *environment){
 		pathEditorLib.AddComponent(pDirectoryName);
 		pModule->SetEditorPathLib(pathEditorLib.GetPathNative());
 		
+		igdeTranslationManager &tm = environment->GetTranslationManager();
 		decPath path;
 		path.SetFromUnix("/data/modules");
 		path.AddComponent(pDirectoryName);
-		environment->GetTranslationManager().LoadLanguagePacks(path, pModule->GetLanguagePacks());
+		path.AddComponent("languages");
+		tm.LoadLanguagePacks(path, pModule->GetLanguagePacks());
+		
+		if(tm.GetActiveLanguage() != igdeTranslationManager::FallbackLanguage){
+			auto found = pModule->GetLanguagePacks().FindByLanguage(igdeTranslationManager::FallbackLanguage);
+			if(found){
+				tm.AddActiveLanguagePack(found);
+			}
+		}
+		
+		auto found = pModule->GetLanguagePacks().FindByLanguage(tm.GetActiveLanguage());
+		if(found){
+			tm.AddActiveLanguagePack(found);
+		}
 		
 		pModule->Start();
 		

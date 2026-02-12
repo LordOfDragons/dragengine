@@ -83,6 +83,7 @@ private:
 	decPoint pMinimumSize;
 	decString pDescription;
 	igdeListHeader::List pHeaders;
+	bool pAutoTranslateItems;
 	
 	decTObjectOrderedSet<igdeIconListBoxListener> pListeners;
 	
@@ -141,6 +142,11 @@ public:
 	/** \brief Focus widget. */
 	void Focus();
 	
+	/** \brief Auto translate items. */
+	inline bool GetAutoTranslateItems() const{ return pAutoTranslateItems; }
+	
+	/** \brief Set auto translate items. */
+	void SetAutoTranslateItems(bool autoTranslate);
 	
 	
 	/** \brief List items. */

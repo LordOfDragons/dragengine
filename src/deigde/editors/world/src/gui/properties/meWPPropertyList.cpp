@@ -463,7 +463,7 @@ public:
 				const int delimiter = line.Find('=');
 				if(delimiter < 1){
 					igdeCommonDialogs::ErrorFormat(*pPanel.GetParentWindow(), "Import From Text",
-						"Invalid property on line %d: '%s'", lineNumber, line.GetString());
+						"Invalid property on line {0}: '{1}'", lineNumber, line.GetString());
 					return false;
 				}
 				

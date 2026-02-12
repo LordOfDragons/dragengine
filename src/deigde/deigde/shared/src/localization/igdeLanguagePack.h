@@ -46,7 +46,18 @@ public:
 	using EntryMap = decTStringDictionary<decUnicodeString>;
 	
 	/** \brief Language pack list. */
-	using List = decTObjectOrderedSet<igdeLanguagePack>;
+	class List: public decTObjectOrderedSet<igdeLanguagePack>{
+	public:
+		using decTObjectOrderedSet<igdeLanguagePack>::decTOrderedSet;
+		
+		/** \brief Find language pack for language. */
+		igdeLanguagePack::Ref FindByLanguage(const decString &language) const{
+			const Ref *found;
+			return Find(found, [&](const igdeLanguagePack &lp){
+				return lp.GetLanguage() == language;
+			}) ? *found : Ref();
+		}
+	};
 	
 	
 private:

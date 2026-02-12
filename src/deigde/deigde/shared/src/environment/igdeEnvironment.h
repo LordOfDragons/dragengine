@@ -347,7 +347,7 @@ public:
 	virtual igdeGuiTheme *GetDefaultGuiTheme() = 0;
 	
 	/** \brief Translation manager. */
-	virtual const igdeTranslationManager &GetTranslationManager() = 0;
+	virtual igdeTranslationManager &GetTranslationManager() = 0;
 	
 	
 	

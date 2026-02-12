@@ -59,7 +59,8 @@ pSelectionMode(esmSingle),
 pViewMode(evmList),
 pSelection(-1),
 pMinimumSize(100, 60),
-pDescription(description){
+pDescription(description),
+pAutoTranslateItems(false){
 }
 
 igdeIconListBox::igdeIconListBox(igdeEnvironment &environment,
@@ -70,7 +71,9 @@ pSelectionMode(esmSingle),
 pViewMode(evmList),
 pSelection(-1),
 pMinimumSize(minimumSize),
-pDescription(description){
+pDescription(description),
+pAutoTranslateItems(false)
+{
 	if(!(minimumSize >= decPoint())){
 		DETHROW(deeInvalidParam);
 	}
@@ -131,6 +134,9 @@ void igdeIconListBox::Focus(){
 	}
 }
 
+void igdeIconListBox::SetAutoTranslateItems(bool autoTranslate){
+	pAutoTranslateItems = autoTranslate;
+}
 
 
 bool igdeIconListBox::HasItem(const char *item) const{
@@ -609,7 +615,13 @@ void igdeIconListBox::NotifyDoubleClickItem(int index){
 void igdeIconListBox::OnLanguageChanged(){
 	igdeWidget::OnLanguageChanged();
 	
-	OnDescriptionChanged();
+	if(GetNativeWidget()){
+		igdeNativeIconListBox * const native = (igdeNativeIconListBox*)GetNativeWidget();
+		native->UpdateDescription();
+		if(pAutoTranslateItems){
+			native->BuildList();
+		}
+	}
 }
 
 

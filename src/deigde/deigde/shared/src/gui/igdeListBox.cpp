@@ -57,7 +57,8 @@ pEnabled(true),
 pSelectionMode(esmSingle),
 pSelection(-1),
 pRows(rows),
-pDescription(description)
+pDescription(description),
+pAutoTranslateItems(false)
 {
 	if(rows < 1){
 		DETHROW(deeInvalidParam);
@@ -110,6 +111,9 @@ void igdeListBox::Focus(){
 	}
 }
 
+void igdeListBox::SetAutoTranslateItems(bool autoTranslate){
+	pAutoTranslateItems = autoTranslate;
+}
 
 
 igdeListItem *igdeListBox::GetItemWithData(void *data) const{
@@ -590,7 +594,13 @@ void igdeListBox::NotifyDoubleClickItem(int index){
 void igdeListBox::OnLanguageChanged(){
 	igdeWidget::OnLanguageChanged();
 	
-	OnDescriptionChanged();
+	if(GetNativeWidget()){
+		igdeNativeListBox * const native = (igdeNativeListBox*)GetNativeWidget();
+		native->UpdateDescription();
+		if(pAutoTranslateItems){
+			native->BuildList();
+		}
+	}
 }
 
 

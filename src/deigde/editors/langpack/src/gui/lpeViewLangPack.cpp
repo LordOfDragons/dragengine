@@ -100,7 +100,7 @@ public:
 		lpeLangPack &langpack = *pView.GetLangPack();
 		if(langpack.GetEntries().HasNamed(name)){
 			igdeCommonDialogs::ErrorFormat(pView, "Set Entry Identifier",
-				"There exists already an entry with name '%s'", name.GetString());
+				"There exists already an entry with name '{0}'", name.GetString());
 			textField->SetText(entry->GetName());
 			return;
 		}

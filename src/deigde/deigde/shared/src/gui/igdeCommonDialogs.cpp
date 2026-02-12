@@ -66,32 +66,8 @@ void igdeCommonDialogs::Information(igdeWidget &owner, const char *title, const 
 	Message(owner, ebsOk, eiInfo, title, text);
 }
 
-void igdeCommonDialogs::InformationFormat(igdeWidget &owner, const char *title,
-const char *textFormat, ...){
-	decString text;
-	
-	va_list list;
-	va_start(list, textFormat);
-	text.FormatUsing(textFormat, list);
-	va_end(list);
-	
-	Message(owner, ebsOk, eiInfo, title, text);
-}
-
 igdeCommonDialogs::eButton igdeCommonDialogs::Question(igdeWidget &owner,
 eButtonSet buttons, const char *title, const char *text){
-	return Message(owner, buttons, eiQuestion, title, text);
-}
-
-igdeCommonDialogs::eButton igdeCommonDialogs::QuestionFormat(igdeWidget &owner,
-eButtonSet buttons, const char *title, const char *textFormat, ...){
-	decString text;
-	
-	va_list list;
-	va_start(list, textFormat);
-	text.FormatUsing(textFormat, list);
-	va_end(list);
-	
 	return Message(owner, buttons, eiQuestion, title, text);
 }
 
@@ -99,31 +75,7 @@ void igdeCommonDialogs::Warning(igdeWidget &owner, const char *title, const char
 	Message(owner, ebsOk, eiWarning, title, text);
 }
 
-void igdeCommonDialogs::WarningFormat(igdeWidget &owner, const char *title,
-const char *textFormat, ...){
-	decString text;
-	
-	va_list list;
-	va_start(list, textFormat);
-	text.FormatUsing(textFormat, list);
-	va_end(list);
-	
-	Message(owner, ebsOk, eiWarning, title, text);
-}
-
 void igdeCommonDialogs::Error(igdeWidget &owner, const char *title, const char *text){
-	Message(owner, ebsOk, eiError, title, text);
-}
-
-void igdeCommonDialogs::ErrorFormat(igdeWidget &owner, const char *title,
-const char *textFormat, ...){
-	decString text;
-	
-	va_list list;
-	va_start(list, textFormat);
-	text.FormatUsing(textFormat, list);
-	va_end(list);
-	
 	Message(owner, ebsOk, eiError, title, text);
 }
 
@@ -143,18 +95,6 @@ void igdeCommonDialogs::FatalError(const char *title, const char *textFormat, ..
 igdeCommonDialogs::eButton igdeCommonDialogs::Message(igdeWidget &owner,
 eButtonSet buttons, eIcon icon, const char *title, const char *text){
 	return igdeNativeCommonDialogs::Message(owner, buttons, icon, title, text);
-}
-
-igdeCommonDialogs::eButton igdeCommonDialogs::MessageFormat(igdeWidget &owner,
-eButtonSet buttons, eIcon icon, const char *title, const char *textFormat, ...){
-	decString text;
-	
-	va_list list;
-	va_start(list, textFormat);
-	text.FormatUsing(textFormat, list);
-	va_end(list);
-	
-	return Message(owner, buttons, icon, title, text);
 }
 
 

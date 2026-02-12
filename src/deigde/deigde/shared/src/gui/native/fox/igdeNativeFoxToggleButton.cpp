@@ -78,8 +78,8 @@ pDeleted(nullptr)
 	if(!powner.GetEnabled()){
 		disable();
 	}
-	setTipText(powner.GetDescription().GetString());
-	setHelpText(powner.GetDescription().GetString());
+	setTipText(igdeUIFoxHelper::TranslateIf(powner, powner.GetDescription()));
+	setHelpText(igdeUIFoxHelper::TranslateIf(powner, powner.GetDescription()));
 }
 
 igdeNativeFoxToggleButton::~igdeNativeFoxToggleButton(){
@@ -167,12 +167,12 @@ void igdeNativeFoxToggleButton::UpdateToggled(){
 
 
 
-const char *igdeNativeFoxToggleButton::ButtonText(const igdeToggleButton &powner){
+FXString igdeNativeFoxToggleButton::ButtonText(const igdeToggleButton &powner){
 	if(powner.GetStyle() == igdeToggleButton::ebsToolBar && powner.GetIcon()){
 		return "";
 		
 	}else{
-		return powner.GetText();
+		return igdeUIFoxHelper::TranslateIf(powner, powner.GetText());
 	}
 }
 

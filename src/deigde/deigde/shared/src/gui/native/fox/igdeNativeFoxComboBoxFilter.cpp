@@ -89,12 +89,17 @@ pInvalidBackColor(igdeUIFoxHelper::BlendColor(pOrgBackColor, FXRGB(255, 0, 0), 0
 		disable();
 	}
 	
-	setTipText(powner.GetDescription().GetString());
-	setHelpText(powner.GetDescription().GetString());
+	setTipText(igdeUIFoxHelper::TranslateIf(powner, powner.GetDescription()));
+	setHelpText(igdeUIFoxHelper::TranslateIf(powner, powner.GetDescription()));
 	
 	BuildList();
 	setCurrentItem(powner.GetSelection());
-	setText(powner.GetText().GetString());
+	if(powner.GetAutoTranslateItems()){
+		setText(igdeUIFoxHelper::TranslateIf(powner, powner.GetText()));
+		
+	}else{
+		setText(powner.GetText().GetString());
+	}
 	
 	UpdateRowCount();
 }
@@ -133,26 +138,32 @@ void igdeNativeFoxComboBoxFilter::DestroyNativeWidget(){
 ///////////////
 
 void igdeNativeFoxComboBoxFilter::BuildList(){
-	const int count = pOwner->GetItems().GetCount();
-	int i;
-	
 	clearItems();
 	
-	for(i=0; i<count; i++){
-		const igdeListItem &item = pOwner->GetItems().GetAt(i);
-		
-		appendItem(item.GetText().GetString());
+	const bool autoTranslateItems = pOwner->GetAutoTranslateItems();
+	pOwner->GetItems().VisitIndexed([&](int i, const igdeListItem &item){
+		if(autoTranslateItems){
+			appendItem(igdeUIFoxHelper::TranslateIf(*pOwner, item.GetText()));
+			
+		}else{
+			appendItem(item.GetText().GetString());
+		}
 		
 		if(item.GetIcon()){
 			list->setItemIcon(i, (FXIcon*)item.GetIcon()->GetNativeIcon());
 		}
-	}
+	});
 }
 
 void igdeNativeFoxComboBoxFilter::UpdateItem(int index){
 	const igdeListItem &item = pOwner->GetItems().GetAt(index);
 	
-	list->setItemText(index, item.GetText().GetString());
+	if(pOwner->GetAutoTranslateItems()){
+		list->setItemText(index, igdeUIFoxHelper::TranslateIf(*pOwner, item.GetText()));
+		
+	}else{
+		list->setItemText(index, item.GetText().GetString());
+	}
 	
 	if(item.GetIcon()){
 		list->setItemIcon(index, (FXIcon*)item.GetIcon()->GetNativeIcon());
@@ -168,7 +179,18 @@ void igdeNativeFoxComboBoxFilter::SyncSelection(bool changing){
 	// update the combo box list selection. since setting the combo box list selection
 	// trashes the set text we can not use the simple solution. using SetText() is more
 	// complex than required but it does work
-	pOwner->SetText(getText().text(), changing);
+	if(pOwner->GetAutoTranslateItems()){
+		const int index = findItem(getText());
+		if(index != -1){
+			pOwner->SetText(pOwner->GetItems()[index]->GetText(), changing);
+			
+		}else{
+			pOwner->SetText(getText().text(), changing);
+		}
+		
+	}else{
+		pOwner->SetText(getText().text(), changing);
+	}
 }
 
 void igdeNativeFoxComboBoxFilter::OnInvalidValueChanged(){
@@ -186,11 +208,22 @@ void igdeNativeFoxComboBoxFilter::UpdateText(){
 	// the documentation that this side-effects is present. we thus have to do this in the
 	// right order to avoid a total mess to break loose.
 	setCurrentItem(pOwner->GetSelection());
-	setText(pOwner->GetText().GetString());
+	
+	if(pOwner->GetAutoTranslateItems()){
+		setText(igdeUIFoxHelper::TranslateIf(*pOwner, pOwner->GetText()));
+		
+	}else{
+		setText(pOwner->GetText().GetString());
+	}
 }
 
 void igdeNativeFoxComboBoxFilter::InsertItem(int index, const igdeListItem &item){
-	list->insertItem(index, item.GetText().GetString());
+	if(pOwner->GetAutoTranslateItems()){
+		list->insertItem(index, igdeUIFoxHelper::TranslateIf(*pOwner, item.GetText()));
+		
+	}else{
+		list->insertItem(index, item.GetText().GetString());
+	}
 	
 	if(item.GetIcon()){
 		list->setItemIcon(index, (FXIcon*)item.GetIcon()->GetNativeIcon());

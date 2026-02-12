@@ -34,6 +34,9 @@
 // Class igdeLanguagePack
 ///////////////////////////
 
+const char *igdeTranslationManager::FallbackLanguage = "en";
+
+
 // Constructor, destructor
 ////////////////////////////
 
@@ -51,18 +54,14 @@ void igdeTranslationManager::LoadIgdeLanguagePacks(const decPath &path){
 	
 	LoadLanguagePacks(path, pIgdeLanguagePacks);
 	DEASSERT_TRUE(pIgdeLanguagePacks.IsNotEmpty())
-	
-	const bool hasEnglish = pIgdeLanguagePacks.HasMatching([](const igdeLanguagePack &lp){
-		return lp.GetLanguage() == "en";
-	});
-	DEASSERT_TRUE(hasEnglish)
+	DEASSERT_NOTNULL(pIgdeLanguagePacks.FindByLanguage(FallbackLanguage))
 	
 	logger.LogInfo("IGDE", "Found IGDE language packs:");
 	pIgdeLanguagePacks.Visit([&](const igdeLanguagePack &lp){
 		logger.LogInfoFormat("IGDE", "- %s (%s)", lp.GetLanguage().GetString(), lp.GetName().ToUTF8().GetString());
 	});
 	
-	SetActiveLanguage("en");
+	SetActiveLanguage(FallbackLanguage);
 }
 
 void igdeTranslationManager::LoadLanguagePacks(const decPath &path,
@@ -78,9 +77,7 @@ igdeLanguagePack::List &languagePacks) const{
 		auto languagePack = igdeLanguagePack::Ref::New();
 		languagePack->LoadFromFile(*pEnvironment.GetLogger(), vfs.OpenFileForReading(file));
 		
-		if(!languagePacks.HasMatching([&](const igdeLanguagePack &lp){
-			return lp.GetLanguage() == languagePack->GetLanguage();
-		})){
+		if(!languagePacks.FindByLanguage(languagePack->GetLanguage())){
 			languagePacks.Add(languagePack);
 		}
 	});
@@ -94,20 +91,18 @@ void igdeTranslationManager::SetActiveLanguage(const decString &language){
 	pActiveLanguagePacks.RemoveAll();
 	pActiveLanguage = language;
 	
-	if(language != "en"){
+	if(language != FallbackLanguage){
 		// add english language pack as fallback if the selected language misses translations
-		pIgdeLanguagePacks.Visit([&](const igdeLanguagePack::Ref &languagePack){
-			if(languagePack->GetLanguage() == "en"){
-				pActiveLanguagePacks.Add(languagePack);
-			}
-		});
+		auto found = pIgdeLanguagePacks.FindByLanguage(FallbackLanguage);
+		if(found){
+			pActiveLanguagePacks.Add(found);
+		}
 	}
 	
-	pIgdeLanguagePacks.Visit([&](const igdeLanguagePack::Ref &languagePack){
-		if(languagePack->GetLanguage() == language){
-			pActiveLanguagePacks.Add(languagePack);
-		}
-	});
+	auto found = pIgdeLanguagePacks.FindByLanguage(language);
+	if(found){
+		pActiveLanguagePacks.Add(found);
+	}
 }
 
 void igdeTranslationManager::AddActiveLanguagePack(const igdeLanguagePack::Ref &languagePack){

@@ -85,7 +85,7 @@ public:
 	virtual void UpdateIcon();
 	virtual void UpdateEnabled();
 	
-	static const char *CheckBoxText(const igdeCheckBox &owner);
+	static FXString CheckBoxText(const igdeCheckBox &owner);
 	static FXIcon *CheckBoxIcon(const igdeCheckBox &owner);
 	static int CheckBoxFlags(const igdeCheckBox &owner);
 	static igdeFont *CheckBoxFont(const igdeCheckBox &owner, const igdeGuiTheme &guitheme);

@@ -188,7 +188,7 @@ public:
 		}
 		if(rig->GetBones().HasNamed(name)){
 			igdeCommonDialogs::ErrorFormat(pPanel, "Invalid Bone Name",
-				"There exists already a bone named %s.", name.GetString());
+				"There exists already a bone named {0}.", name.GetString());
 			return {};
 		}
 		return reUSetBoneName::Ref::New(bone, name);
@@ -213,7 +213,7 @@ public:
 		
 		if(parent && !bone->CanHaveParent(parent)){
 			igdeCommonDialogs::ErrorFormat(pPanel, "Invalid Parent Bone",
-				"Internal error. Bone '%s' is not valid as parent and should not have been selectable!",
+				"Internal error. Bone '{0}' is not valid as parent and should not have been selectable!",
 				parent->GetName().GetString());
 			return {};
 		}

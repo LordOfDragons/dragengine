@@ -175,23 +175,25 @@ void igdeNativeFoxListBox::DestroyNativeWidget(){
 ///////////////
 
 void igdeNativeFoxListBox::BuildList(){
-	const int count = pOwner->GetItems().GetCount();
-	int i;
-	
 	pListBox->clearItems();
 	
-	for(i=0; i<count; i++){
-		const igdeListItem &item = *pOwner->GetItems().GetAt(i);
-		pListBox->appendItem(new igdeNativeFoxListBoxItem(item.GetText().GetString(),
+	const bool autoTranslate = pOwner->GetAutoTranslateItems();
+	pOwner->GetItems().VisitIndexed([&](int i, const igdeListItem &item){
+		pListBox->appendItem(new igdeNativeFoxListBoxItem(
+			autoTranslate
+				? igdeUIFoxHelper::TranslateIf(*pOwner, item.GetText())
+				: item.GetText().GetString(),
 			item.GetIcon() ? (FXIcon*)item.GetIcon()->GetNativeIcon() : nullptr));
-	}
+	});
 	
 	UpdateSelection();
 }
 
 void igdeNativeFoxListBox::UpdateItem(int index){
 	const igdeListItem &item = *pOwner->GetItems().GetAt(index);
-	pListBox->setItemText(index, item.GetText().GetString());
+	pListBox->setItemText(index, pOwner->GetAutoTranslateItems()
+		? igdeUIFoxHelper::TranslateIf(*pOwner, item.GetText())
+		: item.GetText().GetString());
 	
 	if(item.GetIcon()){
 		pListBox->setItemIcon(index, (FXIcon*)item.GetIcon()->GetNativeIcon());
@@ -261,7 +263,10 @@ void igdeNativeFoxListBox::MakeItemVisible(int index){
 
 void igdeNativeFoxListBox::InsertItem(int index){
 	const igdeListItem &item = *pOwner->GetItems().GetAt(index);
-	pListBox->insertItem(index, new igdeNativeFoxListBoxItem(item.GetText().GetString(),
+	pListBox->insertItem(index, new igdeNativeFoxListBoxItem(
+		pOwner->GetAutoTranslateItems()
+			? igdeUIFoxHelper::TranslateIf(*pOwner, item.GetText())
+			: item.GetText().GetString(),
 		item.GetIcon() ? (FXIcon*)item.GetIcon()->GetNativeIcon() : nullptr));
 }
 

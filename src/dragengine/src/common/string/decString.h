@@ -26,6 +26,7 @@
 #define _DECSTRING_H_
 
 #include <stdarg.h>
+#include <format>
 
 #include "../collection/decTList.h"
 #include "../../dragengine_export.h"
@@ -130,9 +131,19 @@ public:
 		__attribute__ ((format (printf, 2, 3)))
 		#endif
 		;
-		
+	
 	/** \brief Formats a string using printf style formatting. */
 	void FormatUsing(const char *format, va_list args);
+	
+	/** \brief Runtime safe format string using std::vformat. */
+	template<typename... Args>
+	inline void FormatSafe(const char *format, Args&&... args){
+		try{
+			Set(std::vformat(std::string_view(format), std::make_format_args(args...)).c_str());
+		}catch(const std::exception &){
+			DEThrowInvalidParam(__FILE__, __LINE__, "Invalid format string or arguments not matching");
+		}
+	}
 	
 	/** \brief Appends a string. */
 	void Append(const decString &string);
@@ -181,9 +192,19 @@ public:
 		__attribute__ ((format (printf, 2, 3)))
 		#endif
 		;
-		
+	
 	/** \brief Appends a formatted string using printf style formatting. */
 	void AppendFormatUsing(const char *format, va_list args);
+	
+	/** \brief Runtime safe append formatted string using std::vformat. */
+	template<typename... Args>
+	inline void AppendFormatSafe(const char *format, Args&&... args){
+		try{
+			Append(std::vformat(std::string_view(format), std::make_format_args(args...)).c_str());
+		}catch(const std::exception &){
+			DEThrowInvalidParam(__FILE__, __LINE__, "Invalid format string or arguments not matching");
+		}
+	}
 	
 	/**
 	 * \brief Index of first occurance of a character or -1 if not found.

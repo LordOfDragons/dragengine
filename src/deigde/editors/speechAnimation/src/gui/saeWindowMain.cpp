@@ -602,7 +602,7 @@ public:
 				}
 				
 				if(wordList.HasNamed(parts.First())){
-					igdeCommonDialogs::ErrorFormat(pWindow, "Add Words", "A word with name '%s' "
+					igdeCommonDialogs::ErrorFormat(pWindow, "Add Words", "A word with name '{0}' "
 						"exists already.", parts.First().GetString());
 					addWordsList.RemoveAll();
 					break;

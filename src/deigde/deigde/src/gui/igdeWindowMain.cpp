@@ -809,7 +809,7 @@ bool igdeWindowMain::LoadGameProject(const char *filename){
 	}catch(const deException &e){
 		GetLogger()->LogException(LOGSOURCE, e);
 		igdeCommonDialogs::ErrorFormat(*this, "@Igde.MainWindow.DialogOpenProject.Title",
-			"Failed loading game project: %s", e.GetDescription().GetString());
+			"Failed loading game project: {0}", e.GetDescription().GetString());
 		
 		const int index = pConfiguration.GetRecentProjectList().IndexOf(filename);
 		if(index != -1){
@@ -1058,11 +1058,10 @@ void igdeWindowMain::ChangeLanguage(const decString &language){
 		// add english language pack from all active modules as fallback for missing translations
 		pModuleManager->GetModules().Visit([&](igdeEditorModuleDefinition &md){
 			if(md.IsModuleRunning()){
-				md.GetModule()->GetLanguagePacks().Visit([&](const igdeLanguagePack::Ref &lp){
-					if(lp->GetLanguage() == "en"){
-						pTranslationManager->AddActiveLanguagePack(lp);
-					}
-				});
+				auto found = md.GetModule()->GetLanguagePacks().FindByLanguage(igdeTranslationManager::FallbackLanguage);
+				if(found){
+					pTranslationManager->AddActiveLanguagePack(found);
+				}
 			}
 		});
 	}
@@ -1070,11 +1069,10 @@ void igdeWindowMain::ChangeLanguage(const decString &language){
 	// add language packs from all active modules matching the selected language
 	pModuleManager->GetModules().Visit([&](igdeEditorModuleDefinition &md){
 		if(md.IsModuleRunning()){
-			md.GetModule()->GetLanguagePacks().Visit([&](const igdeLanguagePack::Ref &lp){
-				if(lp->GetLanguage() == language){
-					pTranslationManager->AddActiveLanguagePack(lp);
-				}
-			});
+			auto found = md.GetModule()->GetLanguagePacks().FindByLanguage(language);
+			if(found){
+				pTranslationManager->AddActiveLanguagePack(found);
+			}
 		}
 	});
 	
@@ -1476,7 +1474,7 @@ bool igdeWindowMain::RequestSaveDocuments(const char *title, const char *message
 		
 		if(!moduleDefinition || !moduleDefinition->IsModuleRunning()
 		|| !moduleDefinition->GetModule()->SaveDocument(docfile)){
-			igdeCommonDialogs::ErrorFormat(*this, title, "Failed to save '%s'", docfile.GetString());
+			igdeCommonDialogs::ErrorFormat(*this, title, "Failed to save '{0}'", docfile.GetString());
 			return false;
 		}
 	}

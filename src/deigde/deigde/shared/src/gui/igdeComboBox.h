@@ -63,6 +63,7 @@ private:
 	bool pEditable;
 	decString pDescription;
 	bool pInvalidValue;
+	bool pAutoTranslateItems;
 	
 	decTObjectOrderedSet<igdeComboBoxListener> pListeners;
 	
@@ -135,6 +136,12 @@ public:
 	
 	/** \brief Focus widget. */
 	void Focus();
+	
+	/** \brief Auto-translate item texts. */
+	inline bool GetAutoTranslateItems() const{ return pAutoTranslateItems; }
+	
+	/** \brief Set auto-translate item texts. */
+	void SetAutoTranslateItems(bool autoTranslateItems);
 	
 	
 	

@@ -67,6 +67,7 @@ private:
 	igdeListItemSorter::Ref pSorter;
 	int pRows;
 	decString pDescription;
+	bool pAutoTranslateItems;
 	
 	decTObjectOrderedSet<igdeListBoxListener> pListeners;
 	
@@ -115,6 +116,12 @@ public:
 	
 	/** \brief Focus widget. */
 	void Focus();
+	
+	/** \brief Auto translate items. */
+	inline bool GetAutoTranslateItems() const{ return pAutoTranslateItems; }
+	
+	/** \brief Set auto translate items. */
+	void SetAutoTranslateItems(bool autoTranslate);
 	
 	
 	

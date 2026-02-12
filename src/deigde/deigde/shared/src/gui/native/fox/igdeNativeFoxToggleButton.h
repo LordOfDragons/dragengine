@@ -85,7 +85,7 @@ public:
 	virtual void UpdateEnabled();
 	virtual void UpdateToggled();
 	
-	static const char *ButtonText(const igdeToggleButton &owner);
+	static FXString ButtonText(const igdeToggleButton &owner);
 	static FXIcon *ButtonIconOn(const igdeToggleButton &owner);
 	static FXIcon *ButtonIconOff(const igdeToggleButton &owner);
 	static int ButtonFlags(const igdeToggleButton &owner);

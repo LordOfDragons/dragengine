@@ -57,7 +57,8 @@ pColumns(columns),
 pRows(10),
 pEditable(false),
 pDescription(description),
-pInvalidValue(false)
+pInvalidValue(false),
+pAutoTranslateItems(false)
 {
 	if(columns < 1){
 		DETHROW(deeInvalidParam);
@@ -73,7 +74,8 @@ pColumns(columns),
 pRows(10),
 pEditable(editable),
 pDescription(description),
-pInvalidValue(false)
+pInvalidValue(false),
+pAutoTranslateItems(false)
 {
 	if(columns < 1){
 		DETHROW(deeInvalidParam);
@@ -89,7 +91,8 @@ pColumns(columns),
 pRows(rows),
 pEditable(false),
 pDescription(description),
-pInvalidValue(false)
+pInvalidValue(false),
+pAutoTranslateItems(false)
 {
 	if(columns < 1 || rows < 1){
 		DETHROW(deeInvalidParam);
@@ -105,7 +108,8 @@ pColumns(columns),
 pRows(rows),
 pEditable(editable),
 pDescription(description),
-pInvalidValue(false)
+pInvalidValue(false),
+pAutoTranslateItems(false)
 {
 	if(columns < 1 || rows < 1){
 		DETHROW(deeInvalidParam);
@@ -170,6 +174,9 @@ void igdeComboBox::Focus(){
 	OnRequestFocus();
 }
 
+void igdeComboBox::SetAutoTranslateItems(bool autoTranslateItems){
+	pAutoTranslateItems = autoTranslateItems;
+}
 
 
 bool igdeComboBox::HasItem(const char *item) const{
@@ -480,7 +487,13 @@ void igdeComboBox::ClearText(){
 void igdeComboBox::OnLanguageChanged(){
 	igdeWidget::OnLanguageChanged();
 	
-	OnDescriptionChanged();
+	if(GetNativeWidget()){
+		igdeNativeComboBox * const native = (igdeNativeComboBox*)GetNativeWidget();
+		native->UpdateDescription();
+		if(pAutoTranslateItems){
+			native->BuildList();
+		}
+	}
 }
 
 

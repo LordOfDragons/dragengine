@@ -98,7 +98,12 @@ FXString igdeNativeFoxIconListBoxItem::getTipText() const{
 
 void igdeNativeFoxIconListBoxItem::UpdateFromItem(){
 	decStringList text;
-	text.Add(pListItem->GetText());
+	if(pList->GetAutoTranslateItems()){
+		text.Add(pList->TranslateIf(pListItem->GetText()).ToUTF8());
+		
+	}else{
+		text.Add(pListItem->GetText());
+	}
 	text += pListItem->GetDetails();
 	
 	FXIcon * const iicon = pListItem->GetIcon() ? (FXIcon*)pListItem->GetIcon()->GetNativeIcon() : nullptr;

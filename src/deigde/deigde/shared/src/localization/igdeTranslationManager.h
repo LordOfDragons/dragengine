@@ -38,6 +38,11 @@ class decPath;
  * \brief Translation manager.
  */
 class DE_DLL_EXPORT igdeTranslationManager{
+public:
+	/** \brief Fallback language. */
+	static const char *FallbackLanguage;
+	
+	
 private:
 	igdeEnvironment &pEnvironment;
 	igdeLanguagePack::List pIgdeLanguagePacks;
