@@ -73,8 +73,8 @@ public:
 	typedef deTObjectReference<igdeDialogStartUp_ActionLoadRecent> Ref;
 	
 	igdeDialogStartUp_ActionLoadRecent(igdeDialogStartUp &dialog) :
-	igdeAction("Load Recent", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
-		"Load selected recent game project"), pDialog(dialog){}
+	igdeAction("@Igde.StartUp.Action.LoadRecent", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
+		"@Igde.StartUp.Action.LoadRecent.ToolTip"), pDialog(dialog){}
 	
 	void OnAction() override{
 		pDialog.LoadSelectedRecentProject();
@@ -92,8 +92,8 @@ public:
 	typedef deTObjectReference<igdeDialogStartUp_ActionLoadFile> Ref;
 	
 	igdeDialogStartUp_ActionLoadFile(igdeDialogStartUp &dialog) :
-	igdeAction("Load Project", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
-		"Load game project from file"), pDialog(dialog){}
+	igdeAction("@Igde.StartUp.Action.LoadFile", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
+		"@Igde.StartUp.Action.LoadFile.ToolTip"), pDialog(dialog){}
 	
 	void OnAction() override{
 		pDialog.LoadProjectFromFile();
@@ -106,8 +106,8 @@ public:
 	typedef deTObjectReference<igdeDialogStartUp_ActionNewProject> Ref;
 	
 	igdeDialogStartUp_ActionNewProject(igdeDialogStartUp &dialog) :
-	igdeAction("New Project", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiNew),
-		"Create new game project"), pDialog(dialog){}
+	igdeAction("@Igde.StartUp.Action.NewProject", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiNew),
+		"@Igde.StartUp.Action.NewProject.ToolTip"), pDialog(dialog){}
 	
 	void OnAction() override{
 		pDialog.NewGameProject();
@@ -124,8 +124,8 @@ public:
 	typedef deTObjectReference<igdeDialogStartUp_ActionQuit> Ref;
 	
 	igdeDialogStartUp_ActionQuit(igdeDialogStartUp &dialog) :
-	igdeAction("Quit IGDE", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiQuit),
-		"Quit the IGDE application"), pDialog(dialog){}
+	igdeAction("@Igde.StartUp.Action.Quit", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiQuit),
+		"@Igde.StartUp.Action.Quit.ToolTip"), pDialog(dialog){}
 	
 	void OnAction() override{
 		pDialog.Cancel();
@@ -141,7 +141,7 @@ public:
 ////////////////////////////
 
 igdeDialogStartUp::igdeDialogStartUp(igdeWindowMain &windowMain) :
-igdeDialog(windowMain.GetEnvironment(), "IGDE Start-Up", windowMain.GetIconApplication()),
+igdeDialog(windowMain.GetEnvironment(), "@Igde.StartUp.Title", windowMain.GetIconApplication()),
 pWindowMain(windowMain)
 {
 	igdeEnvironment &env = windowMain.GetEnvironment();
@@ -149,7 +149,7 @@ pWindowMain(windowMain)
 	
 	SetSize(igdeApplication::app().DisplayScaled(decPoint(600, 0)));
 	
-	helper.ListBox(10, "Recently loaded game projects", pListRecentProjects, igdeDialogStartUp_ListRecentProjects::Ref::New(*this));
+	helper.ListBox(10, "@Igde.StartUp.RecentProjects.ToolTip", pListRecentProjects, igdeDialogStartUp_ListRecentProjects::Ref::New(*this));
 	
 	
 	pActionLoadRecent = igdeDialogStartUp_ActionLoadRecent::Ref::New(*this);
@@ -164,7 +164,7 @@ pWindowMain(windowMain)
 	
 	pUpdateRecentProjectList();
 	
-	AddContent(pListRecentProjects, igdeLabel::Ref::New(env, "Recently used Game Projects"), buttonBar);
+	AddContent(pListRecentProjects, igdeLabel::Ref::New(env, "@Igde.StartUp.RecentProjects.Label"), buttonBar);
 }
 
 igdeDialogStartUp::~igdeDialogStartUp(){
@@ -196,7 +196,7 @@ void igdeDialogStartUp::LoadProjectFromFile(){
 	
 	decString filename(path.GetPathNative());
 	
-	if(!igdeCommonDialogs::GetFileOpen(*this, "Open Game Project",
+	if(!igdeCommonDialogs::GetFileOpen(*this, "@Igde.StartUp.DialogOpenProject.Title",
 	pWindowMain.GetLoadSaveSystem()->GetOpenFilePatternList(igdeLoadSaveSystem::efplGameProject), filename)){
 		return;
 	}

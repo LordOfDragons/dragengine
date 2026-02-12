@@ -196,7 +196,8 @@ void igdeNativeFoxFileDialog::UpdateFileTypeBox(){
 		decString text;
 		
 		pFilePatternList->Visit([&](const igdeFilePattern &fp){
-			text.Format("%s (%s)", fp.GetName().GetString(), fp.GetPattern().GetString());
+			text.Format("%s (%s)", igdeUIFoxHelper::TranslateIf(*pOwner, fp.GetName()).text(),
+				fp.GetPattern().GetString());
 			pCBFilter->appendItem(text.GetString());
 		});
 	}

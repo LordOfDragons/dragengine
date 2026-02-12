@@ -155,7 +155,7 @@ public:
 	typedef deTObjectReference<cActionGameNew> Ref;
 	
 	explicit cActionGameNew(igdeWindowMain &window) : cActionBase(window,
-		"New...", window.GetIconGameNew(), "Creates a new game", deInputEvent::ekcN){}
+		"@Igde.MainWindow.Action.GameNew", window.GetIconGameNew(), "@Igde.MainWindow.Action.GameNew.ToolTip", deInputEvent::ekcN){}
 	
 	void OnAction() override{
 		// RequestSaveDocuments returns true if user wants to continue creating a new project.
@@ -172,7 +172,7 @@ public:
 	typedef deTObjectReference<cActionGameOpen> Ref;
 	
 	explicit cActionGameOpen(igdeWindowMain &window) : cActionBase(window,
-		"Open...", window.GetIconGameOpen(), "Opens a game", deInputEvent::ekcO){}
+		"@Igde.MainWindow.Action.GameOpen", window.GetIconGameOpen(), "@Igde.MainWindow.Action.GameOpen.ToolTip", deInputEvent::ekcO){}
 	
 	void OnAction() override{
 		// RequestSaveDocuments returns true if user wants to continue creating open a project.
@@ -182,7 +182,7 @@ public:
 		}
 		
 		decString filename(pWindow.GetGameProject() ? pWindow.GetGameProject()->GetFilePath() : decString());
-		if(igdeCommonDialogs::GetFileOpen(pWindow, "Open Game Project",
+		if(igdeCommonDialogs::GetFileOpen(pWindow, "@Igde.MainWindow.DialogOpenProject.Title",
 		pWindow.GetLoadSaveSystem()->GetOpenFilePatternList(igdeLoadSaveSystem::efplGameProject), filename)){
 			pWindow.LoadGameProject(filename);
 		}
@@ -210,7 +210,7 @@ public:
 	typedef deTObjectReference<cActionGameOpenRecent> Ref;
 	
 	cActionGameOpenRecent(igdeWindowMain &window, const char *filename) :
-	cActionBase(window, BuildText(filename), nullptr, "Open game project"),
+	cActionBase(window, BuildText(filename), nullptr, "@Igde.MainWindow.Action.GameOpenRecent.ToolTip"),
 	pFilename(filename){}
 	
 	void OnAction() override{
@@ -231,7 +231,7 @@ public:
 	typedef deTObjectReference<cActionGameSaveAs> Ref;
 	
 	explicit cActionGameSaveAs(igdeWindowMain &window) : cActionBase(window,
-		"Save As...", window.GetIconGameSaveAs(), "Saves game under a differen file",
+		"@Igde.MainWindow.Action.GameSaveAs", window.GetIconGameSaveAs(), "@Igde.MainWindow.Action.GameSaveAs.ToolTip",
 		deInputEvent::ekcA){}
 	
 	void OnAction() override{
@@ -240,7 +240,7 @@ public:
 		}
 		
 		decString filename(pWindow.GetGameProject()->GetFilePath());
-		if(igdeCommonDialogs::GetFileOpen(pWindow, "Save Game Project",
+		if(igdeCommonDialogs::GetFileOpen(pWindow, "@Igde.MainWindow.DialogSaveProject.Title",
 		pWindow.GetLoadSaveSystem()->GetSaveFilePatternList(igdeLoadSaveSystem::efplGameProject), filename)){
 			pWindow.SaveGameProject(filename);
 		}
@@ -257,8 +257,8 @@ public:
 	typedef deTObjectReference<cActionGameSave> Ref;
 	
 	explicit cActionGameSave(igdeWindowMain &window) : cActionGameSaveAs(window){
-		SetText("Save");
-		SetDescription("Saves game");
+		SetText("@Igde.MainWindow.Action.GameSave");
+		SetDescription("@Igde.MainWindow.Action.GameSave.ToolTip");
 		//SetHotKey( igdeHotKey( deInputEvent::esmControl, deInputEvent::ekcS ) );
 		SetMnemonic(deInputEvent::ekcS);
 		SetIcon(window.GetIconGameSave());
@@ -282,7 +282,7 @@ public:
 	typedef deTObjectReference<cActionGameSettings> Ref;
 	
 	explicit cActionGameSettings(igdeWindowMain &window) : cActionBase(window,
-		"Settings...", nullptr, "Game project settings", deInputEvent::ekcT){}
+		"@Igde.MainWindow.Action.GameSettings", nullptr, "@Igde.MainWindow.Action.GameSettings.ToolTip", deInputEvent::ekcT){}
 	
 	void OnAction() override{
 		igdeDialogProjectSettings::Ref dialog(igdeDialogProjectSettings::Ref::New(pWindow));
@@ -303,8 +303,8 @@ public:
 	typedef deTObjectReference<cActionGameReloadXMLElementClasses> Ref;
 	
 	explicit cActionGameReloadXMLElementClasses(igdeWindowMain &window) : cActionBase(window,
-		"Reload XML Element Classes", window.GetIconGameReloadXMLElementClasses(),
-		"Reload XML Element Classes"){}
+		"@Igde.MainWindow.Action.GameReloadXMLElementClasses", window.GetIconGameReloadXMLElementClasses(),
+		"@Igde.MainWindow.Action.GameReloadXMLElementClasses.ToolTip"){}
 	
 	void OnAction() override{
 		if(!pWindow.IsSyncGameDefTaskRunning()){
@@ -323,7 +323,7 @@ public:
 	typedef deTObjectReference<cActionGameQuit> Ref;
 	
 	explicit cActionGameQuit(igdeWindowMain &window) : cActionBase(window,
-		"Quit", window.GetIconGameExit(), "Quit IGDE", deInputEvent::ekcQ){}
+		"@Igde.MainWindow.Action.GameQuit", window.GetIconGameExit(), "@Igde.MainWindow.Action.GameQuit.ToolTip", deInputEvent::ekcQ){}
 	
 	void OnAction() override{
 		if(pWindow.QuitRequest()){
@@ -338,8 +338,8 @@ public:
 	typedef deTObjectReference<cActionSettingsEngine> Ref;
 	
 	explicit cActionSettingsEngine(igdeWindowMain &window) : cActionBase(window,
-		"Engine Control Center...", window.GetIconSettingsEngine(),
-		"Shows the engine control system window", deInputEvent::ekcE){}
+		"@Igde.MainWindow.Action.SettingsEngine", window.GetIconSettingsEngine(),
+		"@Igde.MainWindow.Action.SettingsEngine.ToolTip", deInputEvent::ekcE){}
 	
 	void OnAction() override{
 		igdeDialogEngine::Ref::New(pWindow)->Run(&pWindow);
@@ -352,8 +352,8 @@ public:
 	typedef deTObjectReference<cActionSettingsIgde> Ref;
 	
 	explicit cActionSettingsIgde(igdeWindowMain &window) : cActionBase(window,
-		"IGDE Settings...", window.GetIconSettingsTexPropList(),
-		"Change IGDE Settings", deInputEvent::ekcI){}
+		"@Igde.MainWindow.Action.SettingsIgde", window.GetIconSettingsTexPropList(),
+		"@Igde.MainWindow.Action.SettingsIgde.ToolTip", deInputEvent::ekcI){}
 	
 	void OnAction() override{
 		// TODO
@@ -366,8 +366,8 @@ public:
 	typedef deTObjectReference<cActionSettingsTexPropList> Ref;
 	
 	explicit cActionSettingsTexPropList(igdeWindowMain &window) : cActionBase(window,
-		"Texture Property List...", window.GetIconSettingsTexPropList(),
-		"Shows the list of texture properties", deInputEvent::ekcT){}
+		"@Igde.MainWindow.Action.SettingsTexPropList", window.GetIconSettingsTexPropList(),
+		"@Igde.MainWindow.Action.SettingsTexPropList.ToolTip", deInputEvent::ekcT){}
 	
 	void OnAction() override{
 		igdeDialogTexturePropertyList::Ref::New(pWindow.GetEnvironment())->Run(&pWindow);
@@ -380,8 +380,8 @@ public:
 	typedef deTObjectReference<cActionSettingsLogging> Ref;
 	
 	explicit cActionSettingsLogging(igdeWindowMain &window) : cActionBase(window,
-		"Logging Window...", window.GetIconSettingsEngine(),
-		"Displays the logging window", deInputEvent::ekcL){}
+		"@Igde.MainWindow.Action.SettingsLogging", window.GetIconSettingsEngine(),
+		"@Igde.MainWindow.Action.SettingsLogging.ToolTip", deInputEvent::ekcL){}
 	
 	void OnAction() override{
 		pWindow.ShowWindowLogger();
@@ -468,7 +468,7 @@ public:
 ////////////////////////////
 
 igdeWindowMain::igdeWindowMain(igdeEnvironmentIGDE &environment) :
-igdeMainWindow(environment, "Drag[en]gine IGDE"),
+igdeMainWindow(environment, "@Igde.MainWindow.Title"),
 
 pEnvironmentIGDE(environment),
 
@@ -613,7 +613,7 @@ pFirstEngineRun(true)
 		panel->AddChild(pToolBarDockBottom);
 		
 		pStatusBar = igdeStatusBar::Ref::New(environment);
-		pStatusBar->SetText("Ready");
+		pStatusBar->SetText("@Igde.MainWindow.StatusReady");
 		panel->AddChild(pStatusBar);
 		
 		pUIHelper->ProgressBar(pStatusBar, "", 0, 100, true, pSBProgress);
@@ -756,10 +756,12 @@ void igdeWindowMain::SetGameProject(igdeGameProject *project){
 	decString title;
 	
 	if(path.GetComponentCount() == 0){
-		title = "Drag[en]gine IGDE";
+		title = "@Igde.MainWindow.Title";
 		
 	}else{
-		title.Format("Drag[en]gine IGDE - %s", path.GetLastComponent().GetString());
+		title.Format("%s - %s", GetEnvironment().GetTranslationManager().
+			Translate("Igde.MainWindow.Title").ToUTF8().GetString(),
+			path.GetLastComponent().GetString());
 	}
 	
 	SetTitle(title);
@@ -806,12 +808,12 @@ bool igdeWindowMain::LoadGameProject(const char *filename){
 		
 	}catch(const deException &e){
 		GetLogger()->LogException(LOGSOURCE, e);
-		igdeCommonDialogs::ErrorFormat(*this, "Open Game Project",
+		igdeCommonDialogs::ErrorFormat(*this, "@Igde.MainWindow.DialogOpenProject.Title",
 			"Failed loading game project: %s", e.GetDescription().GetString());
 		
 		const int index = pConfiguration.GetRecentProjectList().IndexOf(filename);
 		if(index != -1){
-			if(igdeCommonDialogs::Question(*this, igdeCommonDialogs::ebsYesNo, "Open Game Project",
+			if(igdeCommonDialogs::Question(*this, igdeCommonDialogs::ebsYesNo, "@Igde.MainWindow.DialogOpenProject.Title",
 			"Remove game project from recent file list?") == igdeCommonDialogs::ebYes){
 				pConfiguration.GetRecentProjectList().RemoveFrom(index);
 				pConfiguration.SaveConfiguration();
@@ -2140,13 +2142,13 @@ void igdeWindowMain::pRebuildToolBarEditors(){
 
 
 void igdeWindowMain::pCreateMenu(){
-	pMenuGame = igdeMenuCascade::Ref::New(pEnvironmentIGDE, "Game", deInputEvent::ekcG);
+	pMenuGame = igdeMenuCascade::Ref::New(pEnvironmentIGDE, "@Igde.MainWindow.Menu.Game", deInputEvent::ekcG);
 	pCreateMenuGame(pMenuGame);
 	
-	pMenuSettings = igdeMenuCascade::Ref::New(pEnvironmentIGDE, "Settings", deInputEvent::ekcS);
+	pMenuSettings = igdeMenuCascade::Ref::New(pEnvironmentIGDE, "@Igde.MainWindow.Menu.Settings", deInputEvent::ekcS);
 	pCreateMenuSettings(pMenuSettings);
 	
-	pMenuWindow = igdeMenuCascade::Ref::New(pEnvironmentIGDE, "Window", deInputEvent::ekcW);
+	pMenuWindow = igdeMenuCascade::Ref::New(pEnvironmentIGDE, "@Igde.MainWindow.Menu.Window", deInputEvent::ekcW);
 }
 
 void igdeWindowMain::pCreateMenuGame(igdeMenuCascade &menu){
@@ -2157,7 +2159,7 @@ void igdeWindowMain::pCreateMenuGame(igdeMenuCascade &menu){
 	entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionGameOpen);
 	menu.AddChild(entry);
 	pMenuRecentProjects = igdeMenuCascade::Ref::New(pEnvironmentIGDE,
-		"Open recent project", pIconGameOpen);
+		"@Igde.MainWindow.Menu.RecentProjects", pIconGameOpen);
 	menu.AddChild(pMenuRecentProjects);
 	entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionGameSave);
 	menu.AddChild(entry);

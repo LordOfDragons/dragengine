@@ -268,7 +268,7 @@ const igdeFilePattern::List &filePatterns, decString &filename){
 	const decString ttitle(tm.TranslateIf(decUnicodeString::NewFromUTF8(title)).ToUTF8());
 	
 	FXFileDialog dialog(foxOwner, ttitle.GetString());
-	dialog.setPatternList(igdeUIFoxHelper::FilePatternListToFOX(filePatterns));
+	dialog.setPatternList(igdeUIFoxHelper::FilePatternListToFOX(owner, filePatterns));
 	dialog.setCurrentPattern(0);
 	dialog.setFilename(filename.GetString());
 	
@@ -317,7 +317,7 @@ const igdeFilePattern::List &filePatterns, decString &filename){
 	const decString ttitle(tm.TranslateIf(decUnicodeString::NewFromUTF8(title)).ToUTF8());
 	
 	FXFileDialog dialog(foxOwner, ttitle.GetString());
-	dialog.setPatternList(igdeUIFoxHelper::FilePatternListToFOX(filePatterns));
+	dialog.setPatternList(igdeUIFoxHelper::FilePatternListToFOX(owner, filePatterns));
 	dialog.setCurrentPattern(0);
 	dialog.setFilename(filename.GetString());
 	
@@ -391,7 +391,7 @@ deVirtualFileSystem &vfs, decString &dirname){
 	}
 	
 	// not supported yet
-	DETHROW(deeInvalidAction);
+	DETHROW_INFO(deeInvalidAction, "Directory selection with virtual file system is not supported yet.");
 	
 	/*
 	FXComposite * const foxOwner = (FXComposite*)owner->GetNativeWidget();

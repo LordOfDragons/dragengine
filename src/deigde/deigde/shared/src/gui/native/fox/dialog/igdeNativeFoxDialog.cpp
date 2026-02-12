@@ -63,7 +63,8 @@ igdeNativeFoxDialog::igdeNativeFoxDialog(){}
 
 igdeNativeFoxDialog::igdeNativeFoxDialog(igdeDialog &powner, FXWindow *pparent,
 const igdeGuiTheme &guitheme) :
-FXDialogBox(pparent, powner.GetTitle().GetString(), DialogFlags(powner), 0, 0, 0, 0,
+FXDialogBox(pparent, igdeUIFoxHelper::TranslateIf(powner, powner.GetTitle()),
+	DialogFlags(powner), 0, 0, 0, 0,
 	DialogPadLeft(guitheme), DialogPadRight(guitheme),
 	DialogPadTop(guitheme), DialogPadBottom(guitheme),
 	0, 0),
@@ -123,7 +124,7 @@ void igdeNativeFoxDialog::UpdateIcon(){
 }
 
 void igdeNativeFoxDialog::UpdateTitle(){
-	setTitle(pOwner->GetTitle().GetString());
+	setTitle(igdeUIFoxHelper::TranslateIf(*pOwner, pOwner->GetTitle()));
 }
 
 void igdeNativeFoxDialog::UpdateSize(){

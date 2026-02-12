@@ -64,7 +64,7 @@ igdeLSGameProject::igdeLSGameProject(igdeLoadSaveSystem *lssys){
 	
 	pLoadSaveSystem = lssys;
 	
-	pName = "Drag[en]gine Game Project";
+	pName = "@Igde.LoadSaveSystem.FilePattern.DragengineGameProject";
 	pPattern = "*.degp";
 	pDefaultExtension = ".degp";
 }

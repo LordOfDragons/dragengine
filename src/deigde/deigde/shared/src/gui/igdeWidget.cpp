@@ -22,16 +22,13 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeWidget.h"
 #include "igdeContainer.h"
 #include "native/toolkit.h"
 #include "../engine/igdeEngineController.h"
 #include "../environment/igdeEnvironment.h"
 #include "../gameproject/igdeGameProject.h"
+#include "../localization/igdeTranslationManager.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -144,6 +141,24 @@ igdeWindow *igdeWidget::GetParentWindow(){
 	}else{
 		return nullptr;
 	}
+}
+
+
+
+decUnicodeString igdeWidget::Translate(const decString &entryName) const{
+	return pEnvironment.GetTranslationManager().Translate(entryName);
+}
+
+decUnicodeString igdeWidget::Translate(const char *entryName) const{
+	return pEnvironment.GetTranslationManager().Translate(entryName);
+}
+
+decUnicodeString igdeWidget::TranslateIf(const decString &text) const{
+	return pEnvironment.GetTranslationManager().TranslateIf(text);
+}
+
+decUnicodeString igdeWidget::TranslateIf(const char *text) const{
+	return pEnvironment.GetTranslationManager().TranslateIf(text);
 }
 
 

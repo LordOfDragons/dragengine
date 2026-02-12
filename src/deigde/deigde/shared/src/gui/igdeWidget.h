@@ -31,6 +31,7 @@
 #include <dragengine/deTWeakObjectReference.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/string/unicode/decUnicodeString.h>
 
 class igdeEnvironment;
 class igdeContainer;
@@ -144,6 +145,26 @@ public:
 	
 	/** \brief Parent window. */
 	virtual igdeWindow *GetParentWindow();
+	
+	
+	/** \brief Translation for entry name entry name itself if absent. */
+	decUnicodeString Translate(const decString &entryName) const;
+	decUnicodeString Translate(const char *entryName) const;
+	
+	/**
+	 * \brief Translate text if it starts with a translation character.
+	 *
+	 * This call can be used for plain text and text prefixed with a marker
+	 * character. If text is empty or the first character in text does not
+	 * match the translation character the text is returned unmodified.
+	 * Otherwise the entire text after the translation character converted to
+	 * UTF-8 encoding is used as name in a call to translate(String).
+	 * 
+	 * Choose the marker character to not be found at the start of any text
+	 * you can possibly encounter. A typical choice is '@'.
+	 */
+	decUnicodeString TranslateIf(const decString &text) const;
+	decUnicodeString TranslateIf(const char *text) const;
 	/*@}*/
 	
 	

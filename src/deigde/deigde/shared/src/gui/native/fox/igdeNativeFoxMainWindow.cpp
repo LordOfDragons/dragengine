@@ -67,7 +67,7 @@ igdeNativeFoxMainWindow::igdeNativeFoxMainWindow(){
 }
 
 igdeNativeFoxMainWindow::igdeNativeFoxMainWindow(igdeMainWindow &powner) :
-FXMainWindow(FXApp::instance(), powner.GetTitle().GetString(),
+FXMainWindow(FXApp::instance(), igdeUIFoxHelper::TranslateIf(powner, powner.GetTitle()),
 	powner.GetIcon() ? (FXIcon*) powner.GetIcon()->GetNativeIcon() : nullptr,
 	powner.GetIcon() ? (FXIcon*) powner.GetIcon()->GetNativeIcon() : nullptr,
 	DECOR_ALL, 0, 0, 800, 600),
@@ -232,7 +232,7 @@ void igdeNativeFoxMainWindow::UpdateIcon(){
 }
 
 void igdeNativeFoxMainWindow::UpdateTitle(){
-	setTitle(pOwner->GetTitle().GetString());
+	setTitle(igdeUIFoxHelper::TranslateIf(*pOwner, pOwner->GetTitle()));
 }
 
 void igdeNativeFoxMainWindow::UpdateSize(){

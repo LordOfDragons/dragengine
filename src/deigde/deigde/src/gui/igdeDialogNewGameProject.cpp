@@ -154,7 +154,7 @@ public:
 	igdeDialogNewGameProject_ActionGameDefBaseAdd(
 		igdeDialogNewGameProject& dialog, igdeListBox &listPathGameDefBase) :
 	igdeAction("", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallPlus),
-		"Add base game definition"), pDialog(dialog), pListPathGameDefBase(listPathGameDefBase){}
+		"@Igde.NewGameProject.Action.BaseGameDefAdd.ToolTip"), pDialog(dialog), pListPathGameDefBase(listPathGameDefBase){}
 	
 	void OnAction() override{
 		igdeGameDefinition * const sharedGameDef = pDialog.GetSelectedSharedGameDef();
@@ -184,7 +184,7 @@ public:
 	igdeDialogNewGameProject_ActionGameDefBaseRemove(
 		igdeDialogNewGameProject& dialog, igdeListBox &listPathGameDefBase) :
 	igdeAction("", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallMinus),
-		"Remove base game definition"), pDialog(dialog), pListPathGameDefBase(listPathGameDefBase){}
+		"@Igde.NewGameProject.Action.BaseGameDefRemove.ToolTip"), pDialog(dialog), pListPathGameDefBase(listPathGameDefBase){}
 	
 	void OnAction() override{
 		const int selection = pListPathGameDefBase.GetSelection();
@@ -215,7 +215,7 @@ public:
 	igdeDialogNewGameProject_ActionGameDefBaseUp(
 		igdeDialogNewGameProject& dialog, igdeListBox &listPathGameDefBase) :
 	igdeAction("", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallUp),
-		"Move base game definition up"), pDialog(dialog), pListPathGameDefBase(listPathGameDefBase){}
+		"@Igde.NewGameProject.Action.BaseGameDefUp.ToolTip"), pDialog(dialog), pListPathGameDefBase(listPathGameDefBase){}
 	
 	void OnAction() override{
 		const int selection = pListPathGameDefBase.GetSelection();
@@ -243,7 +243,7 @@ public:
 	igdeDialogNewGameProject_ActionGameDefBaseDown(
 		igdeDialogNewGameProject& dialog, igdeListBox &listPathGameDefBase) :
 	igdeAction("", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
-		"Move base game definition down"), pDialog(dialog), pListPathGameDefBase(listPathGameDefBase){}
+		"@Igde.NewGameProject.Action.BaseGameDefDown.ToolTip"), pDialog(dialog), pListPathGameDefBase(listPathGameDefBase){}
 	
 	void OnAction() override{
 		const int selection = pListPathGameDefBase.GetSelection();
@@ -300,7 +300,7 @@ public:
 ////////////////////////////
 
 igdeDialogNewGameProject::igdeDialogNewGameProject(igdeWindowMain &windowMain) :
-igdeDialog(windowMain.GetEnvironment(), "New Game Project", windowMain.GetIconApplication()),
+igdeDialog(windowMain.GetEnvironment(), "@Igde.NewGameProject.Title", windowMain.GetIconApplication()),
 pWindowMain(windowMain),
 pProjectPathChanged(false),
 pProjectGameDefPathChanged(false)
@@ -311,49 +311,59 @@ pProjectGameDefPathChanged(false)
 	
 	content = igdeContainerForm::Ref::New(env);
 	
-	helper.EditString(content, "Name:", "Name of the game project.", 80, pEditName, igdeDialogNewGameProject_TextName::Ref::New(*this));
-	helper.EditString(content, "Description:", "Description of the game project.", pEditDescription, 5, {});
+	helper.EditString(content, "@Igde.NewGameProject.Name.Label", "@Igde.NewGameProject.Name.ToolTip",
+		80, pEditName, igdeDialogNewGameProject_TextName::Ref::New(*this));
+	helper.EditString(content, "@Igde.NewGameProject.Description.Label",
+		"@Igde.NewGameProject.Description.ToolTip", pEditDescription, 5, {});
 	
-	helper.EditDirectory(content, "Project Directory:",
-		"Project directory to store the project files in.", pEditPathProject,
-		igdeDialogNewGameProject_DirectoryProject::Ref::New(*this));
+	helper.EditDirectory(content, "@Igde.NewGameProject.ProjectDirectory.Label",
+		"@Igde.NewGameProject.ProjectDirectory.ToolTip", pEditPathProject,
+		igdeDialogNewGameProject_DirectoryProject::Ref::New(*this), false);
 	
-	helper.EditString(content, "Project Game Definition:",
-		"Filename of project game definition file relative to project directory.", pEditPathGameDefProject, igdeDialogNewGameProject_TextPathGameDefProject::Ref::New(*this));
-	helper.EditString(content, "Data Directory:",
-		"Data directory relative to project directory.", pEditPathData, {});
-	helper.EditString(content, "Cache Directory:",
-		"Cache directory relative to project directory.", pEditPathCache, {});
+	helper.EditString(content, "@Igde.NewGameProject.ProjectGameDefinition.Label",
+		"@Igde.NewGameProject.ProjectGameDefinition.ToolTip", pEditPathGameDefProject,
+		igdeDialogNewGameProject_TextPathGameDefProject::Ref::New(*this));
+	helper.EditString(content, "@Igde.NewGameProject.DataDirectory.Label",
+		"@Igde.NewGameProject.DataDirectory.ToolTip", pEditPathData, {});
+	helper.EditString(content, "@Igde.NewGameProject.CacheDirectory.Label",
+		"@Igde.NewGameProject.CacheDirectory.ToolTip", pEditPathCache, {});
 	
-	helper.ComboBox(content, "Project Template:",
-		"Project template to use. Enforces script module and some base game definitions.",
+	helper.ComboBox(content, "@Igde.NewGameProject.ProjectTemplate.Label",
+		"@Igde.NewGameProject.ProjectTemplate.ToolTip",
 		pCBTemplate, igdeDialogNewGameProject_ComboTemplate::Ref::New(*this));
 	pCBTemplate->SetDefaultSorter();
-	helper.EditString(content, "", "Template description.", pEditTemplateInfo, 30, 5, {});
+	helper.EditString(content, "", "@Igde.NewGameProject.ProjectTemplateInfo.ToolTip",
+		pEditTemplateInfo, 30, 5, {});
 	pEditTemplateInfo->SetEditable(false);
 	
-	helper.ListBox(content, "Base Game Definitions:", 3,
-		"Game definitions to use as base for the project.", pListPathGameDefBase, {});
+	helper.ListBox(content, "@Igde.NewGameProject.BaseGameDefinitions.Label", 3,
+		"@Igde.NewGameProject.BaseGameDefinitions.ToolTip", pListPathGameDefBase, {});
 	
-	helper.FormLineStretchFirst(content, "", "Available game definitions to add to project", panel);
+	helper.FormLineStretchFirst(content, "", "@Igde.NewGameProject.BaseGameDefinitionsInfo.ToolTip", panel);
 	
-	helper.ComboBox(panel, "Available game definitions to add to project",
+	helper.ComboBox(panel, "@Igde.NewGameProject.BaseGameDefinitionsInfo.ToolTip",
 		pCBSharedGameDefs, igdeDialogNewGameProject_ComboSharedGameDef::Ref::New(*this));
 	pCBSharedGameDefs->SetDefaultSorter();
 	
-	helper.Button(panel, pBtnPathGameDefBaseAdd, igdeDialogNewGameProject_ActionGameDefBaseAdd::Ref::New(*this, pListPathGameDefBase));
-	helper.Button(panel, pBtnPathGameDefBaseRemove, igdeDialogNewGameProject_ActionGameDefBaseRemove::Ref::New(*this, pListPathGameDefBase));
-	helper.Button(panel, pBtnPathGameDefBaseUp, igdeDialogNewGameProject_ActionGameDefBaseUp::Ref::New(*this, pListPathGameDefBase));
-	helper.Button(panel, pBtnPathGameDefBaseDown, igdeDialogNewGameProject_ActionGameDefBaseDown::Ref::New(*this, pListPathGameDefBase));
+	helper.Button(panel, pBtnPathGameDefBaseAdd,
+		igdeDialogNewGameProject_ActionGameDefBaseAdd::Ref::New(*this, pListPathGameDefBase));
+	helper.Button(panel, pBtnPathGameDefBaseRemove,
+		igdeDialogNewGameProject_ActionGameDefBaseRemove::Ref::New(*this, pListPathGameDefBase));
+	helper.Button(panel, pBtnPathGameDefBaseUp,
+		igdeDialogNewGameProject_ActionGameDefBaseUp::Ref::New(*this, pListPathGameDefBase));
+	helper.Button(panel, pBtnPathGameDefBaseDown,
+		igdeDialogNewGameProject_ActionGameDefBaseDown::Ref::New(*this, pListPathGameDefBase));
 	
-	helper.EditString(content, "", "Shared game definition information", pEditSharedGameDefInfo, 5, {});
+	helper.EditString(content, "", "@Igde.NewGameProject.SharedGameDefInfo", pEditSharedGameDefInfo, 5, {});
 	
-	helper.ComboBox(content, "Scripting Module:", "Scripting module to use.", pCBScriptModule, igdeDialogNewGameProject_ComboScriptModule::Ref::New(*this));
+	helper.ComboBox(content, "@Igde.NewGameProject.ScriptingModule.Label",
+		"@Igde.NewGameProject.ScriptingModule.ToolTip", pCBScriptModule,
+		igdeDialogNewGameProject_ComboScriptModule::Ref::New(*this));
 	pCBScriptModule->SetDefaultSorter();
 	
 	
 	igdeContainer::Ref buttonBar;
-	CreateButtonBar(buttonBar, "Create Game Project", "Discard");
+	CreateButtonBar(buttonBar, "@Igde.NewGameProject.Accept", "@Igde.NewGameProject.Cancel");
 	
 	AddContent(content, buttonBar);
 	
@@ -362,15 +372,15 @@ pProjectGameDefPathChanged(false)
 	pProjectPathChanged = true;
 	pProjectGameDefPathChanged = true;
 	
-	pEditName->SetText("New Project");
+	pEditName->SetText(Translate("Igde.NewGameProject.DefaultName").ToUTF8());
 	
 	decPath path(decPath::CreatePathNative(pWindowMain.GetConfiguration().GetPathProjects()));
 	path.AddComponent("New Project");
 	pEditPathProject->SetDirectory(path.GetPathNative());
 	
-	pEditPathGameDefProject->SetText("New Project.degd");
-	pEditPathCache->SetText("cache");
-	pEditPathData->SetText("data");
+	pEditPathGameDefProject->SetText(Translate("Igde.NewGameProject.DefaultGameDef").ToUTF8());
+	pEditPathCache->SetText(Translate("Igde.NewGameProject.DefaultCache").ToUTF8());
+	pEditPathData->SetText(Translate("Igde.NewGameProject.DefaultData").ToUTF8());
 	
 	pInitScriptModules();
 	pInitTemplates();
@@ -408,11 +418,11 @@ igdeTemplate *igdeDialogNewGameProject::GetSelectedTemplate() const{
 }
 
 bool igdeDialogNewGameProject::CheckValidInput(){
-	const char * const mbtitle = "New Game Project";
+	const char * const mbtitle = "@Igde.NewGameProject.ErrorTitle";
 	
 	if(pEditName->GetText().IsEmpty()){
 		pEditName->Focus();
-		igdeCommonDialogs::Error(*this, mbtitle, "Name can not be empty");
+		igdeCommonDialogs::Error(*this, mbtitle, "@Igde.NewGameProject.ErrorNameEmpty");
 		return false;
 	}
 	
@@ -429,8 +439,7 @@ bool igdeDialogNewGameProject::CheckValidInput(){
 		decPath::CreatePathNative(pEditPathProject->GetDirectory())));
 	if(container->ExistsFile(decPath())){
 		pEditPathProject->Focus();
-		igdeCommonDialogs::Error(*this, mbtitle, "Project directory exists. "
-			"New project can only be created using a non-existing directory");
+		igdeCommonDialogs::Error(*this, mbtitle, "@Igde.NewGameProject.ErrorProjectExists");
 		return false;
 	}
 	
@@ -534,7 +543,7 @@ void igdeDialogNewGameProject::UpdateSharedGameDef(){
 void igdeDialogNewGameProject::UpdateTemplate(){
 	const igdeTemplate * const atemplate = GetSelectedTemplate();
 	if(!atemplate){
-		pEditTemplateInfo->SetText("No template selected. Creates an empty project");
+		pEditTemplateInfo->SetText(Translate("Igde.NewGameProject.TemplateInfo").ToUTF8());
 		pCBScriptModule->SetEnabled(true);
 		return;
 	}
@@ -589,7 +598,7 @@ void igdeDialogNewGameProject::pInitScriptModules(){
 
 void igdeDialogNewGameProject::pInitTemplates(){
 	pCBTemplate->RemoveAllItems();
-	pCBTemplate->AddItem("< Use No Template >");
+	pCBTemplate->AddItem(Translate("Igde.NewGameProject.NoTemplate").ToUTF8());
 	
 	pWindowMain.GetTemplates().Visit([&](igdeTemplate *t){
 		if(!pCBScriptModule->HasItemWithData(t)){

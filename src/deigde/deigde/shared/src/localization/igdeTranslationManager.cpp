@@ -116,11 +116,13 @@ void igdeTranslationManager::AddActiveLanguagePack(const igdeLanguagePack::Ref &
 
 
 decUnicodeString igdeTranslationManager::Translate(const decString &entryName) const{
-	const char * const key = entryName;
+	return Translate(entryName.GetString());
+}
+
+decUnicodeString igdeTranslationManager::Translate(const char *entryName) const{
 	const decUnicodeString *result;
-	
 	for(const auto &languagePack : pActiveLanguagePacks){
-		if(languagePack->GetEntries().GetAt(key, result)){
+		if(languagePack->GetEntries().GetAt(entryName, result)){
 			return *result;
 		}
 	}
@@ -130,11 +132,14 @@ decUnicodeString igdeTranslationManager::Translate(const decString &entryName) c
 
 decUnicodeString igdeTranslationManager::Translate(const decString &entryName,
 const decUnicodeString &defaultValue) const{
-	const char * const key = entryName;
+	return Translate(entryName.GetString(), defaultValue);
+}
+
+decUnicodeString igdeTranslationManager::Translate(const char *entryName,
+const decUnicodeString &defaultValue) const{
 	const decUnicodeString *result;
-	
 	for(const auto &languagePack : pActiveLanguagePacks){
-		if(languagePack->GetEntries().GetAt(key, result)){
+		if(languagePack->GetEntries().GetAt(entryName, result)){
 			return *result;
 		}
 	}
@@ -150,10 +155,27 @@ const decUnicodeString &text, int translationCharacter) const{
 	return text;
 }
 
+decUnicodeString igdeTranslationManager::TranslateIf(const char *text, int translationCharacter) const{
+	DEASSERT_NOTNULL(text)
+	if(text[0] == translationCharacter){
+		return Translate(text + 1);
+	}
+	return decUnicodeString::NewFromUTF8(text);
+}
+
 decUnicodeString igdeTranslationManager::TranslateIf(const decUnicodeString &text,
 const decUnicodeString &defaultValue, int translationCharacter) const{
 	if(!text.IsEmpty() && text.GetAt(0) == translationCharacter){
 		return Translate(text.GetRight(text.GetLength() - 1).ToUTF8(), defaultValue);
 	}
 	return text;
+}
+
+decUnicodeString igdeTranslationManager::TranslateIf(const char *text,
+const decUnicodeString &defaultValue, int translationCharacter) const{
+	DEASSERT_NOTNULL(text)
+	if(text[0] == translationCharacter){
+		return Translate(text + 1, defaultValue);
+	}
+	return decUnicodeString::NewFromUTF8(text);
 }

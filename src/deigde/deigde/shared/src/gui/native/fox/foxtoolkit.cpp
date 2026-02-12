@@ -488,12 +488,11 @@ int igdeUIFoxHelper::DebugCountWindows(FXWindow *rootWindow){
 }
 
 FXString igdeUIFoxHelper::Translate(const igdeWidget &widget, const char *name){
-	return widget.GetEnvironment().GetTranslationManager().Translate(name).ToUTF8().GetString();
+	return widget.Translate(name).ToUTF8().GetString();
 }
 
 FXString igdeUIFoxHelper::TranslateIf(const igdeWidget &widget, const char *text){
-	return widget.GetEnvironment().GetTranslationManager().
-		TranslateIf(decUnicodeString::NewFromUTF8(text)).ToUTF8().GetString();
+	return widget.TranslateIf(text).ToUTF8().GetString();
 }
 
 #endif

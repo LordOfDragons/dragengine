@@ -3,10 +3,12 @@
 	<identifier>en</identifier>
 	<name>English</name>
 	<description>English</description>
+	
 	<translation name='Igde.Yes'>Yes</translation>
 	<translation name='Igde.No'>No</translation>
 	<translation name='Igde.Accept'>Accept</translation>
 	<translation name='Igde.Cancel'>Cancel</translation>
+	<translation name='Igde.Discard'>Discard</translation>
 	<translation name='Igde.Close'>Close</translation>
 	<translation name='Igde.Error'>Error</translation>
 	<translation name='Igde.Menu.Cut'>Cut</translation>
@@ -16,4 +18,132 @@
 	<translation name='Igde.Settings.Save'>Save</translation>
 	<translation name='Igde.Settings.Reset'>Reset</translation>
 	<translation name='Igde.Settings.Cancel'>Cancel</translation>
+	
+	<!-- New Game Project Dialog -->
+	<translation name="Igde.NewGameProject.Title">New Game Project</translation>
+	<translation name="Igde.NewGameProject.Name.Label">Name:</translation>
+	<translation name="Igde.NewGameProject.Name.ToolTip"></translation>
+	<translation name="Igde.NewGameProject.Description.Label">Description:</translation>
+	<translation name="Igde.NewGameProject.Description.ToolTip"></translation>
+	<translation name="Igde.NewGameProject.ProjectDirectory.Label">Project Directory:</translation>
+	<translation name="Igde.NewGameProject.ProjectDirectory.ToolTip">Project directory to store the project files in.</translation>
+	<translation name="Igde.NewGameProject.ProjectGameDefinition.Label">Project Game Definition:</translation>
+	<translation name="Igde.NewGameProject.ProjectGameDefinition.ToolTip"></translation>
+	<translation name="Igde.NewGameProject.DataDirectory.Label">Data Directory:</translation>
+	<translation name="Igde.NewGameProject.DataDirectory.ToolTip"></translation>
+	<translation name="Igde.NewGameProject.CacheDirectory.Label">Cache Directory:</translation>
+	<translation name="Igde.NewGameProject.CacheDirectory.ToolTip"></translation>
+	<translation name="Igde.NewGameProject.ProjectTemplate.Label">Project Template:</translation>
+	<translation name="Igde.NewGameProject.ProjectTemplate.ToolTip">Project template to use. Enforces script module and some base game definitions.</translation>
+	<translation name="Igde.NewGameProject.ProjectTemplateInfo.ToolTip"></translation>
+	<translation name="Igde.NewGameProject.BaseGameDefinitions.Label">Base Game Definitions:</translation>
+	<translation name="Igde.NewGameProject.BaseGameDefinitions.ToolTip"></translation>
+	<translation name="Igde.NewGameProject.BaseGameDefinitionsInfo.ToolTip"></translation>
+	<translation name="Igde.NewGameProject.SharedGameDefInfo">Shared game definition information</translation>
+	<translation name="Igde.NewGameProject.ScriptingModule.Label">Scripting Module:</translation>
+	<translation name="Igde.NewGameProject.ScriptingModule.ToolTip">Scripting module to use.</translation>
+	<translation name="Igde.NewGameProject.Accept">Create Game Project</translation>
+	<translation name="Igde.NewGameProject.Cancel">Discard</translation>
+	<translation name="Igde.NewGameProject.DefaultName">New Game Project</translation>
+	<translation name="Igde.NewGameProject.DefaultGameDef">game.degd</translation>
+	<translation name="Igde.NewGameProject.DefaultCache">cache</translation>
+	<translation name="Igde.NewGameProject.DefaultData">data</translation>
+	<translation name="Igde.NewGameProject.NoTemplate">&lt; Use No Template &gt;</translation>
+	<translation name="Igde.NewGameProject.ErrorTitle">New Game Project</translation>
+	<translation name="Igde.NewGameProject.ErrorNameEmpty">Name can not be empty</translation>
+	<translation name="Igde.NewGameProject.ErrorProjectExists">Project directory exists already. Do you want to continue anyways?</translation>
+	<translation name="Igde.NewGameProject.ErrorCreateFailed">Failed creating project</translation>
+	<translation name="Igde.NewGameProject.TemplateInfo">Using template ignores Scripting Module and adds Base Game Definitions from template.</translation>
+	<translation name="Igde.NewGameProject.Action.BaseGameDefAdd.ToolTip">Add base game definition</translation>
+	<translation name="Igde.NewGameProject.Action.BaseGameDefRemove.ToolTip">Remove base game definition</translation>
+	<translation name="Igde.NewGameProject.Action.BaseGameDefUp.ToolTip">Move base game definition up</translation>
+	<translation name="Igde.NewGameProject.Action.BaseGameDefDown.ToolTip">Move base game definition down</translation>
+	
+	<!-- Main Window -->
+	<translation name="Igde.MainWindow.Title">Drag[en]gine IGDE</translation>
+	<translation name="Igde.MainWindow.StatusReady">Ready</translation>
+	<translation name="Igde.MainWindow.Menu.Game">Game</translation>
+	<translation name="Igde.MainWindow.Menu.Settings">Settings</translation>
+	<translation name="Igde.MainWindow.Menu.Window">Window</translation>
+	<translation name="Igde.MainWindow.Menu.RecentProjects">Recent Projects</translation>
+	<translation name="Igde.MainWindow.Action.GameNew">New...</translation>
+	<translation name="Igde.MainWindow.Action.GameNew.ToolTip">Creates a new game</translation>
+	<translation name="Igde.MainWindow.Action.GameOpen">Open...</translation>
+	<translation name="Igde.MainWindow.Action.GameOpen.ToolTip">Opens a game</translation>
+	<translation name="Igde.MainWindow.Action.GameOpenRecent.ToolTip">Open game project</translation>
+	<translation name="Igde.MainWindow.Action.GameSave">Save</translation>
+	<translation name="Igde.MainWindow.Action.GameSave.ToolTip">Saves game</translation>
+	<translation name="Igde.MainWindow.Action.GameSaveAs">Save As...</translation>
+	<translation name="Igde.MainWindow.Action.GameSaveAs.ToolTip">Saves game under a differen file</translation>
+	<translation name="Igde.MainWindow.Action.GameSettings">Settings...</translation>
+	<translation name="Igde.MainWindow.Action.GameSettings.ToolTip">Game project settings</translation>
+	<translation name="Igde.MainWindow.Action.GameReloadXMLElementClasses">Reload XML Element Classes</translation>
+	<translation name="Igde.MainWindow.Action.GameReloadXMLElementClasses.ToolTip">Reload XML Element Classes</translation>
+	<translation name="Igde.MainWindow.Action.GameQuit">Quit</translation>
+	<translation name="Igde.MainWindow.Action.GameQuit.ToolTip">Quit IGDE</translation>
+	<translation name="Igde.MainWindow.Action.SettingsEngine">Engine Control Center...</translation>
+	<translation name="Igde.MainWindow.Action.SettingsEngine.ToolTip">Shows the engine control system window</translation>
+	<translation name="Igde.MainWindow.Action.SettingsIgde">IGDE Settings...</translation>
+	<translation name="Igde.MainWindow.Action.SettingsIgde.ToolTip">Change IGDE Settings</translation>
+	<translation name="Igde.MainWindow.Action.SettingsTexPropList">Texture Property List...</translation>
+	<translation name="Igde.MainWindow.Action.SettingsTexPropList.ToolTip">Shows the list of texture properties</translation>
+	<translation name="Igde.MainWindow.Action.SettingsLogging">Logging Window...</translation>
+	<translation name="Igde.MainWindow.Action.SettingsLogging.ToolTip">Displays the logging window</translation>
+	<translation name="Igde.MainWindow.DialogOpenProject.Title">Open Game Project</translation>
+	<translation name="Igde.MainWindow.DialogSaveProject.Title">Save Game Project</translation>
+	<translation name="Igde.MainWindow.ErrorLoadFailed.Title">Load Game Definition</translation>
+	<translation name="Igde.MainWindow.ErrorInternal.Title">Internal error</translation>
+	<translation name="Igde.MainWindow.Usage">deigde &lt;project-file.degp&gt; {--help | ...}\n</translation>
+	<translation name="Igde.MainWindow.CommandLineHelp">Command-Line Parameters</translation>
+	
+	<!-- Project Settings Dialog -->
+	<translation name="Igde.ProjectSettings.Title">Game Project Settings</translation>
+	<translation name="Igde.ProjectSettings.Name.Label">Name:</translation>
+	<translation name="Igde.ProjectSettings.Name.ToolTip"></translation>
+	<translation name="Igde.ProjectSettings.Description.Label">Description:</translation>
+	<translation name="Igde.ProjectSettings.Description.ToolTip"></translation>
+	<translation name="Igde.ProjectSettings.DataDirectory.Label">Data Directory:</translation>
+	<translation name="Igde.ProjectSettings.DataDirectory.ToolTip"></translation>
+	<translation name="Igde.ProjectSettings.CacheDirectory.Label">Cache Directory:</translation>
+	<translation name="Igde.ProjectSettings.CacheDirectory.ToolTip"></translation>
+	<translation name="Igde.ProjectSettings.BaseGameDefinitions.Label">Base Game Definitions:</translation>
+	<translation name="Igde.ProjectSettings.BaseGameDefinitions.ToolTip"></translation>
+	<translation name="Igde.ProjectSettings.BaseGameDefinitionsInfo.ToolTip"></translation>
+	<translation name="Igde.ProjectSettings.SharedGameDefInfo">Shared game definition information</translation>
+	<translation name="Igde.ProjectSettings.ScriptingModule.Label">Scripting Module:</translation>
+	<translation name="Igde.ProjectSettings.ScriptingModule.ToolTip">Scripting module to use.</translation>
+	<translation name="Igde.ProjectSettings.Version.Label">Version:</translation>
+	<translation name="Igde.ProjectSettings.Version.ToolTip">Scripting module version to use.</translation>
+	<translation name="Igde.ProjectSettings.ErrorTitle">Game Project Settings</translation>
+	<translation name="Igde.ProjectSettings.ErrorNameEmpty">Name can not be empty</translation>
+	<translation name="Igde.ProjectSettings.Action.BaseGameDefAdd.ToolTip">Add base game definition</translation>
+	<translation name="Igde.ProjectSettings.Action.BaseGameDefRemove.ToolTip">Remove base game definition</translation>
+	<translation name="Igde.ProjectSettings.Action.BaseGameDefUp.ToolTip">Move base game definition up</translation>
+	<translation name="Igde.ProjectSettings.Action.BaseGameDefDown.ToolTip">Move base game definition down</translation>
+	
+	<!-- Start-Up Dialog -->
+	<translation name="Igde.StartUp.Title">IGDE Start-Up</translation>
+	<translation name="Igde.StartUp.RecentProjects.Label">Recently used Game Projects</translation>
+	<translation name="Igde.StartUp.RecentProjects.ToolTip">Recently loaded game projects</translation>
+	<translation name="Igde.StartUp.Action.LoadRecent">Load Recent</translation>
+	<translation name="Igde.StartUp.Action.LoadRecent.ToolTip">Load recently used Game Project</translation>
+	<translation name="Igde.StartUp.Action.LoadFile">Load Project</translation>
+	<translation name="Igde.StartUp.Action.LoadFile.ToolTip">Load Game Project from file</translation>
+	<translation name="Igde.StartUp.Action.NewProject">New Project</translation>
+	<translation name="Igde.StartUp.Action.NewProject.ToolTip">Create new Game Project</translation>
+	<translation name="Igde.StartUp.Action.Quit">Quit IGDE</translation>
+	<translation name="Igde.StartUp.Action.Quit.ToolTip">Quit the IGDE application</translation>
+	<translation name="Igde.StartUp.DialogOpenProject.Title">Open Game Project</translation>
+	
+	<!-- Load/Save System - File Patterns -->
+	<translation name="Igde.LoadSaveSystem.FilePattern.AllFormats">All formats</translation>
+	<translation name="Igde.LoadSaveSystem.FilePattern.Animator">Animator</translation>
+	<translation name="Igde.LoadSaveSystem.FilePattern.NavigationSpace">Navigation Space</translation>
+	<translation name="Igde.LoadSaveSystem.FilePattern.ParticleEmitter">Particle Emitter</translation>
+	<translation name="Igde.LoadSaveSystem.FilePattern.Sky">Sky</translation>
+	<translation name="Igde.LoadSaveSystem.FilePattern.Synthesizer">Synthesizer</translation>
+	<translation name="Igde.LoadSaveSystem.FilePattern.SpeechAnimation">Speech Animation</translation>
+	<translation name="Igde.LoadSaveSystem.FilePattern.Camera">Camera</translation>
+	<translation name="Igde.LoadSaveSystem.FilePattern.World">World</translation>
+	<translation name="Igde.LoadSaveSystem.FilePattern.DragengineGameProject">Drag[en]gine Game Project</translation>
 </languagePack>

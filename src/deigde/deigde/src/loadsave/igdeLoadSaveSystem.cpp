@@ -159,7 +159,7 @@ void igdeLoadSaveSystem::UpdatePatternLists(){
 	});
 	
 	for(i=0; i<FPL_MAPPING_COUNT; i++){
-		pAddPattern(pFPLOpen[vFPLMappings[i].list], "All formats",
+		pAddPattern(pFPLOpen[vFPLMappings[i].list], "@Igde.LoadSaveSystem.FilePattern.AllFormats",
 			showAllFormat[i].GetString(), showAllDefaultExtension[i].GetString());
 	}
 	
@@ -177,48 +177,48 @@ void igdeLoadSaveSystem::UpdatePatternLists(){
 	}
 	
 	// some lists are special for the time being
-	pAddPattern(pFPLOpen[efplAnimator], "All formats", "*.deanimator", ".deanimator");
-	pAddPattern(pFPLOpen[efplAnimator], "Animator", "*.deanimator", ".deanimator");
+	pAddPattern(pFPLOpen[efplAnimator], "@Igde.LoadSaveSystem.FilePattern.AllFormats", "*.deanimator", ".deanimator");
+	pAddPattern(pFPLOpen[efplAnimator], "@Igde.LoadSaveSystem.FilePattern.Animator", "*.deanimator", ".deanimator");
 	
-	pAddPattern(pFPLSave[efplAnimator], "Animator", "*.deanimator", ".deanimator");
+	pAddPattern(pFPLSave[efplAnimator], "@Igde.LoadSaveSystem.FilePattern.Animator", "*.deanimator", ".deanimator");
 	
-	pAddPattern(pFPLOpen[efplNavigationSpace], "All formats", "*.denavspace", ".denavspace");
-	pAddPattern(pFPLOpen[efplNavigationSpace], "Navigation Space", "*.denavspace", ".denavspace");
+	pAddPattern(pFPLOpen[efplNavigationSpace], "@Igde.LoadSaveSystem.FilePattern.AllFormats", "*.denavspace", ".denavspace");
+	pAddPattern(pFPLOpen[efplNavigationSpace], "@Igde.LoadSaveSystem.FilePattern.NavigationSpace", "*.denavspace", ".denavspace");
 	
-	pAddPattern(pFPLSave[efplNavigationSpace], "Navigation Space", "*.denavspace", ".denavspace");
+	pAddPattern(pFPLSave[efplNavigationSpace], "@Igde.LoadSaveSystem.FilePattern.NavigationSpace", "*.denavspace", ".denavspace");
 	
-	pAddPattern(pFPLOpen[efplParticleEmitter], "All formats", "*.depemit", ".depemit");
-	pAddPattern(pFPLOpen[efplParticleEmitter], "Particle Emitter", "*.depemit", ".depemit");
+	pAddPattern(pFPLOpen[efplParticleEmitter], "@Igde.LoadSaveSystem.FilePattern.AllFormats", "*.depemit", ".depemit");
+	pAddPattern(pFPLOpen[efplParticleEmitter], "@Igde.LoadSaveSystem.FilePattern.ParticleEmitter", "*.depemit", ".depemit");
 	
-	pAddPattern(pFPLSave[efplParticleEmitter], "Particle Emitter", "*.depemit", ".depemit");
+	pAddPattern(pFPLSave[efplParticleEmitter], "@Igde.LoadSaveSystem.FilePattern.ParticleEmitter", "*.depemit", ".depemit");
 	
-	pAddPattern(pFPLOpen[efplSky], "All formats", "*.desky", ".desky");
-	pAddPattern(pFPLOpen[efplSky], "Sky", "*.desky", ".desky");
+	pAddPattern(pFPLOpen[efplSky], "@Igde.LoadSaveSystem.FilePattern.AllFormats", "*.desky", ".desky");
+	pAddPattern(pFPLOpen[efplSky], "@Igde.LoadSaveSystem.FilePattern.Sky", "*.desky", ".desky");
 	
-	pAddPattern(pFPLSave[efplSky], "Sky", "*.desky", ".desky");
+	pAddPattern(pFPLSave[efplSky], "@Igde.LoadSaveSystem.FilePattern.Sky", "*.desky", ".desky");
 	
-	pAddPattern(pFPLOpen[efplSynthesizer], "All formats", "*.desynth", ".desynth");
-	pAddPattern(pFPLOpen[efplSynthesizer], "Synthesizer", "*.desynth", ".desynth");
+	pAddPattern(pFPLOpen[efplSynthesizer], "@Igde.LoadSaveSystem.FilePattern.AllFormats", "*.desynth", ".desynth");
+	pAddPattern(pFPLOpen[efplSynthesizer], "@Igde.LoadSaveSystem.FilePattern.Synthesizer", "*.desynth", ".desynth");
 	
-	pAddPattern(pFPLSave[efplSynthesizer], "Synthesizer", "*.desynth", ".desynth");
+	pAddPattern(pFPLSave[efplSynthesizer], "@Igde.LoadSaveSystem.FilePattern.Synthesizer", "*.desynth", ".desynth");
 	
-	pAddPattern(pFPLOpen[efplSpeechAnimation], "All formats", "*.desanim", ".desanim");
-	pAddPattern(pFPLOpen[efplSpeechAnimation], "Speech Animation", "*.desanim", ".desanim");
+	pAddPattern(pFPLOpen[efplSpeechAnimation], "@Igde.LoadSaveSystem.FilePattern.AllFormats", "*.desanim", ".desanim");
+	pAddPattern(pFPLOpen[efplSpeechAnimation], "@Igde.LoadSaveSystem.FilePattern.SpeechAnimation", "*.desanim", ".desanim");
 	
-	pAddPattern(pFPLSave[efplSpeechAnimation], "Speech Animation", "*.desanim", ".desanim");
+	pAddPattern(pFPLSave[efplSpeechAnimation], "@Igde.LoadSaveSystem.FilePattern.SpeechAnimation", "*.desanim", ".desanim");
 	
-	pAddPattern(pFPLOpen[efplCamera], "All formats", "*.decamera", ".decamera");
-	pAddPattern(pFPLOpen[efplCamera], "Camera", "*.decamera", ".decamera");
+	pAddPattern(pFPLOpen[efplCamera], "@Igde.LoadSaveSystem.FilePattern.AllFormats", "*.decamera", ".decamera");
+	pAddPattern(pFPLOpen[efplCamera], "@Igde.LoadSaveSystem.FilePattern.Camera", "*.decamera", ".decamera");
 	
-	pAddPattern(pFPLSave[efplCamera], "Camera", "*.decamera", ".decamera");
+	pAddPattern(pFPLSave[efplCamera], "@Igde.LoadSaveSystem.FilePattern.Camera", "*.decamera", ".decamera");
 	
-	pAddPattern(pFPLOpen[efplWorld], "All formats", "*.deworld", ".deworld");
-	pAddPattern(pFPLOpen[efplWorld], "World", "*.deworld", ".deworld");
+	pAddPattern(pFPLOpen[efplWorld], "@Igde.LoadSaveSystem.FilePattern.AllFormats", "*.deworld", ".deworld");
+	pAddPattern(pFPLOpen[efplWorld], "@Igde.LoadSaveSystem.FilePattern.World", "*.deworld", ".deworld");
 	
-	pAddPattern(pFPLSave[efplWorld], "World", "*.deworld", ".deworld");
+	pAddPattern(pFPLSave[efplWorld], "@Igde.LoadSaveSystem.FilePattern.World", "*.deworld", ".deworld");
 	
 	// game project file list
-	pAddPattern(pFPLOpen[efplGameProject], "All formats", "*.degp", "degp");
+	pAddPattern(pFPLOpen[efplGameProject], "@Igde.LoadSaveSystem.FilePattern.AllFormats", "*.degp", "degp");
 	pAddPattern(pFPLOpen[efplGameProject], pLSGameProject->GetName().GetString(),
 		pLSGameProject->GetPattern().GetString(), pLSGameProject->GetDefaultExtension().GetString());
 	

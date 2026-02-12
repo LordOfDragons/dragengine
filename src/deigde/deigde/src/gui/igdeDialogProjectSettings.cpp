@@ -100,7 +100,7 @@ public:
 	igdeDialogProjectSettings_ActionGameDefBaseAdd(
 		igdeDialogProjectSettings& dialog, igdeListBox &listPathGameDefBase) :
 	igdeAction("", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallPlus),
-		"Add base game definition"), pDialog(dialog), pListPathGameDefBase(listPathGameDefBase){}
+		"@Igde.ProjectSettings.Action.BaseGameDefAdd.ToolTip"), pDialog(dialog), pListPathGameDefBase(listPathGameDefBase){}
 	
 	void OnAction() override{
 		igdeGameDefinition * const sharedGameDef = pDialog.GetSelectedSharedGameDef();
@@ -130,7 +130,7 @@ public:
 	igdeDialogProjectSettings_ActionGameDefBaseRemove(
 		igdeDialogProjectSettings& dialog, igdeListBox &listPathGameDefBase) :
 	igdeAction("", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallMinus),
-		"Remove base game definition"), pDialog(dialog), pListPathGameDefBase(listPathGameDefBase){}
+		"@Igde.ProjectSettings.Action.BaseGameDefRemove.ToolTip"), pDialog(dialog), pListPathGameDefBase(listPathGameDefBase){}
 	
 	void OnAction() override{
 		const int selection = pListPathGameDefBase.GetSelection();
@@ -161,7 +161,7 @@ public:
 	igdeDialogProjectSettings_ActionGameDefBaseUp(
 		igdeDialogProjectSettings& dialog, igdeListBox &listPathGameDefBase) :
 	igdeAction("", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallUp),
-		"Move base game definition up"), pDialog(dialog), pListPathGameDefBase(listPathGameDefBase){}
+		"@Igde.ProjectSettings.Action.BaseGameDefUp.ToolTip"), pDialog(dialog), pListPathGameDefBase(listPathGameDefBase){}
 	
 	void OnAction() override{
 		const int selection = pListPathGameDefBase.GetSelection();
@@ -189,7 +189,7 @@ public:
 	igdeDialogProjectSettings_ActionGameDefBaseDown(
 		igdeDialogProjectSettings& dialog, igdeListBox &listPathGameDefBase) :
 	igdeAction("", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
-		"Move base game definition down"), pDialog(dialog), pListPathGameDefBase(listPathGameDefBase){}
+		"@Igde.ProjectSettings.Action.BaseGameDefDown.ToolTip"), pDialog(dialog), pListPathGameDefBase(listPathGameDefBase){}
 	
 	void OnAction() override{
 		const int selection = pListPathGameDefBase.GetSelection();
@@ -233,7 +233,7 @@ public:
 ////////////////////////////
 
 igdeDialogProjectSettings::igdeDialogProjectSettings(igdeWindowMain &windowMain) :
-igdeDialog(windowMain.GetEnvironment(), "Game Project Settings"),
+igdeDialog(windowMain.GetEnvironment(), "@Igde.ProjectSettings.Title"),
 pWindowMain(windowMain),
 pBaseGameDefsChanged(false)
 {
@@ -243,20 +243,20 @@ pBaseGameDefsChanged(false)
 	
 	content = igdeContainerForm::Ref::New(env);
 	
-	helper.EditString(content, "Name:", "Name of the game project.", 60, pEditName, {});
-	helper.EditString(content, "Description:",
-		"Description of the game project.", pEditDescription, 5, {});
-	helper.EditString(content, "Data Directory:",
-		"Data directory relative to project directory.", pEditPathData, {});
-	helper.EditString(content, "Cache Directory:",
-		"Cache directory relative to project directory.", pEditPathCache, {});
+	helper.EditString(content, "@Igde.ProjectSettings.Name.Label", "@Igde.ProjectSettings.Name.ToolTip", 60, pEditName, {});
+	helper.EditString(content, "@Igde.ProjectSettings.Description.Label",
+		"@Igde.ProjectSettings.Description.ToolTip", pEditDescription, 5, {});
+	helper.EditString(content, "@Igde.ProjectSettings.DataDirectory.Label",
+		"@Igde.ProjectSettings.DataDirectory.ToolTip", pEditPathData, {});
+	helper.EditString(content, "@Igde.ProjectSettings.CacheDirectory.Label",
+		"@Igde.ProjectSettings.CacheDirectory.ToolTip", pEditPathCache, {});
 	
-	helper.ListBox(content, "Base Game Definitions:", 3,
-		"Game definitions to use as base for the project.", pListPathGameDefBase, {});
+	helper.ListBox(content, "@Igde.ProjectSettings.BaseGameDefinitions.Label", 3,
+		"@Igde.ProjectSettings.BaseGameDefinitions.ToolTip", pListPathGameDefBase, {});
 	
-	helper.FormLineStretchFirst(content, "", "Available game definitions to add to project", panel);
+	helper.FormLineStretchFirst(content, "", "@Igde.ProjectSettings.BaseGameDefinitionsInfo.ToolTip", panel);
 	
-	helper.ComboBox(panel, "Available game definitions to add to project",
+	helper.ComboBox(panel, "@Igde.ProjectSettings.BaseGameDefinitionsInfo.ToolTip",
 		pCBSharedGameDefs, igdeDialogProjectSettings_ComboSharedGameDef::Ref::New(*this));
 	pCBSharedGameDefs->SetDefaultSorter();
 	
@@ -265,16 +265,16 @@ pBaseGameDefsChanged(false)
 	helper.Button(panel, pBtnPathGameDefBaseUp, igdeDialogProjectSettings_ActionGameDefBaseUp::Ref::New(*this, pListPathGameDefBase));
 	helper.Button(panel, pBtnPathGameDefBaseDown, igdeDialogProjectSettings_ActionGameDefBaseDown::Ref::New(*this, pListPathGameDefBase));
 	
-	helper.EditString(content, "", "Shared game definition information", pEditSharedGameDefInfo, 3, {});
+	helper.EditString(content, "", "@Igde.ProjectSettings.SharedGameDefInfo", pEditSharedGameDefInfo, 3, {});
 	
-	helper.ComboBox(content, "Scripting Module:", "Scripting module to use.", pCBScriptModule, igdeDialogProjectSettings_ComboScriptModule::Ref::New(*this));
+	helper.ComboBox(content, "@Igde.ProjectSettings.ScriptingModule.Label", "@Igde.ProjectSettings.ScriptingModule.ToolTip", pCBScriptModule, igdeDialogProjectSettings_ComboScriptModule::Ref::New(*this));
 	pCBScriptModule->SetDefaultSorter();
 	
-	helper.EditString(content, "Version:", "Scripting module version to use.", 6, pEditScriptModuleVersion, {});
+	helper.EditString(content, "@Igde.ProjectSettings.Version.Label", "@Igde.ProjectSettings.Version.ToolTip", 6, pEditScriptModuleVersion, {});
 	
 	
 	igdeContainer::Ref buttonBar;
-	CreateButtonBar(buttonBar, "Accept", "Discard");
+	CreateButtonBar(buttonBar, "@Igde.Accept", "@Igde.Discard");
 	
 	AddContent(content, buttonBar);
 	
@@ -313,7 +313,7 @@ igdeDialogProjectSettings::~igdeDialogProjectSettings(){
 
 bool igdeDialogProjectSettings::CheckValidInput(){
 	if(pEditName->GetText().IsEmpty()){
-		igdeCommonDialogs::Error(*this, "Game Project Settings", "Name can not be empty");
+		igdeCommonDialogs::Error(*this, "@Igde.ProjectSettings.ErrorTitle", "@Igde.ProjectSettings.ErrorNameEmpty");
 		return false;
 	}
 	

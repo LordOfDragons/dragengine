@@ -82,9 +82,11 @@ public:
 	
 	/** \brief Translation for entry name entry name itself if absent. */
 	decUnicodeString Translate(const decString &entryName) const;
+	decUnicodeString Translate(const char *entryName) const;
 	
 	/** \brief Translation for entry name or default value if absent. */
 	decUnicodeString Translate(const decString &entryName, const decUnicodeString &defaultValue) const;
+	decUnicodeString Translate(const char *entryName, const decUnicodeString &defaultValue) const;
 	
 	/**
 	 * \brief Translate text if it starts with a translation character.
@@ -99,6 +101,7 @@ public:
 	 * you can possibly encounter. A typical choice is '@'.
 	 */
 	decUnicodeString TranslateIf(const decUnicodeString &text, int translationCharacter = '@') const;
+	decUnicodeString TranslateIf(const char *text, int translationCharacter = '@') const;
 	
 	/**
 	 * \brief Translate text if it starts with a translation character.
@@ -113,6 +116,9 @@ public:
 	 * you can possibly encounter. A typical choice is '@'.
 	 */
 	decUnicodeString TranslateIf(const decUnicodeString &text, const decUnicodeString &defaultValue,
+		int translationCharacter = '@') const;
+	
+	decUnicodeString TranslateIf(const char *text, const decUnicodeString &defaultValue,
 		int translationCharacter = '@') const;
 	/*@}*/
 };
