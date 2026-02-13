@@ -68,10 +68,10 @@ aeUSetRuleAddVertexPositionSet::aeUSetRuleAddVertexPositionSet(aeRule *rule, con
 	}
 	
 	if(pVertexPositionSets.GetCount() == 1){
-		SetShortInfo("Add vertex position set to rule");
+		SetShortInfo("@Animator.Undo.SetRuleAddVertexPositionSet");
 		
 	}else{
-		SetShortInfo("Add vertex position sets to rule");
+		SetShortInfo("@Animator.Undo.SetRuleAddVertexPositionSets");
 	}
 	
 	pRule = rule;

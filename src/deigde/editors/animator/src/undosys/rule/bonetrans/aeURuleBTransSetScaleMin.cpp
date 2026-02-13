@@ -51,7 +51,7 @@ aeURuleBTransSetScaleMin::aeURuleBTransSetScaleMin(aeRuleBoneTransformator *rule
 		pOldMin = rule->GetMinimumScaling();
 		pNewMin = newMin;
 		
-		SetShortInfo("Bone transformator Set minimum scaling");
+		SetShortInfo("@Animator.Undo.RuleBoneTransformatorSetMinimumScaling");
 		
 	}catch(const deException &){
 		pCleanUp();

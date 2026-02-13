@@ -46,7 +46,7 @@ aeURuleIKSetReachRange::aeURuleIKSetReachRange(aeRuleInverseKinematic *rule, flo
 	
 	pRule = nullptr;
 	
-	SetShortInfo("Inverse kinematic set reach range");
+	SetShortInfo("@Animator.Undo.RuleInverseKinematicSetReachRange");
 	
 	pOldValue = rule->GetReachRange();
 	pNewValue = newValue;

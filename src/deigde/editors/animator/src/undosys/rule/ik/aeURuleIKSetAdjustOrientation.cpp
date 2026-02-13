@@ -46,7 +46,7 @@ aeURuleIKSetAdjustOrientation::aeURuleIKSetAdjustOrientation(aeRuleInverseKinema
 	
 	try{
 		pRule = rule;
-		SetShortInfo("Inverse Kinematic set adjust orientation");
+		SetShortInfo("@Animator.Undo.RuleInverseKinematicSetAdjustOrientation");
 		
 	}catch(const deException &){
 		pCleanUp();

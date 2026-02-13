@@ -42,7 +42,7 @@ pRule(rule),
 pOldValue(rule->GetMinimumAngle()),
 pNewValue(newValue)
 {
-	SetShortInfo("Bone transformator set minimum angle");
+	SetShortInfo("@Animator.Undo.RuleBoneTransformatorSetMinimumAngle");
 }
 
 aeURuleBTransSetMinAngle::~aeURuleBTransSetMinAngle(){

@@ -42,7 +42,7 @@ pRule(rule),
 pOldValue(rule->GetAxis()),
 pNewValue(newValue)
 {
-	SetShortInfo("Bone transformator set axis");
+	SetShortInfo("@Animator.Undo.RuleBoneTransformatorSetAxis");
 }
 
 aeURuleBTransSetAxis::~aeURuleBTransSetAxis(){

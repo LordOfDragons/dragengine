@@ -48,7 +48,7 @@ aeULinkSetName::aeULinkSetName(aeLink *link, const char *newName){
 	pOldName = link->GetName();
 	pNewName = newName;
 	
-	SetShortInfo("Set Link Name");
+	SetShortInfo("@Animator.Undo.LinkSetName");
 	
 	pLink = link;
 }

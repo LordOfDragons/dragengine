@@ -48,7 +48,7 @@ aeURuleSubAnimToggleEnableRotation::aeURuleSubAnimToggleEnableRotation(aeRuleSub
 	
 	try{
 		pRule = rule;
-		SetShortInfo("Rule sub animator toggle enable rotation");
+		SetShortInfo("@Animator.Undo.RuleSubAnimatorToggleEnableRotation");
 		
 	}catch(const deException &){
 		pCleanUp();

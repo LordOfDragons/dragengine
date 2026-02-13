@@ -44,7 +44,7 @@ pMatchName(matchName)
 	pIndex = rule->GetMatchNames().IndexOf(matchName);
 	DEASSERT_TRUE(pIndex != -1)
 	
-	SetShortInfo("Mirror rule remove match name");
+	SetShortInfo("@Animator.Undo.RuleMirrorRemoveMatchName");
 }
 
 aeURuleMirrorRemoveMatchName::~aeURuleMirrorRemoveMatchName(){

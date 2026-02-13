@@ -59,10 +59,10 @@ pAnimator(animator)
 	}
 	
 	if(pBones.GetCount() == 1){
-		SetShortInfo("Animator remove bone");
+		SetShortInfo("@Animator.Undo.AnimatorRemoveBone");
 		
 	}else{
-		SetShortInfo("Animator remove bones");
+		SetShortInfo("@Animator.Undo.AnimatorRemoveBones");
 	}
 }
 

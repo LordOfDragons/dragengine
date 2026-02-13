@@ -46,7 +46,7 @@ aeUSetRuleFStaEnableSize::aeUSetRuleFStaEnableSize(aeRuleForeignState *rule){
 	
 	try{
 		pRule = rule;
-		SetShortInfo("Set bone rotator rule enable size");
+		SetShortInfo("@Animator.Undo.SetRuleForeignStateEnableSize");
 		
 	}catch(const deException &){
 		pCleanUp();

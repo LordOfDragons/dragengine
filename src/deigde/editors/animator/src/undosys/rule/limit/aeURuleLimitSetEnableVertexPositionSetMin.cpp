@@ -44,7 +44,7 @@ aeURuleLimitSetEnableVertexPositionSetMin::aeURuleLimitSetEnableVertexPositionSe
 	
 	pRule = nullptr;
 	
-	SetShortInfo("Limit toggle enable minimum vertex position set");
+	SetShortInfo("@Animator.Undo.RuleLimitToggleEnableMinimumVertexPositionSet");
 	
 	pRule = rule;
 }

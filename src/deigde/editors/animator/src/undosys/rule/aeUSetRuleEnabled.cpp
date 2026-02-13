@@ -46,7 +46,7 @@ aeUSetRuleEnabled::aeUSetRuleEnabled(aeRule *rule){
 	
 	try{
 		pRule = rule;
-		SetShortInfo("Set rule enabled");
+		SetShortInfo("@Animator.Undo.SetRuleEnabled");
 		
 	}catch(const deException &){
 		pCleanUp();

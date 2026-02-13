@@ -51,7 +51,7 @@ aeUSetRuleFStaSrcCFrame::aeUSetRuleFStaSrcCFrame(aeRuleForeignState *rule, deAni
 		pOldCFrame = rule->GetSourceCoordinateFrame();
 		pNewCFrame = newCFrame;
 		
-		SetShortInfo("Set foreign state rule source cframe");
+		SetShortInfo("@Animator.Undo.SetRuleForeignStateSourceCoordinateFrame");
 		
 	}catch(const deException &){
 		pCleanUp();

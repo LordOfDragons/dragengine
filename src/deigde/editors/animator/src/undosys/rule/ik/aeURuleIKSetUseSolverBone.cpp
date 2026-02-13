@@ -46,7 +46,7 @@ aeURuleIKSetUseSolverBone::aeURuleIKSetUseSolverBone(aeRuleInverseKinematic *rul
 	
 	try{
 		pRule = rule;
-		SetShortInfo("Set inverse kinematic rule use solver bone");
+		SetShortInfo("@Animator.Undo.SetRuleInverseKinematicUseSolverBone");
 		
 	}catch(const deException &){
 		pCleanUp();

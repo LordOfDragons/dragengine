@@ -45,7 +45,7 @@ pNewValue(newValue)
 	
 	pOldValue = rule->GetMatchNames().GetAt(index);
 	
-	SetShortInfo("Mirror rule set match name");
+	SetShortInfo("@Animator.Undo.RuleMirrorSetMatchName");
 }
 
 aeURuleMirrorSetMatchName::~aeURuleMirrorSetMatchName(){

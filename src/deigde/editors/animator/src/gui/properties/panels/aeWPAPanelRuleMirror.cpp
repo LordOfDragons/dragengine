@@ -183,7 +183,7 @@ public:
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleMirror *rule) override{
 		aeDialogMirrorMatchName::Ref dialog(aeDialogMirrorMatchName::Ref::New(
-			pPanel.GetEnvironment(), "Add match name"));
+			pPanel.GetEnvironment(), "@Animator.WPAPanelRuleMirror.Action.AddMatchName"));
 		return dialog->Run(&pPanel) ? aeURuleMirrorAddMatchName::Ref::New(rule, dialog->CreateMatchName()) : igdeUndo::Ref();
 	}
 };
@@ -199,36 +199,36 @@ private:
 public:
 	cActionMatchNameAddTemplate(aeWPAPanelRuleMirror &panel, const char *first, const char *second,
 		deAnimatorRuleMirror::eMatchNameType type) :
-	cBaseAction(panel, CreateText(first, second, type), panel.GetEnvironment().GetStockIcon(
-		igdeEnvironment::esiPlus), "Add match name"),
+	cBaseAction(panel, CreateText(panel, first, second, type), panel.GetEnvironment().GetStockIcon(
+		igdeEnvironment::esiPlus), "@Animator.WPAPanelRuleMirror.Action.AddMatchName"),
 	pFirst(first), pSecond(second), pType(type){}
 	
-	static decString CreateText(const char *first, const char *second, deAnimatorRuleMirror::eMatchNameType type){
+	static decString CreateText(aeWPAPanelRuleMirror &panel, const char *first,
+	const char *second, deAnimatorRuleMirror::eMatchNameType type){
 		if(!first || !second){
 			DETHROW(deeNullPointer);
 		}
 		
-		const char *typeStr;
-		decString text;
+		decString text, typeStr;
 		
 		switch(type){
 		case deAnimatorRuleMirror::emntFirst:
-			typeStr = "Begin";
+			typeStr = panel.Translate("Animator.MatchNameType.Begin").ToUTF8();
 			break;
 			
 		case deAnimatorRuleMirror::emntLast:
-			typeStr = "End";
+			typeStr = panel.Translate("Animator.MatchNameType.End").ToUTF8();
 			break;
 			
 		case deAnimatorRuleMirror::emntMiddle:
-			typeStr = "Middle";
+			typeStr = panel.Translate("Animator.MatchNameType.Middle").ToUTF8();
 			break;
 			
 		default:
 			typeStr = "?";
 		}
 		
-		text.Format("Add: %s '%s' <-> '%s'", typeStr, first, second);
+		text.FormatSafe(panel.Translate("Animator.PanelRuleMirror.AddMatchName").ToUTF8(), typeStr, first, second);
 		return text;
 	}
 	
@@ -253,7 +253,7 @@ public:
 		}
 		
 		aeDialogMirrorMatchName::Ref dialog(aeDialogMirrorMatchName::Ref::New(
-			pPanel.GetEnvironment(), "Edit match name"));
+			pPanel.GetEnvironment(), "@Animator.WPAPanelRuleMirror.Action.EditMatchName"));
 		((aeDialogMirrorMatchName&)(igdeDialog&)dialog).Set(*matchName);
 		if(!dialog->Run(&pPanel)){
 			return {};
@@ -378,7 +378,7 @@ public:
 		return aeURuleMirrorSetEnableRotation::Ref::New(rule);
 	}
 	
-	void Update(const aeAnimator & , const aeRuleMirror &rule) override{
+	void Update(const aeAnimator &, const aeRuleMirror &rule) override{
 		SetEnabled(true);
 		SetSelected(rule.GetEnableOrientation());
 	}
@@ -512,29 +512,28 @@ void aeWPAPanelRuleMirror::UpdateRule(){
 		aeRuleMirror::MatchName * const selection = GetSelectedMatchBone();
 		pListMatchName->RemoveAllItems();
 		
-		const char *typeStr;
-		decString text;
+		decString text, typeStr;
 		
 		rule->GetMatchNames().Visit([&](aeRuleMirror::MatchName *matchName){
 			switch(matchName->type){
 			case deAnimatorRuleMirror::emntFirst:
-				typeStr = "Begin";
+				typeStr = Translate("Animator.MatchNameType.Begin").ToUTF8();
 				break;
 				
 			case deAnimatorRuleMirror::emntLast:
-				typeStr = "End";
+				typeStr = Translate("Animator.MatchNameType.End").ToUTF8();
 				break;
 				
 			case deAnimatorRuleMirror::emntMiddle:
-				typeStr = "Middle";
+				typeStr = Translate("Animator.MatchNameType.Middle").ToUTF8();
 				break;
 				
 			default:
 				typeStr = "?";
 			}
 			
-			text.Format("%s: '%s' <-> '%s'", typeStr,
-				matchName->first.GetString(), matchName->second.GetString());
+			text.FormatSafe(Translate("Animator.PanelRuleMirror.ListMatchName").ToUTF8(),
+				typeStr, matchName->first, matchName->second);
 			pListMatchName->AddItem(text, nullptr, matchName);
 		});
 		

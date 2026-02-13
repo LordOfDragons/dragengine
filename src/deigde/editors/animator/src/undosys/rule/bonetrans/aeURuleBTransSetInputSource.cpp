@@ -42,7 +42,7 @@ pNewValue(newValue)
 	
 	pOldValue = rule->GetInputSource();
 	
-	SetShortInfo("Bone transformator set input source");
+	SetShortInfo("@Animator.Undo.RuleBoneTransformatorSetInputSource");
 	
 	pRule = rule;
 }

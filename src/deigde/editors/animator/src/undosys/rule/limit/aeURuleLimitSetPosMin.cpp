@@ -51,7 +51,7 @@ aeURuleLimitSetPosMin::aeURuleLimitSetPosMin(aeRuleLimit *rule, const decVector 
 		pOldMin = rule->GetMinimumPosition();
 		pNewMin = newMin;
 		
-		SetShortInfo("Limit Set minimum translation");
+		SetShortInfo("@Animator.Undo.SetRuleLimitMinimumTranslation");
 		
 	}catch(const deException &){
 		pCleanUp();

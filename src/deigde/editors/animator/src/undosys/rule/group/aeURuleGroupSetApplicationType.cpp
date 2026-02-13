@@ -49,7 +49,7 @@ deAnimatorRuleGroup::eApplicationTypes newType){
 	pOldType = rule->GetApplicationType();
 	pNewType = newType;
 	
-	SetShortInfo("Group rule set application type");
+	SetShortInfo("@Animator.Undo.RuleGroupSetApplicationType");
 	
 	pRule = rule;
 }

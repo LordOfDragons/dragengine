@@ -41,7 +41,7 @@ aeURuleSubAnimToggleEnableVertexPositionSet::aeURuleSubAnimToggleEnableVertexPos
 	
 	try{
 		pRule = rule;
-		SetShortInfo("Rule sub animator toggle enable vertex position set");
+		SetShortInfo("@Animator.Undo.RuleSubAnimatorToggleEnableVertexPositionSet");
 		
 	}catch(const deException &){
 		pCleanUp();

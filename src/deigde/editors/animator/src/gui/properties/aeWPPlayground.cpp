@@ -663,7 +663,7 @@ void aeWPPlayground::RebuildControllers(){
 		const decString &name = animatorController->GetName();
 		decString text, description;
 		text.Format("%s:", name.GetString());
-		description.Format("Current value of the controller '%s'", name.GetString());
+		description.FormatSafe(Translate("Animator.Playground.ControllerValue").ToUTF8(), name.GetString());
 		
 		igdeEditSliderText::Ref slider;
 		helper.EditSliderText(pFraContent, text, description, 0.0f, 1.0f, 6, 3, 0.1f,

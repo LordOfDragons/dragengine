@@ -44,7 +44,7 @@ aeURuleLimitSetEnableVertexPositionSetMax::aeURuleLimitSetEnableVertexPositionSe
 	
 	pRule = nullptr;
 	
-	SetShortInfo("Limit toggle enable maximum vertex position set");
+	SetShortInfo("@Animator.Undo.RuleLimitToggleEnableMaximumVertexPositionSet");
 	
 	pRule = rule;
 }

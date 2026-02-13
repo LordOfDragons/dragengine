@@ -47,7 +47,7 @@ pIndex(-1)
 	DEASSERT_NOTNULL(animator);
 	DEASSERT_NOTNULL(controller);
 	
-	SetShortInfo("Remove controller");
+	SetShortInfo("@Animator.Undo.RemoveController");
 	
 	pIndex = animator->GetControllers().IndexOf(controller);
 	DEASSERT_TRUE(pIndex != -1)

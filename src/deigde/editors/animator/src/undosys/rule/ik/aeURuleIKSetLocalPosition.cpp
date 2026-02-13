@@ -49,7 +49,7 @@ aeURuleIKSetLocalPosition::aeURuleIKSetLocalPosition(aeRuleInverseKinematic *rul
 		pOldPos = rule->GetLocalPosition();
 		pNewPos = newPos;
 		
-		SetShortInfo("Set inverse kinematic rule local position");
+		SetShortInfo("@Animator.Undo.SetRuleInverseKinematicLocalPosition");
 		
 	}catch(const deException &){
 		pCleanUp();

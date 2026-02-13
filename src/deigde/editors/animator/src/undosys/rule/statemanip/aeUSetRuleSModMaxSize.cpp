@@ -49,7 +49,7 @@ aeUSetRuleSModMaxSize::aeUSetRuleSModMaxSize(aeRuleStateManipulator *rule, const
 		pOldMax = rule->GetMaximumSize();
 		pNewMax = newMax;
 		
-		SetShortInfo("Set state manipulator rule maximum size");
+		SetShortInfo("@Animator.Undo.SetRuleStateManipulatorMaximumSize");
 		
 	}catch(const deException &){
 		pCleanUp();

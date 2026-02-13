@@ -51,7 +51,7 @@ aeURuleBTransSetRotMin::aeURuleBTransSetRotMin(aeRuleBoneTransformator *rule, co
 		pOldMin = rule->GetMinimumRotation();
 		pNewMin = newMin;
 		
-		SetShortInfo("Bone transformator set minimum rotation");
+		SetShortInfo("@Animator.Undo.RuleBoneTransformatorSetMinimumRotation");
 		
 	}catch(const deException &){
 		pCleanUp();

@@ -49,7 +49,7 @@ aeUSetRuleAniDLeadMoveTime::aeUSetRuleAniDLeadMoveTime(aeRuleAnimationDifference
 		pOldTime = rule->GetLeadingMoveTime();
 		pNewTime = newTime;
 		
-		SetShortInfo("Set animation difference rule leading move time");
+		SetShortInfo("@Animator.Undo.SetRuleAnimationDifferenceLeadingMoveTime");
 		
 	}catch(const deException &){
 		pCleanUp();

@@ -47,7 +47,7 @@ aeULinkSetController::aeULinkSetController(aeLink *link, aeController *newContro
 	
 	pLink = nullptr;
 	
-	SetShortInfo("Set Link Controller");
+	SetShortInfo("@Animator.Undo.LinkSetController");
 	
 	pLink = link;
 	pOldController = link->GetController();

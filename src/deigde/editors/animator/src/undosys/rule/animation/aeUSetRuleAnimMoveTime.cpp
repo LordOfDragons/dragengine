@@ -49,7 +49,7 @@ aeUSetRuleAnimMoveTime::aeUSetRuleAnimMoveTime(aeRuleAnimation *rule, float newT
 		pOldTime = rule->GetMoveTime();
 		pNewTime = newTime;
 		
-		SetShortInfo("Set animation rule move time");
+		SetShortInfo("@Animator.Undo.SetRuleAnimationMoveTime");
 		
 	}catch(const deException &){
 		pCleanUp();

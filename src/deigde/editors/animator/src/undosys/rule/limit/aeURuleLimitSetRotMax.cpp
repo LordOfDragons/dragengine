@@ -51,7 +51,7 @@ aeURuleLimitSetRotMax::aeURuleLimitSetRotMax(aeRuleLimit *rule, const decVector 
 		pOldMax = rule->GetMaximumRotation();
 		pNewMax = newMax;
 		
-		SetShortInfo("Limit set maximum rotation");
+		SetShortInfo("@Animator.Undo.SetRuleLimitMaximumRotation");
 		
 	}catch(const deException &){
 		pCleanUp();

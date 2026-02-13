@@ -48,7 +48,7 @@ aeURuleGroupToggleUseCurrentState::aeURuleGroupToggleUseCurrentState(aeRuleGroup
 	
 	try{
 		pRule = rule;
-		SetShortInfo("Rule group toggle use current state");
+		SetShortInfo("@Animator.Undo.RuleGroupToggleUseCurrentState");
 		
 	}catch(const deException &){
 		pCleanUp();

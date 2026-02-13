@@ -46,7 +46,7 @@ aeURuleLimitSetVertexPositionSetMax::aeURuleLimitSetVertexPositionSetMax(
 		pOldMax = rule->GetMaximumVertexPositionSet();
 		pNewMax = newMax;
 		
-		SetShortInfo("Limit Set maximum vertex position set");
+		SetShortInfo("@Animator.Undo.SetRuleLimitMaximumVertexPositionSet");
 		
 	}catch(const deException &){
 		pCleanUp();

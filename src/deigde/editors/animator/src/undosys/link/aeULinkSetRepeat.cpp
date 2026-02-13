@@ -47,7 +47,7 @@ aeULinkSetRepeat::aeULinkSetRepeat(aeLink *link, int newRepeat){
 	
 	pLink = nullptr;
 	
-	SetShortInfo("Link set repeat");
+	SetShortInfo("@Animator.Undo.LinkSetRepeat");
 	
 	pLink = link;
 	pOldRepeat = link->GetRepeat();

@@ -518,9 +518,9 @@ void aeWPAPanelRuleForeignState::UpdateTargetList(){
 	
 	aeRuleForeignState * const rule = (aeRuleForeignState*)GetRule();
 	if(rule){
-		AddTarget("Position", rule->GetTargetPosition());
-		AddTarget("Orientation", rule->GetTargetOrientation());
-		AddTarget("Size", rule->GetTargetSize());
-		AddTarget("Vertex Position Set", rule->GetTargetVertexPositionSet());
+		AddTarget("@Animator.Target.Position", rule->GetTargetPosition());
+		AddTarget("@Animator.Target.Orientation", rule->GetTargetOrientation());
+		AddTarget("@Animator.Target.Size", rule->GetTargetSize());
+		AddTarget("@Animator.Target.VertexPositionSet", rule->GetTargetVertexPositionSet());
 	}
 }

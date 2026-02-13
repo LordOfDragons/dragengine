@@ -48,7 +48,7 @@ aeURuleAnimDiffToggleEnableRotation::aeURuleAnimDiffToggleEnableRotation(aeRuleA
 	
 	try{
 		pRule = rule;
-		SetShortInfo("Rule animation difference toggle enable rotation");
+		SetShortInfo("@Animator.Undo.RuleAnimationDifferenceToggleEnableRotation");
 		
 	}catch(const deException &){
 		pCleanUp();

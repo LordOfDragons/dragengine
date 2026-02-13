@@ -49,7 +49,7 @@ pNewValue(newValue)
 	
 	pOldValue = animator->GetAnimationPath();
 	
-	SetShortInfo("Animator set animation path");
+	SetShortInfo("@Animator.Undo.AnimatorSetAnimationPath");
 }
 
 aeUAnimatorSetAnimationPath::~aeUAnimatorSetAnimationPath(){

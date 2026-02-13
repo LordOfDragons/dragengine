@@ -46,7 +46,7 @@ aeURuleLimitSetEnableScaleYMax::aeURuleLimitSetEnableScaleYMax(aeRuleLimit *rule
 	
 	pRule = nullptr;
 	
-	SetShortInfo("Limit toggle enable maximum y scaling");
+	SetShortInfo("@Animator.Undo.RuleLimitToggleEnableMaximumYScaling");
 	
 	pRule = rule;
 }

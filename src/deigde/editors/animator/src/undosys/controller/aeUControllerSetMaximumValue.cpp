@@ -49,7 +49,7 @@ pNewValue(newValue)
 	}
 	
 	pOldValue = controller->GetMaximumValue();
-	SetShortInfo("Set controller maximum value");
+	SetShortInfo("@Animator.Undo.ControllerSetMaximumValue");
 }
 
 aeUControllerSetMaximumValue::~aeUControllerSetMaximumValue(){

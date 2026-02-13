@@ -48,7 +48,7 @@ aeURuleAnimDiffToggleEnableVertexPositionSet::aeURuleAnimDiffToggleEnableVertexP
 	
 	try{
 		pRule = rule;
-		SetShortInfo("Rule animation toggle enable vertex position set");
+		SetShortInfo("@Animator.Undo.RuleAnimationToggleEnableVertexPositionSet");
 		
 	}catch(const deException &){
 		pCleanUp();

@@ -402,7 +402,7 @@ void aeWPAPanelRuleAnimationDifference::UpdateTargetList(){
 	
 	aeRuleAnimationDifference * const rule = (aeRuleAnimationDifference*)GetRule();
 	if(rule){
-		AddTarget("Leading Move Time", rule->GetTargetLeadingMoveTime());
-		AddTarget("Reference Move Time", rule->GetTargetReferenceMoveTime());
+		AddTarget("@Animator.Target.LeadingMoveTime", rule->GetTargetLeadingMoveTime());
+		AddTarget("@Animator.Target.ReferenceMoveTime", rule->GetTargetReferenceMoveTime());
 	}
 }

@@ -63,7 +63,7 @@ pLink(link)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Remove Link");
+	SetShortInfo("@Animator.Undo.LinkRemove");
 	
 	const int targetCount = pAnimator->CountLinkUsage(link);
 	if(targetCount == 0){

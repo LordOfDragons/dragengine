@@ -89,6 +89,7 @@ pUndoSystem(nullptr)
 	
 	// undo action list
 	pListUndo = igdeListBox::Ref::New(environment, 10);
+	pListUndo->SetAutoTranslateItems(true);
 	groupBox->AddChild(pListUndo, igdeContainerBorder::eaCenter);
 }
 
@@ -135,4 +136,8 @@ void igdeWPUndoHistory::UpdateUndo(){
 	if(pUndoSystem->GetUndos().IsNotEmpty()){
 		pListUndo->SetSelection(decMath::min(redoCount, pUndoSystem->GetUndos().GetCount() - 1));
 	}
+}
+
+void igdeWPUndoHistory::OnLanguageChanged(){
+	UpdateUndo();
 }

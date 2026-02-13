@@ -48,7 +48,7 @@ aeURuleTrackToSetLockedAxis::aeURuleTrackToSetLockedAxis(aeRuleTrackTo *rule, de
 	pOldAxis = rule->GetLockedAxis();
 	pNewAxis = newAxis;
 	
-	SetShortInfo("TrackTo Set Locked Axis");
+	SetShortInfo("@Animator.Undo.RuleTrackToSetLockedAxis");
 	
 	pRule = rule;
 }

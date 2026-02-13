@@ -46,7 +46,7 @@ aeURuleLimitSetEnableScaleXMin::aeURuleLimitSetEnableScaleXMin(aeRuleLimit *rule
 	
 	pRule = nullptr;
 	
-	SetShortInfo("Limit toggle enable minimum x scaling");
+	SetShortInfo("@Animator.Undo.RuleLimitToggleEnableMinimumXScaling");
 	
 	pRule = rule;
 }

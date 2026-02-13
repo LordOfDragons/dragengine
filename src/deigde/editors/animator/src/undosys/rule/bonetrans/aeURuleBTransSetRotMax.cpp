@@ -51,7 +51,7 @@ aeURuleBTransSetRotMax::aeURuleBTransSetRotMax(aeRuleBoneTransformator *rule, co
 		pOldMax = rule->GetMaximumRotation();
 		pNewMax = newMax;
 		
-		SetShortInfo("Bone transformator set maximum rotation");
+		SetShortInfo("@Animator.Undo.RuleBoneTransformatorSetMaximumRotation");
 		
 	}catch(const deException &){
 		pCleanUp();

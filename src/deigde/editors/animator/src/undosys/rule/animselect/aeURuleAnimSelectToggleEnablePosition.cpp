@@ -47,7 +47,7 @@ pRule(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Rule animation select toggle enable position");
+	SetShortInfo("@Animator.Undo.RuleAnimationSelectToggleEnablePosition");
 	
 	pRule = rule;
 }

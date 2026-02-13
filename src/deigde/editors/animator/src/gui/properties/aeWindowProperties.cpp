@@ -52,25 +52,25 @@ pWindowMain(windowMain)
 	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
 	pPropAnimator = aeWPAnimator::Ref::New(*this);
-	AddChild(pPropAnimator, "Animator");
+	AddChild(pPropAnimator, "@Animator.WindowProperties.Animator");
 	
 	pPropController = aeWPController::Ref::New(*this);
-	AddChild(pPropController, "Controller");
+	AddChild(pPropController, "@Animator.WindowProperties.Controller");
 	
 	pPropLink = aeWPLink::Ref::New(*this);
-	AddChild(pPropLink, "Link");
+	AddChild(pPropLink, "@Animator.WindowProperties.Link");
 	
 	pPropRule = aeWPRule::Ref::New(*this);
-	AddChild(pPropRule, "Rule");
+	AddChild(pPropRule, "@Animator.WindowProperties.Rule");
 	
 	pPropPlayground = aeWPPlayground::Ref::New(*this);
-	AddChild(pPropPlayground, "Playground");
+	AddChild(pPropPlayground, "@Animator.WindowProperties.Playground");
 	
 	pPropView = aeWPView::Ref::New(*this);
-	AddChild(pPropView, "View");
+	AddChild(pPropView, "@Animator.WindowProperties.View");
 	
 	pPanelUndoHistory = aeWPUndoHistory::Ref::New(GetEnvironment());
-	AddChild(pPanelUndoHistory, "History");
+	AddChild(pPanelUndoHistory, "@Animator.WindowProperties.History");
 	
 	SetActivePanel(1); // controller
 }

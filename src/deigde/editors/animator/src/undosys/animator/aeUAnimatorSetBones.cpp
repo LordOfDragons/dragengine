@@ -46,7 +46,7 @@ pNewValue(newValue)
 	DEASSERT_NOTNULL(animator)
 	
 	pOldValue = animator->GetListBones();
-	SetShortInfo("Animator set bones");
+	SetShortInfo("@Animator.Undo.AnimatorSetBones");
 }
 
 aeUAnimatorSetBones::~aeUAnimatorSetBones(){

@@ -47,7 +47,7 @@ pController(controller)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Set controller toggle frozen");
+	SetShortInfo("@Animator.Undo.ControllerToggleFrozen");
 }
 
 aeUControllerToggleFrozen::~aeUControllerToggleFrozen(){

@@ -51,7 +51,7 @@ aeURuleLimitSetScaleMax::aeURuleLimitSetScaleMax(aeRuleLimit *rule, const decVec
 		pOldMax = rule->GetMaximumScaling();
 		pNewMax = newMax;
 		
-		SetShortInfo("Limit Set maximum scaling");
+		SetShortInfo("@Animator.Undo.SetRuleLimitMaximumScaling");
 		
 	}catch(const deException &){
 		pCleanUp();

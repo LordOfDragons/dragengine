@@ -46,7 +46,7 @@ aeUSetRuleSModMinVertexPositionSet::aeUSetRuleSModMinVertexPositionSet(
 		pOldMin = rule->GetMinimumVertexPositionSet();
 		pNewMin = newMin;
 		
-		SetShortInfo("Set state manipulator rule minimum vertex position set");
+		SetShortInfo("@Animator.Undo.SetRuleStateManipulatorMinimumVertexPositionSet");
 		
 	}catch(const deException &){
 		pCleanUp();

@@ -46,7 +46,7 @@ aeURuleIKSetReachCenter::aeURuleIKSetReachCenter(aeRuleInverseKinematic *rule, c
 	
 	pRule = nullptr;
 	
-	SetShortInfo("Inverse kinematic set reach center");
+	SetShortInfo("@Animator.Undo.RuleInverseKinematicSetReachCenter");
 	
 	pOldValue = rule->GetReachCenter();
 	pNewValue = newValue;

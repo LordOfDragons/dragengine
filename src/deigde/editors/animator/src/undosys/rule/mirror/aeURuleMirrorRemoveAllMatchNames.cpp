@@ -41,7 +41,7 @@ pRule(rule)
 	
 	pMatchNames = rule->GetMatchNames();
 	
-	SetShortInfo("Mirror rule remove all match names");
+	SetShortInfo("@Animator.Undo.RuleMirrorRemoveAllMatchNames");
 }
 
 aeURuleMirrorRemoveAllMatchNames::~aeURuleMirrorRemoveAllMatchNames(){

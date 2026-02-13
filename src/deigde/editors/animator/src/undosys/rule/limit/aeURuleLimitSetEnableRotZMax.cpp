@@ -46,7 +46,7 @@ aeURuleLimitSetEnableRotZMax::aeURuleLimitSetEnableRotZMax(aeRuleLimit *rule){
 	
 	pRule = nullptr;
 	
-	SetShortInfo("Limit toggle enable maximum z rotation");
+	SetShortInfo("@Animator.Undo.RuleLimitToggleEnableMaximumZRotation");
 	
 	pRule = rule;
 }

@@ -408,7 +408,7 @@ public:
 		}
 		
 		const aeUSetRuleBones::Ref undo = aeUSetRuleBones::Ref::New(rule, rule->GetListBones() + clip->GetBones());
-		undo->SetShortInfo("Rule paste bones");
+		undo->SetShortInfo("@Animator.Undo.RulePasteBones");
 		return undo;
 	}
 	
@@ -482,7 +482,7 @@ public:
 		}
 		
 		const aeUSetRuleBones::Ref undo = aeUSetRuleBones::Ref::New(rule, rule->GetListBones() + bones);
-		undo->SetShortInfo("Rule import bones");
+		undo->SetShortInfo("@Animator.Undo.RuleImportBones");
 		return undo;
 	}
 };
@@ -663,7 +663,7 @@ public:
 		
 		const aeUSetRuleVertexPositionSets::Ref undo = aeUSetRuleVertexPositionSets::Ref::New(
 			rule, rule->GetListVertexPositionSets() + clip->GetVertexPositionSets());
-		undo->SetShortInfo("Rule paste vertex position sets");
+		undo->SetShortInfo("@Animator.Undo.RulePasteVertexPositionSets");
 		return undo;
 	}
 	
@@ -738,7 +738,7 @@ public:
 		
 		const aeUSetRuleVertexPositionSets::Ref undo = aeUSetRuleVertexPositionSets::Ref::New(
 			rule, rule->GetListVertexPositionSets() + vpslist);
-		undo->SetShortInfo("Rule import vertex position sets");
+		undo->SetShortInfo("@Animator.Undo.RuleImportVertexPositionSets");
 		return undo;
 	}
 };
@@ -958,6 +958,7 @@ pRequiredType(requiredType)
 	groupBox->AddChild(formLine);
 	helper.ComboBox(formLine, "@Animator.WPAPanelRule.Target.Label",
 		"@Animator.WPAPanelRule.Target.ToolTip", pCBTarget, cComboTarget::Ref::New(*this));
+	pCBTarget->SetAutoTranslateItems(true);
 	
 	formLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
 	groupBox->AddChild(formLine);
@@ -1155,7 +1156,7 @@ void aeWPAPanelRule::UpdateRule(){
 void aeWPAPanelRule::UpdateTargetList(){
 	pCBTarget->RemoveAllItems();
 	if(GetRule()){
-		AddTarget("Blend Factor", GetRule()->GetTargetBlendFactor());
+		AddTarget("@Animator.Target.BlendFactor", GetRule()->GetTargetBlendFactor());
 	}
 }
 

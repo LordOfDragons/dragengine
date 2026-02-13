@@ -48,7 +48,7 @@ aeURuleSnapToggleEnablePosition::aeURuleSnapToggleEnablePosition(aeRuleStateSnap
 	
 	try{
 		pRule = rule;
-		SetShortInfo("Rule state snapshot toggle enable position");
+		SetShortInfo("@Animator.Undo.RuleSnapshotToggleEnablePosition");
 		
 	}catch(const deException &){
 		pCleanUp();

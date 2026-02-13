@@ -67,7 +67,7 @@ pAnimator(animator)
 	pPatterns.Add(" left");
 	pPatterns.Add(" right");
 	
-	SetShortInfo("Animator mirror bones");
+	SetShortInfo("@Animator.Undo.AnimatorMirrorBones");
 }
 
 aeUAnimatorMirrorBones::~aeUAnimatorMirrorBones(){

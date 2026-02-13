@@ -48,7 +48,7 @@ aeURuleGroupToggleEnableRotation::aeURuleGroupToggleEnableRotation(aeRuleGroup *
 	
 	try{
 		pRule = rule;
-		SetShortInfo("Rule group toggle enable rotation");
+		SetShortInfo("@Animator.Undo.RuleGroupToggleEnableRotation");
 		
 	}catch(const deException &){
 		pCleanUp();

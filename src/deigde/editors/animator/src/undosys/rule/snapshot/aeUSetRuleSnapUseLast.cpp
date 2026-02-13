@@ -46,7 +46,7 @@ aeUSetRuleSnapUseLast::aeUSetRuleSnapUseLast(aeRuleStateSnapshot *rule){
 	
 	try{
 		pRule = rule;
-		SetShortInfo("Set state snapshot rule use last");
+		SetShortInfo("@Animator.Undo.SetRuleSnapshotUseLast");
 		
 	}catch(const deException &){
 		pCleanUp();

@@ -41,7 +41,7 @@ aeURuleSnapToggleEnableVertexPositionSet::aeURuleSnapToggleEnableVertexPositionS
 	
 	try{
 		pRule = rule;
-		SetShortInfo("Rule state snapshot toggle enable vertex position set");
+		SetShortInfo("@Animator.Undo.RuleSnapshotToggleEnableVertexPositionSet");
 		
 	}catch(const deException &){
 		pCleanUp();

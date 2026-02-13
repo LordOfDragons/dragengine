@@ -46,7 +46,7 @@ aeUSetRuleSModMaxVertexPositionSet::aeUSetRuleSModMaxVertexPositionSet(
 		pOldMax = rule->GetMaximumVertexPositionSet();
 		pNewMax = newMax;
 		
-		SetShortInfo("Set state manipulator rule maximum vertex position set");
+		SetShortInfo("@Animator.Undo.SetRuleStateManipulatorMaximumVertexPositionSet");
 		
 	}catch(const deException &){
 		pCleanUp();

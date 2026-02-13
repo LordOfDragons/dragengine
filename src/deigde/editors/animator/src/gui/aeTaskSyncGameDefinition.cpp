@@ -49,7 +49,7 @@
 aeTaskSyncGameDefinition::aeTaskSyncGameDefinition(aeWindowMain &windowMain) :
 pWindowMain(windowMain)
 {
-	SetMessage("Animator Editor: Synchronize Game Definition");
+	SetMessage(pWindowMain.Translate("Animator.Task.SyncGameDefinition").ToUTF8());
 }
 
 aeTaskSyncGameDefinition::~aeTaskSyncGameDefinition(){

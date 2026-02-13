@@ -48,7 +48,7 @@ aeURuleGroupToggleEnablePosition::aeURuleGroupToggleEnablePosition(aeRuleGroup *
 	
 	try{
 		pRule = rule;
-		SetShortInfo("Rule group toggle enable position");
+		SetShortInfo("@Animator.Undo.RuleGroupToggleEnablePosition");
 		
 	}catch(const deException &){
 		pCleanUp();

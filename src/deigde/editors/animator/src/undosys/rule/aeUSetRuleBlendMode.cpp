@@ -51,7 +51,7 @@ aeUSetRuleBlendMode::aeUSetRuleBlendMode(aeRule *rule, deAnimatorRule::eBlendMod
 	
 	try{
 		pRule = rule;
-		SetShortInfo("Rule set blend mode");
+		SetShortInfo("@Animator.Undo.SetRuleBlendMode");
 		
 	}catch(const deException &){
 		pCleanUp();

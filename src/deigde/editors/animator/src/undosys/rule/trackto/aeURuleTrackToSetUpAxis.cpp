@@ -48,7 +48,7 @@ aeURuleTrackToSetUpAxis::aeURuleTrackToSetUpAxis(aeRuleTrackTo *rule, deAnimator
 	pOldAxis = rule->GetUpAxis();
 	pNewAxis = newAxis;
 	
-	SetShortInfo("TrackTo Set Up Axis");
+	SetShortInfo("@Animator.Undo.RuleTrackToSetUpAxis");
 	
 	pRule = rule;
 }

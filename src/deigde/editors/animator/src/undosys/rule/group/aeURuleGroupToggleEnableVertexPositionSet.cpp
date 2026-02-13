@@ -42,7 +42,7 @@ aeURuleGroupToggleEnableVertexPositionSet::aeURuleGroupToggleEnableVertexPositio
 	
 	try{
 		pRule = rule;
-		SetShortInfo("Rule group toggle enable vertex position set");
+		SetShortInfo("@Animator.Undo.RuleGroupToggleEnableVertexPositionSet");
 		
 	}catch(const deException &){
 		pCleanUp();

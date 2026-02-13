@@ -49,7 +49,7 @@ aeUAddRule::aeUAddRule(aeAnimator *animator, aeRule *rule, int index){
 	pRule = nullptr;
 	pIndex = index;
 	
-	SetShortInfo("Add rule");
+	SetShortInfo("@Animator.Undo.AddRule");
 	
 	pAnimator = animator;
 	pRule = rule;

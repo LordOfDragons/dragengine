@@ -49,7 +49,7 @@ aeUSetRuleSModMaxPosition::aeUSetRuleSModMaxPosition(aeRuleStateManipulator *rul
 		pOldMax = rule->GetMaximumPosition();
 		pNewMax = newMax;
 		
-		SetShortInfo("Set state manipulator rule maximum");
+		SetShortInfo("@Animator.Undo.SetRuleStateManipulatorMaximum");
 		
 	}catch(const deException &){
 		pCleanUp();

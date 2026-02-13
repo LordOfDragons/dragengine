@@ -46,7 +46,7 @@ aeUSetRuleAniDRefMoveName::aeUSetRuleAniDRefMoveName(aeRuleAnimationDifference *
 	pOldName = rule->GetReferenceMoveName();
 	pNewName = newName;
 	
-	SetShortInfo("Set animation difference rule reference move name");
+	SetShortInfo("@Animator.Undo.SetRuleAnimationDifferenceReferenceMoveName");
 	
 	pRule = rule;
 }

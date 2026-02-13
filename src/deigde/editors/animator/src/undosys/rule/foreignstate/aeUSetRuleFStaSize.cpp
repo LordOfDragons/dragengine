@@ -49,7 +49,7 @@ aeUSetRuleFStaSize::aeUSetRuleFStaSize(aeRuleForeignState *rule, float newScale)
 		pOldScale = rule->GetScaleSize();
 		pNewScale = newScale;
 		
-		SetShortInfo("Set foreign state rule size scale");
+		SetShortInfo("@Animator.Undo.SetRuleForeignStateSize");
 		
 	}catch(const deException &){
 		pCleanUp();

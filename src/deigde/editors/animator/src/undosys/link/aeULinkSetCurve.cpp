@@ -45,7 +45,7 @@ pLink(link),
 pOldCurve(((aeLink&)(deObject&)pLink).GetCurve()),
 pNewCurve(newCurve)
 {
-	SetShortInfo("Set Link Curve");
+	SetShortInfo("@Animator.Undo.LinkSetCurve");
 }
 
 aeULinkSetCurve::~aeULinkSetCurve(){

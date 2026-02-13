@@ -44,7 +44,7 @@
 aeURuleTargetRemoveLink::aeURuleTargetRemoveLink(aeRule *rule, aeControllerTarget *target, aeLink *link){
 	if(!rule || !target || !link) DETHROW(deeInvalidParam);
 	
-	SetShortInfo("Rule Target Remove Link");
+	SetShortInfo("@Animator.Undo.RuleTargetRemoveLink");
 	
 	pRule = rule;
 	pTarget = target;

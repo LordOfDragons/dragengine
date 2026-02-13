@@ -46,7 +46,7 @@ aeURuleLimitSetEnableScaleXMax::aeURuleLimitSetEnableScaleXMax(aeRuleLimit *rule
 	
 	pRule = nullptr;
 	
-	SetShortInfo("Limit toggle enable maximum x scaling");
+	SetShortInfo("@Animator.Undo.RuleLimitToggleEnableMaximumXScaling");
 	
 	pRule = rule;
 }

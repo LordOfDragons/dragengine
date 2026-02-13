@@ -43,7 +43,7 @@ pNewValue(newValue)
 	DEASSERT_NOTNULL(rule)
 	
 	pOldValue = rule->GetListVertexPositionSets();
-	SetShortInfo("Set rule vertex position sets");
+	SetShortInfo("@Animator.Undo.SetRuleVertexPositionSets");
 	
 	pRule = rule;
 }

@@ -48,7 +48,7 @@ aeURuleAnimToggleEnablePosition::aeURuleAnimToggleEnablePosition(aeRuleAnimation
 	
 	try{
 		pRule = rule;
-		SetShortInfo("Rule animation toggle enable position");
+		SetShortInfo("@Animator.Undo.RuleAnimationToggleEnablePosition");
 		
 	}catch(const deException &){
 		pCleanUp();

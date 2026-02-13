@@ -46,7 +46,7 @@ aeUSetRuleFStaBone::aeUSetRuleFStaBone(aeRuleForeignState *rule, const char *new
 	pOldName = rule->GetForeignBone();
 	pNewName = newName;
 	
-	SetShortInfo("Set foreign state rule bone name");
+	SetShortInfo("@Animator.Undo.SetRuleForeignStateBone");
 	
 	pRule = rule;
 }

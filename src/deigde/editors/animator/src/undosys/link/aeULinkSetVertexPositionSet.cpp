@@ -45,7 +45,7 @@ aeULinkSetVertexPositionSet::aeULinkSetVertexPositionSet(aeLink *link, const cha
 	
 	pLink = nullptr;
 	
-	SetShortInfo("Link set vertex position set");
+	SetShortInfo("@Animator.Undo.LinkSetVertexPositionSet");
 	
 	pLink = link;
 	pOldValue = link->GetVertexPositionSet();

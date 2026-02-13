@@ -40,7 +40,7 @@ pRule(rule)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Toggle mirror rule enable rotation");
+	SetShortInfo("@Animator.Undo.RuleMirrorToggleEnableRotation");
 }
 
 aeURuleMirrorSetEnableRotation::~aeURuleMirrorSetEnableRotation(){

@@ -40,7 +40,7 @@ pRule(rule)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Toggle mirror rule enable size");
+	SetShortInfo("@Animator.Undo.RuleMirrorToggleEnableSize");
 }
 
 aeURuleMirrorSetEnableSize::~aeURuleMirrorSetEnableSize(){

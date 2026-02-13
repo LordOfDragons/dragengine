@@ -43,7 +43,7 @@ pNewValue(newValue)
 	
 	pOldValue = rule->GetMirrorAxis();
 	
-	SetShortInfo("Set mirror rule axis");
+	SetShortInfo("@Animator.Undo.RuleMirrorSetAxis");
 }
 
 aeURuleMirrorSetAxis::~aeURuleMirrorSetAxis(){

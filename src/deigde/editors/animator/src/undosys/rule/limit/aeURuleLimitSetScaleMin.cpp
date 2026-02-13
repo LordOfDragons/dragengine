@@ -51,7 +51,7 @@ aeURuleLimitSetScaleMin::aeURuleLimitSetScaleMin(aeRuleLimit *rule, const decVec
 		pOldMin = rule->GetMinimumScaling();
 		pNewMin = newMin;
 		
-		SetShortInfo("Limit Set minimum scaling");
+		SetShortInfo("@Animator.Undo.SetRuleLimitMinimumScaling");
 		
 	}catch(const deException &){
 		pCleanUp();

@@ -48,7 +48,7 @@ aeURuleTrackToSetTrackBone::aeURuleTrackToSetTrackBone(aeRuleTrackTo *rule, cons
 	pOldName = rule->GetTrackBone();
 	pNewName = newName;
 	
-	SetShortInfo("TrackTo Set Track Bone");
+	SetShortInfo("@Animator.Undo.RuleTrackToSetTrackBone");
 	
 	pRule = rule;
 }

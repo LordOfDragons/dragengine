@@ -43,7 +43,7 @@ pNewName(newName)
 	
 	pOldName = rule->GetForeignVertexPositionSet();
 	
-	SetShortInfo("Set foreign state rule vertex position set");
+	SetShortInfo("@Animator.Undo.SetRuleForeignStateVertexPositionSet");
 	
 	pRule = rule;
 }

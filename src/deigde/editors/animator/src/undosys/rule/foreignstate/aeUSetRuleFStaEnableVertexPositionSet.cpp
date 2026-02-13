@@ -42,7 +42,7 @@ aeUSetRuleFStaEnableVertexPositionSet::aeUSetRuleFStaEnableVertexPositionSet(aeR
 	
 	try{
 		pRule = rule;
-		SetShortInfo("Set bone rotator rule enable vertex position set");
+		SetShortInfo("@Animator.Undo.SetRuleForeignStateEnableVertexPositionSet");
 		
 	}catch(const deException &){
 		pCleanUp();

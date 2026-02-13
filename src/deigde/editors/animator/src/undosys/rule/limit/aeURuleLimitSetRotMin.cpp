@@ -51,7 +51,7 @@ aeURuleLimitSetRotMin::aeURuleLimitSetRotMin(aeRuleLimit *rule, const decVector 
 		pOldMin = rule->GetMinimumRotation();
 		pNewMin = newMin;
 		
-		SetShortInfo("Limit set minimum rotation");
+		SetShortInfo("@Animator.Undo.SetRuleLimitMinimumRotation");
 		
 	}catch(const deException &){
 		pCleanUp();

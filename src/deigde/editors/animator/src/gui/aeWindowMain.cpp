@@ -328,8 +328,8 @@ void aeWindowMain::GetChangedDocuments(decStringList &list){
 
 void aeWindowMain::LoadDocument(const char *filename){
 	if(pAnimator && pAnimator->GetChanged()){
-		if(igdeCommonDialogs::Question(*this, igdeCommonDialogs::ebsYesNo, "Open Animator",
-		"Open animator discards changes. Is this ok?") == igdeCommonDialogs::ebNo){
+		if(igdeCommonDialogs::Question(*this, igdeCommonDialogs::ebsYesNo, "@Animator.WindowMain.OpenAnimator.Title",
+		"@Animator.WindowMain.OpenAnimator.Message") == igdeCommonDialogs::ebNo){
 			return;
 		}
 	}
@@ -524,7 +524,7 @@ public:
 		
 		decString filename(pWindow.GetAnimator() ? pWindow.GetAnimator()->GetFilePath()
 			: pWindow.GetGameProject()->GetPathData());
-		if(!igdeCommonDialogs::GetFileOpen(pWindow, "Open Animator",
+		if(!igdeCommonDialogs::GetFileOpen(pWindow, "@Animator.WindowMain.OpenAnimator.Title",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetEnvironment().GetOpenFilePatternList( igdeEnvironment::efpltAnimator ), filename ) ){
 			return;
@@ -749,7 +749,7 @@ public:
 		"@Animator.Action.Controller.Add.ToolTip", deInputEvent::ekcA){}
 	
 	igdeUndo::Ref OnAction(aeAnimator *animator) override{
-		decString name("Controller");
+		decString name(pWindow.Translate("Animator.DefaultName.Controller").ToUTF8());
 		if(!igdeCommonDialogs::GetString(pWindow, "@Animator.Dialog.AddController.Title", "@Animator.Dialog.AddController.Name", name)){
 			return {};
 		}
@@ -783,7 +783,7 @@ public:
 		
 		const aeController::Ref duplicate(aeController::Ref::New(*controller));
 		duplicate->SetName(name);
-		return aeUAddController::Ref::New(animator, duplicate);
+		return aeUAddController::Ref::New(animator, duplicate, "@Animator.Undo.DuplicateController");
 	}
 };
 
@@ -901,7 +901,7 @@ public:
 		"@Animator.Action.Link.Add.ToolTip", deInputEvent::ekcA){}
 	
 	igdeUndo::Ref OnAction(aeAnimator *animator) override{
-		decString name("Link");
+		decString name(pWindow.Translate("Animator.DefaultName.Link").ToUTF8());
 		if(!igdeCommonDialogs::GetString(pWindow, "@Animator.Dialog.AddLink.Title", "@Animator.Dialog.AddLink.Name", name)){
 			return {};
 		}
@@ -1367,23 +1367,23 @@ void aeWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade = igdeMenuCascade::Ref::New(env, "File", deInputEvent::ekcF);
+	cascade = igdeMenuCascade::Ref::New(env, "@Animator.Menu.File", deInputEvent::ekcF);
 	pCreateMenuFile(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade = igdeMenuCascade::Ref::New(env, "Edit", deInputEvent::ekcE);
+	cascade = igdeMenuCascade::Ref::New(env, "@Animator.Menu.Edit", deInputEvent::ekcE);
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade = igdeMenuCascade::Ref::New(env, "Controller", deInputEvent::ekcC);
+	cascade = igdeMenuCascade::Ref::New(env, "@Animator.Menu.Controller", deInputEvent::ekcC);
 	pCreateMenuController(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade = igdeMenuCascade::Ref::New(env, "Link", deInputEvent::ekcL);
+	cascade = igdeMenuCascade::Ref::New(env, "@Animator.Menu.Link", deInputEvent::ekcL);
 	pCreateMenuLink(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade = igdeMenuCascade::Ref::New(env, "Rule", deInputEvent::ekcR);
+	cascade = igdeMenuCascade::Ref::New(env, "@Animator.Menu.Rule", deInputEvent::ekcR);
 	pCreateMenuRule(cascade);
 	AddSharedMenu(cascade);
 }
@@ -1441,7 +1441,7 @@ void aeWindowMain::pCreateMenuRule(igdeMenuCascade &menu){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
 	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::New(
-		GetEnvironment(), "Add", deInputEvent::ekcA));
+		GetEnvironment(), "@Animator.Menu.Rule.Add", deInputEvent::ekcA));
 	menu.AddChild(subMenu);
 	helper.MenuCommand(subMenu, pActionRuleAddAnim);
 	helper.MenuCommand(subMenu, pActionRuleAddAnimDiff);
@@ -1457,7 +1457,7 @@ void aeWindowMain::pCreateMenuRule(igdeMenuCascade &menu){
 	helper.MenuCommand(subMenu, pActionRuleAddLimit);
 	helper.MenuCommand(subMenu, pActionRuleAddMirror);
 	
-	subMenu = igdeMenuCascade::Ref::New(GetEnvironment(), "Insert", deInputEvent::ekcI);
+	subMenu = igdeMenuCascade::Ref::New(GetEnvironment(), "@Animator.Menu.Rule.Insert", deInputEvent::ekcI);
 	menu.AddChild(subMenu);
 	helper.MenuCommand(subMenu, pActionRuleInsertAnim);
 	helper.MenuCommand(subMenu, pActionRuleInsertAnimDiff);

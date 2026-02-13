@@ -49,7 +49,7 @@ aeUSetRuleSModMinPosition::aeUSetRuleSModMinPosition(aeRuleStateManipulator *rul
 		pOldMin = rule->GetMinimumPosition();
 		pNewMin = newMin;
 		
-		SetShortInfo("Set state manipulator rule minimum");
+		SetShortInfo("@Animator.Undo.SetRuleStateManipulatorMinimum");
 		
 	}catch(const deException &){
 		pCleanUp();

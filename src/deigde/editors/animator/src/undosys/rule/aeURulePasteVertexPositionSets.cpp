@@ -38,7 +38,7 @@
 aeURulePasteVertexPositionSets::aeURulePasteVertexPositionSets(aeRule* rule, const decStringSet &newValue) :
 aeUSetRuleVertexPositionSets(rule, newValue)
 {
-	SetShortInfo("Rule paste all vertex position sets");
+	SetShortInfo("@Animator.Undo.RulePasteAllVertexPositionSets");
 }
 
 aeURulePasteVertexPositionSets::~aeURulePasteVertexPositionSets(){

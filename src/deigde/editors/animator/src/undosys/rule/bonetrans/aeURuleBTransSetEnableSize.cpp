@@ -46,7 +46,7 @@ aeURuleBTransSetEnableSize::aeURuleBTransSetEnableSize(aeRuleBoneTransformator *
 	
 	pRule = nullptr;
 	
-	SetShortInfo("Bone transformator toggle enable size");
+	SetShortInfo("@Animator.Undo.RuleBoneTransformatorSetEnableSize");
 	
 	pRule = rule;
 }

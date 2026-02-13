@@ -43,7 +43,7 @@ pNewValue(newValue)
 	
 	pOldValue = rule->GetMirrorBone();
 	
-	SetShortInfo("Set mirror rule mirror bone");
+	SetShortInfo("@Animator.Undo.RuleMirrorSetMirrorBone");
 }
 
 aeURuleMirrorSetMirrorBone::~aeURuleMirrorSetMirrorBone(){

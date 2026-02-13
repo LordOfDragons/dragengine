@@ -49,7 +49,7 @@ pNewValue(newValue)
 	
 	pOldValue = animator->GetRigPath();
 	
-	SetShortInfo("Animator set rig path");
+	SetShortInfo("@Animator.Undo.AnimatorSetRigPath");
 }
 
 aeUAnimatorSetRigPath::~aeUAnimatorSetRigPath(){

@@ -49,7 +49,7 @@ aeURuleIKSetLocalRotation::aeURuleIKSetLocalRotation(aeRuleInverseKinematic *rul
 		pOldRot = rule->GetLocalOrientation();
 		pNewRot = newRot;
 		
-		SetShortInfo("Set inverse kinematic rule local rotation");
+		SetShortInfo("@Animator.Undo.SetRuleInverseKinematicLocalRotation");
 		
 	}catch(const deException &){
 		pCleanUp();

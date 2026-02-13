@@ -54,7 +54,7 @@ public:
 	/*@{*/
 	/** Create undo object. */
 	aeURuleAnimSelectSetMoves(aeRuleAnimationSelect *rule, const decStringList &newMoves,
-		const char *description = "Set animation select rule moves");
+		const char *description = "@Animator.Undo.RuleAnimSelectSetMoves");
 	
 protected:
 	/** Clean up undo. */

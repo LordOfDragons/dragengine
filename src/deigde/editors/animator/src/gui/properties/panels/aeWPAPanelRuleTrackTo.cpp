@@ -307,7 +307,7 @@ void aeWPAPanelRuleTrackTo::UpdateTargetList(){
 	aeWPAPanelRule::UpdateTargetList();
 	
 	if(rule){
-		AddTarget("Position", rule->GetTargetPosition());
-		AddTarget("Up", rule->GetTargetUp());
+		AddTarget("@Animator.Target.Position", rule->GetTargetPosition());
+		AddTarget("@Animator.Target.Up", rule->GetTargetUp());
 	}
 }

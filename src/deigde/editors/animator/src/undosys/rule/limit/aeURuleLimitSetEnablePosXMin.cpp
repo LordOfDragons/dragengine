@@ -46,7 +46,7 @@ aeURuleLimitSetEnablePosXMin::aeURuleLimitSetEnablePosXMin(aeRuleLimit *rule){
 	
 	pRule = nullptr;
 	
-	SetShortInfo("Limit toggle enable minimum y position");
+	SetShortInfo("@Animator.Undo.RuleLimitToggleEnableMinimumXPosition");
 	
 	pRule = rule;
 }

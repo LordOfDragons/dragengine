@@ -49,7 +49,7 @@ aeURuleLimitSetTargetBone::aeURuleLimitSetTargetBone(aeRuleLimit *rule, const ch
 	pOldBone = rule->GetTargetBone();
 	pNewBone = newBone;
 	
-	SetShortInfo("Limit set target bone");
+	SetShortInfo("@Animator.Undo.RuleLimitSetTargetBone");
 	
 	pRule = rule;
 }

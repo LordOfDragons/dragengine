@@ -41,7 +41,7 @@ aeULinkSetVertexPositionSetMinimum::aeULinkSetVertexPositionSetMinimum(aeLink *l
 	
 	pLink = nullptr;
 	
-	SetShortInfo("Link set vertex position set minimum");
+	SetShortInfo("@Animator.Undo.LinkSetVertexPositionSetMinimum");
 	
 	pLink = link;
 	pOldValue = link->GetVertexPositionSetMinimum();

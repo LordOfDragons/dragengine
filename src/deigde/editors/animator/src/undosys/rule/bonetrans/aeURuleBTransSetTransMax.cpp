@@ -51,7 +51,7 @@ aeURuleBTransSetTransMax::aeURuleBTransSetTransMax(aeRuleBoneTransformator *rule
 		pOldMax = rule->GetMaximumTranslation();
 		pNewMax = newMax;
 		
-		SetShortInfo("Bone transformator Set maximum translation");
+		SetShortInfo("@Animator.Undo.RuleBoneTransformatorSetMaximumTranslation");
 		
 	}catch(const deException &){
 		pCleanUp();

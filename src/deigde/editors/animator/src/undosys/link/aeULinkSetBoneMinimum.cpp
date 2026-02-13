@@ -47,7 +47,7 @@ aeULinkSetBoneMinimum::aeULinkSetBoneMinimum(aeLink *link, float newBoneMinimum)
 	
 	pLink = nullptr;
 	
-	SetShortInfo("Link set bone minimum");
+	SetShortInfo("@Animator.Undo.LinkSetBoneMinimum");
 	
 	pLink = link;
 	pOldValue = link->GetBoneMinimum();

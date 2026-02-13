@@ -260,7 +260,7 @@ public:
 		
 		const aeUAnimatorSetBones::Ref undo = aeUAnimatorSetBones::Ref::New(
 			animator, animator->GetListBones() + clip->GetBones());
-		undo->SetShortInfo("Animator paste bones");
+		undo->SetShortInfo("@Animator.Undo.PasteBones");
 		return undo;
 	}
 	
@@ -333,7 +333,7 @@ public:
 		}
 		
 		const aeUAnimatorSetBones::Ref undo = aeUAnimatorSetBones::Ref::New(animator, animator->GetListBones() + bones);
-		undo->SetShortInfo("Animator import bones");
+		undo->SetShortInfo("@Animator.Undo.ImportBones");
 		return undo;
 	}
 };
@@ -467,7 +467,7 @@ public:
 		
 		const aeUAnimatorSetVertexPositionSets::Ref undo(aeUAnimatorSetVertexPositionSets::Ref::New(
 			animator, animator->GetListVertexPositionSets() + clip->GetVertexPositionSets()));
-		undo->SetShortInfo("Animator paste vertex position sets");
+		undo->SetShortInfo("@Animator.Undo.PasteVertexPositionSets");
 		return undo;
 	}
 	
@@ -541,7 +541,7 @@ public:
 		
 		const aeUAnimatorSetVertexPositionSets::Ref undo(aeUAnimatorSetVertexPositionSets::Ref::New(
 			animator, animator->GetListVertexPositionSets() + sets));
-		undo->SetShortInfo("Animator import vertex position sets");
+		undo->SetShortInfo("@Animator.Undo.ImportVertexPositionSets");
 		return undo;
 	}
 };

@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUAddController(aeAnimator *animator, aeController *controller);
+	aeUAddController(aeAnimator *animator, aeController *controller, const char *shortInfo = nullptr);
 protected:
 	/** Clean up undo. */
 	~aeUAddController() override;

@@ -48,7 +48,7 @@ aeURuleGroupToggleEnableSize::aeURuleGroupToggleEnableSize(aeRuleGroup *rule){
 	
 	try{
 		pRule = rule;
-		SetShortInfo("Rule group toggle enable size");
+		SetShortInfo("@Animator.Undo.RuleGroupToggleEnableSize");
 		
 	}catch(const deException &){
 		pCleanUp();

@@ -46,7 +46,7 @@ aeURuleLimitSetEnablePosXMax::aeURuleLimitSetEnablePosXMax(aeRuleLimit *rule){
 	
 	pRule = nullptr;
 	
-	SetShortInfo("Limit toggle enable maximum x position");
+	SetShortInfo("@Animator.Undo.RuleLimitToggleEnableMaximumXPosition");
 	
 	pRule = rule;
 }

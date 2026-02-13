@@ -49,7 +49,7 @@ pNewID(newID)
 	
 	pOldID = rule->GetID();
 	
-	SetShortInfo("State snapshot rule set ID");
+	SetShortInfo("@Animator.Undo.RuleSnapshotSetID");
 	
 	pRule = rule;
 }

@@ -41,7 +41,7 @@ aeULinkSetVertexPositionSetMaximum::aeULinkSetVertexPositionSetMaximum(aeLink *l
 	
 	pLink = nullptr;
 	
-	SetShortInfo("Link set vertex position set maximum");
+	SetShortInfo("@Animator.Undo.LinkSetVertexPositionSetMaximum");
 	
 	pLink = link;
 	pOldValue = link->GetVertexPositionSetMaximum();

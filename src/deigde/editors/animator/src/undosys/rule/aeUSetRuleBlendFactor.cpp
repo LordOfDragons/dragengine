@@ -51,7 +51,7 @@ aeUSetRuleBlendFactor::aeUSetRuleBlendFactor(aeRule *rule, float newFactor){
 	
 	try{
 		pRule = rule;
-		SetShortInfo("Rule set blend factor");
+		SetShortInfo("@Animator.Undo.SetRuleBlendFactor");
 		
 	}catch(const deException &){
 		pCleanUp();

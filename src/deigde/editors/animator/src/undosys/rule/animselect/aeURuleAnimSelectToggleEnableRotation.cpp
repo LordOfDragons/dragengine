@@ -47,7 +47,7 @@ pRule(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Rule animation select toggle enable rotation");
+	SetShortInfo("@Animator.Undo.RuleAnimationSelectToggleEnableRotation");
 	
 	pRule = rule;
 }

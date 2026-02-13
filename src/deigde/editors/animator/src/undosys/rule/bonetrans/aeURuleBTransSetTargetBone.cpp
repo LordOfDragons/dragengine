@@ -49,7 +49,7 @@ aeURuleBTransSetTargetBone::aeURuleBTransSetTargetBone(aeRuleBoneTransformator *
 	pOldBone = rule->GetTargetBone();
 	pNewBone = newBone;
 	
-	SetShortInfo("Bone transformator set target bone");
+	SetShortInfo("@Animator.Undo.RuleBoneTransformatorSetTargetBone");
 	
 	pRule = rule;
 }

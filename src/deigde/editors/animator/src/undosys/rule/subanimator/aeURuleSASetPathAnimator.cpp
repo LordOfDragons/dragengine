@@ -48,7 +48,7 @@ pNewPath(newPath)
 	pOldPath = rule->GetPathSubAnimator();
 	pOldConnections = rule->GetConnections();
 	
-	SetShortInfo("Sub-Animator: Set animator path");
+	SetShortInfo("@Animator.Undo.RuleSubAnimatorSetPathAnimator");
 	
 	pRule = rule;
 }

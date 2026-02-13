@@ -46,7 +46,7 @@ pRule(rule)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Bone transformator toggle use axis");
+	SetShortInfo("@Animator.Undo.RuleBoneTransformatorSetUseAxis");
 }
 
 aeURuleBTransSetUseAxis::~aeURuleBTransSetUseAxis(){

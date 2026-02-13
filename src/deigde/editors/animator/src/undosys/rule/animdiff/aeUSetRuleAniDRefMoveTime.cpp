@@ -49,7 +49,7 @@ aeUSetRuleAniDRefMoveTime::aeUSetRuleAniDRefMoveTime(aeRuleAnimationDifference *
 		pOldTime = rule->GetReferenceMoveTime();
 		pNewTime = newTime;
 		
-		SetShortInfo("Set animation difference rule reference move time");
+		SetShortInfo("@Animator.Undo.SetRuleAnimationDifferenceReferenceMoveTime");
 		
 	}catch(const deException &){
 		pCleanUp();

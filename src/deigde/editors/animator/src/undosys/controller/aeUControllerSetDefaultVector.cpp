@@ -48,7 +48,7 @@ pNewVector(newVector)
 	DEASSERT_NOTNULL(controller->GetAnimator())
 	
 	pOldVector = controller->GetDefaultVector();
-	SetShortInfo("Set controller default vector");
+	SetShortInfo("@Animator.Undo.ControllerSetDefaultVector");
 }
 
 aeUControllerSetDefaultVector::~aeUControllerSetDefaultVector(){

@@ -46,7 +46,7 @@ aeURuleLimitSetEnableScaleYMin::aeURuleLimitSetEnableScaleYMin(aeRuleLimit *rule
 	
 	pRule = nullptr;
 	
-	SetShortInfo("Limit toggle enable minimum y scaling");
+	SetShortInfo("@Animator.Undo.RuleLimitToggleEnableMinimumYScaling");
 	
 	pRule = rule;
 }

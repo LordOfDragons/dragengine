@@ -49,7 +49,7 @@ pNewValue(newValue)
 	}
 	
 	pOldValue = controller->GetName();
-	SetShortInfo("Set controller name");
+	SetShortInfo("@Animator.Undo.ControllerSetName");
 }
 
 aeUControllerSetName::~aeUControllerSetName(){

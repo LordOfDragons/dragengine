@@ -46,7 +46,7 @@ aeURuleLimitSetVertexPositionSetMin::aeURuleLimitSetVertexPositionSetMin(
 		pOldMin = rule->GetMinimumVertexPositionSet();
 		pNewMin = newMin;
 		
-		SetShortInfo("Limit Set minimum vertex position set");
+		SetShortInfo("@Animator.Undo.SetRuleLimitMinimumVertexPositionSet");
 		
 	}catch(const deException &){
 		pCleanUp();

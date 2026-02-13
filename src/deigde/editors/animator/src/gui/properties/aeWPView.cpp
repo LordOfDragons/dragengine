@@ -439,7 +439,7 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@Animator.WPView.Action.AttachmentAdd.ToolTip"){}
 	
 	void OnAction(aeAnimator *animator) override{
-		const decString baseName("Attachment");
+		const decString baseName(pPanel.Translate("Animator.DefaultName.Attachment").ToUTF8());
 		decString name(baseName);
 		int number = 1;
 		while(animator->GetAttachmentNamed(name)){
@@ -542,7 +542,7 @@ public:
 	using Ref = deTObjectReference<cActionMenuAttach>;
 	
 	cActionMenuAttach(aeWPView &panel) : igdeActionContextMenu("",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Reset animation"),
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "@Animator.WPView.Action.ResetAnimation.ToolTip"),
 	pPanel(panel){}
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override{
@@ -666,9 +666,9 @@ pWindowProperties(windowProperties)
 	
 	
 	// sky, environment object, camera
-	helper.WPSky(content, pWPSky, cEditSky::Ref::New(*this), "Sky:", false, true);
-	helper.WPWObject(content, pWPEnvObject, cEditEnvObject::Ref::New(*this), "Environment Object:", false, true);
-	helper.WPCamera(content, pWPCamera, cEditCamera::Ref::New(*this), "Camera:", false, true);
+	helper.WPSky(content, pWPSky, cEditSky::Ref::New(*this), "@Animator.WPView.Sky.Label", false, true);
+	helper.WPWObject(content, pWPEnvObject, cEditEnvObject::Ref::New(*this), "@Animator.WPView.EnvironmentObject.Label", false, true);
+	helper.WPCamera(content, pWPCamera, cEditCamera::Ref::New(*this), "@Animator.WPView.Camera.Label", false, true);
 	
 	
 	// camera attaching

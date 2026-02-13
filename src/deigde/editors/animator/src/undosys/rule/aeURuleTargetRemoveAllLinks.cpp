@@ -48,7 +48,7 @@ pTarget(nullptr)
 	DEASSERT_NOTNULL(target)
 	DEASSERT_TRUE(target->GetLinks().IsNotEmpty())
 	
-	SetShortInfo("Rule Target Remove All Links");
+	SetShortInfo("@Animator.Undo.RuleTargetRemoveAllLinks");
 	
 	pRule = rule;
 	pTarget = target;

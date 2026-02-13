@@ -81,6 +81,9 @@ public:
 	
 	/** \brief Update undo list. */
 	void UpdateUndo();
+	
+	/** \brief Language changed. */
+	void OnLanguageChanged() override;
 	/*@}*/
 };
 

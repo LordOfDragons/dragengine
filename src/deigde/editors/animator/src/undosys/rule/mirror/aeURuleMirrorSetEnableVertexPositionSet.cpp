@@ -38,7 +38,7 @@ pRule(rule)
 {
 	DEASSERT_NOTNULL(rule)
 	
-	SetShortInfo("Toggle mirror rule enable vertex poosition set");
+	SetShortInfo("@Animator.Undo.RuleMirrorToggleEnableVertexPositionSet");
 }
 
 aeURuleMirrorSetEnableVertexPositionSet::~aeURuleMirrorSetEnableVertexPositionSet(){

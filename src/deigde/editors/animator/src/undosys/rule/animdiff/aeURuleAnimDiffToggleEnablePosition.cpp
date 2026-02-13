@@ -48,7 +48,7 @@ aeURuleAnimDiffToggleEnablePosition::aeURuleAnimDiffToggleEnablePosition(aeRuleA
 	
 	try{
 		pRule = rule;
-		SetShortInfo("Rule animation difference toggle enable position");
+		SetShortInfo("@Animator.Undo.RuleAnimationDifferenceToggleEnablePosition");
 		
 	}catch(const deException &){
 		pCleanUp();

@@ -46,7 +46,7 @@ aeURuleIKSetReachBone::aeURuleIKSetReachBone(aeRuleInverseKinematic *rule, const
 	
 	pRule = nullptr;
 	
-	SetShortInfo("Inverse kinematic set reach bone");
+	SetShortInfo("@Animator.Undo.RuleInverseKinematicSetReachBone");
 	
 	pOldValue = rule->GetReachBone();
 	pNewValue = newValue;

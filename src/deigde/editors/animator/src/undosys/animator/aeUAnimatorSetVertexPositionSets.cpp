@@ -47,7 +47,7 @@ pNewValue(newValue)
 	DEASSERT_NOTNULL(animator)
 	
 	pOldValue = animator->GetListVertexPositionSets();
-	SetShortInfo("Animator set vertex position sets");
+	SetShortInfo("@Animator.Undo.AnimatorSetVertexPositionSets");
 }
 
 aeUAnimatorSetVertexPositionSets::~aeUAnimatorSetVertexPositionSets(){

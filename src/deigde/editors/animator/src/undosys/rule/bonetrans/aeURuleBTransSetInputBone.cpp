@@ -43,7 +43,7 @@ pNewBone(newBone)
 	
 	pOldBone = rule->GetInputBone();
 	
-	SetShortInfo("Bone transformator set input bone");
+	SetShortInfo("@Animator.Undo.RuleBoneTransformatorSetInputBone");
 	
 	pRule = rule;
 }

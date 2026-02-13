@@ -49,7 +49,7 @@ aeUSetRuleSModMinSize::aeUSetRuleSModMinSize(aeRuleStateManipulator *rule, const
 		pOldMin = rule->GetMinimumSize();
 		pNewMin = newMin;
 		
-		SetShortInfo("Set state manipulator rule minimum size");
+		SetShortInfo("@Animator.Undo.SetRuleStateManipulatorMinimumSize");
 		
 	}catch(const deException &){
 		pCleanUp();

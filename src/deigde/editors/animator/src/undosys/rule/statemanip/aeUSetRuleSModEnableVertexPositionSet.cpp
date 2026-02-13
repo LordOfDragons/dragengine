@@ -41,7 +41,7 @@ aeUSetRuleSModEnableVertexPositionSet::aeUSetRuleSModEnableVertexPositionSet(aeR
 	
 	try{
 		pRule = rule;
-		SetShortInfo("Set state manipulator rule enable vertex position set");
+		SetShortInfo("@Animator.Undo.SetRuleStateManipulatorEnableVertexPositionSet");
 		
 	}catch(const deException &){
 		pCleanUp();

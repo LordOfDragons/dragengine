@@ -42,7 +42,7 @@ aeUToggleRuleInvertBlendFactor::aeUToggleRuleInvertBlendFactor(aeRule *rule) :
 pRule(rule)
 {
 	DEASSERT_NOTNULL(rule)
-	SetShortInfo("Rule toggle invert blend factor");
+	SetShortInfo("@Animator.Undo.ToggleRuleInvertBlendFactor");
 }
 
 aeUToggleRuleInvertBlendFactor::~aeUToggleRuleInvertBlendFactor(){

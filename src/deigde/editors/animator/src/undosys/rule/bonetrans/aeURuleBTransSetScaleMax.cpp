@@ -51,7 +51,7 @@ aeURuleBTransSetScaleMax::aeURuleBTransSetScaleMax(aeRuleBoneTransformator *rule
 		pOldMax = rule->GetMaximumScaling();
 		pNewMax = newMax;
 		
-		SetShortInfo("Bone transformator Set maximum scaling");
+		SetShortInfo("@Animator.Undo.RuleBoneTransformatorSetMaximumScaling");
 		
 	}catch(const deException &){
 		pCleanUp();

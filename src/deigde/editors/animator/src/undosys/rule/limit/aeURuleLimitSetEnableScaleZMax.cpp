@@ -46,7 +46,7 @@ aeURuleLimitSetEnableScaleZMax::aeURuleLimitSetEnableScaleZMax(aeRuleLimit *rule
 	
 	pRule = nullptr;
 	
-	SetShortInfo("Limit toggle enable maximum z scaling");
+	SetShortInfo("@Animator.Undo.RuleLimitToggleEnableMaximumZScaling");
 	
 	pRule = rule;
 }

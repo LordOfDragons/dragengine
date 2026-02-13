@@ -47,7 +47,7 @@ pNewValue(newValue)
 	DEASSERT_NOTNULL(controller->GetAnimator())
 	
 	pOldValue = controller->GetDefaultValue();
-	SetShortInfo("Set controller default value");
+	SetShortInfo("@Animator.Undo.ControllerSetDefaultValue");
 }
 
 aeUControllerSetDefaultValue::~aeUControllerSetDefaultValue(){

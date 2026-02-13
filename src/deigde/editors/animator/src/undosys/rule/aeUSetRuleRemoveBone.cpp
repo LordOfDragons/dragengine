@@ -59,10 +59,10 @@ aeUSetRuleRemoveBone::aeUSetRuleRemoveBone(aeRule* rule, const char* pattern){
 	}
 	
 	if(pBones.GetCount() == 1){
-		SetShortInfo("Remove bone from rule");
+		SetShortInfo("@Animator.Undo.SetRuleRemoveBone");
 		
 	}else{
-		SetShortInfo("Remove bones from rule");
+		SetShortInfo("@Animator.Undo.SetRuleRemoveBones");
 	}
 	
 	pRule = rule;

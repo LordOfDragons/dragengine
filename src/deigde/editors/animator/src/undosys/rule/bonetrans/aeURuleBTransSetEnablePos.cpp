@@ -46,7 +46,7 @@ aeURuleBTransSetEnablePos::aeURuleBTransSetEnablePos(aeRuleBoneTransformator *ru
 	
 	pRule = nullptr;
 	
-	SetShortInfo("Bone transformator toggle enable position");
+	SetShortInfo("@Animator.Undo.RuleBoneTransformatorSetEnablePosition");
 	
 	pRule = rule;
 }

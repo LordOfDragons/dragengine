@@ -49,7 +49,7 @@ aeURuleIKSetGoalPosition::aeURuleIKSetGoalPosition(aeRuleInverseKinematic *rule,
 		pOldPos = rule->GetGoalPosition();
 		pNewPos = newPos;
 		
-		SetShortInfo("Set inverse kinematic rule goal position");
+		SetShortInfo("@Animator.Undo.SetRuleInverseKinematicGoalPosition");
 		
 	}catch(const deException &){
 		pCleanUp();

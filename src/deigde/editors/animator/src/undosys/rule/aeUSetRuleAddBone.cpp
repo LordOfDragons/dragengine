@@ -72,10 +72,10 @@ aeUSetRuleAddBone::aeUSetRuleAddBone(aeRule *rule, const char *pattern){
 	}
 	
 	if(pBones.GetCount() == 1){
-		SetShortInfo("Add bone to rule");
+		SetShortInfo("@Animator.Undo.SetRuleAddBone");
 		
 	}else{
-		SetShortInfo("Add bones to rule");
+		SetShortInfo("@Animator.Undo.SetRuleAddBones");
 	}
 	
 	pRule = rule;

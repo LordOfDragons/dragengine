@@ -48,7 +48,7 @@ aeURuleTrackToSetUpTarget::aeURuleTrackToSetUpTarget(aeRuleTrackTo *rule, deAnim
 	pOldTarget = rule->GetUpTarget();
 	pNewTarget = newTarget;
 	
-	SetShortInfo("TrackTo Set Up Target");
+	SetShortInfo("@Animator.Undo.RuleTrackToSetUpTarget");
 	
 	pRule = rule;
 }

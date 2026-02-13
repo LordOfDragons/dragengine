@@ -46,7 +46,7 @@ aeURuleLimitSetEnablePosZMin::aeURuleLimitSetEnablePosZMin(aeRuleLimit *rule){
 	
 	pRule = nullptr;
 	
-	SetShortInfo("Limit toggle enable minimum z position");
+	SetShortInfo("@Animator.Undo.RuleLimitToggleEnableMinimumZPosition");
 	
 	pRule = rule;
 }

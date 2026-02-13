@@ -46,7 +46,7 @@ pRule(nullptr)
 		pOldScale = rule->GetScaleVertexPositionSet();
 		pNewScale = newScale;
 		
-		SetShortInfo("Set foreign state rule vertex position set scale");
+		SetShortInfo("@Animator.Undo.SetRuleForeignStateScaleVertexPositionSet");
 		
 	}catch(const deException &){
 		pCleanUp();

@@ -47,7 +47,7 @@ aeULinkAdd::aeULinkAdd(aeAnimator *animator, aeLink *link){
 	pAnimator = nullptr;
 	pLink = nullptr;
 	
-	SetShortInfo("Add Link");
+	SetShortInfo("@Animator.Undo.LinkAdd");
 	
 	pAnimator = animator;
 	pLink = link;

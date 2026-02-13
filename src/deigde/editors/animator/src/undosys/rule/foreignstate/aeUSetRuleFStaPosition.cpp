@@ -49,7 +49,7 @@ aeUSetRuleFStaPosition::aeUSetRuleFStaPosition(aeRuleForeignState *rule, float n
 		pOldScale = rule->GetScalePosition();
 		pNewScale = newScale;
 		
-		SetShortInfo("Set foreign state rule position scale");
+		SetShortInfo("@Animator.Undo.SetRuleForeignStatePosition");
 		
 	}catch(const deException &){
 		pCleanUp();

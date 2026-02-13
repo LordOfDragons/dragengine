@@ -49,7 +49,7 @@ pNewValue(newValue)
 	}
 	
 	pOldValue = controller->GetMinimumValue();
-	SetShortInfo("Set controller minimum value");
+	SetShortInfo("@Animator.Undo.ControllerSetMinimumValue");
 }
 
 aeUControllerSetMinimumValue::~aeUControllerSetMinimumValue(){

@@ -624,8 +624,8 @@ void aeWPAPanelRuleBoneTransformator::UpdateTargetList(){
 	
 	aeRuleBoneTransformator * const rule = (aeRuleBoneTransformator*)GetRule();
 	if(rule){
-		AddTarget("Translation", rule->GetTargetTranslation());
-		AddTarget("Rotation", rule->GetTargetRotation());
-		AddTarget("Scaling", rule->GetTargetScaling());
+		AddTarget("@Animator.Target.Translation", rule->GetTargetTranslation());
+		AddTarget("@Animator.Target.Rotation", rule->GetTargetRotation());
+		AddTarget("@Animator.Target.Scaling", rule->GetTargetScaling());
 	}
 }

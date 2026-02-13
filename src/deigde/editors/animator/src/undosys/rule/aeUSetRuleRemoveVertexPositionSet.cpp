@@ -54,10 +54,10 @@ aeUSetRuleRemoveVertexPositionSet::aeUSetRuleRemoveVertexPositionSet(aeRule* rul
 	}
 	
 	if(pVertexPositionSets.GetCount() == 1){
-		SetShortInfo("Remove vertex position set from rule");
+		SetShortInfo("@Animator.Undo.SetRuleRemoveVertexPositionSet");
 		
 	}else{
-		SetShortInfo("Remove vertex position sets from rule");
+		SetShortInfo("@Animator.Undo.SetRuleRemoveVertexPositionSets");
 	}
 	
 	pRule = rule;

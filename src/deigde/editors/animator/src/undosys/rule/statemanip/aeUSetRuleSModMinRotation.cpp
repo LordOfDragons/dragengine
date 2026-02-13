@@ -49,7 +49,7 @@ aeUSetRuleSModMinRotation::aeUSetRuleSModMinRotation(aeRuleStateManipulator *rul
 		pOldMin = rule->GetMinimumRotation();
 		pNewMin = newMin;
 		
-		SetShortInfo("Set state manipulator rule minimum rotation");
+		SetShortInfo("@Animator.Undo.SetRuleStateManipulatorMinimumRotation");
 		
 	}catch(const deException &){
 		pCleanUp();

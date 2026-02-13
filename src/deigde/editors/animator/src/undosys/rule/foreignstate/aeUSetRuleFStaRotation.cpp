@@ -49,7 +49,7 @@ aeUSetRuleFStaRotation::aeUSetRuleFStaRotation(aeRuleForeignState *rule, float n
 		pOldScale = rule->GetScaleOrientation();
 		pNewScale = newScale;
 		
-		SetShortInfo("Set foreign state rule rotation scale");
+		SetShortInfo("@Animator.Undo.SetRuleForeignStateRotation");
 		
 	}catch(const deException &){
 		pCleanUp();

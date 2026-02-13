@@ -44,7 +44,7 @@
 aeURuleTargetAddLink::aeURuleTargetAddLink(aeRule *rule, aeControllerTarget *target, aeLink *link){
 	if(!rule || !target || !link) DETHROW(deeInvalidParam);
 	
-	SetShortInfo("Rule Target Add Link");
+	SetShortInfo("@Animator.Undo.RuleTargetAddLink");
 	
 	pRule = rule;
 	pTarget = target;

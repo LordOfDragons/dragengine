@@ -46,7 +46,7 @@ aeUSetRuleFStaEnableRot::aeUSetRuleFStaEnableRot(aeRuleForeignState *rule){
 	
 	try{
 		pRule = rule;
-		SetShortInfo("Set bone rotator rule enable rotation");
+		SetShortInfo("@Animator.Undo.SetRuleForeignStateEnableRotation");
 		
 	}catch(const deException &){
 		pCleanUp();

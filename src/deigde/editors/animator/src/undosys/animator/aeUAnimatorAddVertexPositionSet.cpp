@@ -66,10 +66,10 @@ pAnimator(animator)
 	}
 	
 	if(pVertexPositionSets.GetCount() == 1){
-		SetShortInfo("Animator add vertex position set");
+		SetShortInfo("@Animator.Undo.AnimatorAddVertexPositionSet");
 		
 	}else{
-		SetShortInfo("Animator add vertex position sets");
+		SetShortInfo("@Animator.Undo.AnimatorAddVertexPositionSets");
 	}
 }
 

@@ -46,7 +46,7 @@ aeURuleLimitSetEnableRotZMin::aeURuleLimitSetEnableRotZMin(aeRuleLimit *rule){
 	
 	pRule = nullptr;
 	
-	SetShortInfo("Limit toggle enable minimum y rotation");
+	SetShortInfo("@Animator.Undo.RuleLimitToggleEnableMinimumYRotation");
 	
 	pRule = rule;
 }

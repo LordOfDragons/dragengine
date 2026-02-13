@@ -47,7 +47,7 @@ pLink(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Link set bone parameter");
+	SetShortInfo("@Animator.Undo.LinkSetBoneParameter");
 	
 	pLink = link;
 }

@@ -47,7 +47,7 @@ aeULinkSetBoneParameter::aeULinkSetBoneParameter(aeLink *link, deAnimatorLink::e
 	
 	pLink = nullptr;
 	
-	SetShortInfo("Link set bone parameter");
+	SetShortInfo("@Animator.Undo.LinkSetBoneParameter");
 	
 	pLink = link;
 	pOldValue = link->GetBoneParameter();

@@ -42,7 +42,7 @@ pRule(rule),
 pOldValue(rule->GetMaximumAngle()),
 pNewValue(newValue)
 {
-	SetShortInfo("Bone transformator set maximum angle");
+	SetShortInfo("@Animator.Undo.RuleBoneTransformatorSetMaximumAngle");
 }
 
 aeURuleBTransSetMaxAngle::~aeURuleBTransSetMaxAngle(){

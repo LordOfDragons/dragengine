@@ -48,7 +48,7 @@ aeURuleSnapToggleEnableSize::aeURuleSnapToggleEnableSize(aeRuleStateSnapshot *ru
 	
 	try{
 		pRule = rule;
-		SetShortInfo("Rule state snapshot toggle enable size");
+		SetShortInfo("@Animator.Undo.RuleSnapshotToggleEnableSize");
 		
 	}catch(const deException &){
 		pCleanUp();

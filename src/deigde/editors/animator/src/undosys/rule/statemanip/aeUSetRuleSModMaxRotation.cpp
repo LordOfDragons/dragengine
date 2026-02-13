@@ -49,7 +49,7 @@ aeUSetRuleSModMaxRotation::aeUSetRuleSModMaxRotation(aeRuleStateManipulator *rul
 		pOldMax = rule->GetMaximumRotation();
 		pNewMax = newMax;
 		
-		SetShortInfo("Set state manipulator rule maximum rotation");
+		SetShortInfo("@Animator.Undo.SetRuleStateManipulatorMaximumRotation");
 		
 	}catch(const deException &){
 		pCleanUp();

@@ -47,7 +47,7 @@ pRule(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Rule animation toggle enable size");
+	SetShortInfo("@Animator.Undo.RuleAnimationToggleEnableSize");
 	
 	pRule = rule;
 }

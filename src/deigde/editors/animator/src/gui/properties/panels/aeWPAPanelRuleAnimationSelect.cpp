@@ -130,7 +130,7 @@ public:
 		
 		decStringList moves(rule->GetMoves());
 		moves.Add(name);
-		return aeURuleAnimSelectSetMoves::Ref::New(rule, moves, "Animation select add move");
+		return aeURuleAnimSelectSetMoves::Ref::New(rule, moves, "@Animator.Undo.AnimationSelectAddMove");
 	}
 	
 	void Update(const aeAnimator & , const aeRuleAnimationSelect &) override{
@@ -154,7 +154,7 @@ public:
 		
 		decStringList moves(rule->GetMoves());
 		moves.RemoveFrom(selection);
-		return aeURuleAnimSelectSetMoves::Ref::New(rule, moves, "Animation select remove move");
+		return aeURuleAnimSelectSetMoves::Ref::New(rule, moves, "@Animator.Undo.AnimationSelectRemoveMove");
 	}
 	
 	void Update(const aeAnimator & , const aeRuleAnimationSelect &) override{
@@ -178,7 +178,7 @@ public:
 		
 		decStringList moves(rule->GetMoves());
 		moves.Move(selection, selection - 1);
-		return aeURuleAnimSelectSetMoves::Ref::New(rule, moves, "Animation select move move up");
+		return aeURuleAnimSelectSetMoves::Ref::New(rule, moves, "@Animator.Undo.AnimationSelectMoveMoveUp");
 	}
 	
 	void Update(const aeAnimator & , const aeRuleAnimationSelect &) override{
@@ -202,7 +202,7 @@ public:
 		
 		decStringList moves(rule->GetMoves());
 		moves.Move(selection, selection + 1);
-		return aeURuleAnimSelectSetMoves::Ref::New(rule, moves, "Animation select move move down");
+		return aeURuleAnimSelectSetMoves::Ref::New(rule, moves, "@Animator.Undo.AnimationSelectMoveMoveDown");
 	}
 	
 	void Update(const aeAnimator & , const aeRuleAnimationSelect &rule) override{
@@ -412,8 +412,8 @@ void aeWPAPanelRuleAnimationSelect::UpdateTargetList(){
 	
 	aeRuleAnimationSelect * const rule = (aeRuleAnimationSelect*)GetRule();
 	if(rule){
-		AddTarget("Move Time", rule->GetTargetMoveTime());
-		AddTarget("Select", rule->GetTargetSelect());
+		AddTarget("@Animator.Target.MoveTime", rule->GetTargetMoveTime());
+		AddTarget("@Animator.Target.Select", rule->GetTargetSelect());
 	}
 }
 

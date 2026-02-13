@@ -58,10 +58,10 @@ pAnimator(animator)
 	}
 	
 	if(pVertexPositionSets.GetCount() == 1){
-		SetShortInfo("Animator remove vertex position set");
+		SetShortInfo("@Animator.Undo.AnimatorRemoveVertexPositionSet");
 		
 	}else{
-		SetShortInfo("Animator remove vertex position sets");
+		SetShortInfo("@Animator.Undo.AnimatorRemoveVertexPositionSets");
 	}
 }
 

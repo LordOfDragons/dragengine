@@ -46,7 +46,7 @@ aeURuleLimitSetEnableScaleZMin::aeURuleLimitSetEnableScaleZMin(aeRuleLimit *rule
 	
 	pRule = nullptr;
 	
-	SetShortInfo("Limit toggle enable minimum z scaling");
+	SetShortInfo("@Animator.Undo.RuleLimitToggleEnableMinimumZScaling");
 	
 	pRule = rule;
 }

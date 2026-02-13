@@ -46,7 +46,7 @@ aeUSetRuleFStaEnablePos::aeUSetRuleFStaEnablePos(aeRuleForeignState *rule){
 	
 	try{
 		pRule = rule;
-		SetShortInfo("Set bone rotator rule enable position");
+		SetShortInfo("@Animator.Undo.SetRuleForeignStateEnablePosition");
 		
 	}catch(const deException &){
 		pCleanUp();

@@ -51,7 +51,7 @@ aeURuleLimitSetPosMax::aeURuleLimitSetPosMax(aeRuleLimit *rule, const decVector 
 		pOldMax = rule->GetMaximumPosition();
 		pNewMax = newMax;
 		
-		SetShortInfo("Limit Set maximum translation");
+		SetShortInfo("@Animator.Undo.SetRuleLimitMaximumTranslation");
 		
 	}catch(const deException &){
 		pCleanUp();

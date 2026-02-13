@@ -43,7 +43,7 @@
 aeURulePasteBones::aeURulePasteBones(aeRule* rule, const decStringSet &newValue) :
 aeUSetRuleBones(rule, newValue)
 {
-	SetShortInfo("Rule paste all bones");
+	SetShortInfo("@Animator.Undo.RulePasteAllBones");
 }
 
 aeURulePasteBones::~aeURulePasteBones(){

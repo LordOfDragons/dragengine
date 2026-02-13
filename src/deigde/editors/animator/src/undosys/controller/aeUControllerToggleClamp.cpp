@@ -47,7 +47,7 @@ pController(controller)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Set controller toggle clamp");
+	SetShortInfo("@Animator.Undo.ControllerToggleClamp");
 }
 
 aeUControllerToggleClamp::~aeUControllerToggleClamp(){

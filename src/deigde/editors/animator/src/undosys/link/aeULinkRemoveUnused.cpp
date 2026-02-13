@@ -49,7 +49,7 @@ pAnimator(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Remove unused links");
+	SetShortInfo("@Animator.Undo.LinkRemoveUnused");
 	
 	pLinks = animator->GetLinks().Collect([&](aeLink *link){
 		return animator->CountLinkUsage(link) == 0;

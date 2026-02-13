@@ -49,7 +49,7 @@ aeURuleIKSetGoalRotation::aeURuleIKSetGoalRotation(aeRuleInverseKinematic *rule,
 		pOldRot = rule->GetGoalOrientation();
 		pNewRot = newRot;
 		
-		SetShortInfo("Set inverse kinematic rule goal orientation");
+		SetShortInfo("@Animator.Undo.SetRuleInverseKinematicGoalOrientation");
 		
 	}catch(const deException &){
 		pCleanUp();

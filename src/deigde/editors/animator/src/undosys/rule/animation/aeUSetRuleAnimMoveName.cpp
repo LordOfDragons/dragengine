@@ -46,7 +46,7 @@ aeUSetRuleAnimMoveName::aeUSetRuleAnimMoveName(aeRuleAnimation *rule, const char
 	pOldName = rule->GetMoveName();
 	pNewName = newName;
 	
-	SetShortInfo("Set animation rule move name");
+	SetShortInfo("@Animator.Undo.SetRuleAnimationMoveName");
 	
 	pRule = rule;
 }

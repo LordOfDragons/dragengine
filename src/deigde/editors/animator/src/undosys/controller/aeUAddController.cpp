@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUAddController::aeUAddController(aeAnimator *animator, aeController *controller){
+aeUAddController::aeUAddController(aeAnimator *animator, aeController *controller, const char *shortInfo){
 	if(!animator || !controller) DETHROW(deeInvalidParam);
 	
 	pAnimator = nullptr;
@@ -48,6 +48,8 @@ aeUAddController::aeUAddController(aeAnimator *animator, aeController *controlle
 	
 	pAnimator = animator;
 	pController = controller;
+	
+	SetShortInfo(shortInfo ? shortInfo : "@Animator.Undo.AddController");
 }
 
 aeUAddController::~aeUAddController(){

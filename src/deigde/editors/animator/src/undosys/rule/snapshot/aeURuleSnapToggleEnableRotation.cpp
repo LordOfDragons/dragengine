@@ -48,7 +48,7 @@ aeURuleSnapToggleEnableRotation::aeURuleSnapToggleEnableRotation(aeRuleStateSnap
 	
 	try{
 		pRule = rule;
-		SetShortInfo("Rule state snapshot toggle enable rotation");
+		SetShortInfo("@Animator.Undo.RuleSnapshotToggleEnableRotation");
 		
 	}catch(const deException &){
 		pCleanUp();

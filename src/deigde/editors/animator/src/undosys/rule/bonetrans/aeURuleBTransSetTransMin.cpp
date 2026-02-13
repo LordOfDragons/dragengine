@@ -51,7 +51,7 @@ aeURuleBTransSetTransMin::aeURuleBTransSetTransMin(aeRuleBoneTransformator *rule
 		pOldMin = rule->GetMinimumTranslation();
 		pNewMin = newMin;
 		
-		SetShortInfo("Bone transformator Set minimum translation");
+		SetShortInfo("@Animator.Undo.RuleBoneTransformatorSetMinimumTranslation");
 		
 	}catch(const deException &){
 		pCleanUp();

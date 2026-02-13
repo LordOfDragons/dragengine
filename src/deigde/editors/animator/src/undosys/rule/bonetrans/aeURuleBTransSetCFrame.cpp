@@ -50,7 +50,7 @@ deAnimatorRuleBoneTransformator::eCoordinateFrames newCoordFrame){
 	pOldCoordFrame = rule->GetCoordinateFrame();
 	pNewCoordFrame = newCoordFrame;
 	
-	SetShortInfo("Bone transformator set coordinate frame");
+	SetShortInfo("@Animator.Undo.RuleBoneTransformatorSetCoordinateFrame");
 	
 	pRule = rule;
 }

@@ -47,7 +47,7 @@ aeULinkSetBoneMaximum::aeULinkSetBoneMaximum(aeLink *link, float newBoneMaximum)
 	
 	pLink = nullptr;
 	
-	SetShortInfo("Link set bone maximum");
+	SetShortInfo("@Animator.Undo.LinkSetBoneMaximum");
 	
 	pLink = link;
 	pOldValue = link->GetBoneMaximum();

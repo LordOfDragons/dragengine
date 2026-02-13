@@ -52,7 +52,7 @@ pNewMaximumValue(newMaximumValue)
 	
 	pOldMinimumValue = controller->GetMinimumValue();
 	pOldMaximumValue = controller->GetMaximumValue();
-	SetShortInfo("Set controller from move");
+	SetShortInfo("@Animator.Undo.ControllerSetFromMove");
 }
 
 aeUControllerSetFromMove::~aeUControllerSetFromMove(){

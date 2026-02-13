@@ -58,7 +58,7 @@ pAnimator(animator)
 	pPatterns.Add(" left");
 	pPatterns.Add(" right");
 	
-	SetShortInfo("Animator mirror vertex position sets");
+	SetShortInfo("@Animator.Undo.AnimatorMirrorVertexPositionSets");
 }
 
 aeUAnimatorMirrorVertexPositionSets::~aeUAnimatorMirrorVertexPositionSets(){

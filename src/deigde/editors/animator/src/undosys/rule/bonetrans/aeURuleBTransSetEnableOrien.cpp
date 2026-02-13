@@ -46,7 +46,7 @@ aeURuleBTransSetEnableOrien::aeURuleBTransSetEnableOrien(aeRuleBoneTransformator
 	
 	pRule = nullptr;
 	
-	SetShortInfo("Bone transformator toggle enable orientation");
+	SetShortInfo("@Animator.Undo.RuleBoneTransformatorSetEnableOrientation");
 	
 	pRule = rule;
 }

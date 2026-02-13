@@ -299,6 +299,6 @@ void aeWPAPanelRuleGroup::UpdateTargetList(){
 	
 	aeRuleGroup * const rule = (aeRuleGroup*)GetRule();
 	if(rule){
-		AddTarget("Select", rule->GetTargetSelect());
+		AddTarget("@Animator.Target.Select", rule->GetTargetSelect());
 	}
 }

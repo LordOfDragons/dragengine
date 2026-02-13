@@ -50,7 +50,7 @@ deAnimatorRuleLimit::eCoordinateFrames newCoordFrame){
 	pOldCoordFrame = rule->GetCoordinateFrame();
 	pNewCoordFrame = newCoordFrame;
 	
-	SetShortInfo("Limit set coordinate frame");
+	SetShortInfo("@Animator.Undo.RuleLimitSetCoordinateFrame");
 	
 	pRule = rule;
 }

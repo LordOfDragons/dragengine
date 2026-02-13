@@ -48,7 +48,7 @@ aeURuleSubAnimToggleEnableSize::aeURuleSubAnimToggleEnableSize(aeRuleSubAnimator
 	
 	try{
 		pRule = rule;
-		SetShortInfo("Rule sub animator toggle enable size");
+		SetShortInfo("@Animator.Undo.RuleSubAnimatorToggleEnableSize");
 		
 	}catch(const deException &){
 		pCleanUp();

@@ -41,7 +41,7 @@ pMatchName(matchName)
 	DEASSERT_NOTNULL(matchName)
 	DEASSERT_FALSE(rule->GetMatchNames().Has(matchName))
 	
-	SetShortInfo("Mirror rule add match name");
+	SetShortInfo("@Animator.Undo.RuleMirrorAddMatchName");
 }
 
 aeURuleMirrorAddMatchName::~aeURuleMirrorAddMatchName(){

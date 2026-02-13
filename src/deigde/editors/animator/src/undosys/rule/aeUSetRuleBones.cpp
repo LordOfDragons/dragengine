@@ -52,7 +52,7 @@ pNewValue(newValue)
 	}
 	
 	pOldValue = rule->GetListBones();
-	SetShortInfo("Set rule bones");
+	SetShortInfo("@Animator.Undo.SetRuleBones");
 	
 	pRule = rule;
 }
