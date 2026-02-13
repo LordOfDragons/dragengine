@@ -53,7 +53,7 @@
 ceUCGestureSetName::ceUCGestureSetName(ceGesture *gesture, const char *newName){
 	if(!gesture || !newName) DETHROW(deeInvalidParam);
 	
-	SetShortInfo("Gesture Set Name");
+	SetShortInfo("@Conversation.Undo.GestureSetName");
 	
 	pOldName = gesture->GetName();
 	pNewName = newName;

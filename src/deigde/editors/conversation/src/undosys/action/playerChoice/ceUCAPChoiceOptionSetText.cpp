@@ -53,7 +53,7 @@ ceUCAPChoiceOptionSetText::ceUCAPChoiceOptionSetText(ceConversationTopic *topic,
 	pOldText = option->GetText();
 	pNewText = newText;
 	
-	SetShortInfo("Player Choice Option Text");
+	SetShortInfo("@Conversation.Undo.PlayerChoiceOptionText");
 	
 	pTopic = topic;
 	pPlayerChoice = playerChoice;

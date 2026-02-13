@@ -66,7 +66,7 @@ ceCAIfElseCase *ifcase, ceConversationAction *action){
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("IfElse Remove Action");
+	SetShortInfo("@Conversation.Undo.IfElseRemoveAction");
 	
 	pTopic = topic;
 	pIfElse = ifElse;

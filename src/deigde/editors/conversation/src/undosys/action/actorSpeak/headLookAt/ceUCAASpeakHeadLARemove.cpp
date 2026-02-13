@@ -56,7 +56,7 @@ ceUCAASpeakHeadLARemove::ceUCAASpeakHeadLARemove(ceConversationTopic *topic, ceC
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Remove HeadLookAt");
+	SetShortInfo("@Conversation.Undo.RemoveHeadLookAt");
 	
 	pTopic = topic;
 	pActorSpeak = actorSpeak;

@@ -51,7 +51,7 @@ ceUCATriggerSetName::ceUCATriggerSetName(ceConversationTopic *topic, ceCATrigger
 	pOldName = action->GetName();
 	pNewName = newName;
 	
-	SetShortInfo("Action trigger set name");
+	SetShortInfo("@Conversation.Undo.ActionTriggerSetName");
 	
 	pTopic = topic;
 	pAction = action;

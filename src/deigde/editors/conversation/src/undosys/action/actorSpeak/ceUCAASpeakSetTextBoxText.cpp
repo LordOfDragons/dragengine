@@ -49,7 +49,7 @@ ceUCAASpeakSetTextBoxText::ceUCAASpeakSetTextBoxText(ceConversationTopic *topic,
 	pOldText = actorSpeak->GetTextBoxText();
 	pNewText = newText;
 	
-	SetShortInfo("Actor Speak Set Text Box Text");
+	SetShortInfo("@Conversation.Undo.ActorSpeakSetTextBoxText");
 	
 	pTopic = topic;
 	pActorSpeak = actorSpeak;

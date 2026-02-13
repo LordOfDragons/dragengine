@@ -47,10 +47,10 @@ pFile(nullptr){
 	}
 	
 	if(topics.GetCount() == 1){
-		SetShortInfo("Paste topic");
+		SetShortInfo("@Conversation.Undo.PasteTopic");
 		
 	}else{
-		SetShortInfo("Paste topics");
+		SetShortInfo("@Conversation.Undo.PasteTopics");
 	}
 	
 	topics.Visit([&](const ceConversationTopic &t){

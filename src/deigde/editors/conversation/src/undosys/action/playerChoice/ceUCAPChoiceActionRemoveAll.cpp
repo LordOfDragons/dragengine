@@ -60,7 +60,7 @@ ceCAPlayerChoice *playerChoice, ceCAPlayerChoiceOption *option){
 		pActions = playerChoice->GetActions();
 	}
 	
-	SetShortInfo("Player Choice Remove All Actions");
+	SetShortInfo("@Conversation.Undo.PlayerChoiceRemoveAllActions");
 	
 	pTopic = topic;
 	pPlayerChoice = playerChoice;

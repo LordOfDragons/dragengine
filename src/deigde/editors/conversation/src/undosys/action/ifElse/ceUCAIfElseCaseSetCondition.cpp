@@ -54,7 +54,7 @@ ceCAIfElseCase *ifcase, ceConversationCondition *newCondition){
 	pOldCondition = nullptr;
 	pNewCondition = nullptr;
 	
-	SetShortInfo("If-else set case condition");
+	SetShortInfo("@Conversation.Undo.IfElseSetCaseCondition");
 	
 	pTopic = topic;
 	pIfElse = ifElse;

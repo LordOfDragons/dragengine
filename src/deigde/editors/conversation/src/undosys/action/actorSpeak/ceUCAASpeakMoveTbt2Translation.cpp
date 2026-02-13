@@ -53,7 +53,7 @@ pAddEntry(oldEntryText == nullptr)
 	DEASSERT_NOTNULL(pLangPack)
 	DEASSERT_NOTNULL(pActorSpeak)
 	
-	SetShortInfo("Move actor speak text box text to translation");
+	SetShortInfo("@Conversation.Undo.MoveActorSpeakTextBoxTextToTranslation");
 }
 
 ceUCAASpeakMoveTbt2Translation::~ceUCAASpeakMoveTbt2Translation(){

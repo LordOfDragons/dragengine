@@ -76,7 +76,7 @@ ceCAPlayerChoiceOption *option, ceConversationAction *action, int newIndex){
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Player Choice Move Action");
+	SetShortInfo("@Conversation.Undo.PlayerChoiceMoveAction");
 	
 	pTopic = topic;
 	pPlayerChoice = playerChoice;

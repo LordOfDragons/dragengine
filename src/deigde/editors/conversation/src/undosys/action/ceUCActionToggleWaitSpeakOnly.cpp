@@ -49,7 +49,7 @@ ceConversationTopic *topic, ceConversationAction *action)
 	pTopic = nullptr;
 	pAction = nullptr;
 	
-	SetShortInfo("Action Toggle Wait Speak Only");
+	SetShortInfo("@Conversation.Undo.ActionToggleWaitSpeakOnly");
 	
 	pTopic = topic;
 	pAction = action;

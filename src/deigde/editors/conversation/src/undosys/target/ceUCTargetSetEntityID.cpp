@@ -44,7 +44,7 @@ ceUCTargetSetEntityID::ceUCTargetSetEntityID(ceTarget *target, const char *newID
 	
 	pTarget = nullptr;
 	
-	SetShortInfo("Target Set Entity ID");
+	SetShortInfo("@Conversation.Undo.TargetSetEntityID");
 	
 	pOldID = target->GetCoordSystem();
 	pNewID = newID;

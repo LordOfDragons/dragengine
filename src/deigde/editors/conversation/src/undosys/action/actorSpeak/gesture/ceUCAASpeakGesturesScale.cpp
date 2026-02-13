@@ -38,7 +38,7 @@
 
 ceUCAASpeakGesturesScale::ceUCAASpeakGesturesScale(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak)
 : ceUCAASpeakStripsScale(topic, actorSpeak){
-	SetShortInfo("Scale gestures");
+	SetShortInfo("@Conversation.Undo.ScaleGestures");
 }
 
 ceUCAASpeakGesturesScale::~ceUCAASpeakGesturesScale(){

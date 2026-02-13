@@ -56,7 +56,7 @@ ceUCAASpeakGestureRemove::ceUCAASpeakGestureRemove(ceConversationTopic *topic, c
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Remove Gesture");
+	SetShortInfo("@Conversation.Undo.RemoveGesture");
 	
 	pTopic = topic;
 	pActorSpeak = actorSpeak;

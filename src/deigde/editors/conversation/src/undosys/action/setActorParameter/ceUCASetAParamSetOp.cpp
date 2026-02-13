@@ -49,7 +49,7 @@ ceCASetActorParameter *action, ceCASetActorParameter::eOperators newOperator){
 	pOldOperator = action->GetOperator();
 	pNewOperator = newOperator;
 	
-	SetShortInfo("Action SetActorParameter Operator");
+	SetShortInfo("@Conversation.Undo.ActionSetActorParameterOperator");
 	
 	pTopic = topic;
 	pAction = action;

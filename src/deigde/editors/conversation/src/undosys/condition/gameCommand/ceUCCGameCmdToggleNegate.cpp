@@ -52,7 +52,7 @@ ceConversationAction *action, ceCConditionGameCommand *gameCommand){
 	pAction = nullptr;
 	pGameCommand = nullptr;
 	
-	SetShortInfo("Condition game command negate");
+	SetShortInfo("@Conversation.Undo.ConditionGameCommandNegate");
 	
 	pTopic = topic;
 	pAction = action;

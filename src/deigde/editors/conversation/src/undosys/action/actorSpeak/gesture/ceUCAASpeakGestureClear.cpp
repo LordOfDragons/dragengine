@@ -49,7 +49,7 @@ pTopic(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Actor speak clear gestures");
+	SetShortInfo("@Conversation.Undo.ActorSpeakClearGestures");
 	
 	pOldGestures = actorSpeak->GetGestures();
 	

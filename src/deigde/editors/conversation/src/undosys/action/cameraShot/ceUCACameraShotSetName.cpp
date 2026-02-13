@@ -49,7 +49,7 @@ ceUCACameraShotSetName::ceUCACameraShotSetName(ceConversationTopic *topic, ceCAC
 	pOldName = cameraShot->GetName();
 	pNewName = newName;
 	
-	SetShortInfo("Camera Shot Set Name");
+	SetShortInfo("@Conversation.Undo.CameraShotSetName");
 	
 	pTopic = topic;
 	pCameraShot = cameraShot;

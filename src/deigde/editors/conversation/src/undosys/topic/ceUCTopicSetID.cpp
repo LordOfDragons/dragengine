@@ -57,7 +57,7 @@ pNewID(newID)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Topic Set ID");
+	SetShortInfo("@Conversation.Undo.TopicSetID");
 	
 	pOldID = topic->GetID();
 	

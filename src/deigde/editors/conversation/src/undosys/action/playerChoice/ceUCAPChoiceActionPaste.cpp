@@ -65,10 +65,10 @@ ceUCActionPaste(topic, actions, index)
 	pOption = nullptr;
 	
 	if(actions.GetCount() == 1){
-		SetShortInfo("Player Choice Paste Action");
+		SetShortInfo("@Conversation.Undo.PlayerChoicePasteAction");
 		
 	}else{
-		SetShortInfo("Player Choice Paste Actions");
+		SetShortInfo("@Conversation.Undo.PlayerChoicePasteActions");
 	}
 	
 	pPlayerChoice = playerChoice;

@@ -44,7 +44,7 @@ ceUCCShotSetCamDistTo::ceUCCShotSetCamDistTo(ceCameraShot *cameraShot, float new
 	
 	pCameraShot = nullptr;
 	
-	SetShortInfo("Camera Shot Set End Camera Distance");
+	SetShortInfo("@Conversation.Undo.CameraShotSetEndCameraDistance");
 	
 	pOldDist = cameraShot->GetCameraDistanceTo();
 	pNewDist = newDist;

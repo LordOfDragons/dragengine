@@ -49,7 +49,7 @@ ceUCASetAParamSetName::ceUCASetAParamSetName(ceConversationTopic *topic, ceCASet
 	pOldName = action->GetName();
 	pNewName = newName;
 	
-	SetShortInfo("SetActorParameter Name");
+	SetShortInfo("@Conversation.Undo.SetActorParameterName");
 	
 	pTopic = topic;
 	pAction = action;

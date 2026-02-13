@@ -54,7 +54,7 @@ ceStrip *strip, float newDuration){
 	pOldDuration = strip->GetDuration();
 	pNewDuration = newDuration;
 	
-	SetShortInfo("Strip Set Duration");
+	SetShortInfo("@Conversation.Undo.StripSetDuration");
 	
 	pTopic = topic;
 	pActorSpeak = actorSpeak;

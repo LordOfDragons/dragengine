@@ -55,7 +55,7 @@ ceUCAASpeakWordAdd::ceUCAASpeakWordAdd(ceConversationTopic *topic, ceCAActorSpea
 	pWord = nullptr;
 	pIndex = index;
 	
-	SetShortInfo("Actor Speak Add Word");
+	SetShortInfo("@Conversation.Undo.ActorSpeakAddWord");
 	
 	pTopic = topic;
 	pActorSpeak = actorSpeak;

@@ -53,7 +53,7 @@ ceUCActionAdd::ceUCActionAdd(ceConversationTopic *topic, ceConversationAction *a
 	pAction = nullptr;
 	pIndex = index;
 	
-	SetShortInfo("Add Action");
+	SetShortInfo("@Conversation.Undo.AddAction");
 	
 	pTopic = topic;
 	pAction = action;

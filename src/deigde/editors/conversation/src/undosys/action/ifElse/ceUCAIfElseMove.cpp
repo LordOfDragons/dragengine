@@ -76,7 +76,7 @@ ceCAIfElseCase *ifcase, ceConversationAction *action, int newIndex){
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("IfElse Move Action");
+	SetShortInfo("@Conversation.Undo.IfElseMoveAction");
 	
 	pTopic = topic;
 	pIfElse = ifElse;

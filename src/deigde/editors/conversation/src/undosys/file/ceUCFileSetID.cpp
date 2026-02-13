@@ -56,7 +56,7 @@ pNewID(newID)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("File Set ID");
+	SetShortInfo("@Conversation.Undo.FileSetID");
 	
 	pOldID = file->GetID();
 	

@@ -39,7 +39,7 @@
 ceUCAASpeakFaceSetName::ceUCAASpeakFaceSetName(ceConversationTopic *topic,
 ceCAActorSpeak *actorSpeak, ceStrip *facePose, const char *newName)
 : ceUCAASpeakStripSetID(topic, actorSpeak, facePose, newName){
-	SetShortInfo("Face Pose Set Name");
+	SetShortInfo("@Conversation.Undo.FacePoseSetName");
 }
 
 ceUCAASpeakFaceSetName::~ceUCAASpeakFaceSetName(){

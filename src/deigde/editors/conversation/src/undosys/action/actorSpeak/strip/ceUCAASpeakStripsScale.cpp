@@ -50,7 +50,7 @@ ceUCAASpeakStripsScale::ceUCAASpeakStripsScale(ceConversationTopic *topic, ceCAA
 	pTopic = nullptr;
 	pActorSpeak = nullptr;
 	
-	SetShortInfo("Scale strips");
+	SetShortInfo("@Conversation.Undo.ScaleStrips");
 	
 	pTopic = topic;
 	pActorSpeak = actorSpeak;

@@ -52,7 +52,7 @@ ceCACoordSystemRemove *action, const char *newCoordSystemID){
 	pOldCoordSystemID = action->GetCoordSystemID();
 	pNewCoordSystemID = newCoordSystemID;
 	
-	SetShortInfo("Coord system remove set coord system id");
+	SetShortInfo("@Conversation.Undo.CoordSystemRemoveSetCoordSystemID");
 	
 	pTopic = topic;
 	pAction = action;

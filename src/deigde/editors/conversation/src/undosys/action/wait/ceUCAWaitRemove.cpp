@@ -54,7 +54,7 @@ ceUCAWaitRemove::ceUCAWaitRemove(ceConversationTopic *topic, ceCAWait *wait, ceC
 	
 	if(pIndex == -1) DETHROW(deeInvalidParam);
 	
-	SetShortInfo("Action Wait Remove Action");
+	SetShortInfo("@Conversation.Undo.ActionWaitRemoveAction");
 	
 	pTopic = topic;
 	pWait = wait;

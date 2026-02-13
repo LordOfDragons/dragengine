@@ -52,7 +52,7 @@ ceUCActionMove::ceUCActionMove(ceConversationTopic *topic, ceConversationAction 
 	if(pNewIndex < 0 || pNewIndex >= topic->GetActions().GetCount()) DETHROW(deeInvalidParam);
 	if(pNewIndex == pOldIndex) DETHROW(deeInvalidParam);
 	
-	SetShortInfo("Move Action");
+	SetShortInfo("@Conversation.Undo.MoveAction");
 	
 	pTopic = topic;
 	pAction = action;

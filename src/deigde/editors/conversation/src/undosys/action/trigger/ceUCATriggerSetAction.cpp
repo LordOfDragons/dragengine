@@ -50,7 +50,7 @@ ceUCATriggerSetAction::ceUCATriggerSetAction(ceConversationTopic *topic, ceCATri
 	pOldAction = action->GetAction();
 	pNewAction = newOperator;
 	
-	SetShortInfo("Action trigger set action");
+	SetShortInfo("@Conversation.Undo.ActionTriggerSetAction");
 	
 	pTopic = topic;
 	pAction = action;

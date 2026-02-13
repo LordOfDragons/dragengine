@@ -56,7 +56,7 @@ ceUCAASpeakBodyLARemove::ceUCAASpeakBodyLARemove(ceConversationTopic *topic, ceC
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Remove BodyLookAt");
+	SetShortInfo("@Conversation.Undo.RemoveBodyLookAt");
 	
 	pTopic = topic;
 	pActorSpeak = actorSpeak;

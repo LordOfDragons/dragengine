@@ -56,7 +56,7 @@ ceUCAASpeakEyesLARemove::ceUCAASpeakEyesLARemove(ceConversationTopic *topic, ceC
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Remove EyesLookAt");
+	SetShortInfo("@Conversation.Undo.RemoveEyesLookAt");
 	
 	pTopic = topic;
 	pActorSpeak = actorSpeak;

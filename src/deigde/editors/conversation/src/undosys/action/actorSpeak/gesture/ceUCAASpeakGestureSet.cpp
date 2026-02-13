@@ -53,7 +53,7 @@ ceUCAASpeakGestureSet::ceUCAASpeakGestureSet(ceConversationTopic *topic, ceCAAct
 	pOldStrip = nullptr;
 	pNewStrip = nullptr;
 	
-	SetShortInfo("Set gesture");
+	SetShortInfo("@Conversation.Undo.SetGesture");
 	
 	pOldStrip = ceStrip::Ref::New(*gesture);
 	

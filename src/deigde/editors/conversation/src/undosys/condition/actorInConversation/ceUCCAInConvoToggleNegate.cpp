@@ -52,7 +52,7 @@ pCondition(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Actor in conversation negate");
+	SetShortInfo("@Conversation.Undo.ActorInConversationNegate");
 	
 	pTopic = topic;
 	pAction = action;

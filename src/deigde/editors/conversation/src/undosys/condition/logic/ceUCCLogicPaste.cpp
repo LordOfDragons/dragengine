@@ -51,10 +51,10 @@ ceCConditionLogic *logic, const ceConversationCondition::List &conditions){
 	DEASSERT_TRUE(conditions.IsNotEmpty())
 	
 	if(conditions.GetCount() == 1){
-		SetShortInfo("Logic Paste Condition");
+		SetShortInfo("@Conversation.Undo.LogicPasteCondition");
 		
 	}else{
-		SetShortInfo("Logic Paste Conditions");
+		SetShortInfo("@Conversation.Undo.LogicPasteConditions");
 	}
 	
 	pTopic = topic;

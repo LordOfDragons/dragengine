@@ -46,7 +46,7 @@ ceUCGestureAdd::ceUCGestureAdd(ceConversation *conversation, ceGesture *gesture)
 	pConversation = nullptr;
 	pGesture = nullptr;
 	
-	SetShortInfo("Add Gesture");
+	SetShortInfo("@Conversation.Undo.AddGesture");
 	
 	pConversation = conversation;
 	pGesture = gesture;

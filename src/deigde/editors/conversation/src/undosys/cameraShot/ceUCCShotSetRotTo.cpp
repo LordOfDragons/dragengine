@@ -46,7 +46,7 @@ ceUCCShotSetRotTo::ceUCCShotSetRotTo(ceCameraShot *cameraShot, const decVector &
 	
 	pCameraShot = nullptr;
 	
-	SetShortInfo("Camera Shot Set End Rotation");
+	SetShortInfo("@Conversation.Undo.CameraShotSetEndRotation");
 	
 	pOldRot = cameraShot->GetRotationTo();
 	pNewRot = newRot;

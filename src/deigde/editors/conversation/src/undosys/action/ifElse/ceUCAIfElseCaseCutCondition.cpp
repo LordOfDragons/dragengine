@@ -44,5 +44,5 @@
 ceUCAIfElseCaseCutCondition::ceUCAIfElseCaseCutCondition(ceConversationTopic *topic, ceCAIfElse *ifElse,
 ceCAIfElseCase *ifcase, ceConversationCondition *newCondition) :
 ceUCAIfElseCaseSetCondition(topic, ifElse, ifcase, newCondition){
-	SetShortInfo("If-else cut case condition");
+	SetShortInfo("@Conversation.Undo.IfElseCutCaseCondition");
 }

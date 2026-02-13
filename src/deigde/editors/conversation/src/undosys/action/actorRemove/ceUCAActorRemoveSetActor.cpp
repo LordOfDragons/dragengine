@@ -51,7 +51,7 @@ ceUCAActorRemoveSetActor::ceUCAActorRemoveSetActor(ceConversationTopic *topic, c
 	pOldActorID = action->GetActor();
 	pNewActorID = newActorID;
 	
-	SetShortInfo("Actor remove set actor id");
+	SetShortInfo("@Conversation.Undo.ActorRemoveSetActor");
 	
 	pTopic = topic;
 	pAction = action;

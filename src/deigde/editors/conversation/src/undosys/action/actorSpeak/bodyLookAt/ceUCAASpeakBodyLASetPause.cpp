@@ -39,7 +39,7 @@
 ceUCAASpeakBodyLASetPause::ceUCAASpeakBodyLASetPause(ceConversationTopic *topic,
 ceCAActorSpeak *actorSpeak, ceStrip *bodyLookAt, float newPause)
 : ceUCAASpeakStripSetPause(topic, actorSpeak, bodyLookAt, newPause){
-	SetShortInfo("BodyLookAt Set Pause");
+	SetShortInfo("@Conversation.Undo.BodyLookAtSetPause");
 }
 
 ceUCAASpeakBodyLASetPause::~ceUCAASpeakBodyLASetPause(){

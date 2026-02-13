@@ -51,7 +51,7 @@ ceUCACommentSetComment::ceUCACommentSetComment(ceConversationTopic *topic, ceCAC
 	pOldComment = action->GetComment();
 	pNewComment = newComment;
 	
-	SetShortInfo("Comment set comment");
+	SetShortInfo("@Conversation.Undo.CommentSetComment");
 	
 	pTopic = topic;
 	pComment = action;

@@ -49,7 +49,7 @@ ceUCFileRemove::ceUCFileRemove(ceConversationFile *file){
 	pConversation = nullptr;
 	pFile = nullptr;
 	
-	SetShortInfo("Remove File");
+	SetShortInfo("@Conversation.Undo.RemoveFile");
 	
 	pConversation = conversation;
 	pFile = file;

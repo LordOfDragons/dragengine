@@ -55,7 +55,7 @@ ceUCAASpeakEyesLAAdd::ceUCAASpeakEyesLAAdd(ceConversationTopic *topic, ceCAActor
 	pEyesLA = nullptr;
 	pIndex = index;
 	
-	SetShortInfo("Actor Speak Add EyesLookAt");
+	SetShortInfo("@Conversation.Undo.ActorSpeakAddEyesLookAt");
 	
 	pTopic = topic;
 	pActorSpeak = actorSpeak;

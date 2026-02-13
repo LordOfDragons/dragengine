@@ -39,7 +39,7 @@
 ceUCAASpeakFaceSetDuration::ceUCAASpeakFaceSetDuration(ceConversationTopic *topic,
 ceCAActorSpeak *actorSpeak, ceStrip *facePose, float newDuration)
 : ceUCAASpeakStripSetDuration(topic, actorSpeak, facePose, newDuration){
-	SetShortInfo("Face Pose Set Duration");
+	SetShortInfo("@Conversation.Undo.FacePoseSetDuration");
 }
 
 ceUCAASpeakFaceSetDuration::~ceUCAASpeakFaceSetDuration(){

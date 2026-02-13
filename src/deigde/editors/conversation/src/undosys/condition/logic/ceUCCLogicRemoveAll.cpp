@@ -48,7 +48,7 @@ ceConversationAction *action, ceCConditionLogic *logic){
 	DEASSERT_NOTNULL(action)
 	DEASSERT_NOTNULL(logic)
 	
-	SetShortInfo("Logic remove all conditions");
+	SetShortInfo("@Conversation.Undo.LogicRemoveAllConditions");
 	
 	pConditions = logic->GetConditions();
 	

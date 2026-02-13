@@ -58,7 +58,7 @@ ceStrip *facePose, int newIndex){
 	if(pNewIndex < 0 || pNewIndex >= actorSpeak->GetFacePoses().GetCount()) DETHROW(deeInvalidParam);
 	if(pNewIndex == pOldIndex) DETHROW(deeInvalidParam);
 	
-	SetShortInfo("Move Face Pose");
+	SetShortInfo("@Conversation.Undo.MoveFacePose");
 	
 	pTopic = topic;
 	pActorSpeak = actorSpeak;

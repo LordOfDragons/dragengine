@@ -59,7 +59,7 @@ ceUCAWaitMove::ceUCAWaitMove(ceConversationTopic *topic, ceCAWait *wait, ceConve
 	if(pNewIndex < 0 || pNewIndex >= count) DETHROW(deeInvalidParam);
 	if(pNewIndex == pOldIndex) DETHROW(deeInvalidParam);
 	
-	SetShortInfo("Action Wait Move Action");
+	SetShortInfo("@Conversation.Undo.ActionWaitMoveAction");
 	
 	pTopic = topic;
 	pWait = wait;

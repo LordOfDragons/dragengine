@@ -50,7 +50,7 @@ ceUCAPChoiceSetVarName::ceUCAPChoiceSetVarName(ceConversationTopic *topic, ceCAP
 	pOldName = playerChoice->GetVariableName();
 	pNewName = newName;
 	
-	SetShortInfo("Player Choice Set Variable Name");
+	SetShortInfo("@Conversation.Undo.PlayerChoiceSetVariableName");
 	
 	pTopic = topic;
 	pPlayerChoice = playerChoice;

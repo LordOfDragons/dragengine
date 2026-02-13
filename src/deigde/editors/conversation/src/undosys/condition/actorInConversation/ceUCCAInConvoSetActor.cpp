@@ -55,7 +55,7 @@ pCondition(nullptr)
 	pOldID = condition->GetActor();
 	pNewID = newID;
 	
-	SetShortInfo("Actor in conversation set actor id");
+	SetShortInfo("@Conversation.Undo.ActorInConversationSetActorID");
 	
 	pTopic = topic;
 	pAction = action;

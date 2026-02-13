@@ -51,7 +51,7 @@ ceUCAGameCmdSetCommand::ceUCAGameCmdSetCommand(ceConversationTopic *topic, ceCAG
 	pOldCommand = action->GetCommand();
 	pNewCommand = newCommand;
 	
-	SetShortInfo("Action game command set command");
+	SetShortInfo("@Conversation.Undo.ActionGameCommandSetCommand");
 	
 	pTopic = topic;
 	pAction = action;

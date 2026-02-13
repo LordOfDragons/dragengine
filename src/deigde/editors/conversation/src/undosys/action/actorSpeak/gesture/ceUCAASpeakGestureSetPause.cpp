@@ -39,7 +39,7 @@
 ceUCAASpeakGestureSetPause::ceUCAASpeakGestureSetPause(ceConversationTopic *topic,
 ceCAActorSpeak *actorSpeak, ceStrip *gesture, float newPause)
 : ceUCAASpeakStripSetPause(topic, actorSpeak, gesture, newPause){
-	SetShortInfo("Gesture Set Pause");
+	SetShortInfo("@Conversation.Undo.GestureSetPause");
 }
 
 ceUCAASpeakGestureSetPause::~ceUCAASpeakGestureSetPause(){

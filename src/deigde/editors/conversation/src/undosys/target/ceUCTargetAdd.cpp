@@ -46,7 +46,7 @@ ceUCTargetAdd::ceUCTargetAdd(ceConversation *conversation, ceTarget *target){
 	pConversation = nullptr;
 	pTarget = nullptr;
 	
-	SetShortInfo("Add Target");
+	SetShortInfo("@Conversation.Undo.AddTarget");
 	
 	pConversation = conversation;
 	pTarget = target;

@@ -52,7 +52,7 @@ ceCACoordSystemAdd *action, const char *newCoordSysID){
 	pOldCoordSysID = action->GetCoordSystemID();
 	pNewCoordSysID = newCoordSysID;
 	
-	SetShortInfo("Coord system add set coord system id");
+	SetShortInfo("@Conversation.Undo.CoordSystemAddSetCoordSystemID");
 	
 	pTopic = topic;
 	pAction = action;

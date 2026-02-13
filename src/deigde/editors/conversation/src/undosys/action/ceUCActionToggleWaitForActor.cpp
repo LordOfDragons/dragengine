@@ -49,7 +49,7 @@ ceConversationTopic *topic, ceConversationAction *action)
 	pTopic = nullptr;
 	pAction = nullptr;
 	
-	SetShortInfo("Action Toggle Wait For Actor");
+	SetShortInfo("@Conversation.Undo.ActionToggleWaitForActor");
 	
 	pTopic = topic;
 	pAction = action;

@@ -39,7 +39,7 @@
 ceUCAASpeakFaceSetPause::ceUCAASpeakFaceSetPause(ceConversationTopic *topic,
 ceCAActorSpeak *actorSpeak, ceStrip *facePose, float newPause)
 : ceUCAASpeakStripSetPause(topic, actorSpeak, facePose, newPause){
-	SetShortInfo("Face Pose Set Pause");
+	SetShortInfo("@Conversation.Undo.FacePoseSetPause");
 }
 
 ceUCAASpeakFaceSetPause::~ceUCAASpeakFaceSetPause(){

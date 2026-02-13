@@ -55,7 +55,7 @@ ceUCAASpeakHeadLAAdd::ceUCAASpeakHeadLAAdd(ceConversationTopic *topic, ceCAActor
 	pHeadLA = nullptr;
 	pIndex = index;
 	
-	SetShortInfo("Actor Speak Add HeadLookAt");
+	SetShortInfo("@Conversation.Undo.ActorSpeakAddHeadLookAt");
 	
 	pTopic = topic;
 	pActorSpeak = actorSpeak;

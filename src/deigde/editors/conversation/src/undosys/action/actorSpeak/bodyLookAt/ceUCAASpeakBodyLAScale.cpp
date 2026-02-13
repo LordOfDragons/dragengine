@@ -38,7 +38,7 @@
 
 ceUCAASpeakBodyLAScale::ceUCAASpeakBodyLAScale(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak)
 : ceUCAASpeakStripsScale(topic, actorSpeak){
-	SetShortInfo("Scale body look-at");
+	SetShortInfo("@Conversation.Undo.ScaleBodyLookAt");
 }
 
 ceUCAASpeakBodyLAScale::~ceUCAASpeakBodyLAScale(){

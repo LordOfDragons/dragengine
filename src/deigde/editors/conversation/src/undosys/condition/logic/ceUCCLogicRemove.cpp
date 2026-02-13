@@ -56,7 +56,7 @@ ceCConditionLogic *logic, ceConversationCondition *condition){
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Logic Remove Condition");
+	SetShortInfo("@Conversation.Undo.LogicRemoveCondition");
 	
 	pTopic = topic;
 	pAction = action;

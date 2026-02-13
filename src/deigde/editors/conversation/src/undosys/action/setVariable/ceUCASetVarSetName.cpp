@@ -49,7 +49,7 @@ ceUCASetVarSetName::ceUCASetVarSetName(ceConversationTopic *topic, ceCASetVariab
 	pOldName = action->GetName();
 	pNewName = newName;
 	
-	SetShortInfo("SetVariable Name");
+	SetShortInfo("@Conversation.Undo.SetVariableName");
 	
 	pTopic = topic;
 	pAction = action;

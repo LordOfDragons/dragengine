@@ -49,7 +49,7 @@ pTopic(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Actor speak clear words");
+	SetShortInfo("@Conversation.Undo.ActorSpeakClearWords");
 	
 	pOldWords = actorSpeak->GetWords();
 	

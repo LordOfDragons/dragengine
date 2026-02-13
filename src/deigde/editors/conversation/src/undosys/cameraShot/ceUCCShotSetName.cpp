@@ -52,7 +52,7 @@
 ceUCCShotSetName::ceUCCShotSetName(ceCameraShot *cameraShot, const char *newName){
 	if(!cameraShot || !newName) DETHROW(deeInvalidParam);
 	
-	SetShortInfo("Camera Shot Set Name");
+	SetShortInfo("@Conversation.Undo.CameraShotSetName");
 	
 	pOldName = cameraShot->GetName();
 	pNewName = newName;

@@ -46,7 +46,7 @@ ceUCFPControllerRemove::ceUCFPControllerRemove(ceFacePose *facePose, ceControlle
 	DEASSERT_NOTNULL(controller);
 	DEASSERT_TRUE(facePose->GetControllers().Has(controller));
 	
-	SetShortInfo("Remove Face Pose Controller");
+	SetShortInfo("@Conversation.Undo.RemoveFacePoseController");
 	
 	pFacePose = facePose;
 	pController = controller;

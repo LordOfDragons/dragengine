@@ -48,7 +48,7 @@ pFile(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Duplicate file");
+	SetShortInfo("@Conversation.Undo.DuplicateFile");
 	
 	try{
 		pFile = ceConversationFile::Ref::New(file);

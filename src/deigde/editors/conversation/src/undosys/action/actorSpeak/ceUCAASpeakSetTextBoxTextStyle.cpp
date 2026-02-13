@@ -52,7 +52,7 @@ ceCAActorSpeak *actorSpeak, const char *newText){
 	pOldStyle = actorSpeak->GetTextBoxTextStyle();
 	pNewStyle = newText;
 	
-	SetShortInfo("Actor speak text box text style");
+	SetShortInfo("@Conversation.Undo.ActorSpeakTextBoxTextStyle");
 	
 	pTopic = topic;
 	pActorSpeak = actorSpeak;

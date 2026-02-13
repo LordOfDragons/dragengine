@@ -54,7 +54,7 @@ ceCConditionTrigger *condition, const char *newTrigger){
 	pOldTrigger = condition->GetTrigger();
 	pNewTrigger = newTrigger;
 	
-	SetShortInfo("Condition trigger set trigger");
+	SetShortInfo("@Conversation.Undo.ConditionTriggerSetTrigger");
 	
 	pTopic = topic;
 	pAction = action;

@@ -52,7 +52,7 @@ ceCACoordSystemAdd *action, const char *newAliasID){
 	pOldAliasID = action->GetAliasID();
 	pNewAliasID = newAliasID;
 	
-	SetShortInfo("Coord system add set alias id");
+	SetShortInfo("@Conversation.Undo.CoordSystemAddSetAliasID");
 	
 	pTopic = topic;
 	pAction = action;

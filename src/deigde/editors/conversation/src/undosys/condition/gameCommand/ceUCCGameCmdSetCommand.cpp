@@ -54,7 +54,7 @@ ceCConditionGameCommand *condition, const char *newCommand){
 	pOldCommand = condition->GetCommand();
 	pNewCommand = newCommand;
 	
-	SetShortInfo("Condition game command set command");
+	SetShortInfo("@Conversation.Undo.ConditionGameCommandSetCommand");
 	
 	pTopic = topic;
 	pAction = action;

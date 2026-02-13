@@ -66,7 +66,7 @@ ceCAIfElseCase *ifcase, ceConversationAction *action, int index){
 	pCase = nullptr;
 	pIndex = index;
 	
-	SetShortInfo("IfElse Add Action");
+	SetShortInfo("@Conversation.Undo.IfElseAddAction");
 	
 	pTopic = topic;
 	pIfElse = ifElse;

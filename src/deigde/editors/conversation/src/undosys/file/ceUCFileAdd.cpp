@@ -46,7 +46,7 @@ ceUCFileAdd::ceUCFileAdd(ceConversation *conversation, ceConversationFile *file)
 	pConversation = nullptr;
 	pFile = nullptr;
 	
-	SetShortInfo("Add File");
+	SetShortInfo("@Conversation.Undo.AddFile");
 	
 	pConversation = conversation;
 	pFile = file;

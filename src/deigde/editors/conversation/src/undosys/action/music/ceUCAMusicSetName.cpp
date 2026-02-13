@@ -49,7 +49,7 @@ ceUCAMusicSetName::ceUCAMusicSetName(ceConversationTopic *topic, ceCAMusic *musi
 	pOldName = music->GetName();
 	pNewName = newName;
 	
-	SetShortInfo("Music Set Name");
+	SetShortInfo("@Conversation.Undo.MusicSetName");
 	
 	pTopic = topic;
 	pMusic = music;

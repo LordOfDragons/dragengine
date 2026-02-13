@@ -44,5 +44,5 @@
 ceUCAPChoiceOptionPasteCondition::ceUCAPChoiceOptionPasteCondition(ceConversationTopic *topic, ceCAPlayerChoice *ifElse,
 ceCAPlayerChoiceOption *ifcase, ceConversationCondition *newCondition) :
 ceUCAPChoiceOptionSetCondition(topic, ifElse, ifcase, newCondition){
-	SetShortInfo("Player Choice Option paste case condition");
+	SetShortInfo("@Conversation.Undo.PlayerChoiceOptionPasteCaseCondition");
 }

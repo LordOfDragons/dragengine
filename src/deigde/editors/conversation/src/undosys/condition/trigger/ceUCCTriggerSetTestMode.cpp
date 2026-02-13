@@ -53,7 +53,7 @@ ceCConditionTrigger *condition, ceCConditionTrigger::eTestModes newTestMode){
 	pOldTestMode = condition->GetTestMode();
 	pNewTestMode = newTestMode;
 	
-	SetShortInfo("Condition trigger set test mode");
+	SetShortInfo("@Conversation.Undo.ConditionTriggerSetTestMode");
 	
 	pTopic = topic;
 	pAction = action;

@@ -46,7 +46,7 @@ ceUCTopicAdd::ceUCTopicAdd(ceConversationFile *file, ceConversationTopic *topic)
 	pFile = nullptr;
 	pTopic = nullptr;
 	
-	SetShortInfo("Add Topic");
+	SetShortInfo("@Conversation.Undo.AddTopic");
 	
 	pFile = file;
 	pTopic = topic;

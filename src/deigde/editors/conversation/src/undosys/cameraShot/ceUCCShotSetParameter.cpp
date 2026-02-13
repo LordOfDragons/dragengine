@@ -47,7 +47,7 @@ ceUCCShotSetParameter::ceUCCShotSetParameter(ceCameraShot *cameraShot, int param
 	pCameraShot = nullptr;
 	pParameter = parameter;
 	
-	SetShortInfo("Camera Shot Set Parameter");
+	SetShortInfo("@Conversation.Undo.CameraShotSetParameter");
 	
 	pOldCurve = cameraShot->GetParameterCurve(parameter);
 	pNewCurve = pOldCurve;

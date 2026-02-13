@@ -44,7 +44,7 @@ ceUCCShotSetCamOrbitTo::ceUCCShotSetCamOrbitTo(ceCameraShot *cameraShot, const d
 	
 	pCameraShot = nullptr;
 	
-	SetShortInfo("Camera Shot Set End Camera Rotition");
+	SetShortInfo("@Conversation.Undo.CameraShotSetEndCameraRotition");
 	
 	pOldRot = cameraShot->GetCameraOrbitTo();
 	pNewRot = newRot;

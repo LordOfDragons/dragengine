@@ -55,7 +55,7 @@ ceUCAASpeakGestureAdd::ceUCAASpeakGestureAdd(ceConversationTopic *topic, ceCAAct
 	pGesture = nullptr;
 	pIndex = index;
 	
-	SetShortInfo("Actor Speak Add Gesture");
+	SetShortInfo("@Conversation.Undo.ActorSpeakAddGesture");
 	
 	pTopic = topic;
 	pActorSpeak = actorSpeak;

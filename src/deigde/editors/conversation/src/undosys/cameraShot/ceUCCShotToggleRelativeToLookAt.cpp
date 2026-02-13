@@ -44,7 +44,7 @@ ceUCCShotToggleRelativeToLookAt::ceUCCShotToggleRelativeToLookAt(ceCameraShot *c
 	
 	pCameraShot = nullptr;
 	
-	SetShortInfo("Camera Shot Toggle Relative To Look-At");
+	SetShortInfo("@Conversation.Undo.CameraShotToggleRelativeToLookAt");
 	
 	pCameraShot = cameraShot;
 }

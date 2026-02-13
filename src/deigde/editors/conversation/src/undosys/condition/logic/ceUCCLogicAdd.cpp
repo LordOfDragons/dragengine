@@ -52,7 +52,7 @@ ceCConditionLogic *logic, ceConversationCondition *condition){
 	pLogic = nullptr;
 	pCondition = nullptr;
 	
-	SetShortInfo("Logic Add Condition");
+	SetShortInfo("@Conversation.Undo.LogicAddCondition");
 	
 	pTopic = topic;
 	pAction = action;

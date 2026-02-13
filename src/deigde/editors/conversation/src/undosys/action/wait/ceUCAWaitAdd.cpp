@@ -55,7 +55,7 @@ ceUCAWaitAdd::ceUCAWaitAdd(ceConversationTopic *topic, ceCAWait *wait, ceConvers
 	pAction = nullptr;
 	pIndex = index;
 	
-	SetShortInfo("Action Wait Add Action");
+	SetShortInfo("@Conversation.Undo.ActionWaitAddAction");
 	
 	pTopic = topic;
 	pWait = wait;

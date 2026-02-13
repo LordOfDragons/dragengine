@@ -38,7 +38,7 @@
 
 ceUCAASpeakEyesLAScale::ceUCAASpeakEyesLAScale(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak)
 : ceUCAASpeakStripsScale(topic, actorSpeak){
-	SetShortInfo("Scale eyes look-at");
+	SetShortInfo("@Conversation.Undo.ScaleEyesLookAt");
 }
 
 ceUCAASpeakEyesLAScale::~ceUCAASpeakEyesLAScale(){

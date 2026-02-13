@@ -49,7 +49,7 @@ ceUCASnippetSetFile::ceUCASnippetSetFile(ceConversationTopic *topic, ceCASnippet
 	pOldFile = snippet->GetFile();
 	pNewFile = newFile;
 	
-	SetShortInfo("Snippet Set File");
+	SetShortInfo("@Conversation.Undo.SnippetSetFile");
 	
 	pTopic = topic;
 	pSnippet = snippet;

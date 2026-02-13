@@ -44,7 +44,7 @@ pSnippet(nullptr)
 	DEASSERT_NOTNULL(topic)
 	DEASSERT_NOTNULL(snippet)
 	
-	SetShortInfo("Snippet Toggle Create Side lane");
+	SetShortInfo("@Conversation.Undo.SnippetToggleCreateSideLane");
 	
 	pTopic = topic;
 	pSnippet = snippet;

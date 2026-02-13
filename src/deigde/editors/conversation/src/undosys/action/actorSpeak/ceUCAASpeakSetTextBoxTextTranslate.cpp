@@ -50,7 +50,7 @@ pNewText(newText)
 	
 	pOldText = actorSpeak->GetTextBoxTextTranslate();
 	
-	SetShortInfo("Actor speak set text box text translate");
+	SetShortInfo("@Conversation.Undo.ActorSpeakSetTextBoxTextTranslate");
 	
 	pTopic = topic;
 	pActorSpeak = actorSpeak;

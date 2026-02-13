@@ -51,7 +51,7 @@ ceUCFPControllerSetValue::ceUCFPControllerSetValue(ceFacePose *facePose, ceContr
 	pOldValue = controller->GetValue();
 	pNewValue = newValue;
 	
-	SetShortInfo("Set Face Pose Controller Value");
+	SetShortInfo("@Conversation.Undo.SetFacePoseControllerValue");
 	
 	pFacePose = facePose;
 	pController = controller;

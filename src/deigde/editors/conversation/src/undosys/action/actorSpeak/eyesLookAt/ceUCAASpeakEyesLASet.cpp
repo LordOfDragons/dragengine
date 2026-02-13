@@ -53,7 +53,7 @@ ceUCAASpeakEyesLASet::ceUCAASpeakEyesLASet(ceConversationTopic *topic, ceCAActor
 	pOldStrip = nullptr;
 	pNewStrip = nullptr;
 	
-	SetShortInfo("Set eyes look-at");
+	SetShortInfo("@Conversation.Undo.SetEyesLookAt");
 	
 	pOldStrip = ceStrip::Ref::New(*eyesLookAt);
 	

@@ -58,7 +58,7 @@ ceStrip *gesture, int newIndex){
 	if(pNewIndex < 0 || pNewIndex >= actorSpeak->GetGestures().GetCount()) DETHROW(deeInvalidParam);
 	if(pNewIndex == pOldIndex) DETHROW(deeInvalidParam);
 	
-	SetShortInfo("Move Gesture");
+	SetShortInfo("@Conversation.Undo.MoveGesture");
 	
 	pTopic = topic;
 	pActorSpeak = actorSpeak;

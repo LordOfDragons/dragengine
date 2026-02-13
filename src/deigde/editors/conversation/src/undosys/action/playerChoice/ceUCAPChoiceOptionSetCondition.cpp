@@ -53,7 +53,7 @@ pNewCondition(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Player Choice Option set case condition");
+	SetShortInfo("@Conversation.Undo.PlayerChoiceOptionSetCaseCondition");
 	
 	pTopic = topic;
 	pPlayerChoice = ifElse;

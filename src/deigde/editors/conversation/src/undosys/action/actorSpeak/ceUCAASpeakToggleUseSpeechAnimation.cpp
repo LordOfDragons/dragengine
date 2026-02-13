@@ -50,7 +50,7 @@ ceConversationTopic *topic, ceCAActorSpeak *actorSpeak){
 	pTopic = nullptr;
 	pActorSpeak = nullptr;
 	
-	SetShortInfo("Actor speak toggle use speech animation");
+	SetShortInfo("@Conversation.Undo.ActorSpeakToggleUseSpeechAnimation");
 	
 	pTopic = topic;
 	pActorSpeak = actorSpeak;

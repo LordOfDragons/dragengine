@@ -49,7 +49,7 @@ pTopic(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Actor speak clear face pose");
+	SetShortInfo("@Conversation.Undo.ActorSpeakClearFacePose");
 	
 	pOldFaces = actorSpeak->GetFacePoses();
 	

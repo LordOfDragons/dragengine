@@ -52,7 +52,7 @@ ceCConditionActorParameter *condition, int newValue){
 	pOldValue = condition->GetTestValue();
 	pNewValue = newValue;
 	
-	SetShortInfo("Condition ActorParameter: Set Test Value");
+	SetShortInfo("@Conversation.Undo.ConditionActorParameterSetTestValue");
 	
 	pTopic = topic;
 	pAction = action;

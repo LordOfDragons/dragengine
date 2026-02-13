@@ -55,7 +55,7 @@ ceUCAIfElseCaseRemove::ceUCAIfElseCaseRemove(ceConversationTopic *topic, ceCAIfE
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("If-else remove case");
+	SetShortInfo("@Conversation.Undo.IfElseRemoveCase");
 	
 	pTopic = topic;
 	pIfElse = ifelse;

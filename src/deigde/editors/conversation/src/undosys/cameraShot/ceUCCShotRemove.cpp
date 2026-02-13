@@ -48,7 +48,7 @@ ceUCCShotRemove::ceUCCShotRemove(ceCameraShot *cameraShot){
 	
 	pConversation = nullptr;
 	
-	SetShortInfo("Remove Camera Shot");
+	SetShortInfo("@Conversation.Undo.RemoveCameraShot");
 	
 	pConversation = conversation;
 	pCameraShot = cameraShot;

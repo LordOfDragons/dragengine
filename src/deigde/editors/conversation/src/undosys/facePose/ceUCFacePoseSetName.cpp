@@ -53,7 +53,7 @@
 ceUCFacePoseSetName::ceUCFacePoseSetName(ceFacePose *facePose, const char *newName){
 	if(!facePose || !newName) DETHROW(deeInvalidParam);
 	
-	SetShortInfo("FacePose Set Name");
+	SetShortInfo("@Conversation.Undo.FacePoseSetName");
 	
 	pOldName = facePose->GetName();
 	pNewName = newName;

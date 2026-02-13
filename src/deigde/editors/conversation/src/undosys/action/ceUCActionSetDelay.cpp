@@ -49,7 +49,7 @@ ceUCActionSetDelay::ceUCActionSetDelay(ceConversationTopic *topic, ceConversatio
 	pOldDelay = action->GetDelay();
 	pNewDelay = newDelay;
 	
-	SetShortInfo("Action Set Delay");
+	SetShortInfo("@Conversation.Undo.ActionSetDelay");
 	
 	pTopic = topic;
 	pAction = action;

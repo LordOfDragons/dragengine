@@ -55,7 +55,7 @@ ceUCAASpeakFaceAdd::ceUCAASpeakFaceAdd(ceConversationTopic *topic, ceCAActorSpea
 	pFacePose = nullptr;
 	pIndex = index;
 	
-	SetShortInfo("Actor Speak Add Face Pose");
+	SetShortInfo("@Conversation.Undo.ActorSpeakAddFacePose");
 	
 	pTopic = topic;
 	pActorSpeak = actorSpeak;

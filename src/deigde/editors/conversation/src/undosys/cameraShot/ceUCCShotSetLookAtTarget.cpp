@@ -46,7 +46,7 @@ ceUCCShotSetLookAtTarget::ceUCCShotSetLookAtTarget(ceCameraShot *cameraShot, con
 	
 	pCameraShot = nullptr;
 	
-	SetShortInfo("Camera Shot Set Look-At Target");
+	SetShortInfo("@Conversation.Undo.CameraShotSetLookAtTarget");
 	
 	pOldTarget = cameraShot->GetLookAtTarget();
 	pNewTarget = newTarget;

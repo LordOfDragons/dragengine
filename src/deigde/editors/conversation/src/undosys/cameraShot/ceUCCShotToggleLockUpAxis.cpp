@@ -46,7 +46,7 @@ ceUCCShotToggleLockUpAxis::ceUCCShotToggleLockUpAxis(ceCameraShot *cameraShot){
 	
 	pCameraShot = nullptr;
 	
-	SetShortInfo("Camera shot lock up axis");
+	SetShortInfo("@Conversation.Undo.CameraShotLockUpAxis");
 	
 	pCameraShot = cameraShot;
 }

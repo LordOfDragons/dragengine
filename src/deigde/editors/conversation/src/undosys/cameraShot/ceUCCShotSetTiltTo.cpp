@@ -44,7 +44,7 @@ ceUCCShotSetTiltTo::ceUCCShotSetTiltTo(ceCameraShot *cameraShot, float newTilt){
 	
 	pCameraShot = nullptr;
 	
-	SetShortInfo("Camera Shot Set End Tilt");
+	SetShortInfo("@Conversation.Undo.CameraShotSetEndTilt");
 	
 	pOldTilt = cameraShot->GetTiltTo();
 	pNewTilt = newTilt;

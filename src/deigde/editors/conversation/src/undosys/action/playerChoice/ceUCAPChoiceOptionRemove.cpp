@@ -53,7 +53,7 @@ ceUCAPChoiceOptionRemove::ceUCAPChoiceOptionRemove(ceConversationTopic *topic, c
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Player Choice Remove Option");
+	SetShortInfo("@Conversation.Undo.PlayerChoiceRemoveOption");
 	
 	pTopic = topic;
 	pPlayerChoice = playerChoice;

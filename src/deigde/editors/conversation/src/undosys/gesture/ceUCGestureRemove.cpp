@@ -48,7 +48,7 @@ ceUCGestureRemove::ceUCGestureRemove(ceGesture *gesture){
 	
 	pConversation = nullptr;
 	
-	SetShortInfo("Remove Gesture");
+	SetShortInfo("@Conversation.Undo.RemoveGesture");
 	
 	pConversation = conversation;
 	pGesture = gesture;

@@ -49,7 +49,7 @@ ceUCAASpeakSetMovement::ceUCAASpeakSetMovement(ceConversationTopic *topic, ceCAA
 	pOldMovement = actorSpeak->GetMovement();
 	pNewMovement = newMovement;
 	
-	SetShortInfo("Actor Speak Set Movement");
+	SetShortInfo("@Conversation.Undo.ActorSpeakSetMovement");
 	
 	pTopic = topic;
 	pActorSpeak = actorSpeak;

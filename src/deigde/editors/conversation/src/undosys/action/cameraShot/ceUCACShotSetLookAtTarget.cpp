@@ -49,7 +49,7 @@ ceUCACShotSetLookAtTarget::ceUCACShotSetLookAtTarget(ceConversationTopic *topic,
 	pOldTarget = cameraShot->GetLookAtTarget();
 	pNewTarget = newTarget;
 	
-	SetShortInfo("Set Look-At Target");
+	SetShortInfo("@Conversation.Undo.SetLookAtTarget");
 	
 	pTopic = topic;
 	pCameraShot = cameraShot;

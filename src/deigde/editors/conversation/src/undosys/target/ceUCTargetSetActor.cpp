@@ -44,7 +44,7 @@ ceUCTargetSetActor::ceUCTargetSetActor(ceTarget *target, const char *newID){
 	
 	pTarget = nullptr;
 	
-	SetShortInfo("Target Set Actor ID");
+	SetShortInfo("@Conversation.Undo.TargetSetActorID");
 	
 	pOldID = target->GetActor();
 	pNewID = newID;

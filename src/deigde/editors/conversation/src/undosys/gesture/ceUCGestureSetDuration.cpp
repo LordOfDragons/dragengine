@@ -45,7 +45,7 @@ pNewValue(newValue)
 {
 	DEASSERT_NOTNULL(gesture)
 	
-	SetShortInfo("Gesture Set Duration");
+	SetShortInfo("@Conversation.Undo.GestureSetDuration");
 	pOldValue = gesture->GetDuration();
 }
 

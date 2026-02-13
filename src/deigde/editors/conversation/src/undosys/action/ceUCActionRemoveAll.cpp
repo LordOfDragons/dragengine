@@ -49,7 +49,7 @@ ceUCActionRemoveAll::ceUCActionRemoveAll(ceConversationTopic *topic){
 	pTopic = nullptr;
 	pActionList = topic->GetActions();
 	
-	SetShortInfo("Remove All Actions");
+	SetShortInfo("@Conversation.Undo.RemoveAllActions");
 	
 	pTopic = topic;
 }

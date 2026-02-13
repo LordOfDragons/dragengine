@@ -58,7 +58,7 @@ ceStrip *word, int newIndex){
 	if(pNewIndex < 0 || pNewIndex >= actorSpeak->GetWords().GetCount()) DETHROW(deeInvalidParam);
 	if(pNewIndex == pOldIndex) DETHROW(deeInvalidParam);
 	
-	SetShortInfo("Move Word");
+	SetShortInfo("@Conversation.Undo.MoveWord");
 	
 	pTopic = topic;
 	pActorSpeak = actorSpeak;

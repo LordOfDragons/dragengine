@@ -39,7 +39,7 @@
 ceUCAASpeakEyesLASetName::ceUCAASpeakEyesLASetName(ceConversationTopic *topic,
 ceCAActorSpeak *actorSpeak, ceStrip *eyesLookAt, const char *newName)
 : ceUCAASpeakStripSetID(topic, actorSpeak, eyesLookAt, newName){
-	SetShortInfo("EyesLookAt Set Name");
+	SetShortInfo("@Conversation.Undo.EyesLookAtSetName");
 }
 
 ceUCAASpeakEyesLASetName::~ceUCAASpeakEyesLASetName(){

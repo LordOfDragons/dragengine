@@ -58,7 +58,7 @@ ceStrip *eyesLookAt, int newIndex){
 	if(pNewIndex < 0 || pNewIndex >= actorSpeak->GetEyesLookAts().GetCount()) DETHROW(deeInvalidParam);
 	if(pNewIndex == pOldIndex) DETHROW(deeInvalidParam);
 	
-	SetShortInfo("Move EyesLookAt");
+	SetShortInfo("@Conversation.Undo.MoveEyesLookAt");
 	
 	pTopic = topic;
 	pActorSpeak = actorSpeak;

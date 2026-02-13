@@ -49,7 +49,7 @@ ceUCAASpeakSetPathSound::ceUCAASpeakSetPathSound(ceConversationTopic *topic, ceC
 	pOldPath = actorSpeak->GetPathSound();
 	pNewPath = newPath;
 	
-	SetShortInfo("Actor Speak Set Path Sound");
+	SetShortInfo("@Conversation.Undo.ActorSpeakSetPathSound");
 	
 	pTopic = topic;
 	pActorSpeak = actorSpeak;

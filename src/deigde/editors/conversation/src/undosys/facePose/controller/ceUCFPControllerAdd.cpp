@@ -49,7 +49,7 @@ ceUCFPControllerAdd::ceUCFPControllerAdd(ceFacePose *facePose, ceControllerValue
 	pFacePose = nullptr;
 	pController = nullptr;
 	
-	SetShortInfo("Add Face Pose Controller");
+	SetShortInfo("@Conversation.Undo.AddFacePoseController");
 	
 	pFacePose = facePose;
 	pController = controller;

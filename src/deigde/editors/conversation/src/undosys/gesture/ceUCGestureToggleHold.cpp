@@ -46,7 +46,7 @@ pGesture(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Gesture toggle hold");
+	SetShortInfo("@Conversation.Undo.GestureToggleHold");
 	
 	pGesture = gesture;
 }

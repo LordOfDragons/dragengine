@@ -44,7 +44,7 @@ ceUCCShotSetActorCount::ceUCCShotSetActorCount(ceCameraShot *cameraShot, int new
 	
 	pCameraShot = nullptr;
 	
-	SetShortInfo("Camera Shot Set Actor Count");
+	SetShortInfo("@Conversation.Undo.CameraShotSetActorCount");
 	
 	pOldCount = cameraShot->GetActorCount();
 	pNewCount = newCount;

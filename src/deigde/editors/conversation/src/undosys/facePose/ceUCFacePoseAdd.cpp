@@ -46,7 +46,7 @@ ceUCFacePoseAdd::ceUCFacePoseAdd(ceConversation *conversation, ceFacePose *faceP
 	pConversation = nullptr;
 	pFacePose = nullptr;
 	
-	SetShortInfo("Add Face Pose");
+	SetShortInfo("@Conversation.Undo.AddFacePose");
 	
 	pConversation = conversation;
 	pFacePose = facePose;

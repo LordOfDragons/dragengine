@@ -44,7 +44,7 @@ ceUCTargetSetPosition::ceUCTargetSetPosition(ceTarget *target, const decVector &
 	
 	pTarget = nullptr;
 	
-	SetShortInfo("Target Set Position");
+	SetShortInfo("@Conversation.Undo.TargetSetPosition");
 	
 	pOldPosition = target->GetPosition();
 	pNewPosition = newPosition;

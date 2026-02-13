@@ -49,7 +49,7 @@ ceUCACShotSetCameraTarget::ceUCACShotSetCameraTarget(ceConversationTopic *topic,
 	pOldTarget = cameraShot->GetCameraTarget();
 	pNewTarget = newTarget;
 	
-	SetShortInfo("Set Camera Target");
+	SetShortInfo("@Conversation.Undo.SetCameraTarget");
 	
 	pTopic = topic;
 	pCameraShot = cameraShot;

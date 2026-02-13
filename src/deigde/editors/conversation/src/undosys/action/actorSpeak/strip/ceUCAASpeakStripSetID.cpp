@@ -54,7 +54,7 @@ ceStrip *strip, const char *newID){
 	pOldID = strip->GetID();
 	pNewID = newID;
 	
-	SetShortInfo("Strip set ID");
+	SetShortInfo("@Conversation.Undo.StripSetID");
 	
 	pTopic = topic;
 	pActorSpeak = actorSpeak;

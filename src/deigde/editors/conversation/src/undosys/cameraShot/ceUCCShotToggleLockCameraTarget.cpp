@@ -46,7 +46,7 @@ ceUCCShotToggleLockCameraTarget::ceUCCShotToggleLockCameraTarget(ceCameraShot *c
 	
 	pCameraShot = nullptr;
 	
-	SetShortInfo("Camera shot lock camera target");
+	SetShortInfo("@Conversation.Undo.CameraShotLockCameraTarget");
 	
 	pCameraShot = cameraShot;
 }

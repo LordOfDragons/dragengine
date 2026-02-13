@@ -44,7 +44,7 @@ ceUCTargetSetOrientation::ceUCTargetSetOrientation(ceTarget *target, const decVe
 	
 	pTarget = nullptr;
 	
-	SetShortInfo("Target Set Orientation");
+	SetShortInfo("@Conversation.Undo.TargetSetOrientation");
 	
 	pOldOrientation = target->GetOrientation();
 	pNewOrientation = newOrientation;

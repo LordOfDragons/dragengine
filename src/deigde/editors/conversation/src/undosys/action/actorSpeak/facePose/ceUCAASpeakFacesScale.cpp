@@ -38,7 +38,7 @@
 
 ceUCAASpeakFacesScale::ceUCAASpeakFacesScale(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak)
 : ceUCAASpeakStripsScale(topic, actorSpeak){
-	SetShortInfo("Scale words");
+	SetShortInfo("@Conversation.Undo.ScaleWords");
 }
 
 ceUCAASpeakFacesScale::~ceUCAASpeakFacesScale(){

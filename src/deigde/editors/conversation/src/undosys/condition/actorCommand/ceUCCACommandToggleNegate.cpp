@@ -52,7 +52,7 @@ ceConversationAction *action, ceCConditionActorCommand *actorCommand){
 	pAction = nullptr;
 	pActorCommand = nullptr;
 	
-	SetShortInfo("Condition actor command negate");
+	SetShortInfo("@Conversation.Undo.ConditionActorCommandNegate");
 	
 	pTopic = topic;
 	pAction = action;

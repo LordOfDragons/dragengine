@@ -53,7 +53,7 @@ ceUCAASpeakBodyLASet::ceUCAASpeakBodyLASet(ceConversationTopic *topic, ceCAActor
 	pOldStrip = nullptr;
 	pNewStrip = nullptr;
 	
-	SetShortInfo("Set body look-at");
+	SetShortInfo("@Conversation.Undo.SetBodyLookAt");
 	
 	pOldStrip = ceStrip::Ref::New(*bodyLookAt);
 	

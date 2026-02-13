@@ -50,7 +50,7 @@ pTopic(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Actor speak clear eyes look-at");
+	SetShortInfo("@Conversation.Undo.ActorSpeakClearEyesLookAt");
 	
 	pOldStrips = actorSpeak->GetEyesLookAts();
 	

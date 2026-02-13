@@ -49,7 +49,7 @@ ceUCAACmdSetActor::ceUCAACmdSetActor(ceConversationTopic *topic, ceCAActorComman
 	pOldActorID = action->GetActor();
 	pNewActorID = newActorID;
 	
-	SetShortInfo("Action ActorCommand Set ActorID");
+	SetShortInfo("@Conversation.Undo.ActionActorCommandSetActorID");
 	
 	pTopic = topic;
 	pAction = action;

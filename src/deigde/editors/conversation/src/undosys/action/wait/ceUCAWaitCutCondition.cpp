@@ -43,5 +43,5 @@
 
 ceUCAWaitCutCondition::ceUCAWaitCutCondition(ceConversationTopic *topic, ceCAWait *wait, ceConversationCondition *newCondition) :
 ceUCAWaitSetCondition(topic, wait, newCondition){
-	SetShortInfo("Action Wait Cut Condition");
+	SetShortInfo("@Conversation.Undo.ActionWaitCutCondition");
 }

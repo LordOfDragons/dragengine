@@ -49,7 +49,7 @@ ceUCAACmdSetCommand::ceUCAACmdSetCommand(ceConversationTopic *topic, ceCAActorCo
 	pOldCommand = action->GetCommand();
 	pNewCommand = newCommand;
 	
-	SetShortInfo("Action ActorCommand Set Command");
+	SetShortInfo("@Conversation.Undo.ActionActorCommandSetCommand");
 	
 	pTopic = topic;
 	pAction = action;

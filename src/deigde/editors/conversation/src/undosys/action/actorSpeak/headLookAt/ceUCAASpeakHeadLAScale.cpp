@@ -38,7 +38,7 @@
 
 ceUCAASpeakHeadLAScale::ceUCAASpeakHeadLAScale(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak)
 : ceUCAASpeakStripsScale(topic, actorSpeak){
-	SetShortInfo("Scale head look-at");
+	SetShortInfo("@Conversation.Undo.ScaleHeadLookAt");
 }
 
 ceUCAASpeakHeadLAScale::~ceUCAASpeakHeadLAScale(){

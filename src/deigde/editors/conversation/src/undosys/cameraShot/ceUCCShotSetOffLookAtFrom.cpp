@@ -44,7 +44,7 @@ ceUCCShotSetOffLookAtFrom::ceUCCShotSetOffLookAtFrom(ceCameraShot *cameraShot, c
 	
 	pCameraShot = nullptr;
 	
-	SetShortInfo("Camera Shot Set Start Look-At Position");
+	SetShortInfo("@Conversation.Undo.CameraShotSetStartLookAtPosition");
 	
 	pOldPos = cameraShot->GetOffsetLookAtFrom();
 	pNewPos = newPos;

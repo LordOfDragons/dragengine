@@ -51,7 +51,7 @@ ceUCAActorAddSetAliasID::ceUCAActorAddSetAliasID(ceConversationTopic *topic, ceC
 	pOldAliasID = action->GetAliasID();
 	pNewAliasID = newAliasID;
 	
-	SetShortInfo("Actor add set alias id");
+	SetShortInfo("@Conversation.Undo.ActorAddSetAliasID");
 	
 	pTopic = topic;
 	pAction = action;

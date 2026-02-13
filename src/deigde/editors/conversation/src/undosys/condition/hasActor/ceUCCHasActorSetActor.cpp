@@ -52,7 +52,7 @@ ceCConditionHasActor *hasActor, const char *newID){
 	pOldID = hasActor->GetActor();
 	pNewID = newID;
 	
-	SetShortInfo("Has Actor Set Actor ID");
+	SetShortInfo("@Conversation.Undo.HasActorSetActorID");
 	
 	pTopic = topic;
 	pAction = action;

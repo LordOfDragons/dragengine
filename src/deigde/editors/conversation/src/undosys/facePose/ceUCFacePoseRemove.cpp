@@ -48,7 +48,7 @@ ceUCFacePoseRemove::ceUCFacePoseRemove(ceFacePose *facePose){
 	
 	pConversation = nullptr;
 	
-	SetShortInfo("Remove Face Pose");
+	SetShortInfo("@Conversation.Undo.RemoveFacePose");
 	
 	pConversation = conversation;
 	pFacePose = facePose;

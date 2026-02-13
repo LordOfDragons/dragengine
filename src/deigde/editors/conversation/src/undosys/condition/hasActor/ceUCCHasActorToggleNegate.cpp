@@ -49,7 +49,7 @@ ceUCCHasActorToggleNegate::ceUCCHasActorToggleNegate(ceConversationTopic *topic,
 	pAction = nullptr;
 	pHasActor = nullptr;
 	
-	SetShortInfo("Has Actor Negate");
+	SetShortInfo("@Conversation.Undo.HasActorNegate");
 	
 	pTopic = topic;
 	pAction = action;

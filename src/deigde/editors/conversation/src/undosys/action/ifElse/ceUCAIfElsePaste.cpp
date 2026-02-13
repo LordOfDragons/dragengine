@@ -65,10 +65,10 @@ ceUCActionPaste(topic, actions, index)
 	pCase = nullptr;
 	
 	if(actions.GetCount() == 1){
-		SetShortInfo("IfElse Action");
+		SetShortInfo("@Conversation.Undo.IfElseAction");
 		
 	}else{
-		SetShortInfo("IfElse Actions");
+		SetShortInfo("@Conversation.Undo.IfElseActions");
 	}
 	
 	pIfElse = ifElse;

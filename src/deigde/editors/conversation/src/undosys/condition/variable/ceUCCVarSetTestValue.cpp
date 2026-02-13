@@ -52,7 +52,7 @@ ceCConditionVariable *condition, int newValue){
 	pOldValue = condition->GetTestValue();
 	pNewValue = newValue;
 	
-	SetShortInfo("Condition Variable: Set Test Value");
+	SetShortInfo("@Conversation.Undo.ConditionVariableSetTestValue");
 	
 	pTopic = topic;
 	pAction = action;

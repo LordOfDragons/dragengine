@@ -53,7 +53,7 @@ pNewID(newID)
 	pAction = nullptr;
 	pOldID = action->GetWaitForActorID();
 	
-	SetShortInfo("Action Set Wait For Actor ID ");
+	SetShortInfo("@Conversation.Undo.ActionSetWaitForActorID");
 	
 	pTopic = topic;
 	pAction = action;

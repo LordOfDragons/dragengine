@@ -66,7 +66,7 @@ ceCAPlayerChoiceOption *option, ceConversationAction *action, int index){
 	pAction = nullptr;
 	pIndex = index;
 	
-	SetShortInfo("Player Choice Add Action");
+	SetShortInfo("@Conversation.Undo.PlayerChoiceAddAction");
 	
 	pTopic = topic;
 	pPlayerChoice = playerChoice;

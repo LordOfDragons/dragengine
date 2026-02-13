@@ -65,7 +65,7 @@ ceCAPlayerChoiceOption *option, ceConversationAction *action){
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Player Choice Remove Action");
+	SetShortInfo("@Conversation.Undo.PlayerChoiceRemoveAction");
 	
 	pTopic = topic;
 	pPlayerChoice = playerChoice;

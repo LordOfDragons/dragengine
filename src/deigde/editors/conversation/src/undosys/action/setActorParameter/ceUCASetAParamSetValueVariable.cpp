@@ -52,7 +52,7 @@ pNewName(newName)
 	
 	pOldName = action->GetValueVariable();
 	
-	SetShortInfo("SetActorParameter Value Variable");
+	SetShortInfo("@Conversation.Undo.SetActorParameterValueVariable");
 	
 	pTopic = topic;
 	pAction = action;

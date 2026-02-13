@@ -51,7 +51,7 @@ pNewValue(newValue)
 	
 	pOldValue = conversation->GetImportConversationPath();
 	
-	SetShortInfo("Set Import Conversation Path List");
+	SetShortInfo("@Conversation.Undo.SetImportConversationPathList");
 }
 
 ceUConvoSetImportConvoPath::~ceUConvoSetImportConvoPath(){

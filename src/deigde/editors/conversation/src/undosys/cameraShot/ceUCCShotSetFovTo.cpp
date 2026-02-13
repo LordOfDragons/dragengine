@@ -44,7 +44,7 @@ ceUCCShotSetFovTo::ceUCCShotSetFovTo(ceCameraShot *cameraShot, float newFov){
 	
 	pCameraShot = nullptr;
 	
-	SetShortInfo("Camera Shot Set End Fov");
+	SetShortInfo("@Conversation.Undo.CameraShotSetEndFov");
 	
 	pOldFov = cameraShot->GetFovTo();
 	pNewFov = newFov;

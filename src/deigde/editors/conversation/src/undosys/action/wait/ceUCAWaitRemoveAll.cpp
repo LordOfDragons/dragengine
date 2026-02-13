@@ -51,7 +51,7 @@ ceUCAWaitRemoveAll::ceUCAWaitRemoveAll(ceConversationTopic *topic, ceCAWait *wai
 	pWait = nullptr;
 	pActions = wait->GetActions();
 	
-	SetShortInfo("Action Wait Remove All Actions");
+	SetShortInfo("@Conversation.Undo.ActionWaitRemoveAllActions");
 	
 	pTopic = topic;
 	pWait = wait;

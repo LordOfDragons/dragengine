@@ -49,7 +49,7 @@ ceUCAASpeakSetActor::ceUCAASpeakSetActor(ceConversationTopic *topic, ceCAActorSp
 	pOldActorID = actorSpeak->GetActor();
 	pNewActorID = newActorID;
 	
-	SetShortInfo("Actor Speak Set Actor ID");
+	SetShortInfo("@Conversation.Undo.ActorSpeakSetActorID");
 	
 	pTopic = topic;
 	pActorSpeak = actorSpeak;

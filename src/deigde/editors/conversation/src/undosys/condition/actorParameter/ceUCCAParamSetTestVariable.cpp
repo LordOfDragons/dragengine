@@ -55,7 +55,7 @@ pNewVariable(newVariable)
 	
 	pOldVariable = condition->GetTestVariable();
 	
-	SetShortInfo("ActorParameter: Set Test Variable");
+	SetShortInfo("@Conversation.Undo.ActorParameterSetTestVariable");
 	
 	pTopic = topic;
 	pAction = action;

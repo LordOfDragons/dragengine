@@ -51,7 +51,7 @@ ceUCAASpeakWordFromText::ceUCAASpeakWordFromText(ceConversationTopic *topic, ceC
 	pActorSpeak = nullptr;
 	pOldWords = actorSpeak->GetWords();
 	
-	SetShortInfo("Actor Speak Words From Text");
+	SetShortInfo("@Conversation.Undo.ActorSpeakWordsFromText");
 	
 	pTopic = topic;
 	pActorSpeak = actorSpeak;

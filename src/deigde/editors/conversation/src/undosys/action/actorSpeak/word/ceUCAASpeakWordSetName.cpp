@@ -39,7 +39,7 @@
 ceUCAASpeakWordSetName::ceUCAASpeakWordSetName(ceConversationTopic *topic,
 ceCAActorSpeak *actorSpeak, ceStrip *word, const char *newName)
 : ceUCAASpeakStripSetID(topic, actorSpeak, word, newName){
-	SetShortInfo("Word Set Name");
+	SetShortInfo("@Conversation.Undo.WordSetName");
 }
 
 ceUCAASpeakWordSetName::~ceUCAASpeakWordSetName(){

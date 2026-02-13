@@ -54,7 +54,7 @@ ceUCAPChoiceOptionAdd::ceUCAPChoiceOptionAdd(ceConversationTopic *topic, ceCAPla
 	pOption = nullptr;
 	pIndex = index;
 	
-	SetShortInfo("Player Choice Add Option");
+	SetShortInfo("@Conversation.Undo.PlayerChoiceAddOption");
 	
 	pTopic = topic;
 	pPlayerChoice = playerChoice;

@@ -39,7 +39,7 @@
 ceUCAASpeakBodyLASetDuration::ceUCAASpeakBodyLASetDuration(ceConversationTopic *topic,
 ceCAActorSpeak *actorSpeak, ceStrip *bodyLookAt, float newDuration)
 : ceUCAASpeakStripSetDuration(topic, actorSpeak, bodyLookAt, newDuration){
-	SetShortInfo("BodyLookAt Set Duration");
+	SetShortInfo("@Conversation.Undo.BodyLookAtSetDuration");
 }
 
 ceUCAASpeakBodyLASetDuration::~ceUCAASpeakBodyLASetDuration(){

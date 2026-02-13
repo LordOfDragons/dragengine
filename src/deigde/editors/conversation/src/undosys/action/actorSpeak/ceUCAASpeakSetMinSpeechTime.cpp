@@ -51,7 +51,7 @@ ceUCAASpeakSetMinSpeechTime::ceUCAASpeakSetMinSpeechTime(ceConversationTopic *to
 	pOldTime = actorSpeak->GetMinSpeechTime();
 	pNewTime = newTime;
 	
-	SetShortInfo("Actor speak set minimum speech time");
+	SetShortInfo("@Conversation.Undo.ActorSpeakSetMinimumSpeechTime");
 	
 	pTopic = topic;
 	pActorSpeak = actorSpeak;

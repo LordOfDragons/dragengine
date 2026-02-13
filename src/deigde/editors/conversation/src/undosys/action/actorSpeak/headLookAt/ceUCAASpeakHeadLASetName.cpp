@@ -39,7 +39,7 @@
 ceUCAASpeakHeadLASetName::ceUCAASpeakHeadLASetName(ceConversationTopic *topic,
 ceCAActorSpeak *actorSpeak, ceStrip *headLookAt, const char *newName)
 : ceUCAASpeakStripSetID(topic, actorSpeak, headLookAt, newName){
-	SetShortInfo("HeadLookAt Set Name");
+	SetShortInfo("@Conversation.Undo.HeadLookAtSetName");
 }
 
 ceUCAASpeakHeadLASetName::~ceUCAASpeakHeadLASetName(){

@@ -54,7 +54,7 @@ ceStrip *word, float newPause){
 	pOldPause = word->GetPause();
 	pNewPause = newPause;
 	
-	SetShortInfo("Strip Set Pause");
+	SetShortInfo("@Conversation.Undo.StripSetPause");
 	
 	pTopic = topic;
 	pActorSpeak = actorSpeak;

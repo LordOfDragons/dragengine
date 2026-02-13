@@ -49,7 +49,7 @@ ceCASetVariable *action, ceCASetVariable::eOperators newOperator){
 	pOldOperator = action->GetOperator();
 	pNewOperator = newOperator;
 	
-	SetShortInfo("Action SetVariable Set Operator");
+	SetShortInfo("@Conversation.Undo.ActionSetVariableSetOperator");
 	
 	pTopic = topic;
 	pAction = action;

@@ -46,7 +46,7 @@ ceUCTargetSetBone::ceUCTargetSetBone(ceTarget *target, const char *newBone){
 	
 	pTarget = nullptr;
 	
-	SetShortInfo("Target set bone");
+	SetShortInfo("@Conversation.Undo.TargetSetBone");
 	
 	pOldBone = target->GetBone();
 	pNewBone = newBone;

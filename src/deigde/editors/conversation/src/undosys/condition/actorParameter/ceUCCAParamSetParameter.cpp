@@ -52,7 +52,7 @@ ceCConditionActorParameter *condition, const char *newVariable){
 	pOldParameter = condition->GetParameter();
 	pNewParameter = newVariable;
 	
-	SetShortInfo("Condition ActorParameter: Set Parameter");
+	SetShortInfo("@Conversation.Undo.ConditionActorParameterSetParameter");
 	
 	pTopic = topic;
 	pAction = action;

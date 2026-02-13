@@ -44,7 +44,7 @@ ceUCCShotSetOffCamFrom::ceUCCShotSetOffCamFrom(ceCameraShot *cameraShot, const d
 	
 	pCameraShot = nullptr;
 	
-	SetShortInfo("Camera Shot Set Start Camera Position");
+	SetShortInfo("@Conversation.Undo.CameraShotSetStartCameraPosition");
 	
 	pOldPos = cameraShot->GetOffsetCameraFrom();
 	pNewPos = newPos;

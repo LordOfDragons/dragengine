@@ -39,7 +39,7 @@
 ceUCAASpeakEyesLASetPause::ceUCAASpeakEyesLASetPause(ceConversationTopic *topic,
 ceCAActorSpeak *actorSpeak, ceStrip *eyesLookAt, float newPause)
 : ceUCAASpeakStripSetPause(topic, actorSpeak, eyesLookAt, newPause){
-	SetShortInfo("EyesLookAt Set Pause");
+	SetShortInfo("@Conversation.Undo.EyesLookAtSetPause");
 }
 
 ceUCAASpeakEyesLASetPause::~ceUCAASpeakEyesLASetPause(){

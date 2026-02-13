@@ -62,7 +62,7 @@ ceUCAPChoiceOptionMove::ceUCAPChoiceOptionMove(ceConversationTopic *topic, ceCAP
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Player Choice Move Option");
+	SetShortInfo("@Conversation.Undo.PlayerChoiceMoveOption");
 	
 	pTopic = topic;
 	pPlayerChoice = playerChoice;

@@ -54,7 +54,7 @@ ceUCAIfElseCaseAdd::ceUCAIfElseCaseAdd(ceConversationTopic *topic, ceCAIfElse *i
 	pCase = nullptr;
 	pIndex = index;
 	
-	SetShortInfo("If-else add case");
+	SetShortInfo("@Conversation.Undo.IfElseAddCase");
 	
 	pTopic = topic;
 	pIfElse = ifelse;

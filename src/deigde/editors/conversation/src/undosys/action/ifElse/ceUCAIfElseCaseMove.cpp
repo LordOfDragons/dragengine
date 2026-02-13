@@ -64,7 +64,7 @@ ceUCAIfElseCaseMove::ceUCAIfElseCaseMove(ceConversationTopic *topic, ceCAIfElse 
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("If-else move case");
+	SetShortInfo("@Conversation.Undo.IfElseMoveCase");
 	
 	pTopic = topic;
 	pIfElse = ifelse;

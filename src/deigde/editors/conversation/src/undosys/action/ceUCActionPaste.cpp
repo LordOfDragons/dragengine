@@ -51,10 +51,10 @@ const ceConversationAction::List &actions, int index)
 	pIndex = index;
 	
 	if(actions.GetCount() == 1){
-		SetShortInfo("Paste Action");
+		SetShortInfo("@Conversation.Undo.PasteAction");
 		
 	}else{
-		SetShortInfo("Paste Actions");
+		SetShortInfo("@Conversation.Undo.PasteActions");
 	}
 	
 	pTopic = topic;

@@ -44,7 +44,7 @@ ceUCGestureSetAnimator::ceUCGestureSetAnimator(ceGesture *gesture, const char *n
 	
 	pGesture = nullptr;
 	
-	SetShortInfo("Gesture Set Animator");
+	SetShortInfo("@Conversation.Undo.GestureSetAnimator");
 	
 	pOldAnimator = gesture->GetAnimator();
 	pNewAnimator = newAnimator;

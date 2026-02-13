@@ -46,7 +46,7 @@ ceUCCShotSetCameraTarget::ceUCCShotSetCameraTarget(ceCameraShot *cameraShot, con
 	
 	pCameraShot = nullptr;
 	
-	SetShortInfo("Camera Shot Set Camera Target");
+	SetShortInfo("@Conversation.Undo.CameraShotSetCameraTarget");
 	
 	pOldTarget = cameraShot->GetCameraTarget();
 	pNewTarget = newTarget;

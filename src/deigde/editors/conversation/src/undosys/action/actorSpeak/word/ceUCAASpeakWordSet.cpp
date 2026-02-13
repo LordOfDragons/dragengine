@@ -53,7 +53,7 @@ ceUCAASpeakWordSet::ceUCAASpeakWordSet(ceConversationTopic *topic, ceCAActorSpea
 	pOldStrip = nullptr;
 	pNewStrip = nullptr;
 	
-	SetShortInfo("Set Word");
+	SetShortInfo("@Conversation.Undo.SetWord");
 	
 	pOldStrip = ceStrip::Ref::New(*word);
 	

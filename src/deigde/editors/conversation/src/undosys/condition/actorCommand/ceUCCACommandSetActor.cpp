@@ -54,7 +54,7 @@ ceCConditionActorCommand *condition, const char *newActor){
 	pOldActor = condition->GetActor();
 	pNewActor = newActor;
 	
-	SetShortInfo("Condition actor command set actor");
+	SetShortInfo("@Conversation.Undo.ConditionActorCommandSetActor");
 	
 	pTopic = topic;
 	pAction = action;

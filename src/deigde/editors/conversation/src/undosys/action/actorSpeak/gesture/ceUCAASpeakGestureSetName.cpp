@@ -39,7 +39,7 @@
 ceUCAASpeakGestureSetName::ceUCAASpeakGestureSetName(ceConversationTopic *topic,
 ceCAActorSpeak *actorSpeak, ceStrip *gesture, const char *newName)
 : ceUCAASpeakStripSetID(topic, actorSpeak, gesture, newName){
-	SetShortInfo("Gesture Set Name");
+	SetShortInfo("@Conversation.Undo.GestureSetName");
 }
 
 ceUCAASpeakGestureSetName::~ceUCAASpeakGestureSetName(){

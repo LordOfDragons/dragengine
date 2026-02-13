@@ -53,7 +53,7 @@ ceUCAASpeakFaceSet::ceUCAASpeakFaceSet(ceConversationTopic *topic, ceCAActorSpea
 	pOldStrip = nullptr;
 	pNewStrip = nullptr;
 	
-	SetShortInfo("Set face pose");
+	SetShortInfo("@Conversation.Undo.SetFacePose");
 	
 	pOldStrip = ceStrip::Ref::New(*facePose);
 	

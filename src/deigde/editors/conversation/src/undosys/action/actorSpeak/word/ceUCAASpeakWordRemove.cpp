@@ -56,7 +56,7 @@ ceUCAASpeakWordRemove::ceUCAASpeakWordRemove(ceConversationTopic *topic, ceCAAct
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Remove Word");
+	SetShortInfo("@Conversation.Undo.RemoveWord");
 	
 	pTopic = topic;
 	pActorSpeak = actorSpeak;

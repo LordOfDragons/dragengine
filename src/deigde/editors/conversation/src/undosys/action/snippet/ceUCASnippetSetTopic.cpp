@@ -49,7 +49,7 @@ ceUCASnippetSetTopic::ceUCASnippetSetTopic(ceConversationTopic *topic, ceCASnipp
 	pOldTopic = snippet->GetTopic();
 	pNewTopic = newTopic;
 	
-	SetShortInfo("Snippet Set Topic");
+	SetShortInfo("@Conversation.Undo.SnippetSetTopic");
 	
 	pTopic = topic;
 	pSnippet = snippet;

@@ -44,7 +44,7 @@ ceUCCShotToggleAlignTargets::ceUCCShotToggleAlignTargets(ceCameraShot *cameraSho
 	
 	pCameraShot = nullptr;
 	
-	SetShortInfo("Camera Shot Toggle Billboard Targets");
+	SetShortInfo("@Conversation.Undo.CameraShotToggleBillboardTargets");
 	
 	pCameraShot = cameraShot;
 }

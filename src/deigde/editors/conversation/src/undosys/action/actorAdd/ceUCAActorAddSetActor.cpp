@@ -51,7 +51,7 @@ ceUCAActorAddSetActor::ceUCAActorAddSetActor(ceConversationTopic *topic, ceCAAct
 	pOldActorID = action->GetID();
 	pNewActorID = newActorID;
 	
-	SetShortInfo("Actor add set actor id");
+	SetShortInfo("@Conversation.Undo.ActorAddSetActor");
 	
 	pTopic = topic;
 	pAction = action;

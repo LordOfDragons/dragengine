@@ -56,10 +56,10 @@ ceUCActionPaste(topic, actions, index)
 	pWait = nullptr;
 	
 	if(actions.GetCount() == 1){
-		SetShortInfo("Action Wait Paset Action");
+		SetShortInfo("@Conversation.Undo.ActionWaitPasetAction");
 		
 	}else{
-		SetShortInfo("Action Wait Paste Actions");
+		SetShortInfo("@Conversation.Undo.ActionWaitPasteActions");
 	}
 	
 	pWait = wait;

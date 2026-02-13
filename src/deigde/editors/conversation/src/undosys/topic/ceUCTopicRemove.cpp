@@ -49,7 +49,7 @@ ceUCTopicRemove::ceUCTopicRemove(ceConversationTopic *topic){
 	pFile = nullptr;
 	pTopic = nullptr;
 	
-	SetShortInfo("Remove Topic");
+	SetShortInfo("@Conversation.Undo.RemoveTopic");
 	
 	pFile = file;
 	pTopic = topic;

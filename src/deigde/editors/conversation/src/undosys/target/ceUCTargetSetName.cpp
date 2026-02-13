@@ -54,7 +54,7 @@
 ceUCTargetSetName::ceUCTargetSetName(ceTarget *target, const char *newName){
 	if(!target || !newName) DETHROW(deeInvalidParam);
 	
-	SetShortInfo("Target Set Name");
+	SetShortInfo("@Conversation.Undo.TargetSetName");
 	
 	pOldName = target->GetName();
 	pNewName = newName;

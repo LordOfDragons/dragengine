@@ -56,7 +56,7 @@ ceUCAASpeakFaceRemove::ceUCAASpeakFaceRemove(ceConversationTopic *topic, ceCAAct
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Remove Face Pose");
+	SetShortInfo("@Conversation.Undo.RemoveFacePose");
 	
 	pTopic = topic;
 	pActorSpeak = actorSpeak;

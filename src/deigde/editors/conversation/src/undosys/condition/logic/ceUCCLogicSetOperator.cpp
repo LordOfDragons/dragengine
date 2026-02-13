@@ -52,7 +52,7 @@ ceCConditionLogic::eOperators newOperator){
 	pOldOperator = logic->GetOperator();
 	pNewOperator = newOperator;
 	
-	SetShortInfo("Logic Set Operator");
+	SetShortInfo("@Conversation.Undo.LogicSetOperator");
 	
 	pTopic = topic;
 	pAction = action;

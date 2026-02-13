@@ -58,7 +58,7 @@ ceStrip *bodyLookAt, int newIndex){
 	if(pNewIndex < 0 || pNewIndex >= actorSpeak->GetBodyLookAts().GetCount()) DETHROW(deeInvalidParam);
 	if(pNewIndex == pOldIndex) DETHROW(deeInvalidParam);
 	
-	SetShortInfo("Move BodyLookAt");
+	SetShortInfo("@Conversation.Undo.MoveBodyLookAt");
 	
 	pTopic = topic;
 	pActorSpeak = actorSpeak;

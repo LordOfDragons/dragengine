@@ -47,7 +47,7 @@ pFile(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Duplicate topic");
+	SetShortInfo("@Conversation.Undo.DuplicateTopic");
 	
 	try{
 		pTopic = ceConversationTopic::Ref::New(topic);

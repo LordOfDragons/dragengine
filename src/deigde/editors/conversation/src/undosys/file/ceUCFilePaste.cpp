@@ -43,10 +43,10 @@ pConversation(nullptr){
 	}
 	
 	if(files.GetCount() == 1){
-		SetShortInfo("Paste file");
+		SetShortInfo("@Conversation.Undo.PasteFile");
 		
 	}else{
-		SetShortInfo("Paste files");
+		SetShortInfo("@Conversation.Undo.PasteFiles");
 	}
 	
 	files.Visit([&](const ceConversationFile &f){

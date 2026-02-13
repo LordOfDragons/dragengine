@@ -39,7 +39,7 @@
 ceUCAASpeakHeadLASetDuration::ceUCAASpeakHeadLASetDuration(ceConversationTopic *topic,
 ceCAActorSpeak *actorSpeak, ceStrip *headLookAt, float newDuration)
 : ceUCAASpeakStripSetDuration(topic, actorSpeak, headLookAt, newDuration){
-	SetShortInfo("HeadLookAt Set Duration");
+	SetShortInfo("@Conversation.Undo.HeadLookAtSetDuration");
 }
 
 ceUCAASpeakHeadLASetDuration::~ceUCAASpeakHeadLASetDuration(){

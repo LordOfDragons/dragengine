@@ -49,7 +49,7 @@ ceUCActionRemove::ceUCActionRemove(ceConversationTopic *topic, ceConversationAct
 	pIndex = topic->GetActions().IndexOf(action);
 	if(pIndex == -1) DETHROW(deeInvalidParam);
 	
-	SetShortInfo("Remove Action");
+	SetShortInfo("@Conversation.Undo.RemoveAction");
 	
 	pTopic = topic;
 	pAction = action;

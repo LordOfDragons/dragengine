@@ -59,7 +59,7 @@ ceUCAIfElseRemoveAll::ceUCAIfElseRemoveAll(ceConversationTopic *topic, ceCAIfEls
 		pActions = ifElse->GetElseActions();
 	}
 	
-	SetShortInfo("IfElse Remove All Actions");
+	SetShortInfo("@Conversation.Undo.IfElseRemoveAllActions");
 	
 	pTopic = topic;
 	pIfElse = ifElse;

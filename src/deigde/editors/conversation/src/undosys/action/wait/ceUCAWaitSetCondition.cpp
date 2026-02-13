@@ -49,7 +49,7 @@ ceUCAWaitSetCondition::ceUCAWaitSetCondition(ceConversationTopic *topic, ceCAWai
 	pOldCondition = nullptr;
 	pNewCondition = nullptr;
 	
-	SetShortInfo("Action Wait Set Condition");
+	SetShortInfo("@Conversation.Undo.ActionWaitSetCondition");
 	
 	pTopic = topic;
 	pWait = wait;

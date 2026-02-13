@@ -46,7 +46,7 @@ ceUCAWaitSetInterval::ceUCAWaitSetInterval(ceConversationTopic *topic, ceCAWait 
 	pTopic = nullptr;
 	pWait = nullptr;
 	
-	SetShortInfo("Action Wait Set Interval");
+	SetShortInfo("@Conversation.Undo.ActionWaitSetInterval");
 	
 	pTopic = topic;
 	pWait = wait;

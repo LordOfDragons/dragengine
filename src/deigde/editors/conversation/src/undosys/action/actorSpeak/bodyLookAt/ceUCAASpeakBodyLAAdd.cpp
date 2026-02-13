@@ -55,7 +55,7 @@ ceUCAASpeakBodyLAAdd::ceUCAASpeakBodyLAAdd(ceConversationTopic *topic, ceCAActor
 	pBodyLA = nullptr;
 	pIndex = index;
 	
-	SetShortInfo("Actor Speak Add BodyLookAt");
+	SetShortInfo("@Conversation.Undo.ActorSpeakAddBodyLookAt");
 	
 	pTopic = topic;
 	pActorSpeak = actorSpeak;

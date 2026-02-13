@@ -39,7 +39,7 @@
 ceUCAASpeakWordSetPause::ceUCAASpeakWordSetPause(ceConversationTopic *topic,
 ceCAActorSpeak *actorSpeak, ceStrip *word, float newPause)
 : ceUCAASpeakStripSetPause(topic, actorSpeak, word, newPause){
-	SetShortInfo("Word Set Pause");
+	SetShortInfo("@Conversation.Undo.WordSetPause");
 }
 
 ceUCAASpeakWordSetPause::~ceUCAASpeakWordSetPause(){

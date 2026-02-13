@@ -48,7 +48,7 @@ ceUCTargetRemove::ceUCTargetRemove(ceTarget *target){
 	
 	pConversation = nullptr;
 	
-	SetShortInfo("Remove Target");
+	SetShortInfo("@Conversation.Undo.RemoveTarget");
 	
 	pConversation = conversation;
 	pTarget = target;

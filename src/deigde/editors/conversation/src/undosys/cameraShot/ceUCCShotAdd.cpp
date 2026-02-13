@@ -46,7 +46,7 @@ ceUCCShotAdd::ceUCCShotAdd(ceConversation *conversation, ceCameraShot *cameraSho
 	pConversation = nullptr;
 	pCameraShot = nullptr;
 	
-	SetShortInfo("Add Camera Shot");
+	SetShortInfo("@Conversation.Undo.AddCameraShot");
 	
 	pConversation = conversation;
 	pCameraShot = cameraShot;

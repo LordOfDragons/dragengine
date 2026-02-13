@@ -49,7 +49,7 @@ ceUCACShotSetDuration::ceUCACShotSetDuration(ceConversationTopic *topic, ceCACam
 	pOldDuration = cameraShot->GetDuration();
 	pNewDuration = newDuration;
 	
-	SetShortInfo("Camera Shot Set Duration");
+	SetShortInfo("@Conversation.Undo.CameraShotSetDuration");
 	
 	pTopic = topic;
 	pCameraShot = cameraShot;
