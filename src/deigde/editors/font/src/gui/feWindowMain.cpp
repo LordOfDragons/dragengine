@@ -310,13 +310,13 @@ public:
 class cActionFontNew : public cActionBase{
 public:
 	typedef deTObjectReference<cActionFontNew> Ref;
-	cActionFontNew(feWindowMain &window) : cActionBase(window, "New",
-		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiNew), "Creates a new font",
+	cActionFontNew(feWindowMain &window) : cActionBase(window, "@Font.Action.FontNew",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiNew), "@Font.Action.FontNew.ToolTip",
 		deInputEvent::esmControl, deInputEvent::ekcN, deInputEvent::ekcN){}
 	
 	void OnAction() override{
-		if(igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "New Font",
-		"Creating a new font discarding the current one is that ok?") == igdeCommonDialogs::ebYes){
+		if(igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "@Font.Dialog.NewFont.Title",
+		"@Font.Dialog.NewFont.Message") == igdeCommonDialogs::ebYes){
 			pWindow.CreateNewFont();
 		}
 	}
@@ -326,13 +326,13 @@ public:
 class cActionFontOpen : public cActionBase{
 public:
 	typedef deTObjectReference<cActionFontOpen> Ref;
-	cActionFontOpen(feWindowMain &window) : cActionBase(window, "Open...",
-		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen), "Opens a font from file",
+	cActionFontOpen(feWindowMain &window) : cActionBase(window, "@Font.Action.FontOpen",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen), "@Font.Action.FontOpen.ToolTip",
 		deInputEvent::esmControl, deInputEvent::ekcO, deInputEvent::ekcO){}
 	
 	void OnAction() override{
 		decString filename(pWindow.GetFont()->GetFilePath());
-		if(!igdeCommonDialogs::GetFileOpen(pWindow, "Open Font",
+		if(!igdeCommonDialogs::GetFileOpen(pWindow, "@Font.Dialog.OpenFont.Title",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetEnvironment().GetOpenFilePatternList( igdeEnvironment::efpltFont ), filename ) ){
 			return;
@@ -357,13 +357,13 @@ public:
 class cActionFontSaveAs : public cActionBase{
 public:
 	typedef deTObjectReference<cActionFontSaveAs> Ref;
-	cActionFontSaveAs(feWindowMain &window) : cActionBase(window, "Save As...",
+	cActionFontSaveAs(feWindowMain &window) : cActionBase(window, "@Font.Action.FontSaveAs",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSaveAs),
-		"Saves the font under a differen file", deInputEvent::ekcA){}
+		"@Font.Action.FontSaveAs.ToolTip", deInputEvent::ekcA){}
 	
 	void OnAction() override{
 		decString filename(pWindow.GetFont()->GetFilePath());
-		if(igdeCommonDialogs::GetFileSave(pWindow, "Save Font",
+		if(igdeCommonDialogs::GetFileSave(pWindow, "@Font.Dialog.SaveFont.Title",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetEnvironment().GetSaveFilePatternList( igdeEnvironment::efpltFont ), filename ) ){
 			pWindow.SaveFont(filename);
@@ -376,11 +376,8 @@ class cActionFontSave : public cActionFontSaveAs{
 public:
 	typedef deTObjectReference<cActionFontSave> Ref;
 	cActionFontSave(feWindowMain &window) : cActionFontSaveAs(window){
-		SetText("Save");
-		SetDescription("Saves the font to file");
-		SetHotKey(igdeHotKey(deInputEvent::esmControl, deInputEvent::ekcS));
-		SetMnemonic(deInputEvent::ekcS);
-		SetIcon(window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave));
+			SetText("@Font.Action.FontSave");
+			SetDescription("@Font.Action.FontSave.ToolTip");
 	}
 	
 	void OnAction() override{
@@ -405,20 +402,20 @@ public:
 class cActionFontGenerate : public cActionBase{
 public:
 	typedef deTObjectReference<cActionFontGenerate> Ref;
-	cActionFontGenerate(feWindowMain &window) : cActionBase(window, "Generate...",
+	cActionFontGenerate(feWindowMain &window) : cActionBase(window, "@Font.Action.FontGenerate",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiNew),
-		"Generates a new font from a system font", deInputEvent::ekcG){}
+		"@Font.Action.FontGenerate.ToolTip", deInputEvent::ekcG){}
 	
 	void OnAction() override{
 		igdeFont::sConfiguration config(pWindow.GetGenFontConfig());
-		if(!igdeCommonDialogs::SelectSystemFont(pWindow, "Select Font", config)){
+		if(!igdeCommonDialogs::SelectSystemFont(pWindow, "@Font.Dialog.SelectFont.Title", config)){
 			return;
 		}
 		
 		pWindow.SetGenFontConfig(config);
 		
 		int enlargeGlyph = 0;
-		if(!igdeCommonDialogs::GetInteger(pWindow, "Glyph Enlarge", "Enlarge:", enlargeGlyph)){
+		if(!igdeCommonDialogs::GetInteger(pWindow, "@Font.Dialog.GlyphEnlarge.Title", "@Font.Dialog.GlyphEnlarge.Message", enlargeGlyph)){
 			return;
 		}
 		
@@ -436,8 +433,8 @@ class cActionEditCut : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditCut> Ref;
 	cActionEditCut(feWindowMain &window) : cActionBase(window,
-		"Cut", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
-		"Cut selected objects", deInputEvent::esmControl,
+		"@Font.Action.EditCut", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
+		"@Font.Action.EditCut.ToolTip", deInputEvent::esmControl,
 		deInputEvent::ekcX, deInputEvent::ekcT){}
 	
 	void OnAction() override{
@@ -453,8 +450,8 @@ class cActionEditCopy : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditCopy> Ref;
 	cActionEditCopy(feWindowMain &window) : cActionBase(window,
-		"Copy", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-		"Copies selected objects", deInputEvent::esmControl,
+		"@Font.Action.EditCopy", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		"@Font.Action.EditCopy.ToolTip", deInputEvent::esmControl,
 		deInputEvent::ekcC, deInputEvent::ekcC){}
 	
 	void OnAction() override{
@@ -470,8 +467,8 @@ class cActionEditPaste : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditPaste> Ref;
 	cActionEditPaste(feWindowMain &window) : cActionBase(window,
-		"Paste", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
-		"Paste objects", deInputEvent::esmControl,
+		"@Font.Action.EditPaste", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+		"@Font.Action.EditPaste.ToolTip", deInputEvent::esmControl,
 		deInputEvent::ekcV, deInputEvent::ekcP){}
 	
 	void OnAction() override{
@@ -551,11 +548,11 @@ void feWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade = igdeMenuCascade::Ref::New(env, "Font", deInputEvent::ekcF);
+	cascade = igdeMenuCascade::Ref::New(env, "@Font.Menu.Font", deInputEvent::ekcF);
 	pCreateMenuFont(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade = igdeMenuCascade::Ref::New(env, "Edit", deInputEvent::ekcE);
+	cascade = igdeMenuCascade::Ref::New(env, "@Font.Menu.Edit", deInputEvent::ekcE);
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 }

@@ -40,7 +40,7 @@
 ////////////////////////////
 
 feUGlyphSetBearing::feUGlyphSetBearing(feFontGlyph *glyph, int newBearing){
-	SetShortInfo("Glyph set bearing");
+	SetShortInfo("@Font.Undo.GlyphSetBearing");
 	
 	pOldBearing = glyph->GetBearing();
 	pNewBearing = newBearing;

@@ -41,7 +41,7 @@
 feUFontToggleColorFont::feUFontToggleColorFont(feFont *font) :
 pFont(font)
 {
-	SetShortInfo("Font toggle color font");
+	SetShortInfo("@Font.Undo.ToggleColorFont");
 }
 
 feUFontToggleColorFont::~feUFontToggleColorFont(){

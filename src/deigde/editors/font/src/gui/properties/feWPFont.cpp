@@ -128,13 +128,8 @@ public:
 		}
 		
 		const igdeCommonDialogs::eButton answer = igdeCommonDialogs::Question(
-			pWindow, igdeCommonDialogs::ebsYesNoCancel, "Set Font Image",
-			"The image to save the font image to exists already. Do you want\n"
-			"to import the font image before setting the path?\n"
-			"[YES] imports the image and changes the path and size.\n"
-			"[NO] just changes the path and the next time the font is saved\n"
-			"the image is overwritten.\n"
-			"[CANCEL] does neither import nor change the path.");
+			pWindow, igdeCommonDialogs::ebsYesNoCancel, "@Font.Dialog.SetFontImage.Title",
+			"@Font.Dialog.SetFontImage.Message");
 		
 		if(answer == igdeCommonDialogs::ebCancel){
 			return false;
@@ -146,9 +141,8 @@ public:
 		deImage::Ref image(pWindow.GetEngine()->GetImageManager()->LoadImage(path, "/"));
 		
 		if(image->GetComponentCount() != 4){
-			igdeCommonDialogs::Error(pWindow, "Import Font Image",
-				"The font image does not have exactly 4 color channel. Only\n"
-				"images with 4 color channel can be used as font images.");
+			igdeCommonDialogs::Error(pWindow, "@Font.Dialog.ImportFontImage.Title",
+				"@Font.Dialog.ImportFontImage.Message");
 			return false;
 		}
 		return true;
@@ -177,7 +171,7 @@ private:
 	feWPFont &pPanel;
 public:
 	cActionColorFont(feWPFont &panel) : 
-	igdeAction("Color Font", "Font is a color font"),
+	igdeAction("@Font.WPFont.ColorFont", "@Font.WPFont.ColorFont.ToolTip"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -225,18 +219,18 @@ pWindowProperties(windowProperties)
 	AddChild(content);
 	
 	// font
-	helper.GroupBox(content, groupBox, "Font:");
+	helper.GroupBox(content, groupBox, "@Font.WPFont.GroupFont");
 	
-	helper.FormLineStretchFirst(groupBox, "Image:", "Font image.", frameLine);
-	helper.EditString(frameLine, "Font image.", pEditImagePath, cTextImagePath::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@Font.WPFont.Image.Label", "@Font.WPFont.Image.ToolTip", frameLine);
+	helper.EditString(frameLine, "@Font.WPFont.Image.ToolTip", pEditImagePath, cTextImagePath::Ref::New(*this));
 	helper.Button(frameLine, pBtnImagePath, cActionSelectImagePath::Ref::New(
 		windowProperties.GetWindowMain(), pEditImagePath));
 	
-	helper.EditInteger(groupBox, "Line Height:", "Line height in pixels.",
+	helper.EditInteger(groupBox, "@Font.WPFont.LineHeight.Label", "@Font.WPFont.LineHeight.ToolTip",
 		pEditLineHeight, cTextLineHeight::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkColorFont, cActionColorFont::Ref::New(*this));
 	
-	helper.EditInteger(groupBox, "Base Line:", "Base line from top in pixels.",
+	helper.EditInteger(groupBox, "@Font.WPFont.BaseLine.Label", "@Font.WPFont.BaseLine.ToolTip",
 		pEditBaseLine, cTextBaseLine::Ref::New(*this));
 }
 

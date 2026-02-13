@@ -36,7 +36,7 @@
 ////////////////////////////
 
 feUGlyphSetBearingY::feUGlyphSetBearingY(feFontGlyph *glyph, int newValue){
-	SetShortInfo("GLyph set bearing Y");
+	SetShortInfo("@Font.Undo.GlyphSetBearingY");
 	
 	pOldValue = glyph->GetBearingY();
 	pNewValue = newValue;

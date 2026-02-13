@@ -3,4 +3,106 @@
 	<identifier>en</identifier>
 	<name>English</name>
 	<description>English</description>
+	
+	<!-- Menu: Font -->
+	<translation name="Font.Menu.Font">Font</translation>
+	<translation name="Font.Menu.Edit">Edit</translation>
+	
+	<!-- Actions: Font Menu -->
+	<translation name="Font.Action.FontNew">New</translation>
+	<translation name="Font.Action.FontNew.ToolTip">Creates a new font</translation>
+	<translation name="Font.Action.FontOpen">Open...</translation>
+	<translation name="Font.Action.FontOpen.ToolTip">Opens a font from file</translation>
+	<translation name="Font.Action.FontSave">Save</translation>
+	<translation name="Font.Action.FontSave.ToolTip">Saves the font to file</translation>
+	<translation name="Font.Action.FontSaveAs">Save As...</translation>
+	<translation name="Font.Action.FontSaveAs.ToolTip">Saves the font under a differen file</translation>
+	<translation name="Font.Action.FontGenerate">Generate...</translation>
+	<translation name="Font.Action.FontGenerate.ToolTip">Generates a new font from a system font</translation>
+	
+	<!-- Actions: Edit Menu -->
+	<translation name="Font.Action.EditCut">Cut</translation>
+	<translation name="Font.Action.EditCut.ToolTip">Cut selected objects</translation>
+	<translation name="Font.Action.EditCopy">Copy</translation>
+	<translation name="Font.Action.EditCopy.ToolTip">Copies selected objects</translation>
+	<translation name="Font.Action.EditPaste">Paste</translation>
+	<translation name="Font.Action.EditPaste.ToolTip">Paste objects</translation>
+	
+	<!-- Dialogs -->
+	<translation name="Font.Dialog.NewFont.Title">New Font</translation>
+	<translation name="Font.Dialog.NewFont.Message">Creating a new font discarding the current one is that ok?</translation>
+	<translation name="Font.Dialog.OpenFont.Title">Open Font</translation>
+	<translation name="Font.Dialog.SaveFont.Title">Save Font</translation>
+	<translation name="Font.Dialog.SelectFont.Title">Select Font</translation>
+	<translation name="Font.Dialog.GlyphEnlarge.Title">Glyph Enlarge</translation>
+	<translation name="Font.Dialog.GlyphEnlarge.Message">Enlarge:</translation>
+	<translation name="Font.Dialog.SetFontImage.Title">Set Font Image</translation>
+	<translation name="Font.Dialog.SetFontImage.Message">The image to save the font image to exists already. Do you want
+to import the font image before setting the path?
+[YES] imports the image and changes the path and size.
+[NO] just changes the path and the next time the font is saved
+the image is overwritten.
+[CANCEL] does neither import nor change the path.</translation>
+	<translation name="Font.Dialog.ImportFontImage.Title">Import Font Image</translation>
+	<translation name="Font.Dialog.ImportFontImage.Message">The font image does not have exactly 4 color channel. Only
+images with 4 color channel can be used as font images.</translation>
+	
+	<!-- WPFont: Font Properties Panel -->
+	<translation name="Font.WPFont.GroupFont">Font:</translation>
+	<translation name="Font.WPFont.Image.Label">Image:</translation>
+	<translation name="Font.WPFont.Image.ToolTip">Font image.</translation>
+	<translation name="Font.WPFont.LineHeight.Label">Line Height:</translation>
+	<translation name="Font.WPFont.LineHeight.ToolTip">Line height in pixels.</translation>
+	<translation name="Font.WPFont.ColorFont">Color Font</translation>
+	<translation name="Font.WPFont.ColorFont.ToolTip">Font is a color font</translation>
+	<translation name="Font.WPFont.BaseLine.Label">Base Line:</translation>
+	<translation name="Font.WPFont.BaseLine.ToolTip">Base line from top in pixels.</translation>
+	
+	<!-- WPGlyph: Glyph Properties Panel -->
+	<translation name="Font.WPGlyph.GroupGlyph">Glyph:</translation>
+	<translation name="Font.WPGlyph.Glyph.Label">Glyph:</translation>
+	<translation name="Font.WPGlyph.Glyph.ToolTip">Glyph to edit.</translation>
+	<translation name="Font.WPGlyph.Glyph.Add.ToolTip">Add glyph</translation>
+	<translation name="Font.WPGlyph.Glyph.Remove.ToolTip">Remove glyph</translation>
+	<translation name="Font.WPGlyph.GlyphCode">Code {0}</translation>
+	<translation name="Font.WPGlyph.TexCoords.Label">Tex-Coords:</translation>
+	<translation name="Font.WPGlyph.TexCoords.ToolTip">Texture coordinate in pixels.</translation>
+	<translation name="Font.WPGlyph.TexCoordsU.ToolTip">U texture coordinate in pixels</translation>
+	<translation name="Font.WPGlyph.TexCoordsV.ToolTip">V texture coordinate in pixels</translation>
+	<translation name="Font.WPGlyph.Width.Label">Width:</translation>
+	<translation name="Font.WPGlyph.Width.ToolTip">Width of the glyph in pixels.</translation>
+	<translation name="Font.WPGlyph.Height.Label">Height:</translation>
+	<translation name="Font.WPGlyph.Height.ToolTip">Height of the glyph in pixels.</translation>
+	<translation name="Font.WPGlyph.Bearing.Label">Bearing:</translation>
+	<translation name="Font.WPGlyph.Bearing.ToolTip">Horizontal bearing in pixels.</translation>
+	<translation name="Font.WPGlyph.BearingY.Label">Bearing Y:</translation>
+	<translation name="Font.WPGlyph.BearingY.ToolTip">Vertical bearing in pixels.</translation>
+	<translation name="Font.WPGlyph.Advance.Label">Advance:</translation>
+	<translation name="Font.WPGlyph.Advance.ToolTip">Advance in pixels.</translation>
+	
+	<!-- Undo: Font -->
+	<translation name="Font.Undo.SetImagePath">Font set image path</translation>
+	<translation name="Font.Undo.SetLineHeight">Font set line height</translation>
+	<translation name="Font.Undo.SetBaseLine">Font set base line</translation>
+	<translation name="Font.Undo.ToggleColorFont">Font toggle color font</translation>
+	<translation name="Font.Undo.ImportImage">Font import image</translation>
+	
+	<!-- Undo: Glyph -->
+	<translation name="Font.Undo.GlyphAdd">Add glyph</translation>
+	<translation name="Font.Undo.GlyphRemove">Remove glyph</translation>
+	<translation name="Font.Undo.GlyphSetU">Glyph set u</translation>
+	<translation name="Font.Undo.GlyphSetV">Glyph set v</translation>
+	<translation name="Font.Undo.GlyphSetWidth">Glyph set width</translation>
+	<translation name="Font.Undo.GlyphSetHeight">Glyph set height</translation>
+	<translation name="Font.Undo.GlyphSetBearing">Glyph set bearing</translation>
+	<translation name="Font.Undo.GlyphSetBearingY">Glyph set bearing Y</translation>
+	<translation name="Font.Undo.GlyphSetAdvance">Glyph set advance</translation>
+	
+	<!-- ViewFontImage -->
+	<translation name="Font.ViewFontImage.Zoom.ToolTip">Select zoom factor</translation>
+	
+	<!-- WindowProperties: Tabs -->
+	<translation name="Font.WindowProperties.TabFont">Font</translation>
+	<translation name="Font.WindowProperties.TabGlyph">Glyph</translation>
+	<translation name="Font.WindowProperties.TabUndo">Undo</translation>
 </languagePack>

@@ -55,13 +55,13 @@ pWindowMain(windowMain)
 	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
 	pPanelFont = feWPFont::Ref::New(*this);
-	AddChild(pPanelFont, "Font");
+	AddChild(pPanelFont, "@Font.WindowProperties.TabFont");
 	
 	pPanelGlyph = feWPGlyph::Ref::New(*this);
-	AddChild(pPanelGlyph, "Glyph");
+	AddChild(pPanelGlyph, "@Font.WindowProperties.TabGlyph");
 	
 	pPanelUndoHistory = feWPUndoHistory::Ref::New(env);
-	AddChild(pPanelUndoHistory, "Undo");
+	AddChild(pPanelUndoHistory, "@Font.WindowProperties.TabUndo");
 	
 	SetActivePanel(0);
 }

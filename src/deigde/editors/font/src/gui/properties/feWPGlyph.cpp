@@ -128,7 +128,7 @@ public:
 	typedef deTObjectReference<cActionAdd> Ref;
 	
 	cActionAdd(feWPGlyph &panel) :
-	igdeAction("", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallPlus), "Add glyph"),
+	igdeAction("", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallPlus), "@Font.WPGlyph.Glyph.Add.ToolTip"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -174,7 +174,7 @@ public:
 	typedef deTObjectReference<cActionRemove> Ref;
 	
 	cActionRemove(feWPGlyph &panel) :
-	igdeAction("", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallMinus), "Remove glyph"),
+	igdeAction("", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallMinus), "@Font.WPGlyph.Glyph.Remove.ToolTip"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -307,26 +307,26 @@ pWindowProperties(windowProperties)
 	AddChild(content);
 	
 	// glyph
-	helper.GroupBox(content, groupBox, "Glyph:");
+	helper.GroupBox(content, groupBox, "@Font.WPGlyph.GroupGlyph");
 	
-	helper.FormLineStretchFirst(groupBox, "Glyph:", "Glyph to edit.", frameLine);
-	helper.ComboBox(frameLine, "Glyph to edit.", pCBGlyph, cComboGlyph::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@Font.WPGlyph.Glyph.Label", "@Font.WPGlyph.Glyph.ToolTip", frameLine);
+	helper.ComboBox(frameLine, "@Font.WPGlyph.Glyph.ToolTip", pCBGlyph, cComboGlyph::Ref::New(*this));
 	helper.Button(frameLine, pBtnGlyphAdd, cActionAdd::Ref::New(*this));
 	helper.Button(frameLine, pBtnGlyphDel, cActionRemove::Ref::New(*this));
 	
-	helper.FormLine(groupBox, "Tex-Coords:", "Texture coordinate in pixels.", frameLine);
-	helper.EditInteger(frameLine, "U texture coordinate in pixels", pEditU, cTextU::Ref::New(*this));
-	helper.EditInteger(frameLine, "V texture coordinate in pixels", pEditV, cTextV::Ref::New(*this));
+	helper.FormLine(groupBox, "@Font.WPGlyph.TexCoords.Label", "@Font.WPGlyph.TexCoords.ToolTip", frameLine);
+	helper.EditInteger(frameLine, "@Font.WPGlyph.TexCoordsU.ToolTip", pEditU, cTextU::Ref::New(*this));
+	helper.EditInteger(frameLine, "@Font.WPGlyph.TexCoordsV.ToolTip", pEditV, cTextV::Ref::New(*this));
 	
-	helper.EditInteger(groupBox, "Width:", "Width of the glyph in pixels.",
+	helper.EditInteger(groupBox, "@Font.WPGlyph.Width.Label", "@Font.WPGlyph.Width.ToolTip",
 		pEditWidth, cTextWidth::Ref::New(*this));
-	helper.EditInteger(groupBox, "Height:", "Height of the glyph in pixels.",
+	helper.EditInteger(groupBox, "@Font.WPGlyph.Height.Label", "@Font.WPGlyph.Height.ToolTip",
 		pEditHeight, cTextHeight::Ref::New(*this));
-	helper.EditInteger(groupBox, "Bearing:", "Horizontal bearing in pixels.",
+	helper.EditInteger(groupBox, "@Font.WPGlyph.Bearing.Label", "@Font.WPGlyph.Bearing.ToolTip",
 		pEditBearing, cTextBearing::Ref::New(*this));
-	helper.EditInteger(groupBox, "Bearing Y:", "Vertical bearing in pixels.",
+	helper.EditInteger(groupBox, "@Font.WPGlyph.BearingY.Label", "@Font.WPGlyph.BearingY.ToolTip",
 		pEditBearingY, cTextBearingY::Ref::New(*this));
-	helper.EditInteger(groupBox, "Advance:", "Advance in pixels.",
+	helper.EditInteger(groupBox, "@Font.WPGlyph.Advance.Label", "@Font.WPGlyph.Advance.ToolTip",
 		pEditAdvance, cTextAdvance::Ref::New(*this));
 }
 
@@ -392,7 +392,7 @@ void feWPGlyph::UpdateGlyphList(){
 		
 		pFont->GetGlyphs().Visit([&](feFontGlyph *g){
 			decString text;
-			text.Format("Code %d", g->GetCode());
+			text.FormatSafe(Translate("Font.WPGlyph.GlyphCode").ToUTF8(), g->GetCode());
 			pCBGlyph->AddItem(text, nullptr, g);
 		});
 	}

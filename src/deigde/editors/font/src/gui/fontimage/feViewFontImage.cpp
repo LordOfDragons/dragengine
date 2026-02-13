@@ -115,7 +115,7 @@ pWindowMain(windowMain)
 	bottomLine->AddChild(pSBHorizontal);
 	
 	pCBZoom = igdeComboBox::Ref::New(env, 6, 7, true);
-	pCBZoom->SetDescription("Select zoom factor");
+	pCBZoom->SetDescription("@Font.ViewFontImage.Zoom.ToolTip");
 	pCBZoom->AddItem("100");
 	pCBZoom->AddItem("150");
 	pCBZoom->AddItem("200");

@@ -53,7 +53,7 @@ feUFontImportImage::feUFontImportImage(feFontImage *fontImage, deImage *newImage
 	pOldPath = fontImage->GetFilename();
 	pNewPath = newPath;
 	
-	SetShortInfo("Font import image");
+	SetShortInfo("@Font.Undo.ImportImage");
 	SetMemoryConsumption(sizeof(feUFontImportImage) + sizeof(decColor) * (pOldWidth * pOldHeight + pNewWidth * pNewHeight));
 	
 	newImage->RetainImageData();

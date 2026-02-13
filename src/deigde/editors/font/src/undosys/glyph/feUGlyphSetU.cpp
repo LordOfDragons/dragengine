@@ -39,7 +39,7 @@
 ////////////////////////////
 
 feUGlyphSetU::feUGlyphSetU(feFontGlyph *glyph, int newU){
-	SetShortInfo("GLyph set u");
+	SetShortInfo("@Font.Undo.GlyphSetU");
 	
 	pOldU = glyph->GetU();
 	pNewU = newU;

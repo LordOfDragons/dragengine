@@ -40,7 +40,7 @@
 ////////////////////////////
 
 feUGlyphSetV::feUGlyphSetV(feFontGlyph *glyph, int newV){
-	SetShortInfo("GLyph set v");
+	SetShortInfo("@Font.Undo.GlyphSetV");
 	
 	pOldV = glyph->GetV();
 	pNewV = newV;

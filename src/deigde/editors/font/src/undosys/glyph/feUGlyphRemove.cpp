@@ -44,7 +44,7 @@ feUGlyphRemove::feUGlyphRemove(feFont *font, feFontGlyph *glyph){
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Remove glyph");
+	SetShortInfo("@Font.Undo.GlyphRemove");
 	
 	pFont = font;
 	pGlyph = glyph;

@@ -39,7 +39,7 @@ pFont(font),
 pNewValue(newValue)
 {
 	DEASSERT_TRUE(newValue > 0)
-	SetShortInfo("Font set base line");
+	SetShortInfo("@Font.Undo.SetBaseLine");
 	pOldValue = font->GetBaseLine();
 }
 

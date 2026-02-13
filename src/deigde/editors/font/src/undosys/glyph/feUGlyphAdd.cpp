@@ -44,7 +44,7 @@ feUGlyphAdd::feUGlyphAdd(feFont *font, feFontGlyph *glyph){
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Add glyph");
+	SetShortInfo("@Font.Undo.GlyphAdd");
 	
 	pFont = font;
 	pGlyph = glyph;

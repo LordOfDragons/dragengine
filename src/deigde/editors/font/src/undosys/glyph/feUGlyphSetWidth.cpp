@@ -40,7 +40,7 @@
 ////////////////////////////
 
 feUGlyphSetWidth::feUGlyphSetWidth(feFontGlyph *glyph, int newWidth){
-	SetShortInfo("GLyph set width");
+	SetShortInfo("@Font.Undo.GlyphSetWidth");
 	
 	pOldWidth = glyph->GetWidth();
 	pNewWidth = newWidth;

@@ -43,7 +43,7 @@ pFont(font)
 {
 	if(newLineHeight < 1) DETHROW(deeInvalidParam);
 	
-	SetShortInfo("Font set line height");
+	SetShortInfo("@Font.Undo.SetLineHeight");
 	
 	pOldHeight = font->GetLineHeight();
 	pNewHeight = newLineHeight;

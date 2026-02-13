@@ -40,7 +40,7 @@
 ////////////////////////////
 
 feUGlyphSetAdvance::feUGlyphSetAdvance(feFontGlyph *glyph, int newAdvance){
-	SetShortInfo("Glyph set advance");
+	SetShortInfo("@Font.Undo.GlyphSetAdvance");
 	
 	pOldAdvance = glyph->GetAdvance();
 	pNewAdvance = newAdvance;
