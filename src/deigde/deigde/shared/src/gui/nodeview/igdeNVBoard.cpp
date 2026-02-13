@@ -56,8 +56,8 @@ class igdeNVBoardActionDeleteLink : public igdeAction {
 public:
 	using Ref = deTObjectReference<igdeNVBoardActionDeleteLink>;
 	
-	igdeNVBoardActionDeleteLink(igdeNVBoard &board, igdeNVLink *link) : igdeAction("Delete Link",
-		board.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallMinus), "Delete link"),
+	igdeNVBoardActionDeleteLink(igdeNVBoard &board, igdeNVLink *link) : igdeAction("@Igde.NVBoard.Action.DeleteLink",
+		board.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallMinus), "@Igde.NVBoard.Action.DeleteLink.ToolTip"),
 	pBoard(board), pLink(link){
 		if(!link){
 			DETHROW(deeInvalidParam);
@@ -78,8 +78,8 @@ class igdeNVBoardActionClearLinks : public igdeAction {
 public:
 	using Ref = deTObjectReference<igdeNVBoardActionClearLinks>;
 	
-	igdeNVBoardActionClearLinks(igdeNVBoard &board) : igdeAction("Clear Links",
-		board.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallMinus), "Delete all links"),
+	igdeNVBoardActionClearLinks(igdeNVBoard &board) : igdeAction("@Igde.NVBoard.Action.ClearLinks",
+		board.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallMinus), "@Igde.NVBoard.Action.ClearLinks.ToolTip"),
 	pBoard(board){
 	}
 	

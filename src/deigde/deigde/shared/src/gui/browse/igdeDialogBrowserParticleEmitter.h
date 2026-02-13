@@ -42,7 +42,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	igdeDialogBrowserParticleEmitter(igdeEnvironment &environment, const char *title = "Select ParticleEmitter");
+	igdeDialogBrowserParticleEmitter(igdeEnvironment &environment, const char *title = "@Igde.DialogBrowser.ParticleEmitter.DefaultTitle");
 	
 protected:
 	/** \brief Clean up selection dialog. */
@@ -64,11 +64,11 @@ public:
 	
 	/** \brief Convenience method to select particle emitter. */
 	static bool SelectParticleEmitter(igdeWidget *owner, igdeGDParticleEmitter* &particleEmitter,
-		const char *title = "Select ParticleEmitter");
+		const char *title = "@Igde.DialogBrowser.ParticleEmitter.DefaultTitle");
 	
 	/** \brief Convenience method to select particle emitter. */
 	static bool SelectParticleEmitter(igdeWidget *owner, decString &particleEmitter,
-		const char *title = "Select ParticleEmitter");
+		const char *title = "@Igde.DialogBrowser.ParticleEmitter.DefaultTitle");
 	/*@}*/
 	
 	

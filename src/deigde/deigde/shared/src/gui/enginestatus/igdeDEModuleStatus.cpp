@@ -80,61 +80,61 @@ pDialogEngine(dialogEngine)
 	
 	line = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esLast);
 	AddChild(line);
-	helper.ComboBox(line, "Module:", "Module to show information for",
+	helper.ComboBox(line, "@Igde.DEModuleStatus.Module.Label", "@Igde.DEModuleStatus.Module.ToolTip",
 		pCBModule, igdeDEModuleStatus_ComboModule::Ref::New(*this));
 	pCBModule->SetDefaultSorter();
 	
 	
 	// module information
-	helper.GroupBoxStatic(*this, groupBox, "Module Information:");
+	helper.GroupBoxStatic(*this, groupBox, "@Igde.DEModuleStatus.ModuleInformation.Label");
 	
-	helper.EditString(groupBox, "Description:", "Module description", pEditDescription, 3, {});
+	helper.EditString(groupBox, "@Igde.DEModuleStatus.Description.Label", "@Igde.DEModuleStatus.Description.ToolTip", pEditDescription, 3, {});
 	pEditDescription->SetEditable(false);
 	
-	helper.EditString(groupBox, "Type:", "Module type", pEditType, {});
+	helper.EditString(groupBox, "@Igde.DEModuleStatus.Type.Label", "@Igde.DEModuleStatus.Type.ToolTip", pEditType, {});
 	pEditType->SetEditable(false);
 	
-	helper.EditString(groupBox, "Author:", "Module author", pEditAuthor, {});
+	helper.EditString(groupBox, "@Igde.DEModuleStatus.Author.Label", "@Igde.DEModuleStatus.Author.ToolTip", pEditAuthor, {});
 	pEditAuthor->SetEditable(false);
 	
-	helper.EditString(groupBox, "Version:", "Module version", pEditVersion, {});
+	helper.EditString(groupBox, "@Igde.DEModuleStatus.Version.Label", "@Igde.DEModuleStatus.Version.ToolTip", pEditVersion, {});
 	pEditVersion->SetEditable(false);
 	
-	helper.CheckBox(groupBox, "Fallback Module",
-		"Module is used as fallback if no better module is usable", pChkFallback);
+	helper.CheckBox(groupBox, "@Igde.DEModuleStatus.FallbackModule",
+		"@Igde.DEModuleStatus.FallbackModule.ToolTip", pChkFallback);
 	pChkFallback->SetEnabled(false);
 	
 	
 	// file handling information
-	helper.GroupBoxStatic(*this, groupBox, "File Handling Information:");
+	helper.GroupBoxStatic(*this, groupBox, "@Igde.DEModuleStatus.FileHandlingInformation.Label");
 	
-	helper.EditString(groupBox, "Recognized File Pattern:", "Recognized File Pattern", pEditPattern, {});
+	helper.EditString(groupBox, "@Igde.DEModuleStatus.RecognizedFilePattern.Label", "@Igde.DEModuleStatus.RecognizedFilePattern.ToolTip", pEditPattern, {});
 	pEditPattern->SetEditable(false);
 	
-	helper.EditString(groupBox, "Default Extension:", "Default Extension", pEditDefaultExtension, {});
+	helper.EditString(groupBox, "@Igde.DEModuleStatus.DefaultExtension.Label", "@Igde.DEModuleStatus.DefaultExtension.ToolTip", pEditDefaultExtension, {});
 	pEditDefaultExtension->SetEditable(false);
 	
-	helper.EditString(groupBox, "Module Directory Name:", "Module Directory Name", pEditDirName, {});
+	helper.EditString(groupBox, "@Igde.DEModuleStatus.ModuleDirectoryName.Label", "@Igde.DEModuleStatus.ModuleDirectoryName.ToolTip", pEditDirName, {});
 	pEditDirName->SetEditable(false);
 	
 	
 	// library information
-	helper.GroupBoxStatic(*this, groupBox, "Library Module Information:");
+	helper.GroupBoxStatic(*this, groupBox, "@Igde.DEModuleStatus.LibraryModuleInformation.Label");
 	
-	helper.EditString(groupBox, "Library Filename:", "Library Filename", pEditLibName, {});
+	helper.EditString(groupBox, "@Igde.DEModuleStatus.LibraryFilename.Label", "@Igde.DEModuleStatus.LibraryFilename.ToolTip", pEditLibName, {});
 	pEditLibName->SetEditable(false);
 	
-	helper.EditString(groupBox, "Library File Size:", "Library File Size", pEditLibSize, {});
+	helper.EditString(groupBox, "@Igde.DEModuleStatus.LibraryFileSize.Label", "@Igde.DEModuleStatus.LibraryFileSize.ToolTip", pEditLibSize, {});
 	pEditLibSize->SetEditable(false);
 	
-	helper.EditString(groupBox, "Library Check Sum (SHA):", "Library Check Sum (SHA)", pEditLibHash, {});
+	helper.EditString(groupBox, "@Igde.DEModuleStatus.LibraryCheckSum.Label", "@Igde.DEModuleStatus.LibraryCheckSum.ToolTip", pEditLibHash, {});
 	pEditLibHash->SetEditable(false);
 	
 	
 	// library information
-	helper.GroupBoxStaticFlow(*this, groupBox, "Module Status:", true);
+	helper.GroupBoxStaticFlow(*this, groupBox, "@Igde.DEModuleStatus.ModuleStatus.Label", true);
 	
-	helper.EditString(groupBox, "Module description", pEditStatus, 3, {});
+	helper.EditString(groupBox, "@Igde.DEModuleStatus.ModuleStatus.ToolTip", pEditStatus, 3, {});
 	pEditStatus->SetEditable(false);
 	
 	
@@ -191,91 +191,91 @@ void igdeDEModuleStatus::UpdateModuleStatus(){
 	
 	switch(loadedModule->GetType()){
 	case deModuleSystem::emtGraphic:
-		pEditType->SetText("Graphic");
+		pEditType->SetText(Translate("Igde.DEModuleStatus.Type.Graphic").ToUTF8());
 		break;
 		
 	case deModuleSystem::emtSound:
-		pEditType->SetText("Sound");
+		pEditType->SetText(Translate("Igde.DEModuleStatus.Type.Sound").ToUTF8());
 		break;
 		
 	case deModuleSystem::emtInput:
-		pEditType->SetText("Input");
+		pEditType->SetText(Translate("Igde.DEModuleStatus.Type.Input").ToUTF8());
 		break;
 		
 	case deModuleSystem::emtNetwork:
-		pEditType->SetText("Network");
+		pEditType->SetText(Translate("Igde.DEModuleStatus.Type.Network").ToUTF8());
 		break;
 		
 	case deModuleSystem::emtPhysics:
-		pEditType->SetText("Physics");
+		pEditType->SetText(Translate("Igde.DEModuleStatus.Type.Physics").ToUTF8());
 		break;
 		
 	case deModuleSystem::emtImage:
-		pEditType->SetText("Image");
+		pEditType->SetText(Translate("Igde.DEModuleStatus.Type.Image").ToUTF8());
 		break;
 		
 	case deModuleSystem::emtVideo:
-		pEditType->SetText("Video");
+		pEditType->SetText(Translate("Igde.DEModuleStatus.Type.Video").ToUTF8());
 		break;
 		
 	case deModuleSystem::emtScript:
-		pEditType->SetText("Scripting");
+		pEditType->SetText(Translate("Igde.DEModuleStatus.Type.Scripting").ToUTF8());
 		break;
 		
 	case deModuleSystem::emtModel:
-		pEditType->SetText("Model");
+		pEditType->SetText(Translate("Igde.DEModuleStatus.Type.Model").ToUTF8());
 		break;
 		
 	case deModuleSystem::emtRig:
-		pEditType->SetText("Rig");
+		pEditType->SetText(Translate("Igde.DEModuleStatus.Type.Rig").ToUTF8());
 		break;
 		
 	case deModuleSystem::emtSkin:
-		pEditType->SetText("Skin");
+		pEditType->SetText(Translate("Igde.DEModuleStatus.Type.Skin").ToUTF8());
 		break;
 		
 	case deModuleSystem::emtAnimation:
-		pEditType->SetText("Animation");
+		pEditType->SetText(Translate("Igde.DEModuleStatus.Type.Animation").ToUTF8());
 		break;
 		
 	case deModuleSystem::emtFont:
-		pEditType->SetText("Font");
+		pEditType->SetText(Translate("Igde.DEModuleStatus.Type.Font").ToUTF8());
 		break;
 		
 	case deModuleSystem::emtCrashRecovery:
-		pEditType->SetText("Crash Recovery");
+		pEditType->SetText(Translate("Igde.DEModuleStatus.Type.CrashRecovery").ToUTF8());
 		break;
 		
 	case deModuleSystem::emtLanguagePack:
-		pEditType->SetText("Language Pack");
+		pEditType->SetText(Translate("Igde.DEModuleStatus.Type.LanguagePack").ToUTF8());
 		break;
 		
 	case deModuleSystem::emtAnimator:
-		pEditType->SetText("Animator");
+		pEditType->SetText(Translate("Igde.DEModuleStatus.Type.Animator").ToUTF8());
 		break;
 		
 	case deModuleSystem::emtOcclusionMesh:
-		pEditType->SetText("Occlusion Mesh");
+		pEditType->SetText(Translate("Igde.DEModuleStatus.Type.OcclusionMesh").ToUTF8());
 		break;
 		
 	case deModuleSystem::emtSynthesizer:
-		pEditType->SetText("Synthesizer");
+		pEditType->SetText(Translate("Igde.DEModuleStatus.Type.Synthesizer").ToUTF8());
 		break;
 		
 	case deModuleSystem::emtArchive:
-		pEditType->SetText("Archive");
+		pEditType->SetText(Translate("Igde.DEModuleStatus.Type.Archive").ToUTF8());
 		break;
 		
 	case deModuleSystem::emtVR:
-		pEditType->SetText("VR");
+		pEditType->SetText(Translate("Igde.DEModuleStatus.Type.VR").ToUTF8());
 		break;
 		
 	case deModuleSystem::emtService:
-		pEditType->SetText("Service");
+		pEditType->SetText(Translate("Igde.DEModuleStatus.Type.Service").ToUTF8());
 		break;
 		
 	default:
-		pEditType->SetText("Unknown Type");
+		pEditType->SetText(Translate("Igde.DEModuleStatus.Type.Unknown").ToUTF8());
 	}
 	
 	if(loadedModule->IsInternalModule()){
@@ -290,15 +290,15 @@ void igdeDEModuleStatus::UpdateModuleStatus(){
 		
 		switch(internalModule->GetErrorCode()){
 		case deLoadableModule::eecSuccess:
-			pEditStatus->SetText("Everything OK");
+			pEditStatus->SetText(Translate("Igde.DEModuleStatus.Status.EverythingOk").ToUTF8());
 			break;
 			
 		case deLoadableModule::eecCreateModuleFailed:
-			pEditStatus->SetText("Creation of module failed");
+			pEditStatus->SetText(Translate("Igde.DEModuleStatus.Status.CreateModuleFailed").ToUTF8());
 			break;
 			
 		default:
-			pEditStatus->SetText("Unknown error code");
+			pEditStatus->SetText(Translate("Igde.DEModuleStatus.Status.UnknownError").ToUTF8());
 		}
 		
 	}else if(loadedModule->IsLibraryModule()){
@@ -313,43 +313,43 @@ void igdeDEModuleStatus::UpdateModuleStatus(){
 		
 		switch(libraryModule->GetErrorCode()){
 		case deLoadableModule::eecSuccess:
-			pEditStatus->SetText("Everything OK");
+			pEditStatus->SetText(Translate("Igde.DEModuleStatus.Status.EverythingOk").ToUTF8());
 			break;
 			
 		case deLoadableModule::eecCreateModuleFailed:
-			pEditStatus->SetText("Creation of module failed");
+			pEditStatus->SetText(Translate("Igde.DEModuleStatus.Status.CreateModuleFailed").ToUTF8());
 			break;
 			
 		case deLibraryModule::eecLibFileNotFound:
-			pEditStatus->SetText("Library file could not be found");
+			pEditStatus->SetText(Translate("Igde.DEModuleStatus.Status.LibFileNotFound").ToUTF8());
 			break;
 			
 		case deLibraryModule::eecLibFileNotRegularFile:
-			pEditStatus->SetText("Library file is not a regular file");
+			pEditStatus->SetText(Translate("Igde.DEModuleStatus.Status.LibFileNotRegularFile").ToUTF8());
 			break;
 			
 		case deLibraryModule::eecLibFileSizeMismatch:
-			pEditStatus->SetText("Size of library file does not match expected size");
+			pEditStatus->SetText(Translate("Igde.DEModuleStatus.Status.LibFileSizeMismatch").ToUTF8());
 			break;
 			
 		case deLibraryModule::eecLibFileCheckSumMismatch:
-			pEditStatus->SetText("Check sum of library file does not match expected value");
+			pEditStatus->SetText(Translate("Igde.DEModuleStatus.Status.LibFileCheckSumMismatch").ToUTF8());
 			break;
 			
 		case deLibraryModule::eecLibFileOpenFailed:
-			pEditStatus->SetText("Library file could not be opened");
+			pEditStatus->SetText(Translate("Igde.DEModuleStatus.Status.LibFileOpenFailed").ToUTF8());
 			break;
 			
 		case deLibraryModule::eecLibFileEntryPointNotFound:
-			pEditStatus->SetText("Entry point function could not be found");
+			pEditStatus->SetText(Translate("Igde.DEModuleStatus.Status.LibFileEntryPointNotFound").ToUTF8());
 			break;
 			
 		case deLibraryModule::eecLibFileCreateModuleFailed:
-			pEditStatus->SetText("Creating module using entry function failed");
+			pEditStatus->SetText(Translate("Igde.DEModuleStatus.Status.LibFileCreateModuleFailed").ToUTF8());
 			break;
 			
 		default:
-			pEditStatus->SetText("Unknown error code");
+			pEditStatus->SetText(Translate("Igde.DEModuleStatus.Status.UnknownError").ToUTF8());
 		}
 		
 	}else{

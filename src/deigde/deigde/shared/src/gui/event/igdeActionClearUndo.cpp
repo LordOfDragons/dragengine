@@ -42,9 +42,9 @@
 
 igdeActionClearUndo::igdeActionClearUndo(igdeEnvironment &environment, igdeUndoSystem *undoSystem) :
 igdeAction(
-	"Clear Undo Actions",
+	"@Igde.Action.ClearUndo",
 	environment.GetStockIcon(igdeEnvironment::esiDelete),
-	"Clear all undo actions"),
+	"@Igde.Action.ClearUndo.ToolTip"),
 pEnvironment(environment),
 pUndoSystem(undoSystem){
 }

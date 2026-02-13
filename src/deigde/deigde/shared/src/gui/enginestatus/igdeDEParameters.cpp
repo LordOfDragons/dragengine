@@ -85,7 +85,7 @@ public:
 	using Ref = deTObjectReference<igdeDEParameters_ActionSet>;
 	
 	igdeDEParameters_ActionSet(igdeDEParameters &panel) :
-		igdeAction("Set", nullptr, "Set parameter value"), pPanel(panel){}
+		igdeAction("@Igde.DEParameters.Action.Set", nullptr, "@Igde.DEParameters.Action.Set.ToolTip"), pPanel(panel){}
 	
 	void OnAction() override{
 		pPanel.ParameterSetValue();
@@ -103,7 +103,7 @@ public:
 	using Ref = deTObjectReference<igdeDEParameters_ActionReset>;
 	
 	igdeDEParameters_ActionReset(igdeDEParameters &panel) :
-		igdeAction("Reset", nullptr, "Reset parameter value"), pPanel(panel){}
+		igdeAction("@Igde.DEParameters.Action.Reset", nullptr, "@Igde.DEParameters.Action.Reset.ToolTip"), pPanel(panel){}
 	
 	void OnAction() override{
 		pPanel.ParameterResetValue();
@@ -134,29 +134,29 @@ pDialogEngine(dialogEngine)
 	line = igdeContainerForm::Ref::New(env);
 	AddChild(line);
 	
-	helper.ComboBox(line, "Module:", "Module to show parameters for",
+	helper.ComboBox(line, "@Igde.DEParameters.Module.Label", "@Igde.DEParameters.Module.ToolTip",
 		pCBModule, igdeDEParameters_ComboModule::Ref::New(*this));
 	pCBModule->SetDefaultSorter();
 	
-	helper.ComboBox(line, "Parameter:", "Parameter to show",
+	helper.ComboBox(line, "@Igde.DEParameters.Parameter.Label", "@Igde.DEParameters.Parameter.ToolTip",
 		pCBParameter, igdeDEParameters_ComboParameter::Ref::New(*this));
 	pCBParameter->SetDefaultSorter();
 	
 	
 	// parameter information
-	helper.GroupBoxStatic(*this, groupBox, "Parameter:");
+	helper.GroupBoxStatic(*this, groupBox, "@Igde.DEParameters.ParameterInfo.Label");
 	
-	helper.EditString(groupBox, "Description:", "Parameter description", pEditDescription, 3, {});
+	helper.EditString(groupBox, "@Igde.DEParameters.Description.Label", "@Igde.DEParameters.Description.ToolTip", pEditDescription, 3, {});
 	pEditDescription->SetEditable(false);
 	
-	helper.EditString(groupBox, "Type:", "Parameter type", pEditType, {});
+	helper.EditString(groupBox, "@Igde.DEParameters.Type.Label", "@Igde.DEParameters.Type.ToolTip", pEditType, {});
 	pEditType->SetEditable(false);
 	
-	helper.EditString(groupBox, "Allowed Values:", "Allowed Values", pEditAllowedValues, 5, {});
+	helper.EditString(groupBox, "@Igde.DEParameters.AllowedValues.Label", "@Igde.DEParameters.AllowedValues.ToolTip", pEditAllowedValues, 5, {});
 	pEditAllowedValues->SetEditable(false);
 	
-	helper.FormLineStretchFirst(groupBox, "Value:", "Parameter value", line);
-	helper.EditString(line, "Parameter value", pEditValue, {});
+	helper.FormLineStretchFirst(groupBox, "@Igde.DEParameters.Value.Label", "@Igde.DEParameters.Value.ToolTip", line);
+	helper.EditString(line, "@Igde.DEParameters.Value.ToolTip", pEditValue, {});
 	helper.Button(line, pBtnSet, igdeDEParameters_ActionSet::Ref::New(*this));
 	helper.Button(line, pBtnReset, igdeDEParameters_ActionReset::Ref::New(*this));
 	
@@ -198,25 +198,25 @@ void igdeDEParameters::UpdateParameter(){
 	
 	switch(pParameterInfo.GetType()){
 	case deModuleParameter::eptBoolean:
-		pEditType->SetText("Boolean");
-		pEditAllowedValues->SetText("Boolean value: 1 or 0");
+		pEditType->SetText(Translate("Igde.DEParameters.Type.Boolean").ToUTF8());
+		pEditAllowedValues->SetText(Translate("Igde.DEParameters.AllowedValues.Boolean").ToUTF8());
 		break;
 		
 	case deModuleParameter::eptNumeric:
-		pEditType->SetText("Numeric");
-		pEditAllowedValues->SetText("Numeric value.");
+		pEditType->SetText(Translate("Igde.DEParameters.Type.Numeric").ToUTF8());
+		pEditAllowedValues->SetText(Translate("Igde.DEParameters.AllowedValues.Numeric").ToUTF8());
 		break;
 		
 	case deModuleParameter::eptRanged:
-		pEditType->SetText("Ranged");
-		text.Format("Ranged value from %g to %g step size %g",
+		pEditType->SetText(Translate("Igde.DEParameters.Type.Ranged").ToUTF8());
+		text.FormatSafe(Translate("Igde.DEParameters.AllowedValues.Ranged").ToUTF8(),
 			pParameterInfo.GetMinimumValue(), pParameterInfo.GetMaximumValue(),
 			pParameterInfo.GetValueStepSize());
 		pEditAllowedValues->SetText(text);
 		break;
 		
 	case deModuleParameter::eptSelection:{
-		pEditType->SetText("Selection");
+		pEditType->SetText(Translate("Igde.DEParameters.Type.Selection").ToUTF8());
 		text = "A value from this list:\n";
 		decStringList list;
 		pParameterInfo.GetSelectionEntries().Visit([&](const deModuleParameter::SelectionEntry &entry){
@@ -226,13 +226,13 @@ void igdeDEParameters::UpdateParameter(){
 		}break;
 		
 	case deModuleParameter::eptString:
-		pEditType->SetText("String");
-		pEditAllowedValues->SetText("String value.");
+		pEditType->SetText(Translate("Igde.DEParameters.Type.String").ToUTF8());
+		pEditAllowedValues->SetText(Translate("Igde.DEParameters.AllowedValues.String").ToUTF8());
 		break;
 		
 	default:
-		pEditType->SetText("Unknown Type");
-		pEditAllowedValues->SetText("Unknown");
+		pEditType->SetText(Translate("Igde.DEParameters.Type.Unknown").ToUTF8());
+		pEditAllowedValues->SetText(Translate("Igde.DEParameters.AllowedValues.Unknown").ToUTF8());
 	}
 	
 	pEditValue->SetText(module.GetParameterValue(name));

@@ -60,7 +60,7 @@ igdeUIFoxHelper::igdeUIFoxHelper(){}
 // Functions
 //////////////
 
-FXString igdeUIFoxHelper::AccelString(const igdeHotKey &hotKey){
+FXString igdeUIFoxHelper::AccelString(const igdeWidget &widget, const igdeHotKey &hotKey){
 	const deInputEvent::eKeyCodes keyCode = hotKey.GetKeyCode();
 	if(keyCode == deInputEvent::ekcUndefined){
 		return "";
@@ -73,78 +73,78 @@ FXString igdeUIFoxHelper::AccelString(const igdeHotKey &hotKey){
 	FXString string;
 	
 	if(alt){
-		string += "Alt-";
+		string += widget.Translate("Igde.FoxToolkit.KeyModifier.Alt").ToUTF8().GetString();
 	}
 	if(control){
-		string += "Ctl-";
+		string += widget.Translate("Igde.FoxToolkit.KeyModifier.Ctl").ToUTF8().GetString();
 	}
 	if(shift){
-		string += "Shift-";
+		string += widget.Translate("Igde.FoxToolkit.KeyModifier.Shift").ToUTF8().GetString();
 	}
 	
 	switch(keyCode){
 	case deInputEvent::ekcSpace:
-		string += "Space";
+		string += widget.Translate("Igde.FoxToolkit.Key.Space").ToUTF8().GetString();
 		break;
 		
 	case deInputEvent::ekcBackSpace:
-		string += "BackSpace";
+		string += widget.Translate("Igde.FoxToolkit.Key.BackSpace").ToUTF8().GetString();
 		break;
 		
 	case deInputEvent::ekcTab:
-		string += "Tab";
+		string += widget.Translate("Igde.FoxToolkit.Key.Tab").ToUTF8().GetString();
 		break;
 		
 	case deInputEvent::ekcReturn:
-		string += "Return";
+		string += widget.Translate("Igde.FoxToolkit.Key.Return").ToUTF8().GetString();
 		break;
 		
 	case deInputEvent::ekcPause:
-		string += "Pause";
+		string += widget.Translate("Igde.FoxToolkit.Key.Pause").ToUTF8().GetString();
 		break;
 		
 	case deInputEvent::ekcEscape:
-		string += "Escape";
+		string += widget.Translate("Igde.FoxToolkit.Key.Escape").ToUTF8().GetString();
 		break;
 		
 	case deInputEvent::ekcInsert:
-		string += "Insert";
+		string += widget.Translate("Igde.FoxToolkit.Key.Insert").ToUTF8().GetString();
 		break;
 		
 	case deInputEvent::ekcDelete:
-		string += "Delete";
+		string += widget.Translate("Igde.FoxToolkit.Key.Delete").ToUTF8().GetString();
 		break;
 		
 	case deInputEvent::ekcArrowLeft:
-		string += "Left";
+		string += widget.Translate("Igde.FoxToolkit.Key.Left").ToUTF8().GetString();
 		break;
 		
 	case deInputEvent::ekcArrowUp:
-		string += "Up";
+		string += widget.Translate("Igde.FoxToolkit.Key.Up").ToUTF8().GetString();
 		break;
 		
 	case deInputEvent::ekcArrowRight:
-		string += "Right";
+		string += widget.Translate("Igde.FoxToolkit.Key.Right").ToUTF8().GetString();
 		break;
 		
 	case deInputEvent::ekcArrowDown:
-		string += "Down";
+		string += widget.Translate("Igde.FoxToolkit.Key.Down").ToUTF8().GetString();
 		break;
 		
 	case deInputEvent::ekcPageUp:
-		string += "PgUp";
+		string += widget.Translate("Igde.FoxToolkit.Key.PgUp").ToUTF8().GetString();
 		break;
 		
 	case deInputEvent::ekcPageDown:
-		string += "PgDn";
+		string += widget.Translate("Igde.FoxToolkit.Key.PgDn").ToUTF8().GetString();
 		break;
 		
 	case deInputEvent::ekcHome:
-		string += "Home";
+		string += widget.Translate("Igde.FoxToolkit.Key.Home").ToUTF8().GetString();
 		break;
 		
 	case deInputEvent::ekcEnd:
-		string += "End";
+		string += widget.Translate("Igde.FoxToolkit.Key.End").ToUTF8().GetString();
 		break;
 		
 	default:{

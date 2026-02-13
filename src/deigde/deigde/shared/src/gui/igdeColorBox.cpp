@@ -47,8 +47,8 @@
 ////////////
 
 igdeColorBox::cActionCopy::cActionCopy(igdeColorBox &colorBox) :
-igdeAction("Copy", colorBox.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-	"Copy color to clipboard"),
+igdeAction("@Igde.ColorBox.Action.Copy", colorBox.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+	"@Igde.ColorBox.Action.Copy.ToolTip"),
 pColorBox(colorBox){
 }
 
@@ -61,8 +61,8 @@ void igdeColorBox::cActionCopy::OnAction(){
 
 
 igdeColorBox::cActionCopyHex::cActionCopyHex(igdeColorBox &colorBox) :
-igdeAction("Copy As Hex", colorBox.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-	"Copy color to clipboard as hex value"),
+igdeAction("@Igde.ColorBox.Action.CopyAsHex", colorBox.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+	"@Igde.ColorBox.Action.CopyAsHex.ToolTip"),
 pColorBox(colorBox){
 }
 
@@ -72,8 +72,8 @@ void igdeColorBox::cActionCopyHex::OnAction(){
 
 
 igdeColorBox::cActionPaste::cActionPaste(igdeColorBox &colorBox) :
-igdeAction("Paste", colorBox.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
-	"Paste color from clipboard"),
+igdeAction("@Igde.ColorBox.Action.Paste", colorBox.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+	"@Igde.ColorBox.Action.Paste.ToolTip"),
 pColorBox(colorBox){
 }
 
@@ -92,8 +92,8 @@ void igdeColorBox::cActionPaste::OnAction(){
 
 
 igdeColorBox::cActionPasteHex::cActionPasteHex(igdeColorBox &colorBox) :
-igdeAction("Paste From Hex", colorBox.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
-	"Paste color from clipboard as hex value"),
+igdeAction("@Igde.ColorBox.Action.PasteFromHex", colorBox.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+	"@Igde.ColorBox.Action.PasteFromHex.ToolTip"),
 pColorBox(colorBox){
 }
 
@@ -113,7 +113,7 @@ void igdeColorBox::cActionPasteHex::OnAction(){
 
 
 igdeColorBox::cActionEditValues::cActionEditValues(igdeColorBox &colorBox) :
-igdeAction("Edit Values", nullptr, "Edit values directly"),
+igdeAction("@Igde.ColorBox.Action.EditValues", nullptr, "@Igde.ColorBox.Action.EditValues.ToolTip"),
 pColorBox(colorBox){
 }
 
@@ -123,7 +123,7 @@ void igdeColorBox::cActionEditValues::OnAction(){
 	
 	codec.EncodeColor4(pColorBox.GetColor(), value);
 	
-	if(!igdeCommonDialogs::GetString(pColorBox, GetText(), "Color:", value)){
+	if(!igdeCommonDialogs::GetString(pColorBox, GetText(), "@Igde.ColorBox.Dialog.Color", value)){
 		return;
 	}
 	
@@ -141,7 +141,7 @@ void igdeColorBox::cActionEditValues::OnAction(){
 
 
 igdeColorBox::cActionEditHex::cActionEditHex(igdeColorBox &colorBox) :
-igdeAction("Edit Hex", nullptr, "Edit hex directly"),
+igdeAction("@Igde.ColorBox.Action.EditHex", nullptr, "@Igde.ColorBox.Action.EditHex.ToolTip"),
 pColorBox(colorBox){
 }
 
@@ -155,7 +155,7 @@ void igdeColorBox::cActionEditHex::OnAction(){
 		decMath::clamp((int)(color.b * 255.0f), 0, 255),
 		decMath::clamp((int)(color.a * 255.0f), 0, 255));
 	
-	if(!igdeCommonDialogs::GetString(pColorBox, GetText(), "Color:", value)){
+	if(!igdeCommonDialogs::GetString(pColorBox, GetText(), "@Igde.ColorBox.Dialog.Color", value)){
 		return;
 	}
 	

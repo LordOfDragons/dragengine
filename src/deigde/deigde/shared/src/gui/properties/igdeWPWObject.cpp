@@ -137,7 +137,7 @@ public:
 	typedef deTObjectReference<cActionSelectClass> Ref;
 	
 	cActionSelectClass(igdeWPWObject &panel, igdeTextField &textField) :
-	cBaseAction(panel, "...", "Brings up a dialog to select the object class."),
+	cBaseAction(panel, "@Igde.TriplePoint", "@Igde.WPWObject.Action.SelectClass.ToolTip"),
 	pTextField(textField){}
 	
 	void OnAction(igdeWObject &object) override{
@@ -244,7 +244,7 @@ class cCheckVisible : public cBaseAction{
 public:
 	typedef deTObjectReference<cCheckVisible> Ref;
 	
-	cCheckVisible(igdeWPWObject &panel) : cBaseAction(panel, "Visible", "Object is visible"){}
+	cCheckVisible(igdeWPWObject &panel) : cBaseAction(panel, "@Igde.WPWObject.Visible", "@Igde.WPWObject.Visible.ToolTip"){}
 	
 	void OnAction(igdeWObject &object) override{
 		if(pPanel.GetUndoSystem()){
@@ -265,7 +265,7 @@ public:
 	typedef deTObjectReference<cCheckDynamicCollider> Ref;
 	
 	cCheckDynamicCollider(igdeWPWObject &panel) :
-	cBaseAction(panel, "Dynamic Collider", "Object is attached using a dynamic collider"){}
+	cBaseAction(panel, "@Igde.WPWObject.DynamicCollider", "@Igde.WPWObject.DynamicCollider.ToolTip"){}
 	
 	void OnAction(igdeWObject &object) override{
 		if(pPanel.GetUndoSystem()){
@@ -472,17 +472,17 @@ void igdeWPWObject::pCreateContent(){
 	form = igdeContainerForm::Ref::New(env);
 	AddChild(form);
 	
-	helper.FormLineStretchFirst(form, "Class:",
-		"Game definition class to use for the object.", frameLine);
-	helper.EditString(frameLine, "Path to the sky to use.",
+	helper.FormLineStretchFirst(form, "@Igde.WPWObject.Class.Label",
+		"@Igde.WPWObject.Class.ToolTip", frameLine);
+	helper.EditString(frameLine, "@Igde.WPWObject.Class.ToolTip",
 		pEditClass, cTextClass::Ref::New(*this));
 	helper.Button(frameLine, pBtnClass, cActionSelectClass::Ref::New(*this, pEditClass));
 	
-	helper.EditVector(form, "Position:", "Position of object in meters.",
+	helper.EditVector(form, "@Igde.WPWObject.Position.Label", "@Igde.WPWObject.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
-	helper.EditVector(form, "Orientation:", "Orientation of object in euler coordinates.",
+	helper.EditVector(form, "@Igde.WPWObject.Orientation.Label", "@Igde.WPWObject.Orientation.ToolTip",
 		pEditOrientation, cEditOrientation::Ref::New(*this));
-	helper.EditVector(form, "Scaling:", "Scaling of object.",
+	helper.EditVector(form, "@Igde.WPWObject.Scaling.Label", "@Igde.WPWObject.Scaling.ToolTip",
 		pEditScaling, cEditScaling::Ref::New(*this));
 	
 	helper.CheckBox(form, pChkVisible, cCheckVisible::Ref::New(*this));

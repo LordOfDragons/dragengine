@@ -162,7 +162,7 @@ public:
 	using Ref = deTObjectReference<igdeEditPropertyValue_ActionBoolean>;
 	
 	igdeEditPropertyValue_ActionBoolean(igdeEditPropertyValue &widget) : 
-	igdeAction("Value", "Boolean property value"), pWidget(widget){}
+	igdeAction("@Igde.EditPropertyValue.Action.Value", "@Igde.EditPropertyValue.Action.Value.ToolTip"), pWidget(widget){}
 	
 	void OnAction() override{
 		pWidget.EditWidgetValueChanged(false);
@@ -230,13 +230,12 @@ public:
 	
 	igdeEditPropertyValue_ActionEditRawValue(igdeEditPropertyValue &widget) : 
 	igdeAction("", widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiConfig),
-		"Edit raw property value"), pWidget(widget){}
+		"@Igde.EditPropertyValue.Action.EditRawValue"), pWidget(widget){}
 	
 	void OnAction() override{
 		decString value(pWidget.GetValue());
-		if(igdeCommonDialogs::GetMultilineString(pWidget, "Edit Raw Property Value",
-			"Raw property value. Values entered here can violate the\n"
-			"property type so be careful what you enter", value)){
+		if(igdeCommonDialogs::GetMultilineString(pWidget, "@Igde.EditPropertyValue.Dialog.EditRawValue.Title",
+			"@Igde.EditPropertyValue.Dialog.EditRawValue.Message", value)){
 				pWidget.SetValue(value, pWidget.GetGDProperty());
 				pWidget.NotifyPropertyValueChanged();
 		}
@@ -256,7 +255,7 @@ public:
 	
 	igdeEditPropertyValue_ActionEditList(igdeEditPropertyValue &widget) :
 		igdeAction("", widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiEdit),
-			"Edit list"), pWidget(widget){}
+			"@Igde.EditPropertyValue.Action.EditList"), pWidget(widget){}
 	
 	void OnAction() override{
 		pWidget.GetActionEditRawValue()->OnAction();
@@ -276,7 +275,7 @@ public:
 	
 	igdeEditPropertyValue_ActionEditTriggerExpression(igdeEditPropertyValue &widget) :
 		igdeAction("", widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiEdit),
-			"Edit trigger expression"), pWidget(widget){}
+			"@Igde.EditPropertyValue.Action.EditTriggerExpression"), pWidget(widget){}
 	
 	void OnAction() override{
 		igdeTriggerTargetList *triggerTargetList = pWidget.GetTriggerTargets();
@@ -312,7 +311,7 @@ public:
 	
 	igdeEditPropertyValue_ActionEditShape(igdeEditPropertyValue &widget) :
 		igdeAction("", widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiEdit),
-			"Edit shape"), pWidget(widget){}
+			"@Igde.EditPropertyValue.Action.EditShape"), pWidget(widget){}
 	
 	void OnAction() override{
 		pWidget.GetActionEditRawValue()->OnAction();
@@ -332,7 +331,7 @@ public:
 	
 	igdeEditPropertyValue_ActionEditShapeList(igdeEditPropertyValue &widget) :
 		igdeAction("", widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiEdit),
-			"Edit shape list"), pWidget(widget){}
+			"@Igde.EditPropertyValue.Action.EditShapeList"), pWidget(widget){}
 	
 	void OnAction() override{
 		pWidget.GetActionEditRawValue()->OnAction();
@@ -699,54 +698,54 @@ void igdeEditPropertyValue::pCreateContent(igdeUIHelper &helper){
 	AddChild(pSwitcher);
 	helper.Button(*this, pActionEditRawValue);
 	
-	helper.EditString(pSwitcher, "Property value", pString, igdeEditPropertyValue_TextField::Ref::New(*this));
+	helper.EditString(pSwitcher, "@Igde.EditPropertyValue.PropertyValue.ToolTip", pString, igdeEditPropertyValue_TextField::Ref::New(*this));
 	
-	helper.EditInteger(pSwitcher, "Integer property value", pInteger, igdeEditPropertyValue_TextField::Ref::New(*this));
+	helper.EditInteger(pSwitcher, "@Igde.EditPropertyValue.Integer.ToolTip", pInteger, igdeEditPropertyValue_TextField::Ref::New(*this));
 	
-	helper.EditPoint(pSwitcher, "Point property value", pPoint, igdeEditPropertyValue_EditPoint::Ref::New(*this));
+	helper.EditPoint(pSwitcher, "@Igde.EditPropertyValue.Point.ToolTip", pPoint, igdeEditPropertyValue_EditPoint::Ref::New(*this));
 	
 	helper.EditPoint3(pSwitcher, "3-Component point property value", pPoint3, igdeEditPropertyValue_EditPoint3::Ref::New(*this));
 	
-	helper.EditFloat(pSwitcher, "Floating point property value", pFloat, igdeEditPropertyValue_TextField::Ref::New(*this));
+	helper.EditFloat(pSwitcher, "@Igde.EditPropertyValue.Float.ToolTip", pFloat, igdeEditPropertyValue_TextField::Ref::New(*this));
 	
 	helper.EditVector2(pSwitcher, "2-Component vector property value", pVector2, igdeEditPropertyValue_EditVector2::Ref::New(*this));
 	
-	helper.EditVector(pSwitcher, "Vector property value", pVector, igdeEditPropertyValue_EditVector::Ref::New(*this));
+	helper.EditVector(pSwitcher, "@Igde.EditPropertyValue.Vector.ToolTip", pVector, igdeEditPropertyValue_EditVector::Ref::New(*this));
 	
-	helper.ColorBox(pSwitcher, "Color property value", pColor, igdeEditPropertyValue_ColorBox::Ref::New(*this));
+	helper.ColorBox(pSwitcher, "@Igde.EditPropertyValue.Color.ToolTip", pColor, igdeEditPropertyValue_ColorBox::Ref::New(*this));
 	
 	helper.CheckBoxOnly(pSwitcher, pBoolean, pActionBooleanValue);
 	
-	helper.EditPath(pSwitcher, "Path property value", igdeEnvironment::efpltAll, pPath, igdeEditPropertyValue_EditPath::Ref::New(*this));
+	helper.EditPath(pSwitcher, "@Igde.EditPropertyValue.Path.ToolTip", igdeEnvironment::efpltAll, pPath, igdeEditPropertyValue_EditPath::Ref::New(*this));
 	
-	helper.EditSliderText(pSwitcher, "Range property value", 0.0f, 0.0f, 6, 3, 1.0f, pRange, igdeEditPropertyValue_EditSliderText::Ref::New(*this));
+	helper.EditSliderText(pSwitcher, "@Igde.EditPropertyValue.Range.ToolTip", 0.0f, 0.0f, 6, 3, 1.0f, pRange, igdeEditPropertyValue_EditSliderText::Ref::New(*this));
 	
-	helper.ComboBox(pSwitcher, "Selection property value", pSelect, igdeEditPropertyValue_ComboBox::Ref::New(*this));
+	helper.ComboBox(pSwitcher, "@Igde.EditPropertyValue.Select.ToolTip", pSelect, igdeEditPropertyValue_ComboBox::Ref::New(*this));
 	
 	frameLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
-	helper.EditString(frameLine, "List property value", pList, igdeEditPropertyValue_TextField::Ref::New(*this));
+	helper.EditString(frameLine, "@Igde.EditPropertyValue.List.ToolTip", pList, igdeEditPropertyValue_TextField::Ref::New(*this));
 	helper.Button(frameLine, pActionEditList);
 	pSwitcher->AddChild(frameLine);
 	
 	frameLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
-	helper.EditString(frameLine, "Trigger expression property value", pTriggerExpression, igdeEditPropertyValue_TextField::Ref::New(*this));
+	helper.EditString(frameLine, "@Igde.EditPropertyValue.TriggerExpression.ToolTip", pTriggerExpression, igdeEditPropertyValue_TextField::Ref::New(*this));
 	helper.Button(frameLine, pActionEditTriggerExpression);
 	pSwitcher->AddChild(frameLine);
 	
-	helper.ComboBoxFilter(pSwitcher, true, "Trigger target property value", pTriggerTarget, igdeEditPropertyValue_ComboBox::Ref::New(*this));
+	helper.ComboBoxFilter(pSwitcher, true, "@Igde.EditPropertyValue.TriggerTarget.ToolTip", pTriggerTarget, igdeEditPropertyValue_ComboBox::Ref::New(*this));
 	pTriggerTarget->SetDefaultSorter();
 	
 	frameLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
-	helper.EditString(frameLine, "Shape property value", pShape, igdeEditPropertyValue_TextField::Ref::New(*this));
+	helper.EditString(frameLine, "@Igde.EditPropertyValue.Shape.ToolTip", pShape, igdeEditPropertyValue_TextField::Ref::New(*this));
 	helper.Button(frameLine, pActionEditShape);
 	pSwitcher->AddChild(frameLine);
 	
 	frameLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
-	helper.EditString(frameLine, "Shape list property value", pShapeList, igdeEditPropertyValue_TextField::Ref::New(*this));
+	helper.EditString(frameLine, "@Igde.EditPropertyValue.ShapeList.ToolTip", pShapeList, igdeEditPropertyValue_TextField::Ref::New(*this));
 	helper.Button(frameLine, pActionEditShapeList);
 	pSwitcher->AddChild(frameLine);
 	
-	helper.ComboBoxFilter(pSwitcher, true, "Identifier property value", pIdentifier, igdeEditPropertyValue_ComboBox::Ref::New(*this));
+	helper.ComboBoxFilter(pSwitcher, true, "@Igde.EditPropertyValue.Identifier.ToolTip", pIdentifier, igdeEditPropertyValue_ComboBox::Ref::New(*this));
 	pIdentifier->SetDefaultSorter();
 }
 

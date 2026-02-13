@@ -85,7 +85,7 @@ class cActionFromGDSky : public igdeAction{
 public:
 	typedef deTObjectReference<cActionFromGDSky> Ref;
 	cActionFromGDSky(igdeWPSky &panel, igdeTextField &textField) :
-	igdeAction("GDef", "Show dialog to select sky from game definition"),
+	igdeAction("@Igde.WPSky.Action.GDef", "@Igde.WPSky.Action.GDef.ToolTip"),
 	pPanel(panel), pTextField(textField){}
 	
 	void OnAction() override{
@@ -115,7 +115,7 @@ class cActionPathSky : public igdeAction{
 public:
 	typedef deTObjectReference<cActionPathSky> Ref;
 	cActionPathSky(igdeWPSky &panel, igdeTextField &textField) :
-	igdeAction("...", "Show dialog to select the sky from file"),
+	igdeAction("@Igde.TriplePoint", "@Igde.WPSky.Action.Select.ToolTip"),
 	pPanel(panel), pTextField(textField){}
 	
 	void OnAction() override{
@@ -124,7 +124,7 @@ public:
 		}
 		
 		decString filename(pTextField.GetText().IsEmpty() ? decString("/igde/skies") : pTextField.GetText());
-		if(!igdeCommonDialogs::GetFileOpen(pPanel, "Select Sky",
+		if(!igdeCommonDialogs::GetFileOpen(pPanel, "@Igde.WPSky.Dialog.SelectSky.Title",
 		*pPanel.GetEnvironment().GetFileSystemGame(),
 		*pPanel.GetEnvironment().GetOpenFilePatternList( igdeEnvironment::efpltSky ), filename ) ){
 			return;
@@ -244,7 +244,7 @@ void igdeWPSky::RebuildControllers(){
 		controller->controller = pControllers.GetCount();
 		
 		igdeEditSliderText::Ref slider;
-		helper.EditSliderText(pFraControllers, "", "Current value of the controller ''",
+		helper.EditSliderText(pFraControllers, "", "@Igde.WPSky.Controller.ToolTip",
 			0.0f, 1.0f, 6, 3, 0.1f, slider, cEditControllerValue::Ref::New(*this, controller->controller));
 		
 		controller->slider = slider;
@@ -274,7 +274,7 @@ void igdeWPSky::UpdateController(int index){
 		}
 		
 		decString description;
-		description.Format("Current value of the controller '%s'", name.GetString());
+		description.FormatSafe(Translate("Igde.WPSky.ControllerValue").ToUTF8(), name);
 		if(controller.label){
 			controller.label->SetDescription(description);
 		}
@@ -367,11 +367,11 @@ void igdeWPSky::pCreateContent(){
 	form = igdeContainerForm::Ref::New(env);
 	AddChild(form);
 	
-	helper.FormLineStretchFirst(form, "Sky Path:", "", frameLine);
-	helper.EditString(frameLine, "Path to the sky to use.",
+	helper.FormLineStretchFirst(form, "@Igde.WPSky.SkyPath.Label", "", frameLine);
+	helper.EditString(frameLine, "@Igde.WPSky.SkyPath.ToolTip",
 		pEditSkyPath, cTextPathSky::Ref::New(*this));
 	helper.Button(frameLine, pBtnSkyPath, cActionPathSky::Ref::New(*this, pEditSkyPath));
 	helper.Button(frameLine, pBtnFromGDSky, cActionFromGDSky::Ref::New(*this, pEditSkyPath));
 	
-	helper.GroupBox(*this, pFraControllers, "Controllers:");
+	helper.GroupBox(*this, pFraControllers, "@Igde.WPSky.Controllers.Label");
 }

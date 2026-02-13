@@ -57,8 +57,8 @@
 ////////////
 
 igdeToggleTags::cActionEnableAll::cActionEnableAll(igdeToggleTags &widget) :
-igdeAction("Enable All", widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-	"Enable all tags"),
+igdeAction("@Igde.ToggleTags.Action.EnableAll", widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+	"@Igde.ToggleTags.Action.EnableAll.ToolTip"),
 pWidget(widget){
 }
 
@@ -68,8 +68,8 @@ void igdeToggleTags::cActionEnableAll::OnAction(){
 
 
 igdeToggleTags::cActionDisableAll::cActionDisableAll(igdeToggleTags &widget) :
-igdeAction("Disable All", widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-	"Disable all tags"),
+igdeAction("@Igde.ToggleTags.Action.DisableAll", widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+	"@Igde.ToggleTags.Action.DisableAll.ToolTip"),
 pWidget(widget){
 }
 

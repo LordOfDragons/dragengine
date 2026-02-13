@@ -51,7 +51,7 @@
 ////////////
 
 igdeEditTags::cActionAdd::cActionAdd(igdeEditTags &widget) :
-igdeAction("Add...", widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add tag"),
+igdeAction("@Igde.EditTags.Action.Add", widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@Igde.EditTags.Action.Add.ToolTip"),
 pWidget(widget){
 }
 
@@ -66,7 +66,7 @@ void igdeEditTags::cActionAdd::OnAction(){
 
 
 igdeEditTags::cActionRemove::cActionRemove(igdeEditTags &widget) :
-igdeAction("Remove", widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove tag"),
+igdeAction("@Igde.EditTags.Action.Remove", widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@Igde.EditTags.Action.Remove.ToolTip"),
 pWidget(widget){
 }
 
@@ -86,7 +86,7 @@ void igdeEditTags::cActionRemove::OnAction(){
 
 
 igdeEditTags::cActionClear::cActionClear(igdeEditTags &widget) :
-igdeAction("Clear", nullptr, "Clear tag"),
+igdeAction("@Igde.EditTags.Action.Clear", nullptr, "@Igde.EditTags.Action.Clear.ToolTip"),
 pWidget(widget){
 }
 

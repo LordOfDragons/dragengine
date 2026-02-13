@@ -42,9 +42,9 @@
 
 igdeActionUndo::igdeActionUndo(igdeEnvironment &environment, igdeUndoSystem *undoSystem) :
 igdeAction(
-	"Undo",
+	"@Igde.Action.Undo",
 	environment.GetStockIcon(igdeEnvironment::esiUndo),
-	"Undo last action",
+	"@Igde.Action.Undo.ToolTip",
 	deInputEvent::ekcU,
 	igdeHotKey(deInputEvent::esmControl, deInputEvent::ekcZ)),
 pEnvironment(environment),

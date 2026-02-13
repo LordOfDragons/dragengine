@@ -28,6 +28,7 @@
 
 #include "igdeRecentFiles.h"
 #include "../environment/igdeEnvironment.h"
+#include "../localization/igdeTranslationManager.h"
 #include "../gui/igdeEditorWindow.h"
 #include "../gui/igdeUIHelper.h"
 #include "../gui/event/igdeAction.h"
@@ -71,7 +72,9 @@ public:
 		*/
 		
 		SetText(filename);
-		SetDescription(decString("Load ") + filename);
+		decString description;
+		description.FormatSafe(pRecentFiles.GetEnvironment().GetTranslationManager().Translate("Igde.RecentFiles.LoadFile").ToUTF8(), filename);
+		SetDescription(description);
 	}
 	
 	void OnAction() override{
@@ -86,9 +89,9 @@ class igdeRecentFiles_ActionClear : public igdeAction{
 public:
 	using Ref = deTObjectReference<igdeRecentFiles_ActionClear>;
 	
-	igdeRecentFiles_ActionClear(igdeRecentFiles &recentFiles) : igdeAction("Clear List",
+	igdeRecentFiles_ActionClear(igdeRecentFiles &recentFiles) : igdeAction("@Igde.RecentFiles.Action.ClearList",
 	recentFiles.GetEnvironment().GetStockIcon(igdeEnvironment::esiDelete),
-	"Clear List"), pRecentFiles(recentFiles){
+	"@Igde.RecentFiles.Action.ClearList.ToolTip"), pRecentFiles(recentFiles){
 	}
 	
 	void OnAction() override{

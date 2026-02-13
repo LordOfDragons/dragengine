@@ -52,7 +52,7 @@ igdeDialog(environment, title)
 	helper.EditString(content, "", pEditValue, columns, rows, {});
 	
 	igdeContainer::Ref buttonBar;
-	CreateButtonBar(buttonBar, "Accept", "Discard");
+	CreateButtonBar(buttonBar, "@Igde.Accept", "@Igde.Discard");
 	
 	AddContent(content, buttonBar);
 }

@@ -107,7 +107,7 @@ void igdeNativeFoxMenuOption::UpdateSelected(){
 FXString igdeNativeFoxMenuOption::BuildConstrText(igdeMenuOption &powner){
 	const FXString text(igdeUIFoxHelper::TranslateIf(powner, powner.GetText().GetString()));
 	return igdeUIFoxHelper::MnemonizeString(text.text(), powner.GetMnemonic())
-		+ "\t" + igdeUIFoxHelper::AccelString(powner.GetHotKey())
+		+ "\t" + igdeUIFoxHelper::AccelString(powner, powner.GetHotKey())
 		+ "\t" + igdeUIFoxHelper::TranslateIf(powner, powner.GetDescription());
 }
 

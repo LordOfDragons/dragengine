@@ -66,7 +66,7 @@ public:
 	using Ref = deTObjectReference<igdeDEStatus_ActionStart>;
 	
 	igdeDEStatus_ActionStart(igdeDEStatus &panel) :
-		igdeAction("Start Engine", nullptr, "Start game engine"), pPanel(panel){}
+		igdeAction("@Igde.DEStatus.Action.StartEngine", nullptr, "@Igde.DEStatus.Action.StartEngine.ToolTip"), pPanel(panel){}
 	
 	void OnAction() override{
 		pPanel.StartEngine();
@@ -84,7 +84,7 @@ public:
 	using Ref = deTObjectReference<igdeDEStatus_ActionStop>;
 	
 	igdeDEStatus_ActionStop(igdeDEStatus &panel) :
-		igdeAction("Stop Engine", nullptr, "Stop game engine"), pPanel(panel){}
+		igdeAction("@Igde.DEStatus.Action.StopEngine", nullptr, "@Igde.DEStatus.Action.StopEngine.ToolTip"), pPanel(panel){}
 	
 	void OnAction() override{
 		pPanel.StopEngine();
@@ -112,8 +112,8 @@ pDialogEngine(dialogEngine)
 	igdeContainer::Ref groupBox, panel;
 	
 	
-	helper.GroupBoxStaticFlow(*this, groupBox, "Engine Status:");
-	helper.EditString(groupBox, "Engine status", pTextStatus, 3, {});
+	helper.GroupBoxStaticFlow(*this, groupBox, "@Igde.DEStatus.EngineStatus.Label");
+	helper.EditString(groupBox, "@Igde.DEStatus.EngineStatus.ToolTip", pTextStatus, 3, {});
 	
 	panel = igdeContainerBox::Ref::New(env, igdeContainerBox::eaX);
 	groupBox->AddChild(panel);
@@ -121,15 +121,15 @@ pDialogEngine(dialogEngine)
 	helper.Button(panel, pBtnStop, igdeDEStatus_ActionStop::Ref::New(*this));
 	
 	
-	helper.GroupBoxStaticFlow(*this, groupBox, "System Status:", true);
+	helper.GroupBoxStaticFlow(*this, groupBox, "@Igde.DEStatus.SystemStatus.Label", true);
 	const igdeUIHelper::sColumnHeader columns[3] = {
-		igdeUIHelper::sColumnHeader("System Name", nullptr, igdeApplication::app().DisplayScaled(150)),
-		igdeUIHelper::sColumnHeader("Active Module", nullptr, igdeApplication::app().DisplayScaled(200)),
-		igdeUIHelper::sColumnHeader("Status", nullptr, igdeApplication::app().DisplayScaled(150))
+		igdeUIHelper::sColumnHeader("@Igde.DEStatus.SystemStatus.ColumnSystemName", nullptr, igdeApplication::app().DisplayScaled(150)),
+		igdeUIHelper::sColumnHeader("@Igde.DEStatus.SystemStatus.ColumnActiveModule", nullptr, igdeApplication::app().DisplayScaled(200)),
+		igdeUIHelper::sColumnHeader("@Igde.DEStatus.SystemStatus.ColumnStatus", nullptr, igdeApplication::app().DisplayScaled(150))
 	};
 	helper.IconListBox(groupBox, pListSystems,
 		igdeApplication::app().DisplayScaled(decPoint(100, 150)),
-		columns, 3, "System Status", {});
+		columns, 3, "@Igde.DEStatus.SystemStatus.ToolTip", {});
 	
 	pAddSystem(GetEngine()->GetGraphicSystem());
 	pAddSystem(GetEngine()->GetAudioSystem());
@@ -169,10 +169,10 @@ void igdeDEStatus::UpdateStatus(){
 		}
 		
 		if(system.GetIsRunning()){
-			item.GetDetails().SetAt(1, "Running");
+			item.GetDetails().SetAt(1, Translate("Igde.DEStatus.Running").ToUTF8());
 			
 		}else{
-			item.GetDetails().SetAt(1, "Stopped");
+			item.GetDetails().SetAt(1, Translate("Igde.DEStatus.Stopped").ToUTF8());
 		}
 		
 		pListSystems->ItemChangedAt(i);
@@ -180,10 +180,10 @@ void igdeDEStatus::UpdateStatus(){
 	
 	if(pTextStatus->GetText().IsEmpty()){
 		if(GetEngineController().GetRunning()){
-			pTextStatus->SetText("Engine is running");
+			pTextStatus->SetText(Translate("Igde.DEStatus.EngineRunning").ToUTF8());
 			
 		}else{
-			pTextStatus->SetText("Engine is not running");
+			pTextStatus->SetText(Translate("Igde.DEStatus.EngineNotRunning").ToUTF8());
 		}
 	}
 	
@@ -210,9 +210,8 @@ void igdeDEStatus::StartEngine(){
 				continue;
 			}
 			
-			message.Format("Engine can not be started because system %s is not possible to start."
-				" Verify that a module is selected and that this module is runnable on this system.",
-				system.GetSystemName().GetString());
+			message.FormatSafe(Translate("Igde.DEStatus.EngineCanNotStart").ToUTF8(),
+				system.GetSystemName());
 			pTextStatus->SetText(message);
 			break;
 		}

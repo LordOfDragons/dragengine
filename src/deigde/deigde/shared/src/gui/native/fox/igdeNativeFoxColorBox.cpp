@@ -224,7 +224,7 @@ long igdeNativeFoxColorBox::onClicked(FXObject*, FXSelector, void*){
 		return 0;
 	}
 	
-	FXColorDialog dialog(this, "Select Color");
+	FXColorDialog dialog(this, pOwner->Translate("Igde.FoxColorBox.SelectColor").ToUTF8().GetString());
 	
 	dialog.setOpaqueOnly(false);
 	dialog.setRGBA(pColor);

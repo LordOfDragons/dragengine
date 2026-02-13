@@ -42,7 +42,7 @@
 ////////////////////////////////////////////////
 
 igdeViewCurveBezier::cActionResetView::cActionResetView(igdeViewCurveBezier &view) :
-igdeAction("Reset View", nullptr, "Reset view to default values"),
+igdeAction("@Igde.ViewCurveBezier.Action.ResetView", nullptr, "@Igde.ViewCurveBezier.Action.ResetView.ToolTip"),
 pView(view){
 }
 
@@ -56,7 +56,7 @@ void igdeViewCurveBezier::cActionResetView::OnAction(){
 /////////////////////////////////////////////////
 
 igdeViewCurveBezier::cActionFitToCurve::cActionFitToCurve(igdeViewCurveBezier &view) :
-igdeAction("Fit View to Curve", nullptr, "Reset view parameters to fit curve into view area"),
+igdeAction("@Igde.ViewCurveBezier.Action.FitViewToCurve", nullptr, "@Igde.ViewCurveBezier.Action.FitViewToCurve.ToolTip"),
 pView(view){
 }
 
@@ -72,7 +72,7 @@ void igdeViewCurveBezier::cActionFitToCurve::OnAction(){
 #define CE_MIN_DIST		0.001f
 
 igdeViewCurveBezier::cActionEditSelectedPoint::cActionEditSelectedPoint(igdeViewCurveBezier &view) :
-igdeAction("Edit Selected Point...", nullptr, "Show dialog to edit coordinates of selected point"),
+igdeAction("@Igde.ViewCurveBezier.Action.EditSelectedPoint", nullptr, "@Igde.ViewCurveBezier.Action.EditSelectedPoint.ToolTip"),
 pView(view){
 }
 
@@ -160,8 +160,8 @@ void igdeViewCurveBezier::cActionSetInterpolationMode::Update(){
 static decCurveBezier vIgdeViewCurveBezierCopyCurve;
 
 igdeViewCurveBezier::cActionCopyCurve::cActionCopyCurve(igdeViewCurveBezier &view) :
-igdeAction("Copy Curve", view.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-"Copy curve to clipboard"),
+igdeAction("@Igde.ViewCurveBezier.Action.CopyCurve", view.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+"@Igde.ViewCurveBezier.Action.CopyCurve.ToolTip"),
 pView(view){
 }
 
@@ -175,8 +175,8 @@ void igdeViewCurveBezier::cActionCopyCurve::OnAction(){
 /////////////////////////////////////////////////
 
 igdeViewCurveBezier::cActionPasteCurve::cActionPasteCurve(igdeViewCurveBezier &view) :
-igdeAction("Paste Curve", view.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
-"Paste curve from clipboard"),
+igdeAction("@Igde.ViewCurveBezier.Action.PasteCurve", view.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+"@Igde.ViewCurveBezier.Action.PasteCurve.ToolTip"),
 pView(view){
 }
 
@@ -191,7 +191,7 @@ void igdeViewCurveBezier::cActionPasteCurve::OnAction(){
 /////////////////////////////////////////////////
 
 igdeViewCurveBezier::cActionClearCurve::cActionClearCurve(igdeViewCurveBezier &view) :
-igdeAction("Clear Curve", nullptr, "Remove all points from the curve"),
+igdeAction("@Igde.ViewCurveBezier.Action.ClearCurve", nullptr, "@Igde.ViewCurveBezier.Action.ClearCurve.ToolTip"),
 pView(view){
 }
 
@@ -207,7 +207,7 @@ void igdeViewCurveBezier::cActionClearCurve::OnAction(){
 /////////////////////////////////////////////////////////
 
 igdeViewCurveBezier::cActionSetDefaultConstant::cActionSetDefaultConstant(igdeViewCurveBezier &view) :
-igdeAction("Set to Default Constant", nullptr, "Set curve to constant interpolation switching from 0 to 1 at 0.5"),
+igdeAction("@Igde.ViewCurveBezier.Action.SetToDefaultConstant", nullptr, "@Igde.ViewCurveBezier.Action.SetToDefaultConstant.ToolTip"),
 pView(view){
 }
 
@@ -221,7 +221,7 @@ void igdeViewCurveBezier::cActionSetDefaultConstant::OnAction(){
 ///////////////////////////////////////////////////////
 
 igdeViewCurveBezier::cActionSetDefaultLinear::cActionSetDefaultLinear(igdeViewCurveBezier &view) :
-igdeAction("Set to Default Linear", nullptr, "Set curve to linear interpolation from (0,0) to (1,1)"),
+igdeAction("@Igde.ViewCurveBezier.Action.SetToDefaultLinear", nullptr, "@Igde.ViewCurveBezier.Action.SetToDefaultLinear.ToolTip"),
 pView(view){
 }
 
@@ -235,7 +235,7 @@ void igdeViewCurveBezier::cActionSetDefaultLinear::OnAction(){
 ///////////////////////////////////////////////////////
 
 igdeViewCurveBezier::cActionSetDefaultBezier::cActionSetDefaultBezier(igdeViewCurveBezier &view) :
-igdeAction("Set to Default Bezier", nullptr, "Set curve to bezier interpolation from (0,0) to (1,1)"),
+igdeAction("@Igde.ViewCurveBezier.Action.SetToDefaultBezier", nullptr, "@Igde.ViewCurveBezier.Action.SetToDefaultBezier.ToolTip"),
 pView(view){
 }
 
@@ -249,7 +249,7 @@ void igdeViewCurveBezier::cActionSetDefaultBezier::OnAction(){
 ///////////////////////////////////////////////////
 
 igdeViewCurveBezier::cActionInvertCurveX::cActionInvertCurveX(igdeViewCurveBezier &view) :
-igdeAction("Invert curve along X axis", nullptr, "Invert curve along X axis"),
+igdeAction("@Igde.ViewCurveBezier.Action.InvertCurveX", nullptr, "@Igde.ViewCurveBezier.Action.InvertCurveX.ToolTip"),
 pView(view){
 }
 
@@ -263,7 +263,7 @@ void igdeViewCurveBezier::cActionInvertCurveX::OnAction(){
 ///////////////////////////////////////////////////
 
 igdeViewCurveBezier::cActionInvertCurveY::cActionInvertCurveY(igdeViewCurveBezier &view) :
-igdeAction("Invert curve along Y axis", nullptr, "Invert curve along Y axis"),
+igdeAction("@Igde.ViewCurveBezier.Action.InvertCurveY", nullptr, "@Igde.ViewCurveBezier.Action.InvertCurveY.ToolTip"),
 pView(view){
 }
 
@@ -277,7 +277,7 @@ void igdeViewCurveBezier::cActionInvertCurveY::OnAction(){
 ////////////////////////////////////////////////
 
 igdeViewCurveBezier::cActionEditClamp::cActionEditClamp(igdeViewCurveBezier &view) :
-igdeAction("Edit Clamp Parameters...", nullptr, "Show dialog to edit clamp parameters for the view"),
+igdeAction("@Igde.ViewCurveBezier.Action.EditClampParameters", nullptr, "@Igde.ViewCurveBezier.Action.EditClampParameters.ToolTip"),
 pView(view){
 }
 
@@ -300,7 +300,7 @@ void igdeViewCurveBezier::cActionEditClamp::OnAction(){
 //////////////////////////////////////////////////
 
 igdeViewCurveBezier::cActionAutoHandles::cActionAutoHandles(igdeViewCurveBezier &view) :
-igdeAction("Auto Handles", nullptr, "Set default handles for interpolation type"),
+igdeAction("@Igde.ViewCurveBezier.Action.AutoHandles", nullptr, "@Igde.ViewCurveBezier.Action.AutoHandles.ToolTip"),
 pView(view){
 }
 
@@ -585,11 +585,11 @@ void igdeViewCurveBezier::ShowContextMenu(const decPoint &position){
 	
 	helper.MenuSeparator(menu);
 	helper.MenuOption(menu, cActionSetInterpolationMode::Ref::New(*this, decCurveBezier::eimConstant,
-		"Constant Interpolation", nullptr, "Set curve to constant interpolation"));
+		"@Igde.ViewCurveBezier.Interpolation.Constant", nullptr, "@Igde.ViewCurveBezier.Interpolation.Constant.ToolTip"));
 	helper.MenuOption(menu, cActionSetInterpolationMode::Ref::New(*this, decCurveBezier::eimLinear,
-		"Linear Interpolation", nullptr, "Set curve to linear interpolation"));
+		"@Igde.ViewCurveBezier.Interpolation.Linear", nullptr, "@Igde.ViewCurveBezier.Interpolation.Linear.ToolTip"));
 	helper.MenuOption(menu, cActionSetInterpolationMode::Ref::New(*this, decCurveBezier::eimBezier,
-		"Bezier Interpolation", nullptr, "Set curve to bezier interpolation"));
+		"@Igde.ViewCurveBezier.Interpolation.Bezier", nullptr, "@Igde.ViewCurveBezier.Interpolation.Bezier.ToolTip"));
 	
 	helper.MenuSeparator(menu);
 	helper.MenuCommand(menu, cActionCopyCurve::Ref::New(*this));

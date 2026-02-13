@@ -124,7 +124,7 @@ private:
 	igdeUIFoxHelper();
 	
 public:
-	static FXString AccelString(const igdeHotKey &hotKey);
+	static FXString AccelString(const igdeWidget &widget, const igdeHotKey &hotKey);
 	static FXuchar MnemonicKey(deInputEvent::eKeyCodes keyCode);
 	static FXString MnemonizeString(const char* string, deInputEvent::eKeyCodes keyCode);
 	static deInputEvent::eKeyCodes KeyCodeFromEvent(const FXEvent &event);

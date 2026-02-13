@@ -293,8 +293,8 @@ public:
 class cCheckEnableHDRR : public cBaseAction{
 public:
 	using Ref = deTObjectReference<cCheckEnableHDRR>;
-	cCheckEnableHDRR(igdeWPCamera &panel) : cBaseAction(panel, "Enable HDRR",
-		"Enable high definition range rendering (HDRR) if supported"){ }
+	cCheckEnableHDRR(igdeWPCamera &panel) : cBaseAction(panel, "@Igde.WPCamera.Action.EnableHDRR",
+		"@Igde.WPCamera.Action.EnableHDRR.ToolTip"){ }
 	
 	void OnActionCamera(igdeCamera &camera) override{
 		camera.SetEnableHDRR(!camera.GetEnableHDRR());
@@ -305,8 +305,8 @@ public:
 class cCheckEnableGI : public cBaseAction{
 public:
 	using Ref = deTObjectReference<cCheckEnableGI>;
-	cCheckEnableGI(igdeWPCamera &panel) : cBaseAction(panel, "Enable GI",
-		"Enable global illumination (GI) if supported"){ }
+	cCheckEnableGI(igdeWPCamera &panel) : cBaseAction(panel, "@Igde.WPCamera.Action.EnableGI",
+		"@Igde.WPCamera.Action.EnableGI.ToolTip"){ }
 	
 	void OnActionCamera(igdeCamera &camera) override{
 		camera.SetEnableGI(!camera.GetEnableGI());
@@ -447,7 +447,7 @@ public:
 	using Ref = deTObjectReference<cActionCameraSetDefaultParams>;
 	cActionCameraSetDefaultParams(igdeWPCamera &panel, float lowestIntensity,
 		float highestIntensity, float adaptionTime, const char *text) : cBaseAction(panel,
-		text, "Set default parameters"), pLowestIntensity(lowestIntensity),
+		text, "@Igde.WPCamera.Action.SetDefault.ToolTip"), pLowestIntensity(lowestIntensity),
 		pHighestIntensity(highestIntensity), pAdaptionTime(adaptionTime){}
 	
 	void OnActionCamera(igdeCamera &camera) override{
@@ -459,11 +459,11 @@ public:
 class cActionCameraLoad : public cBaseAction{
 public:
 	using Ref = deTObjectReference<cActionCameraLoad>;
-	cActionCameraLoad(igdeWPCamera &panel) : cBaseAction(panel, "Load...", "Load parameters from file",
+	cActionCameraLoad(igdeWPCamera &panel) : cBaseAction(panel, "@Igde.WPCamera.Action.Load", "@Igde.WPCamera.Action.Load.ToolTip",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen)){}
 	
 	void OnActionCamera(igdeCamera &camera) override{
-		if(!igdeCommonDialogs::GetFileOpen(pPanel, "Open Camera",
+		if(!igdeCommonDialogs::GetFileOpen(pPanel, "@Igde.WPCamera.Dialog.OpenCamera.Title",
 		*pPanel.GetEnvironment().GetFileSystemGame(), igdeWPCamera::patternCamera,
 		igdeWPCamera::lastCameraFile)){
 			return;
@@ -479,11 +479,11 @@ public:
 class cActionCameraSave : public cBaseAction{
 public:
 	using Ref = deTObjectReference<cActionCameraSave>;
-	cActionCameraSave(igdeWPCamera &panel) : cBaseAction(panel, "Save...", "Save parameters to file",
+	cActionCameraSave(igdeWPCamera &panel) : cBaseAction(panel, "@Igde.WPCamera.Action.Save", "@Igde.WPCamera.Action.Save.ToolTip",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave)){}
 	
 	void OnActionCamera(igdeCamera &camera) override{
-		if(!igdeCommonDialogs::GetFileSave(pPanel, "Save Camera",
+		if(!igdeCommonDialogs::GetFileSave(pPanel, "@Igde.WPCamera.Dialog.SaveCamera.Title",
 		*pPanel.GetEnvironment().GetFileSystemGame(), igdeWPCamera::patternCamera,
 		igdeWPCamera::lastCameraFile)){
 			return;
@@ -501,18 +501,18 @@ public:
 	using Ref = deTObjectReference<cActionMenuCamera>;
 	
 	cActionMenuCamera(igdeWPCamera &panel) : igdeActionContextMenu(
-		"...", nullptr, "Camera menu"), pPanel(panel){}
+		"@Igde.TriplePoint", nullptr, "@Igde.WPCamera.Action.Menu.ToolTip"), pPanel(panel){}
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override{
 		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelperProperties();
 		helper.MenuCommand(contextMenu, cActionCameraSetDefaultParams::Ref::New(
-			pPanel, 1.0f, 1.0f, 0.1f, "Set Default Indoor"));
+			pPanel, 1.0f, 1.0f, 0.1f, "@Igde.WPCamera.Action.SetDefaultIndoor"));
 		helper.MenuCommand(contextMenu, cActionCameraSetDefaultParams::Ref::New(
-			pPanel, 20.0f, 20.0f, 0.1f, "Set Default Day"));
+			pPanel, 20.0f, 20.0f, 0.1f, "@Igde.WPCamera.Action.SetDefaultDay"));
 		helper.MenuCommand(contextMenu, cActionCameraSetDefaultParams::Ref::New(
-			pPanel, 0.1f, 0.1f, 0.1f, "Set Default Night"));
+			pPanel, 0.1f, 0.1f, 0.1f, "@Igde.WPCamera.Action.SetDefaultNight"));
 		helper.MenuCommand(contextMenu, cActionCameraSetDefaultParams::Ref::New(
-			pPanel, 1.0f, 20.0f, 0.1f, "Set Default Dynamic"));
+			pPanel, 1.0f, 20.0f, 0.1f, "@Igde.WPCamera.Action.SetDefaultDynamic"));
 		
 		helper.Separator(contextMenu);
 		helper.MenuCommand(contextMenu, cActionCameraLoad::Ref::New(pPanel));
@@ -535,7 +535,7 @@ decString igdeWPCamera::lastCameraFile("Camera.decamera");
 
 static igdeFilePattern::List sCreateFilePatternList(){
 	igdeFilePattern::List list;
-	list.Add(igdeFilePattern::Ref::New("Drag[en]gine Camera", "*.decamera", ".decamera"));
+	list.Add(igdeFilePattern::Ref::New("@Igde.LoadSaveSystem.FilePattern.Camera", "*.decamera", ".decamera"));
 	return list;
 }
 
@@ -722,15 +722,15 @@ void igdeWPCamera::pCreateContent(){
 	form = igdeContainerForm::Ref::New(env);
 	AddChild(form);
 	
-	helper.EditVector(form, "Position:", "Position of the camera",
+	helper.EditVector(form, "@Igde.WPCamera.Position.Label", "@Igde.WPCamera.Position.ToolTip",
 		pEditPosition, cEditCameraPosition::Ref::New(*this));
-	helper.EditVector(form, "Rotation:", "Rotation of the camera",
+	helper.EditVector(form, "@Igde.WPCamera.Rotation.Label", "@Igde.WPCamera.Rotation.ToolTip",
 		pEditRotation, cEditCameraRotation::Ref::New(*this));
 	
-	helper.EditFloat(form, "Orbit Distance:", "Distance to center point",
+	helper.EditFloat(form, "@Igde.WPCamera.OrbitDistance.Label", "@Igde.WPCamera.OrbitDistance.ToolTip",
 		pEditOrbitDistance, cTextOrbitDistance::Ref::New(*this));
 	
-	helper.EditVector(form, "View:", "View direction of the camera", pEditViewDir, {});
+	helper.EditVector(form, "@Igde.WPCamera.View.Label", "@Igde.WPCamera.View.ToolTip", pEditViewDir, {});
 	pEditViewDir->SetEditable(false);
 	
 	helper.FormLineStretchFirst(form, "", "", frameLine);
@@ -744,35 +744,35 @@ void igdeWPCamera::pCreateContent(){
 	helper.CheckBox(form, pChkEnableGI, cCheckEnableGI::Ref::New(*this));
 	
 	
-	helper.GroupBox(*this, group, "Internal parameters:", true);
-	helper.EditFloat(group, "Field of view:", "Field of view in degrees", pEditFov, cTextFov::Ref::New(*this));
-	helper.EditFloat(group, "Field of view ratio:", "Field of view ratio (height / width)",
+	helper.GroupBox(*this, group, "@Igde.WPCamera.InternalParameters.Label", true);
+	helper.EditFloat(group, "@Igde.WPCamera.FieldOfView.Label", "@Igde.WPCamera.FieldOfView.ToolTip", pEditFov, cTextFov::Ref::New(*this));
+	helper.EditFloat(group, "@Igde.WPCamera.FieldOfViewRatio.Label", "@Igde.WPCamera.FieldOfViewRatio.ToolTip",
 		pEditFovRatio, cTextFovRatio::Ref::New(*this));
 	
-	helper.EditFloat(group, "Image distance:", "Image distance in meters (near clipping plane)",
+	helper.EditFloat(group, "@Igde.WPCamera.ImageDistance.Label", "@Igde.WPCamera.ImageDistance.ToolTip",
 		pEditImageDist, cTextImageDistance::Ref::New(*this));
-	helper.EditFloat(group, "View distance:", "View distance in meters (far clipping plane)",
+	helper.EditFloat(group, "@Igde.WPCamera.ViewDistance.Label", "@Igde.WPCamera.ViewDistance.ToolTip",
 		pEditViewDist, cTextViewDistance::Ref::New(*this));
 	
 	
-	helper.GroupBox(*this, group, "Exposure controls:", true);
-	helper.EditFloat(group, "Lower intensity:", "Lower intensity to adapt to",
+	helper.GroupBox(*this, group, "@Igde.WPCamera.ExposureControls.Label", true);
+	helper.EditFloat(group, "@Igde.WPCamera.LowerIntensity.Label", "@Igde.WPCamera.LowerIntensity.ToolTip",
 		pEditLowInt, cTextLowIntensity::Ref::New(*this));
-	helper.EditFloat(group, "Higher intensity:", "Higher intensity to adapt to",
+	helper.EditFloat(group, "@Igde.WPCamera.HigherIntensity.Label", "@Igde.WPCamera.HigherIntensity.ToolTip",
 		pEditHiInt, cTextHighIntensity::Ref::New(*this));
-	helper.EditFloat(group, "Exposure:", "Exposure multiplier", pEditExposure, cTextExposure::Ref::New(*this));
-	helper.EditFloat(group, "Adaption time:", "Adaption time in seconds", pEditAdaptTime, cTextAdaptionTime::Ref::New(*this));
+	helper.EditFloat(group, "@Igde.WPCamera.Exposure.Label", "@Igde.WPCamera.Exposure.ToolTip", pEditExposure, cTextExposure::Ref::New(*this));
+	helper.EditFloat(group, "@Igde.WPCamera.AdaptionTime.Label", "@Igde.WPCamera.AdaptionTime.ToolTip", pEditAdaptTime, cTextAdaptionTime::Ref::New(*this));
 	
 	
-	helper.GroupBoxFlow(*this, group, "Tone mapping:", true, true);
+	helper.GroupBoxFlow(*this, group, "@Igde.WPCamera.ToneMapping.Label", true, true);
 	form = igdeContainerForm::Ref::New(env);
 	group->AddChild(form);
 	
-	helper.EditFloat(form, "White intensity:",
-		"White intensity multiplier (avoid bright parts wash out to white)",
+	helper.EditFloat(form, "@Igde.WPCamera.WhiteIntensity.Label",
+		"@Igde.WPCamera.WhiteIntensity.ToolTip",
 		pEditWhiteIntensity, cTextWhiteIntensity::Ref::New(*this));
 	
-	helper.Label(group, "Custom Curve:");
+	helper.Label(group, "@Igde.WPCamera.CustomCurve.Label");
 	helper.ViewCurveBezier(group, pEditToneMapCurve, cEditToneMapCurve::Ref::New(*this));
 	pEditToneMapCurve->SetDefaultSize(decPoint(200, 150));
 	pEditToneMapCurve->ClearCurve();
@@ -781,15 +781,15 @@ void igdeWPCamera::pCreateContent(){
 	pEditToneMapCurve->SetClampMax(decVector2(3.0f, 1.0f));
 	
 	
-	helper.GroupBox(*this, group, "Bloom / Overbright:", true);
-	helper.EditSliderText(group, "Blend:", "Bloom blend factor (enable/disable bloom)",
+	helper.GroupBox(*this, group, "@Igde.WPCamera.BloomOverbright.Label", true);
+	helper.EditSliderText(group, "@Igde.WPCamera.BloomBlend.Label", "@Igde.WPCamera.BloomBlend.ToolTip",
 		0.0f, 1.0f, 4, 3, 0.1f, pSldBloomBlend, cSliderBloomBlend::Ref::New(*this));
-	helper.EditFloat(group, "Intensity:",
-		"Bloom intensity multiplier (overbright begin threshold)",
+	helper.EditFloat(group, "@Igde.WPCamera.BloomIntensity.Label",
+		"@Igde.WPCamera.BloomIntensity.ToolTip",
 		pEditBloomIntensity, cTextBloomIntensity::Ref::New(*this));
-	helper.EditFloat(group, "Strength:",
-		"Bloom strength (scale intensity above threshold)",
+	helper.EditFloat(group, "@Igde.WPCamera.BloomStrength.Label",
+		"@Igde.WPCamera.BloomStrength.ToolTip",
 		pEditBloomStrength, cTextBloomStrength::Ref::New(*this));
-	helper.EditSliderText(group, "Size:", "Bloom size (blur size relative to screen width)",
+	helper.EditSliderText(group, "@Igde.WPCamera.BloomSize.Label", "@Igde.WPCamera.BloomSize.ToolTip",
 		0.0f, 1.0f, 4, 3, 0.1f, pSldBloomSize, cSliderBloomSize::Ref::New(*this));
 }

@@ -192,7 +192,7 @@ void igdeDialogStartUp::LoadSelectedRecentProject(){
 void igdeDialogStartUp::LoadProjectFromFile(){
 	decPath path;
 	path.SetFromNative(pWindowMain.GetConfiguration().GetPathProjects());
-	path.AddComponent("project.degp");
+	path.AddComponent(pWindowMain.Translate("Igde.StartUp.DefaultProject").ToUTF8() + ".degp");
 	
 	decString filename(path.GetPathNative());
 	

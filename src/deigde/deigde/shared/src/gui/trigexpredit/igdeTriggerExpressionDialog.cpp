@@ -54,7 +54,7 @@ igdeDialog(environment, title)
 	editor.SetTargetList(&targetList);
 	
 	igdeContainer::Ref buttonBar;
-	CreateButtonBar(buttonBar, "Accept", "Discard");
+	CreateButtonBar(buttonBar, "@Igde.Accept", "@Igde.Discard");
 	
 	AddContent(pEditor, buttonBar);
 }

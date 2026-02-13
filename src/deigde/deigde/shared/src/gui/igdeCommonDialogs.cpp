@@ -119,7 +119,7 @@ decString igdeCommonDialogs::FormatException(const deException &exception){
 }
 
 void igdeCommonDialogs::Exception(igdeWidget &owner, const deException &exception){
-	Exception(owner, "Application Error", exception);
+	Exception(owner, "@Igde.CommonDialogs.ApplicationError.Title", exception);
 }
 
 void igdeCommonDialogs::Exception(igdeWidget &owner, const char *title,
@@ -179,13 +179,13 @@ const char *text, decString &value, const decStringList &proposals){
 	
 	igdeComboBoxFilter::Ref comboBox;
 	helper.Label(content, text);
-	helper.ComboBoxFilter(content, 50, 10, true, "Enter value or select from list", comboBox, {});
+	helper.ComboBoxFilter(content, 50, 10, true, "@Igde.CommonDialogs.ComboBoxFilter.ToolTip", comboBox, {});
 	proposals.Visit([&](const decString &item){ comboBox->AddItem(item); });
 	comboBox->StoreFilterItems();
 	comboBox->SetText(value);
 	
 	igdeContainer::Ref buttonBar;
-	dialog->CreateButtonBar(buttonBar, "Accept", "Discard");
+	dialog->CreateButtonBar(buttonBar, "@Igde.Accept", "@Igde.Discard");
 	
 	dialog->AddContent(content, buttonBar);
 	

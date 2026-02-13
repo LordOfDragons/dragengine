@@ -375,12 +375,12 @@ pProjectGameDefPathChanged(false)
 	pEditName->SetText(Translate("Igde.NewGameProject.DefaultName").ToUTF8());
 	
 	decPath path(decPath::CreatePathNative(pWindowMain.GetConfiguration().GetPathProjects()));
-	path.AddComponent("New Project");
+	path.AddComponent(Translate("Igde.NewGameProject.DefaultProjectDir").ToUTF8());
 	pEditPathProject->SetDirectory(path.GetPathNative());
 	
-	pEditPathGameDefProject->SetText(Translate("Igde.NewGameProject.DefaultGameDef").ToUTF8());
-	pEditPathCache->SetText(Translate("Igde.NewGameProject.DefaultCache").ToUTF8());
-	pEditPathData->SetText(Translate("Igde.NewGameProject.DefaultData").ToUTF8());
+	pEditPathGameDefProject->SetText(Translate("Igde.NewGameProject.DefaultGameDef").ToUTF8() + ".degd");
+	pEditPathCache->SetText("cache");
+	pEditPathData->SetText("data");
 	
 	pInitScriptModules();
 	pInitTemplates();
@@ -428,7 +428,7 @@ bool igdeDialogNewGameProject::CheckValidInput(){
 	
 	if(!pCBTemplate->GetSelectedItem()->GetData()){
 		if(igdeCommonDialogs::Question(*this, igdeCommonDialogs::ebsYesNo, mbtitle,
-		"No template selected. Do you really want to create an empty project?")
+		"@Igde.NewGameProject.NoTemplateConfirm")
 		== igdeCommonDialogs::ebNo){
 			pCBTemplate->Focus();
 			return false;

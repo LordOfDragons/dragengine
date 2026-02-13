@@ -618,6 +618,7 @@ void igdeIconListBox::OnLanguageChanged(){
 	if(GetNativeWidget()){
 		igdeNativeIconListBox * const native = (igdeNativeIconListBox*)GetNativeWidget();
 		native->UpdateDescription();
+		native->UpdateHeader();
 		if(pAutoTranslateItems){
 			native->BuildList();
 		}

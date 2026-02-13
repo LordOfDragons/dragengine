@@ -105,7 +105,7 @@ public:
 	typedef deTObjectReference<cActionToggle> Ref;
 	
 	cActionToggle(igdeWPTriggerTable &panel) :
-	igdeAction("Toggle State", nullptr, "Toggle selected target between fired and reset state"),
+	igdeAction("@Igde.WPTriggerTable.Action.ToggleState", nullptr, "@Igde.WPTriggerTable.Action.ToggleState.ToolTip"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -137,7 +137,7 @@ public:
 	typedef deTObjectReference<cActionClear> Ref;
 	
 	cActionClear(igdeWPTriggerTable &panel) :
-	igdeAction("Clear Table", nullptr, "Remove all targets from the table"),
+	igdeAction("@Igde.WPTriggerTable.Action.ClearTable", nullptr, "@Igde.WPTriggerTable.Action.ClearTable.ToolTip"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -164,8 +164,8 @@ public:
 	typedef deTObjectReference<cActionAdd> Ref;
 	
 	cActionAdd(igdeWPTriggerTable &panel) :
-	igdeAction("Add Target...", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-		"Add target to table"),
+	igdeAction("@Igde.WPTriggerTable.Action.AddTarget", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"@Igde.WPTriggerTable.Action.AddTarget.ToolTip"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -177,9 +177,9 @@ public:
 		decString name(pPanel.GetSelectedTarget()
 			? pPanel.GetSelectedTarget()->GetName().GetString() : "Target");
 		
-		while(igdeCommonDialogs::GetString(pPanel, "Add Target", "Name:", name)){
+		while(igdeCommonDialogs::GetString(pPanel, "@Igde.WPTriggerTable.Dialog.AddTarget.Title", "@Igde.WPTriggerTable.Dialog.AddTarget.Name", name)){
 			if(list->GetTargets().HasNamed(name)){
-				igdeCommonDialogs::Information(pPanel, "Add Target",
+				igdeCommonDialogs::Information(pPanel, "@Igde.WPTriggerTable.Dialog.AddTarget.Title",
 					"A target with this name exists already.");
 				continue;
 			}
@@ -206,8 +206,8 @@ public:
 	typedef deTObjectReference<cActionRemove> Ref;
 	
 	cActionRemove(igdeWPTriggerTable &panel) :
-	igdeAction("Remove Target", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-		"Remove selected target from table"),
+	igdeAction("@Igde.WPTriggerTable.Action.RemoveTarget", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@Igde.WPTriggerTable.Action.RemoveTarget.ToolTip"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -234,7 +234,7 @@ public:
 	typedef deTObjectReference<cActionFire> Ref;
 	
 	cActionFire(igdeWPTriggerTable &panel) :
-	igdeAction("Fire Target", nullptr, "Fire selected target"),
+	igdeAction("@Igde.WPTriggerTable.Action.FireTarget", nullptr, "@Igde.WPTriggerTable.Action.FireTarget.ToolTip"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -260,7 +260,7 @@ public:
 	typedef deTObjectReference<cActionReset> Ref;
 	
 	cActionReset(igdeWPTriggerTable &panel) :
-	igdeAction("Reset Target", nullptr, "Reset selected target"),
+	igdeAction("@Igde.WPTriggerTable.Action.ResetTarget", nullptr, "@Igde.WPTriggerTable.Action.ResetTarget.ToolTip"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -286,7 +286,7 @@ public:
 	typedef deTObjectReference<cActionFullReset> Ref;
 	
 	cActionFullReset(igdeWPTriggerTable &panel) :
-	igdeAction("Full Reset Target", nullptr, "Full reset selected target"),
+	igdeAction("@Igde.WPTriggerTable.Action.FullResetTarget", nullptr, "@Igde.WPTriggerTable.Action.FullResetTarget.ToolTip"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -373,8 +373,8 @@ void igdeWPTriggerTable::UpdateTable(){
 				}
 				
 				decString text;
-				text.Format("%s (%s)", t->GetName().GetString(),
-					t->GetHasFired() ? "has fired" : "never fired");
+				text.FormatSafe(Translate("Igde.WPTriggerTable.Target.Text").ToUTF8(), t->GetName(),
+					Translate(t->GetFired() ? "Igde.WPTriggerTable.Target.HasFired" : "Igde.WPTriggerTable.Target.NeverFired").ToUTF8());
 				pListTriggerTable->AddItem(text, t->GetFired() ? pIconFired : pIconNotFired, t);
 			});
 			
@@ -390,8 +390,8 @@ void igdeWPTriggerTable::UpdateTarget(igdeTriggerTarget *target){
 	}
 	
 	decString text;
-	text.Format("%s (%s)", target->GetName().GetString(),
-		target->GetHasFired() ? "has fired" : "never fired");
+	text.FormatSafe(Translate("Igde.WPTriggerTable.Target.Text").ToUTF8(), target->GetName(),
+		Translate(target->GetHasFired() ? "Igde.WPTriggerTable.Target.HasFired" : "Igde.WPTriggerTable.Target.NeverFired").ToUTF8());
 	
 	igdeListItem &item = pListTriggerTable->GetItems().GetAt(index);
 	if(item.GetText() == text){
@@ -457,12 +457,12 @@ void igdeWPTriggerTable::pCreateContent(){
 	pActionReset = cActionReset::Ref::New(*this);
 	pActionFullReset = cActionFullReset::Ref::New(*this);
 	
-	helper.ListBox(*this, 8, "List of targets in the table", pListTriggerTable, cListTable::Ref::New(*this));
+	helper.ListBox(*this, 8, "@Igde.WPTriggerTable.ListBox.ToolTip", pListTriggerTable, cListTable::Ref::New(*this));
 	pListTriggerTable->SetDefaultSorter();
 	
 	igdeContainerFlow::Ref frameLine(igdeContainerFlow::Ref::New(env, eaX, esLast));
-	helper.Label(frameLine, "Filter:");
-	helper.EditString(frameLine, "Filter targets in the list case insensitive",
+	helper.Label(frameLine, "@Igde.WPTriggerTable.Filter.Label");
+	helper.EditString(frameLine, "@Igde.WPTriggerTable.Filter.ToolTip",
 		pEditTriggerTableFilter, cTextFilter::Ref::New(*this));
 	AddChild(frameLine);
 }

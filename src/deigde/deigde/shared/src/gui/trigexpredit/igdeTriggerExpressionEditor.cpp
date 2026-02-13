@@ -64,7 +64,7 @@ public:
 	using Ref = deTObjectReference<igdeTriggerExpressionEditor_ActionNegate>;
 	
 	igdeTriggerExpressionEditor_ActionNegate(igdeTriggerExpressionEditor &editor) :
-	igdeAction("Not", nullptr, "Negate Result"), pEditor(editor){}
+	igdeAction("@Igde.TriggerExpressionEditor.Action.Not", nullptr, "@Igde.TriggerExpressionEditor.Action.Not.ToolTip"), pEditor(editor){}
 	
 	void OnAction() override{
 		igdeTriggerExpressionComponent * const component = pEditor.GetSelectedComponent();
@@ -88,7 +88,7 @@ public:
 	using Ref = deTObjectReference<igdeTriggerExpressionEditor_ActionCurState>;
 	
 	igdeTriggerExpressionEditor_ActionCurState(igdeTriggerExpressionEditor &editor) :
-	igdeAction("Now", nullptr, "Check if target is triggered now or ever"), pEditor(editor){}
+	igdeAction("@Igde.TriggerExpressionEditor.Action.Now", nullptr, "@Igde.TriggerExpressionEditor.Action.Now.ToolTip"), pEditor(editor){}
 	
 	void OnAction() override{
 		igdeTriggerExpressionComponent * const component = pEditor.GetSelectedComponent();
@@ -113,7 +113,7 @@ public:
 	using Ref = deTObjectReference<igdeTriggerExpressionEditor_ActionAnd>;
 	
 	igdeTriggerExpressionEditor_ActionAnd(igdeTriggerExpressionEditor &editor) :
-	igdeAction("And", nullptr, "All children have to evaluate to true"), pEditor(editor){}
+	igdeAction("@Igde.TriggerExpressionEditor.Action.And", nullptr, "@Igde.TriggerExpressionEditor.Action.And.ToolTip"), pEditor(editor){}
 	
 	void OnAction() override{
 		igdeTriggerExpressionComponent * const component = pEditor.GetSelectedComponent();
@@ -137,7 +137,7 @@ public:
 	using Ref = deTObjectReference<igdeTriggerExpressionEditor_ActionOr>;
 	
 	igdeTriggerExpressionEditor_ActionOr(igdeTriggerExpressionEditor &editor) :
-	igdeAction("Or", nullptr, "One or more children have to evaluate to true"), pEditor(editor){}
+	igdeAction("@Igde.TriggerExpressionEditor.Action.Or", nullptr, "@Igde.TriggerExpressionEditor.Action.Or.ToolTip"), pEditor(editor){}
 	
 	void OnAction() override{
 		igdeTriggerExpressionComponent * const component = pEditor.GetSelectedComponent();
@@ -161,7 +161,7 @@ public:
 	using Ref = deTObjectReference<igdeTriggerExpressionEditor_ActionTarget>;
 	
 	igdeTriggerExpressionEditor_ActionTarget(igdeTriggerExpressionEditor &editor) :
-	igdeAction("Target", nullptr, "Target to evaluate"), pEditor(editor){}
+	igdeAction("@Igde.TriggerExpressionEditor.Action.Target", nullptr, "@Igde.TriggerExpressionEditor.Action.Target.ToolTip"), pEditor(editor){}
 	
 	void OnAction() override{
 		igdeTriggerExpressionComponent * const component = pEditor.GetSelectedComponent();
@@ -188,7 +188,7 @@ public:
 	
 	igdeTriggerExpressionEditor_ActionAddChild(igdeTriggerExpressionEditor &editor) :
 	igdeAction("", editor.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-	"Add child to list"), pEditor(editor){}
+	"@Igde.TriggerExpressionEditor.Action.AddChild.ToolTip"), pEditor(editor){}
 	
 	void OnAction() override{
 		igdeTriggerExpressionComponent * const component = pEditor.GetSelectedComponent();
@@ -212,7 +212,7 @@ public:
 	
 	igdeTriggerExpressionEditor_ActionRemoveChild(igdeTriggerExpressionEditor &editor) :
 	igdeAction("", editor.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-	"Remove child from list"), pEditor(editor){}
+	"@Igde.TriggerExpressionEditor.Action.RemoveChild.ToolTip"), pEditor(editor){}
 	
 	void OnAction() override{
 		igdeTriggerExpressionComponent * const component = pEditor.GetSelectedComponent();
@@ -431,7 +431,7 @@ void igdeTriggerExpressionEditor::RebuildTree(){
 			pWorkExpression = pParser->StringToExpression(pExpression);
 			
 		}catch(const deException &){
-			pTreeExpression->AppendItem(nullptr, "error",
+			pTreeExpression->AppendItem(nullptr, Translate("Igde.TriggerExpressionEditor.Error").ToUTF8(),
 				GetEnvironment().GetStockIcon(igdeEnvironment::esiWarning));
 		}
 	}
@@ -483,27 +483,27 @@ void igdeTriggerExpressionEditor::AddComponentToTree(igdeTreeItem *parent, igdeT
 		const int type = component->GetType();
 		
 		if(component->GetNegate()){
-			text += "not ";
+			text += Translate("Igde.TriggerExpressionEditor.Not").ToUTF8();
 		}
 		
 		switch(type){
 		case igdeTriggerExpressionComponent::ectTarget:
 			if(component->GetCurState()){
-				text +=  "fired '";
+				text += Translate("Igde.TriggerExpressionEditor.Fired").ToUTF8();
 				
 			}else{
-				text += "ever fired '";
+				text += Translate("Igde.TriggerExpressionEditor.EverFired").ToUTF8();
 			}
 			text += targetName;
 			text += "'";
 			break;
 			
 		case igdeTriggerExpressionComponent::ectAnd:
-			text += "All";
+			text += Translate("Igde.TriggerExpressionEditor.All").ToUTF8();
 			break;
 			
 		case igdeTriggerExpressionComponent::ectOr:
-			text += "One or more";
+			text += Translate("Igde.TriggerExpressionEditor.OneOrMore").ToUTF8();
 			break;
 			
 		default:
@@ -533,27 +533,27 @@ void igdeTriggerExpressionEditor::UpdateComponentInTree(igdeTreeItem *item, igde
 		const int type = component->GetType();
 		
 		if(component->GetNegate()){
-			text += "not ";
+			text += Translate("Igde.TriggerExpressionEditor.Not").ToUTF8();
 		}
 		
 		switch(type){
 		case igdeTriggerExpressionComponent::ectTarget:
 			if(component->GetCurState()){
-				text +=  "fired '";
+				text += Translate("Igde.TriggerExpressionEditor.Fired").ToUTF8();
 				
 			}else{
-				text += "ever fired '";
+				text += Translate("Igde.TriggerExpressionEditor.EverFired").ToUTF8();
 			}
 			text += targetName;
 			text += "'";
 			break;
 			
 		case igdeTriggerExpressionComponent::ectAnd:
-			text += "All";
+			text += Translate("Igde.TriggerExpressionEditor.All").ToUTF8();
 			break;
 			
 		case igdeTriggerExpressionComponent::ectOr:
-			text += "One or more";
+			text += Translate("Igde.TriggerExpressionEditor.OneOrMore").ToUTF8();
 			break;
 			
 		default:
@@ -689,7 +689,7 @@ void igdeTriggerExpressionEditor::pCreateContent(){
 	
 	// expression string
 	form = igdeContainerForm::Ref::New(env);
-	helper.EditString(form, "Expression:", "Trigger expression", 50,
+	helper.EditString(form, "@Igde.TriggerExpressionEditor.Expression.Label", "@Igde.TriggerExpressionEditor.Expression.ToolTip", 50,
 		pEditExpression, igdeTriggerExpressionEditor_TextExpression::Ref::New(*this));
 	AddChild(form);
 	
@@ -702,14 +702,14 @@ void igdeTriggerExpressionEditor::pCreateContent(){
 	panel = igdeContainerBox::Ref::New(env, igdeContainerBox::eaY);
 	panelContent->AddChild(panel, igdeContainerSplitted::eaCenter);
 	
-	helper.GroupBoxStaticFlow(panel, groupBox, "Structure:", true);
-	helper.TreeList(groupBox, pTreeExpression, 10, "Trigger expression structure", igdeTriggerExpressionEditor_TreeExpression::Ref::New(*this));
+	helper.GroupBoxStaticFlow(panel, groupBox, "@Igde.TriggerExpressionEditor.Structure.Label", true);
+	helper.TreeList(groupBox, pTreeExpression, 10, "@Igde.TriggerExpressionEditor.Structure.ToolTip", igdeTriggerExpressionEditor_TreeExpression::Ref::New(*this));
 	
 	// target list
 	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY, igdeContainerFlow::esLast);
 	panelContent->AddChild(panel, igdeContainerSplitted::eaSide);
 	
-	helper.GroupBoxStaticFlow(panel, groupBox, "Component Control:", false);
+	helper.GroupBoxStaticFlow(panel, groupBox, "@Igde.TriggerExpressionEditor.ComponentControl.Label", false);
 	panel2 = igdeContainerBox::Ref::New(env, igdeContainerBox::eaX);
 	groupBox->AddChild(panel2);
 	helper.ToggleButton(panel2, pBtnNegate, igdeTriggerExpressionEditor_ActionNegate::Ref::New(*this));
@@ -722,17 +722,17 @@ void igdeTriggerExpressionEditor::pCreateContent(){
 	helper.Button(panel2, pBtnAddChild, igdeTriggerExpressionEditor_ActionAddChild::Ref::New(*this));
 	helper.Button(panel2, pBtnRemoveChild, igdeTriggerExpressionEditor_ActionRemoveChild::Ref::New(*this));
 	
-	helper.GroupBoxStaticBorder(panel, groupBorder, "Target Name:", true);
+	helper.GroupBoxStaticBorder(panel, groupBorder, "@Igde.TriggerExpressionEditor.TargetName.Label", true);
 	
-	helper.EditString("Target name", pEditTargetName, igdeTriggerExpressionEditor_TextTargetName::Ref::New(*this));
+	helper.EditString("@Igde.TriggerExpressionEditor.TargetName.ToolTip", pEditTargetName, igdeTriggerExpressionEditor_TextTargetName::Ref::New(*this));
 	groupBorder->AddChild(pEditTargetName, igdeContainerBorder::eaTop);
 	
-	helper.ListBox(10, "Target names found in trigger table", pListTargetName, igdeTriggerExpressionEditor_ListTargets::Ref::New(*this, pEditTargetName));
+	helper.ListBox(10, "@Igde.TriggerExpressionEditor.TargetNameList.ToolTip", pListTargetName, igdeTriggerExpressionEditor_ListTargets::Ref::New(*this, pEditTargetName));
 	pListTargetName->SetDefaultSorter();
 	groupBorder->AddChild(pListTargetName, igdeContainerBorder::eaCenter);
 	
 	form = igdeContainerForm::Ref::New(env);
-	helper.EditString(form, "Filter:", "Filter for list of found target names", 20,
+	helper.EditString(form, "@Igde.TriggerExpressionEditor.FilterTargetName.Label", "@Igde.TriggerExpressionEditor.FilterTargetName.ToolTip", 20,
 		pEditFilterTargetName, igdeTriggerExpressionEditor_TextFilterTargetName::Ref::New(*this));
 	groupBorder->AddChild(form, igdeContainerBorder::eaBottom);
 }

@@ -78,7 +78,7 @@ pInvalidBackColor(igdeUIFoxHelper::BlendColor(pOrgBackColor, FXRGB(255, 0, 0), 0
 {
 	FXHorizontalFrame * const lineFilter = new FXHorizontalFrame(
 		pane, LAYOUT_FILL_X, 0, 0, 0, 0, 0, 0, 0, 0);
-	pLabelFilter = new FXLabel(lineFilter, "Filter:", nullptr, LABEL_NORMAL, 0, 0, 0, 0, 0, 2);
+	pLabelFilter = new FXLabel(lineFilter, pOwner->Translate("Igde.FoxComboBoxFilter.Filter").ToUTF8().GetString(), nullptr, LABEL_NORMAL, 0, 0, 0, 0, 0, 2);
 	pLabelFilter->setJustify(JUSTIFY_LEFT | JUSTIFY_CENTER_Y);
 	pEditFilter = new FXTextField(lineFilter, 5, this, ID_EDIT_FILTER, FRAME_SUNKEN | LAYOUT_FILL_X);
 	

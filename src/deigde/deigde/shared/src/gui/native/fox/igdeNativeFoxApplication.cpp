@@ -30,6 +30,7 @@
 #include <stdint.h>
 
 #include "igdeNativeFoxApplication.h"
+#include "igdeNativeFoxCommonDialogs.h"
 #include "../../igdeApplication.h"
 #include "../../igdeMainWindow.h"
 #include "../../igdeWindow.h"
@@ -291,7 +292,13 @@ void igdeNativeFoxApplication::GetAppFontConfig(igdeFont::sConfiguration &config
 
 void igdeNativeFoxApplication::ShowError(const deException &exception) const{
 	const decString foxMessage(DEJoin(exception.FormatOutput(), "\n"));
-	FXMessageBox::error(FXApp::instance(), FX::MBOX_OK, "Application Error", "%s", foxMessage.GetString());
+	if(pOwner->GetMainWindow() && pOwner->GetMainWindow()->GetNativeWidget()){
+		igdeNativeFoxCommonDialogs::Message(*pOwner->GetMainWindow(), igdeCommonDialogs::ebsOk,
+			igdeCommonDialogs::eiError, "@Igde.FoxApplication.Error.Title", foxMessage.GetString());
+		
+	}else{
+		igdeNativeFoxCommonDialogs::FatalError("Application Error", foxMessage.GetString());
+	}
 }
 
 void igdeNativeFoxApplication::RunModalWhileShown(igdeWindow &window){

@@ -59,7 +59,8 @@ pProgressFactor(0.0f),
 pReloadXMLElementClasses(false)
 {
 	try{
-		SetMessage("Reloading Project Game Definition");
+		SetMessage(pWindowMain.GetEnvironment().GetTranslationManager().
+			Translate("Igde.Task.ReloadProjectGameDefinition").ToUTF8());
 		
 		windowMain.SetProgressVisible(true);
 		windowMain.SetProgress(0.0f);

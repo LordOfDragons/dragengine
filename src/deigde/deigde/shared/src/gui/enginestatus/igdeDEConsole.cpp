@@ -78,15 +78,15 @@ pLog(1000)
 	igdeUIHelper &helper = env.GetUIHelper();
 	
 	
-	helper.EditString(*this, "Console Logs", pEditLogs, 10, {});
+	helper.EditString(*this, "@Igde.DEConsole.Logs.ToolTip", pEditLogs, 10, {});
 	
 	igdeContainerFlow::Ref line(igdeContainerFlow::Ref::New(
 		env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst));
 	AddChild(line);
 	
-	helper.EditString(line, "Command to send", pEditCommand, igdeDEConsole_TextCommand::Ref::New(*this));
+	helper.EditString(line, "@Igde.DEConsole.Command.ToolTip", pEditCommand, igdeDEConsole_TextCommand::Ref::New(*this));
 	
-	helper.ComboBox(line, "Module to send command to", pCBModule, {});
+	helper.ComboBox(line, "@Igde.DEConsole.Module.ToolTip", pCBModule, {});
 	pCBModule->SetDefaultSorter();
 	
 	

@@ -196,13 +196,12 @@ void igdeNativeFoxFileDialog::UpdateFileTypeBox(){
 		decString text;
 		
 		pFilePatternList->Visit([&](const igdeFilePattern &fp){
-			text.Format("%s (%s)", igdeUIFoxHelper::TranslateIf(*pOwner, fp.GetName()).text(),
-				fp.GetPattern().GetString());
+			text.FormatSafe("{0} ({1})", pOwner->TranslateIf(fp.GetName()).ToUTF8(), fp.GetPattern());
 			pCBFilter->appendItem(text.GetString());
 		});
 	}
 	
-	pCBFilter->appendItem("All Files (*)");
+	pCBFilter->appendItem(pOwner->Translate("Igde.FoxFileDialog.AllFiles").ToUTF8().GetString());
 	
 	if(pFilePatternList->IsNotEmpty()){
 		pList->SetPattern(pFilePatternList->First()->GetPattern());
@@ -294,10 +293,10 @@ long igdeNativeFoxFileDialog::onBtnGoRoot(FXObject*, FXSelector, void*){
 }
 
 long igdeNativeFoxFileDialog::onBtnMkDir(FXObject*, FXSelector, void*){
-	FXString dirname("Directory");
+	FXString dirname(pOwner->Translate("Igde.FoxFileDialog.CreateDirectory.Default").ToUTF8().GetString());
 	
 	while(true){
-		if(!FXInputDialog::getString(dirname, this, "Create directory", "Name:", nullptr)){
+		if(!FXInputDialog::getString(dirname, this, pOwner->Translate("Igde.FoxFileDialog.CreateDirectory").ToUTF8().GetString(), pOwner->Translate("Igde.FoxFileDialog.CreateDirectory.Name").ToUTF8().GetString(), nullptr)){
 			return 0;
 		}
 		
@@ -306,12 +305,12 @@ long igdeNativeFoxFileDialog::onBtnMkDir(FXObject*, FXSelector, void*){
 			path.AddComponent(dirname.text());
 			
 			if(pVFS->ExistsFile(path)){
-				FXMessageBox::information(this, MBOX_OK, "Create directory",
-					"There exists already file with this name.");
+				FXMessageBox::information(this, MBOX_OK, pOwner->Translate("Igde.FoxFileDialog.CreateDirectory").ToUTF8().GetString(),
+					pOwner->Translate("Igde.FoxFileDialog.CreateDirectory.ErrorExists").ToUTF8().GetString());
 				
 			}else if(!pVFS->CanWriteFile(path)){
-				FXMessageBox::information(this, MBOX_OK, "Create directory",
-					"Can not create directory here: Read-only VFS container.");
+				FXMessageBox::information(this, MBOX_OK, pOwner->Translate("Igde.FoxFileDialog.CreateDirectory").ToUTF8().GetString(),
+					pOwner->Translate("Igde.FoxFileDialog.CreateDirectory.ErrorReadOnly").ToUTF8().GetString());
 				
 			}else{
 				break;
@@ -498,7 +497,7 @@ void igdeNativeFoxFileDialog::pCreateDialog(){
 	FXHorizontalFrame *frameNav = new FXHorizontalFrame(content, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
 		0, 0, 0, 0, DEFAULT_SPACING, DEFAULT_SPACING, DEFAULT_SPACING, DEFAULT_SPACING, 0, 0);
 	
-	new FXLabel(frameNav, "Directory:", nullptr, LAYOUT_CENTER_Y);
+	new FXLabel(frameNav, pOwner->Translate("Igde.FoxFileDialog.Directory").ToUTF8().GetString(), nullptr, LAYOUT_CENTER_Y);
 	pCBDirectory = new igdeNativeFoxVFSDirectoryBox(pVFS, frameNav, this, ID_CBDIRECTORY, DIRBOX_NO_OWN_ASSOC
 		| FRAME_SUNKEN | FRAME_THICK | LAYOUT_FILL_X | LAYOUT_CENTER_Y, 0, 0, 0, 0, 1, 1, 1, 1);
 	pCBDirectory->setNumVisible(5);
@@ -535,11 +534,11 @@ void igdeNativeFoxFileDialog::pCreateDialog(){
 	new FXButton(entryBlock, "&OK", nullptr, this, ID_ACCEPT, BUTTON_INITIAL | BUTTON_DEFAULT
 		| FRAME_RAISED | FRAME_THICK | LAYOUT_FILL_X, 0, 0, 0, 0, 20, 20);
 	
-	new FXLabel(entryBlock, "File F&ilter:", nullptr, JUSTIFY_LEFT | LAYOUT_CENTER_Y);
+	new FXLabel(entryBlock, pOwner->Translate("Igde.FoxFileDialog.FileFilter").ToUTF8().GetString(), nullptr, JUSTIFY_LEFT | LAYOUT_CENTER_Y);
 	pCBFilter = new FXComboBox(entryBlock, 10, this, ID_CBFILTER, COMBOBOX_STATIC
 		| LAYOUT_FILL_COLUMN | LAYOUT_FILL_X | FRAME_SUNKEN | FRAME_THICK);
 	pCBFilter->setNumVisible(4);
-	pCBFilter->appendItem("All Files (*)");
+	pCBFilter->appendItem(pOwner->Translate("Igde.FoxFileDialog.AllFiles").ToUTF8().GetString());
 	new FXButton(entryBlock, "&Cancel", nullptr, this, ID_CANCEL, BUTTON_DEFAULT | FRAME_RAISED
 		| FRAME_THICK | LAYOUT_FILL_X, 0, 0, 0, 0, 20, 20);
 	

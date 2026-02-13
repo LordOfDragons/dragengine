@@ -43,7 +43,7 @@ public:
 	/*@{*/
 	/** \brief Create dialog. */
 	igdeDialogBrowserObjectClass(igdeEnvironment &environment,
-		const char *title = "Select Object Class");
+		const char *title = "@Igde.DialogBrowser.ObjectClass.DefaultTitle");
 	
 protected:
 	/** \brief Clean up selection dialog. */
@@ -65,11 +65,11 @@ public:
 	
 	/** \brief Convenience method to select object class. */
 	static bool SelectObjectClass(igdeWidget *owner, igdeGDClass* &objectClass,
-		const char *title = "Select Object Class");
+		const char *title = "@Igde.DialogBrowser.ObjectClass.DefaultTitle");
 	
 	/** \brief Convenience method to select object class. */
 	static bool SelectObjectClass(igdeWidget *owner, decString &objectClass,
-		const char *title = "Select Object Class");
+		const char *title = "@Igde.DialogBrowser.ObjectClass.DefaultTitle");
 	/*@}*/
 	
 	

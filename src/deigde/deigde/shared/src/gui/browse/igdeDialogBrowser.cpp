@@ -142,7 +142,7 @@ public:
 	using Ref = deTObjectReference<igdeDialogBrowser_ActionPIRebuild>;
 	
 	igdeDialogBrowser_ActionPIRebuild(igdeDialogBrowser &dialog) : igdeAction(
-		"Rebuild Preview", nullptr, "Rebuild Preview"), pDialog(dialog){}
+		"@Igde.DialogBrowser.Action.RebuildPreview", nullptr, "@Igde.DialogBrowser.Action.RebuildPreview.ToolTip"), pDialog(dialog){}
 	
 	void OnAction() override{
 		pDialog.RebuildPISelectedItem();
@@ -204,16 +204,16 @@ pViewMode(evmPreview)
 	SetSize(igdeApplication::app().DisplayScaled(decPoint(1000, 600)));
 	
 	pActionPISizeSmall = igdeDialogBrowser_ActionPreviewSize::Ref::New(*this, epsSmall,
-		"Small Preview Image", nullptr, "Small Preview Image");
+		"@Igde.DialogBrowser.Action.SmallPreviewImage", nullptr, "@Igde.DialogBrowser.Action.SmallPreviewImage.ToolTip");
 	pActionPISizeMedium = igdeDialogBrowser_ActionPreviewSize::Ref::New(*this, epsMedium,
-		"Medium Preview Image", nullptr, "Medium Preview Image");
+		"@Igde.DialogBrowser.Action.MediumPreviewImage", nullptr, "@Igde.DialogBrowser.Action.MediumPreviewImage.ToolTip");
 	pActionPISizeLarge = igdeDialogBrowser_ActionPreviewSize::Ref::New(*this, epsLarge,
-		"Large Preview Image", nullptr, "Large Preview Image");
+		"@Igde.DialogBrowser.Action.LargePreviewImage", nullptr, "@Igde.DialogBrowser.Action.LargePreviewImage.ToolTip");
 	
 	pActionPIViewList = igdeDialogBrowser_ActionViewMode::Ref::New(*this, evmList,
-		"List Mode", nullptr, "List Mode");
+		"@Igde.DialogBrowser.Action.ListMode", nullptr, "@Igde.DialogBrowser.Action.ListMode.ToolTip");
 	pActionPIViewPreview = igdeDialogBrowser_ActionViewMode::Ref::New(*this, evmPreview,
-		"Preview Mode", nullptr, "Preview Mode");
+		"@Igde.DialogBrowser.Action.PreviewMode", nullptr, "@Igde.DialogBrowser.Action.PreviewMode.ToolTip");
 	
 	
 	igdeContainerSplitted::Ref content(igdeContainerSplitted::Ref::New(
@@ -224,11 +224,11 @@ pViewMode(evmPreview)
 		environment, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 3));
 	
 	igdeContainerForm::Ref filterLine(igdeContainerForm::Ref::New(environment));
-	helper.EditString(filterLine, "Filter:", "Show items containing filter case insensitive",
+	helper.EditString(filterLine, "@Igde.DialogBrowser.Filter.Label", "@Igde.DialogBrowser.Filter.ToolTip",
 		pEditFilter, igdeDialogBrowser_TextFilter::Ref::New(*this));
 	panelCategory->AddChild(filterLine);
 	
-	helper.TreeList(panelCategory, pTreeCategories, 10, "Categories", igdeDialogBrowser_TreeCategories::Ref::New(*this));
+	helper.TreeList(panelCategory, pTreeCategories, 10, "@Igde.DialogBrowser.Categories.ToolTip", igdeDialogBrowser_TreeCategories::Ref::New(*this));
 	pTreeCategories->SetDefaultSorter();
 	
 	content->AddChild(panelCategory, igdeContainerSplitted::eaSide);
@@ -238,15 +238,15 @@ pViewMode(evmPreview)
 		environment, igdeContainerFlow::eaY, igdeContainerFlow::esFirst, 3));
 	
 	const igdeUIHelper::sColumnHeader headers[] = {
-		igdeUIHelper::sColumnHeader("Name", nullptr, igdeApplication::app().DisplayScaled(200))
+		igdeUIHelper::sColumnHeader("@Igde.DialogBrowser.Items.ColumnName", nullptr, igdeApplication::app().DisplayScaled(200))
 	};
 	helper.IconListBox(panelItems, pListItems,
 		igdeApplication::app().DisplayScaled(decPoint(100, 200)),
-		headers, 1, "Items", igdeDialogBrowser_ListItems::Ref::New(*this));
+		headers, 1, "@Igde.DialogBrowser.Items.ToolTip", igdeDialogBrowser_ListItems::Ref::New(*this));
 	pListItems->SetDefaultSorter();
 	pListItems->SetViewMode(igdeIconListBox::evmIconVertical);
 	
-	helper.EditString(panelItems, "Item information", pEditInfos, 50, 5, {});
+	helper.EditString(panelItems, "@Igde.DialogBrowser.Information.ToolTip", pEditInfos, 50, 5, {});
 	pEditInfos->SetEditable(false);
 	
 	content->AddChild(panelItems, igdeContainerSplitted::eaCenter);
@@ -254,7 +254,7 @@ pViewMode(evmPreview)
 	
 	// buttons at bottom
 	igdeContainer::Ref buttonBar;
-	CreateButtonBar(buttonBar, "Accept", "Discard");
+	CreateButtonBar(buttonBar, "@Igde.Accept", "@Igde.Discard");
 	
 	AddContent(content, buttonBar);
 }

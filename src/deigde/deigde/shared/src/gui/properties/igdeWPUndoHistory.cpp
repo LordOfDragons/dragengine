@@ -58,7 +58,7 @@ pUndoSystem(nullptr)
 	igdeUIHelper &helper = environment.GetUIHelperProperties();
 	
 	// group box
-	igdeGroupBox::Ref groupBoxFrame(igdeGroupBox::Ref::New(environment, "Undo History:"));
+	igdeGroupBox::Ref groupBoxFrame(igdeGroupBox::Ref::New(environment, "@Igde.WPUndoHistory.Label"));
 	groupBoxFrame->SetStretchLast(true);
 	AddChild(groupBoxFrame);
 	

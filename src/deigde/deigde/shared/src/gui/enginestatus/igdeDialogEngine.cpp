@@ -44,7 +44,7 @@
 ////////////////////////////
 
 igdeDialogEngine::igdeDialogEngine(igdeMainWindow &mainWindow) :
-igdeDialog(mainWindow.GetEnvironment(), "Engine Control Center"),
+igdeDialog(mainWindow.GetEnvironment(), "@Igde.DialogEngine.Title"),
 pMainWindow(mainWindow)
 {
 	igdeEnvironment &environment = mainWindow.GetEnvironment();
@@ -55,20 +55,20 @@ pMainWindow(mainWindow)
 	pTabPanels = igdeTabBook::Ref::New(environment);
 	
 	panel = igdeDEStatus::Ref::New(*this);
-	pTabPanels->AddChild(panel, "Engine Status");
+	pTabPanels->AddChild(panel, "@Igde.DialogEngine.TabEngineStatus");
 	
 	panel = igdeDEModuleStatus::Ref::New(*this);
-	pTabPanels->AddChild(panel, "Module Status");
+	pTabPanels->AddChild(panel, "@Igde.DialogEngine.TabModuleStatus");
 	
 	panel = igdeDEParameters::Ref::New(*this);
-	pTabPanels->AddChild(panel, "Parameters");
+	pTabPanels->AddChild(panel, "@Igde.DialogEngine.TabParameters");
 	
 	panel = igdeDEConsole::Ref::New(*this);
-	pTabPanels->AddChild(panel, "Console");
+	pTabPanels->AddChild(panel, "@Igde.DialogEngine.TabConsole");
 	
 	
 	igdeContainer::Ref buttonBar;
-	CreateButtonBar(buttonBar, "Close");
+	CreateButtonBar(buttonBar, "@Igde.Close");
 	
 	AddContent(pTabPanels, buttonBar);
 }

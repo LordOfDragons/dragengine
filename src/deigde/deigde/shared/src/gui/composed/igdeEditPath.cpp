@@ -129,8 +129,8 @@ igdeActionSelectFile(editPath.GetEnvironment(),
 pEditPath(editPath),
 pUseRelativePath(false)
 {
-	SetText("Select From File...");
-	SetDescription("Select From File");
+	SetText("@Igde.EditPath.Action.SelectFromFile");
+	SetDescription("@Igde.EditPath.Action.SelectFromFile.ToolTip");
 }
 
 igdeEditPath::cActionSelectFileDialog::~cActionSelectFileDialog(){
@@ -174,7 +174,7 @@ decString igdeEditPath::cActionSelectFileDialog::DefaultPath(){
 ////////////////////////////////////////////////
 
 igdeEditPath::cActionSkinSelectDialog::cActionSkinSelectDialog(igdeEditPath &editPath) :
-igdeAction("Select From Skin List...", "Select From Skin List"),
+igdeAction("@Igde.EditPath.Action.SelectFromSkinList", "@Igde.EditPath.Action.SelectFromSkinList.ToolTip"),
 pEditPath(editPath){
 }
 
@@ -221,8 +221,8 @@ void igdeEditPath::cActionSkinSelectDialog::OnAction(){
 //////////////////////////////////////////
 
 igdeEditPath::cActionBrowseFile::cActionBrowseFile(igdeEditPath &editPath) :
-igdeAction("Browse Directory...", editPath.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
-	"Open file system browser with directory containing file"),
+igdeAction("@Igde.EditPath.Action.BrowseDirectory", editPath.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
+	"@Igde.EditPath.Action.BrowseDirectory.ToolTip"),
 pEditPath(editPath){
 }
 
@@ -243,8 +243,8 @@ void igdeEditPath::cActionBrowseFile::Update(){
 ///////////////////////////////////////////////
 
 igdeEditPath::cActionConvertAbsolute::cActionConvertAbsolute(igdeEditPath &editPath) :
-igdeAction("To Absolute Path", editPath.GetEnvironment().GetStockIcon(igdeEnvironment::esiRight),
-	"Convert path to absolute path"),
+igdeAction("@Igde.EditPath.Action.ToAbsolutePath", editPath.GetEnvironment().GetStockIcon(igdeEnvironment::esiRight),
+	"@Igde.EditPath.Action.ToAbsolutePath.ToolTip"),
 pEditPath(editPath){
 }
 
@@ -272,8 +272,8 @@ void igdeEditPath::cActionConvertAbsolute::Update(){
 ///////////////////////////////////////////////
 
 igdeEditPath::cActionConvertRelative::cActionConvertRelative(igdeEditPath &editPath) :
-igdeAction("To Relative Path", editPath.GetEnvironment().GetStockIcon(igdeEnvironment::esiLeft),
-	"Convert path to relative path"),
+igdeAction("@Igde.EditPath.Action.ToRelativePath", editPath.GetEnvironment().GetStockIcon(igdeEnvironment::esiLeft),
+	"@Igde.EditPath.Action.ToRelativePath.ToolTip"),
 pEditPath(editPath){
 }
 

@@ -160,7 +160,7 @@ public:
 	void OnAction() override{
 		// RequestSaveDocuments returns true if user wants to continue creating a new project.
 		// this can mean to save the documents first or to not save them first.
-		if(pWindow.RequestSaveDocuments("New Game Project", nullptr)){
+		if(pWindow.RequestSaveDocuments("@Igde.MainWindow.RequestSave.NewGameProject", nullptr)){
 			pWindow.CreateNewGameProject();
 		}
 	}
@@ -177,7 +177,7 @@ public:
 	void OnAction() override{
 		// RequestSaveDocuments returns true if user wants to continue creating open a project.
 		// this can mean to save the documents first or to not save them first.
-		if(!pWindow.RequestSaveDocuments("Open Game Project", nullptr)){
+		if(!pWindow.RequestSaveDocuments("@Igde.MainWindow.RequestSave.OpenGameProject", nullptr)){
 			return;
 		}
 		
@@ -216,7 +216,7 @@ public:
 	void OnAction() override{
 		// RequestSaveDocuments returns true if user wants to continue creating open a project.
 		// this can mean to save the documents first or to not save them first.
-		if(pWindow.RequestSaveDocuments("Open Game Project", nullptr)){
+		if(pWindow.RequestSaveDocuments("@Igde.MainWindow.RequestSave.OpenGameProject", nullptr)){
 			// WARNING loading a game does change the recent games menu. to avoid troubles
 			//         the filename is safe-guarded locally to not cause trashed memory
 			const decString filename(pFilename);
@@ -393,9 +393,10 @@ class cActionWindowEditor : public cActionBase{
 private:
 	igdeEditorModuleDefinition &pModule;
 	
-	static decString BuildDescription(const igdeEditorModuleDefinition &module){
+	static decString BuildDescription(igdeWindowMain &window, const igdeEditorModuleDefinition &module){
 		decString text;
-		text.Format("Switch to %s", module.GetName().GetString());
+		text.FormatSafe(window.GetEnvironment().GetTranslationManager().
+			Translate("Igde.MainWindow.Action.WindowEditor.Description").ToUTF8(), module.GetName());
 		return text;
 	}
 	
@@ -403,7 +404,7 @@ public:
 	typedef deTObjectReference<cActionWindowEditor> Ref;
 	
 	cActionWindowEditor(igdeWindowMain &window, igdeEditorModuleDefinition &module, bool smallIcon = true) :
-	cActionBase(window, module.GetName(), nullptr, BuildDescription(module)),
+	cActionBase(window, module.GetName(), nullptr, BuildDescription(window, module)),
 	pModule(module){
 		igdeIcon::Ref icon;
 		const decString &path = smallIcon || module.GetIconLarge().IsEmpty() ? module.GetIconSmall() : module.GetIconLarge();
@@ -809,12 +810,12 @@ bool igdeWindowMain::LoadGameProject(const char *filename){
 	}catch(const deException &e){
 		GetLogger()->LogException(LOGSOURCE, e);
 		igdeCommonDialogs::ErrorFormat(*this, "@Igde.MainWindow.DialogOpenProject.Title",
-			"Failed loading game project: {0}", e.GetDescription().GetString());
+			"@Igde.MainWindow.ErrorLoadFailed", e.GetDescription().GetString());
 		
 		const int index = pConfiguration.GetRecentProjectList().IndexOf(filename);
 		if(index != -1){
 			if(igdeCommonDialogs::Question(*this, igdeCommonDialogs::ebsYesNo, "@Igde.MainWindow.DialogOpenProject.Title",
-			"Remove game project from recent file list?") == igdeCommonDialogs::ebYes){
+			"@Igde.MainWindow.RemoveRecentConfirm") == igdeCommonDialogs::ebYes){
 				pConfiguration.GetRecentProjectList().RemoveFrom(index);
 				pConfiguration.SaveConfiguration();
 				UpdateRecentProjectMenu();
@@ -860,13 +861,13 @@ void igdeWindowMain::AddRecentGameProject(const char *filename){
 
 igdeGameDefinition::Ref igdeWindowMain::CreateNewGameDefinition(){
 	decPath pathGameDef(decPath::CreatePathNative(pConfiguration.GetPathShares()));
-	pathGameDef.AddComponent("newproject.degd");
+	pathGameDef.AddComponent(Translate("Igde.NewGameProject.DefaultGameProject").ToUTF8() + ".degd");
 	
 	const igdeGameDefinition::Ref gamedef(igdeGameDefinition::Ref::New(pEnvironmentIGDE));
 	gamedef->SetFilename(pathGameDef.GetPathNative());
 	
 	decPath pathProjectDir(decPath::CreatePathNative(pConfiguration.GetPathProjects()));
-	pathProjectDir.AddComponent("newproject");
+	pathProjectDir.AddComponent(Translate("Igde.NewGameProject.DefaultProjectDir").ToUTF8());
 	gamedef->SetBasePath(pathProjectDir.GetPathNative());
 	
 	igdeXMLGameDefinition(pEnvironmentIGDE, GetLogger()).Load(
@@ -1054,7 +1055,7 @@ void igdeWindowMain::ChangeLanguage(const decString &language){
 	// with all base IGDE language packs matching the selected language
 	pTranslationManager->SetActiveLanguage(language);
 	
-	if(language != "en"){
+	if(language != igdeTranslationManager::FallbackLanguage){
 		// add english language pack from all active modules as fallback for missing translations
 		pModuleManager->GetModules().Visit([&](igdeEditorModuleDefinition &md){
 			if(md.IsModuleRunning()){
@@ -1175,7 +1176,7 @@ void igdeWindowMain::OnAfterEngineStop(){
 bool igdeWindowMain::QuitRequest(){
 	// RequestSaveDocuments returns true if user wants to continue closing the application.
 	// this can mean to save the documents first or to not save them first.
-	return RequestSaveDocuments("Quit", nullptr);
+	return RequestSaveDocuments("@Igde.MainWindow.RequestSave.Quit", nullptr);
 }
 
 
@@ -1437,7 +1438,8 @@ bool igdeWindowMain::RequestSaveDocuments(const char *title, const char *message
 			text = message;
 			
 		}else{
-			text = "Unsaved changes in game project";
+			text = GetEnvironment().GetTranslationManager().
+				Translate("Igde.MainWindow.RequestSave.UnsavedChanges").ToUTF8();
 		}
 		text += "\n\n";
 		
@@ -1464,7 +1466,7 @@ bool igdeWindowMain::RequestSaveDocuments(const char *title, const char *message
 		const decStringList parts(document.Split(':'));
 		
 		if(parts.GetCount() != 2){
-			igdeCommonDialogs::Error(*this, title, "Internal error");
+			igdeCommonDialogs::Error(*this, title, "@Igde.MainWindow.ErrorInternal");
 			return false;
 		}
 		
@@ -1474,7 +1476,7 @@ bool igdeWindowMain::RequestSaveDocuments(const char *title, const char *message
 		
 		if(!moduleDefinition || !moduleDefinition->IsModuleRunning()
 		|| !moduleDefinition->GetModule()->SaveDocument(docfile)){
-			igdeCommonDialogs::ErrorFormat(*this, title, "Failed to save '{0}'", docfile.GetString());
+			igdeCommonDialogs::ErrorFormat(*this, title, "@Igde.MainWindow.ErrorSaveFailed", docfile.GetString());
 			return false;
 		}
 	}

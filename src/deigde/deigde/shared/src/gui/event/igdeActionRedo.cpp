@@ -42,9 +42,9 @@
 
 igdeActionRedo::igdeActionRedo(igdeEnvironment &environment, igdeUndoSystem *undoSystem) :
 igdeAction(
-	"Redo",
+	"@Igde.Action.Redo",
 	environment.GetStockIcon(igdeEnvironment::esiRedo),
-	"Redo last action",
+	"@Igde.Action.Redo.ToolTip",
 	deInputEvent::ekcR,
 	igdeHotKey(deInputEvent::esmControl, deInputEvent::ekcY)),
 pEnvironment(environment),

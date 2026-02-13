@@ -53,7 +53,7 @@ public:
 	/*@{*/
 	/** \brief Create dialog. */
 	igdeTriggerExpressionDialog(igdeEnvironment &environment, const igdeTriggerTargetList &targetList,
-		igdeTriggerExpressionParser &parser, const char *title = "Edit Trigger Expression");
+		igdeTriggerExpressionParser &parser, const char *title = "@Igde.TriggerExpressionDialog.DefaultTitle");
 	
 	
 	

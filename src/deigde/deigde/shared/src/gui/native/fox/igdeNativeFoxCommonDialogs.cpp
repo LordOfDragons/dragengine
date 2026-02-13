@@ -81,9 +81,8 @@ const char *title, const char *text){
 	FXWindow * const foxOwner = (FXWindow*)owner.GetNativeWidget();
 	int foxResult;
 	
-	const igdeTranslationManager &tm = owner.GetEnvironment().GetTranslationManager();
-	const decString ttitle(tm.TranslateIf(decUnicodeString::NewFromUTF8(title)).ToUTF8());
-	const decString ttext(tm.TranslateIf(decUnicodeString::NewFromUTF8(text)).ToUTF8());
+	const decString ttitle(owner.TranslateIf(title).ToUTF8());
+	const decString ttext(owner.TranslateIf(text).ToUTF8());
 	
 	switch(icon){
 	case igdeCommonDialogs::eiQuestion:

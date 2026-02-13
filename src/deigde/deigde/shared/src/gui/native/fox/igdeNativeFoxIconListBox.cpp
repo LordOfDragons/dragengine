@@ -319,7 +319,7 @@ void igdeNativeFoxIconListBox::UpdateHeader(){
 	nativeHeader.clearItems();
 	
 	pOwner->GetHeaders().Visit([&](const igdeListHeader &h){
-		nativeHeader.appendItem(h.GetTitle().GetString(),
+		nativeHeader.appendItem(igdeUIFoxHelper::TranslateIf(*pOwner, h.GetTitle()),
 			h.GetIcon() ? (FXIcon*)h.GetIcon()->GetNativeIcon() : nullptr, h.GetSize());
 	});
 }

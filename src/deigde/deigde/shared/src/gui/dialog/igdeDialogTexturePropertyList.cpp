@@ -66,7 +66,7 @@ public:
 ////////////////////////////
 
 igdeDialogTexturePropertyList::igdeDialogTexturePropertyList(igdeEnvironment &environment) :
-igdeDialog(environment, "Texture Property List"){
+igdeDialog(environment, "@Igde.DialogTexturePropertyList.Title"){
 	igdeUIHelper &helper = environment.GetUIHelper();
 	
 	SetSize(igdeApplication::app().DisplayScaled(decPoint(1000, 500)));
@@ -74,7 +74,7 @@ igdeDialog(environment, "Texture Property List"){
 	igdeContainerSplitted::Ref content(igdeContainerSplitted::Ref::New(
 		environment, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(300)));
 	
-	helper.ListBox(15, "Textue Property", pListProperties, igdeDialogTexturePropertyList_ListBox::Ref::New(*this));
+	helper.ListBox(15, "@Igde.DialogTexturePropertyList.Properties.ToolTip", pListProperties, igdeDialogTexturePropertyList_ListBox::Ref::New(*this));
 	pListProperties->SetDefaultSorter();
 	content->AddChild(pListProperties, igdeContainerSplitted::eaSide);
 	
@@ -82,27 +82,27 @@ igdeDialog(environment, "Texture Property List"){
 		environment, igdeContainerForm::esLast));
 	content->AddChild(form, igdeContainerSplitted::eaCenter);
 	
-	helper.EditString(form, "Name:", "Property name", pEditName, {});
+	helper.EditString(form, "@Igde.DialogTexturePropertyList.Name.Label", "@Igde.DialogTexturePropertyList.Name.ToolTip", pEditName, {});
 	pEditName->SetEditable(false);
 	
-	helper.EditString(form, "Type:", "Property type", pEditType, {});
+	helper.EditString(form, "@Igde.DialogTexturePropertyList.Type.Label", "@Igde.DialogTexturePropertyList.Type.ToolTip", pEditType, {});
 	pEditType->SetEditable(false);
 	
-	helper.EditString(form, "Components:", "Used color components", pEditComponentCount, {});
+	helper.EditString(form, "@Igde.DialogTexturePropertyList.Components.Label", "@Igde.DialogTexturePropertyList.Components.ToolTip", pEditComponentCount, {});
 	pEditComponentCount->SetEditable(false);
 	
-	helper.EditString(form, "Default Value:", "Default value", pEditDefault, {});
+	helper.EditString(form, "@Igde.DialogTexturePropertyList.DefaultValue.Label", "@Igde.DialogTexturePropertyList.DefaultValue.ToolTip", pEditDefault, {});
 	pEditDefault->SetEditable(false);
 	
-	helper.EditString(form, "Affects:", "Modules affected by property", pEditAffectedModules, {});
+	helper.EditString(form, "@Igde.DialogTexturePropertyList.Affects.Label", "@Igde.DialogTexturePropertyList.Affects.ToolTip", pEditAffectedModules, {});
 	pEditAffectedModules->SetEditable(false);
 	
-	helper.EditString(form, "Description:", "Property description", pEditDescription, 40, 5, {});
+	helper.EditString(form, "@Igde.DialogTexturePropertyList.Description.Label", "@Igde.DialogTexturePropertyList.Description.ToolTip", pEditDescription, 40, 5, {});
 	pEditDescription->SetEditable(false);
 	
 	
 	igdeContainer::Ref buttonBar;
-	CreateButtonBar(buttonBar, "Close");
+	CreateButtonBar(buttonBar, "@Igde.Close");
 	
 	AddContent(content, buttonBar);
 	
@@ -144,17 +144,15 @@ void igdeDialogTexturePropertyList::UpdateProperty(){
 		
 		switch(property->GetType()){
 		case igdeTextureProperty::eptValue:
-			pEditType->SetText("Value");
-			break;
-			
-		case igdeTextureProperty::eptColor:
-			pEditType->SetText("Color");
-			break;
-			
-		case igdeTextureProperty::eptImage:
-			pEditType->SetText("Image");
-			break;
-			
+		pEditType->SetText(Translate("Igde.DialogTexturePropertyList.Type.Value").ToUTF8());
+		break;
+		
+	case igdeTextureProperty::eptColor:
+		pEditType->SetText(Translate("Igde.DialogTexturePropertyList.Type.Color").ToUTF8());
+		break;
+		
+	case igdeTextureProperty::eptImage:
+		pEditType->SetText(Translate("Igde.DialogTexturePropertyList.Type.Image").ToUTF8());
 		default:
 			pEditType->SetText("?");
 		}

@@ -43,7 +43,7 @@ public:
 	/*@{*/
 	/** \brief Create dialog. */
 	igdeDialogBrowserSky(igdeEnvironment &environment,
-		const char *title = "Select Object Class", bool canResize = true);
+		const char *title = "@Igde.DialogBrowser.Sky.DefaultTitle", bool canResize = true);
 	
 protected:
 	/** \brief Clean up selection dialog. */
@@ -64,10 +64,10 @@ public:
 	
 	
 	/** \brief Convenience method to select sky. */
-	static bool SelectSky(igdeWidget *owner, igdeGDSky* &sky, const char *title = "Select Sky");
+	static bool SelectSky(igdeWidget *owner, igdeGDSky* &sky, const char *title = "@Igde.DialogBrowser.Sky.DefaultTitle");
 	
 	/** \brief Convenience method to select sky. */
-	static bool SelectSky(igdeWidget *owner, decString &sky, const char *title = "Select Sky");
+	static bool SelectSky(igdeWidget *owner, decString &sky, const char *title = "@Igde.DialogBrowser.Sky.DefaultTitle");
 	/*@}*/
 	
 	

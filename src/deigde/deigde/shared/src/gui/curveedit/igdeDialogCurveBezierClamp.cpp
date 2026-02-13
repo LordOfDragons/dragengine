@@ -43,14 +43,14 @@
 ////////////////////////////
 
 igdeDialogCurveBezierClamp::igdeDialogCurveBezierClamp(igdeEnvironment &environment) :
-igdeDialog(environment, "Clamp Curve")
+igdeDialog(environment, "@Igde.DialogCurveBezierClamp.Title")
 {
 	pCreateContent(environment);
 }
 
 igdeDialogCurveBezierClamp::igdeDialogCurveBezierClamp(igdeEnvironment &environment,
 bool clamp, const decVector2 &minimum, const decVector2 &maximum) :
-igdeDialog(environment, "Clamp Curve")
+igdeDialog(environment, "@Igde.DialogCurveBezierClamp.Title")
 {
 	pCreateContent(environment);
 	pChkClamp->SetChecked(clamp);
@@ -100,12 +100,12 @@ void igdeDialogCurveBezierClamp::pCreateContent(igdeEnvironment &environment){
 	
 	igdeContainerForm::Ref content(igdeContainerForm::Ref::New(environment));
 	
-	helper.CheckBox(content, "Enable Clamping", "Curve points are clamped to minimum/maximum range", pChkClamp);
-	helper.EditVector2(content, "Minimum:", "Minimum coordinates to clamp curve points to", pEditMinimum, {});
-	helper.EditVector2(content, "Maximum:", "Maximum coordinates to clamp curve points to", pEditMaximum, {});
+	helper.CheckBox(content, "@Igde.DialogCurveBezierClamp.EnableClamping", "@Igde.DialogCurveBezierClamp.EnableClamping.ToolTip", pChkClamp);
+	helper.EditVector2(content, "@Igde.DialogCurveBezierClamp.Minimum.Label", "@Igde.DialogCurveBezierClamp.Minimum.ToolTip", pEditMinimum, {});
+	helper.EditVector2(content, "@Igde.DialogCurveBezierClamp.Maximum.Label", "@Igde.DialogCurveBezierClamp.Maximum.ToolTip", pEditMaximum, {});
 	
 	igdeContainer::Ref buttonBar;
-	CreateButtonBar(buttonBar, "Accept", "Discard");
+	CreateButtonBar(buttonBar, "@Igde.Accept", "@Igde.Discard");
 	
 	AddContent(content, buttonBar);
 }

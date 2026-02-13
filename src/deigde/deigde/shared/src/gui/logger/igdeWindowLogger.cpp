@@ -49,12 +49,12 @@ protected:
 	
 public:
 	igdeWindowLogger_ActionTest(igdeWindowLogger &window) :
-	igdeAction("Test", nullptr, "Test"),
+	igdeAction("@Igde.WindowLogger.Action.Test", nullptr, "@Igde.WindowLogger.Action.Test.ToolTip"),
 	pWindow(window){
 	}
 	
 	void OnAction() override{
-		igdeCommonDialogs::Information(pWindow, "Clicked", "Clicked.");
+		igdeCommonDialogs::Information(pWindow, "@Igde.WindowLogger.Dialog.Clicked.Title", "@Igde.WindowLogger.Dialog.Clicked.Message");
 	}
 };
 
@@ -70,7 +70,7 @@ const char *igdeWindowLogger::styleError = "error";
 ////////////////////////////
 
 igdeWindowLogger::igdeWindowLogger(igdeEnvironment &environment) :
-igdeWindow(environment, "Logging History"),
+igdeWindow(environment, "@Igde.WindowLogger.Title"),
 pListener(igdeWindowLoggerListener::Ref::New(*this)),
 pPendingAddedLogs(0),
 pPendingClearLogs(false)

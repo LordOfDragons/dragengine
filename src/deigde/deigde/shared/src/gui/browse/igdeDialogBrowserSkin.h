@@ -42,7 +42,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	igdeDialogBrowserSkin(igdeEnvironment &environment, const char *title = "Select Skin");
+	igdeDialogBrowserSkin(igdeEnvironment &environment, const char *title = "@Igde.DialogBrowser.Skin.DefaultTitle");
 	
 protected:
 	/** \brief Clean up selection dialog. */
@@ -63,10 +63,10 @@ public:
 	
 	
 	/** \brief Convenience method to select skin. */
-	static bool SelectSkin(igdeWidget *owner, igdeGDSkin* &skin, const char *title = "Select Skin");
+	static bool SelectSkin(igdeWidget *owner, igdeGDSkin* &skin, const char *title = "@Igde.DialogBrowser.Skin.DefaultTitle");
 	
 	/** \brief Convenience method to select skin. */
-	static bool SelectSkin(igdeWidget *owner, decString &skin, const char *title = "Select Skin");
+	static bool SelectSkin(igdeWidget *owner, decString &skin, const char *title = "@Igde.DialogBrowser.Skin.DefaultTitle");
 	/*@}*/
 	
 	

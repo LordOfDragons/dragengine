@@ -29,6 +29,7 @@
 #include "igdeGameProject.h"
 #include "../environment/igdeEnvironment.h"
 #include "../gamedefinition/igdeGameDefinition.h"
+#include "../localization/igdeTranslationManager.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -55,7 +56,7 @@ igdeGameProject::igdeGameProject(igdeEnvironment &environment) :
 pEnvironment(environment),
 pChanged(false),
 
-pName("New Project"),
+pName(environment.GetTranslationManager().Translate("Igde.GameProject.NewProject").ToUTF8()),
 pPathData("data"),
 pPathCache("cache"),
 pPathLocal("local")
