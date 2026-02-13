@@ -166,7 +166,9 @@ void igdeTabBook::OnLanguageChanged(){
 	igdeContainer::OnLanguageChanged();
 	
 	if(GetNativeWidget()){
-		// TODO this is complicated...
+		pHeaders.VisitIndexed([&](int index, const cHeader &header){
+			((igdeNativeTabBook*)GetNativeWidget())->UpdateHeader(index, header);
+		});
 	}
 }
 

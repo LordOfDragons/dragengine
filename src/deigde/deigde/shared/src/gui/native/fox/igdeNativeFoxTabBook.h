@@ -29,11 +29,14 @@
 #include "../../igdeTabBook.h"
 #include "../../resources/igdeFont.h"
 
+#include <dragengine/common/collection/decTList.h>
+
 class igdeTabBook;
 class igdeEnvironment;
 class igdeGuiTheme;
 class igdeWidget;
 class igdeNativeFoxAutoScroller;
+class igdeNativeFoxTabBookHeader;
 
 
 /**
@@ -66,6 +69,7 @@ private:
 	int pPadRight;
 	int pPadTop;
 	int pPadBottom;
+	decTList<igdeNativeFoxTabBookHeader*> pHeaderWidgets;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -94,6 +98,7 @@ public:
 	inline FXSwitcher *GetSwitcher() const{ return pSwitcher; }
 	
 	virtual void AddHeader(const igdeTabBook::cHeader &header);
+	virtual void UpdateHeader(int index, const igdeTabBook::cHeader &header);
 	virtual void RemoveHeader(int index);
 	virtual void RemoveAllHeaders();
 	virtual void ChangePanel(int index);

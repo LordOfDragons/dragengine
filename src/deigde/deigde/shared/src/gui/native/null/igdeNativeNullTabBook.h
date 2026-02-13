@@ -56,6 +56,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	virtual void AddHeader(const igdeTabBook::cHeader &header);
+	virtual void UpdateHeader(int index, const igdeTabBook::cHeader &header);
 	virtual void RemoveHeader(int index);
 	virtual void RemoveAllHeaders();
 	virtual void ChangePanel(int index);

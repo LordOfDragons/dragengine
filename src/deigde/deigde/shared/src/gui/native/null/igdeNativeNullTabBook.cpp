@@ -58,6 +58,9 @@ void igdeNativeNullTabBook::DestroyNativeWidget(){
 void igdeNativeNullTabBook::AddHeader(const igdeTabBook::cHeader &){
 }
 
+void igdeNativeNullTabBook::UpdateHeader(int, const igdeTabBook::cHeader &){
+}
+
 void igdeNativeNullTabBook::RemoveHeader(int){
 }
 

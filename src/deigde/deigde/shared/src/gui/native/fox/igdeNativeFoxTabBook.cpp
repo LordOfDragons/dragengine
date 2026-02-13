@@ -179,17 +179,27 @@ void igdeNativeFoxTabBook::AddHeader(const igdeTabBook::cHeader &header){
 	FXIcon * const iicon = header.icon ? (FXIcon*)header.icon->GetNativeIcon() : nullptr;
 	
 	igdeNativeFoxTabBookHeader * const widget = new igdeNativeFoxTabBookHeader(
-		pHeaders, header.text.GetString(), iicon, this, ID_HEADER,
-		TOGGLEBUTTON_KEEPSTATE | FRAME_SUNKEN,
-		pPadLeft, pPadRight, pPadTop, pPadBottom);
+		pHeaders, igdeUIFoxHelper::TranslateIf(*pOwner, header.text).text(), iicon, this, ID_HEADER,
+		TOGGLEBUTTON_KEEPSTATE | FRAME_SUNKEN, pPadLeft, pPadRight, pPadTop, pPadBottom);
 	widget->setFont((FXFont*)pFont->GetNativeFont());
 	
 	if(id()){
 		widget->create();
 	}
+	
+	pHeaderWidgets.Add(widget);
+}
+
+void igdeNativeFoxTabBook::UpdateHeader(int index, const igdeTabBook::cHeader &header){
+	igdeNativeFoxTabBookHeader &widget = *pHeaderWidgets.GetAt(index);
+	
+	widget.setText(igdeUIFoxHelper::TranslateIf(*pOwner, header.text));
+	widget.setIcon(header.icon ? (FXIcon*)header.icon->GetNativeIcon() : nullptr);
 }
 
 void igdeNativeFoxTabBook::RemoveHeader(int index){
+	pHeaderWidgets.RemoveFrom(index);
+	
 	FXWindow * const child = pHeaders->childAtIndex(index);
 	if(child){
 		delete child;
@@ -197,6 +207,8 @@ void igdeNativeFoxTabBook::RemoveHeader(int index){
 }
 
 void igdeNativeFoxTabBook::RemoveAllHeaders(){
+	pHeaderWidgets.RemoveAll();
+	
 	while(pHeaders->numChildren() > 0){
 		delete pHeaders->childAtIndex(0);
 	}

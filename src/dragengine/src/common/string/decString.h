@@ -27,6 +27,7 @@
 
 #include <stdarg.h>
 #include <format>
+#include <string_view>
 
 #include "../collection/decTList.h"
 #include "../../dragengine_export.h"
@@ -541,5 +542,15 @@ inline unsigned int DEHash(const char *key){
 inline int DECompare(const char *a, const char *b){
 	return strcmp(a, b);
 }
+
+/** \brief Formatter specialization for decString to be used with std::format. */
+template <>
+struct std::formatter<decString> : std::formatter<std::string_view>{
+	// parse() is inherited from string_view
+	
+	auto format(const decString& s, std::format_context& ctx) const{
+		return std::formatter<std::string_view>::format(std::string_view(s.GetString()), ctx);
+	}
+};
 
 #endif

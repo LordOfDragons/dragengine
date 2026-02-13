@@ -44,3 +44,6 @@ jobs:
       
       - name: "Unprotected destructors in ref count classes"
         run: python3 find_refcount_public_destructor.py src
+      
+      - name: "Check for missing translations"
+        run: python3 find_missing_translations_igde.py src/deigde
