@@ -49,7 +49,7 @@
 
 ceWPTMAPasteCondition::ceWPTMAPasteCondition(ceWindowMain &windowMain,
 ceConversation &conversation) :
-ceWPTMenuAction(windowMain, "Paste Condition",
+ceWPTMenuAction(windowMain, "@Conversation.MenuAction.PasteCondition",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste)),
 pConversation(&conversation)
 {

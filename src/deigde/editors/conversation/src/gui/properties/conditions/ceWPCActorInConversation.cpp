@@ -84,8 +84,8 @@ class cActionNegate : public igdeAction {
 	
 public:
 	using Ref = deTObjectReference<cActionNegate>;
-	cActionNegate(ceWPCActorInConversation &panel) : igdeAction("Negate", nullptr,
-		"True if the information is missing instead of existing"), pPanel(panel){ }
+	cActionNegate(ceWPCActorInConversation &panel) : igdeAction("@Conversation.WPConditionActorInConversation.Negate", nullptr,
+		"@Conversation.Condition.ActorInConversationNegate.ToolTip"), pPanel(panel){ }
 	
 	void OnAction() override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
@@ -114,7 +114,7 @@ ceWPCActorInConversation::ceWPCActorInConversation(ceWPTopic &parentPanel) :
 ceWPCondition(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	
-	helper.ComboBox(*this, "Actor ID:", true, "Actor ID to test", pCBActor, cComboActor::Ref::New(*this));
+	helper.ComboBox(*this, "@Conversation.WPConditionActorInConversation.ActorID.Label", true, "@Conversation.ToolTip.ActorIDToTest", pCBActor, cComboActor::Ref::New(*this));
 	pCBActor->SetDefaultSorter();
 		
 	helper.CheckBox(*this, pChkNegate, cActionNegate::Ref::New(*this));

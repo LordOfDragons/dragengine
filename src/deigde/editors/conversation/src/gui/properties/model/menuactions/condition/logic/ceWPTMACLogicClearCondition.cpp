@@ -50,7 +50,7 @@
 ceWPTMACLogicClearCondition::ceWPTMACLogicClearCondition(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
 ceConversationAction &action, ceCConditionLogic &logic) :
-ceWPTMenuAction(windowMain, "Logic: Clear Condition",
+ceWPTMenuAction(windowMain, "@Conversation.MenuAction.LogicClearCondition",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus)),
 pConversation(&conversation),
 pTopic(&topic),

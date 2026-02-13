@@ -97,11 +97,12 @@ ceWPCLogic::ceWPCLogic(ceWPTopic &parentPanel) : ceWPCondition(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	helper.ComboBox(*this, "Operator:", "Logic to apply to the conditions",
+	helper.ComboBox(*this, "@Conversation.WPConditionLogic.Operator.Label", "@Conversation.ToolTip.LogicForConditions",
 		pCBOperator, cComboOperator::Ref::New(*this));
-	pCBOperator->AddItem("None", nullptr, (void*)(intptr_t)ceCConditionLogic::eopNone);
-	pCBOperator->AddItem("Any", nullptr, (void*)(intptr_t)ceCConditionLogic::eopAny);
-	pCBOperator->AddItem("All", nullptr, (void*)(intptr_t)ceCConditionLogic::eopAll);
+	pCBOperator->SetAutoTranslateItems(true);
+	pCBOperator->AddItem("@Conversation.WPConditionLogic.None", nullptr, (void*)(intptr_t)ceCConditionLogic::eopNone);
+	pCBOperator->AddItem("@Conversation.WPConditionLogic.Any", nullptr, (void*)(intptr_t)ceCConditionLogic::eopAny);
+	pCBOperator->AddItem("@Conversation.WPConditionLogic.All", nullptr, (void*)(intptr_t)ceCConditionLogic::eopAll);
 }
 
 ceWPCLogic::~ceWPCLogic(){

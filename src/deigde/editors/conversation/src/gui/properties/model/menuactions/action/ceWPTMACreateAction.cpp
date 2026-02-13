@@ -163,65 +163,65 @@ ceConversationAction::Ref ceWPTMACreateAction::CreateAction(){
 	}
 }
 
-const char *ceWPTMACreateAction::ActionTypeText(ceWindowMain &windowMain,
+decString ceWPTMACreateAction::ActionTypeText(ceWindowMain &windowMain,
 ceConversationAction::eActionTypes actionType){
 	switch(actionType){
 	case ceConversationAction::eatCameraShot:
-		return "Camera Shot";
+		return windowMain.Translate("Conversation.ActionType.CameraShot").ToUTF8();
 		
 	case ceConversationAction::eatMusic:
-		return "Music";
+		return windowMain.Translate("Conversation.ActionType.Music").ToUTF8();
 		
 	case ceConversationAction::eatActorSpeak:
-		return "Actor Speak";
+		return windowMain.Translate("Conversation.ActionType.ActorSpeak").ToUTF8();
 		
 	case ceConversationAction::eatSetVariable:
-		return "Set Variable";
+		return windowMain.Translate("Conversation.ActionType.SetVariable").ToUTF8();
 		
 	case ceConversationAction::eatSetActorParameter:
-		return "Set Actor Parameter";
+		return windowMain.Translate("Conversation.ActionType.SetActorParameter").ToUTF8();
 		
 	case ceConversationAction::eatTrigger:
-		return "Trigger";
+		return windowMain.Translate("Conversation.ActionType.Trigger").ToUTF8();
 		
 	case ceConversationAction::eatIfElse:
-		return "If-Else";
+		return windowMain.Translate("Conversation.ActionType.IfElse").ToUTF8();
 		
 	case ceConversationAction::eatPlayerChoice:
-		return "Player Choice";
+		return windowMain.Translate("Conversation.ActionType.PlayerChoice").ToUTF8();
 		
 	case ceConversationAction::eatWait:
-		return "Wait";
+		return windowMain.Translate("Conversation.ActionType.Wait").ToUTF8();
 		
 	case ceConversationAction::eatSnippet:
-		return "Snippet";
+		return windowMain.Translate("Conversation.ActionType.Snippet").ToUTF8();
 		
 	case ceConversationAction::eatStopConversation:
-		return "Stop Conversation";
+		return windowMain.Translate("Conversation.ActionType.StopConversation").ToUTF8();
 		
 	case ceConversationAction::eatStopTopic:
-		return "Stop Topic";
+		return windowMain.Translate("Conversation.ActionType.StopTopic").ToUTF8();
 		
 	case ceConversationAction::eatActorCommand:
-		return "Actor Command";
+		return windowMain.Translate("Conversation.ActionType.ActorCommand").ToUTF8();
 		
 	case ceConversationAction::eatGameCommand:
-		return "Game Command";
+		return windowMain.Translate("Conversation.ActionType.GameCommand").ToUTF8();
 		
 	case ceConversationAction::eatActorAdd:
-		return "Actor Add";
+		return windowMain.Translate("Conversation.ActionType.ActorAdd").ToUTF8();
 		
 	case ceConversationAction::eatActorRemove:
-		return "Actor Remove";
+		return windowMain.Translate("Conversation.ActionType.ActorRemove").ToUTF8();
 		
 	case ceConversationAction::eatCoordSystemAdd:
-		return "Coordinate System Add";
+		return windowMain.Translate("Conversation.ActionType.CoordSystemAdd").ToUTF8();
 		
 	case ceConversationAction::eatCoordSystemRemove:
-		return "Coordinate System Remove";
+		return windowMain.Translate("Conversation.ActionType.CoordSystemRemove").ToUTF8();
 		
 	case ceConversationAction::eatComment:
-		return "Comment";
+		return windowMain.Translate("Conversation.ActionType.Comment").ToUTF8();
 		
 	default:
 		return "??";

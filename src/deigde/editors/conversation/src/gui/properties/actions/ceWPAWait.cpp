@@ -101,7 +101,7 @@ ceWPAWait::ceWPAWait(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	
 	CreateGUICommon(*this);
 	
-	helper.EditFloat(*this, "Interval:", "Interval in seconds to test condition",
+	helper.EditFloat(*this, "@Conversation.WPActionWait.Interval.Label", "@Conversation.WPActionWait.Interval.ToolTip",
 		pEditInterval, cTextInterval::Ref::New(*this));
 }
 

@@ -296,12 +296,12 @@ void ceWindowMain::SaveConversation(const char *filename){
 void ceWindowMain::ShowFoundMissingWordsDialog(decStringSet &missingWords){
 	const int count = missingWords.GetCount();
 	if(count == 0){
-		igdeCommonDialogs::Information(*this, "Missing Words", "No missing words found");
+		igdeCommonDialogs::Information(*this, "@Conversation.WindowMain.MissingWords.Title", "@Conversation.WindowMain.Nomissingwordsfound.Message");
 		return;
 	}
 	
 	decString result(DEJoin(decStringList(missingWords).GetSortedAscending(), "\n"));
-	igdeCommonDialogs::GetMultilineString(*this, "Missing Words", "Found missing words", result);
+	igdeCommonDialogs::GetMultilineString(*this, "@Conversation.WindowMain.MissingWords.Title", "@Conversation.WindowMain.Foundmissingwords.Message", result);
 }
 
 void ceWindowMain::LoadCTA(const char *filename){
@@ -333,7 +333,7 @@ void ceWindowMain::AttachLangPack(const char *filename){
 	ceLangPack * const langpack = pConversation->GetLanguagePack();
 	if(langpack && langpack->GetChanged()){
 		switch(igdeCommonDialogs::Question(*this, igdeCommonDialogs::ebsYesNoCancel,
-		"Attach Language Pack", "Language pack changed. Save before attaching a new one?")){
+		"@Conversation.WindowMain.AttachLanguagePack.Title", "@Conversation.WindowMain.AttachLanguagePack.Message")){
 		case igdeCommonDialogs::ebYes:
 			pLoadSaveSystem->SaveLangPack(*langpack);
 			break;
@@ -411,8 +411,8 @@ void ceWindowMain::GetChangedDocuments(decStringList &list){
 
 void ceWindowMain::LoadDocument(const char *filename){
 	if(pConversation && pConversation->GetChanged()){
-		if(igdeCommonDialogs::Question(*this, igdeCommonDialogs::ebsYesNo, "Open Conversation",
-		"Open conversation discards changes. Is this ok?") == igdeCommonDialogs::ebNo){
+		if(igdeCommonDialogs::Question(*this, igdeCommonDialogs::ebsYesNo, "@Conversation.WindowMain.OpenConversation.Title",
+		"@Conversation.WindowMain.OpenConversation.Discard.Message") == igdeCommonDialogs::ebNo){
 			return;
 		}
 	}
@@ -510,14 +510,14 @@ private:
 	ceWindowMain &pWindow;
 public:
 	cActionFileNew(ceWindowMain &window) :
-	igdeAction("New", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiNew),
-		"Create new conversation", deInputEvent::ekcN, igdeHotKey(deInputEvent::esmControl, deInputEvent::ekcN)),
+	igdeAction("@Conversation.WindowMain.New", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiNew),
+		"@Conversation.WindowMain.CreateNew.ToolTip", deInputEvent::ekcN, igdeHotKey(deInputEvent::esmControl, deInputEvent::ekcN)),
 	pWindow(window){}
 	
 	void OnAction() override{
 		if(!pWindow.GetConversation() || !pWindow.GetConversation()->GetChanged()
-		|| igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "New Conversation",
-		"Creating a new conversation discarding the current one is that ok?") == igdeCommonDialogs::ebYes){
+		|| igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "@Conversation.WindowMain.NewConversation.Title",
+		"@Conversation.WindowMain.NewConversation.Discard.Message") == igdeCommonDialogs::ebYes){
 			pWindow.CreateNewConversation();
 		}
 	}
@@ -530,21 +530,21 @@ public:
 private:
 	ceWindowMain &pWindow;
 public:
-	cActionFileOpen(ceWindowMain &window) : igdeAction("Open...",
-		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen), "Open conversation from file",
+	cActionFileOpen(ceWindowMain &window) : igdeAction("@Conversation.WindowMain.Open",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen), "@Conversation.WindowMain.OpenFile.ToolTip",
 		deInputEvent::ekcO, igdeHotKey(deInputEvent::esmControl, deInputEvent::ekcO)), pWindow(window){}
 	
 	void OnAction() override{
 		if(pWindow.GetConversation() && pWindow.GetConversation()->GetChanged()){
-			if(igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "Open Conversation",
-			"Open conversation discards changes. Is this ok?") == igdeCommonDialogs::ebNo){
+			if(igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "@Conversation.WindowMain.OpenConversation.Title",
+			"@Conversation.WindowMain.OpenConversation.Discard.Message") == igdeCommonDialogs::ebNo){
 				return;
 			}
 		}
 		
 		decString filename(pWindow.GetConversation() ? pWindow.GetConversation()->GetFilePath()
 			: pWindow.GetGameProject()->GetPathData());
-		if(!igdeCommonDialogs::GetFileOpen(pWindow, "Open Conversation",
+		if(!igdeCommonDialogs::GetFileOpen(pWindow, "@Conversation.WindowMain.OpenConversation.Title",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetLoadSaveSystem()->GetConversationFilePatterns(), filename ) ){
 			return;
@@ -559,12 +559,12 @@ class cActionFileSaveAs : public cActionBase{
 public:
 	typedef deTObjectReference<cActionFileSaveAs> Ref;
 	cActionFileSaveAs(ceWindowMain &window) : cActionBase(window,
-		"Save As...", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave),
-		"Saves conversation under a differen file", deInputEvent::ekcA){}
+		"@Conversation.WindowMain.SaveAs", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave),
+		"@Conversation.WindowMain.SaveAs.ToolTip", deInputEvent::ekcA){}
 	
 	virtual igdeUndo::Ref OnAction(ceConversation *conversation){
 		decString filename(conversation->GetFilePath());
-		if(igdeCommonDialogs::GetFileSave(pWindow, "Save Conversation",
+		if(igdeCommonDialogs::GetFileSave(pWindow, "@Conversation.WindowMain.SaveConversation.Title",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetLoadSaveSystem()->GetConversationFilePatterns(), filename ) ){
 			pWindow.SaveConversation(filename);
@@ -577,9 +577,9 @@ class cActionFileSave : public cActionFileSaveAs{
 public:
 	typedef deTObjectReference<cActionFileSave> Ref;
 	cActionFileSave(ceWindowMain &window) : cActionFileSaveAs(window){
-		SetText("Save");
+		SetText("@Conversation.WindowMain.Save");
 		SetIcon(window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSaveAs));
-		SetDescription("Saves conversation to file");
+		SetDescription("@Conversation.WindowMain.Savesconversationtofile.ToolTip");
 		SetHotKey(igdeHotKey(deInputEvent::esmControl, deInputEvent::ekcS));
 		SetMnemonic(deInputEvent::ekcS);
 	}
@@ -606,8 +606,8 @@ class cActionEditCut : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditCut> Ref;
 	cActionEditCut(ceWindowMain &window) : cActionBase(window,
-		"Cut", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
-		"Cut selected objects", deInputEvent::esmControl,
+		"@Conversation.WindowMain.Cut", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
+		"@Conversation.WindowMain.Cut.ToolTip", deInputEvent::esmControl,
 		deInputEvent::ekcX, deInputEvent::ekcT){}
 	
 	igdeUndo::Ref OnAction(ceConversation*) override{
@@ -619,8 +619,8 @@ class cActionEditCopy : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditCopy> Ref;
 	cActionEditCopy(ceWindowMain &window) : cActionBase(window,
-		"Copy", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-		"Copies selected objects", deInputEvent::esmControl,
+		"@Conversation.WindowMain.Copy", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		"@Conversation.WindowMain.Copy.ToolTip", deInputEvent::esmControl,
 		deInputEvent::ekcC, deInputEvent::ekcC){}
 	
 	igdeUndo::Ref OnAction(ceConversation*) override{
@@ -632,8 +632,8 @@ class cActionEditPaste : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditPaste> Ref;
 	cActionEditPaste(ceWindowMain &window) : cActionBase(window,
-		"Paste", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
-		"Paste objects", deInputEvent::esmControl,
+		"@Conversation.WindowMain.Paste", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+		"@Conversation.WindowMain.Paste.ToolTip", deInputEvent::esmControl,
 		deInputEvent::ekcV, deInputEvent::ekcP){}
 	
 	igdeUndo::Ref OnAction(ceConversation*) override{
@@ -646,13 +646,13 @@ class cActionViewCTSLoad : public cActionBase{
 public:
 	typedef deTObjectReference<cActionViewCTSLoad> Ref;
 	cActionViewCTSLoad(ceWindowMain &window) : cActionBase(window,
-		"Load Conversation Test Setup...",
+		"@Conversation.WindowMain.LoadConversationTestSetup",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
-		"Loads a conversation test setup from file"){}
+		"@Conversation.WindowMain.LoadConversationTestSetup.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		decString filename(conversation->GetCTSPath());
-		if(igdeCommonDialogs::GetFileOpen(pWindow, "Open Conversation Test Setup",
+		if(igdeCommonDialogs::GetFileOpen(pWindow, "@Conversation.WindowMain.OpenConversationTestSetup.Title",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetLoadSaveSystem()->GetCTSFilePatterns(), filename ) ){
 			conversation->SetCTSPath(filename);
@@ -668,13 +668,13 @@ class cActionViewCTSSave : public cActionBase{
 public:
 	typedef deTObjectReference<cActionViewCTSSave> Ref;
 	cActionViewCTSSave(ceWindowMain &window) : cActionBase(window,
-		"Save Conversation Test Setup...",
+		"@Conversation.WindowMain.SaveConversationTestSetup",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave),
-		"Saves a conversation test setup from file"){}
+		"@Conversation.WindowMain.SaveConversationTestSetup.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		decString filename(conversation->GetCTSPath());
-		if(igdeCommonDialogs::GetFileSave(pWindow, "Save Conversation Test Setup",
+		if(igdeCommonDialogs::GetFileSave(pWindow, "@Conversation.WindowMain.SaveConversationTestSetup.Title",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetLoadSaveSystem()->GetCTSFilePatterns(), filename ) ){
 			conversation->SetCTSPath(filename);
@@ -690,13 +690,13 @@ class cActionViewCTALoad : public cActionBase{
 public:
 	typedef deTObjectReference<cActionViewCTALoad> Ref;
 	cActionViewCTALoad(ceWindowMain &window) : cActionBase(window,
-		"Load Conversation Actor Setup...",
+		"@Conversation.WindowMain.LoadConversationActorSetup",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
-		"Loads a conversation actor setup from file"){}
+		"@Conversation.WindowMain.LoadConversationActorSetup.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		decString filename(conversation->GetCTAPath());
-		if(igdeCommonDialogs::GetFileOpen(pWindow, "Open Conversation Actor Setup",
+		if(igdeCommonDialogs::GetFileOpen(pWindow, "@Conversation.WindowMain.OpenConversationActorSetup.Title",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetLoadSaveSystem()->GetCTAFilePatterns(), filename ) ){
 			pWindow.LoadCTA(filename);
@@ -710,9 +710,9 @@ class cActionViewCTASave : public cActionBase{
 public:
 	typedef deTObjectReference<cActionViewCTASave> Ref;
 	cActionViewCTASave(ceWindowMain &window) : cActionBase(window,
-		"Save Conversation Actor Setup...",
+		"@Conversation.WindowMain.SaveConversationActorSetup",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave),
-		"Saves a conversation actor setup from file"){}
+		"@Conversation.WindowMain.SaveConversationActorSetup.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		ceConversationActor * const actor = conversation->GetActiveActor();
@@ -721,7 +721,7 @@ public:
 		}
 		
 		decString filename(conversation->GetCTAPath());
-		if(igdeCommonDialogs::GetFileSave(pWindow, "Save Conversation Actor Setup",
+		if(igdeCommonDialogs::GetFileSave(pWindow, "@Conversation.WindowMain.SaveConversationActorSetup.Title",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetLoadSaveSystem()->GetCTAFilePatterns(), filename ) ){
 			conversation->SetCTAPath(filename);
@@ -736,13 +736,13 @@ class cActionViewCTGSLoad : public cActionBase{
 public:
 	typedef deTObjectReference<cActionViewCTGSLoad> Ref;
 	cActionViewCTGSLoad(ceWindowMain &window) : cActionBase(window,
-		"Load Conversation Test Game State...",
+		"@Conversation.WindowMain.LoadConversationTestGameState",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
-		"Loads a conversation test game state from file"){}
+		"@Conversation.WindowMain.LoadConversationTestGameState.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		decString filename(conversation->GetCTFIPath());
-		if(igdeCommonDialogs::GetFileOpen(pWindow, "Open Conversation Test Game State",
+		if(igdeCommonDialogs::GetFileOpen(pWindow, "@Conversation.WindowMain.OpenConversationTestGameState.Title",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetLoadSaveSystem()->GetCTGSFilePatterns(), filename ) ){
 			conversation->SetCTFIPath(filename);
@@ -758,13 +758,13 @@ class cActionViewCTGSSave : public cActionBase{
 public:
 	typedef deTObjectReference<cActionViewCTGSSave> Ref;
 	cActionViewCTGSSave(ceWindowMain &window) : cActionBase(window,
-		"Save Conversation Test Game State...",
+		"@Conversation.WindowMain.SaveConversationTestGameState",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave),
-		"Saves a conversation test game state from file"){}
+		"@Conversation.WindowMain.SaveConversationTestGameState.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		decString filename(conversation->GetCTFIPath());
-		if(igdeCommonDialogs::GetFileSave(pWindow, "Save Conversation Test Game State",
+		if(igdeCommonDialogs::GetFileSave(pWindow, "@Conversation.WindowMain.SaveConversationTestGameState.Title",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetLoadSaveSystem()->GetCTGSFilePatterns(), filename ) ){
 			conversation->SetCTFIPath(filename);
@@ -780,8 +780,8 @@ class cActionViewShowRuleOfThirdsAid : public cActionBase{
 public:
 	typedef deTObjectReference<cActionViewShowRuleOfThirdsAid> Ref;
 	cActionViewShowRuleOfThirdsAid(ceWindowMain &window) : cActionBase(window,
-		"Show Rule of Thirds aid", nullptr,
-		"Show Rule of Thirds aid", deInputEvent::ekcT){}
+		"@Conversation.WindowMain.ShowRuleOfThirdsAid", nullptr,
+		"@Conversation.WindowMain.ShowRuleOfThirdsAid.ToolTip", deInputEvent::ekcT){}
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		conversation->SetShowRuleOfThirdsAid(!conversation->GetShowRuleOfThirdsAid());
@@ -799,13 +799,13 @@ class cActionViewAttachLangPack : public cActionBase{
 public:
 	typedef deTObjectReference<cActionViewAttachLangPack> Ref;
 	cActionViewAttachLangPack(ceWindowMain &window) : cActionBase(window,
-		"Attach Language Pack...",
+		"@Conversation.WindowMain.AttachLanguagePack",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
-		"Load language pack attaching it to conversation"){}
+		"@Conversation.WindowMain.AttachLanguagePack.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		decString filename(conversation->GetLangPackPath());
-		if(igdeCommonDialogs::GetFileOpen(pWindow, "Open Language Pack",
+		if(igdeCommonDialogs::GetFileOpen(pWindow, "@Conversation.WindowMain.OpenLanguagePack.Title",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		pWindow.GetLoadSaveSystem()->GetLangPackFPList(), filename)){
 			pWindow.AttachLangPack(filename);
@@ -818,9 +818,9 @@ class cActionViewDetachLangPack : public cActionBase{
 public:
 	typedef deTObjectReference<cActionViewDetachLangPack> Ref;
 	cActionViewDetachLangPack(ceWindowMain &window) : cActionBase(window,
-		"Detach Language Pack...",
+		"@Conversation.WindowMain.DetachLanguagePack",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
-		"Detach language pack from conversation"){}
+		"@Conversation.WindowMain.DetachLanguagePack.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		ceLangPack * const langpack = conversation->GetLanguagePack();
@@ -830,7 +830,7 @@ public:
 		
 		if(langpack->GetChanged()){
 			switch(igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNoCancel,
-			"Detach Language Pack", "Language pack changed. Save before detaching?")){
+			"@Conversation.WindowMain.DetachLanguagePack.Title", "@Conversation.WindowMain.DetachLanguagePack.Message")){
 			case igdeCommonDialogs::ebYes:
 				pWindow.GetLoadSaveSystem()->SaveLangPack(*langpack);
 				break;
@@ -856,8 +856,8 @@ public:
 class cActionViewMissingWords : public cActionBase{
 public:
 	typedef deTObjectReference<cActionViewMissingWords> Ref;
-	cActionViewMissingWords(ceWindowMain &window) : cActionBase(window, "Missing Words...",
-		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSearch), "Show missing words"){}
+	cActionViewMissingWords(ceWindowMain &window) : cActionBase(window, "@Conversation.WindowMain.MissingWords",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSearch), "@Conversation.WindowMain.MissingWords.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		decStringSet missingWords;
@@ -997,15 +997,15 @@ void ceWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade = igdeMenuCascade::Ref::New(env, "File", deInputEvent::ekcF);
+	cascade = igdeMenuCascade::Ref::New(env, "@Conversation.WindowMain.File", deInputEvent::ekcF);
 	pCreateMenuFile(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade = igdeMenuCascade::Ref::New(env, "Edit", deInputEvent::ekcE);
+	cascade = igdeMenuCascade::Ref::New(env, "@Conversation.WindowMain.Edit", deInputEvent::ekcE);
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade = igdeMenuCascade::Ref::New(env, "View", deInputEvent::ekcV);
+	cascade = igdeMenuCascade::Ref::New(env, "@Conversation.WindowMain.View", deInputEvent::ekcV);
 	pCreateMenuView(cascade);
 	AddSharedMenu(cascade);
 }
@@ -1037,17 +1037,17 @@ void ceWindowMain::pCreateMenuView(igdeMenuCascade& menu)
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
 	helper.MenuCommand(menu, pActionViewCTSLoad);
-	helper.MenuRecentFiles(menu, pRecentFilesCTS, "Load Recent Conversation Test Setup");
+	helper.MenuRecentFiles(menu, pRecentFilesCTS, "@Conversation.WindowMain.LoadRecentConversationTestSetup");
 	helper.MenuCommand(menu, pActionViewCTSSave);
 	
 	helper.MenuSeparator(menu);
 	helper.MenuCommand(menu, pActionViewCTALoad);
-	helper.MenuRecentFiles(menu, pRecentFilesCTA, "Load Recent Conversation Actor Setup");
+	helper.MenuRecentFiles(menu, pRecentFilesCTA, "@Conversation.WindowMain.LoadRecentConversationActorSetup");
 	helper.MenuCommand(menu, pActionViewCTASave);
 	
 	helper.MenuSeparator(menu);
 	helper.MenuCommand(menu, pActionViewCTGSLoad);
-	helper.MenuRecentFiles(menu, pRecentFilesCTGS, "Load Recent Conversation Test Game State");
+	helper.MenuRecentFiles(menu, pRecentFilesCTGS, "@Conversation.WindowMain.LoadRecentConversationTestGameState");
 	helper.MenuCommand(menu, pActionViewCTGSSave);
 	
 	helper.MenuSeparator(menu);
@@ -1058,6 +1058,6 @@ void ceWindowMain::pCreateMenuView(igdeMenuCascade& menu)
 	
 	helper.MenuSeparator(menu);
 	helper.MenuCommand(menu, pActionViewAttachLangPack);
-	helper.MenuRecentFiles(menu, pRecentFilesLangPack, "Recent Attach Language Pack");
+	helper.MenuRecentFiles(menu, pRecentFilesLangPack, "@Conversation.WindowMain.RecentAttachLanguagePack");
 	helper.MenuCommand(menu, pActionViewDetachLangPack);
 }

@@ -61,7 +61,7 @@ ceWPTTIMAWaitActions::ceWPTTIMAWaitActions(ceWindowMain &windowMain,
 ceConversation &conversation, const ceConversationAction::List &actions) :
 ceWPTTIMActions(windowMain, conversation, etActionWaitActions, actions)
 {
-	SetText("Actions");
+	SetText(windowMain.Translate("Conversation.WPTTIMAWaitActions.Actions").ToUTF8());
 }
 
 ceWPTTIMAWaitActions::~ceWPTTIMAWaitActions(){
@@ -115,7 +115,7 @@ void ceWPTTIMAWaitActions::OnContextMenu(igdeMenuCascade &contextMenu){
 	int i;
 	
 	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::New(
-		environment, "Add Action", environment.GetStockIcon(igdeEnvironment::esiPlus)));
+		environment, "@Conversation.MenuAction.AddAction", environment.GetStockIcon(igdeEnvironment::esiPlus)));
 	contextMenu.AddChild(subMenu);
 	
 	for(i=0; i<ceWPTTIMAction::ListAddMenuActionsCount; i++){
@@ -161,10 +161,10 @@ igdeMenuCascade &contextMenu, ceConversationAction *action){
 	
 	// child action specific
 	helper.MenuCommand(contextMenu, ceWPTMAWaitActionsMoveAction::Ref::New(windowMain, conversation,
-		*topic, wait, action, indexAction - 1, "Move Action Up",
+		*topic, wait, action, indexAction - 1, "@Conversation.MenuAction.MoveActionUp",
 		windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp)));
 	helper.MenuCommand(contextMenu, ceWPTMAWaitActionsMoveAction::Ref::New(windowMain, conversation,
-		*topic, wait, action, indexAction + 1, "Move Action Down",
+		*topic, wait, action, indexAction + 1, "@Conversation.MenuAction.MoveActionDown",
 		windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown)));
 	helper.MenuSeparator(contextMenu);
 	
@@ -172,9 +172,9 @@ igdeMenuCascade &contextMenu, ceConversationAction *action){
 	helper.MenuCommand(contextMenu, ceWPTMAWaitActionsCutAction::Ref::New(
 		windowMain, conversation, *topic, wait, action));
 	helper.MenuCommand(contextMenu, ceWPTMAWaitActionsPasteActions::Ref::New(
-		windowMain, conversation, *topic, wait, indexAction, "Paste Actions Before"));
+		windowMain, conversation, *topic, wait, indexAction, "@Conversation.MenuAction.PasteActionsBefore"));
 	helper.MenuCommand(contextMenu, ceWPTMAWaitActionsPasteActions::Ref::New(
-		windowMain, conversation, *topic, wait, indexAction + 1, "Paste Actions After"));
+		windowMain, conversation, *topic, wait, indexAction + 1, "@Conversation.MenuAction.PasteActionsAfter"));
 	helper.MenuSeparator(contextMenu);
 	
 	helper.MenuCommand(contextMenu, ceWPTMAWaitActionsRemoveAction::Ref::New(
@@ -182,14 +182,14 @@ igdeMenuCascade &contextMenu, ceConversationAction *action){
 	helper.MenuSeparator(contextMenu);
 	
 	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::New(
-		environment, "Insert Action Before", environment.GetStockIcon(igdeEnvironment::esiPlus)));
+		environment, "@Conversation.MenuAction.InsertActionBefore", environment.GetStockIcon(igdeEnvironment::esiPlus)));
 	contextMenu.AddChild(subMenu);
 	for(i=0; i<ceWPTTIMAction::ListAddMenuActionsCount; i++){
 		helper.MenuCommand(subMenu, ceWPTMAWaitActionsAddAction::Ref::New(windowMain, conversation, *topic,
 			wait, ceWPTTIMAction::ListAddMenuActions[i], indexAction));
 	}
 	
-	subMenu = igdeMenuCascade::Ref::New(environment, "Insert Action After",
+	subMenu = igdeMenuCascade::Ref::New(environment, "@Conversation.WPTTIMAWaitActions.InsertActionAfter",
 		environment.GetStockIcon(igdeEnvironment::esiPlus));
 	contextMenu.AddChild(subMenu);
 	for(i=0; i<ceWPTTIMAction::ListAddMenuActionsCount; i++){

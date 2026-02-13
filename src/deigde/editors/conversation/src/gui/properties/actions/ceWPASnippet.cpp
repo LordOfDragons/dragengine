@@ -107,8 +107,8 @@ private:
 	ceWPASnippet &pPanel;
 	
 public:
-	cActionCreateSideLane(ceWPASnippet &panel) : igdeAction("Create Side Lane",
-		nullptr, "Run snippet in a new side lane"), pPanel(panel){}
+	cActionCreateSideLane(ceWPASnippet &panel) : igdeAction("@Conversation.WPActionSnippet.CreateSideLane",
+		nullptr, "@Conversation.Action.SnippetSideLane.ToolTip"), pPanel(panel){}
 	
 	void OnAction() override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
@@ -129,7 +129,7 @@ public:
 	using Ref = deTObjectReference<cActionJumpToTopic>;
 	cActionJumpToTopic(ceWPASnippet &panel) : igdeAction("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallRight),
-		"Jump To Topic"), pPanel(panel){}
+		"@Conversation.Action.SnippetJump.Label"), pPanel(panel){}
 	
 	void OnAction() override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
@@ -171,11 +171,11 @@ ceWPASnippet::ceWPASnippet(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	
 	CreateGUICommon(*this);
 	
-	helper.ComboBoxFilter(*this, "File:", true, "File to run topic from", pCBFile, cComboFile::Ref::New(*this));
+	helper.ComboBoxFilter(*this, "@Conversation.WPActionSnippet.File.Label", true, "@Conversation.WPActionSnippet.File.ToolTip", pCBFile, cComboFile::Ref::New(*this));
 	pCBFile->SetDefaultSorter();
 	
-	helper.FormLineStretchFirst(*this, "Topic:", "Topic to run", formLine);
-	helper.ComboBoxFilter(formLine, true, "Topic to run", pCBTopic, cComboTopic::Ref::New(*this));
+	helper.FormLineStretchFirst(*this, "@Conversation.WPActionSnippet.Topic.Label", "@Conversation.WPActionSnippet.Topic.ToolTip", formLine);
+	helper.ComboBoxFilter(formLine, true, "@Conversation.WPActionSnippet.Topic.ToolTip", pCBTopic, cComboTopic::Ref::New(*this));
 	pCBTopic->SetDefaultSorter();
 	helper.Button(formLine, pBtnJumpToTopic, cActionJumpToTopic::Ref::New(*this));
 	

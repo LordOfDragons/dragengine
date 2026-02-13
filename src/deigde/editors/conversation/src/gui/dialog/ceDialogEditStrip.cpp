@@ -64,7 +64,7 @@ private:
 public:
 	cActionResetDuration(ceDialogEditStrip &dialog) : igdeAction("",
 		dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiUndo),
-		"Reset duration"), pDialog(dialog){}
+		"@Conversation.Dialog.ResetDuration"), pDialog(dialog){}
 	
 	void OnAction() override{
 		pDialog.ResetDuration();
@@ -108,16 +108,16 @@ pAutoResetDuration(true)
 	helper.ComboBoxFilter(content, textLabel, 25, true, "", pCBID, cComboIdentifier::Ref::New(*this));
 	pCBID->SetDefaultSorter();
 	
-	helper.EditFloat(content, "Pause:", "Time in seconds to wait before strip is activated", pEditPause, {});
+	helper.EditFloat(content, "@Conversation.DialogEditStrip.Pause.Label", "@Conversation.DialogEditStrip.Pause.ToolTip", pEditPause, {});
 	
 	igdeContainer::Ref line;
-	const char *tooltip = "Duration in seconds of strip";
-	helper.FormLineStretchFirst(content, "Duration:", tooltip, line);
+	const char *tooltip = "@Conversation.DialogEditStrip.Duration.ToolTip";
+	helper.FormLineStretchFirst(content, "@Conversation.DialogEditStrip.Duration.Label", tooltip, line);
 	helper.EditFloat(line, tooltip, pEditDuration, {});
 	helper.Button(line, pBtnResetDuration, cActionResetDuration::Ref::New(*this));
 	
 	igdeContainer::Ref buttonBar;
-	CreateButtonBar(buttonBar, "Accept", "Cancel");
+	CreateButtonBar(buttonBar, "@Conversation.Dialog.Accept", "@Conversation.Dialog.Cancel");
 	
 	AddContent(content, buttonBar);
 	

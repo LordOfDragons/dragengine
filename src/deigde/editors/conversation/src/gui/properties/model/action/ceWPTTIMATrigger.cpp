@@ -57,19 +57,19 @@ ceWPTTIMATrigger::~ceWPTTIMATrigger(){
 // Management
 ///////////////
 
-const char *ceWPTTIMATrigger::GetActionText(ceCATrigger::eActions action){
+decString ceWPTTIMATrigger::GetActionText(ceCATrigger::eActions action) const{
 	switch(action){
 	case ceCATrigger::eaFire:
-		return "fire";
+		return GetWindowMain().Translate("Conversation.TriggerAction.Fire").ToUTF8();
 		
 	case ceCATrigger::eaReset:
-		return "reset";
+		return GetWindowMain().Translate("Conversation.TriggerAction.Reset").ToUTF8();
 		
 	case ceCATrigger::eaPulse:
-		return "pulse";
+		return GetWindowMain().Translate("Conversation.TriggerAction.Pulse").ToUTF8();
 		
 	case ceCATrigger::eaFullReset:
-		return "full reset";
+		return GetWindowMain().Translate("Conversation.TriggerAction.FullReset").ToUTF8();
 		
 	default:
 		DETHROW(deeInvalidParam);
@@ -80,9 +80,10 @@ void ceWPTTIMATrigger::Update(){
 	const ceCATrigger &action = *GetActionTrigger();
 	decString text;
 	
-	const char * const textAction = GetActionText(action.GetAction());
+	const decString textAction = GetActionText(action.GetAction());
 	
-	text.Format("Trigger: %s '%s'", textAction, action.GetName().GetString());
+	text.FormatSafe( GetWindowMain().Translate( "Conversation.Format.Trigger" ).ToUTF8(),
+		textAction, action.GetName() );
 	
 	SetText(text);
 }

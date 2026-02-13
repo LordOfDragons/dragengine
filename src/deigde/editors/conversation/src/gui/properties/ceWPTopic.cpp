@@ -211,8 +211,8 @@ private:
 	ceWPTopic &pPanel;
 	
 public:
-	cActionGroupAdd(ceWPTopic &panel) : igdeAction("Add...",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add topic group"),
+	cActionGroupAdd(ceWPTopic &panel) : igdeAction("@Conversation.WPTopic.Add",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@Conversation.WPTopic.Add.ToolTip"),
 		pPanel(panel){}
 	
 	void OnAction() override{
@@ -221,13 +221,13 @@ public:
 			return;
 		}
 		
-		decString name("Group");
-		if(!igdeCommonDialogs::GetString(pPanel, "Add Topic Group", "Name:", name)){
+		decString name(pPanel.Translate("Conversation.DefaultName.Group").ToUTF8());
+		if(!igdeCommonDialogs::GetString(pPanel, "@Conversation.WPTopic.AddTopicGroup.Title", "@Conversation.Dialog.Name", name)){
 			return;
 		}
 		
 		if(conversation->GetFiles().HasMatching([&](const ceConversationFile &f){ return f.GetID() == name; })){
-			igdeCommonDialogs::Error(pPanel, "Add Topic Group", "Topic group exists");
+			igdeCommonDialogs::Error(pPanel, "@Conversation.WPTopic.AddTopicGroup.Title", "@Conversation.WPTopic.Topicgroupexists.Message");
 			return;
 		}
 		
@@ -250,8 +250,8 @@ private:
 	ceWPTopic &pPanel;
 	
 public:
-	cActionGroupRemove(ceWPTopic &panel) : igdeAction("Remove",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove topic group"),
+	cActionGroupRemove(ceWPTopic &panel) : igdeAction("@Conversation.WPTopic.Remove",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@Conversation.WPTopic.Remove.ToolTip"),
 		pPanel(panel){}
 	
 	void OnAction() override{
@@ -274,8 +274,8 @@ private:
 	ceWPTopic &pPanel;
 	
 public:
-	cActionGroupRename(ceWPTopic &panel) : igdeAction("Rename...",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Rename topic group"),
+	cActionGroupRename(ceWPTopic &panel) : igdeAction("@Conversation.WPTopic.Rename",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@Conversation.WPTopic.Rename.ToolTip"),
 		pPanel(panel){}
 	
 	void OnAction() override{
@@ -286,12 +286,12 @@ public:
 		}
 		
 		decString name(file->GetID());
-		if(!igdeCommonDialogs::GetString(pPanel, "Rename Topic Group", "Name:", name) || name == file->GetID()){
+		if(!igdeCommonDialogs::GetString(pPanel, "@Conversation.WPTopic.RenameTopicGroup.Title", "@Conversation.Dialog.Name", name) || name == file->GetID()){
 			return;
 		}
 		
 		if(conversation->GetFiles().HasMatching([&](const ceConversationFile &f){ return f.GetID() == name; })){
-			igdeCommonDialogs::Error(pPanel, "Rename Topic Group", "Topic group exists");
+			igdeCommonDialogs::Error(pPanel, "@Conversation.WPTopic.RenameTopicGroup.Title", "@Conversation.WPTopic.Topicgroupexists.Message");
 			return;
 		}
 		
@@ -311,8 +311,8 @@ private:
 	ceWPTopic &pPanel;
 	
 public:
-	cActionGroupCopy(ceWPTopic &panel) : igdeAction("Copy",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy), "Copy topic group"),
+	cActionGroupCopy(ceWPTopic &panel) : igdeAction("@Conversation.WPTopic.Copy",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy), "@Conversation.WPTopic.Copy.ToolTip"),
 		pPanel(panel){}
 	
 	void OnAction() override{
@@ -339,8 +339,8 @@ private:
 	ceWPTopic &pPanel;
 	
 public:
-	cActionGroupPaste(ceWPTopic &panel) : igdeAction("Paste",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste), "Paste topic group"),
+	cActionGroupPaste(ceWPTopic &panel) : igdeAction("@Conversation.WPTopic.Paste",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste), "@Conversation.WPTopic.Paste.ToolTip"),
 		pPanel(panel){}
 	
 	void OnAction() override{
@@ -369,8 +369,8 @@ private:
 	ceWPTopic &pPanel;
 	
 public:
-	cActionGroupDuplicate(ceWPTopic &panel) : igdeAction("Duplicate...",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Duplicate topic group"),
+	cActionGroupDuplicate(ceWPTopic &panel) : igdeAction("@Conversation.WPTopic.Duplicate",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@Conversation.WPTopic.Duplicate.ToolTip"),
 		pPanel(panel){}
 	
 	void OnAction() override{
@@ -381,12 +381,12 @@ public:
 		}
 		
 		decString name(file->GetID());
-		if(!igdeCommonDialogs::GetString(pPanel, "Duplicate Topic Group", "Name:", name)){
+		if(!igdeCommonDialogs::GetString(pPanel, "@Conversation.WPTopic.DuplicateTopicGroup.Title", "@Conversation.Dialog.Name", name)){
 			return;
 		}
 		
 		if(conversation->GetFiles().HasMatching([&](const ceConversationFile &f){ return f.GetID() == name; })){
-			igdeCommonDialogs::Error(pPanel, "Duplicate Topic Group", "Topic group exists");
+			igdeCommonDialogs::Error(pPanel, "@Conversation.WPTopic.DuplicateTopicGroup.Title", "@Conversation.WPTopic.Topicgroupexists.Message");
 			return;
 		}
 		
@@ -407,8 +407,8 @@ private:
 	ceWPTopic &pPanel;
 	
 public:
-	cActionGroupMissingWords(ceWPTopic &panel) : igdeAction("Missing Words...",
-		nullptr, "Show missing words"), pPanel(panel){}
+	cActionGroupMissingWords(ceWPTopic &panel) : igdeAction("@Conversation.WPTopic.MissingWords",
+		nullptr, "@Conversation.WPTopic.MissingWords.ToolTip"), pPanel(panel){}
 	
 	void OnAction() override{
 		ceConversationFile * const group = pPanel.GetFile();
@@ -434,7 +434,7 @@ class cActionFileMenu : public igdeActionContextMenu{
 public:
 	using Ref = deTObjectReference<cActionFileMenu>;
 	cActionFileMenu(ceWPTopic &panel) : igdeActionContextMenu("",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Show File Menu"),
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "@Conversation.WPTopic.ShowFileMenu.ToolTip"),
 		pPanel(panel){}
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override{
@@ -484,8 +484,8 @@ private:
 	ceWPTopic &pPanel;
 	
 public:
-	cActionTopicAdd(ceWPTopic &panel) : igdeAction("Add...",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add topic"),
+	cActionTopicAdd(ceWPTopic &panel) : igdeAction("@Conversation.WPTopic.Add",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@Conversation.WPTopic.Add.ToolTip"),
 		pPanel(panel){}
 	
 	void OnAction() override{
@@ -494,13 +494,13 @@ public:
 			return;
 		}
 		
-		decString name("Topic");
-		if(!igdeCommonDialogs::GetString(pPanel, "Add Topic", "Name:", name)){
+		decString name(pPanel.Translate("Conversation.DefaultName.Topic").ToUTF8());
+		if(!igdeCommonDialogs::GetString(pPanel, "@Conversation.WPTopic.AddTopic.Title", "@Conversation.Dialog.Name", name)){
 			return;
 		}
 		
 		if(file->GetTopics().HasMatching([&](const ceConversationTopic &t){ return t.GetID() == name; })){
-			igdeCommonDialogs::Error(pPanel, "Add Topic", "Topic exists");
+			igdeCommonDialogs::Error(pPanel, "@Conversation.WPTopic.AddTopic.Title", "@Conversation.WPTopic.Topicexists.Message");
 			return;
 		}
 		
@@ -523,8 +523,8 @@ private:
 	ceWPTopic &pPanel;
 	
 public:
-	cActionTopicRemove(ceWPTopic &panel) : igdeAction("Remove",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove topic"),
+	cActionTopicRemove(ceWPTopic &panel) : igdeAction("@Conversation.WPTopic.Remove",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@Conversation.WPTopic.Remove.ToolTip"),
 		pPanel(panel){}
 	
 	void OnAction() override{
@@ -547,8 +547,8 @@ private:
 	ceWPTopic &pPanel;
 	
 public:
-	cActionTopicRename(ceWPTopic &panel) : igdeAction("Rename...",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Rename topic"),
+	cActionTopicRename(ceWPTopic &panel) : igdeAction("@Conversation.WPTopic.Rename",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@Conversation.WPTopic.Rename.ToolTip"),
 		pPanel(panel){}
 	
 	void OnAction() override{
@@ -560,12 +560,12 @@ public:
 		}
 		
 		decString name(topic->GetID());
-		if(!igdeCommonDialogs::GetString(pPanel, "Rename Topic", "Name:", name) || name == topic->GetID()){
+		if(!igdeCommonDialogs::GetString(pPanel, "@Conversation.WPTopic.RenameTopic.Title", "@Conversation.Dialog.Name", name) || name == topic->GetID()){
 			return;
 		}
 		
 		if(file->GetTopics().HasMatching([&](const ceConversationTopic &t){ return t.GetID() == name; })){
-			igdeCommonDialogs::Error(pPanel, "Rename Topic", "Topic exists");
+			igdeCommonDialogs::Error(pPanel, "@Conversation.WPTopic.RenameTopic.Title", "@Conversation.WPTopic.Topicexists.Message");
 			return;
 		}
 		
@@ -585,8 +585,8 @@ private:
 	ceWPTopic &pPanel;
 	
 public:
-	cActionTopicMissingWords(ceWPTopic &panel) : igdeAction("Missing Words...",
-		nullptr, "Show missing words"), pPanel(panel){}
+	cActionTopicMissingWords(ceWPTopic &panel) : igdeAction("@Conversation.WPTopic.MissingWords",
+		nullptr, "@Conversation.WPTopic.MissingWords.ToolTip"), pPanel(panel){}
 	
 	void OnAction() override{
 		ceConversationTopic * const topic = pPanel.GetTopic();
@@ -612,8 +612,8 @@ private:
 	ceWPTopic &pPanel;
 	
 public:
-	cActionTopicCopy(ceWPTopic &panel) : igdeAction("Copy",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy), "Copy topic"),
+	cActionTopicCopy(ceWPTopic &panel) : igdeAction("@Conversation.WPTopic.Copy",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy), "@Conversation.WPTopic.Copy.ToolTip"),
 		pPanel(panel){}
 	
 	void OnAction() override{
@@ -640,8 +640,8 @@ private:
 	ceWPTopic &pPanel;
 	
 public:
-	cActionTopicPaste(ceWPTopic &panel) : igdeAction("Paste",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste), "Paste topic"),
+	cActionTopicPaste(ceWPTopic &panel) : igdeAction("@Conversation.WPTopic.Paste",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste), "@Conversation.WPTopic.Paste.ToolTip"),
 		pPanel(panel){}
 	
 	void OnAction() override{
@@ -670,8 +670,8 @@ private:
 	ceWPTopic &pPanel;
 	
 public:
-	cActionTopicDuplicate(ceWPTopic &panel) : igdeAction("Duplicate...",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Duplicate topic"),
+	cActionTopicDuplicate(ceWPTopic &panel) : igdeAction("@Conversation.WPTopic.Duplicate",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@Conversation.WPTopic.Duplicate.ToolTip"),
 		pPanel(panel){}
 	
 	void OnAction() override{
@@ -682,12 +682,12 @@ public:
 		}
 		
 		decString name(topic->GetID());
-		if(!igdeCommonDialogs::GetString(pPanel, "Duplicate Topic", "Name:", name)){
+		if(!igdeCommonDialogs::GetString(pPanel, "@Conversation.WPTopic.DuplicateTopic.Title", "@Conversation.Dialog.Name", name)){
 			return;
 		}
 		
 		if(file->GetTopics().HasMatching([&](const ceConversationTopic &t){ return t.GetID() == name; })){
-			igdeCommonDialogs::Error(pPanel, "Duplicate Topic", "Topic exists");
+			igdeCommonDialogs::Error(pPanel, "@Conversation.WPTopic.DuplicateTopic.Title", "@Conversation.WPTopic.Topicexists.Message");
 			return;
 		}
 		
@@ -706,7 +706,7 @@ class cActionTopicMenu : public igdeActionContextMenu{
 public:
 	using Ref = deTObjectReference<cActionTopicMenu>;
 	cActionTopicMenu(ceWPTopic &panel) : igdeActionContextMenu("",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Show Topic Menu"),
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "@Conversation.WPTopic.ShowTopicMenu.ToolTip"),
 		pPanel(panel){}
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override{
@@ -820,17 +820,17 @@ pPanelCTrigger(nullptr)
 	
 	
 	// conversation
-	helper.GroupBox(*this, groupBox, "Conversation:");
+	helper.GroupBox(*this, groupBox, "@Conversation.WPTopic.Conversation.Label");
 	
-	helper.FormLineStretchFirst(groupBox, "File:", "File to edit", formLine);
-	helper.ComboBoxFilter(formLine, "File to edit", pCBFile, cComboFile::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@Conversation.WPTopic.File.Label", "@Conversation.WPTopic.File.ToolTip", formLine);
+	helper.ComboBoxFilter(formLine, "@Conversation.WPTopic.File.ToolTip", pCBFile, cComboFile::Ref::New(*this));
 	pCBFile->SetDefaultSorter();
 	const cActionFileMenu::Ref actionFileMenu(cActionFileMenu::Ref::New(*this));
 	helper.Button(formLine, pBtnFile, actionFileMenu);
 	actionFileMenu->SetWidget(pBtnFile);
 	
-	helper.FormLineStretchFirst(groupBox, "Topic:", "Topic to edit", formLine);
-	helper.ComboBoxFilter(formLine, "Topic to edit", pCBTopic, cComboTopic::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@Conversation.WPTopic.Topic.Label", "@Conversation.WPTopic.Topic.ToolTip", formLine);
+	helper.ComboBoxFilter(formLine, "@Conversation.WPTopic.Topic.ToolTip", pCBTopic, cComboTopic::Ref::New(*this));
 	pCBTopic->SetDefaultSorter();
 	const cActionTopicMenu::Ref actionTopicMenu(cActionTopicMenu::Ref::New(*this));
 	helper.Button(formLine, pBtnTopic, actionTopicMenu);
@@ -840,8 +840,8 @@ pPanelCTrigger(nullptr)
 	// actions
 	igdeContainerBorder::Ref groupActions;
 	
-	helper.GroupBoxStaticBorder(*this, groupActions, "Actions:", true);
-	helper.TreeList(10, "Topic Actions", pTreeActions, cTreeActionsListener::Ref::New(*this));
+	helper.GroupBoxStaticBorder(*this, groupActions, "@Conversation.WPTopic.Actions.Label", true);
+	helper.TreeList(10, "@Conversation.WPTopic.Actions.ToolTip", pTreeActions, cTreeActionsListener::Ref::New(*this));
 	groupActions->AddChild(pTreeActions, igdeContainerBorder::eaCenter);
 	
 	pSwitcher = igdeSwitcher::Ref::New(env);
@@ -1414,4 +1414,8 @@ void ceWPTopic::PlayActionFromHere(){
 	item->GetModel()->BuildPlaybackFromHere();
 	
 	playback.SetRunning(true);
+}
+
+void ceWPTopic::OnLanguageChanged(){
+	pModelTreeActions->UpdateActions();
 }

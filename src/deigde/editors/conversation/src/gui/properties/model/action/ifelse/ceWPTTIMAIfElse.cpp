@@ -52,7 +52,7 @@ ceConversation &conversation, ceCAIfElse *action) :
 ceWPTTIMAction(windowMain, etActionIfElse, conversation, action)
 {
 	SetIcon(windowMain.GetIconActionIfElse());
-	SetText("If-Else");
+	SetText(windowMain.Translate("Conversation.WPTTIMAIfElse.IfElse").ToUTF8());
 	
 	pElse = ceWPTTIMAIfElseElse::Ref::New(windowMain, conversation, action->GetElseActions());
 	AddChild(pElse);

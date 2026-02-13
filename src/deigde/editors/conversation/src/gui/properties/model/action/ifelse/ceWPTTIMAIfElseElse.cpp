@@ -60,7 +60,7 @@ ceConversation &conversation, const ceConversationAction::List &actions) :
 ceWPTTIMActions(windowMain, conversation, etActionIfElseElse, actions)
 {
 	SetIcon(windowMain.GetIconActionIfElseCaseElse());
-	SetText("Condition is false");
+	SetText(windowMain.Translate("Conversation.WPTTIMAIfElseElse.Conditionisfalse").ToUTF8());
 }
 
 ceWPTTIMAIfElseElse::~ceWPTTIMAIfElseElse(){
@@ -114,7 +114,7 @@ void ceWPTTIMAIfElseElse::OnContextMenu(igdeMenuCascade &contextMenu){
 	int i;
 	
 	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::New(
-		environment, "Add Action", environment.GetStockIcon(igdeEnvironment::esiPlus)));
+		environment, "@Conversation.TreeModel.AddAction", environment.GetStockIcon(igdeEnvironment::esiPlus)));
 	contextMenu.AddChild(subMenu);
 	
 	for(i=0; i<ceWPTTIMAction::ListAddMenuActionsCount; i++){
@@ -163,10 +163,10 @@ void ceWPTTIMAIfElseElse::ContextMenuAction(igdeMenuCascade &contextMenu, ceConv
 	
 	// child action specific
 	helper.MenuCommand(contextMenu, ceWPTMAIfElseElseMoveAction::Ref::New(windowMain, conversation,
-		*topic, ifElse, action, indexAction - 1, "Move Action Up",
+		*topic, ifElse, action, indexAction - 1, "@Conversation.TreeModel.MoveActionUp",
 		windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp)));
 	helper.MenuCommand(contextMenu, ceWPTMAIfElseElseMoveAction::Ref::New(windowMain, conversation,
-		*topic, ifElse, action, indexAction + 1, "Move Action Down",
+		*topic, ifElse, action, indexAction + 1, "@Conversation.TreeModel.MoveActionDown",
 		windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown)));
 	helper.MenuSeparator(contextMenu);
 	
@@ -174,9 +174,9 @@ void ceWPTTIMAIfElseElse::ContextMenuAction(igdeMenuCascade &contextMenu, ceConv
 	helper.MenuCommand(contextMenu, ceWPTMAIfElseElseCutAction::Ref::New(
 		windowMain, conversation, *topic, ifElse, action));
 	helper.MenuCommand(contextMenu, ceWPTMAIfElseElsePasteActions::Ref::New(
-		windowMain, conversation, *topic, ifElse, indexAction, "Paste Actions Before"));
+		windowMain, conversation, *topic, ifElse, indexAction, "@Conversation.TreeModel.PasteActionsBefore"));
 	helper.MenuCommand(contextMenu, ceWPTMAIfElseElsePasteActions::Ref::New(
-		windowMain, conversation, *topic, ifElse, indexAction + 1, "Paste Actions After"));
+		windowMain, conversation, *topic, ifElse, indexAction + 1, "@Conversation.TreeModel.PasteActionsAfter"));
 	helper.MenuSeparator(contextMenu);
 	
 	helper.MenuCommand(contextMenu, ceWPTMAIfElseElseRemoveAction::Ref::New(
@@ -184,14 +184,14 @@ void ceWPTTIMAIfElseElse::ContextMenuAction(igdeMenuCascade &contextMenu, ceConv
 	helper.MenuSeparator(contextMenu);
 	
 	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::New(
-		environment, "Insert Action Before", environment.GetStockIcon(igdeEnvironment::esiPlus)));
+		environment, "@Conversation.TreeModel.InsertActionBefore", environment.GetStockIcon(igdeEnvironment::esiPlus)));
 	contextMenu.AddChild(subMenu);
 	for(i=0; i<ceWPTTIMAction::ListAddMenuActionsCount; i++){
 		helper.MenuCommand(subMenu, ceWPTMAIfElseElseAddAction::Ref::New(windowMain, conversation, *topic,
 			ifElse, ceWPTTIMAction::ListAddMenuActions[i], indexAction));
 	}
 	
-	subMenu = igdeMenuCascade::Ref::New(environment, "Insert Action After",
+	subMenu = igdeMenuCascade::Ref::New(environment, "@Conversation.WPTTIMAIfElseElse.InsertActionAfter",
 		environment.GetStockIcon(igdeEnvironment::esiPlus));
 	contextMenu.AddChild(subMenu);
 	for(i=0; i<ceWPTTIMAction::ListAddMenuActionsCount; i++){

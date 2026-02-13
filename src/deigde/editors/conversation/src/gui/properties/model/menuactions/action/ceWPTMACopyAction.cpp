@@ -46,7 +46,7 @@
 
 ceWPTMACopyAction::ceWPTMACopyAction(ceWindowMain &windowMain,
 ceConversationAction *action) :
-ceWPTMenuAction(windowMain, "Copy Action",
+ceWPTMenuAction(windowMain, "@Conversation.MenuAction.CopyAction",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy)),
 pAction(action){
 	if(!action){

@@ -164,19 +164,20 @@ ceWPASetVariable::ceWPASetVariable(ceWPTopic &parentPanel) : ceWPAction(parentPa
 	
 	CreateGUICommon(*this);
 	
-	helper.EditString(*this, "Name:", "Name of the variable to set or empty to have no effect",
+	helper.EditString(*this, "@Conversation.WPActionSetVariable.Name.Label", "@Conversation.ToolTip.VariableName",
 		pEditName, cTextName::Ref::New(*this));
 	
-	helper.ComboBox(*this, "Operator:", "How to apply the value to the variable",
+	helper.ComboBox(*this, "@Conversation.WPActionSetVariable.Operator.Label", true, "@Conversation.ToolTip.OperatorForVariable",
 		pCBOperator, cComboOperator::Ref::New(*this));
-	pCBOperator->AddItem("Set", nullptr, (void*)(intptr_t)ceCASetVariable::eopSet);
-	pCBOperator->AddItem("Increment", nullptr, (void*)(intptr_t)ceCASetVariable::eopIncrement);
-	pCBOperator->AddItem("Decrement", nullptr, (void*)(intptr_t)ceCASetVariable::eopDecrement);
-	pCBOperator->AddItem("Random", nullptr, (void*)(intptr_t)ceCASetVariable::eopRandom);
+	pCBOperator->SetAutoTranslateItems(true);
+	pCBOperator->AddItem("@Conversation.WPActionSetVariable.Set", nullptr, (void*)(intptr_t)ceCASetVariable::eopSet);
+	pCBOperator->AddItem("@Conversation.WPActionSetVariable.Increment", nullptr, (void*)(intptr_t)ceCASetVariable::eopIncrement);
+	pCBOperator->AddItem("@Conversation.WPActionSetVariable.Decrement", nullptr, (void*)(intptr_t)ceCASetVariable::eopDecrement);
+	pCBOperator->AddItem("@Conversation.WPActionSetVariable.Random", nullptr, (void*)(intptr_t)ceCASetVariable::eopRandom);
 	
-	helper.EditInteger(*this, "Value:", "Value to use for operation (integer value)",
+	helper.EditInteger(*this, "@Conversation.WPActionSetVariable.Value.Label", "@Conversation.WPActionSetVariable.Value.ToolTip",
 		pEditValue, cTextValue::Ref::New(*this));
-	helper.EditString(*this, "Variable:", "Variable value to use for operation or empty string to use 'Value'",
+	helper.EditString(*this, "@Conversation.WPActionSetVariable.ValueVariable.Label", "@Conversation.ToolTip.VariableForOperation",
 		pEditValueVariable, cTextValueVariable::Ref::New(*this));
 }
 

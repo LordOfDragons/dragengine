@@ -62,7 +62,7 @@ void ceWPTTIMAGameCommand::Update(){
 	decString text;
 	
 	if(action.GetCommand().IsEmpty()){
-		text = "Game Command";
+		text = GetWindowMain().Translate("Conversation.TreeModel.GameCommand").ToUTF8();
 		
 	}else{
 		const decString lineCommand(action.GetCommand().Split('\n').GetAt(0));

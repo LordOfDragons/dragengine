@@ -59,6 +59,6 @@ pIndex(index)
 
 ceUCActionPaste::Ref ceWPTMAWaitActionsPasteSnippet::CreateUndo(const ceConversationAction::List &actions){
 	const ceUCActionPaste::Ref undo = ceUCAWaitPaste::Ref::New(pTopic, pWait, actions, pIndex);
-	undo->SetShortInfo("Paste Conversation Snippet");
+	undo->SetShortInfo("@Conversation.Undo.PasteConversationSnippet");
 	return undo;
 }

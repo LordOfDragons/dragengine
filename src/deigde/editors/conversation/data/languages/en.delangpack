@@ -3,4 +3,992 @@
 	<identifier>en</identifier>
 	<name>English</name>
 	<description>English</description>
+	<!-- Common Dialog Buttons -->
+	<translation name="Conversation.Dialog.Accept">Accept</translation>
+	<translation name="Conversation.Dialog.Cancel">Cancel</translation>
+	<translation name="Conversation.Dialog.GenerateActions">Generate Actions</translation>
+	<translation name="Conversation.Dialog.ResetDuration">Reset duration</translation>
+	<!-- Common UI Elements -->
+	<translation name="Conversation.Common.Add">Add</translation>
+	<translation name="Conversation.Common.AddDots">Add...</translation>
+	<translation name="Conversation.Common.Remove">Remove</translation>
+	<translation name="Conversation.Common.RemoveAll">Remove All</translation>
+	<translation name="Conversation.Common.Rename">Rename...</translation>
+	<translation name="Conversation.Common.Duplicate">Duplicate...</translation>
+	<translation name="Conversation.Common.Set">Set</translation>
+	<translation name="Conversation.Common.SetDots">Set...</translation>
+	<translation name="Conversation.Common.Rewind">Rewind</translation>
+	<translation name="Conversation.Common.Running">Running</translation>
+	<translation name="Conversation.Common.Paused">Paused</translation>
+	<translation name="Conversation.Common.Visible">Visible</translation>
+	<translation name="Conversation.Common.AutoAdvance">Auto Advance</translation>
+	<translation name="Conversation.Common.CopyToClipboard">Copy To Clipboard</translation>
+	<translation name="Conversation.Common.Clear">Clear</translation>
+	<!-- WindowDopeSheet Lanes -->
+	<translation name="Conversation.WindowDopeSheet.LaneWord">Word</translation>
+	<translation name="Conversation.WindowDopeSheet.LaneFacePose">Face Pose</translation>
+	<translation name="Conversation.WindowDopeSheet.LaneGesture">Gesture</translation>
+	<translation name="Conversation.WindowDopeSheet.LaneBodyLookAt">Body Look-At</translation>
+	<translation name="Conversation.WindowDopeSheet.LaneHeadLookAt">Head Look-At</translation>
+	<translation name="Conversation.WindowDopeSheet.LaneEyesLookAt">Eyes Look-At</translation>
+	<translation name="Conversation.WindowDopeSheet.LaneWordDesc">Speech animation.</translation>
+	<translation name="Conversation.WindowDopeSheet.LaneFacePoseDesc">Facial animation.</translation>
+	<translation name="Conversation.WindowDopeSheet.LaneGestureDesc">Gesture playback.</translation>
+	<translation name="Conversation.WindowDopeSheet.LaneBodyLookAtDesc">Body orientation.</translation>
+	<translation name="Conversation.WindowDopeSheet.LaneHeadLookAtDesc">Head orientation.</translation>
+	<translation name="Conversation.WindowDopeSheet.LaneEyesLookAtDesc">Eyes orientation. If empty uses Head Look-At.</translation>
+	<!-- Window Properties Tabs -->
+	<translation name="Conversation.WindowProperties.Conversation">Conversation</translation>
+	<translation name="Conversation.WindowProperties.Topic">Topic</translation>
+	<translation name="Conversation.WindowProperties.View">View</translation>
+	<translation name="Conversation.WindowProperties.Undo">Undo</translation>
+	<!-- DialogPasteSnippet -->
+	<translation name="Conversation.DialogPasteSnippet.Snippet.Label">Snippet:</translation>
+	<translation name="Conversation.DialogPasteSnippet.CameraShot1.Label">Camera Shot 1:</translation>
+	<translation name="Conversation.DialogPasteSnippet.CameraShot2.Label">Camera Shot 2:</translation>
+	<translation name="Conversation.DialogPasteSnippet.Target1.Label">Target 1:</translation>
+	<translation name="Conversation.DialogPasteSnippet.Target2.Label">Target 2:</translation>
+	<translation name="Conversation.DialogPasteSnippet.WaitCameraShot.Label">Wait Camera Shot:</translation>
+	<translation name="Conversation.DialogPasteSnippet.WaitActorSpeak.Label">Wait Actor Speak:</translation>
+	<translation name="Conversation.DialogPasteSnippet.ScaleActorSpeak.Label">Scale Actor Speak:</translation>
+	<!-- DialogEditStrip -->
+	<translation name="Conversation.DialogEditStrip.Pause.Label">Pause:</translation>
+	<translation name="Conversation.DialogEditStrip.Duration.Label">Duration:</translation>
+	<translation name="Conversation.DialogEditStrip.Duration.ToolTip">Duration in seconds the strip stays active. -1 to stay active till the topic completes.</translation>
+	<!-- DopeSheetLane -->
+	<translation name="Conversation.DopeSheetLane.Add">Add...</translation>
+	<translation name="Conversation.DopeSheetLane.Edit">Edit...</translation>
+	<translation name="Conversation.DopeSheetLane.MoveLeft">Move Left</translation>
+	<translation name="Conversation.DopeSheetLane.MoveRight">Move Right</translation>
+	<translation name="Conversation.DopeSheetLane.Remove">Remove</translation>
+	<translation name="Conversation.DopeSheetLane.RemoveAll">Remove All</translation>
+	<!-- DopeSheetLaneEyesLookAt -->
+	<translation name="Conversation.DopeSheetLaneEyesLookAt.SetfromHeadLookAt">Set from Head Look-At</translation>
+	<!-- DopeSheetLaneHeadLookAt -->
+	<translation name="Conversation.DopeSheetLaneHeadLookAt.SetfromEyesLookAt">Set from Eyes Look-At</translation>
+	<!-- DopeSheetLaneWord -->
+	<translation name="Conversation.DopeSheetLaneWord.WordsFromText">Words From Text</translation>
+	<!-- WPActionActorAdd -->
+	<translation name="Conversation.WPActionActorAdd.Actor.Label">Actor:</translation>
+	<translation name="Conversation.WPActionActorAdd.Alias.Label">Alias:</translation>
+	<!-- WPActionActorCmd -->
+	<translation name="Conversation.WPActionActorCmd.ActorID.Label">Actor ID:</translation>
+	<translation name="Conversation.WPActionActorCmd.Commandtosend.Label">Command to send</translation>
+	<!-- WPActionActorRemove -->
+	<translation name="Conversation.WPActionActorRemove.ActorID.Label">Actor ID:</translation>
+	<!-- WPActionActorSpeak -->
+	<translation name="Conversation.WPActionActorSpeak.Actor.Label">Actor:</translation>
+	<translation name="Conversation.WPActionActorSpeak.Movement.Label">Movement:</translation>
+	<translation name="Conversation.WPActionActorSpeak.Movetotranslationentry.Title">Move to translation entry</translation>
+	<translation name="Conversation.WPActionActorSpeak.PathSound.Label">Path Sound:</translation>
+	<translation name="Conversation.WPActionActorSpeak.Showtranslationentry">Show translation entry...</translation>
+	<translation name="Conversation.WPActionActorSpeak.TextStyle.Label">Text Style:</translation>
+	<translation name="Conversation.WPActionActorSpeak.Textfromtranslationentry">Text from translation entry...</translation>
+	<translation name="Conversation.WPActionActorSpeak.Texttodisplayinthetextbox.Label">Text to display in the text box</translation>
+	<translation name="Conversation.WPActionActorSpeak.Texttotranslationentry">Text to translation entry...</translation>
+	<translation name="Conversation.WPActionActorSpeak.TranslationEntry.Title">Translation Entry</translation>
+	<translation name="Conversation.WPActionActorSpeak.Translationnamefromactivelanguage.Label">Translation 'name' from active language pack to use as text box text.</translation>
+	<translation name="Conversation.WPActionActorSpeak.UseSpeechAnimation">Use Speech Animation</translation>
+	<translation name="Conversation.WPActionActorSpeak.TextBoxText.Label">Text Box Text:</translation>
+	<translation name="Conversation.WPActionActorSpeak.Translated.Label">Translated:</translation>
+	<translation name="Conversation.WPActionActorSpeak.Translated.ToolTip">Translated text to display in the text box</translation>
+	<translation name="Conversation.WPActionActorSpeak.ShowTranslation.ToolTip">Language pack translation entry</translation>
+	<translation name="Conversation.WPActionActorSpeak.MinSpeechTime.Label">Min Speech Time:</translation>
+	<translation name="Conversation.WPActionActorSpeak.MinSpeechTime.ToolTip">Minimum time the actor is speaking</translation>
+	<!-- WPActionComment -->
+	<translation name="Conversation.WPActionComment.Comment.Label">Comment:</translation>
+	<!-- WPActionCoordSystemAdd -->
+	<translation name="Conversation.WPActionCoordSystemAdd.Alias.Label">Alias:</translation>
+	<translation name="Conversation.WPActionCoordSystemAdd.CoordSystem.Label">Coord System:</translation>
+	<!-- WPActionCoordSystemRemove -->
+	<translation name="Conversation.WPActionCoordSystemRemove.CoordSystem.Label">Coord System:</translation>
+	<!-- WPActionGameCommand -->
+	<translation name="Conversation.WPActionGameCommand.Commandtosend.Label">Command to send</translation>
+	<!-- WPActionMusic -->
+	<translation name="Conversation.WPActionMusic.Name.Label">Name:</translation>
+	<!-- WPActionPlayerChoice -->
+	<translation name="Conversation.WPActionPlayerChoice.Texttodisplayforoption.Label">Text to display for option</translation>
+	<translation name="Conversation.WPActionPlayerChoice.Variable.Label">Variable:</translation>
+	<!-- WPActionSetAParam -->
+	<translation name="Conversation.WPActionSetAParam.ActorID.Label">Actor ID:</translation>
+	<translation name="Conversation.WPActionSetAParam.Decrement">Decrement</translation>
+	<translation name="Conversation.WPActionSetAParam.Increment">Increment</translation>
+	<translation name="Conversation.WPActionSetAParam.Name.Label">Name:</translation>
+	<translation name="Conversation.WPActionSetAParam.Operator.Label">Operator:</translation>
+	<translation name="Conversation.WPActionSetAParam.Random">Random</translation>
+	<translation name="Conversation.WPActionSetAParam.Set">Set</translation>
+	<translation name="Conversation.WPActionSetAParam.Variable.Label">Variable:</translation>
+	<translation name="Conversation.WPActionSetAParam.Value.Label">Value:</translation>
+	<translation name="Conversation.WPActionSetAParam.Value.ToolTip">Value to use for operation (integer value)</translation>
+	<!-- WPActionCameraShot -->
+	<translation name="Conversation.WPActionCameraShot.Name.Label">Name:</translation>
+	<translation name="Conversation.WPActionCameraShot.Duration.Label">Duration:</translation>
+	<translation name="Conversation.WPActionCameraShot.Duration.ToolTip">Duration of the camera shot</translation>
+	<translation name="Conversation.WPActionCameraShot.CameraTarget.Label">Camera Target:</translation>
+	<translation name="Conversation.WPActionCameraShot.CameraTarget.ToolTip">Target the camera is attached to</translation>
+	<translation name="Conversation.WPActionCameraShot.LookAtTarget.Label">Look-At Target:</translation>
+	<translation name="Conversation.WPActionCameraShot.LookAtTarget.ToolTip">Target to point the camera at</translation>
+	<!-- WPAction -->
+	<translation name="Conversation.WPAction.Delay.Label">Delay:</translation>
+	<translation name="Conversation.WPAction.Delay.ToolTip">Delay the processing of the action after waiting conditions are fulfilled</translation>
+	<translation name="Conversation.WPAction.WaitForActorID.ToolTip">ID of actor to wait for or empty string to wait for all actors</translation>
+	<!-- WPActionSnippet -->
+	<translation name="Conversation.WPActionSnippet.File.Label">File:</translation>
+	<translation name="Conversation.WPActionSnippet.File.ToolTip">File to run topic from</translation>
+	<translation name="Conversation.WPActionSnippet.Topic.Label">Topic:</translation>
+	<translation name="Conversation.WPActionSnippet.Topic.ToolTip">Topic to run</translation>
+	<!-- WPActionWait -->
+	<translation name="Conversation.WPActionWait.Interval.Label">Interval:</translation>
+	<translation name="Conversation.WPActionWait.Interval.ToolTip">Interval in seconds to test condition</translation>
+	<!-- WPActionSetVariable -->
+	<translation name="Conversation.WPActionSetVariable.Decrement">Decrement</translation>
+	<translation name="Conversation.WPActionSetVariable.Increment">Increment</translation>
+	<translation name="Conversation.WPActionSetVariable.Name.Label">Name:</translation>
+	<translation name="Conversation.WPActionSetVariable.Operator.Label">Operator:</translation>
+	<translation name="Conversation.WPActionSetVariable.Random">Random</translation>
+	<translation name="Conversation.WPActionSetVariable.Set">Set</translation>
+	<translation name="Conversation.WPActionSetVariable.Variable.Label">Variable:</translation>
+	<translation name="Conversation.WPActionSetVariable.Value.Label">Value:</translation>
+	<translation name="Conversation.WPActionSetVariable.Value.ToolTip">Value to use for operation (integer value)</translation>
+	<!-- WPActionSnippet -->
+	<translation name="Conversation.WPActionSnippet.CreateSideLane">Create Side Lane</translation>
+	<!-- WPActionTrigger -->
+	<translation name="Conversation.WPActionTrigger.Action.Label">Action:</translation>
+	<translation name="Conversation.WPActionTrigger.Fire">Fire</translation>
+	<translation name="Conversation.WPActionTrigger.FullReset">Full Reset</translation>
+	<translation name="Conversation.WPActionTrigger.Name.Label">Name:</translation>
+	<translation name="Conversation.WPActionTrigger.Pulse">Pulse</translation>
+	<translation name="Conversation.WPActionTrigger.Reset">Reset</translation>
+	<!-- WPActionction -->
+	<translation name="Conversation.WPActionction.Waitforactor">Wait for actor</translation>
+	<translation name="Conversation.WPActionction.Waitspeakonly">Wait speak only</translation>
+	<!-- WPConditionAParam -->
+	<translation name="Conversation.WPConditionAParam.ActorID.Label">Actor ID:</translation>
+	<translation name="Conversation.WPConditionAParam.Equal">Equal</translation>
+	<translation name="Conversation.WPConditionAParam.Greater">Greater</translation>
+	<translation name="Conversation.WPConditionAParam.GreaterorEqual">Greater or Equal</translation>
+	<translation name="Conversation.WPConditionAParam.Less">Less</translation>
+	<translation name="Conversation.WPConditionAParam.LessorEqual">Less or Equal</translation>
+	<translation name="Conversation.WPConditionAParam.NotEqual">Not Equal</translation>
+	<translation name="Conversation.WPConditionAParam.Operator.Label">Operator:</translation>
+	<translation name="Conversation.WPConditionAParam.Parameter.Label">Parameter:</translation>
+	<translation name="Conversation.WPConditionAParam.TestVariable.Label">Test Variable:</translation>
+	<translation name="Conversation.WPConditionAParam.TestValue.Label">Test Value:</translation>
+	<translation name="Conversation.WPConditionAParam.TestValue.ToolTip">Value to compare against</translation>
+	<!-- WPConditionActorCommand -->
+	<translation name="Conversation.WPConditionActorCommand.ActorID.Label">Actor ID:</translation>
+	<translation name="Conversation.WPConditionActorCommand.Commandtosend.Label">Command to send</translation>
+	<translation name="Conversation.WPConditionActorCommand.Negate">Negate</translation>
+	<!-- WPConditionActorInConversation -->
+	<translation name="Conversation.WPConditionActorInConversation.ActorID.Label">Actor ID:</translation>
+	<translation name="Conversation.WPConditionActorInConversation.Negate">Negate</translation>
+	<!-- WPConditionGameCommand -->
+	<translation name="Conversation.WPConditionGameCommand.Commandtosend.Label">Command to send</translation>
+	<translation name="Conversation.WPConditionGameCommand.Negate">Negate</translation>
+	<!-- WPConditionHasActor -->
+	<translation name="Conversation.WPConditionHasActor.ActorID.Label">Actor ID:</translation>
+	<translation name="Conversation.WPConditionHasActor.Negate">Negate</translation>
+	<!-- WPConditionLogic -->
+	<translation name="Conversation.WPConditionLogic.All">All</translation>
+	<translation name="Conversation.WPConditionLogic.Any">Any</translation>
+	<translation name="Conversation.WPConditionLogic.None">None</translation>
+	<translation name="Conversation.WPConditionLogic.Operator.Label">Operator:</translation>
+	<!-- WPConditionTrigger -->
+	<translation name="Conversation.WPConditionTrigger.Fired">Fired</translation>
+	<translation name="Conversation.WPConditionTrigger.HasEverFired">Has Ever Fired</translation>
+	<translation name="Conversation.WPConditionTrigger.HasNeverFired">Has Never Fired</translation>
+	<translation name="Conversation.WPConditionTrigger.NotFired">Not Fired</translation>
+	<translation name="Conversation.WPConditionTrigger.TestMode.Label">Test Mode:</translation>
+	<translation name="Conversation.WPConditionTrigger.Trigger.Label">Trigger:</translation>
+	<!-- WPConditionVariable -->
+	<translation name="Conversation.WPConditionVariable.Equal">Equal</translation>
+	<translation name="Conversation.WPConditionVariable.Greater">Greater</translation>
+	<translation name="Conversation.WPConditionVariable.GreaterorEqual">Greater or Equal</translation>
+	<translation name="Conversation.WPConditionVariable.Less">Less</translation>
+	<translation name="Conversation.WPConditionVariable.LessorEqual">Less or Equal</translation>
+	<translation name="Conversation.WPConditionVariable.NotEqual">Not Equal</translation>
+	<translation name="Conversation.WPConditionVariable.Operator.Label">Operator:</translation>
+	<translation name="Conversation.WPConditionVariable.TestVariable.Label">Test Variable:</translation>
+	<translation name="Conversation.WPConditionVariable.Variable.Label">Variable:</translation>
+	<translation name="Conversation.WPConditionVariable.TestValue.Label">Test Value:</translation>
+	<translation name="Conversation.WPConditionVariable.TestValue.ToolTip">Value to compare against</translation>
+	<!-- WPTTIMAIfElse -->
+	<translation name="Conversation.WPTTIMAIfElse.IfElse">If-Else</translation>
+	<!-- WPTTIMAIfElseElse -->
+	<translation name="Conversation.WPTTIMAIfElseElse.Conditionisfalse">Condition is false</translation>
+	<translation name="Conversation.WPTTIMAIfElseElse.InsertActionAfter">Insert Action After</translation>
+	<!-- WPTTIMAIfElseIfCaseActions -->
+	<translation name="Conversation.WPTTIMAIfElseIfCaseActions.Actions">Actions</translation>
+	<translation name="Conversation.WPTTIMAIfElseIfCaseActions.InsertActionAfter">Insert Action After</translation>
+	<!-- WPTTIMAIfElseIfCaseCondition -->
+	<translation name="Conversation.WPTTIMAIfElseIfCaseCondition.Condition">Condition</translation>
+	<!-- WPTTIMAMusic -->
+	<translation name="Conversation.WPTTIMAMusic.Music">Music</translation>
+	<!-- WPTTIMAPlayerChoice -->
+	<translation name="Conversation.WPTTIMAPlayerChoice.PlayerChoice">Player Choice</translation>
+	<!-- WPTTIMAPlayerChoiceActions -->
+	<translation name="Conversation.WPTTIMAPlayerChoiceActions.InsertActionAfter">Insert Action After</translation>
+	<translation name="Conversation.WPTTIMAPlayerChoiceActions.WaitingActions">Waiting Actions</translation>
+	<!-- WPTTIMAPlayerChoiceOptionActions -->
+	<translation name="Conversation.WPTTIMAPlayerChoiceOptionActions.Actions">Actions</translation>
+	<translation name="Conversation.WPTTIMAPlayerChoiceOptionActions.InsertActionAfter">Insert Action After</translation>
+	<!-- WPTTIMAPlayerChoiceOptionCondition -->
+	<translation name="Conversation.WPTTIMAPlayerChoiceOptionCondition.Condition">Condition</translation>
+	<!-- WPTTIMAStopConversation -->
+	<translation name="Conversation.WPTTIMAStopConversation.StopConversation">Stop Conversation</translation>
+	<!-- WPTTIMAStopTopic -->
+	<translation name="Conversation.WPTTIMAStopTopic.StopTopic">Stop Topic</translation>
+	<!-- WPTTIMAWait -->
+	<translation name="Conversation.WPTTIMAWait.Wait">Wait</translation>
+	<!-- WPTTIMAWaitActions -->
+	<translation name="Conversation.WPTTIMAWaitActions.Actions">Actions</translation>
+	<translation name="Conversation.WPTTIMAWaitActions.InsertActionAfter">Insert Action After</translation>
+	<!-- WPTTIMAWaitCondition -->
+	<translation name="Conversation.WPTTIMAWaitCondition.Condition">Condition</translation>
+	<!-- WPTTreeModel -->
+	<translation name="Conversation.WPTTreeModel.AddAction">Add Action</translation>
+	<translation name="Conversation.WPTTreeModel.InsertActionAfter">Insert Action After</translation>
+	<translation name="Conversation.WPTTreeModel.InsertActionBefore">Insert Action Before</translation>
+	<translation name="Conversation.WPTTreeModel.Topic">Topic</translation>
+	<!-- WPTopic -->
+	<translation name="Conversation.WPTopic.Add">Add...</translation>
+	<translation name="Conversation.WPTopic.Add.ToolTip">Add topic group</translation>
+	<translation name="Conversation.WPTopic.AddTopic.Title">Add Topic</translation>
+	<translation name="Conversation.WPTopic.AddTopicGroup.Title">Add Topic Group</translation>
+	<translation name="Conversation.WPTopic.Copy">Copy</translation>
+	<translation name="Conversation.WPTopic.Copy.ToolTip">Copy topic group</translation>
+	<translation name="Conversation.WPTopic.Duplicate">Duplicate...</translation>
+	<translation name="Conversation.WPTopic.Duplicate.ToolTip">Duplicate topic group</translation>
+	<translation name="Conversation.WPTopic.DuplicateTopic.Title">Duplicate Topic</translation>
+	<translation name="Conversation.WPTopic.DuplicateTopicGroup.Title">Duplicate Topic Group</translation>
+	<translation name="Conversation.WPTopic.MissingWords">Missing Words...</translation>
+	<translation name="Conversation.WPTopic.MissingWords.ToolTip">Missing words</translation>
+	<translation name="Conversation.WPTopic.Paste">Paste</translation>
+	<translation name="Conversation.WPTopic.Paste.ToolTip">Paste topic group</translation>
+	<translation name="Conversation.WPTopic.Remove">Remove</translation>
+	<translation name="Conversation.WPTopic.Remove.ToolTip">Remove topic group</translation>
+	<translation name="Conversation.WPTopic.Rename">Rename...</translation>
+	<translation name="Conversation.WPTopic.Rename.ToolTip">Rename topic group</translation>
+	<translation name="Conversation.WPTopic.RenameTopic.Title">Rename Topic</translation>
+	<translation name="Conversation.WPTopic.RenameTopicGroup.Title">Rename Topic Group</translation>
+	<translation name="Conversation.WPTopic.Topicexists.Message">Topic exists</translation>
+	<translation name="Conversation.WPTopic.Topicgroupexists.Message">Topic group exists</translation>
+	<translation name="Conversation.WPTopic.Actions.ToolTip">Actions in topic</translation>
+	<translation name="Conversation.WPTopic.Conversation.Label">Conversation:</translation>
+	<translation name="Conversation.WPTopic.Conversation.ToolTip">Conversation file</translation>
+	<translation name="Conversation.WPTopic.File.Label">File:</translation>
+	<translation name="Conversation.WPTopic.File.ToolTip">File</translation>
+	<translation name="Conversation.WPTopic.Topic.Label">Topic:</translation>
+	<translation name="Conversation.WPTopic.Topic.ToolTip">Topic in conversation file</translation>
+	<!-- WPView -->
+	<translation name="Conversation.WPView.Acontrollerwiththisnameexistsalrea.Message">A controller with this name exists already.</translation>
+	<translation name="Conversation.WPView.Actorgesturetoedit.Label">Actor gesture to edit</translation>
+	<translation name="Conversation.WPView.Actorposetoedit.Label">Actor pose to edit</translation>
+	<translation name="Conversation.WPView.AddController.Title">Add Controller</translation>
+	<translation name="Conversation.WPView.AddGesture.Title">Add Gesture</translation>
+	<translation name="Conversation.WPView.AddPose.Title">Add Pose</translation>
+	<translation name="Conversation.WPView.AddVariable.Title">Add Variable</translation>
+	<translation name="Conversation.WPView.Agesturewiththisnameexistsalready.Message">A gesture with this name exists already.</translation>
+	<translation name="Conversation.WPView.AliasID.Label">Alias ID:</translation>
+	<translation name="Conversation.WPView.Animator.Label">Animator:</translation>
+	<translation name="Conversation.WPView.Aposewiththisnameexistsalready.Message">A pose with this name exists already.</translation>
+	<translation name="Conversation.WPView.CameraHandling.Label">Camera Handling:</translation>
+	<translation name="Conversation.WPView.CameraShot">Camera Shot</translation>
+	<translation name="Conversation.WPView.Classoftheprop.Label">Class of the prop</translation>
+	<translation name="Conversation.WPView.ConstantValue">Constant Value</translation>
+	<translation name="Conversation.WPView.Controllertoedit.Label">Controller to edit</translation>
+	<translation name="Conversation.WPView.Conversation">Conversation</translation>
+	<translation name="Conversation.WPView.ElapsedTime">Elapsed Time</translation>
+	<translation name="Conversation.WPView.EyeAnimator.Label">Eye Animator:</translation>
+	<translation name="Conversation.WPView.EyesLeftRight">Eyes Left-Right</translation>
+	<translation name="Conversation.WPView.EyesUpDown">Eyes Up-Down</translation>
+	<translation name="Conversation.WPView.FacePoseAnimator.Label">Face Pose Animator:</translation>
+	<translation name="Conversation.WPView.Free">Free</translation>
+	<translation name="Conversation.WPView.HeadLeftRight">Head Left-Right</translation>
+	<translation name="Conversation.WPView.HeadRotator.Label">Head Rotator:</translation>
+	<translation name="Conversation.WPView.HeadUpDown">Head Up-Down</translation>
+	<translation name="Conversation.WPView.ID.Label">ID:</translation>
+	<translation name="Conversation.WPView.Missingwordsfoundduringplayback.Label">Missing words found during playback</translation>
+	<translation name="Conversation.WPView.Model.Label">Model:</translation>
+	<translation name="Conversation.WPView.Name.Label">Name:</translation>
+	<translation name="Conversation.WPView.Position.Label">Position:</translation>
+	<translation name="Conversation.WPView.Proptoedit.Label">Prop to edit</translation>
+	<translation name="Conversation.WPView.RenameController.Title">Rename Controller</translation>
+	<translation name="Conversation.WPView.RenameGesture.Title">Rename Gesture</translation>
+	<translation name="Conversation.WPView.RenamePose.Title">Rename Pose</translation>
+	<translation name="Conversation.WPView.Rig.Label">Rig:</translation>
+	<translation name="Conversation.WPView.Rotation.Label">Rotation:</translation>
+	<translation name="Conversation.WPView.SetParameter.Title">Set Parameter</translation>
+	<translation name="Conversation.WPView.Skin.Label">Skin:</translation>
+	<translation name="Conversation.WPView.SpeechAnimation.Label">Speech Animation:</translation>
+	<translation name="Conversation.WPView.UpdateType.Label">Update Type:</translation>
+	<translation name="Conversation.WPView.Vector.Label">Vector:</translation>
+	<!-- WindowDopeSheet -->
+	<translation name="Conversation.WindowDopeSheet.TimeScale.Label">Time-Scale:</translation>
+	<translation name="Conversation.WindowDopeSheet.TimeScale.ToolTip">Time scaling</translation>
+	<!-- WindowMain -->
+	<translation name="Conversation.WindowMain.Edit">Edit</translation>
+	<translation name="Conversation.WindowMain.File">File</translation>
+	<translation name="Conversation.WindowMain.Foundmissingwords.Message">Found missing words</translation>
+	<translation name="Conversation.WindowMain.LoadRecentConversationActorSetup">Load Recent Conversation Actor Setup</translation>
+	<translation name="Conversation.WindowMain.LoadRecentConversationTestGameState">Load Recent Conversation Test Game State</translation>
+	<translation name="Conversation.WindowMain.LoadRecentConversationTestSetup">Load Recent Conversation Test Setup</translation>
+	<translation name="Conversation.WindowMain.MissingWords.Title">Missing Words</translation>
+	<translation name="Conversation.WindowMain.New">New</translation>
+	<translation name="Conversation.WindowMain.NewConversation.Message">New Conversation</translation>
+	<translation name="Conversation.WindowMain.Nomissingwordsfound.Message">No missing words found</translation>
+	<translation name="Conversation.WindowMain.Open">Open...</translation>
+	<translation name="Conversation.WindowMain.OpenConversation.Message">Open Conversation</translation>
+	<translation name="Conversation.WindowMain.OpenConversation.Title">Open Conversation</translation>
+	<translation name="Conversation.WindowMain.OpenConversationActorSetup.Title">Open Conversation Actor Setup</translation>
+	<translation name="Conversation.WindowMain.OpenConversationTestGameState.Title">Open Conversation Test Game State</translation>
+	<translation name="Conversation.WindowMain.OpenConversationTestSetup.Title">Open Conversation Test Setup</translation>
+	<translation name="Conversation.WindowMain.OpenLanguagePack.Title">Open Language Pack</translation>
+	<translation name="Conversation.WindowMain.RecentAttachLanguagePack">Recent Attach Language Pack</translation>
+	<translation name="Conversation.WindowMain.Save">Save</translation>
+	<translation name="Conversation.WindowMain.SaveConversation.Title">Save Conversation</translation>
+	<translation name="Conversation.WindowMain.SaveConversationActorSetup.Title">Save Conversation Actor Setup</translation>
+	<translation name="Conversation.WindowMain.SaveConversationTestGameState.Title">Save Conversation Test Game State</translation>
+	<translation name="Conversation.WindowMain.SaveConversationTestSetup.Title">Save Conversation Test Setup</translation>
+	<translation name="Conversation.WindowMain.SaveAs">Save As...</translation>
+	<translation name="Conversation.WindowMain.SaveAs.ToolTip">Saves conversation under a differen file</translation>
+	<translation name="Conversation.WindowMain.Savesconversationtofile.ToolTip">Saves conversation to file</translation>
+	<translation name="Conversation.WindowMain.View">View</translation>
+	<translation name="Conversation.WindowMain.Cut">Cut</translation>
+	<translation name="Conversation.WindowMain.Cut.ToolTip">Cut selected objects</translation>
+	<translation name="Conversation.WindowMain.Copy">Copy</translation>
+	<translation name="Conversation.WindowMain.Copy.ToolTip">Copies selected objects</translation>
+	<translation name="Conversation.WindowMain.Paste">Paste</translation>
+	<translation name="Conversation.WindowMain.Paste.ToolTip">Paste objects</translation>
+	<translation name="Conversation.WindowMain.LoadConversationTestSetup">Load Conversation Test Setup...</translation>
+	<translation name="Conversation.WindowMain.LoadConversationTestSetup.ToolTip">Loads a conversation test setup from file</translation>
+	<translation name="Conversation.WindowMain.SaveConversationTestSetup">Save Conversation Test Setup...</translation>
+	<translation name="Conversation.WindowMain.SaveConversationTestSetup.ToolTip">Saves a conversation test setup from file</translation>
+	<translation name="Conversation.WindowMain.LoadConversationActorSetup">Load Conversation Actor Setup...</translation>
+	<translation name="Conversation.WindowMain.LoadConversationActorSetup.ToolTip">Loads a conversation actor setup from file</translation>
+	<translation name="Conversation.WindowMain.SaveConversationActorSetup">Save Conversation Actor Setup...</translation>
+	<translation name="Conversation.WindowMain.SaveConversationActorSetup.ToolTip">Saves a conversation actor setup from file</translation>
+	<translation name="Conversation.WindowMain.LoadConversationTestGameState">Load Conversation Test Game State...</translation>
+	<translation name="Conversation.WindowMain.LoadConversationTestGameState.ToolTip">Loads a conversation test game state from file</translation>
+	<translation name="Conversation.WindowMain.SaveConversationTestGameState">Save Conversation Test Game State...</translation>
+	<translation name="Conversation.WindowMain.SaveConversationTestGameState.ToolTip">Saves a conversation test game state from file</translation>
+	<translation name="Conversation.WindowMain.ShowRuleOfThirdsAid">Show Rule of Thirds aid</translation>
+	<translation name="Conversation.WindowMain.ShowRuleOfThirdsAid.ToolTip">Show Rule of Thirds aid</translation>
+	<translation name="Conversation.WindowMain.AttachLanguagePack">Attach Language Pack...</translation>
+	<translation name="Conversation.WindowMain.AttachLanguagePack.ToolTip">Load language pack attaching it to conversation</translation>
+	<translation name="Conversation.WindowMain.AttachLanguagePack.Title">Attach Language Pack</translation>
+	<translation name="Conversation.WindowMain.AttachLanguagePack.Message">Language pack changed. Save before attaching a new one?</translation>
+	<translation name="Conversation.WindowMain.DetachLanguagePack">Detach Language Pack...</translation>
+	<translation name="Conversation.WindowMain.DetachLanguagePack.ToolTip">Detach language pack from conversation</translation>
+	<translation name="Conversation.WindowMain.DetachLanguagePack.Title">Detach Language Pack</translation>
+	<translation name="Conversation.WindowMain.DetachLanguagePack.Message">Language pack changed. Save before detaching?</translation>
+	<translation name="Conversation.WindowMain.MissingWords">Missing Words...</translation>
+	<translation name="Conversation.WindowMain.MissingWords.ToolTip">Show missing words</translation>
+	<translation name="Conversation.WindowMain.NewConversation.Title">New Conversation</translation>
+	<translation name="Conversation.WindowMain.NewConversation.Discard.Message">Creating a new conversation discarding the current one is that ok?</translation>
+	<translation name="Conversation.WindowMain.OpenConversation.Discard.Message">Open conversation discards changes. Is this ok?</translation>
+	<translation name="Conversation.WindowMain.CreateNew.ToolTip">Create new conversation</translation>
+	<translation name="Conversation.WindowMain.OpenFile.ToolTip">Open conversation from file</translation>
+	<!-- WPConversation -->
+	<translation name="Conversation.WPConversation.AddImportConversation.ToolTip">Add Import Conversation</translation>
+	<translation name="Conversation.WPConversation.RemoveImport">Remove</translation>
+	<translation name="Conversation.WPConversation.RemoveImport.ToolTip">Remove Import</translation>
+	<translation name="Conversation.WPConversation.MoveUp">Move Up</translation>
+	<translation name="Conversation.WPConversation.MoveUp.ToolTip">Move Up</translation>
+	<translation name="Conversation.WPConversation.MoveDown">Move Down</translation>
+	<translation name="Conversation.WPConversation.MoveDown.ToolTip">Move Down</translation>
+	<translation name="Conversation.WPConversation.RemoveAll">Remove All</translation>
+	<translation name="Conversation.WPConversation.RemoveAll.ToolTip">Remove All Imports</translation>
+	<translation name="Conversation.WPConversation.RemoveTarget">Remove</translation>
+	<translation name="Conversation.WPConversation.RemoveTarget.ToolTip">Remove Target</translation>
+	<translation name="Conversation.WPConversation.RemoveCameraShot">Remove</translation>
+	<translation name="Conversation.WPConversation.RemoveCameraShot.ToolTip">Remove Camera Shot</translation>
+	<translation name="Conversation.WPConversation.RemoveGesture">Remove</translation>
+	<translation name="Conversation.WPConversation.RemoveGesture.ToolTip">Remove Gesture</translation>
+	<translation name="Conversation.WPConversation.RemoveFacePose">Remove</translation>
+	<translation name="Conversation.WPConversation.RemoveFacePose.ToolTip">Remove Face Pose</translation>
+	<translation name="Conversation.WPConversation.AlignTargets">Align Targets</translation>
+	<translation name="Conversation.WPConversation.AlignTargets.ToolTip">Targets are aligned to face each other</translation>
+	<translation name="Conversation.WPConversation.AlignTargetLockUpAxis">Align Target Lock Up-Axis</translation>
+	<translation name="Conversation.WPConversation.AlignTargetLockUpAxis.ToolTip">Target up axes are locked during aligning</translation>
+	<translation name="Conversation.WPConversation.AnchorRelativeToLookAt">Anchor Relative to Look-At</translation>
+	<translation name="Conversation.WPConversation.AnchorRelativeToLookAt.ToolTip">Camera is relative to the camera target or the look-at target</translation>
+	<translation name="Conversation.WPConversation.LockTargetCamera">Lock Target Camera</translation>
+	<translation name="Conversation.WPConversation.LockTargetCamera.ToolTip">Camera target position is locked during the entire camera shot</translation>
+	<translation name="Conversation.WPConversation.LockTargetLookAt">Lock Target Look-At</translation>
+	<translation name="Conversation.WPConversation.LockTargetLookAt.ToolTip">Look-at target position is locked during the entire camera shot</translation>
+	<translation name="Conversation.WPConversation.HoldGesture">Hold Gesture</translation>
+	<translation name="Conversation.WPConversation.HoldGesture.ToolTip">Hold gesture after gesture finished</translation>
+	<translation name="Conversation.WPConversation.Name">Name:</translation>
+	<translation name="Conversation.WPConversation.RemoveFacePoseController">Remove</translation>
+	<translation name="Conversation.WPConversation.RemoveFacePoseController.ToolTip">Remove Face Pose Controller</translation>
+	<translation name="Conversation.WPConversation.ControllerToAdd">Controller to add</translation>
+	<translation name="Conversation.WPConversation.ImportConversation.GroupBox">Import Conversation:</translation>
+	<translation name="Conversation.WPConversation.Importedconversations.Description">Imported conversations</translation>
+	<translation name="Conversation.WPConversation.Targets.GroupBox">Targets:</translation>
+	<translation name="Conversation.WPConversation.Target.Label">Target:</translation>
+	<translation name="Conversation.WPConversation.Actor.Label">Actor:</translation>
+	<translation name="Conversation.WPConversation.CameraShots.GroupBox">Camera Shots:</translation>
+	<translation name="Conversation.WPConversation.CameraShot.Label">Camera Shot:</translation>
+	<translation name="Conversation.WPConversation.ActorCount.Label">Actor Count:</translation>
+	<translation name="Conversation.WPConversation.CameraTarget.GroupBox">Camera Target:</translation>
+	<translation name="Conversation.WPConversation.Target2.Label">Target:</translation>
+	<translation name="Conversation.WPConversation.CameraLookAt.GroupBox">Camera Look-At:</translation>
+	<translation name="Conversation.WPConversation.LookAtTarget.Label">Look-At Target:</translation>
+	<translation name="Conversation.WPConversation.Orbiting.GroupBox">Orbiting:</translation>
+	<translation name="Conversation.WPConversation.DistanceFrom.Label">Distance From:</translation>
+	<translation name="Conversation.WPConversation.DistanceTo.Label">Distance To:</translation>
+	<translation name="Conversation.WPConversation.Parameters.GroupBox">Parameters:</translation>
+	<translation name="Conversation.WPConversation.TiltFrom.Label">Tilt From:</translation>
+	<translation name="Conversation.WPConversation.TiltTo.Label">Tilt To:</translation>
+	<translation name="Conversation.WPConversation.FovFrom.Label">Fov From:</translation>
+	<translation name="Conversation.WPConversation.FovTo.Label">Fov To:</translation>
+	<translation name="Conversation.WPConversation.Gestures.GroupBox">Gestures:</translation>
+	<translation name="Conversation.WPConversation.Gesture.Label">Gesture:</translation>
+	<translation name="Conversation.WPConversation.Duration.Label">Duration:</translation>
+	<translation name="Conversation.WPConversation.FacePoses.GroupBox">Face Poses:</translation>
+	<translation name="Conversation.WPConversation.FacePose.Label">Face Pose:</translation>
+	<translation name="Conversation.WPConversation.Value.Label">Value:</translation>
+	<!-- DialogPasteSnippet -->
+	<translation name="Conversation.DialogPasteSnippet.Title">Paste Conversation Snippet</translation>
+	<!-- WPTopic (context menus) -->
+	<translation name="Conversation.WPTopic.ShowFileMenu.ToolTip">Show File Menu</translation>
+	<translation name="Conversation.WPTopic.ShowTopicMenu.ToolTip">Show Topic Menu</translation>
+	<!-- WPView (actions) -->
+	<translation name="Conversation.WPView.AddProp.ToolTip">Add Prop</translation>
+	<translation name="Conversation.WPView.RemoveProp.ToolTip">Remove Prop</translation>
+	<translation name="Conversation.WPView.AddActor.ToolTip">Add Actor</translation>
+	<translation name="Conversation.WPView.RemoveActor.ToolTip">Remove Actor</translation>
+	<translation name="Conversation.WPView.AddActorPose.ToolTip">Add Actor Pose</translation>
+	<translation name="Conversation.WPView.RemoveActorPose.ToolTip">Remove Actor Pose</translation>
+	<translation name="Conversation.WPView.RenameActorPose.ToolTip">Rename Actor Pose</translation>
+	<translation name="Conversation.WPView.AddActorPoseController.ToolTip">Add Actor Pose Controller</translation>
+	<translation name="Conversation.WPView.RemoveActorPoseController.ToolTip">Remove Actor Pose Controller</translation>
+	<translation name="Conversation.WPView.RemoveAllActorPoseControllers.ToolTip">Remove all actor pose controllers</translation>
+	<translation name="Conversation.WPView.RenameActorPoseController.ToolTip">Rename Actor Pose Controller</translation>
+	<translation name="Conversation.WPView.AddActorGesture.ToolTip">Add Actor Gesture</translation>
+	<translation name="Conversation.WPView.RemoveActorGesture.ToolTip">Remove Actor Gesture</translation>
+	<translation name="Conversation.WPView.RenameActorGesture.ToolTip">Rename Actor Gesture</translation>
+	<translation name="Conversation.WPView.AddActorCommand.ToolTip">Add Actor Command</translation>
+	<translation name="Conversation.WPView.RemoveActorCommand.ToolTip">Remove Actor Command</translation>
+	<translation name="Conversation.WPView.RemoveAllActorCommands.ToolTip">Remove All Actor Commands</translation>
+	<translation name="Conversation.WPView.SetActorParameter.ToolTip">Set Actor Parameter</translation>
+	<translation name="Conversation.WPView.RemoveActorParameter.ToolTip">Remove Actor Parameter</translation>
+	<translation name="Conversation.WPView.RemoveAllActorParameters.ToolTip">Remove All Actor Parameters</translation>
+	<translation name="Conversation.WPView.SetParameterValue.Title">Set Parameter Value</translation>
+	<translation name="Conversation.WPView.AddCoordSystem.ToolTip">Add Coord-System</translation>
+	<translation name="Conversation.WPView.RemoveCoordSystem.ToolTip">Remove Coord-System</translation>
+	<translation name="Conversation.WPView.SelectPlaybackTopic.ToolTip">Select Playback Topic</translation>
+	<translation name="Conversation.WPView.RewindPlayback.ToolTip">Rewind Playback</translation>
+	<translation name="Conversation.WPView.AddPlaybackCommand.ToolTip">Add Playback Command</translation>
+	<translation name="Conversation.WPView.RemovePlaybackCommand.ToolTip">Remove Playback Command</translation>
+	<translation name="Conversation.WPView.RemoveAllPlaybackCommands.ToolTip">Remove All Playback Commands</translation>
+	<translation name="Conversation.WPView.AddPlaybackVariable.ToolTip">Add Playback Variable</translation>
+	<translation name="Conversation.WPView.SetPlaybackVariable.ToolTip">Set Playback Variable</translation>
+	<translation name="Conversation.WPView.RemovePlaybackVariable.ToolTip">Remove Playback Variable</translation>
+	<translation name="Conversation.WPView.RemoveAllPlaybackVariables.ToolTip">Remove All Playback Variables</translation>
+	<translation name="Conversation.WPView.SetVariable.Title">Set Variable</translation>
+	<translation name="Conversation.WPView.ShowPlaybackTriggerTable.ToolTip">Show Playback Trigger Table</translation>
+	<translation name="Conversation.WPView.Props.GroupBox">Props:</translation>
+	<translation name="Conversation.WPView.Actors.GroupBox">Actors:</translation>
+	<translation name="Conversation.WPView.Actor.Label">Actor:</translation>
+	<translation name="Conversation.WPView.AnimatorControllers.GroupBox">Animator Controllers:</translation>
+	<translation name="Conversation.WPView.Value.Label">Value:</translation>
+	<translation name="Conversation.WPView.ActorGestures.GroupBox">Actor Gestures:</translation>
+	<translation name="Conversation.WPView.ActorCommandSimulation.GroupBox">Actor Command Simulation:</translation>
+	<translation name="Conversation.WPView.ActorCommands.Description">Actor Commands</translation>
+	<translation name="Conversation.WPView.ActorParameters.GroupBox">Actor Parameters:</translation>
+	<translation name="Conversation.WPView.ActorParameters.Description">Actor Parameters</translation>
+	<translation name="Conversation.WPView.CoordinateSystems.GroupBox">Coordinate Systems:</translation>
+	<translation name="Conversation.WPView.CoordSystem.Label">Coord-System:</translation>
+	<translation name="Conversation.WPView.Playback.GroupBox">Playback:</translation>
+	<translation name="Conversation.WPView.File.Label">File:</translation>
+	<translation name="Conversation.WPView.Topic.Label">Topic:</translation>
+	<translation name="Conversation.WPView.GameCommand.GroupBox">Game Command:</translation>
+	<translation name="Conversation.WPView.GameCommands.Description">Game Commands</translation>
+	<translation name="Conversation.WPView.Variables.GroupBox">Variables:</translation>
+	<translation name="Conversation.WPView.Variables.Description">Variables</translation>
+	<translation name="Conversation.WPView.Debug.GroupBox">Debug:</translation>
+	<translation name="Conversation.WPView.Camera.Label">Camera:</translation>
+	<translation name="Conversation.WPView.CameraFree.Label">Camera Free:</translation>
+	<translation name="Conversation.WPView.Sky.Label">Sky:</translation>
+	<translation name="Conversation.WPView.EnvironmentObject.Label">Environment Object:</translation>
+	<translation name="Conversation.WPView.Proptoedit.Label">Prop to edit</translation>
+	<translation name="Conversation.WPView.Classoftheprop.Label">Class of the prop</translation>
+	<translation name="Conversation.WPView.Actor.ToolTip">Actor to edit</translation>
+	<translation name="Conversation.WPView.Actorposetoedit.Label">Actor pose to edit</translation>
+	<translation name="Conversation.WPView.Controllertoedit.Label">Controller to edit</translation>
+	<translation name="Conversation.WPView.Actorgesturetoedit.Label">Actor gesture to edit</translation>
+	<translation name="Conversation.WPView.CoordSystem.ToolTip">Coordinate system to edit</translation>
+	<translation name="Conversation.WPView.File.ToolTip">File to show topics for</translation>
+	<translation name="Conversation.WPView.Topic.ToolTip">Topic to play back</translation>
+	<translation name="Conversation.WPView.Missingwordsfoundduringplayback.Label">Missing words found during playback</translation>
+	<!-- WPConversation Dialog Titles -->
+	<translation name="Conversation.WPConversation.AddTarget.Title">Add Target</translation>
+	<translation name="Conversation.WPConversation.RenameTarget.Title">Rename Target</translation>
+	<translation name="Conversation.WPConversation.AddCameraShot.Title">Add Camera Shot</translation>
+	<translation name="Conversation.WPConversation.RenameCameraShot.Title">Rename Camera Shot</translation>
+	<translation name="Conversation.WPConversation.DuplicateCameraShot.Title">Duplicate Camera Shot</translation>
+	<translation name="Conversation.WPConversation.AddGesture.Title">Add Gesture</translation>
+	<translation name="Conversation.WPConversation.RenameGesture.Title">Rename Gesture</translation>
+	<translation name="Conversation.WPConversation.AddFacePose.Title">Add Face Pose</translation>
+	<translation name="Conversation.WPConversation.RenameFacePose.Title">Rename Face Pose</translation>
+	<translation name="Conversation.WPConversation.Target.ToolTip">Target to edit</translation>
+	<translation name="Conversation.WPConversation.Actor.ToolTip">ID of the actor or empty to not use an actor by ID</translation>
+	<translation name="Conversation.WPConversation.CoordSystem.Label">Coord-System:</translation>
+	<translation name="Conversation.WPConversation.Bone.Label">Bone:</translation>
+	<translation name="Conversation.WPConversation.Position.Label">Position:</translation>
+	<translation name="Conversation.WPConversation.Orientation.Label">Orientation:</translation>
+	<translation name="Conversation.WPConversation.CameraShot.ToolTip">Camera Shot to edit</translation>
+	<translation name="Conversation.WPConversation.ActorCount.ToolTip">Number of actors required for this camera action</translation>
+	<translation name="Conversation.WPConversation.Target2.ToolTip">Target the camera is attached to or empty string for static position</translation>
+	<translation name="Conversation.WPConversation.LookAtTarget.ToolTip">Target to point the camera at or empty string for static position</translation>
+	<translation name="Conversation.WPConversation.OffsetFrom.Label">Offset From:</translation>
+	<translation name="Conversation.WPConversation.OffsetTo.Label">Offset To:</translation>
+	<translation name="Conversation.WPConversation.OrbitFrom.Label">Orbit From:</translation>
+	<translation name="Conversation.WPConversation.OrbitTo.Label">Orbit To:</translation>
+	<translation name="Conversation.WPConversation.DistanceFrom.ToolTip">Start distance of the camera to the orbit position</translation>
+	<translation name="Conversation.WPConversation.DistanceTo.ToolTip">End distance of the camera to the orbit position</translation>
+	<translation name="Conversation.WPConversation.PositionFrom.Label">Position From:</translation>
+	<translation name="Conversation.WPConversation.PositionTo.Label">Position To:</translation>
+	<translation name="Conversation.WPConversation.RotationFrom.Label">Rotation From:</translation>
+	<translation name="Conversation.WPConversation.RotationTo.Label">Rotation To:</translation>
+	<translation name="Conversation.WPConversation.TiltFrom.ToolTip">Start tilt of the camera along the view axis</translation>
+	<translation name="Conversation.WPConversation.TiltTo.ToolTip">End tilt of the camera along the view axis</translation>
+	<translation name="Conversation.WPConversation.FovFrom.ToolTip">Start fov of the camera along the view axis</translation>
+	<translation name="Conversation.WPConversation.FovTo.ToolTip">End fov of the camera along the view axis</translation>
+	<translation name="Conversation.WPConversation.Gesture.ToolTip">Gesture to edit</translation>
+	<translation name="Conversation.WPConversation.Animator.Label">Animator:</translation>
+	<translation name="Conversation.WPConversation.Duration.ToolTip">Duration of gesture. Used as default value in strips</translation>
+	<translation name="Conversation.WPConversation.FacePose.ToolTip">Face Pose to edit</translation>
+	<translation name="Conversation.WPConversation.Faceposecontrollertoedit.Label">Face pose controller to edit</translation>
+	<translation name="Conversation.WPConversation.Value.ToolTip">Value of face pose controller</translation>
+	<translation name="Conversation.WPConversation.Pathtoaddtoimportlist.Label">Path to add to import list</translation>
+	<!-- Common Dialog Prompts -->
+	<translation name="Conversation.Common.Name">Name:</translation>
+	<translation name="Conversation.Common.Value">Value:</translation>
+	<translation name="Conversation.Common.Command">Command:</translation>
+	<translation name="Conversation.Common.Controller">Controller:</translation>
+	<translation name="Conversation.Common.Gesture">Gesture:</translation>
+	<translation name="Conversation.Common.Pose">Pose:</translation>
+	<translation name="Conversation.Common.Variable">Variable:</translation>
+	<translation name="Conversation.Common.Parameter">Parameter:</translation>
+	<translation name="Conversation.Common.Text">Text:</translation>
+	<!-- Action Tooltips -->
+	<translation name="Conversation.Action.PropAdd.ToolTip">Add Prop</translation>
+	<translation name="Conversation.Action.PropRemove.ToolTip">Remove Prop</translation>
+	<translation name="Conversation.Action.PropClass.ToolTip">Brings up a dialog to select the prop class</translation>
+	<translation name="Conversation.Action.PropVisible.ToolTip">Determines if the prop is visible</translation>
+	<translation name="Conversation.Action.ActorAdd.ToolTip">Add actor</translation>
+	<translation name="Conversation.Action.ActorRemove.ToolTip">Remove actor</translation>
+	<translation name="Conversation.Action.ActorWaiting.Label">Waiting</translation>
+	<translation name="Conversation.Action.ActorWaiting.ToolTip">Simulates the actor game scripts answer to the question if conversation should be waiting</translation>
+	<translation name="Conversation.Action.ActorPoseAdd.ToolTip">Add actor pose</translation>
+	<translation name="Conversation.Action.ActorPoseRemove.ToolTip">Remove actor pose</translation>
+	<translation name="Conversation.Action.ActorPoseRename.ToolTip">Rename actor pose</translation>
+	<translation name="Conversation.Action.ActorPoseControllerAdd.ToolTip">Add actor pose controller</translation>
+	<translation name="Conversation.Action.ActorPoseControllerRemove.ToolTip">Remove actor pose controller</translation>
+	<translation name="Conversation.Action.ActorPoseControllerRemoveAll.ToolTip">Remove all actor pose controllers</translation>
+	<translation name="Conversation.Action.ActorPoseControllerRename.ToolTip">Rename actor pose controller</translation>
+	<translation name="Conversation.Action.ActorGestureAdd.ToolTip">Add actor gesture</translation>
+	<translation name="Conversation.Action.ActorGestureRemove.ToolTip">Remove actor gesture</translation>
+	<translation name="Conversation.Action.ActorGestureRename.ToolTip">Rename actor gesture</translation>
+	<translation name="Conversation.Action.ActorCommandAdd.ToolTip">Add actor command</translation>
+	<translation name="Conversation.Action.ActorCommandRemove.ToolTip">Remove Actor Command</translation>
+	<translation name="Conversation.Action.ActorCommandRemoveAll.ToolTip">Remove All Actor Commands</translation>
+	<translation name="Conversation.Action.ActorParameterSet.ToolTip">Set Actor Parameter</translation>
+	<translation name="Conversation.Action.ActorParameterRemove.ToolTip">Remove Actor Parameter</translation>
+	<translation name="Conversation.Action.ActorParameterClear.ToolTip">Remove All Actor Parameters</translation>
+	<translation name="Conversation.Action.CoordSysAdd.ToolTip">Add coordinate system</translation>
+	<translation name="Conversation.Action.CoordSysRemove.ToolTip">Remove coordinate system</translation>
+	<translation name="Conversation.Action.PlaybackSelectTopic.ToolTip">Set this topic as the one to play back</translation>
+	<translation name="Conversation.Action.PlaybackRewind.ToolTip">Rewind the playback to the beginning of the selected topic</translation>
+	<translation name="Conversation.Action.PlaybackRunning.ToolTip">Determines if the topic is currently played back</translation>
+	<translation name="Conversation.Action.PlaybackPaused.ToolTip">Determines if the played back is paused</translation>
+	<translation name="Conversation.Action.PlaybackAutoAdvance.ToolTip">Auto advance certain commands (game/actor commands, trigger, add/remove actor/coordsystem)</translation>
+	<translation name="Conversation.Action.PlaybackCommandAdd.ToolTip">Add playback command</translation>
+	<translation name="Conversation.Action.PlaybackCommandRemove.ToolTip">Remove Playback Command</translation>
+	<translation name="Conversation.Action.PlaybackCommandRemoveAll.ToolTip">Remove All Playback Commands</translation>
+	<translation name="Conversation.Action.PlaybackVariableAdd.ToolTip">Add playback variable</translation>
+	<translation name="Conversation.Action.PlaybackVariableSet.ToolTip">Set playback variable</translation>
+	<translation name="Conversation.Action.PlaybackVariableRemove.ToolTip">Remove Playback Variable</translation>
+	<translation name="Conversation.Action.PlaybackVariableRemoveAll.ToolTip">Remove All Playback Variables</translation>
+	<translation name="Conversation.Action.MissingWordsCopy.ToolTip">Copy missing words found during playback to clipboard</translation>
+	<translation name="Conversation.Action.MissingWordsClear.ToolTip">Clear list of missing words found during playback</translation>
+	<translation name="Conversation.Action.EditCommand.ToolTip">Edit command in larger dialog</translation>
+	<translation name="Conversation.Action.EditTextBoxText.ToolTip">Edit text in larger dialog</translation>
+	<translation name="Conversation.Action.MoveToTranslation.ToolTip">Move text box text to language pack translation entry</translation>
+	<translation name="Conversation.Action.DopeSheetPlay.ToolTip">Play selected action</translation>
+	<translation name="Conversation.Action.DopeSheetPlayFromHere.ToolTip">Play onwards from selected action</translation>
+	<translation name="Conversation.Action.DopeSheetPlayPause.ToolTip">Pause/Resume playing</translation>
+	<translation name="Conversation.Action.DopeSheetSelectCurAction.ToolTip">Select currently played back action</translation>
+	<translation name="Conversation.Action.LaneAdd.ToolTip">Add element</translation>
+	<translation name="Conversation.Action.LaneRemove.ToolTip">Remove element</translation>
+	<translation name="Conversation.Action.LaneRemoveAll.ToolTip">Remove all elements</translation>
+	<translation name="Conversation.Action.LaneMoveLeft.ToolTip">Switch element with element on the left</translation>
+	<translation name="Conversation.Action.LaneMoveRight.ToolTip">Switch element with element on the right</translation>
+	<translation name="Conversation.Action.LaneEdit.ToolTip">Edit element</translation>
+	<translation name="Conversation.Action.WordsFromText.ToolTip">Set words from Actor Speak Action text using speech animation information</translation>
+	<!-- Menu Names -->
+	<translation name="Conversation.Menu.Prop">Prop menu</translation>
+	<translation name="Conversation.Menu.Actor">Actor menu</translation>
+	<translation name="Conversation.Menu.ActorPose">ActorPose menu</translation>
+	<translation name="Conversation.Menu.ActorPoseController">ActorPoseController menu</translation>
+	<translation name="Conversation.Menu.ActorGesture">ActorGesture menu</translation>
+	<translation name="Conversation.Menu.CoordSystem">Coord-System menu</translation>
+	<translation name="Conversation.Menu.Target">Target menu</translation>
+	<translation name="Conversation.Menu.CameraShot">Camera Shot menu</translation>
+	<translation name="Conversation.Menu.Gesture">Gesture menu</translation>
+	<translation name="Conversation.Menu.FacePose">Face Pose menu</translation>
+	<translation name="Conversation.Menu.FacePoseController">Face Pose Controller menu</translation>
+	<translation name="Conversation.Menu.MissingWords">Missing Words menu</translation>
+	<!-- Dialog Titles -->
+	<translation name="Conversation.Dialog.AddCommand">Add Command</translation>
+	<translation name="Conversation.Dialog.EditCommand">Edit Command</translation>
+	<translation name="Conversation.Dialog.EditTextBoxText">Edit Text Box Text</translation>
+	<translation name="Conversation.Dialog.SetParameter">Set Parameter</translation>
+	<translation name="Conversation.Dialog.CopyToClipboard">Copy To Clipboard</translation>
+	<translation name="Conversation.Dialog.CopyToClipboardText">Text for you to copy to the clipboard</translation>
+	<!-- Additional missing labels and tooltips -->
+	<translation name="Conversation.Action.CoordSystemAdd.Label">Add</translation>
+	<translation name="Conversation.Action.PlaybackSelectTopic.Label">Set</translation>
+	<translation name="Conversation.Action.PlaybackSelectTopic.ToolTip">Set this topic as the one to play back</translation>
+	<translation name="Conversation.Action.PlaybackCommandRemove.Label">Remove</translation>
+	<translation name="Conversation.Action.PlaybackCommandRemove.ToolTip">Remove Playback Command</translation>
+	<translation name="Conversation.Action.PlaybackCommandRemoveAll.Label">Remove All</translation>
+	<translation name="Conversation.Action.PlaybackCommandRemoveAll.ToolTip">Remove All Playback Commands</translation>
+	<translation name="Conversation.Action.PlaybackVariableSet.Label">Set...</translation>
+	<translation name="Conversation.Action.PlaybackVariableRemove.Label">Remove</translation>
+	<translation name="Conversation.Action.PlaybackVariableRemove.ToolTip">Remove Playback Variable</translation>
+	<translation name="Conversation.Action.PlaybackVariableRemoveAll.Label">Remove All</translation>
+	<translation name="Conversation.Action.PlaybackVariableRemoveAll.ToolTip">Remove All Playback Variables</translation>
+	<translation name="Conversation.Action.MissingWordsCopy.Label">Copy To Clipboard</translation>
+	<translation name="Conversation.Action.MissingWordsCopy.ToolTip">Copy missing words found during playback to clipboard</translation>
+	<translation name="Conversation.Action.MissingWordsClear.Label">Clear</translation>
+	<translation name="Conversation.Action.MissingWordsClear.ToolTip">Clear list of missing words found during playback</translation>
+	<translation name="Conversation.Menu.CoordSys">Coord-System menu</translation>
+	<translation name="Conversation.Menu.PlaybackMissingWords">Missing Words menu</translation>
+	<!-- Action/Condition Tooltips and Labels -->
+	<translation name="Conversation.Action.PropClass.ToolTip">Brings up a dialog to select the prop class</translation>
+	<translation name="Conversation.Action.ActorSpeakUseSpeechAnimation.ToolTip">Speech animation is played back or not (for example thinking)</translation>
+	<translation name="Conversation.Action.ActorSpeakMoveTo.ToolTip">Move text box text to language pack translation entry</translation>
+	<translation name="Conversation.Action.ActorSpeakMoveFrom.ToolTip">Set text box text from language pack translation entry</translation>
+	<translation name="Conversation.Action.ActorSpeakShowTranslation.ToolTip">Show language pack translation entry</translation>
+	<translation name="Conversation.Action.ActorSpeakTextTranslateMenu.ToolTip">Show Text Box Text Translate Menu</translation>
+	<translation name="Conversation.Action.EditInDialog.ToolTip">Edit command in larger dialog</translation>
+	<translation name="Conversation.Action.WaitForActorFinished.ToolTip">Wait for actor(s) to finish speaking and return false if asked to wait</translation>
+	<translation name="Conversation.Action.WaitActorSpeaking.ToolTip">Waiting considers only actor speaking not actor waiting</translation>
+	<translation name="Conversation.Action.SnippetSideLane.ToolTip">Run snippet in a new side lane</translation>
+	<translation name="Conversation.Action.SnippetJump.Label">Jump To Topic</translation>
+	<translation name="Conversation.Condition.ActorCommandNegate.ToolTip">True if the result of the command is negated</translation>
+	<translation name="Conversation.Condition.ActorInConversationNegate.ToolTip">True if the information is missing instead of existing</translation>
+	<translation name="Conversation.Condition.GameCommandNegate.ToolTip">True if the result of the command is negated</translation>
+	<translation name="Conversation.Condition.HasActorNegate.ToolTip">True if the information is missing instead of existing</translation>
+	<!-- Dialog Prompts -->
+	<translation name="Conversation.Dialog.Name">Name:</translation>
+	<translation name="Conversation.Dialog.Pose">Pose:</translation>
+	<translation name="Conversation.Dialog.Controller">Controller:</translation>
+	<translation name="Conversation.Dialog.Gesture">Gesture:</translation>
+	<translation name="Conversation.Dialog.Parameter">Parameter:</translation>
+	<translation name="Conversation.Dialog.Value">Value:</translation>
+	<translation name="Conversation.Dialog.Variable">Variable:</translation>
+	<translation name="Conversation.Dialog.Command">Command:</translation>
+	<translation name="Conversation.Dialog.Text">Text:</translation>
+	<!-- Helper Labels -->
+	<translation name="Conversation.WPView.Camera">Camera:</translation>
+	<translation name="Conversation.WPView.CameraFree">Camera Free:</translation>
+	<translation name="Conversation.WPView.Sky">Sky:</translation>
+	<translation name="Conversation.WPView.EnvironmentObject">Environment Object:</translation>
+	<translation name="Conversation.WPView.TriggerTable">Trigger Table:</translation>
+	<!-- Tree Model Text -->
+	<translation name="Conversation.TreeModel.MoveActionUp">Move Action Up</translation>
+	<translation name="Conversation.TreeModel.MoveActionDown">Move Action Down</translation>
+	<translation name="Conversation.TreeModel.PasteActionsBefore">Paste Actions Before</translation>
+	<translation name="Conversation.TreeModel.PasteActionsAfter">Paste Actions After</translation>
+	<translation name="Conversation.TreeModel.AddAction">Add Action</translation>
+	<translation name="Conversation.TreeModel.InsertActionBefore">Insert Action Before</translation>
+	<translation name="Conversation.TreeModel.MoveIfCaseUp">Move If-Case Up</translation>
+	<translation name="Conversation.TreeModel.MoveIfCaseDown">Move If-Case Down</translation>
+	<translation name="Conversation.TreeModel.Comment">Comment</translation>
+	<translation name="Conversation.TreeModel.GameCommand">Game Command</translation>
+	<!-- Menu Actions -->
+	<translation name="Conversation.MenuAction.CopyAction">Copy Action</translation>
+	<translation name="Conversation.MenuAction.CopyActions">Copy Actions</translation>
+	<translation name="Conversation.MenuAction.PasteActions">Paste Actions</translation>
+	<translation name="Conversation.MenuAction.PasteSnippet">Paste Snippet</translation>
+	<translation name="Conversation.MenuAction.RemoveAllActions">Remove All Actions</translation>
+	<translation name="Conversation.MenuAction.IfElseCaseAdd">Add If-Case</translation>
+	<translation name="Conversation.MenuAction.IfElseCaseClearCondition">Clear Condition</translation>
+	<translation name="Conversation.MenuAction.IfElseCaseCutAction">Cut Action</translation>
+	<translation name="Conversation.MenuAction.IfElseCasePasteSnippet">Paste Snippet</translation>
+	<translation name="Conversation.MenuAction.IfElseCaseRemove">Remove If-Case</translation>
+	<translation name="Conversation.MenuAction.IfElseCaseRemoveAction">Remove Action</translation>
+	<translation name="Conversation.MenuAction.CopyCondition">Copy Condition</translation>
+	<translation name="Conversation.MenuAction.PasteCondition">Paste Condition</translation>
+	<translation name="Conversation.MenuAction.RemoveCondition">Remove Condition</translation>
+	<translation name="Conversation.MenuAction.ClearCondition">Clear Condition</translation>
+	<translation name="Conversation.MenuAction.CutCondition">Cut Condition</translation>
+	<!-- Missing Dialog EditOptionText.Title -->
+	<translation name="Conversation.Dialog.EditOptionText.Title">Edit Option Text</translation>
+	<!-- FormLine Labels -->
+	<translation name="Conversation.WPView.Prop">Prop:</translation>
+	<translation name="Conversation.WPView.Object">Object:</translation>
+	<translation name="Conversation.WPView.ActorPose">Actor Pose:</translation>
+	<translation name="Conversation.WPView.Controller">Controller:</translation>
+	<translation name="Conversation.WPView.Gesture">Gesture:</translation>
+	<translation name="Conversation.WPView.MissingWords">Missing Words:</translation>
+	<!-- Additional Menu Action Labels -->
+	<translation name="Conversation.MenuAction.PasteConversationSnippet">Paste Conversation Snippet...</translation>
+	<translation name="Conversation.MenuAction.RemoveAction">Remove Action</translation>
+	<translation name="Conversation.MenuAction.CutAction">Cut Action</translation>
+	<translation name="Conversation.MenuAction.IfElseCaseAdd">Add If-Case</translation>
+	<translation name="Conversation.MenuAction.IfElseCaseRemove">Remove If-Case</translation>
+	<translation name="Conversation.MenuAction.LogicClearCondition">Logic: Clear Condition</translation>
+	<translation name="Conversation.MenuAction.LogicCutCondition">Logic: Cut Condition</translation>
+	<translation name="Conversation.MenuAction.AddOption">Add Option</translation>
+	<translation name="Conversation.MenuAction.RemoveOption">Remove Option</translation>
+	<translation name="Conversation.MenuAction.RemoveCondition">Remove Condition</translation>
+	<translation name="Conversation.MenuAction.ClearCondition">Clear Condition</translation>
+	<translation name="Conversation.MenuAction.SetCondition">Set Condition</translation>
+	<translation name="Conversation.MenuAction.ReplaceCondition">Replace Condition</translation>
+	<translation name="Conversation.MenuAction.AddAction">Add Action</translation>
+	<translation name="Conversation.MenuAction.MoveActionUp">Move Action Up</translation>
+	<translation name="Conversation.MenuAction.MoveActionDown">Move Action Down</translation>
+	<translation name="Conversation.MenuAction.PasteActionsBefore">Paste Actions Before</translation>
+	<translation name="Conversation.MenuAction.PasteActionsAfter">Paste Actions After</translation>
+	<translation name="Conversation.MenuAction.InsertActionBefore">Insert Action Before</translation>
+	<translation name="Conversation.MenuAction.MoveOptionUp">Move Option Up</translation>
+	<translation name="Conversation.MenuAction.MoveOptionDown">Move Option Down</translation>
+	<translation name="Conversation.MenuAction.LogicPasteCondition">Logic: Paste Condition</translation>
+	<!-- Undo Short Info -->
+	<translation name="Conversation.Undo.CutAction">Cut Action</translation>
+	<translation name="Conversation.Undo.PasteConversationSnippet">Paste Conversation Snippet</translation>
+	<translation name="Conversation.Undo.CutCondition">Cut Condition</translation>
+	<!-- Default Names -->
+	<translation name="Conversation.DefaultName.Target">Target</translation>
+	<translation name="Conversation.DefaultName.CameraShot">Camera Shot</translation>
+	<translation name="Conversation.DefaultName.Gesture">Gesture</translation>
+	<translation name="Conversation.DefaultName.FacePose">FacePose</translation>
+	<translation name="Conversation.DefaultName.Group">Group</translation>
+	<translation name="Conversation.DefaultName.Topic">Topic</translation>
+	<!-- Dialog Titles -->
+	<translation name="Conversation.Dialog.ResetDuration">Reset duration</translation>
+	<translation name="Conversation.Dialog.AddCommand">Add Command</translation>
+	<translation name="Conversation.Dialog.AddCommand.Command">Command:</translation>
+	<translation name="Conversation.Dialog.CopyToClipboard">Copy To Clipboard</translation>
+	<translation name="Conversation.Dialog.CopyToClipboard.Text">Text for you to copy to the clipboard</translation>
+	<!-- Tree Model Context Menu GameCommand -->
+	<translation name="Conversation.TreeModel.GameCommand">Game Command</translation>
+	<!-- WPConversation Labels (fixed typos) -->
+	<translation name="Conversation.WPConversation.CoordSystem.Label">Coordinate System:</translation>
+	<translation name="Conversation.WPConversation.Bone.Label">Bone:</translation>
+	<translation name="Conversation.WPConversation.Position.Label">Position:</translation>
+	<translation name="Conversation.WPConversation.Orientation.Label">Orientation:</translation>
+	<translation name="Conversation.WPConversation.OffsetFrom.Label">Offset From:</translation>
+	<translation name="Conversation.WPConversation.OffsetTo.Label">Offset To:</translation>
+	<translation name="Conversation.WPConversation.OrbitFrom.Label">Orbit From:</translation>
+	<translation name="Conversation.WPConversation.OrbitTo.Label">Orbit To:</translation>
+	<translation name="Conversation.WPConversation.PositionFrom.Label">Position From:</translation>
+	<translation name="Conversation.WPConversation.PositionTo.Label">Position To:</translation>
+	<translation name="Conversation.WPConversation.RotationFrom.Label">Rotation From:</translation>
+	<translation name="Conversation.WPConversation.RotationTo.Label">Rotation To:</translation>
+	<translation name="Conversation.WPConversation.Animator.Label">Animator:</translation>
+	<translation name="Conversation.WPConversation.FacePoseControllerToEdit.Label">Face pose controller to edit:</translation>
+	<!-- WPConversation Action Titles -->
+	<translation name="Conversation.WPConversation.AddTarget.Title">Add Target</translation>
+	<translation name="Conversation.WPConversation.RenameTarget.Title">Rename Target</translation>
+	<translation name="Conversation.WPConversation.AddCameraShot.Title">Add Camera Shot</translation>
+	<translation name="Conversation.WPConversation.RenameCameraShot.Title">Rename Camera Shot</translation>
+	<translation name="Conversation.WPConversation.DuplicateCameraShot.Title">Duplicate Camera Shot</translation>
+	<translation name="Conversation.WPConversation.AddGesture.Title">Add Gesture</translation>
+	<translation name="Conversation.WPConversation.RenameGesture.Title">Rename Gesture</translation>
+	<translation name="Conversation.WPConversation.AddFacePose.Title">Add Face Pose</translation>
+	<translation name="Conversation.WPConversation.RenameFacePose.Title">Rename Face Pose</translation>
+	<translation name="Conversation.WPConversation.AddFacePoseController.Title">Add Face Pose Controller</translation>
+	<!-- WPConversation Messages -->
+	<translation name="Conversation.WPConversation.DuplicateName.Message">Duplicate name</translation>
+	<translation name="Conversation.WPConversation.DuplicateController.Message">Duplicate controller</translation>
+	<translation name="Conversation.WPConversation.PathToAddToImportList.Label">Path to add to import list:</translation>
+	<!-- FormLine Labels for Actions and Conditions -->
+	<translation name="Conversation.FormLine.Command">Command:</translation>
+	<translation name="Conversation.FormLine.OptionText">Option Text:</translation>
+	<translation name="Conversation.FormLine.Controller">Controller:</translation>
+	<!-- Menu Cascade Labels -->
+	<translation name="Conversation.MenuCascade.LogicAddCondition">Logic: Add Condition</translation>
+	<translation name="Conversation.MenuCascade.AddCondition">Add Condition</translation>
+	<!-- Tooltips for Actions -->
+	<translation name="Conversation.ToolTip.ConversationSnippet">Conversation snippet to generate actions from</translation>
+	<translation name="Conversation.ToolTip.ActorToAdd">ID of the actor to add to conversation</translation>
+	<translation name="Conversation.ToolTip.ActorAliasToSet">Optional alias ID to set for the added actor</translation>
+	<translation name="Conversation.ToolTip.ActorToSendCommand">Actor to send command to</translation>
+	<translation name="Conversation.ToolTip.ActorToRemove">ID of the actor to remove from conversation</translation>
+	<translation name="Conversation.ToolTip.ActorSpeaking">ID of the actor speaking</translation>
+	<translation name="Conversation.ToolTip.TranslationEntryExists">Translation entry '{0}' exists. Replace entry?</translation>
+	<translation name="Conversation.ToolTip.LanguagePackEntry">Language pack translation entry</translation>
+	<translation name="Conversation.ToolTip.TextBoxTextStyle">Name of style to use for the text box text</translation>
+	<translation name="Conversation.ToolTip.ActorMovement">Name of the actor movement to use or empty to not change</translation>
+	<translation name="Conversation.ToolTip.SoundFile">Sound file to play or empty to not use a sound file</translation>
+	<translation name="Conversation.ToolTip.Comment">Comment</translation>
+	<translation name="Conversation.ToolTip.CoordSystemToAdd">ID of the coordinate system to add to conversation</translation>
+	<translation name="Conversation.ToolTip.CoordSystemAliasToSet">Optional alias ID to set for the added coordinate system</translation>
+	<translation name="Conversation.ToolTip.CoordSystemToRemove">ID of the coordinate system to remove from conversation</translation>
+	<translation name="Conversation.ToolTip.MusicName">Name of the music to use or empty to not change</translation>
+	<translation name="Conversation.ToolTip.VariableForChoice">Name of the variable to store the choice in or empty to use none</translation>
+	<translation name="Conversation.ToolTip.ActorToModify">Actor to modify</translation>
+	<translation name="Conversation.ToolTip.ParameterName">Name of the parameter to set or empty to have no effect</translation>
+	<translation name="Conversation.ToolTip.OperatorForParameter">How to apply the value to the parameter</translation>
+	<translation name="Conversation.ToolTip.VariableForParameter">Variable value to use for operation or empty string to use 'Value'</translation>
+	<translation name="Conversation.ToolTip.VariableName">Name of the variable to set or empty to have no effect</translation>
+	<translation name="Conversation.ToolTip.OperatorForVariable">How to apply the value to the variable</translation>
+	<translation name="Conversation.ToolTip.VariableForOperation">Variable value to use for operation or empty string to use 'Value'</translation>
+	<translation name="Conversation.ToolTip.TriggerName">Name of the trigger to operate or empty to have no effect</translation>
+	<translation name="Conversation.ToolTip.TriggerAction">The action to apply on the trigger</translation>
+	<!-- Tooltips for Conditions -->
+	<translation name="Conversation.ToolTip.ActorIDToTest">Actor ID to test</translation>
+	<translation name="Conversation.ToolTip.OperatorForComparison">Operator to compare parameter value with test value</translation>
+	<translation name="Conversation.ToolTip.ParameterToCompare">Parameter to compare</translation>
+	<translation name="Conversation.ToolTip.VariableToCompare">Variable to compare against or empty string to use 'Test Value'</translation>
+	<translation name="Conversation.ToolTip.LogicForConditions">Logic to apply to the conditions</translation>
+	<translation name="Conversation.ToolTip.TriggerTestMode">How to test the trigger</translation>
+	<translation name="Conversation.ToolTip.TriggerToTest">Name of trigger to test</translation>
+	<translation name="Conversation.ToolTip.VariableOperator">Operator to compare variable value with test value</translation>
+	<translation name="Conversation.ToolTip.VariableToCompareAgainst">Variable to compare against or empty string to use 'Test Value'</translation>
+	<!-- Tooltips for WPConversation -->
+	<translation name="Conversation.ToolTip.CoordSystemID">ID of coordinate system or empty to not use a coordinate system</translation>
+	<translation name="Conversation.ToolTip.BoneName">Name of the bone to use as coordinate frame or an empty string to use the origin</translation>
+	<translation name="Conversation.ToolTip.PositionRelativeToTarget">Position relative to the target object</translation>
+	<translation name="Conversation.ToolTip.OrientationRelativeToTarget">Orientation relative to the target object</translation>
+	<translation name="Conversation.ToolTip.OffsetFromStart">Start offset relative to the target</translation>
+	<translation name="Conversation.ToolTip.OffsetToEnd">End offset relative to the target</translation>
+	<translation name="Conversation.ToolTip.OffsetFromLookAt">Start offset relative to the look-at target</translation>
+	<translation name="Conversation.ToolTip.OffsetToLookAt">End offset relative to the look-at target</translation>
+	<translation name="Conversation.ToolTip.OrbitFromStart">Start rotation of the camera orbit</translation>
+	<translation name="Conversation.ToolTip.OrbitToEnd">End rotation of the camera orbit</translation>
+	<translation name="Conversation.ToolTip.PositionFrom">Start position</translation>
+	<translation name="Conversation.ToolTip.PositionTo">End position</translation>
+	<translation name="Conversation.ToolTip.RotationFrom">Start rotation</translation>
+	<translation name="Conversation.ToolTip.RotationTo">End rotation</translation>
+	<translation name="Conversation.ToolTip.GestureAnimator">Name of the animator to use for this gesture</translation>
+	<!-- Tooltips for WPView -->
+	<translation name="Conversation.ToolTip.PropName">Sets the name of the prop</translation>
+	<translation name="Conversation.ToolTip.PropPosition">Prop position</translation>
+	<translation name="Conversation.ToolTip.PropRotation">Prop rotation</translation>
+	<translation name="Conversation.ToolTip.ActorID">Unique actor ID in the conversation</translation>
+	<translation name="Conversation.ToolTip.ActorAliasID">Optional unique actor alias ID</translation>
+	<translation name="Conversation.ToolTip.ActorPosition">Actor position</translation>
+	<translation name="Conversation.ToolTip.ActorRotation">Actor rotation</translation>
+	<translation name="Conversation.ToolTip.ActorModel">Actor model to use</translation>
+	<translation name="Conversation.ToolTip.ActorSkin">Actor skin to use</translation>
+	<translation name="Conversation.ToolTip.ActorRig">Actor rig to use</translation>
+	<translation name="Conversation.ToolTip.SpeechAnimation">Speech animation to use</translation>
+	<translation name="Conversation.ToolTip.EyeAnimator">Eye animator to use</translation>
+	<translation name="Conversation.ToolTip.FacePoseAnimator">Face pose animator to use</translation>
+	<translation name="Conversation.ToolTip.HeadRotatorBone">Name of head rotator bone or empty string if not used</translation>
+	<translation name="Conversation.ToolTip.Animator">Animator to use</translation>
+	<translation name="Conversation.ToolTip.ControllerUpdateType">How to update the controller</translation>
+	<translation name="Conversation.ToolTip.ConstantVector">Constant vector to use if the update type is constant</translation>
+	<translation name="Conversation.ToolTip.CoordSystemIDUnique">Unique coordinate system ID in the conversation</translation>
+	<translation name="Conversation.ToolTip.CoordSystemAliasID">Optional unique coordinate system alias ID</translation>
+	<translation name="Conversation.ToolTip.CoordSystemPosition">Position of the coordinate system</translation>
+	<translation name="Conversation.ToolTip.CoordSystemOrientation">Orientation of the coordinate system</translation>
+	<translation name="Conversation.ToolTip.CameraHandling">How camera is handled</translation>
+	<!-- Additional Action Labels -->
+	<translation name="Conversation.Action.PlaybackAutoAdvance.Label">Auto Advance</translation>
+	<translation name="Conversation.Action.PlaybackPaused.Label">Paused</translation>
+	<translation name="Conversation.Action.PlaybackRewind.Label">Rewind</translation>
+	<translation name="Conversation.Action.PlaybackRunning.Label">Running</translation>
+	<!-- Additional Tooltips for Dialogs -->
+	<translation name="Conversation.DialogEditStrip.Pause.ToolTip">Time in seconds to wait before strip is activated</translation>
+	<translation name="Conversation.DialogPasteSnippet.CameraShot1.ToolTip">Camera shot to use for the first actor</translation>
+	<translation name="Conversation.DialogPasteSnippet.CameraShot2.ToolTip">Camera shot to use for the second actor</translation>
+	<translation name="Conversation.DialogPasteSnippet.ScaleActorSpeak.ToolTip">Scale duration of spoken words added to actor speak actions</translation>
+	<translation name="Conversation.DialogPasteSnippet.Target1.ToolTip">Target to use for the camera shot for the first actor</translation>
+	<translation name="Conversation.DialogPasteSnippet.Target2.ToolTip">Target to use for the camera shot for the second actor</translation>
+	<translation name="Conversation.DialogPasteSnippet.WaitActorSpeak.ToolTip">Delay in seconds for added actor speak actions</translation>
+	<translation name="Conversation.DialogPasteSnippet.WaitCameraShot.ToolTip">Delay in seconds for added camera shot actions</translation>
+	<!-- Additional Action Tooltips -->
+	<translation name="Conversation.WPActionActorSpeak.TextBoxText.ToolTip">Text to display in the text box</translation>
+	<translation name="Conversation.WPActionCameraShot.Name.ToolTip">Name of the camera shot to use or empty to not change</translation>
+	<!-- Additional Action Labels -->
+	<translation name="Conversation.WPActionSetVariable.ValueVariable.Label">Variable:</translation>
+	<!-- Additional Topic Labels -->
+	<translation name="Conversation.WPTopic.Actions.Label">Actions:</translation>
+	<!-- Additional View Tooltips -->
+	<translation name="Conversation.WPView.Value.ToolTip">Constant value to use if the update type is constant</translation>
+	<!-- Operator Names -->
+	<translation name="Conversation.Operator.Random">random</translation>
+	<!-- Trigger Actions -->
+	<translation name="Conversation.TriggerAction.Fire">fire</translation>
+	<translation name="Conversation.TriggerAction.Reset">reset</translation>
+	<translation name="Conversation.TriggerAction.Pulse">pulse</translation>
+	<translation name="Conversation.TriggerAction.FullReset">full reset</translation>
+	<!-- Logic Operators -->
+	<translation name="Conversation.LogicOperator.None">none</translation>
+	<translation name="Conversation.LogicOperator.Any">any</translation>
+	<translation name="Conversation.LogicOperator.All">all</translation>
+	<!-- Trigger Test Modes -->
+	<translation name="Conversation.TriggerTestMode.Fired">fired</translation>
+	<translation name="Conversation.TriggerTestMode.NotFired">not fired</translation>
+	<translation name="Conversation.TriggerTestMode.EverFired">ever fired</translation>
+	<translation name="Conversation.TriggerTestMode.NeverFired">never fired</translation>
+	<!-- Action Types -->
+	<translation name="Conversation.ActionType.CameraShot">Camera Shot</translation>
+	<translation name="Conversation.ActionType.Music">Music</translation>
+	<translation name="Conversation.ActionType.ActorSpeak">Actor Speak</translation>
+	<translation name="Conversation.ActionType.SetVariable">Set Variable</translation>
+	<translation name="Conversation.ActionType.SetActorParameter">Set Actor Parameter</translation>
+	<translation name="Conversation.ActionType.Trigger">Trigger</translation>
+	<translation name="Conversation.ActionType.IfElse">If-Else</translation>
+	<translation name="Conversation.ActionType.PlayerChoice">Player Choice</translation>
+	<translation name="Conversation.ActionType.Wait">Wait</translation>
+	<translation name="Conversation.ActionType.Snippet">Snippet</translation>
+	<translation name="Conversation.ActionType.StopConversation">Stop Conversation</translation>
+	<translation name="Conversation.ActionType.StopTopic">Stop Topic</translation>
+	<translation name="Conversation.ActionType.ActorCommand">Actor Command</translation>
+	<translation name="Conversation.ActionType.GameCommand">Game Command</translation>
+	<translation name="Conversation.ActionType.ActorAdd">Actor Add</translation>
+	<translation name="Conversation.ActionType.ActorRemove">Actor Remove</translation>
+	<translation name="Conversation.ActionType.CoordSystemAdd">Coordinate System Add</translation>
+	<translation name="Conversation.ActionType.CoordSystemRemove">Coordinate System Remove</translation>
+	<translation name="Conversation.ActionType.Comment">Comment</translation>
+	<!-- Condition Types -->
+	<translation name="Conversation.ConditionType.Logic">Logic</translation>
+	<translation name="Conversation.ConditionType.HasActor">Has Actor</translation>
+	<translation name="Conversation.ConditionType.ActorInConversation">Actor In Conversation</translation>
+	<translation name="Conversation.ConditionType.Variable">Variable</translation>
+	<translation name="Conversation.ConditionType.ActorParameter">Actor Parameter</translation>
+	<translation name="Conversation.ConditionType.ActorCommand">Actor Command</translation>
+	<translation name="Conversation.ConditionType.GameCommand">Game Command</translation>
+	<translation name="Conversation.ConditionType.Trigger">Trigger</translation>
+	<!-- Default Names -->
+	<translation name="Conversation.DefaultName.Group">Group</translation>
+	<translation name="Conversation.DefaultName.Topic">Topic</translation>
+	<!-- Task Messages -->
+	<translation name="Conversation.Task.SyncGameDefinition">Conversation Editor: Synchronize Game Definition</translation>
+	<!-- Format Strings for Tree Item Labels -->
+	<translation name="Conversation.Format.Add">Add {0}</translation>
+	<translation name="Conversation.Format.Edit">Edit {0}</translation>
+	<translation name="Conversation.Format.LabelColon">{0}: </translation>
+	<translation name="Conversation.Format.IfCase">If-Case {0}</translation>
+	<translation name="Conversation.Format.Option">Option {0}</translation>
+	<translation name="Conversation.Format.ActorAdd">Actor Add ({0})</translation>
+	<translation name="Conversation.Format.ActorRemove">Actor Remove ({0})</translation>
+	<translation name="Conversation.Format.CameraShot">Camera Shot ({0})</translation>
+	<translation name="Conversation.Format.CoordSystemAdd">Coord System Add ({0})</translation>
+	<translation name="Conversation.Format.CoordSystemRemove">Coord System Remove ({0})</translation>
+	<translation name="Conversation.Format.SetActorParameter">Set Actor Parameter ({0}): '{1}' {2}</translation>
+	<translation name="Conversation.Format.SetVariableVar">Set Variable: '{0}' {1} '{2}'</translation>
+	<translation name="Conversation.Format.SetVariableInt">Set Variable: '{0}' {1} {2}</translation>
+	<translation name="Conversation.Format.Snippet">Snippet{0}: '{1}' &gt; '{2}'</translation>
+	<translation name="Conversation.Text.SnippetSideLane">{S}</translation>
+	<translation name="Conversation.Format.Trigger">Trigger: {0} '{1}'</translation>
+	<translation name="Conversation.Format.ActorNotInConversation">Actor not in Conversation: '{0}'</translation>
+	<translation name="Conversation.Format.ActorInConversation">Actor in Conversation: '{0}'</translation>
+	<translation name="Conversation.Format.ActorParameter">Actor Parameter: '{0}': '{1}' {2} </translation>
+	<translation name="Conversation.Format.HasNotActor">Has Not Actor: '{0}'</translation>
+	<translation name="Conversation.Format.HasActor">Has Actor: '{0}'</translation>
+	<translation name="Conversation.Format.Logic">Logic ({0})</translation>
+	<translation name="Conversation.Format.TriggerTest">Trigger '{0}' {1}</translation>
+	<translation name="Conversation.Format.VariableVar">Variable '{0}' {1} '{2}'</translation>
+	<translation name="Conversation.Format.VariableInt">Variable '{0}' {1} {2}</translation>
 </languagePack>

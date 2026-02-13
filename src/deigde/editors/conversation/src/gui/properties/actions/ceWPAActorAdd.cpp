@@ -117,11 +117,11 @@ ceWPAActorAdd::ceWPAActorAdd(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	
 	CreateGUICommon(*this);
 	
-	helper.ComboBox(*this, "Actor:", true, "ID of the actor to add to conversation",
+	helper.ComboBox(*this, "@Conversation.WPActionActorAdd.Actor.Label", true, "@Conversation.ToolTip.ActorToAdd",
 		pCBActorID, cComboActorID::Ref::New(*this));
 	pCBActorID->SetDefaultSorter();
 	
-	helper.ComboBox(*this, "Alias:", true, "Optional alias ID to set for the added actor",
+	helper.ComboBox(*this, "@Conversation.WPActionActorAdd.Alias.Label", true, "@Conversation.ToolTip.ActorAliasToSet",
 		pCBAliasID, cComboAliasID::Ref::New(*this));
 	pCBAliasID->SetDefaultSorter();
 }

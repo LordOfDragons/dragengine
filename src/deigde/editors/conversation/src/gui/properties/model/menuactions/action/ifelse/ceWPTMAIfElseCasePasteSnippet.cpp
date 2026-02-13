@@ -60,6 +60,6 @@ pIndex(index)
 
 ceUCActionPaste::Ref ceWPTMAIfElseCasePasteSnippet::CreateUndo(const ceConversationAction::List &actions){
 	const ceUCActionPaste::Ref undo = ceUCAIfElsePaste::Ref::New(pTopic, pIfElse, pIfCase, actions, pIndex);
-	undo->SetShortInfo("Paste Conversation Snippet");
+	undo->SetShortInfo("@Conversation.Undo.PasteConversationSnippet");
 	return undo;
 }

@@ -56,16 +56,16 @@ pWindowMain(windowMain)
 	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
 	pPanelConversation = ceWPConversation::Ref::New(*this);
-	AddChild(pPanelConversation, "Conversation");
+	AddChild(pPanelConversation, "@Conversation.WindowProperties.Conversation");
 	
 	pPanelTopic = ceWPTopic::Ref::New(*this);
-	AddChild(pPanelTopic, "Topic");
+	AddChild(pPanelTopic, "@Conversation.WindowProperties.Topic");
 	
 	pPanelView = ceWPView::Ref::New(*this);
-	AddChild(pPanelView, "View");
+	AddChild(pPanelView, "@Conversation.WindowProperties.View");
 	
 	pPanelUndoHistory = ceWPUndoHistory::Ref::New(GetEnvironment());
-	AddChild(pPanelUndoHistory, "Undo");
+	AddChild(pPanelUndoHistory, "@Conversation.WindowProperties.Undo");
 	
 	SetActivePanel(0); // conversation
 }

@@ -57,8 +57,8 @@ ceWPTTIMASetActorParameter::~ceWPTTIMASetActorParameter(){
 // Management
 ///////////////
 
-const char *ceWPTTIMASetActorParameter::GetOperatorText(
-ceCASetActorParameter::eOperators anOperator){
+decString ceWPTTIMASetActorParameter::GetOperatorText(
+ceCASetActorParameter::eOperators anOperator) const{
 	switch(anOperator){
 	case ceCASetActorParameter::eopSet:
 		return "=";
@@ -70,7 +70,7 @@ ceCASetActorParameter::eOperators anOperator){
 		return "-=";
 		
 	case ceCASetActorParameter::eopRandom:
-		return "random";
+		return GetWindowMain().Translate("Conversation.Operator.Random").ToUTF8();
 		
 	default:
 		DETHROW(deeInvalidParam);
@@ -81,10 +81,10 @@ void ceWPTTIMASetActorParameter::Update(){
 	const ceCASetActorParameter &action = *GetActionSetActorParameter();
 	decString text;
 	
-	const char * const textOperator = GetOperatorText(action.GetOperator());
+	const decString textOperator = GetOperatorText(action.GetOperator());
 	
-	text.Format("Set Actor Parameter (%s): '%s' %s", action.GetActor().GetString(),
-		action.GetName().GetString(), textOperator);
+	text.FormatSafe(GetWindowMain().Translate("Conversation.Format.SetActorParameter").ToUTF8(),
+		action.GetActor(), action.GetName(), textOperator);
 	
 	if(!action.GetValueVariable().IsEmpty()){
 		text.AppendFormat("'%s'", action.GetValueVariable().GetString());

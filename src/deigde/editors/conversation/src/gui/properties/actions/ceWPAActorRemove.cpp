@@ -97,7 +97,7 @@ ceWPAActorRemove::ceWPAActorRemove(ceWPTopic &parentPanel) : ceWPAction(parentPa
 	
 	CreateGUICommon(*this);
 	
-	helper.ComboBox(*this, "Actor ID:", true, "ID of the actor to remove from conversation",
+	helper.ComboBox(*this, "@Conversation.WPActionActorRemove.ActorID.Label", true, "@Conversation.ToolTip.ActorToRemove",
 		pCBActorID, cComboActorID::Ref::New(*this));
 	pCBActorID->SetDefaultSorter();
 }

@@ -61,6 +61,6 @@ void ceWPTTIMACoordSystemRemove::Update(){
 	const ceCACoordSystemRemove &action = *GetActionCoordSystemRemove();
 	decString text;
 	
-	text.Format("Coord System Remove (%s)", action.GetCoordSystemID().GetString());
+	text.FormatSafe( GetWindowMain().Translate( "Conversation.Format.CoordSystemRemove" ).ToUTF8(), action.GetCoordSystemID().GetString() );
 	SetText(text);
 }

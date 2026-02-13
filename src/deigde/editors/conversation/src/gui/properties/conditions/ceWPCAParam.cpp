@@ -192,24 +192,25 @@ ceWPCAParam::ceWPCAParam(ceWPTopic &parentPanel) : ceWPCondition(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	helper.ComboBox(*this, "Actor ID:", true, "Actor ID to test", pCBActorID, cComboActor::Ref::New(*this));
+	helper.ComboBox(*this, "@Conversation.WPConditionAParam.ActorID.Label", true, "@Conversation.ToolTip.ActorIDToTest", pCBActorID, cComboActor::Ref::New(*this));
 	pCBActorID->SetDefaultSorter();
 	
-	helper.ComboBox(*this, "Operator:", "Operator to compare parameter value with test value",
+	helper.ComboBox(*this, "@Conversation.WPConditionAParam.Operator.Label", "@Conversation.ToolTip.OperatorForComparison",
 		pCBOperator, cComboOperator::Ref::New(*this));
-	pCBOperator->AddItem("Equal", nullptr, (void*)(intptr_t)ceCConditionActorParameter::eopEqual);
-	pCBOperator->AddItem("Not Equal", nullptr, (void*)(intptr_t)ceCConditionActorParameter::eopNotEqual);
-	pCBOperator->AddItem("Less", nullptr, (void*)(intptr_t)ceCConditionActorParameter::eopLess);
-	pCBOperator->AddItem("Less or Equal", nullptr, (void*)(intptr_t)ceCConditionActorParameter::eopLessEqual);
-	pCBOperator->AddItem("Greater", nullptr, (void*)(intptr_t)ceCConditionActorParameter::eopGreater);
-	pCBOperator->AddItem("Greater or Equal", nullptr, (void*)(intptr_t)ceCConditionActorParameter::eopGreaterEqual);
+	pCBOperator->SetAutoTranslateItems(true);
+	pCBOperator->AddItem("@Conversation.WPConditionAParam.Equal", nullptr, (void*)(intptr_t)ceCConditionActorParameter::eopEqual);
+	pCBOperator->AddItem("@Conversation.WPConditionAParam.NotEqual", nullptr, (void*)(intptr_t)ceCConditionActorParameter::eopNotEqual);
+	pCBOperator->AddItem("@Conversation.WPConditionAParam.Less", nullptr, (void*)(intptr_t)ceCConditionActorParameter::eopLess);
+	pCBOperator->AddItem("@Conversation.WPConditionAParam.LessorEqual", nullptr, (void*)(intptr_t)ceCConditionActorParameter::eopLessEqual);
+	pCBOperator->AddItem("@Conversation.WPConditionAParam.Greater", nullptr, (void*)(intptr_t)ceCConditionActorParameter::eopGreater);
+	pCBOperator->AddItem("@Conversation.WPConditionAParam.GreaterorEqual", nullptr, (void*)(intptr_t)ceCConditionActorParameter::eopGreaterEqual);
 	
-	helper.EditString(*this, "Parameter:", "Parameter to compare",
+	helper.EditString(*this, "@Conversation.WPConditionAParam.Parameter.Label", "@Conversation.ToolTip.ParameterToCompare",
 		pEditParameter, cTextParameter::Ref::New(*this));
-	helper.EditInteger(*this, "Test Value:", "Value to compare against",
+	helper.EditInteger(*this, "@Conversation.WPConditionAParam.TestValue.Label", "@Conversation.WPConditionAParam.TestValue.ToolTip",
 		pEditTestValue, cTextTestValue::Ref::New(*this));
-	helper.EditString(*this, "Test Variable:",
-		"Variable to compare against or empty string to use 'Test Value'",
+	helper.EditString(*this, "@Conversation.WPConditionAParam.TestVariable.Label",
+		"@Conversation.ToolTip.VariableToCompareAgainst",
 		pEditTestVariable, cTextTestVariable::Ref::New(*this));
 }
 

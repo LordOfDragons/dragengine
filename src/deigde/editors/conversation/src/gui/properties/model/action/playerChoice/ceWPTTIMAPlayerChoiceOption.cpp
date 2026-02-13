@@ -142,10 +142,10 @@ void ceWPTTIMAPlayerChoiceOption::OnContextMenu(igdeMenuCascade &contextMenu){
 	igdeUIHelper &helper = windowMain.GetEnvironment().GetUIHelper();
 	
 	helper.MenuCommand(contextMenu, ceWPTMAPChoiceOptionMove::Ref::New(windowMain, conversation,
-		*topic, playerChoice, pOption, pIndex - 1, "Move Option Up",
+		*topic, playerChoice, pOption, pIndex - 1, "@Conversation.MenuAction.MoveOptionUp",
 		windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp)));
 	helper.MenuCommand(contextMenu, ceWPTMAPChoiceOptionMove::Ref::New(windowMain, conversation,
-		*topic, playerChoice, pOption, pIndex + 1, "Move Option Down",
+		*topic, playerChoice, pOption, pIndex + 1, "@Conversation.MenuAction.MoveOptionDown",
 		windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown)));
 	helper.MenuSeparator(contextMenu);
 	
@@ -160,6 +160,6 @@ void ceWPTTIMAPlayerChoiceOption::OnContextMenu(igdeMenuCascade &contextMenu){
 
 void ceWPTTIMAPlayerChoiceOption::pUpdateText(){
 	decString text;
-	text.Format("Option %d", pIndex + 1);
+	text.FormatSafe( GetWindowMain().Translate( "Conversation.Format.Option" ).ToUTF8(), pIndex + 1 );
 	SetText(text);
 }

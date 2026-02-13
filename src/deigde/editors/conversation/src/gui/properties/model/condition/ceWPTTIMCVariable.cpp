@@ -87,12 +87,14 @@ void ceWPTTIMCVariable::Update(){
 	decString text;
 	
 	if(!condition.GetTestVariable().IsEmpty()){
-		text.Format("Variable '%s' %s '%s'", condition.GetVariable().GetString(),
-			GetOperatorText(condition.GetOperator()), condition.GetTestVariable().GetString());
+		text.FormatSafe( GetWindowMain().Translate( "Conversation.Format.VariableVar" ).ToUTF8(),
+			condition.GetVariable().GetString(), GetOperatorText(condition.GetOperator()),
+			condition.GetTestVariable().GetString() );
 		
 	}else{
-		text.Format("Variable '%s' %s %d", condition.GetVariable().GetString(),
-			GetOperatorText(condition.GetOperator()), condition.GetTestValue());
+		text.FormatSafe( GetWindowMain().Translate( "Conversation.Format.VariableInt" ).ToUTF8(),
+			condition.GetVariable().GetString(), GetOperatorText(condition.GetOperator()),
+			condition.GetTestValue() );
 	}
 	
 	SetText(text);

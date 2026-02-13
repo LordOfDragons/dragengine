@@ -52,7 +52,7 @@
 ceWPTMAPChoiceOptionClearCondition::ceWPTMAPChoiceOptionClearCondition(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
 ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption &option) :
-ceWPTMenuAction(windowMain, "Clear Condition",
+ceWPTMenuAction(windowMain, "@Conversation.MenuAction.ClearCondition",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus)),
 pConversation(&conversation),
 pTopic(&topic),

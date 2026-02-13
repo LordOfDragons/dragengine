@@ -140,10 +140,10 @@ void ceWPTTIMAIfElseIfCase::OnContextMenu(igdeMenuCascade &contextMenu){
 	igdeUIHelper &helper = windowMain.GetEnvironment().GetUIHelper();
 	
 	helper.MenuCommand(contextMenu, ceWPTMAIfElseCaseMove::Ref::New(windowMain, conversation,
-		*topic, ifElse, pIfCase, pIndex - 1, "Move If-Case Up",
+		*topic, ifElse, pIfCase, pIndex - 1, "@Conversation.TreeModel.MoveIfCaseUp",
 		windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp)));
 	helper.MenuCommand(contextMenu, ceWPTMAIfElseCaseMove::Ref::New(windowMain, conversation,
-		*topic, ifElse, pIfCase, pIndex + 1, "Move If-Case Down",
+		*topic, ifElse, pIfCase, pIndex + 1, "@Conversation.TreeModel.MoveIfCaseDown",
 		windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown)));
 	helper.MenuSeparator(contextMenu);
 	
@@ -158,6 +158,6 @@ void ceWPTTIMAIfElseIfCase::OnContextMenu(igdeMenuCascade &contextMenu){
 
 void ceWPTTIMAIfElseIfCase::pUpdateText(){
 	decString text;
-	text.Format("If-Case %d", pIndex + 1);
+	text.FormatSafe( GetWindowMain().Translate( "Conversation.Format.IfCase" ).ToUTF8(), pIndex + 1 );
 	SetText(text);
 }

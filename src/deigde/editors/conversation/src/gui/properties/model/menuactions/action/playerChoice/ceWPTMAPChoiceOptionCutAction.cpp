@@ -50,7 +50,7 @@
 ceWPTMAPChoiceOptionCutAction::ceWPTMAPChoiceOptionCutAction(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
 ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption &option, ceConversationAction *action) :
-ceWPTMACopyAction(windowMain, action, "Cut Action",
+ceWPTMACopyAction(windowMain, action, "@Conversation.MenuAction.CutAction",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut)),
 pConversation(&conversation),
 pTopic(&topic),
@@ -68,6 +68,6 @@ void ceWPTMAPChoiceOptionCutAction::OnAction(){
 	
 	ceUCAPChoiceActionRemove::Ref undo(ceUCAPChoiceActionRemove::Ref::New(
 		pTopic, pPlayerChoice, pOption, GetAction()));
-	undo->SetShortInfo("Cut Action");
+	undo->SetShortInfo("@Conversation.Undo.CutAction");
 	pConversation->GetUndoSystem()->Add(undo);
 }

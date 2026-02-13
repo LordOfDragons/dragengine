@@ -227,6 +227,9 @@ public:
 	
 	/** Start playing starting with action selected in tree. */
 	void PlayActionFromHere();
+	
+	/** Language changed. */
+	void OnLanguageChanged() override;
 	/*@}*/
 };
 

@@ -123,15 +123,16 @@ ceWPATrigger::ceWPATrigger(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	
 	CreateGUICommon(*this);
 	
-	helper.EditString(*this, "Name:", "Name of the trigger to operate or empty to have no effect",
+	helper.EditString(*this, "@Conversation.WPActionTrigger.Name.Label", "@Conversation.ToolTip.TriggerName",
 		pEditName, cTextName::Ref::New(*this));
 	
-	helper.ComboBox(*this, "Action:", "The action to apply on the trigger",
+	helper.ComboBox(*this, "@Conversation.WPActionTrigger.Action.Label", true, "@Conversation.ToolTip.TriggerAction",
 		pCBAction, cComboAction::Ref::New(*this));
-	pCBAction->AddItem("Fire", nullptr, (void*)(intptr_t)ceCATrigger::eaFire);
-	pCBAction->AddItem("Reset", nullptr, (void*)(intptr_t)ceCATrigger::eaReset);
-	pCBAction->AddItem("Pulse", nullptr, (void*)(intptr_t)ceCATrigger::eaPulse);
-	pCBAction->AddItem("Full Reset", nullptr, (void*)(intptr_t)ceCATrigger::eaFullReset);
+	pCBAction->SetAutoTranslateItems(true);
+	pCBAction->AddItem("@Conversation.WPActionTrigger.Fire", nullptr, (void*)(intptr_t)ceCATrigger::eaFire);
+	pCBAction->AddItem("@Conversation.WPActionTrigger.Reset", nullptr, (void*)(intptr_t)ceCATrigger::eaReset);
+	pCBAction->AddItem("@Conversation.WPActionTrigger.Pulse", nullptr, (void*)(intptr_t)ceCATrigger::eaPulse);
+	pCBAction->AddItem("@Conversation.WPActionTrigger.FullReset", nullptr, (void*)(intptr_t)ceCATrigger::eaFullReset);
 }
 
 ceWPATrigger::~ceWPATrigger(){

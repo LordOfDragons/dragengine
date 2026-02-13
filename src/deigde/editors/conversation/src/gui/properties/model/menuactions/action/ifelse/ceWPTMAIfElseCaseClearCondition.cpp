@@ -51,7 +51,7 @@
 ceWPTMAIfElseCaseClearCondition::ceWPTMAIfElseCaseClearCondition(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
 ceCAIfElse &ifElse, ceCAIfElseCase &ifCase) :
-ceWPTMenuAction(windowMain, "Clear Condition",
+ceWPTMenuAction(windowMain, "@Conversation.MenuAction.ClearCondition",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus)),
 pConversation(&conversation),
 pTopic(&topic),

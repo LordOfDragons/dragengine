@@ -123,7 +123,7 @@ public:
 	using Ref = deTObjectReference<cActionEditTextBoxText>;
 	cActionEditTextBoxText(ceWPAActorSpeak &panel) : igdeAction("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
-		"Edit command in larger dialog"), pPanel(panel){}
+		"@Conversation.Action.EditInDialog.ToolTip"), pPanel(panel){}
 	
 	void OnAction() override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
@@ -135,7 +135,7 @@ public:
 		decString text(action->GetTextBoxText().ToUTF8());
 		if(!igdeCommonDialogs::GetMultilineString(
 			pPanel.GetParentPanel().GetWindowProperties().GetWindowMain(),
-			"Edit Text Box Text", "Text:", text)
+			"@Conversation.Dialog.EditTextBoxText", "@Conversation.Dialog.Text", text)
 		|| text == action->GetTextBoxText().ToUTF8()){
 			return;
 		}
@@ -173,9 +173,9 @@ private:
 	ceWPAActorSpeak &pPanel;
 	
 public:
-	cActionTbt2TranslationEntry(ceWPAActorSpeak &panel) : igdeAction("Text to translation entry...",
+	cActionTbt2TranslationEntry(ceWPAActorSpeak &panel) : igdeAction("@Conversation.WPActionActorSpeak.Texttotranslationentry",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongRight),
-		"Move text box text to language pack translation entry"), pPanel(panel){}
+		"@Conversation.Action.ActorSpeakMoveTo.ToolTip"), pPanel(panel){}
 	
 	void OnAction() override{
 		ceConversation * const conversation = pPanel.GetParentPanel().GetConversation();
@@ -191,8 +191,8 @@ public:
 		}
 		
 		decString name(conversation->GetLangPackEntryName());
-		if(!igdeCommonDialogs::GetString(*pPanel.GetParentWindow(), "Move to translation entry",
-		"Name:", name, langpack->GetEntries().GetKeys().GetSortedAscending())){
+		if(!igdeCommonDialogs::GetString(*pPanel.GetParentWindow(), "@Conversation.WPActionActorSpeak.Movetotranslationentry.Title",
+			"@Conversation.Dialog.Name", name, langpack->GetEntries().GetKeys().GetSortedAscending())){
 			return;
 		}
 		
@@ -201,7 +201,7 @@ public:
 		const decUnicodeString *foundText = nullptr;
 		if(langpack->GetEntries().GetAt(name, foundText)){
 			if(igdeCommonDialogs::QuestionFormat(*pPanel.GetParentWindow(), igdeCommonDialogs::ebsYesNo,
-			"Move to translation entry", "Translation entry '{0}' exists. Replace entry?",
+			"@Conversation.WPActionActorSpeak.Movetotranslationentry.Title", "@Conversation.ToolTip.TranslationEntryExists",
 			name.GetString()) == igdeCommonDialogs::ebNo){
 				return;
 			}
@@ -225,9 +225,9 @@ private:
 	ceWPAActorSpeak &pPanel;
 	
 public:
-	cActionTbtFromTranslationEntry(ceWPAActorSpeak &panel) : igdeAction("Text from translation entry...",
+	cActionTbtFromTranslationEntry(ceWPAActorSpeak &panel) : igdeAction("@Conversation.WPActionActorSpeak.Textfromtranslationentry",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongLeft),
-		"Set text box text from language pack translation entry"), pPanel(panel){}
+		"@Conversation.Action.ActorSpeakMoveFrom.ToolTip"), pPanel(panel){}
 	
 	void OnAction() override{
 		ceConversation * const conversation = pPanel.GetParentPanel().GetConversation();
@@ -265,9 +265,9 @@ private:
 	ceWPAActorSpeak &pPanel;
 	
 public:
-	cActionShowTranslationEntry(ceWPAActorSpeak &panel) : igdeAction("Show translation entry...",
+	cActionShowTranslationEntry(ceWPAActorSpeak &panel) : igdeAction("@Conversation.WPActionActorSpeak.Showtranslationentry",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongLeft),
-		"Show language pack translation entry"), pPanel(panel){}
+		"@Conversation.Action.ActorSpeakShowTranslation.ToolTip"), pPanel(panel){}
 	
 	void OnAction() override{
 		ceConversation * const conversation = pPanel.GetParentPanel().GetConversation();
@@ -287,7 +287,7 @@ public:
 			return;
 		}
 		
-		igdeCommonDialogs::Information(*pPanel.GetParentWindow(), "Translation Entry", foundText->ToUTF8());
+		igdeCommonDialogs::Information(*pPanel.GetParentWindow(), "@Conversation.WPActionActorSpeak.TranslationEntry.Title", foundText->ToUTF8());
 	}
 	
 	void Update() override{
@@ -303,7 +303,7 @@ public:
 	using Ref = deTObjectReference<cActionTextBoxTextTranslateMenu>;
 	cActionTextBoxTextTranslateMenu(ceWPAActorSpeak &panel) : igdeActionContextMenu("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
-		"Show Text Box Text Translate Menu"), pPanel(panel){}
+		"@Conversation.Action.ActorSpeakTextTranslateMenu.ToolTip"), pPanel(panel){}
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override{
 		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
@@ -397,8 +397,8 @@ class cActionUseSpeechAnimation : public igdeAction {
 	
 public:
 	using Ref = deTObjectReference<cActionUseSpeechAnimation>;
-	cActionUseSpeechAnimation(ceWPAActorSpeak &panel) : igdeAction("Use Speech Animation",
-		nullptr, "Speech animation is played back or not (for example thinking)"), pPanel(panel){ }
+	cActionUseSpeechAnimation(ceWPAActorSpeak &panel) : igdeAction("@Conversation.WPActionActorSpeak.UseSpeechAnimation",
+		nullptr, "@Conversation.Action.ActorSpeakUseSpeechAnimation.ToolTip"), pPanel(panel){ }
 	
 	void OnAction() override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
@@ -428,32 +428,32 @@ ceWPAActorSpeak::ceWPAActorSpeak(ceWPTopic &parentPanel) : ceWPAction(parentPane
 	
 	CreateGUICommon(*this);
 	
-	helper.ComboBox(*this, "Actor:", true, "ID of the actor speaking",
+	helper.ComboBox(*this, "@Conversation.WPActionActorSpeak.Actor.Label", true, "@Conversation.ToolTip.ActorSpeaking",
 		pCBActorID, cComboActorID::Ref::New(*this));
 	pCBActorID->SetDefaultSorter();
 	
-	helper.FormLineStretchFirst(*this, "Text Box Text:", "Text to display in the text box", formLine);
-	helper.EditString(formLine, "Text to display in the text box",
+	helper.FormLineStretchFirst(*this, "@Conversation.WPActionActorSpeak.TextBoxText.Label", "@Conversation.WPActionActorSpeak.TextBoxText.ToolTip", formLine);
+	helper.EditString(formLine, "@Conversation.WPActionActorSpeak.Texttodisplayinthetextbox.Label",
 		pEditTextBoxText, cTextTextBoxText::Ref::New(*this));
 	helper.Button(formLine, pBtnTextBoxText, cActionEditTextBoxText::Ref::New(*this));
 	
-	helper.FormLineStretchFirst(*this, "Translated:", "Translated text to display in the text box", formLine);
-	helper.EditString(formLine, "Translation 'name' from active language pack to use as text box text."
+	helper.FormLineStretchFirst(*this, "@Conversation.WPActionActorSpeak.Translated.Label", "@Conversation.WPActionActorSpeak.Translated.ToolTip", formLine);
+	helper.EditString(formLine, "@Conversation.WPActionActorSpeak.Translationnamefromactivelanguage.Label"
 		" Replaces static text if not empty.", pEditTextBoxTextTranslate, cTextTextBoxTextTranslate::Ref::New(*this));
 	cActionTextBoxTextTranslateMenu::Ref actionTbtt = cActionTextBoxTextTranslateMenu::Ref::New(*this);
 	helper.Button(formLine, pBtnTextBoxTextTranslate, actionTbtt);
 	actionTbtt->SetWidget(pBtnTextBoxTextTranslate);
 	
-	helper.EditString(*this, "", "Language pack translation entry", pEditShowTranslation, {});
+	helper.EditString(*this, "", "@Conversation.ToolTip.LanguagePackEntry", pEditShowTranslation, {});
 	pEditShowTranslation->SetEditable(false);
 	
-	helper.EditString(*this, "Text Style:", "Name of style to use for the text box text",
+	helper.EditString(*this, "@Conversation.WPActionActorSpeak.TextStyle.Label", "@Conversation.ToolTip.TextBoxTextStyle",
 		pEditTextBoxTextStyle, cTextTextBoxStyle::Ref::New(*this));
-	helper.EditString(*this, "Movement:", "Name of the actor movement to use or empty to not change",
+	helper.EditString(*this, "@Conversation.WPActionActorSpeak.Movement.Label", "@Conversation.ToolTip.ActorMovement",
 		pEditMovement, cTextMovement::Ref::New(*this));
-	helper.EditPath(*this, "Path Sound:", "Sound file to play or empty to not use a sound file",
+	helper.EditPath(*this, "@Conversation.WPActionActorSpeak.PathSound.Label", "@Conversation.ToolTip.SoundFile",
 		igdeEnvironment::efpltSound, pEditPathSound, cPathSound::Ref::New(*this));
-	helper.EditFloat(*this, "Min Speech Time:", "Minimum time the actor is speaking",
+	helper.EditFloat(*this, "@Conversation.WPActionActorSpeak.MinSpeechTime.Label", "@Conversation.WPActionActorSpeak.MinSpeechTime.ToolTip",
 		pEditMinSpeechTime, cTextMinSpeechTime::Ref::New(*this));
 	helper.CheckBox(*this, pChkUseSpeechAnimation, cActionUseSpeechAnimation::Ref::New(*this));
 }

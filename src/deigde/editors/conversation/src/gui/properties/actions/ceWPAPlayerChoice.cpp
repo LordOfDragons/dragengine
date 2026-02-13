@@ -118,7 +118,7 @@ public:
 	using Ref = deTObjectReference<cActionEditOptionText>;
 	cActionEditOptionText(ceWPAPlayerChoice &panel) : igdeAction("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
-		"Edit command in larger dialog"), pPanel(panel){}
+		"@Conversation.Action.EditInDialog.ToolTip"), pPanel(panel){}
 	
 	void OnAction() override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
@@ -131,7 +131,7 @@ public:
 		decString text(option->GetText().ToUTF8());
 		if(!igdeCommonDialogs::GetMultilineString(
 			pPanel.GetParentPanel().GetWindowProperties().GetWindowMain(),
-			"Edit Option Text", "Text:", text)
+			"@Conversation.Dialog.EditOptionText.Title", "@Conversation.Dialog.Text", text)
 		|| text == option->GetText().ToUTF8()){
 			return;
 		}
@@ -159,11 +159,11 @@ ceWPAction(parentPanel){
 	
 	CreateGUICommon(*this);
 	
-	helper.EditString(*this, "Variable:", "Name of the variable to store the choice in or empty to use none",
+	helper.EditString(*this, "@Conversation.WPActionPlayerChoice.Variable.Label", "@Conversation.ToolTip.VariableForChoice",
 		pEditVarName, cTextVarName::Ref::New(*this));
 	
-	helper.FormLineStretchFirst(*this, "Option Text:", "Text to display for option", formLine);
-	helper.EditString(formLine, "Text to display for option", pEditOptionText, cTextOptionText::Ref::New(*this));
+	helper.FormLineStretchFirst(*this, "@Conversation.FormLine.OptionText", "@Conversation.WPActionPlayerChoice.Texttodisplayforoption.Label", formLine);
+	helper.EditString(formLine, "@Conversation.WPActionPlayerChoice.Texttodisplayforoption.Label", pEditOptionText, cTextOptionText::Ref::New(*this));
 	helper.Button(formLine, pBtnOptionText, cActionEditOptionText::Ref::New(*this));
 }
 

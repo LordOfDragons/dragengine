@@ -58,5 +58,5 @@ ceWPTTIMAMusic::~ceWPTTIMAMusic(){
 ///////////////
 
 void ceWPTTIMAMusic::Update(){
-	SetText("Music");
+	SetText(GetWindowMain().Translate("Conversation.WPTTIMAMusic.Music").ToUTF8());
 }

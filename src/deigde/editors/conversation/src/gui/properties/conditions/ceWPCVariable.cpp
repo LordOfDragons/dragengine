@@ -170,21 +170,22 @@ ceWPCVariable::ceWPCVariable(ceWPTopic &parentPanel) : ceWPCondition(parentPanel
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	helper.ComboBox(*this, "Operator:", "Operator to compare variable value with test value",
+	helper.ComboBox(*this, "@Conversation.WPConditionVariable.Operator.Label", "@Conversation.ToolTip.VariableOperator",
 		pCBOperator, cComboOperator::Ref::New(*this));
-	pCBOperator->AddItem("Equal", nullptr, (void*)(intptr_t)ceCConditionVariable::eopEqual);
-	pCBOperator->AddItem("Not Equal", nullptr, (void*)(intptr_t)ceCConditionVariable::eopNotEqual);
-	pCBOperator->AddItem("Less", nullptr, (void*)(intptr_t)ceCConditionVariable::eopLess);
-	pCBOperator->AddItem("Less or Equal", nullptr, (void*)(intptr_t)ceCConditionVariable::eopLessEqual);
-	pCBOperator->AddItem("Greater", nullptr, (void*)(intptr_t)ceCConditionVariable::eopGreater);
-	pCBOperator->AddItem("Greater or Equal", nullptr, (void*)(intptr_t)ceCConditionVariable::eopGreaterEqual);
+	pCBOperator->SetAutoTranslateItems(true);
+	pCBOperator->AddItem("@Conversation.WPConditionVariable.Equal", nullptr, (void*)(intptr_t)ceCConditionVariable::eopEqual);
+	pCBOperator->AddItem("@Conversation.WPConditionVariable.NotEqual", nullptr, (void*)(intptr_t)ceCConditionVariable::eopNotEqual);
+	pCBOperator->AddItem("@Conversation.WPConditionVariable.Less", nullptr, (void*)(intptr_t)ceCConditionVariable::eopLess);
+	pCBOperator->AddItem("@Conversation.WPConditionVariable.LessorEqual", nullptr, (void*)(intptr_t)ceCConditionVariable::eopLessEqual);
+	pCBOperator->AddItem("@Conversation.WPConditionVariable.Greater", nullptr, (void*)(intptr_t)ceCConditionVariable::eopGreater);
+	pCBOperator->AddItem("@Conversation.WPConditionVariable.GreaterorEqual", nullptr, (void*)(intptr_t)ceCConditionVariable::eopGreaterEqual);
 	
-	helper.EditString(*this, "Variable:", "Variable to compare",
+	helper.EditString(*this, "@Conversation.WPConditionVariable.Variable.Label", "@Conversation.ToolTip.VariableToCompare",
 		pEditVariable, cTextVariable::Ref::New(*this));
-	helper.EditInteger(*this, "Test Value:", "Value to compare against",
+	helper.EditInteger(*this, "@Conversation.WPConditionVariable.TestValue.Label", "@Conversation.WPConditionVariable.TestValue.ToolTip",
 		pEditTestValue, cTextTestValue::Ref::New(*this));
-	helper.EditString(*this, "Test Variable:",
-		"Variable to compare against or empty string to use 'Test Value'",
+	helper.EditString(*this, "@Conversation.WPConditionVariable.TestVariable.Label",
+		"@Conversation.ToolTip.VariableToCompareAgainst",
 		pEditTestVariable, cTextTestVariable::Ref::New(*this));
 }
 

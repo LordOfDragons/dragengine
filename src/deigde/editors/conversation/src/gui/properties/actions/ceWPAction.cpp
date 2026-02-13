@@ -96,8 +96,8 @@ private:
 	ceWPAction &pPanel;
 	
 public:
-	cActionWaitForActor(ceWPAction &panel) : igdeAction("Wait for actor",
-		"Wait for actor(s) to finish speaking and return false if asked to wait"),
+	cActionWaitForActor(ceWPAction &panel) : igdeAction("@Conversation.WPActionction.Waitforactor",
+		"@Conversation.Action.WaitForActorFinished.ToolTip"),
 		pPanel(panel){}
 	
 	void OnAction() override{
@@ -126,8 +126,8 @@ private:
 	ceWPAction &pPanel;
 	
 public:
-	cActionWaitSpeakOnly(ceWPAction &panel) : igdeAction("Wait speak only",
-		"Waiting considers only actor speaking not actor waiting"),
+	cActionWaitSpeakOnly(ceWPAction &panel) : igdeAction("@Conversation.WPActionction.Waitspeakonly",
+		"@Conversation.Action.WaitActorSpeaking.ToolTip"),
 		pPanel(panel){}
 	
 	void OnAction() override{
@@ -193,12 +193,12 @@ ceWPAction::~ceWPAction(){
 void ceWPAction::CreateGUICommon(igdeContainerForm &container){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	
-	helper.EditFloat(container, "Delay:",
-		"Delay the processing of the action after waiting conditions are fulfilled",
+	helper.EditFloat(container, "@Conversation.WPAction.Delay.Label",
+		"@Conversation.WPAction.Delay.ToolTip",
 		pEditDelay, cTextDelay::Ref::New(*this));
 	
 	helper.CheckBoxOnly(container, pChkWaitForActor, cActionWaitForActor::Ref::New(*this));
-	helper.ComboBox(container, true, "ID of actor to wait for or empty string to wait for all actors",
+	helper.ComboBox(container, true, "@Conversation.WPAction.WaitForActorID.ToolTip",
 		pCBWaitForActorID, cComboWaitForActorID::Ref::New(*this));
 	
 	helper.CheckBox(container, pChkWaitSpeakOnly, cActionWaitSpeakOnly::Ref::New(*this));

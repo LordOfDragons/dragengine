@@ -62,7 +62,7 @@ void ceWPTTIMAComment::Update(){
 	decString text;
 	
 	if(action.GetComment().IsEmpty()){
-		text = "Comment";
+		text = GetWindowMain().Translate("Conversation.TreeModel.Comment").ToUTF8();
 		
 	}else{
 		const decString lineComment(action.GetComment().Split('\n').GetAt(0));

@@ -59,7 +59,7 @@ public:
 	}
 	
 	/** \brief Text representation for test mode. */
-	static const char *GetTestModeText(ceCConditionTrigger::eTestModes testMode);
+	decString GetTestModeText(ceCConditionTrigger::eTestModes testMode) const;
 	
 	/** \brief Update condition. */
 	void Update() override;

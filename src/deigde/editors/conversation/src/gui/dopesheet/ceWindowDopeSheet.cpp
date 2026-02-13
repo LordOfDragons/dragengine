@@ -129,7 +129,7 @@ public:
 	
 public:
 	cActionPlayAction(ceWindowDopeSheet &window) : cBaseAction(window, "",
-		window.GetWindowMain().GetIconPlayAction(), "Play selected action"){
+		window.GetWindowMain().GetIconPlayAction(), "@Conversation.Action.DopeSheetPlay.ToolTip"){
 	}
 	
 	void OnAction(ceConversation &conversation) override{
@@ -150,7 +150,7 @@ public:
 	
 public:
 	cActionPlayFromHere(ceWindowDopeSheet &window) : cBaseAction(window, "",
-		window.GetWindowMain().GetIconPlayFromHere(), "Play onwards from selected action"){
+		window.GetWindowMain().GetIconPlayFromHere(), "@Conversation.Action.DopeSheetPlayFromHere.ToolTip"){
 	}
 	
 	void OnAction(ceConversation &) override{
@@ -168,7 +168,7 @@ public:
 	
 public:
 	cActionPause(ceWindowDopeSheet &window) : cBaseAction(window, "",
-		window.GetWindowMain().GetIconPlayPause(), "Pause/Resume playing"){
+		window.GetWindowMain().GetIconPlayPause(), "@Conversation.Action.DopeSheetPlayPause.ToolTip"){
 	}
 	
 	void OnAction(ceConversation &conversation) override{
@@ -189,7 +189,7 @@ public:
 	
 public:
 	cActionSelectCurAction(ceWindowDopeSheet &window) : cBaseAction(window, "",
-		window.GetWindowMain().GetIconPlaySelectCurAction(), "Select currently played back action"){
+		window.GetWindowMain().GetIconPlaySelectCurAction(), "@Conversation.Action.DopeSheetSelectCurAction.ToolTip"){
 	}
 	
 	void OnAction(ceConversation &conversation) override{
@@ -371,12 +371,12 @@ pVAPreviewHeight(40)
 	
 	
 	// lanes
-	pLanes.Add(ceWDSLaneWord::Ref::New(*this, 0, "Word", "Speech animation."));
-	pLanes.Add(ceWDSLaneFacePose::Ref::New(*this, 1, "Face Pose", "Facial animation."));
-	pLanes.Add(ceWDSLaneGesture::Ref::New(*this, 2, "Gesture", "Gesture playback."));
-	pLanes.Add(ceWDSLaneBodyLookAt::Ref::New(*this, 3, "Body Look-At", "Body orientation."));
-	pLanes.Add(ceWDSLaneHeadLookAt::Ref::New(*this, 4, "Head Look-At", "Head orientation."));
-	pLanes.Add(ceWDSLaneEyesLookAt::Ref::New(*this, 5, "Eyes Look-At", "Eyes orientation. If empty uses Head Look-At."));
+	pLanes.Add(ceWDSLaneWord::Ref::New(*this, 0, "@Conversation.WindowDopeSheet.LaneWord", "@Conversation.WindowDopeSheet.LaneWordDesc"));
+	pLanes.Add(ceWDSLaneFacePose::Ref::New(*this, 1, "@Conversation.WindowDopeSheet.LaneFacePose", "@Conversation.WindowDopeSheet.LaneFacePoseDesc"));
+	pLanes.Add(ceWDSLaneGesture::Ref::New(*this, 2, "@Conversation.WindowDopeSheet.LaneGesture", "@Conversation.WindowDopeSheet.LaneGestureDesc"));
+	pLanes.Add(ceWDSLaneBodyLookAt::Ref::New(*this, 3, "@Conversation.WindowDopeSheet.LaneBodyLookAt", "@Conversation.WindowDopeSheet.LaneBodyLookAtDesc"));
+	pLanes.Add(ceWDSLaneHeadLookAt::Ref::New(*this, 4, "@Conversation.WindowDopeSheet.LaneHeadLookAt", "@Conversation.WindowDopeSheet.LaneHeadLookAtDesc"));
+	pLanes.Add(ceWDSLaneEyesLookAt::Ref::New(*this, 5, "@Conversation.WindowDopeSheet.LaneEyesLookAt", "@Conversation.WindowDopeSheet.LaneEyesLookAtDesc"));
 	
 	// voice audio preview
 	pVAPreview = ceWDSVAPreview::Ref::New(*this);
@@ -418,8 +418,8 @@ pVAPreviewHeight(40)
 	// scroll and zoom frame on bottom
 	panel2 = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esLast, 2);
 	
-	helper.Label(panel2, "Time-Scale:", "Time scaling");
-	helper.ComboBox(panel2, true, "Time scaling", pCBTimeScale, cComboTimeScale::Ref::New(*this));
+	helper.Label(panel2, "@Conversation.WindowDopeSheet.TimeScale.Label", "@Conversation.WindowDopeSheet.TimeScale.ToolTip");
+	helper.ComboBox(panel2, true, "@Conversation.WindowDopeSheet.TimeScale.ToolTip", pCBTimeScale, cComboTimeScale::Ref::New(*this));
 	pCBTimeScale->AddItem("12");
 	pCBTimeScale->AddItem("25");
 	pCBTimeScale->AddItem("33");

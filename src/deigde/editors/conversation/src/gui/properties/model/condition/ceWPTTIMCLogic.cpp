@@ -70,16 +70,16 @@ ceWPTTIMCLogic::~ceWPTTIMCLogic(){
 // Management
 ///////////////
 
-const char *ceWPTTIMCLogic::GetOperatorText(ceCConditionLogic::eOperators anOperator){
+decString ceWPTTIMCLogic::GetOperatorText(ceCConditionLogic::eOperators anOperator) const{
 	switch(anOperator){
 	case ceCConditionLogic::eopNone:
-		return "none";
+		return GetWindowMain().Translate("Conversation.LogicOperator.None").ToUTF8();
 		
 	case ceCConditionLogic::eopAny:
-		return "any";
+		return GetWindowMain().Translate("Conversation.LogicOperator.Any").ToUTF8();
 		
 	case ceCConditionLogic::eopAll:
-		return "all";
+		return GetWindowMain().Translate("Conversation.LogicOperator.All").ToUTF8();
 		
 	default:
 		DETHROW(deeInvalidParam);
@@ -90,7 +90,8 @@ void ceWPTTIMCLogic::Update(){
 	const ceCConditionLogic &condition = *GetConditionLogic();
 	
 	decString text;
-	text.Format("Logic (%s)", GetOperatorText(condition.GetOperator()));
+	text.FormatSafe( GetWindowMain().Translate( "Conversation.Format.Logic" ).ToUTF8(),
+		GetOperatorText(condition.GetOperator()) );
 	SetText(text);
 	
 	ceWPTTIMConditions::Update();
@@ -124,7 +125,7 @@ void ceWPTTIMCLogic::OnContextMenu(igdeMenuCascade &contextMenu){
 	helper.MenuSeparator(contextMenu);
 	
 	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::New(
-		environment, "Logic: Add Condition", environment.GetStockIcon(igdeEnvironment::esiPlus)));
+		environment, "@Conversation.MenuCascade.LogicAddCondition", environment.GetStockIcon(igdeEnvironment::esiPlus)));
 	contextMenu.AddChild(subMenu);
 	
 	for(i=0; i<ceWPTTIMCondition::ListAddMenuConditionsCount; i++){
@@ -160,7 +161,7 @@ void ceWPTTIMCLogic::ContextMenuCondition(igdeMenuCascade &contextMenu, ceConver
 	
 	// child action specific
 	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::New(
-		environment, "Add Condition", environment.GetStockIcon(igdeEnvironment::esiPlus)));
+		environment, "@Conversation.MenuCascade.AddCondition", environment.GetStockIcon(igdeEnvironment::esiPlus)));
 	contextMenu.AddChild(subMenu);
 	
 	for(i=0; i<ceWPTTIMCondition::ListAddMenuConditionsCount; i++){

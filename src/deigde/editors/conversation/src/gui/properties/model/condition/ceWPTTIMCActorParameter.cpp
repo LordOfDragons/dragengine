@@ -87,8 +87,9 @@ void ceWPTTIMCActorParameter::Update(){
 	const ceCConditionActorParameter &condition = *GetConditionActorParameter();
 	decString text;
 	
-	text.Format("Actor Parameter: '%s': '%s' %s ", condition.GetActor().GetString(),
-		condition.GetParameter().GetString(), GetOperatorText(condition.GetOperator()));
+	text.FormatSafe( GetWindowMain().Translate( "Conversation.Format.ActorParameter" ).ToUTF8(),
+		condition.GetActor().GetString(), condition.GetParameter().GetString(),
+		GetOperatorText(condition.GetOperator()) );
 	
 	if(!condition.GetTestVariable().IsEmpty()){
 		text.AppendFormat("'%s'", condition.GetTestVariable().GetString());

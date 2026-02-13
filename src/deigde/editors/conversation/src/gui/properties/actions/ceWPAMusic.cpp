@@ -96,7 +96,7 @@ ceWPAMusic::ceWPAMusic(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	
 	CreateGUICommon(*this);
 	
-	helper.EditString(*this, "Name:", "Name of the music to use or empty to not change",
+	helper.EditString(*this, "@Conversation.WPActionMusic.Name.Label", "@Conversation.ToolTip.MusicName",
 		pEditName, cTextName::Ref::New(*this));
 }
 

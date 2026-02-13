@@ -59,7 +59,7 @@
 ////////////////////////////
 
 ceDialogPasteSnippet::ceDialogPasteSnippet(igdeEnvironment &environment, ceConversation *conversation) :
-igdeDialog(environment, "Paste Conversation Snippet"),
+igdeDialog(environment, "@Conversation.DialogPasteSnippet.Title"),
 pConversation(conversation)
 {
 	if(!conversation){
@@ -71,36 +71,36 @@ pConversation(conversation)
 	igdeContainerForm::Ref content(igdeContainerForm::Ref::New(
 		environment, igdeContainerForm::esLast));
 	
-	helper.ComboBoxFilter(content, "Camera Shot 1:", true,
-		"Camera shot to use for the first actor", pCBCameraShot1, {});
+	helper.ComboBoxFilter(content, "@Conversation.DialogPasteSnippet.CameraShot1.Label", true,
+		"@Conversation.DialogPasteSnippet.CameraShot1.ToolTip", pCBCameraShot1, {});
 	pCBCameraShot1->SetDefaultSorter();
 	
-	helper.ComboBoxFilter(content, "Camera Shot 2:", true,
-		"Camera shot to use for the second actor", pCBCameraShot2, {});
+	helper.ComboBoxFilter(content, "@Conversation.DialogPasteSnippet.CameraShot2.Label", true,
+		"@Conversation.DialogPasteSnippet.CameraShot2.ToolTip", pCBCameraShot2, {});
 	pCBCameraShot2->SetDefaultSorter();
 	
-	helper.ComboBoxFilter(content, "Target 1:", true,
-		"Target to use for the camera shot for the first actor", pCBTarget1, {});
+	helper.ComboBoxFilter(content, "@Conversation.DialogPasteSnippet.Target1.Label", true,
+		"@Conversation.DialogPasteSnippet.Target1.ToolTip", pCBTarget1, {});
 	pCBTarget1->SetDefaultSorter();
 	
-	helper.ComboBoxFilter(content, "Target 2:", true,
-		"Target to use for the camera shot for the second actor", pCBTarget2, {});
+	helper.ComboBoxFilter(content, "@Conversation.DialogPasteSnippet.Target2.Label", true,
+		"@Conversation.DialogPasteSnippet.Target2.ToolTip", pCBTarget2, {});
 	pCBTarget2->SetDefaultSorter();
 	
-	helper.EditFloat(content, "Wait Camera Shot:",
-		"Delay in seconds for added camera shot actions", pEditDelayCameraShot, {});
+	helper.EditFloat(content, "@Conversation.DialogPasteSnippet.WaitCameraShot.Label",
+		"@Conversation.DialogPasteSnippet.WaitCameraShot.ToolTip", pEditDelayCameraShot, {});
 	
-	helper.EditFloat(content, "Wait Actor Speak:",
-		"Delay in seconds for added actor speak actions", pEditDelayActorSpeak, {});
+	helper.EditFloat(content, "@Conversation.DialogPasteSnippet.WaitActorSpeak.Label",
+		"@Conversation.DialogPasteSnippet.WaitActorSpeak.ToolTip", pEditDelayActorSpeak, {});
 	
-	helper.EditFloat(content, "Scale Actor Speak:",
-		"Scale duration of spoken words added to actor speak actions", pEditScaleActorSpeak, {});
+	helper.EditFloat(content, "@Conversation.DialogPasteSnippet.ScaleActorSpeak.Label",
+		"@Conversation.DialogPasteSnippet.ScaleActorSpeak.ToolTip", pEditScaleActorSpeak, {});
 	
-	helper.EditString(content, "Snippet:", "Conversation snippet to generate actions from",
+	helper.EditString(content, "@Conversation.DialogPasteSnippet.Snippet.Label", "@Conversation.ToolTip.ConversationSnippet",
 		pEditSnippet, 80, 20, {});
 	
 	igdeContainer::Ref buttonBar;
-	CreateButtonBar(buttonBar, "Generate Actions", "Cancel");
+	CreateButtonBar(buttonBar, "@Conversation.Dialog.GenerateActions", "@Conversation.Dialog.Cancel");
 	
 	AddContent(content, buttonBar);
 	

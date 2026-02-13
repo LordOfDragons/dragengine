@@ -49,7 +49,7 @@
 ceWPTMACLogicRemoveCondition::ceWPTMACLogicRemoveCondition(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
 ceConversationAction &action, ceCConditionLogic &logic, ceConversationCondition *condition) :
-ceWPTMenuAction(windowMain, "Remove Condition",
+ceWPTMenuAction(windowMain, "@Conversation.MenuAction.RemoveCondition",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus)),
 pConversation(&conversation),
 pTopic(&topic),

@@ -59,6 +59,6 @@ pIndex(index)
 
 ceUCActionPaste::Ref ceWPTMAPChoiceActionsPasteSnippet::CreateUndo(const ceConversationAction::List &actions){
 	ceUCActionPaste::Ref undo(ceUCAPChoiceActionPaste::Ref::New(pTopic, pPlayerChoice, nullptr, actions, pIndex));
-	undo->SetShortInfo("Paste Conversation Snippet");
+	undo->SetShortInfo("@Conversation.Undo.PasteConversationSnippet");
 	return undo;
 }

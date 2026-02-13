@@ -59,7 +59,7 @@ public:
 	}
 	
 	/** \brief Text representation for operator. */
-	static const char *GetOperatorText(ceCConditionLogic::eOperators anOperator);
+	decString GetOperatorText(ceCConditionLogic::eOperators anOperator) const;
 	
 	/** \brief Update condition. */
 	void Update() override;

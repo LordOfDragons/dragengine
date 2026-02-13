@@ -52,7 +52,7 @@
 
 ceWPTMAIfElseCaseAdd::ceWPTMAIfElseCaseAdd(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic, ceCAIfElse &ifElse) :
-ceWPTMenuAction(windowMain, "Add If-Case", windowMain.GetIconActionIfElseCaseIf()),
+ceWPTMenuAction(windowMain, "@Conversation.MenuAction.IfElseCaseAdd", windowMain.GetIconActionIfElseCaseIf()),
 pConversation(&conversation),
 pTopic(&topic),
 pIfElse(&ifElse){

@@ -49,7 +49,7 @@
 
 ceWPTMAPasteActions::ceWPTMAPasteActions(ceWindowMain &windowMain,
 ceConversation &conversation) :
-ceWPTMenuAction(windowMain, "Paste Actions",
+ceWPTMenuAction(windowMain, "@Conversation.MenuAction.PasteActions",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste)),
 pConversation(&conversation)
 {

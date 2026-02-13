@@ -122,14 +122,15 @@ ceWPCTrigger::ceWPCTrigger(ceWPTopic &parentPanel) : ceWPCondition(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	helper.ComboBox(*this, "Test Mode:", "How to test the trigger",
+	helper.ComboBox(*this, "@Conversation.WPConditionTrigger.TestMode.Label", "@Conversation.ToolTip.TriggerTestMode",
 		pCBTestMode, cComboTestMode::Ref::New(*this));
-	pCBTestMode->AddItem("Fired", nullptr, (void*)(intptr_t)ceCConditionTrigger::etmFired);
-	pCBTestMode->AddItem("Not Fired", nullptr, (void*)(intptr_t)ceCConditionTrigger::etmNotFired);
-	pCBTestMode->AddItem("Has Ever Fired", nullptr, (void*)(intptr_t)ceCConditionTrigger::etmEverFired);
-	pCBTestMode->AddItem("Has Never Fired", nullptr, (void*)(intptr_t)ceCConditionTrigger::etmNeverFired);
+	pCBTestMode->SetAutoTranslateItems(true);
+	pCBTestMode->AddItem("@Conversation.WPConditionTrigger.Fired", nullptr, (void*)(intptr_t)ceCConditionTrigger::etmFired);
+	pCBTestMode->AddItem("@Conversation.WPConditionTrigger.NotFired", nullptr, (void*)(intptr_t)ceCConditionTrigger::etmNotFired);
+	pCBTestMode->AddItem("@Conversation.WPConditionTrigger.HasEverFired", nullptr, (void*)(intptr_t)ceCConditionTrigger::etmEverFired);
+	pCBTestMode->AddItem("@Conversation.WPConditionTrigger.HasNeverFired", nullptr, (void*)(intptr_t)ceCConditionTrigger::etmNeverFired);
 	
-	helper.EditString(*this, "Trigger:", "Name of trigger to test", pEditTrigger, cTextTrigger::Ref::New(*this));
+	helper.EditString(*this, "@Conversation.WPConditionTrigger.Trigger.Label", "@Conversation.ToolTip.TriggerToTest", pEditTrigger, cTextTrigger::Ref::New(*this));
 }
 
 ceWPCTrigger::~ceWPCTrigger(){

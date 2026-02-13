@@ -53,7 +53,7 @@
 ceWPTMAIfElseCaseRemove::ceWPTMAIfElseCaseRemove(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
 ceCAIfElse &ifElse, ceCAIfElseCase *ifCase) :
-ceWPTMenuAction(windowMain, "Remove If-Case",
+ceWPTMenuAction(windowMain, "@Conversation.MenuAction.IfElseCaseRemove",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus)),
 pConversation(&conversation),
 pTopic(&topic),

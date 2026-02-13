@@ -94,7 +94,7 @@ public:
 ceWPAComment::ceWPAComment(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	
-	helper.EditString(*this, "Comment:", "Comment", pEditComment, 8, cTextComment::Ref::New(*this));
+	helper.EditString(*this, "@Conversation.WPActionComment.Comment.Label", "@Conversation.ToolTip.Comment", pEditComment, 8, cTextComment::Ref::New(*this));
 }
 
 ceWPAComment::~ceWPAComment(){

@@ -161,18 +161,18 @@ ceWPACameraShot::ceWPACameraShot(ceWPTopic &parentPanel) : ceWPAction(parentPane
 	
 	CreateGUICommon(*this);
 	
-	helper.ComboBoxFilter(*this, "Name:", true, "Name of the camera shot to use or empty to not change",
+	helper.ComboBoxFilter(*this, "@Conversation.WPActionCameraShot.Name.Label", true, "@Conversation.WPActionCameraShot.Name.ToolTip",
 		pCBName, cComboName::Ref::New(*this));
 	pCBName->SetDefaultSorter();
 	
-	helper.EditFloat(*this, "Duration:", "Duration of the camera shot",
+	helper.EditFloat(*this, "@Conversation.WPActionCameraShot.Duration.Label", "@Conversation.WPActionCameraShot.Duration.ToolTip",
 		pEditDuration, cTextDuration::Ref::New(*this));
 	
-	helper.ComboBoxFilter(*this, "Camera Target:", true, "Target the camera is attached to",
+	helper.ComboBoxFilter(*this, "@Conversation.WPActionCameraShot.CameraTarget.Label", true, "@Conversation.WPActionCameraShot.CameraTarget.ToolTip",
 		pCBCameraTarget, cComboCameraTarget::Ref::New(*this));
 	pCBCameraTarget->SetDefaultSorter();
 	
-	helper.ComboBoxFilter(*this, "Look-At Target:", true, "Target to point the camera at",
+	helper.ComboBoxFilter(*this, "@Conversation.WPActionCameraShot.LookAtTarget.Label", true, "@Conversation.WPActionCameraShot.LookAtTarget.ToolTip",
 		pCBLookAtTarget, cComboLookAtTarget::Ref::New(*this));
 	pCBLookAtTarget->SetDefaultSorter();
 }

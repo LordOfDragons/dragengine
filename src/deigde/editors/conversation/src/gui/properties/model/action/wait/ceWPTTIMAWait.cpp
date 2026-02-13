@@ -48,7 +48,7 @@ ceConversation &conversation, ceCAWait *action) :
 ceWPTTIMAction(windowMain, etActionWait, conversation, action)
 {
 	SetIcon(windowMain.GetIconActionWait());
-	SetText("Wait");
+	SetText(windowMain.Translate("Conversation.WPTTIMAWait.Wait").ToUTF8());
 	
 	pCondition = ceWPTTIMAWaitCondition::Ref::New(windowMain, conversation, action);
 	AddChild(pCondition);

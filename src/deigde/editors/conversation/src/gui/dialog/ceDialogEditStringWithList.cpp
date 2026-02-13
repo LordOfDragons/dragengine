@@ -51,7 +51,7 @@ igdeDialog(environment, windowTitle)
 	pCBString->SetDefaultSorter();
 	
 	igdeContainer::Ref buttonBar;
-	CreateButtonBar(buttonBar, "Accept", "Cancel");
+	CreateButtonBar(buttonBar, "@Conversation.Dialog.Accept", "@Conversation.Dialog.Cancel");
 	
 	AddContent(content, buttonBar);
 	

@@ -52,7 +52,7 @@ ceConversation &conversation, ceCAPlayerChoice *action) :
 ceWPTTIMAction(windowMain, etActionPlayerChoice, conversation, action)
 {
 	SetIcon(windowMain.GetIconActionPlayerChoice());
-	SetText("Player Choice");
+	SetText(windowMain.Translate("Conversation.WPTTIMAPlayerChoice.PlayerChoice").ToUTF8());
 	
 	pActions = ceWPTTIMAPlayerChoiceActions::Ref::New(windowMain, conversation, action->GetActions());
 	AddChild(pActions);

@@ -110,32 +110,32 @@ ceConversationCondition::Ref ceWPTMACreateCondition::CreateCondition(){
 	}
 }
 
-const char *ceWPTMACreateCondition::ConditionTypeText(ceWindowMain &windowMain,
+decString ceWPTMACreateCondition::ConditionTypeText(ceWindowMain &windowMain,
 ceConversationCondition::eConditionTypes conditionType){
 	switch(conditionType){
 	case ceConversationCondition::ectLogic:
-		return "Logic";
+		return windowMain.Translate("Conversation.ConditionType.Logic").ToUTF8();
 		
 	case ceConversationCondition::ectHasActor:
-		return "Has Actor";
+		return windowMain.Translate("Conversation.ConditionType.HasActor").ToUTF8();
 		
 	case ceConversationCondition::ectActorInConversation:
-		return "Actor In Conversation";
+		return windowMain.Translate("Conversation.ConditionType.ActorInConversation").ToUTF8();
 		
 	case ceConversationCondition::ectVariable:
-		return "Variable";
+		return windowMain.Translate("Conversation.ConditionType.Variable").ToUTF8();
 		
 	case ceConversationCondition::ectActorParameter:
-		return "Actor Parameter";
+		return windowMain.Translate("Conversation.ConditionType.ActorParameter").ToUTF8();
 		
 	case ceConversationCondition::ectActorCommand:
-		return "Actor Command";
+		return windowMain.Translate("Conversation.ConditionType.ActorCommand").ToUTF8();
 		
 	case ceConversationCondition::ectGameCommand:
-		return "Game Command";
+		return windowMain.Translate("Conversation.ConditionType.GameCommand").ToUTF8();
 		
 	case ceConversationCondition::ectTrigger:
-		return "Trigger";
+		return windowMain.Translate("Conversation.ConditionType.Trigger").ToUTF8();
 		
 	default:
 		return "??";

@@ -110,7 +110,7 @@ public:
 	using Ref = deTObjectReference<cActionEditCommand>;
 	cActionEditCommand(ceWPAActorCmd &panel) : igdeAction("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
-		"Edit command in larger dialog"), pPanel(panel){}
+		"@Conversation.Action.EditInDialog.ToolTip"), pPanel(panel){}
 	
 	void OnAction() override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
@@ -122,7 +122,7 @@ public:
 		decString text(action->GetCommand());
 		if(!igdeCommonDialogs::GetMultilineString(
 			pPanel.GetParentPanel().GetWindowProperties().GetWindowMain(),
-			"Edit Command", "Command:", text)
+			"@Conversation.Dialog.EditCommand", "@Conversation.Dialog.Command", text)
 		|| text == action->GetCommand()){
 			return;
 		}
@@ -147,11 +147,11 @@ ceWPAActorCmd::ceWPAActorCmd(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	
 	CreateGUICommon(*this);
 	
-	helper.ComboBox(*this, "Actor ID:", true, "Actor to send command to", pCBActorID, cComboActor::Ref::New(*this));
+	helper.ComboBox(*this, "@Conversation.WPActionActorCmd.ActorID.Label", true, "@Conversation.ToolTip.ActorToSendCommand", pCBActorID, cComboActor::Ref::New(*this));
 	pCBActorID->SetDefaultSorter();
 	
-	helper.FormLineStretchFirst(*this, "Command:", "Command to send", formLine);
-	helper.EditString(formLine, "Command to send", pEditCommand, cTextCommand::Ref::New(*this));
+	helper.FormLineStretchFirst(*this, "@Conversation.FormLine.Command", "@Conversation.WPActionActorCmd.Commandtosend.Label", formLine);
+	helper.EditString(formLine, "@Conversation.WPActionActorCmd.Commandtosend.Label", pEditCommand, cTextCommand::Ref::New(*this));
 	helper.Button(formLine, pBtnCommand, cActionEditCommand::Ref::New(*this));
 }
 

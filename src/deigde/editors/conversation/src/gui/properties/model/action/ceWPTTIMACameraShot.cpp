@@ -61,6 +61,6 @@ void ceWPTTIMACameraShot::Update(){
 	const ceCACameraShot &action = *GetActionCameraShot();
 	decString text;
 	
-	text.Format("Camera Shot (%s)", action.GetName().GetString());
+	text.FormatSafe( GetWindowMain().Translate( "Conversation.Format.CameraShot" ).ToUTF8(), action.GetName().GetString() );
 	SetText(text);
 }

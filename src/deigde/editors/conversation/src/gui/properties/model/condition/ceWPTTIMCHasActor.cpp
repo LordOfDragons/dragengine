@@ -62,10 +62,12 @@ void ceWPTTIMCHasActor::Update(){
 	decString text;
 	
 	if(condition.GetNegate()){
-		text.Format("Has Not Actor: '%s'", condition.GetActor().GetString());
+		text.FormatSafe( GetWindowMain().Translate( "Conversation.Format.HasNotActor" ).ToUTF8(),
+			condition.GetActor().GetString() );
 		
 	}else{
-		text.Format("Has Actor: '%s'", condition.GetActor().GetString());
+		text.FormatSafe( GetWindowMain().Translate( "Conversation.Format.HasActor" ).ToUTF8(),
+			condition.GetActor().GetString() );
 	}
 	
 	SetText(text);

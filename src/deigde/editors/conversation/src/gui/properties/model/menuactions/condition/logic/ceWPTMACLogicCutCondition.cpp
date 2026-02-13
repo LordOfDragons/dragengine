@@ -50,7 +50,7 @@ ceWPTMACLogicCutCondition::ceWPTMACLogicCutCondition(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
 ceConversationAction &action, ceCConditionLogic &logic,
 ceConversationCondition *condition) :
-ceWPTMACopyCondition(windowMain, condition, "Logic: Cut Condition",
+ceWPTMACopyCondition(windowMain, condition, "@Conversation.MenuAction.LogicCutCondition",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut)),
 pConversation(&conversation),
 pTopic(&topic),
@@ -68,6 +68,6 @@ void ceWPTMACLogicCutCondition::OnAction(){
 	
 	ceUCCLogicRemove::Ref undo(ceUCCLogicRemove::Ref::New(
 		pTopic, pAction, pLogic, GetCondition()));
-	undo->SetShortInfo("Cut Condition");
+	undo->SetShortInfo("@Conversation.Undo.CutCondition");
 	pConversation->GetUndoSystem()->Add(undo);
 }

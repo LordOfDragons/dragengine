@@ -52,7 +52,7 @@
 
 ceWPTMAPChoiceOptionAdd::ceWPTMAPChoiceOptionAdd(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic, ceCAPlayerChoice &playerChoice) :
-ceWPTMenuAction(windowMain, "Add Option", windowMain.GetIconActionOption()),
+ceWPTMenuAction(windowMain, "@Conversation.MenuAction.AddOption", windowMain.GetIconActionOption()),
 pConversation(&conversation),
 pTopic(&topic),
 pPlayerChoice(&playerChoice){

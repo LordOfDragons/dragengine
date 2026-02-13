@@ -55,7 +55,7 @@ public:
 	inline ceCATrigger *GetActionTrigger() const{ return GetAction().DynamicCast<ceCATrigger>(); }
 	
 	/** \brief Text representation for action. */
-	static const char *GetActionText(ceCATrigger::eActions action);
+	decString GetActionText(ceCATrigger::eActions action) const;
 	
 	/** \brief Update action. */
 	void Update() override;

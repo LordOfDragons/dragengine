@@ -59,7 +59,7 @@ ceWPTTIMConditionContainer(windowMain, conversation, *action, etActionWaitCondit
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetText("Condition");
+	SetText(windowMain.Translate("Conversation.WPTTIMAWaitCondition.Condition").ToUTF8());
 	
 	pAction = action;
 }
@@ -111,7 +111,7 @@ void ceWPTTIMAWaitCondition::OnContextMenu(igdeMenuCascade &contextMenu){
 	
 	// condition
 	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::New(
-		environment, "Set Condition", environment.GetStockIcon(igdeEnvironment::esiPlus)));
+		environment, "@Conversation.MenuAction.SetCondition", environment.GetStockIcon(igdeEnvironment::esiPlus)));
 	contextMenu.AddChild(subMenu);
 	
 	for(i=0; i<ceWPTTIMCondition::ListAddMenuConditionsCount; i++){
@@ -148,7 +148,7 @@ igdeMenuCascade &contextMenu, ceConversationCondition *condition){
 	
 	// child action specific
 	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::New(
-		environment, "Replace Condition", environment.GetStockIcon(igdeEnvironment::esiPlus)));
+		environment, "@Conversation.MenuAction.ReplaceCondition", environment.GetStockIcon(igdeEnvironment::esiPlus)));
 	contextMenu.AddChild(subMenu);
 	
 	for(i=0; i<ceWPTTIMCondition::ListAddMenuConditionsCount; i++){

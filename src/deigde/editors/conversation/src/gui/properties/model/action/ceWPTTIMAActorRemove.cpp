@@ -61,6 +61,6 @@ void ceWPTTIMAActorRemove::Update(){
 	const ceCAActorRemove &action = *GetActionActorRemove();
 	decString text;
 	
-	text.Format("Actor Remove (%s)", action.GetActor().GetString());
+	text.FormatSafe( GetWindowMain().Translate( "Conversation.Format.ActorRemove" ).ToUTF8(), action.GetActor().GetString() );
 	SetText(text);
 }

@@ -185,22 +185,23 @@ ceWPASetAParam::ceWPASetAParam(ceWPTopic &parentPanel) : ceWPAction(parentPanel)
 	
 	CreateGUICommon(*this);
 	
-	helper.ComboBox(*this, "Actor ID:", true, "Actor to modify", pCBActorID, cComboActorID::Ref::New(*this));
+	helper.ComboBox(*this, "@Conversation.WPActionSetAParam.ActorID.Label", true, "@Conversation.ToolTip.ActorToModify", pCBActorID, cComboActorID::Ref::New(*this));
 	pCBActorID->SetDefaultSorter();
 	
-	helper.EditString(*this, "Name:", "Name of the parameter to set or empty to have no effect",
+	helper.EditString(*this, "@Conversation.WPActionSetAParam.Name.Label", "@Conversation.ToolTip.ParameterName",
 		pEditName, cTextName::Ref::New(*this));
 	
-	helper.ComboBox(*this, "Operator:", "How to apply the value to the parameter",
+	helper.ComboBox(*this, "@Conversation.WPActionSetAParam.Operator.Label", "@Conversation.ToolTip.OperatorForParameter",
 		pCBOperator, cComboOperator::Ref::New(*this));
-	pCBOperator->AddItem("Set", nullptr, (void*)(intptr_t)ceCASetActorParameter::eopSet);
-	pCBOperator->AddItem("Increment", nullptr, (void*)(intptr_t)ceCASetActorParameter::eopIncrement);
-	pCBOperator->AddItem("Decrement", nullptr, (void*)(intptr_t)ceCASetActorParameter::eopDecrement);
-	pCBOperator->AddItem("Random", nullptr, (void*)(intptr_t)ceCASetActorParameter::eopRandom);
+	pCBOperator->SetAutoTranslateItems(true);
+	pCBOperator->AddItem("@Conversation.WPActionSetAParam.Set", nullptr, (void*)(intptr_t)ceCASetActorParameter::eopSet);
+	pCBOperator->AddItem("@Conversation.WPActionSetAParam.Increment", nullptr, (void*)(intptr_t)ceCASetActorParameter::eopIncrement);
+	pCBOperator->AddItem("@Conversation.WPActionSetAParam.Decrement", nullptr, (void*)(intptr_t)ceCASetActorParameter::eopDecrement);
+	pCBOperator->AddItem("@Conversation.WPActionSetAParam.Random", nullptr, (void*)(intptr_t)ceCASetActorParameter::eopRandom);
 	
-	helper.EditInteger(*this, "Value:", "Value to use for operation (integer value)",
+	helper.EditInteger(*this, "@Conversation.WPActionSetAParam.Value.Label", "@Conversation.WPActionSetAParam.Value.ToolTip",
 		pEditValue, cTextValue::Ref::New(*this));
-	helper.EditString(*this, "Variable:", "Variable value to use for operation or empty string to use 'Value'",
+	helper.EditString(*this, "@Conversation.WPActionSetAParam.Variable.Label", "@Conversation.ToolTip.VariableForParameter",
 		pEditValueVariable, cTextValueVariable::Ref::New(*this));
 }
 

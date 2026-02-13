@@ -55,7 +55,7 @@ public:
 	inline ceCASetVariable *GetActionSetVariable() const{ return GetAction().DynamicCast<ceCASetVariable>(); }
 	
 	/** \brief Text representation for operator. */
-	static const char *GetOperatorText(ceCASetVariable::eOperators anOperator);
+	decString GetOperatorText(ceCASetVariable::eOperators anOperator) const;
 	
 	/** \brief Update action. */
 	void Update() override;

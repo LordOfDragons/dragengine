@@ -53,7 +53,7 @@
 ceWPTMAPChoiceOptionRemove::ceWPTMAPChoiceOptionRemove(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
 ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption *option) :
-ceWPTMenuAction(windowMain, "Remove Option",
+ceWPTMenuAction(windowMain, "@Conversation.MenuAction.RemoveOption",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus)),
 pConversation(&conversation),
 pTopic(&topic),

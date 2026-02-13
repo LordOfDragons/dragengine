@@ -65,8 +65,8 @@ protected:
 	ceWDSLaneHeadLookAt &pLane;
 	
 public:
-	cActionFromEyesLookAt(ceWDSLaneHeadLookAt &lane) : igdeAction("Set from Eyes Look-At",
-		nullptr, "Set from Eyes Look-At"),
+	cActionFromEyesLookAt(ceWDSLaneHeadLookAt &lane) : igdeAction("@Conversation.DopeSheetLaneHeadLookAt.SetfromEyesLookAt",
+		nullptr, "@Conversation.DopeSheetLaneHeadLookAt.SetfromEyesLookAt"),
 	pLane(lane){}
 	
 	void OnAction() override{

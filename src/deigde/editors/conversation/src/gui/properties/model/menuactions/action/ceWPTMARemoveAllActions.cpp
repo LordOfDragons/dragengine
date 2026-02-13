@@ -47,7 +47,7 @@
 
 ceWPTMARemoveAllActions::ceWPTMARemoveAllActions(ceWindowMain &windowMain,
 ceConversation &conversation) :
-ceWPTMenuAction(windowMain, "Remove All Actions",
+ceWPTMenuAction(windowMain, "@Conversation.MenuAction.RemoveAllActions",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus)),
 pConversation(&conversation){
 }

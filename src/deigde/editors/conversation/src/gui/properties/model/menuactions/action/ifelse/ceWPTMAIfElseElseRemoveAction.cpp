@@ -49,7 +49,7 @@
 ceWPTMAIfElseElseRemoveAction::ceWPTMAIfElseElseRemoveAction(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
 ceCAIfElse &ifElse, ceConversationAction *action) :
-ceWPTMenuAction(windowMain, "Remove Action",
+ceWPTMenuAction(windowMain, "@Conversation.MenuAction.RemoveAction",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus)),
 pConversation(&conversation),
 pTopic(&topic),

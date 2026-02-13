@@ -58,5 +58,5 @@ ceWPTTIMAStopConversation::~ceWPTTIMAStopConversation(){
 ///////////////
 
 void ceWPTTIMAStopConversation::Update(){
-	SetText("Stop Conversation");
+	SetText(GetWindowMain().Translate("Conversation.WPTTIMAStopConversation.StopConversation").ToUTF8());
 }

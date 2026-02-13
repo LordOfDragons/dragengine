@@ -68,8 +68,8 @@ protected:
 	ceWDSLaneWord &pLane;
 	
 public:
-	cActionWordsFromText(ceWDSLaneWord &lane) : igdeAction("Words From Text",
-		nullptr, "Set words from Actor Speak Action text using speech animation information"),
+	cActionWordsFromText(ceWDSLaneWord &lane) : igdeAction("@Conversation.DopeSheetLaneWord.WordsFromText",
+		nullptr, "@Conversation.Action.WordsFromText.ToolTip"),
 	pLane(lane){}
 
 	void OnAction() override{

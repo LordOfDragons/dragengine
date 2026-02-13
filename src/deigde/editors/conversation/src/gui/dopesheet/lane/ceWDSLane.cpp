@@ -95,9 +95,9 @@ private:
 	const int pIndex;
 	
 public:
-	cActionStripAdd(ceWDSLane &lane, int index) : igdeAction("Add...",
+	cActionStripAdd(ceWDSLane &lane, int index) : igdeAction("@Conversation.DopeSheetLane.Add",
 		lane.GetWindow().GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-		"Add element"), pLane(lane), pIndex(index){}
+		"@Conversation.Action.LaneAdd.ToolTip"), pLane(lane), pIndex(index){}
 	
 	void OnAction() override{
 		if(!pLane.GetWindow().GetActionASpeak()){
@@ -105,8 +105,8 @@ public:
 		}
 		
 		decString title, text;
-		title.Format("Add %s", pLane.GetLabel().GetString());
-		text.Format("%s: ", pLane.GetLabel().GetString());
+		title.FormatSafe(pLane.GetWindow().Translate("Conversation.Format.Add").ToUTF8(), pLane.GetLabel().GetString());
+		text.FormatSafe(pLane.GetWindow().Translate("Conversation.Format.LabelColon").ToUTF8(), pLane.GetLabel().GetString());
 		const ceDialogEditStrip::Ref dialog(ceDialogEditStrip::Ref::New(
 			pLane.GetWindow().GetEnvironment(), title, text));
 		
@@ -139,9 +139,9 @@ private:
 	ceStrip *pStrip;
 	
 public:
-	cActionStripRemove(ceWDSLane &lane, ceStrip *strip) : igdeAction("Remove",
+	cActionStripRemove(ceWDSLane &lane, ceStrip *strip) : igdeAction("@Conversation.DopeSheetLane.Remove",
 		lane.GetWindow().GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-		"Remove element"), pLane(lane), pStrip(strip){}
+		"@Conversation.Action.LaneRemove.ToolTip"), pLane(lane), pStrip(strip){}
 	
 	void OnAction() override{
 		if(!pStrip){
@@ -165,9 +165,9 @@ private:
 	ceWDSLane &pLane;
 	
 public:
-	cActionStripRemoveAll(ceWDSLane &lane) : igdeAction("Remove All",
+	cActionStripRemoveAll(ceWDSLane &lane) : igdeAction("@Conversation.DopeSheetLane.RemoveAll",
 		lane.GetWindow().GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-		"Remove all elements"), pLane(lane){}
+		"@Conversation.Action.LaneRemoveAll.ToolTip"), pLane(lane){}
 	
 	void OnAction() override{
 		if(!pLane.GetWindow().GetActionASpeak()){
@@ -192,9 +192,9 @@ private:
 	int pIndex;
 	
 public:
-	cActionStripMoveLeft(ceWDSLane &lane, int index) : igdeAction("Move Left",
+	cActionStripMoveLeft(ceWDSLane &lane, int index) : igdeAction("@Conversation.DopeSheetLane.MoveLeft",
 		lane.GetWindow().GetEnvironment().GetStockIcon(igdeEnvironment::esiLeft),
-		"Switch element with element on the left"), pLane(lane), pIndex(index){}
+		"@Conversation.Action.LaneMoveLeft.ToolTip"), pLane(lane), pIndex(index){}
 	
 	void OnAction() override{
 		if(!pLane.GetWindow().GetActionASpeak() || pIndex < 1){
@@ -219,9 +219,9 @@ private:
 	int pIndex;
 	
 public:
-	cActionStripMoveRight(ceWDSLane &lane, int index) : igdeAction("Move Right",
+	cActionStripMoveRight(ceWDSLane &lane, int index) : igdeAction("@Conversation.DopeSheetLane.MoveRight",
 		lane.GetWindow().GetEnvironment().GetStockIcon(igdeEnvironment::esiRight),
-		"Switch element with element on the right"), pLane(lane), pIndex(index){}
+		"@Conversation.Action.LaneMoveRight.ToolTip"), pLane(lane), pIndex(index){}
 	
 	void OnAction() override{
 		if(!pLane.GetWindow().GetActionASpeak() || pIndex > pLane.GetStripList().GetCount() - 2){
@@ -247,8 +247,8 @@ private:
 	ceStrip *pStrip;
 	
 public:
-	cActionStripEdit(ceWDSLane &lane, ceStrip *strip) : igdeAction("Edit...", nullptr,
-		"Edit element"), pLane(lane), pStrip(strip){}
+	cActionStripEdit(ceWDSLane &lane, ceStrip *strip) : igdeAction("@Conversation.DopeSheetLane.Edit", nullptr,
+		"@Conversation.Action.LaneEdit.ToolTip"), pLane(lane), pStrip(strip){}
 	
 	void OnAction() override{
 		if(pStrip){
@@ -841,8 +841,8 @@ void ceWDSLane::EditStrip(ceStrip *strip){
 	
 	igdeDialog::Ref refDialog;
 	decString title, text;
-	title.Format("Edit %s", pLabel.GetString());
-	text.Format("%s: ", pLabel.GetString());
+	title.FormatSafe(pWindow.Translate("Conversation.Format.Edit").ToUTF8(), pLabel.GetString());
+	text.FormatSafe(pWindow.Translate("Conversation.Format.LabelColon").ToUTF8(), pLabel.GetString());
 	refDialog = ceDialogEditStrip::Ref::New(pWindow.GetEnvironment(), title, text);
 	ceDialogEditStrip &dialog = (ceDialogEditStrip&)(igdeDialog&)refDialog;
 	

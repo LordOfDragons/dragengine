@@ -49,7 +49,7 @@
 ceWPTMAIfElseElseCutAction::ceWPTMAIfElseElseCutAction(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
 ceCAIfElse &ifElse, ceConversationAction *action) :
-ceWPTMACopyAction(windowMain, action, "Cut Action",
+ceWPTMACopyAction(windowMain, action, "@Conversation.MenuAction.CutAction",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut)),
 pConversation(&conversation),
 pTopic(&topic),
@@ -66,6 +66,6 @@ void ceWPTMAIfElseElseCutAction::OnAction(){
 	
 	ceUCAIfElseRemove::Ref undo(ceUCAIfElseRemove::Ref::New(
 		pTopic, pIfElse, nullptr, GetAction()));
-	undo->SetShortInfo("Cut Action");
+	undo->SetShortInfo("@Conversation.Undo.CutAction");
 	pConversation->GetUndoSystem()->Add(undo);
 }

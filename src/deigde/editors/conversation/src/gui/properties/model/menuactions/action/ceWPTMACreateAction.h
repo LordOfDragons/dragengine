@@ -82,12 +82,10 @@ public:
 	ceConversationAction::Ref CreateAction();
 	
 	/** \brief Text for action type. */
-	static const char *ActionTypeText(ceWindowMain &windowMain,
-		ceConversationAction::eActionTypes actionType);
+	decString ActionTypeText(ceWindowMain &windowMain, ceConversationAction::eActionTypes actionType);
 	
 	/** \brief Icon for action type. */
-	static igdeIcon *ActionTypeIcon(ceWindowMain &windowMain,
-		ceConversationAction::eActionTypes actionType);
+	static igdeIcon *ActionTypeIcon(ceWindowMain &windowMain, ceConversationAction::eActionTypes actionType);
 	/*@}*/
 };
 

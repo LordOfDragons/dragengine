@@ -62,10 +62,12 @@ void ceWPTTIMCActorInConversation::Update(){
 	decString text;
 	
 	if(condition.GetNegate()){
-		text.Format("Actor not in Conversation: '%s'", condition.GetActor().GetString());
+		text.FormatSafe( GetWindowMain().Translate( "Conversation.Format.ActorNotInConversation" ).ToUTF8(),
+			condition.GetActor().GetString() );
 		
 	}else{
-		text.Format("Actor in Conversation: '%s'", condition.GetActor().GetString());
+		text.FormatSafe( GetWindowMain().Translate( "Conversation.Format.ActorInConversation" ).ToUTF8(),
+			condition.GetActor().GetString() );
 	}
 	
 	SetText(text);

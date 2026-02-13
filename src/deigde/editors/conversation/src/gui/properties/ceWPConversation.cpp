@@ -273,7 +273,7 @@ public:
 	
 public:
 	cActionImportConvoAdd(ceWPConversation &panel) : cBaseAction(panel, "",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add Import Conversation"){}
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@Conversation.WPConversation.AddImportConversation.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		const decString &path = pPanel.GetPathImportConvo();
@@ -294,8 +294,8 @@ public:
 	using Ref = deTObjectReference<cActionImportConvoRemove>;
 	
 public:
-	cActionImportConvoRemove(ceWPConversation &panel) : cBaseAction(panel, "Remove",
-	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove Import"){}
+	cActionImportConvoRemove(ceWPConversation &panel) : cBaseAction(panel, "@Conversation.WPConversation.RemoveImport",
+	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@Conversation.WPConversation.RemoveImport.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(ceConversation*) override{
 		const decString path(pPanel.GetImportConvo());
@@ -324,8 +324,8 @@ public:
 	using Ref = deTObjectReference<cActionImportConvoMoveUp>;
 	
 public:
-	cActionImportConvoMoveUp(ceWPConversation &panel) : cBaseAction(panel, "Move Up",
-	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp), "Move Up"){}
+	cActionImportConvoMoveUp(ceWPConversation &panel) : cBaseAction(panel, "@Conversation.WPConversation.MoveUp",
+	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp), "@Conversation.WPConversation.MoveUp.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(ceConversation*) override{
 		const decString path(pPanel.GetImportConvo());
@@ -355,8 +355,8 @@ public:
 	using Ref = deTObjectReference<cActionImportConvoMoveDown>;
 	
 public:
-	cActionImportConvoMoveDown(ceWPConversation &panel) : cBaseAction(panel, "Move Down",
-	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp), "Move Down"){}
+	cActionImportConvoMoveDown(ceWPConversation &panel) : cBaseAction(panel, "@Conversation.WPConversation.MoveDown",
+	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp), "@Conversation.WPConversation.MoveDown.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(ceConversation*) override{
 		const decString path(pPanel.GetImportConvo());
@@ -387,8 +387,8 @@ public:
 	using Ref = deTObjectReference<cActionImportConvoClear>;
 	
 public:
-	cActionImportConvoClear(ceWPConversation &panel) : cBaseAction(panel, "Remove All",
-	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove All Imports"){}
+	cActionImportConvoClear(ceWPConversation &panel) : cBaseAction(panel, "@Conversation.WPConversation.RemoveAll",
+	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@Conversation.WPConversation.RemoveAll.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(ceConversation*) override{
 		return pPanel.GetConversation() && pPanel.GetConversation()->GetImportConversationPath().GetCount() > 0
@@ -435,16 +435,16 @@ public:
 	using Ref = deTObjectReference<cActionTargetAdd>;
 	
 public:
-	cActionTargetAdd(ceWPConversation &panel) : cBaseAction(panel, "Add...",
-	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add Target"){}
+	cActionTargetAdd(ceWPConversation &panel) : cBaseAction(panel, "@Conversation.Common.AddDots",
+	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@Conversation.WPConversation.AddTarget.Title"){}
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
-		decString name("Target");
-		if(!igdeCommonDialogs::GetString(pPanel, "Add Target", "Name:", name)){
+		decString name("@Conversation.DefaultName.Target");
+		if(!igdeCommonDialogs::GetString(pPanel, "@Conversation.WPConversation.AddTarget.Title", "@Conversation.Dialog.Name", name)){
 			return {};
 		}
 		if(conversation->GetTargets().HasMatching([&](const ceTarget &t){ return t.GetName() == name; })){
-			igdeCommonDialogs::Error(pPanel, "Add Target", "Duplicate name");
+			igdeCommonDialogs::Error(pPanel, "@Conversation.WPConversation.AddTarget.Title", "@Conversation.WPConversation.DuplicateName.Message");
 			return {};
 		}
 		
@@ -458,8 +458,8 @@ public:
 	using Ref = deTObjectReference<cActionTargetRemove>;
 	
 public:
-	cActionTargetRemove(ceWPConversation &panel) : cBaseAction(panel, "Remove",
-	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove Target"){}
+	cActionTargetRemove(ceWPConversation &panel) : cBaseAction(panel, "@Conversation.WPConversation.RemoveTarget",
+	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@Conversation.WPConversation.RemoveTarget.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(ceConversation*) override{
 		return pPanel.GetTarget() ? ceUCTargetRemove::Ref::New(pPanel.GetTarget()) : ceUCTargetRemove::Ref();
@@ -476,7 +476,7 @@ public:
 	
 public:
 	cActionTargetRename(ceWPConversation &panel) : cBaseAction(panel,
-	"Rename...", nullptr, "Rename Target"){}
+	"@Conversation.Common.Rename", nullptr, "@Conversation.WPConversation.RenameTarget.Title"){}
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		ceTarget * const target = pPanel.GetTarget();
@@ -485,12 +485,12 @@ public:
 		}
 		
 		decString name(target->GetName());
-		if(!igdeCommonDialogs::GetString(pPanel, "Rename Target", "Name:", name) 
+		if(!igdeCommonDialogs::GetString(pPanel, "@Conversation.WPConversation.RenameTarget.Title", "@Conversation.Dialog.Name", name) 
 		|| name == target->GetName()){
 			return {};
 		}
 		if(conversation->GetTargets().HasMatching([&](const ceTarget &t){ return t.GetName() == name; })){
-			igdeCommonDialogs::Error(pPanel, "Rename Target", "Duplicate name");
+			igdeCommonDialogs::Error(pPanel, "@Conversation.WPConversation.RenameTarget.Title", "@Conversation.WPConversation.DuplicateName.Message");
 			return {};
 		}
 		
@@ -505,7 +505,7 @@ public:
 class cActionTargetMenu : public cBaseActionContextMenu{
 public:
 	using Ref = deTObjectReference<cActionTargetMenu>;
-	cActionTargetMenu(ceWPConversation &panel) : cBaseActionContextMenu(panel, "Target menu"){}
+	cActionTargetMenu(ceWPConversation &panel) : cBaseActionContextMenu(panel, "@Conversation.Menu.Target"){}
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu, ceConversation*) override{
 		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
@@ -594,16 +594,16 @@ public:
 	using Ref = deTObjectReference<cActionCameraShotAdd>;
 	
 public:
-	cActionCameraShotAdd(ceWPConversation &panel) : cBaseAction(panel, "Add...",
-	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add Camera Shot"){}
+	cActionCameraShotAdd(ceWPConversation &panel) : cBaseAction(panel, "@Conversation.Common.AddDots",
+	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@Conversation.WPConversation.AddCameraShot.Title"){}
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
-		decString name("Camera Shot");
-		if(!igdeCommonDialogs::GetString(pPanel, "Add Camera Shot", "Name:", name)){
+		decString name("@Conversation.DefaultName.CameraShot");
+		if(!igdeCommonDialogs::GetString(pPanel, "@Conversation.WPConversation.AddCameraShot.Title", "@Conversation.Dialog.Name", name)){
 			return {};
 		}
 		if(conversation->GetCameraShotList().HasMatching([&](const ceCameraShot &c){ return c.GetName() == name; })){
-			igdeCommonDialogs::Error(pPanel, "Add Camera Shot", "Duplicate name");
+			igdeCommonDialogs::Error(pPanel, "@Conversation.WPConversation.AddCameraShot.Title", "@Conversation.WPConversation.DuplicateName.Message");
 			return {};
 		}
 		
@@ -616,8 +616,8 @@ public:
 	using Ref = deTObjectReference<cActionCameraShotRemove>;
 	
 public:
-	cActionCameraShotRemove(ceWPConversation &panel) : cBaseAction(panel, "Remove",
-	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove Camera Shot"){}
+	cActionCameraShotRemove(ceWPConversation &panel) : cBaseAction(panel, "@Conversation.WPConversation.RemoveCameraShot",
+	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@Conversation.WPConversation.RemoveCameraShot.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(ceConversation*) override{
 		return pPanel.GetCameraShot() ? ceUCCShotRemove::Ref::New(pPanel.GetCameraShot()) : ceUCCShotRemove::Ref();
@@ -634,7 +634,7 @@ public:
 	
 public:
 	cActionCameraShotRename(ceWPConversation &panel) : cBaseAction(panel,
-	"Rename...", nullptr, "Rename Camera Shot"){}
+	"@Conversation.Common.Rename", nullptr, "@Conversation.WPConversation.RenameCameraShot.Title"){}
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
@@ -643,12 +643,12 @@ public:
 		}
 		
 		decString name(cameraShot->GetName());
-		if(!igdeCommonDialogs::GetString(pPanel, "Rename Camera Shot", "Name:", name) 
+		if(!igdeCommonDialogs::GetString(pPanel, "@Conversation.WPConversation.RenameCameraShot.Title", "@Conversation.Dialog.Name", name) 
 		|| name == cameraShot->GetName()){
 			return {};
 		}
 		if(conversation->GetCameraShotList().HasMatching([&](const ceCameraShot &c){ return c.GetName() == name; })){
-			igdeCommonDialogs::Error(pPanel, "Rename Camera Shot", "Duplicate name");
+			igdeCommonDialogs::Error(pPanel, "@Conversation.WPConversation.RenameCameraShot.Title", "@Conversation.WPConversation.DuplicateName.Message");
 			return {};
 		}
 		
@@ -666,7 +666,7 @@ public:
 	
 public:
 	cActionCameraDuplicate(ceWPConversation &panel) : cBaseAction(panel,
-	"Duplicate...", nullptr, "Duplicate Camera Shot"){}
+	"@Conversation.Common.Duplicate", nullptr, "@Conversation.WPConversation.DuplicateCameraShot.Title"){}
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
@@ -675,11 +675,11 @@ public:
 		}
 		
 		decString name(cameraShot->GetName());
-		if(!igdeCommonDialogs::GetString(pPanel, "Duplicate Camera Shot", "Name:", name)){
+		if(!igdeCommonDialogs::GetString(pPanel, "@Conversation.WPConversation.DuplicateCameraShot.Title", "@Conversation.Dialog.Name", name)){
 			return {};
 		}
 		if(conversation->GetCameraShotList().HasMatching([&](const ceCameraShot &c){ return c.GetName() == name; })){
-			igdeCommonDialogs::Error(pPanel, "Duplicate Camera Shot", "Duplicate name");
+			igdeCommonDialogs::Error(pPanel, "@Conversation.WPConversation.DuplicateCameraShot.Title", "@Conversation.WPConversation.DuplicateName.Message");
 			return {};
 		}
 		
@@ -696,7 +696,7 @@ public:
 class cActionCameraShotMenu : public cBaseActionContextMenu{
 public:
 	using Ref = deTObjectReference<cActionCameraShotMenu>;
-	cActionCameraShotMenu(ceWPConversation &panel) : cBaseActionContextMenu(panel, "Camera Shot menu"){}
+	cActionCameraShotMenu(ceWPConversation &panel) : cBaseActionContextMenu(panel, "@Conversation.Menu.CameraShot"){}
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu, ceConversation*) override{
 		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
@@ -951,7 +951,7 @@ public:
 	
 public:
 	cActionCShotAlignTargets(ceWPConversation &panel) : cBaseAction(panel,
-		"Align Targets", nullptr, "Targets are aligned to face each other"){}
+		"@Conversation.WPConversation.AlignTargets", nullptr, "@Conversation.WPConversation.AlignTargets.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(ceConversation*) override{
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
@@ -971,7 +971,7 @@ public:
 	
 public:
 	cActionCShotLockUpAxis(ceWPConversation &panel) : cBaseAction(panel,
-		"Align Target Lock Up-Axis", nullptr, "Target up axes are locked during aligning"){}
+		"@Conversation.WPConversation.AlignTargetLockUpAxis", nullptr, "@Conversation.WPConversation.AlignTargetLockUpAxis.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(ceConversation*) override{
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
@@ -991,7 +991,7 @@ public:
 	
 public:
 	cActionCShotRelativeToLookAt(ceWPConversation &panel) : cBaseAction(panel,
-		"Anchor Relative to Look-At", nullptr, "Camera is relative to the camera target or the look-at target"){}
+		"@Conversation.WPConversation.AnchorRelativeToLookAt", nullptr, "@Conversation.WPConversation.AnchorRelativeToLookAt.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(ceConversation*) override{
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
@@ -1011,7 +1011,7 @@ public:
 	
 public:
 	cActionCShotLockCameraTarget(ceWPConversation &panel) : cBaseAction(panel,
-		"Lock Target Camera", nullptr, "Camera target position is locked during the entire camera shot"){}
+		"@Conversation.WPConversation.LockTargetCamera", nullptr, "@Conversation.WPConversation.LockTargetCamera.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(ceConversation*) override{
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
@@ -1031,7 +1031,7 @@ public:
 	
 public:
 	cActionCShotLockLookAtTarget(ceWPConversation &panel) : cBaseAction(panel,
-		"Lock Target Look-At", nullptr, "Look-at target position is locked during the entire camera shot"){}
+		"@Conversation.WPConversation.LockTargetLookAt", nullptr, "@Conversation.WPConversation.LockTargetLookAt.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(ceConversation*) override{
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
@@ -1064,16 +1064,16 @@ public:
 	using Ref = deTObjectReference<cActionGestureAdd>;
 	
 public:
-	cActionGestureAdd(ceWPConversation &panel) : cBaseAction(panel, "Add...",
-	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add Gesture"){}
+	cActionGestureAdd(ceWPConversation &panel) : cBaseAction(panel, "@Conversation.Common.AddDots",
+	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@Conversation.WPConversation.AddGesture.Title"){}
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
-		decString name("Gesture");
-		if(!igdeCommonDialogs::GetString(pPanel, "Add Gesture", "Name:", name)){
+		decString name("@Conversation.DefaultName.Gesture");
+		if(!igdeCommonDialogs::GetString(pPanel, "@Conversation.WPConversation.AddGesture.Title", "@Conversation.Dialog.Name", name)){
 			return {};
 		}
 		if(conversation->GetGestures().HasMatching([&](const ceGesture &g){ return g.GetName() == name; })){
-			igdeCommonDialogs::Error(pPanel, "Add Gesture", "Duplicate name");
+			igdeCommonDialogs::Error(pPanel, "@Conversation.WPConversation.AddGesture.Title", "@Conversation.WPConversation.DuplicateName.Message");
 			return {};
 		}
 		
@@ -1087,8 +1087,8 @@ public:
 	using Ref = deTObjectReference<cActionGestureRemove>;
 	
 public:
-	cActionGestureRemove(ceWPConversation &panel) : cBaseAction(panel, "Remove",
-	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove Gesture"){}
+	cActionGestureRemove(ceWPConversation &panel) : cBaseAction(panel, "@Conversation.WPConversation.RemoveGesture",
+	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@Conversation.WPConversation.RemoveGesture.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(ceConversation*) override{
 		return pPanel.GetGesture() ? ceUCGestureRemove::Ref::New(pPanel.GetGesture()) : ceUCGestureRemove::Ref();
@@ -1105,7 +1105,7 @@ public:
 	
 public:
 	cActionGestureRename(ceWPConversation &panel) : cBaseAction(panel,
-	"Rename...", nullptr, "Rename Gesture"){}
+	"@Conversation.Common.Rename", nullptr, "@Conversation.WPConversation.RenameGesture.Title"){}
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		ceGesture * const gesture = pPanel.GetGesture();
@@ -1114,12 +1114,12 @@ public:
 		}
 		
 		decString name(gesture->GetName());
-		if(!igdeCommonDialogs::GetString(pPanel, "Rename Gesture", "Name:", name) 
+		if(!igdeCommonDialogs::GetString(pPanel, "@Conversation.WPConversation.RenameGesture.Title", "@Conversation.Dialog.Name", name) 
 		|| name == gesture->GetName()){
 			return {};
 		}
 		if(conversation->GetGestures().HasMatching([&](const ceGesture &g){ return g.GetName() == name; })){
-			igdeCommonDialogs::Error(pPanel, "Rename Gesture", "Duplicate name");
+			igdeCommonDialogs::Error(pPanel, "@Conversation.WPConversation.RenameGesture.Title", "@Conversation.WPConversation.DuplicateName.Message");
 			return {};
 		}
 		
@@ -1134,7 +1134,7 @@ public:
 class cActionGestureMenu : public cBaseActionContextMenu{
 public:
 	using Ref = deTObjectReference<cActionGestureMenu>;
-	cActionGestureMenu(ceWPConversation &panel) : cBaseActionContextMenu(panel, "Gesture menu"){}
+	cActionGestureMenu(ceWPConversation &panel) : cBaseActionContextMenu(panel, "@Conversation.Menu.Gesture"){}
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu, ceConversation*) override{
 		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
@@ -1162,7 +1162,7 @@ public:
 	
 public:
 	cActionGestureHold(ceWPConversation &panel) : cBaseAction(panel,
-		"Hold Gesture", nullptr, "Hold gesture after gesture finished"){}
+		"@Conversation.WPConversation.HoldGesture", nullptr, "@Conversation.WPConversation.HoldGesture.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(ceConversation*) override{
 		ceGesture * const gesture = pPanel.GetGesture();
@@ -1208,16 +1208,16 @@ public:
 	using Ref = deTObjectReference<cActionFacePoseAdd>;
 	
 public:
-	cActionFacePoseAdd(ceWPConversation &panel) : cBaseAction(panel, "Add...",
-	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add Face Pose"){}
+	cActionFacePoseAdd(ceWPConversation &panel) : cBaseAction(panel, "@Conversation.Common.AddDots",
+	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@Conversation.WPConversation.AddFacePose.Title"){}
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
-		decString name("FacePose");
-		if(!igdeCommonDialogs::GetString(pPanel, "Add Face Pose", "Name:", name)){
+		decString name("@Conversation.DefaultName.FacePose");
+		if(!igdeCommonDialogs::GetString(pPanel, "@Conversation.WPConversation.AddFacePose.Title", "@Conversation.Dialog.Name", name)){
 			return {};
 		}
 		if(conversation->GetFacePoseList().HasMatching([&](const ceFacePose &f){ return f.GetName() == name; })){
-			igdeCommonDialogs::Error(pPanel, "Add Face Pose", "Duplicate name");
+			igdeCommonDialogs::Error(pPanel, "@Conversation.WPConversation.AddFacePose.Title", "@Conversation.WPConversation.DuplicateName.Message");
 			return {};
 		}
 		
@@ -1231,8 +1231,8 @@ public:
 	using Ref = deTObjectReference<cActionFacePoseRemove>;
 	
 public:
-	cActionFacePoseRemove(ceWPConversation &panel) : cBaseAction(panel, "Remove",
-	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove Face Pose"){}
+	cActionFacePoseRemove(ceWPConversation &panel) : cBaseAction(panel, "@Conversation.WPConversation.RemoveFacePose",
+	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@Conversation.WPConversation.RemoveFacePose.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(ceConversation*) override{
 		return pPanel.GetFacePose() ? ceUCFacePoseRemove::Ref::New(pPanel.GetFacePose()) : ceUCFacePoseRemove::Ref();
@@ -1249,7 +1249,7 @@ public:
 	
 public:
 	cActionFacePoseRename(ceWPConversation &panel) : cBaseAction(panel,
-	"Rename...", nullptr, "Rename Face Pose"){}
+	"@Conversation.Common.Rename", nullptr, "@Conversation.WPConversation.RenameFacePose.Title"){}
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		ceFacePose * const facePose = pPanel.GetFacePose();
@@ -1258,12 +1258,12 @@ public:
 		}
 		
 		decString name(facePose->GetName());
-		if(!igdeCommonDialogs::GetString(pPanel, "Rename Face Pose", "Name:", name) 
+		if(!igdeCommonDialogs::GetString(pPanel, "@Conversation.WPConversation.RenameFacePose.Title", "@Conversation.Dialog.Name", name) 
 		|| name == facePose->GetName()){
 			return {};
 		}
 		if(conversation->GetFacePoseList().HasMatching([&](const ceFacePose &f){ return f.GetName() == name; })){
-			igdeCommonDialogs::Error(pPanel, "Rename Face Pose", "Duplicate name");
+			igdeCommonDialogs::Error(pPanel, "@Conversation.WPConversation.RenameFacePose.Title", "@Conversation.WPConversation.DuplicateName.Message");
 			return {};
 		}
 		
@@ -1278,7 +1278,7 @@ public:
 class cActionFacePoseMenu : public cBaseActionContextMenu{
 public:
 	using Ref = deTObjectReference<cActionFacePoseMenu>;
-	cActionFacePoseMenu(ceWPConversation &panel) : cBaseActionContextMenu(panel, "Face Pose menu"){}
+	cActionFacePoseMenu(ceWPConversation &panel) : cBaseActionContextMenu(panel, "@Conversation.Menu.FacePose"){}
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu, ceConversation*) override{
 		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
@@ -1307,8 +1307,8 @@ public:
 	using Ref = deTObjectReference<cActionFacePoseControllerAdd>;
 	
 public:
-	cActionFacePoseControllerAdd(ceWPConversation &panel) : cBaseAction(panel, "Add...",
-	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add Face Pose Controller"){}
+	cActionFacePoseControllerAdd(ceWPConversation &panel) : cBaseAction(panel, "@Conversation.Common.AddDots",
+	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@Conversation.WPConversation.AddFacePoseController.Title"){}
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		ceFacePose * const facePose = pPanel.GetFacePose();
@@ -1319,12 +1319,12 @@ public:
 		decStringList names(conversation->GetFacePoseControllerNameList());
 		names.SortAscending();
 		decString name;
-		if(!igdeCommonDialogs::GetString(pPanel, "Add Face Pose Controller", "Controller to add", name, names)){
+		if(!igdeCommonDialogs::GetString(pPanel, "@Conversation.WPConversation.AddFacePoseController.Title", "@Conversation.WPConversation.ControllerToAdd", name, names)){
 			return {};
 		}
 		
 		if(facePose->GetControllers().HasMatching([&](const ceControllerValue &c){ return c.GetController() == name; })){
-			igdeCommonDialogs::Error(pPanel, "Add Face Pose Controller", "Duplicate controller");
+			igdeCommonDialogs::Error(pPanel, "@Conversation.WPConversation.AddFacePoseController.Title", "@Conversation.WPConversation.DuplicateController.Message");
 			return {};
 		}
 		
@@ -1346,8 +1346,8 @@ public:
 	using Ref = deTObjectReference<cActionFacePoseControllerRemove>;
 	
 public:
-	cActionFacePoseControllerRemove(ceWPConversation &panel) : cBaseAction(panel, "Remove",
-	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove Face Pose Controller"){}
+	cActionFacePoseControllerRemove(ceWPConversation &panel) : cBaseAction(panel, "@Conversation.WPConversation.RemoveFacePoseController",
+	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@Conversation.WPConversation.RemoveFacePoseController.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(ceConversation*) override{
 		ceFacePose * const facePose = pPanel.GetFacePose();
@@ -1364,7 +1364,7 @@ class cActionFacePoseControllerMenu : public cBaseActionContextMenu{
 public:
 	using Ref = deTObjectReference<cActionFacePoseControllerMenu>;
 	cActionFacePoseControllerMenu(ceWPConversation &panel) :
-	cBaseActionContextMenu(panel, "Face Pose Controller menu"){}
+	cBaseActionContextMenu(panel, "@Conversation.Menu.FacePoseController"){}
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu, ceConversation*) override{
 		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
@@ -1412,116 +1412,116 @@ pWindowProperties(windowProperties)
 	
 	
 	// import conversation
-	helper.GroupBoxFlow(content, groupBox, "Import Conversation:", true, true);
+	helper.GroupBoxFlow(content, groupBox, "@Conversation.WPConversation.ImportConversation.GroupBox", true, true);
 	
 	formLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
-	helper.EditPath(formLine, "Path to add to import list", *windowProperties.GetWindowMain()
+	helper.EditPath(formLine, "@Conversation.WPConversation.PathToAddToImportList.Label", *windowProperties.GetWindowMain()
 		.GetLoadSaveSystem()->GetConversationFilePatterns(), pPathImportConvo, {});
 	helper.Button(formLine, cActionImportConvoAdd::Ref::New(*this));
 	groupBox->AddChild(formLine);
-	helper.ListBox(groupBox, 3, "Imported conversations", pListImportConvoPath, cListImportConvo::Ref::New(*this));
+	helper.ListBox(groupBox, 3, "@Conversation.WPConversation.Importedconversations.Description", pListImportConvoPath, cListImportConvo::Ref::New(*this));
 	
 	
 	// targets
-	helper.GroupBox(content, groupBox, "Targets:", true);
+	helper.GroupBox(content, groupBox, "@Conversation.WPConversation.Targets.GroupBox", true);
 	
-	helper.FormLineStretchFirst(groupBox, "Target:", "Target to edit", formLine);
-	helper.ComboBoxFilter(formLine, "Target to edit", pCBTarget, cComboTarget::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@Conversation.WPConversation.Target.Label", "@Conversation.WPConversation.Target.ToolTip", formLine);
+	helper.ComboBoxFilter(formLine, "@Conversation.WPConversation.Target.ToolTip", pCBTarget, cComboTarget::Ref::New(*this));
 	pCBTarget->SetDefaultSorter();
 	actionContextMenu = cActionTargetMenu::Ref::New(*this);
 	helper.Button(formLine, pBtnTarget, actionContextMenu);
 	actionContextMenu->SetWidget(pBtnTarget);
 	
-	helper.ComboBoxFilter(groupBox, "Actor:", true, "ID of the actor or empty to not use an actor by ID",
+	helper.ComboBoxFilter(groupBox, "@Conversation.WPConversation.Actor.Label", true, "@Conversation.WPConversation.Actor.ToolTip",
 		pCBTargetActorID, cComboTargetActorID::Ref::New(*this));
 	pCBTargetActorID->SetDefaultSorter();
 	
-	helper.EditString(groupBox, "Coord-System:", "ID of coordinate system or empty to not use a coordinate system",
+	helper.EditString(groupBox, "@Conversation.WPConversation.CoordSystem.Label", "@Conversation.ToolTip.CoordSystemID",
 		pEditTargetEntityID, cTextTargetEntityID::Ref::New(*this));
-	helper.EditString(groupBox, "Bone:",
-		"Name of the bone to use as coordinate frame or an empty string to use the origin",
+	helper.EditString(groupBox, "@Conversation.WPConversation.Bone.Label",
+		"@Conversation.ToolTip.BoneName",
 		pEditTargetBone, cTextTargetBone::Ref::New(*this));
-	helper.EditVector(groupBox, "Position:", "Position relative to the target object",
+	helper.EditVector(groupBox, "@Conversation.WPConversation.Position.Label", "@Conversation.ToolTip.PositionRelativeToTarget",
 		pEditTargetPosition, cVectorTargetPosition::Ref::New(*this));
-	helper.EditVector(groupBox, "Orientation:", "Orientation relative to the target object",
+	helper.EditVector(groupBox, "@Conversation.WPConversation.Orientation.Label", "@Conversation.ToolTip.OrientationRelativeToTarget",
 		pEditTargetOrientation, cVectorTargetOrientation::Ref::New(*this));
 	
 	
 	// camera shots
-	helper.GroupBoxFlow(content, groupBox, "Camera Shots:", false, false);
+	helper.GroupBoxFlow(content, groupBox, "@Conversation.WPConversation.CameraShots.GroupBox", false, false);
 	
 	form = igdeContainerForm::Ref::New(env);
 	groupBox->AddChild(form);
-	helper.FormLineStretchFirst(form, "Camera Shot:", "Camera Shot to edit", formLine);
-	helper.ComboBoxFilter(formLine, "Camera Shot to edit", pCBCameraShot, cComboCameraShot::Ref::New(*this));
+	helper.FormLineStretchFirst(form, "@Conversation.WPConversation.CameraShot.Label", "@Conversation.WPConversation.CameraShot.ToolTip", formLine);
+	helper.ComboBoxFilter(formLine, "@Conversation.WPConversation.CameraShot.ToolTip", pCBCameraShot, cComboCameraShot::Ref::New(*this));
 	pCBCameraShot->SetDefaultSorter();
 	actionContextMenu = cActionCameraShotMenu::Ref::New(*this);
 	helper.Button(formLine, pBtnCameraShot, actionContextMenu);
 	actionContextMenu->SetWidget(pBtnCameraShot);
 	
-	helper.EditInteger(form, "Actor Count:", "Number of actors required for this camera action",
+	helper.EditInteger(form, "@Conversation.WPConversation.ActorCount.Label", "@Conversation.WPConversation.ActorCount.ToolTip",
 		pEditCShotActorCount, cTextCShotActorCount::Ref::New(*this));
 	
 	// camera shot camera target
-	helper.GroupBox(groupBox, groupBox2, "Camera Target:", false);
+	helper.GroupBox(groupBox, groupBox2, "@Conversation.WPConversation.CameraTarget.GroupBox", false);
 	
-	helper.ComboBoxFilter(groupBox2, "Target:", true,
-		"Target the camera is attached to or empty string for static position",
+	helper.ComboBoxFilter(groupBox2, "@Conversation.WPConversation.Target2.Label", true,
+		"@Conversation.WPConversation.Target2.ToolTip",
 		pCBCameraShotCameraTarget, cComboCameraShotCameraTarget::Ref::New(*this));
 	pCBCameraShotCameraTarget->SetDefaultSorter();
 	
-	helper.EditVector(groupBox2, "Offset From:", "Start offset relative to the target",
+	helper.EditVector(groupBox2, "@Conversation.WPConversation.OffsetFrom.Label", "@Conversation.ToolTip.OffsetFromStart",
 		pEditCShotOffCamFrom, cVectorCShotOffCamFrom::Ref::New(*this));
-	helper.EditVector(groupBox2, "Offset To:", "End offset relative to the target",
+	helper.EditVector(groupBox2, "@Conversation.WPConversation.OffsetTo.Label", "@Conversation.ToolTip.OffsetToEnd",
 		pEditCShotOffCamTo, cVectorCShotOffCamTo::Ref::New(*this));
 	
 	// camera shot look at target
-	helper.GroupBox(groupBox, groupBox2, "Camera Look-At:", false);
+	helper.GroupBox(groupBox, groupBox2, "@Conversation.WPConversation.CameraLookAt.GroupBox", false);
 	
-	helper.ComboBoxFilter(groupBox2, "Look-At Target:", true,
-		"Target to point the camera at or empty string for static position",
+	helper.ComboBoxFilter(groupBox2, "@Conversation.WPConversation.LookAtTarget.Label", true,
+		"@Conversation.WPConversation.LookAtTarget.ToolTip",
 		pCBCameraShotLookAtTarget, cComboCameraShotCameraLookAt::Ref::New(*this));
 	pCBCameraShotLookAtTarget->SetDefaultSorter();
 	
-	helper.EditVector(groupBox2, "Offset From:", "Start offset relative to the look-at target",
+	helper.EditVector(groupBox2, "@Conversation.WPConversation.OffsetFrom.Label", "@Conversation.ToolTip.OffsetFromLookAt",
 		pEditCShotOffLookAtFrom, cVectorCShotOffLookAtFrom::Ref::New(*this));
-	helper.EditVector(groupBox2, "Offset To:", "End offset relative to the look-at target",
+	helper.EditVector(groupBox2, "@Conversation.WPConversation.OffsetTo.Label", "@Conversation.ToolTip.OffsetToLookAt",
 		pEditCShotOffLookAtTo, cVectorCShotOffLookAtTo::Ref::New(*this));
 	
 	// camera shot camera target
-	helper.GroupBox(groupBox, groupBox2, "Orbiting:", false);
+	helper.GroupBox(groupBox, groupBox2, "@Conversation.WPConversation.Orbiting.GroupBox", false);
 	
-	helper.EditVector(groupBox2, "Orbit From:", "Start rotation of the camera orbit",
+	helper.EditVector(groupBox2, "@Conversation.WPConversation.OrbitFrom.Label", "@Conversation.ToolTip.OrbitFromStart",
 		pEditCShotCamOrbitFrom, cVectorCShotCamOrbitFrom::Ref::New(*this));
-	helper.EditVector(groupBox2, "Orbit To:", "End rotation of the camera orbit",
+	helper.EditVector(groupBox2, "@Conversation.WPConversation.OrbitTo.Label", "@Conversation.ToolTip.OrbitToEnd",
 		pEditCShotCamOrbitTo, cVectorCShotCamOrbitTo::Ref::New(*this));
 	
-	helper.EditFloat(groupBox2, "Distance From:", "Start distance of the camera to the orbit position",
+	helper.EditFloat(groupBox2, "@Conversation.WPConversation.DistanceFrom.Label", "@Conversation.WPConversation.DistanceFrom.ToolTip",
 		pEditCShotCamDistFrom, cTextCShotCamDistanceFrom::Ref::New(*this));
-	helper.EditFloat(groupBox2, "Distance To:", "End distance of the camera to the orbit position",
+	helper.EditFloat(groupBox2, "@Conversation.WPConversation.DistanceTo.Label", "@Conversation.WPConversation.DistanceTo.ToolTip",
 		pEditCShotCamDistTo, cTextCShotCamDistanceTo::Ref::New(*this));
 	
 	// camera shot camera target
-	helper.GroupBox(groupBox, groupBox2, "Parameters:", false);
+	helper.GroupBox(groupBox, groupBox2, "@Conversation.WPConversation.Parameters.GroupBox", false);
 	
-	helper.EditVector(groupBox2, "Position From:", "Start position",
+	helper.EditVector(groupBox2, "@Conversation.WPConversation.PositionFrom.Label", "@Conversation.ToolTip.PositionFrom",
 		pEditCShotPosFrom, cVectorCShotPositionFrom::Ref::New(*this));
-	helper.EditVector(groupBox2, "Position To:", "End position",
+	helper.EditVector(groupBox2, "@Conversation.WPConversation.PositionTo.Label", "@Conversation.ToolTip.PositionTo",
 		pEditCShotPosTo, cVectorCShotPositionTo::Ref::New(*this));
 	
-	helper.EditVector(groupBox2, "Rotation From:", "Start rotation",
+	helper.EditVector(groupBox2, "@Conversation.WPConversation.RotationFrom.Label", "@Conversation.ToolTip.RotationFrom",
 		pEditCShotRotFrom, cVectorCShotRotationFrom::Ref::New(*this));
-	helper.EditVector(groupBox2, "Rotation To:", "End rotation",
+	helper.EditVector(groupBox2, "@Conversation.WPConversation.RotationTo.Label", "@Conversation.ToolTip.RotationTo",
 		pEditCShotRotTo, cVectorCShotRotationTo::Ref::New(*this));
 	
-	helper.EditFloat(groupBox2, "Tilt From:", "Start tilt of the camera along the view axis",
+	helper.EditFloat(groupBox2, "@Conversation.WPConversation.TiltFrom.Label", "@Conversation.WPConversation.TiltFrom.ToolTip",
 		pEditCShotTiltFrom, cTextCShotTiltFrom::Ref::New(*this));
-	helper.EditFloat(groupBox2, "Tilt To:", "End tilt of the camera along the view axis",
+	helper.EditFloat(groupBox2, "@Conversation.WPConversation.TiltTo.Label", "@Conversation.WPConversation.TiltTo.ToolTip",
 		pEditCShotTiltTo, cTextCShotTiltTo::Ref::New(*this));
 	
-	helper.EditFloat(groupBox2, "Fov From:", "Start fov of the camera along the view axis",
+	helper.EditFloat(groupBox2, "@Conversation.WPConversation.FovFrom.Label", "@Conversation.WPConversation.FovFrom.ToolTip",
 		pEditCShotFovFrom, cTextCShotFovFrom::Ref::New(*this));
-	helper.EditFloat(groupBox2, "Fov To:", "End fov of the camera along the view axis",
+	helper.EditFloat(groupBox2, "@Conversation.WPConversation.FovTo.Label", "@Conversation.WPConversation.FovTo.ToolTip",
 		pEditCShotFovTo, cTextCShotFovTo::Ref::New(*this));
 	
 	helper.CheckBox(groupBox2, pChkCShotAlignTargets, cActionCShotAlignTargets::Ref::New(*this));
@@ -1532,42 +1532,42 @@ pWindowProperties(windowProperties)
 	
 	
 	// gestures
-	helper.GroupBox(content, groupBox, "Gestures:", true);
+	helper.GroupBox(content, groupBox, "@Conversation.WPConversation.Gestures.GroupBox", true);
 	
-	helper.FormLineStretchFirst(groupBox, "Gesture:", "Gesture to edit", formLine);
-	helper.ComboBoxFilter(formLine, "Gesture to edit", pCBGesture, cComboGesture::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@Conversation.WPConversation.Gesture.Label", "@Conversation.WPConversation.Gesture.ToolTip", formLine);
+	helper.ComboBoxFilter(formLine, "@Conversation.WPConversation.Gesture.ToolTip", pCBGesture, cComboGesture::Ref::New(*this));
 	pCBGesture->SetDefaultSorter();
 	actionContextMenu = cActionGestureMenu::Ref::New(*this);
 	helper.Button(formLine, pBtnGesture, actionContextMenu);
 	actionContextMenu->SetWidget(pBtnGesture);
 	
-	helper.EditString(groupBox, "Animator:", "Name of the animator to use for this gesture",
+	helper.EditString(groupBox, "@Conversation.WPConversation.Animator.Label", "@Conversation.ToolTip.GestureAnimator",
 		pEditGestureAnimator, cTextGestureAnimator::Ref::New(*this));
 	
-	helper.EditFloat(groupBox, "Duration:", "Duration of gesture. Used as default value in strips",
+	helper.EditFloat(groupBox, "@Conversation.WPConversation.Duration.Label", "@Conversation.WPConversation.Duration.ToolTip",
 		pEditGestureDuration, cTextGestureDuration::Ref::New(*this));
 	
 	helper.CheckBox(groupBox, pChkGestureHold, cActionGestureHold::Ref::New(*this));
 	
 	
 	// facePoses
-	helper.GroupBox(content, groupBox, "Face Poses:", true);
+	helper.GroupBox(content, groupBox, "@Conversation.WPConversation.FacePoses.GroupBox", true);
 	
-	helper.FormLineStretchFirst(groupBox, "Face Pose:", "Face Pose to edit", formLine);
-	helper.ComboBoxFilter(formLine, "Face Pose to edit", pCBFacePose, cComboFacePose::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@Conversation.WPConversation.FacePose.Label", "@Conversation.WPConversation.FacePose.ToolTip", formLine);
+	helper.ComboBoxFilter(formLine, "@Conversation.WPConversation.FacePose.ToolTip", pCBFacePose, cComboFacePose::Ref::New(*this));
 	pCBFacePose->SetDefaultSorter();
 	actionContextMenu = cActionFacePoseMenu::Ref::New(*this);
 	helper.Button(formLine, pBtnFacePose, actionContextMenu);
 	actionContextMenu->SetWidget(pBtnFacePose);
 	
-	helper.FormLineStretchFirst(groupBox, "Controller:", "Face pose controller to edit", formLine);
-	helper.ComboBox(formLine, "Face pose controller to edit", pCBFPController, cComboFacePoseController::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@Conversation.FormLine.Controller", "@Conversation.WPConversation.FacePoseControllerToEdit.Label", formLine);
+	helper.ComboBox(formLine, "@Conversation.WPConversation.FacePoseControllerToEdit.Label", pCBFPController, cComboFacePoseController::Ref::New(*this));
 	pCBFPController->SetDefaultSorter();
 	actionContextMenu = cActionFacePoseControllerMenu::Ref::New(*this);
 	helper.Button(formLine, pBtnFPController, actionContextMenu);
 	actionContextMenu->SetWidget(pBtnFPController);
 	
-	helper.EditFloat(groupBox, "Value:", "Value of face pose controller",
+	helper.EditFloat(groupBox, "@Conversation.WPConversation.Value.Label", "@Conversation.WPConversation.Value.ToolTip",
 		pEditFPControllerValue, cTextFPControllerValue::Ref::New(*this));
 }
 

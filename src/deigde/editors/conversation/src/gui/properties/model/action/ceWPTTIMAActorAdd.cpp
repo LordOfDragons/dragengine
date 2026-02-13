@@ -61,6 +61,6 @@ void ceWPTTIMAActorAdd::Update(){
 	const ceCAActorAdd &action = *GetActionActorAdd();
 	decString text;
 	
-	text.Format("Actor Add (%s)", action.GetID().GetString());
+	text.FormatSafe( GetWindowMain().Translate( "Conversation.Format.ActorAdd" ).ToUTF8(), action.GetID().GetString() );
 	SetText(text);
 }

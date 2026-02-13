@@ -82,7 +82,7 @@ public:
 	ceConversationCondition::Ref CreateCondition();
 	
 	/** \brief Text for condition type. */
-	static const char *ConditionTypeText(ceWindowMain &windowMain,
+	static decString ConditionTypeText(ceWindowMain &windowMain,
 		ceConversationCondition::eConditionTypes conditionType);
 	
 	/** \brief Icon for condition type. */

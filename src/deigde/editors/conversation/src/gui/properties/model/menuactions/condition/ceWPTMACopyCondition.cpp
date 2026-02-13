@@ -46,7 +46,7 @@
 
 ceWPTMACopyCondition::ceWPTMACopyCondition(ceWindowMain &windowMain,
 ceConversationCondition *condition) :
-ceWPTMenuAction(windowMain, "Copy Condition",
+ceWPTMenuAction(windowMain, "@Conversation.MenuAction.CopyCondition",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy)),
 pCondition(condition)
 {

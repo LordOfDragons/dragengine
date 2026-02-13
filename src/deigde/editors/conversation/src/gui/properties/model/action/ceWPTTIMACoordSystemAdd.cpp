@@ -61,6 +61,6 @@ void ceWPTTIMACoordSystemAdd::Update(){
 	const ceCACoordSystemAdd &action = *GetActionCoordSystemAdd();
 	decString text;
 	
-	text.Format("Coord System Add (%s)", action.GetCoordSystemID().GetString());
+	text.FormatSafe( GetWindowMain().Translate( "Conversation.Format.CoordSystemAdd" ).ToUTF8(), action.GetCoordSystemID().GetString() );
 	SetText(text);
 }

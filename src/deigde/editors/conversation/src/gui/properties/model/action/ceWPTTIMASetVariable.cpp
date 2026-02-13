@@ -57,7 +57,7 @@ ceWPTTIMASetVariable::~ceWPTTIMASetVariable(){
 // Management
 ///////////////
 
-const char *ceWPTTIMASetVariable::GetOperatorText(ceCASetVariable::eOperators anOperator){
+decString ceWPTTIMASetVariable::GetOperatorText(ceCASetVariable::eOperators anOperator) const{
 	switch(anOperator){
 	case ceCASetVariable::eopSet:
 		return "=";
@@ -69,7 +69,7 @@ const char *ceWPTTIMASetVariable::GetOperatorText(ceCASetVariable::eOperators an
 		return "-=";
 		
 	case ceCASetVariable::eopRandom:
-		return "random";
+		return GetWindowMain().Translate("Conversation.Operator.Random").ToUTF8();
 		
 	default:
 		DETHROW(deeInvalidParam);
@@ -80,15 +80,15 @@ void ceWPTTIMASetVariable::Update(){
 	const ceCASetVariable &action = *GetActionSetVariable();
 	decString text;
 	
-	const char * const textOperator = GetOperatorText(action.GetOperator());
+	const decString textOperator = GetOperatorText(action.GetOperator());
 	
 	if(!action.GetValueVariable().IsEmpty()){
-		text.Format("Set Variable: '%s' %s '%s'", action.GetName().GetString(),
-			textOperator, action.GetValueVariable().GetString());
+		text.FormatSafe( GetWindowMain().Translate( "Conversation.Format.SetVariableVar" ).ToUTF8(),
+			action.GetName(), textOperator, action.GetValueVariable() );
 		
 	}else{
-		text.Format("Set Variable: '%s' %s %d", action.GetName().GetString(),
-			textOperator, action.GetValue());
+		text.FormatSafe( GetWindowMain().Translate( "Conversation.Format.SetVariableInt" ).ToUTF8(),
+			action.GetName(), textOperator, action.GetValue() );
 	}
 	
 	SetText(text);

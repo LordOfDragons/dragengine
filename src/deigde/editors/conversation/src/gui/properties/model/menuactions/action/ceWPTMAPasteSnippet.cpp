@@ -51,7 +51,7 @@
 
 ceWPTMAPasteSnippet::ceWPTMAPasteSnippet(ceWindowMain &windowMain,
 ceConversation &conversation) :
-ceWPTMenuAction(windowMain, "Paste Conversation Snippet...",
+ceWPTMenuAction(windowMain, "@Conversation.MenuAction.PasteConversationSnippet",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste)),
 pConversation(&conversation){
 }

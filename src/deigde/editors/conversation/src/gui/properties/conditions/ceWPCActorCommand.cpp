@@ -113,7 +113,7 @@ public:
 	using Ref = deTObjectReference<cActionEditCommand>;
 	cActionEditCommand(ceWPCActorCommand &panel) : igdeAction("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
-		"Edit command in larger dialog"), pPanel(panel){}
+		"@Conversation.Action.EditInDialog.ToolTip"), pPanel(panel){}
 	
 	void OnAction() override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
@@ -126,7 +126,7 @@ public:
 		decString text(condition->GetCommand());
 		if(!igdeCommonDialogs::GetMultilineString(
 			pPanel.GetParentPanel().GetWindowProperties().GetWindowMain(),
-			"Edit Command", "Command:", text)
+			"@Conversation.Dialog.EditCommand", "@Conversation.Dialog.Command", text)
 		|| text == condition->GetCommand()){
 			return;
 		}
@@ -141,8 +141,8 @@ class cActionNegate : public igdeAction {
 	
 public:
 	using Ref = deTObjectReference<cActionNegate>;
-	cActionNegate(ceWPCActorCommand &panel) : igdeAction("Negate", nullptr,
-		"True if the result of the command is negated"), pPanel(panel){ }
+	cActionNegate(ceWPCActorCommand &panel) : igdeAction("@Conversation.WPConditionActorCommand.Negate", nullptr,
+		"@Conversation.Condition.ActorCommandNegate.ToolTip"), pPanel(panel){ }
 	
 	void OnAction() override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
@@ -170,11 +170,11 @@ ceWPCActorCommand::ceWPCActorCommand(ceWPTopic &parentPanel) : ceWPCondition(par
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	helper.ComboBox(*this, "Actor ID:", true, "Actor ID to test", pCBActorID, cComboActor::Ref::New(*this));
+	helper.ComboBox(*this, "@Conversation.WPConditionActorCommand.ActorID.Label", true, "@Conversation.ToolTip.ActorIDToTest", pCBActorID, cComboActor::Ref::New(*this));
 	pCBActorID->SetDefaultSorter();
 	
-	helper.FormLineStretchFirst(*this, "Command:", "Command to send", formLine);
-	helper.EditString(formLine, "Command to send", pEditCommand, cTextCommand::Ref::New(*this));
+	helper.FormLineStretchFirst(*this, "@Conversation.FormLine.Command", "@Conversation.WPConditionActorCommand.Commandtosend.Label", formLine);
+	helper.EditString(formLine, "@Conversation.WPConditionActorCommand.Commandtosend.Label", pEditCommand, cTextCommand::Ref::New(*this));
 	helper.Button(formLine, pBtnCommand, cActionEditCommand::Ref::New(*this));
 	
 	helper.CheckBox(formLine, pChkNegate, cActionNegate::Ref::New(*this));
