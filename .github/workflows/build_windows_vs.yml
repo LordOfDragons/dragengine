@@ -120,7 +120,8 @@ jobs:
         run: |
           $Config = "${{ inputs.debugBuild && 'ReleaseDebug' || 'Release' }}"
           $BuilVersion = "${{ inputs.buildVersion }}"
-          msbuild /m -maxcpucount /p:Configuration=$Config /p:BuildVersion=$BuilVersion dragengine.sln
+          $env:MSBUILDDISABLENODEREUSE=1
+          & msbuild /m:4 -tl:off /nodeReuse:false /v:m /p:Configuration=$Config /p:BuildVersion=$BuilVersion dragengine.sln
       
       - name: Archive
         run: |
