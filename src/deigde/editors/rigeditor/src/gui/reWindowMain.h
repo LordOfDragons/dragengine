@@ -83,6 +83,7 @@ private:
 	igdeIcon::Ref pIconEditLockAxisY;
 	igdeIcon::Ref pIconEditLockAxisZ;
 	igdeIcon::Ref pIconEditLockLocal;
+	igdeIcon::Ref pIconEditLockAxisFlip;
 	
 	igdeAction::Ref pActionFileNew;
 	igdeAction::Ref pActionFileOpen;
@@ -111,6 +112,7 @@ private:
 	igdeAction::Ref pActionEditLockAxisY;
 	igdeAction::Ref pActionEditLockAxisZ;
 	igdeAction::Ref pActionEditLockLocal;
+	igdeAction::Ref pActionEditLockAxisFlip;
 	
 	igdeAction::Ref pActionRigAddSphere;
 	igdeAction::Ref pActionRigAddBox;
@@ -218,6 +220,7 @@ public:
 	inline const igdeIcon::Ref &GetIconEditLockAxisY() const{ return pIconEditLockAxisY; }
 	inline const igdeIcon::Ref &GetIconEditLockAxisZ() const{ return pIconEditLockAxisZ; }
 	inline const igdeIcon::Ref &GetIconEditLockLocal() const{ return pIconEditLockLocal; }
+	inline const igdeIcon::Ref &GetIconEditLockAxisFlip() const{ return pIconEditLockAxisFlip; }
 	
 	
 	

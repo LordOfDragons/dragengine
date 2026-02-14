@@ -21,6 +21,8 @@
 	<translation name="Rig.Action.RigSave.Description">Saves rig to file</translation>
 	<translation name="Rig.Action.RigSaveAs">Save As...</translation>
 	<translation name="Rig.Action.RigSaveAs.Description">Saves rig under a differen file</translation>
+	<translation name="Rig.Action.LockFlip">Flip Lock Axes</translation>
+	<translation name="Rig.Action.LockFlip.Description">Flip lock axes during editing</translation>
 	
 	<!-- Window Main Actions - Edit -->
 	<translation name="Rig.Action.Cut">Cut</translation>
@@ -469,6 +471,10 @@
 	<translation name="Rig.Undo.ShapeSetProperty">Shape set property</translation>
 	<translation name="Rig.Undo.PushAdd">Add Push</translation>
 	<translation name="Rig.Undo.PushRemove">Remove Pushes</translation>
+	<translation name="Rig.Undo.PushMove">Move Push</translation>
+	<translation name="Rig.Undo.PushesMove">Move Pushes</translation>
+	<translation name="Rig.Undo.PushRotate">Rotate Push</translation>
+	<translation name="Rig.Undo.PushesRotate">Rotate Pushes</translation>
 	<translation name="Rig.Undo.RigSetCmp">Rig set central mass point</translation>
 	<translation name="Rig.Undo.RigToggleModelCollision">Rig toggle model collision</translation>
 	<translation name="Rig.Undo.RigSetRootBone">Set Rig Root Bone</translation>

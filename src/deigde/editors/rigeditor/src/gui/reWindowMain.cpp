@@ -633,6 +633,22 @@ public:
 	}
 };
 
+class cActionEditLockAxisFlip : public cActionBase{
+public:
+	typedef deTObjectReference<cActionEditLockAxisFlip> Ref;
+	cActionEditLockAxisFlip(reWindowMain &window) : cActionBase(window,
+		"@Rig.Action.LockFlip", window.GetIconEditLockAxisFlip(),
+		"@Rig.Action.LockFlip.Description",
+		deInputEvent::esmControl | deInputEvent::esmShift, deInputEvent::ekcF){}
+	
+	igdeUndo::Ref OnAction(reRig *rig) override{
+		rig->SetLockAxisX(!rig->GetLockAxisX());
+		rig->SetLockAxisY(!rig->GetLockAxisY());
+		rig->SetLockAxisZ(!rig->GetLockAxisZ());
+		return {};
+	}
+};
+
 class cActionEditSelectAll : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditSelectAll> Ref;
@@ -1259,6 +1275,7 @@ void reWindowMain::pLoadIcons(){
 	pIconEditLockAxisY = igdeIcon::LoadPNG(GetEditorModule(), "icons/edit_lock_axis_y.png");
 	pIconEditLockAxisZ = igdeIcon::LoadPNG(GetEditorModule(), "icons/edit_lock_axis_z.png");
 	pIconEditLockLocal = igdeIcon::LoadPNG(GetEditorModule(), "icons/edit_use_local.png");
+	pIconEditLockAxisFlip = igdeIcon::LoadPNG(GetEditorModule(), "icons/edit_lock_axis_flip.png");
 }
 
 void reWindowMain::pCreateActions(){
@@ -1317,6 +1334,7 @@ void reWindowMain::pCreateActions(){
 	pActionEditLockAxisY = cActionEditLockAxisY::Ref::New(*this);
 	pActionEditLockAxisZ = cActionEditLockAxisZ::Ref::New(*this);
 	pActionEditLockLocal = cActionEditLockLocal::Ref::New(*this);
+	pActionEditLockAxisFlip = cActionEditLockAxisFlip::Ref::New(*this);
 	
 	pActionRigAddSphere = cActionRigAddSphere::Ref::New(*this);
 	pActionRigAddBox = cActionRigAddBox::Ref::New(*this);
@@ -1375,6 +1393,7 @@ void reWindowMain::pCreateActions(){
 	AddUpdateAction(pActionEditLockAxisY);
 	AddUpdateAction(pActionEditLockAxisZ);
 	AddUpdateAction(pActionEditLockLocal);
+	AddUpdateAction(pActionEditLockAxisFlip);
 	
 	AddUpdateAction(pActionRigAddSphere);
 	AddUpdateAction(pActionRigAddBox);
@@ -1448,6 +1467,7 @@ void reWindowMain::pCreateToolBarEdit(){
 	helper.ToolBarToggleButton(pTBEdit, pActionEditLockAxisY);
 	helper.ToolBarToggleButton(pTBEdit, pActionEditLockAxisZ);
 	helper.ToolBarToggleButton(pTBEdit, pActionEditLockLocal);
+	helper.ToolBarButton(pTBEdit, pActionEditLockAxisFlip);
 	
 	AddSharedToolBar(pTBEdit);
 }
@@ -1528,6 +1548,7 @@ void reWindowMain::pCreateMenuEdit(igdeMenuCascade &menu){
 	helper.MenuCheck(menu, pActionEditLockAxisY);
 	helper.MenuCheck(menu, pActionEditLockAxisZ);
 	helper.MenuCheck(menu, pActionEditLockLocal);
+	helper.MenuCommand(menu, pActionEditLockAxisFlip);
 }
 
 void reWindowMain::pCreateMenuRig(igdeMenuCascade &menu){

@@ -39,8 +39,12 @@
 #include "../rig/constraint/reTemporaryConstraint.h"
 #include "../rig/shape/reRigShape.h"
 #include "../rig/shape/reSelectionShapes.h"
+#include "../rig/push/reRigPush.h"
+#include "../rig/push/reSelectionPushes.h"
 #include "../undosys/gui/shape/reUMoveShape.h"
 #include "../undosys/gui/shape/reURotateShape.h"
+#include "../undosys/gui/push/reUMovePush.h"
+#include "../undosys/gui/push/reURotatePush.h"
 #include "../undosys/gui/reBaseUndoScale.h"
 
 #include <deigde/engine/igdeEngineController.h>
@@ -301,6 +305,24 @@ public:
 	typedef deTObjectReference<cMoveInteraction> Ref;
 	cMoveInteraction(reView3D &view) : cBaseInteraction(view){}
 	
+	void OnKeyPress(igdeWidget*, deInputEvent::eKeyCodes keyCode, int) override{
+		if(!pUndo || !pView.GetRig()){
+			return;
+		}
+		
+		reRig &rig = *pView.GetRig();
+		
+		if(keyCode == deInputEvent::ekcX){
+			rig.SetLockAxisX(!rig.GetLockAxisX());
+			
+		}else if(keyCode == deInputEvent::ekcY){
+			rig.SetLockAxisY(!rig.GetLockAxisY());
+			
+		}else if(keyCode == deInputEvent::ekcZ){
+			rig.SetLockAxisZ(!rig.GetLockAxisZ());
+		}
+	}
+	
 	bool OnDragBegin(reRig &rig) override{
 		if(rig.GetSimulationRunning() || rig.GetWorkMode() != reRig::ewmMove){
 			return false;
@@ -332,6 +354,23 @@ public:
 				if(bone){
 					pRotationMatrix *= bone->GetPoseMatrix().GetRotationMatrix();
 				}
+			}
+			}break;
+			
+		case reRig::eemPush:{
+			const reSelectionPushes &selection = *rig.GetSelectionPushes();
+			const reRigPush * const activePush = selection.GetActivePush();
+			
+			reRigPush::List list;
+			selection.AddVisiblePushesTo(list);
+			if(list.IsEmpty()){
+				return false;
+			}
+			
+			pUndo = reUMovePush::Ref::New(*rig.GetEnvironment(), list);
+			
+			if(activePush){
+				pRotationMatrix.SetRotation(activePush->GetOrientation() * DEG2RAD);
 			}
 			}break;
 			
@@ -382,7 +421,7 @@ public:
 		}
 		
 		// update undo object and redo the movement
-		reUMoveShape &undo = pUndo.DynamicCast<reUMoveShape>();
+		reBaseUndoMove &undo = pUndo.DynamicCast<reBaseUndoMove>();
 		undo.SetDistance(vector);
 		undo.ProgressiveRedo();
 	}
@@ -397,7 +436,7 @@ public:
 			return;
 		}
 		
-		reUMoveShape &undo = pUndo.DynamicCast<reUMoveShape>();
+		reBaseUndoMove &undo = pUndo.DynamicCast<reBaseUndoMove>();
 		if(undo.GetDistance().Length() > 1e-5f){
 			pView.GetRig()->GetUndoSystem()->Add(pUndo);
 		}
@@ -442,6 +481,24 @@ public:
 	typedef deTObjectReference<cRotateInteraction> Ref;
 	cRotateInteraction(reView3D &view) : cBaseInteraction(view), pNullAngle(0.0f){}
 	
+	void OnKeyPress(igdeWidget*, deInputEvent::eKeyCodes keyCode, int) override{
+		if(!pUndo || !pView.GetRig()){
+			return;
+		}
+		
+		reRig &rig = *pView.GetRig();
+		
+		if(keyCode == deInputEvent::ekcX){
+			rig.SetLockAxisX(!rig.GetLockAxisX());
+			
+		}else if(keyCode == deInputEvent::ekcY){
+			rig.SetLockAxisY(!rig.GetLockAxisY());
+			
+		}else if(keyCode == deInputEvent::ekcZ){
+			rig.SetLockAxisZ(!rig.GetLockAxisZ());
+		}
+	}
+	
 	bool OnDragBegin(reRig &rig) override{
 		if(rig.GetSimulationRunning() || rig.GetWorkMode() != reRig::ewmRotate){
 			return false;
@@ -449,6 +506,8 @@ public:
 		
 		const reSelectionShapes &selectionShapes = *rig.GetSelectionShapes();
 		const reRigShape * const activeShape = selectionShapes.GetActiveShape();
+		const reSelectionPushes &selectionPushes = *rig.GetSelectionPushes();
+		const reRigPush * const activePush = selectionPushes.GetActivePush();
 		
 		pUndo = nullptr;
 		
@@ -467,6 +526,12 @@ public:
 				if(bone){
 					pRotationMatrix *= bone->GetPoseMatrix().GetRotationMatrix();
 				}
+			}
+			break;
+			
+		case reRig::eemPush:
+			if(activePush){
+				pRotationMatrix.SetRotation(activePush->GetOrientation() * DEG2RAD);
 			}
 			break;
 			
@@ -533,6 +598,22 @@ public:
 				pUndo.DynamicCast<reURotateShape>()->SetModifyPosition(list.GetCount() > 1);
 				}break;
 				
+			case reRig::eemPush:{
+				reRigPush::List list;
+				selectionPushes.AddVisiblePushesTo(list);
+				
+				if(list.IsEmpty()){
+					return false;
+				}
+				
+				center = list.Inject(decVector(), [&](const decVector &acc, const reRigPush &push){
+					return acc + push.GetPosition();
+				}) / (float)list.GetCount();
+				
+				pUndo = reURotatePush::Ref::New(*rig.GetEnvironment(), list);
+				pUndo.DynamicCast<reURotatePush>()->SetModifyPosition(list.GetCount() > 1);
+				}break;
+				
 			default:
 				break;
 			}
@@ -545,7 +626,7 @@ public:
 		const decPoint scrDir(GetDragOrigin() - (pView.GetRenderAreaSize() / 2));
 		pNullAngle = atan2f((float)-scrDir.y, (float)scrDir.x);
 		
-		reURotateShape &undo = pUndo.DynamicCast<reURotateShape>();
+		reBaseUndoRotate &undo = pUndo.DynamicCast<reBaseUndoRotate>();
 		undo.SetCenterPosition(center);
 		undo.SetAxis(axis);
 		
@@ -568,7 +649,7 @@ public:
 		}
 		
 		// update undo object and redo the movement
-		reURotateShape &undo = pUndo.DynamicCast<reURotateShape>();
+		reBaseUndoRotate &undo = pUndo.DynamicCast<reBaseUndoRotate>();
 		undo.SetAngle(angle);
 		undo.SetModifyPosition(!GetControlNow());
 		undo.ProgressiveRedo();
@@ -584,7 +665,7 @@ public:
 			return;
 		}
 		
-		reURotateShape &undo = pUndo.DynamicCast<reURotateShape>();
+		reBaseUndoRotate &undo = pUndo.DynamicCast<reBaseUndoRotate>();
 		if(undo.GetAngle() > 1e-5){
 			pView.GetRig()->GetUndoSystem()->Add(pUndo);
 		}
