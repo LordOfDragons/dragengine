@@ -249,8 +249,8 @@ public:
 		}
 		
 		if(project->GetProfiles().HasNamed(name)){
-			igdeCommonDialogs::Error(pPanel, pPanel.Translate("Project.PanelProfiles.Dialog.RenameProfile").ToUTF8(),
-				pPanel.Translate("Project.PanelProfiles.Dialog.RenameProfile.Error").ToUTF8());
+			igdeCommonDialogs::Error(pPanel, "@Project.PanelProfiles.Dialog.RenameProfile",
+				"@Project.PanelProfiles.Dialog.RenameProfile.Error");
 			textField->SetText(profile->GetName());
 			return {};
 		}
@@ -411,8 +411,8 @@ public:
 				? projUProfileSetIdentifier::Ref::New(profile, value) : projUProfileSetIdentifier::Ref();
 			
 		}catch(const deException &){
-			igdeCommonDialogs::Error(pPanel, pPanel.Translate("Project.PanelProfiles.Dialog.InvalidInput").ToUTF8(),
-				pPanel.Translate("Project.PanelProfiles.Dialog.InvalidInput.Identifier").ToUTF8());
+			igdeCommonDialogs::Error(pPanel, "@Project.PanelProfiles.Dialog.InvalidInput",
+				"@Project.PanelProfiles.Dialog.InvalidInput.Identifier");
 			textField->SetText(profile->GetIdentifier().ToHexString(false));
 			return {};
 		}

@@ -56,7 +56,7 @@ pWords(words)
 		}
 	}
 	
-	SetShortInfo("Add Word");
+	SetShortInfo("@SpeechAnimation.Undo.WordAdd");
 	
 	pSAnimation = sanimation;
 }

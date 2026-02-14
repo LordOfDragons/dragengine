@@ -172,21 +172,21 @@ pWindowProperties(windowProperties)
 	AddChild(content);
 	
 	// display
-	helper.GroupBox(content, groupBox, "Display:");
+	helper.GroupBox(content, groupBox, "@SpeechAnimation.WPView.GroupDisplay");
 	
-	helper.EditPath(groupBox, "Model:", "Path to the model resource to use.",
+	helper.EditPath(groupBox, "@SpeechAnimation.WPView.DisplayModel", "@SpeechAnimation.WPView.DisplayModel.Description",
 		igdeEnvironment::efpltModel, pEditDisplayModelPath, cEditDisplayModelPath::Ref::New(*this));
-	helper.EditPath(groupBox, "Skin:", "Path to the skin resource to use.",
+	helper.EditPath(groupBox, "@SpeechAnimation.WPView.DisplaySkin", "@SpeechAnimation.WPView.DisplaySkin.Description",
 		igdeEnvironment::efpltSkin, pEditDisplaySkinPath, cEditDisplaySkinPath::Ref::New(*this));
-	helper.EditPath(groupBox, "Rig:", "Path to the sanimation resource to use.",
+	helper.EditPath(groupBox, "@SpeechAnimation.WPView.DisplayRig", "@SpeechAnimation.WPView.DisplayRig.Description",
 		igdeEnvironment::efpltRig, pEditDisplayRigPath, cEditDisplayRigPath::Ref::New(*this));
 	
 	// property panels
 	action = cActionCameraChanged::Ref::New(*this);
-	helper.WPCamera(content, pWPCamera, action, "Camera:");
+	helper.WPCamera(content, pWPCamera, action, "@SpeechAnimation.WPView.Camera");
 	
 	action = cActionSkyChanged::Ref::New(*this);
-	helper.WPSky(content, pWPSky, action, "Sky:");
+	helper.WPSky(content, pWPSky, action, "@SpeechAnimation.WPView.Sky");
 }
 
 saeWPView::~saeWPView(){

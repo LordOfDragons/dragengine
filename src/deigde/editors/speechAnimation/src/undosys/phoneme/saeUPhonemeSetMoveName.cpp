@@ -44,7 +44,7 @@ saeUPhonemeSetMoveName::saeUPhonemeSetMoveName(saePhoneme *phoneme, const char *
 	
 	pPhoneme = nullptr;
 	
-	SetShortInfo("Phoneme Set Move Name");
+	SetShortInfo("@SpeechAnimation.Undo.PhonemeSetMoveName");
 	
 	pOldName = phoneme->GetMoveName();
 	pNewName = newName;

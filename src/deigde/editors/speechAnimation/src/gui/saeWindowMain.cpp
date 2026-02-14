@@ -332,14 +332,15 @@ class cActionFileNew : public cActionBase{
 public:
 	typedef deTObjectReference<cActionFileNew> Ref;
 	cActionFileNew(saeWindowMain &window) : cActionBase(window,
-		"New", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiNew),
-		"Create new Speech Animation", deInputEvent::esmControl,
+		"@SpeechAnimation.WindowMain.New", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiNew),
+		"@SpeechAnimation.WindowMain.New.Description", deInputEvent::esmControl,
 		deInputEvent::ekcN, deInputEvent::ekcN){}
 	
 	virtual void OnAction(){
 		if(pWindow.GetSAnimation() && pWindow.GetSAnimation()->GetChanged()
-		&& igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "New Speech Animation",
-		"Speech animated changed. Creating new Speech Animation discards the current one. Is that ok?")
+		&& igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo,
+		"@SpeechAnimation.WindowMain.NewSpeechAnimation",
+		"@SpeechAnimation.WindowMain.NewSpeechAnimation.Question")
 		!= igdeCommonDialogs::ebYes){
 			return;
 		}
@@ -351,20 +352,21 @@ class cActionFileOpen : public cActionBase{
 public:
 	typedef deTObjectReference<cActionFileOpen> Ref;
 	cActionFileOpen(saeWindowMain &window) : cActionBase(window,
-		"Open...", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
-		"Open Speech Animation from file", deInputEvent::esmControl,
+		"@SpeechAnimation.WindowMain.Open", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
+		"@SpeechAnimation.WindowMain.Open.Description", deInputEvent::esmControl,
 		deInputEvent::ekcO, deInputEvent::ekcO){}
 	
 	virtual void OnAction(){
 		if(pWindow.GetSAnimation() && pWindow.GetSAnimation()->GetChanged()
-		&& igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "Open Speech Animation",
-		"Speech animated changed. Open Speech Animation discards the current one. Is that ok?")
+		&& igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo,
+		"@SpeechAnimation.WindowMain.OpenSpeechAnimation",
+		"@SpeechAnimation.WindowMain.OpenSpeechAnimation.Question")
 		!= igdeCommonDialogs::ebYes){
 			return;
 		}
 		
 		decString filename(pWindow.GetSAnimation()->GetFilePath());
-		if(!igdeCommonDialogs::GetFileOpen(pWindow, "Open Speech Animation",
+		if(!igdeCommonDialogs::GetFileOpen(pWindow, "@SpeechAnimation.WindowMain.OpenSpeechAnimation",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		pWindow.GetLoadSaveSystem().GetFilePatternList(), filename ) ){
 			return;
@@ -379,12 +381,12 @@ class cActionFileSaveAs : public cActionBase{
 public:
 	typedef deTObjectReference<cActionFileSaveAs> Ref;
 	cActionFileSaveAs(saeWindowMain &window) : cActionBase(window,
-		"Save As...", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSaveAs),
-		"Save Speech Animation to different file", deInputEvent::ekcA){}
+		"@SpeechAnimation.WindowMain.SaveAs", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSaveAs),
+		"@SpeechAnimation.WindowMain.SaveAs.Description", deInputEvent::ekcA){}
 	
 	virtual void OnAction(){
 		decString filename(pWindow.GetSAnimation()->GetFilePath());
-		if(igdeCommonDialogs::GetFileSave(pWindow, "Save Speech Animation",
+		if(igdeCommonDialogs::GetFileSave(pWindow, "@SpeechAnimation.WindowMain.SaveSpeechAnimation",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		pWindow.GetLoadSaveSystem().GetFilePatternList(), filename ) ){
 			pWindow.SaveSAnimation(filename);
@@ -400,9 +402,9 @@ class cActionFileSave : public cActionFileSaveAs{
 public:
 	typedef deTObjectReference<cActionFileSave> Ref;
 	cActionFileSave(saeWindowMain &window) : cActionFileSaveAs(window){
-		SetText("Save");
+		SetText("@SpeechAnimation.WindowMain.Save");
 		SetIcon(window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave));
-		SetDescription("Saves sanimation to file");
+		SetDescription("@SpeechAnimation.WindowMain.Save.Description");
 		SetHotKey(igdeHotKey(deInputEvent::esmControl, deInputEvent::ekcS));
 		SetMnemonic(deInputEvent::ekcS);
 	}
@@ -430,8 +432,8 @@ class cActionEditCut : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditCut> Ref;
 	cActionEditCut(saeWindowMain &window) : cActionBase(window,
-		"Cut", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
-		"Cut selected objects", deInputEvent::esmControl,
+		"@SpeechAnimation.WindowMain.Cut", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
+		"@SpeechAnimation.WindowMain.Cut.Description", deInputEvent::esmControl,
 		deInputEvent::ekcX, deInputEvent::ekcT){}
 	
 	virtual void OnAction(){
@@ -446,8 +448,8 @@ class cActionEditCopy : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditCopy> Ref;
 	cActionEditCopy(saeWindowMain &window) : cActionBase(window,
-		"Copy", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-		"Copies selected objects", deInputEvent::esmControl,
+		"@SpeechAnimation.WindowMain.Copy", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		"@SpeechAnimation.WindowMain.Copy.Description", deInputEvent::esmControl,
 		deInputEvent::ekcC, deInputEvent::ekcC){}
 	
 	virtual void OnAction(){
@@ -462,8 +464,8 @@ class cActionEditPaste : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditPaste> Ref;
 	cActionEditPaste(saeWindowMain &window) : cActionBase(window,
-		"Paste", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
-		"Paste objects", deInputEvent::esmControl,
+		"@SpeechAnimation.WindowMain.Paste", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+		"@SpeechAnimation.WindowMain.Paste.Description", deInputEvent::esmControl,
 		deInputEvent::ekcV, deInputEvent::ekcP){}
 	
 	virtual void OnAction(){
@@ -480,19 +482,20 @@ class cActionPhonemeAdd : public cActionBaseUndo{
 public:
 	typedef deTObjectReference<cActionPhonemeAdd> Ref;
 	cActionPhonemeAdd(saeWindowMain &window) : cActionBaseUndo(window,
-		"Add...", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-		"Add phoneme", deInputEvent::ekcA){}
+		"@SpeechAnimation.WindowMain.PhonemeAdd", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"@SpeechAnimation.WindowMain.PhonemeAdd.Description", deInputEvent::ekcA){}
 	
 	virtual igdeUndo::Ref OnAction(saeSAnimation *sanimation){
 		const saePhoneme::List &phonemes = sanimation->GetPhonemes();
 		decString ipaStringUtf8;
 		
-		while(igdeCommonDialogs::GetString(pWindow, "Add Phoneme",
-		"IPA Symbol (Unicode):", ipaStringUtf8)){
+		while(igdeCommonDialogs::GetString(pWindow, "@SpeechAnimation.WindowMain.AddPhoneme",
+		"@SpeechAnimation.WindowMain.AddPhoneme.IPA", ipaStringUtf8)){
 			const decUnicodeString ipaString(decUnicodeString::NewFromUTF8(ipaStringUtf8));
 			
 			if(ipaString.GetLength() != 1){
-				igdeCommonDialogs::Error(pWindow, "Add Phoneme", "Enter single Unicode IPA");
+				igdeCommonDialogs::Error(pWindow, "@SpeechAnimation.WindowMain.AddPhoneme",
+					"@SpeechAnimation.WindowMain.AddPhoneme.ErrorSingleIPA");
 				continue;
 			}
 			
@@ -501,8 +504,8 @@ public:
 			if(phonemes.HasMatching([ipa](const saePhoneme &p){
 				return p.GetIPA() == ipa;
 			})){
-				igdeCommonDialogs::Error(pWindow, "Add Phoneme",
-					"A phoneme with this IPA symbol exists already.");
+				igdeCommonDialogs::Error(pWindow, "@SpeechAnimation.WindowMain.AddPhoneme",
+					"@SpeechAnimation.WindowMain.AddPhoneme.ErrorExists");
 				continue;
 			}
 			
@@ -521,8 +524,8 @@ class cActionPhonemeRemove : public cActionBaseUndo{
 public:
 	typedef deTObjectReference<cActionPhonemeRemove> Ref;
 	cActionPhonemeRemove(saeWindowMain &window) : cActionBaseUndo(window,
-		"Remove", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-		"Remove phoneme", deInputEvent::ekcR){}
+		"@SpeechAnimation.WindowMain.PhonemeRemove", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"@SpeechAnimation.WindowMain.PhonemeRemove.Description", deInputEvent::ekcR){}
 	
 	igdeUndo::Ref OnAction(saeSAnimation *sanimation) override{
 		saePhoneme * const phoneme = sanimation->GetActivePhoneme();
@@ -543,21 +546,24 @@ class cActionWordAdd : public cActionBaseUndo{
 public:
 	typedef deTObjectReference<cActionWordAdd> Ref;
 	cActionWordAdd(saeWindowMain &window) : cActionBaseUndo(window,
-		"Add...", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-		"Add word", deInputEvent::ekcA){}
+		"@SpeechAnimation.WindowMain.WordAdd", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"@SpeechAnimation.WindowMain.WordAdd.Description", deInputEvent::ekcA){}
 	
 	igdeUndo::Ref OnAction(saeSAnimation *sanimation) override{
 		const saeWord::List &wordList = sanimation->GetWords();
 		decString name;
 		
-		while(igdeCommonDialogs::GetString(pWindow, "Add Word", "Name:", name)){
+		while(igdeCommonDialogs::GetString(pWindow, "@SpeechAnimation.WindowMain.AddWord",
+		"@SpeechAnimation.WindowMain.AddWord.Name", name)){
 			if(name.IsEmpty()){
-				igdeCommonDialogs::Error(pWindow, "Add Word", "Name can not be empty");
+				igdeCommonDialogs::Error(pWindow, "@SpeechAnimation.WindowMain.AddWord",
+					"@SpeechAnimation.WindowMain.AddWord.ErrorEmpty");
 				continue;
 			}
 			
 			if(wordList.HasNamed(name)){
-				igdeCommonDialogs::Error(pWindow, "Add Word", "A word with this name exists already.");
+				igdeCommonDialogs::Error(pWindow, "@SpeechAnimation.WindowMain.AddWord",
+					"@SpeechAnimation.WindowMain.AddWord.ErrorExists");
 				continue;
 			}
 			
@@ -576,15 +582,16 @@ class cActionWordAddList : public cActionBaseUndo{
 public:
 	typedef deTObjectReference<cActionWordAddList> Ref;
 	cActionWordAddList(saeWindowMain &window) : cActionBaseUndo(window,
-		"Add List...", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-		"Add words from text list", deInputEvent::ekcL){}
+		"@SpeechAnimation.WindowMain.WordAddList", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"@SpeechAnimation.WindowMain.WordAddList.Description", deInputEvent::ekcL){}
 	
 	igdeUndo::Ref OnAction(saeSAnimation *sanimation) override{
 		const saeWord::List &wordList = sanimation->GetWords();
 		decString input;
 		
 		while(igdeCommonDialogs::GetMultilineString(pWindow,
-		"Add Words", "Names (lines with 'word phonetics'):", input)){
+				"@SpeechAnimation.WindowMain.AddWords",
+				"@SpeechAnimation.WindowMain.AddWords.Names", input)){
 			const decStringList lines(input.Split('\n'));
 			const int countLines = lines.GetCount();
 			saeWord::List addWordsList;
@@ -596,14 +603,13 @@ public:
 					continue;
 				}
 				if(parts.GetCount() != 2){
-					igdeCommonDialogs::Error(pWindow, "Add Words",
-						"Invalid format. Words have to be a new-line separated list of "
-						"word where each word is of the form 'word phonetics'.");
+					igdeCommonDialogs::Error(pWindow, "@SpeechAnimation.WindowMain.AddWords",
+						"@SpeechAnimation.WindowMain.AddWords.ErrorInvalidFormat");
 				}
 				
 				if(wordList.HasNamed(parts.First())){
-					igdeCommonDialogs::ErrorFormat(pWindow, "Add Words", "A word with name '{0}' "
-						"exists already.", parts.First().GetString());
+					igdeCommonDialogs::ErrorFormat(pWindow, "@SpeechAnimation.WindowMain.AddWords",
+						"@SpeechAnimation.WindowMain.AddWords.ErrorWordExists", parts.First());
 					addWordsList.RemoveAll();
 					break;
 				}
@@ -631,8 +637,9 @@ class cActionWordRemove : public cActionBaseUndo{
 public:
 	typedef deTObjectReference<cActionWordRemove> Ref;
 	cActionWordRemove(saeWindowMain &window) : cActionBaseUndo(window,
-		"Remove", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-		"Remove word", deInputEvent::ekcR){}
+		"@SpeechAnimation.WindowMain.WordRemove",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"@SpeechAnimation.WindowMain.WordRemove.Description", deInputEvent::ekcR){}
 	
 	virtual igdeUndo::Ref OnAction(saeSAnimation *sanimation) override{
 		saeWord * const word = sanimation->GetActiveWord();
@@ -693,12 +700,12 @@ void saeWindowMain::pCreateActions(){
 	pActionEditPaste = cActionEditPaste::Ref::New(*this);
 	
 	pActionViewDispModePhoneme = cActionViewDisplayMode::Ref::New(*this,
-		saeSAnimation::edmPhoneme, "Display Active Phoneme", nullptr,
-		"Display active phoneme in the preview window", deInputEvent::ekcP);
+		saeSAnimation::edmPhoneme, "@SpeechAnimation.WindowMain.ViewDisplayModePhoneme", nullptr,
+		"@SpeechAnimation.WindowMain.ViewDisplayModePhoneme.Description", deInputEvent::ekcP);
 	
 	pActionViewDispModeWord = cActionViewDisplayMode::Ref::New(*this,
-		saeSAnimation::edmWord, "Display Active Word", nullptr,
-		"Display active word in the preview window", deInputEvent::ekcW);
+		saeSAnimation::edmWord, "@SpeechAnimation.WindowMain.ViewDisplayModeWord", nullptr,
+		"@SpeechAnimation.WindowMain.ViewDisplayModeWord.Description", deInputEvent::ekcW);
 	
 	pActionPhonemeAdd = cActionPhonemeAdd::Ref::New(*this);
 	pActionPhonemeRemove = cActionPhonemeRemove::Ref::New(*this);
@@ -764,23 +771,23 @@ void saeWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade = igdeMenuCascade::Ref::New(env, "File", deInputEvent::ekcF);
+	cascade = igdeMenuCascade::Ref::New(env, "@SpeechAnimation.WindowMain.MenuFile", deInputEvent::ekcF);
 	pCreateMenuFile(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade = igdeMenuCascade::Ref::New(env, "Edit", deInputEvent::ekcE);
+	cascade = igdeMenuCascade::Ref::New(env, "@SpeechAnimation.WindowMain.MenuEdit", deInputEvent::ekcE);
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade = igdeMenuCascade::Ref::New(env, "Phoneme", deInputEvent::ekcP);
+	cascade = igdeMenuCascade::Ref::New(env, "@SpeechAnimation.WindowMain.MenuPhoneme", deInputEvent::ekcP);
 	pCreateMenuPhoneme(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade = igdeMenuCascade::Ref::New(env, "Word", deInputEvent::ekcW);
+	cascade = igdeMenuCascade::Ref::New(env, "@SpeechAnimation.WindowMain.MenuWord", deInputEvent::ekcW);
 	pCreateMenuWord(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade = igdeMenuCascade::Ref::New(env, "View", deInputEvent::ekcI);
+	cascade = igdeMenuCascade::Ref::New(env, "@SpeechAnimation.WindowMain.MenuView", deInputEvent::ekcI);
 	pCreateMenuView(cascade);
 	AddSharedMenu(cascade);
 }

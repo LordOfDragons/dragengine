@@ -46,7 +46,7 @@ saeUPhonemeAdd::saeUPhonemeAdd(saeSAnimation *sanimation, saePhoneme *phoneme){
 	pSAnimation = nullptr;
 	pPhoneme = nullptr;
 	
-	SetShortInfo("Add Phoneme");
+	SetShortInfo("@SpeechAnimation.Undo.PhonemeAdd");
 	
 	pSAnimation = sanimation;
 	pPhoneme = phoneme;

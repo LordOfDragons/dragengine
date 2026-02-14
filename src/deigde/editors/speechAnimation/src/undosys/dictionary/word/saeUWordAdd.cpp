@@ -46,7 +46,7 @@ saeUWordAdd::saeUWordAdd(saeSAnimation *sanimation, saeWord *word){
 	pSAnimation = nullptr;
 	pWord = nullptr;
 	
-	SetShortInfo("Add Word");
+	SetShortInfo("@SpeechAnimation.Undo.WordAdd");
 	
 	pSAnimation = sanimation;
 	pWord = word;

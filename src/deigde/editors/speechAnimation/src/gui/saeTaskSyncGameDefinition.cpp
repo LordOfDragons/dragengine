@@ -47,7 +47,7 @@
 saeTaskSyncGameDefinition::saeTaskSyncGameDefinition(saeWindowMain &windowMain) :
 pWindowMain(windowMain)
 {
-	SetMessage("Speech Animation Editor: Synchronize Game Definition");
+	SetMessage(windowMain.Translate("SpeechAnimation.Task.SyncGameDefinition").ToUTF8());
 }
 
 saeTaskSyncGameDefinition::~saeTaskSyncGameDefinition(){

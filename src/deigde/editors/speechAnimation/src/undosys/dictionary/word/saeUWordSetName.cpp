@@ -44,7 +44,7 @@ saeUWordSetName::saeUWordSetName(saeWord *word, const char *newName){
 	
 	pWord = nullptr;
 	
-	SetShortInfo("Word Set Name");
+	SetShortInfo("@SpeechAnimation.Undo.WordSetName");
 	
 	pOldName = word->GetName();
 	pNewName = newName;

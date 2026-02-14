@@ -229,8 +229,8 @@ public:
 class cActionNeutralVertexPositionSetsAdd : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionNeutralVertexPositionSetsAdd> Ref;
-	cActionNeutralVertexPositionSetsAdd(saeWPSAnim &panel) : cBaseAction(panel, "Add",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add vertex position set"){}
+	cActionNeutralVertexPositionSetsAdd(saeWPSAnim &panel) : cBaseAction(panel, "@SpeechAnimation.WPSAnim.NeutralVertexPositionSetAdd",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@SpeechAnimation.WPSAnim.NeutralVertexPositionSetAdd.Description"){}
 	
 	igdeUndo::Ref OnAction(saeSAnimation *sanimation) override{
 		const decString &name = pPanel.GetCBNeutralVertexPositionSetText();
@@ -253,8 +253,8 @@ public:
 class cActionNeutralVertexPositionSetsRemove : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionNeutralVertexPositionSetsRemove> Ref;
-	cActionNeutralVertexPositionSetsRemove(saeWPSAnim &panel) : cBaseAction(panel, "Remove",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove vertex position set"){}
+	cActionNeutralVertexPositionSetsRemove(saeWPSAnim &panel) : cBaseAction(panel, "@SpeechAnimation.WPSAnim.NeutralVertexPositionSetRemove",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@SpeechAnimation.WPSAnim.NeutralVertexPositionSetRemove.Description"){}
 	
 	igdeUndo::Ref OnAction(saeSAnimation *sanimation) override{
 		const decString &name = pPanel.GetCBNeutralVertexPositionSetText();
@@ -277,8 +277,8 @@ public:
 class cActionNeutralVertexPositionSetsClear : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionNeutralVertexPositionSetsClear> Ref;
-	cActionNeutralVertexPositionSetsClear(saeWPSAnim &panel) : cBaseAction(panel, "Clear",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove all vertex position sets"){}
+	cActionNeutralVertexPositionSetsClear(saeWPSAnim &panel) : cBaseAction(panel, "@SpeechAnimation.WPSAnim.NeutralVertexPositionSetClear",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@SpeechAnimation.WPSAnim.NeutralVertexPositionSetClear.Description"){}
 	
 	igdeUndo::Ref OnAction(saeSAnimation *sanimation) override{
 		return sanimation->GetNeutralVertexPositionSets().GetCount() > 0
@@ -366,12 +366,12 @@ public:
 			ipaText = decUnicodeString::NewFromUTF8(textField->GetText());
 			
 		}catch(const deException &){
-			ResetTextField(*textField, *phoneme, "IPA symbol has to be 1 unicode character");
+			ResetTextField(*textField, *phoneme, "@SpeechAnimation.WPSAnim.Error.IPASingleCharacter");
 			return {};
 		}
 		
 		if(ipaText.GetLength() != 1){
-			ResetTextField(*textField, *phoneme, "IPA symbol has to be 1 unicode character");
+			ResetTextField(*textField, *phoneme, "@SpeechAnimation.WPSAnim.Error.IPASingleCharacter");
 			return {};
 		}
 		const int ipa = ipaText.GetAt(0);
@@ -383,7 +383,7 @@ public:
 		if(phonemeList.HasMatching([&](const saePhoneme &p){
 			return p.GetIPA() == ipa;
 		})){
-			ResetTextField(*textField, *phoneme, "There exists already a Phoneme with this IPA symbol");
+			ResetTextField(*textField, *phoneme, "@SpeechAnimation.WPSAnim.Error.PhonemeIPAExists");
 			return {};
 		}
 		
@@ -391,7 +391,7 @@ public:
 	}
 	
 	void ResetTextField(igdeTextField &textField, const saePhoneme &phoneme, const char *error){
-		igdeCommonDialogs::Error(pPanel, "Change Phoneme IPA", error);
+		igdeCommonDialogs::Error(pPanel, "@SpeechAnimation.WPSAnim.Error.ChangePhonemeIPA", error);
 		textField.SetText(decUnicodeString(phoneme.GetIPA()).ToUTF8());
 	}
 };
@@ -511,12 +511,12 @@ public:
 		}
 		
 		if(name.IsEmpty()){
-			ResetTextField(*textField, *word, "Name can not be empty");
+			ResetTextField(*textField, *word, "@SpeechAnimation.WPSAnim.Error.WordNameEmpty");
 			return {};
 		}
 		
 		if(sanimation->GetWords().HasNamed(name)){
-			ResetTextField(*textField, *word, "There exists already a Word with this name");
+			ResetTextField(*textField, *word, "@SpeechAnimation.WPSAnim.Error.WordNameExists");
 			return {};
 		}
 		
@@ -524,7 +524,7 @@ public:
 	}
 	
 	void ResetTextField(igdeTextField &textField, const saeWord &word, const char *error){
-		igdeCommonDialogs::Error(pPanel, "Change Word Name", error);
+		igdeCommonDialogs::Error(pPanel, "@SpeechAnimation.WPSAnim.Error.ChangeWordName", error);
 		textField.SetText(word.GetName());
 	}
 };
@@ -540,7 +540,7 @@ public:
 			phonetics = decUnicodeString::NewFromUTF8(textField->GetText());
 			
 		}catch(const deException &){
-			ResetTextField(*textField, *word, "Invalid phonetics (wrong UTF8 encoding)");
+			ResetTextField(*textField, *word, "@SpeechAnimation.WPSAnim.Error.InvalidPhonetics");
 			return {};
 		}
 		
@@ -548,7 +548,7 @@ public:
 	}
 	
 	void ResetTextField(igdeTextField &textField, const saeWord &word, const char *error){
-		igdeCommonDialogs::Error(pPanel, "Change Word Phonetics", error);
+		igdeCommonDialogs::Error(pPanel, "@SpeechAnimation.WPSAnim.Error.ChangeWordPhonetics", error);
 		textField.SetText(word.GetPhonetics().ToUTF8());
 	}
 };
@@ -560,8 +560,8 @@ private:
 public:
 	typedef deTObjectReference<cActionWordAddIpa> Ref;
 	cActionWordAddIpa(saeWPSAnim &panel, igdeTextField &textFieldPhonetics) :
-	cBaseAction(panel, panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallPlus),
-		"Insert selected phoneme IPA to selected word phonetics at cursor position"),
+	cBaseAction(panel, "@SpeechAnimation.WPSAnim.WordAddIPA", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallPlus),
+		"@SpeechAnimation.WPSAnim.WordAddIPA.Description"),
 	pTextFieldPhonetics(textFieldPhonetics){}
 	
 	igdeUndo::Ref OnAction(saeSAnimation*) override{
@@ -610,65 +610,64 @@ pWindowProperties(windowProperties)
 	
 	
 	// speech animation
-	helper.GroupBox(content, groupBox, "Speech Animation:");
+	helper.GroupBox(content, groupBox, "@SpeechAnimation.WPSAnim.GroupSpeechAnimation");
 	
-	helper.EditPath(groupBox, "Rig:", "Path to rig resource.",
+	helper.EditPath(groupBox, "@SpeechAnimation.WPSAnim.Rig", "@SpeechAnimation.WPSAnim.Rig.Description",
 		igdeEnvironment::efpltRig, pEditRigPath, cEditRigPath::Ref::New(*this));
-	helper.EditPath(groupBox, "Animation:", "Path to animation resource.",
+	helper.EditPath(groupBox, "@SpeechAnimation.WPSAnim.Animation", "@SpeechAnimation.WPSAnim.Animation.Description",
 		igdeEnvironment::efpltAnimation, pEditAnimPath, cEditAnimationPath::Ref::New(*this));
 	
-	helper.ComboBoxFilter(groupBox, "Neutral Move:", true,
-		"Animation move to use for the neutral mouth position.",
+	helper.ComboBoxFilter(groupBox, "@SpeechAnimation.WPSAnim.NeutralMove", true,
+		"@SpeechAnimation.WPSAnim.NeutralMove.Description",
 		pCBNeutralMove, cComboNeutralMove::Ref::New(*this));
 	pCBNeutralMove->SetDefaultSorter();
 	
-	helper.GroupBoxFlow(content, groupBox, "Neutral vertex position sets:");
+	helper.GroupBoxFlow(content, groupBox, "@SpeechAnimation.WPSAnim.GroupNeutralVertexPositionSets");
 	
 	formLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
 	groupBox->AddChild(formLine);
-	helper.ComboBoxFilter(formLine, true, "Set name", pCBNeutralVertexPositionSets, {});
+	helper.ComboBoxFilter(formLine, true, "@SpeechAnimation.WPSAnim.NeutralVertexPositionSet.Description", pCBNeutralVertexPositionSets, {});
 	helper.Button(formLine, pBtnNeutralVertexPositionSetAdd, cActionNeutralVertexPositionSetsAdd::Ref::New(*this));
 	helper.Button(formLine, pBtnNeutralVertexPositionSetDel, cActionNeutralVertexPositionSetsRemove::Ref::New(*this));
 	
-	helper.ListBox(groupBox, 5, "Neutral vertex positions sets. Will be reset to avoid problems."
-		" Sets used by phonemes are automatically reset", pListNeutralVertexPositionSets, cListNeutralVertexPositionSets::Ref::New(*this));
+	helper.ListBox(groupBox, 5, "@SpeechAnimation.WPSAnim.NeutralVertexPositionSets.Description", pListNeutralVertexPositionSets, cListNeutralVertexPositionSets::Ref::New(*this));
 	pListNeutralVertexPositionSets->SetDefaultSorter();
 	
 	
 	// phoneme
-	helper.GroupBox(content, groupBox, "Phoneme:");
+	helper.GroupBox(content, groupBox, "@SpeechAnimation.WPSAnim.GroupPhoneme");
 	
-	helper.ComboBox(groupBox, "Phoneme:", "Phoneme to edit.", pCBPhoneme, cComboPhoneme::Ref::New(*this));
+	helper.ComboBox(groupBox, "@SpeechAnimation.WPSAnim.Phoneme", "@SpeechAnimation.WPSAnim.Phoneme.Description", pCBPhoneme, cComboPhoneme::Ref::New(*this));
 	pCBPhoneme->SetDefaultSorter();
 	
-	helper.EditString(groupBox, "IPA Symbol:", "IPA Symbol (Unicode) representing the phoneme.",
+	helper.EditString(groupBox, "@SpeechAnimation.WPSAnim.PhonemeIPA", "@SpeechAnimation.WPSAnim.PhonemeIPA.Description",
 		pEditPhonemeIPA, cTextPhonemeIpa::Ref::New(*this));
-	helper.EditString(groupBox, "Sample Text:", "Sample text containing the phoneme.",
+	helper.EditString(groupBox, "@SpeechAnimation.WPSAnim.PhonemeSampleText", "@SpeechAnimation.WPSAnim.PhonemeSampleText.Description",
 		pEditPhonemeSampleText, cTextPhonemeSampleText::Ref::New(*this));
-	helper.EditFloat(groupBox, "Length:", "Length of the phoneme in seconds.",
+	helper.EditFloat(groupBox, "@SpeechAnimation.WPSAnim.PhonemeLength", "@SpeechAnimation.WPSAnim.PhonemeLength.Description",
 		pEditPhonemeLength, cTextPhonemeLength::Ref::New(*this));
 	
-	helper.ComboBoxFilter(groupBox, "Move:", true, "Animation move to use for this phoneme.",
+	helper.ComboBoxFilter(groupBox, "@SpeechAnimation.WPSAnim.PhonemeMove", true, "@SpeechAnimation.WPSAnim.PhonemeMove.Description",
 		pCBPhonemeMove, cComboPhonemeMove::Ref::New(*this));
 	pCBPhonemeMove->SetDefaultSorter();
 	
-	helper.ComboBoxFilter(groupBox, "Vertex Position Set:", true,
-		"Model vertex position set to use for this phoneme.",
+	helper.ComboBoxFilter(groupBox, "@SpeechAnimation.WPSAnim.PhonemeVertexPositionSet", true,
+		"@SpeechAnimation.WPSAnim.PhonemeVertexPositionSet.Description",
 		pCBPhonemeVertexPositionSet, cComboPhonemeVertexPositionSet::Ref::New(*this));
 	pCBPhonemeVertexPositionSet->SetDefaultSorter();
 	
 	
 	// word
-	helper.GroupBox(content, groupBox, "Word:");
+	helper.GroupBox(content, groupBox, "@SpeechAnimation.WPSAnim.GroupWord");
 	
-	helper.ComboBoxFilter(groupBox, "Word:", "Word to edit.", pCBWord, cComboWord::Ref::New(*this));
+	helper.ComboBoxFilter(groupBox, "@SpeechAnimation.WPSAnim.Word", "@SpeechAnimation.WPSAnim.Word.Description", pCBWord, cComboWord::Ref::New(*this));
 	pCBWord->SetDefaultSorter();
 	
-	helper.EditString(groupBox, "Name:", "Name of the word.",
+	helper.EditString(groupBox, "@SpeechAnimation.WPSAnim.WordName", "@SpeechAnimation.WPSAnim.WordName.Description",
 		pEditWordName, cTextWordName::Ref::New(*this));
 	
-	helper.FormLineStretchFirst(groupBox, "Phonetics", "Phonetics of the word.", formLine);
-	helper.EditString(formLine, "Phonetics of the word.",
+	helper.FormLineStretchFirst(groupBox, "@SpeechAnimation.WPSAnim.WordPhonetics", "@SpeechAnimation.WPSAnim.WordPhonetics.Description", formLine);
+	helper.EditString(formLine, "@SpeechAnimation.WPSAnim.WordPhonetics.Description",
 		pEditWordPhonetics, cTextWordPhonetics::Ref::New(*this));
 	pActionWordAddIpa = cActionWordAddIpa::Ref::New(*this, pEditWordPhonetics);
 	helper.Button(formLine, pBtnWordAddIPA, pActionWordAddIpa);

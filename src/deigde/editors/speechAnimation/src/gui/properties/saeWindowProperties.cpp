@@ -51,13 +51,13 @@ pWindowMain(windowMain)
 	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
 	pPanelSAnimation = saeWPSAnim::Ref::New(*this);
-	AddChild(pPanelSAnimation, "SAnimation");
+	AddChild(pPanelSAnimation, "@SpeechAnimation.WindowProperties.TabSAnimation");
 	
 	pPanelView = saeWPView::Ref::New(*this);
-	AddChild(pPanelView, "View");
+	AddChild(pPanelView, "@SpeechAnimation.WindowProperties.TabView");
 	
 	pPanelUndoHistory = saeWPUndoHistory::Ref::New(GetEnvironment());
-	AddChild(pPanelUndoHistory, "Undo");
+	AddChild(pPanelUndoHistory, "@SpeechAnimation.WindowProperties.TabUndo");
 	
 	SetActivePanel(0); // speech animation panel
 }

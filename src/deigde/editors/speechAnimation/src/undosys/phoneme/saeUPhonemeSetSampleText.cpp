@@ -44,7 +44,7 @@ saeUPhonemeSetSampleText::saeUPhonemeSetSampleText(saePhoneme *phoneme, const ch
 	
 	pPhoneme = nullptr;
 	
-	SetShortInfo("Phoneme Set Sample Text");
+	SetShortInfo("@SpeechAnimation.Undo.PhonemeSetSampleText");
 	
 	pOldText = phoneme->GetSampleText();
 	pNewText = newText;

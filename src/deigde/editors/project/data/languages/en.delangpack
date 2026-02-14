@@ -140,8 +140,6 @@
 	<translation name="Project.PanelTestRun.Group.LogsDebug">Logs / Debug:</translation>
 	<translation name="Project.PanelTestRun.Tab.Logs">Logs</translation>
 	<translation name="Project.PanelTestRun.Dialog.StartTestRunning.RequestSave">Unsaved changes are present. To start Test-Running it is recommended to save them</translation>
-	<translation name="Project.PanelTestRun.Dialog.Listen">Listen</translation>
-	<translation name="Project.PanelTestRun.Dialog.StopListen">Stop Listen</translation>
 	
 	<!-- Dialog Distribute -->
 	<translation name="Project.DialogDistribute.Title">Distribute</translation>

@@ -44,7 +44,7 @@ saeUSAnimSetAnimPath::saeUSAnimSetAnimPath(saeSAnimation *sanimation, const char
 	
 	pSAnimation = nullptr;
 	
-	SetShortInfo("Set Animation Path");
+	SetShortInfo("@SpeechAnimation.Undo.SetAnimationPath");
 	
 	pOldPath = sanimation->GetAnimationPath();
 	pNewPath = newName;

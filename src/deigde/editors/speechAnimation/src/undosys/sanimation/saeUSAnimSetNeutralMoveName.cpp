@@ -44,7 +44,7 @@ saeUSAnimSetNeutralMoveName::saeUSAnimSetNeutralMoveName(saeSAnimation *sanimati
 	
 	pSAnimation = nullptr;
 	
-	SetShortInfo("Set Neutral Move Name");
+	SetShortInfo("@SpeechAnimation.Undo.SetNeutralMoveName");
 	
 	pOldName = sanimation->GetNeutralMoveName();
 	pNewName = newName;

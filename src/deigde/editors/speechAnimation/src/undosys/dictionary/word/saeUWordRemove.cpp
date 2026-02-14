@@ -49,7 +49,7 @@ saeUWordRemove::saeUWordRemove(saeWord *word){
 	pSAnimation = nullptr;
 	pWord = nullptr;
 	
-	SetShortInfo("Remove Word");
+	SetShortInfo("@SpeechAnimation.Undo.WordRemove");
 	
 	pSAnimation = sanimation;
 	pWord = word;

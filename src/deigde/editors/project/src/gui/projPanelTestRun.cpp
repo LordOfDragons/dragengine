@@ -670,7 +670,7 @@ void projPanelTestRun::RemoteStartListen(){
 		pProject->GetRemoteServer()->ListenForClientConnections(pEditRemoteAddress->GetText());
 		
 	}catch(const deException &e){
-		igdeCommonDialogs::Exception(*this, Translate("Project.PanelTestRun.Dialog.Listen").ToUTF8(), e);
+		igdeCommonDialogs::Exception(*this, "@Project.PanelTestRun.Action.RemoteStartListen", e);
 	}
 	
 	UpdateWidgetEnabled();
@@ -685,7 +685,7 @@ void projPanelTestRun::RemoteStopListen(){
 		pProject->GetRemoteServer()->StopListenClientConnections();
 		
 	}catch(const deException &e){
-		igdeCommonDialogs::Exception(*this, Translate("Project.PanelTestRun.Dialog.StopListen").ToUTF8(), e);
+		igdeCommonDialogs::Exception(*this, "@Project.PanelTestRun.Action.RemoteStopListen", e);
 	}
 	
 	UpdateWidgetEnabled();
@@ -700,7 +700,7 @@ void projPanelTestRun::RemoteSynchronizeAll(){
 		pProject->GetRemoteServer()->RemoteSynchronizeAllClients();
 		
 	}catch(const deException &e){
-		igdeCommonDialogs::Exception(*this, Translate("Project.PanelTestRun.Dialog.StopListen").ToUTF8(), e);
+		igdeCommonDialogs::Exception(*this, "@Project.PanelTestRun.Action.RemoteSynchronizeAll", e);
 	}
 	
 	UpdateWidgetEnabled();

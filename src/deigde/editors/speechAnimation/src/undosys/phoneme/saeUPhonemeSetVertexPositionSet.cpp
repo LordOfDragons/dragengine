@@ -40,7 +40,7 @@ pNewName(newName)
 {
 	DEASSERT_NOTNULL(phoneme)
 	
-	SetShortInfo("Phoneme Set Move Name");
+	SetShortInfo("@SpeechAnimation.Undo.PhonemeSetVertexPositionSet");
 	
 	pOldName = phoneme->GetVertexPositionSet();
 	

@@ -543,14 +543,14 @@ public:
 		decString name(pWindow.Translate("Project.WindowMain.Default.ProfileName").ToUTF8());
 		
 		while(true){
-			if(!igdeCommonDialogs::GetString(pWindow, pWindow.Translate("Project.PanelProfiles.Dialog.AddProfile").ToUTF8(),
-			pWindow.Translate("Project.PanelProfiles.Dialog.AddProfile.Name").ToUTF8(), name)){
+			if(!igdeCommonDialogs::GetString(pWindow, "@Project.PanelProfiles.Dialog.AddProfile",
+			"@Project.PanelProfiles.Dialog.AddProfile.Name", name)){
 				return;
 			}
 			
 			if(list.HasNamed(name)){
-				igdeCommonDialogs::Error(pWindow, pWindow.Translate("Project.PanelProfiles.Dialog.AddProfile").ToUTF8(),
-				pWindow.Translate("Project.PanelProfiles.Dialog.AddProfile.Error").ToUTF8());
+				igdeCommonDialogs::Error(pWindow, "@Project.PanelProfiles.Dialog.AddProfile",
+					"@Project.PanelProfiles.Dialog.AddProfile.Error");
 				
 			}else{
 				break;
@@ -642,14 +642,14 @@ public:
 			profile->GetName().GetString());
 		
 		while(true){
-			if(!igdeCommonDialogs::GetString(pWindow, pWindow.Translate("Project.PanelProfiles.Dialog.DuplicateProfile").ToUTF8(),
-			pWindow.Translate("Project.PanelProfiles.Dialog.DuplicateProfile.Name").ToUTF8(), name)){
+			if(!igdeCommonDialogs::GetString(pWindow, "@Project.PanelProfiles.Dialog.DuplicateProfile",
+					"@Project.PanelProfiles.Dialog.DuplicateProfile.Name", name)){
 				return;
 			}
 			
 			if(list.HasNamed(name)){
-				igdeCommonDialogs::Error(pWindow, pWindow.Translate("Project.PanelProfiles.Dialog.DuplicateProfile").ToUTF8(),
-				pWindow.Translate("Project.PanelProfiles.Dialog.DuplicateProfile.Error").ToUTF8());
+				igdeCommonDialogs::Error(pWindow, "@Project.PanelProfiles.Dialog.DuplicateProfile",
+					"@Project.PanelProfiles.Dialog.DuplicateProfile.Error");
 				
 			}else{
 				break;

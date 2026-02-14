@@ -49,7 +49,7 @@ saeUPhonemeRemove::saeUPhonemeRemove(saePhoneme *phoneme){
 	pSAnimation = nullptr;
 	pPhoneme = nullptr;
 	
-	SetShortInfo("Remove Phoneme");
+	SetShortInfo("@SpeechAnimation.Undo.PhonemeRemove");
 	
 	pSAnimation = sanimation;
 	pPhoneme = phoneme;

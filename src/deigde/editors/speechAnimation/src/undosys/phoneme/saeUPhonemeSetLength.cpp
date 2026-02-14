@@ -44,7 +44,7 @@ saeUPhonemeSetLength::saeUPhonemeSetLength(saePhoneme *phoneme, float newLength)
 	
 	pPhoneme = nullptr;
 	
-	SetShortInfo("Phoneme Set Length");
+	SetShortInfo("@SpeechAnimation.Undo.PhonemeSetLength");
 	
 	pOldLength = phoneme->GetLength();
 	pNewLength = newLength;

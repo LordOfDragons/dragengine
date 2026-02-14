@@ -44,7 +44,7 @@ saeUWordSetPhonetics::saeUWordSetPhonetics(saeWord *word, const decUnicodeString
 	
 	pWord = nullptr;
 	
-	SetShortInfo("Word Set Phonetics");
+	SetShortInfo("@SpeechAnimation.Undo.WordSetPhonetics");
 	
 	pOldPhonetics = word->GetPhonetics();
 	pNewPhonetics = newPhonetics;

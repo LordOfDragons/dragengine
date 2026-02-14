@@ -44,7 +44,7 @@ saeUSAnimSetRigPath::saeUSAnimSetRigPath(saeSAnimation *sanimation, const char *
 	
 	pSAnimation = nullptr;
 	
-	SetShortInfo("Set Rig Path");
+	SetShortInfo("@SpeechAnimation.Undo.SetRigPath");
 	
 	pOldPath = sanimation->GetRigPath();
 	pNewPath = newName;

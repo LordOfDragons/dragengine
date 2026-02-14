@@ -42,7 +42,7 @@ pNewSets(sets)
 {
 	DEASSERT_NOTNULL(sanimation)
 	
-	SetShortInfo("Set neutral vertex position sets");
+	SetShortInfo("@SpeechAnimation.Undo.SetNeutralVertexPositionSets");
 	
 	pOldSets = sanimation->GetNeutralVertexPositionSets();
 	

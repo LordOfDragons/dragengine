@@ -44,7 +44,7 @@ saeUPhonemeSetIPA::saeUPhonemeSetIPA(saePhoneme *phoneme, int newIPA){
 	
 	pPhoneme = nullptr;
 	
-	SetShortInfo("Phoneme Set IPA");
+	SetShortInfo("@SpeechAnimation.Undo.PhonemeSetIPA");
 	
 	pOldIPA = phoneme->GetIPA();
 	pNewIPA = newIPA;
