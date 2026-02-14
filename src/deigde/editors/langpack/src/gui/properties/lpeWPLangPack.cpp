@@ -186,15 +186,15 @@ pListener(lpeWPLangPackListener::Ref::New(*this))
 	AddChild(content);
 	
 	// language pack
-	helper.GroupBox(content, groupBox, "Language Pack:");
+	helper.GroupBox(content, groupBox, "@LangPack.Properties.LangPack.GroupBox");
 	
-	helper.EditString(groupBox, "Identifier:", "Unique identifier of language pack.",
+	helper.EditString(groupBox, "@LangPack.Properties.LangPack.Identifier", "@LangPack.Properties.LangPack.Identifier.Description",
 		pEditIdentifier, cTextIdentifier::Ref::New(*this));
-	helper.EditString(groupBox, "Name:", "Name of language pack.",
+	helper.EditString(groupBox, "@LangPack.Properties.LangPack.Name", "@LangPack.Properties.LangPack.Name.Description",
 		pEditName, cTextName::Ref::New(*this));
-	helper.EditString(groupBox, "Description:", "Description of language pack.",
+	helper.EditString(groupBox, "@LangPack.Properties.LangPack.Description", "@LangPack.Properties.LangPack.Description.Description",
 		pEditDescription, 5, cTextDescription::Ref::New(*this));
-	helper.EditString(groupBox, "Missing Text:", "Text to use for missing entries.",
+	helper.EditString(groupBox, "@LangPack.Properties.LangPack.MissingText", "@LangPack.Properties.LangPack.MissingText.Description",
 		pEditMissingText, cTextMissingText::Ref::New(*this));
 }
 

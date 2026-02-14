@@ -99,8 +99,8 @@ public:
 		
 		lpeLangPack &langpack = *pView.GetLangPack();
 		if(langpack.GetEntries().HasNamed(name)){
-			igdeCommonDialogs::ErrorFormat(pView, "Set Entry Identifier",
-				"There exists already an entry with name '{0}'", name.GetString());
+			igdeCommonDialogs::ErrorFormat(pView, "@LangPack.View.SetEntryIdentifier",
+				"@LangPack.View.SetEntryIdentifier.DuplicateError", name.GetString());
 			textField->SetText(entry->GetName());
 			return;
 		}
@@ -252,7 +252,7 @@ preventUpdate(false)
 	
 	// filter line on top
 	igdeContainerForm::Ref topLine(igdeContainerForm::Ref::New(env));
-	helper.EditString(topLine, "Filter:", "Filter entries by identifier.",
+	helper.EditString(topLine, "@LangPack.View.Filter", "@LangPack.View.Filter.Description",
 		pEditFilter, cTextFilter::Ref::New(*this));
 	AddChild(topLine, igdeContainerBorder::eaTop);
 	
@@ -262,23 +262,23 @@ preventUpdate(false)
 	AddChild(splitted, igdeContainerBorder::eaCenter);
 	
 	igdeContainerForm::Ref sidePanel(igdeContainerForm::Ref::New(env, igdeContainerForm::esLast));
-	helper.EditString(sidePanel, "Identifier:", "Unique identifier name of the entry.",
+	helper.EditString(sidePanel, "@LangPack.View.Identifier", "@LangPack.View.Identifier.Description",
 		pEditEntryName, cTextName::Ref::New(*this));
-	helper.EditString(sidePanel, "Reference Text:", "Reference text of the reference language pack entry.",
+	helper.EditString(sidePanel, "@LangPack.View.ReferenceText", "@LangPack.View.ReferenceText.Description",
 		pEditRefText, {});
-	helper.EditString(sidePanel, "Text:", "Text of the selected entry.",
+	helper.EditString(sidePanel, "@LangPack.View.Text", "@LangPack.View.Text.Description",
 		pEditEntryText, 3, cTextText::Ref::New(*this));
 	pEditRefText->SetEditable(false);
 	splitted->AddChild(sidePanel, igdeContainerSplitted::eaSide);
 	
 	const igdeUIHelper::sColumnHeader listHeaders[3] = {
-		{"Identifier", nullptr, igdeApplication::app().DisplayScaled(250)},
-		{"Text", nullptr, igdeApplication::app().DisplayScaled(650)},
-		{"Reference", nullptr, igdeApplication::app().DisplayScaled(400)}
+		{"@LangPack.View.List.Header.Identifier", nullptr, igdeApplication::app().DisplayScaled(250)},
+		{"@LangPack.View.List.Header.Text", nullptr, igdeApplication::app().DisplayScaled(650)},
+		{"@LangPack.View.List.Header.Reference", nullptr, igdeApplication::app().DisplayScaled(400)}
 	};
 	helper.IconListBox(
 		igdeApplication::app().DisplayScaled(decPoint(100, 150)),
-		listHeaders, 3, "Entries", pListEntries, {});
+		listHeaders, 3, "@LangPack.View.List.Entries", pListEntries, {});
 	pListEntries->SetSelectionMode(igdeIconListBox::esmMultiple);
 	cListEntries::AddToListBox(*this, pListEntries);
 	splitted->AddChild(pListEntries, igdeContainerSplitted::eaCenter);
@@ -445,8 +445,8 @@ void lpeViewLangPack::SelectNextMissingEntry(){
 		}
 	}
 	
-	igdeCommonDialogs::Information(pWindowMain, "Select next missing entry",
-		"No more missing language pack entries");
+	igdeCommonDialogs::Information(pWindowMain, "@LangPack.View.SelectNextMissing",
+		"@LangPack.View.SelectNextMissing.NoMore");
 }
 
 void lpeViewLangPack::UpdateActiveEntry(){

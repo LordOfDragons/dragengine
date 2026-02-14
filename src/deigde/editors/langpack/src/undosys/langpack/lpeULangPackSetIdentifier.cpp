@@ -45,7 +45,7 @@ pNewIdentifier(newIdentifier)
 {
 	DEASSERT_NOTNULL(langpack)
 	
-	SetShortInfo("LangPack set identifier");
+	SetShortInfo("@LangPack.Undo.LangPackSetIdentifier");
 	
 	pOldIdentifier = langpack->GetIdentifier();
 	

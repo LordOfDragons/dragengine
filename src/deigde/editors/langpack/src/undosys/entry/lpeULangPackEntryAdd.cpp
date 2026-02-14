@@ -49,7 +49,7 @@ pRefEntry(refEntry)
 	DEASSERT_NOTNULL(langpack)
 	DEASSERT_NOTNULL(entry)
 	
-	SetShortInfo("Add entry");
+	SetShortInfo("@LangPack.Undo.EntryAdd");
 }
 
 lpeULangPackEntryAdd::~lpeULangPackEntryAdd(){

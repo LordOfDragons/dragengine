@@ -47,7 +47,7 @@ pNewName(newName)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Entry set name");
+	SetShortInfo("@LangPack.Undo.EntrySetName");
 	
 	pOldName = entry->GetName();
 	

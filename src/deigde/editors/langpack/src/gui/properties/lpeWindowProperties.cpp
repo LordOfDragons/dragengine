@@ -55,10 +55,10 @@ pPanelLangPack(nullptr)
 	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
 	pPanelLangPack = lpeWPLangPack::Ref::New(*this);
-	AddChild(pPanelLangPack, "Language Pack");
+	AddChild(pPanelLangPack, "@LangPack.Properties.LangPack");
 	
 	pPanelUndoHistory = lpeWPUndoHistory::Ref::New(env);
-	AddChild(pPanelUndoHistory, "Undo");
+	AddChild(pPanelUndoHistory, "@LangPack.Properties.Undo");
 	
 	SetActivePanel(0);
 }

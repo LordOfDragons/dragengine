@@ -47,7 +47,7 @@ pNewName(newName)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("LangPack set name");
+	SetShortInfo("@LangPack.Undo.LangPackSetName");
 	
 	pOldName = langpack->GetName();
 	

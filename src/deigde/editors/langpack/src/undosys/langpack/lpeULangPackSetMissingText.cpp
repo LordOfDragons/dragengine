@@ -49,7 +49,7 @@ pNewMissingText(newMissingText)
 	}
 	
 	
-	SetShortInfo("LangPack set missing text");
+	SetShortInfo("@LangPack.Undo.LangPackSetMissingText");
 	
 	pOldMissingText = langpack->GetMissingText();
 	

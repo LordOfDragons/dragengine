@@ -49,7 +49,7 @@ pNewDescription(newDescription)
 	}
 	
 	
-	SetShortInfo("LangPack set description");
+	SetShortInfo("@LangPack.Undo.LangPackSetDescription");
 	
 	pOldDescription = langpack->GetDescription();
 	

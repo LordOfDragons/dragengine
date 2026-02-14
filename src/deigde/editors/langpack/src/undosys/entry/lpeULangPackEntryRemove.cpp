@@ -61,7 +61,7 @@ pList(list)
 		});
 	}
 	
-	SetShortInfo(count == 1 ? "Remove entry" : "Remove entries");
+	SetShortInfo(count == 1 ? "@LangPack.Undo.EntryRemove" : "@LangPack.Undo.EntryRemoveMultiple");
 }
 
 lpeULangPackEntryRemove::~lpeULangPackEntryRemove(){
