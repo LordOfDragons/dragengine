@@ -45,7 +45,7 @@ seUPropertyToggleVideoSharedTime::seUPropertyToggleVideoSharedTime(seProperty *p
 	
 	pProperty = nullptr;
 	
-	SetShortInfo("Property toggle video shared time");
+	SetShortInfo("@Skin.Undo.PropertyToggleVideoSharedTime");
 	
 	pProperty = property;
 }

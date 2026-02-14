@@ -47,7 +47,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Node image set repeat");
+	SetShortInfo("@Skin.Undo.NodeImageSetRepeat");
 	
 	pOldValue = node->GetRepeat();
 	

@@ -47,7 +47,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Node set combine mode");
+	SetShortInfo("@Skin.Undo.NodeSetCombineMode");
 	
 	pOldValue = node->GetCombineMode();
 	

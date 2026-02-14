@@ -47,7 +47,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Node shape set type");
+	SetShortInfo("@Skin.Undo.NodeShapeSetType");
 	
 	pOldValue = node->GetShapeType();
 	

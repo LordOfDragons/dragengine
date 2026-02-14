@@ -46,7 +46,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Node set contrast");
+	SetShortInfo("@Skin.Undo.NodeSetContrast");
 	
 	pOldValue = node->GetContrast();
 	

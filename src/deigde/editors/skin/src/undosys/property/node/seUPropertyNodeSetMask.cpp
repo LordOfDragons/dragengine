@@ -49,7 +49,7 @@ pMask(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Node set mask");
+	SetShortInfo("@Skin.Undo.NodeSetMask");
 	
 	pOldPosition = mask->GetPosition();
 	pOldSize = mask->GetSize();

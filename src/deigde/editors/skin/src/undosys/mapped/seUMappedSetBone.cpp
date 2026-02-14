@@ -41,7 +41,7 @@ pNewBone(newBone)
 {
 	DEASSERT_NOTNULL(pMapped)
 	
-	SetShortInfo("Set Mapped Bone");
+	SetShortInfo("@Skin.Undo.SetMappedBone");
 }
 
 seUMappedSetBone::~seUMappedSetBone(){

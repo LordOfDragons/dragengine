@@ -41,7 +41,7 @@ pNewValue(newRenderable)
 {
 	DEASSERT_NOTNULL(pMapped)
 	
-	SetShortInfo("Set Mapped Renderable");
+	SetShortInfo("@Skin.Undo.SetMappedRenderable");
 }
 
 seUMappedSetRenderable::~seUMappedSetRenderable(){

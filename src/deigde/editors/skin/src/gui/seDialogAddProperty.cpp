@@ -67,7 +67,7 @@ private:
 	seDialogAddProperty &pDialog;
 	
 public:
-	cActionDetails(seDialogAddProperty &dialog) : igdeAction("Texture Property Details"),
+	cActionDetails(seDialogAddProperty &dialog) : igdeAction("@Skin.DialogAddProperty.Action.Details"),
 	pDialog(dialog){}
 	
 	void OnAction() override{
@@ -86,7 +86,7 @@ public:
 ////////////////////////////
 
 seDialogAddProperty::seDialogAddProperty(seWindowMain &windowMain) :
-igdeDialog(windowMain.GetEnvironment(), "Add Property"),
+igdeDialog(windowMain.GetEnvironment(), "@Skin.DialogAddProperty.Title"),
 pWindowMain(windowMain)
 {
 	igdeEnvironment &env = GetEnvironment();
@@ -94,26 +94,25 @@ pWindowMain(windowMain)
 	igdeContainer::Ref content, formLine;
 	
 	
-	igdeLabel::Ref header(igdeLabel::Ref::New(
-		env, "Multi-Select properties or enter custom name."));
+	igdeLabel::Ref header(igdeLabel::Ref::New(env, "@Skin.DialogAddProperty.Header"));
 	
 	
 	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 5);
 	
-	helper.ListBox(content, 15, "Property names", pListProperties, {});
+	helper.ListBox(content, 15, "@Skin.DialogAddProperty.PropertyNames", pListProperties, {});
 	pListProperties->SetSelectionMode(igdeListBox::esmMultiple);
 	pListProperties->SetDefaultSorter();
 	
 	helper.Button(content, cActionDetails::Ref::New(*this));
 	
 	formLine = igdeContainerForm::Ref::New(env);
-	helper.EditString(formLine, "Custom Name:", "Custom name (for special uses only)",
+	helper.EditString(formLine, "@Skin.DialogAddProperty.CustomName.Label", "@Skin.DialogAddProperty.CustomName.ToolTip",
 		15, pEditCustomPropertyName, {});
 	content->AddChild(formLine);
 	
 	
 	igdeContainer::Ref buttonBar;
-	CreateButtonBar(buttonBar, "Add Properties", "Cancel");
+	CreateButtonBar(buttonBar, "@Skin.DialogAddProperty.Button.AddProperties", "@Igde.Cancel");
 	
 	
 	AddContent(content, header, buttonBar);

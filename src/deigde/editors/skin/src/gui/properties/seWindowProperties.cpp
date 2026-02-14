@@ -53,22 +53,22 @@ pWindowMain(windowMain)
 	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
 	pPanelMapped = seWPMapped::Ref::New(*this);
-	AddChild(pPanelMapped, "Mapped");
+	AddChild(pPanelMapped, "@Skin.WindowProperties.Tab.Mapped");
 	
 	pPanelTexture = seWPTexture::Ref::New(*this);
-	AddChild(pPanelTexture, "Texture");
+	AddChild(pPanelTexture, "@Skin.WindowProperties.Tab.Texture");
 	
 	pPanelNode = seWPNode::Ref::New(*this);
-	AddChild(pPanelNode, "Node");
+	AddChild(pPanelNode, "@Skin.WindowProperties.Tab.Node");
 	
 	pPanelDynamicSkin = seWPDynamicSkin::Ref::New(*this);
-	AddChild(pPanelDynamicSkin, "Dynamic Skin");
+	AddChild(pPanelDynamicSkin, "@Skin.WindowProperties.Tab.DynamicSkin");
 	
 	pPanelView = seWPView::Ref::New(*this);
-	AddChild(pPanelView, "View");
+	AddChild(pPanelView, "@Skin.WindowProperties.Tab.View");
 	
 	pPanelUndoHistory = seWPUndoHistory::Ref::New(GetEnvironment());
-	AddChild(pPanelUndoHistory, "Undo");
+	AddChild(pPanelUndoHistory, "@Igde.Tab.UndoHistory");
 	
 	SetActivePanel(1); // texture
 }

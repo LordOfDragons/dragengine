@@ -43,7 +43,7 @@ seUPropertySetValue::seUPropertySetValue(seProperty *property, float newValue){
 	
 	pProperty = nullptr;
 	
-	SetShortInfo("Property Set Value");
+	SetShortInfo("@Skin.Undo.PropertySetValue");
 	
 	pOldValue = property->GetValue();
 	pNewValue = newValue;

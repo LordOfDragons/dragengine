@@ -44,7 +44,7 @@ pOldName(property ? property->GetBoneName().GetString() : ""),
 pNewName(newName)
 {
 	DEASSERT_NOTNULL(property)
-	SetShortInfo("Property Set Bone");
+	SetShortInfo("@Skin.Undo.PropertySetBone");
 }
 
 seUPropertySetBoneName::~seUPropertySetBoneName(){

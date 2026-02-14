@@ -47,7 +47,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Node image set path");
+	SetShortInfo("@Skin.Undo.NodeImageSetPath");
 	
 	pOldValue = node->GetPath();
 	

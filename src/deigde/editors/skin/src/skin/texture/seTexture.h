@@ -72,7 +72,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new texture. */
-	seTexture(deEngine *engine, const char *name = "Texture");
+	seTexture(deEngine *engine, const char *name);
 	/** Creates a new texture as a copy of another texture. */
 	seTexture(const seTexture &texture);
 	/** Cleans up the texture. */

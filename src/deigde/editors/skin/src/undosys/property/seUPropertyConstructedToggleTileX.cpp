@@ -45,7 +45,7 @@ pProperty(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Property constructed tile X");
+	SetShortInfo("@Skin.Undo.PropertyConstructedTileX");
 	
 	pProperty = property;
 }

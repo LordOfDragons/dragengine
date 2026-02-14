@@ -42,7 +42,7 @@ pNewValue(newComponent)
 {
 	DEASSERT_NOTNULL(pMapped)
 	
-	SetShortInfo("Set Mapped Renderable Component");
+	SetShortInfo("@Skin.Undo.SetMappedRenderableComponent");
 }
 
 seUMappedSetRenderableComponent::~seUMappedSetRenderableComponent(){

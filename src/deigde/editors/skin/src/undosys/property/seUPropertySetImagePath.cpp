@@ -43,7 +43,7 @@ seUPropertySetImagePath::seUPropertySetImagePath(seProperty *property, const cha
 	
 	pProperty = nullptr;
 	
-	SetShortInfo("Property Set Image Path");
+	SetShortInfo("@Skin.Undo.PropertySetImagePath");
 	
 	pOldPath = property->GetImagePath();
 	pNewPath = newPath;

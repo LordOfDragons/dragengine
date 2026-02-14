@@ -46,7 +46,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Node text set font size");
+	SetShortInfo("@Skin.Undo.NodeTextSetFontSize");
 	
 	pOldValue = node->GetTextSize();
 	

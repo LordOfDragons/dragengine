@@ -46,7 +46,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Node set brightness");
+	SetShortInfo("@Skin.Undo.NodeSetBrightness");
 	
 	pOldValue = node->GetBrightness();
 	

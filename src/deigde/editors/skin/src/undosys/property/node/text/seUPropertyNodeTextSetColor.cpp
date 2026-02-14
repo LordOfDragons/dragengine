@@ -47,7 +47,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Node text set color");
+	SetShortInfo("@Skin.Undo.NodeTextSetColor");
 	
 	pOldValue = node->GetColor();
 	

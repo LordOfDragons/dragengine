@@ -42,7 +42,7 @@
 seUPropertyNodeImageSizeFromImage::seUPropertyNodeImageSizeFromImage(sePropertyNodeImage *node) :
 seUPropertyNodeSetSize(node, GetSizeFromImage(node))
 {
-	SetShortInfo("Node size from image size");
+	SetShortInfo("@Skin.Undo.NodeImageSizeFromImage");
 }
 
 

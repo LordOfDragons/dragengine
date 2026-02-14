@@ -46,7 +46,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Node set transparency");
+	SetShortInfo("@Skin.Undo.NodeSetTransparency");
 	
 	pOldValue = node->GetTransparency();
 	

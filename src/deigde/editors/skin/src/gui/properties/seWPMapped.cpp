@@ -177,8 +177,8 @@ public:
 class cActionCopy : public cBaseActionMapped{
 public:
 	typedef deTObjectReference<cActionCopy> Ref;
-	cActionCopy(seWPMapped &panel) : cBaseActionMapped (panel, "Copy Mapped",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy), "Copy mapped"){}
+	cActionCopy(seWPMapped &panel) : cBaseActionMapped (panel, "@Igde.Action.Copy",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy), "@Igde.Action.Copy.ToolTip"){}
 	
 	igdeUndo::Ref OnActionMapped(seSkin*, seMapped *mapped) override{
 		seMapped::List list;
@@ -192,8 +192,8 @@ public:
 class cActionCut : public cBaseActionMapped{
 public:
 	typedef deTObjectReference<cActionCut> Ref;
-	cActionCut(seWPMapped &panel) : cBaseActionMapped (panel, "Cut Mapped",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut), "Cut mapped"){}
+	cActionCut(seWPMapped &panel) : cBaseActionMapped (panel, "@Igde.Action.Cut",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut), "@Igde.Action.Cut.ToolTip"){}
 	
 	igdeUndo::Ref OnActionMapped(seSkin*, seMapped *mapped) override{
 		seMapped::List list;
@@ -204,9 +204,8 @@ public:
 		const seUMappedRemove::Ref undo(seUMappedRemove::Ref::New(mapped));
 		
 		if(undo->GetDependencyCount() > 0 && igdeCommonDialogs::QuestionFormat(pPanel,
-		igdeCommonDialogs::ebsYesNo, "Cut Mapped", "Mapped is used by {0} dependencies. "
-		"Cutting mapped will also unset it from all dependencies.", undo->GetDependencyCount())
-		== igdeCommonDialogs::ebNo){
+		igdeCommonDialogs::ebsYesNo, "@Skin.WPMapped.CutMapped.Title", "@Skin.WPMapped.CutMapped.Message",
+		undo->GetDependencyCount()) == igdeCommonDialogs::ebNo){
 			return {};
 		}
 		
@@ -217,8 +216,8 @@ public:
 class cActionPaste : public cBaseActionSkin{
 public:
 	typedef deTObjectReference<cActionPaste> Ref;
-	cActionPaste(seWPMapped &panel) : cBaseActionSkin(panel, "Paste Mapped",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste), "Paste mapped"){}
+	cActionPaste(seWPMapped &panel) : cBaseActionSkin(panel, "@Igde.Action.Paste",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste), "@Igde.Action.Paste.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(seSkin *skin) override{
 		const seClipboardDataMapped * const data = (seClipboardDataMapped*)
@@ -236,8 +235,8 @@ public:
 class cActionDuplicate : public cBaseActionMapped{
 public:
 	typedef deTObjectReference<cActionDuplicate> Ref;
-	cActionDuplicate(seWPMapped &panel) : cBaseActionMapped(panel, "Duplicate Mapped",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiDuplicate), "Duplicate mapped"){}
+	cActionDuplicate(seWPMapped &panel) : cBaseActionMapped(panel, "@Igde.Action.Duplicate",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiDuplicate), "@Igde.Action.Duplicate.ToolTip"){}
 	
 	igdeUndo::Ref OnActionMapped(seSkin *skin, seMapped *mapped) override{
 		return seUMappedDuplicate::Ref::New(skin, *mapped);
@@ -290,7 +289,7 @@ public:
 		}
 		
 		if(pPanel.GetSkin()->GetMapped().HasNamed(value)){
-			igdeCommonDialogs::Error(pPanel, "Set Mapped Name", "Mapped name exists already");
+			igdeCommonDialogs::Error(pPanel, "@Skin.WPMapped.SetName.Title", "@Skin.WPMapped.SetName.Exists");
 			textField->SetText(mapped->GetName());
 			return;
 		}
@@ -399,7 +398,7 @@ class cActionInputClamped : public cBaseActionMapped {
 public:
 	typedef deTObjectReference<cActionInputClamped> Ref;
 	cActionInputClamped(seWPMapped &panel) : cBaseActionMapped (panel,
-		"Input Clamped:", nullptr, "Input value is clamperd to input range instead od wrapping around"){}
+		"@Skin.WPMapped.InputClamped.Label", nullptr, "@Skin.WPMapped.InputClamped.ToolTip"){}
 	
 	igdeUndo::Ref OnActionMapped(seSkin*, seMapped *mapped) override{
 		return seUMappedToggleInputClamped::Ref::New(mapped);
@@ -504,52 +503,53 @@ pSkin(nullptr)
 	AddChild(content);
 	
 	
-	helper.GroupBoxFlow(content, groupBox, "Mapped:");
-	helper.ListBox(groupBox, 8, "Mapped", pListMapped, cListMapped::Ref::New(*this));
+	helper.GroupBoxFlow(content, groupBox, "@Skin.WPMapped.GroupMapped");
+	helper.ListBox(groupBox, 8, "@Skin.WPMapped.Mapped.Label", pListMapped, cListMapped::Ref::New(*this));
 	pListMapped->SetDefaultSorter();
 	
 	form = igdeContainerForm::Ref::New(env);
 	groupBox->AddChild(form);
-	helper.EditString(form, "Name:", "Name of mapped", pEditName, cTextName::Ref::New(*this));
+	helper.EditString(form, "@Skin.WPMapped.Name.Label", "@Skin.WPMapped.Name.ToolTip", pEditName, cTextName::Ref::New(*this));
 	
 	
-	helper.ComboBox(form, "Input Type:", "Type of input to use for curve",
+	helper.ComboBox(form, "@Skin.WPMapped.InputType.Label", "@Skin.WPMapped.InputType.ToolTip",
 		pCBInputType, cComboInputType::Ref::New(*this));
+	pCBInputType->SetAutoTranslateItems(true);
+	pCBInputType->AddItem("@Skin.WPMapped.InputType.Time", nullptr, (void*)(intptr_t)deSkinMapped::eitTime);
+	pCBInputType->AddItem("@Skin.WPMapped.InputType.BonePositionX", nullptr, (void*)(intptr_t)deSkinMapped::eitBonePositionX);
+	pCBInputType->AddItem("@Skin.WPMapped.InputType.BonePositionY", nullptr, (void*)(intptr_t)deSkinMapped::eitBonePositionY);
+	pCBInputType->AddItem("@Skin.WPMapped.InputType.BonePositionZ", nullptr, (void*)(intptr_t)deSkinMapped::eitBonePositionZ);
+	pCBInputType->AddItem("@Skin.WPMapped.InputType.BoneRotationX", nullptr, (void*)(intptr_t)deSkinMapped::eitBoneRotationX);
+	pCBInputType->AddItem("@Skin.WPMapped.InputType.BoneRotationY", nullptr, (void*)(intptr_t)deSkinMapped::eitBoneRotationY);
+	pCBInputType->AddItem("@Skin.WPMapped.InputType.BoneRotationZ", nullptr, (void*)(intptr_t)deSkinMapped::eitBoneRotationZ);
+	pCBInputType->AddItem("@Skin.WPMapped.InputType.BoneScaleX", nullptr, (void*)(intptr_t)deSkinMapped::eitBoneScaleX);
+	pCBInputType->AddItem("@Skin.WPMapped.InputType.BoneScaleY", nullptr, (void*)(intptr_t)deSkinMapped::eitBoneScaleY);
+	pCBInputType->AddItem("@Skin.WPMapped.InputType.BoneScaleZ", nullptr, (void*)(intptr_t)deSkinMapped::eitBoneScaleZ);
+	pCBInputType->AddItem("@Skin.WPMapped.InputType.Renderable", nullptr, (void*)(intptr_t)deSkinMapped::eitRenderable);
 	
-	pCBInputType->AddItem("Time", nullptr, (void*)(intptr_t)deSkinMapped::eitTime);
-	pCBInputType->AddItem("BonePositionX", nullptr, (void*)(intptr_t)deSkinMapped::eitBonePositionX);
-	pCBInputType->AddItem("BonePositionY", nullptr, (void*)(intptr_t)deSkinMapped::eitBonePositionY);
-	pCBInputType->AddItem("BonePositionZ", nullptr, (void*)(intptr_t)deSkinMapped::eitBonePositionZ);
-	pCBInputType->AddItem("BoneRotationX", nullptr, (void*)(intptr_t)deSkinMapped::eitBoneRotationX);
-	pCBInputType->AddItem("BoneRotationY", nullptr, (void*)(intptr_t)deSkinMapped::eitBoneRotationY);
-	pCBInputType->AddItem("BoneRotationZ", nullptr, (void*)(intptr_t)deSkinMapped::eitBoneRotationZ);
-	pCBInputType->AddItem("BoneScaleX", nullptr, (void*)(intptr_t)deSkinMapped::eitBoneScaleX);
-	pCBInputType->AddItem("BoneScaleY", nullptr, (void*)(intptr_t)deSkinMapped::eitBoneScaleY);
-	pCBInputType->AddItem("BoneScaleZ", nullptr, (void*)(intptr_t)deSkinMapped::eitBoneScaleZ);
-	pCBInputType->AddItem("Renderable", nullptr, (void*)(intptr_t)deSkinMapped::eitRenderable);
-	
-	helper.EditFloat(form, "Input Lower:", "Lower input range", pEditInputLower, cTextInputLower::Ref::New(*this));
-	helper.EditFloat(form, "Input Upper:", "Upper input range", pEditInputUpper, cTextInputUpper::Ref::New(*this));
+	helper.EditFloat(form, "@Skin.WPMapped.InputLower.Label", "@Skin.WPMapped.InputLower.ToolTip", pEditInputLower, cTextInputLower::Ref::New(*this));
+	helper.EditFloat(form, "@Skin.WPMapped.InputUpper.Label", "@Skin.WPMapped.InputUpper.ToolTip", pEditInputUpper, cTextInputUpper::Ref::New(*this));
 	helper.CheckBox(form, pChkInputClamped, cActionInputClamped::Ref::New(*this));
 	
-	helper.EditFloat(form, "Output Lower:", "Lower output range. 0 Y-curve value maps to lower value."
-		" Values outside range are extrapolated", pEditOutputLower, cTextOutputLower::Ref::New(*this));
-	helper.EditFloat(form, "Output Upper:", "Upper output range. 1 Y-curve value maps to upper value."
-		" Values outside range are extrapolated", pEditOutputUpper, cTextOutputUpper::Ref::New(*this));
+	helper.EditFloat(form, "@Skin.WPMapped.OutputLower.Label", "@Skin.WPMapped.OutputLower.ToolTip",
+		pEditOutputLower, cTextOutputLower::Ref::New(*this));
+	helper.EditFloat(form, "@Skin.WPMapped.OutputUpper.Label", "@Skin.WPMapped.OutputUpper.ToolTip",
+		pEditOutputUpper, cTextOutputUpper::Ref::New(*this));
 	
-	helper.EditString(form, "Bone:", "Name of the bone to use if bone related input type is used",
+	helper.EditString(form, "@Skin.WPMapped.Bone.Label", "@Skin.WPMapped.Bone.ToolTip",
 		pEditBone, cTextBone::Ref::New(*this));
 	
-	helper.EditString(form, "Renderable:", "Name of the renderable to use if renderable input type is used",
+	helper.EditString(form, "@Skin.WPMapped.Renderable.Label", "@Skin.WPMapped.Renderable.ToolTip",
 		pEditRenderable, cTextRenderable::Ref::New(*this));
 	
-	helper.ComboBox(form, "Renderable Component:",
-		"Color component to use if renderable is used and is of color type",
+	helper.ComboBox(form, "@Skin.WPMapped.RenderableComponent.Label",
+		"@Skin.WPMapped.RenderableComponent.ToolTip",
 		pCBRenderableComponent, cComboRenderableComponent::Ref::New(*this));
-	pCBRenderableComponent->AddItem("Red", nullptr, (void*)(intptr_t)deSkinMapped::ercRed);
-	pCBRenderableComponent->AddItem("Green", nullptr, (void*)(intptr_t)deSkinMapped::ercGreen);
-	pCBRenderableComponent->AddItem("Blue", nullptr, (void*)(intptr_t)deSkinMapped::ercBlue);
-	pCBRenderableComponent->AddItem("Alpha", nullptr, (void*)(intptr_t)deSkinMapped::ercAlpha);
+	pCBRenderableComponent->SetAutoTranslateItems(true);
+	pCBRenderableComponent->AddItem("@Skin.WPMapped.RenderableComponent.Red", nullptr, (void*)(intptr_t)deSkinMapped::ercRed);
+	pCBRenderableComponent->AddItem("@Skin.WPMapped.RenderableComponent.Green", nullptr, (void*)(intptr_t)deSkinMapped::ercGreen);
+	pCBRenderableComponent->AddItem("@Skin.WPMapped.RenderableComponent.Blue", nullptr, (void*)(intptr_t)deSkinMapped::ercBlue);
+	pCBRenderableComponent->AddItem("@Skin.WPMapped.RenderableComponent.Alpha", nullptr, (void*)(intptr_t)deSkinMapped::ercAlpha);
 	
 	helper.ViewCurveBezier(groupBox, pEditCurve, cEditCurve::Ref::New(*this));
 	pEditCurve->SetDefaultSize(decPoint(200, 250));

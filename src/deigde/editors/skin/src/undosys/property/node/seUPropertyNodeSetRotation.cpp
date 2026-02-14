@@ -46,7 +46,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Node set rotation");
+	SetShortInfo("@Skin.Undo.NodeSetRotation");
 	
 	pOldValue = node->GetRotation();
 	

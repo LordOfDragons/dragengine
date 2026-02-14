@@ -136,9 +136,9 @@ pWindowMain(windowMain)
 	igdeContainerFlow::Ref bottomLine(igdeContainerFlow::Ref::New(
 		env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst));
 	helper.ScrollBar(bottomLine, true, 0, 0, 1, 0, pSBHorizontal, cScrollView::Ref::New(*this));
-	helper.EditSpinInteger(bottomLine, "Select layer to edit", 0, 0, pSpinLayer, cSpinLayer::Ref::New(*this));
+	helper.EditSpinInteger(bottomLine, "@Skin.ViewConstructed.Layer.ToolTip", 0, 0, pSpinLayer, cSpinLayer::Ref::New(*this));
 	
-	helper.ComboBox(bottomLine, "Select zoom factor", pCBZoom, cComboZoom::Ref::New(*this));
+	helper.ComboBox(bottomLine, "@Skin.ViewConstructed.Zoom.ToolTip", pCBZoom, cComboZoom::Ref::New(*this));
 	pCBZoom->AddItem("800 %", nullptr, (void*)(intptr_t)800);
 	pCBZoom->AddItem("600 %", nullptr, (void*)(intptr_t)600);
 	pCBZoom->AddItem("400 %", nullptr, (void*)(intptr_t)400);

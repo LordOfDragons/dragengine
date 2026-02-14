@@ -44,7 +44,7 @@ pNewValue(newValue)
 	
 	pOldValue = node->GetMappedFor(type);
 	
-	SetShortInfo("Node set mapped");
+	SetShortInfo("@Skin.Undo.NodeSetMapped");
 }
 
 seUPropertyNodeSetMapped::~seUPropertyNodeSetMapped(){

@@ -293,7 +293,7 @@ public:
 		}
 		
 		if(pPanel.GetSkin()->GetTextures().HasNamed(value)){
-			igdeCommonDialogs::Error(pPanel, "Set Texture Name", "Texture name exists already");
+			igdeCommonDialogs::Error(pPanel, "@Skin.WPTexture.Dialog.SetTextureName.Title", "@Skin.WPTexture.Dialog.SetTextureName.Error");
 			textField->SetText(texture->GetName());
 			return;
 		}
@@ -466,7 +466,7 @@ class cActionPropertyVideoUseShared : public cBaseActionProperty{
 public:
 	typedef deTObjectReference<cActionPropertyVideoUseShared> Ref;
 	cActionPropertyVideoUseShared(seWPTexture &panel) : cBaseActionProperty(panel,
-		"Use shared time", nullptr, "Playback time is shared across instances"){}
+		"@Skin.WPTexture.Action.UseSharedTime", nullptr, "@Skin.WPTexture.Action.UseSharedTime.ToolTip"){}
 	
 	virtual igdeUndo::Ref OnActionProperty(seSkin*, seTexture* , seProperty *property){
 		return seUPropertyToggleVideoSharedTime::Ref::New(property);
@@ -555,7 +555,7 @@ class cActionConstructedChkTileX : public cBaseActionProperty{
 public:
 	typedef deTObjectReference<cActionConstructedChkTileX> Ref;
 	cActionConstructedChkTileX(seWPTexture &panel) : cBaseActionProperty(panel,
-		"X-Axis", nullptr, "Tile nodes along X axis"){}
+		"@Skin.WPTexture.Action.TileXAxis", nullptr, "@Skin.WPTexture.Action.TileXAxis.ToolTip"){}
 	
 	virtual igdeUndo::Ref OnActionProperty(seSkin*, seTexture* , seProperty *property){
 		return seUPropertyConstructedToggleTileX::Ref::New(property);
@@ -571,7 +571,7 @@ class cActionConstructedChkTileY : public cBaseActionProperty{
 public:
 	typedef deTObjectReference<cActionConstructedChkTileY> Ref;
 	cActionConstructedChkTileY(seWPTexture &panel) : cBaseActionProperty(panel,
-		"Y-Axis", nullptr, "Tile nodes along Y axis"){}
+		"@Skin.WPTexture.Action.TileYAxis", nullptr, "@Skin.WPTexture.Action.TileYAxis.ToolTip"){}
 	
 	virtual igdeUndo::Ref OnActionProperty(seSkin*, seTexture* , seProperty *property){
 		return seUPropertyConstructedToggleTileY::Ref::New(property);
@@ -632,51 +632,51 @@ pPreventUpdateMappedTarget(false)
 	
 	
 	// texture
-	helper.GroupBoxFlow(content, groupBox, "Texture:");
-	helper.ListBox(groupBox, 8, "Textures", pListTexture, cListTextures::Ref::New(*this));
+	helper.GroupBoxFlow(content, groupBox, "@Skin.WPTexture.GroupTexture");
+	helper.ListBox(groupBox, 8, "@Skin.WPTexture.Textures.Label", pListTexture, cListTextures::Ref::New(*this));
 	pListTexture->SetDefaultSorter();
 	
 	form = igdeContainerForm::Ref::New(env);
 	groupBox->AddChild(form);
-	helper.EditString(form, "Name:", "Name of texture", pEditTexName, cTextTextureName::Ref::New(*this));
+	helper.EditString(form, "@Skin.WPTexture.Name.Label", "@Skin.WPTexture.Name.ToolTip", pEditTexName, cTextTextureName::Ref::New(*this));
 	
 	
 	// preview
-	helper.GroupBox(content, groupBox, "Texture Preview:", true);
-	helper.EditPoint(groupBox, "Translation:", "Texture coordinates translation.",
+	helper.GroupBox(content, groupBox, "@Skin.WPTexture.GroupPreview", true);
+	helper.EditPoint(groupBox, "@Skin.WPTexture.Translation.Label", "@Skin.WPTexture.Translation.ToolTip",
 		pPreviewEditTCOffset, cEditPreviewEditTCOffset::Ref::New(*this));
-	helper.EditPoint(groupBox, "Scaling:", "Texture coordinates scaling.",
+	helper.EditPoint(groupBox, "@Skin.WPTexture.Scaling.Label", "@Skin.WPTexture.Scaling.ToolTip",
 		pPreviewEditTCScaling, cEditPreviewEditTCScale::Ref::New(*this));
-	helper.EditFloat(groupBox, "Rotation:", "Texture coordinates rotation.",
+	helper.EditFloat(groupBox, "@Skin.WPTexture.Rotation.Label", "@Skin.WPTexture.Rotation.ToolTip",
 		pPreviewEditTCRotation, cEditPreviewEditTCRotation::Ref::New(*this));
 	
 	
 	// property
-	helper.GroupBoxFlow(content, groupBox, "Property:");
-	helper.ListBox(groupBox, 8, "Property", pListProperty, cListProperties::Ref::New(*this));
+	helper.GroupBoxFlow(content, groupBox, "@Skin.WPTexture.GroupProperty");
+	helper.ListBox(groupBox, 8, "@Skin.WPTexture.Property.Label", pListProperty, cListProperties::Ref::New(*this));
 	pListProperty->SetDefaultSorter();
 	
 	form = igdeContainerForm::Ref::New(env);
 	groupBox->AddChild(form);
 	
-	helper.EditString(form, "Name:", "Name of property", pEditPropName, {});
+	helper.EditString(form, "@Skin.WPTexture.PropertyName.Label", "@Skin.WPTexture.PropertyName.ToolTip", pEditPropName, {});
 	pEditPropName->SetEditable(false);
 	
-	helper.EditString(form, "Renderable:", "Name of renderable to use or empty string to use none",
+	helper.EditString(form, "@Skin.WPTexture.Renderable.Label", "@Skin.WPTexture.Renderable.ToolTip",
 		pEditPropRenderable, cTextPropertyRenderable::Ref::New(*this));
 	
-	helper.EditString(form, "Bone:", "Name of bone to use or empty string. "
-		"Used by properties using vertex position instead of texture coordinates.",
+	helper.EditString(form, "@Skin.WPTexture.Bone.Label", "@Skin.WPTexture.Bone.ToolTip",
 		pEditPropBone, cTextPropertyBone::Ref::New(*this));
 	
-	helper.ComboBox(form, "Value Type:", "Type of value to use for the property",
+	helper.ComboBox(form, "@Skin.WPTexture.ValueType.Label", "@Skin.WPTexture.ValueType.ToolTip",
 		pCBPropertyType, cComboPropertyValueType::Ref::New(*this));
-	pCBPropertyType->AddItem("Value", nullptr, (void*)(intptr_t)seProperty::evtValue);
-	pCBPropertyType->AddItem("Color", nullptr, (void*)(intptr_t)seProperty::evtColor);
-	pCBPropertyType->AddItem("Image", nullptr, (void*)(intptr_t)seProperty::evtImage);
-	pCBPropertyType->AddItem("Video", nullptr, (void*)(intptr_t)seProperty::evtVideo);
-	pCBPropertyType->AddItem("Constructed", nullptr, (void*)(intptr_t)seProperty::evtConstructed);
-	pCBPropertyType->AddItem("Mapped", nullptr, (void*)(intptr_t)seProperty::evtMapped);
+	pCBPropertyType->SetAutoTranslateItems(true);
+	pCBPropertyType->AddItem("@Skin.WPTexture.ValueType.Value", nullptr, (void*)(intptr_t)seProperty::evtValue);
+	pCBPropertyType->AddItem("@Skin.WPTexture.ValueType.Color", nullptr, (void*)(intptr_t)seProperty::evtColor);
+	pCBPropertyType->AddItem("@Skin.WPTexture.ValueType.Image", nullptr, (void*)(intptr_t)seProperty::evtImage);
+	pCBPropertyType->AddItem("@Skin.WPTexture.ValueType.Video", nullptr, (void*)(intptr_t)seProperty::evtVideo);
+	pCBPropertyType->AddItem("@Skin.WPTexture.ValueType.Constructed", nullptr, (void*)(intptr_t)seProperty::evtConstructed);
+	pCBPropertyType->AddItem("@Skin.WPTexture.ValueType.Mapped", nullptr, (void*)(intptr_t)seProperty::evtMapped);
 	
 	
 	// property panel switcher
@@ -691,36 +691,36 @@ pPreventUpdateMappedTarget(false)
 	// static value
 	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	pSwitcher->AddChild(panel);
-	helper.GroupBox(panel, groupBox, "Value:");
-	helper.EditFloat(groupBox, "Value:", "Value to use", pEditPvtValue, cTextPropertyValue::Ref::New(*this));
+	helper.GroupBox(panel, groupBox, "@Skin.WPTexture.GroupValue");
+	helper.EditFloat(groupBox, "@Skin.WPTexture.Value.Label", "@Skin.WPTexture.Value.ToolTip", pEditPvtValue, cTextPropertyValue::Ref::New(*this));
 	
 	
 	// color value
 	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	pSwitcher->AddChild(panel);
-	helper.GroupBox(panel, groupBox, "Color:");
-	helper.ColorBox(groupBox, "Color:", "Color to use", pClrPvtColor, cColorPropertyColor::Ref::New(*this));
+	helper.GroupBox(panel, groupBox, "@Skin.WPTexture.GroupColor");
+	helper.ColorBox(groupBox, "@Skin.WPTexture.Color.Label", "@Skin.WPTexture.Color.ToolTip", pClrPvtColor, cColorPropertyColor::Ref::New(*this));
 	
 	
 	// image
 	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	pSwitcher->AddChild(panel);
-	helper.GroupBox(panel, groupBox, "Image:");
-	helper.EditPath(groupBox, "Path:", "Path to the image to use", igdeEnvironment::efpltImage,
+	helper.GroupBox(panel, groupBox, "@Skin.WPTexture.GroupImage");
+	helper.EditPath(groupBox, "@Skin.WPTexture.ImagePath.Label", "@Skin.WPTexture.ImagePath.ToolTip", igdeEnvironment::efpltImage,
 		pEditPvtImagePath, cPathPropertyImage::Ref::New(*this));
 	
-	helper.EditString(groupBox, "", "Image information", pLabPvtImageInfo, {});
+	helper.EditString(groupBox, "", "@Skin.WPTexture.ImageInfo.ToolTip", pLabPvtImageInfo, {});
 	pLabPvtImageInfo->SetEditable(false);
 	
 	
 	// video
 	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	pSwitcher->AddChild(panel);
-	helper.GroupBox(panel, groupBox, "Video:");
-	helper.EditPath(groupBox, "Path:", "Path to the video to use", igdeEnvironment::efpltVideo,
+	helper.GroupBox(panel, groupBox, "@Skin.WPTexture.GroupVideo");
+	helper.EditPath(groupBox, "@Skin.WPTexture.VideoPath.Label", "@Skin.WPTexture.VideoPath.ToolTip", igdeEnvironment::efpltVideo,
 		pEditPvtVideoPath, cPathPropertyVideo::Ref::New(*this));
 	
-	helper.EditString(groupBox, "", "Video information", pLabPvtVideoInfo, {});
+	helper.EditString(groupBox, "", "@Skin.WPTexture.VideoInfo.ToolTip", pLabPvtVideoInfo, {});
 	pLabPvtVideoInfo->SetEditable(false);
 	
 	helper.CheckBox(groupBox, pChkPvtVideoSharedTime, cActionPropertyVideoUseShared::Ref::New(*this));
@@ -729,35 +729,36 @@ pPreventUpdateMappedTarget(false)
 	// constructed
 	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	pSwitcher->AddChild(panel);
-	helper.GroupBox(panel, groupBox, "Constructed:");
-	helper.ColorBox(groupBox, "Color:", "Color to use",
+	helper.GroupBox(panel, groupBox, "@Skin.WPTexture.GroupConstructed");
+	helper.ColorBox(groupBox, "@Skin.WPTexture.ConstructedColor.Label", "@Skin.WPTexture.ConstructedColor.ToolTip",
 		pConstructedClrColor, cColorPropertyConstructed::Ref::New(*this));
-	helper.EditPoint3(groupBox, "Size:", "Size of constructed image",
+	helper.EditPoint3(groupBox, "@Skin.WPTexture.ConstructedSize.Label", "@Skin.WPTexture.ConstructedSize.ToolTip",
 		pConstructedEditSize, cEditPropertyConstructedSize::Ref::New(*this));
 	
-	helper.FormLine(groupBox, "Tile:", "Tile nodes", formLine);
+	helper.FormLine(groupBox, "@Skin.WPTexture.Tile.Label", "@Skin.WPTexture.Tile.ToolTip", formLine);
 	helper.CheckBox(formLine, pConstructedChkTileX, cActionConstructedChkTileX::Ref::New(*this));
 	helper.CheckBox(formLine, pConstructedChkTileY, cActionConstructedChkTileY::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "Bit Count:", "Bit count of constructed image",
+	helper.ComboBox(groupBox, "@Skin.WPTexture.BitCount.Label", "@Skin.WPTexture.BitCount.ToolTip",
 		pConstructedCBBitCount, cComboConstructedBitCount::Ref::New(*this));
-	pConstructedCBBitCount->AddItem("8-Bit", nullptr, (void*)(intptr_t)8);
-	pConstructedCBBitCount->AddItem("16-Bit", nullptr, (void*)(intptr_t)16);
-	pConstructedCBBitCount->AddItem("32-Bit", nullptr, (void*)(intptr_t)32);
+	pConstructedCBBitCount->SetAutoTranslateItems(true);
+	pConstructedCBBitCount->AddItem("@Skin.WPTexture.BitCount.8Bit", nullptr, (void*)(intptr_t)8);
+	pConstructedCBBitCount->AddItem("@Skin.WPTexture.BitCount.16Bit", nullptr, (void*)(intptr_t)16);
+	pConstructedCBBitCount->AddItem("@Skin.WPTexture.BitCount.32Bit", nullptr, (void*)(intptr_t)32);
 	
 	
 	// mapped
 	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	pSwitcher->AddChild(panel);
-	helper.GroupBoxFlow(panel, groupBox, "Mapped:");
+	helper.GroupBoxFlow(panel, groupBox, "@Skin.WPTexture.GroupMapped");
 	
 	form = igdeContainerForm::Ref::New(env);
 	groupBox->AddChild(form);
 	
-	helper.EditSpinInteger(form, "Component:", "Component to edit (0=red, 1=green, 2=blue, 3=alpha)",
+	helper.EditSpinInteger(form, "@Skin.WPTexture.Component.Label", "@Skin.WPTexture.Component.ToolTip",
 		0, 3, pSpinPvtMappedComponent, cSpinPropertyMappedComponent::Ref::New(*this));
 	
-	helper.ComboBox(form, "Target:", "Target mapped to use for this component",
+	helper.ComboBox(form, "@Skin.WPTexture.Target.Label", "@Skin.WPTexture.Target.ToolTip",
 		pCBPvtMappedTarget, cComboPropertyMappedTarget::Ref::New(*this, pPreventUpdateMappedTarget));
 	
 	pCBPvtMappedTarget->SetDefaultSorter();
@@ -952,24 +953,24 @@ void seWPTexture::UpdateProperty(){
 		
 		if(property->GetEngineImage()){
 			const deImage &image = *property->GetEngineImage();
-			const char *type = "?";
+			decString type("?");
 			decString text;
 			
 			if(image.GetComponentCount() == 1){
-				type = "Gray";
+				type = Translate("Skin.WPNode.ImageType.Gray").ToUTF8();
 				
 			}else if(image.GetComponentCount() == 2){
-				type = "Gray-Alpha";
+				type = Translate("Skin.WPNode.ImageType.GrayAlpha").ToUTF8();
 				
 			}else if(image.GetComponentCount() == 3){
-				type = "RGB";
+				type = Translate("Skin.WPNode.ImageType.RGB").ToUTF8();
 				
 			}else if(image.GetComponentCount() == 4){
-				type ="RGBA";
+				type = Translate("Skin.WPNode.ImageType.RGBA").ToUTF8();
 			}
 			
-			text.Format("%dx%dx%d, %s, %d-Bit", image.GetWidth(), image.GetHeight(),
-				image.GetDepth(), type, image.GetBitCount());
+			text.FormatSafe(Translate("Skin.WPNode.ImageInfo").ToUTF8(), image.GetWidth(),
+				image.GetHeight(), image.GetDepth(), type, image.GetBitCount());
 			pLabPvtImageInfo->SetText(text);
 			
 		}else{
@@ -979,28 +980,28 @@ void seWPTexture::UpdateProperty(){
 		pEditPvtVideoPath->SetPath(property->GetVideoPath());
 		if(property->GetEngineVideo()){
 			const deVideo &video = *property->GetEngineVideo();
-			const char *type = "?";
+			decString type("?");
 			decString text;
 			
 			switch(video.GetComponentCount()){
 			case 1:
-				type = "Grayscale";
+				type = Translate("Skin.WPTexture.VideoType.Grayscale").ToUTF8();
 				break;
 				
 			case 2:
-				type = "GrayscaleAlpha";
+				type = Translate("Skin.WPTexture.VideoType.GrayscaleAlpha").ToUTF8();
 				break;
 				
 			case 3:
-				type = "RGB";
+				type = Translate("Skin.WPNode.ImageType.RGB").ToUTF8();
 				break;
 				
 			case 4:
-				type = "RGBA";
+				type = Translate("Skin.WPNode.ImageType.RGBA").ToUTF8();
 				break;
 			}
 			
-			text.Format("%dx%d %s, FPS %.1f, Frames %d, Playtime %.1fs", video.GetWidth(),
+			text.FormatSafe(Translate("Skin.WPNode.VideoInfo").ToUTF8(), video.GetWidth(),
 				video.GetHeight(), type, video.GetFrameRate(), video.GetFrameCount(),
 				video.GetPlayTime());
 			pLabPvtVideoInfo->SetText(text);

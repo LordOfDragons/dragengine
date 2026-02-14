@@ -42,7 +42,7 @@ seUPropertySetValueType::seUPropertySetValueType(seProperty *property, sePropert
 	
 	pProperty = nullptr;
 	
-	SetShortInfo("Property Set Value Type");
+	SetShortInfo("@Skin.Undo.PropertySetValueType");
 	
 	pOldType = property->GetValueType();
 	pNewType = newType;

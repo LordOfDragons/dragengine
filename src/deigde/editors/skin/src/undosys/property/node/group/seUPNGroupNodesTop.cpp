@@ -42,7 +42,7 @@ seUPNGroupNodesTop::seUPNGroupNodesTop(sePropertyNodeGroup *node,
 const sePropertyNode::List &children) :
 seUPNGroupMoveNodes(node, children)
 {
-	SetShortInfo("Move nodes to top");
+	SetShortInfo("@Skin.Undo.MoveNodesToTop");
 	
 	if(pChildren.IsNotEmpty() && pChildren.Last()->index == node->GetNodes().GetCount() - 1){
 		pChildren.RemoveAll(); // has no effect

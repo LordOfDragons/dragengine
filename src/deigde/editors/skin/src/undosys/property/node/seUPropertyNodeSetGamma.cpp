@@ -46,7 +46,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Node set gamma");
+	SetShortInfo("@Skin.Undo.NodeSetGamma");
 	
 	pOldValue = node->GetGamma();
 	

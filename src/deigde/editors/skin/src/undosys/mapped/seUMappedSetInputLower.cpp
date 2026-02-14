@@ -41,7 +41,7 @@ pNewInputLower(newInputLower)
 {
 	DEASSERT_NOTNULL(pMapped)
 	
-	SetShortInfo("Set Mapped Input Lower");
+	SetShortInfo("@Skin.Undo.SetMappedInputLower");
 }
 
 seUMappedSetInputLower::~seUMappedSetInputLower(){

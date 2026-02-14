@@ -49,7 +49,7 @@ seUPNGroupNodes::seUPNGroupNodes(const sePropertyNode::List &nodes){
 		DEASSERT_TRUE(node.GetParent() == parentGroup)
 	});
 	
-	SetShortInfo("Group nodes");
+	SetShortInfo("@Skin.Undo.GroupNodes");
 	
 	decVector2 minBounds;
 	decVector2 maxBounds;

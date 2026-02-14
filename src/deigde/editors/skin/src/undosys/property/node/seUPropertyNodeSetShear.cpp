@@ -46,7 +46,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Node set shear");
+	SetShortInfo("@Skin.Undo.NodeSetShear");
 	
 	pOldValue = node->GetShearing();
 	

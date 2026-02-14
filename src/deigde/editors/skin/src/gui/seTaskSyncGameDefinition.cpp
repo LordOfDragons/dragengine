@@ -48,7 +48,7 @@
 seTaskSyncGameDefinition::seTaskSyncGameDefinition(seWindowMain &windowMain) :
 pWindowMain(windowMain)
 {
-	SetMessage("Skin Editor: Synchronize Game Definition");
+	SetMessage(windowMain.Translate("Skin.TaskSyncGameDefinition.Message").ToUTF8());
 }
 
 seTaskSyncGameDefinition::~seTaskSyncGameDefinition(){

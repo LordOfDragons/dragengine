@@ -41,7 +41,7 @@ pSkin(skin)
 	DEASSERT_NOTNULL(pSkin)
 	DEASSERT_NOTNULL(pMapped)
 	
-	SetShortInfo("Add Mapped");
+	SetShortInfo("@Skin.Undo.AddMapped");
 }
 
 seUMappedAdd::~seUMappedAdd(){

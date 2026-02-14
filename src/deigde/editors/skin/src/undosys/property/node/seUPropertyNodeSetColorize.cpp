@@ -47,7 +47,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Node set colorize");
+	SetShortInfo("@Skin.Undo.NodeSetColorize");
 	
 	pOldValue = node->GetColorize();
 	

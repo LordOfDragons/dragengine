@@ -48,10 +48,10 @@ seUPropertyAdd::seUPropertyAdd(seTexture *texture, const seProperty::List &prope
 	pTexture = nullptr;
 	
 	if(properties.GetCount() == 1){
-		SetShortInfo("Add Property");
+		SetShortInfo("@Skin.Undo.AddProperty");
 		
 	}else{
-		SetShortInfo("Add Properties");
+		SetShortInfo("@Skin.Undo.AddProperties");
 	}
 	
 	pProperties = properties;

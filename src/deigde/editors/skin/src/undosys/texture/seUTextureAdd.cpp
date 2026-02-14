@@ -46,7 +46,7 @@ seUTextureAdd::seUTextureAdd(seSkin *skin, seTexture *texture){
 	pSkin = nullptr;
 	pTexture = nullptr;
 	
-	SetShortInfo("Add Texture");
+	SetShortInfo("@Skin.Undo.AddTexture");
 	
 	pTexture = texture;
 	pSkin = skin;

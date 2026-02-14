@@ -48,7 +48,7 @@ seUTextureImport::seUTextureImport(seTexture *texture, const seTexture *importTe
 	
 	pTexture = nullptr;
 	
-	SetShortInfo("Texture import");
+	SetShortInfo("@Skin.Undo.TextureImport");
 	
 	pOldProperties = texture->GetProperties();
 	pNewProperties = importTexture->GetProperties();

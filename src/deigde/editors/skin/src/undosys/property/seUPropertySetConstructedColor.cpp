@@ -48,7 +48,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Property constructed set color");
+	SetShortInfo("@Skin.Undo.PropertyConstructedSetColor");
 	
 	pOldValue = property->GetNodeColor();
 	

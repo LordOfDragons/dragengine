@@ -137,10 +137,10 @@ pLoadSaveSystem(nullptr)
 	splitted->AddChild(pSwitcherViews, igdeContainerSplitted::eaCenter);
 	
 	pViewSkin = seViewSkin::Ref::New(*this);
-	pSwitcherViews->AddChild(pViewSkin, "Skin Preview");
+	pSwitcherViews->AddChild(pViewSkin, "@Skin.WindowMain.ViewSkin");
 	
 	pViewConstructed = seViewConstructed::Ref::New(*this);
-	pSwitcherViews->AddChild(pViewConstructed, "Constructed Channel");
+	pSwitcherViews->AddChild(pViewConstructed, "@Skin.WindowMain.ViewConstructed");
 	
 	CreateNewSkin();
 	
@@ -357,8 +357,8 @@ void seWindowMain::GetChangedDocuments(decStringList &list){
 
 void seWindowMain::LoadDocument(const char *filename){
 	if(pSkin && pSkin->GetChanged()){
-		if(igdeCommonDialogs::Question(*this, igdeCommonDialogs::ebsYesNo, "Open Skin",
-		"Open skin discards changes. Is this ok?") == igdeCommonDialogs::ebNo){
+		if(igdeCommonDialogs::Question(*this, igdeCommonDialogs::ebsYesNo, "@Skin.WindowMain.OpenSkin.Title",
+		"@Skin.WindowMain.OpenSkin.Message") == igdeCommonDialogs::ebNo){
 			return;
 		}
 	}
@@ -452,14 +452,14 @@ private:
 	seWindowMain &pWindow;
 public:
 	cActionFileNew(seWindowMain &window) :
-	igdeAction("New", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiNew),
-		"Create new skin", deInputEvent::ekcN, igdeHotKey(deInputEvent::esmControl, deInputEvent::ekcN)),
+	igdeAction("@Skin.WindowMain.Action.FileNew", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiNew),
+		"@Skin.WindowMain.Action.FileNew.ToolTip", deInputEvent::ekcN, igdeHotKey(deInputEvent::esmControl, deInputEvent::ekcN)),
 	pWindow(window){}
 	
 	void OnAction() override{
 		if(!pWindow.GetSkin() || !pWindow.GetSkin()->GetChanged()
-		|| igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "New Skin",
-		"Creating a new skin discarding the current one is that ok?") == igdeCommonDialogs::ebYes){
+		|| igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "@Skin.WindowMain.Dialog.NewSkin.Title",
+		"@Skin.WindowMain.Dialog.NewSkin.Message") == igdeCommonDialogs::ebYes){
 			pWindow.CreateNewSkin();
 		}
 	}
@@ -473,14 +473,14 @@ private:
 	seWindowMain &pWindow;
 public:
 	cActionFileNewFromModel(seWindowMain &window) :
-	igdeAction("New from Model", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiNew),
-		"Create new skin for model file", deInputEvent::ekcM),
+	igdeAction("@Skin.WindowMain.Action.FileNewFromModel", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiNew),
+		"@Skin.WindowMain.Action.FileNewFromModel.ToolTip", deInputEvent::ekcM),
 	pWindow(window){}
 	
 	void OnAction() override{
 		if(!pWindow.GetSkin() || !pWindow.GetSkin()->GetChanged()
-		|| igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "New Skin",
-		"Creating a new skin discarding the current one is that ok?") == igdeCommonDialogs::ebYes){
+		|| igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "@Skin.WindowMain.Dialog.NewSkin.Title",
+		"@Skin.WindowMain.Dialog.NewSkin.Message") == igdeCommonDialogs::ebYes){
 			CreateSkinFromModel();
 		}
 	}
@@ -492,7 +492,7 @@ public:
 		// query for the model
 		decString filename(pWindow.GetSkin() ? decPath::AbsolutePathUnix(
 			pWindow.GetSkin()->GetModelPath(), pWindow.GetSkin()->GetDirectoryPath()).GetPathUnix() : decString());
-		if(!igdeCommonDialogs::GetFileOpen(pWindow, "New From Model", *environment.GetFileSystemGame(),
+		if(!igdeCommonDialogs::GetFileOpen(pWindow, "@Skin.WindowMain.NewFromModel.Title", *environment.GetFileSystemGame(),
 			*environment.GetOpenFilePatternList( igdeEnvironment::efpltModel ), filename ) ){
 				return;
 		}
@@ -521,22 +521,19 @@ public:
 			const seTexture::Ref texture(seTexture::Ref::New(engine, model.GetTextureAt(i)->GetName()));
 			
 			// create color property with a light gray color
-			property = seProperty::Ref::New(engine);
-			property->SetName("color");
+			property = seProperty::Ref::New(engine, "color");
 			property->SetValueType(seProperty::evtColor);
 			property->SetColor(decColor(0.8f, 0.8f, 0.8f));
 			texture->AddProperty(property);
 			
 			// create reflectivity property with plastic reflectivity
-			property = seProperty::Ref::New(engine);
-			property->SetName("reflectivity");
+			property = seProperty::Ref::New(engine, "reflectivity");
 			property->SetValueType(seProperty::evtValue);
 			property->SetValue(0.23f);
 			texture->AddProperty(property);
 			
 			// create roughness property with moderate roughness
-			property = seProperty::Ref::New(engine);
-			property->SetName("roughness");
+			property = seProperty::Ref::New(engine, "roughness");
 			property->SetValueType(seProperty::evtValue);
 			property->SetValue(0.35f);
 			texture->AddProperty(property);
@@ -557,21 +554,21 @@ public:
 private:
 	seWindowMain &pWindow;
 public:
-	cActionFileOpen(seWindowMain &window) : igdeAction("Open...",
-		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen), "Open skin from file",
+	cActionFileOpen(seWindowMain &window) : igdeAction("@Skin.WindowMain.Action.FileOpen",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen), "@Skin.WindowMain.Action.FileOpen.ToolTip",
 		deInputEvent::ekcO, igdeHotKey(deInputEvent::esmControl, deInputEvent::ekcO)), pWindow(window){}
 	
 	void OnAction() override{
 		if(pWindow.GetSkin() && pWindow.GetSkin()->GetChanged()){
-			if(igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "Open Skin",
-			"Open skin discards changes. Is this ok?") == igdeCommonDialogs::ebNo){
+			if(igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "@Skin.WindowMain.OpenSkin.Title",
+			"@Skin.WindowMain.OpenSkin.Message") == igdeCommonDialogs::ebNo){
 				return;
 			}
 		}
 		
 		decString filename(pWindow.GetSkin() ? pWindow.GetSkin()->GetFilePath()
 			: pWindow.GetGameProject()->GetPathData());
-		if(igdeCommonDialogs::GetFileOpen(pWindow, "Open Skin",
+		if(igdeCommonDialogs::GetFileOpen(pWindow, "@Skin.WindowMain.FileOpen.Title",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetEnvironment().GetOpenFilePatternList( igdeEnvironment::efpltSkin ), filename ) ){
 			pWindow.LoadSkin(filename);
@@ -583,12 +580,12 @@ class cActionFileSaveAs : public cActionBase{
 public:
 	typedef deTObjectReference<cActionFileSaveAs> Ref;
 	cActionFileSaveAs(seWindowMain &window) : cActionBase(window,
-		"Save As...", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSaveAs),
-		"Saves skin under a differen file", deInputEvent::ekcA){}
+		"@Skin.WindowMain.Action.FileSaveAs", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSaveAs),
+		"@Skin.WindowMain.Action.FileSaveAs.ToolTip", deInputEvent::ekcA){}
 	
 	virtual igdeUndo::Ref  OnAction(seSkin *skin){
 		decString filename(skin->GetFilePath());
-		if(igdeCommonDialogs::GetFileSave(pWindow, "Save Skin",
+		if(igdeCommonDialogs::GetFileSave(pWindow, "@Skin.WindowMain.FileSave.Title",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetEnvironment().GetSaveFilePatternList( igdeEnvironment::efpltSkin ), filename ) ){
 			pWindow.SaveSkin(filename);
@@ -601,9 +598,9 @@ class cActionFileSave : public cActionFileSaveAs{
 public:
 	typedef deTObjectReference<cActionFileSave> Ref;
 	cActionFileSave(seWindowMain &window) : cActionFileSaveAs(window){
-		SetText("Save");
+		SetText("@Skin.WindowMain.Action.FileSave");
 		SetIcon(window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave));
-		SetDescription("Saves skin to file");
+		SetDescription("@Skin.WindowMain.Action.FileSave.ToolTip");
 		SetHotKey(igdeHotKey(deInputEvent::esmControl, deInputEvent::ekcS));
 		SetMnemonic(deInputEvent::ekcS);
 	}
@@ -630,8 +627,8 @@ class cActionEditCut : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditCut> Ref;
 	cActionEditCut(seWindowMain &window) : cActionBase(window,
-		"Cut", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
-		"Cut selected objects", deInputEvent::esmControl,
+		"@Igde.Menu.Cut", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
+		"@Igde.Menu.Cut.ToolTip", deInputEvent::esmControl,
 		deInputEvent::ekcX, deInputEvent::ekcT){}
 	
 	igdeUndo::Ref OnAction(seSkin*) override{
@@ -643,8 +640,8 @@ class cActionEditCopy : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditCopy> Ref;
 	cActionEditCopy(seWindowMain &window) : cActionBase(window,
-		"Copy", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-		"Copies selected objects", deInputEvent::esmControl,
+		"@Igde.Menu.Copy", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		"@Igde.Menu.Copy.ToolTip", deInputEvent::esmControl,
 		deInputEvent::ekcC, deInputEvent::ekcC){}
 	
 	igdeUndo::Ref OnAction(seSkin*) override{
@@ -656,8 +653,8 @@ class cActionEditPaste : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditPaste> Ref;
 	cActionEditPaste(seWindowMain &window) : cActionBase(window,
-		"Paste", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
-		"Paste objects", deInputEvent::esmControl,
+		"@Igde.Menu.Paste", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+		"@Igde.Menu.Paste.ToolTip", deInputEvent::esmControl,
 		deInputEvent::ekcV, deInputEvent::ekcP){}
 	
 	igdeUndo::Ref OnAction(seSkin*) override{
@@ -697,14 +694,14 @@ class cActionMappedAdd : public cActionBase{
 public:
 	typedef deTObjectReference<cActionMappedAdd> Ref;
 	cActionMappedAdd(seWindowMain &window) : cActionBase(window,
-		"Add...", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-		"Add mapped", deInputEvent::ekcA){}
+		"@Skin.WindowMain.Action.MappedAdd", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"@Skin.WindowMain.Action.MappedAdd.ToolTip", deInputEvent::ekcA){}
 	
 	igdeUndo::Ref OnAction(seSkin *skin) override{
-		decString name("Mapped");
-		while(igdeCommonDialogs::GetString(pWindow, "Add Mapped", "Name:", name)){
+		decString name(pWindow.Translate("Skin.WindowMain.DefaultMappedName").ToUTF8());
+		while(igdeCommonDialogs::GetString(pWindow, "@Skin.WindowMain.AddMapped.Title", "@Skin.WindowMain.AddMapped.Name", name)){
 			if(skin->GetMapped().HasNamed(name)){
-				igdeCommonDialogs::Error(pWindow, "Add Mapped", "A mapped with this name exists already.");
+				igdeCommonDialogs::Error(pWindow, "@Skin.WindowMain.AddMapped.Title", "@Skin.WindowMain.AddMapped.Exists");
 				
 			}else{
 				return seUMappedAdd::Ref::New(skin, seMapped::Ref::New(name));
@@ -719,15 +716,15 @@ class cActionMappedRemove : public cActionBaseMapped{
 public:
 	typedef deTObjectReference<cActionMappedRemove> Ref;
 	cActionMappedRemove(seWindowMain &window) : cActionBaseMapped(window,
-		"Remove", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-		"Remove mapped", deInputEvent::ekcR){}
+		"@Skin.WindowMain.Action.MappedRemove", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@Skin.WindowMain.Action.MappedRemove.ToolTip", deInputEvent::ekcR){}
 	
 	virtual igdeUndo::Ref OnActionMapped(seSkin*, seMapped *mapped){
 		seUMappedRemove::Ref undo(seUMappedRemove::Ref::New(mapped));
 		
 		if(undo->GetDependencyCount() > 0 && igdeCommonDialogs::QuestionFormat(pWindow,
-		igdeCommonDialogs::ebsYesNo, "Remove Mapped", "Mapped is used by {0} dependencies. "
-		"Removing the mapped will also unset it from all dependencies.", undo->GetDependencyCount())
+		igdeCommonDialogs::ebsYesNo, "@Skin.WindowMain.RemoveMapped.Title", "@Skin.WindowMain.RemoveMapped.Message",
+		undo->GetDependencyCount())
 		== igdeCommonDialogs::ebNo){
 			return {};
 		}
@@ -768,8 +765,8 @@ class cActionTextureAdd : public cActionBase{
 public:
 	typedef deTObjectReference<cActionTextureAdd> Ref;
 	cActionTextureAdd(seWindowMain &window) : cActionBase(window,
-		"Add...", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-		"Add texture", deInputEvent::ekcA){}
+		"@Skin.WindowMain.Action.TextureAdd", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"@Skin.WindowMain.Action.TextureAdd.ToolTip", deInputEvent::ekcA){}
 	
 	igdeUndo::Ref OnAction(seSkin *skin) override{
 		seDialogAddTexture::Ref dialog(seDialogAddTexture::Ref::New(pWindow));
@@ -779,7 +776,7 @@ public:
 		
 		const decString name(dialog->GetTextureName());
 		if(skin->GetTextures().HasNamed(name)){
-			igdeCommonDialogs::Error(pWindow, "Add Texture", "A texture with this name exists already.");
+			igdeCommonDialogs::Error(pWindow, "@Skin.WindowMain.AddTexture.Title", "@Skin.WindowMain.AddTexture.Exists");
 			return {};
 		}
 		
@@ -791,8 +788,8 @@ class cActionTextureRemove : public cActionBaseTexture{
 public:
 	typedef deTObjectReference<cActionTextureRemove> Ref;
 	cActionTextureRemove(seWindowMain &window) : cActionBaseTexture(window,
-		"Remove", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-		"Remove texture", deInputEvent::ekcR){}
+		"@Skin.WindowMain.Action.TextureRemove", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@Skin.WindowMain.Action.TextureRemove.ToolTip", deInputEvent::ekcR){}
 	
 	virtual igdeUndo::Ref OnActionTexture(seSkin*, seTexture *texture){
 		return seUTextureRemove::Ref::New(texture);
@@ -817,7 +814,7 @@ public:
 		
 		// if there is no texture fail
 		if(importTextures.IsEmpty()){
-			igdeCommonDialogs::Information(pWindow, "Import skin texture", "The skin has no textures");
+			igdeCommonDialogs::Information(pWindow, "@Skin.WindowMain.ImportTexture.Title", "@Skin.WindowMain.ImportTexture.NoTextures");
 			return {};
 		}
 		
@@ -835,8 +832,8 @@ public:
 			names.SortAscending();
 			
 			int selection = 0;
-			if(!igdeCommonDialogs::SelectString(pWindow, "Import skin texture",
-			"Select texture to use", names, selection)){
+			if(!igdeCommonDialogs::SelectString(pWindow, "@Skin.WindowMain.ImportTexture.Title",
+			"@Skin.WindowMain.ImportTexture.Select", names, selection)){
 				return {};
 			}
 			
@@ -905,8 +902,8 @@ class cActionTextureImportFromGDef : public cActionTextureImport{
 public:
 	typedef deTObjectReference<cActionTextureImportFromGDef> Ref;
 	cActionTextureImportFromGDef(seWindowMain &window) : cActionTextureImport(window,
-		"Import Texture from Game Definition", nullptr,
-		"Import Texture from a game definition skin", deInputEvent::ekcI){}
+		"@Skin.WindowMain.Action.TextureImportFromGDef", nullptr,
+		"@Skin.WindowMain.Action.TextureImportFromGDef.ToolTip", deInputEvent::ekcI){}
 	
 	virtual igdeUndo::Ref OnActionTexture(seSkin *skin, seTexture *texture){
 		decString importSkin(pWindow.importSkinLastGD);
@@ -926,8 +923,8 @@ class cActionTextureImportFromFile : public cActionTextureImport{
 public:
 	typedef deTObjectReference<cActionTextureImportFromFile> Ref;
 	cActionTextureImportFromFile(seWindowMain &window) : cActionTextureImport(window,
-		"Import Texture from File", nullptr,
-		"Import Texture from a skin file into the active texture", deInputEvent::ekcM){}
+		"@Skin.WindowMain.Action.TextureImportFromFile", nullptr,
+		"@Skin.WindowMain.Action.TextureImportFromFile.ToolTip", deInputEvent::ekcM){}
 	
 	virtual igdeUndo::Ref OnActionTexture(seSkin *skin, seTexture *texture){
 		igdeEnvironment &env = pWindow.GetEnvironment();
@@ -935,7 +932,7 @@ public:
 		if(filename.IsEmpty()){
 			filename = pWindow.GetGameDefinition()->GetSkinManager()->GetDefaultSkinPath();
 		}
-		const igdeUndo::Ref undo(igdeCommonDialogs::GetFileOpen(pWindow, "Import Skin Texture",
+		const igdeUndo::Ref undo(igdeCommonDialogs::GetFileOpen(pWindow, "@Skin.WindowMain.ImportSkinTexture.Title",
 			*env.GetFileSystemGame(), *env.GetOpenFilePatternList( igdeEnvironment::efpltSkin ),
 			filename) ? ImportTexture(skin, texture, filename) : igdeUndo::Ref());
 		if(undo){
@@ -977,8 +974,8 @@ class cActionPropertyAdd : public cActionBaseTexture{
 public:
 	typedef deTObjectReference<cActionPropertyAdd> Ref;
 	cActionPropertyAdd(seWindowMain &window) : cActionBaseTexture(window,
-		"Add...", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-		"Add property", deInputEvent::ekcA){}
+		"@Skin.WindowMain.Action.PropertyAdd", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"@Skin.WindowMain.Action.PropertyAdd.ToolTip", deInputEvent::ekcA){}
 	
 	virtual igdeUndo::Ref OnActionTexture(seSkin*, seTexture *texture){
 		seDialogAddProperty::Ref dialog(seDialogAddProperty::Ref::New(pWindow));
@@ -1018,8 +1015,8 @@ class cActionPropertyRemove : public cActionBaseTextureProperty{
 public:
 	typedef deTObjectReference<cActionPropertyRemove> Ref;
 	cActionPropertyRemove(seWindowMain &window) : cActionBaseTextureProperty(window,
-		"Remove", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-		"Remove property", deInputEvent::ekcR){}
+		"@Skin.WindowMain.Action.PropertyRemove", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@Skin.WindowMain.Action.PropertyRemove.ToolTip", deInputEvent::ekcR){}
 	
 	virtual igdeUndo::Ref OnActionProperty(seSkin*, seTexture*, seProperty *property){
 		return seUPropertyRemove::Ref::New(property);
@@ -1134,19 +1131,19 @@ void seWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade = igdeMenuCascade::Ref::New(env, "Skin", deInputEvent::ekcS);
+	cascade = igdeMenuCascade::Ref::New(env, "@Skin.WindowMain.Menu.Skin", deInputEvent::ekcS);
 	pCreateMenuSkin(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade = igdeMenuCascade::Ref::New(env, "Edit", deInputEvent::ekcE);
+	cascade = igdeMenuCascade::Ref::New(env, "@Igde.Menu.Edit", deInputEvent::ekcE);
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade = igdeMenuCascade::Ref::New(env, "Mapped", deInputEvent::ekcM);
+	cascade = igdeMenuCascade::Ref::New(env, "@Skin.WindowMain.Menu.Mapped", deInputEvent::ekcM);
 	pCreateMenuMapped(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade = igdeMenuCascade::Ref::New(env, "Texture", deInputEvent::ekcT);
+	cascade = igdeMenuCascade::Ref::New(env, "@Skin.WindowMain.Menu.Texture", deInputEvent::ekcT);
 	pCreateMenuTexture(cascade);
 	AddSharedMenu(cascade);
 }

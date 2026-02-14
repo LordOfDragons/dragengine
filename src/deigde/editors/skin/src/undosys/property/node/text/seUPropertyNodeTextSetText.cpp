@@ -47,7 +47,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Node text set text");
+	SetShortInfo("@Skin.Undo.NodeTextSetText");
 	
 	pOldValue = node->GetText();
 	

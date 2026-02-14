@@ -97,7 +97,7 @@ public:
 ////////////////////////////
 
 seDialogAddTexture::seDialogAddTexture(seWindowMain &windowMain) :
-igdeDialog(windowMain.GetEnvironment(), "Add Texture"),
+igdeDialog(windowMain.GetEnvironment(), "@Skin.DialogAddTexture.Title"),
 pWindowMain(windowMain)
 {
 	igdeEnvironment &env = GetEnvironment();
@@ -105,24 +105,23 @@ pWindowMain(windowMain)
 	igdeContainer::Ref content, formLine;
 	
 	
-	igdeLabel::Ref header(igdeLabel::Ref::New(
-		env, "Enter texture name or choose from model textures."));
+	igdeLabel::Ref header(igdeLabel::Ref::New(env, "@Skin.DialogAddTexture.Header"));
 	
 	
 	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY, igdeContainerFlow::esFirst, 5);
 	
-	helper.ListBox(content, 5, "Textures names in model", pListModelTextureNames,
+	helper.ListBox(content, 5, "@Skin.DialogAddTexture.TextureNames", pListModelTextureNames,
 		cListTextureNames::Ref::New(*this));
 	pListModelTextureNames->SetDefaultSorter();
 	
 	formLine = igdeContainerForm::Ref::New(env);
-	helper.EditString(formLine, "Name:", "Name of texture to add", 25,
+	helper.EditString(formLine, "@Skin.DialogAddTexture.Name.Label", "@Skin.DialogAddTexture.Name.ToolTip", 25,
 		pEditTextureName, cTextTextureName::Ref::New(*this));
 	content->AddChild(formLine);
 	
 	
 	igdeContainer::Ref buttonBar;
-	CreateButtonBar(buttonBar, "Create Texture", "Cancel");
+	CreateButtonBar(buttonBar, "@Skin.DialogAddTexture.Button.Create", "@Igde.Cancel");
 	
 	
 	AddContent(content, header, buttonBar);
@@ -130,7 +129,7 @@ pWindowMain(windowMain)
 	
 	pUpdateModelTextureList();
 	
-	pEditTextureName->SetText("Texture");
+	pEditTextureName->SetText(Translate("Skin.DialogAddTexture.DefaultTextureName").ToUTF8());
 	pEditTextureName->Focus();
 }
 

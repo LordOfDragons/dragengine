@@ -44,7 +44,7 @@ seUTextureSetName::seUTextureSetName(seTexture *texture, const char *newName){
 	
 	pTexture = nullptr;
 	
-	SetShortInfo("Set Texture Name");
+	SetShortInfo("@Skin.Undo.SetTextureName");
 	
 	pOldName = texture->GetName();
 	pNewName = newName;

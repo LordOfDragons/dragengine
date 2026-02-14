@@ -219,8 +219,8 @@ public:
 private:
 	seWPDynamicSkin &pPanel;
 public:
-	cActionAddRenderable(seWPDynamicSkin &panel) : igdeAction("Add...",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add Renderable"),
+	cActionAddRenderable(seWPDynamicSkin &panel) : igdeAction("@Skin.WPDynamicSkin.Action.AddRenderable",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@Skin.WPDynamicSkin.Action.AddRenderable.ToolTip"),
 		pPanel(panel){}
 	
 	void OnAction() override{
@@ -228,14 +228,14 @@ public:
 			return;
 		}
 		
-		decString name("Renderable");
-		if(!igdeCommonDialogs::GetString(pPanel, "Add Renderable", "Name:", name)){
+		decString name(pPanel.Translate("Skin.WPDynamicSkin.DefaultRenderableName").ToUTF8());
+		if(!igdeCommonDialogs::GetString(pPanel, "@Skin.WPDynamicSkin.Dialog.AddRenderable.Title", "@Skin.WPDynamicSkin.Dialog.AddRenderable.Name", name)){
 			return;
 		}
 		
 		seDynamicSkin &dynamicSkin = pPanel.GetSkin()->GetDynamicSkin();
 		if(dynamicSkin.GetRenderables().HasNamed(name)){
-			igdeCommonDialogs::Error(pPanel, "Add Renderable", "A renderable with this name exists already.");
+			igdeCommonDialogs::Error(pPanel, "@Skin.WPDynamicSkin.Dialog.AddRenderable.Title", "@Skin.WPDynamicSkin.Dialog.AddRenderable.Error");
 			return;
 		}
 		
@@ -254,8 +254,8 @@ public:
 	typedef deTObjectReference<cActionRemoveRenderable> Ref;
 	
 public:
-	cActionRemoveRenderable(seWPDynamicSkin &panel) : cBaseAction(panel, "Remove",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove renderable"){}
+	cActionRemoveRenderable(seWPDynamicSkin &panel) : cBaseAction(panel, "@Skin.WPDynamicSkin.Action.RemoveRenderable",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@Skin.WPDynamicSkin.Action.RemoveRenderable.ToolTip"){}
 	
 	void OnAction(seSkin *skin, seDynamicSkinRenderable *renderable) override{
 		skin->GetDynamicSkin().RemoveRenderable(renderable);
@@ -293,7 +293,7 @@ public:
 		}
 		
 		if(skin->GetDynamicSkin().GetRenderables().HasNamed(textField.GetText())){
-			igdeCommonDialogs::Error(pPanel, "Rename Renderable", "A renderable with this name exists already.");
+			igdeCommonDialogs::Error(pPanel, "@Skin.WPDynamicSkin.Dialog.RenameRenderable.Title", "@Skin.WPDynamicSkin.Dialog.RenameRenderable.Error");
 			textField.SetText(renderable->GetName());
 			
 		}else{
@@ -452,22 +452,23 @@ pWindowProperties(windowProperties)
 	
 	
 	// renderable
-	helper.GroupBoxFlow(content, groupBox, "Renderable:");
+	helper.GroupBoxFlow(content, groupBox, "@Skin.WPDynamicSkin.GroupRenderable");
 	
-	helper.ListBox(groupBox, 6, "Select renderable to edit", pListRenderable, cListRenderable::Ref::New(*this));
+	helper.ListBox(groupBox, 6, "@Skin.WPDynamicSkin.Renderable.ToolTip", pListRenderable, cListRenderable::Ref::New(*this));
 	pListRenderable->SetDefaultSorter();
 	
 	form = igdeContainerForm::Ref::New(env);
 	groupBox->AddChild(form);
-	helper.EditString(form, "Name:", "Unique name of the renderable", pEditName, cTextRenderableName::Ref::New(*this));
+	helper.EditString(form, "@Skin.WPDynamicSkin.Name.Label", "@Skin.WPDynamicSkin.Name.ToolTip", pEditName, cTextRenderableName::Ref::New(*this));
 	
-	helper.ComboBox(form, "Type:", "Type of renderable", pCBRenderableType, cComboRenderableType::Ref::New(*this));
-	pCBRenderableType->AddItem("Value", nullptr, (void*)(intptr_t)seDynamicSkinRenderable::ertValue);
-	pCBRenderableType->AddItem("Color", nullptr, (void*)(intptr_t)seDynamicSkinRenderable::ertColor);
-	pCBRenderableType->AddItem("Image", nullptr, (void*)(intptr_t)seDynamicSkinRenderable::ertImage);
-	pCBRenderableType->AddItem("Video Frame", nullptr, (void*)(intptr_t)seDynamicSkinRenderable::ertVideoFrame);
-	pCBRenderableType->AddItem("Canvas", nullptr, (void*)(intptr_t)seDynamicSkinRenderable::ertCanvas);
-	pCBRenderableType->AddItem("Camera", nullptr, (void*)(intptr_t)seDynamicSkinRenderable::ertCamera);
+	helper.ComboBox(form, "@Skin.WPDynamicSkin.Type.Label", "@Skin.WPDynamicSkin.Type.ToolTip", pCBRenderableType, cComboRenderableType::Ref::New(*this));
+	pCBRenderableType->SetAutoTranslateItems(true);
+	pCBRenderableType->AddItem("@Skin.WPDynamicSkin.Type.Value", nullptr, (void*)(intptr_t)seDynamicSkinRenderable::ertValue);
+	pCBRenderableType->AddItem("@Skin.WPDynamicSkin.Type.Color", nullptr, (void*)(intptr_t)seDynamicSkinRenderable::ertColor);
+	pCBRenderableType->AddItem("@Skin.WPDynamicSkin.Type.Image", nullptr, (void*)(intptr_t)seDynamicSkinRenderable::ertImage);
+	pCBRenderableType->AddItem("@Skin.WPDynamicSkin.Type.VideoFrame", nullptr, (void*)(intptr_t)seDynamicSkinRenderable::ertVideoFrame);
+	pCBRenderableType->AddItem("@Skin.WPDynamicSkin.Type.Canvas", nullptr, (void*)(intptr_t)seDynamicSkinRenderable::ertCanvas);
+	pCBRenderableType->AddItem("@Skin.WPDynamicSkin.Type.Camera", nullptr, (void*)(intptr_t)seDynamicSkinRenderable::ertCamera);
 	
 	
 	// type specific panels
@@ -482,40 +483,40 @@ pWindowProperties(windowProperties)
 	// value
 	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	pSwitcher->AddChild(panel);
-	helper.GroupBox(panel, groupBox, "Value:");
-	helper.EditSliderText(groupBox, "Value:", "Value", 0.0f, 1.0f, 6, 3, 0.1f, pSldValue, cSliderValue::Ref::New(*this));
-	helper.EditFloat(groupBox, "Lower:", "Lower range", pEditValueLower, cTextValueRangeLower::Ref::New(*this));
-	helper.EditFloat(groupBox, "Upper:", "Upper range", pEditValueUpper, cTextValueRangeUpper::Ref::New(*this));
+	helper.GroupBox(panel, groupBox, "@Skin.WPDynamicSkin.GroupValue");
+	helper.EditSliderText(groupBox, "@Skin.WPDynamicSkin.Value.Label", "@Skin.WPDynamicSkin.Value.ToolTip", 0.0f, 1.0f, 6, 3, 0.1f, pSldValue, cSliderValue::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Skin.WPDynamicSkin.Lower.Label", "@Skin.WPDynamicSkin.Lower.ToolTip", pEditValueLower, cTextValueRangeLower::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Skin.WPDynamicSkin.Upper.Label", "@Skin.WPDynamicSkin.Upper.ToolTip", pEditValueUpper, cTextValueRangeUpper::Ref::New(*this));
 	
 	
 	// color
 	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	pSwitcher->AddChild(panel);
-	helper.GroupBox(panel, groupBox, "Color:");
-	helper.ColorBox(groupBox, "Color:", "Color", pClrColor, cColorColor::Ref::New(*this));
-	helper.EditSliderText(groupBox, "Red:", "Red color value", 0.0f, 1.0f, 6, 3, 0.1f,
+	helper.GroupBox(panel, groupBox, "@Skin.WPDynamicSkin.GroupColor");
+	helper.ColorBox(groupBox, "@Skin.WPDynamicSkin.Color.Label", "@Skin.WPDynamicSkin.Color.ToolTip", pClrColor, cColorColor::Ref::New(*this));
+	helper.EditSliderText(groupBox, "@Skin.WPDynamicSkin.Red.Label", "@Skin.WPDynamicSkin.Red.ToolTip", 0.0f, 1.0f, 6, 3, 0.1f,
 		pSldColorRed, cSliderColorRed::Ref::New(*this));
-	helper.EditSliderText(groupBox, "Green:", "Green color value", 0.0f, 1.0f, 6, 3, 0.1f,
+	helper.EditSliderText(groupBox, "@Skin.WPDynamicSkin.Green.Label", "@Skin.WPDynamicSkin.Green.ToolTip", 0.0f, 1.0f, 6, 3, 0.1f,
 		pSldColorGreen, cSliderColorGreen::Ref::New(*this));
-	helper.EditSliderText(groupBox, "Blue:", "Blue color value", 0.0f, 1.0f, 6, 3, 0.1f,
+	helper.EditSliderText(groupBox, "@Skin.WPDynamicSkin.Blue.Label", "@Skin.WPDynamicSkin.Blue.ToolTip", 0.0f, 1.0f, 6, 3, 0.1f,
 		pSldColorBlue, cSliderColorBlue::Ref::New(*this));
-	helper.EditSliderText(groupBox, "Alpha:", "Alpha color value", 0.0f, 1.0f, 6, 3, 0.1f,
+	helper.EditSliderText(groupBox, "@Skin.WPDynamicSkin.Alpha.Label", "@Skin.WPDynamicSkin.Alpha.ToolTip", 0.0f, 1.0f, 6, 3, 0.1f,
 		pSldColorAlpha, cSliderColorAlpha::Ref::New(*this));
 	
 	
 	// image
 	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	pSwitcher->AddChild(panel);
-	helper.GroupBox(panel, groupBox, "Image:");
-	helper.EditPath(groupBox, "Path:", "Path to image", igdeEnvironment::efpltImage,
+	helper.GroupBox(panel, groupBox, "@Skin.WPDynamicSkin.GroupImage");
+	helper.EditPath(groupBox, "@Skin.WPDynamicSkin.ImagePath.Label", "@Skin.WPDynamicSkin.ImagePath.ToolTip", igdeEnvironment::efpltImage,
 		pEditImagePath, cPathImage::Ref::New(*this));
 	
 	
 	// video
 	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	pSwitcher->AddChild(panel);
-	helper.GroupBox(panel, groupBox, "Video:");
-	helper.EditPath(groupBox, "Path:", "Path to video", igdeEnvironment::efpltVideo,
+	helper.GroupBox(panel, groupBox, "@Skin.WPDynamicSkin.GroupVideo");
+	helper.EditPath(groupBox, "@Skin.WPDynamicSkin.VideoPath.Label", "@Skin.WPDynamicSkin.VideoPath.ToolTip", igdeEnvironment::efpltVideo,
 		pEditVideoPath, cPathVideo::Ref::New(*this));
 	
 	

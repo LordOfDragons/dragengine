@@ -48,7 +48,7 @@ const sePropertyNode::List &children){
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Node group remove nodes");
+	SetShortInfo("@Skin.Undo.NodeGroupRemoveNodes");
 	
 	children.Visit([&](sePropertyNode *child){
 		const cNode::Ref unode(cNode::Ref::New());

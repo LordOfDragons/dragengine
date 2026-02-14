@@ -41,7 +41,7 @@ pNewCurve(newCurve)
 {
 	DEASSERT_NOTNULL(pMapped)
 	
-	SetShortInfo("Set Mapped Curve");
+	SetShortInfo("@Skin.Undo.SetMappedCurve");
 }
 
 seUMappedSetCurve::~seUMappedSetCurve(){

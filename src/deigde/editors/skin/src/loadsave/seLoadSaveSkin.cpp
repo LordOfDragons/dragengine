@@ -157,16 +157,14 @@ const igdeTextureProperty::List &knownPropertyList){
 	for(t=0; t<textureCount; t++){
 		const deSkinTexture &engTexture = engSkin->GetTextureAt(t);
 		
-		const seTexture::Ref texture(seTexture::Ref::New(engine));
-		texture->SetName(engTexture.GetName());
+		const seTexture::Ref texture(seTexture::Ref::New(engine, engTexture.GetName()));
 		
 		propertyCount = engTexture.GetPropertyCount();
 		
 		for(p=0; p<propertyCount; p++){
 			deSkinProperty &engProperty = engTexture.GetPropertyAt(p);
 			
-			seProperty::Ref property(seProperty::Ref::New(engine));
-			property->SetName(engProperty.GetType());
+			seProperty::Ref property(seProperty::Ref::New(engine, engProperty.GetType()));
 			property->InitDefaults(knownPropertyList);
 			
 			property->SetRenderableName(engProperty.GetRenderable());

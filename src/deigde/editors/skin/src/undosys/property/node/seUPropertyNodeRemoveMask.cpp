@@ -48,7 +48,7 @@ pMask(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Node remove mask");
+	SetShortInfo("@Skin.Undo.NodeRemoveMask");
 	
 	pMask = node->GetMask();
 	pOldPosition = pMask->GetPosition();

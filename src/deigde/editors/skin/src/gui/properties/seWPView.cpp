@@ -228,8 +228,8 @@ public:
 	typedef deTObjectReference<cActionPlayback> Ref;
 	
 public:
-	cActionPlayback(seWPView &panel) : cBaseAction(panel, "Play back animation",
-		nullptr, "Animation is played back"){}
+	cActionPlayback(seWPView &panel) : cBaseAction(panel, "@Skin.WPView.Action.Playback",
+		nullptr, "@Skin.WPView.Action.Playback.ToolTip"){}
 	
 	void OnAction(seSkin &skin) override{
 		skin.SetPlayback(!skin.GetPlayback());
@@ -246,8 +246,8 @@ public:
 	typedef deTObjectReference<cActionRewind> Ref;
 	
 public:
-	cActionRewind(seWPView &panel) : cBaseAction(panel, "Rewind Textures", nullptr,
-		"Rewind all textures to the initial state as if added to the game world"){ }
+	cActionRewind(seWPView &panel) : cBaseAction(panel, "@Skin.WPView.Action.Rewind", nullptr,
+		"@Skin.WPView.Action.Rewind.ToolTip"){ }
 	
 	void OnAction(seSkin &skin) override{
 		skin.RewindTextures();
@@ -316,20 +316,21 @@ pPreventUpdate(false)
 	
 	
 	// resources
-	helper.GroupBox(content, groupBox, "Preview:");
+	helper.GroupBox(content, groupBox, "@Skin.WPView.Preview");
 	
-	helper.ComboBox(groupBox, "Mode:", "Preview mode.", pCBPreviewMode, cComboPreviewMode::Ref::New(*this));
-	pCBPreviewMode->AddItem("Model", nullptr, (void*)(intptr_t)seSkin::epmModel);
-	pCBPreviewMode->AddItem("Light", nullptr, (void*)(intptr_t)seSkin::epmLight);
+	helper.ComboBox(groupBox, "@Skin.WPView.Mode.Label", "@Skin.WPView.Mode.ToolTip", pCBPreviewMode, cComboPreviewMode::Ref::New(*this));
+	pCBPreviewMode->SetAutoTranslateItems(true);
+	pCBPreviewMode->AddItem("@Skin.WPView.Mode.Model", nullptr, (void*)(intptr_t)seSkin::epmModel);
+	pCBPreviewMode->AddItem("@Skin.WPView.Mode.Light", nullptr, (void*)(intptr_t)seSkin::epmLight);
 	
-	helper.EditPath(groupBox, "Model:", "Path to the model resource to use.",
+	helper.EditPath(groupBox, "@Skin.WPView.Model.Label", "@Skin.WPView.Model.ToolTip",
 		igdeEnvironment::efpltModel, pEditModelPath, cEditModelPath::Ref::New(*this));
-	helper.EditPath(groupBox, "Rig:", "Path to the rig resource to use.",
+	helper.EditPath(groupBox, "@Skin.WPView.Rig.Label", "@Skin.WPView.Rig.ToolTip",
 		igdeEnvironment::efpltRig, pEditRigPath, cEditRigPath::Ref::New(*this));
-	helper.EditPath(groupBox, "Animation:", "Path to the animation resource to use.",
+	helper.EditPath(groupBox, "@Skin.WPView.Animation.Label", "@Skin.WPView.Animation.ToolTip",
 		igdeEnvironment::efpltAnimation, pEditAnimPath, cEditAnimationPath::Ref::New(*this));
 	
-	helper.ComboBoxFilter(groupBox, "Move:", true, "Name of the animation move to play.",
+	helper.ComboBoxFilter(groupBox, "@Skin.WPView.Move.Label", true, "@Skin.WPView.Move.ToolTip",
 		pCBAnimMoves, cComboMove::Ref::New(*this, pPreventUpdate));
 	pCBAnimMoves->SetDefaultSorter();
 	
@@ -339,9 +340,9 @@ pPreventUpdate(false)
 	helper.Button(formLine, pBtnRewindTextures, cActionRewind::Ref::New(*this));
 	
 	// property panels
-	helper.WPSky(content, pWPSky, cActionSkyChanged::Ref::New(*this), "Sky:");
-	helper.WPWObject(content, pWPEnvObject, cActionEnvObjChanged::Ref::New(*this), "Environment Object:");
-	helper.WPCamera(content, pWPCamera, cActionCameraChanged::Ref::New(*this), "Camera:");
+	helper.WPSky(content, pWPSky, cActionSkyChanged::Ref::New(*this), "@Skin.WPView.Sky.Label");
+	helper.WPWObject(content, pWPEnvObject, cActionEnvObjChanged::Ref::New(*this), "@Skin.WPView.EnvironmentObject.Label");
+	helper.WPCamera(content, pWPCamera, cActionCameraChanged::Ref::New(*this), "@Skin.WPView.Camera.Label");
 }
 
 seWPView::~seWPView(){

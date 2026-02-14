@@ -43,7 +43,7 @@ seUPropertySetRenderableName::seUPropertySetRenderableName(seProperty *property,
 	
 	pProperty = nullptr;
 	
-	SetShortInfo("Property Set Renderable");
+	SetShortInfo("@Skin.Undo.PropertySetRenderable");
 	
 	pOldName = property->GetRenderableName();
 	pNewName = newName;

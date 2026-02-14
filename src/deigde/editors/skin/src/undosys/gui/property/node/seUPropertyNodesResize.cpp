@@ -47,7 +47,7 @@ pOrigin(origin),
 pRotation(rotation),
 pShearing(shearing)
 {
-	SetShortInfo("Resize nodes");
+	SetShortInfo("@Skin.Undo.ResizeNodes");
 	
 	nodes.Visit([&](sePropertyNode *n){
 		pAddNodes(n);

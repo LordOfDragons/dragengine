@@ -47,7 +47,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Node shape set thickness");
+	SetShortInfo("@Skin.Undo.NodeShapeSetThickness");
 	
 	pOldValue = node->GetThickness();
 	

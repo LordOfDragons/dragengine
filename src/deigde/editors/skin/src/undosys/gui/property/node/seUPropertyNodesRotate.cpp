@@ -48,7 +48,7 @@ pOrigin(origin)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Rotate nodes");
+	SetShortInfo("@Skin.Undo.RotateNodes");
 	
 	nodes.Visit([&](sePropertyNode *node){
 		DEASSERT_NOTNULL(node->GetParent())

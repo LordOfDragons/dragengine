@@ -41,7 +41,7 @@ pNewOutputLower(newOutputLower)
 {
 	DEASSERT_NOTNULL(pMapped)
 	
-	SetShortInfo("Set Mapped Output Lower");
+	SetShortInfo("@Skin.Undo.SetMappedOutputLower");
 }
 
 seUMappedSetOutputLower::~seUMappedSetOutputLower(){

@@ -43,7 +43,7 @@ seUPropertySetColor::seUPropertySetColor(seProperty *property, const decColor &n
 	
 	pProperty = nullptr;
 	
-	SetShortInfo("Property Set Color");
+	SetShortInfo("@Skin.Undo.PropertySetColor");
 	
 	pOldColor = property->GetColor();
 	pNewColor = newColor;

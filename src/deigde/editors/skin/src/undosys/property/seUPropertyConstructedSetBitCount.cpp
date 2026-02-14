@@ -46,7 +46,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Property constructed bit count");
+	SetShortInfo("@Skin.Undo.PropertyConstructedBitCount");
 	
 	pOldValue = property->GetNodeBitCount();
 	

@@ -49,7 +49,7 @@ seUPropertyRemove::seUPropertyRemove(seProperty *property){
 	pProperty = nullptr;
 	pTexture = nullptr;
 	
-	SetShortInfo("Remove Property");
+	SetShortInfo("@Skin.Undo.RemoveProperty");
 	
 	pProperty = property;
 	pTexture = texture;

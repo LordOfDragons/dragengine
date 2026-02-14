@@ -795,44 +795,45 @@ pPreventUpdate(false)
 	
 	
 	// outliner
-	helper.TreeList(content, pTreeOutline, 10, "Outliner", cTreeOutliner::Ref::New(*this, pPreventUpdate));
+	helper.TreeList(content, pTreeOutline, 10, "@Skin.WPNode.Outliner.Label", cTreeOutliner::Ref::New(*this, pPreventUpdate));
 	
 	helper.EditString(content, "", pLabSelection, {});
 	pLabSelection->SetEditable(false);
 	
 	
 	// node
-	helper.GroupBox(content, groupBox, "Node:");
+	helper.GroupBox(content, groupBox, "@Skin.WPNode.GroupNode");
 	
-	helper.EditPoint3(groupBox, "Position:", "Position of node center",
+	helper.EditPoint3(groupBox, "@Skin.WPNode.Position.Label", "@Skin.WPNode.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
-	helper.EditPoint3(groupBox, "Size:", "Size of node center", pEditSize, cEditSize::Ref::New(*this));
-	helper.EditFloat(groupBox, "Rotation:", "Counter clock-wise rotation of node",
+	helper.EditPoint3(groupBox, "@Skin.WPNode.Size.Label", "@Skin.WPNode.Size.ToolTip", pEditSize, cEditSize::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Skin.WPNode.Rotation.Label", "@Skin.WPNode.Rotation.ToolTip",
 		pEditRotation, cTextRotation::Ref::New(*this));
-	helper.EditFloat(groupBox, "Shear:", "Shearing of node in degrees along X direction",
+	helper.EditFloat(groupBox, "@Skin.WPNode.Shear.Label", "@Skin.WPNode.Shear.ToolTip",
 		pEditShear, cTextShearing::Ref::New(*this));
-	helper.EditFloat(groupBox, "Brightness:", "Brightness", pEditBrightness, cTextBrightness::Ref::New(*this));
-	helper.EditFloat(groupBox, "Contrast:", "Contrast", pEditContrast, cTextContrast::Ref::New(*this));
-	helper.EditFloat(groupBox, "Gamma:", "Gamma", pEditGamma, cTextGamma::Ref::New(*this));
-	helper.ColorBox(groupBox, "Colorize:", "Colorize", pClrColorize, cColorColorize::Ref::New(*this));
-	helper.EditSliderText(groupBox, "Transparency:", "Transparency of node",
+	helper.EditFloat(groupBox, "@Skin.WPNode.Brightness.Label", "@Skin.WPNode.Brightness.ToolTip", pEditBrightness, cTextBrightness::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Skin.WPNode.Contrast.Label", "@Skin.WPNode.Contrast.ToolTip", pEditContrast, cTextContrast::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Skin.WPNode.Gamma.Label", "@Skin.WPNode.Gamma.ToolTip", pEditGamma, cTextGamma::Ref::New(*this));
+	helper.ColorBox(groupBox, "@Skin.WPNode.Colorize.Label", "@Skin.WPNode.Colorize.ToolTip", pClrColorize, cColorColorize::Ref::New(*this));
+	helper.EditSliderText(groupBox, "@Skin.WPNode.Transparency.Label", "@Skin.WPNode.Transparency.ToolTip",
 		0.0f, 1.0f, 6, 3, 0.1f, pSldTransparency, cSliderTransparency::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "Combine Mode:", "Combine mode", pCBCombineMode, cComboCombineMode::Ref::New(*this));
-	pCBCombineMode->AddItem("Blend", nullptr, (void*)(intptr_t)deSkinPropertyNode::ecmBlend);
-	pCBCombineMode->AddItem("Overlay", nullptr, (void*)(intptr_t)deSkinPropertyNode::ecmOverlay);
+	helper.ComboBox(groupBox, "@Skin.WPNode.CombineMode.Label", "@Skin.WPNode.CombineMode.ToolTip", pCBCombineMode, cComboCombineMode::Ref::New(*this));
+	pCBCombineMode->SetAutoTranslateItems(true);
+	pCBCombineMode->AddItem("@Skin.WPNode.CombineMode.Blend", nullptr, (void*)(intptr_t)deSkinPropertyNode::ecmBlend);
+	pCBCombineMode->AddItem("@Skin.WPNode.CombineMode.Overlay", nullptr, (void*)(intptr_t)deSkinPropertyNode::ecmOverlay);
 	
 	helper.EditString(content, "", pLabMask, {});
 	pLabMask->SetEditable(false);
 	
 	
 	// dynamic
-	helper.GroupBox(content, groupBox, "Dynamic:");
+	helper.GroupBox(content, groupBox, "@Skin.WPNode.GroupDynamic");
 	
-	helper.ComboBox(groupBox, "Property:", "Property to set mapped value for",
+	helper.ComboBox(groupBox, "@Skin.WPNode.MappedProperty.Label", "@Skin.WPNode.MappedProperty.ToolTip",
 		pCBMappedType, cComboMappedType::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "Mapped:", "Mapped value to use for property",
+	helper.ComboBox(groupBox, "@Skin.WPNode.Mapped.Label", "@Skin.WPNode.Mapped.ToolTip",
 		pCBMappedTarget, cComboMappedTarget::Ref::New(*this, pPreventUpdate));
 	
 	
@@ -848,52 +849,52 @@ pPreventUpdate(false)
 	// image node
 	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	pSwitcher->AddChild(panel);
-	helper.GroupBox(panel, groupBox, "Image:");
+	helper.GroupBox(panel, groupBox, "@Skin.WPNode.GroupImage");
 	
-	helper.EditPath(groupBox, "Image:", "Image resource to display",
+	helper.EditPath(groupBox, "@Skin.WPNode.Image.Label", "@Skin.WPNode.Image.ToolTip",
 		igdeEnvironment::efpltImage, pImageEditImage, cPathImage::Ref::New(*this));
-	helper.EditString(groupBox, "", "Image information", pImageLabImageInfo, {});
+	helper.EditString(groupBox, "", "@Skin.WPNode.ImageInfo.ToolTip", pImageLabImageInfo, {});
 	pImageLabImageInfo->SetEditable(false);
 	
-	helper.EditPoint(groupBox, "Repeat:", "Repetition of image inside node size",
+	helper.EditPoint(groupBox, "@Skin.WPNode.Repeat.Label", "@Skin.WPNode.Repeat.ToolTip",
 		pImageEditRepeat, cEditImageRepeat::Ref::New(*this));
 	
 	
 	// shape node
 	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	pSwitcher->AddChild(panel);
-	helper.GroupBox(panel, groupBox, "Shape:");
+	helper.GroupBox(panel, groupBox, "@Skin.WPNode.GroupShape");
 	
-	helper.ComboBox(groupBox, "Type:", "Shape type", pShapeCBType, cComboShapeType::Ref::New(*this));
-	pShapeCBType->AddItem("Rectangle", nullptr, (void*)(intptr_t)deSkinPropertyNodeShape::estRectangle);
-	pShapeCBType->AddItem("Ellipse", nullptr, (void*)(intptr_t)deSkinPropertyNodeShape::estEllipse);
+	helper.ComboBox(groupBox, "@Skin.WPNode.ShapeType.Label", "@Skin.WPNode.ShapeType.ToolTip", pShapeCBType, cComboShapeType::Ref::New(*this));
+	pShapeCBType->AddItem("@Skin.WPNode.ShapeType.Rectangle", nullptr, (void*)(intptr_t)deSkinPropertyNodeShape::estRectangle);
+	pShapeCBType->AddItem("@Skin.WPNode.ShapeType.Ellipse", nullptr, (void*)(intptr_t)deSkinPropertyNodeShape::estEllipse);
 	
-	helper.ColorBox(groupBox, "Line Color:", "Line color", pShapeClrLine, cColorShapeLineColor::Ref::New(*this));
-	helper.ColorBox(groupBox, "Fill Color:", "Fill color", pShapeClrFill, cColorShapeFillColor::Ref::New(*this));
-	helper.EditFloat(groupBox, "Thickness:", "Thickness of line in pixels",
+	helper.ColorBox(groupBox, "@Skin.WPNode.LineColor.Label", "@Skin.WPNode.LineColor.ToolTip", pShapeClrLine, cColorShapeLineColor::Ref::New(*this));
+	helper.ColorBox(groupBox, "@Skin.WPNode.FillColor.Label", "@Skin.WPNode.FillColor.ToolTip", pShapeClrFill, cColorShapeFillColor::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Skin.WPNode.Thickness.Label", "@Skin.WPNode.Thickness.ToolTip",
 		pShapeEditThickness, cColorShapeThickness::Ref::New(*this));
 	
 	
 	// text node
 	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	pSwitcher->AddChild(panel);
-	helper.GroupBox(panel, groupBox, "Text:");
+	helper.GroupBox(panel, groupBox, "@Skin.WPNode.GroupText");
 	
-	helper.EditPath(groupBox, "Font:", "Font resource to use for text",
+	helper.EditPath(groupBox, "@Skin.WPNode.Font.Label", "@Skin.WPNode.Font.ToolTip",
 		igdeEnvironment::efpltFont, pTextEditFont, cEditPathFont::Ref::New(*this));
-	helper.EditString(groupBox, "", "Font information", pTextLabFontInfo, {});
+	helper.EditString(groupBox, "", "@Skin.WPNode.FontInfo.ToolTip", pTextLabFontInfo, {});
 	pTextLabFontInfo->SetEditable(false);
 	
-	helper.EditFloat(groupBox, "Font size:", "Font size in pixels (equals height of text line)",
+	helper.EditFloat(groupBox, "@Skin.WPNode.FontSize.Label", "@Skin.WPNode.FontSize.ToolTip",
 		pTextEditFontSize, cTextFontSize::Ref::New(*this));
-	helper.EditString(groupBox, "Text:", "Text", pTextEditText, cTextText::Ref::New(*this));
-	helper.ColorBox(groupBox, "Color:", "Text color", pTextClrColor, cColorText::Ref::New(*this));
+	helper.EditString(groupBox, "@Skin.WPNode.Text.Label", "@Skin.WPNode.Text.ToolTip", pTextEditText, cTextText::Ref::New(*this));
+	helper.ColorBox(groupBox, "@Skin.WPNode.TextColor.Label", "@Skin.WPNode.TextColor.ToolTip", pTextClrColor, cColorText::Ref::New(*this));
 	
 	
 	// group node
 	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	pSwitcher->AddChild(panel);
-	helper.GroupBox(panel, groupBox, "Group:");
+	helper.GroupBox(panel, groupBox, "@Skin.WPNode.GroupGroup");
 }
 
 seWPNode::~seWPNode(){
@@ -994,7 +995,7 @@ void seWPNode::UpdateNode(){
 	
 	if(property && property->GetValueType() == seProperty::evtConstructed){
 		decString text;
-		text.Format("Selected Nodes: %d", property->GetNodeSelection().GetSelected().GetCount());
+		text.FormatSafe(Translate("Skin.WPNode.SelectedNodes").ToUTF8(), property->GetNodeSelection().GetSelected().GetCount());
 		pLabSelection->SetText(text);
 		
 	}else{
@@ -1016,24 +1017,24 @@ void seWPNode::UpdateNode(){
 		if(node->GetMask()){
 			switch(node->GetMask()->GetNodeType()){
 			case sePropertyNode::entGroup:
-				pLabMask->SetText("Maske: Group");
+				pLabMask->SetText(Translate("Skin.WPNode.MaskGroup").ToUTF8());
 				break;
 				
 			case sePropertyNode::entImage:
-				pLabMask->SetText("Maske: Image");
+				pLabMask->SetText(Translate("Skin.WPNode.MaskImage").ToUTF8());
 				break;
 				
 			case sePropertyNode::entShape:
-				pLabMask->SetText("Maske: Shape");
+				pLabMask->SetText(Translate("Skin.WPNode.MaskShape").ToUTF8());
 				break;
 				
 			case sePropertyNode::entText:
-				pLabMask->SetText("Maske: Text");
+				pLabMask->SetText(Translate("Skin.WPNode.MaskText").ToUTF8());
 				break;
 			}
 			
 		}else{
-			pLabMask->SetText("No Mask");
+			pLabMask->SetText(Translate("Skin.WPNode.NoMask").ToUTF8());
 		}
 		
 		switch(node->GetNodeType()){
@@ -1044,24 +1045,24 @@ void seWPNode::UpdateNode(){
 			
 			if(nodeImage.GetImage()){
 				const deImage &image = *nodeImage.GetImage();
-				const char *type = "?";
+				decString type("?");
 				decString text;
 				
 				if(image.GetComponentCount() == 1){
-					type = "Gray";
+					type = Translate("Skin.WPNode.ImageType.Gray").ToUTF8();
 					
 				}else if(image.GetComponentCount() == 2){
-					type = "Gray-Alpha";
+					type = Translate("Skin.WPNode.ImageType.GrayAlpha").ToUTF8();
 					
 				}else if(image.GetComponentCount() == 3){
-					type = "RGB";
+					type = Translate("Skin.WPNode.ImageType.RGB").ToUTF8();
 					
 				}else if(image.GetComponentCount() == 4){
-					type ="RGBA";
+					type = Translate("Skin.WPNode.ImageType.RGBA").ToUTF8();
 				}
 				
-				text.Format("%dx%dx%d, %s, %d-Bit", image.GetWidth(), image.GetHeight(),
-					image.GetDepth(), type, image.GetBitCount());
+				text.FormatSafe(Translate("Skin.WPNode.ImageInfo").ToUTF8(), image.GetWidth(),
+					image.GetHeight(), image.GetDepth(), type, image.GetBitCount());
 				pImageLabImageInfo->SetText(text);
 				pImageLabImageInfo->SetDescription(text);
 				
@@ -1088,17 +1089,17 @@ void seWPNode::UpdateNode(){
 			
 			if(nodeText.GetFont()){
 				const deFont &font = *nodeText.GetFont();
-				const char *type;
+				decString type;
 				decString text;
 				
 				if(font.GetIsColorFont()){
-					type = "Color";
+					type = Translate("Skin.WPNode.FontType.Color").ToUTF8();
 					
 				}else{
-					type ="Grayscale";
+					type = Translate("Skin.WPNode.FontType.Grayscale").ToUTF8();
 				}
 				
-				text.Format("%s, Line height %d", type, font.GetLineHeight());
+				text.FormatSafe(Translate("Skin.WPNode.FontInfo").ToUTF8(), type, font.GetLineHeight());
 				pTextLabFontInfo->SetText(text);
 				pTextLabFontInfo->SetDescription(text);
 				
@@ -1218,41 +1219,41 @@ void seWPNode::UpdateMappedTypeList(){
 	}
 	
 	pCBMappedType->RemoveAllItems();
-	
-	pCBMappedType->AddItem("Position X", nullptr, (void*)(intptr_t)sePropertyNode::emPositionX);
-	pCBMappedType->AddItem("Position Y", nullptr, (void*)(intptr_t)sePropertyNode::emPositionY);
-	pCBMappedType->AddItem("Position Z", nullptr, (void*)(intptr_t)sePropertyNode::emPositionZ);
-	pCBMappedType->AddItem("Size X", nullptr, (void*)(intptr_t)sePropertyNode::emSizeX);
-	pCBMappedType->AddItem("Size Y", nullptr, (void*)(intptr_t)sePropertyNode::emSizeY);
-	pCBMappedType->AddItem("Size Z", nullptr, (void*)(intptr_t)sePropertyNode::emSizeZ);
-	pCBMappedType->AddItem("Rotation", nullptr, (void*)(intptr_t)sePropertyNode::emRotation);
-	pCBMappedType->AddItem("Shear", nullptr, (void*)(intptr_t)sePropertyNode::emShear);
-	pCBMappedType->AddItem("Brightness", nullptr, (void*)(intptr_t)sePropertyNode::emBrightness);
-	pCBMappedType->AddItem("Contrast", nullptr, (void*)(intptr_t)sePropertyNode::emContrast);
-	pCBMappedType->AddItem("Gamma", nullptr, (void*)(intptr_t)sePropertyNode::emGamma);
-	pCBMappedType->AddItem("Colorize Red", nullptr, (void*)(intptr_t)sePropertyNode::emColorizeRed);
-	pCBMappedType->AddItem("Colorize Green", nullptr, (void*)(intptr_t)sePropertyNode::emColorizeGreen);
-	pCBMappedType->AddItem("Colorize Blue", nullptr, (void*)(intptr_t)sePropertyNode::emColorizeBlue);
-	pCBMappedType->AddItem("Transparency", nullptr, (void*)(intptr_t)sePropertyNode::emTransparency);
+	pCBMappedType->SetAutoTranslateItems(true);
+	pCBMappedType->AddItem("@Skin.WPNode.MappedType.PositionX", nullptr, (void*)(intptr_t)sePropertyNode::emPositionX);
+	pCBMappedType->AddItem("@Skin.WPNode.MappedType.PositionY", nullptr, (void*)(intptr_t)sePropertyNode::emPositionY);
+	pCBMappedType->AddItem("@Skin.WPNode.MappedType.PositionZ", nullptr, (void*)(intptr_t)sePropertyNode::emPositionZ);
+	pCBMappedType->AddItem("@Skin.WPNode.MappedType.SizeX", nullptr, (void*)(intptr_t)sePropertyNode::emSizeX);
+	pCBMappedType->AddItem("@Skin.WPNode.MappedType.SizeY", nullptr, (void*)(intptr_t)sePropertyNode::emSizeY);
+	pCBMappedType->AddItem("@Skin.WPNode.MappedType.SizeZ", nullptr, (void*)(intptr_t)sePropertyNode::emSizeZ);
+	pCBMappedType->AddItem("@Skin.WPNode.MappedType.Rotation", nullptr, (void*)(intptr_t)sePropertyNode::emRotation);
+	pCBMappedType->AddItem("@Skin.WPNode.MappedType.Shear", nullptr, (void*)(intptr_t)sePropertyNode::emShear);
+	pCBMappedType->AddItem("@Skin.WPNode.MappedType.Brightness", nullptr, (void*)(intptr_t)sePropertyNode::emBrightness);
+	pCBMappedType->AddItem("@Skin.WPNode.MappedType.Contrast", nullptr, (void*)(intptr_t)sePropertyNode::emContrast);
+	pCBMappedType->AddItem("@Skin.WPNode.MappedType.Gamma", nullptr, (void*)(intptr_t)sePropertyNode::emGamma);
+	pCBMappedType->AddItem("@Skin.WPNode.MappedType.ColorizeRed", nullptr, (void*)(intptr_t)sePropertyNode::emColorizeRed);
+	pCBMappedType->AddItem("@Skin.WPNode.MappedType.ColorizeGreen", nullptr, (void*)(intptr_t)sePropertyNode::emColorizeGreen);
+	pCBMappedType->AddItem("@Skin.WPNode.MappedType.ColorizeBlue", nullptr, (void*)(intptr_t)sePropertyNode::emColorizeBlue);
+	pCBMappedType->AddItem("@Skin.WPNode.MappedType.Transparency", nullptr, (void*)(intptr_t)sePropertyNode::emTransparency);
 	
 	switch(node->GetNodeType()){
 	case sePropertyNode::entShape:
-		pCBMappedType->AddItem("Fill Color Red", nullptr, (void*)(intptr_t)sePropertyNodeShape::esmFillColorRed);
-		pCBMappedType->AddItem("Fill Color Green", nullptr, (void*)(intptr_t)sePropertyNodeShape::esmFillColorGreen);
-		pCBMappedType->AddItem("Fill Color Blue", nullptr, (void*)(intptr_t)sePropertyNodeShape::esmFillColorBlue);
-		pCBMappedType->AddItem("Fill Color Alpha", nullptr, (void*)(intptr_t)sePropertyNodeShape::esmFillColorAlpha);
-		pCBMappedType->AddItem("Line Color Red", nullptr, (void*)(intptr_t)sePropertyNodeShape::esmLineColorRed);
-		pCBMappedType->AddItem("Line Color Green", nullptr, (void*)(intptr_t)sePropertyNodeShape::esmLineColorGreen);
-		pCBMappedType->AddItem("Line Color Blue", nullptr, (void*)(intptr_t)sePropertyNodeShape::esmLineColorBlue);
-		pCBMappedType->AddItem("Line Color Alpha", nullptr, (void*)(intptr_t)sePropertyNodeShape::esmLineColorAlpha);
-		pCBMappedType->AddItem("Thickness", nullptr, (void*)(intptr_t)sePropertyNodeShape::esmThickness);
+		pCBMappedType->AddItem("@Skin.WPNode.MappedType.FillColorRed", nullptr, (void*)(intptr_t)sePropertyNodeShape::esmFillColorRed);
+		pCBMappedType->AddItem("@Skin.WPNode.MappedType.FillColorGreen", nullptr, (void*)(intptr_t)sePropertyNodeShape::esmFillColorGreen);
+		pCBMappedType->AddItem("@Skin.WPNode.MappedType.FillColorBlue", nullptr, (void*)(intptr_t)sePropertyNodeShape::esmFillColorBlue);
+		pCBMappedType->AddItem("@Skin.WPNode.MappedType.FillColorAlpha", nullptr, (void*)(intptr_t)sePropertyNodeShape::esmFillColorAlpha);
+		pCBMappedType->AddItem("@Skin.WPNode.MappedType.LineColorRed", nullptr, (void*)(intptr_t)sePropertyNodeShape::esmLineColorRed);
+		pCBMappedType->AddItem("@Skin.WPNode.MappedType.LineColorGreen", nullptr, (void*)(intptr_t)sePropertyNodeShape::esmLineColorGreen);
+		pCBMappedType->AddItem("@Skin.WPNode.MappedType.LineColorBlue", nullptr, (void*)(intptr_t)sePropertyNodeShape::esmLineColorBlue);
+		pCBMappedType->AddItem("@Skin.WPNode.MappedType.LineColorAlpha", nullptr, (void*)(intptr_t)sePropertyNodeShape::esmLineColorAlpha);
+		pCBMappedType->AddItem("@Skin.WPNode.MappedType.Thickness", nullptr, (void*)(intptr_t)sePropertyNodeShape::esmThickness);
 		break;
 		
 	case sePropertyNode::entText:
-		pCBMappedType->AddItem("Font Size", nullptr, (void*)(intptr_t)sePropertyNodeText::etmFontSize);
-		pCBMappedType->AddItem("Color Red", nullptr, (void*)(intptr_t)sePropertyNodeText::etmColorRed);
-		pCBMappedType->AddItem("Color Green", nullptr, (void*)(intptr_t)sePropertyNodeText::etmColorGreen);
-		pCBMappedType->AddItem("Color Blue", nullptr, (void*)(intptr_t)sePropertyNodeText::etmColorBlue);
+		pCBMappedType->AddItem("@Skin.WPNode.MappedType.FontSize", nullptr, (void*)(intptr_t)sePropertyNodeText::etmFontSize);
+		pCBMappedType->AddItem("@Skin.WPNode.MappedType.ColorRed", nullptr, (void*)(intptr_t)sePropertyNodeText::etmColorRed);
+		pCBMappedType->AddItem("@Skin.WPNode.MappedType.ColorGreen", nullptr, (void*)(intptr_t)sePropertyNodeText::etmColorGreen);
+		pCBMappedType->AddItem("@Skin.WPNode.MappedType.ColorBlue", nullptr, (void*)(intptr_t)sePropertyNodeText::etmColorBlue);
 		break;
 		
 	default:
@@ -1299,7 +1300,7 @@ void seWPNode::UpdateOutline(igdeTreeItem *item, sePropertyNode *node, const dec
 		const int count = group.GetNodes().GetCount();
 		int i;
 		
-		item->SetText(prefix + "Group");
+		item->SetText(prefix + Translate("Skin.WPNode.Outline.Group").ToUTF8());
 		
 		for(i=count-1; i>=0; i--){
 			if(!childItem){
@@ -1315,21 +1316,21 @@ void seWPNode::UpdateOutline(igdeTreeItem *item, sePropertyNode *node, const dec
 		if(path.GetLength() > 40){
 			path = decString("...") + path.GetRight(40);
 		}
-		item->SetText(prefix + "Image: " + path);
+		item->SetText(prefix + Translate("Skin.WPNode.Outline.Image").ToUTF8() + ": " + path);
 		}break;
 		
 	case sePropertyNode::entShape:
 		switch(((sePropertyNodeShape*)node)->GetShapeType()){
 		case deSkinPropertyNodeShape::estRectangle:
-			item->SetText(prefix + "Shape: Rectangle");
+			item->SetText(prefix + Translate("Skin.WPNode.Outline.ShapeRectangle").ToUTF8());
 			break;
 			
 		case deSkinPropertyNodeShape::estEllipse:
-			item->SetText(prefix + "Shape: Ellipse");
+			item->SetText(prefix + Translate("Skin.WPNode.Outline.ShapeEllipse").ToUTF8());
 			break;
 			
 		default:
-			item->SetText(prefix + "Shape");
+			item->SetText(prefix + Translate("Skin.WPNode.Outline.Shape").ToUTF8());
 		}
 		break;
 		
@@ -1338,7 +1339,7 @@ void seWPNode::UpdateOutline(igdeTreeItem *item, sePropertyNode *node, const dec
 		if(text.GetLength() > 40){
 			text = text.GetLeft(40) + "...";
 		}
-		item->SetText(prefix + "Text: " + text);
+		item->SetText(prefix + Translate("Skin.WPNode.Outline.Text").ToUTF8() + ": " + text);
 		}break;
 	}
 	
@@ -1348,7 +1349,7 @@ void seWPNode::UpdateOutline(igdeTreeItem *item, sePropertyNode *node, const dec
 		if(!childItem){
 			childItem = pTreeOutline->AppendItem(item, "");
 		}
-		UpdateOutline(childItem, node->GetMask(), "Mask: ");
+		UpdateOutline(childItem, node->GetMask(), Translate("Skin.WPNode.MaskPrefix").ToUTF8());
 		childItem = childItem->GetNext();
 	}
 	

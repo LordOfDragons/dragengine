@@ -167,7 +167,7 @@ public:
 	
 public:
 	cActionConstructedFromImage(seViewConstructedView &view) : cBaseAction(view,
-		"Constructed from Image", nullptr, "Create constructed from image"){}
+		"@Skin.ViewConstructed.Action.ConstructedFromImage", nullptr, "@Skin.ViewConstructed.Action.ConstructedFromImage.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(seSkin*, seProperty *property) override{
 		return property->GetEngineImage() ? seUPropertyConstructedFromImage::Ref::New(property) : seUPropertyConstructedFromImage::Ref();
@@ -201,8 +201,8 @@ public:
 class cActionAddShape : public cBaseActionAddNode{
 public:
 	using Ref = deTObjectReference<cActionAddShape>;
-	cActionAddShape(seViewConstructedView &view) : cBaseActionAddNode(view, "Add Shape",
-		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add shape node"){}
+	cActionAddShape(seViewConstructedView &view) : cBaseActionAddNode(view, "@Skin.ViewConstructed.Action.AddShape",
+		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@Skin.ViewConstructed.Action.AddShape.ToolTip"){}
 	
 	sePropertyNode::Ref CreateNode(seSkin &, seProperty &) override{
 		return sePropertyNodeShape::Ref::New(*pView.GetEngine());
@@ -212,13 +212,13 @@ public:
 class cActionAddImage : public cBaseActionAddNode{
 public:
 	using Ref = deTObjectReference<cActionAddImage>;
-	cActionAddImage(seViewConstructedView &view) : cBaseActionAddNode(view, "Add Image ...",
-		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add image node"){}
+	cActionAddImage(seViewConstructedView &view) : cBaseActionAddNode(view, "@Skin.ViewConstructed.Action.AddImage",
+		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@Skin.ViewConstructed.Action.AddImage.ToolTip"){}
 	
 	sePropertyNode::Ref CreateNode(seSkin &skin, seProperty &) override{
 		igdeEnvironment &env = pView.GetEnvironment();
 		decString path(skin.GetDirectoryPath());
-		if(!igdeCommonDialogs::GetFileOpen(pView, "Select Image", *env.GetFileSystemGame(),
+		if(!igdeCommonDialogs::GetFileOpen(pView, "@Skin.ViewConstructed.Dialog.SelectImage", *env.GetFileSystemGame(),
 		*env.GetOpenFilePatternList(igdeEnvironment::efpltImage), path)){
 			return {};
 		}
@@ -240,15 +240,15 @@ public:
 class cActionAddText : public cBaseActionAddNode{
 public:
 	using Ref = deTObjectReference<cActionAddText>;
-	cActionAddText(seViewConstructedView &view) : cBaseActionAddNode(view, "Add Text",
-		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add text node"){}
+	cActionAddText(seViewConstructedView &view) : cBaseActionAddNode(view, "@Skin.ViewConstructed.Action.AddText",
+		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@Skin.ViewConstructed.Action.AddText.ToolTip"){}
 	
 	sePropertyNode::Ref CreateNode(seSkin &, seProperty &) override{
 		const sePropertyNodeText::Ref node(sePropertyNodeText::Ref::New(*pView.GetEngine()));
 		node->SetPath("/igde/fonts/regular_67px.defont");
 		node->SetTextSize(67.0f);
 		node->SetSize(decPoint3(256, 67, 1));
-		node->SetText("Text");
+		node->SetText(pView.Translate("Skin.ViewConstructed.DefaultText").ToUTF8());
 		return node;
 	}
 };
@@ -256,8 +256,8 @@ public:
 class cActionRemoveNode : public cBaseActionNode{
 public:
 	using Ref = deTObjectReference<cActionRemoveNode>;
-	cActionRemoveNode(seViewConstructedView &view) : cBaseActionNode(view, "Remove Nodes",
-		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove nodes"){}
+	cActionRemoveNode(seViewConstructedView &view) : cBaseActionNode(view, "@Skin.ViewConstructed.Action.RemoveNodes",
+		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@Skin.ViewConstructed.Action.RemoveNodes.ToolTip"){}
 	
 	igdeUndo::Ref OnActionNode(seSkin*, seProperty *property, sePropertyNode *node) override{
 		return seUPNGroupRemoveNodes::Ref::New(node->GetParent(), property->GetNodeSelection().GetSelected());
@@ -267,8 +267,8 @@ public:
 class cActionCopyNode : public cBaseActionNode{
 public:
 	using Ref = deTObjectReference<cActionCopyNode>;
-	cActionCopyNode(seViewConstructedView &view) : cBaseActionNode(view, "Copy Nodes",
-		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy), "Copy nodes"){}
+	cActionCopyNode(seViewConstructedView &view) : cBaseActionNode(view, "@Skin.ViewConstructed.Action.CopyNodes",
+		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy), "@Skin.ViewConstructed.Action.CopyNodes.ToolTip"){}
 	
 	igdeUndo::Ref OnActionNode(seSkin*, seProperty *property, sePropertyNode*) override{
 		pView.GetWindowMain().GetClipboard().Set(seClipboardDataPropertyNode::Ref::New(
@@ -280,8 +280,8 @@ public:
 class cActionCutNode : public cBaseActionNode{
 public:
 	using Ref = deTObjectReference<cActionCutNode>;
-	cActionCutNode(seViewConstructedView &view) : cBaseActionNode(view, "Cut Nodes",
-		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut), "Cut nodes"){}
+	cActionCutNode(seViewConstructedView &view) : cBaseActionNode(view, "@Skin.ViewConstructed.Action.CutNodes",
+		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut), "@Skin.ViewConstructed.Action.CutNodes.ToolTip"){}
 	
 	igdeUndo::Ref OnActionNode(seSkin*, seProperty *property, sePropertyNode *node) override{
 		pView.GetWindowMain().GetClipboard().Set(seClipboardDataPropertyNode::Ref::New(
@@ -296,8 +296,8 @@ public:
 	using Ref = deTObjectReference<cActionPasteNode>;
 	
 public:
-	cActionPasteNode(seViewConstructedView &view) : cBaseAction(view, "Paste Nodes",
-		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste), "Paste nodes"){}
+	cActionPasteNode(seViewConstructedView &view) : cBaseAction(view, "@Skin.ViewConstructed.Action.PasteNodes",
+		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste), "@Skin.ViewConstructed.Action.PasteNodes.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(seSkin*, seProperty *property) override{
 		const seClipboardDataPropertyNode * const data = (seClipboardDataPropertyNode*)
@@ -315,8 +315,8 @@ public:
 class cActionEnterGroup : public cBaseActionNode{
 public:
 	using Ref = deTObjectReference<cActionEnterGroup>;
-	cActionEnterGroup(seViewConstructedView &view) : cBaseActionNode(view, "Enter Group",
-		nullptr, "Enter group"){}
+	cActionEnterGroup(seViewConstructedView &view) : cBaseActionNode(view, "@Skin.ViewConstructed.Action.EnterGroup",
+		nullptr, "@Skin.ViewConstructed.Action.EnterGroup.ToolTip"){}
 	
 	igdeUndo::Ref OnActionNode(seSkin*, seProperty *property, sePropertyNode *node) override{
 		if(node->GetNodeType() == sePropertyNode::entGroup){
@@ -336,8 +336,8 @@ public:
 	using Ref = deTObjectReference<cActionExitGroup>;
 	
 public:
-	cActionExitGroup(seViewConstructedView &view) : cBaseAction(view, "Exit Group",
-		nullptr, "Exit group"){}
+	cActionExitGroup(seViewConstructedView &view) : cBaseAction(view, "@Skin.ViewConstructed.Action.ExitGroup",
+		nullptr, "@Skin.ViewConstructed.Action.ExitGroup.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(seSkin*, seProperty *property) override{
 		sePropertyNodeGroup * const node = property->GetActiveNodeGroup();
@@ -366,8 +366,8 @@ public:
 	using Ref = deTObjectReference<cActionGroupNodes>;
 	
 public:
-	cActionGroupNodes(seViewConstructedView &view) : cBaseAction(view, "Group Nodes",
-		nullptr, "Group Nodes"){}
+	cActionGroupNodes(seViewConstructedView &view) : cBaseAction(view, "@Skin.ViewConstructed.Action.GroupNodes",
+		nullptr, "@Skin.ViewConstructed.Action.GroupNodes.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(seSkin*, seProperty *property) override{
 		return property->GetNodeSelection().GetSelected().GetCount() > 1
@@ -382,8 +382,8 @@ public:
 class cActionUngroupNodes : public cBaseActionNode{
 public:
 	using Ref = deTObjectReference<cActionUngroupNodes>;
-	cActionUngroupNodes(seViewConstructedView &view) : cBaseActionNode(view, "Ungroup Nodes",
-		nullptr, "Ungroup Nodes"){}
+	cActionUngroupNodes(seViewConstructedView &view) : cBaseActionNode(view, "@Skin.ViewConstructed.Action.UngroupNodes",
+		nullptr, "@Skin.ViewConstructed.Action.UngroupNodes.ToolTip"){}
 	
 	igdeUndo::Ref OnActionNode(seSkin*, seProperty*, sePropertyNode *node) override{
 		return node->GetNodeType() == sePropertyNode::entGroup
@@ -418,8 +418,8 @@ public:
 class cActionMoveNodesTop : public cBaseMoveNodes{
 public:
 	using Ref = deTObjectReference<cActionMoveNodesTop>;
-	cActionMoveNodesTop(seViewConstructedView &view) : cBaseMoveNodes(view, "Move Node Top",
-		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongUp), "Move node to top"){}
+	cActionMoveNodesTop(seViewConstructedView &view) : cBaseMoveNodes(view, "@Skin.ViewConstructed.Action.MoveNodeTop",
+		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongUp), "@Skin.ViewConstructed.Action.MoveNodeTop.ToolTip"){}
 	
 	seUPNGroupMoveNodes::Ref CreateUndo(seSkin*, seProperty *property, sePropertyNode *node) override{
 		return seUPNGroupNodesTop::Ref::New(node->GetParent(), property->GetNodeSelection().GetSelected());
@@ -429,8 +429,8 @@ public:
 class cActionMoveNodesUp : public cBaseMoveNodes{
 public:
 	using Ref = deTObjectReference<cActionMoveNodesUp>;
-	cActionMoveNodesUp(seViewConstructedView &view) : cBaseMoveNodes(view, "Move Node Up",
-		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp), "Move node up"){}
+	cActionMoveNodesUp(seViewConstructedView &view) : cBaseMoveNodes(view, "@Skin.ViewConstructed.Action.MoveNodeUp",
+		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp), "@Skin.ViewConstructed.Action.MoveNodeUp.ToolTip"){}
 	
 	seUPNGroupMoveNodes::Ref CreateUndo(seSkin*, seProperty *property, sePropertyNode *node) override{
 		return seUPNGroupNodesUp::Ref::New(node->GetParent(), property->GetNodeSelection().GetSelected());
@@ -440,8 +440,8 @@ public:
 class cActionMoveNodesDown : public cBaseMoveNodes{
 public:
 	using Ref = deTObjectReference<cActionMoveNodesDown>;
-	cActionMoveNodesDown(seViewConstructedView &view) : cBaseMoveNodes(view, "Move Node Down",
-		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown), "Move node down"){}
+	cActionMoveNodesDown(seViewConstructedView &view) : cBaseMoveNodes(view, "@Skin.ViewConstructed.Action.MoveNodeDown",
+		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown), "@Skin.ViewConstructed.Action.MoveNodeDown.ToolTip"){}
 	
 	seUPNGroupMoveNodes::Ref CreateUndo(seSkin*, seProperty *property, sePropertyNode *node) override{
 		return seUPNGroupNodesDown::Ref::New(node->GetParent(), property->GetNodeSelection().GetSelected());
@@ -451,8 +451,8 @@ public:
 class cActionMoveNodesBottom : public cBaseMoveNodes{
 public:
 	using Ref = deTObjectReference<cActionMoveNodesBottom>;
-	cActionMoveNodesBottom(seViewConstructedView &view) : cBaseMoveNodes(view, "Move Node Bottom",
-		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongDown), "Move node to bottom"){}
+	cActionMoveNodesBottom(seViewConstructedView &view) : cBaseMoveNodes(view, "@Skin.ViewConstructed.Action.MoveNodeBottom",
+		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongDown), "@Skin.ViewConstructed.Action.MoveNodeBottom.ToolTip"){}
 	
 	seUPNGroupMoveNodes::Ref CreateUndo(seSkin*, seProperty *property, sePropertyNode *node) override{
 		return seUPNGroupNodesBottom::Ref::New(node->GetParent(), property->GetNodeSelection().GetSelected());
@@ -462,8 +462,8 @@ public:
 class cActionSetMask : public cBaseActionNode{
 public:
 	using Ref = deTObjectReference<cActionSetMask>;
-	cActionSetMask(seViewConstructedView &view) : cBaseActionNode(view, "Set Mask",
-		nullptr, "Set Mask"){}
+	cActionSetMask(seViewConstructedView &view) : cBaseActionNode(view, "@Skin.ViewConstructed.Action.SetMask",
+		nullptr, "@Skin.ViewConstructed.Action.SetMask.ToolTip"){}
 	
 	igdeUndo::Ref OnActionNode(seSkin*, seProperty *property, sePropertyNode *node) override{
 		const sePropertyNode::List &selection = property->GetNodeSelection().GetSelected();
@@ -486,8 +486,8 @@ public:
 class cActionRemoveMask : public cBaseActionNode{
 public:
 	using Ref = deTObjectReference<cActionRemoveMask>;
-	cActionRemoveMask(seViewConstructedView &view) : cBaseActionNode(view, "Remove Mask",
-		nullptr, "Remove Mask"){}
+	cActionRemoveMask(seViewConstructedView &view) : cBaseActionNode(view, "@Skin.ViewConstructed.Action.RemoveMask",
+		nullptr, "@Skin.ViewConstructed.Action.RemoveMask.ToolTip"){}
 	
 	igdeUndo::Ref OnActionNode(seSkin*, seProperty*, sePropertyNode *node) override{
 		return node->GetMask() ? seUPropertyNodeRemoveMask::Ref::New(node) : seUPropertyNodeRemoveMask::Ref();
@@ -502,7 +502,7 @@ class cActionSizeFromImage : public cBaseActionNode{
 public:
 	using Ref = deTObjectReference<cActionSizeFromImage>;
 	cActionSizeFromImage(seViewConstructedView &view) : cBaseActionNode(view,
-		"Size from image size", nullptr, "Set image size to constructed size"){}
+		"@Skin.ViewConstructed.Action.SizeFromImage", nullptr, "@Skin.ViewConstructed.Action.SizeFromImage.ToolTip"){}
 	
 	igdeUndo::Ref OnActionNode(seSkin*, seProperty*, sePropertyNode *node) override{
 		return node->GetNodeType() == sePropertyNode::entImage

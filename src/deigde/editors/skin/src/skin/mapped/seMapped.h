@@ -68,7 +68,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create new mapped. */
-	explicit seMapped(const char *name = "Mapped");
+	explicit seMapped(const char *name);
 	
 	/** Create copy of mapped. */
 	seMapped(const seMapped &mapped);

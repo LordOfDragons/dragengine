@@ -52,7 +52,7 @@ pIndex(0)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Ungroup nodes");
+	SetShortInfo("@Skin.Undo.UngroupNodes");
 	
 	pIndex = parentGroup->GetNodes().IndexOf(nodeGroup);
 	

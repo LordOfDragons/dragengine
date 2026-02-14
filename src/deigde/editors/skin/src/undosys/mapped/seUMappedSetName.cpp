@@ -41,7 +41,7 @@ pNewName(newName)
 {
 	DEASSERT_NOTNULL(pMapped)
 	
-	SetShortInfo("Set Mapped Name");
+	SetShortInfo("@Skin.Undo.SetMappedName");
 }
 
 seUMappedSetName::~seUMappedSetName(){

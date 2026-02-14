@@ -58,7 +58,7 @@ pOldContent(nullptr)
 	
 	const decPoint3 size(image->GetWidth(), image->GetHeight(), image->GetDepth());
 	
-	SetShortInfo("Property constructed from image");
+	SetShortInfo("@Skin.Undo.PropertyConstructedFromImage");
 	
 	sePropertyNodeImage::Ref nodeImage;
 	

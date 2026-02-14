@@ -39,7 +39,7 @@ pMapped(mapped)
 {
 	DEASSERT_NOTNULL(pMapped)
 	
-	SetShortInfo("Set Mapped Input Clamped");
+	SetShortInfo("@Skin.Undo.SetMappedInputClamped");
 }
 
 seUMappedToggleInputClamped::~seUMappedToggleInputClamped(){

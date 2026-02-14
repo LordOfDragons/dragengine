@@ -45,7 +45,7 @@ seUPropertySetVideoPath::seUPropertySetVideoPath(seProperty *property, const cha
 	
 	pProperty = nullptr;
 	
-	SetShortInfo("Property Set Video Path");
+	SetShortInfo("@Skin.Undo.PropertySetVideoPath");
 	
 	pOldPath = property->GetVideoPath();
 	pNewPath = newPath;

@@ -49,7 +49,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Property constructed set size");
+	SetShortInfo("@Skin.Undo.PropertyConstructedSetSize");
 	
 	pOldValue = property->GetNodeGroup()->GetSize();
 	

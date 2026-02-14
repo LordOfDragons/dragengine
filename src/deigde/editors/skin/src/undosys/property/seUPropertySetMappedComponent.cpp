@@ -47,7 +47,7 @@ pNewValue(newValue)
 {
 	DEASSERT_NOTNULL(property)
 	
-	SetShortInfo("Property Set Mapped Component");
+	SetShortInfo("@Skin.Undo.PropertySetMappedComponent");
 	
 	pProperty = property;
 }

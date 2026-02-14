@@ -39,5 +39,5 @@ seUMappedPaste::seUMappedPaste(seSkin *skin, const seClipboardDataMapped &data) 
 seUMappedAdd(skin, seMapped::Ref::New(data.GetMapped().First()))
 {
 	pMapped->MakeNameUnique(skin->GetMapped());
-	SetShortInfo("Paste Mapped");
+	SetShortInfo("@Skin.Undo.PasteMapped");
 }

@@ -49,7 +49,7 @@ seUTextureRemove::seUTextureRemove(seTexture *texture){
 	pTexture = nullptr;
 	pSkin = nullptr;
 	
-	SetShortInfo("Remove Texture");
+	SetShortInfo("@Skin.Undo.RemoveTexture");
 	
 	pTexture = texture;
 	pSkin = skin;

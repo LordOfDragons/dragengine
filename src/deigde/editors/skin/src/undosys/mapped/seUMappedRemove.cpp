@@ -42,7 +42,7 @@ pSkin(mapped ? mapped->GetSkin() : nullptr)
 	DEASSERT_NOTNULL(pMapped)
 	DEASSERT_NOTNULL(pSkin)
 	
-	SetShortInfo("Remove Mapped");
+	SetShortInfo("@Skin.Undo.RemoveMapped");
 	
 	pSkin->GetTextures().Visit([&](seTexture *texture){
 		texture->GetProperties().Visit([&](seProperty *property){

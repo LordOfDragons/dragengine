@@ -41,7 +41,7 @@ pNewOutputUpper(newOutputUpper)
 {
 	DEASSERT_NOTNULL(pMapped)
 	
-	SetShortInfo("Set Mapped Output Upper");
+	SetShortInfo("@Skin.Undo.SetMappedOutputUpper");
 }
 
 seUMappedSetOutputUpper::~seUMappedSetOutputUpper(){

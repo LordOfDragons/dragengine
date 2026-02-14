@@ -41,7 +41,7 @@ pNewInputType(newInputType)
 {
 	DEASSERT_NOTNULL(pMapped)
 	
-	SetShortInfo("Set Mapped Input Type");
+	SetShortInfo("@Skin.Undo.SetMappedInputType");
 }
 
 seUMappedSetInputType::~seUMappedSetInputType(){

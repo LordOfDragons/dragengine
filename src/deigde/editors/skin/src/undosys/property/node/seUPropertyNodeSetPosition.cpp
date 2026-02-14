@@ -47,7 +47,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Node set position");
+	SetShortInfo("@Skin.Undo.NodeSetPosition");
 	
 	pOldValue = node->GetPosition();
 	

@@ -48,7 +48,7 @@ pChild(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Node group add node");
+	SetShortInfo("@Skin.Undo.NodeGroupAddNode");
 	
 	pNode = node;
 	pChild = child;

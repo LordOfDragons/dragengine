@@ -41,7 +41,7 @@
 seUPNGroupNodesBottom::seUPNGroupNodesBottom(sePropertyNodeGroup *node, const sePropertyNode::List &children) :
 seUPNGroupMoveNodes(node, children)
 {
-	SetShortInfo("Move nodes to bottom");
+	SetShortInfo("@Skin.Undo.MoveNodesToBottom");
 	
 	if(pChildren.IsNotEmpty() && pChildren.First()->index == 0){
 		pChildren.RemoveAll(); // has no effect

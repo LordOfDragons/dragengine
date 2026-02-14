@@ -120,7 +120,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create property. */
-	seProperty(deEngine *engine, const char *name = "color");
+	seProperty(deEngine *engine, const char *name);
 	
 	/** \brief Create copy of property. */
 	seProperty(const seProperty &property);

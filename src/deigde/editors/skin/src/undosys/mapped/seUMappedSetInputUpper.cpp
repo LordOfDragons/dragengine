@@ -41,7 +41,7 @@ pNewInputUpper(newInputUpper)
 {
 	DEASSERT_NOTNULL(pMapped)
 	
-	SetShortInfo("Set Mapped Input Upper");
+	SetShortInfo("@Skin.Undo.SetMappedInputUpper");
 }
 
 seUMappedSetInputUpper::~seUMappedSetInputUpper(){

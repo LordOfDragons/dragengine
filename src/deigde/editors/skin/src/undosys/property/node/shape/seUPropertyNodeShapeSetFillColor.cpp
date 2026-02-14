@@ -47,7 +47,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Node shape set fill color");
+	SetShortInfo("@Skin.Undo.NodeShapeSetFillColor");
 	
 	pOldValue = node->GetFillColor();
 	

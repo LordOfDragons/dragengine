@@ -46,7 +46,7 @@ seUPropertySetCurve::seUPropertySetCurve(seSkyLayer *layer, seProperty *property
 	pLayer = nullptr;
 	pProperty = nullptr;
 	
-	SetShortInfo("Property Set Curve");
+	SetShortInfo("@Skin.Undo.PropertySetCurve");
 	
 	pOldCurve = property->GetCurve();
 	pNewCurve = pOldCurve;

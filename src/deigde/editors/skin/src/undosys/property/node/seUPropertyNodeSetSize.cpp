@@ -47,7 +47,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Node set size");
+	SetShortInfo("@Skin.Undo.NodeSetSize");
 	
 	pOldValue = node->GetSize();
 	

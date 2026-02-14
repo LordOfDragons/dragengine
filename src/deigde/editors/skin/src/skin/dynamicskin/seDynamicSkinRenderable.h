@@ -98,7 +98,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderable. */
-	explicit seDynamicSkinRenderable(deEngine *engine, const char *name = "Renderable");
+	explicit seDynamicSkinRenderable(deEngine *engine, const char *name);
 	/** Cleans up the renderable. */
 protected:
 	~seDynamicSkinRenderable() override;

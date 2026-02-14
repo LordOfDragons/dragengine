@@ -53,7 +53,7 @@ pLayer(layer)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Node group paste nodes");
+	SetShortInfo("@Skin.Undo.NodeGroupPasteNodes");
 	
 	clipboardData.GetNodes().Visit([&](const sePropertyNode &d){
 		const sePropertyNode::Ref pasteNode(d.Copy());

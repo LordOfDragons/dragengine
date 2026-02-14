@@ -41,7 +41,7 @@
 seUPropertyNodesDrag::seUPropertyNodesDrag(const sePropertyNode::List &nodes) :
 pNodes(nodes)
 {
-	SetShortInfo("Drag nodes");
+	SetShortInfo("@Skin.Undo.DragNodes");
 }
 
 seUPropertyNodesDrag::~seUPropertyNodesDrag(){
