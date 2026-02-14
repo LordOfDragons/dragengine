@@ -53,7 +53,7 @@ reUBoneMassFromVolume::reUBoneMassFromVolume(reRig *rig, const reRigBone::List &
 		density = 0.0f;
 	}
 	
-	SetShortInfo("Bone mass from volume");
+	SetShortInfo("@Rig.Undo.BoneMassFromVolume");
 	
 	bones.Visit([&](reRigBone *bone){
 		const cBone::Ref ubone(cBone::Ref::New());

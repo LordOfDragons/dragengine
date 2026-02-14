@@ -50,7 +50,7 @@ reUConstraintSetOffset::reUConstraintSetOffset(reRigConstraint *constraint, cons
 	pOldOffset = constraint->GetOffset();
 	pNewOffset = newOffset;
 	
-	SetShortInfo("Constraint set offset");
+	SetShortInfo("@Rig.Undo.ConstraintSetOffset");
 }
 
 reUConstraintSetOffset::~reUConstraintSetOffset(){

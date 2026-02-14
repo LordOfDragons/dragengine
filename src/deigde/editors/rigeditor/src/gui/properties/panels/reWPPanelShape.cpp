@@ -158,11 +158,11 @@ pShape(nullptr)
 	igdeContainerForm::Ref content(igdeContainerForm::Ref::New(env));
 	AddChild(content);
 	
-	helper.EditString(content, "Parent:", "Parent bone name or empty string for rig shapes.",
+	helper.EditString(content, "@Rig.PanelShape.Parent.Label", "@Rig.PanelShape.Parent.ToolTip",
 		pEditBone, {});
 	pEditBone->SetEditable(false);
 	
-	helper.EditString(content, "Property:", "Custom shape property string.",
+	helper.EditString(content, "@Rig.PanelShape.Property.Label", "@Rig.PanelShape.Property.ToolTip",
 		pEditProperty, cTextProperty::Ref::New(*this));
 }
 

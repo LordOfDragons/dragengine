@@ -43,7 +43,7 @@ reUSetBoneIKLimitsUpper::reUSetBoneIKLimitsUpper(reRigBone *bone, const decVecto
 	pNewIKLimitsUpper = ikLimitsUpper;
 	
 	try{
-		SetShortInfo("Set Bone IK Limits Upper");
+		SetShortInfo("@Rig.Undo.BoneSetIkLimitsUpper");
 		
 	}catch(const deException &){
 		pCleanUp();

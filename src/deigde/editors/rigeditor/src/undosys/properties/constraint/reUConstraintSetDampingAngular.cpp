@@ -50,7 +50,7 @@ reUConstraintSetDampingAngular::reUConstraintSetDampingAngular(reRigConstraint *
 	pOldDamping = constraint->GetAngularDamping();
 	pNewDamping = newDamping;
 	
-	SetShortInfo("Constraint set angular damping");
+	SetShortInfo("@Rig.Undo.ConstraintSetDampingAngular");
 }
 
 reUConstraintSetDampingAngular::~reUConstraintSetDampingAngular(){

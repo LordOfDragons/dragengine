@@ -50,7 +50,7 @@ reUConstraintSetPosition::reUConstraintSetPosition(reRigConstraint *constraint, 
 	pOldPosition = constraint->GetPosition();
 	pNewPosition = newPosition;
 	
-	SetShortInfo("Constraint set position");
+	SetShortInfo("@Rig.Undo.ConstraintSetPosition");
 }
 
 reUConstraintSetPosition::~reUConstraintSetPosition(){

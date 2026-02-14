@@ -42,9 +42,22 @@ pAxis(axis)
 	
 	pBone = bone;
 	try{
-		decString text;
-		text.Format("Toggle Bone IK Locked %c", 'X' + axis);
-		SetShortInfo(text);
+		switch(axis){
+		case 0:
+			SetShortInfo("@Rig.Undo.BoneToggleIkLockedX");
+			break;
+			
+		case 1:
+			SetShortInfo("@Rig.Undo.BoneToggleIkLockedY");
+			break;
+			
+		case 2:
+			SetShortInfo("@Rig.Undo.BoneToggleIkLockedZ");
+			break;
+			
+		default:
+			DETHROW_INFO(deeInvalidParam, "axis not in range 0..2");
+		}
 		
 	}catch(const deException &){
 		pCleanUp();

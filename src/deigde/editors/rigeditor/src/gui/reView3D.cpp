@@ -139,7 +139,7 @@ public:
 		phyWorld->RayHits(position, direction, &listener, layerMask);
 	}
 	
-	virtual bool OnDragBegin(){
+	bool OnDragBegin() override{
 		return GetDragState() == edsLeft && pView.GetRig() && pView.GetCanRender()
 			&& OnDragBegin(*pView.GetRig());
 	}
@@ -323,7 +323,7 @@ public:
 				return false;
 			}
 			
-			pUndo = reUMoveShape::Ref::New(list);
+			pUndo = reUMoveShape::Ref::New(*rig.GetEnvironment(), list);
 			
 			if(activeShape){
 				pRotationMatrix.SetRotation(activeShape->GetOrientation() * DEG2RAD);
@@ -344,7 +344,7 @@ public:
 		return true;
 	}
 	
-	virtual void OnDragUpdate(){
+	void OnDragUpdate() override{
 		if(!pUndo || !pView.GetRig()){
 			return;
 		}
@@ -387,7 +387,7 @@ public:
 		undo.ProgressiveRedo();
 	}
 	
-	virtual void OnDragFinish(bool cancelled){
+	void OnDragFinish(bool cancelled) override{
 		if(!pUndo){
 			return;
 		}
@@ -529,7 +529,7 @@ public:
 				});
 				center /= (float)list.GetCount();
 				
-				pUndo = reURotateShape::Ref::New(list);
+				pUndo = reURotateShape::Ref::New(*rig.GetEnvironment(), list);
 				pUndo.DynamicCast<reURotateShape>()->SetModifyPosition(list.GetCount() > 1);
 				}break;
 				

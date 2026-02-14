@@ -42,7 +42,7 @@ reUSetShapeCapsuleHalfHeight::reUSetShapeCapsuleHalfHeight(reRigShapeCapsule *sh
 	pOldHalfHeight = shape->GetHalfHeight();
 	pNewHalfHeight = halfHeight;
 	
-	SetShortInfo("Set Capsule Shape Half Height");
+	SetShortInfo("@Rig.Undo.ShapeCapsuleSetHalfHeight");
 }
 
 reUSetShapeCapsuleHalfHeight::~reUSetShapeCapsuleHalfHeight(){

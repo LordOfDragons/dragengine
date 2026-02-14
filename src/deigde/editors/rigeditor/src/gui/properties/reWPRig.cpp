@@ -187,7 +187,7 @@ class cCheckDynamic : public cBaseAction{
 public:
 	using Ref = deTObjectReference<cCheckDynamic>;
 	cCheckDynamic(reWPRig &panel) :
-	cBaseAction(panel, "Dynamic", "Determines if the rig is afflicted by dynamic physics."){ }
+	cBaseAction(panel, "@Rig.PanelRig.Simulation.Dynamic", "@Rig.PanelRig.Simulation.Dynamic.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(reRig *rig) override{
 		return reURigToggleDynamic::Ref::New(rig);
@@ -198,7 +198,7 @@ class cCheckModelCollision : public cBaseAction{
 public:
 	using Ref = deTObjectReference<cCheckModelCollision>;
 	cCheckModelCollision(reWPRig &panel) :
-	cBaseAction(panel, "Model Collision", "Use model collision instead of shapes."){}
+	cBaseAction(panel, "@Rig.PanelRig.Rig.ModelCollision", "@Rig.PanelRig.Rig.ModelCollision.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(reRig *rig) override{
 		return reURigToggleModelCollision::Ref::New(rig);
@@ -253,22 +253,22 @@ pWindowProperties(windowProperties)
 	AddChild(content);
 	
 	
-	helper.GroupBox(content, groupBox, "Rig:");
+	helper.GroupBox(content, groupBox, "@Rig.PanelRig.GroupBox.Rig");
 	
-	helper.ComboBox(groupBox, "Root Bone:", true, "Name of the root bone.",
+	helper.ComboBox(groupBox, "@Rig.PanelRig.Rig.RootBone.Label", true, "@Rig.PanelRig.Rig.RootBone.ToolTip",
 		pCBRootBone, cComboRootBone::Ref::New(*this));
 	pCBRootBone->SetDefaultSorter();
 	
-	helper.EditVector(groupBox, "CMP:",
-		"Central mass point relative to the collider origin.",
+	helper.EditVector(groupBox, "@Rig.PanelRig.Rig.Cmp.Label",
+		"@Rig.PanelRig.Rig.Cmp.ToolTip",
 		pEditCentralMassPoint, cEditCentralMassPoint::Ref::New(*this));
 	
 	helper.CheckBox(groupBox, pChkModelCollision, cCheckModelCollision::Ref::New(*this));
 	
 	
-	helper.GroupBox(content, groupBox, "Simulation:");
+	helper.GroupBox(content, groupBox, "@Rig.PanelRig.GroupBox.Simulation");
 	helper.CheckBox(groupBox, pChkDynamic, cCheckDynamic::Ref::New(*this));
-	helper.EditFloat(groupBox, "Mass:", "Mass in kg.", pEditMass, cEditMass::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Rig.PanelRig.Simulation.Mass.Label", "@Rig.PanelRig.Simulation.Mass.ToolTip", pEditMass, cEditMass::Ref::New(*this));
 }
 
 reWPRig::~reWPRig(){

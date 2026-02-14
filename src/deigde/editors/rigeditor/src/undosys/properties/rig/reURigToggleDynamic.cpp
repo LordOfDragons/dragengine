@@ -42,7 +42,7 @@
 reURigToggleDynamic::reURigToggleDynamic(reRig *rig){
 	DEASSERT_NOTNULL(rig)
 	
-	SetShortInfo("Toggle Rig Dynamic");
+	SetShortInfo("@Rig.Undo.RigToggleDynamic");
 	
 	pRig = rig;
 }

@@ -28,6 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/math/decMath.h>
 
+class igdeEnvironment;
 
 
 /**
@@ -39,6 +40,7 @@ public:
 	
 	
 private:
+	igdeEnvironment &pEnvironment;
 	float pAngle;
 	decPoint3 pCenterSector;
 	decVector pCenterPosition, pAxis;
@@ -52,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reBaseUndoRotate();
+	explicit reBaseUndoRotate(igdeEnvironment &environment);
 	
 protected:
 	/** \brief Clean up undo. */

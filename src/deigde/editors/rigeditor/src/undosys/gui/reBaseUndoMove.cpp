@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "reBaseUndoMove.h"
+
+#include <deigde/environment/igdeEnvironment.h>
+#include <deigde/localization/igdeTranslationManager.h>
 
 
 
@@ -35,7 +35,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-reBaseUndoMove::reBaseUndoMove(){
+reBaseUndoMove::reBaseUndoMove(igdeEnvironment &environment) :
+pEnvironment(environment){
 }
 
 reBaseUndoMove::~reBaseUndoMove(){
@@ -47,12 +48,12 @@ reBaseUndoMove::~reBaseUndoMove(){
 ///////////////
 
 void reBaseUndoMove::SetDistance(const decVector &distance){
-	decString info;
-	
 	pDist = distance;
 	
-	info.Format("distance (%g,%g,%g)", distance.x, distance.y, distance.z);
-	SetLongInfo(info.GetString());
+	decString info;
+	info.FormatSafe(pEnvironment.GetTranslationManager().Translate("Rig.Undo.Move.Format").ToUTF8(),
+		distance.x, distance.y, distance.z);
+	SetLongInfo(info);
 }
 
 

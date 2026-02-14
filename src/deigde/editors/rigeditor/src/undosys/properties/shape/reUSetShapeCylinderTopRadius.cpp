@@ -42,7 +42,7 @@ reUSetShapeCylinderTopRadius::reUSetShapeCylinderTopRadius(reRigShapeCylinder *s
 	pOldTopRadius = shape->GetTopRadius();
 	pNewTopRadius = topRadius;
 	
-	SetShortInfo("Set Cylinder Shape Half Height");
+	SetShortInfo("@Rig.Undo.ShapeCylinderSetTopRadius");
 }
 
 reUSetShapeCylinderTopRadius::~reUSetShapeCylinderTopRadius(){

@@ -45,7 +45,7 @@ pRig(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Rig set central mass point");
+	SetShortInfo("@Rig.Undo.RigSetCmp");
 	
 	pOldCMP = rig->GetCentralMassPoint();
 	pNewCmp = newCMP;

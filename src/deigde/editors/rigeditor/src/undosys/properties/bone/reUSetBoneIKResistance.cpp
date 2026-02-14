@@ -43,7 +43,7 @@ reUSetBoneIKResistance::reUSetBoneIKResistance(reRigBone *bone, const decVector 
 	pNewIKResistance = ikResistance;
 	
 	try{
-		SetShortInfo("Set Bone IK Resistance");
+		SetShortInfo("@Rig.Undo.BoneSetIkResistance");
 		
 	}catch(const deException &){
 		pCleanUp();

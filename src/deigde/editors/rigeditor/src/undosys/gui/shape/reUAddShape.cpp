@@ -50,10 +50,10 @@ reUAddShape::reUAddShape(reRig *rig, reRigBone *bone, reRigShape *shape){
 	
 	try{
 		if(bone){
-			SetShortInfo("Add Bone Shape");
+			SetShortInfo("@Rig.Undo.ShapeAddBone");
 			
 		}else{
-			SetShortInfo("Add Rig Shape");
+			SetShortInfo("@Rig.Undo.ShapeAddRig");
 		}
 		
 	}catch(const deException &){

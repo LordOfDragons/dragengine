@@ -44,7 +44,7 @@ pShape(nullptr){
 	pOldProperty = shape->GetProperty();
 	pNewProperty = newProperty;
 	
-	SetShortInfo("Shape set property");
+	SetShortInfo("@Rig.Undo.ShapeSetProperty");
 }
 
 reUShapeSetProperty::~reUShapeSetProperty(){

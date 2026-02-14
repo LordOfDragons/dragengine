@@ -46,7 +46,7 @@ pIndex(index)
 	
 	pPointOld = shape->GetPoints().GetAt(index);
 	
-	SetShortInfo("Shape hull set point");
+	SetShortInfo("@Rig.Undo.ShapeHullSetPoint");
 }
 
 reUShapeHullSetPoint::~reUShapeHullSetPoint(){

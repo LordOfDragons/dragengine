@@ -57,25 +57,25 @@ pWindowMain(windowMain)
 	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
 	pPanelRig = reWPRig::Ref::New(*this);
-	AddChild(pPanelRig, "Rig");
+	AddChild(pPanelRig, "@Rig.WindowProperties.Panel.Rig");
 	
 	pPanelBone = reWPBone::Ref::New(*this);
-	AddChild(pPanelBone, "Bone");
+	AddChild(pPanelBone, "@Rig.WindowProperties.Panel.Bone");
 	
 	pPanelShape = reWPShape::Ref::New(*this);
-	AddChild(pPanelShape, "Shape");
+	AddChild(pPanelShape, "@Rig.WindowProperties.Panel.Shape");
 	
 	pPanelConstraint = reWPConstraint::Ref::New(*this);
-	AddChild(pPanelConstraint, "Constraint");
+	AddChild(pPanelConstraint, "@Rig.WindowProperties.Panel.Constraint");
 	
 	pPanelPush = reWPPush::Ref::New(*this);
-	AddChild(pPanelPush, "Push");
+	AddChild(pPanelPush, "@Rig.WindowProperties.Panel.Push");
 	
 	pPanelView = reWPView::Ref::New(*this);
-	AddChild(pPanelView, "View");
+	AddChild(pPanelView, "@Rig.WindowProperties.Panel.View");
 	
 	pPanelUndoHistory = reWPUndoHistory::Ref::New(GetEnvironment());
-	AddChild(pPanelUndoHistory, "Undo");
+	AddChild(pPanelUndoHistory, "@Rig.WindowProperties.Panel.Undo");
 	
 	SetActivePanel(5); // view
 }

@@ -42,7 +42,7 @@ reUSetShapeOrientation::reUSetShapeOrientation(reRigShape *shape, const decVecto
 	pOldOrientation = shape->GetOrientation();
 	pNewOrientation = newOrientation;
 	
-	SetShortInfo("Set Shape Rotation");
+	SetShortInfo("@Rig.Undo.ShapeSetRotation");
 }
 
 reUSetShapeOrientation::~reUSetShapeOrientation(){

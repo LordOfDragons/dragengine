@@ -42,7 +42,7 @@ reUSetShapeBoxHalfExtends::reUSetShapeBoxHalfExtends(reRigShapeBox *shape, const
 	pOldHalfExtends = shape->GetHalfExtends();
 	pNewHalfExtends = halfExtends;
 	
-	SetShortInfo("Set Box Shape HalfExtends");
+	SetShortInfo("@Rig.Undo.ShapeBoxSetHalfExtends");
 }
 
 reUSetShapeBoxHalfExtends::~reUSetShapeBoxHalfExtends(){

@@ -40,7 +40,7 @@ reUToggleBoneDynamic::reUToggleBoneDynamic(reRigBone *bone){
 	
 	pBone = bone;
 	try{
-		SetShortInfo("Toggle Bone Dynamic");
+		SetShortInfo("@Rig.Undo.BoneToggleDynamic");
 		
 	}catch(const deException &){
 		pCleanUp();

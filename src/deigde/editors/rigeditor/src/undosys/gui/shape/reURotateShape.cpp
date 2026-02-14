@@ -38,7 +38,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-reURotateShape::reURotateShape(const reRigShape::List &list){
+reURotateShape::reURotateShape(igdeEnvironment &environment, const reRigShape::List &list) :
+reBaseUndoRotate(environment)
+{
 	DEASSERT_TRUE(list.IsNotEmpty())
 	
 	list.Visit([&](reRigShape *s){
@@ -46,10 +48,10 @@ reURotateShape::reURotateShape(const reRigShape::List &list){
 	});
 	
 	if(list.GetCount() > 1){
-		SetShortInfo("Rotate Shapes");
+		SetShortInfo("@Rig.Undo.ShapesRotate");
 		
 	}else{
-		SetShortInfo("Rotate Shape");
+		SetShortInfo("@Rig.Undo.ShapeRotate");
 	}
 }
 

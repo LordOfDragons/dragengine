@@ -46,7 +46,7 @@ reUSetBoneName::reUSetBoneName(reRigBone *bone, const char *newName){
 	pOldName = bone->GetName();
 	pNewName = newName;
 	
-	SetShortInfo("Set Bone Name");
+	SetShortInfo("@Rig.Undo.BoneSetName");
 }
 
 reUSetBoneName::~reUSetBoneName(){

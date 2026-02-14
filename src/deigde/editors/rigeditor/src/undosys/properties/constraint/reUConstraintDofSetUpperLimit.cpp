@@ -54,7 +54,7 @@ deColliderConstraint::eDegreesOfFreedom dof, float newValue){
 	pOldValue = constraint->GetDof(dof).GetUpperLimit();
 	pNewValue = newValue;
 	
-	SetShortInfo("Constraint DOF set upper limit");
+	SetShortInfo("@Rig.Undo.ConstraintDofSetLimitUpper");
 }
 
 reUConstraintDofSetUpperLimit::~reUConstraintDofSetUpperLimit(){

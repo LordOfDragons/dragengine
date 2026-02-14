@@ -187,8 +187,8 @@ public:
 			return {};
 		}
 		if(rig->GetBones().HasNamed(name)){
-			igdeCommonDialogs::ErrorFormat(pPanel, "Invalid Bone Name",
-				"There exists already a bone named {0}.", name.GetString());
+			igdeCommonDialogs::ErrorFormat(pPanel, "@Rig.PanelBone.Dialog.InvalidBoneName",
+				pPanel.Translate("Rig.PanelBone.Error.DuplicateName").ToUTF8(), name.GetString());
 			return {};
 		}
 		return reUSetBoneName::Ref::New(bone, name);
@@ -212,8 +212,8 @@ public:
 		}
 		
 		if(parent && !bone->CanHaveParent(parent)){
-			igdeCommonDialogs::ErrorFormat(pPanel, "Invalid Parent Bone",
-				"Internal error. Bone '{0}' is not valid as parent and should not have been selectable!",
+			igdeCommonDialogs::ErrorFormat(pPanel, "@Rig.PanelBone.Dialog.InvalidParentBone",
+				pPanel.Translate("Rig.PanelBone.Error.InvalidParent").ToUTF8(),
 				parent->GetName().GetString());
 			return {};
 		}
@@ -280,8 +280,8 @@ public:
 	using Ref = deTObjectReference<cCheckDynamic>;
 	
 public:
-	cCheckDynamic(reWPBone &panel) : cBaseAction(panel, "Dynamic",
-		"Determines if the bone is affected by physics."){ }
+	cCheckDynamic(reWPBone &panel) : cBaseAction(panel, "@Rig.PanelBone.Physics.Dynamic",
+		"@Rig.PanelBone.Physics.Dynamic.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(reRig *rig, reRigBone *bone) override{
 		return reUToggleBoneDynamic::Ref::New(bone);
@@ -335,7 +335,7 @@ private:
 	const int pAxis;
 public:
 	cCheckIKLocked(reWPBone &panel, int axis, const char *text) : cBaseAction(panel, text,
-		"Determines if the IK Axis is locked."), pAxis(axis){ }
+		"@Rig.PanelBone.IkLimits.Locked.ToolTip"), pAxis(axis){ }
 	
 	igdeUndo::Ref OnAction(reRig *rig, reRigBone *bone) override{
 		return reUToggleBoneIKLocked::Ref::New(bone, pAxis);
@@ -366,55 +366,55 @@ pWindowProperties(windowProperties)
 	AddChild(content);
 	
 	// structure
-	helper.GroupBox(content, groupBox, "Structure:");
+	helper.GroupBox(content, groupBox, "@Rig.PanelBone.GroupBox.Structure");
 	
-	helper.EditString(groupBox, "Name:", "Unique name of the bone.",
+	helper.EditString(groupBox, "@Rig.PanelBone.Structure.Name.Label", "@Rig.PanelBone.Structure.Name.ToolTip",
 		pEditName, cTextName::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "Parent:", true,
-		"Name of the parent bone or the empty string if this is a top level bone.",
+	helper.ComboBox(groupBox, "@Rig.PanelBone.Structure.Parent.Label", true,
+		"@Rig.PanelBone.Structure.Parent.ToolTip",
 		pCBParent, cComboParent::Ref::New(*this));
 	pCBParent->SetDefaultSorter();
 	
 	// geometry
-	helper.GroupBox(content, groupBox, "Geometry:");
+	helper.GroupBox(content, groupBox, "@Rig.PanelBone.GroupBox.Geometry");
 	
-	helper.EditVector(groupBox, "Position:",
-		"Position of the bone relative to the world or parent bone.",
+	helper.EditVector(groupBox, "@Rig.PanelBone.Geometry.Position.Label",
+		"@Rig.PanelBone.Geometry.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
 	
-	helper.EditVector(groupBox, "Rotation:",
-		"Rotation of the bone relative to the world or parent bone.",
+	helper.EditVector(groupBox, "@Rig.PanelBone.Geometry.Rotation.Label",
+		"@Rig.PanelBone.Geometry.Rotation.ToolTip",
 		pEditRotation, cEditRotation::Ref::New(*this));
 	
 	// physics
-	helper.GroupBox(content, groupBox, "Physics:");
+	helper.GroupBox(content, groupBox, "@Rig.PanelBone.GroupBox.Physics");
 	
-	helper.EditVector(groupBox, "CMP:",
-		"Central mass point relative to the world or parent bone.",
+	helper.EditVector(groupBox, "@Rig.PanelBone.Physics.Cmp.Label",
+		"@Rig.PanelBone.Physics.Cmp.ToolTip",
 		pEditCentralMassPoint, cEditCentralMassPoint::Ref::New(*this));
 	
-	helper.EditFloat(groupBox, "Mass:", "Mass in kg of the matter around the bone.",
+	helper.EditFloat(groupBox, "@Rig.PanelBone.Physics.Mass.Label", "@Rig.PanelBone.Physics.Mass.ToolTip",
 		pEditMass, cTextMass::Ref::New(*this));
 	
 	helper.CheckBox(groupBox, pChkDynamic, cCheckDynamic::Ref::New(*this));
 	
 	// inverse kinematic limits
-	helper.GroupBox(content, groupBox, "Inverse Kinematic Limits:");
+	helper.GroupBox(content, groupBox, "@Rig.PanelBone.GroupBox.IkLimits");
 	
-	helper.EditVector(groupBox, "Lower:", "Lower IK Limits per axis in degrees.",
+	helper.EditVector(groupBox, "@Rig.PanelBone.IkLimits.Lower.Label", "@Rig.PanelBone.IkLimits.Lower.ToolTip",
 		pEditIKLimitsLower, cEditIKLimitsLower::Ref::New(*this));
 	
-	helper.EditVector(groupBox, "Upper:", "Upper IK Limits per axis in degrees.",
+	helper.EditVector(groupBox, "@Rig.PanelBone.IkLimits.Upper.Label", "@Rig.PanelBone.IkLimits.Upper.ToolTip",
 		pEditIKLimitsUpper, cEditIKLimitsUpper::Ref::New(*this));
 	
-	helper.EditVector(groupBox, "Resistance:", "Resistance per axis in degrees in the range from 0 to 1.",
+	helper.EditVector(groupBox, "@Rig.PanelBone.IkLimits.Resistance.Label", "@Rig.PanelBone.IkLimits.Resistance.ToolTip",
 		pEditIKResistance, cEditIKResistance::Ref::New(*this));
 	
-	helper.FormLine(groupBox, "Locked:", "IK axis is locked", frameLine);
-	helper.CheckBox(frameLine, pChkIKLockedX, cCheckIKLocked::Ref::New(*this, 0, "X"));
-	helper.CheckBox(frameLine, pChkIKLockedY, cCheckIKLocked::Ref::New(*this, 1, "Y"));
-	helper.CheckBox(frameLine, pChkIKLockedZ, cCheckIKLocked::Ref::New(*this, 2, "Z"));
+	helper.FormLine(groupBox, "@Rig.PanelBone.IkLimits.Locked.Label", "@Rig.PanelBone.IkLimits.Locked.ToolTip", frameLine);
+	helper.CheckBox(frameLine, pChkIKLockedX, cCheckIKLocked::Ref::New(*this, 0, "@Rig.PanelBone.IkLimits.X"));
+	helper.CheckBox(frameLine, pChkIKLockedY, cCheckIKLocked::Ref::New(*this, 1, "@Rig.PanelBone.IkLimits.Y"));
+	helper.CheckBox(frameLine, pChkIKLockedZ, cCheckIKLocked::Ref::New(*this, 2, "@Rig.PanelBone.IkLimits.Z"));
 }
 
 reWPBone::~reWPBone(){
@@ -458,7 +458,7 @@ void reWPBone::SetBone(reRigBone *bone){
 
 void reWPBone::UpdateParentBoneList(){
 	pCBParent->RemoveAllItems();
-	pCBParent->AddItem("< No Parent >", nullptr, nullptr);
+	pCBParent->AddItem(Translate("Rig.PanelBone.Parent.NoParent").ToUTF8(), nullptr, nullptr);
 	
 	if(pRig && pBone){
 		pRig->GetBones().Visit([&](reRigBone *bone){

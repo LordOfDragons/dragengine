@@ -54,7 +54,7 @@ deColliderConstraint::eDegreesOfFreedom dof, float newValue){
 	pOldValue = constraint->GetDof(dof).GetLowerLimit();
 	pNewValue = newValue;
 	
-	SetShortInfo("Constraint DOF set lower limit");
+	SetShortInfo("@Rig.Undo.ConstraintDofSetLimitLower");
 }
 
 reUConstraintDofSetLowerLimit::~reUConstraintDofSetLowerLimit(){

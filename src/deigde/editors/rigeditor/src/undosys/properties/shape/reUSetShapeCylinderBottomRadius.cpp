@@ -42,7 +42,7 @@ reUSetShapeCylinderBottomRadius::reUSetShapeCylinderBottomRadius(reRigShapeCylin
 	pOldBottomRadius = shape->GetBottomRadius();
 	pNewBottomRadius = bottomRadius;
 	
-	SetShortInfo("Set Cylinder Shape Half Height");
+	SetShortInfo("@Rig.Undo.ShapeCylinderSetBottomRadius");
 }
 
 reUSetShapeCylinderBottomRadius::~reUSetShapeCylinderBottomRadius(){

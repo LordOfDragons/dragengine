@@ -39,7 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUMoveShape::reUMoveShape(const reRigShape::List &list){
+reUMoveShape::reUMoveShape(igdeEnvironment &environment, const reRigShape::List &list) :
+reBaseUndoMove(environment)
+{
 	DEASSERT_TRUE(list.IsNotEmpty())
 	
 	list.Visit([&](reRigShape *s){
@@ -47,10 +49,10 @@ reUMoveShape::reUMoveShape(const reRigShape::List &list){
 	});
 	
 	if(list.GetCount() > 1){
-		SetShortInfo("Move Shapes");
+		SetShortInfo("@Rig.Undo.ShapesMove");
 		
 	}else{
-		SetShortInfo("Move Shape");
+		SetShortInfo("@Rig.Undo.ShapeMove");
 	}
 }
 

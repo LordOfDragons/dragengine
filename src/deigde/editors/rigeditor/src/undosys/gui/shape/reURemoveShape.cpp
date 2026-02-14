@@ -56,7 +56,7 @@ reURemoveShape::reURemoveShape(const reRigShape::List &list){
 		pEntries.Add(entry);
 	});
 	
-	SetShortInfo("Remove Shapes");
+	SetShortInfo("@Rig.Undo.ShapeRemove");
 }
 
 reURemoveShape::~reURemoveShape(){

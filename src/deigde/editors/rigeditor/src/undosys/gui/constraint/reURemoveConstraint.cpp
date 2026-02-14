@@ -55,7 +55,7 @@ reURemoveConstraint::reURemoveConstraint(reRigConstraint::List &list){
 		pEntries.Add(entry);
 	});
 	
-	SetShortInfo("Remove Constraints");
+	SetShortInfo("@Rig.Undo.ConstraintRemove");
 }
 
 reURemoveConstraint::~reURemoveConstraint(){

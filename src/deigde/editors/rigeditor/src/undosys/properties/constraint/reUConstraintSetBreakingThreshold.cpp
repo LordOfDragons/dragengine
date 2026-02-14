@@ -50,7 +50,7 @@ reUConstraintSetBreakingThreshold::reUConstraintSetBreakingThreshold(reRigConstr
 	pOldBreakingThreshold = constraint->GetBreakingThreshold();
 	pNewBreakingThreshold = newBreakingThreshold;
 	
-	SetShortInfo("Constraint set breaking threshold");
+	SetShortInfo("@Rig.Undo.ConstraintSetBreakingThreshold");
 }
 
 reUConstraintSetBreakingThreshold::~reUConstraintSetBreakingThreshold(){

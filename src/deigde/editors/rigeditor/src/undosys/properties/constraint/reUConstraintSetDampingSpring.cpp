@@ -50,7 +50,7 @@ reUConstraintSetDampingSpring::reUConstraintSetDampingSpring(reRigConstraint *co
 	pOldDamping = constraint->GetSpringDamping();
 	pNewDamping = newDamping;
 	
-	SetShortInfo("Constraint set spring damping");
+	SetShortInfo("@Rig.Undo.ConstraintSetDampingSpring");
 }
 
 reUConstraintSetDampingSpring::~reUConstraintSetDampingSpring(){

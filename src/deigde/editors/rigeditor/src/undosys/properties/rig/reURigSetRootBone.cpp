@@ -42,7 +42,7 @@
 reURigSetRootBone::reURigSetRootBone(reRig *rig, reRigBone *rootBone){
 	if(!rig || !rootBone) DETHROW(deeInvalidParam);
 	
-	SetShortInfo("Set Rig Root Bone");
+	SetShortInfo("@Rig.Undo.RigSetRootBone");
 	
 	pRig = rig;
 	pOldBone = rig->GetRootBone();

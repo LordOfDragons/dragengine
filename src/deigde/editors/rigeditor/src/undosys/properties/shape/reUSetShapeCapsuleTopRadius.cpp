@@ -41,7 +41,7 @@ reUSetShapeCapsuleTopRadius::reUSetShapeCapsuleTopRadius(reRigShapeCapsule *shap
 	pOldTopRadius = shape->GetTopRadius();
 	pNewTopRadius = topRadius;
 	
-	SetShortInfo("Set Capsule Shape Half Height");
+	SetShortInfo("@Rig.Undo.ShapeCapsuleSetTopRadius");
 }
 
 reUSetShapeCapsuleTopRadius::~reUSetShapeCapsuleTopRadius(){

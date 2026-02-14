@@ -65,7 +65,7 @@ public:
 ////////////////////////////
 
 reDialogImportBone::reDialogImportBone(reWindowMain &windowMain) :
-igdeDialog(windowMain.GetEnvironment(), "Import Bones"),
+igdeDialog(windowMain.GetEnvironment(), "@Rig.DialogImportBone.Title"),
 pWindowMain(windowMain)
 {
 	igdeEnvironment &env = windowMain.GetEnvironment();
@@ -76,28 +76,28 @@ pWindowMain(windowMain)
 	igdeContainer::Ref content, frameLine;
 	content = igdeContainerForm::Ref::New(env);
 	
-	const char *description = "File to import selected bones from.";
-	helper.FormLineStretchFirst(content, "Path:", description, frameLine);
+	const char *description = "@Rig.DialogImportBone.Path.ToolTip";
+	helper.FormLineStretchFirst(content, "@Rig.DialogImportBone.Path.Label", description, frameLine);
 	helper.EditString(frameLine, description, pEditPath, {});
 	helper.Button(frameLine, pBtnPath, igdeActionSelectFile::Ref::New(
 		env, igdeEnvironment::efpltRig, pEditPath));
 	
-	helper.EditFloat(content, "Scaling:", "Scaling to apply to the imported objects.",
+	helper.EditFloat(content, "@Rig.DialogImportBone.Scaling.Label", "@Rig.DialogImportBone.Scaling.ToolTip",
 		pEditScaling, {});
 	pEditScaling->SetFloat(1.0f);
 	
-	helper.CheckBox(content, "Import bone properties",
-		"Import bone properties (central mass point, mass, dynamic, ...)",
+	helper.CheckBox(content, "@Rig.DialogImportBone.ImportBoneProperties",
+		"@Rig.DialogImportBone.ImportBoneProperties.ToolTip",
 		pChkImportBoneProperties);
 	
-	helper.CheckBox(content, "Import shapes", "Import shapes", pChkImportShapes);
+	helper.CheckBox(content, "@Rig.DialogImportBone.ImportShapes", "@Rig.DialogImportBone.ImportShapes.ToolTip", pChkImportShapes);
 	
-	helper.CheckBox(content, "Import constraints", "Import constraints", pChkImportConstraints);
+	helper.CheckBox(content, "@Rig.DialogImportBone.ImportConstraints", "@Rig.DialogImportBone.ImportConstraints.ToolTip", pChkImportConstraints);
 	
 	
 	// button line
 	igdeContainer::Ref buttonBar;
-	CreateButtonBar(buttonBar, "Import", "Cancel");
+	CreateButtonBar(buttonBar, "@Rig.DialogImportBone.Button.Import", "@Igde.Cancel");
 	
 	AddContent(content, buttonBar);
 }
@@ -154,13 +154,13 @@ void reDialogImportBone::SetImportConstraints(bool import){
 
 bool reDialogImportBone::Accept(){
 	if(GetPath().IsEmpty()){
-		igdeCommonDialogs::Error(*this, "Invalid value", "No path set.");
+		igdeCommonDialogs::Error(*this, "@Rig.DialogImportBone.Error.NoPath.Title", "@Rig.DialogImportBone.Error.NoPath.Message");
 		return false;
 	}
 	
 	const float scale = GetScaling();
 	if(scale <= FLOAT_SAFE_EPSILON){
-		igdeCommonDialogs::Error(*this, "Invalid value", "Scaling has to be 0 or higher.");
+		igdeCommonDialogs::Error(*this, "@Rig.DialogImportBone.Error.InvalidScaling.Title", "@Rig.DialogImportBone.Error.InvalidScaling.Message");
 		return false;
 	}
 	

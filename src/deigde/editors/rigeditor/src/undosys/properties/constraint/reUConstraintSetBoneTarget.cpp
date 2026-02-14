@@ -51,7 +51,7 @@ reUConstraintSetBoneTarget::reUConstraintSetBoneTarget(reRigConstraint *constrai
 	pOldBone = constraint->GetConstraintBone();
 	pNewBone = newBone;
 	
-	SetShortInfo("Constraint set target bone");
+	SetShortInfo("@Rig.Undo.ConstraintSetTargetBone");
 }
 
 reUConstraintSetBoneTarget::~reUConstraintSetBoneTarget(){

@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	explicit reUMoveShape(const reRigShape::List &list);
+	explicit reUMoveShape(igdeEnvironment &environment, const reRigShape::List &list);
 	
 protected:
 	/** \brief Clean up undo. */

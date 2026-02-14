@@ -45,7 +45,7 @@ pIndex(index)
 	
 	pPoint = shape->GetPoints().GetAt(index);
 	
-	SetShortInfo("Shape hull remove point");
+	SetShortInfo("@Rig.Undo.ShapeHullRemovePoint");
 }
 
 reUShapeHullRemovePoint::~reUShapeHullRemovePoint(){

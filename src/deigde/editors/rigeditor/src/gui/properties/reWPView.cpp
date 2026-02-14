@@ -308,7 +308,7 @@ class cCheckUseRestPose : public cBaseAction{
 public:
 	typedef deTObjectReference<cCheckUseRestPose> Ref;
 	cCheckUseRestPose(reWPView &panel) : cBaseAction(panel,
-		"Use rest pose", "Displays the rest pose instead of the animation frame"){}
+		"@Rig.PanelView.Action.UseRestPose", "@Rig.PanelView.Action.UseRestPose.Description"){}
 	
 	void OnAction(reRig &rig) override{
 		rig.SetUseRestPose(!rig.GetUseRestPose());
@@ -319,7 +319,7 @@ class cCheckPlaybackMove : public cBaseAction{
 public:
 	typedef deTObjectReference<cCheckPlaybackMove> Ref;
 	cCheckPlaybackMove(reWPView &panel) : cBaseAction(panel,
-		"Playback", "Determines if the animation move is played back"){ }
+		"@Rig.PanelView.Action.Playback", "@Rig.PanelView.Action.Playback.Description"){ }
 	
 	void OnAction(reRig &rig) override{
 		rig.SetPlaybackMove(!rig.GetPlaybackMove());
@@ -380,7 +380,7 @@ public:
 class cCheckSnapToGrid : public cBaseAction{
 public:
 	typedef deTObjectReference<cCheckSnapToGrid> Ref;
-	cCheckSnapToGrid(reWPView &panel) : cBaseAction(panel, "Snap", "Snap to grid"){}
+	cCheckSnapToGrid(reWPView &panel) : cBaseAction(panel, "@Rig.PanelView.Action.Snap", "@Rig.PanelView.Action.Snap.Description"){}
 	
 	void OnAction(reRig &rig) override{
 		reConfiguration &config = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
@@ -509,8 +509,8 @@ public:
 class cCheckCameraAttach : public cBaseAction{
 public:
 	typedef deTObjectReference<cCheckCameraAttach> Ref;
-	cCheckCameraAttach(reWPView &panel) : cBaseAction(panel, "Attach camera to a bone",
-		"Attaches the camera to a bone instead of roaming around freely"){}
+	cCheckCameraAttach(reWPView &panel) : cBaseAction(panel, "@Rig.PanelView.Action.AttachCameraToBone",
+		"@Rig.PanelView.Action.AttachCameraToBone.Description"){}
 	
 	void OnAction(reRig &rig) override{
 		reCamera &camera = *rig.GetCamera();
@@ -600,112 +600,112 @@ pWindowProperties(windowProperties)
 	
 	
 	// resources
-	helper.GroupBoxFlow(content, groupBox, "Resources:");
+	helper.GroupBoxFlow(content, groupBox, "@Rig.PanelView.GroupBox.Resources");
 	form = igdeContainerForm::Ref::New(env);
 	groupBox->AddChild(form);
 	
-	helper.EditPath(form, "Model:", "Path to the model resource to use.",
+	helper.EditPath(form, "@Rig.PanelView.Resources.Model.Label", "@Rig.PanelView.Resources.Model.ToolTip",
 		igdeEnvironment::efpltModel, pEditModelPath, cEditModelPath::Ref::New(*this));
-	helper.EditPath(form, "Skin:", "Path to the skin resource to use.",
+	helper.EditPath(form, "@Rig.PanelView.Resources.Skin.Label", "@Rig.PanelView.Resources.Skin.ToolTip",
 		igdeEnvironment::efpltSkin, pEditSkinPath, cEditSkinPath::Ref::New(*this));
-	helper.EditPath(form, "Animation:", "Path to the animation resource to use.",
+	helper.EditPath(form, "@Rig.PanelView.Resources.Animation.Label", "@Rig.PanelView.Resources.Animation.ToolTip",
 		igdeEnvironment::efpltAnimation, pEditAnimPath, cEditAnimationPath::Ref::New(*this));
 	
 		// textures
-		helper.GroupBox(groupBox, groupBox2, "Textures:");
+		helper.GroupBox(groupBox, groupBox2, "@Rig.PanelView.GroupBox.Textures");
 		
-		helper.ComboBox(groupBox2, "Texture:", "Model texture to edit.",
+		helper.ComboBox(groupBox2, "@Rig.PanelView.Textures.Texture.Label", "@Rig.PanelView.Textures.Texture.ToolTip",
 			pCBTexture, cComboTexture::Ref::New(*this));
 		pCBTexture->SetDefaultSorter();
 		
-		helper.EditPath(groupBox2, "Skin:", "Skin to use for the texture.",
+		helper.EditPath(groupBox2, "@Rig.PanelView.Textures.Skin.Label", "@Rig.PanelView.Textures.Skin.ToolTip",
 			igdeEnvironment::efpltSkin, pEditTexSkin, cEditTextureSkinPath::Ref::New(*this));
 	
 	// animation move
-	helper.GroupBox(content, groupBox, "Animation Move:");
+	helper.GroupBox(content, groupBox, "@Rig.PanelView.GroupBox.AnimationMove");
 	
-	helper.ComboBox(groupBox, "Move:", true, "Name of the animation move to use.",
+	helper.ComboBox(groupBox, "@Rig.PanelView.AnimationMove.Move.Label", true, "@Rig.PanelView.AnimationMove.Move.ToolTip",
 		pCBAnimMoves, cComboAnimationMove::Ref::New(*this));
 	pCBAnimMoves->SetDefaultSorter();
 	
-	helper.EditSliderText(groupBox, "Time:", "Move time to display.",
+	helper.EditSliderText(groupBox, "@Rig.PanelView.AnimationMove.Time.Label", "@Rig.PanelView.AnimationMove.Time.ToolTip",
 		0.0f, 0.0f, 5, 2, 0.5f, pSldMoveTime, cSliderMoveTime::Ref::New(*this));
 	
 	helper.CheckBox(groupBox, pChkUseRestPose, cCheckUseRestPose::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkPlaybackMove, cCheckPlaybackMove::Ref::New(*this));
 	
 	// physics
-	helper.GroupBox(content, groupBox, "Physics:");
+	helper.GroupBox(content, groupBox, "@Rig.PanelView.GroupBox.Physics");
 	
-	helper.EditVector(groupBox, "Gravity:", "Gravity magnitude and direction of the world.",
+	helper.EditVector(groupBox, "@Rig.PanelView.Physics.Gravity.Label", "@Rig.PanelView.Physics.Gravity.ToolTip",
 		pEditGravity, cEditGravity::Ref::New(*this));
-	helper.EditVector(groupBox, "Local Gravity:", "Magnitude and direction of the object local gravity.",
+	helper.EditVector(groupBox, "@Rig.PanelView.Physics.LocalGravity.Label", "@Rig.PanelView.Physics.LocalGravity.ToolTip",
 		pEditLocalGravity, cEditLocalGravity::Ref::New(*this));
-	helper.EditSliderText(groupBox, "Slowmotion:", "Sets the slowmotion factor.",
+	helper.EditSliderText(groupBox, "@Rig.PanelView.Physics.Slowmotion.Label", "@Rig.PanelView.Physics.Slowmotion.ToolTip",
 		0.0f, 1.0f, 5, 2, 0.1f, pSldSlowmotion, cSliderSlowMotion::Ref::New(*this));
 	pSldSlowmotion->SetValue(1.0f);
 	
 	// editing
-	helper.GroupBox(content, groupBox, "Editing:");
+	helper.GroupBox(content, groupBox, "@Rig.PanelView.GroupBox.Editing");
 	
-	helper.FormLineStretchFirst(groupBox, "Grid:", "Snap to grid", frameLine);
-	helper.EditFloat(frameLine, "Grid spacing in meters", pEditGridSize, cTextGridSize::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@Rig.PanelView.Editing.Grid", "@Rig.PanelView.Editing.Grid.SnapToGrid.ToolTip", frameLine);
+	helper.EditFloat(frameLine, "@Rig.PanelView.Editing.Grid.Spacing.ToolTip", pEditGridSize, cTextGridSize::Ref::New(*this));
 	helper.CheckBox(frameLine, pChkSnapToGrid, cCheckSnapToGrid::Ref::New(*this));
 	
-	helper.EditFloat(groupBox, "Sensitivity:",
-		"Sets the sensivity of the mouse while moving but not rotation.",
+	helper.EditFloat(groupBox, "@Rig.PanelView.Editing.Sensitivity.Label",
+		"@Rig.PanelView.Editing.Sensitivity.ToolTip",
 		pEditSensitivity, cTextSensitivity::Ref::New(*this));
 	
 	// property panels
 	action = cActionSkyChanged::Ref::New(*this);
-	helper.WPSky(content, pWPSky, action, "Sky:", false, true);
+	helper.WPSky(content, pWPSky, action, "@Rig.PanelView.Editing.Sky.Label", false, true);
 	
 	action = cActionEnvObjChanged::Ref::New(*this);
-	helper.WPWObject(content, pWPEnvObject, action, "Environment Object:", false, true);
+	helper.WPWObject(content, pWPEnvObject, action, "@Rig.PanelView.Editing.EnvObject.Label", false, true);
 	
 	// camera
-	helper.GroupBox(content, groupBox, "Camera:", true);
+	helper.GroupBox(content, groupBox, "@Rig.PanelView.GroupBox.Camera", true);
 	
-	helper.EditDVector(groupBox, "Position:", "Position of the camera.",
+	helper.EditDVector(groupBox, "@Rig.PanelView.Camera.Position.Label", "@Rig.PanelView.Camera.Position.ToolTip",
 		pEditCamPosition, cEditCameraPosition::Ref::New(*this));
-	helper.EditVector(groupBox, "Rotation:", "Rotation of the camera.",
+	helper.EditVector(groupBox, "@Rig.PanelView.Camera.Rotation.Label", "@Rig.PanelView.Camera.Rotation.ToolTip",
 		pEditCamRotation, cEditCameraRotation::Ref::New(*this));
 	
-	helper.EditVector(groupBox, "View:", "View direction of the camera.", pEditCamViewDir, {});
+	helper.EditVector(groupBox, "@Rig.PanelView.Camera.View.Label", "@Rig.PanelView.Camera.View.ToolTip", pEditCamViewDir, {});
 	pEditCamViewDir->SetEditable(false);
 	
-	helper.FormLine(groupBox, "FoV:", "Field of view", frameLine);
-	helper.EditFloat(frameLine, "Field of view in degrees", pEditCamFov, cTextCameraFov::Ref::New(*this));
-	helper.EditFloat(frameLine, "Field of view ratio (height / width)", pEditCamFovRatio, cTextCameraFovRatio::Ref::New(*this));
+	helper.FormLine(groupBox, "@Rig.PanelView.Camera.Fov.Label", "@Rig.PanelView.Camera.Fov.ToolTip", frameLine);
+	helper.EditFloat(frameLine, "@Rig.PanelView.Camera.FovDegrees.ToolTip", pEditCamFov, cTextCameraFov::Ref::New(*this));
+	helper.EditFloat(frameLine, "@Rig.PanelView.Camera.FovRatio.ToolTip", pEditCamFovRatio, cTextCameraFovRatio::Ref::New(*this));
 	
-	helper.FormLine(groupBox, "Distance:", "Distances", frameLine);
-	helper.EditFloat(frameLine, "Image distance (near clipping plane)", pEditCamImageDist, cTextCameraImageDistance::Ref::New(*this));
-	helper.EditFloat(frameLine, "View distance (far clipping plane", pEditCamViewDist, cTextCameraViewDistance::Ref::New(*this));
+	helper.FormLine(groupBox, "@Rig.PanelView.Camera.Distance.Label", "@Rig.PanelView.Camera.Distance.ToolTip", frameLine);
+	helper.EditFloat(frameLine, "@Rig.PanelView.Camera.ImageDistance.ToolTip", pEditCamImageDist, cTextCameraImageDistance::Ref::New(*this));
+	helper.EditFloat(frameLine, "@Rig.PanelView.Camera.ViewDistance.ToolTip", pEditCamViewDist, cTextCameraViewDistance::Ref::New(*this));
 	
-	helper.FormLine(groupBox, "Exposure:",
-		"Exposure multiplier and adaption time", frameLine);
-	helper.EditFloat(frameLine, "Exposure multiplier", pEditCamExposure, cTextCameraExposure::Ref::New(*this));
-	helper.EditFloat(frameLine, "Adaption time in seconds", pEditCamAdaptTime, cTextCameraAdaptionTime::Ref::New(*this));
+	helper.FormLine(groupBox, "@Rig.PanelView.Camera.Exposure.Label",
+		"@Rig.PanelView.Camera.Exposure.ToolTip", frameLine);
+	helper.EditFloat(frameLine, "@Rig.PanelView.Camera.ExposureMultiplier.ToolTip", pEditCamExposure, cTextCameraExposure::Ref::New(*this));
+	helper.EditFloat(frameLine, "@Rig.PanelView.Camera.ExposureTime.ToolTip", pEditCamAdaptTime, cTextCameraAdaptionTime::Ref::New(*this));
 	
-	helper.FormLine(groupBox, "Adaption:",
-		"Exposure multiplier and adaption time", frameLine);
-	helper.EditFloat(frameLine, "Lower intensity to adapt to.", pEditCamLowInt, cTextCameraLowIntensity::Ref::New(*this));
-	helper.EditFloat(frameLine, "Higher intensity to adapt to", pEditCamHiInt, cTextCameraHighIntensity::Ref::New(*this));
+	helper.FormLine(groupBox, "@Rig.PanelView.Camera.Adaption.Label",
+		"@Rig.PanelView.Camera.Adaption.ToolTip", frameLine);
+	helper.EditFloat(frameLine, "@Rig.PanelView.Camera.AdaptionLower.ToolTip", pEditCamLowInt, cTextCameraLowIntensity::Ref::New(*this));
+	helper.EditFloat(frameLine, "@Rig.PanelView.Camera.AdaptionUpper.ToolTip", pEditCamHiInt, cTextCameraHighIntensity::Ref::New(*this));
 	
 	// camera attaching
-	helper.GroupBox(content, groupBox, "Camera Attaching:", true);
+	helper.GroupBox(content, groupBox, "@Rig.PanelView.GroupBox.CameraAttaching", true);
 	
 	helper.CheckBox(groupBox, pChkCamAttach, cCheckCameraAttach::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "Bone:", true, "Bone the camera is attached to.",
+	helper.ComboBox(groupBox, "@Rig.PanelView.CameraAttaching.Bone.Label", true, "@Rig.PanelView.CameraAttaching.Bone.ToolTip",
 		pCBCamBone, cComboCameraBone::Ref::New(*this));
 	pCBCamBone->SetDefaultSorter();
 	
-	helper.EditVector(groupBox, "Position:",
-		"Camera position relative to the attachment bone coordinate system.",
+	helper.EditVector(groupBox, "@Rig.PanelView.CameraAttaching.Position.Label",
+		"@Rig.PanelView.CameraAttaching.Position.ToolTip",
 		pEditCamRelPosition, cEditCameraRelativePosition::Ref::New(*this));
-	helper.EditVector(groupBox, "Rotation:",
-		"Camera rotation relative to the attachment bone coordinate system.",
+	helper.EditVector(groupBox, "@Rig.PanelView.CameraAttaching.Rotation.Label",
+		"@Rig.PanelView.CameraAttaching.Rotation.ToolTip",
 		pEditCamRelRotation, cEditCameraRelativeRotation::Ref::New(*this));
 }
 

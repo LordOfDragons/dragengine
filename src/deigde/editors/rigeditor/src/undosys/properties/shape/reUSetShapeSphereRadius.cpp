@@ -42,7 +42,7 @@ reUSetShapeSphereRadius::reUSetShapeSphereRadius(reRigShapeSphere *shape, float 
 	pOldRadius = shape->GetRadius();
 	pNewRadius = radius;
 	
-	SetShortInfo("Set Sphere Shape Radius");
+	SetShortInfo("@Rig.Undo.ShapeSphereSetRadius");
 }
 
 reUSetShapeSphereRadius::~reUSetShapeSphereRadius(){

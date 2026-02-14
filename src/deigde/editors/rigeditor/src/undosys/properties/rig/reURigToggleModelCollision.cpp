@@ -45,7 +45,7 @@ pRig(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Rig toggle model collision");
+	SetShortInfo("@Rig.Undo.RigToggleModelCollision");
 	
 	pRig = rig;
 }

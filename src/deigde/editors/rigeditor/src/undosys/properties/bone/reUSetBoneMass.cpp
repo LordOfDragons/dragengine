@@ -43,7 +43,7 @@ reUSetBoneMass::reUSetBoneMass(reRigBone *bone, float mass){
 	pNewMass = mass;
 	
 	try{
-		SetShortInfo("Set Bone Mass");
+		SetShortInfo("@Rig.Undo.BoneSetMass");
 		
 	}catch(const deException &){
 		pCleanUp();

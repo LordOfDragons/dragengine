@@ -71,7 +71,7 @@ pActivePanel(nullptr)
 	pSwitcher = igdeSwitcher::Ref::New(env);
 	AddChild(pSwitcher);
 	
-	helper.Label(pSwitcher, "No Active Shape");
+	helper.Label(pSwitcher, "@Rig.PanelShape.NoActiveShape");
 	
 	pPanelSphere = reWPPanelShapeSphere::Ref::New(*this);
 	pSwitcher->AddChild(pPanelSphere);

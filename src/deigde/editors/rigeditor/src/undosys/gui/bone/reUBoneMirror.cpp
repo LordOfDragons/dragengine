@@ -49,7 +49,7 @@
 
 reUBoneMirror::reUBoneMirror(reRig *rig){
 	
-	SetShortInfo("Mirror Bones");
+	SetShortInfo("@Rig.Undo.BoneMirror");
 	
 	// create bones array
 	rig->GetSelectionBones()->GetBones().Visit([&](reRigBone *bone){

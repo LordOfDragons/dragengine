@@ -54,7 +54,7 @@ deColliderConstraint::eDegreesOfFreedom dof, float newValue){
 	pOldValue = constraint->GetDof(dof).GetStaticFriction();
 	pNewValue = newValue;
 	
-	SetShortInfo("Constraint DOF set static friction");
+	SetShortInfo("@Rig.Undo.ConstraintDofSetFrictionStatic");
 }
 
 reUConstraintDofSetStaticFriction::~reUConstraintDofSetStaticFriction(){

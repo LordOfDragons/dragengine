@@ -356,8 +356,8 @@ public:
 class cCheckRope : public cBaseAction{
 public:
 	using Ref = deTObjectReference<cCheckRope>;
-	cCheckRope(reWPConstraint &panel) : cBaseAction(panel, "Use rope physics",
-		"Determines if this constraint is a rope constraint."){ }
+	cCheckRope(reWPConstraint &panel) : cBaseAction(panel, "@Rig.PanelConstraint.Rope.IsRope",
+		"@Rig.PanelConstraint.Rope.IsRope.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(reRig*, reRigConstraint *constraint) override{
 		return reUConstraintToggleIsRope::Ref::New(constraint);
@@ -379,8 +379,8 @@ public:
 class cCheckShowJointError : public cBaseAction{
 public:
 	using Ref = deTObjectReference<cCheckShowJointError>;
-	cCheckShowJointError(reWPConstraint &panel) : cBaseAction(panel, "Show joint error",
-		"Shows joint errors visually during simulation."){}
+	cCheckShowJointError(reWPConstraint &panel) : cBaseAction(panel, "@Rig.PanelConstraint.Debugging.ShowJointError",
+		"@Rig.PanelConstraint.Debugging.ShowJointError.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(reRig*, reRigConstraint *constraint) override{
 		constraint->SetShowJointError(!constraint->GetShowJointError());
@@ -414,90 +414,89 @@ pPreventUpdate(false)
 	
 	
 	// structure
-	helper.GroupBox(content, groupBox, "Link Partners:");
+	helper.GroupBox(content, groupBox, "@Rig.PanelConstraint.GroupBox.LinkPartners");
 	
-	helper.EditString(groupBox, "Parent:", "Name of parent bone or empty string for entire rig.",
+	helper.EditString(groupBox, "@Rig.PanelConstraint.LinkPartners.Parent.Label", "@Rig.PanelConstraint.LinkPartners.Parent.ToolTip",
 		pEditBoneParent, {});
 	pEditBoneParent->SetEditable(false);
 	
-	helper.ComboBox(groupBox, "Target:", true, "Name of target bone or empty string for the world.",
+	helper.ComboBox(groupBox, "@Rig.PanelConstraint.LinkPartners.Target.Label", true, "@Rig.PanelConstraint.LinkPartners.Target.ToolTip",
 		pCBBoneTarget, cComboTarget::Ref::New(*this, pPreventUpdate));
 	pCBBoneTarget->SetDefaultSorter();
 	
 	
 	// structure
-	helper.GroupBox(content, groupBox, "Geometry:");
+	helper.GroupBox(content, groupBox, "@Rig.PanelConstraint.GroupBox.Geometry");
 	
-	helper.EditVector(groupBox, "Position:",
-		"Position of the constraint relative to the bone local coordinate system.",
+	helper.EditVector(groupBox, "@Rig.PanelConstraint.Geometry.Position.Label",
+		"@Rig.PanelConstraint.Geometry.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
-	helper.EditVector(groupBox, "Rotation:",
-		"Rotation of the constraint relative to the bone local coordinate system.",
+	helper.EditVector(groupBox, "@Rig.PanelConstraint.Geometry.Rotation.Label",
+		"@Rig.PanelConstraint.Geometry.Rotation.ToolTip",
 		pEditRotation, cEditRotation::Ref::New(*this));
-	helper.EditVector(groupBox, "Offset:",
-		"Offset of the bone local coordinate system relative to the constraint relative cooridnate system.",
+	helper.EditVector(groupBox, "@Rig.PanelConstraint.Geometry.Offset.Label",
+		"@Rig.PanelConstraint.Geometry.Offset.ToolTip",
 		pEditOffset, cEditOffset::Ref::New(*this));
 	
 	
 	// degree of freedoms
 	const char * const dofGroupText[6] = {
-		"DOF Linear X:", "DOF Linear Y:", "DOF Linear Z:",
-		"DOF Angular X:", "DOF Angular Y:", "DOF Angular Z:"
+		"@Rig.PanelConstraint.GroupBox.LinearX", "@Rig.PanelConstraint.GroupBox.LinearY", "@Rig.PanelConstraint.GroupBox.LinearZ",
+		"@Rig.PanelConstraint.GroupBox.AngularX", "@Rig.PanelConstraint.GroupBox.AngularY", "@Rig.PanelConstraint.GroupBox.AngularZ"
 	};
 	int dof;
 	
 	for(dof=0; dof<6; dof++){
 		helper.GroupBox(content, groupBox, dofGroupText[dof], dof < 3);
 		
-		helper.FormLine(groupBox, "Range:",
-			"Lower and upper limit relative to constraint coordinate system. "
-			"locked(lower=upper) limited(upper>lower) free(upper<lower)", frameLine);
-		helper.EditFloat(frameLine, "Lower limit relative to constraint coordinate system.",
+		helper.FormLine(groupBox, "@Rig.PanelConstraint.Dof.Range.Label",
+			"@Rig.PanelConstraint.Dof.Range.ToolTip", frameLine);
+		helper.EditFloat(frameLine, "@Rig.PanelConstraint.Dof.LowerLimit.ToolTip",
 			pEditDofLower[dof], cTextDofLower::Ref::New(*this, vDegreesOfFreedom[dof]));
-		helper.EditFloat(frameLine, "Upper limit relative to constraint coordinate system.",
+		helper.EditFloat(frameLine, "@Rig.PanelConstraint.Dof.UpperLimit.ToolTip",
 			pEditDofUpper[dof], cTextDofUpper::Ref::New(*this, vDegreesOfFreedom[dof]));
 		
-		helper.FormLine(groupBox, "Friction:",
-			"Static friction force and kinematic friction factor for joint inner friction.",
+		helper.FormLine(groupBox, "@Rig.PanelConstraint.Dof.Friction.Label",
+			"@Rig.PanelConstraint.Dof.Friction.ToolTip",
 			frameLine);
 			
-		helper.EditFloat(frameLine, "Static friction force in newton per meter.",
+		helper.EditFloat(frameLine, "@Rig.PanelConstraint.Dof.StaticFriction.ToolTip",
 			pEditDofStaFric[dof], cTextDofFrictionStatic::Ref::New(*this, vDegreesOfFreedom[dof]));
-		helper.EditFloat(frameLine, "Kinematic friction factor.",
+		helper.EditFloat(frameLine, "@Rig.PanelConstraint.Dof.KinematicFriction.ToolTip",
 			pEditDofKinFric[dof], cTextDofFrictionKinematic::Ref::New(*this, vDegreesOfFreedom[dof]));
 		
-		helper.EditString(groupBox, "Stiffness:", "Spring stiffness in newton per meter.",
+		helper.EditString(groupBox, "@Rig.PanelConstraint.Dof.Stiffness.Label", "@Rig.PanelConstraint.Dof.Stiffness.ToolTip",
 			pEditDofSprStiff[dof], cTextDofSpringStiffness::Ref::New(*this, vDegreesOfFreedom[dof]));
 	}
 	
 	
 	// damping
-	helper.GroupBox(content, groupBox, "Damping:", true);
+	helper.GroupBox(content, groupBox, "@Rig.PanelConstraint.GroupBox.Damping", true);
 	
-	helper.EditString(groupBox, "Linear:", "Damping of linear degrees of freedom.",
+	helper.EditString(groupBox, "@Rig.PanelConstraint.Damping.Linear.Label", "@Rig.PanelConstraint.Damping.Linear.ToolTip",
 		pEditDampLin, cTextDampingLinear::Ref::New(*this));
-	helper.EditString(groupBox, "Angular:", "Damping of angular degrees of freedom.",
+	helper.EditString(groupBox, "@Rig.PanelConstraint.Damping.Angular.Label", "@Rig.PanelConstraint.Damping.Angular.ToolTip",
 		pEditDampAng, cTextDampingAngular::Ref::New(*this));
-	helper.EditString(groupBox, "Spring:",
-		"Damping of spring degrees of freedom both linear and angular.",
+	helper.EditString(groupBox, "@Rig.PanelConstraint.Damping.Spring.Label",
+		"@Rig.PanelConstraint.Damping.Spring.ToolTip",
 		pEditDampSpr, cTextDampingSpring::Ref::New(*this));
 	
 	
 	// rope
-	helper.GroupBox(content, groupBox, "Rope:", true);
+	helper.GroupBox(content, groupBox, "@Rig.PanelConstraint.GroupBox.Rope", true);
 	helper.CheckBox(groupBox, pChkRope, cCheckRope::Ref::New(*this));
 	
 	
 	// breaking
-	helper.GroupBox(content, groupBox, "Breaking:", true);
+	helper.GroupBox(content, groupBox, "@Rig.PanelConstraint.GroupBox.Breaking", true);
 	
-	helper.EditString(groupBox, "Breaking:",
-		"Breaking threshold impuls in newton seconds or 0 to disable.",
+	helper.EditString(groupBox, "@Rig.PanelConstraint.Breaking.Threshold.Label",
+		"@Rig.PanelConstraint.Breaking.Threshold.ToolTip",
 		pEditBreakingThreshold, cTextBreakingThreshold::Ref::New(*this));
 	
 	
 	// debugging
-	helper.GroupBox(content, groupBox, "Debugging:", true);
+	helper.GroupBox(content, groupBox, "@Rig.PanelConstraint.GroupBox.Debugging", true);
 	helper.CheckBox(groupBox, pChkShowJointError, cCheckShowJointError::Ref::New(*this));
 }
 
@@ -546,7 +545,8 @@ void reWPConstraint::UpdateBoneLists(){
 	
 	try{
 		pCBBoneTarget->RemoveAllItems();
-		pCBBoneTarget->AddItem("< World >", nullptr, nullptr);
+		pCBBoneTarget->SetAutoTranslateItems(true);
+		pCBBoneTarget->AddItem(Translate("Rig.PanelConstraint.Target.World").ToUTF8(), nullptr, nullptr);
 		
 		if(pRig && pConstraint){
 			pRig->GetBones().Visit([&](reRigBone *bone){
@@ -579,7 +579,7 @@ void reWPConstraint::UpdateConstraint(){
 			pEditBoneParent->SetText(parentBone->GetName());
 			
 		}else{
-			pEditBoneParent->SetText("< Rig >");
+			pEditBoneParent->SetText(Translate("Rig.PanelConstraint.Parent.Rig").ToUTF8());
 		}
 		
 		pCBBoneTarget->SetSelection(pCBBoneTarget->IndexOfItemWithData(

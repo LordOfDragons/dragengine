@@ -43,7 +43,7 @@ reUSetBoneOrientation::reUSetBoneOrientation(reRigBone *bone, const decVector &o
 	pNewOrientation = orientation;
 	
 	try{
-		SetShortInfo("Set Bone Orientation");
+		SetShortInfo("@Rig.Undo.BoneSetOrientation");
 		
 	}catch(const deException &){
 		pCleanUp();

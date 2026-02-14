@@ -42,7 +42,7 @@ reUSetShapeCapsuleBottomRadius::reUSetShapeCapsuleBottomRadius(reRigShapeCapsule
 	pOldBottomRadius = shape->GetBottomRadius();
 	pNewBottomRadius = bottomRadius;
 	
-	SetShortInfo("Set Capsule Shape Half Height");
+	SetShortInfo("@Rig.Undo.ShapeCapsuleSetBottomRadius");
 }
 
 reUSetShapeCapsuleBottomRadius::~reUSetShapeCapsuleBottomRadius(){

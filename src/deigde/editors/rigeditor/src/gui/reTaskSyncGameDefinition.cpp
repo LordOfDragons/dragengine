@@ -48,7 +48,7 @@
 reTaskSyncGameDefinition::reTaskSyncGameDefinition(reWindowMain &windowMain) :
 pWindowMain(windowMain)
 {
-	SetMessage("Rig Editor: Synchronize Game Definition");
+	SetMessage(windowMain.Translate("Rig.Task.SyncGameDefinition").ToUTF8());
 }
 
 reTaskSyncGameDefinition::~reTaskSyncGameDefinition(){

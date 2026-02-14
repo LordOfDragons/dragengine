@@ -50,10 +50,10 @@ reUAddConstraint::reUAddConstraint(reRig *rig, reRigBone *bone, reRigConstraint 
 	
 	try{
 		if(bone){
-			SetShortInfo("Add Bone Constraint");
+			SetShortInfo("@Rig.Undo.ConstraintAddBone");
 			
 		}else{
-			SetShortInfo("Add Rig Constraint");
+			SetShortInfo("@Rig.Undo.ConstraintAddRig");
 		}
 		
 	}catch(const deException &){

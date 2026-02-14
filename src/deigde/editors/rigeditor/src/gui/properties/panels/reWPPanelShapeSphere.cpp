@@ -97,12 +97,12 @@ reWPPanelShape(wpShapes, reRigShape::estSphere)
 	
 	
 	
-	helper.GroupBox(*this, groupBox, "Sphere Parameters:");
+	helper.GroupBox(*this, groupBox, "@Rig.PanelShapeSphere.GroupBox.SphereParameters");
 	
-	helper.EditVector(groupBox, "Position:", "Position of the sphere relative to the parent bone.",
+	helper.EditVector(groupBox, "@Rig.PanelShapeSphere.Position.Label", "@Rig.PanelShapeSphere.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
 	
-	helper.EditString(groupBox, "Radius:", "Radius of the sphere in meters.",
+	helper.EditString(groupBox, "@Rig.PanelShapeSphere.Radius.Label", "@Rig.PanelShapeSphere.Radius.ToolTip",
 		pEditRadius, cTextRadius::Ref::New(*this));
 }
 

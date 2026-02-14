@@ -97,15 +97,15 @@ reWPPanelShape(wpShapes, reRigShape::estBox)
 	
 	
 	
-	helper.GroupBox(*this, groupBox, "Box Parameters:");
+	helper.GroupBox(*this, groupBox, "@Rig.PanelShapeBox.GroupBox.BoxParameters");
 	
-	helper.EditVector(groupBox, "Position:", "Position of the box relative to the parent bone.",
+	helper.EditVector(groupBox, "@Rig.PanelShapeBox.Position.Label", "@Rig.PanelShapeBox.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
 	
-	helper.EditVector(groupBox, "Rotation:", "Rotation of the box.",
+	helper.EditVector(groupBox, "@Rig.PanelShapeBox.Rotation.Label", "@Rig.PanelShapeBox.Rotation.ToolTip",
 		pEditRotation, cEditRotation::Ref::New(*this));
 	
-	helper.EditVector(groupBox, "Half Extends:", "Half extends of the box.",
+	helper.EditVector(groupBox, "@Rig.PanelShapeBox.HalfExtends.Label", "@Rig.PanelShapeBox.HalfExtends.ToolTip",
 		pEditHalfExtends, cEditHalfExtends::Ref::New(*this));
 }
 

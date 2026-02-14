@@ -54,7 +54,7 @@ deColliderConstraint::eDegreesOfFreedom dof, float newValue){
 	pOldValue = constraint->GetDof(dof).GetSpringStiffness();
 	pNewValue = newValue;
 	
-	SetShortInfo("Constraint DOF set spring stiffness");
+	SetShortInfo("@Rig.Undo.ConstraintDofSetStiffness");
 }
 
 reUConstraintDofSetSpringStiffness::~reUConstraintDofSetSpringStiffness(){

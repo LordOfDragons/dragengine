@@ -22,11 +22,10 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <string.h>
-
 #include "reBaseUndoRotate.h"
 
+#include <deigde/environment/igdeEnvironment.h>
+#include <deigde/localization/igdeTranslationManager.h>
 
 
 // class reBaseUndoRotate
@@ -35,10 +34,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-reBaseUndoRotate::reBaseUndoRotate(){
+reBaseUndoRotate::reBaseUndoRotate(igdeEnvironment &environment) :
+pEnvironment(environment)
+{
 	pModifyPosition = true;
 	pModifyOrientation = true;
-	SetShortInfo("Rotate ?");
+	SetShortInfo("@Rig.Undo.Rotate");
 	pAxis = decVector(0.0f, 0.0f, 1.0f);
 }
 
@@ -85,10 +86,10 @@ void reBaseUndoRotate::Update(){
 		* decMatrix::CreateTranslation( pCenterPosition );
 	
 	decString info;
-	info.Format("axis(%g,%g,%g) center(%i,%i,%i - %g,%g,%g) angle=%g°",
+	info.FormatSafe(pEnvironment.GetTranslationManager().Translate("Rig.Undo.Rotate.Format").ToUTF8(),
 		pAxis.x, pAxis.y, pAxis.z, pCenterSector.x, pCenterSector.y, pCenterSector.z,
 		pCenterPosition.x, pCenterPosition.y, pCenterPosition.z, pAngle * RAD2DEG);
-	SetLongInfo(info.GetString());
+	SetLongInfo(info);
 }
 
 

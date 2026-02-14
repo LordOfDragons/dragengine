@@ -210,22 +210,23 @@ pWindowProperties(windowProperties)
 	
 	
 	// structure
-	helper.GroupBox(content, groupBox, "Geometry:");
+	helper.GroupBox(content, groupBox, "@Rig.PanelPush.GroupBox.Geometry");
 	
-	helper.ComboBox(groupBox, "Type:", "Type of the push.", pCBType, cComboType::Ref::New(*this));
-	pCBType->AddItem("Simple Push", nullptr, (void*)(intptr_t)reRigPush::eptSimple);
-	pCBType->AddItem("Explosion", nullptr, (void*)(intptr_t)reRigPush::eptExplosion);
+	helper.ComboBox(groupBox, "@Rig.PanelPush.Geometry.Type.Label", "@Rig.PanelPush.Geometry.Type.ToolTip", pCBType, cComboType::Ref::New(*this));
+	pCBType->SetAutoTranslateItems(true);
+	pCBType->AddItem("@Rig.PanelPush.Type.SimplePush", nullptr, (void*)(intptr_t)reRigPush::eptSimple);
+	pCBType->AddItem("@Rig.PanelPush.Type.Explosion", nullptr, (void*)(intptr_t)reRigPush::eptExplosion);
 	
-	helper.EditVector(groupBox, "Position:", "Position the push originates from.",
+	helper.EditVector(groupBox, "@Rig.PanelPush.Geometry.Position.Label", "@Rig.PanelPush.Geometry.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
-	helper.EditVector(groupBox, "Rotation:", "Rotation of the push determining the push direction.",
+	helper.EditVector(groupBox, "@Rig.PanelPush.Geometry.Rotation.Label", "@Rig.PanelPush.Geometry.Rotation.ToolTip",
 		pEditRotation, cEditRotation::Ref::New(*this));
 	
-	helper.EditFloat(groupBox, "Impuls:", "Power of the push in Ns.",
+	helper.EditFloat(groupBox, "@Rig.PanelPush.Geometry.Impuls.Label", "@Rig.PanelPush.Geometry.Impuls.ToolTip",
 		pEditImpuls, cTextImpuls::Ref::New(*this));
-	helper.EditInteger(groupBox, "Ray Count:", "Number of rays to shoot.",
+	helper.EditInteger(groupBox, "@Rig.PanelPush.Geometry.RayCount.Label", "@Rig.PanelPush.Geometry.RayCount.ToolTip",
 		pEditRayCount, cTextRayCount::Ref::New(*this));
-	helper.EditFloat(groupBox, "Cone:", "Cone angle in degrees if required by the push type.",
+	helper.EditFloat(groupBox, "@Rig.PanelPush.Geometry.Cone.Label", "@Rig.PanelPush.Geometry.Cone.ToolTip",
 		pEditConeAngle, cTextConeAngle::Ref::New(*this));
 }
 

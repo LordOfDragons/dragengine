@@ -50,7 +50,7 @@ reUConstraintSetOrientation::reUConstraintSetOrientation(reRigConstraint *constr
 	pOldOrientation = constraint->GetOrientation();
 	pNewOrientation = newOrientation;
 	
-	SetShortInfo("Constraint set orientation");
+	SetShortInfo("@Rig.Undo.ConstraintSetOrientation");
 }
 
 reUConstraintSetOrientation::~reUConstraintSetOrientation(){

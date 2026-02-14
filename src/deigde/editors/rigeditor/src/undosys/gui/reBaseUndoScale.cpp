@@ -22,11 +22,10 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "reBaseUndoScale.h"
 
+#include <deigde/environment/igdeEnvironment.h>
+#include <deigde/localization/igdeTranslationManager.h>
 
 
 // class reBaseUndoScale
@@ -35,7 +34,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-reBaseUndoScale::reBaseUndoScale(){
+reBaseUndoScale::reBaseUndoScale(igdeEnvironment &environment) :
+pEnvironment(environment)
+{
 	pModifyPosition = true;
 	pModifySize = true;
 	pFactors.Set(1.0f, 1.0f, 1.0f);
@@ -84,8 +85,8 @@ void reBaseUndoScale::Update(){
 	
 	// set information
 	decString info;
-	
-	info.Format("factors(%g,%g,%g) center(%g,%g,%g)", pFactors.x, pFactors.y, pFactors.z, pCenter.x, pCenter.y, pCenter.z);
+	info.FormatSafe(pEnvironment.GetTranslationManager().Translate("Rig.Undo.Scale.Format").ToUTF8(),
+		pFactors.x, pFactors.y, pFactors.z, pCenter.x, pCenter.y, pCenter.z);
 	SetLongInfo(info.GetString());
 }
 

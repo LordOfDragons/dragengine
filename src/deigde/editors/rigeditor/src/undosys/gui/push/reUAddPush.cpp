@@ -46,7 +46,7 @@ reUAddPush::reUAddPush(reRig *rig, reRigPush *push){
 	pRig = rig;
 	pPush = push;
 	try{
-		SetShortInfo("Add Push");
+		SetShortInfo("@Rig.Undo.PushAdd");
 		
 	}catch(const deException &){
 		pCleanUp();

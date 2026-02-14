@@ -75,7 +75,7 @@ class cActionAddPoint : public igdeAction{
 public:
 	using Ref = deTObjectReference<cActionAddPoint>;
 	cActionAddPoint(reWPPanelShapeHull &panel) : igdeAction("",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add point"),
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@Rig.PanelShapeHull.Action.AddPoint"),
 		pPanel(panel){}
 	
 	void OnAction() override{
@@ -102,7 +102,7 @@ class cActionRemovePoint : public igdeAction{
 public:
 	using Ref = deTObjectReference<cActionRemovePoint>;
 	cActionRemovePoint(reWPPanelShapeHull &panel) : igdeAction("",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove point"),
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@Rig.PanelShapeHull.Action.RemovePoint"),
 		pPanel(panel){}
 	
 	void OnAction() override{
@@ -169,20 +169,20 @@ reWPPanelShape(wpShapes, reRigShape::estHull)
 	
 	
 	
-	helper.GroupBox(*this, groupHull, "Hull Parameters:");
+	helper.GroupBox(*this, groupHull, "@Rig.PanelShapeHull.GroupBox.HullParameters");
 	
-	helper.EditVector(groupHull, "Position:", "Position of the box relative to the parent bone.",
+	helper.EditVector(groupHull, "@Rig.PanelShapeHull.Position.Label", "@Rig.PanelShapeHull.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
 	
-	helper.EditVector(groupHull, "Rotation:", "Rotation of the box.",
+	helper.EditVector(groupHull, "@Rig.PanelShapeHull.Rotation.Label", "@Rig.PanelShapeHull.Rotation.ToolTip",
 		pEditRotation, cEditRotation::Ref::New(*this));
 	
-	helper.FormLineStretchFirst(groupHull, "Points:", "Select point to edit", formline);
-	helper.EditSpinInteger(formline, "Select point to edit", 0, 0, pSpinPoint, cSpinPoint::Ref::New(*this));
+	helper.FormLineStretchFirst(groupHull, "@Rig.PanelShapeHull.Points.Label", "@Rig.PanelShapeHull.Points.ToolTip", formline);
+	helper.EditSpinInteger(formline, "@Rig.PanelShapeHull.Points.ToolTip", 0, 0, pSpinPoint, cSpinPoint::Ref::New(*this));
 	helper.Button(formline, pBtnPointAdd, cActionAddPoint::Ref::New(*this));
 	helper.Button(formline, pBtnPointRemove, cActionRemovePoint::Ref::New(*this));
 	
-	helper.EditVector(groupHull, "Coordinates:", "Selected point coordinates.",
+	helper.EditVector(groupHull, "@Rig.PanelShapeHull.Coordinates.Label", "@Rig.PanelShapeHull.Coordinates.ToolTip",
 		pEditPoint, cEditPoint::Ref::New(*this));
 }
 

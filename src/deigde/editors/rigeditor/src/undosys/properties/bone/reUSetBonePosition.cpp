@@ -43,7 +43,7 @@ reUSetBonePosition::reUSetBonePosition(reRigBone *bone, const decVector &positio
 	pNewPosition = position;
 	
 	try{
-		SetShortInfo("Set Bone Position");
+		SetShortInfo("@Rig.Undo.BoneSetPosition");
 		
 	}catch(const deException &){
 		pCleanUp();

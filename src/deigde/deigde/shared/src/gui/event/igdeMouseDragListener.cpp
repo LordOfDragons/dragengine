@@ -69,7 +69,7 @@ void igdeMouseDragListener::Cancel(){
 		return;
 	}
 	
-	OnDragFinish(false);
+	OnDragFinish(true);
 	pDragState = edsNone;
 }
 
@@ -146,7 +146,7 @@ int button, const decPoint &position, int modifiers){
 		return;
 	}
 	
-	OnDragFinish(true);
+	OnDragFinish(false);
 	pDragState = edsNone;
 }
 

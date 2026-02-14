@@ -54,7 +54,7 @@ deColliderConstraint::eDegreesOfFreedom dof, float newValue){
 	pOldValue = constraint->GetDof(dof).GetKinematicFriction();
 	pNewValue = newValue;
 	
-	SetShortInfo("Constraint DOF set kinematic friction");
+	SetShortInfo("@Rig.Undo.ConstraintDofSetFrictionKinematic");
 }
 
 reUConstraintDofSetKinematicFriction::~reUConstraintDofSetKinematicFriction(){

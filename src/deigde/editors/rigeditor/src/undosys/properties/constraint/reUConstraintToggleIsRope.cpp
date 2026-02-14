@@ -47,7 +47,7 @@ reUConstraintToggleIsRope::reUConstraintToggleIsRope(reRigConstraint *constraint
 	
 	pConstraint = constraint;
 	
-	SetShortInfo("Constraint toggle is rope");
+	SetShortInfo("@Rig.Undo.ConstraintToggleRope");
 }
 
 reUConstraintToggleIsRope::~reUConstraintToggleIsRope(){

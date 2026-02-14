@@ -53,7 +53,7 @@ reUBoneImportFromFile::reUBoneImportFromFile(reRig *rig, reRig *importedRig){
 	pImportShapes = true;
 	pImportConstraints = true;
 	
-	SetShortInfo("Import Bones");
+	SetShortInfo("@Rig.Undo.BoneImport");
 	
 	rig->GetSelectionBones()->GetBones().Visit([&](reRigBone *bone){
 		reRigBone * const importBone = importedRig->GetBones().FindNamed(bone->GetName());

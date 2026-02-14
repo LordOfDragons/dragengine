@@ -43,7 +43,7 @@ reUSetBoneParent::reUSetBoneParent(reRigBone *bone, reRigBone *parent){
 	pNewParent = parent;
 	
 	try{
-		SetShortInfo("Set Bone Parent");
+		SetShortInfo("@Rig.Undo.BoneSetParent");
 		
 	}catch(const deException &){
 		pCleanUp();

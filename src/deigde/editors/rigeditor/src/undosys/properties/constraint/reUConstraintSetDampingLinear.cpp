@@ -50,7 +50,7 @@ reUConstraintSetDampingLinear::reUConstraintSetDampingLinear(reRigConstraint *co
 	pOldDamping = constraint->GetLinearDamping();
 	pNewDamping = newDamping;
 	
-	SetShortInfo("Constraint set linear damping");
+	SetShortInfo("@Rig.Undo.ConstraintSetDampingLinear");
 }
 
 reUConstraintSetDampingLinear::~reUConstraintSetDampingLinear(){

@@ -42,7 +42,7 @@ reUSetShapePosition::reUSetShapePosition(reRigShape *shape, const decVector &new
 	pOldPosition = shape->GetPosition();
 	pNewPosition = newPosition;
 	
-	SetShortInfo("Set Shape Position");
+	SetShortInfo("@Rig.Undo.ShapeSetPosition");
 }
 
 reUSetShapePosition::~reUSetShapePosition(){

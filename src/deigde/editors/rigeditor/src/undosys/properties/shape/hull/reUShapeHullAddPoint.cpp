@@ -44,7 +44,7 @@ pIndex(index)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Shape hull add point");
+	SetShortInfo("@Rig.Undo.ShapeHullAddPoint");
 }
 
 reUShapeHullAddPoint::~reUShapeHullAddPoint(){

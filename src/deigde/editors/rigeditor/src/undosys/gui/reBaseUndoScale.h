@@ -28,6 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/math/decMath.h>
 
+class igdeEnvironment;
 
 
 /**
@@ -39,6 +40,7 @@ public:
 	
 	
 private:
+	igdeEnvironment &pEnvironment;
 	bool pModifyPosition;
 	bool pModifySize;
 	decVector pFactors;
@@ -50,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reBaseUndoScale();
+	explicit reBaseUndoScale(igdeEnvironment &environment);
 	
 protected:
 	~reBaseUndoScale() override;

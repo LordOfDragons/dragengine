@@ -46,7 +46,7 @@ reUBoneScaleMass::reUBoneScaleMass(reRig *rig, const reRigBone::List &bones, flo
 	
 	float oldMass = 0.0f;
 	
-	SetShortInfo("Scale bone mass");
+	SetShortInfo("@Rig.Undo.BoneScaleMass");
 	
 	// store bones summing up the their mass. ignore bones without a shape
 	bones.Visit([&](reRigBone *bone){

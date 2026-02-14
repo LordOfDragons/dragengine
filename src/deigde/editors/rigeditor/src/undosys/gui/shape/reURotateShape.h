@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	explicit reURotateShape(const reRigShape::List &list);
+	explicit reURotateShape(igdeEnvironment &environment, const reRigShape::List &list);
 	
 protected:
 	/** \brief Clean up undo. */

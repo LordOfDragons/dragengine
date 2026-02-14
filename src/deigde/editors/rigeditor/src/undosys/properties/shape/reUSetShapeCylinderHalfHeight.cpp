@@ -42,7 +42,7 @@ reUSetShapeCylinderHalfHeight::reUSetShapeCylinderHalfHeight(reRigShapeCylinder 
 	pOldHalfHeight = shape->GetHalfHeight();
 	pNewHalfHeight = halfHeight;
 	
-	SetShortInfo("Set Cylinder Shape Half Height");
+	SetShortInfo("@Rig.Undo.ShapeCylinderSetHalfHeight");
 }
 
 reUSetShapeCylinderHalfHeight::~reUSetShapeCylinderHalfHeight(){

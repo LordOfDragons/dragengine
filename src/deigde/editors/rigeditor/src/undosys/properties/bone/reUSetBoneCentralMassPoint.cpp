@@ -43,7 +43,7 @@ reUSetBoneCentralMassPoint::reUSetBoneCentralMassPoint(reRigBone *bone, const de
 	pNewCentralMassPoint = centralMassPoint;
 	
 	try{
-		SetShortInfo("Set Bone Central Mass Point");
+		SetShortInfo("@Rig.Undo.BoneSetCmp");
 		
 	}catch(const deException &){
 		pCleanUp();

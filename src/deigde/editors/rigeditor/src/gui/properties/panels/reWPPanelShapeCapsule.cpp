@@ -151,21 +151,21 @@ reWPPanelShape(wpShapes, reRigShape::estCapsule)
 	
 	
 	
-	helper.GroupBox(*this, groupBox, "Capsule Parameters:");
+	helper.GroupBox(*this, groupBox, "@Rig.PanelShapeCapsule.GroupBox.CapsuleParameters");
 	
-	helper.EditVector(groupBox, "Position:", "Position of the sphere relative to the parent bone.",
+	helper.EditVector(groupBox, "@Rig.PanelShapeCapsule.Position.Label", "@Rig.PanelShapeCapsule.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
 	
-	helper.EditVector(groupBox, "Rotation:", "Rotation of the capsule.",
+	helper.EditVector(groupBox, "@Rig.PanelShapeCapsule.Rotation.Label", "@Rig.PanelShapeCapsule.Rotation.ToolTip",
 		pEditRotation, cEditRotation::Ref::New(*this));
 	
-	helper.EditString(groupBox, "Half Height:", "Half height of the capsule.",
+	helper.EditString(groupBox, "@Rig.PanelShapeCapsule.HalfHeight.Label", "@Rig.PanelShapeCapsule.HalfHeight.ToolTip",
 		pEditHalfHeight, cTextHalfHeight::Ref::New(*this));
 	
-	helper.EditString(groupBox, "Top Radius:", "Top radius in meters.",
+	helper.EditString(groupBox, "@Rig.PanelShapeCapsule.TopRadius.Label", "@Rig.PanelShapeCapsule.TopRadius.ToolTip",
 		pEditTopRadius, cTextTopRadius::Ref::New(*this));
 	
-	helper.EditString(groupBox, "Bottom Radius:", "Bottom radius in meters.",
+	helper.EditString(groupBox, "@Rig.PanelShapeCapsule.BottomRadius.Label", "@Rig.PanelShapeCapsule.BottomRadius.ToolTip",
 		pEditBottomRadius, cTextBottomRadius::Ref::New(*this));
 }
 

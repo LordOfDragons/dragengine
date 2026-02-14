@@ -153,21 +153,21 @@ reWPPanelShape(wpShapes, reRigShape::estCylinder)
 	
 	
 	
-	helper.GroupBox(*this, groupBox, "Cylinder Parameters:");
+	helper.GroupBox(*this, groupBox, "@Rig.PanelShapeCylinder.GroupBox.CylinderParameters");
 	
-	helper.EditVector(groupBox, "Position:", "Position of the sphere relative to the parent bone.",
+	helper.EditVector(groupBox, "@Rig.PanelShapeCylinder.Position.Label", "@Rig.PanelShapeCylinder.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
 	
-	helper.EditVector(groupBox, "Rotation:", "Rotation of the cylinder.",
+	helper.EditVector(groupBox, "@Rig.PanelShapeCylinder.Rotation.Label", "@Rig.PanelShapeCylinder.Rotation.ToolTip",
 		pEditRotation, cEditRotation::Ref::New(*this));
 	
-	helper.EditString(groupBox, "Half Height:", "Half height of the cylinder.",
+	helper.EditString(groupBox, "@Rig.PanelShapeCylinder.HalfHeight.Label", "@Rig.PanelShapeCylinder.HalfHeight.ToolTip",
 		pEditHalfHeight, cTextHalfHeight::Ref::New(*this));
 	
-	helper.EditString(groupBox, "Top Radius:", "Top radius in meters.",
+	helper.EditString(groupBox, "@Rig.PanelShapeCylinder.TopRadius.Label", "@Rig.PanelShapeCylinder.TopRadius.ToolTip",
 		pEditTopRadius, cTextTopRadius::Ref::New(*this));
 	
-	helper.EditString(groupBox, "Bottom Radius:", "Bottom radius in meters.",
+	helper.EditString(groupBox, "@Rig.PanelShapeCylinder.BottomRadius.Label", "@Rig.PanelShapeCylinder.BottomRadius.ToolTip",
 		pEditBottomRadius, cTextBottomRadius::Ref::New(*this));
 }
 

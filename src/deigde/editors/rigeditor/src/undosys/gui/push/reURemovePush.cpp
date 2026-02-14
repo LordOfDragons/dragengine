@@ -42,7 +42,7 @@
 reURemovePush::reURemovePush(const reRigPush::List &list) :
 pPushes(list){
 	DEASSERT_TRUE(list.IsNotEmpty())
-	SetShortInfo("Remove Pushes");
+	SetShortInfo("@Rig.Undo.PushRemove");
 }
 
 reURemovePush::~reURemovePush(){
