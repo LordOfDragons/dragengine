@@ -112,7 +112,7 @@ jobs:
         # on Ubuntu and GitHub. build them first without parallel to avoid hangups
         run: |
           scons -j 1 lib_openxr lib_openvr lib_libjpeg lib_libwebm lib_modio
-          scons -j 14 with_verbose=yes archive installer
+          scons -j 14 archive installer
       
       - name: Debug Symbols
         run: |
