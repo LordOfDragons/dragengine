@@ -32,7 +32,7 @@
 #include "../../dragengine_export.h"
 
 #ifdef USE_STD_FORMAT_FALLBACK
-	#include <fmt/format.h>
+	#include "fmt/format.h"
 	namespace fmt_ns = fmt;
 #else
 	#include <format>
