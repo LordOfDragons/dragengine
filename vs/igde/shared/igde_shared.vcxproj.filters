@@ -1034,6 +1034,12 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\loadsave\igdeLoadSynthesizer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\localization\igdeLanguagePack.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\localization\igdeTranslationManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\logger\igdeLoggerHistory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -2117,6 +2123,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\loadsave\igdeLoadSynthesizer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\localization\igdeLanguagePack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\localization\igdeTranslationManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\logger\igdeLoggerHistory.h">

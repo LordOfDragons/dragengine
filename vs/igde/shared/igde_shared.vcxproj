@@ -622,6 +622,8 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\loadsave\igdeLoadSaveNavSpace.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\loadsave\igdeLoadSky.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\loadsave\igdeLoadSynthesizer.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\localization\igdeLanguagePack.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\localization\igdeTranslationManager.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\logger\igdeLoggerHistory.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\logger\igdeLoggerHistoryEntry.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\logger\igdeLoggerHistoryListener.cpp" />
@@ -985,6 +987,8 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\loadsave\igdeLoadSaveNavSpace.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\loadsave\igdeLoadSky.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\loadsave\igdeLoadSynthesizer.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\localization\igdeLanguagePack.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\localization\igdeTranslationManager.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\logger\igdeLoggerHistory.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\logger\igdeLoggerHistoryEntry.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\logger\igdeLoggerHistoryListener.h" />
