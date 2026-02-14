@@ -25,8 +25,6 @@
 #ifndef _IGDECOMMONDIALOGS_H_
 #define _IGDECOMMONDIALOGS_H_
 
-#include <format>
-
 #include "igdeWidget.h"
 #include "resources/igdeFont.h"
 #include "filedialog/igdeFilePattern.h"
