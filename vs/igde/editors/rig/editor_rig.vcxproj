@@ -338,7 +338,10 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\constraint\reUAddConstraint.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\constraint\reURemoveConstraint.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\push\reUAddPush.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\push\reUMovePush.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\push\reURemovePush.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\push\reURotatePush.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\push\reUndoDataPush.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\reBaseUndoMove.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\reBaseUndoRotate.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\reBaseUndoScale.cpp" />
@@ -461,7 +464,10 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\constraint\reUAddConstraint.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\constraint\reURemoveConstraint.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\push\reUAddPush.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\push\reUMovePush.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\push\reURemovePush.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\push\reURotatePush.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\push\reUndoDataPush.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\reBaseUndoMove.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\reBaseUndoRotate.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\reBaseUndoScale.h" />

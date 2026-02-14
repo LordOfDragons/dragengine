@@ -226,7 +226,16 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\push\reUAddPush.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\push\reUMovePush.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\push\reURemovePush.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\push\reURotatePush.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\push\reUndoDataPush.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\reBaseUndoMove.cpp">
@@ -591,7 +600,16 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\push\reUAddPush.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\push\reUMovePush.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\push\reURemovePush.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\push\reURotatePush.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\push\reUndoDataPush.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\reBaseUndoMove.h">
