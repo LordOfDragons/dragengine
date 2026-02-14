@@ -53,7 +53,7 @@ pIndex(0)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Move Layer Up");
+	SetShortInfo("@Sky.Undo.Layer.MoveUp");
 	
 	pIndex = sky->GetLayers().IndexOf(layer);
 	if(pIndex < 1){

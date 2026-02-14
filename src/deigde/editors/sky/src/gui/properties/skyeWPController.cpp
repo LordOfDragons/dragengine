@@ -223,9 +223,9 @@ public:
 	using Ref = deTObjectReference<cActionControllerAdd>;
 	
 public:
-	cActionControllerAdd(skyeWPController &panel) : cBaseAction(panel, "Add",
+	cActionControllerAdd(skyeWPController &panel) : cBaseAction(panel, "@Sky.Action.Controller.Add",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-		"Add a controller to the end of the list."){}
+		"@Sky.Action.Controller.Add.Description"){}
 	
 	igdeUndo::Ref OnAction(skyeSky *sky) override{
 		return skyeUControllerAdd::Ref::New(sky, skyeController::Ref::New());
@@ -235,18 +235,16 @@ public:
 class cActionControllerRemove : public cBaseActionController{
 public:
 	using Ref = deTObjectReference<cActionControllerRemove>;
-	cActionControllerRemove(skyeWPController &panel) : cBaseActionController(panel, "Remove",
+	cActionControllerRemove(skyeWPController &panel) : cBaseActionController(panel, "@Sky.Action.Controller.Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-		"Remove the selected controller."){}
+		"@Sky.Action.Controller.Remove.Description"){}
 	
 	igdeUndo::Ref OnActionController(skyeSky *sky, skyeController *controller) override{
 		const int usageCount = sky->CountControllerUsage(controller);
 		
 		if(usageCount > 0 && igdeCommonDialogs::QuestionFormat(
-			pPanel, igdeCommonDialogs::ebsYesNo, "Remove Controller",
-			"The controller '{0}' is used by {1} links.\n"
-			"If the controller is removed now it is also removed from\n"
-			"all the links using it. Do you want to remove the controller?",
+			pPanel, igdeCommonDialogs::ebsYesNo, "@Sky.Action.Controller.Remove.Confirm.Title",
+			"@Sky.Action.Controller.Remove.Confirm",
 			controller->GetName().GetString(), usageCount) != igdeCommonDialogs::ebYes){
 				return {};
 		}
@@ -264,8 +262,8 @@ class cActionControllerUp : public cBaseActionController{
 public:
 	using Ref = deTObjectReference<cActionControllerUp>;
 	cActionControllerUp(skyeWPController &panel, igdeListBox &listBox) : cBaseActionController(
-		panel, "Move Up", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp),
-		"Move controller up in the list."),
+		panel, "@Sky.Action.Controller.Up", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp),
+		"@Sky.Action.Controller.Up.Description"),
 	pListBox(listBox){}
 	
 	igdeUndo::Ref OnActionController(skyeSky*, skyeController *controller) override{
@@ -282,8 +280,8 @@ class cActionControllerDown : public cBaseActionController{
 public:
 	using Ref = deTObjectReference<cActionControllerDown>;
 	cActionControllerDown(skyeWPController &panel, igdeListBox &listBox) : cBaseActionController(
-		panel, "Move Down", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown),
-		"Move controller down in the list."),
+		panel, "@Sky.Action.Controller.Down", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown),
+		"@Sky.Action.Controller.Down.Description"),
 	pListBox(listBox){}
 	
 	igdeUndo::Ref OnActionController(skyeSky*, skyeController *controller) override{
@@ -360,8 +358,8 @@ public:
 class cActionClamp : public cBaseActionController{
 public:
 	using Ref = deTObjectReference<cActionClamp>;
-	cActionClamp(skyeWPController &panel) : cBaseActionController(panel, "Clamp value to range",
-		"Determines if the value of the controller is clamped to the given range."){ }
+	cActionClamp(skyeWPController &panel) : cBaseActionController(panel, "@Sky.Properties.Controller.Clamp",
+		"@Sky.Properties.Controller.Clamp.Description"){ }
 	
 	igdeUndo::Ref OnActionController(skyeSky*, skyeController *controller) override{
 		return skyeUControllerToggleClamp::Ref::New(controller);
@@ -372,7 +370,7 @@ class cActionFrozen : public cBaseActionController{
 public:
 	using Ref = deTObjectReference<cActionFrozen>;
 	cActionFrozen(skyeWPController &panel) : cBaseActionController(panel,
-		"Freeze Controller value", "Prevents the controller from changing the current value."){}
+		"@Sky.Properties.Controller.Frozen", "@Sky.Properties.Controller.Frozen.Description"){}
 	
 	igdeUndo::Ref OnActionController(skyeSky*, skyeController *controller) override{
 		return skyeUControllerToggleFrozen::Ref::New(controller);
@@ -402,9 +400,9 @@ pWindowProperties(windowProperties)
 	AddChild(content);
 	
 	// controller list
-	helper.GroupBoxFlow(content, groupBox, "Controllers:");
+	helper.GroupBoxFlow(content, groupBox, "@Sky.Properties.Controllers");
 	
-	helper.ListBox(groupBox, 8, "Controllers", pListController, cListControllers::Ref::New(*this));
+	helper.ListBox(groupBox, 8, "@Sky.Properties.Controllers.Description", pListController, cListControllers::Ref::New(*this));
 	
 	pActionControllerAdd = cActionControllerAdd::Ref::New(*this);
 	pActionControllerRemove = cActionControllerRemove::Ref::New(*this);
@@ -412,16 +410,16 @@ pWindowProperties(windowProperties)
 	pActionControllerDown = cActionControllerDown::Ref::New(*this, pListController);
 	
 	// controller settings
-	helper.GroupBox(content, groupBox, "Controller Settings:");
-	helper.EditString(groupBox, "Name:", "Name of the controller", pEditName, cTextName::Ref::New(*this));
+	helper.GroupBox(content, groupBox, "@Sky.Properties.Controller.Settings");
+	helper.EditString(groupBox, "@Sky.Properties.Controller.Name", "@Sky.Properties.Controller.Name.Description", pEditName, cTextName::Ref::New(*this));
 	
-	helper.FormLine(groupBox, "Range:", "Range of the controller value if limited", frameLine);
-	helper.EditFloat(frameLine, "Minimum value the controller can take",
+	helper.FormLine(groupBox, "@Sky.Properties.Controller.Range", "@Sky.Properties.Controller.Range.Description", frameLine);
+	helper.EditFloat(frameLine, "@Sky.Properties.Controller.Range.Minimum",
 		pEditMin, cTextMinimumValue::Ref::New(*this));
-	helper.EditFloat(frameLine, "Maximum value the controller can take",
+	helper.EditFloat(frameLine, "@Sky.Properties.Controller.Range.Maximum",
 		pEditMax, cTextMaximumValue::Ref::New(*this));
 	
-	helper.EditSliderText(groupBox, "Value:", "Current value of the controller",
+	helper.EditSliderText(groupBox, "@Sky.Properties.Controller.Value", "@Sky.Properties.Controller.Value.Description",
 		0.0f, 0.0f, 6, 3, 0.1f, pSldValue, cSliderValue::Ref::New(*this));
 	
 	helper.CheckBox(groupBox, pChkClamp, cActionClamp::Ref::New(*this));

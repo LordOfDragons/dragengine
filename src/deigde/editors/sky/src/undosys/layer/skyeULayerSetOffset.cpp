@@ -47,7 +47,7 @@ pNewOffset(newOffset)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Set Layer Offset");
+	SetShortInfo("@Sky.Undo.Layer.SetOffset");
 	
 	pOldOffset = layer->GetOffset();
 	

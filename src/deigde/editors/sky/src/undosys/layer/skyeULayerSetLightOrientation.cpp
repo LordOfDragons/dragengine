@@ -48,7 +48,7 @@ pNewOrientation(newOrientation)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Set Layer Light Orientation");
+	SetShortInfo("@Sky.Undo.Layer.SetLightOrientation");
 	
 	pOldOrientation = layer->GetLightOrientation();
 	

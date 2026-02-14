@@ -47,7 +47,7 @@ pNewSkin(newSkin)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Set Body Skin");
+	SetShortInfo("@Sky.Undo.Body.SetSkin");
 	
 	pOldSkin = body->GetSkinPath();
 	

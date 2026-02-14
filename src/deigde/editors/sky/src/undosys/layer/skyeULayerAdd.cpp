@@ -48,7 +48,7 @@ pLayer(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Add Layer");
+	SetShortInfo("@Sky.Undo.Layer.Add");
 	
 	pSky = sky;
 	pLayer = layer;

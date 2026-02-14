@@ -47,7 +47,7 @@ pNewName(newName)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Set Link Name");
+	SetShortInfo("@Sky.Undo.Link.SetName");
 	
 	pOldName = link->GetName();
 	

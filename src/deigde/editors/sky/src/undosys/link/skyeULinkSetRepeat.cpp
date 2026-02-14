@@ -47,7 +47,7 @@ pNewRepeat(newRepeat)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Set Link Repeat");
+	SetShortInfo("@Sky.Undo.Link.SetRepeat");
 	
 	pOldRepeat = link->GetRepeat();
 	

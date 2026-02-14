@@ -52,7 +52,7 @@ pTarget(target)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Target Add Link");
+	SetShortInfo("@Sky.Undo.Target.AddLink");
 	
 	pLayer = layer;
 	pLink = link;

@@ -49,7 +49,7 @@ pIndex(0)
 	skyeSky * const sky = controller->GetSky();
 	DEASSERT_NOTNULL(sky)
 	
-	SetShortInfo("Remove Controller");
+	SetShortInfo("@Sky.Undo.Controller.Remove");
 	
 	pIndex = sky->GetControllers().IndexOf(controller);
 	DEASSERT_TRUE(pIndex != -1)

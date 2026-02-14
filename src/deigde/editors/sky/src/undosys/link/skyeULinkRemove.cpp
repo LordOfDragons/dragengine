@@ -49,7 +49,7 @@ skyeULinkRemove::skyeULinkRemove(skyeLink *link){
 	
 	DEASSERT_TRUE(sky->GetLinks().IndexOf(link) != -1)
 	
-	SetShortInfo("Remove Link");
+	SetShortInfo("@Sky.Undo.Link.Remove");
 	
 	const int targetCount = sky->CountLinkUsage(link);
 	if(targetCount > 0){

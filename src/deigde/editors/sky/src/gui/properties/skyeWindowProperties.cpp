@@ -57,22 +57,22 @@ pWindowMain(windowMain)
 	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
 	pPanelController = skyeWPController::Ref::New(*this);
-	AddChild(pPanelController, "Controller");
+	AddChild(pPanelController, "@Sky.WindowProperties.Tab.Controller");
 	
 	pPanelLink = skyeWPLink::Ref::New(*this);
-	AddChild(pPanelLink, "Link");
+	AddChild(pPanelLink, "@Sky.WindowProperties.Tab.Link");
 	
 	pPanelLayer = skyeWPLayer::Ref::New(*this);
-	AddChild(pPanelLayer, "Layer");
+	AddChild(pPanelLayer, "@Sky.WindowProperties.Tab.Layer");
 	
 	pPanelSky = skyeWPSky::Ref::New(*this);
-	AddChild(pPanelSky, "Sky");
+	AddChild(pPanelSky, "@Sky.WindowProperties.Tab.Sky");
 	
 	pPanelView = skyeWPView::Ref::New(*this);
-	AddChild(pPanelView, "View");
+	AddChild(pPanelView, "@Sky.WindowProperties.Tab.View");
 	
 	pPanelUndoHistory = skyeWPUndoHistory::Ref::New(GetEnvironment());
-	AddChild(pPanelUndoHistory, "Undo");
+	AddChild(pPanelUndoHistory, "@Sky.WindowProperties.Tab.Undo");
 	
 	SetActivePanel(0); // controller
 }

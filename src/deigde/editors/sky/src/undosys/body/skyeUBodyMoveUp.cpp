@@ -53,7 +53,7 @@ pIndex(0)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Move Body Up");
+	SetShortInfo("@Sky.Undo.Body.MoveUp");
 	
 	pIndex = layer->GetBodies().IndexOf(body);
 	if(pIndex < 1){

@@ -3,4 +3,249 @@
 	<identifier>en</identifier>
 	<name>English</name>
 	<description>English</description>
+	
+	<!-- Main Window -->
+	<translation name="Sky.Menu.Sky">Sky</translation>
+	<translation name="Sky.Menu.Edit">Edit</translation>
+	<translation name="Sky.Menu.View">View</translation>
+	
+	<translation name="Sky.Action.New">New</translation>
+	<translation name="Sky.Action.New.Description">Creates a new sky</translation>
+	<translation name="Sky.Action.Open">Open...</translation>
+	<translation name="Sky.Action.Open.Description">Opens a sky from file</translation>
+	<translation name="Sky.Action.Save">Save</translation>
+	<translation name="Sky.Action.Save.Description">Saves the sky to file</translation>
+	<translation name="Sky.Action.SaveAs">Save As...</translation>
+	<translation name="Sky.Action.SaveAs.Description">Saves the sky under a differen file</translation>
+	<translation name="Sky.Action.Cut">Cut</translation>
+	<translation name="Sky.Action.Cut.Description">Cut selected objects</translation>
+	<translation name="Sky.Action.Copy">Copy</translation>
+	<translation name="Sky.Action.Copy.Description">Copies selected objects</translation>
+	<translation name="Sky.Action.Paste">Paste</translation>
+	<translation name="Sky.Action.Paste.Description">Paste objects</translation>
+	<translation name="Sky.Action.ShowSkyCompass">Show Sky-Compass</translation>
+	<translation name="Sky.Action.ShowSkyCompass.Description">Shows/Hides the Sky Compass</translation>
+	
+	<translation name="Sky.Dialog.NewSky.Title">New Sky</translation>
+	<translation name="Sky.Dialog.NewSky.Message">Creating a new sky discarding the current one is that ok?</translation>
+	<translation name="Sky.Dialog.OpenSky.Title">Open Sky</translation>
+	<translation name="Sky.Dialog.SaveSky.Title">Save Sky</translation>
+	
+	<!-- Properties Window -->
+	<translation name="Sky.WindowProperties.Tab.Controller">Controller</translation>
+	<translation name="Sky.WindowProperties.Tab.Link">Link</translation>
+	<translation name="Sky.WindowProperties.Tab.Layer">Layer</translation>
+	<translation name="Sky.WindowProperties.Tab.Sky">Sky</translation>
+	<translation name="Sky.WindowProperties.Tab.View">View</translation>
+	<translation name="Sky.WindowProperties.Tab.Undo">Undo</translation>
+	
+	<!-- Properties Panel - Sky -->
+	<translation name="Sky.Properties.Sky">Sky:</translation>
+	<translation name="Sky.Properties.Sky.BgColor">Bg Color:</translation>
+	<translation name="Sky.Properties.Sky.BgColor.Description">Background Color.</translation>
+	
+	<!-- Properties Panel - Controller -->
+	<translation name="Sky.Properties.Controllers">Controllers:</translation>
+	<translation name="Sky.Properties.Controllers.Description">Controllers</translation>
+	<translation name="Sky.Properties.Controller.Settings">Controller Settings:</translation>
+	<translation name="Sky.Properties.Controller.Name">Name:</translation>
+	<translation name="Sky.Properties.Controller.Name.Description">Name of the controller</translation>
+	<translation name="Sky.Properties.Controller.Range">Range:</translation>
+	<translation name="Sky.Properties.Controller.Range.Description">Range of the controller value if limited</translation>
+	<translation name="Sky.Properties.Controller.Range.Minimum">Minimum value the controller can take</translation>
+	<translation name="Sky.Properties.Controller.Range.Maximum">Maximum value the controller can take</translation>
+	<translation name="Sky.Properties.Controller.Value">Value:</translation>
+	<translation name="Sky.Properties.Controller.Value.Description">Current value of the controller</translation>
+	<translation name="Sky.Properties.Controller.Clamp">Clamp value to range</translation>
+	<translation name="Sky.Properties.Controller.Clamp.Description">Determines if the value of the controller is clamped to the given range.</translation>
+	<translation name="Sky.Properties.Controller.Frozen">Freeze Controller value</translation>
+	<translation name="Sky.Properties.Controller.Frozen.Description">Prevents the controller from changing the current value.</translation>
+	
+	<translation name="Sky.Action.Controller.Add">Add</translation>
+	<translation name="Sky.Action.Controller.Add.Description">Add a controller to the end of the list.</translation>
+	<translation name="Sky.Action.Controller.Remove">Remove</translation>
+	<translation name="Sky.Action.Controller.Remove.Description">Remove the selected controller.</translation>
+	<translation name="Sky.Action.Controller.Remove.Confirm">The controller '{0}' is used by {1} links.
+If the controller is removed now it is also removed from
+all the links using it. Do you want to remove the controller?</translation>
+	<translation name="Sky.Action.Controller.Remove.Confirm.Title">Remove Controller</translation>
+	<translation name="Sky.Action.Controller.Up">Move Up</translation>
+	<translation name="Sky.Action.Controller.Up.Description">Move controller up in the list.</translation>
+	<translation name="Sky.Action.Controller.Down">Move Down</translation>
+	<translation name="Sky.Action.Controller.Down.Description">Move controller down in the list.</translation>
+	
+	<!-- Properties Panel - Layer -->
+	<translation name="Sky.Properties.Layers">Layers:</translation>
+	<translation name="Sky.Properties.Layers.Description">Layers</translation>
+	<translation name="Sky.Properties.Layer.Settings">Layer Settings:</translation>
+	<translation name="Sky.Properties.Layer.Name">Name:</translation>
+	<translation name="Sky.Properties.Layer.Name.Description">Name of the layer</translation>
+	<translation name="Sky.Properties.Layer.Skin">Skin:</translation>
+	<translation name="Sky.Properties.Layer.Skin.Description">Background skin of the layer</translation>
+	<translation name="Sky.Properties.Layer.Offset">Offset:</translation>
+	<translation name="Sky.Properties.Layer.Offset.Description">Offset of the layer</translation>
+	<translation name="Sky.Properties.Layer.Orientation">Orientation:</translation>
+	<translation name="Sky.Properties.Layer.Orientation.Description">Orientation of the layer</translation>
+	<translation name="Sky.Properties.Layer.Color">Color:</translation>
+	<translation name="Sky.Properties.Layer.Color.Description">Color and intensity the content layer is multiplied with</translation>
+	<translation name="Sky.Properties.Layer.Color.Color">Color or layer content</translation>
+	<translation name="Sky.Properties.Layer.Color.Intensity">Intensity of the layer content</translation>
+	<translation name="Sky.Properties.Layer.Transparency">Transparency:</translation>
+	<translation name="Sky.Properties.Layer.Transparency.Description">Transparency of the layer</translation>
+	<translation name="Sky.Properties.Layer.MulBySkyLight">Multiply By Sky Light</translation>
+	<translation name="Sky.Properties.Layer.MulBySkyLight.Description">Determines if the layer intensity is multiplied by the sky light intensity</translation>
+	<translation name="Sky.Properties.Layer.MulBySkyColor">Multiply By Sky Color</translation>
+	<translation name="Sky.Properties.Layer.MulBySkyColor.Description">Determines if the layer color is multiplied by the sky light color</translation>
+	
+	<translation name="Sky.Properties.Layer.Light">Light Settings:</translation>
+	<translation name="Sky.Properties.Layer.Light.Label">Light:</translation>
+	<translation name="Sky.Properties.Layer.Light.Description">Light color, intensity and ambient intensity</translation>
+	<translation name="Sky.Properties.Layer.Light.Color">Color or layer light</translation>
+	<translation name="Sky.Properties.Layer.Light.Intensity">Intensity of the layer light</translation>
+	<translation name="Sky.Properties.Layer.Light.AmbientIntensity">Ambient intensity of the layer light</translation>
+	<translation name="Sky.Properties.Layer.Light.Orientation">Orientation:</translation>
+	<translation name="Sky.Properties.Layer.Light.Orientation.Description">Orientation of the light relative to the layer</translation>
+	
+	<translation name="Sky.Properties.Layer.Bodies">Bodies:</translation>
+	<translation name="Sky.Properties.Layer.Body">Body:</translation>
+	<translation name="Sky.Properties.Layer.Body.Description">Body to edit</translation>
+	<translation name="Sky.Properties.Layer.Body.Skin">Skin:</translation>
+	<translation name="Sky.Properties.Layer.Body.Skin.Description">Skin for body</translation>
+	<translation name="Sky.Properties.Layer.Body.Orientation">Orientation:</translation>
+	<translation name="Sky.Properties.Layer.Body.Orientation.Description">Orientation of the body</translation>
+	<translation name="Sky.Properties.Layer.Body.Size">Size:</translation>
+	<translation name="Sky.Properties.Layer.Body.Size.Description">Size of the body in degrees</translation>
+	<translation name="Sky.Properties.Layer.Body.Color">Color:</translation>
+	<translation name="Sky.Properties.Layer.Body.Color.Description">Color the content body is multiplied with</translation>
+	<translation name="Sky.Properties.Layer.Body.Menu">Body menu</translation>
+	
+	<translation name="Sky.Properties.Layer.Targets">Targets:</translation>
+	<translation name="Sky.Properties.Layer.Target">Target:</translation>
+	<translation name="Sky.Properties.Layer.Target.Description">Select target to edit</translation>
+	<translation name="Sky.Properties.Layer.Target.OffsetX">Offset X</translation>
+	<translation name="Sky.Properties.Layer.Target.OffsetY">Offset Y</translation>
+	<translation name="Sky.Properties.Layer.Target.OffsetZ">Offset Z</translation>
+	<translation name="Sky.Properties.Layer.Target.OrientationX">Orientation X</translation>
+	<translation name="Sky.Properties.Layer.Target.OrientationY">Orientation Y</translation>
+	<translation name="Sky.Properties.Layer.Target.OrientationZ">Orientation Z</translation>
+	<translation name="Sky.Properties.Layer.Target.RotationX">Rotation X</translation>
+	<translation name="Sky.Properties.Layer.Target.RotationY">Rotation Y</translation>
+	<translation name="Sky.Properties.Layer.Target.RotationZ">Rotation Z</translation>
+	<translation name="Sky.Properties.Layer.Target.ColorRed">Color Red</translation>
+	<translation name="Sky.Properties.Layer.Target.ColorGreen">Color Green</translation>
+	<translation name="Sky.Properties.Layer.Target.ColorBlue">Color Blue</translation>
+	<translation name="Sky.Properties.Layer.Target.Intensity">Intensity</translation>
+	<translation name="Sky.Properties.Layer.Target.Transparency">Transparency</translation>
+	<translation name="Sky.Properties.Layer.Target.LightColorRed">Light Color Red</translation>
+	<translation name="Sky.Properties.Layer.Target.LightColorGreen">Light Color Green</translation>
+	<translation name="Sky.Properties.Layer.Target.LightColorBlue">Light Color Blue</translation>
+	<translation name="Sky.Properties.Layer.Target.LightIntensity">Light Intensity</translation>
+	<translation name="Sky.Properties.Layer.Target.LightAmbientIntensity">Light Ambient Intensity</translation>
+	
+	<translation name="Sky.Properties.Layer.Target.Link">Link:</translation>
+	<translation name="Sky.Properties.Layer.Target.Link.Description">Links</translation>
+	<translation name="Sky.Properties.Layer.Target.Link.Links.Description">Links</translation>
+	
+	<translation name="Sky.Action.Layer.Add">Add</translation>
+	<translation name="Sky.Action.Layer.Add.Description">Add a layer to the end of the list.</translation>
+	<translation name="Sky.Action.Layer.Remove">Remove</translation>
+	<translation name="Sky.Action.Layer.Remove.Description">Remove the selected layer.</translation>
+	<translation name="Sky.Action.Layer.Up">Move Up</translation>
+	<translation name="Sky.Action.Layer.Up.Description">Move layer up in the list.</translation>
+	<translation name="Sky.Action.Layer.Down">Move Down</translation>
+	<translation name="Sky.Action.Layer.Down.Description">Move layer down in the list.</translation>
+	
+	<translation name="Sky.Action.Body.Add">Add</translation>
+	<translation name="Sky.Action.Body.Add.Description">Add body to end of list</translation>
+	<translation name="Sky.Action.Body.Remove">Remove</translation>
+	<translation name="Sky.Action.Body.Remove.Description">Remove selected body from list</translation>
+	<translation name="Sky.Action.Body.Up">Move Up</translation>
+	<translation name="Sky.Action.Body.Up.Description">Move body up in the list</translation>
+	<translation name="Sky.Action.Body.Down">Move Down</translation>
+	<translation name="Sky.Action.Body.Down.Description">Move body down in the list</translation>
+	
+	<translation name="Sky.Action.Link.Add.Description">Add link to target if not present</translation>
+	<translation name="Sky.Action.Link.Remove">Remove</translation>
+	<translation name="Sky.Action.Link.Remove.Description">Remove selected link from target</translation>
+	<translation name="Sky.Action.Link.Remove.Confirm">The link '{0}' is used by {1} targets.
+If the link is removed now it is also removed from
+all the targets using it. Do you want to remove the link?</translation>
+	<translation name="Sky.Action.Link.Remove.Confirm.Title">Remove Link</translation>
+	
+	<!-- Properties Panel - Link -->
+	<translation name="Sky.Properties.Links">Links:</translation>
+	<translation name="Sky.Properties.Links.Description">Links</translation>
+	<translation name="Sky.Properties.Link.Settings">Link Settings:</translation>
+	<translation name="Sky.Properties.Link.Name">Name:</translation>
+	<translation name="Sky.Properties.Link.Name.Description">Name of the link</translation>
+	<translation name="Sky.Properties.Link.Link">Link:</translation>
+	<translation name="Sky.Properties.Link.Link.Description">Name of the link if used</translation>
+	<translation name="Sky.Properties.Link.NoController">&lt; No Controller &gt;</translation>
+	<translation name="Sky.Properties.Link.Repeat">Repeat:</translation>
+	<translation name="Sky.Properties.Link.Repeat.Description">Repeat link value</translation>
+	
+	<translation name="Sky.Action.Link.Add">Add</translation>
+	<translation name="Sky.Action.Link.Add.Description">Add a link to the end of the list.</translation>
+	<translation name="Sky.Action.Link.Remove.Link">Remove</translation>
+	<translation name="Sky.Action.Link.Remove.Link.Description">Remove the selected link.</translation>
+	
+	<!-- Curves Window -->
+	<translation name="Sky.Curves.Link">Link to edit</translation>
+	
+	<!-- Properties Panel - View -->
+	<translation name="Sky.Properties.View.Camera">Camera:</translation>
+	<translation name="Sky.Properties.View.EnvironmentObject">Environment Object:</translation>
+	
+	<!-- Undo System -->
+	<translation name="Sky.Undo.Controller.SetMaximum">Set Controller Maximum</translation>
+	<translation name="Sky.Undo.Controller.Add">Add Controller</translation>
+	<translation name="Sky.Undo.Controller.Remove">Remove Controller</translation>
+	<translation name="Sky.Undo.Controller.SetName">Set Controller Name</translation>
+	<translation name="Sky.Undo.Controller.SetMinimum">Set Controller Minimum</translation>
+	<translation name="Sky.Undo.Controller.MoveUp">Move Controller Up</translation>
+	<translation name="Sky.Undo.Controller.ToggleFrozen">Toggle Controller Frozen</translation>
+	<translation name="Sky.Undo.Controller.ToggleClamp">Toggle Controller Clamp</translation>
+	<translation name="Sky.Undo.Controller.MoveDown">Move Controller Down</translation>
+	
+	<translation name="Sky.Undo.Sky.SetBackgroundColor">Set Sky Background Color</translation>
+	
+	<translation name="Sky.Undo.Link.Remove">Remove Link</translation>
+	<translation name="Sky.Undo.Link.SetRepeat">Set Link Repeat</translation>
+	<translation name="Sky.Undo.Link.SetName">Set Link Name</translation>
+	<translation name="Sky.Undo.Link.Add">Add Link</translation>
+	<translation name="Sky.Undo.Link.SetController">Set Link Controller</translation>
+	<translation name="Sky.Undo.Link.SetCurve">Set Link Curve</translation>
+	
+	<translation name="Sky.Undo.Body.MoveDown">Move Body Down</translation>
+	<translation name="Sky.Undo.Body.Remove">Remove Body</translation>
+	<translation name="Sky.Undo.Body.MoveUp">Move Body Up</translation>
+	<translation name="Sky.Undo.Body.Add">Add Body</translation>
+	<translation name="Sky.Undo.Body.SetSize">Set Body Size</translation>
+	<translation name="Sky.Undo.Body.SetSkin">Set Body Skin</translation>
+	<translation name="Sky.Undo.Body.SetOrientation">Set Body Orientation</translation>
+	<translation name="Sky.Undo.Body.SetColor">Set Body Color</translation>
+	
+	<translation name="Sky.Undo.Layer.MoveDown">Move Layer Down</translation>
+	<translation name="Sky.Undo.Layer.Add">Add Layer</translation>
+	<translation name="Sky.Undo.Layer.SetOffset">Set Layer Offset</translation>
+	<translation name="Sky.Undo.Layer.ToggleMultiplyBySkyColor">Toggle Layer Multiply By Sky Color</translation>
+	<translation name="Sky.Undo.Layer.SetOrientation">Set Layer Orientation</translation>
+	<translation name="Sky.Undo.Layer.SetTransparency">Set Layer Transparency</translation>
+	<translation name="Sky.Undo.Layer.ToggleMultiplyBySkyLight">Toggle Layer Multiply By Sky Light</translation>
+	<translation name="Sky.Undo.Layer.SetSkin">Set Layer Skin</translation>
+	<translation name="Sky.Undo.Layer.SetLightOrientation">Set Layer Light Orientation</translation>
+	<translation name="Sky.Undo.Layer.SetIntensity">Set Layer Intensity</translation>
+	<translation name="Sky.Undo.Layer.SetLightColor">Set Layer Light Color</translation>
+	<translation name="Sky.Undo.Layer.SetName">Set Layer Name</translation>
+	<translation name="Sky.Undo.Layer.SetColor">Set Layer Color</translation>
+	<translation name="Sky.Undo.Layer.Remove">Remove Layer</translation>
+	<translation name="Sky.Undo.Layer.SetAmbientIntensity">Set Layer Ambient Intensity</translation>
+	<translation name="Sky.Undo.Layer.MoveUp">Move Layer Up</translation>
+	<translation name="Sky.Undo.Layer.SetLightIntensity">Set Layer Light Intensity</translation>
+	
+	<translation name="Sky.Undo.Target.RemoveLink">Target Remove Link</translation>
+	<translation name="Sky.Undo.Target.AddLink">Target Add Link</translation>
+	
+	<!-- Task Sync Game Definition -->
+	<translation name="Sky.Task.SyncGameDefinition">Sky Editor: Synchronize Game Definition</translation>
 </languagePack>

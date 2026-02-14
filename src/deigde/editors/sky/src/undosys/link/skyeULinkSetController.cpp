@@ -50,7 +50,7 @@ pNewController(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Set Link Controller");
+	SetShortInfo("@Sky.Undo.Link.SetController");
 	
 	pOldController = link->GetController();
 	pNewController = newController;

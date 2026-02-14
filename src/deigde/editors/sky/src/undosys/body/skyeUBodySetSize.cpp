@@ -47,7 +47,7 @@ pNewSize(newSize)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Set Body Size");
+	SetShortInfo("@Sky.Undo.Body.SetSize");
 	
 	pOldSize = body->GetSize();
 	

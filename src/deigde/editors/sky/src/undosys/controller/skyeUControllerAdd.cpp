@@ -48,7 +48,7 @@ pController(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Add Controller");
+	SetShortInfo("@Sky.Undo.Controller.Add");
 	
 	pSky = sky;
 	pController = controller;

@@ -518,10 +518,10 @@ pWindowProperties(windowProperties)
 	
 	helper.ComboBox(groupBox, "@Animator.WPPlayground.LocomotionType.Label", "@Animator.WPPlayground.LocomotionType.ToolTip",
 		pCBLocomotionType, cComboLocomotionType::Ref::New(*this));
+	pCBLocomotionType->SetAutoTranslateItems(true);
 	pCBLocomotionType->AddItem("@Animator.WPPlayground.LocomotionType.Natural", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eltNatural);
 	pCBLocomotionType->AddItem("@Animator.WPPlayground.LocomotionType.FPS", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eltFPS);
 	pCBLocomotionType->AddItem("@Animator.WPPlayground.LocomotionType.Vehicle", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eltVehicle);
-	pCBLocomotionType->SetAutoTranslateItems(true);
 	
 	helper.EditFloat(groupBox, "@Animator.WPPlayground.LookUpLimit.Label", "@Animator.WPPlayground.LookUpLimit.ToolTip",
 		pEditLocoLimitUp, cTextLocoLimitUp::Ref::New(*this));

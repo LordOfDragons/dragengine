@@ -47,7 +47,7 @@ pNewColor(newColor)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Set Body Color");
+	SetShortInfo("@Sky.Undo.Body.SetColor");
 	
 	pOldColor = body->GetColor();
 	

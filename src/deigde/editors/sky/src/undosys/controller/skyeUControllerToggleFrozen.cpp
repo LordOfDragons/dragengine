@@ -46,7 +46,7 @@ pController(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Toggle Controller Frozen");
+	SetShortInfo("@Sky.Undo.Controller.ToggleFrozen");
 	
 	pController = controller;
 }

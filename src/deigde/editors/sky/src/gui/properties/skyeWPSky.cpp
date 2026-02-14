@@ -102,9 +102,9 @@ pWindowProperties(windowProperties)
 	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
-	helper.GroupBox(content, groupBox, "Sky:");
+	helper.GroupBox(content, groupBox, "@Sky.Properties.Sky");
 	
-	helper.ColorBox(groupBox, "Bg Color:", "Background Color.", pClrBg, cColorBackground::Ref::New(*this));
+	helper.ColorBox(groupBox, "@Sky.Properties.Sky.BgColor", "@Sky.Properties.Sky.BgColor.Description", pClrBg, cColorBackground::Ref::New(*this));
 }
 
 skyeWPSky::~skyeWPSky(){

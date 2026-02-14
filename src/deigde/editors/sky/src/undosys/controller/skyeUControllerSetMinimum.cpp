@@ -47,7 +47,7 @@ pNewMinimum(newMinimum)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Set Controller Minimum");
+	SetShortInfo("@Sky.Undo.Controller.SetMinimum");
 	
 	pOldMinimum = controller->GetMinimumValue();
 	pOldMaximum = controller->GetMaximumValue();

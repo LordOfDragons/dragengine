@@ -47,7 +47,7 @@ pNewSkin(newSkin)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Set Layer Skin");
+	SetShortInfo("@Sky.Undo.Layer.SetSkin");
 	
 	pOldSkin = layer->GetSkinPath();
 	

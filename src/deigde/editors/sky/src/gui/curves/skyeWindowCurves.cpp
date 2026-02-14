@@ -134,7 +134,7 @@ pWindowMain(windowMain)
 	
 	pListener = skyeWindowCurvesListener::Ref::New(*this);
 	
-	helper.ListBox(5, "Link to edit", pListLinks, cListLinks::Ref::New(*this));
+	helper.ListBox(5, "@Sky.Curves.Link", pListLinks, cListLinks::Ref::New(*this));
 	pListLinks->SetDefaultSorter();
 	AddChild(pListLinks, igdeContainerSplitted::eaSide);
 	

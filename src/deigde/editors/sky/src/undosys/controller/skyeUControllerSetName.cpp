@@ -47,7 +47,7 @@ pNewName(newName)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Set Controller Name");
+	SetShortInfo("@Sky.Undo.Controller.SetName");
 	
 	pOldName = controller->GetName();
 	

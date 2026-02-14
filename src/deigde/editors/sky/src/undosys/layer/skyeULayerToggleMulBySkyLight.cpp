@@ -46,7 +46,7 @@ pLayer(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Toggle Layer Multiply By Sky Light");
+	SetShortInfo("@Sky.Undo.Layer.ToggleMultiplyBySkyLight");
 	
 	pLayer = layer;
 }

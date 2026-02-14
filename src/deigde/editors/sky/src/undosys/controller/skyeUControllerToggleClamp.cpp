@@ -46,7 +46,7 @@ pController(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Toggle Controller Clamp");
+	SetShortInfo("@Sky.Undo.Controller.ToggleClamp");
 	
 	pController = controller;
 }

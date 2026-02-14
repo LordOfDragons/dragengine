@@ -47,7 +47,7 @@ pNewColor(newColor)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Set Layer Color");
+	SetShortInfo("@Sky.Undo.Layer.SetColor");
 	
 	pOldColor = layer->GetColor();
 	

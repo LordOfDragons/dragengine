@@ -340,9 +340,9 @@ public:
 class cActionLayerAdd : public cBaseAction{
 public:
 	using Ref = deTObjectReference<cActionLayerAdd>;
-	cActionLayerAdd(skyeWPLayer &panel) : cBaseAction(panel, "Add",
+	cActionLayerAdd(skyeWPLayer &panel) : cBaseAction(panel, "@Sky.Action.Layer.Add",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-		"Add a layer to the end of the list."){}
+		"@Sky.Action.Layer.Add.Description"){}
 	
 	igdeUndo::Ref OnAction(skyeSky *sky) override{
 		const skyeLayer::Ref layer(skyeLayer::Ref::New(pPanel.GetEnvironment()));
@@ -353,9 +353,9 @@ public:
 class cActionLayerRemove : public cBaseActionLayer{
 public:
 	using Ref = deTObjectReference<cActionLayerRemove>;
-	cActionLayerRemove(skyeWPLayer &panel) : cBaseActionLayer(panel, "Remove",
+	cActionLayerRemove(skyeWPLayer &panel) : cBaseActionLayer(panel, "@Sky.Action.Layer.Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-		"Remove the selected layer."){}
+		"@Sky.Action.Layer.Remove.Description"){}
 	
 	igdeUndo::Ref OnActionLayer(skyeSky*, skyeLayer *layer) override{
 		return skyeULayerRemove::Ref::New(layer);
@@ -367,8 +367,8 @@ class cActionLayerUp : public cBaseActionLayer{
 public:
 	using Ref = deTObjectReference<cActionLayerUp>;
 	cActionLayerUp(skyeWPLayer &panel, igdeListBox &listBox) : cBaseActionLayer(panel,
-		"Move Up", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp),
-		"Move layer up in the list."),
+		"@Sky.Action.Layer.Up", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp),
+		"@Sky.Action.Layer.Up.Description"),
 	pListBox(listBox){}
 	
 	igdeUndo::Ref OnActionLayer(skyeSky*, skyeLayer *layer) override{
@@ -385,8 +385,8 @@ class cActionLayerDown : public cBaseActionLayer{
 public:
 	using Ref = deTObjectReference<cActionLayerDown>;
 	cActionLayerDown(skyeWPLayer &panel, igdeListBox &listBox) : cBaseActionLayer(panel,
-		"Move Down", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown),
-		"Move layer down in the list."),
+		"@Sky.Action.Layer.Down", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown),
+		"@Sky.Action.Layer.Down.Description"),
 	pListBox(listBox){}
 	
 	igdeUndo::Ref OnActionLayer(skyeSky*, skyeLayer *layer) override{
@@ -519,8 +519,8 @@ public:
 class cActionMulBySkyLight : public cBaseActionLayer{
 public:
 	using Ref = deTObjectReference<cActionMulBySkyLight>;
-	cActionMulBySkyLight(skyeWPLayer &panel) : cBaseActionLayer(panel, "Multiply By Sky Light",
-		"Determines if the layer intensity is multiplied by the sky light intensity"){ }
+	cActionMulBySkyLight(skyeWPLayer &panel) : cBaseActionLayer(panel, "@Sky.Properties.Layer.MulBySkyLight",
+		"@Sky.Properties.Layer.MulBySkyLight.Description"){ }
 	
 	igdeUndo::Ref OnActionLayer(skyeSky*, skyeLayer *layer) override{
 		return skyeULayerToggleMulBySkyLight::Ref::New(layer);
@@ -530,8 +530,8 @@ public:
 class cActionMulBySkyColor : public cBaseActionLayer{
 public:
 	using Ref = deTObjectReference<cActionMulBySkyColor>;
-	cActionMulBySkyColor(skyeWPLayer &panel) : cBaseActionLayer(panel, "Multiply By Sky Color",
-		"Determines if the layer color is multiplied by the sky light color"){ }
+	cActionMulBySkyColor(skyeWPLayer &panel) : cBaseActionLayer(panel, "@Sky.Properties.Layer.MulBySkyColor",
+		"@Sky.Properties.Layer.MulBySkyColor.Description"){ }
 	
 	igdeUndo::Ref OnActionLayer(skyeSky*, skyeLayer *layer) override{
 		return skyeULayerToggleMulBySkyColor::Ref::New(layer);
@@ -621,7 +621,7 @@ class cActionBody : public cBaseActionLayer{
 public:
 	using Ref = deTObjectReference<cActionBody>;
 	cActionBody(skyeWPLayer &panel, igdeButton::Ref &button) :
-	cBaseActionLayer(panel, "...", "Body menu"), pButton(button){}
+	cBaseActionLayer(panel, "...", "@Sky.Properties.Layer.Body.Menu"), pButton(button){}
 	
 	igdeUndo::Ref OnActionLayer(skyeSky*, skyeLayer*) override{
 		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelperProperties();
@@ -639,9 +639,9 @@ public:
 class cActionBodyAdd : public cBaseActionLayer{
 public:
 	using Ref = deTObjectReference<cActionBodyAdd>;
-	cActionBodyAdd(skyeWPLayer &panel) : cBaseActionLayer(panel, "Add",
+	cActionBodyAdd(skyeWPLayer &panel) : cBaseActionLayer(panel, "@Sky.Action.Body.Add",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-		"Add body to end of list"){}
+		"@Sky.Action.Body.Add.Description"){}
 	
 	igdeUndo::Ref OnActionLayer(skyeSky*, skyeLayer *layer) override{
 		return skyeUBodyAdd::Ref::New(layer, skyeBody::Ref::New(pPanel.GetEngine()));
@@ -651,9 +651,9 @@ public:
 class cActionBodyRemove : public cBaseActionLayer{
 public:
 	using Ref = deTObjectReference<cActionBodyRemove>;
-	cActionBodyRemove(skyeWPLayer &panel) : cBaseActionLayer(panel, "Remove",
+	cActionBodyRemove(skyeWPLayer &panel) : cBaseActionLayer(panel, "@Sky.Action.Body.Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-		"Remove selected body from list"){}
+		"@Sky.Action.Body.Remove.Description"){}
 	
 	igdeUndo::Ref OnActionLayer(skyeSky*, skyeLayer*) override{
 		skyeBody * const body = pPanel.GetBody();
@@ -673,9 +673,9 @@ class cActionBodyUp : public cBaseActionLayer{
 public:
 	using Ref = deTObjectReference<cActionBodyUp>;
 	cActionBodyUp(skyeWPLayer &panel, igdeSpinTextField &spinTextField) :
-	cBaseActionLayer(panel, "Move Up",
+	cBaseActionLayer(panel, "@Sky.Action.Body.Up",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp),
-		"Move body up in the list"),
+		"@Sky.Action.Body.Up.Description"),
 	pSpinTextField(spinTextField){}
 	
 	igdeUndo::Ref OnActionLayer(skyeSky*, skyeLayer*) override{
@@ -697,9 +697,9 @@ class cActionBodyDown : public cBaseActionLayer{
 public:
 	using Ref = deTObjectReference<cActionBodyDown>;
 	cActionBodyDown(skyeWPLayer &panel, igdeSpinTextField &spinTextField) :
-	cBaseActionLayer(panel, "Move Down",
+	cBaseActionLayer(panel, "@Sky.Action.Body.Down",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown),
-		"Move body down in the list"),
+		"@Sky.Action.Body.Down.Description"),
 	pSpinTextField(spinTextField){}
 	
 	igdeUndo::Ref OnActionLayer(skyeSky*, skyeLayer*) override{
@@ -805,7 +805,7 @@ public:
 	using Ref = deTObjectReference<cActionLinkAdd>;
 	cActionLinkAdd(skyeWPLayer &panel, igdeComboBox &comboLinks) : cBaseActionLayer(panel,
 		"", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallPlus),
-		"Add link to target if not present"),
+		"@Sky.Action.Link.Add.Description"),
 	pComboLinks(comboLinks){}
 	
 	igdeUndo::Ref OnActionLayer(skyeSky*, skyeLayer *layer) override{
@@ -833,8 +833,8 @@ class cActionLinkRemove : public cBaseActionLayer{
 public:
 	using Ref = deTObjectReference<cActionLinkRemove>;
 	cActionLinkRemove(skyeWPLayer &panel, igdeListBox &listLinks) : cBaseActionLayer(panel,
-		"Remove", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-		"Remove selected link from target"),
+		"@Sky.Action.Link.Remove", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@Sky.Action.Link.Remove.Description"),
 	pListLinks(listLinks){}
 	
 	igdeUndo::Ref OnActionLayer(skyeSky*, skyeLayer *layer) override{
@@ -881,8 +881,8 @@ pWindowProperties(windowProperties)
 	AddChild(content);
 	
 	// layer list
-	helper.GroupBoxFlow(content, groupBox, "Layers:");
-	helper.ListBox(groupBox, 8, "Layers", pListLayer, cListLayers::Ref::New(*this));
+	helper.GroupBoxFlow(content, groupBox, "@Sky.Properties.Layers");
+	helper.ListBox(groupBox, 8, "@Sky.Properties.Layers.Description", pListLayer, cListLayers::Ref::New(*this));
 	
 	pActionLayerAdd = cActionLayerAdd::Ref::New(*this);
 	pActionLayerRemove = cActionLayerRemove::Ref::New(*this);
@@ -890,40 +890,40 @@ pWindowProperties(windowProperties)
 	pActionLayerDown = cActionLayerDown::Ref::New(*this, pListLayer);
 	
 	// layer settings
-	helper.GroupBox(content, groupBox, "Layer Settings:");
-	helper.EditString(groupBox, "Name:", "Name of the layer", pEditName, cTextName::Ref::New(*this));
-	helper.EditPath(groupBox, "Skin:", "Background skin of the layer",
+	helper.GroupBox(content, groupBox, "@Sky.Properties.Layer.Settings");
+	helper.EditString(groupBox, "@Sky.Properties.Layer.Name", "@Sky.Properties.Layer.Name.Description", pEditName, cTextName::Ref::New(*this));
+	helper.EditPath(groupBox, "@Sky.Properties.Layer.Skin", "@Sky.Properties.Layer.Skin.Description",
 		igdeEnvironment::efpltSkin, pEditSkin, cPathSkin::Ref::New(*this));
-	helper.EditVector(groupBox, "Offset:", "Offset of the layer", pEditOffset, cEditOffset::Ref::New(*this));
-	helper.EditVector(groupBox, "Orientation:", "Orientation of the layer", pEditOrientation, cEditOrientation::Ref::New(*this));
+	helper.EditVector(groupBox, "@Sky.Properties.Layer.Offset", "@Sky.Properties.Layer.Offset.Description", pEditOffset, cEditOffset::Ref::New(*this));
+	helper.EditVector(groupBox, "@Sky.Properties.Layer.Orientation", "@Sky.Properties.Layer.Orientation.Description", pEditOrientation, cEditOrientation::Ref::New(*this));
 	
-	helper.FormLine(groupBox, "Color:",
-		"Color and intensity the content layer is multiplied with", frameLine);
-	helper.ColorBox(frameLine, "Color or layer content", pClrLayer, cEditColor::Ref::New(*this));
-	helper.EditFloat(frameLine, "Intensity of the layer content", pEditIntensity, cTextIntensity::Ref::New(*this));
+	helper.FormLine(groupBox, "@Sky.Properties.Layer.Color",
+		"@Sky.Properties.Layer.Color.Description", frameLine);
+	helper.ColorBox(frameLine, "@Sky.Properties.Layer.Color.Color", pClrLayer, cEditColor::Ref::New(*this));
+	helper.EditFloat(frameLine, "@Sky.Properties.Layer.Color.Intensity", pEditIntensity, cTextIntensity::Ref::New(*this));
 	
-	helper.EditSliderText(groupBox, "Transparency:", "Transparency of the layer",
+	helper.EditSliderText(groupBox, "@Sky.Properties.Layer.Transparency", "@Sky.Properties.Layer.Transparency.Description",
 		0.0f, 1.0f, 3, 3, 0.1f, pSldTransparency, cSliderTransparency::Ref::New(*this));
 	
 	helper.CheckBox(groupBox, pChkMulBySkyLight, cActionMulBySkyLight::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkMulBySkyColor, cActionMulBySkyColor::Ref::New(*this));
 	
 	// light settings
-	helper.GroupBox(content, groupBox, "Light Settings:");
+	helper.GroupBox(content, groupBox, "@Sky.Properties.Layer.Light");
 	
-	helper.FormLine(groupBox, "Light:", "Light color, intensity and ambient intensity", frameLine);
-	helper.ColorBox(frameLine, "Color or layer light", pClrLight, cEditLightColor::Ref::New(*this));
-	helper.EditFloat(frameLine, "Intensity of the layer light", pEditLightIntensity, cTextLightIntensity::Ref::New(*this));
-	helper.EditFloat(frameLine, "Ambient intensity of the layer light", pEditAmbientIntensity, cTextAmbientIntensity::Ref::New(*this));
+	helper.FormLine(groupBox, "@Sky.Properties.Layer.Light.Label", "@Sky.Properties.Layer.Light.Description", frameLine);
+	helper.ColorBox(frameLine, "@Sky.Properties.Layer.Light.Color", pClrLight, cEditLightColor::Ref::New(*this));
+	helper.EditFloat(frameLine, "@Sky.Properties.Layer.Light.Intensity", pEditLightIntensity, cTextLightIntensity::Ref::New(*this));
+	helper.EditFloat(frameLine, "@Sky.Properties.Layer.Light.AmbientIntensity", pEditAmbientIntensity, cTextAmbientIntensity::Ref::New(*this));
 	
-	helper.EditVector(groupBox, "Orientation:", "Orientation of the light relative to the layer",
+	helper.EditVector(groupBox, "@Sky.Properties.Layer.Light.Orientation", "@Sky.Properties.Layer.Light.Orientation.Description",
 		pEditLightOrientation, cEditLightOrientation::Ref::New(*this));
 	
 	// bodies
-	helper.GroupBox(content, groupBox, "Bodies:");
+	helper.GroupBox(content, groupBox, "@Sky.Properties.Layer.Bodies");
 	
-	helper.FormLine(groupBox, "Body:", "Body to edit", frameLine);
-	helper.EditSpinInteger(frameLine, "Body to edit", 0, 0, pSpinBody, cSpinBody::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@Sky.Properties.Layer.Body", "@Sky.Properties.Layer.Body.Description", frameLine);
+	helper.EditSpinInteger(frameLine, "@Sky.Properties.Layer.Body.Description", 0, 0, pSpinBody, cSpinBody::Ref::New(*this));
 	
 	pActionBodyAdd = cActionBodyAdd::Ref::New(*this);
 	pActionBodyRemove = cActionBodyRemove::Ref::New(*this);
@@ -932,48 +932,49 @@ pWindowProperties(windowProperties)
 	
 	helper.Button(frameLine, pBtnBody, cActionBody::Ref::New(*this, pBtnBody));
 	
-	helper.EditPath(groupBox, "Skin:", "Skin for body",
+	helper.EditPath(groupBox, "@Sky.Properties.Layer.Body.Skin", "@Sky.Properties.Layer.Body.Skin.Description",
 		igdeEnvironment::efpltSkin, pEditBodySkin, cPathBodySkin::Ref::New(*this));
-	helper.EditVector(groupBox, "Orientation:", "Orientation of the body",
+	helper.EditVector(groupBox, "@Sky.Properties.Layer.Body.Orientation", "@Sky.Properties.Layer.Body.Orientation.Description",
 		pEditBodyOrienation, cEditBodyOrientation::Ref::New(*this));
-	helper.EditVector2(groupBox, "Size:", "Size of the body in degrees",
+	helper.EditVector2(groupBox, "@Sky.Properties.Layer.Body.Size", "@Sky.Properties.Layer.Body.Size.Description",
 		pEditBodySize, cEditBodySize::Ref::New(*this));
-	helper.ColorBox(groupBox, "Color:", "Color the content body is multiplied with",
+	helper.ColorBox(groupBox, "@Sky.Properties.Layer.Body.Color", "@Sky.Properties.Layer.Body.Color.Description",
 		pClrBody, cEditBodyColor::Ref::New(*this));
 	
 	// targets
-	helper.GroupBoxFlow(content, groupBox, "Targets:");
+	helper.GroupBoxFlow(content, groupBox, "@Sky.Properties.Layer.Targets");
 	
 	frameLine = igdeContainerForm::Ref::New(env);
 	groupBox->AddChild(frameLine);
 	
-	helper.ComboBox(frameLine, "Target:", "Select target to edit", pCBTarget, cComboTarget::Ref::New(*this));
-	pCBTarget->AddItem("Offset X", nullptr, (void*)(intptr_t)deSkyLayer::etOffsetX);
-	pCBTarget->AddItem("Offset Y", nullptr, (void*)(intptr_t)deSkyLayer::etOffsetY);
-	pCBTarget->AddItem("Offset Z", nullptr, (void*)(intptr_t)deSkyLayer::etOffsetZ);
-	pCBTarget->AddItem("Orientation X", nullptr, (void*)(intptr_t)deSkyLayer::etOrientationX);
-	pCBTarget->AddItem("Orientation Y", nullptr, (void*)(intptr_t)deSkyLayer::etOrientationY);
-	pCBTarget->AddItem("Orientation Z", nullptr, (void*)(intptr_t)deSkyLayer::etOrientationZ);
-	pCBTarget->AddItem("Rotation X", nullptr, (void*)(intptr_t)deSkyLayer::etRotationX);
-	pCBTarget->AddItem("Rotation Y", nullptr, (void*)(intptr_t)deSkyLayer::etRotationY);
-	pCBTarget->AddItem("Rotation Z", nullptr, (void*)(intptr_t)deSkyLayer::etRotationZ);
-	pCBTarget->AddItem("Color Red", nullptr, (void*)(intptr_t)deSkyLayer::etColorR);
-	pCBTarget->AddItem("Color Green", nullptr, (void*)(intptr_t)deSkyLayer::etColorG);
-	pCBTarget->AddItem("Color Blue", nullptr, (void*)(intptr_t)deSkyLayer::etColorB);
-	pCBTarget->AddItem("Intensity", nullptr, (void*)(intptr_t)deSkyLayer::etIntensity);
-	pCBTarget->AddItem("Transparency", nullptr, (void*)(intptr_t)deSkyLayer::etTransparency);
-	pCBTarget->AddItem("Light Color Red", nullptr, (void*)(intptr_t)deSkyLayer::etLightColorR);
-	pCBTarget->AddItem("Light Color Green", nullptr, (void*)(intptr_t)deSkyLayer::etLightColorG);
-	pCBTarget->AddItem("Light Color Blue", nullptr, (void*)(intptr_t)deSkyLayer::etLightColorB);
-	pCBTarget->AddItem("Light Intensity", nullptr, (void*)(intptr_t)deSkyLayer::etLightIntensity);
-	pCBTarget->AddItem("Light Ambient Intensity", nullptr, (void*)(intptr_t)deSkyLayer::etAmbientIntensity);
+	helper.ComboBox(frameLine, "@Sky.Properties.Layer.Target", "@Sky.Properties.Layer.Target.Description", pCBTarget, cComboTarget::Ref::New(*this));
+	pCBTarget->SetAutoTranslateItems(true);
+	pCBTarget->AddItem("@Sky.Properties.Layer.Target.OffsetX", nullptr, (void*)(intptr_t)deSkyLayer::etOffsetX);
+	pCBTarget->AddItem("@Sky.Properties.Layer.Target.OffsetY", nullptr, (void*)(intptr_t)deSkyLayer::etOffsetY);
+	pCBTarget->AddItem("@Sky.Properties.Layer.Target.OffsetZ", nullptr, (void*)(intptr_t)deSkyLayer::etOffsetZ);
+	pCBTarget->AddItem("@Sky.Properties.Layer.Target.OrientationX", nullptr, (void*)(intptr_t)deSkyLayer::etOrientationX);
+	pCBTarget->AddItem("@Sky.Properties.Layer.Target.OrientationY", nullptr, (void*)(intptr_t)deSkyLayer::etOrientationY);
+	pCBTarget->AddItem("@Sky.Properties.Layer.Target.OrientationZ", nullptr, (void*)(intptr_t)deSkyLayer::etOrientationZ);
+	pCBTarget->AddItem("@Sky.Properties.Layer.Target.RotationX", nullptr, (void*)(intptr_t)deSkyLayer::etRotationX);
+	pCBTarget->AddItem("@Sky.Properties.Layer.Target.RotationY", nullptr, (void*)(intptr_t)deSkyLayer::etRotationY);
+	pCBTarget->AddItem("@Sky.Properties.Layer.Target.RotationZ", nullptr, (void*)(intptr_t)deSkyLayer::etRotationZ);
+	pCBTarget->AddItem("@Sky.Properties.Layer.Target.ColorRed", nullptr, (void*)(intptr_t)deSkyLayer::etColorR);
+	pCBTarget->AddItem("@Sky.Properties.Layer.Target.ColorGreen", nullptr, (void*)(intptr_t)deSkyLayer::etColorG);
+	pCBTarget->AddItem("@Sky.Properties.Layer.Target.ColorBlue", nullptr, (void*)(intptr_t)deSkyLayer::etColorB);
+	pCBTarget->AddItem("@Sky.Properties.Layer.Target.Intensity", nullptr, (void*)(intptr_t)deSkyLayer::etIntensity);
+	pCBTarget->AddItem("@Sky.Properties.Layer.Target.Transparency", nullptr, (void*)(intptr_t)deSkyLayer::etTransparency);
+	pCBTarget->AddItem("@Sky.Properties.Layer.Target.LightColorRed", nullptr, (void*)(intptr_t)deSkyLayer::etLightColorR);
+	pCBTarget->AddItem("@Sky.Properties.Layer.Target.LightColorGreen", nullptr, (void*)(intptr_t)deSkyLayer::etLightColorG);
+	pCBTarget->AddItem("@Sky.Properties.Layer.Target.LightColorBlue", nullptr, (void*)(intptr_t)deSkyLayer::etLightColorB);
+	pCBTarget->AddItem("@Sky.Properties.Layer.Target.LightIntensity", nullptr, (void*)(intptr_t)deSkyLayer::etLightIntensity);
+	pCBTarget->AddItem("@Sky.Properties.Layer.Target.LightAmbientIntensity", nullptr, (void*)(intptr_t)deSkyLayer::etAmbientIntensity);
 	
-	helper.FormLineStretchFirst(frameLine, "Link:", "Links", frameLine2);
-	helper.ComboBox(frameLine2, "Links", pCBLinks, {});
+	helper.FormLineStretchFirst(frameLine, "@Sky.Properties.Layer.Target.Link", "@Sky.Properties.Layer.Target.Link.Description", frameLine2);
+	helper.ComboBox(frameLine2, "@Sky.Properties.Layer.Target.Link.Links.Description", pCBLinks, {});
 	pActionLinkAdd = cActionLinkAdd::Ref::New(*this, pCBLinks);
 	helper.Button(frameLine2, pBtnLinkAdd, pActionLinkAdd);
 	
-	helper.ListBox(groupBox, 8, "Links", pListLinks, cListLinks::Ref::New(*this));
+	helper.ListBox(groupBox, 8, "@Sky.Properties.Layer.Target.Link.Links.Description", pListLinks, cListLinks::Ref::New(*this));
 	pListLinks->SetDefaultSorter();
 	
 	pActionLinkRemove = cActionLinkRemove::Ref::New(*this, pListLinks);

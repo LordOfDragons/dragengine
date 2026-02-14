@@ -47,7 +47,7 @@ pNewIntensity(newIntensity)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Set Layer Ambient Intensity");
+	SetShortInfo("@Sky.Undo.Layer.SetAmbientIntensity");
 	
 	pOldIntensity = layer->GetAmbientIntensity();
 	

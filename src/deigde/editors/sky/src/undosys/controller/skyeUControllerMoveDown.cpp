@@ -53,7 +53,7 @@ pIndex(0)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Move Controller Down");
+	SetShortInfo("@Sky.Undo.Controller.MoveDown");
 	
 	pIndex = sky->GetControllers().IndexOf(controller);
 	if(pIndex == -1 || pIndex == sky->GetControllers().GetCount() - 1){

@@ -48,7 +48,7 @@ pBody(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Add Body");
+	SetShortInfo("@Sky.Undo.Body.Add");
 	
 	pLayer = layer;
 	pBody = body;

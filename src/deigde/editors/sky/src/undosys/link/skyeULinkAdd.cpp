@@ -47,7 +47,7 @@ pSky(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Add Link");
+	SetShortInfo("@Sky.Undo.Link.Add");
 	
 	pSky = sky;
 	pLink = link;

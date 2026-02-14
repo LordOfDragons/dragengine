@@ -211,9 +211,9 @@ public:
 class cActionLinkAdd : public cBaseAction{
 public:
 	using Ref = deTObjectReference<cActionLinkAdd>;
-	cActionLinkAdd(skyeWPLink &panel) : cBaseAction(panel, "Add",
+	cActionLinkAdd(skyeWPLink &panel) : cBaseAction(panel, "@Sky.Action.Link.Add",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-		"Add a link to the end of the list."){}
+		"@Sky.Action.Link.Add.Description"){}
 	
 	igdeUndo::Ref OnAction(skyeSky *sky) override{
 		return skyeULinkAdd::Ref::New(sky, skyeLink::Ref::New());
@@ -223,19 +223,17 @@ public:
 class cActionLinkRemove : public cBaseActionLink{
 public:
 	using Ref = deTObjectReference<cActionLinkRemove>;
-	cActionLinkRemove(skyeWPLink &panel) : cBaseActionLink(panel, "Remove",
+	cActionLinkRemove(skyeWPLink &panel) : cBaseActionLink(panel, "@Sky.Action.Link.Remove.Link",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-		"Remove the selected link."){}
+		"@Sky.Action.Link.Remove.Link.Description"){}
 	
 	igdeUndo::Ref OnActionLink(skyeSky *sky, skyeLink *link) override{
 		const int usageCount = sky->CountLinkUsage(link);
 		
 		if(usageCount > 0 && igdeCommonDialogs::QuestionFormat(
-			pPanel, igdeCommonDialogs::ebsYesNo, "Remove Link",
-			"The link '{0}' is used by {1} targets.\n"
-			"If the link is removed now it is also removed from\n"
-			"all the targets using it. Do you want to remove the link?",
-			link->GetName().GetString(), usageCount) != igdeCommonDialogs::ebYes){
+			pPanel, igdeCommonDialogs::ebsYesNo, "@Sky.Action.Link.Remove.Confirm.Title",
+			"@Sky.Action.Link.Remove.Confirm",
+			link->GetName(), usageCount) != igdeCommonDialogs::ebYes){
 				return {};
 		}
 		
@@ -356,26 +354,26 @@ pWindowProperties(windowProperties)
 	AddChild(content);
 	
 	// link list
-	helper.GroupBoxFlow(content, groupBox, "Links:");
+	helper.GroupBoxFlow(content, groupBox, "@Sky.Properties.Links");
 	
-	helper.ListBox(groupBox, 8, "Links", pListLinks, cListLinks::Ref::New(*this));
+	helper.ListBox(groupBox, 8, "@Sky.Properties.Links.Description", pListLinks, cListLinks::Ref::New(*this));
 	pListLinks->SetDefaultSorter();
 	
 	pActionLinkAdd = cActionLinkAdd::Ref::New(*this);
 	pActionLinkRemove = cActionLinkRemove::Ref::New(*this);
 	
 	// link settings
-	helper.GroupBoxFlow(content, groupBox, "Link Settings:");
+	helper.GroupBoxFlow(content, groupBox, "@Sky.Properties.Link.Settings");
 	
 	frameLine = igdeContainerForm::Ref::New(env);
 	groupBox->AddChild(frameLine);
 	
-	helper.EditString(frameLine, "Name:", "Name of the link", pEditName, cTextName::Ref::New(*this));
+	helper.EditString(frameLine, "@Sky.Properties.Link.Name", "@Sky.Properties.Link.Name.Description", pEditName, cTextName::Ref::New(*this));
 	
-	helper.ComboBox(frameLine, "Link:", true, "Name of the link if used", pCBController, cComboController::Ref::New(*this));
+	helper.ComboBox(frameLine, "@Sky.Properties.Link.Link", true, "@Sky.Properties.Link.Link.Description", pCBController, cComboController::Ref::New(*this));
 	pCBController->SetDefaultSorter();
 	
-	helper.EditInteger(frameLine, "Repeat:", "Repeat link value", pEditRepeat, cTextRepeat::Ref::New(*this));
+	helper.EditInteger(frameLine, "@Sky.Properties.Link.Repeat", "@Sky.Properties.Link.Repeat.Description", pEditRepeat, cTextRepeat::Ref::New(*this));
 	
 	helper.ViewCurveBezier(groupBox, pEditCurve, cEditCurve::Ref::New(*this));
 }
@@ -457,7 +455,7 @@ void skyeWPLink::UpdateLink(){
 
 void skyeWPLink::UpdateControllerList(){
 	pCBController->RemoveAllItems();
-	pCBController->AddItem("< No Controller >", nullptr);
+	pCBController->AddItem(Translate("Sky.Properties.Link.NoController").ToUTF8(), nullptr);
 	
 	if(pSky){
 		pSky->GetControllers().Visit([&](skyeController *controller){

@@ -54,7 +54,7 @@ pIndex(0)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Remove Layer");
+	SetShortInfo("@Sky.Undo.Layer.Remove");
 	
 	pIndex = sky->GetLayers().IndexOf(layer);
 	if(pIndex == -1){

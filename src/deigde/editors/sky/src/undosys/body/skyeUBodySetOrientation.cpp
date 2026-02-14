@@ -47,7 +47,7 @@ pNewOrientation(newOrientation)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Set Body Orientation");
+	SetShortInfo("@Sky.Undo.Body.SetOrientation");
 	
 	pOldOrientation = body->GetOrientation();
 	

@@ -314,13 +314,13 @@ public:
 class cActionSkyNew : public cActionBase{
 public:
 	typedef deTObjectReference<cActionSkyNew> Ref;
-	cActionSkyNew(skyeWindowMain &window) : cActionBase(window, "New",
-		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiNew), "Creates a new sky",
+	cActionSkyNew(skyeWindowMain &window) : cActionBase(window, "@Sky.Action.New",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiNew), "@Sky.Action.New.Description",
 		deInputEvent::esmControl, deInputEvent::ekcN, deInputEvent::ekcN){}
 	
 	void OnAction() override{
-		if(igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "New Sky",
-		"Creating a new sky discarding the current one is that ok?") == igdeCommonDialogs::ebYes){
+		if(igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "@Sky.Dialog.NewSky.Title",
+		"@Sky.Dialog.NewSky.Message") == igdeCommonDialogs::ebYes){
 			pWindow.CreateNewSky();
 		}
 	}
@@ -330,13 +330,13 @@ public:
 class cActionSkyOpen : public cActionBase{
 public:
 	typedef deTObjectReference<cActionSkyOpen> Ref;
-	cActionSkyOpen(skyeWindowMain &window) : cActionBase(window, "Open...",
-		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen), "Opens a sky from file",
+	cActionSkyOpen(skyeWindowMain &window) : cActionBase(window, "@Sky.Action.Open",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen), "@Sky.Action.Open.Description",
 		deInputEvent::esmControl, deInputEvent::ekcO, deInputEvent::ekcO){}
 	
 	void OnAction() override{
 		decString filename(pWindow.GetSky()->GetFilePath());
-		if(!igdeCommonDialogs::GetFileOpen(pWindow, "Open Sky",
+		if(!igdeCommonDialogs::GetFileOpen(pWindow, "@Sky.Dialog.OpenSky.Title",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetLoadSaveSystem().GetSkyFilePatterns(), filename ) ){
 			return;
@@ -361,13 +361,13 @@ public:
 class cActionSkySaveAs : public cActionBase{
 public:
 	typedef deTObjectReference<cActionSkySaveAs> Ref;
-	cActionSkySaveAs(skyeWindowMain &window) : cActionBase(window, "Save As...",
+	cActionSkySaveAs(skyeWindowMain &window) : cActionBase(window, "@Sky.Action.SaveAs",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSaveAs),
-		"Saves the sky under a differen file", deInputEvent::ekcA){}
+		"@Sky.Action.SaveAs.Description", deInputEvent::ekcA){}
 	
 	void OnAction() override{
 		decString filename(pWindow.GetSky()->GetFilePath());
-		if(igdeCommonDialogs::GetFileSave(pWindow, "Save Sky",
+		if(igdeCommonDialogs::GetFileSave(pWindow, "@Sky.Dialog.SaveSky.Title",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetLoadSaveSystem().GetSkyFilePatterns(), filename ) ){
 			pWindow.SaveSky(filename);
@@ -380,8 +380,8 @@ class cActionSkySave : public cActionSkySaveAs{
 public:
 	typedef deTObjectReference<cActionSkySave> Ref;
 	cActionSkySave(skyeWindowMain &window) : cActionSkySaveAs(window){
-		SetText("Save");
-		SetDescription("Saves the sky to file");
+		SetText("@Sky.Action.Save");
+		SetDescription("@Sky.Action.Save.Description");
 		SetHotKey(igdeHotKey(deInputEvent::esmControl, deInputEvent::ekcS));
 		SetMnemonic(deInputEvent::ekcS);
 		SetIcon(window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave));
@@ -411,8 +411,8 @@ class cActionEditCut : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditCut> Ref;
 	cActionEditCut(skyeWindowMain &window) : cActionBase(window,
-		"Cut", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
-		"Cut selected objects", deInputEvent::esmControl,
+		"@Sky.Action.Cut", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
+		"@Sky.Action.Cut.Description", deInputEvent::esmControl,
 		deInputEvent::ekcX, deInputEvent::ekcT){}
 	
 	void OnAction() override{
@@ -428,8 +428,8 @@ class cActionEditCopy : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditCopy> Ref;
 	cActionEditCopy(skyeWindowMain &window) : cActionBase(window,
-		"Copy", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-		"Copies selected objects", deInputEvent::esmControl,
+		"@Sky.Action.Copy", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		"@Sky.Action.Copy.Description", deInputEvent::esmControl,
 		deInputEvent::ekcC, deInputEvent::ekcC){}
 	
 	void OnAction() override{
@@ -445,8 +445,8 @@ class cActionEditPaste : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditPaste> Ref;
 	cActionEditPaste(skyeWindowMain &window) : cActionBase(window,
-		"Paste", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
-		"Paste objects", deInputEvent::esmControl,
+		"@Sky.Action.Paste", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+		"@Sky.Action.Paste.Description", deInputEvent::esmControl,
 		deInputEvent::ekcV, deInputEvent::ekcP){}
 	
 	void OnAction() override{
@@ -462,7 +462,7 @@ class cActionViewShowCompass : public cActionBase{
 public:
 	typedef deTObjectReference<cActionViewShowCompass> Ref;
 	cActionViewShowCompass(skyeWindowMain &window) : cActionBase(window,
-		"Show Sky-Compass", nullptr, "Shows/Hides the Sky Compass", deInputEvent::ekcC){}
+		"@Sky.Action.ShowSkyCompass", nullptr, "@Sky.Action.ShowSkyCompass.Description", deInputEvent::ekcC){}
 	
 	void OnAction() override{
 		skyeSky * const sky = pWindow.GetSky();
@@ -547,15 +547,15 @@ void skyeWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade = igdeMenuCascade::Ref::New(env, "Sky", deInputEvent::ekcS);
+	cascade = igdeMenuCascade::Ref::New(env, "@Sky.Menu.Sky", deInputEvent::ekcS);
 	pCreateMenuSky(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade = igdeMenuCascade::Ref::New(env, "Edit", deInputEvent::ekcE);
+	cascade = igdeMenuCascade::Ref::New(env, "@Sky.Menu.Edit", deInputEvent::ekcE);
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade = igdeMenuCascade::Ref::New(env, "View", deInputEvent::ekcV);
+	cascade = igdeMenuCascade::Ref::New(env, "@Sky.Menu.View", deInputEvent::ekcV);
 	pCreateMenuView(cascade);
 	AddSharedMenu(cascade);
 }

@@ -47,7 +47,7 @@ pNewCurve(newCurve)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Set Link Curve");
+	SetShortInfo("@Sky.Undo.Link.SetCurve");
 	
 	pOldCurve = link->GetCurve();
 	

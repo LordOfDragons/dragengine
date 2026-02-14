@@ -720,10 +720,10 @@ pWindowProperties(windowProperties)
 	pCBAttBoneName->SetDefaultSorter();
 	
 	helper.ComboBox(groupBox, "@Animator.WPView.Attach.Label", "@Animator.WPView.Attach.ToolTip", pCBAttAttachType, cComboAttachmentType::Ref::New(*this));
+	pCBAttAttachType->SetAutoTranslateItems(true);
 	pCBAttAttachType->AddItem("@Animator.WPView.AttachType.None", nullptr, (void*)(intptr_t)aeAttachment::eatNone);
 	pCBAttAttachType->AddItem("@Animator.WPView.AttachType.Bone", nullptr, (void*)(intptr_t)aeAttachment::eatBone);
 	pCBAttAttachType->AddItem("@Animator.WPView.AttachType.Rig", nullptr, (void*)(intptr_t)aeAttachment::eatRig);
-	pCBAttAttachType->SetAutoTranslateItems(true);
 	
 	helper.WPWObject(content, pWPAttachment, cEditAttachmentObject::Ref::New(*this),
 		"@Animator.WPView.AttachmentObject.Label", false, true);

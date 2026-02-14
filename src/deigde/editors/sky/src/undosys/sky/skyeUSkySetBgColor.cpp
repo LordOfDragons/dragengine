@@ -47,7 +47,7 @@ pNewColor(newColor)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Set Sky Bg Color");
+	SetShortInfo("@Sky.Undo.Sky.SetBackgroundColor");
 	
 	pOldColor = sky->GetBgColor();
 	

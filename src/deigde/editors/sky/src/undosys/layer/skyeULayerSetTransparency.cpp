@@ -47,7 +47,7 @@ pNewTransparency(newTransparency)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Set Layer Transparency");
+	SetShortInfo("@Sky.Undo.Layer.SetTransparency");
 	
 	pOldTransparency = layer->GetTransparency();
 	

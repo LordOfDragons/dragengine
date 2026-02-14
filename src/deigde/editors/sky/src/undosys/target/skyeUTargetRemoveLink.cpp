@@ -53,7 +53,7 @@ pTarget(target)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Target Remove Link");
+	SetShortInfo("@Sky.Undo.Target.RemoveLink");
 	
 	pLayer = layer;
 	pLink = link;

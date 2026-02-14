@@ -47,7 +47,7 @@ pNewName(newName)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Set Layer Name");
+	SetShortInfo("@Sky.Undo.Layer.SetName");
 	
 	pOldName = layer->GetName();
 	

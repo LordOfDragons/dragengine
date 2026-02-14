@@ -112,9 +112,9 @@ pWindowProperties(windowProperties)
 	AddChild(content);
 	
 	helper.WPCamera(content, pWPCamera, cActionCameraChanged::Ref::New(*this),
-		"Camera:", false, false);
+		"@Sky.Properties.View.Camera", false, false);
 	helper.WPWObject(content, pWPEnvObject, cActionEnvObjChanged::Ref::New(*this),
-		"Environment Object:", false, false);
+		"@Sky.Properties.View.EnvironmentObject", false, false);
 }
 
 skyeWPView::~skyeWPView(){

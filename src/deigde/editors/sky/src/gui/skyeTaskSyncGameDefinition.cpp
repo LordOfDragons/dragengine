@@ -47,7 +47,7 @@
 skyeTaskSyncGameDefinition::skyeTaskSyncGameDefinition(skyeWindowMain &windowMain) :
 pWindowMain(windowMain)
 {
-	SetMessage("Sky Editor: Synchronize Game Definition");
+	SetMessage(pWindowMain.Translate("Sky.Task.SyncGameDefinition").ToUTF8());
 }
 
 skyeTaskSyncGameDefinition::~skyeTaskSyncGameDefinition(){

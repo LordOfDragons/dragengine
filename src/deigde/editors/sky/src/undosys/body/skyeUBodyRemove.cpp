@@ -54,7 +54,7 @@ pIndex(0)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Remove Body");
+	SetShortInfo("@Sky.Undo.Body.Remove");
 	
 	pIndex = layer->GetBodies().IndexOf(body);
 	if(pIndex == -1){
