@@ -31,12 +31,12 @@
 #include "../collection/decTList.h"
 #include "../../dragengine_export.h"
 
-#ifdef USE_STD_FORMAT
-	#include <format>
-	namespace fmt_ns = std;
-#else
+#ifdef USE_STD_FORMAT_FALLBACK
 	#include <fmt/format.h>
 	namespace fmt_ns = fmt;
+#else
+	#include <format>
+	namespace fmt_ns = std;
 #endif
 
 

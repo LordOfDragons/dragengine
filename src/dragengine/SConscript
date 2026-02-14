@@ -104,8 +104,8 @@ if envDragengine['OSPosix'] or envDragengine['OSMacOS']:
 	hasPthreadCancel = conf.CheckFunc('pthread_cancel')
 
 hasFormat = conf.CheckCXXHeader('format')
-if hasFormat:
-	envDragengine.Append(CXXFLAGS = ['-DUSE_STD_FORMAT'])
+if not hasFormat:
+	envDragengine.Append(CXXFLAGS = ['-DUSE_STD_FORMAT_FALLBACK'])
 
 conf.Finish()
 
@@ -155,6 +155,7 @@ def buildWriteConfig(source, target, env):
 		# android specific problems
 		#configFileDefines['HAS_FUNC_UTIMENSAT'] = hasUtimensat
 		configFileDefines['HAS_FUNC_PTRHEAD_CANCEL'] = hasPthreadCancel
+	configFileDefines['USE_STD_FORMAT_FALLBACK'] = not hasFormat
 	
 	if WriteConfigFile(configFilePath, configFileDefines, env):
 		raise Exception('Writing configuration file failed')
