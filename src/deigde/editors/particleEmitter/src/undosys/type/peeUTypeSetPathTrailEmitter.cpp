@@ -46,7 +46,7 @@ peeUTypeSetPathTrailEmitter::peeUTypeSetPathTrailEmitter(peeType *type, const ch
 	
 	pType = nullptr;
 	
-	SetShortInfo("Set Type Path Trail Emitter");
+	SetShortInfo("@ParticleEmitter.Undo.Type.SetPathTrailEmitter");
 	
 	pOldPath = type->GetPathTrailEmitter();
 	pNewPath = newPath;

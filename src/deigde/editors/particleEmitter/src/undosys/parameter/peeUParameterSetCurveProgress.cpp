@@ -44,7 +44,7 @@ peeUParameterSetCurveProgress::peeUParameterSetCurveProgress(peeType *type,
 	peeParameter *parameter, const decCurveBezier &newCurve) :
 peeUParameterSetCurve(type, parameter, newCurve)
 {
-	SetShortInfo("Set Parameter Progress Curve");
+	SetShortInfo("@ParticleEmitter.Undo.Parameter.SetCurveProgress");
 	pOldCurve = parameter->GetCurveProgress();
 }
 

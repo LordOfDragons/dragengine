@@ -48,7 +48,7 @@ pNewSimType(newSimType)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Set Type Simulation Type");
+	SetShortInfo("@ParticleEmitter.Undo.Type.SetSimulationType");
 	
 	pOldSimType = type->GetSimulationType();
 	

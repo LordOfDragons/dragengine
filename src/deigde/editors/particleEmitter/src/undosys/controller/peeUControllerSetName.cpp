@@ -44,7 +44,7 @@ peeUControllerSetName::peeUControllerSetName(peeController *controller, const ch
 	
 	pController = nullptr;
 	
-	SetShortInfo("Set Controller Name");
+	SetShortInfo("@ParticleEmitter.Undo.Controller.SetName");
 	
 	pOldName = controller->GetName();
 	pNewName = newName;

@@ -46,7 +46,7 @@ peeUTypeSetPhysicsSize::peeUTypeSetPhysicsSize(peeType *type, float newSize){
 	
 	pType = nullptr;
 	
-	SetShortInfo("Set Type Physics Size");
+	SetShortInfo("@ParticleEmitter.Undo.Type.SetPhysicsSize");
 	
 	pOldSize = type->GetPhysicsSize();
 	pNewSize = newSize;

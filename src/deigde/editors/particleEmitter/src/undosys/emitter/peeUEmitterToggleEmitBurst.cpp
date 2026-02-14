@@ -46,7 +46,7 @@ peeUEmitterToggleEmitBurst::peeUEmitterToggleEmitBurst(peeEmitter *emitter){
 	
 	pEmitter = nullptr;
 	
-	SetShortInfo("Set Emitter Emit Burst");
+	SetShortInfo("@ParticleEmitter.Undo.Emitter.ToggleEmitBurst");
 	
 	pEmitter = emitter;
 }

@@ -48,7 +48,7 @@ peeUControllerMoveUp::peeUControllerMoveUp(peeController *controller){
 	
 	pController = nullptr;
 	
-	SetShortInfo("Move Controller Up");
+	SetShortInfo("@ParticleEmitter.Undo.Controller.MoveUp");
 	
 	pIndex = emitter->GetControllers().IndexOf(controller);
 	if(pIndex < 1) DETHROW(deeInvalidParam);

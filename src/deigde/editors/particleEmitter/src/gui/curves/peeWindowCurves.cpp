@@ -185,11 +185,12 @@ pWindowMain(windowMain)
 	
 	pListener = peeWindowCurvesListener::Ref::New(*this);
 	
-	helper.ListBox(4, "Curve to edit", pListCurves, cListCurves::Ref::New(*this));
-	pListCurves->AddItem("Value", pIconCurveEmpty, (void*)(intptr_t)ecValue);
-	pListCurves->AddItem("Spread", pIconCurveEmpty, (void*)(intptr_t)ecSpread);
-	pListCurves->AddItem("Progress", pIconCurveEmpty, (void*)(intptr_t)ecProgress);
-	pListCurves->AddItem("Beam", pIconCurveEmpty, (void*)(intptr_t)ecBeam);
+	helper.ListBox(4, "@ParticleEmitter.WindowCurves.Curves.ToolTip", pListCurves, cListCurves::Ref::New(*this));
+	pListCurves->SetAutoTranslateItems(true);
+	pListCurves->AddItem("@ParticleEmitter.WindowCurves.Curve.Value", pIconCurveEmpty, (void*)(intptr_t)ecValue);
+	pListCurves->AddItem("@ParticleEmitter.WindowCurves.Curve.Spread", pIconCurveEmpty, (void*)(intptr_t)ecSpread);
+	pListCurves->AddItem("@ParticleEmitter.WindowCurves.Curve.Progress", pIconCurveEmpty, (void*)(intptr_t)ecProgress);
+	pListCurves->AddItem("@ParticleEmitter.WindowCurves.Curve.Beam", pIconCurveEmpty, (void*)(intptr_t)ecBeam);
 	AddChild(pListCurves, igdeContainerSplitted::eaSide);
 	
 	helper.ViewCurveBezier(pEditCurve, cViewCurve::Ref::New(*this, pUndoSetCurve));

@@ -47,7 +47,7 @@ pNewLower(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Set Controller Lower");
+	SetShortInfo("@ParticleEmitter.Undo.Controller.SetLower");
 	
 	pOldLower = controller->GetLower();
 	pOldUpper = controller->GetUpper();

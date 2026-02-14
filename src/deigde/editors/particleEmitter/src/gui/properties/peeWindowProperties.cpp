@@ -51,16 +51,16 @@ pWindowMain(windowMain)
 	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
 	pPanelType = peeWPType::Ref::New(*this);
-	AddChild(pPanelType, "Type");
+	AddChild(pPanelType, "@ParticleEmitter.WindowProperties.Tab.Type");
 	
 	pPanelController = peeWPController::Ref::New(*this);
-	AddChild(pPanelController, "Controller");
+	AddChild(pPanelController, "@ParticleEmitter.WindowProperties.Tab.Controller");
 	
 	pPanelView = peeWPView::Ref::New(*this);
-	AddChild(pPanelView, "View");
+	AddChild(pPanelView, "@ParticleEmitter.WindowProperties.Tab.View");
 	
 	pPanelUndoHistory = peeWPUndoHistory::Ref::New(GetEnvironment());
-	AddChild(pPanelUndoHistory, "Undo");
+	AddChild(pPanelUndoHistory, "@ParticleEmitter.WindowProperties.Tab.Undo");
 	
 	SetActivePanel(0); // type
 }

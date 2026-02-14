@@ -44,7 +44,7 @@ peeUParameterSetCurveBeam::peeUParameterSetCurveBeam(peeType *type,
 	peeParameter *parameter, const decCurveBezier &newCurve) :
 peeUParameterSetCurve(type, parameter, newCurve)
 {
-	SetShortInfo("Set Parameter Beam Curve");
+	SetShortInfo("@ParticleEmitter.Undo.Parameter.SetCurveBeam");
 	pOldCurve = parameter->GetCurveBeam();
 }
 

@@ -46,7 +46,7 @@ peeUTypeSetIntervalAsDistance::peeUTypeSetIntervalAsDistance(peeType *type){
 	
 	pType = nullptr;
 	
-	SetShortInfo("Set Type Interval As Distance");
+	SetShortInfo("@ParticleEmitter.Undo.Type.SetIntervalAsDistance");
 	
 	pType = type;
 }

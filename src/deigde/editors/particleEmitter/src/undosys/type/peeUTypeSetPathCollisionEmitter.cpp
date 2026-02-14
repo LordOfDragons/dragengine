@@ -46,7 +46,7 @@ peeUTypeSetPathCollisionEmitter::peeUTypeSetPathCollisionEmitter(peeType *type, 
 	
 	pType = nullptr;
 	
-	SetShortInfo("Set Type Path Collision Emitter");
+	SetShortInfo("@ParticleEmitter.Undo.Type.SetPathCollisionEmitter");
 	
 	pOldPath = type->GetPathCollisionEmitter();
 	pNewPath = newPath;

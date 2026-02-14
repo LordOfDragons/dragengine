@@ -44,7 +44,7 @@ peeUControllerToggleFrozen::peeUControllerToggleFrozen(peeController *controller
 	
 	pController = nullptr;
 	
-	SetShortInfo("Toggle Controller Frozen");
+	SetShortInfo("@ParticleEmitter.Undo.Controller.ToggleFrozen");
 	
 	pController = controller;
 }

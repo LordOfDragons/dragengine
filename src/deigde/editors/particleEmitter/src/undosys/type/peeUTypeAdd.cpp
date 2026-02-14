@@ -48,7 +48,7 @@ peeUTypeAdd::peeUTypeAdd(peeEmitter *emitter, peeType *type){
 	pEmitter = nullptr;
 	pType = nullptr;
 	
-	SetShortInfo("Add Type");
+	SetShortInfo("@ParticleEmitter.Undo.Type.Add");
 	
 	pEmitter = emitter;
 	pType = type;

@@ -49,7 +49,7 @@ pNewTarget(newTarget)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Set Type Trail Controller");
+	SetShortInfo("@ParticleEmitter.Undo.Type.SetTrailController");
 	
 	pOldTarget = type->GetTrailController(controller);
 	

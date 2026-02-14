@@ -46,7 +46,7 @@ peeUTypeSetSkinPath::peeUTypeSetSkinPath(peeType *type, const char *newPath){
 	
 	pType = nullptr;
 	
-	SetShortInfo("Set Type Skin Path");
+	SetShortInfo("@ParticleEmitter.Undo.Type.SetSkinPath");
 	
 	pOldPath = type->GetSkinPath();
 	pNewPath = newPath;

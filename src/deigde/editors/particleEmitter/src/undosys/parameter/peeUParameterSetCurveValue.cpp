@@ -44,7 +44,7 @@ peeUParameterSetCurveValue::peeUParameterSetCurveValue(peeType *type,
 	peeParameter *parameter, const decCurveBezier &newCurve) :
 peeUParameterSetCurve(type, parameter, newCurve)
 {
-	SetShortInfo("Set Parameter Cast Curve");
+	SetShortInfo("@ParticleEmitter.Undo.Parameter.SetCurveValue");
 	pOldCurve = parameter->GetCurveValue();
 }
 

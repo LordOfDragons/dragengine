@@ -305,13 +305,13 @@ public:
 class cActionEmitterNew : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEmitterNew> Ref;
-	cActionEmitterNew(peeWindowMain &window) : cActionBase(window, "New",
-		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiNew), "Creates a new emitter",
+	cActionEmitterNew(peeWindowMain &window) : cActionBase(window, "@ParticleEmitter.WindowMain.Menu.Action.New",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiNew), "@ParticleEmitter.WindowMain.Menu.Action.New.ToolTip",
 		deInputEvent::esmControl, deInputEvent::ekcN, deInputEvent::ekcN){}
 	
 	void OnAction() override{
-		if(igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "New Emitter",
-		"Creating a new emitter discarding the current one is that ok?") == igdeCommonDialogs::ebYes){
+		if(igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "@ParticleEmitter.WindowMain.Dialog.NewEmitter.Title",
+		"@ParticleEmitter.WindowMain.Dialog.NewEmitter.Message") == igdeCommonDialogs::ebYes){
 			pWindow.CreateNewEmitter();
 		}
 	}
@@ -321,13 +321,13 @@ public:
 class cActionEmitterOpen : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEmitterOpen> Ref;
-	cActionEmitterOpen(peeWindowMain &window) : cActionBase(window, "Open...",
-		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen), "Opens a emitter from file",
+	cActionEmitterOpen(peeWindowMain &window) : cActionBase(window, "@ParticleEmitter.WindowMain.Menu.Action.Open",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen), "@ParticleEmitter.WindowMain.Menu.Action.Open.ToolTip",
 		deInputEvent::esmControl, deInputEvent::ekcO, deInputEvent::ekcO){}
 	
 	void OnAction() override{
 		decString filename(pWindow.GetEmitter()->GetFilePath());
-		if(!igdeCommonDialogs::GetFileOpen(pWindow, "Open Emitter",
+		if(!igdeCommonDialogs::GetFileOpen(pWindow, "@ParticleEmitter.WindowMain.Dialog.OpenEmitter.Title",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetLoadSaveSystem().GetEmitterFilePatterns(), filename ) ){
 			return;
@@ -350,13 +350,13 @@ public:
 class cActionEmitterSaveAs : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEmitterSaveAs> Ref;
-	cActionEmitterSaveAs(peeWindowMain &window) : cActionBase(window, "Save As...",
+	cActionEmitterSaveAs(peeWindowMain &window) : cActionBase(window, "@ParticleEmitter.WindowMain.Menu.Action.SaveAs",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSaveAs),
-		"Saves the emitter under a differen file", deInputEvent::ekcA){}
+		"@ParticleEmitter.WindowMain.Menu.Action.SaveAs.ToolTip", deInputEvent::ekcA){}
 	
 	void OnAction() override{
 		decString filename(pWindow.GetEmitter()->GetFilePath());
-		if(igdeCommonDialogs::GetFileSave(pWindow, "Save Emitter",
+		if(igdeCommonDialogs::GetFileSave(pWindow, "@ParticleEmitter.WindowMain.Dialog.SaveEmitter.Title",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetLoadSaveSystem().GetEmitterFilePatterns(), filename ) ){
 			pWindow.SaveEmitter(filename);
@@ -373,8 +373,8 @@ class cActionEmitterSave : public cActionEmitterSaveAs{
 public:
 	typedef deTObjectReference<cActionEmitterSave> Ref;
 	cActionEmitterSave(peeWindowMain &window) : cActionEmitterSaveAs(window){
-		SetText("Save");
-		SetDescription("Saves the emitter to file");
+		SetText("@ParticleEmitter.WindowMain.Menu.Action.Save");
+		SetDescription("@ParticleEmitter.WindowMain.Menu.Action.Save.ToolTip");
 		SetHotKey(igdeHotKey(deInputEvent::esmControl, deInputEvent::ekcS));
 		SetMnemonic(deInputEvent::ekcS);
 		SetIcon(window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave));
@@ -404,8 +404,8 @@ class cActionEditCut : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditCut> Ref;
 	cActionEditCut(peeWindowMain &window) : cActionBase(window,
-		"Cut", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
-		"Cut selected objects", deInputEvent::esmControl,
+		"@ParticleEmitter.WindowMain.Menu.Action.Cut", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
+		"@ParticleEmitter.WindowMain.Menu.Action.Cut.ToolTip", deInputEvent::esmControl,
 		deInputEvent::ekcX, deInputEvent::ekcT){}
 	
 	void OnAction() override{
@@ -421,8 +421,8 @@ class cActionEditCopy : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditCopy> Ref;
 	cActionEditCopy(peeWindowMain &window) : cActionBase(window,
-		"Copy", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-		"Copies selected objects", deInputEvent::esmControl,
+		"@ParticleEmitter.WindowMain.Menu.Action.Copy", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		"@ParticleEmitter.WindowMain.Menu.Action.Copy.ToolTip", deInputEvent::esmControl,
 		deInputEvent::ekcC, deInputEvent::ekcC){}
 	
 	void OnAction() override{
@@ -438,8 +438,8 @@ class cActionEditPaste : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditPaste> Ref;
 	cActionEditPaste(peeWindowMain &window) : cActionBase(window,
-		"Paste", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
-		"Paste objects", deInputEvent::esmControl,
+		"@ParticleEmitter.WindowMain.Menu.Action.Paste", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+		"@ParticleEmitter.WindowMain.Menu.Action.Paste.ToolTip", deInputEvent::esmControl,
 		deInputEvent::ekcV, deInputEvent::ekcP){}
 	
 	void OnAction() override{
@@ -517,11 +517,11 @@ void peeWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade = igdeMenuCascade::Ref::New(env, "Emitter", deInputEvent::ekcM);
+	cascade = igdeMenuCascade::Ref::New(env, "@ParticleEmitter.WindowMain.Menu.Emitter", deInputEvent::ekcM);
 	pCreateMenuEmitter(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade = igdeMenuCascade::Ref::New(env, "Edit", deInputEvent::ekcE);
+	cascade = igdeMenuCascade::Ref::New(env, "@ParticleEmitter.WindowMain.Menu.Edit", deInputEvent::ekcE);
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 }

@@ -46,7 +46,7 @@ peeUTypeSetCastFrom::peeUTypeSetCastFrom(peeType *type, deParticleEmitterType::e
 	
 	pType = nullptr;
 	
-	SetShortInfo("Set Type Cast From");
+	SetShortInfo("@ParticleEmitter.Undo.Type.SetCastFrom");
 	
 	pOldCastFrom = type->GetCastFrom();
 	pNewCastFrom = newCastFrom;

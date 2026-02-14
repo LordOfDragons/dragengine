@@ -53,7 +53,7 @@ peeUTypeRemove::peeUTypeRemove(peeType *type){
 	pEmitter = nullptr;
 	pType = nullptr;
 	
-	SetShortInfo("Remove Type");
+	SetShortInfo("@ParticleEmitter.Undo.Type.Remove");
 	
 	pIndex = emitter->GetTypes().IndexOf(type);
 	if(pIndex == -1){

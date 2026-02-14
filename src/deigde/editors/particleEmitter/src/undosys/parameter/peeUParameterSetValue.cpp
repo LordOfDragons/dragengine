@@ -48,7 +48,7 @@ peeUParameterSetValue::peeUParameterSetValue(peeType *type, peeParameter *parame
 	pType = nullptr;
 	pParameter = parameter;
 	
-	SetShortInfo("Set Parameter Value");
+	SetShortInfo("@ParticleEmitter.Undo.Parameter.SetValue");
 	
 	pOldValue = parameter->GetValue();
 	pNewValue = newValue;

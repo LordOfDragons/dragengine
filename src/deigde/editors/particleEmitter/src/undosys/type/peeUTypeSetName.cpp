@@ -46,7 +46,7 @@ peeUTypeSetName::peeUTypeSetName(peeType *type, const char *newName){
 	
 	pType = nullptr;
 	
-	SetShortInfo("Set Type Name");
+	SetShortInfo("@ParticleEmitter.Undo.Type.SetName");
 	
 	pOldName = type->GetName();
 	pNewName = newName;

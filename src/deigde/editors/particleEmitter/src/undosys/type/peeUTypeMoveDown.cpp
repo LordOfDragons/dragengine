@@ -52,7 +52,7 @@ peeUTypeMoveDown::peeUTypeMoveDown(peeType *type){
 	
 	pType = nullptr;
 	
-	SetShortInfo("Move Type Down");
+	SetShortInfo("@ParticleEmitter.Undo.Type.MoveDown");
 	
 	pIndex = emitter->GetTypes().IndexOf(type);
 	if(pIndex == -1 || pIndex == emitter->GetTypes().GetCount() - 1){

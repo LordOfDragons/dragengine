@@ -49,7 +49,7 @@ peeUControllerRemove::peeUControllerRemove(peeController *controller){
 	pEmitter = nullptr;
 	pController = nullptr;
 	
-	SetShortInfo("Remove Controller");
+	SetShortInfo("@ParticleEmitter.Undo.Controller.Remove");
 	
 	pIndex = emitter->GetControllers().IndexOf(controller);
 	if(pIndex == -1) DETHROW(deeInvalidParam);

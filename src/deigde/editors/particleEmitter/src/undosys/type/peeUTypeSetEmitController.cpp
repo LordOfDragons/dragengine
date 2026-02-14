@@ -49,7 +49,7 @@ pNewTarget(newTarget)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Set Type Emit Controller");
+	SetShortInfo("@ParticleEmitter.Undo.Type.SetEmitController");
 	
 	pOldTarget = type->GetEmitController(controller);
 	

@@ -48,7 +48,7 @@ peeUControllerAdd::peeUControllerAdd(peeEmitter *emitter, peeController *control
 	pEmitter = nullptr;
 	pController = nullptr;
 	
-	SetShortInfo("Add Controller");
+	SetShortInfo("@ParticleEmitter.Undo.Controller.Add");
 	
 	pEmitter = emitter;
 	pController = controller;

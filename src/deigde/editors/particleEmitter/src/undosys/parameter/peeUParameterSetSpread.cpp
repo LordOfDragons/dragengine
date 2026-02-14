@@ -48,7 +48,7 @@ peeUParameterSetSpread::peeUParameterSetSpread(peeType *type, peeParameter *para
 	pType = nullptr;
 	pParameter = parameter;
 	
-	SetShortInfo("Set Parameter Spread");
+	SetShortInfo("@ParticleEmitter.Undo.Parameter.SetSpread");
 	
 	pOldSpread = parameter->GetSpread();
 	pNewSpread = newSpread;

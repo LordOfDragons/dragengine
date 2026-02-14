@@ -48,7 +48,7 @@ pNewResponse(newResponse)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Set Type Collision Response");
+	SetShortInfo("@ParticleEmitter.Undo.Type.SetCollisionResponse");
 	
 	pOldResponse = type->GetCollisionResponse();
 	

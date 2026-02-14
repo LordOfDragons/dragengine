@@ -51,7 +51,7 @@ peeUParameterSetControllerValue::peeUParameterSetControllerValue(peeType *type, 
 	pOldController = nullptr;
 	pNewController = nullptr;
 	
-	SetShortInfo("Set Parameter Value Curve Controller");
+	SetShortInfo("@ParticleEmitter.Undo.Parameter.SetControllerValue");
 	
 	pOldController = parameter->GetControllerValue();
 	pNewController = newController;

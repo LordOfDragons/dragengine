@@ -195,8 +195,8 @@ class cActionEmitBurst : public igdeAction{
 	peeWPType &pPanel;
 public:
 	using Ref = deTObjectReference<cActionEmitBurst>;
-	cActionEmitBurst(peeWPType &panel) : igdeAction("Emit Burst", nullptr,
-		"Determines if particles are emit as burst or continuous"),
+	cActionEmitBurst(peeWPType &panel) : igdeAction("@ParticleEmitter.WPType.EmitBurst", nullptr,
+		"@ParticleEmitter.WPType.EmitBurst.ToolTip"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -256,7 +256,7 @@ public:
 	using Ref = deTObjectReference<cActionType>;
 	cActionType(peeWPType &panel, igdeButton::Ref &button) :
 	igdeAction("", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
-		"Edit type menu"),
+		"@ParticleEmitter.WPType.TypeMenu.ToolTip"),
 	pPanel(panel), pButton(button){}
 	
 	void OnAction() override{
@@ -279,8 +279,8 @@ class cActionTypeAdd : public igdeAction{
 public:
 	using Ref = deTObjectReference<cActionTypeAdd>;
 	cActionTypeAdd(peeWPType &panel) :
-	igdeAction("Add...", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-		"Add type"),
+	igdeAction("@ParticleEmitter.WPType.Action.TypeAdd", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"@ParticleEmitter.WPType.Action.TypeAdd.ToolTip"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -289,11 +289,11 @@ public:
 			return;
 		}
 		
-		decString name("Type");
+		decString name(pPanel.Translate("ParticleEmitter.WPType.DefaultName").ToUTF8());
 		
-		while(igdeCommonDialogs::GetString(pPanel, "Add Type", "Name:", name)){
+		while(igdeCommonDialogs::GetString(pPanel, "@ParticleEmitter.WPType.Dialog.AddType.Title", "@ParticleEmitter.WPType.Dialog.AddType.Name", name)){
 			if(emitter->GetTypes().HasNamed(name)){
-				igdeCommonDialogs::Error(pPanel, "Add Type", "A type with this name exists already.");
+				igdeCommonDialogs::Error(pPanel, "@ParticleEmitter.WPType.Dialog.AddType.Title", "@ParticleEmitter.WPType.Dialog.AddType.Error");
 				continue;
 			}
 			
@@ -313,8 +313,8 @@ class cActionTypeRemove : public cBaseAction{
 public:
 	using Ref = deTObjectReference<cActionTypeRemove>;
 	cActionTypeRemove(peeWPType &panel) :
-	cBaseAction(panel, "Remove", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-		"Remove selected type"){}
+	cBaseAction(panel, "@ParticleEmitter.WPType.Action.TypeRemove", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@ParticleEmitter.WPType.Action.TypeRemove.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(peeEmitter*, peeType *type) override{
 		return peeUTypeRemove::Ref::New(type);
@@ -329,17 +329,17 @@ class cActionTypeRename : public cBaseAction{
 public:
 	using Ref = deTObjectReference<cActionTypeRename>;
 	cActionTypeRename(peeWPType &panel) :
-	cBaseAction(panel, "Rename...", nullptr, "Rename selected type"){}
+	cBaseAction(panel, "@ParticleEmitter.WPType.Action.TypeRename", nullptr, "@ParticleEmitter.WPType.Action.TypeRename.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(peeEmitter *emitter, peeType *type) override{
 		decString name(type->GetName());
 		
-		while(igdeCommonDialogs::GetString(pPanel, "Rename Type", "Name:", name)){
+		while(igdeCommonDialogs::GetString(pPanel, "@ParticleEmitter.WPType.Dialog.RenameType.Title", "@ParticleEmitter.WPType.Dialog.RenameType.Name", name)){
 			if(name == type->GetName()){
 				break;
 				
 			}else if(emitter->GetTypes().HasNamed(name)){
-				igdeCommonDialogs::Error(pPanel, "Rename Type", "A type with this name exists already.");
+				igdeCommonDialogs::Error(pPanel, "@ParticleEmitter.WPType.Dialog.RenameType.Title", "@ParticleEmitter.WPType.Dialog.RenameType.Error");
 				
 			}else{
 				return peeUTypeSetName::Ref::New(type, name);
@@ -437,8 +437,8 @@ class cActionIntervalAsDistance : public cBaseAction{
 public:
 	using Ref = deTObjectReference<cActionIntervalAsDistance>;
 	cActionIntervalAsDistance(peeWPType &panel) :
-	cBaseAction(panel, "Interval As Distance", nullptr,
-		"Determines if the interval is used with distance instead of time"){ }
+	cBaseAction(panel, "@ParticleEmitter.WPType.IntervalAsDistance", nullptr,
+		"@ParticleEmitter.WPType.IntervalAsDistance.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(peeEmitter*, peeType *type) override{
 		return peeUTypeSetIntervalAsDistance::Ref::New(type);
@@ -706,74 +706,74 @@ public:
 ///////////////////
 
 static void AddControllersToComboBox(igdeComboBox &comboBox){
-	comboBox.AddItem("Lifetime", nullptr,
+	comboBox.AddItem("@ParticleEmitter.WPType.Trail.Controller.Lifetime", nullptr,
 		(void*)(intptr_t)deParticleEmitterType::eecLifetime);
-	comboBox.AddItem("Mass", nullptr,
+	comboBox.AddItem("@ParticleEmitter.WPType.Trail.Controller.Mass", nullptr,
 		(void*)(intptr_t)deParticleEmitterType::eecMass);
-	comboBox.AddItem("Linear Velocity", nullptr,
+	comboBox.AddItem("@ParticleEmitter.WPType.Trail.Controller.LinearVelocity", nullptr,
 		(void*)(intptr_t)deParticleEmitterType::eecLinearVelocity);
-	comboBox.AddItem("Angular Velocity", nullptr,
+	comboBox.AddItem("@ParticleEmitter.WPType.Trail.Controller.AngularVelocity", nullptr,
 		(void*)(intptr_t)deParticleEmitterType::eecAngularVelocity);
 }
 
 static void AddParametersToListBox(igdeListBox &listBox, igdeIcon *icon){
-	listBox.AddItem("Time to live", icon,
+	listBox.AddItem("@ParticleEmitter.WPType.Parameters.TimeToLive", icon,
 		(void*)(intptr_t)deParticleEmitterType::epTimeToLive);
-	listBox.AddItem("Interval", icon,
+	listBox.AddItem("@ParticleEmitter.WPType.Parameters.Interval", icon,
 		(void*)(intptr_t)deParticleEmitterType::epInterval);
-	listBox.AddItem("Particle Count", icon,
+	listBox.AddItem("@ParticleEmitter.WPType.Parameters.ParticleCount", icon,
 		(void*)(intptr_t)deParticleEmitterType::epParticleCount);
-	listBox.AddItem("Cast Angle X", icon,
+	listBox.AddItem("@ParticleEmitter.WPType.Parameters.CastAngleX", icon,
 		(void*)(intptr_t)deParticleEmitterType::epCastAngleX);
-	listBox.AddItem("Cast Angle Y", icon,
+	listBox.AddItem("@ParticleEmitter.WPType.Parameters.CastAngleY", icon,
 		(void*)(intptr_t)deParticleEmitterType::epCastAngleY);
-	listBox.AddItem("Size", icon,
+	listBox.AddItem("@ParticleEmitter.WPType.Parameters.Size", icon,
 		(void*)(intptr_t)deParticleEmitterType::epSize);
-	listBox.AddItem("Red", icon,
+	listBox.AddItem("@ParticleEmitter.WPType.Parameters.Red", icon,
 		(void*)(intptr_t)deParticleEmitterType::epRed);
-	listBox.AddItem("Green", icon,
+	listBox.AddItem("@ParticleEmitter.WPType.Parameters.Green", icon,
 		(void*)(intptr_t)deParticleEmitterType::epGreen);
-	listBox.AddItem("Blue", icon,
+	listBox.AddItem("@ParticleEmitter.WPType.Parameters.Blue", icon,
 		(void*)(intptr_t)deParticleEmitterType::epBlue);
-	listBox.AddItem("Transparency", icon,
+	listBox.AddItem("@ParticleEmitter.WPType.Parameters.Transparency", icon,
 		(void*)(intptr_t)deParticleEmitterType::epTransparency);
-	listBox.AddItem("Emissivity", icon,
+	listBox.AddItem("@ParticleEmitter.WPType.Parameters.Emissivity", icon,
 		(void*)(intptr_t)deParticleEmitterType::epEmissivity);
-	listBox.AddItem("Mass", icon,
+	listBox.AddItem("@ParticleEmitter.WPType.Parameters.Mass", icon,
 		(void*)(intptr_t)deParticleEmitterType::epMass);
-	listBox.AddItem("Rotation", icon,
+	listBox.AddItem("@ParticleEmitter.WPType.Parameters.Rotation", icon,
 		(void*)(intptr_t)deParticleEmitterType::epRotation);
-	listBox.AddItem("Linear Velocity", icon,
+	listBox.AddItem("@ParticleEmitter.WPType.Parameters.LinearVelocity", icon,
 		(void*)(intptr_t)deParticleEmitterType::epLinearVelocity);
-	listBox.AddItem("Angular Velocity", icon,
+	listBox.AddItem("@ParticleEmitter.WPType.Parameters.AngularVelocity", icon,
 		(void*)(intptr_t)deParticleEmitterType::epAngularVelocity);
-	listBox.AddItem("Brown Motion", icon,
+	listBox.AddItem("@ParticleEmitter.WPType.Parameters.BrownMotion", icon,
 		(void*)(intptr_t)deParticleEmitterType::epBrownMotion);
-	listBox.AddItem("Damping", icon,
+	listBox.AddItem("@ParticleEmitter.WPType.Parameters.Damping", icon,
 		(void*)(intptr_t)deParticleEmitterType::epDamping);
-	listBox.AddItem("Drag", icon,
+	listBox.AddItem("@ParticleEmitter.WPType.Parameters.Drag", icon,
 		(void*)(intptr_t)deParticleEmitterType::epDrag);
-	listBox.AddItem("Gravity X", icon,
+	listBox.AddItem("@ParticleEmitter.WPType.Parameters.GravityX", icon,
 		(void*)(intptr_t)deParticleEmitterType::epGravityX);
-	listBox.AddItem("Gravity Y", icon,
+	listBox.AddItem("@ParticleEmitter.WPType.Parameters.GravityY", icon,
 		(void*)(intptr_t)deParticleEmitterType::epGravityY);
-	listBox.AddItem("Gravity Z", icon,
+	listBox.AddItem("@ParticleEmitter.WPType.Parameters.GravityZ", icon,
 		(void*)(intptr_t)deParticleEmitterType::epGravityZ);
-	listBox.AddItem("Local Gravity", icon,
+	listBox.AddItem("@ParticleEmitter.WPType.Parameters.LocalGravity", icon,
 		(void*)(intptr_t)deParticleEmitterType::epLocalGravity);
-	listBox.AddItem("Force Field Direct", icon,
+	listBox.AddItem("@ParticleEmitter.WPType.Parameters.ForceFieldDirect", icon,
 		(void*)(intptr_t)deParticleEmitterType::epForceFieldDirect);
-	listBox.AddItem("Force Field Surface", icon,
+	listBox.AddItem("@ParticleEmitter.WPType.Parameters.ForceFieldSurface", icon,
 		(void*)(intptr_t)deParticleEmitterType::epForceFieldSurface);
-	listBox.AddItem("Force Field Mass", icon,
+	listBox.AddItem("@ParticleEmitter.WPType.Parameters.ForceFieldMass", icon,
 		(void*)(intptr_t)deParticleEmitterType::epForceFieldMass);
-	listBox.AddItem("Force Field Speed", icon,
+	listBox.AddItem("@ParticleEmitter.WPType.Parameters.ForceFieldSpeed", icon,
 		(void*)(intptr_t)deParticleEmitterType::epForceFieldSpeed);
-	listBox.AddItem("Elasticity", icon,
+	listBox.AddItem("@ParticleEmitter.WPType.Parameters.Elasticity", icon,
 		(void*)(intptr_t)deParticleEmitterType::epElasticity);
-	listBox.AddItem("Roughness", icon,
+	listBox.AddItem("@ParticleEmitter.WPType.Parameters.Roughness", icon,
 		(void*)(intptr_t)deParticleEmitterType::epRoughness);
-	listBox.AddItem("Emit Direction", icon,
+	listBox.AddItem("@ParticleEmitter.WPType.Parameters.EmitDirection", icon,
 		(void*)(intptr_t)deParticleEmitterType::epEmitDirection);
 }
 
@@ -808,103 +808,109 @@ pPreventUpdate(false)
 	
 	
 	// emitter settings
-	helper.GroupBox(content, groupBox, "Emitter:");
+	helper.GroupBox(content, groupBox, "@ParticleEmitter.WPType.Group.Emitter");
 	
 	helper.CheckBox(groupBox, pChkEmitBurst, cActionEmitBurst::Ref::New(*this));
-	helper.EditFloat(groupBox, "Lifetime:", "Lifetime of burst",
+	helper.EditFloat(groupBox, "@ParticleEmitter.WPType.Lifetime.Label", "@ParticleEmitter.WPType.Lifetime.ToolTip",
 		pEditBurstLifetime, cTextBurstLifetime::Ref::New(*this));
 	
 	
 	// type settings
-	helper.GroupBox(content, groupBox, "Types:");
+	helper.GroupBox(content, groupBox, "@ParticleEmitter.WPType.Group.Types");
 	
-	helper.FormLineStretchFirst(groupBox, "Type:", "Type to edit", frameLine);
-	helper.ComboBox(frameLine, "Types", pCBType, cComboType::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@ParticleEmitter.WPType.Type.Label", "@ParticleEmitter.WPType.Type.ToolTip", frameLine);
+	helper.ComboBox(frameLine, "@ParticleEmitter.WPType.Types.ToolTip", pCBType, cComboType::Ref::New(*this));
 	pCBType->SetDefaultSorter();
 	helper.Button(frameLine, pBtnType, cActionType::Ref::New(*this, pBtnType));
 	
-	helper.EditPath(groupBox, "Skin:", "Path to the skin for the particles",
+	helper.EditPath(groupBox, "@ParticleEmitter.WPType.Skin.Label", "@ParticleEmitter.WPType.Skin.ToolTip",
 		igdeEnvironment::efpltSkin, pEditSkin, cPathSkin::Ref::New(*this));
-	helper.EditPath(groupBox, "Model:", "Path to the model to emit particles from",
+	helper.EditPath(groupBox, "@ParticleEmitter.WPType.Model.Label", "@ParticleEmitter.WPType.Model.ToolTip",
 		igdeEnvironment::efpltModel, pEditModel, cPathModel::Ref::New(*this));
-	helper.EditPath(groupBox, "Model Skin:", "Path to the skin for the model to emit particles from",
+	helper.EditPath(groupBox, "@ParticleEmitter.WPType.ModelSkin.Label", "@ParticleEmitter.WPType.ModelSkin.ToolTip",
 		igdeEnvironment::efpltSkin, pEditModelSkin, cPathModelSkin::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "Cast From:", "Type of element to cast particles from if a model is set",
+	helper.ComboBox(groupBox, "@ParticleEmitter.WPType.CastFrom.Label", "@ParticleEmitter.WPType.CastFrom.ToolTip",
 		pCBCastFrom, cComboCastFrom::Ref::New(*this));
-	pCBCastFrom->AddItem("Vertex", nullptr, (void*)(intptr_t)deParticleEmitterType::ecfVertex);
-	pCBCastFrom->AddItem("Face", nullptr, (void*)(intptr_t)deParticleEmitterType::ecfFace);
-	pCBCastFrom->AddItem("Volume", nullptr, (void*)(intptr_t)deParticleEmitterType::ecfVolume);
+	pCBCastFrom->SetAutoTranslateItems(true);
+	pCBCastFrom->AddItem("@ParticleEmitter.WPType.CastFrom.Vertex", nullptr, (void*)(intptr_t)deParticleEmitterType::ecfVertex);
+	pCBCastFrom->AddItem("@ParticleEmitter.WPType.CastFrom.Face", nullptr, (void*)(intptr_t)deParticleEmitterType::ecfFace);
+	pCBCastFrom->AddItem("@ParticleEmitter.WPType.CastFrom.Volume", nullptr, (void*)(intptr_t)deParticleEmitterType::ecfVolume);
 	
-	helper.ComboBox(groupBox, "Simulation Type:", "Type of simulation to use",
+	helper.ComboBox(groupBox, "@ParticleEmitter.WPType.SimulationType.Label", "@ParticleEmitter.WPType.SimulationType.ToolTip",
 		pCBSimType, cComboSimType::Ref::New(*this));
-	pCBSimType->AddItem("Particle", nullptr, (void*)(intptr_t)deParticleEmitterType::estParticle);
-	pCBSimType->AddItem("Ribbon", nullptr, (void*)(intptr_t)deParticleEmitterType::estRibbon);
-	pCBSimType->AddItem("Beam", nullptr, (void*)(intptr_t)deParticleEmitterType::estBeam);
+	pCBSimType->SetAutoTranslateItems(true);
+	pCBSimType->AddItem("@ParticleEmitter.WPType.SimulationType.Particle", nullptr, (void*)(intptr_t)deParticleEmitterType::estParticle);
+	pCBSimType->AddItem("@ParticleEmitter.WPType.SimulationType.Ribbon", nullptr, (void*)(intptr_t)deParticleEmitterType::estRibbon);
+	pCBSimType->AddItem("@ParticleEmitter.WPType.SimulationType.Beam", nullptr, (void*)(intptr_t)deParticleEmitterType::estBeam);
 	
 	helper.CheckBox(groupBox, pChkIntervalAsDistance, cActionIntervalAsDistance::Ref::New(*this));
-	helper.EditFloat(groupBox, "Physics Size:", "Size of particles for physics simulation",
+	helper.EditFloat(groupBox, "@ParticleEmitter.WPType.PhysicsSize.Label", "@ParticleEmitter.WPType.PhysicsSize.ToolTip",
 		pEditPhysicsSize, cTextPhysicsSize::Ref::New(*this));
 	
 	
 	// type trail
-	helper.GroupBox(content, groupBox, "Trail:");
+	helper.GroupBox(content, groupBox, "@ParticleEmitter.WPType.Group.Trail");
 	
-	helper.EditPath(groupBox, "Emitter:", "Path to the particle emitter to use as trail",
+	helper.EditPath(groupBox, "@ParticleEmitter.WPType.Trail.Emitter.Label", "@ParticleEmitter.WPType.Trail.Emitter.ToolTip",
 		igdeEnvironment::efpltParticleEmitter, pEditPathTrailEmitter, cPathTrailEmitter::Ref::New(*this));
 	
-	helper.FormLineStretchFirst(groupBox, "Controller:", "Type of controller to set", frameLine);
-	helper.ComboBox(frameLine, "Type of controller to set",
+	helper.FormLineStretchFirst(groupBox, "@ParticleEmitter.WPType.Trail.Controller.Label", "@ParticleEmitter.WPType.Trail.Controller.ToolTip", frameLine);
+	helper.ComboBox(frameLine, "@ParticleEmitter.WPType.Trail.Controller.ToolTip",
 		pCBTrailController, cComboTrailController::Ref::New(*this));
+	pCBTrailController->SetAutoTranslateItems(true);
 	AddControllersToComboBox(pCBTrailController);
-	helper.EditString(frameLine, "Controller in the trail emitter set to this type",
+	helper.EditString(frameLine, "@ParticleEmitter.WPType.Trail.TargetController.ToolTip",
 		pEditTrailTargetController, cTextTrailTargetController::Ref::New(*this, pCBTrailController));
 	
 	
 	// type collision
-	helper.GroupBox(content, groupBox, "Collision:");
+	helper.GroupBox(content, groupBox, "@ParticleEmitter.WPType.Group.Collision");
 	
-	helper.ComboBox(groupBox, "Response:", "Collision response to use",
+	helper.ComboBox(groupBox, "@ParticleEmitter.WPType.Collision.Response.Label", "@ParticleEmitter.WPType.Collision.Response.ToolTip",
 		pCBCollisionResponse, cComboCollisionResponse::Ref::New(*this));
-	pCBCollisionResponse->AddItem("Destroy", nullptr,
+	pCBCollisionResponse->SetAutoTranslateItems(true);
+	pCBCollisionResponse->AddItem("@ParticleEmitter.WPType.Collision.Response.Destroy", nullptr,
 		(void*)(intptr_t)deParticleEmitterType::ecrDestroy);
-	pCBCollisionResponse->AddItem("Physical Response", nullptr,
+	pCBCollisionResponse->AddItem("@ParticleEmitter.WPType.Collision.Response.Physical", nullptr,
 		(void*)(intptr_t)deParticleEmitterType::ecrPhysical);
-	pCBCollisionResponse->AddItem("Custom Response", nullptr,
+	pCBCollisionResponse->AddItem("@ParticleEmitter.WPType.Collision.Response.Custom", nullptr,
 		(void*)(intptr_t)deParticleEmitterType::ecrCustom);
 	
-	helper.EditPath(groupBox, "Emitter:", "Path to the particle emitter to create for impacts",
+	helper.EditPath(groupBox, "@ParticleEmitter.WPType.Collision.Emitter.Label", "@ParticleEmitter.WPType.Collision.Emitter.ToolTip",
 		igdeEnvironment::efpltParticleEmitter, pEditPathCollisionEmitter, cPathCollisionEmitter::Ref::New(*this));
-	helper.EditFloat(groupBox, "Min Impulse:",
-		"Minimal impact impulse required to create a new collision emitter instance",
+	helper.EditFloat(groupBox, "@ParticleEmitter.WPType.Collision.MinImpulse.Label",
+		"@ParticleEmitter.WPType.Collision.MinImpulse.ToolTip",
 		pEditEmitMinImpulse, cTextEmitMinImpulse::Ref::New(*this));
 	
-	helper.FormLineStretchFirst(groupBox, "Controller:", "Type of controller to set", frameLine);
-	helper.ComboBox(frameLine, "Type of controller to set",
+	helper.FormLineStretchFirst(groupBox, "@ParticleEmitter.WPType.Collision.Controller.Label", "@ParticleEmitter.WPType.Collision.Controller.ToolTip", frameLine);
+	helper.ComboBox(frameLine, "@ParticleEmitter.WPType.Collision.Controller.ToolTip",
 		pCBEmitController, cComboEmitController::Ref::New(*this));
+	pCBEmitController->SetAutoTranslateItems(true);
 	AddControllersToComboBox(pCBEmitController);
-	helper.EditString(frameLine, "Controller in the collision emitter set to this type",
+	helper.EditString(frameLine, "@ParticleEmitter.WPType.Collision.TargetController.ToolTip",
 		pEditEmitTargetController, cTextEmitTargetController::Ref::New(*this, pCBEmitController));
 	
 	
 	// parameter list
-	helper.GroupBoxFlow(content, groupBox, "Parameters:");
+	helper.GroupBoxFlow(content, groupBox, "@ParticleEmitter.WPType.Group.Parameters");
 	
-	helper.ListBox(groupBox, 10, "Parameters", pListParams, cListTypes::Ref::New(*this));
+	helper.ListBox(groupBox, 10, "@ParticleEmitter.WPType.Parameters.ToolTip", pListParams, cListTypes::Ref::New(*this));
+	pListParams->SetAutoTranslateItems(true);
 	AddParametersToListBox(pListParams, pIconUnused);
 	
 	form = igdeContainerForm::Ref::New(env);
 	groupBox->AddChild(form);
 	
-	helper.EditFloat(form, "Cast Range:",
-		"Pick cast value randomly between range given by a value and a spread",
+	helper.EditFloat(form, "@ParticleEmitter.WPType.Parameter.CastRange.Label",
+		"@ParticleEmitter.WPType.Parameter.CastRange.ToolTip",
 		pEditParamValue, cTextParamValue::Ref::New(*this));
-	helper.EditFloat(form, "Cast Spread:",
-		"Maximum spread around the cast value", pEditParamSpread, cTextParamSpread::Ref::New(*this));
+	helper.EditFloat(form, "@ParticleEmitter.WPType.Parameter.CastSpread.Label",
+		"@ParticleEmitter.WPType.Parameter.CastSpread.ToolTip", pEditParamSpread, cTextParamSpread::Ref::New(*this));
 	
-	helper.ComboBox(form, "Controller Value:", "Controller used to sample value from value curve",
+	helper.ComboBox(form, "@ParticleEmitter.WPType.Parameter.ControllerValue.Label", "@ParticleEmitter.WPType.Parameter.ControllerValue.ToolTip",
 		pCBParamCtrlValue, cComboControllerValue::Ref::New(*this, pPreventUpdate));
-	helper.ComboBox(form, "Controller Spread:", "Controller used to sample value from spread curve",
+	helper.ComboBox(form, "@ParticleEmitter.WPType.Parameter.ControllerSpread.Label", "@ParticleEmitter.WPType.Parameter.ControllerSpread.ToolTip",
 		pCBParamCtrlSpread, cComboControllerSpread::Ref::New(*this, pPreventUpdate));
 }
 
@@ -1089,8 +1095,8 @@ void peeWPType::UpdateControllerList(){
 		pCBParamCtrlValue->RemoveAllItems();
 		pCBParamCtrlSpread->RemoveAllItems();
 		
-		pCBParamCtrlValue->AddItem("< None >", nullptr, nullptr);
-		pCBParamCtrlSpread->AddItem("< None >", nullptr, nullptr);
+		pCBParamCtrlValue->AddItem(Translate("ParticleEmitter.WPType.Parameter.None").ToUTF8(), nullptr, nullptr);
+		pCBParamCtrlSpread->AddItem(Translate("ParticleEmitter.WPType.Parameter.None").ToUTF8(), nullptr, nullptr);
 		
 		pCBParamCtrlValue->SetEnabled(pEmitter.IsNotNull());
 		pCBParamCtrlSpread->SetEnabled(pEmitter.IsNotNull());

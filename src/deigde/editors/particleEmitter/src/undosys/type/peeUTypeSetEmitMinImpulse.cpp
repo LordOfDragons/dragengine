@@ -46,7 +46,7 @@ peeUTypeSetEmitMinImpulse::peeUTypeSetEmitMinImpulse(peeType *type, float newImp
 	
 	pType = nullptr;
 	
-	SetShortInfo("Set Type Emit Min Impulse");
+	SetShortInfo("@ParticleEmitter.Undo.Type.SetEmitMinImpulse");
 	
 	pOldImpulse = type->GetEmitMinImpulse();
 	pNewImpulse = newImpulse;

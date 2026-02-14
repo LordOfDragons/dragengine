@@ -48,7 +48,7 @@
 peeTaskSyncGameDefinition::peeTaskSyncGameDefinition(peeWindowMain &windowMain) :
 pWindowMain(windowMain)
 {
-	SetMessage("Particle Emitter Editor: Synchronize Game Definition");
+	SetMessage(pWindowMain.Translate("ParticleEmitter.Task.SyncGameDefinition").ToUTF8());
 }
 
 peeTaskSyncGameDefinition::~peeTaskSyncGameDefinition(){

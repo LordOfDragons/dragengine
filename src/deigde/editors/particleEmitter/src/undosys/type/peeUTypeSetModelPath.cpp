@@ -46,7 +46,7 @@ peeUTypeSetModelPath::peeUTypeSetModelPath(peeType *type, const char *newPath){
 	
 	pType = nullptr;
 	
-	SetShortInfo("Set Type Model Path");
+	SetShortInfo("@ParticleEmitter.Undo.Type.SetModelPath");
 	
 	pOldPath = type->GetModelPath();
 	pNewPath = newPath;

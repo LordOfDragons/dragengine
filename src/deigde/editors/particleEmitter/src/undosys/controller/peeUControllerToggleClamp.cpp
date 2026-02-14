@@ -44,7 +44,7 @@ peeUControllerToggleClamp::peeUControllerToggleClamp(peeController *controller){
 	
 	pController = nullptr;
 	
-	SetShortInfo("Toggle Controller Clamp");
+	SetShortInfo("@ParticleEmitter.Undo.Controller.ToggleClamp");
 	
 	pController = controller;
 }

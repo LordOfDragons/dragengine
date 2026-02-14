@@ -163,7 +163,7 @@ class cActionEnableCasting : public cBaseAction{
 public:
 	using Ref = deTObjectReference<cActionEnableCasting>;
 	cActionEnableCasting(peeWPView &panel) :
-	cBaseAction(panel, "Enable Casting", "Determines if casting is enabled"){ }
+	cBaseAction(panel, "@ParticleEmitter.WPView.EnableCasting", "@ParticleEmitter.WPView.EnableCasting.ToolTip"){ }
 	
 	void OnAction(peeEmitter &emitter) override{
 		emitter.SetEnableCasting(!emitter.GetEnableCasting());
@@ -193,21 +193,21 @@ pWindowProperties(windowProperties)
 	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
-	helper.WPCamera(content, pWPCamera, cActionCameraChanged::Ref::New(*this), "Camera:", false, false);
-	helper.WPSky(content, pWPSky, cActionSkyChanged::Ref::New(*this), "Sky:", false, false);
+	helper.WPCamera(content, pWPCamera, cActionCameraChanged::Ref::New(*this), "@ParticleEmitter.WPView.Camera", false, false);
+	helper.WPSky(content, pWPSky, cActionSkyChanged::Ref::New(*this), "@ParticleEmitter.WPView.Sky", false, false);
 	helper.WPWObject(content, pWPEnvObject, cActionEnvObjChanged::Ref::New(*this),
-		"Environment Object:", false, false);
+		"@ParticleEmitter.WPView.EnvironmentObject", false, false);
 	
 	// preview settings
-	helper.GroupBox(content, groupBox, "Preview:");
-	helper.EditVector(groupBox, "Position:", "Position of the emitter in meters.",
+	helper.GroupBox(content, groupBox, "@ParticleEmitter.WPView.Group.Preview");
+	helper.EditVector(groupBox, "@ParticleEmitter.WPView.Position.Label", "@ParticleEmitter.WPView.Position.ToolTip",
 		pEditEmitterPosition, cEditPosition::Ref::New(*this));
-	helper.EditVector(groupBox, "Rotation:", "Rotation of the emitter in degrees",
+	helper.EditVector(groupBox, "@ParticleEmitter.WPView.Rotation.Label", "@ParticleEmitter.WPView.Rotation.ToolTip",
 		pEditEmitterRotation, cEditRotation::Ref::New(*this));
-	helper.EditFloat(groupBox, "Burst Interval:", "Interval in seconds between bursts",
+	helper.EditFloat(groupBox, "@ParticleEmitter.WPView.BurstInterval.Label", "@ParticleEmitter.WPView.BurstInterval.ToolTip",
 		pEditEmitterBurstInterval, cEditBurstInterval::Ref::New(*this));
-	helper.EditFloat(groupBox, "Warm-Up Time:",
-		"Warm-Up time in seconds for the first enabling casting",
+	helper.EditFloat(groupBox, "@ParticleEmitter.WPView.WarmUpTime.Label",
+		"@ParticleEmitter.WPView.WarmUpTime.ToolTip",
 		pEditEmitterWarmUpTime, cEditWarmUpTime::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkEmitterEnableCasting, cActionEnableCasting::Ref::New(*this));
 }

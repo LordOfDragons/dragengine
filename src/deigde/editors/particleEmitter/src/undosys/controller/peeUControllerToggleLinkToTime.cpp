@@ -46,7 +46,7 @@ peeUControllerToggleLinkToTime::peeUControllerToggleLinkToTime(peeController *co
 	
 	pController = nullptr;
 	
-	SetShortInfo("Toggle Controller Link To Time");
+	SetShortInfo("@ParticleEmitter.Undo.Controller.ToggleLinkToTime");
 	
 	pController = controller;
 }

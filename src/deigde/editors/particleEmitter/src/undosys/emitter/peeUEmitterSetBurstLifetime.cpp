@@ -46,7 +46,7 @@ peeUEmitterSetBurstLifetime::peeUEmitterSetBurstLifetime(peeEmitter *emitter, fl
 	
 	pEmitter = nullptr;
 	
-	SetShortInfo("Set Emitter Burst Lifetime");
+	SetShortInfo("@ParticleEmitter.Undo.Emitter.SetBurstLifetime");
 	
 	pOldLifetime = emitter->GetBurstInterval();
 	pNewLifetime = newLifetime;

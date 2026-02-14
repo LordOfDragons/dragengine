@@ -218,16 +218,16 @@ public:
 class cActionControllerAdd : public cBaseAction{
 public:
 	using Ref = deTObjectReference<cActionControllerAdd>;
-	cActionControllerAdd(peeWPController &panel) : cBaseAction(panel, "Add",
+	cActionControllerAdd(peeWPController &panel) : cBaseAction(panel, "@ParticleEmitter.WPController.Action.Add",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-		"Add a controller to the end of the list."){}
+		"@ParticleEmitter.WPController.Action.Add.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(peeEmitter *emitter) override{
 		const peeController::Ref controller = peeController::Ref::New();
 		decString name(controller->GetName());
 		int number = 2;
 		while(emitter->GetControllers().HasNamed(name)){
-			name.Format("Controller #%d", number++);
+			name.FormatSafe(pPanel.Translate("ParticleEmitter.WPController.DefaultName").ToUTF8(), number++);
 		}
 		controller->SetName(name);
 		return peeUControllerAdd::Ref::New(emitter, controller);
@@ -237,9 +237,9 @@ public:
 class cActionControllerRemove : public cBaseActionController{
 public:
 	using Ref = deTObjectReference<cActionControllerRemove>;
-	cActionControllerRemove(peeWPController &panel) : cBaseActionController(panel, "Remove",
+	cActionControllerRemove(peeWPController &panel) : cBaseActionController(panel, "@ParticleEmitter.WPController.Action.Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-		"Remove the selected controller."){}
+		"@ParticleEmitter.WPController.Action.Remove.ToolTip"){}
 	
 	igdeUndo::Ref OnActionController(peeEmitter*, peeController *controller) override{
 		return peeUControllerRemove::Ref::New(controller);
@@ -255,8 +255,8 @@ class cActionControllerUp : public cBaseActionController{
 public:
 	using Ref = deTObjectReference<cActionControllerUp>;
 	cActionControllerUp(peeWPController &panel, igdeListBox &listBox) : cBaseActionController(
-		panel, "Move Up", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp),
-		"Move controller up in the list."),
+		panel, "@ParticleEmitter.WPController.Action.Up", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp),
+		"@ParticleEmitter.WPController.Action.Up.ToolTip"),
 	pListBox(listBox){}
 	
 	igdeUndo::Ref OnActionController(peeEmitter*, peeController *controller) override{
@@ -273,8 +273,8 @@ class cActionControllerDown : public cBaseActionController{
 public:
 	using Ref = deTObjectReference<cActionControllerDown>;
 	cActionControllerDown(peeWPController &panel, igdeListBox &listBox) : cBaseActionController(
-		panel, "Move Down", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown),
-		"Move controller down in the list."),
+		panel, "@ParticleEmitter.WPController.Action.Down", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown),
+		"@ParticleEmitter.WPController.Action.Down.ToolTip"),
 	pListBox(listBox){}
 	
 	igdeUndo::Ref OnActionController(peeEmitter*, peeController *controller) override{
@@ -351,8 +351,8 @@ public:
 class cActionClamp : public cBaseActionController{
 public:
 	using Ref = deTObjectReference<cActionClamp>;
-	cActionClamp(peeWPController &panel) : cBaseActionController(panel, "Clamp value to range",
-		"Determines if the value of the controller is clamped to the given range."){ }
+	cActionClamp(peeWPController &panel) : cBaseActionController(panel, "@ParticleEmitter.WPController.Clamp",
+		"@ParticleEmitter.WPController.Clamp.ToolTip"){ }
 	
 	igdeUndo::Ref OnActionController(peeEmitter*, peeController *controller) override{
 		return peeUControllerToggleClamp::Ref::New(controller);
@@ -363,7 +363,7 @@ class cActionFrozen : public cBaseActionController{
 public:
 	using Ref = deTObjectReference<cActionFrozen>;
 	cActionFrozen(peeWPController &panel) : cBaseActionController(panel,
-		"Freeze Controller value", "Prevents the controller from changing the current value."){}
+		"@ParticleEmitter.WPController.Frozen", "@ParticleEmitter.WPController.Frozen.ToolTip"){}
 	
 	igdeUndo::Ref OnActionController(peeEmitter*, peeController *controller) override{
 		return peeUControllerToggleFrozen::Ref::New(controller);
@@ -393,9 +393,9 @@ pWindowProperties(windowProperties)
 	AddChild(content);
 	
 	// controller list
-	helper.GroupBoxFlow(content, groupBox, "Controllers:");
+	helper.GroupBoxFlow(content, groupBox, "@ParticleEmitter.WPController.Group.Controllers");
 	
-	helper.ListBox(groupBox, 8, "Controllers", pListController, cListControllers::Ref::New(*this));
+	helper.ListBox(groupBox, 8, "@ParticleEmitter.WPController.Controllers.ToolTip", pListController, cListControllers::Ref::New(*this));
 	
 	pActionControllerAdd = cActionControllerAdd::Ref::New(*this);
 	pActionControllerRemove = cActionControllerRemove::Ref::New(*this);
@@ -403,16 +403,16 @@ pWindowProperties(windowProperties)
 	pActionControllerDown = cActionControllerDown::Ref::New(*this, pListController);
 	
 	// controller settings
-	helper.GroupBox(content, groupBox, "Controller Settings:");
-	helper.EditString(groupBox, "Name:", "Name of the controller", pEditName, cTextName::Ref::New(*this));
+	helper.GroupBox(content, groupBox, "@ParticleEmitter.WPController.Group.ControllerSettings");
+	helper.EditString(groupBox, "@ParticleEmitter.WPController.Name.Label", "@ParticleEmitter.WPController.Name.ToolTip", pEditName, cTextName::Ref::New(*this));
 	
-	helper.FormLine(groupBox, "Range:", "Range of the controller value if limited", frameLine);
-	helper.EditFloat(frameLine, "Minimum value the controller can take",
+	helper.FormLine(groupBox, "@ParticleEmitter.WPController.Range.Label", "@ParticleEmitter.WPController.Range.ToolTip", frameLine);
+	helper.EditFloat(frameLine, "@ParticleEmitter.WPController.MinimumValue.ToolTip",
 		pEditMin, cTextMinimumValue::Ref::New(*this));
-	helper.EditFloat(frameLine, "Maximum value the controller can take",
+	helper.EditFloat(frameLine, "@ParticleEmitter.WPController.MaximumValue.ToolTip",
 		pEditMax, cTextMaximumValue::Ref::New(*this));
 	
-	helper.EditSliderText(groupBox, "Value:", "Current value of the controller",
+	helper.EditSliderText(groupBox, "@ParticleEmitter.WPController.Value.Label", "@ParticleEmitter.WPController.Value.ToolTip",
 		0.0f, 0.0f, 4, 3, 0.1f, pSldValue, cSliderValue::Ref::New(*this));
 	
 	helper.CheckBox(groupBox, pChkClamp, cActionClamp::Ref::New(*this));
