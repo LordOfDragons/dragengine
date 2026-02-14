@@ -382,6 +382,9 @@ if not 'mingw' in envDragengine['TOOLS']:
 	libpath.extend(parent_targets['lib_zlib']['libpath'])
 	binlibs.extend(parent_targets['lib_zlib']['libs'])
 
+if not hasFormat:
+	cpppath.append(envDragengine.Dir('fmt'))
+
 if envDragengine['platform_webwasm']:
 	linklibs = library
 
