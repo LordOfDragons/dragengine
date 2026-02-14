@@ -104,8 +104,6 @@ if envDragengine['OSPosix'] or envDragengine['OSMacOS']:
 	hasPthreadCancel = conf.CheckFunc('pthread_cancel')
 
 hasFormat = conf.CheckCXXHeader('format')
-if not hasFormat:
-	envDragengine.Append(CPPPATH = ['fmt'])
 
 conf.Finish()
 
@@ -229,7 +227,7 @@ envDragengine.Append(CPPPATH = ['base64'])
 
 if not hasFormat:
 	sources.append('fmt/format.cc')
-	envDragengine.Append(CPPPATH = ['fmt'])
+	envDragengine.Append(CPPPATH = envDragengine.Dir('fmt').srcnode().abspath)
 
 ignoreHeaders = []
 ignoreHeaders.append('src/doxy_main.h')
