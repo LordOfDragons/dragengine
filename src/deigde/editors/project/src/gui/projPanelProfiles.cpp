@@ -249,8 +249,8 @@ public:
 		}
 		
 		if(project->GetProfiles().HasNamed(name)){
-			igdeCommonDialogs::Error(pPanel, "Rename profile",
-				"A profile with this name exists already.");
+			igdeCommonDialogs::Error(pPanel, pPanel.Translate("Project.PanelProfiles.Dialog.RenameProfile").ToUTF8(),
+				pPanel.Translate("Project.PanelProfiles.Dialog.RenameProfile.Error").ToUTF8());
 			textField->SetText(profile->GetName());
 			return {};
 		}
@@ -291,7 +291,7 @@ public:
 	using Ref = deTObjectReference<cActionScriptDirectory>;
 	
 	cActionScriptDirectory(projPanelProfiles &panel) : cActionBase(panel,
-		"...", nullptr, "VFS directory where the game scripts are located"){}
+		"...", nullptr, "@Project.PanelProfiles.Field.ScriptDirectory.Description"){}
 	
 	igdeUndo::Ref OnAction(projProject*, projProfile*) override{
 		return {}; // TODO we need a VFS version of FXDirDialog since this is VFS path
@@ -329,7 +329,7 @@ public:
 	using Ref = deTObjectReference<cActionPathConfig>;
 	
 	cActionPathConfig(projPanelProfiles &panel) : cActionBase(panel,
-		"...", nullptr, "VFS directory where the game stores configuration files"){}
+		"...", nullptr, "@Project.PanelProfiles.Field.PathConfig.Description"){}
 	
 	igdeUndo::Ref OnAction(projProject*, projProfile*) override{
 		return {}; // TODO we need a VFS version of FXDirDialog since this is VFS path
@@ -354,7 +354,7 @@ public:
 	using Ref = deTObjectReference<cActionPathCapture>;
 	
 	cActionPathCapture(projPanelProfiles &panel) : cActionBase(panel,
-		"...", nullptr, "VFS directory where the game stores captured files"){}
+		"...", nullptr, "@Project.PanelProfiles.Field.PathCapture.Description"){}
 	
 	igdeUndo::Ref OnAction(projProject*, projProfile*) override{
 		return {}; // TODO we need a VFS version of FXDirDialog since this is VFS path
@@ -366,11 +366,12 @@ public:
 	using Ref = deTObjectReference<cActionGenerateIdentifier>;
 	
 	cActionGenerateIdentifier(projPanelProfiles &panel) : cActionBase(panel,
-		"Generate Identifier", nullptr, "Generate Identifier"){}
+		"@Project.PanelProfiles.Action.GenerateIdentifier", nullptr, "@Project.PanelProfiles.Action.GenerateIdentifier.Description"){}
 	
 	igdeUndo::Ref OnAction(projProject*, projProfile *profile) override{
-		if(igdeCommonDialogs::Question(pPanel, igdeCommonDialogs::ebsYesNo, "Generate Identifier",
-		"Generating new identifier can break the game. Do you really want to generate new identifier?")
+		if(igdeCommonDialogs::Question(pPanel, igdeCommonDialogs::ebsYesNo,
+		pPanel.Translate("Project.PanelProfiles.Action.GenerateIdentifier").ToUTF8(),
+		pPanel.Translate("Project.PanelProfiles.Action.GenerateIdentifier.Confirm").ToUTF8())
 		== igdeCommonDialogs::ebYes){
 			return projUProfileSetIdentifier::Ref::New(profile, decUuid::Random());
 		}
@@ -385,7 +386,7 @@ public:
 	using Ref = deTObjectReference<cActionMenuIdentifier>;
 	
 	cActionMenuIdentifier(projPanelProfiles &panel) : igdeActionContextMenu("",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Identifier menu"),
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "@Project.PanelProfiles.Action.IdentifierMenu.Description"),
 	pPanel(panel){}
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override{
@@ -410,8 +411,8 @@ public:
 				? projUProfileSetIdentifier::Ref::New(profile, value) : projUProfileSetIdentifier::Ref();
 			
 		}catch(const deException &){
-			igdeCommonDialogs::Error(pPanel, "Invalid Input",
-				"Identifier has to be a valid UUID in the format 8-4-4-4-6 groups of hex-encoded values");
+			igdeCommonDialogs::Error(pPanel, pPanel.Translate("Project.PanelProfiles.Dialog.InvalidInput").ToUTF8(),
+				pPanel.Translate("Project.PanelProfiles.Dialog.InvalidInput.Identifier").ToUTF8());
 			textField->SetText(profile->GetIdentifier().ToHexString(false));
 			return {};
 		}
@@ -505,7 +506,7 @@ public:
 	using Ref = deTObjectReference<cActionAddIcon>;
 	
 	cActionAddIcon(projPanelProfiles &panel, igdeEditPath &editPath) :
-	cActionBase(panel, "", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallPlus), "Add icon"),
+	cActionBase(panel, "", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallPlus), "@Project.PanelProfiles.Action.AddIcon.Description"),
 	pEditPath(editPath){}
 	
 	igdeUndo::Ref OnAction(projProject*, projProfile *profile) override{
@@ -527,7 +528,7 @@ public:
 	
 	cActionRemoveIcon(projPanelProfiles &panel, igdeListBox &listPatterns) :
 	cActionBase(panel, "", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallMinus),
-		"Remove selected icon"),
+		"@Project.PanelProfiles.Action.RemoveIcon.Description"),
 	pListIcons(listPatterns){}
 	
 	igdeUndo::Ref OnAction(projProject*, projProfile *profile) override{
@@ -557,7 +558,7 @@ public:
 	
 	cActionAddExcludePattern(projPanelProfiles &panel, igdeTextField &textPattern) :
 	cActionBase(panel, "", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallPlus),
-		"Add file pattern to set"),
+		"@Project.PanelProfiles.Action.AddExcludePattern.Description"),
 	pTextPattern(textPattern){}
 	
 	igdeUndo::Ref OnAction(projProject*, projProfile *profile) override{
@@ -579,7 +580,7 @@ public:
 	
 	cActionRemoveExcludePattern(projPanelProfiles &panel, igdeListBox &listPatterns) :
 	cActionBase(panel, "", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallMinus),
-		"Remove selected file pattern from set"),
+		"@Project.PanelProfiles.Action.RemoveExcludePattern.Description"),
 	pListPatterns(listPatterns){}
 	
 	igdeUndo::Ref OnAction(projProject*, projProfile *profile) override{
@@ -609,7 +610,7 @@ public:
 	
 	cActionAddRequiredExtension(projPanelProfiles &panel, igdeTextField &textExtension) :
 	cActionBase(panel, "", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallPlus),
-		"Add resource file extension to set"),
+		"@Project.PanelProfiles.Action.AddRequiredExtension.Description"),
 	pTextExtension(textExtension){}
 	
 	igdeUndo::Ref OnAction(projProject*, projProfile *profile) override{
@@ -631,7 +632,7 @@ public:
 	
 	cActionRemoveRequiredExtension(projPanelProfiles &panel, igdeListBox &listPatterns) :
 	cActionBase(panel, "", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallMinus),
-		"Remove selected resource file extension from set"),
+		"@Project.PanelProfiles.Action.RemoveRequiredExtension.Description"),
 	pListPatterns(listPatterns){}
 	
 	igdeUndo::Ref OnAction(projProject*, projProfile *profile) override{
@@ -671,7 +672,7 @@ public:
 	using Ref = deTObjectReference<cActionDelgaPath>;
 	
 	cActionDelgaPath(projPanelProfiles &panel) : cActionBase(panel,
-		"...", nullptr, "VFS directory where to place the build DELGA file"){}
+		"...", nullptr, "@Project.PanelProfiles.Field.DelgaFile.Description"){}
 	
 	igdeUndo::Ref OnAction(projProject*, projProfile*) override{
 		return {}; // TODO we need a VFS version of FXDirDialog since this is VFS path
@@ -723,20 +724,20 @@ pWindowMain(windowMain)
 	sidePanel->SetWidgetGuiThemeName("");
 	AddChild(scroll, eaSide);
 	
-	helper.ListBox(sidePanel, 10, "Profiles", pListProfiles, cListProfile::Ref::New(*this));
+	helper.ListBox(sidePanel, 10, "@Project.PanelProfiles.Label.Profiles", pListProfiles, cListProfile::Ref::New(*this));
 	pListProfiles->SetDefaultSorter();
 	helper.Button(sidePanel, windowMain.GetActionProfileAdd());
 	helper.Button(sidePanel, windowMain.GetActionProfileRemove());
 	helper.Button(sidePanel, windowMain.GetActionProfileDuplicate());
 	
 	igdeContainer::Ref groupBox, formLine;
-	helper.GroupBoxStaticFlow(sidePanel, groupBox, "Content:");
+	helper.GroupBoxStaticFlow(sidePanel, groupBox, "@Project.PanelProfiles.Group.Content");
 	helper.Button(groupBox, windowMain.GetActionShowContent());
 	
-	helper.GroupBoxStaticFlow(sidePanel, groupBox, "Test-Run:");
+	helper.GroupBoxStaticFlow(sidePanel, groupBox, "@Project.PanelProfiles.Group.TestRun");
 	helper.Button(groupBox, windowMain.GetActionProfileTestRun());
 	
-	helper.GroupBoxStaticFlow(sidePanel, groupBox, "Distribution:");
+	helper.GroupBoxStaticFlow(sidePanel, groupBox, "@Project.PanelProfiles.Group.Distribution");
 	helper.Button(groupBox, windowMain.GetActionProfileDistribute());
 	helper.Button(groupBox, windowMain.GetActionShowDistribute());
 	
@@ -752,65 +753,65 @@ pWindowMain(windowMain)
 	
 	groupBox = igdeContainerForm::Ref::New(env);
 	sidePanel->AddChild(groupBox);
-	helper.EditString(groupBox, "Name:", "Profile name.", pEditName, cTextName::Ref::New(*this));
-	helper.EditString(groupBox, "Description:", "Profile description.",
+	helper.EditString(groupBox, "@Project.PanelProfiles.Field.Name", "@Project.PanelProfiles.Field.Name.Description", pEditName, cTextName::Ref::New(*this));
+	helper.EditString(groupBox, "@Project.PanelProfiles.Field.Description", "@Project.PanelProfiles.Field.Description.Description",
 		pEditDescription, 5, cTextDescription::Ref::New(*this));
 	
 	
 	// game parameters
-	helper.GroupBox(sidePanel, groupBox, "Game Parameters:");
+	helper.GroupBox(sidePanel, groupBox, "@Project.PanelProfiles.Group.GameParameters");
 	
-	description = "VFS directory where the game scripts are located.";
-	helper.FormLineStretchFirst(groupBox, "Script Directory:", description, frameLine);
+	description = "@Project.PanelProfiles.Field.ScriptDirectory.Description";
+	helper.FormLineStretchFirst(groupBox, "@Project.PanelProfiles.Field.ScriptDirectory", description, frameLine);
 	helper.EditString(frameLine, description, pEditScriptDirectory, cTextScriptDirectory::Ref::New(*this));
 	pActionScriptDirectory = cActionScriptDirectory::Ref::New(*this);
 	helper.Button(frameLine, pActionScriptDirectory);
 	
-	helper.EditString(groupBox, "Game Object:",
-		"Game object the scripting module uses as entry point to run the game.",
+	helper.EditString(groupBox, "@Project.PanelProfiles.Field.GameObject",
+		"@Project.PanelProfiles.Field.GameObject.Description",
 		pEditGameObject, cTextGameObject::Ref::New(*this));
 	
-	description = "VFS directory where the game stores configuration files.";
-	helper.FormLineStretchFirst(groupBox, "Config Path:", description, frameLine);
+	description = "@Project.PanelProfiles.Field.PathConfig.Description";
+	helper.FormLineStretchFirst(groupBox, "@Project.PanelProfiles.Field.PathConfig", description, frameLine);
 	helper.EditString(frameLine, description, pEditPathConfig, cTextPathConfig::Ref::New(*this));
 	pActionPathConfig = cActionPathConfig::Ref::New(*this);
 	helper.Button(frameLine, pActionPathConfig);
 	
-	description = "VFS directory where the game stores captured files.";
-	helper.FormLineStretchFirst(groupBox, "Capture Path:", description, frameLine);
+	description = "@Project.PanelProfiles.Field.PathCapture.Description";
+	helper.FormLineStretchFirst(groupBox, "@Project.PanelProfiles.Field.PathCapture", description, frameLine);
 	helper.EditString(frameLine, description, pEditPathCapture, cTextPathCapture::Ref::New(*this));
 	pActionPathCapture = cActionPathCapture::Ref::New(*this);
 	helper.Button(frameLine, pActionPathCapture);
 	
 	pActionMenuIdentifier = cActionMenuIdentifier::Ref::New(*this);
-	helper.FormLineStretchFirst(groupBox, "Identifier:",
-		"Unique identifier of game used by Launchers. CHANGING THIS CAN BREAK YOUR GAME!", formLine);
-	helper.EditString(formLine, "Unique identifier of game used by Launchers. CHANGING THIS CAN BREAK YOUR GAME!",
+	helper.FormLineStretchFirst(groupBox, "@Project.PanelProfiles.Field.Identifier",
+		"@Project.PanelProfiles.Field.Identifier.Description", formLine);
+	helper.EditString(formLine, "@Project.PanelProfiles.Field.Identifier.Description",
 		pEditIdentifier, cTextIdentifier::Ref::New(*this));
 	helper.Button(formLine, pBtnMenuIdentifier, pActionMenuIdentifier);
 	pActionMenuIdentifier->SetWidget(pBtnMenuIdentifier);
 	
-	helper.EditString(groupBox, "Alias Identifier:", "Alias identifier of game used by Launchers to simplify running the game.",
+	helper.EditString(groupBox, "@Project.PanelProfiles.Field.AliasIdentifier", "@Project.PanelProfiles.Field.AliasIdentifier.Description",
 		pEditAliasIdentifier, cTextAliasIdentifier::Ref::New(*this));
 	
-	helper.EditString(groupBox, "Title:", "Title to display for the game by Launchers.",
+	helper.EditString(groupBox, "@Project.PanelProfiles.Field.Title", "@Project.PanelProfiles.Field.Title.Description",
 		pEditTitle, cTextTitle::Ref::New(*this));
 	
-	helper.EditString(groupBox, "Description:", "Description to display for the game by Launchers.",
+	helper.EditString(groupBox, "@Project.PanelProfiles.Field.GameDescription", "@Project.PanelProfiles.Field.GameDescription.Description",
 		pEditGameDescription, 10, cTextGameDescription::Ref::New(*this));
 	
-	helper.EditString(groupBox, "Creator:", "Creator (or author) of the game.",
+	helper.EditString(groupBox, "@Project.PanelProfiles.Field.Creator", "@Project.PanelProfiles.Field.Creator.Description",
 		pEditCreator, cTextCreator::Ref::New(*this));
 	
-	helper.EditString(groupBox, "Website:", "Website (or any other kind of internet presence) of project or creator (author).",
+	helper.EditString(groupBox, "@Project.PanelProfiles.Field.Website", "@Project.PanelProfiles.Field.Website.Description",
 		pEditWebsite, cTextWebsite::Ref::New(*this));
 	
-	helper.EditPoint(groupBox, "Window Size:", "Size of run-time window or 0 to run fullscreen.",
+	helper.EditPoint(groupBox, "@Project.PanelProfiles.Field.WindowSize", "@Project.PanelProfiles.Field.WindowSize.Description",
 		pEditWindowSize, cEditWindowSize::Ref::New(*this));
 	
 	
 	// processing parameters
-	groupBox = igdeGroupBox::Ref::New(env, "Processing Parameters:", false);
+	groupBox = igdeGroupBox::Ref::New(env, "@Project.PanelProfiles.Group.ProcessingParameters", false);
 	sidePanel->AddChild(groupBox);
 	
 	igdeContainer::Ref subGroup, subGroup2;
@@ -818,10 +819,10 @@ pWindowMain(windowMain)
 	groupBox->AddChild(subGroup);
 	
 	// icons
-	helper.GroupBoxStaticFlow(subGroup, subGroup2, "Icons:");
+	helper.GroupBoxStaticFlow(subGroup, subGroup2, "@Project.PanelProfiles.Group.Icons");
 	
-	description = "Set of icons of different size representing the project.";
-	helper.FormLineStretchFirst(subGroup2, "Path:", description, frameLine);
+	description = "@Project.PanelProfiles.Field.IconPath.Description";
+	helper.FormLineStretchFirst(subGroup2, "@Project.PanelProfiles.Field.IconPath", description, frameLine);
 	helper.EditPath(frameLine, description, igdeEnvironment::efpltImage, pEditIconPath, {});
 	pActionAddIcon = cActionAddIcon::Ref::New(*this, pEditIconPath);
 	helper.Button(frameLine, pActionAddIcon);
@@ -833,10 +834,10 @@ pWindowMain(windowMain)
 	helper.Button(frameLine, pActionRemoveIcon);
 	
 	// exclude patterns
-	helper.GroupBoxStaticFlow(subGroup, subGroup2, "Exclude Patterns:");
+	helper.GroupBoxStaticFlow(subGroup, subGroup2, "@Project.PanelProfiles.Group.ExcludePatterns");
 	
-	description = "Set of file patterns to exclude from projribution process.";
-	helper.FormLineStretchFirst(subGroup2, "Pattern:", description, frameLine);
+	description = "@Project.PanelProfiles.Field.ExcludePattern.Description";
+	helper.FormLineStretchFirst(subGroup2, "@Project.PanelProfiles.Field.ExcludePattern", description, frameLine);
 	helper.EditString(frameLine, description, pEditExcludePattern, {});
 	pActionAddExcludePattern = cActionAddExcludePattern::Ref::New(*this, pEditExcludePattern);
 	helper.Button(frameLine, pActionAddExcludePattern);
@@ -848,10 +849,10 @@ pWindowMain(windowMain)
 	helper.Button(frameLine, pActionRemoveExcludePattern);
 	
 	// required extensions
-	helper.GroupBoxStaticFlow(subGroup, subGroup2, "Required Extensions:");
+	helper.GroupBoxStaticFlow(subGroup, subGroup2, "@Project.PanelProfiles.Group.RequiredExtensions");
 	
-	description = "Set of resource file extensions (.extension) required by the project";
-	helper.FormLineStretchFirst(subGroup2, "Extension:", description, frameLine);
+	description = "@Project.PanelProfiles.Field.RequiredExtension.Description";
+	helper.FormLineStretchFirst(subGroup2, "@Project.PanelProfiles.Field.RequiredExtension", description, frameLine);
 	helper.EditString(frameLine, description, pEditRequiredExtension, {});
 	pActionAddRequiredExtension = cActionAddRequiredExtension::Ref::New(*this, pEditRequiredExtension);
 	helper.Button(frameLine, pActionAddRequiredExtension);
@@ -868,19 +869,19 @@ pWindowMain(windowMain)
 	sidePanel->AddChild(subGroup);
 	
 	// delga parameters
-	helper.GroupBox(subGroup, groupBox, "DELGA Parameters:");
+	helper.GroupBox(subGroup, groupBox, "@Project.PanelProfiles.Group.DelgaParameters");
 	
-	description = "VFS directory where to place the build DELGA file.";
-	helper.FormLineStretchFirst(groupBox, "DELGA File:", description, frameLine);
+	description = "@Project.PanelProfiles.Field.DelgaFile.Description";
+	helper.FormLineStretchFirst(groupBox, "@Project.PanelProfiles.Field.DelgaFile", description, frameLine);
 	helper.EditString(frameLine, description, pEditDelgaPath, cTextDelgaPath::Ref::New(*this));
 	pActionDelgaPath = cActionDelgaPath::Ref::New(*this);
 	helper.Button(frameLine, pActionDelgaPath);
 	
 	
 	// test running
-	helper.GroupBox(subGroup, groupBox, "Test Run:");
+	helper.GroupBox(subGroup, groupBox, "@Project.PanelProfiles.Group.TestRun");
 	
-	helper.EditString(groupBox, "Arguments:", "Arguments to use while test running",
+	helper.EditString(groupBox, "@Project.PanelProfiles.Field.Arguments", "@Project.PanelProfiles.Field.Arguments.Description",
 		pEditRunArguments, cTextRunArguments::Ref::New(*this));
 }
 

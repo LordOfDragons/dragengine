@@ -48,7 +48,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Project set script directory");
+	SetShortInfo("@Project.Undo.ProjectSetScriptDirectory");
 	
 	pOldValue = project->GetScriptDirectory();
 	

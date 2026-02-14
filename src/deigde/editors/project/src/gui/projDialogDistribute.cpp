@@ -55,7 +55,7 @@
 ////////////////////////////
 
 projDialogDistribute::projDialogDistribute(projWindowMain &windowMain, projProfile *profile) :
-igdeDialog(windowMain.GetEnvironment(), "Distribute"),
+igdeDialog(windowMain.GetEnvironment(), "@Project.DialogDistribute.Title"),
 
 pWindowMain(windowMain),
 pProfile(profile),
@@ -69,8 +69,8 @@ pSuccess(true)
 	igdeUIHelper &helper = env.GetUIHelper();
 	
 	
-	pActionShowInFSManager = igdeActionExternOpen::Ref::New(env, "Show in File Manager",
-		env.GetStockIcon(igdeEnvironment::esiOpen), "Show DELGA file in File Manager");
+	pActionShowInFSManager = igdeActionExternOpen::Ref::New(env, "@Project.DialogDistribute.Action.ShowInFileManager",
+		env.GetStockIcon(igdeEnvironment::esiOpen), "@Project.DialogDistribute.Action.ShowInFileManager.Description");
 	
 	
 	igdeContainerFlow::Ref content(igdeContainerFlow::Ref::New(
@@ -78,27 +78,27 @@ pSuccess(true)
 	
 	// build information
 	igdeContainer::Ref groupBox;
-	helper.GroupBoxStatic(content, groupBox, "DELGA:");
+	helper.GroupBoxStatic(content, groupBox, "@Project.DialogDistribute.Group.Delga");
 	
-	helper.EditString(groupBox, "DELGA File:", "DELGA file being build.", pEditDelgaPath, {});
+	helper.EditString(groupBox, "@Project.DialogDistribute.Field.DelgaFile", "@Project.DialogDistribute.Field.DelgaFile.Description", pEditDelgaPath, {});
 	pEditDelgaPath->SetEditable(false);
 	
-	helper.EditString(groupBox, "DELGA Size:", "Size of DELGA file.", pEditDelgaSize, {});
+	helper.EditString(groupBox, "@Project.DialogDistribute.Field.DelgaSize", "@Project.DialogDistribute.Field.DelgaSize.Description", pEditDelgaSize, {});
 	pEditDelgaSize->SetEditable(false);
 	
-	helper.EditString(groupBox, "Files:", "Number of processed files.", pEditDelgaFileCount, {});
+	helper.EditString(groupBox, "@Project.DialogDistribute.Field.Files", "@Project.DialogDistribute.Field.Files.Description", pEditDelgaFileCount, {});
 	pEditDelgaFileCount->SetEditable(false);
 	
-	helper.EditString(groupBox, "Directories:", "Number of processed directories.", pEditDelgaDirCount, {});
+	helper.EditString(groupBox, "@Project.DialogDistribute.Field.Directories", "@Project.DialogDistribute.Field.Directories.Description", pEditDelgaDirCount, {});
 	pEditDelgaDirCount->SetEditable(false);
 	
 	// logs and info line
 	igdeContainerFlow::Ref containerLogs(igdeContainerFlow::Ref::New(
 		env, igdeContainerFlow::eaY, igdeContainerFlow::esFirst, 5));
 	
-	helper.GroupBoxStaticFlow(containerLogs, groupBox, "Logs:", true);
+	helper.GroupBoxStaticFlow(containerLogs, groupBox, "@Project.DialogDistribute.Group.Logs", true);
 	
-	helper.EditString(groupBox, "Building logs.", pEditLogs, 80, 12, {});
+	helper.EditString(groupBox, "@Project.DialogDistribute.Field.Logs.Description", pEditLogs, 80, 12, {});
 	pEditLogs->SetEditable(false);
 	
 	// info line
@@ -111,7 +111,7 @@ pSuccess(true)
 	
 	// button line
 	igdeContainer::Ref buttonBar;
-	CreateButtonBar(buttonBar, "Close");
+	CreateButtonBar(buttonBar, "@Project.DialogDistribute.Button.Close");
 	
 	AddContent(content, buttonBar);
 	
@@ -165,23 +165,23 @@ void projDialogDistribute::OnFrameUpdate(){
 		}
 		
 		decString text;
-		text.Format("%s (%s bytes)",
-			igdeUIHelper::FormatSize1024(pTaskDistribute->GetDelgaSize()).GetString(),
-			igdeUIHelper::FormatSizeTousand(pTaskDistribute->GetDelgaSize()).GetString());
-		pEditDelgaSize->SetText(text);
-		
-		pEditDelgaDirCount->SetText(igdeUIHelper::FormatSizeTousand(
-			pTaskDistribute->GetDelgaDirectoryCount()));
-		pEditDelgaFileCount->SetText(igdeUIHelper::FormatSizeTousand(
-			pTaskDistribute->GetDelgaFileCount()));
-		
-		const decString &taskMessage = pTaskDistribute->GetMessage();
-		if(taskMessage != pLastTaskMessage){
-			LogMessage(taskMessage);
-		}
-		
-	}catch(const deException &e){
-		pSuccess = false;
+	text.FormatSafe(Translate("Project.DialogDistribute.Format.DelgaSize").ToUTF8(),
+		igdeUIHelper::FormatSize1024(pTaskDistribute->GetDelgaSize()).GetString(),
+		igdeUIHelper::FormatSizeTousand(pTaskDistribute->GetDelgaSize()).GetString());
+	pEditDelgaSize->SetText(text);
+	
+	pEditDelgaDirCount->SetText(igdeUIHelper::FormatSizeTousand(
+		pTaskDistribute->GetDelgaDirectoryCount()));
+	pEditDelgaFileCount->SetText(igdeUIHelper::FormatSizeTousand(
+		pTaskDistribute->GetDelgaFileCount()));
+	
+	const decString &taskMessage = pTaskDistribute->GetMessage();
+	if(taskMessage != pLastTaskMessage){
+		LogMessage(taskMessage);
+	}
+	
+}catch(const deException &e){
+	pSuccess = false;
 		
 		const decString &taskMessage = pTaskDistribute->GetMessage();
 		if(taskMessage != pLastTaskMessage){
@@ -189,7 +189,7 @@ void projDialogDistribute::OnFrameUpdate(){
 		}
 		
 		LogMessage(igdeCommonDialogs::FormatException(e));
-		LogMessage("Distribution Failed!");
+		LogMessage(Translate("Project.WindowMain.Error.DistributeFailed").ToUTF8());
 		
 		pWindowMain.GetLogger()->LogException(LOGSOURCE, e);
 	}

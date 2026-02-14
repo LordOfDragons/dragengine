@@ -74,8 +74,8 @@ class cActionStart : public igdeAction{
 public:
 	typedef deTObjectReference<cActionStart> Ref;
 	
-	cActionStart(projPanelTestRun &panel) : igdeAction("Start",
-		panel.GetWindowMain().GetIconStart(), "Test-Run project using selected Launcher Profile"),
+	cActionStart(projPanelTestRun &panel) : igdeAction("@Project.PanelTestRun.Action.Start",
+		panel.GetWindowMain().GetIconStart(), "@Project.PanelTestRun.Action.Start.Description"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -92,8 +92,8 @@ class cActionStop : public igdeAction{
 public:
 	typedef deTObjectReference<cActionStop> Ref;
 	
-	cActionStop(projPanelTestRun &panel) : igdeAction("Stop",
-		panel.GetWindowMain().GetIconStop(), "Stop Test-Run project"),
+	cActionStop(projPanelTestRun &panel) : igdeAction("@Project.PanelTestRun.Action.Stop",
+		panel.GetWindowMain().GetIconStop(), "@Project.PanelTestRun.Action.Stop.Description"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -110,8 +110,8 @@ class cActionKill : public igdeAction{
 public:
 	typedef deTObjectReference<cActionKill> Ref;
 	
-	cActionKill(projPanelTestRun &panel) : igdeAction("Kill",
-		panel.GetWindowMain().GetIconKill(), "Kill Test-Run project"),
+	cActionKill(projPanelTestRun &panel) : igdeAction("@Project.PanelTestRun.Action.Kill",
+		panel.GetWindowMain().GetIconKill(), "@Project.PanelTestRun.Action.Kill.Description"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -189,8 +189,8 @@ class cActionRemoteStartListen : public igdeAction{
 	projPanelTestRun &pPanel;
 public:
 	typedef deTObjectReference<cActionRemoteStartListen> Ref;
-	cActionRemoteStartListen(projPanelTestRun &panel) : igdeAction("Start Listen",
-		nullptr, "Start listening for remote client connections"),
+	cActionRemoteStartListen(projPanelTestRun &panel) : igdeAction("@Project.PanelTestRun.Action.RemoteStartListen",
+		nullptr, "@Project.PanelTestRun.Action.RemoteStartListen.Description"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -207,8 +207,8 @@ class cActionRemoteStopListen : public igdeAction{
 	projPanelTestRun &pPanel;
 public:
 	typedef deTObjectReference<cActionRemoteStopListen> Ref;
-	cActionRemoteStopListen(projPanelTestRun &panel) : igdeAction("Stop Listen",
-		nullptr, "Stop listening for remote client connections"),
+	cActionRemoteStopListen(projPanelTestRun &panel) : igdeAction("@Project.PanelTestRun.Action.RemoteStopListen",
+		nullptr, "@Project.PanelTestRun.Action.RemoteStopListen.Description"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -225,9 +225,9 @@ class cActionRemoteSynchronizeAll : public igdeAction{
 	projPanelTestRun &pPanel;
 public:
 	typedef deTObjectReference<cActionRemoteSynchronizeAll> Ref;
-	cActionRemoteSynchronizeAll(projPanelTestRun &panel) : igdeAction("Synchronize All",
+	cActionRemoteSynchronizeAll(projPanelTestRun &panel) : igdeAction("@Project.PanelTestRun.Action.RemoteSynchronizeAll",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongRight),
-		"Synchronize all remote clients"),
+		"@Project.PanelTestRun.Action.RemoteSynchronizeAll.Description"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -287,15 +287,15 @@ pMaxLines(500)
 	
 	
 	igdeContainer::Ref groupBox(igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY));
-	helper.Label(groupBox, "Profile:");
-	helper.ComboBox(groupBox, "Distribution profile to run.",
+	helper.Label(groupBox, "@Project.PanelTestRun.Label.Profile");
+	helper.ComboBox(groupBox, "@Project.PanelTestRun.Field.Profile.Description",
 		pCBProfile, cComboProfile::Ref::New(*this));
 	pCBProfile->SetDefaultSorter();
 	sidePanel->AddChild(groupBox);
 	
 	groupBox = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
-	helper.Label(groupBox, "Launch Profile:");
-	helper.ComboBox(groupBox, "Launcher profile to use for testing.",
+	helper.Label(groupBox, "@Project.PanelTestRun.Label.LaunchProfile");
+	helper.ComboBox(groupBox, "@Project.PanelTestRun.Field.LaunchProfile.Description",
 		pCBLaunchProfile, cComboLaunchProfile::Ref::New(*this));
 	pCBLaunchProfile->SetDefaultSorter();
 	sidePanel->AddChild(groupBox);
@@ -306,10 +306,10 @@ pMaxLines(500)
 	
 	
 	// remote launching
-	helper.GroupBoxFlow(sidePanel, groupBox, "Remote Launching:");
+	helper.GroupBoxFlow(sidePanel, groupBox, "@Project.PanelTestRun.Group.RemoteLaunching");
 	
 	igdeContainerForm::Ref form(igdeContainerForm::Ref::New(env));
-	helper.EditString(form, "Address:", "IP address to listen for remote client connections",
+	helper.EditString(form, "@Project.PanelTestRun.Field.Address", "@Project.PanelTestRun.Field.Address.Description",
 		pEditRemoteAddress, cEditRemoteAddress::Ref::New(*this));
 	groupBox->AddChild(form);
 	
@@ -319,7 +319,7 @@ pMaxLines(500)
 	
 	
 	// logs / debug
-	helper.GroupBoxStaticFlow(sidePanel, groupBox, "Logs / Debug:");
+	helper.GroupBoxStaticFlow(sidePanel, groupBox, "@Project.PanelTestRun.Group.LogsDebug");
 	helper.Button(groupBox, windowMain.GetActionShowLogs());
 	helper.Button(groupBox, windowMain.GetActionShowConfig());
 	helper.Button(groupBox, windowMain.GetActionShowOverlay());
@@ -344,7 +344,7 @@ pMaxLines(500)
 // 	style->SetBold( true );
 	pEditLogs->AddStyle(style);
 	
-	pTabContent->AddChild(pEditLogs, "Logs");
+	pTabContent->AddChild(pEditLogs, "@Project.PanelTestRun.Tab.Logs");
 	
 	
 	// update
@@ -419,8 +419,8 @@ void projPanelTestRun::Start(){
 		pWindowMain.SaveProject();
 	}
 	
-	if(!GetEnvironment().RequestSaveDocuments("Start Test-Running",
-	"Unsaved changes are present. To start Test-Running it is recommended to save them")){
+	if(!GetEnvironment().RequestSaveDocuments(Translate("Project.PanelTestRun.Action.Start").ToUTF8(),
+	Translate("Project.PanelTestRun.Dialog.StartTestRunning.RequestSave").ToUTF8())){
 		return;
 	}
 	
@@ -670,7 +670,7 @@ void projPanelTestRun::RemoteStartListen(){
 		pProject->GetRemoteServer()->ListenForClientConnections(pEditRemoteAddress->GetText());
 		
 	}catch(const deException &e){
-		igdeCommonDialogs::Exception(*this, "Listen", e);
+		igdeCommonDialogs::Exception(*this, Translate("Project.PanelTestRun.Dialog.Listen").ToUTF8(), e);
 	}
 	
 	UpdateWidgetEnabled();
@@ -685,7 +685,7 @@ void projPanelTestRun::RemoteStopListen(){
 		pProject->GetRemoteServer()->StopListenClientConnections();
 		
 	}catch(const deException &e){
-		igdeCommonDialogs::Exception(*this, "Stop Listen", e);
+		igdeCommonDialogs::Exception(*this, Translate("Project.PanelTestRun.Dialog.StopListen").ToUTF8(), e);
 	}
 	
 	UpdateWidgetEnabled();
@@ -700,7 +700,7 @@ void projPanelTestRun::RemoteSynchronizeAll(){
 		pProject->GetRemoteServer()->RemoteSynchronizeAllClients();
 		
 	}catch(const deException &e){
-		igdeCommonDialogs::Exception(*this, "Stop Listen", e);
+		igdeCommonDialogs::Exception(*this, Translate("Project.PanelTestRun.Dialog.StopListen").ToUTF8(), e);
 	}
 	
 	UpdateWidgetEnabled();
@@ -736,7 +736,7 @@ void projPanelTestRun::pUpdateLaunchProfiles(){
 	preventUpdateLaunchProfile = true;
 	
 	pCBLaunchProfile->RemoveAllItems();
-	pCBLaunchProfile->AddItem("< IGDE Default >", nullptr, nullptr);
+	pCBLaunchProfile->AddItem(Translate("Project.PanelTestRun.Field.LaunchProfile.DefaultItem").ToUTF8(), nullptr, nullptr);
 	
 	pTestRunner->LoadEngineConfiguration();
 	

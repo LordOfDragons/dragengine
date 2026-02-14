@@ -49,7 +49,7 @@ projUProfileRemove::projUProfileRemove(projProject *project, projProfile *profil
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Remove profile");
+	SetShortInfo("@Project.Undo.ProfileRemove");
 	
 	pProfile = profile;
 	pProject = project;

@@ -48,7 +48,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Profile set exclude patterns");
+	SetShortInfo("@Project.Undo.ProfileSetExcludePatterns");
 	
 	pOldValue = profile->GetExcludePatterns();
 	

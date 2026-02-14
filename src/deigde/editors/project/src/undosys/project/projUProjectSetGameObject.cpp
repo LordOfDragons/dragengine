@@ -48,7 +48,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Project set game object");
+	SetShortInfo("@Project.Undo.ProjectSetGameObject");
 	
 	pOldValue = project->GetGameObject();
 	

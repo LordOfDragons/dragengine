@@ -48,7 +48,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Profile set required extensions");
+	SetShortInfo("@Project.Undo.ProfileSetRequiredExtensions");
 	
 	pOldValue = profile->GetRequiredExtensions();
 	

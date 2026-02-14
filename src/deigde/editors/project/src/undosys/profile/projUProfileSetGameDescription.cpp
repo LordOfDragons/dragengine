@@ -48,7 +48,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Profile set game description");
+	SetShortInfo("@Project.Undo.ProfileSetGameDescription");
 	
 	pOldValue = profile->GetGameDescription();
 	

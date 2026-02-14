@@ -47,7 +47,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Profile set icons");
+	SetShortInfo("@Project.Undo.ProfileSetIcons");
 	
 	pOldValue = profile->GetIcons();
 	

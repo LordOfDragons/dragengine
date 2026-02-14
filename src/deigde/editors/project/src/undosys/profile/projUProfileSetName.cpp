@@ -47,7 +47,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Profile set name");
+	SetShortInfo("@Project.Undo.ProfileSetName");
 	
 	pOldValue = profile->GetName();
 	

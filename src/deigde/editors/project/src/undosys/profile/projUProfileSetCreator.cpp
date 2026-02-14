@@ -47,7 +47,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Profile set creator");
+	SetShortInfo("@Project.Undo.ProfileSetCreator");
 	
 	pOldValue = profile->GetCreator();
 	

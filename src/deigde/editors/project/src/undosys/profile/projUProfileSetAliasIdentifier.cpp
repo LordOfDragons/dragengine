@@ -47,7 +47,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Profile set alias identifier");
+	SetShortInfo("@Project.Undo.ProfileSetAliasIdentifier");
 	
 	pOldValue = profile->GetAliasIdentifier();
 	

@@ -48,7 +48,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Profile set config path");
+	SetShortInfo("@Project.Undo.ProfileSetPathConfig");
 	
 	pOldValue = profile->GetPathConfig();
 	

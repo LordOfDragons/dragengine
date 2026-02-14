@@ -115,13 +115,13 @@ pLoadSaveSystem(*this)
 	AddChild(pTabPanels);
 	
 	pPanelProfiles = projPanelProfiles::Ref::New(*this);
-	pTabPanels->AddChild(pPanelProfiles, "Profiles");
+	pTabPanels->AddChild(pPanelProfiles, "@Project.WindowMain.Tab.Profiles");
 	
 	pPanelTestRun = projPanelTestRun::Ref::New(*this);
-	pTabPanels->AddChild(pPanelTestRun, "Test-Run");
+	pTabPanels->AddChild(pPanelTestRun, "@Project.WindowMain.Tab.TestRun");
 	
 	pPanelUndoHistory = projPanelUndoHistory::Ref::New(env);
-	pTabPanels->AddChild(pPanelUndoHistory, "Undo History");
+	pTabPanels->AddChild(pPanelUndoHistory, "@Project.WindowMain.Tab.UndoHistory");
 	
 	// load game project
 	LoadProject();
@@ -450,8 +450,8 @@ public:
 	typedef deTObjectReference<cActionDistSave> Ref;
 	
 	cActionDistSave(projWindowMain &window) : cActionBase(window,
-		"Save", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave),
-		"Save project", deInputEvent::esmControl,
+		"@Project.Action.Save", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave),
+		"@Project.Action.Save.Description", deInputEvent::esmControl,
 		deInputEvent::ekcS, deInputEvent::ekcS){}
 	
 	void OnAction() override{
@@ -476,8 +476,8 @@ public:
 	typedef deTObjectReference<cActionEditCut> Ref;
 	
 	cActionEditCut(projWindowMain &window) : cActionBase(window,
-		"Cut", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
-		"Cut selected objects", deInputEvent::esmControl,
+		"@Project.Action.Cut", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
+		"@Project.Action.Cut.Description", deInputEvent::esmControl,
 		deInputEvent::ekcX, deInputEvent::ekcT){}
 	
 	void OnAction() override{
@@ -494,8 +494,8 @@ public:
 	typedef deTObjectReference<cActionEditCopy> Ref;
 	
 	cActionEditCopy(projWindowMain &window) : cActionBase(window,
-		"Copy", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-		"Copy selected objects", deInputEvent::esmControl,
+		"@Project.Action.Copy", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		"@Project.Action.Copy.Description", deInputEvent::esmControl,
 		deInputEvent::ekcC, deInputEvent::ekcC){}
 	
 	void OnAction() override{
@@ -512,8 +512,8 @@ public:
 	typedef deTObjectReference<cActionEditPaste> Ref;
 	
 	cActionEditPaste(projWindowMain &window) : cActionBase(window,
-		"Paste", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
-		"Paste objects", deInputEvent::esmControl,
+		"@Project.Action.Paste", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+		"@Project.Action.Paste.Description", deInputEvent::esmControl,
 		deInputEvent::ekcV, deInputEvent::ekcP){}
 	
 	void OnAction() override{
@@ -530,8 +530,8 @@ public:
 	typedef deTObjectReference<cActionProfileAdd> Ref;
 	
 	cActionProfileAdd(projWindowMain &window) : cActionBase(window,
-		"Add...", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-		"Add profile", deInputEvent::ekcA){}
+		"@Project.Action.ProfileAdd", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"@Project.Action.ProfileAdd.Description", deInputEvent::ekcA){}
 	
 	void OnAction() override{
 		projProject * const project = pWindow.GetProject();
@@ -540,16 +540,17 @@ public:
 		}
 		
 		const projProfile::List &list = project->GetProfiles();
-		decString name("Profile");
+		decString name(pWindow.Translate("Project.WindowMain.Default.ProfileName").ToUTF8());
 		
 		while(true){
-			if(!igdeCommonDialogs::GetString(pWindow, "Add Profile", "Name:", name)){
+			if(!igdeCommonDialogs::GetString(pWindow, pWindow.Translate("Project.PanelProfiles.Dialog.AddProfile").ToUTF8(),
+			pWindow.Translate("Project.PanelProfiles.Dialog.AddProfile.Name").ToUTF8(), name)){
 				return;
 			}
 			
 			if(list.HasNamed(name)){
-				igdeCommonDialogs::Error(pWindow, "Add Profile",
-					"A profile with this name exists already.");
+				igdeCommonDialogs::Error(pWindow, pWindow.Translate("Project.PanelProfiles.Dialog.AddProfile").ToUTF8(),
+				pWindow.Translate("Project.PanelProfiles.Dialog.AddProfile.Error").ToUTF8());
 				
 			}else{
 				break;
@@ -593,8 +594,8 @@ public:
 	typedef deTObjectReference<cActionProfileRemove> Ref;
 	
 	cActionProfileRemove(projWindowMain &window) : cActionBase(window,
-		"Remove", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-		"Remove selected profile", deInputEvent::ekcR){}
+		"@Project.Action.ProfileRemove", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@Project.Action.ProfileRemove.Description", deInputEvent::ekcR){}
 	
 	void OnAction() override{
 		projProject * const project = pWindow.GetProject();
@@ -621,8 +622,8 @@ public:
 	typedef deTObjectReference<cActionProfileDuplicate> Ref;
 	
 	cActionProfileDuplicate(projWindowMain &window) : cActionBase(window,
-		"Duplicate", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-		"Duplicate profile", deInputEvent::ekcD){}
+		"@Project.Action.ProfileDuplicate", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		"@Project.Action.ProfileDuplicate.Description", deInputEvent::ekcD){}
 	
 	void OnAction() override{
 		projProject * const project = pWindow.GetProject();
@@ -637,16 +638,18 @@ public:
 		
 		const projProfile::List &list = project->GetProfiles();
 		decString name;
-		name.Format("%s Copy", profile->GetName().GetString());
+		name.Format(pWindow.Translate("Project.PanelProfiles.Dialog.DuplicateProfile.NameCopy").ToUTF8(),
+			profile->GetName().GetString());
 		
 		while(true){
-			if(!igdeCommonDialogs::GetString(pWindow, "Duplicate Profile", "Name:", name)){
+			if(!igdeCommonDialogs::GetString(pWindow, pWindow.Translate("Project.PanelProfiles.Dialog.DuplicateProfile").ToUTF8(),
+			pWindow.Translate("Project.PanelProfiles.Dialog.DuplicateProfile.Name").ToUTF8(), name)){
 				return;
 			}
 			
 			if(list.HasNamed(name)){
-				igdeCommonDialogs::Error(pWindow, "Duplicate Profile",
-					"A profile with this name exists already.");
+				igdeCommonDialogs::Error(pWindow, pWindow.Translate("Project.PanelProfiles.Dialog.DuplicateProfile").ToUTF8(),
+				pWindow.Translate("Project.PanelProfiles.Dialog.DuplicateProfile.Error").ToUTF8());
 				
 			}else{
 				break;
@@ -676,8 +679,8 @@ class cActionProfileDistribute : public cActionBase{
 public:
 	typedef deTObjectReference<cActionProfileDistribute> Ref;
 	
-	cActionProfileDistribute(projWindowMain &window) : cActionBase(window, "Build DELGA...",
-		window.GetIconDelga(), "Build DELGA file using selected profile", deInputEvent::ekcD){}
+	cActionProfileDistribute(projWindowMain &window) : cActionBase(window, "@Project.Action.ProfileDistribute",
+		window.GetIconDelga(), "@Project.Action.ProfileDistribute.Description", deInputEvent::ekcD){}
 	
 	void OnAction() override{
 		projProject * const project = pWindow.GetProject();
@@ -690,8 +693,8 @@ public:
 		}
 		pWindow.SaveProjectLocal();
 		
-		if(!pWindow.GetEnvironment().RequestSaveDocuments("Distribute",
-		"Unsaved changes are present. To projribute it is recommended to save them")){
+		if(!pWindow.GetEnvironment().RequestSaveDocuments(pWindow.Translate("Project.Action.ProfileDistribute").ToUTF8(),
+		pWindow.Translate("Project.PanelProfiles.Dialog.Distribute.RequestSave").ToUTF8())){
 			return;
 		}
 		
@@ -709,7 +712,7 @@ public:
 	typedef deTObjectReference<cActionProfileTestRun> Ref;
 	
 	cActionProfileTestRun(projWindowMain &window) : cActionBase(window,
-		"Test-Run...", window.GetIconStart(), "Test-Run selected profile", deInputEvent::ekcR){}
+		"@Project.Action.ProfileTestRun", window.GetIconStart(), "@Project.Action.ProfileTestRun.Description", deInputEvent::ekcR){}
 	
 	void OnAction() override{
 		projProject * const project = pWindow.GetProject();
@@ -761,28 +764,28 @@ void projWindowMain::pCreateActions(){
 	pActionProfileTestRun = cActionProfileTestRun::Ref::New(*this);
 	
 	pActionShowDelga = igdeActionExternOpen::Ref::New(env,
-		"Browse DELGA", env.GetStockIcon(igdeEnvironment::esiOpen),
-		"Open DELGA Directory in File Manager");
+		"@Project.Action.ShowDelga", env.GetStockIcon(igdeEnvironment::esiOpen),
+		"@Project.Action.ShowDelga.Description");
 	
 	pActionShowContent = igdeActionExternOpen::Ref::New(env,
-		"Browse Content", env.GetStockIcon(igdeEnvironment::esiOpen),
-		"Open Content directory in File Manager");
+		"@Project.Action.ShowContent", env.GetStockIcon(igdeEnvironment::esiOpen),
+		"@Project.Action.ShowContent.Description");
 	
 	pActionShowConfig = igdeActionExternOpen::Ref::New(env,
-		"Browse Run Config", env.GetStockIcon(igdeEnvironment::esiOpen),
-		"Open Run-Time Configuration Directory in File Manager");
+		"@Project.Action.ShowConfig", env.GetStockIcon(igdeEnvironment::esiOpen),
+		"@Project.Action.ShowConfig.Description");
 	
 	pActionShowOverlay = igdeActionExternOpen::Ref::New(env,
-		"Browse Run Overlay", env.GetStockIcon(igdeEnvironment::esiOpen),
-		"Open Run-Time Overlay Directory in File Manager");
+		"@Project.Action.ShowOverlay", env.GetStockIcon(igdeEnvironment::esiOpen),
+		"@Project.Action.ShowOverlay.Description");
 	
 	pActionShowCapture = igdeActionExternOpen::Ref::New(env,
-		"Browse Run Capture", env.GetStockIcon(igdeEnvironment::esiOpen),
-		"Open Run-Time Capture Directory in File Manager");
+		"@Project.Action.ShowCapture", env.GetStockIcon(igdeEnvironment::esiOpen),
+		"@Project.Action.ShowCapture.Description");
 	
 	pActionShowLogs = igdeActionExternOpen::Ref::New(env,
-		"Open Run Logs", env.GetStockIcon(igdeEnvironment::esiOpen),
-		"Open Run-Time Log File in External Application");
+		"@Project.Action.ShowLogs", env.GetStockIcon(igdeEnvironment::esiOpen),
+		"@Project.Action.ShowLogs.Description");
 }
 
 void projWindowMain::pCreateToolBarDistribute(){
@@ -815,15 +818,15 @@ void projWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade = igdeMenuCascade::Ref::New(env, "Project", deInputEvent::ekcD);
+	cascade = igdeMenuCascade::Ref::New(env, "@Project.Menu.Project", deInputEvent::ekcD);
 	pCreateMenuDistribute(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade = igdeMenuCascade::Ref::New(env, "Edit", deInputEvent::ekcE);
+	cascade = igdeMenuCascade::Ref::New(env, "@Project.Menu.Edit", deInputEvent::ekcE);
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade = igdeMenuCascade::Ref::New(env, "Profile", deInputEvent::ekcP);
+	cascade = igdeMenuCascade::Ref::New(env, "@Project.Menu.Profile", deInputEvent::ekcP);
 	pCreateMenuProfile(cascade);
 	AddSharedMenu(cascade);
 }
@@ -880,26 +883,26 @@ bool projWindowMain::pCmdLineProfileDistribute(decUnicodeStringList &arguments){
 		
 		if(arg.BeginsWith("--") || arg.BeginsWith("-")){
 			decString message;
-			message.Format("Unknown argument '%s'", arg.GetString());
+			message.FormatSafe(Translate("Project.WindowMain.Error.UnknownArgument").ToUTF8(), arg.GetString());
 			DETHROW_INFO(deeInvalidParam, message);
 			
 		}else if(!profile){
 			profile = pProject->GetProfiles().FindNamed(arg);
 			if(!profile){
 				decString message;
-				message.Format("Unknown profile '%s'", arg.GetString());
+				message.FormatSafe(Translate("Project.WindowMain.Error.UnknownProfile").ToUTF8(), arg.GetString());
 				DETHROW_INFO(deeInvalidParam, message);
 			}
 			
 		}else{
 			decString message;
-			message.Format("Unknown argument '%s'", arg.GetString());
+			message.FormatSafe(Translate("Project.WindowMain.Error.UnknownArgument").ToUTF8(), arg.GetString());
 			DETHROW_INFO(deeInvalidParam, message);
 		}
 	}
 	
 	if(!profile){
-		DETHROW_INFO(deeInvalidParam, "Missing argument: profile");
+		DETHROW_INFO(deeInvalidParam, Translate("Project.WindowMain.Error.MissingArgumentProfile").ToUTF8());
 	}
 	
 	GetEnvironment().ActivateEditor(&GetEditorModule());
@@ -910,7 +913,7 @@ bool projWindowMain::pCmdLineProfileDistribute(decUnicodeStringList &arguments){
 	dialog->Run(this);
 	
 	if(!dialog->GetSuccess()){
-		DETHROW_INFO(deeInvalidAction, "Distribute failed");
+		DETHROW_INFO(deeInvalidAction, Translate("Project.WindowMain.Error.DistributeFailed").ToUTF8());
 	}
 	
 	return false;
@@ -929,26 +932,26 @@ bool projWindowMain::pCmdLineProfileDistributeFile(decUnicodeStringList &argumen
 		
 		if(arg.BeginsWith("--") || arg.BeginsWith("-")){
 			decString message;
-			message.Format("Unknown argument '%s'", arg.GetString());
+			message.FormatSafe(Translate("Project.WindowMain.Error.UnknownArgument").ToUTF8(), arg.GetString());
 			DETHROW_INFO(deeInvalidParam, message);
 			
 		}else if(!profile){
 			profile = pProject->GetProfiles().FindNamed(arg);
 			if(!profile){
 				decString message;
-				message.Format("Unknown profile '%s'", arg.GetString());
+				message.FormatSafe(Translate("Project.WindowMain.Error.UnknownProfile").ToUTF8(), arg.GetString());
 				DETHROW_INFO(deeInvalidParam, message);
 			}
 			
 		}else{
 			decString message;
-			message.Format("Unknown argument '%s'", arg.GetString());
+			message.FormatSafe(Translate("Project.WindowMain.Error.UnknownArgument").ToUTF8(), arg.GetString());
 			DETHROW_INFO(deeInvalidParam, message);
 		}
 	}
 	
 	if(!profile){
-		DETHROW_INFO(deeInvalidParam, "Missing argument: profile");
+		DETHROW_INFO(deeInvalidParam, Translate("Project.WindowMain.Error.MissingArgumentProfile").ToUTF8());
 	}
 	
 	GetEnvironment().ActivateEditor(&GetEditorModule());
@@ -968,7 +971,7 @@ bool projWindowMain::pCmdLineProfileList(decUnicodeStringList &arguments){
 	
 	if(arguments.GetCount() > 0){
 		decString message;
-		message.Format("Unknown argument '%s'", arguments.GetAt(0).ToUTF8().GetString());
+		message.FormatSafe(Translate("Project.WindowMain.Error.UnknownArgument").ToUTF8(), arguments.GetAt(0).ToUTF8().GetString());
 		DETHROW_INFO(deeInvalidParam, message);
 	}
 	
@@ -982,13 +985,13 @@ bool projWindowMain::pCmdLineProfileList(decUnicodeStringList &arguments){
 void projWindowMain::pCmdLineHelp(){
 	printf("\n");
 	printf("deigde <path-project.degp> --project.profile.distribute <profile>\n");
-	printf("   Build distribution file (*.delga) for profile in game project.\n");
+	printf(Translate("Project.WindowMain.Syntax1").ToUTF8());
 	
-	printf("\n");
+	printf("\n\n");
 	printf("deigde <path-project.degp> --project.profile.distribute.file <profile>\n");
-	printf("   Absolute path to distribution file (*.delga).\n");
+	printf(Translate("Project.WindowMain.Syntax2").ToUTF8());
 	
-	printf("\n");
+	printf("\n\n");
 	printf("deigde <path-project.degp> --project.profile.list\n");
-	printf("   List all profiles in game project. Prints each profile name on a new line.\n");
+	printf(Translate("Project.WindowMain.Syntax3").ToUTF8());
 }

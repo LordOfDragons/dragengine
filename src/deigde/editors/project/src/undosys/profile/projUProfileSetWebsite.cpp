@@ -47,7 +47,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Profile set website");
+	SetShortInfo("@Project.Undo.ProfileSetWebsite");
 	
 	pOldValue = profile->GetWebsite();
 	

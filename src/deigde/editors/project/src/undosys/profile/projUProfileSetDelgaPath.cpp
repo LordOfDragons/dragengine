@@ -48,7 +48,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Profile set delga path");
+	SetShortInfo("@Project.Undo.ProfileSetDelgaPath");
 	
 	pOldValue = profile->GetDelgaPath();
 	

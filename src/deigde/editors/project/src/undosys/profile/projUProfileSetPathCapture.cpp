@@ -48,7 +48,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Profile set capture path");
+	SetShortInfo("@Project.Undo.ProfileSetPathCapture");
 	
 	pOldValue = profile->GetPathCapture();
 	

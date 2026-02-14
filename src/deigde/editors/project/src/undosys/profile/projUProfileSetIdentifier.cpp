@@ -47,7 +47,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Profile set identifier");
+	SetShortInfo("@Project.Undo.ProfileSetIdentifier");
 	
 	pOldValue = profile->GetIdentifier();
 	

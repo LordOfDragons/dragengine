@@ -45,7 +45,7 @@ projUProfileAdd::projUProfileAdd(projProject *project, projProfile *profile){
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Add profile");
+	SetShortInfo("@Project.Undo.ProfileAdd");
 	
 	pProfile = profile;
 	pProject = project;

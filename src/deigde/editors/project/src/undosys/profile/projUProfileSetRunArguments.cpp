@@ -46,7 +46,7 @@ pNewValue(newValue)
 {
 	DEASSERT_NOTNULL(profile)
 	
-	SetShortInfo("Profile set run arguments");
+	SetShortInfo("@Project.Undo.ProfileSetRunArguments");
 	
 	pOldValue = profile->GetRunArguments();
 	

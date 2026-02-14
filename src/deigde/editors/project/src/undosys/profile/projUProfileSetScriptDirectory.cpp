@@ -48,7 +48,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Profile set script directory");
+	SetShortInfo("@Project.Undo.ProfileSetScriptDirectory");
 	
 	pOldValue = profile->GetScriptDirectory();
 	

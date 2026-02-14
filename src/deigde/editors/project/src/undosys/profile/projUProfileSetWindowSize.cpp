@@ -48,7 +48,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Profile set window size");
+	SetShortInfo("@Project.Undo.ProfileSetWindowSize");
 	
 	pOldValue = profile->GetWindowSize();
 	

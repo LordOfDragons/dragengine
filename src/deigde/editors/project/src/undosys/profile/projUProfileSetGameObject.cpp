@@ -48,7 +48,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Profile set game object");
+	SetShortInfo("@Project.Undo.ProfileSetGameObject");
 	
 	pOldValue = profile->GetGameObject();
 	

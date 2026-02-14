@@ -48,7 +48,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Project set config path");
+	SetShortInfo("@Project.Undo.ProjectSetPathConfig");
 	
 	pOldValue = project->GetPathConfig();
 	
