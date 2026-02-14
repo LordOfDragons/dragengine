@@ -227,7 +227,7 @@ envDragengine.Append(CPPPATH = ['base64'])
 
 if not hasFormat:
 	sources.append('fmt/format.cc')
-	envDragengine.Append(CPPPATH = envDragengine.Dir('fmt').srcnode().abspath)
+	envDragengine.Append(CPPPATH = ['fmt'])
 
 ignoreHeaders = []
 ignoreHeaders.append('src/doxy_main.h')
