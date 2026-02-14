@@ -49,7 +49,7 @@ pCamera(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Camera set orientation");
+	SetShortInfo("@GameDefinition.Undo.OCCameraSetRotation");
 	
 	pOldValue = camera->GetRotation();
 	pNewValue = newValue;

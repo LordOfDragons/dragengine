@@ -50,7 +50,7 @@ pTexture(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Texture set offset");
+	SetShortInfo("@GameDefinition.Undo.OCTextureSetOffset");
 	
 	pOldValue = texture->GetOffset();
 	pNewValue = newValue;

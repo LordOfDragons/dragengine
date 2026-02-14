@@ -53,7 +53,7 @@ pSpeaker(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Remove speaker");
+	SetShortInfo("@GameDefinition.Undo.OCRemoveSpeaker");
 	
 	pSpeaker = speaker;
 	pObjectClass = objectClass;

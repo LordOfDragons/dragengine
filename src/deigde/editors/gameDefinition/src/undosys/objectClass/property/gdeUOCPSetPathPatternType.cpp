@@ -47,7 +47,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Object class property set path pattern type");
+	SetShortInfo("@GameDefinition.Undo.OCPSetPathPatternType");
 	
 	pOldValue = property->GetPathPatternType();
 	pNewValue = newValue;

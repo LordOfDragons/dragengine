@@ -55,7 +55,7 @@ gdeWPSTIMOCSubObject(tree, etObjectClassNavigationBlocker, objectClass, index)
 	}
 	
 	decString text;
-	text.Format("Navigation Blocker #%d", index + 1);
+	text.FormatSafe(GetWindowMain().Translate("GameDefinition.TreeModel.NavigationBlockerNumber").ToUTF8(), index + 1);
 	SetText(text);
 	
 	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));

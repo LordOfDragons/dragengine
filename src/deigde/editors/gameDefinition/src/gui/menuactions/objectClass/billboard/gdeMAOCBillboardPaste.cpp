@@ -50,9 +50,9 @@
 ////////////////
 
 gdeMAOCBillboardPaste::gdeMAOCBillboardPaste(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Paste Object Class Billboard",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCBillboardPaste",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
-	"Paste object class billboard")
+	"@GameDefinition.Menu.OCBillboardPaste.ToolTip")
 {
 }
 
@@ -71,7 +71,7 @@ igdeUndo::Ref gdeMAOCBillboardPaste::OnActionSubObject(gdeGameDefinition&, gdeOb
 	const igdeUndo::Ref undo = gdeUOCAddBillboard::Ref::New(&objectClass,
 		gdeOCBillboard::Ref::New(*clip.DynamicCast<gdeClipboardDataOCBillboard>()->GetBillboard()));
 	
-	undo->SetShortInfo("Paste object class billboard");
+	undo->SetShortInfo("@GameDefinition.Undo.PasteOCBillboard");
 	return undo;
 }
 

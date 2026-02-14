@@ -48,7 +48,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Light set intensity");
+	SetShortInfo("@GameDefinition.Undo.OCLightSetIntensity");
 	
 	pOldValue = light->GetIntensity();
 	pNewValue = newValue;

@@ -49,7 +49,7 @@ pTexture(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Txture set rotation");
+	SetShortInfo("@GameDefinition.Undo.OCTextureSetRotation");
 	
 	pOldValue = texture->GetRotation();
 	pNewValue = newValue;

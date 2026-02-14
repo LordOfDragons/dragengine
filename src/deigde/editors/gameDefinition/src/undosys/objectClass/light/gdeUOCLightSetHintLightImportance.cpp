@@ -48,7 +48,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Light set hint light importance");
+	SetShortInfo("@GameDefinition.Undo.OCLightSetHintLightImportance");
 	
 	pOldValue = light->GetHintLightImportance();
 	pNewValue = newValue;

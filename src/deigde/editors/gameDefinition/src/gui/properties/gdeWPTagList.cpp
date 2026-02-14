@@ -60,7 +60,7 @@ class cActionAppend : public igdeAction{
 public:
 	using Ref = deTObjectReference<cActionAppend>;
 	cActionAppend (gdeWPTagList &panel, igdeComboBoxFilter::Ref &comboBox, igdeListBox::Ref &listBox) : 
-	igdeAction("Add...", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add tag"),
+	igdeAction("@GameDefinition.TagList.Action.Add", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@GameDefinition.TagList.Action.Add.ToolTip"),
 	pPanel(panel), pComboBox(comboBox), pListBox(listBox){}
 	
 	void OnAction() override{
@@ -83,8 +83,8 @@ class cActionRemove : public igdeAction{
 public:
 	using Ref = deTObjectReference<cActionRemove>;
 	cActionRemove(gdeWPTagList &panel, igdeListBox::Ref &listBox) :
-	igdeAction("Remove", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-		"Remove tag"), pPanel(panel), pListBox(listBox){}
+	igdeAction("@GameDefinition.TagList.Action.Remove", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@GameDefinition.TagList.Action.Remove.ToolTip"), pPanel(panel), pListBox(listBox){}
 	
 	void OnAction() override{
 		if(!pPanel.GetTagList() || !pPanel.GetUndoSystem() || !pListBox->GetSelectedItem()){
@@ -109,7 +109,7 @@ class cActionClear : public igdeAction{
 public:
 	using Ref = deTObjectReference<cActionClear>;
 	cActionClear(gdeWPTagList &panel, igdeListBox::Ref &listBox) :
-	igdeAction("Clear", nullptr, "Clear tag"), pPanel(panel), pListBox(listBox){}
+	igdeAction("@GameDefinition.TagList.Action.Clear", nullptr, "@GameDefinition.TagList.Action.Clear.ToolTip"), pPanel(panel), pListBox(listBox){}
 	
 	void OnAction() override{
 		if(!pPanel.GetTagList() || !pPanel.GetUndoSystem() || pListBox->GetItems().IsEmpty()){

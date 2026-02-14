@@ -49,7 +49,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Component texture set properties");
+	SetShortInfo("@GameDefinition.Undo.OCCTextureSetProperties");
 	
 	pOldValue = texture->GetProperties();
 	pNewValue = newValue;

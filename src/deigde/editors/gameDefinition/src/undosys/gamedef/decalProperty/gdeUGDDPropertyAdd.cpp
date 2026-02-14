@@ -48,7 +48,7 @@ pProperty(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Game definition add property");
+	SetShortInfo("@GameDefinition.Undo.GDDPropertyAdd");
 	
 	pGameDefinition = gamedef;
 	pProperty = property;

@@ -49,7 +49,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Game definition set base game definition IDs");
+	SetShortInfo("@GameDefinition.Undo.GDSetBaseGameDefIDs");
 	
 	pOldValue = gameDefinition->GetBaseGameDefinitionIDList();
 	

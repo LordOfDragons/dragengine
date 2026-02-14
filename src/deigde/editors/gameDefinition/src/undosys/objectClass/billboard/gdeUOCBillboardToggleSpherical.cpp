@@ -49,7 +49,7 @@ pBillboard(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Billboard toggle spherical");
+	SetShortInfo("@GameDefinition.Undo.OCBillboardToggleSpherical");
 	
 	pBillboard = billboard;
 	pObjectClass = objectClass;

@@ -47,9 +47,9 @@
 ////////////////
 
 gdeMAOCSnapPointRemove::gdeMAOCSnapPointRemove(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Remove Object Class Snap Point",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCSnapPointRemove",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-	"Remove object class snap point")
+	"@GameDefinition.Menu.OCSnapPointRemove.ToolTip")
 {
 }
 

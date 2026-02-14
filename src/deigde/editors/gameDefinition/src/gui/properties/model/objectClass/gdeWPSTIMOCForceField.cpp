@@ -56,7 +56,7 @@ gdeWPSTIMOCSubObject(tree, etObjectClassForceField, objectClass, index)
 	}
 	
 	decString text;
-	text.Format("Force Field #%d", index + 1);
+	text.FormatSafe(GetWindowMain().Translate("GameDefinition.TreeModel.ForceFieldNumber").ToUTF8(), index + 1);
 	SetText(text);
 	
 	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));

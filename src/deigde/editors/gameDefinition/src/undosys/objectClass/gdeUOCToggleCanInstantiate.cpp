@@ -46,7 +46,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Object class toggle can instantiate");
+	SetShortInfo("@GameDefinition.Undo.OCToggleCanInstantiate");
 	
 	pObjectClass = objectClass;
 }

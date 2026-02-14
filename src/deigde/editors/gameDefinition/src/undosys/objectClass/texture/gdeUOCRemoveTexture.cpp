@@ -54,7 +54,7 @@ pTexture(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Remove texture");
+	SetShortInfo("@GameDefinition.Undo.OCRemoveTexture");
 	
 	pTexture = texture;
 	pObjectClass = objectClass;

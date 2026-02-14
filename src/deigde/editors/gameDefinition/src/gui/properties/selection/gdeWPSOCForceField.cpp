@@ -254,12 +254,12 @@ public:
 			codec.DecodeShapeList(encoded, shapeList);
 			
 		}catch(const deException &){
-			igdeCommonDialogs::Error(*pPanel.GetParentWindow(), "Invalid Input",
-				"Input value does not decode to a proper shape list");
+			igdeCommonDialogs::Error(*pPanel.GetParentWindow(), "@GameDefinition.OCForceField.InvalidInput.Error",
+				"@GameDefinition.OCForceField.InputValueDoesNotDecodeToAProperShapeList.Error");
 			textField.Focus();
 			return {};
 		}
-		
+	
 		return gdeUOCForceFieldSetInfluenceArea::Ref::New(objectClass, forceField, shapeList);
 	}
 };
@@ -395,12 +395,12 @@ public:
 			codec.DecodeShapeList(encoded, shapeList);
 			
 		}catch(const deException &){
-			igdeCommonDialogs::Error(*pPanel.GetParentWindow(), "Invalid Input",
-				"Input value does not decode to a proper shape list");
+			igdeCommonDialogs::Error(*pPanel.GetParentWindow(), "@GameDefinition.OCForceField.InvalidInput.Error",
+				"@GameDefinition.OCForceField.InputValueDoesNotDecodeToAProperShapeList.Error");
 			textField.Focus();
 			return {};
 		}
-		
+	
 		return gdeUOCForceFieldSetShape::Ref::New(objectClass, forceField, shapeList);
 	}
 };
@@ -411,7 +411,7 @@ public:
 	
 public:
 	cActionEnabled(gdeWPSOCForceField &panel) :
-	cBaseAction(panel, "Enabled", "Force field is enabled"){}
+	cBaseAction(panel, "@GameDefinition.WPSOCForceField.Enabled", "@GameDefinition.WPSOCForceField.Enabled.ToolTip"){}
 	
 	virtual igdeUndo::Ref OnActionForceField(gdeObjectClass *objectClass, gdeOCForceField *forceField){
 		return gdeUOCForceFieldToggleEnabled::Ref::New(objectClass, forceField);
@@ -522,77 +522,81 @@ pWindowProperties(windowProperties)
 	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
-	helper.GroupBox(content, groupBox, "Object Class Particle Emitter:");
+	helper.GroupBox(content, groupBox, "@GameDefinition.PanelOCForceField.GroupBoxForceField.Label");
 	
-	helper.EditVector(groupBox, "Position:", "Position relative to object class",
+	helper.EditVector(groupBox, "@GameDefinition.PanelOCForceField.Position.Label", "@GameDefinition.PanelOCForceField.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
-	helper.EditVector(groupBox, "Rotation:", "Rotation in degrees relative to object class", 4, 1,
+	helper.EditVector(groupBox, "@GameDefinition.PanelOCForceField.Rotation.Label", "@GameDefinition.PanelOCForceField.Rotation.ToolTip", 4, 1,
 		pEditRotation, cEditRotation::Ref::New(*this));
-	helper.EditString(groupBox, "Bone:", "Bone name or empty string if not used",
+	helper.EditString(groupBox, "@GameDefinition.PanelOCForceField.Bone.Label", "@GameDefinition.PanelOCForceField.Bone.ToolTip",
 		pEditBoneName, cTextBoneName::Ref::New(*this));
-	helper.EditString(groupBox, "Influence Area:", "Area influenced by the force field",
+	helper.EditString(groupBox, "@GameDefinition.PanelOCForceField.InfluenceArea.Label", "@GameDefinition.PanelOCForceField.InfluenceArea.ToolTip",
 		pEditInfluenceArea, cEditInfluenceArea::Ref::New(*this));
-	helper.EditFloat(groupBox, "Radius:", "Radius in meters of force field effect",
+	helper.EditFloat(groupBox, "@GameDefinition.PanelOCForceField.Radius.Label", "@GameDefinition.PanelOCForceField.Radius.ToolTip",
 		pEditRadius, cTextRadius::Ref::New(*this));
-	helper.EditFloat(groupBox, "Exponent:", "Force fall-off exponent",
+	helper.EditFloat(groupBox, "@GameDefinition.PanelOCForceField.Exponent.Label", "@GameDefinition.PanelOCForceField.Exponent.ToolTip",
 		pEditExponent, cTextExponent::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "Field Type:", "Force field type",
+	helper.ComboBox(groupBox, "@GameDefinition.PanelOCForceField.FieldType.Label", "@GameDefinition.PanelOCForceField.FieldType.ToolTip",
 		pCBFieldType, cComboFieldType::Ref::New(*this));
-	pCBFieldType->AddItem("Radial", nullptr, (void*)(intptr_t)deForceField::eftRadial);
-	pCBFieldType->AddItem("Linear", nullptr, (void*)(intptr_t)deForceField::eftLinear);
-	pCBFieldType->AddItem("Vortex", nullptr, (void*)(intptr_t)deForceField::eftVortex);
+	pCBFieldType->SetAutoTranslateItems(true);
+	pCBFieldType->AddItem("@GameDefinition.PanelOCForceField.FieldTypeRadial", nullptr, (void*)(intptr_t)deForceField::eftRadial);
+	pCBFieldType->AddItem("@GameDefinition.PanelOCForceField.FieldTypeLinear", nullptr, (void*)(intptr_t)deForceField::eftLinear);
+	pCBFieldType->AddItem("@GameDefinition.PanelOCForceField.FieldTypeVortex", nullptr, (void*)(intptr_t)deForceField::eftVortex);
 	
-	helper.ComboBox(groupBox, "Application Type:", "Force application type",
+	helper.ComboBox(groupBox, "@GameDefinition.PanelOCForceField.ApplicationType.Label", "@GameDefinition.PanelOCForceField.ApplicationType.ToolTip",
 		pCBApplicationType, cComboApplicationType::Ref::New(*this));
-	pCBApplicationType->AddItem("Direct", nullptr, (void*)(intptr_t)deForceField::eatDirect);
-	pCBApplicationType->AddItem("Surface", nullptr, (void*)(intptr_t)deForceField::eatSurface);
-	pCBApplicationType->AddItem("Mass", nullptr, (void*)(intptr_t)deForceField::eatMass);
-	pCBApplicationType->AddItem("Speed", nullptr, (void*)(intptr_t)deForceField::eatSpeed);
+	pCBApplicationType->SetAutoTranslateItems(true);
+	pCBApplicationType->AddItem("@GameDefinition.PanelOCForceField.ApplicationTypeDirect", nullptr, (void*)(intptr_t)deForceField::eatDirect);
+	pCBApplicationType->AddItem("@GameDefinition.PanelOCForceField.ApplicationTypeSurface", nullptr, (void*)(intptr_t)deForceField::eatSurface);
+	pCBApplicationType->AddItem("@GameDefinition.PanelOCForceField.ApplicationTypeMass", nullptr, (void*)(intptr_t)deForceField::eatMass);
+	pCBApplicationType->AddItem("@GameDefinition.PanelOCForceField.ApplicationTypeSpeed", nullptr, (void*)(intptr_t)deForceField::eatSpeed);
 	
-	helper.EditVector(groupBox, "Direction:", "Direction the force is applied in (linear)",
+	helper.EditVector(groupBox, "@GameDefinition.PanelOCForceField.Direction.Label", "@GameDefinition.PanelOCForceField.Direction.ToolTip",
 		pEditDirection, cEditDirection::Ref::New(*this));
-	helper.EditFloat(groupBox, "Force:", "Force in newtons",
+	helper.EditFloat(groupBox, "@GameDefinition.PanelOCForceField.Force.Label", "@GameDefinition.PanelOCForceField.Force.ToolTip",
 		pEditForce, cTextForce::Ref::New(*this));
-	helper.EditFloat(groupBox, "Fluctuation Direction:", "Fluctiation direction in degrees",
+	helper.EditFloat(groupBox, "@GameDefinition.PanelOCForceField.FluctuationDirection.Label", "@GameDefinition.PanelOCForceField.FluctuationDirection.ToolTip",
 		pEditFluctuationDirection, cTextFluctuationDirection::Ref::New(*this));
-	helper.EditFloat(groupBox, "Fluctuation Force:", "Fluctiation force in newtons",
+	helper.EditFloat(groupBox, "@GameDefinition.PanelOCForceField.FluctuationForce.Label", "@GameDefinition.PanelOCForceField.FluctuationForce.ToolTip",
 		pEditFluctuationForce, cTextFluctuationForce::Ref::New(*this));
-	helper.EditString(groupBox, "Shape:", "Shape of force source",
+	helper.EditString(groupBox, "@GameDefinition.PanelOCForceField.Shape.Label", "@GameDefinition.PanelOCForceField.Shape.ToolTip",
 		pEditShape, cEditShape::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkEnabled, cActionEnabled::Ref::New(*this));
 	
 	// property targets
-	helper.GroupBox(content, groupBox, "Properties:");
-	helper.ComboBox(groupBox, "Property:", "Property to set target for",
+	helper.GroupBox(content, groupBox, "@GameDefinition.PanelOCForceField.GroupBoxProperties.Label");
+	helper.ComboBox(groupBox, "@GameDefinition.PanelOCForceField.Property.Label", "@GameDefinition.PanelOCForceField.Property.ToolTip",
 		pCBPropertyNames, cComboPropertyNames::Ref::New(*this));
-	pCBPropertyNames->AddItem("Influence Area", nullptr, (void*)(intptr_t)gdeOCForceField::epInfluenceArea);
-	pCBPropertyNames->AddItem("Radius", nullptr, (void*)(intptr_t)gdeOCForceField::epRadius);
-	pCBPropertyNames->AddItem("Exponent", nullptr, (void*)(intptr_t)gdeOCForceField::epExponent);
-	pCBPropertyNames->AddItem("Field Type", nullptr, (void*)(intptr_t)gdeOCForceField::epFieldType);
-	pCBPropertyNames->AddItem("Application Type", nullptr, (void*)(intptr_t)gdeOCForceField::epApplicationType);
-	pCBPropertyNames->AddItem("Direction", nullptr, (void*)(intptr_t)gdeOCForceField::epDirection);
-	pCBPropertyNames->AddItem("Force", nullptr, (void*)(intptr_t)gdeOCForceField::epForce);
-	pCBPropertyNames->AddItem("Fluctuation Direction", nullptr, (void*)(intptr_t)gdeOCForceField::epFluctuationDirection);
-	pCBPropertyNames->AddItem("Fluctuation Force", nullptr, (void*)(intptr_t)gdeOCForceField::epFluctuationForce);
-	pCBPropertyNames->AddItem("Shape", nullptr, (void*)(intptr_t)gdeOCForceField::epShape);
-	pCBPropertyNames->AddItem("Enabled", nullptr, (void*)(intptr_t)gdeOCForceField::epEnabled);
-	pCBPropertyNames->AddItem("Attach position", nullptr, (void*)(intptr_t)gdeOCForceField::epAttachPosition);
-	pCBPropertyNames->AddItem("Attach rotation", nullptr, (void*)(intptr_t)gdeOCForceField::epAttachRotation);
+	pCBPropertyNames->SetAutoTranslateItems(true);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCForceField.PropertyInfluenceArea", nullptr, (void*)(intptr_t)gdeOCForceField::epInfluenceArea);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCForceField.PropertyRadius", nullptr, (void*)(intptr_t)gdeOCForceField::epRadius);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCForceField.PropertyExponent", nullptr, (void*)(intptr_t)gdeOCForceField::epExponent);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCForceField.PropertyFieldType", nullptr, (void*)(intptr_t)gdeOCForceField::epFieldType);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCForceField.PropertyApplicationType", nullptr, (void*)(intptr_t)gdeOCForceField::epApplicationType);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCForceField.PropertyDirection", nullptr, (void*)(intptr_t)gdeOCForceField::epDirection);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCForceField.PropertyForce", nullptr, (void*)(intptr_t)gdeOCForceField::epForce);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCForceField.PropertyFluctuationDirection", nullptr, (void*)(intptr_t)gdeOCForceField::epFluctuationDirection);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCForceField.PropertyFluctuationForce", nullptr, (void*)(intptr_t)gdeOCForceField::epFluctuationForce);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCForceField.PropertyShape", nullptr, (void*)(intptr_t)gdeOCForceField::epShape);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCForceField.PropertyEnabled", nullptr, (void*)(intptr_t)gdeOCForceField::epEnabled);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCForceField.PropertyAttachPosition", nullptr, (void*)(intptr_t)gdeOCForceField::epAttachPosition);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCForceField.PropertyAttachRotation", nullptr, (void*)(intptr_t)gdeOCForceField::epAttachRotation);
 	
-	helper.ComboBoxFilter(groupBox, "Target:", true, "Object class property to target",
+	helper.ComboBoxFilter(groupBox, "@GameDefinition.PanelOCForceField.Target.Label", true, "@GameDefinition.PanelOCForceField.Target.ToolTip",
 		pCBPropertyNameTarget, cComboPropertyNameTarget::Ref::New(*this));
 	pCBPropertyNameTarget->SetEditable(true);
 	pCBPropertyNameTarget->SetDefaultSorter();
 	pCBPropertyNameTarget->SetFilterCaseInsentive(true);
 	
 	// trigger targets
-	helper.GroupBox(content, groupBox, "Triggers:");
-	helper.ComboBox(groupBox, "Trigger:", "Trigger to set target for",
+	helper.GroupBox(content, groupBox, "@GameDefinition.PanelOCForceField.GroupBoxTriggers.Label");
+	helper.ComboBox(groupBox, "@GameDefinition.PanelOCForceField.Trigger.Label", "@GameDefinition.PanelOCForceField.Trigger.ToolTip",
 		pCBTriggerNames, cComboTriggerNames::Ref::New(*this));
-	pCBTriggerNames->AddItem("Enabled", nullptr, (void*)(intptr_t)gdeOCForceField::etEnabled);
+	pCBTriggerNames->SetAutoTranslateItems(true);
+	pCBTriggerNames->AddItem("@GameDefinition.PanelOCForceField.TriggerEnabled", nullptr, (void*)(intptr_t)gdeOCForceField::etEnabled);
 	
-	helper.ComboBoxFilter(groupBox, "Target:", true, "Object class property to target",
+	helper.ComboBoxFilter(groupBox, "@GameDefinition.PanelOCForceField.TriggerTarget.Label", true, "@GameDefinition.PanelOCForceField.TriggerTarget.ToolTip",
 		pCBTriggerNameTarget, cComboTriggerNameTarget::Ref::New(*this));
 	pCBTriggerNameTarget->SetEditable(true);
 	pCBTriggerNameTarget->SetDefaultSorter();

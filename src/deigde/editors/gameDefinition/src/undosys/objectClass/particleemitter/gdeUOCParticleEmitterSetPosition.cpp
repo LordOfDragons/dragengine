@@ -49,7 +49,7 @@ pParticleEmitter(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Particle emitter set position");
+	SetShortInfo("@GameDefinition.Undo.OCParticleEmitterSetPosition");
 	
 	pOldValue = particleEmitter->GetPosition();
 	pNewValue = newValue;

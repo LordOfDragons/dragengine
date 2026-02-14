@@ -49,9 +49,9 @@
 ////////////////
 
 gdeMAOCBillboardCut::gdeMAOCBillboardCut(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Cut Object Class Billboard",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCBillboardCut",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
-	"Cut object class billboard")
+	"@GameDefinition.Menu.OCBillboardCut.ToolTip")
 {
 }
 

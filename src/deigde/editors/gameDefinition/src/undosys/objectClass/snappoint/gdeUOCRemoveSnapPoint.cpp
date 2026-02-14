@@ -53,7 +53,7 @@ pSnapPoint(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Remove snap point");
+	SetShortInfo("@GameDefinition.Undo.OCRemoveSnapPoint");
 	
 	pSnapPoint = snapPoint;
 	pObjectClass = objectClass;

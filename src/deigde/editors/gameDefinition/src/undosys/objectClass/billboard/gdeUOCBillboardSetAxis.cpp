@@ -49,7 +49,7 @@ pBillboard(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Billboard set axis");
+	SetShortInfo("@GameDefinition.Undo.OCBillboardSetAxis");
 	
 	pOldValue = billboard->GetAxis();
 	pNewValue = newValue;

@@ -390,7 +390,7 @@ public:
 	
 public:
 	cActionActivated(gdeWPSOCLight &panel) :
-	cBaseAction(panel, "Activated", "Light is activated"){}
+	cBaseAction(panel, "@GameDefinition.WPSOCLight.Activated", "@GameDefinition.WPSOCLight.Activated.ToolTip"){}
 	
 	virtual igdeUndo::Ref OnActionLight(gdeObjectClass *objectClass, gdeOCLight *light){
 		return gdeUOCLightToggleActivated::Ref::New(objectClass, light);
@@ -403,7 +403,7 @@ public:
 	
 public:
 	cActionCastShadows(gdeWPSOCLight &panel) :
-	cBaseAction(panel, "Cast Shadows", "Light casts shadows"){}
+	cBaseAction(panel, "@GameDefinition.WPSOCLight.CastShadows", "@GameDefinition.WPSOCLight.CastShadows.ToolTip"){}
 	
 	virtual igdeUndo::Ref OnActionLight(gdeObjectClass *objectClass, gdeOCLight *light){
 		return gdeUOCLightToggleCastShadows::Ref::New(objectClass, light);
@@ -587,98 +587,103 @@ pWindowProperties(windowProperties)
 	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
-	helper.GroupBox(content, groupBox, "Object Class Light:");
+	helper.GroupBox(content, groupBox, "@GameDefinition.PanelOCLight.GroupBoxLight.Label");
 	
-	helper.ComboBox(groupBox, "Type:", "Light type", pCBType, cComboType::Ref::New(*this));
-	pCBType->AddItem("Point", nullptr, (void*)(intptr_t)deLight::eltPoint);
-	pCBType->AddItem("Spot", nullptr, (void*)(intptr_t)deLight::eltSpot);
-	pCBType->AddItem("Projector", nullptr, (void*)(intptr_t)deLight::eltProjector);
+	helper.ComboBox(groupBox, "@GameDefinition.PanelOCLight.Type.Label", "@GameDefinition.PanelOCLight.Type.ToolTip", pCBType, cComboType::Ref::New(*this));
+	pCBType->SetAutoTranslateItems(true);
+	pCBType->AddItem("@GameDefinition.PanelOCLight.TypePoint", nullptr, (void*)(intptr_t)deLight::eltPoint);
+	pCBType->AddItem("@GameDefinition.PanelOCLight.TypeSpot", nullptr, (void*)(intptr_t)deLight::eltSpot);
+	pCBType->AddItem("@GameDefinition.PanelOCLight.TypeProjector", nullptr, (void*)(intptr_t)deLight::eltProjector);
 	
-	helper.ColorBox(groupBox, "Color:", "Light color", pClrColor, cColorLight::Ref::New(*this));
-	helper.EditFloat(groupBox, "Intensity:", "Light intensity",
+	helper.ColorBox(groupBox, "@GameDefinition.PanelOCLight.Color.Label", "@GameDefinition.PanelOCLight.Color.ToolTip", pClrColor, cColorLight::Ref::New(*this));
+	helper.EditFloat(groupBox, "@GameDefinition.PanelOCLight.Intensity.Label", "@GameDefinition.PanelOCLight.Intensity.ToolTip",
 		pEditIntensity, cTextIntensity::Ref::New(*this));
-	helper.EditFloat(groupBox, "Ambient Ratio:", "Light ambient ratio",
+	helper.EditFloat(groupBox, "@GameDefinition.PanelOCLight.AmbientRatio.Label", "@GameDefinition.PanelOCLight.AmbientRatio.ToolTip",
 		pEditAmbientRatio, cTextAmbientRatio::Ref::New(*this));
-	helper.EditVector(groupBox, "Position:", "Position relative to object class",
+	helper.EditVector(groupBox, "@GameDefinition.PanelOCLight.Position.Label", "@GameDefinition.PanelOCLight.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
-	helper.EditVector(groupBox, "Rotation:", "Rotation in degrees relative to object class", 4, 1,
+	helper.EditVector(groupBox, "@GameDefinition.PanelOCLight.Rotation.Label", "@GameDefinition.PanelOCLight.Rotation.ToolTip", 4, 1,
 		pEditRotation, cEditRotation::Ref::New(*this));
-	helper.EditString(groupBox, "Bone:", "Bone name or empty string if not used",
+	helper.EditString(groupBox, "@GameDefinition.PanelOCLight.Bone.Label", "@GameDefinition.PanelOCLight.Bone.ToolTip",
 		pEditBoneName, cTextBoneName::Ref::New(*this));
-	helper.EditFloat(groupBox, "Range:", "Light range in meters", 4, 1,
+	helper.EditFloat(groupBox, "@GameDefinition.PanelOCLight.Range.Label", "@GameDefinition.PanelOCLight.Range.ToolTip", 4, 1,
 		pEditRange, cTextRange::Ref::New(*this));
-	helper.EditFloat(groupBox, "Half Intensity:",
-		"half intensity distance relative to light range (0 to 1)",
+	helper.EditFloat(groupBox, "@GameDefinition.PanelOCLight.HalfIntensity.Label",
+		"@GameDefinition.PanelOCLight.HalfIntensity.ToolTip",
 		pEditHalfIntensityDistance, cTextHalfIntensityDistance::Ref::New(*this));
-	helper.EditFloat(groupBox, "Spot Angle:", "Outer spot angle in degrees", 4, 1,
+	helper.EditFloat(groupBox, "@GameDefinition.PanelOCLight.SpotAngle.Label", "@GameDefinition.PanelOCLight.SpotAngle.ToolTip", 4, 1,
 		pEditSpotAngle, cTextSpotAngle::Ref::New(*this));
-	helper.EditFloat(groupBox, "Spot Ratio:", "Spot ratio as height divided by width",
+	helper.EditFloat(groupBox, "@GameDefinition.PanelOCLight.SpotRatio.Label", "@GameDefinition.PanelOCLight.SpotRatio.ToolTip",
 		pEditSpotRatio, cTextSpotRatio::Ref::New(*this));
-	helper.EditFloat(groupBox, "Spot Smoothness:",
-		"Spot smoothess as fraction from outer spot angle where inner spot angle starts",
+	helper.EditFloat(groupBox, "@GameDefinition.PanelOCLight.SpotSmoothness.Label",
+		"@GameDefinition.PanelOCLight.SpotSmoothness.ToolTip",
 		pEditSpotSmoothness, cTextSpotSmoothness::Ref::New(*this));
-	helper.EditFloat(groupBox, "Spot exponent:", "Spot exponent",
+	helper.EditFloat(groupBox, "@GameDefinition.PanelOCLight.SpotExponent.Label", "@GameDefinition.PanelOCLight.SpotExponent.ToolTip",
 		pEditSpotExponent, cTextSpotExponent::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkActivated, cActionActivated::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkCastShadows, cActionCastShadows::Ref::New(*this));
-	helper.EditPath(groupBox, "Light Skin:", "Path to light skin",
+	helper.EditPath(groupBox, "@GameDefinition.PanelOCLight.LightSkin.Label", "@GameDefinition.PanelOCLight.LightSkin.ToolTip",
 		igdeEnvironment::efpltSkin, pEditLightSkin, cTextLightSkin::Ref::New(*this));
 	
 	// hints
-	helper.GroupBox(content, groupBox, "Hints:", true);
-	helper.EditInteger(groupBox, "Light Importance:", "Light importance in percentage from 0 to 100",
+	helper.GroupBox(content, groupBox, "@GameDefinition.PanelOCLight.GroupBoxHints.Label", true);
+	helper.EditInteger(groupBox, "@GameDefinition.PanelOCLight.HintLightImportance.Label", "@GameDefinition.PanelOCLight.HintLightImportance.ToolTip",
 		pEditHintLightImportance, cTextHintLightImportance::Ref::New(*this));
-	helper.EditInteger(groupBox, "Shadow Importance:", "Shadow importance in percentage from 0 to 100",
+	helper.EditInteger(groupBox, "@GameDefinition.PanelOCLight.HintShadowImportance.Label", "@GameDefinition.PanelOCLight.HintShadowImportance.ToolTip",
 		pEditHintShadowImportance, cTextHintShadowImportance::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "Movement:", "Light movement hint",
+	helper.ComboBox(groupBox, "@GameDefinition.PanelOCLight.HintMovement.Label", "@GameDefinition.PanelOCLight.HintMovement.ToolTip",
 		pCBHintMovement, cComboHintMovement::Ref::New(*this));
-	pCBHintMovement->AddItem("Static", nullptr, (void*)(intptr_t)deLight::emhStationary);
-	pCBHintMovement->AddItem("Jittering", nullptr, (void*)(intptr_t)deLight::emhJittering);
-	pCBHintMovement->AddItem("Dynamic", nullptr, (void*)(intptr_t)deLight::emhDynamic);
+	pCBHintMovement->SetAutoTranslateItems(true);
+	pCBHintMovement->AddItem("@GameDefinition.PanelOCLight.HintMovementStatic", nullptr, (void*)(intptr_t)deLight::emhStationary);
+	pCBHintMovement->AddItem("@GameDefinition.PanelOCLight.HintMovementJittering", nullptr, (void*)(intptr_t)deLight::emhJittering);
+	pCBHintMovement->AddItem("@GameDefinition.PanelOCLight.HintMovementDynamic", nullptr, (void*)(intptr_t)deLight::emhDynamic);
 	
-	helper.ComboBox(groupBox, "Parameter:", "Light parameter hint",
+	helper.ComboBox(groupBox, "@GameDefinition.PanelOCLight.HintParameter.Label", "@GameDefinition.PanelOCLight.HintParameter.ToolTip",
 		pCBHintParameter, cComboHintParameter::Ref::New(*this));
-	pCBHintParameter->AddItem("Static", nullptr, (void*)(intptr_t)deLight::ephStatic);
-	pCBHintParameter->AddItem("Activation", nullptr, (void*)(intptr_t)deLight::ephActivation);
-	pCBHintParameter->AddItem("Flicker", nullptr, (void*)(intptr_t)deLight::ephFlicker);
-	pCBHintParameter->AddItem("Dynamic", nullptr, (void*)(intptr_t)deLight::ephDynamic);
+	pCBHintParameter->SetAutoTranslateItems(true);
+	pCBHintParameter->AddItem("@GameDefinition.PanelOCLight.HintParameterStatic", nullptr, (void*)(intptr_t)deLight::ephStatic);
+	pCBHintParameter->AddItem("@GameDefinition.PanelOCLight.HintParameterActivation", nullptr, (void*)(intptr_t)deLight::ephActivation);
+	pCBHintParameter->AddItem("@GameDefinition.PanelOCLight.HintParameterFlicker", nullptr, (void*)(intptr_t)deLight::ephFlicker);
+	pCBHintParameter->AddItem("@GameDefinition.PanelOCLight.HintParameterDynamic", nullptr, (void*)(intptr_t)deLight::ephDynamic);
 	
 	// property targets
-	helper.GroupBox(content, groupBox, "Properties:");
-	helper.ComboBox(groupBox, "Property:", "Property to set target for",
+	helper.GroupBox(content, groupBox, "@GameDefinition.PanelOCLight.GroupBoxProperties.Label");
+	helper.ComboBox(groupBox, "@GameDefinition.PanelOCLight.Property.Label", "@GameDefinition.PanelOCLight.Property.ToolTip",
 		pCBPropertyNames, cComboPropertyNames::Ref::New(*this));
-	pCBPropertyNames->AddItem("Type", nullptr, (void*)(intptr_t)gdeOCLight::epType);
-	pCBPropertyNames->AddItem("Color", nullptr, (void*)(intptr_t)gdeOCLight::epColor);
-	pCBPropertyNames->AddItem("Intensity", nullptr, (void*)(intptr_t)gdeOCLight::epIntensity);
-	pCBPropertyNames->AddItem("Ambient ratio", nullptr, (void*)(intptr_t)gdeOCLight::epAmbientRatio);
-	pCBPropertyNames->AddItem("Range", nullptr, (void*)(intptr_t)gdeOCLight::epRange);
-	pCBPropertyNames->AddItem("Half intensity distance", nullptr, (void*)(intptr_t)gdeOCLight::epHalfIntDist);
-	pCBPropertyNames->AddItem("Spot Angle", nullptr, (void*)(intptr_t)gdeOCLight::epSpotAngle);
-	pCBPropertyNames->AddItem("Spot Ratio", nullptr, (void*)(intptr_t)gdeOCLight::epSpotRatio);
-	pCBPropertyNames->AddItem("Spot Smoothness", nullptr, (void*)(intptr_t)gdeOCLight::epSpotSmoothness);
-	pCBPropertyNames->AddItem("Spot exponent", nullptr, (void*)(intptr_t)gdeOCLight::epSpotExponent);
-	pCBPropertyNames->AddItem("Light skin", nullptr, (void*)(intptr_t)gdeOCLight::epLightSkin);
-	pCBPropertyNames->AddItem("Activated", nullptr, (void*)(intptr_t)gdeOCLight::epActivated);
-	pCBPropertyNames->AddItem("Cast shadows", nullptr, (void*)(intptr_t)gdeOCLight::epCastShadows);
-	pCBPropertyNames->AddItem("Hint light importance", nullptr, (void*)(intptr_t)gdeOCLight::epHintLightImportance);
-	pCBPropertyNames->AddItem("Hint shadow importance", nullptr, (void*)(intptr_t)gdeOCLight::epHintShadowImportance);
-	pCBPropertyNames->AddItem("Attach position", nullptr, (void*)(intptr_t)gdeOCLight::epAttachPosition);
-	pCBPropertyNames->AddItem("Attach rotation", nullptr, (void*)(intptr_t)gdeOCLight::epAttachRotation);
+	pCBPropertyNames->SetAutoTranslateItems(true);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCLight.PropertyType", nullptr, (void*)(intptr_t)gdeOCLight::epType);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCLight.PropertyColor", nullptr, (void*)(intptr_t)gdeOCLight::epColor);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCLight.PropertyIntensity", nullptr, (void*)(intptr_t)gdeOCLight::epIntensity);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCLight.PropertyAmbientRatio", nullptr, (void*)(intptr_t)gdeOCLight::epAmbientRatio);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCLight.PropertyRange", nullptr, (void*)(intptr_t)gdeOCLight::epRange);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCLight.PropertyHalfIntDist", nullptr, (void*)(intptr_t)gdeOCLight::epHalfIntDist);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCLight.PropertySpotAngle", nullptr, (void*)(intptr_t)gdeOCLight::epSpotAngle);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCLight.PropertySpotRatio", nullptr, (void*)(intptr_t)gdeOCLight::epSpotRatio);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCLight.PropertySpotSmoothness", nullptr, (void*)(intptr_t)gdeOCLight::epSpotSmoothness);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCLight.PropertySpotExponent", nullptr, (void*)(intptr_t)gdeOCLight::epSpotExponent);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCLight.PropertyLightSkin", nullptr, (void*)(intptr_t)gdeOCLight::epLightSkin);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCLight.PropertyActivated", nullptr, (void*)(intptr_t)gdeOCLight::epActivated);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCLight.PropertyCastShadows", nullptr, (void*)(intptr_t)gdeOCLight::epCastShadows);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCLight.PropertyHintLightImportance", nullptr, (void*)(intptr_t)gdeOCLight::epHintLightImportance);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCLight.PropertyHintShadowImportance", nullptr, (void*)(intptr_t)gdeOCLight::epHintShadowImportance);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCLight.PropertyAttachPosition", nullptr, (void*)(intptr_t)gdeOCLight::epAttachPosition);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCLight.PropertyAttachRotation", nullptr, (void*)(intptr_t)gdeOCLight::epAttachRotation);
 	
-	helper.ComboBoxFilter(groupBox, "Target:", true, "Object class property to target",
+	helper.ComboBoxFilter(groupBox, "@GameDefinition.PanelOCLight.Target.Label", true, "@GameDefinition.PanelOCLight.Target.ToolTip",
 		pCBPropertyNameTarget, cComboPropertyNameTarget::Ref::New(*this));
 	pCBPropertyNameTarget->SetEditable(true);
 	pCBPropertyNameTarget->SetDefaultSorter();
 	pCBPropertyNameTarget->SetFilterCaseInsentive(true);
 	
 	// trigger targets
-	helper.GroupBox(content, groupBox, "Triggers:");
-	helper.ComboBox(groupBox, "Trigger:", "Trigger to set target for",
+	helper.GroupBox(content, groupBox, "@GameDefinition.PanelOCLight.GroupBoxTriggers.Label");
+	helper.ComboBox(groupBox, "@GameDefinition.PanelOCLight.Trigger.Label", "@GameDefinition.PanelOCLight.Trigger.ToolTip",
 		pCBTriggerNames, cComboTriggerNames::Ref::New(*this));
-	pCBTriggerNames->AddItem("Activated", nullptr, (void*)(intptr_t)gdeOCLight::etActivated);
+	pCBTriggerNames->SetAutoTranslateItems(true);
+	pCBTriggerNames->AddItem("@GameDefinition.PanelOCLight.TriggerActivated", nullptr, (void*)(intptr_t)gdeOCLight::etActivated);
 	
-	helper.ComboBoxFilter(groupBox, "Target:", true, "Object class property to target",
+	helper.ComboBoxFilter(groupBox, "@GameDefinition.PanelOCLight.TriggerTarget.Label", true, "@GameDefinition.PanelOCLight.TriggerTarget.ToolTip",
 		pCBTriggerNameTarget, cComboTriggerNameTarget::Ref::New(*this));
 	pCBTriggerNameTarget->SetEditable(true);
 	pCBTriggerNameTarget->SetDefaultSorter();

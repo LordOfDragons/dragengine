@@ -49,7 +49,7 @@ pEnvMapProbe(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Env-map probe set shape influence");
+	SetShortInfo("@GameDefinition.Undo.OCEnvMapProbeSetShapeInfluence");
 	
 	pOldValue = envMapProbe->GetShapeListInfluence();
 	pNewValue = newValue;

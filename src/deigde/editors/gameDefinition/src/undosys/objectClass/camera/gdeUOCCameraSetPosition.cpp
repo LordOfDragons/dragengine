@@ -49,7 +49,7 @@ pCamera(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Camera set position");
+	SetShortInfo("@GameDefinition.Undo.OCCameraSetPosition");
 	
 	pOldValue = camera->GetPosition();
 	pNewValue = newValue;

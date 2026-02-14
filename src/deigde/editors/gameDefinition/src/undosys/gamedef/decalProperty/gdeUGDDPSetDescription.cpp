@@ -48,7 +48,7 @@ pProperty(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Game definition property set description");
+	SetShortInfo("@GameDefinition.Undo.GDDPSetDescription");
 	
 	pOldValue = property->GetDescription();
 	pNewValue = newValue;

@@ -259,8 +259,8 @@ public:
 	typedef deTObjectReference<cActionLocked> Ref;
 	
 public:
-	cActionLocked(gdeWPSOCBillboard &panel) : cBaseAction(panel, "Locked",
-		"Billboard is locked to axis while facing the camera as well as possible"){ }
+	cActionLocked(gdeWPSOCBillboard &panel) : cBaseAction(panel, "@GameDefinition.WPSOCBillboard.Locked",
+		"@GameDefinition.WPSOCBillboard.Locked.ToolTip"){ }
 	
 	virtual igdeUndo::Ref OnActionBillboard(gdeObjectClass *objectClass, gdeOCBillboard *billboard){
 		return gdeUOCBillboardToggleLocked::Ref::New(objectClass, billboard);
@@ -277,8 +277,8 @@ public:
 	typedef deTObjectReference<cActionSpherical> Ref;
 	
 public:
-	cActionSpherical(gdeWPSOCBillboard &panel) : cBaseAction(panel, "Spherical",
-		"Billboard is aligned using spherical mode"){}
+	cActionSpherical(gdeWPSOCBillboard &panel) : cBaseAction(panel, "@GameDefinition.WPSOCBillboard.Spherical",
+		"@GameDefinition.WPSOCBillboard.Spherical.ToolTip"){}
 	
 	virtual igdeUndo::Ref OnActionBillboard(gdeObjectClass *objectClass, gdeOCBillboard *billboard){
 		return gdeUOCBillboardToggleSpherical::Ref::New(objectClass, billboard);
@@ -295,8 +295,8 @@ public:
 	typedef deTObjectReference<cActionRelativeSize> Ref;
 	
 public:
-	cActionRelativeSize(gdeWPSOCBillboard &panel) : cBaseAction(panel, "Relative Size",
-		"Size is relative to screen size"){}
+	cActionRelativeSize(gdeWPSOCBillboard &panel) : cBaseAction(panel, "@GameDefinition.WPSOCBillboard.RelativeSize",
+		"@GameDefinition.WPSOCBillboard.RelativeSize.ToolTip"){}
 	
 	virtual igdeUndo::Ref OnActionBillboard(gdeObjectClass *objectClass, gdeOCBillboard *billboard){
 		return gdeUOCBillboardToggleSizeFixedToScreen::Ref::New(objectClass, billboard);
@@ -313,8 +313,8 @@ public:
 	typedef deTObjectReference<cActionDoNotScale> Ref;
 	
 public:
-	cActionDoNotScale(gdeWPSOCBillboard &panel) : cBaseAction(panel, "Do not scale",
-		"Billboard scale does not change with scale of parent object class instance"){}
+	cActionDoNotScale(gdeWPSOCBillboard &panel) : cBaseAction(panel, "@GameDefinition.WPSOCBillboard.DoNotScale",
+		"@GameDefinition.WPSOCBillboard.DoNotScale.ToolTip"){}
 	
 	virtual igdeUndo::Ref OnActionBillboard(gdeObjectClass *objectClass, gdeOCBillboard *billboard){
 		return gdeUOCBillboardToggleDoNotScale::Ref::New(objectClass, billboard);
@@ -331,8 +331,8 @@ public:
 	typedef deTObjectReference<cActionRenderEnvMap> Ref;
 	
 public:
-	cActionRenderEnvMap(gdeWPSOCBillboard &panel) : cBaseAction(panel, "Render Env-Map",
-		"Billboard is included in environment maps"){}
+	cActionRenderEnvMap(gdeWPSOCBillboard &panel) : cBaseAction(panel, "@GameDefinition.WPSOCBillboard.RenderEnvMap",
+		"@GameDefinition.WPSOCBillboard.RenderEnvMap.ToolTip"){}
 	
 	virtual igdeUndo::Ref OnActionBillboard(gdeObjectClass *objectClass, gdeOCBillboard *billboard){
 		return gdeUOCBillboardToggleRenderEnvMap::Ref::New(objectClass, billboard);
@@ -349,8 +349,8 @@ public:
 	typedef deTObjectReference<cActionPartialHide> Ref;
 	
 public:
-	cActionPartialHide(gdeWPSOCBillboard &panel) : cBaseAction(panel, "Partial hide",
-		"Billboard is hidden if partial hide tags match"){ }
+	cActionPartialHide(gdeWPSOCBillboard &panel) : cBaseAction(panel, "@GameDefinition.WPSOCBillboard.PartialHide",
+		"@GameDefinition.WPSOCBillboard.PartialHide.ToolTip"){ }
 	
 	virtual igdeUndo::Ref OnActionBillboard(gdeObjectClass *objectClass, gdeOCBillboard *billboard){
 		return gdeUOCBillboardTogglePartialHide::Ref::New(objectClass, billboard);
@@ -453,19 +453,19 @@ pWindowProperties(windowProperties)
 	AddChild(content);
 	
 	// billboard
-	helper.GroupBox(content, groupBox, "Object Class Billboard:");
-	helper.EditPath(groupBox, "Skin:", "Path to skin file to use",
+	helper.GroupBox(content, groupBox, "@GameDefinition.WPSOCBillboard.GroupBillboard");
+	helper.EditPath(groupBox, "@GameDefinition.WPSOCBillboard.Skin.Label", "@GameDefinition.WPSOCBillboard.Skin.ToolTip",
 		igdeEnvironment::efpltSkin, pEditPathSkin, cEditPathSkin::Ref::New(*this));
-	helper.EditVector(groupBox, "Axis:", "Axis to align billboard with",
+	helper.EditVector(groupBox, "@GameDefinition.WPSOCBillboard.Axis.Label", "@GameDefinition.WPSOCBillboard.Axis.ToolTip",
 		pEditAxis, cEditAxis::Ref::New(*this));
-	helper.EditVector2(groupBox, "Size:", "Size of billboard",
+	helper.EditVector2(groupBox, "@GameDefinition.WPSOCBillboard.Size.Label", "@GameDefinition.WPSOCBillboard.Size.ToolTip",
 		pEditSize, cEditSize::Ref::New(*this));
-	helper.EditVector2(groupBox, "Offset:", "Offset of texture on billboard",
+	helper.EditVector2(groupBox, "@GameDefinition.WPSOCBillboard.Offset.Label", "@GameDefinition.WPSOCBillboard.Offset.ToolTip",
 		pEditOffset, cEditOffset::Ref::New(*this));
 	
-	helper.EditVector(groupBox, "Position:", "Position relative to object class",
+	helper.EditVector(groupBox, "@GameDefinition.WPSOCBillboard.Position.Label", "@GameDefinition.WPSOCBillboard.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
-	helper.EditString(groupBox, "Bone:", "Bone name or empty string if not used",
+	helper.EditString(groupBox, "@GameDefinition.WPSOCBillboard.Bone.Label", "@GameDefinition.WPSOCBillboard.Bone.ToolTip",
 		pEditBoneName, cTextBoneName::Ref::New(*this));
 	
 	helper.CheckBox(groupBox, pChkLocked, cActionLocked::Ref::New(*this));
@@ -476,18 +476,19 @@ pWindowProperties(windowProperties)
 	helper.CheckBox(groupBox, pChkRenderEnvMap, cActionRenderEnvMap::Ref::New(*this));
 	
 	// properties targets
-	helper.GroupBox(content, groupBox, "Properties:");
-	helper.ComboBox(groupBox, "Property:", "Property to set target for",
+	helper.GroupBox(content, groupBox, "@GameDefinition.WPSOCBillboard.GroupProperties");
+	helper.ComboBox(groupBox, "@GameDefinition.WPSOCBillboard.Property.Label", "@GameDefinition.WPSOCBillboard.Property.ToolTip",
 		pCBPropertyNames, cComboPropertyNames::Ref::New(*this));
-	pCBPropertyNames->AddItem("Skin", nullptr, (void*)(intptr_t)gdeOCBillboard::epSkin);
-	pCBPropertyNames->AddItem("Axis", nullptr, (void*)(intptr_t)gdeOCBillboard::epAxis);
-	pCBPropertyNames->AddItem("Offset", nullptr, (void*)(intptr_t)gdeOCBillboard::epOffset);
-	pCBPropertyNames->AddItem("Locked", nullptr, (void*)(intptr_t)gdeOCBillboard::epLocked);
-	pCBPropertyNames->AddItem("Spherical", nullptr, (void*)(intptr_t)gdeOCBillboard::epSpherical);
-	pCBPropertyNames->AddItem("Render EnvironmentMap", nullptr, (void*)(intptr_t)gdeOCBillboard::epRenderEnvMap);
-	pCBPropertyNames->AddItem("Attach Position", nullptr, (void*)(intptr_t)gdeOCBillboard::epAttachPosition);
+	pCBPropertyNames->SetAutoTranslateItems(true);
+	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.Skin", nullptr, (void*)(intptr_t)gdeOCBillboard::epSkin);
+	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.Axis", nullptr, (void*)(intptr_t)gdeOCBillboard::epAxis);
+	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.Offset", nullptr, (void*)(intptr_t)gdeOCBillboard::epOffset);
+	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.Locked", nullptr, (void*)(intptr_t)gdeOCBillboard::epLocked);
+	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.Spherical", nullptr, (void*)(intptr_t)gdeOCBillboard::epSpherical);
+	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.RenderEnvironmentMap", nullptr, (void*)(intptr_t)gdeOCBillboard::epRenderEnvMap);
+	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.AttachPosition", nullptr, (void*)(intptr_t)gdeOCBillboard::epAttachPosition);
 	
-	helper.ComboBoxFilter(groupBox, "Target:", true, "Object class property to target",
+	helper.ComboBoxFilter(groupBox, "@GameDefinition.WPSOCBillboard.Target.Label", true, "@GameDefinition.WPSOCBillboard.Target.ToolTip",
 		pCBPropertyNameTarget, cComboPropertyNameTarget::Ref::New(*this));
 	pCBPropertyNameTarget->SetDefaultSorter();
 	pCBPropertyNameTarget->SetFilterCaseInsentive(true);

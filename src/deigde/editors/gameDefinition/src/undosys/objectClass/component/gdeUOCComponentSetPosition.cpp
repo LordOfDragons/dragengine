@@ -49,7 +49,7 @@ pComponent(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Component set position");
+	SetShortInfo("@GameDefinition.Undo.OCComponentSetPosition");
 	
 	pOldValue = component->GetPosition();
 	pNewValue = newValue;

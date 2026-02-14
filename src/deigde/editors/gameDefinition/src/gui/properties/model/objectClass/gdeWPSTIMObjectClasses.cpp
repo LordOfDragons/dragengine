@@ -50,7 +50,7 @@
 gdeWPSTIMObjectClasses::gdeWPSTIMObjectClasses(gdeWPSTreeModel &tree) :
 gdeWPSTreeItemModel(tree, etObjectClasses)
 {
-	SetText("Object Classes");
+	SetText(GetWindowMain().Translate("GameDefinition.TreeModel.ObjectClasses").ToUTF8());
 	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 }
 

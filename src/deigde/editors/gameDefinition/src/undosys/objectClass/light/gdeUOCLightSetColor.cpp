@@ -48,7 +48,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Light set color");
+	SetShortInfo("@GameDefinition.Undo.OCLightSetColor");
 	
 	pOldValue = light->GetColor();
 	pNewValue = newValue;

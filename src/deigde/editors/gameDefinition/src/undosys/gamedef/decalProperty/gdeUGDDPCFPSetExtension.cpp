@@ -50,7 +50,7 @@ pProperty(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Game definition property custom file pattern set extension");
+	SetShortInfo("@GameDefinition.Undo.GDDPCFPSetExtension");
 	
 	pOldValue = filePattern->GetDefaultExtension();
 	pNewValue = newValue;

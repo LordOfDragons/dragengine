@@ -49,7 +49,7 @@ pProperty(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Game definition property set identifier group");
+	SetShortInfo("@GameDefinition.Undo.GDDPSetIdentifierGroup");
 	
 	pOldValue = property->GetIdentifierGroup();
 	pNewValue = newValue;

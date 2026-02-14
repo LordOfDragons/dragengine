@@ -49,9 +49,9 @@
 ////////////////
 
 gdeMAOCForceFieldCut::gdeMAOCForceFieldCut(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Cut Object Class Force Field",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCForceFieldCut",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
-	"Cut object class force field")
+	"@GameDefinition.Menu.OCForceFieldCut.ToolTip")
 {
 }
 

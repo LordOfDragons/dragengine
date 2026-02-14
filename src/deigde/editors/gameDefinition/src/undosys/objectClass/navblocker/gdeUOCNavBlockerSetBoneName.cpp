@@ -49,7 +49,7 @@ pNavBlocker(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("NavBlocker set bone name");
+	SetShortInfo("@GameDefinition.Undo.OCNavBlockerSetBoneName");
 	
 	pOldValue = navBlocker->GetBoneName();
 	pNewValue = newValue;

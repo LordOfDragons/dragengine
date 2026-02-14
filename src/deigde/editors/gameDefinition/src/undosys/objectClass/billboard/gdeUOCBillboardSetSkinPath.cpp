@@ -49,7 +49,7 @@ pBillboard(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Billboard set skin path");
+	SetShortInfo("@GameDefinition.Undo.OCBillboardSetSkinPath");
 	
 	pOldValue = billboard->GetSkinPath();
 	pNewValue = newValue;

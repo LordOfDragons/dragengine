@@ -282,8 +282,8 @@ public:
 class cActionIsGhost : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionIsGhost> Ref;
-	cActionIsGhost(gdeWPSObjectClass &panel) : cBaseAction(panel, "Ghost", nullptr,
-		"Object is not touched by other objects during placements"){}
+	cActionIsGhost(gdeWPSObjectClass &panel) : cBaseAction(panel, "@GameDefinition.WPSObjectClass.Ghost", nullptr,
+		"@GameDefinition.WPSObjectClass.Ghost.ToolTip"){}
 	
 	igdeUndo::Ref OnActionObjectClass(gdeObjectClass *objectClass) override{
 		return gdeUOCToggleIsGhost::Ref::New(objectClass);
@@ -295,8 +295,8 @@ public:
 class cActionCanInstantiate : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionCanInstantiate> Ref;
-	cActionCanInstantiate(gdeWPSObjectClass &panel) : cBaseAction(panel, "Can Instantiate", nullptr,
-		"Object can be instantiated (visible in browser and usable). Disable for classes only inherited from."){ }
+	cActionCanInstantiate(gdeWPSObjectClass &panel) : cBaseAction(panel, "@GameDefinition.WPSObjectClass.CanInstantiate", nullptr,
+		"@GameDefinition.WPSObjectClass.CanInstantiate.ToolTip"){ }
 	
 	igdeUndo::Ref OnActionObjectClass(gdeObjectClass *objectClass) override{
 		return gdeUOCToggleCanInstantiate::Ref::New(objectClass);
@@ -309,7 +309,7 @@ class cActionIsAttachableBehavior : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionIsAttachableBehavior> Ref;
 	cActionIsAttachableBehavior(gdeWPSObjectClass &panel) : cBaseAction(panel,
-		"Attachable Behavior", nullptr, "Object is an attachable behavior"){}
+		"@GameDefinition.WPSObjectClass.AttachableBehavior", nullptr, "@GameDefinition.WPSObjectClass.AttachableBehavior.ToolTip"){}
 	
 	igdeUndo::Ref OnActionObjectClass(gdeObjectClass *objectClass) override{
 		return gdeUOCToggleIsAttachableBehavior::Ref::New(objectClass);
@@ -360,7 +360,7 @@ public:
 	
 	igdeUndo::Ref UndoPaste(gdeProperty *property) override{
 		const gdeUOCPropertyAdd::Ref undo = gdeUOCPropertyAdd::Ref::New(pPanel.GetObjectClass(), property);
-		undo->SetShortInfo("Paste property");
+		undo->SetShortInfo("@GameDefinition.Undo.PasteProperty");
 		return undo;
 	}
 	
@@ -448,7 +448,7 @@ public:
 	
 	igdeUndo::Ref UndoPaste(gdeProperty *property) override{
 		const gdeUOCTexPropertyAdd::Ref undo = gdeUOCTexPropertyAdd::Ref::New(pPanel.GetObjectClass(), property);
-		undo->SetShortInfo("Paste property");
+		undo->SetShortInfo("@GameDefinition.Undo.PasteProperty");
 		return undo;
 	}
 	
@@ -540,8 +540,8 @@ public:
 class cActionInheritAdd : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionInheritAdd> Ref;
-	cActionInheritAdd(gdeWPSObjectClass &panel) : cBaseAction(panel, "Add...",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add inherit"){}
+	cActionInheritAdd(gdeWPSObjectClass &panel) : cBaseAction(panel, "@GameDefinition.WPSObjectClass.Action.AddInherit",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@GameDefinition.WPSObjectClass.Action.AddInherit.ToolTip"){}
 	
 	igdeUndo::Ref OnActionObjectClass(gdeObjectClass *objectClass) override{
 		const decStringSet &classNames = pPanel.GetGameDefinition()->GetClassNameList();
@@ -553,18 +553,18 @@ public:
 		}
 		proposals.SortAscending();
 		
-		decString name("Name");
-		if(!igdeCommonDialogs::GetString(*pPanel.GetParentWindow(), "Add Inherit", "Name:", name, proposals)){
+		decString name(pPanel.Translate("GameDefinition.Default.Name").ToUTF8());
+		if(!igdeCommonDialogs::GetString(*pPanel.GetParentWindow(), "@GameDefinition.ObjectClass.Dialog.AddInherit", "@GameDefinition.ObjectClass.Dialog.Name", name, proposals)){
 			return {};
 		}
 		const gdeObjectClass * const inheritOC = pPanel.GetGameDefinition()->FindObjectClass(name);
 		if(inheritOC){
 			if(objectClass == inheritOC){
-				igdeCommonDialogs::Error(pPanel, "Add Inherit", "Can not inherit from yourself");
+				igdeCommonDialogs::Error(pPanel, "@GameDefinition.ObjectClass.AddInherit.Error", "@GameDefinition.ObjectClass.CanNotInheritFromYourself.Error");
 				return {};
 			}
 			if(inheritOC->InheritsFrom(objectClass)){
-				igdeCommonDialogs::Error(pPanel, "Add Inherit", "Inheritance loop");
+				igdeCommonDialogs::Error(pPanel, "@GameDefinition.ObjectClass.AddInherit.Error", "@GameDefinition.ObjectClass.InheritanceLoop.Error");
 				return {};
 			}
 		}
@@ -589,8 +589,8 @@ public:
 class cActionInheritRemove : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionInheritRemove> Ref;
-	cActionInheritRemove(gdeWPSObjectClass &panel) : cBaseAction(panel, "Remove",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove inherit"){}
+	cActionInheritRemove(gdeWPSObjectClass &panel) : cBaseAction(panel, "@GameDefinition.WPSObjectClass.Action.RemoveInherit",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@GameDefinition.WPSObjectClass.Action.RemoveInherit.ToolTip"){}
 	
 	igdeUndo::Ref OnActionObjectClass(gdeObjectClass *objectClass) override{
 		gdeOCInherit * const inherit = pPanel.GetInherit();
@@ -605,8 +605,8 @@ public:
 class cActionInheritRemoveAll : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionInheritRemoveAll> Ref;
-	cActionInheritRemoveAll(gdeWPSObjectClass &panel) : cBaseAction(panel, "Remove All",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove all inherits"){}
+	cActionInheritRemoveAll(gdeWPSObjectClass &panel) : cBaseAction(panel, "@GameDefinition.WPSObjectClass.Action.RemoveAllInherits",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@GameDefinition.WPSObjectClass.Action.RemoveAllInherits.ToolTip"){}
 	
 	igdeUndo::Ref OnActionObjectClass(gdeObjectClass *objectClass) override{
 		return objectClass->GetInherits().GetCount() > 0 ? gdeUOCRemoveAllInherits::Ref::New(objectClass) : gdeUOCRemoveAllInherits::Ref();
@@ -630,12 +630,12 @@ public:
 		const gdeObjectClass * const inheritOC = pPanel.GetGameDefinition()->FindObjectClass(comboBox.GetText());
 		if(inheritOC){
 			if(objectClass == inheritOC){
-				igdeCommonDialogs::Error(pPanel, "Set Inherit Name", "Can not inherit from yourself");
+				igdeCommonDialogs::Error(pPanel, "@GameDefinition.ObjectClass.SetInheritName.Error", "@GameDefinition.ObjectClass.CanNotInheritFromYourself.Error");
 				comboBox.SetText(inherit->GetName());
 				return {};
 			}
 			if(inheritOC->InheritsFrom(objectClass)){
-				igdeCommonDialogs::Error(pPanel, "Set Inherit Name", "Inheritance loop");
+				igdeCommonDialogs::Error(pPanel, "@GameDefinition.ObjectClass.SetInheritName.Error", "@GameDefinition.ObjectClass.InheritanceLoop.Error");
 				comboBox.SetText(inherit->GetName());
 				return {};
 			}
@@ -662,7 +662,7 @@ class cActionInheritResetPropertyPrefix : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionInheritResetPropertyPrefix> Ref;
 	cActionInheritResetPropertyPrefix(gdeWPSObjectClass &panel) : cBaseAction(panel, "R", nullptr,
-		"Reset property prefix to default property prefix of inherited object class"){}
+		"@GameDefinition.WPSObjectClass.Action.ResetPropertyPrefix.ToolTip"){}
 	
 	igdeUndo::Ref OnActionObjectClass(gdeObjectClass *objectClass) override{
 		gdeOCInherit * const inherit = pPanel.GetInherit();
@@ -683,7 +683,7 @@ public:
 	typedef deTObjectReference<cActionInheritJumpToClass> Ref;
 	cActionInheritJumpToClass(gdeWPSObjectClass &panel) : cBaseAction(panel, "",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallStrongRight),
-		"Jump to Class"){}
+		"@GameDefinition.WPSObjectClass.Action.JumpToClass.ToolTip"){}
 	
 	igdeUndo::Ref OnActionObjectClass(gdeObjectClass*) override{
 		const gdeOCInherit * const inherit = pPanel.GetInherit();
@@ -720,7 +720,7 @@ public:
 	typedef deTObjectReference<cActionJumpToCategory> Ref;
 	cActionJumpToCategory(gdeWPSObjectClass &panel) : cBaseAction(panel, "",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallStrongRight),
-		"Jump to Category"){}
+		"@GameDefinition.WPSObjectClass.Action.JumpToCategory.ToolTip"){}
 	
 	igdeUndo::Ref OnActionObjectClass(gdeObjectClass *objectClass) override{
 		gdeGameDefinition &gameDefinition = *pPanel.GetGameDefinition();
@@ -742,7 +742,7 @@ class cListHideTags : public gdeWPTagList {
 public:
 	typedef deTObjectReference<cListHideTags> Ref;
 	cListHideTags(gdeWPSObjectClass &panel, igdeUIHelper &helper) :
-	gdeWPTagList(helper, 5, "Hide Tags"), pPanel(panel){}
+	gdeWPTagList(helper, 5, "@GameDefinition.WPSObjectClass.HideTags.Label"), pPanel(panel){}
 	
 	igdeUndo::Ref UndoSet(const decStringSet &tags) override{
 		return gdeUOCSetHideTags::Ref::New(pPanel.GetObjectClass(), tags);
@@ -755,7 +755,7 @@ class cListPartialHideTags : public gdeWPTagList {
 public:
 	typedef deTObjectReference<cListPartialHideTags> Ref;
 	cListPartialHideTags(gdeWPSObjectClass &panel, igdeUIHelper &helper) :
-	gdeWPTagList(helper, 5, "Partial Hide Tags"), pPanel(panel){}
+	gdeWPTagList(helper, 5, "@GameDefinition.WPSObjectClass.PartialHideTags.Label"), pPanel(panel){}
 	
 	igdeUndo::Ref UndoSet(const decStringSet &tags) override{
 		return gdeUOCSetPartialHideTags::Ref::New(pPanel.GetObjectClass(), tags);
@@ -766,8 +766,8 @@ public:
 class cActionPropertyValueSet : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionPropertyValueSet> Ref;
-	cActionPropertyValueSet(gdeWPSObjectClass &panel) : cBaseAction(panel, "Set",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Set property value"){}
+	cActionPropertyValueSet(gdeWPSObjectClass &panel) : cBaseAction(panel, "@GameDefinition.WPSObjectClass.Action.SetPropertyValue",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@GameDefinition.WPSObjectClass.Action.SetPropertyValue.ToolTip"){}
 	
 	igdeUndo::Ref OnActionObjectClass(gdeObjectClass *objectClass) override{
 		const decString &key = pPanel.GetPropertyKey();
@@ -777,7 +777,7 @@ public:
 		
 		decString value;
 		objectClass->NamedPropertyDefaultValue(key, value);
-		if(!igdeCommonDialogs::GetMultilineString(*pPanel.GetParentWindow(), "Set Property Value", "Value:", value)){
+		if(!igdeCommonDialogs::GetMultilineString(*pPanel.GetParentWindow(), "@GameDefinition.WPSObjectClass.Dialog.SetPropertyValue", "@GameDefinition.WPSObjectClass.Dialog.Value", value)){
 			return {};
 		}
 		
@@ -794,8 +794,8 @@ public:
 class cActionPropertyValueRemove : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionPropertyValueRemove> Ref;
-	cActionPropertyValueRemove(gdeWPSObjectClass &panel) : cBaseAction(panel, "Remove",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove property value"){}
+	cActionPropertyValueRemove(gdeWPSObjectClass &panel) : cBaseAction(panel, "@GameDefinition.WPSObjectClass.Action.RemovePropertyValue",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@GameDefinition.WPSObjectClass.Action.RemovePropertyValue.ToolTip"){}
 	
 	igdeUndo::Ref OnActionObjectClass(gdeObjectClass *objectClass) override{
 		const char * const key = pPanel.GetPropertyValue();
@@ -818,8 +818,8 @@ public:
 class cActionPropertyValueClear : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionPropertyValueClear> Ref;
-	cActionPropertyValueClear(gdeWPSObjectClass &panel) : cBaseAction(panel, "Clear",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove all property values"){}
+	cActionPropertyValueClear(gdeWPSObjectClass &panel) : cBaseAction(panel, "@GameDefinition.WPSObjectClass.Action.ClearPropertyValues",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@GameDefinition.WPSObjectClass.Action.ClearPropertyValues.ToolTip"){}
 	
 	igdeUndo::Ref OnActionObjectClass(gdeObjectClass *objectClass) override{
 		if(objectClass->GetPropertyValues().GetCount() == 0){
@@ -838,7 +838,7 @@ class cActionPropertyValuesFromSubObjects : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionPropertyValuesFromSubObjects> Ref;
 	cActionPropertyValuesFromSubObjects(gdeWPSObjectClass &panel) : cBaseAction(panel,
-		"Set from sub objects", nullptr, "Set property values from sub objects links"){}
+		"@GameDefinition.WPSObjectClass.Action.PropertyValuesFromSubObjects", nullptr, "@GameDefinition.WPSObjectClass.Action.PropertyValuesFromSubObjects.ToolTip"){}
 	
 	igdeUndo::Ref OnActionObjectClass(gdeObjectClass *objectClass) override{
 		return gdeUOCPropertyValuesFromSubObjects::Create(objectClass);
@@ -864,7 +864,7 @@ public:
 		
 		const decString &key = listBox->GetItems().GetAt(index)->GetText();
 		decString value(objectClass->GetPropertyValues().GetAtOrDefault(key));
-		if(!igdeCommonDialogs::GetMultilineString(*pPanel.GetParentWindow(), "Edit Property Value", "Value:", value)){
+		if(!igdeCommonDialogs::GetMultilineString(*pPanel.GetParentWindow(), "@GameDefinition.WPSObjectClass.Dialog.EditPropertyValue", "@GameDefinition.WPSObjectClass.Dialog.Value", value)){
 			return;
 		}
 		
@@ -982,25 +982,25 @@ private:
 	const decString pTextureName;
 	
 public:
-	cActionTextureAdd(gdeWPSObjectClass &panel) : cBaseAction(panel, "Add...",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add texture"){}
+	cActionTextureAdd(gdeWPSObjectClass &panel) : cBaseAction(panel, "@GameDefinition.WPSObjectClass.Action.AddTexture",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@GameDefinition.WPSObjectClass.Action.AddTexture.ToolTip"){}
 	
 	cActionTextureAdd(gdeWPSObjectClass &panel, const decString &textureName) :
-		cBaseAction(panel, textureName, nullptr, "Add texture"), pTextureName(textureName){}
+		cBaseAction(panel, textureName, nullptr, "@GameDefinition.WPSObjectClass.Action.AddTexture.ToolTip"), pTextureName(textureName){}
 	
 	igdeUndo::Ref OnActionObjectClass(gdeObjectClass *objectClass) override{
 		decString name(pTextureName);
 		
 		if(name.IsEmpty()){
-			name = "Texture";
+			name = pPanel.Translate("GameDefinition.Default.Texture").ToUTF8();
 			
 			while(true){
-				if(!igdeCommonDialogs::GetString(*pPanel.GetParentWindow(), "Add Texture", "Name:", name)){
+				if(!igdeCommonDialogs::GetString(*pPanel.GetParentWindow(), "@GameDefinition.ObjectClass.Dialog.AddTexture", "@GameDefinition.ObjectClass.Dialog.Name", name)){
 					return {};
 				}
 				
 				if(objectClass->GetTextures().HasNamed(name)){
-					igdeCommonDialogs::Error(*pPanel.GetParentWindow(), "Add Texture", "A texture with this name exists already.");
+					igdeCommonDialogs::Error(*pPanel.GetParentWindow(), "@GameDefinition.ObjectClass.AddTexture.Error", "@GameDefinition.ObjectClass.ATextureWithThisNameExistsAlready.Error");
 					
 				}else{
 					break;
@@ -1027,8 +1027,8 @@ public:
 class cActionTextureRemove : public cBaseActionTexture{
 public:
 	typedef deTObjectReference<cActionTextureRemove> Ref;
-	cActionTextureRemove(gdeWPSObjectClass &panel) : cBaseActionTexture(panel, "Remove",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove selected texture"){}
+	cActionTextureRemove(gdeWPSObjectClass &panel) : cBaseActionTexture(panel, "@GameDefinition.WPSObjectClass.Action.RemoveTexture",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@GameDefinition.WPSObjectClass.Action.RemoveTexture.ToolTip"){}
 	
 	igdeUndo::Ref OnActionTexture(gdeObjectClass *objectClass, gdeOCComponentTexture *texture) override{
 		return gdeUOCRemoveTexture::Ref::New(objectClass, texture);
@@ -1042,7 +1042,7 @@ public:
 	typedef deTObjectReference<cActionTexturesMenu> Ref;
 	cActionTexturesMenu(gdeWPSObjectClass &panel) : igdeActionContextMenu("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
-		"Textures menu"), pPanel(panel){}
+		"@GameDefinition.WPSObjectClass.Menu.TexturesMenu.ToolTip"), pPanel(panel){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
 		igdeEnvironment &env = contextMenu.GetEnvironment();
@@ -1064,7 +1064,7 @@ public:
 		}
 		
 		if(objectClass->GetTextures().HasNamed(textField.GetText())){
-			igdeCommonDialogs::Information(*pPanel.GetParentWindow(), "Rename texture", "A texture with this name exists already.");
+			igdeCommonDialogs::Information(*pPanel.GetParentWindow(), "@GameDefinition.ObjectClass.Dialog.RenameTexture", "@GameDefinition.ObjectClass.Dialog.ATextureWithThisNameExistsAlready");
 			textField.SetText(texture->GetName());
 			return {};
 		}
@@ -1189,141 +1189,142 @@ pWindowProperties(windowProperties)
 	
 	
 	// object class
-	helper.GroupBox(content, groupBox, "Object Class:");
-	helper.EditString(groupBox, "Name:", "Object class name", pEditName, cTextName::Ref::New(*this));
-	helper.EditString(groupBox, "Description:", "Object class description",
+	helper.GroupBox(content, groupBox, "@GameDefinition.PanelObjectClass.GroupBoxObjectClass.Label");
+	helper.EditString(groupBox, "@GameDefinition.PanelObjectClass.Name.Label", "@GameDefinition.PanelObjectClass.Name.ToolTip", pEditName, cTextName::Ref::New(*this));
+	helper.EditString(groupBox, "@GameDefinition.PanelObjectClass.Description.Label", "@GameDefinition.PanelObjectClass.Description.ToolTip",
 		pEditDescription, 15, 5, cTextDescription::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "Scale Mode:", "Object scale mode", pCBScaleMode, cComboScaleMode::Ref::New(*this));
-	pCBScaleMode->AddItem("Fixed", nullptr, (void*)(intptr_t)gdeObjectClass::esmFixed);
-	pCBScaleMode->AddItem("Uniform", nullptr, (void*)(intptr_t)gdeObjectClass::esmUniform);
-	pCBScaleMode->AddItem("Free", nullptr, (void*)(intptr_t)gdeObjectClass::esmFree);
+	helper.ComboBox(groupBox, "@GameDefinition.PanelObjectClass.ScaleMode.Label", "@GameDefinition.PanelObjectClass.ScaleMode.ToolTip", pCBScaleMode, cComboScaleMode::Ref::New(*this));
+	pCBScaleMode->SetAutoTranslateItems(true);
+	pCBScaleMode->AddItem("@GameDefinition.PanelObjectClass.ScaleMode.Fixed", nullptr, (void*)(intptr_t)gdeObjectClass::esmFixed);
+	pCBScaleMode->AddItem("@GameDefinition.PanelObjectClass.ScaleMode.Uniform", nullptr, (void*)(intptr_t)gdeObjectClass::esmUniform);
+	pCBScaleMode->AddItem("@GameDefinition.PanelObjectClass.ScaleMode.Free", nullptr, (void*)(intptr_t)gdeObjectClass::esmFree);
 	
-	helper.EditString(groupBox, "Def Inherit Prop Pref:",
-		"Default property prefix to use if this object class is inherited from",
+	helper.EditString(groupBox, "@GameDefinition.PanelObjectClass.DefaultInheritPropertyPrefix.Label",
+		"@GameDefinition.PanelObjectClass.DefaultInheritPropertyPrefix.ToolTip",
 		pEditDefaultInheritPropertyPrefix, cTextDefaultInheritPropertyPrefix::Ref::New(*this));
 	
 	helper.CheckBox(groupBox, pChkIsGhost, cActionIsGhost::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkCanInstantiate, cActionCanInstantiate::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkIsAttachableBehavior, cActionIsAttachableBehavior::Ref::New(*this));
 	
-	helper.FormLineStretchFirst(groupBox, "Category: ", "Category", frameLine);
-	helper.ComboBoxFilter(frameLine, true, "Category", pCBCategory, cComboCategory::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@GameDefinition.PanelObjectClass.Category.Label", "@GameDefinition.PanelObjectClass.Category.ToolTip", frameLine);
+	helper.ComboBoxFilter(frameLine, true, "@GameDefinition.PanelObjectClass.Category.ToolTip", pCBCategory, cComboCategory::Ref::New(*this));
 	pCBCategory->SetDefaultSorter();
 	pCBCategory->SetFilterCaseInsentive(true);
 	helper.Button(frameLine, pBtnJumpToCategory, cActionJumpToCategory::Ref::New(*this));
 	
 	
 	// inherits
-	helper.GroupBoxFlow(content, groupBox, "Inherits:");
+	helper.GroupBoxFlow(content, groupBox, "@GameDefinition.PanelObjectClass.GroupBoxInherits.Label");
 	
-	helper.ListBox(groupBox, 5, "Inherited object classes", pListInherits, cListInherits::Ref::New(*this));
+	helper.ListBox(groupBox, 5, "@GameDefinition.PanelObjectClass.Inherits.ToolTip", pListInherits, cListInherits::Ref::New(*this));
 	pListInherits->SetDefaultSorter();
 	
 	form = igdeContainerForm::Ref::New(env);
 	groupBox->AddChild(form);
 	
-	helper.FormLineStretchFirst(form, "Name:", "Name of class to inherit", frameLine);
-	helper.ComboBoxFilter(frameLine, true, "Name of class to inherit",
+	helper.FormLineStretchFirst(form, "@GameDefinition.PanelObjectClass.InheritName.Label", "@GameDefinition.PanelObjectClass.InheritName.ToolTip", frameLine);
+	helper.ComboBoxFilter(frameLine, true, "@GameDefinition.PanelObjectClass.InheritName.ToolTip",
 		pInheritCBClass, cComboInheritName::Ref::New(*this));
 	pInheritCBClass->SetDefaultSorter();
 	pInheritCBClass->SetFilterCaseInsentive(true);
 	helper.Button(frameLine, pBtnJumpToInheritClass, cActionInheritJumpToClass::Ref::New(*this));
 	
-	helper.FormLineStretchFirst(form, "Property Prefix:",
-		"Prefix to apply to inherited property names", frameLine);
-	helper.EditString(frameLine, "Prefix to apply to inherited property names",
+	helper.FormLineStretchFirst(form, "@GameDefinition.PanelObjectClass.InheritPropertyPrefix.Label",
+		"@GameDefinition.PanelObjectClass.InheritPropertyPrefix.ToolTip", frameLine);
+	helper.EditString(frameLine, "@GameDefinition.PanelObjectClass.InheritPropertyPrefix.ToolTip",
 		pInheritEditPropertyPrefix, cTextInheritPropertyPrefix::Ref::New(*this));
 	helper.Button(frameLine, pBtnInheritPropertyPrefixReset, cActionInheritResetPropertyPrefix::Ref::New(*this));
 	
 	
 	// inherit sub objects
-	helper.GroupBoxFlow(content, groupBox, "Inherit Sub-Objects:", false, true);
+	helper.GroupBoxFlow(content, groupBox, "@GameDefinition.PanelObjectClass.GroupBoxInheritSubObjects.Label", false, true);
 	helper.CheckBox(groupBox, pChkInheritSOBillboards, cActionInheritSubObjects::Ref::New(*this,
-		igdeGDClass::efsoBillboards, "Billboards", "Inherit billboards"));
+		igdeGDClass::efsoBillboards, "@GameDefinition.PanelObjectClass.InheritBillboards.Label", "@GameDefinition.PanelObjectClass.InheritBillboards.ToolTip"));
 	helper.CheckBox(groupBox, pChkInheritSOComponents, cActionInheritSubObjects::Ref::New(*this,
-		igdeGDClass::efsoComponents, "Components", "Inherit components"));
+		igdeGDClass::efsoComponents, "@GameDefinition.PanelObjectClass.InheritComponents.Label", "@GameDefinition.PanelObjectClass.InheritComponents.ToolTip"));
 	helper.CheckBox(groupBox, pChkInheritSOLights, cActionInheritSubObjects::Ref::New(*this,
-		igdeGDClass::efsoLights, "Lights", "Inherit lights"));
+		igdeGDClass::efsoLights, "@GameDefinition.PanelObjectClass.InheritLights.Label", "@GameDefinition.PanelObjectClass.InheritLights.ToolTip"));
 	helper.CheckBox(groupBox, pChkInheritSOSnapPoints, cActionInheritSubObjects::Ref::New(*this,
-		igdeGDClass::efsoSnapPoints, "Snap Points", "Inherit snap points"));
+		igdeGDClass::efsoSnapPoints, "@GameDefinition.PanelObjectClass.InheritSnapPoints.Label", "@GameDefinition.PanelObjectClass.InheritSnapPoints.ToolTip"));
 	helper.CheckBox(groupBox, pChkInheritSOParticleEmitters, cActionInheritSubObjects::Ref::New(*this,
-		igdeGDClass::efsoParticleEmitters, "Particle Emitters", "Inherit particle emitters"));
+		igdeGDClass::efsoParticleEmitters, "@GameDefinition.PanelObjectClass.InheritParticleEmitters.Label", "@GameDefinition.PanelObjectClass.InheritParticleEmitters.ToolTip"));
 	helper.CheckBox(groupBox, pChkInheritSOForceFields, cActionInheritSubObjects::Ref::New(*this,
-		igdeGDClass::efsoForceFields, "Force Fields", "Inherit force fields"));
+		igdeGDClass::efsoForceFields, "@GameDefinition.PanelObjectClass.InheritForceFields.Label", "@GameDefinition.PanelObjectClass.InheritForceFields.ToolTip"));
 	helper.CheckBox(groupBox, pChkInheritSOEnvMapProbes, cActionInheritSubObjects::Ref::New(*this,
-		igdeGDClass::efsoEnvMapProbes, "Environment Map Probes", "Inherit environment map probes"));
+		igdeGDClass::efsoEnvMapProbes, "@GameDefinition.PanelObjectClass.InheritEnvironmentMapProbes.Label", "@GameDefinition.PanelObjectClass.InheritEnvironmentMapProbes.ToolTip"));
 	helper.CheckBox(groupBox, pChkInheritSOSpeakers, cActionInheritSubObjects::Ref::New(*this,
-		igdeGDClass::efsoSpeakers, "Speakers", "Inherit speakers"));
+		igdeGDClass::efsoSpeakers, "@GameDefinition.PanelObjectClass.InheritSpeakers.Label", "@GameDefinition.PanelObjectClass.InheritSpeakers.ToolTip"));
 	helper.CheckBox(groupBox, pChkInheritSONavigationSpaces, cActionInheritSubObjects::Ref::New(*this,
-		igdeGDClass::efsoNavigationSpaces, "Navigation Spaces", "Inherit navigation spaces"));
+		igdeGDClass::efsoNavigationSpaces, "@GameDefinition.PanelObjectClass.InheritNavigationSpaces.Label", "@GameDefinition.PanelObjectClass.InheritNavigationSpaces.ToolTip"));
 	helper.CheckBox(groupBox, pChkInheritSONavigationBlockers, cActionInheritSubObjects::Ref::New(*this,
-		igdeGDClass::efsoNavigationBlockers, "Navigation Blockers", "Inherit navigation blockers"));
+		igdeGDClass::efsoNavigationBlockers, "@GameDefinition.PanelObjectClass.InheritNavigationBlockers.Label", "@GameDefinition.PanelObjectClass.InheritNavigationBlockers.ToolTip"));
 	helper.CheckBox(groupBox, pChkInheritSOWorlds, cActionInheritSubObjects::Ref::New(*this,
-		igdeGDClass::efsoWorlds, "Worlds", "Inherit worlds"));
+		igdeGDClass::efsoWorlds, "@GameDefinition.PanelObjectClass.InheritWorlds.Label", "@GameDefinition.PanelObjectClass.InheritWorlds.ToolTip"));
 	
 	
 	// properties
-	helper.GroupBoxFlow(content, groupBox, "Properties:");
+	helper.GroupBoxFlow(content, groupBox, "@GameDefinition.PanelObjectClass.GroupBoxProperties.Label");
 	pEditProperties = cEditProperties::Ref::New(*this);
 	groupBox->AddChild(pEditProperties);
 	
 	
 	// property values
-	helper.GroupBoxFlow(content, groupBox, "Property Values:", true);
+	helper.GroupBoxFlow(content, groupBox, "@GameDefinition.PanelObjectClass.GroupBoxPropertyValues.Label", true);
 	
 	frameLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
-	helper.ComboBox(frameLine, true, "Property value to set", pCBPropertyValuesKeys, {});
+	helper.ComboBox(frameLine, true, "@GameDefinition.PanelObjectClass.PropertyValuesKeys.ToolTip", pCBPropertyValuesKeys, {});
 	pCBPropertyValuesKeys->SetDefaultSorter();
 	helper.Button(frameLine, pBtnPropertyValueSet, pActionPropertyValueSet);
 	groupBox->AddChild(frameLine);
 	
 	const igdeUIHelper::sColumnHeader headersPropertyValues[2] = {
-		igdeUIHelper::sColumnHeader("Key", nullptr, igdeApplication::app().DisplayScaled(150)),
-		igdeUIHelper::sColumnHeader("Value", nullptr, igdeApplication::app().DisplayScaled(200))
+		igdeUIHelper::sColumnHeader("@GameDefinition.PanelObjectClass.PropertyValuesKey.Label", nullptr, igdeApplication::app().DisplayScaled(150)),
+		igdeUIHelper::sColumnHeader("@GameDefinition.PanelObjectClass.PropertyValuesValue.Label", nullptr, igdeApplication::app().DisplayScaled(200))
 	};
 	helper.IconListBox(groupBox, pListPropertyValues,
 		igdeApplication::app().DisplayScaled(decPoint(100, 120)),
-		headersPropertyValues, 2, "Property values", cListPropertyValues::Ref::New(*this));
+		headersPropertyValues, 2, "@GameDefinition.PanelObjectClass.PropertyValues.ToolTip", cListPropertyValues::Ref::New(*this));
 	pListPropertyValues->SetDefaultSorter();
 	
 	
 	// texture properties
-	helper.GroupBoxFlow(content, groupBox, "Texture Properties:", false, true);
+	helper.GroupBoxFlow(content, groupBox, "@GameDefinition.PanelObjectClass.GroupBoxTextureProperties.Label", false, true);
 	pEditTextureProperties = cEditTextureProperties::Ref::New(*this);
 	groupBox->AddChild(pEditTextureProperties);
 	
 	
 	// tagging
-	helper.GroupBoxFlow(content, groupBox, "Hide Tags:", false, true);
+	helper.GroupBoxFlow(content, groupBox, "@GameDefinition.PanelObjectClass.GroupBoxHideTags.Label", false, true);
 	pListHideTags = cListHideTags::Ref::New(*this, helper);
 	groupBox->AddChild(pListHideTags);
 	
-	helper.GroupBoxFlow(content, groupBox, "Partial Hide Tags:", false, true);
+	helper.GroupBoxFlow(content, groupBox, "@GameDefinition.PanelObjectClass.GroupBoxPartialHideTags.Label", false, true);
 	pListPartialHideTags = cListPartialHideTags::Ref::New(*this, helper);
 	groupBox->AddChild(pListPartialHideTags);
 	
 	
 	// textures
-	helper.GroupBox(content, groupBox, "Textures:");
+	helper.GroupBox(content, groupBox, "@GameDefinition.PanelObjectClass.GroupBoxTextures.Label");
 	
-	helper.FormLineStretchFirst(groupBox, "Texture:", "Texture to edit", frameLine);
-	helper.ComboBox(frameLine, "Texture to edit", pCBTextures, cComboTextures::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@GameDefinition.PanelObjectClass.Texture.Label", "@GameDefinition.PanelObjectClass.Texture.ToolTip", frameLine);
+	helper.ComboBox(frameLine, "@GameDefinition.PanelObjectClass.Texture.ToolTip", pCBTextures, cComboTextures::Ref::New(*this));
 	pCBTextures->SetDefaultSorter();
 	helper.Button(frameLine, pBtnTextures, pActionTexturesMenu);
 	pActionTexturesMenu->SetWidget(pBtnTextures);
 	
-	helper.EditString(groupBox, "Name:", "Name of texture", pTextureEditName, cTextTextureEditName::Ref::New(*this));
-	helper.EditPath(groupBox, "Skin:", "Path to skin file to use",
+	helper.EditString(groupBox, "@GameDefinition.PanelObjectClass.TextureName.Label", "@GameDefinition.PanelObjectClass.TextureName.ToolTip", pTextureEditName, cTextTextureEditName::Ref::New(*this));
+	helper.EditPath(groupBox, "@GameDefinition.PanelObjectClass.TextureSkin.Label", "@GameDefinition.PanelObjectClass.TextureSkin.ToolTip",
 		igdeEnvironment::efpltSkin, pTextureEditPathSkin, cEditTextureEditPathSkin::Ref::New(*this));
-	helper.EditVector2(groupBox, "Offset:", "Texture coordinate offset",
+	helper.EditVector2(groupBox, "@GameDefinition.PanelObjectClass.TextureOffset.Label", "@GameDefinition.PanelObjectClass.TextureOffset.ToolTip",
 		pTextureEditOffset, cEditTextureEditOffset::Ref::New(*this));
-	helper.EditFloat(groupBox, "Rotation:",
-		"Texture coordinate rotation around texture center in degrees",
+	helper.EditFloat(groupBox, "@GameDefinition.PanelObjectClass.TextureRotation.Label",
+		"@GameDefinition.PanelObjectClass.TextureRotation.ToolTip",
 		pTextureEditRotation, cTextTextureEditRotation::Ref::New(*this));
-	helper.EditVector2(groupBox, "Scale:", "Texture coordinate scaling",
+	helper.EditVector2(groupBox, "@GameDefinition.PanelObjectClass.TextureScale.Label", "@GameDefinition.PanelObjectClass.TextureScale.ToolTip",
 		pTextureEditScale, cEditTextureEditScale::Ref::New(*this));
-	helper.ColorBox(groupBox, "Tint:", "Texture tint color",
+	helper.ColorBox(groupBox, "@GameDefinition.PanelObjectClass.TextureTint.Label", "@GameDefinition.PanelObjectClass.TextureTint.ToolTip",
 		pTextureClrTint, cColorTextureTint::Ref::New(*this));
 }
 

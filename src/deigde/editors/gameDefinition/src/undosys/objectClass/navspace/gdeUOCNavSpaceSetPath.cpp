@@ -48,7 +48,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Nav-space set path");
+	SetShortInfo("@GameDefinition.Undo.OCNavSpaceSetPath");
 	
 	pOldValue = navspace->GetPath();
 	pNewValue = newValue;

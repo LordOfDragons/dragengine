@@ -49,7 +49,7 @@ pEnvMapProbe(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Env-map probe set influence border size");
+	SetShortInfo("@GameDefinition.Undo.OCEnvMapProbeSetInfluenceBorderSize");
 	
 	pOldValue = envMapProbe->GetInfluenceBorderSize();
 	pNewValue = newValue;

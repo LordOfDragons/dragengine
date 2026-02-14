@@ -53,7 +53,7 @@ pSkin(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Remove skin");
+	SetShortInfo("@GameDefinition.Undo.RemoveSkin");
 	
 	pSkin = skin;
 	pGameDefinition = gameDefinition;

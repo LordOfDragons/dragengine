@@ -49,7 +49,7 @@ pComponent(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Component set orientation");
+	SetShortInfo("@GameDefinition.Undo.OCComponentSetRotation");
 	
 	pOldValue = component->GetRotation();
 	pNewValue = newValue;

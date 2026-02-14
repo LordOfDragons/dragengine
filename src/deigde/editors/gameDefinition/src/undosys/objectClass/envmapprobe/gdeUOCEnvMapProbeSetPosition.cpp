@@ -49,7 +49,7 @@ pEnvMapProbe(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Env-map probe set position");
+	SetShortInfo("@GameDefinition.Undo.OCEnvMapProbeSetPosition");
 	
 	pOldValue = envMapProbe->GetPosition();
 	pNewValue = newValue;

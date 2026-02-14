@@ -49,7 +49,7 @@ pComponent(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Component set model path");
+	SetShortInfo("@GameDefinition.Undo.OCComponentSetModelPath");
 	
 	pOldValue = component->GetModelPath();
 	pNewValue = newValue;

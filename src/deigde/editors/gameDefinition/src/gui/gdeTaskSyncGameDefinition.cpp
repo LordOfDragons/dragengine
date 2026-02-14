@@ -48,7 +48,7 @@
 gdeTaskSyncGameDefinition::gdeTaskSyncGameDefinition(gdeWindowMain &windowMain) :
 pWindowMain(windowMain)
 {
-	SetMessage("Game Definition Editor: Synchronize Game Definition");
+	SetMessage(pWindowMain.Translate("GameDefinition.Task.SyncGameDefinition").ToUTF8());
 }
 
 gdeTaskSyncGameDefinition::~gdeTaskSyncGameDefinition(){

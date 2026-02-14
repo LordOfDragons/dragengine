@@ -47,7 +47,7 @@ pParticleEmitter(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Particle emitter set description");
+	SetShortInfo("@GameDefinition.Undo.ParticleEmitterSetDescription");
 	
 	pOldValue = particleEmitter->GetDescription();
 	pNewValue = newValue;

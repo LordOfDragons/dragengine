@@ -48,9 +48,9 @@
 ////////////////
 
 gdeMAOCComponentCopy::gdeMAOCComponentCopy(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Copy Object Class Component",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCComponentCopy",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-	"Copy object class component")
+	"@GameDefinition.Menu.OCComponentCopy.ToolTip")
 {
 }
 

@@ -313,12 +313,12 @@ public:
 			codec.DecodeShapeList(encoded, shapeList);
 			
 		}catch(const deException &){
-			igdeCommonDialogs::Error(*pPanel.GetParentWindow(), "Invalid Input",
-				"Input value does not decode to a proper shape list");
+			igdeCommonDialogs::Error(*pPanel.GetParentWindow(), "@GameDefinition.OCNavigationSpace.InvalidInput.Error",
+				"@GameDefinition.OCNavigationSpace.InputValueDoesNotDecodeToAProperShapeList.Error");
 			textField.Focus();
 			return {};
 		}
-		
+	
 		return gdeUOCNavSpaceSetBlockerShapeList::Ref::New(objectClass, navspace, shapeList);
 	}
 };
@@ -384,48 +384,50 @@ pWindowProperties(windowProperties)
 	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
-	helper.GroupBox(content, groupBox, "Object Class Navigation Space:");
+	helper.GroupBox(content, groupBox, "@GameDefinition.WPSOCNavigationSpace.GroupNavigationSpace");
 	
-	helper.EditPath(groupBox, "Path:", "Path to navigation space",
+	helper.EditPath(groupBox, "@GameDefinition.WPSOCNavigationSpace.Path.Label", "@GameDefinition.WPSOCNavigationSpace.Path.ToolTip",
 		igdeEnvironment::efpltNavigationSpace, pEditPath, cEditPath::Ref::New(*this));
-	helper.EditVector(groupBox, "Position:", "Position relative to object class",
+	helper.EditVector(groupBox, "@GameDefinition.WPSOCNavigationSpace.Position.Label", "@GameDefinition.WPSOCNavigationSpace.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
-	helper.EditVector(groupBox, "Rotation:", "Rotation in degrees relative to object class", 4, 1,
+	helper.EditVector(groupBox, "@GameDefinition.WPSOCNavigationSpace.Rotation.Label", "@GameDefinition.WPSOCNavigationSpace.Rotation.ToolTip", 4, 1,
 		pEditRotation, cEditRotation::Ref::New(*this));
-	helper.EditString(groupBox, "Bone:", "Bone name or empty string if not used",
+	helper.EditString(groupBox, "@GameDefinition.WPSOCNavigationSpace.Bone.Label", "@GameDefinition.WPSOCNavigationSpace.Bone.ToolTip",
 		pEditBoneName, cTextBoneName::Ref::New(*this));
-	helper.EditInteger(groupBox, "Layer:", "Navigation layer the blocker affects",
+	helper.EditInteger(groupBox, "@GameDefinition.WPSOCNavigationSpace.Layer.Label", "@GameDefinition.WPSOCNavigationSpace.Layer.ToolTip",
 		pEditLayer, cTextLayer::Ref::New(*this));
-	helper.EditFloat(groupBox, "Snap distance:", "Snap distance",
+	helper.EditFloat(groupBox, "@GameDefinition.WPSOCNavigationSpace.SnapDistance.Label", "@GameDefinition.WPSOCNavigationSpace.SnapDistance.ToolTip",
 		pEditSnapDistance, cTextSnapDistance::Ref::New(*this));
-	helper.EditFloat(groupBox, "Snap angle:", "Snap angle", 4, 1,
+	helper.EditFloat(groupBox, "@GameDefinition.WPSOCNavigationSpace.SnapAngle.Label", "@GameDefinition.WPSOCNavigationSpace.SnapAngle.ToolTip", 4, 1,
 		pEditSnapAngle, cTextSnapAngle::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "Type:", "Navigation space ", pCBType, cComboType::Ref::New(*this));
-	pCBType->AddItem("Grid", nullptr, (void*)(intptr_t)deNavigationSpace::estGrid);
-	pCBType->AddItem("Mesh", nullptr, (void*)(intptr_t)deNavigationSpace::estMesh);
-	pCBType->AddItem("Volume", nullptr, (void*)(intptr_t)deNavigationSpace::estVolume);
+	helper.ComboBox(groupBox, "@GameDefinition.WPSOCNavigationSpace.Type.Label", "@GameDefinition.WPSOCNavigationSpace.Type.ToolTip", pCBType, cComboType::Ref::New(*this));
+	pCBType->SetAutoTranslateItems(true);
+	pCBType->AddItem("@GameDefinition.NavSpaceType.Grid", nullptr, (void*)(intptr_t)deNavigationSpace::estGrid);
+	pCBType->AddItem("@GameDefinition.NavSpaceType.Mesh", nullptr, (void*)(intptr_t)deNavigationSpace::estMesh);
+	pCBType->AddItem("@GameDefinition.NavSpaceType.Volume", nullptr, (void*)(intptr_t)deNavigationSpace::estVolume);
 	
-	helper.EditInteger(groupBox, "Blocking priority:",
-		"Blocks navigation spaces with the same or lower priority",
+	helper.EditInteger(groupBox, "@GameDefinition.WPSOCNavigationSpace.BlockingPriority.Label",
+		"@GameDefinition.WPSOCNavigationSpace.BlockingPriority.ToolTip",
 		pEditBlockingPriority, cTextBlockingPriority::Ref::New(*this));
-	helper.EditString(groupBox, "Blocking shape:", "Space shape of navigation space if present",
+	helper.EditString(groupBox, "@GameDefinition.WPSOCNavigationSpace.BlockingShape.Label", "@GameDefinition.WPSOCNavigationSpace.BlockingShape.ToolTip",
 		pEditBlockerShape, cTextBlockingShape::Ref::New(*this));
 	
 	// property targets
-	helper.GroupBox(content, groupBox, "Properties:");
-	helper.ComboBox(groupBox, "Property:", "Property to set target for",
+	helper.GroupBox(content, groupBox, "@GameDefinition.WPSOCNavigationSpace.GroupProperties");
+	helper.ComboBox(groupBox, "@GameDefinition.WPSOCNavigationSpace.Property.Label", "@GameDefinition.WPSOCNavigationSpace.Property.ToolTip",
 		pCBPropertyNames, cComboPropertyNames::Ref::New(*this));
-	pCBPropertyNames->AddItem("Path", nullptr, (void*)(intptr_t)gdeOCNavigationSpace::epPath);
-	pCBPropertyNames->AddItem("Layer", nullptr, (void*)(intptr_t)gdeOCNavigationSpace::epLayer);
-	pCBPropertyNames->AddItem("Snap distance", nullptr, (void*)(intptr_t)gdeOCNavigationSpace::epSnapDistance);
-	pCBPropertyNames->AddItem("Snap angle", nullptr, (void*)(intptr_t)gdeOCNavigationSpace::epSnapAngle);
-	pCBPropertyNames->AddItem("Space shape", nullptr, (void*)(intptr_t)gdeOCNavigationSpace::epBlockerShape);
-	pCBPropertyNames->AddItem("Blocking priority", nullptr, (void*)(intptr_t)gdeOCNavigationSpace::epBlockingPriority);
-	pCBPropertyNames->AddItem("Attach position", nullptr, (void*)(intptr_t)gdeOCNavigationSpace::epAttachPosition);
-	pCBPropertyNames->AddItem("Attach rotation", nullptr, (void*)(intptr_t)gdeOCNavigationSpace::epAttachRotation);
+	pCBPropertyNames->SetAutoTranslateItems(true);
+	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.Path", nullptr, (void*)(intptr_t)gdeOCNavigationSpace::epPath);
+	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.Layer", nullptr, (void*)(intptr_t)gdeOCNavigationSpace::epLayer);
+	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.SnapDistance", nullptr, (void*)(intptr_t)gdeOCNavigationSpace::epSnapDistance);
+	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.SnapAngle", nullptr, (void*)(intptr_t)gdeOCNavigationSpace::epSnapAngle);
+	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.SpaceShape", nullptr, (void*)(intptr_t)gdeOCNavigationSpace::epBlockerShape);
+	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.BlockingPriority", nullptr, (void*)(intptr_t)gdeOCNavigationSpace::epBlockingPriority);
+	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.AttachPosition", nullptr, (void*)(intptr_t)gdeOCNavigationSpace::epAttachPosition);
+	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.AttachRotation", nullptr, (void*)(intptr_t)gdeOCNavigationSpace::epAttachRotation);
 	
-	helper.ComboBoxFilter(groupBox, "Target:", true, "Object class property to target",
+	helper.ComboBoxFilter(groupBox, "@GameDefinition.WPSOCNavigationSpace.Target.Label", true, "@GameDefinition.WPSOCNavigationSpace.Target.ToolTip",
 		pCBPropertyNameTarget, cComboPropertyNameTarget::Ref::New(*this));
 	pCBPropertyNameTarget->SetEditable(true);
 	pCBPropertyNameTarget->SetDefaultSorter();

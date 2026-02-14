@@ -45,9 +45,9 @@
 ////////////////
 
 gdeMASkyRemove::gdeMASkyRemove(gdeWindowMain &windowMain) :
-gdeBaseAction(windowMain, "Remove Sky",
+gdeBaseAction(windowMain, "@GameDefinition.Menu.SkyRemove",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-	"Remove sky")
+	"@GameDefinition.Menu.SkyRemove.ToolTip")
 {
 }
 

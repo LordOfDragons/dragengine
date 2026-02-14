@@ -44,9 +44,9 @@
 ////////////////
 
 gdeMACategoryObjectClassAdd::gdeMACategoryObjectClassAdd(gdeWindowMain &windowMain) :
-gdeMACategoryAdd(windowMain, "Add Object Class Category...",
+gdeMACategoryAdd(windowMain, "@GameDefinition.Menu.CategoryObjectClassAdd",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-	"Add object class category")
+	"@GameDefinition.Menu.CategoryObjectClassAdd.ToolTip")
 {
 }
 

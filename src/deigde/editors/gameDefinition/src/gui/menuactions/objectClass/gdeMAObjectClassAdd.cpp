@@ -47,9 +47,9 @@
 ////////////////
 
 gdeMAObjectClassAdd::gdeMAObjectClassAdd(gdeWindowMain &windowMain) :
-gdeBaseAction(windowMain, "Add Object Class...",
+gdeBaseAction(windowMain, "@GameDefinition.Menu.ObjectClassAdd",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-	"Add object class")
+	"@GameDefinition.Menu.ObjectClassAdd.ToolTip")
 {
 }
 
@@ -60,11 +60,11 @@ gdeBaseAction(windowMain, "Add Object Class...",
 
 igdeUndo::Ref gdeMAObjectClassAdd::OnAction(gdeGameDefinition &gameDefinition){
 	const gdeObjectClass::List &list = gameDefinition.GetObjectClasses();
-	decString name("Object Class");
+	decString name(pWindowMain.Translate("GameDefinition.Default.ObjectClass").ToUTF8());
 	
-	while(igdeCommonDialogs::GetString(pWindowMain, "Add Object Class", "Name:", name)){
+	while(igdeCommonDialogs::GetString(pWindowMain, "@GameDefinition.Dialog.ObjectClassAdd.Title", "@GameDefinition.Dialog.ObjectClassAdd.Name", name)){
 		if(list.HasNamed(name)){
-			igdeCommonDialogs::Error(pWindowMain, "Add Object Class", "Object Class exists already.");
+			igdeCommonDialogs::Error(pWindowMain, "@GameDefinition.Dialog.ObjectClassAdd.Title", "@GameDefinition.Dialog.ObjectClassAdd.ErrorExists");
 			continue;
 		}
 		

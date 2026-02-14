@@ -49,7 +49,7 @@ pSpeaker(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Speaker set range");
+	SetShortInfo("@GameDefinition.Undo.OCSpeakerSetRange");
 	
 	pOldValue = speaker->GetRange();
 	pNewValue = newValue;

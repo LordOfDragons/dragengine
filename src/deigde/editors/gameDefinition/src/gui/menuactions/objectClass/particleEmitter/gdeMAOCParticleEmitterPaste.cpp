@@ -50,9 +50,9 @@
 ////////////////
 
 gdeMAOCParticleEmitterPaste::gdeMAOCParticleEmitterPaste(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Paste Object Class Particle Emitter",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCParticleEmitterPaste",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
-	"Paste object class particle emitter")
+	"@GameDefinition.Menu.OCParticleEmitterPaste.ToolTip")
 {
 }
 
@@ -71,7 +71,7 @@ igdeUndo::Ref gdeMAOCParticleEmitterPaste::OnActionSubObject(gdeGameDefinition&,
 	const igdeUndo::Ref undo = gdeUOCAddParticleEmitter::Ref::New(&objectClass, 
 		gdeOCParticleEmitter::Ref::New(*clip.DynamicCast<gdeClipboardDataOCParticleEmitter>()->GetParticleEmitter()));
 	
-	undo->SetShortInfo("Paste object class particle emitter");
+	undo->SetShortInfo("@GameDefinition.Undo.PasteOCParticleEmitter");
 	return undo;
 }
 

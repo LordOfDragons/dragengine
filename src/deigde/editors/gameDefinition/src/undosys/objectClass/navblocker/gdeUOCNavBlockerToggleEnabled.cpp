@@ -49,7 +49,7 @@ pNavBlocker(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Nav-blocker toggle enabled");
+	SetShortInfo("@GameDefinition.Undo.OCNavBlockerToggleEnabled");
 	
 	pNavBlocker = navblocker;
 	pObjectClass = objectClass;

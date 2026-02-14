@@ -48,7 +48,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Object class set hide tags");
+	SetShortInfo("@GameDefinition.Undo.OCSetHideTags");
 	
 	pOldValue = objectClass->GetHideTags();
 	pNewValue = newValue;

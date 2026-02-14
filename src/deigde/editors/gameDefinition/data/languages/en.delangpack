@@ -3,4 +3,1679 @@
 	<identifier>en</identifier>
 	<name>English</name>
 	<description>English</description>
+	
+	<!-- UI: Property Types -->
+	<translation name="GameDefinition.PropertyType.String">String</translation>
+	<translation name="GameDefinition.PropertyType.Integer">Integer</translation>
+	<translation name="GameDefinition.PropertyType.Point2">Point2</translation>
+	<translation name="GameDefinition.PropertyType.Point3">Point3</translation>
+	<translation name="GameDefinition.PropertyType.Float">Float</translation>
+	<translation name="GameDefinition.PropertyType.Vector2">Vector2</translation>
+	<translation name="GameDefinition.PropertyType.Vector3">Vector3</translation>
+	<translation name="GameDefinition.PropertyType.Color">Color</translation>
+	<translation name="GameDefinition.PropertyType.Boolean">Boolean</translation>
+	<translation name="GameDefinition.PropertyType.Path">Path</translation>
+	<translation name="GameDefinition.PropertyType.Range">Range</translation>
+	<translation name="GameDefinition.PropertyType.Select">Select</translation>
+	<translation name="GameDefinition.PropertyType.List">List</translation>
+	<translation name="GameDefinition.PropertyType.TriggerExpression">Trigger expression</translation>
+	<translation name="GameDefinition.PropertyType.TriggerTarget">Trigger target</translation>
+	<translation name="GameDefinition.PropertyType.Shape">Shape</translation>
+	<translation name="GameDefinition.PropertyType.ShapeList">Shape list</translation>
+	<translation name="GameDefinition.PropertyType.Identifier">Identifier</translation>
+	
+	<!-- UI: Path Pattern Types -->
+	<translation name="GameDefinition.PathPatternType.All">All files</translation>
+	<translation name="GameDefinition.PathPatternType.Model">Model resources</translation>
+	<translation name="GameDefinition.PathPatternType.Skin">Skin resources</translation>
+	<translation name="GameDefinition.PathPatternType.Rig">Rig resources</translation>
+	<translation name="GameDefinition.PathPatternType.Animation">Animation resources</translation>
+	<translation name="GameDefinition.PathPatternType.Animator">Animator resources</translation>
+	<translation name="GameDefinition.PathPatternType.Image">Image resources</translation>
+	<translation name="GameDefinition.PathPatternType.OcclusionMesh">Occlusion mesh resources</translation>
+	<translation name="GameDefinition.PathPatternType.NavigationSpace">Navigation space resources</translation>
+	<translation name="GameDefinition.PathPatternType.ParticleEmitter">Particle emitter resources</translation>
+	<translation name="GameDefinition.PathPatternType.Sound">Sound resources</translation>
+	<translation name="GameDefinition.PathPatternType.Synthesizer">Synthesizer resources</translation>
+	<translation name="GameDefinition.PathPatternType.Video">Video resources</translation>
+	<translation name="GameDefinition.PathPatternType.Font">Font resources</translation>
+	<translation name="GameDefinition.PathPatternType.Sky">Sky resources</translation>
+	<translation name="GameDefinition.PathPatternType.Camera">Camera resources</translation>
+	<translation name="GameDefinition.PathPatternType.World">World resources</translation>
+	<translation name="GameDefinition.PathPatternType.Custom">Custom file pattern</translation>
+	
+	<!-- Menu Actions: Category -->
+	<translation name="GameDefinition.Menu.CategoryAdd">Add Child Category...</translation>
+	<translation name="GameDefinition.Menu.CategoryAdd.ToolTip">Add category to active category</translation>
+	<translation name="GameDefinition.Menu.CategoryRemove">Remove Category</translation>
+	<translation name="GameDefinition.Menu.CategoryRemove.ToolTip">Remove category</translation>
+	
+	<!-- Menu Actions: Object Class -->
+	<translation name="GameDefinition.Menu.ObjectClassAdd">Add Object Class...</translation>
+	<translation name="GameDefinition.Menu.ObjectClassAdd.ToolTip">Add object class</translation>
+	<translation name="GameDefinition.Menu.ObjectClassCopy.ToolTip">Copy object class</translation>
+	<translation name="GameDefinition.Menu.ObjectClassCut.ToolTip">Cut object class</translation>
+	<translation name="GameDefinition.Menu.ObjectClassPaste.ToolTip">Paste object class</translation>
+	<translation name="GameDefinition.Menu.ObjectClassRemove">Remove Object Class</translation>
+	<translation name="GameDefinition.Menu.ObjectClassRemove.ToolTip">Remove object class</translation>
+	<translation name="GameDefinition.Menu.ObjectClassDuplicate">Duplicate Object Class...</translation>
+	<translation name="GameDefinition.Menu.ObjectClassDuplicate.ToolTip">Duplicate object class</translation>
+	<translation name="GameDefinition.Menu.ObjectClassSubclass">Subclass Object Class</translation>
+	<translation name="GameDefinition.Menu.ObjectClassSubclass.ToolTip">Create new Object Class as Subclass of the selected Object Class</translation>
+	<translation name="GameDefinition.Menu.ObjectClassExportXmlEClass">Object Class Export XML EClass</translation>
+	<translation name="GameDefinition.Menu.ObjectClassExportXmlEClass.ToolTip">Export object class as XML EClass (*.deeclass)</translation>
+	
+	<!-- Menu Actions: Object Class Sub-Objects - Billboard -->
+	<translation name="GameDefinition.Menu.OCBillboardAdd">Add Object Class Billboard...</translation>
+	<translation name="GameDefinition.Menu.OCBillboardAdd.ToolTip">Add object class billboard</translation>
+	<translation name="GameDefinition.Menu.OCBillboardRemove">Remove Object Class Billboard</translation>
+	<translation name="GameDefinition.Menu.OCBillboardRemove.ToolTip">Remove object class billboard</translation>
+	<translation name="GameDefinition.Menu.OCBillboardCopy">Copy Object Class Billboard</translation>
+	<translation name="GameDefinition.Menu.OCBillboardCopy.ToolTip">Copy object class billboard</translation>
+	<translation name="GameDefinition.Menu.OCBillboardCut">Cut Object Class Billboard</translation>
+	<translation name="GameDefinition.Menu.OCBillboardCut.ToolTip">Cut object class billboard</translation>
+	<translation name="GameDefinition.Menu.OCBillboardPaste">Paste Object Class Billboard</translation>
+	<translation name="GameDefinition.Menu.OCBillboardPaste.ToolTip">Paste object class billboard</translation>
+	
+	<!-- Menu Actions: Object Class Sub-Objects - Camera -->
+	<translation name="GameDefinition.Menu.OCCameraAdd">Add Object Class Camera...</translation>
+	<translation name="GameDefinition.Menu.OCCameraAdd.ToolTip">Add object class camera</translation>
+	<translation name="GameDefinition.Menu.OCCameraRemove">Remove Object Class Camera</translation>
+	<translation name="GameDefinition.Menu.OCCameraRemove.ToolTip">Remove object class camera</translation>
+	<translation name="GameDefinition.Menu.OCCameraCopy">Copy Object Class Camera</translation>
+	<translation name="GameDefinition.Menu.OCCameraCopy.ToolTip">Copy object class camera</translation>
+	<translation name="GameDefinition.Menu.OCCameraCut">Cut Object Class Camera</translation>
+	<translation name="GameDefinition.Menu.OCCameraCut.ToolTip">Cut object class camera</translation>
+	<translation name="GameDefinition.Menu.OCCameraPaste">Paste Object Class Camera</translation>
+	<translation name="GameDefinition.Menu.OCCameraPaste.ToolTip">Paste object class camera</translation>
+	
+	<!-- Menu Actions: Object Class Sub-Objects - Component -->
+	<translation name="GameDefinition.Menu.OCComponentAdd">Add Object Class Component...</translation>
+	<translation name="GameDefinition.Menu.OCComponentAdd.ToolTip">Add object class component</translation>
+	<translation name="GameDefinition.Menu.OCComponentRemove">Remove Object Class Component</translation>
+	<translation name="GameDefinition.Menu.OCComponentRemove.ToolTip">Remove object class component</translation>
+	<translation name="GameDefinition.Menu.OCComponentCopy">Copy Object Class Component</translation>
+	<translation name="GameDefinition.Menu.OCComponentCopy.ToolTip">Copy object class component</translation>
+	<translation name="GameDefinition.Menu.OCComponentCut">Cut Object Class Component</translation>
+	<translation name="GameDefinition.Menu.OCComponentCut.ToolTip">Cut object class component</translation>
+	<translation name="GameDefinition.Menu.OCComponentPaste">Paste Object Class Component</translation>
+	<translation name="GameDefinition.Menu.OCComponentPaste.ToolTip">Paste object class component</translation>
+	
+	<!-- Menu Actions: Object Class Sub-Objects - Environment Map Probe -->
+	<translation name="GameDefinition.Menu.OCEnvMapProbeAdd">Add Object Class Environment Map Probe...</translation>
+	<translation name="GameDefinition.Menu.OCEnvMapProbeAdd.ToolTip">Add object class environment map probe</translation>
+	<translation name="GameDefinition.Menu.OCEnvMapProbeRemove">Remove Object Class Environment Map Probe</translation>
+	<translation name="GameDefinition.Menu.OCEnvMapProbeRemove.ToolTip">Remove object class environment map probe</translation>
+	<translation name="GameDefinition.Menu.OCEnvMapProbeCopy">Copy Object Class Environment Map Probe</translation>
+	<translation name="GameDefinition.Menu.OCEnvMapProbeCopy.ToolTip">Copy object class environment map probe</translation>
+	<translation name="GameDefinition.Menu.OCEnvMapProbeCut">Cut Object Class Environment Map Probe</translation>
+	<translation name="GameDefinition.Menu.OCEnvMapProbeCut.ToolTip">Cut object class environment map probe</translation>
+	<translation name="GameDefinition.Menu.OCEnvMapProbePaste">Paste Object Class Environment Map Probe</translation>
+	<translation name="GameDefinition.Menu.OCEnvMapProbePaste.ToolTip">Paste object class environment map probe</translation>
+	
+	<!-- Menu Actions: Object Class Sub-Objects - Force Field -->
+	<translation name="GameDefinition.Menu.OCForceFieldAdd">Add Object Class Force Field...</translation>
+	<translation name="GameDefinition.Menu.OCForceFieldAdd.ToolTip">Add object class force field</translation>
+	<translation name="GameDefinition.Menu.OCForceFieldRemove">Remove Object Class Force Field</translation>
+	<translation name="GameDefinition.Menu.OCForceFieldRemove.ToolTip">Remove object class force field</translation>
+	<translation name="GameDefinition.Menu.OCForceFieldCopy">Copy Object Class Force Field</translation>
+	<translation name="GameDefinition.Menu.OCForceFieldCopy.ToolTip">Copy object class force field</translation>
+	<translation name="GameDefinition.Menu.OCForceFieldCut">Cut Object Class Force Field</translation>
+	<translation name="GameDefinition.Menu.OCForceFieldCut.ToolTip">Cut object class force field</translation>
+	<translation name="GameDefinition.Menu.OCForceFieldPaste">Paste Object Class Force Field</translation>
+	<translation name="GameDefinition.Menu.OCForceFieldPaste.ToolTip">Paste object class force field</translation>
+	
+	<!-- Menu Actions: Object Class Sub-Objects - Light -->
+	<translation name="GameDefinition.Menu.OCLightAdd">Add Object Class Light...</translation>
+	<translation name="GameDefinition.Menu.OCLightAdd.ToolTip">Add object class light</translation>
+	<translation name="GameDefinition.Menu.OCLightRemove">Remove Object Class Light</translation>
+	<translation name="GameDefinition.Menu.OCLightRemove.ToolTip">Remove object class light</translation>
+	<translation name="GameDefinition.Menu.OCLightCopy">Copy Object Class Light</translation>
+	<translation name="GameDefinition.Menu.OCLightCopy.ToolTip">Copy object class light</translation>
+	<translation name="GameDefinition.Menu.OCLightCut">Cut Object Class Light</translation>
+	<translation name="GameDefinition.Menu.OCLightCut.ToolTip">Cut object class light</translation>
+	<translation name="GameDefinition.Menu.OCLightPaste">Paste Object Class Light</translation>
+	<translation name="GameDefinition.Menu.OCLightPaste.ToolTip">Paste object class light</translation>
+	
+	<!-- Menu Actions: Object Class Sub-Objects - Navigation Blocker -->
+	<translation name="GameDefinition.Menu.OCNavBlockerAdd">Add Object Class Navigation Blocker...</translation>
+	<translation name="GameDefinition.Menu.OCNavBlockerAdd.ToolTip">Add object class navigation blocker</translation>
+	<translation name="GameDefinition.Menu.OCNavBlockerRemove">Remove Object Class Navigation Blocker</translation>
+	<translation name="GameDefinition.Menu.OCNavBlockerRemove.ToolTip">Remove object class navigation blocker</translation>
+	<translation name="GameDefinition.Menu.OCNavBlockerCopy">Copy Object Class Navigation Blocker</translation>
+	<translation name="GameDefinition.Menu.OCNavBlockerCopy.ToolTip">Copy object class navigation blocker</translation>
+	<translation name="GameDefinition.Menu.OCNavBlockerCut">Cut Object Class Navigation Blocker</translation>
+	<translation name="GameDefinition.Menu.OCNavBlockerCut.ToolTip">Cut object class navigation blocker</translation>
+	<translation name="GameDefinition.Menu.OCNavBlockerPaste">Paste Object Class Navigation Blocker</translation>
+	<translation name="GameDefinition.Menu.OCNavBlockerPaste.ToolTip">Paste object class navigation blocker</translation>
+	
+	<!-- Menu Actions: Object Class Sub-Objects - Navigation Space -->
+	<translation name="GameDefinition.Menu.OCNavSpaceAdd">Add Object Class Navigation Space...</translation>
+	<translation name="GameDefinition.Menu.OCNavSpaceAdd.ToolTip">Add object class navigation space</translation>
+	<translation name="GameDefinition.Menu.OCNavSpaceRemove">Remove Object Class Navigation Space</translation>
+	<translation name="GameDefinition.Menu.OCNavSpaceRemove.ToolTip">Remove object class navigation space</translation>
+	<translation name="GameDefinition.Menu.OCNavSpaceCopy">Copy Object Class Navigation Space</translation>
+	<translation name="GameDefinition.Menu.OCNavSpaceCopy.ToolTip">Copy object class navigation space</translation>
+	<translation name="GameDefinition.Menu.OCNavSpaceCut">Cut Object Class Navigation Space</translation>
+	<translation name="GameDefinition.Menu.OCNavSpaceCut.ToolTip">Cut object class navigation space</translation>
+	<translation name="GameDefinition.Menu.OCNavSpacePaste">Paste Object Class Navigation Space</translation>
+	<translation name="GameDefinition.Menu.OCNavSpacePaste.ToolTip">Paste object class navigation space</translation>
+	
+	<!-- Menu Actions: Object Class Sub-Objects - Particle Emitter -->
+	<translation name="GameDefinition.Menu.OCParticleEmitterAdd">Add Object Class Particle Emitter...</translation>
+	<translation name="GameDefinition.Menu.OCParticleEmitterAdd.ToolTip">Add object class particle emitter</translation>
+	<translation name="GameDefinition.Menu.OCParticleEmitterRemove">Remove Object Class Particle Emitter</translation>
+	<translation name="GameDefinition.Menu.OCParticleEmitterRemove.ToolTip">Remove object class particle emitter</translation>
+	<translation name="GameDefinition.Menu.OCParticleEmitterCopy">Copy Object Class Particle Emitter</translation>
+	<translation name="GameDefinition.Menu.OCParticleEmitterCopy.ToolTip">Copy object class particle emitter</translation>
+	<translation name="GameDefinition.Menu.OCParticleEmitterCut">Cut Object Class Particle Emitter</translation>
+	<translation name="GameDefinition.Menu.OCParticleEmitterCut.ToolTip">Cut object class particle emitter</translation>
+	<translation name="GameDefinition.Menu.OCParticleEmitterPaste">Paste Object Class Particle Emitter</translation>
+	<translation name="GameDefinition.Menu.OCParticleEmitterPaste.ToolTip">Paste object class particle emitter</translation>
+	
+	<!-- Menu Actions: Object Class Sub-Objects - Snap Point -->
+	<translation name="GameDefinition.Menu.OCSnapPointAdd">Add Object Class Snap Point...</translation>
+	<translation name="GameDefinition.Menu.OCSnapPointAdd.ToolTip">Add object class snap point</translation>
+	<translation name="GameDefinition.Menu.OCSnapPointRemove">Remove Object Class Snap Point</translation>
+	<translation name="GameDefinition.Menu.OCSnapPointRemove.ToolTip">Remove object class snap point</translation>
+	<translation name="GameDefinition.Menu.OCSnapPointCopy">Copy Object Class Snap Point</translation>
+	<translation name="GameDefinition.Menu.OCSnapPointCopy.ToolTip">Copy object class snap point</translation>
+	<translation name="GameDefinition.Menu.OCSnapPointCut">Cut Object Class Snap Point</translation>
+	<translation name="GameDefinition.Menu.OCSnapPointCut.ToolTip">Cut object class snap point</translation>
+	<translation name="GameDefinition.Menu.OCSnapPointPaste">Paste Object Class Snap Point</translation>
+	<translation name="GameDefinition.Menu.OCSnapPointPaste.ToolTip">Paste object class snap point</translation>
+	
+	<!-- Menu Actions: Object Class Sub-Objects - Speaker -->
+	<translation name="GameDefinition.Menu.OCSpeakerAdd">Add Object Class Speaker...</translation>
+	<translation name="GameDefinition.Menu.OCSpeakerAdd.ToolTip">Add object class speaker</translation>
+	<translation name="GameDefinition.Menu.OCSpeakerRemove">Remove Object Class Speaker</translation>
+	<translation name="GameDefinition.Menu.OCSpeakerRemove.ToolTip">Remove object class speaker</translation>
+	<translation name="GameDefinition.Menu.OCSpeakerCopy">Copy Object Class Speaker</translation>
+	<translation name="GameDefinition.Menu.OCSpeakerCopy.ToolTip">Copy object class speaker</translation>
+	<translation name="GameDefinition.Menu.OCSpeakerCut">Cut Object Class Speaker</translation>
+	<translation name="GameDefinition.Menu.OCSpeakerCut.ToolTip">Cut object class speaker</translation>
+	<translation name="GameDefinition.Menu.OCSpeakerPaste">Paste Object Class Speaker</translation>
+	<translation name="GameDefinition.Menu.OCSpeakerPaste.ToolTip">Paste object class speaker</translation>
+	
+	<!-- Menu Actions: Object Class Sub-Objects - World -->
+	<translation name="GameDefinition.Menu.OCWorldAdd">Add Object Class World...</translation>
+	<translation name="GameDefinition.Menu.OCWorldAdd.ToolTip">Add object class world</translation>
+	<translation name="GameDefinition.Menu.OCWorldRemove">Remove Object Class World</translation>
+	<translation name="GameDefinition.Menu.OCWorldRemove.ToolTip">Remove object class world</translation>
+	<translation name="GameDefinition.Menu.OCWorldCopy">Copy Object Class World</translation>
+	<translation name="GameDefinition.Menu.OCWorldCopy.ToolTip">Copy object class world</translation>
+	<translation name="GameDefinition.Menu.OCWorldCut">Cut Object Class World</translation>
+	<translation name="GameDefinition.Menu.OCWorldCut.ToolTip">Cut object class world</translation>
+	<translation name="GameDefinition.Menu.OCWorldPaste">Paste Object Class World</translation>
+	<translation name="GameDefinition.Menu.OCWorldPaste.ToolTip">Paste object class world</translation>
+	
+	<!-- Menu Actions: Particle Emitter -->
+	<translation name="GameDefinition.Menu.ParticleEmitterAdd">Add Particle Emitter...</translation>
+	<translation name="GameDefinition.Menu.ParticleEmitterAdd.ToolTip">Add particle emitter</translation>
+	<translation name="GameDefinition.Menu.ParticleEmitterRemove">Remove Particle Emitter</translation>
+	<translation name="GameDefinition.Menu.ParticleEmitterRemove.ToolTip">Remove particle emitter</translation>
+	
+	<!-- Menu Actions: Skin -->
+	<translation name="GameDefinition.Menu.SkinAdd">Add Skin...</translation>
+	<translation name="GameDefinition.Menu.SkinAdd.ToolTip">Add skin</translation>
+	<translation name="GameDefinition.Menu.SkinRemove">Remove Skin</translation>
+	<translation name="GameDefinition.Menu.SkinRemove.ToolTip">Remove skin</translation>
+	
+	<!-- Menu Actions: Sky -->
+	<translation name="GameDefinition.Menu.SkyAdd">Add Sky...</translation>
+	<translation name="GameDefinition.Menu.SkyAdd.ToolTip">Add sky</translation>
+	<translation name="GameDefinition.Menu.SkyRemove">Remove Sky</translation>
+	<translation name="GameDefinition.Menu.SkyRemove.ToolTip">Remove sky</translation>
+	
+	<!-- Dialogs -->
+	<translation name="GameDefinition.Dialog.CategoryAdd.Title">Add Category</translation>
+	<translation name="GameDefinition.Dialog.CategoryAdd.Name">Name:</translation>
+	<translation name="GameDefinition.Dialog.CategoryAdd.ErrorExists">Category exists already.</translation>
+	
+	<translation name="GameDefinition.Dialog.ObjectClassAdd.Title">Add Object Class</translation>
+	<translation name="GameDefinition.Dialog.ObjectClassAdd.Name">Name:</translation>
+	<translation name="GameDefinition.Dialog.ObjectClassAdd.ErrorExists">Object Class exists already.</translation>
+	
+	<translation name="GameDefinition.Dialog.ObjectClassDuplicate.Title">Duplicate Object Class</translation>
+	<translation name="GameDefinition.Dialog.ObjectClassDuplicate.Name">Name:</translation>
+	<translation name="GameDefinition.Dialog.ObjectClassDuplicate.ErrorExists">Object Class exists already.</translation>
+	
+	<translation name="GameDefinition.Dialog.ObjectClassSubclass.Title">Subclass Object Class</translation>
+	<translation name="GameDefinition.Dialog.ObjectClassSubclass.Name">Name:</translation>
+	<translation name="GameDefinition.Dialog.ObjectClassSubclass.ErrorExists">Object Class exists already.</translation>
+	
+	<translation name="GameDefinition.Dialog.ObjectClassPaste.Title">Paste Object Class</translation>
+	
+	<translation name="GameDefinition.Dialog.ObjectClassExportXmlEClass.Title">Export XML Element Class</translation>
+	
+	<translation name="GameDefinition.Dialog.ParticleEmitterAdd.Title">Add Particle Emitter</translation>
+	<translation name="GameDefinition.Dialog.ParticleEmitterAdd.ErrorExists">Particle emitter with path exists already.</translation>
+	<translation name="GameDefinition.Dialog.ParticleEmitterSelect.Title">Select particle emitter</translation>
+	
+	<translation name="GameDefinition.Dialog.SkinAdd.Title">Add Skin</translation>
+	<translation name="GameDefinition.Dialog.SkinAdd.ErrorExists">Skin with path exists already.</translation>
+	<translation name="GameDefinition.Dialog.SkinMaterialSelect.Title">Select skin material</translation>
+	
+	<translation name="GameDefinition.Dialog.SkyAdd.Title">Add Sky</translation>
+	<translation name="GameDefinition.Dialog.SkyAdd.ErrorExists">Sky with path exists already.</translation>
+	<translation name="GameDefinition.Dialog.SkySelect.Title">Select sky</translation>
+	
+	<!-- Undo Descriptions -->
+	
+	<!-- Object Class Component -->
+	<translation name="GameDefinition.OCComponent.Dialog.AddTexture">Add Texture</translation>
+	<translation name="GameDefinition.OCComponent.Dialog.RenameTexture">Rename texture</translation>
+	<translation name="GameDefinition.OCComponent.Dialog.EditTexturePropertyValue">Edit Texture Property Value</translation>
+	<translation name="GameDefinition.OCComponent.Dialog.SetTexturePropertyValue">Set Texture Property Value</translation>
+	<translation name="GameDefinition.OCComponent.Dialog.Name">Name:</translation>
+	<translation name="GameDefinition.OCComponent.Dialog.Value">Value:</translation>
+	
+	<!-- Object Class Environment Map Probe -->
+	
+	<!-- Object Class Force Field -->
+	
+	<!-- Object Class Navigation Blocker -->
+	
+	<!-- Object Class Navigation Space -->
+	
+	<!-- Object Class General -->
+	<translation name="GameDefinition.ObjectClass.Dialog.AddInherit">Add Inherit</translation>
+	<translation name="GameDefinition.ObjectClass.Dialog.AddTexture">Add Texture</translation>
+	<translation name="GameDefinition.ObjectClass.Dialog.RenameTexture">Rename texture</translation>
+	<translation name="GameDefinition.ObjectClass.Dialog.Name">Name:</translation>
+	
+	<!-- Path List Actions -->
+	<translation name="GameDefinition.PathList.Action.Append">Append</translation>
+	<translation name="GameDefinition.PathList.Action.Append.ToolTip">Append path</translation>
+	<translation name="GameDefinition.PathList.Action.Insert">Insert</translation>
+	<translation name="GameDefinition.PathList.Action.Insert.ToolTip">Insert path</translation>
+	<translation name="GameDefinition.PathList.Action.Remove">Remove</translation>
+	<translation name="GameDefinition.PathList.Action.Remove.ToolTip">Remove path</translation>
+	<translation name="GameDefinition.PathList.Action.Clear">Clear</translation>
+	<translation name="GameDefinition.PathList.Action.Clear.ToolTip">Clear path</translation>
+	
+	<!-- Pattern List Actions -->
+	<translation name="GameDefinition.PatternList.Action.Add">Add</translation>
+	<translation name="GameDefinition.PatternList.Action.Add.ToolTip">Add pattern</translation>
+	<translation name="GameDefinition.PatternList.Action.Remove">Remove</translation>
+	<translation name="GameDefinition.PatternList.Action.Remove.ToolTip">Remove pattern</translation>
+	<translation name="GameDefinition.PatternList.Action.Clear">Clear</translation>
+	<translation name="GameDefinition.PatternList.Action.Clear.ToolTip">Clear pattern</translation>
+	
+	<!-- Property List Actions -->
+	<translation name="GameDefinition.PropertyList.Action.Add">Add...</translation>
+	<translation name="GameDefinition.PropertyList.Action.Add.ToolTip">Add property</translation>
+	<translation name="GameDefinition.PropertyList.Action.Copy.ToolTip">Copy selected property</translation>
+	<translation name="GameDefinition.PropertyList.Action.Paste.ToolTip">Paste property</translation>
+	<translation name="GameDefinition.PropertyList.Action.Remove">Remove</translation>
+	<translation name="GameDefinition.PropertyList.Action.Remove.ToolTip">Remove selected property</translation>
+	<translation name="GameDefinition.PropertyList.Dialog.AddFilePattern">Add File Pattern</translation>
+	<translation name="GameDefinition.PropertyList.Dialog.AddOption">Add Option</translation>
+	<translation name="GameDefinition.PropertyList.Dialog.AddProperty">Add Property</translation>
+	<translation name="GameDefinition.PropertyList.Dialog.PasteProperty">Paste Property</translation>
+	<translation name="GameDefinition.PropertyList.Dialog.Name">Name:</translation>
+	<translation name="GameDefinition.PropertyList.Dialog.Option">Option:</translation>
+	
+	<!-- Sky Actions and Dialogs -->
+	<translation name="GameDefinition.Sky.Dialog.AddController">Add Controller</translation>
+	<translation name="GameDefinition.Sky.Dialog.RenameController">Rename controller</translation>
+	<translation name="GameDefinition.Sky.Dialog.Name">Name:</translation>
+	
+	<!-- Tag List Actions -->
+	<translation name="GameDefinition.TagList.Action.Add">Add...</translation>
+	<translation name="GameDefinition.TagList.Action.Add.ToolTip">Add tag</translation>
+	<translation name="GameDefinition.TagList.Action.Remove">Remove</translation>
+	<translation name="GameDefinition.TagList.Action.Remove.ToolTip">Remove tag</translation>
+	<translation name="GameDefinition.TagList.Action.Clear">Clear</translation>
+	<translation name="GameDefinition.TagList.Action.Clear.ToolTip">Clear tag</translation>
+	
+	<!-- Main Window Actions -->
+	<translation name="GameDefinition.WindowMain.Action.New">New</translation>
+	<translation name="GameDefinition.WindowMain.Action.New.ToolTip">Creates a new game definition</translation>
+	<translation name="GameDefinition.WindowMain.Action.Open">Open...</translation>
+	<translation name="GameDefinition.WindowMain.Action.Open.ToolTip">Opens game definition from file</translation>
+	<translation name="GameDefinition.WindowMain.Action.OpenProject">Open Project</translation>
+	<translation name="GameDefinition.WindowMain.Action.OpenProject.ToolTip">Open project game definition</translation>
+	<translation name="GameDefinition.WindowMain.Action.SaveAs">Save As...</translation>
+	<translation name="GameDefinition.WindowMain.Action.SaveAs.ToolTip">Saves the game definition under a differen file</translation>
+	<translation name="GameDefinition.WindowMain.Action.Save">Save</translation>
+	<translation name="GameDefinition.WindowMain.Action.Save.ToolTip">Save game definition to file</translation>
+	<translation name="GameDefinition.WindowMain.Action.Cut">Cut</translation>
+	<translation name="GameDefinition.WindowMain.Action.Cut.ToolTip">Cut selected objects</translation>
+	<translation name="GameDefinition.WindowMain.Action.Copy">Copy</translation>
+	<translation name="GameDefinition.WindowMain.Action.Copy.ToolTip">Copies selected objects</translation>
+	<translation name="GameDefinition.WindowMain.Action.Paste">Paste</translation>
+	<translation name="GameDefinition.WindowMain.Action.Paste.ToolTip">Paste objects</translation>
+	<translation name="GameDefinition.WindowMain.Action.Find">Find...</translation>
+	<translation name="GameDefinition.WindowMain.Action.Find.ToolTip">Find objects</translation>
+	<translation name="GameDefinition.WindowMain.Action.ShowEnvMapProbes">Show Environment Map Probes</translation>
+	<translation name="GameDefinition.WindowMain.Action.ShowEnvMapProbes.ToolTip">Show all environment map probes</translation>
+	<translation name="GameDefinition.WindowMain.Action.ShowNavBlockers">Show Navigation Blockers</translation>
+	<translation name="GameDefinition.WindowMain.Action.ShowNavBlockers.ToolTip">Show all navigation blockers</translation>
+	
+	<!-- Main Window Menus -->
+	<translation name="GameDefinition.WindowMain.Menu.GameDefinition">Game-Definition</translation>
+	<translation name="GameDefinition.WindowMain.Menu.Edit">Edit</translation>
+	<translation name="GameDefinition.WindowMain.Menu.View">View</translation>
+	
+	<!-- Main Window Dialogs -->
+	<translation name="GameDefinition.WindowMain.Dialog.NewGameDefinition">New Game Definition</translation>
+	<translation name="GameDefinition.WindowMain.Dialog.NewGameDefinition.Message">Creating a new game definition discards changes in the current one. Is that ok?</translation>
+	<translation name="GameDefinition.WindowMain.Dialog.OpenGameDefinition">Open Game Definition</translation>
+	<translation name="GameDefinition.WindowMain.Dialog.OpenGameDefinition.Message">Loading game definition discards changes in the current one. Is that ok?</translation>
+	<translation name="GameDefinition.WindowMain.Dialog.OpenProjectGameDefinition">Open Project Game Definition</translation>
+	<translation name="GameDefinition.WindowMain.Dialog.OpenProjectGameDefinition.Message">Loading project game definition discards changes in the current one. Is that ok?</translation>
+	<translation name="GameDefinition.WindowMain.Dialog.SaveGameDefinition">Save Game Definition</translation>
+	<translation name="GameDefinition.WindowMain.Dialog.Find">Find</translation>
+	<translation name="GameDefinition.WindowMain.Dialog.Text">Text:</translation>
+	<translation name="GameDefinition.WindowMain.Dialog.SelectProjectDataDirectory">Select Project Data Directory</translation>
+	
+	<!-- Category Add Actions -->
+	<translation name="GameDefinition.Menu.CategoryObjectClassAdd">Add Object Class Category...</translation>
+	<translation name="GameDefinition.Menu.CategoryObjectClassAdd.ToolTip">Add object class category</translation>
+	<translation name="GameDefinition.Menu.CategoryParticleEmitterAdd">Add Particle Emitter Category...</translation>
+	<translation name="GameDefinition.Menu.CategoryParticleEmitterAdd.ToolTip">Add particle emitter category</translation>
+	<translation name="GameDefinition.Menu.CategorySkinAdd">Add Skin Category...</translation>
+	<translation name="GameDefinition.Menu.CategorySkinAdd.ToolTip">Add skin category</translation>
+	<translation name="GameDefinition.Menu.CategorySkyAdd">Add Sky Category...</translation>
+	<translation name="GameDefinition.Menu.CategorySkyAdd.ToolTip">Add sky category</translation>
+	
+	<!-- GameDefinition Panel Actions -->
+	<translation name="GameDefinition.WPGameDefinition.Action.BasePath.ToolTip">Base path to project data files</translation>
+	
+	<!-- Path List Actions (already exist but adding for completeness) -->
+	<translation name="GameDefinition.PathList.Action.Append.ToolTip">Append path</translation>
+	<translation name="GameDefinition.PathList.Action.Insert.ToolTip">Insert path</translation>
+	<translation name="GameDefinition.PathList.Action.Remove.ToolTip">Remove path</translation>
+	<translation name="GameDefinition.PathList.Action.Clear.ToolTip">Clear path</translation>
+	
+	<!-- Pattern List Actions (already exist but adding for completeness) -->
+	<translation name="GameDefinition.PatternList.Action.Add.ToolTip">Add pattern</translation>
+	<translation name="GameDefinition.PatternList.Action.Remove.ToolTip">Remove pattern</translation>
+	<translation name="GameDefinition.PatternList.Action.Clear.ToolTip">Clear pattern</translation>
+	
+	<!-- Property List Actions (already exist but adding for completeness) -->
+	<translation name="GameDefinition.PropertyList.Action.Add.ToolTip">Add property</translation>
+	<translation name="GameDefinition.PropertyList.Action.Remove.ToolTip">Remove selected property</translation>
+	<translation name="GameDefinition.PropertyList.Action.Copy">Copy</translation>
+	<translation name="GameDefinition.PropertyList.Action.Copy.ToolTip">Copy selected property</translation>
+	<translation name="GameDefinition.PropertyList.Action.Cut">Cut</translation>
+	<translation name="GameDefinition.PropertyList.Action.Cut.ToolTip">Cut selected property</translation>
+	<translation name="GameDefinition.PropertyList.Action.Paste.ToolTip">Paste property</translation>
+	
+	<!-- Object Class Property Dialogs -->
+	<translation name="GameDefinition.WPSObjectClass.Dialog.EditPropertyValue">Edit Property Value</translation>
+	<translation name="GameDefinition.WPSObjectClass.Dialog.SetPropertyValue">Set Property Value</translation>
+	<translation name="GameDefinition.WPSObjectClass.Dialog.Value">Value:</translation>
+	
+	<!-- WPSObjectClass Action Jump to Category -->
+	
+	<!-- WPSParticleEmitter Action Jump to Category -->
+	<translation name="GameDefinition.WPSParticleEmitter.JumpToCategory.ToolTip">Jump to category</translation>
+	
+	<!-- WPSSkin Action Jump to Category -->
+	<translation name="GameDefinition.WPSSkin.JumpToCategory.ToolTip">Jump to category</translation>
+	
+	<!-- WPSSky Action Jump to Category -->
+	<translation name="GameDefinition.WPSSky.JumpToCategory.ToolTip">Jump to category</translation>
+	<translation name="GameDefinition.OCComponent.ATextureWithThisNameExistsAlready.Error">A texture with this name exists already.</translation>
+	<translation name="GameDefinition.OCComponent.AddTexture.Error">Add Texture</translation>
+	<translation name="GameDefinition.OCComponent.Dialog.ATextureWithThisNameExistsAlready">A texture with this name exists already.</translation>
+	<translation name="GameDefinition.OCComponent.Dialog.AddTexture">Add Texture</translation>
+	<translation name="GameDefinition.OCComponent.Dialog.EditTexturePropertyValue">Edit Texture Property Value</translation>
+	<translation name="GameDefinition.OCComponent.Dialog.Name">Name:</translation>
+	<translation name="GameDefinition.OCComponent.Dialog.RenameTexture">Rename texture</translation>
+	<translation name="GameDefinition.OCComponent.Dialog.SetTexturePropertyValue">Set Texture Property Value</translation>
+	<translation name="GameDefinition.OCComponent.Dialog.Value">Value:</translation>
+	<translation name="GameDefinition.OCEnvMapProbe.InputValueDoesNotDecodeToAProperShapeList.Error">Input value does not decode to a proper shape list</translation>
+	<translation name="GameDefinition.OCEnvMapProbe.InvalidInput.Error">Invalid Input</translation>
+	<translation name="GameDefinition.OCForceField.InputValueDoesNotDecodeToAProperShapeList.Error">Input value does not decode to a proper shape list</translation>
+	<translation name="GameDefinition.OCForceField.InvalidInput.Error">Invalid Input</translation>
+	<translation name="GameDefinition.OCNavigationBlocker.InputValueDoesNotDecodeToAProperShapeList.Error">Input value does not decode to a proper shape list</translation>
+	<translation name="GameDefinition.OCNavigationBlocker.InvalidInput.Error">Invalid Input</translation>
+	<translation name="GameDefinition.OCNavigationSpace.InputValueDoesNotDecodeToAProperShapeList.Error">Input value does not decode to a proper shape list</translation>
+	<translation name="GameDefinition.OCNavigationSpace.InvalidInput.Error">Invalid Input</translation>
+	<translation name="GameDefinition.ObjectClass.ATextureWithThisNameExistsAlready.Error">A texture with this name exists already.</translation>
+	<translation name="GameDefinition.ObjectClass.AddInherit.Error">Add Inherit</translation>
+	<translation name="GameDefinition.ObjectClass.AddTexture.Error">Add Texture</translation>
+	<translation name="GameDefinition.ObjectClass.CanNotInheritFromYourself.Error">Can not inherit from yourself</translation>
+	<translation name="GameDefinition.ObjectClass.Dialog.ATextureWithThisNameExistsAlready">A texture with this name exists already.</translation>
+	<translation name="GameDefinition.ObjectClass.Dialog.AddInherit">Add Inherit</translation>
+	<translation name="GameDefinition.ObjectClass.Dialog.AddTexture">Add Texture</translation>
+	<translation name="GameDefinition.ObjectClass.Dialog.Name">Name:</translation>
+	<translation name="GameDefinition.ObjectClass.Dialog.RenameTexture">Rename texture</translation>
+	<translation name="GameDefinition.ObjectClass.InheritanceLoop.Error">Inheritance loop</translation>
+	<translation name="GameDefinition.ObjectClass.SetInheritName.Error">Set Inherit Name</translation>
+	<translation name="GameDefinition.ParticleEmitter.Dialog.ChangeParticleEmitterPath">Change particle emitter path</translation>
+	<translation name="GameDefinition.PathList.Action.Append">Append</translation>
+	<translation name="GameDefinition.PathList.Action.Clear">Clear</translation>
+	<translation name="GameDefinition.PathList.Action.Insert">Insert</translation>
+	<translation name="GameDefinition.PathList.Action.Remove">Remove</translation>
+	<translation name="GameDefinition.PatternList.Action.Add">Add</translation>
+	<translation name="GameDefinition.PatternList.Action.Clear">Clear</translation>
+	<translation name="GameDefinition.PatternList.Action.Remove">Remove</translation>
+	<translation name="GameDefinition.PropertyList.Action.Add">Add...</translation>
+	<translation name="GameDefinition.PropertyList.Action.AddCustomPattern">Add custom pattern</translation>
+	<translation name="GameDefinition.PropertyList.Action.Remove">Remove</translation>
+	<translation name="GameDefinition.PropertyList.Dialog.AddFilePattern">Add File Pattern</translation>
+	<translation name="GameDefinition.PropertyList.Dialog.AddOption">Add Option</translation>
+	<translation name="GameDefinition.PropertyList.Dialog.AddProperty">Add Property</translation>
+	<translation name="GameDefinition.PropertyList.Dialog.Name">Name:</translation>
+	<translation name="GameDefinition.PropertyList.Dialog.Option">Option:</translation>
+	<translation name="GameDefinition.PropertyList.Dialog.PasteProperty">Paste Property</translation>
+	<translation name="GameDefinition.PropertyList.NameExistsAlready.Error">Name exists already.</translation>
+	<translation name="GameDefinition.PropertyList.OptionExistsAlready.Error">Option exists already.</translation>
+	<translation name="GameDefinition.PropertyList.RenameProperty.Error">Rename property</translation>
+	<translation name="GameDefinition.Skin.Dialog.ChangeSkinEmitterPath">Change skin emitter path</translation>
+	<translation name="GameDefinition.Sky.Dialog.AControllerWithThisNameExistsAlready">A controller with this name exists already.</translation>
+	<translation name="GameDefinition.Sky.Dialog.ASkyEmitterWithThisPathExistsAlready">A sky emitter with this path exists already.</translation>
+	<translation name="GameDefinition.Sky.Dialog.AddController">Add Controller</translation>
+	<translation name="GameDefinition.Sky.Dialog.ChangeSkyEmitterPath">Change sky emitter path</translation>
+	<translation name="GameDefinition.Sky.Dialog.ControllerExistsAlready">Controller exists already.</translation>
+	<translation name="GameDefinition.Sky.Dialog.Name">Name:</translation>
+	<translation name="GameDefinition.Sky.Dialog.RenameController">Rename controller</translation>
+	<translation name="GameDefinition.TagList.Action.Add">Add...</translation>
+	<translation name="GameDefinition.TagList.Action.Clear">Clear</translation>
+	<translation name="GameDefinition.TagList.Action.Remove">Remove</translation>
+	<translation name="GameDefinition.WindowMain.Dialog.Find">Find</translation>
+	<translation name="GameDefinition.WindowMain.Dialog.OpenGameDefinition">Open Game Definition</translation>
+	<translation name="GameDefinition.WindowMain.Dialog.SaveGameDefinition">Save Game Definition</translation>
+	<translation name="GameDefinition.WindowMain.Dialog.Text">Text:</translation>
+	
+	<!-- Window Properties Tabs -->
+	<translation name="GameDefinition.WindowProperties.TabGameDefinition">Game Definition</translation>
+	<translation name="GameDefinition.WindowProperties.TabSelection">Selection</translation>
+	<translation name="GameDefinition.WindowProperties.TabView">View</translation>
+	<translation name="GameDefinition.WindowProperties.TabUndo">Undo</translation>
+	
+	<!-- WPView Panel -->
+	<translation name="GameDefinition.WPView.Camera">Camera:</translation>
+	<translation name="GameDefinition.WPView.EnvironmentObject">Environment Object:</translation>
+	
+	<!-- WPSelection Panel -->
+	<translation name="GameDefinition.WPSelection.TreeGameDefinitionObjects">Game definition objects</translation>
+	<translation name="GameDefinition.WPSelection.NoSelection">No Selection</translation>
+	
+	<!-- WPGameDefinition Panel -->
+	<translation name="GameDefinition.WPGameDefinition.GroupGameDefinition">Game Definition:</translation>
+	<translation name="GameDefinition.WPGameDefinition.Identifier">Identifier:</translation>
+	<translation name="GameDefinition.WPGameDefinition.Identifier.ToolTip">Identifier</translation>
+	<translation name="GameDefinition.WPGameDefinition.Description">Description:</translation>
+	<translation name="GameDefinition.WPGameDefinition.Description.ToolTip">Description</translation>
+	<translation name="GameDefinition.WPGameDefinition.BasePath">Base Path:</translation>
+	<translation name="GameDefinition.WPGameDefinition.BasePath.ToolTip">Base path to project data files</translation>
+	<translation name="GameDefinition.WPGameDefinition.VFSPath">VFS Path:</translation>
+	<translation name="GameDefinition.WPGameDefinition.VFSPath.ToolTip">VFS path the base path will be visible at</translation>
+	<translation name="GameDefinition.WPGameDefinition.ScriptModule">Script Module:</translation>
+	<translation name="GameDefinition.WPGameDefinition.ScriptModule.ToolTip">Script module this game definition is compatible with</translation>
+	<translation name="GameDefinition.WPGameDefinition.GroupInformation">Information:</translation>
+	<translation name="GameDefinition.WPGameDefinition.UseBasePath">Use Base Path:</translation>
+	<translation name="GameDefinition.WPGameDefinition.UseBasePath.ToolTip">Actually used base path (can differ if this is the project game definition)</translation>
+	<translation name="GameDefinition.WPGameDefinition.IsProjectGameDefinition">Is Project Game Definition</translation>
+	<translation name="GameDefinition.WPGameDefinition.IsProjectGameDefinition.ToolTip">Indicates if this is the project game definition</translation>
+	<translation name="GameDefinition.WPGameDefinition.GroupWorldProperties">World Properties:</translation>
+	<translation name="GameDefinition.WPGameDefinition.GroupDecalProperties">Decal Properties:</translation>
+	<translation name="GameDefinition.WPGameDefinition.GroupAutoFindPathObjectClasses">Auto Find Path Object Classes:</translation>
+	<translation name="GameDefinition.WPGameDefinition.GroupAutoFindPathSkins">Auto Find Path Skins:</translation>
+	<translation name="GameDefinition.WPGameDefinition.GroupAutoFindPathSkies">Auto Find Path Skies:</translation>
+	
+	<!-- WPSCategory Panel -->
+	<translation name="GameDefinition.WPSCategory.GroupCategory">Category:</translation>
+	<translation name="GameDefinition.WPSCategory.Name">Name:</translation>
+	<translation name="GameDefinition.WPSCategory.Name.ToolTip">Category name</translation>
+	<translation name="GameDefinition.WPSCategory.Description">Description:</translation>
+	<translation name="GameDefinition.WPSCategory.Description.ToolTip">Category description</translation>
+	<translation name="GameDefinition.WPSCategory.Hidden">Hidden</translation>
+	<translation name="GameDefinition.WPSCategory.Hidden.ToolTip">Hide in browsers</translation>
+	<translation name="GameDefinition.WPSCategory.GroupAutoCategorize">Auto Categorize:</translation>
+	<translation name="GameDefinition.WPSCategory.GroupAssignedElements">Assigned Elements:</translation>
+	<translation name="GameDefinition.WPSCategory.AssignedElements.ToolTip">Assigned Elements. Double click to jump to element</translation>
+	<translation name="GameDefinition.WPSCategory.Dialog.RenameCategory">Rename category</translation>
+	<translation name="GameDefinition.WPSCategory.Dialog.CategoryExists">A category with this name exists already.</translation>
+	
+	<!-- WPPropertyList Panel -->
+	<translation name="GameDefinition.WPPropertyList.Property">Property:</translation>
+	<translation name="GameDefinition.WPPropertyList.Property.ToolTip">Property to edit</translation>
+	<translation name="GameDefinition.WPPropertyList.Name">Name:</translation>
+	<translation name="GameDefinition.WPPropertyList.Name.ToolTip">Property name</translation>
+	<translation name="GameDefinition.WPPropertyList.Description">Description:</translation>
+	<translation name="GameDefinition.WPPropertyList.Description.ToolTip">Property description</translation>
+	<translation name="GameDefinition.WPPropertyList.Type">Type:</translation>
+	<translation name="GameDefinition.WPPropertyList.Type.ToolTip">Property type</translation>
+	<translation name="GameDefinition.WPPropertyList.Default">Default:</translation>
+	<translation name="GameDefinition.WPPropertyList.Default.ToolTip">Default property value</translation>
+	<translation name="GameDefinition.WPPropertyList.GroupParameters">Parameters:</translation>
+	<translation name="GameDefinition.WPPropertyList.NoParameters">&lt; No Parameters &gt;</translation>
+	<translation name="GameDefinition.WPPropertyList.Minimum">Minimum:</translation>
+	<translation name="GameDefinition.WPPropertyList.Minimum.ToolTip">Minimum value for range type property</translation>
+	<translation name="GameDefinition.WPPropertyList.Maximum">Maximum:</translation>
+	<translation name="GameDefinition.WPPropertyList.Maximum.ToolTip">Maximum value for range type property</translation>
+	<translation name="GameDefinition.WPPropertyList.AllowedOptions.ToolTip">Allowed options</translation>
+	<translation name="GameDefinition.WPPropertyList.PatternType">Pattern type:</translation>
+	<translation name="GameDefinition.WPPropertyList.PatternType.ToolTip">Path pattern type</translation>
+	<translation name="GameDefinition.WPPropertyList.CustomPattern">Custom pattern:</translation>
+	<translation name="GameDefinition.WPPropertyList.CustomPattern.ToolTip">Custom pattern to edit.</translation>
+	<translation name="GameDefinition.WPPropertyList.CustomPatternName">Name:</translation>
+	<translation name="GameDefinition.WPPropertyList.CustomPatternName.ToolTip">Name of pattern in file dialogs</translation>
+	<translation name="GameDefinition.WPPropertyList.CustomPatternPattern">Pattern:</translation>
+	<translation name="GameDefinition.WPPropertyList.CustomPatternPattern.ToolTip">Pattern</translation>
+	<translation name="GameDefinition.WPPropertyList.CustomPatternExtension">Extension:</translation>
+	<translation name="GameDefinition.WPPropertyList.CustomPatternExtension.ToolTip">Extension to use for saving files</translation>
+	<translation name="GameDefinition.WPPropertyList.IdentifierGroup">Group:</translation>
+	<translation name="GameDefinition.WPPropertyList.IdentifierGroup.ToolTip">Identifier group name</translation>
+	
+	<!-- WPSOCBillboard Panel -->
+	<translation name="GameDefinition.WPSOCBillboard.Skin.ToolTip">Skin</translation>
+	<translation name="GameDefinition.WPSOCBillboard.Axis.ToolTip">Billboard axis</translation>
+	<translation name="GameDefinition.WPSOCBillboard.Size.ToolTip">Billboard size in meters</translation>
+	<translation name="GameDefinition.WPSOCBillboard.Offset.ToolTip">Texture coordinate offset in meters</translation>
+	<translation name="GameDefinition.WPSOCBillboard.Position.ToolTip">Position relative to object class</translation>
+	
+	<!-- WPSOCCamera Panel -->
+	<translation name="GameDefinition.WPSOCCamera.FOV.ToolTip">Field of view (FOV) in degrees</translation>
+	<translation name="GameDefinition.WPSOCCamera.FOVRatio.ToolTip">Field of view Ratio</translation>
+	<translation name="GameDefinition.WPSOCCamera.ImageDistance.ToolTip">Image distance in meters</translation>
+	<translation name="GameDefinition.WPSOCCamera.ViewDistance.ToolTip">View distance in meters</translation>
+	<translation name="GameDefinition.WPSOCCamera.IDProperty.ToolTip">ID property</translation>
+	<translation name="GameDefinition.WPSOCCamera.PositionProperty.ToolTip">Position property</translation>
+	<translation name="GameDefinition.WPSOCCamera.RotationProperty.ToolTip">Rotation property</translation>
+	
+	<!-- WPSOCComponent Panel -->
+	
+	<!-- WPSOCEnvMapProbe Panel -->
+	<translation name="GameDefinition.WPSOCEnvMapProbe.Position.ToolTip">Position relative to object class</translation>
+	<translation name="GameDefinition.WPSOCEnvMapProbe.Rotation.ToolTip">Rotation in degrees</translation>
+	<translation name="GameDefinition.WPSOCEnvMapProbe.Scaling.ToolTip">Scaling factor for environment map</translation>
+	<translation name="GameDefinition.WPSOCEnvMapProbe.InfluenceBorderSize.ToolTip">Influence border size</translation>
+	<translation name="GameDefinition.WPSOCEnvMapProbe.InfluencePriority.ToolTip">Influence priority</translation>
+	
+	<!-- WPSOCForceField Panel -->
+	
+	<!-- WPSOCLight Panel -->
+	
+	<!-- WPSOCNavigationBlocker Panel -->
+	<translation name="GameDefinition.WPSOCNavigationBlocker.Position.ToolTip">Position relative to object class</translation>
+	<translation name="GameDefinition.WPSOCNavigationBlocker.Rotation.ToolTip">Rotation in degrees</translation>
+	<translation name="GameDefinition.WPSOCNavigationBlocker.Scaling.ToolTip">Scaling</translation>
+	<translation name="GameDefinition.WPSOCNavigationBlocker.Shape.ToolTip">Shape list</translation>
+	<translation name="GameDefinition.WPSOCNavigationBlocker.Layer.ToolTip">Layer number</translation>
+	<translation name="GameDefinition.WPSOCNavigationBlocker.BlockingPriority.ToolTip">Blocking priority</translation>
+	
+	<!-- WPSOCNavigationSpace Panel -->
+	<translation name="GameDefinition.WPSOCNavigationSpace.Path.ToolTip">Navigation space</translation>
+	<translation name="GameDefinition.WPSOCNavigationSpace.Position.ToolTip">Position relative to object class</translation>
+	<translation name="GameDefinition.WPSOCNavigationSpace.Rotation.ToolTip">Rotation in degrees</translation>
+	<translation name="GameDefinition.WPSOCNavigationSpace.Layer.ToolTip">Layer number</translation>
+	<translation name="GameDefinition.WPSOCNavigationSpace.SnapDistance.ToolTip">Snap distance</translation>
+	<translation name="GameDefinition.WPSOCNavigationSpace.SnapAngle.ToolTip">Snap angle</translation>
+	
+	<!-- WPSOCParticleEmitter Panel -->
+	<translation name="GameDefinition.WPSOCParticleEmitter.Path.ToolTip">Particle emitter</translation>
+	<translation name="GameDefinition.WPSOCParticleEmitter.Position.ToolTip">Position relative to object class</translation>
+	<translation name="GameDefinition.WPSOCParticleEmitter.Rotation.ToolTip">Rotation in degrees</translation>
+	
+	<!-- WPSOCSnapPoint Panel -->
+	<translation name="GameDefinition.WPSOCSnapPoint.Position.ToolTip">Position relative to object class</translation>
+	<translation name="GameDefinition.WPSOCSnapPoint.Rotation.ToolTip">Rotation in degrees</translation>
+	<translation name="GameDefinition.WPSOCSnapPoint.SnapDistance.ToolTip">Snap distance in meters</translation>
+	
+	<!-- WPSOCSpeaker Panel -->
+	
+	<!-- WPSOCWorld Panel -->
+	<translation name="GameDefinition.WPSOCWorld.Position.ToolTip">Position relative to object class</translation>
+	<translation name="GameDefinition.WPSOCWorld.Rotation.ToolTip">Rotation in degrees</translation>
+	
+	<!-- WPSObjectClass Panel -->
+	<translation name="GameDefinition.WPSObjectClass.CanInstantiate">Can Instantiate</translation>
+	<translation name="GameDefinition.WPSObjectClass.CanInstantiate.ToolTip">Object class can be instantiated</translation>
+	
+	<!-- WPSParticleEmitter Panel -->
+	<translation name="GameDefinition.WPSParticleEmitter.GroupParticleEmitter">Particle Emitter:</translation>
+	<translation name="GameDefinition.WPSParticleEmitter.Name.ToolTip">Unique particle emitter name</translation>
+	<translation name="GameDefinition.WPSParticleEmitter.Description.ToolTip">Particle emitter description for use in editors</translation>
+	<translation name="GameDefinition.WPSParticleEmitter.Category.ToolTip">Category to group particle emitter into</translation>
+	
+	<!-- WPSSkin Panel -->
+	<translation name="GameDefinition.WPSSkin.GroupSkin">Skin:</translation>
+	<translation name="GameDefinition.WPSSkin.Name.ToolTip">Unique skin name</translation>
+	<translation name="GameDefinition.WPSSkin.Description.ToolTip">Skin description for use in editors</translation>
+	<translation name="GameDefinition.WPSSkin.Category.ToolTip">Category to group skin into</translation>
+	
+	<!-- WPSSky Panel -->
+	<translation name="GameDefinition.WPSSky.GroupSky">Sky:</translation>
+	<translation name="GameDefinition.WPSSky.Name.ToolTip">Unique sky name</translation>
+	<translation name="GameDefinition.WPSSky.Description.ToolTip">Sky description for use in editors</translation>
+	<translation name="GameDefinition.WPSSky.Category.ToolTip">Category to group sky into</translation>
+	<translation name="GameDefinition.WPSSky.Path.ToolTip">Path to sky resource file</translation>
+	
+	<!-- Undo Actions -->
+	<translation name="GameDefinition.Undo.AddObjectClass">Add object class</translation>
+	<translation name="GameDefinition.Undo.AddParticleEmitter">Add particle emitter</translation>
+	<translation name="GameDefinition.Undo.AddSkin">Add skin</translation>
+	<translation name="GameDefinition.Undo.AddSky">Add sky</translation>
+	<translation name="GameDefinition.Undo.CategoryAdd">Category add</translation>
+	<translation name="GameDefinition.Undo.CategoryRemove">Category remove</translation>
+	<translation name="GameDefinition.Undo.CategorySetAutoCategorizePattern">Category set auto categorize pattern</translation>
+	<translation name="GameDefinition.Undo.CategorySetDescription">Category set description</translation>
+	<translation name="GameDefinition.Undo.CategorySetName">Category set name</translation>
+	<translation name="GameDefinition.Undo.CategoryToggleHidden">Category toggle hidden</translation>
+	<translation name="GameDefinition.Undo.GDDPCFPAdd">Game definition property add custom file pattern</translation>
+	<translation name="GameDefinition.Undo.GDDPCFPRemove">Game definition property remove custom file pattern</translation>
+	<translation name="GameDefinition.Undo.GDDPCFPSetExtension">Game definition property custom file pattern set extension</translation>
+	<translation name="GameDefinition.Undo.GDDPCFPSetName">Game definition property custom file pattern set name</translation>
+	<translation name="GameDefinition.Undo.GDDPCFPSetPattern">Game definition property custom file pattern set pattern</translation>
+	<translation name="GameDefinition.Undo.GDDPSetDefaultValue">Game definition property set default value</translation>
+	<translation name="GameDefinition.Undo.GDDPSetDescription">Game definition property set description</translation>
+	<translation name="GameDefinition.Undo.GDDPSetIdentifierGroup">Game definition property set identifier group</translation>
+	<translation name="GameDefinition.Undo.GDDPSetMaxValue">Game definition property set maximum value</translation>
+	<translation name="GameDefinition.Undo.GDDPSetMinValue">Game definition property set minimum value</translation>
+	<translation name="GameDefinition.Undo.GDDPSetName">Game definition property set name</translation>
+	<translation name="GameDefinition.Undo.GDDPSetOptions">Game definition property set options</translation>
+	<translation name="GameDefinition.Undo.GDDPSetPathPatternType">Game definition property set path pattern type</translation>
+	<translation name="GameDefinition.Undo.GDDPSetType">Game definition property set type</translation>
+	<translation name="GameDefinition.Undo.GDDPToggleIdentifierUsage">Game definition property toggle identifier usage</translation>
+	<translation name="GameDefinition.Undo.GDDPropertyAdd">Game definition add property</translation>
+	<translation name="GameDefinition.Undo.GDDPropertyRemove">Game definition remove property</translation>
+	<translation name="GameDefinition.Undo.GDSetAutoFindPathObjectClasses">Game definition set auto find path object classes</translation>
+	<translation name="GameDefinition.Undo.GDSetAutoFindPathSkies">Game definition set auto find path skies</translation>
+	<translation name="GameDefinition.Undo.GDSetAutoFindPathSkins">Game definition set auto find path skins</translation>
+	<translation name="GameDefinition.Undo.GDSetBaseGameDefIDs">Game definition set base game definition IDs</translation>
+	<translation name="GameDefinition.Undo.GDSetBasePath">Game definition set base path</translation>
+	<translation name="GameDefinition.Undo.GDSetDescription">Game definition set description</translation>
+	<translation name="GameDefinition.Undo.GDSetID">Game definition set identifier</translation>
+	<translation name="GameDefinition.Undo.GDSetScriptModule">Game definition set script module</translation>
+	<translation name="GameDefinition.Undo.GDSetVFSPath">Game definition set VFS path</translation>
+	<translation name="GameDefinition.Undo.GDWPCFPAdd">Game definition property add custom file pattern</translation>
+	<translation name="GameDefinition.Undo.GDWPCFPRemove">Game definition property remove custom file pattern</translation>
+	<translation name="GameDefinition.Undo.GDWPCFPSetExtension">Game definition property custom file pattern set extension</translation>
+	<translation name="GameDefinition.Undo.GDWPCFPSetName">Game definition property custom file pattern set name</translation>
+	<translation name="GameDefinition.Undo.GDWPCFPSetPattern">Game definition property custom file pattern set pattern</translation>
+	<translation name="GameDefinition.Undo.GDWPSetDefaultValue">Game definition property set default value</translation>
+	<translation name="GameDefinition.Undo.GDWPSetDescription">Game definition property set description</translation>
+	<translation name="GameDefinition.Undo.GDWPSetIdentifierGroup">Game definition property set identifier group</translation>
+	<translation name="GameDefinition.Undo.GDWPSetMaxValue">Game definition property set maximum value</translation>
+	<translation name="GameDefinition.Undo.GDWPSetMinValue">Game definition property set minimum value</translation>
+	<translation name="GameDefinition.Undo.GDWPSetName">Game definition property set name</translation>
+	<translation name="GameDefinition.Undo.GDWPSetOptions">Game definition property set options</translation>
+	<translation name="GameDefinition.Undo.GDWPSetPathPatternType">Game definition property set path pattern type</translation>
+	<translation name="GameDefinition.Undo.GDWPSetType">Game definition property set type</translation>
+	<translation name="GameDefinition.Undo.GDWPToggleIdentifierUsage">Game definition property toggle identifier usage</translation>
+	<translation name="GameDefinition.Undo.GDWPropertyAdd">Game definition add property</translation>
+	<translation name="GameDefinition.Undo.GDWPropertyRemove">Game definition remove property</translation>
+	<translation name="GameDefinition.Undo.OCAddBillboard">Add billboard</translation>
+	<translation name="GameDefinition.Undo.OCAddCamera">Add camera</translation>
+	<translation name="GameDefinition.Undo.OCAddComponent">Add component</translation>
+	<translation name="GameDefinition.Undo.OCAddEnvMapProbe">Add environment map probe</translation>
+	<translation name="GameDefinition.Undo.OCAddForceField">Add force field</translation>
+	<translation name="GameDefinition.Undo.OCAddInherit">Add inherit</translation>
+	<translation name="GameDefinition.Undo.OCAddLight">Add light</translation>
+	<translation name="GameDefinition.Undo.OCAddNavBlocker">Add navblocker</translation>
+	<translation name="GameDefinition.Undo.OCAddNavSpace">Add navspace</translation>
+	<translation name="GameDefinition.Undo.OCAddParticleEmitter">Add particleEmitter</translation>
+	<translation name="GameDefinition.Undo.OCAddSnapPoint">Add snap point</translation>
+	<translation name="GameDefinition.Undo.OCAddSpeaker">Add speaker</translation>
+	<translation name="GameDefinition.Undo.OCAddTexture">Add texture</translation>
+	<translation name="GameDefinition.Undo.OCAddWorld">Add World</translation>
+	<translation name="GameDefinition.Undo.OCBillboardSetAxis">Billboard set axis</translation>
+	<translation name="GameDefinition.Undo.OCBillboardSetBoneName">Billboard set bone name</translation>
+	<translation name="GameDefinition.Undo.OCBillboardSetOffset">Billboard set offset</translation>
+	<translation name="GameDefinition.Undo.OCBillboardSetPosition">Billboard set position</translation>
+	<translation name="GameDefinition.Undo.OCBillboardSetPropertyName">Billboard set property name</translation>
+	<translation name="GameDefinition.Undo.OCBillboardSetSize">Billboard set size</translation>
+	<translation name="GameDefinition.Undo.OCBillboardSetSkinPath">Billboard set skin path</translation>
+	<translation name="GameDefinition.Undo.OCBillboardToggleDoNotScale">Billboard toggle do not scale</translation>
+	<translation name="GameDefinition.Undo.OCBillboardToggleLocked">Billboard toggle locked</translation>
+	<translation name="GameDefinition.Undo.OCBillboardTogglePartialHide">Billboard toggle partial hide</translation>
+	<translation name="GameDefinition.Undo.OCBillboardToggleRenderEnvMap">Billboard toggle render env-map</translation>
+	<translation name="GameDefinition.Undo.OCBillboardToggleSizeFixedToScreen">Billboard toggle size fixed to screen</translation>
+	<translation name="GameDefinition.Undo.OCBillboardToggleSpherical">Billboard toggle spherical</translation>
+	<translation name="GameDefinition.Undo.OCCAddTexture">Component add texture</translation>
+	<translation name="GameDefinition.Undo.OCCRemoveTexture">Component remove texture</translation>
+	<translation name="GameDefinition.Undo.OCCTextureSetColorTint">Component texture set color tint</translation>
+	<translation name="GameDefinition.Undo.OCCTextureSetName">Component texture set name</translation>
+	<translation name="GameDefinition.Undo.OCCTextureSetOffset">Component texture set offset</translation>
+	<translation name="GameDefinition.Undo.OCCTextureSetPathSkin">Component texture set skin path</translation>
+	<translation name="GameDefinition.Undo.OCCTextureSetProperties">Component texture set properties</translation>
+	<translation name="GameDefinition.Undo.OCCTextureSetRotation">Component texture set rotation</translation>
+	<translation name="GameDefinition.Undo.OCCTextureSetScale">Component texture set scale</translation>
+	<translation name="GameDefinition.Undo.OCCameraSetFov">Camera set fov</translation>
+	<translation name="GameDefinition.Undo.OCCameraSetFovRatio">Camera set fov ratio</translation>
+	<translation name="GameDefinition.Undo.OCCameraSetImageDistance">Camera set image distance</translation>
+	<translation name="GameDefinition.Undo.OCCameraSetPosition">Camera set position</translation>
+	<translation name="GameDefinition.Undo.OCCameraSetPropertyName">Camera set property name</translation>
+	<translation name="GameDefinition.Undo.OCCameraSetPropertyPosition">Camera set property position</translation>
+	<translation name="GameDefinition.Undo.OCCameraSetPropertyRotation">Camera set property rotation</translation>
+	<translation name="GameDefinition.Undo.OCCameraSetRotation">Camera set orientation</translation>
+	<translation name="GameDefinition.Undo.OCCameraSetViewDistance">Camera set view distance</translation>
+	<translation name="GameDefinition.Undo.OCComponentSetAnimationPath">Component set animation path</translation>
+	<translation name="GameDefinition.Undo.OCComponentSetAnimatorPath">Component set animator path</translation>
+	<translation name="GameDefinition.Undo.OCComponentSetAudioModelPath">Component set audio model path</translation>
+	<translation name="GameDefinition.Undo.OCComponentSetBoneName">Component set bone name</translation>
+	<translation name="GameDefinition.Undo.OCComponentSetColRespType">Component set collider response type</translation>
+	<translation name="GameDefinition.Undo.OCComponentSetModelPath">Component set model path</translation>
+	<translation name="GameDefinition.Undo.OCComponentSetMove">Component set move</translation>
+	<translation name="GameDefinition.Undo.OCComponentSetOccMeshPath">Component set occlusion mesh path</translation>
+	<translation name="GameDefinition.Undo.OCComponentSetPlaybackController">Component set move name</translation>
+	<translation name="GameDefinition.Undo.OCComponentSetPosition">Component set position</translation>
+	<translation name="GameDefinition.Undo.OCComponentSetPropertyName">Component set property name</translation>
+	<translation name="GameDefinition.Undo.OCComponentSetRigPath">Component set rig path</translation>
+	<translation name="GameDefinition.Undo.OCComponentSetRotation">Component set orientation</translation>
+	<translation name="GameDefinition.Undo.OCComponentSetSkinPath">Component set skin path</translation>
+	<translation name="GameDefinition.Undo.OCComponentToggleAffectsAudio">Component toggle affects audiomap</translation>
+	<translation name="GameDefinition.Undo.OCComponentToggleAttachTarget">Component toggle attach target</translation>
+	<translation name="GameDefinition.Undo.OCComponentToggleDoNotScale">Component toggle do not scale</translation>
+	<translation name="GameDefinition.Undo.OCComponentToggleLightShadowIgnore">Component toggle light shadow ignore</translation>
+	<translation name="GameDefinition.Undo.OCComponentTogglePartialHide">Component toggle partial hide</translation>
+	<translation name="GameDefinition.Undo.OCComponentToggleRenderEnvMap">Component toggle render env-map</translation>
+	<translation name="GameDefinition.Undo.OCComponentToggleStatic">Component toggle static</translation>
+	<translation name="GameDefinition.Undo.OCEnvMapProbeSetInfluenceBorderSize">Env-map probe set influence border size</translation>
+	<translation name="GameDefinition.Undo.OCEnvMapProbeSetInfluencePriority">Env-map probe set influence priority</translation>
+	<translation name="GameDefinition.Undo.OCEnvMapProbeSetPosition">Env-map probe set position</translation>
+	<translation name="GameDefinition.Undo.OCEnvMapProbeSetPropertyName">Env-map probe set property name</translation>
+	<translation name="GameDefinition.Undo.OCEnvMapProbeSetRotation">Env-map probe set position</translation>
+	<translation name="GameDefinition.Undo.OCEnvMapProbeSetScaling">Env-map probe set scaling</translation>
+	<translation name="GameDefinition.Undo.OCEnvMapProbeSetShapeInfluence">Env-map probe set shape influence</translation>
+	<translation name="GameDefinition.Undo.OCEnvMapProbeSetShapeReflection">Env-map probe set shape reflection</translation>
+	<translation name="GameDefinition.Undo.OCEnvMapProbeSetShapeReflectionMask">Env-map probe set shape reflection mask</translation>
+	<translation name="GameDefinition.Undo.OCForceFieldSetApplicationType">Force field set application type</translation>
+	<translation name="GameDefinition.Undo.OCForceFieldSetBoneName">Force field set bone name</translation>
+	<translation name="GameDefinition.Undo.OCForceFieldSetDirection">Force field set direction</translation>
+	<translation name="GameDefinition.Undo.OCForceFieldSetExponent">Force field set exponent</translation>
+	<translation name="GameDefinition.Undo.OCForceFieldSetFieldType">Force field set field type</translation>
+	<translation name="GameDefinition.Undo.OCForceFieldSetFluctuationDirection">Force field set fluctuation direction</translation>
+	<translation name="GameDefinition.Undo.OCForceFieldSetFluctuationForce">Force field set fluctuation force</translation>
+	<translation name="GameDefinition.Undo.OCForceFieldSetForce">Force field set force</translation>
+	<translation name="GameDefinition.Undo.OCForceFieldSetInfluenceArea">Force field set influence area</translation>
+	<translation name="GameDefinition.Undo.OCForceFieldSetPosition">Force field set position</translation>
+	<translation name="GameDefinition.Undo.OCForceFieldSetPropertyName">Force field set property name</translation>
+	<translation name="GameDefinition.Undo.OCForceFieldSetRadius">Force field set radius</translation>
+	<translation name="GameDefinition.Undo.OCForceFieldSetRotation">Force field set rotation</translation>
+	<translation name="GameDefinition.Undo.OCForceFieldSetShape">Force field set shape</translation>
+	<translation name="GameDefinition.Undo.OCForceFieldSetTriggerName">Force field set trigger name</translation>
+	<translation name="GameDefinition.Undo.OCForceFieldToggleEnabled">Force field toggle enabled</translation>
+	<translation name="GameDefinition.Undo.OCInheritSetName">Object inherit set name</translation>
+	<translation name="GameDefinition.Undo.OCInheritSetPropertyPrefix">Inherit set property prefix</translation>
+	<translation name="GameDefinition.Undo.OCLightSetAmbientRatio">Light set ambient ratio</translation>
+	<translation name="GameDefinition.Undo.OCLightSetBoneName">Light set bone name</translation>
+	<translation name="GameDefinition.Undo.OCLightSetColor">Light set color</translation>
+	<translation name="GameDefinition.Undo.OCLightSetHalfIntDist">Light set half intensity distance</translation>
+	<translation name="GameDefinition.Undo.OCLightSetHintLightImportance">Light set hint light importance</translation>
+	<translation name="GameDefinition.Undo.OCLightSetHintMovement">Light set hint movement</translation>
+	<translation name="GameDefinition.Undo.OCLightSetHintParameter">Light set hint parameter</translation>
+	<translation name="GameDefinition.Undo.OCLightSetHintShadowImportance">Light set hint shadow importance</translation>
+	<translation name="GameDefinition.Undo.OCLightSetIntensity">Light set intensity</translation>
+	<translation name="GameDefinition.Undo.OCLightSetLightSkinPath">Light set light skin path</translation>
+	<translation name="GameDefinition.Undo.OCLightSetPosition">Light set position</translation>
+	<translation name="GameDefinition.Undo.OCLightSetPropertyName">Light set property name</translation>
+	<translation name="GameDefinition.Undo.OCLightSetRange">Light set range</translation>
+	<translation name="GameDefinition.Undo.OCLightSetRotation">Light set orientation</translation>
+	<translation name="GameDefinition.Undo.OCLightSetSpotAngle">Light set spot angle</translation>
+	<translation name="GameDefinition.Undo.OCLightSetSpotExponent">Light set spot exponent</translation>
+	<translation name="GameDefinition.Undo.OCLightSetSpotRatio">Light set spot ratio</translation>
+	<translation name="GameDefinition.Undo.OCLightSetSpotSmoothness">Light set spot smoothness</translation>
+	<translation name="GameDefinition.Undo.OCLightSetTriggerName">Light set trigger name</translation>
+	<translation name="GameDefinition.Undo.OCLightSetType">Light set type</translation>
+	<translation name="GameDefinition.Undo.OCLightToggleActivated">Light toggle activated</translation>
+	<translation name="GameDefinition.Undo.OCLightToggleCastShadows">Light toggle cast shadows</translation>
+	<translation name="GameDefinition.Undo.OCNavBlockerSetBlockingPriority">Nav-blocker set blocking priority</translation>
+	<translation name="GameDefinition.Undo.OCNavBlockerSetBoneName">NavBlocker set bone name</translation>
+	<translation name="GameDefinition.Undo.OCNavBlockerSetLayer">Nav-blocker set layer</translation>
+	<translation name="GameDefinition.Undo.OCNavBlockerSetPosition">Nav-blocker set position</translation>
+	<translation name="GameDefinition.Undo.OCNavBlockerSetPropertyName">NavBlocker set property name</translation>
+	<translation name="GameDefinition.Undo.OCNavBlockerSetRotation">Nav-blocker set rotation</translation>
+	<translation name="GameDefinition.Undo.OCNavBlockerSetScaling">Nav-blocker set scaling</translation>
+	<translation name="GameDefinition.Undo.OCNavBlockerSetShapeList">Nav-blocker set shapes</translation>
+	<translation name="GameDefinition.Undo.OCNavBlockerSetType">Nav-blocker set type</translation>
+	<translation name="GameDefinition.Undo.OCNavBlockerToggleEnabled">Nav-blocker toggle enabled</translation>
+	<translation name="GameDefinition.Undo.OCNavSpaceSetBlockerShapeList">Nav-space set shapes</translation>
+	<translation name="GameDefinition.Undo.OCNavSpaceSetBlockingPriority">Nav-space set blocking priority</translation>
+	<translation name="GameDefinition.Undo.OCNavSpaceSetBoneName">NavSpace set bone name</translation>
+	<translation name="GameDefinition.Undo.OCNavSpaceSetLayer">Nav-space set layer</translation>
+	<translation name="GameDefinition.Undo.OCNavSpaceSetPath">Nav-space set path</translation>
+	<translation name="GameDefinition.Undo.OCNavSpaceSetPosition">Nav-space set position</translation>
+	<translation name="GameDefinition.Undo.OCNavSpaceSetPropertyName">NavSpace set property name</translation>
+	<translation name="GameDefinition.Undo.OCNavSpaceSetRotation">Nav-space set rotation</translation>
+	<translation name="GameDefinition.Undo.OCNavSpaceSetSnapAngle">Nav-space set snap angle</translation>
+	<translation name="GameDefinition.Undo.OCNavSpaceSetSnapDistance">Nav-space set snap distance</translation>
+	<translation name="GameDefinition.Undo.OCNavSpaceSetType">Nav-spacer set type</translation>
+	<translation name="GameDefinition.Undo.OCPCFPAdd">Object class property add custom file pattern</translation>
+	<translation name="GameDefinition.Undo.OCPCFPRemove">Object class property remove custom file pattern</translation>
+	<translation name="GameDefinition.Undo.OCPCFPSetExtension">Object class property custom file pattern set extension</translation>
+	<translation name="GameDefinition.Undo.OCPCFPSetName">Object class property custom file pattern set name</translation>
+	<translation name="GameDefinition.Undo.OCPCFPSetPattern">Object class property custom file pattern set pattern</translation>
+	<translation name="GameDefinition.Undo.OCPSetDefaultValue">Object class property set default value</translation>
+	<translation name="GameDefinition.Undo.OCPSetDescription">Object class property set description</translation>
+	<translation name="GameDefinition.Undo.OCPSetIdentifierGroup">Object class property set identifier group</translation>
+	<translation name="GameDefinition.Undo.OCPSetMaxValue">Object class property set maximum value</translation>
+	<translation name="GameDefinition.Undo.OCPSetMinValue">Object class property set minimum value</translation>
+	<translation name="GameDefinition.Undo.OCPSetName">Object class property set name</translation>
+	<translation name="GameDefinition.Undo.OCPSetOptions">Object class property set options</translation>
+	<translation name="GameDefinition.Undo.OCPSetPathPatternType">Object class property set path pattern type</translation>
+	<translation name="GameDefinition.Undo.OCPSetType">Object class property set type</translation>
+	<translation name="GameDefinition.Undo.OCPToggleIdentifierUsage">Object class property toggle identifier usage</translation>
+	<translation name="GameDefinition.Undo.OCParticleEmitterSetBoneName">ParticleEmitter set bone name</translation>
+	<translation name="GameDefinition.Undo.OCParticleEmitterSetPath">Particle emitter set path</translation>
+	<translation name="GameDefinition.Undo.OCParticleEmitterSetPosition">Particle emitter set position</translation>
+	<translation name="GameDefinition.Undo.OCParticleEmitterSetPropertyName">ParticleEmitter set property name</translation>
+	<translation name="GameDefinition.Undo.OCParticleEmitterSetRotation">Particle emitter set rotation</translation>
+	<translation name="GameDefinition.Undo.OCParticleEmitterSetTriggerName">ParticleEmitter set trigger name</translation>
+	<translation name="GameDefinition.Undo.OCParticleEmitterToggleCasting">ParticleEmitter toggle casting</translation>
+	<translation name="GameDefinition.Undo.OCPropertyAdd">Object class add property</translation>
+	<translation name="GameDefinition.Undo.OCPropertyRemove">Object class remove property</translation>
+	<translation name="GameDefinition.Undo.OCPropertyValuesFromSubObjects">Object class set property values from sub objects</translation>
+	<translation name="GameDefinition.Undo.OCRemoveAllInherits">Remove all inherits</translation>
+	<translation name="GameDefinition.Undo.OCRemoveBillboard">Remove billboard</translation>
+	<translation name="GameDefinition.Undo.OCRemoveCamera">Remove camera</translation>
+	<translation name="GameDefinition.Undo.OCRemoveComponent">Remove component</translation>
+	<translation name="GameDefinition.Undo.OCRemoveEnvMapProbe">Remove environment map probe</translation>
+	<translation name="GameDefinition.Undo.OCRemoveForceField">Remove force field</translation>
+	<translation name="GameDefinition.Undo.OCRemoveInherit">Remove inherit</translation>
+	<translation name="GameDefinition.Undo.OCRemoveLight">Remove light</translation>
+	<translation name="GameDefinition.Undo.OCRemoveNavBlocker">Remove navigation blocker</translation>
+	<translation name="GameDefinition.Undo.OCRemoveNavSpace">Remove navigation space</translation>
+	<translation name="GameDefinition.Undo.OCRemoveParticleEmitter">Remove particle emitter</translation>
+	<translation name="GameDefinition.Undo.OCRemoveSnapPoint">Remove snap point</translation>
+	<translation name="GameDefinition.Undo.OCRemoveSpeaker">Remove speaker</translation>
+	<translation name="GameDefinition.Undo.OCRemoveTexture">Remove texture</translation>
+	<translation name="GameDefinition.Undo.OCRemoveWorld">Remove world</translation>
+	<translation name="GameDefinition.Undo.OCSetCategory">Object class set category</translation>
+	<translation name="GameDefinition.Undo.OCSetDefaultInheritPropertyPrefix">Object class set default inherit property prefix</translation>
+	<translation name="GameDefinition.Undo.OCSetDescription">Object class set description</translation>
+	<translation name="GameDefinition.Undo.OCSetHideTags">Object class set hide tags</translation>
+	<translation name="GameDefinition.Undo.OCSetInheritSubObjects">Object class set inherit sub objects</translation>
+	<translation name="GameDefinition.Undo.OCSetName">Object class set name</translation>
+	<translation name="GameDefinition.Undo.OCSetPartialHideTags">Object class set partial hide tags</translation>
+	<translation name="GameDefinition.Undo.OCSetPropertyValues">Object class set property values</translation>
+	<translation name="GameDefinition.Undo.OCSetScaleMode">Object class set scale mode</translation>
+	<translation name="GameDefinition.Undo.OCSetTextureProperties">Object class set texture properties</translation>
+	<translation name="GameDefinition.Undo.OCSnapPointSetName">Snap point set name</translation>
+	<translation name="GameDefinition.Undo.OCSnapPointSetPosition">Snap point set position</translation>
+	<translation name="GameDefinition.Undo.OCSnapPointSetRotation">Snap point set rotation</translation>
+	<translation name="GameDefinition.Undo.OCSnapPointSetSnapDistance">Snap point set snap distance</translation>
+	<translation name="GameDefinition.Undo.OCSnapPointToggleSnapToRotation">Snap point toggle snap to rotation</translation>
+	<translation name="GameDefinition.Undo.OCSpeakerSetBoneName">Speaker set bone name</translation>
+	<translation name="GameDefinition.Undo.OCSpeakerSetDistanceOffset">Speaker set distance offset</translation>
+	<translation name="GameDefinition.Undo.OCSpeakerSetPathSound">Speaker set path sound</translation>
+	<translation name="GameDefinition.Undo.OCSpeakerSetPlaySpeed">Speaker set play speed</translation>
+	<translation name="GameDefinition.Undo.OCSpeakerSetPosition">Speaker set position</translation>
+	<translation name="GameDefinition.Undo.OCSpeakerSetPropertyName">Speaker set property name</translation>
+	<translation name="GameDefinition.Undo.OCSpeakerSetRange">Speaker set range</translation>
+	<translation name="GameDefinition.Undo.OCSpeakerSetRollOff">Speaker set roll off</translation>
+	<translation name="GameDefinition.Undo.OCSpeakerSetRotation">Speaker set orientation</translation>
+	<translation name="GameDefinition.Undo.OCSpeakerSetTriggerName">Speaker set trigger name</translation>
+	<translation name="GameDefinition.Undo.OCSpeakerSetVolume">Speaker set volume</translation>
+	<translation name="GameDefinition.Undo.OCSpeakerToggleLooping">Speaker toggle looping</translation>
+	<translation name="GameDefinition.Undo.OCSpeakerTogglePlaying">Speaker toggle playing</translation>
+	<translation name="GameDefinition.Undo.OCTPCFPAdd">Object class texture property add custom file pattern</translation>
+	<translation name="GameDefinition.Undo.OCTPCFPRemove">Object class texture property remove custom file pattern</translation>
+	<translation name="GameDefinition.Undo.OCTPCFPSetExtension">Object class texture property custom file pattern set extension</translation>
+	<translation name="GameDefinition.Undo.OCTPCFPSetName">Object class texture property custom file pattern set name</translation>
+	<translation name="GameDefinition.Undo.OCTPCFPSetPattern">Object class texture property custom file pattern set pattern</translation>
+	<translation name="GameDefinition.Undo.OCTPSetDefaultValue">Object class texture property set default value</translation>
+	<translation name="GameDefinition.Undo.OCTPSetDescription">Object class texture property set description</translation>
+	<translation name="GameDefinition.Undo.OCTPSetIdentifierGroup">Object class texture property set identifier group</translation>
+	<translation name="GameDefinition.Undo.OCTPSetMaxValue">Object class texture property set maximum value</translation>
+	<translation name="GameDefinition.Undo.OCTPSetMinValue">Object class texture property set minimum value</translation>
+	<translation name="GameDefinition.Undo.OCTPSetName">Object class texture property set name</translation>
+	<translation name="GameDefinition.Undo.OCTPSetOptions">Object class texture property set options</translation>
+	<translation name="GameDefinition.Undo.OCTPSetPathPatternType">Object class texture property set path pattern type</translation>
+	<translation name="GameDefinition.Undo.OCTPSetType">Object class texture property set type</translation>
+	<translation name="GameDefinition.Undo.OCTPToggleIdentifierUsage">Object class texture property toggle identifier usage</translation>
+	<translation name="GameDefinition.Undo.OCTexPropertyAdd">Object class add texture property</translation>
+	<translation name="GameDefinition.Undo.OCTexPropertyRemove">Object class remove texture property</translation>
+	<translation name="GameDefinition.Undo.OCTextureSetColorTint">Texture set color tint</translation>
+	<translation name="GameDefinition.Undo.OCTextureSetName">Texture set name</translation>
+	<translation name="GameDefinition.Undo.OCTextureSetOffset">Texture set offset</translation>
+	<translation name="GameDefinition.Undo.OCTextureSetPathSkin">Texture set skin path</translation>
+	<translation name="GameDefinition.Undo.OCTextureSetRotation">Txture set rotation</translation>
+	<translation name="GameDefinition.Undo.OCTextureSetScale">Texture set scale</translation>
+	<translation name="GameDefinition.Undo.OCToggleCanInstantiate">Object class toggle can instantiate</translation>
+	<translation name="GameDefinition.Undo.OCToggleIsAttachableBehavior">Object class toggle is attachable behavior</translation>
+	<translation name="GameDefinition.Undo.OCToggleIsGhost">Object class toggle is ghost</translation>
+	<translation name="GameDefinition.Undo.OCWorldSetPath">World set path</translation>
+	<translation name="GameDefinition.Undo.OCWorldSetPosition">World set position</translation>
+	<translation name="GameDefinition.Undo.OCWorldSetPropertyName">World set property name</translation>
+	<translation name="GameDefinition.Undo.OCWorldSetRotation">World set rotation</translation>
+	<translation name="GameDefinition.Undo.ParticleEmitterSetCategory">Particle emitter set category</translation>
+	<translation name="GameDefinition.Undo.ParticleEmitterSetDescription">Particle emitter set description</translation>
+	<translation name="GameDefinition.Undo.ParticleEmitterSetName">Particle emitter set name</translation>
+	<translation name="GameDefinition.Undo.ParticleEmitterSetPath">Particle emitter set path</translation>
+	<translation name="GameDefinition.Undo.RemoveObjectClass">Remove object class</translation>
+	<translation name="GameDefinition.Undo.RemoveParticleEmitter">Remove particle emitter</translation>
+	<translation name="GameDefinition.Undo.RemoveSkin">Remove skin</translation>
+	<translation name="GameDefinition.Undo.RemoveSky">Remove sky</translation>
+	<translation name="GameDefinition.Undo.SkinSetCategory">Skin set category</translation>
+	<translation name="GameDefinition.Undo.SkinSetDescription">Skin set description</translation>
+	<translation name="GameDefinition.Undo.SkinSetName">Skin set name</translation>
+	<translation name="GameDefinition.Undo.SkinSetPath">Skin set path</translation>
+	<translation name="GameDefinition.Undo.SkyControllerAdd">Add sky controller</translation>
+	<translation name="GameDefinition.Undo.SkyControllerRemove">Remove sky controller</translation>
+	<translation name="GameDefinition.Undo.SkyControllerSetName">Sky controller set name</translation>
+	<translation name="GameDefinition.Undo.SkyControllerSetValue">Sky controller set name</translation>
+	<translation name="GameDefinition.Undo.SkySetCategory">Sky set category</translation>
+	<translation name="GameDefinition.Undo.SkySetDescription">Sky set description</translation>
+	<translation name="GameDefinition.Undo.SkySetName">Sky set name</translation>
+	<translation name="GameDefinition.Undo.SkySetPath">Sky set path</translation>
+	
+	<!-- Panel: Object Class Component -->
+	<translation name="GameDefinition.PanelOCComponent.Animation.Label">Animation</translation>
+	<translation name="GameDefinition.PanelOCComponent.Animation.ToolTip">Animation resource</translation>
+	<translation name="GameDefinition.PanelOCComponent.Animator.Label">Animator</translation>
+	<translation name="GameDefinition.PanelOCComponent.Animator.ToolTip">Animator resource</translation>
+	<translation name="GameDefinition.PanelOCComponent.AudioModel.Label">Audio model</translation>
+	<translation name="GameDefinition.PanelOCComponent.AudioModel.ToolTip">Audio model resource</translation>
+	<translation name="GameDefinition.PanelOCComponent.Bone.Label">Bone</translation>
+	<translation name="GameDefinition.PanelOCComponent.Bone.ToolTip">Bone name to attach to</translation>
+	<translation name="GameDefinition.PanelOCComponent.Collision.Label">Collision</translation>
+	<translation name="GameDefinition.PanelOCComponent.Collision.ToolTip">Collision response type</translation>
+	<translation name="GameDefinition.PanelOCComponent.CollisionStatic">Static</translation>
+	<translation name="GameDefinition.PanelOCComponent.CollisionKinematic">Kinematic</translation>
+	<translation name="GameDefinition.PanelOCComponent.CollisionDynamic">Dynamic</translation>
+	<translation name="GameDefinition.PanelOCComponent.GroupBoxComponent.Label">Component</translation>
+	<translation name="GameDefinition.PanelOCComponent.GroupBoxProperties.Label">Properties</translation>
+	<translation name="GameDefinition.PanelOCComponent.GroupBoxTextures.Label">Textures</translation>
+	<translation name="GameDefinition.PanelOCComponent.GroupBoxTextureProperties.Label">Texture properties</translation>
+	<translation name="GameDefinition.PanelOCComponent.Model.Label">Model</translation>
+	<translation name="GameDefinition.PanelOCComponent.Model.ToolTip">Model resource</translation>
+	<translation name="GameDefinition.PanelOCComponent.Move.Label">Move</translation>
+	<translation name="GameDefinition.PanelOCComponent.Move.ToolTip">Move resource</translation>
+	<translation name="GameDefinition.PanelOCComponent.OcclusionMesh.Label">Occlusion mesh</translation>
+	<translation name="GameDefinition.PanelOCComponent.OcclusionMesh.ToolTip">Occlusion mesh resource</translation>
+	<translation name="GameDefinition.PanelOCComponent.PlaybackController.Label">Playback controller</translation>
+	<translation name="GameDefinition.PanelOCComponent.PlaybackController.ToolTip">Playback controller name</translation>
+	<translation name="GameDefinition.PanelOCComponent.Position.Label">Position</translation>
+	<translation name="GameDefinition.PanelOCComponent.Position.ToolTip">Component position</translation>
+	<translation name="GameDefinition.PanelOCComponent.Property.Label">Property</translation>
+	<translation name="GameDefinition.PanelOCComponent.Property.ToolTip">Property name to use</translation>
+	<translation name="GameDefinition.PanelOCComponent.PropertyModel">Model</translation>
+	<translation name="GameDefinition.PanelOCComponent.PropertySkin">Skin</translation>
+	<translation name="GameDefinition.PanelOCComponent.PropertyRig">Rig</translation>
+	<translation name="GameDefinition.PanelOCComponent.PropertyAnimator">Animator</translation>
+	<translation name="GameDefinition.PanelOCComponent.PropertyAnimation">Animation</translation>
+	<translation name="GameDefinition.PanelOCComponent.PropertyMove">Move</translation>
+	<translation name="GameDefinition.PanelOCComponent.PropertyPlaybackController">Playback controller</translation>
+	<translation name="GameDefinition.PanelOCComponent.PropertyOcclusionMesh">Occlusion mesh</translation>
+	<translation name="GameDefinition.PanelOCComponent.PropertyAudioModel">Audio model</translation>
+	<translation name="GameDefinition.PanelOCComponent.PropertyRenderEnvMap">Render environment map</translation>
+	<translation name="GameDefinition.PanelOCComponent.PropertyAffectsAudio">Affects audio</translation>
+	<translation name="GameDefinition.PanelOCComponent.PropertyLightShadowIgnore">Light shadow ignore</translation>
+	<translation name="GameDefinition.PanelOCComponent.PropertyAttachPosition">Attach position</translation>
+	<translation name="GameDefinition.PanelOCComponent.PropertyAttachRotation">Attach rotation</translation>
+	<translation name="GameDefinition.PanelOCComponent.Rig.Label">Rig</translation>
+	<translation name="GameDefinition.PanelOCComponent.Rig.ToolTip">Rig resource</translation>
+	<translation name="GameDefinition.PanelOCComponent.Rotation.Label">Rotation</translation>
+	<translation name="GameDefinition.PanelOCComponent.Rotation.ToolTip">Component rotation</translation>
+	<translation name="GameDefinition.PanelOCComponent.Skin.Label">Skin</translation>
+	<translation name="GameDefinition.PanelOCComponent.Skin.ToolTip">Skin resource</translation>
+	<translation name="GameDefinition.PanelOCComponent.Target.Label">Target</translation>
+	<translation name="GameDefinition.PanelOCComponent.Target.ToolTip">Target name to use</translation>
+	<translation name="GameDefinition.PanelOCComponent.Texture.Label">Texture:</translation>
+	<translation name="GameDefinition.PanelOCComponent.Texture.ToolTip">Texture to edit</translation>
+	<translation name="GameDefinition.PanelOCComponent.TextureName.Label">Name</translation>
+	<translation name="GameDefinition.PanelOCComponent.TextureName.ToolTip">Texture name</translation>
+	<translation name="GameDefinition.PanelOCComponent.TextureOffset.Label">Offset</translation>
+	<translation name="GameDefinition.PanelOCComponent.TextureOffset.ToolTip">Texture coordinate offset</translation>
+	<translation name="GameDefinition.PanelOCComponent.TextureRotation.Label">Rotation</translation>
+	<translation name="GameDefinition.PanelOCComponent.TextureRotation.ToolTip">Texture coordinate rotation</translation>
+	<translation name="GameDefinition.PanelOCComponent.TextureScale.Label">Scale</translation>
+	<translation name="GameDefinition.PanelOCComponent.TextureScale.ToolTip">Texture coordinate scale</translation>
+	<translation name="GameDefinition.PanelOCComponent.TextureSkin.Label">Skin</translation>
+	<translation name="GameDefinition.PanelOCComponent.TextureSkin.ToolTip">Skin resource path</translation>
+	<translation name="GameDefinition.PanelOCComponent.TextureTint.Label">Tint</translation>
+	<translation name="GameDefinition.PanelOCComponent.TextureTint.ToolTip">Tint color</translation>
+	<translation name="GameDefinition.PanelOCComponent.TextureProperties.ToolTip">Texture properties</translation>
+	<translation name="GameDefinition.PanelOCComponent.TextureProperty.ToolTip">Texture property to edit</translation>
+	<translation name="GameDefinition.PanelOCComponent.PropertyKey">Property key</translation>
+	<translation name="GameDefinition.PanelOCComponent.PropertyValue">Property value</translation>
+	
+	<!-- Panel: Object Class Force Field -->
+	<translation name="GameDefinition.PanelOCForceField.ApplicationType.Label">Application type</translation>
+	<translation name="GameDefinition.PanelOCForceField.ApplicationType.ToolTip">Type of force application</translation>
+	<translation name="GameDefinition.PanelOCForceField.ApplicationTypeDirect">Direct</translation>
+	<translation name="GameDefinition.PanelOCForceField.ApplicationTypeSurface">Surface</translation>
+	<translation name="GameDefinition.PanelOCForceField.ApplicationTypeMass">Mass</translation>
+	<translation name="GameDefinition.PanelOCForceField.ApplicationTypeSpeed">Speed</translation>
+	<translation name="GameDefinition.PanelOCForceField.Bone.Label">Bone</translation>
+	<translation name="GameDefinition.PanelOCForceField.Bone.ToolTip">Bone name to attach to</translation>
+	<translation name="GameDefinition.PanelOCForceField.Direction.Label">Direction</translation>
+	<translation name="GameDefinition.PanelOCForceField.Direction.ToolTip">Force field direction</translation>
+	<translation name="GameDefinition.PanelOCForceField.Exponent.Label">Exponent</translation>
+	<translation name="GameDefinition.PanelOCForceField.Exponent.ToolTip">Force field exponent</translation>
+	<translation name="GameDefinition.PanelOCForceField.FieldType.Label">Field type</translation>
+	<translation name="GameDefinition.PanelOCForceField.FieldType.ToolTip">Type of force field</translation>
+	<translation name="GameDefinition.PanelOCForceField.FieldTypeRadial">Radial</translation>
+	<translation name="GameDefinition.PanelOCForceField.FieldTypeLinear">Linear</translation>
+	<translation name="GameDefinition.PanelOCForceField.FieldTypeVortex">Vortex</translation>
+	<translation name="GameDefinition.PanelOCForceField.FluctuationDirection.Label">Fluctuation direction</translation>
+	<translation name="GameDefinition.PanelOCForceField.FluctuationDirection.ToolTip">Force fluctuation direction</translation>
+	<translation name="GameDefinition.PanelOCForceField.FluctuationForce.Label">Fluctuation force</translation>
+	<translation name="GameDefinition.PanelOCForceField.FluctuationForce.ToolTip">Force fluctuation strength</translation>
+	<translation name="GameDefinition.PanelOCForceField.Force.Label">Force</translation>
+	<translation name="GameDefinition.PanelOCForceField.Force.ToolTip">Force strength</translation>
+	<translation name="GameDefinition.PanelOCForceField.GroupBoxForceField.Label">Force field</translation>
+	<translation name="GameDefinition.PanelOCForceField.GroupBoxProperties.Label">Properties</translation>
+	<translation name="GameDefinition.PanelOCForceField.GroupBoxTriggers.Label">Triggers</translation>
+	<translation name="GameDefinition.PanelOCForceField.InfluenceArea.Label">Influence area</translation>
+	<translation name="GameDefinition.PanelOCForceField.InfluenceArea.ToolTip">Area influenced by force field</translation>
+	<translation name="GameDefinition.PanelOCForceField.Position.Label">Position</translation>
+	<translation name="GameDefinition.PanelOCForceField.Position.ToolTip">Force field position</translation>
+	<translation name="GameDefinition.PanelOCForceField.Property.Label">Property</translation>
+	<translation name="GameDefinition.PanelOCForceField.Property.ToolTip">Property name to use</translation>
+	<translation name="GameDefinition.PanelOCForceField.PropertyInfluenceArea">Influence area</translation>
+	<translation name="GameDefinition.PanelOCForceField.PropertyRadius">Radius</translation>
+	<translation name="GameDefinition.PanelOCForceField.PropertyExponent">Exponent</translation>
+	<translation name="GameDefinition.PanelOCForceField.PropertyFieldType">Field type</translation>
+	<translation name="GameDefinition.PanelOCForceField.PropertyApplicationType">Application type</translation>
+	<translation name="GameDefinition.PanelOCForceField.PropertyDirection">Direction</translation>
+	<translation name="GameDefinition.PanelOCForceField.PropertyForce">Force</translation>
+	<translation name="GameDefinition.PanelOCForceField.PropertyFluctuationDirection">Fluctuation direction</translation>
+	<translation name="GameDefinition.PanelOCForceField.PropertyFluctuationForce">Fluctuation force</translation>
+	<translation name="GameDefinition.PanelOCForceField.PropertyShape">Shape</translation>
+	<translation name="GameDefinition.PanelOCForceField.PropertyEnabled">Enabled</translation>
+	<translation name="GameDefinition.PanelOCForceField.PropertyAttachPosition">Attach position</translation>
+	<translation name="GameDefinition.PanelOCForceField.PropertyAttachRotation">Attach rotation</translation>
+	<translation name="GameDefinition.PanelOCForceField.Radius.Label">Radius</translation>
+	<translation name="GameDefinition.PanelOCForceField.Radius.ToolTip">Force field radius</translation>
+	<translation name="GameDefinition.PanelOCForceField.Rotation.Label">Rotation</translation>
+	<translation name="GameDefinition.PanelOCForceField.Rotation.ToolTip">Force field rotation</translation>
+	<translation name="GameDefinition.PanelOCForceField.Shape.Label">Shape</translation>
+	<translation name="GameDefinition.PanelOCForceField.Shape.ToolTip">Influence shape</translation>
+	<translation name="GameDefinition.PanelOCForceField.Target.Label">Target</translation>
+	<translation name="GameDefinition.PanelOCForceField.Target.ToolTip">Target name to use</translation>
+	<translation name="GameDefinition.PanelOCForceField.Trigger.Label">Trigger</translation>
+	<translation name="GameDefinition.PanelOCForceField.Trigger.ToolTip">Trigger name to use</translation>
+	<translation name="GameDefinition.PanelOCForceField.TriggerEnabled">Enabled</translation>
+	<translation name="GameDefinition.PanelOCForceField.TriggerTarget.Label">Target</translation>
+	<translation name="GameDefinition.PanelOCForceField.TriggerTarget.ToolTip">Trigger target name</translation>
+	
+	<!-- Panel: Object Class Light -->
+	<translation name="GameDefinition.PanelOCLight.AmbientRatio.Label">Ambient ratio</translation>
+	<translation name="GameDefinition.PanelOCLight.AmbientRatio.ToolTip">Ratio of ambient light</translation>
+	<translation name="GameDefinition.PanelOCLight.Bone.Label">Bone</translation>
+	<translation name="GameDefinition.PanelOCLight.Bone.ToolTip">Bone name to attach to</translation>
+	<translation name="GameDefinition.PanelOCLight.Color.Label">Color</translation>
+	<translation name="GameDefinition.PanelOCLight.Color.ToolTip">Light color</translation>
+	<translation name="GameDefinition.PanelOCLight.GroupBoxHints.Label">Hints</translation>
+	<translation name="GameDefinition.PanelOCLight.GroupBoxLight.Label">Light</translation>
+	<translation name="GameDefinition.PanelOCLight.GroupBoxProperties.Label">Properties</translation>
+	<translation name="GameDefinition.PanelOCLight.GroupBoxTriggers.Label">Triggers</translation>
+	<translation name="GameDefinition.PanelOCLight.HalfIntensity.Label">Half intensity distance</translation>
+	<translation name="GameDefinition.PanelOCLight.HalfIntensity.ToolTip">Distance at which intensity is halved</translation>
+	<translation name="GameDefinition.PanelOCLight.HintLightImportance.Label">Light importance</translation>
+	<translation name="GameDefinition.PanelOCLight.HintLightImportance.ToolTip">Importance of light for rendering</translation>
+	<translation name="GameDefinition.PanelOCLight.HintMovement.Label">Movement hint</translation>
+	<translation name="GameDefinition.PanelOCLight.HintMovement.ToolTip">Movement behavior hint</translation>
+	<translation name="GameDefinition.PanelOCLight.HintMovementStatic">Static</translation>
+	<translation name="GameDefinition.PanelOCLight.HintMovementJittering">Jittering</translation>
+	<translation name="GameDefinition.PanelOCLight.HintMovementDynamic">Dynamic</translation>
+	<translation name="GameDefinition.PanelOCLight.HintParameter.Label">Parameter hint</translation>
+	<translation name="GameDefinition.PanelOCLight.HintParameter.ToolTip">Parameter change behavior hint</translation>
+	<translation name="GameDefinition.PanelOCLight.HintParameterStatic">Static</translation>
+	<translation name="GameDefinition.PanelOCLight.HintParameterActivation">Activation</translation>
+	<translation name="GameDefinition.PanelOCLight.HintParameterFlicker">Flicker</translation>
+	<translation name="GameDefinition.PanelOCLight.HintParameterDynamic">Dynamic</translation>
+	<translation name="GameDefinition.PanelOCLight.HintShadowImportance.Label">Shadow importance</translation>
+	<translation name="GameDefinition.PanelOCLight.HintShadowImportance.ToolTip">Importance of shadows for rendering</translation>
+	<translation name="GameDefinition.PanelOCLight.Intensity.Label">Intensity</translation>
+	<translation name="GameDefinition.PanelOCLight.Intensity.ToolTip">Light intensity</translation>
+	<translation name="GameDefinition.PanelOCLight.LightSkin.Label">Light skin</translation>
+	<translation name="GameDefinition.PanelOCLight.LightSkin.ToolTip">Skin resource for light</translation>
+	<translation name="GameDefinition.PanelOCLight.Position.Label">Position</translation>
+	<translation name="GameDefinition.PanelOCLight.Position.ToolTip">Light position</translation>
+	<translation name="GameDefinition.PanelOCLight.Property.Label">Property</translation>
+	<translation name="GameDefinition.PanelOCLight.Property.ToolTip">Property name to use</translation>
+	<translation name="GameDefinition.PanelOCLight.PropertyType">Type</translation>
+	<translation name="GameDefinition.PanelOCLight.PropertyColor">Color</translation>
+	<translation name="GameDefinition.PanelOCLight.PropertyIntensity">Intensity</translation>
+	<translation name="GameDefinition.PanelOCLight.PropertyAmbientRatio">Ambient ratio</translation>
+	<translation name="GameDefinition.PanelOCLight.PropertyRange">Range</translation>
+	<translation name="GameDefinition.PanelOCLight.PropertyHalfIntDist">Half intensity distance</translation>
+	<translation name="GameDefinition.PanelOCLight.PropertySpotAngle">Spot angle</translation>
+	<translation name="GameDefinition.PanelOCLight.PropertySpotRatio">Spot ratio</translation>
+	<translation name="GameDefinition.PanelOCLight.PropertySpotSmoothness">Spot smoothness</translation>
+	<translation name="GameDefinition.PanelOCLight.PropertySpotExponent">Spot exponent</translation>
+	<translation name="GameDefinition.PanelOCLight.PropertyLightSkin">Light skin</translation>
+	<translation name="GameDefinition.PanelOCLight.PropertyActivated">Activated</translation>
+	<translation name="GameDefinition.PanelOCLight.PropertyCastShadows">Cast shadows</translation>
+	<translation name="GameDefinition.PanelOCLight.PropertyHintLightImportance">Light importance hint</translation>
+	<translation name="GameDefinition.PanelOCLight.PropertyHintShadowImportance">Shadow importance hint</translation>
+	<translation name="GameDefinition.PanelOCLight.PropertyAttachPosition">Attach position</translation>
+	<translation name="GameDefinition.PanelOCLight.PropertyAttachRotation">Attach rotation</translation>
+	<translation name="GameDefinition.PanelOCLight.Range.Label">Range</translation>
+	<translation name="GameDefinition.PanelOCLight.Range.ToolTip">Light range</translation>
+	<translation name="GameDefinition.PanelOCLight.Rotation.Label">Rotation</translation>
+	<translation name="GameDefinition.PanelOCLight.Rotation.ToolTip">Light rotation</translation>
+	<translation name="GameDefinition.PanelOCLight.SpotAngle.Label">Spot angle</translation>
+	<translation name="GameDefinition.PanelOCLight.SpotAngle.ToolTip">Spot light outer angle</translation>
+	<translation name="GameDefinition.PanelOCLight.SpotExponent.Label">Spot exponent</translation>
+	<translation name="GameDefinition.PanelOCLight.SpotExponent.ToolTip">Spot light exponent</translation>
+	<translation name="GameDefinition.PanelOCLight.SpotRatio.Label">Spot ratio</translation>
+	<translation name="GameDefinition.PanelOCLight.SpotRatio.ToolTip">Spot light aspect ratio</translation>
+	<translation name="GameDefinition.PanelOCLight.SpotSmoothness.Label">Spot smoothness</translation>
+	<translation name="GameDefinition.PanelOCLight.SpotSmoothness.ToolTip">Spot light edge smoothness</translation>
+	<translation name="GameDefinition.PanelOCLight.Target.Label">Target</translation>
+	<translation name="GameDefinition.PanelOCLight.Target.ToolTip">Target name to use</translation>
+	<translation name="GameDefinition.PanelOCLight.Trigger.Label">Trigger</translation>
+	<translation name="GameDefinition.PanelOCLight.Trigger.ToolTip">Trigger name to use</translation>
+	<translation name="GameDefinition.PanelOCLight.TriggerActivated">Activated</translation>
+	<translation name="GameDefinition.PanelOCLight.TriggerTarget.Label">Target</translation>
+	<translation name="GameDefinition.PanelOCLight.TriggerTarget.ToolTip">Trigger target name</translation>
+	<translation name="GameDefinition.PanelOCLight.Type.Label">Type</translation>
+	<translation name="GameDefinition.PanelOCLight.Type.ToolTip">Light type</translation>
+	<translation name="GameDefinition.PanelOCLight.TypePoint">Point</translation>
+	<translation name="GameDefinition.PanelOCLight.TypeSpot">Spot</translation>
+	<translation name="GameDefinition.PanelOCLight.TypeProjector">Projector</translation>
+	
+	<!-- Panel: Object Class Speaker -->
+	<translation name="GameDefinition.PanelOCSpeaker.Bone.Label">Bone</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.Bone.ToolTip">Bone name to attach to</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.DistanceOffset.Label">Distance offset</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.DistanceOffset.ToolTip">Distance offset for volume attenuation</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.GroupBoxProperties.Label">Properties</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.GroupBoxSpeaker.Label">Speaker</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.GroupBoxTriggers.Label">Triggers</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.PlaySpeed.Label">Play speed</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.PlaySpeed.ToolTip">Playback speed factor</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.Position.Label">Position</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.Position.ToolTip">Speaker position</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.Property.Label">Property</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.Property.ToolTip">Property name to use</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.PropertySound">Sound</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.PropertyVolume">Volume</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.PropertyRange">Range</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.PropertyRollOff">Roll off</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.PropertyDistanceOffset">Distance offset</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.PropertyPlaySpeed">Play speed</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.PropertyPlaying">Playing</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.PropertyLooping">Looping</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.PropertyAttachPosition">Attach position</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.PropertyAttachRotation">Attach rotation</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.Range.Label">Range</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.Range.ToolTip">Speaker range</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.RollOff.Label">Roll off</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.RollOff.ToolTip">Volume roll off factor</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.Rotation.Label">Rotation</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.Rotation.ToolTip">Speaker rotation</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.Sound.Label">Sound</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.Sound.ToolTip">Sound resource</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.Target.Label">Target</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.Target.ToolTip">Target name to use</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.Trigger.Label">Trigger</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.Trigger.ToolTip">Trigger name to use</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.TriggerPlaying">Playing</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.TriggerMuted">Muted</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.TriggerTarget.Label">Target</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.TriggerTarget.ToolTip">Trigger target name</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.Volume.Label">Volume</translation>
+	<translation name="GameDefinition.PanelOCSpeaker.Volume.ToolTip">Speaker volume</translation>
+	
+	<!-- Panel: Object Class -->
+	<translation name="GameDefinition.PanelObjectClass.Category.Label">Category</translation>
+	<translation name="GameDefinition.PanelObjectClass.Category.ToolTip">Object class category</translation>
+	<translation name="GameDefinition.PanelObjectClass.DefaultInheritPropertyPrefix.Label">Property prefix</translation>
+	<translation name="GameDefinition.PanelObjectClass.DefaultInheritPropertyPrefix.ToolTip">Default prefix for inherited properties</translation>
+	<translation name="GameDefinition.PanelObjectClass.Description.Label">Description</translation>
+	<translation name="GameDefinition.PanelObjectClass.Description.ToolTip">Object class description</translation>
+	<translation name="GameDefinition.PanelObjectClass.GroupBoxHideTags.Label">Hide tags</translation>
+	<translation name="GameDefinition.PanelObjectClass.GroupBoxInheritSubObjects.Label">Inherit sub objects</translation>
+	<translation name="GameDefinition.PanelObjectClass.GroupBoxInherits.Label">Inherits</translation>
+	<translation name="GameDefinition.PanelObjectClass.GroupBoxObjectClass.Label">Object class</translation>
+	<translation name="GameDefinition.PanelObjectClass.GroupBoxPartialHideTags.Label">Partial hide tags</translation>
+	<translation name="GameDefinition.PanelObjectClass.GroupBoxProperties.Label">Properties</translation>
+	<translation name="GameDefinition.PanelObjectClass.GroupBoxPropertyValues.Label">Property values</translation>
+	<translation name="GameDefinition.PanelObjectClass.GroupBoxTextures.Label">Textures</translation>
+	<translation name="GameDefinition.PanelObjectClass.GroupBoxTextureProperties.Label">Texture properties</translation>
+	<translation name="GameDefinition.PanelObjectClass.InheritBillboards.Label">Billboards</translation>
+	<translation name="GameDefinition.PanelObjectClass.InheritBillboards.ToolTip">Inherit billboards from parent classes</translation>
+	<translation name="GameDefinition.PanelObjectClass.InheritComponents.Label">Components</translation>
+	<translation name="GameDefinition.PanelObjectClass.InheritComponents.ToolTip">Inherit components from parent classes</translation>
+	<translation name="GameDefinition.PanelObjectClass.InheritEnvironmentMapProbes.Label">Environment map probes</translation>
+	<translation name="GameDefinition.PanelObjectClass.InheritEnvironmentMapProbes.ToolTip">Inherit environment map probes from parent classes</translation>
+	<translation name="GameDefinition.PanelObjectClass.InheritForceFields.Label">Force fields</translation>
+	<translation name="GameDefinition.PanelObjectClass.InheritForceFields.ToolTip">Inherit force fields from parent classes</translation>
+	<translation name="GameDefinition.PanelObjectClass.InheritLights.Label">Lights</translation>
+	<translation name="GameDefinition.PanelObjectClass.InheritLights.ToolTip">Inherit lights from parent classes</translation>
+	<translation name="GameDefinition.PanelObjectClass.InheritName.Label">Name</translation>
+	<translation name="GameDefinition.PanelObjectClass.InheritName.ToolTip">Parent class name</translation>
+	<translation name="GameDefinition.PanelObjectClass.InheritNavigationBlockers.Label">Navigation blockers</translation>
+	<translation name="GameDefinition.PanelObjectClass.InheritNavigationBlockers.ToolTip">Inherit navigation blockers from parent classes</translation>
+	<translation name="GameDefinition.PanelObjectClass.InheritNavigationSpaces.Label">Navigation spaces</translation>
+	<translation name="GameDefinition.PanelObjectClass.InheritNavigationSpaces.ToolTip">Inherit navigation spaces from parent classes</translation>
+	<translation name="GameDefinition.PanelObjectClass.InheritParticleEmitters.Label">Particle emitters</translation>
+	<translation name="GameDefinition.PanelObjectClass.InheritParticleEmitters.ToolTip">Inherit particle emitters from parent classes</translation>
+	<translation name="GameDefinition.PanelObjectClass.InheritPropertyPrefix.Label">Property prefix</translation>
+	<translation name="GameDefinition.PanelObjectClass.InheritPropertyPrefix.ToolTip">Prefix for inherited properties</translation>
+	<translation name="GameDefinition.PanelObjectClass.InheritSnapPoints.Label">Snap points</translation>
+	<translation name="GameDefinition.PanelObjectClass.InheritSnapPoints.ToolTip">Inherit snap points from parent classes</translation>
+	<translation name="GameDefinition.PanelObjectClass.InheritSpeakers.Label">Speakers</translation>
+	<translation name="GameDefinition.PanelObjectClass.InheritSpeakers.ToolTip">Inherit speakers from parent classes</translation>
+	<translation name="GameDefinition.PanelObjectClass.InheritWorlds.Label">Worlds</translation>
+	<translation name="GameDefinition.PanelObjectClass.InheritWorlds.ToolTip">Inherit worlds from parent classes</translation>
+	<translation name="GameDefinition.PanelObjectClass.Inherits.ToolTip">List of parent classes</translation>
+	<translation name="GameDefinition.PanelObjectClass.Name.Label">Name</translation>
+	<translation name="GameDefinition.PanelObjectClass.Name.ToolTip">Object class name</translation>
+	<translation name="GameDefinition.PanelObjectClass.PropertyValues.ToolTip">Property values for this object class</translation>
+	<translation name="GameDefinition.PanelObjectClass.PropertyValuesKey.Label">Key</translation>
+	<translation name="GameDefinition.PanelObjectClass.PropertyValuesKeys.ToolTip">Property value keys</translation>
+	<translation name="GameDefinition.PanelObjectClass.PropertyValuesValue.Label">Value</translation>
+	<translation name="GameDefinition.PanelObjectClass.ScaleMode.Label">Scale mode</translation>
+	<translation name="GameDefinition.PanelObjectClass.ScaleMode.ToolTip">Scaling behavior mode</translation>
+	<translation name="GameDefinition.PanelObjectClass.ScaleMode.Fixed">Fixed</translation>
+	<translation name="GameDefinition.PanelObjectClass.ScaleMode.Uniform">Uniform</translation>
+	<translation name="GameDefinition.PanelObjectClass.ScaleMode.Free">Free</translation>
+	<translation name="GameDefinition.PanelObjectClass.Texture.Label">Texture</translation>
+	<translation name="GameDefinition.PanelObjectClass.Texture.ToolTip">Texture to edit</translation>
+	<translation name="GameDefinition.PanelObjectClass.TextureName.Label">Name</translation>
+	<translation name="GameDefinition.PanelObjectClass.TextureName.ToolTip">Texture name</translation>
+	<translation name="GameDefinition.PanelObjectClass.TextureOffset.Label">Offset</translation>
+	<translation name="GameDefinition.PanelObjectClass.TextureOffset.ToolTip">Texture coordinate offset</translation>
+	<translation name="GameDefinition.PanelObjectClass.TextureRotation.Label">Rotation</translation>
+	<translation name="GameDefinition.PanelObjectClass.TextureRotation.ToolTip">Texture coordinate rotation</translation>
+	<translation name="GameDefinition.PanelObjectClass.TextureScale.Label">Scale</translation>
+	<translation name="GameDefinition.PanelObjectClass.TextureScale.ToolTip">Texture coordinate scale</translation>
+	<translation name="GameDefinition.PanelObjectClass.TextureSkin.Label">Skin</translation>
+	<translation name="GameDefinition.PanelObjectClass.TextureSkin.ToolTip">Skin resource path</translation>
+	<translation name="GameDefinition.PanelObjectClass.TextureTint.Label">Tint</translation>
+	<translation name="GameDefinition.PanelObjectClass.TextureTint.ToolTip">Tint color</translation>
+	
+	<!-- Undo: Paste actions -->
+	<translation name="GameDefinition.Undo.PasteOCBillboard">Paste object class billboard</translation>
+	<translation name="GameDefinition.Undo.PasteOCCamera">Paste object class camera</translation>
+	<translation name="GameDefinition.Undo.PasteOCComponent">Paste object class component</translation>
+	<translation name="GameDefinition.Undo.PasteOCEnvMapProbe">Paste object class environment map probe</translation>
+	<translation name="GameDefinition.Undo.PasteOCForceField">Paste object class force field</translation>
+	<translation name="GameDefinition.Undo.PasteOCLight">Paste object class light</translation>
+	<translation name="GameDefinition.Undo.PasteOCNavBlocker">Paste object class navigation blocker</translation>
+	<translation name="GameDefinition.Undo.PasteOCNavSpace">Paste object class navigation space</translation>
+	<translation name="GameDefinition.Undo.PasteOCParticleEmitter">Paste object class particle emitter</translation>
+	<translation name="GameDefinition.Undo.PasteOCSnapPoint">Paste object class snap point</translation>
+	<translation name="GameDefinition.Undo.PasteOCSpeaker">Paste object class speaker</translation>
+	<translation name="GameDefinition.Undo.PasteOCWorld">Paste object class world</translation>
+	<translation name="GameDefinition.Undo.PasteObjectClass">Paste object class</translation>
+	
+	<!-- WPS: Object Class Billboard -->
+	<translation name="GameDefinition.WPSOCBillboard.Axis.Label">Axis</translation>
+	<translation name="GameDefinition.WPSOCBillboard.Bone.Label">Bone</translation>
+	<translation name="GameDefinition.WPSOCBillboard.Bone.ToolTip">Bone name to attach to</translation>
+	<translation name="GameDefinition.WPSOCBillboard.DoNotScale">Do not scale</translation>
+	<translation name="GameDefinition.WPSOCBillboard.DoNotScale.ToolTip">Prevent billboard from scaling</translation>
+	<translation name="GameDefinition.WPSOCBillboard.GroupBillboard">Billboard</translation>
+	<translation name="GameDefinition.WPSOCBillboard.GroupProperties">Properties</translation>
+	<translation name="GameDefinition.WPSOCBillboard.PartialHide">Partial hide</translation>
+	<translation name="GameDefinition.WPSOCBillboard.PartialHide.ToolTip">Partial hide billboard in object class</translation>
+	<translation name="GameDefinition.WPSOCBillboard.RelativeSize">Relative size</translation>
+	<translation name="GameDefinition.WPSOCBillboard.RelativeSize.ToolTip">Use size relative to screen</translation>
+	<translation name="GameDefinition.WPSOCBillboard.RenderEnvMap">Render environment map</translation>
+	<translation name="GameDefinition.WPSOCBillboard.RenderEnvMap.ToolTip">Render in environment maps</translation>
+	<translation name="GameDefinition.WPSOCBillboard.Locked">Locked</translation>
+	<translation name="GameDefinition.WPSOCBillboard.Locked.ToolTip">Lock billboard orientation</translation>
+	<translation name="GameDefinition.WPSOCBillboard.Offset.Label">Offset</translation>
+	<translation name="GameDefinition.WPSOCBillboard.Offset.ToolTip">Billboard offset</translation>
+	<translation name="GameDefinition.WPSOCBillboard.Position.Label">Position</translation>
+	<translation name="GameDefinition.WPSOCBillboard.Position.ToolTip">Billboard position</translation>
+	<translation name="GameDefinition.WPSOCBillboard.Property.Label">Property</translation>
+	<translation name="GameDefinition.WPSOCBillboard.Property.ToolTip">Property name to use</translation>
+	<translation name="GameDefinition.WPSOCBillboard.Size.Label">Size</translation>
+	<translation name="GameDefinition.WPSOCBillboard.Size.ToolTip">Billboard size</translation>
+	<translation name="GameDefinition.WPSOCBillboard.Skin.Label">Skin</translation>
+	<translation name="GameDefinition.WPSOCBillboard.Skin.ToolTip">Skin resource</translation>
+	<translation name="GameDefinition.WPSOCBillboard.Spherical">Spherical</translation>
+	<translation name="GameDefinition.WPSOCBillboard.Spherical.ToolTip">Use spherical billboard</translation>
+	<translation name="GameDefinition.WPSOCBillboard.Target.Label">Target</translation>
+	<translation name="GameDefinition.WPSOCBillboard.Target.ToolTip">Target name to use</translation>
+	
+	<!-- WPS: Object Class Camera -->
+	<translation name="GameDefinition.WPSOCCamera.FOV.Label">Field of view</translation>
+	<translation name="GameDefinition.WPSOCCamera.FOVRatio.Label">FOV ratio</translation>
+	<translation name="GameDefinition.WPSOCCamera.GroupCamera">Camera</translation>
+	<translation name="GameDefinition.WPSOCCamera.IDProperty.Label">ID property</translation>
+	<translation name="GameDefinition.WPSOCCamera.PositionProperty.Label">Position property</translation>
+	<translation name="GameDefinition.WPSOCCamera.RotationProperty.Label">Rotation property</translation>
+	<translation name="GameDefinition.WPSOCCamera.ImageDistance.Label">Image distance</translation>
+	<translation name="GameDefinition.WPSOCCamera.ImageDistance.ToolTip">Distance to image plane</translation>
+	<translation name="GameDefinition.WPSOCCamera.Position.Label">Position</translation>
+	<translation name="GameDefinition.WPSOCCamera.Position.ToolTip">Camera position</translation>
+	<translation name="GameDefinition.WPSOCCamera.Rotation.Label">Rotation</translation>
+	<translation name="GameDefinition.WPSOCCamera.Rotation.ToolTip">Camera rotation</translation>
+	<translation name="GameDefinition.WPSOCCamera.ViewDistance.Label">View distance</translation>
+	<translation name="GameDefinition.WPSOCCamera.ViewDistance.ToolTip">Maximum view distance</translation>
+	
+	<!-- WPS: Object Class Environment Map Probe -->
+	<translation name="GameDefinition.WPSOCEnvMapProbe.GroupEnvMapProbe">Environment map probe</translation>
+	<translation name="GameDefinition.WPSOCEnvMapProbe.GroupProperties">Properties</translation>
+	<translation name="GameDefinition.WPSOCEnvMapProbe.InfluenceShape.Label">Influence shape</translation>
+	<translation name="GameDefinition.WPSOCEnvMapProbe.InfluenceShape.ToolTip">Shape for influence area</translation>
+	<translation name="GameDefinition.WPSOCEnvMapProbe.InfluenceBorderSize.Label">Influence border size</translation>
+	<translation name="GameDefinition.WPSOCEnvMapProbe.InfluenceBorderSize.ToolTip">Size of influence border</translation>
+	<translation name="GameDefinition.WPSOCEnvMapProbe.InfluencePriority.Label">Influence priority</translation>
+	<translation name="GameDefinition.WPSOCEnvMapProbe.InfluencePriority.ToolTip">Priority of influence</translation>
+	<translation name="GameDefinition.WPSOCEnvMapProbe.Position.Label">Position</translation>
+	<translation name="GameDefinition.WPSOCEnvMapProbe.Position.ToolTip">Probe position</translation>
+	<translation name="GameDefinition.WPSOCEnvMapProbe.Property.Label">Property</translation>
+	<translation name="GameDefinition.WPSOCEnvMapProbe.Property.ToolTip">Property name to use</translation>
+	<translation name="GameDefinition.WPSOCEnvMapProbe.ReflectionShape.Label">Reflection shape</translation>
+	<translation name="GameDefinition.WPSOCEnvMapProbe.ReflectionShape.ToolTip">Shape for reflections</translation>
+	<translation name="GameDefinition.WPSOCEnvMapProbe.ReflectionShapeMask.Label">Reflection shape mask</translation>
+	<translation name="GameDefinition.WPSOCEnvMapProbe.ReflectionShapeMask.ToolTip">Mask for reflection shape</translation>
+	<translation name="GameDefinition.WPSOCEnvMapProbe.Rotation.Label">Rotation</translation>
+	<translation name="GameDefinition.WPSOCEnvMapProbe.Rotation.ToolTip">Probe rotation</translation>
+	<translation name="GameDefinition.WPSOCEnvMapProbe.Scaling.Label">Scaling</translation>
+	<translation name="GameDefinition.WPSOCEnvMapProbe.Scaling.ToolTip">Probe scaling</translation>
+	<translation name="GameDefinition.WPSOCEnvMapProbe.Target.Label">Target</translation>
+	<translation name="GameDefinition.WPSOCEnvMapProbe.Target.ToolTip">Target name to use</translation>
+	
+	<!-- WPS: Object Class Navigation Blocker -->
+	<translation name="GameDefinition.WPSOCNavigationBlocker.BlockingPriority.Label">Blocking priority</translation>
+	<translation name="GameDefinition.WPSOCNavigationBlocker.BlockingPriority.ToolTip">Priority for blocking</translation>
+	<translation name="GameDefinition.WPSOCNavigationBlocker.Bone.Label">Bone</translation>
+	<translation name="GameDefinition.WPSOCNavigationBlocker.Bone.ToolTip">Bone name to attach to</translation>
+	<translation name="GameDefinition.WPSOCNavigationBlocker.Enabled">Enabled</translation>
+	<translation name="GameDefinition.WPSOCNavigationBlocker.Enabled.ToolTip">Enable navigation blocker</translation>
+	<translation name="GameDefinition.WPSOCNavigationBlocker.GroupNavigationBlocker">Navigation blocker</translation>
+	<translation name="GameDefinition.WPSOCNavigationBlocker.GroupProperties">Properties</translation>
+	<translation name="GameDefinition.WPSOCNavigationBlocker.Layer.Label">Layer</translation>
+	<translation name="GameDefinition.WPSOCNavigationBlocker.Layer.ToolTip">Navigation layer number</translation>
+	<translation name="GameDefinition.WPSOCNavigationBlocker.Position.Label">Position</translation>
+	<translation name="GameDefinition.WPSOCNavigationBlocker.Position.ToolTip">Blocker position</translation>
+	<translation name="GameDefinition.WPSOCNavigationBlocker.Property.Label">Property</translation>
+	<translation name="GameDefinition.WPSOCNavigationBlocker.Property.ToolTip">Property name to use</translation>
+	<translation name="GameDefinition.WPSOCNavigationBlocker.Rotation.Label">Rotation</translation>
+	<translation name="GameDefinition.WPSOCNavigationBlocker.Rotation.ToolTip">Blocker rotation</translation>
+	<translation name="GameDefinition.WPSOCNavigationBlocker.Scaling.Label">Scaling</translation>
+	<translation name="GameDefinition.WPSOCNavigationBlocker.Scaling.ToolTip">Blocker scaling</translation>
+	<translation name="GameDefinition.WPSOCNavigationBlocker.Shape.Label">Shape</translation>
+	<translation name="GameDefinition.WPSOCNavigationBlocker.Shape.ToolTip">Blocker shape</translation>
+	<translation name="GameDefinition.WPSOCNavigationBlocker.Target.Label">Target</translation>
+	<translation name="GameDefinition.WPSOCNavigationBlocker.Target.ToolTip">Target name to use</translation>
+	<translation name="GameDefinition.WPSOCNavigationBlocker.Type.Label">Type</translation>
+	<translation name="GameDefinition.WPSOCNavigationBlocker.Type.ToolTip">Navigation space type</translation>
+	
+	<!-- WPS: Object Class Navigation Space -->
+	<translation name="GameDefinition.WPSOCNavigationSpace.BlockingPriority.Label">Blocking priority</translation>
+	<translation name="GameDefinition.WPSOCNavigationSpace.BlockingPriority.ToolTip">Priority for blocking</translation>
+	<translation name="GameDefinition.WPSOCNavigationSpace.BlockingShape.Label">Blocking shape</translation>
+	<translation name="GameDefinition.WPSOCNavigationSpace.BlockingShape.ToolTip">Shape for blocking</translation>
+	<translation name="GameDefinition.WPSOCNavigationSpace.Bone.Label">Bone</translation>
+	<translation name="GameDefinition.WPSOCNavigationSpace.Bone.ToolTip">Bone name to attach to</translation>
+	<translation name="GameDefinition.WPSOCNavigationSpace.GroupNavigationSpace">Navigation space</translation>
+	<translation name="GameDefinition.WPSOCNavigationSpace.GroupProperties">Properties</translation>
+	<translation name="GameDefinition.WPSOCNavigationSpace.Layer.Label">Layer</translation>
+	<translation name="GameDefinition.WPSOCNavigationSpace.Layer.ToolTip">Navigation layer number</translation>
+	<translation name="GameDefinition.WPSOCNavigationSpace.Path.Label">Path</translation>
+	<translation name="GameDefinition.WPSOCNavigationSpace.Path.ToolTip">Navigation space resource path</translation>
+	<translation name="GameDefinition.WPSOCNavigationSpace.Position.Label">Position</translation>
+	<translation name="GameDefinition.WPSOCNavigationSpace.Position.ToolTip">Navigation space position</translation>
+	<translation name="GameDefinition.WPSOCNavigationSpace.Property.Label">Property</translation>
+	<translation name="GameDefinition.WPSOCNavigationSpace.Property.ToolTip">Property name to use</translation>
+	<translation name="GameDefinition.WPSOCNavigationSpace.Rotation.Label">Rotation</translation>
+	<translation name="GameDefinition.WPSOCNavigationSpace.Rotation.ToolTip">Navigation space rotation</translation>
+	<translation name="GameDefinition.WPSOCNavigationSpace.SnapAngle.Label">Snap angle</translation>
+	<translation name="GameDefinition.WPSOCNavigationSpace.SnapAngle.ToolTip">Angle snapping threshold</translation>
+	<translation name="GameDefinition.WPSOCNavigationSpace.SnapDistance.Label">Snap distance</translation>
+	<translation name="GameDefinition.WPSOCNavigationSpace.SnapDistance.ToolTip">Distance snapping threshold</translation>
+	<translation name="GameDefinition.WPSOCNavigationSpace.Target.Label">Target</translation>
+	<translation name="GameDefinition.WPSOCNavigationSpace.Target.ToolTip">Target name to use</translation>
+	<translation name="GameDefinition.WPSOCNavigationSpace.Type.Label">Type</translation>
+	<translation name="GameDefinition.WPSOCNavigationSpace.Type.ToolTip">Navigation space type</translation>
+	
+	<!-- WPS: Object Class Particle Emitter -->
+	<translation name="GameDefinition.WPSOCParticleEmitter.Bone.Label">Bone</translation>
+	<translation name="GameDefinition.WPSOCParticleEmitter.Bone.ToolTip">Bone name to attach to</translation>
+	<translation name="GameDefinition.WPSOCParticleEmitter.Casting">Casting</translation>
+	<translation name="GameDefinition.WPSOCParticleEmitter.Casting.ToolTip">Enable particle casting</translation>
+	<translation name="GameDefinition.WPSOCParticleEmitter.GroupParticleEmitter">Particle emitter</translation>
+	<translation name="GameDefinition.WPSOCParticleEmitter.GroupProperties">Properties</translation>
+	<translation name="GameDefinition.WPSOCParticleEmitter.GroupTriggers">Triggers</translation>
+	<translation name="GameDefinition.WPSOCParticleEmitter.Path.Label">Path</translation>
+	<translation name="GameDefinition.WPSOCParticleEmitter.Path.ToolTip">Particle emitter resource path</translation>
+	<translation name="GameDefinition.WPSOCParticleEmitter.Position.Label">Position</translation>
+	<translation name="GameDefinition.WPSOCParticleEmitter.Position.ToolTip">Particle emitter position</translation>
+	<translation name="GameDefinition.WPSOCParticleEmitter.Property.Label">Property</translation>
+	<translation name="GameDefinition.WPSOCParticleEmitter.Property.ToolTip">Property name to use</translation>
+	<translation name="GameDefinition.WPSOCParticleEmitter.Rotation.Label">Rotation</translation>
+	<translation name="GameDefinition.WPSOCParticleEmitter.Rotation.ToolTip">Particle emitter rotation</translation>
+	<translation name="GameDefinition.WPSOCParticleEmitter.Target.Label">Target</translation>
+	<translation name="GameDefinition.WPSOCParticleEmitter.Target.ToolTip">Target name to use</translation>
+	<translation name="GameDefinition.WPSOCParticleEmitter.Trigger.Label">Trigger</translation>
+	<translation name="GameDefinition.WPSOCParticleEmitter.Trigger.ToolTip">Trigger name to use</translation>
+	
+	<!-- WPS: Object Class Snap Point -->
+	<translation name="GameDefinition.WPSOCSnapPoint.GroupSnapPoint">Snap point</translation>
+	<translation name="GameDefinition.WPSOCSnapPoint.Name.Label">Name</translation>
+	<translation name="GameDefinition.WPSOCSnapPoint.Name.ToolTip">Snap point name</translation>
+	<translation name="GameDefinition.WPSOCSnapPoint.Position.Label">Position</translation>
+	<translation name="GameDefinition.WPSOCSnapPoint.Position.ToolTip">Snap point position</translation>
+	<translation name="GameDefinition.WPSOCSnapPoint.Rotation.Label">Rotation</translation>
+	<translation name="GameDefinition.WPSOCSnapPoint.Rotation.ToolTip">Snap point rotation</translation>
+	<translation name="GameDefinition.WPSOCSnapPoint.SnapDistance.Label">Snap distance</translation>
+	<translation name="GameDefinition.WPSOCSnapPoint.SnapDistance.ToolTip">Distance threshold for snapping</translation>
+	<translation name="GameDefinition.WPSOCSnapPoint.SnapToRotation">Snap to rotation</translation>
+	<translation name="GameDefinition.WPSOCSnapPoint.SnapToRotation.ToolTip">Snap to rotation orientation</translation>
+	
+	<!-- WPS: Object Class World -->
+	<translation name="GameDefinition.WPSOCWorld.GroupProperties">Properties</translation>
+	<translation name="GameDefinition.WPSOCWorld.GroupWorld">World</translation>
+	<translation name="GameDefinition.WPSOCWorld.Path.Label">Path</translation>
+	<translation name="GameDefinition.WPSOCWorld.Path.ToolTip">World resource path</translation>
+	<translation name="GameDefinition.WPSOCWorld.Position.Label">Position</translation>
+	<translation name="GameDefinition.WPSOCWorld.Property.Label">Property</translation>
+	<translation name="GameDefinition.WPSOCWorld.Property.ToolTip">Property name to use</translation>
+	<translation name="GameDefinition.WPSOCWorld.Rotation.Label">Rotation</translation>
+	<translation name="GameDefinition.WPSOCWorld.Target.Label">Target</translation>
+	<translation name="GameDefinition.WPSOCWorld.Target.ToolTip">Target name to use</translation>
+	
+	<!-- WPS: Particle Emitter -->
+	<translation name="GameDefinition.WPSParticleEmitter.Category.Label">Category</translation>
+	<translation name="GameDefinition.WPSParticleEmitter.Description.Label">Description</translation>
+	<translation name="GameDefinition.WPSParticleEmitter.Name.Label">Name</translation>
+	<translation name="GameDefinition.WPSParticleEmitter.Path.Label">Path</translation>
+	<translation name="GameDefinition.WPSParticleEmitter.Path.ToolTip">Particle emitter resource path</translation>
+	
+	<!-- WPS: Skin -->
+	<translation name="GameDefinition.WPSSkin.Category.Label">Category</translation>
+	<translation name="GameDefinition.WPSSkin.Description.Label">Description</translation>
+	<translation name="GameDefinition.WPSSkin.Name.Label">Name</translation>
+	<translation name="GameDefinition.WPSSkin.Path.Label">Path</translation>
+	<translation name="GameDefinition.WPSSkin.Path.ToolTip">Skin resource path</translation>
+	
+	<!-- WPS: Sky -->
+	<translation name="GameDefinition.WPSSky.AddController">Add controller</translation>
+	<translation name="GameDefinition.WPSSky.Category.Label">Category</translation>
+	<translation name="GameDefinition.WPSSky.Controller.Label">Controller</translation>
+	<translation name="GameDefinition.WPSSky.Controller.ToolTip">Sky controller</translation>
+	<translation name="GameDefinition.WPSSky.ControllerMenu">Controller menu</translation>
+	<translation name="GameDefinition.WPSSky.ControllerName.Label">Name</translation>
+	<translation name="GameDefinition.WPSSky.ControllerName.ToolTip">Controller name</translation>
+	<translation name="GameDefinition.WPSSky.ControllerValue.Label">Value</translation>
+	<translation name="GameDefinition.WPSSky.ControllerValue.ToolTip">Controller value</translation>
+	<translation name="GameDefinition.WPSSky.Description.Label">Description</translation>
+	<translation name="GameDefinition.WPSSky.GroupControllers">Controllers</translation>
+	<translation name="GameDefinition.WPSSky.Name.Label">Name</translation>
+	<translation name="GameDefinition.WPSSky.Path.Label">Path</translation>
+	<translation name="GameDefinition.WPSSky.RemoveController">Remove controller</translation>
+	
+	<!-- UI: Navigation Space Types -->
+	<translation name="GameDefinition.NavSpaceType.Grid">Grid</translation>
+	<translation name="GameDefinition.NavSpaceType.Mesh">Mesh</translation>
+	<translation name="GameDefinition.NavSpaceType.Volume">Volume</translation>
+	
+	<!-- UI: Additional Property Types -->
+	<translation name="GameDefinition.PropertyType.AttachPosition">Attach position</translation>
+	<translation name="GameDefinition.PropertyType.AttachRotation">Attach rotation</translation>
+	<translation name="GameDefinition.PropertyType.Axis">Axis</translation>
+	<translation name="GameDefinition.PropertyType.BlockingPriority">Blocking priority</translation>
+	<translation name="GameDefinition.PropertyType.Casting">Casting</translation>
+	<translation name="GameDefinition.PropertyType.Enabled">Enabled</translation>
+	<translation name="GameDefinition.PropertyType.InfluenceArea">Influence area</translation>
+	<translation name="GameDefinition.PropertyType.InfluenceBorderSize">Influence border size</translation>
+	<translation name="GameDefinition.PropertyType.InfluencePriority">Influence priority</translation>
+	<translation name="GameDefinition.PropertyType.Layer">Layer</translation>
+	<translation name="GameDefinition.PropertyType.Locked">Locked</translation>
+	<translation name="GameDefinition.PropertyType.Offset">Offset</translation>
+	<translation name="GameDefinition.PropertyType.Position">Position</translation>
+	<translation name="GameDefinition.PropertyType.ReflectionMask">Reflection mask</translation>
+	<translation name="GameDefinition.PropertyType.ReflectionShape">Reflection shape</translation>
+	<translation name="GameDefinition.PropertyType.RenderEnvironmentMap">Render environment map</translation>
+	<translation name="GameDefinition.PropertyType.Rotation">Rotation</translation>
+	<translation name="GameDefinition.PropertyType.Skin">Skin</translation>
+	<translation name="GameDefinition.PropertyType.SnapAngle">Snap angle</translation>
+	<translation name="GameDefinition.PropertyType.SnapDistance">Snap distance</translation>
+	<translation name="GameDefinition.PropertyType.SpaceShape">Space shape</translation>
+	<translation name="GameDefinition.PropertyType.Spherical">Spherical</translation>
+	
+	<!-- UI: Trigger Types -->
+	<translation name="GameDefinition.TriggerType.Casting">Casting</translation>
+	
+	<!-- Additional Missing Translations -->
+	<translation name="GameDefinition.PropertyList.Action.Paste">Paste</translation>
+	<translation name="GameDefinition.Skin.Dialog.ChangeSkinEmitterPath">Change Skin Emitter Path</translation>
+	<translation name="GameDefinition.Skin.Dialog.ASkinEmitterWithThisPathExistsAlready.">A skin emitter with this path exists already.</translation>
+	<translation name="GameDefinition.ParticleEmitter.Dialog.AParticleEmitterWithThisPathExistsAlready.">A particle emitter with this path exists already.</translation>
+	
+	<!-- Undo: Game Definition -->
+	<translation name="GameDefinition.Undo.PasteProperty">Paste property</translation>
+	
+	<!-- WP: Game Definition -->
+	<translation name="GameDefinition.WPGameDefinition.AutoFindPathObjectClasses.Label">Auto Find Path Object Classes</translation>
+	<translation name="GameDefinition.WPGameDefinition.AutoFindPathSkins.Label">Auto Find Path SkinsClasses</translation>
+	<translation name="GameDefinition.WPGameDefinition.AutoFindPathSkies.Label">Auto Find Path Skies</translation>
+	
+	<!-- WP: Property List -->
+	<translation name="GameDefinition.PropertyList.Menu.ShowPropertiesMenu.ToolTip">Show Properties Menu</translation>
+	<translation name="GameDefinition.PropertyList.Action.AddOption">Add Option...</translation>
+	<translation name="GameDefinition.PropertyList.Action.AddOption.ToolTip">Add option</translation>
+	<translation name="GameDefinition.PropertyList.Action.RemoveOption">Remove Option</translation>
+	<translation name="GameDefinition.PropertyList.Action.RemoveOption.ToolTip">Remove option</translation>
+	<translation name="GameDefinition.PropertyList.Menu.ShowCustomPatternMenu.ToolTip">Show Custom Pattern Menu</translation>
+	<translation name="GameDefinition.PropertyList.Action.RemoveCustomPattern">Remove</translation>
+	<translation name="GameDefinition.PropertyList.Action.RemoveCustomPattern.ToolTip">Remove custom pattern</translation>
+	<translation name="GameDefinition.PropertyList.DefinesIdentifier">Defines Identifier</translation>
+	<translation name="GameDefinition.PropertyList.DefinesIdentifier.ToolTip">Property defines identifier</translation>
+	
+	<!-- WPS: Category -->
+	<translation name="GameDefinition.WPSCategory.AutoCategorizePattern.Label">Auto Categorize Pattern</translation>
+	
+	<!-- WPS: Object Class -->
+	<translation name="GameDefinition.WPSObjectClass.Ghost">Ghost</translation>
+	<translation name="GameDefinition.WPSObjectClass.Ghost.ToolTip">Object is not touched by other objects during placements</translation>
+	<translation name="GameDefinition.WPSObjectClass.CanInstantiate">Can Instantiate</translation>
+	<translation name="GameDefinition.WPSObjectClass.CanInstantiate.ToolTip">Object can be instantiated (visible in browser and usable). Disable for classes only inherited from.</translation>
+	<translation name="GameDefinition.WPSObjectClass.AttachableBehavior">Attachable Behavior</translation>
+	<translation name="GameDefinition.WPSObjectClass.AttachableBehavior.ToolTip">Object is an attachable behavior</translation>
+	<translation name="GameDefinition.WPSObjectClass.Action.AddInherit">Add...</translation>
+	<translation name="GameDefinition.WPSObjectClass.Action.AddInherit.ToolTip">Add inherit</translation>
+	<translation name="GameDefinition.WPSObjectClass.Action.RemoveInherit">Remove</translation>
+	<translation name="GameDefinition.WPSObjectClass.Action.RemoveInherit.ToolTip">Remove inherit</translation>
+	<translation name="GameDefinition.WPSObjectClass.Action.RemoveAllInherits">Remove All</translation>
+	<translation name="GameDefinition.WPSObjectClass.Action.RemoveAllInherits.ToolTip">Remove all inherits</translation>
+	<translation name="GameDefinition.WPSObjectClass.Action.ResetPropertyPrefix.ToolTip">Reset property prefix to default property prefix of inherited object class</translation>
+	<translation name="GameDefinition.WPSObjectClass.Action.JumpToClass.ToolTip">Jump to Class</translation>
+	<translation name="GameDefinition.WPSObjectClass.Action.JumpToCategory.ToolTip">Jump to Category</translation>
+	<translation name="GameDefinition.WPSObjectClass.HideTags.Label">Hide Tags</translation>
+	<translation name="GameDefinition.WPSObjectClass.PartialHideTags.Label">Partial Hide Tags</translation>
+	<translation name="GameDefinition.WPSObjectClass.Action.SetPropertyValue">Set</translation>
+	<translation name="GameDefinition.WPSObjectClass.Action.SetPropertyValue.ToolTip">Set property value</translation>
+	<translation name="GameDefinition.WPSObjectClass.Action.RemovePropertyValue">Remove</translation>
+	<translation name="GameDefinition.WPSObjectClass.Action.RemovePropertyValue.ToolTip">Remove property value</translation>
+	<translation name="GameDefinition.WPSObjectClass.Action.ClearPropertyValues">Clear</translation>
+	<translation name="GameDefinition.WPSObjectClass.Action.ClearPropertyValues.ToolTip">Remove all property values</translation>
+	<translation name="GameDefinition.WPSObjectClass.Action.PropertyValuesFromSubObjects">Set from sub objects</translation>
+	<translation name="GameDefinition.WPSObjectClass.Action.PropertyValuesFromSubObjects.ToolTip">Set property values from sub objects links</translation>
+	<translation name="GameDefinition.WPSObjectClass.Action.AddTexture">Add...</translation>
+	<translation name="GameDefinition.WPSObjectClass.Action.AddTexture.ToolTip">Add texture</translation>
+	<translation name="GameDefinition.WPSObjectClass.Action.RemoveTexture">Remove</translation>
+	<translation name="GameDefinition.WPSObjectClass.Action.RemoveTexture.ToolTip">Remove selected texture</translation>
+	<translation name="GameDefinition.WPSObjectClass.Menu.TexturesMenu.ToolTip">Textures menu</translation>
+	
+	<!-- WPS: Object Class Component -->
+	<translation name="GameDefinition.WPSOCComponent.DoNotScale">Do not scale</translation>
+	<translation name="GameDefinition.WPSOCComponent.DoNotScale.ToolTip">Component scale does not change with scale of parent object class instance</translation>
+	<translation name="GameDefinition.WPSOCComponent.Static">Static</translation>
+	<translation name="GameDefinition.WPSOCComponent.Static.ToolTip">Component is static (optimization for graphic module)</translation>
+	<translation name="GameDefinition.WPSOCComponent.RenderEnvMap">Render Env-Map</translation>
+	<translation name="GameDefinition.WPSOCComponent.RenderEnvMap.ToolTip">Component is included in environment maps</translation>
+	<translation name="GameDefinition.WPSOCComponent.AffectsAudio">Affects audio</translation>
+	<translation name="GameDefinition.WPSOCComponent.AffectsAudio.ToolTip">Component affects audio</translation>
+	<translation name="GameDefinition.WPSOCComponent.LightShadowIgnore">Light Shadow Ignore</translation>
+	<translation name="GameDefinition.WPSOCComponent.LightShadowIgnore.ToolTip">Component is not casting shadows from lights present in the same object</translation>
+	<translation name="GameDefinition.WPSOCComponent.PartialHide">Partial hide</translation>
+	<translation name="GameDefinition.WPSOCComponent.PartialHide.ToolTip">Component is hidden if partial hide tags match</translation>
+	<translation name="GameDefinition.WPSOCComponent.AttachTarget">Attach Target</translation>
+	<translation name="GameDefinition.WPSOCComponent.AttachTarget.ToolTip">Resourcec can be attached to this component in the editor.</translation>
+	<translation name="GameDefinition.WPSOCComponent.Action.AddTexture">Add...</translation>
+	<translation name="GameDefinition.WPSOCComponent.Action.AddTexture.ToolTip">Add texture</translation>
+	<translation name="GameDefinition.WPSOCComponent.Action.RemoveTexture">Remove</translation>
+	<translation name="GameDefinition.WPSOCComponent.Action.RemoveTexture.ToolTip">Remove selected texture</translation>
+	<translation name="GameDefinition.WPSOCComponent.Menu.TexturesMenu.ToolTip">Textures menu</translation>
+	<translation name="GameDefinition.WPSOCComponent.Action.AddTextureFromModel">Add Texture From Model</translation>
+	<translation name="GameDefinition.WPSOCComponent.Action.SetTexturePropertyValue">Set</translation>
+	<translation name="GameDefinition.WPSOCComponent.Action.SetTexturePropertyValue.ToolTip">Set property value</translation>
+	<translation name="GameDefinition.WPSOCComponent.Action.RemoveTexturePropertyValue">Remove</translation>
+	<translation name="GameDefinition.WPSOCComponent.Action.RemoveTexturePropertyValue.ToolTip">Remove property value</translation>
+	<translation name="GameDefinition.WPSOCComponent.Action.ClearTexturePropertyValues">Clear</translation>
+	<translation name="GameDefinition.WPSOCComponent.Action.ClearTexturePropertyValues.ToolTip">Remove all property values</translation>
+	
+	<!-- WPS: Object Class Force Field -->
+	<translation name="GameDefinition.WPSOCForceField.Enabled">Enabled</translation>
+	<translation name="GameDefinition.WPSOCForceField.Enabled.ToolTip">Force field is enabled</translation>
+	
+	<!-- WPS: Object Class Light -->
+	<translation name="GameDefinition.WPSOCLight.Activated">Activated</translation>
+	<translation name="GameDefinition.WPSOCLight.Activated.ToolTip">Light is activated</translation>
+	<translation name="GameDefinition.WPSOCLight.CastShadows">Cast Shadows</translation>
+	<translation name="GameDefinition.WPSOCLight.CastShadows.ToolTip">Light casts shadows</translation>
+	
+	<!-- WPS: Object Class Snap Point -->
+	<translation name="GameDefinition.WPSOCSnapPoint.Position.Label">Position:</translation>
+	<translation name="GameDefinition.WPSOCSnapPoint.Position.ToolTip">Position relative to object class</translation>
+	<translation name="GameDefinition.WPSOCSnapPoint.Rotation.Label">Rotation:</translation>
+	<translation name="GameDefinition.WPSOCSnapPoint.Rotation.ToolTip">Rotation in degrees relative to object class</translation>
+	<translation name="GameDefinition.WPSOCSnapPoint.SnapDistance.Label">Snap Distance:</translation>
+	<translation name="GameDefinition.WPSOCSnapPoint.SnapDistance.ToolTip">Snap distance in meters</translation>
+	
+	<!-- WPS: Object Class Speaker -->
+	<translation name="GameDefinition.WPSOCSpeaker.Looping">Looping</translation>
+	<translation name="GameDefinition.WPSOCSpeaker.Looping.ToolTip">Speaker is looping</translation>
+	<translation name="GameDefinition.WPSOCSpeaker.Playing">Playing</translation>
+	<translation name="GameDefinition.WPSOCSpeaker.Playing.ToolTip">Speaker is playing</translation>
+	
+	<!-- WPS: Particle Emitter, Skin, Sky - Category Filter -->
+	<translation name="GameDefinition.Category.Filter.ToolTip">Category</translation>
+	<translation name="GameDefinition.WPSParticleEmitter.JumpToCategory.ToolTip">Jump to category</translation>
+	<translation name="GameDefinition.WPSSkin.JumpToCategory.ToolTip">Jump to category</translation>
+	<translation name="GameDefinition.WPSSky.JumpToCategory.ToolTip">Jump to category</translation>
+	
+	<!-- Task Messages -->
+	<translation name="GameDefinition.Task.SyncGameDefinition">Game Definition Editor: Synchronize Game Definition</translation>
+	
+	<!-- Tree Model: Root Labels -->
+	<translation name="GameDefinition.TreeModel.Categories">Categories</translation>
+	<translation name="GameDefinition.TreeModel.ObjectClasses">Object Classes</translation>
+	<translation name="GameDefinition.TreeModel.ParticleEmitters">Particle Emitters</translation>
+	<translation name="GameDefinition.TreeModel.Skins">Skins</translation>
+	<translation name="GameDefinition.TreeModel.Skies">Skies</translation>
+	
+	<!-- Tree Model: Numbered Items -->
+	<translation name="GameDefinition.TreeModel.BillboardNumber">Billboard #{0}</translation>
+	<translation name="GameDefinition.TreeModel.CameraNumber">Camera #{0}</translation>
+	<translation name="GameDefinition.TreeModel.ComponentNumber">Component #{0}</translation>
+	<translation name="GameDefinition.TreeModel.EnvMapProbeNumber">EnvMap Probe #{0}</translation>
+	<translation name="GameDefinition.TreeModel.ForceFieldNumber">Force Field #{0}</translation>
+	<translation name="GameDefinition.TreeModel.LightNumber">Light #{0}</translation>
+	<translation name="GameDefinition.TreeModel.NavigationBlockerNumber">Navigation Blocker #{0}</translation>
+	<translation name="GameDefinition.TreeModel.NavigationSpaceNumber">Navigation Space #{0}</translation>
+	<translation name="GameDefinition.TreeModel.ParticleEmitterNumber">Particle Emitter #{0}</translation>
+	<translation name="GameDefinition.TreeModel.SnapPointNumberName">Snap Point #{0}: {1}</translation>
+	<translation name="GameDefinition.TreeModel.SpeakerNumber">Speaker #{0}</translation>
+	<translation name="GameDefinition.TreeModel.WorldNumber">World #{0}</translation>
+	
+	<!-- Default Values -->
+	<translation name="GameDefinition.Default.Category">Category</translation>
+	<translation name="GameDefinition.Default.ObjectClass">Object Class</translation>
+	<translation name="GameDefinition.Default.Property">Property</translation>
+	<translation name="GameDefinition.Default.Option">Option</translation>
+	<translation name="GameDefinition.Default.FilePattern">File Pattern</translation>
+	<translation name="GameDefinition.Default.Name">Name</translation>
+	<translation name="GameDefinition.Default.Texture">Texture</translation>
+	<translation name="GameDefinition.Default.Controller">Controller</translation>
 </languagePack>

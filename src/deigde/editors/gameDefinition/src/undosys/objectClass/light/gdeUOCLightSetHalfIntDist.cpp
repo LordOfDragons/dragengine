@@ -48,7 +48,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Light set half intensity distance");
+	SetShortInfo("@GameDefinition.Undo.OCLightSetHalfIntDist");
 	
 	pOldValue = light->GetHalfIntensityDistance();
 	pNewValue = newValue;

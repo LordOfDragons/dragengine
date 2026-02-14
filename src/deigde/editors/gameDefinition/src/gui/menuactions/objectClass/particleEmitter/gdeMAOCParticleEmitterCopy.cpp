@@ -48,9 +48,9 @@
 ////////////////
 
 gdeMAOCParticleEmitterCopy::gdeMAOCParticleEmitterCopy(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Copy Object Class Particle Emitter",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCParticleEmitterCopy",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-	"Copy object class particle emitter")
+	"@GameDefinition.Menu.OCParticleEmitterCopy.ToolTip")
 {
 }
 

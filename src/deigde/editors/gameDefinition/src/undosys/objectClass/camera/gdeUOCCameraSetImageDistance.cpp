@@ -49,7 +49,7 @@ pCamera(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Camera set image distance");
+	SetShortInfo("@GameDefinition.Undo.OCCameraSetImageDistance");
 	
 	pOldValue = camera->GetImageDistance();
 	pNewValue = newValue;

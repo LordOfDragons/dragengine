@@ -48,7 +48,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Light set orientation");
+	SetShortInfo("@GameDefinition.Undo.OCLightSetRotation");
 	
 	pOldValue = light->GetRotation();
 	pNewValue = newValue;

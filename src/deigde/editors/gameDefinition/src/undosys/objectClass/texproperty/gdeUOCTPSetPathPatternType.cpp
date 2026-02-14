@@ -47,7 +47,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Object class texture property set path pattern type");
+	SetShortInfo("@GameDefinition.Undo.OCTPSetPathPatternType");
 	
 	pOldValue = property->GetPathPatternType();
 	pNewValue = newValue;

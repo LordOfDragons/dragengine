@@ -47,9 +47,9 @@
 ////////////////
 
 gdeMAObjectClassDuplicate::gdeMAObjectClassDuplicate(gdeWindowMain &windowMain) :
-gdeBaseAction(windowMain, "Duplicate Object Class...",
+gdeBaseAction(windowMain, "@GameDefinition.Menu.ObjectClassDuplicate",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongRight),
-	"Duplicate object class")
+	"@GameDefinition.Menu.ObjectClassDuplicate.ToolTip")
 {
 }
 
@@ -67,9 +67,9 @@ igdeUndo::Ref gdeMAObjectClassDuplicate::OnAction(gdeGameDefinition &gameDefinit
 	const gdeObjectClass::List &list = gameDefinition.GetObjectClasses();
 	decString name(objectClass->GetName());
 	
-	while(igdeCommonDialogs::GetString(pWindowMain, "Duplicate Object Class", "Name:", name)){
+	while(igdeCommonDialogs::GetString(pWindowMain, "@GameDefinition.Dialog.ObjectClassDuplicate.Title", "@GameDefinition.Dialog.ObjectClassDuplicate.Name", name)){
 		if(list.HasNamed(name)){
-			igdeCommonDialogs::Error(pWindowMain, "Duplicate Object Class", "Object Class exists already.");
+			igdeCommonDialogs::Error(pWindowMain, "@GameDefinition.Dialog.ObjectClassDuplicate.Title", "@GameDefinition.Dialog.ObjectClassDuplicate.ErrorExists");
 			continue;
 		}
 		

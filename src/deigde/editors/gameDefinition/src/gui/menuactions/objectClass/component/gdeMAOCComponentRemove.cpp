@@ -47,9 +47,9 @@
 ////////////////
 
 gdeMAOCComponentRemove::gdeMAOCComponentRemove(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Remove Object Class Component",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCComponentRemove",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-	"Remove object class component")
+	"@GameDefinition.Menu.OCComponentRemove.ToolTip")
 {
 }
 

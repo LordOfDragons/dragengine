@@ -47,9 +47,9 @@
 ////////////////
 
 gdeMAOCSnapPointAdd::gdeMAOCSnapPointAdd(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Add Object Class Snap Point...",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCSnapPointAdd",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-	"Add object class snap point")
+	"@GameDefinition.Menu.OCSnapPointAdd.ToolTip")
 {
 }
 

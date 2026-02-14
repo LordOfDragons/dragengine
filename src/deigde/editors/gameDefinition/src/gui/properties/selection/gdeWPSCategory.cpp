@@ -86,8 +86,9 @@ public:
 		
 		if(category->GetParent()
 		&& category->GetParent()->GetCategories().FindNamed(textField->GetText())){
-			igdeCommonDialogs::Information(*pPanel.GetParentWindow(), "Rename category",
-				"A category with this name exists already.");
+			igdeCommonDialogs::Information(*pPanel.GetParentWindow(),
+				"@GameDefinition.WPSCategory.Dialog.RenameCategory",
+				"@GameDefinition.WPSCategory.Dialog.CategoryExists");
 			textField->SetText(category->GetName());
 			return;
 		}
@@ -121,7 +122,7 @@ class cEditAutoCategorizePattern : public gdeWPPatternList{
 public:
 	typedef deTObjectReference<cEditAutoCategorizePattern> Ref;
 	cEditAutoCategorizePattern(gdeWPSCategory &panel) : gdeWPPatternList(
-		panel.GetEnvironment().GetUIHelper(), 3, "Auto Categorize Pattern"),
+		panel.GetEnvironment().GetUIHelper(), 3, "@GameDefinition.WPSCategory.AutoCategorizePattern.Label"),
 		pPanel(panel){}
 	
 	igdeUndo::Ref UndoSet(const decStringSet &patterns) override{
@@ -139,7 +140,8 @@ class cActionHidden : public igdeAction{
 	
 public:
 	typedef deTObjectReference<cActionHidden> Ref;
-	cActionHidden(gdeWPSCategory &panel) : igdeAction("Hidden", "Hide in browsers"), pPanel(panel){}
+	cActionHidden(gdeWPSCategory &panel) : igdeAction(
+		"@GameDefinition.WPSCategory.Hidden", "@GameDefinition.WPSCategory.Hidden.ToolTip"), pPanel(panel){}
 	
 	void Update() override{
 		const gdeCategory * const category = pPanel.GetCategory();
@@ -231,20 +233,22 @@ pWindowProperties(windowProperties)
 	AddChild(content);
 	
 	// category
-	helper.GroupBox(content, groupBox, "Category:");
-	helper.EditString(groupBox, "Name:", "Category name", pEditName, cTextName::Ref::New(*this));
-	helper.EditString(groupBox, "Description:", "Category description",
+	helper.GroupBox(content, groupBox, "@GameDefinition.WPSCategory.GroupCategory");
+	helper.EditString(groupBox, "@GameDefinition.WPSCategory.Name",
+		"@GameDefinition.WPSCategory.Name.ToolTip", pEditName, cTextName::Ref::New(*this));
+	helper.EditString(groupBox, "@GameDefinition.WPSCategory.Description",
+		"@GameDefinition.WPSCategory.Description.ToolTip",
 		pEditDescription, 15, 5, cTextDescription::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkHidden, cActionHidden::Ref::New(*this));
 	
 	// auto categorize
-	helper.GroupBoxFlow(content, groupBox, "Auto Categorize:");
+	helper.GroupBoxFlow(content, groupBox, "@GameDefinition.WPSCategory.GroupAutoCategorize");
 	pAutoCategorizePattern = cEditAutoCategorizePattern::Ref::New(*this);
 	groupBox->AddChild(pAutoCategorizePattern);
 	
 	// element listing
-	helper.GroupBoxFlow(content, groupBox, "Assigned Elements:");
-	helper.ListBox(groupBox, 10, "Assigned Elements. Double click to jump to element",
+	helper.GroupBoxFlow(content, groupBox, "@GameDefinition.WPSCategory.GroupAssignedElements");
+	helper.ListBox(groupBox, 10, "@GameDefinition.WPSCategory.AssignedElements.ToolTip",
 		pListElements, cListElements::Ref::New(*this));
 	pListElements->SetDefaultSorter();
 }

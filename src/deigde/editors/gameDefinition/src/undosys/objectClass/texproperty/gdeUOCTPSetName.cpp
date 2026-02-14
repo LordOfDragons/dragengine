@@ -47,7 +47,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Object class texture property set name");
+	SetShortInfo("@GameDefinition.Undo.OCTPSetName");
 	
 	pOldValue = property->GetName();
 	pNewValue = newValue;

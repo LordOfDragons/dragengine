@@ -50,9 +50,9 @@
 ////////////////
 
 gdeMAOCEnvMapProbePaste::gdeMAOCEnvMapProbePaste(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Paste Object Class Environment Map Probe",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCEnvMapProbePaste",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
-	"Paste object class environment map probe")
+	"@GameDefinition.Menu.OCEnvMapProbePaste.ToolTip")
 {
 }
 
@@ -71,7 +71,7 @@ igdeUndo::Ref gdeMAOCEnvMapProbePaste::OnActionSubObject(gdeGameDefinition&, gde
 	const igdeUndo::Ref undo = gdeUOCAddEnvMapProbe::Ref::New(&objectClass,
 		gdeOCEnvMapProbe::Ref::New(*clip.DynamicCast<gdeClipboardDataOCEnvMapProbe>()->GetEnvMapProbe()));
 	
-	undo->SetShortInfo("Paste object class environment map probe");
+	undo->SetShortInfo("@GameDefinition.Undo.PasteOCEnvMapProbe");
 	return undo;
 }
 

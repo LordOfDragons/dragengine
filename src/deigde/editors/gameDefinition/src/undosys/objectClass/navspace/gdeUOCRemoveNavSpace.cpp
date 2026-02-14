@@ -52,7 +52,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Remove navigation space");
+	SetShortInfo("@GameDefinition.Undo.OCRemoveNavSpace");
 	
 	pNavSpace = navspace;
 	pObjectClass = objectClass;

@@ -47,7 +47,7 @@ pSky(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Sky set path");
+	SetShortInfo("@GameDefinition.Undo.SkySetPath");
 	
 	pOldValue = sky->GetPath();
 	pNewValue = newValue;

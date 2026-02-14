@@ -49,7 +49,7 @@ pEnvMapProbe(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Add environment map probe");
+	SetShortInfo("@GameDefinition.Undo.OCAddEnvMapProbe");
 	
 	pEnvMapProbe = envMapProbe;
 	pObjectClass = objectClass;
@@ -79,4 +79,9 @@ void gdeUOCAddEnvMapProbe::Undo(){
 void gdeUOCAddEnvMapProbe::Redo(){
 	pObjectClass->GetEnvMapProbes().Add(pEnvMapProbe);
 	pObjectClass->NotifyEnvMapProbesChanged();
+	
+	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
+	gameDefinition->SetActiveObjectClass(pObjectClass);
+	gameDefinition->SetActiveOCEnvMapProbe(pEnvMapProbe);
+	gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotOCEnvMapProbe);
 }

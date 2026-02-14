@@ -49,7 +49,7 @@ pSpeaker(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Speaker set orientation");
+	SetShortInfo("@GameDefinition.Undo.OCSpeakerSetRotation");
 	
 	pOldValue = speaker->GetRotation();
 	pNewValue = newValue;

@@ -48,7 +48,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("NavSpace set bone name");
+	SetShortInfo("@GameDefinition.Undo.OCNavSpaceSetBoneName");
 	
 	pOldValue = navSpace->GetBoneName();
 	pNewValue = newValue;

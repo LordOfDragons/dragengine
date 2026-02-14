@@ -45,9 +45,9 @@
 ////////////////
 
 gdeMASkinRemove::gdeMASkinRemove(gdeWindowMain &windowMain) :
-gdeBaseAction(windowMain, "Remove Skin",
+gdeBaseAction(windowMain, "@GameDefinition.Menu.SkinRemove",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-	"Remove skin")
+	"@GameDefinition.Menu.SkinRemove.ToolTip")
 {
 }
 

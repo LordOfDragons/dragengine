@@ -47,7 +47,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Object class property set maximum value");
+	SetShortInfo("@GameDefinition.Undo.OCPSetMaxValue");
 	
 	pOldValue = property->GetMaximumValue();
 	pNewValue = newValue;

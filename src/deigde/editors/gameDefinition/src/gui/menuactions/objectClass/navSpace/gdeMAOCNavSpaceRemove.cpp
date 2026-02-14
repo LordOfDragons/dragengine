@@ -47,9 +47,9 @@
 ////////////////
 
 gdeMAOCNavSpaceRemove::gdeMAOCNavSpaceRemove(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Remove Object Class Navigation Space",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCNavSpaceRemove",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-	"Remove object class navigation space")
+	"@GameDefinition.Menu.OCNavSpaceRemove.ToolTip")
 {
 }
 

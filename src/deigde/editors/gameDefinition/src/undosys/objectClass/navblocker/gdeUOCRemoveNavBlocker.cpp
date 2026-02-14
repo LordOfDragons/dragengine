@@ -53,7 +53,7 @@ pNavBlocker(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Remove navigation blocker");
+	SetShortInfo("@GameDefinition.Undo.OCRemoveNavBlocker");
 	
 	pNavBlocker = navblocker;
 	pObjectClass = objectClass;

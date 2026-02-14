@@ -48,9 +48,9 @@
 ////////////////
 
 gdeMAOCEnvMapProbeCopy::gdeMAOCEnvMapProbeCopy(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Copy Object Class Environment Map Probe",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCEnvMapProbeCopy",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-	"Copy object class environment map probe")
+	"@GameDefinition.Menu.OCEnvMapProbeCopy.ToolTip")
 {
 }
 

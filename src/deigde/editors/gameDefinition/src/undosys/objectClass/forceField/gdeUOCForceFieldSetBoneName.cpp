@@ -49,7 +49,7 @@ pForceField(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Force field set bone name");
+	SetShortInfo("@GameDefinition.Undo.OCForceFieldSetBoneName");
 	
 	pOldValue = forceField->GetBoneName();
 	pNewValue = newValue;

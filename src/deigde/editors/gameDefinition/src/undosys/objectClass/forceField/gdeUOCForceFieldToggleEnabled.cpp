@@ -49,7 +49,7 @@ pForceField(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Force field toggle enabled");
+	SetShortInfo("@GameDefinition.Undo.OCForceFieldToggleEnabled");
 	
 	pForceField = forceField;
 	pObjectClass = objectClass;

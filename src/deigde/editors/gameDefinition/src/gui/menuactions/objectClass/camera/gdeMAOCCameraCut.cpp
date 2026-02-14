@@ -49,9 +49,9 @@
 ////////////////
 
 gdeMAOCCameraCut::gdeMAOCCameraCut(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Cut Object Class Camera",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCCameraCut",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
-	"Cut object class camera")
+	"@GameDefinition.Menu.OCCameraCut.ToolTip")
 {
 }
 

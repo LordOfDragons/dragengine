@@ -49,7 +49,7 @@ pParticleEmitter(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("ParticleEmitter set bone name");
+	SetShortInfo("@GameDefinition.Undo.OCParticleEmitterSetBoneName");
 	
 	pOldValue = particleEmitter->GetBoneName();
 	pNewValue = newValue;

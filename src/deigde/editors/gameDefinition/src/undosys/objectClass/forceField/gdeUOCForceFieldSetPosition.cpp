@@ -49,7 +49,7 @@ pForceField(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Force field set position");
+	SetShortInfo("@GameDefinition.Undo.OCForceFieldSetPosition");
 	
 	pOldValue = forceField->GetPosition();
 	pNewValue = newValue;

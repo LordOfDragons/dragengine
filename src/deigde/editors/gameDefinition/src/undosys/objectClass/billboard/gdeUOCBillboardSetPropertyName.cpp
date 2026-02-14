@@ -49,7 +49,7 @@ pProperty(property)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Billboard set property name");
+	SetShortInfo("@GameDefinition.Undo.OCBillboardSetPropertyName");
 	
 	pOldValue = billboard->GetPropertyName(property);
 	pNewValue = newValue;

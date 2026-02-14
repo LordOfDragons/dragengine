@@ -48,7 +48,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Game definition set script module");
+	SetShortInfo("@GameDefinition.Undo.GDSetScriptModule");
 	
 	pOldValue = gameDefinition->GetScriptModule();
 	

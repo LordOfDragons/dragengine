@@ -86,8 +86,8 @@ public:
 		}
 		
 		if(pPanel.GetGameDefinition()->GetSkins().HasWithPath(editPath->GetPath())){
-			igdeCommonDialogs::Information(*pPanel.GetParentWindow(), "Change skin emitter path",
-				"A skin emitter with this path exists already.");
+			igdeCommonDialogs::Information(*pPanel.GetParentWindow(), "@GameDefinition.Skin.Dialog.ChangeSkinEmitterPath",
+				"@GameDefinition.Skin.Dialog.ASkinEmitterWithThisPathExistsAlready.");
 			editPath->SetPath(skin->GetPath());
 			return;
 		}
@@ -158,7 +158,7 @@ public:
 	typedef deTObjectReference<cActionJumpToCategory> Ref;
 	cActionJumpToCategory(gdeWPSSkin &panel) : 
 	igdeAction("", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallStrongRight),
-		"Jump to Category"),
+		"@GameDefinition.WPSSkin.JumpToCategory.ToolTip"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -206,15 +206,15 @@ pWindowProperties(windowProperties)
 	AddChild(content);
 	
 	// skin
-	helper.GroupBox(content, groupBox, "Skin:");
-	helper.EditPath(groupBox, "Path:", "Path to skin emitter",
+	helper.GroupBox(content, groupBox, "@GameDefinition.WPSSkin.GroupSkin");
+	helper.EditPath(groupBox, "@GameDefinition.WPSSkin.Path.Label", "@GameDefinition.WPSSkin.Path.ToolTip",
 		igdeEnvironment::efpltSkin, pEditPath, cEditPath::Ref::New(*this));
-	helper.EditString(groupBox, "Name:", "Skin name", pEditName, cTextName::Ref::New(*this));
-	helper.EditString(groupBox, "Description:", "Skin description",
+	helper.EditString(groupBox, "@GameDefinition.WPSSkin.Name.Label", "@GameDefinition.WPSSkin.Name.ToolTip", pEditName, cTextName::Ref::New(*this));
+	helper.EditString(groupBox, "@GameDefinition.WPSSkin.Description.Label", "@GameDefinition.WPSSkin.Description.ToolTip",
 		pEditDescription, 15, 5, cTextDescription::Ref::New(*this));
 	
-	helper.FormLineStretchFirst(groupBox, "Category: ", "Category", frameLine);
-	helper.ComboBoxFilter(frameLine, true, "Category", pCBCategory, cComboCategory::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@GameDefinition.WPSSkin.Category.Label", "@GameDefinition.WPSSkin.Category.ToolTip", frameLine);
+	helper.ComboBoxFilter(frameLine, true, "@GameDefinition.Category.Filter.ToolTip", pCBCategory, cComboCategory::Ref::New(*this));
 	pCBCategory->SetEditable(true);
 	pCBCategory->SetDefaultSorter();
 	pCBCategory->SetFilterCaseInsentive(true);

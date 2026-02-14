@@ -48,7 +48,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Nav-space set rotation");
+	SetShortInfo("@GameDefinition.Undo.OCNavSpaceSetRotation");
 	
 	pOldValue = navspace->GetRotation();
 	pNewValue = newValue;

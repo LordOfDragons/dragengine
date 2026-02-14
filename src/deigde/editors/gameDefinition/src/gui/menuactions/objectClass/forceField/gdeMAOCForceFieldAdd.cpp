@@ -47,9 +47,9 @@
 ////////////////
 
 gdeMAOCForceFieldAdd::gdeMAOCForceFieldAdd(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Add Object Class Force Field...",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCForceFieldAdd",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-	"Add object class force field")
+	"@GameDefinition.Menu.OCForceFieldAdd.ToolTip")
 {
 }
 

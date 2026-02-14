@@ -48,7 +48,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Light set light skin path");
+	SetShortInfo("@GameDefinition.Undo.OCLightSetLightSkinPath");
 	
 	pOldValue = light->GetLightSkinPath();
 	pNewValue = newValue;

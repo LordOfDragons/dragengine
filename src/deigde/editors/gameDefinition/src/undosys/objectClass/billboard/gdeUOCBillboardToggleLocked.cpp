@@ -49,7 +49,7 @@ pBillboard(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Billboard toggle locked");
+	SetShortInfo("@GameDefinition.Undo.OCBillboardToggleLocked");
 	
 	pBillboard = billboard;
 	pObjectClass = objectClass;

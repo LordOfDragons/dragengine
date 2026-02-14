@@ -48,9 +48,9 @@
 ////////////////
 
 gdeMAOCSnapPointCopy::gdeMAOCSnapPointCopy(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Copy Object Class Snap Point",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCSnapPointCopy",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-	"Copy object class snap point")
+	"@GameDefinition.Menu.OCSnapPointCopy.ToolTip")
 {
 }
 

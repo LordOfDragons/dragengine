@@ -47,7 +47,7 @@ pCamera(nullptr)
 	DEASSERT_NOTNULL(objectClass)
 	DEASSERT_NOTNULL(camera)
 	
-	SetShortInfo("Camera set property rotation");
+	SetShortInfo("@GameDefinition.Undo.OCCameraSetPropertyRotation");
 	
 	pOldValue = camera->GetPropRotation();
 	pNewValue = newValue;

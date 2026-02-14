@@ -49,9 +49,9 @@
 ////////////////
 
 gdeMAObjectClassPaste::gdeMAObjectClassPaste(gdeWindowMain &windowMain) :
-gdeBaseAction(windowMain, "Paste Object Class",
+gdeBaseAction(windowMain, "@Igde.Menu.Paste",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
-	"Paste object class")
+	"@GameDefinition.Menu.ObjectClassPaste.ToolTip")
 {
 }
 
@@ -74,12 +74,12 @@ igdeUndo::Ref gdeMAObjectClassPaste::OnAction(gdeGameDefinition &gameDefinition)
 	
 	if(list.HasNamed(name)){
 		while(true){
-			if(!igdeCommonDialogs::GetString(pWindowMain, "Paste Object Class", "Name:", name)){
+			if(!igdeCommonDialogs::GetString(pWindowMain, "@GameDefinition.Dialog.ObjectClassPaste.Title", "@GameDefinition.Dialog.ObjectClassDuplicate.Name", name)){
 				return {};
 			}
 			
 			if(list.HasNamed(name)){
-				igdeCommonDialogs::Error(pWindowMain, "Paste Object Class", "Object Class exists already.");
+				igdeCommonDialogs::Error(pWindowMain, "@GameDefinition.Dialog.ObjectClassPaste.Title", "@GameDefinition.Dialog.ObjectClassDuplicate.ErrorExists");
 				
 			}else{
 				break;
@@ -91,7 +91,7 @@ igdeUndo::Ref gdeMAObjectClassPaste::OnAction(gdeGameDefinition &gameDefinition)
 	objectClass->SetName(name);
 	
 	const igdeUndo::Ref undo = gdeUAddObjectClass::Ref::New(&gameDefinition, objectClass);
-	undo->SetShortInfo("Paste object class");
+	undo->SetShortInfo("@GameDefinition.Undo.PasteObjectClass");
 	return undo;
 }
 

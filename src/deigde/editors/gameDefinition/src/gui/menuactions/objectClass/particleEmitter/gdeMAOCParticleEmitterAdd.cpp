@@ -47,9 +47,9 @@
 ////////////////
 
 gdeMAOCParticleEmitterAdd::gdeMAOCParticleEmitterAdd(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Add Object Class Particle Emitter...",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCParticleEmitterAdd",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-	"Add object class particle emitter")
+	"@GameDefinition.Menu.OCParticleEmitterAdd.ToolTip")
 {
 }
 

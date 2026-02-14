@@ -50,9 +50,9 @@
 ////////////////
 
 gdeMAOCNavSpacePaste::gdeMAOCNavSpacePaste(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Paste Object Class Navigation Space",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCNavSpacePaste",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
-	"Paste object class navigation space")
+	"@GameDefinition.Menu.OCNavSpacePaste.ToolTip")
 {
 }
 
@@ -71,7 +71,7 @@ igdeUndo::Ref gdeMAOCNavSpacePaste::OnActionSubObject(gdeGameDefinition&, gdeObj
 	const igdeUndo::Ref undo = gdeUOCAddNavSpace::Ref::New(&objectClass, 
 		gdeOCNavigationSpace::Ref::New(*clip.DynamicCast<gdeClipboardDataOCNavSpace>()->GetNavSpace()));
 	
-	undo->SetShortInfo("Paste object class navigation space");
+	undo->SetShortInfo("@GameDefinition.Undo.PasteOCNavSpace");
 	return undo;
 }
 

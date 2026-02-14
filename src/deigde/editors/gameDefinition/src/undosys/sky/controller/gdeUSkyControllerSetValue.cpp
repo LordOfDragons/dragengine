@@ -53,7 +53,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Sky controller set name");
+	SetShortInfo("@GameDefinition.Undo.SkyControllerSetValue");
 	
 	pOldValue = controller->GetValue();
 	

@@ -55,7 +55,7 @@ pSkin(nullptr),
 pSky(nullptr),
 pParticleEmitter(nullptr)
 {
-	SetText("Categories");
+	SetText(GetWindowMain().Translate("GameDefinition.TreeModel.Categories").ToUTF8());
 	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 }
 

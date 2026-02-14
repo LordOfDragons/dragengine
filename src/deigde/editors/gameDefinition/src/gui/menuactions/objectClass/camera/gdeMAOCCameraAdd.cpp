@@ -47,9 +47,9 @@
 ////////////////
 
 gdeMAOCCameraAdd::gdeMAOCCameraAdd(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Add Object Class Camera...",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCCameraAdd",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-	"Add object class camera")
+	"@GameDefinition.Menu.OCCameraAdd.ToolTip")
 {
 }
 

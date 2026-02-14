@@ -47,7 +47,7 @@
 gdeDefaultPropertyValue::gdeDefaultPropertyValue(igdeUIHelper &helper) :
 igdeEditPropertyValue(helper)
 {
-	pGDProperty = igdeGDProperty::Ref::New("Property");
+	pGDProperty = igdeGDProperty::Ref::New(Translate("GameDefinition.Default.Property").ToUTF8());
 }
 
 gdeDefaultPropertyValue::~gdeDefaultPropertyValue(){

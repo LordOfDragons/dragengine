@@ -49,7 +49,7 @@ pComponent(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Component set move name");
+	SetShortInfo("@GameDefinition.Undo.OCComponentSetPlaybackController");
 	
 	pOldValue = component->GetPlaybackController();
 	pNewValue = newValue;

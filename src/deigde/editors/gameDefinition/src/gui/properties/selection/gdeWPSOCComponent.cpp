@@ -388,8 +388,8 @@ public:
 class cActionDoNotScale : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionDoNotScale> Ref;
-	cActionDoNotScale(gdeWPSOCComponent &panel) : cBaseAction(panel, "Do not scale",
-		"Component scale does not change with scale of parent object class instance"){}
+	cActionDoNotScale(gdeWPSOCComponent &panel) : cBaseAction(panel, "@GameDefinition.WPSOCComponent.DoNotScale",
+		"@GameDefinition.WPSOCComponent.DoNotScale.ToolTip"){}
 	
 	virtual igdeUndo::Ref OnActionComponent(gdeObjectClass *objectClass, gdeOCComponent *component){
 		return gdeUOCComponentToggleDoNotScale::Ref::New(objectClass, component);
@@ -401,8 +401,8 @@ public:
 class cActionStatic : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionStatic> Ref;
-	cActionStatic(gdeWPSOCComponent &panel) : cBaseAction(panel, "Static",
-		"Component is static (optimization for graphic module)"){ }
+	cActionStatic(gdeWPSOCComponent &panel) : cBaseAction(panel, "@GameDefinition.WPSOCComponent.Static",
+		"@GameDefinition.WPSOCComponent.Static.ToolTip"){ }
 	
 	virtual igdeUndo::Ref OnActionComponent(gdeObjectClass *objectClass, gdeOCComponent *component){
 		return gdeUOCComponentToggleStatic::Ref::New(objectClass, component);
@@ -414,8 +414,8 @@ public:
 class cActionRenderEnvMap : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionRenderEnvMap> Ref;
-	cActionRenderEnvMap(gdeWPSOCComponent &panel) : cBaseAction(panel, "Render Env-Map",
-		"Component is included in environment maps"){}
+	cActionRenderEnvMap(gdeWPSOCComponent &panel) : cBaseAction(panel, "@GameDefinition.WPSOCComponent.RenderEnvMap",
+		"@GameDefinition.WPSOCComponent.RenderEnvMap.ToolTip"){}
 	
 	virtual igdeUndo::Ref OnActionComponent(gdeObjectClass *objectClass, gdeOCComponent *component){
 		return gdeUOCComponentToggleRenderEnvMap::Ref::New(objectClass, component);
@@ -427,8 +427,8 @@ public:
 class cActionAffectsAudio : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionAffectsAudio> Ref;
-	cActionAffectsAudio(gdeWPSOCComponent &panel) : cBaseAction(panel, "Affects audio",
-		"Component affects audio"){}
+	cActionAffectsAudio(gdeWPSOCComponent &panel) : cBaseAction(panel, "@GameDefinition.WPSOCComponent.AffectsAudio",
+		"@GameDefinition.WPSOCComponent.AffectsAudio.ToolTip"){}
 	
 	virtual igdeUndo::Ref OnActionComponent(gdeObjectClass *objectClass, gdeOCComponent *component){
 		return gdeUOCComponentToggleAffectsAudio::Ref::New(objectClass, component);
@@ -440,8 +440,8 @@ public:
 class cActionLightShadowIgnore : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionLightShadowIgnore> Ref;
-	cActionLightShadowIgnore(gdeWPSOCComponent &panel) : cBaseAction(panel, "Light Shadow Ignore",
-		"Component is not casting shadows from lights present in the same object"){}
+	cActionLightShadowIgnore(gdeWPSOCComponent &panel) : cBaseAction(panel, "@GameDefinition.WPSOCComponent.LightShadowIgnore",
+		"@GameDefinition.WPSOCComponent.LightShadowIgnore.ToolTip"){}
 	
 	virtual igdeUndo::Ref OnActionComponent(gdeObjectClass *objectClass, gdeOCComponent *component){
 		return gdeUOCComponentToggleLightShadowIgnore::Ref::New(objectClass, component);
@@ -453,8 +453,8 @@ public:
 class cActionPartialHide : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionPartialHide> Ref;
-	cActionPartialHide(gdeWPSOCComponent &panel) : cBaseAction(panel, "Partial hide",
-		"Component is hidden if partial hide tags match"){ }
+	cActionPartialHide(gdeWPSOCComponent &panel) : cBaseAction(panel, "@GameDefinition.WPSOCComponent.PartialHide",
+		"@GameDefinition.WPSOCComponent.PartialHide.ToolTip"){ }
 	
 	virtual igdeUndo::Ref OnActionComponent(gdeObjectClass *objectClass, gdeOCComponent *component){
 		return gdeUOCComponentTogglePartialHide::Ref::New(objectClass, component);
@@ -466,8 +466,8 @@ public:
 class cActionAttachTarget : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionAttachTarget> Ref;
-	cActionAttachTarget(gdeWPSOCComponent &panel) : cBaseAction(panel, "Attach Target",
-		"Resourcec can be attached to this component in the editor."){}
+	cActionAttachTarget(gdeWPSOCComponent &panel) : cBaseAction(panel, "@GameDefinition.WPSOCComponent.AttachTarget",
+		"@GameDefinition.WPSOCComponent.AttachTarget.ToolTip"){}
 	
 	virtual igdeUndo::Ref OnActionComponent(gdeObjectClass *objectClass, gdeOCComponent *component){
 		return gdeUOCComponentToggleAttachTarget::Ref::New(objectClass, component);
@@ -676,25 +676,25 @@ private:
 	const decString pTextureName;
 	
 public:
-	cActionTextureAdd(gdeWPSOCComponent &panel) : cBaseAction(panel, "Add...",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add texture"){}
+	cActionTextureAdd(gdeWPSOCComponent &panel) : cBaseAction(panel, "@GameDefinition.WPSOCComponent.Action.AddTexture",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@GameDefinition.WPSOCComponent.Action.AddTexture.ToolTip"){}
 	
 	cActionTextureAdd(gdeWPSOCComponent &panel, const decString &textureName) :
-		cBaseAction(panel, textureName, nullptr, "Add texture"), pTextureName(textureName){}
+		cBaseAction(panel, textureName, nullptr, "@GameDefinition.WPSOCComponent.Action.AddTexture.ToolTip"), pTextureName(textureName){}
 	
 	virtual igdeUndo::Ref OnActionComponent(gdeObjectClass *objectClass, gdeOCComponent *component){
 		decString name(pTextureName);
 		
 		if(name.IsEmpty()){
-			name = "Texture";
+			name = pPanel.Translate("GameDefinition.Default.Texture").ToUTF8();
 			
 			while(true){
-				if(!igdeCommonDialogs::GetString(*pPanel.GetParentWindow(), "Add Texture", "Name:", name)){
+				if(!igdeCommonDialogs::GetString(*pPanel.GetParentWindow(), "@GameDefinition.OCComponent.Dialog.AddTexture", "@GameDefinition.OCComponent.Dialog.Name", name)){
 					return {};
 				}
 				
 				if(component->GetTextures().HasNamed(name)){
-					igdeCommonDialogs::Error(*pPanel.GetParentWindow(), "Add Texture", "A texture with this name exists already.");
+					igdeCommonDialogs::Error(*pPanel.GetParentWindow(), "@GameDefinition.OCComponent.AddTexture.Error", "@GameDefinition.OCComponent.ATextureWithThisNameExistsAlready.Error");
 					
 				}else{
 					break;
@@ -721,8 +721,8 @@ public:
 class cActionTextureRemove : public cBaseActionTexture{
 public:
 	typedef deTObjectReference<cActionTextureRemove> Ref;
-	cActionTextureRemove(gdeWPSOCComponent &panel) : cBaseActionTexture(panel, "Remove",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove selected texture"){}
+	cActionTextureRemove(gdeWPSOCComponent &panel) : cBaseActionTexture(panel, "@GameDefinition.WPSOCComponent.Action.RemoveTexture",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@GameDefinition.WPSOCComponent.Action.RemoveTexture.ToolTip"){}
 	
 	virtual igdeUndo::Ref OnActionTexture(gdeObjectClass *objectClass, gdeOCComponent *component,
 	gdeOCComponentTexture *texture){
@@ -737,7 +737,7 @@ public:
 	typedef deTObjectReference<cActionTexturesMenu> Ref;
 	cActionTexturesMenu(gdeWPSOCComponent &panel) : igdeActionContextMenu("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
-		"Textures menu"), pPanel(panel){}
+		"@GameDefinition.WPSOCComponent.Menu.TexturesMenu.ToolTip"), pPanel(panel){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
 		pPanel.PrepareEngineModelPath();
@@ -750,7 +750,7 @@ public:
 		
 		if(actionsAddFromModel.IsNotEmpty()){
 			igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::New(
-				env, "Add Texture From Model", env.GetStockIcon(igdeEnvironment::esiPlus), "Add Texture From Model"));
+				env, "@GameDefinition.WPSOCComponent.Action.AddTextureFromModel", env.GetStockIcon(igdeEnvironment::esiPlus), "@GameDefinition.WPSOCComponent.Action.AddTextureFromModel"));
 			
 			actionsAddFromModel.Visit([&](const igdeAction::Ref &action){
 				helper.MenuCommand(subMenu, action);
@@ -775,7 +775,7 @@ public:
 		}
 		
 		if(component->GetTextures().HasNamed(textField.GetText())){
-			igdeCommonDialogs::Information(*pPanel.GetParentWindow(), "Rename texture", "A texture with this name exists already.");
+			igdeCommonDialogs::Information(*pPanel.GetParentWindow(), "@GameDefinition.OCComponent.Dialog.RenameTexture", "@GameDefinition.OCComponent.Dialog.ATextureWithThisNameExistsAlready");
 			textField.SetText(texture->GetName());
 			return {};
 		}
@@ -867,8 +867,8 @@ public:
 class cActionPropertyValueSet : public cBaseActionTexture {
 public:
 	typedef deTObjectReference<cActionPropertyValueSet> Ref;
-	cActionPropertyValueSet(gdeWPSOCComponent &panel) : cBaseActionTexture(panel, "Set",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Set property value"){}
+	cActionPropertyValueSet(gdeWPSOCComponent &panel) : cBaseActionTexture(panel, "@GameDefinition.WPSOCComponent.Action.SetTexturePropertyValue",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@GameDefinition.WPSOCComponent.Action.SetTexturePropertyValue.ToolTip"){}
 	
 	virtual igdeUndo::Ref OnActionTexture(gdeObjectClass *objectClass, gdeOCComponent *component,
 	gdeOCComponentTexture *texture){
@@ -885,7 +885,7 @@ public:
 			value = property->GetDefaultValue();
 		}
 		
-		if(!igdeCommonDialogs::GetString(*pPanel.GetParentWindow(), "Set Texture Property Value", "Value:", value)){
+		if(!igdeCommonDialogs::GetString(*pPanel.GetParentWindow(), "@GameDefinition.OCComponent.Dialog.SetTexturePropertyValue", "@GameDefinition.OCComponent.Dialog.Value", value)){
 			return {};
 		}
 		
@@ -902,8 +902,8 @@ public:
 class cActionPropertyValueRemove : public cBaseActionTexture {
 public:
 	typedef deTObjectReference<cActionPropertyValueRemove> Ref;
-	cActionPropertyValueRemove(gdeWPSOCComponent &panel) : cBaseActionTexture(panel, "Remove",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove property value"){}
+	cActionPropertyValueRemove(gdeWPSOCComponent &panel) : cBaseActionTexture(panel, "@GameDefinition.WPSOCComponent.Action.RemoveTexturePropertyValue",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@GameDefinition.WPSOCComponent.Action.RemoveTexturePropertyValue.ToolTip"){}
 	
 	virtual igdeUndo::Ref OnActionTexture(gdeObjectClass *objectClass, gdeOCComponent *component,
 	gdeOCComponentTexture *texture){
@@ -927,8 +927,8 @@ public:
 class cActionPropertyValueClear : public cBaseActionTexture {
 public:
 	typedef deTObjectReference<cActionPropertyValueClear> Ref;
-	cActionPropertyValueClear(gdeWPSOCComponent &panel) : cBaseActionTexture(panel, "Clear",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove all property values"){}
+	cActionPropertyValueClear(gdeWPSOCComponent &panel) : cBaseActionTexture(panel, "@GameDefinition.WPSOCComponent.Action.ClearTexturePropertyValues",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@GameDefinition.WPSOCComponent.Action.ClearTexturePropertyValues.ToolTip"){}
 	
 	virtual igdeUndo::Ref OnActionTexture(gdeObjectClass *objectClass, gdeOCComponent *component,
 	gdeOCComponentTexture *texture){
@@ -963,7 +963,7 @@ public:
 		}
 		
 		decString value(texture->GetProperties().GetAt(key));
-		if(!igdeCommonDialogs::GetString(*pPanel.GetParentWindow(), "Edit Texture Property Value", "Value:", value)){
+		if(!igdeCommonDialogs::GetString(*pPanel.GetParentWindow(), "@GameDefinition.OCComponent.Dialog.EditTexturePropertyValue", "@GameDefinition.OCComponent.Dialog.Value", value)){
 			return;
 		}
 		
@@ -1016,37 +1016,38 @@ pDirtyEngModelTexNames(true)
 	
 	
 	// component
-	helper.GroupBox(content, groupBox, "Object Class Component:");
+	helper.GroupBox(content, groupBox, "@GameDefinition.PanelOCComponent.GroupBoxComponent.Label");
 	
-	helper.EditPath(groupBox, "Model:", "Path to model file to use",
+	helper.EditPath(groupBox, "@GameDefinition.PanelOCComponent.Model.Label", "@GameDefinition.PanelOCComponent.Model.ToolTip",
 		igdeEnvironment::efpltModel, pEditPathModel, cEditPathModel::Ref::New(*this));
-	helper.EditPath(groupBox, "Skin:", "Path to skin file to use",
+	helper.EditPath(groupBox, "@GameDefinition.PanelOCComponent.Skin.Label", "@GameDefinition.PanelOCComponent.Skin.ToolTip",
 		igdeEnvironment::efpltSkin, pEditPathSkin, cEditPathSkin::Ref::New(*this));
-	helper.EditPath(groupBox, "Rig:", "Path to rig file to use",
+	helper.EditPath(groupBox, "@GameDefinition.PanelOCComponent.Rig.Label", "@GameDefinition.PanelOCComponent.Rig.ToolTip",
 		igdeEnvironment::efpltRig, pEditPathRig, cEditPathRig::Ref::New(*this));
-	helper.EditPath(groupBox, "Animator:", "Path to animator file to use",
+	helper.EditPath(groupBox, "@GameDefinition.PanelOCComponent.Animator.Label", "@GameDefinition.PanelOCComponent.Animator.ToolTip",
 		igdeEnvironment::efpltAnimator, pEditPathAnimator, cEditPathAnimator::Ref::New(*this));
-	helper.EditPath(groupBox, "Animation:", "Path to animation file to use",
+	helper.EditPath(groupBox, "@GameDefinition.PanelOCComponent.Animation.Label", "@GameDefinition.PanelOCComponent.Animation.ToolTip",
 		igdeEnvironment::efpltAnimation, pEditPathAnimation, cEditPathAnimation::Ref::New(*this));
-	helper.EditString(groupBox, "Move:", "Move to use from animation file", 15, pEditMove, cEditMove::Ref::New(*this));
-	helper.EditPath(groupBox, "Occlusion Mesh:", "Path to occlusion mesh file to use",
+	helper.EditString(groupBox, "@GameDefinition.PanelOCComponent.Move.Label", "@GameDefinition.PanelOCComponent.Move.ToolTip", 15, pEditMove, cEditMove::Ref::New(*this));
+	helper.EditPath(groupBox, "@GameDefinition.PanelOCComponent.OcclusionMesh.Label", "@GameDefinition.PanelOCComponent.OcclusionMesh.ToolTip",
 		igdeEnvironment::efpltOcclusionMesh, pEditPathOcclusionMesh, cEditPathOcclusionMesh::Ref::New(*this));
-	helper.EditPath(groupBox, "Audio Model:", "Path to audio model file to use",
+	helper.EditPath(groupBox, "@GameDefinition.PanelOCComponent.AudioModel.Label", "@GameDefinition.PanelOCComponent.AudioModel.ToolTip",
 		igdeEnvironment::efpltModel, pEditPathAudioModel, cEditPathAudioModel::Ref::New(*this));
-	helper.EditString(groupBox, "Playback Controller:", "Name of animator playback controller",
+	helper.EditString(groupBox, "@GameDefinition.PanelOCComponent.PlaybackController.Label", "@GameDefinition.PanelOCComponent.PlaybackController.ToolTip",
 		pEditPlaybackController, cTextPlaybackController::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "Collision:", "Collision response type",
+	helper.ComboBox(groupBox, "@GameDefinition.PanelOCComponent.Collision.Label", "@GameDefinition.PanelOCComponent.Collision.ToolTip",
 		pCBCollisionResponseType, cComboCollisionResponseType::Ref::New(*this));
-	pCBCollisionResponseType->AddItem("Static", nullptr, (void*)(intptr_t)deCollider::ertStatic);
-	pCBCollisionResponseType->AddItem("Kinematic", nullptr, (void*)(intptr_t)deCollider::ertKinematic);
-	pCBCollisionResponseType->AddItem("Dynamic", nullptr, (void*)(intptr_t)deCollider::ertDynamic);
+	pCBCollisionResponseType->SetAutoTranslateItems(true);
+	pCBCollisionResponseType->AddItem("@GameDefinition.PanelOCComponent.CollisionStatic", nullptr, (void*)(intptr_t)deCollider::ertStatic);
+	pCBCollisionResponseType->AddItem("@GameDefinition.PanelOCComponent.CollisionKinematic", nullptr, (void*)(intptr_t)deCollider::ertKinematic);
+	pCBCollisionResponseType->AddItem("@GameDefinition.PanelOCComponent.CollisionDynamic", nullptr, (void*)(intptr_t)deCollider::ertDynamic);
 	
-	helper.EditVector(groupBox, "Position:", "Position relative to object class",
+	helper.EditVector(groupBox, "@GameDefinition.PanelOCComponent.Position.Label", "@GameDefinition.PanelOCComponent.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
-	helper.EditVector(groupBox, "Rotation:", "Rotation in degrees relative to object class", 4, 1,
+	helper.EditVector(groupBox, "@GameDefinition.PanelOCComponent.Rotation.Label", "@GameDefinition.PanelOCComponent.Rotation.ToolTip", 4, 1,
 		pEditRotation, cEditRotation::Ref::New(*this));
-	helper.EditString(groupBox, "Bone:", "Bone name or empty string if not used",
+	helper.EditString(groupBox, "@GameDefinition.PanelOCComponent.Bone.Label", "@GameDefinition.PanelOCComponent.Bone.ToolTip",
 		pEditBoneName, cTextBoneName::Ref::New(*this));
 	
 	helper.CheckBox(groupBox, pChkDoNotScale, cActionDoNotScale::Ref::New(*this));
@@ -1059,25 +1060,26 @@ pDirtyEngModelTexNames(true)
 	
 	
 	// property targets
-	helper.GroupBox(content, groupBox, "Properties:");
-	helper.ComboBox(groupBox, "Property:", "Property to set target for",
+	helper.GroupBox(content, groupBox, "@GameDefinition.PanelOCComponent.GroupBoxProperties.Label");
+	helper.ComboBox(groupBox, "@GameDefinition.PanelOCComponent.Property.Label", "@GameDefinition.PanelOCComponent.Property.ToolTip",
 		pCBPropertyNames, cComboPropertyNames::Ref::New(*this));
-	pCBPropertyNames->AddItem("Model", nullptr, (void*)(intptr_t)gdeOCComponent::epModel);
-	pCBPropertyNames->AddItem("Skin", nullptr, (void*)(intptr_t)gdeOCComponent::epSkin);
-	pCBPropertyNames->AddItem("Rig", nullptr, (void*)(intptr_t)gdeOCComponent::epRig);
-	pCBPropertyNames->AddItem("Animator", nullptr, (void*)(intptr_t)gdeOCComponent::epAnimator);
-	pCBPropertyNames->AddItem("Animation", nullptr, (void*)(intptr_t)gdeOCComponent::epAnimation);
-	pCBPropertyNames->AddItem("Move", nullptr, (void*)(intptr_t)gdeOCComponent::epMove);
-	pCBPropertyNames->AddItem("Playback controller", nullptr, (void*)(intptr_t)gdeOCComponent::epPlaybackController);
-	pCBPropertyNames->AddItem("Occlusion mesh", nullptr, (void*)(intptr_t)gdeOCComponent::epOcclusionMesh);
-	pCBPropertyNames->AddItem("Audio model", nullptr, (void*)(intptr_t)gdeOCComponent::epAudioModel);
-	pCBPropertyNames->AddItem("Render env-map", nullptr, (void*)(intptr_t)gdeOCComponent::epRenderEnvMap);
-	pCBPropertyNames->AddItem("Affects audio", nullptr, (void*)(intptr_t)gdeOCComponent::epAffectsAudio);
-	pCBPropertyNames->AddItem("Light Shadow Ignore", nullptr, (void*)(intptr_t)gdeOCComponent::epLightShadowIgnore);
-	pCBPropertyNames->AddItem("Attach position", nullptr,  (void*)(intptr_t)gdeOCComponent::epAttachPosition);
-	pCBPropertyNames->AddItem("Attach rotation", nullptr, (void*)(intptr_t)gdeOCComponent::epAttachRotation);
+	pCBPropertyNames->SetAutoTranslateItems(true);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCComponent.PropertyModel", nullptr, (void*)(intptr_t)gdeOCComponent::epModel);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCComponent.PropertySkin", nullptr, (void*)(intptr_t)gdeOCComponent::epSkin);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCComponent.PropertyRig", nullptr, (void*)(intptr_t)gdeOCComponent::epRig);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCComponent.PropertyAnimator", nullptr, (void*)(intptr_t)gdeOCComponent::epAnimator);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCComponent.PropertyAnimation", nullptr, (void*)(intptr_t)gdeOCComponent::epAnimation);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCComponent.PropertyMove", nullptr, (void*)(intptr_t)gdeOCComponent::epMove);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCComponent.PropertyPlaybackController", nullptr, (void*)(intptr_t)gdeOCComponent::epPlaybackController);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCComponent.PropertyOcclusionMesh", nullptr, (void*)(intptr_t)gdeOCComponent::epOcclusionMesh);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCComponent.PropertyAudioModel", nullptr, (void*)(intptr_t)gdeOCComponent::epAudioModel);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCComponent.PropertyRenderEnvMap", nullptr, (void*)(intptr_t)gdeOCComponent::epRenderEnvMap);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCComponent.PropertyAffectsAudio", nullptr, (void*)(intptr_t)gdeOCComponent::epAffectsAudio);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCComponent.PropertyLightShadowIgnore", nullptr, (void*)(intptr_t)gdeOCComponent::epLightShadowIgnore);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCComponent.PropertyAttachPosition", nullptr,  (void*)(intptr_t)gdeOCComponent::epAttachPosition);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCComponent.PropertyAttachRotation", nullptr, (void*)(intptr_t)gdeOCComponent::epAttachRotation);
 	
-	helper.ComboBoxFilter(groupBox, "Target:", true, "Object class property to target",
+	helper.ComboBoxFilter(groupBox, "@GameDefinition.PanelOCComponent.Target.Label", true, "@GameDefinition.PanelOCComponent.Target.ToolTip",
 		pCBPropertyNameTarget, cComboPropertyNameTarget::Ref::New(*this));
 	pCBPropertyNameTarget->SetEditable(true);
 	pCBPropertyNameTarget->SetDefaultSorter();
@@ -1085,44 +1087,44 @@ pDirtyEngModelTexNames(true)
 	
 	
 	// textures
-	helper.GroupBox(content, groupBox, "Textures:");
+	helper.GroupBox(content, groupBox, "@GameDefinition.PanelOCComponent.GroupBoxTextures.Label");
 	
-	helper.FormLineStretchFirst(groupBox, "Texture:", "Texture to edit", frameLine);
-	helper.ComboBox(frameLine, "Texture to edit", pCBTextures, cComboTextures::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@GameDefinition.PanelOCComponent.Texture.Label", "@GameDefinition.PanelOCComponent.Texture.ToolTip", frameLine);
+	helper.ComboBox(frameLine, "@GameDefinition.PanelOCComponent.Texture.ToolTip", pCBTextures, cComboTextures::Ref::New(*this));
 	pCBTextures->SetDefaultSorter();
 	helper.Button(frameLine, pBtnTextures, pActionTexturesMenu);
 	pActionTexturesMenu->SetWidget(pBtnTextures);
 	
-	helper.EditString(groupBox, "Name:", "Name of texture", pTextureEditName, cTextTextureEditName::Ref::New(*this));
-	helper.EditPath(groupBox, "Skin:", "Path to skin file to use",
+	helper.EditString(groupBox, "@GameDefinition.PanelOCComponent.TextureName.Label", "@GameDefinition.PanelOCComponent.TextureName.ToolTip", pTextureEditName, cTextTextureEditName::Ref::New(*this));
+	helper.EditPath(groupBox, "@GameDefinition.PanelOCComponent.TextureSkin.Label", "@GameDefinition.PanelOCComponent.TextureSkin.ToolTip",
 		igdeEnvironment::efpltSkin, pTextureEditPathSkin, cEditTextureEditPathSkin::Ref::New(*this));
-	helper.EditVector2(groupBox, "Offset:", "Texture coordinate offset",
+	helper.EditVector2(groupBox, "@GameDefinition.PanelOCComponent.TextureOffset.Label", "@GameDefinition.PanelOCComponent.TextureOffset.ToolTip",
 		pTextureEditOffset, cEditTextureEditOffset::Ref::New(*this));
-	helper.EditFloat(groupBox, "Rotation:",
-		"Texture coordinate rotation around texture center in degrees",
+	helper.EditFloat(groupBox, "@GameDefinition.PanelOCComponent.TextureRotation.Label",
+		"@GameDefinition.PanelOCComponent.TextureRotation.ToolTip",
 		pTextureEditRotation, cTextTextureEditRotation::Ref::New(*this));
-	helper.EditVector2(groupBox, "Scale:", "Texture coordinate scaling",
+	helper.EditVector2(groupBox, "@GameDefinition.PanelOCComponent.TextureScale.Label", "@GameDefinition.PanelOCComponent.TextureScale.ToolTip",
 		pTextureEditScale, cEditTextureEditScale::Ref::New(*this));
-	helper.ColorBox(groupBox, "Tint:", "Texture tint color",
+	helper.ColorBox(groupBox, "@GameDefinition.PanelOCComponent.TextureTint.Label", "@GameDefinition.PanelOCComponent.TextureTint.ToolTip",
 		pTextureClrTint, cColorTextureTint::Ref::New(*this));
 	
 	
 	// texture property values
-	helper.GroupBoxFlow(content, groupBox, "Texture Properties:", false, true);
+	helper.GroupBoxFlow(content, groupBox, "@GameDefinition.PanelOCComponent.GroupBoxTextureProperties.Label", false, true);
 	
 	frameLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
-	helper.ComboBox(frameLine, "Property value to set", pTextureCBPropertyKeys, {});
+	helper.ComboBox(frameLine, "@GameDefinition.PanelOCComponent.TextureProperty.ToolTip", pTextureCBPropertyKeys, {});
 	pTextureCBPropertyKeys->SetDefaultSorter();
 	helper.Button(frameLine, pTextureBtnPropertyValueSet, pActionTexturePropertyValueSet);
 	groupBox->AddChild(frameLine);
 	
 	const igdeUIHelper::sColumnHeader headersPropertyValues[2] = {
-		igdeUIHelper::sColumnHeader("Key", nullptr, igdeApplication::app().DisplayScaled(150)),
-		igdeUIHelper::sColumnHeader("Value", nullptr, igdeApplication::app().DisplayScaled(200))
+		igdeUIHelper::sColumnHeader("@GameDefinition.PanelOCComponent.PropertyKey", nullptr, igdeApplication::app().DisplayScaled(150)),
+		igdeUIHelper::sColumnHeader("@GameDefinition.PanelOCComponent.PropertyValue", nullptr, igdeApplication::app().DisplayScaled(200))
 	};
 	helper.IconListBox(groupBox, pTextureListProperties,
 		igdeApplication::app().DisplayScaled(decPoint(100, 120)),
-		headersPropertyValues, 2, "Property values", cListTexturePropertyValues::Ref::New(*this));
+		headersPropertyValues, 2, "@GameDefinition.PanelOCComponent.TextureProperties.ToolTip", cListTexturePropertyValues::Ref::New(*this));
 	pTextureListProperties->SetDefaultSorter();
 }
 

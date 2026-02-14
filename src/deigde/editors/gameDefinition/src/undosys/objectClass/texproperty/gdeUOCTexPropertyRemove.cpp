@@ -50,7 +50,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Object class remove texture property");
+	SetShortInfo("@GameDefinition.Undo.OCTexPropertyRemove");
 	
 	pObjectClass = objectClass;
 	pProperty = property;

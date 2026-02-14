@@ -47,9 +47,9 @@
 ////////////////
 
 gdeMAOCSpeakerAdd::gdeMAOCSpeakerAdd(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Add Object Class Speaker...",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCSpeakerAdd",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-	"Add object class speaker")
+	"@GameDefinition.Menu.OCSpeakerAdd.ToolTip")
 {
 }
 

@@ -48,7 +48,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Light set hint movement");
+	SetShortInfo("@GameDefinition.Undo.OCLightSetHintMovement");
 	
 	pOldValue = light->GetHintMovement();
 	pNewValue = newValue;

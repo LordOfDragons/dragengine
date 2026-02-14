@@ -48,9 +48,9 @@
 ////////////////
 
 gdeMAParticleEmitterAdd::gdeMAParticleEmitterAdd(gdeWindowMain &windowMain) :
-gdeBaseAction(windowMain, "Add Particle Emitter...",
+gdeBaseAction(windowMain, "@GameDefinition.Menu.ParticleEmitterAdd",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-	"Add particle emitter")
+	"@GameDefinition.Menu.ParticleEmitterAdd.ToolTip")
 {
 }
 
@@ -65,14 +65,14 @@ igdeUndo::Ref gdeMAParticleEmitterAdd::OnAction(gdeGameDefinition &gameDefinitio
 	//dialog.SetFilename( ... last particleEmitter? what directory? );
 	
 	if(!igdeCommonDialogs::GetFileOpen(pWindowMain,
-	"Select particle emitter", *gameDefinition.GetPreviewVFS(),
+	"@GameDefinition.Dialog.ParticleEmitterSelect.Title", *gameDefinition.GetPreviewVFS(),
 	*environment.GetOpenFilePatternList( igdeEnvironment::efpltParticleEmitter ), filename ) ){
 		return {};
 	}
 	
 	if(gameDefinition.GetParticleEmitters().HasWithPath(filename)){
-		igdeCommonDialogs::Information(pWindowMain, "Add Particle Emitter",
-			"Particle emitter with path exists already.");
+		igdeCommonDialogs::Information(pWindowMain, "@GameDefinition.Dialog.ParticleEmitterAdd.Title",
+			"@GameDefinition.Dialog.ParticleEmitterAdd.ErrorExists");
 		return {};
 	}
 	

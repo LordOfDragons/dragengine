@@ -49,7 +49,7 @@ pWorld(world)
 	DEASSERT_NOTNULL(world)
 	
 	decString text;
-	text.Format("World #%d", index + 1);
+	text.FormatSafe(GetWindowMain().Translate("GameDefinition.TreeModel.WorldNumber").ToUTF8(), index + 1);
 	SetText(text);
 	
 	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));

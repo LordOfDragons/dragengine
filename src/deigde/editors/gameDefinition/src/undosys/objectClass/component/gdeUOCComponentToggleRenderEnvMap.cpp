@@ -49,7 +49,7 @@ pComponent(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Component toggle render env-map");
+	SetShortInfo("@GameDefinition.Undo.OCComponentToggleRenderEnvMap");
 	
 	pComponent = component;
 	pObjectClass = objectClass;

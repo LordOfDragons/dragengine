@@ -42,9 +42,9 @@
 ////////////////
 
 gdeMAOCWorldRemove::gdeMAOCWorldRemove(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Remove Object Class World",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCWorldRemove",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-	"Remove object class world"){
+	"@GameDefinition.Menu.OCWorldRemove.ToolTip"){
 }
 
 

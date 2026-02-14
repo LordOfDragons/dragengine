@@ -53,7 +53,7 @@ pBillboard(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Remove billboard");
+	SetShortInfo("@GameDefinition.Undo.OCRemoveBillboard");
 	
 	pBillboard = billboard;
 	pObjectClass = objectClass;

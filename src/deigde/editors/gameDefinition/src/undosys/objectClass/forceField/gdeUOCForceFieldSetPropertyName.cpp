@@ -49,7 +49,7 @@ pProperty(property)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Force field set property name");
+	SetShortInfo("@GameDefinition.Undo.OCForceFieldSetPropertyName");
 	
 	pOldValue = forceField->GetPropertyName(property);
 	pNewValue = newValue;

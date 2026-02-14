@@ -48,7 +48,7 @@
 gdeWPSTIMCategoriesSkin::gdeWPSTIMCategoriesSkin(gdeWPSTreeModel &tree) :
 gdeWPSTreeItemModel(tree, etCategoriesSkin)
 {
-	SetText("Skins");
+	SetText(GetWindowMain().Translate("GameDefinition.TreeModel.Skins").ToUTF8());
 	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 }
 

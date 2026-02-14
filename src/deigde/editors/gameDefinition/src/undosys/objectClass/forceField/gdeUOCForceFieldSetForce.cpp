@@ -49,7 +49,7 @@ pForceField(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Force field set force");
+	SetShortInfo("@GameDefinition.Undo.OCForceFieldSetForce");
 	
 	pOldValue = forceField->GetForce();
 	pNewValue = newValue;

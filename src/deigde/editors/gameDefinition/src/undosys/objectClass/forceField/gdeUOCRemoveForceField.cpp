@@ -53,7 +53,7 @@ pForceField(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Remove force field");
+	SetShortInfo("@GameDefinition.Undo.OCRemoveForceField");
 	
 	pForceField = forceField;
 	pObjectClass = objectClass;

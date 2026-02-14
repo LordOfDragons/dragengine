@@ -49,7 +49,7 @@ pBillboard(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Billboard set position");
+	SetShortInfo("@GameDefinition.Undo.OCBillboardSetPosition");
 	
 	pOldValue = billboard->GetPosition();
 	pNewValue = newValue;

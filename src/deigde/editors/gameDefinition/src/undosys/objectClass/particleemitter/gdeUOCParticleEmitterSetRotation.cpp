@@ -49,7 +49,7 @@ pParticleEmitter(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Particle emitter set rotation");
+	SetShortInfo("@GameDefinition.Undo.OCParticleEmitterSetRotation");
 	
 	pOldValue = particleEmitter->GetRotation();
 	pNewValue = newValue;

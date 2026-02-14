@@ -49,9 +49,9 @@
 ////////////////
 
 gdeMAOCNavSpaceCut::gdeMAOCNavSpaceCut(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Cut Object Class Navigation Space",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCNavSpaceCut",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
-	"Cut object class navigation space")
+	"@GameDefinition.Menu.OCNavSpaceCut.ToolTip")
 {
 }
 

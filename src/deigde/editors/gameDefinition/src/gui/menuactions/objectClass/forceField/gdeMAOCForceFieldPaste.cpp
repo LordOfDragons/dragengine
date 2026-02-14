@@ -50,9 +50,9 @@
 ////////////////
 
 gdeMAOCForceFieldPaste::gdeMAOCForceFieldPaste(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Paste Object Class Force Field",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCForceFieldPaste",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
-	"Paste object class force field")
+	"@GameDefinition.Menu.OCForceFieldPaste.ToolTip")
 {
 }
 
@@ -71,7 +71,7 @@ igdeUndo::Ref gdeMAOCForceFieldPaste::OnActionSubObject(gdeGameDefinition&, gdeO
 	const igdeUndo::Ref undo = gdeUOCAddForceField::Ref::New(&objectClass, 
 		gdeOCForceField::Ref::New(*clip.DynamicCast<gdeClipboardDataOCForceField>()->GetForceField()));
 	
-	undo->SetShortInfo("Paste object class particle emitter");
+	undo->SetShortInfo("@GameDefinition.Undo.PasteOCForceField");
 	return undo;
 }
 

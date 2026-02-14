@@ -48,7 +48,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Nav-space set snap angle");
+	SetShortInfo("@GameDefinition.Undo.OCNavSpaceSetSnapAngle");
 	
 	pOldValue = navspace->GetSnapAngle();
 	pNewValue = newValue;

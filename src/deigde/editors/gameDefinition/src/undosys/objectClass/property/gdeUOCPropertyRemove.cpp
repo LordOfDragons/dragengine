@@ -51,7 +51,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Object class remove property");
+	SetShortInfo("@GameDefinition.Undo.OCPropertyRemove");
 	
 	pObjectClass = objectClass;
 	pProperty = property;

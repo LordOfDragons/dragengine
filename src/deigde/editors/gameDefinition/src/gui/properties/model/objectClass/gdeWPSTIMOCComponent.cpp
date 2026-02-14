@@ -56,7 +56,7 @@ gdeWPSTIMOCSubObject(tree, etObjectClassComponent, objectClass, index)
 	}
 	
 	decString text;
-	text.Format("Component #%d", index + 1);
+	text.FormatSafe(GetWindowMain().Translate("GameDefinition.TreeModel.ComponentNumber").ToUTF8(), index + 1);
 	SetText(text);
 	
 	pComponent = component;

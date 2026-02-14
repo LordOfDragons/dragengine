@@ -49,7 +49,7 @@ pNavBlocker(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Nav-blocker set type");
+	SetShortInfo("@GameDefinition.Undo.OCNavBlockerSetType");
 	
 	pOldValue = navblocker->GetType();
 	pNewValue = newValue;

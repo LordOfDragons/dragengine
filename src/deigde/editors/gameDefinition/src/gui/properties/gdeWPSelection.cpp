@@ -157,10 +157,10 @@ pModelTreeObjects(nullptr)
 	pSwitcher = igdeSwitcher::Ref::New(env);
 	AddChild(pSwitcher, igdeContainerSplitted::eaSide);
 	
-	helper.TreeList(10, "Game definition objects", pTreeObjects, cTreeObjects::Ref::New(*this));
+	helper.TreeList(10, "@GameDefinition.WPSelection.TreeGameDefinitionObjects", pTreeObjects, cTreeObjects::Ref::New(*this));
 	AddChild(pTreeObjects, igdeContainerSplitted::eaCenter);
 	
-	helper.Label(pSwitcher, "No Selection");
+	helper.Label(pSwitcher, "@GameDefinition.WPSelection.NoSelection");
 	
 	pPanelCategory = gdeWPSCategory::Ref::New(windowProperties);
 	pSwitcher->AddChild(pPanelCategory);

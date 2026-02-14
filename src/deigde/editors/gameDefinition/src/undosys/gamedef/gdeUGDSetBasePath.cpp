@@ -47,7 +47,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Game definition set base path");
+	SetShortInfo("@GameDefinition.Undo.GDSetBasePath");
 	
 	pOldValue = gameDefinition->GetBasePath();
 	

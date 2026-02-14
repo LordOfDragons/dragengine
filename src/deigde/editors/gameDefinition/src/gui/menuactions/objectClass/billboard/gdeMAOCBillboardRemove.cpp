@@ -47,9 +47,9 @@
 ////////////////
 
 gdeMAOCBillboardRemove::gdeMAOCBillboardRemove(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Remove Object Class Billboard",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCBillboardRemove",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-	"Remove object class billboard")
+	"@GameDefinition.Menu.OCBillboardRemove.ToolTip")
 {
 }
 

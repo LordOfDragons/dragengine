@@ -49,7 +49,7 @@ pSpeaker(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Speaker set play speed");
+	SetShortInfo("@GameDefinition.Undo.OCSpeakerSetPlaySpeed");
 	
 	pOldValue = speaker->GetPlaySpeed();
 	pNewValue = newValue;

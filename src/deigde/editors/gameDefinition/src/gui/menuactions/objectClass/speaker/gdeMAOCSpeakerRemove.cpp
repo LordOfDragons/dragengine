@@ -47,9 +47,9 @@
 ////////////////
 
 gdeMAOCSpeakerRemove::gdeMAOCSpeakerRemove(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Remove Object Class Speaker",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCSpeakerRemove",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-	"Remove object class speaker")
+	"@GameDefinition.Menu.OCSpeakerRemove.ToolTip")
 {
 }
 

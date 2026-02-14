@@ -51,7 +51,7 @@ pGameDefinition(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Remove object class");
+	SetShortInfo("@GameDefinition.Undo.RemoveObjectClass");
 	
 	pObjectClass = objectClass;
 	pGameDefinition = gameDefinition;

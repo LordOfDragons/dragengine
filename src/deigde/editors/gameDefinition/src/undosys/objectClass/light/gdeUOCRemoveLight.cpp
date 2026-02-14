@@ -52,7 +52,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Remove light");
+	SetShortInfo("@GameDefinition.Undo.OCRemoveLight");
 	
 	pLight = light;
 	pObjectClass = objectClass;

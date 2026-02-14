@@ -49,7 +49,7 @@ pProperty(property)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Env-map probe set property name");
+	SetShortInfo("@GameDefinition.Undo.OCEnvMapProbeSetPropertyName");
 	
 	pOldValue = envMapProbe->GetPropertyName(property);
 	pNewValue = newValue;

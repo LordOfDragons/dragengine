@@ -44,9 +44,9 @@
 ////////////////
 
 gdeMACategoryParticleEmitterAdd::gdeMACategoryParticleEmitterAdd(gdeWindowMain &windowMain) :
-gdeMACategoryAdd(windowMain, "Add Particle Emitter Category...",
+gdeMACategoryAdd(windowMain, "@GameDefinition.Menu.CategoryParticleEmitterAdd",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-	"Add particle emitter category")
+	"@GameDefinition.Menu.CategoryParticleEmitterAdd.ToolTip")
 {
 }
 

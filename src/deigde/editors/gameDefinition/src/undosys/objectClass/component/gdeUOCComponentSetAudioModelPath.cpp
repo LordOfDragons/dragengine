@@ -49,7 +49,7 @@ pComponent(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Component set audio model path");
+	SetShortInfo("@GameDefinition.Undo.OCComponentSetAudioModelPath");
 	
 	pOldValue = component->GetAudioModelPath();
 	pNewValue = newValue;

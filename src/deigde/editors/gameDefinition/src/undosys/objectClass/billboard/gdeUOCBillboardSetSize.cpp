@@ -49,7 +49,7 @@ pBillboard(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Billboard set size");
+	SetShortInfo("@GameDefinition.Undo.OCBillboardSetSize");
 	
 	pOldValue = billboard->GetSize();
 	pNewValue = newValue;

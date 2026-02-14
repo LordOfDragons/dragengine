@@ -48,9 +48,9 @@
 ////////////////
 
 gdeMAOCSpeakerCopy::gdeMAOCSpeakerCopy(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Copy Object Class Speaker",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCSpeakerCopy",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-	"Copy object class speaker")
+	"@GameDefinition.Menu.OCSpeakerCopy.ToolTip")
 {
 }
 

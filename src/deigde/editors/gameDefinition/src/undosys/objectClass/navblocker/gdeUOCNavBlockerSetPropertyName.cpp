@@ -49,7 +49,7 @@ pProperty(property)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("NavBlocker set property name");
+	SetShortInfo("@GameDefinition.Undo.OCNavBlockerSetPropertyName");
 	
 	pOldValue = navblocker->GetPropertyName(property);
 	pNewValue = newValue;

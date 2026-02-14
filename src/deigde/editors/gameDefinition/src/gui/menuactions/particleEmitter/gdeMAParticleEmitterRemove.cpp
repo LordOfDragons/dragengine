@@ -45,9 +45,9 @@
 ////////////////
 
 gdeMAParticleEmitterRemove::gdeMAParticleEmitterRemove(gdeWindowMain &windowMain) :
-gdeBaseAction(windowMain, "Remove Particle Emitter",
+gdeBaseAction(windowMain, "@GameDefinition.Menu.ParticleEmitterRemove",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-	"Remove particle emitter")
+	"@GameDefinition.Menu.ParticleEmitterRemove.ToolTip")
 {
 }
 

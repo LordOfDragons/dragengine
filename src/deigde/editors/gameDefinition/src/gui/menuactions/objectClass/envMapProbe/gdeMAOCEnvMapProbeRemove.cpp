@@ -47,9 +47,9 @@
 ////////////////
 
 gdeMAOCEnvMapProbeRemove::gdeMAOCEnvMapProbeRemove(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Remove Object Class Environment Map Probe",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCEnvMapProbeRemove",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-	"Remove object class environment map probe")
+	"@GameDefinition.Menu.OCEnvMapProbeRemove.ToolTip")
 {
 }
 

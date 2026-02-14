@@ -57,7 +57,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Component remove texture");
+	SetShortInfo("@GameDefinition.Undo.OCCRemoveTexture");
 	
 	pTexture = texture;
 	pComponent = component;

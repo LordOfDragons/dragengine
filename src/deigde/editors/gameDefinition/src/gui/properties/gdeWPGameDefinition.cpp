@@ -215,12 +215,12 @@ private:
 	
 public:
 	cActionBasePath(gdeWPGameDefinition &panel, igdeTextField &textField) :
-	cBaseAction(panel, "...", nullptr, "Base path to project data files"),
+	cBaseAction(panel, "...", nullptr, "@GameDefinition.WPGameDefinition.Action.BasePath.ToolTip"),
 	pTextField(textField){}
 	
 	igdeUndo::Ref OnActionGameDefinition(gdeGameDefinition *gameDefinition) override{
 		decString basePath(gameDefinition->GetBasePath());
-		if(igdeCommonDialogs::GetDirectory(*pPanel.GetParentWindow(), "Select Project Data Directory", basePath)){
+		if(igdeCommonDialogs::GetDirectory(*pPanel.GetParentWindow(), "@GameDefinition.WindowMain.Dialog.SelectProjectDataDirectory", basePath)){
 			pTextField.SetText(basePath);
 			pTextField.NotifyTextChanged();
 		}
@@ -275,7 +275,7 @@ public:
 	
 	igdeUndo::Ref UndoPaste(gdeProperty *property) override{
 		const gdeUGDWPropertyAdd::Ref undo = gdeUGDWPropertyAdd::Ref::New(pPanel.GetGameDefinition(), property);
-		undo->SetShortInfo("Paste property");
+		undo->SetShortInfo("@GameDefinition.Undo.PasteProperty");
 		return undo;
 	}
 	
@@ -364,7 +364,7 @@ public:
 	
 	igdeUndo::Ref UndoPaste(gdeProperty *property) override{
 		const gdeUGDDPropertyAdd::Ref undo = gdeUGDDPropertyAdd::Ref::New(pPanel.GetGameDefinition(), property);
-		undo->SetShortInfo("Paste property");
+		undo->SetShortInfo("@GameDefinition.Undo.PasteProperty");
 		return undo;
 	}
 	
@@ -439,7 +439,7 @@ class cEditAutoFindPathObjectClasses : public gdeWPPathList {
 public:
 	typedef deTObjectReference<cEditAutoFindPathObjectClasses> Ref;
 	cEditAutoFindPathObjectClasses(gdeWPGameDefinition &panel) :
-	gdeWPPathList(panel.GetEnvironment().GetUIHelper(), 3, "Auto Find Path Object Classes"),
+	gdeWPPathList(panel.GetEnvironment().GetUIHelper(), 3, "@GameDefinition.WPGameDefinition.AutoFindPathObjectClasses.Label"),
 	pPanel(panel){}
 	
 	igdeUndo::Ref UndoSet(const decStringList &paths) override{
@@ -453,7 +453,7 @@ class cEditAutoFindPathSkins : public gdeWPPathList {
 public:
 	typedef deTObjectReference<cEditAutoFindPathSkins> Ref;
 	cEditAutoFindPathSkins(gdeWPGameDefinition &panel) :
-	gdeWPPathList(panel.GetEnvironment().GetUIHelper(), 3, "Auto Find Path SkinsClasses"),
+	gdeWPPathList(panel.GetEnvironment().GetUIHelper(), 3, "@GameDefinition.WPGameDefinition.AutoFindPathSkins.Label"),
 	pPanel(panel){}
 	
 	igdeUndo::Ref UndoSet(const decStringList &paths) override{
@@ -467,7 +467,7 @@ class cEditAutoFindPathSkies : public gdeWPPathList {
 public:
 	typedef deTObjectReference<cEditAutoFindPathSkies> Ref;
 	cEditAutoFindPathSkies(gdeWPGameDefinition &panel) :
-	gdeWPPathList(panel.GetEnvironment().GetUIHelper(), 3, "Auto Find Path Skies"),
+	gdeWPPathList(panel.GetEnvironment().GetUIHelper(), 3, "@GameDefinition.WPGameDefinition.AutoFindPathSkies.Label"),
 	pPanel(panel){}
 	
 	igdeUndo::Ref UndoSet(const decStringList &paths) override{
@@ -499,53 +499,54 @@ pWindowProperties(windowProperties)
 	AddChild(content);
 	
 	// game definition
-	helper.GroupBox(content, groupBox, "Game Definition:");
-	helper.EditString(groupBox, "Identifier:", "Identifier", pEditID, cEditId::Ref::New(*this));
-	helper.EditString(groupBox, "Description:", "Description",
+	helper.GroupBox(content, groupBox, "@GameDefinition.WPGameDefinition.GroupGameDefinition");
+	helper.EditString(groupBox, "@GameDefinition.WPGameDefinition.Identifier", "@GameDefinition.WPGameDefinition.Identifier.ToolTip", pEditID, cEditId::Ref::New(*this));
+	helper.EditString(groupBox, "@GameDefinition.WPGameDefinition.Description", "@GameDefinition.WPGameDefinition.Description.ToolTip",
 		pEditDescription, 5, cEditDescription::Ref::New(*this));
 	
-	helper.FormLineStretchFirst(groupBox, "Base Path:", "Base path to project data files", frameLine);
-	helper.EditString(frameLine, "Base path to project data files",
+	helper.FormLineStretchFirst(groupBox, "@GameDefinition.WPGameDefinition.BasePath", "@GameDefinition.WPGameDefinition.BasePath.ToolTip", frameLine);
+	helper.EditString(frameLine, "@GameDefinition.WPGameDefinition.BasePath.ToolTip",
 		pEditBasePath, cEditBasePath::Ref::New(*this));
 	pActionBasePath = cActionBasePath::Ref::New(*this, pEditBasePath);
 	helper.Button(frameLine, pActionBasePath);
 	
-	helper.EditString(groupBox, "VFS Path:", "VFS path the base path will be visible at",
+	helper.EditString(groupBox, "@GameDefinition.WPGameDefinition.VFSPath", "@GameDefinition.WPGameDefinition.VFSPath.ToolTip",
 		pEditVFSPath, cEditVfsPath::Ref::New(*this));
-	helper.EditString(groupBox, "Script Module:", "Script module this game definition is compatible with",
+	helper.EditString(groupBox, "@GameDefinition.WPGameDefinition.ScriptModule", "@GameDefinition.WPGameDefinition.ScriptModule.ToolTip",
 		pEditScriptModule, cEditScriptModule::Ref::New(*this));
 	
 	// information
-	helper.GroupBox(content, groupBox, "Information:");
+	helper.GroupBox(content, groupBox, "@GameDefinition.WPGameDefinition.GroupInformation");
 	
-	helper.EditString(groupBox, "Use Base Path:",
-		"Actually used base path (can differ if this is the project game definition)",
+	helper.EditString(groupBox, "@GameDefinition.WPGameDefinition.UseBasePath",
+		"@GameDefinition.WPGameDefinition.UseBasePath.ToolTip",
 		pEditUseBasePath, {});
 	pEditUseBasePath->SetEditable(false);
 	
-	helper.CheckBox(groupBox, "Is Project Game Definition", "Is Project Game Definition", pChkIsProjectGameDef);
+	helper.CheckBox(groupBox, "@GameDefinition.WPGameDefinition.IsProjectGameDefinition",
+		"@GameDefinition.WPGameDefinition.IsProjectGameDefinition.ToolTip", pChkIsProjectGameDef);
 	pChkIsProjectGameDef->SetEnabled(false);
 	
 	// world properties
-	helper.GroupBoxFlow(content, groupBox, "World Properties:", false, true);
+	helper.GroupBoxFlow(content, groupBox, "@GameDefinition.WPGameDefinition.GroupWorldProperties", false, true);
 	pEditWorldProperties = cEditWorldProperties::Ref::New(*this);
 	groupBox->AddChild(pEditWorldProperties);
 	
 	// decal properties
-	helper.GroupBoxFlow(content, groupBox, "Decal Properties:", false, true);
+	helper.GroupBoxFlow(content, groupBox, "@GameDefinition.WPGameDefinition.GroupDecalProperties", false, true);
 	pEditDecalProperties = cEditDecalProperties::Ref::New(*this);
 	groupBox->AddChild(pEditDecalProperties);
 	
 	// auto find path
-	helper.GroupBoxFlow(content, groupBox, "Auto Find Path Object Classes:", false, true);
+	helper.GroupBoxFlow(content, groupBox, "@GameDefinition.WPGameDefinition.GroupAutoFindPathObjectClasses", false, true);
 	pEditAutoFindPathObjectClasses = cEditAutoFindPathObjectClasses::Ref::New(*this);
 	groupBox->AddChild(pEditAutoFindPathObjectClasses);
 	
-	helper.GroupBoxFlow(content, groupBox, "Auto Find Path Skins:", false, true);
+	helper.GroupBoxFlow(content, groupBox, "@GameDefinition.WPGameDefinition.GroupAutoFindPathSkins", false, true);
 	pEditAutoFindPathSkins = cEditAutoFindPathSkins::Ref::New(*this);
 	groupBox->AddChild(pEditAutoFindPathSkins);
 	
-	helper.GroupBoxFlow(content, groupBox, "Auto Find Path Skies:", false, true);
+	helper.GroupBoxFlow(content, groupBox, "@GameDefinition.WPGameDefinition.GroupAutoFindPathSkies", false, true);
 	pEditAutoFindPathSkies = cEditAutoFindPathSkies::Ref::New(*this);
 	groupBox->AddChild(pEditAutoFindPathSkies);
 }

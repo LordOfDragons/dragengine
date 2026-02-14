@@ -48,7 +48,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Nav-space set layer");
+	SetShortInfo("@GameDefinition.Undo.OCNavSpaceSetLayer");
 	
 	pOldValue = navspace->GetLayer();
 	pNewValue = newValue;

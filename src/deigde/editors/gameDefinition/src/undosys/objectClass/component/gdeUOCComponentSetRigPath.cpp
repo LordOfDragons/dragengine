@@ -49,7 +49,7 @@ pComponent(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Component set rig path");
+	SetShortInfo("@GameDefinition.Undo.OCComponentSetRigPath");
 	
 	pOldValue = component->GetRigPath();
 	pNewValue = newValue;

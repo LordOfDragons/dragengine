@@ -48,7 +48,7 @@ pTexture(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Add texture");
+	SetShortInfo("@GameDefinition.Undo.OCAddTexture");
 	
 	pTexture = texture;
 	pObjectClass = objectClass;

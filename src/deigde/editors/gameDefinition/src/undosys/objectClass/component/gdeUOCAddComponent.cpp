@@ -49,7 +49,7 @@ pComponent(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Add component");
+	SetShortInfo("@GameDefinition.Undo.OCAddComponent");
 	
 	pComponent = component;
 	pObjectClass = objectClass;
@@ -79,4 +79,9 @@ void gdeUOCAddComponent::Undo(){
 void gdeUOCAddComponent::Redo(){
 	pObjectClass->GetComponents().Add(pComponent);
 	pObjectClass->NotifyComponentsChanged();
+	
+	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
+	gameDefinition->SetActiveObjectClass(pObjectClass);
+	gameDefinition->SetActiveOCComponent(pComponent);
+	gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotOCComponent);
 }

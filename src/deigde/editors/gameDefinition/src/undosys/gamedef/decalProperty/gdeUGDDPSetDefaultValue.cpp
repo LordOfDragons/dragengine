@@ -49,7 +49,7 @@ pProperty(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Game definition property set default value");
+	SetShortInfo("@GameDefinition.Undo.GDDPSetDefaultValue");
 	
 	pOldValue = oldValue;
 	pNewValue = newValue;

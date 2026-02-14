@@ -48,7 +48,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Light set ambient ratio");
+	SetShortInfo("@GameDefinition.Undo.OCLightSetAmbientRatio");
 	
 	pOldValue = light->GetAmbientRatio();
 	pNewValue = newValue;

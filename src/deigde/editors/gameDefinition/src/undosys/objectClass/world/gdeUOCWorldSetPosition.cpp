@@ -41,7 +41,7 @@ pWorld(world)
 	DEASSERT_NOTNULL(objectClass)
 	DEASSERT_NOTNULL(world)
 	
-	SetShortInfo("World set position");
+	SetShortInfo("@GameDefinition.Undo.OCWorldSetPosition");
 	
 	pOldValue = world->GetPosition();
 	pNewValue = newValue;

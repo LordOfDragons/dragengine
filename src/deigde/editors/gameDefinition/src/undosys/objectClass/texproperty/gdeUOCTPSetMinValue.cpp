@@ -47,7 +47,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Object class texture property set minimum value");
+	SetShortInfo("@GameDefinition.Undo.OCTPSetMinValue");
 	
 	pOldValue = property->GetMinimumValue();
 	pNewValue = newValue;

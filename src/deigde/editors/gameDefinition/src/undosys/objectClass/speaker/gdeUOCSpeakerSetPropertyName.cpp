@@ -49,7 +49,7 @@ pProperty(property)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Speaker set property name");
+	SetShortInfo("@GameDefinition.Undo.OCSpeakerSetPropertyName");
 	
 	pOldValue = speaker->GetPropertyName(property);
 	pNewValue = newValue;

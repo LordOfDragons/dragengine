@@ -51,7 +51,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Remove inherit");
+	SetShortInfo("@GameDefinition.Undo.OCRemoveInherit");
 	
 	pInherit = inherit;
 	pObjectClass = objectClass;

@@ -50,7 +50,7 @@ pProperty(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Object class texture property custom file pattern set name");
+	SetShortInfo("@GameDefinition.Undo.OCTPCFPSetName");
 	
 	pOldValue = filePattern->GetName();
 	pNewValue = newValue;

@@ -49,7 +49,7 @@ pNavBlocker(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Add navblocker");
+	SetShortInfo("@GameDefinition.Undo.OCAddNavBlocker");
 	
 	pNavBlocker = navblocker;
 	pObjectClass = objectClass;
@@ -79,4 +79,9 @@ void gdeUOCAddNavBlocker::Undo(){
 void gdeUOCAddNavBlocker::Redo(){
 	pObjectClass->GetNavigationBlockers().Add(pNavBlocker);
 	pObjectClass->NotifyNavigationBlockersChanged();
+	
+	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
+	gameDefinition->SetActiveObjectClass(pObjectClass);
+	gameDefinition->SetActiveOCNavigationBlocker(pNavBlocker);
+	gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotOCNavigationBlocker);
 }

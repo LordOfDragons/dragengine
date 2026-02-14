@@ -47,9 +47,9 @@
 ////////////////
 
 gdeMAOCBillboardAdd::gdeMAOCBillboardAdd(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Add Object Class Billboard...",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCBillboardAdd",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-	"Add object class billboard")
+	"@GameDefinition.Menu.OCBillboardAdd.ToolTip")
 {
 }
 

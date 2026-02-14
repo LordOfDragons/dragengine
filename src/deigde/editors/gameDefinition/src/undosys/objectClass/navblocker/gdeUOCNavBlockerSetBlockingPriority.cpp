@@ -49,7 +49,7 @@ pNavBlocker(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Nav-blocker set blocking priority");
+	SetShortInfo("@GameDefinition.Undo.OCNavBlockerSetBlockingPriority");
 	
 	pOldValue = navblocker->GetBlockingPriority();
 	pNewValue = newValue;

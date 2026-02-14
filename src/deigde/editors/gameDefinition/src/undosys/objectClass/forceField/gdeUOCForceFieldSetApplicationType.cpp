@@ -49,7 +49,7 @@ pForceField(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Force field set application type");
+	SetShortInfo("@GameDefinition.Undo.OCForceFieldSetApplicationType");
 	
 	pOldValue = forceField->GetApplicationType();
 	pNewValue = newValue;

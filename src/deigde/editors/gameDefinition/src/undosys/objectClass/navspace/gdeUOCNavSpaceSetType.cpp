@@ -48,7 +48,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Nav-spacer set type");
+	SetShortInfo("@GameDefinition.Undo.OCNavSpaceSetType");
 	
 	pOldValue = navspacer->GetType();
 	pNewValue = newValue;

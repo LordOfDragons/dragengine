@@ -47,7 +47,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Light toggle cast shadows");
+	SetShortInfo("@GameDefinition.Undo.OCLightToggleCastShadows");
 	
 	pLight = light;
 	pObjectClass = objectClass;

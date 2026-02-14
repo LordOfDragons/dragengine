@@ -47,9 +47,9 @@
 ////////////////
 
 gdeMAOCCameraRemove::gdeMAOCCameraRemove(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Remove Object Class Camera",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCCameraRemove",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-	"Remove object class camera")
+	"@GameDefinition.Menu.OCCameraRemove.ToolTip")
 {
 }
 

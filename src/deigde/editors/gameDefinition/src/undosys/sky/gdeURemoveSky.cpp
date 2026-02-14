@@ -52,7 +52,7 @@ pGameDefinition(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Remove sky");
+	SetShortInfo("@GameDefinition.Undo.RemoveSky");
 	
 	pSky = sky;
 	pGameDefinition = gameDefinition;

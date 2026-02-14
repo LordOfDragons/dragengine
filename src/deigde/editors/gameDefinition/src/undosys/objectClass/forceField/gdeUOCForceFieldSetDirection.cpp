@@ -49,7 +49,7 @@ pForceField(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Force field set direction");
+	SetShortInfo("@GameDefinition.Undo.OCForceFieldSetDirection");
 	
 	pOldValue = forceField->GetDirection();
 	pNewValue = newValue;

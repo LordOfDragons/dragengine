@@ -49,7 +49,7 @@ pTrigger(trigger)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("ParticleEmitter set trigger name");
+	SetShortInfo("@GameDefinition.Undo.OCParticleEmitterSetTriggerName");
 	
 	pOldValue = particleEmitter->GetTriggerName(trigger);
 	pNewValue = newValue;

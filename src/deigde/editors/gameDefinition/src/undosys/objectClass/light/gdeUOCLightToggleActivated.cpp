@@ -47,7 +47,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Light toggle activated");
+	SetShortInfo("@GameDefinition.Undo.OCLightToggleActivated");
 	
 	pLight = light;
 	pObjectClass = objectClass;

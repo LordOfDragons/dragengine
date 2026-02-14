@@ -182,8 +182,8 @@ private:
 	gdeWPSOCSnapPoint &pPanel;
 	
 public:
-	cActionSnapToRotation(gdeWPSOCSnapPoint &panel) : igdeAction("Snap to rotation",
-		"Object rotation is snapped to snap point rotation"), pPanel(panel){}
+	cActionSnapToRotation(gdeWPSOCSnapPoint &panel) : igdeAction("@GameDefinition.WPSOCSnapPoint.SnapToRotation",
+		"@GameDefinition.WPSOCSnapPoint.SnapToRotation.ToolTip"), pPanel(panel){}
 	
 	void OnAction() override{
 		gdeOCSnapPoint * const snapPoint = pPanel.GetSnapPoint();
@@ -219,15 +219,15 @@ pWindowProperties(windowProperties)
 	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
-	helper.GroupBox(content, groupBox, "Object Class Particle Emitter:");
+	helper.GroupBox(content, groupBox, "@GameDefinition.WPSOCSnapPoint.GroupSnapPoint");
 	
-	helper.EditString(groupBox, "Name:", "Name to show next to snap points",
+	helper.EditString(groupBox, "@GameDefinition.WPSOCSnapPoint.Name.Label", "@GameDefinition.WPSOCSnapPoint.Name.ToolTip",
 		pEditName, cTextName::Ref::New(*this));
-	helper.EditVector(groupBox, "Position:", "Position relative to object class",
+	helper.EditVector(groupBox, "@GameDefinition.WPSOCSnapPoint.Position.Label", "@GameDefinition.WPSOCSnapPoint.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
-	helper.EditVector(groupBox, "Rotation:", "Rotation in degrees relative to object class", 4, 1,
+	helper.EditVector(groupBox, "@GameDefinition.WPSOCSnapPoint.Rotation.Label", "@GameDefinition.WPSOCSnapPoint.Rotation.ToolTip", 4, 1,
 		pEditRotation, cEditRotation::Ref::New(*this));
-	helper.EditFloat(groupBox, "Snap Distance:", "Snap distance in meters",
+	helper.EditFloat(groupBox, "@GameDefinition.WPSOCSnapPoint.SnapDistance.Label", "@GameDefinition.WPSOCSnapPoint.SnapDistance.ToolTip",
 		pEditSnapDistance, cTextSnapDistance::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkSnapToRotation, cActionSnapToRotation::Ref::New(*this));
 }

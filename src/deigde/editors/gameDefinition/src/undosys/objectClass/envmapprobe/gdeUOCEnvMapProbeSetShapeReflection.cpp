@@ -47,7 +47,7 @@ gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe, const decShape *newV
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Env-map probe set shape reflection");
+	SetShortInfo("@GameDefinition.Undo.OCEnvMapProbeSetShapeReflection");
 	
 	if(envMapProbe->GetShapeReflection()){
 		pOldValue = envMapProbe->GetShapeReflection()->Copy();

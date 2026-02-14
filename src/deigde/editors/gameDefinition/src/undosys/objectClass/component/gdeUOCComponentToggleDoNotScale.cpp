@@ -49,7 +49,7 @@ pComponent(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Component toggle do not scale");
+	SetShortInfo("@GameDefinition.Undo.OCComponentToggleDoNotScale");
 	
 	pComponent = component;
 	pObjectClass = objectClass;

@@ -49,7 +49,7 @@ pBillboard(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Billboard toggle render env-map");
+	SetShortInfo("@GameDefinition.Undo.OCBillboardToggleRenderEnvMap");
 	
 	pBillboard = billboard;
 	pObjectClass = objectClass;

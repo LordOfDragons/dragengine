@@ -48,9 +48,9 @@
 ////////////////
 
 gdeMAOCLightCopy::gdeMAOCLightCopy(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Copy Object Class Light",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCLightCopy",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-	"Copy object class light")
+	"@GameDefinition.Menu.OCLightCopy.ToolTip")
 {
 }
 

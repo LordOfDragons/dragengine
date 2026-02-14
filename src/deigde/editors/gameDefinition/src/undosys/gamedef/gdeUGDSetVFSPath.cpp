@@ -47,7 +47,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Game definition set VFS path");
+	SetShortInfo("@GameDefinition.Undo.GDSetVFSPath");
 	
 	pOldValue = gameDefinition->GetVFSPath();
 	

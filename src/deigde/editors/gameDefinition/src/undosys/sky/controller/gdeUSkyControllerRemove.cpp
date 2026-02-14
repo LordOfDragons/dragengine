@@ -52,7 +52,7 @@ pController(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Remove sky controller");
+	SetShortInfo("@GameDefinition.Undo.SkyControllerRemove");
 	
 	pSky = sky;
 	pController = controller;

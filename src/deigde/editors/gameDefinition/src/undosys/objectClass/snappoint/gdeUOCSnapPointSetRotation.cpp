@@ -49,7 +49,7 @@ pSnapPoint(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Snap point set rotation");
+	SetShortInfo("@GameDefinition.Undo.OCSnapPointSetRotation");
 	
 	pOldValue = snapPoint->GetRotation();
 	pNewValue = newValue;

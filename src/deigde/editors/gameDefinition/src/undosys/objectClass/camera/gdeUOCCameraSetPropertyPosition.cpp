@@ -47,7 +47,7 @@ pCamera(nullptr)
 	DEASSERT_NOTNULL(objectClass)
 	DEASSERT_NOTNULL(camera)
 	
-	SetShortInfo("Camera set property position");
+	SetShortInfo("@GameDefinition.Undo.OCCameraSetPropertyPosition");
 	
 	pOldValue = camera->GetPropPosition();
 	pNewValue = newValue;

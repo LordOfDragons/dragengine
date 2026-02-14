@@ -56,7 +56,7 @@ gdeWPSTIMOCSubObject(tree, etObjectClassLight, objectClass, index)
 	}
 	
 	decString text;
-	text.Format("Light #%d", index + 1);
+	text.FormatSafe(GetWindowMain().Translate("GameDefinition.TreeModel.LightNumber").ToUTF8(), index + 1);
 	SetText(text);
 	
 	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));

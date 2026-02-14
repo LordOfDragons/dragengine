@@ -49,7 +49,7 @@ pProperty(property)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Component set property name");
+	SetShortInfo("@GameDefinition.Undo.OCComponentSetPropertyName");
 	
 	pOldValue = component->GetPropertyName(property);
 	pNewValue = newValue;

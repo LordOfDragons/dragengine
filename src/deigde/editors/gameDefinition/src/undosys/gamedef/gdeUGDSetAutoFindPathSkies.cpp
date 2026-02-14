@@ -48,7 +48,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Game definition set auto find path skies");
+	SetShortInfo("@GameDefinition.Undo.GDSetAutoFindPathSkies");
 	
 	pOldValue = gameDefinition->GetAutoFindPathSkies();
 	

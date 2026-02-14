@@ -48,7 +48,7 @@ pParticleEmitter(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Add particle emitter");
+	SetShortInfo("@GameDefinition.Undo.AddParticleEmitter");
 	
 	pParticleEmitter = particleEmitter;
 	pGameDefinition = gameDefinition;

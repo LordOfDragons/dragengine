@@ -118,8 +118,8 @@ pWindowProperties(windowProperties)
 	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
-	helper.WPCamera(content, pWPCamera, cActionCameraChanged::Ref::New(*this), "Camera:", false, false);
-	helper.WPSky(content, pWPSky, cActionSkyChanged::Ref::New(*this), "Environment Object:", false, false);
+	helper.WPCamera(content, pWPCamera, cActionCameraChanged::Ref::New(*this), "@GameDefinition.WPView.Camera", false, false);
+	helper.WPSky(content, pWPSky, cActionSkyChanged::Ref::New(*this), "@GameDefinition.WPView.EnvironmentObject", false, false);
 }
 
 gdeWPView::~gdeWPView(){

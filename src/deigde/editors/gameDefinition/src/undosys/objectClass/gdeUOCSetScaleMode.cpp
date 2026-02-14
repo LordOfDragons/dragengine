@@ -46,7 +46,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Object class set scale mode");
+	SetShortInfo("@GameDefinition.Undo.OCSetScaleMode");
 	
 	pOldValue = objectClass->GetScaleMode();
 	pNewValue = newValue;

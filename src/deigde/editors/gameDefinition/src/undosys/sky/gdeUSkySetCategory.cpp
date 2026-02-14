@@ -47,7 +47,7 @@ pSky(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Sky set category");
+	SetShortInfo("@GameDefinition.Undo.SkySetCategory");
 	
 	pOldValue = sky->GetCategory();
 	pNewValue = newValue;

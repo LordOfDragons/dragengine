@@ -48,7 +48,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Nav-space set blocking priority");
+	SetShortInfo("@GameDefinition.Undo.OCNavSpaceSetBlockingPriority");
 	
 	pOldValue = navspace->GetBlockingPriority();
 	pNewValue = newValue;

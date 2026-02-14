@@ -48,7 +48,7 @@ pProperty(property)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("NavSpace set property name");
+	SetShortInfo("@GameDefinition.Undo.OCNavSpaceSetPropertyName");
 	
 	pOldValue = navspace->GetPropertyName(property);
 	pNewValue = newValue;

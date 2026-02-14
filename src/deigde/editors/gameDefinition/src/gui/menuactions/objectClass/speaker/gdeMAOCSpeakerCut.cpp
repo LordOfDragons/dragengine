@@ -49,9 +49,9 @@
 ////////////////
 
 gdeMAOCSpeakerCut::gdeMAOCSpeakerCut(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Cut Object Class Speaker",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCSpeakerCut",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
-	"Cut object class speaker")
+	"@GameDefinition.Menu.OCSpeakerCut.ToolTip")
 {
 }
 

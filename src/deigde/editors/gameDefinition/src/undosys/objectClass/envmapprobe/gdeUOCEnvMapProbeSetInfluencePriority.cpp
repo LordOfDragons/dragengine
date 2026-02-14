@@ -49,7 +49,7 @@ pEnvMapProbe(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Env-map probe set influence priority");
+	SetShortInfo("@GameDefinition.Undo.OCEnvMapProbeSetInfluencePriority");
 	
 	pOldValue = envMapProbe->GetInfluencePriority();
 	pNewValue = newValue;

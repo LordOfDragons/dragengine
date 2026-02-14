@@ -49,7 +49,7 @@ pSnapPoint(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Add snap point");
+	SetShortInfo("@GameDefinition.Undo.OCAddSnapPoint");
 	
 	pSnapPoint = snapPoint;
 	pObjectClass = objectClass;
@@ -79,4 +79,9 @@ void gdeUOCAddSnapPoint::Undo(){
 void gdeUOCAddSnapPoint::Redo(){
 	pObjectClass->GetSnapPoints().Add(pSnapPoint);
 	pObjectClass->NotifySnapPointsChanged();
+	
+	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
+	gameDefinition->SetActiveObjectClass(pObjectClass);
+	gameDefinition->SetActiveOCSnapPoint(pSnapPoint);
+	gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotOCSnapPoint);
 }

@@ -48,7 +48,7 @@ gdeUCategoryBase(gameDefinition, type)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Category set description");
+	SetShortInfo("@GameDefinition.Undo.CategorySetDescription");
 	
 	pOldValue = category->GetDescription();
 	pNewValue = newValue;

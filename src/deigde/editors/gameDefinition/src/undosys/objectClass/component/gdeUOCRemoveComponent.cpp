@@ -53,7 +53,7 @@ pComponent(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Remove component");
+	SetShortInfo("@GameDefinition.Undo.OCRemoveComponent");
 	
 	pComponent = component;
 	pObjectClass = objectClass;

@@ -48,7 +48,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Light set spot exponent");
+	SetShortInfo("@GameDefinition.Undo.OCLightSetSpotExponent");
 	
 	pOldValue = light->GetSpotExponent();
 	pNewValue = newValue;

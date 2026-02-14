@@ -49,7 +49,7 @@ pSpeaker(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Speaker set path sound");
+	SetShortInfo("@GameDefinition.Undo.OCSpeakerSetPathSound");
 	
 	pOldValue = speaker->GetPathSound();
 	pNewValue = newValue;

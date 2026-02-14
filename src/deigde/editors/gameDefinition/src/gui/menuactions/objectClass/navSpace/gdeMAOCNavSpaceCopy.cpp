@@ -48,9 +48,9 @@
 ////////////////
 
 gdeMAOCNavSpaceCopy::gdeMAOCNavSpaceCopy(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Copy Object Class Navigation Space",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCNavSpaceCopy",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-	"Copy object class navigation space")
+	"@GameDefinition.Menu.OCNavSpaceCopy.ToolTip")
 {
 }
 

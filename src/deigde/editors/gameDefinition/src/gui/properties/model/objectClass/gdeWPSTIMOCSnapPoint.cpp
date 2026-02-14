@@ -56,7 +56,7 @@ pIndex(index)
 	}
 	
 	decString text;
-	text.Format("Snap Point #%d: %s", index + 1, snapPoint->GetName().GetString());
+	text.FormatSafe(GetWindowMain().Translate("GameDefinition.TreeModel.SnapPointNumberName").ToUTF8(), index + 1, snapPoint->GetName().GetString());
 	SetText(text);
 	
 	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
@@ -109,7 +109,7 @@ void gdeWPSTIMOCSnapPoint::OnContextMenu(igdeMenuCascade &contextMenu){
 
 void gdeWPSTIMOCSnapPoint::UpdateName(){
 	decString text;
-	text.Format("Snap Point #%d: %s", pIndex + 1, pSnapPoint->GetName().GetString());
+	text.FormatSafe(GetWindowMain().Translate("GameDefinition.TreeModel.SnapPointNumberName").ToUTF8(), pIndex + 1, pSnapPoint->GetName().GetString());
 	SetText(text);
 	ItemChanged();
 }

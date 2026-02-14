@@ -49,7 +49,7 @@ pForceField(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Force field set fluctuation force");
+	SetShortInfo("@GameDefinition.Undo.OCForceFieldSetFluctuationForce");
 	
 	pOldValue = forceField->GetFluctuationForce();
 	pNewValue = newValue;

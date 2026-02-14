@@ -49,7 +49,7 @@ pComponent(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Component set collider response type");
+	SetShortInfo("@GameDefinition.Undo.OCComponentSetColRespType");
 	
 	pOldValue = component->GetColliderResponseType();
 	pNewValue = newValue;

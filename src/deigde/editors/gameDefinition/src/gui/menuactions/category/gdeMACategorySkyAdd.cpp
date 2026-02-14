@@ -44,9 +44,9 @@
 ////////////////
 
 gdeMACategorySkyAdd::gdeMACategorySkyAdd(gdeWindowMain &windowMain) :
-gdeMACategoryAdd(windowMain, "Add Sky Category...",
+gdeMACategoryAdd(windowMain, "@GameDefinition.Menu.CategorySkyAdd",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-	"Add sky category")
+	"@GameDefinition.Menu.CategorySkyAdd.ToolTip")
 {
 }
 

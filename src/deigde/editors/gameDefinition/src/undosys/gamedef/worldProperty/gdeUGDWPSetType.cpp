@@ -48,7 +48,7 @@ pProperty(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Game definition property set type");
+	SetShortInfo("@GameDefinition.Undo.GDWPSetType");
 	
 	pOldValue = property->GetType();
 	pNewValue = newValue;

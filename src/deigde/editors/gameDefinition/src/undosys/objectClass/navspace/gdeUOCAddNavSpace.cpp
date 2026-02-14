@@ -48,7 +48,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Add navspace");
+	SetShortInfo("@GameDefinition.Undo.OCAddNavSpace");
 	
 	pNavSpace = navspace;
 	pObjectClass = objectClass;
@@ -78,4 +78,9 @@ void gdeUOCAddNavSpace::Undo(){
 void gdeUOCAddNavSpace::Redo(){
 	pObjectClass->GetNavigationSpaces().Add(pNavSpace);
 	pObjectClass->NotifyNavigationSpacesChanged();
+	
+	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
+	gameDefinition->SetActiveObjectClass(pObjectClass);
+	gameDefinition->SetActiveOCNavigationSpace(pNavSpace);
+	gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotOCNavigationSpace);
 }

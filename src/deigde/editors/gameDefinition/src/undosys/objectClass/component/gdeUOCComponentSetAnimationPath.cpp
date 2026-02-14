@@ -49,7 +49,7 @@ pComponent(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Component set animation path");
+	SetShortInfo("@GameDefinition.Undo.OCComponentSetAnimationPath");
 	
 	pOldValue = component->GetAnimationPath();
 	pNewValue = newValue;

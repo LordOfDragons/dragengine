@@ -50,9 +50,9 @@
 ////////////////
 
 gdeMAOCLightPaste::gdeMAOCLightPaste(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Paste Object Class Light",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCLightPaste",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
-	"Paste object class light")
+	"@GameDefinition.Menu.OCLightPaste.ToolTip")
 {
 }
 
@@ -71,7 +71,7 @@ igdeUndo::Ref gdeMAOCLightPaste::OnActionSubObject(gdeGameDefinition&, gdeObject
 	const igdeUndo::Ref undo = gdeUOCAddLight::Ref::New(&objectClass, 
 		gdeOCLight::Ref::New(*clip.DynamicCast<gdeClipboardDataOCLight>()->GetLight()));
 	
-	undo->SetShortInfo("Paste object class light");
+	undo->SetShortInfo("@GameDefinition.Undo.PasteOCLight");
 	return undo;
 }
 

@@ -46,7 +46,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Object class set name");
+	SetShortInfo("@GameDefinition.Undo.OCSetName");
 	
 	pOldValue = objectClass->GetName();
 	pNewValue = newValue;

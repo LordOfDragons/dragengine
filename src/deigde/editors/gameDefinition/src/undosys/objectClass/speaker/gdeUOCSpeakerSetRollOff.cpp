@@ -49,7 +49,7 @@ pSpeaker(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Speaker set roll off");
+	SetShortInfo("@GameDefinition.Undo.OCSpeakerSetRollOff");
 	
 	pOldValue = speaker->GetRollOff();
 	pNewValue = newValue;

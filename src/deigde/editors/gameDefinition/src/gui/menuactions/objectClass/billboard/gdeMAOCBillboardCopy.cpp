@@ -48,9 +48,9 @@
 ////////////////
 
 gdeMAOCBillboardCopy::gdeMAOCBillboardCopy(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Copy Object Class Billboard",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCBillboardCopy",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-	"Copy object class billboard")
+	"@GameDefinition.Menu.OCBillboardCopy.ToolTip")
 {
 }
 

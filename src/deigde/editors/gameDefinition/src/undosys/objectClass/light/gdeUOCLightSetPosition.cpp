@@ -48,7 +48,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Light set position");
+	SetShortInfo("@GameDefinition.Undo.OCLightSetPosition");
 	
 	pOldValue = light->GetPosition();
 	pNewValue = newValue;

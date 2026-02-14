@@ -45,9 +45,9 @@
 ////////////////
 
 gdeMAObjectClassRemove::gdeMAObjectClassRemove(gdeWindowMain &windowMain) :
-gdeBaseAction(windowMain, "Remove Object Class",
+gdeBaseAction(windowMain, "@GameDefinition.Menu.ObjectClassRemove",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-	"Remove object class")
+	"@GameDefinition.Menu.ObjectClassRemove.ToolTip")
 {
 }
 

@@ -49,7 +49,7 @@ pForceField(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Force field set rotation");
+	SetShortInfo("@GameDefinition.Undo.OCForceFieldSetRotation");
 	
 	pOldValue = forceField->GetRotation();
 	pNewValue = newValue;

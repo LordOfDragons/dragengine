@@ -49,7 +49,7 @@ pSnapPoint(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Snap point set name");
+	SetShortInfo("@GameDefinition.Undo.OCSnapPointSetName");
 	
 	pOldValue = snapPoint->GetName();
 	pNewValue = newValue;

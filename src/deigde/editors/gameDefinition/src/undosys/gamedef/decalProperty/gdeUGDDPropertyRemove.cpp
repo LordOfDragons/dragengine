@@ -51,7 +51,7 @@ pProperty(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Game definition remove property");
+	SetShortInfo("@GameDefinition.Undo.GDDPropertyRemove");
 	
 	pGameDefinition = gamedef;
 	pProperty = property;

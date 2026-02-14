@@ -49,7 +49,7 @@ pEnvMapProbe(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Env-map probe set scaling");
+	SetShortInfo("@GameDefinition.Undo.OCEnvMapProbeSetScaling");
 	
 	pOldValue = envMapProbe->GetScaling();
 	pNewValue = newValue;

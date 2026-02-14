@@ -49,7 +49,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Component add texture");
+	SetShortInfo("@GameDefinition.Undo.OCCAddTexture");
 	
 	pTexture = texture;
 	pComponent = component;

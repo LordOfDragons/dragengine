@@ -47,7 +47,7 @@ pParticleEmitter(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Particle emitter set category");
+	SetShortInfo("@GameDefinition.Undo.ParticleEmitterSetCategory");
 	
 	pOldValue = particleEmitter->GetCategory();
 	pNewValue = newValue;

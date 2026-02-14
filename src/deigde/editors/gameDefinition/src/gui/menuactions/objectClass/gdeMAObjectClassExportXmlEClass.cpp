@@ -53,9 +53,9 @@ decString gdeMAObjectClassExportXmlEClass::pLastDirExportXmlEClass;
 ////////////////
 
 gdeMAObjectClassExportXmlEClass::gdeMAObjectClassExportXmlEClass(gdeWindowMain &windowMain) :
-gdeBaseAction(windowMain, "Object Class Export XML EClass",
+gdeBaseAction(windowMain, "@GameDefinition.Menu.ObjectClassExportXmlEClass",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiSaveAs),
-	"Export object class as XML EClass (*.deeclass)")
+	"@GameDefinition.Menu.ObjectClassExportXmlEClass.ToolTip")
 {
 }
 
@@ -84,7 +84,7 @@ igdeUndo::Ref gdeMAObjectClassExportXmlEClass::OnAction(gdeGameDefinition &gameD
 	
 	decString filename(path.GetPathNative());
 	
-	if(!igdeCommonDialogs::GetFileSave(pWindowMain, "Export XML Element Class",
+	if(!igdeCommonDialogs::GetFileSave(pWindowMain, "@GameDefinition.Dialog.ObjectClassExportXmlEClass.Title",
 	pWindowMain.GetLoadSaveSystem().GetXmlEClassFilePatterns(), filename)){
 		return {};
 	}

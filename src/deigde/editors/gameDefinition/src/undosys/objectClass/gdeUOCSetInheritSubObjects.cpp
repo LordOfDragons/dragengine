@@ -44,7 +44,7 @@ pNewValue(newValue)
 {
 	DEASSERT_NOTNULL(objectClass)
 	
-	SetShortInfo("Object class set inherit sub objects");
+	SetShortInfo("@GameDefinition.Undo.OCSetInheritSubObjects");
 	
 	pOldValue = objectClass->GetInheritSubObjects();
 	pNewValue = newValue;

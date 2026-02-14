@@ -47,7 +47,7 @@ pGameDefinition(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Add object class");
+	SetShortInfo("@GameDefinition.Undo.AddObjectClass");
 	
 	pObjectClass = objectClass;
 	pGameDefinition = gameDefinition;

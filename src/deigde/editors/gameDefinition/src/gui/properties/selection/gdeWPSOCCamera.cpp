@@ -295,29 +295,29 @@ pWindowProperties(windowProperties)
 	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
-	helper.GroupBox(content, groupBox, "Object Class Camera:");
-	helper.EditFloat(groupBox, "FOV:", "Field of view (FOV) in degrees", 4, 1,
+	helper.GroupBox(content, groupBox, "@GameDefinition.WPSOCCamera.GroupCamera");
+	helper.EditFloat(groupBox, "@GameDefinition.WPSOCCamera.FOV.Label", "@GameDefinition.WPSOCCamera.FOV.ToolTip", 4, 1,
 		pEditFov, cTextFov::Ref::New(*this));
-	helper.EditFloat(groupBox, "FOV Ratio:", "Field of view Ratio", 4, 2,
+	helper.EditFloat(groupBox, "@GameDefinition.WPSOCCamera.FOVRatio.Label", "@GameDefinition.WPSOCCamera.FOVRatio.ToolTip", 4, 2,
 		pEditFovRatio, cTextFovRatio::Ref::New(*this));
-	helper.EditFloat(groupBox, "Image Distance:", "Image distance in meters",
+	helper.EditFloat(groupBox, "@GameDefinition.WPSOCCamera.ImageDistance.Label", "@GameDefinition.WPSOCCamera.ImageDistance.ToolTip",
 		pEditImageDistance, cTextImageDistance::Ref::New(*this));
-	helper.EditFloat(groupBox, "View Distance:", "View distance in meters", 4, 1,
+	helper.EditFloat(groupBox, "@GameDefinition.WPSOCCamera.ViewDistance.Label", "@GameDefinition.WPSOCCamera.ViewDistance.ToolTip", 4, 1,
 		pEditViewDistance, cTextViewDistance::Ref::New(*this));
-	helper.EditVector(groupBox, "Position:", "Position relative to object class",
+	helper.EditVector(groupBox, "@GameDefinition.WPSOCCamera.Position.Label", "@GameDefinition.WPSOCCamera.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
-	helper.EditVector(groupBox, "Rotation:", "Rotation in degrees relative to object class",
+	helper.EditVector(groupBox, "@GameDefinition.WPSOCCamera.Rotation.Label", "@GameDefinition.WPSOCCamera.Rotation.ToolTip",
 		pEditRotation, cEditRotation::Ref::New(*this));
-	helper.ComboBox(groupBox, "ID Property:", true,
-		"Object class property containing camera identifier",
+	helper.ComboBox(groupBox, "@GameDefinition.WPSOCCamera.IDProperty.Label", true,
+		"@GameDefinition.WPSOCCamera.IDProperty.ToolTip",
 		pCBPropertyName, cComboPropertyName::Ref::New(*this));
 	pCBPropertyName->SetDefaultSorter();
-	helper.ComboBox(groupBox, "Position Property:", true,
-		"Object class property containing camera position",
+	helper.ComboBox(groupBox, "@GameDefinition.WPSOCCamera.PositionProperty.Label", true,
+		"@GameDefinition.WPSOCCamera.PositionProperty.ToolTip",
 		pCBPropertyPosition, cComboPropertyPosition::Ref::New(*this));
 	pCBPropertyPosition->SetDefaultSorter();
-	helper.ComboBox(groupBox, "Rotation Property:", true,
-		"Object class property containing camera rotation",
+	helper.ComboBox(groupBox, "@GameDefinition.WPSOCCamera.RotationProperty.Label", true,
+		"@GameDefinition.WPSOCCamera.RotationProperty.ToolTip",
 		pCBPropertyRotation, cComboPropertyRotation::Ref::New(*this));
 	pCBPropertyRotation->SetDefaultSorter();
 }

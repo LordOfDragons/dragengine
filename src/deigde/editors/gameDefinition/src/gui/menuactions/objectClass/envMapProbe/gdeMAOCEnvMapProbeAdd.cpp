@@ -47,9 +47,9 @@
 ////////////////
 
 gdeMAOCEnvMapProbeAdd::gdeMAOCEnvMapProbeAdd(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Add Object Class Environment Map Probe...",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCEnvMapProbeAdd",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-	"Add object class environment map probe")
+	"@GameDefinition.Menu.OCEnvMapProbeAdd.ToolTip")
 {
 }
 

@@ -49,7 +49,7 @@ pParticleEmitter(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("ParticleEmitter toggle casting");
+	SetShortInfo("@GameDefinition.Undo.OCParticleEmitterToggleCasting");
 	
 	pParticleEmitter = particleEmitter;
 	pObjectClass = objectClass;

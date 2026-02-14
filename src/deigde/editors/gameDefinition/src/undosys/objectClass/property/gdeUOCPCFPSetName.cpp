@@ -50,7 +50,7 @@ pProperty(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Object class property custom file pattern set name");
+	SetShortInfo("@GameDefinition.Undo.OCPCFPSetName");
 	
 	pOldValue = filePattern->GetName();
 	pNewValue = newValue;

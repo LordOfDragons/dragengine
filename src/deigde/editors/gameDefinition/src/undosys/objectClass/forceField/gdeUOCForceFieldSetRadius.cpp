@@ -49,7 +49,7 @@ pForceField(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Force field set radius");
+	SetShortInfo("@GameDefinition.Undo.OCForceFieldSetRadius");
 	
 	pOldValue = forceField->GetRadius();
 	pNewValue = newValue;

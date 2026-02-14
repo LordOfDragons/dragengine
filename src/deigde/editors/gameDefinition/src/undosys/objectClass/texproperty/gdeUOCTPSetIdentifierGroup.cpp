@@ -48,7 +48,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Object class texture property set identifier group");
+	SetShortInfo("@GameDefinition.Undo.OCTPSetIdentifierGroup");
 	
 	pOldValue = property->GetIdentifierGroup();
 	pNewValue = newValue;

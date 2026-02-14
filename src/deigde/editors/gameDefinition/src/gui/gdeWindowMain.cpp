@@ -433,15 +433,15 @@ public:
 class cActionGameDefNew : public cActionBase{
 public:
 	typedef deTObjectReference<cActionGameDefNew> Ref;
-	cActionGameDefNew(gdeWindowMain &window) : cActionBase(window, "New",
-		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiNew), "Creates a new game definition",
+	cActionGameDefNew(gdeWindowMain &window) : cActionBase(window, "@GameDefinition.WindowMain.Action.New",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiNew), "@GameDefinition.WindowMain.Action.New.ToolTip",
 		deInputEvent::esmControl, deInputEvent::ekcN, deInputEvent::ekcN){}
 	
 	void OnAction() override{
 		const gdeGameDefinition * const gamedef = pWindow.GetActiveGameDefinition();
 		if(gamedef && gamedef->GetChanged()){
-			if(igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "New Game Definition",
-			"Creating a new game definition discards changes in the current one. Is that ok?") != igdeCommonDialogs::ebYes){
+			if(igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "@GameDefinition.WindowMain.Dialog.NewGameDefinition",
+			"@GameDefinition.WindowMain.Dialog.NewGameDefinition.Message") != igdeCommonDialogs::ebYes){
 				return;
 			}
 		}
@@ -453,14 +453,14 @@ public:
 class cActionGameDefOpen : public cActionBase{
 public:
 	typedef deTObjectReference<cActionGameDefOpen> Ref;
-	cActionGameDefOpen(gdeWindowMain &window) : cActionBase(window, "Open...",
-		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen), "Opens game definition from file"){}
+	cActionGameDefOpen(gdeWindowMain &window) : cActionBase(window, "@GameDefinition.WindowMain.Action.Open",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen), "@GameDefinition.WindowMain.Action.Open.ToolTip"){}
 	
 	void OnAction() override{
 		const gdeGameDefinition * const gamedef = pWindow.GetActiveGameDefinition();
 		if(gamedef && gamedef->GetChanged()){
-			if(igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "Open Game Definition",
-			"Loading game definition discards changes in the current one. Is that ok?") != igdeCommonDialogs::ebYes){
+			if(igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "@GameDefinition.WindowMain.Dialog.OpenGameDefinition",
+			"@GameDefinition.WindowMain.Dialog.OpenGameDefinition.Message") != igdeCommonDialogs::ebYes){
 				return;
 			}
 		}
@@ -473,7 +473,7 @@ public:
 			filename = path.GetPathNative();
 		}
 		
-		if(!igdeCommonDialogs::GetFileOpen(pWindow, "Open Game Definition",
+		if(!igdeCommonDialogs::GetFileOpen(pWindow, "@GameDefinition.WindowMain.Dialog.OpenGameDefinition",
 		pWindow.GetLoadSaveSystem().GetGameDefFilePatterns(), filename)){
 			return;
 		}
@@ -494,15 +494,15 @@ public:
 class cActionGameDefOpenProject : public cActionBase{
 public:
 	typedef deTObjectReference<cActionGameDefOpenProject> Ref;
-	cActionGameDefOpenProject(gdeWindowMain &window) : cActionBase(window, "Open Project",
-		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen), "Open project game definition",
+	cActionGameDefOpenProject(gdeWindowMain &window) : cActionBase(window, "@GameDefinition.WindowMain.Action.OpenProject",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen), "@GameDefinition.WindowMain.Action.OpenProject.ToolTip",
 		deInputEvent::esmControl, deInputEvent::ekcO, deInputEvent::ekcO){}
 	
 	void OnAction() override{
 		const gdeGameDefinition * const gamedef = pWindow.GetActiveGameDefinition();
 		if(gamedef && gamedef->GetChanged()){
-			if(igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "Open Project Game Definition",
-			"Loading project game definition discards changes in the current one. Is that ok?") != igdeCommonDialogs::ebYes){
+			if(igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "@GameDefinition.WindowMain.Dialog.OpenProjectGameDefinition",
+			"@GameDefinition.WindowMain.Dialog.OpenProjectGameDefinition.Message") != igdeCommonDialogs::ebYes){
 				return;
 			}
 		}
@@ -515,9 +515,9 @@ public:
 class cActionGameDefSaveAs : public cActionBase{
 public:
 	typedef deTObjectReference<cActionGameDefSaveAs> Ref;
-	cActionGameDefSaveAs(gdeWindowMain &window) : cActionBase(window, "Save As...",
+	cActionGameDefSaveAs(gdeWindowMain &window) : cActionBase(window, "@GameDefinition.WindowMain.Action.SaveAs",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSaveAs),
-		"Saves the game definition under a differen file", deInputEvent::ekcA){}
+		"@GameDefinition.WindowMain.Action.SaveAs.ToolTip", deInputEvent::ekcA){}
 	
 	void OnAction() override{
 		gdeGameDefinition * const gamedef = pWindow.GetActiveGameDefinition();
@@ -537,7 +537,7 @@ public:
 			filename = path.GetPathNative().GetString();
 		}
 		
-		if(!igdeCommonDialogs::GetFileSave(pWindow, "Save Game Definition",
+		if(!igdeCommonDialogs::GetFileSave(pWindow, "@GameDefinition.WindowMain.Dialog.SaveGameDefinition",
 		pWindow.GetLoadSaveSystem().GetGameDefFilePatterns(), filename)){
 			return;
 		}
@@ -551,8 +551,8 @@ class cActionGameDefSave : public cActionGameDefSaveAs{
 public:
 	typedef deTObjectReference<cActionGameDefSave> Ref;
 	cActionGameDefSave(gdeWindowMain &window) : cActionGameDefSaveAs(window){
-		SetText("Save");
-		SetDescription("Save game definition to file");
+		SetText("@GameDefinition.WindowMain.Action.Save");
+		SetDescription("@GameDefinition.WindowMain.Action.Save.ToolTip");
 		SetHotKey(igdeHotKey(deInputEvent::esmControl, deInputEvent::ekcS));
 		SetMnemonic(deInputEvent::ekcS);
 		SetIcon(window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave));
@@ -588,8 +588,8 @@ class cActionEditCut : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditCut> Ref;
 	cActionEditCut(gdeWindowMain &window) : cActionBase(window,
-		"Cut", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
-		"Cut selected objects", deInputEvent::esmControl,
+		"@GameDefinition.WindowMain.Action.Cut", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
+		"@GameDefinition.WindowMain.Action.Cut.ToolTip", deInputEvent::esmControl,
 		deInputEvent::ekcX, deInputEvent::ekcT){}
 	
 	void OnAction() override{
@@ -605,8 +605,8 @@ class cActionEditCopy : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditCopy> Ref;
 	cActionEditCopy(gdeWindowMain &window) : cActionBase(window,
-		"Copy", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-		"Copies selected objects", deInputEvent::esmControl,
+		"@GameDefinition.WindowMain.Action.Copy", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		"@GameDefinition.WindowMain.Action.Copy.ToolTip", deInputEvent::esmControl,
 		deInputEvent::ekcC, deInputEvent::ekcC){}
 	
 	void OnAction() override{
@@ -622,8 +622,8 @@ class cActionEditPaste : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditPaste> Ref;
 	cActionEditPaste(gdeWindowMain &window) : cActionBase(window,
-		"Paste", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
-		"Paste objects", deInputEvent::esmControl,
+		"@GameDefinition.WindowMain.Action.Paste", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+		"@GameDefinition.WindowMain.Action.Paste.ToolTip", deInputEvent::esmControl,
 		deInputEvent::ekcV, deInputEvent::ekcP){}
 	
 	void OnAction() override{
@@ -639,8 +639,8 @@ class cActionEditFind : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditFind> Ref;
 	cActionEditFind(gdeWindowMain &window) : cActionBase(window,
-		"Find...", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSearch),
-		"Find objects", deInputEvent::esmControl,
+		"@GameDefinition.WindowMain.Action.Find", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSearch),
+		"@GameDefinition.WindowMain.Action.Find.ToolTip", deInputEvent::esmControl,
 		deInputEvent::ekcF, deInputEvent::ekcF){}
 	
 	void OnAction() override{
@@ -650,7 +650,7 @@ public:
 		}
 		
 		decString text;
-		if(igdeCommonDialogs::GetString(pWindow, "Find", "Text:", text)){
+		if(igdeCommonDialogs::GetString(pWindow, "@GameDefinition.WindowMain.Dialog.Find", "@GameDefinition.WindowMain.Dialog.Text", text)){
 			pWindow.GetWindowProperties().GetPanelSelection().Find(text);
 		}
 	}
@@ -665,8 +665,8 @@ class cActionViewShowEnvMapProbes : public cActionBase{
 public:
 	typedef deTObjectReference<cActionViewShowEnvMapProbes> Ref;
 	cActionViewShowEnvMapProbes(gdeWindowMain &window) : cActionBase(window,
-		"Show Environment Map Probes", window.GetIconShowEnvMapProbes(),
-		"Show all environment map probes", deInputEvent::ekcE){}
+		"@GameDefinition.WindowMain.Action.ShowEnvMapProbes", window.GetIconShowEnvMapProbes(),
+		"@GameDefinition.WindowMain.Action.ShowEnvMapProbes.ToolTip", deInputEvent::ekcE){}
 	
 	void OnAction() override{
 		pWindow.GetViewActiveObject().SetShowEnvMapProbes(!pWindow.GetViewActiveObject().GetShowEnvMapProbes());
@@ -681,8 +681,8 @@ class cActionViewShowNavBlockers : public cActionBase{
 public:
 	typedef deTObjectReference<cActionViewShowNavBlockers> Ref;
 	cActionViewShowNavBlockers(gdeWindowMain &window) : cActionBase(window,
-		"Show Navigation Blockers", window.GetIconShowNavBlockers(),
-		"Show all navigation blockers", deInputEvent::ekcL){}
+		"@GameDefinition.WindowMain.Action.ShowNavBlockers", window.GetIconShowNavBlockers(),
+		"@GameDefinition.WindowMain.Action.ShowNavBlockers.ToolTip", deInputEvent::ekcL){}
 	
 	void OnAction() override{
 		pWindow.GetViewActiveObject().SetShowNavBlockers(!pWindow.GetViewActiveObject().GetShowNavBlockers());
@@ -969,15 +969,15 @@ void gdeWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade = igdeMenuCascade::Ref::New(env, "Game-Definition", deInputEvent::ekcG);
+	cascade = igdeMenuCascade::Ref::New(env, "@GameDefinition.WindowMain.Menu.GameDefinition", deInputEvent::ekcG);
 	pCreateMenuGameDef(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade = igdeMenuCascade::Ref::New(env, "Edit", deInputEvent::ekcE);
+	cascade = igdeMenuCascade::Ref::New(env, "@GameDefinition.WindowMain.Menu.Edit", deInputEvent::ekcE);
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade = igdeMenuCascade::Ref::New(env, "View", deInputEvent::ekcV);
+	cascade = igdeMenuCascade::Ref::New(env, "@GameDefinition.WindowMain.Menu.View", deInputEvent::ekcV);
 	pCreateMenuView(cascade);
 	AddSharedMenu(cascade);
 }

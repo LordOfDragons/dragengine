@@ -49,7 +49,7 @@ pComponent(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Component toggle attach target");
+	SetShortInfo("@GameDefinition.Undo.OCComponentToggleAttachTarget");
 	
 	pComponent = component;
 	pObjectClass = objectClass;

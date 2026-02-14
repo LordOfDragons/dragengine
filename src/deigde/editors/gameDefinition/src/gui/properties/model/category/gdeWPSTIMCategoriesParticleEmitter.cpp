@@ -48,7 +48,7 @@
 gdeWPSTIMCategoriesParticleEmitter::gdeWPSTIMCategoriesParticleEmitter(gdeWPSTreeModel &tree) :
 gdeWPSTreeItemModel(tree, etCategoriesParticleEmitter)
 {
-	SetText("Particle Emitters");
+	SetText(GetWindowMain().Translate("GameDefinition.TreeModel.ParticleEmitters").ToUTF8());
 	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 }
 

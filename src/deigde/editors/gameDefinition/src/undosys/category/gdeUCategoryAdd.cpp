@@ -48,7 +48,7 @@ gdeUCategoryBase(gameDefinition, type)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Category add");
+	SetShortInfo("@GameDefinition.Undo.CategoryAdd");
 	
 	pParent = parent;
 	pCategory = category;

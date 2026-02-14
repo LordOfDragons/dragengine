@@ -53,7 +53,7 @@ pCamera(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Remove camera");
+	SetShortInfo("@GameDefinition.Undo.OCRemoveCamera");
 	
 	pCamera = camera;
 	pObjectClass = objectClass;

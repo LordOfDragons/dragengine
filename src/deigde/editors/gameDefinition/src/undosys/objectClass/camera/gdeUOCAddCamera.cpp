@@ -49,7 +49,7 @@ pCamera(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Add camera");
+	SetShortInfo("@GameDefinition.Undo.OCAddCamera");
 	
 	pCamera = camera;
 	pObjectClass = objectClass;
@@ -79,4 +79,9 @@ void gdeUOCAddCamera::Undo(){
 void gdeUOCAddCamera::Redo(){
 	pObjectClass->GetCameras().Add(pCamera);
 	pObjectClass->NotifyCamerasChanged();
+	
+	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
+	gameDefinition->SetActiveObjectClass(pObjectClass);
+	gameDefinition->SetActiveOCCamera(pCamera);
+	gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotOCCamera);
 }

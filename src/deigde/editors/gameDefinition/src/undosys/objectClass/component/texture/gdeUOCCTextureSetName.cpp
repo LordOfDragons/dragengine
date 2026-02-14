@@ -49,7 +49,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Component texture set name");
+	SetShortInfo("@GameDefinition.Undo.OCCTextureSetName");
 	
 	pOldValue = texture->GetName();
 	pNewValue = newValue;

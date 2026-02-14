@@ -50,7 +50,7 @@ pProperty(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Object class texture property add custom file pattern");
+	SetShortInfo("@GameDefinition.Undo.OCTPCFPAdd");
 	
 	pObjectClass = objectClass;
 	pProperty = property;

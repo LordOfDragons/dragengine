@@ -45,9 +45,9 @@
 ////////////////
 
 gdeMAOCWorldPaste::gdeMAOCWorldPaste(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Paste Object Class World",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCWorldPaste",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
-	"Paste object class world"){
+	"@GameDefinition.Menu.OCWorldPaste.ToolTip"){
 }
 
 
@@ -63,7 +63,7 @@ igdeUndo::Ref gdeMAOCWorldPaste::OnActionSubObject(gdeGameDefinition&, gdeObject
 	
 	const igdeUndo::Ref undo = gdeUOCAddWorld::Ref::New(&objectClass,
 		gdeOCWorld::Ref::New(*clip.DynamicCast<gdeClipboardDataOCWorld>()->GetWorld()));
-	undo->SetShortInfo("Paste object class world");
+	undo->SetShortInfo("@GameDefinition.Undo.PasteOCWorld");
 	return undo;
 }
 

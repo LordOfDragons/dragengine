@@ -53,7 +53,7 @@ pProperty(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Object class property remove custom file pattern");
+	SetShortInfo("@GameDefinition.Undo.OCPCFPRemove");
 	
 	pObjectClass = objectClass;
 	pProperty = property;

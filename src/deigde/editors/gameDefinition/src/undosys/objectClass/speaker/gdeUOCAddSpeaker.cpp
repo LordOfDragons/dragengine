@@ -49,7 +49,7 @@ pSpeaker(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Add speaker");
+	SetShortInfo("@GameDefinition.Undo.OCAddSpeaker");
 	
 	pSpeaker = speaker;
 	pObjectClass = objectClass;
@@ -79,4 +79,9 @@ void gdeUOCAddSpeaker::Undo(){
 void gdeUOCAddSpeaker::Redo(){
 	pObjectClass->GetSpeakers().Add(pSpeaker);
 	pObjectClass->NotifySpeakersChanged();
+	
+	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
+	gameDefinition->SetActiveObjectClass(pObjectClass);
+	gameDefinition->SetActiveOCSpeaker(pSpeaker);
+	gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotOCSpeaker);
 }

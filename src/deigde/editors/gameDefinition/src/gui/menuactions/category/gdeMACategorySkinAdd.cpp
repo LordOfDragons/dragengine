@@ -44,9 +44,9 @@
 ////////////////
 
 gdeMACategorySkinAdd::gdeMACategorySkinAdd(gdeWindowMain &windowMain) :
-gdeMACategoryAdd(windowMain, "Add Skin Category...",
+gdeMACategoryAdd(windowMain, "@GameDefinition.Menu.CategorySkinAdd",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-	"Add skin category")
+	"@GameDefinition.Menu.CategorySkinAdd.ToolTip")
 {
 }
 

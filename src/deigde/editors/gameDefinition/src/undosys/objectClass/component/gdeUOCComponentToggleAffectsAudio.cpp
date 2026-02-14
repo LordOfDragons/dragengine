@@ -49,7 +49,7 @@ pComponent(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Component toggle affects audiomap");
+	SetShortInfo("@GameDefinition.Undo.OCComponentToggleAffectsAudio");
 	
 	pComponent = component;
 	pObjectClass = objectClass;

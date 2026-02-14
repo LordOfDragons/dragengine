@@ -48,9 +48,9 @@
 ////////////////
 
 gdeMASkyAdd::gdeMASkyAdd(gdeWindowMain &windowMain) :
-gdeBaseAction(windowMain, "Add Sky...",
+gdeBaseAction(windowMain, "@GameDefinition.Menu.SkyAdd",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-	"Add sky")
+	"@GameDefinition.Menu.SkyAdd.ToolTip")
 {
 }
 
@@ -65,13 +65,13 @@ igdeUndo::Ref gdeMASkyAdd::OnAction(gdeGameDefinition &gameDefinition){
 	//dialog.SetFilename( ... last sky? what directory? );
 	
 	if(!igdeCommonDialogs::GetFileOpen(pWindowMain,
-	"Select sky", *gameDefinition.GetPreviewVFS(),
+	"@GameDefinition.Dialog.SkySelect.Title", *gameDefinition.GetPreviewVFS(),
 	*environment.GetOpenFilePatternList( igdeEnvironment::efpltSky ), filename ) ){
 		return {};
 	}
 	
 	if(gameDefinition.GetSkies().HasWithPath(filename)){
-		igdeCommonDialogs::Information(pWindowMain, "Add Sky", "Sky with path exists already.");
+		igdeCommonDialogs::Information(pWindowMain, "@GameDefinition.Dialog.SkyAdd.Title", "@GameDefinition.Dialog.SkyAdd.ErrorExists");
 		return {};
 	}
 	

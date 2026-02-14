@@ -48,7 +48,7 @@ pTrigger(trigger)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Light set trigger name");
+	SetShortInfo("@GameDefinition.Undo.OCLightSetTriggerName");
 	
 	pOldValue = light->GetTriggerName(trigger);
 	pNewValue = newValue;

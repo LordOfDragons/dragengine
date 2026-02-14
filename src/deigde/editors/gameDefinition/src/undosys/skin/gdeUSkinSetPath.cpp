@@ -47,7 +47,7 @@ pSkin(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Skin set path");
+	SetShortInfo("@GameDefinition.Undo.SkinSetPath");
 	
 	pOldValue = skin->GetPath();
 	pNewValue = newValue;

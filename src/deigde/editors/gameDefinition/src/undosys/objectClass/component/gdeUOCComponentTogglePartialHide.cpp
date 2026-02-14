@@ -49,7 +49,7 @@ pComponent(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Component toggle partial hide");
+	SetShortInfo("@GameDefinition.Undo.OCComponentTogglePartialHide");
 	
 	pComponent = component;
 	pObjectClass = objectClass;

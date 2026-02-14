@@ -48,7 +48,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Object class add property");
+	SetShortInfo("@GameDefinition.Undo.OCPropertyAdd");
 	
 	pObjectClass = objectClass;
 	pProperty = property;

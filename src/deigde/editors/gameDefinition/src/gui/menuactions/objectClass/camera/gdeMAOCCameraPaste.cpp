@@ -50,9 +50,9 @@
 ////////////////
 
 gdeMAOCCameraPaste::gdeMAOCCameraPaste(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Paste Object Class Camera",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCCameraPaste",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
-	"Paste object class camera")
+	"@GameDefinition.Menu.OCCameraPaste.ToolTip")
 {
 }
 
@@ -70,7 +70,7 @@ igdeUndo::Ref gdeMAOCCameraPaste::OnActionSubObject(gdeGameDefinition&, gdeObjec
 	
 	const igdeUndo::Ref undo = gdeUOCAddCamera::Ref::New(&objectClass,
 		gdeOCCamera::Ref::New(*clip.DynamicCast<gdeClipboardDataOCCamera>()->GetCamera()));
-	undo->SetShortInfo("Paste object class camera");
+	undo->SetShortInfo("@GameDefinition.Undo.PasteOCCamera");
 	return undo;
 }
 

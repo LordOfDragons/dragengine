@@ -49,7 +49,7 @@ pTexture(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Texture set scale");
+	SetShortInfo("@GameDefinition.Undo.OCTextureSetScale");
 	
 	pOldValue = texture->GetScale();
 	pNewValue = newValue;

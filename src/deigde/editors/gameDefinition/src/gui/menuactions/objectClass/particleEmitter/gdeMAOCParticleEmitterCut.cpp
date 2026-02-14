@@ -49,9 +49,9 @@
 ////////////////
 
 gdeMAOCParticleEmitterCut::gdeMAOCParticleEmitterCut(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Cut Object Class Particle Emitter",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCParticleEmitterCut",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
-	"Cut object class particle emitter")
+	"@GameDefinition.Menu.OCParticleEmitterCut.ToolTip")
 {
 }
 

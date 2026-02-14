@@ -47,7 +47,7 @@ pSkin(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Skin set description");
+	SetShortInfo("@GameDefinition.Undo.SkinSetDescription");
 	
 	pOldValue = skin->GetDescription();
 	pNewValue = newValue;

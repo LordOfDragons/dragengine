@@ -47,9 +47,9 @@
 ////////////////
 
 gdeMAOCComponentAdd::gdeMAOCComponentAdd(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Add Object Class Component...",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCComponentAdd",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-	"Add object class component")
+	"@GameDefinition.Menu.OCComponentAdd.ToolTip")
 {
 }
 

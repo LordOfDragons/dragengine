@@ -49,7 +49,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Component texture set offset");
+	SetShortInfo("@GameDefinition.Undo.OCCTextureSetOffset");
 	
 	pOldValue = texture->GetOffset();
 	pNewValue = newValue;

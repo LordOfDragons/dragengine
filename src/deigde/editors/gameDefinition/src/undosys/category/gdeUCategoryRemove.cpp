@@ -48,7 +48,7 @@ gdeUCategoryBase(gameDefinition, type)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Category remove");
+	SetShortInfo("@GameDefinition.Undo.CategoryRemove");
 	
 	gdeCategory * const parent = category->GetParent();
 	if(parent){

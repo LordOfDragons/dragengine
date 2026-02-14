@@ -49,7 +49,7 @@ pNavBlocker(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Nav-blocker set position");
+	SetShortInfo("@GameDefinition.Undo.OCNavBlockerSetPosition");
 	
 	pOldValue = navblocker->GetPosition();
 	pNewValue = newValue;

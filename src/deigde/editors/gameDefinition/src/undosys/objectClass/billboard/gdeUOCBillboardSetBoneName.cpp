@@ -49,7 +49,7 @@ pBillboard(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Billboard set bone name");
+	SetShortInfo("@GameDefinition.Undo.OCBillboardSetBoneName");
 	
 	pOldValue = billboard->GetBoneName();
 	pNewValue = newValue;

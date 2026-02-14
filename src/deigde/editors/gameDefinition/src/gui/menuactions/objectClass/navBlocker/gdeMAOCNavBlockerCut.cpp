@@ -49,9 +49,9 @@
 ////////////////
 
 gdeMAOCNavBlockerCut::gdeMAOCNavBlockerCut(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Cut Object Class Navigation Blocker",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCNavBlockerCut",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
-	"Cut object class navigation blocker")
+	"@GameDefinition.Menu.OCNavBlockerCut.ToolTip")
 {
 }
 

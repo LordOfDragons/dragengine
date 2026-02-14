@@ -50,9 +50,9 @@
 ////////////////
 
 gdeMAOCComponentPaste::gdeMAOCComponentPaste(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Paste Object Class Component",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCComponentPaste",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
-	"Paste object class component")
+	"@GameDefinition.Menu.OCComponentPaste.ToolTip")
 {
 }
 
@@ -70,7 +70,7 @@ igdeUndo::Ref gdeMAOCComponentPaste::OnActionSubObject(gdeGameDefinition&, gdeOb
 	
 	const igdeUndo::Ref undo = gdeUOCAddComponent::Ref::New(&objectClass,
 		gdeOCComponent::Ref::New(*clip.DynamicCast<gdeClipboardDataOCComponent>()->GetComponent()));
-	undo->SetShortInfo("Paste object class component");
+	undo->SetShortInfo("@GameDefinition.Undo.PasteOCComponent");
 	return undo;
 }
 

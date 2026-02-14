@@ -42,7 +42,7 @@ pProperty(property)
 	DEASSERT_NOTNULL(objectClass)
 	DEASSERT_NOTNULL(world)
 	
-	SetShortInfo("World set property name");
+	SetShortInfo("@GameDefinition.Undo.OCWorldSetPropertyName");
 	
 	pOldValue = world->GetPropertyName(property);
 	pNewValue = newValue;

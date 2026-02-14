@@ -46,7 +46,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Object class toggle is ghost");
+	SetShortInfo("@GameDefinition.Undo.OCToggleIsGhost");
 	
 	pObjectClass = objectClass;
 }

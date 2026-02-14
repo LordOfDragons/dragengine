@@ -56,7 +56,7 @@ gdeWPSTIMOCSubObject(tree, etObjectClassBillboard, objectClass, index)
 	}
 	
 	decString text;
-	text.Format("Billboard #%d", index + 1);
+	text.FormatSafe(GetWindowMain().Translate("GameDefinition.TreeModel.BillboardNumber").ToUTF8(), index + 1);
 	SetText(text);
 	
 	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));

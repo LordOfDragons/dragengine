@@ -49,9 +49,9 @@
 ////////////////
 
 gdeMAOCSnapPointCut::gdeMAOCSnapPointCut(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Cut Object Class Snap Point",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCSnapPointCut",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
-	"Cut object class snap point")
+	"@GameDefinition.Menu.OCSnapPointCut.ToolTip")
 {
 }
 

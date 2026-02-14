@@ -48,7 +48,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Light set type");
+	SetShortInfo("@GameDefinition.Undo.OCLightSetType");
 	
 	pOldValue = light->GetType();
 	pNewValue = newValue;

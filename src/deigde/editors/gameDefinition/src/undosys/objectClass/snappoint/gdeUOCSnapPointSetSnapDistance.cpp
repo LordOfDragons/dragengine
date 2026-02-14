@@ -50,7 +50,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Snap point set snap distance");
+	SetShortInfo("@GameDefinition.Undo.OCSnapPointSetSnapDistance");
 	
 	pOldValue = snapPoint->GetSnapDistance();
 	

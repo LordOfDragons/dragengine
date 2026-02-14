@@ -511,7 +511,7 @@ gdeUOCPropertyValuesFromSubObjects::gdeUOCPropertyValuesFromSubObjects(
 gdeObjectClass *objectClass, const decStringDictionary &newValues) :
 gdeUOCSetPropertyValues(objectClass, newValues)
 {
-	SetShortInfo("Object class set property values from sub objects");
+	SetShortInfo("@GameDefinition.Undo.OCPropertyValuesFromSubObjects");
 }
 
 gdeUOCPropertyValuesFromSubObjects::~gdeUOCPropertyValuesFromSubObjects(){

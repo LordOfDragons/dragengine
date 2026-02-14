@@ -48,7 +48,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Object class set partial hide tags");
+	SetShortInfo("@GameDefinition.Undo.OCSetPartialHideTags");
 	
 	pOldValue = objectClass->GetPartialHideTags();
 	pNewValue = newValue;

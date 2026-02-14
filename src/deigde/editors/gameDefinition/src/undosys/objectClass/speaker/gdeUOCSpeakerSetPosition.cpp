@@ -49,7 +49,7 @@ pSpeaker(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Speaker set position");
+	SetShortInfo("@GameDefinition.Undo.OCSpeakerSetPosition");
 	
 	pOldValue = speaker->GetPosition();
 	pNewValue = newValue;

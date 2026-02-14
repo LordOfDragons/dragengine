@@ -48,7 +48,7 @@ pProperty(property)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Light set property name");
+	SetShortInfo("@GameDefinition.Undo.OCLightSetPropertyName");
 	
 	pOldValue = light->GetPropertyName(property);
 	pNewValue = newValue;

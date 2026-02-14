@@ -48,7 +48,7 @@ pProperty(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Game definition property set minimum value");
+	SetShortInfo("@GameDefinition.Undo.GDDPSetMinValue");
 	
 	pOldValue = property->GetMinimumValue();
 	pNewValue = newValue;

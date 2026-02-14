@@ -92,8 +92,8 @@ public:
 		}
 		
 		if(pPanel.GetGameDefinition()->GetSkies().HasWithPath(editPath->GetPath())){
-			igdeCommonDialogs::Information(*pPanel.GetParentWindow(), "Change sky emitter path",
-				"A sky emitter with this path exists already.");
+			igdeCommonDialogs::Information(*pPanel.GetParentWindow(), "@GameDefinition.Sky.Dialog.ChangeSkyEmitterPath",
+				"@GameDefinition.Sky.Dialog.ASkyEmitterWithThisPathExistsAlready");
 			editPath->SetPath(sky->GetPath());
 			return;
 		}
@@ -146,7 +146,8 @@ class cActionControllerAdd : public igdeAction{
 public:
 	typedef deTObjectReference<cActionControllerAdd> Ref;
 	cActionControllerAdd(gdeWPSSky &panel, igdeComboBox &comboBox) : 
-	igdeAction("Add...", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add controller"),
+	igdeAction("@Igde.Add", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"@GameDefinition.WPSSky.AddController"),
 	pPanel(panel), pComboBox(comboBox){}
 	
 	void OnAction() override{
@@ -156,11 +157,15 @@ public:
 		}
 		
 		const gdeSkyController::List &list = sky->GetControllers();
-		decString name("Controller");
+		decString name(pPanel.Translate("GameDefinition.Default.Controller").ToUTF8());
 		
-		while(igdeCommonDialogs::GetString(*pPanel.GetParentWindow(), "Add Controller", "Name:", name)){
+		while(igdeCommonDialogs::GetString(*pPanel.GetParentWindow(),
+				"@GameDefinition.Sky.Dialog.AddController",
+				"@GameDefinition.Sky.Dialog.Name", name)){
 			if(list.HasNamed(name)){
-				igdeCommonDialogs::Information(*pPanel.GetParentWindow(), "Add Controller", "Controller exists already.");
+				igdeCommonDialogs::Information(*pPanel.GetParentWindow(),
+					"@GameDefinition.Sky.Dialog.AddController",
+					"@GameDefinition.Sky.Dialog.ControllerExistsAlready");
 				continue;
 			}
 			
@@ -182,7 +187,8 @@ class cActionControllerRemove : public igdeAction{
 public:
 	typedef deTObjectReference<cActionControllerRemove> Ref;
 	cActionControllerRemove(gdeWPSSky &panel, igdeComboBox &comboBox) : 
-	igdeAction("Remove", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove controller"),
+	igdeAction("@Igde.Remove", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@GameDefinition.WPSSky.RemoveController"),
 	pPanel(panel), pComboBox(comboBox){}
 	
 	void OnAction() override{
@@ -206,10 +212,11 @@ class cActionControllerMenu : public igdeActionContextMenu{
 public:
 	typedef deTObjectReference<cActionControllerMenu> Ref;
 	cActionControllerMenu(gdeWPSSky &panel) : igdeActionContextMenu("",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Controller menu"),
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
+		"@GameDefinition.WPSSky.ControllerMenu"),
 	pPanel(panel){}
 	
-	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
+	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override{
 		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
 		helper.MenuCommand(contextMenu, pPanel.GetActionControllerAdd());
 		helper.MenuCommand(contextMenu, pPanel.GetActionControllerRemove());
@@ -246,8 +253,9 @@ public:
 		}
 		
 		if(pPanel.GetSky()->GetControllers().HasNamed(textField->GetText())){
-			igdeCommonDialogs::Information(*pPanel.GetParentWindow(), "Rename controller",
-				"A controller with this name exists already.");
+			igdeCommonDialogs::Information(*pPanel.GetParentWindow(),
+				"@GameDefinition.Sky.Dialog.RenameController",
+				"@GameDefinition.Sky.Dialog.AControllerWithThisNameExistsAlready");
 			textField->SetText(controller->GetName());
 			return;
 		}
@@ -302,7 +310,7 @@ public:
 	typedef deTObjectReference<cActionJumpToCategory> Ref;
 	cActionJumpToCategory(gdeWPSSky &panel) : 
 	igdeAction("", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallStrongRight),
-		"Jump to Category"),
+	"@GameDefinition.WPSSky.JumpToCategory.ToolTip"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -350,31 +358,43 @@ pWindowProperties(windowProperties)
 	AddChild(content);
 	
 	// sky
-	helper.GroupBox(content, groupBox, "Sky:");
-	helper.EditPath(groupBox, "Path:", "Path to sky emitter",
-		igdeEnvironment::efpltSky, pEditPath, cEditPath::Ref::New(*this));
-	helper.EditString(groupBox, "Name:", "Sky name", pEditName, cTextName::Ref::New(*this));
-	helper.EditString(groupBox, "Description:", "Sky description",
-		pEditDescription, 15, 5, cTextDescription::Ref::New(*this));
+	helper.GroupBox(content, groupBox, "@GameDefinition.WPSSky.GroupSky");
+	helper.EditPath(groupBox, "@GameDefinition.WPSSky.Path.Label",
+		"@GameDefinition.WPSSky.Path.ToolTip", igdeEnvironment::efpltSky,
+		pEditPath, cEditPath::Ref::New(*this));
+	helper.EditString(groupBox, "@GameDefinition.WPSSky.Name.Label",
+		"@GameDefinition.WPSSky.Name.ToolTip", pEditName, cTextName::Ref::New(*this));
+	helper.EditString(groupBox, "@GameDefinition.WPSSky.Description.Label",
+		"@GameDefinition.WPSSky.Description.ToolTip", pEditDescription, 15, 5,
+		cTextDescription::Ref::New(*this));
 	
-	helper.FormLineStretchFirst(groupBox, "Category: ", "Category", frameLine);
-	helper.ComboBoxFilter(frameLine, true, "Category", pCBCategory, cComboCategory::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@GameDefinition.WPSSky.Category.Label",
+		"@GameDefinition.WPSSky.Category.ToolTip", frameLine);
+	helper.ComboBoxFilter(frameLine, true, "@GameDefinition.Category.Filter.ToolTip",
+		pCBCategory, cComboCategory::Ref::New(*this));
 	pCBCategory->SetDefaultSorter();
 	pCBCategory->SetFilterCaseInsentive(true);
 	helper.Button(frameLine, pBtnJumpToCategory, cActionJumpToCategory::Ref::New(*this));
 	
 	// controller
-	helper.GroupBox(content, groupBox, "Controllers:");
+	helper.GroupBox(content, groupBox, "@GameDefinition.WPSSky.GroupControllers");
 	
-	helper.FormLineStretchFirst(groupBox, "Controller:", "Controller to edit", frameLine);
-	helper.ComboBox(frameLine, "Controller to edit", pCBController, cComboController::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@GameDefinition.WPSSky.Controller.Label",
+		"@GameDefinition.WPSSky.Controller.ToolTip", frameLine);
+	helper.ComboBox(frameLine, "@GameDefinition.WPSSky.Controller.ToolTip",
+		pCBController, cComboController::Ref::New(*this));
 	pActionControllerAdd = cActionControllerAdd::Ref::New(*this, pCBController);
 	pActionControllerRemove = cActionControllerRemove::Ref::New(*this, pCBController);
 	pActionControllerMenu = cActionControllerMenu::Ref::New(*this);
-	helper.Button(frameLine, pActionControllerMenu);
+	helper.Button(frameLine, pBtnControllerMenu, pActionControllerMenu);
+	pActionControllerMenu->SetWidget(pBtnControllerMenu);
 	
-	helper.EditString(groupBox, "Name:", "Controller name", pEditControllerName, cTextControllerName::Ref::New(*this));
-	helper.EditFloat(groupBox, "Value:", "Controller value", pEditControllerValue, cTextControllerValue::Ref::New(*this));
+	helper.EditString(groupBox, "@GameDefinition.WPSSky.ControllerName.Label",
+		"@GameDefinition.WPSSky.ControllerName.ToolTip", pEditControllerName,
+		cTextControllerName::Ref::New(*this));
+	helper.EditFloat(groupBox, "@GameDefinition.WPSSky.ControllerValue.Label",
+		"@GameDefinition.WPSSky.ControllerValue.ToolTip", pEditControllerValue,
+		cTextControllerValue::Ref::New(*this));
 }
 
 gdeWPSSky::~gdeWPSSky(){
@@ -413,13 +433,7 @@ gdeSky *gdeWPSSky::GetSky() const{
 }
 
 gdeSkyController *gdeWPSSky::GetController() const{
-	const gdeSky * const sky = GetSky();
-	if(!sky){
-		return nullptr;
-	}
-	
-	const decString &name = pCBController->GetSelectedItem()->GetText();
-	return pCBController->GetSelectedItem() ? sky->GetControllers().FindNamed(name) : nullptr;
+	return (gdeSkyController*)pCBController->GetSelectedItemData();
 }
 
 
@@ -486,32 +500,34 @@ void gdeWPSSky::UpdateSky(){
 	pEditDescription->SetEnabled(enabled);
 	pCBCategory->SetEnabled(enabled);
 	
-	UpdateController();
+	UpdateControllerList();
 }
 
-void gdeWPSSky::UpdateController(){
-	const gdeSkyController * selectedController = GetController();
-	const gdeSky * const sky = GetSky();
+void gdeWPSSky::UpdateControllerList(){
+	gdeSkyController *selected = GetController();
+	const gdeSky *const sky = GetSky();
 	
 	pCBController->RemoveAllItems();
 	
 	if(sky){
-		const gdeSkyController::List &controllers = sky->GetControllers();
-		const int count = controllers.GetCount();
-		int i;
-		for(i=0; i<count; i++){
-			pCBController->AddItem(controllers.GetAt(i)->GetName());
-		}
+		const gdeSkyController::List &list = sky->GetControllers();
+		list.Visit([&](gdeSkyController *controller){
+			pCBController->AddItem(controller->GetName(), nullptr, controller);
+		});
 		pCBController->SortItems();
 		
-		if(!selectedController && pCBController->GetItems().IsNotEmpty()){
-			selectedController = controllers.FindNamed(pCBController->GetItems().First()->GetText());
+		if(!selected && pCBController->GetItems().IsNotEmpty()){
+			selected = (gdeSkyController*)pCBController->GetItems().First()->GetData();
 		}
 	}
 	
-	if(selectedController){
-		pCBController->SetSelection(pCBController->IndexOfItem(selectedController->GetName()));
+	if(selected){
+		pCBController->SetSelectionWithData(selected);
 	}
+}
+
+void gdeWPSSky::UpdateController(){
+	const gdeSkyController *selectedController = GetController();
 	
 	if(selectedController){
 		pEditControllerName->SetText(selectedController->GetName());

@@ -48,7 +48,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Light set bone name");
+	SetShortInfo("@GameDefinition.Undo.OCLightSetBoneName");
 	
 	pOldValue = light->GetBoneName();
 	pNewValue = newValue;

@@ -48,9 +48,9 @@
 ////////////////
 
 gdeMAOCForceFieldCopy::gdeMAOCForceFieldCopy(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Copy Object Class Force Field",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCForceFieldCopy",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-	"Copy object class force field")
+	"@GameDefinition.Menu.OCForceFieldCopy.ToolTip")
 {
 }
 

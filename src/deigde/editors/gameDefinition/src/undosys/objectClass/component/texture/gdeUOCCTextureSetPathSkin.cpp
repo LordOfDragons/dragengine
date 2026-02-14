@@ -49,7 +49,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Component texture set skin path");
+	SetShortInfo("@GameDefinition.Undo.OCCTextureSetPathSkin");
 	
 	pOldValue = texture->GetPathSkin();
 	pNewValue = newValue;

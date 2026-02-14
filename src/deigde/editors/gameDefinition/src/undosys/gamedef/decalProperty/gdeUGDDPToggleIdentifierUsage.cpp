@@ -49,7 +49,7 @@ pProperty(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Game definition property toggle identifier usage");
+	SetShortInfo("@GameDefinition.Undo.GDDPToggleIdentifierUsage");
 	
 	pGameDefinition = gamedef;
 	pProperty = property;

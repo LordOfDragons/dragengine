@@ -19,6 +19,9 @@
 	<translation name='Igde.Settings.Reset'>Reset</translation>
 	<translation name='Igde.Settings.Cancel'>Cancel</translation>
 	<translation name="Igde.TriplePoint">...</translation>
+	<translation name="Igde.Add">Add</translation>
+	<translation name="Igde.AddTriplePoint">Add...</translation>
+	<translation name="Igde.Remove">Remove</translation>
 	
 	<!-- New Game Project Dialog -->
 	<translation name="Igde.NewGameProject.Title">New Game Project</translation>

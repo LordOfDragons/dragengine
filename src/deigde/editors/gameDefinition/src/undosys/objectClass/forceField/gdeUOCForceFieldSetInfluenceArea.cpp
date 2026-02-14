@@ -49,7 +49,7 @@ pForceField(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Force field set influence area");
+	SetShortInfo("@GameDefinition.Undo.OCForceFieldSetInfluenceArea");
 	
 	pOldValue = forceField->GetInfluenceArea();
 	pNewValue = newValue;

@@ -56,7 +56,7 @@ gdeWPSTIMOCSubObject(tree, etObjectClassNavigationSpace, objectClass, index)
 	}
 	
 	decString text;
-	text.Format("Navigation Space #%d", index + 1);
+	text.FormatSafe(GetWindowMain().Translate("GameDefinition.TreeModel.NavigationSpaceNumber").ToUTF8(), index + 1);
 	SetText(text);
 	
 	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));

@@ -44,8 +44,8 @@
 ////////////////
 
 gdeMAOCWorldCut::gdeMAOCWorldCut(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Cut Object Class World",
-	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut), "Cut object class world"){
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCWorldCut",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut), "@GameDefinition.Menu.OCWorldCut.ToolTip"){
 }
 
 

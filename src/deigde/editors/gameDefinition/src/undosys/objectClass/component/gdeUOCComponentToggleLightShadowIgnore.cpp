@@ -49,7 +49,7 @@ pComponent(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Component toggle light shadow ignore");
+	SetShortInfo("@GameDefinition.Undo.OCComponentToggleLightShadowIgnore");
 	
 	pComponent = component;
 	pObjectClass = objectClass;

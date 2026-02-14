@@ -958,7 +958,7 @@ void gdeGameDefinition::SetActiveSkin(gdeSkin *skin){
 //////////
 
 void gdeGameDefinition::AddSky(gdeSky *sky){
-	DEASSERT_NULL(sky)
+	DEASSERT_NOTNULL(sky)
 	pSkies.AddOrThrow(sky);
 	
 	sky->SetGameDefinition(this);

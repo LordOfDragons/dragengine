@@ -46,7 +46,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Object class set default inherit property prefix");
+	SetShortInfo("@GameDefinition.Undo.OCSetDefaultInheritPropertyPrefix");
 	
 	pOldValue = objectClass->GetDefaultInheritPropertyPrefix();
 	pNewValue = newValue;

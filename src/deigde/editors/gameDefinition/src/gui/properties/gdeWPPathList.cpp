@@ -59,7 +59,7 @@ class cActionAppend : public igdeAction{
 public:
 	using Ref = deTObjectReference<cActionAppend>;
 	cActionAppend(gdeWPPathList &panel, igdeEditPath::Ref &editPath, igdeListBox::Ref &listBox) : 
-	igdeAction("Append", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Append path"),
+	igdeAction("@GameDefinition.PathList.Action.Append", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@GameDefinition.PathList.Action.Append.ToolTip"),
 	pPanel(panel), pEditPath(editPath), pListBox(listBox){}
 	
 	void OnAction() override{
@@ -87,7 +87,7 @@ class cActionInsert : public igdeAction{
 public:
 	using Ref = deTObjectReference<cActionInsert>;
 	cActionInsert(gdeWPPathList &panel, igdeEditPath::Ref &editPath, igdeListBox::Ref &listBox) : 
-	igdeAction("Insert", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Insert path"),
+	igdeAction("@GameDefinition.PathList.Action.Insert", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@GameDefinition.PathList.Action.Insert.ToolTip"),
 	pPanel(panel), pEditPath(editPath), pListBox(listBox){}
 	
 	void OnAction() override{
@@ -125,8 +125,8 @@ class cActionRemove : public igdeAction{
 public:
 	using Ref = deTObjectReference<cActionRemove>;
 	cActionRemove(gdeWPPathList &panel, igdeListBox::Ref &listBox) :
-	igdeAction("Remove", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-		"Remove path"), pPanel(panel), pListBox(listBox){}
+	igdeAction("@GameDefinition.PathList.Action.Remove", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@GameDefinition.PathList.Action.Remove.ToolTip"), pPanel(panel), pListBox(listBox){}
 	
 	void OnAction() override{
 		if(!pPanel.GetPathList() || !pPanel.GetUndoSystem()){
@@ -154,7 +154,7 @@ class cActionClear : public igdeAction{
 public:
 	using Ref = deTObjectReference<cActionClear>;
 	cActionClear(gdeWPPathList &panel, igdeListBox::Ref &listBox) :
-	igdeAction("Clear", nullptr, "Clear path"), pPanel(panel), pListBox(listBox){}
+	igdeAction("@GameDefinition.PathList.Action.Clear", nullptr, "@GameDefinition.PathList.Action.Clear.ToolTip"), pPanel(panel), pListBox(listBox){}
 	
 	void OnAction() override{
 		if(!pPanel.GetPathList() || !pPanel.GetUndoSystem() || pListBox->GetItems().IsEmpty()){

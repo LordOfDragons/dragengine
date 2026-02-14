@@ -53,7 +53,7 @@ pProperty(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Game definition property remove custom file pattern");
+	SetShortInfo("@GameDefinition.Undo.GDDPCFPRemove");
 	
 	pGameDefinition = gamedef;
 	pProperty = property;

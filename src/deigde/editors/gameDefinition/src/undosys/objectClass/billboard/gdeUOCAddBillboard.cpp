@@ -49,7 +49,7 @@ pBillboard(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Add billboard");
+	SetShortInfo("@GameDefinition.Undo.OCAddBillboard");
 	
 	pBillboard = billboard;
 	pObjectClass = objectClass;

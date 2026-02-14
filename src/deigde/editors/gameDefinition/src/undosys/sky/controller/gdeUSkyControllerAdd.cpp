@@ -52,7 +52,7 @@ pController(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Add sky controller");
+	SetShortInfo("@GameDefinition.Undo.SkyControllerAdd");
 	
 	pSky = sky;
 	pController = controller;

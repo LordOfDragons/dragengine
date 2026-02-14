@@ -47,7 +47,7 @@ pSkin(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Skin set category");
+	SetShortInfo("@GameDefinition.Undo.SkinSetCategory");
 	
 	pOldValue = skin->GetCategory();
 	pNewValue = newValue;

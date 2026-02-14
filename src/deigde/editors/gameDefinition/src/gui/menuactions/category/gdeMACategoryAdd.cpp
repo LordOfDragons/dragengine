@@ -47,9 +47,9 @@
 ////////////////
 
 gdeMACategoryAdd::gdeMACategoryAdd(gdeWindowMain &windowMain) :
-gdeBaseAction(windowMain, "Add Child Category...",
+gdeBaseAction(windowMain, "@GameDefinition.Menu.CategoryAdd",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-	"Add category to active category")
+	"@GameDefinition.Menu.CategoryAdd.ToolTip")
 {
 }
 
@@ -100,11 +100,11 @@ igdeUndo::Ref gdeMACategoryAdd::OnAction(gdeGameDefinition &gameDefinition){
 
 igdeUndo::Ref gdeMACategoryAdd::AddCategory(gdeGameDefinition &gameDefinition,
 gdeCategory *parent, const gdeCategory::List &list, gdeUCategoryBase::eCategoryType categoryType) const{
-	decString name("Category");
+	decString name(pWindowMain.Translate("GameDefinition.Default.Category").ToUTF8());
 	
-	while(igdeCommonDialogs::GetString(pWindowMain, "Add Category", "Name:", name)){
+	while(igdeCommonDialogs::GetString(pWindowMain, "@GameDefinition.Dialog.CategoryAdd.Title", "@GameDefinition.Dialog.CategoryAdd.Name", name)){
 		if(list.FindNamed(name)){
-			igdeCommonDialogs::Error(pWindowMain, "Add Category", "Category exists already.");
+			igdeCommonDialogs::Error(pWindowMain, "@GameDefinition.Dialog.CategoryAdd.Title", "@GameDefinition.Dialog.CategoryAdd.ErrorExists");
 			continue;
 		}
 		

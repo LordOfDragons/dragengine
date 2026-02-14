@@ -53,7 +53,7 @@ pEnvMapProbe(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Remove environment map probe");
+	SetShortInfo("@GameDefinition.Undo.OCRemoveEnvMapProbe");
 	
 	pEnvMapProbe = envMapProbe;
 	pObjectClass = objectClass;

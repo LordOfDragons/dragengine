@@ -55,7 +55,7 @@ gdeWPSTIMOCSubObject(tree, etObjectClassCamera, objectClass, index)
 	}
 	
 	decString text;
-	text.Format("Camera #%d", index + 1);
+	text.FormatSafe(GetWindowMain().Translate("GameDefinition.TreeModel.CameraNumber").ToUTF8(), index + 1);
 	SetText(text);
 	
 	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));

@@ -49,7 +49,7 @@ pProperty(property)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("ParticleEmitter set property name");
+	SetShortInfo("@GameDefinition.Undo.OCParticleEmitterSetPropertyName");
 	
 	pOldValue = particleEmitter->GetPropertyName(property);
 	pNewValue = newValue;

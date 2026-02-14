@@ -49,7 +49,7 @@ pComponent(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Component set move");
+	SetShortInfo("@GameDefinition.Undo.OCComponentSetMove");
 	
 	pOldValue = component->GetMove();
 	pNewValue = newValue;

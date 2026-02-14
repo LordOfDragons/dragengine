@@ -48,7 +48,7 @@
 gdeWPSTIMSkies::gdeWPSTIMSkies(gdeWPSTreeModel &tree) :
 gdeWPSTreeItemModel(tree, etSkies)
 {
-	SetText("Skies");
+	SetText(GetWindowMain().Translate("GameDefinition.TreeModel.Skies").ToUTF8());
 	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 }
 

@@ -49,7 +49,7 @@ pComponent(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Component toggle static");
+	SetShortInfo("@GameDefinition.Undo.OCComponentToggleStatic");
 	
 	pComponent = component;
 	pObjectClass = objectClass;

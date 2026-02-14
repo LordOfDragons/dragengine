@@ -49,7 +49,7 @@ pTrigger(trigger)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Speaker set trigger name");
+	SetShortInfo("@GameDefinition.Undo.OCSpeakerSetTriggerName");
 	
 	pOldValue = speaker->GetTriggerName(trigger);
 	pNewValue = newValue;

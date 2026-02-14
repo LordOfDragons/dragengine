@@ -49,9 +49,9 @@
 ////////////////
 
 gdeMAOCComponentCut::gdeMAOCComponentCut(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Cut Object Class Component",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCComponentCut",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
-	"Cut object class component")
+	"@GameDefinition.Menu.OCComponentCut.ToolTip")
 {
 }
 

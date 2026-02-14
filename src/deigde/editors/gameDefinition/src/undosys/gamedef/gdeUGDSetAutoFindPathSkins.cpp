@@ -48,7 +48,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Game definition set auto find path skins");
+	SetShortInfo("@GameDefinition.Undo.GDSetAutoFindPathSkins");
 	
 	pOldValue = gameDefinition->GetAutoFindPathSkins();
 	

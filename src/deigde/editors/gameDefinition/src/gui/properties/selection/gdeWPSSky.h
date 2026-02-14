@@ -127,6 +127,9 @@ public:
 	/** \brief Update sky. */
 	void UpdateSky();
 	
+	/** \brief Update controller list. */
+	void UpdateControllerList();
+	
 	/** \brief Update controller. */
 	void UpdateController();
 	/*@}*/

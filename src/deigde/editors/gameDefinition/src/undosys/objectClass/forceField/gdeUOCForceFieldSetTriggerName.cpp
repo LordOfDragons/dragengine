@@ -49,7 +49,7 @@ pTrigger(trigger)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Force field set trigger name");
+	SetShortInfo("@GameDefinition.Undo.OCForceFieldSetTriggerName");
 	
 	pOldValue = forceField->GetTriggerName(trigger);
 	pNewValue = newValue;

@@ -47,9 +47,9 @@
 ////////////////
 
 gdeMAOCNavSpaceAdd::gdeMAOCNavSpaceAdd(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Add Object Class Navigation Space...",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCNavSpaceAdd",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-	"Add object class navigation space")
+	"@GameDefinition.Menu.OCNavSpaceAdd.ToolTip")
 {
 }
 

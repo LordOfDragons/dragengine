@@ -48,7 +48,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Nav-space set shapes");
+	SetShortInfo("@GameDefinition.Undo.OCNavSpaceSetBlockerShapeList");
 	
 	pOldValue = navspace->GetBlockerShapeList();
 	pNewValue = newValue;

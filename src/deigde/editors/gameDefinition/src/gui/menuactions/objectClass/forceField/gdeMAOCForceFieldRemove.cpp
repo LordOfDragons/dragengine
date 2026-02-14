@@ -47,9 +47,9 @@
 ////////////////
 
 gdeMAOCForceFieldRemove::gdeMAOCForceFieldRemove(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Remove Object Class Force Field",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCForceFieldRemove",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-	"Remove object class force field")
+	"@GameDefinition.Menu.OCForceFieldRemove.ToolTip")
 {
 }
 

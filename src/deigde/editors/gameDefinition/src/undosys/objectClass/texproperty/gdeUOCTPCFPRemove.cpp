@@ -53,7 +53,7 @@ pProperty(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Object class texture property remove custom file pattern");
+	SetShortInfo("@GameDefinition.Undo.OCTPCFPRemove");
 	
 	pObjectClass = objectClass;
 	pProperty = property;

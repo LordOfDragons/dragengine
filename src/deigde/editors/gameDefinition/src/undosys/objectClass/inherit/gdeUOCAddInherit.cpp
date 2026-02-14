@@ -47,7 +47,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Add inherit");
+	SetShortInfo("@GameDefinition.Undo.OCAddInherit");
 	
 	pInherit = inherit;
 	pObjectClass = objectClass;

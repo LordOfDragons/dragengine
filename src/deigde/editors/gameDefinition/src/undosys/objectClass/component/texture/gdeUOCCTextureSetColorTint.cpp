@@ -49,7 +49,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Component texture set color tint");
+	SetShortInfo("@GameDefinition.Undo.OCCTextureSetColorTint");
 	
 	pOldValue = texture->GetColorTint();
 	pNewValue = newValue;

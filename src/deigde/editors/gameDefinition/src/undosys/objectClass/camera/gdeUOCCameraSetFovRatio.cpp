@@ -48,7 +48,7 @@ pCamera(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Camera set fov ratio");
+	SetShortInfo("@GameDefinition.Undo.OCCameraSetFovRatio");
 	
 	pOldValue = camera->GetFovRatio();
 	pNewValue = newValue;

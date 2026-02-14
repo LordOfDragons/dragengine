@@ -49,9 +49,9 @@
 ////////////////
 
 gdeMAOCEnvMapProbeCut::gdeMAOCEnvMapProbeCut(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Cut Object Class Environment Map Probe",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCEnvMapProbeCut",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
-	"Cut object class environment map probe")
+	"@GameDefinition.Menu.OCEnvMapProbeCut.ToolTip")
 {
 }
 

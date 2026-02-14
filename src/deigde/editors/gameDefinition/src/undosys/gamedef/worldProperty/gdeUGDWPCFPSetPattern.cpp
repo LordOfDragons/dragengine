@@ -50,7 +50,7 @@ pProperty(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Game definition property custom file pattern set pattern");
+	SetShortInfo("@GameDefinition.Undo.GDWPCFPSetPattern");
 	
 	pOldValue = filePattern->GetPattern();
 	pNewValue = newValue;

@@ -46,7 +46,7 @@ pGameDefinition(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Game definition set identifier");
+	SetShortInfo("@GameDefinition.Undo.GDSetID");
 	
 	pOldValue = gameDefinition->GetID();
 	pNewValue = newValue;

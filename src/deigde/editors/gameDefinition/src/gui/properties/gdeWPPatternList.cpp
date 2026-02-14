@@ -60,7 +60,7 @@ class cActionAppend : public igdeAction{
 public:
 	using Ref = deTObjectReference<cActionAppend>;
 	cActionAppend (gdeWPPatternList &panel, igdeEditPath::Ref &editPath, igdeListBox::Ref &listBox) : 
-	igdeAction("Add", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add pattern"),
+	igdeAction("@GameDefinition.PatternList.Action.Add", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@GameDefinition.PatternList.Action.Add.ToolTip"),
 	pPanel(panel), pEditPath(editPath), pListBox(listBox){}
 	
 	void OnAction() override{
@@ -83,8 +83,8 @@ class cActionRemove : public igdeAction{
 public:
 	using Ref = deTObjectReference<cActionRemove>;
 	cActionRemove(gdeWPPatternList &panel, igdeListBox::Ref &listBox) :
-	igdeAction("Remove", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-		"Remove pattern"), pPanel(panel), pListBox(listBox){}
+	igdeAction("@GameDefinition.PatternList.Action.Remove", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@GameDefinition.PatternList.Action.Remove.ToolTip"), pPanel(panel), pListBox(listBox){}
 	
 	void OnAction() override{
 		if(!pPanel.GetPatternList() || !pPanel.GetUndoSystem() || !pListBox->GetSelectedItem()){
@@ -109,7 +109,7 @@ class cActionClear : public igdeAction{
 public:
 	using Ref = deTObjectReference<cActionClear>;
 	cActionClear(gdeWPPatternList &panel, igdeListBox::Ref &listBox) :
-	igdeAction("Clear", nullptr, "Clear pattern"), pPanel(panel), pListBox(listBox){}
+	igdeAction("@GameDefinition.PatternList.Action.Clear", nullptr, "@GameDefinition.PatternList.Action.Clear.ToolTip"), pPanel(panel), pListBox(listBox){}
 	
 	void OnAction() override{
 		if(!pPanel.GetPatternList() || !pPanel.GetUndoSystem() || pListBox->GetItems().IsEmpty()){

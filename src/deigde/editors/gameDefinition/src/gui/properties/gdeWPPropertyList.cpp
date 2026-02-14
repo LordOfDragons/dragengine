@@ -92,7 +92,7 @@ public:
 	typedef deTObjectReference<cActionPropertyMenu> Ref;
 	cActionPropertyMenu(gdeWPPropertyList &panel) :
 	igdeActionContextMenu("", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
-		"Show Properties Menu"),
+		"@GameDefinition.PropertyList.Menu.ShowPropertiesMenu.ToolTip"),
 	pPanel(panel){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
@@ -116,8 +116,9 @@ class cActionPropertyAdd : public igdeAction{
 public:
 	typedef deTObjectReference<cActionPropertyAdd> Ref;
 	cActionPropertyAdd(gdeWPPropertyList &panel) :
-	igdeAction("Add...", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-		"Add property"),
+	igdeAction("@GameDefinition.PropertyList.Action.Add",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"@GameDefinition.PropertyList.Action.Add.ToolTip"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -126,11 +127,15 @@ public:
 		}
 		
 		const gdeProperty::List &list = *pPanel.GetPropertyList();
-		decString name("Property");
+		decString name(pPanel.Translate("GameDefinition.Default.Property").ToUTF8());
 		
-		while(igdeCommonDialogs::GetString(*pPanel.GetParentWindow(), "Add Property", "Name:", name)){
+		while(igdeCommonDialogs::GetString(*pPanel.GetParentWindow(),
+				"@GameDefinition.PropertyList.Dialog.AddProperty",
+				"@GameDefinition.PropertyList.Dialog.Name", name)){
 			if(list.HasNamed(name)){
-				igdeCommonDialogs::Error(*pPanel.GetParentWindow(), "Add Property", "Name exists already.");
+				igdeCommonDialogs::Error(*pPanel.GetParentWindow(),
+					"@GameDefinition.PropertyList.Dialog.AddProperty",
+					"@GameDefinition.PropertyList.NameExistsAlready.Error");
 				continue;
 			}
 			
@@ -156,8 +161,8 @@ class cActionPropertyRemove : public igdeAction{
 public:
 	typedef deTObjectReference<cActionPropertyRemove> Ref;
 	cActionPropertyRemove(gdeWPPropertyList &panel) :
-	igdeAction("Remove", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-		"Remove selected property"),
+	igdeAction("@GameDefinition.PropertyList.Action.Remove", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@GameDefinition.PropertyList.Action.Remove.ToolTip"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -184,8 +189,8 @@ protected:
 public:
 	typedef deTObjectReference<cActionPropertyCopy> Ref;
 	cActionPropertyCopy(gdeWPPropertyList &panel) :
-	igdeAction("Copy", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-		"Copy selected property"),
+	igdeAction("@GameDefinition.PropertyList.Action.Copy", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		"@GameDefinition.PropertyList.Action.Copy.ToolTip"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -209,9 +214,9 @@ public:
 	using Ref = deTObjectReference<cActionPropertyCut>;
 	
 	cActionPropertyCut(gdeWPPropertyList &panel) : cActionPropertyCopy(panel){
-		SetText("Cut");
+		SetText("@GameDefinition.PropertyList.Action.Cut");
 		SetIcon(panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut));
-		SetDescription("Cut selected property");
+		SetDescription("@GameDefinition.PropertyList.Action.Cut.ToolTip");
 	}
 	
 	void OnAction() override{
@@ -235,8 +240,8 @@ class cActionPropertyPaste : public igdeAction{
 public:
 	typedef deTObjectReference<cActionPropertyPaste> Ref;
 	cActionPropertyPaste(gdeWPPropertyList &panel) :
-	igdeAction("Paste", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
-		"Paste property"),
+	igdeAction("@GameDefinition.PropertyList.Action.Paste", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+		"@GameDefinition.PropertyList.Action.Paste.ToolTip"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -254,8 +259,8 @@ public:
 		decString name(clip->GetProperty()->GetName());
 		
 		while(list.HasNamed(name)){
-			igdeCommonDialogs::Error(*pPanel.GetParentWindow(), "Paste Property", "Name exists already.");
-			if(!igdeCommonDialogs::GetString(*pPanel.GetParentWindow(), "Paste Property", "Name:", name)){
+			igdeCommonDialogs::Error(*pPanel.GetParentWindow(), "@GameDefinition.PropertyList.Dialog.PasteProperty", "@GameDefinition.PropertyList.NameExistsAlready.Error");
+			if(!igdeCommonDialogs::GetString(*pPanel.GetParentWindow(), "@GameDefinition.PropertyList.Dialog.PasteProperty", "@GameDefinition.PropertyList.Dialog.Name", name)){
 				return;
 			}
 		}
@@ -388,7 +393,7 @@ public:
 		}
 		
 		if(pPanel.GetPropertyList()->HasNamed(name)){
-			igdeCommonDialogs::Error(*pPanel.GetParentWindow(), "Rename property", "Name exists already.");
+			igdeCommonDialogs::Error(*pPanel.GetParentWindow(), "@GameDefinition.PropertyList.RenameProperty.Error", "@GameDefinition.PropertyList.NameExistsAlready.Error");
 			textField->SetText(property->GetName());
 			return {};
 		}
@@ -520,15 +525,15 @@ public:
 class cActionOptionAdd : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionOptionAdd> Ref;
-	cActionOptionAdd(gdeWPPropertyList &panel) : cBaseAction(panel, "Add Option...",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add option"){}
+	cActionOptionAdd(gdeWPPropertyList &panel) : cBaseAction(panel, "@GameDefinition.PropertyList.Action.AddOption",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@GameDefinition.PropertyList.Action.AddOption.ToolTip"){}
 	
 	igdeUndo::Ref OnActionUndo(gdeProperty *property) override{
-		decString option("Option");
+		decString option(pPanel.Translate("GameDefinition.Default.Option").ToUTF8());
 		
-		while(igdeCommonDialogs::GetString(*pPanel.GetParentWindow(), "Add Option", "Option:", option)){
+		while(igdeCommonDialogs::GetString(*pPanel.GetParentWindow(), "@GameDefinition.PropertyList.Dialog.AddOption", "@GameDefinition.PropertyList.Dialog.Option", option)){
 			if(property->GetOptions().Has(option)){
-				igdeCommonDialogs::Error(*pPanel.GetParentWindow(), "Add Option", "Option exists already.");
+				igdeCommonDialogs::Error(*pPanel.GetParentWindow(), "@GameDefinition.PropertyList.Dialog.AddOption", "@GameDefinition.PropertyList.OptionExistsAlready.Error");
 				continue;
 			}
 			
@@ -544,8 +549,8 @@ public:
 class cActionOptionRemove : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionOptionRemove> Ref;
-	cActionOptionRemove(gdeWPPropertyList &panel) : cBaseAction(panel, "Remove Option",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove option"){}
+	cActionOptionRemove(gdeWPPropertyList &panel) : cBaseAction(panel, "@GameDefinition.PropertyList.Action.RemoveOption",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@GameDefinition.PropertyList.Action.RemoveOption.ToolTip"){}
 	
 	igdeUndo::Ref OnActionUndo(gdeProperty *property) override{
 		const decString option(pPanel.GetOption());
@@ -595,7 +600,7 @@ public:
 	typedef deTObjectReference<cActionCustomPatternMenu> Ref;
 	cActionCustomPatternMenu(gdeWPPropertyList &panel) :
 	igdeActionContextMenu("", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
-		"Show Custom Pattern Menu"),
+		"@GameDefinition.PropertyList.Menu.ShowCustomPatternMenu.ToolTip"),
 	pPanel(panel){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
@@ -614,8 +619,8 @@ class cActionCustomPatternAdd : public igdeAction{
 	
 public:
 	typedef deTObjectReference<cActionCustomPatternAdd> Ref;
-	cActionCustomPatternAdd(gdeWPPropertyList &panel) : igdeAction("Add...",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add custom pattern"),
+	cActionCustomPatternAdd(gdeWPPropertyList &panel) : igdeAction("@GameDefinition.PropertyList.Action.Add",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@GameDefinition.PropertyList.Action.AddCustomPattern"),
 		pPanel(panel){}
 	
 	void OnAction() override{
@@ -624,8 +629,8 @@ public:
 			return;
 		}
 		
-		decString name("File Pattern");
-		if(!igdeCommonDialogs::GetString(*pPanel.GetParentWindow(), "Add File Pattern", "Name:", name)){
+		decString name(pPanel.Translate("GameDefinition.Default.FilePattern").ToUTF8());
+		if(!igdeCommonDialogs::GetString(*pPanel.GetParentWindow(), "@GameDefinition.PropertyList.Dialog.AddFilePattern", "@GameDefinition.PropertyList.Dialog.Name", name)){
 			return;
 		}
 		
@@ -646,8 +651,8 @@ public:
 class cActionCustomPatternRemove : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionCustomPatternRemove> Ref;
-	cActionCustomPatternRemove(gdeWPPropertyList &panel) : cBaseAction(panel, "Remove",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove custom pattern"){}
+	cActionCustomPatternRemove(gdeWPPropertyList &panel) : cBaseAction(panel, "@GameDefinition.PropertyList.Action.RemoveCustomPattern",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@GameDefinition.PropertyList.Action.RemoveCustomPattern.ToolTip"){}
 	
 	igdeUndo::Ref OnActionUndo(gdeProperty *property) override{
 		gdeFilePattern * const filePattern = pPanel.GetCustomPattern();
@@ -731,7 +736,7 @@ class cActionIdentifierUsage : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionIdentifierUsage> Ref;
 	cActionIdentifierUsage(gdeWPPropertyList &panel) : cBaseAction(panel,
-		"Defines Identifier", nullptr, "Property defines identifier"){}
+		"@GameDefinition.PropertyList.DefinesIdentifier", nullptr, "@GameDefinition.PropertyList.DefinesIdentifier.ToolTip"){}
 	
 	igdeUndo::Ref OnActionUndo(gdeProperty *property) override{
 		return pPanel.UndoIdentifierUsage(property);
@@ -784,100 +789,102 @@ pClipboard(nullptr)
 	AddChild(form);
 	
 	
-	helper.FormLineStretchFirst(form, "Property:", "Property to edit", frameLine);
-	helper.ComboBox(frameLine, "Property to edit", pCBProperties, cComboProperty::Ref::New(*this));
+	helper.FormLineStretchFirst(form, "@GameDefinition.WPPropertyList.Property", "@GameDefinition.WPPropertyList.Property.ToolTip", frameLine);
+	helper.ComboBox(frameLine, "@GameDefinition.WPPropertyList.Property.ToolTip", pCBProperties, cComboProperty::Ref::New(*this));
 	pCBProperties->SetDefaultSorter();
 	helper.Button(frameLine, pBtnMenuProperties, pActionPropertiesMenu);
 	pActionPropertiesMenu->SetWidget(pBtnMenuProperties);
 	
-	helper.EditString(form, "Name:", "Property name", pEditName, cEditName::Ref::New(*this));
-	helper.EditString(form, "Description:", "Property description", pEditDescription,
+	helper.EditString(form, "@GameDefinition.WPPropertyList.Name", "@GameDefinition.WPPropertyList.Name.ToolTip", pEditName, cEditName::Ref::New(*this));
+	helper.EditString(form, "@GameDefinition.WPPropertyList.Description", "@GameDefinition.WPPropertyList.Description.ToolTip", pEditDescription,
 		15, 3, cEditDescription::Ref::New(*this));
 	
-	helper.ComboBox(form, "Type:", "Property type", pCBType, cComboType::Ref::New(*this));
-	pCBType->AddItem("String", nullptr, (void*)(intptr_t)gdeProperty::eptString);
-	pCBType->AddItem("Integer", nullptr, (void*)(intptr_t)gdeProperty::eptInteger);
-	pCBType->AddItem("Point2", nullptr, (void*)(intptr_t)gdeProperty::eptPoint2);
-	pCBType->AddItem("Point3", nullptr, (void*)(intptr_t)gdeProperty::eptPoint3);
-	pCBType->AddItem("Float", nullptr, (void*)(intptr_t)gdeProperty::eptFloat);
-	pCBType->AddItem("Vector2", nullptr, (void*)(intptr_t)gdeProperty::eptVector2);
-	pCBType->AddItem("Vector3", nullptr, (void*)(intptr_t)gdeProperty::eptVector3);
-	pCBType->AddItem("Color", nullptr, (void*)(intptr_t)gdeProperty::eptColor);
-	pCBType->AddItem("Boolean", nullptr, (void*)(intptr_t)gdeProperty::eptBoolean);
-	pCBType->AddItem("Path", nullptr, (void*)(intptr_t)gdeProperty::eptPath);
-	pCBType->AddItem("Range", nullptr, (void*)(intptr_t)gdeProperty::eptRange);
-	pCBType->AddItem("Select", nullptr, (void*)(intptr_t)gdeProperty::eptSelect);
-	pCBType->AddItem("List", nullptr, (void*)(intptr_t)gdeProperty::eptList);
-	pCBType->AddItem("Trigger expression", nullptr, (void*)(intptr_t)gdeProperty::eptTriggerExpression);
-	pCBType->AddItem("Trigger target", nullptr, (void*)(intptr_t)gdeProperty::eptTriggerTarget);
-	pCBType->AddItem("Shape", nullptr, (void*)(intptr_t)gdeProperty::eptShape);
-	pCBType->AddItem("Shape list", nullptr, (void*)(intptr_t)gdeProperty::eptShapeList);
-	pCBType->AddItem("Identifier", nullptr, (void*)(intptr_t)gdeProperty::eptIdentifier);
+	helper.ComboBox(form, "@GameDefinition.WPPropertyList.Type", "@GameDefinition.WPPropertyList.Type.ToolTip", pCBType, cComboType::Ref::New(*this));
+	pCBType->SetAutoTranslateItems(true);
+	pCBType->AddItem("@GameDefinition.PropertyType.String", nullptr, (void*)(intptr_t)gdeProperty::eptString);
+	pCBType->AddItem("@GameDefinition.PropertyType.Integer", nullptr, (void*)(intptr_t)gdeProperty::eptInteger);
+	pCBType->AddItem("@GameDefinition.PropertyType.Point2", nullptr, (void*)(intptr_t)gdeProperty::eptPoint2);
+	pCBType->AddItem("@GameDefinition.PropertyType.Point3", nullptr, (void*)(intptr_t)gdeProperty::eptPoint3);
+	pCBType->AddItem("@GameDefinition.PropertyType.Float", nullptr, (void*)(intptr_t)gdeProperty::eptFloat);
+	pCBType->AddItem("@GameDefinition.PropertyType.Vector2", nullptr, (void*)(intptr_t)gdeProperty::eptVector2);
+	pCBType->AddItem("@GameDefinition.PropertyType.Vector3", nullptr, (void*)(intptr_t)gdeProperty::eptVector3);
+	pCBType->AddItem("@GameDefinition.PropertyType.Color", nullptr, (void*)(intptr_t)gdeProperty::eptColor);
+	pCBType->AddItem("@GameDefinition.PropertyType.Boolean", nullptr, (void*)(intptr_t)gdeProperty::eptBoolean);
+	pCBType->AddItem("@GameDefinition.PropertyType.Path", nullptr, (void*)(intptr_t)gdeProperty::eptPath);
+	pCBType->AddItem("@GameDefinition.PropertyType.Range", nullptr, (void*)(intptr_t)gdeProperty::eptRange);
+	pCBType->AddItem("@GameDefinition.PropertyType.Select", nullptr, (void*)(intptr_t)gdeProperty::eptSelect);
+	pCBType->AddItem("@GameDefinition.PropertyType.List", nullptr, (void*)(intptr_t)gdeProperty::eptList);
+	pCBType->AddItem("@GameDefinition.PropertyType.TriggerExpression", nullptr, (void*)(intptr_t)gdeProperty::eptTriggerExpression);
+	pCBType->AddItem("@GameDefinition.PropertyType.TriggerTarget", nullptr, (void*)(intptr_t)gdeProperty::eptTriggerTarget);
+	pCBType->AddItem("@GameDefinition.PropertyType.Shape", nullptr, (void*)(intptr_t)gdeProperty::eptShape);
+	pCBType->AddItem("@GameDefinition.PropertyType.ShapeList", nullptr, (void*)(intptr_t)gdeProperty::eptShapeList);
+	pCBType->AddItem("@GameDefinition.PropertyType.Identifier", nullptr, (void*)(intptr_t)gdeProperty::eptIdentifier);
 	
-	gdeDefaultPropertyValue::CreateAndAdd(form, helper, "Default:", "Default property value",
+	gdeDefaultPropertyValue::CreateAndAdd(form, helper, "@GameDefinition.WPPropertyList.Default", "@GameDefinition.WPPropertyList.Default.ToolTip",
 		pEditDefault, cEditDefault::Ref::New(*this));
 	
 	
 	// type specific parameters
-	helper.GroupBoxFlow(*this, group, "Parameters:", false, true);
+	helper.GroupBoxFlow(*this, group, "@GameDefinition.WPPropertyList.GroupParameters", false, true);
 	pSwiParameters = igdeSwitcher::Ref::New(env);
 	group->AddChild(pSwiParameters);
 	
 	
 	// no additional parameters
-	helper.Label(pSwiParameters, "< No Parameters >");
+	helper.Label(pSwiParameters, "@GameDefinition.WPPropertyList.NoParameters");
 	
 	
 	// range
 	form = igdeContainerForm::Ref::New(env);
 	pSwiParameters->AddChild(form);
 	
-	helper.EditFloat(form, "Minimum:", "Minimum value for range type property",
+	helper.EditFloat(form, "@GameDefinition.WPPropertyList.Minimum", "@GameDefinition.WPPropertyList.Minimum.ToolTip",
 		pEditMinimum, cEditMinimum::Ref::New(*this));
-	helper.EditFloat(form, "Maximum:", "Maximum value for range type property",
+	helper.EditFloat(form, "@GameDefinition.WPPropertyList.Maximum", "@GameDefinition.WPPropertyList.Maximum.ToolTip",
 		pEditMaximum, cEditMaximum::Ref::New(*this));
 	
 	
 	// selection
-	helper.ListBox(pSwiParameters, 6, "Allowed options", pListOptions, cListOptions::Ref::New(*this));
+	helper.ListBox(pSwiParameters, 6, "@GameDefinition.WPPropertyList.AllowedOptions.ToolTip", pListOptions, cListOptions::Ref::New(*this));
 	
 	
 	// path
 	form = igdeContainerForm::Ref::New(env);
 	pSwiParameters->AddChild(form);
 	
-	helper.ComboBox(form, "Pattern type:", "Path pattern type",
+	helper.ComboBox(form, "@GameDefinition.WPPropertyList.PatternType", "@GameDefinition.WPPropertyList.PatternType.ToolTip",
 		pCBPathPatternType, cComboPathPatternType::Ref::New(*this));
-	pCBPathPatternType->AddItem("All files", nullptr, (void*)(intptr_t)gdeProperty::epptAll);
-	pCBPathPatternType->AddItem("Model resources", nullptr, (void*)(intptr_t)gdeProperty::epptModel);
-	pCBPathPatternType->AddItem("Skin resources", nullptr, (void*)(intptr_t)gdeProperty::epptSkin);
-	pCBPathPatternType->AddItem("Rig resources", nullptr, (void*)(intptr_t)gdeProperty::epptRig);
-	pCBPathPatternType->AddItem("Animation resources", nullptr, (void*)(intptr_t)gdeProperty::epptAnimation);
-	pCBPathPatternType->AddItem("Animator resources", nullptr, (void*)(intptr_t)gdeProperty::epptAnimator);
-	pCBPathPatternType->AddItem("Image resources", nullptr, (void*)(intptr_t)gdeProperty::epptImage);
-	pCBPathPatternType->AddItem("Occlusion mesh resources", nullptr, (void*)(intptr_t)gdeProperty::epptOcclusionMesh);
-	pCBPathPatternType->AddItem("Navigation space resources", nullptr, (void*)(intptr_t)gdeProperty::epptNavigationSpace);
-	pCBPathPatternType->AddItem("Particle emitter resources", nullptr, (void*)(intptr_t)gdeProperty::epptParticleEmitter);
-	pCBPathPatternType->AddItem("Sound resources", nullptr, (void*)(intptr_t)gdeProperty::epptSound);
-	pCBPathPatternType->AddItem("Synthesizer resources", nullptr, (void*)(intptr_t)gdeProperty::epptSynthesizer);
-	pCBPathPatternType->AddItem("Video resources", nullptr, (void*)(intptr_t)gdeProperty::epptVideo);
-	pCBPathPatternType->AddItem("Font resources", nullptr, (void*)(intptr_t)gdeProperty::epptFont);
-	pCBPathPatternType->AddItem("Sky resources", nullptr, (void*)(intptr_t)gdeProperty::epptSky);
-	pCBPathPatternType->AddItem("Camera resources", nullptr, (void*)(intptr_t)gdeProperty::epptCamera);
-	pCBPathPatternType->AddItem("World resources", nullptr, (void*)(intptr_t)gdeProperty::epptWorld);
-	pCBPathPatternType->AddItem("Custom file pattern", nullptr, (void*)(intptr_t)gdeProperty::epptCustom);
+	pCBPathPatternType->SetAutoTranslateItems(true);
+	pCBPathPatternType->AddItem("@GameDefinition.PathPatternType.All", nullptr, (void*)(intptr_t)gdeProperty::epptAll);
+	pCBPathPatternType->AddItem("@GameDefinition.PathPatternType.Model", nullptr, (void*)(intptr_t)gdeProperty::epptModel);
+	pCBPathPatternType->AddItem("@GameDefinition.PathPatternType.Skin", nullptr, (void*)(intptr_t)gdeProperty::epptSkin);
+	pCBPathPatternType->AddItem("@GameDefinition.PathPatternType.Rig", nullptr, (void*)(intptr_t)gdeProperty::epptRig);
+	pCBPathPatternType->AddItem("@GameDefinition.PathPatternType.Animation", nullptr, (void*)(intptr_t)gdeProperty::epptAnimation);
+	pCBPathPatternType->AddItem("@GameDefinition.PathPatternType.Animator", nullptr, (void*)(intptr_t)gdeProperty::epptAnimator);
+	pCBPathPatternType->AddItem("@GameDefinition.PathPatternType.Image", nullptr, (void*)(intptr_t)gdeProperty::epptImage);
+	pCBPathPatternType->AddItem("@GameDefinition.PathPatternType.OcclusionMesh", nullptr, (void*)(intptr_t)gdeProperty::epptOcclusionMesh);
+	pCBPathPatternType->AddItem("@GameDefinition.PathPatternType.NavigationSpace", nullptr, (void*)(intptr_t)gdeProperty::epptNavigationSpace);
+	pCBPathPatternType->AddItem("@GameDefinition.PathPatternType.ParticleEmitter", nullptr, (void*)(intptr_t)gdeProperty::epptParticleEmitter);
+	pCBPathPatternType->AddItem("@GameDefinition.PathPatternType.Sound", nullptr, (void*)(intptr_t)gdeProperty::epptSound);
+	pCBPathPatternType->AddItem("@GameDefinition.PathPatternType.Synthesizer", nullptr, (void*)(intptr_t)gdeProperty::epptSynthesizer);
+	pCBPathPatternType->AddItem("@GameDefinition.PathPatternType.Video", nullptr, (void*)(intptr_t)gdeProperty::epptVideo);
+	pCBPathPatternType->AddItem("@GameDefinition.PathPatternType.Font", nullptr, (void*)(intptr_t)gdeProperty::epptFont);
+	pCBPathPatternType->AddItem("@GameDefinition.PathPatternType.Sky", nullptr, (void*)(intptr_t)gdeProperty::epptSky);
+	pCBPathPatternType->AddItem("@GameDefinition.PathPatternType.Camera", nullptr, (void*)(intptr_t)gdeProperty::epptCamera);
+	pCBPathPatternType->AddItem("@GameDefinition.PathPatternType.World", nullptr, (void*)(intptr_t)gdeProperty::epptWorld);
+	pCBPathPatternType->AddItem("@GameDefinition.PathPatternType.Custom", nullptr, (void*)(intptr_t)gdeProperty::epptCustom);
 	
-	helper.FormLineStretchFirst(form, "Custom pattern:", "Custom pattern to edit.", frameLine);
-	helper.ComboBox(frameLine, "Custom pattern to edit.", pCBCustomPattern, cComboCustomPattern::Ref::New(*this));
+	helper.FormLineStretchFirst(form, "@GameDefinition.WPPropertyList.CustomPattern", "@GameDefinition.WPPropertyList.CustomPattern.ToolTip", frameLine);
+	helper.ComboBox(frameLine, "@GameDefinition.WPPropertyList.CustomPattern.ToolTip", pCBCustomPattern, cComboCustomPattern::Ref::New(*this));
 	pCBCustomPattern->SetDefaultSorter();
 	helper.Button(frameLine, pBtnCustomPatternMenu, pActionCustomPatternMenu);
 	pActionCustomPatternMenu->SetWidget(pBtnCustomPatternMenu);
 	
-	helper.EditString(form, "Name:", "Name of pattern in file dialogs",
+	helper.EditString(form, "@GameDefinition.WPPropertyList.CustomPatternName", "@GameDefinition.WPPropertyList.CustomPatternName.ToolTip",
 		pCustomPatternEditName, cEditCustomPatternName::Ref::New(*this));
-	helper.EditString(form, "Pattern:", "Pattern",
+	helper.EditString(form, "@GameDefinition.WPPropertyList.CustomPatternPattern", "@GameDefinition.WPPropertyList.CustomPatternPattern.ToolTip",
 		pCustomPatternEditPattern, cEditCustomPatternPattern::Ref::New(*this));
-	helper.EditString(form, "Extension:", "Extension to use for saving files",
+	helper.EditString(form, "@GameDefinition.WPPropertyList.CustomPatternExtension", "@GameDefinition.WPPropertyList.CustomPatternExtension.ToolTip",
 		pCustomPatternEditExtension, cEditCustomPatternExtension::Ref::New(*this));
 	
 	
@@ -885,7 +892,7 @@ pClipboard(nullptr)
 	form = igdeContainerForm::Ref::New(env);
 	pSwiParameters->AddChild(form);
 	
-	helper.ComboBox(form, "Group:", true, "Identifier group name", pCBIdentifierGroup, cComboIdentifierGroup::Ref::New(*this));
+	helper.ComboBox(form, "@GameDefinition.WPPropertyList.IdentifierGroup", true, "@GameDefinition.WPPropertyList.IdentifierGroup.ToolTip", pCBIdentifierGroup, cComboIdentifierGroup::Ref::New(*this));
 	pCBIdentifierGroup->SetDefaultSorter();
 	
 	helper.CheckBox(form, pChkIdentifierUsage, cActionIdentifierUsage::Ref::New(*this));

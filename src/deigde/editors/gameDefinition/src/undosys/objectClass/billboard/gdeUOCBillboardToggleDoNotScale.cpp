@@ -49,7 +49,7 @@ pBillboard(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Billboard toggle do not scale");
+	SetShortInfo("@GameDefinition.Undo.OCBillboardToggleDoNotScale");
 	
 	pBillboard = billboard;
 	pObjectClass = objectClass;

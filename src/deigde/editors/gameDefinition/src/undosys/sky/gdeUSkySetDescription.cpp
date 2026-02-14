@@ -47,7 +47,7 @@ pSky(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Sky set description");
+	SetShortInfo("@GameDefinition.Undo.SkySetDescription");
 	
 	pOldValue = sky->GetDescription();
 	pNewValue = newValue;

@@ -48,7 +48,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Object class property set options");
+	SetShortInfo("@GameDefinition.Undo.OCPSetOptions");
 	
 	pOldValue = property->GetOptions();
 	pNewValue = newValue;

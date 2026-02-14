@@ -49,7 +49,7 @@ pComponent(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Component set occlusion mesh path");
+	SetShortInfo("@GameDefinition.Undo.OCComponentSetOccMeshPath");
 	
 	pOldValue = component->GetOcclusionMeshPath();
 	pNewValue = newValue;

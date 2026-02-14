@@ -47,9 +47,9 @@
 ////////////////
 
 gdeMAOCLightAdd::gdeMAOCLightAdd(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Add Object Class Light...",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCLightAdd",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-	"Add object class light")
+	"@GameDefinition.Menu.OCLightAdd.ToolTip")
 {
 }
 

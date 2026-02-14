@@ -50,7 +50,7 @@ pProperty(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Object class property add custom file pattern");
+	SetShortInfo("@GameDefinition.Undo.OCPCFPAdd");
 	
 	pObjectClass = objectClass;
 	pProperty = property;

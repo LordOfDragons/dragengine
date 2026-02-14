@@ -56,7 +56,7 @@ gdeWPSTIMOCSubObject(tree, etObjectClassSpeaker, objectClass, index)
 	}
 	
 	decString text;
-	text.Format("Speaker #%d", index + 1);
+	text.FormatSafe(GetWindowMain().Translate("GameDefinition.TreeModel.SpeakerNumber").ToUTF8(), index + 1);
 	SetText(text);
 	
 	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));

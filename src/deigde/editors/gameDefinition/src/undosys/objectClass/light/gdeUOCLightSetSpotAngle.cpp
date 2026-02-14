@@ -48,7 +48,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Light set spot angle");
+	SetShortInfo("@GameDefinition.Undo.OCLightSetSpotAngle");
 	
 	pOldValue = light->GetSpotAngle();
 	pNewValue = newValue;

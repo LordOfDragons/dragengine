@@ -48,7 +48,7 @@ pSpeaker(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Speaker toggle looping");
+	SetShortInfo("@GameDefinition.Undo.OCSpeakerToggleLooping");
 	
 	pSpeaker = speaker;
 	pObjectClass = objectClass;

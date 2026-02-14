@@ -48,9 +48,9 @@
 ////////////////
 
 gdeMAOCCameraCopy::gdeMAOCCameraCopy(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Copy Object Class Camera",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCCameraCopy",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-	"Copy object class camera")
+	"@GameDefinition.Menu.OCCameraCopy.ToolTip")
 {
 }
 

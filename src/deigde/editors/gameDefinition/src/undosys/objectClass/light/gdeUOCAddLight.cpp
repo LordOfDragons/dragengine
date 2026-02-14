@@ -48,7 +48,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Add light");
+	SetShortInfo("@GameDefinition.Undo.OCAddLight");
 	
 	pLight = light;
 	pObjectClass = objectClass;
@@ -78,4 +78,9 @@ void gdeUOCAddLight::Undo(){
 void gdeUOCAddLight::Redo(){
 	pObjectClass->GetLights().Add(pLight);
 	pObjectClass->NotifyLightsChanged();
+	
+	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
+	gameDefinition->SetActiveObjectClass(pObjectClass);
+	gameDefinition->SetActiveOCLight(pLight);
+	gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotOCLight);
 }

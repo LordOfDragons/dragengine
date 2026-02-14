@@ -48,7 +48,7 @@ pSpeaker(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Speaker toggle playing");
+	SetShortInfo("@GameDefinition.Undo.OCSpeakerTogglePlaying");
 	
 	pSpeaker = speaker;
 	pObjectClass = objectClass;

@@ -47,9 +47,9 @@
 ////////////////
 
 gdeMAOCNavBlockerAdd::gdeMAOCNavBlockerAdd(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Add Object Class Navigation Blocker...",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCNavBlockerAdd",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-	"Add object class navigation blocker")
+	"@GameDefinition.Menu.OCNavBlockerAdd.ToolTip")
 {
 }
 

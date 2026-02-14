@@ -50,9 +50,9 @@
 ////////////////
 
 gdeMAOCNavBlockerPaste::gdeMAOCNavBlockerPaste(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Paste Object Class Navigation Blocker",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCNavBlockerPaste",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
-	"Paste object class navigation blocker")
+	"@GameDefinition.Menu.OCNavBlockerPaste.ToolTip")
 {
 }
 
@@ -71,7 +71,7 @@ igdeUndo::Ref gdeMAOCNavBlockerPaste::OnActionSubObject(gdeGameDefinition&, gdeO
 	const igdeUndo::Ref undo = gdeUOCAddNavBlocker::Ref::New(&objectClass, 
 		gdeOCNavigationBlocker::Ref::New(*clip.DynamicCast<gdeClipboardDataOCNavBlocker>()->GetNavBlocker()));
 	
-	undo->SetShortInfo("Paste object class navigation blocker");
+	undo->SetShortInfo("@GameDefinition.Undo.PasteOCNavBlocker");
 	return undo;
 }
 

@@ -49,7 +49,7 @@ pSpeaker(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Speaker set bone name");
+	SetShortInfo("@GameDefinition.Undo.OCSpeakerSetBoneName");
 	
 	pOldValue = speaker->GetBoneName();
 	pNewValue = newValue;

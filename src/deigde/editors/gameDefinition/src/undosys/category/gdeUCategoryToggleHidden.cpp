@@ -48,7 +48,7 @@ gdeUCategoryBase(gameDefinition, type)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Category toggle hidden");
+	SetShortInfo("@GameDefinition.Undo.CategoryToggleHidden");
 	
 	pCategory = category;
 }

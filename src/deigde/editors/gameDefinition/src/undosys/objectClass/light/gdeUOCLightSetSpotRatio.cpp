@@ -48,7 +48,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Light set spot ratio");
+	SetShortInfo("@GameDefinition.Undo.OCLightSetSpotRatio");
 	
 	pOldValue = light->GetSpotRatio();
 	pNewValue = newValue;

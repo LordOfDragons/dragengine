@@ -48,7 +48,7 @@
 gdeWPSTIMCategoriesSky::gdeWPSTIMCategoriesSky(gdeWPSTreeModel &tree) :
 gdeWPSTreeItemModel(tree, etCategoriesSky)
 {
-	SetText("Skies");
+	SetText(GetWindowMain().Translate("GameDefinition.TreeModel.Skies").ToUTF8());
 	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 }
 

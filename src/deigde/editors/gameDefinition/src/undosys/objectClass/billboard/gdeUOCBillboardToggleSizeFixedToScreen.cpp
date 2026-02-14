@@ -49,7 +49,7 @@ pBillboard(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Billboard toggle size fixed to screen");
+	SetShortInfo("@GameDefinition.Undo.OCBillboardToggleSizeFixedToScreen");
 	
 	pBillboard = billboard;
 	pObjectClass = objectClass;

@@ -50,7 +50,7 @@ pProperty(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Object class texture property custom file pattern set extension");
+	SetShortInfo("@GameDefinition.Undo.OCTPCFPSetExtension");
 	
 	pOldValue = filePattern->GetDefaultExtension();
 	pNewValue = newValue;

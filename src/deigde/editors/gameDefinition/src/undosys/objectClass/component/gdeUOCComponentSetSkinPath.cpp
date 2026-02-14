@@ -49,7 +49,7 @@ pComponent(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Component set skin path");
+	SetShortInfo("@GameDefinition.Undo.OCComponentSetSkinPath");
 	
 	pOldValue = component->GetSkinPath();
 	pNewValue = newValue;

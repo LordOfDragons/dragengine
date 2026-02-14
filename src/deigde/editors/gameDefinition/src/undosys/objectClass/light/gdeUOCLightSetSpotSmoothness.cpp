@@ -48,7 +48,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Light set spot smoothness");
+	SetShortInfo("@GameDefinition.Undo.OCLightSetSpotSmoothness");
 	
 	pOldValue = light->GetSpotSmoothness();
 	pNewValue = newValue;

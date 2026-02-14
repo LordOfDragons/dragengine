@@ -50,7 +50,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Category set auto categorize pattern");
+	SetShortInfo("@GameDefinition.Undo.CategorySetAutoCategorizePattern");
 	
 	pOldValue = category->GetAutoCategorizePattern();
 	

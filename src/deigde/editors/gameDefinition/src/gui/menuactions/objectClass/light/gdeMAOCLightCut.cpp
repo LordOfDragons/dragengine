@@ -49,9 +49,9 @@
 ////////////////
 
 gdeMAOCLightCut::gdeMAOCLightCut(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Cut Object Class Light",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCLightCut",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
-	"Cut object class light")
+	"@GameDefinition.Menu.OCLightCut.ToolTip")
 {
 }
 

@@ -45,9 +45,9 @@
 ////////////////
 
 gdeMACategoryRemove::gdeMACategoryRemove(gdeWindowMain &windowMain) :
-gdeBaseAction(windowMain, "Remove Category",
+gdeBaseAction(windowMain, "@GameDefinition.Menu.CategoryRemove",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-	"Remove category")
+	"@GameDefinition.Menu.CategoryRemove.ToolTip")
 {
 }
 

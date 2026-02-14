@@ -49,7 +49,7 @@ pSnapPoint(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Snap point toggle snap to rotation");
+	SetShortInfo("@GameDefinition.Undo.OCSnapPointToggleSnapToRotation");
 	
 	pSnapPoint = snapPoint;
 	pObjectClass = objectClass;

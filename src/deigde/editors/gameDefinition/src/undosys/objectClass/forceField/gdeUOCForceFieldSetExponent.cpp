@@ -49,7 +49,7 @@ pForceField(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Force field set exponent");
+	SetShortInfo("@GameDefinition.Undo.OCForceFieldSetExponent");
 	
 	pOldValue = forceField->GetExponent();
 	pNewValue = newValue;

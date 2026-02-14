@@ -49,7 +49,7 @@ pForceField(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Add force field");
+	SetShortInfo("@GameDefinition.Undo.OCAddForceField");
 	
 	pForceField = forceField;
 	pObjectClass = objectClass;
@@ -79,4 +79,9 @@ void gdeUOCAddForceField::Undo(){
 void gdeUOCAddForceField::Redo(){
 	pObjectClass->GetForceFields().Add(pForceField);
 	pObjectClass->NotifyForceFieldsChanged();
+	
+	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
+	gameDefinition->SetActiveObjectClass(pObjectClass);
+	gameDefinition->SetActiveOCForceField(pForceField);
+	gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotOCForceField);
 }

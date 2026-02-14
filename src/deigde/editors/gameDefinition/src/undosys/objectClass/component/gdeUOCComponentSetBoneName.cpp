@@ -49,7 +49,7 @@ pComponent(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Component set bone name");
+	SetShortInfo("@GameDefinition.Undo.OCComponentSetBoneName");
 	
 	pOldValue = component->GetBoneName();
 	pNewValue = newValue;

@@ -48,7 +48,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Object class property set default value");
+	SetShortInfo("@GameDefinition.Undo.OCPSetDefaultValue");
 	
 	pOldValue = oldValue;
 	pNewValue = newValue;

@@ -49,7 +49,7 @@ pSpeaker(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Speaker set volume");
+	SetShortInfo("@GameDefinition.Undo.OCSpeakerSetVolume");
 	
 	pOldValue = speaker->GetVolume();
 	pNewValue = newValue;

@@ -47,9 +47,9 @@
 ////////////////
 
 gdeMAOCLightRemove::gdeMAOCLightRemove(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Remove Object Class Light",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCLightRemove",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-	"Remove object class light")
+	"@GameDefinition.Menu.OCLightRemove.ToolTip")
 {
 }
 

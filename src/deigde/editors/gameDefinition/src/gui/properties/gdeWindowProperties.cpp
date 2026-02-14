@@ -55,16 +55,16 @@ pWindowMain(windowMain)
 	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
 	pPanelGameDefinition = gdeWPGameDefinition::Ref::New(*this);
-	AddChild(pPanelGameDefinition, "Game Definition");
+	AddChild(pPanelGameDefinition, "@GameDefinition.WindowProperties.TabGameDefinition");
 	
 	pPanelSelection = gdeWPSelection::Ref::New(*this);
-	AddChild(pPanelSelection, "Selection");
+	AddChild(pPanelSelection, "@GameDefinition.WindowProperties.TabSelection");
 	
 	pPanelView = gdeWPView::Ref::New(*this);
-	AddChild(pPanelView, "View");
+	AddChild(pPanelView, "@GameDefinition.WindowProperties.TabView");
 	
 	pPanelUndoHistory = gdeWPUndoHistory::Ref::New(GetEnvironment());
-	AddChild(pPanelUndoHistory, "Undo");
+	AddChild(pPanelUndoHistory, "@GameDefinition.WindowProperties.TabUndo");
 	
 	SetActivePanel(1); // selection
 }

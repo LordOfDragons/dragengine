@@ -49,7 +49,7 @@ pNavBlocker(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Nav-blocker set rotation");
+	SetShortInfo("@GameDefinition.Undo.OCNavBlockerSetRotation");
 	
 	pOldValue = navblocker->GetRotation();
 	pNewValue = newValue;

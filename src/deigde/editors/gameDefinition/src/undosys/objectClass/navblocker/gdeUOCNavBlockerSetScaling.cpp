@@ -49,7 +49,7 @@ pNavBlocker(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Nav-blocker set scaling");
+	SetShortInfo("@GameDefinition.Undo.OCNavBlockerSetScaling");
 	
 	pOldValue = navblocker->GetScaling();
 	pNewValue = newValue;

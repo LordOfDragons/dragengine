@@ -48,9 +48,9 @@
 ////////////////
 
 gdeMASkinAdd::gdeMASkinAdd(gdeWindowMain &windowMain) :
-gdeBaseAction(windowMain, "Add Skin...",
+gdeBaseAction(windowMain, "@GameDefinition.Menu.SkinAdd",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-	"Add skin")
+	"@GameDefinition.Menu.SkinAdd.ToolTip")
 {
 }
 
@@ -65,13 +65,13 @@ igdeUndo::Ref gdeMASkinAdd::OnAction(gdeGameDefinition &gameDefinition){
 	//dialog.SetFilename( ... last skin? what directory? );
 	
 	if(!igdeCommonDialogs::GetFileOpen(pWindowMain,
-	"Select skin material", *gameDefinition.GetPreviewVFS(),
+	"@GameDefinition.Dialog.SkinMaterialSelect.Title", *gameDefinition.GetPreviewVFS(),
 	*environment.GetOpenFilePatternList( igdeEnvironment::efpltSkin ), filename ) ){
 		return {};
 	}
 	
 	if(gameDefinition.GetSkins().HasWithPath(filename)){
-		igdeCommonDialogs::Information(pWindowMain, "Add Skin", "Skin with path exists already.");
+		igdeCommonDialogs::Information(pWindowMain, "@GameDefinition.Dialog.SkinAdd.Title", "@GameDefinition.Dialog.SkinAdd.ErrorExists");
 		return {};
 	}
 	

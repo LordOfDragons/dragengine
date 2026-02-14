@@ -49,7 +49,7 @@ pNavBlocker(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Nav-blocker set shapes");
+	SetShortInfo("@GameDefinition.Undo.OCNavBlockerSetShapeList");
 	
 	pOldValue = navblocker->GetShapeList();
 	pNewValue = newValue;

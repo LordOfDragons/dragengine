@@ -49,7 +49,7 @@ pBillboard(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Billboard toggle partial hide");
+	SetShortInfo("@GameDefinition.Undo.OCBillboardTogglePartialHide");
 	
 	pBillboard = billboard;
 	pObjectClass = objectClass;

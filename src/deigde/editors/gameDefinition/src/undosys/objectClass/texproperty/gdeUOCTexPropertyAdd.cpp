@@ -47,7 +47,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Object class add texture property");
+	SetShortInfo("@GameDefinition.Undo.OCTexPropertyAdd");
 	
 	pObjectClass = objectClass;
 	pProperty = property;

@@ -48,7 +48,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Nav-space set snap distance");
+	SetShortInfo("@GameDefinition.Undo.OCNavSpaceSetSnapDistance");
 	
 	pOldValue = navspace->GetSnapDistance();
 	pNewValue = newValue;

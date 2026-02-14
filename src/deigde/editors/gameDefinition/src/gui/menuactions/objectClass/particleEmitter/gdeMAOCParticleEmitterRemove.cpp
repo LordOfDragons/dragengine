@@ -47,9 +47,9 @@
 ////////////////
 
 gdeMAOCParticleEmitterRemove::gdeMAOCParticleEmitterRemove(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Remove Object Class Particle Emitter",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCParticleEmitterRemove",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-	"Remove object class particle emitter")
+	"@GameDefinition.Menu.OCParticleEmitterRemove.ToolTip")
 {
 }
 

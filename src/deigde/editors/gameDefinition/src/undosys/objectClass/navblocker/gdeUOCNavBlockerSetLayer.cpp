@@ -49,7 +49,7 @@ pNavBlocker(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Nav-blocker set layer");
+	SetShortInfo("@GameDefinition.Undo.OCNavBlockerSetLayer");
 	
 	pOldValue = navblocker->GetLayer();
 	pNewValue = newValue;

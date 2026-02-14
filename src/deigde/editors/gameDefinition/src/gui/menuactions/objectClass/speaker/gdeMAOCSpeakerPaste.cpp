@@ -50,9 +50,9 @@
 ////////////////
 
 gdeMAOCSpeakerPaste::gdeMAOCSpeakerPaste(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Paste Object Class Speaker",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCSpeakerPaste",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
-	"Paste object class speaker")
+	"@GameDefinition.Menu.OCSpeakerPaste.ToolTip")
 {
 }
 
@@ -71,7 +71,7 @@ igdeUndo::Ref gdeMAOCSpeakerPaste::OnActionSubObject(gdeGameDefinition&, gdeObje
 	const igdeUndo::Ref undo = gdeUOCAddSpeaker::Ref::New(&objectClass, 
 		gdeOCSpeaker::Ref::New(*clip.DynamicCast<gdeClipboardDataOCSpeaker>()->GetSpeaker()));
 	
-	undo->SetShortInfo("Paste object class speaker");
+	undo->SetShortInfo("@GameDefinition.Undo.PasteOCSpeaker");
 	return undo;
 }
 

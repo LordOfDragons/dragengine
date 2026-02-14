@@ -49,7 +49,7 @@ pCamera(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Camera set property name");
+	SetShortInfo("@GameDefinition.Undo.OCCameraSetPropertyName");
 	
 	pOldValue = camera->GetPropName();
 	pNewValue = newValue;

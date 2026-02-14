@@ -49,7 +49,7 @@ pProperty(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Game definition property set options");
+	SetShortInfo("@GameDefinition.Undo.GDWPSetOptions");
 	
 	pOldValue = property->GetOptions();
 	pNewValue = newValue;

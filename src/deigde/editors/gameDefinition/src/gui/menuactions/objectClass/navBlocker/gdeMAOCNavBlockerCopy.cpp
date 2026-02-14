@@ -48,9 +48,9 @@
 ////////////////
 
 gdeMAOCNavBlockerCopy::gdeMAOCNavBlockerCopy(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Copy Object Class Navigation Blocker",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCNavBlockerCopy",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-	"Copy object class navigation blocker")
+	"@GameDefinition.Menu.OCNavBlockerCopy.ToolTip")
 {
 }
 

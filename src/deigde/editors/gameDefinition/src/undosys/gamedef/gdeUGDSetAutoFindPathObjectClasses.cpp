@@ -48,7 +48,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Game definition set auto find path object classes");
+	SetShortInfo("@GameDefinition.Undo.GDSetAutoFindPathObjectClasses");
 	
 	pOldValue = gameDefinition->GetAutoFindPathObjectClasses();
 	

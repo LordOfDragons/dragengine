@@ -49,7 +49,7 @@ pEnvMapProbe(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Env-map probe set shape reflection mask");
+	SetShortInfo("@GameDefinition.Undo.OCEnvMapProbeSetShapeReflectionMask");
 	
 	pOldValue = envMapProbe->GetShapeListReflectionMask();
 	pNewValue = newValue;

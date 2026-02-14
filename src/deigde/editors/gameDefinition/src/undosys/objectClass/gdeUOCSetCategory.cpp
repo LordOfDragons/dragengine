@@ -46,7 +46,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Object class set category");
+	SetShortInfo("@GameDefinition.Undo.OCSetCategory");
 	
 	pOldValue = objectClass->GetCategory();
 	pNewValue = newValue;

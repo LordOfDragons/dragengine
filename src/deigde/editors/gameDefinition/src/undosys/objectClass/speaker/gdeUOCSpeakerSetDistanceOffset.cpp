@@ -49,7 +49,7 @@ pSpeaker(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Speaker set distance offset");
+	SetShortInfo("@GameDefinition.Undo.OCSpeakerSetDistanceOffset");
 	
 	pOldValue = speaker->GetDistanceOffset();
 	pNewValue = newValue;

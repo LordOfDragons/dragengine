@@ -48,7 +48,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Object class texture property set default value");
+	SetShortInfo("@GameDefinition.Undo.OCTPSetDefaultValue");
 	
 	pOldValue = oldValue;
 	pNewValue = newValue;

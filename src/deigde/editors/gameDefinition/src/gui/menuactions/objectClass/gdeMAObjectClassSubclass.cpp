@@ -48,9 +48,9 @@
 ////////////////
 
 gdeMAObjectClassSubclass::gdeMAObjectClassSubclass(gdeWindowMain &windowMain) :
-gdeBaseAction(windowMain, "Subclass Object Class",
+gdeBaseAction(windowMain, "@GameDefinition.Menu.ObjectClassSubclass",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongDown),
-	"Create new Object Class as Subclass of the selected Object Class")
+	"@GameDefinition.Menu.ObjectClassSubclass.ToolTip")
 {
 }
 
@@ -73,9 +73,9 @@ igdeUndo::Ref gdeMAObjectClassSubclass::OnAction(gdeGameDefinition &gameDefiniti
 	const gdeObjectClass::List &list = gameDefinition.GetObjectClasses();
 	decString name(objectClass->GetName());
 	
-	while(igdeCommonDialogs::GetString(pWindowMain, "Subclass Object Class", "Name:", name)){
+	while(igdeCommonDialogs::GetString(pWindowMain, "@GameDefinition.Dialog.ObjectClassSubclass.Title", "@GameDefinition.Dialog.ObjectClassSubclass.Name", name)){
 		if(list.HasNamed(name)){
-			igdeCommonDialogs::Error(pWindowMain, "Subclass Object Class", "Object Class exists already.");
+			igdeCommonDialogs::Error(pWindowMain, "@GameDefinition.Dialog.ObjectClassSubclass.Title", "@GameDefinition.Dialog.ObjectClassSubclass.ErrorExists");
 			continue;
 		}
 		

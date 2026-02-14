@@ -50,9 +50,9 @@
 ////////////////
 
 gdeMAOCSnapPointPaste::gdeMAOCSnapPointPaste(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Paste Object Class Snap Point",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCSnapPointPaste",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
-	"Paste object class snap point")
+	"@GameDefinition.Menu.OCSnapPointPaste.ToolTip")
 {
 }
 
@@ -71,7 +71,7 @@ igdeUndo::Ref gdeMAOCSnapPointPaste::OnActionSubObject(gdeGameDefinition&, gdeOb
 	const igdeUndo::Ref undo = gdeUOCAddSnapPoint::Ref::New(&objectClass, 
 		gdeOCSnapPoint::Ref::New(*clip.DynamicCast<gdeClipboardDataOCSnapPoint>()->GetSnapPoint()));
 	
-	undo->SetShortInfo("Paste object class snap point");
+	undo->SetShortInfo("@GameDefinition.Undo.PasteOCSnapPoint");
 	return undo;
 }
 

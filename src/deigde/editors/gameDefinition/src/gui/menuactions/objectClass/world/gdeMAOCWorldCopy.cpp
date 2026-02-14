@@ -43,8 +43,8 @@
 ////////////////
 
 gdeMAOCWorldCopy::gdeMAOCWorldCopy(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Copy Object Class World",
-	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy), "Copy object class world"){
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCWorldCopy",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy), "@GameDefinition.Menu.OCWorldCopy.ToolTip"){
 }
 
 

@@ -47,9 +47,9 @@
 ////////////////
 
 gdeMAOCNavBlockerRemove::gdeMAOCNavBlockerRemove(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Remove Object Class Navigation Blocker",
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCNavBlockerRemove",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-	"Remove object class navigation blocker")
+	"@GameDefinition.Menu.OCNavBlockerRemove.ToolTip")
 {
 }
 

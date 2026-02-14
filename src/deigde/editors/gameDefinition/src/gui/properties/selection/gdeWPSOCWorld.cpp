@@ -247,24 +247,25 @@ pWindowProperties(windowProperties)
 	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
-	helper.GroupBox(content, groupBox, "Object Class World:");
+	helper.GroupBox(content, groupBox, "@GameDefinition.WPSOCWorld.GroupWorld");
 	
-	helper.EditPath(groupBox, "Path:", "Path to world", igdeEnvironment::efpltWorld,
+	helper.EditPath(groupBox, "@GameDefinition.WPSOCWorld.Path.Label", "@GameDefinition.WPSOCWorld.Path.ToolTip", igdeEnvironment::efpltWorld,
 		pEditPath, cEditPath::Ref::New(*this));
-	helper.EditVector(groupBox, "Position:", "Position relative to object class",
+	helper.EditVector(groupBox, "@GameDefinition.WPSOCWorld.Position.Label", "@GameDefinition.WPSOCWorld.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
-	helper.EditVector(groupBox, "Rotation:", "Rotation in degrees relative to object class", 4, 1,
+	helper.EditVector(groupBox, "@GameDefinition.WPSOCWorld.Rotation.Label", "@GameDefinition.WPSOCWorld.Rotation.ToolTip", 4, 1,
 		pEditRotation, cEditRotation::Ref::New(*this));
 	
 	// property targets
-	helper.GroupBox(content, groupBox, "Properties:");
-	helper.ComboBox(groupBox, "Property:", "Property to set target for",
+	helper.GroupBox(content, groupBox, "@GameDefinition.WPSOCWorld.GroupProperties");
+	helper.ComboBox(groupBox, "@GameDefinition.WPSOCWorld.Property.Label", "@GameDefinition.WPSOCWorld.Property.ToolTip",
 		pCBPropertyNames, cComboPropertyNames::Ref::New(*this));
-	pCBPropertyNames->AddItem("Path", nullptr, (void*)(intptr_t)gdeOCWorld::epPath);
-	pCBPropertyNames->AddItem("Position", nullptr, (void*)(intptr_t)gdeOCWorld::epPosition);
-	pCBPropertyNames->AddItem("Rotation", nullptr, (void*)(intptr_t)gdeOCWorld::epRotation);
+	pCBPropertyNames->SetAutoTranslateItems(true);
+	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.Path", nullptr, (void*)(intptr_t)gdeOCWorld::epPath);
+	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.Position", nullptr, (void*)(intptr_t)gdeOCWorld::epPosition);
+	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.Rotation", nullptr, (void*)(intptr_t)gdeOCWorld::epRotation);
 	
-	helper.ComboBoxFilter(groupBox, "Target:", true, "Object class property to target",
+	helper.ComboBoxFilter(groupBox, "@GameDefinition.WPSOCWorld.Target.Label", true, "@GameDefinition.WPSOCWorld.Target.ToolTip",
 		pCBPropertyNameTarget, cComboPropertyNameTarget::Ref::New(*this));
 	pCBPropertyNameTarget->SetEditable(true);
 	pCBPropertyNameTarget->SetDefaultSorter();

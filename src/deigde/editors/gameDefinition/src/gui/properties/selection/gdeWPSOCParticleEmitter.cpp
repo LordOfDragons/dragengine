@@ -252,7 +252,7 @@ public:
 	
 public:
 	cActionCasting(gdeWPSOCParticleEmitter &panel) :
-	cBaseAction(panel, "Casting Particles", "Particle emitter is casting particles"){}
+	cBaseAction(panel, "@GameDefinition.WPSOCParticleEmitter.Casting", "@GameDefinition.WPSOCParticleEmitter.Casting.ToolTip"){}
 	
 	virtual igdeUndo::Ref OnActionParticleEmitter(gdeObjectClass *objectClass, gdeOCParticleEmitter *particleEmitter){
 		return gdeUOCParticleEmitterToggleCasting::Ref::New(objectClass, particleEmitter);
@@ -363,40 +363,42 @@ pWindowProperties(windowProperties)
 	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
-	helper.GroupBox(content, groupBox, "Object Class Particle Emitter:");
+	helper.GroupBox(content, groupBox, "@GameDefinition.WPSOCParticleEmitter.GroupParticleEmitter");
 	
-	helper.EditPath(groupBox, "Path:", "Path to particle emitter",
+	helper.EditPath(groupBox, "@GameDefinition.WPSOCParticleEmitter.Path.Label", "@GameDefinition.WPSOCParticleEmitter.Path.ToolTip",
 		igdeEnvironment::efpltParticleEmitter, pEditPath, cEditPath::Ref::New(*this));
-	helper.EditVector(groupBox, "Position:", "Position relative to object class",
+	helper.EditVector(groupBox, "@GameDefinition.WPSOCParticleEmitter.Position.Label", "@GameDefinition.WPSOCParticleEmitter.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
-	helper.EditVector(groupBox, "Rotation:", "Rotation in degrees relative to object class", 4, 1,
+	helper.EditVector(groupBox, "@GameDefinition.WPSOCParticleEmitter.Rotation.Label", "@GameDefinition.WPSOCParticleEmitter.Rotation.ToolTip", 4, 1,
 		pEditRotation, cEditRotation::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkCasting, cActionCasting::Ref::New(*this));
-	helper.EditString(groupBox, "Bone:", "Bone name or empty string if not used",
+	helper.EditString(groupBox, "@GameDefinition.WPSOCParticleEmitter.Bone.Label", "@GameDefinition.WPSOCParticleEmitter.Bone.ToolTip",
 		pEditBoneName, cTextBoneName::Ref::New(*this));
 	
 	// property targets
-	helper.GroupBox(content, groupBox, "Properties:");
-	helper.ComboBox(groupBox, "Property:", "Property to set target for",
+	helper.GroupBox(content, groupBox, "@GameDefinition.WPSOCParticleEmitter.GroupProperties");
+	helper.ComboBox(groupBox, "@GameDefinition.WPSOCParticleEmitter.Property.Label", "@GameDefinition.WPSOCParticleEmitter.Property.ToolTip",
 		pCBPropertyNames, cComboPropertyNames::Ref::New(*this));
-	pCBPropertyNames->AddItem("Path", nullptr, (void*)(intptr_t)gdeOCParticleEmitter::epPath);
-	pCBPropertyNames->AddItem("Attach position", nullptr, (void*)(intptr_t)gdeOCParticleEmitter::epAttachPosition);
-	pCBPropertyNames->AddItem("Attach rotation", nullptr, (void*)(intptr_t)gdeOCParticleEmitter::epAttachRotation);
-	pCBPropertyNames->AddItem("Casting", nullptr, (void*)(intptr_t)gdeOCParticleEmitter::epCasting);
+	pCBPropertyNames->SetAutoTranslateItems(true);
+	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.Path", nullptr, (void*)(intptr_t)gdeOCParticleEmitter::epPath);
+	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.AttachPosition", nullptr, (void*)(intptr_t)gdeOCParticleEmitter::epAttachPosition);
+	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.AttachRotation", nullptr, (void*)(intptr_t)gdeOCParticleEmitter::epAttachRotation);
+	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.Casting", nullptr, (void*)(intptr_t)gdeOCParticleEmitter::epCasting);
 	
-	helper.ComboBoxFilter(groupBox, "Target:", true, "Object class property to target",
+	helper.ComboBoxFilter(groupBox, "@GameDefinition.WPSOCParticleEmitter.Target.Label", true, "@GameDefinition.WPSOCParticleEmitter.Target.ToolTip",
 		pCBPropertyNameTarget, cComboPropertyNameTarget::Ref::New(*this));
 	pCBPropertyNameTarget->SetEditable(true);
 	pCBPropertyNameTarget->SetDefaultSorter();
 	pCBPropertyNameTarget->SetFilterCaseInsentive(true);
 	
 	// trigger targets
-	helper.GroupBox(content, groupBox, "Triggers:");
-	helper.ComboBox(groupBox, "Trigger:", "Trigger to set target for",
+	helper.GroupBox(content, groupBox, "@GameDefinition.WPSOCParticleEmitter.GroupTriggers");
+	helper.ComboBox(groupBox, "@GameDefinition.WPSOCParticleEmitter.Trigger.Label", "@GameDefinition.WPSOCParticleEmitter.Trigger.ToolTip",
 		pCBTriggerNames, cComboTriggerNames::Ref::New(*this));
-	pCBTriggerNames->AddItem("Casting", nullptr, (void*)(intptr_t)gdeOCParticleEmitter::etCasting);
+	pCBTriggerNames->SetAutoTranslateItems(true);
+	pCBTriggerNames->AddItem("@GameDefinition.TriggerType.Casting", nullptr, (void*)(intptr_t)gdeOCParticleEmitter::etCasting);
 	
-	helper.ComboBoxFilter(groupBox, "Target:", true, "Object class property to target",
+	helper.ComboBoxFilter(groupBox, "@GameDefinition.WPSOCParticleEmitter.Target.Label", true, "@GameDefinition.WPSOCParticleEmitter.Target.ToolTip",
 		pCBTriggerNameTarget, cComboTriggerNameTarget::Ref::New(*this));
 	pCBTriggerNameTarget->SetEditable(true);
 	pCBTriggerNameTarget->SetDefaultSorter();

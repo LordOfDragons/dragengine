@@ -50,7 +50,7 @@ pProperty(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Game definition property add custom file pattern");
+	SetShortInfo("@GameDefinition.Undo.GDWPCFPAdd");
 	
 	pGameDefinition = gamedef;
 	pProperty = property;

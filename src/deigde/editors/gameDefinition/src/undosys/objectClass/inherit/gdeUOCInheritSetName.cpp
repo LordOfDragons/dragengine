@@ -48,7 +48,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Object inherit set name");
+	SetShortInfo("@GameDefinition.Undo.OCInheritSetName");
 	
 	pOldValue = inherit->GetName();
 	pNewValue = newValue;

@@ -48,7 +48,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Object class texture property toggle identifier usage");
+	SetShortInfo("@GameDefinition.Undo.OCTPToggleIdentifierUsage");
 	
 	pObjectClass = objectClass;
 	pProperty = property;

@@ -48,7 +48,7 @@ pObjectClass(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Light set range");
+	SetShortInfo("@GameDefinition.Undo.OCLightSetRange");
 	
 	pOldValue = light->GetRange();
 	pNewValue = newValue;

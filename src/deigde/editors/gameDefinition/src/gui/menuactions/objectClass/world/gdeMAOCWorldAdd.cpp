@@ -42,8 +42,8 @@
 ////////////////
 
 gdeMAOCWorldAdd::gdeMAOCWorldAdd(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Add Object Class World...",
-	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add object class world"){
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCWorldAdd",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@GameDefinition.Menu.OCWorldAdd.ToolTip"){
 }
 
 
