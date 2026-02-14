@@ -104,6 +104,8 @@ if envDragengine['OSPosix'] or envDragengine['OSMacOS']:
 	hasPthreadCancel = conf.CheckFunc('pthread_cancel')
 
 hasFormat = conf.CheckCXXHeader('format')
+if not hasFormat:
+	envDragengine.Append(CPPPATH = ['fmt'])
 
 conf.Finish()
 
