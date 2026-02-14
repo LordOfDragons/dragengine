@@ -26,11 +26,18 @@
 #define _DECSTRING_H_
 
 #include <stdarg.h>
-#include <format>
 #include <string_view>
 
 #include "../collection/decTList.h"
 #include "../../dragengine_export.h"
+
+#ifdef USE_STD_FORMAT
+	#include <format>
+	namespace fmt_ns = std;
+#else
+	#include <fmt/format.h>
+	namespace fmt_ns = fmt;
+#endif
 
 
 /**
@@ -55,6 +62,7 @@ public:
 	/** \brief Create new empty string. */
 	decString();
 	
+	// cppcheck-suppress noExplicitConstructor
 	/** \brief Create new string. */
 	decString(const char *string);
 	
@@ -140,7 +148,7 @@ public:
 	template<typename... Args>
 	inline void FormatSafe(const char *format, Args&&... args){
 		try{
-			Set(std::vformat(std::string_view(format), std::make_format_args(args...)).c_str());
+			Set(fmt_ns::vformat(std::string_view(format), fmt_ns::make_format_args(args...)).c_str());
 		}catch(const std::exception &){
 			DEThrowInvalidParam(__FILE__, __LINE__, "Invalid format string or arguments not matching");
 		}
@@ -201,7 +209,7 @@ public:
 	template<typename... Args>
 	inline void AppendFormatSafe(const char *format, Args&&... args){
 		try{
-			Append(std::vformat(std::string_view(format), std::make_format_args(args...)).c_str());
+			Append(fmt_ns::vformat(std::string_view(format), fmt_ns::make_format_args(args...)).c_str());
 		}catch(const std::exception &){
 			DEThrowInvalidParam(__FILE__, __LINE__, "Invalid format string or arguments not matching");
 		}
@@ -545,11 +553,11 @@ inline int DECompare(const char *a, const char *b){
 
 /** \brief Formatter specialization for decString to be used with std::format. */
 template <>
-struct std::formatter<decString> : std::formatter<std::string_view>{
+struct fmt_ns::formatter<decString> : fmt_ns::formatter<std::string_view>{
 	// parse() is inherited from string_view
 	
-	auto format(const decString& s, std::format_context& ctx) const{
-		return std::formatter<std::string_view>::format(std::string_view(s.GetString()), ctx);
+	auto format(const decString& s, fmt_ns::format_context& ctx) const{
+		return fmt_ns::formatter<std::string_view>::format(std::string_view(s.GetString()), ctx);
 	}
 };
 

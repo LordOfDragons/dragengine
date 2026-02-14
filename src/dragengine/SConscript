@@ -103,6 +103,10 @@ if envDragengine['OSPosix'] or envDragengine['OSMacOS']:
 	#hasUtimensat = conf.CheckFunc('utimensat', 'sys/stat.h')
 	hasPthreadCancel = conf.CheckFunc('pthread_cancel')
 
+hasFormat = conf.CheckCXXHeader('format')
+if hasFormat:
+	envDragengine.Append(CXXFLAGS = ['-DUSE_STD_FORMAT'])
+
 conf.Finish()
 
 # fetch values in expanded form for later use
@@ -221,6 +225,10 @@ if envDragengine['OSMacOS']:
 
 sources.append('base64/base64.cpp')
 envDragengine.Append(CPPPATH = ['base64'])
+
+if not hasFormat:
+	sources.append('fmt/format.cc')
+	envDragengine.Append(CPPPATH = ['fmt'])
 
 ignoreHeaders = []
 ignoreHeaders.append('src/doxy_main.h')
@@ -561,11 +569,7 @@ if not envDragengine['with_static_internalmodules']:
 
 # report
 if envDragengine['OSPosix'] or envDragengine['OSMacOS']:
-	if hasDL:
-		parent_report['use dynamic libraries'] = 'yes'
-	else:
-		parent_report['use dynamic libraries'] = 'no'
-	if hasX11:
-		parent_report['use X Window System'] = 'yes'
-	else:
-		parent_report['use dynamic libraries'] = 'no'
+	parent_report['use dynamic libraries'] = 'yes' if hasDL else 'no'
+	parent_report['use X Window System'] = 'yes' if hasX11 else 'no'
+
+parent_report['use std::format'] = 'yes' if hasFormat else 'no'

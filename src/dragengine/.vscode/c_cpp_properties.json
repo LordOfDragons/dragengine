@@ -8,7 +8,8 @@
             "defines": [
                 "DE_ENGINE_PATH=",
                 "DE_SHARE_PATH=",
-                "DE_CONFIG_PATH="
+                "DE_CONFIG_PATH=",
+                "USE_STD_FORMAT=1"
             ],
             "cStandard": "c11",
             "cppStandard": "c++20"
