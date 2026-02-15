@@ -62,6 +62,30 @@ jobs:
     runs-on: windows-latest
     
     steps:
+      - name: Maximize Disk Space
+        shell: pwsh
+        run: |
+          Write-Host "Initial Disk Space:"
+          Get-PSDrive C | Select-Object Size, Free
+          
+          # Remove heavy pre-installed tools (approx 5-10GB recovery)
+          $folders = @(
+            "$env:ProgramFiles\Android",
+            "$env:ProgramFiles\dotnet",
+            "$env:ProgramFiles\Microsoft SDKs\Azure",
+            "$env:ProgramFiles\Microsoft Help Viewer"
+          )
+          
+          foreach ($folder in $folders) {
+            if (Test-Path $folder) {
+              Write-Host "Removing $folder..."
+              Remove-Item -Recurse -Force $folder -ErrorAction SilentlyContinue
+            }
+          }
+          
+          Write-Host "Final Disk Space:"
+          Get-PSDrive C | Select-Object Size, Free
+      
       - uses: actions/checkout@v4
         with:
           lfs: ${{ !inputs.lfscache }}
