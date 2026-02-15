@@ -136,9 +136,11 @@ jobs:
         run: |
           $Config = "${{ inputs.debugBuild && 'ReleaseDebug' || 'Release' }}"
           $BuilVersion = "${{ inputs.buildVersion }}"
-          $env:MSBUILDDISABLENODEREUSE=1
-          & msbuild /m:2 /p:CL_MPCount=2 `
-            -tl:off /nodeReuse:false /v:m `
+          # $env:MSBUILDDISABLENODEREUSE=1
+          # & msbuild /m:2 /p:CL_MPCount=2 `
+          #   -tl:off /nodeReuse:false /v:m `
+          & msbuild /m:2 `
+            -tl:off /v:m `
             /p:Configuration=$Config `
             /p:BuildVersion=$BuilVersion `
             dragengine.sln
