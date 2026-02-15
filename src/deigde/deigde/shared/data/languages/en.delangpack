@@ -116,6 +116,11 @@
 	<translation name="Igde.MainWindow.ErrorInternal">Internal error</translation>
 	<translation name="Igde.MainWindow.ErrorSaveFailed">Failed to save '{0}'</translation>
 	
+	<!-- Settings Dialog -->
+	<translation name="Igde.Settings.Title">IGDE Settings</translation>
+	<translation name="Igde.Settings.Language">Language:</translation>
+	<translation name="Igde.Settings.Language.ToolTip">Language to use</translation>
+	
 	<!-- Project Settings Dialog -->
 	<translation name="Igde.ProjectSettings.Title">Game Project Settings</translation>
 	<translation name="Igde.ProjectSettings.Name">Name:</translation>

@@ -25,6 +25,7 @@
 #include "igdeWindowMain.h"
 #include "igdeDialogNewGameProject.h"
 #include "igdeDialogProjectSettings.h"
+#include "igdeDialogSettings.h"
 #include "igdeDialogStartUp.h"
 #include "igdeSharedFontList.h"
 #include "../engine/igdeScriptModule.h"
@@ -356,7 +357,7 @@ public:
 		"@Igde.MainWindow.Action.SettingsIgde.ToolTip", deInputEvent::ekcI){}
 	
 	void OnAction() override{
-		// TODO
+		igdeDialogSettings::Ref::New(pWindow)->Run(&pWindow);
 	}
 };
 
@@ -2152,47 +2153,29 @@ void igdeWindowMain::pCreateMenu(){
 }
 
 void igdeWindowMain::pCreateMenuGame(igdeMenuCascade &menu){
-	igdeWidget::Ref entry;
-	
-	entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionGameNew);
-	menu.AddChild(entry);
-	entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionGameOpen);
-	menu.AddChild(entry);
+	menu.AddChild(igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionGameNew));
+	menu.AddChild(igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionGameOpen));
 	pMenuRecentProjects = igdeMenuCascade::Ref::New(pEnvironmentIGDE,
 		"@Igde.MainWindow.Menu.RecentProjects", pIconGameOpen);
 	menu.AddChild(pMenuRecentProjects);
-	entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionGameSave);
-	menu.AddChild(entry);
-	entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionGameSaveAs);
-	menu.AddChild(entry);
+	menu.AddChild(igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionGameSave));
+	menu.AddChild(igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionGameSaveAs));
 	
-	entry = igdeMenuSeparator::Ref::New(pEnvironmentIGDE);
-	menu.AddChild(entry);
-	entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionGameSettings);
-	menu.AddChild(entry);
+	menu.AddChild(igdeMenuSeparator::Ref::New(pEnvironmentIGDE));
+	menu.AddChild(igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionGameSettings));
 	
-	entry = igdeMenuSeparator::Ref::New(pEnvironmentIGDE);
-	menu.AddChild(entry);
-	entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionGameReloadXMLElementClasses);
-	menu.AddChild(entry);
+	menu.AddChild(igdeMenuSeparator::Ref::New(pEnvironmentIGDE));
+	menu.AddChild(igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionGameReloadXMLElementClasses));
 	
-	entry = igdeMenuSeparator::Ref::New(pEnvironmentIGDE);
-	menu.AddChild(entry);
-	entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionGameQuit);
-	menu.AddChild(entry);
+	menu.AddChild(igdeMenuSeparator::Ref::New(pEnvironmentIGDE));
+	menu.AddChild(igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionGameQuit));
 }
 
 void igdeWindowMain::pCreateMenuSettings(igdeMenuCascade &menu){
-	igdeWidget::Ref entry;
-	
-	entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionSettingsEngine);
-	menu.AddChild(entry);
-// 	entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionSettingsIgde);
-// 	menu.AddChild( entry );
-	entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionSettingsTexPropList);
-	menu.AddChild(entry);
-	entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionSettingsLogging);
-	menu.AddChild(entry);
+	menu.AddChild(igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionSettingsEngine));
+	menu.AddChild(igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionSettingsIgde));
+	menu.AddChild(igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionSettingsTexPropList));
+	menu.AddChild(igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionSettingsLogging));
 }
 
 void igdeWindowMain::pUpdateMenuRecentProjects(igdeMenuCascade &menu){
