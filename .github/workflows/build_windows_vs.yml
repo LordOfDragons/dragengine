@@ -86,6 +86,9 @@ jobs:
           Write-Host "Final Disk Space:"
           Get-PSDrive C | Select-Object Size, Free
       
+      - name: Disable Windows Defender
+        run: Set-MpPreference -DisableRealtimeMonitoring $true
+      
       - name: Expand Pagefile
         uses: al-cheb/configure-pagefile-action@v1.4
         with:
@@ -134,6 +137,9 @@ jobs:
           Write-Output "PATH=$env:PATH" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
         # binary name glslangValidator.exe
         
+      - name: Run sccache-cache
+        uses: mozilla-actions/sccache-action@v0.0.9
+      
       - name: Restore NuGet packages
         working-directory: vs
         run: nuget restore dragengine.sln
@@ -160,15 +166,28 @@ jobs:
         with:
           key: ${{ runner.os }}-ccache-${{ hashFiles('./vs/extern/**/*.ps1') }}
           restore-keys: ${{ runner.os }}-ccache-
-          variant: sccache # sccache is often better for Windows/MSBuild
-    
+          variant: sccache
+      
+      - name: Move Workspace to D
+        run: |
+          xcopy . D:\build /s /e /q
+          echo "GITHUB_WORKSPACE=D:\build" >> $GITHUB_ENV
+      
       - name: Build
         working-directory: vs
         run: |
           $Config = "${{ inputs.debugBuild && 'ReleaseDebug' || 'Release' }}"
           $BuilVersion = "${{ inputs.buildVersion }}"
           $env:MSBUILDDISABLENODEREUSE=1
-          & msbuild /m:4 /p:CL_MPCount=1 -tl:off /nodeReuse:false /v:m /p:Configuration=$Config /p:BuildVersion=$BuilVersion dragengine.sln
+          
+          # Build with /Z7 and sccache. The linker will still produce your .pdb files at the end
+          & msbuild /p:DebugInformationFormat=OldStyle `
+            /p:CLToolExe=sccache.exe `
+            /m:2 /p:CL_MPCount=2 `
+            -tl:off /nodeReuse:false /v:m `
+            /p:Configuration=$Config `
+            /p:BuildVersion=$BuilVersion `
+            dragengine.sln
       
       - name: Archive
         run: |

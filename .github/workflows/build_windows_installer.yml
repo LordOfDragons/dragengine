@@ -84,11 +84,12 @@ jobs:
           docker run --rm \
             -v ${{ github.workspace }}/installer/windows:/work \
             -w /work \
+            --entrypoint /bin/sh \
             amake/innosetup:latest \
-            sh -c "iscc dragengine64.iss && \
-                  iscc dragengine64-sdk.iss && \
-                  iscc deigde64.iss && \
-                  iscc deigde64-sdk.iss"
+            -c "iscc dragengine64.iss && \
+                iscc dragengine64-sdk.iss && \
+                iscc deigde64.iss && \
+                iscc deigde64-sdk.iss"
       
       - name: Rename installers
         run: |
