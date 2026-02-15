@@ -111,7 +111,7 @@ pRuleMultiMath(nullptr)
 	pFraParameters = igdeContainerForm::Ref::New(env);
 	AddChild(pFraParameters);
 	
-	helper.ComboBox(pFraParameters, "@World.WVNodeVectorMath.Operator.Label", "@World.WVNodeVectorMath.OperatorToUse.ToolTip", pCBOperator, cComboOperator::Ref::New(*this));
+	helper.ComboBox(pFraParameters, "@World.WVNodeVectorMath.Operator", "@World.WVNodeVectorMath.OperatorToUse.ToolTip", pCBOperator, cComboOperator::Ref::New(*this));
 	pCBOperator->SetAutoTranslateItems(true);
 	pCBOperator->AddItem("@World.WVNodeMultiMath.Operator.Add", nullptr, (void*)(intptr_t)meHTVRuleMultiMath::eopAdd);
 	pCBOperator->AddItem("@World.WVNodeMultiMath.Operator.Multiply", nullptr, (void*)(intptr_t)meHTVRuleMultiMath::eopMultiply);

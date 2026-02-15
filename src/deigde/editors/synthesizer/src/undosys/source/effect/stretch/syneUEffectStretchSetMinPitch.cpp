@@ -46,7 +46,7 @@ pSource(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("@Effect Stretch Set Min Pitch");
+	SetShortInfo("@Synthesizer.Undo.EffectStretchSetMinPitch");
 	
 	pOldPitch = effect->GetMinPitch();
 	pNewPitch = newPitch;

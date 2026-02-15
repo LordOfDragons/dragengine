@@ -286,10 +286,10 @@ syneWPAPanelSource(wpSource, deSynthesizerSourceVisitorIdentify::estChain)
 	
 	helper.GroupBox(*this, groupBox, "@Synthesizer.WPAPanelSourceChain.GroupChain");
 	
-	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelSourceChain.FieldMinSpeed.Label",
+	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelSourceChain.FieldMinSpeed",
 		"@Synthesizer.WPAPanelSourceChain.FieldMinSpeed.ToolTip",
 		pEditMinSpeed, cTextMinSpeed::Ref::New(*this));
-	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelSourceChain.FieldMaxSpeed.Label",
+	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelSourceChain.FieldMaxSpeed",
 		"@Synthesizer.WPAPanelSourceChain.FieldMaxSpeed.ToolTip",
 		pEditMaxSpeed, cTextMaxSpeed::Ref::New(*this));
 	
@@ -300,7 +300,7 @@ syneWPAPanelSource(wpSource, deSynthesizerSourceVisitorIdentify::estChain)
 	form = igdeContainerForm::Ref::New(env);
 	groupBox->AddChild(form);
 	
-	helper.EditPath(form, "@Synthesizer.WPAPanelSourceChain.FieldSound.Label", "@Synthesizer.WPAPanelSourceChain.FieldSound.ToolTip", igdeEnvironment::efpltSound,
+	helper.EditPath(form, "@Synthesizer.WPAPanelSourceChain.FieldSound", "@Synthesizer.WPAPanelSourceChain.FieldSound.ToolTip", igdeEnvironment::efpltSound,
 		pEditPathSound, cPathSound::Ref::New(*this));
 	helper.EditString(form, "", "", pLabSoundInfo, {});
 	pLabSoundInfo->SetEditable(false);

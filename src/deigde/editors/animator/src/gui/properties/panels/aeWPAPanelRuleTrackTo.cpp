@@ -188,14 +188,14 @@ aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertTrackTo)
 	igdeContainer::Ref groupBox;
 	
 	
-	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRuleTrackTo.TrackTo.Label");
+	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRuleTrackTo.TrackTo");
 	
-	helper.ComboBoxFilter(groupBox, "@Animator.WPAPanelRuleTrackTo.TrackBone.Label", true,
+	helper.ComboBoxFilter(groupBox, "@Animator.WPAPanelRuleTrackTo.TrackBone", true,
 		"@Animator.WPAPanelRuleTrackTo.TrackBone.ToolTip",
 		pCBTrackBone, cComboTrackBone::Ref::New(*this));
 	pCBTrackBone->SetDefaultSorter();
 	
-	helper.ComboBox(groupBox, "@Animator.WPAPanelRuleTrackTo.TrackAxis.Label",
+	helper.ComboBox(groupBox, "@Animator.WPAPanelRuleTrackTo.TrackAxis",
 		"@Animator.WPAPanelRuleTrackTo.TrackAxis.ToolTip",
 		pCBTrackAxis, cComboTrackAxis::Ref::New(*this));
 	pCBTrackAxis->SetAutoTranslateItems(true);
@@ -206,7 +206,7 @@ aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertTrackTo)
 	pCBTrackAxis->AddItem("@Animator.WPAPanelRuleTrackTo.TrackAxis.NegY", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::etaNegY);
 	pCBTrackAxis->AddItem("@Animator.WPAPanelRuleTrackTo.TrackAxis.NegZ", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::etaNegZ);
 	
-	helper.ComboBox(groupBox, "@Animator.WPAPanelRuleTrackTo.UpAxis.Label",
+	helper.ComboBox(groupBox, "@Animator.WPAPanelRuleTrackTo.UpAxis",
 		"@Animator.WPAPanelRuleTrackTo.UpAxis.ToolTip",
 		pCBUpAxis, cComboUpAxis::Ref::New(*this));
 	pCBUpAxis->SetAutoTranslateItems(true);
@@ -217,7 +217,7 @@ aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertTrackTo)
 	pCBUpAxis->AddItem("@Animator.WPAPanelRuleTrackTo.TrackAxis.NegY", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::etaNegY);
 	pCBUpAxis->AddItem("@Animator.WPAPanelRuleTrackTo.TrackAxis.NegZ", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::etaNegZ);
 	
-	helper.ComboBox(groupBox, "@Animator.WPAPanelRuleTrackTo.UpTarget.Label",
+	helper.ComboBox(groupBox, "@Animator.WPAPanelRuleTrackTo.UpTarget",
 		"@Animator.WPAPanelRuleTrackTo.UpTarget.ToolTip",
 		pCBUpTarget, cComboUpTarget::Ref::New(*this));
 	pCBUpTarget->SetAutoTranslateItems(true);
@@ -232,7 +232,7 @@ aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertTrackTo)
 	pCBUpTarget->AddItem("@Animator.WPAPanelRuleTrackTo.UpTarget.TrackBoneZ", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::eutTrackBoneZ);
 	pCBUpTarget->AddItem("@Animator.WPAPanelRuleTrackTo.UpTarget.Controller", nullptr, (void*)(intptr_t)deAnimatorRuleTrackTo::eutController);
 	
-	helper.ComboBox(groupBox, "@Animator.WPAPanelRuleTrackTo.LockedAxis.Label",
+	helper.ComboBox(groupBox, "@Animator.WPAPanelRuleTrackTo.LockedAxis",
 		"@Animator.WPAPanelRuleTrackTo.LockedAxis.ToolTip",
 		pCBLockedAxis, cComboLockedAxis::Ref::New(*this));
 	pCBLockedAxis->SetAutoTranslateItems(true);

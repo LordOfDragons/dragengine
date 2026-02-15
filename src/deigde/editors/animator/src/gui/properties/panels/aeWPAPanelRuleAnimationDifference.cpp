@@ -215,7 +215,7 @@ public:
 	
 public:
 	cActionEnablePosition(aeWPAPanelRuleAnimationDifference &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleAnimationDifference.EnablePosition.Label", nullptr,
+		"@Animator.WPAPanelRuleAnimationDifference.EnablePosition", nullptr,
 		"@Animator.WPAPanelRuleAnimationDifference.EnablePosition.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleAnimationDifference *rule) override{
@@ -234,7 +234,7 @@ public:
 	
 public:
 	cActionEnableRotation(aeWPAPanelRuleAnimationDifference &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleAnimationDifference.EnableRotation.Label", nullptr,
+		"@Animator.WPAPanelRuleAnimationDifference.EnableRotation", nullptr,
 		"@Animator.WPAPanelRuleAnimationDifference.EnableRotation.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleAnimationDifference *rule) override{
@@ -253,7 +253,7 @@ public:
 	
 public:
 	cActionEnableSize(aeWPAPanelRuleAnimationDifference &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleAnimationDifference.EnableSize.Label", nullptr,
+		"@Animator.WPAPanelRuleAnimationDifference.EnableSize", nullptr,
 		"@Animator.WPAPanelRuleAnimationDifference.EnableSize.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleAnimationDifference *rule) override{
@@ -272,7 +272,7 @@ public:
 	
 public:
 	cActionEnableVertexPositionSet(aeWPAPanelRuleAnimationDifference &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleAnimationDifference.EnableVertexPositionSet.Label", nullptr,
+		"@Animator.WPAPanelRuleAnimationDifference.EnableVertexPositionSet", nullptr,
 		"@Animator.WPAPanelRuleAnimationDifference.EnableVertexPositionSet.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleAnimationDifference *rule) override{
@@ -303,23 +303,23 @@ aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertAnimationDifference)
 	igdeContainer::Ref groupBox;
 	
 	
-	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRuleAnimationDifference.Animation.Label");
+	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRuleAnimationDifference.Animation");
 	
-	helper.ComboBoxFilter(groupBox, "@Animator.WPAPanelRuleAnimationDifference.LeadingMoveName.Label",
+	helper.ComboBoxFilter(groupBox, "@Animator.WPAPanelRuleAnimationDifference.LeadingMoveName",
 		true, "@Animator.WPAPanelRuleAnimationDifference.LeadingMoveName.ToolTip",
 		pCBLMoveName, cComboLeadingMoveName::Ref::New(*this));
 	pCBLMoveName->SetDefaultSorter();
 	
-	helper.EditFloat(groupBox, "@Animator.WPAPanelRuleAnimationDifference.LeadingMoveTime.Label",
+	helper.EditFloat(groupBox, "@Animator.WPAPanelRuleAnimationDifference.LeadingMoveTime",
 		"@Animator.WPAPanelRuleAnimationDifference.LeadingMoveTime.ToolTip",
 		pEditLMoveTime, cTextLeadingMoveTime::Ref::New(*this));
 	
-	helper.ComboBoxFilter(groupBox, "@Animator.WPAPanelRuleAnimationDifference.ReferenceMoveName.Label",
+	helper.ComboBoxFilter(groupBox, "@Animator.WPAPanelRuleAnimationDifference.ReferenceMoveName",
 		true, "@Animator.WPAPanelRuleAnimationDifference.ReferenceMoveName.ToolTip",
 		pCBRMoveName, cComboReferenceMoveName::Ref::New(*this));
 	pCBRMoveName->SetDefaultSorter();
 	
-	helper.EditFloat(groupBox, "@Animator.WPAPanelRuleAnimationDifference.ReferenceMoveTime.Label",
+	helper.EditFloat(groupBox, "@Animator.WPAPanelRuleAnimationDifference.ReferenceMoveTime",
 		"@Animator.WPAPanelRuleAnimationDifference.ReferenceMoveTime.ToolTip",
 		pEditRMoveTime, cTextReferenceMoveTime::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkEnablePosition, cActionEnablePosition::Ref::New(*this));

@@ -30,7 +30,11 @@ class TranslationScanner:
         # String literals to exclude from translation checking (e.g., special path variables)
         self.excluded_strings: Set[str] = {
             "@RoamingAppData",
+            "@RoamingAppData\\\\DEIGDE\\\\Config",
+            "@RoamingAppData\\\\DELaunchers\\\\Config",
+            "@LocalAppData\\\\DEIGDE\\\\Logs",
             "@Documents",
+            "@Documents\\\\DEGameProjects"
         }
         
     def find_source_files(self, directory: Path) -> List[Path]:
@@ -101,24 +105,34 @@ class TranslationScanner:
         
         return langpacks
     
-    def find_translation_strings(self, file_path: Path) -> List[Tuple[int, str]]:
-        """Find all translation string references in a source file."""
-        translations = []
+    def find_translation_strings(self, file_path: Path) -> Tuple[List[Tuple[int, str]], List[Tuple[int, str, str]]]:
+        """Find all translation string references in a source file.
+        
+        Returns:
+            Tuple of (valid_translations, invalid_translations)
+            - valid_translations: List of (line_num, trans_name)
+            - invalid_translations: List of (line_num, trans_name, full_string)
+        """
+        valid_translations = []
+        invalid_translations = []
         
         try:
             with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
                 lines = f.readlines()
         except Exception as e:
-            return translations
+            return valid_translations, invalid_translations
         
-        # Pattern 1: @<translation-name> in string literals
+        # Pattern 1: @<translation-name> in string literals (valid names: alphanumeric, dots, underscores, hyphens)
         # Match: "@Conversation.WPTopic.Actions.Label"
-        # We need to capture it within quotes
-        at_pattern = re.compile(r'"@([\w.]+)"')
+        at_pattern_valid = re.compile(r'"@([\w.-]+)"')
         
-        # Pattern 2: Translate("<translation-name>")
+        # Pattern 2: @<anything> in string literals (to catch invalid names)
+        # This captures strings starting with @ that contain spaces or other invalid characters
+        at_pattern_any = re.compile(r'"(@[^"]+)"')
+        
+        # Pattern 3: Translate("<translation-name>")
         # Match: Translate("Conversation.WPTopic.Actions.Label")
-        translate_pattern = re.compile(r'Translate\s*\(\s*"([\w.]+)"\s*\)')
+        translate_pattern = re.compile(r'Translate\s*\(\s*"([\w.-]+)"\s*\)')
         
         for line_num, line in enumerate(lines, 1):
             # Skip comments
@@ -129,20 +143,35 @@ class TranslationScanner:
             # Remove single-line comments
             code_part = line.split('//', 1)[0]
             
-            # Find @<translation-name> patterns
-            for match in at_pattern.finditer(code_part):
+            # First, find all @<anything> patterns to detect invalid names
+            all_at_strings = {}
+            for match in at_pattern_any.finditer(code_part):
+                full_string = match.group(1)  # e.g., "@Link Set Controller"
+                all_at_strings[match.start()] = full_string
+            
+            # Then find valid @<translation-name> patterns
+            valid_positions = set()
+            for match in at_pattern_valid.finditer(code_part):
                 trans_name = match.group(1)
                 # Check if this is an excluded string
                 full_string = f"@{trans_name}"
                 if full_string not in self.excluded_strings:
-                    translations.append((line_num, trans_name))
+                    valid_translations.append((line_num, trans_name))
+                    valid_positions.add(match.start())
+            
+            # Find invalid @strings (those that weren't matched by the valid pattern)
+            for pos, full_string in all_at_strings.items():
+                if pos not in valid_positions and full_string not in self.excluded_strings:
+                    # Extract the attempted name (everything after @)
+                    trans_name = full_string[1:]  # Remove the @
+                    invalid_translations.append((line_num, trans_name, full_string))
             
             # Find Translate("<translation-name>") patterns
             for match in translate_pattern.finditer(code_part):
                 trans_name = match.group(1)
-                translations.append((line_num, trans_name))
+                valid_translations.append((line_num, trans_name))
         
-        return translations
+        return valid_translations, invalid_translations
     
     def should_exclude_file(self, file_path, exclude_dirs):
         """
@@ -177,11 +206,13 @@ class TranslationScanner:
         
         print(f"Found {len(scan_files)} source files to scan")
         
-        # Scan for missing translations
-        print("\nScanning for missing translations...")
+        # Scan for missing translations and invalid names
+        print("\nScanning for missing translations and invalid translation names...")
         total_missing = 0
-        files_with_missing = 0
+        total_invalid = 0
+        files_with_issues = 0
         missing_details = []
+        invalid_details = []
         
         for file_path in scan_files:
             langpack_paths = self.get_langpack_for_file(file_path)
@@ -196,14 +227,45 @@ class TranslationScanner:
                 available_translations.update(self.load_langpack_translations(langpack_path))
             
             # Find translation strings in source file
-            translation_refs = self.find_translation_strings(file_path)
+            valid_refs, invalid_refs = self.find_translation_strings(file_path)
             
-            # Check for missing translations
-            # Use the first langpack (editor-specific) for error reporting
+            # Check for invalid translation names
             primary_langpack = langpack_paths[0] if langpack_paths else None
-            for line_num, trans_name in translation_refs:
+            for line_num, trans_name, full_string in invalid_refs:
+                invalid_details.append((file_path, line_num, trans_name, full_string, primary_langpack))
+            
+            # Check for missing translations (only for valid names)
+            for line_num, trans_name in valid_refs:
                 if trans_name not in available_translations:
                     missing_details.append((file_path, line_num, trans_name, primary_langpack))
+        
+        # Print invalid translation names first
+        if invalid_details:
+            print(f"\n{'='*70}")
+            print("INVALID TRANSLATION NAMES FOUND")
+            print(f"{'='*70}")
+            print("Translation names must contain only alphanumeric characters, dots (.), hyphens (-), and underscores (_).")
+            print("Spaces and other special characters are not allowed.\n")
+            
+            # Group by langpack
+            invalid_by_langpack: Dict[Path, Dict[str, List[Tuple[Path, int, str]]]] = {}
+            for file_path, line_num, trans_name, full_string, langpack_path in invalid_details:
+                if langpack_path not in invalid_by_langpack:
+                    invalid_by_langpack[langpack_path] = {}
+                if trans_name not in invalid_by_langpack[langpack_path]:
+                    invalid_by_langpack[langpack_path][trans_name] = []
+                invalid_by_langpack[langpack_path][trans_name].append((file_path, line_num, full_string))
+            
+            for langpack_path in sorted(invalid_by_langpack.keys()):
+                print(f"\nEditor: {langpack_path.parent.parent.parent.name if langpack_path else 'Unknown'}")
+                print(f"-" * 70)
+                
+                for trans_name in sorted(invalid_by_langpack[langpack_path].keys()):
+                    print(f"\nInvalid translation name: '{trans_name}'")
+                    total_invalid += 1
+                    for file_path, line_num, full_string in invalid_by_langpack[langpack_path][trans_name]:
+                        print(f"  {file_path}:{line_num}")
+                        print(f"    Found: \"{full_string}\"")
         
         # Group missing translations by langpack and translation name
         missing_by_langpack: Dict[Path, Dict[str, List[Tuple[Path, int]]]] = {}
@@ -214,34 +276,50 @@ class TranslationScanner:
                 missing_by_langpack[langpack_path][trans_name] = []
             missing_by_langpack[langpack_path][trans_name].append((file_path, line_num))
         
-        # Print results grouped by langpack
-        for langpack_path in sorted(missing_by_langpack.keys()):
+        # Print missing translations
+        if missing_by_langpack:
             print(f"\n{'='*70}")
-            print(f"Missing translations in: {langpack_path}")
-            print(f"{'='*70}")
+            print("MISSING TRANSLATIONS")
+            print(f"{'='*70}\n")
             
-            for trans_name in sorted(missing_by_langpack[langpack_path].keys()):
-                print(f"\nTranslation '{trans_name}' missing:")
-                total_missing += 1
-                for file_path, line_num in missing_by_langpack[langpack_path][trans_name]:
-                    print(f"  {file_path}:{line_num}")
+            for langpack_path in sorted(missing_by_langpack.keys()):
+                print(f"Missing translations in: {langpack_path}")
+                print(f"-" * 70)
+                
+                for trans_name in sorted(missing_by_langpack[langpack_path].keys()):
+                    print(f"\nTranslation '{trans_name}' missing:")
+                    total_missing += 1
+                    for file_path, line_num in missing_by_langpack[langpack_path][trans_name]:
+                        print(f"  {file_path}:{line_num}")
         
-        # Count files with missing translations
-        files_with_missing = len(set(fp for fp, _, _, _ in missing_details))
+        # Count files with issues
+        files_with_issues = len(set(
+            [fp for fp, _, _, _, _ in invalid_details] + 
+            [fp for fp, _, _, _ in missing_details]
+        ))
         
         print(f"\n{'='*70}")
         print(f"Summary:")
         print(f"  Total files scanned: {len(scan_files)}")
-        print(f"  Files with missing translations: {files_with_missing}")
-        print(f"  Total missing translations: {total_missing}")
+        print(f"  Files with issues: {files_with_issues}")
+        print(f"  Invalid translation names: {total_invalid}")
+        print(f"  Missing translations: {total_missing}")
         print(f"{'='*70}")
+        
+        if total_invalid > 0:
+            print("\nRecommendation: Fix invalid translation names by:")
+            print("  1. Replace spaces with dots or remove them")
+            print("  2. Use only alphanumeric characters, dots (.), hyphens (-), and underscores (_)")
+            print("  3. Follow the naming convention: Editor.Component.Action or similar")
         
         if total_missing > 0:
             print("\nRecommendation: Add missing translation entries to respective en.delangpack files")
-            return 1
-        else:
-            print("\nNo missing translations found!")
+        
+        if total_invalid == 0 and total_missing == 0:
+            print("\nNo issues found!")
             return 0
+        
+        return 1
 
 
 def main():

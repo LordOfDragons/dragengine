@@ -159,11 +159,11 @@ ceWPAction(parentPanel){
 	
 	CreateGUICommon(*this);
 	
-	helper.EditString(*this, "@Conversation.WPActionPlayerChoice.Variable.Label", "@Conversation.ToolTip.VariableForChoice",
+	helper.EditString(*this, "@Conversation.WPActionPlayerChoice.Variable", "@Conversation.ToolTip.VariableForChoice",
 		pEditVarName, cTextVarName::Ref::New(*this));
 	
-	helper.FormLineStretchFirst(*this, "@Conversation.FormLine.OptionText", "@Conversation.WPActionPlayerChoice.Texttodisplayforoption.Label", formLine);
-	helper.EditString(formLine, "@Conversation.WPActionPlayerChoice.Texttodisplayforoption.Label", pEditOptionText, cTextOptionText::Ref::New(*this));
+	helper.FormLineStretchFirst(*this, "@Conversation.FormLine.OptionText", "@Conversation.WPActionPlayerChoice.DisplayText", formLine);
+	helper.EditString(formLine, "@Conversation.WPActionPlayerChoice.DisplayText", pEditOptionText, cTextOptionText::Ref::New(*this));
 	helper.Button(formLine, pBtnOptionText, cActionEditOptionText::Ref::New(*this));
 }
 

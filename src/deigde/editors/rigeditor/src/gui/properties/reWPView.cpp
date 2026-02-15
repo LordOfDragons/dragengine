@@ -604,31 +604,31 @@ pWindowProperties(windowProperties)
 	form = igdeContainerForm::Ref::New(env);
 	groupBox->AddChild(form);
 	
-	helper.EditPath(form, "@Rig.PanelView.Resources.Model.Label", "@Rig.PanelView.Resources.Model.ToolTip",
+	helper.EditPath(form, "@Rig.PanelView.Resources.Model", "@Rig.PanelView.Resources.Model.ToolTip",
 		igdeEnvironment::efpltModel, pEditModelPath, cEditModelPath::Ref::New(*this));
-	helper.EditPath(form, "@Rig.PanelView.Resources.Skin.Label", "@Rig.PanelView.Resources.Skin.ToolTip",
+	helper.EditPath(form, "@Rig.PanelView.Resources.Skin", "@Rig.PanelView.Resources.Skin.ToolTip",
 		igdeEnvironment::efpltSkin, pEditSkinPath, cEditSkinPath::Ref::New(*this));
-	helper.EditPath(form, "@Rig.PanelView.Resources.Animation.Label", "@Rig.PanelView.Resources.Animation.ToolTip",
+	helper.EditPath(form, "@Rig.PanelView.Resources.Animation", "@Rig.PanelView.Resources.Animation.ToolTip",
 		igdeEnvironment::efpltAnimation, pEditAnimPath, cEditAnimationPath::Ref::New(*this));
 	
 		// textures
 		helper.GroupBox(groupBox, groupBox2, "@Rig.PanelView.GroupBox.Textures");
 		
-		helper.ComboBox(groupBox2, "@Rig.PanelView.Textures.Texture.Label", "@Rig.PanelView.Textures.Texture.ToolTip",
+		helper.ComboBox(groupBox2, "@Rig.PanelView.Textures.Texture", "@Rig.PanelView.Textures.Texture.ToolTip",
 			pCBTexture, cComboTexture::Ref::New(*this));
 		pCBTexture->SetDefaultSorter();
 		
-		helper.EditPath(groupBox2, "@Rig.PanelView.Textures.Skin.Label", "@Rig.PanelView.Textures.Skin.ToolTip",
+		helper.EditPath(groupBox2, "@Rig.PanelView.Textures.Skin", "@Rig.PanelView.Textures.Skin.ToolTip",
 			igdeEnvironment::efpltSkin, pEditTexSkin, cEditTextureSkinPath::Ref::New(*this));
 	
 	// animation move
 	helper.GroupBox(content, groupBox, "@Rig.PanelView.GroupBox.AnimationMove");
 	
-	helper.ComboBox(groupBox, "@Rig.PanelView.AnimationMove.Move.Label", true, "@Rig.PanelView.AnimationMove.Move.ToolTip",
+	helper.ComboBox(groupBox, "@Rig.PanelView.AnimationMove.Move", true, "@Rig.PanelView.AnimationMove.Move.ToolTip",
 		pCBAnimMoves, cComboAnimationMove::Ref::New(*this));
 	pCBAnimMoves->SetDefaultSorter();
 	
-	helper.EditSliderText(groupBox, "@Rig.PanelView.AnimationMove.Time.Label", "@Rig.PanelView.AnimationMove.Time.ToolTip",
+	helper.EditSliderText(groupBox, "@Rig.PanelView.AnimationMove.Time", "@Rig.PanelView.AnimationMove.Time.ToolTip",
 		0.0f, 0.0f, 5, 2, 0.5f, pSldMoveTime, cSliderMoveTime::Ref::New(*this));
 	
 	helper.CheckBox(groupBox, pChkUseRestPose, cCheckUseRestPose::Ref::New(*this));
@@ -637,11 +637,11 @@ pWindowProperties(windowProperties)
 	// physics
 	helper.GroupBox(content, groupBox, "@Rig.PanelView.GroupBox.Physics");
 	
-	helper.EditVector(groupBox, "@Rig.PanelView.Physics.Gravity.Label", "@Rig.PanelView.Physics.Gravity.ToolTip",
+	helper.EditVector(groupBox, "@Rig.PanelView.Physics.Gravity", "@Rig.PanelView.Physics.Gravity.ToolTip",
 		pEditGravity, cEditGravity::Ref::New(*this));
-	helper.EditVector(groupBox, "@Rig.PanelView.Physics.LocalGravity.Label", "@Rig.PanelView.Physics.LocalGravity.ToolTip",
+	helper.EditVector(groupBox, "@Rig.PanelView.Physics.LocalGravity", "@Rig.PanelView.Physics.LocalGravity.ToolTip",
 		pEditLocalGravity, cEditLocalGravity::Ref::New(*this));
-	helper.EditSliderText(groupBox, "@Rig.PanelView.Physics.Slowmotion.Label", "@Rig.PanelView.Physics.Slowmotion.ToolTip",
+	helper.EditSliderText(groupBox, "@Rig.PanelView.Physics.Slowmotion", "@Rig.PanelView.Physics.Slowmotion.ToolTip",
 		0.0f, 1.0f, 5, 2, 0.1f, pSldSlowmotion, cSliderSlowMotion::Ref::New(*this));
 	pSldSlowmotion->SetValue(1.0f);
 	
@@ -652,42 +652,42 @@ pWindowProperties(windowProperties)
 	helper.EditFloat(frameLine, "@Rig.PanelView.Editing.Grid.Spacing.ToolTip", pEditGridSize, cTextGridSize::Ref::New(*this));
 	helper.CheckBox(frameLine, pChkSnapToGrid, cCheckSnapToGrid::Ref::New(*this));
 	
-	helper.EditFloat(groupBox, "@Rig.PanelView.Editing.Sensitivity.Label",
+	helper.EditFloat(groupBox, "@Rig.PanelView.Editing.Sensitivity",
 		"@Rig.PanelView.Editing.Sensitivity.ToolTip",
 		pEditSensitivity, cTextSensitivity::Ref::New(*this));
 	
 	// property panels
 	action = cActionSkyChanged::Ref::New(*this);
-	helper.WPSky(content, pWPSky, action, "@Rig.PanelView.Editing.Sky.Label", false, true);
+	helper.WPSky(content, pWPSky, action, "@Rig.PanelView.Editing.Sky", false, true);
 	
 	action = cActionEnvObjChanged::Ref::New(*this);
-	helper.WPWObject(content, pWPEnvObject, action, "@Rig.PanelView.Editing.EnvObject.Label", false, true);
+	helper.WPWObject(content, pWPEnvObject, action, "@Rig.PanelView.Editing.EnvObject", false, true);
 	
 	// camera
 	helper.GroupBox(content, groupBox, "@Rig.PanelView.GroupBox.Camera", true);
 	
-	helper.EditDVector(groupBox, "@Rig.PanelView.Camera.Position.Label", "@Rig.PanelView.Camera.Position.ToolTip",
+	helper.EditDVector(groupBox, "@Rig.PanelView.Camera.Position", "@Rig.PanelView.Camera.Position.ToolTip",
 		pEditCamPosition, cEditCameraPosition::Ref::New(*this));
-	helper.EditVector(groupBox, "@Rig.PanelView.Camera.Rotation.Label", "@Rig.PanelView.Camera.Rotation.ToolTip",
+	helper.EditVector(groupBox, "@Rig.PanelView.Camera.Rotation", "@Rig.PanelView.Camera.Rotation.ToolTip",
 		pEditCamRotation, cEditCameraRotation::Ref::New(*this));
 	
-	helper.EditVector(groupBox, "@Rig.PanelView.Camera.View.Label", "@Rig.PanelView.Camera.View.ToolTip", pEditCamViewDir, {});
+	helper.EditVector(groupBox, "@Rig.PanelView.Camera.View", "@Rig.PanelView.Camera.View.ToolTip", pEditCamViewDir, {});
 	pEditCamViewDir->SetEditable(false);
 	
-	helper.FormLine(groupBox, "@Rig.PanelView.Camera.Fov.Label", "@Rig.PanelView.Camera.Fov.ToolTip", frameLine);
+	helper.FormLine(groupBox, "@Rig.PanelView.Camera.Fov", "@Rig.PanelView.Camera.Fov.ToolTip", frameLine);
 	helper.EditFloat(frameLine, "@Rig.PanelView.Camera.FovDegrees.ToolTip", pEditCamFov, cTextCameraFov::Ref::New(*this));
 	helper.EditFloat(frameLine, "@Rig.PanelView.Camera.FovRatio.ToolTip", pEditCamFovRatio, cTextCameraFovRatio::Ref::New(*this));
 	
-	helper.FormLine(groupBox, "@Rig.PanelView.Camera.Distance.Label", "@Rig.PanelView.Camera.Distance.ToolTip", frameLine);
+	helper.FormLine(groupBox, "@Rig.PanelView.Camera.Distance", "@Rig.PanelView.Camera.Distance.ToolTip", frameLine);
 	helper.EditFloat(frameLine, "@Rig.PanelView.Camera.ImageDistance.ToolTip", pEditCamImageDist, cTextCameraImageDistance::Ref::New(*this));
 	helper.EditFloat(frameLine, "@Rig.PanelView.Camera.ViewDistance.ToolTip", pEditCamViewDist, cTextCameraViewDistance::Ref::New(*this));
 	
-	helper.FormLine(groupBox, "@Rig.PanelView.Camera.Exposure.Label",
+	helper.FormLine(groupBox, "@Rig.PanelView.Camera.Exposure",
 		"@Rig.PanelView.Camera.Exposure.ToolTip", frameLine);
 	helper.EditFloat(frameLine, "@Rig.PanelView.Camera.ExposureMultiplier.ToolTip", pEditCamExposure, cTextCameraExposure::Ref::New(*this));
 	helper.EditFloat(frameLine, "@Rig.PanelView.Camera.ExposureTime.ToolTip", pEditCamAdaptTime, cTextCameraAdaptionTime::Ref::New(*this));
 	
-	helper.FormLine(groupBox, "@Rig.PanelView.Camera.Adaption.Label",
+	helper.FormLine(groupBox, "@Rig.PanelView.Camera.Adaption",
 		"@Rig.PanelView.Camera.Adaption.ToolTip", frameLine);
 	helper.EditFloat(frameLine, "@Rig.PanelView.Camera.AdaptionLower.ToolTip", pEditCamLowInt, cTextCameraLowIntensity::Ref::New(*this));
 	helper.EditFloat(frameLine, "@Rig.PanelView.Camera.AdaptionUpper.ToolTip", pEditCamHiInt, cTextCameraHighIntensity::Ref::New(*this));
@@ -697,14 +697,14 @@ pWindowProperties(windowProperties)
 	
 	helper.CheckBox(groupBox, pChkCamAttach, cCheckCameraAttach::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "@Rig.PanelView.CameraAttaching.Bone.Label", true, "@Rig.PanelView.CameraAttaching.Bone.ToolTip",
+	helper.ComboBox(groupBox, "@Rig.PanelView.CameraAttaching.Bone", true, "@Rig.PanelView.CameraAttaching.Bone.ToolTip",
 		pCBCamBone, cComboCameraBone::Ref::New(*this));
 	pCBCamBone->SetDefaultSorter();
 	
-	helper.EditVector(groupBox, "@Rig.PanelView.CameraAttaching.Position.Label",
+	helper.EditVector(groupBox, "@Rig.PanelView.CameraAttaching.Position",
 		"@Rig.PanelView.CameraAttaching.Position.ToolTip",
 		pEditCamRelPosition, cEditCameraRelativePosition::Ref::New(*this));
-	helper.EditVector(groupBox, "@Rig.PanelView.CameraAttaching.Rotation.Label",
+	helper.EditVector(groupBox, "@Rig.PanelView.CameraAttaching.Rotation",
 		"@Rig.PanelView.CameraAttaching.Rotation.ToolTip",
 		pEditCamRelRotation, cEditCameraRelativeRotation::Ref::New(*this));
 }

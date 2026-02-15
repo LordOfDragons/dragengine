@@ -174,7 +174,7 @@ public:
 	
 public:
 	cActionEnablePosition(aeWPAPanelRuleSubAnimator &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleSubAnimator.EnablePosition.Label", nullptr,
+		"@Animator.WPAPanelRuleSubAnimator.EnablePosition", nullptr,
 		"@Animator.WPAPanelRuleSubAnimator.EnablePosition.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleSubAnimator *rule) override{
@@ -193,7 +193,7 @@ public:
 	
 public:
 	cActionEnableRotation(aeWPAPanelRuleSubAnimator &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleSubAnimator.EnableRotation.Label", nullptr,
+		"@Animator.WPAPanelRuleSubAnimator.EnableRotation", nullptr,
 		"@Animator.WPAPanelRuleSubAnimator.EnableRotation.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleSubAnimator *rule) override{
@@ -212,7 +212,7 @@ public:
 	
 public:
 	cActionEnableSize(aeWPAPanelRuleSubAnimator &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleSubAnimator.EnableSize.Label", nullptr,
+		"@Animator.WPAPanelRuleSubAnimator.EnableSize", nullptr,
 		"@Animator.WPAPanelRuleSubAnimator.EnableSize.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleSubAnimator *rule) override{
@@ -231,7 +231,7 @@ public:
 	
 public:
 	cActionEnableVertexPositionSet(aeWPAPanelRuleSubAnimator &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleSubAnimator.EnableVertexPositionSet.Label", nullptr,
+		"@Animator.WPAPanelRuleSubAnimator.EnableVertexPositionSet", nullptr,
 		"@Animator.WPAPanelRuleSubAnimator.EnableVertexPositionSet.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleSubAnimator *rule) override{
@@ -283,9 +283,9 @@ pPreventUpdate(false)
 	igdeContainer::Ref groupBox, formLine;
 	
 	
-	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRuleSubAnimator.SubAnimator.Label");
+	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRuleSubAnimator.SubAnimator");
 	
-	helper.EditPath(groupBox, "@Animator.WPAPanelRuleSubAnimator.Path.Label",
+	helper.EditPath(groupBox, "@Animator.WPAPanelRuleSubAnimator.Path",
 		"@Animator.WPAPanelRuleSubAnimator.Path.ToolTip", igdeEnvironment::efpltAnimator,
 		pEditPathAnimator, cPathAnimator::Ref::New(*this));
 	
@@ -295,16 +295,16 @@ pPreventUpdate(false)
 	helper.CheckBox(groupBox, pChkEnableVertexPositionSet, cActionEnableVertexPositionSet::Ref::New(*this));
 	
 	
-	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRuleSubAnimator.Connections.Label");
+	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRuleSubAnimator.Connections");
 	
-	helper.Label(groupBox, "@Animator.WPAPanelRuleSubAnimator.ConnectionInfo.Label");
+	helper.Label(groupBox, "@Animator.WPAPanelRuleSubAnimator.ConnectionInfo");
 	helper.Label(groupBox, "@Animator.WPAPanelRuleSubAnimator.ConnectionInfo.ToolTip",
 		"@Animator.WPAPanelRuleSubAnimator.ConnectionInfo.Value");
 	
-	helper.ComboBox(groupBox, "@Animator.WPAPanelRuleSubAnimator.Target.Label",
+	helper.ComboBox(groupBox, "@Animator.WPAPanelRuleSubAnimator.Target",
 		"@Animator.WPAPanelRuleSubAnimator.Target.ToolTip", pCBConnection, cComboConnection::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "@Animator.WPAPanelRuleSubAnimator.Controller.Label",
+	helper.ComboBox(groupBox, "@Animator.WPAPanelRuleSubAnimator.Controller",
 		"@Animator.WPAPanelRuleSubAnimator.Controller.ToolTip",
 		pCBConnectionController, cComboConnectionController::Ref::New(*this, pPreventUpdate));
 	

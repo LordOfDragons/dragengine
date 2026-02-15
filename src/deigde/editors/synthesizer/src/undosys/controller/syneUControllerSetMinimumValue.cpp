@@ -49,6 +49,8 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	pOldValue = controller->GetMinimumValue();
+	
+	SetShortInfo("@Synthesizer.Undo.ControllerSetMinValue");
 }
 
 syneUControllerSetMinimumValue::~syneUControllerSetMinimumValue(){

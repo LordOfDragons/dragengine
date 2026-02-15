@@ -93,7 +93,7 @@ public:
 		
 		if(pPanel.GetGameDefinition()->GetSkies().HasWithPath(editPath->GetPath())){
 			igdeCommonDialogs::Information(*pPanel.GetParentWindow(), "@GameDefinition.Sky.Dialog.ChangeSkyEmitterPath",
-				"@GameDefinition.Sky.Dialog.ASkyEmitterWithThisPathExistsAlready");
+				"@GameDefinition.Sky.Dialog.DuplicateSky.Error");
 			editPath->SetPath(sky->GetPath());
 			return;
 		}
@@ -165,7 +165,7 @@ public:
 			if(list.HasNamed(name)){
 				igdeCommonDialogs::Information(*pPanel.GetParentWindow(),
 					"@GameDefinition.Sky.Dialog.AddController",
-					"@GameDefinition.Sky.Dialog.ControllerExistsAlready");
+					"@GameDefinition.Sky.Dialog.DuplicateController.Error");
 				continue;
 			}
 			
@@ -255,7 +255,7 @@ public:
 		if(pPanel.GetSky()->GetControllers().HasNamed(textField->GetText())){
 			igdeCommonDialogs::Information(*pPanel.GetParentWindow(),
 				"@GameDefinition.Sky.Dialog.RenameController",
-				"@GameDefinition.Sky.Dialog.AControllerWithThisNameExistsAlready");
+				"@GameDefinition.Sky.Dialog.DuplicateController.Error");
 			textField->SetText(controller->GetName());
 			return;
 		}
@@ -359,16 +359,16 @@ pWindowProperties(windowProperties)
 	
 	// sky
 	helper.GroupBox(content, groupBox, "@GameDefinition.WPSSky.GroupSky");
-	helper.EditPath(groupBox, "@GameDefinition.WPSSky.Path.Label",
+	helper.EditPath(groupBox, "@GameDefinition.WPSSky.Path",
 		"@GameDefinition.WPSSky.Path.ToolTip", igdeEnvironment::efpltSky,
 		pEditPath, cEditPath::Ref::New(*this));
-	helper.EditString(groupBox, "@GameDefinition.WPSSky.Name.Label",
+	helper.EditString(groupBox, "@GameDefinition.WPSSky.Name",
 		"@GameDefinition.WPSSky.Name.ToolTip", pEditName, cTextName::Ref::New(*this));
-	helper.EditString(groupBox, "@GameDefinition.WPSSky.Description.Label",
+	helper.EditString(groupBox, "@GameDefinition.WPSSky.Description",
 		"@GameDefinition.WPSSky.Description.ToolTip", pEditDescription, 15, 5,
 		cTextDescription::Ref::New(*this));
 	
-	helper.FormLineStretchFirst(groupBox, "@GameDefinition.WPSSky.Category.Label",
+	helper.FormLineStretchFirst(groupBox, "@GameDefinition.WPSSky.Category",
 		"@GameDefinition.WPSSky.Category.ToolTip", frameLine);
 	helper.ComboBoxFilter(frameLine, true, "@GameDefinition.Category.Filter.ToolTip",
 		pCBCategory, cComboCategory::Ref::New(*this));
@@ -379,7 +379,7 @@ pWindowProperties(windowProperties)
 	// controller
 	helper.GroupBox(content, groupBox, "@GameDefinition.WPSSky.GroupControllers");
 	
-	helper.FormLineStretchFirst(groupBox, "@GameDefinition.WPSSky.Controller.Label",
+	helper.FormLineStretchFirst(groupBox, "@GameDefinition.WPSSky.Controller",
 		"@GameDefinition.WPSSky.Controller.ToolTip", frameLine);
 	helper.ComboBox(frameLine, "@GameDefinition.WPSSky.Controller.ToolTip",
 		pCBController, cComboController::Ref::New(*this));
@@ -389,10 +389,10 @@ pWindowProperties(windowProperties)
 	helper.Button(frameLine, pBtnControllerMenu, pActionControllerMenu);
 	pActionControllerMenu->SetWidget(pBtnControllerMenu);
 	
-	helper.EditString(groupBox, "@GameDefinition.WPSSky.ControllerName.Label",
+	helper.EditString(groupBox, "@GameDefinition.WPSSky.ControllerName",
 		"@GameDefinition.WPSSky.ControllerName.ToolTip", pEditControllerName,
 		cTextControllerName::Ref::New(*this));
-	helper.EditFloat(groupBox, "@GameDefinition.WPSSky.ControllerValue.Label",
+	helper.EditFloat(groupBox, "@GameDefinition.WPSSky.ControllerValue",
 		"@GameDefinition.WPSSky.ControllerValue.ToolTip", pEditControllerValue,
 		cTextControllerValue::Ref::New(*this));
 }

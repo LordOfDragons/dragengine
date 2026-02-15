@@ -99,10 +99,10 @@ reWPPanelShape(wpShapes, reRigShape::estSphere)
 	
 	helper.GroupBox(*this, groupBox, "@Rig.PanelShapeSphere.GroupBox.SphereParameters");
 	
-	helper.EditVector(groupBox, "@Rig.PanelShapeSphere.Position.Label", "@Rig.PanelShapeSphere.Position.ToolTip",
+	helper.EditVector(groupBox, "@Rig.PanelShapeSphere.Position", "@Rig.PanelShapeSphere.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
 	
-	helper.EditString(groupBox, "@Rig.PanelShapeSphere.Radius.Label", "@Rig.PanelShapeSphere.Radius.ToolTip",
+	helper.EditString(groupBox, "@Rig.PanelShapeSphere.Radius", "@Rig.PanelShapeSphere.Radius.ToolTip",
 		pEditRadius, cTextRadius::Ref::New(*this));
 }
 

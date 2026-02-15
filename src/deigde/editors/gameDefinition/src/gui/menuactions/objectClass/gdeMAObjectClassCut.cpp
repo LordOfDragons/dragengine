@@ -48,7 +48,7 @@
 ////////////////
 
 gdeMAObjectClassCut::gdeMAObjectClassCut(gdeWindowMain &windowMain) :
-gdeBaseAction(windowMain, "@Igde.Menu.Cut",
+gdeBaseAction(windowMain, "@Igde.Action.Cut",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
 	"@GameDefinition.Menu.ObjectClassCut.ToolTip")
 {

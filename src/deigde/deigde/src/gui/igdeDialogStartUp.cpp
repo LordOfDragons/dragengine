@@ -164,7 +164,7 @@ pWindowMain(windowMain)
 	
 	pUpdateRecentProjectList();
 	
-	AddContent(pListRecentProjects, igdeLabel::Ref::New(env, "@Igde.StartUp.RecentProjects.Label"), buttonBar);
+	AddContent(pListRecentProjects, igdeLabel::Ref::New(env, "@Igde.StartUp.RecentProjects"), buttonBar);
 }
 
 igdeDialogStartUp::~igdeDialogStartUp(){

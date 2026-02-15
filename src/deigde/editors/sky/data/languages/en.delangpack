@@ -97,8 +97,8 @@ all the links using it. Do you want to remove the controller?</translation>
 	<translation name="Sky.Properties.Layer.MulBySkyColor">Multiply By Sky Color</translation>
 	<translation name="Sky.Properties.Layer.MulBySkyColor.Description">Determines if the layer color is multiplied by the sky light color</translation>
 	
-	<translation name="Sky.Properties.Layer.Light">Light Settings:</translation>
-	<translation name="Sky.Properties.Layer.Light.Label">Light:</translation>
+	<translation name="Sky.Properties.Layer.LightSettings">Light Settings:</translation>
+	<translation name="Sky.Properties.Layer.Light">Light:</translation>
 	<translation name="Sky.Properties.Layer.Light.Description">Light color, intensity and ambient intensity</translation>
 	<translation name="Sky.Properties.Layer.Light.Color">Color or layer light</translation>
 	<translation name="Sky.Properties.Layer.Light.Intensity">Intensity of the layer light</translation>
@@ -185,7 +185,6 @@ all the targets using it. Do you want to remove the link?</translation>
 	<translation name="Sky.Properties.Link.Repeat.Description">Repeat link value</translation>
 	
 	<translation name="Sky.Action.Link.Add">Add</translation>
-	<translation name="Sky.Action.Link.Add.Description">Add a link to the end of the list.</translation>
 	<translation name="Sky.Action.Link.Remove.Link">Remove</translation>
 	<translation name="Sky.Action.Link.Remove.Link.Description">Remove the selected link.</translation>
 	

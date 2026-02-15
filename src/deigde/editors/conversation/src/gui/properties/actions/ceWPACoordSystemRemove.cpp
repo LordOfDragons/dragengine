@@ -97,7 +97,7 @@ ceWPACoordSystemRemove::ceWPACoordSystemRemove(ceWPTopic &parentPanel) : ceWPAct
 	
 	CreateGUICommon(*this);
 	
-	helper.ComboBox(*this, "@Conversation.WPActionCoordSystemRemove.CoordSystem.Label", true, "@Conversation.ToolTip.CoordSystemToRemove",
+	helper.ComboBox(*this, "@Conversation.WPActionCoordSystemRemove.CoordSystem", true, "@Conversation.ToolTip.CoordSystemToRemove",
 		pCBCoordSystemID, cComboCoordSystemID::Ref::New(*this));
 	pCBCoordSystemID->SetDefaultSorter();
 }

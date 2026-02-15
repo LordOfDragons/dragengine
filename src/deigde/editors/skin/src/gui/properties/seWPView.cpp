@@ -318,19 +318,19 @@ pPreventUpdate(false)
 	// resources
 	helper.GroupBox(content, groupBox, "@Skin.WPView.Preview");
 	
-	helper.ComboBox(groupBox, "@Skin.WPView.Mode.Label", "@Skin.WPView.Mode.ToolTip", pCBPreviewMode, cComboPreviewMode::Ref::New(*this));
+	helper.ComboBox(groupBox, "@Skin.WPView.Mode", "@Skin.WPView.Mode.ToolTip", pCBPreviewMode, cComboPreviewMode::Ref::New(*this));
 	pCBPreviewMode->SetAutoTranslateItems(true);
 	pCBPreviewMode->AddItem("@Skin.WPView.Mode.Model", nullptr, (void*)(intptr_t)seSkin::epmModel);
 	pCBPreviewMode->AddItem("@Skin.WPView.Mode.Light", nullptr, (void*)(intptr_t)seSkin::epmLight);
 	
-	helper.EditPath(groupBox, "@Skin.WPView.Model.Label", "@Skin.WPView.Model.ToolTip",
+	helper.EditPath(groupBox, "@Skin.WPView.Model", "@Skin.WPView.Model.ToolTip",
 		igdeEnvironment::efpltModel, pEditModelPath, cEditModelPath::Ref::New(*this));
-	helper.EditPath(groupBox, "@Skin.WPView.Rig.Label", "@Skin.WPView.Rig.ToolTip",
+	helper.EditPath(groupBox, "@Skin.WPView.Rig", "@Skin.WPView.Rig.ToolTip",
 		igdeEnvironment::efpltRig, pEditRigPath, cEditRigPath::Ref::New(*this));
-	helper.EditPath(groupBox, "@Skin.WPView.Animation.Label", "@Skin.WPView.Animation.ToolTip",
+	helper.EditPath(groupBox, "@Skin.WPView.Animation", "@Skin.WPView.Animation.ToolTip",
 		igdeEnvironment::efpltAnimation, pEditAnimPath, cEditAnimationPath::Ref::New(*this));
 	
-	helper.ComboBoxFilter(groupBox, "@Skin.WPView.Move.Label", true, "@Skin.WPView.Move.ToolTip",
+	helper.ComboBoxFilter(groupBox, "@Skin.WPView.Move", true, "@Skin.WPView.Move.ToolTip",
 		pCBAnimMoves, cComboMove::Ref::New(*this, pPreventUpdate));
 	pCBAnimMoves->SetDefaultSorter();
 	
@@ -340,9 +340,9 @@ pPreventUpdate(false)
 	helper.Button(formLine, pBtnRewindTextures, cActionRewind::Ref::New(*this));
 	
 	// property panels
-	helper.WPSky(content, pWPSky, cActionSkyChanged::Ref::New(*this), "@Skin.WPView.Sky.Label");
-	helper.WPWObject(content, pWPEnvObject, cActionEnvObjChanged::Ref::New(*this), "@Skin.WPView.EnvironmentObject.Label");
-	helper.WPCamera(content, pWPCamera, cActionCameraChanged::Ref::New(*this), "@Skin.WPView.Camera.Label");
+	helper.WPSky(content, pWPSky, cActionSkyChanged::Ref::New(*this), "@Skin.WPView.Sky");
+	helper.WPWObject(content, pWPEnvObject, cActionEnvObjChanged::Ref::New(*this), "@Skin.WPView.EnvironmentObject");
+	helper.WPCamera(content, pWPCamera, cActionCameraChanged::Ref::New(*this), "@Skin.WPView.Camera");
 }
 
 seWPView::~seWPView(){

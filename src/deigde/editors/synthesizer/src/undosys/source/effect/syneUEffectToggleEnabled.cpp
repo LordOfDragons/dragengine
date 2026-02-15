@@ -48,7 +48,7 @@ pEffect(nullptr)
 	
 	try{
 		pEffect = effect;
-		SetShortInfo("@Effect Toggle Enabled");
+		SetShortInfo("@Synthesizer.Undo.EffectToggleEnabled");
 		
 	}catch(const deException &){
 		pCleanUp();

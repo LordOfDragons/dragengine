@@ -161,19 +161,19 @@ pRuleMapping(rule)
 	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::New(env,
 		"@World.WVNodeMapping.Output.Lower", "@World.WVNodeMapping.Output.LowerDesc",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleMapping::eisLower));
-	helper.EditFloat(slot, "@World.WVNodeMapping.LowerValueIfSlotIsNotConnected.Label",
+	helper.EditFloat(slot, "@World.WVNodeMapping.LowerValueIfSlotIsNotConnected",
 		pEditLower, cTextLower::Ref::New(*this));
 	AddSlot(slot);
 	
 	slot = meWVNodeSlot::Ref::New(env, "@World.WVNodeMapping.Output.Upper", "@World.WVNodeMapping.Output.UpperDesc",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleMapping::eisUpper);
-	helper.EditFloat(slot, "@World.WVNodeMapping.UpperValueIfSlotIsNotConnected.Label",
+	helper.EditFloat(slot, "@World.WVNodeMapping.UpperValueIfSlotIsNotConnected",
 		pEditUpper, cTextUpper::Ref::New(*this));
 	AddSlot(slot);
 	
 	slot = meWVNodeSlot::Ref::New(env, "@World.WVNodeMapping.Input.Value", "@World.WVNodeMapping.Input.ValueDesc",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleMapping::eisValue);
-	helper.EditFloat(slot, "@World.WVNodeMapping.ValueToMapIfSlotIsNotConnected.Label",
+	helper.EditFloat(slot, "@World.WVNodeMapping.ValueToMapIfSlotIsNotConnected",
 		pEditValue, cTextValue::Ref::New(*this));
 	AddSlot(slot);
 	

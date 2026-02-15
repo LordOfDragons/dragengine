@@ -108,11 +108,11 @@ pAutoResetDuration(true)
 	helper.ComboBoxFilter(content, textLabel, 25, true, "", pCBID, cComboIdentifier::Ref::New(*this));
 	pCBID->SetDefaultSorter();
 	
-	helper.EditFloat(content, "@Conversation.DialogEditStrip.Pause.Label", "@Conversation.DialogEditStrip.Pause.ToolTip", pEditPause, {});
+	helper.EditFloat(content, "@Conversation.DialogEditStrip.Pause", "@Conversation.DialogEditStrip.Pause.ToolTip", pEditPause, {});
 	
 	igdeContainer::Ref line;
 	const char *tooltip = "@Conversation.DialogEditStrip.Duration.ToolTip";
-	helper.FormLineStretchFirst(content, "@Conversation.DialogEditStrip.Duration.Label", tooltip, line);
+	helper.FormLineStretchFirst(content, "@Conversation.DialogEditStrip.Duration", tooltip, line);
 	helper.EditFloat(line, tooltip, pEditDuration, {});
 	helper.Button(line, pBtnResetDuration, cActionResetDuration::Ref::New(*this));
 	

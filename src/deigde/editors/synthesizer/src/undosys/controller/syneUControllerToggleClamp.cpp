@@ -47,6 +47,8 @@ pController(controller)
 	if(!controller){
 		DETHROW(deeInvalidParam);
 	}
+	
+	SetShortInfo("@Synthesizer.Undo.ControllerToggleClamp");
 }
 
 syneUControllerToggleClamp::~syneUControllerToggleClamp(){

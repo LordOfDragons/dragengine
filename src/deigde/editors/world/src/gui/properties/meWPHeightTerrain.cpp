@@ -475,7 +475,7 @@ public:
 		decString name(pPanel.Translate("World.WPHeightTerrain.DefaultName.Texture").ToUTF8());
 		while(igdeCommonDialogs::GetString(pPanel, "@World.WPHeightTerrain.Dialog.AddTexture", "@World.WPHeightTerrain.Dialog.EnterNameOfNewTexture", name)){
 			if(sector->GetTextures().HasNamed(name)){
-				igdeCommonDialogs::Error(pPanel, "@World.WPHeightTerrain.Dialog.InvalidTextureNameError", "@World.WPHeightTerrain.Dialog.ATextureWithThisNameExistsAlready");
+				igdeCommonDialogs::Error(pPanel, "@World.WPHeightTerrain.Dialog.InvalidTextureNameError", "@World.WPHeightTerrain.Dialog.DuplicateTextureName");
 				continue;
 			}
 			
@@ -1409,94 +1409,94 @@ pWindowProperties(windowProperties)
 	
 	
 	// height terrain
-	helper.GroupBox(content, groupBox, "@World.WPHeightTerrain.HeightTerrain.Label");
+	helper.GroupBox(content, groupBox, "@World.WPHeightTerrain.HeightTerrain");
 	
 	igdeFilePattern::List filePatterns;
 	filePatterns.Add(igdeFilePattern::Ref::New(
 		"@World.WPHeightTerrain.DragEnGineHeightTerrain", "*.deterrain", ".deterrain"));
-	helper.EditPath(groupBox, "@World.WPHeightTerrain.HeightTerrain.Label", "@World.WPHeightTerrain.FileToSaveHeightTerrainTo.ToolTip",
+	helper.EditPath(groupBox, "@World.WPHeightTerrain.HeightTerrain", "@World.WPHeightTerrain.FileToSaveHeightTerrainTo.ToolTip",
 		filePatterns, pEditPathHTerrain, cEditPathHT::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WPHeightTerrain.SectorSize.Label", "@World.WPHeightTerrain.SizeOfSectorsAlongXZAxis.ToolTip",
+	helper.EditFloat(groupBox, "@World.WPHeightTerrain.SectorSize", "@World.WPHeightTerrain.SizeOfSectorsAlongXZAxis.ToolTip",
 		pEditSectorSize, cEditSectorSize::Ref::New(*this));
-	helper.EditInteger(groupBox, "@World.WPHeightTerrain.SectorResolution.Label", "@World.WPHeightTerrain.SectorResolution.ToolTip",
+	helper.EditInteger(groupBox, "@World.WPHeightTerrain.SectorResolution", "@World.WPHeightTerrain.SectorResolution.ToolTip",
 		pEditSectorResolution, cEditSectorResolution::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WPHeightTerrain.BaseHeight.Label", "@World.WPHeightTerrain.SetBaseHeightOfHeightImageValues.ToolTip",
+	helper.EditFloat(groupBox, "@World.WPHeightTerrain.BaseHeight", "@World.WPHeightTerrain.SetBaseHeightOfHeightImageValues.ToolTip",
 		pEditBaseHeight, cEditBaseHeight::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WPHeightTerrain.HeightScaling.Label", "@World.WPHeightTerrain.SetHeightScalingOfHeightImageValues.ToolTip",
+	helper.EditFloat(groupBox, "@World.WPHeightTerrain.HeightScaling", "@World.WPHeightTerrain.SetHeightScalingOfHeightImageValues.ToolTip",
 		pEditHeightScale, cEditHeightScale::Ref::New(*this));
 	
 	
 	// sector
-	helper.GroupBox(content, groupBox, "@World.WPHeightTerrain.Sector.Label");
+	helper.GroupBox(content, groupBox, "@World.WPHeightTerrain.Sector");
 	
-	helper.EditPath(groupBox, "@World.WPHeightTerrain.HeightImage.Label", "@World.WPHeightTerrain.FileToSaveHeightImageTo.ToolTip",
+	helper.EditPath(groupBox, "@World.WPHeightTerrain.HeightImage", "@World.WPHeightTerrain.FileToSaveHeightImageTo.ToolTip",
 		igdeEnvironment::efpltImage, pEditPathHeightImage, cEditPathHeightImage::Ref::New(*this));
-	helper.EditPath(groupBox, "@World.WPHeightTerrain.VisibilityImage.Label", "@World.WPHeightTerrain.FileToSaveVisibilityImageTo.ToolTip",
+	helper.EditPath(groupBox, "@World.WPHeightTerrain.VisibilityImage", "@World.WPHeightTerrain.FileToSaveVisibilityImageTo.ToolTip",
 		igdeEnvironment::efpltImage, pEditPathVisImage, cEditPathVisibilityImage::Ref::New(*this));
 	
 	
 	// texture
-	helper.GroupBox(content, groupBox, "@World.WPSObject.Texture.Label");
+	helper.GroupBox(content, groupBox, "@World.WPSObject.Texture");
 	
-	helper.FormLineStretchFirst(groupBox, "@World.WPSObject.Texture.Label", "@World.WPHeightTerrain.TextureToEdit.ToolTip", formLine);
+	helper.FormLineStretchFirst(groupBox, "@World.WPSObject.Texture", "@World.WPHeightTerrain.TextureToEdit.ToolTip", formLine);
 	helper.ComboBox(formLine, "@World.WPHeightTerrain.TextureToEdit.ToolTip", pCBTexture, cComboTexture::Ref::New(*this));
 	helper.Button(formLine, pBtnTexture, pActionMenuTexture);
 	pActionMenuTexture->SetWidget(pBtnTexture);
 	
-	helper.EditInteger(groupBox, "@World.WPWorld.TypeNumber.Label", "@World.WPHeightTerrain.TypeNumberOfTexture.ToolTip",
+	helper.EditInteger(groupBox, "@World.WPWorld.TypeNumber", "@World.WPHeightTerrain.TypeNumberOfTexture.ToolTip",
 		pEditTexTypeNum, cTextTexTypeNumber::Ref::New(*this));
-	helper.EditPath(groupBox, "@World.WPSObject.Skin.Label", "@World.WPHeightTerrain.SkinToUseForTexture.ToolTip",
+	helper.EditPath(groupBox, "@World.WPSObject.Skin", "@World.WPHeightTerrain.SkinToUseForTexture.ToolTip",
 		igdeEnvironment::efpltSkin, pEditTexSkin, cPathTexSkin::Ref::New(*this));
-	helper.EditPath(groupBox, "@World.WPHeightTerrain.Mask.Label", "@World.WPHeightTerrain.MaskToUseForTexture.ToolTip",
+	helper.EditPath(groupBox, "@World.WPHeightTerrain.Mask", "@World.WPHeightTerrain.MaskToUseForTexture.ToolTip",
 		igdeEnvironment::efpltSkin, pEditTexMask, cPathTexMask::Ref::New(*this));
-	helper.EditVector2(groupBox, "@World.WPHeightTerrain.Offset.Label", "@World.WPHeightTerrain.OffsetsProjectedTextureRelativeToWorldOrigin.ToolTip",
+	helper.EditVector2(groupBox, "@World.WPHeightTerrain.Offset", "@World.WPHeightTerrain.OffsetsProjectedTextureRelativeToWorldOrigin.ToolTip",
 		pEditTexUVOffset, cEditTexUVOffset::Ref::New(*this));
-	helper.EditVector2(groupBox, "@World.WPHeightTerrain.Scaling.Label", "@World.WPHeightTerrain.ScalingOfProjectedTexture.ToolTip",
+	helper.EditVector2(groupBox, "@World.WPHeightTerrain.Scaling", "@World.WPHeightTerrain.ScalingOfProjectedTexture.ToolTip",
 		pEditTexUVScale, cEditTexUVScale::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WPHeightTerrain.Rotation.Label", "@World.WPHeightTerrain.RotationOfProjectedTexture.ToolTip",
+	helper.EditFloat(groupBox, "@World.WPHeightTerrain.Rotation", "@World.WPHeightTerrain.RotationOfProjectedTexture.ToolTip",
 		pEditTexUVRot, cEditTexUVRotation::Ref::New(*this));
 	
 	
 	// navigation space
-	helper.GroupBox(content, groupBox, "@World.WPHeightTerrain.NavigationSpace.Label", true);
+	helper.GroupBox(content, groupBox, "@World.WPHeightTerrain.NavigationSpace", true);
 	
-	helper.FormLineStretchFirst(groupBox, "@World.WPHeightTerrain.NavSpace.Label", "@World.WPHeightTerrain.NavSpace.ToolTip", formLine);
+	helper.FormLineStretchFirst(groupBox, "@World.WPHeightTerrain.NavSpace", "@World.WPHeightTerrain.NavSpace.ToolTip", formLine);
 	helper.ComboBox(formLine, "@World.WPHeightTerrain.NavSpace.ToolTip", pCBNavSpace, cComboNavSpace::Ref::New(*this));
 	helper.Button(formLine, pBtnNavSpace, pActionMenuNavSpace);
 	pActionMenuNavSpace->SetWidget(pBtnNavSpace);
 	
-	helper.EditInteger(groupBox, "@World.WPWorld.Layer.Label", "@World.WPHeightTerrain.NavigationLayer.ToolTip",
+	helper.EditInteger(groupBox, "@World.WPWorld.Layer", "@World.WPHeightTerrain.NavigationLayer.ToolTip",
 		pEditNavSpaceLayer, cTextNavSpaceLayer::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WPHeightTerrain.SnapDistance.Label", "@World.WPHeightTerrain.SnapDistance.ToolTip",
+	helper.EditFloat(groupBox, "@World.WPHeightTerrain.SnapDistance", "@World.WPHeightTerrain.SnapDistance.ToolTip",
 		pEditNavSpaceSnapDist, cTextNavSpaceSnapDistance::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WPHeightTerrain.SnapAngle.Label", "@World.WPHeightTerrain.SnapAngle.ToolTip",
+	helper.EditFloat(groupBox, "@World.WPHeightTerrain.SnapAngle", "@World.WPHeightTerrain.SnapAngle.ToolTip",
 		pEditNavSpaceSnapAngle, cTextNavSpaceSnapAngle::Ref::New(*this));
 	
 	
 	// navigation space type
-	helper.GroupBox(content, groupBox, "@World.WPHeightTerrain.NavigationType.Label", true);
+	helper.GroupBox(content, groupBox, "@World.WPHeightTerrain.NavigationType", true);
 	
 	helper.FormLineStretchFirst(groupBox, "@World.WPHeightTerrain.Type.Label2", "@World.WPHeightTerrain.NavigationTypeToEdit.ToolTip", formLine);
 	helper.ComboBox(formLine, "@World.WPHeightTerrain.NavigationTypeToEdit.ToolTip", pCBNavSpaceType, cComboNavSpaceType::Ref::New(*this));
 	helper.Button(formLine, pBtnNavSpaceType, pActionMenuNavSpaceType);
 	pActionMenuNavSpaceType->SetWidget(pBtnNavSpaceType);
 	
-	helper.EditString(groupBox, "@World.WPHeightTerrain.Name.Label", "@World.WPHeightTerrain.NavigationSpaceTypeName.ToolTip",
+	helper.EditString(groupBox, "@World.WPHeightTerrain.Name", "@World.WPHeightTerrain.NavigationSpaceTypeName.ToolTip",
 		pEditNavSpaceTypeName, cTextNavSpaceTypeName::Ref::New(*this));
 	helper.EditInteger(groupBox, "@World.WPHeightTerrain.Type.Label3", "@World.WPHeightTerrain.NavigationSpaceTypeNumber.ToolTip",
 		pEditNavSpaceTypeType, cTextNavSpaceTypeType::Ref::New(*this));
-	helper.ColorBox(groupBox, "@World.WPHeightTerrain.Color.Label", "@World.WPHeightTerrain.NavigationSpaceTypeColorForVisualizationPurpose.ToolTip",
+	helper.ColorBox(groupBox, "@World.WPHeightTerrain.Color", "@World.WPHeightTerrain.NavigationSpaceTypeColorForVisualizationPurpose.ToolTip",
 		pEditNavSpaceTypeColor, cTextNavSpaceTypeColor::Ref::New(*this));
 	
-	helper.FormLine(groupBox, "@World.WPHeightTerrain.Faces.Label", "@World.WPHeightTerrain.NavigationSpaceFaces.ToolTip", formLine);
+	helper.FormLine(groupBox, "@World.WPHeightTerrain.Faces", "@World.WPHeightTerrain.NavigationSpaceFaces.ToolTip", formLine);
 	helper.Button(formLine, pBtnNavSpaceFaceAdd, pActionNavSpaceFaceAdd);
 	helper.Button(formLine, pBtnNavSpaceFaceRemove, pActionNavSpaceFaceRemove);
 	
 	
 	// vegetation
-	helper.GroupBox(content, groupBox, "@World.WPHeightTerrain.Vegetation.Label", true);
+	helper.GroupBox(content, groupBox, "@World.WPHeightTerrain.Vegetation", true);
 	
-	helper.FormLine(groupBox, "@World.WPHeightTerrain.Update.Label", "@World.WPHeightTerrain.UpdateVegetation.ToolTip", formLine);
+	helper.FormLine(groupBox, "@World.WPHeightTerrain.Update", "@World.WPHeightTerrain.UpdateVegetation.ToolTip", formLine);
 	helper.Button(formLine, pBtnUpdateVegetation, cActionUpdateVegetation::Ref::New(*this));
 	helper.Button(formLine, pBtnUpdateVegetationAll, cActionUpdateVegetationAll::Ref::New(*this));
 	helper.Button(formLine, pBtnClearVegetation, cActionClearVegetation::Ref::New(*this));
@@ -1504,71 +1504,71 @@ pWindowProperties(windowProperties)
 	filePatterns.RemoveAll();
 	filePatterns.Add(igdeFilePattern::Ref::New(
 		"@World.WPHeightTerrain.DragEnGinePropFieldCache", "*.depfc", ".depfc"));
-	helper.EditPath(groupBox, "@World.WPSObject.Skin.Label", "@World.WPHeightTerrain.SkinToUseForTexture.ToolTip",
+	helper.EditPath(groupBox, "@World.WPSObject.Skin", "@World.WPHeightTerrain.SkinToUseForTexture.ToolTip",
 		filePatterns, pEditPathPFCache, cPathPathPFCache::Ref::New(*this));
 	
-	helper.FormLineStretchFirst(groupBox, "@World.WPWorld.Layer.Label", "@World.WPHeightTerrain.LayerToEdit.ToolTip", formLine);
+	helper.FormLineStretchFirst(groupBox, "@World.WPWorld.Layer", "@World.WPHeightTerrain.LayerToEdit.ToolTip", formLine);
 	helper.ComboBox(formLine, "@World.WPHeightTerrain.LayerToEdit.ToolTip", pCBVLayer, cComboVLayer::Ref::New(*this));
 	helper.Button(formLine, pBtnMenuVLayer, pActionMenuVLayer);
 	pActionMenuVLayer->SetWidget(pBtnMenuVLayer);
 	
-	helper.FormLineStretchFirst(groupBox, "@World.WPHeightTerrain.Variation.Label", "@World.WPHeightTerrain.VariationToEdit.ToolTip", formLine);
-	helper.ComboBox(formLine, "@World.WPHeightTerrain.VariationToEdit.ToolTip", pCBVVariation, cComboVVariation::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@World.WPHeightTerrain.Variation", "@World.WPHeightTerrain.Variation.ToolTip", formLine);
+	helper.ComboBox(formLine, "@World.WPHeightTerrain.Variation.ToolTip", pCBVVariation, cComboVVariation::Ref::New(*this));
 	helper.Button(formLine, pBtnMenuVVariation, pActionMenuVVariation);
 	pActionMenuVVariation->SetWidget(pBtnMenuVVariation);
 	
-	helper.EditPath(groupBox, "@World.WPHeightTerrain.Model.Label", "@World.WPHeightTerrain.ModelToUseForVariation.ToolTip",
+	helper.EditPath(groupBox, "@World.WPHeightTerrain.Model", "@World.WPHeightTerrain.ModelToUseForVariation.ToolTip",
 		igdeEnvironment::efpltModel, pEditVVModel, cPathVVModel::Ref::New(*this));
-	helper.EditPath(groupBox, "@World.WPSObject.Skin.Label", "@World.WPHeightTerrain.SkinToUseForVariation.ToolTip",
+	helper.EditPath(groupBox, "@World.WPSObject.Skin", "@World.WPHeightTerrain.SkinToUseForVariation.ToolTip",
 		igdeEnvironment::efpltSkin, pEditVVSkin, cPathVVSkin::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WPHeightTerrain.RotationForce.Label", "@World.WPHeightTerrain.RotationPerForce.ToolTip",
+	helper.EditFloat(groupBox, "@World.WPHeightTerrain.RotationForce", "@World.WPHeightTerrain.RotationPerForce.ToolTip",
 		pEditVVRotPerForce, cTextVVRotPerForce::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WPHeightTerrain.Restition.Label", "@World.WPHeightTerrain.Restition.ToolTip",
+	helper.EditFloat(groupBox, "@World.WPHeightTerrain.Restition", "@World.WPHeightTerrain.Restition.ToolTip",
 		pEditVVRestitution, cTextVVRestitution::Ref::New(*this));
 	
 	
 	// height paint
-	helper.GroupBox(content, groupBox, "@World.WPHeightTerrain.HeightPainting.Label");
+	helper.GroupBox(content, groupBox, "@World.WPHeightTerrain.HeightPainting");
 	
-	helper.FormLine(groupBox, "@World.WPHeightTerrain.Mode.Label", "@World.WPHeightTerrain.PaintMode.ToolTip", formLine);
+	helper.FormLine(groupBox, "@World.WPHeightTerrain.Mode", "@World.WPHeightTerrain.PaintMode.ToolTip", formLine);
 	helper.ToggleButton(formLine, pBtnHPModeRaise, cActionHPMode::Ref::New(*this,
-		meWorldGuiParameters::ehpdmRaise, "@World.WPHeightTerrain.Raise.Label", nullptr, "@World.WPHeightTerrain.Raise.Label"));
+		meWorldGuiParameters::ehpdmRaise, "@World.WPHeightTerrain.Raise", nullptr, "@World.WPHeightTerrain.Raise"));
 	helper.ToggleButton(formLine, pBtnHPModeLower, cActionHPMode::Ref::New(*this,
-		meWorldGuiParameters::ehpdmLower, "@World.WPHeightTerrain.Lower.Label", nullptr, "@World.WPHeightTerrain.Lower.Label"));
+		meWorldGuiParameters::ehpdmLower, "@World.WPHeightTerrain.Lower", nullptr, "@World.WPHeightTerrain.Lower"));
 	helper.ToggleButton(formLine, pBtnHPModeLevel, cActionHPMode::Ref::New(*this,
-		meWorldGuiParameters::ehpdmLevel, "@World.WPHeightTerrain.Level.Label", nullptr, "@World.WPHeightTerrain.Level.Label"));
+		meWorldGuiParameters::ehpdmLevel, "@World.WPHeightTerrain.Level", nullptr, "@World.WPHeightTerrain.Level"));
 	helper.ToggleButton(formLine, pBtnHPModeSmooth, cActionHPMode::Ref::New(*this,
-		meWorldGuiParameters::ehpdmSmooth, "@World.WPHeightTerrain.Smooth.Label", nullptr, "@World.WPHeightTerrain.Smooth.Label"));
+		meWorldGuiParameters::ehpdmSmooth, "@World.WPHeightTerrain.Smooth", nullptr, "@World.WPHeightTerrain.Smooth"));
 	
-	helper.EditSliderText(groupBox, "@World.WVNodePropCount.Radius.Label", "@World.WPHeightTerrain.SetsRadiusOfInfluence.ToolTip",
+	helper.EditSliderText(groupBox, "@World.WVNodePropCount.Radius", "@World.WPHeightTerrain.SetsRadiusOfInfluence.ToolTip",
 		0.0f, 10.0f, 6, 3, 1.0f, pSldHPRadius, cSliderHPRadius::Ref::New(*this));
-	helper.EditSliderText(groupBox, "@World.WPHeightTerrain.Strength.Label", "@World.WPHeightTerrain.StrengthOfInfluence.ToolTip",
+	helper.EditSliderText(groupBox, "@World.WPHeightTerrain.Strength", "@World.WPHeightTerrain.StrengthOfInfluence.ToolTip",
 		0.0f, 1.0f, 6, 3, 0.1f, pSldHPStrength, cSliderHPStrength::Ref::New(*this));
 	
 	
 	// mask paint
-	helper.GroupBox(content, groupBox, "@World.WPHeightTerrain.MaskPainting.Label", true);
+	helper.GroupBox(content, groupBox, "@World.WPHeightTerrain.MaskPainting", true);
 	
-	helper.FormLine(groupBox, "@World.WPHeightTerrain.Mode.Label", "@World.WPHeightTerrain.PaintMode.ToolTip", formLine);
+	helper.FormLine(groupBox, "@World.WPHeightTerrain.Mode", "@World.WPHeightTerrain.PaintMode.ToolTip", formLine);
 	helper.ToggleButton(formLine, pBtnMPModeDraw, cActionMPMode::Ref::New(*this,
-		meWorldGuiParameters::empdmDraw, "@World.WPHeightTerrain.Draw.Label", nullptr, "@World.WPHeightTerrain.Draw.Label"));
+		meWorldGuiParameters::empdmDraw, "@World.WPHeightTerrain.Draw", nullptr, "@World.WPHeightTerrain.Draw"));
 	helper.ToggleButton(formLine, pBtnMPModeErase, cActionMPMode::Ref::New(*this,
-		meWorldGuiParameters::empdmErase, "@World.WPHeightTerrain.Erase.Label", nullptr, "@World.WPHeightTerrain.Erase.Label"));
+		meWorldGuiParameters::empdmErase, "@World.WPHeightTerrain.Erase", nullptr, "@World.WPHeightTerrain.Erase"));
 	
-	helper.EditSliderText(groupBox, "@World.WVNodePropCount.Radius.Label", "@World.WPHeightTerrain.SetsRadiusOfInfluence.ToolTip",
+	helper.EditSliderText(groupBox, "@World.WVNodePropCount.Radius", "@World.WPHeightTerrain.SetsRadiusOfInfluence.ToolTip",
 		0.0f, 10.0f, 6, 3, 1.0f, pSldMPRadius, cSliderMPRadius::Ref::New(*this));
 	
 	
 	// visibility paint
-	helper.GroupBox(content, groupBox, "@World.WPHeightTerrain.VisibilityPainting.Label", true);
+	helper.GroupBox(content, groupBox, "@World.WPHeightTerrain.VisibilityPainting", true);
 	
-	helper.FormLine(groupBox, "@World.WPHeightTerrain.Mode.Label", "@World.WPHeightTerrain.PaintMode.ToolTip", formLine);
+	helper.FormLine(groupBox, "@World.WPHeightTerrain.Mode", "@World.WPHeightTerrain.PaintMode.ToolTip", formLine);
 	helper.ToggleButton(formLine, pBtnVPModeVisible, cActionVPMode::Ref::New(*this,
 		meWorldGuiParameters::evpdmVisible, "@World.WPHeightTerrain.PaintModeVisible", nullptr, "@World.WPHeightTerrain.PaintModeVisible"));
 	helper.ToggleButton(formLine, pBtnVPModeInvisible, cActionVPMode::Ref::New(*this,
-		meWorldGuiParameters::evpdmInvisible, "@World.WPHeightTerrain.Invisible.Label", nullptr, "@World.WPHeightTerrain.Invisible.Label"));
+		meWorldGuiParameters::evpdmInvisible, "@World.WPHeightTerrain.Invisible", nullptr, "@World.WPHeightTerrain.Invisible"));
 	
-	helper.EditSliderText(groupBox, "@World.WVNodePropCount.Radius.Label", "@World.WPHeightTerrain.SetsRadiusOfInfluence.ToolTip",
+	helper.EditSliderText(groupBox, "@World.WVNodePropCount.Radius", "@World.WPHeightTerrain.SetsRadiusOfInfluence.ToolTip",
 		0.0f, 10.0f, 6, 3, 1.0f, pSldVPRadius, cSliderVPRadius::Ref::New(*this));
 }
 
@@ -1871,7 +1871,7 @@ void meWPHeightTerrain::UpdateVVariationList(){
 		if(pVLayer){
 			pVLayer->GetVariations().VisitIndexed([&](int i, meHTVVariation *variation){
 				pCBVVariation->AddItem(decString::Formatted(
-					Translate("World.WPHeightTerrain.Variation").ToUTF8(), i),
+					Translate("World.WPHeightTerrain.DefaultName.Variation").ToUTF8(), i),
 					nullptr, variation);
 			});
 		}

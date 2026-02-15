@@ -55,6 +55,7 @@ pSource(nullptr)
 	
 	pSource = source;
 	pEffect = effect;
+	SetShortInfo("@Synthesizer.Undo.EffectRemove");
 }
 
 syneUSourceRemoveEffect::~syneUSourceRemoveEffect(){

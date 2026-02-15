@@ -97,13 +97,13 @@ syneWPAPanelSource(wpSource, deSynthesizerSourceVisitorIdentify::estGroup)
 	
 	
 	helper.GroupBox(*this, groupBox, "@Synthesizer.WPAPanelSourceGroup.GroupGroup");
-	helper.ComboBox(groupBox, "@Synthesizer.WPAPanelSourceGroup.FieldApplicationType.Label",
+	helper.ComboBox(groupBox, "@Synthesizer.WPAPanelSourceGroup.FieldApplicationType",
 		"@Synthesizer.WPAPanelSourceGroup.FieldApplicationType.ToolTip",
 		pCBApplicationType, cComboApplicationType::Ref::New(*this));
 	pCBApplicationType->SetAutoTranslateItems(true);
-	pCBApplicationType->AddItem("@Synthesizer.WPAPanelSourceGroup.ComboAll", nullptr, (void*)(intptr_t)deSynthesizerSourceGroup::eatAll);
-	pCBApplicationType->AddItem("@Synthesizer.WPAPanelSourceGroup.ComboSelect", nullptr, (void*)(intptr_t)deSynthesizerSourceGroup::eatSelect);
-	pCBApplicationType->AddItem("@Synthesizer.WPAPanelSourceGroup.ComboSolo", nullptr, (void*)(intptr_t)deSynthesizerSourceGroup::eatSolo);
+	pCBApplicationType->AddItem("@Synthesizer.WPAPanelSourceGroup.ApplicationType.All", nullptr, (void*)(intptr_t)deSynthesizerSourceGroup::eatAll);
+	pCBApplicationType->AddItem("@Synthesizer.WPAPanelSourceGroup.ApplicationType.Select", nullptr, (void*)(intptr_t)deSynthesizerSourceGroup::eatSelect);
+	pCBApplicationType->AddItem("@Synthesizer.WPAPanelSourceGroup.ApplicationType.Solo", nullptr, (void*)(intptr_t)deSynthesizerSourceGroup::eatSolo);
 }
 
 syneWPAPanelSourceGroup::~syneWPAPanelSourceGroup(){

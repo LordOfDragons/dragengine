@@ -138,7 +138,7 @@ public:
 	
 public:
 	cActionEnablePosition(aeWPAPanelRuleGroup &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleGroup.EnablePosition.Label", nullptr,
+		"@Animator.WPAPanelRuleGroup.EnablePosition", nullptr,
 		"@Animator.WPAPanelRuleGroup.EnablePosition.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleGroup *rule) override{
@@ -157,7 +157,7 @@ public:
 	
 public:
 	cActionEnableRotation(aeWPAPanelRuleGroup &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleGroup.EnableRotation.Label", nullptr,
+		"@Animator.WPAPanelRuleGroup.EnableRotation", nullptr,
 		"@Animator.WPAPanelRuleGroup.EnableRotation.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleGroup *rule) override{
@@ -176,7 +176,7 @@ public:
 	
 public:
 	cActionEnableSize(aeWPAPanelRuleGroup &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleGroup.EnableSize.Label", nullptr,
+		"@Animator.WPAPanelRuleGroup.EnableSize", nullptr,
 		"@Animator.WPAPanelRuleGroup.EnableSize.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleGroup *rule) override{
@@ -195,7 +195,7 @@ public:
 	
 public:
 	cActionEnableVertexPositionSet(aeWPAPanelRuleGroup &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleGroup.EnableVertexPositionSet.Label", nullptr,
+		"@Animator.WPAPanelRuleGroup.EnableVertexPositionSet", nullptr,
 		"@Animator.WPAPanelRuleGroup.EnableVertexPositionSet.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleGroup *rule) override{
@@ -214,7 +214,7 @@ public:
 	
 public:
 	cActionUseCurrentState(aeWPAPanelRuleGroup &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleGroup.UseCurrentState.Label", nullptr,
+		"@Animator.WPAPanelRuleGroup.UseCurrentState", nullptr,
 		"@Animator.WPAPanelRuleGroup.UseCurrentState.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleGroup *rule) override{
@@ -245,9 +245,9 @@ aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertGroup)
 	igdeContainer::Ref groupBox;
 	
 	
-	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRuleGroup.Group.Label");
+	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRuleGroup.Group");
 	
-	helper.ComboBox(groupBox, "@Animator.WPAPanelRuleGroup.ApplicationType.Label",
+	helper.ComboBox(groupBox, "@Animator.WPAPanelRuleGroup.ApplicationType",
 		"@Animator.WPAPanelRuleGroup.ApplicationType.ToolTip",
 		pCBApplicationType, cComboApplicationType::Ref::New(*this));
 	pCBApplicationType->SetAutoTranslateItems(true);

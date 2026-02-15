@@ -122,7 +122,7 @@ ceWPCTrigger::ceWPCTrigger(ceWPTopic &parentPanel) : ceWPCondition(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	helper.ComboBox(*this, "@Conversation.WPConditionTrigger.TestMode.Label", "@Conversation.ToolTip.TriggerTestMode",
+	helper.ComboBox(*this, "@Conversation.WPConditionTrigger.TestMode", "@Conversation.ToolTip.TriggerTestMode",
 		pCBTestMode, cComboTestMode::Ref::New(*this));
 	pCBTestMode->SetAutoTranslateItems(true);
 	pCBTestMode->AddItem("@Conversation.WPConditionTrigger.Fired", nullptr, (void*)(intptr_t)ceCConditionTrigger::etmFired);
@@ -130,7 +130,7 @@ ceWPCTrigger::ceWPCTrigger(ceWPTopic &parentPanel) : ceWPCondition(parentPanel){
 	pCBTestMode->AddItem("@Conversation.WPConditionTrigger.HasEverFired", nullptr, (void*)(intptr_t)ceCConditionTrigger::etmEverFired);
 	pCBTestMode->AddItem("@Conversation.WPConditionTrigger.HasNeverFired", nullptr, (void*)(intptr_t)ceCConditionTrigger::etmNeverFired);
 	
-	helper.EditString(*this, "@Conversation.WPConditionTrigger.Trigger.Label", "@Conversation.ToolTip.TriggerToTest", pEditTrigger, cTextTrigger::Ref::New(*this));
+	helper.EditString(*this, "@Conversation.WPConditionTrigger.Trigger", "@Conversation.ToolTip.TriggerToTest", pEditTrigger, cTextTrigger::Ref::New(*this));
 }
 
 ceWPCTrigger::~ceWPCTrigger(){

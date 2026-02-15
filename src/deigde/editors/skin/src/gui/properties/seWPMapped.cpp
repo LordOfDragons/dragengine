@@ -398,7 +398,7 @@ class cActionInputClamped : public cBaseActionMapped {
 public:
 	typedef deTObjectReference<cActionInputClamped> Ref;
 	cActionInputClamped(seWPMapped &panel) : cBaseActionMapped (panel,
-		"@Skin.WPMapped.InputClamped.Label", nullptr, "@Skin.WPMapped.InputClamped.ToolTip"){}
+		"@Skin.WPMapped.InputClamped", nullptr, "@Skin.WPMapped.InputClamped.ToolTip"){}
 	
 	igdeUndo::Ref OnActionMapped(seSkin*, seMapped *mapped) override{
 		return seUMappedToggleInputClamped::Ref::New(mapped);
@@ -504,15 +504,15 @@ pSkin(nullptr)
 	
 	
 	helper.GroupBoxFlow(content, groupBox, "@Skin.WPMapped.GroupMapped");
-	helper.ListBox(groupBox, 8, "@Skin.WPMapped.Mapped.Label", pListMapped, cListMapped::Ref::New(*this));
+	helper.ListBox(groupBox, 8, "@Skin.WPMapped.Mapped", pListMapped, cListMapped::Ref::New(*this));
 	pListMapped->SetDefaultSorter();
 	
 	form = igdeContainerForm::Ref::New(env);
 	groupBox->AddChild(form);
-	helper.EditString(form, "@Skin.WPMapped.Name.Label", "@Skin.WPMapped.Name.ToolTip", pEditName, cTextName::Ref::New(*this));
+	helper.EditString(form, "@Skin.WPMapped.Name", "@Skin.WPMapped.Name.ToolTip", pEditName, cTextName::Ref::New(*this));
 	
 	
-	helper.ComboBox(form, "@Skin.WPMapped.InputType.Label", "@Skin.WPMapped.InputType.ToolTip",
+	helper.ComboBox(form, "@Skin.WPMapped.InputType", "@Skin.WPMapped.InputType.ToolTip",
 		pCBInputType, cComboInputType::Ref::New(*this));
 	pCBInputType->SetAutoTranslateItems(true);
 	pCBInputType->AddItem("@Skin.WPMapped.InputType.Time", nullptr, (void*)(intptr_t)deSkinMapped::eitTime);
@@ -527,22 +527,22 @@ pSkin(nullptr)
 	pCBInputType->AddItem("@Skin.WPMapped.InputType.BoneScaleZ", nullptr, (void*)(intptr_t)deSkinMapped::eitBoneScaleZ);
 	pCBInputType->AddItem("@Skin.WPMapped.InputType.Renderable", nullptr, (void*)(intptr_t)deSkinMapped::eitRenderable);
 	
-	helper.EditFloat(form, "@Skin.WPMapped.InputLower.Label", "@Skin.WPMapped.InputLower.ToolTip", pEditInputLower, cTextInputLower::Ref::New(*this));
-	helper.EditFloat(form, "@Skin.WPMapped.InputUpper.Label", "@Skin.WPMapped.InputUpper.ToolTip", pEditInputUpper, cTextInputUpper::Ref::New(*this));
+	helper.EditFloat(form, "@Skin.WPMapped.InputLower", "@Skin.WPMapped.InputLower.ToolTip", pEditInputLower, cTextInputLower::Ref::New(*this));
+	helper.EditFloat(form, "@Skin.WPMapped.InputUpper", "@Skin.WPMapped.InputUpper.ToolTip", pEditInputUpper, cTextInputUpper::Ref::New(*this));
 	helper.CheckBox(form, pChkInputClamped, cActionInputClamped::Ref::New(*this));
 	
-	helper.EditFloat(form, "@Skin.WPMapped.OutputLower.Label", "@Skin.WPMapped.OutputLower.ToolTip",
+	helper.EditFloat(form, "@Skin.WPMapped.OutputLower", "@Skin.WPMapped.OutputLower.ToolTip",
 		pEditOutputLower, cTextOutputLower::Ref::New(*this));
-	helper.EditFloat(form, "@Skin.WPMapped.OutputUpper.Label", "@Skin.WPMapped.OutputUpper.ToolTip",
+	helper.EditFloat(form, "@Skin.WPMapped.OutputUpper", "@Skin.WPMapped.OutputUpper.ToolTip",
 		pEditOutputUpper, cTextOutputUpper::Ref::New(*this));
 	
-	helper.EditString(form, "@Skin.WPMapped.Bone.Label", "@Skin.WPMapped.Bone.ToolTip",
+	helper.EditString(form, "@Skin.WPMapped.Bone", "@Skin.WPMapped.Bone.ToolTip",
 		pEditBone, cTextBone::Ref::New(*this));
 	
-	helper.EditString(form, "@Skin.WPMapped.Renderable.Label", "@Skin.WPMapped.Renderable.ToolTip",
+	helper.EditString(form, "@Skin.WPMapped.Renderable", "@Skin.WPMapped.Renderable.ToolTip",
 		pEditRenderable, cTextRenderable::Ref::New(*this));
 	
-	helper.ComboBox(form, "@Skin.WPMapped.RenderableComponent.Label",
+	helper.ComboBox(form, "@Skin.WPMapped.RenderableComponent",
 		"@Skin.WPMapped.RenderableComponent.ToolTip",
 		pCBRenderableComponent, cComboRenderableComponent::Ref::New(*this));
 	pCBRenderableComponent->SetAutoTranslateItems(true);

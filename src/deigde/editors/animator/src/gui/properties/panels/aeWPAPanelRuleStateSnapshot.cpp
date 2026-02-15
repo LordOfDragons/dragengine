@@ -145,7 +145,7 @@ public:
 	
 public:
 	cActionUseLastState(aeWPAPanelRuleStateSnapshot &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleStateSnapshot.UseLastState.Label", nullptr,
+		"@Animator.WPAPanelRuleStateSnapshot.UseLastState", nullptr,
 		"@Animator.WPAPanelRuleStateSnapshot.UseLastState.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleStateSnapshot *rule) override{
@@ -175,7 +175,7 @@ public:
 	
 public:
 	cActionEnablePosition(aeWPAPanelRuleStateSnapshot &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleStateSnapshot.EnablePosition.Label", nullptr,
+		"@Animator.WPAPanelRuleStateSnapshot.EnablePosition", nullptr,
 		"@Animator.WPAPanelRuleStateSnapshot.EnablePosition.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleStateSnapshot *rule) override{
@@ -194,7 +194,7 @@ public:
 	
 public:
 	cActionEnableRotation(aeWPAPanelRuleStateSnapshot &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleStateSnapshot.EnableRotation.Label", nullptr,
+		"@Animator.WPAPanelRuleStateSnapshot.EnableRotation", nullptr,
 		"@Animator.WPAPanelRuleStateSnapshot.EnableRotation.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleStateSnapshot *rule) override{
@@ -213,7 +213,7 @@ public:
 	
 public:
 	cActionEnableSize(aeWPAPanelRuleStateSnapshot &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleStateSnapshot.EnableSize.Label", nullptr,
+		"@Animator.WPAPanelRuleStateSnapshot.EnableSize", nullptr,
 		"@Animator.WPAPanelRuleStateSnapshot.EnableSize.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleStateSnapshot *rule) override{
@@ -232,7 +232,7 @@ public:
 	
 public:
 	cActionEnableVertexPositionSet(aeWPAPanelRuleStateSnapshot &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleStateSnapshot.EnableVertexPositionSet.Label", nullptr,
+		"@Animator.WPAPanelRuleStateSnapshot.EnableVertexPositionSet", nullptr,
 		"@Animator.WPAPanelRuleStateSnapshot.EnableVertexPositionSet.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleStateSnapshot *rule) override{
@@ -251,7 +251,7 @@ public:
 	
 public:
 	cActionSnapshot(aeWPAPanelRuleStateSnapshot &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleStateSnapshot.ActionSnapshot.Label", nullptr,
+		"@Animator.WPAPanelRuleStateSnapshot.ActionSnapshot", nullptr,
 		"@Animator.WPAPanelRuleStateSnapshot.ActionSnapshot.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator *animator, aeRuleStateSnapshot *rule) override{
@@ -269,7 +269,7 @@ public:
 	
 public:
 	cActionGetFrame(aeWPAPanelRuleStateSnapshot &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleStateSnapshot.ActionGetFrame.Label", nullptr,
+		"@Animator.WPAPanelRuleStateSnapshot.ActionGetFrame", nullptr,
 		"@Animator.WPAPanelRuleStateSnapshot.ActionGetFrame.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator *animator, aeRuleStateSnapshot *rule) override{
@@ -304,19 +304,19 @@ aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertStateSnapshot)
 	igdeContainer::Ref groupBox, formLine;
 	
 	
-	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRuleStateSnapshot.StateSnapshot.Label");
+	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRuleStateSnapshot.StateSnapshot");
 	
 	helper.CheckBox(groupBox, pChkUseLastState, cActionUseLastState::Ref::New(*this));
-	helper.EditInteger(groupBox, "@Animator.WPAPanelRuleStateSnapshot.ID.Label",
+	helper.EditInteger(groupBox, "@Animator.WPAPanelRuleStateSnapshot.ID",
 		"@Animator.WPAPanelRuleStateSnapshot.ID.ToolTip",
 		pEditID, cTextID::Ref::New(*this));
 	
-	helper.ComboBoxFilter(groupBox, "@Animator.WPAPanelRuleStateSnapshot.MoveName.Label", true,
+	helper.ComboBoxFilter(groupBox, "@Animator.WPAPanelRuleStateSnapshot.MoveName", true,
 		"@Animator.WPAPanelRuleStateSnapshot.MoveName.ToolTip",
 		pCBMoveName, {});
 	pCBMoveName->SetDefaultSorter();
 	
-	helper.EditFloat(groupBox, "@Animator.WPAPanelRuleStateSnapshot.MoveTime.Label",
+	helper.EditFloat(groupBox, "@Animator.WPAPanelRuleStateSnapshot.MoveTime",
 		"@Animator.WPAPanelRuleStateSnapshot.MoveTime.ToolTip",
 		pEditMoveTime, {});
 	
@@ -325,7 +325,7 @@ aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertStateSnapshot)
 	helper.CheckBox(groupBox, pChkEnableSize, cActionEnableSize::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkEnableVertexPositionSet, cActionEnableVertexPositionSet::Ref::New(*this));
 	
-	helper.FormLine(groupBox, "@Animator.WPAPanelRuleStateSnapshot.Snapshot.Label",
+	helper.FormLine(groupBox, "@Animator.WPAPanelRuleStateSnapshot.Snapshot",
 		"@Animator.WPAPanelRuleStateSnapshot.Snapshot.ToolTip", formLine);
 	helper.Button(formLine, pBtnSnapshot, cActionSnapshot::Ref::New(*this));
 	helper.Button(formLine, pBtnGetFrame, cActionGetFrame::Ref::New(*this));

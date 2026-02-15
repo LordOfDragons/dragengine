@@ -304,7 +304,7 @@ public:
 	using Ref = deTObjectReference<cActionSetFromMove>;
 	
 public:
-	cActionSetFromMove(aeWPController &panel) : cBaseAction(panel, "@Animator.WPController.SetFromMove.Label",
+	cActionSetFromMove(aeWPController &panel) : cBaseAction(panel, "@Animator.WPController.SetFromMove",
 		nullptr, "@Animator.WPController.SetFromMove.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator *animator, aeController *controller) override{
@@ -338,7 +338,7 @@ public:
 	using Ref = deTObjectReference<cActionResetValue>;
 	
 public:
-	cActionResetValue(aeWPController &panel) : cBaseAction(panel, "@Animator.WPController.Reset.Label",
+	cActionResetValue(aeWPController &panel) : cBaseAction(panel, "@Animator.WPController.Reset",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongLeft),
 		"@Animator.WPController.Reset.ToolTip"){}
 	
@@ -387,7 +387,7 @@ public:
 	using Ref = deTObjectReference<cActionClamp>;
 	
 public:
-	cActionClamp(aeWPController &panel) : cBaseAction(panel, "@Animator.WPController.Clamp.Label",
+	cActionClamp(aeWPController &panel) : cBaseAction(panel, "@Animator.WPController.Clamp",
 		nullptr, "@Animator.WPController.Clamp.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeController *controller) override{
@@ -405,7 +405,7 @@ public:
 	using Ref = deTObjectReference<cActionFrozen>;
 	
 public:
-	cActionFrozen(aeWPController &panel) : cBaseAction(panel, "@Animator.WPController.Frozen.Label",
+	cActionFrozen(aeWPController &panel) : cBaseAction(panel, "@Animator.WPController.Frozen",
 		nullptr, "@Animator.WPController.Frozen.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeController *controller) override{
@@ -524,22 +524,22 @@ pWindowProperties(windowProperties)
 	
 	
 	// controllers
-	helper.GroupBoxFlow(content, groupBox, "@Animator.WPController.Controllers.Label");
+	helper.GroupBoxFlow(content, groupBox, "@Animator.WPController.Controllers");
 	helper.ListBox(groupBox, 8, "@Animator.WPController.Controllers.ToolTip",
 		pListController, cListControllers::Ref::New(*this));
 	
 	
 	// controller settings
-	helper.GroupBox(content, groupBox, "@Animator.WPController.ControllerSettings.Label");
-	helper.EditString(groupBox, "@Animator.WPController.Name.Label",
+	helper.GroupBox(content, groupBox, "@Animator.WPController.ControllerSettings");
+	helper.EditString(groupBox, "@Animator.WPController.Name",
 		"@Animator.WPController.Name.ToolTip", pEditName, cTextName::Ref::New(*this));
-	helper.EditFloat(groupBox, "@Animator.WPController.MinimumValue.Label",
+	helper.EditFloat(groupBox, "@Animator.WPController.MinimumValue",
 		"@Animator.WPController.MinimumValue.ToolTip", pEditMin, cTextMinimumValue::Ref::New(*this));
-	helper.EditFloat(groupBox, "@Animator.WPController.MaximumValue.Label",
+	helper.EditFloat(groupBox, "@Animator.WPController.MaximumValue",
 		"@Animator.WPController.MaximumValue.ToolTip", pEditMax, cTextMaximumValue::Ref::New(*this));
-	helper.EditSliderText(groupBox, "@Animator.WPController.Value.Label",
+	helper.EditSliderText(groupBox, "@Animator.WPController.Value",
 		"@Animator.WPController.Value.ToolTip", 0.0f, 1.0f, 6, 3, 0.1f, pSldValue, cSlideValue::Ref::New(*this));
-	helper.EditVector(groupBox, "@Animator.WPController.Vector.Label",
+	helper.EditVector(groupBox, "@Animator.WPController.Vector",
 		"@Animator.WPController.Vector.ToolTip", pEditVector, cEditVector::Ref::New(*this));
 	
 	helper.FormLine(groupBox, "", "", formLine);
@@ -549,16 +549,16 @@ pWindowProperties(windowProperties)
 	helper.CheckBox(groupBox, pChkClamp, cActionClamp::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkFrozen, cActionFrozen::Ref::New(*this));
 	
-	helper.EditFloat(groupBox, "@Animator.WPController.DefaultValue.Label",
+	helper.EditFloat(groupBox, "@Animator.WPController.DefaultValue",
 		"@Animator.WPController.DefaultValue.ToolTip", pEditDefaultValue, cTextDefaultValue::Ref::New(*this));
-	helper.EditVector(groupBox, "@Animator.WPController.DefaultVector.Label",
+	helper.EditVector(groupBox, "@Animator.WPController.DefaultVector",
 		"@Animator.WPController.DefaultVector.ToolTip", pEditDefaultVector, cEditDefaultVector::Ref::New(*this));
 	
 	
 	// locomotion testing
-	helper.GroupBox(content, groupBox, "@Animator.WPController.LocomotionTesting.Label");
+	helper.GroupBox(content, groupBox, "@Animator.WPController.LocomotionTesting");
 	
-	helper.ComboBox(groupBox, "@Animator.WPController.Attribute.Label",
+	helper.ComboBox(groupBox, "@Animator.WPController.Attribute",
 		"@Animator.WPController.Attribute.ToolTip", pCBLocoAttr, cComboLocoAttr::Ref::New(*this));
 	pCBLocoAttr->SetAutoTranslateItems(true);
 	pCBLocoAttr->AddItem("@Animator.WPController.Attribute.None", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaNone);
@@ -582,10 +582,10 @@ pWindowProperties(windowProperties)
 	pCBLocoAttr->AddItem("@Animator.WPController.Attribute.LegPosition", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaLegPosition);
 	pCBLocoAttr->AddItem("@Animator.WPController.Attribute.LegOrientation", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaLegOrientation);
 	
-	helper.EditInteger(groupBox, "@Animator.WPController.Leg.Label",
+	helper.EditInteger(groupBox, "@Animator.WPController.Leg",
 		"@Animator.WPController.Leg.ToolTip", pEditLocoLeg, cTextLocoLeg::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "@Animator.WPController.VectorSimulation.Label",
+	helper.ComboBox(groupBox, "@Animator.WPController.VectorSimulation",
 		"@Animator.WPController.VectorSimulation.ToolTip", pCBVectorSimulation, cComboVectorSimulation::Ref::New(*this));
 	pCBVectorSimulation->SetAutoTranslateItems(true);
 	pCBVectorSimulation->AddItem("@Animator.WPController.VectorSimulation.None", nullptr, (void*)(intptr_t)aeController::evsNone);

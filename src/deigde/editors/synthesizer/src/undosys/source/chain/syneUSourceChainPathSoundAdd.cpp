@@ -49,7 +49,7 @@ pSource(nullptr)
 	pIndex = source->GetPathSounds().GetCount();
 	pPath = path;
 	
-	SetShortInfo("@Source Chain Path Sound Add");
+	SetShortInfo("@Synthesizer.Undo.SourceChainPathSoundAdd");
 	
 	pSource = source;
 }

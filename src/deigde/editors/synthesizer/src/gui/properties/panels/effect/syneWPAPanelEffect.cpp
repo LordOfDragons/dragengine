@@ -255,7 +255,7 @@ pRequiredType(requiredType)
 	
 	// general settings
 	helper.GroupBox(*this, groupBox, "@Synthesizer.WPAPanelEffect.GroupGeneralSettings");
-	helper.EditString(groupBox, "@Synthesizer.WPAPanelEffect.FieldStrength.Label", "@Synthesizer.WPAPanelEffect.FieldStrength.ToolTip", pEditStrength, cTextStrength::Ref::New(*this));
+	helper.EditString(groupBox, "@Synthesizer.WPAPanelEffect.FieldStrength", "@Synthesizer.WPAPanelEffect.FieldStrength.ToolTip", pEditStrength, cTextStrength::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkEnabled, cActionEnable::Ref::New(*this));
 	
 	
@@ -264,11 +264,11 @@ pRequiredType(requiredType)
 	
 	form = igdeContainerForm::Ref::New(env);
 	groupBox->AddChild(form);
-	helper.ComboBox(form, "@Synthesizer.WPAPanelEffect.FieldTarget.Label", "@Synthesizer.WPAPanelEffect.FieldTarget.ToolTip",
+	helper.ComboBox(form, "@Synthesizer.WPAPanelEffect.FieldTarget", "@Synthesizer.WPAPanelEffect.FieldTarget.ToolTip",
 		pCBTarget, cComboTarget::Ref::New(*this));
 	pCBTarget->SetAutoTranslateItems(true);
 	
-	helper.FormLineStretchFirst(form, "@Synthesizer.WPAPanelEffect.FieldLink.Label", "@Synthesizer.WPAPanelEffect.FieldLink.ToolTip", formLine);
+	helper.FormLineStretchFirst(form, "@Synthesizer.WPAPanelEffect.FieldLink", "@Synthesizer.WPAPanelEffect.FieldLink.ToolTip", formLine);
 	helper.ComboBox(formLine, "@Synthesizer.WPAPanelEffect.FieldLink.ToolTip", pCBLinks, cComboTarget::Ref::New(*this));
 	helper.Button(formLine, pBtnLinkAdd, pActionLinkAdd);
 	

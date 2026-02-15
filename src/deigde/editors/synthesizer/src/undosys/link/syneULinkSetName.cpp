@@ -50,7 +50,7 @@ pLink(nullptr)
 	pOldName = link->GetName();
 	pNewName = newName;
 	
-	SetShortInfo("@Link Set Name");
+	SetShortInfo("@Synthesizer.Undo.LinkSetName");
 	
 	pLink = link;
 }

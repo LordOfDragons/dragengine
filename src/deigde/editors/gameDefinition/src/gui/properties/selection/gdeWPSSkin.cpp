@@ -87,7 +87,7 @@ public:
 		
 		if(pPanel.GetGameDefinition()->GetSkins().HasWithPath(editPath->GetPath())){
 			igdeCommonDialogs::Information(*pPanel.GetParentWindow(), "@GameDefinition.Skin.Dialog.ChangeSkinEmitterPath",
-				"@GameDefinition.Skin.Dialog.ASkinEmitterWithThisPathExistsAlready.");
+				"@GameDefinition.Skin.Dialog.DuplicateSkinEmitter.Error");
 			editPath->SetPath(skin->GetPath());
 			return;
 		}
@@ -207,13 +207,13 @@ pWindowProperties(windowProperties)
 	
 	// skin
 	helper.GroupBox(content, groupBox, "@GameDefinition.WPSSkin.GroupSkin");
-	helper.EditPath(groupBox, "@GameDefinition.WPSSkin.Path.Label", "@GameDefinition.WPSSkin.Path.ToolTip",
+	helper.EditPath(groupBox, "@GameDefinition.WPSSkin.Path", "@GameDefinition.WPSSkin.Path.ToolTip",
 		igdeEnvironment::efpltSkin, pEditPath, cEditPath::Ref::New(*this));
-	helper.EditString(groupBox, "@GameDefinition.WPSSkin.Name.Label", "@GameDefinition.WPSSkin.Name.ToolTip", pEditName, cTextName::Ref::New(*this));
-	helper.EditString(groupBox, "@GameDefinition.WPSSkin.Description.Label", "@GameDefinition.WPSSkin.Description.ToolTip",
+	helper.EditString(groupBox, "@GameDefinition.WPSSkin.Name", "@GameDefinition.WPSSkin.Name.ToolTip", pEditName, cTextName::Ref::New(*this));
+	helper.EditString(groupBox, "@GameDefinition.WPSSkin.Description", "@GameDefinition.WPSSkin.Description.ToolTip",
 		pEditDescription, 15, 5, cTextDescription::Ref::New(*this));
 	
-	helper.FormLineStretchFirst(groupBox, "@GameDefinition.WPSSkin.Category.Label", "@GameDefinition.WPSSkin.Category.ToolTip", frameLine);
+	helper.FormLineStretchFirst(groupBox, "@GameDefinition.WPSSkin.Category", "@GameDefinition.WPSSkin.Category.ToolTip", frameLine);
 	helper.ComboBoxFilter(frameLine, true, "@GameDefinition.Category.Filter.ToolTip", pCBCategory, cComboCategory::Ref::New(*this));
 	pCBCategory->SetEditable(true);
 	pCBCategory->SetDefaultSorter();

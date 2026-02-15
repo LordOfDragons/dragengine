@@ -50,7 +50,7 @@ pSource(nullptr)
 	pNewMode = newMode;
 	
 	pSource = source;
-	SetShortInfo("@Source Set Mix Mode");
+	SetShortInfo("@Synthesizer.Undo.SourceSetMixMode");
 }
 
 syneUSetSourceMixMode::~syneUSetSourceMixMode(){

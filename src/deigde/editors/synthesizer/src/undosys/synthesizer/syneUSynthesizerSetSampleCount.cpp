@@ -51,7 +51,7 @@ pSynthesizer(nullptr)
 	pNewSampleCount = newSampleCount;
 	
 	pSynthesizer = synthesizer;
-	SetShortInfo("@Synthesizer Set Sample Count");
+	SetShortInfo("@Synthesizer.Undo.SynthesizerSetSampleCount");
 }
 
 syneUSynthesizerSetSampleCount::~syneUSynthesizerSetSampleCount(){

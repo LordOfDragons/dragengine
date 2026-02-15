@@ -340,19 +340,19 @@ pWPEffect(nullptr)
 	
 	// general settings
 	helper.GroupBox(*this, groupBox, "@Synthesizer.WPAPanelSource.GroupGeneralSettings");
-	helper.EditString(groupBox, "@Synthesizer.WPAPanelSource.FieldName.Label", "@Synthesizer.WPAPanelSource.FieldName.ToolTip", pEditName, cTextName::Ref::New(*this));
+	helper.EditString(groupBox, "@Synthesizer.WPAPanelSource.FieldName", "@Synthesizer.WPAPanelSource.FieldName.ToolTip", pEditName, cTextName::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "@Synthesizer.WPAPanelSource.FieldMixMode.Label",
+	helper.ComboBox(groupBox, "@Synthesizer.WPAPanelSource.FieldMixMode",
 		"@Synthesizer.WPAPanelSource.FieldMixMode.ToolTip", pCBMixMode, cComboMixMode::Ref::New(*this));
 	pCBMixMode->SetAutoTranslateItems(true);
-	pCBMixMode->AddItem("@Synthesizer.WPAPanelSource.ComboBlend", nullptr, (void*)(intptr_t)deSynthesizerSource::emmBlend);
-	pCBMixMode->AddItem("@Synthesizer.WPAPanelSource.ComboAdd", nullptr, (void*)(intptr_t)deSynthesizerSource::emmAdd);
+	pCBMixMode->AddItem("@Synthesizer.WPAPanelSource.MixMode.Blend", nullptr, (void*)(intptr_t)deSynthesizerSource::emmBlend);
+	pCBMixMode->AddItem("@Synthesizer.WPAPanelSource.MixMode.Add", nullptr, (void*)(intptr_t)deSynthesizerSource::emmAdd);
 	
-	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelSource.FieldBlendFactor.Label", "@Synthesizer.WPAPanelSource.FieldBlendFactor.ToolTip", pEditBlendFactor, cTextBlendFactor::Ref::New(*this));
-	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelSource.FieldMinVolume.Label", "@Synthesizer.WPAPanelSource.FieldMinVolume.ToolTip", pEditMinVolume, cTextMinVolume::Ref::New(*this));
-	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelSource.FieldMaxVolume.Label", "@Synthesizer.WPAPanelSource.FieldMaxVolume.ToolTip", pEditMaxVolume, cTextMaxVolume::Ref::New(*this));
-	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelSource.FieldMinPanning.Label", "@Synthesizer.WPAPanelSource.FieldMinPanning.ToolTip", pEditMinPanning, cTextMinPanning::Ref::New(*this));
-	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelSource.FieldMaxPanning.Label", "@Synthesizer.WPAPanelSource.FieldMaxPanning.ToolTip", pEditMaxPanning, cTextMaxPanning::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelSource.FieldBlendFactor", "@Synthesizer.WPAPanelSource.FieldBlendFactor.ToolTip", pEditBlendFactor, cTextBlendFactor::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelSource.FieldMinVolume", "@Synthesizer.WPAPanelSource.FieldMinVolume.ToolTip", pEditMinVolume, cTextMinVolume::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelSource.FieldMaxVolume", "@Synthesizer.WPAPanelSource.FieldMaxVolume.ToolTip", pEditMaxVolume, cTextMaxVolume::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelSource.FieldMinPanning", "@Synthesizer.WPAPanelSource.FieldMinPanning.ToolTip", pEditMinPanning, cTextMinPanning::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelSource.FieldMaxPanning", "@Synthesizer.WPAPanelSource.FieldMaxPanning.ToolTip", pEditMaxPanning, cTextMaxPanning::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkEnabled, cActionEnable::Ref::New(*this));
 	
 	
@@ -361,11 +361,11 @@ pWPEffect(nullptr)
 	
 	form = igdeContainerForm::Ref::New(env);
 	groupBox->AddChild(form);
-	helper.ComboBox(form, "@Synthesizer.WPAPanelSource.FieldTarget.Label", "@Synthesizer.WPAPanelSource.FieldTarget.ToolTip",
+	helper.ComboBox(form, "@Synthesizer.WPAPanelSource.FieldTarget", "@Synthesizer.WPAPanelSource.FieldTarget.ToolTip",
 		pCBTarget, cComboTarget::Ref::New(*this));
 	pCBTarget->SetAutoTranslateItems(true);
 	
-	helper.FormLineStretchFirst(form, "@Synthesizer.WPAPanelSource.FieldLink.Label", "@Synthesizer.WPAPanelSource.FieldLink.ToolTip", formLine);
+	helper.FormLineStretchFirst(form, "@Synthesizer.WPAPanelSource.FieldLink", "@Synthesizer.WPAPanelSource.FieldLink.ToolTip", formLine);
 	helper.ComboBox(formLine, "@Synthesizer.WPAPanelSource.FieldLink.ToolTip", pCBLinks, cComboTarget::Ref::New(*this));
 	helper.Button(formLine, pBtnLinkAdd, pActionLinkAdd);
 	

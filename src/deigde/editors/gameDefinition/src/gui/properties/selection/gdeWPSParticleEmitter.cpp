@@ -87,7 +87,7 @@ public:
 		
 		if(pPanel.GetGameDefinition()->GetParticleEmitters().HasWithPath(editPath->GetPath())){
 			igdeCommonDialogs::Information(*pPanel.GetParentWindow(), "@GameDefinition.ParticleEmitter.Dialog.ChangeParticleEmitterPath",
-				"@GameDefinition.ParticleEmitter.Dialog.AParticleEmitterWithThisPathExistsAlready.");
+				"@GameDefinition.ParticleEmitter.Dialog.DuplicateParticleEmitter.Error");
 			editPath->SetPath(particleEmitter->GetPath());
 			return;
 		}
@@ -208,13 +208,13 @@ pWindowProperties(windowProperties)
 	
 	// particle emitter
 	helper.GroupBox(content, groupBox, "@GameDefinition.WPSParticleEmitter.GroupParticleEmitter");
-	helper.EditPath(groupBox, "@GameDefinition.WPSParticleEmitter.Path.Label", "@GameDefinition.WPSParticleEmitter.Path.ToolTip",
+	helper.EditPath(groupBox, "@GameDefinition.WPSParticleEmitter.Path", "@GameDefinition.WPSParticleEmitter.Path.ToolTip",
 		igdeEnvironment::efpltParticleEmitter, pEditPath, cEditPath::Ref::New(*this));
-	helper.EditString(groupBox, "@GameDefinition.WPSParticleEmitter.Name.Label", "@GameDefinition.WPSParticleEmitter.Name.ToolTip", pEditName, cTextName::Ref::New(*this));
-	helper.EditString(groupBox, "@GameDefinition.WPSParticleEmitter.Description.Label", "@GameDefinition.WPSParticleEmitter.Description.ToolTip",
+	helper.EditString(groupBox, "@GameDefinition.WPSParticleEmitter.Name", "@GameDefinition.WPSParticleEmitter.Name.ToolTip", pEditName, cTextName::Ref::New(*this));
+	helper.EditString(groupBox, "@GameDefinition.WPSParticleEmitter.Description", "@GameDefinition.WPSParticleEmitter.Description.ToolTip",
 		pEditDescription, 15, 5, cTextDescription::Ref::New(*this));
 	
-	helper.FormLineStretchFirst(groupBox, "@GameDefinition.WPSParticleEmitter.Category.Label", "@GameDefinition.WPSParticleEmitter.Category.ToolTip", frameLine);
+	helper.FormLineStretchFirst(groupBox, "@GameDefinition.WPSParticleEmitter.Category", "@GameDefinition.WPSParticleEmitter.Category.ToolTip", frameLine);
 	helper.ComboBoxFilter(frameLine, true, "@GameDefinition.Category.Filter.ToolTip", pCBCategory, cComboCategory::Ref::New(*this));
 	pCBCategory->SetDefaultSorter();
 	pCBCategory->SetFilterCaseInsentive(true);

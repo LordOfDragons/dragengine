@@ -50,6 +50,7 @@ pIndex(index)
 	
 	pSource = source;
 	pEffect = effect;
+	SetShortInfo("@Synthesizer.Undo.EffectAdd");
 }
 
 syneUSourceAddEffect::~syneUSourceAddEffect(){

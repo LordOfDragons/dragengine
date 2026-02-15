@@ -118,7 +118,7 @@ class cActionMoveAdd: public cBaseAction{
 public:
 	using Ref = deTObjectReference<cActionMoveAdd>;
 	cActionMoveAdd(aeWPAPanelRuleAnimationSelect &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleAnimationSelect.Action.MoveAdd.Label",
+		"@Animator.WPAPanelRuleAnimationSelect.Action.MoveAdd",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"@Animator.WPAPanelRuleAnimationSelect.Action.MoveAdd.ToolTip"){}
 	
@@ -142,7 +142,7 @@ class cActionMoveRemove: public cBaseAction{
 public:
 	using Ref = deTObjectReference<cActionMoveRemove>;
 	cActionMoveRemove(aeWPAPanelRuleAnimationSelect &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleAnimationSelect.Action.MoveRemove.Label",
+		"@Animator.WPAPanelRuleAnimationSelect.Action.MoveRemove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"@Animator.WPAPanelRuleAnimationSelect.Action.MoveRemove.ToolTip"){}
 	
@@ -166,7 +166,7 @@ class cActionMoveUp: public cBaseAction{
 public:
 	using Ref = deTObjectReference<cActionMoveUp>;
 	cActionMoveUp(aeWPAPanelRuleAnimationSelect &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleAnimationSelect.Action.MoveUp.Label",
+		"@Animator.WPAPanelRuleAnimationSelect.Action.MoveUp",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp),
 		"@Animator.WPAPanelRuleAnimationSelect.Action.MoveUp.ToolTip"){}
 	
@@ -190,7 +190,7 @@ class cActionMoveDown: public cBaseAction{
 public:
 	using Ref = deTObjectReference<cActionMoveDown>;
 	cActionMoveDown(aeWPAPanelRuleAnimationSelect &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleAnimationSelect.Action.MoveDown.Label",
+		"@Animator.WPAPanelRuleAnimationSelect.Action.MoveDown",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown),
 		"@Animator.WPAPanelRuleAnimationSelect.Action.MoveDown.ToolTip"){}
 	
@@ -236,7 +236,7 @@ public:
 	
 public:
 	cActionEnablePosition(aeWPAPanelRuleAnimationSelect &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleAnimationSelect.EnablePosition.Label", nullptr,
+		"@Animator.WPAPanelRuleAnimationSelect.EnablePosition", nullptr,
 		"@Animator.WPAPanelRuleAnimationSelect.EnablePosition.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleAnimationSelect *rule) override{
@@ -255,7 +255,7 @@ public:
 	
 public:
 	cActionEnableRotation(aeWPAPanelRuleAnimationSelect &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleAnimationSelect.EnableRotation.Label", nullptr,
+		"@Animator.WPAPanelRuleAnimationSelect.EnableRotation", nullptr,
 		"@Animator.WPAPanelRuleAnimationSelect.EnableRotation.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleAnimationSelect *rule) override{
@@ -274,7 +274,7 @@ public:
 	
 public:
 	cActionEnableSize(aeWPAPanelRuleAnimationSelect &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleAnimationSelect.EnableSize.Label", nullptr,
+		"@Animator.WPAPanelRuleAnimationSelect.EnableSize", nullptr,
 		"@Animator.WPAPanelRuleAnimationSelect.EnableSize.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleAnimationSelect *rule) override{
@@ -293,7 +293,7 @@ public:
 	
 public:
 	cActionEnableVertexPositionSet(aeWPAPanelRuleAnimationSelect &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleAnimationSelect.EnableVertexPositionSet.Label", nullptr,
+		"@Animator.WPAPanelRuleAnimationSelect.EnableVertexPositionSet", nullptr,
 		"@Animator.WPAPanelRuleAnimationSelect.EnableVertexPositionSet.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleAnimationSelect *rule) override{
@@ -323,7 +323,7 @@ aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertAnimationSelect)
 	igdeContainer::Ref groupBox, formLine;
 	
 	
-	helper.GroupBoxFlow(*this, groupBox, "@Animator.WPAPanelRuleAnimationSelect.AnimationSelect.Label");
+	helper.GroupBoxFlow(*this, groupBox, "@Animator.WPAPanelRuleAnimationSelect.AnimationSelect");
 	
 	formLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
 	groupBox->AddChild(formLine);

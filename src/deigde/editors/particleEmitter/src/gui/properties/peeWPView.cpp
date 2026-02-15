@@ -200,13 +200,13 @@ pWindowProperties(windowProperties)
 	
 	// preview settings
 	helper.GroupBox(content, groupBox, "@ParticleEmitter.WPView.Group.Preview");
-	helper.EditVector(groupBox, "@ParticleEmitter.WPView.Position.Label", "@ParticleEmitter.WPView.Position.ToolTip",
+	helper.EditVector(groupBox, "@ParticleEmitter.WPView.Position", "@ParticleEmitter.WPView.Position.ToolTip",
 		pEditEmitterPosition, cEditPosition::Ref::New(*this));
-	helper.EditVector(groupBox, "@ParticleEmitter.WPView.Rotation.Label", "@ParticleEmitter.WPView.Rotation.ToolTip",
+	helper.EditVector(groupBox, "@ParticleEmitter.WPView.Rotation", "@ParticleEmitter.WPView.Rotation.ToolTip",
 		pEditEmitterRotation, cEditRotation::Ref::New(*this));
-	helper.EditFloat(groupBox, "@ParticleEmitter.WPView.BurstInterval.Label", "@ParticleEmitter.WPView.BurstInterval.ToolTip",
+	helper.EditFloat(groupBox, "@ParticleEmitter.WPView.BurstInterval", "@ParticleEmitter.WPView.BurstInterval.ToolTip",
 		pEditEmitterBurstInterval, cEditBurstInterval::Ref::New(*this));
-	helper.EditFloat(groupBox, "@ParticleEmitter.WPView.WarmUpTime.Label",
+	helper.EditFloat(groupBox, "@ParticleEmitter.WPView.WarmUpTime",
 		"@ParticleEmitter.WPView.WarmUpTime.ToolTip",
 		pEditEmitterWarmUpTime, cEditWarmUpTime::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkEmitterEnableCasting, cActionEnableCasting::Ref::New(*this));

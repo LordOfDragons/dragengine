@@ -124,7 +124,7 @@ pWindowMain(windowMain)
 		igdeUIHelper::sColumnHeader("@World.WindowChangelog.Column.Filename", nullptr, igdeApplication::app().DisplayScaled(380))};
 	helper.IconListBox(
 		igdeApplication::app().DisplayScaled(decPoint(100, 150)),
-		headers, 3, "@World.WindowChangelog.Changes.Label", pListChanges, cListChangelog::Ref::New(*this));
+		headers, 3, "@World.WindowChangelog.Changes", pListChanges, cListChangelog::Ref::New(*this));
 	AddChild(pListChanges, igdeContainerBorder::eaCenter);
 	
 	pListChanges->SetSorter(cChangelogSorter::Ref::New());

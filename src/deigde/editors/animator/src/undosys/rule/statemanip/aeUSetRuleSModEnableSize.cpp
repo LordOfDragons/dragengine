@@ -46,7 +46,7 @@ aeUSetRuleSModEnableSize::aeUSetRuleSModEnableSize(aeRuleStateManipulator *rule)
 	
 	try{
 		pRule = rule;
-		SetShortInfo("@Animator.Undo.SetRuleStateManipulatorEnablePosition");
+		SetShortInfo("@Animator.Undo.SetRuleStateManipulatorEnableSize");
 		
 	}catch(const deException &){
 		pCleanUp();

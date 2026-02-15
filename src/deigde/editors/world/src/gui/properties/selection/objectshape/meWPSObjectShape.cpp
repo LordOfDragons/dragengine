@@ -185,22 +185,22 @@ pPreventUpdate(false)
 	form = igdeContainerForm::Ref::New(env);
 	content->AddChild(form);
 	
-	helper.EditString(form, "@World.WPSObjectShape.Class.Label", "@World.WPSObjectShape.NameOfActiveObjectClass.ToolTip", pEditObjectClass, {});
+	helper.EditString(form, "@World.WPSObjectShape.Class", "@World.WPSObjectShape.NameOfActiveObjectClass.ToolTip", pEditObjectClass, {});
 	pEditObjectClass->SetEditable(false);
 	
-	helper.ComboBox(form, "@World.WPSObjectShape.Property.Label", "@World.WPSObjectShape.NameOfActiveObjectProperty.ToolTip",
+	helper.ComboBox(form, "@World.WPSObjectShape.Property", "@World.WPSObjectShape.NameOfActiveObjectProperty.ToolTip",
 		pCBProperties, cComboProperties::Ref::New(*this, pPreventUpdate));
 	pCBProperties->SetDefaultSorter();
 	
 	formLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esLast, 10);
 	content->AddChild(formLine);
-	helper.Label(formLine, "@World.WPSObjectShape.Count.Label");
-	helper.EditInteger(formLine, "@World.WPSObjectShape.CountOfShapes.Label", 3, pEditShapeCount, {});
+	helper.Label(formLine, "@World.WPSObjectShape.Count");
+	helper.EditInteger(formLine, "@World.WPSObjectShape.CountOfShapes", 3, pEditShapeCount, {});
 	pEditShapeCount->SetEditable(false);
-	helper.Label(formLine, "@World.WPView.Active.Label");
-	helper.EditSpinInteger(formLine, "@World.WPSObjectShape.ActiveShapeToEdit.Label", 0, 0, pSpinActive, cSpinActive::Ref::New(*this));
+	helper.Label(formLine, "@World.WPView.Active");
+	helper.EditSpinInteger(formLine, "@World.WPSObjectShape.ActiveShapeToEdit", 0, 0, pSpinActive, cSpinActive::Ref::New(*this));
 	
-	helper.EditString(content, "@World.WPSObjectShape.PropertyInformation.Label", pTextInfos, 6, {});
+	helper.EditString(content, "@World.WPSObjectShape.PropertyInformation", pTextInfos, 6, {});
 	pTextInfos->SetEditable(false);
 	
 	
@@ -565,52 +565,52 @@ void meWPSObjectShape::pCreateShapePanels(){
 	
 	
 	// none
-	helper.Label(pSwitcherShapeType, "@World.WPSObjectShape.NoShapeSelected.Label");
+	helper.Label(pSwitcherShapeType, "@World.WPSObjectShape.NoShapeSelected");
 	
 	
 	// sphere
-	helper.GroupBoxStatic(pSwitcherShapeType, groupBox, "@World.WPSObjectShape.Sphere.Label");
-	helper.EditVector(groupBox, "@World.WPSObjectShape.PositionSphere.Label", "@World.WPSObjectShape.PositionOfSphere.ToolTip",
+	helper.GroupBoxStatic(pSwitcherShapeType, groupBox, "@World.WPSObjectShape.Sphere");
+	helper.EditVector(groupBox, "@World.WPSObjectShape.PositionSphere", "@World.WPSObjectShape.PositionOfSphere.ToolTip",
 		pEditSpherePosition, cShapeValueVector::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WVNodePropCount.Radius.Label", "@World.WPSObjectShape.RadiusOfSphere.ToolTip",
+	helper.EditFloat(groupBox, "@World.WVNodePropCount.Radius", "@World.WPSObjectShape.RadiusOfSphere.ToolTip",
 		pEditSphereRadius, cShapeValueFloat::Ref::New(*this));
 	
 	
 	// box
-	helper.GroupBoxStatic(pSwitcherShapeType, groupBox, "@World.WPSObjectShape.Box.Label");
-	helper.EditVector(groupBox, "@World.WPSObjectShape.PositionBox.Label", "@World.WPSObjectShape.PositionOfBox.ToolTip",
+	helper.GroupBoxStatic(pSwitcherShapeType, groupBox, "@World.WPSObjectShape.Box");
+	helper.EditVector(groupBox, "@World.WPSObjectShape.PositionBox", "@World.WPSObjectShape.PositionOfBox.ToolTip",
 		pEditBoxPosition, cShapeValueVector::Ref::New(*this));
-	helper.EditVector(groupBox, "@World.WPSObjectShape.RotationBox.Label", "@World.WPSObjectShape.RotationOfBox.ToolTip",
+	helper.EditVector(groupBox, "@World.WPSObjectShape.RotationBox", "@World.WPSObjectShape.RotationOfBox.ToolTip",
 		pEditBoxRotation, cShapeValueVector::Ref::New(*this));
-	helper.EditVector(groupBox, "@World.WPSObjectShape.Extends.Label", "@World.WPSObjectShape.ExtendsOfBox.ToolTip",
+	helper.EditVector(groupBox, "@World.WPSObjectShape.Extends", "@World.WPSObjectShape.ExtendsOfBox.ToolTip",
 		pEditBoxExtends, cShapeValueVector::Ref::New(*this));
 	
 	
 	// cylinder
-	helper.GroupBoxStatic(pSwitcherShapeType, groupBox, "@World.WPSObjectShape.Cylinder.Label");
-	helper.EditVector(groupBox, "@World.WPSObjectShape.PositionCylinder.Label", "@World.WPSObjectShape.PositionOfCylinder.ToolTip",
+	helper.GroupBoxStatic(pSwitcherShapeType, groupBox, "@World.WPSObjectShape.Cylinder");
+	helper.EditVector(groupBox, "@World.WPSObjectShape.PositionCylinder", "@World.WPSObjectShape.PositionOfCylinder.ToolTip",
 		pEditCylinderPosition, cShapeValueVector::Ref::New(*this));
-	helper.EditVector(groupBox, "@World.WPSObjectShape.RotationCylinder.Label", "@World.WPSObjectShape.RotationOfCylinder.ToolTip",
+	helper.EditVector(groupBox, "@World.WPSObjectShape.RotationCylinder", "@World.WPSObjectShape.RotationOfCylinder.ToolTip",
 		pEditCylinderRotation, cShapeValueVector::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WPSObjectShape.Height.Label", "@World.WPSObjectShape.HeightOfCylinder.ToolTip",
+	helper.EditFloat(groupBox, "@World.WPSObjectShape.Height", "@World.WPSObjectShape.HeightOfCylinder.ToolTip",
 		pEditCylinderHeight, cShapeValueFloat::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WPSObjectShape.RadiusTop.Label", "@World.WPSObjectShape.TopRadiusOfCylinder.ToolTip",
+	helper.EditFloat(groupBox, "@World.WPSObjectShape.RadiusTop", "@World.WPSObjectShape.TopRadiusOfCylinder.ToolTip",
 		pEditCylinderRadiusTop, cShapeValueFloat::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WPSObjectShape.RadiusBottom.Label", "@World.WPSObjectShape.BottomRadiusOfCylinder.ToolTip",
+	helper.EditFloat(groupBox, "@World.WPSObjectShape.RadiusBottom", "@World.WPSObjectShape.BottomRadiusOfCylinder.ToolTip",
 		pEditCylinderRadiusBottom, cShapeValueFloat::Ref::New(*this));
 	
 	
 	// capsule
-	helper.GroupBoxStatic(pSwitcherShapeType, groupBox, "@World.WPSObjectShape.Capsule.Label");
-	helper.EditVector(groupBox, "@World.WPSObjectShape.PositionCapsule.Label", "@World.WPSObjectShape.PositionOfCapsule.ToolTip",
+	helper.GroupBoxStatic(pSwitcherShapeType, groupBox, "@World.WPSObjectShape.Capsule");
+	helper.EditVector(groupBox, "@World.WPSObjectShape.PositionCapsule", "@World.WPSObjectShape.PositionOfCapsule.ToolTip",
 		pEditCapsulePosition, cShapeValueVector::Ref::New(*this));
-	helper.EditVector(groupBox, "@World.WPSObjectShape.RotationCapsule.Label", "@World.WPSObjectShape.RotationOfCapsule.ToolTip",
+	helper.EditVector(groupBox, "@World.WPSObjectShape.RotationCapsule", "@World.WPSObjectShape.RotationOfCapsule.ToolTip",
 		pEditCapsuleRotation, cShapeValueVector::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WPSObjectShape.Height.Label", "@World.WPSObjectShape.HeightOfCapsule.ToolTip",
+	helper.EditFloat(groupBox, "@World.WPSObjectShape.Height", "@World.WPSObjectShape.HeightOfCapsule.ToolTip",
 		pEditCapsuleHeight, cShapeValueFloat::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WPSObjectShape.RadiusTop.Label", "@World.WPSObjectShape.TopRadiusOfCapsule.ToolTip",
+	helper.EditFloat(groupBox, "@World.WPSObjectShape.RadiusTop", "@World.WPSObjectShape.TopRadiusOfCapsule.ToolTip",
 		pEditCapsuleRadiusTop, cShapeValueFloat::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WPSObjectShape.RadiusBottom.Label", "@World.WPSObjectShape.BottomRadiusOfCapsule.ToolTip",
+	helper.EditFloat(groupBox, "@World.WPSObjectShape.RadiusBottom", "@World.WPSObjectShape.BottomRadiusOfCapsule.ToolTip",
 		pEditCapsuleRadiusBottom, cShapeValueFloat::Ref::New(*this));
 }
 

@@ -60,22 +60,22 @@ pWindowMain(windowMain)
 	AddChild(pPropSelection, "@World.WindowProperties.Tab.Selection");
 	
 	pPropBrowser = meWPBrowser::Ref::New(*this);
-	AddChild(pPropBrowser, "@World.WindowProperties.Browser.Label");
+	AddChild(pPropBrowser, "@World.WindowProperties.Browser");
 	
 // 	pPropAdd = meWPAdd::Ref::New(*this);
 // 	AddChild(pPropAdd, "Add");
 	
 	pPropHT = meWPHeightTerrain::Ref::New(*this);
-	AddChild(pPropHT, "@World.WindowProperties.HeightTerrain.Label");
+	AddChild(pPropHT, "@World.WindowProperties.HeightTerrain");
 	
 	pPropView = meWPView::Ref::New(*this);
-	AddChild(pPropView, "@World.WindowProperties.View.Label");
+	AddChild(pPropView, "@World.WindowProperties.View");
 	
 	pPropSensors = meWPSensors::Ref::New(*this);
-	AddChild(pPropSensors, "@World.WindowProperties.Sensors.Label");
+	AddChild(pPropSensors, "@World.WindowProperties.Sensors");
 	
 	pPanelUndoHistory = meWPUndoHistory::Ref::New(GetEnvironment());
-	AddChild(pPanelUndoHistory, "@World.WindowProperties.History.Label");
+	AddChild(pPanelUndoHistory, "@World.WindowProperties.History");
 	
 	SetActivePanel(1); // selection
 }

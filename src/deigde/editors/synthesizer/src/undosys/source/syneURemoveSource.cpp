@@ -52,6 +52,8 @@ pSynthesizer(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
+	SetShortInfo("@Synthesizer.Undo.SourceRemove");
+	
 	pSynthesizer = synthesizer;
 	pSource = source;
 }

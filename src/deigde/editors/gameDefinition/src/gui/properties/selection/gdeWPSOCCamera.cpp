@@ -296,27 +296,27 @@ pWindowProperties(windowProperties)
 	AddChild(content);
 	
 	helper.GroupBox(content, groupBox, "@GameDefinition.WPSOCCamera.GroupCamera");
-	helper.EditFloat(groupBox, "@GameDefinition.WPSOCCamera.FOV.Label", "@GameDefinition.WPSOCCamera.FOV.ToolTip", 4, 1,
+	helper.EditFloat(groupBox, "@GameDefinition.WPSOCCamera.FOV", "@GameDefinition.WPSOCCamera.FOV.ToolTip", 4, 1,
 		pEditFov, cTextFov::Ref::New(*this));
-	helper.EditFloat(groupBox, "@GameDefinition.WPSOCCamera.FOVRatio.Label", "@GameDefinition.WPSOCCamera.FOVRatio.ToolTip", 4, 2,
+	helper.EditFloat(groupBox, "@GameDefinition.WPSOCCamera.FOVRatio", "@GameDefinition.WPSOCCamera.FOVRatio.ToolTip", 4, 2,
 		pEditFovRatio, cTextFovRatio::Ref::New(*this));
-	helper.EditFloat(groupBox, "@GameDefinition.WPSOCCamera.ImageDistance.Label", "@GameDefinition.WPSOCCamera.ImageDistance.ToolTip",
+	helper.EditFloat(groupBox, "@GameDefinition.WPSOCCamera.ImageDistance", "@GameDefinition.WPSOCCamera.ImageDistance.ToolTip",
 		pEditImageDistance, cTextImageDistance::Ref::New(*this));
-	helper.EditFloat(groupBox, "@GameDefinition.WPSOCCamera.ViewDistance.Label", "@GameDefinition.WPSOCCamera.ViewDistance.ToolTip", 4, 1,
+	helper.EditFloat(groupBox, "@GameDefinition.WPSOCCamera.ViewDistance", "@GameDefinition.WPSOCCamera.ViewDistance.ToolTip", 4, 1,
 		pEditViewDistance, cTextViewDistance::Ref::New(*this));
-	helper.EditVector(groupBox, "@GameDefinition.WPSOCCamera.Position.Label", "@GameDefinition.WPSOCCamera.Position.ToolTip",
+	helper.EditVector(groupBox, "@GameDefinition.WPSOCCamera.Position", "@GameDefinition.WPSOCCamera.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
-	helper.EditVector(groupBox, "@GameDefinition.WPSOCCamera.Rotation.Label", "@GameDefinition.WPSOCCamera.Rotation.ToolTip",
+	helper.EditVector(groupBox, "@GameDefinition.WPSOCCamera.Rotation", "@GameDefinition.WPSOCCamera.Rotation.ToolTip",
 		pEditRotation, cEditRotation::Ref::New(*this));
-	helper.ComboBox(groupBox, "@GameDefinition.WPSOCCamera.IDProperty.Label", true,
+	helper.ComboBox(groupBox, "@GameDefinition.WPSOCCamera.IDProperty", true,
 		"@GameDefinition.WPSOCCamera.IDProperty.ToolTip",
 		pCBPropertyName, cComboPropertyName::Ref::New(*this));
 	pCBPropertyName->SetDefaultSorter();
-	helper.ComboBox(groupBox, "@GameDefinition.WPSOCCamera.PositionProperty.Label", true,
+	helper.ComboBox(groupBox, "@GameDefinition.WPSOCCamera.PositionProperty", true,
 		"@GameDefinition.WPSOCCamera.PositionProperty.ToolTip",
 		pCBPropertyPosition, cComboPropertyPosition::Ref::New(*this));
 	pCBPropertyPosition->SetDefaultSorter();
-	helper.ComboBox(groupBox, "@GameDefinition.WPSOCCamera.RotationProperty.Label", true,
+	helper.ComboBox(groupBox, "@GameDefinition.WPSOCCamera.RotationProperty", true,
 		"@GameDefinition.WPSOCCamera.RotationProperty.ToolTip",
 		pCBPropertyRotation, cComboPropertyRotation::Ref::New(*this));
 	pCBPropertyRotation->SetDefaultSorter();

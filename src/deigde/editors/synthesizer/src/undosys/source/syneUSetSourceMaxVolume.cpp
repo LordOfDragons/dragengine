@@ -50,7 +50,7 @@ pSource(nullptr)
 	pNewValue = newValue;
 	
 	pSource = source;
-	SetShortInfo("@Source Set Max Volume");
+	SetShortInfo("@Synthesizer.Undo.SourceSetMaxVolume");
 }
 
 syneUSetSourceMaxVolume::~syneUSetSourceMaxVolume(){

@@ -795,7 +795,7 @@ pPreventUpdate(false)
 	
 	
 	// outliner
-	helper.TreeList(content, pTreeOutline, 10, "@Skin.WPNode.Outliner.Label", cTreeOutliner::Ref::New(*this, pPreventUpdate));
+	helper.TreeList(content, pTreeOutline, 10, "@Skin.WPNode.Outliner", cTreeOutliner::Ref::New(*this, pPreventUpdate));
 	
 	helper.EditString(content, "", pLabSelection, {});
 	pLabSelection->SetEditable(false);
@@ -804,21 +804,21 @@ pPreventUpdate(false)
 	// node
 	helper.GroupBox(content, groupBox, "@Skin.WPNode.GroupNode");
 	
-	helper.EditPoint3(groupBox, "@Skin.WPNode.Position.Label", "@Skin.WPNode.Position.ToolTip",
+	helper.EditPoint3(groupBox, "@Skin.WPNode.Position", "@Skin.WPNode.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
-	helper.EditPoint3(groupBox, "@Skin.WPNode.Size.Label", "@Skin.WPNode.Size.ToolTip", pEditSize, cEditSize::Ref::New(*this));
-	helper.EditFloat(groupBox, "@Skin.WPNode.Rotation.Label", "@Skin.WPNode.Rotation.ToolTip",
+	helper.EditPoint3(groupBox, "@Skin.WPNode.Size", "@Skin.WPNode.Size.ToolTip", pEditSize, cEditSize::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Skin.WPNode.Rotation", "@Skin.WPNode.Rotation.ToolTip",
 		pEditRotation, cTextRotation::Ref::New(*this));
-	helper.EditFloat(groupBox, "@Skin.WPNode.Shear.Label", "@Skin.WPNode.Shear.ToolTip",
+	helper.EditFloat(groupBox, "@Skin.WPNode.Shear", "@Skin.WPNode.Shear.ToolTip",
 		pEditShear, cTextShearing::Ref::New(*this));
-	helper.EditFloat(groupBox, "@Skin.WPNode.Brightness.Label", "@Skin.WPNode.Brightness.ToolTip", pEditBrightness, cTextBrightness::Ref::New(*this));
-	helper.EditFloat(groupBox, "@Skin.WPNode.Contrast.Label", "@Skin.WPNode.Contrast.ToolTip", pEditContrast, cTextContrast::Ref::New(*this));
-	helper.EditFloat(groupBox, "@Skin.WPNode.Gamma.Label", "@Skin.WPNode.Gamma.ToolTip", pEditGamma, cTextGamma::Ref::New(*this));
-	helper.ColorBox(groupBox, "@Skin.WPNode.Colorize.Label", "@Skin.WPNode.Colorize.ToolTip", pClrColorize, cColorColorize::Ref::New(*this));
-	helper.EditSliderText(groupBox, "@Skin.WPNode.Transparency.Label", "@Skin.WPNode.Transparency.ToolTip",
+	helper.EditFloat(groupBox, "@Skin.WPNode.Brightness", "@Skin.WPNode.Brightness.ToolTip", pEditBrightness, cTextBrightness::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Skin.WPNode.Contrast", "@Skin.WPNode.Contrast.ToolTip", pEditContrast, cTextContrast::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Skin.WPNode.Gamma", "@Skin.WPNode.Gamma.ToolTip", pEditGamma, cTextGamma::Ref::New(*this));
+	helper.ColorBox(groupBox, "@Skin.WPNode.Colorize", "@Skin.WPNode.Colorize.ToolTip", pClrColorize, cColorColorize::Ref::New(*this));
+	helper.EditSliderText(groupBox, "@Skin.WPNode.Transparency", "@Skin.WPNode.Transparency.ToolTip",
 		0.0f, 1.0f, 6, 3, 0.1f, pSldTransparency, cSliderTransparency::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "@Skin.WPNode.CombineMode.Label", "@Skin.WPNode.CombineMode.ToolTip", pCBCombineMode, cComboCombineMode::Ref::New(*this));
+	helper.ComboBox(groupBox, "@Skin.WPNode.CombineMode", "@Skin.WPNode.CombineMode.ToolTip", pCBCombineMode, cComboCombineMode::Ref::New(*this));
 	pCBCombineMode->SetAutoTranslateItems(true);
 	pCBCombineMode->AddItem("@Skin.WPNode.CombineMode.Blend", nullptr, (void*)(intptr_t)deSkinPropertyNode::ecmBlend);
 	pCBCombineMode->AddItem("@Skin.WPNode.CombineMode.Overlay", nullptr, (void*)(intptr_t)deSkinPropertyNode::ecmOverlay);
@@ -830,10 +830,10 @@ pPreventUpdate(false)
 	// dynamic
 	helper.GroupBox(content, groupBox, "@Skin.WPNode.GroupDynamic");
 	
-	helper.ComboBox(groupBox, "@Skin.WPNode.MappedProperty.Label", "@Skin.WPNode.MappedProperty.ToolTip",
+	helper.ComboBox(groupBox, "@Skin.WPNode.MappedProperty", "@Skin.WPNode.MappedProperty.ToolTip",
 		pCBMappedType, cComboMappedType::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "@Skin.WPNode.Mapped.Label", "@Skin.WPNode.Mapped.ToolTip",
+	helper.ComboBox(groupBox, "@Skin.WPNode.Mapped", "@Skin.WPNode.Mapped.ToolTip",
 		pCBMappedTarget, cComboMappedTarget::Ref::New(*this, pPreventUpdate));
 	
 	
@@ -851,12 +851,12 @@ pPreventUpdate(false)
 	pSwitcher->AddChild(panel);
 	helper.GroupBox(panel, groupBox, "@Skin.WPNode.GroupImage");
 	
-	helper.EditPath(groupBox, "@Skin.WPNode.Image.Label", "@Skin.WPNode.Image.ToolTip",
+	helper.EditPath(groupBox, "@Skin.WPNode.Image", "@Skin.WPNode.Image.ToolTip",
 		igdeEnvironment::efpltImage, pImageEditImage, cPathImage::Ref::New(*this));
 	helper.EditString(groupBox, "", "@Skin.WPNode.ImageInfo.ToolTip", pImageLabImageInfo, {});
 	pImageLabImageInfo->SetEditable(false);
 	
-	helper.EditPoint(groupBox, "@Skin.WPNode.Repeat.Label", "@Skin.WPNode.Repeat.ToolTip",
+	helper.EditPoint(groupBox, "@Skin.WPNode.Repeat", "@Skin.WPNode.Repeat.ToolTip",
 		pImageEditRepeat, cEditImageRepeat::Ref::New(*this));
 	
 	
@@ -865,13 +865,13 @@ pPreventUpdate(false)
 	pSwitcher->AddChild(panel);
 	helper.GroupBox(panel, groupBox, "@Skin.WPNode.GroupShape");
 	
-	helper.ComboBox(groupBox, "@Skin.WPNode.ShapeType.Label", "@Skin.WPNode.ShapeType.ToolTip", pShapeCBType, cComboShapeType::Ref::New(*this));
+	helper.ComboBox(groupBox, "@Skin.WPNode.ShapeType", "@Skin.WPNode.ShapeType.ToolTip", pShapeCBType, cComboShapeType::Ref::New(*this));
 	pShapeCBType->AddItem("@Skin.WPNode.ShapeType.Rectangle", nullptr, (void*)(intptr_t)deSkinPropertyNodeShape::estRectangle);
 	pShapeCBType->AddItem("@Skin.WPNode.ShapeType.Ellipse", nullptr, (void*)(intptr_t)deSkinPropertyNodeShape::estEllipse);
 	
-	helper.ColorBox(groupBox, "@Skin.WPNode.LineColor.Label", "@Skin.WPNode.LineColor.ToolTip", pShapeClrLine, cColorShapeLineColor::Ref::New(*this));
-	helper.ColorBox(groupBox, "@Skin.WPNode.FillColor.Label", "@Skin.WPNode.FillColor.ToolTip", pShapeClrFill, cColorShapeFillColor::Ref::New(*this));
-	helper.EditFloat(groupBox, "@Skin.WPNode.Thickness.Label", "@Skin.WPNode.Thickness.ToolTip",
+	helper.ColorBox(groupBox, "@Skin.WPNode.LineColor", "@Skin.WPNode.LineColor.ToolTip", pShapeClrLine, cColorShapeLineColor::Ref::New(*this));
+	helper.ColorBox(groupBox, "@Skin.WPNode.FillColor", "@Skin.WPNode.FillColor.ToolTip", pShapeClrFill, cColorShapeFillColor::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Skin.WPNode.Thickness", "@Skin.WPNode.Thickness.ToolTip",
 		pShapeEditThickness, cColorShapeThickness::Ref::New(*this));
 	
 	
@@ -880,15 +880,15 @@ pPreventUpdate(false)
 	pSwitcher->AddChild(panel);
 	helper.GroupBox(panel, groupBox, "@Skin.WPNode.GroupText");
 	
-	helper.EditPath(groupBox, "@Skin.WPNode.Font.Label", "@Skin.WPNode.Font.ToolTip",
+	helper.EditPath(groupBox, "@Skin.WPNode.Font", "@Skin.WPNode.Font.ToolTip",
 		igdeEnvironment::efpltFont, pTextEditFont, cEditPathFont::Ref::New(*this));
 	helper.EditString(groupBox, "", "@Skin.WPNode.FontInfo.ToolTip", pTextLabFontInfo, {});
 	pTextLabFontInfo->SetEditable(false);
 	
-	helper.EditFloat(groupBox, "@Skin.WPNode.FontSize.Label", "@Skin.WPNode.FontSize.ToolTip",
+	helper.EditFloat(groupBox, "@Skin.WPNode.FontSize", "@Skin.WPNode.FontSize.ToolTip",
 		pTextEditFontSize, cTextFontSize::Ref::New(*this));
-	helper.EditString(groupBox, "@Skin.WPNode.Text.Label", "@Skin.WPNode.Text.ToolTip", pTextEditText, cTextText::Ref::New(*this));
-	helper.ColorBox(groupBox, "@Skin.WPNode.TextColor.Label", "@Skin.WPNode.TextColor.ToolTip", pTextClrColor, cColorText::Ref::New(*this));
+	helper.EditString(groupBox, "@Skin.WPNode.Text", "@Skin.WPNode.Text.ToolTip", pTextEditText, cTextText::Ref::New(*this));
+	helper.ColorBox(groupBox, "@Skin.WPNode.TextColor", "@Skin.WPNode.TextColor.ToolTip", pTextClrColor, cColorText::Ref::New(*this));
 	
 	
 	// group node

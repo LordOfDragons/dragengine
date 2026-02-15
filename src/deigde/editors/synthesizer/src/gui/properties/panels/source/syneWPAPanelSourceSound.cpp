@@ -162,16 +162,16 @@ syneWPAPanelSource(wpSource, deSynthesizerSourceVisitorIdentify::estSound)
 	
 	
 	helper.GroupBox(*this, groupBox, "@Synthesizer.WPAPanelSourceSound.GroupSound");
-	helper.EditPath(groupBox, "@Synthesizer.WPAPanelSourceSound.FieldSound.Label", "@Synthesizer.WPAPanelSourceSound.FieldSound.ToolTip", igdeEnvironment::efpltSound,
+	helper.EditPath(groupBox, "@Synthesizer.WPAPanelSourceSound.FieldSound", "@Synthesizer.WPAPanelSourceSound.FieldSound.ToolTip", igdeEnvironment::efpltSound,
 		pEditPathSound, cPathSound::Ref::New(*this));
 	
 	helper.EditString(groupBox, "", "", pLabSoundInfo, {});
 	pLabSoundInfo->SetEditable(false);
 	
-	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelSourceSound.FieldMinSpeed.Label",
+	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelSourceSound.FieldMinSpeed",
 		"@Synthesizer.WPAPanelSourceSound.FieldMinSpeed.ToolTip",
 		pEditMinSpeed, cTextMinSpeed::Ref::New(*this));
-	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelSourceSound.FieldMaxSpeed.Label",
+	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelSourceSound.FieldMaxSpeed",
 		"@Synthesizer.WPAPanelSourceSound.FieldMaxSpeed.ToolTip",
 		pEditMaxSpeed, cTextMaxSpeed::Ref::New(*this));
 	

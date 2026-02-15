@@ -380,7 +380,7 @@ class cActionSetClass : public igdeAction{
 	
 public:
 	typedef deTObjectReference<cActionSetClass> Ref;
-	cActionSetClass(meWPBrowser &panel) : igdeAction("@World.WPBrowser.SetClass.Label", nullptr,
+	cActionSetClass(meWPBrowser &panel) : igdeAction("@World.WPBrowser.SetClass", nullptr,
 		"@World.WPBrowser.Action.SetClass"), pPanel(panel){}
 	
 	void OnAction() override{
@@ -626,16 +626,16 @@ pViewMode(evmPreview)
 	frameLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
 	groupBox->AddChild(frameLine);
 	
-	helper.ComboBox(frameLine, "@World.WPBrowser.TypeOfItemsToBrowse.Label", pCBTypes, cComboType::Ref::New(*this));
+	helper.ComboBox(frameLine, "@World.WPBrowser.TypeOfItemsToBrowse", pCBTypes, cComboType::Ref::New(*this));
 	pCBTypes->SetAutoTranslateItems(true);
 	pCBTypes->AddItem("@World.WPBrowser.ObjectClass", nullptr, (void*)(intptr_t)epitObjectClass);
 	pCBTypes->AddItem("@World.WPBrowser.BrowserType.Skin", nullptr, (void*)(intptr_t)epitSkin);
 	pCBTypes->AddItem("@World.WPBrowser.BrowserType.Sky", nullptr, (void*)(intptr_t)epitSky);
 	
 	helper.Button(frameLine, pBtnSelByCat, cActionSelectionMode::Ref::New(*this, esmCategory,
-		"@World.WPBrowser.Category.Label", nullptr, "@World.WPBrowser.BrowseByCategory"));
+		"@World.WPBrowser.Category", nullptr, "@World.WPBrowser.BrowseByCategory"));
 	helper.Button(frameLine, pBtnSelByFilter, cActionSelectionMode::Ref::New(*this, esmFilter,
-		"@World.WPBrowser.Filter.Label", nullptr, "@World.WPBrowser.BrowseByFiltering"));
+		"@World.WPBrowser.Filter", nullptr, "@World.WPBrowser.BrowseByFiltering"));
 	
 	
 	pSwitcherSelBy = igdeSwitcher::Ref::New(env);
@@ -643,7 +643,7 @@ pViewMode(evmPreview)
 	
 	
 	// category tree
-	helper.TreeList(pSwitcherSelBy, pTreeCategories, 10, "@World.WPBrowser.Categories.Label", cTreeCategories::Ref::New(*this));
+	helper.TreeList(pSwitcherSelBy, pTreeCategories, 10, "@World.WPBrowser.Categories", cTreeCategories::Ref::New(*this));
 	pTreeCategories->SetDefaultSorter();
 	
 	
@@ -651,12 +651,12 @@ pViewMode(evmPreview)
 	form = igdeContainerForm::Ref::New(env);
 	pSwitcherSelBy->AddChild(form);
 	
-	helper.EditString(form, "@World.WPBrowser.Filter.Label2:", "@World.WPBrowser.Filter.ToolTip",
+	helper.EditString(form, "@World.WPBrowser.Filter.Label2", "@World.WPBrowser.Filter.ToolTip",
 		pEditFilter, cTextFilter::Ref::New(*this));
 	
 	
 	// items
-	frameLine = igdeGroupBox::Ref::New(env, "@World.WPBrowser.Items.Label");
+	frameLine = igdeGroupBox::Ref::New(env, "@World.WPBrowser.Items");
 	frameLine.DynamicCast<igdeGroupBox>()->SetCanCollapse(false);
 	frameLine.DynamicCast<igdeGroupBox>()->SetStretchLast(true);
 	content->AddChild(frameLine, igdeContainerSplitted::eaCenter);

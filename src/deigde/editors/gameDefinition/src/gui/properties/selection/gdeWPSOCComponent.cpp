@@ -694,7 +694,7 @@ public:
 				}
 				
 				if(component->GetTextures().HasNamed(name)){
-					igdeCommonDialogs::Error(*pPanel.GetParentWindow(), "@GameDefinition.OCComponent.AddTexture.Error", "@GameDefinition.OCComponent.ATextureWithThisNameExistsAlready.Error");
+					igdeCommonDialogs::Error(*pPanel.GetParentWindow(), "@GameDefinition.OCComponent.Dialog.AddTexture", "@GameDefinition.OCComponent.DuplicateTextureName.Error");
 					
 				}else{
 					break;
@@ -775,7 +775,7 @@ public:
 		}
 		
 		if(component->GetTextures().HasNamed(textField.GetText())){
-			igdeCommonDialogs::Information(*pPanel.GetParentWindow(), "@GameDefinition.OCComponent.Dialog.RenameTexture", "@GameDefinition.OCComponent.Dialog.ATextureWithThisNameExistsAlready");
+			igdeCommonDialogs::Information(*pPanel.GetParentWindow(), "@GameDefinition.OCComponent.Dialog.RenameTexture", "@GameDefinition.OCComponent.DuplicateTextureName.Error");
 			textField.SetText(texture->GetName());
 			return {};
 		}
@@ -1016,38 +1016,38 @@ pDirtyEngModelTexNames(true)
 	
 	
 	// component
-	helper.GroupBox(content, groupBox, "@GameDefinition.PanelOCComponent.GroupBoxComponent.Label");
+	helper.GroupBox(content, groupBox, "@GameDefinition.PanelOCComponent.GroupBoxComponent");
 	
-	helper.EditPath(groupBox, "@GameDefinition.PanelOCComponent.Model.Label", "@GameDefinition.PanelOCComponent.Model.ToolTip",
+	helper.EditPath(groupBox, "@GameDefinition.PanelOCComponent.Model", "@GameDefinition.PanelOCComponent.Model.ToolTip",
 		igdeEnvironment::efpltModel, pEditPathModel, cEditPathModel::Ref::New(*this));
-	helper.EditPath(groupBox, "@GameDefinition.PanelOCComponent.Skin.Label", "@GameDefinition.PanelOCComponent.Skin.ToolTip",
+	helper.EditPath(groupBox, "@GameDefinition.PanelOCComponent.Skin", "@GameDefinition.PanelOCComponent.Skin.ToolTip",
 		igdeEnvironment::efpltSkin, pEditPathSkin, cEditPathSkin::Ref::New(*this));
-	helper.EditPath(groupBox, "@GameDefinition.PanelOCComponent.Rig.Label", "@GameDefinition.PanelOCComponent.Rig.ToolTip",
+	helper.EditPath(groupBox, "@GameDefinition.PanelOCComponent.Rig", "@GameDefinition.PanelOCComponent.Rig.ToolTip",
 		igdeEnvironment::efpltRig, pEditPathRig, cEditPathRig::Ref::New(*this));
-	helper.EditPath(groupBox, "@GameDefinition.PanelOCComponent.Animator.Label", "@GameDefinition.PanelOCComponent.Animator.ToolTip",
+	helper.EditPath(groupBox, "@GameDefinition.PanelOCComponent.Animator", "@GameDefinition.PanelOCComponent.Animator.ToolTip",
 		igdeEnvironment::efpltAnimator, pEditPathAnimator, cEditPathAnimator::Ref::New(*this));
-	helper.EditPath(groupBox, "@GameDefinition.PanelOCComponent.Animation.Label", "@GameDefinition.PanelOCComponent.Animation.ToolTip",
+	helper.EditPath(groupBox, "@GameDefinition.PanelOCComponent.Animation", "@GameDefinition.PanelOCComponent.Animation.ToolTip",
 		igdeEnvironment::efpltAnimation, pEditPathAnimation, cEditPathAnimation::Ref::New(*this));
-	helper.EditString(groupBox, "@GameDefinition.PanelOCComponent.Move.Label", "@GameDefinition.PanelOCComponent.Move.ToolTip", 15, pEditMove, cEditMove::Ref::New(*this));
-	helper.EditPath(groupBox, "@GameDefinition.PanelOCComponent.OcclusionMesh.Label", "@GameDefinition.PanelOCComponent.OcclusionMesh.ToolTip",
+	helper.EditString(groupBox, "@GameDefinition.PanelOCComponent.Move", "@GameDefinition.PanelOCComponent.Move.ToolTip", 15, pEditMove, cEditMove::Ref::New(*this));
+	helper.EditPath(groupBox, "@GameDefinition.PanelOCComponent.OcclusionMesh", "@GameDefinition.PanelOCComponent.OcclusionMesh.ToolTip",
 		igdeEnvironment::efpltOcclusionMesh, pEditPathOcclusionMesh, cEditPathOcclusionMesh::Ref::New(*this));
-	helper.EditPath(groupBox, "@GameDefinition.PanelOCComponent.AudioModel.Label", "@GameDefinition.PanelOCComponent.AudioModel.ToolTip",
+	helper.EditPath(groupBox, "@GameDefinition.PanelOCComponent.AudioModel", "@GameDefinition.PanelOCComponent.AudioModel.ToolTip",
 		igdeEnvironment::efpltModel, pEditPathAudioModel, cEditPathAudioModel::Ref::New(*this));
-	helper.EditString(groupBox, "@GameDefinition.PanelOCComponent.PlaybackController.Label", "@GameDefinition.PanelOCComponent.PlaybackController.ToolTip",
+	helper.EditString(groupBox, "@GameDefinition.PanelOCComponent.PlaybackController", "@GameDefinition.PanelOCComponent.PlaybackController.ToolTip",
 		pEditPlaybackController, cTextPlaybackController::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "@GameDefinition.PanelOCComponent.Collision.Label", "@GameDefinition.PanelOCComponent.Collision.ToolTip",
+	helper.ComboBox(groupBox, "@GameDefinition.PanelOCComponent.Collision", "@GameDefinition.PanelOCComponent.Collision.ToolTip",
 		pCBCollisionResponseType, cComboCollisionResponseType::Ref::New(*this));
 	pCBCollisionResponseType->SetAutoTranslateItems(true);
 	pCBCollisionResponseType->AddItem("@GameDefinition.PanelOCComponent.CollisionStatic", nullptr, (void*)(intptr_t)deCollider::ertStatic);
 	pCBCollisionResponseType->AddItem("@GameDefinition.PanelOCComponent.CollisionKinematic", nullptr, (void*)(intptr_t)deCollider::ertKinematic);
 	pCBCollisionResponseType->AddItem("@GameDefinition.PanelOCComponent.CollisionDynamic", nullptr, (void*)(intptr_t)deCollider::ertDynamic);
 	
-	helper.EditVector(groupBox, "@GameDefinition.PanelOCComponent.Position.Label", "@GameDefinition.PanelOCComponent.Position.ToolTip",
+	helper.EditVector(groupBox, "@GameDefinition.PanelOCComponent.Position", "@GameDefinition.PanelOCComponent.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
-	helper.EditVector(groupBox, "@GameDefinition.PanelOCComponent.Rotation.Label", "@GameDefinition.PanelOCComponent.Rotation.ToolTip", 4, 1,
+	helper.EditVector(groupBox, "@GameDefinition.PanelOCComponent.Rotation", "@GameDefinition.PanelOCComponent.Rotation.ToolTip", 4, 1,
 		pEditRotation, cEditRotation::Ref::New(*this));
-	helper.EditString(groupBox, "@GameDefinition.PanelOCComponent.Bone.Label", "@GameDefinition.PanelOCComponent.Bone.ToolTip",
+	helper.EditString(groupBox, "@GameDefinition.PanelOCComponent.Bone", "@GameDefinition.PanelOCComponent.Bone.ToolTip",
 		pEditBoneName, cTextBoneName::Ref::New(*this));
 	
 	helper.CheckBox(groupBox, pChkDoNotScale, cActionDoNotScale::Ref::New(*this));
@@ -1060,8 +1060,8 @@ pDirtyEngModelTexNames(true)
 	
 	
 	// property targets
-	helper.GroupBox(content, groupBox, "@GameDefinition.PanelOCComponent.GroupBoxProperties.Label");
-	helper.ComboBox(groupBox, "@GameDefinition.PanelOCComponent.Property.Label", "@GameDefinition.PanelOCComponent.Property.ToolTip",
+	helper.GroupBox(content, groupBox, "@GameDefinition.PanelOCComponent.GroupBoxProperties");
+	helper.ComboBox(groupBox, "@GameDefinition.PanelOCComponent.Property", "@GameDefinition.PanelOCComponent.Property.ToolTip",
 		pCBPropertyNames, cComboPropertyNames::Ref::New(*this));
 	pCBPropertyNames->SetAutoTranslateItems(true);
 	pCBPropertyNames->AddItem("@GameDefinition.PanelOCComponent.PropertyModel", nullptr, (void*)(intptr_t)gdeOCComponent::epModel);
@@ -1079,7 +1079,7 @@ pDirtyEngModelTexNames(true)
 	pCBPropertyNames->AddItem("@GameDefinition.PanelOCComponent.PropertyAttachPosition", nullptr,  (void*)(intptr_t)gdeOCComponent::epAttachPosition);
 	pCBPropertyNames->AddItem("@GameDefinition.PanelOCComponent.PropertyAttachRotation", nullptr, (void*)(intptr_t)gdeOCComponent::epAttachRotation);
 	
-	helper.ComboBoxFilter(groupBox, "@GameDefinition.PanelOCComponent.Target.Label", true, "@GameDefinition.PanelOCComponent.Target.ToolTip",
+	helper.ComboBoxFilter(groupBox, "@GameDefinition.PanelOCComponent.Target", true, "@GameDefinition.PanelOCComponent.Target.ToolTip",
 		pCBPropertyNameTarget, cComboPropertyNameTarget::Ref::New(*this));
 	pCBPropertyNameTarget->SetEditable(true);
 	pCBPropertyNameTarget->SetDefaultSorter();
@@ -1087,30 +1087,30 @@ pDirtyEngModelTexNames(true)
 	
 	
 	// textures
-	helper.GroupBox(content, groupBox, "@GameDefinition.PanelOCComponent.GroupBoxTextures.Label");
+	helper.GroupBox(content, groupBox, "@GameDefinition.PanelOCComponent.GroupBoxTextures");
 	
-	helper.FormLineStretchFirst(groupBox, "@GameDefinition.PanelOCComponent.Texture.Label", "@GameDefinition.PanelOCComponent.Texture.ToolTip", frameLine);
+	helper.FormLineStretchFirst(groupBox, "@GameDefinition.PanelOCComponent.Texture", "@GameDefinition.PanelOCComponent.Texture.ToolTip", frameLine);
 	helper.ComboBox(frameLine, "@GameDefinition.PanelOCComponent.Texture.ToolTip", pCBTextures, cComboTextures::Ref::New(*this));
 	pCBTextures->SetDefaultSorter();
 	helper.Button(frameLine, pBtnTextures, pActionTexturesMenu);
 	pActionTexturesMenu->SetWidget(pBtnTextures);
 	
-	helper.EditString(groupBox, "@GameDefinition.PanelOCComponent.TextureName.Label", "@GameDefinition.PanelOCComponent.TextureName.ToolTip", pTextureEditName, cTextTextureEditName::Ref::New(*this));
-	helper.EditPath(groupBox, "@GameDefinition.PanelOCComponent.TextureSkin.Label", "@GameDefinition.PanelOCComponent.TextureSkin.ToolTip",
+	helper.EditString(groupBox, "@GameDefinition.PanelOCComponent.TextureName", "@GameDefinition.PanelOCComponent.TextureName.ToolTip", pTextureEditName, cTextTextureEditName::Ref::New(*this));
+	helper.EditPath(groupBox, "@GameDefinition.PanelOCComponent.TextureSkin", "@GameDefinition.PanelOCComponent.TextureSkin.ToolTip",
 		igdeEnvironment::efpltSkin, pTextureEditPathSkin, cEditTextureEditPathSkin::Ref::New(*this));
-	helper.EditVector2(groupBox, "@GameDefinition.PanelOCComponent.TextureOffset.Label", "@GameDefinition.PanelOCComponent.TextureOffset.ToolTip",
+	helper.EditVector2(groupBox, "@GameDefinition.PanelOCComponent.TextureOffset", "@GameDefinition.PanelOCComponent.TextureOffset.ToolTip",
 		pTextureEditOffset, cEditTextureEditOffset::Ref::New(*this));
-	helper.EditFloat(groupBox, "@GameDefinition.PanelOCComponent.TextureRotation.Label",
+	helper.EditFloat(groupBox, "@GameDefinition.PanelOCComponent.TextureRotation",
 		"@GameDefinition.PanelOCComponent.TextureRotation.ToolTip",
 		pTextureEditRotation, cTextTextureEditRotation::Ref::New(*this));
-	helper.EditVector2(groupBox, "@GameDefinition.PanelOCComponent.TextureScale.Label", "@GameDefinition.PanelOCComponent.TextureScale.ToolTip",
+	helper.EditVector2(groupBox, "@GameDefinition.PanelOCComponent.TextureScale", "@GameDefinition.PanelOCComponent.TextureScale.ToolTip",
 		pTextureEditScale, cEditTextureEditScale::Ref::New(*this));
-	helper.ColorBox(groupBox, "@GameDefinition.PanelOCComponent.TextureTint.Label", "@GameDefinition.PanelOCComponent.TextureTint.ToolTip",
+	helper.ColorBox(groupBox, "@GameDefinition.PanelOCComponent.TextureTint", "@GameDefinition.PanelOCComponent.TextureTint.ToolTip",
 		pTextureClrTint, cColorTextureTint::Ref::New(*this));
 	
 	
 	// texture property values
-	helper.GroupBoxFlow(content, groupBox, "@GameDefinition.PanelOCComponent.GroupBoxTextureProperties.Label", false, true);
+	helper.GroupBoxFlow(content, groupBox, "@GameDefinition.PanelOCComponent.GroupBoxTextureProperties", false, true);
 	
 	frameLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
 	helper.ComboBox(frameLine, "@GameDefinition.PanelOCComponent.TextureProperty.ToolTip", pTextureCBPropertyKeys, {});

@@ -161,18 +161,18 @@ ceWPACameraShot::ceWPACameraShot(ceWPTopic &parentPanel) : ceWPAction(parentPane
 	
 	CreateGUICommon(*this);
 	
-	helper.ComboBoxFilter(*this, "@Conversation.WPActionCameraShot.Name.Label", true, "@Conversation.WPActionCameraShot.Name.ToolTip",
+	helper.ComboBoxFilter(*this, "@Conversation.WPActionCameraShot.Name", true, "@Conversation.WPActionCameraShot.Name.ToolTip",
 		pCBName, cComboName::Ref::New(*this));
 	pCBName->SetDefaultSorter();
 	
-	helper.EditFloat(*this, "@Conversation.WPActionCameraShot.Duration.Label", "@Conversation.WPActionCameraShot.Duration.ToolTip",
+	helper.EditFloat(*this, "@Conversation.WPActionCameraShot.Duration", "@Conversation.WPActionCameraShot.Duration.ToolTip",
 		pEditDuration, cTextDuration::Ref::New(*this));
 	
-	helper.ComboBoxFilter(*this, "@Conversation.WPActionCameraShot.CameraTarget.Label", true, "@Conversation.WPActionCameraShot.CameraTarget.ToolTip",
+	helper.ComboBoxFilter(*this, "@Conversation.WPActionCameraShot.CameraTarget", true, "@Conversation.WPActionCameraShot.CameraTarget.ToolTip",
 		pCBCameraTarget, cComboCameraTarget::Ref::New(*this));
 	pCBCameraTarget->SetDefaultSorter();
 	
-	helper.ComboBoxFilter(*this, "@Conversation.WPActionCameraShot.LookAtTarget.Label", true, "@Conversation.WPActionCameraShot.LookAtTarget.ToolTip",
+	helper.ComboBoxFilter(*this, "@Conversation.WPActionCameraShot.LookAtTarget", true, "@Conversation.WPActionCameraShot.LookAtTarget.ToolTip",
 		pCBLookAtTarget, cComboLookAtTarget::Ref::New(*this));
 	pCBLookAtTarget->SetDefaultSorter();
 }

@@ -235,7 +235,7 @@ public:
 	
 public:
 	cActionInvertBlendFactor(aeWPAPanelRule &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRule.InvertBlendFactor.Label", nullptr,
+		"@Animator.WPAPanelRule.InvertBlendFactor", nullptr,
 		"@Animator.WPAPanelRule.InvertBlendFactor.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
@@ -254,7 +254,7 @@ public:
 	
 public:
 	cActionEnabled(aeWPAPanelRule &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRule.Enabled.Label", nullptr,
+		"@Animator.WPAPanelRule.Enabled", nullptr,
 		"@Animator.WPAPanelRule.Enabled.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
@@ -274,7 +274,7 @@ public:
 	
 public:
 	cActionBoneAdd(aeWPAPanelRule &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRule.Action.BoneAdd.Label",
+		"@Animator.WPAPanelRule.Action.BoneAdd",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"@Animator.WPAPanelRule.Action.BoneAdd.ToolTip"){}
 	
@@ -296,7 +296,7 @@ public:
 	
 public:
 	cActionBoneRemoves(aeWPAPanelRule &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRule.Action.BoneRemoves.Label",
+		"@Animator.WPAPanelRule.Action.BoneRemoves",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"@Animator.WPAPanelRule.Action.BoneRemoves.ToolTip"){}
 	
@@ -320,7 +320,7 @@ public:
 	
 public:
 	cActionBoneRemovesAll(aeWPAPanelRule &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRule.Action.BoneRemoveAll.Label",
+		"@Animator.WPAPanelRule.Action.BoneRemoveAll",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"@Animator.WPAPanelRule.Action.BoneRemoveAll.ToolTip"){}
 	
@@ -340,7 +340,7 @@ public:
 	
 public:
 	cActionBoneSelectedRemove(aeWPAPanelRule &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRule.Action.BoneSelectedRemove.Label",
+		"@Animator.WPAPanelRule.Action.BoneSelectedRemove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"@Animator.WPAPanelRule.Action.BoneSelectedRemove.ToolTip"){}
 	
@@ -360,7 +360,7 @@ public:
 	
 public:
 	cActionMirrorRigBones(aeWPAPanelRule &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRule.Action.MirrorRigBones.Label",
+		"@Animator.WPAPanelRule.Action.MirrorRigBones",
 		nullptr, "@Animator.WPAPanelRule.Action.MirrorRigBones.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
@@ -379,7 +379,7 @@ public:
 	
 public:
 	cActionCopyBones(aeWPAPanelRule &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRule.Action.CopyBones.Label",
+		"@Animator.WPAPanelRule.Action.CopyBones",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 		"@Animator.WPAPanelRule.Action.CopyBones.ToolTip"){}
 	
@@ -396,7 +396,7 @@ public:
 	
 public:
 	cActionPasteBones(aeWPAPanelRule &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRule.Action.PasteBones.Label",
+		"@Animator.WPAPanelRule.Action.PasteBones",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 		"@Animator.WPAPanelRule.Action.PasteBones.ToolTip"){}
 	
@@ -423,7 +423,7 @@ public:
 	
 public:
 	cActionExportBones(aeWPAPanelRule &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRule.Action.ExportBones.Label",
+		"@Animator.WPAPanelRule.Action.ExportBones",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave),
 		"@Animator.WPAPanelRule.Action.ExportBones.ToolTip"){}
 	
@@ -455,7 +455,7 @@ public:
 	
 public:
 	cActionImportBones(aeWPAPanelRule &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRule.Action.ImportBones.Label",
+		"@Animator.WPAPanelRule.Action.ImportBones",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
 		"@Animator.WPAPanelRule.Action.ImportBones.ToolTip"){}
 	
@@ -528,7 +528,7 @@ public:
 	
 public:
 	cActionVertexPositionSetAdd(aeWPAPanelRule &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRule.Action.VPSAdd.Label",
+		"@Animator.WPAPanelRule.Action.VPSAdd",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"@Animator.WPAPanelRule.Action.VPSAdd.ToolTip"){}
 	
@@ -550,7 +550,7 @@ public:
 	
 public:
 	cActionVertexPositionSetRemoves(aeWPAPanelRule &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRule.Action.VPSRemoves.Label",
+		"@Animator.WPAPanelRule.Action.VPSRemoves",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"@Animator.WPAPanelRule.Action.VPSRemoves.ToolTip"){}
 	
@@ -574,7 +574,7 @@ public:
 	
 public:
 	cActionVertexPositionSetRemovesAll(aeWPAPanelRule &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRule.Action.VPSRemoveAll.Label",
+		"@Animator.WPAPanelRule.Action.VPSRemoveAll",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"@Animator.WPAPanelRule.Action.VPSRemoveAll.ToolTip"){}
 	
@@ -594,7 +594,7 @@ public:
 	
 public:
 	cActionVertexPositionSetSelectedRemove(aeWPAPanelRule &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRule.Action.VPSSelectedRemove.Label",
+		"@Animator.WPAPanelRule.Action.VPSSelectedRemove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"@Animator.WPAPanelRule.Action.VPSSelectedRemove.ToolTip"){}
 	
@@ -614,7 +614,7 @@ public:
 	
 public:
 	cActionMirrorRigVertexPositionSets(aeWPAPanelRule &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRule.Action.MirrorRigVPS.Label", nullptr,
+		"@Animator.WPAPanelRule.Action.MirrorRigVPS", nullptr,
 		"@Animator.WPAPanelRule.Action.MirrorRigVPS.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
@@ -633,7 +633,7 @@ public:
 	
 public:
 	cActionCopyVertexPositionSets(aeWPAPanelRule &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRule.Action.CopyVPS.Label",
+		"@Animator.WPAPanelRule.Action.CopyVPS",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 		"@Animator.WPAPanelRule.Action.CopyVPS.ToolTip"){}
 	
@@ -650,7 +650,7 @@ public:
 	
 public:
 	cActionPasteVertexPositionSets(aeWPAPanelRule &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRule.Action.PasteVPS.Label",
+		"@Animator.WPAPanelRule.Action.PasteVPS",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 		"@Animator.WPAPanelRule.Action.PasteVPS.ToolTip"){}
 	
@@ -678,7 +678,7 @@ public:
 	
 public:
 	cActionExportVertexPositionSets(aeWPAPanelRule &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRule.Action.ExportVPS.Label",
+		"@Animator.WPAPanelRule.Action.ExportVPS",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave),
 		"@Animator.WPAPanelRule.Action.ExportVPS.ToolTip"){}
 	
@@ -710,7 +710,7 @@ public:
 	
 public:
 	cActionImportVertexPositionSets(aeWPAPanelRule &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRule.Action.ImportVPS.Label",
+		"@Animator.WPAPanelRule.Action.ImportVPS",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
 		"@Animator.WPAPanelRule.Action.ImportVPS.ToolTip"){}
 	
@@ -790,7 +790,7 @@ public:
 	
 public:
 	cActionLinkAdd(aeWPAPanelRule &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRule.Action.LinkAdd.Label",
+		"@Animator.WPAPanelRule.Action.LinkAdd",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"@Animator.WPAPanelRule.Action.LinkAdd.ToolTip"){}
 	
@@ -814,7 +814,7 @@ public:
 	
 public:
 	cActionLinkRemove(aeWPAPanelRule &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRule.Action.LinkRemove.Label",
+		"@Animator.WPAPanelRule.Action.LinkRemove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"@Animator.WPAPanelRule.Action.LinkRemove.ToolTip"){}
 	
@@ -838,7 +838,7 @@ public:
 	
 public:
 	cActionLinkRemoveAll(aeWPAPanelRule &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRule.Action.LinkRemoveAll.Label",
+		"@Animator.WPAPanelRule.Action.LinkRemoveAll",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"@Animator.WPAPanelRule.Action.LinkRemoveAll.ToolTip"){}
 	
@@ -902,19 +902,19 @@ pRequiredType(requiredType)
 	
 	
 	// animation
-	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRule.GeneralSettings.Label");
+	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRule.GeneralSettings");
 	
-	helper.EditString(groupBox, "@Animator.WPAPanelRule.Name.Label",
+	helper.EditString(groupBox, "@Animator.WPAPanelRule.Name",
 		"@Animator.WPAPanelRule.Name.ToolTip", pEditName, cTextName::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "@Animator.WPAPanelRule.BlendMode.Label",
+	helper.ComboBox(groupBox, "@Animator.WPAPanelRule.BlendMode",
 		"@Animator.WPAPanelRule.BlendMode.ToolTip",
 		pCBBlendMode, cComboBlendMode::Ref::New(*this));
 	pCBBlendMode->SetAutoTranslateItems(true);
 	pCBBlendMode->AddItem("@Animator.WPAPanelRule.BlendMode.Blend", nullptr, (void*)(intptr_t)deAnimatorRule::ebmBlend);
 	pCBBlendMode->AddItem("@Animator.WPAPanelRule.BlendMode.Overlay", nullptr, (void*)(intptr_t)deAnimatorRule::ebmOverlay);
 	
-	helper.EditFloat(groupBox, "@Animator.WPAPanelRule.BlendFactor.Label",
+	helper.EditFloat(groupBox, "@Animator.WPAPanelRule.BlendFactor",
 		"@Animator.WPAPanelRule.BlendFactor.ToolTip",
 		pEditBlendFactor, cTextBlendFactor::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkInvertBlendFactor, cActionInvertBlendFactor::Ref::New(*this));
@@ -922,7 +922,7 @@ pRequiredType(requiredType)
 	
 	
 	// affected bones
-	helper.GroupBoxFlow(*this, groupBox, "@Animator.WPAPanelRule.AffectedBones.Label", false, true);
+	helper.GroupBoxFlow(*this, groupBox, "@Animator.WPAPanelRule.AffectedBones", false, true);
 	
 	formLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
 	groupBox->AddChild(formLine);
@@ -937,7 +937,7 @@ pRequiredType(requiredType)
 	
 	
 	// affected vertex position sets
-	helper.GroupBoxFlow(*this, groupBox, "@Animator.WPAPanelRule.AffectedVertexPositionSets.Label", false, true);
+	helper.GroupBoxFlow(*this, groupBox, "@Animator.WPAPanelRule.AffectedVertexPositionSets", false, true);
 	
 	formLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
 	groupBox->AddChild(formLine);
@@ -952,11 +952,11 @@ pRequiredType(requiredType)
 	
 	
 	// targets
-	helper.GroupBoxFlow(*this, groupBox, "@Animator.WPAPanelRule.TargetsAndLinks.Label");
+	helper.GroupBoxFlow(*this, groupBox, "@Animator.WPAPanelRule.TargetsAndLinks");
 	
 	formLine = igdeContainerForm::Ref::New(env);
 	groupBox->AddChild(formLine);
-	helper.ComboBox(formLine, "@Animator.WPAPanelRule.Target.Label",
+	helper.ComboBox(formLine, "@Animator.WPAPanelRule.Target",
 		"@Animator.WPAPanelRule.Target.ToolTip", pCBTarget, cComboTarget::Ref::New(*this));
 	pCBTarget->SetAutoTranslateItems(true);
 	

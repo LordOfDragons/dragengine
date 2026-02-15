@@ -221,16 +221,16 @@ pWindowProperties(windowProperties)
 	// font
 	helper.GroupBox(content, groupBox, "@Font.WPFont.GroupFont");
 	
-	helper.FormLineStretchFirst(groupBox, "@Font.WPFont.Image.Label", "@Font.WPFont.Image.ToolTip", frameLine);
+	helper.FormLineStretchFirst(groupBox, "@Font.WPFont.Image", "@Font.WPFont.Image.ToolTip", frameLine);
 	helper.EditString(frameLine, "@Font.WPFont.Image.ToolTip", pEditImagePath, cTextImagePath::Ref::New(*this));
 	helper.Button(frameLine, pBtnImagePath, cActionSelectImagePath::Ref::New(
 		windowProperties.GetWindowMain(), pEditImagePath));
 	
-	helper.EditInteger(groupBox, "@Font.WPFont.LineHeight.Label", "@Font.WPFont.LineHeight.ToolTip",
+	helper.EditInteger(groupBox, "@Font.WPFont.LineHeight", "@Font.WPFont.LineHeight.ToolTip",
 		pEditLineHeight, cTextLineHeight::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkColorFont, cActionColorFont::Ref::New(*this));
 	
-	helper.EditInteger(groupBox, "@Font.WPFont.BaseLine.Label", "@Font.WPFont.BaseLine.ToolTip",
+	helper.EditInteger(groupBox, "@Font.WPFont.BaseLine", "@Font.WPFont.BaseLine.ToolTip",
 		pEditBaseLine, cTextBaseLine::Ref::New(*this));
 }
 

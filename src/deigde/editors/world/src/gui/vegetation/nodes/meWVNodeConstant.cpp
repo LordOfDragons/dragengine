@@ -112,7 +112,7 @@ pRuleConstant(rule)
 	pFraParameters = igdeContainerForm::Ref::New(env);
 	AddChild(pFraParameters);
 	
-	helper.EditVector(pFraParameters, "@World.WVNodeConstant.Vector.Label", "@World.WVNodeConstant.VectorValue.ToolTip", pEditVector, cEditVector::Ref::New(*this));
+	helper.EditVector(pFraParameters, "@World.WVNodeConstant.Vector", "@World.WVNodeConstant.VectorValue.ToolTip", pEditVector, cEditVector::Ref::New(*this));
 }
 
 meWVNodeConstant::~meWVNodeConstant(){

@@ -45,7 +45,7 @@ pSource(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("@Source Wave Set Type");
+	SetShortInfo("@Synthesizer.Undo.SourceWaveSetType");
 	
 	pOldType = source->GetWaveType();
 	pNewType = newType;

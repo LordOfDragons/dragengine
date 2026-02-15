@@ -220,7 +220,7 @@ pWindowProperties(windowProperties)
 	
 	// object filter
 	/*
-	helper.GroupBoxFlow(content, groupBox, "@World.WPAdd.ObjectFilter.Label");
+	helper.GroupBoxFlow(content, groupBox, "@World.WPAdd.ObjectFilter");
 	
 	helper.CheckBoxOnly(groupBox, pChkFilterObjects, cActionFilterObjects::Ref::New(*this));
 	
@@ -230,14 +230,14 @@ pWindowProperties(windowProperties)
 	pComboObjClass->SetDefaultSorter();
 	helper.Button(formLine, pActionClassAdd);
 	
-	helper.ListBox(groupBox, 5, "@World.WPAdd.ListOfObjectClassFilters.Label", pListObjClasses, cListObjectClasses::Ref::New(*this));
+	helper.ListBox(groupBox, 5, "@World.WPAdd.ListOfObjectClassFilters", pListObjClasses, cListObjectClasses::Ref::New(*this));
 	pListObjClasses->SetDefaultSorter();
 	
 	helper.CheckBoxOnly(groupBox, pChkObjInclusive, cActionObjInclusive::Ref::New(*this));
 	*/
 	
 	// randomize
-	helper.GroupBoxFlow(content, groupBox, "@World.WPAdd.Randomize.Label");
+	helper.GroupBoxFlow(content, groupBox, "@World.WPAdd.Randomize");
 	
 	helper.CheckBoxOnly(groupBox, pChkRandomizeYAxis, cActionRandomizeYAxis::Ref::New(*this));
 }

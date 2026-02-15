@@ -38,26 +38,26 @@
 	
 	<!-- New Game Project Dialog -->
 	<translation name="Igde.NewGameProject.Title">New Game Project</translation>
-	<translation name="Igde.NewGameProject.Name.Label">Name:</translation>
+	<translation name="Igde.NewGameProject.Name">Name:</translation>
 	<translation name="Igde.NewGameProject.Name.ToolTip"></translation>
-	<translation name="Igde.NewGameProject.Description.Label">Description:</translation>
+	<translation name="Igde.NewGameProject.Description">Description:</translation>
 	<translation name="Igde.NewGameProject.Description.ToolTip"></translation>
-	<translation name="Igde.NewGameProject.ProjectDirectory.Label">Project Directory:</translation>
+	<translation name="Igde.NewGameProject.ProjectDirectory">Project Directory:</translation>
 	<translation name="Igde.NewGameProject.ProjectDirectory.ToolTip">Project directory to store the project files in.</translation>
-	<translation name="Igde.NewGameProject.ProjectGameDefinition.Label">Project Game Definition:</translation>
+	<translation name="Igde.NewGameProject.ProjectGameDefinition">Project Game Definition:</translation>
 	<translation name="Igde.NewGameProject.ProjectGameDefinition.ToolTip"></translation>
-	<translation name="Igde.NewGameProject.DataDirectory.Label">Data Directory:</translation>
+	<translation name="Igde.NewGameProject.DataDirectory">Data Directory:</translation>
 	<translation name="Igde.NewGameProject.DataDirectory.ToolTip"></translation>
-	<translation name="Igde.NewGameProject.CacheDirectory.Label">Cache Directory:</translation>
+	<translation name="Igde.NewGameProject.CacheDirectory">Cache Directory:</translation>
 	<translation name="Igde.NewGameProject.CacheDirectory.ToolTip"></translation>
-	<translation name="Igde.NewGameProject.ProjectTemplate.Label">Project Template:</translation>
+	<translation name="Igde.NewGameProject.ProjectTemplate">Project Template:</translation>
 	<translation name="Igde.NewGameProject.ProjectTemplate.ToolTip">Project template to use. Enforces script module and some base game definitions.</translation>
 	<translation name="Igde.NewGameProject.ProjectTemplateInfo.ToolTip"></translation>
-	<translation name="Igde.NewGameProject.BaseGameDefinitions.Label">Base Game Definitions:</translation>
+	<translation name="Igde.NewGameProject.BaseGameDefinitions">Base Game Definitions:</translation>
 	<translation name="Igde.NewGameProject.BaseGameDefinitions.ToolTip"></translation>
 	<translation name="Igde.NewGameProject.BaseGameDefinitionsInfo.ToolTip"></translation>
 	<translation name="Igde.NewGameProject.SharedGameDefInfo">Shared game definition information</translation>
-	<translation name="Igde.NewGameProject.ScriptingModule.Label">Scripting Module:</translation>
+	<translation name="Igde.NewGameProject.ScriptingModule">Scripting Module:</translation>
 	<translation name="Igde.NewGameProject.ScriptingModule.ToolTip">Scripting module to use.</translation>
 	<translation name="Igde.NewGameProject.Accept">Create Game Project</translation>
 	<translation name="Igde.NewGameProject.Cancel">Discard</translation>
@@ -70,7 +70,6 @@
 	<translation name="Igde.NewGameProject.ErrorNameEmpty">Name can not be empty</translation>
 	<translation name="Igde.NewGameProject.NoTemplateConfirm">No template selected. Do you really want to create an empty project?</translation>
 	<translation name="Igde.NewGameProject.ErrorProjectExists">Project directory exists already. Do you want to continue anyways?</translation>
-	<translation name="Igde.NewGameProject.ErrorCreateFailed">Failed creating project</translation>
 	<translation name="Igde.NewGameProject.TemplateInfo">Using template ignores Scripting Module and adds Base Game Definitions from template.</translation>
 	<translation name="Igde.NewGameProject.Action.BaseGameDefAdd.ToolTip">Add base game definition</translation>
 	<translation name="Igde.NewGameProject.Action.BaseGameDefRemove.ToolTip">Remove base game definition</translation>
@@ -112,32 +111,28 @@
 	<translation name="Igde.MainWindow.RequestSave.NewGameProject">New Game Project</translation>
 	<translation name="Igde.MainWindow.RequestSave.OpenGameProject">Open Game Project</translation>
 	<translation name="Igde.MainWindow.RequestSave.Quit">Quit</translation>
-	<translation name="Igde.MainWindow.ErrorLoadFailed.Title">Load Game Definition</translation>
 	<translation name="Igde.MainWindow.ErrorLoadFailed">Failed loading game project: {0}</translation>
 	<translation name="Igde.MainWindow.RemoveRecentConfirm">Remove game project from recent file list?</translation>
-	<translation name="Igde.MainWindow.ErrorInternal.Title">Internal error</translation>
 	<translation name="Igde.MainWindow.ErrorInternal">Internal error</translation>
 	<translation name="Igde.MainWindow.ErrorSaveFailed">Failed to save '{0}'</translation>
-	<translation name="Igde.MainWindow.Usage">deigde &lt;project-file.degp&gt; {--help | ...}\n</translation>
-	<translation name="Igde.MainWindow.CommandLineHelp">Command-Line Parameters</translation>
 	
 	<!-- Project Settings Dialog -->
 	<translation name="Igde.ProjectSettings.Title">Game Project Settings</translation>
-	<translation name="Igde.ProjectSettings.Name.Label">Name:</translation>
+	<translation name="Igde.ProjectSettings.Name">Name:</translation>
 	<translation name="Igde.ProjectSettings.Name.ToolTip"></translation>
-	<translation name="Igde.ProjectSettings.Description.Label">Description:</translation>
+	<translation name="Igde.ProjectSettings.Description">Description:</translation>
 	<translation name="Igde.ProjectSettings.Description.ToolTip"></translation>
-	<translation name="Igde.ProjectSettings.DataDirectory.Label">Data Directory:</translation>
+	<translation name="Igde.ProjectSettings.DataDirectory">Data Directory:</translation>
 	<translation name="Igde.ProjectSettings.DataDirectory.ToolTip"></translation>
-	<translation name="Igde.ProjectSettings.CacheDirectory.Label">Cache Directory:</translation>
+	<translation name="Igde.ProjectSettings.CacheDirectory">Cache Directory:</translation>
 	<translation name="Igde.ProjectSettings.CacheDirectory.ToolTip"></translation>
-	<translation name="Igde.ProjectSettings.BaseGameDefinitions.Label">Base Game Definitions:</translation>
+	<translation name="Igde.ProjectSettings.BaseGameDefinitions">Base Game Definitions:</translation>
 	<translation name="Igde.ProjectSettings.BaseGameDefinitions.ToolTip"></translation>
 	<translation name="Igde.ProjectSettings.BaseGameDefinitionsInfo.ToolTip"></translation>
 	<translation name="Igde.ProjectSettings.SharedGameDefInfo">Shared game definition information</translation>
-	<translation name="Igde.ProjectSettings.ScriptingModule.Label">Scripting Module:</translation>
+	<translation name="Igde.ProjectSettings.ScriptingModule">Scripting Module:</translation>
 	<translation name="Igde.ProjectSettings.ScriptingModule.ToolTip">Scripting module to use.</translation>
-	<translation name="Igde.ProjectSettings.Version.Label">Version:</translation>
+	<translation name="Igde.ProjectSettings.Version">Version:</translation>
 	<translation name="Igde.ProjectSettings.Version.ToolTip">Scripting module version to use.</translation>
 	<translation name="Igde.ProjectSettings.ErrorTitle">Game Project Settings</translation>
 	<translation name="Igde.ProjectSettings.ErrorNameEmpty">Name can not be empty</translation>
@@ -148,7 +143,7 @@
 	
 	<!-- Start-Up Dialog -->
 	<translation name="Igde.StartUp.Title">IGDE Start-Up</translation>
-	<translation name="Igde.StartUp.RecentProjects.Label">Recently used Game Projects</translation>
+	<translation name="Igde.StartUp.RecentProjects">Recently used Game Projects</translation>
 	<translation name="Igde.StartUp.RecentProjects.ToolTip">Recently loaded game projects</translation>
 	<translation name="Igde.StartUp.Action.LoadRecent">Load Recent</translation>
 	<translation name="Igde.StartUp.Action.LoadRecent.ToolTip">Load recently used Game Project</translation>
@@ -195,7 +190,7 @@
 	<translation name="Igde.DialogBrowser.Action.ListMode.ToolTip">List Mode</translation>
 	<translation name="Igde.DialogBrowser.Action.PreviewMode">Preview Mode</translation>
 	<translation name="Igde.DialogBrowser.Action.PreviewMode.ToolTip">Preview Mode</translation>
-	<translation name="Igde.DialogBrowser.Filter.Label">Filter:</translation>
+	<translation name="Igde.DialogBrowser.Filter">Filter:</translation>
 	<translation name="Igde.DialogBrowser.Filter.ToolTip">Show items containing filter case insensitive</translation>
 	<translation name="Igde.DialogBrowser.Categories.ToolTip">Categories</translation>
 	<translation name="Igde.DialogBrowser.Items.ColumnName">Name</translation>
@@ -263,18 +258,18 @@ property type so be careful what you enter</translation>
 	<translation name="Igde.DialogCurveBezierClamp.Title">Clamp Curve</translation>
 	<translation name="Igde.DialogCurveBezierClamp.EnableClamping">Enable Clamping</translation>
 	<translation name="Igde.DialogCurveBezierClamp.EnableClamping.ToolTip">Curve points are clamped to minimum/maximum range</translation>
-	<translation name="Igde.DialogCurveBezierClamp.Minimum.Label">Minimum:</translation>
+	<translation name="Igde.DialogCurveBezierClamp.Minimum">Minimum:</translation>
 	<translation name="Igde.DialogCurveBezierClamp.Minimum.ToolTip">Minimum coordinates to clamp curve points to</translation>
-	<translation name="Igde.DialogCurveBezierClamp.Maximum.Label">Maximum:</translation>
+	<translation name="Igde.DialogCurveBezierClamp.Maximum">Maximum:</translation>
 	<translation name="Igde.DialogCurveBezierClamp.Maximum.ToolTip">Maximum coordinates to clamp curve points to</translation>
 	
 	<!-- Dialog Curve Bezier Coord -->
 	<translation name="Igde.DialogCurveBezierCoord.Title">Point Coordinates</translation>
-	<translation name="Igde.DialogCurveBezierCoord.Point.Label">Point:</translation>
+	<translation name="Igde.DialogCurveBezierCoord.Point">Point:</translation>
 	<translation name="Igde.DialogCurveBezierCoord.Point.ToolTip">Point coordinates</translation>
-	<translation name="Igde.DialogCurveBezierCoord.LeftHandle.Label">Left Handle:</translation>
+	<translation name="Igde.DialogCurveBezierCoord.LeftHandle">Left Handle:</translation>
 	<translation name="Igde.DialogCurveBezierCoord.LeftHandle.ToolTip">Left handle coordinates</translation>
-	<translation name="Igde.DialogCurveBezierCoord.RightHandle.Label">Right Handle:</translation>
+	<translation name="Igde.DialogCurveBezierCoord.RightHandle">Right Handle:</translation>
 	<translation name="Igde.DialogCurveBezierCoord.RightHandle.ToolTip">Right handle coordinates</translation>
 	
 	<!-- View Curve Bezier -->
@@ -314,17 +309,17 @@ property type so be careful what you enter</translation>
 	<!-- Dialog Texture Property List -->
 	<translation name="Igde.DialogTexturePropertyList.Title">Texture Property List</translation>
 	<translation name="Igde.DialogTexturePropertyList.Properties.ToolTip">Textue Property</translation>
-	<translation name="Igde.DialogTexturePropertyList.Name.Label">Name:</translation>
+	<translation name="Igde.DialogTexturePropertyList.Name">Name:</translation>
 	<translation name="Igde.DialogTexturePropertyList.Name.ToolTip">Property name</translation>
-	<translation name="Igde.DialogTexturePropertyList.Type.Label">Type:</translation>
+	<translation name="Igde.DialogTexturePropertyList.Type">Type:</translation>
 	<translation name="Igde.DialogTexturePropertyList.Type.ToolTip">Property type</translation>
-	<translation name="Igde.DialogTexturePropertyList.Components.Label">Components:</translation>
+	<translation name="Igde.DialogTexturePropertyList.Components">Components:</translation>
 	<translation name="Igde.DialogTexturePropertyList.Components.ToolTip">Used color components</translation>
-	<translation name="Igde.DialogTexturePropertyList.DefaultValue.Label">Default Value:</translation>
+	<translation name="Igde.DialogTexturePropertyList.DefaultValue">Default Value:</translation>
 	<translation name="Igde.DialogTexturePropertyList.DefaultValue.ToolTip">Default value</translation>
-	<translation name="Igde.DialogTexturePropertyList.Affects.Label">Affects:</translation>
+	<translation name="Igde.DialogTexturePropertyList.Affects">Affects:</translation>
 	<translation name="Igde.DialogTexturePropertyList.Affects.ToolTip">Modules affected by property</translation>
-	<translation name="Igde.DialogTexturePropertyList.Description.Label">Description:</translation>
+	<translation name="Igde.DialogTexturePropertyList.Description">Description:</translation>
 	<translation name="Igde.DialogTexturePropertyList.Description.ToolTip">Property description</translation>
 	
 	<!-- DE Console -->
@@ -333,34 +328,34 @@ property type so be careful what you enter</translation>
 	<translation name="Igde.DEConsole.Module.ToolTip">Module to send command to</translation>
 	
 	<!-- DE Module Status -->
-	<translation name="Igde.DEModuleStatus.Module.Label">Module:</translation>
+	<translation name="Igde.DEModuleStatus.Module">Module:</translation>
 	<translation name="Igde.DEModuleStatus.Module.ToolTip">Module to show information for</translation>
-	<translation name="Igde.DEModuleStatus.ModuleInformation.Label">Module Information:</translation>
-	<translation name="Igde.DEModuleStatus.Description.Label">Description:</translation>
+	<translation name="Igde.DEModuleStatus.ModuleInformation">Module Information:</translation>
+	<translation name="Igde.DEModuleStatus.Description">Description:</translation>
 	<translation name="Igde.DEModuleStatus.Description.ToolTip">Module description</translation>
-	<translation name="Igde.DEModuleStatus.Type.Label">Type:</translation>
+	<translation name="Igde.DEModuleStatus.Type">Type:</translation>
 	<translation name="Igde.DEModuleStatus.Type.ToolTip">Module type</translation>
-	<translation name="Igde.DEModuleStatus.Author.Label">Author:</translation>
+	<translation name="Igde.DEModuleStatus.Author">Author:</translation>
 	<translation name="Igde.DEModuleStatus.Author.ToolTip">Module author</translation>
-	<translation name="Igde.DEModuleStatus.Version.Label">Version:</translation>
+	<translation name="Igde.DEModuleStatus.Version">Version:</translation>
 	<translation name="Igde.DEModuleStatus.Version.ToolTip">Module version</translation>
 	<translation name="Igde.DEModuleStatus.FallbackModule">Fallback Module</translation>
 	<translation name="Igde.DEModuleStatus.FallbackModule.ToolTip">Module is used as fallback if no better module is usable</translation>
-	<translation name="Igde.DEModuleStatus.FileHandlingInformation.Label">File Handling Information:</translation>
-	<translation name="Igde.DEModuleStatus.RecognizedFilePattern.Label">Recognized File Pattern:</translation>
+	<translation name="Igde.DEModuleStatus.FileHandlingInformation">File Handling Information:</translation>
+	<translation name="Igde.DEModuleStatus.RecognizedFilePattern">Recognized File Pattern:</translation>
 	<translation name="Igde.DEModuleStatus.RecognizedFilePattern.ToolTip">Recognized File Pattern</translation>
-	<translation name="Igde.DEModuleStatus.DefaultExtension.Label">Default Extension:</translation>
+	<translation name="Igde.DEModuleStatus.DefaultExtension">Default Extension:</translation>
 	<translation name="Igde.DEModuleStatus.DefaultExtension.ToolTip">Default Extension</translation>
-	<translation name="Igde.DEModuleStatus.ModuleDirectoryName.Label">Module Directory Name:</translation>
+	<translation name="Igde.DEModuleStatus.ModuleDirectoryName">Module Directory Name:</translation>
 	<translation name="Igde.DEModuleStatus.ModuleDirectoryName.ToolTip">Module Directory Name</translation>
-	<translation name="Igde.DEModuleStatus.LibraryModuleInformation.Label">Library Module Information:</translation>
-	<translation name="Igde.DEModuleStatus.LibraryFilename.Label">Library Filename:</translation>
+	<translation name="Igde.DEModuleStatus.LibraryModuleInformation">Library Module Information:</translation>
+	<translation name="Igde.DEModuleStatus.LibraryFilename">Library Filename:</translation>
 	<translation name="Igde.DEModuleStatus.LibraryFilename.ToolTip">Library Filename</translation>
-	<translation name="Igde.DEModuleStatus.LibraryFileSize.Label">Library File Size:</translation>
+	<translation name="Igde.DEModuleStatus.LibraryFileSize">Library File Size:</translation>
 	<translation name="Igde.DEModuleStatus.LibraryFileSize.ToolTip">Library File Size</translation>
-	<translation name="Igde.DEModuleStatus.LibraryCheckSum.Label">Library Check Sum (SHA):</translation>
+	<translation name="Igde.DEModuleStatus.LibraryCheckSum">Library Check Sum (SHA):</translation>
 	<translation name="Igde.DEModuleStatus.LibraryCheckSum.ToolTip">Library Check Sum (SHA)</translation>
-	<translation name="Igde.DEModuleStatus.ModuleStatus.Label">Module Status:</translation>
+	<translation name="Igde.DEModuleStatus.ModuleStatus">Module Status:</translation>
 	<translation name="Igde.DEModuleStatus.ModuleStatus.ToolTip">Module description</translation>
 	
 	<!-- DE Parameters -->
@@ -368,18 +363,18 @@ property type so be careful what you enter</translation>
 	<translation name="Igde.DEParameters.Action.Set.ToolTip">Set parameter value</translation>
 	<translation name="Igde.DEParameters.Action.Reset">Reset</translation>
 	<translation name="Igde.DEParameters.Action.Reset.ToolTip">Reset parameter value</translation>
-	<translation name="Igde.DEParameters.Module.Label">Module:</translation>
+	<translation name="Igde.DEParameters.Module">Module:</translation>
 	<translation name="Igde.DEParameters.Module.ToolTip">Module to show parameters for</translation>
-	<translation name="Igde.DEParameters.Parameter.Label">Parameter:</translation>
+	<translation name="Igde.DEParameters.Parameter">Parameter:</translation>
 	<translation name="Igde.DEParameters.Parameter.ToolTip">Parameter to show</translation>
-	<translation name="Igde.DEParameters.ParameterInfo.Label">Parameter:</translation>
-	<translation name="Igde.DEParameters.Description.Label">Description:</translation>
+	<translation name="Igde.DEParameters.ParameterInfo">Parameter:</translation>
+	<translation name="Igde.DEParameters.Description">Description:</translation>
 	<translation name="Igde.DEParameters.Description.ToolTip">Parameter description</translation>
-	<translation name="Igde.DEParameters.Type.Label">Type:</translation>
+	<translation name="Igde.DEParameters.Type">Type:</translation>
 	<translation name="Igde.DEParameters.Type.ToolTip">Parameter type</translation>
-	<translation name="Igde.DEParameters.AllowedValues.Label">Allowed Values:</translation>
+	<translation name="Igde.DEParameters.AllowedValues">Allowed Values:</translation>
 	<translation name="Igde.DEParameters.AllowedValues.ToolTip">Allowed Values</translation>
-	<translation name="Igde.DEParameters.Value.Label">Value:</translation>
+	<translation name="Igde.DEParameters.Value">Value:</translation>
 	<translation name="Igde.DEParameters.Value.ToolTip">Parameter value</translation>
 	
 	<!-- DE Status -->
@@ -387,9 +382,9 @@ property type so be careful what you enter</translation>
 	<translation name="Igde.DEStatus.Action.StartEngine.ToolTip">Start game engine</translation>
 	<translation name="Igde.DEStatus.Action.StopEngine">Stop Engine</translation>
 	<translation name="Igde.DEStatus.Action.StopEngine.ToolTip">Stop game engine</translation>
-	<translation name="Igde.DEStatus.EngineStatus.Label">Engine Status:</translation>
+	<translation name="Igde.DEStatus.EngineStatus">Engine Status:</translation>
 	<translation name="Igde.DEStatus.EngineStatus.ToolTip">Engine status</translation>
-	<translation name="Igde.DEStatus.SystemStatus.Label">System Status:</translation>
+	<translation name="Igde.DEStatus.SystemStatus">System Status:</translation>
 	<translation name="Igde.DEStatus.SystemStatus.ColumnSystemName">System Name</translation>
 	<translation name="Igde.DEStatus.SystemStatus.ColumnActiveModule">Active Module</translation>
 	<translation name="Igde.DEStatus.SystemStatus.ColumnStatus">Status</translation>
@@ -442,44 +437,44 @@ property type so be careful what you enter</translation>
 	<translation name="Igde.WPCamera.Action.SetDefaultDay">Set Default Day</translation>
 	<translation name="Igde.WPCamera.Action.SetDefaultNight">Set Default Night</translation>
 	<translation name="Igde.WPCamera.Action.SetDefaultDynamic">Set Default Dynamic</translation>
-	<translation name="Igde.WPCamera.Position.Label">Position:</translation>
+	<translation name="Igde.WPCamera.Position">Position:</translation>
 	<translation name="Igde.WPCamera.Position.ToolTip">Position of the camera</translation>
-	<translation name="Igde.WPCamera.Rotation.Label">Rotation:</translation>
+	<translation name="Igde.WPCamera.Rotation">Rotation:</translation>
 	<translation name="Igde.WPCamera.Rotation.ToolTip">Rotation of the camera</translation>
-	<translation name="Igde.WPCamera.OrbitDistance.Label">Orbit Distance:</translation>
+	<translation name="Igde.WPCamera.OrbitDistance">Orbit Distance:</translation>
 	<translation name="Igde.WPCamera.OrbitDistance.ToolTip">Distance to center point</translation>
-	<translation name="Igde.WPCamera.View.Label">View:</translation>
+	<translation name="Igde.WPCamera.View">View:</translation>
 	<translation name="Igde.WPCamera.View.ToolTip">View direction of the camera</translation>
-	<translation name="Igde.WPCamera.InternalParameters.Label">Internal parameters:</translation>
-	<translation name="Igde.WPCamera.FieldOfView.Label">Field of view:</translation>
+	<translation name="Igde.WPCamera.InternalParameters">Internal parameters:</translation>
+	<translation name="Igde.WPCamera.FieldOfView">Field of view:</translation>
 	<translation name="Igde.WPCamera.FieldOfView.ToolTip">Field of view in degrees</translation>
-	<translation name="Igde.WPCamera.FieldOfViewRatio.Label">Field of view ratio:</translation>
+	<translation name="Igde.WPCamera.FieldOfViewRatio">Field of view ratio:</translation>
 	<translation name="Igde.WPCamera.FieldOfViewRatio.ToolTip">Field of view ratio (height / width)</translation>
-	<translation name="Igde.WPCamera.ImageDistance.Label">Image distance:</translation>
+	<translation name="Igde.WPCamera.ImageDistance">Image distance:</translation>
 	<translation name="Igde.WPCamera.ImageDistance.ToolTip">Image distance in meters (near clipping plane)</translation>
-	<translation name="Igde.WPCamera.ViewDistance.Label">View distance:</translation>
+	<translation name="Igde.WPCamera.ViewDistance">View distance:</translation>
 	<translation name="Igde.WPCamera.ViewDistance.ToolTip">View distance in meters (far clipping plane)</translation>
-	<translation name="Igde.WPCamera.ExposureControls.Label">Exposure controls:</translation>
-	<translation name="Igde.WPCamera.LowerIntensity.Label">Lower intensity:</translation>
+	<translation name="Igde.WPCamera.ExposureControls">Exposure controls:</translation>
+	<translation name="Igde.WPCamera.LowerIntensity">Lower intensity:</translation>
 	<translation name="Igde.WPCamera.LowerIntensity.ToolTip">Lower intensity to adapt to</translation>
-	<translation name="Igde.WPCamera.HigherIntensity.Label">Higher intensity:</translation>
+	<translation name="Igde.WPCamera.HigherIntensity">Higher intensity:</translation>
 	<translation name="Igde.WPCamera.HigherIntensity.ToolTip">Higher intensity to adapt to</translation>
-	<translation name="Igde.WPCamera.Exposure.Label">Exposure:</translation>
+	<translation name="Igde.WPCamera.Exposure">Exposure:</translation>
 	<translation name="Igde.WPCamera.Exposure.ToolTip">Exposure multiplier</translation>
-	<translation name="Igde.WPCamera.AdaptionTime.Label">Adaption time:</translation>
+	<translation name="Igde.WPCamera.AdaptionTime">Adaption time:</translation>
 	<translation name="Igde.WPCamera.AdaptionTime.ToolTip">Adaption time in seconds</translation>
-	<translation name="Igde.WPCamera.ToneMapping.Label">Tone mapping:</translation>
-	<translation name="Igde.WPCamera.WhiteIntensity.Label">White intensity:</translation>
+	<translation name="Igde.WPCamera.ToneMapping">Tone mapping:</translation>
+	<translation name="Igde.WPCamera.WhiteIntensity">White intensity:</translation>
 	<translation name="Igde.WPCamera.WhiteIntensity.ToolTip">White intensity multiplier (avoid bright parts wash out to white)</translation>
-	<translation name="Igde.WPCamera.CustomCurve.Label">Custom Curve:</translation>
-	<translation name="Igde.WPCamera.BloomOverbright.Label">Bloom / Overbright:</translation>
-	<translation name="Igde.WPCamera.BloomBlend.Label">Blend:</translation>
+	<translation name="Igde.WPCamera.CustomCurve">Custom Curve:</translation>
+	<translation name="Igde.WPCamera.BloomOverbright">Bloom / Overbright:</translation>
+	<translation name="Igde.WPCamera.BloomBlend">Blend:</translation>
 	<translation name="Igde.WPCamera.BloomBlend.ToolTip">Bloom blend factor (enable/disable bloom)</translation>
-	<translation name="Igde.WPCamera.BloomIntensity.Label">Intensity:</translation>
+	<translation name="Igde.WPCamera.BloomIntensity">Intensity:</translation>
 	<translation name="Igde.WPCamera.BloomIntensity.ToolTip">Bloom intensity multiplier (overbright begin threshold)</translation>
-	<translation name="Igde.WPCamera.BloomStrength.Label">Strength:</translation>
+	<translation name="Igde.WPCamera.BloomStrength">Strength:</translation>
 	<translation name="Igde.WPCamera.BloomStrength.ToolTip">Bloom strength (scale intensity above threshold)</translation>
-	<translation name="Igde.WPCamera.BloomSize.Label">Size:</translation>
+	<translation name="Igde.WPCamera.BloomSize">Size:</translation>
 	<translation name="Igde.WPCamera.BloomSize.ToolTip">Bloom size (blur size relative to screen width)</translation>
 	
 	<!-- WP Sky -->
@@ -488,9 +483,9 @@ property type so be careful what you enter</translation>
 	<translation name="Igde.WPSky.Action.Select.ToolTip">Show dialog to select the sky from file</translation>
 	<translation name="Igde.WPSky.Dialog.SelectSky.Title">Select Sky</translation>
 	<translation name="Igde.WPSky.Controller.ToolTip">Current value of the controller ''</translation>
-	<translation name="Igde.WPSky.SkyPath.Label">Sky Path:</translation>
+	<translation name="Igde.WPSky.SkyPath">Sky Path:</translation>
 	<translation name="Igde.WPSky.SkyPath.ToolTip">Path to the sky to use.</translation>
-	<translation name="Igde.WPSky.Controllers.Label">Controllers:</translation>
+	<translation name="Igde.WPSky.Controllers">Controllers:</translation>
 	
 	<!-- WP Trigger Table -->
 	<translation name="Igde.WPTriggerTable.Action.ToggleState">Toggle State</translation>
@@ -509,13 +504,12 @@ property type so be careful what you enter</translation>
 	<translation name="Igde.WPTriggerTable.Action.ResetTarget.ToolTip">Reset selected target</translation>
 	<translation name="Igde.WPTriggerTable.Action.FullResetTarget">Full Reset Target</translation>
 	<translation name="Igde.WPTriggerTable.Action.FullResetTarget.ToolTip">Full reset selected target</translation>
-	<translation name="Igde.WPTriggerTable.TriggerTable.ToolTip">List of targets in the table</translation>
-	<translation name="Igde.WPTriggerTable.Filter.Label">Filter:</translation>
+	<translation name="Igde.WPTriggerTable.Filter">Filter:</translation>
 	<translation name="Igde.WPTriggerTable.Filter.ToolTip">Filter targets in the list case insensitive</translation>
 	<translation name="Igde.WPTriggerTable.ListBox.ToolTip">List of targets in the table</translation>
 	
 	<!-- WP Undo History -->
-	<translation name="Igde.WPUndoHistory.Label">Undo History:</translation>
+	<translation name="Igde.WPUndoHistory">Undo History:</translation>
 	
 	<!-- WP World Object -->
 	<translation name="Igde.WPWObject.Action.SelectClass.ToolTip">Brings up a dialog to select the object class.</translation>
@@ -523,13 +517,13 @@ property type so be careful what you enter</translation>
 	<translation name="Igde.WPWObject.Visible.ToolTip">Object is visible</translation>
 	<translation name="Igde.WPWObject.DynamicCollider">Dynamic Collider</translation>
 	<translation name="Igde.WPWObject.DynamicCollider.ToolTip">Object is attached using a dynamic collider</translation>
-	<translation name="Igde.WPWObject.Class.Label">Class:</translation>
+	<translation name="Igde.WPWObject.Class">Class:</translation>
 	<translation name="Igde.WPWObject.Class.ToolTip">Path to the sky to use.</translation>
-	<translation name="Igde.WPWObject.Position.Label">Position:</translation>
+	<translation name="Igde.WPWObject.Position">Position:</translation>
 	<translation name="Igde.WPWObject.Position.ToolTip">Position of object in meters.</translation>
-	<translation name="Igde.WPWObject.Orientation.Label">Orientation:</translation>
+	<translation name="Igde.WPWObject.Orientation">Orientation:</translation>
 	<translation name="Igde.WPWObject.Orientation.ToolTip">Orientation of object in euler coordinates.</translation>
-	<translation name="Igde.WPWObject.Scaling.Label">Scaling:</translation>
+	<translation name="Igde.WPWObject.Scaling">Scaling:</translation>
 	<translation name="Igde.WPWObject.Scaling.ToolTip">Scaling of object.</translation>
 	
 	<!-- Trigger Expression Dialog -->
@@ -548,15 +542,15 @@ property type so be careful what you enter</translation>
 	<translation name="Igde.TriggerExpressionEditor.Action.Target.ToolTip">Target to evaluate</translation>
 	<translation name="Igde.TriggerExpressionEditor.Action.AddChild.ToolTip">Add child to list</translation>
 	<translation name="Igde.TriggerExpressionEditor.Action.RemoveChild.ToolTip">Remove child from list</translation>
-	<translation name="Igde.TriggerExpressionEditor.Expression.Label">Expression:</translation>
+	<translation name="Igde.TriggerExpressionEditor.Expression">Expression:</translation>
 	<translation name="Igde.TriggerExpressionEditor.Expression.ToolTip">Trigger expression</translation>
-	<translation name="Igde.TriggerExpressionEditor.Structure.Label">Structure:</translation>
+	<translation name="Igde.TriggerExpressionEditor.Structure">Structure:</translation>
 	<translation name="Igde.TriggerExpressionEditor.Structure.ToolTip">Trigger expression structure</translation>
-	<translation name="Igde.TriggerExpressionEditor.ComponentControl.Label">Component Control:</translation>
-	<translation name="Igde.TriggerExpressionEditor.TargetName.Label">Target Name:</translation>
+	<translation name="Igde.TriggerExpressionEditor.ComponentControl">Component Control:</translation>
+	<translation name="Igde.TriggerExpressionEditor.TargetName">Target Name:</translation>
 	<translation name="Igde.TriggerExpressionEditor.TargetName.ToolTip">Target name</translation>
 	<translation name="Igde.TriggerExpressionEditor.TargetNameList.ToolTip">Target names found in trigger table</translation>
-	<translation name="Igde.TriggerExpressionEditor.FilterTargetName.Label">Filter:</translation>
+	<translation name="Igde.TriggerExpressionEditor.FilterTargetName">Filter:</translation>
 	<translation name="Igde.TriggerExpressionEditor.FilterTargetName.ToolTip">Filter for list of found target names</translation>
 	
 	<!-- Color Box -->
@@ -587,12 +581,6 @@ property type so be careful what you enter</translation>
 	<translation name="Igde.RecentFiles.LoadFile">Load {0}</translation>
 	
 	<!-- Game Definition -->
-	<translation name="Igde.GameDef.ClassCategory">Classes</translation>
-	<translation name="Igde.GameDef.ParticleEmitterCategory">Particle Emitters</translation>
-	<translation name="Igde.GameDef.SkinCategory">Skins</translation>
-	<translation name="Igde.GameDef.SkyCategory">Skies</translation>
-	<translation name="Igde.GameDef.AutoImported">Auto-Imported</translation>
-	<translation name="Igde.GameDef.Preview.ErrorSave">Can not save preview image to cache file {0}</translation>
 	
 	<!-- Game Project -->
 	<translation name="Igde.GameProject.NewProject">New Project</translation>
@@ -657,9 +645,6 @@ property type so be careful what you enter</translation>
 	<translation name="Igde.DEStatus.EngineCanNotStart">Engine can not be started because system {0} is not possible to start. Verify that a module is selected and that this module is runnable on this system.</translation>
 	
 	<!-- Fox Toolkit -->
-	<translation name="Igde.FoxToolkit.Key.Alt">Alt-</translation>
-	<translation name="Igde.FoxToolkit.Key.Ctl">Ctl-</translation>
-	<translation name="Igde.FoxToolkit.Key.Shift">Shift-</translation>
 	<translation name="Igde.FoxToolkit.Key.Space">Space</translation>
 	<translation name="Igde.FoxToolkit.Key.BackSpace">BackSpace</translation>
 	<translation name="Igde.FoxToolkit.Key.Tab">Tab</translation>
@@ -694,19 +679,13 @@ property type so be careful what you enter</translation>
 	<translation name="Igde.FoxFileDialog.FileFilter">File F&amp;ilter:</translation>
 	
 	<!-- Fox VFS List -->
-	<translation name="Igde.FoxVFSList.Header.Name">Name</translation>
-	<translation name="Igde.FoxVFSList.Header.Size">Size</translation>
-	<translation name="Igde.FoxVFSList.Header.Time">Time</translation>
 	
 	<!-- Fox VFS List Item -->
-	<translation name="Igde.FoxVFSListItem.Type.Directory">Directory</translation>
-	<translation name="Igde.FoxVFSListItem.Type.File">File</translation>
 	
 	<!-- WP Sky -->
 	<translation name="Igde.WPSky.ControllerValue">Current value of the controller {0}</translation>
 	
 	<!-- WP Trigger Table -->
-	<translation name="Igde.WPTriggerTable.TargetName.Default">Target</translation>
 	<translation name="Igde.WPTriggerTable.Target.HasFired">has fired</translation>
 	<translation name="Igde.WPTriggerTable.Target.NeverFired">never fired</translation>
 	<translation name="Igde.WPTriggerTable.Target.Text">{0} ({1})</translation>
@@ -723,22 +702,6 @@ property type so be careful what you enter</translation>
 	<translation name="Igde.FoxToolkit.KeyModifier.Alt">Alt-</translation>
 	<translation name="Igde.FoxToolkit.KeyModifier.Ctl">Ctl-</translation>
 	<translation name="Igde.FoxToolkit.KeyModifier.Shift">Shift-</translation>
-	<translation name="Igde.FoxToolkit.Key.Space">Space</translation>
-	<translation name="Igde.FoxToolkit.Key.BackSpace">BackSpace</translation>
-	<translation name="Igde.FoxToolkit.Key.Tab">Tab</translation>
-	<translation name="Igde.FoxToolkit.Key.Return">Return</translation>
-	<translation name="Igde.FoxToolkit.Key.Pause">Pause</translation>
-	<translation name="Igde.FoxToolkit.Key.Escape">Escape</translation>
-	<translation name="Igde.FoxToolkit.Key.Insert">Insert</translation>
-	<translation name="Igde.FoxToolkit.Key.Delete">Delete</translation>
-	<translation name="Igde.FoxToolkit.Key.Left">Left</translation>
-	<translation name="Igde.FoxToolkit.Key.Up">Up</translation>
-	<translation name="Igde.FoxToolkit.Key.Right">Right</translation>
-	<translation name="Igde.FoxToolkit.Key.Down">Down</translation>
-	<translation name="Igde.FoxToolkit.Key.PgUp">PgUp</translation>
-	<translation name="Igde.FoxToolkit.Key.PgDn">PgDn</translation>
-	<translation name="Igde.FoxToolkit.Key.Home">Home</translation>
-	<translation name="Igde.FoxToolkit.Key.End">End</translation>
 	
 	<!-- Fox Application -->
 	<translation name="Igde.FoxApplication.Error.Title">Application Error</translation>

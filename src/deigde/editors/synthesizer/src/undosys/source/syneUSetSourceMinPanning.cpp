@@ -50,7 +50,7 @@ pSource(nullptr)
 	pNewValue = newFactor;
 	
 	pSource = source;
-	SetShortInfo("@Source Set Min Panning");
+	SetShortInfo("@Synthesizer.Undo.SourceSetMinPanning");
 }
 
 syneUSetSourceMinPanning::~syneUSetSourceMinPanning(){

@@ -742,7 +742,7 @@ class cListHideTags : public gdeWPTagList {
 public:
 	typedef deTObjectReference<cListHideTags> Ref;
 	cListHideTags(gdeWPSObjectClass &panel, igdeUIHelper &helper) :
-	gdeWPTagList(helper, 5, "@GameDefinition.WPSObjectClass.HideTags.Label"), pPanel(panel){}
+	gdeWPTagList(helper, 5, "@GameDefinition.WPSObjectClass.HideTags"), pPanel(panel){}
 	
 	igdeUndo::Ref UndoSet(const decStringSet &tags) override{
 		return gdeUOCSetHideTags::Ref::New(pPanel.GetObjectClass(), tags);
@@ -755,7 +755,7 @@ class cListPartialHideTags : public gdeWPTagList {
 public:
 	typedef deTObjectReference<cListPartialHideTags> Ref;
 	cListPartialHideTags(gdeWPSObjectClass &panel, igdeUIHelper &helper) :
-	gdeWPTagList(helper, 5, "@GameDefinition.WPSObjectClass.PartialHideTags.Label"), pPanel(panel){}
+	gdeWPTagList(helper, 5, "@GameDefinition.WPSObjectClass.PartialHideTags"), pPanel(panel){}
 	
 	igdeUndo::Ref UndoSet(const decStringSet &tags) override{
 		return gdeUOCSetPartialHideTags::Ref::New(pPanel.GetObjectClass(), tags);
@@ -1000,7 +1000,7 @@ public:
 				}
 				
 				if(objectClass->GetTextures().HasNamed(name)){
-					igdeCommonDialogs::Error(*pPanel.GetParentWindow(), "@GameDefinition.ObjectClass.AddTexture.Error", "@GameDefinition.ObjectClass.ATextureWithThisNameExistsAlready.Error");
+					igdeCommonDialogs::Error(*pPanel.GetParentWindow(), "@GameDefinition.ObjectClass.AddTexture.Error", "@GameDefinition.ObjectClass.DuplicateTextureName.Error");
 					
 				}else{
 					break;
@@ -1064,7 +1064,7 @@ public:
 		}
 		
 		if(objectClass->GetTextures().HasNamed(textField.GetText())){
-			igdeCommonDialogs::Information(*pPanel.GetParentWindow(), "@GameDefinition.ObjectClass.Dialog.RenameTexture", "@GameDefinition.ObjectClass.Dialog.ATextureWithThisNameExistsAlready");
+			igdeCommonDialogs::Information(*pPanel.GetParentWindow(), "@GameDefinition.ObjectClass.Dialog.RenameTexture", "@GameDefinition.ObjectClass.DuplicateTextureName.Error");
 			textField.SetText(texture->GetName());
 			return {};
 		}
@@ -1189,18 +1189,18 @@ pWindowProperties(windowProperties)
 	
 	
 	// object class
-	helper.GroupBox(content, groupBox, "@GameDefinition.PanelObjectClass.GroupBoxObjectClass.Label");
-	helper.EditString(groupBox, "@GameDefinition.PanelObjectClass.Name.Label", "@GameDefinition.PanelObjectClass.Name.ToolTip", pEditName, cTextName::Ref::New(*this));
-	helper.EditString(groupBox, "@GameDefinition.PanelObjectClass.Description.Label", "@GameDefinition.PanelObjectClass.Description.ToolTip",
+	helper.GroupBox(content, groupBox, "@GameDefinition.PanelObjectClass.GroupBoxObjectClass");
+	helper.EditString(groupBox, "@GameDefinition.PanelObjectClass.Name", "@GameDefinition.PanelObjectClass.Name.ToolTip", pEditName, cTextName::Ref::New(*this));
+	helper.EditString(groupBox, "@GameDefinition.PanelObjectClass.Description", "@GameDefinition.PanelObjectClass.Description.ToolTip",
 		pEditDescription, 15, 5, cTextDescription::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "@GameDefinition.PanelObjectClass.ScaleMode.Label", "@GameDefinition.PanelObjectClass.ScaleMode.ToolTip", pCBScaleMode, cComboScaleMode::Ref::New(*this));
+	helper.ComboBox(groupBox, "@GameDefinition.PanelObjectClass.ScaleMode", "@GameDefinition.PanelObjectClass.ScaleMode.ToolTip", pCBScaleMode, cComboScaleMode::Ref::New(*this));
 	pCBScaleMode->SetAutoTranslateItems(true);
 	pCBScaleMode->AddItem("@GameDefinition.PanelObjectClass.ScaleMode.Fixed", nullptr, (void*)(intptr_t)gdeObjectClass::esmFixed);
 	pCBScaleMode->AddItem("@GameDefinition.PanelObjectClass.ScaleMode.Uniform", nullptr, (void*)(intptr_t)gdeObjectClass::esmUniform);
 	pCBScaleMode->AddItem("@GameDefinition.PanelObjectClass.ScaleMode.Free", nullptr, (void*)(intptr_t)gdeObjectClass::esmFree);
 	
-	helper.EditString(groupBox, "@GameDefinition.PanelObjectClass.DefaultInheritPropertyPrefix.Label",
+	helper.EditString(groupBox, "@GameDefinition.PanelObjectClass.DefaultInheritPropertyPrefix",
 		"@GameDefinition.PanelObjectClass.DefaultInheritPropertyPrefix.ToolTip",
 		pEditDefaultInheritPropertyPrefix, cTextDefaultInheritPropertyPrefix::Ref::New(*this));
 	
@@ -1208,7 +1208,7 @@ pWindowProperties(windowProperties)
 	helper.CheckBox(groupBox, pChkCanInstantiate, cActionCanInstantiate::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkIsAttachableBehavior, cActionIsAttachableBehavior::Ref::New(*this));
 	
-	helper.FormLineStretchFirst(groupBox, "@GameDefinition.PanelObjectClass.Category.Label", "@GameDefinition.PanelObjectClass.Category.ToolTip", frameLine);
+	helper.FormLineStretchFirst(groupBox, "@GameDefinition.PanelObjectClass.Category", "@GameDefinition.PanelObjectClass.Category.ToolTip", frameLine);
 	helper.ComboBoxFilter(frameLine, true, "@GameDefinition.PanelObjectClass.Category.ToolTip", pCBCategory, cComboCategory::Ref::New(*this));
 	pCBCategory->SetDefaultSorter();
 	pCBCategory->SetFilterCaseInsentive(true);
@@ -1216,7 +1216,7 @@ pWindowProperties(windowProperties)
 	
 	
 	// inherits
-	helper.GroupBoxFlow(content, groupBox, "@GameDefinition.PanelObjectClass.GroupBoxInherits.Label");
+	helper.GroupBoxFlow(content, groupBox, "@GameDefinition.PanelObjectClass.GroupBoxInherits");
 	
 	helper.ListBox(groupBox, 5, "@GameDefinition.PanelObjectClass.Inherits.ToolTip", pListInherits, cListInherits::Ref::New(*this));
 	pListInherits->SetDefaultSorter();
@@ -1224,14 +1224,14 @@ pWindowProperties(windowProperties)
 	form = igdeContainerForm::Ref::New(env);
 	groupBox->AddChild(form);
 	
-	helper.FormLineStretchFirst(form, "@GameDefinition.PanelObjectClass.InheritName.Label", "@GameDefinition.PanelObjectClass.InheritName.ToolTip", frameLine);
+	helper.FormLineStretchFirst(form, "@GameDefinition.PanelObjectClass.InheritName", "@GameDefinition.PanelObjectClass.InheritName.ToolTip", frameLine);
 	helper.ComboBoxFilter(frameLine, true, "@GameDefinition.PanelObjectClass.InheritName.ToolTip",
 		pInheritCBClass, cComboInheritName::Ref::New(*this));
 	pInheritCBClass->SetDefaultSorter();
 	pInheritCBClass->SetFilterCaseInsentive(true);
 	helper.Button(frameLine, pBtnJumpToInheritClass, cActionInheritJumpToClass::Ref::New(*this));
 	
-	helper.FormLineStretchFirst(form, "@GameDefinition.PanelObjectClass.InheritPropertyPrefix.Label",
+	helper.FormLineStretchFirst(form, "@GameDefinition.PanelObjectClass.InheritPropertyPrefix",
 		"@GameDefinition.PanelObjectClass.InheritPropertyPrefix.ToolTip", frameLine);
 	helper.EditString(frameLine, "@GameDefinition.PanelObjectClass.InheritPropertyPrefix.ToolTip",
 		pInheritEditPropertyPrefix, cTextInheritPropertyPrefix::Ref::New(*this));
@@ -1239,39 +1239,39 @@ pWindowProperties(windowProperties)
 	
 	
 	// inherit sub objects
-	helper.GroupBoxFlow(content, groupBox, "@GameDefinition.PanelObjectClass.GroupBoxInheritSubObjects.Label", false, true);
+	helper.GroupBoxFlow(content, groupBox, "@GameDefinition.PanelObjectClass.GroupBoxInheritSubObjects", false, true);
 	helper.CheckBox(groupBox, pChkInheritSOBillboards, cActionInheritSubObjects::Ref::New(*this,
-		igdeGDClass::efsoBillboards, "@GameDefinition.PanelObjectClass.InheritBillboards.Label", "@GameDefinition.PanelObjectClass.InheritBillboards.ToolTip"));
+		igdeGDClass::efsoBillboards, "@GameDefinition.PanelObjectClass.InheritBillboards", "@GameDefinition.PanelObjectClass.InheritBillboards.ToolTip"));
 	helper.CheckBox(groupBox, pChkInheritSOComponents, cActionInheritSubObjects::Ref::New(*this,
-		igdeGDClass::efsoComponents, "@GameDefinition.PanelObjectClass.InheritComponents.Label", "@GameDefinition.PanelObjectClass.InheritComponents.ToolTip"));
+		igdeGDClass::efsoComponents, "@GameDefinition.PanelObjectClass.InheritComponents", "@GameDefinition.PanelObjectClass.InheritComponents.ToolTip"));
 	helper.CheckBox(groupBox, pChkInheritSOLights, cActionInheritSubObjects::Ref::New(*this,
-		igdeGDClass::efsoLights, "@GameDefinition.PanelObjectClass.InheritLights.Label", "@GameDefinition.PanelObjectClass.InheritLights.ToolTip"));
+		igdeGDClass::efsoLights, "@GameDefinition.PanelObjectClass.InheritLights", "@GameDefinition.PanelObjectClass.InheritLights.ToolTip"));
 	helper.CheckBox(groupBox, pChkInheritSOSnapPoints, cActionInheritSubObjects::Ref::New(*this,
-		igdeGDClass::efsoSnapPoints, "@GameDefinition.PanelObjectClass.InheritSnapPoints.Label", "@GameDefinition.PanelObjectClass.InheritSnapPoints.ToolTip"));
+		igdeGDClass::efsoSnapPoints, "@GameDefinition.PanelObjectClass.InheritSnapPoints", "@GameDefinition.PanelObjectClass.InheritSnapPoints.ToolTip"));
 	helper.CheckBox(groupBox, pChkInheritSOParticleEmitters, cActionInheritSubObjects::Ref::New(*this,
-		igdeGDClass::efsoParticleEmitters, "@GameDefinition.PanelObjectClass.InheritParticleEmitters.Label", "@GameDefinition.PanelObjectClass.InheritParticleEmitters.ToolTip"));
+		igdeGDClass::efsoParticleEmitters, "@GameDefinition.PanelObjectClass.InheritParticleEmitters", "@GameDefinition.PanelObjectClass.InheritParticleEmitters.ToolTip"));
 	helper.CheckBox(groupBox, pChkInheritSOForceFields, cActionInheritSubObjects::Ref::New(*this,
-		igdeGDClass::efsoForceFields, "@GameDefinition.PanelObjectClass.InheritForceFields.Label", "@GameDefinition.PanelObjectClass.InheritForceFields.ToolTip"));
+		igdeGDClass::efsoForceFields, "@GameDefinition.PanelObjectClass.InheritForceFields", "@GameDefinition.PanelObjectClass.InheritForceFields.ToolTip"));
 	helper.CheckBox(groupBox, pChkInheritSOEnvMapProbes, cActionInheritSubObjects::Ref::New(*this,
-		igdeGDClass::efsoEnvMapProbes, "@GameDefinition.PanelObjectClass.InheritEnvironmentMapProbes.Label", "@GameDefinition.PanelObjectClass.InheritEnvironmentMapProbes.ToolTip"));
+		igdeGDClass::efsoEnvMapProbes, "@GameDefinition.PanelObjectClass.InheritEnvironmentMapProbes", "@GameDefinition.PanelObjectClass.InheritEnvironmentMapProbes.ToolTip"));
 	helper.CheckBox(groupBox, pChkInheritSOSpeakers, cActionInheritSubObjects::Ref::New(*this,
-		igdeGDClass::efsoSpeakers, "@GameDefinition.PanelObjectClass.InheritSpeakers.Label", "@GameDefinition.PanelObjectClass.InheritSpeakers.ToolTip"));
+		igdeGDClass::efsoSpeakers, "@GameDefinition.PanelObjectClass.InheritSpeakers", "@GameDefinition.PanelObjectClass.InheritSpeakers.ToolTip"));
 	helper.CheckBox(groupBox, pChkInheritSONavigationSpaces, cActionInheritSubObjects::Ref::New(*this,
-		igdeGDClass::efsoNavigationSpaces, "@GameDefinition.PanelObjectClass.InheritNavigationSpaces.Label", "@GameDefinition.PanelObjectClass.InheritNavigationSpaces.ToolTip"));
+		igdeGDClass::efsoNavigationSpaces, "@GameDefinition.PanelObjectClass.InheritNavigationSpaces", "@GameDefinition.PanelObjectClass.InheritNavigationSpaces.ToolTip"));
 	helper.CheckBox(groupBox, pChkInheritSONavigationBlockers, cActionInheritSubObjects::Ref::New(*this,
-		igdeGDClass::efsoNavigationBlockers, "@GameDefinition.PanelObjectClass.InheritNavigationBlockers.Label", "@GameDefinition.PanelObjectClass.InheritNavigationBlockers.ToolTip"));
+		igdeGDClass::efsoNavigationBlockers, "@GameDefinition.PanelObjectClass.InheritNavigationBlockers", "@GameDefinition.PanelObjectClass.InheritNavigationBlockers.ToolTip"));
 	helper.CheckBox(groupBox, pChkInheritSOWorlds, cActionInheritSubObjects::Ref::New(*this,
-		igdeGDClass::efsoWorlds, "@GameDefinition.PanelObjectClass.InheritWorlds.Label", "@GameDefinition.PanelObjectClass.InheritWorlds.ToolTip"));
+		igdeGDClass::efsoWorlds, "@GameDefinition.PanelObjectClass.InheritWorlds", "@GameDefinition.PanelObjectClass.InheritWorlds.ToolTip"));
 	
 	
 	// properties
-	helper.GroupBoxFlow(content, groupBox, "@GameDefinition.PanelObjectClass.GroupBoxProperties.Label");
+	helper.GroupBoxFlow(content, groupBox, "@GameDefinition.PanelObjectClass.GroupBoxProperties");
 	pEditProperties = cEditProperties::Ref::New(*this);
 	groupBox->AddChild(pEditProperties);
 	
 	
 	// property values
-	helper.GroupBoxFlow(content, groupBox, "@GameDefinition.PanelObjectClass.GroupBoxPropertyValues.Label", true);
+	helper.GroupBoxFlow(content, groupBox, "@GameDefinition.PanelObjectClass.GroupBoxPropertyValues", true);
 	
 	frameLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
 	helper.ComboBox(frameLine, true, "@GameDefinition.PanelObjectClass.PropertyValuesKeys.ToolTip", pCBPropertyValuesKeys, {});
@@ -1280,8 +1280,8 @@ pWindowProperties(windowProperties)
 	groupBox->AddChild(frameLine);
 	
 	const igdeUIHelper::sColumnHeader headersPropertyValues[2] = {
-		igdeUIHelper::sColumnHeader("@GameDefinition.PanelObjectClass.PropertyValuesKey.Label", nullptr, igdeApplication::app().DisplayScaled(150)),
-		igdeUIHelper::sColumnHeader("@GameDefinition.PanelObjectClass.PropertyValuesValue.Label", nullptr, igdeApplication::app().DisplayScaled(200))
+		igdeUIHelper::sColumnHeader("@GameDefinition.PanelObjectClass.PropertyValuesKey", nullptr, igdeApplication::app().DisplayScaled(150)),
+		igdeUIHelper::sColumnHeader("@GameDefinition.PanelObjectClass.PropertyValuesValue", nullptr, igdeApplication::app().DisplayScaled(200))
 	};
 	helper.IconListBox(groupBox, pListPropertyValues,
 		igdeApplication::app().DisplayScaled(decPoint(100, 120)),
@@ -1290,41 +1290,41 @@ pWindowProperties(windowProperties)
 	
 	
 	// texture properties
-	helper.GroupBoxFlow(content, groupBox, "@GameDefinition.PanelObjectClass.GroupBoxTextureProperties.Label", false, true);
+	helper.GroupBoxFlow(content, groupBox, "@GameDefinition.PanelObjectClass.GroupBoxTextureProperties", false, true);
 	pEditTextureProperties = cEditTextureProperties::Ref::New(*this);
 	groupBox->AddChild(pEditTextureProperties);
 	
 	
 	// tagging
-	helper.GroupBoxFlow(content, groupBox, "@GameDefinition.PanelObjectClass.GroupBoxHideTags.Label", false, true);
+	helper.GroupBoxFlow(content, groupBox, "@GameDefinition.PanelObjectClass.GroupBoxHideTags", false, true);
 	pListHideTags = cListHideTags::Ref::New(*this, helper);
 	groupBox->AddChild(pListHideTags);
 	
-	helper.GroupBoxFlow(content, groupBox, "@GameDefinition.PanelObjectClass.GroupBoxPartialHideTags.Label", false, true);
+	helper.GroupBoxFlow(content, groupBox, "@GameDefinition.PanelObjectClass.GroupBoxPartialHideTags", false, true);
 	pListPartialHideTags = cListPartialHideTags::Ref::New(*this, helper);
 	groupBox->AddChild(pListPartialHideTags);
 	
 	
 	// textures
-	helper.GroupBox(content, groupBox, "@GameDefinition.PanelObjectClass.GroupBoxTextures.Label");
+	helper.GroupBox(content, groupBox, "@GameDefinition.PanelObjectClass.GroupBoxTextures");
 	
-	helper.FormLineStretchFirst(groupBox, "@GameDefinition.PanelObjectClass.Texture.Label", "@GameDefinition.PanelObjectClass.Texture.ToolTip", frameLine);
+	helper.FormLineStretchFirst(groupBox, "@GameDefinition.PanelObjectClass.Texture", "@GameDefinition.PanelObjectClass.Texture.ToolTip", frameLine);
 	helper.ComboBox(frameLine, "@GameDefinition.PanelObjectClass.Texture.ToolTip", pCBTextures, cComboTextures::Ref::New(*this));
 	pCBTextures->SetDefaultSorter();
 	helper.Button(frameLine, pBtnTextures, pActionTexturesMenu);
 	pActionTexturesMenu->SetWidget(pBtnTextures);
 	
-	helper.EditString(groupBox, "@GameDefinition.PanelObjectClass.TextureName.Label", "@GameDefinition.PanelObjectClass.TextureName.ToolTip", pTextureEditName, cTextTextureEditName::Ref::New(*this));
-	helper.EditPath(groupBox, "@GameDefinition.PanelObjectClass.TextureSkin.Label", "@GameDefinition.PanelObjectClass.TextureSkin.ToolTip",
+	helper.EditString(groupBox, "@GameDefinition.PanelObjectClass.TextureName", "@GameDefinition.PanelObjectClass.TextureName.ToolTip", pTextureEditName, cTextTextureEditName::Ref::New(*this));
+	helper.EditPath(groupBox, "@GameDefinition.PanelObjectClass.TextureSkin", "@GameDefinition.PanelObjectClass.TextureSkin.ToolTip",
 		igdeEnvironment::efpltSkin, pTextureEditPathSkin, cEditTextureEditPathSkin::Ref::New(*this));
-	helper.EditVector2(groupBox, "@GameDefinition.PanelObjectClass.TextureOffset.Label", "@GameDefinition.PanelObjectClass.TextureOffset.ToolTip",
+	helper.EditVector2(groupBox, "@GameDefinition.PanelObjectClass.TextureOffset", "@GameDefinition.PanelObjectClass.TextureOffset.ToolTip",
 		pTextureEditOffset, cEditTextureEditOffset::Ref::New(*this));
-	helper.EditFloat(groupBox, "@GameDefinition.PanelObjectClass.TextureRotation.Label",
+	helper.EditFloat(groupBox, "@GameDefinition.PanelObjectClass.TextureRotation",
 		"@GameDefinition.PanelObjectClass.TextureRotation.ToolTip",
 		pTextureEditRotation, cTextTextureEditRotation::Ref::New(*this));
-	helper.EditVector2(groupBox, "@GameDefinition.PanelObjectClass.TextureScale.Label", "@GameDefinition.PanelObjectClass.TextureScale.ToolTip",
+	helper.EditVector2(groupBox, "@GameDefinition.PanelObjectClass.TextureScale", "@GameDefinition.PanelObjectClass.TextureScale.ToolTip",
 		pTextureEditScale, cEditTextureEditScale::Ref::New(*this));
-	helper.ColorBox(groupBox, "@GameDefinition.PanelObjectClass.TextureTint.Label", "@GameDefinition.PanelObjectClass.TextureTint.ToolTip",
+	helper.ColorBox(groupBox, "@GameDefinition.PanelObjectClass.TextureTint", "@GameDefinition.PanelObjectClass.TextureTint.ToolTip",
 		pTextureClrTint, cColorTextureTint::Ref::New(*this));
 }
 

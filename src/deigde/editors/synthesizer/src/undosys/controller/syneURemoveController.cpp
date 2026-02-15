@@ -53,6 +53,8 @@ pController(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
+	SetShortInfo("@Synthesizer.Undo.ControllerRemove");
+	
 	pSynthesizer = synthesizer;
 	pController = controller;
 }

@@ -225,7 +225,7 @@ public:
 	using Ref = deTObjectReference<cActionResetState>;
 	
 public:
-	cActionResetState(aeWPView &panel) : cBaseAction(panel, "@Animator.WPView.ResetState.Label", nullptr,
+	cActionResetState(aeWPView &panel) : cBaseAction(panel, "@Animator.WPView.ResetState", nullptr,
 		"@Animator.WPView.ResetState.ToolTip"){ }
 	
 	void OnAction(aeAnimator *animator) override{
@@ -281,7 +281,7 @@ public:
 	using Ref = deTObjectReference<cActionCamAttach>;
 	
 public:
-	cActionCamAttach(aeWPView &panel) : cBaseAction(panel, "@Animator.WPView.CamAttach.Label", nullptr,
+	cActionCamAttach(aeWPView &panel) : cBaseAction(panel, "@Animator.WPView.CamAttach", nullptr,
 		"@Animator.WPView.CamAttach.ToolTip"){}
 	
 	void OnAction(aeAnimator *animator) override{
@@ -392,7 +392,7 @@ public:
 	using Ref = deTObjectReference<cActionPaused>;
 	
 public:
-	cActionPaused(aeWPView &panel) : cBaseAction(panel, "@Animator.WPView.Paused.Label", nullptr, "@Animator.WPView.Paused.ToolTip"){}
+	cActionPaused(aeWPView &panel) : cBaseAction(panel, "@Animator.WPView.Paused", nullptr, "@Animator.WPView.Paused.ToolTip"){}
 	
 	void OnAction(aeAnimator *animator) override{
 		animator->SetPaused(!animator->GetPaused());
@@ -409,7 +409,7 @@ public:
 	using Ref = deTObjectReference<cActionReset>;
 	
 public:
-	cActionReset(aeWPView &panel) : cBaseAction(panel, "@Animator.WPView.Reset.Label", nullptr, "@Animator.WPView.Reset.ToolTip"){}
+	cActionReset(aeWPView &panel) : cBaseAction(panel, "@Animator.WPView.Reset", nullptr, "@Animator.WPView.Reset.ToolTip"){}
 	
 	void OnAction(aeAnimator *animator) override{
 		animator->GetControllers().Visit([](aeController &controller){
@@ -645,20 +645,20 @@ pWindowProperties(windowProperties)
 	
 	
 	// controllers
-	helper.GroupBox(content, groupBox, "@Animator.WPView.DisplayFilePath.Label");
+	helper.GroupBox(content, groupBox, "@Animator.WPView.DisplayFilePath");
 	
-	helper.EditPath(groupBox, "@Animator.WPView.Model.Label", "@Animator.WPView.Model.ToolTip", igdeEnvironment::efpltModel,
+	helper.EditPath(groupBox, "@Animator.WPView.Model", "@Animator.WPView.Model.ToolTip", igdeEnvironment::efpltModel,
 		pEditDisplayModelPath, cPathDisplayModel::Ref::New(*this));
-	helper.EditPath(groupBox, "@Animator.WPView.Skin.Label", "@Animator.WPView.Skin.ToolTip", igdeEnvironment::efpltSkin,
+	helper.EditPath(groupBox, "@Animator.WPView.Skin", "@Animator.WPView.Skin.ToolTip", igdeEnvironment::efpltSkin,
 		pEditDisplaySkinPath, cPathDisplaySkin::Ref::New(*this));
-	helper.EditPath(groupBox, "@Animator.WPView.Rig.Label", "@Animator.WPView.Rig.ToolTip", igdeEnvironment::efpltRig,
+	helper.EditPath(groupBox, "@Animator.WPView.Rig", "@Animator.WPView.Rig.ToolTip", igdeEnvironment::efpltRig,
 		pEditDisplayRigPath, cPathDisplayRig::Ref::New(*this));
 	
 	
 	// testing animator
-	helper.GroupBox(content, groupBox, "@Animator.WPView.TestingBaseAnimator.Label", true);
+	helper.GroupBox(content, groupBox, "@Animator.WPView.TestingBaseAnimator", true);
 	
-	helper.EditPath(groupBox, "@Animator.WPView.Animator.Label",
+	helper.EditPath(groupBox, "@Animator.WPView.Animator",
 		"@Animator.WPView.Animator.ToolTip",
 		igdeEnvironment::efpltAnimator, pEditTestingAnimatorPath, cPathTestingAnimator::Ref::New(*this));
 	
@@ -666,33 +666,33 @@ pWindowProperties(windowProperties)
 	
 	
 	// sky, environment object, camera
-	helper.WPSky(content, pWPSky, cEditSky::Ref::New(*this), "@Animator.WPView.Sky.Label", false, true);
-	helper.WPWObject(content, pWPEnvObject, cEditEnvObject::Ref::New(*this), "@Animator.WPView.EnvironmentObject.Label", false, true);
-	helper.WPCamera(content, pWPCamera, cEditCamera::Ref::New(*this), "@Animator.WPView.Camera.Label", false, true);
+	helper.WPSky(content, pWPSky, cEditSky::Ref::New(*this), "@Animator.WPView.Sky", false, true);
+	helper.WPWObject(content, pWPEnvObject, cEditEnvObject::Ref::New(*this), "@Animator.WPView.EnvironmentObject", false, true);
+	helper.WPCamera(content, pWPCamera, cEditCamera::Ref::New(*this), "@Animator.WPView.Camera", false, true);
 	
 	
 	// camera attaching
-	helper.GroupBox(content, groupBox, "@Animator.WPView.CameraAttaching.Label");
+	helper.GroupBox(content, groupBox, "@Animator.WPView.CameraAttaching");
 	
 	helper.CheckBox(groupBox, pChkCamAttach, cActionCamAttach::Ref::New(*this));
-	helper.ComboBoxFilter(groupBox, "@Animator.WPView.CamBone.Label", true, "@Animator.WPView.CamBone.ToolTip",
+	helper.ComboBoxFilter(groupBox, "@Animator.WPView.CamBone", true, "@Animator.WPView.CamBone.ToolTip",
 		pCBCamBone, cComboCamAttachBone::Ref::New(*this));
 	pCBCamBone->SetDefaultSorter();
 	
-	helper.EditVector(groupBox, "@Animator.WPView.CamRelPos.Label",
+	helper.EditVector(groupBox, "@Animator.WPView.CamRelPos",
 		"@Animator.WPView.CamRelPos.ToolTip",
 		pEditCamRelPos, cEditCamRelPos::Ref::New(*this));
-	helper.EditVector(groupBox, "@Animator.WPView.CamRelRot.Label",
+	helper.EditVector(groupBox, "@Animator.WPView.CamRelRot",
 		"@Animator.WPView.CamRelRot.ToolTip",
 		pEditCamRelRot, cEditCamRelRot::Ref::New(*this));
 	
 	
 	// playback
-	helper.GroupBox(content, groupBox, "@Animator.WPView.Playback.Label");
+	helper.GroupBox(content, groupBox, "@Animator.WPView.Playback");
 	
-	helper.EditFloat(groupBox, "@Animator.WPView.PlaySpeed.Label", "@Animator.WPView.PlaySpeed.ToolTip",
+	helper.EditFloat(groupBox, "@Animator.WPView.PlaySpeed", "@Animator.WPView.PlaySpeed.ToolTip",
 		pEditPlaySpeed, cTextPlaySpeed::Ref::New(*this));
-	helper.EditFloat(groupBox, "@Animator.WPView.TimeStep.Label", "@Animator.WPView.TimeStep.ToolTip",
+	helper.EditFloat(groupBox, "@Animator.WPView.TimeStep", "@Animator.WPView.TimeStep.ToolTip",
 		pEditTimeStep, cTextTimeStep::Ref::New(*this));
 	
 	helper.FormLine(groupBox, "", "", formLine);
@@ -703,30 +703,30 @@ pWindowProperties(windowProperties)
 	
 	
 	// attachments
-	helper.GroupBox(content, groupBox, "@Animator.WPView.Attachments.Label", true);
+	helper.GroupBox(content, groupBox, "@Animator.WPView.Attachments", true);
 	
-	helper.FormLineStretchFirst(groupBox, "@Animator.WPView.Attachment.Label", "@Animator.WPView.Attachment.ToolTip", formLine);
+	helper.FormLineStretchFirst(groupBox, "@Animator.WPView.Attachment", "@Animator.WPView.Attachment.ToolTip", formLine);
 	helper.ComboBox(formLine, "@Animator.WPView.Attachment.ToolTip", pCBAttachments, cComboAttachment::Ref::New(*this));
 	
 	cActionMenuAttach::Ref actionMenuAttachment(cActionMenuAttach::Ref::New(*this));
 	helper.Button(formLine, pBtnAttMenu, actionMenuAttachment);
 	actionMenuAttachment->SetWidget(pBtnAttMenu);
 	
-	helper.EditString(groupBox, "@Animator.WPView.AttachmentName.Label", "@Animator.WPView.AttachmentName.ToolTip",
+	helper.EditString(groupBox, "@Animator.WPView.AttachmentName", "@Animator.WPView.AttachmentName.ToolTip",
 		pEditAttName, cTextAttachmentName::Ref::New(*this));
 	
-	helper.ComboBoxFilter(groupBox, "@Animator.WPView.AttachBone.Label", true, "@Animator.WPView.AttachBone.ToolTip",
+	helper.ComboBoxFilter(groupBox, "@Animator.WPView.AttachBone", true, "@Animator.WPView.AttachBone.ToolTip",
 		pCBAttBoneName, cComboAttachmentBone::Ref::New(*this));
 	pCBAttBoneName->SetDefaultSorter();
 	
-	helper.ComboBox(groupBox, "@Animator.WPView.Attach.Label", "@Animator.WPView.Attach.ToolTip", pCBAttAttachType, cComboAttachmentType::Ref::New(*this));
+	helper.ComboBox(groupBox, "@Animator.WPView.Attach", "@Animator.WPView.Attach.ToolTip", pCBAttAttachType, cComboAttachmentType::Ref::New(*this));
 	pCBAttAttachType->SetAutoTranslateItems(true);
 	pCBAttAttachType->AddItem("@Animator.WPView.AttachType.None", nullptr, (void*)(intptr_t)aeAttachment::eatNone);
 	pCBAttAttachType->AddItem("@Animator.WPView.AttachType.Bone", nullptr, (void*)(intptr_t)aeAttachment::eatBone);
 	pCBAttAttachType->AddItem("@Animator.WPView.AttachType.Rig", nullptr, (void*)(intptr_t)aeAttachment::eatRig);
 	
 	helper.WPWObject(content, pWPAttachment, cEditAttachmentObject::Ref::New(*this),
-		"@Animator.WPView.AttachmentObject.Label", false, true);
+		"@Animator.WPView.AttachmentObject", false, true);
 }
 
 aeWPView::~aeWPView(){

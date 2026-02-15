@@ -472,17 +472,17 @@ void igdeWPWObject::pCreateContent(){
 	form = igdeContainerForm::Ref::New(env);
 	AddChild(form);
 	
-	helper.FormLineStretchFirst(form, "@Igde.WPWObject.Class.Label",
+	helper.FormLineStretchFirst(form, "@Igde.WPWObject.Class",
 		"@Igde.WPWObject.Class.ToolTip", frameLine);
 	helper.EditString(frameLine, "@Igde.WPWObject.Class.ToolTip",
 		pEditClass, cTextClass::Ref::New(*this));
 	helper.Button(frameLine, pBtnClass, cActionSelectClass::Ref::New(*this, pEditClass));
 	
-	helper.EditVector(form, "@Igde.WPWObject.Position.Label", "@Igde.WPWObject.Position.ToolTip",
+	helper.EditVector(form, "@Igde.WPWObject.Position", "@Igde.WPWObject.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
-	helper.EditVector(form, "@Igde.WPWObject.Orientation.Label", "@Igde.WPWObject.Orientation.ToolTip",
+	helper.EditVector(form, "@Igde.WPWObject.Orientation", "@Igde.WPWObject.Orientation.ToolTip",
 		pEditOrientation, cEditOrientation::Ref::New(*this));
-	helper.EditVector(form, "@Igde.WPWObject.Scaling.Label", "@Igde.WPWObject.Scaling.ToolTip",
+	helper.EditVector(form, "@Igde.WPWObject.Scaling", "@Igde.WPWObject.Scaling.ToolTip",
 		pEditScaling, cEditScaling::Ref::New(*this));
 	
 	helper.CheckBox(form, pChkVisible, cCheckVisible::Ref::New(*this));

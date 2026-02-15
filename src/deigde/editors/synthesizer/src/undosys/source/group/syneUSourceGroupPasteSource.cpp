@@ -55,6 +55,7 @@ pIndex(index)
 	});
 	
 	pGroup = group;
+	SetShortInfo("@Synthesizer.Undo.SourceGroupPasteSource");
 }
 
 syneUSourceGroupPasteSource::~syneUSourceGroupPasteSource(){

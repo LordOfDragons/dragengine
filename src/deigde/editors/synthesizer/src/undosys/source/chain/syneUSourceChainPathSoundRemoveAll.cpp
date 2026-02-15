@@ -48,7 +48,7 @@ pSource(nullptr)
 	
 	pPathSounds = source->GetPathSounds();
 	
-	SetShortInfo("@Source Chain Path Sound Remove All");
+	SetShortInfo("@Synthesizer.Undo.SourceChainPathSoundRemoveAll");
 	
 	pSource = source;
 }

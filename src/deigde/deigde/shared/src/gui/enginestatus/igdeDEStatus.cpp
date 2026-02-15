@@ -112,7 +112,7 @@ pDialogEngine(dialogEngine)
 	igdeContainer::Ref groupBox, panel;
 	
 	
-	helper.GroupBoxStaticFlow(*this, groupBox, "@Igde.DEStatus.EngineStatus.Label");
+	helper.GroupBoxStaticFlow(*this, groupBox, "@Igde.DEStatus.EngineStatus");
 	helper.EditString(groupBox, "@Igde.DEStatus.EngineStatus.ToolTip", pTextStatus, 3, {});
 	
 	panel = igdeContainerBox::Ref::New(env, igdeContainerBox::eaX);
@@ -121,7 +121,7 @@ pDialogEngine(dialogEngine)
 	helper.Button(panel, pBtnStop, igdeDEStatus_ActionStop::Ref::New(*this));
 	
 	
-	helper.GroupBoxStaticFlow(*this, groupBox, "@Igde.DEStatus.SystemStatus.Label", true);
+	helper.GroupBoxStaticFlow(*this, groupBox, "@Igde.DEStatus.SystemStatus", true);
 	const igdeUIHelper::sColumnHeader columns[3] = {
 		igdeUIHelper::sColumnHeader("@Igde.DEStatus.SystemStatus.ColumnSystemName", nullptr, igdeApplication::app().DisplayScaled(150)),
 		igdeUIHelper::sColumnHeader("@Igde.DEStatus.SystemStatus.ColumnActiveModule", nullptr, igdeApplication::app().DisplayScaled(200)),

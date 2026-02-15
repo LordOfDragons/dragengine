@@ -46,7 +46,7 @@ syneUSourceTargetAddLink::syneUSourceTargetAddLink(syneSource *source, syneContr
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("@Source Target Add Link");
+	SetShortInfo("@Synthesizer.Undo.SourceTargetAddLink");
 	
 	pSource = source;
 	pTarget = target;

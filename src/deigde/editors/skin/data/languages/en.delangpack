@@ -11,8 +11,6 @@
 	<translation name="Skin.WindowMain.OpenSkin.Title">Open Skin</translation>
 	<translation name="Skin.WindowMain.OpenSkin.Message">Open skin discards changes. Is this ok?</translation>
 	
-	<translation name="Skin.WindowMain.NewSkin.Title">New Skin</translation>
-	<translation name="Skin.WindowMain.NewSkin.Message">Creating a new skin discarding the current one is that ok?</translation>
 	
 	<translation name="Skin.WindowMain.NewFromModel.Title">New From Model</translation>
 	
@@ -77,12 +75,13 @@
 	<translation name="Skin.WindowMain.Menu.Skin">Skin</translation>
 	<translation name="Skin.WindowMain.Menu.Mapped">Mapped</translation>
 	<translation name="Skin.WindowMain.Menu.Texture">Texture</translation>
+	<translation name="Skin.WindowMain.Menu.Edit">Edit</translation>
 	
 	<!-- Dialog Add Texture -->
 	<translation name="Skin.DialogAddTexture.Title">Add Texture</translation>
 	<translation name="Skin.DialogAddTexture.Header">Enter texture name or choose from model textures.</translation>
 	<translation name="Skin.DialogAddTexture.TextureNames">Textures names in model</translation>
-	<translation name="Skin.DialogAddTexture.Name.Label">Name:</translation>
+	<translation name="Skin.DialogAddTexture.Name">Name:</translation>
 	<translation name="Skin.DialogAddTexture.Name.ToolTip">Name of texture to add</translation>
 	<translation name="Skin.DialogAddTexture.Button.Create">Create Texture</translation>
 	
@@ -90,7 +89,7 @@
 	<translation name="Skin.DialogAddProperty.Title">Add Property</translation>
 	<translation name="Skin.DialogAddProperty.Header">Multi-Select properties or enter custom name.</translation>
 	<translation name="Skin.DialogAddProperty.PropertyNames">Property names</translation>
-	<translation name="Skin.DialogAddProperty.CustomName.Label">Custom Name:</translation>
+	<translation name="Skin.DialogAddProperty.CustomName">Custom Name:</translation>
 	<translation name="Skin.DialogAddProperty.CustomName.ToolTip">Custom name (for special uses only)</translation>
 	<translation name="Skin.DialogAddProperty.Button.AddProperties">Add Properties</translation>
 	<translation name="Skin.DialogAddProperty.Action.Details">Texture Property Details</translation>
@@ -104,21 +103,21 @@
 	
 	<!-- WPView -->
 	<translation name="Skin.WPView.Preview">Preview:</translation>
-	<translation name="Skin.WPView.Mode.Label">Mode:</translation>
+	<translation name="Skin.WPView.Mode">Mode:</translation>
 	<translation name="Skin.WPView.Mode.ToolTip">Preview mode.</translation>
 	<translation name="Skin.WPView.Mode.Model">Model</translation>
 	<translation name="Skin.WPView.Mode.Light">Light</translation>
-	<translation name="Skin.WPView.Model.Label">Model:</translation>
+	<translation name="Skin.WPView.Model">Model:</translation>
 	<translation name="Skin.WPView.Model.ToolTip">Path to the model resource to use.</translation>
-	<translation name="Skin.WPView.Rig.Label">Rig:</translation>
+	<translation name="Skin.WPView.Rig">Rig:</translation>
 	<translation name="Skin.WPView.Rig.ToolTip">Path to the rig resource to use.</translation>
-	<translation name="Skin.WPView.Animation.Label">Animation:</translation>
+	<translation name="Skin.WPView.Animation">Animation:</translation>
 	<translation name="Skin.WPView.Animation.ToolTip">Path to the animation resource to use.</translation>
-	<translation name="Skin.WPView.Move.Label">Move:</translation>
+	<translation name="Skin.WPView.Move">Move:</translation>
 	<translation name="Skin.WPView.Move.ToolTip">Name of the animation move to play.</translation>
-	<translation name="Skin.WPView.Sky.Label">Sky:</translation>
-	<translation name="Skin.WPView.EnvironmentObject.Label">Environment Object:</translation>
-	<translation name="Skin.WPView.Camera.Label">Camera:</translation>
+	<translation name="Skin.WPView.Sky">Sky:</translation>
+	<translation name="Skin.WPView.EnvironmentObject">Environment Object:</translation>
+	<translation name="Skin.WPView.Camera">Camera:</translation>
 	<translation name="Skin.WPView.Action.Playback">Play back animation</translation>
 	<translation name="Skin.WPView.Action.Playback.ToolTip">Animation is played back</translation>
 	<translation name="Skin.WPView.Action.Rewind">Rewind Textures</translation>
@@ -130,12 +129,12 @@
 	
 	<!-- WPMapped -->
 	<translation name="Skin.WPMapped.GroupMapped">Mapped:</translation>
-	<translation name="Skin.WPMapped.Mapped.Label">Mapped</translation>
+	<translation name="Skin.WPMapped.Mapped">Mapped</translation>
 	
-	<translation name="Skin.WPMapped.Name.Label">Name:</translation>
+	<translation name="Skin.WPMapped.Name">Name:</translation>
 	<translation name="Skin.WPMapped.Name.ToolTip">Name of mapped</translation>
 	
-	<translation name="Skin.WPMapped.InputType.Label">Input Type:</translation>
+	<translation name="Skin.WPMapped.InputType">Input Type:</translation>
 	<translation name="Skin.WPMapped.InputType.ToolTip">Type of input to use for curve</translation>
 	<translation name="Skin.WPMapped.InputType.Time">Time</translation>
 	<translation name="Skin.WPMapped.InputType.BonePositionX">BonePositionX</translation>
@@ -149,26 +148,26 @@
 	<translation name="Skin.WPMapped.InputType.BoneScaleZ">BoneScaleZ</translation>
 	<translation name="Skin.WPMapped.InputType.Renderable">Renderable</translation>
 	
-	<translation name="Skin.WPMapped.InputLower.Label">Input Lower:</translation>
+	<translation name="Skin.WPMapped.InputLower">Input Lower:</translation>
 	<translation name="Skin.WPMapped.InputLower.ToolTip">Lower input range</translation>
-	<translation name="Skin.WPMapped.InputUpper.Label">Input Upper:</translation>
+	<translation name="Skin.WPMapped.InputUpper">Input Upper:</translation>
 	<translation name="Skin.WPMapped.InputUpper.ToolTip">Upper input range</translation>
 	
-	<translation name="Skin.WPMapped.InputClamped.Label">Input Clamped:</translation>
+	<translation name="Skin.WPMapped.InputClamped">Input Clamped:</translation>
 	<translation name="Skin.WPMapped.InputClamped.ToolTip">Input value is clamperd to input range instead od wrapping around</translation>
 	
-	<translation name="Skin.WPMapped.OutputLower.Label">Output Lower:</translation>
+	<translation name="Skin.WPMapped.OutputLower">Output Lower:</translation>
 	<translation name="Skin.WPMapped.OutputLower.ToolTip">Lower output range. 0 Y-curve value maps to lower value. Values outside range are extrapolated</translation>
-	<translation name="Skin.WPMapped.OutputUpper.Label">Output Upper:</translation>
+	<translation name="Skin.WPMapped.OutputUpper">Output Upper:</translation>
 	<translation name="Skin.WPMapped.OutputUpper.ToolTip">Upper output range. 1 Y-curve value maps to upper value. Values outside range are extrapolated</translation>
 	
-	<translation name="Skin.WPMapped.Bone.Label">Bone:</translation>
+	<translation name="Skin.WPMapped.Bone">Bone:</translation>
 	<translation name="Skin.WPMapped.Bone.ToolTip">Name of the bone to use if bone related input type is used</translation>
 	
-	<translation name="Skin.WPMapped.Renderable.Label">Renderable:</translation>
+	<translation name="Skin.WPMapped.Renderable">Renderable:</translation>
 	<translation name="Skin.WPMapped.Renderable.ToolTip">Name of the renderable to use if renderable input type is used</translation>
 	
-	<translation name="Skin.WPMapped.RenderableComponent.Label">Component:</translation>
+	<translation name="Skin.WPMapped.RenderableComponent">Component:</translation>
 	<translation name="Skin.WPMapped.RenderableComponent.ToolTip">Color component to use if renderable is used and is of color type</translation>
 	<translation name="Skin.WPMapped.RenderableComponent.Red">Red</translation>
 	<translation name="Skin.WPMapped.RenderableComponent.Green">Green</translation>
@@ -182,28 +181,28 @@
 	<translation name="Skin.WPMapped.SetName.Exists">Mapped name exists already</translation>
 	
 	<!-- WPNode -->
-	<translation name="Skin.WPNode.Outliner.Label">Outliner</translation>
+	<translation name="Skin.WPNode.Outliner">Outliner</translation>
 	
 	<translation name="Skin.WPNode.GroupNode">Node:</translation>
-	<translation name="Skin.WPNode.Position.Label">Position:</translation>
+	<translation name="Skin.WPNode.Position">Position:</translation>
 	<translation name="Skin.WPNode.Position.ToolTip">Position of node center</translation>
-	<translation name="Skin.WPNode.Size.Label">Size:</translation>
+	<translation name="Skin.WPNode.Size">Size:</translation>
 	<translation name="Skin.WPNode.Size.ToolTip">Size of node center</translation>
-	<translation name="Skin.WPNode.Rotation.Label">Rotation:</translation>
+	<translation name="Skin.WPNode.Rotation">Rotation:</translation>
 	<translation name="Skin.WPNode.Rotation.ToolTip">Counter clock-wise rotation of node</translation>
-	<translation name="Skin.WPNode.Shear.Label">Shear:</translation>
+	<translation name="Skin.WPNode.Shear">Shear:</translation>
 	<translation name="Skin.WPNode.Shear.ToolTip">Shearing of node in degrees along X direction</translation>
-	<translation name="Skin.WPNode.Brightness.Label">Brightness:</translation>
+	<translation name="Skin.WPNode.Brightness">Brightness:</translation>
 	<translation name="Skin.WPNode.Brightness.ToolTip">Brightness</translation>
-	<translation name="Skin.WPNode.Contrast.Label">Contrast:</translation>
+	<translation name="Skin.WPNode.Contrast">Contrast:</translation>
 	<translation name="Skin.WPNode.Contrast.ToolTip">Contrast</translation>
-	<translation name="Skin.WPNode.Gamma.Label">Gamma:</translation>
+	<translation name="Skin.WPNode.Gamma">Gamma:</translation>
 	<translation name="Skin.WPNode.Gamma.ToolTip">Gamma</translation>
-	<translation name="Skin.WPNode.Colorize.Label">Colorize:</translation>
+	<translation name="Skin.WPNode.Colorize">Colorize:</translation>
 	<translation name="Skin.WPNode.Colorize.ToolTip">Colorize</translation>
-	<translation name="Skin.WPNode.Transparency.Label">Transparency:</translation>
+	<translation name="Skin.WPNode.Transparency">Transparency:</translation>
 	<translation name="Skin.WPNode.Transparency.ToolTip">Transparency of node</translation>
-	<translation name="Skin.WPNode.CombineMode.Label">Combine Mode:</translation>
+	<translation name="Skin.WPNode.CombineMode">Combine Mode:</translation>
 	<translation name="Skin.WPNode.CombineMode.ToolTip">Combine mode</translation>
 	<translation name="Skin.WPNode.CombineMode.Blend">Blend</translation>
 	<translation name="Skin.WPNode.CombineMode.Overlay">Overlay</translation>
@@ -215,9 +214,9 @@
 	<translation name="Skin.WPNode.NoMask">No Mask</translation>
 	
 	<translation name="Skin.WPNode.GroupDynamic">Dynamic:</translation>
-	<translation name="Skin.WPNode.MappedProperty.Label">Property:</translation>
+	<translation name="Skin.WPNode.MappedProperty">Property:</translation>
 	<translation name="Skin.WPNode.MappedProperty.ToolTip">Property to set mapped value for</translation>
-	<translation name="Skin.WPNode.Mapped.Label">Mapped:</translation>
+	<translation name="Skin.WPNode.Mapped">Mapped:</translation>
 	<translation name="Skin.WPNode.Mapped.ToolTip">Mapped value to use for property</translation>
 	
 	<translation name="Skin.WPNode.MappedType.PositionX">Position X</translation>
@@ -250,34 +249,34 @@
 	<translation name="Skin.WPNode.MappedType.ColorBlue">Color Blue</translation>
 	
 	<translation name="Skin.WPNode.GroupImage">Image:</translation>
-	<translation name="Skin.WPNode.Image.Label">Image:</translation>
+	<translation name="Skin.WPNode.Image">Image:</translation>
 	<translation name="Skin.WPNode.Image.ToolTip">Image resource to display</translation>
 	<translation name="Skin.WPNode.ImageInfo">{0}x{1}x{2}, {3}, {4}-Bit</translation>
 	<translation name="Skin.WPNode.ImageInfo.ToolTip">Image information</translation>
-	<translation name="Skin.WPNode.Repeat.Label">Repeat:</translation>
+	<translation name="Skin.WPNode.Repeat">Repeat:</translation>
 	<translation name="Skin.WPNode.Repeat.ToolTip">Repetition of image inside node size</translation>
 	
 	<translation name="Skin.WPNode.GroupShape">Shape:</translation>
-	<translation name="Skin.WPNode.ShapeType.Label">Type:</translation>
+	<translation name="Skin.WPNode.ShapeType">Type:</translation>
 	<translation name="Skin.WPNode.ShapeType.ToolTip">Shape type</translation>
 	<translation name="Skin.WPNode.ShapeType.Rectangle">Rectangle</translation>
 	<translation name="Skin.WPNode.ShapeType.Ellipse">Ellipse</translation>
-	<translation name="Skin.WPNode.LineColor.Label">Line Color:</translation>
+	<translation name="Skin.WPNode.LineColor">Line Color:</translation>
 	<translation name="Skin.WPNode.LineColor.ToolTip">Line color</translation>
-	<translation name="Skin.WPNode.FillColor.Label">Fill Color:</translation>
+	<translation name="Skin.WPNode.FillColor">Fill Color:</translation>
 	<translation name="Skin.WPNode.FillColor.ToolTip">Fill color</translation>
-	<translation name="Skin.WPNode.Thickness.Label">Thickness:</translation>
+	<translation name="Skin.WPNode.Thickness">Thickness:</translation>
 	<translation name="Skin.WPNode.Thickness.ToolTip">Thickness of line in pixels</translation>
 	
 	<translation name="Skin.WPNode.GroupText">Text:</translation>
-	<translation name="Skin.WPNode.Font.Label">Font:</translation>
+	<translation name="Skin.WPNode.Font">Font:</translation>
 	<translation name="Skin.WPNode.Font.ToolTip">Font resource to use for text</translation>
 	<translation name="Skin.WPNode.FontInfo.ToolTip">Font information</translation>
-	<translation name="Skin.WPNode.FontSize.Label">Font size:</translation>
+	<translation name="Skin.WPNode.FontSize">Font size:</translation>
 	<translation name="Skin.WPNode.FontSize.ToolTip">Font size in pixels (equals height of text line)</translation>
-	<translation name="Skin.WPNode.Text.Label">Text:</translation>
+	<translation name="Skin.WPNode.Text">Text:</translation>
 	<translation name="Skin.WPNode.Text.ToolTip">Text</translation>
-	<translation name="Skin.WPNode.TextColor.Label">Color:</translation>
+	<translation name="Skin.WPNode.TextColor">Color:</translation>
 	<translation name="Skin.WPNode.TextColor.ToolTip">Text color</translation>
 	
 	<translation name="Skin.WPNode.GroupGroup">Group:</translation>
@@ -293,28 +292,28 @@
 	
 	<!-- WPTexture -->
 	<translation name="Skin.WPTexture.GroupTexture">Texture:</translation>
-	<translation name="Skin.WPTexture.Textures.Label">Textures</translation>
-	<translation name="Skin.WPTexture.Name.Label">Name:</translation>
+	<translation name="Skin.WPTexture.Textures">Textures</translation>
+	<translation name="Skin.WPTexture.Name">Name:</translation>
 	<translation name="Skin.WPTexture.Name.ToolTip">Name of texture</translation>
 	
 	<translation name="Skin.WPTexture.GroupPreview">Texture Preview:</translation>
-	<translation name="Skin.WPTexture.Translation.Label">Translation:</translation>
+	<translation name="Skin.WPTexture.Translation">Translation:</translation>
 	<translation name="Skin.WPTexture.Translation.ToolTip">Texture coordinates translation.</translation>
-	<translation name="Skin.WPTexture.Scaling.Label">Scaling:</translation>
+	<translation name="Skin.WPTexture.Scaling">Scaling:</translation>
 	<translation name="Skin.WPTexture.Scaling.ToolTip">Texture coordinates scaling.</translation>
-	<translation name="Skin.WPTexture.Rotation.Label">Rotation:</translation>
+	<translation name="Skin.WPTexture.Rotation">Rotation:</translation>
 	<translation name="Skin.WPTexture.Rotation.ToolTip">Texture coordinates rotation.</translation>
 	
 	<translation name="Skin.WPTexture.GroupProperty">Property:</translation>
-	<translation name="Skin.WPTexture.Property.Label">Property</translation>
-	<translation name="Skin.WPTexture.PropertyName.Label">Name:</translation>
+	<translation name="Skin.WPTexture.Property">Property</translation>
+	<translation name="Skin.WPTexture.PropertyName">Name:</translation>
 	<translation name="Skin.WPTexture.PropertyName.ToolTip">Name of property</translation>
-	<translation name="Skin.WPTexture.Renderable.Label">Renderable:</translation>
+	<translation name="Skin.WPTexture.Renderable">Renderable:</translation>
 	<translation name="Skin.WPTexture.Renderable.ToolTip">Name of renderable to use or empty string to use none</translation>
-	<translation name="Skin.WPTexture.Bone.Label">Bone:</translation>
+	<translation name="Skin.WPTexture.Bone">Bone:</translation>
 	<translation name="Skin.WPTexture.Bone.ToolTip">Name of bone to use or empty string. Used by properties using vertex position instead of texture coordinates.</translation>
 	
-	<translation name="Skin.WPTexture.ValueType.Label">Value Type:</translation>
+	<translation name="Skin.WPTexture.ValueType">Value Type:</translation>
 	<translation name="Skin.WPTexture.ValueType.ToolTip">Type of value to use for the property</translation>
 	<translation name="Skin.WPTexture.ValueType.Value">Value</translation>
 	<translation name="Skin.WPTexture.ValueType.Color">Color</translation>
@@ -324,40 +323,40 @@
 	<translation name="Skin.WPTexture.ValueType.Mapped">Mapped</translation>
 	
 	<translation name="Skin.WPTexture.GroupValue">Value:</translation>
-	<translation name="Skin.WPTexture.Value.Label">Value:</translation>
+	<translation name="Skin.WPTexture.Value">Value:</translation>
 	<translation name="Skin.WPTexture.Value.ToolTip">Value to use</translation>
 	
 	<translation name="Skin.WPTexture.GroupColor">Color:</translation>
-	<translation name="Skin.WPTexture.Color.Label">Color:</translation>
+	<translation name="Skin.WPTexture.Color">Color:</translation>
 	<translation name="Skin.WPTexture.Color.ToolTip">Color to use</translation>
 	
 	<translation name="Skin.WPTexture.GroupImage">Image:</translation>
-	<translation name="Skin.WPTexture.ImagePath.Label">Path:</translation>
+	<translation name="Skin.WPTexture.ImagePath">Path:</translation>
 	<translation name="Skin.WPTexture.ImagePath.ToolTip">Path to the image to use</translation>
 	<translation name="Skin.WPTexture.ImageInfo.ToolTip">Image information</translation>
 	
 	<translation name="Skin.WPTexture.GroupVideo">Video:</translation>
-	<translation name="Skin.WPTexture.VideoPath.Label">Path:</translation>
+	<translation name="Skin.WPTexture.VideoPath">Path:</translation>
 	<translation name="Skin.WPTexture.VideoPath.ToolTip">Path to the video to use</translation>
 	<translation name="Skin.WPTexture.VideoInfo.ToolTip">Video information</translation>
 	
 	<translation name="Skin.WPTexture.GroupConstructed">Constructed:</translation>
-	<translation name="Skin.WPTexture.ConstructedColor.Label">Color:</translation>
+	<translation name="Skin.WPTexture.ConstructedColor">Color:</translation>
 	<translation name="Skin.WPTexture.ConstructedColor.ToolTip">Color to use</translation>
-	<translation name="Skin.WPTexture.ConstructedSize.Label">Size:</translation>
+	<translation name="Skin.WPTexture.ConstructedSize">Size:</translation>
 	<translation name="Skin.WPTexture.ConstructedSize.ToolTip">Size of constructed image</translation>
-	<translation name="Skin.WPTexture.Tile.Label">Tile:</translation>
+	<translation name="Skin.WPTexture.Tile">Tile:</translation>
 	<translation name="Skin.WPTexture.Tile.ToolTip">Tile nodes</translation>
-	<translation name="Skin.WPTexture.BitCount.Label">Bit Count:</translation>
+	<translation name="Skin.WPTexture.BitCount">Bit Count:</translation>
 	<translation name="Skin.WPTexture.BitCount.ToolTip">Bit count of constructed image</translation>
 	<translation name="Skin.WPTexture.BitCount.8Bit">8-Bit</translation>
 	<translation name="Skin.WPTexture.BitCount.16Bit">16-Bit</translation>
 	<translation name="Skin.WPTexture.BitCount.32Bit">32-Bit</translation>
 	
 	<translation name="Skin.WPTexture.GroupMapped">Mapped:</translation>
-	<translation name="Skin.WPTexture.Component.Label">Component:</translation>
+	<translation name="Skin.WPTexture.Component">Component:</translation>
 	<translation name="Skin.WPTexture.Component.ToolTip">Component to edit (0=red, 1=green, 2=blue, 3=alpha)</translation>
-	<translation name="Skin.WPTexture.Target.Label">Target:</translation>
+	<translation name="Skin.WPTexture.Target">Target:</translation>
 	<translation name="Skin.WPTexture.Target.ToolTip">Target mapped to use for this component</translation>
 	
 	<!-- Undo Actions -->
@@ -448,9 +447,9 @@
 	<!-- WPDynamicSkin: Dynamic Skin Property Panel -->
 	<translation name="Skin.WPDynamicSkin.GroupRenderable">Renderable:</translation>
 	<translation name="Skin.WPDynamicSkin.Renderable.ToolTip">Select renderable to edit</translation>
-	<translation name="Skin.WPDynamicSkin.Name.Label">Name:</translation>
+	<translation name="Skin.WPDynamicSkin.Name">Name:</translation>
 	<translation name="Skin.WPDynamicSkin.Name.ToolTip">Unique name of the renderable</translation>
-	<translation name="Skin.WPDynamicSkin.Type.Label">Type:</translation>
+	<translation name="Skin.WPDynamicSkin.Type">Type:</translation>
 	<translation name="Skin.WPDynamicSkin.Type.ToolTip">Type of renderable</translation>
 	<translation name="Skin.WPDynamicSkin.Type.Value">Value</translation>
 	<translation name="Skin.WPDynamicSkin.Type.Color">Color</translation>
@@ -459,28 +458,28 @@
 	<translation name="Skin.WPDynamicSkin.Type.Canvas">Canvas</translation>
 	<translation name="Skin.WPDynamicSkin.Type.Camera">Camera</translation>
 	<translation name="Skin.WPDynamicSkin.GroupValue">Value:</translation>
-	<translation name="Skin.WPDynamicSkin.Value.Label">Value:</translation>
+	<translation name="Skin.WPDynamicSkin.Value">Value:</translation>
 	<translation name="Skin.WPDynamicSkin.Value.ToolTip">Value</translation>
-	<translation name="Skin.WPDynamicSkin.Lower.Label">Lower:</translation>
+	<translation name="Skin.WPDynamicSkin.Lower">Lower:</translation>
 	<translation name="Skin.WPDynamicSkin.Lower.ToolTip">Lower range</translation>
-	<translation name="Skin.WPDynamicSkin.Upper.Label">Upper:</translation>
+	<translation name="Skin.WPDynamicSkin.Upper">Upper:</translation>
 	<translation name="Skin.WPDynamicSkin.Upper.ToolTip">Upper range</translation>
 	<translation name="Skin.WPDynamicSkin.GroupColor">Color:</translation>
-	<translation name="Skin.WPDynamicSkin.Color.Label">Color:</translation>
+	<translation name="Skin.WPDynamicSkin.Color">Color:</translation>
 	<translation name="Skin.WPDynamicSkin.Color.ToolTip">Color</translation>
-	<translation name="Skin.WPDynamicSkin.Red.Label">Red:</translation>
+	<translation name="Skin.WPDynamicSkin.Red">Red:</translation>
 	<translation name="Skin.WPDynamicSkin.Red.ToolTip">Red color value</translation>
-	<translation name="Skin.WPDynamicSkin.Green.Label">Green:</translation>
+	<translation name="Skin.WPDynamicSkin.Green">Green:</translation>
 	<translation name="Skin.WPDynamicSkin.Green.ToolTip">Green color value</translation>
-	<translation name="Skin.WPDynamicSkin.Blue.Label">Blue:</translation>
+	<translation name="Skin.WPDynamicSkin.Blue">Blue:</translation>
 	<translation name="Skin.WPDynamicSkin.Blue.ToolTip">Blue color value</translation>
-	<translation name="Skin.WPDynamicSkin.Alpha.Label">Alpha:</translation>
+	<translation name="Skin.WPDynamicSkin.Alpha">Alpha:</translation>
 	<translation name="Skin.WPDynamicSkin.Alpha.ToolTip">Alpha color value</translation>
 	<translation name="Skin.WPDynamicSkin.GroupImage">Image:</translation>
-	<translation name="Skin.WPDynamicSkin.ImagePath.Label">Path:</translation>
+	<translation name="Skin.WPDynamicSkin.ImagePath">Path:</translation>
 	<translation name="Skin.WPDynamicSkin.ImagePath.ToolTip">Path to image</translation>
 	<translation name="Skin.WPDynamicSkin.GroupVideo">Video:</translation>
-	<translation name="Skin.WPDynamicSkin.VideoPath.Label">Path:</translation>
+	<translation name="Skin.WPDynamicSkin.VideoPath">Path:</translation>
 	<translation name="Skin.WPDynamicSkin.VideoPath.ToolTip">Path to video</translation>
 	
 	<!-- Window Main -->

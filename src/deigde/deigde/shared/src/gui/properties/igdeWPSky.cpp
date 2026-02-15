@@ -367,11 +367,11 @@ void igdeWPSky::pCreateContent(){
 	form = igdeContainerForm::Ref::New(env);
 	AddChild(form);
 	
-	helper.FormLineStretchFirst(form, "@Igde.WPSky.SkyPath.Label", "", frameLine);
+	helper.FormLineStretchFirst(form, "@Igde.WPSky.SkyPath", "", frameLine);
 	helper.EditString(frameLine, "@Igde.WPSky.SkyPath.ToolTip",
 		pEditSkyPath, cTextPathSky::Ref::New(*this));
 	helper.Button(frameLine, pBtnSkyPath, cActionPathSky::Ref::New(*this, pEditSkyPath));
 	helper.Button(frameLine, pBtnFromGDSky, cActionFromGDSky::Ref::New(*this, pEditSkyPath));
 	
-	helper.GroupBox(*this, pFraControllers, "@Igde.WPSky.Controllers.Label");
+	helper.GroupBox(*this, pFraControllers, "@Igde.WPSky.Controllers");
 }

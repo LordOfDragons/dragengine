@@ -47,7 +47,7 @@ pSource(nullptr)
 	}
 	
 	pSource = source;
-	SetShortInfo("@Source Toggle Enabled");
+	SetShortInfo("@Synthesizer.Undo.SourceToggleEnabled");
 }
 
 syneUSourceToggleEnabled::~syneUSourceToggleEnabled(){

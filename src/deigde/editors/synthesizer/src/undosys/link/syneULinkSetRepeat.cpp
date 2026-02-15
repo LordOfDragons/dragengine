@@ -47,7 +47,7 @@ pLink(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("@Link Set Repeat");
+	SetShortInfo("@Synthesizer.Undo.LinkSetRepeat");
 	
 	pLink = link;
 	pOldRepeat = link->GetRepeat();

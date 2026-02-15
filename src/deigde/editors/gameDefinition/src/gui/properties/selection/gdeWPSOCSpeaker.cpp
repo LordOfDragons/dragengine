@@ -437,32 +437,32 @@ pWindowProperties(windowProperties)
 	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
-	helper.GroupBox(content, groupBox, "@GameDefinition.PanelOCSpeaker.GroupBoxSpeaker.Label");
+	helper.GroupBox(content, groupBox, "@GameDefinition.PanelOCSpeaker.GroupBoxSpeaker");
 	
-	helper.EditPath(groupBox, "@GameDefinition.PanelOCSpeaker.Sound.Label", "@GameDefinition.PanelOCSpeaker.Sound.ToolTip",
+	helper.EditPath(groupBox, "@GameDefinition.PanelOCSpeaker.Sound", "@GameDefinition.PanelOCSpeaker.Sound.ToolTip",
 		igdeEnvironment::efpltSound, pEditPathSound, cEditPathSound::Ref::New(*this));
-	helper.EditVector(groupBox, "@GameDefinition.PanelOCSpeaker.Position.Label", "@GameDefinition.PanelOCSpeaker.Position.ToolTip",
+	helper.EditVector(groupBox, "@GameDefinition.PanelOCSpeaker.Position", "@GameDefinition.PanelOCSpeaker.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
-	helper.EditVector(groupBox, "@GameDefinition.PanelOCSpeaker.Rotation.Label", "@GameDefinition.PanelOCSpeaker.Rotation.ToolTip", 4, 1,
+	helper.EditVector(groupBox, "@GameDefinition.PanelOCSpeaker.Rotation", "@GameDefinition.PanelOCSpeaker.Rotation.ToolTip", 4, 1,
 		pEditRotation, cEditRotation::Ref::New(*this));
-	helper.EditString(groupBox, "@GameDefinition.PanelOCSpeaker.Bone.Label", "@GameDefinition.PanelOCSpeaker.Bone.ToolTip",
+	helper.EditString(groupBox, "@GameDefinition.PanelOCSpeaker.Bone", "@GameDefinition.PanelOCSpeaker.Bone.ToolTip",
 		pEditBoneName, cTextBoneName::Ref::New(*this));
-	helper.EditFloat(groupBox, "@GameDefinition.PanelOCSpeaker.Volume.Label", "@GameDefinition.PanelOCSpeaker.Volume.ToolTip",
+	helper.EditFloat(groupBox, "@GameDefinition.PanelOCSpeaker.Volume", "@GameDefinition.PanelOCSpeaker.Volume.ToolTip",
 		pEditVolume, cTextVolume::Ref::New(*this));
-	helper.EditFloat(groupBox, "@GameDefinition.PanelOCSpeaker.Range.Label", "@GameDefinition.PanelOCSpeaker.Range.ToolTip",
+	helper.EditFloat(groupBox, "@GameDefinition.PanelOCSpeaker.Range", "@GameDefinition.PanelOCSpeaker.Range.ToolTip",
 		pEditRange, cTextRange::Ref::New(*this));
-	helper.EditFloat(groupBox, "@GameDefinition.PanelOCSpeaker.RollOff.Label", "@GameDefinition.PanelOCSpeaker.RollOff.ToolTip",
+	helper.EditFloat(groupBox, "@GameDefinition.PanelOCSpeaker.RollOff", "@GameDefinition.PanelOCSpeaker.RollOff.ToolTip",
 		pEditRollOff, cTextRollOff::Ref::New(*this));
-	helper.EditFloat(groupBox, "@GameDefinition.PanelOCSpeaker.DistanceOffset.Label", "@GameDefinition.PanelOCSpeaker.DistanceOffset.ToolTip",
+	helper.EditFloat(groupBox, "@GameDefinition.PanelOCSpeaker.DistanceOffset", "@GameDefinition.PanelOCSpeaker.DistanceOffset.ToolTip",
 		pEditDistanceOffset, cTextDistanceOffset::Ref::New(*this));
-	helper.EditFloat(groupBox, "@GameDefinition.PanelOCSpeaker.PlaySpeed.Label", "@GameDefinition.PanelOCSpeaker.PlaySpeed.ToolTip",
+	helper.EditFloat(groupBox, "@GameDefinition.PanelOCSpeaker.PlaySpeed", "@GameDefinition.PanelOCSpeaker.PlaySpeed.ToolTip",
 		pEditPlaySpeed, cTextPlaySpeed::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkLooping, cActionLooping::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkPlaying, cActionPlaying::Ref::New(*this));
 	
 	// property targets
-	helper.GroupBox(content, groupBox, "@GameDefinition.PanelOCSpeaker.GroupBoxProperties.Label");
-	helper.ComboBox(groupBox, "@GameDefinition.PanelOCSpeaker.Property.Label", "@GameDefinition.PanelOCSpeaker.Property.ToolTip",
+	helper.GroupBox(content, groupBox, "@GameDefinition.PanelOCSpeaker.GroupBoxProperties");
+	helper.ComboBox(groupBox, "@GameDefinition.PanelOCSpeaker.Property", "@GameDefinition.PanelOCSpeaker.Property.ToolTip",
 		pCBPropertyNames, cComboPropertyNames::Ref::New(*this));
 	pCBPropertyNames->SetAutoTranslateItems(true);
 	pCBPropertyNames->AddItem("@GameDefinition.PanelOCSpeaker.PropertySound", nullptr, (void*)(intptr_t)gdeOCSpeaker::epSound);
@@ -476,21 +476,21 @@ pWindowProperties(windowProperties)
 	pCBPropertyNames->AddItem("@GameDefinition.PanelOCSpeaker.PropertyAttachPosition", nullptr, (void*)(intptr_t)gdeOCSpeaker::epAttachPosition);
 	pCBPropertyNames->AddItem("@GameDefinition.PanelOCSpeaker.PropertyAttachRotation", nullptr, (void*)(intptr_t)gdeOCSpeaker::epAttachRotation);
 	
-	helper.ComboBoxFilter(groupBox, "@GameDefinition.PanelOCSpeaker.Target.Label", true, "@GameDefinition.PanelOCSpeaker.Target.ToolTip",
+	helper.ComboBoxFilter(groupBox, "@GameDefinition.PanelOCSpeaker.Target", true, "@GameDefinition.PanelOCSpeaker.Target.ToolTip",
 		pCBPropertyNameTarget, cComboPropertyNameTarget::Ref::New(*this));
 	pCBPropertyNameTarget->SetEditable(true);
 	pCBPropertyNameTarget->SetDefaultSorter();
 	pCBPropertyNameTarget->SetFilterCaseInsentive(true);
 	
 	// trigger targets
-	helper.GroupBox(content, groupBox, "@GameDefinition.PanelOCSpeaker.GroupBoxTriggers.Label");
-	helper.ComboBox(groupBox, "@GameDefinition.PanelOCSpeaker.Trigger.Label", "@GameDefinition.PanelOCSpeaker.Trigger.ToolTip",
+	helper.GroupBox(content, groupBox, "@GameDefinition.PanelOCSpeaker.GroupBoxTriggers");
+	helper.ComboBox(groupBox, "@GameDefinition.PanelOCSpeaker.Trigger", "@GameDefinition.PanelOCSpeaker.Trigger.ToolTip",
 		pCBTriggerNames, cComboTriggerNames::Ref::New(*this));
 	pCBTriggerNames->SetAutoTranslateItems(true);
 	pCBTriggerNames->AddItem("@GameDefinition.PanelOCSpeaker.TriggerPlaying", nullptr, (void*)(intptr_t)gdeOCSpeaker::etPlaying);
 	pCBTriggerNames->AddItem("@GameDefinition.PanelOCSpeaker.TriggerMuted", nullptr, (void*)(intptr_t)gdeOCSpeaker::etMuted);
 	
-	helper.ComboBoxFilter(groupBox, "@GameDefinition.PanelOCSpeaker.TriggerTarget.Label", true, "@GameDefinition.PanelOCSpeaker.TriggerTarget.ToolTip",
+	helper.ComboBoxFilter(groupBox, "@GameDefinition.PanelOCSpeaker.TriggerTarget", true, "@GameDefinition.PanelOCSpeaker.TriggerTarget.ToolTip",
 		pCBTriggerNameTarget, cComboTriggerNameTarget::Ref::New(*this));
 	pCBTriggerNameTarget->SetEditable(true);
 	pCBTriggerNameTarget->SetDefaultSorter();

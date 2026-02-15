@@ -171,10 +171,10 @@ pUse3DCursor(false)
 	pTabContent->AddChild(pView3D, "@World.WindowMain.Tab.World");
 	
 	pViewVegetation = meWindowVegetation::Ref::New(*this);
-	pTabContent->AddChild(pViewVegetation, "@World.WindowMain.Vegetation.Label");
+	pTabContent->AddChild(pViewVegetation, "@World.WindowMain.Vegetation");
 	
 	pViewChangelog = meWindowChangelog::Ref::New(*this);
-	pTabContent->AddChild(pViewChangelog, "@World.WindowMain.ChangeLog.Label");
+	pTabContent->AddChild(pViewChangelog, "@World.WindowMain.ChangeLog");
 	
 	pTabContent->SetActivePanel(0); // world
 	
@@ -2208,12 +2208,12 @@ void meWindowMain::pCreateMenuObject(igdeMenuCascade &menu){
 	
 	helper.MenuSeparator(menu);
 	igdeMenuCascade::Ref active(igdeMenuCascade::Ref::New(
-		GetEnvironment(), "@World.WindowMain.ActiveObject.Label", nullptr, "@World.WindowMain.ActiveObject.Label", deInputEvent::ekcA));
+		GetEnvironment(), "@World.WindowMain.ActiveObject", nullptr, "@World.WindowMain.ActiveObject", deInputEvent::ekcA));
 		
 		menu.AddChild(active);
 		
 		igdeMenuCascade::Ref activeRotate(igdeMenuCascade::Ref::New(
-			GetEnvironment(), "@World.WindowMain.Rotate.Label", nullptr, "@World.WindowMain.Rotate.Label", deInputEvent::ekcR));
+			GetEnvironment(), "@World.WindowMain.Rotate", nullptr, "@World.WindowMain.Rotate", deInputEvent::ekcR));
 			
 			active->AddChild(activeRotate);
 			helper.MenuCommand(activeRotate, pActionObjectRotateL45);
@@ -2224,7 +2224,7 @@ void meWindowMain::pCreateMenuObject(igdeMenuCascade &menu){
 			helper.MenuCommand(activeRotate, pActionObjectRotateRandom);
 		
 		igdeMenuCascade::Ref activeCopySelected(igdeMenuCascade::Ref::New(
-			GetEnvironment(), "@World.WindowMain.CopyToSelected.Label", nullptr, "@World.WindowMain.CopyToSelected.Label"));
+			GetEnvironment(), "@World.WindowMain.CopyToSelected", nullptr, "@World.WindowMain.CopyToSelected"));
 			
 			active->AddChild(activeCopySelected);
 			helper.MenuCommand(activeCopySelected, pActionObjectCopyPositionX);
@@ -2246,13 +2246,13 @@ void meWindowMain::pCreateMenuObject(igdeMenuCascade &menu){
 			helper.MenuCommand(activeCopySelected, pActionObjectCopyScaleXYZ);
 			
 		igdeMenuCascade::Ref activeLight(igdeMenuCascade::Ref::New(
-			GetEnvironment(), "@World.WindowMain.Light.Label", nullptr, "@World.WindowMain.Light.Label", deInputEvent::ekcL));
+			GetEnvironment(), "@World.WindowMain.Light", nullptr, "@World.WindowMain.Light", deInputEvent::ekcL));
 			
 			active->AddChild(activeLight);
 			helper.MenuCommand(activeLight, pActionObjectLightToggle);
 			
 		igdeMenuCascade::Ref activeShapes(igdeMenuCascade::Ref::New(
-			GetEnvironment(), "@World.WindowMain.PropertyShapes.Label", nullptr, "@World.WindowMain.PropertyShapes.Label", deInputEvent::ekcS));
+			GetEnvironment(), "@World.WindowMain.PropertyShapes", nullptr, "@World.WindowMain.PropertyShapes", deInputEvent::ekcS));
 			
 			active->AddChild(activeShapes);
 			helper.MenuCommand(activeShapes, pActionObjectShapeAddSphere);

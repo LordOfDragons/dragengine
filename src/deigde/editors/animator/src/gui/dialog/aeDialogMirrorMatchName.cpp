@@ -51,15 +51,15 @@ igdeDialog(environment, windowTitle)
 	igdeContainerForm::Ref content(igdeContainerForm::Ref::New(
 		environment, igdeContainerForm::esLast));
 	
-	helper.ComboBox(content, "@Animator.DialogMirrorMatchName.Type.Label", "@Animator.DialogMirrorMatchName.Type.ToolTip", pCBType, {});
+	helper.ComboBox(content, "@Animator.DialogMirrorMatchName.Type", "@Animator.DialogMirrorMatchName.Type.ToolTip", pCBType, {});
 	pCBType->SetAutoTranslateItems(true);
 	pCBType->AddItem("@Animator.DialogMirrorMatchName.Type.BeginOfName", nullptr, (void*)(intptr_t)deAnimatorRuleMirror::emntFirst);
 	pCBType->AddItem("@Animator.DialogMirrorMatchName.Type.EndOfName", nullptr, (void*)(intptr_t)deAnimatorRuleMirror::emntLast);
 	pCBType->AddItem("@Animator.DialogMirrorMatchName.Type.MiddleOfName", nullptr, (void*)(intptr_t)deAnimatorRuleMirror::emntMiddle);
 	pCBType->SetSelectionWithData((void*)(intptr_t)deAnimatorRuleMirror::emntLast);
 	
-	helper.EditString(content, "@Animator.DialogMirrorMatchName.First.Label", "@Animator.DialogMirrorMatchName.First.ToolTip", 30, pEditFirst, {});
-	helper.EditString(content, "@Animator.DialogMirrorMatchName.Second.Label", "@Animator.DialogMirrorMatchName.Second.ToolTip", 30, pEditSecond, {});
+	helper.EditString(content, "@Animator.DialogMirrorMatchName.First", "@Animator.DialogMirrorMatchName.First.ToolTip", 30, pEditFirst, {});
+	helper.EditString(content, "@Animator.DialogMirrorMatchName.Second", "@Animator.DialogMirrorMatchName.Second.ToolTip", 30, pEditSecond, {});
 	
 	igdeContainer::Ref buttonBar;
 	CreateButtonBar(buttonBar, "@Igde.Accept", "@Igde.Cancel");

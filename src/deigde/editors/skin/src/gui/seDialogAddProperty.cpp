@@ -106,7 +106,7 @@ pWindowMain(windowMain)
 	helper.Button(content, cActionDetails::Ref::New(*this));
 	
 	formLine = igdeContainerForm::Ref::New(env);
-	helper.EditString(formLine, "@Skin.DialogAddProperty.CustomName.Label", "@Skin.DialogAddProperty.CustomName.ToolTip",
+	helper.EditString(formLine, "@Skin.DialogAddProperty.CustomName", "@Skin.DialogAddProperty.CustomName.ToolTip",
 		15, pEditCustomPropertyName, {});
 	content->AddChild(formLine);
 	

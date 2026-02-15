@@ -82,22 +82,22 @@ igdeDialog(environment, "@Igde.DialogTexturePropertyList.Title"){
 		environment, igdeContainerForm::esLast));
 	content->AddChild(form, igdeContainerSplitted::eaCenter);
 	
-	helper.EditString(form, "@Igde.DialogTexturePropertyList.Name.Label", "@Igde.DialogTexturePropertyList.Name.ToolTip", pEditName, {});
+	helper.EditString(form, "@Igde.DialogTexturePropertyList.Name", "@Igde.DialogTexturePropertyList.Name.ToolTip", pEditName, {});
 	pEditName->SetEditable(false);
 	
-	helper.EditString(form, "@Igde.DialogTexturePropertyList.Type.Label", "@Igde.DialogTexturePropertyList.Type.ToolTip", pEditType, {});
+	helper.EditString(form, "@Igde.DialogTexturePropertyList.Type", "@Igde.DialogTexturePropertyList.Type.ToolTip", pEditType, {});
 	pEditType->SetEditable(false);
 	
-	helper.EditString(form, "@Igde.DialogTexturePropertyList.Components.Label", "@Igde.DialogTexturePropertyList.Components.ToolTip", pEditComponentCount, {});
+	helper.EditString(form, "@Igde.DialogTexturePropertyList.Components", "@Igde.DialogTexturePropertyList.Components.ToolTip", pEditComponentCount, {});
 	pEditComponentCount->SetEditable(false);
 	
-	helper.EditString(form, "@Igde.DialogTexturePropertyList.DefaultValue.Label", "@Igde.DialogTexturePropertyList.DefaultValue.ToolTip", pEditDefault, {});
+	helper.EditString(form, "@Igde.DialogTexturePropertyList.DefaultValue", "@Igde.DialogTexturePropertyList.DefaultValue.ToolTip", pEditDefault, {});
 	pEditDefault->SetEditable(false);
 	
-	helper.EditString(form, "@Igde.DialogTexturePropertyList.Affects.Label", "@Igde.DialogTexturePropertyList.Affects.ToolTip", pEditAffectedModules, {});
+	helper.EditString(form, "@Igde.DialogTexturePropertyList.Affects", "@Igde.DialogTexturePropertyList.Affects.ToolTip", pEditAffectedModules, {});
 	pEditAffectedModules->SetEditable(false);
 	
-	helper.EditString(form, "@Igde.DialogTexturePropertyList.Description.Label", "@Igde.DialogTexturePropertyList.Description.ToolTip", pEditDescription, 40, 5, {});
+	helper.EditString(form, "@Igde.DialogTexturePropertyList.Description", "@Igde.DialogTexturePropertyList.Description.ToolTip", pEditDescription, 40, 5, {});
 	pEditDescription->SetEditable(false);
 	
 	

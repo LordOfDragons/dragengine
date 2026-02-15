@@ -113,7 +113,7 @@ public:
 ceWPCHasActor::ceWPCHasActor(ceWPTopic &parentPanel) : ceWPCondition(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	
-	helper.ComboBox(*this, "@Conversation.WPConditionHasActor.ActorID.Label", true, "@Conversation.ToolTip.ActorIDToTest", pCBActor, cComboActor::Ref::New(*this));
+	helper.ComboBox(*this, "@Conversation.WPConditionHasActor.ActorID", true, "@Conversation.ToolTip.ActorIDToTest", pCBActor, cComboActor::Ref::New(*this));
 	pCBActor->SetDefaultSorter();
 		
 	helper.CheckBox(*this, pChkNegate, cActionNegate::Ref::New(*this));

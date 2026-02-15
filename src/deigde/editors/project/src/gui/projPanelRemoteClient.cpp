@@ -210,12 +210,12 @@ pMaxLines(500)
 	igdeContainer::Ref groupBox;
 	helper.GroupBoxFlow(sidePanel, groupBox, "@Project.PanelRemoteClient.GroupBox.Client");
 	
-	helper.Label(groupBox, "@Project.PanelRemoteClient.Client.Name.Label");
+	helper.Label(groupBox, "@Project.PanelRemoteClient.Client.Name");
 	helper.EditString(groupBox, "@Project.PanelRemoteClient.Client.Name.ToolTip", 15, pEditName, {});
 	pEditName->SetText(client->GetName().c_str());
 	pEditName->SetEditable(false);
 	
-	helper.Label(groupBox, "@Project.PanelRemoteClient.Client.Address.Label");
+	helper.Label(groupBox, "@Project.PanelRemoteClient.Client.Address");
 	helper.EditString(groupBox, "@Project.PanelRemoteClient.Client.Address.ToolTip", 15, pEditAddress, {});
 	pEditAddress->SetText(client->GetAddress().c_str());
 	pEditAddress->SetEditable(false);
@@ -236,7 +236,7 @@ pMaxLines(500)
 	// launching
 	helper.GroupBoxFlow(sidePanel, groupBox, "@Project.PanelRemoteClient.GroupBox.Launching");
 	
-	helper.Label(groupBox, "@Project.PanelRemoteClient.Launching.LaunchProfile.Label");
+	helper.Label(groupBox, "@Project.PanelRemoteClient.Launching.LaunchProfile");
 	helper.ComboBox(groupBox, "@Project.PanelRemoteClient.Launching.LaunchProfile.ToolTip",
 		pCBLaunchProfile, cComboLaunchProfile::Ref::New(*this));
 	pCBLaunchProfile->SetDefaultSorter();

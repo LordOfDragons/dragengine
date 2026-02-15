@@ -309,24 +309,24 @@ pWindowProperties(windowProperties)
 	// glyph
 	helper.GroupBox(content, groupBox, "@Font.WPGlyph.GroupGlyph");
 	
-	helper.FormLineStretchFirst(groupBox, "@Font.WPGlyph.Glyph.Label", "@Font.WPGlyph.Glyph.ToolTip", frameLine);
+	helper.FormLineStretchFirst(groupBox, "@Font.WPGlyph.Glyph", "@Font.WPGlyph.Glyph.ToolTip", frameLine);
 	helper.ComboBox(frameLine, "@Font.WPGlyph.Glyph.ToolTip", pCBGlyph, cComboGlyph::Ref::New(*this));
 	helper.Button(frameLine, pBtnGlyphAdd, cActionAdd::Ref::New(*this));
 	helper.Button(frameLine, pBtnGlyphDel, cActionRemove::Ref::New(*this));
 	
-	helper.FormLine(groupBox, "@Font.WPGlyph.TexCoords.Label", "@Font.WPGlyph.TexCoords.ToolTip", frameLine);
+	helper.FormLine(groupBox, "@Font.WPGlyph.TexCoords", "@Font.WPGlyph.TexCoords.ToolTip", frameLine);
 	helper.EditInteger(frameLine, "@Font.WPGlyph.TexCoordsU.ToolTip", pEditU, cTextU::Ref::New(*this));
 	helper.EditInteger(frameLine, "@Font.WPGlyph.TexCoordsV.ToolTip", pEditV, cTextV::Ref::New(*this));
 	
-	helper.EditInteger(groupBox, "@Font.WPGlyph.Width.Label", "@Font.WPGlyph.Width.ToolTip",
+	helper.EditInteger(groupBox, "@Font.WPGlyph.Width", "@Font.WPGlyph.Width.ToolTip",
 		pEditWidth, cTextWidth::Ref::New(*this));
-	helper.EditInteger(groupBox, "@Font.WPGlyph.Height.Label", "@Font.WPGlyph.Height.ToolTip",
+	helper.EditInteger(groupBox, "@Font.WPGlyph.Height", "@Font.WPGlyph.Height.ToolTip",
 		pEditHeight, cTextHeight::Ref::New(*this));
-	helper.EditInteger(groupBox, "@Font.WPGlyph.Bearing.Label", "@Font.WPGlyph.Bearing.ToolTip",
+	helper.EditInteger(groupBox, "@Font.WPGlyph.Bearing", "@Font.WPGlyph.Bearing.ToolTip",
 		pEditBearing, cTextBearing::Ref::New(*this));
-	helper.EditInteger(groupBox, "@Font.WPGlyph.BearingY.Label", "@Font.WPGlyph.BearingY.ToolTip",
+	helper.EditInteger(groupBox, "@Font.WPGlyph.BearingY", "@Font.WPGlyph.BearingY.ToolTip",
 		pEditBearingY, cTextBearingY::Ref::New(*this));
-	helper.EditInteger(groupBox, "@Font.WPGlyph.Advance.Label", "@Font.WPGlyph.Advance.ToolTip",
+	helper.EditInteger(groupBox, "@Font.WPGlyph.Advance", "@Font.WPGlyph.Advance.ToolTip",
 		pEditAdvance, cTextAdvance::Ref::New(*this));
 }
 

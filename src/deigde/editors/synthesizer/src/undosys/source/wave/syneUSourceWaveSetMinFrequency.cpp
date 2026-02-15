@@ -46,7 +46,7 @@ pSource(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("@Source Wave Set Min Frequency");
+	SetShortInfo("@Synthesizer.Undo.SourceWaveSetMinFrequency");
 	
 	pOldFrequency = source->GetMinFrequency();
 	pNewFrequency = newFrequency;

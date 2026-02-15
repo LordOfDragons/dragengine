@@ -365,19 +365,19 @@ pWindowProperties(windowProperties)
 	
 	helper.GroupBox(content, groupBox, "@GameDefinition.WPSOCParticleEmitter.GroupParticleEmitter");
 	
-	helper.EditPath(groupBox, "@GameDefinition.WPSOCParticleEmitter.Path.Label", "@GameDefinition.WPSOCParticleEmitter.Path.ToolTip",
+	helper.EditPath(groupBox, "@GameDefinition.WPSOCParticleEmitter.Path", "@GameDefinition.WPSOCParticleEmitter.Path.ToolTip",
 		igdeEnvironment::efpltParticleEmitter, pEditPath, cEditPath::Ref::New(*this));
-	helper.EditVector(groupBox, "@GameDefinition.WPSOCParticleEmitter.Position.Label", "@GameDefinition.WPSOCParticleEmitter.Position.ToolTip",
+	helper.EditVector(groupBox, "@GameDefinition.WPSOCParticleEmitter.Position", "@GameDefinition.WPSOCParticleEmitter.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
-	helper.EditVector(groupBox, "@GameDefinition.WPSOCParticleEmitter.Rotation.Label", "@GameDefinition.WPSOCParticleEmitter.Rotation.ToolTip", 4, 1,
+	helper.EditVector(groupBox, "@GameDefinition.WPSOCParticleEmitter.Rotation", "@GameDefinition.WPSOCParticleEmitter.Rotation.ToolTip", 4, 1,
 		pEditRotation, cEditRotation::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkCasting, cActionCasting::Ref::New(*this));
-	helper.EditString(groupBox, "@GameDefinition.WPSOCParticleEmitter.Bone.Label", "@GameDefinition.WPSOCParticleEmitter.Bone.ToolTip",
+	helper.EditString(groupBox, "@GameDefinition.WPSOCParticleEmitter.Bone", "@GameDefinition.WPSOCParticleEmitter.Bone.ToolTip",
 		pEditBoneName, cTextBoneName::Ref::New(*this));
 	
 	// property targets
 	helper.GroupBox(content, groupBox, "@GameDefinition.WPSOCParticleEmitter.GroupProperties");
-	helper.ComboBox(groupBox, "@GameDefinition.WPSOCParticleEmitter.Property.Label", "@GameDefinition.WPSOCParticleEmitter.Property.ToolTip",
+	helper.ComboBox(groupBox, "@GameDefinition.WPSOCParticleEmitter.Property", "@GameDefinition.WPSOCParticleEmitter.Property.ToolTip",
 		pCBPropertyNames, cComboPropertyNames::Ref::New(*this));
 	pCBPropertyNames->SetAutoTranslateItems(true);
 	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.Path", nullptr, (void*)(intptr_t)gdeOCParticleEmitter::epPath);
@@ -385,7 +385,7 @@ pWindowProperties(windowProperties)
 	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.AttachRotation", nullptr, (void*)(intptr_t)gdeOCParticleEmitter::epAttachRotation);
 	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.Casting", nullptr, (void*)(intptr_t)gdeOCParticleEmitter::epCasting);
 	
-	helper.ComboBoxFilter(groupBox, "@GameDefinition.WPSOCParticleEmitter.Target.Label", true, "@GameDefinition.WPSOCParticleEmitter.Target.ToolTip",
+	helper.ComboBoxFilter(groupBox, "@GameDefinition.WPSOCParticleEmitter.Target", true, "@GameDefinition.WPSOCParticleEmitter.Target.ToolTip",
 		pCBPropertyNameTarget, cComboPropertyNameTarget::Ref::New(*this));
 	pCBPropertyNameTarget->SetEditable(true);
 	pCBPropertyNameTarget->SetDefaultSorter();
@@ -393,12 +393,12 @@ pWindowProperties(windowProperties)
 	
 	// trigger targets
 	helper.GroupBox(content, groupBox, "@GameDefinition.WPSOCParticleEmitter.GroupTriggers");
-	helper.ComboBox(groupBox, "@GameDefinition.WPSOCParticleEmitter.Trigger.Label", "@GameDefinition.WPSOCParticleEmitter.Trigger.ToolTip",
+	helper.ComboBox(groupBox, "@GameDefinition.WPSOCParticleEmitter.Trigger", "@GameDefinition.WPSOCParticleEmitter.Trigger.ToolTip",
 		pCBTriggerNames, cComboTriggerNames::Ref::New(*this));
 	pCBTriggerNames->SetAutoTranslateItems(true);
 	pCBTriggerNames->AddItem("@GameDefinition.TriggerType.Casting", nullptr, (void*)(intptr_t)gdeOCParticleEmitter::etCasting);
 	
-	helper.ComboBoxFilter(groupBox, "@GameDefinition.WPSOCParticleEmitter.Target.Label", true, "@GameDefinition.WPSOCParticleEmitter.Target.ToolTip",
+	helper.ComboBoxFilter(groupBox, "@GameDefinition.WPSOCParticleEmitter.Target", true, "@GameDefinition.WPSOCParticleEmitter.Target.ToolTip",
 		pCBTriggerNameTarget, cComboTriggerNameTarget::Ref::New(*this));
 	pCBTriggerNameTarget->SetEditable(true);
 	pCBTriggerNameTarget->SetDefaultSorter();

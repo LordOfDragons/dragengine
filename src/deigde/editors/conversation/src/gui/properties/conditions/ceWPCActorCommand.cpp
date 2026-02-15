@@ -170,11 +170,11 @@ ceWPCActorCommand::ceWPCActorCommand(ceWPTopic &parentPanel) : ceWPCondition(par
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	helper.ComboBox(*this, "@Conversation.WPConditionActorCommand.ActorID.Label", true, "@Conversation.ToolTip.ActorIDToTest", pCBActorID, cComboActor::Ref::New(*this));
+	helper.ComboBox(*this, "@Conversation.WPConditionActorCommand.ActorID", true, "@Conversation.ToolTip.ActorIDToTest", pCBActorID, cComboActor::Ref::New(*this));
 	pCBActorID->SetDefaultSorter();
 	
-	helper.FormLineStretchFirst(*this, "@Conversation.FormLine.Command", "@Conversation.WPConditionActorCommand.Commandtosend.Label", formLine);
-	helper.EditString(formLine, "@Conversation.WPConditionActorCommand.Commandtosend.Label", pEditCommand, cTextCommand::Ref::New(*this));
+	helper.FormLineStretchFirst(*this, "@Conversation.FormLine.Command", "@Conversation.WPConditionActorCommand.Command.ToolTip", formLine);
+	helper.EditString(formLine, "@Conversation.WPConditionActorCommand.Command.ToolTip", pEditCommand, cTextCommand::Ref::New(*this));
 	helper.Button(formLine, pBtnCommand, cActionEditCommand::Ref::New(*this));
 	
 	helper.CheckBox(formLine, pChkNegate, cActionNegate::Ref::New(*this));

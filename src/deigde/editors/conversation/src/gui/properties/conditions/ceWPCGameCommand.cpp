@@ -149,8 +149,8 @@ ceWPCGameCommand::ceWPCGameCommand(ceWPTopic &parentPanel) : ceWPCondition(paren
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	helper.FormLineStretchFirst(*this, "@Conversation.FormLine.Command", "@Conversation.WPConditionGameCommand.Commandtosend.Label", formLine);
-	helper.EditString(formLine, "@Conversation.WPConditionGameCommand.Commandtosend.Label", pEditCommand, cTextCommand::Ref::New(*this));
+	helper.FormLineStretchFirst(*this, "@Conversation.FormLine.Command", "@Conversation.WPConditionGameCommand.Command.ToolTip", formLine);
+	helper.EditString(formLine, "@Conversation.WPConditionGameCommand.Command.ToolTip", pEditCommand, cTextCommand::Ref::New(*this));
 	helper.Button(formLine, pBtnCommand, cActionEditCommand::Ref::New(*this));
 	
 	helper.CheckBox(formLine, pChkNegate, cActionNegate::Ref::New(*this));

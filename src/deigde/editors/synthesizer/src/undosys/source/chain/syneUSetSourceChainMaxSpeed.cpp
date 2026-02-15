@@ -46,7 +46,7 @@ pSource(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("@Source Chain Set Max Speed");
+	SetShortInfo("@Synthesizer.Undo.SourceChainSetMaxSpeed");
 	
 	pOldSpeed = source->GetMaxSpeed();
 	pNewSpeed = newSpeed;

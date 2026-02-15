@@ -46,7 +46,7 @@ pSource(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("@Source Sound Toggle Looping");
+	SetShortInfo("@Synthesizer.Undo.SourceSoundToggleLooping");
 	
 	pSource = source;
 }

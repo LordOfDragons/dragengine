@@ -49,7 +49,7 @@ pSource(nullptr)
 	pOldPath = source->GetPathSound();
 	pNewPath = newPath;
 	
-	SetShortInfo("@Source Sound Set Path");
+	SetShortInfo("@Synthesizer.Undo.SourceSoundSetPath");
 	
 	pSource = source;
 }

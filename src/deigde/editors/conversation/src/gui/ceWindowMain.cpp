@@ -296,12 +296,12 @@ void ceWindowMain::SaveConversation(const char *filename){
 void ceWindowMain::ShowFoundMissingWordsDialog(decStringSet &missingWords){
 	const int count = missingWords.GetCount();
 	if(count == 0){
-		igdeCommonDialogs::Information(*this, "@Conversation.WindowMain.MissingWords.Title", "@Conversation.WindowMain.Nomissingwordsfound.Message");
+		igdeCommonDialogs::Information(*this, "@Conversation.WindowMain.MissingWords.Title", "@Conversation.WindowMain.NoMissingWords.Message");
 		return;
 	}
 	
 	decString result(DEJoin(decStringList(missingWords).GetSortedAscending(), "\n"));
-	igdeCommonDialogs::GetMultilineString(*this, "@Conversation.WindowMain.MissingWords.Title", "@Conversation.WindowMain.Foundmissingwords.Message", result);
+	igdeCommonDialogs::GetMultilineString(*this, "@Conversation.WindowMain.MissingWords.Title", "@Conversation.WindowMain.MissingWords.Message", result);
 }
 
 void ceWindowMain::LoadCTA(const char *filename){
@@ -579,7 +579,7 @@ public:
 	cActionFileSave(ceWindowMain &window) : cActionFileSaveAs(window){
 		SetText("@Conversation.WindowMain.Save");
 		SetIcon(window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSaveAs));
-		SetDescription("@Conversation.WindowMain.Savesconversationtofile.ToolTip");
+		SetDescription("@Conversation.WindowMain.Save.ToolTip");
 		SetHotKey(igdeHotKey(deInputEvent::esmControl, deInputEvent::ekcS));
 		SetMnemonic(deInputEvent::ekcS);
 	}

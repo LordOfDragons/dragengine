@@ -173,7 +173,7 @@ private:
 	ceWPAActorSpeak &pPanel;
 	
 public:
-	cActionTbt2TranslationEntry(ceWPAActorSpeak &panel) : igdeAction("@Conversation.WPActionActorSpeak.Texttotranslationentry",
+	cActionTbt2TranslationEntry(ceWPAActorSpeak &panel) : igdeAction("@Conversation.WPActionActorSpeak.TextToTranslation",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongRight),
 		"@Conversation.Action.ActorSpeakMoveTo.ToolTip"), pPanel(panel){}
 	
@@ -191,7 +191,7 @@ public:
 		}
 		
 		decString name(conversation->GetLangPackEntryName());
-		if(!igdeCommonDialogs::GetString(*pPanel.GetParentWindow(), "@Conversation.WPActionActorSpeak.Movetotranslationentry.Title",
+		if(!igdeCommonDialogs::GetString(*pPanel.GetParentWindow(), "@Conversation.WPActionActorSpeak.MoveToTranslationEntry.Title",
 			"@Conversation.Dialog.Name", name, langpack->GetEntries().GetKeys().GetSortedAscending())){
 			return;
 		}
@@ -201,7 +201,7 @@ public:
 		const decUnicodeString *foundText = nullptr;
 		if(langpack->GetEntries().GetAt(name, foundText)){
 			if(igdeCommonDialogs::QuestionFormat(*pPanel.GetParentWindow(), igdeCommonDialogs::ebsYesNo,
-			"@Conversation.WPActionActorSpeak.Movetotranslationentry.Title", "@Conversation.ToolTip.TranslationEntryExists",
+			"@Conversation.WPActionActorSpeak.MoveToTranslationEntry.Title", "@Conversation.ToolTip.TranslationEntryExists",
 			name.GetString()) == igdeCommonDialogs::ebNo){
 				return;
 			}
@@ -225,7 +225,7 @@ private:
 	ceWPAActorSpeak &pPanel;
 	
 public:
-	cActionTbtFromTranslationEntry(ceWPAActorSpeak &panel) : igdeAction("@Conversation.WPActionActorSpeak.Textfromtranslationentry",
+	cActionTbtFromTranslationEntry(ceWPAActorSpeak &panel) : igdeAction("@Conversation.WPActionActorSpeak.TextFromTranslation",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongLeft),
 		"@Conversation.Action.ActorSpeakMoveFrom.ToolTip"), pPanel(panel){}
 	
@@ -265,7 +265,7 @@ private:
 	ceWPAActorSpeak &pPanel;
 	
 public:
-	cActionShowTranslationEntry(ceWPAActorSpeak &panel) : igdeAction("@Conversation.WPActionActorSpeak.Showtranslationentry",
+	cActionShowTranslationEntry(ceWPAActorSpeak &panel) : igdeAction("@Conversation.WPActionActorSpeak.ShowTranslationEntry",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongLeft),
 		"@Conversation.Action.ActorSpeakShowTranslation.ToolTip"), pPanel(panel){}
 	
@@ -428,17 +428,17 @@ ceWPAActorSpeak::ceWPAActorSpeak(ceWPTopic &parentPanel) : ceWPAction(parentPane
 	
 	CreateGUICommon(*this);
 	
-	helper.ComboBox(*this, "@Conversation.WPActionActorSpeak.Actor.Label", true, "@Conversation.ToolTip.ActorSpeaking",
+	helper.ComboBox(*this, "@Conversation.WPActionActorSpeak.Actor", true, "@Conversation.ToolTip.ActorSpeaking",
 		pCBActorID, cComboActorID::Ref::New(*this));
 	pCBActorID->SetDefaultSorter();
 	
-	helper.FormLineStretchFirst(*this, "@Conversation.WPActionActorSpeak.TextBoxText.Label", "@Conversation.WPActionActorSpeak.TextBoxText.ToolTip", formLine);
-	helper.EditString(formLine, "@Conversation.WPActionActorSpeak.Texttodisplayinthetextbox.Label",
+	helper.FormLineStretchFirst(*this, "@Conversation.WPActionActorSpeak.TextBoxText", "@Conversation.WPActionActorSpeak.TextBoxText.ToolTip", formLine);
+	helper.EditString(formLine, "@Conversation.WPActionActorSpeak.DisplayText",
 		pEditTextBoxText, cTextTextBoxText::Ref::New(*this));
 	helper.Button(formLine, pBtnTextBoxText, cActionEditTextBoxText::Ref::New(*this));
 	
-	helper.FormLineStretchFirst(*this, "@Conversation.WPActionActorSpeak.Translated.Label", "@Conversation.WPActionActorSpeak.Translated.ToolTip", formLine);
-	helper.EditString(formLine, "@Conversation.WPActionActorSpeak.Translationnamefromactivelanguage.Label"
+	helper.FormLineStretchFirst(*this, "@Conversation.WPActionActorSpeak.Translated", "@Conversation.WPActionActorSpeak.Translated.ToolTip", formLine);
+	helper.EditString(formLine, "@Conversation.WPActionActorSpeak.TranslationName"
 		" Replaces static text if not empty.", pEditTextBoxTextTranslate, cTextTextBoxTextTranslate::Ref::New(*this));
 	cActionTextBoxTextTranslateMenu::Ref actionTbtt = cActionTextBoxTextTranslateMenu::Ref::New(*this);
 	helper.Button(formLine, pBtnTextBoxTextTranslate, actionTbtt);
@@ -447,13 +447,13 @@ ceWPAActorSpeak::ceWPAActorSpeak(ceWPTopic &parentPanel) : ceWPAction(parentPane
 	helper.EditString(*this, "", "@Conversation.ToolTip.LanguagePackEntry", pEditShowTranslation, {});
 	pEditShowTranslation->SetEditable(false);
 	
-	helper.EditString(*this, "@Conversation.WPActionActorSpeak.TextStyle.Label", "@Conversation.ToolTip.TextBoxTextStyle",
+	helper.EditString(*this, "@Conversation.WPActionActorSpeak.TextStyle", "@Conversation.ToolTip.TextBoxTextStyle",
 		pEditTextBoxTextStyle, cTextTextBoxStyle::Ref::New(*this));
-	helper.EditString(*this, "@Conversation.WPActionActorSpeak.Movement.Label", "@Conversation.ToolTip.ActorMovement",
+	helper.EditString(*this, "@Conversation.WPActionActorSpeak.Movement", "@Conversation.ToolTip.ActorMovement",
 		pEditMovement, cTextMovement::Ref::New(*this));
-	helper.EditPath(*this, "@Conversation.WPActionActorSpeak.PathSound.Label", "@Conversation.ToolTip.SoundFile",
+	helper.EditPath(*this, "@Conversation.WPActionActorSpeak.PathSound", "@Conversation.ToolTip.SoundFile",
 		igdeEnvironment::efpltSound, pEditPathSound, cPathSound::Ref::New(*this));
-	helper.EditFloat(*this, "@Conversation.WPActionActorSpeak.MinSpeechTime.Label", "@Conversation.WPActionActorSpeak.MinSpeechTime.ToolTip",
+	helper.EditFloat(*this, "@Conversation.WPActionActorSpeak.MinSpeechTime", "@Conversation.WPActionActorSpeak.MinSpeechTime.ToolTip",
 		pEditMinSpeechTime, cTextMinSpeechTime::Ref::New(*this));
 	helper.CheckBox(*this, pChkUseSpeechAnimation, cActionUseSpeechAnimation::Ref::New(*this));
 }

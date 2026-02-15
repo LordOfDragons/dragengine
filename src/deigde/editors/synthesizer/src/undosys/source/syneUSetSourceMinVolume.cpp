@@ -50,7 +50,7 @@ pSource(nullptr)
 	pNewValue = newValue;
 	
 	pSource = source;
-	SetShortInfo("@Source Set Min Volume");
+	SetShortInfo("@Synthesizer.Undo.SourceSetMinVolume");
 }
 
 syneUSetSourceMinVolume::~syneUSetSourceMinVolume(){

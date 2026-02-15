@@ -97,7 +97,6 @@
 	<translation name="Project.PanelProfiles.Group.DelgaParameters">DELGA Parameters:</translation>
 	<translation name="Project.PanelProfiles.Field.DelgaFile">DELGA File:</translation>
 	<translation name="Project.PanelProfiles.Field.DelgaFile.Description">VFS directory where to place the build DELGA file.</translation>
-	<translation name="Project.PanelProfiles.Group.TestRun">Test Run:</translation>
 	<translation name="Project.PanelProfiles.Field.Arguments">Arguments:</translation>
 	<translation name="Project.PanelProfiles.Field.Arguments.Description">Arguments to use while test running</translation>
 	<translation name="Project.PanelProfiles.Action.GenerateIdentifier">Generate Identifier</translation>
@@ -202,21 +201,20 @@
 	<translation name="Project.PanelRemoteClient.Action.Kill">Kill</translation>
 	<translation name="Project.PanelRemoteClient.Action.Kill.Description">Kill Test-Run project</translation>
 	<translation name="Project.PanelRemoteClient.GroupBox.Client">Client:</translation>
-	<translation name="Project.PanelRemoteClient.Client.Name.Label">Name:</translation>
+	<translation name="Project.PanelRemoteClient.Client.Name">Name:</translation>
 	<translation name="Project.PanelRemoteClient.Client.Name.ToolTip">Client name</translation>
-	<translation name="Project.PanelRemoteClient.Client.Address.Label">Address:</translation>
+	<translation name="Project.PanelRemoteClient.Client.Address">Address:</translation>
 	<translation name="Project.PanelRemoteClient.Client.Address.ToolTip">IP address of connected client</translation>
 	<translation name="Project.PanelRemoteClient.GroupBox.Synchronize">Synchronize:</translation>
 	<translation name="Project.PanelRemoteClient.Synchronize.State.ToolTip">Synchronize state</translation>
 	<translation name="Project.PanelRemoteClient.GroupBox.Launching">Launching:</translation>
-	<translation name="Project.PanelRemoteClient.Launching.LaunchProfile.Label">Launch Profile:</translation>
+	<translation name="Project.PanelRemoteClient.Launching.LaunchProfile">Launch Profile:</translation>
 	<translation name="Project.PanelRemoteClient.Launching.LaunchProfile.ToolTip">Launcher profile to use for testing.</translation>
 	<translation name="Project.PanelRemoteClient.Tab.Logs">Logs</translation>
 	<translation name="Project.PanelRemoteClient.Dialog.StartTestRunning.Title">Start Test-Running</translation>
 	<translation name="Project.PanelRemoteClient.Dialog.StartTestRunning.Message">Unsaved changes are present. To start Test-Running it is recommended to save them</translation>
 	
 	<!-- Dialog Distribute Messages -->
-	<translation name="Project.DialogDistribute.Message.DistributionFailed">Distribution Failed!</translation>
 	
 	<!-- Window Main Messages -->
 	<translation name="Project.WindowMain.Default.ProfileName">Profile</translation>

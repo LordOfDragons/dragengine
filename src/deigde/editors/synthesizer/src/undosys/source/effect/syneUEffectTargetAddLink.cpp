@@ -46,7 +46,7 @@ syneUEffectTargetAddLink::syneUEffectTargetAddLink(syneEffect *effect, syneContr
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("@Effect Target Add Link");
+	SetShortInfo("@Synthesizer.Undo.EffectTargetAddLink");
 	
 	pEffect = effect;
 	pTarget = target;

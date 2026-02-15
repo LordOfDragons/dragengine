@@ -77,12 +77,12 @@ pWindowMain(windowMain)
 	content = igdeContainerForm::Ref::New(env);
 	
 	const char *description = "@Rig.DialogImportBone.Path.ToolTip";
-	helper.FormLineStretchFirst(content, "@Rig.DialogImportBone.Path.Label", description, frameLine);
+	helper.FormLineStretchFirst(content, "@Rig.DialogImportBone.Path", description, frameLine);
 	helper.EditString(frameLine, description, pEditPath, {});
 	helper.Button(frameLine, pBtnPath, igdeActionSelectFile::Ref::New(
 		env, igdeEnvironment::efpltRig, pEditPath));
 	
-	helper.EditFloat(content, "@Rig.DialogImportBone.Scaling.Label", "@Rig.DialogImportBone.Scaling.ToolTip",
+	helper.EditFloat(content, "@Rig.DialogImportBone.Scaling", "@Rig.DialogImportBone.Scaling.ToolTip",
 		pEditScaling, {});
 	pEditScaling->SetFloat(1.0f);
 	

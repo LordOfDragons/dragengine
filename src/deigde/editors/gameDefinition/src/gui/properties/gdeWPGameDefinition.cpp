@@ -439,7 +439,7 @@ class cEditAutoFindPathObjectClasses : public gdeWPPathList {
 public:
 	typedef deTObjectReference<cEditAutoFindPathObjectClasses> Ref;
 	cEditAutoFindPathObjectClasses(gdeWPGameDefinition &panel) :
-	gdeWPPathList(panel.GetEnvironment().GetUIHelper(), 3, "@GameDefinition.WPGameDefinition.AutoFindPathObjectClasses.Label"),
+	gdeWPPathList(panel.GetEnvironment().GetUIHelper(), 3, "@GameDefinition.WPGameDefinition.AutoFindPathObjectClasses"),
 	pPanel(panel){}
 	
 	igdeUndo::Ref UndoSet(const decStringList &paths) override{
@@ -453,7 +453,7 @@ class cEditAutoFindPathSkins : public gdeWPPathList {
 public:
 	typedef deTObjectReference<cEditAutoFindPathSkins> Ref;
 	cEditAutoFindPathSkins(gdeWPGameDefinition &panel) :
-	gdeWPPathList(panel.GetEnvironment().GetUIHelper(), 3, "@GameDefinition.WPGameDefinition.AutoFindPathSkins.Label"),
+	gdeWPPathList(panel.GetEnvironment().GetUIHelper(), 3, "@GameDefinition.WPGameDefinition.AutoFindPathSkins"),
 	pPanel(panel){}
 	
 	igdeUndo::Ref UndoSet(const decStringList &paths) override{
@@ -467,7 +467,7 @@ class cEditAutoFindPathSkies : public gdeWPPathList {
 public:
 	typedef deTObjectReference<cEditAutoFindPathSkies> Ref;
 	cEditAutoFindPathSkies(gdeWPGameDefinition &panel) :
-	gdeWPPathList(panel.GetEnvironment().GetUIHelper(), 3, "@GameDefinition.WPGameDefinition.AutoFindPathSkies.Label"),
+	gdeWPPathList(panel.GetEnvironment().GetUIHelper(), 3, "@GameDefinition.WPGameDefinition.AutoFindPathSkies"),
 	pPanel(panel){}
 	
 	igdeUndo::Ref UndoSet(const decStringList &paths) override{

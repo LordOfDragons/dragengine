@@ -134,28 +134,28 @@ pDialogEngine(dialogEngine)
 	line = igdeContainerForm::Ref::New(env);
 	AddChild(line);
 	
-	helper.ComboBox(line, "@Igde.DEParameters.Module.Label", "@Igde.DEParameters.Module.ToolTip",
+	helper.ComboBox(line, "@Igde.DEParameters.Module", "@Igde.DEParameters.Module.ToolTip",
 		pCBModule, igdeDEParameters_ComboModule::Ref::New(*this));
 	pCBModule->SetDefaultSorter();
 	
-	helper.ComboBox(line, "@Igde.DEParameters.Parameter.Label", "@Igde.DEParameters.Parameter.ToolTip",
+	helper.ComboBox(line, "@Igde.DEParameters.Parameter", "@Igde.DEParameters.Parameter.ToolTip",
 		pCBParameter, igdeDEParameters_ComboParameter::Ref::New(*this));
 	pCBParameter->SetDefaultSorter();
 	
 	
 	// parameter information
-	helper.GroupBoxStatic(*this, groupBox, "@Igde.DEParameters.ParameterInfo.Label");
+	helper.GroupBoxStatic(*this, groupBox, "@Igde.DEParameters.ParameterInfo");
 	
-	helper.EditString(groupBox, "@Igde.DEParameters.Description.Label", "@Igde.DEParameters.Description.ToolTip", pEditDescription, 3, {});
+	helper.EditString(groupBox, "@Igde.DEParameters.Description", "@Igde.DEParameters.Description.ToolTip", pEditDescription, 3, {});
 	pEditDescription->SetEditable(false);
 	
-	helper.EditString(groupBox, "@Igde.DEParameters.Type.Label", "@Igde.DEParameters.Type.ToolTip", pEditType, {});
+	helper.EditString(groupBox, "@Igde.DEParameters.Type", "@Igde.DEParameters.Type.ToolTip", pEditType, {});
 	pEditType->SetEditable(false);
 	
-	helper.EditString(groupBox, "@Igde.DEParameters.AllowedValues.Label", "@Igde.DEParameters.AllowedValues.ToolTip", pEditAllowedValues, 5, {});
+	helper.EditString(groupBox, "@Igde.DEParameters.AllowedValues", "@Igde.DEParameters.AllowedValues.ToolTip", pEditAllowedValues, 5, {});
 	pEditAllowedValues->SetEditable(false);
 	
-	helper.FormLineStretchFirst(groupBox, "@Igde.DEParameters.Value.Label", "@Igde.DEParameters.Value.ToolTip", line);
+	helper.FormLineStretchFirst(groupBox, "@Igde.DEParameters.Value", "@Igde.DEParameters.Value.ToolTip", line);
 	helper.EditString(line, "@Igde.DEParameters.Value.ToolTip", pEditValue, {});
 	helper.Button(line, pBtnSet, igdeDEParameters_ActionSet::Ref::New(*this));
 	helper.Button(line, pBtnReset, igdeDEParameters_ActionReset::Ref::New(*this));

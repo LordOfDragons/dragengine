@@ -140,11 +140,11 @@ void igdeDialogCurveBezierCoord::pCreateContent(igdeEnvironment &environment){
 	
 	igdeContainerForm::Ref content(igdeContainerForm::Ref::New(environment));
 	
-	helper.EditVector2(content, "@Igde.DialogCurveBezierCoord.Point.Label", "@Igde.DialogCurveBezierCoord.Point.ToolTip",
+	helper.EditVector2(content, "@Igde.DialogCurveBezierCoord.Point", "@Igde.DialogCurveBezierCoord.Point.ToolTip",
 		pEditPoint, igdeDialogCurveBezierCoordEditPoint::Ref::New(*this));
-	helper.EditVector2(content, "@Igde.DialogCurveBezierCoord.LeftHandle.Label", "@Igde.DialogCurveBezierCoord.LeftHandle.ToolTip",
+	helper.EditVector2(content, "@Igde.DialogCurveBezierCoord.LeftHandle", "@Igde.DialogCurveBezierCoord.LeftHandle.ToolTip",
 		pEditHandle1, igdeDialogCurveBezierCoordEditHandle1::Ref::New(*this));
-	helper.EditVector2(content, "@Igde.DialogCurveBezierCoord.RightHandle.Label", "@Igde.DialogCurveBezierCoord.RightHandle.ToolTip",
+	helper.EditVector2(content, "@Igde.DialogCurveBezierCoord.RightHandle", "@Igde.DialogCurveBezierCoord.RightHandle.ToolTip",
 		pEditHandle2, igdeDialogCurveBezierCoordEditHandle2::Ref::New(*this));
 	
 	igdeContainer::Ref buttonBar;

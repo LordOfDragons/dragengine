@@ -60,7 +60,7 @@ ceConversation &conversation, const ceConversationAction::List &actions) :
 ceWPTTIMActions(windowMain, conversation, etActionIfElseElse, actions)
 {
 	SetIcon(windowMain.GetIconActionIfElseCaseElse());
-	SetText(windowMain.Translate("Conversation.WPTTIMAIfElseElse.Conditionisfalse").ToUTF8());
+	SetText(windowMain.Translate("Conversation.WPTTIMAIfElseElse.Else").ToUTF8());
 }
 
 ceWPTTIMAIfElseElse::~ceWPTTIMAIfElseElse(){

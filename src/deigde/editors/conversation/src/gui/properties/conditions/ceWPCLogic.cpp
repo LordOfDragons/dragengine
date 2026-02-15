@@ -97,7 +97,7 @@ ceWPCLogic::ceWPCLogic(ceWPTopic &parentPanel) : ceWPCondition(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	helper.ComboBox(*this, "@Conversation.WPConditionLogic.Operator.Label", "@Conversation.ToolTip.LogicForConditions",
+	helper.ComboBox(*this, "@Conversation.WPConditionLogic.Operator", "@Conversation.ToolTip.LogicForConditions",
 		pCBOperator, cComboOperator::Ref::New(*this));
 	pCBOperator->SetAutoTranslateItems(true);
 	pCBOperator->AddItem("@Conversation.WPConditionLogic.None", nullptr, (void*)(intptr_t)ceCConditionLogic::eopNone);

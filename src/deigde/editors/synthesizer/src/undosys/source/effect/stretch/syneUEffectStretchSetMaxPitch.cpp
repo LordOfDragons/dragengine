@@ -46,7 +46,7 @@ pSource(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("@Effect Stretch Set Max Pitch");
+	SetShortInfo("@Synthesizer.Undo.EffectStretchSetMaxPitch");
 	
 	pOldPitch = effect->GetMaxPitch();
 	pNewPitch = newPitch;

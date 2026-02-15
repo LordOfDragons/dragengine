@@ -122,7 +122,7 @@ class cEditAutoCategorizePattern : public gdeWPPatternList{
 public:
 	typedef deTObjectReference<cEditAutoCategorizePattern> Ref;
 	cEditAutoCategorizePattern(gdeWPSCategory &panel) : gdeWPPatternList(
-		panel.GetEnvironment().GetUIHelper(), 3, "@GameDefinition.WPSCategory.AutoCategorizePattern.Label"),
+		panel.GetEnvironment().GetUIHelper(), 3, "@GameDefinition.WPSCategory.AutoCategorizePattern"),
 		pPanel(panel){}
 	
 	igdeUndo::Ref UndoSet(const decStringSet &patterns) override{

@@ -408,10 +408,10 @@ pViewSynthesizer(viewSynthesizer)
 	
 	
 	helper.GroupBoxStatic(content, groupBox, "@Synthesizer.WPController.GroupControllerSettings");
-	helper.EditString(groupBox, "@Synthesizer.WPController.FieldName.Label", "@Synthesizer.WPController.FieldName.ToolTip", pEditName, cTextName::Ref::New(*this));
-	helper.EditFloat(groupBox, "@Synthesizer.WPController.FieldMinValue.Label", "@Synthesizer.WPController.FieldMinValue.ToolTip",
+	helper.EditString(groupBox, "@Synthesizer.WPController.FieldName", "@Synthesizer.WPController.FieldName.ToolTip", pEditName, cTextName::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Synthesizer.WPController.FieldMinValue", "@Synthesizer.WPController.FieldMinValue.ToolTip",
 		pEditMin, cTextMinimumValue::Ref::New(*this));
-	helper.EditFloat(groupBox, "@Synthesizer.WPController.FieldMaxValue.Label", "@Synthesizer.WPController.FieldMaxValue.ToolTip",
+	helper.EditFloat(groupBox, "@Synthesizer.WPController.FieldMaxValue", "@Synthesizer.WPController.FieldMaxValue.ToolTip",
 		pEditMax, cTextMaximumValue::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkClamp, cActionClamp::Ref::New(*this));
 	

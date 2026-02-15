@@ -54,6 +54,7 @@ pSource(nullptr)
 	
 	pSource = source;
 	pEffect = effect;
+	SetShortInfo("@Synthesizer.Undo.EffectMoveDown");
 }
 
 syneUSourceMoveEffectDown::~syneUSourceMoveEffectDown(){

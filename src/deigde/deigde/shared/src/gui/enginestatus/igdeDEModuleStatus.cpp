@@ -80,24 +80,24 @@ pDialogEngine(dialogEngine)
 	
 	line = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esLast);
 	AddChild(line);
-	helper.ComboBox(line, "@Igde.DEModuleStatus.Module.Label", "@Igde.DEModuleStatus.Module.ToolTip",
+	helper.ComboBox(line, "@Igde.DEModuleStatus.Module", "@Igde.DEModuleStatus.Module.ToolTip",
 		pCBModule, igdeDEModuleStatus_ComboModule::Ref::New(*this));
 	pCBModule->SetDefaultSorter();
 	
 	
 	// module information
-	helper.GroupBoxStatic(*this, groupBox, "@Igde.DEModuleStatus.ModuleInformation.Label");
+	helper.GroupBoxStatic(*this, groupBox, "@Igde.DEModuleStatus.ModuleInformation");
 	
-	helper.EditString(groupBox, "@Igde.DEModuleStatus.Description.Label", "@Igde.DEModuleStatus.Description.ToolTip", pEditDescription, 3, {});
+	helper.EditString(groupBox, "@Igde.DEModuleStatus.Description", "@Igde.DEModuleStatus.Description.ToolTip", pEditDescription, 3, {});
 	pEditDescription->SetEditable(false);
 	
-	helper.EditString(groupBox, "@Igde.DEModuleStatus.Type.Label", "@Igde.DEModuleStatus.Type.ToolTip", pEditType, {});
+	helper.EditString(groupBox, "@Igde.DEModuleStatus.Type", "@Igde.DEModuleStatus.Type.ToolTip", pEditType, {});
 	pEditType->SetEditable(false);
 	
-	helper.EditString(groupBox, "@Igde.DEModuleStatus.Author.Label", "@Igde.DEModuleStatus.Author.ToolTip", pEditAuthor, {});
+	helper.EditString(groupBox, "@Igde.DEModuleStatus.Author", "@Igde.DEModuleStatus.Author.ToolTip", pEditAuthor, {});
 	pEditAuthor->SetEditable(false);
 	
-	helper.EditString(groupBox, "@Igde.DEModuleStatus.Version.Label", "@Igde.DEModuleStatus.Version.ToolTip", pEditVersion, {});
+	helper.EditString(groupBox, "@Igde.DEModuleStatus.Version", "@Igde.DEModuleStatus.Version.ToolTip", pEditVersion, {});
 	pEditVersion->SetEditable(false);
 	
 	helper.CheckBox(groupBox, "@Igde.DEModuleStatus.FallbackModule",
@@ -106,33 +106,33 @@ pDialogEngine(dialogEngine)
 	
 	
 	// file handling information
-	helper.GroupBoxStatic(*this, groupBox, "@Igde.DEModuleStatus.FileHandlingInformation.Label");
+	helper.GroupBoxStatic(*this, groupBox, "@Igde.DEModuleStatus.FileHandlingInformation");
 	
-	helper.EditString(groupBox, "@Igde.DEModuleStatus.RecognizedFilePattern.Label", "@Igde.DEModuleStatus.RecognizedFilePattern.ToolTip", pEditPattern, {});
+	helper.EditString(groupBox, "@Igde.DEModuleStatus.RecognizedFilePattern", "@Igde.DEModuleStatus.RecognizedFilePattern.ToolTip", pEditPattern, {});
 	pEditPattern->SetEditable(false);
 	
-	helper.EditString(groupBox, "@Igde.DEModuleStatus.DefaultExtension.Label", "@Igde.DEModuleStatus.DefaultExtension.ToolTip", pEditDefaultExtension, {});
+	helper.EditString(groupBox, "@Igde.DEModuleStatus.DefaultExtension", "@Igde.DEModuleStatus.DefaultExtension.ToolTip", pEditDefaultExtension, {});
 	pEditDefaultExtension->SetEditable(false);
 	
-	helper.EditString(groupBox, "@Igde.DEModuleStatus.ModuleDirectoryName.Label", "@Igde.DEModuleStatus.ModuleDirectoryName.ToolTip", pEditDirName, {});
+	helper.EditString(groupBox, "@Igde.DEModuleStatus.ModuleDirectoryName", "@Igde.DEModuleStatus.ModuleDirectoryName.ToolTip", pEditDirName, {});
 	pEditDirName->SetEditable(false);
 	
 	
 	// library information
-	helper.GroupBoxStatic(*this, groupBox, "@Igde.DEModuleStatus.LibraryModuleInformation.Label");
+	helper.GroupBoxStatic(*this, groupBox, "@Igde.DEModuleStatus.LibraryModuleInformation");
 	
-	helper.EditString(groupBox, "@Igde.DEModuleStatus.LibraryFilename.Label", "@Igde.DEModuleStatus.LibraryFilename.ToolTip", pEditLibName, {});
+	helper.EditString(groupBox, "@Igde.DEModuleStatus.LibraryFilename", "@Igde.DEModuleStatus.LibraryFilename.ToolTip", pEditLibName, {});
 	pEditLibName->SetEditable(false);
 	
-	helper.EditString(groupBox, "@Igde.DEModuleStatus.LibraryFileSize.Label", "@Igde.DEModuleStatus.LibraryFileSize.ToolTip", pEditLibSize, {});
+	helper.EditString(groupBox, "@Igde.DEModuleStatus.LibraryFileSize", "@Igde.DEModuleStatus.LibraryFileSize.ToolTip", pEditLibSize, {});
 	pEditLibSize->SetEditable(false);
 	
-	helper.EditString(groupBox, "@Igde.DEModuleStatus.LibraryCheckSum.Label", "@Igde.DEModuleStatus.LibraryCheckSum.ToolTip", pEditLibHash, {});
+	helper.EditString(groupBox, "@Igde.DEModuleStatus.LibraryCheckSum", "@Igde.DEModuleStatus.LibraryCheckSum.ToolTip", pEditLibHash, {});
 	pEditLibHash->SetEditable(false);
 	
 	
 	// library information
-	helper.GroupBoxStaticFlow(*this, groupBox, "@Igde.DEModuleStatus.ModuleStatus.Label", true);
+	helper.GroupBoxStaticFlow(*this, groupBox, "@Igde.DEModuleStatus.ModuleStatus", true);
 	
 	helper.EditString(groupBox, "@Igde.DEModuleStatus.ModuleStatus.ToolTip", pEditStatus, 3, {});
 	pEditStatus->SetEditable(false);

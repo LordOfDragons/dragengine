@@ -144,13 +144,13 @@ syneWPAPanelEffect(wpEffect, deSynthesizerEffectVisitorIdentify::eetStretch)
 	
 	
 	helper.GroupBox(*this, groupBox, "@Synthesizer.WPAPanelEffectStretch.GroupStretch");
-	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelEffectStretch.FieldTimeMin.Label", "@Synthesizer.WPAPanelEffectStretch.FieldTimeMin.ToolTip",
+	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelEffectStretch.FieldTimeMin", "@Synthesizer.WPAPanelEffectStretch.FieldTimeMin.ToolTip",
 		pEditMinTime, cTextMinTime::Ref::New(*this));
-	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelEffectStretch.FieldTimeMax.Label", "@Synthesizer.WPAPanelEffectStretch.FieldTimeMax.ToolTip",
+	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelEffectStretch.FieldTimeMax", "@Synthesizer.WPAPanelEffectStretch.FieldTimeMax.ToolTip",
 		pEditMaxTime, cTextMaxTime::Ref::New(*this));
-	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelEffectStretch.FieldPitchMin.Label", "@Synthesizer.WPAPanelEffectStretch.FieldPitchMin.ToolTip",
+	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelEffectStretch.FieldPitchMin", "@Synthesizer.WPAPanelEffectStretch.FieldPitchMin.ToolTip",
 		pEditMinPitch, cTextMinPitch::Ref::New(*this));
-	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelEffectStretch.FieldPitchMax.Label", "@Synthesizer.WPAPanelEffectStretch.FieldPitchMax.ToolTip",
+	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelEffectStretch.FieldPitchMax", "@Synthesizer.WPAPanelEffectStretch.FieldPitchMax.ToolTip",
 		pEditMaxPitch, cTextMaxPitch::Ref::New(*this));
 }
 

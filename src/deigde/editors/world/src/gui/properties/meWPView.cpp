@@ -258,10 +258,10 @@ public:
 		}
 		
 		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelper();
-		helper.MenuCommand(contextMenu, cActionSetSensitivity::Ref::New(pPanel, 1.0f, "@World.WPView.SetTo1.Label"));
-		helper.MenuCommand(contextMenu, cActionSetSensitivity::Ref::New(pPanel, 0.1f, "@World.WPView.SetTo01.Label"));
-		helper.MenuCommand(contextMenu, cActionSetSensitivity::Ref::New(pPanel, 0.01f, "@World.WPView.SetTo001.Label"));
-		helper.MenuCommand(contextMenu, cActionSetSensitivity::Ref::New(pPanel, 10.0f, "@World.WPView.SetTo10.Label"));
+		helper.MenuCommand(contextMenu, cActionSetSensitivity::Ref::New(pPanel, 1.0f, "@World.WPView.SetTo1"));
+		helper.MenuCommand(contextMenu, cActionSetSensitivity::Ref::New(pPanel, 0.1f, "@World.WPView.SetTo01"));
+		helper.MenuCommand(contextMenu, cActionSetSensitivity::Ref::New(pPanel, 0.01f, "@World.WPView.SetTo001"));
+		helper.MenuCommand(contextMenu, cActionSetSensitivity::Ref::New(pPanel, 10.0f, "@World.WPView.SetTo10"));
 	}
 };
 
@@ -586,18 +586,18 @@ pPreventUpdateCamera(false)
 	
 	
 	// grid snapping and alignment
-	helper.GroupBox(content, groupBox, "@World.WPView.GridSnapping.Label");
+	helper.GroupBox(content, groupBox, "@World.WPView.GridSnapping");
 	
 	helper.CheckBoxOnly(groupBox, pChkMoveSnap, cActionMoveSnap::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WPView.SnapMovingDistance.Label", pEditMoveStep, cTextMoveStep::Ref::New(*this));
+	helper.EditFloat(groupBox, "@World.WPView.SnapMovingDistance", pEditMoveStep, cTextMoveStep::Ref::New(*this));
 	
 	helper.CheckBoxOnly(groupBox, pChkRotSnap, cActionRotateSnap::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WPView.SnapRotationAngle.Label", pEditRotStep, cTextRotateStep::Ref::New(*this));
+	helper.EditFloat(groupBox, "@World.WPView.SnapRotationAngle", pEditRotStep, cTextRotateStep::Ref::New(*this));
 	
 	helper.CheckBoxOnly(groupBox, pChkScaleSnap, cActionScaleSnap::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WPView.SnapScalingFactor.Label", pEditScaleStep, cTextScaleStep::Ref::New(*this));
+	helper.EditFloat(groupBox, "@World.WPView.SnapScalingFactor", pEditScaleStep, cTextScaleStep::Ref::New(*this));
 	
-	helper.FormLineStretchFirst(groupBox, "@World.WPView.Sensitivity.Label", "@World.WPView.SensitivityOfMouseInput.ToolTip", formLine);
+	helper.FormLineStretchFirst(groupBox, "@World.WPView.Sensitivity", "@World.WPView.SensitivityOfMouseInput.ToolTip", formLine);
 	helper.EditFloat(formLine, "@World.WPView.SensitivityOfMouseInput.ToolTip", pEditSensitivity, cTextSensitivity::Ref::New(*this));
 	actionMenu = cActionMenuSensitivity::Ref::New(*this);
 	helper.Button(formLine, pBtnSensitivity, actionMenu);
@@ -605,35 +605,35 @@ pPreventUpdateCamera(false)
 	
 	
 	// selection
-	helper.GroupBox(content, groupBox, "@World.WPView.Selection.Label");
+	helper.GroupBox(content, groupBox, "@World.WPView.Selection");
 	
-	helper.EditFloat(groupBox, "@World.WPView.Distance.Label", "@World.WPView.DistanceForRectangularSelection.ToolTip",
+	helper.EditFloat(groupBox, "@World.WPView.Distance", "@World.WPView.DistanceForRectangularSelection.ToolTip",
 		pEditRectSelDist, cTextRectSelDist::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WPView.DistanceStep.Label",
+	helper.EditFloat(groupBox, "@World.WPView.DistanceStep",
 		"@World.WPView.MouseWheelAdjustmentStepForDistanceForRectangularSelection.ToolTip",
 		pEditRectSelDistStep, cTextRectSelDistStep::Ref::New(*this));
 	
 	
 	// auto updating
-	helper.GroupBox(content, groupBox, "@World.WPView.AutoUpdating.Label");
+	helper.GroupBox(content, groupBox, "@World.WPView.AutoUpdating");
 	helper.CheckBox(groupBox, pChkAutoUpdate, cActionAutoUpdate::Ref::New(*this));
 	
 	
 	// class hiding
-	helper.GroupBoxFlow(content, groupBox, "@World.WPView.ClassHideTags.Label", false, true);
+	helper.GroupBoxFlow(content, groupBox, "@World.WPView.ClassHideTags", false, true);
 	helper.ToggleTags(groupBox, pEditClassHideTags, cActionClassHideTags::Ref::New(*this, pEditClassHideTags));
 	
-	helper.GroupBoxFlow(content, groupBox, "@World.WPView.ClassPartialHideTags.Label", false, true);
+	helper.GroupBoxFlow(content, groupBox, "@World.WPView.ClassPartialHideTags", false, true);
 	helper.ToggleTags(groupBox, pEditClassPartialHideTags, cActionClassPartialHideTags::Ref::New(*this, pEditClassPartialHideTags));
 	
 	
 	// camera
-	helper.GroupBoxFlow(content, groupBox, "@World.WPView.Camera.Label");
+	helper.GroupBoxFlow(content, groupBox, "@World.WPView.Camera");
 	
 	form = igdeContainerForm::Ref::New(env);
 	groupBox->AddChild(form);
 	
-	helper.EditString(form, "@World.WPView.Active.Label", "@World.WPView.ActiveCamera.ToolTip", pEditActiveCamera, {});
+	helper.EditString(form, "@World.WPView.Active", "@World.WPView.ActiveCamera.ToolTip", pEditActiveCamera, {});
 	pEditActiveCamera->SetEditable(false);
 	
 	helper.FormLine(form, "", "", formLine);
@@ -644,7 +644,7 @@ pPreventUpdateCamera(false)
 	pActionCameraObject = cActionCameraObject::Ref::New(*this);
 	helper.Button(formLine, pActionCameraObject);
 	
-	helper.ComboBox(form, "@World.WPView.ObjectCamera.Label", "@World.WPView.ObjectCamera.ToolTip", pCBCameraObjects, {});
+	helper.ComboBox(form, "@World.WPView.ObjectCamera", "@World.WPView.ObjectCamera.ToolTip", pCBCameraObjects, {});
 	pCBCameraObjects->SetDefaultSorter();
 	
 	helper.WPCamera(groupBox, pWPCamera, cActionCameraChanged::Ref::New(*this),
@@ -652,26 +652,26 @@ pPreventUpdateCamera(false)
 	
 	
 	// microphone
-	helper.GroupBoxFlow(content, groupBox, "@World.WPView.Microphone.Label");
+	helper.GroupBoxFlow(content, groupBox, "@World.WPView.Microphone");
 	helper.CheckBox(groupBox, pChkEnableAuralization, cActionEnableAuralization::Ref::New(*this));
 	
 	
 	// property panels
 	helper.WPSky(content, pWPSky, cActionSkyChanged::Ref::New(*this), "@World.WPView.Sky.Label2", false, false);
-	helper.WPWObject(content, pWPBgObject, cEditBgObject::Ref::New(*this), "@World.WPView.BackgroundObject.Label", false, true);
+	helper.WPWObject(content, pWPBgObject, cEditBgObject::Ref::New(*this), "@World.WPView.BackgroundObject", false, true);
 	helper.WPTriggerTable(content, pWPTriggerTable, cActionTriggerTable::Ref::New(*this),
 		"@World.WPView.TriggerTable.Label2", false, true);
 	
 	// limit box
-	helper.GroupBox(content, groupBox, "@World.WPView.LimitBox.Label");
+	helper.GroupBox(content, groupBox, "@World.WPView.LimitBox");
 	
-	helper.FormLineStretchFirst(groupBox, "@World.WPView.MinimumExtend.Label", "@World.WPView.MinimumExtendOfLimitBox.ToolTip", formLine);
+	helper.FormLineStretchFirst(groupBox, "@World.WPView.MinimumExtend", "@World.WPView.MinimumExtendOfLimitBox.ToolTip", formLine);
 	helper.EditVector(formLine, "@World.WPView.MinimumExtendOfLimitBox.ToolTip", pEditLimitBoxMinExtend, cEditLimitBoxMinExtend::Ref::New(*this));
 	actionMenu = cActionMenuLimitBox::Ref::New(*this);
 	helper.Button(formLine, pBtnLimitBoxMenu, actionMenu);
 	actionMenu->SetWidget(pBtnLimitBoxMenu);
 	
-	helper.EditVector(groupBox, "@World.WPView.MaximumExtend.Label", "@World.WPView.MaximumExtendOfLimitBox.ToolTip",
+	helper.EditVector(groupBox, "@World.WPView.MaximumExtend", "@World.WPView.MaximumExtendOfLimitBox.ToolTip",
 		pEditLimitBoxMaxExtend, cEditLimitBoxMaxExtend::Ref::New(*this));
 }
 

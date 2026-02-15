@@ -221,13 +221,13 @@ pWindowProperties(windowProperties)
 	
 	helper.GroupBox(content, groupBox, "@GameDefinition.WPSOCSnapPoint.GroupSnapPoint");
 	
-	helper.EditString(groupBox, "@GameDefinition.WPSOCSnapPoint.Name.Label", "@GameDefinition.WPSOCSnapPoint.Name.ToolTip",
+	helper.EditString(groupBox, "@GameDefinition.WPSOCSnapPoint.Name", "@GameDefinition.WPSOCSnapPoint.Name.ToolTip",
 		pEditName, cTextName::Ref::New(*this));
-	helper.EditVector(groupBox, "@GameDefinition.WPSOCSnapPoint.Position.Label", "@GameDefinition.WPSOCSnapPoint.Position.ToolTip",
+	helper.EditVector(groupBox, "@GameDefinition.WPSOCSnapPoint.Position", "@GameDefinition.WPSOCSnapPoint.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
-	helper.EditVector(groupBox, "@GameDefinition.WPSOCSnapPoint.Rotation.Label", "@GameDefinition.WPSOCSnapPoint.Rotation.ToolTip", 4, 1,
+	helper.EditVector(groupBox, "@GameDefinition.WPSOCSnapPoint.Rotation", "@GameDefinition.WPSOCSnapPoint.Rotation.ToolTip", 4, 1,
 		pEditRotation, cEditRotation::Ref::New(*this));
-	helper.EditFloat(groupBox, "@GameDefinition.WPSOCSnapPoint.SnapDistance.Label", "@GameDefinition.WPSOCSnapPoint.SnapDistance.ToolTip",
+	helper.EditFloat(groupBox, "@GameDefinition.WPSOCSnapPoint.SnapDistance", "@GameDefinition.WPSOCSnapPoint.SnapDistance.ToolTip",
 		pEditSnapDistance, cTextSnapDistance::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkSnapToRotation, cActionSnapToRotation::Ref::New(*this));
 }

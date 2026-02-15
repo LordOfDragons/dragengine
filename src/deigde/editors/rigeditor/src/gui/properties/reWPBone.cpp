@@ -368,10 +368,10 @@ pWindowProperties(windowProperties)
 	// structure
 	helper.GroupBox(content, groupBox, "@Rig.PanelBone.GroupBox.Structure");
 	
-	helper.EditString(groupBox, "@Rig.PanelBone.Structure.Name.Label", "@Rig.PanelBone.Structure.Name.ToolTip",
+	helper.EditString(groupBox, "@Rig.PanelBone.Structure.Name", "@Rig.PanelBone.Structure.Name.ToolTip",
 		pEditName, cTextName::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "@Rig.PanelBone.Structure.Parent.Label", true,
+	helper.ComboBox(groupBox, "@Rig.PanelBone.Structure.Parent", true,
 		"@Rig.PanelBone.Structure.Parent.ToolTip",
 		pCBParent, cComboParent::Ref::New(*this));
 	pCBParent->SetDefaultSorter();
@@ -379,22 +379,22 @@ pWindowProperties(windowProperties)
 	// geometry
 	helper.GroupBox(content, groupBox, "@Rig.PanelBone.GroupBox.Geometry");
 	
-	helper.EditVector(groupBox, "@Rig.PanelBone.Geometry.Position.Label",
+	helper.EditVector(groupBox, "@Rig.PanelBone.Geometry.Position",
 		"@Rig.PanelBone.Geometry.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
 	
-	helper.EditVector(groupBox, "@Rig.PanelBone.Geometry.Rotation.Label",
+	helper.EditVector(groupBox, "@Rig.PanelBone.Geometry.Rotation",
 		"@Rig.PanelBone.Geometry.Rotation.ToolTip",
 		pEditRotation, cEditRotation::Ref::New(*this));
 	
 	// physics
 	helper.GroupBox(content, groupBox, "@Rig.PanelBone.GroupBox.Physics");
 	
-	helper.EditVector(groupBox, "@Rig.PanelBone.Physics.Cmp.Label",
+	helper.EditVector(groupBox, "@Rig.PanelBone.Physics.Cmp",
 		"@Rig.PanelBone.Physics.Cmp.ToolTip",
 		pEditCentralMassPoint, cEditCentralMassPoint::Ref::New(*this));
 	
-	helper.EditFloat(groupBox, "@Rig.PanelBone.Physics.Mass.Label", "@Rig.PanelBone.Physics.Mass.ToolTip",
+	helper.EditFloat(groupBox, "@Rig.PanelBone.Physics.Mass", "@Rig.PanelBone.Physics.Mass.ToolTip",
 		pEditMass, cTextMass::Ref::New(*this));
 	
 	helper.CheckBox(groupBox, pChkDynamic, cCheckDynamic::Ref::New(*this));
@@ -402,16 +402,16 @@ pWindowProperties(windowProperties)
 	// inverse kinematic limits
 	helper.GroupBox(content, groupBox, "@Rig.PanelBone.GroupBox.IkLimits");
 	
-	helper.EditVector(groupBox, "@Rig.PanelBone.IkLimits.Lower.Label", "@Rig.PanelBone.IkLimits.Lower.ToolTip",
+	helper.EditVector(groupBox, "@Rig.PanelBone.IkLimits.Lower", "@Rig.PanelBone.IkLimits.Lower.ToolTip",
 		pEditIKLimitsLower, cEditIKLimitsLower::Ref::New(*this));
 	
-	helper.EditVector(groupBox, "@Rig.PanelBone.IkLimits.Upper.Label", "@Rig.PanelBone.IkLimits.Upper.ToolTip",
+	helper.EditVector(groupBox, "@Rig.PanelBone.IkLimits.Upper", "@Rig.PanelBone.IkLimits.Upper.ToolTip",
 		pEditIKLimitsUpper, cEditIKLimitsUpper::Ref::New(*this));
 	
-	helper.EditVector(groupBox, "@Rig.PanelBone.IkLimits.Resistance.Label", "@Rig.PanelBone.IkLimits.Resistance.ToolTip",
+	helper.EditVector(groupBox, "@Rig.PanelBone.IkLimits.Resistance", "@Rig.PanelBone.IkLimits.Resistance.ToolTip",
 		pEditIKResistance, cEditIKResistance::Ref::New(*this));
 	
-	helper.FormLine(groupBox, "@Rig.PanelBone.IkLimits.Locked.Label", "@Rig.PanelBone.IkLimits.Locked.ToolTip", frameLine);
+	helper.FormLine(groupBox, "@Rig.PanelBone.IkLimits.Locked", "@Rig.PanelBone.IkLimits.Locked.ToolTip", frameLine);
 	helper.CheckBox(frameLine, pChkIKLockedX, cCheckIKLocked::Ref::New(*this, 0, "@Rig.PanelBone.IkLimits.X"));
 	helper.CheckBox(frameLine, pChkIKLockedY, cCheckIKLocked::Ref::New(*this, 1, "@Rig.PanelBone.IkLimits.Y"));
 	helper.CheckBox(frameLine, pChkIKLockedZ, cCheckIKLocked::Ref::New(*this, 2, "@Rig.PanelBone.IkLimits.Z"));

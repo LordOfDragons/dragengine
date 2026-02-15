@@ -46,7 +46,7 @@ pSource(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("@Effect Stretch Set Max Time");
+	SetShortInfo("@Synthesizer.Undo.EffectStretchSetMaxTime");
 	
 	pOldTime = effect->GetMaxTime();
 	pNewTime = newTime;

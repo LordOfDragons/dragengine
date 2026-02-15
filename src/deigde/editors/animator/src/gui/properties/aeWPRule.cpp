@@ -373,7 +373,7 @@ pActivePanel(nullptr)
 	AddChild(content);
 	
 	
-	helper.GroupBoxFlow(content, groupBox, "@Animator.WPRule.Rules.Label");
+	helper.GroupBoxFlow(content, groupBox, "@Animator.WPRule.Rules");
 	helper.TreeList(groupBox, pTreeRule, 8, "@Animator.WPRule.Rules.ToolTip", cTreeRules::Ref::New(*this));
 	
 	

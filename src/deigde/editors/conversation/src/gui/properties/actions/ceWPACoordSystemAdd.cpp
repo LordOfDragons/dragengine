@@ -117,11 +117,11 @@ ceWPACoordSystemAdd::ceWPACoordSystemAdd(ceWPTopic &parentPanel) : ceWPAction(pa
 	
 	CreateGUICommon(*this);
 	
-	helper.ComboBox(*this, "@Conversation.WPActionCoordSystemAdd.CoordSystem.Label", true, "@Conversation.ToolTip.CoordSystemToAdd",
+	helper.ComboBox(*this, "@Conversation.WPActionCoordSystemAdd.CoordSystem", true, "@Conversation.ToolTip.CoordSystemToAdd",
 		pCBCoordSystemID, cComboCoordSystemID::Ref::New(*this));
 	pCBCoordSystemID->SetDefaultSorter();
 	
-	helper.ComboBox(*this, "@Conversation.WPActionCoordSystemAdd.Alias.Label", true, "@Conversation.ToolTip.CoordSystemAliasToSet",
+	helper.ComboBox(*this, "@Conversation.WPActionCoordSystemAdd.Alias", true, "@Conversation.ToolTip.CoordSystemAliasToSet",
 		pCBAliasID, cComboAliasID::Ref::New(*this));
 	pCBAliasID->SetDefaultSorter();
 }

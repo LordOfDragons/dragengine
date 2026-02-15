@@ -909,9 +909,9 @@ pWindowProperties(windowProperties)
 	helper.CheckBox(groupBox, pChkMulBySkyColor, cActionMulBySkyColor::Ref::New(*this));
 	
 	// light settings
-	helper.GroupBox(content, groupBox, "@Sky.Properties.Layer.Light");
+	helper.GroupBox(content, groupBox, "@Sky.Properties.Layer.LightSettings");
 	
-	helper.FormLine(groupBox, "@Sky.Properties.Layer.Light.Label", "@Sky.Properties.Layer.Light.Description", frameLine);
+	helper.FormLine(groupBox, "@Sky.Properties.Layer.Light", "@Sky.Properties.Layer.Light.Description", frameLine);
 	helper.ColorBox(frameLine, "@Sky.Properties.Layer.Light.Color", pClrLight, cEditLightColor::Ref::New(*this));
 	helper.EditFloat(frameLine, "@Sky.Properties.Layer.Light.Intensity", pEditLightIntensity, cTextLightIntensity::Ref::New(*this));
 	helper.EditFloat(frameLine, "@Sky.Properties.Layer.Light.AmbientIntensity", pEditAmbientIntensity, cTextAmbientIntensity::Ref::New(*this));

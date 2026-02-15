@@ -677,7 +677,7 @@ public:
 	typedef deTObjectReference<cActionActorWaiting> Ref;
 	
 public:
-	cActionActorWaiting(ceWPView &panel) : cBaseAction(panel, "@Conversation.Action.ActorWaiting.Label", nullptr,
+	cActionActorWaiting(ceWPView &panel) : cBaseAction(panel, "@Conversation.Action.ActorWaiting", nullptr,
 	"@Conversation.Action.ActorWaiting.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(ceConversation*) override{
@@ -740,7 +740,7 @@ public:
 		}
 		
 		if(actor->GetPoses().HasMatching([&](const ceActorPose::Ref &p){ return p->GetName() == name; })){
-			igdeCommonDialogs::Error(pPanel, "@Conversation.WPView.AddPose.Title", "@Conversation.WPView.Aposewiththisnameexistsalready.Message");
+			igdeCommonDialogs::Error(pPanel, "@Conversation.WPView.AddPose.Title", "@Conversation.WPView.PoseExists.Message");
 			return {};
 		}
 		
@@ -795,7 +795,7 @@ public:
 		}
 		
 		if(actor->GetPoses().HasMatching([&](const ceActorPose::Ref &p){ return p->GetName() == name; })){
-			igdeCommonDialogs::Error(pPanel, "@Conversation.WPView.RenamePose.Title", "@Conversation.WPView.Aposewiththisnameexistsalready.Message");
+			igdeCommonDialogs::Error(pPanel, "@Conversation.WPView.RenamePose.Title", "@Conversation.WPView.PoseExists.Message");
 			
 		}else{
 			pose->SetName(name);
@@ -867,7 +867,7 @@ public:
 		}
 		
 		if(pose->GetControllers().HasMatching([&](const ceActorController::Ref &c){ return c->GetName() == name; })){
-			igdeCommonDialogs::Error(pPanel, "@Conversation.WPView.AddController.Title", "@Conversation.WPView.Acontrollerwiththisnameexistsalrea.Message");
+			igdeCommonDialogs::Error(pPanel, "@Conversation.WPView.AddController.Title", "@Conversation.WPView.ControllerExists.Message");
 			return {};
 		}
 		
@@ -947,7 +947,7 @@ public:
 		}
 		
 		if(pPanel.GetActorPose()->GetControllers().HasMatching([&](const ceActorController::Ref &c){ return c->GetName() == name; })){
-			igdeCommonDialogs::Error(pPanel, "@Conversation.WPView.RenameController.Title", "@Conversation.WPView.Acontrollerwiththisnameexistsalrea.Message");
+			igdeCommonDialogs::Error(pPanel, "@Conversation.WPView.RenameController.Title", "@Conversation.WPView.ControllerExists.Message");
 			
 		}else{
 			controller->SetName(name);
@@ -1066,7 +1066,7 @@ public:
 		}
 		
 		if(pose->GetGestures().HasMatching([&name](const ceActorGesture &g){ return g.GetName() == name; })){
-			igdeCommonDialogs::Error(pPanel, "@Conversation.WPView.AddGesture.Title", "@Conversation.WPView.Agesturewiththisnameexistsalready.Message");
+			igdeCommonDialogs::Error(pPanel, "@Conversation.WPView.AddGesture.Title", "@Conversation.WPView.GestureExists.Message");
 			return {};
 		}
 		
@@ -1123,7 +1123,7 @@ public:
 		}
 		
 		if(pose->GetGestures().HasMatching([&name](const ceActorGesture &g){ return g.GetName() == name; })){
-			igdeCommonDialogs::Error(pPanel, "@Conversation.WPView.RenameGesture.Title", "@Conversation.WPView.Agesturewiththisnameexistsalready.Message");
+			igdeCommonDialogs::Error(pPanel, "@Conversation.WPView.RenameGesture.Title", "@Conversation.WPView.GestureExists.Message");
 			
 		}else{
 			gesture->SetName(name);
@@ -1394,7 +1394,7 @@ public:
 	typedef deTObjectReference<cActionCoordSysAdd> Ref;
 	
 public:
-	cActionCoordSysAdd(ceWPView &panel) : cBaseAction(panel, "@Conversation.Action.CoordSystemAdd.Label",
+	cActionCoordSysAdd(ceWPView &panel) : cBaseAction(panel, "@Conversation.Action.CoordSystemAdd",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@Conversation.WPView.AddCoordSystem.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
@@ -1510,7 +1510,7 @@ public:
 	typedef deTObjectReference<cActionPlaybackSelectTopic> Ref;
 	
 public:
-	cActionPlaybackSelectTopic(ceWPView &panel) : cBaseAction(panel, "@Conversation.Action.PlaybackSelectTopic.Label",
+	cActionPlaybackSelectTopic(ceWPView &panel) : cBaseAction(panel, "@Conversation.Action.PlaybackSelectTopic",
 	nullptr, "@Conversation.Action.PlaybackSelectTopic.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
@@ -1531,7 +1531,7 @@ public:
 	typedef deTObjectReference<cActionPlaybackRewind> Ref;
 	
 public:
-	cActionPlaybackRewind(ceWPView &panel) : cBaseAction(panel, "@Conversation.Action.PlaybackRewind.Label",
+	cActionPlaybackRewind(ceWPView &panel) : cBaseAction(panel, "@Conversation.Action.PlaybackRewind",
 	nullptr, "@Conversation.Action.PlaybackRewind.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
@@ -1545,7 +1545,7 @@ public:
 	typedef deTObjectReference<cActionPlaybackRunning> Ref;
 	
 public:
-	cActionPlaybackRunning(ceWPView &panel) : cBaseAction(panel, "@Conversation.Action.PlaybackRunning.Label",
+	cActionPlaybackRunning(ceWPView &panel) : cBaseAction(panel, "@Conversation.Action.PlaybackRunning",
 	nullptr, "@Conversation.Action.PlaybackRunning.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
@@ -1564,7 +1564,7 @@ public:
 	typedef deTObjectReference<cActionPlaybackPaused> Ref;
 	
 public:
-	cActionPlaybackPaused(ceWPView &panel) : cBaseAction(panel, "@Conversation.Action.PlaybackPaused.Label",
+	cActionPlaybackPaused(ceWPView &panel) : cBaseAction(panel, "@Conversation.Action.PlaybackPaused",
 	nullptr, "@Conversation.Action.PlaybackPaused.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
@@ -1583,7 +1583,7 @@ public:
 	typedef deTObjectReference<cActionPlaybackAutoAdvanceCommands> Ref;
 	
 public:
-	cActionPlaybackAutoAdvanceCommands(ceWPView &panel) : cBaseAction(panel, "@Conversation.Action.PlaybackAutoAdvance.Label",
+	cActionPlaybackAutoAdvanceCommands(ceWPView &panel) : cBaseAction(panel, "@Conversation.Action.PlaybackAutoAdvance",
 	nullptr, "@Conversation.Action.PlaybackAutoAdvance.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
@@ -1644,7 +1644,7 @@ private:
 	
 public:
 	cActionPlaybackCommandRemove(ceWPView &panel, igdeListBox &listBox) :
-	cBaseAction(panel, "@Conversation.Action.PlaybackCommandRemove.Label", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+	cBaseAction(panel, "@Conversation.Action.PlaybackCommandRemove", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 	"@Conversation.Action.PlaybackCommandRemove.ToolTip"), pListBox(listBox){}
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
@@ -1670,7 +1670,7 @@ private:
 	
 public:
 	cActionPlaybackCommandClear(ceWPView &panel, igdeListBox &listBox) :
-	cBaseAction(panel, "@Conversation.Action.PlaybackCommandRemoveAll.Label", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+	cBaseAction(panel, "@Conversation.Action.PlaybackCommandRemoveAll", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 	"@Conversation.Action.PlaybackCommandRemoveAll.ToolTip"), pListBox(listBox){}
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
@@ -1741,7 +1741,7 @@ private:
 	
 public:
 	cActionPlaybackVariableSet(ceWPView &panel, igdeListBox &listBox) :
-	cBaseAction(panel, "@Conversation.Action.PlaybackVariableSet.Label", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+	cBaseAction(panel, "@Conversation.Action.PlaybackVariableSet", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 	"@Conversation.WPView.SetPlaybackVariable.ToolTip"), pListBox(listBox){}
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
@@ -1774,7 +1774,7 @@ private:
 	
 public:
 	cActionPlaybackVariableRemove(ceWPView &panel, igdeListBox &listBox) :
-	cBaseAction(panel, "@Conversation.Action.PlaybackVariableRemove.Label", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+	cBaseAction(panel, "@Conversation.Action.PlaybackVariableRemove", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 	"@Conversation.Action.PlaybackVariableRemove.ToolTip"), pListBox(listBox){}
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
@@ -1800,7 +1800,7 @@ private:
 	
 public:
 	cActionPlaybackVariableClear(ceWPView &panel, igdeListBox &listBox) :
-	cBaseAction(panel, "@Conversation.Action.PlaybackVariableRemoveAll.Label", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+	cBaseAction(panel, "@Conversation.Action.PlaybackVariableRemoveAll", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 	"@Conversation.Action.PlaybackVariableRemoveAll.ToolTip"), pListBox(listBox){}
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
@@ -1870,7 +1870,7 @@ public:
 	typedef deTObjectReference<cActionMissingWordsCopy> Ref;
 	
 public:
-	cActionMissingWordsCopy(ceWPView &panel) : cBaseAction(panel, "@Conversation.Action.MissingWordsCopy.Label",
+	cActionMissingWordsCopy(ceWPView &panel) : cBaseAction(panel, "@Conversation.Action.MissingWordsCopy",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 		"@Conversation.Action.MissingWordsCopy.ToolTip"){}
 	
@@ -1896,7 +1896,7 @@ public:
 	typedef deTObjectReference<cActionMissingWordsClear> Ref;
 	
 public:
-	cActionMissingWordsClear(ceWPView &panel) : cBaseAction(panel, "@Conversation.Action.MissingWordsClear.Label",
+	cActionMissingWordsClear(ceWPView &panel) : cBaseAction(panel, "@Conversation.Action.MissingWordsClear",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiDelete),
 		"@Conversation.Action.MissingWordsClear.ToolTip"){}
 	
@@ -1954,22 +1954,22 @@ pWindowProperties(windowProperties)
 	// props
 	helper.GroupBox(content, groupBox, "@Conversation.WPView.Props.GroupBox", true);
 	
-	helper.FormLineStretchFirst(groupBox, "@Conversation.WPView.Prop", "@Conversation.WPView.Proptoedit.Label", formLine);
-	helper.ComboBox(formLine, "@Conversation.WPView.Proptoedit.Label", pCBProps, cComboProp::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@Conversation.WPView.Prop", "@Conversation.WPView.Proptoedit", formLine);
+	helper.ComboBox(formLine, "@Conversation.WPView.Proptoedit", pCBProps, cComboProp::Ref::New(*this));
 	pCBProps->SetDefaultSorter();
 	actionContextMenu = cActionPropMenu::Ref::New(*this);
 	helper.Button(formLine, pBtnPropMenu, actionContextMenu);
 	actionContextMenu->SetWidget(pBtnPropMenu);
 	
-	helper.EditString(groupBox, "@Conversation.WPView.Name.Label", "@Conversation.ToolTip.PropName", pEditPropName, cTextPropName::Ref::New(*this));
+	helper.EditString(groupBox, "@Conversation.WPView.Name", "@Conversation.ToolTip.PropName", pEditPropName, cTextPropName::Ref::New(*this));
 	
-	helper.FormLineStretchFirst(groupBox, "@Conversation.WPView.Object", "@Conversation.WPView.Classoftheprop.Label", formLine);
-	helper.EditString(formLine, "@Conversation.WPView.Classoftheprop.Label", pEditPropClass, cTextPropClass::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@Conversation.WPView.Object", "@Conversation.WPView.PropClass", formLine);
+	helper.EditString(formLine, "@Conversation.WPView.PropClass", pEditPropClass, cTextPropClass::Ref::New(*this));
 	helper.Button(formLine, pBtnPropMenu, cActionPropClass::Ref::New(*this, pEditPropClass));
 	
 	helper.CheckBox(groupBox, pChkPropVisible, cActionPropVisible::Ref::New(*this));
-	helper.EditVector(groupBox, "@Conversation.WPView.Position.Label", "@Conversation.ToolTip.PropPosition", pEditPropPos, cVectorPropPosition::Ref::New(*this));
-	helper.EditVector(groupBox, "@Conversation.WPView.Rotation.Label", "@Conversation.ToolTip.PropRotation", pEditPropRot, cVectorPropRotation::Ref::New(*this));
+	helper.EditVector(groupBox, "@Conversation.WPView.Position", "@Conversation.ToolTip.PropPosition", pEditPropPos, cVectorPropPosition::Ref::New(*this));
+	helper.EditVector(groupBox, "@Conversation.WPView.Rotation", "@Conversation.ToolTip.PropRotation", pEditPropRot, cVectorPropRotation::Ref::New(*this));
 	
 	
 	// props
@@ -1978,83 +1978,83 @@ pWindowProperties(windowProperties)
 	form = igdeContainerForm::Ref::New(env);
 	groupBox->AddChild(form);
 	
-	helper.FormLineStretchFirst(form, "@Conversation.WPView.Actor.Label", "@Conversation.WPView.Actor.ToolTip", formLine);
+	helper.FormLineStretchFirst(form, "@Conversation.WPView.Actor", "@Conversation.WPView.Actor.ToolTip", formLine);
 	helper.EditSpinInteger(formLine, "@Conversation.WPView.Actor.ToolTip", 0, 0, pSpinActor, cSpinActor::Ref::New(*this));
 	actionContextMenu = cActionActorMenu::Ref::New(*this);
 	helper.Button(formLine, pBtnActorMenu, actionContextMenu);
 	actionContextMenu->SetWidget(pBtnActorMenu);
 	
-	helper.EditString(form, "@Conversation.WPView.ID.Label", "@Conversation.ToolTip.ActorID",
+	helper.EditString(form, "@Conversation.WPView.ID", "@Conversation.ToolTip.ActorID",
 		pEditActorID, cTextActorID::Ref::New(*this));
-	helper.EditString(form, "@Conversation.WPView.AliasID.Label", "@Conversation.ToolTip.ActorAliasID",
+	helper.EditString(form, "@Conversation.WPView.AliasID", "@Conversation.ToolTip.ActorAliasID",
 		pEditActorAliasID, cTextActorAliasID::Ref::New(*this));
-	helper.EditVector(form, "@Conversation.WPView.Position.Label", "@Conversation.ToolTip.ActorPosition", pEditActorPos, cVectorActorPosition::Ref::New(*this));
-	helper.EditVector(form, "@Conversation.WPView.Rotation.Label", "@Conversation.ToolTip.ActorRotation", pEditActorOri, cVectorActorRotation::Ref::New(*this));
-	helper.EditPath(form, "@Conversation.WPView.Model.Label", "@Conversation.ToolTip.ActorModel", igdeEnvironment::efpltModel,
+	helper.EditVector(form, "@Conversation.WPView.Position", "@Conversation.ToolTip.ActorPosition", pEditActorPos, cVectorActorPosition::Ref::New(*this));
+	helper.EditVector(form, "@Conversation.WPView.Rotation", "@Conversation.ToolTip.ActorRotation", pEditActorOri, cVectorActorRotation::Ref::New(*this));
+	helper.EditPath(form, "@Conversation.WPView.Model", "@Conversation.ToolTip.ActorModel", igdeEnvironment::efpltModel,
 		pEditActorPathModel, cPathActorModel::Ref::New(*this));
-	helper.EditPath(form, "@Conversation.WPView.Skin.Label", "@Conversation.ToolTip.ActorSkin", igdeEnvironment::efpltSkin,
+	helper.EditPath(form, "@Conversation.WPView.Skin", "@Conversation.ToolTip.ActorSkin", igdeEnvironment::efpltSkin,
 		pEditActorPathSkin, cPathActorSkin::Ref::New(*this));
-	helper.EditPath(form, "@Conversation.WPView.Rig.Label", "@Conversation.ToolTip.ActorRig", igdeEnvironment::efpltRig,
+	helper.EditPath(form, "@Conversation.WPView.Rig", "@Conversation.ToolTip.ActorRig", igdeEnvironment::efpltRig,
 		pEditActorPathRig, cPathActorRig::Ref::New(*this));
-	helper.EditPath(form, "@Conversation.WPView.SpeechAnimation.Label", "@Conversation.ToolTip.SpeechAnimation",
+	helper.EditPath(form, "@Conversation.WPView.SpeechAnimation", "@Conversation.ToolTip.SpeechAnimation",
 		igdeEnvironment::efpltSpeechAnimation, pEditActorPathSpeechAnim, cPathActorSpeechAnimation::Ref::New(*this));
-	helper.EditPath(form, "@Conversation.WPView.EyeAnimator.Label", "@Conversation.ToolTip.EyeAnimator",
+	helper.EditPath(form, "@Conversation.WPView.EyeAnimator", "@Conversation.ToolTip.EyeAnimator",
 		igdeEnvironment::efpltAnimator, pEditActorPathEyeAnimator, cPathActorEyeAnimator::Ref::New(*this));
-	helper.EditPath(form, "@Conversation.WPView.FacePoseAnimator.Label", "@Conversation.ToolTip.FacePoseAnimator",
+	helper.EditPath(form, "@Conversation.WPView.FacePoseAnimator", "@Conversation.ToolTip.FacePoseAnimator",
 		igdeEnvironment::efpltAnimator, pEditActorPathFaceAnimator, cPathActorFacePoseAnimator::Ref::New(*this));
 	helper.CheckBox(form, pChkActorWaiting, cActionActorWaiting::Ref::New(*this));
-	helper.EditString(form, "@Conversation.WPView.HeadRotator.Label", "@Conversation.ToolTip.HeadRotatorBone",
+	helper.EditString(form, "@Conversation.WPView.HeadRotator", "@Conversation.ToolTip.HeadRotatorBone",
 		pEditActorBoneHeadRotator, cTextActorBoneHeadRotator::Ref::New(*this));
 	
-	helper.FormLineStretchFirst(form, "@Conversation.WPView.ActorPose", "@Conversation.WPView.Actorposetoedit.Label", formLine);
-	helper.ComboBox(formLine, "@Conversation.WPView.Actorposetoedit.Label", pCBActorPose, cComboActorPose::Ref::New(*this));
+	helper.FormLineStretchFirst(form, "@Conversation.WPView.ActorPose", "@Conversation.WPView.ActorPose", formLine);
+	helper.ComboBox(formLine, "@Conversation.WPView.ActorPose", pCBActorPose, cComboActorPose::Ref::New(*this));
 	actionContextMenu = cActionActorPoseMenu::Ref::New(*this);
 	helper.Button(formLine, pBtnActorPoseMenu, actionContextMenu);
 	actionContextMenu->SetWidget(pBtnActorPoseMenu);
 	
-	helper.EditPath(form, "@Conversation.WPView.Animator.Label", "@Conversation.ToolTip.Animator",
+	helper.EditPath(form, "@Conversation.WPView.Animator", "@Conversation.ToolTip.Animator",
 		igdeEnvironment::efpltAnimator, pEditActorPosePathAnimator, cPathActorPoseAnimator::Ref::New(*this));
 	
 	
 	helper.GroupBox(groupBox, groupBox2, "@Conversation.WPView.AnimatorControllers.GroupBox", true);
 	
-	helper.FormLineStretchFirst(groupBox2, "@Conversation.WPView.Controller", "@Conversation.WPView.Controllertoedit.Label", formLine);
-	helper.ComboBox(formLine, "@Conversation.WPView.Controllertoedit.Label", pCBActorPoseController, cComboActorPoseController::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox2, "@Conversation.WPView.Controller", "@Conversation.WPView.Controller", formLine);
+	helper.ComboBox(formLine, "@Conversation.WPView.Controller", pCBActorPoseController, cComboActorPoseController::Ref::New(*this));
 	actionContextMenu = cActionActorPoseControllerMenu::Ref::New(*this);
 	helper.Button(formLine, pBtnActorPoseControllerMenu, actionContextMenu);
 	actionContextMenu->SetWidget(pBtnActorPoseControllerMenu);
 	
-	helper.ComboBox(groupBox2, "@Conversation.WPView.UpdateType.Label", "@Conversation.ToolTip.ControllerUpdateType",
+	helper.ComboBox(groupBox2, "@Conversation.WPView.UpdateType", "@Conversation.ControllerUpdateType.ToolTip",
 		pCBActorPoseControllerUpdateType, cComboActorPoseControllerUpdateType::Ref::New(*this, pCBActorPoseController));
 	pCBActorPoseControllerUpdateType->SetAutoTranslateItems(true);
-	pCBActorPoseControllerUpdateType->AddItem("@Conversation.WPView.ConstantValue", nullptr,
+	pCBActorPoseControllerUpdateType->AddItem("@Conversation.WPView.ControllerUpdateType.Enum.ConstantValue", nullptr,
 		(void*)(intptr_t)ceActorController::eutConstant);
-	pCBActorPoseControllerUpdateType->AddItem("@Conversation.WPView.ElapsedTime", nullptr,
+	pCBActorPoseControllerUpdateType->AddItem("@Conversation.WPView.ControllerUpdateType.Enum.ElapsedTime", nullptr,
 		(void*)(intptr_t)ceActorController::eutElapsedTime);
-	pCBActorPoseControllerUpdateType->AddItem("@Conversation.WPView.HeadLeftRight", nullptr,
+	pCBActorPoseControllerUpdateType->AddItem("@Conversation.WPView.ControllerUpdateType.Enum.HeadLeftRight", nullptr,
 		(void*)(intptr_t)ceActorController::eutHeadLeftRight);
-	pCBActorPoseControllerUpdateType->AddItem("@Conversation.WPView.HeadUpDown", nullptr,
+	pCBActorPoseControllerUpdateType->AddItem("@Conversation.WPView.ControllerUpdateType.Enum.HeadUpDown", nullptr,
 		(void*)(intptr_t)ceActorController::eutHeadUpDown);
-	pCBActorPoseControllerUpdateType->AddItem("@Conversation.WPView.EyesLeftRight", nullptr,
+	pCBActorPoseControllerUpdateType->AddItem("@Conversation.WPView.ControllerUpdateType.Enum.EyesLeftRight", nullptr,
 		(void*)(intptr_t)ceActorController::eutEyesLeftRight);
-	pCBActorPoseControllerUpdateType->AddItem("@Conversation.WPView.EyesUpDown", nullptr,
+	pCBActorPoseControllerUpdateType->AddItem("@Conversation.WPView.ControllerUpdateType.Enum.EyesUpDown", nullptr,
 		(void*)(intptr_t)ceActorController::eutEyesUpDown);
 	
-	helper.EditFloat(groupBox2, "@Conversation.WPView.Value.Label", "@Conversation.WPView.Value.ToolTip",
+	helper.EditFloat(groupBox2, "@Conversation.WPView.Value", "@Conversation.WPView.Value.ToolTip",
 		pEditActorPoseControllerValue, cTextActorPoseControllerValue::Ref::New(*this, pCBActorPoseController));
-	helper.EditVector(groupBox2, "@Conversation.WPView.Vector.Label", "@Conversation.ToolTip.ConstantVector",
+	helper.EditVector(groupBox2, "@Conversation.WPView.Vector", "@Conversation.ToolTip.ConstantVector",
 		pEditActorPoseControllerVector, cTextActorPoseControllerVector::Ref::New(*this, pCBActorPoseController));
 	
 	
 	helper.GroupBox(groupBox, groupBox2, "@Conversation.WPView.ActorGestures.GroupBox", true);
 	
-	helper.FormLineStretchFirst(groupBox2, "@Conversation.WPView.Gesture", "@Conversation.WPView.Actorgesturetoedit.Label", formLine);
-	helper.ComboBox(formLine, "@Conversation.WPView.Actorgesturetoedit.Label", pCBActorGesture, cComboActorGesture::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox2, "@Conversation.WPView.Gesture", "@Conversation.WPView.ActorGesture", formLine);
+	helper.ComboBox(formLine, "@Conversation.WPView.ActorGesture", pCBActorGesture, cComboActorGesture::Ref::New(*this));
 	actionContextMenu = cActionActorGestureMenu::Ref::New(*this);
 	helper.Button(formLine, pBtnActorGestureMenu, actionContextMenu);
 	actionContextMenu->SetWidget(pBtnActorGestureMenu);
 	
-	helper.EditPath(groupBox2, "@Conversation.WPView.Animator.Label", "@Conversation.ToolTip.Animator", igdeEnvironment::efpltAnimator,
+	helper.EditPath(groupBox2, "@Conversation.WPView.Animator", "@Conversation.ToolTip.Animator", igdeEnvironment::efpltAnimator,
 		pEditActorGesturePathAnimator, cPathActorGestureAnimator::Ref::New(*this));
 	
 	
@@ -2070,19 +2070,19 @@ pWindowProperties(windowProperties)
 	// coordinate system
 	helper.GroupBox(content, groupBox, "@Conversation.WPView.CoordinateSystems.GroupBox", true);
 	
-	helper.FormLineStretchFirst(groupBox, "@Conversation.WPView.CoordSystem.Label", "@Conversation.WPView.CoordSystem.ToolTip", formLine);
+	helper.FormLineStretchFirst(groupBox, "@Conversation.WPView.CoordSystem", "@Conversation.WPView.CoordSystem.ToolTip", formLine);
 	helper.EditSpinInteger(formLine, "@Conversation.WPView.CoordSystem.ToolTip", 0, 0, pSpinCoordSys, cSpinCoordSys::Ref::New(*this));
 	actionContextMenu = cActionCoordSysMenu::Ref::New(*this);
 	helper.Button(formLine, pBtnCoordSysMenu, actionContextMenu);
 	actionContextMenu->SetWidget(pBtnCoordSysMenu);
 	
-	helper.EditString(groupBox, "@Conversation.WPView.ID.Label", "@Conversation.ToolTip.CoordSystemIDUnique",
+	helper.EditString(groupBox, "@Conversation.WPView.ID", "@Conversation.ToolTip.CoordSystemIDUnique",
 		pEditCoordSysID, cTextCoordSysID::Ref::New(*this));
-	helper.EditString(groupBox, "@Conversation.WPView.AliasID.Label", "@Conversation.ToolTip.CoordSystemAliasID",
+	helper.EditString(groupBox, "@Conversation.WPView.AliasID", "@Conversation.ToolTip.CoordSystemAliasID",
 		pEditCoordSysAliasID, cTextCoordSysAliasID::Ref::New(*this));
-	helper.EditVector(groupBox, "@Conversation.WPView.Position.Label", "@Conversation.ToolTip.CoordSystemPosition",
+	helper.EditVector(groupBox, "@Conversation.WPView.Position", "@Conversation.ToolTip.CoordSystemPosition",
 		pEditCoordSysPosition, cVectorCoordSysPosition::Ref::New(*this));
-	helper.EditVector(groupBox, "@Conversation.WPView.Rotation.Label", "@Conversation.ToolTip.CoordSystemOrientation",
+	helper.EditVector(groupBox, "@Conversation.WPView.Rotation", "@Conversation.ToolTip.CoordSystemOrientation",
 		pEditCoordSysRotation, cVectorCoordSysRotation::Ref::New(*this));
 	
 	
@@ -2092,11 +2092,11 @@ pWindowProperties(windowProperties)
 	form = igdeContainerForm::Ref::New(env);
 	groupBox->AddChild(form);
 	
-	helper.ComboBoxFilter(form, "@Conversation.WPView.File.Label", "@Conversation.WPView.File.ToolTip",
+	helper.ComboBoxFilter(form, "@Conversation.WPView.File", "@Conversation.WPView.File.ToolTip",
 		pCBPlaybackFile, cComboPlaybackFile::Ref::New(*this));
 	pCBPlaybackFile->SetDefaultSorter();
 	
-	helper.ComboBoxFilter(form, "@Conversation.WPView.Topic.Label", "@Conversation.WPView.Topic.ToolTip", pCBPlaybackTopic, {});
+	helper.ComboBoxFilter(form, "@Conversation.WPView.Topic", "@Conversation.WPView.Topic.ToolTip", pCBPlaybackTopic, {});
 	pCBPlaybackTopic->SetDefaultSorter();
 	
 	helper.FormLine(form, "", "", formLine);
@@ -2108,12 +2108,12 @@ pWindowProperties(windowProperties)
 	helper.CheckBoxOnly(formLine, pChkPlaybackPaused, cActionPlaybackPaused::Ref::New(*this));
 	helper.CheckBoxOnly(formLine, pChkPlaybackAutoAdvanceCommands, cActionPlaybackAutoAdvanceCommands::Ref::New(*this));
 	
-	helper.ComboBox(form, "@Conversation.WPView.CameraHandling.Label", "@Conversation.ToolTip.CameraHandling",
+	helper.ComboBox(form, "@Conversation.WPView.CameraHandling", "@Conversation.CameraHandling.ToolTip",
 		pCBPlaybackCameraHandling, cComboPlaybackCameraHandling::Ref::New(*this));
 	pCBPlaybackCameraHandling->SetAutoTranslateItems(true);
-	pCBPlaybackCameraHandling->AddItem("@Conversation.WPView.Conversation", nullptr, (void*)(intptr_t)cePlayback::echConversation);
-	pCBPlaybackCameraHandling->AddItem("@Conversation.WPView.CameraShot", nullptr, (void*)(intptr_t)cePlayback::echCameraShot);
-	pCBPlaybackCameraHandling->AddItem("@Conversation.WPView.Free", nullptr, (void*)(intptr_t)cePlayback::echFree);
+	pCBPlaybackCameraHandling->AddItem("@Conversation.WPView.CameraHandling.Enum.Conversation", nullptr, (void*)(intptr_t)cePlayback::echConversation);
+	pCBPlaybackCameraHandling->AddItem("@Conversation.WPView.CameraHandling.Enum.CameraShot", nullptr, (void*)(intptr_t)cePlayback::echCameraShot);
+	pCBPlaybackCameraHandling->AddItem("@Conversation.WPView.CameraHandling.Enum.Free", nullptr, (void*)(intptr_t)cePlayback::echFree);
 	pCBPlaybackCameraHandling->SetSelectionWithData((void*)(intptr_t)cePlayback::echFree);
 	
 	
@@ -2132,8 +2132,8 @@ pWindowProperties(windowProperties)
 	
 	helper.GroupBoxFlow(groupBox, groupBox2, "@Conversation.WPView.Debug.GroupBox", false, false);
 	
-	helper.FormLineStretchFirst(groupBox2, "@Conversation.WPView.MissingWords", "@Conversation.WPView.Missingwordsfoundduringplayback.Label", formLine);
-	helper.ComboBox(formLine, "@Conversation.WPView.Missingwordsfoundduringplayback.Label", pCBPlaybackMissingWords, {});
+	helper.FormLineStretchFirst(groupBox2, "@Conversation.WPView.MissingWords", "@Conversation.WPView.MissingWordsPlayback.ToolTip", formLine);
+	helper.ComboBox(formLine, "@Conversation.WPView.MissingWordsPlayback.ToolTip", pCBPlaybackMissingWords, {});
 	pCBPlaybackMissingWords->SetDefaultSorter();
 	actionContextMenu = cActionPlaybackMissingWordsMenu::Ref::New(*this);
 	helper.Button(formLine, pBtnPlaybackMissingWordsMenu, actionContextMenu);

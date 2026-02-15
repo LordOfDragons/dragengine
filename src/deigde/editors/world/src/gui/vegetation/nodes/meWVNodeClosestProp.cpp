@@ -171,13 +171,13 @@ pRuleCP(rule)
 	pFraParameters = igdeContainerForm::Ref::New(env);
 	AddChild(pFraParameters);
 	
-	helper.FormLineStretchFirst(pFraParameters, "@World.WVNodeClosestProp.Class.Label", "@World.WVNodePropCount.SelectClassNameOfPropToSearchFor.ToolTip", formLine);
+	helper.FormLineStretchFirst(pFraParameters, "@World.WVNodeClosestProp.Class", "@World.WVNodePropCount.SelectClassNameOfPropToSearchFor.ToolTip", formLine);
 	helper.ComboBoxFilter(formLine, true, "@World.WVNodePropCount.SelectClassNameOfPropToSearchFor.ToolTip",
 		pCBPropClass, cComboClass::Ref::New(*this));
 	helper.Button(formLine, pBtnPropClass, pActionMenuClass);
 	pActionMenuClass->SetWidget(pBtnPropClass);
 	
-	helper.EditFloat(pFraParameters, "@World.WVNodePropCount.Radius.Label", "@World.WVNodePropCount.SetSearchRadiusInMeters.ToolTip",
+	helper.EditFloat(pFraParameters, "@World.WVNodePropCount.Radius", "@World.WVNodePropCount.SetSearchRadiusInMeters.ToolTip",
 		pEditSearchRadius, cTextSearchRadius::Ref::New(*this));
 	
 	UpdateClassLists();

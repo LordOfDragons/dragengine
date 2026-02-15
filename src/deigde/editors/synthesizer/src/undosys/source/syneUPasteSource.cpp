@@ -49,6 +49,8 @@ pIndex(index)
 		DETHROW(deeInvalidParam);
 	}
 	
+	SetShortInfo("@Synthesizer.Undo.SourcePaste");
+	
 	sources.Visit([&](const syneSource &source){
 		pSources.Add(source.CreateCopy());
 	});

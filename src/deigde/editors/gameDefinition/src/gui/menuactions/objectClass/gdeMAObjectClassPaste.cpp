@@ -49,7 +49,7 @@
 ////////////////
 
 gdeMAObjectClassPaste::gdeMAObjectClassPaste(gdeWindowMain &windowMain) :
-gdeBaseAction(windowMain, "@Igde.Menu.Paste",
+gdeBaseAction(windowMain, "@Igde.Action.Paste",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
 	"@GameDefinition.Menu.ObjectClassPaste.ToolTip")
 {

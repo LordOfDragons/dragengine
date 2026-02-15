@@ -328,7 +328,7 @@ public:
 	
 public:
 	cActionEnablePositionMinX(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleLimit.EnablePosMinX.Label", nullptr,
+		"@Animator.WPAPanelRuleLimit.EnablePosMinX", nullptr,
 		"@Animator.WPAPanelRuleLimit.EnablePosMinX.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
@@ -347,7 +347,7 @@ public:
 	
 public:
 	cActionEnablePositionMinY(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleLimit.EnablePosMinY.Label", nullptr,
+		"@Animator.WPAPanelRuleLimit.EnablePosMinY", nullptr,
 		"@Animator.WPAPanelRuleLimit.EnablePosMinY.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
@@ -366,7 +366,7 @@ public:
 	
 public:
 	cActionEnablePositionMinZ(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleLimit.EnablePosMinZ.Label", nullptr,
+		"@Animator.WPAPanelRuleLimit.EnablePosMinZ", nullptr,
 		"@Animator.WPAPanelRuleLimit.EnablePosMinZ.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
@@ -385,7 +385,7 @@ public:
 	
 public:
 	cActionEnablePositionMaxX(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleLimit.EnablePosMaxX.Label", nullptr,
+		"@Animator.WPAPanelRuleLimit.EnablePosMaxX", nullptr,
 		"@Animator.WPAPanelRuleLimit.EnablePosMaxX.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
@@ -404,7 +404,7 @@ public:
 	
 public:
 	cActionEnablePositionMaxY(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleLimit.EnablePosMaxY.Label", nullptr,
+		"@Animator.WPAPanelRuleLimit.EnablePosMaxY", nullptr,
 		"@Animator.WPAPanelRuleLimit.EnablePosMaxY.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
@@ -423,7 +423,7 @@ public:
 	
 public:
 	cActionEnablePositionMaxZ(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleLimit.EnablePosMaxZ.Label", nullptr,
+		"@Animator.WPAPanelRuleLimit.EnablePosMaxZ", nullptr,
 		"@Animator.WPAPanelRuleLimit.EnablePosMaxZ.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
@@ -443,7 +443,7 @@ public:
 	
 public:
 	cActionEnableRotationMinX(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleLimit.EnableRotMinX.Label", nullptr,
+		"@Animator.WPAPanelRuleLimit.EnableRotMinX", nullptr,
 		"@Animator.WPAPanelRuleLimit.EnableRotMinX.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
@@ -462,7 +462,7 @@ public:
 	
 public:
 	cActionEnableRotationMinY(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleLimit.EnableRotMinY.Label", nullptr,
+		"@Animator.WPAPanelRuleLimit.EnableRotMinY", nullptr,
 		"@Animator.WPAPanelRuleLimit.EnableRotMinY.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
@@ -481,7 +481,7 @@ public:
 	
 public:
 	cActionEnableRotationMinZ(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleLimit.EnableRotMinZ.Label", nullptr,
+		"@Animator.WPAPanelRuleLimit.EnableRotMinZ", nullptr,
 		"@Animator.WPAPanelRuleLimit.EnableRotMinZ.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
@@ -500,7 +500,7 @@ public:
 	
 public:
 	cActionEnableRotationMaxX(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleLimit.EnableRotMaxX.Label", nullptr,
+		"@Animator.WPAPanelRuleLimit.EnableRotMaxX", nullptr,
 		"@Animator.WPAPanelRuleLimit.EnableRotMaxX.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
@@ -519,7 +519,7 @@ public:
 	
 public:
 	cActionEnableRotationMaxY(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleLimit.EnableRotMaxY.Label", nullptr,
+		"@Animator.WPAPanelRuleLimit.EnableRotMaxY", nullptr,
 		"@Animator.WPAPanelRuleLimit.EnableRotMaxY.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
@@ -538,7 +538,7 @@ public:
 	
 public:
 	cActionEnableRotationMaxZ(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleLimit.EnableRotMaxZ.Label", nullptr,
+		"@Animator.WPAPanelRuleLimit.EnableRotMaxZ", nullptr,
 		"@Animator.WPAPanelRuleLimit.EnableRotMaxZ.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
@@ -558,7 +558,7 @@ public:
 	
 public:
 	cActionEnableScalingMinX(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleLimit.EnableScaleMinX.Label", nullptr,
+		"@Animator.WPAPanelRuleLimit.EnableScaleMinX", nullptr,
 		"@Animator.WPAPanelRuleLimit.EnableScaleMinX.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
@@ -577,7 +577,7 @@ public:
 	
 public:
 	cActionEnableScalingMinY(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleLimit.EnableScaleMinY.Label", nullptr,
+		"@Animator.WPAPanelRuleLimit.EnableScaleMinY", nullptr,
 		"@Animator.WPAPanelRuleLimit.EnableScaleMinY.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
@@ -596,7 +596,7 @@ public:
 	
 public:
 	cActionEnableScalingMinZ(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleLimit.EnableScaleMinZ.Label", nullptr,
+		"@Animator.WPAPanelRuleLimit.EnableScaleMinZ", nullptr,
 		"@Animator.WPAPanelRuleLimit.EnableScaleMinZ.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
@@ -615,7 +615,7 @@ public:
 	
 public:
 	cActionEnableScalingMaxX(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleLimit.EnableScaleMaxX.Label", nullptr,
+		"@Animator.WPAPanelRuleLimit.EnableScaleMaxX", nullptr,
 		"@Animator.WPAPanelRuleLimit.EnableScaleMaxX.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
@@ -634,7 +634,7 @@ public:
 	
 public:
 	cActionEnableScalingMaxY(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleLimit.EnableScaleMaxY.Label", nullptr,
+		"@Animator.WPAPanelRuleLimit.EnableScaleMaxY", nullptr,
 		"@Animator.WPAPanelRuleLimit.EnableScaleMaxY.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
@@ -653,7 +653,7 @@ public:
 	
 public:
 	cActionEnableScalingMaxZ(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleLimit.EnableScaleMaxZ.Label", nullptr,
+		"@Animator.WPAPanelRuleLimit.EnableScaleMaxZ", nullptr,
 		"@Animator.WPAPanelRuleLimit.EnableScaleMaxZ.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
@@ -672,7 +672,7 @@ public:
 	
 public:
 	cActionEnableVertexPositionSetMin(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleLimit.EnableVPSMin.Label", nullptr,
+		"@Animator.WPAPanelRuleLimit.EnableVPSMin", nullptr,
 		"@Animator.WPAPanelRuleLimit.EnableVPSMin.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
@@ -691,7 +691,7 @@ public:
 	
 public:
 	cActionEnableVertexPositionSetMax(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleLimit.EnableVPSMax.Label", nullptr,
+		"@Animator.WPAPanelRuleLimit.EnableVPSMax", nullptr,
 		"@Animator.WPAPanelRuleLimit.EnableVPSMax.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
@@ -734,37 +734,37 @@ aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertLimit)
 	igdeContainer::Ref groupBox, formLine;
 	
 	
-	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRuleLimit.Limit.Label");
+	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRuleLimit.Limit");
 	
-	helper.EditVector(groupBox, "@Animator.WPAPanelRuleLimit.MinPosition.Label",
+	helper.EditVector(groupBox, "@Animator.WPAPanelRuleLimit.MinPosition",
 		"@Animator.WPAPanelRuleLimit.MinPosition.ToolTip",
 		pEditMinPos, cEditPositionMinimum::Ref::New(*this));
-	helper.EditVector(groupBox, "@Animator.WPAPanelRuleLimit.MaxPosition.Label",
+	helper.EditVector(groupBox, "@Animator.WPAPanelRuleLimit.MaxPosition",
 		"@Animator.WPAPanelRuleLimit.MaxPosition.ToolTip",
 		pEditMaxPos, cEditPositionMaximum::Ref::New(*this));
 	
-	helper.EditVector(groupBox, "@Animator.WPAPanelRuleLimit.MinRotation.Label",
+	helper.EditVector(groupBox, "@Animator.WPAPanelRuleLimit.MinRotation",
 		"@Animator.WPAPanelRuleLimit.MinRotation.ToolTip",
 		pEditMinRot, cEditRotationMinimum::Ref::New(*this));
-	helper.EditVector(groupBox, "@Animator.WPAPanelRuleLimit.MaxRotation.Label",
+	helper.EditVector(groupBox, "@Animator.WPAPanelRuleLimit.MaxRotation",
 		"@Animator.WPAPanelRuleLimit.MaxRotation.ToolTip",
 		pEditMaxRot, cEditRotationMaximum::Ref::New(*this));
 	
-	helper.EditVector(groupBox, "@Animator.WPAPanelRuleLimit.MinScaling.Label",
+	helper.EditVector(groupBox, "@Animator.WPAPanelRuleLimit.MinScaling",
 		"@Animator.WPAPanelRuleLimit.MinScaling.ToolTip",
 		pEditMinScale, cEditScalingMinimum::Ref::New(*this));
-	helper.EditVector(groupBox, "@Animator.WPAPanelRuleLimit.MaxScaling.Label",
+	helper.EditVector(groupBox, "@Animator.WPAPanelRuleLimit.MaxScaling",
 		"@Animator.WPAPanelRuleLimit.MaxScaling.ToolTip",
 		pEditMaxScale, cEditScalingMaximum::Ref::New(*this));
 	
-	helper.EditFloat(groupBox, "@Animator.WPAPanelRuleLimit.MinVertexPositionSet.Label",
+	helper.EditFloat(groupBox, "@Animator.WPAPanelRuleLimit.MinVertexPositionSet",
 		"@Animator.WPAPanelRuleLimit.MinVertexPositionSet.ToolTip",
 		pEditMinVertexPositionSet, cEditVertexPositionSetMinimum::Ref::New(*this));
-	helper.EditFloat(groupBox, "@Animator.WPAPanelRuleLimit.MaxVertexPositionSet.Label",
+	helper.EditFloat(groupBox, "@Animator.WPAPanelRuleLimit.MaxVertexPositionSet",
 		"@Animator.WPAPanelRuleLimit.MaxVertexPositionSet.ToolTip",
 		pEditMaxVertexPositionSet, cEditVertexPositionSetMaximum::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "@Animator.WPAPanelRuleLimit.CoordFrame.Label",
+	helper.ComboBox(groupBox, "@Animator.WPAPanelRuleLimit.CoordFrame",
 		"@Animator.WPAPanelRuleLimit.CoordFrame.ToolTip",
 		pCBCoordFrame, cComboCoordFrame::Ref::New(*this));
 	pCBCoordFrame->SetAutoTranslateItems(true);
@@ -772,48 +772,48 @@ aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertLimit)
 	pCBCoordFrame->AddItem("@Animator.WPAPanelRuleLimit.CoordFrame.Component", nullptr, (void*)(intptr_t)deAnimatorRuleLimit::ecfComponent);
 	pCBCoordFrame->AddItem("@Animator.WPAPanelRuleLimit.CoordFrame.TargetBone", nullptr, (void*)(intptr_t)deAnimatorRuleLimit::ecfTargetBone);
 	
-	helper.ComboBoxFilter(groupBox, "@Animator.WPAPanelRuleLimit.TargetBone.Label", true,
+	helper.ComboBoxFilter(groupBox, "@Animator.WPAPanelRuleLimit.TargetBone", true,
 		"@Animator.WPAPanelRuleLimit.TargetBone.ToolTip",
 		pCBTargetBone, cComboTargetBone::Ref::New(*this));
 	pCBTargetBone->SetDefaultSorter();
 	
-	helper.FormLine(groupBox, "@Animator.WPAPanelRuleLimit.EnableMinPos.Label",
+	helper.FormLine(groupBox, "@Animator.WPAPanelRuleLimit.EnableMinPos",
 		"@Animator.WPAPanelRuleLimit.EnableMinPos.ToolTip", formLine);
 	helper.CheckBoxOnly(formLine, pChkEnablePosXMin, cActionEnablePositionMinX::Ref::New(*this));
 	helper.CheckBoxOnly(formLine, pChkEnablePosYMin, cActionEnablePositionMinY::Ref::New(*this));
 	helper.CheckBoxOnly(formLine, pChkEnablePosZMin, cActionEnablePositionMinZ::Ref::New(*this));
 	
-	helper.FormLine(groupBox, "@Animator.WPAPanelRuleLimit.EnableMaxPos.Label",
+	helper.FormLine(groupBox, "@Animator.WPAPanelRuleLimit.EnableMaxPos",
 		"@Animator.WPAPanelRuleLimit.EnableMaxPos.ToolTip", formLine);
 	helper.CheckBoxOnly(formLine, pChkEnablePosXMax, cActionEnablePositionMaxX::Ref::New(*this));
 	helper.CheckBoxOnly(formLine, pChkEnablePosYMax, cActionEnablePositionMaxY::Ref::New(*this));
 	helper.CheckBoxOnly(formLine, pChkEnablePosZMax, cActionEnablePositionMaxZ::Ref::New(*this));
 	
-	helper.FormLine(groupBox, "@Animator.WPAPanelRuleLimit.EnableMinRot.Label",
+	helper.FormLine(groupBox, "@Animator.WPAPanelRuleLimit.EnableMinRot",
 		"@Animator.WPAPanelRuleLimit.EnableMinRot.ToolTip", formLine);
 	helper.CheckBoxOnly(formLine, pChkEnableRotXMin, cActionEnableRotationMinX::Ref::New(*this));
 	helper.CheckBoxOnly(formLine, pChkEnableRotYMin, cActionEnableRotationMinY::Ref::New(*this));
 	helper.CheckBoxOnly(formLine, pChkEnableRotZMin, cActionEnableRotationMinZ::Ref::New(*this));
 	
-	helper.FormLine(groupBox, "@Animator.WPAPanelRuleLimit.EnableMaxRot.Label",
+	helper.FormLine(groupBox, "@Animator.WPAPanelRuleLimit.EnableMaxRot",
 		"@Animator.WPAPanelRuleLimit.EnableMaxRot.ToolTip", formLine);
 	helper.CheckBoxOnly(formLine, pChkEnableRotXMax, cActionEnableRotationMaxX::Ref::New(*this));
 	helper.CheckBoxOnly(formLine, pChkEnableRotYMax, cActionEnableRotationMaxY::Ref::New(*this));
 	helper.CheckBoxOnly(formLine, pChkEnableRotZMax, cActionEnableRotationMaxZ::Ref::New(*this));
 	
-	helper.FormLine(groupBox, "@Animator.WPAPanelRuleLimit.EnableMinScale.Label",
+	helper.FormLine(groupBox, "@Animator.WPAPanelRuleLimit.EnableMinScale",
 		"@Animator.WPAPanelRuleLimit.EnableMinScale.ToolTip", formLine);
 	helper.CheckBoxOnly(formLine, pChkEnableScaleXMin, cActionEnableScalingMinX::Ref::New(*this));
 	helper.CheckBoxOnly(formLine, pChkEnableScaleYMin, cActionEnableScalingMinY::Ref::New(*this));
 	helper.CheckBoxOnly(formLine, pChkEnableScaleZMin, cActionEnableScalingMinZ::Ref::New(*this));
 	
-	helper.FormLine(groupBox, "@Animator.WPAPanelRuleLimit.EnableMaxScale.Label",
+	helper.FormLine(groupBox, "@Animator.WPAPanelRuleLimit.EnableMaxScale",
 		"@Animator.WPAPanelRuleLimit.EnableMaxScale.ToolTip", formLine);
 	helper.CheckBoxOnly(formLine, pChkEnableScaleXMax, cActionEnableScalingMaxX::Ref::New(*this));
 	helper.CheckBoxOnly(formLine, pChkEnableScaleYMax, cActionEnableScalingMaxY::Ref::New(*this));
 	helper.CheckBoxOnly(formLine, pChkEnableScaleZMax, cActionEnableScalingMaxZ::Ref::New(*this));
 	
-	helper.FormLine(groupBox, "@Animator.WPAPanelRuleLimit.EnableVertexPositionSet.Label",
+	helper.FormLine(groupBox, "@Animator.WPAPanelRuleLimit.EnableVertexPositionSet",
 		"@Animator.WPAPanelRuleLimit.EnableVertexPositionSet.ToolTip", formLine);
 	helper.CheckBoxOnly(formLine, pChkEnableVertexPositionSetMin, cActionEnableVertexPositionSetMin::Ref::New(*this));
 	helper.CheckBoxOnly(formLine, pChkEnableVertexPositionSetMax, cActionEnableVertexPositionSetMax::Ref::New(*this));

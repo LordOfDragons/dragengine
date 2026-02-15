@@ -491,7 +491,7 @@ public:
 		if(pPanel.GetWorld()->GetPathFindTest()->GetTypeList().HasMatching([&](const mePathFindTestType &t){
 			return t.GetTypeNumber() == value;
 		})){
-			igdeCommonDialogs::Error(pPanel, "@World.WPWorld.ChangeTypeNumber.Label", "@World.WPWorld.TypeNumberAlreadyExists.ToolTip");
+			igdeCommonDialogs::Error(pPanel, "@World.WPWorld.ChangeTypeNumber", "@World.WPWorld.TypeNumberAlreadyExists.ToolTip");
 			textField->SetInteger(type->GetTypeNumber());
 			
 		}else{
@@ -654,51 +654,51 @@ pWindowProperties(windowProperties)
 	
 	
 	// parameters
-	helper.GroupBox(content, groupBox, "@World.WPWorld.WorldParameters.Label");
+	helper.GroupBox(content, groupBox, "@World.WPWorld.WorldParameters");
 	
 	helper.EditDVector(groupBox, "@World.WPWorld.Label.Size", "@World.WPWorld.SizeOfWorldInMetersWhereModulesCanExpectContent.ToolTip",
 		8, 0, pEditSize, cEditSize::Ref::New(*this));
 	
-	helper.EditVector(groupBox, "@World.WPWorld.Gravity.Label", "@World.WPWorld.WorldGravity.ToolTip", pEditGravity, cEditGravity::Ref::New(*this));
+	helper.EditVector(groupBox, "@World.WPWorld.Gravity", "@World.WPWorld.WorldGravity.ToolTip", pEditGravity, cEditGravity::Ref::New(*this));
 	
 	
 	// properties
-	helper.GroupBoxFlow(content, groupBox, "@World.WPWorld.WorldProperties.Label", false, false);
+	helper.GroupBoxFlow(content, groupBox, "@World.WPWorld.WorldProperties", false, false);
 	
 	pEditProperties = cEditWorldProperties::Ref::New(*this);
 	groupBox->AddChild(pEditProperties);
 	
 	
 	// find path test
-	helper.GroupBox(content, groupBox, "@World.WPWorld.PathFindTest.Label", true);
+	helper.GroupBox(content, groupBox, "@World.WPWorld.PathFindTest", true);
 	
-	helper.FormLineStretchFirst(groupBox, "@World.WPWorld.StartPosition.Label", "@World.WPWorld.StartPositionOfTestPath.ToolTip", formLine);
+	helper.FormLineStretchFirst(groupBox, "@World.WPWorld.StartPosition", "@World.WPWorld.StartPositionOfTestPath.ToolTip", formLine);
 	helper.EditDVector(formLine, "@World.WPWorld.StartPositionOfTestPath.ToolTip",
 		pEditPFTStartPosition, cEditPFTStartPosition::Ref::New(*this));
 	helper.Button(formLine, pBtnPFTStartPosFromCamera, cActionPFTStartPosFromCamera::Ref::New(*this));
 	
-	helper.FormLineStretchFirst(groupBox, "@World.WPWorld.GoalPosition.Label", "@World.WPWorld.GoalPositionOfTestPath.ToolTip", formLine);
+	helper.FormLineStretchFirst(groupBox, "@World.WPWorld.GoalPosition", "@World.WPWorld.GoalPositionOfTestPath.ToolTip", formLine);
 	helper.EditDVector(formLine, "@World.WPWorld.GoalPositionOfTestPath.ToolTip",
 		pEditPFTGoalPosition, cEditPFTGoalPosition::Ref::New(*this));
 	helper.Button(formLine, pBtnPFTGoalPosFromCamera, cActionPFTGoalPosFromCamera::Ref::New(*this));
 	
-	helper.EditInteger(groupBox, "@World.WPWorld.Layer.Label", "@World.WPWorld.LayerToNavigate.ToolTip",
+	helper.EditInteger(groupBox, "@World.WPWorld.Layer", "@World.WPWorld.LayerToNavigate.ToolTip",
 		pEditPFTLayer, cEditPFTLayer::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "@World.WPWorld.SpaceType.Label", "@World.WPWorld.SpaceTypeToNavigate.ToolTip",
+	helper.ComboBox(groupBox, "@World.WPWorld.SpaceType", "@World.WPWorld.SpaceTypeToNavigate.ToolTip",
 		pCBPFTSpaceType, cComboPFTSpaceType::Ref::New(*this));
 	pCBPFTSpaceType->SetAutoTranslateItems(true);
 	pCBPFTSpaceType->AddItem("@World.WPWorld.Grid", nullptr, (void*)(intptr_t)deNavigationSpace::estGrid);
 	pCBPFTSpaceType->AddItem("@World.WPWorld.Mesh", nullptr, (void*)(intptr_t)deNavigationSpace::estMesh);
 	pCBPFTSpaceType->AddItem("@World.WPWorld.Volume", nullptr, (void*)(intptr_t)deNavigationSpace::estVolume);
 	
-	helper.EditFloat(groupBox, "@World.WPWorld.BlockingCost.Label", "@World.WPWorld.BlockingCost.ToolTip",
+	helper.EditFloat(groupBox, "@World.WPWorld.BlockingCost", "@World.WPWorld.BlockingCost.ToolTip",
 		pEditPFTBlockingCost, cEditPFTBlockingCost::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkPFTShowPath, cActionPFTShowPath::Ref::New(*this));
 	
 	
 	// find path test types
-	helper.GroupBox(content, groupBox, "@World.WPWorld.PathFindTestTypes.Label", true);
+	helper.GroupBox(content, groupBox, "@World.WPWorld.PathFindTestTypes", true);
 	
 	helper.FormLineStretchFirst(groupBox, "@World.WPWorld.Dialog.TypeNumber2", "@World.WPWorld.TypeToEdit.ToolTip", formLine);
 	helper.ComboBox(formLine, "@World.WPWorld.TypeToEdit.ToolTip", pCBPFTType, cComboPFTType::Ref::New(*this));
@@ -706,23 +706,23 @@ pWindowProperties(windowProperties)
 	helper.Button(formLine, pBtnPFTTypes, pActionPFTTypes);
 	pActionPFTTypes->SetWidget(pBtnPFTTypes);
 	
-	helper.EditInteger(groupBox, "@World.WPWorld.TypeNumber.Label", "@World.WPWorld.TypeNumber.ToolTip",
+	helper.EditInteger(groupBox, "@World.WPWorld.TypeNumber", "@World.WPWorld.TypeNumber.ToolTip",
 		pEditPFTTypeNumber, cEditPFTTypeNumber::Ref::New(*this));
 	helper.EditString(groupBox, "@World.WPWorld.Dialog.Name", "@World.WPWorld.NameOfType.ToolTip",
 		pEditPFTTypeName, cEditPFTTypeName::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WPWorld.FixCost.Label", "@World.WPWorld.FixCostToMoveIntoType.ToolTip",
+	helper.EditFloat(groupBox, "@World.WPWorld.FixCost", "@World.WPWorld.FixCostToMoveIntoType.ToolTip",
 		pEditPFTTypeFixCost, cEditPFTTypeFixCost::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WPWorld.CostPerMeter.Label", "@World.WPWorld.CostPerMeterTravelledInsideType.ToolTip",
+	helper.EditFloat(groupBox, "@World.WPWorld.CostPerMeter", "@World.WPWorld.CostPerMeterTravelledInsideType.ToolTip",
 		pEditPFTTypeCPM, cEditPFTTypeCostPerMeter::Ref::New(*this));
 	
 	
 	// music testing
-	helper.GroupBox(content, groupBox, "@World.WPWorld.MusicTesting.Label", true);
+	helper.GroupBox(content, groupBox, "@World.WPWorld.MusicTesting", true);
 	
-	helper.EditPath(groupBox, "@World.WPWorld.Path.Label", "@World.WPWorld.PathToSoundFileToPlay.ToolTip",
+	helper.EditPath(groupBox, "@World.WPWorld.Path", "@World.WPWorld.PathToSoundFileToPlay.ToolTip",
 		igdeEnvironment::efpltSound, pEditMusicPath, cEditMusicPath::Ref::New(*this));
 	
-	helper.EditSliderText(groupBox, "@World.WPWorld.Volume.Label", "@World.WPWorld.VolumeToPlayMusic.ToolTip",
+	helper.EditSliderText(groupBox, "@World.WPWorld.Volume", "@World.WPWorld.VolumeToPlayMusic.ToolTip",
 		0.0f, 1.0f, 4, 2, 0.1f, pEditMusicVolume, cEditMusicVolume::Ref::New(*this));
 	
 	helper.FormLine(groupBox, "", "", formLine);

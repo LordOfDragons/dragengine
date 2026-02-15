@@ -495,47 +495,47 @@ pWPSelection(wpselection)
 	
 	groupBox = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esLast, 10);
 	content->AddChild(groupBox);
-	helper.Label(groupBox, "@World.WPSObject.Selected.Label");
-	helper.EditInteger(groupBox, "@World.WPSDecal.NumberOfSelectedDecals.Label", 3, pEditSelCount, {});
+	helper.Label(groupBox, "@World.WPSObject.Selected");
+	helper.EditInteger(groupBox, "@World.WPSDecal.NumberOfSelectedDecals", 3, pEditSelCount, {});
 	pEditSelCount->SetEditable(false);
-	helper.Label(groupBox, "@World.WPView.Active.Label");
-	helper.EditSpinInteger(groupBox, "@World.WPSDecal.ActiveDecalToEdit.Label", 0, 0, pSpinActive, cSpinActive::Ref::New(*this));
+	helper.Label(groupBox, "@World.WPView.Active");
+	helper.EditSpinInteger(groupBox, "@World.WPSDecal.ActiveDecalToEdit", 0, 0, pSpinActive, cSpinActive::Ref::New(*this));
 	
 	
 	// geometry
-	helper.GroupBox(content, groupBox, "@World.WPSObject.Geometry.Label");
+	helper.GroupBox(content, groupBox, "@World.WPSObject.Geometry");
 	
-	helper.EditString(groupBox, "@World.WPSObject.Id.Label", "@World.WPSDecal.UniqueDecalId.ToolTip", pEditID, {});
+	helper.EditString(groupBox, "@World.WPSObject.Id", "@World.WPSDecal.UniqueDecalId.ToolTip", pEditID, {});
 	pEditID->SetEditable(false);
 	
 	helper.EditDVector(groupBox, "@World.WPSDecal.Label.Position", "@World.WPSDecal.PositionOfDecal.ToolTip", pEditPosition, cEditPosition::Ref::New(*this));
 	helper.EditVector(groupBox, "@World.WPSDecal.Label.Rotation", "@World.WPSDecal.RotationOfDecal.ToolTip", pEditRotation, cEditRotation::Ref::New(*this));
 	helper.EditVector(groupBox, "@World.WPSDecal.Label.Size", "@World.WPSDecal.SizeOfDecal.ToolTip", pEditSize, cEditSize::Ref::New(*this));
-	helper.EditInteger(groupBox, "@World.WPSDecal.Order.Label", "@World.WPSDecal.DrawingOrderOfDecal.ToolTip", pEditOrder, cEditOrder::Ref::New(*this));
+	helper.EditInteger(groupBox, "@World.WPSDecal.Order", "@World.WPSDecal.DrawingOrderOfDecal.ToolTip", pEditOrder, cEditOrder::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkVisible, cActionVisible::Ref::New(*this));
 	
 	
 	// texture
-	helper.GroupBox(content, groupBox, "@World.WPSObject.Texture.Label");
+	helper.GroupBox(content, groupBox, "@World.WPSObject.Texture");
 	
-	helper.EditPath(groupBox, "@World.WPSObject.Skin.Label", "@World.WPSDecal.SkinToUseForDecal.ToolTip",
+	helper.EditPath(groupBox, "@World.WPSObject.Skin", "@World.WPSDecal.SkinToUseForDecal.ToolTip",
 		igdeEnvironment::efpltSkin, pEditSkin, cEditSkin::Ref::New(*this));
 	
 	
 	// texture transform
-	helper.GroupBox(content, groupBox, "@World.WPSObject.TextureTransformation.Label", true);
+	helper.GroupBox(content, groupBox, "@World.WPSObject.TextureTransformation", true);
 	
-	helper.EditVector2(groupBox, "@World.WPSObject.Translation.Label", "@World.WPSObject.TextureCoordinatesTranslation.ToolTip",
+	helper.EditVector2(groupBox, "@World.WPSObject.Translation", "@World.WPSObject.TextureCoordinatesTranslation.ToolTip",
 		pEditTexCoordOffset, cEditTexCoordOffset::Ref::New(*this));
 	helper.EditVector2(groupBox, "@World.WPSDecal.Label.Scaling", "@World.WPSObject.TextureCoordinatesScaling.ToolTip",
 		pEditTexCoordScaling, cEditTexCoordScaling::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WPSDecal.TextureCoordinatesRotation.Label", "@World.WPSDecal.TextureCoordinatesRotation.ToolTip",
+	helper.EditFloat(groupBox, "@World.WPSDecal.TextureCoordinatesRotation", "@World.WPSDecal.TextureCoordinatesRotation.ToolTip",
 		pEditTexCoordRotation, cEditTexCoordRotation::Ref::New(*this));
-	helper.ColorBox(groupBox, "@World.WPSObject.Tint.Label", "@World.WPSDecal.ColorTint.ToolTip", pClrColorTint, cEditColorTint::Ref::New(*this));
+	helper.ColorBox(groupBox, "@World.WPSObject.Tint", "@World.WPSDecal.ColorTint.ToolTip", pClrColorTint, cEditColorTint::Ref::New(*this));
 	
 	
 	// properties
-	helper.GroupBoxFlow(content, groupBox, "@World.WPSObject.Properties.Label");
+	helper.GroupBoxFlow(content, groupBox, "@World.WPSObject.Properties");
 	
 	pEditProperties = cEditProperties::Ref::New(*this);
 	groupBox->AddChild(pEditProperties);

@@ -47,7 +47,7 @@
 ////////////////
 
 gdeMAObjectClassCopy::gdeMAObjectClassCopy(gdeWindowMain &windowMain) :
-gdeBaseAction(windowMain, "@Igde.Menu.Copy",
+gdeBaseAction(windowMain, "@Igde.Action.Copy",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 	"@GameDefinition.Menu.ObjectClassCopy.ToolTip")
 {

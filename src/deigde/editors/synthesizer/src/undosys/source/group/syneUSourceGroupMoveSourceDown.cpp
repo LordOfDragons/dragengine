@@ -54,6 +54,7 @@ pSource(nullptr)
 	
 	pGroup = group;
 	pSource = source;
+	SetShortInfo("@Synthesizer.Undo.SourceGroupMoveSourceDown");
 }
 
 syneUSourceGroupMoveSourceDown::~syneUSourceGroupMoveSourceDown(){

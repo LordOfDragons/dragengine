@@ -55,7 +55,7 @@ syneULinkRemove::syneULinkRemove(syneLink *link){
 	
 	const int targetCount = synthesizer->CountLinkUsage(link);
 	
-	SetShortInfo("@Link Remove");
+	SetShortInfo("@Synthesizer.Undo.LinkRemove");
 	
 	if(targetCount > 0){
 		synthesizer->GetSources().Visit([&](const syneSource::Ref &source){

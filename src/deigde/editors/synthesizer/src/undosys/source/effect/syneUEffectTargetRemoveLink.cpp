@@ -47,7 +47,7 @@ syneEffect *effect, syneControllerTarget *target, syneLink *link){
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("@Effect Target Remove Link");
+	SetShortInfo("@Synthesizer.Undo.EffectTargetRemoveLink");
 	
 	pEffect = effect;
 	pTarget = target;

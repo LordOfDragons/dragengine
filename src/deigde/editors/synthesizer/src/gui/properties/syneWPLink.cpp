@@ -299,11 +299,11 @@ pPreventUpdate(false)
 	
 	
 	helper.GroupBoxStatic(content, groupBox, "@Synthesizer.WPLink.GroupLinkSettings");
-	helper.EditString(groupBox, "@Synthesizer.WPLink.FieldName.Label", "@Synthesizer.WPLink.FieldName.ToolTip", pEditName, cTextName::Ref::New(*this));
-	helper.ComboBox(groupBox, "@Synthesizer.WPLink.FieldController.Label", "@Synthesizer.WPLink.FieldController.ToolTip",
+	helper.EditString(groupBox, "@Synthesizer.WPLink.FieldName", "@Synthesizer.WPLink.FieldName.ToolTip", pEditName, cTextName::Ref::New(*this));
+	helper.ComboBox(groupBox, "@Synthesizer.WPLink.FieldController", "@Synthesizer.WPLink.FieldController.ToolTip",
 		pCBController, cComboController::Ref::New(*this));
 	pCBController->SetDefaultSorter();
-	helper.EditSpinInteger(groupBox, "@Synthesizer.WPLink.FieldRepeat.Label", "@Synthesizer.WPLink.FieldRepeat.ToolTip", 1, 99,
+	helper.EditSpinInteger(groupBox, "@Synthesizer.WPLink.FieldRepeat", "@Synthesizer.WPLink.FieldRepeat.ToolTip", 1, 99,
 		pSpinRepeat, cSpinRepeat::Ref::New(*this));
 	
 	

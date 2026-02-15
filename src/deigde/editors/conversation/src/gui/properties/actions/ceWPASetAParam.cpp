@@ -185,13 +185,13 @@ ceWPASetAParam::ceWPASetAParam(ceWPTopic &parentPanel) : ceWPAction(parentPanel)
 	
 	CreateGUICommon(*this);
 	
-	helper.ComboBox(*this, "@Conversation.WPActionSetAParam.ActorID.Label", true, "@Conversation.ToolTip.ActorToModify", pCBActorID, cComboActorID::Ref::New(*this));
+	helper.ComboBox(*this, "@Conversation.WPActionSetAParam.ActorID", true, "@Conversation.ToolTip.ActorToModify", pCBActorID, cComboActorID::Ref::New(*this));
 	pCBActorID->SetDefaultSorter();
 	
-	helper.EditString(*this, "@Conversation.WPActionSetAParam.Name.Label", "@Conversation.ToolTip.ParameterName",
+	helper.EditString(*this, "@Conversation.WPActionSetAParam.Name", "@Conversation.ToolTip.ParameterName",
 		pEditName, cTextName::Ref::New(*this));
 	
-	helper.ComboBox(*this, "@Conversation.WPActionSetAParam.Operator.Label", "@Conversation.ToolTip.OperatorForParameter",
+	helper.ComboBox(*this, "@Conversation.WPActionSetAParam.Operator", "@Conversation.ToolTip.OperatorForParameter",
 		pCBOperator, cComboOperator::Ref::New(*this));
 	pCBOperator->SetAutoTranslateItems(true);
 	pCBOperator->AddItem("@Conversation.WPActionSetAParam.Set", nullptr, (void*)(intptr_t)ceCASetActorParameter::eopSet);
@@ -199,9 +199,9 @@ ceWPASetAParam::ceWPASetAParam(ceWPTopic &parentPanel) : ceWPAction(parentPanel)
 	pCBOperator->AddItem("@Conversation.WPActionSetAParam.Decrement", nullptr, (void*)(intptr_t)ceCASetActorParameter::eopDecrement);
 	pCBOperator->AddItem("@Conversation.WPActionSetAParam.Random", nullptr, (void*)(intptr_t)ceCASetActorParameter::eopRandom);
 	
-	helper.EditInteger(*this, "@Conversation.WPActionSetAParam.Value.Label", "@Conversation.WPActionSetAParam.Value.ToolTip",
+	helper.EditInteger(*this, "@Conversation.WPActionSetAParam.Value", "@Conversation.WPActionSetAParam.Value.ToolTip",
 		pEditValue, cTextValue::Ref::New(*this));
-	helper.EditString(*this, "@Conversation.WPActionSetAParam.Variable.Label", "@Conversation.ToolTip.VariableForParameter",
+	helper.EditString(*this, "@Conversation.WPActionSetAParam.Variable", "@Conversation.ToolTip.VariableForParameter",
 		pEditValueVariable, cTextValueVariable::Ref::New(*this));
 }
 

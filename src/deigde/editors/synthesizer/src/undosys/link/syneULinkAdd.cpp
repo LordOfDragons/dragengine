@@ -48,7 +48,7 @@ pSynthesizer(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("@Link Add");
+	SetShortInfo("@Synthesizer.Undo.LinkAdd");
 	
 	pSynthesizer = synthesizer;
 	pLink = link;

@@ -454,18 +454,18 @@ pWindowProperties(windowProperties)
 	
 	// billboard
 	helper.GroupBox(content, groupBox, "@GameDefinition.WPSOCBillboard.GroupBillboard");
-	helper.EditPath(groupBox, "@GameDefinition.WPSOCBillboard.Skin.Label", "@GameDefinition.WPSOCBillboard.Skin.ToolTip",
+	helper.EditPath(groupBox, "@GameDefinition.WPSOCBillboard.Skin", "@GameDefinition.WPSOCBillboard.Skin.ToolTip",
 		igdeEnvironment::efpltSkin, pEditPathSkin, cEditPathSkin::Ref::New(*this));
-	helper.EditVector(groupBox, "@GameDefinition.WPSOCBillboard.Axis.Label", "@GameDefinition.WPSOCBillboard.Axis.ToolTip",
+	helper.EditVector(groupBox, "@GameDefinition.WPSOCBillboard.Axis", "@GameDefinition.WPSOCBillboard.Axis.ToolTip",
 		pEditAxis, cEditAxis::Ref::New(*this));
-	helper.EditVector2(groupBox, "@GameDefinition.WPSOCBillboard.Size.Label", "@GameDefinition.WPSOCBillboard.Size.ToolTip",
+	helper.EditVector2(groupBox, "@GameDefinition.WPSOCBillboard.Size", "@GameDefinition.WPSOCBillboard.Size.ToolTip",
 		pEditSize, cEditSize::Ref::New(*this));
-	helper.EditVector2(groupBox, "@GameDefinition.WPSOCBillboard.Offset.Label", "@GameDefinition.WPSOCBillboard.Offset.ToolTip",
+	helper.EditVector2(groupBox, "@GameDefinition.WPSOCBillboard.Offset", "@GameDefinition.WPSOCBillboard.Offset.ToolTip",
 		pEditOffset, cEditOffset::Ref::New(*this));
 	
-	helper.EditVector(groupBox, "@GameDefinition.WPSOCBillboard.Position.Label", "@GameDefinition.WPSOCBillboard.Position.ToolTip",
+	helper.EditVector(groupBox, "@GameDefinition.WPSOCBillboard.Position", "@GameDefinition.WPSOCBillboard.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
-	helper.EditString(groupBox, "@GameDefinition.WPSOCBillboard.Bone.Label", "@GameDefinition.WPSOCBillboard.Bone.ToolTip",
+	helper.EditString(groupBox, "@GameDefinition.WPSOCBillboard.Bone", "@GameDefinition.WPSOCBillboard.Bone.ToolTip",
 		pEditBoneName, cTextBoneName::Ref::New(*this));
 	
 	helper.CheckBox(groupBox, pChkLocked, cActionLocked::Ref::New(*this));
@@ -477,7 +477,7 @@ pWindowProperties(windowProperties)
 	
 	// properties targets
 	helper.GroupBox(content, groupBox, "@GameDefinition.WPSOCBillboard.GroupProperties");
-	helper.ComboBox(groupBox, "@GameDefinition.WPSOCBillboard.Property.Label", "@GameDefinition.WPSOCBillboard.Property.ToolTip",
+	helper.ComboBox(groupBox, "@GameDefinition.WPSOCBillboard.Property", "@GameDefinition.WPSOCBillboard.Property.ToolTip",
 		pCBPropertyNames, cComboPropertyNames::Ref::New(*this));
 	pCBPropertyNames->SetAutoTranslateItems(true);
 	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.Skin", nullptr, (void*)(intptr_t)gdeOCBillboard::epSkin);
@@ -488,7 +488,7 @@ pWindowProperties(windowProperties)
 	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.RenderEnvironmentMap", nullptr, (void*)(intptr_t)gdeOCBillboard::epRenderEnvMap);
 	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.AttachPosition", nullptr, (void*)(intptr_t)gdeOCBillboard::epAttachPosition);
 	
-	helper.ComboBoxFilter(groupBox, "@GameDefinition.WPSOCBillboard.Target.Label", true, "@GameDefinition.WPSOCBillboard.Target.ToolTip",
+	helper.ComboBoxFilter(groupBox, "@GameDefinition.WPSOCBillboard.Target", true, "@GameDefinition.WPSOCBillboard.Target.ToolTip",
 		pCBPropertyNameTarget, cComboPropertyNameTarget::Ref::New(*this));
 	pCBPropertyNameTarget->SetDefaultSorter();
 	pCBPropertyNameTarget->SetFilterCaseInsentive(true);

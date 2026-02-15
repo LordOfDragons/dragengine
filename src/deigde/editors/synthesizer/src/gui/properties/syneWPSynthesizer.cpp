@@ -308,26 +308,26 @@ pPreventUpdate(false)
 	
 	helper.GroupBoxFlow(content, groupBox, "@Synthesizer.WPSynthesizer.GroupSynthesizerSettings");
 	
-	helper.ComboBox(groupBox, "@Synthesizer.WPSynthesizer.FieldChannels.Label", true, "@Synthesizer.WPSynthesizer.FieldChannels.ToolTip",
+	helper.ComboBox(groupBox, "@Synthesizer.WPSynthesizer.FieldChannels", true, "@Synthesizer.WPSynthesizer.FieldChannels.ToolTip",
 		pCBChannelCount, cComboChannelCount::Ref::New(*this));
 	pCBChannelCount->AddItem("1");
 	pCBChannelCount->AddItem("2");
 	
-	helper.ComboBox(groupBox, "@Synthesizer.WPSynthesizer.FieldSampleRate.Label", true, "@Synthesizer.WPSynthesizer.FieldSampleRate.ToolTip",
+	helper.ComboBox(groupBox, "@Synthesizer.WPSynthesizer.FieldSampleRate", true, "@Synthesizer.WPSynthesizer.FieldSampleRate.ToolTip",
 		pCBSampleRate, cComboSampleRate::Ref::New(*this));
 	pCBSampleRate->AddItem("44100");
 	pCBSampleRate->AddItem("22050");
 	pCBSampleRate->AddItem("11025");
 	
-	helper.ComboBox(groupBox, "@Synthesizer.WPSynthesizer.FieldBytesPerSample.Label", true, "@Synthesizer.WPSynthesizer.FieldBytesPerSample.ToolTip",
+	helper.ComboBox(groupBox, "@Synthesizer.WPSynthesizer.FieldBytesPerSample", true, "@Synthesizer.WPSynthesizer.FieldBytesPerSample.ToolTip",
 		pCBBytesPerSample, cComboBytesPerSample::Ref::New(*this));
 	pCBBytesPerSample->AddItem("1");
 	pCBBytesPerSample->AddItem("2");
 	
 	
-	helper.EditInteger(groupBox, "@Synthesizer.WPSynthesizer.FieldSampleCount.Label", "@Synthesizer.WPSynthesizer.FieldSampleCount.ToolTip", 8,
+	helper.EditInteger(groupBox, "@Synthesizer.WPSynthesizer.FieldSampleCount", "@Synthesizer.WPSynthesizer.FieldSampleCount.ToolTip", 8,
 		pEditSampleCount, cTextSampleCount::Ref::New(*this));
-	helper.EditFloat(groupBox, "@Synthesizer.WPSynthesizer.FieldPlayTime.Label", "@Synthesizer.WPSynthesizer.FieldPlayTime.ToolTip", 6, 1,
+	helper.EditFloat(groupBox, "@Synthesizer.WPSynthesizer.FieldPlayTime", "@Synthesizer.WPSynthesizer.FieldPlayTime.ToolTip", 6, 1,
 		pEditPlayTime, cTextPlayTime::Ref::New(*this, pPreventUpdate));
 	
 	

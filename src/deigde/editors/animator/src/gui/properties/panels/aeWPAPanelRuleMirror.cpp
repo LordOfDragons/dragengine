@@ -177,7 +177,7 @@ public:
 	
 public:
 	cActionMatchNameAdd(aeWPAPanelRuleMirror &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleMirror.ActionMatchNameAdd.Label",
+		"@Animator.WPAPanelRuleMirror.ActionMatchNameAdd",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"@Animator.WPAPanelRuleMirror.ActionMatchNameAdd.ToolTip"){}
 	
@@ -243,7 +243,7 @@ public:
 	using Ref = deTObjectReference<cActionMatchNameEdit>;
 	
 	cActionMatchNameEdit(aeWPAPanelRuleMirror &panel) :
-	cBaseAction(panel, "@Animator.WPAPanelRuleMirror.ActionMatchNameEdit.Label",
+	cBaseAction(panel, "@Animator.WPAPanelRuleMirror.ActionMatchNameEdit",
 		nullptr, "@Animator.WPAPanelRuleMirror.ActionMatchNameEdit.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleMirror *rule) override{
@@ -277,7 +277,7 @@ public:
 	
 public:
 	cActionMatchNameRemove(aeWPAPanelRuleMirror &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleMirror.ActionMatchNameRemove.Label",
+		"@Animator.WPAPanelRuleMirror.ActionMatchNameRemove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"@Animator.WPAPanelRuleMirror.ActionMatchNameRemove.ToolTip"){}
 	
@@ -297,7 +297,7 @@ public:
 	
 public:
 	cActionMatchNameRemoveAll(aeWPAPanelRuleMirror &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleMirror.ActionMatchNameRemoveAll.Label",
+		"@Animator.WPAPanelRuleMirror.ActionMatchNameRemoveAll",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"@Animator.WPAPanelRuleMirror.ActionMatchNameRemoveAll.ToolTip"){}
 	
@@ -352,7 +352,7 @@ public:
 	
 public:
 	cActionEnablePosition(aeWPAPanelRuleMirror &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleMirror.EnablePosition.Label", nullptr,
+		"@Animator.WPAPanelRuleMirror.EnablePosition", nullptr,
 		"@Animator.WPAPanelRuleMirror.EnablePosition.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleMirror *rule) override{
@@ -371,7 +371,7 @@ public:
 	
 public:
 	cActionEnableRotation(aeWPAPanelRuleMirror &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleMirror.EnableRotation.Label", nullptr,
+		"@Animator.WPAPanelRuleMirror.EnableRotation", nullptr,
 		"@Animator.WPAPanelRuleMirror.EnableRotation.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleMirror *rule) override{
@@ -390,7 +390,7 @@ public:
 	
 public:
 	cActionEnableSize(aeWPAPanelRuleMirror &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleMirror.EnableSize.Label", nullptr,
+		"@Animator.WPAPanelRuleMirror.EnableSize", nullptr,
 		"@Animator.WPAPanelRuleMirror.EnableSize.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleMirror *rule) override{
@@ -409,7 +409,7 @@ public:
 	
 public:
 	cActionEnableVertexPositionSet(aeWPAPanelRuleMirror &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleMirror.EnableVertexPositionSet.Label", nullptr,
+		"@Animator.WPAPanelRuleMirror.EnableVertexPositionSet", nullptr,
 		"@Animator.WPAPanelRuleMirror.EnableVertexPositionSet.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleMirror *rule) override{
@@ -440,16 +440,16 @@ aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertMirror)
 	igdeContainer::Ref groupBox;
 	
 	
-	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRuleMirror.Mirror.Label");
+	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRuleMirror.Mirror");
 	
-	helper.ComboBox(groupBox, "@Animator.WPAPanelRuleMirror.Axis.Label",
+	helper.ComboBox(groupBox, "@Animator.WPAPanelRuleMirror.Axis",
 		"@Animator.WPAPanelRuleMirror.Axis.ToolTip", pCBMirrorAxis, cComboMirrorAxis::Ref::New(*this));
 	pCBMirrorAxis->SetAutoTranslateItems(true);
 	pCBMirrorAxis->AddItem("@Animator.WPAPanelRuleMirror.Axis.X", nullptr, (void*)(intptr_t)deAnimatorRuleMirror::emaX);
 	pCBMirrorAxis->AddItem("@Animator.WPAPanelRuleMirror.Axis.Y", nullptr, (void*)(intptr_t)deAnimatorRuleMirror::emaY);
 	pCBMirrorAxis->AddItem("@Animator.WPAPanelRuleMirror.Axis.Z", nullptr, (void*)(intptr_t)deAnimatorRuleMirror::emaZ);
 	
-	helper.ComboBoxFilter(groupBox, "@Animator.WPAPanelRuleMirror.Bone.Label", true,
+	helper.ComboBoxFilter(groupBox, "@Animator.WPAPanelRuleMirror.Bone", true,
 		"@Animator.WPAPanelRuleMirror.Bone.ToolTip",
 		pCBMirrorBone, cComboMirrorBone::Ref::New(*this));
 	pCBMirrorBone->SetDefaultSorter();
@@ -459,7 +459,7 @@ aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertMirror)
 	helper.CheckBox(groupBox, pChkEnableSize, cActionEnableSize::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkEnableVertexPositionSet, cActionEnableVertexPositionSet::Ref::New(*this));
 	
-	helper.ListBox(groupBox, "@Animator.WPAPanelRuleMirror.Pairs.Label", 3,
+	helper.ListBox(groupBox, "@Animator.WPAPanelRuleMirror.Pairs", 3,
 		"@Animator.WPAPanelRuleMirror.Pairs.ToolTip",
 		pListMatchName, cListMatchNames::Ref::New(*this));
 }

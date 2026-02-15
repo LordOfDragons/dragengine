@@ -46,7 +46,7 @@ pSource(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("@Source Wave Set Max Frequency");
+	SetShortInfo("@Synthesizer.Undo.SourceWaveSetMaxFrequency");
 	
 	pOldFrequency = source->GetMaxFrequency();
 	pNewFrequency = newFrequency;

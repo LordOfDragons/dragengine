@@ -224,7 +224,7 @@ pViewMode(evmPreview)
 		environment, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 3));
 	
 	igdeContainerForm::Ref filterLine(igdeContainerForm::Ref::New(environment));
-	helper.EditString(filterLine, "@Igde.DialogBrowser.Filter.Label", "@Igde.DialogBrowser.Filter.ToolTip",
+	helper.EditString(filterLine, "@Igde.DialogBrowser.Filter", "@Igde.DialogBrowser.Filter.ToolTip",
 		pEditFilter, igdeDialogBrowser_TextFilter::Ref::New(*this));
 	panelCategory->AddChild(filterLine);
 	

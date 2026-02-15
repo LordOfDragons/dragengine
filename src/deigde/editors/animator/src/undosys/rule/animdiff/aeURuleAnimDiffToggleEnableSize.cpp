@@ -48,7 +48,7 @@ aeURuleAnimDiffToggleEnableSize::aeURuleAnimDiffToggleEnableSize(aeRuleAnimation
 	
 	try{
 		pRule = rule;
-		SetShortInfo("@Animator.Undo.RuleAnimationToggleEnableSize");
+		SetShortInfo("@Animator.Undo.RuleAnimationDifferenceToggleEnableSize");
 		
 	}catch(const deException &){
 		pCleanUp();

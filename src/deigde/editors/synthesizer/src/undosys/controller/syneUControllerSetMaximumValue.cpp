@@ -49,6 +49,8 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	pOldValue = controller->GetMaximumValue();
+	
+	SetShortInfo("@Synthesizer.Undo.ControllerSetMaxValue");
 }
 
 syneUControllerSetMaximumValue::~syneUControllerSetMaximumValue(){

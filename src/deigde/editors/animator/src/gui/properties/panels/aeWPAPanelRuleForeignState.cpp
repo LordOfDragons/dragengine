@@ -279,7 +279,7 @@ public:
 	
 public:
 	cActionEnablePosition(aeWPAPanelRuleForeignState &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleForeignState.EnablePosition.Label", nullptr,
+		"@Animator.WPAPanelRuleForeignState.EnablePosition", nullptr,
 		"@Animator.WPAPanelRuleForeignState.EnablePosition.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleForeignState *rule) override{
@@ -298,7 +298,7 @@ public:
 	
 public:
 	cActionEnableRotation(aeWPAPanelRuleForeignState &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleForeignState.EnableRotation.Label", nullptr,
+		"@Animator.WPAPanelRuleForeignState.EnableRotation", nullptr,
 		"@Animator.WPAPanelRuleForeignState.EnableRotation.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleForeignState *rule) override{
@@ -317,7 +317,7 @@ public:
 	
 public:
 	cActionEnableSize(aeWPAPanelRuleForeignState &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleForeignState.EnableSize.Label", nullptr,
+		"@Animator.WPAPanelRuleForeignState.EnableSize", nullptr,
 		"@Animator.WPAPanelRuleForeignState.EnableSize.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleForeignState *rule) override{
@@ -336,7 +336,7 @@ public:
 	
 public:
 	cActionEnableVertexPositionSet(aeWPAPanelRuleForeignState &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleForeignState.EnableVertexPositionSet.Label", nullptr,
+		"@Animator.WPAPanelRuleForeignState.EnableVertexPositionSet", nullptr,
 		"@Animator.WPAPanelRuleForeignState.EnableVertexPositionSet.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleForeignState *rule) override{
@@ -367,32 +367,32 @@ aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertForeignState)
 	igdeContainer::Ref groupBox;
 	
 	
-	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRuleForeignState.ForeignState.Label");
+	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRuleForeignState.ForeignState");
 	
-	helper.ComboBoxFilter(groupBox, "@Animator.WPAPanelRuleForeignState.Bone.Label", true,
+	helper.ComboBoxFilter(groupBox, "@Animator.WPAPanelRuleForeignState.Bone", true,
 		"@Animator.WPAPanelRuleForeignState.Bone.ToolTip",
 		pCBBone, cComboBone::Ref::New(*this));
 	pCBBone->SetDefaultSorter();
 	
-	helper.ComboBoxFilter(groupBox, "@Animator.WPAPanelRuleForeignState.VertexPositionSet.Label", true,
+	helper.ComboBoxFilter(groupBox, "@Animator.WPAPanelRuleForeignState.VertexPositionSet", true,
 		"@Animator.WPAPanelRuleForeignState.VertexPositionSet.ToolTip",
 		pCBVertexPositionSet, cComboVertexPositionSet::Ref::New(*this));
 	pCBVertexPositionSet->SetDefaultSorter();
 	
-	helper.EditFloat(groupBox, "@Animator.WPAPanelRuleForeignState.ScalePosition.Label",
+	helper.EditFloat(groupBox, "@Animator.WPAPanelRuleForeignState.ScalePosition",
 		"@Animator.WPAPanelRuleForeignState.ScalePosition.ToolTip",
 		pEditPosition, cTextScalePosition::Ref::New(*this));
-	helper.EditFloat(groupBox, "@Animator.WPAPanelRuleForeignState.ScaleRotation.Label",
+	helper.EditFloat(groupBox, "@Animator.WPAPanelRuleForeignState.ScaleRotation",
 		"@Animator.WPAPanelRuleForeignState.ScaleRotation.ToolTip",
 		pEditRotation, cTextScaleRotation::Ref::New(*this));
-	helper.EditFloat(groupBox, "@Animator.WPAPanelRuleForeignState.ScaleSize.Label",
+	helper.EditFloat(groupBox, "@Animator.WPAPanelRuleForeignState.ScaleSize",
 		"@Animator.WPAPanelRuleForeignState.ScaleSize.ToolTip",
 		pEditSize, cTextScaleSize::Ref::New(*this));
-	helper.EditFloat(groupBox, "@Animator.WPAPanelRuleForeignState.ScaleVertexPositionSet.Label",
+	helper.EditFloat(groupBox, "@Animator.WPAPanelRuleForeignState.ScaleVertexPositionSet",
 		"@Animator.WPAPanelRuleForeignState.ScaleVertexPositionSet.ToolTip",
 		pEditVertexPositionSet, cTextScaleVertexPositionSet::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "@Animator.WPAPanelRuleForeignState.SrcCoordFrame.Label",
+	helper.ComboBox(groupBox, "@Animator.WPAPanelRuleForeignState.SrcCoordFrame",
 		"@Animator.WPAPanelRuleForeignState.SrcCoordFrame.ToolTip",
 		pCBSrcCFrame, cComboCoordFrameSource::Ref::New(*this));
 	pCBSrcCFrame->SetAutoTranslateItems(true);
@@ -401,7 +401,7 @@ aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertForeignState)
 	pCBSrcCFrame->AddItem("@Animator.WPAPanelRuleForeignState.CoordFrame.Component",
 		nullptr, (void*)(intptr_t)deAnimatorRuleForeignState::ecfComponent);
 	
-	helper.ComboBox(groupBox, "@Animator.WPAPanelRuleForeignState.DestCoordFrame.Label",
+	helper.ComboBox(groupBox, "@Animator.WPAPanelRuleForeignState.DestCoordFrame",
 		"@Animator.WPAPanelRuleForeignState.DestCoordFrame.ToolTip",
 		pCBDestCFrame, cComboCoordFrameDestination::Ref::New(*this));
 	pCBDestCFrame->SetAutoTranslateItems(true);

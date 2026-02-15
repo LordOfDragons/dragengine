@@ -51,7 +51,7 @@ pSynthesizer(nullptr)
 	pNewSampleRate = newSampleRate;
 	
 	pSynthesizer = synthesizer;
-	SetShortInfo("@Synthesizer Set Sample Rate");
+	SetShortInfo("@Synthesizer.Undo.SynthesizerSetSampleRate");
 }
 
 syneUSynthesizerSetSampleRate::~syneUSynthesizerSetSampleRate(){

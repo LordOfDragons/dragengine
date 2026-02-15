@@ -53,7 +53,7 @@ pNewController(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("@Link Set Controller");
+	SetShortInfo("@Synthesizer.Undo.LinkSetController");
 	
 	pLink = link;
 	pOldController = link->GetController();

@@ -185,18 +185,18 @@ pPreventUpdate(false)
 	
 	
 	helper.GroupBox(*this, groupBox, "@Synthesizer.WPAPanelSourceSynthesizer.GroupSynthesizer");
-	helper.EditPath(groupBox, "@Synthesizer.WPAPanelSourceSynthesizer.FieldPath.Label", "@Synthesizer.WPAPanelSourceSynthesizer.FieldPath.ToolTip", igdeEnvironment::efpltSynthesizer,
+	helper.EditPath(groupBox, "@Synthesizer.WPAPanelSourceSynthesizer.FieldPath", "@Synthesizer.WPAPanelSourceSynthesizer.FieldPath.ToolTip", igdeEnvironment::efpltSynthesizer,
 		pEditPathSynthesizer, cPathSynthesizer::Ref::New(*this));
 	
 	
 	helper.GroupBox(*this, groupBox, "@Synthesizer.WPAPanelSourceSynthesizer.GroupConnections");
 	
-	helper.FormLineStretchFirst(groupBox, "@Synthesizer.WPAPanelSourceSynthesizer.FieldTarget.Label", "@Synthesizer.WPAPanelSourceSynthesizer.FieldTarget.ToolTip", formLine);
+	helper.FormLineStretchFirst(groupBox, "@Synthesizer.WPAPanelSourceSynthesizer.FieldTarget", "@Synthesizer.WPAPanelSourceSynthesizer.FieldTarget.ToolTip", formLine);
 	helper.ComboBox(formLine, "@Synthesizer.WPAPanelSourceSynthesizer.FieldTarget.ToolTip", pCBConTarget, cComboConTarget::Ref::New(*this));
 	helper.Button(formLine, pBtnConTargetMore, cActionConTargetMore::Ref::New(*this));
 	helper.Button(formLine, pBtnConTargetLess, cActionConTargetLess::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "@Synthesizer.WPAPanelSourceSynthesizer.FieldController.Label", "@Synthesizer.WPAPanelSourceSynthesizer.FieldController.ToolTip",
+	helper.ComboBox(groupBox, "@Synthesizer.WPAPanelSourceSynthesizer.FieldController", "@Synthesizer.WPAPanelSourceSynthesizer.FieldController.ToolTip",
 		pCBConController, cComboController::Ref::New(*this));
 	
 	UpdateControllerList();

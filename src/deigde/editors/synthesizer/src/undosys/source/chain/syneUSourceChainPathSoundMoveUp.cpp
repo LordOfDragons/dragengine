@@ -48,7 +48,7 @@ pSource(nullptr)
 	
 	pIndex = index;
 	
-	SetShortInfo("@Source Chain Path Sound Move Up");
+	SetShortInfo("@Synthesizer.Undo.SourceChainPathSoundMoveUp");
 	
 	pSource = source;
 }

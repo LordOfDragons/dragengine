@@ -689,7 +689,7 @@ void igdeTriggerExpressionEditor::pCreateContent(){
 	
 	// expression string
 	form = igdeContainerForm::Ref::New(env);
-	helper.EditString(form, "@Igde.TriggerExpressionEditor.Expression.Label", "@Igde.TriggerExpressionEditor.Expression.ToolTip", 50,
+	helper.EditString(form, "@Igde.TriggerExpressionEditor.Expression", "@Igde.TriggerExpressionEditor.Expression.ToolTip", 50,
 		pEditExpression, igdeTriggerExpressionEditor_TextExpression::Ref::New(*this));
 	AddChild(form);
 	
@@ -702,14 +702,14 @@ void igdeTriggerExpressionEditor::pCreateContent(){
 	panel = igdeContainerBox::Ref::New(env, igdeContainerBox::eaY);
 	panelContent->AddChild(panel, igdeContainerSplitted::eaCenter);
 	
-	helper.GroupBoxStaticFlow(panel, groupBox, "@Igde.TriggerExpressionEditor.Structure.Label", true);
+	helper.GroupBoxStaticFlow(panel, groupBox, "@Igde.TriggerExpressionEditor.Structure", true);
 	helper.TreeList(groupBox, pTreeExpression, 10, "@Igde.TriggerExpressionEditor.Structure.ToolTip", igdeTriggerExpressionEditor_TreeExpression::Ref::New(*this));
 	
 	// target list
 	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY, igdeContainerFlow::esLast);
 	panelContent->AddChild(panel, igdeContainerSplitted::eaSide);
 	
-	helper.GroupBoxStaticFlow(panel, groupBox, "@Igde.TriggerExpressionEditor.ComponentControl.Label", false);
+	helper.GroupBoxStaticFlow(panel, groupBox, "@Igde.TriggerExpressionEditor.ComponentControl", false);
 	panel2 = igdeContainerBox::Ref::New(env, igdeContainerBox::eaX);
 	groupBox->AddChild(panel2);
 	helper.ToggleButton(panel2, pBtnNegate, igdeTriggerExpressionEditor_ActionNegate::Ref::New(*this));
@@ -722,7 +722,7 @@ void igdeTriggerExpressionEditor::pCreateContent(){
 	helper.Button(panel2, pBtnAddChild, igdeTriggerExpressionEditor_ActionAddChild::Ref::New(*this));
 	helper.Button(panel2, pBtnRemoveChild, igdeTriggerExpressionEditor_ActionRemoveChild::Ref::New(*this));
 	
-	helper.GroupBoxStaticBorder(panel, groupBorder, "@Igde.TriggerExpressionEditor.TargetName.Label", true);
+	helper.GroupBoxStaticBorder(panel, groupBorder, "@Igde.TriggerExpressionEditor.TargetName", true);
 	
 	helper.EditString("@Igde.TriggerExpressionEditor.TargetName.ToolTip", pEditTargetName, igdeTriggerExpressionEditor_TextTargetName::Ref::New(*this));
 	groupBorder->AddChild(pEditTargetName, igdeContainerBorder::eaTop);
@@ -732,7 +732,7 @@ void igdeTriggerExpressionEditor::pCreateContent(){
 	groupBorder->AddChild(pListTargetName, igdeContainerBorder::eaCenter);
 	
 	form = igdeContainerForm::Ref::New(env);
-	helper.EditString(form, "@Igde.TriggerExpressionEditor.FilterTargetName.Label", "@Igde.TriggerExpressionEditor.FilterTargetName.ToolTip", 20,
+	helper.EditString(form, "@Igde.TriggerExpressionEditor.FilterTargetName", "@Igde.TriggerExpressionEditor.FilterTargetName.ToolTip", 20,
 		pEditFilterTargetName, igdeTriggerExpressionEditor_TextFilterTargetName::Ref::New(*this));
 	groupBorder->AddChild(form, igdeContainerBorder::eaBottom);
 }

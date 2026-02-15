@@ -52,7 +52,7 @@ pSource(nullptr)
 	pOldController = nullptr;
 	pNewController = nullptr;
 	
-	SetShortInfo("@Source Synthesizer Set Con Controller");
+	SetShortInfo("@Synthesizer.Undo.SourceSynthesizerSetConController");
 	
 	pOldController = source->GetConnections().GetAt(target);
 	pNewController = newController;

@@ -47,6 +47,8 @@ pSynthesizer(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
+	SetShortInfo("@Synthesizer.Undo.SourceMoveUp");
+	
 	pIndex = synthesizer->GetSources().IndexOf(source);
 	if(pIndex < 1){
 		DETHROW(deeInvalidParam);

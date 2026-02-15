@@ -52,7 +52,7 @@ pEffect(nullptr)
 	
 	try{
 		pEffect = effect;
-		SetShortInfo("@Effect Set Strength");
+		SetShortInfo("@Synthesizer.Undo.EffectSetStrength");
 		
 	}catch(const deException &){
 		pCleanUp();

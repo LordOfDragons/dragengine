@@ -51,7 +51,7 @@ pSource(nullptr)
 	pNewFactor = newFactor;
 	
 	pSource = source;
-	SetShortInfo("@Source Set Blend Factor");
+	SetShortInfo("@Synthesizer.Undo.SourceSetBlendFactor");
 }
 
 syneUSetSourceBlendFactor::~syneUSetSourceBlendFactor(){

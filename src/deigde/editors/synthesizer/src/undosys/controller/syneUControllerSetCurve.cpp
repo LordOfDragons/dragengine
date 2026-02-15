@@ -49,6 +49,8 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	pOldValue = controller->GetCurve();
+	
+	SetShortInfo("@Synthesizer.Undo.ControllerSetCurve");
 }
 
 syneUControllerSetCurve::~syneUControllerSetCurve(){

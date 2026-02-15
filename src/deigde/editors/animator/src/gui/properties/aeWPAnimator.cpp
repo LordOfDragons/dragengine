@@ -605,15 +605,15 @@ pWindowProperties(windowProperties)
 	
 	
 	// animation
-	helper.GroupBox(content, groupBox, "@Animator.WPAnimator.AnimatorFilePath.Label");
-	helper.EditPath(groupBox, "@Animator.WPAnimator.Rig.Label",
+	helper.GroupBox(content, groupBox, "@Animator.WPAnimator.AnimatorFilePath");
+	helper.EditPath(groupBox, "@Animator.WPAnimator.Rig",
 		"@Animator.WPAnimator.Rig.ToolTip", igdeEnvironment::efpltRig, pEditRigPath, cPathRig::Ref::New(*this));
-	helper.EditPath(groupBox, "@Animator.WPAnimator.Animation.Label",
+	helper.EditPath(groupBox, "@Animator.WPAnimator.Animation",
 		"@Animator.WPAnimator.Animation.ToolTip", igdeEnvironment::efpltAnimation, pEditAnimPath, cPathAnimation::Ref::New(*this));
 	
 	
 	// affected bones
-	helper.GroupBoxFlow(content, groupBox, "@Animator.WPAnimator.AffectedBones.Label");
+	helper.GroupBoxFlow(content, groupBox, "@Animator.WPAnimator.AffectedBones");
 	
 	formLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
 	groupBox->AddChild(formLine);
@@ -626,7 +626,7 @@ pWindowProperties(windowProperties)
 	
 	
 	// affected vertex position sets
-	helper.GroupBoxFlow(content, groupBox, "@Animator.WPAnimator.AffectedVertexPositionSets.Label");
+	helper.GroupBoxFlow(content, groupBox, "@Animator.WPAnimator.AffectedVertexPositionSets");
 	
 	formLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
 	groupBox->AddChild(formLine);

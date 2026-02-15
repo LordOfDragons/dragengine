@@ -316,7 +316,7 @@ public:
 			
 		}catch(const deException &){
 			igdeCommonDialogs::Error(*pPanel.GetParentWindow(), "@GameDefinition.OCNavigationBlocker.InvalidInput.Error",
-				"@GameDefinition.OCNavigationBlocker.InputValueDoesNotDecodeToAProperShapeList.Error");
+				"@GameDefinition.OCNavigationBlocker.ShapeDecodeInvalidValue.Error");
 			textField.Focus();
 			return {};
 		}
@@ -388,34 +388,34 @@ pWindowProperties(windowProperties)
 	
 	helper.GroupBox(content, groupBox, "@GameDefinition.WPSOCNavigationBlocker.GroupNavigationBlocker");
 	
-	helper.EditVector(groupBox, "@GameDefinition.WPSOCNavigationBlocker.Position.Label", "@GameDefinition.WPSOCNavigationBlocker.Position.ToolTip",
+	helper.EditVector(groupBox, "@GameDefinition.WPSOCNavigationBlocker.Position", "@GameDefinition.WPSOCNavigationBlocker.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
-	helper.EditVector(groupBox, "@GameDefinition.WPSOCNavigationBlocker.Rotation.Label", "@GameDefinition.WPSOCNavigationBlocker.Rotation.ToolTip", 4, 1,
+	helper.EditVector(groupBox, "@GameDefinition.WPSOCNavigationBlocker.Rotation", "@GameDefinition.WPSOCNavigationBlocker.Rotation.ToolTip", 4, 1,
 		pEditRotation, cEditRotation::Ref::New(*this));
-	helper.EditVector(groupBox, "@GameDefinition.WPSOCNavigationBlocker.Scaling.Label", "@GameDefinition.WPSOCNavigationBlocker.Scaling.ToolTip",
+	helper.EditVector(groupBox, "@GameDefinition.WPSOCNavigationBlocker.Scaling", "@GameDefinition.WPSOCNavigationBlocker.Scaling.ToolTip",
 		pEditScaling, cEditScaling::Ref::New(*this));
-	helper.EditString(groupBox, "@GameDefinition.WPSOCNavigationBlocker.Bone.Label", "@GameDefinition.WPSOCNavigationBlocker.Bone.ToolTip",
+	helper.EditString(groupBox, "@GameDefinition.WPSOCNavigationBlocker.Bone", "@GameDefinition.WPSOCNavigationBlocker.Bone.ToolTip",
 		pEditBoneName, cTextBoneName::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkEnabled, cActionEnabled::Ref::New(*this));
-	helper.EditInteger(groupBox, "@GameDefinition.WPSOCNavigationBlocker.Layer.Label", "@GameDefinition.WPSOCNavigationBlocker.Layer.ToolTip",
+	helper.EditInteger(groupBox, "@GameDefinition.WPSOCNavigationBlocker.Layer", "@GameDefinition.WPSOCNavigationBlocker.Layer.ToolTip",
 		pEditLayer, cTextLayer::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "@GameDefinition.WPSOCNavigationBlocker.Type.Label", "@GameDefinition.WPSOCNavigationBlocker.Type.ToolTip",
+	helper.ComboBox(groupBox, "@GameDefinition.WPSOCNavigationBlocker.Type", "@GameDefinition.WPSOCNavigationBlocker.Type.ToolTip",
 		pCBType, cComboType::Ref::New(*this));
 	pCBType->SetAutoTranslateItems(true);
 	pCBType->AddItem("@GameDefinition.NavSpaceType.Grid", nullptr, (void*)(intptr_t)deNavigationSpace::estGrid);
 	pCBType->AddItem("@GameDefinition.NavSpaceType.Mesh", nullptr, (void*)(intptr_t)deNavigationSpace::estMesh);
 	pCBType->AddItem("@GameDefinition.NavSpaceType.Volume", nullptr, (void*)(intptr_t)deNavigationSpace::estVolume);
 	
-	helper.EditInteger(groupBox, "@GameDefinition.WPSOCNavigationBlocker.BlockingPriority.Label",
+	helper.EditInteger(groupBox, "@GameDefinition.WPSOCNavigationBlocker.BlockingPriority",
 		"@GameDefinition.WPSOCNavigationBlocker.BlockingPriority.ToolTip",
 		pEditBlockingPriority, cTextBlockingPriority::Ref::New(*this));
-	helper.EditString(groupBox, "@GameDefinition.WPSOCNavigationBlocker.Shape.Label", "@GameDefinition.WPSOCNavigationBlocker.Shape.ToolTip",
+	helper.EditString(groupBox, "@GameDefinition.WPSOCNavigationBlocker.Shape", "@GameDefinition.WPSOCNavigationBlocker.Shape.ToolTip",
 		pEditShape, cTextShape::Ref::New(*this));
 	
 	// property targets
 	helper.GroupBox(content, groupBox, "@GameDefinition.WPSOCNavigationBlocker.GroupProperties");
-	helper.ComboBox(groupBox, "@GameDefinition.WPSOCNavigationBlocker.Property.Label", "@GameDefinition.WPSOCNavigationBlocker.Property.ToolTip",
+	helper.ComboBox(groupBox, "@GameDefinition.WPSOCNavigationBlocker.Property", "@GameDefinition.WPSOCNavigationBlocker.Property.ToolTip",
 		pCBPropertyNames, cComboPropertyNames::Ref::New(*this));
 	pCBPropertyNames->SetAutoTranslateItems(true);
 	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.Enabled", nullptr,
@@ -431,7 +431,7 @@ pWindowProperties(windowProperties)
 	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.AttachRotation", nullptr,
 		(void*)(intptr_t)gdeOCNavigationBlocker::epAttachRotation);
 	
-	helper.ComboBoxFilter(groupBox, "@GameDefinition.WPSOCNavigationBlocker.Target.Label", true, "@GameDefinition.WPSOCNavigationBlocker.Target.ToolTip",
+	helper.ComboBoxFilter(groupBox, "@GameDefinition.WPSOCNavigationBlocker.Target", true, "@GameDefinition.WPSOCNavigationBlocker.Target.ToolTip",
 		pCBPropertyNameTarget, cComboPropertyNameTarget::Ref::New(*this));
 	pCBPropertyNameTarget->SetEditable(true);
 	pCBPropertyNameTarget->SetDefaultSorter();

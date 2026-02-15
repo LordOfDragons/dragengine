@@ -461,7 +461,7 @@ void igdeWPTriggerTable::pCreateContent(){
 	pListTriggerTable->SetDefaultSorter();
 	
 	igdeContainerFlow::Ref frameLine(igdeContainerFlow::Ref::New(env, eaX, esLast));
-	helper.Label(frameLine, "@Igde.WPTriggerTable.Filter.Label");
+	helper.Label(frameLine, "@Igde.WPTriggerTable.Filter");
 	helper.EditString(frameLine, "@Igde.WPTriggerTable.Filter.ToolTip",
 		pEditTriggerTableFilter, cTextFilter::Ref::New(*this));
 	AddChild(frameLine);

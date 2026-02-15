@@ -212,21 +212,21 @@ pWindowProperties(windowProperties)
 	// structure
 	helper.GroupBox(content, groupBox, "@Rig.PanelPush.GroupBox.Geometry");
 	
-	helper.ComboBox(groupBox, "@Rig.PanelPush.Geometry.Type.Label", "@Rig.PanelPush.Geometry.Type.ToolTip", pCBType, cComboType::Ref::New(*this));
+	helper.ComboBox(groupBox, "@Rig.PanelPush.Geometry.Type", "@Rig.PanelPush.Geometry.Type.ToolTip", pCBType, cComboType::Ref::New(*this));
 	pCBType->SetAutoTranslateItems(true);
 	pCBType->AddItem("@Rig.PanelPush.Type.SimplePush", nullptr, (void*)(intptr_t)reRigPush::eptSimple);
 	pCBType->AddItem("@Rig.PanelPush.Type.Explosion", nullptr, (void*)(intptr_t)reRigPush::eptExplosion);
 	
-	helper.EditVector(groupBox, "@Rig.PanelPush.Geometry.Position.Label", "@Rig.PanelPush.Geometry.Position.ToolTip",
+	helper.EditVector(groupBox, "@Rig.PanelPush.Geometry.Position", "@Rig.PanelPush.Geometry.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
-	helper.EditVector(groupBox, "@Rig.PanelPush.Geometry.Rotation.Label", "@Rig.PanelPush.Geometry.Rotation.ToolTip",
+	helper.EditVector(groupBox, "@Rig.PanelPush.Geometry.Rotation", "@Rig.PanelPush.Geometry.Rotation.ToolTip",
 		pEditRotation, cEditRotation::Ref::New(*this));
 	
-	helper.EditFloat(groupBox, "@Rig.PanelPush.Geometry.Impuls.Label", "@Rig.PanelPush.Geometry.Impuls.ToolTip",
+	helper.EditFloat(groupBox, "@Rig.PanelPush.Geometry.Impuls", "@Rig.PanelPush.Geometry.Impuls.ToolTip",
 		pEditImpuls, cTextImpuls::Ref::New(*this));
-	helper.EditInteger(groupBox, "@Rig.PanelPush.Geometry.RayCount.Label", "@Rig.PanelPush.Geometry.RayCount.ToolTip",
+	helper.EditInteger(groupBox, "@Rig.PanelPush.Geometry.RayCount", "@Rig.PanelPush.Geometry.RayCount.ToolTip",
 		pEditRayCount, cTextRayCount::Ref::New(*this));
-	helper.EditFloat(groupBox, "@Rig.PanelPush.Geometry.Cone.Label", "@Rig.PanelPush.Geometry.Cone.ToolTip",
+	helper.EditFloat(groupBox, "@Rig.PanelPush.Geometry.Cone", "@Rig.PanelPush.Geometry.Cone.ToolTip",
 		pEditConeAngle, cTextConeAngle::Ref::New(*this));
 }
 

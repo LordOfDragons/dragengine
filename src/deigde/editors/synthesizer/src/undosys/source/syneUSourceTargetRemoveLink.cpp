@@ -47,7 +47,7 @@ syneSource *source, syneControllerTarget *target, syneLink *link){
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("@Source Target Remove Link");
+	SetShortInfo("@Synthesizer.Undo.SourceTargetRemoveLink");
 	
 	pSource = source;
 	pTarget = target;

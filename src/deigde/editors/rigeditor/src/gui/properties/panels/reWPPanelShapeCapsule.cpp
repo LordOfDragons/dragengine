@@ -153,19 +153,19 @@ reWPPanelShape(wpShapes, reRigShape::estCapsule)
 	
 	helper.GroupBox(*this, groupBox, "@Rig.PanelShapeCapsule.GroupBox.CapsuleParameters");
 	
-	helper.EditVector(groupBox, "@Rig.PanelShapeCapsule.Position.Label", "@Rig.PanelShapeCapsule.Position.ToolTip",
+	helper.EditVector(groupBox, "@Rig.PanelShapeCapsule.Position", "@Rig.PanelShapeCapsule.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
 	
-	helper.EditVector(groupBox, "@Rig.PanelShapeCapsule.Rotation.Label", "@Rig.PanelShapeCapsule.Rotation.ToolTip",
+	helper.EditVector(groupBox, "@Rig.PanelShapeCapsule.Rotation", "@Rig.PanelShapeCapsule.Rotation.ToolTip",
 		pEditRotation, cEditRotation::Ref::New(*this));
 	
-	helper.EditString(groupBox, "@Rig.PanelShapeCapsule.HalfHeight.Label", "@Rig.PanelShapeCapsule.HalfHeight.ToolTip",
+	helper.EditString(groupBox, "@Rig.PanelShapeCapsule.HalfHeight", "@Rig.PanelShapeCapsule.HalfHeight.ToolTip",
 		pEditHalfHeight, cTextHalfHeight::Ref::New(*this));
 	
-	helper.EditString(groupBox, "@Rig.PanelShapeCapsule.TopRadius.Label", "@Rig.PanelShapeCapsule.TopRadius.ToolTip",
+	helper.EditString(groupBox, "@Rig.PanelShapeCapsule.TopRadius", "@Rig.PanelShapeCapsule.TopRadius.ToolTip",
 		pEditTopRadius, cTextTopRadius::Ref::New(*this));
 	
-	helper.EditString(groupBox, "@Rig.PanelShapeCapsule.BottomRadius.Label", "@Rig.PanelShapeCapsule.BottomRadius.ToolTip",
+	helper.EditString(groupBox, "@Rig.PanelShapeCapsule.BottomRadius", "@Rig.PanelShapeCapsule.BottomRadius.ToolTip",
 		pEditBottomRadius, cTextBottomRadius::Ref::New(*this));
 }
 

@@ -627,8 +627,8 @@ class cActionEditCut : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditCut> Ref;
 	cActionEditCut(seWindowMain &window) : cActionBase(window,
-		"@Igde.Menu.Cut", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
-		"@Igde.Menu.Cut.ToolTip", deInputEvent::esmControl,
+		"@Igde.Action.Cut", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
+		"@Igde.Action.Cut.ToolTip", deInputEvent::esmControl,
 		deInputEvent::ekcX, deInputEvent::ekcT){}
 	
 	igdeUndo::Ref OnAction(seSkin*) override{
@@ -640,8 +640,8 @@ class cActionEditCopy : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditCopy> Ref;
 	cActionEditCopy(seWindowMain &window) : cActionBase(window,
-		"@Igde.Menu.Copy", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-		"@Igde.Menu.Copy.ToolTip", deInputEvent::esmControl,
+		"@Igde.Action.Copy", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		"@Igde.Action.Copy.ToolTip", deInputEvent::esmControl,
 		deInputEvent::ekcC, deInputEvent::ekcC){}
 	
 	igdeUndo::Ref OnAction(seSkin*) override{
@@ -653,8 +653,8 @@ class cActionEditPaste : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditPaste> Ref;
 	cActionEditPaste(seWindowMain &window) : cActionBase(window,
-		"@Igde.Menu.Paste", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
-		"@Igde.Menu.Paste.ToolTip", deInputEvent::esmControl,
+		"@Igde.Action.Paste", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+		"@Igde.Action.Paste.ToolTip", deInputEvent::esmControl,
 		deInputEvent::ekcV, deInputEvent::ekcP){}
 	
 	igdeUndo::Ref OnAction(seSkin*) override{
@@ -1135,7 +1135,7 @@ void seWindowMain::pCreateMenu(){
 	pCreateMenuSkin(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade = igdeMenuCascade::Ref::New(env, "@Igde.Menu.Edit", deInputEvent::ekcE);
+	cascade = igdeMenuCascade::Ref::New(env, "@Skin.WindowMain.Menu.Edit", deInputEvent::ekcE);
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 	

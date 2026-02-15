@@ -50,7 +50,7 @@ pSource(nullptr)
 	pOldType = source->GetApplicationType();
 	pNewType = newType;
 	
-	SetShortInfo("@Source Group Set Application Type");
+	SetShortInfo("@Synthesizer.Undo.SourceGroupSetApplicationType");
 	
 	pSource = source;
 }

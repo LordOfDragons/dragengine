@@ -1204,8 +1204,7 @@ void syneWindowMain::pCreateMenuSource(igdeMenuCascade &menu){
 	helper.MenuCommand(submenu, pActionSourceInsertSynthesizer);
 	menu.AddChild(submenu);
 	
-	submenu = igdeMenuCascade::Ref::New(GetEnvironment(),
-		"@Synthesizer.PanelSource.ContextMenu.AddIntoGroup");
+	submenu = igdeMenuCascade::Ref::New(GetEnvironment(), "@Synthesizer.WindowMain.Menu.AddIntoGroup");
 	helper.MenuCommand(submenu, pActionSourceGroupAddWave);
 	helper.MenuCommand(submenu, pActionSourceGroupAddSound);
 	helper.MenuCommand(submenu, pActionSourceGroupAddChain);

@@ -50,7 +50,7 @@ pSource(nullptr)
 	pNewValue = newValue;
 	
 	pSource = source;
-	SetShortInfo("@Source Set Max Panning");
+	SetShortInfo("@Synthesizer.Undo.SourceSetMaxPanning");
 }
 
 syneUSetSourceMaxPanning::~syneUSetSourceMaxPanning(){

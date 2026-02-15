@@ -128,8 +128,8 @@ ceWPAGameCommand::ceWPAGameCommand(ceWPTopic &parentPanel) : ceWPAction(parentPa
 	
 	CreateGUICommon(*this);
 	
-	helper.FormLineStretchFirst(*this, "@Conversation.FormLine.Command", "@Conversation.WPActionGameCommand.Commandtosend.Label", formLine);
-	helper.EditString(formLine, "@Conversation.WPActionGameCommand.Commandtosend.Label", pEditCommand, cTextCommand::Ref::New(*this));
+	helper.FormLineStretchFirst(*this, "@Conversation.FormLine.Command", "@Conversation.WPActionGameCommand.Command.ToolTip", formLine);
+	helper.EditString(formLine, "@Conversation.WPActionGameCommand.Command.ToolTip", pEditCommand, cTextCommand::Ref::New(*this));
 	helper.Button(formLine, pBtnCommand, cActionEditCommand::Ref::New(*this));
 }
 

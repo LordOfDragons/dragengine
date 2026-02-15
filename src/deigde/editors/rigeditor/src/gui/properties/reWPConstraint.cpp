@@ -416,11 +416,11 @@ pPreventUpdate(false)
 	// structure
 	helper.GroupBox(content, groupBox, "@Rig.PanelConstraint.GroupBox.LinkPartners");
 	
-	helper.EditString(groupBox, "@Rig.PanelConstraint.LinkPartners.Parent.Label", "@Rig.PanelConstraint.LinkPartners.Parent.ToolTip",
+	helper.EditString(groupBox, "@Rig.PanelConstraint.LinkPartners.Parent", "@Rig.PanelConstraint.LinkPartners.Parent.ToolTip",
 		pEditBoneParent, {});
 	pEditBoneParent->SetEditable(false);
 	
-	helper.ComboBox(groupBox, "@Rig.PanelConstraint.LinkPartners.Target.Label", true, "@Rig.PanelConstraint.LinkPartners.Target.ToolTip",
+	helper.ComboBox(groupBox, "@Rig.PanelConstraint.LinkPartners.Target", true, "@Rig.PanelConstraint.LinkPartners.Target.ToolTip",
 		pCBBoneTarget, cComboTarget::Ref::New(*this, pPreventUpdate));
 	pCBBoneTarget->SetDefaultSorter();
 	
@@ -428,13 +428,13 @@ pPreventUpdate(false)
 	// structure
 	helper.GroupBox(content, groupBox, "@Rig.PanelConstraint.GroupBox.Geometry");
 	
-	helper.EditVector(groupBox, "@Rig.PanelConstraint.Geometry.Position.Label",
+	helper.EditVector(groupBox, "@Rig.PanelConstraint.Geometry.Position",
 		"@Rig.PanelConstraint.Geometry.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
-	helper.EditVector(groupBox, "@Rig.PanelConstraint.Geometry.Rotation.Label",
+	helper.EditVector(groupBox, "@Rig.PanelConstraint.Geometry.Rotation",
 		"@Rig.PanelConstraint.Geometry.Rotation.ToolTip",
 		pEditRotation, cEditRotation::Ref::New(*this));
-	helper.EditVector(groupBox, "@Rig.PanelConstraint.Geometry.Offset.Label",
+	helper.EditVector(groupBox, "@Rig.PanelConstraint.Geometry.Offset",
 		"@Rig.PanelConstraint.Geometry.Offset.ToolTip",
 		pEditOffset, cEditOffset::Ref::New(*this));
 	
@@ -449,14 +449,14 @@ pPreventUpdate(false)
 	for(dof=0; dof<6; dof++){
 		helper.GroupBox(content, groupBox, dofGroupText[dof], dof < 3);
 		
-		helper.FormLine(groupBox, "@Rig.PanelConstraint.Dof.Range.Label",
+		helper.FormLine(groupBox, "@Rig.PanelConstraint.Dof.Range",
 			"@Rig.PanelConstraint.Dof.Range.ToolTip", frameLine);
 		helper.EditFloat(frameLine, "@Rig.PanelConstraint.Dof.LowerLimit.ToolTip",
 			pEditDofLower[dof], cTextDofLower::Ref::New(*this, vDegreesOfFreedom[dof]));
 		helper.EditFloat(frameLine, "@Rig.PanelConstraint.Dof.UpperLimit.ToolTip",
 			pEditDofUpper[dof], cTextDofUpper::Ref::New(*this, vDegreesOfFreedom[dof]));
 		
-		helper.FormLine(groupBox, "@Rig.PanelConstraint.Dof.Friction.Label",
+		helper.FormLine(groupBox, "@Rig.PanelConstraint.Dof.Friction",
 			"@Rig.PanelConstraint.Dof.Friction.ToolTip",
 			frameLine);
 			
@@ -465,7 +465,7 @@ pPreventUpdate(false)
 		helper.EditFloat(frameLine, "@Rig.PanelConstraint.Dof.KinematicFriction.ToolTip",
 			pEditDofKinFric[dof], cTextDofFrictionKinematic::Ref::New(*this, vDegreesOfFreedom[dof]));
 		
-		helper.EditString(groupBox, "@Rig.PanelConstraint.Dof.Stiffness.Label", "@Rig.PanelConstraint.Dof.Stiffness.ToolTip",
+		helper.EditString(groupBox, "@Rig.PanelConstraint.Dof.Stiffness", "@Rig.PanelConstraint.Dof.Stiffness.ToolTip",
 			pEditDofSprStiff[dof], cTextDofSpringStiffness::Ref::New(*this, vDegreesOfFreedom[dof]));
 	}
 	
@@ -473,11 +473,11 @@ pPreventUpdate(false)
 	// damping
 	helper.GroupBox(content, groupBox, "@Rig.PanelConstraint.GroupBox.Damping", true);
 	
-	helper.EditString(groupBox, "@Rig.PanelConstraint.Damping.Linear.Label", "@Rig.PanelConstraint.Damping.Linear.ToolTip",
+	helper.EditString(groupBox, "@Rig.PanelConstraint.Damping.Linear", "@Rig.PanelConstraint.Damping.Linear.ToolTip",
 		pEditDampLin, cTextDampingLinear::Ref::New(*this));
-	helper.EditString(groupBox, "@Rig.PanelConstraint.Damping.Angular.Label", "@Rig.PanelConstraint.Damping.Angular.ToolTip",
+	helper.EditString(groupBox, "@Rig.PanelConstraint.Damping.Angular", "@Rig.PanelConstraint.Damping.Angular.ToolTip",
 		pEditDampAng, cTextDampingAngular::Ref::New(*this));
-	helper.EditString(groupBox, "@Rig.PanelConstraint.Damping.Spring.Label",
+	helper.EditString(groupBox, "@Rig.PanelConstraint.Damping.Spring",
 		"@Rig.PanelConstraint.Damping.Spring.ToolTip",
 		pEditDampSpr, cTextDampingSpring::Ref::New(*this));
 	
@@ -490,7 +490,7 @@ pPreventUpdate(false)
 	// breaking
 	helper.GroupBox(content, groupBox, "@Rig.PanelConstraint.GroupBox.Breaking", true);
 	
-	helper.EditString(groupBox, "@Rig.PanelConstraint.Breaking.Threshold.Label",
+	helper.EditString(groupBox, "@Rig.PanelConstraint.Breaking.Threshold",
 		"@Rig.PanelConstraint.Breaking.Threshold.ToolTip",
 		pEditBreakingThreshold, cTextBreakingThreshold::Ref::New(*this));
 	

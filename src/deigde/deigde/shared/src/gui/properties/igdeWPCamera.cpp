@@ -722,15 +722,15 @@ void igdeWPCamera::pCreateContent(){
 	form = igdeContainerForm::Ref::New(env);
 	AddChild(form);
 	
-	helper.EditVector(form, "@Igde.WPCamera.Position.Label", "@Igde.WPCamera.Position.ToolTip",
+	helper.EditVector(form, "@Igde.WPCamera.Position", "@Igde.WPCamera.Position.ToolTip",
 		pEditPosition, cEditCameraPosition::Ref::New(*this));
-	helper.EditVector(form, "@Igde.WPCamera.Rotation.Label", "@Igde.WPCamera.Rotation.ToolTip",
+	helper.EditVector(form, "@Igde.WPCamera.Rotation", "@Igde.WPCamera.Rotation.ToolTip",
 		pEditRotation, cEditCameraRotation::Ref::New(*this));
 	
-	helper.EditFloat(form, "@Igde.WPCamera.OrbitDistance.Label", "@Igde.WPCamera.OrbitDistance.ToolTip",
+	helper.EditFloat(form, "@Igde.WPCamera.OrbitDistance", "@Igde.WPCamera.OrbitDistance.ToolTip",
 		pEditOrbitDistance, cTextOrbitDistance::Ref::New(*this));
 	
-	helper.EditVector(form, "@Igde.WPCamera.View.Label", "@Igde.WPCamera.View.ToolTip", pEditViewDir, {});
+	helper.EditVector(form, "@Igde.WPCamera.View", "@Igde.WPCamera.View.ToolTip", pEditViewDir, {});
 	pEditViewDir->SetEditable(false);
 	
 	helper.FormLineStretchFirst(form, "", "", frameLine);
@@ -744,35 +744,35 @@ void igdeWPCamera::pCreateContent(){
 	helper.CheckBox(form, pChkEnableGI, cCheckEnableGI::Ref::New(*this));
 	
 	
-	helper.GroupBox(*this, group, "@Igde.WPCamera.InternalParameters.Label", true);
-	helper.EditFloat(group, "@Igde.WPCamera.FieldOfView.Label", "@Igde.WPCamera.FieldOfView.ToolTip", pEditFov, cTextFov::Ref::New(*this));
-	helper.EditFloat(group, "@Igde.WPCamera.FieldOfViewRatio.Label", "@Igde.WPCamera.FieldOfViewRatio.ToolTip",
+	helper.GroupBox(*this, group, "@Igde.WPCamera.InternalParameters", true);
+	helper.EditFloat(group, "@Igde.WPCamera.FieldOfView", "@Igde.WPCamera.FieldOfView.ToolTip", pEditFov, cTextFov::Ref::New(*this));
+	helper.EditFloat(group, "@Igde.WPCamera.FieldOfViewRatio", "@Igde.WPCamera.FieldOfViewRatio.ToolTip",
 		pEditFovRatio, cTextFovRatio::Ref::New(*this));
 	
-	helper.EditFloat(group, "@Igde.WPCamera.ImageDistance.Label", "@Igde.WPCamera.ImageDistance.ToolTip",
+	helper.EditFloat(group, "@Igde.WPCamera.ImageDistance", "@Igde.WPCamera.ImageDistance.ToolTip",
 		pEditImageDist, cTextImageDistance::Ref::New(*this));
-	helper.EditFloat(group, "@Igde.WPCamera.ViewDistance.Label", "@Igde.WPCamera.ViewDistance.ToolTip",
+	helper.EditFloat(group, "@Igde.WPCamera.ViewDistance", "@Igde.WPCamera.ViewDistance.ToolTip",
 		pEditViewDist, cTextViewDistance::Ref::New(*this));
 	
 	
-	helper.GroupBox(*this, group, "@Igde.WPCamera.ExposureControls.Label", true);
-	helper.EditFloat(group, "@Igde.WPCamera.LowerIntensity.Label", "@Igde.WPCamera.LowerIntensity.ToolTip",
+	helper.GroupBox(*this, group, "@Igde.WPCamera.ExposureControls", true);
+	helper.EditFloat(group, "@Igde.WPCamera.LowerIntensity", "@Igde.WPCamera.LowerIntensity.ToolTip",
 		pEditLowInt, cTextLowIntensity::Ref::New(*this));
-	helper.EditFloat(group, "@Igde.WPCamera.HigherIntensity.Label", "@Igde.WPCamera.HigherIntensity.ToolTip",
+	helper.EditFloat(group, "@Igde.WPCamera.HigherIntensity", "@Igde.WPCamera.HigherIntensity.ToolTip",
 		pEditHiInt, cTextHighIntensity::Ref::New(*this));
-	helper.EditFloat(group, "@Igde.WPCamera.Exposure.Label", "@Igde.WPCamera.Exposure.ToolTip", pEditExposure, cTextExposure::Ref::New(*this));
-	helper.EditFloat(group, "@Igde.WPCamera.AdaptionTime.Label", "@Igde.WPCamera.AdaptionTime.ToolTip", pEditAdaptTime, cTextAdaptionTime::Ref::New(*this));
+	helper.EditFloat(group, "@Igde.WPCamera.Exposure", "@Igde.WPCamera.Exposure.ToolTip", pEditExposure, cTextExposure::Ref::New(*this));
+	helper.EditFloat(group, "@Igde.WPCamera.AdaptionTime", "@Igde.WPCamera.AdaptionTime.ToolTip", pEditAdaptTime, cTextAdaptionTime::Ref::New(*this));
 	
 	
-	helper.GroupBoxFlow(*this, group, "@Igde.WPCamera.ToneMapping.Label", true, true);
+	helper.GroupBoxFlow(*this, group, "@Igde.WPCamera.ToneMapping", true, true);
 	form = igdeContainerForm::Ref::New(env);
 	group->AddChild(form);
 	
-	helper.EditFloat(form, "@Igde.WPCamera.WhiteIntensity.Label",
+	helper.EditFloat(form, "@Igde.WPCamera.WhiteIntensity",
 		"@Igde.WPCamera.WhiteIntensity.ToolTip",
 		pEditWhiteIntensity, cTextWhiteIntensity::Ref::New(*this));
 	
-	helper.Label(group, "@Igde.WPCamera.CustomCurve.Label");
+	helper.Label(group, "@Igde.WPCamera.CustomCurve");
 	helper.ViewCurveBezier(group, pEditToneMapCurve, cEditToneMapCurve::Ref::New(*this));
 	pEditToneMapCurve->SetDefaultSize(decPoint(200, 150));
 	pEditToneMapCurve->ClearCurve();
@@ -781,15 +781,15 @@ void igdeWPCamera::pCreateContent(){
 	pEditToneMapCurve->SetClampMax(decVector2(3.0f, 1.0f));
 	
 	
-	helper.GroupBox(*this, group, "@Igde.WPCamera.BloomOverbright.Label", true);
-	helper.EditSliderText(group, "@Igde.WPCamera.BloomBlend.Label", "@Igde.WPCamera.BloomBlend.ToolTip",
+	helper.GroupBox(*this, group, "@Igde.WPCamera.BloomOverbright", true);
+	helper.EditSliderText(group, "@Igde.WPCamera.BloomBlend", "@Igde.WPCamera.BloomBlend.ToolTip",
 		0.0f, 1.0f, 4, 3, 0.1f, pSldBloomBlend, cSliderBloomBlend::Ref::New(*this));
-	helper.EditFloat(group, "@Igde.WPCamera.BloomIntensity.Label",
+	helper.EditFloat(group, "@Igde.WPCamera.BloomIntensity",
 		"@Igde.WPCamera.BloomIntensity.ToolTip",
 		pEditBloomIntensity, cTextBloomIntensity::Ref::New(*this));
-	helper.EditFloat(group, "@Igde.WPCamera.BloomStrength.Label",
+	helper.EditFloat(group, "@Igde.WPCamera.BloomStrength",
 		"@Igde.WPCamera.BloomStrength.ToolTip",
 		pEditBloomStrength, cTextBloomStrength::Ref::New(*this));
-	helper.EditSliderText(group, "@Igde.WPCamera.BloomSize.Label", "@Igde.WPCamera.BloomSize.ToolTip",
+	helper.EditSliderText(group, "@Igde.WPCamera.BloomSize", "@Igde.WPCamera.BloomSize.ToolTip",
 		0.0f, 1.0f, 4, 3, 0.1f, pSldBloomSize, cSliderBloomSize::Ref::New(*this));
 }

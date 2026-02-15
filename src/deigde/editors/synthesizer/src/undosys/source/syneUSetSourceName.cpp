@@ -49,7 +49,7 @@ pSource(nullptr)
 	pOldName = source->GetName();
 	pNewName = newName;
 	
-	SetShortInfo("@Source Set Name");
+	SetShortInfo("@Synthesizer.Undo.SourceSetName");
 	
 	pSource = source;
 }

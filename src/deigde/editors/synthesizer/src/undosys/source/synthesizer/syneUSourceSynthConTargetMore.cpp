@@ -46,7 +46,7 @@ pSource(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("@Source Synthesizer Con Target More");
+	SetShortInfo("@Synthesizer.Undo.SourceSynthesizerConTargetMore");
 	
 	pSource = source;
 }

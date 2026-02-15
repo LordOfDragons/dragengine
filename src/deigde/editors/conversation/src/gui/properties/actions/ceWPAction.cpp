@@ -96,7 +96,7 @@ private:
 	ceWPAction &pPanel;
 	
 public:
-	cActionWaitForActor(ceWPAction &panel) : igdeAction("@Conversation.WPActionction.Waitforactor",
+	cActionWaitForActor(ceWPAction &panel) : igdeAction("@Conversation.WPActionction.WaitActor",
 		"@Conversation.Action.WaitForActorFinished.ToolTip"),
 		pPanel(panel){}
 	
@@ -126,7 +126,7 @@ private:
 	ceWPAction &pPanel;
 	
 public:
-	cActionWaitSpeakOnly(ceWPAction &panel) : igdeAction("@Conversation.WPActionction.Waitspeakonly",
+	cActionWaitSpeakOnly(ceWPAction &panel) : igdeAction("@Conversation.WPActionction.WaitSpeak",
 		"@Conversation.Action.WaitActorSpeaking.ToolTip"),
 		pPanel(panel){}
 	
@@ -193,7 +193,7 @@ ceWPAction::~ceWPAction(){
 void ceWPAction::CreateGUICommon(igdeContainerForm &container){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	
-	helper.EditFloat(container, "@Conversation.WPAction.Delay.Label",
+	helper.EditFloat(container, "@Conversation.WPAction.Delay",
 		"@Conversation.WPAction.Delay.ToolTip",
 		pEditDelay, cTextDelay::Ref::New(*this));
 	

@@ -227,7 +227,7 @@ public:
 		}
 		
 		if(conversation->GetFiles().HasMatching([&](const ceConversationFile &f){ return f.GetID() == name; })){
-			igdeCommonDialogs::Error(pPanel, "@Conversation.WPTopic.AddTopicGroup.Title", "@Conversation.WPTopic.Topicgroupexists.Message");
+			igdeCommonDialogs::Error(pPanel, "@Conversation.WPTopic.AddTopicGroup.Title", "@Conversation.WPTopic.TopicGroupExists.Message");
 			return;
 		}
 		
@@ -291,7 +291,7 @@ public:
 		}
 		
 		if(conversation->GetFiles().HasMatching([&](const ceConversationFile &f){ return f.GetID() == name; })){
-			igdeCommonDialogs::Error(pPanel, "@Conversation.WPTopic.RenameTopicGroup.Title", "@Conversation.WPTopic.Topicgroupexists.Message");
+			igdeCommonDialogs::Error(pPanel, "@Conversation.WPTopic.RenameTopicGroup.Title", "@Conversation.WPTopic.TopicGroupExists.Message");
 			return;
 		}
 		
@@ -386,7 +386,7 @@ public:
 		}
 		
 		if(conversation->GetFiles().HasMatching([&](const ceConversationFile &f){ return f.GetID() == name; })){
-			igdeCommonDialogs::Error(pPanel, "@Conversation.WPTopic.DuplicateTopicGroup.Title", "@Conversation.WPTopic.Topicgroupexists.Message");
+			igdeCommonDialogs::Error(pPanel, "@Conversation.WPTopic.DuplicateTopicGroup.Title", "@Conversation.WPTopic.TopicGroupExists.Message");
 			return;
 		}
 		
@@ -500,7 +500,7 @@ public:
 		}
 		
 		if(file->GetTopics().HasMatching([&](const ceConversationTopic &t){ return t.GetID() == name; })){
-			igdeCommonDialogs::Error(pPanel, "@Conversation.WPTopic.AddTopic.Title", "@Conversation.WPTopic.Topicexists.Message");
+			igdeCommonDialogs::Error(pPanel, "@Conversation.WPTopic.AddTopic.Title", "@Conversation.WPTopic.TopicExists.Message");
 			return;
 		}
 		
@@ -565,7 +565,7 @@ public:
 		}
 		
 		if(file->GetTopics().HasMatching([&](const ceConversationTopic &t){ return t.GetID() == name; })){
-			igdeCommonDialogs::Error(pPanel, "@Conversation.WPTopic.RenameTopic.Title", "@Conversation.WPTopic.Topicexists.Message");
+			igdeCommonDialogs::Error(pPanel, "@Conversation.WPTopic.RenameTopic.Title", "@Conversation.WPTopic.TopicExists.Message");
 			return;
 		}
 		
@@ -687,7 +687,7 @@ public:
 		}
 		
 		if(file->GetTopics().HasMatching([&](const ceConversationTopic &t){ return t.GetID() == name; })){
-			igdeCommonDialogs::Error(pPanel, "@Conversation.WPTopic.DuplicateTopic.Title", "@Conversation.WPTopic.Topicexists.Message");
+			igdeCommonDialogs::Error(pPanel, "@Conversation.WPTopic.DuplicateTopic.Title", "@Conversation.WPTopic.TopicExists.Message");
 			return;
 		}
 		
@@ -820,16 +820,16 @@ pPanelCTrigger(nullptr)
 	
 	
 	// conversation
-	helper.GroupBox(*this, groupBox, "@Conversation.WPTopic.Conversation.Label");
+	helper.GroupBox(*this, groupBox, "@Conversation.WPTopic.Conversation");
 	
-	helper.FormLineStretchFirst(groupBox, "@Conversation.WPTopic.File.Label", "@Conversation.WPTopic.File.ToolTip", formLine);
+	helper.FormLineStretchFirst(groupBox, "@Conversation.WPTopic.File", "@Conversation.WPTopic.File.ToolTip", formLine);
 	helper.ComboBoxFilter(formLine, "@Conversation.WPTopic.File.ToolTip", pCBFile, cComboFile::Ref::New(*this));
 	pCBFile->SetDefaultSorter();
 	const cActionFileMenu::Ref actionFileMenu(cActionFileMenu::Ref::New(*this));
 	helper.Button(formLine, pBtnFile, actionFileMenu);
 	actionFileMenu->SetWidget(pBtnFile);
 	
-	helper.FormLineStretchFirst(groupBox, "@Conversation.WPTopic.Topic.Label", "@Conversation.WPTopic.Topic.ToolTip", formLine);
+	helper.FormLineStretchFirst(groupBox, "@Conversation.WPTopic.Topic", "@Conversation.WPTopic.Topic.ToolTip", formLine);
 	helper.ComboBoxFilter(formLine, "@Conversation.WPTopic.Topic.ToolTip", pCBTopic, cComboTopic::Ref::New(*this));
 	pCBTopic->SetDefaultSorter();
 	const cActionTopicMenu::Ref actionTopicMenu(cActionTopicMenu::Ref::New(*this));
@@ -840,7 +840,7 @@ pPanelCTrigger(nullptr)
 	// actions
 	igdeContainerBorder::Ref groupActions;
 	
-	helper.GroupBoxStaticBorder(*this, groupActions, "@Conversation.WPTopic.Actions.Label", true);
+	helper.GroupBoxStaticBorder(*this, groupActions, "@Conversation.WPTopic.Actions", true);
 	helper.TreeList(10, "@Conversation.WPTopic.Actions.ToolTip", pTreeActions, cTreeActionsListener::Ref::New(*this));
 	groupActions->AddChild(pTreeActions, igdeContainerBorder::eaCenter);
 	

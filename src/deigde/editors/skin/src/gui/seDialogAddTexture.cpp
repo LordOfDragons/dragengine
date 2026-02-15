@@ -115,7 +115,7 @@ pWindowMain(windowMain)
 	pListModelTextureNames->SetDefaultSorter();
 	
 	formLine = igdeContainerForm::Ref::New(env);
-	helper.EditString(formLine, "@Skin.DialogAddTexture.Name.Label", "@Skin.DialogAddTexture.Name.ToolTip", 25,
+	helper.EditString(formLine, "@Skin.DialogAddTexture.Name", "@Skin.DialogAddTexture.Name.ToolTip", 25,
 		pEditTextureName, cTextTextureName::Ref::New(*this));
 	content->AddChild(formLine);
 	

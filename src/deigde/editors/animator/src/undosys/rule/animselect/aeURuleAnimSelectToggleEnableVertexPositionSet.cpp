@@ -41,7 +41,7 @@ pRule(nullptr)
 {
 	DEASSERT_NOTNULL(rule)
 	
-	SetShortInfo("@Animator.Undo.RuleAnimationToggleEnableVertexPositionSet");
+	SetShortInfo("@Animator.Undo.RuleAnimationSelectToggleEnableVertexPositionSet");
 	
 	pRule = rule;
 }

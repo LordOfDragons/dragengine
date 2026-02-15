@@ -51,7 +51,7 @@ pLink(nullptr)
 	pOldCurve = link->GetCurve();
 	pNewCurve = newCurve;
 	
-	SetShortInfo("@Link Set Curve");
+	SetShortInfo("@Synthesizer.Undo.LinkSetCurve");
 	
 	pLink = link;
 }

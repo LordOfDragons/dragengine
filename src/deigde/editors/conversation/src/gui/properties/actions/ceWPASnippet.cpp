@@ -129,7 +129,7 @@ public:
 	using Ref = deTObjectReference<cActionJumpToTopic>;
 	cActionJumpToTopic(ceWPASnippet &panel) : igdeAction("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallRight),
-		"@Conversation.Action.SnippetJump.Label"), pPanel(panel){}
+		"@Conversation.Action.SnippetJump"), pPanel(panel){}
 	
 	void OnAction() override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
@@ -171,10 +171,10 @@ ceWPASnippet::ceWPASnippet(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	
 	CreateGUICommon(*this);
 	
-	helper.ComboBoxFilter(*this, "@Conversation.WPActionSnippet.File.Label", true, "@Conversation.WPActionSnippet.File.ToolTip", pCBFile, cComboFile::Ref::New(*this));
+	helper.ComboBoxFilter(*this, "@Conversation.WPActionSnippet.File", true, "@Conversation.WPActionSnippet.File.ToolTip", pCBFile, cComboFile::Ref::New(*this));
 	pCBFile->SetDefaultSorter();
 	
-	helper.FormLineStretchFirst(*this, "@Conversation.WPActionSnippet.Topic.Label", "@Conversation.WPActionSnippet.Topic.ToolTip", formLine);
+	helper.FormLineStretchFirst(*this, "@Conversation.WPActionSnippet.Topic", "@Conversation.WPActionSnippet.Topic.ToolTip", formLine);
 	helper.ComboBoxFilter(formLine, true, "@Conversation.WPActionSnippet.Topic.ToolTip", pCBTopic, cComboTopic::Ref::New(*this));
 	pCBTopic->SetDefaultSorter();
 	helper.Button(formLine, pBtnJumpToTopic, cActionJumpToTopic::Ref::New(*this));

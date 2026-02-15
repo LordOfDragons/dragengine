@@ -255,11 +255,11 @@ pWindowProperties(windowProperties)
 	
 	helper.GroupBox(content, groupBox, "@Rig.PanelRig.GroupBox.Rig");
 	
-	helper.ComboBox(groupBox, "@Rig.PanelRig.Rig.RootBone.Label", true, "@Rig.PanelRig.Rig.RootBone.ToolTip",
+	helper.ComboBox(groupBox, "@Rig.PanelRig.Rig.RootBone", true, "@Rig.PanelRig.Rig.RootBone.ToolTip",
 		pCBRootBone, cComboRootBone::Ref::New(*this));
 	pCBRootBone->SetDefaultSorter();
 	
-	helper.EditVector(groupBox, "@Rig.PanelRig.Rig.Cmp.Label",
+	helper.EditVector(groupBox, "@Rig.PanelRig.Rig.Cmp",
 		"@Rig.PanelRig.Rig.Cmp.ToolTip",
 		pEditCentralMassPoint, cEditCentralMassPoint::Ref::New(*this));
 	
@@ -268,7 +268,7 @@ pWindowProperties(windowProperties)
 	
 	helper.GroupBox(content, groupBox, "@Rig.PanelRig.GroupBox.Simulation");
 	helper.CheckBox(groupBox, pChkDynamic, cCheckDynamic::Ref::New(*this));
-	helper.EditFloat(groupBox, "@Rig.PanelRig.Simulation.Mass.Label", "@Rig.PanelRig.Simulation.Mass.ToolTip", pEditMass, cEditMass::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Rig.PanelRig.Simulation.Mass", "@Rig.PanelRig.Simulation.Mass.ToolTip", pEditMass, cEditMass::Ref::New(*this));
 }
 
 reWPRig::~reWPRig(){

@@ -249,23 +249,23 @@ pWindowProperties(windowProperties)
 	
 	helper.GroupBox(content, groupBox, "@GameDefinition.WPSOCWorld.GroupWorld");
 	
-	helper.EditPath(groupBox, "@GameDefinition.WPSOCWorld.Path.Label", "@GameDefinition.WPSOCWorld.Path.ToolTip", igdeEnvironment::efpltWorld,
+	helper.EditPath(groupBox, "@GameDefinition.WPSOCWorld.Path", "@GameDefinition.WPSOCWorld.Path.ToolTip", igdeEnvironment::efpltWorld,
 		pEditPath, cEditPath::Ref::New(*this));
-	helper.EditVector(groupBox, "@GameDefinition.WPSOCWorld.Position.Label", "@GameDefinition.WPSOCWorld.Position.ToolTip",
+	helper.EditVector(groupBox, "@GameDefinition.WPSOCWorld.Position", "@GameDefinition.WPSOCWorld.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
-	helper.EditVector(groupBox, "@GameDefinition.WPSOCWorld.Rotation.Label", "@GameDefinition.WPSOCWorld.Rotation.ToolTip", 4, 1,
+	helper.EditVector(groupBox, "@GameDefinition.WPSOCWorld.Rotation", "@GameDefinition.WPSOCWorld.Rotation.ToolTip", 4, 1,
 		pEditRotation, cEditRotation::Ref::New(*this));
 	
 	// property targets
 	helper.GroupBox(content, groupBox, "@GameDefinition.WPSOCWorld.GroupProperties");
-	helper.ComboBox(groupBox, "@GameDefinition.WPSOCWorld.Property.Label", "@GameDefinition.WPSOCWorld.Property.ToolTip",
+	helper.ComboBox(groupBox, "@GameDefinition.WPSOCWorld.Property", "@GameDefinition.WPSOCWorld.Property.ToolTip",
 		pCBPropertyNames, cComboPropertyNames::Ref::New(*this));
 	pCBPropertyNames->SetAutoTranslateItems(true);
 	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.Path", nullptr, (void*)(intptr_t)gdeOCWorld::epPath);
 	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.Position", nullptr, (void*)(intptr_t)gdeOCWorld::epPosition);
 	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.Rotation", nullptr, (void*)(intptr_t)gdeOCWorld::epRotation);
 	
-	helper.ComboBoxFilter(groupBox, "@GameDefinition.WPSOCWorld.Target.Label", true, "@GameDefinition.WPSOCWorld.Target.ToolTip",
+	helper.ComboBoxFilter(groupBox, "@GameDefinition.WPSOCWorld.Target", true, "@GameDefinition.WPSOCWorld.Target.ToolTip",
 		pCBPropertyNameTarget, cComboPropertyNameTarget::Ref::New(*this));
 	pCBPropertyNameTarget->SetEditable(true);
 	pCBPropertyNameTarget->SetDefaultSorter();

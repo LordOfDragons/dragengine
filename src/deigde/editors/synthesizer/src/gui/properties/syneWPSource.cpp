@@ -275,8 +275,8 @@ class cActionSourcePasteIntoGroup : public cActionSourcePaste{
 public:
 	using Ref = deTObjectReference<cActionSourcePasteIntoGroup>;
 	cActionSourcePasteIntoGroup(syneWPSource &panel) : cActionSourcePaste(panel){
-		SetText("@Synthesizer.WPSource.ActionPasteIntoGroup.Text");
-		SetDescription("@Synthesizer.WPSource.ActionPasteIntoGroup.Description");
+		SetText("@Synthesizer.WPSource.Action.PasteIntoGroup");
+		SetDescription("@Synthesizer.WPSource.Action.PasteIntoGroup.Description");
 	}
 	
 	void OnAction() override{

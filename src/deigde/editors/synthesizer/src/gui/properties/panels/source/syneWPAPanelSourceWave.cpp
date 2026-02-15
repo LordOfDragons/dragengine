@@ -147,17 +147,17 @@ syneWPAPanelSource(wpSource, deSynthesizerSourceVisitorIdentify::estWave)
 	
 	helper.GroupBox(*this, groupBox, "@Synthesizer.WPAPanelSourceWave.GroupWave");
 	
-	helper.ComboBox(groupBox, "@Synthesizer.WPAPanelSourceWave.FieldWaveType.Label",
+	helper.ComboBox(groupBox, "@Synthesizer.WPAPanelSourceWave.FieldWaveType",
 		"@Synthesizer.WPAPanelSourceWave.FieldWaveType.ToolTip", pCBType, cComboType::Ref::New(*this));
 	pCBType->SetAutoTranslateItems(true);
-	pCBType->AddItem("@Synthesizer.WPAPanelSourceWave.ComboSine", nullptr, (void*)(intptr_t)deSynthesizerSourceWave::ewtSine);
-	pCBType->AddItem("@Synthesizer.WPAPanelSourceWave.ComboSquare", nullptr, (void*)(intptr_t)deSynthesizerSourceWave::ewtSquare);
-	pCBType->AddItem("@Synthesizer.WPAPanelSourceWave.ComboSawTooth", nullptr, (void*)(intptr_t)deSynthesizerSourceWave::ewtSawTooth);
-	pCBType->AddItem("@Synthesizer.WPAPanelSourceWave.ComboTriangle", nullptr, (void*)(intptr_t)deSynthesizerSourceWave::ewtTriangle);
+	pCBType->AddItem("@Synthesizer.WPAPanelSourceWave.WaveType.Sine", nullptr, (void*)(intptr_t)deSynthesizerSourceWave::ewtSine);
+	pCBType->AddItem("@Synthesizer.WPAPanelSourceWave.WaveType.Square", nullptr, (void*)(intptr_t)deSynthesizerSourceWave::ewtSquare);
+	pCBType->AddItem("@Synthesizer.WPAPanelSourceWave.WaveType.SawTooth", nullptr, (void*)(intptr_t)deSynthesizerSourceWave::ewtSawTooth);
+	pCBType->AddItem("@Synthesizer.WPAPanelSourceWave.WaveType.Triangle", nullptr, (void*)(intptr_t)deSynthesizerSourceWave::ewtTriangle);
 	
-	helper.EditInteger(groupBox, "@Synthesizer.WPAPanelSourceWave.FieldMinFrequency.Label", "@Synthesizer.WPAPanelSourceWave.FieldMinFrequency.ToolTip",
+	helper.EditInteger(groupBox, "@Synthesizer.WPAPanelSourceWave.FieldMinFrequency", "@Synthesizer.WPAPanelSourceWave.FieldMinFrequency.ToolTip",
 		pEditMinFrequency, cTextMinFrequency::Ref::New(*this));
-	helper.EditInteger(groupBox, "@Synthesizer.WPAPanelSourceWave.FieldMaxFrequency.Label", "@Synthesizer.WPAPanelSourceWave.FieldMaxFrequency.ToolTip",
+	helper.EditInteger(groupBox, "@Synthesizer.WPAPanelSourceWave.FieldMaxFrequency", "@Synthesizer.WPAPanelSourceWave.FieldMaxFrequency.ToolTip",
 		pEditMaxFrequency, cTextMaxFrequency::Ref::New(*this));
 }
 

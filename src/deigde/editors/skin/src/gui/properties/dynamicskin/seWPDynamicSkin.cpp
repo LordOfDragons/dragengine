@@ -459,9 +459,9 @@ pWindowProperties(windowProperties)
 	
 	form = igdeContainerForm::Ref::New(env);
 	groupBox->AddChild(form);
-	helper.EditString(form, "@Skin.WPDynamicSkin.Name.Label", "@Skin.WPDynamicSkin.Name.ToolTip", pEditName, cTextRenderableName::Ref::New(*this));
+	helper.EditString(form, "@Skin.WPDynamicSkin.Name", "@Skin.WPDynamicSkin.Name.ToolTip", pEditName, cTextRenderableName::Ref::New(*this));
 	
-	helper.ComboBox(form, "@Skin.WPDynamicSkin.Type.Label", "@Skin.WPDynamicSkin.Type.ToolTip", pCBRenderableType, cComboRenderableType::Ref::New(*this));
+	helper.ComboBox(form, "@Skin.WPDynamicSkin.Type", "@Skin.WPDynamicSkin.Type.ToolTip", pCBRenderableType, cComboRenderableType::Ref::New(*this));
 	pCBRenderableType->SetAutoTranslateItems(true);
 	pCBRenderableType->AddItem("@Skin.WPDynamicSkin.Type.Value", nullptr, (void*)(intptr_t)seDynamicSkinRenderable::ertValue);
 	pCBRenderableType->AddItem("@Skin.WPDynamicSkin.Type.Color", nullptr, (void*)(intptr_t)seDynamicSkinRenderable::ertColor);
@@ -484,23 +484,23 @@ pWindowProperties(windowProperties)
 	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	pSwitcher->AddChild(panel);
 	helper.GroupBox(panel, groupBox, "@Skin.WPDynamicSkin.GroupValue");
-	helper.EditSliderText(groupBox, "@Skin.WPDynamicSkin.Value.Label", "@Skin.WPDynamicSkin.Value.ToolTip", 0.0f, 1.0f, 6, 3, 0.1f, pSldValue, cSliderValue::Ref::New(*this));
-	helper.EditFloat(groupBox, "@Skin.WPDynamicSkin.Lower.Label", "@Skin.WPDynamicSkin.Lower.ToolTip", pEditValueLower, cTextValueRangeLower::Ref::New(*this));
-	helper.EditFloat(groupBox, "@Skin.WPDynamicSkin.Upper.Label", "@Skin.WPDynamicSkin.Upper.ToolTip", pEditValueUpper, cTextValueRangeUpper::Ref::New(*this));
+	helper.EditSliderText(groupBox, "@Skin.WPDynamicSkin.Value", "@Skin.WPDynamicSkin.Value.ToolTip", 0.0f, 1.0f, 6, 3, 0.1f, pSldValue, cSliderValue::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Skin.WPDynamicSkin.Lower", "@Skin.WPDynamicSkin.Lower.ToolTip", pEditValueLower, cTextValueRangeLower::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Skin.WPDynamicSkin.Upper", "@Skin.WPDynamicSkin.Upper.ToolTip", pEditValueUpper, cTextValueRangeUpper::Ref::New(*this));
 	
 	
 	// color
 	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	pSwitcher->AddChild(panel);
 	helper.GroupBox(panel, groupBox, "@Skin.WPDynamicSkin.GroupColor");
-	helper.ColorBox(groupBox, "@Skin.WPDynamicSkin.Color.Label", "@Skin.WPDynamicSkin.Color.ToolTip", pClrColor, cColorColor::Ref::New(*this));
-	helper.EditSliderText(groupBox, "@Skin.WPDynamicSkin.Red.Label", "@Skin.WPDynamicSkin.Red.ToolTip", 0.0f, 1.0f, 6, 3, 0.1f,
+	helper.ColorBox(groupBox, "@Skin.WPDynamicSkin.Color", "@Skin.WPDynamicSkin.Color.ToolTip", pClrColor, cColorColor::Ref::New(*this));
+	helper.EditSliderText(groupBox, "@Skin.WPDynamicSkin.Red", "@Skin.WPDynamicSkin.Red.ToolTip", 0.0f, 1.0f, 6, 3, 0.1f,
 		pSldColorRed, cSliderColorRed::Ref::New(*this));
-	helper.EditSliderText(groupBox, "@Skin.WPDynamicSkin.Green.Label", "@Skin.WPDynamicSkin.Green.ToolTip", 0.0f, 1.0f, 6, 3, 0.1f,
+	helper.EditSliderText(groupBox, "@Skin.WPDynamicSkin.Green", "@Skin.WPDynamicSkin.Green.ToolTip", 0.0f, 1.0f, 6, 3, 0.1f,
 		pSldColorGreen, cSliderColorGreen::Ref::New(*this));
-	helper.EditSliderText(groupBox, "@Skin.WPDynamicSkin.Blue.Label", "@Skin.WPDynamicSkin.Blue.ToolTip", 0.0f, 1.0f, 6, 3, 0.1f,
+	helper.EditSliderText(groupBox, "@Skin.WPDynamicSkin.Blue", "@Skin.WPDynamicSkin.Blue.ToolTip", 0.0f, 1.0f, 6, 3, 0.1f,
 		pSldColorBlue, cSliderColorBlue::Ref::New(*this));
-	helper.EditSliderText(groupBox, "@Skin.WPDynamicSkin.Alpha.Label", "@Skin.WPDynamicSkin.Alpha.ToolTip", 0.0f, 1.0f, 6, 3, 0.1f,
+	helper.EditSliderText(groupBox, "@Skin.WPDynamicSkin.Alpha", "@Skin.WPDynamicSkin.Alpha.ToolTip", 0.0f, 1.0f, 6, 3, 0.1f,
 		pSldColorAlpha, cSliderColorAlpha::Ref::New(*this));
 	
 	
@@ -508,7 +508,7 @@ pWindowProperties(windowProperties)
 	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	pSwitcher->AddChild(panel);
 	helper.GroupBox(panel, groupBox, "@Skin.WPDynamicSkin.GroupImage");
-	helper.EditPath(groupBox, "@Skin.WPDynamicSkin.ImagePath.Label", "@Skin.WPDynamicSkin.ImagePath.ToolTip", igdeEnvironment::efpltImage,
+	helper.EditPath(groupBox, "@Skin.WPDynamicSkin.ImagePath", "@Skin.WPDynamicSkin.ImagePath.ToolTip", igdeEnvironment::efpltImage,
 		pEditImagePath, cPathImage::Ref::New(*this));
 	
 	
@@ -516,7 +516,7 @@ pWindowProperties(windowProperties)
 	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	pSwitcher->AddChild(panel);
 	helper.GroupBox(panel, groupBox, "@Skin.WPDynamicSkin.GroupVideo");
-	helper.EditPath(groupBox, "@Skin.WPDynamicSkin.VideoPath.Label", "@Skin.WPDynamicSkin.VideoPath.ToolTip", igdeEnvironment::efpltVideo,
+	helper.EditPath(groupBox, "@Skin.WPDynamicSkin.VideoPath", "@Skin.WPDynamicSkin.VideoPath.ToolTip", igdeEnvironment::efpltVideo,
 		pEditVideoPath, cPathVideo::Ref::New(*this));
 	
 	

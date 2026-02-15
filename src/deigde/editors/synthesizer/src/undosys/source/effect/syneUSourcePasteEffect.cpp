@@ -55,6 +55,7 @@ pIndex(index)
 	});
 	
 	pSource = source;
+	SetShortInfo("@Synthesizer.Undo.EffectPaste");
 }
 
 syneUSourcePasteEffect::~syneUSourcePasteEffect(){

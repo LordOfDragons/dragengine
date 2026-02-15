@@ -243,7 +243,7 @@ public:
 	
 public:
 	cActionAdjustRotation(aeWPAPanelRuleInverseKinematic &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleInverseKinematic.AdjustOrientation.Label", nullptr,
+		"@Animator.WPAPanelRuleInverseKinematic.AdjustOrientation", nullptr,
 		"@Animator.WPAPanelRuleInverseKinematic.AdjustOrientation.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleInverseKinematic *rule) override{
@@ -273,7 +273,7 @@ public:
 	
 public:
 	cActionUseSolverBone(aeWPAPanelRuleInverseKinematic &panel) : cBaseAction(panel,
-		"@Animator.WPAPanelRuleInverseKinematic.UseSolverBone.Label", nullptr,
+		"@Animator.WPAPanelRuleInverseKinematic.UseSolverBone", nullptr,
 		"@Animator.WPAPanelRuleInverseKinematic.UseSolverBone.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleInverseKinematic *rule) override{
@@ -338,24 +338,24 @@ aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertInverseKinematic)
 	igdeContainer::Ref groupBox;
 	
 	
-	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRuleInverseKinematic.InverseKinematic.Label");
+	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRuleInverseKinematic.InverseKinematic");
 	
-	helper.EditVector(groupBox, "@Animator.WPAPanelRuleInverseKinematic.GoalPosition.Label",
+	helper.EditVector(groupBox, "@Animator.WPAPanelRuleInverseKinematic.GoalPosition",
 		"@Animator.WPAPanelRuleInverseKinematic.GoalPosition.ToolTip",
 		pEditGoalPos, cEditGoalPosition::Ref::New(*this));
-	helper.EditVector(groupBox, "@Animator.WPAPanelRuleInverseKinematic.GoalOrientation.Label",
+	helper.EditVector(groupBox, "@Animator.WPAPanelRuleInverseKinematic.GoalOrientation",
 		"@Animator.WPAPanelRuleInverseKinematic.GoalOrientation.ToolTip",
 		pEditGoalRot, cEditGoalRotation::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkAdjustRotation, cActionAdjustRotation::Ref::New(*this));
 	
-	helper.EditVector(groupBox, "@Animator.WPAPanelRuleInverseKinematic.LocalPosition.Label",
+	helper.EditVector(groupBox, "@Animator.WPAPanelRuleInverseKinematic.LocalPosition",
 		"@Animator.WPAPanelRuleInverseKinematic.LocalPosition.ToolTip",
 		pEditLocalPos, cEditLocalPosition::Ref::New(*this));
-	helper.EditVector(groupBox, "@Animator.WPAPanelRuleInverseKinematic.LocalOrientation.Label",
+	helper.EditVector(groupBox, "@Animator.WPAPanelRuleInverseKinematic.LocalOrientation",
 		"@Animator.WPAPanelRuleInverseKinematic.LocalOrientation.ToolTip",
 		pEditLocalRot, cEditLocalRotation::Ref::New(*this));
 	
-	helper.ComboBoxFilter(groupBox, "@Animator.WPAPanelRuleInverseKinematic.SolverBone.Label", true,
+	helper.ComboBoxFilter(groupBox, "@Animator.WPAPanelRuleInverseKinematic.SolverBone", true,
 		"@Animator.WPAPanelRuleInverseKinematic.SolverBone.ToolTip",
 		pCBSolverBone, cComboSolverBone::Ref::New(*this));
 	pCBSolverBone->SetDefaultSorter();
@@ -363,18 +363,18 @@ aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertInverseKinematic)
 	
 	
 	// reach
-	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRuleInverseKinematic.Reach.Label", true);
+	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRuleInverseKinematic.Reach", true);
 	
-	helper.EditFloat(groupBox, "@Animator.WPAPanelRuleInverseKinematic.Range.Label",
+	helper.EditFloat(groupBox, "@Animator.WPAPanelRuleInverseKinematic.Range",
 		"@Animator.WPAPanelRuleInverseKinematic.Range.ToolTip",
 		pEditReachRange, cTextReachRange::Ref::New(*this));
 	
-	helper.ComboBoxFilter(groupBox, "@Animator.WPAPanelRuleInverseKinematic.ReachBone.Label", true,
+	helper.ComboBoxFilter(groupBox, "@Animator.WPAPanelRuleInverseKinematic.ReachBone", true,
 		"@Animator.WPAPanelRuleInverseKinematic.ReachBone.ToolTip",
 		pCBReachBone, cComboReachBone::Ref::New(*this));
 	pCBReachBone->SetDefaultSorter();
 	
-	helper.EditVector(groupBox, "@Animator.WPAPanelRuleInverseKinematic.ReachCenter.Label",
+	helper.EditVector(groupBox, "@Animator.WPAPanelRuleInverseKinematic.ReachCenter",
 		"@Animator.WPAPanelRuleInverseKinematic.ReachCenter.ToolTip",
 		pEditReachCenter, cEditReachCenter::Ref::New(*this));
 }
@@ -462,11 +462,11 @@ void aeWPAPanelRuleInverseKinematic::UpdateTargetList(){
 	
 	aeRuleInverseKinematic * const rule = (aeRuleInverseKinematic*)GetRule();
 	if(rule){
-		AddTarget("@Animator.WPAPanelRuleInverseKinematic.GoalPosition.Label", rule->GetTargetGoalPosition());
-		AddTarget("@Animator.WPAPanelRuleInverseKinematic.GoalOrientation.Label", rule->GetTargetGoalOrientation());
-		AddTarget("@Animator.WPAPanelRuleInverseKinematic.LocalPosition.Label", rule->GetTargetLocalPosition());
-		AddTarget("@Animator.WPAPanelRuleInverseKinematic.LocalOrientation.Label", rule->GetTargetLocalOrientation());
-		AddTarget("@Animator.WPAPanelRuleInverseKinematic.Range.Label", rule->GetTargetReachRange());
-		AddTarget("@Animator.WPAPanelRuleInverseKinematic.ReachCenter.Label", rule->GetTargetReachCenter());
+		AddTarget("@Animator.WPAPanelRuleInverseKinematic.GoalPosition", rule->GetTargetGoalPosition());
+		AddTarget("@Animator.WPAPanelRuleInverseKinematic.GoalOrientation", rule->GetTargetGoalOrientation());
+		AddTarget("@Animator.WPAPanelRuleInverseKinematic.LocalPosition", rule->GetTargetLocalPosition());
+		AddTarget("@Animator.WPAPanelRuleInverseKinematic.LocalOrientation", rule->GetTargetLocalOrientation());
+		AddTarget("@Animator.WPAPanelRuleInverseKinematic.Range", rule->GetTargetReachRange());
+		AddTarget("@Animator.WPAPanelRuleInverseKinematic.ReachCenter", rule->GetTargetReachCenter());
 	}
 }

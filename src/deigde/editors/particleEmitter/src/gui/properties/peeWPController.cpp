@@ -404,15 +404,15 @@ pWindowProperties(windowProperties)
 	
 	// controller settings
 	helper.GroupBox(content, groupBox, "@ParticleEmitter.WPController.Group.ControllerSettings");
-	helper.EditString(groupBox, "@ParticleEmitter.WPController.Name.Label", "@ParticleEmitter.WPController.Name.ToolTip", pEditName, cTextName::Ref::New(*this));
+	helper.EditString(groupBox, "@ParticleEmitter.WPController.Name", "@ParticleEmitter.WPController.Name.ToolTip", pEditName, cTextName::Ref::New(*this));
 	
-	helper.FormLine(groupBox, "@ParticleEmitter.WPController.Range.Label", "@ParticleEmitter.WPController.Range.ToolTip", frameLine);
+	helper.FormLine(groupBox, "@ParticleEmitter.WPController.Range", "@ParticleEmitter.WPController.Range.ToolTip", frameLine);
 	helper.EditFloat(frameLine, "@ParticleEmitter.WPController.MinimumValue.ToolTip",
 		pEditMin, cTextMinimumValue::Ref::New(*this));
 	helper.EditFloat(frameLine, "@ParticleEmitter.WPController.MaximumValue.ToolTip",
 		pEditMax, cTextMaximumValue::Ref::New(*this));
 	
-	helper.EditSliderText(groupBox, "@ParticleEmitter.WPController.Value.Label", "@ParticleEmitter.WPController.Value.ToolTip",
+	helper.EditSliderText(groupBox, "@ParticleEmitter.WPController.Value", "@ParticleEmitter.WPController.Value.ToolTip",
 		0.0f, 0.0f, 4, 3, 0.1f, pSldValue, cSliderValue::Ref::New(*this));
 	
 	helper.CheckBox(groupBox, pChkClamp, cActionClamp::Ref::New(*this));

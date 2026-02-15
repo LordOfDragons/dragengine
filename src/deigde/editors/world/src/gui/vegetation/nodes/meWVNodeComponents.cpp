@@ -107,7 +107,7 @@ pRuleComponents(rule)
 	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::New(env,
 		"@World.WVNodeComponents.Input.Vector", "@World.WVNodeComponents.Input.VectorDesc",
 		true, *this, meWVNodeSlot::estVector, meHTVRuleComponents::eisVector));
-	helper.EditVector(slot, "@World.WVNodeComponents.InputVector.Label", pEditVector, cEditVector::Ref::New(*this));
+	helper.EditVector(slot, "@World.WVNodeComponents.InputVector", pEditVector, cEditVector::Ref::New(*this));
 	AddSlot(slot);
 	
 	// parameters

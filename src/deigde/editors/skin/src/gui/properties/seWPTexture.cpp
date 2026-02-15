@@ -633,42 +633,42 @@ pPreventUpdateMappedTarget(false)
 	
 	// texture
 	helper.GroupBoxFlow(content, groupBox, "@Skin.WPTexture.GroupTexture");
-	helper.ListBox(groupBox, 8, "@Skin.WPTexture.Textures.Label", pListTexture, cListTextures::Ref::New(*this));
+	helper.ListBox(groupBox, 8, "@Skin.WPTexture.Textures", pListTexture, cListTextures::Ref::New(*this));
 	pListTexture->SetDefaultSorter();
 	
 	form = igdeContainerForm::Ref::New(env);
 	groupBox->AddChild(form);
-	helper.EditString(form, "@Skin.WPTexture.Name.Label", "@Skin.WPTexture.Name.ToolTip", pEditTexName, cTextTextureName::Ref::New(*this));
+	helper.EditString(form, "@Skin.WPTexture.Name", "@Skin.WPTexture.Name.ToolTip", pEditTexName, cTextTextureName::Ref::New(*this));
 	
 	
 	// preview
 	helper.GroupBox(content, groupBox, "@Skin.WPTexture.GroupPreview", true);
-	helper.EditPoint(groupBox, "@Skin.WPTexture.Translation.Label", "@Skin.WPTexture.Translation.ToolTip",
+	helper.EditPoint(groupBox, "@Skin.WPTexture.Translation", "@Skin.WPTexture.Translation.ToolTip",
 		pPreviewEditTCOffset, cEditPreviewEditTCOffset::Ref::New(*this));
-	helper.EditPoint(groupBox, "@Skin.WPTexture.Scaling.Label", "@Skin.WPTexture.Scaling.ToolTip",
+	helper.EditPoint(groupBox, "@Skin.WPTexture.Scaling", "@Skin.WPTexture.Scaling.ToolTip",
 		pPreviewEditTCScaling, cEditPreviewEditTCScale::Ref::New(*this));
-	helper.EditFloat(groupBox, "@Skin.WPTexture.Rotation.Label", "@Skin.WPTexture.Rotation.ToolTip",
+	helper.EditFloat(groupBox, "@Skin.WPTexture.Rotation", "@Skin.WPTexture.Rotation.ToolTip",
 		pPreviewEditTCRotation, cEditPreviewEditTCRotation::Ref::New(*this));
 	
 	
 	// property
 	helper.GroupBoxFlow(content, groupBox, "@Skin.WPTexture.GroupProperty");
-	helper.ListBox(groupBox, 8, "@Skin.WPTexture.Property.Label", pListProperty, cListProperties::Ref::New(*this));
+	helper.ListBox(groupBox, 8, "@Skin.WPTexture.Property", pListProperty, cListProperties::Ref::New(*this));
 	pListProperty->SetDefaultSorter();
 	
 	form = igdeContainerForm::Ref::New(env);
 	groupBox->AddChild(form);
 	
-	helper.EditString(form, "@Skin.WPTexture.PropertyName.Label", "@Skin.WPTexture.PropertyName.ToolTip", pEditPropName, {});
+	helper.EditString(form, "@Skin.WPTexture.PropertyName", "@Skin.WPTexture.PropertyName.ToolTip", pEditPropName, {});
 	pEditPropName->SetEditable(false);
 	
-	helper.EditString(form, "@Skin.WPTexture.Renderable.Label", "@Skin.WPTexture.Renderable.ToolTip",
+	helper.EditString(form, "@Skin.WPTexture.Renderable", "@Skin.WPTexture.Renderable.ToolTip",
 		pEditPropRenderable, cTextPropertyRenderable::Ref::New(*this));
 	
-	helper.EditString(form, "@Skin.WPTexture.Bone.Label", "@Skin.WPTexture.Bone.ToolTip",
+	helper.EditString(form, "@Skin.WPTexture.Bone", "@Skin.WPTexture.Bone.ToolTip",
 		pEditPropBone, cTextPropertyBone::Ref::New(*this));
 	
-	helper.ComboBox(form, "@Skin.WPTexture.ValueType.Label", "@Skin.WPTexture.ValueType.ToolTip",
+	helper.ComboBox(form, "@Skin.WPTexture.ValueType", "@Skin.WPTexture.ValueType.ToolTip",
 		pCBPropertyType, cComboPropertyValueType::Ref::New(*this));
 	pCBPropertyType->SetAutoTranslateItems(true);
 	pCBPropertyType->AddItem("@Skin.WPTexture.ValueType.Value", nullptr, (void*)(intptr_t)seProperty::evtValue);
@@ -692,21 +692,21 @@ pPreventUpdateMappedTarget(false)
 	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	pSwitcher->AddChild(panel);
 	helper.GroupBox(panel, groupBox, "@Skin.WPTexture.GroupValue");
-	helper.EditFloat(groupBox, "@Skin.WPTexture.Value.Label", "@Skin.WPTexture.Value.ToolTip", pEditPvtValue, cTextPropertyValue::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Skin.WPTexture.Value", "@Skin.WPTexture.Value.ToolTip", pEditPvtValue, cTextPropertyValue::Ref::New(*this));
 	
 	
 	// color value
 	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	pSwitcher->AddChild(panel);
 	helper.GroupBox(panel, groupBox, "@Skin.WPTexture.GroupColor");
-	helper.ColorBox(groupBox, "@Skin.WPTexture.Color.Label", "@Skin.WPTexture.Color.ToolTip", pClrPvtColor, cColorPropertyColor::Ref::New(*this));
+	helper.ColorBox(groupBox, "@Skin.WPTexture.Color", "@Skin.WPTexture.Color.ToolTip", pClrPvtColor, cColorPropertyColor::Ref::New(*this));
 	
 	
 	// image
 	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	pSwitcher->AddChild(panel);
 	helper.GroupBox(panel, groupBox, "@Skin.WPTexture.GroupImage");
-	helper.EditPath(groupBox, "@Skin.WPTexture.ImagePath.Label", "@Skin.WPTexture.ImagePath.ToolTip", igdeEnvironment::efpltImage,
+	helper.EditPath(groupBox, "@Skin.WPTexture.ImagePath", "@Skin.WPTexture.ImagePath.ToolTip", igdeEnvironment::efpltImage,
 		pEditPvtImagePath, cPathPropertyImage::Ref::New(*this));
 	
 	helper.EditString(groupBox, "", "@Skin.WPTexture.ImageInfo.ToolTip", pLabPvtImageInfo, {});
@@ -717,7 +717,7 @@ pPreventUpdateMappedTarget(false)
 	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	pSwitcher->AddChild(panel);
 	helper.GroupBox(panel, groupBox, "@Skin.WPTexture.GroupVideo");
-	helper.EditPath(groupBox, "@Skin.WPTexture.VideoPath.Label", "@Skin.WPTexture.VideoPath.ToolTip", igdeEnvironment::efpltVideo,
+	helper.EditPath(groupBox, "@Skin.WPTexture.VideoPath", "@Skin.WPTexture.VideoPath.ToolTip", igdeEnvironment::efpltVideo,
 		pEditPvtVideoPath, cPathPropertyVideo::Ref::New(*this));
 	
 	helper.EditString(groupBox, "", "@Skin.WPTexture.VideoInfo.ToolTip", pLabPvtVideoInfo, {});
@@ -730,16 +730,16 @@ pPreventUpdateMappedTarget(false)
 	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	pSwitcher->AddChild(panel);
 	helper.GroupBox(panel, groupBox, "@Skin.WPTexture.GroupConstructed");
-	helper.ColorBox(groupBox, "@Skin.WPTexture.ConstructedColor.Label", "@Skin.WPTexture.ConstructedColor.ToolTip",
+	helper.ColorBox(groupBox, "@Skin.WPTexture.ConstructedColor", "@Skin.WPTexture.ConstructedColor.ToolTip",
 		pConstructedClrColor, cColorPropertyConstructed::Ref::New(*this));
-	helper.EditPoint3(groupBox, "@Skin.WPTexture.ConstructedSize.Label", "@Skin.WPTexture.ConstructedSize.ToolTip",
+	helper.EditPoint3(groupBox, "@Skin.WPTexture.ConstructedSize", "@Skin.WPTexture.ConstructedSize.ToolTip",
 		pConstructedEditSize, cEditPropertyConstructedSize::Ref::New(*this));
 	
-	helper.FormLine(groupBox, "@Skin.WPTexture.Tile.Label", "@Skin.WPTexture.Tile.ToolTip", formLine);
+	helper.FormLine(groupBox, "@Skin.WPTexture.Tile", "@Skin.WPTexture.Tile.ToolTip", formLine);
 	helper.CheckBox(formLine, pConstructedChkTileX, cActionConstructedChkTileX::Ref::New(*this));
 	helper.CheckBox(formLine, pConstructedChkTileY, cActionConstructedChkTileY::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "@Skin.WPTexture.BitCount.Label", "@Skin.WPTexture.BitCount.ToolTip",
+	helper.ComboBox(groupBox, "@Skin.WPTexture.BitCount", "@Skin.WPTexture.BitCount.ToolTip",
 		pConstructedCBBitCount, cComboConstructedBitCount::Ref::New(*this));
 	pConstructedCBBitCount->SetAutoTranslateItems(true);
 	pConstructedCBBitCount->AddItem("@Skin.WPTexture.BitCount.8Bit", nullptr, (void*)(intptr_t)8);
@@ -755,10 +755,10 @@ pPreventUpdateMappedTarget(false)
 	form = igdeContainerForm::Ref::New(env);
 	groupBox->AddChild(form);
 	
-	helper.EditSpinInteger(form, "@Skin.WPTexture.Component.Label", "@Skin.WPTexture.Component.ToolTip",
+	helper.EditSpinInteger(form, "@Skin.WPTexture.Component", "@Skin.WPTexture.Component.ToolTip",
 		0, 3, pSpinPvtMappedComponent, cSpinPropertyMappedComponent::Ref::New(*this));
 	
-	helper.ComboBox(form, "@Skin.WPTexture.Target.Label", "@Skin.WPTexture.Target.ToolTip",
+	helper.ComboBox(form, "@Skin.WPTexture.Target", "@Skin.WPTexture.Target.ToolTip",
 		pCBPvtMappedTarget, cComboPropertyMappedTarget::Ref::New(*this, pPreventUpdateMappedTarget));
 	
 	pCBPvtMappedTarget->SetDefaultSorter();

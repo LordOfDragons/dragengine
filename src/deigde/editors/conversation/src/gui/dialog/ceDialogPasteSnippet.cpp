@@ -71,32 +71,32 @@ pConversation(conversation)
 	igdeContainerForm::Ref content(igdeContainerForm::Ref::New(
 		environment, igdeContainerForm::esLast));
 	
-	helper.ComboBoxFilter(content, "@Conversation.DialogPasteSnippet.CameraShot1.Label", true,
+	helper.ComboBoxFilter(content, "@Conversation.DialogPasteSnippet.CameraShot1", true,
 		"@Conversation.DialogPasteSnippet.CameraShot1.ToolTip", pCBCameraShot1, {});
 	pCBCameraShot1->SetDefaultSorter();
 	
-	helper.ComboBoxFilter(content, "@Conversation.DialogPasteSnippet.CameraShot2.Label", true,
+	helper.ComboBoxFilter(content, "@Conversation.DialogPasteSnippet.CameraShot2", true,
 		"@Conversation.DialogPasteSnippet.CameraShot2.ToolTip", pCBCameraShot2, {});
 	pCBCameraShot2->SetDefaultSorter();
 	
-	helper.ComboBoxFilter(content, "@Conversation.DialogPasteSnippet.Target1.Label", true,
+	helper.ComboBoxFilter(content, "@Conversation.DialogPasteSnippet.Target1", true,
 		"@Conversation.DialogPasteSnippet.Target1.ToolTip", pCBTarget1, {});
 	pCBTarget1->SetDefaultSorter();
 	
-	helper.ComboBoxFilter(content, "@Conversation.DialogPasteSnippet.Target2.Label", true,
+	helper.ComboBoxFilter(content, "@Conversation.DialogPasteSnippet.Target2", true,
 		"@Conversation.DialogPasteSnippet.Target2.ToolTip", pCBTarget2, {});
 	pCBTarget2->SetDefaultSorter();
 	
-	helper.EditFloat(content, "@Conversation.DialogPasteSnippet.WaitCameraShot.Label",
+	helper.EditFloat(content, "@Conversation.DialogPasteSnippet.WaitCameraShot",
 		"@Conversation.DialogPasteSnippet.WaitCameraShot.ToolTip", pEditDelayCameraShot, {});
 	
-	helper.EditFloat(content, "@Conversation.DialogPasteSnippet.WaitActorSpeak.Label",
+	helper.EditFloat(content, "@Conversation.DialogPasteSnippet.WaitActorSpeak",
 		"@Conversation.DialogPasteSnippet.WaitActorSpeak.ToolTip", pEditDelayActorSpeak, {});
 	
-	helper.EditFloat(content, "@Conversation.DialogPasteSnippet.ScaleActorSpeak.Label",
+	helper.EditFloat(content, "@Conversation.DialogPasteSnippet.ScaleActorSpeak",
 		"@Conversation.DialogPasteSnippet.ScaleActorSpeak.ToolTip", pEditScaleActorSpeak, {});
 	
-	helper.EditString(content, "@Conversation.DialogPasteSnippet.Snippet.Label", "@Conversation.ToolTip.ConversationSnippet",
+	helper.EditString(content, "@Conversation.DialogPasteSnippet.Snippet", "@Conversation.ToolTip.ConversationSnippet",
 		pEditSnippet, 80, 20, {});
 	
 	igdeContainer::Ref buttonBar;

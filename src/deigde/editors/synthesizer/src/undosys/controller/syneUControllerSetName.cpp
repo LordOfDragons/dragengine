@@ -49,6 +49,8 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	pOldValue = controller->GetName();
+	
+	SetShortInfo("@Synthesizer.Undo.ControllerSetName");
 }
 
 syneUControllerSetName::~syneUControllerSetName(){

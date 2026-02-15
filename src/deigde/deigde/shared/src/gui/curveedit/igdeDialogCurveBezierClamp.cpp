@@ -101,8 +101,8 @@ void igdeDialogCurveBezierClamp::pCreateContent(igdeEnvironment &environment){
 	igdeContainerForm::Ref content(igdeContainerForm::Ref::New(environment));
 	
 	helper.CheckBox(content, "@Igde.DialogCurveBezierClamp.EnableClamping", "@Igde.DialogCurveBezierClamp.EnableClamping.ToolTip", pChkClamp);
-	helper.EditVector2(content, "@Igde.DialogCurveBezierClamp.Minimum.Label", "@Igde.DialogCurveBezierClamp.Minimum.ToolTip", pEditMinimum, {});
-	helper.EditVector2(content, "@Igde.DialogCurveBezierClamp.Maximum.Label", "@Igde.DialogCurveBezierClamp.Maximum.ToolTip", pEditMaximum, {});
+	helper.EditVector2(content, "@Igde.DialogCurveBezierClamp.Minimum", "@Igde.DialogCurveBezierClamp.Minimum.ToolTip", pEditMinimum, {});
+	helper.EditVector2(content, "@Igde.DialogCurveBezierClamp.Maximum", "@Igde.DialogCurveBezierClamp.Maximum.ToolTip", pEditMaximum, {});
 	
 	igdeContainer::Ref buttonBar;
 	CreateButtonBar(buttonBar, "@Igde.Accept", "@Igde.Discard");

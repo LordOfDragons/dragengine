@@ -99,13 +99,13 @@ reWPPanelShape(wpShapes, reRigShape::estBox)
 	
 	helper.GroupBox(*this, groupBox, "@Rig.PanelShapeBox.GroupBox.BoxParameters");
 	
-	helper.EditVector(groupBox, "@Rig.PanelShapeBox.Position.Label", "@Rig.PanelShapeBox.Position.ToolTip",
+	helper.EditVector(groupBox, "@Rig.PanelShapeBox.Position", "@Rig.PanelShapeBox.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
 	
-	helper.EditVector(groupBox, "@Rig.PanelShapeBox.Rotation.Label", "@Rig.PanelShapeBox.Rotation.ToolTip",
+	helper.EditVector(groupBox, "@Rig.PanelShapeBox.Rotation", "@Rig.PanelShapeBox.Rotation.ToolTip",
 		pEditRotation, cEditRotation::Ref::New(*this));
 	
-	helper.EditVector(groupBox, "@Rig.PanelShapeBox.HalfExtends.Label", "@Rig.PanelShapeBox.HalfExtends.ToolTip",
+	helper.EditVector(groupBox, "@Rig.PanelShapeBox.HalfExtends", "@Rig.PanelShapeBox.HalfExtends.ToolTip",
 		pEditHalfExtends, cEditHalfExtends::Ref::New(*this));
 }
 

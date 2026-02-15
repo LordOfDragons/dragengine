@@ -49,35 +49,35 @@ images with 4 color channel can be used as font images.</translation>
 	
 	<!-- WPFont: Font Properties Panel -->
 	<translation name="Font.WPFont.GroupFont">Font:</translation>
-	<translation name="Font.WPFont.Image.Label">Image:</translation>
+	<translation name="Font.WPFont.Image">Image:</translation>
 	<translation name="Font.WPFont.Image.ToolTip">Font image.</translation>
-	<translation name="Font.WPFont.LineHeight.Label">Line Height:</translation>
+	<translation name="Font.WPFont.LineHeight">Line Height:</translation>
 	<translation name="Font.WPFont.LineHeight.ToolTip">Line height in pixels.</translation>
 	<translation name="Font.WPFont.ColorFont">Color Font</translation>
 	<translation name="Font.WPFont.ColorFont.ToolTip">Font is a color font</translation>
-	<translation name="Font.WPFont.BaseLine.Label">Base Line:</translation>
+	<translation name="Font.WPFont.BaseLine">Base Line:</translation>
 	<translation name="Font.WPFont.BaseLine.ToolTip">Base line from top in pixels.</translation>
 	
 	<!-- WPGlyph: Glyph Properties Panel -->
 	<translation name="Font.WPGlyph.GroupGlyph">Glyph:</translation>
-	<translation name="Font.WPGlyph.Glyph.Label">Glyph:</translation>
+	<translation name="Font.WPGlyph.Glyph">Glyph:</translation>
 	<translation name="Font.WPGlyph.Glyph.ToolTip">Glyph to edit.</translation>
 	<translation name="Font.WPGlyph.Glyph.Add.ToolTip">Add glyph</translation>
 	<translation name="Font.WPGlyph.Glyph.Remove.ToolTip">Remove glyph</translation>
 	<translation name="Font.WPGlyph.GlyphCode">Code {0}</translation>
-	<translation name="Font.WPGlyph.TexCoords.Label">Tex-Coords:</translation>
+	<translation name="Font.WPGlyph.TexCoords">Tex-Coords:</translation>
 	<translation name="Font.WPGlyph.TexCoords.ToolTip">Texture coordinate in pixels.</translation>
 	<translation name="Font.WPGlyph.TexCoordsU.ToolTip">U texture coordinate in pixels</translation>
 	<translation name="Font.WPGlyph.TexCoordsV.ToolTip">V texture coordinate in pixels</translation>
-	<translation name="Font.WPGlyph.Width.Label">Width:</translation>
+	<translation name="Font.WPGlyph.Width">Width:</translation>
 	<translation name="Font.WPGlyph.Width.ToolTip">Width of the glyph in pixels.</translation>
-	<translation name="Font.WPGlyph.Height.Label">Height:</translation>
+	<translation name="Font.WPGlyph.Height">Height:</translation>
 	<translation name="Font.WPGlyph.Height.ToolTip">Height of the glyph in pixels.</translation>
-	<translation name="Font.WPGlyph.Bearing.Label">Bearing:</translation>
+	<translation name="Font.WPGlyph.Bearing">Bearing:</translation>
 	<translation name="Font.WPGlyph.Bearing.ToolTip">Horizontal bearing in pixels.</translation>
-	<translation name="Font.WPGlyph.BearingY.Label">Bearing Y:</translation>
+	<translation name="Font.WPGlyph.BearingY">Bearing Y:</translation>
 	<translation name="Font.WPGlyph.BearingY.ToolTip">Vertical bearing in pixels.</translation>
-	<translation name="Font.WPGlyph.Advance.Label">Advance:</translation>
+	<translation name="Font.WPGlyph.Advance">Advance:</translation>
 	<translation name="Font.WPGlyph.Advance.ToolTip">Advance in pixels.</translation>
 	
 	<!-- Undo: Font -->

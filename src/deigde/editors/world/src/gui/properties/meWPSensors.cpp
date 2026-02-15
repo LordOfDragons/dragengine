@@ -178,22 +178,22 @@ pWindowProperties(windowProperties)
 	
 	
 	// lumimeter
-	helper.GroupBox(content, groupBox, "@World.WPSensors.Lumimeter.Label");
+	helper.GroupBox(content, groupBox, "@World.WPSensors.Lumimeter");
 	
 	helper.CheckBox(groupBox, pChkLMTrackCam, cActionLMTrackCam::Ref::New(*this));
 	helper.EditDVector(groupBox, "@World.WPSensors.Label.Position", "@World.WPSensors.Position.ToolTip", pEditLMPos, cEditLMPos::Ref::New(*this));
-	helper.EditVector(groupBox, "@World.WPSensors.Direction.Label", "@World.WPSensors.Direction.ToolTip", pEditLMDir, cEditLMDir::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WPSensors.InnerAngle.Label", "@World.WPSensors.ConeInnerAngleInDegrees.ToolTip",
+	helper.EditVector(groupBox, "@World.WPSensors.Direction", "@World.WPSensors.Direction.ToolTip", pEditLMDir, cEditLMDir::Ref::New(*this));
+	helper.EditFloat(groupBox, "@World.WPSensors.InnerAngle", "@World.WPSensors.ConeInnerAngleInDegrees.ToolTip",
 		pEditLMConeIA, cTextLMConeIA::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WPSensors.OuterAngle.Label", "@World.WPSensors.ConeOuterAngleInDegrees.ToolTip",
+	helper.EditFloat(groupBox, "@World.WPSensors.OuterAngle", "@World.WPSensors.ConeOuterAngleInDegrees.ToolTip",
 		pEditLMConeOA, cTextLMConeOA::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WPSensors.Exponent.Label",
+	helper.EditFloat(groupBox, "@World.WPSensors.Exponent",
 		"@World.WPSensors.ConeExponentSmoothingBetweenInnerOuterAngle.ToolTip",
 		pEditLMConeExp, cTextLMConeExp::Ref::New(*this));
 	
-	helper.EditFloat(groupBox, "@World.WPSensors.MeasuredLuminance.Label", "@World.WPSensors.MeasuredLuminance.ToolTip", pEditLMLumi, {});
+	helper.EditFloat(groupBox, "@World.WPSensors.MeasuredLuminance", "@World.WPSensors.MeasuredLuminance.ToolTip", pEditLMLumi, {});
 	pEditLMLumi->SetEditable(false);
-	helper.ColorBox(groupBox, "@World.WPSensors.MeasuredColor.Label", "@World.WPSensors.MeasuredColor.ToolTip", pEditLMColor, {});
+	helper.ColorBox(groupBox, "@World.WPSensors.MeasuredColor", "@World.WPSensors.MeasuredColor.ToolTip", pEditLMColor, {});
 	pEditLMColor->SetEnabled(false);
 }
 

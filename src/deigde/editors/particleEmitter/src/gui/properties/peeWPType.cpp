@@ -811,33 +811,33 @@ pPreventUpdate(false)
 	helper.GroupBox(content, groupBox, "@ParticleEmitter.WPType.Group.Emitter");
 	
 	helper.CheckBox(groupBox, pChkEmitBurst, cActionEmitBurst::Ref::New(*this));
-	helper.EditFloat(groupBox, "@ParticleEmitter.WPType.Lifetime.Label", "@ParticleEmitter.WPType.Lifetime.ToolTip",
+	helper.EditFloat(groupBox, "@ParticleEmitter.WPType.Lifetime", "@ParticleEmitter.WPType.Lifetime.ToolTip",
 		pEditBurstLifetime, cTextBurstLifetime::Ref::New(*this));
 	
 	
 	// type settings
 	helper.GroupBox(content, groupBox, "@ParticleEmitter.WPType.Group.Types");
 	
-	helper.FormLineStretchFirst(groupBox, "@ParticleEmitter.WPType.Type.Label", "@ParticleEmitter.WPType.Type.ToolTip", frameLine);
+	helper.FormLineStretchFirst(groupBox, "@ParticleEmitter.WPType.Type", "@ParticleEmitter.WPType.Type.ToolTip", frameLine);
 	helper.ComboBox(frameLine, "@ParticleEmitter.WPType.Types.ToolTip", pCBType, cComboType::Ref::New(*this));
 	pCBType->SetDefaultSorter();
 	helper.Button(frameLine, pBtnType, cActionType::Ref::New(*this, pBtnType));
 	
-	helper.EditPath(groupBox, "@ParticleEmitter.WPType.Skin.Label", "@ParticleEmitter.WPType.Skin.ToolTip",
+	helper.EditPath(groupBox, "@ParticleEmitter.WPType.Skin", "@ParticleEmitter.WPType.Skin.ToolTip",
 		igdeEnvironment::efpltSkin, pEditSkin, cPathSkin::Ref::New(*this));
-	helper.EditPath(groupBox, "@ParticleEmitter.WPType.Model.Label", "@ParticleEmitter.WPType.Model.ToolTip",
+	helper.EditPath(groupBox, "@ParticleEmitter.WPType.Model", "@ParticleEmitter.WPType.Model.ToolTip",
 		igdeEnvironment::efpltModel, pEditModel, cPathModel::Ref::New(*this));
-	helper.EditPath(groupBox, "@ParticleEmitter.WPType.ModelSkin.Label", "@ParticleEmitter.WPType.ModelSkin.ToolTip",
+	helper.EditPath(groupBox, "@ParticleEmitter.WPType.ModelSkin", "@ParticleEmitter.WPType.ModelSkin.ToolTip",
 		igdeEnvironment::efpltSkin, pEditModelSkin, cPathModelSkin::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "@ParticleEmitter.WPType.CastFrom.Label", "@ParticleEmitter.WPType.CastFrom.ToolTip",
+	helper.ComboBox(groupBox, "@ParticleEmitter.WPType.CastFrom", "@ParticleEmitter.WPType.CastFrom.ToolTip",
 		pCBCastFrom, cComboCastFrom::Ref::New(*this));
 	pCBCastFrom->SetAutoTranslateItems(true);
 	pCBCastFrom->AddItem("@ParticleEmitter.WPType.CastFrom.Vertex", nullptr, (void*)(intptr_t)deParticleEmitterType::ecfVertex);
 	pCBCastFrom->AddItem("@ParticleEmitter.WPType.CastFrom.Face", nullptr, (void*)(intptr_t)deParticleEmitterType::ecfFace);
 	pCBCastFrom->AddItem("@ParticleEmitter.WPType.CastFrom.Volume", nullptr, (void*)(intptr_t)deParticleEmitterType::ecfVolume);
 	
-	helper.ComboBox(groupBox, "@ParticleEmitter.WPType.SimulationType.Label", "@ParticleEmitter.WPType.SimulationType.ToolTip",
+	helper.ComboBox(groupBox, "@ParticleEmitter.WPType.SimulationType", "@ParticleEmitter.WPType.SimulationType.ToolTip",
 		pCBSimType, cComboSimType::Ref::New(*this));
 	pCBSimType->SetAutoTranslateItems(true);
 	pCBSimType->AddItem("@ParticleEmitter.WPType.SimulationType.Particle", nullptr, (void*)(intptr_t)deParticleEmitterType::estParticle);
@@ -845,17 +845,17 @@ pPreventUpdate(false)
 	pCBSimType->AddItem("@ParticleEmitter.WPType.SimulationType.Beam", nullptr, (void*)(intptr_t)deParticleEmitterType::estBeam);
 	
 	helper.CheckBox(groupBox, pChkIntervalAsDistance, cActionIntervalAsDistance::Ref::New(*this));
-	helper.EditFloat(groupBox, "@ParticleEmitter.WPType.PhysicsSize.Label", "@ParticleEmitter.WPType.PhysicsSize.ToolTip",
+	helper.EditFloat(groupBox, "@ParticleEmitter.WPType.PhysicsSize", "@ParticleEmitter.WPType.PhysicsSize.ToolTip",
 		pEditPhysicsSize, cTextPhysicsSize::Ref::New(*this));
 	
 	
 	// type trail
 	helper.GroupBox(content, groupBox, "@ParticleEmitter.WPType.Group.Trail");
 	
-	helper.EditPath(groupBox, "@ParticleEmitter.WPType.Trail.Emitter.Label", "@ParticleEmitter.WPType.Trail.Emitter.ToolTip",
+	helper.EditPath(groupBox, "@ParticleEmitter.WPType.Trail.Emitter", "@ParticleEmitter.WPType.Trail.Emitter.ToolTip",
 		igdeEnvironment::efpltParticleEmitter, pEditPathTrailEmitter, cPathTrailEmitter::Ref::New(*this));
 	
-	helper.FormLineStretchFirst(groupBox, "@ParticleEmitter.WPType.Trail.Controller.Label", "@ParticleEmitter.WPType.Trail.Controller.ToolTip", frameLine);
+	helper.FormLineStretchFirst(groupBox, "@ParticleEmitter.WPType.Trail.Controller", "@ParticleEmitter.WPType.Trail.Controller.ToolTip", frameLine);
 	helper.ComboBox(frameLine, "@ParticleEmitter.WPType.Trail.Controller.ToolTip",
 		pCBTrailController, cComboTrailController::Ref::New(*this));
 	pCBTrailController->SetAutoTranslateItems(true);
@@ -867,7 +867,7 @@ pPreventUpdate(false)
 	// type collision
 	helper.GroupBox(content, groupBox, "@ParticleEmitter.WPType.Group.Collision");
 	
-	helper.ComboBox(groupBox, "@ParticleEmitter.WPType.Collision.Response.Label", "@ParticleEmitter.WPType.Collision.Response.ToolTip",
+	helper.ComboBox(groupBox, "@ParticleEmitter.WPType.Collision.Response", "@ParticleEmitter.WPType.Collision.Response.ToolTip",
 		pCBCollisionResponse, cComboCollisionResponse::Ref::New(*this));
 	pCBCollisionResponse->SetAutoTranslateItems(true);
 	pCBCollisionResponse->AddItem("@ParticleEmitter.WPType.Collision.Response.Destroy", nullptr,
@@ -877,13 +877,13 @@ pPreventUpdate(false)
 	pCBCollisionResponse->AddItem("@ParticleEmitter.WPType.Collision.Response.Custom", nullptr,
 		(void*)(intptr_t)deParticleEmitterType::ecrCustom);
 	
-	helper.EditPath(groupBox, "@ParticleEmitter.WPType.Collision.Emitter.Label", "@ParticleEmitter.WPType.Collision.Emitter.ToolTip",
+	helper.EditPath(groupBox, "@ParticleEmitter.WPType.Collision.Emitter", "@ParticleEmitter.WPType.Collision.Emitter.ToolTip",
 		igdeEnvironment::efpltParticleEmitter, pEditPathCollisionEmitter, cPathCollisionEmitter::Ref::New(*this));
-	helper.EditFloat(groupBox, "@ParticleEmitter.WPType.Collision.MinImpulse.Label",
+	helper.EditFloat(groupBox, "@ParticleEmitter.WPType.Collision.MinImpulse",
 		"@ParticleEmitter.WPType.Collision.MinImpulse.ToolTip",
 		pEditEmitMinImpulse, cTextEmitMinImpulse::Ref::New(*this));
 	
-	helper.FormLineStretchFirst(groupBox, "@ParticleEmitter.WPType.Collision.Controller.Label", "@ParticleEmitter.WPType.Collision.Controller.ToolTip", frameLine);
+	helper.FormLineStretchFirst(groupBox, "@ParticleEmitter.WPType.Collision.Controller", "@ParticleEmitter.WPType.Collision.Controller.ToolTip", frameLine);
 	helper.ComboBox(frameLine, "@ParticleEmitter.WPType.Collision.Controller.ToolTip",
 		pCBEmitController, cComboEmitController::Ref::New(*this));
 	pCBEmitController->SetAutoTranslateItems(true);
@@ -902,15 +902,15 @@ pPreventUpdate(false)
 	form = igdeContainerForm::Ref::New(env);
 	groupBox->AddChild(form);
 	
-	helper.EditFloat(form, "@ParticleEmitter.WPType.Parameter.CastRange.Label",
+	helper.EditFloat(form, "@ParticleEmitter.WPType.Parameter.CastRange",
 		"@ParticleEmitter.WPType.Parameter.CastRange.ToolTip",
 		pEditParamValue, cTextParamValue::Ref::New(*this));
-	helper.EditFloat(form, "@ParticleEmitter.WPType.Parameter.CastSpread.Label",
+	helper.EditFloat(form, "@ParticleEmitter.WPType.Parameter.CastSpread",
 		"@ParticleEmitter.WPType.Parameter.CastSpread.ToolTip", pEditParamSpread, cTextParamSpread::Ref::New(*this));
 	
-	helper.ComboBox(form, "@ParticleEmitter.WPType.Parameter.ControllerValue.Label", "@ParticleEmitter.WPType.Parameter.ControllerValue.ToolTip",
+	helper.ComboBox(form, "@ParticleEmitter.WPType.Parameter.ControllerValue", "@ParticleEmitter.WPType.Parameter.ControllerValue.ToolTip",
 		pCBParamCtrlValue, cComboControllerValue::Ref::New(*this, pPreventUpdate));
-	helper.ComboBox(form, "@ParticleEmitter.WPType.Parameter.ControllerSpread.Label", "@ParticleEmitter.WPType.Parameter.ControllerSpread.ToolTip",
+	helper.ComboBox(form, "@ParticleEmitter.WPType.Parameter.ControllerSpread", "@ParticleEmitter.WPType.Parameter.ControllerSpread.ToolTip",
 		pCBParamCtrlSpread, cComboControllerSpread::Ref::New(*this, pPreventUpdate));
 }
 

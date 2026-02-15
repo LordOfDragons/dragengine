@@ -48,6 +48,9 @@ pIndex(index)
 		DETHROW(deeInvalidParam);
 	}
 	
+	
+	SetShortInfo("@Synthesizer.Undo.SourceAdd");
+	
 	pSynthesizer = synthesizer;
 	pSource = source;
 }

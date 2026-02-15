@@ -311,24 +311,24 @@ pProjectGameDefPathChanged(false)
 	
 	content = igdeContainerForm::Ref::New(env);
 	
-	helper.EditString(content, "@Igde.NewGameProject.Name.Label", "@Igde.NewGameProject.Name.ToolTip",
+	helper.EditString(content, "@Igde.NewGameProject.Name", "@Igde.NewGameProject.Name.ToolTip",
 		80, pEditName, igdeDialogNewGameProject_TextName::Ref::New(*this));
-	helper.EditString(content, "@Igde.NewGameProject.Description.Label",
+	helper.EditString(content, "@Igde.NewGameProject.Description",
 		"@Igde.NewGameProject.Description.ToolTip", pEditDescription, 5, {});
 	
-	helper.EditDirectory(content, "@Igde.NewGameProject.ProjectDirectory.Label",
+	helper.EditDirectory(content, "@Igde.NewGameProject.ProjectDirectory",
 		"@Igde.NewGameProject.ProjectDirectory.ToolTip", pEditPathProject,
 		igdeDialogNewGameProject_DirectoryProject::Ref::New(*this), false);
 	
-	helper.EditString(content, "@Igde.NewGameProject.ProjectGameDefinition.Label",
+	helper.EditString(content, "@Igde.NewGameProject.ProjectGameDefinition",
 		"@Igde.NewGameProject.ProjectGameDefinition.ToolTip", pEditPathGameDefProject,
 		igdeDialogNewGameProject_TextPathGameDefProject::Ref::New(*this));
-	helper.EditString(content, "@Igde.NewGameProject.DataDirectory.Label",
+	helper.EditString(content, "@Igde.NewGameProject.DataDirectory",
 		"@Igde.NewGameProject.DataDirectory.ToolTip", pEditPathData, {});
-	helper.EditString(content, "@Igde.NewGameProject.CacheDirectory.Label",
+	helper.EditString(content, "@Igde.NewGameProject.CacheDirectory",
 		"@Igde.NewGameProject.CacheDirectory.ToolTip", pEditPathCache, {});
 	
-	helper.ComboBox(content, "@Igde.NewGameProject.ProjectTemplate.Label",
+	helper.ComboBox(content, "@Igde.NewGameProject.ProjectTemplate",
 		"@Igde.NewGameProject.ProjectTemplate.ToolTip",
 		pCBTemplate, igdeDialogNewGameProject_ComboTemplate::Ref::New(*this));
 	pCBTemplate->SetDefaultSorter();
@@ -336,7 +336,7 @@ pProjectGameDefPathChanged(false)
 		pEditTemplateInfo, 30, 5, {});
 	pEditTemplateInfo->SetEditable(false);
 	
-	helper.ListBox(content, "@Igde.NewGameProject.BaseGameDefinitions.Label", 3,
+	helper.ListBox(content, "@Igde.NewGameProject.BaseGameDefinitions", 3,
 		"@Igde.NewGameProject.BaseGameDefinitions.ToolTip", pListPathGameDefBase, {});
 	
 	helper.FormLineStretchFirst(content, "", "@Igde.NewGameProject.BaseGameDefinitionsInfo.ToolTip", panel);
@@ -356,7 +356,7 @@ pProjectGameDefPathChanged(false)
 	
 	helper.EditString(content, "", "@Igde.NewGameProject.SharedGameDefInfo", pEditSharedGameDefInfo, 5, {});
 	
-	helper.ComboBox(content, "@Igde.NewGameProject.ScriptingModule.Label",
+	helper.ComboBox(content, "@Igde.NewGameProject.ScriptingModule",
 		"@Igde.NewGameProject.ScriptingModule.ToolTip", pCBScriptModule,
 		igdeDialogNewGameProject_ComboScriptModule::Ref::New(*this));
 	pCBScriptModule->SetDefaultSorter();

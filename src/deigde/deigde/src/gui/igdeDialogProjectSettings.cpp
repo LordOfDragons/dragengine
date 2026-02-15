@@ -243,15 +243,15 @@ pBaseGameDefsChanged(false)
 	
 	content = igdeContainerForm::Ref::New(env);
 	
-	helper.EditString(content, "@Igde.ProjectSettings.Name.Label", "@Igde.ProjectSettings.Name.ToolTip", 60, pEditName, {});
-	helper.EditString(content, "@Igde.ProjectSettings.Description.Label",
+	helper.EditString(content, "@Igde.ProjectSettings.Name", "@Igde.ProjectSettings.Name.ToolTip", 60, pEditName, {});
+	helper.EditString(content, "@Igde.ProjectSettings.Description",
 		"@Igde.ProjectSettings.Description.ToolTip", pEditDescription, 5, {});
-	helper.EditString(content, "@Igde.ProjectSettings.DataDirectory.Label",
+	helper.EditString(content, "@Igde.ProjectSettings.DataDirectory",
 		"@Igde.ProjectSettings.DataDirectory.ToolTip", pEditPathData, {});
-	helper.EditString(content, "@Igde.ProjectSettings.CacheDirectory.Label",
+	helper.EditString(content, "@Igde.ProjectSettings.CacheDirectory",
 		"@Igde.ProjectSettings.CacheDirectory.ToolTip", pEditPathCache, {});
 	
-	helper.ListBox(content, "@Igde.ProjectSettings.BaseGameDefinitions.Label", 3,
+	helper.ListBox(content, "@Igde.ProjectSettings.BaseGameDefinitions", 3,
 		"@Igde.ProjectSettings.BaseGameDefinitions.ToolTip", pListPathGameDefBase, {});
 	
 	helper.FormLineStretchFirst(content, "", "@Igde.ProjectSettings.BaseGameDefinitionsInfo.ToolTip", panel);
@@ -267,10 +267,10 @@ pBaseGameDefsChanged(false)
 	
 	helper.EditString(content, "", "@Igde.ProjectSettings.SharedGameDefInfo", pEditSharedGameDefInfo, 3, {});
 	
-	helper.ComboBox(content, "@Igde.ProjectSettings.ScriptingModule.Label", "@Igde.ProjectSettings.ScriptingModule.ToolTip", pCBScriptModule, igdeDialogProjectSettings_ComboScriptModule::Ref::New(*this));
+	helper.ComboBox(content, "@Igde.ProjectSettings.ScriptingModule", "@Igde.ProjectSettings.ScriptingModule.ToolTip", pCBScriptModule, igdeDialogProjectSettings_ComboScriptModule::Ref::New(*this));
 	pCBScriptModule->SetDefaultSorter();
 	
-	helper.EditString(content, "@Igde.ProjectSettings.Version.Label", "@Igde.ProjectSettings.Version.ToolTip", 6, pEditScriptModuleVersion, {});
+	helper.EditString(content, "@Igde.ProjectSettings.Version", "@Igde.ProjectSettings.Version.ToolTip", 6, pEditScriptModuleVersion, {});
 	
 	
 	igdeContainer::Ref buttonBar;

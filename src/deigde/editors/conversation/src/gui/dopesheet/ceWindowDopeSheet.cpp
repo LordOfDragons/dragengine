@@ -418,7 +418,7 @@ pVAPreviewHeight(40)
 	// scroll and zoom frame on bottom
 	panel2 = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esLast, 2);
 	
-	helper.Label(panel2, "@Conversation.WindowDopeSheet.TimeScale.Label", "@Conversation.WindowDopeSheet.TimeScale.ToolTip");
+	helper.Label(panel2, "@Conversation.WindowDopeSheet.TimeScale", "@Conversation.WindowDopeSheet.TimeScale.ToolTip");
 	helper.ComboBox(panel2, true, "@Conversation.WindowDopeSheet.TimeScale.ToolTip", pCBTimeScale, cComboTimeScale::Ref::New(*this));
 	pCBTimeScale->AddItem("12");
 	pCBTimeScale->AddItem("25");

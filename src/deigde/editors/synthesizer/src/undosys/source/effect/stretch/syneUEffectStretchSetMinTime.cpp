@@ -46,7 +46,7 @@ pSource(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("@Effect Stretch Set Min Time");
+	SetShortInfo("@Synthesizer.Undo.EffectStretchSetMinTime");
 	
 	pOldTime = effect->GetMinTime();
 	pNewTime = newTime;

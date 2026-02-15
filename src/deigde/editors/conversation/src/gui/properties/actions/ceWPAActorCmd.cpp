@@ -147,11 +147,11 @@ ceWPAActorCmd::ceWPAActorCmd(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	
 	CreateGUICommon(*this);
 	
-	helper.ComboBox(*this, "@Conversation.WPActionActorCmd.ActorID.Label", true, "@Conversation.ToolTip.ActorToSendCommand", pCBActorID, cComboActor::Ref::New(*this));
+	helper.ComboBox(*this, "@Conversation.WPActionActorCmd.ActorID", true, "@Conversation.ToolTip.ActorToSendCommand", pCBActorID, cComboActor::Ref::New(*this));
 	pCBActorID->SetDefaultSorter();
 	
-	helper.FormLineStretchFirst(*this, "@Conversation.FormLine.Command", "@Conversation.WPActionActorCmd.Commandtosend.Label", formLine);
-	helper.EditString(formLine, "@Conversation.WPActionActorCmd.Commandtosend.Label", pEditCommand, cTextCommand::Ref::New(*this));
+	helper.FormLineStretchFirst(*this, "@Conversation.FormLine.Command", "@Conversation.WPActionActorCmd.Command.ToolTip", formLine);
+	helper.EditString(formLine, "@Conversation.WPActionActorCmd.Command.ToolTip", pEditCommand, cTextCommand::Ref::New(*this));
 	helper.Button(formLine, pBtnCommand, cActionEditCommand::Ref::New(*this));
 }
 

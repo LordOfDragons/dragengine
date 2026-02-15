@@ -120,9 +120,9 @@ pRuleCV(rule)
 	pFraParameters = igdeContainerForm::Ref::New(env);
 	AddChild(pFraParameters);
 	
-	helper.EditFloat(pFraParameters, "@World.WVNodeClosestVegetation.Type.Label", "@World.WVNodeClosestVegetation.SetTypeOfVegetationToSearchFor.ToolTip",
+	helper.EditFloat(pFraParameters, "@World.WVNodeClosestVegetation.Type", "@World.WVNodeClosestVegetation.SetTypeOfVegetationToSearchFor.ToolTip",
 		pEditVegetationType, cTextVegetationType::Ref::New(*this));
-	helper.EditFloat(pFraParameters, "@World.WVNodePropCount.Radius.Label", "@World.WVNodePropCount.SetSearchRadiusInMeters.ToolTip",
+	helper.EditFloat(pFraParameters, "@World.WVNodePropCount.Radius", "@World.WVNodePropCount.SetSearchRadiusInMeters.ToolTip",
 		pEditSearchRadius, cTextSearchRadius::Ref::New(*this));
 }
 

@@ -50,6 +50,7 @@ pIndex(index)
 	
 	pGroup = group;
 	pSource = source;
+	SetShortInfo("@Synthesizer.Undo.SourceGroupAddSource");
 }
 
 syneUSourceGroupAddSource::~syneUSourceGroupAddSource(){

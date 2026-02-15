@@ -582,7 +582,7 @@ public:
 	using Ref = deTObjectReference<cCheckWrapY>;
 	
 public:
-	cCheckWrapY(aeWPLink &panel) : cBaseAction(panel, "@Animator.WPLink.WrapY.Label", nullptr,
+	cCheckWrapY(aeWPLink &panel) : cBaseAction(panel, "@Animator.WPLink.WrapY", nullptr,
 		"@Animator.WPLink.WrapY.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeLink *link) override{
@@ -620,28 +620,28 @@ pPreventUpdate(false)
 	
 	
 	// links
-	helper.GroupBoxFlow(content, groupBox, "@Animator.WPLink.Links.Label");
+	helper.GroupBoxFlow(content, groupBox, "@Animator.WPLink.Links");
 	helper.ListBox(groupBox, 8, "@Animator.WPLink.Links.ToolTip", pListLink, cListLinks::Ref::New(*this));
 	pListLink->SetDefaultSorter();
 	
 	
 	// link settings
-	helper.GroupBox(content, groupBox, "@Animator.WPLink.LinkSettings.Label");
-	helper.EditString(groupBox, "@Animator.WPLink.Name.Label",
+	helper.GroupBox(content, groupBox, "@Animator.WPLink.LinkSettings");
+	helper.EditString(groupBox, "@Animator.WPLink.Name",
 		"@Animator.WPLink.Name.ToolTip", pEditName, cTextName::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "@Animator.WPLink.Controller.Label",
+	helper.ComboBox(groupBox, "@Animator.WPLink.Controller",
 		"@Animator.WPLink.Controller.ToolTip", pCBController, cComboConnectionController::Ref::New(*this, pPreventUpdate));
 	pCBController->SetDefaultSorter();
 	
-	helper.EditSpinInteger(groupBox, "@Animator.WPLink.Repeat.Label",
+	helper.EditSpinInteger(groupBox, "@Animator.WPLink.Repeat",
 		"@Animator.WPLink.Repeat.ToolTip", 1, 99, pSpinRepeat, cSpinRepeat::Ref::New(*this));
 	
-	helper.ComboBoxFilter(groupBox, "@Animator.WPLink.Bone.Label", true,
+	helper.ComboBoxFilter(groupBox, "@Animator.WPLink.Bone", true,
 		"@Animator.WPLink.Bone.ToolTip", pCBBone, cComboBone::Ref::New(*this, pPreventUpdate));
 	pCBBone->SetDefaultSorter();
 	
-	helper.ComboBox(groupBox, "@Animator.WPLink.BoneParameter.Label",
+	helper.ComboBox(groupBox, "@Animator.WPLink.BoneParameter",
 		"@Animator.WPLink.BoneParameter.ToolTip", pCBBoneParameter, cComboBoneParameter::Ref::New(*this));
 	pCBBoneParameter->SetAutoTranslateItems(true);
 	pCBBoneParameter->AddItem("@Animator.WPLink.BoneParameter.PositionX", nullptr, (void*)(intptr_t)deAnimatorLink::ebpPositionX);
@@ -654,24 +654,24 @@ pPreventUpdate(false)
 	pCBBoneParameter->AddItem("@Animator.WPLink.BoneParameter.ScaleY", nullptr, (void*)(intptr_t)deAnimatorLink::ebpScaleY);
 	pCBBoneParameter->AddItem("@Animator.WPLink.BoneParameter.ScaleZ", nullptr, (void*)(intptr_t)deAnimatorLink::ebpScaleZ);
 	
-	helper.EditFloat(groupBox, "@Animator.WPLink.BoneMinimumValue.Label",
+	helper.EditFloat(groupBox, "@Animator.WPLink.BoneMinimumValue",
 		"@Animator.WPLink.BoneMinimumValue.ToolTip", pEditBoneMinimum, cTextBoneMinimum::Ref::New(*this));
-	helper.EditFloat(groupBox, "@Animator.WPLink.BoneMaximumValue.Label",
+	helper.EditFloat(groupBox, "@Animator.WPLink.BoneMaximumValue",
 		"@Animator.WPLink.BoneMaximumValue.ToolTip", pEditBoneMaximum, cTextBoneMaximum::Ref::New(*this));
 	
-	helper.ComboBoxFilter(groupBox, "@Animator.WPLink.VertexPositionSet.Label", true,
+	helper.ComboBoxFilter(groupBox, "@Animator.WPLink.VertexPositionSet", true,
 		"@Animator.WPLink.VertexPositionSet.ToolTip", pCBVertexPositionSet, cComboVertexPositionSet::Ref::New(*this, pPreventUpdate));
 	pCBVertexPositionSet->SetDefaultSorter();
 	
-	helper.EditFloat(groupBox, "@Animator.WPLink.VPSMinimumValue.Label",
+	helper.EditFloat(groupBox, "@Animator.WPLink.VPSMinimumValue",
 		"@Animator.WPLink.VPSMinimumValue.ToolTip", pEditVertexPositionSetMinimum, cTextVertexPositionSetMinimum::Ref::New(*this));
-	helper.EditFloat(groupBox, "@Animator.WPLink.VPSMaximumValue.Label",
+	helper.EditFloat(groupBox, "@Animator.WPLink.VPSMaximumValue",
 		"@Animator.WPLink.VPSMaximumValue.ToolTip", pEditVertexPositionSetMaximum, cTextVertexPositionSetMaximum::Ref::New(*this));
 	
 	helper.CheckBox(groupBox, pChkWrapY, cCheckWrapY::Ref::New(*this));
 	
 	
-	helper.GroupBoxFlow(content, groupBox, "@Animator.WPLink.LinkCurve.Label");
+	helper.GroupBoxFlow(content, groupBox, "@Animator.WPLink.LinkCurve");
 	
 	helper.ViewCurveBezier(groupBox, pEditCurve, cEditCurve::Ref::New(*this));
 	pEditCurve->SetDefaultSize(decPoint(200, 250));

@@ -46,7 +46,7 @@ aeUSetRuleSModEnableRot::aeUSetRuleSModEnableRot(aeRuleStateManipulator *rule){
 	
 	try{
 		pRule = rule;
-		SetShortInfo("@Animator.Undo.SetRuleStateManipulatorEnablePosition");
+		SetShortInfo("@Animator.Undo.SetRuleStateManipulatorEnableRotation");
 		
 	}catch(const deException &){
 		pCleanUp();

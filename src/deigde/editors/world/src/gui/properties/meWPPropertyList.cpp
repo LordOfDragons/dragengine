@@ -586,7 +586,7 @@ pEnabled(true)
 	pActionPropertyImport = cActionPropertyImport::Ref::New(*this);
 	
 	
-	//helper.FormLineStretchFirst(*this, "@World.WPSObjectShape.Property.Label", "@World.WPPropertyList.PropertyToAdd.ToolTip", frameLine);
+	//helper.FormLineStretchFirst(*this, "@World.WPSObjectShape.Property", "@World.WPPropertyList.PropertyToAdd.ToolTip", frameLine);
 	frameLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
 	AddChild(frameLine);
 	helper.ComboBoxFilter(frameLine, true, "@World.WPPropertyList.PropertyToAdd.ToolTip", pCBKeys, cComboKey::Ref::New(*this));
@@ -604,7 +604,7 @@ pEnabled(true)
 	
 	helper.EditPropertyValue(*this, pEditPropertyValue, cEditPropertyValue::Ref::New(*this));
 	
-	helper.EditString(*this, "@World.WPPropertyList.Information.Label", pDisplayInfo, 6, {});
+	helper.EditString(*this, "@World.WPPropertyList.Information", pDisplayInfo, 6, {});
 	pDisplayInfo->SetEditable(false);
 }
 

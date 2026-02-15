@@ -190,7 +190,7 @@ public:
 			
 		}catch(const deException &){
 			igdeCommonDialogs::Error(*pPanel.GetParentWindow(), "@GameDefinition.OCEnvMapProbe.InvalidInput.Error",
-				"@GameDefinition.OCEnvMapProbe.InputValueDoesNotDecodeToAProperShapeList.Error");
+				"@GameDefinition.OCEnvMapProbe.ShapeDecodeInvalidValue.Error");
 			textField.Focus();
 			return {};
 		}
@@ -221,7 +221,7 @@ public:
 		
 		}catch(const deException &){
 			igdeCommonDialogs::Error(*pPanel.GetParentWindow(), "@GameDefinition.OCEnvMapProbe.InvalidInput.Error",
-				"@GameDefinition.OCEnvMapProbe.InputValueDoesNotDecodeToAProperShapeList.Error");
+				"@GameDefinition.OCEnvMapProbe.ShapeDecodeInvalidValue.Error");
 			textField.Focus();
 			return {};
 		}
@@ -252,7 +252,7 @@ public:
 		
 		}catch(const deException &){
 			igdeCommonDialogs::Error(*pPanel.GetParentWindow(), "@GameDefinition.OCEnvMapProbe.InvalidInput.Error",
-				"@GameDefinition.OCEnvMapProbe.InputValueDoesNotDecodeToAProperShapeList.Error");
+				"@GameDefinition.OCEnvMapProbe.ShapeDecodeInvalidValue.Error");
 			textField.Focus();
 			return {};
 		}
@@ -354,26 +354,26 @@ pWindowProperties(windowProperties)
 	pListener = gdeWPSOCEnvMapProbeListener::Ref::New(*this);
 	
 	helper.GroupBox(content, groupBox, "@GameDefinition.WPSOCEnvMapProbe.GroupEnvMapProbe");
-	helper.EditVector(groupBox, "@GameDefinition.WPSOCEnvMapProbe.Position.Label", "@GameDefinition.WPSOCEnvMapProbe.Position.ToolTip",
+	helper.EditVector(groupBox, "@GameDefinition.WPSOCEnvMapProbe.Position", "@GameDefinition.WPSOCEnvMapProbe.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
-	helper.EditVector(groupBox, "@GameDefinition.WPSOCEnvMapProbe.Rotation.Label", "@GameDefinition.WPSOCEnvMapProbe.Rotation.ToolTip",
+	helper.EditVector(groupBox, "@GameDefinition.WPSOCEnvMapProbe.Rotation", "@GameDefinition.WPSOCEnvMapProbe.Rotation.ToolTip",
 		pEditRotation, cEditRotation::Ref::New(*this));
-	helper.EditVector(groupBox, "@GameDefinition.WPSOCEnvMapProbe.Scaling.Label", "@GameDefinition.WPSOCEnvMapProbe.Scaling.ToolTip",
+	helper.EditVector(groupBox, "@GameDefinition.WPSOCEnvMapProbe.Scaling", "@GameDefinition.WPSOCEnvMapProbe.Scaling.ToolTip",
 		pEditScaling, cEditScaling::Ref::New(*this));
-	helper.EditString(groupBox, "@GameDefinition.WPSOCEnvMapProbe.InfluenceShape.Label", "@GameDefinition.WPSOCEnvMapProbe.InfluenceShape.ToolTip",
+	helper.EditString(groupBox, "@GameDefinition.WPSOCEnvMapProbe.InfluenceShape", "@GameDefinition.WPSOCEnvMapProbe.InfluenceShape.ToolTip",
 		pEditShapeInfluence, cTextShapeInfluence::Ref::New(*this));
-	helper.EditString(groupBox, "@GameDefinition.WPSOCEnvMapProbe.ReflectionShape.Label", "@GameDefinition.WPSOCEnvMapProbe.ReflectionShape.ToolTip",
+	helper.EditString(groupBox, "@GameDefinition.WPSOCEnvMapProbe.ReflectionShape", "@GameDefinition.WPSOCEnvMapProbe.ReflectionShape.ToolTip",
 		pEditShapeReflection, cTextShapeReflection::Ref::New(*this));
-	helper.EditString(groupBox, "@GameDefinition.WPSOCEnvMapProbe.ReflectionShapeMask.Label", "@GameDefinition.WPSOCEnvMapProbe.ReflectionShapeMask.ToolTip",
+	helper.EditString(groupBox, "@GameDefinition.WPSOCEnvMapProbe.ReflectionShapeMask", "@GameDefinition.WPSOCEnvMapProbe.ReflectionShapeMask.ToolTip",
 		pEditShapeReflectionMask, cTextShapeReflectionMask::Ref::New(*this));
-	helper.EditFloat(groupBox, "@GameDefinition.WPSOCEnvMapProbe.InfluenceBorderSize.Label", "@GameDefinition.WPSOCEnvMapProbe.InfluenceBorderSize.ToolTip",
+	helper.EditFloat(groupBox, "@GameDefinition.WPSOCEnvMapProbe.InfluenceBorderSize", "@GameDefinition.WPSOCEnvMapProbe.InfluenceBorderSize.ToolTip",
 		pEditInfluenceBorderSize, cTextInfluenceBorderSize::Ref::New(*this));
-	helper.EditInteger(groupBox, "@GameDefinition.WPSOCEnvMapProbe.InfluencePriority.Label", "@GameDefinition.WPSOCEnvMapProbe.InfluencePriority.ToolTip",
+	helper.EditInteger(groupBox, "@GameDefinition.WPSOCEnvMapProbe.InfluencePriority", "@GameDefinition.WPSOCEnvMapProbe.InfluencePriority.ToolTip",
 		pEditInfluencePriority, cTextInfluencePriority::Ref::New(*this));
 	
 	// properties targets
 	helper.GroupBox(content, groupBox, "@GameDefinition.WPSOCEnvMapProbe.GroupProperties");
-	helper.ComboBox(groupBox, "@GameDefinition.WPSOCEnvMapProbe.Property.Label", "@GameDefinition.WPSOCEnvMapProbe.Property.ToolTip",
+	helper.ComboBox(groupBox, "@GameDefinition.WPSOCEnvMapProbe.Property", "@GameDefinition.WPSOCEnvMapProbe.Property.ToolTip",
 		pCBPropertyNames, cComboPropertyNames::Ref::New(*this));
 	pCBPropertyNames->SetAutoTranslateItems(true);
 	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.InfluenceArea", nullptr,
@@ -391,7 +391,7 @@ pWindowProperties(windowProperties)
 	pCBPropertyNames->AddItem("@GameDefinition.PropertyType.AttachRotation", nullptr,
 		(void*)(intptr_t)gdeOCEnvMapProbe::epAttachRotation);
 	
-	helper.ComboBoxFilter(groupBox, "@GameDefinition.WPSOCEnvMapProbe.Target.Label", true, "@GameDefinition.WPSOCEnvMapProbe.Target.ToolTip",
+	helper.ComboBoxFilter(groupBox, "@GameDefinition.WPSOCEnvMapProbe.Target", true, "@GameDefinition.WPSOCEnvMapProbe.Target.ToolTip",
 		pCBPropertyNameTarget, cComboPropertyNameTarget::Ref::New(*this));
 	pCBPropertyNameTarget->SetEditable(true);
 	pCBPropertyNameTarget->SetDefaultSorter();

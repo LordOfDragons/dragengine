@@ -101,7 +101,7 @@ ceWPAWait::ceWPAWait(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	
 	CreateGUICommon(*this);
 	
-	helper.EditFloat(*this, "@Conversation.WPActionWait.Interval.Label", "@Conversation.WPActionWait.Interval.ToolTip",
+	helper.EditFloat(*this, "@Conversation.WPActionWait.Interval", "@Conversation.WPActionWait.Interval.ToolTip",
 		pEditInterval, cTextInterval::Ref::New(*this));
 }
 
