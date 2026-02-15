@@ -170,7 +170,7 @@ jobs:
       
       - name: Move Workspace to D
         run: |
-          robocopy . D:\build\ /E /SL /XJ /NP /R:0 /W:0
+          robocopy . D:\build\ /E /SL /XJ /NP /NFL /NDL /R:0 /W:0
           if ($LASTEXITCODE -lt 8) { $global:LASTEXITCODE = 0 }
           cd D:\build
           echo "GITHUB_WORKSPACE=D:\build" >> $env:GITHUB_ENV
