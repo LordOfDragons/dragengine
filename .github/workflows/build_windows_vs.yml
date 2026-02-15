@@ -175,6 +175,9 @@ jobs:
           cd D:\build
           echo "GITHUB_WORKSPACE=D:\build" >> $env:GITHUB_ENV
       
+      - name: Set up MSVC Developer Command Prompt
+        uses: ilammy/msvc-dev-cmd@v1
+      
       - name: Build
         working-directory: vs
         run: |
