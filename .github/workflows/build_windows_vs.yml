@@ -125,6 +125,13 @@ jobs:
           $env:MSBUILDDISABLENODEREUSE=1
           & msbuild /m:4 -tl:off /nodeReuse:false /v:m /p:Configuration=$Config /p:BuildVersion=$BuilVersion dragengine.sln
       
+      - name: Configure Pagefile
+        uses: al-cheb/configure-pagefile-action@v1.2
+        with:
+          minimum-size: 16GB
+          maximum-size: 32GB
+          disk-root: "C:"
+      
       - name: Archive
         run: |
           $DistributeDir = "${{ github.workspace }}/vs/Distribute"
