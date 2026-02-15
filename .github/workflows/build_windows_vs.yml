@@ -86,6 +86,11 @@ jobs:
           Write-Host "Final Disk Space:"
           Get-PSDrive C | Select-Object Size, Free
       
+      - name: Expand Pagefile
+        uses: al-cheb/configure-pagefile-action@v1.4
+        with:
+          minimum-size: 32GB
+      
       - uses: actions/checkout@v4
         with:
           lfs: ${{ !inputs.lfscache }}
@@ -148,12 +153,6 @@ jobs:
           $BuilVersion = "${{ inputs.buildVersion }}"
           $env:MSBUILDDISABLENODEREUSE=1
           & msbuild /m:4 /p:CL_MPCount=1 -tl:off /nodeReuse:false /v:m /p:Configuration=$Config /p:BuildVersion=$BuilVersion dragengine.sln
-      
-      - name: Configure Pagefile
-        uses: al-cheb/configure-pagefile-action@v1.2
-        with:
-          minimum-size: 32GB
-          disk-root: "C:"
       
       - name: Archive
         run: |
