@@ -29,6 +29,8 @@
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 
+class igdeEnvironment;
+
 
 
 /**
@@ -41,6 +43,7 @@ public:
 	
 	
 private:
+	igdeEnvironment &pEnvironment;
 	bool pModifyPosition;
 	bool pModifySize;
 	decVector pFactors;
@@ -50,7 +53,7 @@ private:
 	
 public:
 	// constructor, destructor
-	meBaseUndoScale();
+	meBaseUndoScale(igdeEnvironment &environment);
 	
 protected:
 	~meBaseUndoScale() override;

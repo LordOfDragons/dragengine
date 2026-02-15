@@ -30,6 +30,8 @@
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 
+class igdeEnvironment;
+
 
 
 /**
@@ -42,6 +44,7 @@ public:
 	
 	
 private:
+igdeEnvironment &pEnvironment;
 	float pAngle;
 	decDVector pPivot;
 	decDVector pAxis;
@@ -51,7 +54,7 @@ private:
 	
 public:
 	// constructor, destructor
-	meBaseUndoRotate();
+	meBaseUndoRotate(igdeEnvironment &environment);
 	
 protected:
 	~meBaseUndoRotate() override;

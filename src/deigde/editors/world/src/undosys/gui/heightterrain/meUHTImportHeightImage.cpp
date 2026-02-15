@@ -53,7 +53,7 @@ meUHTImportHeightImage::meUHTImportHeightImage(meWorld *world, meHeightTerrainSe
 	pWorld = nullptr;
 	pSector = sector;
 	
-	SetShortInfo("Import Height Image");
+	SetShortInfo("@World.WPHeightTerrain.Dialog.ImportHeightImage");
 	SetMemoryConsumption(sizeof(meUHTImportHeightImage) + 2 * sizeof(float) * pixelCount);
 	
 	// store old heights

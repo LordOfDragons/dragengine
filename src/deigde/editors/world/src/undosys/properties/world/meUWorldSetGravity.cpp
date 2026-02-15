@@ -46,7 +46,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Set world gravity");
+	SetShortInfo("@World.UWorldSetGravity.SetWorldGravity");
 	
 	pOldValue = world->GetGravity();
 	

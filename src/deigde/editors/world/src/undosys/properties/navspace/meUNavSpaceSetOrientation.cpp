@@ -53,7 +53,7 @@ meUNavSpaceSetOrientation::meUNavSpaceSetOrientation(meNavigationSpace *navspace
 	
 	pNavSpace = nullptr;
 	
-	SetShortInfo("NavSpace Set Orientation");
+	SetShortInfo("@World.UNavSpaceSetOrientation.NavspaceSetOrientation");
 	
 	pOldOrientation = navspace->GetOrientation();
 	pNewOrientation = newOrientation;

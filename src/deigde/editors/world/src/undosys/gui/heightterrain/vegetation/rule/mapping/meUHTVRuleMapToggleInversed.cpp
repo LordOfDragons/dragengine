@@ -46,7 +46,7 @@ meUHTVRuleMapToggleInversed::meUHTVRuleMapToggleInversed(meHTVegetationLayer *vl
 	pVLayer = nullptr;
 	pRule = nullptr;
 	
-	SetShortInfo("Vegetation Layer Rule Mapping Toggle Inversed");
+	SetShortInfo("@World.UHTVRuleMapToggleInversed.VegetationLayerRuleMappingToggleInversed");
 	SetMemoryConsumption(sizeof(meUHTVRuleMapToggleInversed));
 	
 	pVLayer = vlayer;

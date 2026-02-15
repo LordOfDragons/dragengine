@@ -111,19 +111,19 @@ pRuleResult(rule)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	SetTitle("Result");
+	SetTitle("@World.WVNodeResult.Title");
 	
 	// slots
 	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::New(env,
-		"Probability", "Probability in the range from 0 to 1",
+		"@World.WVNodeResult.Input.Probability", "@World.WVNodeResult.Input.ProbabilityDesc",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleResult::eisProbability));
-	helper.EditFloat(slot, "Probability if slot is not connected.",
+	helper.EditFloat(slot, "@World.WVNodeResult.ProbabilityIfSlotIsNotConnected.Label",
 		pEditProbability, cTextProbability::Ref::New(*this));
 	AddSlot(slot);
 	
-	slot = meWVNodeSlot::Ref::New(env, "Variation", "Variation to use",
+	slot = meWVNodeSlot::Ref::New(env, "@World.WVNodeResult.Input.Variation", "@World.WVNodeResult.Input.VariationDesc",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleResult::eisVariation);
-	helper.EditInteger(slot, "Variation if slot is not connected.",
+	helper.EditInteger(slot, "@World.WVNodeResult.VariationIfSlotIsNotConnected.Label",
 		pEditVariation, cTextVariation::Ref::New(*this));
 	AddSlot(slot);
 	

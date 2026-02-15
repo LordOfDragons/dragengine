@@ -48,7 +48,7 @@ meURaiseDecalTop::meURaiseDecalTop(meWorld *world, meDecal *decal){
 		pOldIndex = decal->GetParentObject()->GetDecals().IndexOf(decal);
 	//}
 	
-	SetShortInfo("Raise decal to the top.");
+	SetShortInfo("@World.URaiseDecalTop.RaiseDecalToTop");
 	SetLongInfo("");
 }
 

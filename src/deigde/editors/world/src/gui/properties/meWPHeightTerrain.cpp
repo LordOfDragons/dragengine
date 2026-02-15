@@ -340,12 +340,8 @@ public:
 		
 		if(pPanel.GetEngine()->GetVirtualFileSystem()->ExistsFile(decPath::CreatePathUnix(editPath->GetPath()))){
 			igdeCommonDialogs::eButton answer = igdeCommonDialogs::Question(pPanel,
-				igdeCommonDialogs::ebsYesNoCancel, "Set Height Image Path",
-				"Image to save the height image to exists already.\n"
-				"Do you want to import image before changing path?\n"
-				"[YES] Import image then change path (2 undo actions).\n"
-				"[NO] Change path and while saving image will be overwritten.\n"
-				"[CANCEL] Do no import image nor change path.");
+				igdeCommonDialogs::ebsYesNoCancel, "@World.WPHeightTerrain.Dialog.SetHeightImagePath",
+				"@World.WPHeightTerrain.Dialog.ImageToSaveHeightImageToExistsAlready");
 			
 			if(answer == igdeCommonDialogs::ebCancel){
 				return {};
@@ -356,15 +352,14 @@ public:
 				
 				if(image->GetComponentCount() != 1){
 					image = nullptr;
-					igdeCommonDialogs::Error(pPanel, "Import Height Image",
-						"The height image does not have exactly 1 color channel. Only\n"
-						"images with 1 color channel can be used for height terrains.");
+					igdeCommonDialogs::Error(pPanel, "@World.WPHeightTerrain.Dialog.ImportHeightImage",
+						"@World.WPHeightTerrain.Dialog.HeightImageDoesNotHaveExactly1ColorChannelOnly");
 				}
 				
 				if(image && (image->GetWidth() != resolution || image->GetHeight() != resolution)){
 					image = nullptr;
-					igdeCommonDialogs::Error(pPanel, "Import Height Image",
-						"The image does not match the height image dimension set in the height terrain.");
+					igdeCommonDialogs::Error(pPanel, "@World.WPHeightTerrain.Dialog.ImportHeightImage",
+						"@World.WPHeightTerrain.Dialog.ImageDoesNotMatchHeightImageDimensionSetInHeightTerrain");
 					// NOTE allow the user to scale the height image... maybe.. scaling is tricky
 				}
 				
@@ -392,12 +387,8 @@ public:
 		
 		if(pPanel.GetEngine()->GetVirtualFileSystem()->ExistsFile(decPath::CreatePathUnix(editPath->GetPath()))){
 			igdeCommonDialogs::eButton answer = igdeCommonDialogs::Question(pPanel,
-				igdeCommonDialogs::ebsYesNoCancel, "Set Visibility Image Path",
-				"Image to save the visibility image to exists already.\n"
-				"Do you want to import image before changing path?\n"
-				"[YES] Import image then change path (2 undo actions).\n"
-				"[NO] Change path and while saving image will be overwritten.\n"
-				"[CANCEL] Do no import image nor change path.");
+				igdeCommonDialogs::ebsYesNoCancel, "@World.WPHeightTerrain.Dialog.SetVisibilityImagePath",
+				"@World.WPHeightTerrain.Dialog.ImageToSaveVisibilityImageToExistsAlready");
 			
 			if(answer == igdeCommonDialogs::ebCancel){
 				return {};
@@ -410,15 +401,14 @@ public:
 				
 				if(image->GetComponentCount() != 1){
 					image = nullptr;
-					igdeCommonDialogs::Error(pPanel, "Import Visibility Image",
-						"The visibility image does not have exactly 1 color channel. Only\n"
-						"images with 1 color channel can be used for visibility terrains.");
+					igdeCommonDialogs::Error(pPanel, "@World.WPHeightTerrain.Dialog.ImportVisibilityImage",
+						"@World.WPHeightTerrain.Dialog.VisibilityImageDoesNotHaveExactly1ColorChannelOnly");
 				}
 				
 				if(image && (image->GetWidth() != resolution || image->GetHeight() != resolution)){
 					image = nullptr;
-					igdeCommonDialogs::Error(pPanel, "Import Visibility Image",
-						"The image does not match the visibility image dimension set in the visibility terrain.");
+					igdeCommonDialogs::Error(pPanel, "@World.WPHeightTerrain.Dialog.ImportVisibilityImage",
+						"@World.WPHeightTerrain.Dialog.ImageDoesNotMatchVisibilityImageDimensionSetInVisibilityTerrain");
 					// NOTE allow the user to scale the visibility image... maybe.. scaling is tricky
 				}
 				
@@ -456,7 +446,7 @@ class cActionMenuTexture : public igdeActionContextMenu{
 public:
 	typedef deTObjectReference<cActionMenuTexture> Ref;
 	cActionMenuTexture(meWPHeightTerrain &panel) : igdeActionContextMenu("",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Texture menu"),
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "@World.WPHeightTerrain.Action.TextureMenu"),
 	pPanel(panel){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
@@ -473,8 +463,8 @@ public:
 class cActionTextureAdd : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionTextureAdd> Ref;
-	cActionTextureAdd(meWPHeightTerrain &panel) : cBaseAction(panel, "Add...",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add texture"){}
+	cActionTextureAdd(meWPHeightTerrain &panel) : cBaseAction(panel, "@World.WPHeightTerrain.Action.TextureAdd2",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@World.WPHeightTerrain.Action.TextureAdd"){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
 		meHeightTerrainSector * const sector = pPanel.GetSector();
@@ -482,10 +472,10 @@ public:
 			return {};
 		}
 		
-		decString name("texture");
-		while(igdeCommonDialogs::GetString(pPanel, "Add Texture", "Enter the name of the new texture", name)){
+		decString name(pPanel.Translate("World.WPHeightTerrain.DefaultName.Texture").ToUTF8());
+		while(igdeCommonDialogs::GetString(pPanel, "@World.WPHeightTerrain.Dialog.AddTexture", "@World.WPHeightTerrain.Dialog.EnterNameOfNewTexture", name)){
 			if(sector->GetTextures().HasNamed(name)){
-				igdeCommonDialogs::Error(pPanel, "Invalid Texture Name", "A texture with this name exists already.");
+				igdeCommonDialogs::Error(pPanel, "@World.WPHeightTerrain.Dialog.InvalidTextureNameError", "@World.WPHeightTerrain.Dialog.ATextureWithThisNameExistsAlready");
 				continue;
 			}
 			
@@ -503,8 +493,8 @@ public:
 class cActionTextureRemove : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionTextureRemove> Ref;
-	cActionTextureRemove(meWPHeightTerrain &panel) : cBaseAction(panel, "Remove",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove texture"){}
+	cActionTextureRemove(meWPHeightTerrain &panel) : cBaseAction(panel, "@World.WPHeightTerrain.Action.TextureRemove2",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@World.WPHeightTerrain.Action.TextureRemove"){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
 		meHeightTerrainTexture * const texture = pPanel.GetTexture();
@@ -611,7 +601,7 @@ class cActionMenuNavSpace : public igdeActionContextMenu{
 public:
 	typedef deTObjectReference<cActionMenuNavSpace> Ref;
 	cActionMenuNavSpace(meWPHeightTerrain &panel) : igdeActionContextMenu("",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Navigation Space menu"),
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "@World.WPHeightTerrain.Action.NavSpaceMenu"),
 	pPanel(panel){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
@@ -628,18 +618,18 @@ public:
 class cActionNavSpaceAdd : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionNavSpaceAdd> Ref;
-	cActionNavSpaceAdd(meWPHeightTerrain &panel) : cBaseAction(panel, "Add...",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add Navigation Space"){}
+	cActionNavSpaceAdd(meWPHeightTerrain &panel) : cBaseAction(panel, "@World.WPHeightTerrain.Action.NavSpaceAdd2",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@World.WPHeightTerrain.Action.NavSpaceAdd"){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
 		meHeightTerrainSector * const sector = pPanel.GetSector();
 		if(sector){
-			decString name("navspace");
-			while(igdeCommonDialogs::GetString(pPanel, "Add Navigation Space",
-			"Enter the name of the new navigation space", name)){
+			decString name(pPanel.Translate("World.WPHeightTerrain.DefaultName.NavSpace").ToUTF8());
+			while(igdeCommonDialogs::GetString(pPanel, "@World.UAddNavSpace.AddNavigationSpace",
+			"@World.WPHeightTerrain.Dialog.EnterNameOfNewNavigationSpace", name)){
 				if(sector->GetNavSpaces().HasNamed(name)){
-					igdeCommonDialogs::Error(pPanel, "Invalid Navigation Space Name",
-						"A navigation space with this name exists already.");
+					igdeCommonDialogs::Error(pPanel, "@World.WPHeightTerrain.Dialog.InvalidNavigationSpaceNameError",
+						"@World.WPHeightTerrain.Dialog.ANavigationSpaceWithThisNameExistsAlready");
 					continue;
 				}
 				
@@ -658,8 +648,8 @@ public:
 class cActionNavSpaceRemove : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionNavSpaceRemove> Ref;
-	cActionNavSpaceRemove(meWPHeightTerrain &panel) : cBaseAction(panel, "Remove",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove Navigation Space"){}
+	cActionNavSpaceRemove(meWPHeightTerrain &panel) : cBaseAction(panel, "@World.WPHeightTerrain.Action.NavSpaceRemove2",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@World.WPHeightTerrain.Action.NavSpaceRemove"){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
 		meHeightTerrainNavSpace * const navspace = pPanel.GetActiveNavSpace();
@@ -731,7 +721,7 @@ class cActionMenuNavSpaceType : public igdeActionContextMenu{
 public:
 	typedef deTObjectReference<cActionMenuNavSpaceType> Ref;
 	cActionMenuNavSpaceType(meWPHeightTerrain &panel) : igdeActionContextMenu("",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Navigation Space Type menu"),
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "@World.WPHeightTerrain.Action.NavSpaceTypeMenu"),
 	pPanel(panel){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
@@ -748,17 +738,17 @@ public:
 class cActionNavSpaceTypeAdd : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionNavSpaceTypeAdd> Ref;
-	cActionNavSpaceTypeAdd(meWPHeightTerrain &panel) : cBaseAction(panel, "Add...",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add Navigation Space Type"){}
+	cActionNavSpaceTypeAdd(meWPHeightTerrain &panel) : cBaseAction(panel, "@World.WPHeightTerrain.Action.NavSpaceTypeAdd2",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@World.WPHeightTerrain.Action.NavSpaceTypeAdd"){}
 	
 	igdeUndo::Ref OnAction(meWorld*) override{
 		meHeightTerrainNavSpace * const navspace = pPanel.GetActiveNavSpace();
-		decString name("type");
-		while(igdeCommonDialogs::GetString(pPanel, "Add Navigation Space Type",
-		"Enter the name of the new navigation space type", name)){
+		decString name(pPanel.Translate("World.WPHeightTerrain.DefaultName.Type").ToUTF8());
+		while(igdeCommonDialogs::GetString(pPanel, "@World.WPHeightTerrain.Dialog.AddNavigationSpaceType",
+		"@World.WPHeightTerrain.Dialog.EnterNameOfNewNavigationSpaceType", name)){
 			if(navspace->GetTypes().HasNamed(name)){
-				igdeCommonDialogs::Error(pPanel, "Invalid Navigation Space Type Name",
-					"A navigation space type with this name exists already.");
+				igdeCommonDialogs::Error(pPanel, "@World.WPHeightTerrain.Dialog.InvalidNavigationSpaceTypeNameError",
+					"@World.WPHeightTerrain.Dialog.ANavigationSpaceTypeWithThisNameExistsAlready");
 				continue;
 			}
 			
@@ -776,8 +766,8 @@ public:
 class cActionNavSpaceTypeRemove : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionNavSpaceTypeRemove> Ref;
-	cActionNavSpaceTypeRemove(meWPHeightTerrain &panel) : cBaseAction(panel, "Remove",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove Navigation Space Type"){}
+	cActionNavSpaceTypeRemove(meWPHeightTerrain &panel) : cBaseAction(panel, "@World.WPHeightTerrain.Action.NavSpaceTypeRemove2",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@World.WPHeightTerrain.Action.NavSpaceTypeRemove"){}
 	
 	igdeUndo::Ref OnAction(meWorld*) override{
 		meHeightTerrainNavSpaceType * const type = pPanel.GetActiveNavSpaceType();
@@ -800,7 +790,7 @@ public:
 			return {};
 		}
 		if(pPanel.GetActiveNavSpace()->GetTypes().HasNamed(textField->GetText())){
-			igdeCommonDialogs::Error(pPanel, "Invalid Name", "A navigation space type with this name exists already.");
+			igdeCommonDialogs::Error(pPanel, "@World.WPHeightTerrain.Dialog.InvalidNavigationSpaceTypeNameError", "@World.WPHeightTerrain.Dialog.ANavigationSpaceTypeWithThisNameExistsAlready");
 			pPanel.UpdateNavSpaceType();
 			return {};
 		}
@@ -840,8 +830,8 @@ public:
 class cActionNavSpaceFaceAdd : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionNavSpaceFaceAdd> Ref;
-	cActionNavSpaceFaceAdd(meWPHeightTerrain &panel) : cBaseAction(panel, "Add",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add face with selected navigation points"){}
+	cActionNavSpaceFaceAdd(meWPHeightTerrain &panel) : cBaseAction(panel, "@World.WPHeightTerrain.Action.NavSpaceFaceAdd2",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@World.WPHeightTerrain.Action.NavSpaceFaceAdd"){}
 	
 	bool CanUse(const meWorld &world) const{
 		const meHeightTerrainNavSpace * const navspace = pPanel.GetActiveNavSpace();
@@ -884,9 +874,9 @@ public:
 class cActionNavSpaceFaceRemove : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionNavSpaceFaceRemove> Ref;
-	cActionNavSpaceFaceRemove(meWPHeightTerrain &panel) : cBaseAction(panel, "Remove",
+	cActionNavSpaceFaceRemove(meWPHeightTerrain &panel) : cBaseAction(panel, "@World.WPHeightTerrain.Action.NavSpaceFaceRemove2",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-		"Remove face matching selected navigation points"){}
+		"@World.WPHeightTerrain.Action.NavSpaceFaceRemove"){}
 	
 	bool CanUse(const meWorld &world) const{
 		return pPanel.GetActiveNavSpace()
@@ -957,8 +947,8 @@ public:
 class cActionUpdateVegetation : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionUpdateVegetation> Ref;
-	cActionUpdateVegetation(meWPHeightTerrain &panel) : cBaseAction(panel, "Visible",
-		nullptr, "Updates the visible vegetation system (can take some time)"){}
+	cActionUpdateVegetation(meWPHeightTerrain &panel) : cBaseAction(panel, "@World.WPHeightTerrain.Action.UpdateVegetation2",
+		nullptr, "@World.WPHeightTerrain.Action.UpdateVegetationVisible"){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
 		world->ForceUpdateVegetation(false);
@@ -973,8 +963,8 @@ public:
 class cActionUpdateVegetationAll : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionUpdateVegetationAll> Ref;
-	cActionUpdateVegetationAll(meWPHeightTerrain &panel) : cBaseAction(panel, "All",
-		nullptr, "Updates entire the vegetation system (lengthy operation!)"){}
+	cActionUpdateVegetationAll(meWPHeightTerrain &panel) : cBaseAction(panel, "@World.WPHeightTerrain.Action.UpdateVegetationAll2",
+		nullptr, "@World.WPHeightTerrain.Action.UpdateVegetationAll"){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
 		world->ForceUpdateVegetation(true);
@@ -989,8 +979,8 @@ public:
 class cActionClearVegetation : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionClearVegetation> Ref;
-	cActionClearVegetation(meWPHeightTerrain &panel) : cBaseAction(panel, "Clear",
-		nullptr, "Clear vegetation (hides all)"){}
+	cActionClearVegetation(meWPHeightTerrain &panel) : cBaseAction(panel, "@World.WPHeightTerrain.Action.ClearVegetation2",
+		nullptr, "@World.WPHeightTerrain.Action.ClearVegetation"){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
 		world->ClearVegetation();
@@ -1033,7 +1023,7 @@ class cActionMenuVLayer : public igdeActionContextMenu{
 public:
 	typedef deTObjectReference<cActionMenuVLayer> Ref;
 	cActionMenuVLayer(meWPHeightTerrain &panel) : igdeActionContextMenu("",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Vegetation Layer menu"),
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "@World.WPHeightTerrain.Action.VLayerMenu"),
 	pPanel(panel){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
@@ -1052,12 +1042,12 @@ public:
 class cActionVLayerAdd : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionVLayerAdd> Ref;
-	cActionVLayerAdd(meWPHeightTerrain &panel) : cBaseAction(panel, "Add...",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add vegetation layer"){}
+	cActionVLayerAdd(meWPHeightTerrain &panel) : cBaseAction(panel, "@World.WPHeightTerrain.Action.VLayerAdd2",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@World.WPHeightTerrain.Action.VLayerAdd"){}
 	
 	virtual igdeUndo::Ref OnAction(meWorld *world){
-		decString name("vlayer");
-		if(!igdeCommonDialogs::GetString(pPanel, "Add Vegetation Layer", "Enter name of new layer", name)){
+		decString name(pPanel.Translate("World.WPHeightTerrain.DefaultName.VLayer").ToUTF8());
+		if(!igdeCommonDialogs::GetString(pPanel, "@World.WPHeightTerrain.Dialog.AddVegetationLayer", "@World.WPHeightTerrain.Dialog.EnterNameOfNewLayer", name)){
 			return {};
 		}
 		
@@ -1076,8 +1066,8 @@ public:
 class cActionVLayerRemove : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionVLayerRemove> Ref;
-	cActionVLayerRemove(meWPHeightTerrain &panel) : cBaseAction(panel, "Remove",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove vegetation layer"){}
+	cActionVLayerRemove(meWPHeightTerrain &panel) : cBaseAction(panel, "@World.WPHeightTerrain.Action.VLayerRemove2",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@World.WPHeightTerrain.Action.VLayerRemove"){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
 		meHTVegetationLayer * const vlayer = pPanel.GetVLayer();
@@ -1092,8 +1082,8 @@ public:
 class cActionVLayerUp : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionVLayerUp> Ref;
-	cActionVLayerUp(meWPHeightTerrain &panel) : cBaseAction(panel, "Move Up",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp), "Move vegetation layer up"){}
+	cActionVLayerUp(meWPHeightTerrain &panel) : cBaseAction(panel, "@World.WPHeightTerrain.Action.VLayerUp2",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp), "@World.WPHeightTerrain.Action.VLayerUp"){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
 		meHTVegetationLayer * const vlayer = pPanel.GetVLayer();
@@ -1109,8 +1099,8 @@ public:
 class cActionVLayerDown : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionVLayerDown> Ref;
-	cActionVLayerDown(meWPHeightTerrain &panel) : cBaseAction(panel, "Move Down",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp), "Move vegetation layer down"){}
+	cActionVLayerDown(meWPHeightTerrain &panel) : cBaseAction(panel, "@World.WPHeightTerrain.Action.VLayerDown2",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp), "@World.WPHeightTerrain.Action.VLayerDown"){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
 		meHTVegetationLayer * const vlayer = pPanel.GetVLayer();
@@ -1147,7 +1137,7 @@ class cActionMenuVVariation : public igdeActionContextMenu{
 public:
 	typedef deTObjectReference<cActionMenuVVariation> Ref;
 	cActionMenuVVariation(meWPHeightTerrain &panel) : igdeActionContextMenu("",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Vegetation Variation menu"),
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "@World.WPHeightTerrain.Action.VVariationMenu"),
 	pPanel(panel){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
@@ -1164,8 +1154,8 @@ public:
 class cActionVVariationAdd : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionVVariationAdd> Ref;
-	cActionVVariationAdd(meWPHeightTerrain &panel) : cBaseAction(panel, "Add",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add variation"){}
+	cActionVVariationAdd(meWPHeightTerrain &panel) : cBaseAction(panel, "@World.WPHeightTerrain.Action.VVariationAdd2",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@World.WPHeightTerrain.Action.VVariationAddDesc"){}
 	
 	virtual igdeUndo::Ref OnAction(meWorld *world){
 		meHTVegetationLayer * const vlayer = pPanel.GetVLayer();
@@ -1185,8 +1175,8 @@ public:
 class cActionVVariationRemove : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionVVariationRemove> Ref;
-	cActionVVariationRemove(meWPHeightTerrain &panel) : cBaseAction(panel, "Remove",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove variation"){}
+	cActionVVariationRemove(meWPHeightTerrain &panel) : cBaseAction(panel, "@World.WPHeightTerrain.Action.VVariationRemove2",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@World.WPHeightTerrain.Action.VVariationRemoveDesc"){}
 	
 	igdeUndo::Ref OnAction(meWorld*) override{
 		meHTVVariation * const variation = pPanel.GetVVariation();
@@ -1419,166 +1409,166 @@ pWindowProperties(windowProperties)
 	
 	
 	// height terrain
-	helper.GroupBox(content, groupBox, "Height Terrain:");
+	helper.GroupBox(content, groupBox, "@World.WPHeightTerrain.HeightTerrain.Label");
 	
 	igdeFilePattern::List filePatterns;
 	filePatterns.Add(igdeFilePattern::Ref::New(
-		"Drag[en]gine Height Terrain", "*.deterrain", ".deterrain"));
-	helper.EditPath(groupBox, "Height Terrain:", "File to save height terrain to",
+		"@World.WPHeightTerrain.DragEnGineHeightTerrain", "*.deterrain", ".deterrain"));
+	helper.EditPath(groupBox, "@World.WPHeightTerrain.HeightTerrain.Label", "@World.WPHeightTerrain.FileToSaveHeightTerrainTo.ToolTip",
 		filePatterns, pEditPathHTerrain, cEditPathHT::Ref::New(*this));
-	helper.EditFloat(groupBox, "Sector Size:", "Size of sectors along X and Z axis",
+	helper.EditFloat(groupBox, "@World.WPHeightTerrain.SectorSize.Label", "@World.WPHeightTerrain.SizeOfSectorsAlongXZAxis.ToolTip",
 		pEditSectorSize, cEditSectorSize::Ref::New(*this));
-	helper.EditInteger(groupBox, "Sector Resolution:", "Resolution of height images in sectors (width and height)",
+	helper.EditInteger(groupBox, "@World.WPHeightTerrain.SectorResolution.Label", "@World.WPHeightTerrain.SectorResolution.ToolTip",
 		pEditSectorResolution, cEditSectorResolution::Ref::New(*this));
-	helper.EditFloat(groupBox, "Base Height:", "Set base height of height image values",
+	helper.EditFloat(groupBox, "@World.WPHeightTerrain.BaseHeight.Label", "@World.WPHeightTerrain.SetBaseHeightOfHeightImageValues.ToolTip",
 		pEditBaseHeight, cEditBaseHeight::Ref::New(*this));
-	helper.EditFloat(groupBox, "Height Scaling:", "Set height scaling of height image values",
+	helper.EditFloat(groupBox, "@World.WPHeightTerrain.HeightScaling.Label", "@World.WPHeightTerrain.SetHeightScalingOfHeightImageValues.ToolTip",
 		pEditHeightScale, cEditHeightScale::Ref::New(*this));
 	
 	
 	// sector
-	helper.GroupBox(content, groupBox, "Sector:");
+	helper.GroupBox(content, groupBox, "@World.WPHeightTerrain.Sector.Label");
 	
-	helper.EditPath(groupBox, "Height Image:", "File to save height image to",
+	helper.EditPath(groupBox, "@World.WPHeightTerrain.HeightImage.Label", "@World.WPHeightTerrain.FileToSaveHeightImageTo.ToolTip",
 		igdeEnvironment::efpltImage, pEditPathHeightImage, cEditPathHeightImage::Ref::New(*this));
-	helper.EditPath(groupBox, "Visibility Image:", "File to save visibility image to",
+	helper.EditPath(groupBox, "@World.WPHeightTerrain.VisibilityImage.Label", "@World.WPHeightTerrain.FileToSaveVisibilityImageTo.ToolTip",
 		igdeEnvironment::efpltImage, pEditPathVisImage, cEditPathVisibilityImage::Ref::New(*this));
 	
 	
 	// texture
-	helper.GroupBox(content, groupBox, "Texture:");
+	helper.GroupBox(content, groupBox, "@World.WPSObject.Texture.Label");
 	
-	helper.FormLineStretchFirst(groupBox, "Texture:", "Texture to edit", formLine);
-	helper.ComboBox(formLine, "Texture to edit", pCBTexture, cComboTexture::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@World.WPSObject.Texture.Label", "@World.WPHeightTerrain.TextureToEdit.ToolTip", formLine);
+	helper.ComboBox(formLine, "@World.WPHeightTerrain.TextureToEdit.ToolTip", pCBTexture, cComboTexture::Ref::New(*this));
 	helper.Button(formLine, pBtnTexture, pActionMenuTexture);
 	pActionMenuTexture->SetWidget(pBtnTexture);
 	
-	helper.EditInteger(groupBox, "Type Number:", "Type number of the texture.",
+	helper.EditInteger(groupBox, "@World.WPWorld.TypeNumber.Label", "@World.WPHeightTerrain.TypeNumberOfTexture.ToolTip",
 		pEditTexTypeNum, cTextTexTypeNumber::Ref::New(*this));
-	helper.EditPath(groupBox, "Skin:", "Skin to use for the texture.",
+	helper.EditPath(groupBox, "@World.WPSObject.Skin.Label", "@World.WPHeightTerrain.SkinToUseForTexture.ToolTip",
 		igdeEnvironment::efpltSkin, pEditTexSkin, cPathTexSkin::Ref::New(*this));
-	helper.EditPath(groupBox, "Mask:", "Mask to use for the texture.",
+	helper.EditPath(groupBox, "@World.WPHeightTerrain.Mask.Label", "@World.WPHeightTerrain.MaskToUseForTexture.ToolTip",
 		igdeEnvironment::efpltSkin, pEditTexMask, cPathTexMask::Ref::New(*this));
-	helper.EditVector2(groupBox, "Offset:", "Offsets the projected texture relative to the world origin.",
+	helper.EditVector2(groupBox, "@World.WPHeightTerrain.Offset.Label", "@World.WPHeightTerrain.OffsetsProjectedTextureRelativeToWorldOrigin.ToolTip",
 		pEditTexUVOffset, cEditTexUVOffset::Ref::New(*this));
-	helper.EditVector2(groupBox, "Scaling:", "Scaling of the projected texture.",
+	helper.EditVector2(groupBox, "@World.WPHeightTerrain.Scaling.Label", "@World.WPHeightTerrain.ScalingOfProjectedTexture.ToolTip",
 		pEditTexUVScale, cEditTexUVScale::Ref::New(*this));
-	helper.EditFloat(groupBox, "Rotation:", "Rotation of the projected texture.",
+	helper.EditFloat(groupBox, "@World.WPHeightTerrain.Rotation.Label", "@World.WPHeightTerrain.RotationOfProjectedTexture.ToolTip",
 		pEditTexUVRot, cEditTexUVRotation::Ref::New(*this));
 	
 	
 	// navigation space
-	helper.GroupBox(content, groupBox, "Navigation-Space:", true);
+	helper.GroupBox(content, groupBox, "@World.WPHeightTerrain.NavigationSpace.Label", true);
 	
-	helper.FormLineStretchFirst(groupBox, "Nav-Space:", "Nav-Space", formLine);
-	helper.ComboBox(formLine, "Nav-Space", pCBNavSpace, cComboNavSpace::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@World.WPHeightTerrain.NavSpace.Label", "@World.WPHeightTerrain.NavSpace.ToolTip", formLine);
+	helper.ComboBox(formLine, "@World.WPHeightTerrain.NavSpace.ToolTip", pCBNavSpace, cComboNavSpace::Ref::New(*this));
 	helper.Button(formLine, pBtnNavSpace, pActionMenuNavSpace);
 	pActionMenuNavSpace->SetWidget(pBtnNavSpace);
 	
-	helper.EditInteger(groupBox, "Layer:", "Navigation layer.",
+	helper.EditInteger(groupBox, "@World.WPWorld.Layer.Label", "@World.WPHeightTerrain.NavigationLayer.ToolTip",
 		pEditNavSpaceLayer, cTextNavSpaceLayer::Ref::New(*this));
-	helper.EditFloat(groupBox, "Snap Distance:", "Snap distance.",
+	helper.EditFloat(groupBox, "@World.WPHeightTerrain.SnapDistance.Label", "@World.WPHeightTerrain.SnapDistance.ToolTip",
 		pEditNavSpaceSnapDist, cTextNavSpaceSnapDistance::Ref::New(*this));
-	helper.EditFloat(groupBox, "Snap Angle:", "Snap angle.",
+	helper.EditFloat(groupBox, "@World.WPHeightTerrain.SnapAngle.Label", "@World.WPHeightTerrain.SnapAngle.ToolTip",
 		pEditNavSpaceSnapAngle, cTextNavSpaceSnapAngle::Ref::New(*this));
 	
 	
 	// navigation space type
-	helper.GroupBox(content, groupBox, "Navigation Type:", true);
+	helper.GroupBox(content, groupBox, "@World.WPHeightTerrain.NavigationType.Label", true);
 	
-	helper.FormLineStretchFirst(groupBox, "Type:", "Navigation type to edit", formLine);
-	helper.ComboBox(formLine, "Navigation type to edit", pCBNavSpaceType, cComboNavSpaceType::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@World.WPHeightTerrain.Type.Label2", "@World.WPHeightTerrain.NavigationTypeToEdit.ToolTip", formLine);
+	helper.ComboBox(formLine, "@World.WPHeightTerrain.NavigationTypeToEdit.ToolTip", pCBNavSpaceType, cComboNavSpaceType::Ref::New(*this));
 	helper.Button(formLine, pBtnNavSpaceType, pActionMenuNavSpaceType);
 	pActionMenuNavSpaceType->SetWidget(pBtnNavSpaceType);
 	
-	helper.EditString(groupBox, "Name:", "Navigation space type name.",
+	helper.EditString(groupBox, "@World.WPHeightTerrain.Name.Label", "@World.WPHeightTerrain.NavigationSpaceTypeName.ToolTip",
 		pEditNavSpaceTypeName, cTextNavSpaceTypeName::Ref::New(*this));
-	helper.EditInteger(groupBox, "Type:", "Navigation space type number.",
+	helper.EditInteger(groupBox, "@World.WPHeightTerrain.Type.Label3", "@World.WPHeightTerrain.NavigationSpaceTypeNumber.ToolTip",
 		pEditNavSpaceTypeType, cTextNavSpaceTypeType::Ref::New(*this));
-	helper.ColorBox(groupBox, "Color:", "Navigation space type color for visualization purpose.",
+	helper.ColorBox(groupBox, "@World.WPHeightTerrain.Color.Label", "@World.WPHeightTerrain.NavigationSpaceTypeColorForVisualizationPurpose.ToolTip",
 		pEditNavSpaceTypeColor, cTextNavSpaceTypeColor::Ref::New(*this));
 	
-	helper.FormLine(groupBox, "Faces:", "Navigation space faces", formLine);
+	helper.FormLine(groupBox, "@World.WPHeightTerrain.Faces.Label", "@World.WPHeightTerrain.NavigationSpaceFaces.ToolTip", formLine);
 	helper.Button(formLine, pBtnNavSpaceFaceAdd, pActionNavSpaceFaceAdd);
 	helper.Button(formLine, pBtnNavSpaceFaceRemove, pActionNavSpaceFaceRemove);
 	
 	
 	// vegetation
-	helper.GroupBox(content, groupBox, "Vegetation:", true);
+	helper.GroupBox(content, groupBox, "@World.WPHeightTerrain.Vegetation.Label", true);
 	
-	helper.FormLine(groupBox, "Update:", "Update vegetation", formLine);
+	helper.FormLine(groupBox, "@World.WPHeightTerrain.Update.Label", "@World.WPHeightTerrain.UpdateVegetation.ToolTip", formLine);
 	helper.Button(formLine, pBtnUpdateVegetation, cActionUpdateVegetation::Ref::New(*this));
 	helper.Button(formLine, pBtnUpdateVegetationAll, cActionUpdateVegetationAll::Ref::New(*this));
 	helper.Button(formLine, pBtnClearVegetation, cActionClearVegetation::Ref::New(*this));
 	
 	filePatterns.RemoveAll();
 	filePatterns.Add(igdeFilePattern::Ref::New(
-		"Drag[en]gine Prop Field Cache", "*.depfc", ".depfc"));
-	helper.EditPath(groupBox, "Skin:", "Skin to use for the texture.",
+		"@World.WPHeightTerrain.DragEnGinePropFieldCache", "*.depfc", ".depfc"));
+	helper.EditPath(groupBox, "@World.WPSObject.Skin.Label", "@World.WPHeightTerrain.SkinToUseForTexture.ToolTip",
 		filePatterns, pEditPathPFCache, cPathPathPFCache::Ref::New(*this));
 	
-	helper.FormLineStretchFirst(groupBox, "Layer:", "Layer to edit", formLine);
-	helper.ComboBox(formLine, "Layer to edit", pCBVLayer, cComboVLayer::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@World.WPWorld.Layer.Label", "@World.WPHeightTerrain.LayerToEdit.ToolTip", formLine);
+	helper.ComboBox(formLine, "@World.WPHeightTerrain.LayerToEdit.ToolTip", pCBVLayer, cComboVLayer::Ref::New(*this));
 	helper.Button(formLine, pBtnMenuVLayer, pActionMenuVLayer);
 	pActionMenuVLayer->SetWidget(pBtnMenuVLayer);
 	
-	helper.FormLineStretchFirst(groupBox, "Variation:", "Variation to edit", formLine);
-	helper.ComboBox(formLine, "Variation to edit", pCBVVariation, cComboVVariation::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@World.WPHeightTerrain.Variation.Label", "@World.WPHeightTerrain.VariationToEdit.ToolTip", formLine);
+	helper.ComboBox(formLine, "@World.WPHeightTerrain.VariationToEdit.ToolTip", pCBVVariation, cComboVVariation::Ref::New(*this));
 	helper.Button(formLine, pBtnMenuVVariation, pActionMenuVVariation);
 	pActionMenuVVariation->SetWidget(pBtnMenuVVariation);
 	
-	helper.EditPath(groupBox, "Model:", "Model to use for the variation",
+	helper.EditPath(groupBox, "@World.WPHeightTerrain.Model.Label", "@World.WPHeightTerrain.ModelToUseForVariation.ToolTip",
 		igdeEnvironment::efpltModel, pEditVVModel, cPathVVModel::Ref::New(*this));
-	helper.EditPath(groupBox, "Skin:", "Skin to use for the variation",
+	helper.EditPath(groupBox, "@World.WPSObject.Skin.Label", "@World.WPHeightTerrain.SkinToUseForVariation.ToolTip",
 		igdeEnvironment::efpltSkin, pEditVVSkin, cPathVVSkin::Ref::New(*this));
-	helper.EditFloat(groupBox, "Rotation/Force:", "Rotation per Force.",
+	helper.EditFloat(groupBox, "@World.WPHeightTerrain.RotationForce.Label", "@World.WPHeightTerrain.RotationPerForce.ToolTip",
 		pEditVVRotPerForce, cTextVVRotPerForce::Ref::New(*this));
-	helper.EditFloat(groupBox, "Restition:", "Restition.",
+	helper.EditFloat(groupBox, "@World.WPHeightTerrain.Restition.Label", "@World.WPHeightTerrain.Restition.ToolTip",
 		pEditVVRestitution, cTextVVRestitution::Ref::New(*this));
 	
 	
 	// height paint
-	helper.GroupBox(content, groupBox, "Height Painting:");
+	helper.GroupBox(content, groupBox, "@World.WPHeightTerrain.HeightPainting.Label");
 	
-	helper.FormLine(groupBox, "Mode:", "Paint mode", formLine);
+	helper.FormLine(groupBox, "@World.WPHeightTerrain.Mode.Label", "@World.WPHeightTerrain.PaintMode.ToolTip", formLine);
 	helper.ToggleButton(formLine, pBtnHPModeRaise, cActionHPMode::Ref::New(*this,
-		meWorldGuiParameters::ehpdmRaise, "Raise", nullptr, "Raise"));
+		meWorldGuiParameters::ehpdmRaise, "@World.WPHeightTerrain.Raise.Label", nullptr, "@World.WPHeightTerrain.Raise.Label"));
 	helper.ToggleButton(formLine, pBtnHPModeLower, cActionHPMode::Ref::New(*this,
-		meWorldGuiParameters::ehpdmLower, "Lower", nullptr, "Lower"));
+		meWorldGuiParameters::ehpdmLower, "@World.WPHeightTerrain.Lower.Label", nullptr, "@World.WPHeightTerrain.Lower.Label"));
 	helper.ToggleButton(formLine, pBtnHPModeLevel, cActionHPMode::Ref::New(*this,
-		meWorldGuiParameters::ehpdmLevel, "Level", nullptr, "Level"));
+		meWorldGuiParameters::ehpdmLevel, "@World.WPHeightTerrain.Level.Label", nullptr, "@World.WPHeightTerrain.Level.Label"));
 	helper.ToggleButton(formLine, pBtnHPModeSmooth, cActionHPMode::Ref::New(*this,
-		meWorldGuiParameters::ehpdmSmooth, "Smooth", nullptr, "Smooth"));
+		meWorldGuiParameters::ehpdmSmooth, "@World.WPHeightTerrain.Smooth.Label", nullptr, "@World.WPHeightTerrain.Smooth.Label"));
 	
-	helper.EditSliderText(groupBox, "Radius:", "Sets the radius of influence.",
+	helper.EditSliderText(groupBox, "@World.WVNodePropCount.Radius.Label", "@World.WPHeightTerrain.SetsRadiusOfInfluence.ToolTip",
 		0.0f, 10.0f, 6, 3, 1.0f, pSldHPRadius, cSliderHPRadius::Ref::New(*this));
-	helper.EditSliderText(groupBox, "Strength:", "Strength of the influence.",
+	helper.EditSliderText(groupBox, "@World.WPHeightTerrain.Strength.Label", "@World.WPHeightTerrain.StrengthOfInfluence.ToolTip",
 		0.0f, 1.0f, 6, 3, 0.1f, pSldHPStrength, cSliderHPStrength::Ref::New(*this));
 	
 	
 	// mask paint
-	helper.GroupBox(content, groupBox, "Mask Painting:", true);
+	helper.GroupBox(content, groupBox, "@World.WPHeightTerrain.MaskPainting.Label", true);
 	
-	helper.FormLine(groupBox, "Mode:", "Paint mode", formLine);
+	helper.FormLine(groupBox, "@World.WPHeightTerrain.Mode.Label", "@World.WPHeightTerrain.PaintMode.ToolTip", formLine);
 	helper.ToggleButton(formLine, pBtnMPModeDraw, cActionMPMode::Ref::New(*this,
-		meWorldGuiParameters::empdmDraw, "Draw", nullptr, "Draw"));
+		meWorldGuiParameters::empdmDraw, "@World.WPHeightTerrain.Draw.Label", nullptr, "@World.WPHeightTerrain.Draw.Label"));
 	helper.ToggleButton(formLine, pBtnMPModeErase, cActionMPMode::Ref::New(*this,
-		meWorldGuiParameters::empdmErase, "Erase", nullptr, "Erase"));
+		meWorldGuiParameters::empdmErase, "@World.WPHeightTerrain.Erase.Label", nullptr, "@World.WPHeightTerrain.Erase.Label"));
 	
-	helper.EditSliderText(groupBox, "Radius:", "Sets the radius of influence.",
+	helper.EditSliderText(groupBox, "@World.WVNodePropCount.Radius.Label", "@World.WPHeightTerrain.SetsRadiusOfInfluence.ToolTip",
 		0.0f, 10.0f, 6, 3, 1.0f, pSldMPRadius, cSliderMPRadius::Ref::New(*this));
 	
 	
 	// visibility paint
-	helper.GroupBox(content, groupBox, "Visibility Painting:", true);
+	helper.GroupBox(content, groupBox, "@World.WPHeightTerrain.VisibilityPainting.Label", true);
 	
-	helper.FormLine(groupBox, "Mode:", "Paint mode", formLine);
+	helper.FormLine(groupBox, "@World.WPHeightTerrain.Mode.Label", "@World.WPHeightTerrain.PaintMode.ToolTip", formLine);
 	helper.ToggleButton(formLine, pBtnVPModeVisible, cActionVPMode::Ref::New(*this,
-		meWorldGuiParameters::evpdmVisible, "Visible", nullptr, "Visible"));
+		meWorldGuiParameters::evpdmVisible, "@World.WPHeightTerrain.PaintModeVisible", nullptr, "@World.WPHeightTerrain.PaintModeVisible"));
 	helper.ToggleButton(formLine, pBtnVPModeInvisible, cActionVPMode::Ref::New(*this,
-		meWorldGuiParameters::evpdmInvisible, "Invisible", nullptr, "Invisible"));
+		meWorldGuiParameters::evpdmInvisible, "@World.WPHeightTerrain.Invisible.Label", nullptr, "@World.WPHeightTerrain.Invisible.Label"));
 	
-	helper.EditSliderText(groupBox, "Radius:", "Sets the radius of influence.",
+	helper.EditSliderText(groupBox, "@World.WVNodePropCount.Radius.Label", "@World.WPHeightTerrain.SetsRadiusOfInfluence.ToolTip",
 		0.0f, 10.0f, 6, 3, 1.0f, pSldVPRadius, cSliderVPRadius::Ref::New(*this));
 }
 
@@ -1880,9 +1870,9 @@ void meWPHeightTerrain::UpdateVVariationList(){
 		
 		if(pVLayer){
 			pVLayer->GetVariations().VisitIndexed([&](int i, meHTVVariation *variation){
-				decString text;
-				text.Format("Variation %d", i);
-				pCBVVariation->AddItem(text, nullptr, variation);
+				pCBVVariation->AddItem(decString::Formatted(
+					Translate("World.WPHeightTerrain.Variation").ToUTF8(), i),
+					nullptr, variation);
 			});
 		}
 	}, 0);

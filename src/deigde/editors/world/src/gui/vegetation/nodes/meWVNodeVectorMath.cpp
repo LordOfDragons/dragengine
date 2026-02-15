@@ -142,27 +142,27 @@ pRuleVectorMath(nullptr)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	SetTitle("Vector-Math");
+	SetTitle("@World.WVNodeVectorMath.Title");
 	
 	// slots
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"Value", "Value result of operation",
+		"@World.WVNodeVectorMath.Output.Value", "@World.WVNodeVectorMath.Output.ValueDesc",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleVectorMath::eosValue));
 	
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"Vector", "Vector result of operation",
+		"@World.WVNodeVectorMath.Output.Result", "@World.WVNodeVectorMath.Output.ResultDesc",
 		false, *this, meWVNodeSlot::estVector, meHTVRuleVectorMath::eosVector));
 	
 	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::New(env,
-		"Vector A", "First operand",
+		"@World.WVNodeVectorMath.Input.A", "@World.WVNodeVectorMath.Input.ADesc",
 		true, *this, meWVNodeSlot::estVector, meHTVRuleVectorMath::eisVectorA));
-	helper.EditVector(slot, "First operant if slot is not connected.",
+	helper.EditVector(slot, "@World.WVNodeVectorMath.FirstOperantIfSlotIsNotConnected.Label",
 		pEditVectorA, cTextVectorA::Ref::New(*this));
 	AddSlot(slot);
 	
-	slot = meWVNodeSlot::Ref::New(env, "Vector B", "Second operand if required",
+	slot = meWVNodeSlot::Ref::New(env, "@World.WVNodeVectorMath.Input.B", "@World.WVNodeVectorMath.Input.BDesc",
 		true, *this, meWVNodeSlot::estVector, meHTVRuleVectorMath::eisVectorB);
-	helper.EditVector(slot, "Second operant if slot is not connected.",
+	helper.EditVector(slot, "@World.WVNodeVectorMath.SecondOperantIfSlotIsNotConnected.Label",
 		pEditVectorB, cTextVectorB::Ref::New(*this));
 	AddSlot(slot);
 	
@@ -170,13 +170,14 @@ pRuleVectorMath(nullptr)
 	pFraParameters = igdeContainerForm::Ref::New(env);
 	AddChild(pFraParameters);
 	
-	helper.ComboBox(pFraParameters, "Operator:", "Operator to use.", pCBOperator, cComboOperator::Ref::New(*this));
-	pCBOperator->AddItem("Add", nullptr, (void*)(intptr_t)meHTVRuleVectorMath::eopAdd);
-	pCBOperator->AddItem("Subtract", nullptr, (void*)(intptr_t)meHTVRuleVectorMath::eopSubtract);
-	pCBOperator->AddItem("Average", nullptr, (void*)(intptr_t)meHTVRuleVectorMath::eopAverage);
-	pCBOperator->AddItem("Normalize", nullptr, (void*)(intptr_t)meHTVRuleVectorMath::eopNormalize);
-	pCBOperator->AddItem("Dot", nullptr, (void*)(intptr_t)meHTVRuleVectorMath::eopDot);
-	pCBOperator->AddItem("Cross", nullptr, (void*)(intptr_t)meHTVRuleVectorMath::eopCross);
+	helper.ComboBox(pFraParameters, "@World.WVNodeVectorMath.Operator.Label", "@World.WVNodeVectorMath.OperatorToUse.ToolTip", pCBOperator, cComboOperator::Ref::New(*this));
+	pCBOperator->SetAutoTranslateItems(true);
+	pCBOperator->AddItem("@World.WVNodeVectorMath.Operator.Add", nullptr, (void*)(intptr_t)meHTVRuleVectorMath::eopAdd);
+	pCBOperator->AddItem("@World.WVNodeVectorMath.Operator.Subtract", nullptr, (void*)(intptr_t)meHTVRuleVectorMath::eopSubtract);
+	pCBOperator->AddItem("@World.WVNodeVectorMath.Operator.Average", nullptr, (void*)(intptr_t)meHTVRuleVectorMath::eopAverage);
+	pCBOperator->AddItem("@World.WVNodeVectorMath.Operator.Normalize", nullptr, (void*)(intptr_t)meHTVRuleVectorMath::eopNormalize);
+	pCBOperator->AddItem("@World.WVNodeVectorMath.Operator.Dot", nullptr, (void*)(intptr_t)meHTVRuleVectorMath::eopDot);
+	pCBOperator->AddItem("@World.WVNodeVectorMath.Operator.Cross", nullptr, (void*)(intptr_t)meHTVRuleVectorMath::eopCross);
 	
 	pRuleVectorMath = rule; // required for combo box listener to not fire while list is build
 }

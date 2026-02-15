@@ -49,7 +49,7 @@ pNewColor(newColor)
 	
 	pOldColor = type->GetColor();
 	
-	SetShortInfo("Height terrain nav-space type set color");
+	SetShortInfo("@World.UHTNavSpaceTypeSetColor.HeightTerrainNavSpaceTypeSetColor");
 	
 	pType = type;
 }

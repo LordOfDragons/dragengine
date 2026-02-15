@@ -50,10 +50,10 @@ decTList<unsigned char> &&oldValues){
 	int pixelCount = size.x * size.y;
 	
 	if(drawMode == meWorldGuiParameters::empdmDraw){
-		SetShortInfo("Draw Mask");
+		SetShortInfo("@World.UHTPaintMask.DrawMask");
 		
 	}else{
-		SetShortInfo("Erase Mask");
+		SetShortInfo("@World.UHTPaintMask.EraseMask");
 	}
 	
 	pWorld = world;

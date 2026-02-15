@@ -37,10 +37,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-meURotateObject::meURotateObject(meWorld *world, const meObject::List &objects){
+meURotateObject::meURotateObject(meWorld *world, const meObject::List &objects) :
+meBaseUndoRotate(*world->GetEnvironment())
+{
 	DEASSERT_NOTNULL(world)
 	
-	SetShortInfo("Rotate Object");
+	SetShortInfo("@World.URotateObject.RotateObject");
 	
 	pWorld = world;
 	

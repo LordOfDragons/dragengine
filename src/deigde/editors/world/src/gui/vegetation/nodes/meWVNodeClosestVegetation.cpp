@@ -105,24 +105,24 @@ pRuleCV(rule)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	SetTitle("Closest Vegetation");
+	SetTitle("@World.WVNodeClosestVegetation.Title");
 	
 	// slots
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"Distance", "Distance in meters from closest vegetation",
+		"@World.WVNodeClosestVegetation.Output.Distance", "@World.WVNodeClosestVegetation.Output.DistanceDesc",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleClosestVegetation::eosDistance));
 	
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"Direction", "Direction (normalized vector) towards closest vegetation",
+		"@World.WVNodeClosestVegetation.Output.Direction", "@World.WVNodeClosestVegetation.Output.DirectionDesc",
 		false, *this, meWVNodeSlot::estVector, meHTVRuleClosestVegetation::eosDirection));
 	
 	// parameters
 	pFraParameters = igdeContainerForm::Ref::New(env);
 	AddChild(pFraParameters);
 	
-	helper.EditFloat(pFraParameters, "Type:", "Set type of vegetation to search for.",
+	helper.EditFloat(pFraParameters, "@World.WVNodeClosestVegetation.Type.Label", "@World.WVNodeClosestVegetation.SetTypeOfVegetationToSearchFor.ToolTip",
 		pEditVegetationType, cTextVegetationType::Ref::New(*this));
-	helper.EditFloat(pFraParameters, "Radius:", "Set search radius in meters.",
+	helper.EditFloat(pFraParameters, "@World.WVNodePropCount.Radius.Label", "@World.WVNodePropCount.SetSearchRadiusInMeters.ToolTip",
 		pEditSearchRadius, cTextSearchRadius::Ref::New(*this));
 }
 

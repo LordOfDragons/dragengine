@@ -50,16 +50,16 @@ const decPoint &grid, const decPoint &size, decTList<float> &&oldHeights){
 	int adjustX, adjustY;
 	
 	if(drawMode == meWorldGuiParameters::ehpdmRaise){
-		SetShortInfo("Raise Terrain");
+		SetShortInfo("@World.UHTPaintHeight.RaiseTerrain");
 		
 	}else if(drawMode == meWorldGuiParameters::ehpdmLower){
-		SetShortInfo("Lower Terrain");
+		SetShortInfo("@World.UHTPaintHeight.LowerTerrain");
 		
 	}else if(drawMode == meWorldGuiParameters::ehpdmLevel){
-		SetShortInfo("Level Terrain");
+		SetShortInfo("@World.UHTPaintHeight.LevelTerrain");
 		
 	}else{
-		SetShortInfo("Smooth Terrain");
+		SetShortInfo("@World.UHTPaintHeight.SmoothTerrain");
 	}
 	
 	pWorld = world;

@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "meBaseUndoMove.h"
+
+#include <deigde/environment/igdeEnvironment.h>
+#include <deigde/localization/igdeTranslationManager.h>
 
 
 
@@ -35,7 +35,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meBaseUndoMove::meBaseUndoMove() :
+meBaseUndoMove::meBaseUndoMove(igdeEnvironment &environment) :
+pEnvironment(environment),
 pModifyOrientation(false){
 }
 
@@ -48,12 +49,11 @@ meBaseUndoMove::~meBaseUndoMove(){
 ///////////////
 
 void meBaseUndoMove::SetDistance(const decDVector &distance){
-	decString info;
-	
 	pDistance = distance;
 	
-	info.Format("distance (%g,%g,%g)", distance.x, distance.y, distance.z);
-	SetLongInfo(info.GetString());
+	SetLongInfo(decString::Formatted(
+		pEnvironment.GetTranslationManager().Translate("World.BaseUndoMove.Distance").ToUTF8(),
+		distance.x, distance.y, distance.z));
 }
 
 void meBaseUndoMove::SetModifyOrientation(bool modify){
@@ -66,10 +66,9 @@ void meBaseUndoMove::SetMatrix(const decDMatrix &matrix){
 	const decDVector displacement(matrix.GetPosition());
 	const decDVector rotation(matrix.GetEulerAngles() * RAD2DEG);
 	
-	decString info;
-	info.Format("distance(%g,%g,%g) rotation=(%g,%g,%g)",
-		displacement.x, displacement.y, displacement.z,
-		rotation.x, rotation.y, rotation.z);
+	SetLongInfo(decString::Formatted(
+		pEnvironment.GetTranslationManager().Translate("World.BaseUndoMove.DistanceRotation").ToUTF8(),
+		displacement.x, displacement.y, displacement.z, rotation.x, rotation.y, rotation.z));
 }
 
 

@@ -51,7 +51,7 @@ meUDecalTCRotation::meUDecalTCRotation(meDecal *decal, float newRotation){
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Decal Texture Rotation");
+	SetShortInfo("@World.UDecalTCRotation.DecalTextureRotation");
 	
 	pDecal = nullptr;
 	

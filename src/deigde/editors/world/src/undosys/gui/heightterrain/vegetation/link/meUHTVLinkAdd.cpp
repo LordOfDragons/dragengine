@@ -48,7 +48,7 @@ meUHTVLinkAdd::meUHTVLinkAdd(meHTVegetationLayer *vlayer, meHTVRLink *link){
 	pVLayer = nullptr;
 	pLink = nullptr;
 	
-	SetShortInfo("Add Vegetation Layer Link");
+	SetShortInfo("@World.UHTVLinkAdd.AddVegetationLayerLink");
 	SetMemoryConsumption(sizeof(meUHTVLinkAdd));
 	
 	pVLayer = vlayer;

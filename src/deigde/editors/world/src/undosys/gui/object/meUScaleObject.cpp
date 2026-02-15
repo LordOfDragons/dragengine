@@ -40,10 +40,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUScaleObject::meUScaleObject(meWorld *world, const meObject::List &objects){
+meUScaleObject::meUScaleObject(meWorld *world, const meObject::List &objects) :
+meBaseUndoScale(*world->GetEnvironment())
+{
 	DEASSERT_NOTNULL(world)
 	
-	SetShortInfo("Scale Object");
+	SetShortInfo("@World.UScaleObject.ScaleObject");
 	
 	pWorld = world;
 	

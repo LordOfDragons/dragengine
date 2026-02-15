@@ -47,7 +47,7 @@ meUHTVVarSetRestitution::meUHTVVarSetRestitution(meHTVVariation *variation, floa
 	pOldRestitution = variation->GetRestitution();
 	pNewRestitution = newRestitution;
 	
-	SetShortInfo("Vegetation Layer Variation Set Restitution");
+	SetShortInfo("@World.UHTVVarSetRestitution.VegetationLayerVariationSetRestitution");
 }
 
 meUHTVVarSetRestitution::~meUHTVVarSetRestitution(){

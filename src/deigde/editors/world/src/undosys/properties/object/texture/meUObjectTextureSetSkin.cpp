@@ -46,7 +46,7 @@ meUObjectTextureSetSkin::meUObjectTextureSetSkin(meObjectTexture *texture, const
 	
 	DEASSERT_NOTNULL(object->GetWorld())
 	
-	SetShortInfo("Set object texture skin");
+	SetShortInfo("@World.UObjectTextureSetSkin.SetObjectTextureSkin");
 	
 	const cTexture::Ref udata(cTexture::Ref::New());
 	udata->oldskin = texture->GetSkinPath();
@@ -59,7 +59,7 @@ meUObjectTextureSetSkin::meUObjectTextureSetSkin(meObjectTexture::List &textures
 	DEASSERT_NOTNULL(newskin)
 	DEASSERT_TRUE(textures.IsNotEmpty())
 	
-	SetShortInfo("Set object texture skins");
+	SetShortInfo("@World.UObjectTextureSetSkin.SetObjectTextureSkins");
 	
 	textures.Visit([&](meObjectTexture *texture){
 		const cTexture::Ref udata(cTexture::Ref::New());

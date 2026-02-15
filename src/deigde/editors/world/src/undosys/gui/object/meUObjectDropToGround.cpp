@@ -29,6 +29,9 @@
 #include "../../../world/object/meObject.h"
 #include "../../../world/object/meObjectSelection.h"
 
+#include <deigde/environment/igdeEnvironment.h>
+#include <deigde/localization/igdeTranslationManager.h>
+
 #include <dragengine/resources/collider/deColliderVolume.h>
 #include <dragengine/resources/world/deWorld.h>
 #include <dragengine/systems/modules/physics/deBasePhysicsWorld.h>
@@ -50,14 +53,16 @@ pAlign(false)
 	DEASSERT_NOTNULL(world)
 	DEASSERT_TRUE(objects.IsNotEmpty())
 	
-	SetShortInfo("Drop objects to ground");
+	SetShortInfo("@World.UObjectDropToGround.DropObjectsToGround");
+	
+	igdeTranslationManager &tm = world->GetEnvironment()->GetTranslationManager();
 	
 	decString text;
 	if(objects.GetCount() > 1){
-		text.Format("%d objects", objects.GetCount());
+		text.FormatSafe(tm.Translate("World.UObjectDropToGround.CountObjects").ToUTF8(), objects.GetCount());
 		
 	}else{
-		text = "1 object";
+		text = tm.Translate("World.UObjectDropToGround.OneObject").ToUTF8();
 	}
 	SetLongInfo(text);
 	

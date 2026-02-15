@@ -46,7 +46,7 @@ meUHTVRuleCompSetVector::meUHTVRuleCompSetVector(meHTVegetationLayer *vlayer, me
 	pVLayer = nullptr;
 	pRule = nullptr;
 	
-	SetShortInfo("Vegetation Layer Rule Combine Set Vector");
+	SetShortInfo("@World.UHTVRuleCompSetVector.VegetationLayerRuleCombineSetVector");
 	SetMemoryConsumption(sizeof(meUHTVRuleCompSetVector));
 	
 	pOldVector = rule->GetVector();

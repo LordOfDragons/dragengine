@@ -58,8 +58,8 @@ meUObjectShapesDelete::meUObjectShapesDelete(meObject *object, const char *prope
 	
 	pObject = nullptr;
 	
-	SetShortInfo("Object-Shape delete");
-	SetLongInfo("Object-Shape delete");
+	SetShortInfo("@World.UObjectShapeDelete.ObjectShapeDelete");
+	SetLongInfo("@World.UObjectShapeDelete.ObjectShapeDelete");
 	
 	pPropertyExists = object->GetProperties().Has(property);
 	if(pPropertyExists){

@@ -206,6 +206,9 @@ public:
 	
 	/** \brief Notify listeners dragging ended. */
 	virtual void NotifyDragEnd();
+	
+	/** \brief Language changed. */
+	void OnLanguageChanged() override;
 	/*@}*/
 	
 	

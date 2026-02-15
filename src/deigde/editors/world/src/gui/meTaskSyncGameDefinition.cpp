@@ -59,7 +59,7 @@ pStepCount(0),
 pBatchSizeObjects(100),
 pBatchSizeDecals(100)
 {
-	SetMessage("World Editor: Synchronize Game Definition");
+	SetMessage(pWindowMain.Translate("World.TaskSyncGameDefinition.SyncGameDefinition").ToUTF8());
 }
 
 meTaskSyncGameDefinition::~meTaskSyncGameDefinition(){
@@ -101,8 +101,8 @@ bool meTaskSyncGameDefinition::Step(){
 		SetProgress((float)pStepIndex / (float)pStepCount);
 		
 		decString message;
-		message.Format("World Editor: Synchronize Game Definition: Objects (%d/%d)",
-			pObjectIndex, objectCount);
+		message = pWindowMain.Translate("World.TaskSyncGameDefinition.SyncGameDefinitionObjects").ToUTF8();
+		message.FormatSafe(message, pObjectIndex, objectCount);
 		SetMessage(message);
 		
 		for(; pObjectIndex<lastIndex; pObjectIndex++){
@@ -137,8 +137,8 @@ bool meTaskSyncGameDefinition::Step(){
 		
 		SetProgress((float)pStepIndex / (float)pStepCount);
 		decString message;
-		message.Format("World Editor: Synchronize Game Definition: Decals (%d/%d)",
-			pDecalIndex, pDecalIndex);
+		message = pWindowMain.Translate("World.TaskSyncGameDefinition.SyncGameDefinitionDecals").ToUTF8();
+		message.FormatSafe(message, pDecalIndex, pDecalIndex);
 		SetMessage(message);
 		
 		for(; pDecalIndex<lastIndex; pDecalIndex++){
@@ -156,7 +156,7 @@ bool meTaskSyncGameDefinition::Step(){
 		
 	case esProcessWindows:
 		SetProgress((float)pStepIndex / (float)pStepCount);
-		SetMessage("World Editor: Synchronize Game Definition");
+		SetMessage(pWindowMain.Translate("World.TaskSyncGameDefinition.SyncGameDefinition").ToUTF8());
 		
 		pWindowMain.GetWindowProperties()->OnGameDefinitionChanged();
 		pState = esFinished;

@@ -47,7 +47,7 @@ pSector(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Height terrain add nav-space");
+	SetShortInfo("@World.UHTNavSpaceAdd.HeightTerrainAddNavSpace");
 	
 	pSector = sector;
 	pNavSpace = navspace;

@@ -47,7 +47,7 @@ meUDecalDuplicate::meUDecalDuplicate(meWorld *world, const decVector &offset){
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Duplicate decals");
+	SetShortInfo("@World.UDecalDuplicate.DuplicateDecals");
 	
 	pWorld = nullptr;
 	

@@ -47,8 +47,8 @@ pCopyZ(copyZ)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Copy Object Scale");
-	SetLongInfo("Copy Object Scale");
+	SetShortInfo("@World.UObjectCopyScale.CopyObjectScale");
+	SetLongInfo("@World.UObjectCopyScale.CopyObjectScale");
 	
 	world->GetSelectionObject().GetSelected().Visit([&](meObject *o){
 		pObjects.Add(meUndoDataObject::Ref::New(o));

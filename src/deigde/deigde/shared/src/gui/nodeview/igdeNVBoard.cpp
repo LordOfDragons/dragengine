@@ -349,10 +349,15 @@ void igdeNVBoard::ShowContextMenu(const decPoint &position){
 	helper.MenuCommand(menu, igdeNVBoardActionClearLinks::Ref::New(*this));
 	
 	// listener provided
-	const int count = pListeners.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((igdeNVBoardListener*)pListeners.GetAt(i))->AddContextMenuEntries(this, menu, position);
+	helper.MenuSeparator(menu);
+	const int count = menu->GetChildren().GetCount();
+	
+	pListeners.Visit([&](igdeNVBoardListener &l){
+		l.AddContextMenuEntries(this, menu, position);
+	});
+	
+	if(menu->GetChildren().GetCount() == count){
+		menu->RemoveChild(menu->GetChildren().Last());
 	}
 	
 	if(menu->GetChildren().IsNotEmpty()){

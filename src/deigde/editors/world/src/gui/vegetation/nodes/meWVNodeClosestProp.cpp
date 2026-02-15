@@ -87,7 +87,7 @@ class cActionClassSelect : public igdeAction{
 public:
 	typedef deTObjectReference<cActionClassSelect> Ref;
 	cActionClassSelect(meWVNodeClosestProp &node) :
-		igdeAction("", nullptr, "Select Object Class"), pNode(node){}
+		igdeAction("", nullptr, "@World.WVNodeClosestProp.Action.SelectObjectClass"), pNode(node){}
 	
 	void OnAction() override{
 		if(!pNode.GetGameDefinition()){
@@ -108,7 +108,7 @@ class cActionMenuClass : public igdeActionContextMenu{
 public:
 	typedef deTObjectReference<cActionMenuClass> Ref;
 	cActionMenuClass(meWVNodeClosestProp &node) : igdeActionContextMenu("",
-		node.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Class menu"),
+		node.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "@World.WVNodeClosestProp.Menu.Class"),
 		pNode(node){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
@@ -154,30 +154,30 @@ pRuleCP(rule)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	SetTitle("Closest Prop");
+	SetTitle("@World.WVNodeClosestProp.Title");
 	
 	pActionMenuClass = cActionMenuClass::Ref::New(*this);
 	
 	// slots
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"Distance", "Distance in meters from closest prop",
+		"@World.WVNodeClosestProp.Output.Distance", "@World.WVNodeClosestProp.Output.DistanceDesc",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleClosestProp::eosDistance));
 	
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"Direction", "Direction (normalized vector) towards closest prop",
+		"@World.WVNodeClosestProp.Output.Direction", "@World.WVNodeClosestProp.Output.DirectionDesc",
 		false, *this, meWVNodeSlot::estVector, meHTVRuleClosestProp::eosDirection));
 	
 	// parameters
 	pFraParameters = igdeContainerForm::Ref::New(env);
 	AddChild(pFraParameters);
 	
-	helper.FormLineStretchFirst(pFraParameters, "Class:", "Select class name of prop to search for.", formLine);
-	helper.ComboBoxFilter(formLine, true, "Select class name of prop to search for.",
+	helper.FormLineStretchFirst(pFraParameters, "@World.WVNodeClosestProp.Class.Label", "@World.WVNodePropCount.SelectClassNameOfPropToSearchFor.ToolTip", formLine);
+	helper.ComboBoxFilter(formLine, true, "@World.WVNodePropCount.SelectClassNameOfPropToSearchFor.ToolTip",
 		pCBPropClass, cComboClass::Ref::New(*this));
 	helper.Button(formLine, pBtnPropClass, pActionMenuClass);
 	pActionMenuClass->SetWidget(pBtnPropClass);
 	
-	helper.EditFloat(pFraParameters, "Radius:", "Set search radius in meters.",
+	helper.EditFloat(pFraParameters, "@World.WVNodePropCount.Radius.Label", "@World.WVNodePropCount.SetSearchRadiusInMeters.ToolTip",
 		pEditSearchRadius, cTextSearchRadius::Ref::New(*this));
 	
 	UpdateClassLists();

@@ -281,6 +281,15 @@ void igdeNVNode::NotifyDragEnd(){
 	});
 }
 
+void igdeNVNode::OnLanguageChanged(){
+	igdeContainer::OnLanguageChanged();
+	
+	if(GetNativeWidget()){
+		igdeNativeNVNode * const native = (igdeNativeNVNode*)GetNativeWidget();
+		native->UpdateTitle();
+		native->UpdateDescription();
+	}
+}
 
 
 void igdeNVNode::CreateNativeWidget(){

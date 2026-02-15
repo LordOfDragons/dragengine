@@ -51,7 +51,7 @@ meUDecalVisible::meUDecalVisible(meDecal *decal){
 	
 	pDecal = nullptr;
 	
-	SetShortInfo("Set decal visible");
+	SetShortInfo("@World.UDecalVisible.SetDecalVisible");
 	
 	pDecal = decal;
 }

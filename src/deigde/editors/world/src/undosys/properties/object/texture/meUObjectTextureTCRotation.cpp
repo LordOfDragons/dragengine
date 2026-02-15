@@ -56,7 +56,7 @@ meUObjectTextureTCRotation::meUObjectTextureTCRotation(meObjectTexture *texture,
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Objext Texture Rotation");
+	SetShortInfo("@World.UObjectTextureTCRotation.ObjextTextureRotation");
 	
 	pTexture = nullptr;
 	

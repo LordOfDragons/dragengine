@@ -51,7 +51,7 @@ meUDecalTCScaling::meUDecalTCScaling(meDecal *decal, const decVector2 &newScalin
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Decal Texture Scaling");
+	SetShortInfo("@World.UDecalTCScaling.DecalTextureScaling");
 	
 	pDecal = nullptr;
 	

@@ -89,30 +89,30 @@ pRuleConstant(rule)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	SetTitle("Constant");
+	SetTitle("@World.WVNodeConstant.Title");
 	
 	// slots
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"Vector", "Vector value",
+		"@World.WVNodeConstant.Output.Vector", "@World.WVNodeConstant.Output.VectorDesc",
 		false, *this, meWVNodeSlot::estVector, meHTVRuleConstant::eosVector));
 	
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"X", "X value",
+		"@World.WVNodeConstant.Output.X", "@World.WVNodeConstant.Output.XDesc",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleConstant::eosX));
 	
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"Y", "Y value",
+		"@World.WVNodeConstant.Output.Y", "@World.WVNodeConstant.Output.YDesc",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleConstant::eosY));
 	
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"Z", "Z value",
+		"@World.WVNodeConstant.Output.Z", "@World.WVNodeConstant.Output.ZDesc",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleConstant::eosZ));
 	
 	// parameters
 	pFraParameters = igdeContainerForm::Ref::New(env);
 	AddChild(pFraParameters);
 	
-	helper.EditVector(pFraParameters, "Vector:", "Vector value.", pEditVector, cEditVector::Ref::New(*this));
+	helper.EditVector(pFraParameters, "@World.WVNodeConstant.Vector.Label", "@World.WVNodeConstant.VectorValue.ToolTip", pEditVector, cEditVector::Ref::New(*this));
 }
 
 meWVNodeConstant::~meWVNodeConstant(){

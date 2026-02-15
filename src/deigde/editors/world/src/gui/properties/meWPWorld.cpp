@@ -290,7 +290,8 @@ class cActionPFTStartPosFromCamera : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionPFTStartPosFromCamera> Ref;
 	cActionPFTStartPosFromCamera(meWPWorld &panel) : cBaseAction(panel,
-		"Set", nullptr, "Set start position from camera position"){}
+		"@World.WPWorld.Action.SetStartPosFromCamera", nullptr,
+		"@World.WPWorld.Action.SetStartPosFromCamera"){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
 		world->GetPathFindTest()->SetStartPosition(world->GetActiveCamera()->GetPosition());
@@ -313,7 +314,8 @@ class cActionPFTGoalPosFromCamera : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionPFTGoalPosFromCamera> Ref;
 	cActionPFTGoalPosFromCamera(meWPWorld &panel) : cBaseAction(panel,
-		"Set", nullptr, "Set goal position from camera position"){}
+		"@World.WPWorld.Action.SetGoalPosFromCamera", nullptr,
+		"@World.WPWorld.Action.SetGoalPosFromCamera"){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
 		world->GetPathFindTest()->SetGoalPosition(world->GetActiveCamera()->GetPosition());
@@ -361,7 +363,7 @@ class cActionPFTShowPath : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionPFTShowPath> Ref;
 	cActionPFTShowPath(meWPWorld &panel) : cBaseAction(panel,
-		"Show Path", nullptr, "Show path"){}
+		"@World.WPWorld.Action.ShowPath", nullptr, "@World.WPWorld.Action.ShowPath"){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
 		world->GetPathFindTest()->SetShowPath(!world->GetPathFindTest()->GetShowPath());
@@ -384,8 +386,8 @@ public:
 class cActionPFTTypeAdd : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionPFTTypeAdd> Ref;
-	cActionPFTTypeAdd(meWPWorld &panel) : cBaseAction(panel, "Add...",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add type"){}
+	cActionPFTTypeAdd(meWPWorld &panel) : cBaseAction(panel, "@World.WPWorld.Action.PathFindTypeAdd",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@World.WPWorld.Action.PFTTypeAdd"){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
 		mePathFindTestType::List &list = world->GetPathFindTest()->GetTypeList();
@@ -393,11 +395,11 @@ public:
 			return decMath::max(v, t.GetTypeNumber() + 1);
 		});
 		
-		while(igdeCommonDialogs::GetInteger(pPanel, "Add Type", "Type Number:", newValue)){
+		while(igdeCommonDialogs::GetInteger(pPanel, "@World.WPWorld.Dialog.AddType", "@World.WPWorld.Dialog.AddTypeNumber", newValue)){
 			if(list.HasMatching([&](const mePathFindTestType &t){
 				return t.GetTypeNumber() == newValue;
 			})){
-				igdeCommonDialogs::Error(pPanel, "Add Type", "A type with this type number exists already.");
+				igdeCommonDialogs::Error(pPanel, "@World.WPWorld.Dialog.AddType", "@World.WPWorld.Dialog.ATypeWithThisTypeNumberExistsAlready");
 				continue;
 			}
 			
@@ -418,8 +420,8 @@ public:
 class cActionPFTTypeRemove : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionPFTTypeRemove> Ref;
-	cActionPFTTypeRemove(meWPWorld &panel) : cBaseAction(panel, "Remove",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove type"){}
+	cActionPFTTypeRemove(meWPWorld &panel) : cBaseAction(panel, "@World.WPWorld.Action.PathFindTypeRemove",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@World.WPWorld.Action.PFTTypeRemove"){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
 		mePathFindTestType * const type = pPanel.GetActivePathFindTestType();
@@ -437,8 +439,8 @@ public:
 class cActionPFTTypeClear : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionPFTTypeClear> Ref;
-	cActionPFTTypeClear(meWPWorld &panel) : cBaseAction(panel, "Clear",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove all types"){}
+	cActionPFTTypeClear(meWPWorld &panel) : cBaseAction(panel, "@World.WPWorld.Action.PathFindTypeClear",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@World.WPWorld.Action.PFTTypeClear"){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
 		if(world->GetPathFindTest()->GetTypeList().IsNotEmpty()){
@@ -459,7 +461,7 @@ class cActionPFTTypes : public igdeActionContextMenu{
 public:
 	typedef deTObjectReference<cActionPFTTypes> Ref;
 	cActionPFTTypes(meWPWorld &panel) : igdeActionContextMenu("",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Menu"),
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "@World.WPWorld.Action.Menu"),
 	pPanel(panel){}
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override{
@@ -489,7 +491,7 @@ public:
 		if(pPanel.GetWorld()->GetPathFindTest()->GetTypeList().HasMatching([&](const mePathFindTestType &t){
 			return t.GetTypeNumber() == value;
 		})){
-			igdeCommonDialogs::Error(pPanel, "Change Type Number", "Type number already exists");
+			igdeCommonDialogs::Error(pPanel, "@World.WPWorld.ChangeTypeNumber.Label", "@World.WPWorld.TypeNumberAlreadyExists.ToolTip");
 			textField->SetInteger(type->GetTypeNumber());
 			
 		}else{
@@ -577,7 +579,7 @@ public:
 class cActionMusicPlay : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionMusicPlay> Ref;
-	cActionMusicPlay(meWPWorld &panel) : cBaseAction(panel, "Play", nullptr, "Play"){}
+	cActionMusicPlay(meWPWorld &panel) : cBaseAction(panel, "@World.WPWorld.Action.MusicPlay", nullptr, "@World.WPWorld.Action.MusicPlay"){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
 		world->GetMusic().Play();
@@ -592,7 +594,7 @@ public:
 class cActionMusicPause : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionMusicPause> Ref;
-	cActionMusicPause(meWPWorld &panel) : cBaseAction(panel, "Pause", nullptr, "Pause"){}
+	cActionMusicPause(meWPWorld &panel) : cBaseAction(panel, "@World.WPWorld.Action.MusicPause", nullptr, "@World.WPWorld.Action.MusicPause"){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
 		world->GetMusic().Pause();
@@ -607,7 +609,7 @@ public:
 class cActionMusicStop : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionMusicStop> Ref;
-	cActionMusicStop(meWPWorld &panel) : cBaseAction(panel, "Stop", nullptr, "Stop"){}
+	cActionMusicStop(meWPWorld &panel) : cBaseAction(panel, "@World.WPWorld.Action.MusicStop", nullptr, "@World.WPWorld.Action.MusicStop"){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
 		world->GetMusic().Stop();
@@ -652,74 +654,75 @@ pWindowProperties(windowProperties)
 	
 	
 	// parameters
-	helper.GroupBox(content, groupBox, "World Parameters:");
+	helper.GroupBox(content, groupBox, "@World.WPWorld.WorldParameters.Label");
 	
-	helper.EditDVector(groupBox, "Size", "Size of world in meters where modules can expect content",
+	helper.EditDVector(groupBox, "@World.WPWorld.Label.Size", "@World.WPWorld.SizeOfWorldInMetersWhereModulesCanExpectContent.ToolTip",
 		8, 0, pEditSize, cEditSize::Ref::New(*this));
 	
-	helper.EditVector(groupBox, "Gravity", "World gravity", pEditGravity, cEditGravity::Ref::New(*this));
+	helper.EditVector(groupBox, "@World.WPWorld.Gravity.Label", "@World.WPWorld.WorldGravity.ToolTip", pEditGravity, cEditGravity::Ref::New(*this));
 	
 	
 	// properties
-	helper.GroupBoxFlow(content, groupBox, "World Properties:", false, false);
+	helper.GroupBoxFlow(content, groupBox, "@World.WPWorld.WorldProperties.Label", false, false);
 	
 	pEditProperties = cEditWorldProperties::Ref::New(*this);
 	groupBox->AddChild(pEditProperties);
 	
 	
 	// find path test
-	helper.GroupBox(content, groupBox, "Path Find Test:", true);
+	helper.GroupBox(content, groupBox, "@World.WPWorld.PathFindTest.Label", true);
 	
-	helper.FormLineStretchFirst(groupBox, "Start Position:", "Start position of the test path", formLine);
-	helper.EditDVector(formLine, "Start position of the test path",
+	helper.FormLineStretchFirst(groupBox, "@World.WPWorld.StartPosition.Label", "@World.WPWorld.StartPositionOfTestPath.ToolTip", formLine);
+	helper.EditDVector(formLine, "@World.WPWorld.StartPositionOfTestPath.ToolTip",
 		pEditPFTStartPosition, cEditPFTStartPosition::Ref::New(*this));
 	helper.Button(formLine, pBtnPFTStartPosFromCamera, cActionPFTStartPosFromCamera::Ref::New(*this));
 	
-	helper.FormLineStretchFirst(groupBox, "Goal Position:", "Goal position of the test path", formLine);
-	helper.EditDVector(formLine, "Goal position of the test path",
+	helper.FormLineStretchFirst(groupBox, "@World.WPWorld.GoalPosition.Label", "@World.WPWorld.GoalPositionOfTestPath.ToolTip", formLine);
+	helper.EditDVector(formLine, "@World.WPWorld.GoalPositionOfTestPath.ToolTip",
 		pEditPFTGoalPosition, cEditPFTGoalPosition::Ref::New(*this));
 	helper.Button(formLine, pBtnPFTGoalPosFromCamera, cActionPFTGoalPosFromCamera::Ref::New(*this));
 	
-	helper.EditInteger(groupBox, "Layer:", "Layer to navigate.",
+	helper.EditInteger(groupBox, "@World.WPWorld.Layer.Label", "@World.WPWorld.LayerToNavigate.ToolTip",
 		pEditPFTLayer, cEditPFTLayer::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "Space Type:", "Space type to navigate.",
+	helper.ComboBox(groupBox, "@World.WPWorld.SpaceType.Label", "@World.WPWorld.SpaceTypeToNavigate.ToolTip",
 		pCBPFTSpaceType, cComboPFTSpaceType::Ref::New(*this));
-	pCBPFTSpaceType->AddItem("Grid", nullptr, (void*)(intptr_t)deNavigationSpace::estGrid);
-	pCBPFTSpaceType->AddItem("Mesh", nullptr, (void*)(intptr_t)deNavigationSpace::estMesh);
-	pCBPFTSpaceType->AddItem("Volume", nullptr, (void*)(intptr_t)deNavigationSpace::estVolume);
+	pCBPFTSpaceType->SetAutoTranslateItems(true);
+	pCBPFTSpaceType->AddItem("@World.WPWorld.Grid", nullptr, (void*)(intptr_t)deNavigationSpace::estGrid);
+	pCBPFTSpaceType->AddItem("@World.WPWorld.Mesh", nullptr, (void*)(intptr_t)deNavigationSpace::estMesh);
+	pCBPFTSpaceType->AddItem("@World.WPWorld.Volume", nullptr, (void*)(intptr_t)deNavigationSpace::estVolume);
 	
-	helper.EditFloat(groupBox, "Blocking Cost:", "Blocking cost.",
+	helper.EditFloat(groupBox, "@World.WPWorld.BlockingCost.Label", "@World.WPWorld.BlockingCost.ToolTip",
 		pEditPFTBlockingCost, cEditPFTBlockingCost::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkPFTShowPath, cActionPFTShowPath::Ref::New(*this));
 	
 	
 	// find path test types
-	helper.GroupBox(content, groupBox, "Path Find Test Types:", true);
+	helper.GroupBox(content, groupBox, "@World.WPWorld.PathFindTestTypes.Label", true);
 	
-	helper.FormLineStretchFirst(groupBox, "Type:", "Type to edit", formLine);
-	helper.ComboBox(formLine, "Type to edit", pCBPFTType, cComboPFTType::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@World.WPWorld.Dialog.TypeNumber2", "@World.WPWorld.TypeToEdit.ToolTip", formLine);
+	helper.ComboBox(formLine, "@World.WPWorld.TypeToEdit.ToolTip", pCBPFTType, cComboPFTType::Ref::New(*this));
 	pActionPFTTypes = cActionPFTTypes::Ref::New(*this);
 	helper.Button(formLine, pBtnPFTTypes, pActionPFTTypes);
 	pActionPFTTypes->SetWidget(pBtnPFTTypes);
 	
-	helper.EditInteger(groupBox, "Type Number:", "Type number.",
+	helper.EditInteger(groupBox, "@World.WPWorld.TypeNumber.Label", "@World.WPWorld.TypeNumber.ToolTip",
 		pEditPFTTypeNumber, cEditPFTTypeNumber::Ref::New(*this));
-	helper.EditString(groupBox, "Name:", "Name of the type.",
+	helper.EditString(groupBox, "@World.WPWorld.Dialog.Name", "@World.WPWorld.NameOfType.ToolTip",
 		pEditPFTTypeName, cEditPFTTypeName::Ref::New(*this));
-	helper.EditFloat(groupBox, "Fix Cost:", "Fix cost to move into type.",
+	helper.EditFloat(groupBox, "@World.WPWorld.FixCost.Label", "@World.WPWorld.FixCostToMoveIntoType.ToolTip",
 		pEditPFTTypeFixCost, cEditPFTTypeFixCost::Ref::New(*this));
-	helper.EditFloat(groupBox, "Cost Per Meter:", "Cost per meter travelled inside type.",
+	helper.EditFloat(groupBox, "@World.WPWorld.CostPerMeter.Label", "@World.WPWorld.CostPerMeterTravelledInsideType.ToolTip",
 		pEditPFTTypeCPM, cEditPFTTypeCostPerMeter::Ref::New(*this));
 	
 	
 	// music testing
-	helper.GroupBox(content, groupBox, "Music Testing:", true);
+	helper.GroupBox(content, groupBox, "@World.WPWorld.MusicTesting.Label", true);
 	
-	helper.EditPath(groupBox, "Path:", "Path to sound file to play.",
+	helper.EditPath(groupBox, "@World.WPWorld.Path.Label", "@World.WPWorld.PathToSoundFileToPlay.ToolTip",
 		igdeEnvironment::efpltSound, pEditMusicPath, cEditMusicPath::Ref::New(*this));
 	
-	helper.EditSliderText(groupBox, "Volume:", "Volume to play music.",
+	helper.EditSliderText(groupBox, "@World.WPWorld.Volume.Label", "@World.WPWorld.VolumeToPlayMusic.ToolTip",
 		0.0f, 1.0f, 4, 2, 0.1f, pEditMusicVolume, cEditMusicVolume::Ref::New(*this));
 	
 	helper.FormLine(groupBox, "", "", formLine);

@@ -54,28 +54,28 @@ pWindowMain(windowMain)
 	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
 	pPropWorld = meWPWorld::Ref::New(*this);
-	AddChild(pPropWorld, "World");
+	AddChild(pPropWorld, "@World.WindowProperties.Tab.World");
 	
 	pPropSelection = meWPSelection::Ref::New(*this);
-	AddChild(pPropSelection, "Selection");
+	AddChild(pPropSelection, "@World.WindowProperties.Tab.Selection");
 	
 	pPropBrowser = meWPBrowser::Ref::New(*this);
-	AddChild(pPropBrowser, "Browser");
+	AddChild(pPropBrowser, "@World.WindowProperties.Browser.Label");
 	
 // 	pPropAdd = meWPAdd::Ref::New(*this);
 // 	AddChild(pPropAdd, "Add");
 	
 	pPropHT = meWPHeightTerrain::Ref::New(*this);
-	AddChild(pPropHT, "Height Terrain");
+	AddChild(pPropHT, "@World.WindowProperties.HeightTerrain.Label");
 	
 	pPropView = meWPView::Ref::New(*this);
-	AddChild(pPropView, "View");
+	AddChild(pPropView, "@World.WindowProperties.View.Label");
 	
 	pPropSensors = meWPSensors::Ref::New(*this);
-	AddChild(pPropSensors, "Sensors");
+	AddChild(pPropSensors, "@World.WindowProperties.Sensors.Label");
 	
 	pPanelUndoHistory = meWPUndoHistory::Ref::New(GetEnvironment());
-	AddChild(pPanelUndoHistory, "History");
+	AddChild(pPanelUndoHistory, "@World.WindowProperties.History.Label");
 	
 	SetActivePanel(1); // selection
 }

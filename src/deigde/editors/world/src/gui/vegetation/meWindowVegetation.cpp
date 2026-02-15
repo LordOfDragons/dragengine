@@ -102,7 +102,7 @@ public:
 	using Ref = deTObjectReference<cActionAddNode>;
 	cActionAddNode(meWindowVegetation &view, meHTVRule::eRuleTypes type,
 		const decVector2 &position, const char *text, igdeIcon *icon) :
-	igdeAction(text, icon, "Add Node"), pView(view), pType(type), pPosition(position){}
+	igdeAction(text, icon, "@World.WindowVegetation.Action.AddNode"), pView(view), pType(type), pPosition(position){}
 	
 	void OnAction() override{
 		if(!pView.GetVLayer() || !pView.GetWorld()){
@@ -126,7 +126,7 @@ class cActionAddClosestProp : public cActionAddNode {
 public:
 	using Ref = deTObjectReference<cActionAddClosestProp>;
 	cActionAddClosestProp(meWindowVegetation &view, const decVector2 &position) :
-	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Closest Prop", nullptr){}
+	cActionAddNode(view, meHTVRule::ertClosestProp, position, "@World.WindowVegetation.Action.AddNodeClosestProp", nullptr){}
 	
 	meHTVRule::Ref CreateRule() override{
 		return meHTVRuleClosestProp::Ref::New();
@@ -137,7 +137,7 @@ class cActionAddClosestVegetation : public cActionAddNode {
 public:
 	using Ref = deTObjectReference<cActionAddClosestVegetation>;
 	cActionAddClosestVegetation(meWindowVegetation &view, const decVector2 &position) :
-	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Closest Vegetation", nullptr){}
+	cActionAddNode(view, meHTVRule::ertClosestProp, position, "@World.WindowVegetation.Action.AddNodeClosestVegetation", nullptr){}
 	
 	meHTVRule::Ref CreateRule() override{
 		return meHTVRuleClosestVegetation::Ref::New();
@@ -148,7 +148,7 @@ class cActionAddCombine : public cActionAddNode {
 public:
 	using Ref = deTObjectReference<cActionAddCombine>;
 	cActionAddCombine(meWindowVegetation &view, const decVector2 &position) :
-	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Combine", nullptr){}
+	cActionAddNode(view, meHTVRule::ertClosestProp, position, "@World.WindowVegetation.Action.AddNodeCombine", nullptr){}
 	
 	meHTVRule::Ref CreateRule() override{
 		return meHTVRuleCombine::Ref::New();
@@ -159,7 +159,7 @@ class cActionAddComponents : public cActionAddNode {
 public:
 	using Ref = deTObjectReference<cActionAddComponents>;
 	cActionAddComponents(meWindowVegetation &view, const decVector2 &position) :
-	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Components", nullptr){}
+	cActionAddNode(view, meHTVRule::ertClosestProp, position, "@World.WindowVegetation.Action.AddNodeComponents", nullptr){}
 	
 	meHTVRule::Ref CreateRule() override{
 		return meHTVRuleComponents::Ref::New();
@@ -170,7 +170,7 @@ class cActionAddCurve : public cActionAddNode {
 public:
 	using Ref = deTObjectReference<cActionAddCurve>;
 	cActionAddCurve(meWindowVegetation &view, const decVector2 &position) :
-	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Curve", nullptr){}
+	cActionAddNode(view, meHTVRule::ertClosestProp, position, "@World.WindowVegetation.Action.AddNodeCurve", nullptr){}
 	
 	meHTVRule::Ref CreateRule() override{
 		return meHTVRuleCurve::Ref::New();
@@ -181,7 +181,7 @@ class cActionAddGeometry : public cActionAddNode {
 public:
 	using Ref = deTObjectReference<cActionAddGeometry>;
 	cActionAddGeometry(meWindowVegetation &view, const decVector2 &position) :
-	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Geometry", nullptr){}
+	cActionAddNode(view, meHTVRule::ertClosestProp, position, "@World.WindowVegetation.Action.AddNodeGeometry", nullptr){}
 	
 	meHTVRule::Ref CreateRule() override{
 		return meHTVRuleGeometry::Ref::New();
@@ -192,7 +192,7 @@ class cActionAddMapping : public cActionAddNode {
 public:
 	using Ref = deTObjectReference<cActionAddMapping>;
 	cActionAddMapping(meWindowVegetation &view, const decVector2 &position) :
-	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Mapping", nullptr){}
+	cActionAddNode(view, meHTVRule::ertClosestProp, position, "@World.WindowVegetation.Action.AddNodeMapping", nullptr){}
 	
 	meHTVRule::Ref CreateRule() override{
 		return meHTVRuleMapping::Ref::New();
@@ -203,7 +203,7 @@ class cActionAddMath : public cActionAddNode {
 public:
 	using Ref = deTObjectReference<cActionAddMath>;
 	cActionAddMath(meWindowVegetation &view, const decVector2 &position) :
-	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Math", nullptr){}
+	cActionAddNode(view, meHTVRule::ertClosestProp, position, "@World.WindowVegetation.Action.AddNodeMath", nullptr){}
 	
 	meHTVRule::Ref CreateRule() override{
 		return meHTVRuleMath::Ref::New();
@@ -214,7 +214,7 @@ class cActionAddMultiMath : public cActionAddNode {
 public:
 	using Ref = deTObjectReference<cActionAddMultiMath>;
 	cActionAddMultiMath(meWindowVegetation &view, const decVector2 &position) :
-	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Multi-Math", nullptr){}
+	cActionAddNode(view, meHTVRule::ertClosestProp, position, "@World.WindowVegetation.Action.AddNodeMultiMath", nullptr){}
 	
 	meHTVRule::Ref CreateRule() override{
 		return meHTVRuleMultiMath::Ref::New();
@@ -225,7 +225,7 @@ class cActionAddVectorMath : public cActionAddNode {
 public:
 	using Ref = deTObjectReference<cActionAddVectorMath>;
 	cActionAddVectorMath(meWindowVegetation &view, const decVector2 &position) :
-	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Vector Math", nullptr){}
+	cActionAddNode(view, meHTVRule::ertClosestProp, position, "@World.WindowVegetation.Action.AddNodeVectorMath", nullptr){}
 	
 	meHTVRule::Ref CreateRule() override{
 		return meHTVRuleVectorMath::Ref::New();
@@ -236,7 +236,7 @@ class cActionAddRandom : public cActionAddNode {
 public:
 	using Ref = deTObjectReference<cActionAddRandom>;
 	cActionAddRandom(meWindowVegetation &view, const decVector2 &position) :
-	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Random", nullptr){}
+	cActionAddNode(view, meHTVRule::ertClosestProp, position, "@World.WindowVegetation.Action.AddNodeRandom", nullptr){}
 	
 	meHTVRule::Ref CreateRule() override{
 		return meHTVRuleRandom::Ref::New();
@@ -247,7 +247,7 @@ class cActionAddConstant : public cActionAddNode {
 public:
 	using Ref = deTObjectReference<cActionAddConstant>;
 	cActionAddConstant(meWindowVegetation &view, const decVector2 &position) :
-	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Constant", nullptr){}
+	cActionAddNode(view, meHTVRule::ertClosestProp, position, "@World.WindowVegetation.Action.AddNodeConstant", nullptr){}
 	
 	meHTVRule::Ref CreateRule() override{
 		return meHTVRuleConstant::Ref::New();
@@ -258,7 +258,7 @@ class cActionAddPropCount : public cActionAddNode {
 public:
 	using Ref = deTObjectReference<cActionAddPropCount>;
 	cActionAddPropCount(meWindowVegetation &view, const decVector2 &position) :
-	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Prop Count", nullptr){}
+	cActionAddNode(view, meHTVRule::ertClosestProp, position, "@World.WindowVegetation.Action.AddNodePropCount", nullptr){}
 	
 	meHTVRule::Ref CreateRule() override{
 		return meHTVRulePropCount::Ref::New();
@@ -272,7 +272,7 @@ class cActionViewAutoUpdate : public igdeAction {
 public:
 	using Ref = deTObjectReference<cActionViewAutoUpdate>;
 	cActionViewAutoUpdate(meWindowVegetation &view) : igdeAction(
-		"Auto Update Vegetation", nullptr, "Auto Update Vegetation"), pView(view){}
+		"@World.WindowVegetation.Action.AutoUpdateVegetation", ""), pView(view){}
 	
 	void OnAction() override{
 		if(pView.GetWorld()){
@@ -330,30 +330,30 @@ public:
 		const decVector2 addNodePosition(decVector2(position - pView.GetSize() / 2)
 			* pView.GetPixelToUnits() - pView.GetVLayer()->GetViewCenter() );
 		
-		subMenu = igdeMenuCascade::Ref::New(env, "Add Node",
-			env.GetStockIcon(igdeEnvironment::esiPlus), "Add Node");
+		subMenu = igdeMenuCascade::Ref::New(env, "@World.WindowVegetation.Menu.AddNode",
+			env.GetStockIcon(igdeEnvironment::esiPlus));
 		menu.AddChild(subMenu);
 		
-		subMenu2 = igdeMenuCascade::Ref::New(env, "Input", nullptr, "Input");
+		subMenu2 = igdeMenuCascade::Ref::New(env, "@World.WindowVegetation.Menu.Input", nullptr);
 		subMenu->AddChild(subMenu2);
 		helper.MenuCommand(subMenu2, cActionAddConstant::Ref::New(pView, addNodePosition));
 		helper.MenuCommand(subMenu2, cActionAddGeometry::Ref::New(pView, addNodePosition));
 		helper.MenuCommand(subMenu2, cActionAddRandom::Ref::New(pView, addNodePosition));
 		
-		subMenu2 = igdeMenuCascade::Ref::New(env, "Proximity", nullptr, "Proximity");
+		subMenu2 = igdeMenuCascade::Ref::New(env, "@World.WindowVegetation.Menu.Proximity", nullptr);
 		subMenu->AddChild(subMenu2);
 		helper.MenuCommand(subMenu2, cActionAddClosestProp::Ref::New(pView, addNodePosition));
 		helper.MenuCommand(subMenu2, cActionAddClosestVegetation::Ref::New(pView, addNodePosition));
 		helper.MenuCommand(subMenu2, cActionAddPropCount::Ref::New(pView, addNodePosition));
 		
-		subMenu2 = igdeMenuCascade::Ref::New(env, "Conversion", nullptr, "Conversion");
+		subMenu2 = igdeMenuCascade::Ref::New(env, "@World.WindowVegetation.Menu.Conversion", nullptr);
 		subMenu->AddChild(subMenu2);
 		helper.MenuCommand(subMenu2, cActionAddCurve::Ref::New(pView, addNodePosition));
 		helper.MenuCommand(subMenu2, cActionAddMapping::Ref::New(pView, addNodePosition));
 		helper.MenuCommand(subMenu2, cActionAddMath::Ref::New(pView, addNodePosition));
 		helper.MenuCommand(subMenu2, cActionAddMultiMath::Ref::New(pView, addNodePosition));
 		
-		subMenu2 = igdeMenuCascade::Ref::New(env, "Vector", nullptr, "Vector");
+		subMenu2 = igdeMenuCascade::Ref::New(env, "@World.WindowVegetation.Menu.Vector", nullptr);
 		subMenu->AddChild(subMenu2);
 		helper.MenuCommand(subMenu2, cActionAddCombine::Ref::New(pView, addNodePosition));
 		helper.MenuCommand(subMenu2, cActionAddComponents::Ref::New(pView, addNodePosition));

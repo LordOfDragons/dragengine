@@ -47,7 +47,7 @@ meUHTVLinkCut::meUHTVLinkCut(meHTVegetationLayer *vlayer){
 	
 	pVLayer = nullptr;
 	
-	SetShortInfo("Cut Vegetation Layer Links");
+	SetShortInfo("@World.UHTVLinkCut.CutVegetationLayerLinks");
 	SetMemoryConsumption(sizeof(meUHTVLinkCut));
 	
 	pVLayer = vlayer;

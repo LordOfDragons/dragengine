@@ -52,7 +52,7 @@ meHeightTerrain *heightTerrain, int newSectorResolution){
 	pOldSectorResolution = heightTerrain->GetSectorResolution();
 	pNewSectorResolution = newSectorResolution;
 	
-	SetShortInfo("Set Height Terrain Sector Resolution");
+	SetShortInfo("@World.UHTSetSectorResolution.SetHeightTerrainSectorResolution");
 }
 
 meUHTSetSectorResolution::~meUHTSetSectorResolution(){

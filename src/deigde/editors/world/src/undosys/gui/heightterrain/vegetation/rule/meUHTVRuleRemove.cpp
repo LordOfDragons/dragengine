@@ -49,7 +49,7 @@ pRule(rule)
 		pLinks += slot.GetLinks();
 	});
 	
-	SetShortInfo("Vegetation layer remove rule");
+	SetShortInfo("@World.UHTVRuleRemove.VegetationLayerRemoveRule");
 	SetMemoryConsumption(sizeof(meUHTVRuleRemove));
 }
 

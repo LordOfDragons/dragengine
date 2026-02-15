@@ -47,7 +47,7 @@ meUHTVRuleMultiMathSetOp::meUHTVRuleMultiMathSetOp(meHTVegetationLayer *vlayer,
 	pVLayer = nullptr;
 	pRule = nullptr;
 	
-	SetShortInfo("Vegetation Layer Rule Multi-Math Set Operator");
+	SetShortInfo("@World.UHTVRuleMultiMathSetOp.VegetationLayerRuleMultiMathSetOperator");
 	SetMemoryConsumption(sizeof(meUHTVRuleMultiMathSetOp));
 	
 	pOldOp = rule->GetOperator();

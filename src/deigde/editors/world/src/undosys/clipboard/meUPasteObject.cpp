@@ -46,7 +46,7 @@ meUPasteObject::meUPasteObject(meWorld *world, meClipboardDataObject *clip){
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Paste Objects");
+	SetShortInfo("@World.UPasteObject.PasteObjects");
 	SetLongInfo("");
 	
 	pWorld = nullptr;

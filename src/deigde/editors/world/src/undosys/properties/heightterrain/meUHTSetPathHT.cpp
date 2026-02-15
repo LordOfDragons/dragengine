@@ -51,7 +51,7 @@ meUHTSetPathHT::meUHTSetPathHT(meWorld *world, meHeightTerrain *heightTerrain, c
 	pOldPath = heightTerrain->GetPathHT();
 	pNewPath = newPath;
 	
-	SetShortInfo("Set Height Terrain Path");
+	SetShortInfo("@World.UHTSetPathHT.SetHeightTerrainPath");
 }
 
 meUHTSetPathHT::~meUHTSetPathHT(){

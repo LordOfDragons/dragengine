@@ -46,7 +46,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Set world size");
+	SetShortInfo("@World.UWorldSetSize.SetWorldSize");
 	
 	pOldValue = world->GetSize();
 	

@@ -46,7 +46,7 @@ meUHTVRuleCombineSetZ::meUHTVRuleCombineSetZ(meHTVegetationLayer *vlayer, meHTVR
 	pVLayer = nullptr;
 	pRule = nullptr;
 	
-	SetShortInfo("Vegetation Layer Rule Combine Set Z");
+	SetShortInfo("@World.UHTVRuleCombineSetZ.VegetationLayerRuleCombineSetZ");
 	SetMemoryConsumption(sizeof(meUHTVRuleCombineSetZ));
 	
 	pOldZ = rule->GetZ();

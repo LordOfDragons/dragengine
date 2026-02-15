@@ -50,7 +50,7 @@ meUHTSetPathHI::meUHTSetPathHI(meWorld *world, meHeightTerrainSector *sector, co
 	pOldPath = sector->GetPathHeightImage();
 	pNewPath = newPath;
 	
-	SetShortInfo("Set Height Terrain Height Image Path");
+	SetShortInfo("@World.UHTSetPathHI.SetHeightTerrainHeightImagePath");
 }
 
 meUHTSetPathHI::~meUHTSetPathHI(){

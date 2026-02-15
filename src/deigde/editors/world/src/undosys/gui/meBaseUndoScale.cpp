@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "meBaseUndoScale.h"
+
+#include <deigde/environment/igdeEnvironment.h>
+#include <deigde/localization/igdeTranslationManager.h>
 #include "../../worldedit.h"
 
 
@@ -36,13 +36,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-meBaseUndoScale::meBaseUndoScale(){
-	pModifyPosition = true;
-	pModifySize = true;
-	pFactors.Set(1.0f, 1.0f, 1.0f);
-	pUniformFactor = 1.0f;
-	pScaleUniform = false;
-	
+meBaseUndoScale::meBaseUndoScale(igdeEnvironment &environment) :
+pEnvironment(environment),
+pModifyPosition(true),
+pModifySize(true),
+pFactors(1.0f, 1.0f, 1.0f),
+pUniformFactor(1.0f),
+pScaleUniform(false)
+{
 	Update();
 }
 
@@ -97,10 +98,9 @@ void meBaseUndoScale::Update(){
 	*/
 	
 	// set information
-	decString info;
-	info.Format("factors(%g,%g,%g;%g) pivot(%g,%g,%g)",
-		pFactors.x, pFactors.y, pFactors.z, pUniformFactor, pPivot.x, pPivot.y, pPivot.z);
-	SetLongInfo(info);
+	SetLongInfo(decString::Formatted(
+		pEnvironment.GetTranslationManager().Translate("World.BaseUndoScale.FactorsPivot").ToUTF8(),
+		pFactors.x, pFactors.y, pFactors.z, pUniformFactor, pPivot.x, pPivot.y, pPivot.z));
 }
 
 void meBaseUndoScale::TransformElement(decDVector &position, decVector &scaling){

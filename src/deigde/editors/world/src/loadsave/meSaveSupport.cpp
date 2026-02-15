@@ -139,7 +139,7 @@ void meSaveSupport::SaveWorld(meWorld *world, bool forceAskForFilename){
 	if(!world->GetSaved() || forceAskForFilename){
 		igdeFilePattern::List filePatternList;
 		GetWorldPatterns(filePatternList);
-		if(!igdeCommonDialogs::GetFileSave(*pWindowMain, "Save World",
+		if(!igdeCommonDialogs::GetFileSave(*pWindowMain, "@World.SaveSupport.Dialog.SaveWorld",
 		*pWindowMain->GetEnvironment().GetFileSystemGame(), filePatternList, filename ) ){
 			return;
 		}
@@ -181,7 +181,7 @@ void meSaveSupport::SaveHeightTerrain(meWorld &world, bool forceAskForFilename){
 	if(!heightTerrain.GetSaved() || forceAskForFilename){
 		igdeFilePattern::List filePatternList;
 		GetHeightTerrainSectorPatterns(filePatternList);
-		if(!igdeCommonDialogs::GetFileSave(*pWindowMain, "Save Height Terrain Sector",
+		if(!igdeCommonDialogs::GetFileSave(*pWindowMain, "@World.SaveSupport.Dialog.SaveHeightTerrainSector",
 		*pWindowMain->GetEnvironment().GetFileSystemGame(), filePatternList, filename ) ){
 			return;
 		}
@@ -232,7 +232,7 @@ void meSaveSupport::SaveHTHeightImage(meWorld *world, meHeightTerrainSector *sec
 	}
 	
 	if(!sector->GetHeightImageSaved() || forceAskForFilename){
-		if(!igdeCommonDialogs::GetFileSave(*pWindowMain, "Save Height Terrain Height Image",
+		if(!igdeCommonDialogs::GetFileSave(*pWindowMain, "@World.SaveSupport.Dialog.SaveHeightTerrainHeightImage",
 		*pWindowMain->GetEnvironment().GetFileSystemGame(),
 		*pWindowMain->GetEnvironment().GetSaveFilePatternList( igdeEnvironment::efpltImage ),
 		filename)){
@@ -291,7 +291,7 @@ void meSaveSupport::SaveHTVisibilityImage(meWorld *world, meHeightTerrainSector 
 	int x, y, cols, rows, p;
 	
 	if(!sector->GetVisibilitySaved() || forceAskForFilename){
-		if(!igdeCommonDialogs::GetFileSave(*pWindowMain, "Save Height Terrain Visibility Image",
+		if(!igdeCommonDialogs::GetFileSave(*pWindowMain, "@World.SaveSupport.Dialog.SaveHeightTerrainVisibilityImage",
 		*pWindowMain->GetEnvironment().GetFileSystemGame(),
 		*pWindowMain->GetEnvironment().GetSaveFilePatternList( igdeEnvironment::efpltImage ),
 		filename)){
@@ -350,7 +350,7 @@ meHeightTerrainTexture *texture, bool forceAskForFilename){
 	deImageManager *imgmgr = texture->GetEngine()->GetImageManager();
 	
 	if(!texture->GetMaskSaved() || forceAskForFilename){
-		if(!igdeCommonDialogs::GetFileSave(*pWindowMain, "Save Height Terrain Texture Mask Image",
+		if(!igdeCommonDialogs::GetFileSave(*pWindowMain, "@World.SaveSupport.Dialog.SaveHeightTerrainTextureMaskImage",
 		*pWindowMain->GetEnvironment().GetFileSystemGame(),
 		*pWindowMain->GetEnvironment().GetSaveFilePatternList( igdeEnvironment::efpltImage ),
 		filename)){
@@ -391,7 +391,7 @@ void meSaveSupport::SaveHTNavSpace(meWorld &world, meHeightTerrainNavSpace &navs
 		fpl.Add(igdeFilePattern::Ref::New(saveNavSpace.GetName(),
 			saveNavSpace.GetPattern(), saveNavSpace.GetDefaultExtension()));
 		
-		if(!igdeCommonDialogs::GetFileSave(*pWindowMain, "Save height terrain navigation space",
+		if(!igdeCommonDialogs::GetFileSave(*pWindowMain, "@World.SaveSupport.Dialog.SaveHeightTerrainNavigationSpace",
 		*pWindowMain->GetEnvironment().GetFileSystemGame(), fpl, filename ) ){
 			return;
 		}
@@ -420,7 +420,7 @@ void meSaveSupport::SaveHTPFCache(meWorld *world, meHeightTerrainSector *sector,
 		world->GetDirectoryPath()).GetPathUnix());
 	
 	if(!sector->GetPFCacheSaved() || forceAskForFilename){
-		if(!igdeCommonDialogs::GetFileSave(*pWindowMain, "Save Height Terrain Prop Field Cache",
+		if(!igdeCommonDialogs::GetFileSave(*pWindowMain, "@World.SaveSupport.Dialog.SaveHeightTerrainPropFieldCache",
 		*pWindowMain->GetEnvironment().GetFileSystemGame(),
 		pWindowMain->GetLoadSaveSystem().GetPropFieldCacheFilePatterns(), filename)){
 			return;
@@ -457,7 +457,7 @@ void meSaveSupport::SaveNavigationSpace(meWorld *world, meNavigationSpace *navsp
 		world->GetDirectoryPath()).GetPathUnix());
 	
 	if(/* !navspace->GetSaved() || */ forceAskForFilename){
-		if(!igdeCommonDialogs::GetFileSave(*pWindowMain, "Save Navigation Space",
+		if(!igdeCommonDialogs::GetFileSave(*pWindowMain, "@World.SaveSupport.Dialog.SaveNavigationSpace",
 		*pWindowMain->GetEnvironment().GetFileSystemGame(),
 		*pWindowMain->GetEnvironment().GetSaveFilePatternList( igdeEnvironment::efpltImage ),
 		filename)){

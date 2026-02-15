@@ -38,10 +38,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalScale::meUDecalScale(meWorld *world){
+meUDecalScale::meUDecalScale(meWorld *world) :
+meBaseUndoScale(*world->GetEnvironment())
+{
 	if(!world) DETHROW(deeInvalidParam);
 	
-	SetShortInfo("Scale Decals");
+	SetShortInfo("@World.UDecalScale.ScaleDecals");
 	
 	pWorld = nullptr;
 	

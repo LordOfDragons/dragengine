@@ -47,8 +47,8 @@ pCopyZ(copyZ)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Copy Object Position");
-	SetLongInfo("Copy Object Position");
+	SetShortInfo("@World.UObjectCopyPosition.CopyObjectPosition");
+	SetLongInfo("@World.UObjectCopyPosition.CopyObjectPosition");
 	
 	world->GetSelectionObject().GetSelected().Visit([&](meObject *o){
 		pObjects.Add(meUndoDataObject::Ref::New(o));

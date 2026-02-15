@@ -49,7 +49,7 @@ meUObjectSetScaling::meUObjectSetScaling(meObject *object, const decVector &nsca
 	pOldScaling = object->GetScaling();
 	pNewScaling = nscaling;
 	
-	SetShortInfo("Object Set Scaling");
+	SetShortInfo("@World.UObjectSetScaling.ObjectSetScaling");
 	
 	pObject = object;
 }

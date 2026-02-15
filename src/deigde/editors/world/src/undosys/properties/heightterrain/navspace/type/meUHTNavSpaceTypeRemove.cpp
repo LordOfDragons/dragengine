@@ -48,7 +48,7 @@ pType(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Height terrain nav-space remove type");
+	SetShortInfo("@World.UHTNavSpaceTypeRemove.HeightTerrainNavSpaceRemoveType");
 	
 	pNavSpace = type->GetNavSpace();
 	pType = type;

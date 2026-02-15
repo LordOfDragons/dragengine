@@ -37,12 +37,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUMoveObject::meUMoveObject(meWorld *world, const meObject::List &objects){
+meUMoveObject::meUMoveObject(meWorld *world, const meObject::List &objects) :
+meBaseUndoMove(*world->GetEnvironment())
+{
 	if(!world){
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Move Object");
+	SetShortInfo("@World.UMoveObject.MoveObject");
 	
 	pWorld = world;
 	

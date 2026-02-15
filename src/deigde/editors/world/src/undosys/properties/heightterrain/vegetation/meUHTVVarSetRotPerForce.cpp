@@ -47,7 +47,7 @@ meUHTVVarSetRotPerForce::meUHTVVarSetRotPerForce(meHTVVariation *variation, floa
 	pOldRotPerForce = variation->GetRotationPerForce();
 	pNewRotPerForce = newRotPerForce;
 	
-	SetShortInfo("Vegetation Layer Variation Set Rotation Per Force");
+	SetShortInfo("@World.UHTVVarSetRotPerForce.VegetationLayerVariationSetRotationPerForce");
 }
 
 meUHTVVarSetRotPerForce::~meUHTVVarSetRotPerForce(){

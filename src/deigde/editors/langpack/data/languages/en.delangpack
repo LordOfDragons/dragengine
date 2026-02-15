@@ -89,7 +89,5 @@
 	<translation name="LangPack.Undo.LangPackSetMissingText">LangPack set missing text</translation>
 	
 	<!-- Log Messages -->
-	<translation name="LangPack.Log.SavingLangPack">Saving Language Pack {0}</translation>
-	<translation name="LangPack.Log.LoadingLangPack">Loading language pack {0}</translation>
 	<translation name="LangPack.Default.EntryName">Entry</translation>
 </languagePack>

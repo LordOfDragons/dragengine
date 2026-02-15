@@ -51,7 +51,7 @@ meUDecalRotation::meUDecalRotation(meDecal *decal, const decVector &newRotation)
 	
 	pDecal = nullptr;
 	
-	SetShortInfo("Set decal orientation");
+	SetShortInfo("@World.UDecalRotation.SetDecalOrientation");
 	
 	pOldRotation = decal->GetRotation();
 	pNewRotation = newRotation;

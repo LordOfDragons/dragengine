@@ -43,7 +43,7 @@ meUDecalSkin::meUDecalSkin(meDecal *decal, const char *newskin){
 	DEASSERT_NOTNULL(decal->GetWorld())
 	DEASSERT_NOTNULL(newskin)
 	
-	SetShortInfo("Set Decal Skin");
+	SetShortInfo("@World.UDecalSkin.SetDecalSkin");
 	
 	const cDecal::Ref udata(cDecal::Ref::New());
 	udata->decal = decal;
@@ -56,7 +56,7 @@ meUDecalSkin::meUDecalSkin(meDecal::List &decals, const char *newskin){
 	DEASSERT_NOTNULL(newskin)
 	DEASSERT_TRUE(decals.IsNotEmpty())
 	
-	SetShortInfo("Set Decal Skins");
+	SetShortInfo("@World.UDecalSkin.SetDecalSkins");
 	
 	decals.Visit([&](meDecal *decal){
 		const cDecal::Ref udata(cDecal::Ref::New());

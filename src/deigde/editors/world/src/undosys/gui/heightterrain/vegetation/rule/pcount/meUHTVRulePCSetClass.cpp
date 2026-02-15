@@ -46,7 +46,7 @@ meUHTVRulePCSetClass::meUHTVRulePCSetClass(meHTVegetationLayer *vlayer, meHTVRul
 	pVLayer = nullptr;
 	pRule = nullptr;
 	
-	SetShortInfo("Vegetation Layer Rule Prop Count Set Class");
+	SetShortInfo("@World.UHTVRulePCSetRadius.VegetationLayerRulePropCountSetClass");
 	SetMemoryConsumption(sizeof(meUHTVRulePCSetClass));
 	
 	pOldPropClass = rule->GetPropClass();

@@ -23,11 +23,15 @@
  */
 
 #include "meWCEntry.h"
+#include "../meWindowMain.h"
 #include "../../world/meWorld.h"
 #include "../../world/terrain/meHeightTerrain.h"
 #include "../../world/terrain/meHeightTerrainSector.h"
 #include "../../world/terrain/meHeightTerrainTexture.h"
 #include "../../world/terrain/meHeightTerrainNavSpace.h"
+
+#include <deigde/environment/igdeEnvironment.h>
+#include <deigde/localization/igdeTranslationManager.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -89,7 +93,7 @@ void meWCEntry::UpdateText(){
 	switch(pType){
 	case eetWorld:
 		text = "-";
-		details.Add("World");
+		details.Add(pWorld->GetWindowMain().Translate("World.WCEntry.World").ToUTF8());
 		
 		if(pWorld->GetSaved()){
 			details.Add(pWorld->GetFilePath());
@@ -101,7 +105,7 @@ void meWCEntry::UpdateText(){
 		
 	case eetHeightTerrain: {
 		text = "-";
-		details.Add("Height Terrain");
+		details.Add(pWorld->GetWindowMain().Translate("World.WCEntry.HeightTerrain").ToUTF8());
 		
 		if(pWorld->GetHeightTerrain()->GetSaved()){
 			if(pWorld->GetHeightTerrain()->GetPathHT().IsEmpty()){
@@ -121,7 +125,7 @@ void meWCEntry::UpdateText(){
 			pWorld->GetHeightTerrain()->GetSectorWith(decPoint(pSector.x, pSector.z));
 		
 		text.Format("(%d,%d)", pSector.x, pSector.z);
-		details.Add("Height Image");
+		details.Add(pWorld->GetWindowMain().Translate("World.WCEntry.HeightImage").ToUTF8());
 		
 		if(htsector && htsector->GetHeightImageSaved()){
 			if(htsector->GetPathHeightImage().IsEmpty()){
@@ -141,7 +145,7 @@ void meWCEntry::UpdateText(){
 			pWorld->GetHeightTerrain()->GetSectorWith(decPoint(pSector.x, pSector.z));
 		
 		text.Format("(%d,%d)", pSector.x, pSector.z);
-		details.Add("Visibility Image");
+		details.Add(pWorld->GetWindowMain().Translate("World.WCEntry.VisibilityImage").ToUTF8());
 		
 		if(htsector && htsector->GetVisibilitySaved()){
 			if(htsector->GetPathVisibilityImage().IsEmpty()){
@@ -158,7 +162,7 @@ void meWCEntry::UpdateText(){
 		
 	case eetHTTextureMask:
 		text.Format("(%d,%d)", pSector.x, pSector.z);
-		details.Add("Texture Mask");
+		details.Add(pWorld->GetWindowMain().Translate("World.WCEntry.TextureMask").ToUTF8());
 		
 		if(pHTTexture->GetMaskSaved()){
 			if(pHTTexture->GetPathMask().IsEmpty()){
@@ -175,7 +179,7 @@ void meWCEntry::UpdateText(){
 		
 	case meWCEntry::eetHTNavSpace:
 		text = "-";
-		details.Add("Navigation Space");
+		details.Add(pWorld->GetWindowMain().Translate("World.WCEntry.NavigationSpace").ToUTF8());
 		
 		if(pHTNavSpace->GetNavSpaceSaved()){
 			if(pHTNavSpace->GetPathNavSpace().IsEmpty()){
@@ -195,7 +199,7 @@ void meWCEntry::UpdateText(){
 			pWorld->GetHeightTerrain()->GetSectorWith(decPoint(pSector.x, pSector.z));
 		
 		text.Format("(%d,%d)", pSector.x, pSector.z);
-		details.Add("Prop Field Cache");
+		details.Add(pWorld->GetWindowMain().Translate("World.WCEntry.PropFieldCache").ToUTF8());
 		
 		if(htsector && htsector->GetPFCacheSaved()){
 			if(htsector->GetPathPFCacheImage().IsEmpty()){

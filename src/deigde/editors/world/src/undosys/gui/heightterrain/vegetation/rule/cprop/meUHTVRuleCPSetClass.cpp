@@ -46,7 +46,7 @@ meUHTVRuleCPSetClass::meUHTVRuleCPSetClass(meHTVegetationLayer *vlayer, meHTVRul
 	pVLayer = nullptr;
 	pRule = nullptr;
 	
-	SetShortInfo("Vegetation Layer Rule Closest Prop Set Class");
+	SetShortInfo("@World.UHTVRuleCPSetRadius.VegetationLayerRuleClosestPropSetClass");
 	SetMemoryConsumption(sizeof(meUHTVRuleCPSetClass));
 	
 	pOldPropClass = rule->GetPropClass();

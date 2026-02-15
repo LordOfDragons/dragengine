@@ -44,7 +44,7 @@ pGrid((double)grid)
 	DEASSERT_NOTNULL(world)
 	DEASSERT_TRUE(objects.IsNotEmpty())
 	
-	SetShortInfo("Snap objects to grid");
+	SetShortInfo("@World.UObjectSnapToGrid.SnapObjectsToGrid");
 	
 	meUndoDataObject::AddObjectsWithAttachments(objects, pObjects);
 	

@@ -50,7 +50,7 @@ meUObjectRemoveTexture::meUObjectRemoveTexture(meObjectTexture *texture){
 	meWorld *world = object->GetWorld();
 	if(!world) DETHROW(deeInvalidParam);
 	
-	SetShortInfo("Remove Object Texture");
+	SetShortInfo("@World.UObjectRemoveTexture.RemoveObjectTexture");
 	
 	pObject = object;
 	pTexture = texture;

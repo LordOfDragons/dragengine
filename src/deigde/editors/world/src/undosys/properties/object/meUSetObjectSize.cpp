@@ -45,7 +45,7 @@ meUSetObjectSize::meUSetObjectSize(meObject *object, const decVector &newSize){
 	pOldSize = object->GetSize();
 	pNewSize = newSize;
 	
-	SetShortInfo("Set Object size");
+	SetShortInfo("@World.USetObjectSize.SetObjectSize");
 	
 	pObject = object;
 }

@@ -46,7 +46,7 @@ meUHTVRuleConstSetVector::meUHTVRuleConstSetVector(meHTVegetationLayer *vlayer, 
 	pVLayer = nullptr;
 	pRule = nullptr;
 	
-	SetShortInfo("Vegetation Layer Rule Constant Set Vector");
+	SetShortInfo("@World.UHTVRuleConstSetVector.VegetationLayerRuleConstantSetVector");
 	SetMemoryConsumption(sizeof(meUHTVRuleConstSetVector));
 	
 	pOldVector = rule->GetVector();

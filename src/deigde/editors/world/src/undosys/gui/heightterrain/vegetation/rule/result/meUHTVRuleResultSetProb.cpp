@@ -46,7 +46,7 @@ meUHTVRuleResultSetProb::meUHTVRuleResultSetProb(meHTVegetationLayer *vlayer, me
 	pVLayer = nullptr;
 	pRule = nullptr;
 	
-	SetShortInfo("Vegetation Layer Rule Result Set Probability");
+	SetShortInfo("@World.UHTVRuleResultSetProb.VegetationLayerRuleResultSetProbability");
 	SetMemoryConsumption(sizeof(meUHTVRuleResultSetProb));
 	
 	pOldProb = rule->GetProbability();

@@ -52,7 +52,7 @@ pDecal(nullptr)
 	
 	pDecal = nullptr;
 	
-	SetShortInfo("Remove decal property");
+	SetShortInfo("@World.UDecalRemoveProperty.RemoveDecalProperty");
 	
 	pKey = key;
 	pValue = value;

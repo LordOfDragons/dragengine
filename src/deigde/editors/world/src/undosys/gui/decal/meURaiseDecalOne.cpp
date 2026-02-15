@@ -44,7 +44,7 @@ meURaiseDecalOne::meURaiseDecalOne(meWorld *world, meDecal *decal){
 	pWorld = world;
 	
 	pDecal = decal;
-	SetShortInfo("Raise decal one level.");
+	SetShortInfo("@World.URaiseDecalOne.RaiseDecalOneLevel");
 	SetLongInfo("");
 }
 

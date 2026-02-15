@@ -46,7 +46,7 @@ meUHTVRuleResultSetVar::meUHTVRuleResultSetVar(meHTVegetationLayer *vlayer, meHT
 	pVLayer = nullptr;
 	pRule = nullptr;
 	
-	SetShortInfo("Vegetation Layer Rule Result Set Variation");
+	SetShortInfo("@World.UHTVRuleResultSetVar.VegetationLayerRuleResultSetVariation");
 	SetMemoryConsumption(sizeof(meUHTVRuleResultSetVar));
 	
 	pOldVar = rule->GetVariation();

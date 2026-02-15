@@ -263,7 +263,7 @@ public:
 class cActionVisible : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionVisible> Ref;
-	cActionVisible(meWPSDecal &panel) : cBaseAction(panel, "Visible", nullptr, "Decal is initially visible"){}
+	cActionVisible(meWPSDecal &panel) : cBaseAction(panel, "@World.WPSDecal.Action.Visible", nullptr, "@World.WPSDecal.Action.Visible"){}
 	
 	igdeUndo::Ref OnAction(meDecal *decal) override{
 		return meUDecalVisible::Ref::New(decal);
@@ -410,9 +410,9 @@ public:
 class cActionPropCopyToSel : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionPropCopyToSel> Ref;
-	cActionPropCopyToSel(meWPSDecal &panel) : cBaseAction(panel, "Copy To Selected",
+	cActionPropCopyToSel(meWPSDecal &panel) : cBaseAction(panel, "@World.WPSDecal.Action.PropertyCopyToSelected",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-			"Copy property from active decal to all selected decals"){}
+			"@World.WPSDecal.Action.PropCopyToSel"){}
 	
 	igdeUndo::Ref OnAction(meDecal *decal) override{
 		meDecal::List list(pPanel.GetWorld()->GetSelectionDecal().GetSelected());
@@ -431,9 +431,9 @@ public:
 class cActionPropRemoveFromSel : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionPropRemoveFromSel> Ref;
-	cActionPropRemoveFromSel(meWPSDecal &panel) : cBaseAction(panel, "Remove From Selected",
+	cActionPropRemoveFromSel(meWPSDecal &panel) : cBaseAction(panel, "@World.WPSDecal.Action.PropertyRemoveFromSelected",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-			"Remove property from all selected decals"){}
+			"@World.WPSDecal.Action.PropertyRemoveFromSelected"){}
 	
 	igdeUndo::Ref OnAction(meDecal*) override{
 		const meDecal::List &list = pPanel.GetWorld()->GetSelectionDecal().GetSelected();
@@ -450,9 +450,9 @@ public:
 class cActionPropCloneToSel : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionPropCloneToSel> Ref;
-	cActionPropCloneToSel(meWPSDecal &panel) : cBaseAction(panel, "Clone To Selected",
+	cActionPropCloneToSel(meWPSDecal &panel) : cBaseAction(panel, "@World.WPSDecal.Action.PropertyCloneToSelected",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-			"Clone all properties from active decal to all selected decals"){}
+			"@World.WPSDecal.Action.PropertyCloneToSelected"){}
 	
 	igdeUndo::Ref OnAction(meDecal *decal) override{
 		meDecal::List list(pPanel.GetWorld()->GetSelectionDecal().GetSelected());
@@ -495,47 +495,47 @@ pWPSelection(wpselection)
 	
 	groupBox = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esLast, 10);
 	content->AddChild(groupBox);
-	helper.Label(groupBox, "Selected:");
-	helper.EditInteger(groupBox, "Number of selected decals", 3, pEditSelCount, {});
+	helper.Label(groupBox, "@World.WPSObject.Selected.Label");
+	helper.EditInteger(groupBox, "@World.WPSDecal.NumberOfSelectedDecals.Label", 3, pEditSelCount, {});
 	pEditSelCount->SetEditable(false);
-	helper.Label(groupBox, "Active:");
-	helper.EditSpinInteger(groupBox, "Active decal to edit", 0, 0, pSpinActive, cSpinActive::Ref::New(*this));
+	helper.Label(groupBox, "@World.WPView.Active.Label");
+	helper.EditSpinInteger(groupBox, "@World.WPSDecal.ActiveDecalToEdit.Label", 0, 0, pSpinActive, cSpinActive::Ref::New(*this));
 	
 	
 	// geometry
-	helper.GroupBox(content, groupBox, "Geometry:");
+	helper.GroupBox(content, groupBox, "@World.WPSObject.Geometry.Label");
 	
-	helper.EditString(groupBox, "ID:", "Unique decal ID", pEditID, {});
+	helper.EditString(groupBox, "@World.WPSObject.Id.Label", "@World.WPSDecal.UniqueDecalId.ToolTip", pEditID, {});
 	pEditID->SetEditable(false);
 	
-	helper.EditDVector(groupBox, "Position:", "Position of decal.", pEditPosition, cEditPosition::Ref::New(*this));
-	helper.EditVector(groupBox, "Rotation:", "Rotation of decal.", pEditRotation, cEditRotation::Ref::New(*this));
-	helper.EditVector(groupBox, "Size:", "Size of decal.", pEditSize, cEditSize::Ref::New(*this));
-	helper.EditInteger(groupBox, "Order:", "Drawing order of decal.", pEditOrder, cEditOrder::Ref::New(*this));
+	helper.EditDVector(groupBox, "@World.WPSDecal.Label.Position", "@World.WPSDecal.PositionOfDecal.ToolTip", pEditPosition, cEditPosition::Ref::New(*this));
+	helper.EditVector(groupBox, "@World.WPSDecal.Label.Rotation", "@World.WPSDecal.RotationOfDecal.ToolTip", pEditRotation, cEditRotation::Ref::New(*this));
+	helper.EditVector(groupBox, "@World.WPSDecal.Label.Size", "@World.WPSDecal.SizeOfDecal.ToolTip", pEditSize, cEditSize::Ref::New(*this));
+	helper.EditInteger(groupBox, "@World.WPSDecal.Order.Label", "@World.WPSDecal.DrawingOrderOfDecal.ToolTip", pEditOrder, cEditOrder::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkVisible, cActionVisible::Ref::New(*this));
 	
 	
 	// texture
-	helper.GroupBox(content, groupBox, "Texture:");
+	helper.GroupBox(content, groupBox, "@World.WPSObject.Texture.Label");
 	
-	helper.EditPath(groupBox, "Skin:", "Skin to use for decal",
+	helper.EditPath(groupBox, "@World.WPSObject.Skin.Label", "@World.WPSDecal.SkinToUseForDecal.ToolTip",
 		igdeEnvironment::efpltSkin, pEditSkin, cEditSkin::Ref::New(*this));
 	
 	
 	// texture transform
-	helper.GroupBox(content, groupBox, "Texture Transformation:", true);
+	helper.GroupBox(content, groupBox, "@World.WPSObject.TextureTransformation.Label", true);
 	
-	helper.EditVector2(groupBox, "Translation:", "Texture coordinates translation.",
+	helper.EditVector2(groupBox, "@World.WPSObject.Translation.Label", "@World.WPSObject.TextureCoordinatesTranslation.ToolTip",
 		pEditTexCoordOffset, cEditTexCoordOffset::Ref::New(*this));
-	helper.EditVector2(groupBox, "Scaling:", "Texture coordinates scaling.",
+	helper.EditVector2(groupBox, "@World.WPSDecal.Label.Scaling", "@World.WPSObject.TextureCoordinatesScaling.ToolTip",
 		pEditTexCoordScaling, cEditTexCoordScaling::Ref::New(*this));
-	helper.EditFloat(groupBox, "Rotation:", "Texture coordinates rotation.",
+	helper.EditFloat(groupBox, "@World.WPSDecal.TextureCoordinatesRotation.Label", "@World.WPSDecal.TextureCoordinatesRotation.ToolTip",
 		pEditTexCoordRotation, cEditTexCoordRotation::Ref::New(*this));
-	helper.ColorBox(groupBox, "Tint:", "Color tint.", pClrColorTint, cEditColorTint::Ref::New(*this));
+	helper.ColorBox(groupBox, "@World.WPSObject.Tint.Label", "@World.WPSDecal.ColorTint.ToolTip", pClrColorTint, cEditColorTint::Ref::New(*this));
 	
 	
 	// properties
-	helper.GroupBoxFlow(content, groupBox, "Properties:");
+	helper.GroupBoxFlow(content, groupBox, "@World.WPSObject.Properties.Label");
 	
 	pEditProperties = cEditProperties::Ref::New(*this);
 	groupBox->AddChild(pEditProperties);

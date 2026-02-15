@@ -43,7 +43,7 @@ const meObject::List &list, const meObjectTexture::List &textureList){
 	DEASSERT_TRUE(list.IsNotEmpty())
 	DEASSERT_TRUE(textureList.IsNotEmpty())
 	
-	SetShortInfo("Clone object textures to selected");
+	SetShortInfo("@World.UObjectCloneTexturesToSelected.CloneObjectTexturesToSelected");
 	pTextureList = textureList;
 	
 	list.Visit([&](meObject *object){

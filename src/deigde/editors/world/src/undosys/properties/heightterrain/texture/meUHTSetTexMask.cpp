@@ -51,7 +51,7 @@ meUHTSetTexMask::meUHTSetTexMask(meWorld *world, meHeightTerrainSector *sector, 
 	pOldPath = texture->GetPathMask();
 	pNewPath = newPath;
 	
-	SetShortInfo("Set Height Terrain Texture Mask");
+	SetShortInfo("@World.UHTSetTexMask.SetHeightTerrainTextureMask");
 	pTexture = texture;
 }
 

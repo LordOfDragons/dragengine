@@ -46,7 +46,7 @@ meUHTVVariationAdd::meUHTVVariationAdd(meHTVegetationLayer *vlayer, meHTVVariati
 	pVLayer = vlayer;
 	pVariation = variation;
 	
-	SetShortInfo("Add Vegetation Layer Variation");
+	SetShortInfo("@World.UHTVVariationAdd.AddVegetationLayerVariation");
 }
 
 meUHTVVariationAdd::~meUHTVVariationAdd(){

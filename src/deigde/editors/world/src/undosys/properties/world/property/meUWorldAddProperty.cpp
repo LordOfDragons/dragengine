@@ -48,7 +48,7 @@ pValue(value)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Add world property");
+	SetShortInfo("@World.UWorldAddProperty.AddWorldProperty");
 	
 	pWorld = world;
 }

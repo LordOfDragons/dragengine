@@ -50,7 +50,7 @@ meUHTVLayerRemove::meUHTVLayerRemove(meWorld *world, meHeightTerrain *heightTerr
 	pIndex = heightTerrain->GetVLayers().IndexOf(vlayer);
 	if(pIndex == -1) DETHROW(deeInvalidParam);
 	
-	SetShortInfo("Remove Height Terrain Vegetation Layer");
+	SetShortInfo("@World.UHTVLayerRemove.RemoveHeightTerrainVegetationLayer");
 	pVLayer = vlayer;
 }
 

@@ -56,7 +56,7 @@
 ////////////////////////////
 
 meASubclassAsEClass::meASubclassAsEClass(meWindowMain &window) :
-igdeAction("Subclass As EClass...",
+igdeAction("@World.ASubclassAsEClass.Action.SubclassAsEclass",
 	window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSaveAs),
 	"Create Subclass of selected object saved as XML Element Class"),
 pWindow(window)
@@ -88,12 +88,12 @@ void meASubclassAsEClass::OnAction(){
 	// ask for class name to use
 	const char * const dialogTitle = "Subclass As EClass";
 	decString classname(gdclass.GetName());
-	if(!igdeCommonDialogs::GetString(pWindow, dialogTitle, "Object Class:", classname)){
+	if(!igdeCommonDialogs::GetString(pWindow, dialogTitle, "@World.ASubclassAsEClass.Dialog.ObjectClass", classname)){
 		return;
 	}
 	
 	if(gamedefinition.GetClassManager()->GetClasses().HasNamed(classname)){
-		igdeCommonDialogs::Error(pWindow, dialogTitle, "Object class exists already");
+		igdeCommonDialogs::Error(pWindow, dialogTitle, "@World.ASubclassAsEClass.Dialog.ObjectClassExistsAlready");
 		return;
 	}
 	

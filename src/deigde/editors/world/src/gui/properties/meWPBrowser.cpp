@@ -173,8 +173,9 @@ class cActionSetSkinObjTex : public igdeAction{
 public:
 	typedef deTObjectReference<cActionSetSkinObjTex> Ref;
 	cActionSetSkinObjTex(meWPBrowser &panel, const decString &name) : igdeAction(
-		decString("Active Object Set Texture: ") + name, nullptr,
-		decString("Set texture '") + name + "' of active object"), pPanel(panel), pName(name){}
+		decString::Formatted(panel.Translate("World.WPBrowser.Action.ActiveObjectSetTexture").ToUTF8(), name), nullptr,
+		decString::Formatted(panel.Translate("World.WPBrowser.Action.ActiveObjectSetTextureDesc").ToUTF8(), name)),
+		pPanel(panel), pName(name){}
 	
 	void OnAction() override{
 		igdeGDSkin * const gdskin = pPanel.GetSelectedSkin();
@@ -216,8 +217,9 @@ class cActionSetSkinObjProp : public igdeAction{
 public:
 	typedef deTObjectReference<cActionSetSkinObjProp> Ref;
 	cActionSetSkinObjProp(meWPBrowser &panel, const decString &name) : igdeAction(
-		decString("Active Object Set Property: ") + name, nullptr,
-		decString("Set property '") + name + "' of active object"), pPanel(panel), pName(name){}
+		decString::Formatted(panel.Translate("World.WPBrowser.Action.ActiveObjectSetProperty").ToUTF8(), name), nullptr,
+		decString::Formatted(panel.Translate("World.WPBrowser.Action.ActiveObjectSetPropertyDesc").ToUTF8(), name)),
+		pPanel(panel), pName(name){}
 	
 	void OnAction() override{
 		igdeGDSkin * const gdskin = pPanel.GetSelectedSkin();
@@ -357,7 +359,7 @@ public:
 		helper.MenuCommand(menu, pPanel.GetActionPIRebuild());
 		
 		// view
-		igdeMenuCascade::Ref menuView(igdeMenuCascade::Ref::New(helper.GetEnvironment(), "View"));
+		igdeMenuCascade::Ref menuView(igdeMenuCascade::Ref::New(helper.GetEnvironment(), "@World.WPBrowser.Menu.View"));
 		
 		helper.MenuOption(menuView, pPanel.GetActionPISizeSmall());
 		helper.MenuOption(menuView, pPanel.GetActionPISizeMedium());
@@ -378,8 +380,8 @@ class cActionSetClass : public igdeAction{
 	
 public:
 	typedef deTObjectReference<cActionSetClass> Ref;
-	cActionSetClass(meWPBrowser &panel) : igdeAction("Set Class", nullptr,
-		"Set class of selected objects"), pPanel(panel){}
+	cActionSetClass(meWPBrowser &panel) : igdeAction("@World.WPBrowser.SetClass.Label", nullptr,
+		"@World.WPBrowser.Action.SetClass"), pPanel(panel){}
 	
 	void OnAction() override{
 		const igdeGDClass * const gdclass = pPanel.GetSelectedObjectClass();
@@ -415,8 +417,8 @@ class cActionSetSkin : public igdeAction{
 	
 public:
 	typedef deTObjectReference<cActionSetSkin> Ref;
-	cActionSetSkin(meWPBrowser &panel) : igdeAction("Objects Set Active Texture Skin", nullptr,
-		"Set skin of active texture of selected objects"), pPanel(panel){}
+	cActionSetSkin(meWPBrowser &panel) : igdeAction("@World.WPBrowser.Action.ObjectsSetActiveTextureSkin", nullptr,
+		"@World.WPBrowser.Action.ObjectsSetActiveTextureSkin"), pPanel(panel){}
 	
 	void OnAction() override{
 		const igdeGDSkin * const gdskin = pPanel.GetSelectedSkin();
@@ -453,8 +455,8 @@ class cActionSetDecal : public igdeAction{
 	
 public:
 	typedef deTObjectReference<cActionSetDecal> Ref;
-	cActionSetDecal(meWPBrowser &panel) : igdeAction("Decals Set Skin", nullptr,
-		"Set skin of selected decals"), pPanel(panel){}
+	cActionSetDecal(meWPBrowser &panel) : igdeAction("@World.WPBrowser.Action.DecalsSetSkin", nullptr,
+		"@World.WPBrowser.Action.DecalsSetSkin"), pPanel(panel){}
 	
 	void OnAction() override{
 		const igdeGDSkin * const gdskin = pPanel.GetSelectedSkin();
@@ -490,8 +492,8 @@ class cActionSetSky : public igdeAction{
 	
 public:
 	typedef deTObjectReference<cActionSetSky> Ref;
-	cActionSetSky(meWPBrowser &panel) : igdeAction("Set Sky", nullptr,
-		"Change preview sky of world to the selected sky"), pPanel(panel){}
+	cActionSetSky(meWPBrowser &panel) : igdeAction("@World.WPBrowser.Action.SetSky", nullptr,
+		"@World.WPBrowser.Action.SetSky"), pPanel(panel){}
 	
 	void OnAction() override{
 		igdeGDSky * const gdsky = pPanel.GetSelectedSky();
@@ -550,8 +552,8 @@ class cActionPIRebuild : public igdeAction{
 	
 public:
 	typedef deTObjectReference<cActionPIRebuild> Ref;
-	cActionPIRebuild(meWPBrowser &panel) : igdeAction("Rebuild Preview", nullptr,
-		"Rebuild Preview"), pPanel(panel){}
+	cActionPIRebuild(meWPBrowser &panel) : igdeAction("@World.WPBrowser.Action.RebuildPreview", nullptr,
+		"@World.WPBrowser.Action.RebuildPreview"), pPanel(panel){}
 	
 	void OnAction() override{
 		pPanel.RebuildPISelectedItem();
@@ -594,16 +596,16 @@ pViewMode(evmPreview)
 	pActionSetSky = cActionSetSky::Ref::New(*this);
 	
 	pActionPISizeSmall = cActionPreviewSize::Ref::New(*this, epsSmall,
-		"Small Preview Image", nullptr, "Small Preview Image");
+		"@World.WPBrowser.View.SmallPreviewImage", nullptr, "@World.WPBrowser.View.SmallPreviewImage");
 	pActionPISizeMedium = cActionPreviewSize::Ref::New(*this, epsMedium,
-		"Medium Preview Image", nullptr, "Medium Preview Image");
+		"@World.WPBrowser.View.MediumPreviewImage", nullptr, "@World.WPBrowser.View.MediumPreviewImage");
 	pActionPISizeLarge = cActionPreviewSize::Ref::New(*this, epsLarge,
-		"Large Preview Image", nullptr, "Large Preview Image");
+		"@World.WPBrowser.View.LargePreviewImage", nullptr, "@World.WPBrowser.View.LargePreviewImage");
 	
 	pActionPIViewList = cActionViewMode::Ref::New(*this, evmList,
-		"List Mode", nullptr, "List Mode");
+		"@World.WPBrowser.View.ListMode", nullptr, "@World.WPBrowser.View.ListMode");
 	pActionPIViewPreview = cActionViewMode::Ref::New(*this, evmPreview,
-		"Preview Mode", nullptr, "Preview Mode");
+		"@World.WPBrowser.View.PreviewMode", nullptr, "@World.WPBrowser.View.PreviewMode");
 	
 	pActionPIRebuild = cActionPIRebuild::Ref::New(*this);
 	
@@ -614,7 +616,7 @@ pViewMode(evmPreview)
 	
 	
 	// browser
-	frameLine = igdeGroupBox::Ref::New(env, "Browser:");
+	frameLine = igdeGroupBox::Ref::New(env, "@World.WPBrowser.Browser.Label2");
 	frameLine.DynamicCast<igdeGroupBox>()->SetCanCollapse(false);
 	frameLine.DynamicCast<igdeGroupBox>()->SetStretchLast(true);
 	content->AddChild(frameLine, igdeContainerSplitted::eaSide);
@@ -624,15 +626,16 @@ pViewMode(evmPreview)
 	frameLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
 	groupBox->AddChild(frameLine);
 	
-	helper.ComboBox(frameLine, "Type of items to browse", pCBTypes, cComboType::Ref::New(*this));
-	pCBTypes->AddItem("Object Class", nullptr, (void*)(intptr_t)epitObjectClass);
-	pCBTypes->AddItem("Skin", nullptr, (void*)(intptr_t)epitSkin);
-	pCBTypes->AddItem("Sky", nullptr, (void*)(intptr_t)epitSky);
+	helper.ComboBox(frameLine, "@World.WPBrowser.TypeOfItemsToBrowse.Label", pCBTypes, cComboType::Ref::New(*this));
+	pCBTypes->SetAutoTranslateItems(true);
+	pCBTypes->AddItem("@World.WPBrowser.ObjectClass", nullptr, (void*)(intptr_t)epitObjectClass);
+	pCBTypes->AddItem("@World.WPBrowser.BrowserType.Skin", nullptr, (void*)(intptr_t)epitSkin);
+	pCBTypes->AddItem("@World.WPBrowser.BrowserType.Sky", nullptr, (void*)(intptr_t)epitSky);
 	
 	helper.Button(frameLine, pBtnSelByCat, cActionSelectionMode::Ref::New(*this, esmCategory,
-		"Category", nullptr, "Browse by category"));
+		"@World.WPBrowser.Category.Label", nullptr, "@World.WPBrowser.BrowseByCategory"));
 	helper.Button(frameLine, pBtnSelByFilter, cActionSelectionMode::Ref::New(*this, esmFilter,
-		"Filter", nullptr, "Browse by filtering"));
+		"@World.WPBrowser.Filter.Label", nullptr, "@World.WPBrowser.BrowseByFiltering"));
 	
 	
 	pSwitcherSelBy = igdeSwitcher::Ref::New(env);
@@ -640,7 +643,7 @@ pViewMode(evmPreview)
 	
 	
 	// category tree
-	helper.TreeList(pSwitcherSelBy, pTreeCategories, 10, "Categories", cTreeCategories::Ref::New(*this));
+	helper.TreeList(pSwitcherSelBy, pTreeCategories, 10, "@World.WPBrowser.Categories.Label", cTreeCategories::Ref::New(*this));
 	pTreeCategories->SetDefaultSorter();
 	
 	
@@ -648,12 +651,12 @@ pViewMode(evmPreview)
 	form = igdeContainerForm::Ref::New(env);
 	pSwitcherSelBy->AddChild(form);
 	
-	helper.EditString(form, "Filter:", "Show items containing filter case insensitive",
+	helper.EditString(form, "@World.WPBrowser.Filter.Label2:", "@World.WPBrowser.Filter.ToolTip",
 		pEditFilter, cTextFilter::Ref::New(*this));
 	
 	
 	// items
-	frameLine = igdeGroupBox::Ref::New(env, "Items:");
+	frameLine = igdeGroupBox::Ref::New(env, "@World.WPBrowser.Items.Label");
 	frameLine.DynamicCast<igdeGroupBox>()->SetCanCollapse(false);
 	frameLine.DynamicCast<igdeGroupBox>()->SetStretchLast(true);
 	content->AddChild(frameLine, igdeContainerSplitted::eaCenter);
@@ -661,15 +664,15 @@ pViewMode(evmPreview)
 	frameLine->AddChild(groupBox);
 	
 	const igdeUIHelper::sColumnHeader headers[] = {
-		igdeUIHelper::sColumnHeader("Name", nullptr, igdeApplication::app().DisplayScaled(200))
+		igdeUIHelper::sColumnHeader("@World.WPBrowser.Column.Name", nullptr, igdeApplication::app().DisplayScaled(200))
 	};
 	helper.IconListBox(groupBox, pListItems,
 		igdeApplication::app().DisplayScaled(decPoint(100, 150)),
-		headers, 1, "Items", cListItems::Ref::New(*this));
+		headers, 1, "@World.WPBrowser.Items", cListItems::Ref::New(*this));
 	pListItems->SetDefaultSorter();
 	pListItems->SetViewMode(igdeIconListBox::evmIconVertical);
 	
-	helper.EditString(groupBox, "Item information", pEditInfos, 50, 5, {});
+	helper.EditString(groupBox, "@World.WPBrowser.ItemInformation", pEditInfos, 50, 5, {});
 	pEditInfos->SetEditable(false);
 	
 	OnGameDefinitionChanged();

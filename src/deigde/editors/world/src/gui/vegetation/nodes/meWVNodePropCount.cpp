@@ -88,7 +88,7 @@ protected:
 public:
 	typedef deTObjectReference<cActionMenuClass> Ref;
 	cActionMenuClass(meWVNodePropCount &node) : igdeActionContextMenu("",
-		node.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Class menu"),
+		node.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "@World.WVNodePropCount.Menu.Class"),
 		pNode(node){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
@@ -134,26 +134,26 @@ pRulePC(rule)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	SetTitle("Prop Count");
+	SetTitle("@World.WVNodePropCount.Title");
 	
 	pActionMenuClass = cActionMenuClass::Ref::New(*this);
 	
 	// slots
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"Distance", "Distance in meters from closest prop",
+		"@World.WVNodePropCount.Output.Count", "@World.WVNodePropCount.Output.CountDesc",
 		false, *this, meWVNodeSlot::estValue, meHTVRulePropCount::eosCount));
 	
 	// parameters
 	pFraParameters = igdeContainerForm::Ref::New(env);
 	AddChild(pFraParameters);
 	
-	helper.FormLineStretchFirst(pFraParameters, "Class:", "Select class name of prop to search for.", formLine);
-	helper.ComboBoxFilter(formLine, true, "Select class name of prop to search for.",
+	helper.FormLineStretchFirst(pFraParameters, "@World.WVNodePropCount.Class.Label", "@World.WVNodePropCount.SelectClassNameOfPropToSearchFor.ToolTip", formLine);
+	helper.ComboBoxFilter(formLine, true, "@World.WVNodePropCount.SelectClassNameOfPropToSearchFor.ToolTip",
 		pCBPropClass, cComboClass::Ref::New(*this));
 	helper.Button(formLine, pBtnPropClass, pActionMenuClass);
 	pActionMenuClass->SetWidget(pBtnPropClass);
 	
-	helper.EditFloat(pFraParameters, "Radius:", "Set search radius in meters.",
+	helper.EditFloat(pFraParameters, "@World.WVNodePropCount.Radius.Label", "@World.WVNodePropCount.SetSearchRadiusInMeters.ToolTip",
 		pEditSearchRadius, cTextSearchRadius::Ref::New(*this));
 	
 	UpdateClassLists();

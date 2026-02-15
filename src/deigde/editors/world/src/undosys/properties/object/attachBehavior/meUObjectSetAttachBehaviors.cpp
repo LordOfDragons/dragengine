@@ -42,7 +42,7 @@ pNewValues(newValues)
 	DEASSERT_NOTNULL(object)
 	DEASSERT_NOTNULL(object->GetWorld())
 	
-	SetShortInfo("Set object attach behaviors");
+	SetShortInfo("@World.UObjectSetAttachBehaviors.SetObjectAttachBehaviors");
 	
 	pOldValues = object->GetAttachBehaviors();
 }

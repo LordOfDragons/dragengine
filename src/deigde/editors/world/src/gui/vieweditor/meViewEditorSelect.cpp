@@ -354,8 +354,8 @@ void meViewEditorSelect::OnLeftMouseButtonRelease(int x, int y, bool shift, bool
 					hitList.Visit(visitor);
 					
 					int selectionIndex = 0;
-					if(igdeCommonDialogs::SelectString(GetView(), "Choose Element",
-					"Choose element to select/deselect:", visitor.selectionList, selectionIndex)){
+					if(igdeCommonDialogs::SelectString(GetView(), "@World.ViewEditorSelect.Dialog.ChooseElement",
+					"@World.ViewEditorSelect.Dialog.ChooseElementDesc", visitor.selectionList, selectionIndex)){
 						pCLSelect->RunAction(selectionIndex);
 					}
 				}
@@ -588,7 +588,7 @@ void meViewEditorSelect::pUpdateInfoBubble(int x, int y, bool singleElement){
 			collected.Visit(0, limit, visitor);
 			
 			decString text;
-			text.Format("... and %d more", collected.GetCount() - limit);
+			text.FormatSafe(GetView().Translate("World.ViewEditorSelect.AndMore").ToUTF8(), collected.GetCount() - limit);
 			visitor.lines.Insert(text, 0);
 		}
 	}

@@ -49,7 +49,7 @@ pNewLayer(newLayer)
 	
 	pOldLayer = navspace->GetLayer();
 	
-	SetShortInfo("Height terrain nav-space set layer");
+	SetShortInfo("@World.UHTNavSpaceSetLayer.HeightTerrainNavSpaceSetLayer");
 	
 	pNavSpace = navspace;
 }

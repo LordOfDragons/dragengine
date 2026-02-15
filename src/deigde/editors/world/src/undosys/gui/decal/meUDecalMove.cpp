@@ -38,10 +38,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalMove::meUDecalMove(meWorld *world){
+meUDecalMove::meUDecalMove(meWorld *world) :
+meBaseUndoMove(*world->GetEnvironment())
+{
 	if(!world) DETHROW(deeInvalidParam);
 	
-	SetShortInfo("Move Decals");
+	SetShortInfo("@World.UDecalMove.MoveDecals");
 	
 	pWorld = nullptr;
 	

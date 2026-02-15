@@ -294,7 +294,7 @@ class cActionMenuClass : public igdeActionContextMenu{
 public:
 	typedef deTObjectReference<cActionMenuClass> Ref;
 	cActionMenuClass(meWPSObject &panel) : igdeActionContextMenu("",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Class menu"),
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "@World.WPSObject.ClassMenu"),
 	pPanel(panel){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
@@ -315,7 +315,7 @@ class cActionClassBrowse : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionClassBrowse> Ref;
 	cActionClassBrowse(meWPSObject &panel) : cBaseAction(panel,
-		"Browse Class", nullptr, "Show class in class browser"){}
+		"@World.WPSObject.Action.BrowseClass", nullptr, "@World.WPSObject.Action.BrowseClassDesc"){}
 	
 	igdeUndo::Ref OnAction(meObject *object) override{
 		if(object->GetGDClass()){
@@ -334,7 +334,7 @@ class cActionClassEdit : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionClassEdit> Ref;
 	cActionClassEdit(meWPSObject &panel) : cBaseAction(panel,
-		"Edit Class", nullptr, "Edit class in Game Definition Editor"){}
+		"@World.WPSObject.Action.EditClass", nullptr, "@World.WPSObject.Action.EditClassDesc"){}
 	
 	igdeUndo::Ref OnAction(meObject *object) override{
 		if(object->GetGDClass()){
@@ -355,7 +355,7 @@ class cActionMenuId : public igdeActionContextMenu{
 public:
 	typedef deTObjectReference<cActionMenuId> Ref;
 	cActionMenuId(meWPSObject &panel) : igdeActionContextMenu("",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "ID menu"),
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "@World.WPSObject.IDMenu"),
 	pPanel(panel){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
@@ -373,9 +373,9 @@ class cActionIdFind : public igdeAction{
 
 public:
 	typedef deTObjectReference<cActionIdFind> Ref;
-	cActionIdFind(meWPSObject &panel) : igdeAction("Find ID...",
+	cActionIdFind(meWPSObject &panel) : igdeAction("@World.WPSObject.FindId.Label",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSearch),
-		"Find ID. Activates object if found."), pPanel(panel){}
+		"@World.WPSObject.Action.FindIDDesc"), pPanel(panel){}
 	
 	void OnAction() override{
 		meWorld * const world = pPanel.GetWorld();
@@ -384,7 +384,7 @@ public:
 		}
 		
 		decString value;
-		if(!igdeCommonDialogs::GetString(pPanel.GetWPSelection(), "Find ID", "ID:", value)){
+		if(!igdeCommonDialogs::GetString(pPanel.GetWPSelection(), "@World.WPSObject.Dialog.FindID", "@World.WPSObject.Dialog.FindIDNumber", value)){
 			return;
 		}
 		
@@ -399,7 +399,7 @@ public:
 			
 		}catch(const deException &){
 			igdeCommonDialogs::ErrorFormat(pPanel.GetWPSelection(),
-				"Find ID", "Invalid ID '{0}'", value.GetString());
+				"@World.WPSObject.Dialog.FindID", "@World.WPSObject.Error.InvalidID", value.GetString());
 			return;
 		}
 		
@@ -427,7 +427,7 @@ public:
 		}
 		
 		igdeCommonDialogs::ErrorFormat(pPanel.GetWPSelection(),
-			"Find ID", "ID '{0}' not found", value.GetString());
+			"@World.WPSObject.Dialog.FindID", "@World.WPSObject.Error.IDNotFound", value.GetString());
 	}
 	
 	void Update() override{
@@ -452,7 +452,7 @@ public:
 class cActionResetPosition : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionResetPosition> Ref;
-	cActionResetPosition(meWPSObject &panel) : cBaseAction(panel, "Reset Position", nullptr, "Reset position to 0"){}
+	cActionResetPosition(meWPSObject &panel) : cBaseAction(panel, "@World.WPSObject.Action.ResetPosition", nullptr, "@World.WPSObject.Action.ResetPositionDesc"){}
 	
 	igdeUndo::Ref OnAction(meObject *object) override{
 		return !object->GetPosition().IsEqualTo(decVector(1.0f, 1.0f, 1.0f))
@@ -466,7 +466,7 @@ class cActionMenuPosition : public igdeActionContextMenu{
 public:
 	typedef deTObjectReference<cActionMenuPosition> Ref;
 	cActionMenuPosition(meWPSObject &panel) : igdeActionContextMenu("",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Position menu"),
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "@World.WPSObject.PositionMenu"),
 	pPanel(panel){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
@@ -505,7 +505,7 @@ public:
 class cActionResetRotation : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionResetRotation> Ref;
-	cActionResetRotation(meWPSObject &panel) : cBaseAction(panel, "Reset Rotation", nullptr, "Reset rotation to 0"){}
+	cActionResetRotation(meWPSObject &panel) : cBaseAction(panel, "@World.WPSObject.Action.ResetRotation", nullptr, "@World.WPSObject.Action.ResetRotationDesc"){}
 	
 	igdeUndo::Ref OnAction(meObject *object) override{
 		return !object->GetRotation().IsEqualTo(decVector(1.0f, 1.0f, 1.0f))
@@ -519,7 +519,7 @@ class cActionMenuRotation : public igdeActionContextMenu{
 public:
 	typedef deTObjectReference<cActionMenuRotation> Ref;
 	cActionMenuRotation(meWPSObject &panel) : igdeActionContextMenu("",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Rotation menu"),
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "@World.WPSObject.RotationMenu"),
 	pPanel(panel){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
@@ -629,7 +629,7 @@ public:
 class cActionResetScaling : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionResetScaling> Ref;
-	cActionResetScaling(meWPSObject &panel) : cBaseAction(panel, "Reset Scaling", nullptr, "Reset scaling to 1"){}
+	cActionResetScaling(meWPSObject &panel) : cBaseAction(panel, "@World.WPSObject.Action.ResetScaling", nullptr, "@World.WPSObject.Action.ResetScalingDesc"){}
 	
 	igdeUndo::Ref OnAction(meObject *object) override{
 		return !object->GetScaling().IsEqualTo(decVector(1.0f, 1.0f, 1.0f))
@@ -643,7 +643,7 @@ class cActionMenuScale : public igdeActionContextMenu{
 public:
 	typedef deTObjectReference<cActionMenuScale> Ref;
 	cActionMenuScale(meWPSObject &panel) : igdeActionContextMenu("",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Scale menu"),
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "@World.WPSObject.ScaleMenu"),
 	pPanel(panel){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
@@ -731,7 +731,7 @@ class cActionTextureAddModel : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionTextureAddModel> Ref;
 	cActionTextureAddModel(meWPSObject &panel, const char *name) :
-	cBaseAction(panel, name, nullptr, "Add model texture"), pTextureName(name){}
+	cBaseAction(panel, name, nullptr, "@World.WPSObject.Action.MTexAddDesc"), pTextureName(name){}
 	
 	igdeUndo::Ref OnAction(meObject *object) override{
 		meObjectTexture::Ref texture;
@@ -755,7 +755,7 @@ class cActionTextureRemoveModel : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionTextureRemoveModel> Ref;
 	cActionTextureRemoveModel(meWPSObject &panel, const char *name) :
-	cBaseAction(panel, name, nullptr, "Remove model texture"), pTextureName(name){}
+	cBaseAction(panel, name, nullptr, "@World.WPSObject.Action.MTexRemoveDesc"), pTextureName(name){}
 	
 	igdeUndo::Ref OnAction(meObject*) override{
 		return {};
@@ -773,7 +773,7 @@ class cActionMenuTexture : public igdeActionContextMenu{
 public:
 	typedef deTObjectReference<cActionMenuTexture> Ref;
 	cActionMenuTexture(meWPSObject &panel) : igdeActionContextMenu("",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Texture menu"),
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "@World.WPSObject.TextureMenu"),
 	pPanel(panel){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
@@ -795,7 +795,7 @@ public:
 		helper.MenuCommand(contextMenu, pPanel.GetActionTextureAddCustom());
 		helper.MenuCommand(contextMenu, pPanel.GetActionTextureAddAllModel());
 		
-		cascade = igdeMenuCascade::Ref::New(env, "Add From Model",
+		cascade = igdeMenuCascade::Ref::New(env, "@World.WPSObject.Action.TextureAddFromModel",
 			env.GetStockIcon(igdeEnvironment::esiPlus));
 		contextMenu.AddChild(cascade);
 		
@@ -811,7 +811,7 @@ public:
 		helper.MenuCommand(contextMenu, pPanel.GetActionTextureRemoveAll());
 		helper.MenuCommand(contextMenu, pPanel.GetActionTextureRemoveAllNotModel());
 		
-		cascade = igdeMenuCascade::Ref::New(env, "Remove From Model",
+		cascade = igdeMenuCascade::Ref::New(env, "@World.WPSObject.Action.TextureRemoveFromModel",
 			env.GetStockIcon(igdeEnvironment::esiMinus));
 		contextMenu.AddChild(cascade);
 		
@@ -831,14 +831,14 @@ public:
 class cActionTextureAddCustom : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionTextureAddCustom> Ref;
-	cActionTextureAddCustom(meWPSObject &panel) : cBaseAction(panel, "Add...",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add texture"){}
+	cActionTextureAddCustom(meWPSObject &panel) : cBaseAction(panel, "@World.WPSObject.Action.TextureAdd",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@World.WPSObject.Action.TextureAddDesc"){}
 	
 	igdeUndo::Ref OnAction(meObject *object) override{
 		decString name;
-		while(igdeCommonDialogs::GetString(pPanel, "Add Texture", "Name:", name)){
+		while(igdeCommonDialogs::GetString(pPanel, "@World.WPSObject.Dialog.AddTexture", "@World.WPSObject.Dialog.AddTextureName", name)){
 			if(object->GetTextures().HasNamed(name)){
-				igdeCommonDialogs::Error(pPanel, "Add Texture", "Texture name exists already");
+				igdeCommonDialogs::Error(pPanel, "@World.WPSObject.Dialog.AddTexture", "@World.WPSObject.Dialog.TextureNameExistsAlready");
 				continue;
 			}
 			
@@ -860,8 +860,8 @@ public:
 class cActionTextureAddAllModel : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionTextureAddAllModel> Ref;
-	cActionTextureAddAllModel(meWPSObject &panel) : cBaseAction(panel, "Add All From Model",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add all textures from model"){}
+	cActionTextureAddAllModel(meWPSObject &panel) : cBaseAction(panel, "@World.WPSObject.Action.TextureAddAllFromModel",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@World.WPSObject.Action.TextureAddAllFromModelDesc"){}
 	
 	igdeUndo::Ref OnAction(meObject *object) override{
 		const meUObjectAddUsedTextures::Ref undo = meUObjectAddUsedTextures::Ref::New(object);
@@ -893,8 +893,8 @@ public:
 class cActionTextureRemove : public cBaseActionTexture{
 public:
 	typedef deTObjectReference<cActionTextureRemove> Ref;
-	cActionTextureRemove(meWPSObject &panel) : cBaseActionTexture(panel, "Remove",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove texture"){}
+	cActionTextureRemove(meWPSObject &panel) : cBaseActionTexture(panel, "@World.WPSObject.Action.TextureRemove",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@World.WPSObject.Action.TextureRemoveDesc"){}
 	
 	igdeUndo::Ref OnActionTexture(meObject*, meObjectTexture *texture) override{
 		return meUObjectRemoveTexture::Ref::New(texture);
@@ -908,8 +908,8 @@ public:
 class cActionTextureRemoveAll : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionTextureRemoveAll> Ref;
-	cActionTextureRemoveAll(meWPSObject &panel) : cBaseAction(panel, "Remove All",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove all textures"){}
+	cActionTextureRemoveAll(meWPSObject &panel) : cBaseAction(panel, "@World.WPSObject.Action.TextureRemoveAll",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@World.WPSObject.Action.TextureRemoveAllDesc"){}
 	
 	igdeUndo::Ref OnAction(meObject *object) override{
 		return object->GetTextures().GetCount() > 0 ? meUObjectRemoveAllTextures::Ref::New(object) : meUObjectRemoveAllTextures::Ref();
@@ -923,8 +923,8 @@ public:
 class cActionTextureRemoveAllNotModel : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionTextureRemoveAllNotModel> Ref;
-	cActionTextureRemoveAllNotModel(meWPSObject &panel) : cBaseAction(panel, "Remove All Not From Model",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove all textures not from model"){}
+	cActionTextureRemoveAllNotModel(meWPSObject &panel) : cBaseAction(panel, "@World.WPSObject.Action.TextureRemoveAllNotFromModel",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@World.WPSObject.Action.TextureRemoveAllNotFromModelDesc"){}
 	
 	igdeUndo::Ref OnAction(meObject *object) override{
 		return meUObjectRemoveUnusedTextures::Ref::New(object);
@@ -956,8 +956,8 @@ class cActionTextureCopyToSelected : public cBaseActionTexture{
 public:
 	typedef deTObjectReference<cActionTextureCopyToSelected> Ref;
 	cActionTextureCopyToSelected(meWPSObject &panel) : cBaseActionTexture(panel,
-		"Copy To Selected", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-			"Copy texture from active object to selected objects"){}
+		"@World.WPSObject.Action.TextureCopyToSelected", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+			"@World.WPSObject.Action.TextureCopyToSelectedDesc"){}
 	
 	igdeUndo::Ref OnActionTexture(meObject*, meObjectTexture *texture) override{
 		const meObject::List &list = pPanel.GetWorld()->GetSelectionObject().GetSelected();
@@ -972,9 +972,9 @@ public:
 class cActionTextureCloneToSelected : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionTextureCloneToSelected> Ref;
-	cActionTextureCloneToSelected(meWPSObject &panel) : cBaseAction(panel, "Clone To Selected",
+	cActionTextureCloneToSelected(meWPSObject &panel) : cBaseAction(panel, "@World.WPSObject.Action.TextureCloneToSelected",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-			"Clone textures from active object to selected objects"){}
+			"@World.WPSObject.Action.TextureCloneToSelectedDesc"){}
 	
 	igdeUndo::Ref OnAction(meObject *object) override{
 		meObject::List list(pPanel.GetWorld()->GetSelectionObject().GetSelected());
@@ -1099,9 +1099,9 @@ public:
 class cActionPropCopyToSel : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionPropCopyToSel> Ref;
-	cActionPropCopyToSel(meWPSObject &panel) : cBaseAction(panel, "Copy To Selected",
+	cActionPropCopyToSel(meWPSObject &panel) : cBaseAction(panel, "@World.WPSObject.Action.PropertyCopyToSelected",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-			"Copy property from active object to all selected objects"){}
+			"@World.WPSObject.Action.PropertyCopyToSelectedDesc"){}
 	
 	igdeUndo::Ref OnAction(meObject *object) override{
 		meObject::List list(pPanel.GetWorld()->GetSelectionObject().GetSelected());
@@ -1120,9 +1120,9 @@ public:
 class cActionPropRemoveFromSel : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionPropRemoveFromSel> Ref;
-	cActionPropRemoveFromSel(meWPSObject &panel) : cBaseAction(panel, "Remove From Selected",
+	cActionPropRemoveFromSel(meWPSObject &panel) : cBaseAction(panel, "@World.WPSObject.Action.PropertyRemoveFromSelected",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-			"Remove property from all selected objects"){}
+			"@World.WPSObject.Action.PropertyRemoveFromSelectedDesc"){}
 	
 	igdeUndo::Ref OnAction(meObject*) override{
 		const meObject::List &list = pPanel.GetWorld()->GetSelectionObject().GetSelected();
@@ -1139,9 +1139,9 @@ public:
 class cActionPropCloneToSel : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionPropCloneToSel> Ref;
-	cActionPropCloneToSel(meWPSObject &panel) : cBaseAction(panel, "Clone To Selected",
+	cActionPropCloneToSel(meWPSObject &panel) : cBaseAction(panel, "@World.WPSObject.Action.PropertyCloneToSelected",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-			"Clone all properties from active object to all selected objects"){}
+			"@World.WPSObject.Action.PropertyCloneToSelectedDesc"){}
 	
 	igdeUndo::Ref OnAction(meObject *object) override{
 		meObject::List list(pPanel.GetWorld()->GetSelectionObject().GetSelected());
@@ -1158,8 +1158,8 @@ public:
 class cActionAddAttachBehavior : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionAddAttachBehavior> Ref;
-	cActionAddAttachBehavior(meWPSObject &panel) : cBaseAction(panel, "Add Attachable Behavior...",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add attachable behavior"){}
+	cActionAddAttachBehavior(meWPSObject &panel) : cBaseAction(panel, "@World.WPSObject.Action.AttachableAdd",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@World.WPSObject.Action.AttachableAddDesc"){}
 	
 	igdeUndo::Ref OnAction(meObject *object) override{
 		decStringList names;
@@ -1174,7 +1174,7 @@ public:
 		}
 		
 		decString name;
-		if(!igdeCommonDialogs::GetString(pPanel, "Add Attachable Behavior", "Behavior:", name, names)){
+		if(!igdeCommonDialogs::GetString(pPanel, "@World.WPSObject.Dialog.AddAttachable", "@World.WPSObject.Dialog.Behavior", name, names)){
 			return {};
 		}
 		
@@ -1191,8 +1191,8 @@ public:
 class cActionRemoveAttachBehavior : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionRemoveAttachBehavior> Ref;
-	cActionRemoveAttachBehavior(meWPSObject &panel) : cBaseAction(panel, "Remove Attachable Behavior",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove attachable behavior"){}
+	cActionRemoveAttachBehavior(meWPSObject &panel) : cBaseAction(panel, "@World.WPSObject.Action.AttachableRemove",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@World.WPSObject.Action.AttachableRemoveDesc"){}
 	
 	igdeUndo::Ref OnAction(meObject *object) override{
 		decStringList list(object->GetAttachBehaviors());
@@ -1210,9 +1210,9 @@ class cActionRemoveAllAttachBehaviors : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionRemoveAllAttachBehaviors> Ref;
 	cActionRemoveAllAttachBehaviors(meWPSObject &panel) : cBaseAction(panel,
-		"Remove All Attachable Behaviors",
+		"@World.WPSObject.Action.AttachableRemoveAll",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-		"Remove all attachable behaviors"){}
+		"@World.WPSObject.Action.AttachableRemoveAllDesc"){}
 	
 	igdeUndo::Ref OnAction(meObject *object) override{
 		if(pPanel.GetActiveObject()->GetAttachBehaviors().IsEmpty()){
@@ -1331,8 +1331,8 @@ public:
 class cActionShowMissingTextures : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionShowMissingTextures> Ref;
-	cActionShowMissingTextures(meWPSObject &panel) : cBaseAction(panel, "Show Missing Textures",
-		nullptr, "Show mising textures using placeholder texture"){}
+	cActionShowMissingTextures(meWPSObject &panel) : cBaseAction(panel, "@World.WPSObject.Action.ShowMissingTextures",
+		nullptr, "@World.WPSObject.Action.ShowMissingTexturesDesc"){}
 	
 	igdeUndo::Ref OnAction(meObject *object) override{
 		object->SetShowMissingTextures(!object->GetShowMissingTextures());
@@ -1508,118 +1508,118 @@ pPreventUpdate(false)
 	
 	groupBox = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esLast, 10);
 	content->AddChild(groupBox);
-	helper.Label(groupBox, "Selected:");
-	helper.EditInteger(groupBox, "Number of selected objects", 3, pEditSelCount, {});
+	helper.Label(groupBox, "@World.WPSObject.Selected.Label");
+	helper.EditInteger(groupBox, "@World.WPSObject.NumberOfSelectedObjects.Label", 3, pEditSelCount, {});
 	pEditSelCount->SetEditable(false);
-	helper.Label(groupBox, "Active:");
-	helper.EditSpinInteger(groupBox, "Active object to edit", 0, 0, pSpinActive, cSpinActive::Ref::New(*this));
+	helper.Label(groupBox, "@World.WPView.Active.Label");
+	helper.EditSpinInteger(groupBox, "@World.WPSObject.ActiveObjectToEdit.Label", 0, 0, pSpinActive, cSpinActive::Ref::New(*this));
 	
 	
 	// geometry
-	helper.GroupBox(content, groupBox, "Geometry:");
+	helper.GroupBox(content, groupBox, "@World.WPSObject.Geometry.Label");
 	
-	helper.FormLineStretchFirst(groupBox, "Class:", "Name of the active object class.", formLine);
-	helper.ComboBoxFilter(formLine, true, "Name of the active object class.", pCBClass, cComboClass::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@World.WPSObject.Class.Label", "@World.WPSObject.NameOfActiveObjectClass.ToolTip", formLine);
+	helper.ComboBoxFilter(formLine, true, "@World.WPSObjectShape.NameOfActiveObjectClass.ToolTip", pCBClass, cComboClass::Ref::New(*this));
 	pCBClass->SetDefaultSorter();
 	helper.Button(formLine, pBtnClassMenu, pActionMenuClass);
 	pActionMenuClass->SetWidget(pBtnClassMenu);
 	
-	helper.FormLineStretchFirst(groupBox, "ID:", "Unique object ID.", formLine);
-	helper.EditString(formLine, "Unique object ID", pEditID, {});
+	helper.FormLineStretchFirst(groupBox, "@World.WPSObject.Id.Label", "@World.WPSObject.UniqueObjectId.ToolTip", formLine);
+	helper.EditString(formLine, "@World.WPSObject.UniqueObjectId.Label", pEditID, {});
 	pEditID->SetEditable(false);
 	helper.Button(formLine, pBtnIdMenu, pActionIdClass);
 	pActionIdClass->SetWidget(pBtnIdMenu);
 	
-	helper.EditString(groupBox, "Attach:", "ID of object to attach to", pEditAttach, {});
+	helper.EditString(groupBox, "@World.WPSObject.Attach.Label", "@World.WPSObject.IdOfObjectToAttachTo.ToolTip", pEditAttach, {});
 	pEditAttach->SetEditable(false);
 	
-	helper.FormLineStretchFirst(groupBox, "Position:", "Position of the object.", formLine);
-	helper.EditDVector(formLine, "Position of the object.", pEditPosition, cEditPosition::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@World.WPSObject.Position.Label", "@World.WPSObject.PositionOfObject.ToolTip", formLine);
+	helper.EditDVector(formLine, "@World.WPSObject.PositionOfObject.ToolTip", pEditPosition, cEditPosition::Ref::New(*this));
 	helper.Button(formLine, pBtnPositionMenu, pActionMenuPosition);
 	pActionMenuPosition->SetWidget(pBtnPositionMenu);
 	
-	helper.FormLineStretchFirst(groupBox, "Rotation:", "Rotation of the object.", formLine);
-	helper.EditVector(formLine, "Rotation of the object.", pEditRotation, cEditRotation::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@World.WPSObject.Rotation.Label", "@World.WPSObject.RotationOfObject.ToolTip", formLine);
+	helper.EditVector(formLine, "@World.WPSObject.RotationOfObject.ToolTip", pEditRotation, cEditRotation::Ref::New(*this));
 	helper.Button(formLine, pBtnRotationMenu, pActionMenuRotation);
 	pActionMenuRotation->SetWidget(pBtnRotationMenu);
 	
-	helper.FormLineStretchFirst(groupBox, "Scaling:", "Scaling of the object.", formLine);
-	helper.EditVector(formLine, "Scaling of the object.", pEditScaling, cEditScaling::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@World.WPSObject.Scaling.Label", "@World.WPSObject.ScalingOfObject.ToolTip", formLine);
+	helper.EditVector(formLine, "@World.WPSObject.ScalingOfObject.ToolTip", pEditScaling, cEditScaling::Ref::New(*this));
 	helper.Button(formLine, pBtnScaleMenu, pActionMenuScale);
 	pActionMenuScale->SetWidget(pBtnScaleMenu);
 	
-	helper.EditVector(groupBox, "Size:", "Size of the object.", pEditSize, cEditSize::Ref::New(*this));
+	helper.EditVector(groupBox, "@World.WPSObject.Size.Label", "@World.WPSObject.SizeOfObject.ToolTip", pEditSize, cEditSize::Ref::New(*this));
 	
 	
 	// properties
-	helper.GroupBoxFlow(content, groupBox, "Properties:");
+	helper.GroupBoxFlow(content, groupBox, "@World.WPSObject.Properties.Label");
 	
 	pEditProperties = cEditObjectProperties::Ref::New(*this);
 	groupBox->AddChild(pEditProperties);
 	
 	
 	// attachable behaviors
-	helper.GroupBoxFlow(content, groupBox, "Attachable Behaviors:", true, true);
+	helper.GroupBoxFlow(content, groupBox, "@World.WPSObject.AttachableBehaviors.Label", true, true);
 	
-	helper.ListBox(groupBox, 3, "Attachable behaviors of the object.",
+	helper.ListBox(groupBox, 3, "@World.WPSObject.AttachableBehaviorsOfObject.Label",
 		pListAttachBehaviors, cListAttachBehavior::Ref::New(*this, pPreventUpdate));
 	
 	
 	// display options
-	helper.GroupBox(content, groupBox, "Display Options", true);
+	helper.GroupBox(content, groupBox, "@World.WPSObject.DisplayOptions.Label", true);
 	
 	helper.CheckBox(groupBox, pChkShowMissingTextures, cActionShowMissingTextures::Ref::New(*this));
 	
 	
 	// texture
-	helper.GroupBox(content, groupBox, "Texture:", true);
+	helper.GroupBox(content, groupBox, "@World.WPSObject.Texture.Label", true);
 	
-	helper.FormLineStretchFirst(groupBox, "Texture:", "Texture to edit.", formLine);
-	helper.ComboBox(formLine, "Texture to edit.", pCBTexture, cComboTexture::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@World.WPSObject.Texture.Label", "@World.WPSObject.TextureToEdit.ToolTip", formLine);
+	helper.ComboBox(formLine, "@World.WPSObject.TextureToEdit.ToolTip", pCBTexture, cComboTexture::Ref::New(*this));
 	pCBTexture->SetDefaultSorter();
 	helper.Button(formLine, pBtnTextureMenu, pActionMenuTexture);
 	pActionMenuTexture->SetWidget(pBtnTextureMenu);
 	
-	helper.EditPath(groupBox, "Skin:", "Skin to use for the texture",
+	helper.EditPath(groupBox, "@World.WPSObject.Skin.Label", "@World.WPSObject.SkinToUseForTexture.ToolTip",
 		igdeEnvironment::efpltSkin, pEditTexSkin, cEditTextureSkin::Ref::New(*this));
 	
 	
 	// texture transform
-	helper.GroupBox(content, groupBox, "Texture Transformation:", true);
+	helper.GroupBox(content, groupBox, "@World.WPSObject.TextureTransformation.Label", true);
 	
-	helper.EditVector2(groupBox, "Translation:", "Texture coordinates translation.",
+	helper.EditVector2(groupBox, "@World.WPSObject.Translation.Label", "@World.WPSObject.TextureCoordinatesTranslation.ToolTip",
 		pEditTexTCOffset, cEditTextureTCOffset::Ref::New(*this));
-	helper.EditVector2(groupBox, "Scaling:", "Texture coordinates scaling.",
+	helper.EditVector2(groupBox, "@World.WPSObject.TextureCoordinatesScaling.Label", "@World.WPSObject.TextureCoordinatesScaling.ToolTip",
 		pEditTexTCScaling, cEditTextureTCScaling::Ref::New(*this));
-	helper.EditFloat(groupBox, "Rotation:", "Texture coordinates rotation.",
+	helper.EditFloat(groupBox, "@World.WPSObject.TextureCoordinatesRotation.Label", "@World.WPSObject.TextureCoordinatesRotation.ToolTip",
 		pEditTexTCRotation, cEditTextureTCRotation::Ref::New(*this));
-	helper.ColorBox(groupBox, "Tint:", "Color tint (affects renderable named 'tint').", pClrTexTint, cEditTextureColorTint::Ref::New(*this));
+	helper.ColorBox(groupBox, "@World.WPSObject.Tint.Label", "@World.WPSObject.Tint.ToolTip", pClrTexTint, cEditTextureColorTint::Ref::New(*this));
 	
 	
 	// texture properties tables
-	helper.GroupBoxFlow(content, groupBox, "Texture Properties:", false, true);
+	helper.GroupBoxFlow(content, groupBox, "@World.WPSObject.TextureProperties.Label", false, true);
 	
 	pEditTexProperties = cEditTextureProperties::Ref::New(*this);
 	groupBox->AddChild(pEditTexProperties);
 	
 	
 	// light properties
-	helper.GroupBox(content, groupBox, "Light:", true);
+	helper.GroupBox(content, groupBox, "@World.WPSObject.Light.Label", true);
 	
-	helper.EditSliderText(groupBox, "Intensity:", "Intensity of the light.", 0.0f, 10.0f,
+	helper.EditSliderText(groupBox, "@World.WPSObject.IntensityOfLight.Label", "@World.WPSObject.IntensityOfLight.ToolTip", 0.0f, 10.0f,
 		5, 2, 1.0f, pSldLigInt, cLightSlider::Ref::New(*this, igdeGDCLight::epIntensity));
-	helper.ColorBox(groupBox, "Color:", "Color of the light.", pClrLight, cLightColor::Ref::New(*this));
-	helper.EditSliderText(groupBox, "Range:", "Range of the light in meters.", 0.0f, 10.0f,
+	helper.ColorBox(groupBox, "@World.WPSObject.Color.Label", "@World.WPSObject.ColorOfLight.ToolTip", pClrLight, cLightColor::Ref::New(*this));
+	helper.EditSliderText(groupBox, "@World.WPSObject.Range.Label", "@World.WPSObject.RangeOfLightInMeters.ToolTip", 0.0f, 10.0f,
 		5, 2, 1.0f, pSldLigRange, cLightSlider::Ref::New(*this, igdeGDCLight::epRange));
-	helper.EditSliderText(groupBox, "Half-Int Dist:",
-		"Half intensity distance as percentage of light range.", 0.0f, 1.0f,
+	helper.EditSliderText(groupBox, "@World.WPSObject.HalfIntDist.Label",
+		"@World.WPSObject.HalfIntensityDistanceAsPercentageOfLightRange.ToolTip", 0.0f, 1.0f,
 		5, 2, 0.1f, pSldLigHID, cLightSlider::Ref::New(*this, igdeGDCLight::epHalfIntDist));
 	
-	helper.EditSliderText(groupBox, "Distance:",
-		"Distance to the light source to evaluate distance for.", 0.0f, 10.0f,
+	helper.EditSliderText(groupBox, "@World.WPView.Distance.Label",
+		"@World.WPSObject.DistanceToLightSourceToEvaluateDistanceFor.ToolTip", 0.0f, 10.0f,
 		5, 2, 1.0f, pSldLigDist, cLightIntForDistSlider::Ref::New(*this));
-	helper.EditString(groupBox, "Intensity:",
-		"Evaluated intensity at distance to light source.", pEditLigDistInt, {});
+	helper.EditString(groupBox, "@World.WPSObject.Intensity.Label",
+		"@World.WPSObject.EvaluatedIntensityAtDistanceToLightSource.ToolTip", pEditLigDistInt, {});
 	pEditLigDistInt->SetEditable(false);
 }
 

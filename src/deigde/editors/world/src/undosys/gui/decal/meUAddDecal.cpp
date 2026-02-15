@@ -47,7 +47,7 @@ meUAddDecal::meUAddDecal(meWorld *world, meDecal *decal){
 	pWorld = nullptr;
 	pDecal = nullptr;
 	
-	SetShortInfo("Add Decal");
+	SetShortInfo("@World.UAddDecal.AddDecal");
 	SetLongInfo("");
 	
 	pDecal = decal;

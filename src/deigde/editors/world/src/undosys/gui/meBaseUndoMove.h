@@ -30,6 +30,8 @@
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 
+class igdeEnvironment;
+
 
 
 /**
@@ -42,6 +44,7 @@ public:
 	
 	
 private:
+igdeEnvironment &pEnvironment;
 	decDVector pDistance;
 	
 	bool pModifyOrientation;
@@ -53,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	meBaseUndoMove();
+	meBaseUndoMove(igdeEnvironment &environment);
 	
 	/** \brief Clean up undo action. */
 

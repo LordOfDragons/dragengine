@@ -168,13 +168,13 @@ pUse3DCursor(false)
 	splitted->AddChild(pTabContent, igdeContainerSplitted::eaCenter);
 	
 	pView3D = meView3D::Ref::New(*this);
-	pTabContent->AddChild(pView3D, "World");
+	pTabContent->AddChild(pView3D, "@World.WindowMain.Tab.World");
 	
 	pViewVegetation = meWindowVegetation::Ref::New(*this);
-	pTabContent->AddChild(pViewVegetation, "Vegetation");
+	pTabContent->AddChild(pViewVegetation, "@World.WindowMain.Vegetation.Label");
 	
 	pViewChangelog = meWindowChangelog::Ref::New(*this);
-	pTabContent->AddChild(pViewChangelog, "Change-Log");
+	pTabContent->AddChild(pViewChangelog, "@World.WindowMain.ChangeLog.Label");
 	
 	pTabContent->SetActivePanel(0); // world
 	
@@ -283,9 +283,8 @@ void meWindowMain::LoadWorld(const char *filename){
 	SetProgressVisible(true);
 	SetProgress(0.0f);
 	
-	decString message;
-	message.Format("Loading world from '%s'", filename);
-	SetProgressText(message);
+	SetProgressText(decString::Formatted(
+		Translate("World.WindowMain.LoadingWorld").ToUTF8(), filename));
 	
 	GetRecentFiles().AddFile(filename);
 }
@@ -360,8 +359,8 @@ void meWindowMain::GetChangedDocuments(decStringList &list){
 
 void meWindowMain::LoadDocument(const char *filename){
 	if(pWorld && pWorld->GetAnyChanged()){
-		if(igdeCommonDialogs::Question(*this, igdeCommonDialogs::ebsYesNo, "Open World",
-		"Open world discards changes. Is this ok?") == igdeCommonDialogs::ebNo){
+		if(igdeCommonDialogs::Question(*this, igdeCommonDialogs::ebsYesNo, "@World.WindowMain.Dialog.OpenWorld",
+		"@World.WindowMain.Dialog.OpenWorldDiscardsChangesIsThisOk") == igdeCommonDialogs::ebNo){
 			return;
 		}
 	}
@@ -482,14 +481,14 @@ class cActionFileNew : public igdeAction{
 public:
 	typedef deTObjectReference<cActionFileNew> Ref;
 	cActionFileNew(meWindowMain &window) :
-	igdeAction("New", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiNew),
-		"Create new world", deInputEvent::ekcN, igdeHotKey(deInputEvent::esmControl, deInputEvent::ekcN)),
+	igdeAction("@World.WindowMain.Action.New", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiNew),
+		"@World.WindowMain.Action.FileNew", deInputEvent::ekcN, igdeHotKey(deInputEvent::esmControl, deInputEvent::ekcN)),
 	pWindow(window){}
 	
 	void OnAction() override{
 		if(!pWindow.GetWorld() || !pWindow.GetWorld()->GetAnyChanged()
-		|| igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "New World",
-		"Creating a new World discarding the current one is that ok?") == igdeCommonDialogs::ebYes){
+		|| igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "@World.WindowMain.Dialog.NewWorld",
+		"@World.WindowMain.Dialog.CreatingANewWorldDiscardingCurrentOneIsThatOk") == igdeCommonDialogs::ebYes){
 			pWindow.CreateNewWorld();
 		}
 	}
@@ -500,21 +499,21 @@ class cActionFileOpen : public igdeAction{
 	
 public:
 	typedef deTObjectReference<cActionFileOpen> Ref;
-	cActionFileOpen(meWindowMain &window) : igdeAction("Open...",
-		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen), "Open world from file",
+	cActionFileOpen(meWindowMain &window) : igdeAction("@World.WindowMain.Menu.FileOpen",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen), "@World.WindowMain.Action.FileOpen",
 		deInputEvent::ekcO, igdeHotKey(deInputEvent::esmControl, deInputEvent::ekcO)), pWindow(window){}
 	
 	void OnAction() override{
 		if(pWindow.GetWorld() && pWindow.GetWorld()->GetAnyChanged()){
-			if(igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "Open World",
-			"Open world discards changes. Is this ok?") == igdeCommonDialogs::ebNo){
+			if(igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "@World.WindowMain.Dialog.OpenWorld",
+			"@World.WindowMain.Dialog.OpenWorldDiscardsChangesIsThisOk") == igdeCommonDialogs::ebNo){
 				return;
 			}
 		}
 		
 		decString filename(pWindow.GetWorld() ? pWindow.GetWorld()->GetFilePath()
 			: pWindow.GetGameProject()->GetPathData());
-		if(igdeCommonDialogs::GetFileOpen(pWindow, "Open World",
+		if(igdeCommonDialogs::GetFileOpen(pWindow, "@World.WindowMain.Dialog.OpenWorld",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		pWindow.GetLoadSaveSystem().GetFilePatternList(), filename)){
 			pWindow.LoadWorld(filename);
@@ -526,8 +525,8 @@ class cActionFileSave : public cActionBase{
 public:
 	typedef deTObjectReference<cActionFileSave> Ref;
 	cActionFileSave(meWindowMain &window) : cActionBase(window,
-		"Save", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave),
-		"Save world to file", deInputEvent::esmControl, deInputEvent::ekcS, deInputEvent::ekcS){}
+		"@World.WindowMain.Menu.FileSave", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave),
+		"@World.WindowMain.Action.FileSave", deInputEvent::esmControl, deInputEvent::ekcS, deInputEvent::ekcS){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
 		pWindow.GetSaveSupport().SaveWorldWithDependencies(world, false);
@@ -543,8 +542,8 @@ class cActionFileSaveAs : public cActionBase{
 public:
 	typedef deTObjectReference<cActionFileSaveAs> Ref;
 	cActionFileSaveAs(meWindowMain &window) : cActionBase(window,
-		"Save As...", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSaveAs),
-		"Save world under a differen file", deInputEvent::ekcA){}
+		"@World.WindowMain.Menu.FileSaveAs", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSaveAs),
+		"@World.WindowMain.Action.FileSaveAs", deInputEvent::ekcA){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
 		pWindow.GetSaveSupport().SaveWorldWithDependencies(world, true);
@@ -557,8 +556,8 @@ class cActionEditCut : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditCut> Ref;
 	cActionEditCut(meWindowMain &window) : cActionBase(window,
-		"Cut", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
-		"Cut selected objects", deInputEvent::esmControl,
+		"@World.WindowMain.Menu.EditCut", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
+		"@World.WindowMain.Action.EditCut", deInputEvent::esmControl,
 		deInputEvent::ekcX, deInputEvent::ekcT){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
@@ -585,8 +584,8 @@ class cActionEditCopy : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditCopy> Ref;
 	cActionEditCopy(meWindowMain &window) : cActionBase(window,
-		"Copy", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-		"Copies selected objects", deInputEvent::esmControl,
+		"@World.WindowMain.Menu.EditCopy", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		"@World.WindowMain.Action.EditCopy", deInputEvent::esmControl,
 		deInputEvent::ekcC, deInputEvent::ekcC){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
@@ -613,8 +612,8 @@ class cActionEditPaste : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditPaste> Ref;
 	cActionEditPaste(meWindowMain &window) : cActionBase(window,
-		"Paste", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
-		"Paste objects", deInputEvent::esmControl,
+		"@World.WindowMain.Menu.EditPaste", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+		"@World.WindowMain.Action.EditPaste", deInputEvent::esmControl,
 		deInputEvent::ekcV, deInputEvent::ekcP){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
@@ -646,9 +645,9 @@ public:
 class cActionEditDuplicate : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditDuplicate> Ref;
-	cActionEditDuplicate(meWindowMain &window) : cActionBase(window, "Duplicate",
+	cActionEditDuplicate(meWindowMain &window) : cActionBase(window, "@World.WindowMain.Action.EditDuplicate",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiDuplicate),
-		"Duplicate objects", deInputEvent::esmControl,
+		"@World.WindowMain.Action.EditDuplicate", deInputEvent::esmControl,
 		deInputEvent::ekcD, deInputEvent::ekcD){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
@@ -689,9 +688,9 @@ public:
 class cActionEditDelete : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditDelete> Ref;
-	cActionEditDelete(meWindowMain &window) : cActionBase(window, "Delete",
+	cActionEditDelete(meWindowMain &window) : cActionBase(window, "@World.WindowMain.Action.EditDelete",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiDelete),
-		"Delete objects", deInputEvent::esmNone,
+		"@World.WindowMain.Action.EditDeleteDesc", deInputEvent::esmNone,
 		deInputEvent::ekcDelete, deInputEvent::ekcE){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
@@ -786,8 +785,8 @@ public:
 class cActionEditLockAxisX : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditLockAxisX> Ref;
-	cActionEditLockAxisX(meWindowMain &window) : cActionBase(window, "Lock X-Axis",
-		window.GetIconEditLockAxisX(), "Lock X coordinates during editing",
+	cActionEditLockAxisX(meWindowMain &window) : cActionBase(window, "@World.WindowMain.Action.EditLockAxisX",
+		window.GetIconEditLockAxisX(), "@World.WindowMain.Action.EditLockAxisX",
 		deInputEvent::esmControl | deInputEvent::esmShift, deInputEvent::ekcX){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
@@ -804,8 +803,8 @@ public:
 class cActionEditLockAxisY : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditLockAxisY> Ref;
-	cActionEditLockAxisY(meWindowMain &window) : cActionBase(window, "Lock Y-Axis",
-		window.GetIconEditLockAxisY(), "Lock Y coordinates during editing",
+	cActionEditLockAxisY(meWindowMain &window) : cActionBase(window, "@World.WindowMain.Action.EditLockAxisY",
+		window.GetIconEditLockAxisY(), "@World.WindowMain.Action.EditLockAxisY",
 		deInputEvent::esmControl | deInputEvent::esmShift, deInputEvent::ekcY){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
@@ -822,8 +821,8 @@ public:
 class cActionEditLockAxisZ : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditLockAxisZ> Ref;
-	cActionEditLockAxisZ(meWindowMain &window) : cActionBase(window, "Lock Z-Axis",
-		window.GetIconEditLockAxisZ(), "Lock Z coordinates during editing",
+	cActionEditLockAxisZ(meWindowMain &window) : cActionBase(window, "@World.WindowMain.Action.EditLockAxisZ",
+		window.GetIconEditLockAxisZ(), "@World.WindowMain.Action.EditLockAxisZ",
 		deInputEvent::esmControl | deInputEvent::esmShift, deInputEvent::ekcZ){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
@@ -840,8 +839,8 @@ public:
 class cActionEditUseLocal : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditUseLocal> Ref;
-	cActionEditUseLocal(meWindowMain &window) : cActionBase(window, "Use local coordinates",
-		window.GetIconEditUseLocal(), "Uses local coordinates for editing instead of world coordinates",
+	cActionEditUseLocal(meWindowMain &window) : cActionBase(window, "@World.WindowMain.Action.EditUseLocal",
+		window.GetIconEditUseLocal(), "@World.WindowMain.Action.EditUseLocal",
 		deInputEvent::esmControl | deInputEvent::esmShift, deInputEvent::ekcL){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
@@ -858,8 +857,8 @@ public:
 class cActionEditLockAxisFlip : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditLockAxisFlip> Ref;
-	cActionEditLockAxisFlip(meWindowMain &window) : cActionBase(window, "Flip Lock Axes",
-		window.GetIconEditLockAxisFlip(), "Flip lock axes during editing",
+	cActionEditLockAxisFlip(meWindowMain &window) : cActionBase(window, "@World.WindowMain.Action.EditLockAxisFlip",
+		window.GetIconEditLockAxisFlip(), "@World.WindowMain.Action.EditLockAxisFlip",
 		deInputEvent::esmControl | deInputEvent::esmShift, deInputEvent::ekcF){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
@@ -874,8 +873,8 @@ public:
 class cActionEditSnapSnapPoints : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditSnapSnapPoints> Ref;
-	cActionEditSnapSnapPoints(meWindowMain &window) : cActionBase(window, "Snap to Snap Points",
-		window.GetIconEditSnap(), "Snap to Snap Points",
+	cActionEditSnapSnapPoints(meWindowMain &window) : cActionBase(window, "@World.WindowMain.Action.EditSnapSnapPoints",
+		window.GetIconEditSnap(), "@World.WindowMain.Action.EditSnapSnapPoints",
 		deInputEvent::esmControl | deInputEvent::esmShift, deInputEvent::ekcP){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
@@ -914,8 +913,8 @@ public:
 class cActionEditUse3DCursor : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditUse3DCursor> Ref;
-	cActionEditUse3DCursor(meWindowMain &window) : cActionBase(window, "Use 3D-Cursor as Center",
-		window.GetIconEdit3DCursor(), "Use 3D-Cursor as center for actions",
+	cActionEditUse3DCursor(meWindowMain &window) : cActionBase(window, "@World.WindowMain.Action.EditUse3DCursor",
+		window.GetIconEdit3DCursor(), "@World.WindowMain.Action.EditUse3DCursor",
 		deInputEvent::esmNone, deInputEvent::ekcUndefined, deInputEvent::ekc3){}
 	
 	igdeUndo::Ref OnAction(meWorld*) override{
@@ -932,8 +931,8 @@ public:
 class cActionEditSelectNone : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditSelectNone> Ref;
-	cActionEditSelectNone(meWindowMain &window) : cActionBase(window, "Select None",
-		window.GetIconEditSelect(), "Select none", deInputEvent::esmControl, deInputEvent::ekcA){}
+	cActionEditSelectNone(meWindowMain &window) : cActionBase(window, "@World.WindowMain.Action.EditSelectNone",
+		window.GetIconEditSelect(), "@World.WindowMain.Action.EditSelectNone", deInputEvent::esmControl, deInputEvent::ekcA){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
 		switch(world->GetGuiParameters().GetElementMode()){
@@ -977,9 +976,9 @@ public:
 class cActionObjectDropToGround : public cActionBase{
 public:
 	typedef deTObjectReference<cActionObjectDropToGround> Ref;
-	cActionObjectDropToGround(meWindowMain &window) : cActionBase(window, "Drop to ground",
+	cActionObjectDropToGround(meWindowMain &window) : cActionBase(window, "@World.WindowMain.Action.ObjectDropToGround",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongDown),
-		"Drops the selected objects to the ground", deInputEvent::esmControl,
+		"@World.WindowMain.Action.ObjectDropToGround", deInputEvent::esmControl,
 		deInputEvent::ekcG, deInputEvent::ekcG){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
@@ -998,8 +997,8 @@ public:
 class cActionObjectSnapToGrid : public cActionBase{
 public:
 	typedef deTObjectReference<cActionObjectSnapToGrid> Ref;
-	cActionObjectSnapToGrid(meWindowMain &window) : cActionBase(window, "Snap to grid",
-		window.GetIconEditSnap(), "Snap objects to grid", deInputEvent::esmNone,
+	cActionObjectSnapToGrid(meWindowMain &window) : cActionBase(window, "@World.WindowMain.Action.ObjectSnapToGrid",
+		window.GetIconEditSnap(), "@World.WindowMain.Action.ObjectSnapToGrid", deInputEvent::esmNone,
 		deInputEvent::ekcUndefined, deInputEvent::ekcS){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
@@ -1024,7 +1023,12 @@ protected:
 public:
 	typedef deTObjectReference<cActionBaseObjectCopyToSelected> Ref;
 	cActionBaseObjectCopyToSelected(meWindowMain &window, const char *baseText, bool copyX, bool copyY, bool copyZ) :
-		cActionBase(window, Text(baseText, copyX, copyY, copyZ), window.GetIconEditSnap(), baseText),
+		cActionBase(window,
+			decString::Formatted("{0}: {1}{2}{3}",
+				window.TranslateIf(baseText).ToUTF8(),
+				copyX ? "X" : "", copyY ? "Y" : "", copyZ ? "Z" : ""),
+			window.GetIconEditSnap(),
+			window.TranslateIf(baseText).ToUTF8()),
 		pCopyX(copyX), pCopyY(copyY), pCopyZ(copyZ){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
@@ -1036,19 +1040,13 @@ public:
 	void Update(const meWorld &world) override{
 		SetEnabled(world.GetSelectionObject().GetSelected().GetCount() > 1);
 	}
-	
-	static decString Text(const char *baseText, bool copyX, bool copyY, bool copyZ){
-		decString text;
-		text.Format("%s: %s%s%s", baseText, copyX ? "X" : "", copyY ? "Y" : "", copyZ ? "Z" : "");
-		return text;
-	}
 };
 
 class cActionObjectCopyPosition : public cActionBaseObjectCopyToSelected{
 public:
 	typedef deTObjectReference<cActionObjectCopyPosition> Ref;
 	cActionObjectCopyPosition(meWindowMain &window, bool copyX, bool copyY, bool copyZ) :
-		cActionBaseObjectCopyToSelected(window, "Copy Position To Selected", copyX, copyY, copyZ){}
+		cActionBaseObjectCopyToSelected(window, "@World.WindowMain.Action.ObjectCopyPositionToSelected", copyX, copyY, copyZ){}
 	
 	virtual igdeUndo::Ref OnActionCopy(meWorld *world){
 		return meUObjectCopyPosition::Ref::New(world, pCopyX, pCopyY, pCopyZ);
@@ -1059,7 +1057,7 @@ class cActionObjectCopyRotation : public cActionBaseObjectCopyToSelected{
 public:
 	typedef deTObjectReference<cActionObjectCopyRotation> Ref;
 	cActionObjectCopyRotation(meWindowMain &window, bool copyX, bool copyY, bool copyZ) :
-		cActionBaseObjectCopyToSelected(window, "Copy Rotation To Selected", copyX, copyY, copyZ){}
+		cActionBaseObjectCopyToSelected(window, "@World.WindowMain.Action.ObjectCopyRotationToSelected", copyX, copyY, copyZ){}
 	
 	virtual igdeUndo::Ref OnActionCopy(meWorld *world){
 		return meUObjectCopyRotation::Ref::New(world, pCopyX, pCopyY, pCopyZ);
@@ -1070,7 +1068,7 @@ class cActionObjectCopyScale : public cActionBaseObjectCopyToSelected{
 public:
 	typedef deTObjectReference<cActionObjectCopyScale> Ref;
 	cActionObjectCopyScale(meWindowMain &window, bool copyX, bool copyY, bool copyZ) :
-		cActionBaseObjectCopyToSelected(window, "Copy Scale To Selected", copyX, copyY, copyZ){}
+		cActionBaseObjectCopyToSelected(window, "@World.WindowMain.Action.ObjectCopyScaleToSelected", copyX, copyY, copyZ){}
 	
 	virtual igdeUndo::Ref OnActionCopy(meWorld *world){
 		return meUObjectCopyScale::Ref::New(world, pCopyX, pCopyY, pCopyZ);
@@ -1080,8 +1078,8 @@ public:
 class cActionObjectAttachTo : public cActionBase{
 public:
 	typedef deTObjectReference<cActionObjectAttachTo> Ref;
-	cActionObjectAttachTo(meWindowMain &window) : cActionBase(window, "Attach To",
-		nullptr, "Attach objects to another object", deInputEvent::esmNone,
+	cActionObjectAttachTo(meWindowMain &window) : cActionBase(window, "@World.WindowMain.Action.ObjectAttachTo",
+		nullptr, "@World.WindowMain.Action.ObjectAttachTo", deInputEvent::esmNone,
 		deInputEvent::ekcUndefined, deInputEvent::ekcA){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
@@ -1102,8 +1100,8 @@ public:
 class cActionObjectDetach : public cActionBase{
 public:
 	typedef deTObjectReference<cActionObjectDetach> Ref;
-	cActionObjectDetach(meWindowMain &window) : cActionBase(window, "Detach",
-		nullptr, "Detach objects from their parents", deInputEvent::esmNone,
+	cActionObjectDetach(meWindowMain &window) : cActionBase(window, "@World.WindowMain.Action.ObjectDetach",
+		nullptr, "@World.WindowMain.Action.ObjectDetach", deInputEvent::esmNone,
 		deInputEvent::ekcUndefined, deInputEvent::ekcE){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
@@ -1122,8 +1120,8 @@ public:
 class cActionObjectSelectAttached : public cActionBase{
 public:
 	typedef deTObjectReference<cActionObjectSelectAttached> Ref;
-	cActionObjectSelectAttached(meWindowMain &window) : cActionBase(window, "Select Attached",
-		nullptr, "Select all objects attached to the active object"){}
+	cActionObjectSelectAttached(meWindowMain &window) : cActionBase(window, "@World.WindowMain.Action.ObjectSelectAttached",
+		nullptr, "@World.WindowMain.Action.ObjectSelectAttached"){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
 		meObject * const active = world->GetSelectionObject().GetActive();
@@ -1148,16 +1146,12 @@ public:
 class cActionObjectReassignIDs : public cActionBase{
 public:
 	typedef deTObjectReference<cActionObjectReassignIDs> Ref;
-	cActionObjectReassignIDs(meWindowMain &window) : cActionBase(window, "Reassign Object IDs",
-		nullptr, "Reassign Object IDs (WARNING! Dangerous Operation!)"){}
+	cActionObjectReassignIDs(meWindowMain &window) : cActionBase(window, "@World.WindowMain.Action.ObjectReassignIds",
+		nullptr, "@World.WindowMain.Action.ObjectReassignIds"){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
-		if(igdeCommonDialogs::QuestionFormat(pWindow, igdeCommonDialogs::ebsYesNo, "Reassign Object IDs",
-		"This action will assign new IDs starting at ID 1 for all objects.\n"
-		"This can be used before shipping to compact IDs into a continuous range.\n"
-		"This should NEVER be done after a production release.\n"
-		"This WILL break save states and all other linking usage of the Object ID.\n\n"
-		"Are you REALLY sure you want to reassign object IDs now?") == igdeCommonDialogs::ebYes){
+		if(igdeCommonDialogs::QuestionFormat(pWindow, igdeCommonDialogs::ebsYesNo, "@World.WindowMain.Dialog.ReassignObjectIds",
+		"@World.WindowMain.Dialog.ReassignObjectIdsQuestion") == igdeCommonDialogs::ebYes){
 			world->ReassignObjectIDs();
 		}
 		return {};
@@ -1254,8 +1248,8 @@ public:
 class cActionObjectLightToggle : public cActionBase{
 public:
 	typedef deTObjectReference<cActionObjectLightToggle> Ref;
-	cActionObjectLightToggle(meWindowMain &window) : cActionBase(window, "Toggle light",
-		window.GetIconObjectLightToggle(), "Toggle light on and off",
+	cActionObjectLightToggle(meWindowMain &window) : cActionBase(window, "@World.WindowMain.Action.ObjectLightToggle",
+		window.GetIconObjectLightToggle(), "@World.WindowMain.Action.ObjectLightToggle",
 		deInputEvent::esmNone, deInputEvent::ekcUndefined, deInputEvent::ekcT){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
@@ -1364,7 +1358,7 @@ class cActionObjectShapeAddSphere : public cActionObjectShapeAdd{
 public:
 	typedef deTObjectReference<cActionObjectShapeAddSphere> Ref;
 	cActionObjectShapeAddSphere(meWindowMain &window) : cActionObjectShapeAdd(window,
-		"Add Sphere Shape", nullptr, "Add sphere shape", deInputEvent::ekcS){}
+		"@World.WindowMain.Action.DecalAddSphereShape", nullptr, "@World.WindowMain.Action.DecalAddSphereShape", deInputEvent::ekcS){}
 	
 	decShape::Ref CreateShape() override{
 		return decShapeSphere::Ref::New(0.5f);
@@ -1375,7 +1369,7 @@ class cActionObjectShapeAddBox : public cActionObjectShapeAdd{
 public:
 	typedef deTObjectReference<cActionObjectShapeAddBox> Ref;
 	cActionObjectShapeAddBox(meWindowMain &window) : cActionObjectShapeAdd(window,
-		"Add Box Shape", nullptr, "Add box shape", deInputEvent::ekcB){}
+		"@World.WindowMain.Action.DecalAddBoxShape", nullptr, "@World.WindowMain.Action.DecalAddBoxShape", deInputEvent::ekcB){}
 	
 	decShape::Ref CreateShape() override{
 		return decShapeBox::Ref::New(decVector(0.5f, 0.5f, 0.5f));
@@ -1386,7 +1380,7 @@ class cActionObjectShapeAddCylinder : public cActionObjectShapeAdd{
 public:
 	typedef deTObjectReference<cActionObjectShapeAddCylinder> Ref;
 	cActionObjectShapeAddCylinder(meWindowMain &window) : cActionObjectShapeAdd(window,
-		"Add Cylinder Shape", nullptr, "Add cylinder shape", deInputEvent::ekcC){}
+		"@World.WindowMain.Action.DecalAddCylinderShape", nullptr, "@World.WindowMain.Action.DecalAddCylinderShape", deInputEvent::ekcC){}
 	
 	decShape::Ref CreateShape() override{
 		return decShapeCylinder::Ref::New(0.5f, 0.25f);
@@ -1397,7 +1391,7 @@ class cActionObjectShapeAddCapsule : public cActionObjectShapeAdd{
 public:
 	typedef deTObjectReference<cActionObjectShapeAddCapsule> Ref;
 	cActionObjectShapeAddCapsule(meWindowMain &window) : cActionObjectShapeAdd(window,
-		"Add Capsule Shape", nullptr, "Add capsule shape", deInputEvent::ekcP){}
+		"@World.WindowMain.Action.DecalAddCapsuleShape", nullptr, "@World.WindowMain.Action.DecalAddCapsuleShape", deInputEvent::ekcP){}
 	
 	decShape::Ref CreateShape() override{
 		return decShapeCapsule::Ref::New(0.5f, 0.25f, 0.25f);
@@ -1408,7 +1402,7 @@ class cActionObjectShapeDelete : public cActionObjectShapeBase{
 public:
 	typedef deTObjectReference<cActionObjectShapeDelete> Ref;
 	cActionObjectShapeDelete(meWindowMain &window) : cActionObjectShapeBase(window,
-		"Delete Shapes", nullptr, "Delete selected shapes", deInputEvent::ekcD){}
+		"@World.WindowMain.Action.DecalDeleteShapes", nullptr, "@World.WindowMain.Action.DecalDeleteShapes", deInputEvent::ekcD){}
 	
 	virtual igdeUndo::Ref  OnActionShape(meWorld *world, meObject *object, const char *property){
 		return meUObjectShapesDelete::Ref::New(object, property, world->GetSelectionObjectShape().GetSelected());
@@ -1419,8 +1413,8 @@ public:
 class cActionDecalDelete : public cActionBase{
 public:
 	typedef deTObjectReference<cActionDecalDelete> Ref;
-	cActionDecalDelete(meWindowMain &window) : cActionBase(window, "Delete Decals",
-		nullptr, "Deletes the selected decals"){}
+	cActionDecalDelete(meWindowMain &window) : cActionBase(window, "@World.WindowMain.Action.DecalDelete",
+		nullptr, "@World.WindowMain.Action.DecalDelete"){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
 		if(world->GetSelectionDecal().GetSelected().IsEmpty()){
@@ -1474,9 +1468,9 @@ public:
 class cActionDecalRaiseTop : public cActionDecalReorder{
 public:
 	typedef deTObjectReference<cActionDecalRaiseTop> Ref;
-	cActionDecalRaiseTop(meWindowMain &window) : cActionDecalReorder(window, "Raise to Top",
+	cActionDecalRaiseTop(meWindowMain &window) : cActionDecalReorder(window, "@World.WindowMain.Action.DecalRaiseTop",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongUp),
-		"Raise decal to the top", deInputEvent::ekcT){}
+		"@World.WindowMain.Action.DecalRaiseTop", deInputEvent::ekcT){}
 	
 	bool CanReorder(const meObject &, int index) override{
 		return index > 0;
@@ -1490,9 +1484,9 @@ public:
 class cActionDecalRaiseOne : public cActionDecalReorder{
 public:
 	typedef deTObjectReference<cActionDecalRaiseOne> Ref;
-	cActionDecalRaiseOne(meWindowMain &window) : cActionDecalReorder(window, "Raise by one",
+	cActionDecalRaiseOne(meWindowMain &window) : cActionDecalReorder(window, "@World.WindowMain.Action.DecalRaiseOne",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp),
-		"Raise decal by one level", deInputEvent::ekcR){}
+		"@World.WindowMain.Action.DecalRaiseOne", deInputEvent::ekcR){}
 	
 	bool CanReorder(const meObject &, int index) override{
 		return index > 0;
@@ -1506,9 +1500,9 @@ public:
 class cActionDecalLowerOne : public cActionDecalReorder{
 public:
 	typedef deTObjectReference<cActionDecalLowerOne> Ref;
-	cActionDecalLowerOne(meWindowMain &window) : cActionDecalReorder(window, "Lower by one",
+	cActionDecalLowerOne(meWindowMain &window) : cActionDecalReorder(window, "@World.WindowMain.Action.DecalLowerOne",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown),
-		"Lower decal by one level", deInputEvent::ekcL){}
+		"@World.WindowMain.Action.DecalLowerOne", deInputEvent::ekcL){}
 	
 	bool CanReorder(const meObject &object, int index) override{
 		return index < object.GetDecals().GetCount() - 1;
@@ -1522,9 +1516,9 @@ public:
 class cActionDecalLowerBottom : public cActionDecalReorder{
 public:
 	typedef deTObjectReference<cActionDecalLowerBottom> Ref;
-	cActionDecalLowerBottom(meWindowMain &window) : cActionDecalReorder(window, "Lower to Bottom",
+	cActionDecalLowerBottom(meWindowMain &window) : cActionDecalReorder(window, "@World.WindowMain.Action.DecalLowerBottom",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongDown),
-		"Lower decal to the bottom", deInputEvent::ekcB){}
+		"@World.WindowMain.Action.DecalLowerBottom", deInputEvent::ekcB){}
 	
 	bool CanReorder(const meObject &object, int index) override{
 		return index < object.GetDecals().GetCount() - 1;
@@ -1539,8 +1533,8 @@ public:
 class cActionFullBright : public cActionBase{
 public:
 	typedef deTObjectReference<cActionFullBright> Ref;
-	cActionFullBright(meWindowMain &window) : cActionBase(window, "Full Bright Mode",
-		window.GetIconViewFullBrightOn(), "Toggles full bright mode",
+	cActionFullBright(meWindowMain &window) : cActionBase(window, "@World.WindowMain.Action.FullBright",
+		window.GetIconViewFullBrightOn(), "@World.WindowMain.Action.FullBright",
 		deInputEvent::esmNone, deInputEvent::ekcUndefined, deInputEvent::ekcB){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
@@ -1557,8 +1551,8 @@ public:
 class cActionMuteSound : public cActionBase{
 public:
 	typedef deTObjectReference<cActionMuteSound> Ref;
-	cActionMuteSound(meWindowMain &window) : cActionBase(window, "Mute Sound",
-		window.GetIconViewMuteSoundOn(), "Toggles mute sound",
+	cActionMuteSound(meWindowMain &window) : cActionBase(window, "@World.WindowMain.Action.MuteSound",
+		window.GetIconViewMuteSoundOn(), "@World.WindowMain.Action.MuteSound",
 		deInputEvent::esmNone, deInputEvent::ekcUndefined, deInputEvent::ekcM){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
@@ -1576,7 +1570,7 @@ class cActionShowOcclusionMeshes : public cActionBase{
 public:
 	typedef deTObjectReference<cActionShowOcclusionMeshes> Ref;
 	cActionShowOcclusionMeshes(meWindowMain &window) : cActionBase(window,
-		"Show Occlusion Meshes", nullptr, "Show occlusion meshes"){}
+		"@World.WindowMain.Action.ViewShowOcclusionMeshes", nullptr, "@World.WindowMain.Action.ViewShowOcclusionMeshes"){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
 		world->GetGuiParameters().SetShowOcclusionMeshes(
@@ -1594,7 +1588,8 @@ class cActionShowOcclusionMeshesSelected : public cActionBase{
 public:
 	typedef deTObjectReference<cActionShowOcclusionMeshesSelected> Ref;
 	cActionShowOcclusionMeshesSelected(meWindowMain &window) : cActionBase(window,
-		"Show Occlusion Meshes Selected", nullptr, "Show occlusion meshes of selected objects"){}
+		"@World.WindowMain.Action.ViewShowOcclusionMeshesSelected", nullptr,
+		"@World.WindowMain.Action.ViewShowOcclusionMeshesSelected"){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
 		world->GetGuiParameters().SetShowOcclusionMeshesSelected(
@@ -1612,7 +1607,8 @@ class cActionShowNavigationSpaces : public cActionBase{
 public:
 	typedef deTObjectReference<cActionShowNavigationSpaces> Ref;
 	cActionShowNavigationSpaces(meWindowMain &window) : cActionBase(window,
-		"Show Navigation Spaces", nullptr, "Show navigation spaces"){}
+		"@World.WindowMain.Action.ViewShowNavigationSpaces", nullptr,
+		"@World.WindowMain.Action.ViewShowNavigationSpaces"){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
 		world->GetGuiParameters().SetShowNavigationSpaces(
@@ -1630,7 +1626,8 @@ class cActionShowNavigationSpacesSelected : public cActionBase{
 public:
 	typedef deTObjectReference<cActionShowNavigationSpacesSelected> Ref;
 	cActionShowNavigationSpacesSelected(meWindowMain &window) : cActionBase(window,
-		"Show Navigation Spaces Selected", nullptr, "Show navigation spaces of selected objects"){}
+		"@World.WindowMain.Action.ViewShowNavigationSpacesSelected", nullptr,
+		"@World.WindowMain.Action.ViewShowNavigationSpacesSelected"){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
 		world->GetGuiParameters().SetShowNavigationSpacesSelected(
@@ -1648,7 +1645,8 @@ class cActionShowShapes : public cActionBase{
 public:
 	typedef deTObjectReference<cActionShowShapes> Ref;
 	cActionShowShapes(meWindowMain &window) :
-	cActionBase(window, "Show Shapes", nullptr, "Show shapes"){}
+	cActionBase(window, "@World.WindowMain.Action.ViewShowShapes", nullptr,
+		"@World.WindowMain.Action.ViewShowShapes"){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
 		world->GetGuiParameters().SetShowShapes(!world->GetGuiParameters().GetShowShapes());
@@ -1665,7 +1663,8 @@ class cActionShowShapesSelected : public cActionBase{
 public:
 	typedef deTObjectReference<cActionShowShapesSelected> Ref;
 	cActionShowShapesSelected(meWindowMain &window) : cActionBase(window,
-		"Show Shapes Selected", nullptr, "Show shapes of selected objects"){}
+		"@World.WindowMain.Action.ViewShowShapesSelected", nullptr,
+		"@World.WindowMain.Action.ViewShowShapesSelected"){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
 		world->GetGuiParameters().SetShowShapesSelected(
@@ -1684,11 +1683,12 @@ class cActionNavTestLoad : public cActionBase{
 public:
 	typedef deTObjectReference<cActionNavTestLoad> Ref;
 	cActionNavTestLoad(meWindowMain &window) : cActionBase(window,
-		"Load navigation test", nullptr, "Load Navigation Test"){}
+		"@World.WindowMain.Action.ViewLoadNavigationTest", nullptr,
+		"@World.WindowMain.Action.ViewLoadNavigationTest"){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
 		decString filename(world->GetPathNavTest());
-		if(igdeCommonDialogs::GetFileOpen(pWindow, "Open Navigation Test",
+		if(igdeCommonDialogs::GetFileOpen(pWindow, "@World.WindowMain.Dialog.OpenNavigationTest",
 		*pWindow.GetLoadSaveSystem().GetNavTestFilePatterns(), filename ) ){
 			world->SetPathNavTest(filename);
 			pWindow.GetEditorModule().LogInfoFormat("Loading Navigation Test %s", filename.GetString());
@@ -1702,11 +1702,12 @@ class cActionNavTestSave : public cActionBase{
 public:
 	typedef deTObjectReference<cActionNavTestSave> Ref;
 	cActionNavTestSave(meWindowMain &window) : cActionBase(window,
-		"Save navigation test", nullptr, "Save Navigation Test"){}
+		"@World.WindowMain.Action.ViewSaveNavigationTest", nullptr,
+		"@World.WindowMain.Action.ViewSaveNavigationTest"){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
 		decString filename(world->GetPathNavTest());
-		if(igdeCommonDialogs::GetFileSave(pWindow, "Save Navigation Test",
+		if(igdeCommonDialogs::GetFileSave(pWindow, "@World.WindowMain.Dialog.SaveNavigationTest",
 		*pWindow.GetLoadSaveSystem().GetNavTestFilePatterns(), filename ) ){
 			world->SetPathNavTest(filename);
 			pWindow.GetEditorModule().LogInfoFormat("Saving Navigation Test %s", filename.GetString());
@@ -1768,45 +1769,45 @@ void meWindowMain::pCreateActions(){
 	pActionEditDelete = cActionEditDelete::Ref::New(*this);
 	
 	pActionEditEModeObject = cActionEditElementMode::Ref::New(*this,
-		meWorldGuiParameters::eemObject, "Object Mode", pIconEditObject, "Object mode",
+		meWorldGuiParameters::eemObject, "@World.WindowMain.EditMode.Object", pIconEditObject, "@World.WindowMain.EditMode.Object",
 		deInputEvent::ekcQ, deInputEvent::ekcO);
 	pActionEditEModeDecal = cActionEditElementMode::Ref::New(*this,
-		meWorldGuiParameters::eemDecal, "Decal Mode", pIconEditDecal, "Decal mode",
+		meWorldGuiParameters::eemDecal, "@World.WindowMain.EditMode.Decal", pIconEditDecal, "@World.WindowMain.EditMode.Decal",
 		deInputEvent::ekcW, deInputEvent::ekcD);
 	pActionEditEModeNavSpace = cActionEditElementMode::Ref::New(*this,
-		meWorldGuiParameters::eemNavSpace, "Navigation Space Mode", pIconEditNavSpace, "Navigation space mode",
+		meWorldGuiParameters::eemNavSpace, "@World.WindowMain.EditMode.NavSpace", pIconEditNavSpace, "@World.WindowMain.EditMode.NavSpace",
 		deInputEvent::ekcR, deInputEvent::ekcN);
 	pActionEditEModeObjectShape = cActionEditElementMode::Ref::New(*this,
-		meWorldGuiParameters::eemObjectShape, "Object Shape Mode", pIconEditObjectShape, "Object shape mode",
+		meWorldGuiParameters::eemObjectShape, "@World.WindowMain.EditMode.ObjectShape", pIconEditObjectShape, "@World.WindowMain.EditMode.ObjectShape",
 		deInputEvent::ekcT, deInputEvent::ekcO);
 	
 	pActionEditSelectMode = cActionEditWorkMode::Ref::New(*this,
-		meWorldGuiParameters::ewmSelect, "Select Mode", pIconEditSelect, "Select mode",
+		meWorldGuiParameters::ewmSelect, "@World.WindowMain.WorkMode.Select", pIconEditSelect, "@World.WindowMain.WorkMode.Select",
 		deInputEvent::ekc1, deInputEvent::ekcUndefined);
 	pActionEditMoveMode = cActionEditWorkMode::Ref::New(*this,
-		meWorldGuiParameters::ewmMove, "Move Mode", pIconEditMove, "Move mode",
+		meWorldGuiParameters::ewmMove, "@World.WindowMain.WorkMode.Move", pIconEditMove, "@World.WindowMain.WorkMode.Move",
 		deInputEvent::ekc2, deInputEvent::ekcUndefined);
 	pActionEditScaleMode = cActionEditWorkMode::Ref::New(*this,
-		meWorldGuiParameters::ewmScale, "Scale Mode", pIconEditScale, "Scale mode",
+		meWorldGuiParameters::ewmScale, "@World.WindowMain.WorkMode.Scale", pIconEditScale, "@World.WindowMain.WorkMode.Scale",
 		deInputEvent::ekc3, deInputEvent::ekcUndefined);
 	pActionEditRotateMode = cActionEditWorkMode::Ref::New(*this,
-		meWorldGuiParameters::ewmRotate, "Rotation Mode", pIconEditRotate, "Rotation mode",
+		meWorldGuiParameters::ewmRotate, "@World.WindowMain.WorkMode.Rotate", pIconEditRotate, "@World.WindowMain.WorkMode.Rotate",
 		deInputEvent::ekc4, deInputEvent::ekcUndefined);
 	pActionEditAddMode = cActionEditWorkMode::Ref::New(*this,
-		meWorldGuiParameters::ewmAddNew, "Add New Mode",
-		environment.GetStockIcon(igdeEnvironment::esiPlus), "Add new mode",
+		meWorldGuiParameters::ewmAddNew, "@World.WindowMain.WorkMode.AddNew",
+		environment.GetStockIcon(igdeEnvironment::esiPlus), "@World.WindowMain.WorkMode.AddNew",
 		deInputEvent::ekc5, deInputEvent::ekcUndefined);
 	pActionEditHeightPaintMode = cActionEditWorkMode::Ref::New(*this,
-		meWorldGuiParameters::ewmHeightPaint, "Height Paint Mode", pIconEditHeightPaint, "Height paint mode",
+		meWorldGuiParameters::ewmHeightPaint, "@World.WindowMain.WorkMode.HeightPaint", pIconEditHeightPaint, "@World.WindowMain.WorkMode.HeightPaint",
 		deInputEvent::ekc6, deInputEvent::ekcUndefined);
 	pActionEditMaskPaintMode = cActionEditWorkMode::Ref::New(*this,
-		meWorldGuiParameters::ewmMaskPaint, "Mask Paint Mode", pIconEditMaskPaint, "Mask paint mode",
+		meWorldGuiParameters::ewmMaskPaint, "@World.WindowMain.WorkMode.MaskPaint", pIconEditMaskPaint, "@World.WindowMain.WorkMode.MaskPaint",
 		deInputEvent::ekc7, deInputEvent::ekcUndefined);
 	pActionEditVisPaintMode = cActionEditWorkMode::Ref::New(*this,
-		meWorldGuiParameters::ewmVisibilityPaint, "Visibility Paint Mode", pIconEditVisibilityPaint, "Visibility paint mode",
+		meWorldGuiParameters::ewmVisibilityPaint, "@World.WindowMain.WorkMode.VisibilityPaint", pIconEditVisibilityPaint, "@World.WindowMain.WorkMode.VisibilityPaint",
 		deInputEvent::ekc8, deInputEvent::ekcUndefined);
 	pActionEditModeNavSpaceEdit = cActionEditWorkMode::Ref::New(*this,
-		meWorldGuiParameters::ewmNavSpaceEdit, "Navigation Space Edit Mode", pIconEditNavSpace, "Navigation space edit mode",
+		meWorldGuiParameters::ewmNavSpaceEdit, "@World.WindowMain.WorkMode.NavSpaceEdit", pIconEditNavSpace, "@World.WindowMain.WorkMode.NavSpaceEdit",
 		deInputEvent::ekc9, deInputEvent::ekcUndefined);
 // 	pActionEdit3DCursorMode = cActionEditWorkMode::Ref::New(*this,
 // 		meWorldGuiParameters::ewm3DCursor, "3D-Cursor Mode", pIconEdit3DCursor, "3D-Cursor mode",
@@ -1820,14 +1821,14 @@ void meWindowMain::pCreateActions(){
 	pActionEditSnapSnapPoints = cActionEditSnapSnapPoints::Ref::New(*this);
 	
 	pActionEditRPCenterActive = cActionEditRotationPivot::Ref::New(*this,
-		meWorldGuiParameters::erpcActive, "Rotation Pivot Center Active",
-		nullptr, "Rotate around selected element position");
+		meWorldGuiParameters::erpcActive, "@World.WindowMain.RotationPivotCenter.Active",
+		nullptr, "@World.WindowMain.RotationPivotCenter.Active");
 	pActionEditRPCenterSelected = cActionEditRotationPivot::Ref::New(*this,
-		meWorldGuiParameters::erpcSelected, "Rotation Pivot Center Selected",
-		nullptr, "Rotate around average position of all selected elements");
+		meWorldGuiParameters::erpcSelected, "@World.WindowMain.RotationPivotCenter.Selected",
+		nullptr, "@World.WindowMain.RotationPivotCenter.Selected");
 	pActionEditRPCenterIndividual = cActionEditRotationPivot::Ref::New(*this,
-		meWorldGuiParameters::erpcIndividual, "Rotation Pivot Center Individual",
-		nullptr, "Rotate around individual element positions");
+		meWorldGuiParameters::erpcIndividual, "@World.WindowMain.RotationPivotCenter.Individual",
+		nullptr, "@World.WindowMain.RotationPivotCenter.Individual");
 	
 	pActionEditUse3DCursor = cActionEditUse3DCursor::Ref::New(*this);
 	pActionEditSelectNone = cActionEditSelectNone::Ref::New(*this);
@@ -1836,27 +1837,27 @@ void meWindowMain::pCreateActions(){
 	
 	pActionObjectRotateL45 = cActionObjectRotate::Ref::New(*this,
 		decVector(0.0f, 1.0f, 0.0f), 45.0f,
-		"Left 45°", environment.GetStockIcon(igdeEnvironment::esiLeft),
-		"Rotate object left by 45°", deInputEvent::ekcUndefined);
+		"@World.WindowMain.Action.RotateLeft45", environment.GetStockIcon(igdeEnvironment::esiLeft),
+		"@World.WindowMain.Action.RotateLeft45", deInputEvent::ekcUndefined);
 	pActionObjectRotateL90 = cActionObjectRotate::Ref::New(*this,
 		decVector(0.0f, 1.0f, 0.0f), 90.0f,
-		"Left 90°", environment.GetStockIcon(igdeEnvironment::esiStrongLeft),
-		"Rotate object left by 90°", deInputEvent::ekcUndefined);
+		"@World.WindowMain.Action.RotateLeft90", environment.GetStockIcon(igdeEnvironment::esiStrongLeft),
+		"@World.WindowMain.Action.RotateLeft90", deInputEvent::ekcUndefined);
 	pActionObjectRotateR45 = cActionObjectRotate::Ref::New(*this,
 		decVector(0.0f, 1.0f, 0.0f), -45.0f,
-		"Right 45°", environment.GetStockIcon(igdeEnvironment::esiRight),
-		"Rotate object right by 45°", deInputEvent::ekcUndefined);
+		"@World.WindowMain.Action.RotateRight45", environment.GetStockIcon(igdeEnvironment::esiRight),
+		"@World.WindowMain.Action.RotateRight45", deInputEvent::ekcUndefined);
 	pActionObjectRotateR90 = cActionObjectRotate::Ref::New(*this,
 		decVector(0.0f, 1.0f, 0.0f), -90.0f,
-		"Right 90°", environment.GetStockIcon(igdeEnvironment::esiStrongRight),
-		"Rotate object right by 90°", deInputEvent::ekcUndefined);
+		"@World.WindowMain.Action.RotateRight90", environment.GetStockIcon(igdeEnvironment::esiStrongRight),
+		"@World.WindowMain.Action.RotateRight90", deInputEvent::ekcUndefined);
 	pActionObjectRotate180 = cActionObjectRotate::Ref::New(*this,
 		decVector(0.0f, 1.0f, 0.0f), 180.0f,
-		"Turn around 180°", environment.GetStockIcon(igdeEnvironment::esiStrongDown),
-		"Rotate object by 180°", deInputEvent::ekcUndefined);
+		"@World.WindowMain.Action.RotateTurnAround", environment.GetStockIcon(igdeEnvironment::esiStrongDown),
+		"@World.WindowMain.Action.RotateTurnAround", deInputEvent::ekcUndefined);
 	pActionObjectRotateRandom = cActionObjectRandomRotate::Ref::New(*this, false, true, false,
-		"Random rotate Y axis", pIconEditRotateRandom,
-		"Random rotate object around Y axis", deInputEvent::ekcUndefined);
+		"@World.WindowMain.Action.RandomRotateYAxis", pIconEditRotateRandom,
+		"@World.WindowMain.Action.RandomRotateYAxis", deInputEvent::ekcUndefined);
 	
 	pActionObjectDropToGround = cActionObjectDropToGround::Ref::New(*this);
 	pActionObjectSnapToGrid = cActionObjectSnapToGrid::Ref::New(*this);
@@ -2102,23 +2103,23 @@ void meWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade = igdeMenuCascade::Ref::New(env, "File", deInputEvent::ekcF);
+	cascade = igdeMenuCascade::Ref::New(env, "@World.WindowMain.Menu.File", deInputEvent::ekcF);
 	pCreateMenuFile(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade = igdeMenuCascade::Ref::New(env, "Edit", deInputEvent::ekcE);
+	cascade = igdeMenuCascade::Ref::New(env, "@World.WindowMain.Menu.Edit", deInputEvent::ekcE);
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade = igdeMenuCascade::Ref::New(env, "Object", deInputEvent::ekcO);
+	cascade = igdeMenuCascade::Ref::New(env, "@World.WindowMain.Menu.Object", deInputEvent::ekcO);
 	pCreateMenuObject(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade = igdeMenuCascade::Ref::New(env, "Decal", deInputEvent::ekcD);
+	cascade = igdeMenuCascade::Ref::New(env, "@World.WindowMain.Menu.Decal", deInputEvent::ekcD);
 	pCreateMenuDecal(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade = igdeMenuCascade::Ref::New(env, "View", deInputEvent::ekcV);
+	cascade = igdeMenuCascade::Ref::New(env, "@World.WindowMain.Menu.View", deInputEvent::ekcV);
 	pCreateMenuView(cascade);
 	AddSharedMenu(cascade);
 }
@@ -2207,12 +2208,12 @@ void meWindowMain::pCreateMenuObject(igdeMenuCascade &menu){
 	
 	helper.MenuSeparator(menu);
 	igdeMenuCascade::Ref active(igdeMenuCascade::Ref::New(
-		GetEnvironment(), "Active Object", nullptr, "Active object", deInputEvent::ekcA));
+		GetEnvironment(), "@World.WindowMain.ActiveObject.Label", nullptr, "@World.WindowMain.ActiveObject.Label", deInputEvent::ekcA));
 		
 		menu.AddChild(active);
 		
 		igdeMenuCascade::Ref activeRotate(igdeMenuCascade::Ref::New(
-			GetEnvironment(), "Rotate", nullptr, "Rotate active object", deInputEvent::ekcR));
+			GetEnvironment(), "@World.WindowMain.Rotate.Label", nullptr, "@World.WindowMain.Rotate.Label", deInputEvent::ekcR));
 			
 			active->AddChild(activeRotate);
 			helper.MenuCommand(activeRotate, pActionObjectRotateL45);
@@ -2223,7 +2224,7 @@ void meWindowMain::pCreateMenuObject(igdeMenuCascade &menu){
 			helper.MenuCommand(activeRotate, pActionObjectRotateRandom);
 		
 		igdeMenuCascade::Ref activeCopySelected(igdeMenuCascade::Ref::New(
-			GetEnvironment(), "Copy To Selected", nullptr, "Copy To Selected"));
+			GetEnvironment(), "@World.WindowMain.CopyToSelected.Label", nullptr, "@World.WindowMain.CopyToSelected.Label"));
 			
 			active->AddChild(activeCopySelected);
 			helper.MenuCommand(activeCopySelected, pActionObjectCopyPositionX);
@@ -2245,13 +2246,13 @@ void meWindowMain::pCreateMenuObject(igdeMenuCascade &menu){
 			helper.MenuCommand(activeCopySelected, pActionObjectCopyScaleXYZ);
 			
 		igdeMenuCascade::Ref activeLight(igdeMenuCascade::Ref::New(
-			GetEnvironment(), "Light", nullptr, "Active object light", deInputEvent::ekcL));
+			GetEnvironment(), "@World.WindowMain.Light.Label", nullptr, "@World.WindowMain.Light.Label", deInputEvent::ekcL));
 			
 			active->AddChild(activeLight);
 			helper.MenuCommand(activeLight, pActionObjectLightToggle);
 			
 		igdeMenuCascade::Ref activeShapes(igdeMenuCascade::Ref::New(
-			GetEnvironment(), "Property Shapes", nullptr, "Active object property shapes", deInputEvent::ekcS));
+			GetEnvironment(), "@World.WindowMain.PropertyShapes.Label", nullptr, "@World.WindowMain.PropertyShapes.Label", deInputEvent::ekcS));
 			
 			active->AddChild(activeShapes);
 			helper.MenuCommand(activeShapes, pActionObjectShapeAddSphere);

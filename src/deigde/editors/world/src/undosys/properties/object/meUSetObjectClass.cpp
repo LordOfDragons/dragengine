@@ -41,7 +41,7 @@ meUSetObjectClass::meUSetObjectClass(meObject *object, const char *newcname){
 	DEASSERT_NOTNULL(object)
 	DEASSERT_NOTNULL(object->GetWorld())
 	
-	SetShortInfo("Set Object class");
+	SetShortInfo("@World.USetObjectClass.SetObjectClass");
 	
 	const cObject::Ref udata(cObject::Ref::New());
 	udata->oldcname = object->GetClassName();
@@ -55,7 +55,7 @@ meUSetObjectClass::meUSetObjectClass(meObject *object, const char *newcname){
 meUSetObjectClass::meUSetObjectClass(meObject::List &objects, const char *newcname){
 	DEASSERT_TRUE(objects.IsNotEmpty())
 	
-	SetShortInfo("Set Object classes");
+	SetShortInfo("@World.USetObjectClass.SetObjectClasses");
 	
 	objects.Visit([&](meObject *object){
 		const cObject::Ref udata(cObject::Ref::New());

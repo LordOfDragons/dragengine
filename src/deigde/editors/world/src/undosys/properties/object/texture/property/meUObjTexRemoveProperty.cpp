@@ -59,7 +59,7 @@ pValue(value)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Object texture remove property");
+	SetShortInfo("@World.UObjTexRemoveProperty.ObjectTextureRemoveProperty");
 	
 	pTexture = texture;
 }

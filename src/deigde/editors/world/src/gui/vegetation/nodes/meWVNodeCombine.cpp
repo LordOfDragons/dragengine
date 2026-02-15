@@ -132,29 +132,29 @@ pRuleCombine(rule)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	SetTitle("Combine");
+	SetTitle("@World.WVNodeCombine.Title");
 	
 	// slots
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"Vector", "Vector composed of the input values",
+		"@World.WVNodeCombine.Output.Vector", "@World.WVNodeCombine.Output.VectorDesc",
 		false, *this, meWVNodeSlot::estVector, meHTVRuleCombine::eosVector));
 	
 	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::New(env,
-		"X", "X component of vector",
+		"@World.WVNodeCombine.Input.X", "@World.WVNodeCombine.Input.XDesc",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleCombine::eisX));
-	helper.EditFloat(slot, "X component of vector if slot is not connected.",
+	helper.EditFloat(slot, "@World.WVNodeCombine.XComponentOfVectorIfSlotIsNotConnected.Label",
 		pEditX, cTextX::Ref::New(*this));
 	AddSlot(slot);
 	
-	slot = meWVNodeSlot::Ref::New(env, "Y", "Y component of vector",
+	slot = meWVNodeSlot::Ref::New(env, "@World.WVNodeCombine.Input.Y", "@World.WVNodeCombine.Input.YDesc",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleCombine::eisY);
-	helper.EditFloat(slot, "Y component of vector if slot is not connected.",
+	helper.EditFloat(slot, "@World.WVNodeCombine.YComponentOfVectorIfSlotIsNotConnected.Label",
 		pEditY, cTextY::Ref::New(*this));
 	AddSlot(slot);
 	
-	slot = meWVNodeSlot::Ref::New(env, "Z", "Z component of vector",
+	slot = meWVNodeSlot::Ref::New(env, "@World.WVNodeCombine.Input.Z", "@World.WVNodeCombine.Input.ZDesc",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleCombine::eisZ);
-	helper.EditFloat(slot, "Z component of vector if slot is not connected.",
+	helper.EditFloat(slot, "@World.WVNodeCombine.ZComponentOfVectorIfSlotIsNotConnected.Label",
 		pEditZ, cTextZ::Ref::New(*this));
 	AddSlot(slot);
 	

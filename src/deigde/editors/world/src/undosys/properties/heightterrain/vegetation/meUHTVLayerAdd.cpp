@@ -47,7 +47,7 @@ meUHTVLayerAdd::meUHTVLayerAdd(meWorld *world, meHeightTerrain *heightTerrain, m
 	pWorld = world;
 	pHeightTerrain = heightTerrain;
 	
-	SetShortInfo("Add Height Terrain Vegetation Layer");
+	SetShortInfo("@World.UHTVLayerAdd.AddHeightTerrainVegetationLayer");
 	pVLayer = vlayer;
 }
 

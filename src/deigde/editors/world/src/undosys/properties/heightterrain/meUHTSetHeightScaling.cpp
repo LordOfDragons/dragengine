@@ -51,7 +51,7 @@ meUHTSetHeightScaling::meUHTSetHeightScaling(meWorld *world, meHeightTerrain *he
 	pOldHeightScaling = heightTerrain->GetHeightScaling();
 	pNewHeightScaling = newHeightScaling;
 	
-	SetShortInfo("Set Height Terrain Height Scaling");
+	SetShortInfo("@World.UHTSetHeightScaling.SetHeightTerrainHeightScaling");
 }
 
 meUHTSetHeightScaling::~meUHTSetHeightScaling(){

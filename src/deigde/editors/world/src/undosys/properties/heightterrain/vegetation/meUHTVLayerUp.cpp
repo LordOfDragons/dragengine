@@ -50,7 +50,7 @@ meUHTVLayerUp::meUHTVLayerUp(meWorld *world, meHeightTerrain *heightTerrain, meH
 	pIndex = heightTerrain->GetVLayers().IndexOf(vlayer);
 	if(pIndex < 1) DETHROW(deeInvalidParam);
 	
-	SetShortInfo("Move Height Terrain Vegetation Layer Up");
+	SetShortInfo("@World.UHTVLayerUp.MoveHeightTerrainVegetationLayerUp");
 	pVLayer = vlayer;
 }
 

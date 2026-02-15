@@ -47,7 +47,7 @@ pNavSpace(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Add Navigation Space");
+	SetShortInfo("@World.UAddNavSpace.AddNavigationSpace");
 	
 	pWorld = world;
 	pNavSpace = navspace;

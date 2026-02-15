@@ -49,7 +49,7 @@ meUObjectSetProperty::meUObjectSetProperty(meObject *object, const char *key, co
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Change object property");
+	SetShortInfo("@World.UObjectSetProperty.ChangeObjectProperty");
 	
 	pObject = nullptr;
 	

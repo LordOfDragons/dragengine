@@ -46,7 +46,7 @@ meUHTVRuleAdd::meUHTVRuleAdd(meHTVegetationLayer *vlayer, meHTVRule *rule){
 	pVLayer = nullptr;
 	pRule = nullptr;
 	
-	SetShortInfo("Add Vegetation Layer Rule");
+	SetShortInfo("@World.UHTVRuleAdd.AddVegetationLayerRule");
 	SetMemoryConsumption(sizeof(meUHTVRuleAdd));
 	
 	pVLayer = vlayer;

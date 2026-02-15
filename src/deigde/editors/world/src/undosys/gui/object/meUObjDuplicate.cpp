@@ -51,7 +51,7 @@ pWorld(nullptr)
 	const meObject::List &list = world->GetSelectionObject().GetSelected();
 	DEASSERT_TRUE(list.IsNotEmpty())
 	
-	SetShortInfo("Duplicate Objects");
+	SetShortInfo("@World.UObjDuplicate.DuplicateObjects");
 	
 	list.Visit([&](const meObject &object){
 		const meObject::Ref duplicate(meObject::Ref::New(world->GetEnvironment()));

@@ -56,7 +56,7 @@ meUObjectTextureTCOffset::meUObjectTextureTCOffset(meObjectTexture *texture, con
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Objext Texture Offset");
+	SetShortInfo("@World.UObjectTextureTCOffset.ObjextTextureOffset");
 	
 	pTexture = nullptr;
 	

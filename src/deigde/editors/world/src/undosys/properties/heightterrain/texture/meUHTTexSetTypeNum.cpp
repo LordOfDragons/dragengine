@@ -47,7 +47,7 @@ meUHTTexSetTypeNum::meUHTTexSetTypeNum(meHeightTerrainTexture *texture, int newT
 	pOldTypeNumber = texture->GetTypeNumber();
 	pNewTypeNumber = newTypeNumber;
 	
-	SetShortInfo("Set Height Terrain Texture Type Number");
+	SetShortInfo("@World.UHTTexSetTypeNum.SetHeightTerrainTextureTypeNumber");
 }
 
 meUHTTexSetTypeNum::~meUHTTexSetTypeNum(){

@@ -46,7 +46,7 @@ meUHTVRuleMapSetValue::meUHTVRuleMapSetValue(meHTVegetationLayer *vlayer, meHTVR
 	pVLayer = nullptr;
 	pRule = nullptr;
 	
-	SetShortInfo("Vegetation Layer Rule Mapping Set Value");
+	SetShortInfo("@World.UHTVRuleMapSetValue.VegetationLayerRuleMappingSetValue");
 	SetMemoryConsumption(sizeof(meUHTVRuleMapSetValue));
 	
 	pOldValue = rule->GetValue();

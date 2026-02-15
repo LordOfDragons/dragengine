@@ -47,7 +47,7 @@ meUHTVVarSetSkin::meUHTVVarSetSkin(meHTVVariation *variation, const char *newPat
 	pOldPath = variation->GetPathSkin();
 	pNewPath = newPath;
 	
-	SetShortInfo("Vegetation Layer Variation Set Skin");
+	SetShortInfo("@World.UHTVVarSetSkin.VegetationLayerVariationSetSkin");
 }
 
 meUHTVVarSetSkin::~meUHTVVarSetSkin(){

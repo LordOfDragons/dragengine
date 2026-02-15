@@ -51,7 +51,7 @@ meUDecalTCOffset::meUDecalTCOffset(meDecal *decal, const decVector2 &newOffset){
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Decal Texture Offset");
+	SetShortInfo("@World.UDecalTCOffset.DecalTextureOffset");
 	
 	pDecal = nullptr;
 	

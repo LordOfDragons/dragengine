@@ -60,7 +60,7 @@ pValue(value)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Object texture add property");
+	SetShortInfo("@World.UObjTexAddProperty.ObjectTextureAddProperty");
 	
 	pTexture = texture;
 }

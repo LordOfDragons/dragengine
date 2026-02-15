@@ -53,7 +53,7 @@ meUNavSpaceSetPath::meUNavSpaceSetPath(meNavigationSpace *navspace, const char *
 	
 	pNavSpace = nullptr;
 	
-	SetShortInfo("NavSpace Set Path");
+	SetShortInfo("@World.UNavSpaceSetPath.NavspaceSetPath");
 	
 	pOldPath = navspace->GetFilename();
 	pNewPath = newPath;

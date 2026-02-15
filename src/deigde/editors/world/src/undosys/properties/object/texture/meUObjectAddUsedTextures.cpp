@@ -59,7 +59,7 @@ meUObjectAddUsedTextures::meUObjectAddUsedTextures(meObject *object){
 	
 	pObject = nullptr;
 	
-	SetShortInfo("Add Used Object Textures");
+	SetShortInfo("@World.UObjectAddUsedTextures.AddUsedObjectTextures");
 	
 	decStringList modelTextureNames;
 	object->GetModelTextureNameList(modelTextureNames);

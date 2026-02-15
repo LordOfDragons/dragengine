@@ -47,7 +47,7 @@ pType(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Height terrain nav-space add face");
+	SetShortInfo("@World.UHTNavSpaceFaceAdd.HeightTerrainNavSpaceAddFace");
 	
 	pType = type;
 	pFace = face;

@@ -49,7 +49,7 @@ pNewName(newName)
 	
 	pOldName = type->GetName();
 	
-	SetShortInfo("Height terrain nav-space type set name");
+	SetShortInfo("@World.UHTNavSpaceTypeSetName.HeightTerrainNavSpaceTypeSetName");
 	
 	pType = type;
 }

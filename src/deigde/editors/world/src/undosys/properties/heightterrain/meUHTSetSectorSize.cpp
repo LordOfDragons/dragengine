@@ -51,7 +51,7 @@ meUHTSetSectorSize::meUHTSetSectorSize(meWorld *world, meHeightTerrain *heightTe
 	pOldSectorSize = heightTerrain->GetSectorSize();
 	pNewSectorSize = newSectorSize;
 	
-	SetShortInfo("Set Height Terrain Sector Size");
+	SetShortInfo("@World.UHTSetSectorSize.SetHeightTerrainSectorSize");
 }
 
 meUHTSetSectorSize::~meUHTSetSectorSize(){

@@ -30,6 +30,9 @@
 #include "../../../world/object/meObject.h"
 #include "../../../worldedit.h"
 
+#include <deigde/environment/igdeEnvironment.h>
+#include <deigde/localization/igdeTranslationManager.h>
+
 #include <dragengine/common/exceptions.h>
 
 
@@ -50,12 +53,14 @@ meUDeleteDecal::meUDeleteDecal(meWorld *world){
 		pDecals.Add(meUndoDataDecal::Ref::New(decal));
 	});
 	
-	SetShortInfo("Delete Decals");
+	igdeTranslationManager &tm = world->GetEnvironment()->GetTranslationManager();
+	
+	SetShortInfo("@World.UDeleteDecal.DeleteDecals");
 	if(pDecals.GetCount() > 1){
-		text.Format("%d decals", pDecals.GetCount());
+		text.FormatSafe(tm.Translate("World.UDeleteDecal.CountDecals").ToUTF8(), pDecals.GetCount());
 		
 	}else{
-		text = "1 object";
+		text = tm.Translate("World.UDeleteDecal.OneDecal").ToUTF8();
 	}
 	SetLongInfo(text);
 }

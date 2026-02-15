@@ -22,12 +22,13 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-
 #include "meUAddObject.h"
 #include "../../../world/meWorld.h"
 #include "../../../world/object/meObject.h"
 #include "../../../world/object/meObjectSelection.h"
+
+#include <deigde/environment/igdeEnvironment.h>
+#include <deigde/localization/igdeTranslationManager.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -44,7 +45,7 @@ meUAddObject::meUAddObject(meWorld *world, meObject *object){
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Add Object");
+	SetShortInfo("@World.UAddObject.AddObject");
 	
 	pWorld = world;
 	pObject = object;
@@ -55,11 +56,10 @@ meUAddObject::meUAddObject(meWorld *world, const decDVector &position, const cha
 		DETHROW(deeInvalidParam);
 	}
 	
-	decString text;
-	
-	SetShortInfo("Add Object");
-	text.Format("position(%g,%g,%g) class(%s)", position.x, position.y, position.z, classname);
-	SetLongInfo(text.GetString());
+	SetShortInfo("@World.UAddObject.AddObject");
+	SetLongInfo(decString::Formatted(
+		world->GetEnvironment()->GetTranslationManager().Translate("World.UAddObject.PositionClass").ToUTF8(),
+		position.x, position.y, position.z, classname));
 	
 	pWorld = nullptr;
 	pObject = nullptr;

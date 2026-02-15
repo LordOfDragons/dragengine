@@ -49,7 +49,7 @@ pObject(nullptr)
 	meWorld *world = object->GetWorld();
 	if(!world) DETHROW(deeInvalidParam);
 	
-	SetShortInfo("Add Object Texture");
+	SetShortInfo("@World.UObjectAddTexture.AddObjectTexture");
 	
 	pObject = object;
 	pTexture = texture;

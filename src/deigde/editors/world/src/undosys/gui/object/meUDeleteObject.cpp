@@ -28,6 +28,9 @@
 #include "../../../world/object/meObject.h"
 #include "../../../world/object/meObjectSelection.h"
 
+#include <deigde/environment/igdeEnvironment.h>
+#include <deigde/localization/igdeTranslationManager.h>
+
 #include <dragengine/common/exceptions.h>
 
 
@@ -59,13 +62,15 @@ pWorld(nullptr)
 		}
 	});
 	
-	SetShortInfo("Delete Objects");
+	igdeTranslationManager &tm = world->GetEnvironment()->GetTranslationManager();
+	
+	SetShortInfo("@World.UDeleteObject.DeleteObjects");
 	decString text;
 	if(pObjects.GetCount() > 1){
-		text.Format("%i objects", pObjects.GetCount());
+		text.FormatSafe(tm.Translate("World.UDeleteObject.CountObjects").ToUTF8(), pObjects.GetCount());
 		
 	}else{
-		text = "1 object";
+		text = tm.Translate("World.UDeleteObject.OneObject").ToUTF8();
 	}
 	SetLongInfo(text);
 }

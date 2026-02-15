@@ -52,7 +52,7 @@ meUHTVRuleMove::meUHTVRuleMove(meHTVegetationLayer *vlayer, meHTVRule *rule){
 	pOldPosition = rule->GetPosition();
 	pNewPosition = pOldPosition;
 	
-	SetShortInfo("Move Vegetation Layer Rule");
+	SetShortInfo("@World.UHTVRuleMove.MoveVegetationLayerRule");
 	SetMemoryConsumption(sizeof(meUHTVRuleMove));
 	
 	pVLayer = vlayer;

@@ -47,7 +47,7 @@ meUHTVVarSetModel::meUHTVVarSetModel(meHTVVariation *variation, const char *newP
 	pOldPath = variation->GetPathModel();
 	pNewPath = newPath;
 	
-	SetShortInfo("Vegetation Layer Variation Set Model");
+	SetShortInfo("@World.UHTVVarSetModel.VegetationLayerVariationSetModel");
 }
 
 meUHTVVarSetModel::~meUHTVVarSetModel(){

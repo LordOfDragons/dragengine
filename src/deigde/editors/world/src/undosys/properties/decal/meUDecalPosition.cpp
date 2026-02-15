@@ -51,7 +51,7 @@ meUDecalPosition::meUDecalPosition(meDecal *decal, const decDVector &newPosition
 	
 	pDecal = nullptr;
 	
-	SetShortInfo("Set decal position");
+	SetShortInfo("@World.UDecalPosition.SetDecalPosition");
 	
 	pOldPosition = decal->GetPosition();
 	pNewPosition = newPosition;

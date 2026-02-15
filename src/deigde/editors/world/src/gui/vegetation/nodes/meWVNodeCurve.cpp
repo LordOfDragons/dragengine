@@ -97,13 +97,13 @@ pRuleCurve(rule)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	SetTitle("Curve");
+	SetTitle("@World.WVNodeCurve.Title");
 	
 	// slots
-	AddSlot(meWVNodeSlot::Ref::New(env, "Value", "Value of curve at input value",
+	AddSlot(meWVNodeSlot::Ref::New(env, "@World.WVNodeCurve.Output.Result", "@World.WVNodeCurve.Output.ResultDesc",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleCurve::eosValue));
 	
-	AddSlot(meWVNodeSlot::Ref::New(env, "Value", "Value to evaluate curve at",
+	AddSlot(meWVNodeSlot::Ref::New(env, "@World.WVNodeCurve.Input.Value", "@World.WVNodeCurve.Input.ValueDesc",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleCurve::eisValue));
 	
 	// parameters

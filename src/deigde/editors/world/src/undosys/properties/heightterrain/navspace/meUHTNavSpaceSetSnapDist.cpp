@@ -49,7 +49,7 @@ pNewSnapDist(newSnapDist)
 	
 	pOldSnapDist = navspace->GetSnapDistance();
 	
-	SetShortInfo("Height terrain nav-space set snap distance");
+	SetShortInfo("@World.UHTNavSpaceSetSnapDist.HeightTerrainNavSpaceSetSnapDistance");
 	
 	pNavSpace = navspace;
 }

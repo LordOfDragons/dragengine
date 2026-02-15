@@ -48,7 +48,7 @@ pNewOp(nop)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Vegetation Layer Rule Vector Math Set Operator");
+	SetShortInfo("@World.UHTVRuleVecMathSetOp.VegetationLayerRuleVectorMathSetOperator");
 	SetMemoryConsumption(sizeof(meUHTVRuleVecMathSetOp));
 	
 	pOldOp = rule->GetOperator();

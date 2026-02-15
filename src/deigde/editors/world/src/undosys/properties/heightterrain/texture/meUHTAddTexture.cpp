@@ -48,7 +48,7 @@ meUHTAddTexture::meUHTAddTexture(meWorld *world, meHeightTerrainSector *sector, 
 	pWorld = world;
 	pSector = sector;
 	
-	SetShortInfo("Height Terrain Add Texture");
+	SetShortInfo("@World.UHTRemoveTexture.HeightTerrainAddTexture");
 	pTexture = texture;
 }
 

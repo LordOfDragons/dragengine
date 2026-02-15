@@ -56,7 +56,7 @@ meUObjectTextureTCScaling::meUObjectTextureTCScaling(meObjectTexture *texture, c
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Objext Texture Scaling");
+	SetShortInfo("@World.UObjectTextureTCScaling.ObjextTextureScaling");
 	
 	pTexture = nullptr;
 	

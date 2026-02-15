@@ -59,7 +59,7 @@ class cActionLMTrackCam : public igdeAction{
 	
 public:
 	using Ref = deTObjectReference<cActionLMTrackCam>;
-	cActionLMTrackCam(meWPSensors &panel) : igdeAction("Track Camera", "Track camera."),
+	cActionLMTrackCam(meWPSensors &panel) : igdeAction("@World.WPSensors.Action.TrackCamera", "@World.WPSensors.TrackCamera"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -178,22 +178,22 @@ pWindowProperties(windowProperties)
 	
 	
 	// lumimeter
-	helper.GroupBox(content, groupBox, "Lumimeter:");
+	helper.GroupBox(content, groupBox, "@World.WPSensors.Lumimeter.Label");
 	
 	helper.CheckBox(groupBox, pChkLMTrackCam, cActionLMTrackCam::Ref::New(*this));
-	helper.EditDVector(groupBox, "Position:", "Position", pEditLMPos, cEditLMPos::Ref::New(*this));
-	helper.EditVector(groupBox, "Direction:", "Direction", pEditLMDir, cEditLMDir::Ref::New(*this));
-	helper.EditFloat(groupBox, "Inner Angle:", "Cone inner angle in degrees",
+	helper.EditDVector(groupBox, "@World.WPSensors.Label.Position", "@World.WPSensors.Position.ToolTip", pEditLMPos, cEditLMPos::Ref::New(*this));
+	helper.EditVector(groupBox, "@World.WPSensors.Direction.Label", "@World.WPSensors.Direction.ToolTip", pEditLMDir, cEditLMDir::Ref::New(*this));
+	helper.EditFloat(groupBox, "@World.WPSensors.InnerAngle.Label", "@World.WPSensors.ConeInnerAngleInDegrees.ToolTip",
 		pEditLMConeIA, cTextLMConeIA::Ref::New(*this));
-	helper.EditFloat(groupBox, "Outer Angle:", "Cone outer angle in degrees",
+	helper.EditFloat(groupBox, "@World.WPSensors.OuterAngle.Label", "@World.WPSensors.ConeOuterAngleInDegrees.ToolTip",
 		pEditLMConeOA, cTextLMConeOA::Ref::New(*this));
-	helper.EditFloat(groupBox, "Exponent:",
-		"Cone exponent smoothing between inner and outer angle",
+	helper.EditFloat(groupBox, "@World.WPSensors.Exponent.Label",
+		"@World.WPSensors.ConeExponentSmoothingBetweenInnerOuterAngle.ToolTip",
 		pEditLMConeExp, cTextLMConeExp::Ref::New(*this));
 	
-	helper.EditFloat(groupBox, "Measured Luminance:", "Measured luminance", pEditLMLumi, {});
+	helper.EditFloat(groupBox, "@World.WPSensors.MeasuredLuminance.Label", "@World.WPSensors.MeasuredLuminance.ToolTip", pEditLMLumi, {});
 	pEditLMLumi->SetEditable(false);
-	helper.ColorBox(groupBox, "Measured Color:", "Measured color", pEditLMColor, {});
+	helper.ColorBox(groupBox, "@World.WPSensors.MeasuredColor.Label", "@World.WPSensors.MeasuredColor.ToolTip", pEditLMColor, {});
 	pEditLMColor->SetEnabled(false);
 }
 

@@ -46,7 +46,7 @@ meUObjectTextureCopyToSelected::meUObjectTextureCopyToSelected(
 	
 	const decString &textureName = texture->GetName();
 	
-	SetShortInfo("Copy object texture to selected");
+	SetShortInfo("@World.UObjectTextureCopyToSelected.CopyObjectTextureToSelected");
 	
 	list.Visit([&](meObject *object){
 		DEASSERT_NOTNULL(object->GetWorld())

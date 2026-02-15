@@ -58,8 +58,8 @@ meUObjectShapeAdd::meUObjectShapeAdd(meObject *object, const char *property, con
 	
 	pObject = nullptr;
 	
-	SetShortInfo("Object-Shape add");
-	SetLongInfo("Object-Shape add");
+	SetShortInfo("@World.UObjectShapeAdd.ObjectShapeAdd");
+	SetLongInfo("@World.UObjectShapeAdd.ObjectShapeAdd");
 	
 	pPropertyExists = object->GetProperties().Has(property);
 	if(pPropertyExists){

@@ -40,7 +40,7 @@ meUCameraMoveObject::meUCameraMoveObject(meObject *object){
 	DEASSERT_NOTNULL(object)
 	
 	pNewPosition = pOldPosition = object->GetPosition();
-	SetShortInfo("Move Camera Object");
+	SetShortInfo("@World.UCameraMoveObject.MoveCameraObject");
 	
 	pObject = object;
 }

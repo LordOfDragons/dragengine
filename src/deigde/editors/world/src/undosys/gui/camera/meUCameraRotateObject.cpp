@@ -42,7 +42,7 @@ meUCameraRotateObject::meUCameraRotateObject(meObject *object){
 	
 	pOldRotation = object->GetRotation();
 	pNewRotation = pOldRotation;
-	SetShortInfo("Rotate Camera Object");
+	SetShortInfo("@World.UCameraRotateObject.RotateCameraObject");
 	
 	pObject = object;
 }

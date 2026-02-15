@@ -90,7 +90,7 @@ pDragControl(false)
 	pFrameTitle->setSelector(ID_FRA_TITLE);
 	pFrameTitle->enable();
 	
-	pLabTitle = new FXLabel(pFrameTitle, powner.GetTitle().GetString(), nullptr,
+	pLabTitle = new FXLabel(pFrameTitle, igdeUIFoxHelper::TranslateIf(powner, powner.GetTitle()), nullptr,
 		LAYOUT_FILL_X | LAYOUT_FILL_Y | JUSTIFY_CENTER_X | JUSTIFY_CENTER_Y);
 	pLabTitle->setFont((FXFont*)pFont->GetNativeFont());
 	pLabTitle->setTarget(this);
@@ -152,12 +152,13 @@ FXbool igdeNativeFoxNVNode::canFocus() const{
 
 
 void igdeNativeFoxNVNode::UpdateTitle(){
-	pLabTitle->setText(pOwner->GetTitle().GetString());
+	pLabTitle->setText(igdeUIFoxHelper::TranslateIf(*pOwner, pOwner->GetTitle()));
 }
 
 void igdeNativeFoxNVNode::UpdateDescription(){
-	pLabTitle->setTipText(pOwner->GetDescription().GetString());
-	pLabTitle->setHelpText(pOwner->GetDescription().GetString());
+	const FXString description = igdeUIFoxHelper::TranslateIf(*pOwner, pOwner->GetDescription());
+	pLabTitle->setTipText(description);
+	pLabTitle->setHelpText(description);
 }
 
 void igdeNativeFoxNVNode::UpdateEnabled(){

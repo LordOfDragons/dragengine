@@ -49,7 +49,7 @@ pNewType(newType)
 	
 	pOldType = type->GetType();
 	
-	SetShortInfo("Height terrain nav-space type set type");
+	SetShortInfo("@World.UHTNavSpaceTypeSetType.HeightTerrainNavSpaceTypeSetType");
 	
 	pType = type;
 }

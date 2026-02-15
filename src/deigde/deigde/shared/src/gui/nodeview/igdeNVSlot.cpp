@@ -221,6 +221,15 @@ decPoint igdeNVSlot::GetConnectorBoard() const{
 	return ((igdeNativeNVSlot*)GetNativeWidget())->GetConnectorBoard();
 }
 
+void igdeNVSlot::OnLanguageChanged(){
+	igdeContainer::OnLanguageChanged();
+	
+	if(GetNativeWidget()){
+		igdeNativeNVSlot * const native = (igdeNativeNVSlot*)GetNativeWidget();
+		native->UpdateText();
+		native->UpdateDescription();
+	}
+}
 
 
 void igdeNVSlot::CreateNativeWidget(){

@@ -27,6 +27,9 @@
 #include "../../../world/object/meObject.h"
 #include "../../../world/object/meObjectSelection.h"
 
+#include <deigde/environment/igdeEnvironment.h>
+#include <deigde/localization/igdeTranslationManager.h>
+
 #include <dragengine/common/exceptions.h>
 
 
@@ -42,18 +45,20 @@ meUObjectAttachTo::meUObjectAttachTo(meWorld *world, const meObject::List &objec
 	DEASSERT_TRUE(objects.IsNotEmpty())
 	
 	if(attachTo){
-		SetShortInfo("Attach Objects To");
+		SetShortInfo("@World.UObjectAttachTo.AttachObjectsTo");
 		
 	}else{
-		SetShortInfo("Detach Objects");
+		SetShortInfo("@World.UObjectAttachTo.DetachObjects");
 	}
+	
+	igdeTranslationManager &tm = world->GetEnvironment()->GetTranslationManager();
 	
 	decString text;
 	if(objects.GetCount() > 1){
-		text.Format("%i objects", objects.GetCount());
+		text.FormatSafe(tm.Translate("World.UObjectAttachTo.CountObjects").ToUTF8(), objects.GetCount());
 		
 	}else{
-		text = "1 object";
+		text = tm.Translate("World.UObjectAttachTo.OneObject").ToUTF8();
 	}
 	SetLongInfo(text.GetString());
 	

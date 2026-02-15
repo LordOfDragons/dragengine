@@ -49,7 +49,7 @@ pNewValues(newValues)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Object texture set properties");
+	SetShortInfo("@World.UObjTexSetProperties.ObjectTextureSetProperties");
 	
 	pOldValues = texture->GetProperties();
 	

@@ -56,7 +56,7 @@ pWindowProperties(windowProperties)
 {
 	pListener = meWPSelectionListener::Ref::New(*this);
 	
-	GetEnvironment().GetUIHelper().Label(*this, "No Selection");
+	GetEnvironment().GetUIHelper().Label(*this, "@World.WPSelection.NoSelection");
 	
 	pPanelObject = meWPSObject::Ref::New(*this);
 	AddChild(pPanelObject);

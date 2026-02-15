@@ -45,7 +45,7 @@ meUSetObjectRotation::meUSetObjectRotation(meObject *object, const decVector &ne
 	pOldRotation = object->GetRotation();
 	pNewRotation = newRotation;
 	
-	SetShortInfo("Set Object rotation");
+	SetShortInfo("@World.USetObjectRotation.SetObjectRotation");
 	
 	pObject = object;
 }

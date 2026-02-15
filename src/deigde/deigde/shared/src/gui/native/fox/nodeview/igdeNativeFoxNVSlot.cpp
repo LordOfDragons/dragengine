@@ -86,7 +86,8 @@ pIsDnd(false)
 	pSocket = new igdeNativeFoxNVSocket(this, this, ID_SOCKET, LAYOUT_FILL_Y | (powner.GetIsInput()
 		? LAYOUT_SIDE_LEFT | LAYOUT_LEFT : LAYOUT_SIDE_RIGHT | LAYOUT_RIGHT), guitheme);
 	
-	pLabel = new FXLabel(this, powner.GetText().GetString(), nullptr, LAYOUT_FILL_Y | (powner.GetIsInput()
+	pLabel = new FXLabel(this, igdeUIFoxHelper::TranslateIf(powner, powner.GetText()),
+			nullptr, LAYOUT_FILL_Y | (powner.GetIsInput()
 			? JUSTIFY_LEFT | JUSTIFY_CENTER_Y | ICON_BEFORE_TEXT | LAYOUT_SIDE_RIGHT | LAYOUT_LEFT
 			: JUSTIFY_RIGHT | JUSTIFY_CENTER_Y | ICON_AFTER_TEXT | LAYOUT_SIDE_LEFT | LAYOUT_RIGHT
 ), 0, 0, 0, 0, 0, 0, 0, 0);
@@ -141,12 +142,13 @@ FXbool igdeNativeFoxNVSlot::canFocus() const{
 
 
 void igdeNativeFoxNVSlot::UpdateText(){
-	pLabel->setText(pOwner->GetText().GetString());
+	pLabel->setText(igdeUIFoxHelper::TranslateIf(*pOwner, pOwner->GetText()));
 }
 
 void igdeNativeFoxNVSlot::UpdateDescription(){
-	pLabel->setTipText(pOwner->GetDescription().GetString());
-	pLabel->setHelpText(pOwner->GetDescription().GetString());
+	const FXString description = igdeUIFoxHelper::TranslateIf(*pOwner, pOwner->GetDescription());
+	pLabel->setTipText(description);
+	pLabel->setHelpText(description);
 }
 
 void igdeNativeFoxNVSlot::UpdateEnabled(){

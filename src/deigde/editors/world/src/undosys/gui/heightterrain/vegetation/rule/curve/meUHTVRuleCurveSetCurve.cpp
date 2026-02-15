@@ -49,7 +49,7 @@ pNewCurve(newCurve)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Vegetation Layer Rule Curve Set Curve");
+	SetShortInfo("@World.UHTVRuleCurveSetCurve.VegetationLayerRuleCurveSetCurve");
 	
 	pOldCurve = rule->GetCurve();
 	

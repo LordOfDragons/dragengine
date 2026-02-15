@@ -46,7 +46,7 @@ meUObjectRemoveUnusedTextures::meUObjectRemoveUnusedTextures(meObject *object){
 	DEASSERT_NOTNULL(object)
 	DEASSERT_NOTNULL(object->GetWorld())
 	
-	SetShortInfo("Remove Unused Object Textures");
+	SetShortInfo("@World.UObjectRemoveUnusedTextures.RemoveUnusedObjectTextures");
 	
 	decStringList names;
 	object->GetModelTextureNameList(names);

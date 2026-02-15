@@ -47,7 +47,7 @@ pNewValues(newValues)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Change decal properties");
+	SetShortInfo("@World.UDecalSetProperties.ChangeDecalProperties");
 	
 	pDecal = nullptr;
 	

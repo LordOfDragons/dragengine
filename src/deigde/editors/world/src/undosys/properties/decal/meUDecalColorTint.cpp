@@ -51,7 +51,7 @@ meUDecalColorTint::meUDecalColorTint(meDecal *decal, const decColor &newColor){
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Decal Texture Color Tint");
+	SetShortInfo("@World.UDecalColorTint.DecalTextureColorTint");
 	
 	pDecal = nullptr;
 	

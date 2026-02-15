@@ -56,7 +56,7 @@ meUObjectTextureColorTint::meUObjectTextureColorTint(meObjectTexture *texture, c
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Objext Texture Color Tint");
+	SetShortInfo("@World.UObjectTextureColorTint.ObjextTextureColorTint");
 	
 	pTexture = nullptr;
 	

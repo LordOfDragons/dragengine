@@ -38,10 +38,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalRotate::meUDecalRotate(meWorld *world){
+meUDecalRotate::meUDecalRotate(meWorld *world) :
+meBaseUndoRotate(*world->GetEnvironment())
+{
 	if(!world) DETHROW(deeInvalidParam);
 	
-	SetShortInfo("Rotate Decals");
+	SetShortInfo("@World.UDecalRotate.RotateDecals");
 	
 	pWorld = nullptr;
 	

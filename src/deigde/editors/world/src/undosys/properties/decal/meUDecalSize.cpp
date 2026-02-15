@@ -51,7 +51,7 @@ meUDecalSize::meUDecalSize(meDecal *decal, const decVector &newSize){
 	
 	pDecal = nullptr;
 	
-	SetShortInfo("Set decal size");
+	SetShortInfo("@World.UDecalSize.SetDecalSize");
 	
 	pOldSize = decal->GetSize();
 	pNewSize = newSize;

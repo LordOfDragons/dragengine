@@ -47,8 +47,8 @@ pCopyZ(copyZ)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Copy Object Rotation");
-	SetLongInfo("Copy Object Rotation");
+	SetShortInfo("@World.UObjectCopyRotation.CopyObjectRotation");
+	SetLongInfo("@World.UObjectCopyRotation.CopyObjectRotation");
 	
 	world->GetSelectionObject().GetSelected().Visit([&](meObject *o){
 		pObjects.Add(meUndoDataObject::Ref::New(o));

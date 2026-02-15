@@ -43,7 +43,7 @@
 meUObjectPropertyRemoveFromSelected::meUObjectPropertyRemoveFromSelected(const meObject::List &list, const char *key){
 	DEASSERT_TRUE(list.IsNotEmpty())
 	
-	SetShortInfo("Remove object property from selected");
+	SetShortInfo("@World.UObjectPropertyRemoveFromSelected.RemoveObjectPropertyFromSelected");
 	pKey = key;
 	
 	list.Visit([&](meObject *object){

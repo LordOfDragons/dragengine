@@ -69,7 +69,7 @@ class cActionClassAdd : public igdeAction{
 public:
 	typedef deTObjectReference<cActionClassAdd> Ref;
 	cActionClassAdd(meWPAdd &panel, igdeComboBoxFilter::Ref &comboClass) :
-	igdeAction("Add", nullptr, "Add class"), pPanel(panel), pComboClass(comboClass){}
+	igdeAction("@World.WPAdd.Action.Add", nullptr, "@World.WPAdd.Action.Add"), pPanel(panel), pComboClass(comboClass){}
 	
 	void OnAction() override{
 		meWorld * const world = pPanel.GetWorld();
@@ -92,7 +92,7 @@ class cActionClassRemove : public igdeAction{
 public:
 	typedef deTObjectReference<cActionClassRemove> Ref;
 	cActionClassRemove(meWPAdd &panel, igdeListBox::Ref &listBox) :
-	igdeAction("Remove", nullptr, "Remove selected class"), pPanel(panel), pListBox(listBox){}
+	igdeAction("@World.WPAdd.Menu.ClassRemove", nullptr, "@World.WPAdd.Action.Remove"), pPanel(panel), pListBox(listBox){}
 	
 	void OnAction() override{
 		meWorld * const world = pPanel.GetWorld();
@@ -113,7 +113,7 @@ class cActionClassClear : public igdeAction{
 	
 public:
 	typedef deTObjectReference<cActionClassClear> Ref;
-	cActionClassClear(meWPAdd &panel) : igdeAction("Clear", nullptr, "Remove all classes"),
+	cActionClassClear(meWPAdd &panel) : igdeAction("@World.WPAdd.Menu.ClassClear", nullptr, "@World.WPAdd.Action.Clear"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -131,8 +131,8 @@ class cActionFilterObjects : public igdeAction{
 	
 public:
 	typedef deTObjectReference<cActionFilterObjects> Ref;
-	cActionFilterObjects(meWPAdd &panel) : igdeAction("Enable Object Filter",
-		nullptr, "Determines if objects are filtered"), pPanel(panel){ }
+	cActionFilterObjects(meWPAdd &panel) : igdeAction("@World.WPAdd.Action.EnableObjectFilter",
+		nullptr, "@World.WPAdd.Action.FilterObjects"), pPanel(panel){ }
 	
 	void OnAction() override{
 	}
@@ -158,8 +158,8 @@ class cActionObjInclusive : public igdeAction{
 	
 public:
 	typedef deTObjectReference<cActionObjInclusive> Ref;
-	cActionObjInclusive(meWPAdd &panel) : igdeAction("Accept if in list", nullptr,
-		"Determines if objects are accepted or rejected if they are in the list."),
+	cActionObjInclusive(meWPAdd &panel) : igdeAction("@World.WPAdd.Action.AcceptIfInList", nullptr,
+		"@World.WPAdd.Action.AcceptIfInListDesc"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -177,8 +177,8 @@ class cActionRandomizeYAxis : public igdeAction {
 	
 public:
 	typedef deTObjectReference<cActionRandomizeYAxis> Ref;
-	cActionRandomizeYAxis(meWPAdd &panel) : igdeAction("Randomize Y Axis", nullptr,
-		"Determines if objects are randomized around the Y axis when added."),
+	cActionRandomizeYAxis(meWPAdd &panel) : igdeAction("@World.WPAdd.Action.RandomizeYAxis", nullptr,
+		"@World.WPAdd.Action.RandomizeYAxisDesc"),
 		pPanel(panel){}
 	
 	virtual void OnAction() {
@@ -220,24 +220,24 @@ pWindowProperties(windowProperties)
 	
 	// object filter
 	/*
-	helper.GroupBoxFlow(content, groupBox, "Object Filter:");
+	helper.GroupBoxFlow(content, groupBox, "@World.WPAdd.ObjectFilter.Label");
 	
 	helper.CheckBoxOnly(groupBox, pChkFilterObjects, cActionFilterObjects::Ref::New(*this));
 	
 	formLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
 	groupBox->AddChild(formLine);
-	helper.ComboBoxFilter(formLine, "Object filter", pComboObjClass, {});
+	helper.ComboBoxFilter(formLine, "@World.WPAdd.ObjectFilter.Label2", pComboObjClass, {});
 	pComboObjClass->SetDefaultSorter();
 	helper.Button(formLine, pActionClassAdd);
 	
-	helper.ListBox(groupBox, 5, "List of object class filters", pListObjClasses, cListObjectClasses::Ref::New(*this));
+	helper.ListBox(groupBox, 5, "@World.WPAdd.ListOfObjectClassFilters.Label", pListObjClasses, cListObjectClasses::Ref::New(*this));
 	pListObjClasses->SetDefaultSorter();
 	
 	helper.CheckBoxOnly(groupBox, pChkObjInclusive, cActionObjInclusive::Ref::New(*this));
 	*/
 	
 	// randomize
-	helper.GroupBoxFlow(content, groupBox, "Randomize:");
+	helper.GroupBoxFlow(content, groupBox, "@World.WPAdd.Randomize.Label");
 	
 	helper.CheckBoxOnly(groupBox, pChkRandomizeYAxis, cActionRandomizeYAxis::Ref::New(*this));
 }

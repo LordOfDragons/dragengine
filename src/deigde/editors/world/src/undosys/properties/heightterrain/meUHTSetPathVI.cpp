@@ -50,7 +50,7 @@ meUHTSetPathVI::meUHTSetPathVI(meWorld *world, meHeightTerrainSector *sector, co
 	pOldPath = sector->GetPathVisibilityImage().GetString();
 	pNewPath = newPath;
 	
-	SetShortInfo("Set Height Terrain Visibility Image Path");
+	SetShortInfo("@World.UHTSetPathVI.SetHeightTerrainVisibilityImagePath");
 }
 
 meUHTSetPathVI::~meUHTSetPathVI(){

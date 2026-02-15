@@ -202,7 +202,7 @@ void lpeWindowMain::SaveLangPack(const char *filename){
 		return;
 	}
 	
-	GetEditorModule().LogInfoFormat(Translate("LangPack.Log.SavingLangPack").ToUTF8(), filename);
+	GetEditorModule().LogInfoFormat("Saving Language Pack %s", filename);
 	pLoadSaveSystem->SaveLangPack(pLangPack, filename);
 	
 	pLangPack->SetFilePath(filename);
@@ -320,7 +320,7 @@ public:
 		}
 		
 		// load language pack
-		pWindow.GetEditorModule().LogInfoFormat(pWindow.Translate("LangPack.Log.LoadingLangPack").ToUTF8(), filename.GetString());
+		pWindow.GetEditorModule().LogInfoFormat("Loading language pack %s", filename.GetString());
 		lpeLangPack * const langpack = pWindow.GetLoadSaveSystem().LoadLangPack(filename);
 		
 		// replace language pack
@@ -409,7 +409,7 @@ public:
 			return;
 		}
 		
-		pWindow.GetEditorModule().LogInfoFormat(pWindow.Translate("LangPack.Log.LoadingLangPack").ToUTF8(), filename.GetString());
+		pWindow.GetEditorModule().LogInfoFormat("Loading language pack %s", filename.GetString());
 		pWindow.SetReferenceLangPack(pWindow.GetLoadSaveSystem().LoadLangPack(filename));
 		pWindow.GetRecentFilesRefLangPack().AddFile(filename);
 	}

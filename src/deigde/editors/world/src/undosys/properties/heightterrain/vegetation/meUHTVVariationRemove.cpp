@@ -49,7 +49,7 @@ meUHTVVariationRemove::meUHTVVariationRemove(meHTVegetationLayer *vlayer, meHTVV
 	pIndex = vlayer->GetVariations().IndexOf(variation);
 	if(pIndex == -1) DETHROW(deeInvalidParam);
 	
-	SetShortInfo("Remove Vegetation Layer Variation");
+	SetShortInfo("@World.UHTVVariationRemove.RemoveVegetationLayerVariation");
 }
 
 meUHTVVariationRemove::~meUHTVVariationRemove(){

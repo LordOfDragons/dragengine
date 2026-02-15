@@ -89,25 +89,25 @@ pRuleComponents(rule)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	SetTitle("Components");
+	SetTitle("@World.WVNodeComponents.Title");
 	
 	// slots
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"X", "X component of vector",
+		"@World.WVNodeComponents.Output.X", "@World.WVNodeComponents.Output.XDesc",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleComponents::eosX));
 	
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"Y", "Y component of vector",
+		"@World.WVNodeComponents.Output.Y", "@World.WVNodeComponents.Output.YDesc",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleComponents::eosY));
 	
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"Z", "Z component of vector",
+		"@World.WVNodeComponents.Output.Z", "@World.WVNodeComponents.Output.ZDesc",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleComponents::eosZ));
 	
 	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::New(env,
-		"Vector", "Vector to decompose",
+		"@World.WVNodeComponents.Input.Vector", "@World.WVNodeComponents.Input.VectorDesc",
 		true, *this, meWVNodeSlot::estVector, meHTVRuleComponents::eisVector));
-	helper.EditVector(slot, "Input vector.", pEditVector, cEditVector::Ref::New(*this));
+	helper.EditVector(slot, "@World.WVNodeComponents.InputVector.Label", pEditVector, cEditVector::Ref::New(*this));
 	AddSlot(slot);
 	
 	// parameters

@@ -43,7 +43,9 @@
 ////////////////////////////
 
 meUObjectShapeRotate::meUObjectShapeRotate(meObject *object, const char *property,
-const meObjectShape::List &list){
+const meObjectShape::List &list) :
+meBaseUndoRotate(*object->GetEnvironment())
+{
 	if(list.IsEmpty()){
 		DETHROW(deeInvalidParam);
 	}
@@ -60,8 +62,8 @@ const meObjectShape::List &list){
 	
 	pObject = nullptr;
 	
-	SetShortInfo("Rotate object shapes");
-	SetLongInfo("Rotate object shapes");
+	SetShortInfo("@World.UObjectShapeRotate.RotateObjectShapes");
+	SetLongInfo("@World.UObjectShapeRotate.RotateObjectShapes");
 	
 	pPropertyExists = object->GetProperties().Has(property);
 	if(pPropertyExists){

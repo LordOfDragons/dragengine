@@ -48,7 +48,7 @@ pValue(value)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Remove world property");
+	SetShortInfo("@World.UWorldRemoveProperty.RemoveWorldProperty");
 	
 	pWorld = world;
 }

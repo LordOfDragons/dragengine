@@ -22,13 +22,11 @@
  * SOFTWARE.
  */
 
-// includes
-
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "meBaseUndoRotate.h"
 #include "../../worldedit.h"
+
+#include <deigde/environment/igdeEnvironment.h>
+#include <deigde/localization/igdeTranslationManager.h>
 
 
 
@@ -38,11 +36,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-meBaseUndoRotate::meBaseUndoRotate(){
-	pModifyPosition = true;
-	pModifyOrientation = true;
-	SetShortInfo("Rotate ?");
-	pAxis.Set(0.0, 0.0, 1.0);
+meBaseUndoRotate::meBaseUndoRotate(igdeEnvironment &environment) :
+pEnvironment(environment),
+pAxis(0.0, 0.0, 1.0),
+pModifyPosition(true),
+pModifyOrientation(true)
+{
+	SetShortInfo("@World.BaseUndoRotate.Rotate");
 }
 
 meBaseUndoRotate::~meBaseUndoRotate(){
@@ -82,9 +82,9 @@ void meBaseUndoRotate::UpdateRotationMatrix(){
 		* decDMatrix::CreateRotationAxis( pAxis, pAngle * DEG2RAD )
 		* decDMatrix::CreateTranslation( pPivot );
 	
-	decString info;
-	info.Format("axis(%g,%g,%g) center(%g,%g,%g) angle=%g",
-		pAxis.x, pAxis.y, pAxis.z, pPivot.x, pPivot.y, pPivot.z, pAngle);
+	SetLongInfo(decString::Formatted(
+		pEnvironment.GetTranslationManager().Translate("World.BaseUndoRotate.AxisCenterAngle").ToUTF8(),
+		pAxis.x, pAxis.y, pAxis.z, pPivot.x, pPivot.y, pPivot.z, pAngle));
 }
 
 void meBaseUndoRotate::TransformElement(decDVector &position, decDVector &rotation){

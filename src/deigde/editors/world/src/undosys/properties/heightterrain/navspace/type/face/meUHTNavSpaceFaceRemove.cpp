@@ -41,10 +41,10 @@ meUHTNavSpaceFaceRemove::meUHTNavSpaceFaceRemove(const meHeightTerrainNavSpaceFa
 	DEASSERT_TRUE(faces.IsNotEmpty())
 	
 	if(faces.GetCount() == 1){
-		SetShortInfo("Height terrain nav-space remove face");
+		SetShortInfo("@World.UHTNavSpaceFaceRemove.HeightTerrainNavSpaceRemoveFace");
 		
 	}else{
-		SetShortInfo("Height terrain nav-space remove faces");
+		SetShortInfo("@World.UHTNavSpaceFaceRemove.HeightTerrainNavSpaceRemoveFaces");
 	}
 	
 	faces.Visit([&](meHeightTerrainNavSpaceFace *face){

@@ -119,12 +119,12 @@ pWindowMain(windowMain)
 	pListener = meWindowChangelogListener::Ref::New(*this);
 	
 	igdeUIHelper::sColumnHeader headers[3] = {
-		igdeUIHelper::sColumnHeader("Sector", nullptr, igdeApplication::app().DisplayScaled(50)),
-		igdeUIHelper::sColumnHeader("What", nullptr, igdeApplication::app().DisplayScaled(150)),
-		igdeUIHelper::sColumnHeader("Filename", nullptr, igdeApplication::app().DisplayScaled(380))};
+		igdeUIHelper::sColumnHeader("@World.WindowChangelog.Column.Sector", nullptr, igdeApplication::app().DisplayScaled(50)),
+		igdeUIHelper::sColumnHeader("@World.WindowChangelog.Column.What", nullptr, igdeApplication::app().DisplayScaled(150)),
+		igdeUIHelper::sColumnHeader("@World.WindowChangelog.Column.Filename", nullptr, igdeApplication::app().DisplayScaled(380))};
 	helper.IconListBox(
 		igdeApplication::app().DisplayScaled(decPoint(100, 150)),
-		headers, 3, "Changes", pListChanges, cListChangelog::Ref::New(*this));
+		headers, 3, "@World.WindowChangelog.Changes.Label", pListChanges, cListChangelog::Ref::New(*this));
 	AddChild(pListChanges, igdeContainerBorder::eaCenter);
 	
 	pListChanges->SetSorter(cChangelogSorter::Ref::New());

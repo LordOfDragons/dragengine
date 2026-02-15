@@ -55,10 +55,10 @@ const decPoint &size, meBitArray *oldVis){
 	int adjustX, adjustY;
 	
 	if(drawMode == meWorldGuiParameters::evpdmVisible){
-		SetShortInfo("Face Visibible");
+		SetShortInfo("@World.UHTPaintVisibility.FaceVisibible");
 		
 	}else{
-		SetShortInfo("Face Invisible");
+		SetShortInfo("@World.UHTPaintVisibility.FaceInvisible");
 	}
 	
 	pWorld = world;

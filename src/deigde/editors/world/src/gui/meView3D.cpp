@@ -264,9 +264,8 @@ void meView3D::OnFrameUpdate(float elapsed){
 			pFPSRedrawCanvasDelay = 1.0f;
 			
 			if(pCanvasFPSText){
-				decString text;
-				text.Format("FPS: %i", statsFPS);
-				pCanvasFPSText->SetText(text);
+				pCanvasFPSText->SetText(decString::Formatted(
+					Translate("World.View3D.Fps").ToUTF8(), statsFPS));
 			}
 		}
 	}

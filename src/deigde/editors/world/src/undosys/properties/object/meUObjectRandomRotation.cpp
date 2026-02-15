@@ -42,7 +42,7 @@ pWorld(world)
 {
 	DEASSERT_NOTNULL(world)
 	
-	SetShortInfo("Randomize Object Rotation");
+	SetShortInfo("@World.UObjectRandomRotation.RandomizeObjectRotation");
 	
 	meUndoDataObject::AddObjectsWithAttachments(objects, pObjects);
 	

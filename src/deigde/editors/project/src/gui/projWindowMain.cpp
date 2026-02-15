@@ -638,8 +638,8 @@ public:
 		
 		const projProfile::List &list = project->GetProfiles();
 		decString name;
-		name.Format(pWindow.Translate("Project.PanelProfiles.Dialog.DuplicateProfile.NameCopy").ToUTF8(),
-			profile->GetName().GetString());
+		name.FormatSafe(pWindow.Translate("Project.PanelProfiles.Dialog.DuplicateProfile.NameCopy").ToUTF8(),
+			profile->GetName());
 		
 		while(true){
 			if(!igdeCommonDialogs::GetString(pWindow, "@Project.PanelProfiles.Dialog.DuplicateProfile",

@@ -50,7 +50,7 @@ meUHTSetPathPFCache::meUHTSetPathPFCache(meWorld *world, meHeightTerrainSector *
 	pOldPath = sector->GetPathPFCacheImage();
 	pNewPath = newPath;
 	
-	SetShortInfo("Set Height Terrain Prop Field Cache Path");
+	SetShortInfo("@World.UHTSetPathPFCache.SetHeightTerrainPropFieldCachePath");
 }
 
 meUHTSetPathPFCache::~meUHTSetPathPFCache(){

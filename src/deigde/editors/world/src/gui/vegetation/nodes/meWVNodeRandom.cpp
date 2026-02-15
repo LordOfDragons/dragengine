@@ -64,11 +64,11 @@ pRuleRandom(rule)
 // 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	SetTitle("Random");
+	SetTitle("@World.WVNodeRandom.Title");
 	
 	// slots
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"Random", "Random value",
+		"@World.WVNodeRandom.Output.Value", "@World.WVNodeRandom.Output.ValueDesc",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleRandom::eosRandom));
 	
 	// parameters

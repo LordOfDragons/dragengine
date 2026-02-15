@@ -48,7 +48,7 @@ pType(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Height terrain nav-space add type");
+	SetShortInfo("@World.UHTNavSpaceTypeAdd.HeightTerrainNavSpaceAddType");
 	
 	pNavSpace = navspace;
 	pType = type;

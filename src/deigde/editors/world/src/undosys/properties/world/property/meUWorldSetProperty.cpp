@@ -49,7 +49,7 @@ pNewValue(newValue)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Set world property");
+	SetShortInfo("@World.UWorldSetProperty.SetWorldProperty");
 	
 	pWorld = world;
 }

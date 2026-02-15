@@ -53,7 +53,7 @@ meUNavSpaceSetPosition::meUNavSpaceSetPosition(meNavigationSpace *navspace, cons
 	
 	pNavSpace = nullptr;
 	
-	SetShortInfo("NavSpace Set Position");
+	SetShortInfo("@World.UNavSpaceSetPosition.NavspaceSetPosition");
 	
 	pOldPosition = navspace->GetPosition();
 	pNewPosition = newPosition;

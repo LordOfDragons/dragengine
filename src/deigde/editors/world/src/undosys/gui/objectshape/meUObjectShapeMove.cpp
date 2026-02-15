@@ -43,7 +43,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectShapeMove::meUObjectShapeMove(meObject *object, const char *property, const meObjectShape::List &list){
+meUObjectShapeMove::meUObjectShapeMove(meObject *object, const char *property,
+const meObjectShape::List &list) :
+meBaseUndoMove(*object->GetEnvironment())
+{
 	if(list.IsEmpty()){
 		DETHROW(deeInvalidParam);
 	}
@@ -60,8 +63,8 @@ meUObjectShapeMove::meUObjectShapeMove(meObject *object, const char *property, c
 	
 	pObject = nullptr;
 	
-	SetShortInfo("Move object shapes");
-	SetLongInfo("Move object shapes");
+	SetShortInfo("@World.UObjectShapeMove.MoveObjectShapes");
+	SetLongInfo("@World.UObjectShapeMove.MoveObjectShapes");
 	
 	pPropertyExists = object->GetProperties().Has(property);
 	if(pPropertyExists){

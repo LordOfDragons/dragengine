@@ -51,7 +51,7 @@ meUHTSetBaseHeight::meUHTSetBaseHeight(meWorld *world, meHeightTerrain *heightTe
 	pOldBaseHeight = heightTerrain->GetBaseHeight();
 	pNewBaseHeight = newBaseHeight;
 	
-	SetShortInfo("Set Height Terrain Base Height");
+	SetShortInfo("@World.UHTSetBaseHeight.SetHeightTerrainBaseHeight");
 }
 
 meUHTSetBaseHeight::~meUHTSetBaseHeight(){

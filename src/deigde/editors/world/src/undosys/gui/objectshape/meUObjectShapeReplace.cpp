@@ -55,8 +55,8 @@ meUObjectShapeReplace::meUObjectShapeReplace(meObject *object, const char *prope
 	
 	pObject = nullptr;
 	
-	SetShortInfo("Object-Shape replace");
-	SetLongInfo("Object-Shape replace");
+	SetShortInfo("@World.UObjectShapeReplace.ObjectShapeReplace");
+	SetLongInfo("@World.UObjectShapeReplace.ObjectShapeReplace");
 	
 	pPropertyExists = object->GetProperties().Has(property);
 	if(pPropertyExists){

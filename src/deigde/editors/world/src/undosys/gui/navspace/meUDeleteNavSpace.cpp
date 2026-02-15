@@ -28,6 +28,9 @@
 #include "../../../world/navspace/meNavigationSpace.h"
 #include "../../../world/navspace/meNavigationSpaceSelection.h"
 
+#include <deigde/environment/igdeEnvironment.h>
+#include <deigde/localization/igdeTranslationManager.h>
+
 #include <dragengine/common/exceptions.h>
 
 
@@ -49,12 +52,14 @@ meUDeleteNavSpace::meUDeleteNavSpace(meWorld *world){
 	
 	decString text;
 	
-	SetShortInfo("Delete Objects");
+	igdeTranslationManager &tm = world->GetEnvironment()->GetTranslationManager();
+	
+	SetShortInfo("@World.UDeleteObject.DeleteObjects");
 	if(pNavSpaces.GetCount() > 1){
-		text.Format("%i objects", pNavSpaces.GetCount());
+		text.FormatSafe(tm.Translate("World.UDeleteNavSpace.CountObjects").ToUTF8(), pNavSpaces.GetCount());
 		
 	}else{
-		text = "1 object";
+		text = tm.Translate("World.UDeleteNavSpace.OneObject").ToUTF8();
 	}
 	SetLongInfo(text);
 }

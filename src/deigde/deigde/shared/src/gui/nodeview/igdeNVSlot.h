@@ -174,6 +174,9 @@ public:
 	
 	/** \brief Connector position of slot in owner board coordinates.. */
 	decPoint GetConnectorBoard() const;
+	
+	/** \brief Language changed. */
+	void OnLanguageChanged() override;
 	/*@}*/
 	
 	

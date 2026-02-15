@@ -47,7 +47,7 @@ pSector(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Height terrain remove nav-space");
+	SetShortInfo("@World.UHTNavSpaceRemove.HeightTerrainRemoveNavSpace");
 	
 	pSector = sector;
 	pNavSpace = navspace;

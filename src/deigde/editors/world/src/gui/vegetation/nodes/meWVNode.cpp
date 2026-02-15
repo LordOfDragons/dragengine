@@ -58,8 +58,8 @@ class cActionDeleteNode : public igdeAction {
 	
 public:
 	using Ref = deTObjectReference<cActionDeleteNode>;
-	cActionDeleteNode(meWVNode &node) : igdeAction("Delete Node",
-		node.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Delete Node"),
+	cActionDeleteNode(meWVNode &node) : igdeAction("@World.WVNode.Action.DeleteNode",
+		node.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@World.WVNode.Action.DeleteNode"),
 	pNode(node){}
 	
 	void OnAction() override{
@@ -82,8 +82,8 @@ class cActionDuplicateNode : public igdeAction {
 	
 public:
 	using Ref = deTObjectReference<cActionDuplicateNode>;
-	cActionDuplicateNode(meWVNode &node) : igdeAction("Duplicate Node",
-		node.GetEnvironment().GetStockIcon(igdeEnvironment::esiDuplicate), "Duplicate Node"),
+	cActionDuplicateNode(meWVNode &node) : igdeAction("@World.WVNode.Action.DuplicateNode",
+		node.GetEnvironment().GetStockIcon(igdeEnvironment::esiDuplicate), "@World.WVNode.Action.DuplicateNode"),
 	pNode(node){}
 	
 	void OnAction() override{
@@ -176,7 +176,7 @@ public:
 ////////////////////////////
 
 meWVNode::meWVNode(meWindowVegetation &windowVegetation, meHTVRule *rule) :
-igdeNVNode(windowVegetation.GetEnvironment(), "Rule"),
+igdeNVNode(windowVegetation.GetEnvironment(), "@World.WVNode.Title.Rule"),
 pWindowVegetation(windowVegetation)
 {
 	if(!rule){

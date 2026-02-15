@@ -187,26 +187,26 @@ pWPSelection(wpselection)
 	// selection
 	groupBox = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esLast, 10);
 	content->AddChild(groupBox);
-	helper.Label(groupBox, "Selection:");
-	helper.EditInteger(groupBox, "Count of selected navigation spaces", 3, pEditSelCount, {});
+	helper.Label(groupBox, "@World.WPView.Selection.Label");
+	helper.EditInteger(groupBox, "@World.WPSNavSpace.CountOfSelectedNavigationSpaces.Label", 3, pEditSelCount, {});
 	pEditSelCount->SetEditable(false);
-	helper.Label(groupBox, "Active:");
-	helper.EditSpinInteger(groupBox, "Selected navigation space", 0, 0, pSpinActive, cSpinNavSpace::Ref::New(*this));
+	helper.Label(groupBox, "@World.WPView.Active.Label");
+	helper.EditSpinInteger(groupBox, "@World.WPSNavSpace.SelectedNavigationSpace.Label", 0, 0, pSpinActive, cSpinNavSpace::Ref::New(*this));
 	
 	
 	// navigation space
-	helper.GroupBox(content, groupBox, "Navigation Space:");
-	helper.EditPath(groupBox, "Path:", "Path to the navigation space",
+	helper.GroupBox(content, groupBox, "@World.WPSNavSpace.NavigationSpace.Label");
+	helper.EditPath(groupBox, "@World.WPWorld.Path.Label", "@World.WPSNavSpace.PathToNavigationSpace.ToolTip",
 		igdeEnvironment::efpltNavigationSpace, pEditPath, cPathNavSpace::Ref::New(*this));
-	helper.EditDVector(groupBox, "Position:", "Position of the navigation space.",
+	helper.EditDVector(groupBox, "@World.WPSNavSpace.Label.Position", "@World.WPSNavSpace.PositionOfNavigationSpace.ToolTip",
 		pEditPositon, cEditPosition::Ref::New(*this));
-	helper.EditVector(groupBox, "Orientation:", "Orientation of the navigation space.",
+	helper.EditVector(groupBox, "@World.WPSNavSpace.OrientationOfNavigationSpace.Label", "@World.WPSNavSpace.OrientationOfNavigationSpace.ToolTip",
 		pEditOrientation, cEditOrientation::Ref::New(*this));
 	
 	
 	// cost information
-	helper.GroupBoxFlow(content, groupBox, "Used Cost Types:");
-	helper.ListBox(groupBox, 5, "Used cost types", pListUsedCostTypes, {});
+	helper.GroupBoxFlow(content, groupBox, "@World.WPSNavSpace.UsedCostTypes.Label");
+	helper.ListBox(groupBox, 5, "@World.WPSNavSpace.UsedCostTypes.Label2", pListUsedCostTypes, {});
 	pListUsedCostTypes->SetDefaultSorter();
 }
 
@@ -303,9 +303,8 @@ void meWPSNavSpace::UpdateUsedCostTypes(){
 	const meNavigationSpace * const navspace = GetNavigationSpace();
 	if(navspace){
 		navspace->GetUsedCostTypes().Visit([&](int value){
-			decString text;
-			text.Format("Type #%d", value);
-			pListUsedCostTypes->AddItem(text);
+			pListUsedCostTypes->AddItem(decString::Formatted(
+				Translate("World.WPSNavSpace.CostType").ToUTF8(), value));
 		});
 	}
 	

@@ -51,7 +51,7 @@ meUHTSetTexSkin::meUHTSetTexSkin(meWorld *world, meHeightTerrainSector *sector, 
 	pOldPath = texture->GetPathSkin();
 	pNewPath = newPath;
 	
-	SetShortInfo("Set Height Terrain Texture Skin");
+	SetShortInfo("@World.UHTSetTexSkin.SetHeightTerrainTextureSkin");
 	pTexture = texture;
 }
 

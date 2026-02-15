@@ -96,27 +96,28 @@ pRuleMultiMath(nullptr)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	SetTitle("Multi-Math");
+	SetTitle("@World.WVNodeMultiMath.Title");
 	
 	// slots
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"Result", "Result of the operation",
+		"@World.WVNodeMultiMath.Output.Result", "@World.WVNodeMultiMath.Output.ResultDesc",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleMultiMath::eosResult));
 	
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"Values", "Input values",
+		"@World.WVNodeMultiMath.Input.Value", "@World.WVNodeMultiMath.Input.ValueDesc",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleMultiMath::eisValues));
 	
 	// parameters
 	pFraParameters = igdeContainerForm::Ref::New(env);
 	AddChild(pFraParameters);
 	
-	helper.ComboBox(pFraParameters, "Operator:", "Operator to use.", pCBOperator, cComboOperator::Ref::New(*this));
-	pCBOperator->AddItem("Add", nullptr, (void*)(intptr_t)meHTVRuleMultiMath::eopAdd);
-	pCBOperator->AddItem("Multiply", nullptr, (void*)(intptr_t)meHTVRuleMultiMath::eopMultiply);
-	pCBOperator->AddItem("Minimum", nullptr, (void*)(intptr_t)meHTVRuleMultiMath::eopMinimum);
-	pCBOperator->AddItem("Maximum", nullptr, (void*)(intptr_t)meHTVRuleMultiMath::eopMaximum);
-	pCBOperator->AddItem("Average", nullptr, (void*)(intptr_t)meHTVRuleMultiMath::eopAverage);
+	helper.ComboBox(pFraParameters, "@World.WVNodeVectorMath.Operator.Label", "@World.WVNodeVectorMath.OperatorToUse.ToolTip", pCBOperator, cComboOperator::Ref::New(*this));
+	pCBOperator->SetAutoTranslateItems(true);
+	pCBOperator->AddItem("@World.WVNodeMultiMath.Operator.Add", nullptr, (void*)(intptr_t)meHTVRuleMultiMath::eopAdd);
+	pCBOperator->AddItem("@World.WVNodeMultiMath.Operator.Multiply", nullptr, (void*)(intptr_t)meHTVRuleMultiMath::eopMultiply);
+	pCBOperator->AddItem("@World.WVNodeMultiMath.Operator.Minimum", nullptr, (void*)(intptr_t)meHTVRuleMultiMath::eopMinimum);
+	pCBOperator->AddItem("@World.WVNodeMultiMath.Operator.Maximum", nullptr, (void*)(intptr_t)meHTVRuleMultiMath::eopMaximum);
+	pCBOperator->AddItem("@World.WVNodeMultiMath.Operator.Average", nullptr, (void*)(intptr_t)meHTVRuleMultiMath::eopAverage);
 	
 	pRuleMultiMath = rule; // required for combo box listener to not fire while list is build
 }

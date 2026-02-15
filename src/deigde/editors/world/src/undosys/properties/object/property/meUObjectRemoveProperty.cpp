@@ -50,7 +50,7 @@ meUObjectRemoveProperty::meUObjectRemoveProperty(meObject *object, const char *k
 	
 	pObject = nullptr;
 	
-	SetShortInfo("Remove object property");
+	SetShortInfo("@World.UObjectRemoveProperty.RemoveObjectProperty");
 	
 	pKey = key;
 	pValue = value;

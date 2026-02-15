@@ -40,7 +40,7 @@
 meUObjectPropertyCopyToSelected::meUObjectPropertyCopyToSelected(const meObject::List &list, const char *key, const char *value){
 	DEASSERT_TRUE(list.IsNotEmpty())
 	
-	SetShortInfo("Copy object property to selected");
+	SetShortInfo("@World.UObjectPropertyCopyToSelected.CopyObjectPropertyToSelected");
 	pKey = key;
 	pValue = value;
 	

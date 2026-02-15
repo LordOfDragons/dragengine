@@ -40,7 +40,7 @@
 meUDecalPropertyRemoveFromSelected::meUDecalPropertyRemoveFromSelected(const meDecal::List &list, const char *key){
 	DEASSERT_TRUE(list.IsNotEmpty())
 	
-	SetShortInfo("Remove decal property from selected");
+	SetShortInfo("@World.UDecalPropertyRemoveFromSelected.RemoveDecalPropertyFromSelected");
 	pKey = key;
 	
 	list.Visit([&](meDecal *decal){

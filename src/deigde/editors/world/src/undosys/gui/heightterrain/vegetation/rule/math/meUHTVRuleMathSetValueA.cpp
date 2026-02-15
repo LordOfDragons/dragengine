@@ -46,7 +46,7 @@ meUHTVRuleMathSetValueA::meUHTVRuleMathSetValueA(meHTVegetationLayer *vlayer, me
 	pVLayer = nullptr;
 	pRule = nullptr;
 	
-	SetShortInfo("Vegetation Layer Rule Math Set Value A");
+	SetShortInfo("@World.UHTVRuleMathSetValueA.VegetationLayerRuleMathSetValueA");
 	SetMemoryConsumption(sizeof(meUHTVRuleMathSetValueA));
 	
 	pOldValueA = rule->GetValueA();

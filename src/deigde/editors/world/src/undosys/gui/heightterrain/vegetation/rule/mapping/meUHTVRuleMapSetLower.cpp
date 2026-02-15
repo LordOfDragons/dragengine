@@ -46,7 +46,7 @@ meUHTVRuleMapSetLower::meUHTVRuleMapSetLower(meHTVegetationLayer *vlayer, meHTVR
 	pVLayer = nullptr;
 	pRule = nullptr;
 	
-	SetShortInfo("Vegetation Layer Rule Mapping Set Lower");
+	SetShortInfo("@World.UHTVRuleMapSetLower.VegetationLayerRuleMappingSetLower");
 	SetMemoryConsumption(sizeof(meUHTVRuleMapSetLower));
 	
 	pOldLower = rule->GetLower();

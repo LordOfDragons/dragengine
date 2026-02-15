@@ -46,7 +46,7 @@ meUHTVRuleCPSetRadius::meUHTVRuleCPSetRadius(meHTVegetationLayer *vlayer, meHTVR
 	pVLayer = nullptr;
 	pRule = nullptr;
 	
-	SetShortInfo("Vegetation Layer Rule Closest Prop Set Class");
+	SetShortInfo("@World.UHTVRuleCPSetRadius.VegetationLayerRuleClosestPropSetClass");
 	SetMemoryConsumption(sizeof(meUHTVRuleCPSetRadius));
 	
 	pOldRadius = rule->GetSearchRadius();

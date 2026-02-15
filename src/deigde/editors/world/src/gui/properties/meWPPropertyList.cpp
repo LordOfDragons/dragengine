@@ -133,8 +133,8 @@ class cActionPropertyAdd : public igdeAction {
 public:
 	using Ref = deTObjectReference<cActionPropertyAdd>;
 	cActionPropertyAdd(meWPPropertyList &panel) :
-	igdeAction("Add", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-		"Add property"),
+	igdeAction("@World.WPPropertyList.Action.PropertyAdd", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"@World.WPPropertyList.Action.Add"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -163,8 +163,8 @@ class cActionPropertyRemove : public igdeAction {
 public:
 	using Ref = deTObjectReference<cActionPropertyRemove>;
 	cActionPropertyRemove(meWPPropertyList &panel) :
-	igdeAction("Remove", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-		"Remove selected property"),
+	igdeAction("@World.WPPropertyList.Action.PropertyRemove", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@World.WPPropertyList.Action.Remove"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -190,8 +190,8 @@ class cActionPropertyClear : public igdeAction {
 public:
 	using Ref = deTObjectReference<cActionPropertyClear>;
 	cActionPropertyClear(meWPPropertyList &panel) :
-	igdeAction("Clear", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-		"Remove all properties"),
+	igdeAction("@World.WPPropertyList.Action.PropertyClear", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@World.WPPropertyList.Action.Clear"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -216,7 +216,7 @@ class cActionPropertyRename : public igdeAction {
 public:
 	using Ref = deTObjectReference<cActionPropertyRename>;
 	cActionPropertyRename(meWPPropertyList &panel) :
-	igdeAction("Rename...", nullptr, "Rename property"),
+	igdeAction("@World.WPPropertyList.Action.Rename", nullptr, "@World.WPPropertyList.Action.PropertyRename"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -226,12 +226,12 @@ public:
 		}
 		
 		decString name(property);
-		if(!igdeCommonDialogs::GetString(pPanel, "Rename Property", "Name:", name) || name == property){
+		if(!igdeCommonDialogs::GetString(pPanel, "@World.WPPropertyList.Dialog.Rename", "@World.WPPropertyList.Dialog.RenameName", name) || name == property){
 			return;
 		}
 		
 		if(pPanel.GetProperties().Has(name)){
-			igdeCommonDialogs::Error(pPanel, "Rename Property", "Property exists already");
+			igdeCommonDialogs::Error(pPanel, "@World.WPPropertyList.Dialog.Rename", "@World.WPPropertyList.Dialog.PropertyExistsAlready");
 			return;
 		}
 		
@@ -258,8 +258,8 @@ protected:
 public:
 	using Ref = deTObjectReference<cActionPropertyCopy>;
 	cActionPropertyCopy(meWPPropertyList &panel) :
-	igdeAction("Copy", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-		"Copy selected property"),
+	igdeAction("@World.WPPropertyList.Action.PropertyCopy", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		"@World.WPPropertyList.Action.Copy"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -285,8 +285,8 @@ protected:
 public:
 	using Ref = deTObjectReference<cActionPropertyCopyAll>;
 	cActionPropertyCopyAll(meWPPropertyList &panel) :
-	igdeAction("Copy All", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-		"Copy all properties"),
+	igdeAction("@World.WPPropertyList.Action.CopyAll", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		"@World.WPPropertyList.Action.CopyAllDesc"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -306,9 +306,9 @@ class cActionPropertyCut : public cActionPropertyCopy {
 public:
 	using Ref = deTObjectReference<cActionPropertyCut>;
 	cActionPropertyCut(meWPPropertyList &panel) : cActionPropertyCopy(panel){
-		SetText("Cut");
+		SetText("@World.WPPropertyList.Action.PropertyCut");
 		SetIcon(panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut));
-		SetDescription("Cut selected property");
+		SetDescription("@World.WPPropertyList.Action.CutSelectedProperty");
 	}
 	
 	void OnAction() override{
@@ -334,9 +334,9 @@ class cActionPropertyCutAll : public cActionPropertyCopyAll {
 public:
 	using Ref = deTObjectReference<cActionPropertyCutAll>;
 	cActionPropertyCutAll(meWPPropertyList &panel) : cActionPropertyCopyAll(panel){
-		SetText("Cut All");
+		SetText("@World.WPPropertyList.Action.PropertyCutAll");
 		SetIcon(panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut));
-		SetDescription("Cut all properties");
+		SetDescription("@World.WPPropertyList.Action.CutAllProperties");
 	}
 	
 	void OnAction() override{
@@ -363,8 +363,8 @@ class cActionPropertyPaste : public igdeAction {
 public:
 	using Ref = deTObjectReference<cActionPropertyPaste>;
 	cActionPropertyPaste(meWPPropertyList &panel) :
-	igdeAction("Paste", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
-		"Paste property"),
+	igdeAction("@World.WPPropertyList.Action.PropertyPaste", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+		"@World.WPPropertyList.Action.Paste"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -403,8 +403,8 @@ protected:
 public:
 	using Ref = deTObjectReference<cActionPropertyExport>;
 	cActionPropertyExport(meWPPropertyList &panel) :
-	igdeAction("Export All To Text...", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSaveAs),
-		"Show dialog with all properties in text form"),
+	igdeAction("@World.WPPropertyList.Action.ExportAllToText", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSaveAs),
+		"@World.WPPropertyList.PropertyKey.ToolTip"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -423,7 +423,7 @@ public:
 		});
 		
 		igdeCommonDialogs::GetMultilineString(*pPanel.GetParentWindow(),
-			"Export To Text", "Properties", text);
+			"@World.WPPropertyList.Dialog.ExportToText", "@World.WPPropertyList.Dialog.Duplicate", text);
 	}
 	
 	void Update() override{
@@ -437,8 +437,8 @@ class cActionPropertyImport : public igdeAction {
 public:
 	using Ref = deTObjectReference<cActionPropertyImport>;
 	cActionPropertyImport(meWPPropertyList &panel) :
-	igdeAction("Import From Text...", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
-		"Show dialog to enter properties to import in text form."),
+	igdeAction("@World.WPPropertyList.Action.ImportFromText", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
+		"@World.WPPropertyList.Action.ImportFromTextDesc"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -451,7 +451,7 @@ public:
 		
 		while(true){
 			if(!igdeCommonDialogs::GetMultilineString(*pPanel.GetParentWindow(),
-			"Import From Text", "Properties. One property per line in the form 'key=value'.", text)){
+			"@World.WPPropertyList.Dialog.ImportFromText", "@World.WPPropertyList.Dialog.PropertiesOnePropertyPerLineInFormKeyValueDesc", text)){
 				return;
 			}
 			
@@ -462,8 +462,8 @@ public:
 				lineNumber++;
 				const int delimiter = line.Find('=');
 				if(delimiter < 1){
-					igdeCommonDialogs::ErrorFormat(*pPanel.GetParentWindow(), "Import From Text",
-						"Invalid property on line {0}: '{1}'", lineNumber, line.GetString());
+					igdeCommonDialogs::ErrorFormat(*pPanel.GetParentWindow(), "@World.WPPropertyList.Dialog.ImportFromTextError",
+						"@World.WPPropertyList.Error.InvalidPropertyOnLine", lineNumber, line.GetString());
 					return false;
 				}
 				
@@ -586,23 +586,25 @@ pEnabled(true)
 	pActionPropertyImport = cActionPropertyImport::Ref::New(*this);
 	
 	
-	helper.FormLineStretchFirst(*this, "Property:", "Property to add", frameLine);
-	helper.ComboBoxFilter(frameLine, true, "Property to add", pCBKeys, cComboKey::Ref::New(*this));
+	//helper.FormLineStretchFirst(*this, "@World.WPSObjectShape.Property.Label", "@World.WPPropertyList.PropertyToAdd.ToolTip", frameLine);
+	frameLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
+	AddChild(frameLine);
+	helper.ComboBoxFilter(frameLine, true, "@World.WPPropertyList.PropertyToAdd.ToolTip", pCBKeys, cComboKey::Ref::New(*this));
 	pCBKeys->SetDefaultSorter();
 	helper.Button(frameLine, pBtnKeyAdd, pActionPropertyAdd);
 	
 	const igdeUIHelper::sColumnHeader headers[] = {
-		{"Key", nullptr, igdeApplication::app().DisplayScaled(200)},
-		{"Value", nullptr, igdeApplication::app().DisplayScaled(200)}
+		{"@World.WPPropertyList.Column.Key", nullptr, igdeApplication::app().DisplayScaled(200)},
+		{"@World.WPPropertyList.Column.Value", nullptr, igdeApplication::app().DisplayScaled(200)}
 	};
 	helper.IconListBox(*this, pListProperties,
 		igdeApplication::app().DisplayScaled(decPoint(100, 150)),
-		headers, 2, "Properties", cListProperties::Ref::New(*this));
+		headers, 2, "@World.WPPropertyList.Label.Properties", cListProperties::Ref::New(*this));
 	pListProperties->SetDefaultSorter();
 	
 	helper.EditPropertyValue(*this, pEditPropertyValue, cEditPropertyValue::Ref::New(*this));
 	
-	helper.EditString(*this, "Information", pDisplayInfo, 5, {});
+	helper.EditString(*this, "@World.WPPropertyList.Information.Label", pDisplayInfo, 6, {});
 	pDisplayInfo->SetEditable(false);
 }
 
@@ -769,9 +771,8 @@ void meWPPropertyList::EditPropertyValueInDialog(){
 	const decString oldValue(selection->GetDetails().GetAt(0));
 	decString newValue(oldValue);
 	
-	if(!igdeCommonDialogs::GetMultilineString(*this, "Edit Raw Property Value",
-		"Raw property value. Values entered here can violate the\n"
-		"property type so be careful what you enter", newValue)){
+	if(!igdeCommonDialogs::GetMultilineString(*this, "@World.WPPropertyList.Dialog.EditRawPropertyValue",
+		"@World.WPPropertyList.Dialog.EditRawPropertyValueDesc", newValue)){
 			return;
 	}
 	
@@ -815,11 +816,11 @@ void meWPPropertyList::UpdateInformation(const char *key){
 	decString text;
 	
 	if(gdProperty){
-		text.Format("Property: %s\nDefault: '%s'\n\n%s", key, defaultValue.GetString(),
-			gdProperty->GetDescription().GetString());
+		text.FormatSafe(Translate("World.WPPropertyList.Info.WithIdentifier").ToUTF8(),
+			key, defaultValue, gdProperty->GetDescription());
 		
 	}else{
-		text.Format("Property: %s\nDefault: '%s'", key, defaultValue.GetString());
+		text.FormatSafe(Translate("World.WPPropertyList.Info.NoIdentifier").ToUTF8(), key, defaultValue);
 	}
 	
 	pDisplayInfo->SetText(text);

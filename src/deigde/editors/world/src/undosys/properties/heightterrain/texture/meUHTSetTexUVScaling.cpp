@@ -52,7 +52,7 @@ meUHTSetTexUVScaling::meUHTSetTexUVScaling(meWorld *world, meHeightTerrainSector
 	pOldScaling.y = texture->GetProjectionScalingV();
 	pNewScaling = newScaling;
 	
-	SetShortInfo("Set Height Terrain Texture UV Scaling");
+	SetShortInfo("@World.UHTSetTexUVScaling.SetHeightTerrainTextureUvScaling");
 	pTexture = texture;
 }
 

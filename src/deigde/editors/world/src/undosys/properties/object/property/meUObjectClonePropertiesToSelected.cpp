@@ -44,7 +44,7 @@ meUObjectClonePropertiesToSelected::meUObjectClonePropertiesToSelected(
 const meObject::List &list, const decStringDictionary &properties){
 	DEASSERT_TRUE(list.IsNotEmpty())
 	
-	SetShortInfo("Clone object properties to selected");
+	SetShortInfo("@World.UObjectClonePropertiesToSelected.CloneObjectPropertiesToSelected");
 	pProperties = properties;
 	
 	list.Visit([&](meObject *object){

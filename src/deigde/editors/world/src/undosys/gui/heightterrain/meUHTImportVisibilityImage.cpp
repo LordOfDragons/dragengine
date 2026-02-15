@@ -61,7 +61,7 @@ meUHTImportVisibilityImage::meUHTImportVisibilityImage(meWorld *world, meHeightT
 	pOldVis = nullptr;
 	pNewVis = nullptr;
 	
-	SetShortInfo("Import Visibility Image");
+	SetShortInfo("@World.WPHeightTerrain.Dialog.ImportVisibilityImage");
 	SetMemoryConsumption(sizeof(meUHTImportVisibilityImage) + 2 * (pixelCount / 8 + 1));
 	
 	try{

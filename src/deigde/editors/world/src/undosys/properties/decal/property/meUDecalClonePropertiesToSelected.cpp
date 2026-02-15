@@ -41,7 +41,7 @@ meUDecalClonePropertiesToSelected::meUDecalClonePropertiesToSelected(
 const meDecal::List &list, const decStringDictionary &properties){
 	DEASSERT_TRUE(list.IsNotEmpty())
 	
-	SetShortInfo("Clone decal properties to selected");
+	SetShortInfo("@World.UDecalClonePropertiesToSelected.CloneDecalPropertiesToSelected");
 	pPropertyList = properties;
 	
 	list.Visit([&](meDecal *decal){

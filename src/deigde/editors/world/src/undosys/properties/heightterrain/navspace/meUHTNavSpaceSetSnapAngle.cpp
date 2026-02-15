@@ -49,7 +49,7 @@ pNewSnapAngle(newSnapAngle)
 	
 	pOldSnapAngle = navspace->GetSnapAngle();
 	
-	SetShortInfo("Height terrain nav-space set snap angle");
+	SetShortInfo("@World.UHTNavSpaceSetSnapAngle.HeightTerrainNavSpaceSetSnapAngle");
 	
 	pNavSpace = navspace;
 }

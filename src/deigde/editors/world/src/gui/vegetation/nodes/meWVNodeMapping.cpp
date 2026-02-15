@@ -124,7 +124,7 @@ protected:
 public:
 	using Ref = deTObjectReference<cActionInversed>;
 	cActionInversed(meWVNodeMapping &node) :
-		igdeAction("Inversed", nullptr, "Invert value"), pNode(node){}
+		igdeAction("@World.WVNodeMapping.Action.Inversed", nullptr, "@World.WVNodeMapping.Action.Inversed"), pNode(node){}
 	
 	void OnAction() override{
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
@@ -151,29 +151,29 @@ pRuleMapping(rule)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	SetTitle("Mapping");
+	SetTitle("@World.WVNodeMapping.Title");
 	
 	// slots
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"Value", "Mapped value",
+		"@World.WVNodeMapping.Output.Result", "@World.WVNodeMapping.Output.ResultDesc",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleMapping::eosValue));
 	
 	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::New(env,
-		"Lower", "Lower value",
+		"@World.WVNodeMapping.Output.Lower", "@World.WVNodeMapping.Output.LowerDesc",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleMapping::eisLower));
-	helper.EditFloat(slot, "Lower value if slot is not connected.",
+	helper.EditFloat(slot, "@World.WVNodeMapping.LowerValueIfSlotIsNotConnected.Label",
 		pEditLower, cTextLower::Ref::New(*this));
 	AddSlot(slot);
 	
-	slot = meWVNodeSlot::Ref::New(env, "Upper", "Upper value",
+	slot = meWVNodeSlot::Ref::New(env, "@World.WVNodeMapping.Output.Upper", "@World.WVNodeMapping.Output.UpperDesc",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleMapping::eisUpper);
-	helper.EditFloat(slot, "Upper value if slot is not connected.",
+	helper.EditFloat(slot, "@World.WVNodeMapping.UpperValueIfSlotIsNotConnected.Label",
 		pEditUpper, cTextUpper::Ref::New(*this));
 	AddSlot(slot);
 	
-	slot = meWVNodeSlot::Ref::New(env, "Value", "Value to map",
+	slot = meWVNodeSlot::Ref::New(env, "@World.WVNodeMapping.Input.Value", "@World.WVNodeMapping.Input.ValueDesc",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleMapping::eisValue);
-	helper.EditFloat(slot, "Value to map if slot is not connected.",
+	helper.EditFloat(slot, "@World.WVNodeMapping.ValueToMapIfSlotIsNotConnected.Label",
 		pEditValue, cTextValue::Ref::New(*this));
 	AddSlot(slot);
 	

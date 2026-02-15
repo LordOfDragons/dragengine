@@ -45,7 +45,7 @@ meUSetObjectPosition::meUSetObjectPosition(meObject *object, const decDVector &n
 	pOldPosition = object->GetPosition();
 	pNewPosition = newPosition;
 	
-	SetShortInfo("Set Object position");
+	SetShortInfo("@World.USetObjectPosition.SetObjectPosition");
 	
 	pObject = object;
 }

@@ -54,7 +54,7 @@ meHeightTerrainTexture *texture, const decVector2 &newOffset)
 	pOldOffset.y = texture->GetProjectionOffsetV();
 	pNewOffset = newOffset;
 	
-	SetShortInfo("Set Height Terrain Texture UV Offset");
+	SetShortInfo("@World.UHTSetTexUVOffset.SetHeightTerrainTextureUvOffset");
 	pTexture = texture;
 }
 

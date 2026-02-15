@@ -64,19 +64,19 @@ pRuleGeometry(rule)
 // 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	SetTitle("Geometry");
+	SetTitle("@World.WVNodeGeometry.Title");
 	
 	// slots
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"Height", "Height of point relative to terrain position",
+		"@World.WVNodeGeometry.Output.Position", "@World.WVNodeGeometry.Output.PositionDesc",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleGeometry::eosHeight));
 	
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"Normal", "Normalized vector relative to terrain orientation",
+		"@World.WVNodeGeometry.Output.Normal", "@World.WVNodeGeometry.Output.NormalDesc",
 		false, *this, meWVNodeSlot::estVector, meHTVRuleGeometry::eosNormal));
 	
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"Terrain Type", "Terrain type",
+		"@World.WVNodeGeometry.Output.TerrainType", "@World.WVNodeGeometry.Output.TerrainTypeDesc",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleGeometry::eosTerrainType));
 	
 	// parameters

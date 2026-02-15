@@ -140,23 +140,23 @@ pRuleMath(nullptr)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	SetTitle("Math");
+	SetTitle("@World.WVNodeMath.Title");
 	
 	// slots
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"Result", "Result of the operation",
+		"@World.WVNodeMath.Output.Result", "@World.WVNodeMath.Output.ResultDesc",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleMath::eosResult));
 	
 	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::New(env,
-		"Value A", "First operand",
+		"@World.WVNodeMath.Input.A", "@World.WVNodeMath.Input.ADesc",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleMath::eisValueA));
-	helper.EditFloat(slot, "First operant if slot is not connected.",
+	helper.EditFloat(slot, "@World.WVNodeVectorMath.FirstOperantIfSlotIsNotConnected.Label",
 		pEditValueA, cTextValueA::Ref::New(*this));
 	AddSlot(slot);
 	
-	slot = meWVNodeSlot::Ref::New(env, "Value B", "Second operand if required",
+	slot = meWVNodeSlot::Ref::New(env, "@World.WVNodeMath.Input.B", "@World.WVNodeMath.Input.BDesc",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleMath::eisValueB);
-	helper.EditFloat(slot, "Second operant if slot is not connected.",
+	helper.EditFloat(slot, "@World.WVNodeVectorMath.SecondOperantIfSlotIsNotConnected.Label",
 		pEditValueB, cTextValueB::Ref::New(*this));
 	AddSlot(slot);
 	
@@ -164,28 +164,29 @@ pRuleMath(nullptr)
 	pFraParameters = igdeContainerForm::Ref::New(env);
 	AddChild(pFraParameters);
 	
-	helper.ComboBox(pFraParameters, "Operator:", "Operator to use.", pCBOperator, cComboOperator::Ref::New(*this));
-	pCBOperator->AddItem("Add", nullptr, (void*)(intptr_t)meHTVRuleMath::eopAdd);
-	pCBOperator->AddItem("Subtract", nullptr, (void*)(intptr_t)meHTVRuleMath::eopSubtract);
-	pCBOperator->AddItem("Multiply", nullptr, (void*)(intptr_t)meHTVRuleMath::eopMultiply);
-	pCBOperator->AddItem("Divide", nullptr, (void*)(intptr_t)meHTVRuleMath::eopDivide);
-	pCBOperator->AddItem("Sine", nullptr, (void*)(intptr_t)meHTVRuleMath::eopSine);
-	pCBOperator->AddItem("Cosine", nullptr, (void*)(intptr_t)meHTVRuleMath::eopCosine);
-	pCBOperator->AddItem("Tangent", nullptr, (void*)(intptr_t)meHTVRuleMath::eopTangent);
-	pCBOperator->AddItem("ArcSine", nullptr, (void*)(intptr_t)meHTVRuleMath::eopArcSine);
-	pCBOperator->AddItem("ArcCosine", nullptr, (void*)(intptr_t)meHTVRuleMath::eopArcCosine);
-	pCBOperator->AddItem("ArcTangent", nullptr, (void*)(intptr_t)meHTVRuleMath::eopArcTangent);
-	pCBOperator->AddItem("Power", nullptr, (void*)(intptr_t)meHTVRuleMath::eopPower);
-	pCBOperator->AddItem("Exponential", nullptr, (void*)(intptr_t)meHTVRuleMath::eopExponential);
-	pCBOperator->AddItem("Logarithm", nullptr, (void*)(intptr_t)meHTVRuleMath::eopLogarithm);
-	pCBOperator->AddItem("Minimum", nullptr, (void*)(intptr_t)meHTVRuleMath::eopMinimum);
-	pCBOperator->AddItem("Maximum", nullptr, (void*)(intptr_t)meHTVRuleMath::eopMaximum);
-	pCBOperator->AddItem("Round", nullptr, (void*)(intptr_t)meHTVRuleMath::eopRound);
-	pCBOperator->AddItem("LessThan", nullptr, (void*)(intptr_t)meHTVRuleMath::eopLessThan);
-	pCBOperator->AddItem("GreaterThan", nullptr, (void*)(intptr_t)meHTVRuleMath::eopGreaterThan);
-	pCBOperator->AddItem("Equal", nullptr, (void*)(intptr_t)meHTVRuleMath::eopEqual);
-	pCBOperator->AddItem("NotEqual", nullptr, (void*)(intptr_t)meHTVRuleMath::eopNotEqual);
-	pCBOperator->AddItem("Average", nullptr, (void*)(intptr_t)meHTVRuleMath::eopAverage);
+	helper.ComboBox(pFraParameters, "@World.WVNodeVectorMath.Operator.Label", "@World.WVNodeVectorMath.OperatorToUse.ToolTip", pCBOperator, cComboOperator::Ref::New(*this));
+	pCBOperator->SetAutoTranslateItems(true);
+	pCBOperator->AddItem("@World.WVNodeMath.Operator.Add", nullptr, (void*)(intptr_t)meHTVRuleMath::eopAdd);
+	pCBOperator->AddItem("@World.WVNodeMath.Operator.Subtract", nullptr, (void*)(intptr_t)meHTVRuleMath::eopSubtract);
+	pCBOperator->AddItem("@World.WVNodeMath.Operator.Multiply", nullptr, (void*)(intptr_t)meHTVRuleMath::eopMultiply);
+	pCBOperator->AddItem("@World.WVNodeMath.Operator.Divide", nullptr, (void*)(intptr_t)meHTVRuleMath::eopDivide);
+	pCBOperator->AddItem("@World.WVNodeMath.Operator.Sine", nullptr, (void*)(intptr_t)meHTVRuleMath::eopSine);
+	pCBOperator->AddItem("@World.WVNodeMath.Operator.Cosine", nullptr, (void*)(intptr_t)meHTVRuleMath::eopCosine);
+	pCBOperator->AddItem("@World.WVNodeMath.Operator.Tangent", nullptr, (void*)(intptr_t)meHTVRuleMath::eopTangent);
+	pCBOperator->AddItem("@World.WVNodeMath.Operator.ArcSine", nullptr, (void*)(intptr_t)meHTVRuleMath::eopArcSine);
+	pCBOperator->AddItem("@World.WVNodeMath.Operator.ArcCosine", nullptr, (void*)(intptr_t)meHTVRuleMath::eopArcCosine);
+	pCBOperator->AddItem("@World.WVNodeMath.Operator.ArcTangent", nullptr, (void*)(intptr_t)meHTVRuleMath::eopArcTangent);
+	pCBOperator->AddItem("@World.WVNodeMath.Operator.Power", nullptr, (void*)(intptr_t)meHTVRuleMath::eopPower);
+	pCBOperator->AddItem("@World.WVNodeMath.Operator.Exponential", nullptr, (void*)(intptr_t)meHTVRuleMath::eopExponential);
+	pCBOperator->AddItem("@World.WVNodeMath.Operator.Logarithm", nullptr, (void*)(intptr_t)meHTVRuleMath::eopLogarithm);
+	pCBOperator->AddItem("@World.WVNodeMath.Operator.Minimum", nullptr, (void*)(intptr_t)meHTVRuleMath::eopMinimum);
+	pCBOperator->AddItem("@World.WVNodeMath.Operator.Maximum", nullptr, (void*)(intptr_t)meHTVRuleMath::eopMaximum);
+	pCBOperator->AddItem("@World.WVNodeMath.Operator.Round", nullptr, (void*)(intptr_t)meHTVRuleMath::eopRound);
+	pCBOperator->AddItem("@World.WVNodeMath.Operator.LessThan", nullptr, (void*)(intptr_t)meHTVRuleMath::eopLessThan);
+	pCBOperator->AddItem("@World.WVNodeMath.Operator.GreaterThan", nullptr, (void*)(intptr_t)meHTVRuleMath::eopGreaterThan);
+	pCBOperator->AddItem("@World.WVNodeMath.Operator.Equal", nullptr, (void*)(intptr_t)meHTVRuleMath::eopEqual);
+	pCBOperator->AddItem("@World.WVNodeMath.Operator.NotEqual", nullptr, (void*)(intptr_t)meHTVRuleMath::eopNotEqual);
+	pCBOperator->AddItem("@World.WVNodeMath.Operator.Average", nullptr, (void*)(intptr_t)meHTVRuleMath::eopAverage);
 	
 	pRuleMath = rule; // required for combo box listener to not fire while list is build
 }

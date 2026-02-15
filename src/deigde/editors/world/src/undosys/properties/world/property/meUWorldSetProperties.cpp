@@ -46,7 +46,7 @@ pNewValues(newValues)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Set world properties");
+	SetShortInfo("@World.UWorldSetProperties.SetWorldProperties");
 	
 	pOldValues = world->GetProperties();
 	

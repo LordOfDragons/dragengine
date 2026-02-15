@@ -46,7 +46,7 @@ meUObjectRemoveAllTextures::meUObjectRemoveAllTextures(meObject *object){
 	DEASSERT_TRUE(object->GetTextures().IsNotEmpty())
 	DEASSERT_NOTNULL(object->GetWorld())
 	
-	SetShortInfo("Remove All Object Textures");
+	SetShortInfo("@World.UObjectRemoveAllTextures.RemoveAllObjectTextures");
 	
 	pTextureList = object->GetTextures();
 	pObject = object;

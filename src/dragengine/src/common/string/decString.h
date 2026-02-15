@@ -154,6 +154,14 @@ public:
 		}
 	}
 	
+	/** \brief Runtime safe format string using std::vformat. */
+	template<typename... Args>
+	inline static decString Formatted(const char *format, Args&&... args){
+		decString result;
+		result.FormatSafe(format, std::forward<Args>(args)...);
+		return result;
+	}
+	
 	/** \brief Appends a string. */
 	void Append(const decString &string);
 	

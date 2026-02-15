@@ -52,7 +52,7 @@ pDecal(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Add decal property");
+	SetShortInfo("@World.UDecalAddProperty.AddDecalProperty");
 	
 	pDecal = nullptr;
 	

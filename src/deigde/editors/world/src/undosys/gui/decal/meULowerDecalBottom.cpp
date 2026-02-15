@@ -49,7 +49,7 @@ meULowerDecalBottom::meULowerDecalBottom(meWorld *world, meDecal *decal){
 		pOldIndex = decal->GetParentObject()->GetDecals().IndexOf(decal);
 	//}
 	
-	SetShortInfo("Lower decal to the bottom.");
+	SetShortInfo("@World.ULowerDecalBottom.LowerDecalToBottom");
 	SetLongInfo("");
 }
 

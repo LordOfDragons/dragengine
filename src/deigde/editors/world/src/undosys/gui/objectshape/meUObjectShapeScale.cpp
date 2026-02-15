@@ -99,14 +99,16 @@ public:
 ////////////////////////////
 
 meUObjectShapeScale::meUObjectShapeScale(meObject *object, const char *property,
-const meObjectShape::List &list){
+const meObjectShape::List &list) :
+meBaseUndoScale(*object->GetEnvironment())
+{
 	DEASSERT_TRUE(list.IsNotEmpty())
 	DEASSERT_NOTNULL(object)
 	DEASSERT_NOTNULL(property)
 	DEASSERT_NOTNULL(object->GetWorld())
 	
-	SetShortInfo("Scale object shapes");
-	SetLongInfo("Scale object shapes");
+	SetShortInfo("@World.UObjectShapeScale.ScaleObjectShapes");
+	SetLongInfo("@World.UObjectShapeScale.ScaleObjectShapes");
 	
 	pPropertyExists = object->GetProperties().Has(property);
 	if(pPropertyExists){
