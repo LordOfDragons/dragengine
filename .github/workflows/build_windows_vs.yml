@@ -146,6 +146,22 @@ jobs:
           $Content = $Content -creplace "DebugBuild","${{ inputs.debugBuild && 'yes' || 'no' }}"
           Set-Content -Path "custom.py" -Value $Content
       
+      - name: Cache External Dependencies
+        id: cache-extern
+        uses: actions/cache@v4
+        with:
+          path: ./vs/extern
+          key: ${{ runner.os }}-extern-${{ hashFiles('./vs/extern/**/*.ps1') }}
+          restore-keys: |
+            ${{ runner.os }}-extern-
+      
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: ${{ runner.os }}-ccache-${{ hashFiles('**/vs/extern/**/*.ps1') }}
+          restore-keys: ${{ runner.os }}-ccache-
+          variant: sccache # sccache is often better for Windows/MSBuild
+    
       - name: Build
         working-directory: vs
         run: |
