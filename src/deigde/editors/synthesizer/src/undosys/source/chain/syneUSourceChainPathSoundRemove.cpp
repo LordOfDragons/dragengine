@@ -49,7 +49,7 @@ pSource(nullptr)
 	pIndex = index;
 	pPath = source->GetPathSounds().GetAt(index);
 	
-	SetShortInfo("Chain source remove path sound");
+	SetShortInfo("@Source Chain Path Sound Remove");
 	
 	pSource = source;
 }

@@ -51,7 +51,7 @@ pSynthesizer(nullptr)
 	pNewBytesPerSample = newBytesPerSample;
 	
 	pSynthesizer = synthesizer;
-	SetShortInfo("Synthesizer set bytes per sample");
+	SetShortInfo("@Synthesizer Set Bytes Per Sample");
 }
 
 syneUSynthesizerSetBytesPerSample::~syneUSynthesizerSetBytesPerSample(){

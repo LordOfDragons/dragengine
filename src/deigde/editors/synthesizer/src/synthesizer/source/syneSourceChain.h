@@ -61,7 +61,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create synthesizer source. */
-	syneSourceChain(deEngine *engine);
+	syneSourceChain(deEngine *engine, const char *name);
 	
 	/** \brief Create copy of synthesizer source. */
 	syneSourceChain(const syneSourceChain &copy);

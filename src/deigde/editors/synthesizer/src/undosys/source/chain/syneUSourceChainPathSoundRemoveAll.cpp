@@ -48,7 +48,7 @@ pSource(nullptr)
 	
 	pPathSounds = source->GetPathSounds();
 	
-	SetShortInfo("Chain source remove all path sounds");
+	SetShortInfo("@Source Chain Path Sound Remove All");
 	
 	pSource = source;
 }

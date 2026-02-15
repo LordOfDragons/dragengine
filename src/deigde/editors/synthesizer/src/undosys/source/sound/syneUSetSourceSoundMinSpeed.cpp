@@ -46,7 +46,7 @@ pSource(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Set sound source minimum speed");
+	SetShortInfo("@Source Sound Set Min Speed");
 	
 	pOldSpeed = source->GetMinSpeed();
 	pNewSpeed = newSpeed;

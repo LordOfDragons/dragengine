@@ -53,7 +53,7 @@ pNewController(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Set Link Controller");
+	SetShortInfo("@Link Set Controller");
 	
 	pLink = link;
 	pOldController = link->GetController();

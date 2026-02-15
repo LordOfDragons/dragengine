@@ -45,7 +45,7 @@ pSource(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Source wave set type");
+	SetShortInfo("@Source Wave Set Type");
 	
 	pOldType = source->GetWaveType();
 	pNewType = newType;

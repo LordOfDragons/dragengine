@@ -49,8 +49,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-syneSourceChain::syneSourceChain(deEngine *engine) :
-syneSource(deSynthesizerSourceVisitorIdentify::estChain),
+syneSourceChain::syneSourceChain(deEngine *engine, const char *name) :
+syneSource(deSynthesizerSourceVisitorIdentify::estChain, name),
 pEngine(engine),
 pMinSpeed(1.0f),
 pMaxSpeed(1.0f),

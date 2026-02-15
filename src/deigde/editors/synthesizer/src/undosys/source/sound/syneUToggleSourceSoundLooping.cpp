@@ -46,7 +46,7 @@ pSource(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Toggle sound source looping");
+	SetShortInfo("@Source Sound Toggle Looping");
 	
 	pSource = source;
 }

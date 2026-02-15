@@ -47,7 +47,7 @@ pSource(nullptr)
 	}
 	
 	pSource = source;
-	SetShortInfo("Toggle source enabled");
+	SetShortInfo("@Source Toggle Enabled");
 }
 
 syneUSourceToggleEnabled::~syneUSourceToggleEnabled(){

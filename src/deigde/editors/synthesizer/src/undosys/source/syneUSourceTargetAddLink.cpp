@@ -41,15 +41,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-syneUSourceTargetAddLink::syneUSourceTargetAddLink(syneSource *source, syneControllerTarget *target, syneLink *link) :
-
-pTarget(nullptr)
-{
+syneUSourceTargetAddLink::syneUSourceTargetAddLink(syneSource *source, syneControllerTarget *target, syneLink *link){
 	if(!source || !target || !link){
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Source Target Add Link");
+	SetShortInfo("@Source Target Add Link");
 	
 	pSource = source;
 	pTarget = target;

@@ -50,7 +50,7 @@ pSource(nullptr)
 	pOldType = source->GetApplicationType();
 	pNewType = newType;
 	
-	SetShortInfo("Group source set application type");
+	SetShortInfo("@Source Group Set Application Type");
 	
 	pSource = source;
 }

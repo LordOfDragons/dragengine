@@ -49,7 +49,7 @@ pSource(nullptr)
 	pOldName = source->GetName();
 	pNewName = newName;
 	
-	SetShortInfo("Set Source Name");
+	SetShortInfo("@Source Set Name");
 	
 	pSource = source;
 }

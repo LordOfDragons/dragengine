@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create source. */
-	syneSourceWave();
+	explicit syneSourceWave(const char *name);
 	
 	/** \brief Create copy of source. */
 	syneSourceWave(const syneSourceWave &copy);

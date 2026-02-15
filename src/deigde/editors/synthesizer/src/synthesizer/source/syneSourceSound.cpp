@@ -49,8 +49,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-syneSourceSound::syneSourceSound(deEngine *engine) :
-syneSource(deSynthesizerSourceVisitorIdentify::estSound),
+syneSourceSound::syneSourceSound(deEngine *engine, const char *name) :
+syneSource(deSynthesizerSourceVisitorIdentify::estSound, name),
 pEngine(engine),
 pMinSpeed(1.0f),
 pMaxSpeed(1.0f),

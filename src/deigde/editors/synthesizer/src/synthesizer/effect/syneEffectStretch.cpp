@@ -47,7 +47,9 @@ syneEffect(deSynthesizerEffectVisitorIdentify::eetStretch),
 pMinTime(0.0f),
 pMaxTime(0.0f),
 pMinPitch(0.0f),
-pMaxPitch(0.0f){
+pMaxPitch(0.0f),
+pTargetTime(syneControllerTarget::Ref::New()),
+pTargetPitch(syneControllerTarget::Ref::New()){
 }
 
 syneEffectStretch::syneEffectStretch(const syneEffectStretch &copy) :
@@ -56,8 +58,8 @@ pMinTime(copy.pMinTime),
 pMaxTime(copy.pMaxTime),
 pMinPitch(copy.pMinPitch),
 pMaxPitch(copy.pMaxPitch),
-pTargetTime(copy.pTargetTime),
-pTargetPitch(copy.pTargetPitch){
+pTargetTime(syneControllerTarget::Ref::New(copy.pTargetTime)),
+pTargetPitch(syneControllerTarget::Ref::New(copy.pTargetPitch)){
 }
 
 syneEffectStretch::~syneEffectStretch(){

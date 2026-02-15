@@ -162,7 +162,7 @@ public:
 		}
 		
 		if(pPanel.GetSynthesizer()->GetControllers().HasNamed(text)){
-			igdeCommonDialogs::Error(pPanel, "Invalid Value", "Duplicate controller name");
+			igdeCommonDialogs::Error(pPanel, "@Synthesizer.WPController.Error.InvalidValue.Title", "@Synthesizer.WPController.Error.DuplicateName");
 			textField->SetText(controller->GetName());
 			return {};
 		}
@@ -198,8 +198,8 @@ public:
 class cActionClamp : public cBaseAction{
 public:
 	using Ref = deTObjectReference<cActionClamp>;
-	cActionClamp(syneWPController &panel) : cBaseAction(panel, "Clamp value to range",
-		nullptr, "Determines if the value of the controller is clamped to the given range"){ }
+	cActionClamp(syneWPController &panel) : cBaseAction(panel, "@Synthesizer.WPController.Action.Clamp",
+		nullptr, "@Synthesizer.WPController.Action.Clamp.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(syneController *controller) override{
 		return syneUControllerToggleClamp::Ref::New(controller);
@@ -283,7 +283,7 @@ class cActionCurveSetConstValue : public cActionSetCurve{
 public:
 	using Ref = deTObjectReference<cActionCurveSetConstValue>;
 	cActionCurveSetConstValue(syneWPController &panel, igdeViewCurveBezier *editCurve, igdeTextField *editConstValue) :
-		cActionSetCurve(panel, editCurve, "Const", nullptr, "Set curve to constant value"),
+		cActionSetCurve(panel, editCurve, "@Synthesizer.WPController.Action.CurveConst", nullptr, "@Synthesizer.WPController.Action.CurveConst.ToolTip"),
 	pEditConstValue(editConstValue){}
 	
 	void CreateCurve(const syneController &controller, decCurveBezier &curve) override{
@@ -301,7 +301,7 @@ class cActionCurveSetLinear : public cActionSetCurve{
 public:
 	using Ref = deTObjectReference<cActionCurveSetLinear>;
 	cActionCurveSetLinear(syneWPController &panel, igdeViewCurveBezier *editCurve) :
-		cActionSetCurve(panel, editCurve, "Linear", nullptr, "Set curve to linear curve from 0 to 1"){}
+		cActionSetCurve(panel, editCurve, "@Synthesizer.WPController.Action.CurveLinear", nullptr, "@Synthesizer.WPController.Action.CurveLinear.ToolTip"){}
 	
 	void CreateCurve(const syneController &controller, decCurveBezier &curve) override{
 		const float xmax = pPanel.GetSynthesizer()->GetPlayTime();
@@ -322,7 +322,7 @@ class cActionCurveSetLinearInverse : public cActionSetCurve{
 public:
 	using Ref = deTObjectReference<cActionCurveSetLinearInverse>;
 	cActionCurveSetLinearInverse(syneWPController &panel, igdeViewCurveBezier *editCurve) :
-		cActionSetCurve(panel, editCurve, "Inverse", nullptr, "Set curve to linear curve from 1 to 0"){}
+		cActionSetCurve(panel, editCurve, "@Synthesizer.WPController.Action.CurveInverse", nullptr, "@Synthesizer.WPController.Action.CurveInverse.ToolTip"){}
 	
 	void CreateCurve(const syneController &controller, decCurveBezier &curve) override{
 		const float xmax = pPanel.GetSynthesizer()->GetPlayTime();
@@ -343,7 +343,7 @@ class cActionCurveSetBezier : public cActionSetCurve{
 public:
 	using Ref = deTObjectReference<cActionCurveSetBezier>;
 	cActionCurveSetBezier(syneWPController &panel, igdeViewCurveBezier *editCurve) :
-		cActionSetCurve(panel, editCurve, "Bezier", nullptr, "Set curve to bezier curve from 0 to 1"){}
+		cActionSetCurve(panel, editCurve, "@Synthesizer.WPController.Action.CurveBezier", nullptr, "@Synthesizer.WPController.Action.CurveBezier.ToolTip"){}
 	
 	void CreateCurve(const syneController &controller, decCurveBezier &curve) override{
 		const float xmax = pPanel.GetSynthesizer()->GetPlayTime();
@@ -362,7 +362,7 @@ class cActionCurveSetBezierInverse : public cActionSetCurve{
 public:
 	using Ref = deTObjectReference<cActionCurveSetBezierInverse>;
 	cActionCurveSetBezierInverse(syneWPController &panel, igdeViewCurveBezier *editCurve) :
-		cActionSetCurve(panel, editCurve, "Inverse", nullptr, "Set curve to bezier curve from 1 to 0"){}
+		cActionSetCurve(panel, editCurve, "@Synthesizer.WPController.Action.CurveBezierInverse", nullptr, "@Synthesizer.WPController.Action.CurveBezierInverse.ToolTip"){}
 	
 	void CreateCurve(const syneController &controller, decCurveBezier &curve) override{
 		const float xmax = pPanel.GetSynthesizer()->GetPlayTime();
@@ -402,21 +402,21 @@ pViewSynthesizer(viewSynthesizer)
 	AddChild(content);
 	
 	
-	helper.GroupBoxFlow(content, groupBox, "Controllers:");
-	helper.ListBox(groupBox, 10, "Controllers", pListController, cListControllers::Ref::New(*this));
+	helper.GroupBoxFlow(content, groupBox, "@Synthesizer.WPController.GroupControllers");
+	helper.ListBox(groupBox, 10, "@Synthesizer.WPController.ListControllers.ToolTip", pListController, cListControllers::Ref::New(*this));
 	pListController->SetDefaultSorter();
 	
 	
-	helper.GroupBoxStatic(content, groupBox, "Controller Settings:");
-	helper.EditString(groupBox, "Name:", "Name of controller", pEditName, cTextName::Ref::New(*this));
-	helper.EditFloat(groupBox, "Minimum Value:", "Minimum controller value",
+	helper.GroupBoxStatic(content, groupBox, "@Synthesizer.WPController.GroupControllerSettings");
+	helper.EditString(groupBox, "@Synthesizer.WPController.FieldName.Label", "@Synthesizer.WPController.FieldName.ToolTip", pEditName, cTextName::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Synthesizer.WPController.FieldMinValue.Label", "@Synthesizer.WPController.FieldMinValue.ToolTip",
 		pEditMin, cTextMinimumValue::Ref::New(*this));
-	helper.EditFloat(groupBox, "Maximum Value:", "Maximum controller value",
+	helper.EditFloat(groupBox, "@Synthesizer.WPController.FieldMaxValue.Label", "@Synthesizer.WPController.FieldMaxValue.ToolTip",
 		pEditMax, cTextMaximumValue::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkClamp, cActionClamp::Ref::New(*this));
 	
 	
-	helper.GroupBoxFlow(content, groupBox, "Controller Curve:");
+	helper.GroupBoxFlow(content, groupBox, "@Synthesizer.WPController.GroupControllerCurve");
 	
 	helper.ViewCurveBezier(groupBox, pEditCurve, cEditCurve::Ref::New(*this));
 	pEditCurve->SetDefaultSize(decPoint(200, 250));
@@ -427,7 +427,7 @@ pViewSynthesizer(viewSynthesizer)
 	
 	formLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX);
 	groupBox->AddChild(formLine);
-	helper.EditFloat(formLine, "Constant curve value", 6, 3,
+	helper.EditFloat(formLine, "@Synthesizer.WPController.FieldConstValue.ToolTip", 6, 3,
 		pEditCurveSetConstValue, cTextCurveConstValue::Ref::New(*this));
 	helper.Button(formLine, pBtnCurveSetConstant, cActionCurveSetConstValue::Ref::New(*this, pEditCurve, pEditCurveSetConstValue));
 	

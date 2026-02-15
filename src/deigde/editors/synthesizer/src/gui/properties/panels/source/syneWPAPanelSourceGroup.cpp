@@ -96,13 +96,14 @@ syneWPAPanelSource(wpSource, deSynthesizerSourceVisitorIdentify::estGroup)
 	igdeContainer::Ref groupBox;
 	
 	
-	helper.GroupBox(*this, groupBox, "Group:");
-	helper.ComboBox(groupBox, "Group:", "Sets how child sources are process in the the group.\n"
-		"Apply all sources (all) or blend between two selected sources using the select target (select).",
+	helper.GroupBox(*this, groupBox, "@Synthesizer.WPAPanelSourceGroup.GroupGroup");
+	helper.ComboBox(groupBox, "@Synthesizer.WPAPanelSourceGroup.FieldApplicationType.Label",
+		"@Synthesizer.WPAPanelSourceGroup.FieldApplicationType.ToolTip",
 		pCBApplicationType, cComboApplicationType::Ref::New(*this));
-	pCBApplicationType->AddItem("All", nullptr, (void*)(intptr_t)deSynthesizerSourceGroup::eatAll);
-	pCBApplicationType->AddItem("Select", nullptr, (void*)(intptr_t)deSynthesizerSourceGroup::eatSelect);
-	pCBApplicationType->AddItem("Solo", nullptr, (void*)(intptr_t)deSynthesizerSourceGroup::eatSolo);
+	pCBApplicationType->SetAutoTranslateItems(true);
+	pCBApplicationType->AddItem("@Synthesizer.WPAPanelSourceGroup.ComboAll", nullptr, (void*)(intptr_t)deSynthesizerSourceGroup::eatAll);
+	pCBApplicationType->AddItem("@Synthesizer.WPAPanelSourceGroup.ComboSelect", nullptr, (void*)(intptr_t)deSynthesizerSourceGroup::eatSelect);
+	pCBApplicationType->AddItem("@Synthesizer.WPAPanelSourceGroup.ComboSolo", nullptr, (void*)(intptr_t)deSynthesizerSourceGroup::eatSolo);
 }
 
 syneWPAPanelSourceGroup::~syneWPAPanelSourceGroup(){
@@ -133,6 +134,6 @@ void syneWPAPanelSourceGroup::UpdateTargetList(){
 	syneWPAPanelSource::UpdateTargetList();
 	
 	if(source){
-		AddTarget("Select", source->GetTargetSelect());
+		AddTarget("@Synthesizer.WPAPanelSourceGroup.Target.Select", source->GetTargetSelect());
 	}
 }

@@ -48,7 +48,7 @@ pEffect(nullptr)
 	
 	try{
 		pEffect = effect;
-		SetShortInfo("Effect toggle enabled");
+		SetShortInfo("@Effect Toggle Enabled");
 		
 	}catch(const deException &){
 		pCleanUp();

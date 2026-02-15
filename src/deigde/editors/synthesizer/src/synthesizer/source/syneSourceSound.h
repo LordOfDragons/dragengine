@@ -60,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create synthesizer source. */
-	syneSourceSound(deEngine *engine);
+	syneSourceSound(deEngine *engine, const char *name);
 	
 	/** \brief Create copy of synthesizer source. */
 	syneSourceSound(const syneSourceSound &copy);

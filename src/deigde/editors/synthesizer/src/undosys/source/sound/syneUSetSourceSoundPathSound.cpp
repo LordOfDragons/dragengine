@@ -49,7 +49,7 @@ pSource(nullptr)
 	pOldPath = source->GetPathSound();
 	pNewPath = newPath;
 	
-	SetShortInfo("Set sound source path sound");
+	SetShortInfo("@Source Sound Set Path");
 	
 	pSource = source;
 }

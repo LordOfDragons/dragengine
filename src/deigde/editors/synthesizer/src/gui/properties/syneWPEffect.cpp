@@ -104,11 +104,11 @@ public:
 		helper.MenuCommand(menu, pPanel.GetActionEffectPasteInsert());
 		
 		const syneWindowMain &windowMain = pPanel.GetViewSynthesizer().GetWindowMain();
-		igdeMenuCascade::Ref submenu(igdeMenuCascade::Ref::New(menu.GetEnvironment(), "Add"));
+		igdeMenuCascade::Ref submenu(igdeMenuCascade::Ref::New(menu.GetEnvironment(), "@Synthesizer.WPEffect.Menu.Add"));
 		helper.MenuCommand(submenu, windowMain.GetActionEffectAddStretch());
 		menu.AddChild(submenu);
 		
-		submenu = igdeMenuCascade::Ref::New(menu.GetEnvironment(), "Insert");
+		submenu = igdeMenuCascade::Ref::New(menu.GetEnvironment(), "@Synthesizer.WPEffect.Menu.Insert");
 		helper.MenuCommand(submenu, windowMain.GetActionEffectInsertStretch());
 		menu.AddChild(submenu);
 		
@@ -124,9 +124,9 @@ class cActionEffectCopy : public igdeAction{
 
 public:
 	using Ref = deTObjectReference<cActionEffectCopy>;
-	cActionEffectCopy(syneWPEffect &panel) : igdeAction("Copy",
+	cActionEffectCopy(syneWPEffect &panel) : igdeAction("@Synthesizer.WPEffect.Action.Copy",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-		"Copy effect to clipboard"), pPanel(panel){}
+		"@Synthesizer.WPEffect.Action.Copy.ToolTip"), pPanel(panel){}
 	
 	void OnAction() override{
 		syneEffect * const effect = pPanel.GetEffect();
@@ -148,9 +148,9 @@ class cActionEffectCut : public igdeAction{
 	
 public:
 	using Ref = deTObjectReference<cActionEffectCut>;
-	cActionEffectCut(syneWPEffect &panel) : igdeAction("Cut",
+	cActionEffectCut(syneWPEffect &panel) : igdeAction("@Synthesizer.WPEffect.Action.Cut",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
-		"Cut effect to clipboard"), pPanel(panel){}
+		"@Synthesizer.WPEffect.Action.Cut.ToolTip"), pPanel(panel){}
 	
 	void OnAction() override{
 		syneEffect * const effect = pPanel.GetEffect();
@@ -177,9 +177,9 @@ protected:
 	
 public:
 	using Ref = deTObjectReference<cActionEffectPasteAdd>;
-	cActionEffectPasteAdd(syneWPEffect &panel) : igdeAction("Paste",
+	cActionEffectPasteAdd(syneWPEffect &panel) : igdeAction("@Synthesizer.WPEffect.Action.Paste",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
-		"Paste effect from clipboard"), pPanel(panel){}
+		"@Synthesizer.WPEffect.Action.Paste.ToolTip"), pPanel(panel){}
 	
 	void OnAction() override{
 		if(!pPanel.GetSource()){
@@ -210,8 +210,8 @@ class cActionEffectPasteInsert : public cActionEffectPasteAdd{
 public:
 	using Ref = deTObjectReference<cActionEffectPasteInsert>;
 	cActionEffectPasteInsert(syneWPEffect &panel) : cActionEffectPasteAdd(panel){
-		SetText("Paste Append");
-		SetDescription("Paste effect from clipboard");
+		SetText("@Synthesizer.WPEffect.Action.PasteAppend");
+		SetDescription("@Synthesizer.WPEffect.Action.PasteAppend.ToolTip");
 	}
 	
 	void OnAction() override{
@@ -259,8 +259,9 @@ pActivePanel(nullptr)
 	pActionEffectPasteInsert = cActionEffectPasteInsert::Ref::New(*this);
 	
 	
-	helper.GroupBoxFlow(*this, groupBox, "Effects:");
-	helper.ListBox(groupBox, 3, "Effects", pListEffect, cListEffects::Ref::New(*this));
+	helper.GroupBoxFlow(*this, groupBox, "@Synthesizer.WPEffect.GroupEffects");
+	helper.ListBox(groupBox, 3, "@Synthesizer.WPEffect.LabelEffects", pListEffect, cListEffects::Ref::New(*this));
+	pListEffect->SetAutoTranslateItems(true);
 	
 	
 	pSwitcher = igdeSwitcher::Ref::New(env);
@@ -337,11 +338,11 @@ void syneWPEffect::UpdateEffectList(){
 			source->GetEffects().Visit([&](syneEffect *effect){
 				switch(effect->GetType()){
 				case deSynthesizerEffectVisitorIdentify::eetStretch:
-					pListEffect->AddItem("Time/Pitch Stretch", nullptr, effect);
+					pListEffect->AddItem("@Synthesizer.WPEffect.EffectType.Stretch", nullptr, effect);
 					break;
 					
 				default:
-					pListEffect->AddItem("??", nullptr, effect);
+					pListEffect->AddItem("@Synthesizer.WPEffect.EffectType.Unknown", nullptr, effect);
 				}
 			});
 		}

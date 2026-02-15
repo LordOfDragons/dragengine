@@ -51,7 +51,7 @@ pSynthesizer(nullptr)
 	pNewSampleCount = newSampleCount;
 	
 	pSynthesizer = synthesizer;
-	SetShortInfo("Synthesizer set sample count");
+	SetShortInfo("@Synthesizer Set Sample Count");
 }
 
 syneUSynthesizerSetSampleCount::~syneUSynthesizerSetSampleCount(){

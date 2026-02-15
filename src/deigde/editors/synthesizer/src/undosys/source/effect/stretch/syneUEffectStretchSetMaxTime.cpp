@@ -46,7 +46,7 @@ pSource(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Effect stretch set maximum time");
+	SetShortInfo("@Effect Stretch Set Max Time");
 	
 	pOldTime = effect->GetMaxTime();
 	pNewTime = newTime;

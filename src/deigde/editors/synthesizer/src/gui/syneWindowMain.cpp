@@ -73,9 +73,15 @@
 #include <deigde/undo/igdeUndoSystem.h>
 #include <deigde/undo/igdeUndo.h>
 
+#include <deigde/environment/igdeEnvironment.h>
+#include <deigde/gamedefinition/igdeGameDefinition.h>
+#include <deigde/undo/igdeUndoSystem.h>
+#include <deigde/undo/igdeUndo.h>
+
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decDiskFileReader.h>
+
 #include <dragengine/common/file/decDiskFileWriter.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/logger/deLogger.h>
@@ -218,8 +224,7 @@ deSynthesizerSourceVisitorIdentify::eSourceTypes type, bool insert, bool group){
 		}
 	}
 	
-	const syneSource::Ref source(syneSource::CreateSourceFromType(GetEngine(), type));
-	source->SetName(name);
+	const syneSource::Ref source(syneSource::CreateSourceFromType(GetEngine(), type, name));
 	
 	if(insert){
 		if(parentGroup){
@@ -446,14 +451,16 @@ class cActionFileNew : public igdeAction{
 public:
 	typedef deTObjectReference<cActionFileNew> Ref;
 	cActionFileNew(syneWindowMain &window) :
-	igdeAction("New", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiNew),
-		"Create new synthesizer", deInputEvent::ekcN, igdeHotKey(deInputEvent::esmControl, deInputEvent::ekcN)),
+	igdeAction("@Synthesizer.WindowMain.Action.FileNew",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiNew),
+		"@Synthesizer.WindowMain.Action.FileNew.ToolTip",
+		deInputEvent::ekcN, igdeHotKey(deInputEvent::esmControl, deInputEvent::ekcN)),
 	pWindow(window){}
 	
 	void OnAction() override{
 		if(!pWindow.GetSynthesizer() || !pWindow.GetSynthesizer()->GetChanged()
-		|| igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "New Synthesizer",
-		"Creating a new Synthesizer discarding the current one is that ok?") == igdeCommonDialogs::ebYes){
+		|| igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "@Synthesizer.WindowMain.Dialog.NewSynthesizer.Title",
+		"@Synthesizer.WindowMain.Dialog.NewSynthesizer.Message") == igdeCommonDialogs::ebYes){
 			pWindow.CreateSynthesizer();
 		}
 	}
@@ -463,13 +470,15 @@ class cActionFileOpen : public cActionBase{
 public:
 	typedef deTObjectReference<cActionFileOpen> Ref;
 	cActionFileOpen(syneWindowMain &window) : cActionBase(window,
-		"Open...", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
-		"Open synthesizer from file", deInputEvent::ekcO, deInputEvent::esmControl,
+		"@Synthesizer.WindowMain.Action.FileOpen",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
+		"@Synthesizer.WindowMain.Action.FileOpen.ToolTip",
+		deInputEvent::ekcO, deInputEvent::esmControl,
 		deInputEvent::ekcO){}
 	
 	igdeUndo::Ref OnAction(syneSynthesizer *synthesizer) override{
 		decString filename(synthesizer->GetFilePath());
-		if(igdeCommonDialogs::GetFileOpen(pWindow, "Open Synthesizer",
+		if(igdeCommonDialogs::GetFileOpen(pWindow, "@Synthesizer.WindowMain.Dialog.OpenSynthesizer.Title",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		pWindow.GetLoadSaveSystem().GetSynthesizerFilePatterns(), filename)){
 			pWindow.SetSynthesizer(pWindow.GetLoadSaveSystem().LoadSynthesizer(filename));
@@ -482,13 +491,15 @@ public:
 class cActionFileSaveAs : public cActionBase{
 public:
 	typedef deTObjectReference<cActionFileSaveAs> Ref;
-	cActionFileSaveAs(syneWindowMain &window) : cActionBase(window, "Save As...",
+	cActionFileSaveAs(syneWindowMain &window) : cActionBase(window,
+		"@Synthesizer.WindowMain.Action.FileSaveAs",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSaveAs),
-		"Saves the synthesizer under a differen file", deInputEvent::ekcA){}
+		"@Synthesizer.WindowMain.Action.FileSaveAs.ToolTip",
+		deInputEvent::ekcA){}
 	
 	igdeUndo::Ref OnAction(syneSynthesizer *synthesizer) override{
 		decString filename(synthesizer->GetFilePath());
-		if(igdeCommonDialogs::GetFileSave(pWindow, "Save Synthesizer",
+		if(igdeCommonDialogs::GetFileSave(pWindow, "@Synthesizer.WindowMain.Dialog.SaveSynthesizer.Title",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		pWindow.GetLoadSaveSystem().GetSynthesizerFilePatterns(), filename)){
 			pWindow.SaveSynthesizer(filename);
@@ -501,8 +512,8 @@ class cActionFileSave : public cActionFileSaveAs{
 public:
 	typedef deTObjectReference<cActionFileSave> Ref;
 	cActionFileSave(syneWindowMain &window) : cActionFileSaveAs(window){
-		SetText("Save");
-		SetDescription("Saves the synthesizer to file");
+		SetText("@Synthesizer.WindowMain.Action.FileSave");
+		SetDescription("@Synthesizer.WindowMain.Action.FileSave.ToolTip");
 		SetHotKey(igdeHotKey(deInputEvent::esmControl, deInputEvent::ekcS));
 		SetMnemonic(deInputEvent::ekcS);
 		SetIcon(window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave));
@@ -530,8 +541,10 @@ class cActionEditCut : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditCut> Ref;
 	cActionEditCut(syneWindowMain &window) : cActionBase(window,
-		"Cut", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
-		"Cut selected objects", deInputEvent::ekcT, deInputEvent::esmControl,
+		"@Synthesizer.WindowMain.Action.EditCut",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
+		"@Synthesizer.WindowMain.Action.EditCut.ToolTip",
+		deInputEvent::ekcT, deInputEvent::esmControl,
 		deInputEvent::ekcX){}
 	
 	igdeUndo::Ref OnAction(syneSynthesizer*) override{
@@ -543,8 +556,10 @@ class cActionEditCopy : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditCopy> Ref;
 	cActionEditCopy(syneWindowMain &window) : cActionBase(window,
-		"Copy", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-		"Copies selected objects", deInputEvent::ekcC, deInputEvent::esmControl,
+		"@Synthesizer.WindowMain.Action.EditCopy",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		"@Synthesizer.WindowMain.Action.EditCopy.ToolTip",
+		deInputEvent::ekcC, deInputEvent::esmControl,
 		deInputEvent::ekcC){}
 	
 	igdeUndo::Ref OnAction(syneSynthesizer*) override{
@@ -556,8 +571,10 @@ class cActionEditPaste : public cActionBase{
 public:
 	typedef deTObjectReference<cActionEditPaste> Ref;
 	cActionEditPaste(syneWindowMain &window) : cActionBase(window,
-		"Paste", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
-		"Paste objects", deInputEvent::ekcP, deInputEvent::esmControl,
+		"@Synthesizer.WindowMain.Action.EditPaste",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+		"@Synthesizer.WindowMain.Action.EditPaste.ToolTip",
+		deInputEvent::ekcP, deInputEvent::esmControl,
 		deInputEvent::ekcV){}
 	
 	igdeUndo::Ref OnAction(syneSynthesizer*) override{
@@ -574,15 +591,17 @@ class cActionControllerAdd : public cActionBase{
 public:
 	typedef deTObjectReference<cActionControllerAdd> Ref;
 	cActionControllerAdd(syneWindowMain &window) : cActionBase(window,
-		"Add", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-		"Add controller", deInputEvent::ekcA){}
+		"@Synthesizer.WindowMain.Action.ControllerAdd",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"@Synthesizer.WindowMain.Action.ControllerAdd.ToolTip",
+		deInputEvent::ekcA){}
 	
 	virtual igdeUndo::Ref OnAction(syneSynthesizer *synthesizer){
 		const syneController::List &list = synthesizer->GetControllers();
-		decString name("Controller");
+		decString name(pWindow.Translate("Synthesizer.DefaultName.Controller").ToUTF8());
 		int number = 2;
 		while(list.HasNamed(name)){
-			name.Format("Controller #%d", number++);
+			name.FormatSafe(pWindow.Translate("Synthesizer.DefaultName.ControllerFormat").ToUTF8(), number++);
 		}
 		
 		const syneController::Ref controller(syneController::Ref::New(name));
@@ -594,8 +613,10 @@ class cActionControllerRemove : public cActionBase{
 public:
 	typedef deTObjectReference<cActionControllerRemove> Ref;
 	cActionControllerRemove(syneWindowMain &window) : cActionBase(window,
-		"Remove", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-		"Remove controller", deInputEvent::ekcR){}
+		"@Synthesizer.WindowMain.Action.ControllerRemove",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@Synthesizer.WindowMain.Action.ControllerRemove.ToolTip",
+		deInputEvent::ekcR){}
 	
 	igdeUndo::Ref OnAction(syneSynthesizer *synthesizer) override{
 		return syneURemoveController::Ref::New(synthesizer, synthesizer->GetActiveController());
@@ -610,8 +631,10 @@ class cActionControllerUp : public cActionBase{
 public:
 	typedef deTObjectReference<cActionControllerUp> Ref;
 	cActionControllerUp(syneWindowMain &window) : cActionBase(window,
-		"Move Up", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp),
-		"Move controller up", deInputEvent::ekcU){}
+		"@Synthesizer.WindowMain.Action.ControllerUp",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp),
+		"@Synthesizer.WindowMain.Action.ControllerUp.ToolTip",
+		deInputEvent::ekcU){}
 	
 	igdeUndo::Ref OnAction(syneSynthesizer *synthesizer) override{
 		return syneUMoveControllerUp::Ref::New(synthesizer, synthesizer->GetActiveController());
@@ -626,8 +649,10 @@ class cActionControllerDown : public cActionBase{
 public:
 	typedef deTObjectReference<cActionControllerDown> Ref;
 	cActionControllerDown(syneWindowMain &window) : cActionBase(window,
-		"Move Down", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown),
-		"Move controller down", deInputEvent::ekcD){}
+		"@Synthesizer.WindowMain.Action.ControllerDown",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown),
+		"@Synthesizer.WindowMain.Action.ControllerDown.ToolTip",
+		deInputEvent::ekcD){}
 	
 	igdeUndo::Ref OnAction(syneSynthesizer *synthesizer) override{
 		return syneUMoveControllerDown::Ref::New(synthesizer, synthesizer->GetActiveController());
@@ -683,8 +708,9 @@ public:
 	cActionBase(window, name, icon, description, mnemonic), pType(type), pInsert(insert){}
 	
 	igdeUndo::Ref OnAction(syneSynthesizer*) override{
-		decString name("Source");
-		if(igdeCommonDialogs::GetString(pWindow, GetText(), "Name:", name)){
+		decString name(pWindow.Translate("Synthesizer.WindowMain.NewSource.Default").ToUTF8());
+		if(igdeCommonDialogs::GetString(pWindow, GetText(),
+			"@Synthesizer.WindowMain.NewSource.Name", name)){
 			pWindow.CreateSource(name, pType, pInsert, false);
 		}
 		return {};
@@ -699,8 +725,9 @@ public:
 	cActionSourceAdd(window, type, false, name, icon, description, mnemonic){}
 	
 	igdeUndo::Ref OnAction(syneSynthesizer*) override{
-		decString name("Source");
-		if(igdeCommonDialogs::GetString(pWindow, GetText(), "Name:", name)){
+		decString name(pWindow.Translate("Synthesizer.WindowMain.NewSource.Default").ToUTF8());
+		if(igdeCommonDialogs::GetString(pWindow, GetText(),
+			"@Synthesizer.WindowMain.NewSource.Name", name)){
 			pWindow.CreateSource(name, pType, pInsert, true);
 		}
 		return {};
@@ -716,8 +743,10 @@ class cActionSourceRemove : public cActionBaseSource{
 public:
 	typedef deTObjectReference<cActionSourceRemove> Ref;
 	cActionSourceRemove(syneWindowMain &window) : cActionBaseSource(window,
-		"Remove", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-		"Remove source", deInputEvent::ekcR){}
+		"@Synthesizer.WindowMain.Action.SourceRemove",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@Synthesizer.WindowMain.Action.SourceRemove.ToolTip",
+		deInputEvent::ekcR){}
 	
 	virtual igdeUndo::Ref OnActionSource(syneSynthesizer *synthesizer, syneSource *source){
 		if(source->GetParentGroup()){
@@ -733,8 +762,10 @@ class cActionSourceUp : public cActionBaseSource{
 public:
 	typedef deTObjectReference<cActionSourceUp> Ref;
 	cActionSourceUp(syneWindowMain &window) : cActionBaseSource(window,
-		"Move Up", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp),
-		"Move source up", deInputEvent::ekcU){}
+		"@Synthesizer.WindowMain.Action.SourceUp",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp),
+		"@Synthesizer.WindowMain.Action.SourceUp.ToolTip",
+		deInputEvent::ekcU){}
 	
 	virtual igdeUndo::Ref OnActionSource(syneSynthesizer *synthesizer, syneSource *source){
 		if(source->GetParentGroup()){
@@ -756,8 +787,10 @@ class cActionSourceDown : public cActionBaseSource{
 public:
 	typedef deTObjectReference<cActionSourceDown> Ref;
 	cActionSourceDown(syneWindowMain &window) : cActionBaseSource(window,
-		"Move Down", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown),
-		"Move source down", deInputEvent::ekcD){}
+		"@Synthesizer.WindowMain.Action.SourceDown",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown),
+		"@Synthesizer.WindowMain.Action.SourceDown.ToolTip",
+		deInputEvent::ekcD){}
 	
 	virtual igdeUndo::Ref OnActionSource(syneSynthesizer *synthesizer, syneSource *source){
 		if(source->GetParentGroup()){
@@ -828,8 +861,10 @@ class cActionEffectRemove : public cActionBaseEffect{
 public:
 	typedef deTObjectReference<cActionEffectRemove> Ref;
 	cActionEffectRemove(syneWindowMain &window) : cActionBaseEffect(window,
-		"Remove", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-		"Remove effect", deInputEvent::ekcR){}
+		"@Synthesizer.WindowMain.Action.EffectRemove",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@Synthesizer.WindowMain.Action.EffectRemove.ToolTip",
+		deInputEvent::ekcR){}
 	
 	virtual igdeUndo::Ref OnActionEffect(syneSynthesizer*, syneSource *source, syneEffect *effect){
 		return syneUSourceRemoveEffect::Ref::New(source, effect);
@@ -840,8 +875,10 @@ class cActionEffectUp : public cActionBaseEffect{
 public:
 	typedef deTObjectReference<cActionEffectUp> Ref;
 	cActionEffectUp(syneWindowMain &window) : cActionBaseEffect(window,
-		"Move Up", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp),
-		"Move effect up", deInputEvent::ekcU){}
+		"@Synthesizer.WindowMain.Action.EffectUp",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp),
+		"@Synthesizer.WindowMain.Action.EffectUp.ToolTip",
+		deInputEvent::ekcU){}
 	
 	virtual igdeUndo::Ref OnActionEffect(syneSynthesizer*, syneSource *source, syneEffect *effect){
 		return syneUSourceMoveEffectUp::Ref::New(source, effect);
@@ -856,8 +893,10 @@ class cActionEffectDown : public cActionBaseEffect{
 public:
 	typedef deTObjectReference<cActionEffectDown> Ref;
 	cActionEffectDown(syneWindowMain &window) : cActionBaseEffect(window,
-		"Move Down", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown),
-		"Move effect down", deInputEvent::ekcD){}
+		"@Synthesizer.WindowMain.Action.EffectDown",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown),
+		"@Synthesizer.WindowMain.Action.EffectDown.ToolTip",
+		deInputEvent::ekcD){}
 	
 	virtual igdeUndo::Ref OnActionEffect(syneSynthesizer*, syneSource *source, syneEffect *effect){
 		return syneUSourceMoveEffectDown::Ref::New(source, effect);
@@ -910,64 +949,98 @@ void syneWindowMain::pCreateActions(){
 	pActionControllerDown = cActionControllerDown::Ref::New(*this);
 	
 	pActionSourceAddSound = cActionSourceAdd::Ref::New(*this,
-		deSynthesizerSourceVisitorIdentify::estSound, false, "Sound",
-		pIconSourceSound, "Add sound source", deInputEvent::ekcS);
+		deSynthesizerSourceVisitorIdentify::estSound, false,
+		"@Synthesizer.WindowMain.Action.SourceAddSound",
+		pIconSourceSound, "@Synthesizer.WindowMain.Action.SourceAddSound.ToolTip",
+		deInputEvent::ekcS);
 	pActionSourceAddWave = cActionSourceAdd::Ref::New(*this,
-		deSynthesizerSourceVisitorIdentify::estWave, false, "Wave",
-		pIconSourceWave, "Add wave source", deInputEvent::ekcW);
+		deSynthesizerSourceVisitorIdentify::estWave, false,
+		"@Synthesizer.WindowMain.Action.SourceAddWave",
+		pIconSourceWave, "@Synthesizer.WindowMain.Action.SourceAddWave.ToolTip",
+		deInputEvent::ekcW);
 	pActionSourceAddChain = cActionSourceAdd::Ref::New(*this,
-		deSynthesizerSourceVisitorIdentify::estChain, false, "Chain",
-		pIconSourceChain, "Add chain source", deInputEvent::ekcC);
+		deSynthesizerSourceVisitorIdentify::estChain, false,
+		"@Synthesizer.WindowMain.Action.SourceAddChain",
+		pIconSourceChain, "@Synthesizer.WindowMain.Action.SourceAddChain.ToolTip",
+		deInputEvent::ekcC);
 	pActionSourceAddGroup = cActionSourceAdd::Ref::New(*this,
-		deSynthesizerSourceVisitorIdentify::estGroup, false, "Group",
-		pIconSourceGroup, "Add group source", deInputEvent::ekcG);
+		deSynthesizerSourceVisitorIdentify::estGroup, false,
+		"@Synthesizer.WindowMain.Action.SourceAddGroup",
+		pIconSourceGroup, "@Synthesizer.WindowMain.Action.SourceAddGroup.ToolTip",
+		deInputEvent::ekcG);
 	pActionSourceAddSynthesizer = cActionSourceAdd::Ref::New(*this,
-		deSynthesizerSourceVisitorIdentify::estSynthesizer, false, "Synthesizer",
-		pIconSourceSynthesizer, "Add synthesizer source", deInputEvent::ekcY);
+		deSynthesizerSourceVisitorIdentify::estSynthesizer, false,
+		"@Synthesizer.WindowMain.Action.SourceAddSynthesizer",
+		pIconSourceSynthesizer, "@Synthesizer.WindowMain.Action.SourceAddSynthesizer.ToolTip",
+		deInputEvent::ekcY);
 	
 	pActionSourceGroupAddSound = cActionSourceGroupAdd::Ref::New(*this,
-		deSynthesizerSourceVisitorIdentify::estSound, "Sound",
-		pIconSourceSound, "Add sound source", deInputEvent::ekcS);
+		deSynthesizerSourceVisitorIdentify::estSound,
+		"@Synthesizer.WindowMain.Action.SourceAddSound",
+		pIconSourceSound, "@Synthesizer.WindowMain.Action.SourceAddSound.ToolTip",
+		deInputEvent::ekcS);
 	pActionSourceGroupAddWave = cActionSourceGroupAdd::Ref::New(*this,
-		deSynthesizerSourceVisitorIdentify::estWave, "Wave",
-		pIconSourceWave, "Add wave source", deInputEvent::ekcW);
+		deSynthesizerSourceVisitorIdentify::estWave,
+		"@Synthesizer.WindowMain.Action.SourceAddWave",
+		pIconSourceWave, "@Synthesizer.WindowMain.Action.SourceAddWave.ToolTip",
+		deInputEvent::ekcW);
 	pActionSourceGroupAddChain = cActionSourceGroupAdd::Ref::New(*this,
-		deSynthesizerSourceVisitorIdentify::estChain, "Chain",
-		pIconSourceChain, "Add chain source", deInputEvent::ekcC);
+		deSynthesizerSourceVisitorIdentify::estChain,
+		"@Synthesizer.WindowMain.Action.SourceAddChain",
+		pIconSourceChain, "@Synthesizer.WindowMain.Action.SourceAddChain.ToolTip",
+		deInputEvent::ekcC);
 	pActionSourceGroupAddGroup = cActionSourceGroupAdd::Ref::New(*this,
-		deSynthesizerSourceVisitorIdentify::estGroup, "Group",
-		pIconSourceGroup, "Add group source", deInputEvent::ekcG);
+		deSynthesizerSourceVisitorIdentify::estGroup,
+		"@Synthesizer.WindowMain.Action.SourceAddGroup",
+		pIconSourceGroup, "@Synthesizer.WindowMain.Action.SourceAddGroup.ToolTip",
+		deInputEvent::ekcG);
 	pActionSourceGroupAddSynthesizer = cActionSourceGroupAdd::Ref::New(*this,
-		deSynthesizerSourceVisitorIdentify::estSynthesizer, "Synthesizer",
-		pIconSourceSynthesizer, "Add synthesizer source", deInputEvent::ekcY);
+		deSynthesizerSourceVisitorIdentify::estSynthesizer,
+		"@Synthesizer.WindowMain.Action.SourceAddSynthesizer",
+		pIconSourceSynthesizer, "@Synthesizer.WindowMain.Action.SourceAddSynthesizer.ToolTip",
+		deInputEvent::ekcY);
 	
 	pActionSourceInsertSound = cActionSourceAdd::Ref::New(*this,
-		deSynthesizerSourceVisitorIdentify::estSound, true, "Sound",
-		pIconSourceSound, "Insert sound source", deInputEvent::ekcS);
+		deSynthesizerSourceVisitorIdentify::estSound, true,
+		"@Synthesizer.WindowMain.Action.SourceInsertSound",
+		pIconSourceSound, "@Synthesizer.WindowMain.Action.SourceInsertSound.ToolTip",
+		deInputEvent::ekcS);
 	pActionSourceInsertWave = cActionSourceAdd::Ref::New(*this,
-		deSynthesizerSourceVisitorIdentify::estWave, true, "Wave",
-		pIconSourceWave, "Insert wave source", deInputEvent::ekcW);
+		deSynthesizerSourceVisitorIdentify::estWave, true,
+		"@Synthesizer.WindowMain.Action.SourceInsertWave",
+		pIconSourceWave, "@Synthesizer.WindowMain.Action.SourceInsertWave.ToolTip",
+		deInputEvent::ekcW);
 	pActionSourceInsertChain = cActionSourceAdd::Ref::New(*this,
-		deSynthesizerSourceVisitorIdentify::estChain, true, "Chain",
-		pIconSourceChain, "Insert chain source", deInputEvent::ekcC);
+		deSynthesizerSourceVisitorIdentify::estChain, true,
+		"@Synthesizer.WindowMain.Action.SourceInsertChain",
+		pIconSourceChain, "@Synthesizer.WindowMain.Action.SourceInsertChain.ToolTip",
+		deInputEvent::ekcC);
 	pActionSourceInsertGroup = cActionSourceAdd::Ref::New(*this,
-		deSynthesizerSourceVisitorIdentify::estGroup, true, "Group",
-		pIconSourceGroup, "Insert group source", deInputEvent::ekcG);
+		deSynthesizerSourceVisitorIdentify::estGroup, true,
+		"@Synthesizer.WindowMain.Action.SourceInsertGroup",
+		pIconSourceGroup, "@Synthesizer.WindowMain.Action.SourceInsertGroup.ToolTip",
+		deInputEvent::ekcG);
 	pActionSourceInsertSynthesizer = cActionSourceAdd::Ref::New(*this,
-		deSynthesizerSourceVisitorIdentify::estSynthesizer, true, "Synthesizer",
-		pIconSourceSynthesizer, "Insert synthesizer source", deInputEvent::ekcY);
+		deSynthesizerSourceVisitorIdentify::estSynthesizer, true,
+		"@Synthesizer.WindowMain.Action.SourceInsertSynthesizer",
+		pIconSourceSynthesizer, "@Synthesizer.WindowMain.Action.SourceInsertSynthesizer.ToolTip",
+		deInputEvent::ekcY);
 	
 	pActionSourceRemove = cActionSourceRemove::Ref::New(*this);
 	pActionSourceUp = cActionSourceUp::Ref::New(*this);
 	pActionSourceDown = cActionSourceDown::Ref::New(*this);
 	
 	pActionEffectAddStretch = cActionEffectAdd::Ref::New(*this,
-		deSynthesizerEffectVisitorIdentify::eetStretch, false, "Stretch Time/Pitch",
-		pIconEffectStretch, "Add stretch pitch and time effect", deInputEvent::ekcS);
+		deSynthesizerEffectVisitorIdentify::eetStretch, false,
+		"@Synthesizer.WindowMain.Action.EffectAddStretch",
+		pIconEffectStretch, "@Synthesizer.WindowMain.Action.EffectAddStretch.ToolTip",
+		deInputEvent::ekcS);
 	
 	pActionEffectInsertStretch = cActionEffectAdd::Ref::New(*this,
-		deSynthesizerEffectVisitorIdentify::eetStretch, true, "Insert Time/Pitch",
-		pIconEffectStretch, "Insert stretch pitch and time effect", deInputEvent::ekcS);
+		deSynthesizerEffectVisitorIdentify::eetStretch, true,
+		"@Synthesizer.WindowMain.Action.EffectInsertStretch",
+		pIconEffectStretch, "@Synthesizer.WindowMain.Action.EffectInsertStretch.ToolTip",
+		deInputEvent::ekcS);
 	
 	pActionEffectRemove = cActionEffectRemove::Ref::New(*this);
 	pActionEffectUp = cActionEffectUp::Ref::New(*this);
@@ -1055,23 +1128,27 @@ void syneWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade = igdeMenuCascade::Ref::New(env, "File", deInputEvent::ekcF);
+	cascade = igdeMenuCascade::Ref::New(env,
+		"@Synthesizer.WindowMain.Menu.Synthesizer", deInputEvent::ekcF);
 	pCreateMenuSynthesizer(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade = igdeMenuCascade::Ref::New(env, "Edit", deInputEvent::ekcE);
+	cascade = igdeMenuCascade::Ref::New(env, "@Synthesizer.WindowMain.Menu.Edit", deInputEvent::ekcE);
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade = igdeMenuCascade::Ref::New(env, "Controller", deInputEvent::ekcC);
+	cascade = igdeMenuCascade::Ref::New(env,
+		"@Synthesizer.WindowMain.Menu.Controller", deInputEvent::ekcC);
 	pCreateMenuController(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade = igdeMenuCascade::Ref::New(env, "Source", deInputEvent::ekcS);
+	cascade = igdeMenuCascade::Ref::New(env,
+		"@Synthesizer.WindowMain.Menu.Source", deInputEvent::ekcS);
 	pCreateMenuSource(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade = igdeMenuCascade::Ref::New(env, "Effect", deInputEvent::ekcE);
+	cascade = igdeMenuCascade::Ref::New(env,
+		"@Synthesizer.WindowMain.Menu.Effect", deInputEvent::ekcE);
 	pCreateMenuEffect(cascade);
 	AddSharedMenu(cascade);
 }
@@ -1111,7 +1188,7 @@ void syneWindowMain::pCreateMenuSource(igdeMenuCascade &menu){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
 	igdeMenuCascade::Ref submenu(igdeMenuCascade::Ref::New(
-		GetEnvironment(), "Add", deInputEvent::ekcA));
+		GetEnvironment(), "@Synthesizer.WindowMain.Menu.Add", deInputEvent::ekcA));
 	helper.MenuCommand(submenu, pActionSourceAddWave);
 	helper.MenuCommand(submenu, pActionSourceAddSound);
 	helper.MenuCommand(submenu, pActionSourceAddChain);
@@ -1119,7 +1196,7 @@ void syneWindowMain::pCreateMenuSource(igdeMenuCascade &menu){
 	helper.MenuCommand(submenu, pActionSourceAddSynthesizer);
 	menu.AddChild(submenu);
 	
-	submenu = igdeMenuCascade::Ref::New(GetEnvironment(), "Insert", deInputEvent::ekcI);
+	submenu = igdeMenuCascade::Ref::New(GetEnvironment(), "@Synthesizer.WindowMain.Menu.Insert", deInputEvent::ekcI);
 	helper.MenuCommand(submenu, pActionSourceInsertWave);
 	helper.MenuCommand(submenu, pActionSourceInsertSound);
 	helper.MenuCommand(submenu, pActionSourceInsertChain);
@@ -1127,7 +1204,8 @@ void syneWindowMain::pCreateMenuSource(igdeMenuCascade &menu){
 	helper.MenuCommand(submenu, pActionSourceInsertSynthesizer);
 	menu.AddChild(submenu);
 	
-	submenu = igdeMenuCascade::Ref::New(GetEnvironment(), "Add Into Group");
+	submenu = igdeMenuCascade::Ref::New(GetEnvironment(),
+		"@Synthesizer.PanelSource.ContextMenu.AddIntoGroup");
 	helper.MenuCommand(submenu, pActionSourceGroupAddWave);
 	helper.MenuCommand(submenu, pActionSourceGroupAddSound);
 	helper.MenuCommand(submenu, pActionSourceGroupAddChain);
@@ -1144,11 +1222,11 @@ void syneWindowMain::pCreateMenuEffect(igdeMenuCascade &menu){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
 	igdeMenuCascade::Ref submenu(igdeMenuCascade::Ref::New(
-		GetEnvironment(), "Add", deInputEvent::ekcA));
+		GetEnvironment(), "@Synthesizer.WindowMain.Menu.Add", deInputEvent::ekcA));
 	helper.MenuCommand(submenu, pActionEffectAddStretch);
 	menu.AddChild(submenu);
 	
-	submenu = igdeMenuCascade::Ref::New(GetEnvironment(), "Insert", deInputEvent::ekcI);
+	submenu = igdeMenuCascade::Ref::New(GetEnvironment(), "@Synthesizer.WindowMain.Menu.Insert", deInputEvent::ekcI);
 	helper.MenuCommand(submenu, pActionEffectInsertStretch);
 	menu.AddChild(submenu);
 	

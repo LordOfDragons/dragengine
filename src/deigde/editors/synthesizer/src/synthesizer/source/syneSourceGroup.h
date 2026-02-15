@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create source. */
-	syneSourceGroup();
+	explicit syneSourceGroup(const char *name);
 	
 	/** \brief Create copy of source. */
 	syneSourceGroup(const syneSourceGroup &copy);

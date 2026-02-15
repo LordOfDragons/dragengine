@@ -173,12 +173,12 @@ public:
 class cActionSoundAdd : public cBaseAction {
 public:
 	using Ref = deTObjectReference<cActionSoundAdd>;
-	cActionSoundAdd(syneWPAPanelSourceChain &panel) : cBaseAction(panel, "Add",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add sound to list"){}
+	cActionSoundAdd(syneWPAPanelSourceChain &panel) : cBaseAction(panel, "@Synthesizer.WPAPanelSourceChain.Action.SoundAdd",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@Synthesizer.WPAPanelSourceChain.Action.SoundAdd.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(syneSourceChain *source) override{
 		decString path;
-		if(!igdeCommonDialogs::GetFileOpen(pPanel, "Add Sound",
+		if(!igdeCommonDialogs::GetFileOpen(pPanel, "@Synthesizer.WPAPanelSourceChain.Dialog.AddSound.Title",
 			*pPanel.GetEnvironment().GetFileSystemGame(),
 			*pPanel.GetEnvironment().GetOpenFilePatternList( igdeEnvironment::efpltSound ), path ) ){
 				return {};
@@ -195,8 +195,8 @@ public:
 class cActionSoundRemove : public cBaseAction {
 public:
 	using Ref = deTObjectReference<cActionSoundRemove>;
-	cActionSoundRemove(syneWPAPanelSourceChain &panel) : cBaseAction(panel, "Remove",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove sound from list"){}
+	cActionSoundRemove(syneWPAPanelSourceChain &panel) : cBaseAction(panel, "@Synthesizer.WPAPanelSourceChain.Action.SoundRemove",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@Synthesizer.WPAPanelSourceChain.Action.SoundRemove.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(syneSourceChain *source) override{
 		const int selection = pPanel.GetSelectedSoundInList();
@@ -211,8 +211,8 @@ public:
 class cActionSoundUp : public cBaseAction {
 public:
 	using Ref = deTObjectReference<cActionSoundUp>;
-	cActionSoundUp(syneWPAPanelSourceChain &panel) : cBaseAction(panel, "Move Up",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp), "Move sound up in list"){}
+	cActionSoundUp(syneWPAPanelSourceChain &panel) : cBaseAction(panel, "@Synthesizer.WPAPanelSourceChain.Action.SoundUp",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp), "@Synthesizer.WPAPanelSourceChain.Action.SoundUp.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(syneSourceChain *source) override{
 		const int selection = pPanel.GetSelectedSoundInList();
@@ -227,8 +227,8 @@ public:
 class cActionSoundDown : public cBaseAction {
 public:
 	using Ref = deTObjectReference<cActionSoundDown>;
-	cActionSoundDown(syneWPAPanelSourceChain &panel) : cBaseAction(panel, "Move Up",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp), "Move sound up in list"){}
+	cActionSoundDown(syneWPAPanelSourceChain &panel) : cBaseAction(panel, "@Synthesizer.WPAPanelSourceChain.Action.SoundDown",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp), "@Synthesizer.WPAPanelSourceChain.Action.SoundDown.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(syneSourceChain *source) override{
 		const int selection = pPanel.GetSelectedSoundInList();
@@ -284,23 +284,23 @@ syneWPAPanelSource(wpSource, deSynthesizerSourceVisitorIdentify::estChain)
 	pActionSoundDown = cActionSoundDown::Ref::New(*this);
 	
 	
-	helper.GroupBox(*this, groupBox, "Chain:");
+	helper.GroupBox(*this, groupBox, "@Synthesizer.WPAPanelSourceChain.GroupChain");
 	
-	helper.EditFloat(groupBox, "Minimum Speed:",
-		"Minimum play speed in percentage of normal playback speed. Use negative values to play backwards.",
+	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelSourceChain.FieldMinSpeed.Label",
+		"@Synthesizer.WPAPanelSourceChain.FieldMinSpeed.ToolTip",
 		pEditMinSpeed, cTextMinSpeed::Ref::New(*this));
-	helper.EditFloat(groupBox, "Maximum Speed:",
-		"Maximum play speed in percentage of normal playback speed. Use negative values to play backwards.",
+	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelSourceChain.FieldMaxSpeed.Label",
+		"@Synthesizer.WPAPanelSourceChain.FieldMaxSpeed.ToolTip",
 		pEditMaxSpeed, cTextMaxSpeed::Ref::New(*this));
 	
 	
-	helper.GroupBoxFlow(*this, groupBox, "Sounds:");
-	helper.ListBox(groupBox, 5, "Sounds to play", pListSounds, cListSounds::Ref::New(*this));
+	helper.GroupBoxFlow(*this, groupBox, "@Synthesizer.WPAPanelSourceChain.GroupSounds");
+	helper.ListBox(groupBox, 5, "@Synthesizer.WPAPanelSourceChain.ListSounds.ToolTip", pListSounds, cListSounds::Ref::New(*this));
 	
 	form = igdeContainerForm::Ref::New(env);
 	groupBox->AddChild(form);
 	
-	helper.EditPath(form, "Sound:", "Sound file", igdeEnvironment::efpltSound,
+	helper.EditPath(form, "@Synthesizer.WPAPanelSourceChain.FieldSound.Label", "@Synthesizer.WPAPanelSourceChain.FieldSound.ToolTip", igdeEnvironment::efpltSound,
 		pEditPathSound, cPathSound::Ref::New(*this));
 	helper.EditString(form, "", "", pLabSoundInfo, {});
 	pLabSoundInfo->SetEditable(false);
@@ -353,9 +353,9 @@ void syneWPAPanelSourceChain::UpdateTargetList(){
 	
 	syneSourceChain *source = (syneSourceChain*)GetSource();
 	if(source){
-		AddTarget("Speed", source->GetTargetSpeed());
-		AddTarget("Select", source->GetTargetSelect());
-		AddTarget("Play", source->GetTargetPlay());
+		AddTarget("@Synthesizer.WPAPanelSourceChain.Target.Speed", source->GetTargetSpeed());
+		AddTarget("@Synthesizer.WPAPanelSourceChain.Target.Select", source->GetTargetSelect());
+		AddTarget("@Synthesizer.WPAPanelSourceChain.Target.Play", source->GetTargetPlay());
 	}
 }
 
@@ -414,7 +414,7 @@ void syneWPAPanelSourceChain::UpdateSoundInfo(){
 			if(!description.IsEmpty()){
 				description.AppendCharacter('\n');
 			}
-			description += "Sound has more channels than synthesizer!";
+			description += Translate("Synthesizer.Validation.SoundMoreChannels").ToUTF8();
 			invalidValue = true;
 		}
 		
@@ -422,7 +422,7 @@ void syneWPAPanelSourceChain::UpdateSoundInfo(){
 			if(!description.IsEmpty()){
 				description.AppendCharacter('\n');
 			}
-			description += "Sound sample rate differs synthesizer!";
+			description += Translate("Synthesizer.Validation.SoundDifferentSampleRate").ToUTF8();
 			invalidValue = true;
 		}
 		

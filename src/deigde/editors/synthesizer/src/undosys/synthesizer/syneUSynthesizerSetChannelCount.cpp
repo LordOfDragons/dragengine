@@ -51,7 +51,7 @@ pSynthesizer(nullptr)
 	pNewChannelCount = newChannelCount;
 	
 	pSynthesizer = synthesizer;
-	SetShortInfo("Synthesizer set channel count");
+	SetShortInfo("@Synthesizer Set Channel Count");
 }
 
 syneUSynthesizerSetChannelCount::~syneUSynthesizerSetChannelCount(){

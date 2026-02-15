@@ -98,7 +98,7 @@ public:
 	using Ref = deTObjectReference<cActionConTargetMore>;
 	cActionConTargetMore(syneWPAPanelSourceSynthesizer &panel) : igdeAction("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-		"Increase the number of targets"), pPanel(panel){}
+		"@Synthesizer.WPAPanelSourceSynthesizer.Action.TargetMore.ToolTip"), pPanel(panel){}
 	
 	void OnAction() override{
 		syneSourceSynthesizer * const source = (syneSourceSynthesizer*)pPanel.GetSource();
@@ -122,7 +122,7 @@ public:
 	using Ref = deTObjectReference<cActionConTargetLess>;
 	cActionConTargetLess(syneWPAPanelSourceSynthesizer &panel) : igdeAction("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-		"Decrease the number of targets"), pPanel(panel){}
+		"@Synthesizer.WPAPanelSourceSynthesizer.Action.TargetLess.ToolTip"), pPanel(panel){}
 	
 	void OnAction() override{
 		syneSourceSynthesizer * const source = (syneSourceSynthesizer*)pPanel.GetSource();
@@ -184,19 +184,19 @@ pPreventUpdate(false)
 	igdeContainer::Ref groupBox, formLine;
 	
 	
-	helper.GroupBox(*this, groupBox, "Synthesizer:");
-	helper.EditPath(groupBox, "Path:", "Sets the synthesizer to use", igdeEnvironment::efpltSynthesizer,
+	helper.GroupBox(*this, groupBox, "@Synthesizer.WPAPanelSourceSynthesizer.GroupSynthesizer");
+	helper.EditPath(groupBox, "@Synthesizer.WPAPanelSourceSynthesizer.FieldPath.Label", "@Synthesizer.WPAPanelSourceSynthesizer.FieldPath.ToolTip", igdeEnvironment::efpltSynthesizer,
 		pEditPathSynthesizer, cPathSynthesizer::Ref::New(*this));
 	
 	
-	helper.GroupBox(*this, groupBox, "Connections:");
+	helper.GroupBox(*this, groupBox, "@Synthesizer.WPAPanelSourceSynthesizer.GroupConnections");
 	
-	helper.FormLineStretchFirst(groupBox, "Target:", "Target controller to edit", formLine);
-	helper.ComboBox(formLine, "Target controller", pCBConTarget, cComboConTarget::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@Synthesizer.WPAPanelSourceSynthesizer.FieldTarget.Label", "@Synthesizer.WPAPanelSourceSynthesizer.FieldTarget.ToolTip", formLine);
+	helper.ComboBox(formLine, "@Synthesizer.WPAPanelSourceSynthesizer.FieldTarget.ToolTip", pCBConTarget, cComboConTarget::Ref::New(*this));
 	helper.Button(formLine, pBtnConTargetMore, cActionConTargetMore::Ref::New(*this));
 	helper.Button(formLine, pBtnConTargetLess, cActionConTargetLess::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "Controller:", "Controller to take value from",
+	helper.ComboBox(groupBox, "@Synthesizer.WPAPanelSourceSynthesizer.FieldController.Label", "@Synthesizer.WPAPanelSourceSynthesizer.FieldController.ToolTip",
 		pCBConController, cComboController::Ref::New(*this));
 	
 	UpdateControllerList();
@@ -261,7 +261,7 @@ void syneWPAPanelSourceSynthesizer::UpdateControllerList(){
 	void * const selection = pCBConController->GetSelectedItemData();
 	
 	pCBConController->RemoveAllItems();
-	pCBConController->AddItem("< No Controller >", nullptr);
+	pCBConController->AddItem(Translate("Synthesizer.WPAPanelSourceSynthesizer.ComboNoController").ToUTF8(), nullptr);
 	
 	if(synthesizer){
 		synthesizer->GetControllers().Visit([&](syneController *controller){

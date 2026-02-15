@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create source. */
-	syneSourceSynthesizer(deEngine *engine);
+	syneSourceSynthesizer(deEngine *engine, const char *name);
 	
 	/** Create copy of source. */
 	syneSourceSynthesizer(const syneSourceSynthesizer &copy);

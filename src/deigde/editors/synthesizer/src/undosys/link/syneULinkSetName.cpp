@@ -50,7 +50,7 @@ pLink(nullptr)
 	pOldName = link->GetName();
 	pNewName = newName;
 	
-	SetShortInfo("Set Link Name");
+	SetShortInfo("@Link Set Name");
 	
 	pLink = link;
 }

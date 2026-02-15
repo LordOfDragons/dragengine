@@ -42,15 +42,12 @@
 ////////////////////////////
 
 syneUSourceTargetRemoveLink::syneUSourceTargetRemoveLink(
-syneSource *source, syneControllerTarget *target, syneLink *link) :
-
-pTarget(nullptr)
-{
+syneSource *source, syneControllerTarget *target, syneLink *link){
 	if(!source || !target || !link){
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Source Target Remove Link");
+	SetShortInfo("@Source Target Remove Link");
 	
 	pSource = source;
 	pTarget = target;

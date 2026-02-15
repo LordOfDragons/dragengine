@@ -67,7 +67,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create link. */
-	syneLink();
+	explicit syneLink(const char *name);
 	
 	/** Create copy of link. */
 	syneLink(const syneLink &copy);

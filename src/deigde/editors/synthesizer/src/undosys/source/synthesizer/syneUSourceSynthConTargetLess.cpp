@@ -46,7 +46,7 @@ pOldController(nullptr)
 {
 	DEASSERT_NOTNULL(source)
 	
-	SetShortInfo("Synthesizer source less connection targets");
+	SetShortInfo("@Source Synthesizer Con Target Less");
 	
 	pOldController = source->GetConnections().Last();
 	pSource = source;

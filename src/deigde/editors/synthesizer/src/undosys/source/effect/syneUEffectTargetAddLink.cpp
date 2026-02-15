@@ -41,15 +41,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-syneUEffectTargetAddLink::syneUEffectTargetAddLink(syneEffect *effect, syneControllerTarget *target, syneLink *link) :
-
-pTarget(nullptr)
-{
+syneUEffectTargetAddLink::syneUEffectTargetAddLink(syneEffect *effect, syneControllerTarget *target, syneLink *link){
 	if(!effect || !target || !link){
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Effect target add link");
+	SetShortInfo("@Effect Target Add Link");
 	
 	pEffect = effect;
 	pTarget = target;

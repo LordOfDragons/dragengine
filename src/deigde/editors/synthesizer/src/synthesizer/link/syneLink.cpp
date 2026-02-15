@@ -42,9 +42,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-syneLink::syneLink() :
+syneLink::syneLink(const char *name) :
 pSynthesizer(nullptr),
-pName("Link"),
+pName(name),
 pRepeat(1){
 }
 

@@ -48,7 +48,7 @@ pSynthesizer(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Add Link");
+	SetShortInfo("@Link Add");
 	
 	pSynthesizer = synthesizer;
 	pLink = link;

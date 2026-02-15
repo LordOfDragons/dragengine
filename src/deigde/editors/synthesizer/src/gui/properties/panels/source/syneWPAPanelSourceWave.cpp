@@ -145,17 +145,19 @@ syneWPAPanelSource(wpSource, deSynthesizerSourceVisitorIdentify::estWave)
 	igdeContainer::Ref groupBox;
 	
 	
-	helper.GroupBox(*this, groupBox, "Wave:");
+	helper.GroupBox(*this, groupBox, "@Synthesizer.WPAPanelSourceWave.GroupWave");
 	
-	helper.ComboBox(groupBox, "Wave Type:", "Select wave type", pCBType, cComboType::Ref::New(*this));
-	pCBType->AddItem("Sine", nullptr, (void*)(intptr_t)deSynthesizerSourceWave::ewtSine);
-	pCBType->AddItem("Square", nullptr, (void*)(intptr_t)deSynthesizerSourceWave::ewtSquare);
-	pCBType->AddItem("Saw-Tooth", nullptr, (void*)(intptr_t)deSynthesizerSourceWave::ewtSawTooth);
-	pCBType->AddItem("Triangle", nullptr, (void*)(intptr_t)deSynthesizerSourceWave::ewtTriangle);
+	helper.ComboBox(groupBox, "@Synthesizer.WPAPanelSourceWave.FieldWaveType.Label",
+		"@Synthesizer.WPAPanelSourceWave.FieldWaveType.ToolTip", pCBType, cComboType::Ref::New(*this));
+	pCBType->SetAutoTranslateItems(true);
+	pCBType->AddItem("@Synthesizer.WPAPanelSourceWave.ComboSine", nullptr, (void*)(intptr_t)deSynthesizerSourceWave::ewtSine);
+	pCBType->AddItem("@Synthesizer.WPAPanelSourceWave.ComboSquare", nullptr, (void*)(intptr_t)deSynthesizerSourceWave::ewtSquare);
+	pCBType->AddItem("@Synthesizer.WPAPanelSourceWave.ComboSawTooth", nullptr, (void*)(intptr_t)deSynthesizerSourceWave::ewtSawTooth);
+	pCBType->AddItem("@Synthesizer.WPAPanelSourceWave.ComboTriangle", nullptr, (void*)(intptr_t)deSynthesizerSourceWave::ewtTriangle);
 	
-	helper.EditInteger(groupBox, "Minimum Frequency:", "Minimum frequency in Hz.",
+	helper.EditInteger(groupBox, "@Synthesizer.WPAPanelSourceWave.FieldMinFrequency.Label", "@Synthesizer.WPAPanelSourceWave.FieldMinFrequency.ToolTip",
 		pEditMinFrequency, cTextMinFrequency::Ref::New(*this));
-	helper.EditInteger(groupBox, "Maximum Frequency:", "Maximum frequency in Hz",
+	helper.EditInteger(groupBox, "@Synthesizer.WPAPanelSourceWave.FieldMaxFrequency.Label", "@Synthesizer.WPAPanelSourceWave.FieldMaxFrequency.ToolTip",
 		pEditMaxFrequency, cTextMaxFrequency::Ref::New(*this));
 }
 
@@ -194,6 +196,6 @@ void syneWPAPanelSourceWave::UpdateTargetList(){
 	syneWPAPanelSource::UpdateTargetList();
 	
 	if(source){
-		AddTarget("Frequency", source->GetTargetFrequency());
+		AddTarget("@Synthesizer.WPAPanelSourceWave.Target.Frequency", source->GetTargetFrequency());
 	}
 }

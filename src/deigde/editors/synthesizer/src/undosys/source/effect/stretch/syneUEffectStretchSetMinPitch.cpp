@@ -46,7 +46,7 @@ pSource(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Effect stretch set minimum pitch");
+	SetShortInfo("@Effect Stretch Set Min Pitch");
 	
 	pOldPitch = effect->GetMinPitch();
 	pNewPitch = newPitch;

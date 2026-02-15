@@ -55,8 +55,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-syneSourceSynthesizer::syneSourceSynthesizer(deEngine *engine) :
-syneSource(deSynthesizerSourceVisitorIdentify::estSynthesizer),
+syneSourceSynthesizer::syneSourceSynthesizer(deEngine *engine, const char *name) :
+syneSource(deSynthesizerSourceVisitorIdentify::estSynthesizer, name),
 pEngine(engine){
 }
 

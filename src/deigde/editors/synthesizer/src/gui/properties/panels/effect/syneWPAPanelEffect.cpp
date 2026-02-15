@@ -154,8 +154,8 @@ public:
 class cActionEnable : public cBaseAction {
 public:
 	using Ref = deTObjectReference<cActionEnable>;
-	cActionEnable(syneWPAPanelEffect &panel) : cBaseAction(panel, "Enable effect",
-		nullptr, "Determines if the effect is affecting the source"){ }
+	cActionEnable(syneWPAPanelEffect &panel) : cBaseAction(panel, "@Synthesizer.WPAPanelEffect.Action.Enable",
+		nullptr, "@Synthesizer.WPAPanelEffect.Action.Enable.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(syneEffect *effect) override{
 		return syneUEffectToggleEnabled::Ref::New(effect);
@@ -191,8 +191,8 @@ public:
 class cActionLinkAdd : public cBaseAction {
 public:
 	using Ref = deTObjectReference<cActionLinkAdd>;
-	cActionLinkAdd(syneWPAPanelEffect &panel) : cBaseAction(panel, "Add",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add link"){}
+	cActionLinkAdd(syneWPAPanelEffect &panel) : cBaseAction(panel, "@Synthesizer.WPAPanelEffect.Action.LinkAdd",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@Synthesizer.WPAPanelEffect.Action.LinkAdd.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(syneEffect *effect) override{
 		syneControllerTarget * const target = pPanel.GetTarget();
@@ -211,8 +211,8 @@ public:
 class cActionLinkRemove : public cBaseAction {
 public:
 	using Ref = deTObjectReference<cActionLinkRemove>;
-	cActionLinkRemove(syneWPAPanelEffect &panel) : cBaseAction(panel, "Remove",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove link"){}
+	cActionLinkRemove(syneWPAPanelEffect &panel) : cBaseAction(panel, "@Synthesizer.WPAPanelEffect.Action.LinkRemove",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@Synthesizer.WPAPanelEffect.Action.LinkRemove.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(syneEffect *effect) override{
 		syneControllerTarget * const target = pPanel.GetTarget();
@@ -254,24 +254,25 @@ pRequiredType(requiredType)
 	
 	
 	// general settings
-	helper.GroupBox(*this, groupBox, "General Settings:");
-	helper.EditString(groupBox, "Strength:", "Set effect strength", pEditStrength, cTextStrength::Ref::New(*this));
+	helper.GroupBox(*this, groupBox, "@Synthesizer.WPAPanelEffect.GroupGeneralSettings");
+	helper.EditString(groupBox, "@Synthesizer.WPAPanelEffect.FieldStrength.Label", "@Synthesizer.WPAPanelEffect.FieldStrength.ToolTip", pEditStrength, cTextStrength::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkEnabled, cActionEnable::Ref::New(*this));
 	
 	
 	// targets and links
-	helper.GroupBoxFlow(*this, groupBox, "Targets and Links:");
+	helper.GroupBoxFlow(*this, groupBox, "@Synthesizer.WPAPanelEffect.GroupTargetsLinks");
 	
 	form = igdeContainerForm::Ref::New(env);
 	groupBox->AddChild(form);
-	helper.ComboBox(form, "Target:", "Displays all links of for a given target",
+	helper.ComboBox(form, "@Synthesizer.WPAPanelEffect.FieldTarget.Label", "@Synthesizer.WPAPanelEffect.FieldTarget.ToolTip",
 		pCBTarget, cComboTarget::Ref::New(*this));
+	pCBTarget->SetAutoTranslateItems(true);
 	
-	helper.FormLineStretchFirst(form, "Link:", "Link to add to target", formLine);
-	helper.ComboBox(formLine, "Link to add to target", pCBLinks, cComboTarget::Ref::New(*this));
+	helper.FormLineStretchFirst(form, "@Synthesizer.WPAPanelEffect.FieldLink.Label", "@Synthesizer.WPAPanelEffect.FieldLink.ToolTip", formLine);
+	helper.ComboBox(formLine, "@Synthesizer.WPAPanelEffect.FieldLink.ToolTip", pCBLinks, cComboTarget::Ref::New(*this));
 	helper.Button(formLine, pBtnLinkAdd, pActionLinkAdd);
 	
-	helper.ListBox(groupBox, 4, "Links used by target", pListLinks, cListLinks::Ref::New(*this));
+	helper.ListBox(groupBox, 4, "@Synthesizer.WPAPanelEffect.ListLinks.ToolTip", pListLinks, cListLinks::Ref::New(*this));
 	pListLinks->SetDefaultSorter();
 }
 
@@ -376,7 +377,7 @@ void syneWPAPanelEffect::UpdateTargetList(){
 	
 	syneEffect * const effect = GetEffect();
 	if(effect){
-		AddTarget("Strength", effect->GetTargetStrength());
+		AddTarget("@Synthesizer.WPAPanelEffect.Target.Strength", effect->GetTargetStrength());
 	}
 }
 

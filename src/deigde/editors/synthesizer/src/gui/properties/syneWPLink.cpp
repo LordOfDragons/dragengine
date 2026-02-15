@@ -151,8 +151,8 @@ class cActionLinkAdd : public igdeAction{
 	
 public:
 	using Ref = deTObjectReference<cActionLinkAdd>;
-	cActionLinkAdd(syneWPLink &panel) : igdeAction("Add",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add link"),
+	cActionLinkAdd(syneWPLink &panel) : igdeAction("@Synthesizer.WPLink.Action.Add",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@Synthesizer.WPLink.Action.Add.ToolTip"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -161,7 +161,8 @@ public:
 			return;
 		}
 		
-		synthesizer->GetUndoSystem()->Add(syneULinkAdd::Ref::New(synthesizer, syneLink::Ref::New()));
+		synthesizer->GetUndoSystem()->Add(syneULinkAdd::Ref::New(synthesizer,
+			syneLink::Ref::New(pPanel.Translate("Synthesizer.DefaultName.Link").ToUTF8())));
 	}
 	
 	void Update() override{
@@ -172,8 +173,8 @@ public:
 class cActionLinkRemove : public cBaseAction{
 public:
 	using Ref = deTObjectReference<cActionLinkRemove>;
-	cActionLinkRemove(syneWPLink &panel) : cBaseAction(panel, "Remove",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove link"){}
+	cActionLinkRemove(syneWPLink &panel) : cBaseAction(panel, "@Synthesizer.WPLink.Action.Remove",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@Synthesizer.WPLink.Action.Remove.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(syneLink *link) override{
 		return syneULinkRemove::Ref::New(link);
@@ -292,21 +293,21 @@ pPreventUpdate(false)
 	AddChild(content);
 	
 	
-	helper.GroupBoxFlow(content, groupBox, "Links:");
-	helper.ListBox(groupBox, 10, "Links", pListLink, cListLinks::Ref::New(*this));
+	helper.GroupBoxFlow(content, groupBox, "@Synthesizer.WPLink.GroupLinks");
+	helper.ListBox(groupBox, 10, "@Synthesizer.WPLink.ListLinks.ToolTip", pListLink, cListLinks::Ref::New(*this));
 	pListLink->SetDefaultSorter();
 	
 	
-	helper.GroupBoxStatic(content, groupBox, "Link Settings:");
-	helper.EditString(groupBox, "Name:", "Name of link", pEditName, cTextName::Ref::New(*this));
-	helper.ComboBox(groupBox, "Controller:", "Controller to query values from",
+	helper.GroupBoxStatic(content, groupBox, "@Synthesizer.WPLink.GroupLinkSettings");
+	helper.EditString(groupBox, "@Synthesizer.WPLink.FieldName.Label", "@Synthesizer.WPLink.FieldName.ToolTip", pEditName, cTextName::Ref::New(*this));
+	helper.ComboBox(groupBox, "@Synthesizer.WPLink.FieldController.Label", "@Synthesizer.WPLink.FieldController.ToolTip",
 		pCBController, cComboController::Ref::New(*this));
 	pCBController->SetDefaultSorter();
-	helper.EditSpinInteger(groupBox, "Repeat:", "Repeat curve along X direction", 1, 99,
+	helper.EditSpinInteger(groupBox, "@Synthesizer.WPLink.FieldRepeat.Label", "@Synthesizer.WPLink.FieldRepeat.ToolTip", 1, 99,
 		pSpinRepeat, cSpinRepeat::Ref::New(*this));
 	
 	
-	helper.GroupBoxFlow(content, groupBox, "Link Curve:");
+	helper.GroupBoxFlow(content, groupBox, "@Synthesizer.WPLink.GroupLinkCurve");
 	
 	helper.ViewCurveBezier(groupBox, pEditCurve, cEditCurve::Ref::New(*this));
 	pEditCurve->SetDefaultSize(decPoint(200, 250));
@@ -394,7 +395,7 @@ void syneWPLink::UpdateControllerList(){
 	void * const selection = pCBController->GetSelectedItemData();
 	
 	pCBController->RemoveAllItems();
-	pCBController->AddItem("< No Controller >", nullptr);
+	pCBController->AddItem(Translate("Synthesizer.WPLink.ComboNoController").ToUTF8(), nullptr);
 	
 	if(pSynthesizer){
 		pSynthesizer->GetControllers().Visit([&](syneController *controller){

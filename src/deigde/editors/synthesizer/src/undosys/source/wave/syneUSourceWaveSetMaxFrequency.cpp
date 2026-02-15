@@ -46,7 +46,7 @@ pSource(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Source wave set maximum frequency");
+	SetShortInfo("@Source Wave Set Max Frequency");
 	
 	pOldFrequency = source->GetMaxFrequency();
 	pNewFrequency = newFrequency;

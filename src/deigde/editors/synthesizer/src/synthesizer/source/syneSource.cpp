@@ -57,10 +57,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-syneSource::syneSource(deSynthesizerSourceVisitorIdentify::eSourceTypes type) :
+syneSource::syneSource(deSynthesizerSourceVisitorIdentify::eSourceTypes type, const char *name) :
 pSynthesizer(nullptr),
 pParentGroup(nullptr),
-pName("Source"),
+pName(name),
 pType(type),
 pMixMode(deSynthesizerSource::emmAdd),
 pBlendFactor(1.0f),
@@ -525,22 +525,23 @@ syneSource &syneSource::operator=(const syneSource &copy){
 // Helper
 ///////////
 
-syneSource::Ref syneSource::CreateSourceFromType(deEngine *engine, deSynthesizerSourceVisitorIdentify::eSourceTypes type){
+syneSource::Ref syneSource::CreateSourceFromType(deEngine *engine,
+deSynthesizerSourceVisitorIdentify::eSourceTypes type, const char *name){
 	switch(type){
 	case deSynthesizerSourceVisitorIdentify::estSound:
-		return syneSourceSound::Ref::New(engine);
+		return syneSourceSound::Ref::New(engine, name);
 		
 	case deSynthesizerSourceVisitorIdentify::estWave:
-		return syneSourceWave::Ref::New();
+		return syneSourceWave::Ref::New(name);
 		
 	case deSynthesizerSourceVisitorIdentify::estChain:
-		return syneSourceChain::Ref::New(engine);
+		return syneSourceChain::Ref::New(engine, name);
 		
 	case deSynthesizerSourceVisitorIdentify::estGroup:
-		return syneSourceGroup::Ref::New();
+		return syneSourceGroup::Ref::New(name);
 		
 	case deSynthesizerSourceVisitorIdentify::estSynthesizer:
-		return syneSourceSynthesizer::Ref::New(engine);
+		return syneSourceSynthesizer::Ref::New(engine, name);
 		
 	default:
 		DETHROW(deeInvalidParam);

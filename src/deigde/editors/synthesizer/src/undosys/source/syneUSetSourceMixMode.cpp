@@ -50,7 +50,7 @@ pSource(nullptr)
 	pNewMode = newMode;
 	
 	pSource = source;
-	SetShortInfo("Source set blend mode");
+	SetShortInfo("@Source Set Mix Mode");
 }
 
 syneUSetSourceMixMode::~syneUSetSourceMixMode(){

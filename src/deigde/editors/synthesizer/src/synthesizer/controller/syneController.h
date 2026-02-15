@@ -63,7 +63,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create controller. */
-	syneController(const char *name = "Controller");
+	syneController(const char *name);
 	
 	/** \brief Create copy of controller. */
 	syneController(const syneController &copy);

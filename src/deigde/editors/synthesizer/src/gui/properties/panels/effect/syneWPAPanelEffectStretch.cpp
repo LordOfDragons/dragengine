@@ -143,14 +143,14 @@ syneWPAPanelEffect(wpEffect, deSynthesizerEffectVisitorIdentify::eetStretch)
 	igdeContainer::Ref groupBox;
 	
 	
-	helper.GroupBox(*this, groupBox, "Stretch Time/Pitch:");
-	helper.EditFloat(groupBox, "Time Minimum:", "Set minimum time stretch",
+	helper.GroupBox(*this, groupBox, "@Synthesizer.WPAPanelEffectStretch.GroupStretch");
+	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelEffectStretch.FieldTimeMin.Label", "@Synthesizer.WPAPanelEffectStretch.FieldTimeMin.ToolTip",
 		pEditMinTime, cTextMinTime::Ref::New(*this));
-	helper.EditFloat(groupBox, "Time Maximum:", "Set maximum time stretch",
+	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelEffectStretch.FieldTimeMax.Label", "@Synthesizer.WPAPanelEffectStretch.FieldTimeMax.ToolTip",
 		pEditMaxTime, cTextMaxTime::Ref::New(*this));
-	helper.EditFloat(groupBox, "Pitch Minimum:", "Set minimum pitch stretch",
+	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelEffectStretch.FieldPitchMin.Label", "@Synthesizer.WPAPanelEffectStretch.FieldPitchMin.ToolTip",
 		pEditMinPitch, cTextMinPitch::Ref::New(*this));
-	helper.EditFloat(groupBox, "Pitch Maximum:", "Set maximum pitch stretch",
+	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelEffectStretch.FieldPitchMax.Label", "@Synthesizer.WPAPanelEffectStretch.FieldPitchMax.ToolTip",
 		pEditMaxPitch, cTextMaxPitch::Ref::New(*this));
 }
 
@@ -191,7 +191,7 @@ void syneWPAPanelEffectStretch::UpdateTargetList(){
 	
 	syneEffectStretch * const effect = (syneEffectStretch*)GetEffect();
 	if(effect){
-		AddTarget("Time", effect->GetTargetTime());
-		AddTarget("Pitch", effect->GetTargetPitch());
+		AddTarget("@Synthesizer.WPAPanelEffectStretch.Target.Time", effect->GetTargetTime());
+		AddTarget("@Synthesizer.WPAPanelEffectStretch.Target.Pitch", effect->GetTargetPitch());
 	}
 }

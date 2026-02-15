@@ -51,7 +51,7 @@ pNewPath(newPath)
 	pIndex = index;
 	pOldPath = source->GetPathSounds().GetAt(index);
 	
-	SetShortInfo("Chain source set path sound");
+	SetShortInfo("@Source Chain Set Path Sound");
 	
 	pSource = source;
 }

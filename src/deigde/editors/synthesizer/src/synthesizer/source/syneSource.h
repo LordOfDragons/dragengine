@@ -86,7 +86,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create synthesizer source. */
-	syneSource(deSynthesizerSourceVisitorIdentify::eSourceTypes type);
+	syneSource(deSynthesizerSourceVisitorIdentify::eSourceTypes type, const char *name);
 	
 	/** \brief Create a copy of an synthesizer source. */
 	syneSource(const syneSource &copy);
@@ -266,7 +266,8 @@ public:
 	/** \name Helper */
 	/*@{*/
 	/** \brief Create a new source from a source type. */
-	static syneSource::Ref CreateSourceFromType(deEngine *engine, deSynthesizerSourceVisitorIdentify::eSourceTypes type);
+	static syneSource::Ref CreateSourceFromType(deEngine *engine,
+		deSynthesizerSourceVisitorIdentify::eSourceTypes type, const char *name);
 	/*@}*/
 };
 

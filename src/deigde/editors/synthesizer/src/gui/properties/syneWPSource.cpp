@@ -133,7 +133,7 @@ public:
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		
 		const syneWindowMain &windowMain = pPanel.GetViewSynthesizer().GetWindowMain();
-		igdeMenuCascade::Ref submenu(igdeMenuCascade::Ref::New(menu.GetEnvironment(), "Add"));
+		igdeMenuCascade::Ref submenu(igdeMenuCascade::Ref::New(menu.GetEnvironment(), "@Synthesizer.WPSource.Menu.Add"));
 		helper.MenuCommand(submenu, windowMain.GetActionSourceAddWave());
 		helper.MenuCommand(submenu, windowMain.GetActionSourceAddSound());
 		helper.MenuCommand(submenu, windowMain.GetActionSourceAddChain());
@@ -141,7 +141,7 @@ public:
 		helper.MenuCommand(submenu, windowMain.GetActionSourceAddSynthesizer());
 		menu.AddChild(submenu);
 		
-		submenu = igdeMenuCascade::Ref::New(menu.GetEnvironment(), "Add Into Group");
+		submenu = igdeMenuCascade::Ref::New(menu.GetEnvironment(), "@Synthesizer.WPSource.Menu.AddIntoGroup");
 		helper.MenuCommand(submenu, windowMain.GetActionSourceGroupAddWave());
 		helper.MenuCommand(submenu, windowMain.GetActionSourceGroupAddSound());
 		helper.MenuCommand(submenu, windowMain.GetActionSourceGroupAddChain());
@@ -149,7 +149,7 @@ public:
 		helper.MenuCommand(submenu, windowMain.GetActionSourceGroupAddSynthesizer());
 		menu.AddChild(submenu);
 		
-		submenu = igdeMenuCascade::Ref::New(menu.GetEnvironment(), "Insert");
+		submenu = igdeMenuCascade::Ref::New(menu.GetEnvironment(), "@Synthesizer.WPSource.Menu.Insert");
 		helper.MenuCommand(submenu, windowMain.GetActionSourceInsertWave());
 		helper.MenuCommand(submenu, windowMain.GetActionSourceInsertSound());
 		helper.MenuCommand(submenu, windowMain.GetActionSourceInsertChain());
@@ -175,9 +175,9 @@ class cActionSourceCopy : public igdeAction{
 	
 public:
 	using Ref = deTObjectReference<cActionSourceCopy>;
-	cActionSourceCopy(syneWPSource &panel) : igdeAction("Copy",
+	cActionSourceCopy(syneWPSource &panel) : igdeAction("@Synthesizer.WPSource.Action.Copy",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-		"Copy source to clipboard"), pPanel(panel){}
+		"@Synthesizer.WPSource.Action.Copy.ToolTip"), pPanel(panel){}
 	
 	void OnAction() override{
 		syneSource * const source = pPanel.GetSource();
@@ -199,9 +199,9 @@ class cActionSourceCut : public igdeAction{
 	
 public:
 	using Ref = deTObjectReference<cActionSourceCut>;
-	cActionSourceCut(syneWPSource &panel) : igdeAction("Cut",
+	cActionSourceCut(syneWPSource &panel) : igdeAction("@Synthesizer.WPSource.Action.Cut",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
-		"Cut source to clipboard"), pPanel(panel){}
+		"@Synthesizer.WPSource.Action.Cut.ToolTip"), pPanel(panel){}
 	
 	void OnAction() override{
 		syneSource * const source = pPanel.GetSource();
@@ -233,9 +233,9 @@ protected:
 	
 public:
 	using Ref = deTObjectReference<cActionSourcePaste>;
-	cActionSourcePaste(syneWPSource &panel) : igdeAction("Paste",
+	cActionSourcePaste(syneWPSource &panel) : igdeAction("@Synthesizer.WPSource.Action.Paste",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
-		"Paste source from clipboard"), pPanel(panel){}
+		"@Synthesizer.WPSource.Action.Paste.ToolTip"), pPanel(panel){}
 	
 	void OnAction() override{
 		if(!pPanel.GetSynthesizer()){
@@ -275,8 +275,8 @@ class cActionSourcePasteIntoGroup : public cActionSourcePaste{
 public:
 	using Ref = deTObjectReference<cActionSourcePasteIntoGroup>;
 	cActionSourcePasteIntoGroup(syneWPSource &panel) : cActionSourcePaste(panel){
-		SetText("Paste Into Group");
-		SetDescription("Paste source from clipboard into group");
+		SetText("@Synthesizer.WPSource.ActionPasteIntoGroup.Text");
+		SetDescription("@Synthesizer.WPSource.ActionPasteIntoGroup.Description");
 	}
 	
 	void OnAction() override{
@@ -343,8 +343,8 @@ pActivePanel(nullptr)
 	AddChild(content);
 	
 	
-	helper.GroupBoxFlow(content, groupBox, "Sources:");
-	helper.TreeList(groupBox, pTreeSource, 10, "Sources", cTreeSources::Ref::New(*this));
+	helper.GroupBoxFlow(content, groupBox, "@Synthesizer.WPSource.GroupSources");
+	helper.TreeList(groupBox, pTreeSource, 10, "@Synthesizer.WPSource.TreeSources.ToolTip", cTreeSources::Ref::New(*this));
 	
 	
 	pSwitcher = igdeSwitcher::Ref::New(env);

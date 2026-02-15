@@ -48,7 +48,7 @@ pSource(nullptr)
 	
 	pIndex = index;
 	
-	SetShortInfo("Chain source move path sound up");
+	SetShortInfo("@Source Chain Path Sound Move Up");
 	
 	pSource = source;
 }

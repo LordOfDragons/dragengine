@@ -504,7 +504,7 @@ void syneLoadSaveSynthesizer::pReadSynthesizer(const decXmlElementTag &root, syn
 }
 
 void syneLoadSaveSynthesizer::pReadController(const decXmlElementTag &root, syneSynthesizer &synthesizer){
-	const syneController::Ref controller(syneController::Ref::New());
+	const syneController::Ref controller(syneController::Ref::New("Controller"));
 	synthesizer.AddController(controller);
 	
 	int i;
@@ -560,7 +560,7 @@ const decXmlElementTag &root, syneController &controller){
 }
 
 void syneLoadSaveSynthesizer::pReadLink(const decXmlElementTag &root, syneSynthesizer &synthesizer){
-	const syneLink::Ref link(syneLink::Ref::New());
+	const syneLink::Ref link(syneLink::Ref::New("Link"));
 	int i;
 	for(i=0; i<root.GetElementCount(); i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -621,7 +621,7 @@ syneSource::Ref syneLoadSaveSynthesizer::pReadSource(const decXmlElementTag &roo
 }
 
 syneSource::Ref syneLoadSaveSynthesizer::pReadSourceSound(const decXmlElementTag &root, syneSynthesizer &synthesizer){
-	const syneSourceSound::Ref source(syneSourceSound::Ref::New(synthesizer.GetEngine()));
+	const syneSourceSound::Ref source(syneSourceSound::Ref::New(synthesizer.GetEngine(), "Source"));
 	
 	int i;
 	for(i=0; i<root.GetElementCount(); i++){
@@ -679,7 +679,7 @@ syneSource::Ref syneLoadSaveSynthesizer::pReadSourceSound(const decXmlElementTag
 }
 
 syneSource::Ref syneLoadSaveSynthesizer::pReadSourceWave(const decXmlElementTag &root, syneSynthesizer &synthesizer){
-	const syneSourceWave::Ref source(syneSourceWave::Ref::New());
+	const syneSourceWave::Ref source(syneSourceWave::Ref::New("Source"));
 	int i;
 	
 	for(i=0; i<root.GetElementCount(); i++){
@@ -747,7 +747,7 @@ syneSource::Ref syneLoadSaveSynthesizer::pReadSourceWave(const decXmlElementTag 
 }
 
 syneSource::Ref syneLoadSaveSynthesizer::pReadSourceChain(const decXmlElementTag &root, syneSynthesizer &synthesizer){
-	const syneSourceChain::Ref source(syneSourceChain::Ref::New(synthesizer.GetEngine()));
+	const syneSourceChain::Ref source(syneSourceChain::Ref::New(synthesizer.GetEngine(), "Source"));
 	int i;
 	
 	for(i=0; i<root.GetElementCount(); i++){
@@ -805,7 +805,7 @@ syneSource::Ref syneLoadSaveSynthesizer::pReadSourceChain(const decXmlElementTag
 }
 
 syneSource::Ref syneLoadSaveSynthesizer::pReadSourceGroup(const decXmlElementTag &root, syneSynthesizer &synthesizer){
-	const syneSourceGroup::Ref source(syneSourceGroup::Ref::New());
+	const syneSourceGroup::Ref source(syneSourceGroup::Ref::New("Source"));
 	const int elementCount = root.GetElementCount();
 	int i;
 	
@@ -871,7 +871,7 @@ syneSource::Ref syneLoadSaveSynthesizer::pReadSourceGroup(const decXmlElementTag
 }
 
 syneSource::Ref syneLoadSaveSynthesizer::pReadSourceSynthesizer(const decXmlElementTag &root, syneSynthesizer &synthesizer){
-	const syneSourceSynthesizer::Ref source(syneSourceSynthesizer::Ref::New(synthesizer.GetEngine()));
+	const syneSourceSynthesizer::Ref source(syneSourceSynthesizer::Ref::New(synthesizer.GetEngine(), "Source"));
 	int i;
 	
 	for(i=0; i<root.GetElementCount(); i++){

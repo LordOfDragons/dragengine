@@ -52,7 +52,7 @@ pEffect(nullptr)
 	
 	try{
 		pEffect = effect;
-		SetShortInfo("Effect set strength");
+		SetShortInfo("@Effect Set Strength");
 		
 	}catch(const deException &){
 		pCleanUp();

@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-syneSourceGroup::syneSourceGroup() :
-syneSource(deSynthesizerSourceVisitorIdentify::estGroup),
+syneSourceGroup::syneSourceGroup(const char *name) :
+syneSource(deSynthesizerSourceVisitorIdentify::estGroup, name),
 pApplicationType(deSynthesizerSourceGroup::eatAll),
 pTargetSelect(syneControllerTarget::Ref::New()),
 pTreeListExpanded(false){

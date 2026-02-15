@@ -46,7 +46,7 @@ pSource(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Source wave set minimum frequency");
+	SetShortInfo("@Source Wave Set Min Frequency");
 	
 	pOldFrequency = source->GetMinFrequency();
 	pNewFrequency = newFrequency;

@@ -46,7 +46,7 @@ pSource(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Set chain source maximum speed");
+	SetShortInfo("@Source Chain Set Max Speed");
 	
 	pOldSpeed = source->GetMaxSpeed();
 	pNewSpeed = newSpeed;

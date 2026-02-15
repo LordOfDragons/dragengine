@@ -46,7 +46,7 @@ pSource(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Effect stretch set minimum time");
+	SetShortInfo("@Effect Stretch Set Min Time");
 	
 	pOldTime = effect->GetMinTime();
 	pNewTime = newTime;

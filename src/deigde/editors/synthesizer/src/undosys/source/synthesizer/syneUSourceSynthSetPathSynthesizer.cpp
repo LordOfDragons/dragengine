@@ -52,7 +52,7 @@ pSource(nullptr)
 	
 	pOldConCount = source->GetConnections().GetCount();
 	
-	SetShortInfo("Synthesizer source set synthesizer path");
+	SetShortInfo("@Source Synthesizer Set Path");
 	
 	pSource = source;
 }

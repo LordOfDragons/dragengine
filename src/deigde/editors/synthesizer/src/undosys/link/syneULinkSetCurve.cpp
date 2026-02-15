@@ -51,7 +51,7 @@ pLink(nullptr)
 	pOldCurve = link->GetCurve();
 	pNewCurve = newCurve;
 	
-	SetShortInfo("Set Link Curve");
+	SetShortInfo("@Link Set Curve");
 	
 	pLink = link;
 }

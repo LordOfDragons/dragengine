@@ -58,7 +58,8 @@ pSynthesizer(nullptr),
 pParentSource(nullptr),
 pType(type),
 pEnabled(true),
-pStrength(1.0f){
+pStrength(1.0f),
+pTargetStrength(syneControllerTarget::Ref::New()){
 }
 
 syneEffect::syneEffect(const syneEffect &copy) :
@@ -67,7 +68,7 @@ pParentSource(nullptr),
 pType(copy.pType),
 pEnabled(copy.pEnabled),
 pStrength(copy.pStrength),
-pTargetStrength(copy.pTargetStrength){
+pTargetStrength(syneControllerTarget::Ref::New(copy.pTargetStrength)){
 }
 
 syneEffect::~syneEffect(){

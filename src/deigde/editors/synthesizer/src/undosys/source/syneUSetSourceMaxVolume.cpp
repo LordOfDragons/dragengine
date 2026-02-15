@@ -50,7 +50,7 @@ pSource(nullptr)
 	pNewValue = newValue;
 	
 	pSource = source;
-	SetShortInfo("Source set maximum volume");
+	SetShortInfo("@Source Set Max Volume");
 }
 
 syneUSetSourceMaxVolume::~syneUSetSourceMaxVolume(){

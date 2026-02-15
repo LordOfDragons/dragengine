@@ -42,15 +42,12 @@
 ////////////////////////////
 
 syneUEffectTargetRemoveLink::syneUEffectTargetRemoveLink(
-syneEffect *effect, syneControllerTarget *target, syneLink *link) :
-
-pTarget(nullptr)
-{
+syneEffect *effect, syneControllerTarget *target, syneLink *link){
 	if(!effect || !target || !link){
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Effect target remove link");
+	SetShortInfo("@Effect Target Remove Link");
 	
 	pEffect = effect;
 	pTarget = target;

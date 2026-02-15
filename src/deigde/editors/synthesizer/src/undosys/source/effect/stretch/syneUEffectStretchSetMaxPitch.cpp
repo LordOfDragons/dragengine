@@ -46,7 +46,7 @@ pSource(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Effect stretch set maximum pitch");
+	SetShortInfo("@Effect Stretch Set Max Pitch");
 	
 	pOldPitch = effect->GetMaxPitch();
 	pNewPitch = newPitch;

@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-syneSourceWave::syneSourceWave() :
-syneSource(deSynthesizerSourceVisitorIdentify::estWave),
+syneSourceWave::syneSourceWave(const char *name) :
+syneSource(deSynthesizerSourceVisitorIdentify::estWave, name),
 pWaveType(deSynthesizerSourceWave::ewtSine),
 pMinFrequency(440.0f),
 pMaxFrequency(440.0f),

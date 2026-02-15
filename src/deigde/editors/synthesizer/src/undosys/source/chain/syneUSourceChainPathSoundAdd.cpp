@@ -49,7 +49,7 @@ pSource(nullptr)
 	pIndex = source->GetPathSounds().GetCount();
 	pPath = path;
 	
-	SetShortInfo("Chain source add path sound");
+	SetShortInfo("@Source Chain Path Sound Add");
 	
 	pSource = source;
 }

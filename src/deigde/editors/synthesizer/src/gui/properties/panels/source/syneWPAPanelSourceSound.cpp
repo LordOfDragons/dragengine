@@ -129,8 +129,8 @@ class cActionLooping : public igdeAction {
 	
 public:
 	using Ref = deTObjectReference<cActionLooping>;
-	cActionLooping(syneWPAPanelSourceSound &panel) : igdeAction("Looping",
-		nullptr, "Sound is played back looping"), pPanel(panel){}
+	cActionLooping(syneWPAPanelSourceSound &panel) : igdeAction("@Synthesizer.WPAPanelSourceSound.Action.Looping",
+		nullptr, "@Synthesizer.WPAPanelSourceSound.Action.Looping.ToolTip"), pPanel(panel){}
 	
 	void OnAction() override{
 		syneSourceSound * const source = (syneSourceSound*)pPanel.GetSource();
@@ -161,18 +161,18 @@ syneWPAPanelSource(wpSource, deSynthesizerSourceVisitorIdentify::estSound)
 	igdeContainer::Ref groupBox;
 	
 	
-	helper.GroupBox(*this, groupBox, "Sound:");
-	helper.EditPath(groupBox, "Sound:", "Sound file to use", igdeEnvironment::efpltSound,
+	helper.GroupBox(*this, groupBox, "@Synthesizer.WPAPanelSourceSound.GroupSound");
+	helper.EditPath(groupBox, "@Synthesizer.WPAPanelSourceSound.FieldSound.Label", "@Synthesizer.WPAPanelSourceSound.FieldSound.ToolTip", igdeEnvironment::efpltSound,
 		pEditPathSound, cPathSound::Ref::New(*this));
 	
 	helper.EditString(groupBox, "", "", pLabSoundInfo, {});
 	pLabSoundInfo->SetEditable(false);
 	
-	helper.EditFloat(groupBox, "Minimum Speed:",
-		"Minimum play speed in percentage of normal playback speed. Use negative values to play backwards.",
+	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelSourceSound.FieldMinSpeed.Label",
+		"@Synthesizer.WPAPanelSourceSound.FieldMinSpeed.ToolTip",
 		pEditMinSpeed, cTextMinSpeed::Ref::New(*this));
-	helper.EditFloat(groupBox, "Maximum Speed:",
-		"Maximum play speed in percentage of normal playback speed. Use negative values to play backwards.",
+	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelSourceSound.FieldMaxSpeed.Label",
+		"@Synthesizer.WPAPanelSourceSound.FieldMaxSpeed.ToolTip",
 		pEditMaxSpeed, cTextMaxSpeed::Ref::New(*this));
 	
 	helper.CheckBox(groupBox, pChkLooping, cActionLooping::Ref::New(*this));
@@ -231,8 +231,8 @@ void syneWPAPanelSourceSound::UpdateTargetList(){
 	
 	syneSourceSound * const source = (syneSourceSound*)GetSource();
 	if(source){
-		AddTarget("Speed", source->GetTargetSpeed());
-		AddTarget("Play", source->GetTargetPlay());
+		AddTarget("@Synthesizer.WPAPanelSourceSound.Target.Speed", source->GetTargetSpeed());
+		AddTarget("@Synthesizer.WPAPanelSourceSound.Target.Play", source->GetTargetPlay());
 	}
 }
 
@@ -252,7 +252,7 @@ void syneWPAPanelSourceSound::UpdateSoundInfo(){
 			if(!description.IsEmpty()){
 				description.AppendCharacter('\n');
 			}
-			description += "Sound has more channels than synthesizer!";
+			description += Translate("Synthesizer.Validation.SoundMoreChannels").ToUTF8();
 			invalidValue = true;
 		}
 		
@@ -260,7 +260,7 @@ void syneWPAPanelSourceSound::UpdateSoundInfo(){
 			if(!description.IsEmpty()){
 				description.AppendCharacter('\n');
 			}
-			description += "Sound sample rate differs synthesizer!";
+			description += Translate("Synthesizer.Validation.SoundDifferentSampleRate").ToUTF8();
 			invalidValue = true;
 		}
 		

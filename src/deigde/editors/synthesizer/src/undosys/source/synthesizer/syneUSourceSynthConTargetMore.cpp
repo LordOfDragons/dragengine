@@ -46,7 +46,7 @@ pSource(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Synthesizer source more connection targets");
+	SetShortInfo("@Source Synthesizer Con Target More");
 	
 	pSource = source;
 }

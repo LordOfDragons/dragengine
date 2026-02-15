@@ -215,8 +215,8 @@ public:
 class cActionLooping : public cBaseAction{
 public:
 	using Ref = deTObjectReference<cActionLooping>;
-	cActionLooping(syneWPSynthesizer &panel) : cBaseAction(panel, "Looping",
-		nullptr, "Playback looping"){}
+	cActionLooping(syneWPSynthesizer &panel) : cBaseAction(panel, "@Synthesizer.WPSynthesizer.Action.Looping",
+		nullptr, "@Synthesizer.WPSynthesizer.Action.Looping.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(syneSynthesizer *synthesizer) override{
 		synthesizer->SetLooping(!synthesizer->GetLooping());
@@ -227,9 +227,9 @@ public:
 class cActionPlay : public cBaseAction{
 public:
 	using Ref = deTObjectReference<cActionPlay>;
-	cActionPlay(syneWPSynthesizer &panel) : cBaseAction(panel, "Play",
+	cActionPlay(syneWPSynthesizer &panel) : cBaseAction(panel, "@Synthesizer.WPSynthesizer.Action.Play",
 		panel.GetViewSynthesizer().GetWindowMain().GetIconPlay(),
-		"Start playing back"){}
+		"@Synthesizer.WPSynthesizer.Action.Play.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(syneSynthesizer *synthesizer) override{
 		synthesizer->Play();
@@ -244,9 +244,9 @@ public:
 class cActionPause : public cBaseAction{
 public:
 	using Ref = deTObjectReference<cActionPause>;
-	cActionPause(syneWPSynthesizer &panel) : cBaseAction(panel, "Pause",
+	cActionPause(syneWPSynthesizer &panel) : cBaseAction(panel, "@Synthesizer.WPSynthesizer.Action.Pause",
 		panel.GetViewSynthesizer().GetWindowMain().GetIconPause(),
-		"Pause playing back"){}
+		"@Synthesizer.WPSynthesizer.Action.Pause.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(syneSynthesizer *synthesizer) override{
 		synthesizer->Pause();
@@ -261,9 +261,9 @@ public:
 class cActionStop : public cBaseAction{
 public:
 	using Ref = deTObjectReference<cActionStop>;
-	cActionStop(syneWPSynthesizer &panel) : cBaseAction(panel, "Stop",
+	cActionStop(syneWPSynthesizer &panel) : cBaseAction(panel, "@Synthesizer.WPSynthesizer.Action.Stop",
 		panel.GetViewSynthesizer().GetWindowMain().GetIconStop(),
-		"Stop playing back"){}
+		"@Synthesizer.WPSynthesizer.Action.Stop.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(syneSynthesizer *synthesizer) override{
 		synthesizer->Stop();
@@ -306,32 +306,32 @@ pPreventUpdate(false)
 	AddChild(content);
 	
 	
-	helper.GroupBoxFlow(content, groupBox, "Synthesizer Settings:");
+	helper.GroupBoxFlow(content, groupBox, "@Synthesizer.WPSynthesizer.GroupSynthesizerSettings");
 	
-	helper.ComboBox(groupBox, "Channels:", true, "Number of channels",
+	helper.ComboBox(groupBox, "@Synthesizer.WPSynthesizer.FieldChannels.Label", true, "@Synthesizer.WPSynthesizer.FieldChannels.ToolTip",
 		pCBChannelCount, cComboChannelCount::Ref::New(*this));
 	pCBChannelCount->AddItem("1");
 	pCBChannelCount->AddItem("2");
 	
-	helper.ComboBox(groupBox, "Sample rate:", true, "Sample rate in Hz",
+	helper.ComboBox(groupBox, "@Synthesizer.WPSynthesizer.FieldSampleRate.Label", true, "@Synthesizer.WPSynthesizer.FieldSampleRate.ToolTip",
 		pCBSampleRate, cComboSampleRate::Ref::New(*this));
 	pCBSampleRate->AddItem("44100");
 	pCBSampleRate->AddItem("22050");
 	pCBSampleRate->AddItem("11025");
 	
-	helper.ComboBox(groupBox, "Bytes per sample:", true, "Bytes per sample",
+	helper.ComboBox(groupBox, "@Synthesizer.WPSynthesizer.FieldBytesPerSample.Label", true, "@Synthesizer.WPSynthesizer.FieldBytesPerSample.ToolTip",
 		pCBBytesPerSample, cComboBytesPerSample::Ref::New(*this));
 	pCBBytesPerSample->AddItem("1");
 	pCBBytesPerSample->AddItem("2");
 	
 	
-	helper.EditInteger(groupBox, "Sample count:", "Number of samples to create", 8,
+	helper.EditInteger(groupBox, "@Synthesizer.WPSynthesizer.FieldSampleCount.Label", "@Synthesizer.WPSynthesizer.FieldSampleCount.ToolTip", 8,
 		pEditSampleCount, cTextSampleCount::Ref::New(*this));
-	helper.EditFloat(groupBox, "Play time:", "Play time in seconds", 6, 1,
+	helper.EditFloat(groupBox, "@Synthesizer.WPSynthesizer.FieldPlayTime.Label", "@Synthesizer.WPSynthesizer.FieldPlayTime.ToolTip", 6, 1,
 		pEditPlayTime, cTextPlayTime::Ref::New(*this, pPreventUpdate));
 	
 	
-	helper.GroupBoxFlow(content, groupBox, "Playback / Testing:");
+	helper.GroupBoxFlow(content, groupBox, "@Synthesizer.WPSynthesizer.GroupPlaybackTesting");
 	helper.CheckBox(groupBox, pChkLooping, cActionLooping::Ref::New(*this));
 	helper.Button(groupBox, pBtnPlay, pActionPlay);
 	helper.Button(groupBox, pBtnPause, pActionPause);

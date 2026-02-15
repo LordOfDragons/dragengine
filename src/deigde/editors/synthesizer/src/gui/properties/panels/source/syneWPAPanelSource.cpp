@@ -238,8 +238,8 @@ public:
 class cActionEnable : public cBaseAction {
 public:
 	using Ref = deTObjectReference<cActionEnable>;
-	cActionEnable(syneWPAPanelSource &panel) : cBaseAction(panel, "Enable source",
-		nullptr, "Determines if the source is affecting the model"){ }
+	cActionEnable(syneWPAPanelSource &panel) : cBaseAction(panel, "@Synthesizer.WPAPanelSource.Action.Enable",
+		nullptr, "@Synthesizer.WPAPanelSource.Action.Enable.ToolTip"){ }
 	
 	igdeUndo::Ref OnAction(syneSource *source) override{
 		return syneUSourceToggleEnabled::Ref::New(source);
@@ -275,8 +275,8 @@ public:
 class cActionLinkAdd : public cBaseAction {
 public:
 	using Ref = deTObjectReference<cActionLinkAdd>;
-	cActionLinkAdd(syneWPAPanelSource &panel) : cBaseAction(panel, "Add",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add link"){}
+	cActionLinkAdd(syneWPAPanelSource &panel) : cBaseAction(panel, "@Synthesizer.WPAPanelSource.Action.LinkAdd",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@Synthesizer.WPAPanelSource.Action.LinkAdd.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(syneSource *source) override{
 		syneControllerTarget * const target = pPanel.GetTarget();
@@ -295,8 +295,8 @@ public:
 class cActionLinkRemove : public cBaseAction {
 public:
 	using Ref = deTObjectReference<cActionLinkRemove>;
-	cActionLinkRemove(syneWPAPanelSource &panel) : cBaseAction(panel, "Remove",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove link"){}
+	cActionLinkRemove(syneWPAPanelSource &panel) : cBaseAction(panel, "@Synthesizer.WPAPanelSource.Action.LinkRemove",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@Synthesizer.WPAPanelSource.Action.LinkRemove.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(syneSource *source) override{
 		syneControllerTarget * const target = pPanel.GetTarget();
@@ -339,40 +339,43 @@ pWPEffect(nullptr)
 	
 	
 	// general settings
-	helper.GroupBox(*this, groupBox, "General Settings:");
-	helper.EditString(groupBox, "Name:", "Name of the source", pEditName, cTextName::Ref::New(*this));
+	helper.GroupBox(*this, groupBox, "@Synthesizer.WPAPanelSource.GroupGeneralSettings");
+	helper.EditString(groupBox, "@Synthesizer.WPAPanelSource.FieldName.Label", "@Synthesizer.WPAPanelSource.FieldName.ToolTip", pEditName, cTextName::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "Mix Mode:", "Set mix mode", pCBMixMode, cComboMixMode::Ref::New(*this));
-	pCBMixMode->AddItem("Blend", nullptr, (void*)(intptr_t)deSynthesizerSource::emmBlend);
-	pCBMixMode->AddItem("Add", nullptr, (void*)(intptr_t)deSynthesizerSource::emmAdd);
+	helper.ComboBox(groupBox, "@Synthesizer.WPAPanelSource.FieldMixMode.Label",
+		"@Synthesizer.WPAPanelSource.FieldMixMode.ToolTip", pCBMixMode, cComboMixMode::Ref::New(*this));
+	pCBMixMode->SetAutoTranslateItems(true);
+	pCBMixMode->AddItem("@Synthesizer.WPAPanelSource.ComboBlend", nullptr, (void*)(intptr_t)deSynthesizerSource::emmBlend);
+	pCBMixMode->AddItem("@Synthesizer.WPAPanelSource.ComboAdd", nullptr, (void*)(intptr_t)deSynthesizerSource::emmAdd);
 	
-	helper.EditFloat(groupBox, "Blend Factor:", "Set blend factor", pEditBlendFactor, cTextBlendFactor::Ref::New(*this));
-	helper.EditFloat(groupBox, "Minimum Volume:", "Minimum volume", pEditMinVolume, cTextMinVolume::Ref::New(*this));
-	helper.EditFloat(groupBox, "Maximum Volume:", "Maximum volume", pEditMaxVolume, cTextMaxVolume::Ref::New(*this));
-	helper.EditFloat(groupBox, "Minimum Panning:", "Minimum panning", pEditMinPanning, cTextMinPanning::Ref::New(*this));
-	helper.EditFloat(groupBox, "Maximum Panning:", "Maximum panning", pEditMaxPanning, cTextMaxPanning::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelSource.FieldBlendFactor.Label", "@Synthesizer.WPAPanelSource.FieldBlendFactor.ToolTip", pEditBlendFactor, cTextBlendFactor::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelSource.FieldMinVolume.Label", "@Synthesizer.WPAPanelSource.FieldMinVolume.ToolTip", pEditMinVolume, cTextMinVolume::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelSource.FieldMaxVolume.Label", "@Synthesizer.WPAPanelSource.FieldMaxVolume.ToolTip", pEditMaxVolume, cTextMaxVolume::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelSource.FieldMinPanning.Label", "@Synthesizer.WPAPanelSource.FieldMinPanning.ToolTip", pEditMinPanning, cTextMinPanning::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Synthesizer.WPAPanelSource.FieldMaxPanning.Label", "@Synthesizer.WPAPanelSource.FieldMaxPanning.ToolTip", pEditMaxPanning, cTextMaxPanning::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkEnabled, cActionEnable::Ref::New(*this));
 	
 	
 	// targets and links
-	helper.GroupBoxFlow(*this, groupBox, "Targets and Links:");
+	helper.GroupBoxFlow(*this, groupBox, "@Synthesizer.WPAPanelSource.GroupTargetsLinks");
 	
 	form = igdeContainerForm::Ref::New(env);
 	groupBox->AddChild(form);
-	helper.ComboBox(form, "Target:", "Displays all links of for a given target",
+	helper.ComboBox(form, "@Synthesizer.WPAPanelSource.FieldTarget.Label", "@Synthesizer.WPAPanelSource.FieldTarget.ToolTip",
 		pCBTarget, cComboTarget::Ref::New(*this));
+	pCBTarget->SetAutoTranslateItems(true);
 	
-	helper.FormLineStretchFirst(form, "Link:", "Link to add to target", formLine);
-	helper.ComboBox(formLine, "Link to add to target", pCBLinks, cComboTarget::Ref::New(*this));
+	helper.FormLineStretchFirst(form, "@Synthesizer.WPAPanelSource.FieldLink.Label", "@Synthesizer.WPAPanelSource.FieldLink.ToolTip", formLine);
+	helper.ComboBox(formLine, "@Synthesizer.WPAPanelSource.FieldLink.ToolTip", pCBLinks, cComboTarget::Ref::New(*this));
 	helper.Button(formLine, pBtnLinkAdd, pActionLinkAdd);
 	
-	helper.ListBox(groupBox, 4, "Links used by target", pListLinks, cListLinks::Ref::New(*this));
+	helper.ListBox(groupBox, 4, "@Synthesizer.WPAPanelSource.ListLinks.ToolTip", pListLinks, cListLinks::Ref::New(*this));
 	pListLinks->SetDefaultSorter();
 	
 	
 	
 	// effects
-	helper.GroupBoxFlow(*this, groupBox, "Effects:", false, true);
+	helper.GroupBoxFlow(*this, groupBox, "@Synthesizer.WPAPanelSource.GroupEffects", false, true);
 	pWPEffect = syneWPEffect::Ref::New(wpSource.GetViewSynthesizer());
 	groupBox->AddChild(pWPEffect);
 }
@@ -518,9 +521,9 @@ void syneWPAPanelSource::UpdateTargetList(){
 	
 	syneSource * const source = GetSource();
 	if(source){
-		AddTarget("Blend Factor", source->GetTargetBlendFactor());
-		AddTarget("Volume", source->GetTargetVolume());
-		AddTarget("Panning", source->GetTargetPanning());
+		AddTarget("@Synthesizer.WPAPanelSource.Target.BlendFactor", source->GetTargetBlendFactor());
+		AddTarget("@Synthesizer.WPAPanelSource.Target.Volume", source->GetTargetVolume());
+		AddTarget("@Synthesizer.WPAPanelSource.Target.Panning", source->GetTargetPanning());
 	}
 }
 

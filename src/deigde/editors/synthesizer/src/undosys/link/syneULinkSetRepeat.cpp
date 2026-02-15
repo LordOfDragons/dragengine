@@ -47,7 +47,7 @@ pLink(nullptr)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo("Link set repeat");
+	SetShortInfo("@Link Set Repeat");
 	
 	pLink = link;
 	pOldRepeat = link->GetRepeat();
