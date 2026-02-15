@@ -170,8 +170,9 @@ jobs:
       
       - name: Move Workspace to D
         run: |
-          xcopy . D:\build /s /e /q
-          echo "GITHUB_WORKSPACE=D:\build" >> $GITHUB_ENV
+          xcopy . D:\build\ /s /e /q /y /i
+          cd D:\build
+          echo "GITHUB_WORKSPACE=D:\build" >> $env:GITHUB_ENV
       
       - name: Build
         working-directory: vs
