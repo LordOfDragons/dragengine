@@ -80,16 +80,16 @@ jobs:
           chmod 777 installer/windows/build
           
       - name: Build Installers
-        uses: addnab/docker-run-action@v3
-        with:
-          image: amake/innosetup:latest
-          options: -v ${{ github.workspace }}/installer/windows:/work
-          run: |
-            iscc dragengine64.iss
-            iscc dragengine64-sdk.iss
-            iscc deigde64.iss
-            iscc deigde64-sdk.iss
-        
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}/installer/windows:/work \
+            -w /work \
+            amake/innosetup:latest \
+            sh -c "iscc dragengine64.iss && \
+                  iscc dragengine64-sdk.iss && \
+                  iscc deigde64.iss && \
+                  iscc deigde64-sdk.iss"
+      
       - name: Rename installers
         run: |
           cd ${{ github.workspace }}/installer/windows/build
