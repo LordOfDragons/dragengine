@@ -63,6 +63,7 @@ jobs:
     
     steps:
       - name: Maximize Disk Space
+        if: false
         shell: pwsh
         run: |
           Write-Host "Initial Disk Space:"
@@ -137,9 +138,6 @@ jobs:
           Write-Output "PATH=$env:PATH" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
         # binary name glslangValidator.exe
         
-      - name: Run sccache-cache
-        uses: mozilla-actions/sccache-action@v0.0.9
-      
       - name: Restore NuGet packages
         working-directory: vs
         run: nuget restore dragengine.sln
@@ -161,13 +159,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-extern-
       
-      - name: ccache
-        uses: hendrikmuhs/ccache-action@v1.2
-        with:
-          key: ${{ runner.os }}-ccache-${{ hashFiles('./vs/extern/**/*.ps1') }}
-          restore-keys: ${{ runner.os }}-ccache-
-          variant: sccache
-      
       - name: Move Workspace to D
         run: |
           robocopy . D:\build\ /E /SL /XJ /NP /NFL /NDL /R:0 /W:0
@@ -175,20 +166,13 @@ jobs:
           cd D:\build
           echo "GITHUB_WORKSPACE=D:\build" >> $env:GITHUB_ENV
       
-      - name: Set up MSVC Developer Command Prompt
-        uses: ilammy/msvc-dev-cmd@v1
-      
       - name: Build
         working-directory: vs
         run: |
           $Config = "${{ inputs.debugBuild && 'ReleaseDebug' || 'Release' }}"
           $BuilVersion = "${{ inputs.buildVersion }}"
           $env:MSBUILDDISABLENODEREUSE=1
-          
-          # Build with /Z7 and sccache. The linker will still produce your .pdb files at the end
-          & msbuild /p:DebugInformationFormat=OldStyle `
-            /p:CLToolExe=sccache.exe `
-            /m:2 /p:CL_MPCount=2 `
+          & msbuild /m:2 /p:CL_MPCount=2 `
             -tl:off /nodeReuse:false /v:m `
             /p:Configuration=$Config `
             /p:BuildVersion=$BuilVersion `
