@@ -609,7 +609,7 @@ params.Update(parent_env)
 #print(parent_env.Dump())
 
 # cache dir
-if 'with_cachedir' in parent_env:
+if parent_env['with_cachedir']:
 	CacheDir('.scons_cache')
 
 # external flags
