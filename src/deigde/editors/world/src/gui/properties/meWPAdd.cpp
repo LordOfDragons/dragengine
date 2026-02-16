@@ -159,7 +159,7 @@ class cActionObjInclusive : public igdeAction{
 public:
 	typedef deTObjectReference<cActionObjInclusive> Ref;
 	cActionObjInclusive(meWPAdd &panel) : igdeAction("@World.WPAdd.Action.AcceptIfInList", nullptr,
-		"@World.WPAdd.Action.AcceptIfInListDesc"),
+		"@World.WPAdd.Action.AcceptIfInList.ToolTip"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -178,7 +178,7 @@ class cActionRandomizeYAxis : public igdeAction {
 public:
 	typedef deTObjectReference<cActionRandomizeYAxis> Ref;
 	cActionRandomizeYAxis(meWPAdd &panel) : igdeAction("@World.WPAdd.Action.RandomizeYAxis", nullptr,
-		"@World.WPAdd.Action.RandomizeYAxisDesc"),
+		"@World.WPAdd.Action.RandomizeYAxis.ToolTip"),
 		pPanel(panel){}
 	
 	virtual void OnAction() {

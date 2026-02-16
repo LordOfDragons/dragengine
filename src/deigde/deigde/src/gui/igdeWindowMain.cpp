@@ -585,6 +585,7 @@ pFirstEngineRun(true)
 		pCreateGuiThemes();
 		
 		pModuleManager = new igdeEditorModuleManager(*this);
+		ChangeLanguage(pConfiguration.GetLanguage()); // requires modules to be loaded
 		
 		pCreateActions();
 		pCreateMenu();
@@ -862,7 +863,7 @@ void igdeWindowMain::AddRecentGameProject(const char *filename){
 
 igdeGameDefinition::Ref igdeWindowMain::CreateNewGameDefinition(){
 	decPath pathGameDef(decPath::CreatePathNative(pConfiguration.GetPathShares()));
-	pathGameDef.AddComponent(Translate("Igde.NewGameProject.DefaultGameProject").ToUTF8() + ".degd");
+	pathGameDef.AddComponent("newproject.degd");
 	
 	const igdeGameDefinition::Ref gamedef(igdeGameDefinition::Ref::New(pEnvironmentIGDE));
 	gamedef->SetFilename(pathGameDef.GetPathNative());
@@ -906,6 +907,10 @@ void igdeWindowMain::ActivateEditor(igdeEditorModule *editor){
 
 
 void igdeWindowMain::RebuildMenu(){
+	if(!pMenuBar){
+		return;
+	}
+	
 	// clear the menu bar from all entries
 	pMenuBar->RemoveAllChildren();
 	
@@ -936,6 +941,10 @@ void igdeWindowMain::RebuildMenu(){
 }
 
 void igdeWindowMain::RebuildToolBars(){
+	if(!pToolBarDockTop || !pToolBarDockLeft || !pToolBarDockRight || !pToolBarDockBottom){
+		return;
+	}
+	
 	// remove all toolbars
 	pToolBarDockTop->RemoveAllChildren();
 	pToolBarDockLeft->RemoveAllChildren();
@@ -1083,6 +1092,8 @@ void igdeWindowMain::ChangeLanguage(const decString &language){
 	pConfiguration.SaveConfiguration();
 	
 	// update all UI elements potentially affected by the new language
+	OnLanguageChanged();
+	
 	pModuleManager->GetModules().Visit([&](igdeEditorModuleDefinition &md){
 		if(md.IsModuleRunning()){
 			md.GetModule()->OnLanguageChanged();

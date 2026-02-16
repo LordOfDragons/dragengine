@@ -63,7 +63,6 @@
 	<translation name="Igde.NewGameProject.Cancel">Discard</translation>
 	<translation name="Igde.NewGameProject.DefaultName">New Game Project</translation>
 	<translation name="Igde.NewGameProject.DefaultGameDef">game</translation>
-	<translation name="Igde.NewGameProject.DefaultGameProject">newproject</translation>
 	<translation name="Igde.NewGameProject.DefaultProjectDir">New Project</translation>
 	<translation name="Igde.NewGameProject.NoTemplate">&lt; Use No Template &gt;</translation>
 	<translation name="Igde.NewGameProject.ErrorTitle">New Game Project</translation>
@@ -523,7 +522,7 @@ property type so be careful what you enter</translation>
 	<translation name="Igde.WPWObject.DynamicCollider">Dynamic Collider</translation>
 	<translation name="Igde.WPWObject.DynamicCollider.ToolTip">Object is attached using a dynamic collider</translation>
 	<translation name="Igde.WPWObject.Class">Class:</translation>
-	<translation name="Igde.WPWObject.Class.ToolTip">Path to the sky to use.</translation>
+	<translation name="Igde.WPWObject.Class.ToolTip">Path to the object class to use.</translation>
 	<translation name="Igde.WPWObject.Position">Position:</translation>
 	<translation name="Igde.WPWObject.Position.ToolTip">Position of object in meters.</translation>
 	<translation name="Igde.WPWObject.Orientation">Orientation:</translation>
@@ -579,6 +578,7 @@ property type so be careful what you enter</translation>
 	
 	<!-- UI Helper -->
 	<translation name="Igde.UIHelper.RecentFiles.Title">Open Recent File</translation>
+	<translation name="Igde.UIHelper.RecentFiles.Title.ToolTip">Open recent file</translation>
 	
 	<!-- Recent Files -->
 	<translation name="Igde.RecentFiles.Action.ClearList">Clear List</translation>

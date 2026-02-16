@@ -135,6 +135,9 @@ protected:
 	
 	/** \brief Toggled changed. */
 	virtual void OnToggledChanged();
+	
+	/** \brief Active language changed. */
+	void OnLanguageChanged() override;
 	/*@}*/
 };
 

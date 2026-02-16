@@ -993,7 +993,8 @@ public:
 	
 	/** \brief Add menu recent files sub menu. */
 	void MenuRecentFiles(igdeMenuCascade &menu, igdeRecentFiles &recentFiles,
-		const char *text = "@Igde.UIHelper.RecentFiles.Title");
+		const char *text = "@Igde.UIHelper.RecentFiles.Title",
+		const char *description = "@Igde.UIHelper.RecentFiles.ToolTip");
 	
 	
 	

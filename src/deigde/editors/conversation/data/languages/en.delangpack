@@ -273,7 +273,7 @@
 	<!-- WPView -->
 	<translation name="Conversation.WPView.ControllerExists.Message">A controller with this name exists already.</translation>
 	<translation name="Conversation.WPView.ActorGesture">Actor gesture to edit</translation>
-	<translation name="Conversation.WPView.ActorPose">Actor pose to edit</translation>
+	<translation name="Conversation.WPView.ActorPose.ToolTip">Actor pose to edit</translation>
 	<translation name="Conversation.WPView.AddController.Title">Add Controller</translation>
 	<translation name="Conversation.WPView.AddGesture.Title">Add Gesture</translation>
 	<translation name="Conversation.WPView.AddPose.Title">Add Pose</translation>
@@ -286,7 +286,7 @@
 	<translation name="Conversation.WPView.CameraHandling.Enum.CameraShot">Camera Shot</translation>
 	<translation name="Conversation.WPView.PropClass">Class of the prop</translation>
 	<translation name="Conversation.WPView.ControllerUpdateType.Enum.ConstantValue">Constant Value</translation>
-	<translation name="Conversation.WPView.Controller">Controller to edit</translation>
+	<translation name="Conversation.WPView.Controller.ToolTip">Controller to edit</translation>
 	<translation name="Conversation.WPView.CameraHandling.Enum.Conversation">Conversation</translation>
 	<translation name="Conversation.WPView.ControllerUpdateType.Enum.ElapsedTime">Elapsed Time</translation>
 	<translation name="Conversation.WPView.EyeAnimator">Eye Animator:</translation>

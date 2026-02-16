@@ -193,7 +193,9 @@ void igdeNativeFoxTabBook::AddHeader(const igdeTabBook::cHeader &header){
 void igdeNativeFoxTabBook::UpdateHeader(int index, const igdeTabBook::cHeader &header){
 	igdeNativeFoxTabBookHeader &widget = *pHeaderWidgets.GetAt(index);
 	
-	widget.setText(igdeUIFoxHelper::TranslateIf(*pOwner, header.text));
+	const FXString text = igdeUIFoxHelper::TranslateIf(*pOwner, header.text);
+	widget.setText(text);
+	widget.setAltText(text);
 	widget.setIcon(header.icon ? (FXIcon*)header.icon->GetNativeIcon() : nullptr);
 }
 

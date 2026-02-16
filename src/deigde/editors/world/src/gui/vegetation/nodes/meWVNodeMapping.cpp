@@ -155,25 +155,25 @@ pRuleMapping(rule)
 	
 	// slots
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"@World.WVNodeMapping.Output.Result", "@World.WVNodeMapping.Output.ResultDesc",
+		"@World.WVNodeMapping.Output.Result", "@World.WVNodeMapping.Output.Result.ToolTip",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleMapping::eosValue));
 	
 	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::New(env,
-		"@World.WVNodeMapping.Output.Lower", "@World.WVNodeMapping.Output.LowerDesc",
+		"@World.WVNodeMapping.Output.Lower", "@World.WVNodeMapping.Output.Lower.ToolTip",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleMapping::eisLower));
-	helper.EditFloat(slot, "@World.WVNodeMapping.LowerValueIfSlotIsNotConnected",
+	helper.EditFloat(slot, "@World.WVNodeMapping.LowerValue",
 		pEditLower, cTextLower::Ref::New(*this));
 	AddSlot(slot);
 	
-	slot = meWVNodeSlot::Ref::New(env, "@World.WVNodeMapping.Output.Upper", "@World.WVNodeMapping.Output.UpperDesc",
+	slot = meWVNodeSlot::Ref::New(env, "@World.WVNodeMapping.Output.Upper", "@World.WVNodeMapping.Output.Upper.ToolTip",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleMapping::eisUpper);
-	helper.EditFloat(slot, "@World.WVNodeMapping.UpperValueIfSlotIsNotConnected",
+	helper.EditFloat(slot, "@World.WVNodeMapping.UpperValue",
 		pEditUpper, cTextUpper::Ref::New(*this));
 	AddSlot(slot);
 	
-	slot = meWVNodeSlot::Ref::New(env, "@World.WVNodeMapping.Input.Value", "@World.WVNodeMapping.Input.ValueDesc",
+	slot = meWVNodeSlot::Ref::New(env, "@World.WVNodeMapping.Input.Value", "@World.WVNodeMapping.Input.Value.ToolTip",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleMapping::eisValue);
-	helper.EditFloat(slot, "@World.WVNodeMapping.ValueToMapIfSlotIsNotConnected",
+	helper.EditFloat(slot, "@World.WVNodeMapping.ValueToMap",
 		pEditValue, cTextValue::Ref::New(*this));
 	AddSlot(slot);
 	

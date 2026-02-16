@@ -55,6 +55,7 @@ private:
 	int pMaxRecentProjectEntries;
 	
 	decString pLanguage;
+	bool pCanSaveConfig;
 	
 	
 public:

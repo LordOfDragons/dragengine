@@ -95,7 +95,8 @@
 igdeConfiguration::igdeConfiguration(igdeWindowMain &windowMain) :
 pWindowMain(windowMain),
 pMaxRecentProjectEntries(10),
-pLanguage(igdeTranslationManager::FallbackLanguage)
+pLanguage(igdeTranslationManager::FallbackLanguage),
+pCanSaveConfig(false)
 {
 #ifdef TEST_SPECIAL
 	// DEBUG
@@ -592,9 +593,15 @@ void igdeConfiguration::LoadConfiguration(){
 	}else{
 		logger.LogInfo(LOGSOURCE, "User configuration file not found, will be created upon exiting");
 	}
+	
+	pCanSaveConfig = true;
 }
 
 void igdeConfiguration::SaveConfiguration(){
+	if(!pCanSaveConfig){
+		return;
+	}
+	
 	igdeConfigurationXML configXML(pWindowMain.GetLogger(), LOGSOURCE);
 	deVirtualFileSystem &vfs = *pWindowMain.GetVirtualFileSystem();
 	deLogger &logger = *pWindowMain.GetLogger();

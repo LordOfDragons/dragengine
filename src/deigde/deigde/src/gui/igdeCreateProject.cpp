@@ -314,7 +314,7 @@ void igdeCreateProject::pCreateGameDefinition(){
 void igdeCreateProject::pLoadSharedGameDefContent(){
 	decPath path;
 	path.SetFromNative(pWindowMain.GetConfiguration().GetPathShares());
-	path.AddComponent(pWindowMain.Translate("Igde.NewGameProject.DefaultGameProject").ToUTF8() + ".degd");
+	path.AddComponent("newproject.degd");
 	const decDiskFileReader::Ref reader(decDiskFileReader::Ref::New(path.GetPathNative()));
 	
 	const int contentLen = reader->GetLength();

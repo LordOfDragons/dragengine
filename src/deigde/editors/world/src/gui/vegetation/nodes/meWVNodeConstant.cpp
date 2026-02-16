@@ -93,19 +93,19 @@ pRuleConstant(rule)
 	
 	// slots
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"@World.WVNodeConstant.Output.Vector", "@World.WVNodeConstant.Output.VectorDesc",
+		"@World.WVNodeConstant.Output.Vector", "@World.WVNodeConstant.Output.Vector.ToolTip",
 		false, *this, meWVNodeSlot::estVector, meHTVRuleConstant::eosVector));
 	
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"@World.WVNodeConstant.Output.X", "@World.WVNodeConstant.Output.XDesc",
+		"@World.WVNodeConstant.Output.X", "@World.WVNodeConstant.Output.X.ToolTip",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleConstant::eosX));
 	
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"@World.WVNodeConstant.Output.Y", "@World.WVNodeConstant.Output.YDesc",
+		"@World.WVNodeConstant.Output.Y", "@World.WVNodeConstant.Output.Y.ToolTip",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleConstant::eosY));
 	
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"@World.WVNodeConstant.Output.Z", "@World.WVNodeConstant.Output.ZDesc",
+		"@World.WVNodeConstant.Output.Z", "@World.WVNodeConstant.Output.Z.ToolTip",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleConstant::eosZ));
 	
 	// parameters

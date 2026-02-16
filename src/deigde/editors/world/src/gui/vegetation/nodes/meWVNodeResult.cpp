@@ -115,15 +115,15 @@ pRuleResult(rule)
 	
 	// slots
 	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::New(env,
-		"@World.WVNodeResult.Input.Probability", "@World.WVNodeResult.Input.ProbabilityDesc",
+		"@World.WVNodeResult.Input.Probability", "@World.WVNodeResult.Input.Probability.ToolTip",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleResult::eisProbability));
-	helper.EditFloat(slot, "@World.WVNodeResult.ProbabilityIfSlotIsNotConnected",
+	helper.EditFloat(slot, "@World.WVNodeResult.Probability",
 		pEditProbability, cTextProbability::Ref::New(*this));
 	AddSlot(slot);
 	
-	slot = meWVNodeSlot::Ref::New(env, "@World.WVNodeResult.Input.Variation", "@World.WVNodeResult.Input.VariationDesc",
+	slot = meWVNodeSlot::Ref::New(env, "@World.WVNodeResult.Input.Variation", "@World.WVNodeResult.Input.Variation.ToolTip",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleResult::eisVariation);
-	helper.EditInteger(slot, "@World.WVNodeResult.VariationIfSlotIsNotConnected",
+	helper.EditInteger(slot, "@World.WVNodeResult.Variation",
 		pEditVariation, cTextVariation::Ref::New(*this));
 	AddSlot(slot);
 	

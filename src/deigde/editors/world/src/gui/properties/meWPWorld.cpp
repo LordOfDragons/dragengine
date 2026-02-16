@@ -291,7 +291,7 @@ public:
 	typedef deTObjectReference<cActionPFTStartPosFromCamera> Ref;
 	cActionPFTStartPosFromCamera(meWPWorld &panel) : cBaseAction(panel,
 		"@World.WPWorld.Action.SetStartPosFromCamera", nullptr,
-		"@World.WPWorld.Action.SetStartPosFromCamera"){}
+		"@World.WPWorld.Action.SetStartPosFromCamera.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
 		world->GetPathFindTest()->SetStartPosition(world->GetActiveCamera()->GetPosition());
@@ -315,7 +315,7 @@ public:
 	typedef deTObjectReference<cActionPFTGoalPosFromCamera> Ref;
 	cActionPFTGoalPosFromCamera(meWPWorld &panel) : cBaseAction(panel,
 		"@World.WPWorld.Action.SetGoalPosFromCamera", nullptr,
-		"@World.WPWorld.Action.SetGoalPosFromCamera"){}
+		"@World.WPWorld.Action.SetGoalPosFromCamera.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
 		world->GetPathFindTest()->SetGoalPosition(world->GetActiveCamera()->GetPosition());
@@ -399,7 +399,7 @@ public:
 			if(list.HasMatching([&](const mePathFindTestType &t){
 				return t.GetTypeNumber() == newValue;
 			})){
-				igdeCommonDialogs::Error(pPanel, "@World.WPWorld.Dialog.AddType", "@World.WPWorld.Dialog.ATypeWithThisTypeNumberExistsAlready");
+				igdeCommonDialogs::Error(pPanel, "@World.WPWorld.Dialog.AddType", "@World.WPWorld.Dialog.CostTypeExists");
 				continue;
 			}
 			
@@ -491,7 +491,7 @@ public:
 		if(pPanel.GetWorld()->GetPathFindTest()->GetTypeList().HasMatching([&](const mePathFindTestType &t){
 			return t.GetTypeNumber() == value;
 		})){
-			igdeCommonDialogs::Error(pPanel, "@World.WPWorld.ChangeTypeNumber", "@World.WPWorld.TypeNumberAlreadyExists.ToolTip");
+			igdeCommonDialogs::Error(pPanel, "@World.WPWorld.ChangeTypeNumber", "@World.WPWorld.TypeNumberExists.ToolTip");
 			textField->SetInteger(type->GetTypeNumber());
 			
 		}else{
@@ -656,7 +656,7 @@ pWindowProperties(windowProperties)
 	// parameters
 	helper.GroupBox(content, groupBox, "@World.WPWorld.WorldParameters");
 	
-	helper.EditDVector(groupBox, "@World.WPWorld.Label.Size", "@World.WPWorld.SizeOfWorldInMetersWhereModulesCanExpectContent.ToolTip",
+	helper.EditDVector(groupBox, "@World.WPWorld.Label.Size", "@World.WPWorld.WorldSize.ToolTip",
 		8, 0, pEditSize, cEditSize::Ref::New(*this));
 	
 	helper.EditVector(groupBox, "@World.WPWorld.Gravity", "@World.WPWorld.WorldGravity.ToolTip", pEditGravity, cEditGravity::Ref::New(*this));
@@ -672,20 +672,20 @@ pWindowProperties(windowProperties)
 	// find path test
 	helper.GroupBox(content, groupBox, "@World.WPWorld.PathFindTest", true);
 	
-	helper.FormLineStretchFirst(groupBox, "@World.WPWorld.StartPosition", "@World.WPWorld.StartPositionOfTestPath.ToolTip", formLine);
-	helper.EditDVector(formLine, "@World.WPWorld.StartPositionOfTestPath.ToolTip",
+	helper.FormLineStretchFirst(groupBox, "@World.WPWorld.StartPosition", "@World.WPWorld.StartPosition.ToolTip", formLine);
+	helper.EditDVector(formLine, "@World.WPWorld.StartPosition.ToolTip",
 		pEditPFTStartPosition, cEditPFTStartPosition::Ref::New(*this));
 	helper.Button(formLine, pBtnPFTStartPosFromCamera, cActionPFTStartPosFromCamera::Ref::New(*this));
 	
-	helper.FormLineStretchFirst(groupBox, "@World.WPWorld.GoalPosition", "@World.WPWorld.GoalPositionOfTestPath.ToolTip", formLine);
-	helper.EditDVector(formLine, "@World.WPWorld.GoalPositionOfTestPath.ToolTip",
+	helper.FormLineStretchFirst(groupBox, "@World.WPWorld.GoalPosition", "@World.WPWorld.GoalPosition.ToolTip", formLine);
+	helper.EditDVector(formLine, "@World.WPWorld.GoalPosition.ToolTip",
 		pEditPFTGoalPosition, cEditPFTGoalPosition::Ref::New(*this));
 	helper.Button(formLine, pBtnPFTGoalPosFromCamera, cActionPFTGoalPosFromCamera::Ref::New(*this));
 	
-	helper.EditInteger(groupBox, "@World.WPWorld.Layer", "@World.WPWorld.LayerToNavigate.ToolTip",
+	helper.EditInteger(groupBox, "@World.WPWorld.Layer", "@World.WPWorld.Layer.ToolTip",
 		pEditPFTLayer, cEditPFTLayer::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "@World.WPWorld.SpaceType", "@World.WPWorld.SpaceTypeToNavigate.ToolTip",
+	helper.ComboBox(groupBox, "@World.WPWorld.SpaceType", "@World.WPWorld.SpaceType.ToolTip",
 		pCBPFTSpaceType, cComboPFTSpaceType::Ref::New(*this));
 	pCBPFTSpaceType->SetAutoTranslateItems(true);
 	pCBPFTSpaceType->AddItem("@World.WPWorld.Grid", nullptr, (void*)(intptr_t)deNavigationSpace::estGrid);
@@ -710,16 +710,16 @@ pWindowProperties(windowProperties)
 		pEditPFTTypeNumber, cEditPFTTypeNumber::Ref::New(*this));
 	helper.EditString(groupBox, "@World.WPWorld.Dialog.Name", "@World.WPWorld.NameOfType.ToolTip",
 		pEditPFTTypeName, cEditPFTTypeName::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WPWorld.FixCost", "@World.WPWorld.FixCostToMoveIntoType.ToolTip",
+	helper.EditFloat(groupBox, "@World.WPWorld.FixCost", "@World.WPWorld.FixCost.ToolTip",
 		pEditPFTTypeFixCost, cEditPFTTypeFixCost::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WPWorld.CostPerMeter", "@World.WPWorld.CostPerMeterTravelledInsideType.ToolTip",
+	helper.EditFloat(groupBox, "@World.WPWorld.CostPerMeter", "@World.WPWorld.CostPerMeter.ToolTip",
 		pEditPFTTypeCPM, cEditPFTTypeCostPerMeter::Ref::New(*this));
 	
 	
 	// music testing
 	helper.GroupBox(content, groupBox, "@World.WPWorld.MusicTesting", true);
 	
-	helper.EditPath(groupBox, "@World.WPWorld.Path", "@World.WPWorld.PathToSoundFileToPlay.ToolTip",
+	helper.EditPath(groupBox, "@World.WPWorld.Path", "@World.WPWorld.PathSoundFile.ToolTip",
 		igdeEnvironment::efpltSound, pEditMusicPath, cEditMusicPath::Ref::New(*this));
 	
 	helper.EditSliderText(groupBox, "@World.WPWorld.Volume", "@World.WPWorld.VolumeToPlayMusic.ToolTip",

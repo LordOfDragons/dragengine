@@ -68,15 +68,15 @@ pRuleGeometry(rule)
 	
 	// slots
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"@World.WVNodeGeometry.Output.Position", "@World.WVNodeGeometry.Output.PositionDesc",
+		"@World.WVNodeGeometry.Output.Position", "@World.WVNodeGeometry.Output.Position.ToolTip",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleGeometry::eosHeight));
 	
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"@World.WVNodeGeometry.Output.Normal", "@World.WVNodeGeometry.Output.NormalDesc",
+		"@World.WVNodeGeometry.Output.Normal", "@World.WVNodeGeometry.Output.Normal.ToolTip",
 		false, *this, meWVNodeSlot::estVector, meHTVRuleGeometry::eosNormal));
 	
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"@World.WVNodeGeometry.Output.TerrainType", "@World.WVNodeGeometry.Output.TerrainTypeDesc",
+		"@World.WVNodeGeometry.Output.TerrainType", "@World.WVNodeGeometry.Output.TerrainType.ToolTip",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleGeometry::eosTerrainType));
 	
 	// parameters

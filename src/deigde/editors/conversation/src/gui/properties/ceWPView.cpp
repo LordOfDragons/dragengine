@@ -2006,8 +2006,8 @@ pWindowProperties(windowProperties)
 	helper.EditString(form, "@Conversation.WPView.HeadRotator", "@Conversation.ToolTip.HeadRotatorBone",
 		pEditActorBoneHeadRotator, cTextActorBoneHeadRotator::Ref::New(*this));
 	
-	helper.FormLineStretchFirst(form, "@Conversation.WPView.ActorPose", "@Conversation.WPView.ActorPose", formLine);
-	helper.ComboBox(formLine, "@Conversation.WPView.ActorPose", pCBActorPose, cComboActorPose::Ref::New(*this));
+	helper.FormLineStretchFirst(form, "@Conversation.WPView.ActorPose", "@Conversation.WPView.ActorPose.ToolTip", formLine);
+	helper.ComboBox(formLine, "@Conversation.WPView.ActorPose.ToolTip", pCBActorPose, cComboActorPose::Ref::New(*this));
 	actionContextMenu = cActionActorPoseMenu::Ref::New(*this);
 	helper.Button(formLine, pBtnActorPoseMenu, actionContextMenu);
 	actionContextMenu->SetWidget(pBtnActorPoseMenu);
@@ -2018,8 +2018,8 @@ pWindowProperties(windowProperties)
 	
 	helper.GroupBox(groupBox, groupBox2, "@Conversation.WPView.AnimatorControllers.GroupBox", true);
 	
-	helper.FormLineStretchFirst(groupBox2, "@Conversation.WPView.Controller", "@Conversation.WPView.Controller", formLine);
-	helper.ComboBox(formLine, "@Conversation.WPView.Controller", pCBActorPoseController, cComboActorPoseController::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox2, "@Conversation.WPView.Controller", "@Conversation.WPView.Controller.ToolTip", formLine);
+	helper.ComboBox(formLine, "@Conversation.WPView.Controller.ToolTip", pCBActorPoseController, cComboActorPoseController::Ref::New(*this));
 	actionContextMenu = cActionActorPoseControllerMenu::Ref::New(*this);
 	helper.Button(formLine, pBtnActorPoseControllerMenu, actionContextMenu);
 	actionContextMenu->SetWidget(pBtnActorPoseControllerMenu);

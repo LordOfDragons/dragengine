@@ -341,7 +341,7 @@ public:
 		if(pPanel.GetEngine()->GetVirtualFileSystem()->ExistsFile(decPath::CreatePathUnix(editPath->GetPath()))){
 			igdeCommonDialogs::eButton answer = igdeCommonDialogs::Question(pPanel,
 				igdeCommonDialogs::ebsYesNoCancel, "@World.WPHeightTerrain.Dialog.SetHeightImagePath",
-				"@World.WPHeightTerrain.Dialog.ImageToSaveHeightImageToExistsAlready");
+				"@World.WPHeightTerrain.Dialog.SaveHeightImageExists");
 			
 			if(answer == igdeCommonDialogs::ebCancel){
 				return {};
@@ -353,13 +353,13 @@ public:
 				if(image->GetComponentCount() != 1){
 					image = nullptr;
 					igdeCommonDialogs::Error(pPanel, "@World.WPHeightTerrain.Dialog.ImportHeightImage",
-						"@World.WPHeightTerrain.Dialog.HeightImageDoesNotHaveExactly1ColorChannelOnly");
+						"@World.WPHeightTerrain.Dialog.HeightImageRequires1Component");
 				}
 				
 				if(image && (image->GetWidth() != resolution || image->GetHeight() != resolution)){
 					image = nullptr;
 					igdeCommonDialogs::Error(pPanel, "@World.WPHeightTerrain.Dialog.ImportHeightImage",
-						"@World.WPHeightTerrain.Dialog.ImageDoesNotMatchHeightImageDimensionSetInHeightTerrain");
+						"@World.WPHeightTerrain.Dialog.ImageSizeNotMatchHeightImage");
 					// NOTE allow the user to scale the height image... maybe.. scaling is tricky
 				}
 				
@@ -388,7 +388,7 @@ public:
 		if(pPanel.GetEngine()->GetVirtualFileSystem()->ExistsFile(decPath::CreatePathUnix(editPath->GetPath()))){
 			igdeCommonDialogs::eButton answer = igdeCommonDialogs::Question(pPanel,
 				igdeCommonDialogs::ebsYesNoCancel, "@World.WPHeightTerrain.Dialog.SetVisibilityImagePath",
-				"@World.WPHeightTerrain.Dialog.ImageToSaveVisibilityImageToExistsAlready");
+				"@World.WPHeightTerrain.Dialog.SaveVisibilityImageExists");
 			
 			if(answer == igdeCommonDialogs::ebCancel){
 				return {};
@@ -402,13 +402,13 @@ public:
 				if(image->GetComponentCount() != 1){
 					image = nullptr;
 					igdeCommonDialogs::Error(pPanel, "@World.WPHeightTerrain.Dialog.ImportVisibilityImage",
-						"@World.WPHeightTerrain.Dialog.VisibilityImageDoesNotHaveExactly1ColorChannelOnly");
+						"@World.WPHeightTerrain.Dialog.VisibilityImageRequires1Component");
 				}
 				
 				if(image && (image->GetWidth() != resolution || image->GetHeight() != resolution)){
 					image = nullptr;
 					igdeCommonDialogs::Error(pPanel, "@World.WPHeightTerrain.Dialog.ImportVisibilityImage",
-						"@World.WPHeightTerrain.Dialog.ImageDoesNotMatchVisibilityImageDimensionSetInVisibilityTerrain");
+						"@World.WPHeightTerrain.Dialog.ImageSizeNotMatchVisibilityImage");
 					// NOTE allow the user to scale the visibility image... maybe.. scaling is tricky
 				}
 				
@@ -473,7 +473,7 @@ public:
 		}
 		
 		decString name(pPanel.Translate("World.WPHeightTerrain.DefaultName.Texture").ToUTF8());
-		while(igdeCommonDialogs::GetString(pPanel, "@World.WPHeightTerrain.Dialog.AddTexture", "@World.WPHeightTerrain.Dialog.EnterNameOfNewTexture", name)){
+		while(igdeCommonDialogs::GetString(pPanel, "@World.WPHeightTerrain.Dialog.AddTexture", "@World.WPHeightTerrain.Dialog.EnterTextureName", name)){
 			if(sector->GetTextures().HasNamed(name)){
 				igdeCommonDialogs::Error(pPanel, "@World.WPHeightTerrain.Dialog.InvalidTextureNameError", "@World.WPHeightTerrain.Dialog.DuplicateTextureName");
 				continue;
@@ -626,10 +626,10 @@ public:
 		if(sector){
 			decString name(pPanel.Translate("World.WPHeightTerrain.DefaultName.NavSpace").ToUTF8());
 			while(igdeCommonDialogs::GetString(pPanel, "@World.UAddNavSpace.AddNavigationSpace",
-			"@World.WPHeightTerrain.Dialog.EnterNameOfNewNavigationSpace", name)){
+			"@World.WPHeightTerrain.Dialog.EnterNavigationSpaceName", name)){
 				if(sector->GetNavSpaces().HasNamed(name)){
 					igdeCommonDialogs::Error(pPanel, "@World.WPHeightTerrain.Dialog.InvalidNavigationSpaceNameError",
-						"@World.WPHeightTerrain.Dialog.ANavigationSpaceWithThisNameExistsAlready");
+						"@World.WPHeightTerrain.Dialog.NavigationSpaceExists");
 					continue;
 				}
 				
@@ -745,10 +745,10 @@ public:
 		meHeightTerrainNavSpace * const navspace = pPanel.GetActiveNavSpace();
 		decString name(pPanel.Translate("World.WPHeightTerrain.DefaultName.Type").ToUTF8());
 		while(igdeCommonDialogs::GetString(pPanel, "@World.WPHeightTerrain.Dialog.AddNavigationSpaceType",
-		"@World.WPHeightTerrain.Dialog.EnterNameOfNewNavigationSpaceType", name)){
+		"@World.WPHeightTerrain.Dialog.EnterNavigationSpaceType", name)){
 			if(navspace->GetTypes().HasNamed(name)){
 				igdeCommonDialogs::Error(pPanel, "@World.WPHeightTerrain.Dialog.InvalidNavigationSpaceTypeNameError",
-					"@World.WPHeightTerrain.Dialog.ANavigationSpaceTypeWithThisNameExistsAlready");
+					"@World.WPHeightTerrain.Dialog.NavigationSpaceExists");
 				continue;
 			}
 			
@@ -790,7 +790,7 @@ public:
 			return {};
 		}
 		if(pPanel.GetActiveNavSpace()->GetTypes().HasNamed(textField->GetText())){
-			igdeCommonDialogs::Error(pPanel, "@World.WPHeightTerrain.Dialog.InvalidNavigationSpaceTypeNameError", "@World.WPHeightTerrain.Dialog.ANavigationSpaceTypeWithThisNameExistsAlready");
+			igdeCommonDialogs::Error(pPanel, "@World.WPHeightTerrain.Dialog.InvalidNavigationSpaceTypeNameError", "@World.WPHeightTerrain.Dialog.NavigationSpaceExists");
 			pPanel.UpdateNavSpaceType();
 			return {};
 		}
@@ -1155,7 +1155,7 @@ class cActionVVariationAdd : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionVVariationAdd> Ref;
 	cActionVVariationAdd(meWPHeightTerrain &panel) : cBaseAction(panel, "@World.WPHeightTerrain.Action.VVariationAdd2",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@World.WPHeightTerrain.Action.VVariationAddDesc"){}
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@World.WPHeightTerrain.Action.VVariationAdd.ToolTip"){}
 	
 	virtual igdeUndo::Ref OnAction(meWorld *world){
 		meHTVegetationLayer * const vlayer = pPanel.GetVLayer();
@@ -1176,7 +1176,7 @@ class cActionVVariationRemove : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionVVariationRemove> Ref;
 	cActionVVariationRemove(meWPHeightTerrain &panel) : cBaseAction(panel, "@World.WPHeightTerrain.Action.VVariationRemove2",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@World.WPHeightTerrain.Action.VVariationRemoveDesc"){}
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@World.WPHeightTerrain.Action.VVariationRemove.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(meWorld*) override{
 		meHTVVariation * const variation = pPanel.GetVVariation();
@@ -1420,9 +1420,9 @@ pWindowProperties(windowProperties)
 		pEditSectorSize, cEditSectorSize::Ref::New(*this));
 	helper.EditInteger(groupBox, "@World.WPHeightTerrain.SectorResolution", "@World.WPHeightTerrain.SectorResolution.ToolTip",
 		pEditSectorResolution, cEditSectorResolution::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WPHeightTerrain.BaseHeight", "@World.WPHeightTerrain.SetBaseHeightOfHeightImageValues.ToolTip",
+	helper.EditFloat(groupBox, "@World.WPHeightTerrain.BaseHeight", "@World.WPHeightTerrain.HeightImageBaseHeight.ToolTip",
 		pEditBaseHeight, cEditBaseHeight::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WPHeightTerrain.HeightScaling", "@World.WPHeightTerrain.SetHeightScalingOfHeightImageValues.ToolTip",
+	helper.EditFloat(groupBox, "@World.WPHeightTerrain.HeightScaling", "@World.WPHeightTerrain.HeightImageHeightScaling.ToolTip",
 		pEditHeightScale, cEditHeightScale::Ref::New(*this));
 	
 	
@@ -1449,7 +1449,7 @@ pWindowProperties(windowProperties)
 		igdeEnvironment::efpltSkin, pEditTexSkin, cPathTexSkin::Ref::New(*this));
 	helper.EditPath(groupBox, "@World.WPHeightTerrain.Mask", "@World.WPHeightTerrain.MaskToUseForTexture.ToolTip",
 		igdeEnvironment::efpltSkin, pEditTexMask, cPathTexMask::Ref::New(*this));
-	helper.EditVector2(groupBox, "@World.WPHeightTerrain.Offset", "@World.WPHeightTerrain.OffsetsProjectedTextureRelativeToWorldOrigin.ToolTip",
+	helper.EditVector2(groupBox, "@World.WPHeightTerrain.Offset", "@World.WPHeightTerrain.ProjectedTextureOffset.ToolTip",
 		pEditTexUVOffset, cEditTexUVOffset::Ref::New(*this));
 	helper.EditVector2(groupBox, "@World.WPHeightTerrain.Scaling", "@World.WPHeightTerrain.ScalingOfProjectedTexture.ToolTip",
 		pEditTexUVScale, cEditTexUVScale::Ref::New(*this));
@@ -1485,7 +1485,7 @@ pWindowProperties(windowProperties)
 		pEditNavSpaceTypeName, cTextNavSpaceTypeName::Ref::New(*this));
 	helper.EditInteger(groupBox, "@World.WPHeightTerrain.Type.Label3", "@World.WPHeightTerrain.NavigationSpaceTypeNumber.ToolTip",
 		pEditNavSpaceTypeType, cTextNavSpaceTypeType::Ref::New(*this));
-	helper.ColorBox(groupBox, "@World.WPHeightTerrain.Color", "@World.WPHeightTerrain.NavigationSpaceTypeColorForVisualizationPurpose.ToolTip",
+	helper.ColorBox(groupBox, "@World.WPHeightTerrain.Color", "@World.WPHeightTerrain.NavigationSpaceTypeColor.ToolTip",
 		pEditNavSpaceTypeColor, cTextNavSpaceTypeColor::Ref::New(*this));
 	
 	helper.FormLine(groupBox, "@World.WPHeightTerrain.Faces", "@World.WPHeightTerrain.NavigationSpaceFaces.ToolTip", formLine);

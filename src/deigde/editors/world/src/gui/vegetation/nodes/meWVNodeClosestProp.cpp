@@ -160,24 +160,24 @@ pRuleCP(rule)
 	
 	// slots
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"@World.WVNodeClosestProp.Output.Distance", "@World.WVNodeClosestProp.Output.DistanceDesc",
+		"@World.WVNodeClosestProp.Output.Distance", "@World.WVNodeClosestProp.Output.Distance.ToolTip",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleClosestProp::eosDistance));
 	
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"@World.WVNodeClosestProp.Output.Direction", "@World.WVNodeClosestProp.Output.DirectionDesc",
+		"@World.WVNodeClosestProp.Output.Direction", "@World.WVNodeClosestProp.Output.Direction.ToolTip",
 		false, *this, meWVNodeSlot::estVector, meHTVRuleClosestProp::eosDirection));
 	
 	// parameters
 	pFraParameters = igdeContainerForm::Ref::New(env);
 	AddChild(pFraParameters);
 	
-	helper.FormLineStretchFirst(pFraParameters, "@World.WVNodeClosestProp.Class", "@World.WVNodePropCount.SelectClassNameOfPropToSearchFor.ToolTip", formLine);
-	helper.ComboBoxFilter(formLine, true, "@World.WVNodePropCount.SelectClassNameOfPropToSearchFor.ToolTip",
+	helper.FormLineStretchFirst(pFraParameters, "@World.WVNodeClosestProp.Class", "@World.WVNodePropCount.PropClass.ToolTip", formLine);
+	helper.ComboBoxFilter(formLine, true, "@World.WVNodePropCount.PropClass.ToolTip",
 		pCBPropClass, cComboClass::Ref::New(*this));
 	helper.Button(formLine, pBtnPropClass, pActionMenuClass);
 	pActionMenuClass->SetWidget(pBtnPropClass);
 	
-	helper.EditFloat(pFraParameters, "@World.WVNodePropCount.Radius", "@World.WVNodePropCount.SetSearchRadiusInMeters.ToolTip",
+	helper.EditFloat(pFraParameters, "@World.WVNodePropCount.Radius", "@World.WVNodePropCount.Radius.ToolTip",
 		pEditSearchRadius, cTextSearchRadius::Ref::New(*this));
 	
 	UpdateClassLists();

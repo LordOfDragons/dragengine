@@ -156,3 +156,12 @@ void igdeToggleButton::OnToggledChanged(){
 		((igdeNativeToggleButton*)GetNativeWidget())->UpdateToggled();
 	}
 }
+
+void igdeToggleButton::OnLanguageChanged(){
+	igdeButton::OnLanguageChanged();
+	if(GetNativeWidget()){
+		igdeNativeToggleButton * const native = (igdeNativeToggleButton*)GetNativeWidget();
+		native->UpdateText();
+		native->UpdateDescription();
+	}
+}

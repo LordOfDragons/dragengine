@@ -78,8 +78,7 @@ pDeleted(nullptr)
 	if(!powner.GetEnabled()){
 		disable();
 	}
-	setTipText(igdeUIFoxHelper::TranslateIf(powner, powner.GetDescription()));
-	setHelpText(igdeUIFoxHelper::TranslateIf(powner, powner.GetDescription()));
+	UpdateDescription();
 }
 
 igdeNativeFoxToggleButton::~igdeNativeFoxToggleButton(){
@@ -136,11 +135,13 @@ void igdeNativeFoxToggleButton::UpdateStyle(){
 }
 
 void igdeNativeFoxToggleButton::UpdateText(){
-	setText(igdeNativeFoxToggleButton::ButtonText(*pOwner));
+	const FXString text = igdeNativeFoxToggleButton::ButtonText(*pOwner);
+	setText(text);
+	setAltText(text);
 }
 
 void igdeNativeFoxToggleButton::UpdateDescription(){
-	const char * const description = pOwner->GetDescription();
+	const FXString description = igdeUIFoxHelper::TranslateIf(*pOwner, pOwner->GetDescription());
 	setTipText(description);
 	setHelpText(description);
 	setAltTipText(description);

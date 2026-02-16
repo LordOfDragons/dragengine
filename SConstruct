@@ -168,6 +168,7 @@ params.Add(StringVariable('with_cmake_flags', 'Additional flags for external CMa
 params.Add(StringVariable('with_cmake_c_flags', 'Additional C flags for external CMake builds', ''))
 params.Add(BoolVariable('with_engine_module_checks', 'Check engine module file before loading', True))
 params.Add(StringVariable('distro_maintained_info_url', 'Package is distribution maintaned and URL contains update information', ''))
+params.Add(BoolVariable('with_cachedir', 'Use cache dir ".scons_cache"', False))
 
 params.Add(StringVariable('url_extern_artifacts',
 	'Base URL to download external artifacts from if missing',
@@ -606,6 +607,10 @@ else:
 
 params.Update(parent_env)
 #print(parent_env.Dump())
+
+# cache dir
+if 'with_cachedir' in parent_env:
+	CacheDir('.scons_cache')
 
 # external flags
 parent_env.Replace(EXTERN_CMAKE_FLAGS = shlex.split(parent_env['with_cmake_flags']))

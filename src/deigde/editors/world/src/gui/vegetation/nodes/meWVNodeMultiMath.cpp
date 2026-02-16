@@ -100,18 +100,18 @@ pRuleMultiMath(nullptr)
 	
 	// slots
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"@World.WVNodeMultiMath.Output.Result", "@World.WVNodeMultiMath.Output.ResultDesc",
+		"@World.WVNodeMultiMath.Output.Result", "@World.WVNodeMultiMath.Output.Result.ToolTip",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleMultiMath::eosResult));
 	
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"@World.WVNodeMultiMath.Input.Value", "@World.WVNodeMultiMath.Input.ValueDesc",
+		"@World.WVNodeMultiMath.Input.Value", "@World.WVNodeMultiMath.Input.Value.ToolTip",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleMultiMath::eisValues));
 	
 	// parameters
 	pFraParameters = igdeContainerForm::Ref::New(env);
 	AddChild(pFraParameters);
 	
-	helper.ComboBox(pFraParameters, "@World.WVNodeVectorMath.Operator", "@World.WVNodeVectorMath.OperatorToUse.ToolTip", pCBOperator, cComboOperator::Ref::New(*this));
+	helper.ComboBox(pFraParameters, "@World.WVNodeVectorMath.Operator", "@World.WVNodeVectorMath.Operator.ToolTip", pCBOperator, cComboOperator::Ref::New(*this));
 	pCBOperator->SetAutoTranslateItems(true);
 	pCBOperator->AddItem("@World.WVNodeMultiMath.Operator.Add", nullptr, (void*)(intptr_t)meHTVRuleMultiMath::eopAdd);
 	pCBOperator->AddItem("@World.WVNodeMultiMath.Operator.Multiply", nullptr, (void*)(intptr_t)meHTVRuleMultiMath::eopMultiply);

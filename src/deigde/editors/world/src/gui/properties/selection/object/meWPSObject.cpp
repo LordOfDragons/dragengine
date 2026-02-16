@@ -315,7 +315,7 @@ class cActionClassBrowse : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionClassBrowse> Ref;
 	cActionClassBrowse(meWPSObject &panel) : cBaseAction(panel,
-		"@World.WPSObject.Action.BrowseClass", nullptr, "@World.WPSObject.Action.BrowseClassDesc"){}
+		"@World.WPSObject.Action.BrowseClass", nullptr, "@World.WPSObject.Action.BrowseClass.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(meObject *object) override{
 		if(object->GetGDClass()){
@@ -334,7 +334,7 @@ class cActionClassEdit : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionClassEdit> Ref;
 	cActionClassEdit(meWPSObject &panel) : cBaseAction(panel,
-		"@World.WPSObject.Action.EditClass", nullptr, "@World.WPSObject.Action.EditClassDesc"){}
+		"@World.WPSObject.Action.EditClass", nullptr, "@World.WPSObject.Action.EditClass.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(meObject *object) override{
 		if(object->GetGDClass()){
@@ -375,7 +375,7 @@ public:
 	typedef deTObjectReference<cActionIdFind> Ref;
 	cActionIdFind(meWPSObject &panel) : igdeAction("@World.WPSObject.FindId",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSearch),
-		"@World.WPSObject.Action.FindIDDesc"), pPanel(panel){}
+		"@World.WPSObject.Action.FindID.ToolTip"), pPanel(panel){}
 	
 	void OnAction() override{
 		meWorld * const world = pPanel.GetWorld();
@@ -452,7 +452,7 @@ public:
 class cActionResetPosition : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionResetPosition> Ref;
-	cActionResetPosition(meWPSObject &panel) : cBaseAction(panel, "@World.WPSObject.Action.ResetPosition", nullptr, "@World.WPSObject.Action.ResetPositionDesc"){}
+	cActionResetPosition(meWPSObject &panel) : cBaseAction(panel, "@World.WPSObject.Action.ResetPosition", nullptr, "@World.WPSObject.Action.ResetPosition.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(meObject *object) override{
 		return !object->GetPosition().IsEqualTo(decVector(1.0f, 1.0f, 1.0f))
@@ -505,7 +505,7 @@ public:
 class cActionResetRotation : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionResetRotation> Ref;
-	cActionResetRotation(meWPSObject &panel) : cBaseAction(panel, "@World.WPSObject.Action.ResetRotation", nullptr, "@World.WPSObject.Action.ResetRotationDesc"){}
+	cActionResetRotation(meWPSObject &panel) : cBaseAction(panel, "@World.WPSObject.Action.ResetRotation", nullptr, "@World.WPSObject.Action.ResetRotation.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(meObject *object) override{
 		return !object->GetRotation().IsEqualTo(decVector(1.0f, 1.0f, 1.0f))
@@ -629,7 +629,7 @@ public:
 class cActionResetScaling : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionResetScaling> Ref;
-	cActionResetScaling(meWPSObject &panel) : cBaseAction(panel, "@World.WPSObject.Action.ResetScaling", nullptr, "@World.WPSObject.Action.ResetScalingDesc"){}
+	cActionResetScaling(meWPSObject &panel) : cBaseAction(panel, "@World.WPSObject.Action.ResetScaling", nullptr, "@World.WPSObject.Action.ResetScaling.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(meObject *object) override{
 		return !object->GetScaling().IsEqualTo(decVector(1.0f, 1.0f, 1.0f))
@@ -731,7 +731,7 @@ class cActionTextureAddModel : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionTextureAddModel> Ref;
 	cActionTextureAddModel(meWPSObject &panel, const char *name) :
-	cBaseAction(panel, name, nullptr, "@World.WPSObject.Action.MTexAddDesc"), pTextureName(name){}
+	cBaseAction(panel, name, nullptr, "@World.WPSObject.Action.MTexAdd.ToolTip"), pTextureName(name){}
 	
 	igdeUndo::Ref OnAction(meObject *object) override{
 		meObjectTexture::Ref texture;
@@ -755,7 +755,7 @@ class cActionTextureRemoveModel : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionTextureRemoveModel> Ref;
 	cActionTextureRemoveModel(meWPSObject &panel, const char *name) :
-	cBaseAction(panel, name, nullptr, "@World.WPSObject.Action.MTexRemoveDesc"), pTextureName(name){}
+	cBaseAction(panel, name, nullptr, "@World.WPSObject.Action.MTexRemove.ToolTip"), pTextureName(name){}
 	
 	igdeUndo::Ref OnAction(meObject*) override{
 		return {};
@@ -832,7 +832,7 @@ class cActionTextureAddCustom : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionTextureAddCustom> Ref;
 	cActionTextureAddCustom(meWPSObject &panel) : cBaseAction(panel, "@World.WPSObject.Action.TextureAdd",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@World.WPSObject.Action.TextureAddDesc"){}
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@World.WPSObject.Action.TextureAdd.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(meObject *object) override{
 		decString name;
@@ -861,7 +861,7 @@ class cActionTextureAddAllModel : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionTextureAddAllModel> Ref;
 	cActionTextureAddAllModel(meWPSObject &panel) : cBaseAction(panel, "@World.WPSObject.Action.TextureAddAllFromModel",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@World.WPSObject.Action.TextureAddAllFromModelDesc"){}
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@World.WPSObject.Action.TextureAddAllFromModel.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(meObject *object) override{
 		const meUObjectAddUsedTextures::Ref undo = meUObjectAddUsedTextures::Ref::New(object);
@@ -894,7 +894,7 @@ class cActionTextureRemove : public cBaseActionTexture{
 public:
 	typedef deTObjectReference<cActionTextureRemove> Ref;
 	cActionTextureRemove(meWPSObject &panel) : cBaseActionTexture(panel, "@World.WPSObject.Action.TextureRemove",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@World.WPSObject.Action.TextureRemoveDesc"){}
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@World.WPSObject.Action.TextureRemove.ToolTip"){}
 	
 	igdeUndo::Ref OnActionTexture(meObject*, meObjectTexture *texture) override{
 		return meUObjectRemoveTexture::Ref::New(texture);
@@ -909,7 +909,7 @@ class cActionTextureRemoveAll : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionTextureRemoveAll> Ref;
 	cActionTextureRemoveAll(meWPSObject &panel) : cBaseAction(panel, "@World.WPSObject.Action.TextureRemoveAll",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@World.WPSObject.Action.TextureRemoveAllDesc"){}
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@World.WPSObject.Action.TextureRemoveAll.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(meObject *object) override{
 		return object->GetTextures().GetCount() > 0 ? meUObjectRemoveAllTextures::Ref::New(object) : meUObjectRemoveAllTextures::Ref();
@@ -924,7 +924,7 @@ class cActionTextureRemoveAllNotModel : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionTextureRemoveAllNotModel> Ref;
 	cActionTextureRemoveAllNotModel(meWPSObject &panel) : cBaseAction(panel, "@World.WPSObject.Action.TextureRemoveAllNotFromModel",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@World.WPSObject.Action.TextureRemoveAllNotFromModelDesc"){}
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@World.WPSObject.Action.TextureRemoveAllNotFromModel.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(meObject *object) override{
 		return meUObjectRemoveUnusedTextures::Ref::New(object);
@@ -957,7 +957,7 @@ public:
 	typedef deTObjectReference<cActionTextureCopyToSelected> Ref;
 	cActionTextureCopyToSelected(meWPSObject &panel) : cBaseActionTexture(panel,
 		"@World.WPSObject.Action.TextureCopyToSelected", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-			"@World.WPSObject.Action.TextureCopyToSelectedDesc"){}
+			"@World.WPSObject.Action.TextureCopyToSelected.ToolTip"){}
 	
 	igdeUndo::Ref OnActionTexture(meObject*, meObjectTexture *texture) override{
 		const meObject::List &list = pPanel.GetWorld()->GetSelectionObject().GetSelected();
@@ -974,7 +974,7 @@ public:
 	typedef deTObjectReference<cActionTextureCloneToSelected> Ref;
 	cActionTextureCloneToSelected(meWPSObject &panel) : cBaseAction(panel, "@World.WPSObject.Action.TextureCloneToSelected",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-			"@World.WPSObject.Action.TextureCloneToSelectedDesc"){}
+			"@World.WPSObject.Action.TextureCloneToSelected.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(meObject *object) override{
 		meObject::List list(pPanel.GetWorld()->GetSelectionObject().GetSelected());
@@ -1101,7 +1101,7 @@ public:
 	typedef deTObjectReference<cActionPropCopyToSel> Ref;
 	cActionPropCopyToSel(meWPSObject &panel) : cBaseAction(panel, "@World.WPSObject.Action.PropertyCopyToSelected",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-			"@World.WPSObject.Action.PropertyCopyToSelectedDesc"){}
+			"@World.WPSObject.Action.PropertyCopyToSelected.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(meObject *object) override{
 		meObject::List list(pPanel.GetWorld()->GetSelectionObject().GetSelected());
@@ -1122,7 +1122,7 @@ public:
 	typedef deTObjectReference<cActionPropRemoveFromSel> Ref;
 	cActionPropRemoveFromSel(meWPSObject &panel) : cBaseAction(panel, "@World.WPSObject.Action.PropertyRemoveFromSelected",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-			"@World.WPSObject.Action.PropertyRemoveFromSelectedDesc"){}
+			"@World.WPSObject.Action.PropertyRemoveFromSelected.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(meObject*) override{
 		const meObject::List &list = pPanel.GetWorld()->GetSelectionObject().GetSelected();
@@ -1141,7 +1141,7 @@ public:
 	typedef deTObjectReference<cActionPropCloneToSel> Ref;
 	cActionPropCloneToSel(meWPSObject &panel) : cBaseAction(panel, "@World.WPSObject.Action.PropertyCloneToSelected",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-			"@World.WPSObject.Action.PropertyCloneToSelectedDesc"){}
+			"@World.WPSObject.Action.PropertyCloneToSelected.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(meObject *object) override{
 		meObject::List list(pPanel.GetWorld()->GetSelectionObject().GetSelected());
@@ -1159,7 +1159,7 @@ class cActionAddAttachBehavior : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionAddAttachBehavior> Ref;
 	cActionAddAttachBehavior(meWPSObject &panel) : cBaseAction(panel, "@World.WPSObject.Action.AttachableAdd",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@World.WPSObject.Action.AttachableAddDesc"){}
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@World.WPSObject.Action.AttachableAdd.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(meObject *object) override{
 		decStringList names;
@@ -1192,7 +1192,7 @@ class cActionRemoveAttachBehavior : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionRemoveAttachBehavior> Ref;
 	cActionRemoveAttachBehavior(meWPSObject &panel) : cBaseAction(panel, "@World.WPSObject.Action.AttachableRemove",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@World.WPSObject.Action.AttachableRemoveDesc"){}
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@World.WPSObject.Action.AttachableRemove.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(meObject *object) override{
 		decStringList list(object->GetAttachBehaviors());
@@ -1212,7 +1212,7 @@ public:
 	cActionRemoveAllAttachBehaviors(meWPSObject &panel) : cBaseAction(panel,
 		"@World.WPSObject.Action.AttachableRemoveAll",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
-		"@World.WPSObject.Action.AttachableRemoveAllDesc"){}
+		"@World.WPSObject.Action.AttachableRemoveAll.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(meObject *object) override{
 		if(pPanel.GetActiveObject()->GetAttachBehaviors().IsEmpty()){
@@ -1332,7 +1332,7 @@ class cActionShowMissingTextures : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionShowMissingTextures> Ref;
 	cActionShowMissingTextures(meWPSObject &panel) : cBaseAction(panel, "@World.WPSObject.Action.ShowMissingTextures",
-		nullptr, "@World.WPSObject.Action.ShowMissingTexturesDesc"){}
+		nullptr, "@World.WPSObject.Action.ShowMissingTextures.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(meObject *object) override{
 		object->SetShowMissingTextures(!object->GetShowMissingTextures());
@@ -1612,14 +1612,14 @@ pPreventUpdate(false)
 	helper.EditSliderText(groupBox, "@World.WPSObject.Range", "@World.WPSObject.RangeOfLightInMeters.ToolTip", 0.0f, 10.0f,
 		5, 2, 1.0f, pSldLigRange, cLightSlider::Ref::New(*this, igdeGDCLight::epRange));
 	helper.EditSliderText(groupBox, "@World.WPSObject.HalfIntDist",
-		"@World.WPSObject.HalfIntensityDistanceAsPercentageOfLightRange.ToolTip", 0.0f, 1.0f,
+		"@World.WPSObject.HalfIntensityDistance.ToolTip", 0.0f, 1.0f,
 		5, 2, 0.1f, pSldLigHID, cLightSlider::Ref::New(*this, igdeGDCLight::epHalfIntDist));
 	
 	helper.EditSliderText(groupBox, "@World.WPView.Distance",
 		"@World.WPSObject.DistanceToLightSourceToEvaluateDistanceFor.ToolTip", 0.0f, 10.0f,
 		5, 2, 1.0f, pSldLigDist, cLightIntForDistSlider::Ref::New(*this));
 	helper.EditString(groupBox, "@World.WPSObject.Intensity",
-		"@World.WPSObject.EvaluatedIntensityAtDistanceToLightSource.ToolTip", pEditLigDistInt, {});
+		"@World.WPSObject.LightIntensityEvaluateDistance.ToolTip", pEditLigDistInt, {});
 	pEditLigDistInt->SetEditable(false);
 }
 

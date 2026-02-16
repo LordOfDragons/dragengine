@@ -115,14 +115,11 @@ decUnicodeString igdeTranslationManager::Translate(const decString &entryName) c
 }
 
 decUnicodeString igdeTranslationManager::Translate(const char *entryName) const{
-	const decUnicodeString *result;
-	for(const auto &languagePack : pActiveLanguagePacks){
-		if(languagePack->GetEntries().GetAt(entryName, result)){
-			return *result;
-		}
-	}
-	
-	return decUnicodeString::NewFromUTF8(entryName);
+	const decUnicodeString *result = nullptr;
+	pActiveLanguagePacks.VisitWhileReverse([&](const igdeLanguagePack &lp){
+		return !lp.GetEntries().GetAt(entryName, result);
+	});
+	return result ? *result : decUnicodeString::NewFromUTF8(entryName);
 }
 
 decUnicodeString igdeTranslationManager::Translate(const decString &entryName,
@@ -132,14 +129,11 @@ const decUnicodeString &defaultValue) const{
 
 decUnicodeString igdeTranslationManager::Translate(const char *entryName,
 const decUnicodeString &defaultValue) const{
-	const decUnicodeString *result;
-	for(const auto &languagePack : pActiveLanguagePacks){
-		if(languagePack->GetEntries().GetAt(entryName, result)){
-			return *result;
-		}
-	}
-	
-	return defaultValue;
+	const decUnicodeString *result = nullptr;
+	pActiveLanguagePacks.VisitWhileReverse([&](const igdeLanguagePack &lp){
+		return !lp.GetEntries().GetAt(entryName, result);
+	});
+	return result ? *result : defaultValue;
 }
 
 decUnicodeString igdeTranslationManager::TranslateIf(

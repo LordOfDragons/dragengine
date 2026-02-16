@@ -288,6 +288,7 @@ void igdeNVNode::OnLanguageChanged(){
 		igdeNativeNVNode * const native = (igdeNativeNVNode*)GetNativeWidget();
 		native->UpdateTitle();
 		native->UpdateDescription();
+		native->FitSizeToContent();
 	}
 }
 

@@ -183,12 +183,12 @@ pWindowProperties(windowProperties)
 	helper.CheckBox(groupBox, pChkLMTrackCam, cActionLMTrackCam::Ref::New(*this));
 	helper.EditDVector(groupBox, "@World.WPSensors.Label.Position", "@World.WPSensors.Position.ToolTip", pEditLMPos, cEditLMPos::Ref::New(*this));
 	helper.EditVector(groupBox, "@World.WPSensors.Direction", "@World.WPSensors.Direction.ToolTip", pEditLMDir, cEditLMDir::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WPSensors.InnerAngle", "@World.WPSensors.ConeInnerAngleInDegrees.ToolTip",
+	helper.EditFloat(groupBox, "@World.WPSensors.InnerAngle", "@World.WPSensors.ConeInnerAngle.ToolTip",
 		pEditLMConeIA, cTextLMConeIA::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WPSensors.OuterAngle", "@World.WPSensors.ConeOuterAngleInDegrees.ToolTip",
+	helper.EditFloat(groupBox, "@World.WPSensors.OuterAngle", "@World.WPSensors.ConeOuterAngle.ToolTip",
 		pEditLMConeOA, cTextLMConeOA::Ref::New(*this));
 	helper.EditFloat(groupBox, "@World.WPSensors.Exponent",
-		"@World.WPSensors.ConeExponentSmoothingBetweenInnerOuterAngle.ToolTip",
+		"@World.WPSensors.ConeExponent.ToolTip",
 		pEditLMConeExp, cTextLMConeExp::Ref::New(*this));
 	
 	helper.EditFloat(groupBox, "@World.WPSensors.MeasuredLuminance", "@World.WPSensors.MeasuredLuminance.ToolTip", pEditLMLumi, {});

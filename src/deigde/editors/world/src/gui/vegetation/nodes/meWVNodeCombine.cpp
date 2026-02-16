@@ -136,25 +136,25 @@ pRuleCombine(rule)
 	
 	// slots
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"@World.WVNodeCombine.Output.Vector", "@World.WVNodeCombine.Output.VectorDesc",
+		"@World.WVNodeCombine.Output.Vector", "@World.WVNodeCombine.Output.Vector.ToolTip",
 		false, *this, meWVNodeSlot::estVector, meHTVRuleCombine::eosVector));
 	
 	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::New(env,
-		"@World.WVNodeCombine.Input.X", "@World.WVNodeCombine.Input.XDesc",
+		"@World.WVNodeCombine.Input.X", "@World.WVNodeCombine.Input.X.ToolTip",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleCombine::eisX));
-	helper.EditFloat(slot, "@World.WVNodeCombine.XComponentOfVectorIfSlotIsNotConnected",
+	helper.EditFloat(slot, "@World.WVNodeCombine.XComponent",
 		pEditX, cTextX::Ref::New(*this));
 	AddSlot(slot);
 	
-	slot = meWVNodeSlot::Ref::New(env, "@World.WVNodeCombine.Input.Y", "@World.WVNodeCombine.Input.YDesc",
+	slot = meWVNodeSlot::Ref::New(env, "@World.WVNodeCombine.Input.Y", "@World.WVNodeCombine.Input.Y.ToolTip",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleCombine::eisY);
-	helper.EditFloat(slot, "@World.WVNodeCombine.YComponentOfVectorIfSlotIsNotConnected",
+	helper.EditFloat(slot, "@World.WVNodeCombine.YComponent",
 		pEditY, cTextY::Ref::New(*this));
 	AddSlot(slot);
 	
-	slot = meWVNodeSlot::Ref::New(env, "@World.WVNodeCombine.Input.Z", "@World.WVNodeCombine.Input.ZDesc",
+	slot = meWVNodeSlot::Ref::New(env, "@World.WVNodeCombine.Input.Z", "@World.WVNodeCombine.Input.Z.ToolTip",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleCombine::eisZ);
-	helper.EditFloat(slot, "@World.WVNodeCombine.ZComponentOfVectorIfSlotIsNotConnected",
+	helper.EditFloat(slot, "@World.WVNodeCombine.ZComponent",
 		pEditZ, cTextZ::Ref::New(*this));
 	AddSlot(slot);
 	

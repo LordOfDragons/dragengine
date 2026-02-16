@@ -109,11 +109,11 @@ pRuleCV(rule)
 	
 	// slots
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"@World.WVNodeClosestVegetation.Output.Distance", "@World.WVNodeClosestVegetation.Output.DistanceDesc",
+		"@World.WVNodeClosestVegetation.Output.Distance", "@World.WVNodeClosestVegetation.Output.Distance.ToolTip",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleClosestVegetation::eosDistance));
 	
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"@World.WVNodeClosestVegetation.Output.Direction", "@World.WVNodeClosestVegetation.Output.DirectionDesc",
+		"@World.WVNodeClosestVegetation.Output.Direction", "@World.WVNodeClosestVegetation.Output.Direction.ToolTip",
 		false, *this, meWVNodeSlot::estVector, meHTVRuleClosestVegetation::eosDirection));
 	
 	// parameters
@@ -122,7 +122,7 @@ pRuleCV(rule)
 	
 	helper.EditFloat(pFraParameters, "@World.WVNodeClosestVegetation.Type", "@World.WVNodeClosestVegetation.SetTypeOfVegetationToSearchFor.ToolTip",
 		pEditVegetationType, cTextVegetationType::Ref::New(*this));
-	helper.EditFloat(pFraParameters, "@World.WVNodePropCount.Radius", "@World.WVNodePropCount.SetSearchRadiusInMeters.ToolTip",
+	helper.EditFloat(pFraParameters, "@World.WVNodePropCount.Radius", "@World.WVNodePropCount.Radius.ToolTip",
 		pEditSearchRadius, cTextSearchRadius::Ref::New(*this));
 }
 

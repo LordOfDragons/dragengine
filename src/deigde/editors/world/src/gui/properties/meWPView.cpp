@@ -129,7 +129,7 @@ class cActionMoveSnap : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionMoveSnap> Ref;
 	cActionMoveSnap(meWPView &panel) :
-	cBaseAction(panel, "@World.WPView.Action.SnapMove", nullptr, "@World.WPView.Action.SnapMove"){}
+	cBaseAction(panel, "@World.WPView.Action.SnapMove", nullptr, "@World.WPView.Action.SnapMove.ToolTip"){}
 	
 	void OnAction(meWorld &world) override{
 		meConfiguration &configuration = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
@@ -157,7 +157,7 @@ class cActionRotateSnap : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionRotateSnap> Ref;
 	cActionRotateSnap(meWPView &panel) :
-	cBaseAction(panel, "@World.WPView.Action.SnapRotate", nullptr, "@World.WPView.Action.SnapRotate"){}
+	cBaseAction(panel, "@World.WPView.Action.SnapRotate", nullptr, "@World.WPView.Action.SnapRotate.ToolTip"){}
 	
 	void OnAction(meWorld &world) override{
 		meConfiguration &configuration = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
@@ -185,7 +185,7 @@ class cActionScaleSnap : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionScaleSnap> Ref;
 	cActionScaleSnap(meWPView &panel) :
-	cBaseAction(panel, "@World.WPView.Action.SnapScale", nullptr, "@World.WPView.Action.SnapScale"){}
+	cBaseAction(panel, "@World.WPView.Action.SnapScale", nullptr, "@World.WPView.Action.SnapScale.ToolTip"){}
 	
 	void OnAction(meWorld &world) override{
 		meConfiguration &configuration = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
@@ -230,7 +230,7 @@ class cActionSetSensitivity : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionSetSensitivity> Ref;
 	cActionSetSensitivity(meWPView &panel, float sensitivity, const char *text) :
-	cBaseAction(panel, text, nullptr, "@World.WPView.Action.SetSensitivity"), pSensitivity(sensitivity){}
+	cBaseAction(panel, text, nullptr, "@World.WPView.Action.SetSensitivity.ToolTip"), pSensitivity(sensitivity){}
 	
 	void OnAction(meWorld &world) override{
 		meConfiguration &conf = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
@@ -295,7 +295,8 @@ class cActionAutoUpdate : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionAutoUpdate> Ref;
 	cActionAutoUpdate(meWPView &panel) :
-	cBaseAction(panel, "@World.WPView.Action.EnableAutoUpdating", nullptr, "@World.WPView.Action.EnableAutoUpdating"){}
+	cBaseAction(panel, "@World.WPView.Action.EnableAutoUpdating", nullptr,
+		"@World.WPView.Action.EnableAutoUpdating.ToolTip"){}
 	
 	void OnAction(meWorld &world) override{
 		meConfiguration &configuration = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
@@ -340,7 +341,7 @@ class cActionCameraFreeRoaming : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionCameraFreeRoaming> Ref;
 	cActionCameraFreeRoaming(meWPView &panel) :
-	cBaseAction(panel, "@World.WPView.Action.FreeRoaming", nullptr, "@World.WPView.Action.FreeRoaming"){}
+	cBaseAction(panel, "@World.WPView.Action.FreeRoaming", nullptr, "@World.WPView.Action.FreeRoaming.ToolTip"){}
 	
 	void OnAction(meWorld &world) override{
 		world.SetActiveCamera(world.GetFreeRoamingCamera());
@@ -351,7 +352,7 @@ class cActionCameraPlayer : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionCameraPlayer> Ref;
 	cActionCameraPlayer(meWPView &panel) :
-	cBaseAction(panel, "@World.WPView.Action.Player", nullptr, "@World.WPView.Action.Player"){}
+	cBaseAction(panel, "@World.WPView.Action.Player", nullptr, "@World.WPView.Action.Player.ToolTip"){}
 	
 	void OnAction(meWorld &world) override{
 		world.SetActiveCamera(world.GetPlayerCamera());
@@ -362,7 +363,7 @@ class cActionCameraObject : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionCameraObject> Ref;
 	cActionCameraObject(meWPView &panel) :
-	cBaseAction(panel, "@World.WPView.Action.Object", nullptr, "@World.WPView.Action.Object"){}
+	cBaseAction(panel, "@World.WPView.Action.Object", nullptr, "@World.WPView.Action.Object.ToolTip"){}
 	
 	void OnAction(meWorld &world) override{
 		meCamera * const camera = pPanel.GetSelectedCameraObject();
@@ -401,7 +402,7 @@ public:
 	typedef deTObjectReference<cActionEnableAuralization> Ref;
 	cActionEnableAuralization(meWPView &panel) :
 	cBaseAction(panel, "@World.WPView.Action.EnableAuralization", nullptr,
-		"@World.WPView.Action.EnableAuralization"){ }
+		"@World.WPView.Action.EnableAuralization.ToolTip"){ }
 	
 	void OnAction(meWorld &world) override{
 		meConfiguration &configuration = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
@@ -468,7 +469,7 @@ public:
 	typedef deTObjectReference<cActionLimitBoxClear> Ref;
 	cActionLimitBoxClear(meWPView &panel) :
 	cBaseAction(panel, "@World.WPView.Action.LimitBoxClear", nullptr,
-		"@World.WPView.Action.LimitBoxClear"){}
+		"@World.WPView.Action.LimitBoxClear.ToolTip"){}
 	
 	void OnAction(meWorld &world) override{
 		if(!world.GetLimitBoxMinExtend().IsZero() || !world.GetLimitBoxMaxExtend().IsZero()){
@@ -483,7 +484,7 @@ public:
 	typedef deTObjectReference<cActionLimitBoxDefault> Ref;
 	cActionLimitBoxDefault(meWPView &panel) :
 	cBaseAction(panel, "@World.WPView.Action.LimitBoxDefault", nullptr,
-		"@World.WPView.Action.LimitBoxDefault"){}
+		"@World.WPView.Action.LimitBoxDefault.ToolTip"){}
 	
 	void OnAction(meWorld &world) override{
 		const decVector minExtend(-0.5f, -0.5f, -0.5f), maxExtend(0.5f, 0.5f, 0.5f);
@@ -500,7 +501,7 @@ public:
 	typedef deTObjectReference<cActionLimitBoxDefaultGround> Ref;
 	cActionLimitBoxDefaultGround(meWPView &panel) :
 	cBaseAction(panel, "@World.WPView.Action.LimitBoxDefaultGround", nullptr,
-		"@World.WPView.Action.LimitBoxDefaultGround"){}
+		"@World.WPView.Action.LimitBoxDefaultGround.ToolTip"){}
 	
 	void OnAction(meWorld &world) override{
 		const decVector minExtend(-0.5f, 0.0f, -0.5f), maxExtend(0.5f, 1.0f, 0.5f);
@@ -589,16 +590,16 @@ pPreventUpdateCamera(false)
 	helper.GroupBox(content, groupBox, "@World.WPView.GridSnapping");
 	
 	helper.CheckBoxOnly(groupBox, pChkMoveSnap, cActionMoveSnap::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WPView.SnapMovingDistance", pEditMoveStep, cTextMoveStep::Ref::New(*this));
+	helper.EditFloat(groupBox, "@World.WPView.SnapMovingDistance.ToolTip", pEditMoveStep, cTextMoveStep::Ref::New(*this));
 	
 	helper.CheckBoxOnly(groupBox, pChkRotSnap, cActionRotateSnap::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WPView.SnapRotationAngle", pEditRotStep, cTextRotateStep::Ref::New(*this));
+	helper.EditFloat(groupBox, "@World.WPView.SnapRotationAngle.ToolTip", pEditRotStep, cTextRotateStep::Ref::New(*this));
 	
 	helper.CheckBoxOnly(groupBox, pChkScaleSnap, cActionScaleSnap::Ref::New(*this));
-	helper.EditFloat(groupBox, "@World.WPView.SnapScalingFactor", pEditScaleStep, cTextScaleStep::Ref::New(*this));
+	helper.EditFloat(groupBox, "@World.WPView.SnapScalingFactor.ToolTip", pEditScaleStep, cTextScaleStep::Ref::New(*this));
 	
-	helper.FormLineStretchFirst(groupBox, "@World.WPView.Sensitivity", "@World.WPView.SensitivityOfMouseInput.ToolTip", formLine);
-	helper.EditFloat(formLine, "@World.WPView.SensitivityOfMouseInput.ToolTip", pEditSensitivity, cTextSensitivity::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@World.WPView.Sensitivity", "@World.WPView.Sensitivity.ToolTip", formLine);
+	helper.EditFloat(formLine, "@World.WPView.Sensitivity.ToolTip", pEditSensitivity, cTextSensitivity::Ref::New(*this));
 	actionMenu = cActionMenuSensitivity::Ref::New(*this);
 	helper.Button(formLine, pBtnSensitivity, actionMenu);
 	actionMenu->SetWidget(pBtnSensitivity);
@@ -607,10 +608,10 @@ pPreventUpdateCamera(false)
 	// selection
 	helper.GroupBox(content, groupBox, "@World.WPView.Selection");
 	
-	helper.EditFloat(groupBox, "@World.WPView.Distance", "@World.WPView.DistanceForRectangularSelection.ToolTip",
+	helper.EditFloat(groupBox, "@World.WPView.Distance", "@World.WPView.DistanceRectSelect.ToolTip",
 		pEditRectSelDist, cTextRectSelDist::Ref::New(*this));
 	helper.EditFloat(groupBox, "@World.WPView.DistanceStep",
-		"@World.WPView.MouseWheelAdjustmentStepForDistanceForRectangularSelection.ToolTip",
+		"@World.WPView.MouseWheelAdjustmentStep.ToolTip",
 		pEditRectSelDistStep, cTextRectSelDistStep::Ref::New(*this));
 	
 	
@@ -665,13 +666,13 @@ pPreventUpdateCamera(false)
 	// limit box
 	helper.GroupBox(content, groupBox, "@World.WPView.LimitBox");
 	
-	helper.FormLineStretchFirst(groupBox, "@World.WPView.MinimumExtend", "@World.WPView.MinimumExtendOfLimitBox.ToolTip", formLine);
-	helper.EditVector(formLine, "@World.WPView.MinimumExtendOfLimitBox.ToolTip", pEditLimitBoxMinExtend, cEditLimitBoxMinExtend::Ref::New(*this));
+	helper.FormLineStretchFirst(groupBox, "@World.WPView.MinimumExtend", "@World.WPView.MinimumExtendLimitBox.ToolTip", formLine);
+	helper.EditVector(formLine, "@World.WPView.MinimumExtendLimitBox.ToolTip", pEditLimitBoxMinExtend, cEditLimitBoxMinExtend::Ref::New(*this));
 	actionMenu = cActionMenuLimitBox::Ref::New(*this);
 	helper.Button(formLine, pBtnLimitBoxMenu, actionMenu);
 	actionMenu->SetWidget(pBtnLimitBoxMenu);
 	
-	helper.EditVector(groupBox, "@World.WPView.MaximumExtend", "@World.WPView.MaximumExtendOfLimitBox.ToolTip",
+	helper.EditVector(groupBox, "@World.WPView.MaximumExtend", "@World.WPView.MaximumExtendLimitBox.ToolTip",
 		pEditLimitBoxMaxExtend, cEditLimitBoxMaxExtend::Ref::New(*this));
 }
 

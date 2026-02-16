@@ -93,19 +93,19 @@ pRuleComponents(rule)
 	
 	// slots
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"@World.WVNodeComponents.Output.X", "@World.WVNodeComponents.Output.XDesc",
+		"@World.WVNodeComponents.Output.X", "@World.WVNodeComponents.Output.X.ToolTip",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleComponents::eosX));
 	
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"@World.WVNodeComponents.Output.Y", "@World.WVNodeComponents.Output.YDesc",
+		"@World.WVNodeComponents.Output.Y", "@World.WVNodeComponents.Output.Y.ToolTip",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleComponents::eosY));
 	
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"@World.WVNodeComponents.Output.Z", "@World.WVNodeComponents.Output.ZDesc",
+		"@World.WVNodeComponents.Output.Z", "@World.WVNodeComponents.Output.Z.ToolTip",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleComponents::eosZ));
 	
 	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::New(env,
-		"@World.WVNodeComponents.Input.Vector", "@World.WVNodeComponents.Input.VectorDesc",
+		"@World.WVNodeComponents.Input.Vector", "@World.WVNodeComponents.Input.Vector.ToolTip",
 		true, *this, meWVNodeSlot::estVector, meHTVRuleComponents::eisVector));
 	helper.EditVector(slot, "@World.WVNodeComponents.InputVector", pEditVector, cEditVector::Ref::New(*this));
 	AddSlot(slot);

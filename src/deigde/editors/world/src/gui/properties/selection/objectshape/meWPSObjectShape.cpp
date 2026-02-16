@@ -635,13 +635,13 @@ void meWPSObjectShape::pDisplayPropertyInfo(){
 	
 	decString text;
 	if(gdproperty){
-		text.FormatSafe(Translate("World.WPSObjectShape.ObjectClassInfoWithDescription").ToUTF8(),
+		text.FormatSafe(Translate("World.WPSObjectShape.PropertyInfoDescription").ToUTF8(),
 			object->GetClassName().GetString(), property.GetString(),
 			gdproperty->GetDefaultValue().GetString(),
 			gdproperty->GetDescription().GetString());
 		
 	}else{
-		text.FormatSafe(Translate("World.WPSObjectShape.ObjectClassInfoWithoutDescription").ToUTF8(),
+		text.FormatSafe(Translate("World.WPSObjectShape.PropertyInfo").ToUTF8(),
 			object->GetClassName().GetString(), property.GetString());
 	}
 	

@@ -286,7 +286,7 @@ public:
 	using Ref = deTObjectReference<cActionPropertyCopyAll>;
 	cActionPropertyCopyAll(meWPPropertyList &panel) :
 	igdeAction("@World.WPPropertyList.Action.CopyAll", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-		"@World.WPPropertyList.Action.CopyAllDesc"),
+		"@World.WPPropertyList.Action.CopyAll.ToolTip"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -438,7 +438,7 @@ public:
 	using Ref = deTObjectReference<cActionPropertyImport>;
 	cActionPropertyImport(meWPPropertyList &panel) :
 	igdeAction("@World.WPPropertyList.Action.ImportFromText", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
-		"@World.WPPropertyList.Action.ImportFromTextDesc"),
+		"@World.WPPropertyList.Action.ImportFromText.ToolTip"),
 	pPanel(panel){}
 	
 	void OnAction() override{
@@ -451,7 +451,7 @@ public:
 		
 		while(true){
 			if(!igdeCommonDialogs::GetMultilineString(*pPanel.GetParentWindow(),
-			"@World.WPPropertyList.Dialog.ImportFromText", "@World.WPPropertyList.Dialog.PropertiesOnePropertyPerLineInFormKeyValueDesc", text)){
+			"@World.WPPropertyList.Dialog.ImportFromText", "@World.WPPropertyList.Dialog.Properties.ToolTip", text)){
 				return;
 			}
 			
@@ -772,7 +772,7 @@ void meWPPropertyList::EditPropertyValueInDialog(){
 	decString newValue(oldValue);
 	
 	if(!igdeCommonDialogs::GetMultilineString(*this, "@World.WPPropertyList.Dialog.EditRawPropertyValue",
-		"@World.WPPropertyList.Dialog.EditRawPropertyValueDesc", newValue)){
+		"@World.WPPropertyList.Dialog.EditRawPropertyValue.ToolTip", newValue)){
 			return;
 	}
 	

@@ -146,23 +146,23 @@ pRuleVectorMath(nullptr)
 	
 	// slots
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"@World.WVNodeVectorMath.Output.Value", "@World.WVNodeVectorMath.Output.ValueDesc",
+		"@World.WVNodeVectorMath.Output.Value", "@World.WVNodeVectorMath.Output.Value.ToolTip",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleVectorMath::eosValue));
 	
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"@World.WVNodeVectorMath.Output.Result", "@World.WVNodeVectorMath.Output.ResultDesc",
+		"@World.WVNodeVectorMath.Output.Result", "@World.WVNodeVectorMath.Output.Result.ToolTip",
 		false, *this, meWVNodeSlot::estVector, meHTVRuleVectorMath::eosVector));
 	
 	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::New(env,
-		"@World.WVNodeVectorMath.Input.A", "@World.WVNodeVectorMath.Input.ADesc",
+		"@World.WVNodeVectorMath.Input.A", "@World.WVNodeVectorMath.Input.A.ToolTip",
 		true, *this, meWVNodeSlot::estVector, meHTVRuleVectorMath::eisVectorA));
-	helper.EditVector(slot, "@World.WVNodeVectorMath.FirstOperantIfSlotIsNotConnected",
+	helper.EditVector(slot, "@World.WVNodeVectorMath.FirstOperant",
 		pEditVectorA, cTextVectorA::Ref::New(*this));
 	AddSlot(slot);
 	
-	slot = meWVNodeSlot::Ref::New(env, "@World.WVNodeVectorMath.Input.B", "@World.WVNodeVectorMath.Input.BDesc",
+	slot = meWVNodeSlot::Ref::New(env, "@World.WVNodeVectorMath.Input.B", "@World.WVNodeVectorMath.Input.B.ToolTip",
 		true, *this, meWVNodeSlot::estVector, meHTVRuleVectorMath::eisVectorB);
-	helper.EditVector(slot, "@World.WVNodeVectorMath.SecondOperantIfSlotIsNotConnected",
+	helper.EditVector(slot, "@World.WVNodeVectorMath.SecondOperant",
 		pEditVectorB, cTextVectorB::Ref::New(*this));
 	AddSlot(slot);
 	
@@ -170,7 +170,7 @@ pRuleVectorMath(nullptr)
 	pFraParameters = igdeContainerForm::Ref::New(env);
 	AddChild(pFraParameters);
 	
-	helper.ComboBox(pFraParameters, "@World.WVNodeVectorMath.Operator", "@World.WVNodeVectorMath.OperatorToUse.ToolTip", pCBOperator, cComboOperator::Ref::New(*this));
+	helper.ComboBox(pFraParameters, "@World.WVNodeVectorMath.Operator", "@World.WVNodeVectorMath.Operator.ToolTip", pCBOperator, cComboOperator::Ref::New(*this));
 	pCBOperator->SetAutoTranslateItems(true);
 	pCBOperator->AddItem("@World.WVNodeVectorMath.Operator.Add", nullptr, (void*)(intptr_t)meHTVRuleVectorMath::eopAdd);
 	pCBOperator->AddItem("@World.WVNodeVectorMath.Operator.Subtract", nullptr, (void*)(intptr_t)meHTVRuleVectorMath::eopSubtract);

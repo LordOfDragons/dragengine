@@ -355,7 +355,7 @@ void meViewEditorSelect::OnLeftMouseButtonRelease(int x, int y, bool shift, bool
 					
 					int selectionIndex = 0;
 					if(igdeCommonDialogs::SelectString(GetView(), "@World.ViewEditorSelect.Dialog.ChooseElement",
-					"@World.ViewEditorSelect.Dialog.ChooseElementDesc", visitor.selectionList, selectionIndex)){
+					"@World.ViewEditorSelect.Dialog.ChooseElement.ToolTip", visitor.selectionList, selectionIndex)){
 						pCLSelect->RunAction(selectionIndex);
 					}
 				}

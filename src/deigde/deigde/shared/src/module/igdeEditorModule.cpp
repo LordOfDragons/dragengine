@@ -174,9 +174,6 @@ bool igdeEditorModule::ProcessCommandLine(decUnicodeStringList&){
 }
 
 void igdeEditorModule::OnLanguageChanged(){
-	if(pEditorWindow){
-		pEditorWindow->OnLanguageChanged();
-	}
 }
 
 

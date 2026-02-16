@@ -68,7 +68,7 @@ pRuleRandom(rule)
 	
 	// slots
 	AddSlot(meWVNodeSlot::Ref::New(env,
-		"@World.WVNodeRandom.Output.Value", "@World.WVNodeRandom.Output.ValueDesc",
+		"@World.WVNodeRandom.Output.Value", "@World.WVNodeRandom.Output.Value.ToolTip",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleRandom::eosRandom));
 	
 	// parameters

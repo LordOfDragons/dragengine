@@ -83,10 +83,10 @@
 	<translation name="LangPack.Undo.EntryRemoveMultiple">Remove entries</translation>
 	<translation name="LangPack.Undo.EntrySetName">Entry set name</translation>
 	<translation name="LangPack.Undo.EntrySetText">Entry set text</translation>
-	<translation name="LangPack.Undo.LangPackSetIdentifier">LangPack set identifier</translation>
-	<translation name="LangPack.Undo.LangPackSetName">LangPack set name</translation>
-	<translation name="LangPack.Undo.LangPackSetDescription">LangPack set description</translation>
-	<translation name="LangPack.Undo.LangPackSetMissingText">LangPack set missing text</translation>
+	<translation name="LangPack.Undo.LangPackSetIdentifier">Language pack set identifier</translation>
+	<translation name="LangPack.Undo.LangPackSetName">Language pack set name</translation>
+	<translation name="LangPack.Undo.LangPackSetDescription">Language pack set description</translation>
+	<translation name="LangPack.Undo.LangPackSetMissingText">Language pack set missing text</translation>
 	
 	<!-- Log Messages -->
 	<translation name="LangPack.Default.EntryName">Entry</translation>

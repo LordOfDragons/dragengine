@@ -174,7 +174,7 @@ public:
 	typedef deTObjectReference<cActionSetSkinObjTex> Ref;
 	cActionSetSkinObjTex(meWPBrowser &panel, const decString &name) : igdeAction(
 		decString::Formatted(panel.Translate("World.WPBrowser.Action.ActiveObjectSetTexture").ToUTF8(), name), nullptr,
-		decString::Formatted(panel.Translate("World.WPBrowser.Action.ActiveObjectSetTextureDesc").ToUTF8(), name)),
+		decString::Formatted(panel.Translate("World.WPBrowser.Action.ActiveObjectSetTexture.ToolTip").ToUTF8(), name)),
 		pPanel(panel), pName(name){}
 	
 	void OnAction() override{
@@ -218,7 +218,7 @@ public:
 	typedef deTObjectReference<cActionSetSkinObjProp> Ref;
 	cActionSetSkinObjProp(meWPBrowser &panel, const decString &name) : igdeAction(
 		decString::Formatted(panel.Translate("World.WPBrowser.Action.ActiveObjectSetProperty").ToUTF8(), name), nullptr,
-		decString::Formatted(panel.Translate("World.WPBrowser.Action.ActiveObjectSetPropertyDesc").ToUTF8(), name)),
+		decString::Formatted(panel.Translate("World.WPBrowser.Action.ActiveObjectSetProperty.ToolTip").ToUTF8(), name)),
 		pPanel(panel), pName(name){}
 	
 	void OnAction() override{

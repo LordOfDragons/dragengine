@@ -188,7 +188,7 @@ pWPSelection(wpselection)
 	groupBox = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esLast, 10);
 	content->AddChild(groupBox);
 	helper.Label(groupBox, "@World.WPView.Selection");
-	helper.EditInteger(groupBox, "@World.WPSNavSpace.CountOfSelectedNavigationSpaces", 3, pEditSelCount, {});
+	helper.EditInteger(groupBox, "@World.WPSNavSpace.SelectedNavigationSpaceCount", 3, pEditSelCount, {});
 	pEditSelCount->SetEditable(false);
 	helper.Label(groupBox, "@World.WPView.Active");
 	helper.EditSpinInteger(groupBox, "@World.WPSNavSpace.SelectedNavigationSpace", 0, 0, pSpinActive, cSpinNavSpace::Ref::New(*this));

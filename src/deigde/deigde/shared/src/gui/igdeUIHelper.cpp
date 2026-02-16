@@ -1325,9 +1325,10 @@ void igdeUIHelper::MenuSeparator(igdeMenuCascade &menu){
 	menu.AddChild(igdeMenuSeparator::Ref::New(pEnvironment));
 }
 
-void igdeUIHelper::MenuRecentFiles(igdeMenuCascade &menu, igdeRecentFiles &recentFiles, const char *text){
+void igdeUIHelper::MenuRecentFiles(igdeMenuCascade &menu, igdeRecentFiles &recentFiles,
+const char *text, const char *description){
 	const igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::New(pEnvironment,
-		text, pEnvironment.GetStockIcon(igdeEnvironment::esiOpen), text));
+		text, pEnvironment.GetStockIcon(igdeEnvironment::esiOpen), description));
 	recentFiles.SetMenu(subMenu);
 	menu.AddChild(subMenu);
 }

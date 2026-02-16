@@ -100,10 +100,10 @@ pRuleCurve(rule)
 	SetTitle("@World.WVNodeCurve.Title");
 	
 	// slots
-	AddSlot(meWVNodeSlot::Ref::New(env, "@World.WVNodeCurve.Output.Result", "@World.WVNodeCurve.Output.ResultDesc",
+	AddSlot(meWVNodeSlot::Ref::New(env, "@World.WVNodeCurve.Output.Result", "@World.WVNodeCurve.Output.Result.ToolTip",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleCurve::eosValue));
 	
-	AddSlot(meWVNodeSlot::Ref::New(env, "@World.WVNodeCurve.Input.Value", "@World.WVNodeCurve.Input.ValueDesc",
+	AddSlot(meWVNodeSlot::Ref::New(env, "@World.WVNodeCurve.Input.Value", "@World.WVNodeCurve.Input.Value.ToolTip",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleCurve::eisValue));
 	
 	// parameters
