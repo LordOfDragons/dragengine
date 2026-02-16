@@ -1,0 +1,494 @@
+<?xml version='1.0' encoding='utf-8'?>
+<languagePack>
+	<identifier>de</identifier>
+	<name>Deutsch</name>
+	<description>Deutsch</description>
+	
+	<!-- Window Main Menus -->
+	<translation name="Rig.Menu.File">Datei</translation>
+	<translation name="Rig.Menu.Edit">Bearbeiten</translation>
+	<translation name="Rig.Menu.Rig">Rig</translation>
+	<translation name="Rig.Menu.Bone">Knochen</translation>
+	<translation name="Rig.Menu.View">Ansicht</translation>
+	<translation name="Rig.Menu.Simulation">Simulation</translation>
+	
+	<!-- Window Main Actions - File -->
+	<translation name="Rig.Action.RigNew">Neu</translation>
+	<translation name="Rig.Action.RigNew.Description">Erstellt ein neues Rig</translation>
+	<translation name="Rig.Action.RigOpen">Öffnen...</translation>
+	<translation name="Rig.Action.RigOpen.Description">Öffnet ein Rig aus einer Datei</translation>
+	<translation name="Rig.Action.RigSave">Speichern</translation>
+	<translation name="Rig.Action.RigSave.Description">Speichert das Rig in einer Datei</translation>
+	<translation name="Rig.Action.RigSaveAs">Speichern unter...</translation>
+	<translation name="Rig.Action.RigSaveAs.Description">Speichert das Rig unter einem anderen Dateinamen.</translation>
+	<translation name="Rig.Action.LockFlip">Achsen umschalten</translation>
+	<translation name="Rig.Action.LockFlip.Description">Achsen während der Bearbeitung umschalten</translation>
+	
+	<!-- Window Main Actions - Edit -->
+	<translation name="Rig.Action.Cut">Schnitt</translation>
+	<translation name="Rig.Action.Cut.Description">Ausgewählte Objekte ausschneiden</translation>
+	<translation name="Rig.Action.Copy">Kopieren</translation>
+	<translation name="Rig.Action.Copy.Description">Kopiert ausgewählte Objekte</translation>
+	<translation name="Rig.Action.Paste">Einfügen</translation>
+	<translation name="Rig.Action.Paste.Description">Objekte einfügen</translation>
+	<translation name="Rig.Action.LockX">X-Achse sperren</translation>
+	<translation name="Rig.Action.LockX.Description">X-Koordinaten während der Bearbeitung sperren</translation>
+	<translation name="Rig.Action.LockY">Y-Achse sperren</translation>
+	<translation name="Rig.Action.LockY.Description">Y-Koordinaten während der Bearbeitung sperren</translation>
+	<translation name="Rig.Action.LockZ">Z-Achse sperren</translation>
+	<translation name="Rig.Action.LockZ.Description">Z-Koordinaten während der Bearbeitung sperren</translation>
+	<translation name="Rig.Action.LockLocal">Lokale Koordinaten verwenden</translation>
+	<translation name="Rig.Action.LockLocal.Description">Verwendet lokale Koordinaten anstelle von Weltkoordinaten für die Bearbeitung.</translation>
+	<translation name="Rig.Action.SelectAll">Alle auswählen</translation>
+	<translation name="Rig.Action.SelectAll.Description">Wählt alle Elemente aus</translation>
+	<translation name="Rig.Action.SelectAllWithShapes">Alle mit Formen auswählen</translation>
+	<translation name="Rig.Action.SelectAllWithShapes.Description">Wählt alle Knochen mit Formen aus</translation>
+	<translation name="Rig.Action.SelectNone">Keine auswählen</translation>
+	<translation name="Rig.Action.SelectNone.Description">Hebt die Auswahl aller Elemente auf</translation>
+	<translation name="Rig.Action.Delete">Auswahl löschen</translation>
+	<translation name="Rig.Action.Delete.Description">Löscht die ausgewählten Objekte.</translation>
+	
+	<!-- Window Main Actions - Rig -->
+	<translation name="Rig.Action.RigAddSphere">Kugelform hinzufügen</translation>
+	<translation name="Rig.Action.RigAddSphere.Description">Fügt eine Kugelform hinzu</translation>
+	<translation name="Rig.Action.RigAddBox">Form hinzufügen</translation>
+	<translation name="Rig.Action.RigAddBox.Description">Fügt eine Box-Form hinzu</translation>
+	<translation name="Rig.Action.RigAddCylinder">Zylinderform hinzufügen</translation>
+	<translation name="Rig.Action.RigAddCylinder.Description">Fügt eine Zylinderform hinzu</translation>
+	<translation name="Rig.Action.RigAddCapsule">Kapselform hinzufügen</translation>
+	<translation name="Rig.Action.RigAddCapsule.Description">Fügt eine Kapselform hinzu</translation>
+	<translation name="Rig.Action.RigAddConstraint">Einschränkung hinzufügen</translation>
+	<translation name="Rig.Action.RigAddConstraint.Description">Beschränkung hinzufügen</translation>
+	<translation name="Rig.Action.RigAddPush">Push hinzufügen</translation>
+	<translation name="Rig.Action.RigAddPush.Description">Push hinzufügen</translation>
+	<translation name="Rig.Action.RigShowShapes">Rig-Formen anzeigen</translation>
+	<translation name="Rig.Action.RigShowShapes.Description">Formen des gesamten Rigs anzeigen</translation>
+	<translation name="Rig.Action.RigShowConstraints">Rig-Beschränkungen anzeigen</translation>
+	<translation name="Rig.Action.RigShowConstraints.Description">Anzeige der Einschränkungen des gesamten Rigs</translation>
+	<translation name="Rig.Action.RigShowPushs">Rig-Pushs anzeigen</translation>
+	<translation name="Rig.Action.RigShowPushs.Description">Anzeigen der Pushes des gesamten Rigs</translation>
+	
+	<!-- Window Main Actions - Bone -->
+	<translation name="Rig.Action.BoneAdd">Hinzufügen</translation>
+	<translation name="Rig.Action.BoneAdd.Description">Knochen hinzufügen</translation>
+	<translation name="Rig.Action.BoneAddSphere">Kugelform hinzufügen</translation>
+	<translation name="Rig.Action.BoneAddSphere.Description">Fügt eine Kugelform hinzu</translation>
+	<translation name="Rig.Action.BoneAddBox">Formfeld hinzufügen</translation>
+	<translation name="Rig.Action.BoneAddBox.Description">Fügt eine Box-Form hinzu</translation>
+	<translation name="Rig.Action.BoneAddCylinder">Zylinderform hinzufügen</translation>
+	<translation name="Rig.Action.BoneAddCylinder.Description">Fügt eine Zylinderform hinzu</translation>
+	<translation name="Rig.Action.BoneAddCapsule">Kapselform hinzufügen</translation>
+	<translation name="Rig.Action.BoneAddCapsule.Description">Fügt eine Kapselform hinzu</translation>
+	<translation name="Rig.Action.BoneAddConstraint">Beschränkung hinzufügen</translation>
+	<translation name="Rig.Action.BoneAddConstraint.Description">Beschränkung hinzufügen</translation>
+	<translation name="Rig.Action.BoneShowBones">Knochen anzeigen</translation>
+	<translation name="Rig.Action.BoneShowBones.Description">Knochen anzeigen</translation>
+	<translation name="Rig.Action.BoneShowAllShapes">Alle Knochenformen anzeigen</translation>
+	<translation name="Rig.Action.BoneShowAllShapes.Description">Zeigen Sie die Formen aller Knochen an, nicht nur die des ausgewählten.</translation>
+	<translation name="Rig.Action.BoneShowAllConstraints">Alle Knochenbeschränkungen anzeigen</translation>
+	<translation name="Rig.Action.BoneShowAllConstraints.Description">Zeigen Sie die Einschränkungen aller Knochen an, nicht nur die des ausgewählten.</translation>
+	<translation name="Rig.Action.BoneMirror">Spiegel</translation>
+	<translation name="Rig.Action.BoneMirror.Description">Spiegeln Sie die ausgewählten Knochen.</translation>
+	<translation name="Rig.Action.BoneImport">Importieren</translation>
+	<translation name="Rig.Action.BoneImport.Description">Importieren Sie die ausgewählten Bones aus der Datei.</translation>
+	<translation name="Rig.Action.BoneScaleMass">Skalierung und Masse</translation>
+	<translation name="Rig.Action.BoneScaleMass.Description">Skalierung der Gesamtmasse der ausgewählten Knochen</translation>
+	<translation name="Rig.Action.BoneMassFromVolume">Masse aus Volumen</translation>
+	<translation name="Rig.Action.BoneMassFromVolume.Description">Legen Sie die Masse des Knochens anhand der Formvolumina fest.</translation>
+	<translation name="Rig.Action.BoneXRayShapes">Röntgenformen</translation>
+	<translation name="Rig.Action.BoneXRayShapes.Description">Legt fest, ob Formen durch die Geometrie hindurch sichtbar sind.</translation>
+	
+	<!-- Window Main Actions - View -->
+	<translation name="Rig.Action.ViewRunSimulation">Simulation ausführen</translation>
+	<translation name="Rig.Action.ViewRunSimulation.Description">Startet und beendet die Simulation</translation>
+	
+	<!-- Window Main Actions - Modes -->
+	<translation name="Rig.Action.ModeBone">Knochenmodus</translation>
+	<translation name="Rig.Action.ModeBone.Description">Knochenmodus</translation>
+	<translation name="Rig.Action.ModeShape">Formmodus</translation>
+	<translation name="Rig.Action.ModeShape.Description">Formmodus</translation>
+	<translation name="Rig.Action.ModeConstraint">Einschränkungsmodus</translation>
+	<translation name="Rig.Action.ModeConstraint.Description">Einschränkungsmodus</translation>
+	<translation name="Rig.Action.ModePush">Push-Modus</translation>
+	<translation name="Rig.Action.ModePush.Description">Push-Modus</translation>
+	<translation name="Rig.Action.ModeSelect">Modus auswählen</translation>
+	<translation name="Rig.Action.ModeSelect.Description">Modus auswählen</translation>
+	<translation name="Rig.Action.ModeMove">Bewegungsmodus</translation>
+	<translation name="Rig.Action.ModeMove.Description">Bewegungsmodus</translation>
+	<translation name="Rig.Action.ModeScale">Skalierungsmodus</translation>
+	<translation name="Rig.Action.ModeScale.Description">Skalierungsmodus</translation>
+	<translation name="Rig.Action.ModeRotate">Drehmodus</translation>
+	<translation name="Rig.Action.ModeRotate.Description">Drehmodus</translation>
+	
+	<!-- Window Main Dialogs -->
+	<translation name="Rig.Dialog.NewRig.Title">Neues Rig</translation>
+	<translation name="Rig.Dialog.NewRig.Message">Ist es in Ordnung, ein neues Rig zu erstellen und das aktuelle zu verwerfen?</translation>
+	<translation name="Rig.Dialog.OpenRig.Title">Rig öffnen</translation>
+	<translation name="Rig.Dialog.OpenRig.Message">Das Öffnen des Rigs verwirft alle Änderungen. Ist dies in Ordnung?</translation>
+	<translation name="Rig.Dialog.SaveRig.Title">Rig speichern</translation>
+	<translation name="Rig.Dialog.ScaleMass.Title">Skala</translation>
+	<translation name="Rig.Dialog.ScaleMass.NoBonesSelected">Keine Knochen mit Formen ausgewählt</translation>
+	<translation name="Rig.Dialog.ScaleMass.Message">Neue Gesamtmasse:</translation>
+	<translation name="Rig.Dialog.MassFromVolume.Title">Masse aus Volumen</translation>
+	<translation name="Rig.Dialog.MassFromVolume.NoBonesSelected">Keine Knochen ausgewählt</translation>
+	<translation name="Rig.Dialog.MassFromVolume.Message">Dichte:</translation>
+	
+	<!-- Window Main Actions - View Panel -->
+	<translation name="Rig.PanelView.Action.UseRestPose">Ruhepose verwenden</translation>
+	<translation name="Rig.PanelView.Action.UseRestPose.Description">Zeigt die Ruhepose anstelle des Animationsframes an.</translation>
+	<translation name="Rig.PanelView.Action.Playback">Wiedergabe</translation>
+	<translation name="Rig.PanelView.Action.Playback.Description">Legt fest, ob die Animationsbewegung wiedergegeben wird.</translation>
+	<translation name="Rig.PanelView.Action.Snap">Einrasten</translation>
+	<translation name="Rig.PanelView.Action.Snap.Description">Am Raster ausrichten</translation>
+	<translation name="Rig.PanelView.Action.AttachCameraToBone">Kamera an Knochen befestigen</translation>
+	<translation name="Rig.PanelView.Action.AttachCameraToBone.Description">Befestigt die Kamera an einem Knochen, anstatt frei zu bewegen.</translation>
+	
+	<!-- Shape Panel Hull Actions -->
+	<translation name="Rig.PanelShapeHull.Action.AddPoint">Punkt hinzufügen</translation>
+	<translation name="Rig.PanelShapeHull.Action.RemovePoint">Punkt entfernen</translation>
+	
+	<!-- Window Properties Panels -->
+	<translation name="Rig.WindowProperties.Panel.Rig">Rig</translation>
+	<translation name="Rig.WindowProperties.Panel.Bone">Knochen</translation>
+	<translation name="Rig.WindowProperties.Panel.Shape">Form</translation>
+	<translation name="Rig.WindowProperties.Panel.Constraint">Einschränkung</translation>
+	<translation name="Rig.WindowProperties.Panel.Push">Push</translation>
+	<translation name="Rig.WindowProperties.Panel.View">Ansicht</translation>
+	<translation name="Rig.WindowProperties.Panel.Undo">Rückgängig</translation>
+	
+	<!-- Bone Panel -->
+	<translation name="Rig.PanelBone.GroupBox.Structure">Struktur:</translation>
+	<translation name="Rig.PanelBone.Structure.Name">Name:</translation>
+	<translation name="Rig.PanelBone.Structure.Name.ToolTip">Eindeutiger Name des Knochens.</translation>
+	<translation name="Rig.PanelBone.Structure.Parent">Übergeordnetes Element:</translation>
+	<translation name="Rig.PanelBone.Structure.Parent.ToolTip">Name des übergeordneten Knochens oder leere Zeichenfolge für Stammknochen.</translation>
+	<translation name="Rig.PanelBone.GroupBox.Geometry">Geometrie:</translation>
+	<translation name="Rig.PanelBone.Geometry.Position">Position:</translation>
+	<translation name="Rig.PanelBone.Geometry.Position.ToolTip">Position des Knochens relativ zum übergeordneten Knochen oder Rig, wenn es sich um einen Stammknochen handelt. Dies ist die Kopfposition des Knochens.</translation>
+	<translation name="Rig.PanelBone.Geometry.Rotation">Rotation:</translation>
+	<translation name="Rig.PanelBone.Geometry.Rotation.ToolTip">Ausrichtung des Knochens als Eulerwinkel relativ zum übergeordneten Knochen oder Rig, wenn es sich um einen Wurzelknochen handelt. Die X-Achse verläuft entlang des Knochens in Richtung Schwanz.</translation>
+	<translation name="Rig.PanelBone.GroupBox.Physics">Physik:</translation>
+	<translation name="Rig.PanelBone.Physics.Cmp">CMP:</translation>
+	<translation name="Rig.PanelBone.Physics.Cmp.ToolTip">Relative Position des zentralen Massenpunkts im Verhältnis zum Knochenkoordinatensystem.</translation>
+	<translation name="Rig.PanelBone.Physics.Mass">Masse:</translation>
+	<translation name="Rig.PanelBone.Physics.Mass.ToolTip">Masse in kg der Materie um den Knochen herum.</translation>
+	<translation name="Rig.PanelBone.Physics.Dynamic">Dynamik</translation>
+	<translation name="Rig.PanelBone.Physics.Dynamic.ToolTip">Legt fest, ob der Knochen dynamisch ist</translation>
+	<translation name="Rig.PanelBone.GroupBox.IkLimits">Inverse kinematische Beschränkungen:</translation>
+	<translation name="Rig.PanelBone.IkLimits.Lower">Niedriger:</translation>
+	<translation name="Rig.PanelBone.IkLimits.Lower.ToolTip">Unterer IK-Grenzwert pro Achse in Grad.</translation>
+	<translation name="Rig.PanelBone.IkLimits.Upper">Obere Begrenzung:</translation>
+	<translation name="Rig.PanelBone.IkLimits.Upper.ToolTip">Obere IK-Grenzen pro Achse in Grad.</translation>
+	<translation name="Rig.PanelBone.IkLimits.Resistance">Widerstand:</translation>
+	<translation name="Rig.PanelBone.IkLimits.Resistance.ToolTip">Widerstand pro Achse in Grad im Bereich von 0 bis 1.</translation>
+	<translation name="Rig.PanelBone.IkLimits.Locked">Gesperrt:</translation>
+	<translation name="Rig.PanelBone.IkLimits.Locked.ToolTip">IK-Achse ist gesperrt</translation>
+	<translation name="Rig.PanelBone.IkLimits.X">X</translation>
+	<translation name="Rig.PanelBone.IkLimits.Y">Y</translation>
+	<translation name="Rig.PanelBone.IkLimits.Z">Z</translation>
+	<translation name="Rig.PanelBone.Parent.NoParent">[L] Kein übergeordnetes Element [R]</translation>
+	<translation name="Rig.PanelBone.Dialog.InvalidBoneName">Ungültiger Knochenname</translation>
+	<translation name="Rig.PanelBone.Dialog.InvalidParentBone">Ungültiges übergeordnetes Knochenelement</translation>
+	
+	<!-- Constraint Panel -->
+	<translation name="Rig.PanelConstraint.GroupBox.LinkPartners">Link-Partner:</translation>
+	<translation name="Rig.PanelConstraint.LinkPartners.Parent">Übergeordnetes Element:</translation>
+	<translation name="Rig.PanelConstraint.LinkPartners.Parent.ToolTip">Name des übergeordneten Bones oder leere Zeichenfolge für das gesamte Rig.</translation>
+	<translation name="Rig.PanelConstraint.LinkPartners.Target">Ziel:</translation>
+	<translation name="Rig.PanelConstraint.LinkPartners.Target.ToolTip">Name des Zielknochens oder leere Zeichenfolge für die Welt.</translation>
+	<translation name="Rig.PanelConstraint.GroupBox.Geometry">Geometrie:</translation>
+	<translation name="Rig.PanelConstraint.Geometry.Position">Position:</translation>
+	<translation name="Rig.PanelConstraint.Geometry.Position.ToolTip">Position der Beschränkung relativ zum übergeordneten Knochen.</translation>
+	<translation name="Rig.PanelConstraint.Geometry.Rotation">Rotation:</translation>
+	<translation name="Rig.PanelConstraint.Geometry.Rotation.ToolTip">Ausrichtung der Beschränkung relativ zum übergeordneten Knochen.</translation>
+	<translation name="Rig.PanelConstraint.Geometry.Offset">Versatz:</translation>
+	<translation name="Rig.PanelConstraint.Geometry.Offset.ToolTip">Versatz.</translation>
+	<translation name="Rig.PanelConstraint.GroupBox.LinearX">Linear X:</translation>
+	<translation name="Rig.PanelConstraint.GroupBox.LinearY">Linear Y:</translation>
+	<translation name="Rig.PanelConstraint.GroupBox.LinearZ">Linear Z:</translation>
+	<translation name="Rig.PanelConstraint.GroupBox.AngularX">Angular X:</translation>
+	<translation name="Rig.PanelConstraint.GroupBox.AngularY">Winkel Y:</translation>
+	<translation name="Rig.PanelConstraint.GroupBox.AngularZ">Angular Z:</translation>
+	<translation name="Rig.PanelConstraint.Dof.Range">Bereich:</translation>
+	<translation name="Rig.PanelConstraint.Dof.Range.ToolTip">Bereich relativ zum Koordinatensystem der Beschränkung</translation>
+	<translation name="Rig.PanelConstraint.Dof.LowerLimit.ToolTip">Untergrenze relativ zum Koordinatensystem der Beschränkung.</translation>
+	<translation name="Rig.PanelConstraint.Dof.UpperLimit.ToolTip">Obergrenze relativ zum Koordinatensystem der Beschränkung.</translation>
+	<translation name="Rig.PanelConstraint.Dof.Friction">Reibung:</translation>
+	<translation name="Rig.PanelConstraint.Dof.Friction.ToolTip">Reibung</translation>
+	<translation name="Rig.PanelConstraint.Dof.StaticFriction.ToolTip">Statische Reibungskraft in Newton pro Meter.</translation>
+	<translation name="Rig.PanelConstraint.Dof.KinematicFriction.ToolTip">Kinematischer Reibungsfaktor.</translation>
+	<translation name="Rig.PanelConstraint.Dof.Stiffness">Steifigkeit:</translation>
+	<translation name="Rig.PanelConstraint.Dof.Stiffness.ToolTip">Federsteifigkeit in Newton pro Meter.</translation>
+	<translation name="Rig.PanelConstraint.GroupBox.Damping">Dämpfung:</translation>
+	<translation name="Rig.PanelConstraint.Damping.Linear">Linear:</translation>
+	<translation name="Rig.PanelConstraint.Damping.Linear.ToolTip">Dämpfung linearer Freiheitsgrade.</translation>
+	<translation name="Rig.PanelConstraint.Damping.Angular">Winkel:</translation>
+	<translation name="Rig.PanelConstraint.Damping.Angular.ToolTip">Dämpfung der Winkel-Freiheitsgrade.</translation>
+	<translation name="Rig.PanelConstraint.Damping.Spring">Feder:</translation>
+	<translation name="Rig.PanelConstraint.Damping.Spring.ToolTip">Federdämpfung.</translation>
+	<translation name="Rig.PanelConstraint.GroupBox.Rope">Seil:</translation>
+	<translation name="Rig.PanelConstraint.Rope.IsRope">Seil</translation>
+	<translation name="Rig.PanelConstraint.Rope.IsRope.ToolTip">Beschränkungen funktionieren wie ein Seil</translation>
+	<translation name="Rig.PanelConstraint.GroupBox.Breaking">Unterbrechung:</translation>
+	<translation name="Rig.PanelConstraint.Breaking.Threshold">Überschreiten:</translation>
+	<translation name="Rig.PanelConstraint.Breaking.Threshold.ToolTip">Zwingen Sie die Schwelle, um die Beschränkung aufzuheben. Setzen Sie den Wert auf 0, um die Beschränkung nicht aufzuheben.</translation>
+	<translation name="Rig.PanelConstraint.GroupBox.Debugging">Debuggen:</translation>
+	<translation name="Rig.PanelConstraint.Debugging.ShowJointError">Gemeinsamen Fehler anzeigen</translation>
+	<translation name="Rig.PanelConstraint.Debugging.ShowJointError.ToolTip">Zeigt visuelles Feedback für Beschränkungsfehler an</translation>
+	<translation name="Rig.PanelConstraint.Target.World">&lt; Welt &gt;</translation>
+	<translation name="Rig.PanelConstraint.Parent.Rig">&lt; Rig &gt;</translation>
+	
+	<!-- Push Panel -->
+	<translation name="Rig.PanelPush.GroupBox.Geometry">Geometrie:</translation>
+	<translation name="Rig.PanelPush.Geometry.Type">Typ:</translation>
+	<translation name="Rig.PanelPush.Geometry.Type.ToolTip">Art des Pushs.</translation>
+	<translation name="Rig.PanelPush.Geometry.Position">Position:</translation>
+	<translation name="Rig.PanelPush.Geometry.Position.ToolTip">Position, von der aus die Verschiebung ausgeht.</translation>
+	<translation name="Rig.PanelPush.Geometry.Rotation">Rotation:</translation>
+	<translation name="Rig.PanelPush.Geometry.Rotation.ToolTip">Drehung des Pushs, die die Push-Richtung bestimmt.</translation>
+	<translation name="Rig.PanelPush.Geometry.Impuls">Impuls:</translation>
+	<translation name="Rig.PanelPush.Geometry.Impuls.ToolTip">Kraft des Push in Ns.</translation>
+	<translation name="Rig.PanelPush.Geometry.RayCount">Ray Count:</translation>
+	<translation name="Rig.PanelPush.Geometry.RayCount.ToolTip">Anzahl der zu schiessenden Strahlen.</translation>
+	<translation name="Rig.PanelPush.Geometry.Cone">Kegel:</translation>
+	<translation name="Rig.PanelPush.Geometry.Cone.ToolTip">Kegelwinkel in Grad, falls vom Push-Typ erforderlich.</translation>
+	<translation name="Rig.PanelPush.Type.SimplePush">Einfacher Push</translation>
+	<translation name="Rig.PanelPush.Type.Explosion">Explosionsdarstellung</translation>
+	
+	<!-- Rig Panel -->
+	<translation name="Rig.PanelRig.GroupBox.Rig">Rig:</translation>
+	<translation name="Rig.PanelRig.Rig.RootBone">Root Bone:</translation>
+	<translation name="Rig.PanelRig.Rig.RootBone.ToolTip">Name des Root-Bones.</translation>
+	<translation name="Rig.PanelRig.Rig.Cmp">CMP:</translation>
+	<translation name="Rig.PanelRig.Rig.Cmp.ToolTip">Relative Position des zentralen Massenpunkts.</translation>
+	<translation name="Rig.PanelRig.Rig.ModelCollision">Modellkollision</translation>
+	<translation name="Rig.PanelRig.Rig.ModelCollision.ToolTip">Legt fest, ob die Modellkollision erstellt wird oder nicht.</translation>
+	<translation name="Rig.PanelRig.GroupBox.Simulation">Simulation:</translation>
+	<translation name="Rig.PanelRig.Simulation.Dynamic">Dynamisch</translation>
+	<translation name="Rig.PanelRig.Simulation.Dynamic.ToolTip">Legt fest, ob das Rig dynamisch ist</translation>
+	<translation name="Rig.PanelRig.Simulation.Mass">Masse:</translation>
+	<translation name="Rig.PanelRig.Simulation.Mass.ToolTip">Masse in kg.</translation>
+	
+	<!-- Shape Panel -->
+	<translation name="Rig.PanelShape.NoActiveShape">Keine aktive Form</translation>
+	<translation name="Rig.PanelShape.Parent">Übergeordnetes Element:</translation>
+	<translation name="Rig.PanelShape.Parent.ToolTip">Name des übergeordneten Knochens oder leere Zeichenfolge für Rig-Formen.</translation>
+	<translation name="Rig.PanelShape.Property">Eigenschaft:</translation>
+	<translation name="Rig.PanelShape.Property.ToolTip">Benutzerdefinierte Form-Eigenschaftszeichenfolge.</translation>
+	
+	<!-- Shape Panel - Sphere -->
+	<translation name="Rig.PanelShapeSphere.GroupBox.SphereParameters">Kugelparameter:</translation>
+	<translation name="Rig.PanelShapeSphere.Position">Position:</translation>
+	<translation name="Rig.PanelShapeSphere.Position.ToolTip">Position der Kugel relativ zum übergeordneten Knochen.</translation>
+	<translation name="Rig.PanelShapeSphere.Radius">Radius:</translation>
+	<translation name="Rig.PanelShapeSphere.Radius.ToolTip">Radius der Kugel in Metern.</translation>
+	
+	<!-- Shape Panel - Box -->
+	<translation name="Rig.PanelShapeBox.GroupBox.BoxParameters">Box-Parameter:</translation>
+	<translation name="Rig.PanelShapeBox.Position">Position:</translation>
+	<translation name="Rig.PanelShapeBox.Position.ToolTip">Position des Feldes relativ zum übergeordneten Knochen.</translation>
+	<translation name="Rig.PanelShapeBox.Rotation">Drehung:</translation>
+	<translation name="Rig.PanelShapeBox.Rotation.ToolTip">Drehung des Feldes.</translation>
+	<translation name="Rig.PanelShapeBox.HalfExtends">Halb erweitert:</translation>
+	<translation name="Rig.PanelShapeBox.HalfExtends.ToolTip">Die Hälfte der Box wird erweitert.</translation>
+	
+	<!-- Shape Panel - Capsule -->
+	<translation name="Rig.PanelShapeCapsule.GroupBox.CapsuleParameters">Kapselparameter:</translation>
+	<translation name="Rig.PanelShapeCapsule.Position">Position:</translation>
+	<translation name="Rig.PanelShapeCapsule.Position.ToolTip">Position der Kugel relativ zum übergeordneten Knochen.</translation>
+	<translation name="Rig.PanelShapeCapsule.Rotation">Rotation:</translation>
+	<translation name="Rig.PanelShapeCapsule.Rotation.ToolTip">Drehung der Kapsel.</translation>
+	<translation name="Rig.PanelShapeCapsule.HalfHeight">Halbe Höhe:</translation>
+	<translation name="Rig.PanelShapeCapsule.HalfHeight.ToolTip">Halbe Höhe der Kapsel.</translation>
+	<translation name="Rig.PanelShapeCapsule.TopRadius">Oberer Radius:</translation>
+	<translation name="Rig.PanelShapeCapsule.TopRadius.ToolTip">Oberer Radius in Metern.</translation>
+	<translation name="Rig.PanelShapeCapsule.BottomRadius">Radius des unteren Randes:</translation>
+	<translation name="Rig.PanelShapeCapsule.BottomRadius.ToolTip">Unterer Radius in Metern.</translation>
+	
+	<!-- Shape Panel - Cylinder -->
+	<translation name="Rig.PanelShapeCylinder.GroupBox.CylinderParameters">Zylinderparameter:</translation>
+	<translation name="Rig.PanelShapeCylinder.Position">Position:</translation>
+	<translation name="Rig.PanelShapeCylinder.Position.ToolTip">Position der Kugel relativ zum übergeordneten Knochen.</translation>
+	<translation name="Rig.PanelShapeCylinder.Rotation">Rotation:</translation>
+	<translation name="Rig.PanelShapeCylinder.Rotation.ToolTip">Rotation des Zylinders.</translation>
+	<translation name="Rig.PanelShapeCylinder.HalfHeight">Halbe Höhe:</translation>
+	<translation name="Rig.PanelShapeCylinder.HalfHeight.ToolTip">Halbe Höhe des Zylinders.</translation>
+	<translation name="Rig.PanelShapeCylinder.TopRadius">Oberer Radius:</translation>
+	<translation name="Rig.PanelShapeCylinder.TopRadius.ToolTip">Oberer Radius in Metern.</translation>
+	<translation name="Rig.PanelShapeCylinder.BottomRadius">Bodenradius:</translation>
+	<translation name="Rig.PanelShapeCylinder.BottomRadius.ToolTip">Bodenradius in Metern.</translation>
+	
+	<!-- Shape Panel - Hull -->
+	<translation name="Rig.PanelShapeHull.GroupBox.HullParameters">Rumpfparameter:</translation>
+	<translation name="Rig.PanelShapeHull.Position">Position:</translation>
+	<translation name="Rig.PanelShapeHull.Position.ToolTip">Position des Kastens relativ zum übergeordneten Knochen.</translation>
+	<translation name="Rig.PanelShapeHull.Rotation">Rotation:</translation>
+	<translation name="Rig.PanelShapeHull.Rotation.ToolTip">Drehung des Kastens.</translation>
+	<translation name="Rig.PanelShapeHull.Points">Punkte:</translation>
+	<translation name="Rig.PanelShapeHull.Points.ToolTip">Bitte wählen Sie den zu bearbeitenden Punkt aus.</translation>
+	<translation name="Rig.PanelShapeHull.Coordinates">Koordinaten:</translation>
+	<translation name="Rig.PanelShapeHull.Coordinates.ToolTip">Koordinaten des ausgewählten Punktes.</translation>
+	
+	<!-- View Panel -->
+	<translation name="Rig.PanelView.GroupBox.Resources">Ressourcen:</translation>
+	<translation name="Rig.PanelView.Resources.Model">Modell:</translation>
+	<translation name="Rig.PanelView.Resources.Model.ToolTip">Pfad zur zu verwendenden Modellressource.</translation>
+	<translation name="Rig.PanelView.Resources.Skin">Haut:</translation>
+	<translation name="Rig.PanelView.Resources.Skin.ToolTip">Pfad zur zu verwendenden Skin-Ressource.</translation>
+	<translation name="Rig.PanelView.Resources.Animation">Animation:</translation>
+	<translation name="Rig.PanelView.Resources.Animation.ToolTip">Pfad zur zu verwendenden Animationsressource.</translation>
+	<translation name="Rig.PanelView.GroupBox.Textures">Texturen:</translation>
+	<translation name="Rig.PanelView.Textures.Texture">Textur:</translation>
+	<translation name="Rig.PanelView.Textures.Texture.ToolTip">Zu bearbeitende Modelltextur.</translation>
+	<translation name="Rig.PanelView.Textures.Skin">Oberfläche:</translation>
+	<translation name="Rig.PanelView.Textures.Skin.ToolTip">Für die Textur zu verwendende Oberfläche.</translation>
+	<translation name="Rig.PanelView.GroupBox.AnimationMove">Animation: Verschieben</translation>
+	<translation name="Rig.PanelView.AnimationMove.Move">Verschieben:</translation>
+	<translation name="Rig.PanelView.AnimationMove.Move.ToolTip">Name der zu verwendenden Animationsbewegung.</translation>
+	<translation name="Rig.PanelView.AnimationMove.Time">Zeit:</translation>
+	<translation name="Rig.PanelView.AnimationMove.Time.ToolTip">Bewegungszeit anzeigen.</translation>
+	<translation name="Rig.PanelView.GroupBox.Physics">Physik:</translation>
+	<translation name="Rig.PanelView.Physics.Gravity">Schwerkraft:</translation>
+	<translation name="Rig.PanelView.Physics.Gravity.ToolTip">Gravitationsstärke und -richtung der Welt.</translation>
+	<translation name="Rig.PanelView.Physics.LocalGravity">Lokale Schwerkraft:</translation>
+	<translation name="Rig.PanelView.Physics.LocalGravity.ToolTip">Stärke und Richtung der lokalen Schwerkraft des Objekts.</translation>
+	<translation name="Rig.PanelView.Physics.Slowmotion">Zeitlupe:</translation>
+	<translation name="Rig.PanelView.Physics.Slowmotion.ToolTip">Legt den Zeitlupenfaktor fest.</translation>
+	<translation name="Rig.PanelView.GroupBox.Editing">Bearbeiten:</translation>
+	<translation name="Rig.PanelView.Editing.Grid">Raster:</translation>
+	<translation name="Rig.PanelView.Editing.Grid.SnapToGrid.ToolTip">Ausrichten am Raster</translation>
+	<translation name="Rig.PanelView.Editing.Grid.Spacing.ToolTip">Rasterabstand in Metern</translation>
+	<translation name="Rig.PanelView.Editing.Sensitivity">Empfindlichkeit:</translation>
+	<translation name="Rig.PanelView.Editing.Sensitivity.ToolTip">Bearbeitungsempfindlichkeit.</translation>
+	<translation name="Rig.PanelView.Editing.Sky">Himmel:</translation>
+	<translation name="Rig.PanelView.Editing.EnvObject">Umgebungsobjekt:</translation>
+	<translation name="Rig.PanelView.GroupBox.Camera">Kamera:</translation>
+	<translation name="Rig.PanelView.Camera.Position">Position:</translation>
+	<translation name="Rig.PanelView.Camera.Position.ToolTip">Position der Kamera.</translation>
+	<translation name="Rig.PanelView.Camera.Rotation">Drehung:</translation>
+	<translation name="Rig.PanelView.Camera.Rotation.ToolTip">Drehung der Kamera.</translation>
+	<translation name="Rig.PanelView.Camera.View">Ansicht:</translation>
+	<translation name="Rig.PanelView.Camera.View.ToolTip">Anzeigerichtung der Kamera.</translation>
+	<translation name="Rig.PanelView.Camera.Fov">Sichtfeld:</translation>
+	<translation name="Rig.PanelView.Camera.Fov.ToolTip">Sichtfeld</translation>
+	<translation name="Rig.PanelView.Camera.FovDegrees.ToolTip">Sichtfeld in Grad</translation>
+	<translation name="Rig.PanelView.Camera.FovRatio.ToolTip">Sichtfeldverhältnis (Höhe/Breite)</translation>
+	<translation name="Rig.PanelView.Camera.Distance">Entfernung:</translation>
+	<translation name="Rig.PanelView.Camera.Distance.ToolTip">Entfernungen</translation>
+	<translation name="Rig.PanelView.Camera.ImageDistance.ToolTip">Bildabstand (nahe der Clipping-Ebene)</translation>
+	<translation name="Rig.PanelView.Camera.ViewDistance.ToolTip">Sichtweite (ferne Clipping-Ebene)</translation>
+	<translation name="Rig.PanelView.Camera.Exposure">Belichtung:</translation>
+	<translation name="Rig.PanelView.Camera.Exposure.ToolTip">Belichtung</translation>
+	<translation name="Rig.PanelView.Camera.ExposureMultiplier.ToolTip">Belichtungsmultiplikator</translation>
+	<translation name="Rig.PanelView.Camera.ExposureTime.ToolTip">Anpassungszeit in Sekunden</translation>
+	<translation name="Rig.PanelView.Camera.Adaption">Anpassung:</translation>
+	<translation name="Rig.PanelView.Camera.Adaption.ToolTip">Anpassung</translation>
+	<translation name="Rig.PanelView.Camera.AdaptionLower.ToolTip">Intensität verringern, um anzupassen.</translation>
+	<translation name="Rig.PanelView.Camera.AdaptionUpper.ToolTip">Höhere Intensität zur Anpassung an</translation>
+	<translation name="Rig.PanelView.GroupBox.CameraAttaching">Kamera anbringen:</translation>
+	<translation name="Rig.PanelView.CameraAttaching.Bone">Knochen:</translation>
+	<translation name="Rig.PanelView.CameraAttaching.Bone.ToolTip">Knochen, an dem die Kamera befestigt ist.</translation>
+	<translation name="Rig.PanelView.CameraAttaching.Position">Position:</translation>
+	<translation name="Rig.PanelView.CameraAttaching.Position.ToolTip">Position der Kamera relativ zum Knochen.</translation>
+	<translation name="Rig.PanelView.CameraAttaching.Rotation">Drehung:</translation>
+	<translation name="Rig.PanelView.CameraAttaching.Rotation.ToolTip">Drehung der Kamera relativ zum Knochen.</translation>
+	
+	<!-- Import Bone Dialog -->
+	<translation name="Rig.DialogImportBone.Title">Knochen importieren</translation>
+	<translation name="Rig.DialogImportBone.Path">Pfad:</translation>
+	<translation name="Rig.DialogImportBone.Path.ToolTip">Datei, aus der Knochen importiert werden sollen.</translation>
+	<translation name="Rig.DialogImportBone.Scaling">Skalierung:</translation>
+	<translation name="Rig.DialogImportBone.Scaling.ToolTip">Skalierung, die auf die importierten Objekte angewendet werden soll.</translation>
+	<translation name="Rig.DialogImportBone.ImportBoneProperties">Importieren von Knochen-Eigenschaften</translation>
+	<translation name="Rig.DialogImportBone.ImportBoneProperties.ToolTip">Importieren von Knochen-Eigenschaften (zentraler Massenpunkt, Masse, Dynamik, ...)</translation>
+	<translation name="Rig.DialogImportBone.ImportShapes">Importieren von Formen</translation>
+	<translation name="Rig.DialogImportBone.ImportShapes.ToolTip">Formen importieren</translation>
+	<translation name="Rig.DialogImportBone.ImportConstraints">Importbeschränkungen</translation>
+	<translation name="Rig.DialogImportBone.ImportConstraints.ToolTip">Importbeschränkungen</translation>
+	<translation name="Rig.DialogImportBone.Button.Import">Importieren</translation>
+	<translation name="Rig.DialogImportBone.Error.NoPath.Title">Ungültiger Wert</translation>
+	<translation name="Rig.DialogImportBone.Error.NoPath.Message">Kein Pfad festgelegt.</translation>
+	<translation name="Rig.DialogImportBone.Error.InvalidScaling.Title">Ungültiger Wert</translation>
+	<translation name="Rig.DialogImportBone.Error.InvalidScaling.Message">Die Skalierung muss 0 oder höher sein.</translation>
+	
+	<!-- Undo Actions -->
+	<translation name="Rig.Undo.BoneImport">Knochen importieren</translation>
+	<translation name="Rig.Undo.BoneMassFromVolume">Knochenmasse aus Volumen</translation>
+	<translation name="Rig.Undo.BoneMirror">Knochen spiegeln</translation>
+	<translation name="Rig.Undo.BoneScaleMass">Knochenmasse skalieren</translation>
+	<translation name="Rig.Undo.BoneSetCmp">Zentralen Massenpunkt des Knochens festlegen</translation>
+	<translation name="Rig.Undo.BoneSetIkLimitsLower">IK-Grenzen für Knochen festlegen</translation>
+	<translation name="Rig.Undo.BoneSetIkLimitsUpper">Obere IK-Grenzen für Knochen festlegen</translation>
+	<translation name="Rig.Undo.BoneSetIkResistance">IK-Widerstand von Knochen festlegen</translation>
+	<translation name="Rig.Undo.BoneSetMass">Knochenmasse festlegen</translation>
+	<translation name="Rig.Undo.BoneSetName">Knochennamen festlegen</translation>
+	<translation name="Rig.Undo.BoneSetOrientation">Knochenausrichtung festlegen</translation>
+	<translation name="Rig.Undo.BoneSetParent">Übergeordnetes Element des Knochens festlegen</translation>
+	<translation name="Rig.Undo.BoneSetPosition">Knochenposition festlegen</translation>
+	<translation name="Rig.Undo.BoneToggleDynamic">Knochen-Dynamik umschalten</translation>
+	<translation name="Rig.Undo.BoneToggleIkLockedX">IK-Sperre für Knochen X umschalten</translation>
+	<translation name="Rig.Undo.BoneToggleIkLockedY">IK-Sperre für Knochen Y umschalten</translation>
+	<translation name="Rig.Undo.BoneToggleIkLockedZ">IK-Sperre für Knochen Z umschalten</translation>
+	<translation name="Rig.Undo.ConstraintAddBone">Knochenbeschränkung hinzufügen</translation>
+	<translation name="Rig.Undo.ConstraintAddRig">Rig-Beschränkung hinzufügen</translation>
+	<translation name="Rig.Undo.ConstraintRemove">Einschränkungen entfernen</translation>
+	<translation name="Rig.Undo.ConstraintDofSetFrictionKinematic">Beschränkung DOF kinematische Reibung festlegen</translation>
+	<translation name="Rig.Undo.ConstraintDofSetLimitLower">Begrenzung DOF untere Grenze festlegen</translation>
+	<translation name="Rig.Undo.ConstraintDofSetStiffness">Beschränkung DOF Federsteifigkeit einstellen</translation>
+	<translation name="Rig.Undo.ConstraintDofSetFrictionStatic">Beschränkung DOF statische Reibung festlegen</translation>
+	<translation name="Rig.Undo.ConstraintDofSetLimitUpper">Obergrenze für Constraint DOF festlegen</translation>
+	<translation name="Rig.Undo.ConstraintSetTargetBone">Zielknochen für Beschränkung festlegen</translation>
+	<translation name="Rig.Undo.ConstraintSetBreakingThreshold">Schwellenwert für das Überschreiten von Einschränkungen festlegen</translation>
+	<translation name="Rig.Undo.ConstraintSetDampingAngular">Winkel-Dämpfung der Beschränkung festlegen</translation>
+	<translation name="Rig.Undo.ConstraintSetDampingLinear">Lineare Dämpfung der Beschränkung festlegen</translation>
+	<translation name="Rig.Undo.ConstraintSetDampingSpring">Federdämpfung der Beschränkung einstellen</translation>
+	<translation name="Rig.Undo.ConstraintSetOffset">Offset der Einschränkung festlegen</translation>
+	<translation name="Rig.Undo.ConstraintSetOrientation">Ausrichtung der Beschränkung festlegen</translation>
+	<translation name="Rig.Undo.ConstraintSetPosition">Position der Beschränkung festlegen</translation>
+	<translation name="Rig.Undo.ConstraintToggleRope">Beschränkung umschalten ist Seil</translation>
+	<translation name="Rig.Undo.ShapeAddBone">Knochenform hinzufügen</translation>
+	<translation name="Rig.Undo.ShapeAddRig">Rig-Form hinzufügen</translation>
+	<translation name="Rig.Undo.ShapeMove">Form verschieben</translation>
+	<translation name="Rig.Undo.ShapesMove">Formen verschieben</translation>
+	<translation name="Rig.Undo.ShapeRemove">Formen entfernen</translation>
+	<translation name="Rig.Undo.ShapeRotate">Form drehen</translation>
+	<translation name="Rig.Undo.ShapesRotate">Formen drehen</translation>
+	<translation name="Rig.Undo.ShapeBoxSetHalfExtends">Boxform festlegen Halbausdehnungen</translation>
+	<translation name="Rig.Undo.ShapeCapsuleSetHalfHeight">Halbe Höhe der Kapselform festlegen</translation>
+	<translation name="Rig.Undo.ShapeCapsuleSetTopRadius">Oberen Radius der Kapselform festlegen</translation>
+	<translation name="Rig.Undo.ShapeCapsuleSetBottomRadius">Unteren Radius der Kapselform festlegen</translation>
+	<translation name="Rig.Undo.ShapeCylinderSetHalfHeight">Halbe Höhe der Zylinderform festlegen</translation>
+	<translation name="Rig.Undo.ShapeCylinderSetTopRadius">Oberen Radius der Zylinderform festlegen</translation>
+	<translation name="Rig.Undo.ShapeCylinderSetBottomRadius">Unteren Radius der Zylinderform festlegen</translation>
+	<translation name="Rig.Undo.ShapeSetPosition">Formposition festlegen</translation>
+	<translation name="Rig.Undo.ShapeSetRotation">Formdrehung festlegen</translation>
+	<translation name="Rig.Undo.ShapeSphereSetRadius">Radius der Kugelform festlegen</translation>
+	<translation name="Rig.Undo.ShapeHullAddPoint">Formhülle Punkt hinzufügen</translation>
+	<translation name="Rig.Undo.ShapeHullRemovePoint">Formhülle Punkt entfernen</translation>
+	<translation name="Rig.Undo.ShapeHullSetPoint">Formhülle-Setpunkt</translation>
+	<translation name="Rig.Undo.ShapeSetProperty">Eigenschaft "Formsatz"</translation>
+	<translation name="Rig.Undo.PushAdd">Hinzufügen</translation>
+	<translation name="Rig.Undo.PushRemove">Änderungen entfernen</translation>
+	<translation name="Rig.Undo.PushMove">Verschieben</translation>
+	<translation name="Rig.Undo.PushesMove">Verschieben</translation>
+	<translation name="Rig.Undo.PushRotate">Drehen Schieben</translation>
+	<translation name="Rig.Undo.PushesRotate">Drehen</translation>
+	<translation name="Rig.Undo.RigSetCmp">Zentralen Massenpunkt des Rigs festlegen</translation>
+	<translation name="Rig.Undo.RigToggleModelCollision">Rig-Umschaltung Modellkollision</translation>
+	<translation name="Rig.Undo.RigSetRootBone">Rig-Stammknochen festlegen</translation>
+	<translation name="Rig.Undo.RigToggleDynamic">Rig-Dynamik umschalten</translation>
+	<translation name="Rig.Undo.Rotate">Drehen?</translation>
+	<translation name="Rig.Undo.Rotate.Format">Achse({0},{1},{2}) zentrieren({3},{4},{5} - {6},{7},{8}) Winkel={9}°</translation>
+	<translation name="Rig.Undo.Move.Format">Entfernung ({0},{1},{2})</translation>
+	<translation name="Rig.Undo.Scale.Format">faktoren({0},{1},{2}) zentrieren({3},{4},{5})</translation>
+	
+	<!-- Task Messages -->
+	<translation name="Rig.Task.SyncGameDefinition">Rig-Editor: Synchronisierung der Spieldefinition</translation>
+	
+	<!-- Dialog Messages -->
+	<translation name="Rig.Dialog.OpenRigConfirm">Das Öffnen des Rigs verwirft alle Änderungen. Ist dies in Ordnung?</translation>
+	
+	<!-- Error Messages -->
+	<translation name="Rig.PanelBone.Error.DuplicateName">Es existiert bereits ein Bone mit dem Namen {0}.</translation>
+	<translation name="Rig.PanelBone.Error.InvalidParent">Interner Fehler. Das Element "{0}" ist als übergeordnetes Element ungültig und hätte nicht ausgewählt werden dürfen.</translation>
+</languagePack>

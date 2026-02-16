@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='utf-8'?>
+<languagePack>
+	<identifier>de</identifier>
+	<name>Deutsch</name>
+	<description>Deutsch</description>
+	
+	<!-- Window Main Actions -->
+	<translation name="LangPack.Action.LangPackNew">Neu</translation>
+	<translation name="LangPack.Action.LangPackNew.Description">Erstellt ein neues Sprachpaket</translation>
+	<translation name="LangPack.Action.LangPackOpen">Öffnen...</translation>
+	<translation name="LangPack.Action.LangPackOpen.Description">Öffnet das Sprachpaket aus der Datei</translation>
+	<translation name="LangPack.Action.LangPackSave">Speichern</translation>
+	<translation name="LangPack.Action.LangPackSave.Description">Speichert die Schriftart in einer Datei</translation>
+	<translation name="LangPack.Action.LangPackSaveAs">Speichern unter...</translation>
+	<translation name="LangPack.Action.LangPackSaveAs.Description">Speichert die Schriftart unter einem anderen Dateinamen.</translation>
+	<translation name="LangPack.Action.LangPackOpenRef">Referenz öffnen...</translation>
+	<translation name="LangPack.Action.LangPackOpenRef.Description">Öffnet das Referenz-Sprachpaket aus der Datei</translation>
+	<translation name="LangPack.Action.Cut">Ausschneiden</translation>
+	<translation name="LangPack.Action.Cut.Description">Ausgewählte Objekte ausschneiden</translation>
+	<translation name="LangPack.Action.Copy">Kopieren</translation>
+	<translation name="LangPack.Action.Copy.Description">Kopiert ausgewählte Objekte</translation>
+	<translation name="LangPack.Action.Paste">Einfügen</translation>
+	<translation name="LangPack.Action.Paste.Description">Objekte einfügen</translation>
+	<translation name="LangPack.Action.EntryAdd">Eintrag hinzufügen</translation>
+	<translation name="LangPack.Action.EntryAdd.Description">Sprachpaket-Eintrag hinzufügen</translation>
+	<translation name="LangPack.Action.EntryRemove">Eintrag entfernen</translation>
+	<translation name="LangPack.Action.EntryRemove.Description">Ausgewählten Sprachpaket-Eintrag entfernen</translation>
+	<translation name="LangPack.Action.EntryNextMissing">Nächste fehlende auswählen</translation>
+	<translation name="LangPack.Action.EntryNextMissing.Description">Bitte wählen Sie den nächsten fehlenden Sprachpaket-Eintrag aus.</translation>
+	
+	<!-- Window Main Menu -->
+	<translation name="LangPack.Menu.LangPack">Sprachpaket</translation>
+	<translation name="LangPack.Menu.Edit">Bearbeiten</translation>
+	<translation name="LangPack.Menu.Entry">Eintrag</translation>
+	<translation name="LangPack.Menu.OpenRecentRefLangPack">Zuletzt verwendetes Referenz-Sprachpaket öffnen</translation>
+	
+	<!-- Window Main Dialogs -->
+	<translation name="LangPack.Dialog.NewLangPack">Neues Sprachpaket</translation>
+	<translation name="LangPack.Dialog.NewLangPack.Message">Erstellen eines neuen Sprachpakets unter Verzicht auf das aktuelle. Ist das in Ordnung?</translation>
+	<translation name="LangPack.Dialog.OpenLangPack">Sprachpaket öffnen</translation>
+	<translation name="LangPack.Dialog.SaveLangPack">Sprachpaket speichern</translation>
+	<translation name="LangPack.Dialog.OpenRefLangPack">Referenz-Sprachpaket öffnen</translation>
+	<translation name="LangPack.Dialog.AddEntry">Eintrag hinzufügen</translation>
+	<translation name="LangPack.Dialog.AddEntry.Identifier">Kennung:</translation>
+	<translation name="LangPack.Dialog.AddEntry.DuplicateError">Es existiert bereits ein Eintrag mit diesem Namen.</translation>
+	
+	<!-- View Lang Pack -->
+	<translation name="LangPack.View.Filter">Filter:</translation>
+	<translation name="LangPack.View.Filter.Description">Filtern Sie Einträge nach Kennung.</translation>
+	<translation name="LangPack.View.Identifier">Kennung:</translation>
+	<translation name="LangPack.View.Identifier.Description">Eindeutiger Identifikator-Name des Eintrags.</translation>
+	<translation name="LangPack.View.ReferenceText">Referenztext:</translation>
+	<translation name="LangPack.View.ReferenceText.Description">Referenztext des Referenzsprachpaketeintrags.</translation>
+	<translation name="LangPack.View.Text">Text:</translation>
+	<translation name="LangPack.View.Text.Description">Text des ausgewählten Eintrags.</translation>
+	<translation name="LangPack.View.List.Entries">Einträge</translation>
+	<translation name="LangPack.View.List.Header.Identifier">Kennung</translation>
+	<translation name="LangPack.View.List.Header.Text">Text</translation>
+	<translation name="LangPack.View.List.Header.Reference">Referenz</translation>
+	<translation name="LangPack.View.SetEntryIdentifier">Eintragskennung festlegen</translation>
+	<translation name="LangPack.View.SetEntryIdentifier.DuplicateError">Es existiert bereits ein Eintrag mit dem Namen "{0}".</translation>
+	<translation name="LangPack.View.SelectNextMissing">Nächsten fehlenden Eintrag auswählen</translation>
+	<translation name="LangPack.View.SelectNextMissing.NoMore">Keine fehlenden Sprachpaket-Einträge mehr</translation>
+	
+	<!-- Window Properties: Language Pack Panel -->
+	<translation name="LangPack.Properties.LangPack">Sprachpaket</translation>
+	<translation name="LangPack.Properties.LangPack.GroupBox">Sprachpaket:</translation>
+	<translation name="LangPack.Properties.LangPack.Identifier">Kennung:</translation>
+	<translation name="LangPack.Properties.LangPack.Identifier.Description">Eindeutige Kennung des Sprachpakets.</translation>
+	<translation name="LangPack.Properties.LangPack.Name">Name:</translation>
+	<translation name="LangPack.Properties.LangPack.Name.Description">Name des Sprachpakets.</translation>
+	<translation name="LangPack.Properties.LangPack.Description">Beschreibung:</translation>
+	<translation name="LangPack.Properties.LangPack.Description.Description">Beschreibung des Sprachpakets.</translation>
+	<translation name="LangPack.Properties.LangPack.MissingText">Fehlender Text:</translation>
+	<translation name="LangPack.Properties.LangPack.MissingText.Description">Text, der für fehlende Einträge verwendet werden soll.</translation>
+	
+	<!-- Window Properties: Undo Panel -->
+	<translation name="LangPack.Properties.Undo">Rückgängig</translation>
+	
+	<!-- Undo Actions -->
+	<translation name="LangPack.Undo.EntryAdd">Eintrag hinzufügen</translation>
+	<translation name="LangPack.Undo.EntryRemove">Eintrag entfernen</translation>
+	<translation name="LangPack.Undo.EntryRemoveMultiple">Einträge entfernen</translation>
+	<translation name="LangPack.Undo.EntrySetName">Name des Eintrags festlegen</translation>
+	<translation name="LangPack.Undo.EntrySetText">Eintragstext festlegen</translation>
+	<translation name="LangPack.Undo.LangPackSetIdentifier">Sprachpaket-Kennung festlegen</translation>
+	<translation name="LangPack.Undo.LangPackSetName">Name des Sprachpakets festlegen</translation>
+	<translation name="LangPack.Undo.LangPackSetDescription">Beschreibung des Sprachpakets</translation>
+	<translation name="LangPack.Undo.LangPackSetMissingText">Sprachpaket einrichten, fehlenden Text hinzufügen</translation>
+	
+	<!-- Log Messages -->
+	<translation name="LangPack.Default.EntryName">Eintrag</translation>
+</languagePack>

@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='utf-8'?>
+<languagePack>
+	<identifier>de</identifier>
+	<name>Deutsch</name>
+	<description>Deutsch</description>
+	
+	<!-- Menu: Font -->
+	<translation name="Font.Menu.Font">Schriftart</translation>
+	<translation name="Font.Menu.Edit">Bearbeiten</translation>
+	
+	<!-- Actions: Font Menu -->
+	<translation name="Font.Action.FontNew">Neu</translation>
+	<translation name="Font.Action.FontNew.ToolTip">Erstellt eine neue Schriftart</translation>
+	<translation name="Font.Action.FontOpen">Öffnen...</translation>
+	<translation name="Font.Action.FontOpen.ToolTip">Öffnet eine Schriftart aus einer Datei</translation>
+	<translation name="Font.Action.FontSave">Speichern</translation>
+	<translation name="Font.Action.FontSave.ToolTip">Speichert die Schriftart in einer Datei</translation>
+	<translation name="Font.Action.FontSaveAs">Speichern unter...</translation>
+	<translation name="Font.Action.FontSaveAs.ToolTip">Speichert die Schriftart unter einem anderen Dateinamen.</translation>
+	<translation name="Font.Action.FontGenerate">Generieren...</translation>
+	<translation name="Font.Action.FontGenerate.ToolTip">Erzeugt eine neue Schriftart aus einer Systemschriftart.</translation>
+	
+	<!-- Actions: Edit Menu -->
+	<translation name="Font.Action.EditCut">Ausschneiden</translation>
+	<translation name="Font.Action.EditCut.ToolTip">Ausgewählte Objekte ausschneiden</translation>
+	<translation name="Font.Action.EditCopy">Kopieren</translation>
+	<translation name="Font.Action.EditCopy.ToolTip">Kopiert ausgewählte Objekte</translation>
+	<translation name="Font.Action.EditPaste">Einfügen</translation>
+	<translation name="Font.Action.EditPaste.ToolTip">Objekte einfügen</translation>
+	
+	<!-- Dialogs -->
+	<translation name="Font.Dialog.NewFont.Title">Neue Schriftart</translation>
+	<translation name="Font.Dialog.NewFont.Message">Ist es in Ordnung, eine neue Schriftart zu erstellen und die aktuelle zu verwerfen?</translation>
+	<translation name="Font.Dialog.OpenFont.Title">Schriftart öffnen</translation>
+	<translation name="Font.Dialog.SaveFont.Title">Schriftart speichern</translation>
+	<translation name="Font.Dialog.SelectFont.Title">Schriftart auswählen</translation>
+	<translation name="Font.Dialog.GlyphEnlarge.Title">Glyphe vergrössern</translation>
+	<translation name="Font.Dialog.GlyphEnlarge.Message">Vergrössern:</translation>
+	<translation name="Font.Dialog.SetFontImage.Title">Schriftartbild festlegen</translation>
+	<translation name="Font.Dialog.SetFontImage.Message">Das Bild, in dem das Schriftbild gespeichert werden soll, ist bereits vorhanden. Möchten Sie das
+Schriftbild importieren, bevor Sie den Pfad festlegen?
+[JA] importiert das Bild und ändert den Pfad und die Grösse.
+[NEIN] ändert nur den Pfad, und beim nächsten Speichern der
+Schriftart wird das Bild überschrieben.
+[ABBRECHEN] importiert weder das Bild noch ändert es den Pfad.</translation>
+	<translation name="Font.Dialog.ImportFontImage.Title">Schriftartbild importieren</translation>
+	<translation name="Font.Dialog.ImportFontImage.Message">Das Schriftbild verfügt nicht über genau 4 Farbkanäle. Nur Bilder mit 4 Farbkanälen können als Schriftbilder verwendet werden.</translation>
+	
+	<!-- WPFont: Font Properties Panel -->
+	<translation name="Font.WPFont.GroupFont">Schriftart:</translation>
+	<translation name="Font.WPFont.Image">Bild:</translation>
+	<translation name="Font.WPFont.Image.ToolTip">Schriftartbild.</translation>
+	<translation name="Font.WPFont.LineHeight">Zeilenhöhe:</translation>
+	<translation name="Font.WPFont.LineHeight.ToolTip">Zeilenhöhe in Pixeln.</translation>
+	<translation name="Font.WPFont.ColorFont">Farbschrift</translation>
+	<translation name="Font.WPFont.ColorFont.ToolTip">Die Schriftart ist eine farbige Schriftart.</translation>
+	<translation name="Font.WPFont.BaseLine">Grundlinie:</translation>
+	<translation name="Font.WPFont.BaseLine.ToolTip">Grundlinie von oben in Pixeln.</translation>
+	
+	<!-- WPGlyph: Glyph Properties Panel -->
+	<translation name="Font.WPGlyph.GroupGlyph">Glyphe:</translation>
+	<translation name="Font.WPGlyph.Glyph">Glyphe:</translation>
+	<translation name="Font.WPGlyph.Glyph.ToolTip">Zu bearbeitende Glyphe.</translation>
+	<translation name="Font.WPGlyph.Glyph.Add.ToolTip">Glyphe hinzufügen</translation>
+	<translation name="Font.WPGlyph.Glyph.Remove.ToolTip">Glyphe entfernen</translation>
+	<translation name="Font.WPGlyph.GlyphCode">Code {0}</translation>
+	<translation name="Font.WPGlyph.TexCoords">Tex-Koordinaten:</translation>
+	<translation name="Font.WPGlyph.TexCoords.ToolTip">Texturkoordinaten in Pixeln.</translation>
+	<translation name="Font.WPGlyph.TexCoordsU.ToolTip">U Texturkoordinaten in Pixeln</translation>
+	<translation name="Font.WPGlyph.TexCoordsV.ToolTip">V Texturkoordinaten in Pixeln</translation>
+	<translation name="Font.WPGlyph.Width">Breite:</translation>
+	<translation name="Font.WPGlyph.Width.ToolTip">Breite des Glyphs in Pixeln.</translation>
+	<translation name="Font.WPGlyph.Height">Höhe:</translation>
+	<translation name="Font.WPGlyph.Height.ToolTip">Höhe des Glyphs in Pixeln.</translation>
+	<translation name="Font.WPGlyph.Bearing">Versatz:</translation>
+	<translation name="Font.WPGlyph.Bearing.ToolTip">Horizontaler Versatz in Pixel.</translation>
+	<translation name="Font.WPGlyph.BearingY">Versatz Y:</translation>
+	<translation name="Font.WPGlyph.BearingY.ToolTip">Vertikaler Versatz in Pixel.</translation>
+	<translation name="Font.WPGlyph.Advance">Vorschub:</translation>
+	<translation name="Font.WPGlyph.Advance.ToolTip">Vorschub in Pixel.</translation>
+	
+	<!-- Undo: Font -->
+	<translation name="Font.Undo.SetImagePath">Schriftart Bildpfad festlegen</translation>
+	<translation name="Font.Undo.SetLineHeight">Schriftart Zeilenhöhe festlegen</translation>
+	<translation name="Font.Undo.SetBaseLine">Schriftart-Grundlinie festlegen</translation>
+	<translation name="Font.Undo.ToggleColorFont">Schriftart umschalten Farbschrift</translation>
+	<translation name="Font.Undo.ImportImage">Schriftart Importieren von Bild</translation>
+	
+	<!-- Undo: Glyph -->
+	<translation name="Font.Undo.GlyphAdd">Glyphe hinzufügen</translation>
+	<translation name="Font.Undo.GlyphRemove">Glyphe entfernen</translation>
+	<translation name="Font.Undo.GlyphSetU">Glyphe U setzen</translation>
+	<translation name="Font.Undo.GlyphSetV">Glyphe V setzen</translation>
+	<translation name="Font.Undo.GlyphSetWidth">Glyphe Breite setzen</translation>
+	<translation name="Font.Undo.GlyphSetHeight">Glyphe Höhe setzen</translation>
+	<translation name="Font.Undo.GlyphSetBearing">Glyphe Versatz setzen</translation>
+	<translation name="Font.Undo.GlyphSetBearingY">Glyphe Versatz Y setzen</translation>
+	<translation name="Font.Undo.GlyphSetAdvance">Glyphe Vorschub setzen</translation>
+	
+	<!-- ViewFontImage -->
+	<translation name="Font.ViewFontImage.Zoom.ToolTip">Zoomfaktor auswählen</translation>
+	
+	<!-- WindowProperties: Tabs -->
+	<translation name="Font.WindowProperties.TabFont">Schriftart</translation>
+	<translation name="Font.WindowProperties.TabGlyph">Glyphe</translation>
+	<translation name="Font.WindowProperties.TabUndo">Rückgängig</translation>
+</languagePack>
