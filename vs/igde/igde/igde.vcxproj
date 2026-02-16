@@ -299,6 +299,7 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\src\gui\igdeCreateProject.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\src\gui\igdeDialogNewGameProject.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\src\gui\igdeDialogProjectSettings.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\gui\igdeDialogSettings.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\src\gui\igdeDialogStartUp.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\src\gui\igdeRealApplication.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\src\gui\igdeSharedFontList.cpp" />
@@ -327,6 +328,7 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\src\gui\igdeCreateProject.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\src\gui\igdeDialogNewGameProject.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\src\gui\igdeDialogProjectSettings.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\gui\igdeDialogSettings.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\src\gui\igdeDialogStartUp.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\src\gui\igdeRealApplication.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\src\gui\igdeSharedFontList.h" />

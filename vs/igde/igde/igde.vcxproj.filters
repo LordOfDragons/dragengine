@@ -63,6 +63,9 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\src\gui\igdeDialogProjectSettings.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\gui\igdeDialogSettings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\src\gui\igdeDialogStartUp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -141,6 +144,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\src\gui\igdeDialogProjectSettings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\gui\igdeDialogSettings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\src\gui\igdeDialogStartUp.h">
