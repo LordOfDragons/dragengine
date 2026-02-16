@@ -124,6 +124,14 @@ jobs:
           key: external-cache-web-${{ hashFiles('./extern/**/{SConscript,*.tar.*,*.zip}') }}
           restore-keys: external-cache-web-
       
+      - name: Cache SCons
+        uses: actions/cache@v4
+        id: scons-cache
+        with:
+          path: ./.sconsign.dblite
+          key: scons-cache-web-${{ hashFiles('./.sconsign.dblite') }}
+          restore-keys: scons-cache-web-
+      
       - name: Build
         # CMake based projects are problem children that like to get stuck forever in CMake
         # on Ubuntu and GitHub. build them first without parallel to avoid hangups
