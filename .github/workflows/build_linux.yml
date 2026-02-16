@@ -140,8 +140,8 @@ jobs:
         id: external-cache
         with:
           path: ./extern
-          key: external-cache-${{ github.job }}-${{ hashFiles('./extern/**/{SConscript,*.tar.*,*.zip}') }}
-          restore-keys: external-cache-${{ github.job }}-
+          key: external-cache-linux-${{ hashFiles('./extern/**/{SConscript,*.tar.*,*.zip}') }}
+          restore-keys: external-cache-linux-
       
       - name: Build external
         # Build first all external libraries. Aboids avoid running CodeQL on them.

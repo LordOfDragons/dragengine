@@ -96,8 +96,8 @@ jobs:
         id: external-cache
         with:
           path: ./extern
-          key: external-cache-${{ github.job }}-${{ hashFiles('./extern/**/{SConscript,*.tar.*,*.zip}') }}
-          restore-keys: external-cache-${{ github.job }}-
+          key: external-cache-android-${{ inputs.androidArch }}-${{ hashFiles('./extern/**/{SConscript,*.tar.*,*.zip}') }}
+          restore-keys: external-cache-android-${{ inputs.androidArch }}-
       
       - name: Build
         # CMake based projects are problem children that like to get stuck forever in CMake
