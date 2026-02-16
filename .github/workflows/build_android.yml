@@ -33,6 +33,10 @@ on:
       buildNumber:
         required: true
         type: string
+      sconscache:
+        required: false
+        default: true
+        type: boolean
 
 jobs:
   build:
@@ -102,10 +106,11 @@ jobs:
       - name: Cache SCons
         uses: actions/cache@v4
         id: scons-cache
+        if: ${{ inputs.sconscache }}
         with:
-          path: ./.sconsign.dblite
-          key: scons-cache-android-${{ inputs.androidArch }}-${{ hashFiles('./.sconsign.dblite') }}
-          restore-keys: scons-cache-android-${{ inputs.androidArch }}-
+          path: .scons_cache
+          key: ${{ runner.os }}-scons-cache-android-${{ inputs.androidArch }}-${{ hashFiles('./SConstruct', './*.py', './site_scons/**', '**/SConscript') }}
+          restore-keys: ${{ runner.os }}-scons-cache-android-${{ inputs.androidArch }}-
       
       - name: Build
         # CMake based projects are problem children that like to get stuck forever in CMake

@@ -23,6 +23,10 @@ on:
         required: false
         default: true
         type: boolean
+      sconscache:
+        required: false
+        default: true
+        type: boolean
   
   workflow_dispatch:
     inputs:
@@ -52,6 +56,10 @@ on:
         type: string
         default: "installers-linux"
       lfscache:
+        required: false
+        default: true
+        type: boolean
+      sconscache:
         required: false
         default: true
         type: boolean
@@ -118,10 +126,11 @@ jobs:
       - name: Cache SCons
         uses: actions/cache@v4
         id: scons-cache
+        if: ${{ inputs.sconscache }}
         with:
-          path: ./.sconsign.dblite
-          key: scons-cache-linux_ci-${{ hashFiles('./.sconsign.dblite') }}
-          restore-keys: scons-cache-linux_ci-
+          path: .scons_cache
+          key: ${{ runner.os }}-scons-cache-linux_ci-${{ hashFiles('./SConstruct', './*.py', './site_scons/**', '**/SConscript') }}
+          restore-keys: ${{ runner.os }}-scons-cache-linux_ci-
       
       - name: Build
         # CMake based projects are problem children that like to get stuck forever in CMake

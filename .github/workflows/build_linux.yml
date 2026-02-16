@@ -34,6 +34,10 @@ on:
         required: false
         default: false
         type: boolean
+      sconscache:
+        required: false
+        default: true
+        type: boolean
   
   workflow_dispatch:
     inputs:
@@ -79,6 +83,10 @@ on:
       codeql:
         required: false
         default: false
+        type: boolean
+      sconscache:
+        required: false
+        default: true
         type: boolean
       
 jobs:
@@ -146,10 +154,11 @@ jobs:
       - name: Cache SCons
         uses: actions/cache@v4
         id: scons-cache
+        if: ${{ inputs.sconscache }}
         with:
-          path: ./.sconsign.dblite
-          key: scons-cache-linux-${{ hashFiles('./.sconsign.dblite') }}
-          restore-keys: scons-cache-linux-
+          path: .scons_cache
+          key: ${{ runner.os }}-scons-cache-linux-${{ hashFiles('./SConstruct', './*.py', './site_scons/**', '**/SConscript') }}
+          restore-keys: ${{ runner.os }}-scons-cache-linux-
       
       - name: Build external
         # Build first all external libraries. Aboids avoid running CodeQL on them.

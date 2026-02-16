@@ -49,6 +49,7 @@ jobs:
       artifactArchive: archives-linux
       artifactInstaller: installers-linux
       artifactTools: tools-crossplatform
+      sconscache: false
   
   build_windows:
     needs: [generate_buildnumbers]
@@ -86,6 +87,7 @@ jobs:
       buildVersion: ${{ github.event.inputs.version }}
       artifactArchive: archives-linux-ci
       artifactInstaller: installers-linux-ci
+      sconscache: false
   
   build_android_armv8:
     needs: [generate_buildnumbers]
@@ -96,6 +98,7 @@ jobs:
       androidArch: 'armv8'
       artifactArchive: archives-android-armv8
       buildNumber: ${{ needs.generate_buildnumbers.outputs.build_number }}
+      sconscache: false
   
   build_android_armv7:
     needs: [generate_buildnumbers]
@@ -106,6 +109,7 @@ jobs:
       androidArch: 'armv7'
       artifactArchive: archives-android-armv7
       buildNumber: ${{ needs.generate_buildnumbers.outputs.build_number }}
+      sconscache: false
   
   build_live:
     needs: [build_linux, build_windows]
