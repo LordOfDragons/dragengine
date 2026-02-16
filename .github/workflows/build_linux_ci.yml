@@ -107,6 +107,14 @@ jobs:
           sed -i -e 's/{ReleaseVersion}/${{ inputs.releaseVersion }}/g' custom.py
           sed -i -e 's/{BuildVersion}/${{ inputs.buildVersion }}/g' custom.py
       
+      - name: Cache external
+        uses: actions/cache@v4
+        id: external-cache
+        with:
+          path: ./extern
+          key: external-cache-${{ github.job }}-${{ hashFiles('./extern/**/{SConscript,*.tar.*,*.zip}') }}
+          restore-keys: external-cache-${{ github.job }}-
+      
       - name: Build
         # CMake based projects are problem children that like to get stuck forever in CMake
         # on Ubuntu and GitHub. build them first without parallel to avoid hangups

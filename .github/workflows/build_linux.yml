@@ -135,6 +135,14 @@ jobs:
           sed -i -e 's/{BuildVersion}/${{ inputs.buildVersion }}/g' custom.py
           sed -i -e 's/{DebugBuild}/${{ inputs.debugBuild }}/g' custom.py
       
+      - name: Cache external
+        uses: actions/cache@v4
+        id: external-cache
+        with:
+          path: ./extern
+          key: external-cache-${{ github.job }}-${{ hashFiles('./extern/**/{SConscript,*.tar.*,*.zip}') }}
+          restore-keys: external-cache-${{ github.job }}-
+      
       - name: Build external
         # Build first all external libraries. Aboids avoid running CodeQL on them.
         # CMake based projects are problem children that like to get stuck forever in CMake
