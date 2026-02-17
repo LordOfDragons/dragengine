@@ -165,7 +165,7 @@ jobs:
         # CMake based projects are problem children that like to get stuck forever in CMake
         # on Ubuntu and GitHub. build them first without parallel to avoid hangups
         run: |
-          scons -j 1 \
+          scons --config=force -j 1 \
             lib_openxr \
             lib_openvr \
             lib_libjpeg \
@@ -263,3 +263,10 @@ jobs:
           path: |
             src/tools/blender/build/blender-addon-dragengine-${{ inputs.buildVersion }}.zip
           if-no-files-found: error
+      
+      - name: Prune Cache
+        if: success()
+        run: |
+          if [ -d ".scons_cache" ]; then
+            find .scons_cache -type f -atime +7 -delete
+          fi

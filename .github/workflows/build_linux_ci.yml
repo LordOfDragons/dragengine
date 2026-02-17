@@ -136,7 +136,7 @@ jobs:
         # CMake based projects are problem children that like to get stuck forever in CMake
         # on Ubuntu and GitHub. build them first without parallel to avoid hangups
         run: |
-          scons -j 1 lib_openxr lib_openvr lib_libjpeg lib_libwebm lib_modio
+          scons --config=force -j 1 lib_openxr lib_openvr lib_libjpeg lib_libwebm lib_modio
           scons -j 14 archive installer
       
       - name: Debug Symbols
@@ -172,3 +172,10 @@ jobs:
             installer/build/install-dragengine-ci-${{ inputs.releaseVersion }}-linux64.sh
             installer/build/install-deigde-ci-${{ inputs.releaseVersion }}-linux64.sh
           if-no-files-found: error
+      
+      - name: Prune Cache
+        if: success()
+        run: |
+          if [ -d ".scons_cache" ]; then
+            find .scons_cache -type f -atime +7 -delete
+          fi

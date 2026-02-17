@@ -116,7 +116,7 @@ jobs:
         # CMake based projects are problem children that like to get stuck forever in CMake
         # on Ubuntu and GitHub. build them first without parallel to avoid hangups
         run: |
-          scons -j 1 lib_openxr lib_libjpeg lib_libwebm
+          scons --config=force -j 1 lib_openxr lib_libjpeg lib_libwebm
           scons -j 14 archive launcher_android_build
       
       - name: Debug Symbols
@@ -146,3 +146,10 @@ jobs:
             src/launcher/android/build/DELauncher-${{ inputs.releaseVersion }}-${{ inputs.androidArch }}.apk
             src/launcher/android/build/DELauncher-${{ inputs.releaseVersion }}-${{ inputs.androidArch }}.aab
           if-no-files-found: error
+      
+      - name: Prune Cache
+        if: success()
+        run: |
+          if [ -d ".scons_cache" ]; then
+            find .scons_cache -type f -atime +7 -delete
+          fi

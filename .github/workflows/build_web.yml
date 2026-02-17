@@ -147,7 +147,7 @@ jobs:
         # on Ubuntu and GitHub. build them first without parallel to avoid hangups
         #emscons scons -j 1 lib_openxr lib_libjpeg lib_libwebm
         run: |
-          emscons scons -j 1 lib_libjpeg lib_libwebm
+          emscons scons --config=force -j 1 lib_libjpeg lib_libwebm
           emscons scons -j 14 archive launcher_web_build
           cd src/launcher/web/build
           7z a deweblauncher-${{ inputs.releaseVersion }}.7z delauncher-web.{js,wasm,data}
@@ -165,3 +165,10 @@ jobs:
             archive/build/dragengine-dev-${{ inputs.releaseVersion }}-web.tar.bz2
             src/launcher/web/build/deweblauncher-${{ inputs.releaseVersion }}.7z
           if-no-files-found: error
+      
+      - name: Prune Cache
+        if: success()
+        run: |
+          if [ -d ".scons_cache" ]; then
+            find .scons_cache -type f -atime +7 -delete
+          fi
