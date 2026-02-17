@@ -133,14 +133,14 @@ jobs:
           key: external-cache-web-${{ hashFiles('./extern/**/{SConscript,*.tar.*,*.zip}') }}
           restore-keys: external-cache-web-
       
-      - name: Cache SCons
-        uses: actions/cache@v4
-        id: scons-cache
-        if: ${{ inputs.sconscache }}
-        with:
-          path: .scons_cache
-          key: ${{ runner.os }}-scons-cache-web-${{ hashFiles('./SConstruct', './*.py', './site_scons/**', '**/SConscript') }}
-          restore-keys: ${{ runner.os }}-scons-cache-web-
+      # - name: Cache SCons
+      #   uses: actions/cache@v4
+      #   id: scons-cache
+      #   if: ${{ inputs.sconscache }}
+      #   with:
+      #     path: .scons_cache
+      #     key: ${{ runner.os }}-scons-cache-web-${{ hashFiles('./SConstruct', './*.py', './site_scons/**', '**/SConscript') }}
+      #     restore-keys: ${{ runner.os }}-scons-cache-web-
       
       - name: Build
         # CMake based projects are problem children that like to get stuck forever in CMake
@@ -166,9 +166,9 @@ jobs:
             src/launcher/web/build/deweblauncher-${{ inputs.releaseVersion }}.7z
           if-no-files-found: error
       
-      - name: Prune Cache
-        if: success()
-        run: |
-          if [ -d ".scons_cache" ]; then
-            find .scons_cache -type f -atime +7 -delete
-          fi
+      # - name: Prune Cache
+      #   if: success()
+      #   run: |
+      #     if [ -d ".scons_cache" ]; then
+      #       find .scons_cache -type f -atime +7 -delete
+      #     fi

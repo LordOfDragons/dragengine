@@ -151,14 +151,14 @@ jobs:
           key: external-cache-linux-${{ hashFiles('./extern/**/{SConscript,*.tar.*,*.zip}') }}
           restore-keys: external-cache-linux-
       
-      - name: Cache SCons
-        uses: actions/cache@v4
-        id: scons-cache
-        if: ${{ inputs.sconscache }}
-        with:
-          path: .scons_cache
-          key: ${{ runner.os }}-scons-cache-linux-${{ hashFiles('./SConstruct', './*.py', './site_scons/**', '**/SConscript') }}
-          restore-keys: ${{ runner.os }}-scons-cache-linux-
+      # - name: Cache SCons
+      #   uses: actions/cache@v4
+      #   id: scons-cache
+      #   if: ${{ inputs.sconscache }}
+      #   with:
+      #     path: .scons_cache
+      #     key: ${{ runner.os }}-scons-cache-linux-${{ hashFiles('./SConstruct', './*.py', './site_scons/**', '**/SConscript') }}
+      #     restore-keys: ${{ runner.os }}-scons-cache-linux-
       
       - name: Build external
         # Build first all external libraries. Aboids avoid running CodeQL on them.
@@ -264,9 +264,9 @@ jobs:
             src/tools/blender/build/blender-addon-dragengine-${{ inputs.buildVersion }}.zip
           if-no-files-found: error
       
-      - name: Prune Cache
-        if: success()
-        run: |
-          if [ -d ".scons_cache" ]; then
-            find .scons_cache -type f -atime +7 -delete
-          fi
+      # - name: Prune Cache
+      #   if: success()
+      #   run: |
+      #     if [ -d ".scons_cache" ]; then
+      #       find .scons_cache -type f -atime +7 -delete
+      #     fi
