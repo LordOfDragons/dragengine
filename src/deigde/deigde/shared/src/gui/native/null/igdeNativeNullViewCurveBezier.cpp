@@ -50,31 +50,24 @@ void igdeNativeNullViewCurveBezier::DestroyNativeWidget(){
 }
 
 void igdeNativeNullViewCurveBezier::UpdateEnabled(){
-	pView->UpdateEnabled();
 }
 
 void igdeNativeNullViewCurveBezier::UpdateDefaultSize(){
-	pView->UpdateDefaultSize();
 }
 
 void igdeNativeNullViewCurveBezier::UpdateCurve(){
-	pView->UpdateCurve();
 }
 
 void igdeNativeNullViewCurveBezier::UpdateSelectedPoint(){
-	pView->UpdateSelectedPoint();
 }
 
 void igdeNativeNullViewCurveBezier::UpdateClamp(){
-	pView->UpdateClamp();
 }
 
 void igdeNativeNullViewCurveBezier::ResetView(){
-	pView->ResetView();
 }
 
 void igdeNativeNullViewCurveBezier::FitViewToCurve(){
-	pView->FitViewToCurve();
 }
 
 #endif
