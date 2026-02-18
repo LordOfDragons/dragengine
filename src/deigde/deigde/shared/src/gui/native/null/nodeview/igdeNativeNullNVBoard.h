@@ -38,6 +38,10 @@ class igdeNativeNullNVSlot;
  * Null NodeView Board.
  */
 class igdeNativeNullNVBoard : public igdeNVBoard::cNativeNVBoard{
+private:
+	igdeNVLink::Ref pNullLink;
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
