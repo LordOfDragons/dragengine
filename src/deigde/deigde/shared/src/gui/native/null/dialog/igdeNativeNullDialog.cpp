@@ -83,10 +83,6 @@ void igdeNativeNullDialog::CloseDialog(bool){
 	SetIsClosed(true);
 }
 
-void igdeNativeNullDialog::OnFrameUpdate(){
-	pOwnerDialog.OnFrameUpdate();
-}
-
 int igdeNativeNullDialog::DialogPadContent (const igdeGuiTheme &){
 	return 0;
 }

@@ -74,8 +74,6 @@ public:
 	void ShowDialog() override;
 	void CloseDialog(bool accepted) override;
 	
-	void OnFrameUpdate() override;
-	
 	static int DialogPadContent(const igdeGuiTheme &guitheme);
 	static int DialogPadButtons(const igdeGuiTheme &guitheme);
 	/*@}*/
